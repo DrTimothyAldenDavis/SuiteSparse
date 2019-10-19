@@ -6,7 +6,7 @@ function stats = UFstats (A, kind, skip_chol, skip_dmperm, Z)
 % A: a sparse matrix
 % kind: a string with the Problem.kind
 % Z: empty, or a sparse matrix the same size as A.  Only used for
-%   pattern_symmetry and nzero statistics, described below.
+%   pattern_symmetry, nzero, and bandwidth statistics, described below.
 %
 % Requires amd, cholmod, RBio, and CSparse.  Computes the following
 % statistics, returning them as fields in the stats struct:
@@ -32,6 +32,10 @@ function stats = UFstats (A, kind, skip_chol, skip_dmperm, Z)
 %   posdef              1 if positive definite, 0 otherwise
 %   isND                1 if a 2D/3D problem, 0 otherwise
 %   isGraph             1 if a graph, 0 otherwise
+%   lowerbandwidth      lower bandwidth, [i j]=find(A), max(0,max(i-j))
+%   upperbandwidth      upper bandwidth, [i j]=find(A), max(0,max(j-i))
+%   rcm_lowerbandwidth  lower bandwidth after symrcm
+%   rcm_upperbandwidth  upper bandwidth after symrcm
 %
 % amd_lnz and amd_flops are not computed for rectangular matrices.
 %
@@ -42,12 +46,18 @@ function stats = UFstats (A, kind, skip_chol, skip_dmperm, Z)
 % nblocks is the same as ncc, for these problems.  stats.sprank and
 % stats.nblocks are left as -2.
 %
+% The bandwidth statistics include the Z matrix.  For rectangular matrices,
+% symrcm is not applicable, and the rcm_lowerbandwidth and rcm_upperbandwidth
+% statistics are the same as the unpermuted versions, lowerbandwidth and
+% upperbandwidth, respectively.
+%
 % If a statistic is not computed, it is set to -2.  If an attempt to compute
 % the statistic was made but failed, it is set to -1.
 %
-% See also UFget, UFindex, RBtype, amd, colamd, cs_scc, cs_sqr, dmperm, cholmod2
+% See also UFget, UFindex, RBtype, amd, colamd, cs_scc, cs_sqr, dmperm,
+% cholmod2, symrcm
 
-% Copyright 2006-2011, Timothy A. Davis
+% Copyright 2006-2014, Timothy A. Davis
 
 % Requires the SuiteSparse set of packages: CHOLMOD, RBio, CSparse
 
@@ -61,6 +71,19 @@ end
 
 uncomputed = -2 ;
 failure = -1 ;
+
+if (nargin < 5)
+    Z = [ ] ;
+end
+if (nargin < 4)
+    skip_dmperm = 0 ;
+end
+if (nargin < 3)
+    skip_chol = 0 ;
+end
+if (nargin < 2)
+    kind = '' ;
+end
 
 %-------------------------------------------------------------------------------
 % basic stats
@@ -109,13 +132,17 @@ fprintf ('numerical_symmetry: %g pattern_symmetry: %g time: %g\n', ...
 
 % recompute the pattern symmetry with Z included
 tic ;
+if (stats.nzero > 0)
+    AZ = A + Z ;
+else
+    AZ = A ;
+end
 if (m == n && stats.nzero > 0)
     AZ = A+Z ;
     if (nnz (AZ) ~= nnz (A) + nnz (Z))
         error ('A and Z overlap!')
     end
     [s xmatched pmatched nzoffdiag] = spsym (AZ) ;
-    clear AZ
     if (nzoffdiag > 0)
         stats.pattern_symmetry = pmatched / nzoffdiag ;
     else
@@ -124,6 +151,35 @@ if (m == n && stats.nzero > 0)
 end
 fprintf ('numerical_symmetry: %g pattern_symmetry: %g time: %g\n', ...
     stats.numerical_symmetry, stats.pattern_symmetry, toc) ;
+
+%-------------------------------------------------------------------------------
+% bandwidth (includes explicit zeros)
+%-------------------------------------------------------------------------------
+
+[i j] = find (AZ) ;
+stats.lowerbandwidth = max (0, max (i-j)) ;
+stats.upperbandwidth = max (0, max (j-i)) ;
+clear i j
+fprintf ('lo %d up %d ', ...
+    stats.lowerbandwidth, stats.upperbandwidth) ;
+% now with symrcm, if the matrix is square
+stats.rcm_lowerbandwidth = stats.lowerbandwidth ;
+stats.rcm_upperbandwidth = stats.upperbandwidth ;
+if (m == n)
+    try
+        p = symrcm (AZ) ;
+        [i j] = find (AZ (p,p)) ;
+        stats.rcm_lowerbandwidth = max (0, max (i-j)) ;
+        stats.rcm_upperbandwidth = max (0, max (j-i)) ;
+    catch
+        fprintf ('================ symrcm failed ') ;
+        stats.rcm_lowerbandwidth = failure ;
+        stats.rcm_upperbandwidth = failure ;
+    end
+    fprintf ('rcm: lo %d up %d', ...
+        stats.rcm_lowerbandwidth, stats.rcm_upperbandwidth) ;
+end
+clear AZ i j p
 
 %-------------------------------------------------------------------------------
 % isND

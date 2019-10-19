@@ -203,15 +203,7 @@
 /* Memory allocator */
 /* -------------------------------------------------------------------------- */
 
-/* See AMD/Source/amd_global.c and AMD/Source/amd.h for the
- * definition of the memory allocator used by UMFPACK.  Versions 4.4 and
- * earlier had their memory allocator definitions here.   Other global
- * function pointers for UMFPACK are located in umf_global.c.
- *
- * The MATLAB mexFunction uses MATLAB's memory manager and mexPrintf, while the
- * C-callable AMD library uses the ANSI C malloc, free, realloc, and printf
- * routines.
- */
+    /* see SuiteSparse_config */
 
 /* -------------------------------------------------------------------------- */
 /* Memory space definitions */

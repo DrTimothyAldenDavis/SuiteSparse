@@ -74,8 +74,6 @@ void mexFunction
     Long spumoni ;              /* verbosity variable */
     Long stats [COLAMD_STATS] ; /* stats for colamd */
 
-    colamd_printf = mexPrintf ; /* COLAMD printf routine */
-
     /* === Check inputs ===================================================== */
 
     if (nrhs < 1 || nrhs > 2 || nlhs < 0 || nlhs > 2)

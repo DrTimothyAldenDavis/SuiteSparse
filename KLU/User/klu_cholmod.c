@@ -48,12 +48,6 @@ int klu_cholmod
     cm.supernodal = CHOLMOD_SIMPLICIAL ;
     cm.print = 0 ;
 
-    /* use KLU memory management routines for CHOLMOD */
-    cm.malloc_memory = Common->malloc_memory ;
-    cm.realloc_memory = Common->realloc_memory ;
-    cm.calloc_memory = Common->calloc_memory ;
-    cm.free_memory = Common->free_memory ;
-
     /* construct a CHOLMOD version of the input matrix A */
     A = &Amatrix ;
     A->nrow = n ;                   /* A is n-by-n */

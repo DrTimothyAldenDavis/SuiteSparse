@@ -48,12 +48,6 @@ void mexFunction
     /* get control parameters */
     /* --------------------------------------------------------------------- */
 
-    camd_malloc = mxMalloc ;
-    camd_free = mxFree ;
-    camd_calloc = mxCalloc ;
-    camd_realloc = mxRealloc ;
-    camd_printf = mexPrintf ;
-
     spumoni = 0 ;
     if (nargin == 0)
     {

@@ -103,10 +103,10 @@ SuiteSparse_long ldl_l_valid_matrix ( SuiteSparse_long n,
 /* === LDL version ========================================================== */
 /* ========================================================================== */
 
-#define LDL_DATE "Jun 1, 2012"
+#define LDL_DATE "July 31, 2013"
 #define LDL_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
 #define LDL_MAIN_VERSION 2
-#define LDL_SUB_VERSION 1
+#define LDL_SUB_VERSION 2
 #define LDL_SUBSUB_VERSION 0
 #define LDL_VERSION LDL_VERSION_CODE(LDL_MAIN_VERSION,LDL_SUB_VERSION)
 

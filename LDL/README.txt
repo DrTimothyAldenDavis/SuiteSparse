@@ -1,4 +1,4 @@
-LDL Copyright (c) 2005-2012 by Timothy A. Davis. http://www.suitesparse.com
+LDL Copyright (c) 2005-2013 by Timothy A. Davis. http://www.suitesparse.com
 
 LDL: a sparse LDL' factorization and solve package.
     Written in C, with both a C and MATLAB mexFunction interface. 
@@ -16,12 +16,12 @@ this directory.
 Quick start (Unix, or Windows with Cygwin):
 
     To compile, test, and install LDL, you may wish to first obtain a copy of
-    AMD v2.0 from http://www.suitesparse.com and place it in the
+    AMD from http://www.suitesparse.com and place it in the
     ../AMD directory, relative to this directory.  Next, type "make", which
     will compile the LDL library and three demo main programs (one of which
     requires AMD).  It will also compile the LDL MATLAB mexFunction (if you
     have MATLAB).  Typing "make clean" will remove non-essential files.
-    AMD v2.0 or later is required.  Its use is optional.
+    AMD v2.4 or later is required.  Its use is optional.
 
 Quick start (for MATLAB users);
 

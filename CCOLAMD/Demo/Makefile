@@ -10,7 +10,10 @@ I = -I../Include -I../../SuiteSparse_config
 
 C = $(CC) $(CF) $(I)
 
+LIB2 = ../../SuiteSparse_config/libsuitesparseconfig.a $(LIB)
+
 library:
+	( cd ../../SuiteSparse_config ; $(MAKE) )
 	( cd ../Lib ; $(MAKE) )
 
 #------------------------------------------------------------------------------
@@ -20,12 +23,12 @@ library:
 dist:
 
 ccolamd_example: ccolamd_example.c library
-	$(C) -o ccolamd_example ccolamd_example.c ../Lib/libccolamd.a -lm
+	$(C) -o ccolamd_example ccolamd_example.c ../Lib/libccolamd.a $(LIB2)
 	- ./ccolamd_example > my_ccolamd_example.out
 	- diff ccolamd_example.out my_ccolamd_example.out
 
 ccolamd_l_example: ccolamd_l_example.c library
-	$(C) -o ccolamd_l_example ccolamd_l_example.c ../Lib/libccolamd.a -lm
+	$(C) -o ccolamd_l_example ccolamd_l_example.c ../Lib/libccolamd.a $(LIB2)
 	- ./ccolamd_l_example > my_ccolamd_l_example.out
 	- diff ccolamd_l_example.out my_ccolamd_l_example.out
 

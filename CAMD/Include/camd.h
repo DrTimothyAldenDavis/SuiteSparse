@@ -3,7 +3,7 @@
 /* ========================================================================= */
 
 /* ------------------------------------------------------------------------- */
-/* CAMD Version 2.2, Copyright (c) 2007 by Timothy A. Davis, Yanqing Chen,   */
+/* CAMD Version 2.4, Copyright (c) 2013 by Timothy A. Davis, Yanqing Chen,   */
 /* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
 /* email: DrTimothyAldenDavis@gmail.com                                      */
 /* ------------------------------------------------------------------------- */
@@ -318,18 +318,7 @@ SuiteSparse_long camd_l_cvalid
 /* CAMD memory manager and printf routines */
 /* ------------------------------------------------------------------------- */
 
-/* The user can redefine these to change the malloc, free, and printf routines
- * that CAMD uses. */
-
-#ifndef EXTERN
-#define EXTERN extern
-#endif
-
-EXTERN void *(*camd_malloc) (size_t) ;              /* pointer to malloc */
-EXTERN void (*camd_free) (void *) ;                 /* pointer to free */
-EXTERN void *(*camd_realloc) (void *, size_t) ;     /* pointer to realloc */
-EXTERN void *(*camd_calloc) (size_t, size_t) ;      /* pointer to calloc */
-EXTERN int (*camd_printf) (const char *, ...) ;     /* pointer to printf */
+    /* moved to SuiteSparse_config.c */
 
 /* ------------------------------------------------------------------------- */
 /* CAMD Control and Info arrays */
@@ -404,11 +393,11 @@ void camd_l_info     (double Info [ ]) ;
  *      #endif
  */
 
-#define CAMD_DATE "Jun 20, 2012"
+#define CAMD_DATE "July 31, 2013"
 #define CAMD_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
 #define CAMD_MAIN_VERSION 2
-#define CAMD_SUB_VERSION 3
-#define CAMD_SUBSUB_VERSION 1
+#define CAMD_SUB_VERSION 4
+#define CAMD_SUBSUB_VERSION 0
 #define CAMD_VERSION CAMD_VERSION_CODE(CAMD_MAIN_VERSION,CAMD_SUB_VERSION)
 
 #ifdef __cplusplus

@@ -61,5 +61,5 @@ void mexFunction
 	sfmult (A, X, at, ac, xt, xc, yt, yc) :
 	fsmult (A, X, at, ac, xt, xc, yt, yc) ;
 
-    // TODO convert y to real if imag(y) is all zero
+    // (TO DO) convert y to real if imag(y) is all zero
 }

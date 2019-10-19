@@ -34,7 +34,7 @@ template <typename Entry> void spqr_rcount
     Entry **Rblock, *R, *Tau, *HTau ;
     Long *Rp, *Rj, *Super, *HStair, *Stair, *Hm ;
     char *Rdead ;
-    Long nf, n, j, f, col1, fp, pr, fn, rm, k, i, t, fm, h, getRa, getRb, nh,
+    Long nf, j, f, col1, fp, pr, fn, rm, k, i, t, fm, h, getRa, getRb, nh,
         row1, keepH, getH, hnz ;
 
     // -------------------------------------------------------------------------
@@ -53,7 +53,7 @@ template <typename Entry> void spqr_rcount
     }
 
     nf = QRsym->nf ;
-    n = QRsym->n ;
+    // n = QRsym->n ;
     Rblock = QRnum->Rblock ;
     Rp = QRsym->Rp ;
     Rj = QRsym->Rj ;
@@ -130,7 +130,7 @@ template <typename Entry> void spqr_rcount
             {
                 // a non-pivotal column of front F
                 j = Rj [pr + k] ;
-                ASSERT (j >= Super [f+1] && j < n) ;
+                ASSERT (j >= Super [f+1] && j < QRsym->n) ;
                 if (keepH)
                 {
                     t = Stair [k] ;             // length of R+H vector
@@ -177,10 +177,10 @@ template <typename Entry> void spqr_rcount
             // count nnz (H (:,pr+k))
             // -----------------------------------------------------------------
 
-            PR (("look at H k %ld, t %ld h %ld\n", k, t, h)) ;
             if (keepH && t >= h)
             {
                 // the Householder reflection is not empty
+                PR (("count terms in H k %ld, t %ld h %ld\n", k, t, h)) ;
                 if (getH && Tau [k] != (Entry) 0)
                 {
                     H2p [nh++] = hnz++ ;    // count the implicit identity

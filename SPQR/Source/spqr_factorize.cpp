@@ -278,7 +278,7 @@ template <typename Entry> spqr_numeric <Entry> *spqr_factorize
         // Wi no longer needed ]
     }
 
-    PR (("status after creating Sx: %d\n", cc->status)) ;
+    PR (("in spqr_factorize, status after creating Sx: %d\n", cc->status)) ;
 
     // -------------------------------------------------------------------------
     // input matrix A no longer needed; free it if the user doesn't need it
@@ -290,9 +290,11 @@ template <typename Entry> spqr_numeric <Entry> *spqr_factorize
         cholmod_l_free_sparse (Ahandle, cc) ;
         ASSERT (*Ahandle == NULL) ;
     }
+    PR (("in spqr_factorize, freed A, status %d\n", cc->status)) ;
 
     if (cc->status < CHOLMOD_OK)
     {
+        PR (("in spqr_factorize, failure %d\n", cc->status)) ;
         // out of memory
         FREE_WORK ;
         return (NULL) ;
@@ -304,6 +306,7 @@ template <typename Entry> spqr_numeric <Entry> *spqr_factorize
 
     QRnum = (spqr_numeric<Entry> *)
         cholmod_l_malloc (1, sizeof (spqr_numeric<Entry>), cc) ;
+    PR (("after allocating numeric object header, status %d\n", cc->status)) ;
 
     if (cc->status < CHOLMOD_OK)
     {
@@ -364,11 +367,14 @@ template <typename Entry> spqr_numeric <Entry> *spqr_factorize
         return (NULL) ;
     }
 
+    PR (("after allocating rest of numeric object, status %d\n", cc->status)) ;
+
     // -------------------------------------------------------------------------
     // allocate workspace
     // -------------------------------------------------------------------------
 
     Work = get_Work <Entry> (ns, n, maxfn, keepH, fchunk, &wtsize, cc) ;
+    PR (("after allocating work, status %d\n", cc->status)) ;
 
     // -------------------------------------------------------------------------
     // allocate and initialize each Stack
@@ -388,6 +394,8 @@ template <typename Entry> spqr_numeric <Entry> *spqr_factorize
             Work [stack].Stack_top  = Stack + stacksize ;
         }
     }
+
+    PR (("after allocating the stacks, status %d\n", cc->status)) ;
 
     // -------------------------------------------------------------------------
     // punt to sequential case and fchunk = 1 if out of memory
@@ -473,11 +481,13 @@ template <typename Entry> spqr_numeric <Entry> *spqr_factorize
     // initialize the "pure" flop count (for performance testing only)
     // -------------------------------------------------------------------------
 
-    cc->other1 [0] = 0 ;
+    cc->SPQR_flopcount = 0 ;
 
     // -------------------------------------------------------------------------
     // numeric QR factorization
     // -------------------------------------------------------------------------
+
+    PR (("[ calling the kernel\n")) ;
 
     if (ntasks == 1)
     {
@@ -499,6 +509,8 @@ template <typename Entry> spqr_numeric <Entry> *spqr_factorize
         }
 #endif
     }
+
+    PR (("] did the kernel\n")) ;
 
     // -------------------------------------------------------------------------
     // check for BLAS Long overflow
@@ -560,7 +572,7 @@ template <typename Entry> spqr_numeric <Entry> *spqr_factorize
         }
     }
     QRnum->norm_E_fro = wscale * sqrt (wssq) ;
-    cc->SPQR_xstat [2] = QRnum->norm_E_fro ;
+    cc->SPQR_norm_E_fro = QRnum->norm_E_fro ;
 
     // -------------------------------------------------------------------------
     // free all workspace, except Cblock and Work

@@ -11,20 +11,6 @@
 /* This file is for internal use in AMD itself, and does not normally need to
  * be included in user code (it is included in UMFPACK, however).   All others
  * should use amd.h instead.
- *
- * The following compile-time definitions affect how AMD is compiled.
- *
- *      -DNPRINT
- *
- *          Disable all printing.  stdio.h will not be included.  Printing can
- *          be re-enabled at run-time by setting the global pointer amd_printf
- *          to printf (or mexPrintf for a MATLAB mexFunction).
- *
- *      -DNMALLOC
- *
- *          No memory manager is defined at compile-time.  You MUST define the
- *          function pointers amd_malloc, amd_free, amd_realloc, and
- *          amd_calloc at run-time for AMD to work properly.
  */
 
 /* ========================================================================= */
@@ -211,13 +197,6 @@
 
 #endif
 
-/* ========================================================================= */
-/* === PRINTF macro ======================================================== */
-/* ========================================================================= */
-
-/* All output goes through the PRINTF macro.  */
-#define PRINTF(params) { if (amd_printf != NULL) (void) amd_printf params ; }
-
 /* ------------------------------------------------------------------------- */
 /* AMD routine definitions (not user-callable) */
 /* ------------------------------------------------------------------------- */
@@ -328,11 +307,11 @@ GLOBAL void AMD_dump
 #define ASSERT(expression) (assert (expression))
 #endif
 
-#define AMD_DEBUG0(params) { PRINTF (params) ; }
-#define AMD_DEBUG1(params) { if (AMD_debug >= 1) PRINTF (params) ; }
-#define AMD_DEBUG2(params) { if (AMD_debug >= 2) PRINTF (params) ; }
-#define AMD_DEBUG3(params) { if (AMD_debug >= 3) PRINTF (params) ; }
-#define AMD_DEBUG4(params) { if (AMD_debug >= 4) PRINTF (params) ; }
+#define AMD_DEBUG0(params) { SUITESPARSE_PRINTF (params) ; }
+#define AMD_DEBUG1(params) { if (AMD_debug >= 1) SUITESPARSE_PRINTF (params) ; }
+#define AMD_DEBUG2(params) { if (AMD_debug >= 2) SUITESPARSE_PRINTF (params) ; }
+#define AMD_DEBUG3(params) { if (AMD_debug >= 3) SUITESPARSE_PRINTF (params) ; }
+#define AMD_DEBUG4(params) { if (AMD_debug >= 4) SUITESPARSE_PRINTF (params) ; }
 
 #else
 

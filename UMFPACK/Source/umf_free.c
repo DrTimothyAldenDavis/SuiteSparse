@@ -29,8 +29,7 @@ GLOBAL void *UMF_free
     if (p)
     {
 
-	/* see AMD/Source/amd_global.c for the memory allocator selection */
-	amd_free (p) ;
+	SuiteSparse_free (p) ;
 
 #if defined (UMF_MALLOC_COUNT) || !defined (NDEBUG)
 	/* One more object has been free'd.  Keep track of the count. */

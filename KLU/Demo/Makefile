@@ -6,15 +6,20 @@ default: all
 include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 CLIB = ../Lib/libklu.a  ../../BTF/Lib/libbtf.a \
-	../../AMD/Lib/libamd.a ../../COLAMD/Lib/libcolamd.a
-
-CHOLMOD = ../../CHOLMOD/Lib/libcholmod.a \
+	../../AMD/Lib/libamd.a ../../COLAMD/Lib/libcolamd.a \
         ../../SuiteSparse_config/libsuitesparseconfig.a
+
+CHOLMOD_LIB = ../../CHOLMOD/Lib/libcholmod.a
+CHOLMOD = $(CHOLMOD_LIB) $(LAPACK) $(BLAS) $(XERBLA)
+
+ifneq ($(GPU_CONFIG),)
+CHOLMOD += $(CUDART_LIB) $(CUBLAS_LIB) 
+endif
 
 I = -I../../SuiteSparse_config -I../../AMD/Include -I../../COLAMD/Include \
 	-I../../BTF/Include -I../Include -I../../CHOLMOD/Include
 
-all: $(CLIB) klu_simple $(CHOLMOD) kludemo kluldemo
+all: $(CLIB) klu_simple $(CHOLMOD_LIB) kludemo kluldemo
 	- ./klu_simple
 	- ./kludemo < ../Matrix/1c.mtx
 	- ./kludemo < ../Matrix/arrowc.mtx

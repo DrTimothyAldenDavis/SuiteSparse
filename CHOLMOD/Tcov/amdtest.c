@@ -326,14 +326,14 @@ void amdtest (cholmod_sparse *A)
 
 	if (n > 0)
 	{
-	    amd_malloc = cm->malloc_memory ;
-	    amd_free = cm->free_memory ;
+
+	    normal_memory_handler ( ) ;
+
 	    ok = AMD_order (n, Cp, Ci, P, Control, Info) ;
 	    OK (sorted ? (ok == AMD_OK) : (ok >= AMD_OK)) ;
 
 	    test_memory_handler ( ) ;
-	    amd_malloc = cm->malloc_memory ;
-	    amd_free = cm->free_memory ;
+
 	    for (trial = 0 ; trial < 6 ; trial++)
 	    {
 		my_tries = trial ;
@@ -346,8 +346,6 @@ void amdtest (cholmod_sparse *A)
 	    normal_memory_handler ( ) ;
 	    OK (CHOLMOD(print_perm) (P, n, n, "AMD2 permutation", cm)) ;
 
-	    amd_malloc = cm->malloc_memory ;
-	    amd_free = cm->free_memory ;
 	}
 
 	CHOLMOD(free_sparse) (&E, cm) ;

@@ -180,17 +180,6 @@ int CHOLMOD(camd)
 	Control [CAMD_AGGRESSIVE] = Common->method [Common->current].aggressive;
     }
 
-    /* CAMD_2 does not use camd_malloc and camd_free, but set these pointers
-     * just be safe. */
-    camd_malloc = Common->malloc_memory ;
-    camd_free = Common->free_memory ;
-    camd_calloc = Common->calloc_memory ;
-    camd_realloc = Common->realloc_memory ;
-
-    /* CAMD_2 doesn't print anything either, but future versions might,
-     * so set the camd_printf pointer too. */
-    camd_printf = Common->print_function ;
-
 #ifdef LONG
     /* DEBUG (camd_l_debug_init ("cholmod_l_camd")) ; */
     camd_l2 (n, C->p,  C->i, Len, C->nzmax, cnz, Nv, Next, Perm, Head, Elen,

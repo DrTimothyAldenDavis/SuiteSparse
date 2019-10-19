@@ -78,7 +78,8 @@ INC =   ../Include/cholmod.h \
 	../Include/cholmod_modify.h \
 	../Include/cholmod_partition.h \
 	../Include/cholmod_supernodal.h \
-	../Include/cholmod_template.h
+	../Include/cholmod_template.h \
+	../Include/cholmod_gpu.h
 
 #-------------------------------------------------------------------------------
 # The 7 CHOLMOD library modules (int, double)
@@ -110,8 +111,10 @@ MODIFY = cholmod_rowadd.o cholmod_rowdel.o cholmod_updown.o
 SUPERNODAL = cholmod_super_numeric.o cholmod_super_solve.o \
 	cholmod_super_symbolic.o
 
+GPU = cholmod_gpu.o cholmod_gpu_kernels.o
+
 DI = $(CORE) $(CHECK) $(CHOLESKY) $(MATRIXOPS) $(MODIFY) $(SUPERNODAL) \
-	$(PARTITION)
+	$(GPU) $(PARTITION) 
 
 #-------------------------------------------------------------------------------
 # CHOLMOD library modules (long, double)
@@ -143,8 +146,10 @@ LMODIFY = cholmod_l_rowadd.o cholmod_l_rowdel.o cholmod_l_updown.o
 LSUPERNODAL = cholmod_l_super_numeric.o cholmod_l_super_solve.o \
 	cholmod_l_super_symbolic.o
 
+LGPU = cholmod_l_gpu.o cholmod_gpu_kernels.o
+
 DL = $(LCORE) $(LCHECK) $(LCHOLESKY) $(LMATRIXOPS) $(LMODIFY) $(LSUPERNODAL) \
-	$(LPARTITION)
+	$(LPARTITION) $(LGPU)
 
 #-------------------------------------------------------------------------------
 
@@ -492,7 +497,7 @@ cholmod_l_updown.o: ../Modify/cholmod_updown.c \
 #-------------------------------------------------------------------------------
 
 cholmod_super_numeric.o: ../Supernodal/cholmod_super_numeric.c \
-        ../Supernodal/t_cholmod_gpu.c \
+        ../GPU/t_cholmod_gpu.c \
 	../Supernodal/t_cholmod_super_numeric.c
 	$(C) -c $(I) $<
 
@@ -515,3 +520,24 @@ cholmod_l_super_symbolic.o: ../Supernodal/cholmod_super_symbolic.c
 cholmod_l_super_solve.o: ../Supernodal/cholmod_super_solve.c \
 	../Supernodal/t_cholmod_super_solve.c
 	$(C) -DDLONG -c $(I) $< -o $@
+
+#-------------------------------------------------------------------------------
+# GPU module
+#-------------------------------------------------------------------------------
+
+# This is an unusual rule.  If the GPU is not available, 'make' still needs
+# to find a cholmod_gpu_kernels.o file.  A dummy file is compiled first,
+# and then if the GPU is available, it is overwritten with a compiled 
+# version of cholmod_gpu_kernels.cu.
+
+cholmod_gpu_kernels.o: ../GPU/cholmod_gpu_kernels.c \
+        ../GPU/cholmod_gpu_kernels.cu
+	$(C) -c $(I) $<
+	$(NVCC) -I../../SuiteSparse_config -Xcompiler -fPIC -O3  -gencode=arch=compute_20,code=sm_20 -gencode=arch=compute_30,code=sm_30 -gencode=arch=compute_35,code=sm_35 -c ../GPU/cholmod_gpu_kernels.cu
+
+cholmod_gpu.o: ../GPU/cholmod_gpu.c 
+	$(C) -c $(I) $<
+
+cholmod_l_gpu.o: ../GPU/cholmod_gpu.c 
+	$(C) -DDLONG -c $(I) $< -o $@
+

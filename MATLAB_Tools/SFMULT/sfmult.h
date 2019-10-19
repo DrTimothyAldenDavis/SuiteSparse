@@ -50,7 +50,7 @@ mxArray *fsmult		// returns y = x*A or variants
 // transpose
 // -----------------------------------------------------------------------------
 
-mxArray *ssmult_transpose	// returns C = A' or A.'    TODO rename
+mxArray *ssmult_transpose	// returns C = A' or A.'    (TO DO) rename
 (
     // --- inputs, not modified:
     const mxArray *A,

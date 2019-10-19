@@ -90,15 +90,15 @@ GLOBAL Int CAMD_order
     }
 
     /* allocate two size-n integer workspaces */
-    Len = camd_malloc (n * sizeof (Int)) ;
-    Pinv = camd_malloc (n * sizeof (Int)) ;
+    Len  = SuiteSparse_malloc (n, sizeof (Int)) ;
+    Pinv = SuiteSparse_malloc (n, sizeof (Int)) ;
     mem += n ;
     mem += n ;
     if (!Len || !Pinv)
     {
 	/* :: out of memory :: */
-	camd_free (Len) ;
-	camd_free (Pinv) ;
+	SuiteSparse_free (Len) ;
+	SuiteSparse_free (Pinv) ;
 	if (info) Info [CAMD_STATUS] = CAMD_OUT_OF_MEMORY ;
 	return (CAMD_OUT_OF_MEMORY) ;
     }
@@ -107,17 +107,17 @@ GLOBAL Int CAMD_order
     {
 	/* sort the input matrix and remove duplicate entries */
 	CAMD_DEBUG1 (("Matrix is jumbled\n")) ;
-	Rp = camd_malloc ((n+1) * sizeof (Int)) ;
-	Ri = camd_malloc (MAX (nz,1) * sizeof (Int)) ;
+	Rp = SuiteSparse_malloc (n+1, sizeof (Int)) ;
+	Ri = SuiteSparse_malloc (nz,  sizeof (Int)) ;
 	mem += (n+1) ;
 	mem += MAX (nz,1) ;
 	if (!Rp || !Ri)
 	{
 	    /* :: out of memory :: */
-	    camd_free (Rp) ;
-	    camd_free (Ri) ;
-	    camd_free (Len) ;
-	    camd_free (Pinv) ;
+	    SuiteSparse_free (Rp) ;
+	    SuiteSparse_free (Ri) ;
+	    SuiteSparse_free (Len) ;
+	    SuiteSparse_free (Pinv) ;
 	    if (info) Info [CAMD_STATUS] = CAMD_OUT_OF_MEMORY ;
 	    return (CAMD_OUT_OF_MEMORY) ;
 	}
@@ -161,16 +161,16 @@ GLOBAL Int CAMD_order
     ok = ok && (slen < Int_MAX) ;	/* S[i] for Int i must be OK */
     if (ok)
     {
-	S = camd_malloc (slen * sizeof (Int)) ;
+	S = SuiteSparse_malloc (slen, sizeof (Int)) ;
     }
     CAMD_DEBUG1 (("slen %g\n", (double) slen)) ;
     if (!S)
     {
 	/* :: out of memory :: (or problem too large) */
-	camd_free (Rp) ;
-	camd_free (Ri) ;
-	camd_free (Len) ;
-	camd_free (Pinv) ;
+	SuiteSparse_free (Rp) ;
+	SuiteSparse_free (Ri) ;
+	SuiteSparse_free (Len) ;
+	SuiteSparse_free (Pinv) ;
 	if (info) Info [CAMD_STATUS] = CAMD_OUT_OF_MEMORY ;
 	return (CAMD_OUT_OF_MEMORY) ;
     }
@@ -190,11 +190,11 @@ GLOBAL Int CAMD_order
     /* free the workspace */
     /* --------------------------------------------------------------------- */
 
-    camd_free (Rp) ;
-    camd_free (Ri) ;
-    camd_free (Len) ;
-    camd_free (Pinv) ;
-    camd_free (S) ;
+    SuiteSparse_free (Rp) ;
+    SuiteSparse_free (Ri) ;
+    SuiteSparse_free (Len) ;
+    SuiteSparse_free (Pinv) ;
+    SuiteSparse_free (S) ;
     if (info) Info [CAMD_STATUS] = status ;
     return (status) ;	    /* successful ordering */
 }

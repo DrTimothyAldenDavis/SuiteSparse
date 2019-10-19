@@ -99,10 +99,11 @@ template <typename Entry> Long SuiteSparseQR
 )
 {
     Long *Q1fill, *R1p, *R1j, *P1inv, *Zp, *Zi, *Rp, *Ri, *Rap, *Hp, *H2p,
-        *Hi, *HP1inv, *Ap, *Ai, *Rlive, *E, *Bp, *Bi ;
-    Entry *R1x, *B, *Zx, *Rx, *X2, *C, *Hx, *C1, *X1, *Xwork, *Ax, *W, **Rcolp,
-        *Bx ;
-    Long i, j, k, d, p, p2, n1cols, n1rows, B_is_sparse, Z_is_sparse, getC,
+        *Hi, *HP1inv, // *Ap, *Ai,
+        *Rlive, *E, *Bp, *Bi ;
+    Entry *R1x, *B, *Zx, *Rx, *X2, *C, *Hx, *C1, *X1, *Xwork, // *Ax,
+        *W, **Rcolp, *Bx ;
+    Long i, j, k, p, p2, n1cols, n1rows, B_is_sparse, Z_is_sparse, getC,
         getR, getH, getE, getX, getZ, iold, inew, rank, n2, rnz, znz, zn, zm,
         pr, xsize, getT, nh, k1, k2, xchunk, xncol, m, n, csize, wsize, ldb,
         maxfrank, rjsize, bncols, bnrows ;
@@ -180,9 +181,9 @@ template <typename Entry> Long SuiteSparseQR
 
     m = A->nrow ;
     n = A->ncol ;
-    Ap = (Long *) A->p ;
-    Ai = (Long *) A->i ;
-    Ax = (Entry *) A->x ;
+    // Ap = (Long *) A->p ;
+    // Ai = (Long *) A->i ;
+    // Ax = (Entry *) A->x ;
 
     // B is an optional input.  It can be sparse or dense
     B_is_sparse = (Bsparse != NULL) ;
@@ -222,6 +223,7 @@ template <typename Entry> Long SuiteSparseQR
         ERROR (CHOLMOD_INVALID, "A and B must have the same # of rows") ;
         return (EMPTY) ;
     }
+    PR (("bncols : %ld\n", bncols)) ;
 
     // Z = C, C', or X, can be sparse or dense
     Z_is_sparse = (p_Zsparse != NULL) ;
@@ -247,6 +249,9 @@ template <typename Entry> Long SuiteSparseQR
 
     // at most one of C, C', or X will be returned as the Z matrix
     ASSERT (getC + getT + getX <= 1) ;
+
+    PR (("getCTX %d getZ %ld getC %ld getT %ld getX %ld getR %ld getE %ld"
+        "getH %ld\n", getCTX, getZ, getC, getT, getX, getR, getE, getH)) ;
 
     // -------------------------------------------------------------------------
     // symbolic and numeric QR factorization of [A B], exploiting singletons
@@ -274,6 +279,7 @@ template <typename Entry> Long SuiteSparseQR
     tol = QR->tol ;
 
     PR (("Singletons: n1cols %ld n1rows %ld\n", n1cols, n1rows)) ;
+    PR (("n2 %ld n %ld QRsym->n %ld\n", n2, n, QRsym->n)) ;
 
     // -------------------------------------------------------------------------
     // determine the economy size
@@ -312,6 +318,7 @@ template <typename Entry> Long SuiteSparseQR
         Zsparse = cholmod_l_allocate_sparse (zm, zn, 0, TRUE, TRUE, 0, xtype,
             cc) ;
         Zp = Zsparse ? ((Long *) Zsparse->p) : NULL ;
+        PR (("Z is zm %ld by zn %ld\n", zm, zn)) ;
     }
 
     if (getR)
@@ -407,7 +414,6 @@ template <typename Entry> Long SuiteSparseQR
             for (k = 0 ; k < bncols ; k++)
             {
                 // count the nonzero entries in column k of B1
-                d = 0 ;
                 for (iold = 0 ; iold < m ; iold++)
                 {
                     inew = P1inv [iold] ;
@@ -419,6 +425,12 @@ template <typename Entry> Long SuiteSparseQR
                 B += ldb ;
             }
         }
+        #ifndef NDEBUG
+        for (k = 0 ; k < zn ; k++)
+        {
+            PR (("after adding singletons Zp [%ld] %ld count\n", k, Zp [k])) ;
+        }
+        #endif
     }
 
     // -------------------------------------------------------------------------
@@ -890,13 +902,13 @@ template <typename Entry> Long SuiteSparseQR
 
     if (getR && ordering != SPQR_ORDERING_FIXED && rank < n && tol >= 0)
     {
-        Long *Rtrapp, *Rtrapi, *Qtrap, rank2 ;
+        Long *Rtrapp, *Rtrapi, *Qtrap ;
         Entry *Rtrapx ;
 
         // find Rtrap and Qtrap. This may fail if tol < 0 and the matrix
-        // is structurally rank deficient; in that case, rank2 = EMPTY and
+        // is structurally rank deficient; in that case, k2 = EMPTY and
         // Rtrap is returned NULL.
-        rank2 = spqr_trapezoidal (n, Rp, Ri, Rx, bncols, Q1fill, TRUE,
+        k2 = spqr_trapezoidal (n, Rp, Ri, Rx, bncols, Q1fill, TRUE,
             &Rtrapp, &Rtrapi, &Rtrapx, &Qtrap, cc) ;
 
         if (cc->status < CHOLMOD_OK)
@@ -908,7 +920,7 @@ template <typename Entry> Long SuiteSparseQR
             return (EMPTY) ;
         }
 
-        ASSERT (rank2 == EMPTY || rank == rank2) ;
+        ASSERT (k2 == EMPTY || rank == k2) ;
 
         if (Rtrapp != NULL)
         {
@@ -968,7 +980,8 @@ template <typename Entry> Long SuiteSparseQR
 
     double t3 = SuiteSparse_time ( ) ;
     double total_time = t3 - t0 ;
-    cc->other1 [3] = total_time - cc->other1 [1] - cc->other1 [2] ;
+    cc->SPQR_solve_time =
+        total_time - cc->SPQR_analyze_time - cc->SPQR_factorize_time ;
 
     return (rank) ;
 }
@@ -1125,9 +1138,11 @@ template <typename Entry> cholmod_sparse *SuiteSparseQR
     cholmod_common *cc      // workspace and parameters
 )
 {
+
     cholmod_sparse *X ;
     SuiteSparseQR <Entry> (ordering, tol, 0, 2, A,   
         B, NULL, &X, NULL, NULL, NULL, NULL, NULL, NULL, cc) ;
+
     return (X) ;
 }
 

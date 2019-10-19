@@ -1,3 +1,8 @@
+July 31, 2013: version 5.7.0
+
+    * changed malloc, printf, hypot and divcomplex pointers to use
+        SuiteSparse_config
+
 April 25, 2013: version 5.6.2
 
     * bug fix in Demo/Makefile for Fortran interface

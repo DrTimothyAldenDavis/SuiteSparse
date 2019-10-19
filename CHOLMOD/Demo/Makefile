@@ -51,7 +51,7 @@ LIB2 = ../Lib/libcholmod.a ../../AMD/Lib/libamd.a ../../COLAMD/Lib/libcolamd.a \
 #-------------------------------------------------------------------------------
 # With the CUDA BLAS:
 ifneq ($(GPU_CONFIG),)
-LIB2 += $(GPU_BLAS_PATH)/lib64/libcudart.so $(GPU_BLAS_PATH)/lib64/libcublas.so
+LIB2 += $(CUDART_LIB) $(CUBLAS_LIB)
 endif
 #-------------------------------------------------------------------------------
 

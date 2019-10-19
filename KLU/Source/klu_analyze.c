@@ -306,12 +306,6 @@ static KLU_symbolic *order_and_analyze  /* returns NULL if error, or a valid
         return (NULL) ;
     }
 
-    /* AMD memory management routines */
-    amd_malloc  = Common->malloc_memory ;
-    amd_free    = Common->free_memory ;
-    amd_calloc  = Common->calloc_memory ;
-    amd_realloc = Common->realloc_memory ;
-
     /* ---------------------------------------------------------------------- */
     /* allocate workspace for BTF permutation */
     /* ---------------------------------------------------------------------- */

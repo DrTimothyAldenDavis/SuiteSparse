@@ -29,7 +29,11 @@ help colamd_test
     end
     cmd = sprintf (...
         'mex -DDLONG -O %s -I../../SuiteSparse_config -I../Include ', d) ;
-    src = '../Source/colamd.c ../Source/colamd_global.c' ;
+    src = '../Source/colamd.c ../../SuiteSparse_config/SuiteSparse_config.c' ;
+    if (~(ispc || ismac))
+        % for POSIX timing routine
+        src = [src ' -lrt'] ;
+    end
     eval ([cmd 'colamdtestmex.c ' src]) ;
     eval ([cmd 'symamdtestmex.c ' src]) ;
     fprintf ('Done compiling.\n') ; 

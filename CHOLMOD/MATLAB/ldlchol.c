@@ -103,7 +103,7 @@ void mexFunction
     /* get inputs */
     /* ---------------------------------------------------------------------- */
 
-    if (nargin > 2 || nargout > 3)
+    if (nargin < 1 || nargin > 2 || nargout > 3)
     {
 	mexErrMsgTxt ("usage: [L,p,q] = ldlchol (A,beta)") ;
     }

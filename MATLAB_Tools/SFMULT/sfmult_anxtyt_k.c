@@ -20,20 +20,20 @@ void sfmult_AN_XT_YT_2	// y = (A*x')'	x is 2-by-n, and y is 2-by-m
 (
     // --- outputs, not initialized on input
     double *Yx,		// 2-by-m
-    double *Yz,		// 2-by-m if Y is complex TODO
+    double *Yz,		// 2-by-m if Y is complex (TO DO)
 
     // --- inputs, not modified
     const Int *Ap,	// size n+1 column pointers
     const Int *Ai,	// size nz = Ap[n] row indices
     const double *Ax,	// size nz values
-    const double *Az,	// size nz imaginary values if A is complex TODO
+    const double *Az,	// size nz imaginary values if A is complex (TO DO)
     Int m,		// A is m-by-n
     Int n,
     const double *Xx,	// 2-by-n with leading dimension k
-    const double *Xz,	// 2-by-n with leading dimension k if X complex TODO
-    int ac,		// true: use conj(A), otherwise use A TODO
-    int xc,		// true: use conj(X), otherwise use X TODO
-    int yc		// true: compute conj(Y), otherwise compute Y TODO
+    const double *Xz,	// 2-by-n with leading dimension k if X complex (TO DO)
+    int ac,		// true: use conj(A), otherwise use A (TO DO)
+    int xc,		// true: use conj(X), otherwise use X (TO DO)
+    int yc		// true: compute conj(Y), otherwise compute Y (TO DO)
     , Int k		// leading dimension of X
 )
 {
@@ -82,20 +82,20 @@ void sfmult_AN_XT_YT_3	// y = (A*x')'	x is 3-by-n, and y is 3-by-m (ldy = 4)
 (
     // --- outputs, not initialized on input
     double *Yx,		// 3-by-m
-    double *Yz,		// 3-by-m if Y is complex TODO
+    double *Yz,		// 3-by-m if Y is complex (TO DO)
 
     // --- inputs, not modified
     const Int *Ap,	// size n+1 column pointers
     const Int *Ai,	// size nz = Ap[n] row indices
     const double *Ax,	// size nz values
-    const double *Az,	// size nz imaginary values if A is complex TODO
+    const double *Az,	// size nz imaginary values if A is complex (TO DO)
     Int m,		// A is m-by-n
     Int n,
     const double *Xx,	// 3-by-n with leading dimension k
-    const double *Xz,	// 3-by-n with leading dimension k if X complex TODO
-    int ac,		// true: use conj(A), otherwise use A TODO
-    int xc,		// true: use conj(X), otherwise use X TODO
-    int yc		// true: compute conj(Y), otherwise compute Y TODO
+    const double *Xz,	// 3-by-n with leading dimension k if X complex (TO DO)
+    int ac,		// true: use conj(A), otherwise use A (TO DO)
+    int xc,		// true: use conj(X), otherwise use X (TO DO)
+    int yc		// true: compute conj(Y), otherwise compute Y (TO DO)
     , Int k		// leading dimension of X
 )
 {
@@ -149,20 +149,20 @@ void sfmult_AN_XT_YT_4 // y = (A*x')'	x is 4-by-n, and y is 4-by-m
 (
     // --- outputs, not initialized on input
     double *Yx,		// 4-by-m
-    double *Yz,		// 4-by-m if Y is complex TODO
+    double *Yz,		// 4-by-m if Y is complex (TO DO)
 
     // --- inputs, not modified
     const Int *Ap,	// size n+1 column pointers
     const Int *Ai,	// size nz = Ap[n] row indices
     const double *Ax,	// size nz values
-    const double *Az,	// size nz imaginary values if A is complex TODO
+    const double *Az,	// size nz imaginary values if A is complex (TO DO)
     Int m,		// A is m-by-n
     Int n,
     const double *Xx,	// 4-by-n with leading dimension k
-    const double *Xz,	// 4-by-n with leading dimension k if X complex TODO
-    int ac,		// true: use conj(A), otherwise use A TODO
-    int xc,		// true: use conj(X), otherwise use X TODO
-    int yc		// true: compute conj(Y), otherwise compute Y TODO
+    const double *Xz,	// 4-by-n with leading dimension k if X complex (TO DO)
+    int ac,		// true: use conj(A), otherwise use A (TO DO)
+    int xc,		// true: use conj(X), otherwise use X (TO DO)
+    int yc		// true: compute conj(Y), otherwise compute Y (TO DO)
     , Int k		// leading dimension of X
 )
 {

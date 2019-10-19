@@ -24,52 +24,9 @@
 /* === cholmod_hypot ======================================================== */
 /* ========================================================================== */
 
-/* There is an equivalent routine called hypot in <math.h>, which conforms
- * to ANSI C99.  However, CHOLMOD does not assume that ANSI C99 is available.
- * You can use the ANSI C99 hypot routine with:
- *
- *	#include <math.h>
- *	Common->hypotenuse = hypot ;
- *
- * Default value of the Common->hypotenuse pointer is cholmod_hypot.
- *
- * s = hypot (x,y) computes s = sqrt (x*x + y*y) but does so more accurately.
- * The NaN cases for the double relops x >= y and x+y == x are safely ignored.
- * 
- * Source: Algorithm 312, "Absolute value and square root of a complex number,"
- * P. Friedland, Comm. ACM, vol 10, no 10, October 1967, page 665.
- */
-
 double CHOLMOD(hypot) (double x, double y)
 {
-    double s, r ;
-    x = fabs (x) ;
-    y = fabs (y) ;
-    if (x >= y)
-    {
-	if (x + y == x)
-	{
-	    s = x ;
-	}
-	else
-	{
-	    r = y / x ;
-	    s = x * sqrt (1.0 + r*r) ;
-	}
-    }
-    else
-    {
-	if (y + x == y)
-	{
-	    s = y ;
-	}
-	else
-	{
-	    r = x / y ;
-	    s = y * sqrt (1.0 + r*r) ;
-	}
-    } 
-    return (s) ;
+    return (SuiteSparse_config.hypot_func (x, y)) ;
 }
 
 
@@ -99,24 +56,7 @@ int CHOLMOD(divcomplex)
     double *cr, double *ci	/* real and imaginary parts of c */
 )
 {
-    double tr, ti, r, den ;
-    if (fabs (br) >= fabs (bi))
-    {
-	r = bi / br ;
-	den = br + r * bi ;
-	tr = (ar + ai * r) / den ;
-	ti = (ai - ar * r) / den ;
-    }
-    else
-    {
-	r = br / bi ;
-	den = r * br + bi ;
-	tr = (ar * r + ai) / den ;
-	ti = (ai * r - ar) / den ;
-    }
-    *cr = tr ;
-    *ci = ti ;
-    return (IS_ZERO (den)) ;
+    return (SuiteSparse_config.divcomplex_func (ar, ai, br, bi, cr, ci)) ;
 }
 
 

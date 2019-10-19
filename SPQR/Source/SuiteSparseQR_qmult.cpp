@@ -221,10 +221,11 @@ template <typename Entry> cholmod_dense *SuiteSparseQR_qmult
     // Y = Q'*X, Q*X, X*Q, or X*Q'
     // -------------------------------------------------------------------------
 
-    PR (("Method %ld m %ld n %ld X %p Y %p P %p\n", method, m, n, X, Y, HPinv));
-    PR (("Hp %p Hi %p Hx %p Tau %p\n", Hp, Hi, Hx, Tau)) ;
+    PR (("Method %d m %ld n %ld X %p Y %p P %p\n", method, m, n, X, Y, HPinv)) ;
+    PR (("Hp %p Hi %p Hx %p\n", Hp, Hi, Hx)) ;
     ASSERT (IMPLIES ((nh > 0), Hp != NULL && Hi != NULL && Hx != NULL)) ;
     Tau = (Entry *) HTau->x ;
+    PR (("Tau %p\n", Tau)) ;
     ASSERT (Tau != NULL) ;
 
     if (method == SPQR_QTX)

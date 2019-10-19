@@ -17,20 +17,20 @@ void sfmult_AN_x_1	// y = A*x	x is n-by-1 unit stride, y is m-by-1
 (
     // --- outputs, not initialized on input
     double *Yx,		// m-by-1
-    double *Yz,		// m-by-1 if Y is complex TODO
+    double *Yz,		// m-by-1 if Y is complex (TO DO)
 
     // --- inputs, not modified
     const Int *Ap,	// size n+1 column pointers
     const Int *Ai,	// size nz = Ap[n] row indices
     const double *Ax,	// size nz values
-    const double *Az,	// size nz imaginary values if A is complex TODO
+    const double *Az,	// size nz imaginary values if A is complex (TO DO)
     Int m,		// A is m-by-n
     Int n,
     const double *Xx,	// n-by-1
     const double *Xz,	// n-by-1 if X complex
-    int ac,		// true: use conj(A), otherwise use A TODO
-    int xc,		// true: use conj(X), otherwise use X TODO
-    int yc		// true: compute conj(Y), otherwise compute Y TODO
+    int ac,		// true: use conj(A), otherwise use A (TO DO)
+    int xc,		// true: use conj(X), otherwise use X (TO DO)
+    int yc		// true: compute conj(Y), otherwise compute Y (TO DO)
 )
 {
     double y [4], x ;
@@ -79,20 +79,20 @@ void sfmult_AT_x_1	// y = A'*x	x is m-by-1 unit stride, y is n-by-1
 (
     // --- outputs, not initialized on input
     double *Yx,		// n-by-1
-    double *Yz,		// n-by-1 if Y is complex TODO
+    double *Yz,		// n-by-1 if Y is complex (TO DO)
 
     // --- inputs, not modified
     const Int *Ap,	// size n+1 column pointers
     const Int *Ai,	// size nz = Ap[n] row indices
     const double *Ax,	// size nz values
-    const double *Az,	// size nz imaginary values if A is complex TODO
+    const double *Az,	// size nz imaginary values if A is complex (TO DO)
     Int m,		// A is m-by-n
     Int n,
     const double *Xx,	// m-by-1
     const double *Xz,	// m-by-1 if X complex
-    int ac,		// true: use conj(A), otherwise use A TODO
-    int xc,		// true: use conj(X), otherwise use X TODO
-    int yc		// true: compute conj(Y), otherwise compute Y TODO
+    int ac,		// true: use conj(A), otherwise use A (TO DO)
+    int xc,		// true: use conj(X), otherwise use X (TO DO)
+    int yc		// true: compute conj(Y), otherwise compute Y (TO DO)
 )
 {
     double y ;

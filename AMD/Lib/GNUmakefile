@@ -30,9 +30,6 @@ AMDL = $(addsuffix .o, $(subst amd_,amd_l_,$(AMD)))
 # compile each int and long routine (with no real/complex version)
 #-------------------------------------------------------------------------------
 
-amd_global.o: ../Source/amd_global.c $(INC)
-	$(C) -c $< -o $@
-
 amd_i_%.o: ../Source/amd_%.c $(INC)
 	$(C) -DDINT -c $< -o $@
 
@@ -43,7 +40,7 @@ amd_l_%.o: ../Source/amd_%.c $(INC)
 # Create the libamd.a library (C versions only)
 #-------------------------------------------------------------------------------
 
-libamd.a: amd_global.o $(AMDI) $(AMDL)
+libamd.a: $(AMDI) $(AMDL)
 	$(ARCHIVE) libamd.a $^
 	- $(RANLIB) libamd.a
 

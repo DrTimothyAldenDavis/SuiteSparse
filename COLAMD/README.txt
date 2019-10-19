@@ -1,4 +1,4 @@
-COLAMD, Copyright 1998-2012, Timothy A. Davis.  http://www.suitesparse.com
+COLAMD, Copyright 1998-2013, Timothy A. Davis.  http://www.suitesparse.com
 -------------------------------------------------------------------------------
 
 The COLAMD column approximate minimum degree ordering algorithm computes

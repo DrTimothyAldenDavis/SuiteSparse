@@ -103,8 +103,6 @@ void mexFunction
     Long *stats ;
     stats = stats2 ;
 
-    colamd_printf = mexPrintf ; /* COLAMD printf routine */
-
     /* === Check inputs ===================================================== */
 
     if (nrhs < 1 || nrhs > 2 || nlhs < 0 || nlhs > 2)

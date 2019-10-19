@@ -100,14 +100,17 @@ int CHOLMOD(csymamd)
 	knobs [CCOLAMD_DENSE_ROW] =Common->method[Common->current].prune_dense ;
 	knobs [CCOLAMD_AGGRESSIVE]=Common->method[Common->current].aggressive ;
     }
-
     {
 #ifdef LONG
-	csymamd_l (nrow, A->i, A->p, perm, knobs, stats, Common->calloc_memory,
-		Common->free_memory, Cmember, A->stype) ;
+	csymamd_l (nrow, A->i, A->p, perm, knobs, stats,
+                SuiteSparse_config.calloc_func,
+                SuiteSparse_config.free_func,
+                Cmember, A->stype) ;
 #else
-	csymamd (nrow, A->i, A->p, perm, knobs, stats, Common->calloc_memory,
-		Common->free_memory, Cmember, A->stype) ;
+	csymamd (nrow, A->i, A->p, perm, knobs, stats,
+                SuiteSparse_config.calloc_func,
+                SuiteSparse_config.free_func,
+                Cmember, A->stype) ;
 #endif
 	ok = stats [CCOLAMD_STATUS] ;
     }

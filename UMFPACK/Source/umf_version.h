@@ -352,7 +352,8 @@ typedef struct
 /* c = a/b, using function pointer */
 #define DIV(c,a,b) \
 { \
-    (void) umfpack_divcomplex ((a).Real, (a).Imag, (b).Real, (b).Imag, \
+    (void) SuiteSparse_config.divcomplex_func \
+        ((a).Real, (a).Imag, (b).Real, (b).Imag, \
 	&((c).Real), &((c).Imag)) ; \
 }
 
@@ -361,7 +362,8 @@ typedef struct
 /* c = a/conjugate(b), using function pointer */
 #define DIV_CONJ(c,a,b) \
 { \
-    (void) umfpack_divcomplex ((a).Real, (a).Imag, (b).Real, (-(b).Imag), \
+    (void) SuiteSparse_config.divcomplex_func \
+        ((a).Real, (a).Imag, (b).Real, (-(b).Imag), \
 	&((c).Real), &((c).Imag)) ; \
 }
 
@@ -378,7 +380,7 @@ typedef struct
 /* exact absolute value, s = sqrt (a.real^2 + a.imag^2) */
 #define ABS(s,a) \
 { \
-    (s) = umfpack_hypot ((a).Real, (a).Imag) ; \
+    (s) = SuiteSparse_config.hypot_func ((a).Real, (a).Imag) ; \
 }
 
 /* -------------------------------------------------------------------------- */

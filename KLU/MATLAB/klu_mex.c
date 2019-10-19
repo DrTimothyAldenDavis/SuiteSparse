@@ -253,12 +253,6 @@ void mexFunction
 
     klu_l_defaults (&Common) ;
 
-    /* memory management routines */
-    Common.malloc_memory  = mxMalloc ;
-    Common.calloc_memory  = mxCalloc ;
-    Common.free_memory    = mxFree ;
-    Common.realloc_memory = mxRealloc ;
-
     /* factorization options */
     if (opts_matlab != NULL && mxIsStruct (opts_matlab))
     {

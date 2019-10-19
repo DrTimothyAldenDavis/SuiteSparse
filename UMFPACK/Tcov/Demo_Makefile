@@ -14,7 +14,7 @@ C = $(CC) $(CF) $(UMFPACK_CONFIG) -I../Include -I../../AMD/Include \
 
 INC = ../Include/umfpack.h ../../AMD/Include/amd.h ../../SuiteSparse_config/SuiteSparse_config.h
 
-LIBS = $(BLAS) $(XERBLA) $(LIB)
+LIBS = $(LAPACK) $(BLAS) $(XERBLA) $(LIB)
 
 ../Lib/libumfpack.a:
 	( cd ../Lib && $(MAKE) )

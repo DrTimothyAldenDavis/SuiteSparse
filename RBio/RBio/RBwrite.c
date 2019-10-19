@@ -52,14 +52,10 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    Long nrow, ncol, ititle, ok, zrow, zcol, i, mkind ;
+    Long nrow, ncol, ititle, zrow, zcol, i, mkind ;
     Long *Ap, *Ai, *Zp, *Zi, *w, *cp ;
     double *Ax, *Az ;
     char filename [LEN+1], title [73], key [9], mtype [4] ;
-
-    SuiteSparse_config config ;
-    config.malloc_memory = mxMalloc ;
-    config.free_memory = mxFree ;
 
     /* ---------------------------------------------------------------------- */
     /* check inputs */
@@ -158,8 +154,8 @@ void mexFunction
     /* write the matrix to the file */
     /* ---------------------------------------------------------------------- */
 
-    ok = RBwrite (filename, title, key, nrow, ncol, Ap, Ai, Ax, Az, Zp, Zi,
-        mkind, mtype, &config) ;
+    RBwrite (filename, title, key, nrow, ncol, Ap, Ai, Ax, Az, Zp, Zi,
+        mkind, mtype) ;
 
     /* ---------------------------------------------------------------------- */
     /* return mtype */

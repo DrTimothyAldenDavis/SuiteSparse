@@ -2,7 +2,7 @@
 # UMFPACK Makefile
 #-------------------------------------------------------------------------------
 
-VERSION = 5.6.2
+VERSION = 5.7.0
 
 # UMFPACK requires the AMD package to be in ../AMD
 
@@ -12,6 +12,7 @@ include ../SuiteSparse_config/SuiteSparse_config.mk
 
 # compile all C code (except hb, fortran, and fortran64), incl. AMD and demos
 all:
+	( cd Lib    ; $(MAKE) )
 	( cd Demo   ; $(MAKE) )
 
 # compile just the C-callable UMFPACK library
@@ -58,9 +59,11 @@ distclean: purge
 
 ccode: library
 
+lib: library
+
 # statement coverage (requires Linux; takes a lot of time and disk space)
 cov: purge
-	( cd Tcov ; ./DO.linux )
+	( cd Tcov ; ./DO.all )
 
 # install UMFPACK
 install:

@@ -198,7 +198,9 @@ void cctest (cholmod_sparse *A)
 	Int n = nrow ;
 
 	ok = CSYMAMD_MAIN (n, Si, Sp, P, NULL, stats,
-		cm->calloc_memory, cm->free_memory, Cmember, A->stype) ;
+                SuiteSparse_config.calloc_func,
+                SuiteSparse_config.free_func,
+                Cmember, A->stype) ;
 	OK (ok) ;
 	OK (check_constraints (P, Cmember, n)) ;
 	CSYMAMD_report (stats) ;
@@ -207,31 +209,43 @@ void cctest (cholmod_sparse *A)
 	/* csymamd errors */
 	/* ------------------------------------------------------------------ */
 
-	ok = CSYMAMD_MAIN (n, Si, Sp, P, NULL, NULL, cm->calloc_memory,
-		cm->free_memory, Cmember, A->stype) ;		       NOT (ok);
+	ok = CSYMAMD_MAIN (n, Si, Sp, P, NULL, NULL,
+                SuiteSparse_config.calloc_func,
+                SuiteSparse_config.free_func,
+                Cmember, A->stype) ;		       NOT (ok);
 
-	ok = CSYMAMD_MAIN (n, NULL, Sp, P, NULL, stats, cm->calloc_memory,
-		cm->free_memory, Cmember, A->stype) ;		       NOT (ok);
+	ok = CSYMAMD_MAIN (n, NULL, Sp, P, NULL, stats,
+                SuiteSparse_config.calloc_func,
+                SuiteSparse_config.free_func,
+		Cmember, A->stype) ;		       NOT (ok);
 	CSYMAMD_report (stats) ;
 
-	ok = CSYMAMD_MAIN (n, Si, NULL, P, NULL, stats, cm->calloc_memory,
-		cm->free_memory, Cmember, A->stype) ;		       NOT (ok);
+	ok = CSYMAMD_MAIN (n, Si, NULL, P, NULL, stats,
+                SuiteSparse_config.calloc_func,
+                SuiteSparse_config.free_func,
+		Cmember, A->stype) ;		       NOT (ok);
 	CSYMAMD_report (stats) ;
 
-	ok = CSYMAMD_MAIN (-1, Si, Sp, P, NULL, stats, cm->calloc_memory,
-		cm->free_memory, Cmember, A->stype) ;		       NOT (ok);
+	ok = CSYMAMD_MAIN (-1, Si, Sp, P, NULL, stats,
+                SuiteSparse_config.calloc_func,
+                SuiteSparse_config.free_func,
+		Cmember, A->stype) ;		       NOT (ok);
 	CSYMAMD_report (stats) ;
 
 	p = Sp [n] ;
 	Sp [n] = -1 ;
-	ok = CSYMAMD_MAIN (n, Si, Sp, P, NULL, stats, cm->calloc_memory,
-		cm->free_memory, Cmember, A->stype) ;		       NOT (ok);
+	ok = CSYMAMD_MAIN (n, Si, Sp, P, NULL, stats,
+                SuiteSparse_config.calloc_func,
+                SuiteSparse_config.free_func,
+		Cmember, A->stype) ;		       NOT (ok);
 	CSYMAMD_report (stats) ;
 	Sp [n] = p ;
 
 	Sp [0] = -1 ;
-	ok = CSYMAMD_MAIN (n, Si, Sp, P, NULL, stats, cm->calloc_memory,
-		cm->free_memory, Cmember, A->stype) ;		       NOT (ok);
+	ok = CSYMAMD_MAIN (n, Si, Sp, P, NULL, stats,
+                SuiteSparse_config.calloc_func,
+                SuiteSparse_config.free_func,
+		Cmember, A->stype) ;		       NOT (ok);
 	CSYMAMD_report (stats) ;
 	Sp [0] = 0 ;
 
@@ -239,15 +253,19 @@ void cctest (cholmod_sparse *A)
 	{
 	    p = Sp [1] ;
 	    Sp [1] = -1 ;
-	    ok = CSYMAMD_MAIN (n, Si, Sp, P, NULL, stats, cm->calloc_memory,
-		    cm->free_memory, Cmember, A->stype) ;	       NOT (ok);
+	    ok = CSYMAMD_MAIN (n, Si, Sp, P, NULL, stats,
+                SuiteSparse_config.calloc_func,
+                SuiteSparse_config.free_func,
+		Cmember, A->stype) ;	       NOT (ok);
 	    CSYMAMD_report (stats) ;
 	    Sp [1] = p ;
 
 	    i = Si [0] ;
 	    Si [0] = -1 ;
-	    ok = CSYMAMD_MAIN (n, Si, Sp, P, NULL, stats, cm->calloc_memory,
-		    cm->free_memory, Cmember, A->stype) ;	       NOT (ok);
+	    ok = CSYMAMD_MAIN (n, Si, Sp, P, NULL, stats,
+                SuiteSparse_config.calloc_func,
+                SuiteSparse_config.free_func,
+		Cmember, A->stype) ;	       NOT (ok);
 	    CSYMAMD_report (stats) ;
 	    Si [0] = i ;
 
@@ -255,16 +273,20 @@ void cctest (cholmod_sparse *A)
 	    i = Si [0] ;
 	    Si [0] = Si [1] ;
 	    Si [1] = i ;
-	    ok = CSYMAMD_MAIN (n, Si, Sp, P, NULL, stats, cm->calloc_memory,
-		    cm->free_memory, Cmember, A->stype) ;	       OK (ok);
+	    ok = CSYMAMD_MAIN (n, Si, Sp, P, NULL, stats,
+                SuiteSparse_config.calloc_func,
+                SuiteSparse_config.free_func,
+		Cmember, A->stype) ;	       OK (ok);
 	    CSYMAMD_report (stats) ;
 	    i = Si [0] ;
 	    Si [0] = Si [1] ;
 	    Si [1] = i ;
 
 	    test_memory_handler ( ) ;
-	    ok = CSYMAMD_MAIN (n, Si, Sp, P, NULL, stats, cm->calloc_memory,
-		    cm->free_memory, Cmember, A->stype) ;	       NOT(ok);
+	    ok = CSYMAMD_MAIN (n, Si, Sp, P, NULL, stats,
+                SuiteSparse_config.calloc_func,
+                SuiteSparse_config.free_func,
+		Cmember, A->stype) ;	       NOT(ok);
 	    CSYMAMD_report (stats) ;
 	    normal_memory_handler ( ) ;
 	}

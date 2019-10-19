@@ -132,6 +132,7 @@ static void my_srand (unsigned seed)
 void *my_malloc (size_t size) ;
 void *my_calloc (size_t n, size_t size) ;
 void *my_realloc (void *p, size_t size) ;
+void my_free (void *p) ;
 
 Int my_tries = -1 ;
 
@@ -156,21 +157,27 @@ void *my_realloc (void *p, size_t size)
     return (realloc (p, size)) ;
 }
 
-static void normal_memory_handler (KLU_common *Common)
+void my_free (void *p)
 {
-    Common->malloc_memory = malloc ;
-    Common->calloc_memory = calloc ;
-    Common->realloc_memory = realloc ;
-    Common->free_memory = free ;
+    if (p) free (p) ;
+}
+
+static void normal_memory_handler ( void )
+{
+    SuiteSparse_config.malloc_func = malloc ;
+    SuiteSparse_config.calloc_func = calloc ;
+    SuiteSparse_config.realloc_func = realloc ;
+    SuiteSparse_config.free_func = free ;
+
     my_tries = -1 ;
 }
 
-static void test_memory_handler (KLU_common *Common)
+static void test_memory_handler ( void )
 {
-    Common->malloc_memory = my_malloc ;
-    Common->calloc_memory = my_calloc ;
-    Common->realloc_memory = my_realloc ;
-    Common->free_memory = free ;
+    SuiteSparse_config.malloc_func = my_malloc ;
+    SuiteSparse_config.calloc_func = my_calloc ;
+    SuiteSparse_config.realloc_func = my_realloc ;
+    SuiteSparse_config.free_func = my_free ;
     my_tries = -1 ;
 }
 
@@ -384,13 +391,13 @@ static double do_1_solve (cholmod_sparse *A, cholmod_dense *B,
     KLU_common *Common, cholmod_common *ch, Int *isnan)
 {
     Int *Ai, *Ap ;
-    double *Ax, *Bx, *Xknownx, *Xx, *Ax2, *Axx ;
+    double *Ax, *Xknownx, *Xx, *Ax2, *Axx ;
     KLU_symbolic *Symbolic = NULL ; 
     KLU_numeric *Numeric = NULL ;
     cholmod_dense *X = NULL, *R = NULL ;
     cholmod_sparse *AT = NULL, *A2 = NULL, *AT2 = NULL ;
     double one [2], minusone [2],
-        rnorm, anorm, bnorm, xnorm, relresid, relerr, err = 0. ;
+        rnorm, anorm, xnorm, relresid, relerr, err = 0. ;
     Int i, j, nrhs2, isreal, n, nrhs, transpose, step, k, save, tries ;
 
     printf ("\ndo_1_solve: btf "ID" maxwork %g scale "ID" ordering "ID" user: "
@@ -409,7 +416,7 @@ static double do_1_solve (cholmod_sparse *A, cholmod_dense *B,
     Ax = A->x ;
     n = A->nrow ;
     isreal = (A->xtype == CHOLMOD_REAL) ;
-    Bx = B->x ;
+    /* Bx = B->x ; */
     Xknownx = Xknown->x ;
     nrhs = B->ncol ;
 
@@ -659,7 +666,7 @@ static double do_1_solve (cholmod_sparse *A, cholmod_dense *B,
                 rnorm = CHOLMOD_norm_dense (R, 1, ch) ;
                 anorm = CHOLMOD_norm_sparse ((step == 3) ? A2 : A, 1, ch) ;
                 xnorm = CHOLMOD_norm_dense (X, 1, ch) ;
-                bnorm = CHOLMOD_norm_dense (B, 1, ch) ;
+                /* bnorm = CHOLMOD_norm_dense (B, 1, ch) ; */
 
                 CHOLMOD_free_dense (&R, ch) ;
 
@@ -845,7 +852,7 @@ int main (void)
     cholmod_dense *X, *B ;
     cholmod_common ch ;
     Int *Ap, *Ai, *Puser, *Quser, *Gunk ;
-    double *Ax, *Bx, *Xx, *A2x ;
+    double *Ax, *Xx, *A2x ;
     double one [2], zero [2], xsave, maxerr ;
     Int n, i, j, nz, save, isreal, k, isnan ;
     KLU_symbolic *Symbolic, *Symbolic2 ;
@@ -860,7 +867,7 @@ int main (void)
     OK (klu_defaults (&Common)) ;
     CHOLMOD_start (&ch) ;
     ch.print = 0 ;
-    normal_memory_handler (&Common) ;
+    normal_memory_handler ( ) ;
 
     /* ---------------------------------------------------------------------- */
     /* read in a sparse matrix from stdin */
@@ -929,13 +936,13 @@ int main (void)
     /* B = A*X */
     B = CHOLMOD_allocate_dense (n, NRHS, n, A->xtype, &ch) ;
     CHOLMOD_sdmult (A, 0, one, zero, X, B, &ch) ;
-    Bx = B->x ;
+    /* Bx = B->x ; */
 
     /* ---------------------------------------------------------------------- */
     /* test KLU */
     /* ---------------------------------------------------------------------- */
 
-    test_memory_handler (&Common) ;
+    test_memory_handler ( ) ;
     maxerr = do_solves (A, B, X, Puser, Quser, &Common, &ch, &isnan) ;
 
     /* ---------------------------------------------------------------------- */

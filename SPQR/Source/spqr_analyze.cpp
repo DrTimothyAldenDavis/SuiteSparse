@@ -42,7 +42,7 @@ spqr_symbolic *spqr_analyze
 {
     spqr_symbolic *QRsym ;
     Long *Parent, *Child, *Childp, *W, *Rj, *Rp, *Super, *Stair, *Fmap, *Sleft,
-        *Post, *Ap, *Ai, *Weight, *On_stack, *Task, *TaskParent,
+        *Post, *Ap, *Weight, *On_stack, *Task, *TaskParent,
         *TaskChildp, *TaskChild, *Fm, *Cm, *TaskFront, *TaskFrontp, *Rh,
         *Stack_stack, *Stack_maxstack, *Hip,
         *TaskStack, *InvPost ;
@@ -70,7 +70,7 @@ spqr_symbolic *spqr_analyze
     m = A->nrow ;
     n = A->ncol ;
     Ap = (Long *) A->p ;
-    Ai = (Long *) A->i ;
+    /* Ai = (Long *) A->i ; */
     anz = Ap [n] ;
 
     do_parallel_analysis = (cc->SPQR_grain > 1) ;
@@ -457,8 +457,8 @@ spqr_symbolic *spqr_analyze
 
     // uses CHOLMOD workspace: Head (nf+1), Iwork (2*(nf+1)).  Guaranteed
     // to succeed since enough workspace has already been allocated above.
-    cholmod_l_postorder ((SuiteSparse_long *) Parent, nf+1, (SuiteSparse_long *) Weight,
-        (SuiteSparse_long *) Post, cc) ;
+    cholmod_l_postorder ((SuiteSparse_long *) Parent, nf+1,
+        (SuiteSparse_long *) Weight, (SuiteSparse_long *) Post, cc) ;
     ASSERT (cc->status == CHOLMOD_OK) ;
     ASSERT (Post [nf] == nf) ;          // placeholder is last
 
@@ -910,7 +910,7 @@ spqr_symbolic *spqr_analyze
     QRsym->hisize = hisize ;        // max size of int part of H
     QRsym->maxfn = maxfn ;          // max # of columns in any frontal matrix
 
-    cc->SPQR_xstat [0] = total_flops ;         // total flop count
+    cc->SPQR_flopcount_bound = total_flops ;   // total bound on flop count
 
     cc->SPQR_istat [0] = rxsize ;              // nnz (R)
     cc->SPQR_istat [1] = rhxsize - rxsize ;    // nnz (H)

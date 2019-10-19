@@ -11,6 +11,7 @@
 //      SuiteSparseQR_factorize  QR factorization, returning a QR object
 //                               This performs both symbolic analysis and
 //                               numeric factorization, and exploits singletons.
+//                               Note that H is always kept.
 //
 //      SuiteSparseQR_symbolic   symbolic QR factorization, based purely on the
 //                               nonzero pattern of A; to be followed by:
@@ -21,6 +22,10 @@
 //      SuiteSparseQR_qmult      multiply by Q or Q', using Q from the QR object
 //      SuiteSparseQR_min2norm   min 2-norm solution for x=A\b
 //      SuiteSparseQR_free       free the QR object
+//
+// All of these functions keep the Householder vectors.  The
+// SuiteSparseQR_solve function does not require the Householder vectors, but
+// in the current version, it is only used in that case.
 //
 // If all you need is to solve a least-squares problem, or to compute a QR
 // factorization and return the results in vanilla sparse matrix format, see
@@ -77,7 +82,10 @@ SuiteSparseQR_factorization <Entry> *SuiteSparseQR_symbolic
     // perform the symbolic analysis
     // -------------------------------------------------------------------------
 
-    QR->QRsym = QRsym = spqr_analyze (A, ordering, NULL, allow_tol, TRUE, cc) ;
+    // Using SuiteSparseQR_symbolic followed by SuiteSparseQR_numeric requires
+    // that the Householder vectors be kept.
+    int keepH = TRUE ;
+    QR->QRsym = QRsym = spqr_analyze (A, ordering, NULL, allow_tol, keepH, cc) ;
 
     QR->QRnum = NULL ;          // allocated later, by numeric factorization
 
@@ -136,7 +144,7 @@ SuiteSparseQR_factorization <Entry> *SuiteSparseQR_symbolic
     }
 
     double t1 = SuiteSparse_time ( ) ;
-    cc->other1 [1] = t1 - t0 ;
+    cc->SPQR_analyze_time = t1 - t0 ;
 
     return (QR) ;
 }
@@ -173,6 +181,9 @@ SuiteSparseQR_factorization <Complex> *SuiteSparseQR_symbolic <Complex>
 // SuiteSparseQR_factorize can be followed by a factorization by this function.
 //
 // Returns TRUE if successful, FALSE otherwise.
+//
+// This function requires the Householder
+// vectors to be kept.
 
 template <typename Entry> int SuiteSparseQR_numeric
 (
@@ -257,10 +268,10 @@ template <typename Entry> int SuiteSparseQR_numeric
     // -------------------------------------------------------------------------
 
     cc->SPQR_istat [4] = QR->rank ;         // estimated rank of A
-    cc->SPQR_xstat [1] = tol ;              // tol used
+    cc->SPQR_tol_used = tol ;               // tol used
 
     double t1 = SuiteSparse_time ( ) ;
-    cc->other1 [2] = t1 - t0 ;
+    cc->SPQR_factorize_time = t1 - t0 ;
 
     return (TRUE) ;
 }
@@ -306,6 +317,8 @@ template int SuiteSparseQR_numeric <Complex>
 // is a vector or matrix, or sparse or dense), and do not need to reuse the QR
 // factorization of A, then use the SuiteSparseQR function instead (which
 // corresponds to the MATLAB statement x=A\B, using a sparse QR factorization).
+//
+// In this function, the Householder vectors are always kept.
 
 template <typename Entry>
 SuiteSparseQR_factorization <Entry> *SuiteSparseQR_factorize
@@ -323,7 +336,8 @@ SuiteSparseQR_factorization <Entry> *SuiteSparseQR_factorize
     RETURN_IF_XTYPE_INVALID (A, NULL) ;
     cc->status = CHOLMOD_OK ;
     // B is not present, and always keep H:
-    return (spqr_1factor <Entry> (ordering, tol, 0, TRUE, A,
+    int keepH = TRUE ;
+    return (spqr_1factor <Entry> (ordering, tol, 0, keepH, A,
         0, NULL, NULL, NULL, cc)) ;
 }
 
@@ -1337,7 +1351,7 @@ template <typename Entry> cholmod_dense *SuiteSparseQR_qmult
     // Y = Q'*X, Q*X, X*Q, or X*Q'
     // -------------------------------------------------------------------------
 
-    PR (("Qfmult Method %ld m %ld n %ld X %p Y %p P %p\n", method, m, n, X, Y));
+    PR (("Qfmult Method %d m %ld n %ld X %p Y %p\n", method, m, n, X, Y)) ;
 
     if (method == SPQR_QTX)
     {
@@ -1614,7 +1628,8 @@ template <typename Entry> cholmod_dense *SuiteSparseQR_min2norm
 
         double t3 = SuiteSparse_time ( ) ;
         double total_time = t3 - t0 ;
-        cc->other1 [3] = total_time - cc->other1 [1] - cc->other1 [2] ;
+        cc->SPQR_solve_time =
+            total_time - cc->SPQR_analyze_time - cc->SPQR_factorize_time ;
 
     }
     else
@@ -1694,7 +1709,8 @@ template <typename Entry> cholmod_sparse *SuiteSparseQR_min2norm    // returns X
 
     double t3 = SuiteSparse_time ( ) ;
     double total_time = t3 - t0 ;
-    cc->other1 [3] = total_time - cc->other1 [1] - cc->other1 [2] ;
+    cc->SPQR_solve_time =
+        total_time - cc->SPQR_analyze_time - cc->SPQR_factorize_time ;
 
     return (Xsparse) ;
 }

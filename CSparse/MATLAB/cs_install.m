@@ -39,7 +39,25 @@ addpath ([pwd '/Demo']) ;
 if (verLessThan ('matlab', '7.0'))
     fprintf ('UFget not installed (MATLAB 7.0 or later required)\n') ;
 else
-    addpath ([pwd '/UFget']) ;
+    % install UFget, unless it's already in the path
+    try
+        % if this fails, then UFget is not yet installed
+        index = UFget ;
+        fprintf ('UFget already installed:\n') ;
+        which UFget
+    catch
+        index = [ ] ;
+    end
+    if (isempty (index))
+        % UFget is not installed.  Use ./UFget
+        fprintf ('Installing ./UFget\n') ;
+        try
+            addpath ([pwd '/UFget']) ;
+        catch me
+            disp (me.message) ;
+            fprintf ('UFget not installed\n') ;
+        end
+    end
 end
 
 cd ('CSparse') ;

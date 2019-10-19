@@ -19,41 +19,33 @@
 
 void spqrDebug_print
 (
-    double x,          // unused if NPRINTF defined
-    cholmod_common *cc
+    double x
 )
 {
-    if (cc == NULL) return ;
     PR ((" %10.4g", x)) ;
 }
 
 void spqrDebug_print
 (
-    Complex x,          // unused if NPRINTF defined
-    cholmod_common *cc
+    Complex x
 )
 {
-    if (cc == NULL) return ;
     PR ((" (%10.4g + 1i*(%10.4g))", x.real ( ), x.imag ( ))) ;
 }
 
 void spqrDebug_printf
 (
-    double x,
-    cholmod_common *cc
+    double x
 )
 {
-    if (cc == NULL) return ;
     printf (" %10.4g", x) ;
 }
 
 void spqrDebug_printf
 (
-    Complex x,
-    cholmod_common *cc
+    Complex x
 )
 {
-    if (cc == NULL) return ;
     printf (" (%10.4g + 1i*(%10.4g))", x.real ( ), x.imag ( )) ;
 }
 
@@ -71,7 +63,7 @@ template <typename Entry> void spqrDebug_dumpdense
 )
 {
     Long i, j ;
-    // if (cc == NULL) return ;
+    if (cc == NULL) return ;
     // PR (("Dense: m %ld n %ld lda %ld p %p\n", m, n, lda, A)) ;
     printf ("Dense: m %ld n %ld lda %ld p %p\n", m, n, lda, A) ;
     if (m < 0 || n < 0 || lda < m || A == NULL)
@@ -93,7 +85,7 @@ template <typename Entry> void spqrDebug_dumpdense
                 printf (".")  ;
             }
 #endif
-            spqrDebug_printf (A [i + j*lda], cc) ;
+            spqrDebug_printf (A [i + j*lda]) ;
         }
         printf ("\n") ;
     }
@@ -143,7 +135,7 @@ template <typename Entry> void spqrDebug_dumpsparse
         {
             i = Ai [p] ;
             PR (("   %ld :", i)) ;
-            spqrDebug_print (Ax [p], cc) ;
+            spqrDebug_print (Ax [p]) ;
             PR (("\n")) ;
             ASSERT (i >= 0 && i < m) ;
         }

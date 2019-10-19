@@ -269,7 +269,7 @@ fprintf (f, '<p><b>Matrix: %s</b>\n', fullname) ;
 fprintf (f, '<p>Description: %s<p>\n', ptitle) ;
 
 % Yifan Hu's medium-sized graph plot, for all matrices
-yifan_graphs = 'http://www.research.att.com/~yifanhu/GALLERY/GRAPHS/' ;
+yifan_graphs = 'http://yifanhu.net/GALLERY/GRAPHS/' ;
 yifan_thumb = [yifan_graphs 'GIF_THUMBNAIL/'] ;
 yifan_medium = [yifan_graphs 'GIF_SMALL/'] ;
 yname = strrep (fullname, '/', '@') ;

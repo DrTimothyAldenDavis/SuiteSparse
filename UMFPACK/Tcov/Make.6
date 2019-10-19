@@ -5,7 +5,7 @@
 CC = gcc
 CF = -O0 -g -ftest-coverage -fprofile-arcs -O0
 UMFPACK_CONFIG = -DTESTING -DNTIMER
-LIB = -lblas -lgfortran -lgfortranbegin -lm
+LIB = -llapack -lblas -lgfortran -lgfortranbegin -lm -lrt
 
 RANLIB = ranlib
 MV = mv -f

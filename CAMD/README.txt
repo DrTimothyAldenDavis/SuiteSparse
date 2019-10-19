@@ -1,4 +1,4 @@
-CAMD, Copyright (c) 2007-2012, University of Florida.
+CAMD, Copyright (c) 2007-2013, University of Florida.
 Written by Timothy A. Davis (http://www.suitesparse.com), Yanqing Chen, Patrick
 R. Amestoy, and Iain S. Duff.  All Rights Reserved.  CAMD is available under
 alternate licences; contact T. Davis for details.

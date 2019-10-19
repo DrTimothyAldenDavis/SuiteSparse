@@ -51,17 +51,19 @@ int CHOLMOD(error)
 
 #ifndef NPRINT
 	/* print a warning or error message */
-	if (Common->print_function != NULL)
+	if (SuiteSparse_config.printf_func != NULL)
 	{
 	    if (status > 0 && Common->print > 1)
 	    {
-		(Common->print_function) ("CHOLMOD warning: %s\n", message) ;
+		SuiteSparse_config.printf_func ("CHOLMOD warning: %s\n",
+                    message) ;
 		fflush (stdout) ;
 		fflush (stderr) ;
 	    }
 	    else if (Common->print > 0)
 	    {
-		(Common->print_function) ("CHOLMOD error: %s\n", message) ;
+		SuiteSparse_config.printf_func ("CHOLMOD error: %s\n",
+                    message) ;
 		fflush (stdout) ;
 		fflush (stderr) ;
 	    }

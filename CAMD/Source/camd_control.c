@@ -34,17 +34,18 @@ GLOBAL void CAMD_control
 	aggressive = CAMD_DEFAULT_AGGRESSIVE ;
     }
 
-    PRINTF (("\ncamd version %d.%d, %s:  approximate minimum degree ordering:\n"
+    SUITESPARSE_PRINTF ((
+        "\ncamd version %d.%d, %s:  approximate minimum degree ordering:\n"
 	"    dense row parameter: %g\n", CAMD_MAIN_VERSION, CAMD_SUB_VERSION,
 	CAMD_DATE, alpha)) ;
 
     if (alpha < 0)
     {
-	PRINTF (("    no rows treated as dense\n")) ;
+	SUITESPARSE_PRINTF (("    no rows treated as dense\n")) ;
     }
     else
     {
-	PRINTF ((
+	SUITESPARSE_PRINTF ((
 	"    (rows with more than max (%g * sqrt (n), 16) entries are\n"
 	"    considered \"dense\", and placed last in output permutation)\n",
 	alpha)) ;
@@ -52,10 +53,12 @@ GLOBAL void CAMD_control
 
     if (aggressive)
     {
-	PRINTF (("    aggressive absorption:  yes\n\n")) ;
+	SUITESPARSE_PRINTF (("    aggressive absorption:  yes\n")) ;
     }
     else
     {
-	PRINTF (("    aggressive absorption:  no\n\n")) ;
+	SUITESPARSE_PRINTF (("    aggressive absorption:  no\n")) ;
     }
+
+    SUITESPARSE_PRINTF (("    size of CAMD integer: %d\n\n", sizeof (Int))) ;
 }

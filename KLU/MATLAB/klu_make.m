@@ -62,6 +62,8 @@ else
     include = ['-DNCHOLMOD ' include] ;
 end
 
+suitesparse_src = { '../../SuiteSparse_config/SuiteSparse_config' } ;
+
 amd_src = { ...
     '../../AMD/Source/amd_1', ...
     '../../AMD/Source/amd_2', ...
@@ -269,7 +271,7 @@ end
 % compile each library source file
 obj = ' ' ;
 
-source = [amd_src btf_src klu_src colamd_src] ;
+source = [suitesparse_src amd_src btf_src klu_src colamd_src] ;
 if (with_cholmod)
     source = [metis_src ccolamd_src camd_src cholmod_src source] ;
 end
@@ -312,6 +314,12 @@ end
 % compile the KLU mexFunction
 s = sprintf ('mex %s -DDLONG -O %s -output klu klu_mex.c', d, include) ;
 s = [s obj] ;                                                               %#ok
+
+if (~(ispc || ismac))
+    % for POSIX timing routine
+    s = [s ' -lrt'] ;
+end
+
 kk = do_cmd (s, kk, details) ;
 
 % clean up

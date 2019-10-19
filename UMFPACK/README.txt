@@ -1,4 +1,4 @@
-UMFPACK, Copyright (c) 1995-2012 by Timothy A. Davis,
+UMFPACK, Copyright (c) 1995-2013 by Timothy A. Davis,
 http://www.suitesparse.com
 
 UMFPACK :  a set of routines solving sparse linear systems via LU

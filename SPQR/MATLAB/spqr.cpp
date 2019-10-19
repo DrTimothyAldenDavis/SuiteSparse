@@ -478,7 +478,7 @@ void mexFunction
 
     if (nargout > 3)
     {
-        double flops = cc->other1 [0] ;
+        double flops = cc->SPQR_flopcount ;
         double t = SuiteSparse_time ( ) - t0 ;
         pargout [3] = spqr_mx_info (cc, t, flops) ;
     }

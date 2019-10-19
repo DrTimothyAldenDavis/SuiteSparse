@@ -2,7 +2,7 @@
 # CHOLMOD Makefile
 #-------------------------------------------------------------------------------
 
-VERSION = 2.1.2
+VERSION = 3.0.0
 
 # Note: If you do not have METIS, or do not wish to use it in CHOLMOD, you must
 # compile CHOLMOD with the -DNPARTITION flag.

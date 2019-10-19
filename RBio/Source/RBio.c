@@ -39,20 +39,20 @@
 #define PUBLIC
 
 #define SLEN 4096
-#define FREE_WORK   { SuiteSparse_free (w,config) ; \
-                      SuiteSparse_free (cp,config) ; }
+#define FREE_WORK   { SuiteSparse_free (w) ; \
+                      SuiteSparse_free (cp) ; }
 
 #define FREE_ALL    { FREE_WORK ; \
-                      SuiteSparse_free (Ap,config) ; \
-                      SuiteSparse_free (Ai,config) ; \
-                      SuiteSparse_free (Ax,config) ; \
-                      SuiteSparse_free (Az,config) ; \
-                      SuiteSparse_free (Zp,config) ; \
-                      SuiteSparse_free (Zi,config) ; }
+                      SuiteSparse_free (Ap) ; \
+                      SuiteSparse_free (Ai) ; \
+                      SuiteSparse_free (Ax) ; \
+                      SuiteSparse_free (Az) ; \
+                      SuiteSparse_free (Zp) ; \
+                      SuiteSparse_free (Zi) ; }
 
-#define FREE_RAW    { SuiteSparse_free (Ap,config) ; \
-                      SuiteSparse_free (Ai,config) ; \
-                      SuiteSparse_free (Ax,config) ; }
+#define FREE_RAW    { SuiteSparse_free (Ap) ; \
+                      SuiteSparse_free (Ai) ; \
+                      SuiteSparse_free (Ax) ; }
 
 
 /* ========================================================================== */
@@ -1321,7 +1321,7 @@ PRIVATE Int RB(xread)     /* TRUE if OK, FALSE otherwise */
 
     or
 
-        SuiteSparse_free (Ap, config) ;
+        SuiteSparse_free (Ap) ;
 
     etc, for Ap, Ai, Ax, Az, Zp, and Zi.
 
@@ -1366,9 +1366,7 @@ PUBLIC Int RB(read)              /* 0: OK, < 0: error, > 0: warning */
     double **p_Ax,      /* real values (ignored if NULL) of A */
     double **p_Az,      /* imaginary values (ignored if NULL) of A */
     Int **p_Zp,         /* column pointers of Z */
-    Int **p_Zi,         /* row indices of Z */
-
-    SuiteSparse_config *config    /* SuiteSparse configuration parameters */
+    Int **p_Zi          /* row indices of Z */
 )
 {
     Int nnz, nelnz, status, fem ;
@@ -1447,10 +1445,10 @@ PUBLIC Int RB(read)              /* 0: OK, < 0: error, > 0: warning */
     /* allocate space for A */
     /* ---------------------------------------------------------------------- */
 
-    ok = TRUE ;
     *asize = ((build_upper) ? 2 : 1) * MAX (nnz, 1) ;
-    Ap = (Int *) SuiteSparse_malloc ((*ncol) + 1, sizeof (Int), &ok, config) ;
-    Ai = (Int *) SuiteSparse_malloc (*asize, sizeof (Int), &ok, config) ;
+    Ap = (Int *) SuiteSparse_malloc ((*ncol) + 1, sizeof (Int)) ;
+    Ai = (Int *) SuiteSparse_malloc (*asize, sizeof (Int)) ;
+    ok = (Ap != NULL && Ai != NULL) ;
     Ax = NULL ;
     Az = NULL ;
     Zp = NULL ;
@@ -1461,32 +1459,31 @@ PUBLIC Int RB(read)              /* 0: OK, < 0: error, > 0: warning */
         /* return A as real, integer, or pattern */
         if (p_Ax)
         {
-            Ax = (double *) SuiteSparse_malloc (*asize, sizeof (double), &ok,
-                config) ;
+            Ax = (double *) SuiteSparse_malloc (*asize, sizeof (double)) ;
+            ok = ok && (Ax != NULL) ;
         }
     }
     else if (*mkind == 2)
     {
         /* return A as split-complex */
-        Ax = (double *) SuiteSparse_malloc (*asize, sizeof (double), &ok,
-            config) ;
-        Az = (double *) SuiteSparse_malloc (*asize, sizeof (double), &ok,
-            config) ;
+        Ax = (double *) SuiteSparse_malloc (*asize, sizeof (double)) ;
+        Az = (double *) SuiteSparse_malloc (*asize, sizeof (double)) ;
+        ok = ok && (Ax != NULL && Az != NULL) ;
     }
     else /* if (*mkind == 4) */
     {
         /* return A as merged-complex */
-        Ax = (double *) SuiteSparse_malloc (*asize, 2*sizeof (double), &ok,
-            config) ;
+        Ax = (double *) SuiteSparse_malloc (*asize, 2*sizeof (double)) ;
+        ok = ok && (Ax != NULL) ;
     }
 
     /* ---------------------------------------------------------------------- */
     /* allocate workspace */
     /* ---------------------------------------------------------------------- */
 
-    cp = (Int *) SuiteSparse_malloc ((*ncol) + 1, sizeof (Int), &ok, config) ;
-    w  = (Int *) SuiteSparse_malloc (MAX (*nrow, *ncol) + 1, sizeof (Int), &ok,
-        config) ;
+    cp = (Int *) SuiteSparse_malloc ((*ncol) + 1, sizeof (Int)) ;
+    w  = (Int *) SuiteSparse_malloc (MAX (*nrow, *ncol) + 1, sizeof (Int)) ;
+    ok = ok && (cp != NULL && w != NULL) ;
 
     if (!ok)
     {
@@ -1533,10 +1530,9 @@ PUBLIC Int RB(read)              /* 0: OK, < 0: error, > 0: warning */
     {
         /* allocate the Z matrix */
         *znz = RB(zcount) (Ap [*ncol], *mkind, Ax, Az) ;
-        Zp = (Int *) SuiteSparse_malloc ((*ncol) + 1, sizeof (Int), &ok,
-            config) ;
-        Zi = (Int *) SuiteSparse_malloc (*znz, sizeof (Int), &ok, config) ;
-        if (!ok)
+        Zp = (Int *) SuiteSparse_malloc ((*ncol) + 1, sizeof (Int)) ;
+        Zi = (Int *) SuiteSparse_malloc (*znz, sizeof (Int)) ;
+        if (Zp == NULL || Zi == NULL)
         {
             FREE_ALL ;
             return (RBIO_OUT_OF_MEMORY) ;
@@ -1593,9 +1589,7 @@ PUBLIC Int RB(readraw)           /* 0: OK, < 0: error, > 0: warning */
     /* output: these are malloc'ed below and must be freed by the caller */
     Int **p_Ap,         /* size ncol+1, column pointers of A */
     Int **p_Ai,         /* size nnz, row indices of A */
-    double **p_Ax,      /* size xsize, numerical values of A */
-
-    SuiteSparse_config *config    /* SuiteSparse configuration parameters */
+    double **p_Ax       /* size xsize, numerical values of A */
 )
 {
     FILE *file = NULL ; /* read from stdin if NULL */
@@ -1648,9 +1642,9 @@ PUBLIC Int RB(readraw)           /* 0: OK, < 0: error, > 0: warning */
     /* allocate space for Ap, Ai, and Ax */
     /* ---------------------------------------------------------------------- */
 
-    ok = TRUE ;
-    Ap = (Int *) SuiteSparse_malloc ((*ncol) + 1, sizeof (Int), &ok, config) ;
-    Ai = (Int *) SuiteSparse_malloc (*nnz, sizeof (Int), &ok, config) ;
+    Ap = (Int *) SuiteSparse_malloc ((*ncol) + 1, sizeof (Int)) ;
+    Ai = (Int *) SuiteSparse_malloc (*nnz, sizeof (Int)) ;
+    ok = (Ap != NULL && Ai != NULL) ;
 
     if (*mkind == 1)
     {
@@ -1662,8 +1656,8 @@ PUBLIC Int RB(readraw)           /* 0: OK, < 0: error, > 0: warning */
     {
         /* A has numerical values */
         *xsize = ((*fem) ? (*nelnz) : (*nnz)) * (((*mkind) == 2) ? 2 : 1) ;
-        Ax = (double *) SuiteSparse_malloc (*xsize, sizeof (double), &ok,
-            config) ;
+        Ax = (double *) SuiteSparse_malloc (*xsize, sizeof (double)) ;
+        ok = ok && (Ax != NULL) ;
     }
 
     if (!ok)
@@ -1769,9 +1763,7 @@ PUBLIC Int RB(write)         /* 0:OK, < 0: error, > 0: warning */
     Int mkind_in,   /* 0:R, 1:P: 2:Csplit, 3:I, 4:Cmerged */
 
     /* output */
-    char mtype [4], /* matrix type (RUA, RSA, etc), may be NULL */
-
-    SuiteSparse_config *config    /* SuiteSparse configuration parameters */
+    char mtype [4]  /* matrix type (RUA, RSA, etc), may be NULL */
 )
 {
     double xmin, xmax, zmin, zmax ;
@@ -1841,10 +1833,9 @@ PUBLIC Int RB(write)         /* 0:OK, < 0: error, > 0: warning */
     /* allocate workspace */
     /* ---------------------------------------------------------------------- */
 
-    ok = TRUE ;
-    w  = SuiteSparse_malloc (MAX (nrow, ncol) + 1, sizeof (Int), &ok, config) ;
-    cp = SuiteSparse_malloc (ncol + 1, sizeof (Int), &ok, config) ;
-    if (!ok)
+    w  = SuiteSparse_malloc (MAX (nrow, ncol) + 1, sizeof (Int)) ;
+    cp = SuiteSparse_malloc (ncol + 1, sizeof (Int)) ;
+    if (cp == NULL || w == NULL)
     {
         FREE_WORK ;
         return (RBIO_OUT_OF_MEMORY) ;
@@ -1855,7 +1846,7 @@ PUBLIC Int RB(write)         /* 0:OK, < 0: error, > 0: warning */
     /* ---------------------------------------------------------------------- */
 
     RB(kind) (nrow, ncol, Ap, Ai, Ax, Az, mkind_in, &mkind, &skind, mtype,
-        &xmin, &xmax, cp, config) ;
+        &xmin, &xmax, cp) ;
 
     /* now use mkind instead of mkind_in */
 
@@ -1870,7 +1861,7 @@ PUBLIC Int RB(write)         /* 0:OK, < 0: error, > 0: warning */
     {
         /* determine if Z is symmetric or not */
         RB(kind) (nrow, ncol, Zp, Zi, NULL, NULL, 3, &zmkind, &zskind, zmtype,
-            &zmin, &zmax, cp, config) ;
+            &zmin, &zmax, cp) ;
         if (zskind == 0)
         {
             /* Z is square and unsymmetric; force A unsymmetric too */
@@ -2051,14 +2042,11 @@ PUBLIC Int RB(kind)          /* 0: OK, < 0: error, > 0: warning */
     double *xmin,   /* smallest value */
     double *xmax,   /* largest value */
 
-    /* workspace: allocated internall if NULL */
-    Int *cp,        /* workspace of size ncol+1, undefined on input and output*/
-
-    SuiteSparse_config *config    /* SuiteSparse configuration parameters */
+    /* workspace: allocated internally if NULL */
+    Int *cp         /* workspace of size ncol+1, undefined on input and output*/
 )
 {
     Int nnz, is_h, is_z, is_s, k, p, i, j, pt, get_workspace ;
-    int ok ;
     Int *w = NULL ;
     double aij_real, aij_imag, aji_real, aji_imag ;
 
@@ -2077,13 +2065,12 @@ PUBLIC Int RB(kind)          /* 0: OK, < 0: error, > 0: warning */
     /* allocate workspace, if needed */
     /* ---------------------------------------------------------------------- */
 
-    ok = TRUE ;
-    get_workspace = !cp ;
+    get_workspace = (cp == NULL) ;
     if (get_workspace)
     {
-        cp = (Int *) SuiteSparse_malloc (ncol + 1, sizeof (Int), &ok, config) ;
+        cp = (Int *) SuiteSparse_malloc (ncol + 1, sizeof (Int)) ;
     }
-    if (!ok)
+    if (cp == NULL)
     {
         return (RBIO_OUT_OF_MEMORY) ;
     }

@@ -15,7 +15,6 @@ C = $(CC) $(CF) $(UMFPACK_CONFIG) \
     -I../../CHOLMOD/Include
 
 everything:
-	$(C) -c ../Source/umfpack_global.c -o umfpack_gn_global.o
 	$(C) -DDINT -c ../Source/umf_analyze.c -o umf_i_analyze.o
 	$(C) -DDINT -c ../Source/umf_apply_order.c -o umf_i_apply_order.o
 	$(C) -DDINT -c ../Source/umf_colamd.c -o umf_i_colamd.o
@@ -333,7 +332,6 @@ everything:
 	$(C) -DZLONG -c ../Source/umfpack_load_symbolic.c -o umfpack_zl_load_symbolic.o
 	$(C) -DZLONG -c ../Source/umfpack_save_symbolic.c -o umfpack_zl_save_symbolic.o
 	$(ARCHIVE)  ../Lib/libumfpack.a \
-	    umfpack_gn_global.o \
 	    umf_i_analyze.o umf_i_apply_order.o umf_i_colamd.o umf_i_free.o \
             umf_i_cholmod.o umf_i_fsize.o umf_i_is_permutation.o \
             umf_i_malloc.o umf_i_realloc.o \

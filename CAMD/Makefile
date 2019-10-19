@@ -2,9 +2,9 @@
 # CAMD Makefile
 #------------------------------------------------------------------------------
 
-VERSION = 2.3.1
+VERSION = 2.4.0
 
-default: demos
+default: all
 
 include ../SuiteSparse_config/SuiteSparse_config.mk
 

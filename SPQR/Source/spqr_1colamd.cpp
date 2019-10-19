@@ -50,7 +50,7 @@ template <typename Entry> int spqr_1colamd  // TRUE if OK, FALSE otherwise
     Long *Q1fill, *Degree, *Qrows, *W, *Winv, *ATp, *ATj, *R1p, *P1inv, *Yp,
         *Ap, *Ai, *Work ;
     Entry *Ax ;
-    Long p, d, j, i, k, n1cols, n1rows, row, col, pend, n2rows, n2cols = EMPTY,
+    Long p, d, j, i, k, n1cols, n1rows, row, pend, n2rows, n2cols = EMPTY,
         nz2, kk, p2, col2, ynz, fill_reducing_ordering, m, n, xtype, worksize ;
     cholmod_sparse *AT, *Y ;
 
@@ -172,7 +172,9 @@ template <typename Entry> int spqr_1colamd  // TRUE if OK, FALSE otherwise
         // get a new singleton from the queue
         // ---------------------------------------------------------------------
 
-        col = Q1fill [k] ;
+        // Long col = Q1fill [k] ;   unused variable, for debugging
+        #define col (Q1fill [k])
+
         row = Qrows [k] ;
         PR (("\n---- singleton col %ld row %ld\n", col, row)) ;
         ASSERT (Degree [col] == EMPTY) ;
@@ -212,7 +214,7 @@ template <typename Entry> int spqr_1colamd  // TRUE if OK, FALSE otherwise
                     continue ;
                 }
                 ASSERT (d >= 1) ;
-                ASSERT2 (spqrDebug_listcount (j, Q1fill, n1cols, 0) == 0) ;
+                ASSERT2 (spqrDebug_listcount (j, Q1fill, n1cols, 0, cc) == 0) ;
                 d-- ;
                 Degree [j] = d ;
                 if (d == 0)
@@ -234,7 +236,7 @@ template <typename Entry> int spqr_1colamd  // TRUE if OK, FALSE otherwise
                         {
                             // i might appear in Qrows [k+1:n1cols-1]
                             PR (("newly live %ld\n", j)) ;
-                            ASSERT2 (spqrDebug_listcount (i,Qrows,k+1,1) == 0) ;
+                            ASSERT2 (spqrDebug_listcount (i,Qrows,k+1,1,cc)==0);
                             Q1fill [n1cols] = j ;
                             Qrows [n1cols] = i ;
                             n1cols++ ;
@@ -246,9 +248,12 @@ template <typename Entry> int spqr_1colamd  // TRUE if OK, FALSE otherwise
             }
         }
         // Q1fill [0:k] and Qrows [0:k] have no duplicates
-        ASSERT2 (spqrDebug_listcount (col, Q1fill, n1cols, 0) == 1) ; 
+        ASSERT2 (spqrDebug_listcount (col, Q1fill, n1cols, 0, cc) == 1) ; 
         ASSERT2 (IMPLIES (row >= 0, spqrDebug_listcount 
-            (row, Qrows, k+1, 1) == 1)) ; 
+            (row, Qrows, k+1, 1, cc) == 1)) ; 
+
+        // used for debugging only
+        #undef col
     }
 
     // -------------------------------------------------------------------------
@@ -266,7 +271,7 @@ template <typename Entry> int spqr_1colamd  // TRUE if OK, FALSE otherwise
     ASSERT (k == n - n1cols) ;
     for (k = 0 ; k < n1cols ; k++)
     {
-        col = Q1fill [k] ;
+        Long col = Q1fill [k] ;
         ASSERT (Degree [col] <= 0) ;
     }
     k = 0 ;

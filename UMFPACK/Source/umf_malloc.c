@@ -60,20 +60,7 @@ GLOBAL void *UMF_malloc
 
     DEBUG0 (("UMF_malloc: ")) ;
 
-    /* make sure that we allocate something */
-    n_objects = MAX (1, n_objects) ;
-
-    size = (size_t) n_objects ;
-    ASSERT (size_of_object > 1) ;
-    if (size > Int_MAX / size_of_object)
-    {
-	/* object is too big for integer pointer arithmetic */
-	return ((void *) NULL) ;
-    }
-    size *= size_of_object ;
-
-    /* see AMD/Source/amd_global.c for the memory allocator selection */
-    p = amd_malloc (size) ;
+    p = SuiteSparse_malloc (n_objects, size_of_object) ;
 
     DEBUG0 ((ID"\n", (Int) p)) ;
 

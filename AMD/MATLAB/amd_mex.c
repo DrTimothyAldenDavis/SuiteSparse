@@ -47,12 +47,6 @@ void mexFunction
     /* get control parameters */
     /* --------------------------------------------------------------------- */
 
-    amd_malloc = mxMalloc ;
-    amd_free = mxFree ;
-    amd_calloc = mxCalloc ;
-    amd_realloc = mxRealloc ;
-    amd_printf = mexPrintf ;
-
     spumoni = 0 ;
     if (nargin == 0)
     {

@@ -1,3 +1,14 @@
+March 26, 2014: version 3.0.0
+
+    * major update to GPU acceleration.  Released at NVIDIA GTC 2014.
+
+July 31, 2013: version 2.2.0
+
+    * modified the CHOLMOD Common so that it is the same size regardless
+        of whether or not the GPU is used.
+    * changed malloc, printf, hypot, and divcomplex pointers to use
+        SuiteSparse_config.  Removed CHOLMOD Common-> function pointers.
+
 Apr 25, 2013: version 2.1.2
 
     * minor update for CHOLMOD/Cholesky/*solve*.c:

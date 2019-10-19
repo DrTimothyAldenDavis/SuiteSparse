@@ -49,12 +49,8 @@ void mexFunction
     double xmin, xmax ;
     Long *Ap, *Ai ;
     double *Ax, *Az ;
-    Long nrow, ncol, nnz, mkind, skind, mkind_in, ok = TRUE ;
+    Long nrow, ncol, nnz, mkind, skind, mkind_in ;
     char mtype [4] ;
-
-    SuiteSparse_config config ;
-    config.malloc_memory = mxMalloc ;
-    config.free_memory = mxFree ;
 
     /* ---------------------------------------------------------------------- */
     /* check inputs */
@@ -88,7 +84,7 @@ void mexFunction
     mkind_in = mxIsComplex (pargin [0]) ? 2 : 0 ;
 
     RBkind (nrow, ncol, Ap, Ai, Ax, Az, mkind_in, &mkind, &skind, mtype,
-        &xmin, &xmax, NULL, NULL) ;
+        &xmin, &xmax, NULL) ;
 
     /* ---------------------------------------------------------------------- */
     /* return the result */

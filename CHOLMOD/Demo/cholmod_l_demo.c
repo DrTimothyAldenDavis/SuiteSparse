@@ -62,16 +62,22 @@ int main (int argc, char **argv)
     double one [2], zero [2], minusone [2], beta [2], xlnz ;
     cholmod_common Common, *cm ;
     cholmod_factor *L ;
-    double *Bx, *Rx, *Xx ;
+    double *Bx, *Rx, *Xx, *Bz, *Xz, *Rz ;
     SuiteSparse_long i, n, isize, xsize, ordering, xtype, s, ss, lnz ;
     int trial, method, L_is_super ;
     int ver [3] ;
+    int prefer_zomplex, nmethods ;
+
+    ts[0] = 0.;
+    ts[1] = 0.;
+    ts[2] = 0.;
 
     /* ---------------------------------------------------------------------- */
     /* get the file containing the input matrix */
     /* ---------------------------------------------------------------------- */
 
     ff = NULL ;
+    prefer_zomplex = 0 ;
     if (argc > 1)
     {
 	if ((f = fopen (argv [1], "r")) == NULL)
@@ -80,6 +86,7 @@ int main (int argc, char **argv)
 		    "unable to open file") ;
 	}
 	ff = f ;
+        prefer_zomplex = (argc > 2) ;
     }
     else
     {
@@ -92,6 +99,8 @@ int main (int argc, char **argv)
 
     cm = &Common ;
     cholmod_l_start (cm) ;
+    /* cm->useGPU = 1; */
+    cm->prefer_zomplex = prefer_zomplex ;
 
     /* use default parameter settings, except for the error handler.  This
      * demo program terminates if an error occurs (out of memory, not positive
@@ -132,10 +141,63 @@ int main (int argc, char **argv)
         ff = NULL ;
     }
     anorm = cholmod_l_norm_sparse (A, 0, cm) ;
-    xtype = A->xtype ;
     printf ("norm (A,inf) = %g\n", anorm) ;
     printf ("norm (A,1)   = %g\n", cholmod_l_norm_sparse (A, 1, cm)) ;
+
+    if (prefer_zomplex && A->xtype == CHOLMOD_COMPLEX)
+    {
+        /* Convert to zomplex, just for testing.  In a zomplex matrix,
+           the real and imaginary parts are in separate arrays.  MATLAB
+           uses zomplex matrix exclusively. */
+        double *Ax = A->x ;
+        SuiteSparse_long nz = cholmod_l_nnz (A, cm) ;
+        printf ("nz: %ld\n", nz) ;
+        double *Ax2 = cholmod_l_malloc (nz, sizeof (double), cm) ;
+        double *Az2 = cholmod_l_malloc (nz, sizeof (double), cm) ;
+        for (i = 0 ; i < nz ; i++)
+        {
+            Ax2 [i] = Ax [2*i  ] ;
+            Az2 [i] = Ax [2*i+1] ;
+        }
+        cholmod_l_free (A->nzmax, 2*sizeof(double), Ax, cm) ;
+        A->x = Ax2 ;
+        A->z = Az2 ;
+        A->xtype = CHOLMOD_ZOMPLEX ;
+        /* cm->print = 5 ; */
+    }
+
+    xtype = A->xtype ;
     cholmod_l_print_sparse (A, "A", cm) ;
+
+#if 0
+    if ( 0 ) {
+      // scale diagonal
+      printf ("\n\n     SCALING DIAGONAL   \n\n");
+      
+      // create diagonal
+      printf ("%ld,%ld,%d\n", A->nrow, A->ncol, A->xtype );
+
+      cholmod_sparse *D = cholmod_l_speye (A->nrow, A->ncol, A->xtype, cm );
+      printf ("sparse done \n");
+      cholmod_l_print_sparse (D, "D", cm);
+
+      D->stype = 1;
+      cholmod_l_print_sparse (D, "D", cm);
+
+      double alpha[2];
+      double beta[2];
+      alpha[0] = 1.0;
+      alpha[1] = 1.0;
+      beta[0] = 1.0e9; // 9 works, 467doesn't
+      beta[1] = 1.0e0;
+
+      cholmod_sparse *C = cholmod_l_add (A, D, alpha, beta, 1, 0, cm );
+      cholmod_l_print_sparse (C, "C", cm);
+
+      A = C;
+
+    }
+#endif
 
     if (A->nrow > A->ncol)
     {
@@ -153,6 +215,7 @@ int main (int argc, char **argv)
     n = A->nrow ;
     B = cholmod_l_zeros (n, 1, xtype, cm) ;
     Bx = B->x ;
+    Bz = B->z ;
 
 #if GHS
     {
@@ -172,7 +235,7 @@ int main (int argc, char **argv)
 	    Bx [i] = 1 + i / x ;
 	}
     }
-    else
+    else if (xtype == CHOLMOD_COMPLEX)
     {
 	/* complex case */
 	for (i = 0 ; i < n ; i++)
@@ -182,6 +245,17 @@ int main (int argc, char **argv)
 	    Bx [2*i+1] = (x/2 - i) / (3*x) ;	/* imag part of B(i) */
 	}
     }
+    else /* (xtype == CHOLMOD_ZOMPLEX) */
+    {
+	/* zomplex case */
+	for (i = 0 ; i < n ; i++)
+	{
+	    double x = n ;
+	    Bx [i] = 1 + i / x ;		/* real part of B(i) */
+	    Bz [i] = (x/2 - i) / (3*x) ;	/* imag part of B(i) */
+	}
+    }
+
 #endif
 
     cholmod_l_print_dense (B, "B", cm) ;
@@ -256,9 +330,24 @@ int main (int argc, char **argv)
     /* solve */
     /* ---------------------------------------------------------------------- */
 
-    for (method = 0 ; method <= 3 ; method++)
+    if (n >= 1000)
+    {
+        nmethods = 1 ;
+    }
+    else if (xtype == CHOLMOD_ZOMPLEX)
+    {
+        nmethods = 2 ;
+    }
+    else
+    {
+        nmethods = 3 ;
+    }
+    printf ("nmethods: %d\n", nmethods) ;
+
+    for (method = 0 ; method <= nmethods ; method++)
     {
         double x = n ;
+        resid [method] = -1 ;       /* not yet computed */
 
         if (method == 0)
         {
@@ -331,7 +420,7 @@ int main (int argc, char **argv)
                 {
                     B2x [i] = 3.1 * i + 0.9 ;
                 }
-                else
+                else /* (xtype == CHOLMOD_COMPLEX) */
                 {
                     B2x [2*i  ] = i + 0.042 ;
                     B2x [2*i+1] = i - 92.7 ;
@@ -373,10 +462,6 @@ int main (int argc, char **argv)
                 X2x = X2->x ;
                 Lnz = L->nz ;
 
-                /*
-                printf ("\ni %d xlen %d  (%p %p)\n", i, xlen, X1x, X2x) ;
-                */
-
                 if (xtype == CHOLMOD_REAL)
                 {
                     fl = 2 * xlen ;
@@ -389,7 +474,7 @@ int main (int argc, char **argv)
                         resid [3] = MAX (resid [3], err) ;
                     }
                 }
-                else
+                else /* (xtype == CHOLMOD_COMPLEX) */
                 {
                     fl = 16 * xlen ;
                     for (k = 0 ; k < xlen ; k++)
@@ -404,6 +489,7 @@ int main (int argc, char **argv)
                         resid [3] = MAX (resid [3], err) ;
                     }
                 }
+
                 if (timelog) fprintf (timelog, "%g %g %g %g\n",
                     (double) i, (double) xlen, fl, t);
 
@@ -412,12 +498,11 @@ int main (int argc, char **argv)
                 {
                     B2x [i] = 0 ;
                 }
-                else
+                else /* (xtype == CHOLMOD_COMPLEX) */
                 {
                     B2x [2*i  ] = 0 ;
                     B2x [2*i+1] = 0 ;
                 }
-
             }
 
             if (timelog)
@@ -453,7 +538,9 @@ int main (int argc, char **argv)
                 /* R = B - beta*X */
                 R = cholmod_l_zeros (n, 1, xtype, cm) ;
                 Rx = R->x ;
+                Rz = R->z ;
                 Xx = X->x ;
+                Xz = X->z ;
                 if (xtype == CHOLMOD_REAL)
                 {
                     for (i = 0 ; i < n ; i++)
@@ -461,15 +548,25 @@ int main (int argc, char **argv)
                         Rx [i] = Bx [i] - beta [0] * Xx [i] ;
                     }
                 }
-                else
+                else if (xtype == CHOLMOD_COMPLEX)
                 {
                     /* complex case */
                     for (i = 0 ; i < n ; i++)
                     {
                         Rx [2*i  ] = Bx [2*i  ] - beta [0] * Xx [2*i  ] ;
-                        Rx [2*i+1] = Bx [2*i+1] - beta [0] * Xx [2*i+1] ;
+                        Rx [2*i+1] = Bx [2*i+1] - beta [1] * Xx [2*i+1] ;
                     }
                 }
+                else /* (xtype == CHOLMOD_ZOMPLEX) */
+                {
+                    /* zomplex case */
+                    for (i = 0 ; i < n ; i++)
+                    {
+                        Rx [i] = Bx [i] - beta [0] * Xx [i] ;
+                        Rz [i] = Bz [i] - beta [1] * Xz [i] ;
+                    }
+                }
+
                 /* R = A*W - R */
                 cholmod_l_sdmult (A, 0, one, minusone, W, R, cm) ;
                 cholmod_l_free_dense (&W, cm) ;
@@ -526,6 +623,7 @@ int main (int argc, char **argv)
 
     anz = cm->anz ;
     for (i = 0 ; i < CHOLMOD_MAXMETHODS ; i++)
+    /* for (i = 4 ; i < 3 ; i++) */
     {
 	fl = cm->method [i].fl ;
 	xlnz = cm->method [i].lnz ;
@@ -537,9 +635,9 @@ int main (int argc, char **argv)
 	    printf ("Ordering: ") ;
 	    if (ordering == CHOLMOD_POSTORDERED) printf ("postordered ") ;
 	    if (ordering == CHOLMOD_NATURAL)     printf ("natural ") ;
-	    if (ordering == CHOLMOD_GIVEN)	     printf ("user    ") ;
-	    if (ordering == CHOLMOD_AMD)	     printf ("AMD     ") ;
-	    if (ordering == CHOLMOD_METIS)	     printf ("METIS   ") ;
+	    if (ordering == CHOLMOD_GIVEN)	 printf ("user    ") ;
+	    if (ordering == CHOLMOD_AMD)	 printf ("AMD     ") ;
+	    if (ordering == CHOLMOD_METIS)	 printf ("METIS   ") ;
 	    if (ordering == CHOLMOD_NESDIS)      printf ("NESDIS  ") ;
 	    if (xlnz > 0)
 	    {
@@ -587,7 +685,7 @@ int main (int argc, char **argv)
     printf ("peak memory usage: %12.0f (MB)\n",
 	    (double) (cm->memory_usage) / 1048576.) ;
     printf ("residual (|Ax-b|/(|A||x|+|b|)): ") ;
-    for (method = 0 ; method <= 2 ; method++)
+    for (method = 0 ; method <= nmethods ; method++)
     {
         printf ("%8.2e ", resid [method]) ;
     }

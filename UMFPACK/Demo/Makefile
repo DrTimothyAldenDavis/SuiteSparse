@@ -56,7 +56,7 @@ C = $(CC) $(CF) $(UMFPACK_CONFIG) $(CONFIG1) $(CONFIG2) \
 
 INC = ../Include/umfpack.h ../../AMD/Include/amd.h ../../SuiteSparse_config/SuiteSparse_config.h
 
-LIBS = $(BLAS) $(XERBLA) $(LIB) $(LIB_WITH_CHOLMOD) $(LIB_WITH_PARTITION)
+LIBS = $(LAPACK) $(BLAS) $(XERBLA) $(LIB) $(LIB_WITH_CHOLMOD) $(LIB_WITH_PARTITION) $(CUBLAS_LIB) $(CUDART_LIB)
 
 ../Lib/libumfpack.a:
 	( cd ../Lib ; $(MAKE) )
@@ -85,7 +85,7 @@ $(METIS):
 
 UMFPACK = ../Lib/libumfpack.a ../../AMD/Lib/libamd.a \
     ../../SuiteSparse_config/libsuitesparseconfig.a \
-    $(LIB_WITH_CHOLMOD) $(LIB_WITH_PARTITION)
+    $(LIB_WITH_CHOLMOD) $(LIB_WITH_PARTITION) 
 
 libs: $(UMFPACK)
 

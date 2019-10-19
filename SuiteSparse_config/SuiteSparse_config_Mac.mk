@@ -1,7 +1,5 @@
 #===============================================================================
-# SuiteSparse_config_Mac.mk:  Mac configuration file for the SuiteSparse
-# To use this configuration, delete the SuiteSparse_config.mk file that
-# comes with SuiteSparse and rename this file as SuiteSparse_config.mk .
+# SuiteSparse_config.mk:  common configuration file for the SuiteSparse
 #===============================================================================
 
 # This file contains all configuration settings for all packages authored or
@@ -9,17 +7,17 @@
 #
 # Package Version       Description
 # ------- -------       -----------
-# AMD	  1.2 or later  approximate minimum degree ordering
+# AMD     1.2 or later  approximate minimum degree ordering
 # COLAMD  2.4 or later  column approximate minimum degree ordering
 # CCOLAMD 1.0 or later  constrained column approximate minimum degree ordering
-# CAMD    any		constrained approximate minimum degree ordering
-# UMFPACK 4.5 or later	sparse LU factorization, with the BLAS
-# CHOLMOD any		sparse Cholesky factorization, update/downdate
-# KLU	  0.8 or later  sparse LU factorization, BLAS-free
-# BTF	  0.8 or later  permutation to block triangular form
-# LDL	  1.2 or later	concise sparse LDL'
-# CXSparse any		extended version of CSparse (int/long, real/complex)
-# SuiteSparseQR	any	sparse QR factorization
+# CAMD    any           constrained approximate minimum degree ordering
+# UMFPACK 4.5 or later  sparse LU factorization, with the BLAS
+# CHOLMOD any           sparse Cholesky factorization, update/downdate
+# KLU     0.8 or later  sparse LU factorization, BLAS-free
+# BTF     0.8 or later  permutation to block triangular form
+# LDL     1.2 or later  concise sparse LDL'
+# CXSparse any          extended version of CSparse (int/long, real/complex)
+# SuiteSparseQR any     sparse QR factorization
 # RBio    2.0 or later  read/write sparse matrices in Rutherford-Boeing format
 #
 # By design, this file is NOT included in the CSparse makefile.
@@ -59,10 +57,21 @@
 # You can redefine them here, but by default they are used from the
 # default make environment.
 
+# To use OpenMP add -openmp to the CFLAGS
+# If OpenMP is used, it is recommended to define CHOLMOD_OMP_NUM_THREADS
+# as the number of cores per socket on the machine being used to maximize
+# memory performance
+  CFLAGS = 
+# CFLAGS = -g
+# for the icc compiler and OpenMP:
+# CFLAGS = -openmp
+
 # C and C++ compiler flags.  The first three are standard for *.c and *.cpp
 # Add -DNTIMER if you do use any timing routines (otherwise -lrt is required).
 # CF = $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -O3 -fexceptions -fPIC -DNTIMER
   CF = $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -O3 -fexceptions -fPIC
+# for the MKL BLAS:
+# CF = $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -O3 -fexceptions -fPIC -I$(MKLROOT)/include -D_GNU_SOURCE
 
 # ranlib, and ar, for generating libraries.  If you don't need ranlib,
 # just change it to RANLAB = echo
@@ -108,8 +117,20 @@ INSTALL_INCLUDE = /usr/local/include
 # naming the BLAS and LAPACK library (*.a or *.so) files.
 
 # This is probably slow ... it might connect to the Standard Reference BLAS:
-BLAS = -lblas -lgfortran
-LAPACK = -llapack
+  BLAS = -lblas -lgfortran
+  LAPACK = -llapack
+
+# MKL 
+# BLAS = -Wl,--start-group $(MKLROOT)/lib/intel64/libmkl_intel_lp64.a $(MKLROOT)/lib/intel64/libmkl_core.a $(MKLROOT)/lib/intel64/libmkl_intel_thread.a -Wl,--end-group -lpthread -lm
+# LAPACK = 
+
+# ACML
+# BLAS = -lacml -lgfortran
+# LAPACK =
+
+# OpenBLAS
+# BLAS = -lopenblas
+# LAPACK = 
 
 # NOTE: this next option for the "Goto BLAS" has nothing to do with a "goto"
 # statement.  Rather, the Goto BLAS is written by Dr. Kazushige Goto.
@@ -143,16 +164,41 @@ XERBLA =
 # XERBLA = ../../SuiteSparse_config/xerbla/libxerbla.a 
 
 #------------------------------------------------------------------------------
-# GPU configuration for CHOLMOD, using the CUDA BLAS
+# GPU configuration for CHOLMOD
 #------------------------------------------------------------------------------
 
 # no cuda
-GPU_BLAS_PATH =
-GPU_CONFIG =
+  CUDA_ROOT     =
+  GPU_BLAS_PATH =
+  GPU_CONFIG    =
+  CUDA_PATH     =
+  CUDART_LIB    =
+  CUBLAS_LIB    =
+  CUDA_INC_PATH =
+  NV20          =
+  NV30          =
+  NV35          =
+  NVCC          = echo
+  NVCCFLAGS     =
 
-# with cuda BLAS acceleration for CHOLMOD
-# GPU_BLAS_PATH=/usr/local/cuda
-# GPU_CONFIG=-DGPU_BLAS -I$(GPU_BLAS_PATH)/include
+# with cuda for CHOLMOD
+# CUDA_ROOT     = /usr/local/cuda
+# GPU_BLAS_PATH = $(CUDA_ROOT)
+# with 4 cores (default):
+# GPU_CONFIG    = -I$(CUDA_ROOT)/include -DGPU_BLAS
+# with 10 cores:
+# GPU_CONFIG    = -I$(CUDA_ROOT)/include -DGPU_BLAS -DCHOLMOD_OMP_NUM_THREADS=10
+# CUDA_PATH     = $(CUDA_ROOT)
+# CUDART_LIB    = $(CUDA_ROOT)/lib64/libcudart.so
+# CUBLAS_LIB    = $(CUDA_ROOT)/lib64/libcublas.so
+# CUDA_INC_PATH = $(CUDA_ROOT)/include/
+# NV20          = -arch=sm_20 -Xcompiler -fPIC
+# NV30          = -arch=sm_30 -Xcompiler -fPIC
+# NV35          = -arch=sm_35 -Xcompiler -fPIC
+# NVCC          = $(CUDA_ROOT)/bin/nvcc
+# NVCCFLAGS     = $(NV20) -O3 -gencode=arch=compute_20,code=sm_20 -gencode=arch=compute_30,code=sm_30 -gencode=arch=compute_35,code=sm_35
+
+# was NVCC      = $(CUDA_ROOT)/bin/nvcc $(NV35) $(NV30) $(NV20)
 
 #------------------------------------------------------------------------------
 # METIS, optionally used by CHOLMOD
@@ -173,12 +219,12 @@ METIS = ../../metis-4.0/libmetis.a
 
 # Configuration flags for UMFPACK.  See UMFPACK/Source/umf_config.h for details.
 #
-# -DNBLAS	do not use the BLAS.  UMFPACK will be very slow.
+# -DNBLAS       do not use the BLAS.  UMFPACK will be very slow.
 # -D'LONGBLAS=long' or -DLONGBLAS='long long' defines the integers used by
-#  		LAPACK and the BLAS (defaults to 'int')
-# -DNSUNPERF	do not use the Sun Perf. Library (default is use it on Solaris)
-# -DNRECIPROCAL	do not multiply by the reciprocal
-# -DNO_DIVIDE_BY_ZERO	do not divide by zero
+#               LAPACK and the BLAS (defaults to 'int')
+# -DNSUNPERF    do not use the Sun Perf. Library (default is use it on Solaris)
+# -DNRECIPROCAL do not multiply by the reciprocal
+# -DNO_DIVIDE_BY_ZERO   do not divide by zero
 # -DNCHOLMOD    do not use CHOLMOD as a ordering method.  If -DNCHOLMOD is
 #               included in UMFPACK_CONFIG, then UMFPACK  does not rely on
 #               CHOLMOD, CAMD, CCOLAMD, COLAMD, and METIS.
@@ -193,37 +239,37 @@ UMFPACK_CONFIG =
 #------------------------------------------------------------------------------
 
 # CHOLMOD Library Modules, which appear in libcholmod.a:
-# Core		requires: none
-# Check		requires: Core
-# Cholesky	requires: Core, AMD, COLAMD.  optional: Partition, Supernodal
-# MatrixOps	requires: Core
-# Modify	requires: Core
-# Partition	requires: Core, CCOLAMD, METIS.  optional: Cholesky
-# Supernodal	requires: Core, BLAS, LAPACK
+# Core          requires: none
+# Check         requires: Core
+# Cholesky      requires: Core, AMD, COLAMD.  optional: Partition, Supernodal
+# MatrixOps     requires: Core
+# Modify        requires: Core
+# Partition     requires: Core, CCOLAMD, METIS.  optional: Cholesky
+# Supernodal    requires: Core, BLAS, LAPACK
 #
 # CHOLMOD test/demo Modules (all are GNU GPL, do not appear in libcholmod.a):
-# Tcov		requires: Core, Check, Cholesky, MatrixOps, Modify, Supernodal
-#		optional: Partition
-# Valgrind	same as Tcov
-# Demo		requires: Core, Check, Cholesky, MatrixOps, Supernodal
-#		optional: Partition
+# Tcov          requires: Core, Check, Cholesky, MatrixOps, Modify, Supernodal
+#               optional: Partition
+# Valgrind      same as Tcov
+# Demo          requires: Core, Check, Cholesky, MatrixOps, Supernodal
+#               optional: Partition
 #
 # Configuration flags:
-# -DNCHECK	    do not include the Check module.	   License GNU LGPL
-# -DNCHOLESKY	    do not include the Cholesky module.	   License GNU LGPL
-# -DNPARTITION	    do not include the Partition module.   License GNU LGPL
-#		    also do not include METIS.
+# -DNCHECK          do not include the Check module.       License GNU LGPL
+# -DNCHOLESKY       do not include the Cholesky module.    License GNU LGPL
+# -DNPARTITION      do not include the Partition module.   License GNU LGPL
+#                   also do not include METIS.
 # -DNCAMD           do not use CAMD, etc from Partition module.    GNU LGPL
-# -DNGPL	    do not include any GNU GPL Modules in the CHOLMOD library:
-# -DNMATRIXOPS	    do not include the MatrixOps module.   License GNU GPL
-# -DNMODIFY	    do not include the Modify module.      License GNU GPL
+# -DNGPL            do not include any GNU GPL Modules in the CHOLMOD library:
+# -DNMATRIXOPS      do not include the MatrixOps module.   License GNU GPL
+# -DNMODIFY         do not include the Modify module.      License GNU GPL
 # -DNSUPERNODAL     do not include the Supernodal module.  License GNU GPL
 #
-# -DNPRINT	    do not print anything.
+# -DNPRINT          do not print anything.
 # -D'LONGBLAS=long' or -DLONGBLAS='long long' defines the integers used by
-#  		    	LAPACK and the BLAS (defaults to 'int')
-# -DNSUNPERF	    for Solaris only.  If defined, do not use the Sun
-#			Performance Library
+#                   LAPACK and the BLAS (defaults to 'int')
+# -DNSUNPERF        for Solaris only.  If defined, do not use the Sun
+#                   Performance Library
 
 CHOLMOD_CONFIG = $(GPU_CONFIG)
 
@@ -238,6 +284,7 @@ CHOLMOD_CONFIG = $(GPU_CONFIG)
 #
 # -DNPARTITION      do not include the CHOLMOD partition module
 # -DNEXPERT         do not include the functions in SuiteSparseQR_expert.cpp
+# -DNSPQRGPU        do not include the GPU accelerated code
 # -DHAVE_TBB        enable the use of Intel's Threading Building Blocks (TBB)
 
 # default, without timing, without TBB:
@@ -254,6 +301,15 @@ SPQR_CONFIG =
 TBB =
 
 #------------------------------------------------------------------------------
+# code formatting
+#------------------------------------------------------------------------------
+
+# Use "grep" only, if you do not have "indent"  
+  PRETTY = grep -v "^\#"
+# PRETTY = grep -v "^\#" | indent -bl -nce -ss -bli0 -i4 -sob -l120
+# PRETTY = grep -v "^\#" | indent -bl -nce -bli0 -i4 -sob -l120
+
+#------------------------------------------------------------------------------
 # Linux
 #------------------------------------------------------------------------------
 
@@ -263,18 +319,18 @@ TBB =
 
 # alternatives:
 # CF = $(CFLAGS) -g -fexceptions \
-   	-Wall -W -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
-    	-Wredundant-decls -Wnested-externs -Wdisabled-optimization -ansi \
-        -funit-at-a-time
+#       -Wall -W -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
+#       -Wredundant-decls -Wnested-externs -Wdisabled-optimization -ansi \
+#       -funit-at-a-time
 # CF = $(CFLAGS) -O3 -fexceptions \
-   	-Wall -W -Werror -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
-    	-Wredundant-decls -Wnested-externs -Wdisabled-optimization -ansi
+#       -Wall -W -Werror -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
+#       -Wredundant-decls -Wnested-externs -Wdisabled-optimization -ansi
 # CF = $(CFLAGS) -O3 -fexceptions -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
 # CF = $(CFLAGS) -O3
 # CF = $(CFLAGS) -O3 -g -fexceptions
 # CF = $(CFLAGS) -g -fexceptions \
-   	-Wall -W -Wshadow \
-    	-Wredundant-decls -Wdisabled-optimization -ansi
+#       -Wall -W -Wshadow \
+#       -Wredundant-decls -Wdisabled-optimization -ansi
 
 # consider:
 # -fforce-addr -fmove-all-movables -freduce-all-givs -ftsp-ordering

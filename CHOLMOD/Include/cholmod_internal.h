@@ -231,34 +231,6 @@ size_t cholmod_l_mult_size_t (size_t a, size_t k, int *ok) ;
 #define ID SuiteSparse_long_id
 
 /* -------------------------------------------------------------------------- */
-/* double, int/SuiteSparse_long */
-/* -------------------------------------------------------------------------- */
-
-#elif defined (DMIX)
-#error "mixed int/SuiteSparse_long not yet supported"
-
-/* -------------------------------------------------------------------------- */
-/* single, int */
-/* -------------------------------------------------------------------------- */
-
-#elif defined (SINT)
-#error "single-precision not yet supported"
-
-/* -------------------------------------------------------------------------- */
-/* single, SuiteSparse_long */
-/* -------------------------------------------------------------------------- */
-
-#elif defined (SLONG)
-#error "single-precision not yet supported"
-
-/* -------------------------------------------------------------------------- */
-/* single, int/SuiteSparse_long */
-/* -------------------------------------------------------------------------- */
-
-#elif defined (SMIX)
-#error "single-precision not yet supported"
-
-/* -------------------------------------------------------------------------- */
 /* double (also complex double), int: this is the default */
 /* -------------------------------------------------------------------------- */
 
@@ -277,6 +249,9 @@ size_t cholmod_l_mult_size_t (size_t a, size_t k, int *ok) ;
 #define ITYPE CHOLMOD_INT
 #define DTYPE CHOLMOD_DOUBLE
 #define ID "%d"
+
+/* GPU acceleration is not available for the int version of CHOLMOD */
+#undef GPU_BLAS
 
 #endif
 
@@ -366,9 +341,9 @@ int  cholmod_l_dump_work(int, int, SuiteSparse_long, cholmod_common *) ;
 
 #define PRK(k,params) \
 { \
-    if (CHOLMOD(dump) >= (k) && Common->print_function != NULL) \
+    if (CHOLMOD(dump) >= (k) && SuiteSparse_config.printf_func != NULL) \
     { \
-	(Common->print_function) params ; \
+	(SuiteSparse_config.printf_func) params ; \
     } \
 }
 

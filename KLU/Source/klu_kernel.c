@@ -539,6 +539,7 @@ static void prune
     Int p, i, j, p2, phead, ptail, llen, ulen ;
 
     /* check to see if any column of L can be pruned */
+    /* Ux is set but not used.  This OK. */
     GET_POINTER (LU, Uip, Ulen, Ui, Ux, k, ulen) ;
     for (p = 0 ; p < ulen ; p++)
     {

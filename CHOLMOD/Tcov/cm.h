@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include <math.h>
+#include <signal.h>
 
 #define Size_max ((size_t) (-1))
 

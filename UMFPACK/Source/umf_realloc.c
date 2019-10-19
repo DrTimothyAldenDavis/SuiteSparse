@@ -56,8 +56,7 @@ GLOBAL void *UMF_realloc
     DEBUG0 (("UMF_realloc: "ID" n_objects "ID"  size_of_object "ID"\n",
 	(Int) p, n_objects, (Int) size_of_object)) ;
 
-    /* see AMD/Source/amd_global.c for the memory allocator selection */
-    p2 = amd_realloc (p, size) ;
+    p2 = SuiteSparse_config.realloc_func (p, size) ;
 
 #if defined (UMF_MALLOC_COUNT) || !defined (NDEBUG)
     /* If p didn't exist on input, and p2 exists, then a new object has been

@@ -1675,9 +1675,6 @@ int CHOLMOD(solve2)         /* returns TRUE on success, FALSE on failure */
         }
     }
 
-    /*
-    printf ("bye from solve2\n") ;
-    */
     DEBUG (CHOLMOD(dump_dense) (X, "X result", Common)) ;
     return (TRUE) ;
 }

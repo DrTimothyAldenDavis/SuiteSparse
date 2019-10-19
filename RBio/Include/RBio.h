@@ -86,11 +86,11 @@ extern "C" {
 #define RBIO_VALUE_IOERROR (-94)  /* I/O error: numerical values */
 #define RBIO_FILE_IOERROR (-95)   /* I/O error: cannot read/write the file */
 
-#define RBIO_DATE "Jun 20, 2012"
+#define RBIO_DATE "July 31, 2013"
 #define RBIO_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define RBIO_MAIN_VERSION 2
-#define RBIO_SUB_VERSION 1
-#define RBIO_SUBSUB_VERSION 1
+#define RBIO_SUB_VERSION 2
+#define RBIO_SUBSUB_VERSION 0
 #define RBIO_VERSION RBIO_VER_CODE(RBIO_MAIN_VERSION,RBIO_SUB_VERSION)
 
 
@@ -138,16 +138,13 @@ int RBkind_i        /* 0: OK, < 0: error, > 0: warning */
     double *xmax,   /* largest value */
 
     /* workspace: allocated internally if NULL */
-    int *cp,        /* workspace of size ncol+1, undefined on input and output*/
-
-    SuiteSparse_config *config    /* SuiteSparse configuration parameters */
+    int *cp         /* workspace of size ncol+1, undefined on input and output*/
 ) ;
 
 SuiteSparse_long RBkind (SuiteSparse_long nrow, SuiteSparse_long ncol,
     SuiteSparse_long *Ap, SuiteSparse_long *Ai, double *Ax, double *Az,
     SuiteSparse_long mkind_in, SuiteSparse_long *mkind, SuiteSparse_long *skind,
-    char mtype [4], double *xmin, double *xmax, SuiteSparse_long *cp,
-    SuiteSparse_config *config) ;
+    char mtype [4], double *xmin, double *xmax, SuiteSparse_long *cp) ;
 
 
 int RBread_i            /* 0: OK, < 0: error, > 0: warning */
@@ -174,9 +171,7 @@ int RBread_i            /* 0: OK, < 0: error, > 0: warning */
     double **Ax,        /* real values (ignored if NULL) of A */
     double **Az,        /* imaginary values (ignored if NULL) of A */
     int **Zp,           /* column pointers of Z */
-    int **Zi,           /* row indices of Z */
-
-    SuiteSparse_config *config    /* SuiteSparse configuration parameters */
+    int **Zi            /* row indices of Z */
 ) ;
 
 SuiteSparse_long RBread (char *filename, SuiteSparse_long build_upper,
@@ -184,8 +179,7 @@ SuiteSparse_long RBread (char *filename, SuiteSparse_long build_upper,
     char mtype [4], SuiteSparse_long *nrow, SuiteSparse_long *ncol,
     SuiteSparse_long *mkind, SuiteSparse_long *skind, SuiteSparse_long *asize,
     SuiteSparse_long *znz, SuiteSparse_long **Ap, SuiteSparse_long **Ai,
-    double **Ax, double **Az, SuiteSparse_long **Zp, SuiteSparse_long **Zi,
-    SuiteSparse_config *config) ;
+    double **Ax, double **Az, SuiteSparse_long **Zp, SuiteSparse_long **Zi) ;
 
 
 int RBreadraw_i         /* 0: OK, < 0: error, > 0: warning */
@@ -209,9 +203,7 @@ int RBreadraw_i         /* 0: OK, < 0: error, > 0: warning */
     /* output: these are malloc'ed below and must be freed by the caller */
     int **p_Ap,         /* size ncol+1, column pointers of A */
     int **p_Ai,         /* size nnz, row indices of A */
-    double **p_Ax,      /* size xsize, numerical values of A */
-
-    SuiteSparse_config *config    /* SuiteSparse configuration parameters */
+    double **p_Ax       /* size xsize, numerical values of A */
 ) ;
 
 
@@ -219,8 +211,7 @@ SuiteSparse_long RBreadraw (char *filename, char title [73], char key [9],
     char mtype[4], SuiteSparse_long *nrow, SuiteSparse_long *ncol,
     SuiteSparse_long *nnz, SuiteSparse_long *nelnz, SuiteSparse_long *mkind,
     SuiteSparse_long *skind, SuiteSparse_long *fem, SuiteSparse_long *xsize,
-    SuiteSparse_long **p_Ap, SuiteSparse_long **p_Ai, double **p_Ax,
-    SuiteSparse_config *config) ;
+    SuiteSparse_long **p_Ap, SuiteSparse_long **p_Ai, double **p_Ax) ;
 
 
 int RBwrite_i       /* 0:OK, < 0: error, > 0: warning */
@@ -240,16 +231,13 @@ int RBwrite_i       /* 0:OK, < 0: error, > 0: warning */
     int mkind_in,   /* 0:R, 1:P: 2:Csplit, 3:I, 4:Cmerged */
 
     /* output */
-    char mtype [4], /* matrix type (RUA, RSA, etc), may be NULL */
-
-    SuiteSparse_config *config    /* SuiteSparse configuration parameters */
+    char mtype [4]  /* matrix type (RUA, RSA, etc), may be NULL */
 ) ;
 
 SuiteSparse_long RBwrite (char *filename, char *title, char *key,
     SuiteSparse_long nrow, SuiteSparse_long ncol, SuiteSparse_long *Ap,
     SuiteSparse_long *Ai, double *Ax, double *Az, SuiteSparse_long *Zp,
-    SuiteSparse_long *Zi, SuiteSparse_long mkind_in, char mtype [4],
-    SuiteSparse_config *config) ;
+    SuiteSparse_long *Zi, SuiteSparse_long mkind_in, char mtype [4]) ;
 
 
 void RBget_entry_i

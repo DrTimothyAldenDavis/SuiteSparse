@@ -87,7 +87,8 @@ template <typename Entry> void spqr_rsolve
     Entry **Rblock, *R, *W1, *B1, *X1 ;
     Long *Rp, *Rj, *Super, *HStair, *Hm, *Stair ;
     char *Rdead ;
-    Long nf, m, rank, j, f, col1, col2, fp, pr, fn, rm, k, i, row1, row2, ii,
+    Long nf, // m,
+        rank, j, f, col1, col2, fp, pr, fn, rm, k, i, row1, row2, ii,
         keepH, fm, h, t, live, kk ;
 
     // -------------------------------------------------------------------------
@@ -107,7 +108,7 @@ template <typename Entry> void spqr_rsolve
     keepH = QRnum->keepH ;
     PR (("rsolve keepH %ld\n", keepH)) ;
     nf = QRsym->nf ;
-    m = QRsym->m ;
+    // m = QRsym->m ;
     Rblock = QRnum->Rblock ;
     Rp = QRsym->Rp ;
     Rj = QRsym->Rj ;

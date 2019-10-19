@@ -35,14 +35,13 @@ everything:
 	$(C) -DDLONG -c ../Source/camd_info.c -o camd_l_info.o
 	$(C) -DDLONG -c ../Source/camd_valid.c -o camd_l_valid.o
 	$(C) -DDLONG -c ../Source/camd_preprocess.c -o camd_l_preprocess.o
-	$(C) -c ../Source/camd_global.c
 	$(ARCHIVE)  libcamd.a \
             camd_i_aat.o camd_i_1.o camd_i_2.o camd_i_dump.o \
 	    camd_i_postorder.o camd_i_defaults.o camd_i_order.o \
 	    camd_i_control.o camd_i_info.o camd_i_valid.o camd_l_aat.o \
 	    camd_l_1.o camd_l_2.o camd_l_dump.o camd_l_postorder.o \
 	    camd_l_defaults.o camd_l_order.o camd_l_control.o camd_l_info.o \
-	    camd_l_valid.o camd_i_preprocess.o camd_l_preprocess.o camd_global.o
+	    camd_l_valid.o camd_i_preprocess.o camd_l_preprocess.o
 	- $(RANLIB) libcamd.a
 
 #-------------------------------------------------------------------------------

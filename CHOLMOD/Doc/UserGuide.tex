@@ -21,7 +21,7 @@ DrTimothyAldenDavis@gmail.com, http://www.suitesparse.com }
 \title{User Guide for CHOLMOD: a sparse Cholesky factorization and
 modification package}
 
-\date{VERSION 2.1.2, April 25, 2013}
+\date{VERSION 3.0.0, March 26, 2014}
 \maketitle
 
 %-------------------------------------------------------------------------------
@@ -47,7 +47,7 @@ modification package}
 \end{abstract}
 %-------------------------------------------------------------------------------
 
-CHOLMOD Copyright\copyright 2005-2013 by Timothy A. Davis.  Portions are also
+CHOLMOD Copyright\copyright 2005-2014 by Timothy A. Davis.  Portions are also
 copyrighted by William W. Hager (the {\tt Modify} Module),
 and the University of Florida (the {\tt Partition} and {\tt Core} Modules).
 All Rights Reserved.  Some of CHOLMOD's Modules are distributed under the GNU
@@ -92,7 +92,7 @@ Most of its operations are available within MATLAB via mexFunction interfaces.
     leading submatrices are well-conditioned ($\m{D}$ is diagonal).
 
 A pair of articles on CHOLMOD has been submitted to the ACM Transactions
-on Mathematical Softare:
+on Mathematical Software:
 \cite{ChenDavisHagerRajamanickam06,DavisHager06}.
 
 CHOLMOD 1.0 replaces {\tt chol} (the sparse case), {\tt symbfact}, and {\tt etree}
@@ -435,7 +435,7 @@ Each function is described in the next sections.
 \subsection{{\tt ldlupdate}: update/downdate an $\m{LDL}\tr$ factorization}	\input{_ldlupdate_m.tex}
 \newpage
 \subsection{{\tt mread}: read a sparse or dense matrix from a Matrix Market file}\input{_mread_m.tex}
-\subsection{{\tt mwrite}: write a sparse or densematrix to a Matrix Market file}	\input{_mwrite_m.tex}
+\subsection{{\tt mwrite}: write a sparse or dense matrix to a Matrix Market file}	\input{_mwrite_m.tex}
 \newpage
 \subsection{{\tt metis}: order with METIS}					\input{_metis_m.tex}
 \newpage
@@ -492,6 +492,142 @@ Thus, METIS will safely abort without terminating MATLAB, if it runs out
 of memory.
 The {\tt cholmod\_make} handles this redefinition without making any
 changes to your METIS source code.
+
+%-------------------------------------------------------------------------------
+\newpage \section{Using CHOLMOD with GPU acceleration}
+%-------------------------------------------------------------------------------
+
+Starting with CHOLMOD v2.0.0, it is possible to accelerate the numerical
+factorization phase of CHOLMOD using NVIDIA GPUs.  Due to the large
+computational capability of the GPUs, enabling this capability can result in
+significant performance improvements.  Similar to CPU processing, the GPU is
+better able to accelerate the dense math associated with larger supernodes.
+Hence the GPU will provide more significant performance improvements for larger
+matrices that have more, larger supernodes.
+
+In CHOLMOD v2.3.0 this GPU capability has been improved to provide a
+significant increase in performance and the interface has been expanded to make
+the use of GPUs more flexible.  CHOLMOD can take advantage of a single NVIDIA
+GPU that supports CUDA and has at least 64MB of memory.  (But substantially
+more memory, typically about 3 GB, is recommended for best performance.)
+
+Only the {\tt long} integer version of CHOLMOD can leverage GPU acceleration.
+
+%-------------------------------------------------------------------------------
+\subsection{Compiling CHOLMOD with GPU support}
+%-------------------------------------------------------------------------------
+
+In order to support GPU processing, CHOLMOD must be compiled with the
+preprocessor macro {\tt GPU\_BLAS} defined.  All GPU code is conditional upon
+this macro.  As well, the environment variable {\tt CUDA\_ROOT} must be defined
+and point to the installation of the CUDA toolkit to be used for compilation of
+CHOLMOD.  Typically this would be {\tt /usr/local/cuda}.  See {\tt
+SuiteSparse\_config\_GPU.mk} for an example of how this is done.
+
+%-------------------------------------------------------------------------------
+\subsection{Enabling GPU acceleration in CHOLMOD}
+%-------------------------------------------------------------------------------
+
+Even if compiled with GPU support, in CHOLMOD v.2.3.0, GPU processing is not
+enabled by default and must be specifically requested.  There are two ways to
+do this, either in the code calling CHOLMOD or using environment variables.
+
+The code author can specify the use of GPU processing with the {\tt
+Common->useGPU} variable.  If this is set to {\tt 1}, CHOLMOD will attempt to
+use the GPU.  If this is set to {\tt 0} the use of the GPU will be prohibited.
+If this is set to {\tt -1}, which is the default case, then the environment
+variables (following paragraph) will be queried to determine if the GPU is to
+be used.  Note that the default value of {\tt -1} is set when {\tt
+cholmod\_start(Common)} is called, so the code author must set {\tt
+Common->useGPU} after calling {\tt cholmod\_start}.
+
+Alternatively, or if it is not possible to modify the code calling CHOLMOD, GPU
+processing can invoked using the {\tt CHOLMOD\_USE\_GPU} environment variable.
+This makes it possible for any CHOLMOD user to invoke GPU processing even if
+the author of the calling program did not consider this.  The interpretation of
+the environment variable {\tt CHOLMOD\_USE\_GPU} is that if the string
+evaluates to an integer other than zero, GPU processing will be enabled.  Note
+that the setting of {\tt Common->useGPU} takes precedence and the environment
+variable {\tt CHOLMOD\_USE\_GPU} will only be queried if {\tt Common->useGPU =
+-1}.
+
+Note that in either case, if GPU processing is requested, but there is no GPU
+present, CHOLMOD will continue using the CPU only.  Consequently it is always
+safe to request GPU processing.
+
+%-------------------------------------------------------------------------------
+\newpage \subsection{Adjustable parameters}
+%-------------------------------------------------------------------------------
+
+There are a number of parameters that have been added to CHOLMOD to control GPU
+processing.  All of these have appropriate defaults such that GPU processing
+can be used without any modification.  However, for any particular combination
+of CPU/GPU, better performance might be obtained by adjusting these parameters.
+
+\bigskip
+
+From {\tt t\_cholmod\_gpu.c}
+
+\begin{quote}
+  {\tt CHOLMOD\_ND\_ROW\_LIMIT} : Minimum number of rows required in a
+  descendant supernode to be eligible for GPU processing during supernode
+  assembly
+
+
+  {\tt CHOLMOD\_ND\_COL\_LIMIT} : Minimum number of columns in a descendant
+  supernode to be eligible for GPU processing during supernode assembly
+
+
+  {\tt CHOLMOD\_POTRF\_LIMIT} : Minimum number of columns in a supernode to be
+  eligible for {\tt POTRF} and {\tt TRSM} processing on the GPU
+
+
+  {\tt CHOLMOD\_GPU\_SKIP} : Number of small descendant supernodes to assembled
+  on the CPU before querying if the GPU is needs more descendant supernodes
+  queued 
+
+\end{quote}
+
+From {\tt cholmod\_core.h}
+
+\begin{quote}
+  {\tt CHOLMOD\_HOST\_SUPERNODE\_BUFFERS} : Number of buffers in which to queue
+  descendant supernodes for GPU processing
+
+\end{quote}
+
+Programatically
+
+\begin{quote}
+
+  {\tt Common->maxGpuMemBytes} : Specifies the maximum amount of memory, in
+  bytes, that CHOLMOD can allocate on the GPU.  If this parameter is not set,
+  CHOLMOD will allocate as much GPU memory as possible.  Hence, the purpose of
+  this parameter is to restrict CHOLMOD's GPU memory use so that CHOLMOD can be
+  used simultaneously with other codes that also use GPU acceleration and
+  require some amount of GPU memory.  If the specified amount of GPU memory is
+  not allocatable, CHOLMOD will allocate the available memory and continue.
+
+  {\tt Common->maxGpuMemFraction} : Entirely similar to {\tt
+  Common->maxGpuMemBytes} but with the memory specified as a fraction of total
+  GPU memory.  Note that if both {\tt maxGpuMemBytes} and {\tt
+  maxGpuMemFraction} are specified, whichever results in the minimum amount of
+  memory will be used.
+
+\end{quote}
+
+Environment variables
+
+\begin{quote}
+  {\tt CHOLMOD\_GPU\_MEM\_BYTES} : Environment variable with a meaning
+  equivalent to {\tt Common->maxGpuMemBytes}.  This will only be queried if
+  {\tt Common->useGPU = -1}.
+
+  {\tt CHOLMOD\_GPU\_MEM\_FRACTION} : Environment variable with a meaning
+  equivalent to {\tt Common->maxGpuMemFraction}.  This will only be queried if
+  {\tt Common->useGPU = -1}.
+
+\end{quote}
 
 %-------------------------------------------------------------------------------
 \newpage \section{Integer and floating-point types, and notation used}
@@ -1940,7 +2076,7 @@ Changing from complex or zomplex to real discards the imaginary part.
 
 \input{_malloc.tex}
 Allocates a block of memory of size {\tt n*size},
-using the {\tt Common->malloc\_memory}
+using the {\tt SuiteSparse\_config.malloc\_func}
 function pointer (default is to use the ANSI C {\tt malloc} routine).
 A value of {\tt n=0} is treated as {\tt n=1}.
 If not successful, {\tt NULL} is returned and {\tt Common->status} is set to {\tt CHOLMOD\_OUT\_OF\_MEMORY}.
@@ -1951,7 +2087,7 @@ If not successful, {\tt NULL} is returned and {\tt Common->status} is set to {\t
 
 \input{_calloc.tex}
 Allocates a block of memory of size {\tt n*size},
-using the {\tt Common->calloc\_memory}
+using the {\tt SuiteSparse\_config.calloc\_func}
 function pointer (default is to use the ANSI C {\tt calloc} routine).
 A value of {\tt n=0} is treated as {\tt n=1}.
 If not successful, {\tt NULL} is returned and {\tt Common->status} is set to {\tt CHOLMOD\_OUT\_OF\_MEMORY}.
@@ -1962,7 +2098,7 @@ If not successful, {\tt NULL} is returned and {\tt Common->status} is set to {\t
 
 \input{_free.tex}
 Frees a block of memory of size {\tt n*size},
-using the {\tt Common->free\_memory}
+using the {\tt SuiteSparse\_config.free\_func}
 function pointer (default is to use the ANSI C {\tt free} routine).
 The size of the block ({\tt n} and {\tt size}) is only required so that CHOLMOD
 can keep track of its current and peak memory usage.  This is a useful statistic,
@@ -1980,7 +2116,7 @@ have a memory leak.
 \input{_realloc.tex}
 Reallocates a block of memory whose current size {\tt n*size},
 and whose new size will be {\tt nnew*size} if successful,
-using the {\tt Common->calloc\_memory}
+using the {\tt SuiteSparse\_config.calloc\_func}
 function pointer (default is to use the ANSI C {\tt realloc} routine).
 If the reallocation is not successful, {\tt p} is returned unchanged
 and {\tt Common->status} is set to {\tt CHOLMOD\_OUT\_OF\_MEMORY}.
@@ -2022,7 +2158,7 @@ macro, so that the following code fragment works in any version of CHOLMOD:
 Note that {\tt cholmod\_version} and {\tt cholmod\_l\_version} have identical
 prototypes.  Both use {\tt int}'s.  Unlike all other CHOLMOD functions, this
 function does not take the {\tt Common} object as an input parameter, and it
-does not use any defintions from any include files.  Thus, the caller can
+does not use any definitions from any include files.  Thus, the caller can
 access this function even if the caller does not include any CHOLMOD include
 files.
 
@@ -2656,17 +2792,17 @@ workspaces ({\tt X}, {\tt Xset}, {\tt Y}, and {\tt E}) have been allocated
 by a prior call (or if allocated by the user).  To let {\tt cholmod\_solve2}
 allocate these outputs and workspaces for you, simply initialize them to
 NULL (as in the example above).  Since it is possible for this function
-to reallocate these 4 arrays, you should always reaquire the pointers to
+to reallocate these 4 arrays, you should always re-acquire the pointers to
 their internal data ({\tt X->x} for example) after calling
 {\tt cholmod\_solve2}), since they may change.  They normally will not
 change except in the first call to this function.
 
 On the first call to {\tt cholmod\_solve2} when {\tt Bset} is NULL,
 the factorization is converted from supernodal to simplicial, if needed.
-The inverse permutation is also computed and stored in the factoriation
+The inverse permutation is also computed and stored in the factorization
 object, {\tt L}.  This can take a modest amount of time.  Subsequent
 calls to {\tt cholmod\_solve2} with a small {\tt Bset}
-are very fast (both asympotically and in practice).
+are very fast (both asymptotically and in practice).
 
 You can find an example of how to use {\tt cholmod\_solve2} in the
 two demo programs, {\tt cholmod\_demo} and {\tt cholmod\_l\_demo}.
@@ -3273,8 +3409,8 @@ pattern symmetry, where 0 is a completely unsymmetric matrix, and 1 is a
 perfectly symmetric matrix.  This option is used when computing the following
 statistics for the matrices in the UF Sparse Matrix Collection.
 
-	numerical symmetry: number of matched offdiagonal nonzeros over
-	the total number of offdiagonal entries.  A real entry $a_{ij}$,  $i \ne j$,
+	numerical symmetry: number of matched off-diagonal nonzeros over
+	the total number of off-diagonal entries.  A real entry $a_{ij}$,  $i \ne j$,
 	is matched if $a_{ji} = a_{ij}$, but this is only counted if both
 	$a_{ji}$ and $a_{ij}$ are nonzero.  This does not depend on {\tt Z}.
 	(If A is complex, then the above test is modified; $a_{ij}$ is matched

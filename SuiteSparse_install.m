@@ -38,7 +38,7 @@ function SuiteSparse_install (do_demo)
 %
 % This script installs the full-featured CXSparse rather than CSparse.
 %
-% Copyright 1990-2013, Timothy A. Davis, http://www.suitesparse.com.
+% Copyright 1990-2014, Timothy A. Davis, http://www.suitesparse.com.
 % In collaboration with Patrick Amestoy, Yanqing Chen, Iain Duff, John Gilbert,
 % Steve Hadfield, William Hager, Stefan Larimore, Leslie Foster,
 % Eka Palamadai Natarajan, Esmond Ng, and Siva Rajamanickam.
@@ -135,9 +135,28 @@ catch me
     fprintf ('CAMD not installed\n') ;
 end
 
-% compile and install CXSparse and UFget
+% install UFget, unless it's already in the path
 try
-    paths = add_to_path (paths, [SuiteSparse '/CXSparse/MATLAB/UFget']) ;
+    % if this fails, then UFget is not yet installed
+    index = UFget ;
+    fprintf ('UFget already installed:\n') ;
+    which UFget
+catch
+    index = [ ] ;
+end
+if (isempty (index))
+    % UFget is not installed.  Use SuiteSparse/UFget
+    fprintf ('Installing SuiteSparse/UFget\n') ;
+    try
+        paths = add_to_path (paths, [SuiteSparse '/UFget']) ;
+    catch me
+        disp (me.message) ;
+        fprintf ('UFget not installed\n') ;
+    end
+end
+
+% compile and install CXSparse
+try
     paths = add_to_path (paths, [SuiteSparse '/CXSparse/MATLAB/Demo']) ;
     paths = add_to_path (paths, [SuiteSparse '/CXSparse/MATLAB/CSparse']) ;
     fprintf ('Compiling CXSparse:\n') ;

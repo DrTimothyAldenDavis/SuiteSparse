@@ -69,7 +69,7 @@ USER = $(UMFPACKW) $(UMFPACK)
 
 # user-callable, only one version for int/SuiteSparse_long,
 # real/complex, *.[ch] files:
-GENERIC = umfpack_timer umfpack_tictoc umfpack_global
+GENERIC = umfpack_timer umfpack_tictoc
 
 #-------------------------------------------------------------------------------
 # include files:

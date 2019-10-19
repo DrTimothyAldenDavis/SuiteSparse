@@ -54,7 +54,7 @@
  * Common->precise controls the # of digits printed for numerical entries
  * (5 if FALSE, 15 if TRUE).
  *
- * If Common->print_function is NULL, then no printing occurs.  The
+ * If SuiteSparse_config.printf_func is NULL, then no printing occurs.  The
  * cholmod_check_* and cholmod_print_* routines still check their inputs and
  * return TRUE/FALSE if the object is valid or not.
  *
@@ -81,9 +81,9 @@
 
 #define PR(i,format,arg) \
 { \
-    if (print >= i && Common->print_function != NULL) \
+    if (print >= i && SuiteSparse_config.printf_func != NULL) \
     { \
-	(Common->print_function) (format, arg) ; \
+	SuiteSparse_config.printf_func (format, arg) ; \
     } \
 }
 
@@ -248,11 +248,9 @@ static int check_common
 	    P1 ("%s", "status: ERROR, method not installed\n") ;
 	    break ;
 
-#if GPU_BLAS
 	case CHOLMOD_GPU_PROBLEM:
 	    P1 ("%s", "status: ERROR, GPU had a fatal error\n") ;
 	    break ;
-#endif
 
 	case CHOLMOD_NOT_POSDEF:
 	    P1 ("%s", "status: warning, matrix not positive definite\n") ;

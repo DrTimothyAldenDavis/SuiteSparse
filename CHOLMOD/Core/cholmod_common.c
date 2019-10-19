@@ -87,41 +87,19 @@ int CHOLMOD(start)
     /* memory management routines */
     /* ---------------------------------------------------------------------- */
 
-    /* The user can replace cholmod's memory management routines by redefining
-     * these function pointers. */
-
-#ifndef NMALLOC
-    /* stand-alone ANSI C program */
-    Common->malloc_memory  = malloc ;
-    Common->free_memory    = free ;
-    Common->realloc_memory = realloc ;
-    Common->calloc_memory  = calloc ;
-#else
-    /* no memory manager defined at compile-time; MUST define one at run-time */
-    Common->malloc_memory  = NULL ;
-    Common->free_memory    = NULL ;
-    Common->realloc_memory = NULL ;
-    Common->calloc_memory  = NULL ;
-#endif
+        /* moved to SuiteSparse_config */
 
     /* ---------------------------------------------------------------------- */
     /* complex arithmetic routines */
     /* ---------------------------------------------------------------------- */
 
-    Common->complex_divide = CHOLMOD(divcomplex) ;
-    Common->hypotenuse = CHOLMOD(hypot) ;
+        /* moved to SuiteSparse_config */
 
     /* ---------------------------------------------------------------------- */
     /* print routine */
     /* ---------------------------------------------------------------------- */
 
-#ifndef NPRINT
-    /* stand-alone ANSI C program */
-    Common->print_function = printf ;
-#else
-    /* printing disabled */
-    Common->print_function = NULL ;
-#endif
+        /* moved to SuiteSparse_config */
 
     /* ---------------------------------------------------------------------- */
     /* workspace */
@@ -174,44 +152,71 @@ int CHOLMOD(start)
     /* default SuiteSparseQR knobs and statististics */
     /* ---------------------------------------------------------------------- */
 
-    for (k = 0 ; k < 4  ; k++) Common->SPQR_xstat [k] = 0 ;
     for (k = 0 ; k < 10 ; k++) Common->SPQR_istat [k] = 0 ;
 
-    for (k = 0 ; k < 10 ; k++) Common->other1 [k] = 0 ;
-    for (k = 0 ; k < 6  ; k++) Common->other2 [k] = 0 ;
-    for (k = 0 ; k < 10 ; k++) Common->other3 [k] = 0 ;
-    for (k = 0 ; k < 16 ; k++) Common->other4 [k] = 0 ;
-    for (k = 0 ; k < 16 ; k++) Common->other5 [k] = (void *) NULL ;
+    Common->SPQR_flopcount_bound = 0 ;   /* upper bound on flop count */
+    Common->SPQR_tol_used = 0 ;          /* tolerance used */
+    Common->SPQR_norm_E_fro = 0 ;        /* Frobenius norm of dropped entries */
 
     Common->SPQR_grain = 1 ;    /* no Intel TBB multitasking, by default */
     Common->SPQR_small = 1e6 ;  /* target min task size for TBB */
     Common->SPQR_shrink = 1 ;   /* controls SPQR shrink realloc */
     Common->SPQR_nthreads = 0 ; /* 0: let TBB decide how many threads to use */
 
+    Common->SPQR_flopcount = 0 ;         /* flop count for SPQR */
+    Common->SPQR_analyze_time = 0 ;      /* analysis time for SPQR */
+    Common->SPQR_factorize_time = 0 ;    /* factorize time for SPQR */
+    Common->SPQR_solve_time = 0 ;        /* backsolve time for SPQR */
+
     /* ---------------------------------------------------------------------- */
     /* GPU initializations */
     /* ---------------------------------------------------------------------- */
 
-#ifdef GPU_BLAS
+    /* these are destroyed by cholmod_gpu_deallocate and cholmod_gpu_end */
     Common->cublasHandle = NULL ;
-    Common->cudaStreamSyrk = NULL ;
-    Common->cudaStreamGemm = NULL ;
-    Common->cudaStreamTrsm = NULL ;
-    Common->cudaStreamPotrf [0] = NULL ;
-    Common->cudaStreamPotrf [1] = NULL ;
-    Common->cudaStreamPotrf [2] = NULL ;
     Common->cublasEventPotrf [0] = NULL ;
     Common->cublasEventPotrf [1] = NULL ;
-    Common->HostPinnedMemory = NULL ;
-    Common->devPotrfWork = NULL ;
-    Common->devSyrkGemmPtrLx = NULL ;
-    Common->devSyrkGemmPtrC = NULL ;
-    Common->GemmUsed = 0 ;
-    Common->SyrkUsed = 0 ;
+    Common->cublasEventPotrf [2] = NULL ;
+    for (k = 0 ; k < CHOLMOD_HOST_SUPERNODE_BUFFERS ; k++)
+    {
+        Common->gpuStream [k] = NULL ;
+        Common->updateCBuffersFree [k] = NULL ;
+    }
+    Common->updateCKernelsComplete = NULL;
+
+    /* these are destroyed by cholmod_gpu_deallocate */
+    Common->dev_mempool = NULL;
+    Common->dev_mempool_size = 0;
+    Common->host_pinned_mempool = NULL;
+    Common->host_pinned_mempool_size = 0;
+
     Common->syrkStart = 0 ;
-#endif
+
+    Common->cholmod_cpu_gemm_time = 0 ;
+    Common->cholmod_cpu_syrk_time = 0 ;
+    Common->cholmod_cpu_trsm_time = 0 ;
+    Common->cholmod_cpu_potrf_time = 0 ;
+    Common->cholmod_gpu_gemm_time = 0 ;
+    Common->cholmod_gpu_syrk_time = 0 ;
+    Common->cholmod_gpu_trsm_time = 0 ;
+    Common->cholmod_gpu_potrf_time = 0 ;
+    Common->cholmod_assemble_time = 0 ;
+    Common->cholmod_assemble_time2 = 0 ;
+
+    Common->cholmod_cpu_gemm_calls = 0 ;
+    Common->cholmod_cpu_syrk_calls = 0 ;
+    Common->cholmod_cpu_trsm_calls = 0 ;
+    Common->cholmod_cpu_potrf_calls = 0 ;
+    Common->cholmod_gpu_gemm_calls = 0 ;
+    Common->cholmod_gpu_syrk_calls = 0 ;
+    Common->cholmod_gpu_trsm_calls = 0 ;
+    Common->cholmod_gpu_potrf_calls = 0 ;
+
+    Common->maxGpuMemBytes = 0;
+    Common->maxGpuMemFraction = 0.0;
 
     DEBUG_INIT ("cholmod start", Common) ;
+
     return (TRUE) ;
 }
 
@@ -347,6 +352,17 @@ int CHOLMOD(defaults)
 
     /* COLAMD for A*A', AMD for A */
     Common->method [8].ordering = CHOLMOD_COLAMD ;
+
+    /* ---------------------------------------------------------------------- */
+    /* GPU configuration and statistics */
+    /* ---------------------------------------------------------------------- */
+
+#ifdef DLONG
+    Common->useGPU = EMPTY ;
+#else
+    /* GPU acceleration is not supported for int version of CHOLMOD */
+    Common->useGPU = 0 ;
+#endif
 
     return (TRUE) ;
 }
@@ -561,6 +577,10 @@ int CHOLMOD(free_work)
     Common->nrow = 0 ;
     Common->iworksize = 0 ;
     Common->xworksize = 0 ;
+
+#ifdef GPU_BLAS
+    CHOLMOD(gpu_deallocate) (Common) ;
+#endif
     return (TRUE) ;
 }
 
@@ -698,4 +718,23 @@ double CHOLMOD(dbound)	/* returns modified diagonal entry of D */
 	}
     }
     return (dj) ;
+}
+
+
+/* ========================================================================== */
+/* === scorecomp ============================================================ */
+/* ========================================================================== */
+
+/* For sorting descendant supernodes with qsort */
+int CHOLMOD(score_comp) (struct cholmod_descendant_score_t *i, 
+			       struct cholmod_descendant_score_t *j)
+{
+  if ((*i).score < (*j).score)
+    {
+	return (1) ;
+    }
+    else
+    {
+	return (-1) ;
+    }
 }

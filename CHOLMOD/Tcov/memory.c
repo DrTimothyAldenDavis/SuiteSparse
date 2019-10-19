@@ -112,10 +112,12 @@ void my_free2 (void *p)
 
 void normal_memory_handler ( void )
 {
-    cm->malloc_memory = malloc ;
-    cm->calloc_memory = calloc ;
-    cm->realloc_memory = realloc ;
-    cm->free_memory = free ;
+
+    SuiteSparse_config.malloc_func = malloc ;
+    SuiteSparse_config.calloc_func = calloc ;
+    SuiteSparse_config.realloc_func = realloc ;
+    SuiteSparse_config.free_func = free ;
+
     cm->error_handler = my_handler ;
     CHOLMOD(free_work) (cm) ;
 }
@@ -127,10 +129,11 @@ void normal_memory_handler ( void )
 
 void test_memory_handler ( void )
 {
-    cm->malloc_memory = my_malloc2 ;
-    cm->calloc_memory = my_calloc2 ;
-    cm->realloc_memory = my_realloc2 ;
-    cm->free_memory = my_free2 ;
+    SuiteSparse_config.malloc_func = my_malloc2 ;
+    SuiteSparse_config.calloc_func = my_calloc2 ;
+    SuiteSparse_config.realloc_func = my_realloc2 ;
+    SuiteSparse_config.free_func = my_free2 ;
+
     cm->error_handler = NULL ;
     CHOLMOD(free_work) (cm) ;
     my_tries = 0 ;
@@ -320,7 +323,7 @@ void memory_tests (cholmod_triplet *T)
     my_tries = -1 ;
     for (trial = 0 ; my_tries <= 0 ; trial++)
     {
-	CHOLMOD(defaults) (cm) ;
+	CHOLMOD(defaults) (cm) ; cm->useGPU = 0 ;
 	cm->supernodal = CHOLMOD_SUPERNODAL ;
 	cm->metis_memory = 2.0 ;
 	cm->nmethods = 4 ;

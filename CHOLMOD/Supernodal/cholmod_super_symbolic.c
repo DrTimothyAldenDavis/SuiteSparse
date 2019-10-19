@@ -45,6 +45,9 @@
 #include "cholmod_internal.h"
 #include "cholmod_supernodal.h"
 
+#ifdef GPU_BLAS
+#include "cholmod_gpu.h"
+#endif
 
 /* ========================================================================== */
 /* === subtree ============================================================== */
@@ -150,7 +153,7 @@ static void subtree
 /* ========================================================================== */
 
 /* Analyze for supernodal Cholesky or multifrontal QR.  CHOLMOD itself always
- * analyzes for supernodal Cholesky, of course.  The "for_cholesky = TRUE"
+ * analyzes for supernodal Cholesky, of course.  The "for_cholesky = FALSE"
  * option is used by SuiteSparseQR only. */
 
 int CHOLMOD(super_symbolic2)
@@ -177,6 +180,11 @@ int CHOLMOD(super_symbolic2)
 	merge, snext, esize, maxesize, nrelax0, nrelax1, nrelax2, Asorted ;
     size_t w ;
     int ok = TRUE ;
+    const char* env_use_gpu;
+    const char* env_max_bytes;
+    size_t max_bytes;
+    const char* env_max_fraction;
+    double max_fraction;
 
     /* ---------------------------------------------------------------------- */
     /* check inputs */
@@ -229,6 +237,91 @@ int CHOLMOD(super_symbolic2)
 	return (FALSE) ;
     }
     ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
+
+    /* ---------------------------------------------------------------------- */
+    /* allocate GPU workspace */
+    /* ---------------------------------------------------------------------- */
+
+#ifdef GPU_BLAS
+
+    /* GPU module is installed */
+    if ( for_cholesky ) {         /* only allocate GPU workspace for Cholesky */
+
+        max_bytes = 0;
+        max_fraction = 0;
+
+#ifdef DLONG
+        if ( Common->useGPU == EMPTY )
+        {
+            /* useGPU not explicity requested by the user, but not explicitly
+             * prohibited either.  Query OS environment variables for request.*/
+            env_use_gpu  = getenv("CHOLMOD_USE_GPU");
+
+            if ( env_use_gpu )
+            {
+                /* CHOLMOD_USE_GPU environment variable is set to something */
+                if ( atoi ( env_use_gpu ) == 0 )
+                {
+                    Common->useGPU = 0; /* don't use the gpu */
+                }
+                else
+                {
+                    Common->useGPU = 1; /* use the gpu */
+                    env_max_bytes = getenv("CHOLMOD_GPU_MEM_BYTES");
+                    env_max_fraction = getenv("CHOLMOD_GPU_MEM_FRACTION");
+                    if ( env_max_bytes )
+                    {
+                        max_bytes = atol(env_max_bytes);
+                        Common->maxGpuMemBytes = max_bytes;
+                    }
+                    if ( env_max_fraction )
+                    {
+                        max_fraction = atof (env_max_fraction);
+                        if ( max_fraction < 0 ) max_fraction = 0;
+                        if ( max_fraction > 1 ) max_fraction = 1;
+                        Common->maxGpuMemFraction = max_fraction;
+                    }	  
+                }
+            }
+            else
+            {
+                /* CHOLMOD_USE_GPU environment variable not set, so no GPU
+                 * acceleration will be used */
+                Common->useGPU = 0;
+            }
+            /* fprintf (stderr, "useGPU queried: %d\n", Common->useGPU) ; */
+        }
+
+        /* Ensure that a GPU is present */
+        if ( Common->useGPU == 1 )
+        {
+            /* fprintf (stderr, "\nprobe GPU:\n") ; */
+            Common->useGPU = CHOLMOD(gpu_probe) (Common); 
+            /* fprintf (stderr, "\nprobe GPU: result %d\n", Common->useGPU) ; */
+        }
+
+        if ( Common->useGPU == 1 )
+        {
+            /* Cholesky + GPU, so allocate space */
+            /* fprintf (stderr, "allocate GPU:\n") ; */
+            CHOLMOD(gpu_allocate) ( Common );
+            /* fprintf (stderr, "allocate GPU done\n") ; */
+        }
+#else
+        /* GPU acceleration is only supported for long int version */
+        Common->useGPU = 0;
+#endif
+    }
+
+    /* Cache the fact that the symbolic factorization supports 
+     * GPU acceleration */
+    L->useGPU = Common->useGPU;
+
+#else
+    /* GPU module is not installed */
+    Common->useGPU = 0 ;
+    L->useGPU = 0 ;
+#endif
 
     /* ---------------------------------------------------------------------- */
     /* get inputs */
@@ -322,7 +415,16 @@ int CHOLMOD(super_symbolic2)
 	/* check if j starts new supernode, or in the same supernode as j-1 */
 	if (Parent [j-1] != j	    /* parent of j-1 is not j */
 	    || (ColCount [j-1] != ColCount [j] + 1) /* j-1 not subset of j*/
-	    || Wi [j] > 1)	    /* j has more than one child */
+	    || Wi [j] > 1	    /* j has more than one child */
+#ifdef GPU_BLAS
+	    /* Ensure that the supernode will fit in the GPU buffers */
+	    /* Data size of 16 bytes must be assumed for case of PATTERN */
+	    || (for_cholesky && L->useGPU && 
+		 (j-Super[nfsuper-1]+1) * 
+		 ColCount[Super[nfsuper-1]] * sizeof(double) * 2 >= 
+		 Common->devBuffSize)
+#endif
+	    )
 	{
 	    /* j is the leading node of a supernode */
 	    Super [nfsuper++] = j ;
@@ -417,6 +519,7 @@ int CHOLMOD(super_symbolic2)
 	PRINT2 (("ns "ID" nscol0 "ID" nscol1 "ID"\n", ns, nscol0, nscol1)) ;
 
 	totzeros = Zeros [s+1] ;	/* current # of zeros in s+1 */
+	double lnz1 = Snz [s+1] ;	/* # entries in leading column of s+1 */
 
 	/* determine if supernodes s and s+1 should merge */
 	if (ns <= nrelax0)
@@ -428,7 +531,6 @@ int CHOLMOD(super_symbolic2)
 	{
 	    /* use double to avoid integer overflow */
 	    double lnz0 = Snz [s] ;	/* # entries in leading column of s */
-	    double lnz1 = Snz [s+1] ;	/* # entries in leading column of s+1 */
 	    double xnewzeros = nscol0 * (lnz1 + nscol0 - lnz0) ;
 
 	    /* use Int for the final update of Zeros [s] below */
@@ -471,6 +573,18 @@ int CHOLMOD(super_symbolic2)
 
 	    }
 	}
+
+#ifdef GPU_BLAS
+	if ( for_cholesky && L->useGPU ) {
+	  /* Ensure that the aggregated supernode fits in the device 
+	     supernode buffers */
+	  double xns = (double) ns;
+	  if ( ((xns * xns) + xns * (lnz1 - nscol1))*sizeof(double)*2  >= 
+	       Common->devBuffSize ) {
+	    merge = FALSE;
+	  }
+	}
+#endif
 
 	if (merge)
 	{

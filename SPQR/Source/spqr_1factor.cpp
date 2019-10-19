@@ -107,7 +107,7 @@ template <typename Entry> SuiteSparseQR_factorization <Entry> *spqr_1factor
     Entry *Yx, *R1x, *Ax ;
     Long noY, anz, a2nz, r1nz, ynz, i, j, k, p, p2, bnz, py, n1rows,
         n1cols, n2, Bsparse, d, iold, inew, m, n ;
-    cholmod_sparse *Y ;
+    cholmod_sparse *Y = NULL ;
 
     double t0 = SuiteSparse_time ( ) ;
     double t1, t2 ;
@@ -145,7 +145,6 @@ template <typename Entry> SuiteSparseQR_factorization <Entry> *spqr_1factor
 
     QR->narows = m ;
     QR->nacols = n ;
-    QR->bncols = bncols ;
     QR->n1rows = 0 ;
     QR->n1cols = 0 ;
 
@@ -159,6 +158,8 @@ template <typename Entry> SuiteSparseQR_factorization <Entry> *spqr_1factor
         // B is not present; force bncols to be zero
         bncols = 0 ;
     }
+
+    QR->bncols = bncols ;
 
     // -------------------------------------------------------------------------
     // find the default tol, if requested
@@ -246,11 +247,13 @@ template <typename Entry> SuiteSparseQR_factorization <Entry> *spqr_1factor
     {
 
         // A will be factorized instead of Y.  There is no B.  C or X can exist
-        // as empty matrices with rows but no columns
+        // as empty matrices with rows but no columns.
+        // There are no singletons.
         ASSERT (Yp == NULL) ;
         ASSERT (R1p == NULL) ;
         ASSERT (P1inv == NULL) ;
         ASSERT (n1rows == 0) ;
+        ASSERT (n1cols == 0) ;
         ASSERT (a2nz == Ap [n]) ;
         ASSERT (bncols == 0) ;
 
@@ -654,6 +657,10 @@ template <typename Entry> SuiteSparseQR_factorization <Entry> *spqr_1factor
         return (NULL) ;
     }
 
+    // singletons do not take part in the symbolic analysis, and any columns
+    // of B are tacked on and do take part.
+    ASSERT (QRsym->n == n - n1cols + bncols) ;
+
     cc->SPQR_istat [0] += r1nz ;       // nnz (R)
 
     // rank estimate of A, including singletons but excluding the columns of
@@ -669,6 +676,7 @@ template <typename Entry> SuiteSparseQR_factorization <Entry> *spqr_1factor
 
     ASSERT ((n1cols == 0) == (P1inv == NULL)) ;
     ASSERT (IMPLIES (n1cols == 0, n1rows == 0)) ;
+    ASSERT (n1cols >= n1rows) ;
 
     if (keepH && n1cols > 0)
     {
@@ -731,11 +739,11 @@ template <typename Entry> SuiteSparseQR_factorization <Entry> *spqr_1factor
     cc->SPQR_istat [4] = QR->rank ;         // estimated rank of A
     cc->SPQR_istat [5] = n1cols ;           // number of columns singletons
     cc->SPQR_istat [6] = n1rows ;           // number of singleton rows
-    cc->SPQR_xstat [1] = tol ;              // tol used
+    cc->SPQR_tol_used = tol ;               // tol used
 
     t2 = SuiteSparse_time ( ) ;
-    cc->other1 [1] = t1 - t0 ;  // analyze time, including singletons
-    cc->other1 [2] = t2 - t1 ;  // factorize time
+    cc->SPQR_analyze_time = t1 - t0 ;   // analyze time, including singletons
+    cc->SPQR_factorize_time = t2 - t1 ; // factorize time
 
     return (QR) ;
 }

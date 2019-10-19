@@ -130,7 +130,14 @@ cdemo: qrdemoc
 $(METIS):
 	( cd $(METIS_PATH) && $(MAKE) )
 
-library: $(CLIB)
+library:
+	( cd ../Lib ; $(MAKE) )
+	( cd ../../AMD ; $(MAKE) library )
+	( cd ../../SuiteSparse_config ; $(MAKE) library )
+	- ( cd ../../CHOLMOD && $(MAKE) library )
+	- ( cd ../../COLAMD && $(MAKE) library )
+	- ( cd ../../CCOLAMD && $(MAKE) library )
+	- ( cd ../../CAMD && $(MAKE) library )
 
 purge: distclean
 

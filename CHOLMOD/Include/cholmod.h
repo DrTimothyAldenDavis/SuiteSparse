@@ -118,6 +118,10 @@ extern "C" {
 #include "cholmod_supernodal.h"
 #endif
 
+#ifdef GPU_BLAS
+#include "cholmod_gpu.h"
+#endif
+
 #ifdef __cplusplus
 }
 #endif

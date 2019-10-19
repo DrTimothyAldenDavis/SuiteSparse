@@ -150,6 +150,10 @@ if (create_new)
     UF_Index.ncc = nothing ;
     UF_Index.isND = nothing ;
     UF_Index.isGraph = nothing ;
+    UF_Index.lowerbandwidth = nothing ;
+    UF_Index.upperbandwidth = nothing ;
+    UF_Index.rcm_lowerbandwidth = nothing ;
+    UF_Index.rcm_upperbandwidth = nothing ;
 
 else
 
@@ -185,6 +189,10 @@ else
             UF_Index.ncc        = [UF_Index.ncc nothing] ;
             UF_Index.isND       = [UF_Index.isND nothing] ;
             UF_Index.isGraph    = [UF_Index.isGraph nothing] ;
+            UF_Index.lowerbandwidth     = [UF_Index.lowerbandwidth nothing ;
+            UF_Index.upperbandwidth     = [UF_Index.upperbandwidth nothing ;
+            UF_Index.rcm_lowerbandwidth = [UF_Index.rcm_upperbandwidth nothing ;
+            UF_Index.rcm_upperbandwidth = [UF_Index.rcm_upperbandwidth nothing ;
         end
     end
 end
@@ -350,6 +358,10 @@ for k = 1:length (matrixlist)
     UF_Index.ncc (id) = stats.ncc ;
     UF_Index.isND (id) = stats.isND ;
     UF_Index.isGraph (id) = stats.isGraph ;
+    UF_Index.lowerbandwidth (id) = stats.lowerbandwidth ;
+    UF_Index.upperbandwidth (id) = stats.upperbandwidth ;
+    UF_Index.rcm_lowerbandwidth (id) = stats.rcm_lowerbandwidth ;
+    UF_Index.rcm_upperbandwidth (id) = stats.rcm_upperbandwidth ;
 
     %---------------------------------------------------------------------------
     % clear the problem and save the index and UFstats.csv

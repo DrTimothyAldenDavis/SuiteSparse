@@ -171,7 +171,7 @@ template <typename Entry> void spqr_happly
         // apply in forward direction
         // ---------------------------------------------------------------------
 
-        PR (("\nHAPPLY Forward, method %ld\n", method)) ;
+        PR (("\nHAPPLY Forward, method %d\n", method)) ;
 
         for (h1 = 0 ; h1 < nh ; h1 = h2)
         {
@@ -261,7 +261,7 @@ template <typename Entry> void spqr_happly
         // apply in backward direction
         // ---------------------------------------------------------------------
 
-        PR (("\nHAPPLY Backward, method %ld\n", method)) ;
+        PR (("\nHAPPLY Backward, method %d\n", method)) ;
 
         for (h2 = nh ; h2 > 0 ; h2 = h1)
         {

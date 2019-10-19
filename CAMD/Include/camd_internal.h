@@ -11,20 +11,6 @@
 /* This file is for internal use in CAMD itself, and does not normally need to
  * be included in user code (it is included in UMFPACK, however).   All others
  * should use camd.h instead.
- *
- * The following compile-time definitions affect how CAMD is compiled.
- *
- *      -DNPRINT
- *
- *          Disable all printing.  stdio.h will not be included.  Printing can
- *          be re-enabled at run-time by setting the global pointer camd_printf
- *          to printf (or mexPrintf for a MATLAB mexFunction).
- *
- *      -DNMALLOC
- *
- *          No memory manager is defined at compile-time.  You MUST define the
- *          function pointers camd_malloc, camd_free, camd_realloc, and
- *          camd_calloc at run-time for CAMD to work properly.
  */
 
 /* ========================================================================= */
@@ -214,13 +200,6 @@
 
 #endif
 
-/* ========================================================================= */
-/* === PRINTF macro ======================================================== */
-/* ========================================================================= */
-
-/* All output goes through the PRINTF macro.  */
-#define PRINTF(params) { if (camd_printf != NULL) (void) camd_printf params ; }
-
 /* ------------------------------------------------------------------------- */
 /* CAMD routine definitions (not user-callable) */
 /* ------------------------------------------------------------------------- */
@@ -315,11 +294,15 @@ GLOBAL void CAMD_dump
 #define ASSERT(expression) (assert (expression))
 #endif
 
-#define CAMD_DEBUG0(params) { PRINTF (params) ; }
-#define CAMD_DEBUG1(params) { if (CAMD_debug >= 1) PRINTF (params) ; }
-#define CAMD_DEBUG2(params) { if (CAMD_debug >= 2) PRINTF (params) ; }
-#define CAMD_DEBUG3(params) { if (CAMD_debug >= 3) PRINTF (params) ; }
-#define CAMD_DEBUG4(params) { if (CAMD_debug >= 4) PRINTF (params) ; }
+#define CAMD_DEBUG0(params) { SUITESPARSE_PRINTF (params) ; }
+#define CAMD_DEBUG1(params) \
+    { if (CAMD_debug >= 1) SUITESPARSE_PRINTF (params) ; }
+#define CAMD_DEBUG2(params) \
+    { if (CAMD_debug >= 2) SUITESPARSE_PRINTF (params) ; }
+#define CAMD_DEBUG3(params) \
+    { if (CAMD_debug >= 3) SUITESPARSE_PRINTF (params) ; }
+#define CAMD_DEBUG4(params) \
+    { if (CAMD_debug >= 4) SUITESPARSE_PRINTF (params) ; }
 
 #else
 

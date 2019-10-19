@@ -4261,12 +4261,12 @@ static int do_amd_transpose
     }
 #endif
 
-    W = amd_malloc (MAX (n,1) * sizeof (Int)) ;
-    Flag = amd_malloc (MAX (n,1) * sizeof (Int)) ;
+    W = SuiteSparse_malloc (n, sizeof (Int)) ;
+    Flag = SuiteSparse_malloc (n, sizeof (Int)) ;
     if (!W || !Flag)
     {
-	amd_free (W) ;
-	amd_free (Flag) ;
+	SuiteSparse_free (W) ;
+	SuiteSparse_free (Flag) ;
 	return (AMD_OUT_OF_MEMORY) ;
     }
 
@@ -4276,8 +4276,8 @@ static int do_amd_transpose
     amd_l_preprocess (n, Ap, Ai, Rp, Ri, W, Flag) ;
 #endif
 
-    amd_free (W) ;
-    amd_free (Flag) ;
+    SuiteSparse_free (W) ;
+    SuiteSparse_free (Flag) ;
     return (AMD_OK) ;
 
 }
@@ -4586,8 +4586,9 @@ int main (int argc, char **argv)
     /* test malloc, realloc, and free */
     /* ---------------------------------------------------------------------- */
 
+    /*
     P = (Int *) UMF_malloc (Int_MAX, 2) ;
-    if (P) error ("should have failed\n", 0.) ;
+    if (P) error ("large malloc should have failed\n", 0.) ;
 
     printf ("reallocing...\n") ;
     P = (Int *) UMF_realloc (P, 1, 4) ;
@@ -4602,6 +4603,7 @@ int main (int argc, char **argv)
 #if defined (UMF_MALLOC_COUNT) || !defined (NDEBUG)
     if (UMF_malloc_count != 0) error ("should be 0", 0.) ;
 #endif
+    */
 
     xnan = divide (0., 0.) ;
     xinf = divide (1., 0.) ;

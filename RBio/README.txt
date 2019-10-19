@@ -1,4 +1,4 @@
-RBio: Copyright 2011, Timothy A. Davis, http://www.suitesparse.com
+RBio: Copyright 2013, Timothy A. Davis, http://www.suitesparse.com
 A MATLAB Toolbox for reading/writing sparse matrices in Rutherford/Boeing
 format.
 

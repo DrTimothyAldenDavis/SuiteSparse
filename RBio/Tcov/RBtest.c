@@ -2,7 +2,7 @@
 /* === RBio/Tcov/RBtest.c: C test =========================================== */
 /* ========================================================================== */
 
-/* Copyright 2009, Timothy A. Davis, All Rights Reserved.
+/* Copyright 2009-2013, Timothy A. Davis, All Rights Reserved.
    Refer to RBio/Doc/license.txt for the RBio license. */
 
 #include "RBio.h"
@@ -21,15 +21,14 @@ int main (int argc, char **argv)
     int ok ;
     char title [73], key [9], mtype [4], mtype2 [4], *filename, s [100], *As ;
 
-    SuiteSparse_config config ;
-    config.malloc_memory = malloc ;
-    config.free_memory = free ;
+    /* initialize the memory allocation functions */
+    SuiteSparse_start ( ) ;
 
     /* test arg-handling for RB functions */
 
     status = RBread (NULL, 0, 0, NULL, NULL, NULL,
         NULL, NULL, NULL, NULL, NULL, NULL,
-        NULL, NULL, NULL, NULL, NULL, NULL, NULL) ;
+        NULL, NULL, NULL, NULL, NULL, NULL) ;
     if (status != RBIO_ARG_ERROR)
     {
         printf ("RBtest failure (1)!\n") ;
@@ -37,7 +36,7 @@ int main (int argc, char **argv)
     }
 
     status = RBreadraw (NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-        NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ;
+        NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) ;
     if (status != RBIO_ARG_ERROR)
     {
         printf ("RBtest failure (2)\n") ;
@@ -46,7 +45,7 @@ int main (int argc, char **argv)
 
     status = RBread ("no file", build_upper, zero_handling, title, key, mtype,
         &nrow, &ncol, &mkind, &skind, &asize, &znz,
-        &Ap, &Ai, &Ax, &Az, &Zp, &Zi, &config) ;
+        &Ap, &Ai, &Ax, &Az, &Zp, &Zi) ;
     if (status != RBIO_FILE_IOERROR)
     {
         printf ("RBtest failure (3)\n") ;
@@ -54,7 +53,7 @@ int main (int argc, char **argv)
     }
 
     status = RBreadraw ("no file", title, key, mtype, &nrow, &ncol, &nnz,
-        &nelnz, &mkind, &skind, &fem, &xsize, &Ap, &Ai, &Ax, NULL) ;
+        &nelnz, &mkind, &skind, &fem, &xsize, &Ap, &Ai, &Ax) ;
     if (status != RBIO_FILE_IOERROR)
     {
         printf ("RBtest failure (4)\n") ;
@@ -62,7 +61,7 @@ int main (int argc, char **argv)
     }
 
     status = RBwrite (NULL, NULL, NULL, 1, 1, NULL, NULL, NULL, NULL,
-        NULL, NULL, 0, NULL, NULL) ;
+        NULL, NULL, 0, NULL) ;
     if (status != RBIO_ARG_ERROR)
     {
         printf ("RBtest failure (5)\n") ;
@@ -70,7 +69,7 @@ int main (int argc, char **argv)
     }
 
     status = RBkind (1, 1, NULL, NULL, NULL, NULL, 0, NULL, NULL,
-        NULL, NULL, NULL, NULL, NULL) ;
+        NULL, NULL, NULL, NULL) ;
     if (status != RBIO_ARG_ERROR)
     {
         printf ("RBtest failure (6)\n") ;
@@ -79,14 +78,14 @@ int main (int argc, char **argv)
 
     status = RBread ("matrices/m4.rb", 1, 2, title, key, mtype,
         &nrow, &ncol, &mkind, &skind, &asize, &znz,
-        &Ap, &Ai, &Ax, NULL, &Zp, &Zi, &config) ;
+        &Ap, &Ai, &Ax, NULL, &Zp, &Zi) ;
     if (status != 0)
     {
-        SuiteSparse_free (Ap, &config) ;
-        SuiteSparse_free (Ai, &config) ;
-        SuiteSparse_free (Ax, &config) ;
-        SuiteSparse_free (Zp, &config) ;
-        SuiteSparse_free (Zi, &config) ;
+        SuiteSparse_free (Ap) ;
+        SuiteSparse_free (Ai) ;
+        SuiteSparse_free (Ax) ;
+        SuiteSparse_free (Zp) ;
+        SuiteSparse_free (Zi) ;
         printf ("RBread test failure (7) "ID"\n", status) ;
         return (1) ;
     }
@@ -94,7 +93,7 @@ int main (int argc, char **argv)
     /* mangle the matrix */
     Ap [0] = 1 ;
     status = RBwrite ("temp.rb", title, key, nrow, ncol, Ap, Ai, Ax,
-        NULL, Zp, Zi, mkind, mtype2, NULL) ;
+        NULL, Zp, Zi, mkind, mtype2) ;
     if (status == RBIO_OK)
     {
         printf ("RBtest failure (8)\n") ;
@@ -104,7 +103,7 @@ int main (int argc, char **argv)
     Ap [0] = 0 ;
     Zp [0] = 1 ;
     status = RBwrite ("temp.rb", title, key, nrow, ncol, Ap, Ai, Ax,
-        NULL, Zp, Zi, mkind, mtype2, NULL) ;
+        NULL, Zp, Zi, mkind, mtype2) ;
     if (status == RBIO_OK)
     {
         printf ("RBtest failure (9)\n") ;
@@ -114,7 +113,7 @@ int main (int argc, char **argv)
 
     /* valid matrix */
     status = RBwrite ("temp.rb", title, key, nrow, ncol, Ap, Ai, Ax,
-        NULL, Zp, Zi, mkind, NULL, NULL) ;
+        NULL, Zp, Zi, mkind, NULL) ;
     if (status != RBIO_OK)
     {
         printf ("RBtest failure (10) "ID"\n", status) ;
@@ -127,7 +126,7 @@ int main (int argc, char **argv)
     {
         sprintf (s, "temp_" ID ".rb", kk) ;    
         status = RBwrite (s, title, key, nrow, ncol, Ap, Ai, Ax,
-            NULL, Zp, Zi, mkind, NULL, NULL) ;
+            NULL, Zp, Zi, mkind, NULL) ;
         if (status != RBIO_OK)
         {
             printf ("RBtest failure (11) "ID" "ID"\n", status, kk) ;
@@ -139,7 +138,7 @@ int main (int argc, char **argv)
     /* valid matrix, but with a very large integer */
     Ax [0] = 1e9 + 1 ;
     status = RBwrite ("temp1.rb", title, key, nrow, ncol, Ap, Ai, Ax,
-        NULL, Zp, Zi, mkind, NULL, NULL) ;
+        NULL, Zp, Zi, mkind, NULL) ;
     if (status != RBIO_OK)
     {
         printf ("RBtest failure (12) "ID"\n", status) ;
@@ -149,7 +148,7 @@ int main (int argc, char **argv)
     /* valid matrix, but with a very large real */
     Ax [0] = 1e100 ;
     status = RBwrite ("temp2.rb", title, key, nrow, ncol, Ap, Ai, Ax,
-        NULL, Zp, Zi, mkind, NULL, NULL) ;
+        NULL, Zp, Zi, mkind, NULL) ;
     if (status != RBIO_OK)
     {
         printf ("RBtest failure (13) "ID"\n", status) ;
@@ -160,7 +159,7 @@ int main (int argc, char **argv)
     Ax [0] = 1 ;
     Zi [0] = 1 ;
     status = RBwrite ("temp3.rb", title, key, nrow, ncol, Ap, Ai, Ax,
-        NULL, Zp, Zi, mkind, NULL, NULL) ;
+        NULL, Zp, Zi, mkind, NULL) ;
     if (status != RBIO_OK)
     {
         printf ("RBtest failure (14) "ID"\n", status) ;
@@ -169,7 +168,7 @@ int main (int argc, char **argv)
 
     /* invalid file name */
     status = RBwrite ("gunk/gunk.rb", title, key, nrow, ncol, Ap, Ai, Ax,
-        NULL, Zp, Zi, mkind, NULL, NULL) ;
+        NULL, Zp, Zi, mkind, NULL) ;
     if (status != RBIO_FILE_IOERROR)
     {
         printf ("RBtest failure (12) "ID"\n", status) ;
@@ -183,30 +182,30 @@ int main (int argc, char **argv)
         Zp [j] = 0 ; 
     }
     status = RBwrite ("temp.rb", title, key, nrow, ncol, Ap, Ai, Ax,
-        NULL, Zp, Zi, mkind, NULL, NULL) ;
+        NULL, Zp, Zi, mkind, NULL) ;
     if (status != RBIO_DIM_INVALID)
     {
         printf ("RBtest failure (13) "ID"\n", status) ;
         return (1) ;
     }
 
-    SuiteSparse_free (Ap, &config) ;
-    SuiteSparse_free (Ai, &config) ;
-    SuiteSparse_free (Ax, &config) ;
-    SuiteSparse_free (Zp, &config) ;
-    SuiteSparse_free (Zi, &config) ;
+    SuiteSparse_free (Ap) ;
+    SuiteSparse_free (Ai) ;
+    SuiteSparse_free (Ax) ;
+    SuiteSparse_free (Zp) ;
+    SuiteSparse_free (Zi) ;
 
     /* re-read a valid matrix */
     status = RBread ("matrices/m4.rb", 1, 0, title, key, mtype,
         &nrow, &ncol, &mkind, &skind, &asize, &znz,
-        &Ap, &Ai, &Ax, NULL, NULL, NULL, &config) ;
+        &Ap, &Ai, &Ax, NULL, NULL, NULL) ;
     if (status != 0)
     {
-        SuiteSparse_free (Ap, &config) ;
-        SuiteSparse_free (Ai, &config) ;
-        SuiteSparse_free (Ax, &config) ;
-        SuiteSparse_free (Zp, &config) ;
-        SuiteSparse_free (Zi, &config) ;
+        SuiteSparse_free (Ap) ;
+        SuiteSparse_free (Ai) ;
+        SuiteSparse_free (Ax) ;
+        SuiteSparse_free (Zp) ;
+        SuiteSparse_free (Zi) ;
         printf ("RBread test failure (14) "ID"\n", status) ;
         return (1) ;
     }
@@ -270,7 +269,7 @@ int main (int argc, char **argv)
     Ai [1] = i ;
 
     ok = 1 ;
-    As = (char *) SuiteSparse_malloc (asize, sizeof (char), &ok, &config) ;
+    As = (char *) SuiteSparse_malloc (asize, sizeof (char)) ;
     for (i = 0 ; i < asize ; i++) As [i] = 1 ;
     status = RBok (nrow, ncol, asize, Ap, Ai, Ax, Az, As, 1,
         &njumbled, &nzeros) ;
@@ -278,8 +277,9 @@ int main (int argc, char **argv)
     {
         printf ("RBread test failure (22) "ID"\n", status) ;
     }
-    SuiteSparse_free (As, &config) ;
+    SuiteSparse_free (As) ;
 
     printf ("RBtest OK\n") ;
+    SuiteSparse_finish ( ) ;
     return (0) ;
 }

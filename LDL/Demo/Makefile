@@ -12,7 +12,10 @@ C = $(CC) $(CF) $(I)
 
 all: ldlsimple ldllsimple ldlmain ldllmain ldlamd ldllamd
 
+LIB2 = ../../SuiteSparse_config/libsuitesparseconfig.a $(LIB)
+
 library:
+	( cd ../../SuiteSparse_config ; $(MAKE) library )
 	( cd ../../AMD ; $(MAKE) library )
 	( cd ../Lib ; $(MAKE) )
 
@@ -21,34 +24,34 @@ library:
 #-------------------------------------------------------------------------------
 
 ldlmain:  ldlmain.c library
-	$(C) ldlmain.c ../Lib/libldl.a -o ldlmain -lm
+	$(C) ldlmain.c ../Lib/libldl.a -o ldlmain $(LIB2)
 	- ./ldlmain > my_ldlmain.out
 	- diff ldlmain.out my_ldlmain.out
 
 ldllmain:  ldlmain.c library
-	$(C) -DLDL_LONG ldlmain.c ../Lib/libldl.a -o ldllmain -lm
+	$(C) -DLDL_LONG ldlmain.c ../Lib/libldl.a -o ldllmain $(LIB2)
 	- ./ldllmain > my_ldllmain.out
 	- diff ldlmain.out my_ldllmain.out
 
 ldlsimple:  ldlsimple.c library
-	$(C) ldlsimple.c ../Lib/libldl.a -o ldlsimple -lm
+	$(C) ldlsimple.c ../Lib/libldl.a -o ldlsimple $(LIB2)
 	- ./ldlsimple > my_ldlsimple.out
 	- diff ldlsimple.out my_ldlsimple.out
 
 ldllsimple:  ldlsimple.c library
-	$(C) $(I) -DLDL_LONG ldlsimple.c ../Lib/libldl.a -o ldllsimple -lm
+	$(C) $(I) -DLDL_LONG ldlsimple.c ../Lib/libldl.a -o ldllsimple $(LIB2)
 	- ./ldllsimple > my_ldllsimple.out
 	- diff ldlsimple.out my_ldllsimple.out
 
 ldlamd:  ldlmain.c library
 	- $(C) -I../../AMD/Include -DUSE_AMD \
-		ldlmain.c ../../AMD/Lib/libamd.a ../Lib/libldl.a -o ldlamd -lm
+		ldlmain.c ../../AMD/Lib/libamd.a ../Lib/libldl.a -o ldlamd $(LIB2)
 	- ./ldlamd > my_ldlamd.out
 	- diff ldlamd.out my_ldlamd.out
 
 ldllamd:  ldlmain.c library
 	- $(C) -DLDL_LONG $(I) -I../../AMD/Include -DUSE_AMD \
-		ldlmain.c ../../AMD/Lib/libamd.a ../Lib/libldl.a -o ldllamd -lm
+		ldlmain.c ../../AMD/Lib/libamd.a ../Lib/libldl.a -o ldllamd $(LIB2)
 	- ./ldllamd > my_ldllamd.out
 	- diff ldllamd.out my_ldllamd.out
 

@@ -24,8 +24,7 @@ Long spqr_fsize     // returns # of rows of F
     Long *Stair             // size fn
 )
 {
-    Long col1, col2, p1, p2, fp, fn, fm, col, p, j, c, pc, cm, ci, t, fpc, fnc,
-        cn ;
+    Long col1, col2, p1, p2, fp, fn, fm, col, p, j, c, pc, cm, ci, t, fpc ;
 
     // -------------------------------------------------------------------------
     // get the front F
@@ -84,13 +83,13 @@ Long spqr_fsize     // returns # of rows of F
         PR (("child %ld\n", c)) ;
         pc = Rp [c] ;                   // get the pattern of child R
         cm = Cm [c] ;                   // # of rows in child C
-        fnc = Rp [c+1] - pc ;           // total # cols in child F
+        // fnc = (Rp [c+1] - pc) ;      // total # cols in child F
         fpc = Super [c+1] - Super [c] ; // # of pivot cols in child
-        cn = fnc - fpc ;                // # of cols in child C
-        ASSERT (cm >= 0 && cm <= cn) ;
+        // cn = (fnc - fpc) ;           // # of cols in child C
+        // ASSERT (cm >= 0 && cm <= cn) ;
         pc += fpc ;                     // pointer to column indices in C
-        ASSERT (pc + cn == Rp [c+1]) ;
-        PR (("  cm %ld cn %ld\n", cm, cn)) ;
+        // ASSERT (pc + cn == Rp [c+1]) ;
+        // PR (("  cm %ld cn %ld\n", cm, cn)) ;
 
         // add the child rows to the staircase
         for (ci = 0 ; ci < cm ; ci++)

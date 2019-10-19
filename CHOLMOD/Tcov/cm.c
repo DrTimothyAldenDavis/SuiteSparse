@@ -1336,7 +1336,7 @@ double do_matrix (cholmod_sparse *A)
 	    /* -------------------------------------------------------------- */
 
 	    OK (CHOLMOD(print_common) ("cm", cm)) ;
-	    CHOLMOD(defaults) (cm) ;
+	    CHOLMOD(defaults) (cm) ; cm->useGPU = 0 ;
 	}
     }
 
@@ -1365,10 +1365,14 @@ int main (int argc, char **argv)
     char *s ;
     double err = 0, maxerr = 0 ;
     Int n = 0, nmin = 0, nrow = 0, ncol = 0, save ;
-    int singular, do_memory, i, do_nantests ;
-    double v = CHOLMOD_VERSION ;
+    int singular, do_memory, i, do_nantests, ok ;
+    double v = CHOLMOD_VERSION, tic [2], t ;
     int version [3] ;
+    char *p ;
+    const char* env_use_gpu;
 
+    SuiteSparse_start ( ) ;
+    SuiteSparse_tic (tic) ;
     printf ("Testing CHOLMOD (%g): %d ", v, CHOLMOD(version) (version)) ;
     printf ("(%d.%d.%d)\n", version [0], version [1], version [2]) ;
     v = SUITESPARSE_VERSION ;
@@ -1376,6 +1380,30 @@ int main (int argc, char **argv)
     printf ("(%d.%d.%d)\n", version [0], version [1], version [2]) ;
     printf ("%s: argc: %d\n", argv [0], argc) ;
     my_srand (42) ;						/* RAND */
+
+    /* Ignore floating point exceptions.  Infs and NaNs are generated
+       on purpose. */
+    signal (SIGFPE, SIG_IGN) ;
+
+    /* query the CHOLMOD_USE_GPU environment variable */
+    env_use_gpu = getenv ("CHOLMOD_USE_GPU") ;
+    if ( env_use_gpu )
+    {
+        /* CHOLMOD_USE_GPU environment variable is set to something */
+        if ( atoi ( env_use_gpu ) == 0 )
+        {
+            printf ("CHOLMOD_USE_GPU 0\n") ;
+        }
+        else
+        {
+            printf ("CHOLMOD_USE_GPU 1 (ignored for this test)\n") ;
+        }
+    }
+    else
+    {
+        printf ("CHOLMOD_USE_GPU not present\n") ;
+    }
+
     fflush (stdout) ;
 
     singular = FALSE ;
@@ -1392,11 +1420,39 @@ int main (int argc, char **argv)
     printf ("do_memory: %d singular: %d\n", do_memory, singular) ;
 
     /* ---------------------------------------------------------------------- */
+    /* test SuiteSparse malloc functions */
+    /* ---------------------------------------------------------------------- */
+
+    p = SuiteSparse_malloc (0, 0) ;
+    OKP (p) ;
+    p [0] = 'a' ;
+    SuiteSparse_free (p) ;
+    p = SuiteSparse_calloc (0, 0) ;
+    OKP (p) ;
+    p [0] = 'a' ;
+    p = SuiteSparse_realloc (0, 0, 0, p, &ok) ;
+    OK (ok) ;
+    OKP (p) ;
+    p [0] = 'a' ;
+    SuiteSparse_free (p) ;
+    p = SuiteSparse_malloc (SuiteSparse_long_max, 1024) ;
+    NOP (p) ;
+    p = SuiteSparse_calloc (SuiteSparse_long_max, 1024) ;
+    NOP (p) ;
+    p = SuiteSparse_realloc (0, 0, 0, NULL, &ok) ;
+    OK (ok) ;
+    OKP (p) ;
+    p [0] = 'a' ;
+    p = SuiteSparse_realloc (SuiteSparse_long_max, 0, 1024, NULL, &ok) ;
+    NOP (p) ;
+    NOT (ok) ;
+
+    /* ---------------------------------------------------------------------- */
     /* initialize CHOLMOD */
     /* ---------------------------------------------------------------------- */
 
     cm = &Common ;
-    OK (CHOLMOD(start) (cm)) ;
+    OK (CHOLMOD(start) (cm)) ; cm->useGPU = 0 ;
 
     /* ---------------------------------------------------------------------- */
     /* test all methods with NULL common */
@@ -1412,7 +1468,7 @@ int main (int argc, char **argv)
     null_test2 ( ) ;
     CHOLMOD(finish) (cm) ;
     OK (cm->malloc_count == 0) ;
-    OK (CHOLMOD(start) (cm)) ;
+    OK (CHOLMOD(start) (cm)) ; cm->useGPU = 0 ;
 
     /* ---------------------------------------------------------------------- */
     /* create basic scalars */
@@ -1453,7 +1509,7 @@ int main (int argc, char **argv)
 	}
 
 	maxerr = 0 ;
-	CHOLMOD(defaults) (cm) ;
+	CHOLMOD(defaults) (cm) ; cm->useGPU = 0 ;
 	cm->error_handler = my_handler ;
 	cm->print = 4 ;
 	cm->precise = FALSE ;
@@ -1694,14 +1750,17 @@ int main (int argc, char **argv)
 	    (Int) cm->memory_inuse) ;
     OK (cm->malloc_count == 0) ;
     OK (cm->memory_inuse == 0) ;
+    t = SuiteSparse_toc (tic) ;
     if (nrow > ncol)
     {
 	/* maxerr should be NaN, so don't print it */
-	printf ("All tests successful\n") ;
+	printf ("All tests successful: time %.1g\n", t) ;
     }
     else
     {
-	printf ("All tests successful: max error %.1g\n", maxerr) ;
+	printf ("All tests successful: max error %.1g time: %.1g\n", maxerr, t);
     }
+
+    SuiteSparse_finish ( ) ;
     return (0) ;
 }

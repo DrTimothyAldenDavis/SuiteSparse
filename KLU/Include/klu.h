@@ -153,12 +153,6 @@ typedef struct klu_common_struct
     int scale ;             /* row scaling: -1: none (and no error check),
                              * 0: none, 1: sum, 2: max */
 
-    /* memory management routines */
-    void *(*malloc_memory) (size_t) ;           /* pointer to malloc */
-    void *(*realloc_memory) (void *, size_t) ;  /* pointer to realloc */
-    void (*free_memory) (void *) ;              /* pointer to free */
-    void *(*calloc_memory) (size_t, size_t) ;   /* pointer to calloc */
-
     /* pointer to user ordering function */
     int (*user_order) (int, int *, int *, int *, struct klu_common_struct *) ;
 
@@ -217,10 +211,6 @@ typedef struct klu_l_common_struct /* 64-bit version (otherwise same as above)*/
 
     double tol, memgrow, initmem_amd, initmem, maxwork ;
     SuiteSparse_long btf, ordering, scale ;
-    void *(*malloc_memory) (size_t) ;
-    void *(*realloc_memory) (void *, size_t) ;
-    void (*free_memory) (void *) ;
-    void *(*calloc_memory) (size_t, size_t) ;
     SuiteSparse_long (*user_order) (SuiteSparse_long, SuiteSparse_long *,
         SuiteSparse_long *, SuiteSparse_long *,
         struct klu_l_common_struct *) ;
@@ -829,11 +819,11 @@ void *klu_l_realloc (size_t, size_t, size_t, void *, klu_l_common *) ;
  *      #endif
  */
 
-#define KLU_DATE "Jun 20, 2012"
+#define KLU_DATE "July 31, 2013"
 #define KLU_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
 #define KLU_MAIN_VERSION 1
-#define KLU_SUB_VERSION 2
-#define KLU_SUBSUB_VERSION 1
+#define KLU_SUB_VERSION 3
+#define KLU_SUBSUB_VERSION 0
 #define KLU_VERSION KLU_VERSION_CODE(KLU_MAIN_VERSION,KLU_SUB_VERSION)
 
 #ifdef __cplusplus

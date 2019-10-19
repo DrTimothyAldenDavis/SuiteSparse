@@ -14,7 +14,7 @@
 
 #include "camd_internal.h"
 
-#define PRI(format,x) { if (x >= 0) { PRINTF ((format, x)) ; }}
+#define PRI(format,x) { if (x >= 0) { SUITESPARSE_PRINTF ((format, x)) ; }}
 
 GLOBAL void CAMD_info
 (
@@ -22,6 +22,9 @@ GLOBAL void CAMD_info
 )
 {
     double n, ndiv, nmultsubs_ldl, nmultsubs_lu, lnz, lnzd ;
+
+    SUITESPARSE_PRINTF (("\nCAMD version %d.%d.%d, %s, results:\n",
+	CAMD_MAIN_VERSION, CAMD_SUB_VERSION, CAMD_SUBSUB_VERSION, CAMD_DATE)) ;
 
     if (!Info)
     {
@@ -36,28 +39,26 @@ GLOBAL void CAMD_info
     lnzd = (n >= 0 && lnz >= 0) ? (n + lnz) : (-1) ;
 
     /* CAMD return status */
-    PRINTF ((
-	"\ncamd:  approximate minimum degree ordering, results:\n"
-	"    status: ")) ;
+    SUITESPARSE_PRINTF (("    status: ")) ;
     if (Info [CAMD_STATUS] == CAMD_OK)
     {
-	PRINTF (("OK\n")) ;
+	SUITESPARSE_PRINTF (("OK\n")) ;
     }
     else if (Info [CAMD_STATUS] == CAMD_OUT_OF_MEMORY)
     {
-	PRINTF (("out of memory\n")) ;
+	SUITESPARSE_PRINTF (("out of memory\n")) ;
     }
     else if (Info [CAMD_STATUS] == CAMD_INVALID)
     {
-	PRINTF (("invalid matrix\n")) ;
+	SUITESPARSE_PRINTF (("invalid matrix\n")) ;
     }
     else if (Info [CAMD_STATUS] == CAMD_OK_BUT_JUMBLED)
     {
-	PRINTF (("OK, but jumbled\n")) ;
+	SUITESPARSE_PRINTF (("OK, but jumbled\n")) ;
     }
     else
     {
-	PRINTF (("unknown\n")) ;
+	SUITESPARSE_PRINTF (("unknown\n")) ;
     }
 
     /* statistics about the input matrix */
@@ -80,7 +81,7 @@ GLOBAL void CAMD_info
 	Info [CAMD_NCMPA]) ;
 
     /* statistics about the ordering quality */
-    PRINTF (("\n"
+    SUITESPARSE_PRINTF (("\n"
 	"    The following approximate statistics are for a subsequent\n"
 	"    factorization of A(P,P) + A(P,P)'.  They are slight upper\n"
 	"    bounds if there are no dense rows/columns in A+A', and become\n"
@@ -103,7 +104,7 @@ GLOBAL void CAMD_info
 
     if (n >= 0 && ndiv >= 0 && nmultsubs_ldl >= 0 && nmultsubs_lu >= 0)
     {
-	PRINTF (("\n"
+	SUITESPARSE_PRINTF (("\n"
 	"    chol flop count for real A, sqrt counted as 1 flop: %.20g\n"
 	"    LDL' flop count for real A:                         %.20g\n"
 	"    LDL' flop count for complex A:                      %.20g\n"

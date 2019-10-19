@@ -433,21 +433,6 @@ cholmod_dense *CHOLMOD(ensure_dense)
          * reallocate it in the right size and shape.  If an error occurs
          * (out of memory or inputs nrow, etc invalid), then the error is
          * set in cholmod_allocate_dense and X is returned as NULL. */
-#if 0
-        if (X == NULL)
-        {
-            printf ("oops, X was null\n") ;
-        }
-        else
-        {
-            printf ("oops, nrow %g %g ncol %g %g d %g %g xtype %g %g\n",
-                (double) X->nrow, (double) nrow,
-                (double) X->ncol, (double) ncol,
-                (double) X->d, (double) d,
-                (double) X->xtype, (double) xtype
-                ) ;
-        }
-#endif
         CHOLMOD(free_dense) (XHandle, Common) ;
         X = CHOLMOD(allocate_dense) (nrow, ncol, d, xtype, Common) ;
         *XHandle = X ;

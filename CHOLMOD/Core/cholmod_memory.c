@@ -122,7 +122,9 @@ void *CHOLMOD(malloc)	/* returns pointer to the newly malloc'd block */
 {
     void *p ;
     size_t s ;
+    /*
     int ok = TRUE ;
+    */
 
     RETURN_IF_NULL_COMMON (NULL) ;
     if (size == 0)
@@ -139,8 +141,8 @@ void *CHOLMOD(malloc)	/* returns pointer to the newly malloc'd block */
     else
     {
 	/* call malloc, or its equivalent */
-	s = CHOLMOD(mult_size_t) (MAX (1,n), size, &ok) ;
-	p = ok ? ((Common->malloc_memory) (s)) : NULL ;
+	p = SuiteSparse_malloc (n, size) ;
+
 	if (p == NULL)
 	{
 	    /* failure: out of memory */
@@ -196,7 +198,8 @@ void *CHOLMOD(free)	/* always returns NULL */
     {
 	/* only free the object if the pointer is not NULL */
 	/* call free, or its equivalent */
-	(Common->free_memory) (p) ;
+	SuiteSparse_free (p) ;
+
 	Common->malloc_count-- ;
 	Common->memory_inuse -= (n * size) ;
 	PRINTM (("cholmod_free   %p %g cnt: %g inuse %g\n",
@@ -250,7 +253,8 @@ void *CHOLMOD(calloc)	/* returns pointer to the newly calloc'd block */
     else
     {
 	/* call calloc, or its equivalent */
-	p = (Common->calloc_memory) (MAX (1,n), size) ;
+	p = SuiteSparse_calloc (n, size) ;
+
 	if (p == NULL)
 	{
 	    /* failure: out of memory */
@@ -338,39 +342,9 @@ void *CHOLMOD(realloc)	/* returns pointer to reallocated block */
 	/* The object exists, and is changing to some other nonzero size. */
 	/* call realloc, or its equivalent */
 	PRINT1 (("realloc : %d to %d, %d\n", nold, nnew, size)) ;
-	pnew = NULL ;
-
-	s = CHOLMOD(mult_size_t) (MAX (1,nnew), size, &ok) ;
-	pnew = ok ? ((Common->realloc_memory) (p, s)) : NULL ;
-
-	if (pnew == NULL)
-	{
-	    /* Do not change p, since it still points to allocated memory */
-	    if (nnew <= nold)
-	    {
-		/* The attempt to reduce the size of the block from n to
-		 * nnew has failed.  The current block is not modified, so
-		 * pretend to succeed, but do not change p.  Do change
-		 * CHOLMOD's notion of the size of the block, however. */
-		*n = nnew ;
-		PRINTM (("nnew <= nold failed, pretend to succeed\n")) ;
-		PRINTM (("cholmod_free %p %g cnt: %g inuse %g\n"
-			 "cholmod_malloc %p %g cnt: %g inuse %g\n",
-		    p, (double) nold*size, (double) Common->malloc_count-1,
-		       (double) (Common->memory_inuse - nold*size),
-		    p, (double) nnew*size, (double) Common->malloc_count,
-		       (double) (Common->memory_inuse + (nnew-nold)*size))) ;
-		Common->memory_inuse += ((nnew-nold) * size) ;
-	    }
-	    else
-	    {
-		/* Increasing the size of the block has failed.
-		 * Do not change n. */
-		ERROR (CHOLMOD_OUT_OF_MEMORY, "out of memory") ;
-	    }
-	}
-	else
-	{
+        pnew = SuiteSparse_realloc (nnew, nold, size, p, &ok) ;
+        if (ok)
+        {
 	    /* success: return revised p and change the size of the block */
 	    PRINTM (("cholmod_free %p %g cnt: %g inuse %g\n"
 		     "cholmod_malloc %p %g cnt: %g inuse %g\n",
@@ -382,6 +356,13 @@ void *CHOLMOD(realloc)	/* returns pointer to reallocated block */
 	    *n = nnew ;
 	    Common->memory_inuse += ((nnew-nold) * size) ;
 	}
+        else
+        {
+            /* Increasing the size of the block has failed.
+             * Do not change n. */
+            ERROR (CHOLMOD_OUT_OF_MEMORY, "out of memory") ;
+        }
+
 	Common->memory_usage = MAX (Common->memory_usage, Common->memory_inuse);
     }
 

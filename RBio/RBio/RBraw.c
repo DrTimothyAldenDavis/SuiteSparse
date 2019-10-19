@@ -58,10 +58,6 @@ void mexFunction
     mwSize dims [2] = { 0, 1 } ;
     char filename [LEN+1], title [73], key [9], mtype [4] ;
 
-    SuiteSparse_config config ;
-    config.malloc_memory = mxMalloc ;
-    config.free_memory = mxFree ;
-
     /* ---------------------------------------------------------------------- */
     /* check inputs */
     /* ---------------------------------------------------------------------- */
@@ -87,7 +83,7 @@ void mexFunction
     /* ---------------------------------------------------------------------- */
 
     status = RBreadraw (filename, title, key, mtype, &nrow, &ncol, &nnz, &nelnz,
-        &mkind, &skind, &fem, &xsize, &Ap, &Ai, &Ax, &config) ;
+        &mkind, &skind, &fem, &xsize, &Ap, &Ai, &Ax) ;
 
     if (status != RBIO_OK)
     {

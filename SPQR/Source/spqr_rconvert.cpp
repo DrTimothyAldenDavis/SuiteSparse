@@ -60,8 +60,9 @@ template <typename Entry> void spqr_rconvert
     Entry **Rblock, *R, *Tau, *HTau ;
     Long *Rp, *Rj, *Super, *HStair, *Hii, *Stair, *Hip, *Hm, *Hi ;
     char *Rdead ;
-    Long nf, n, j, f, col1, fp, pr, fn, rm, k, i, p, getRa, getRb, row1, fm,
-        rjsize, h, getH, keepH, ph, t, nh ;
+    Long nf, j, f, col1, fp, pr, fn, rm, k, i, p, getRa, getRb, row1, fm,
+        // n, rjsize,
+        h, getH, keepH, ph, t, nh ;
 
     // -------------------------------------------------------------------------
     // get the contents of the QRsym and QRnum objects
@@ -82,12 +83,23 @@ template <typename Entry> void spqr_rconvert
     if (getRa)
     {
         for (k = 0 ; k <= n2 ; k++)
+        {
             PR (("Rap [%ld] = %ld on input\n", k, Rap [k])) ;
+        }
+    }
+    if (getRb)
+    {
+        Long n = QRsym->n ;
+        Long zn = getT ? econ : n-n2 ;
+        for (k = 0 ; k <= zn ; k++)
+        {
+            PR (("Rbp [%ld] = %ld on input\n", k, Rbp [k])) ;
+        }
     }
 #endif
 
     nf = QRsym->nf ;
-    n = QRsym->n ;
+    // n = QRsym->n ;
     Rblock = QRnum->Rblock ;
     Rp = QRsym->Rp ;
     Rj = QRsym->Rj ;
@@ -99,7 +111,7 @@ template <typename Entry> void spqr_rconvert
     Hm = QRnum->Hm ;
     Hii = QRnum->Hii ;
     Hip = QRsym->Hip ;
-    rjsize = QRsym->rjsize ;
+    // rjsize = QRsym->rjsize ;
     Stair = NULL ;
     Hi = NULL ;
     Tau = NULL ;
@@ -114,9 +126,10 @@ template <typename Entry> void spqr_rconvert
 
     row1 = n1rows ;
     ph = 0 ;                                // pointer for constructing H
-    PR (("rconvert nf : %ld\n", nf)) ;
+    PR (("rconvert nf : %ld xtype %d\n", nf, spqr_type <Entry> ( ))) ;
     for (f = 0 ; f < nf ; f ++)
     {
+        PR (("\n---- rconvert front f %ld\n", f)) ;
         R = Rblock [f] ;
         col1 = Super [f] ;                  // first pivot column in front F
         fp = Super [f+1] - col1 ;           // number of pivots in front F
@@ -150,6 +163,8 @@ template <typename Entry> void spqr_rconvert
             {
                 // a pivotal column of front F
                 j = col1 + k ;
+                PR (("\nk %ld pivotal column of front f %ld, global j %ld\n",
+                    k, f, j)) ;
                 ASSERT (Rj [pr + k] == j) ;
                 if (keepH)
                 {
@@ -168,17 +183,22 @@ template <typename Entry> void spqr_rconvert
                 }
                 else
                 {
+                    PR (("  k %ld j %ld Rdead[j] %d old rm %ld ",
+                        k, j, (int) (Rdead [j]), rm)) ;
                     if (!Rdead [j])
                     {
                         rm++ ;                  // column k is not dead
                     }
+                    PR ((" new rm %ld\n", rm)) ;
                 }
             }
             else
             {
                 // a non-pivotal column of front F
                 j = Rj [pr + k] ;
-                ASSERT (j >= Super [f+1] && j < n) ;
+                PR (("\nk %ld non-pivotal column of front f %ld, global j %ld\n",
+                    k, f, j)) ;
+                ASSERT (j >= Super [f+1] && j < QRsym->n) ;
                 if (keepH)
                 {
                     t = Stair [k] ;             // length of R+H vector
@@ -192,6 +212,7 @@ template <typename Entry> void spqr_rconvert
             // extract the column of R
             // -----------------------------------------------------------------
 
+            PR (("extract column j (%ld) of R (rm %ld entries)\n", j, rm)) ;
             for (i = 0 ; i < rm ; i++)
             {
                 rij = *(R++) ;
@@ -221,6 +242,9 @@ template <typename Entry> void spqr_rconvert
                             }
                             else
                             {
+                                PR (("  row %ld value", row1+i)) ;
+                                PRVAL ((rij)) ;
+                                PR ((" at p %ld\n", Rbp [j-n2])) ;
                                 p = Rbp [j-n2]++ ;
                                 Rbi [p] = row1 + i ;
                                 Rbx [p] = rij ;

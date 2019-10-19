@@ -68,6 +68,10 @@ int main (int argc, char **argv)
     int trial, method, L_is_super ;
     int ver [3] ;
 
+    ts[0] = 0.;
+    ts[1] = 0.;
+    ts[2] = 0.;
+
     /* ---------------------------------------------------------------------- */
     /* get the file containing the input matrix */
     /* ---------------------------------------------------------------------- */

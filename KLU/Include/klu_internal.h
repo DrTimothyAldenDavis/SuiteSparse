@@ -58,7 +58,7 @@
 #undef FLIP
 
 #ifndef NPRINT
-#define PRINTF(s) { printf s ; } ;
+#define PRINTF(s) SUITESPARSE_PRINTF (s)
 #else
 #define PRINTF(s)
 #endif

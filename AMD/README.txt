@@ -1,4 +1,4 @@
-AMD, Copyright (c) 2009-2012 by Timothy A. Davis (http://www.suitesparse.com),
+AMD, Copyright (c) 2009-2013 by Timothy A. Davis (http://www.suitesparse.com),
 Patrick R. Amestoy, and Iain S. Duff.  All Rights Reserved.  AMD is available
 under alternate licences; contact T. Davis for details.
 

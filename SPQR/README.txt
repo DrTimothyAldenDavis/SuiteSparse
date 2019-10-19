@@ -1,4 +1,4 @@
-SuiteSparseQR Copyright (c) 2008-2012, Timothy A. Davis,
+SuiteSparseQR Copyright (c) 2008-2013, Timothy A. Davis,
 http://www.suitesparse.com
 
 SuiteSparseQR is a a multithread, multifrontal, rank-revealing sparse QR

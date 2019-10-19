@@ -35,18 +35,12 @@ void sputil_config (Long spumoni, cholmod_common *cm)
     /* cholmod_l_solve must return a real or zomplex X for MATLAB */
     cm->prefer_zomplex = TRUE ;
 
-    /* use mxMalloc and related memory management routines */
-    cm->malloc_memory  = mxMalloc ;
-    cm->free_memory    = mxFree ;
-    cm->realloc_memory = mxRealloc ;
-    cm->calloc_memory  = mxCalloc ;
-
     /* printing and error handling */
     if (spumoni == 0)
     {
 	/* do not print anything from within CHOLMOD */
 	cm->print = -1 ;
-	cm->print_function = NULL ;
+        SuiteSparse_config.printf_func = NULL ;
     }
     else
     {
@@ -55,22 +49,18 @@ void sputil_config (Long spumoni, cholmod_common *cm)
 	 * spumoni = 2: also print a short summary of each object.
 	 */
 	cm->print = spumoni + 2 ;
-	cm->print_function = mexPrintf ;
+        /* SuiteSparse_config.printf_func = mexPrintf : */
     }
 
     /* error handler */
     cm->error_handler  = sputil_error_handler ;
 
-    /* complex arithmetic */
-    cm->complex_divide = cholmod_l_divcomplex ;
-    cm->hypotenuse     = cholmod_l_hypot ;
-
 #ifndef NPARTITION
 #if defined(METIS_VERSION)
 #if (METIS_VERSION >= METIS_VER(4,0,2))
     /* METIS 4.0.2 uses function pointers for malloc and free */
-    METIS_malloc = cm->malloc_memory ;
-    METIS_free   = cm->free_memory ;
+    METIS_malloc = Suiteparse_config.malloc_func ;
+    METIS_free   = Suiteparse_config.free_func ;
 #endif
 #endif
 #endif

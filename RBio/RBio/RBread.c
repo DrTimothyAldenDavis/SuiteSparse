@@ -35,12 +35,7 @@ void mexFunction
     double *Ax, *Az, *Zx ;
     Long p, j, build_upper, zero_handling, nrow, ncol, mkind, skind, asize, znz,
         status ;
-    int ok = TRUE ;
     char filename [LEN+1], title [73], key [9], mtype [4] ;
-
-    SuiteSparse_config config ;
-    config.malloc_memory = mxMalloc ;
-    config.free_memory = mxFree ;
 
     /* ---------------------------------------------------------------------- */
     /* check inputs */
@@ -69,7 +64,7 @@ void mexFunction
 
     status = RBread (filename, build_upper, zero_handling, title, key, mtype,
         &nrow, &ncol, &mkind, &skind, &asize, &znz,
-        &Ap, &Ai, &Ax, &Az, &Zp, &Zi, &config) ;
+        &Ap, &Ai, &Ax, &Az, &Zp, &Zi) ;
 
     if (status != RBIO_OK)
     {
@@ -100,7 +95,7 @@ void mexFunction
 
     if (nargout > 1)
     {
-        Zx = (double *) SuiteSparse_malloc (znz, sizeof (double), &ok, &config);
+        Zx = (double *) SuiteSparse_malloc (znz, sizeof (double)) ;
         for (p = 0 ; p < znz ; p++)
         {
             Zx [p] = 1 ;

@@ -8,17 +8,5 @@
  * http://www.suitesparse.com
  * -------------------------------------------------------------------------- */
 
-/* Global variables for COLAMD */
-
-#ifndef NPRINT
-#ifdef MATLAB_MEX_FILE
-#include "mex.h"
-int (*colamd_printf) (const char *, ...) = mexPrintf ;
-#else
-#include <stdio.h>
-int (*colamd_printf) (const char *, ...) = printf ;
-#endif
-#else
-int (*colamd_printf) (const char *, ...) = ((void *) 0) ;
-#endif
-
+/* Global variables for COLAMD : colamd_printf replaced with
+    a function in SuiteSparse_config. */

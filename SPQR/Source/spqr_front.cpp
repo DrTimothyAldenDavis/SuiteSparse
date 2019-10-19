@@ -305,7 +305,7 @@ template <typename Entry> Long spqr_front
     double *wscale,
     double *wssq,
 
-    cholmod_common *cc  // for cc->hypotenuse function
+    cholmod_common *cc
 )
 {
     Entry tau ;
@@ -617,7 +617,7 @@ template Long spqr_front <double>
     double *wscale,
     double *wssq,
 
-    cholmod_common *cc  // for cc->hypotenuse function
+    cholmod_common *cc
 ) ;
 
 // =============================================================================
@@ -651,5 +651,5 @@ template Long spqr_front <Complex>
     double *wscale,
     double *wssq,
 
-    cholmod_common *cc  // for cc->hypotenuse function
+    cholmod_common *cc
 ) ;

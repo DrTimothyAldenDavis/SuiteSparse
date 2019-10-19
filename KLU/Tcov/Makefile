@@ -22,13 +22,12 @@ LIB = ../../AMD/Lib/libamd.a ../../COLAMD/Lib/libcolamd.a \
     ../../CHOLMOD/Lib/libcholmod.a \
     ../../CAMD/Lib/libcamd.a ../../CCOLAMD/Lib/libccolamd.a \
     ../../metis-4.0/libmetis.a \
-    -lm
+    ../../SuiteSparse_config/libsuitesparseconfig.a \
+    $(LAPACK) $(BLAS) -lm -lrt
 
 I = -I../../SuiteSparse_config -I../../AMD/Include -I../../COLAMD/Include \
     -I../../BTF/Include -I../../CHOLMOD/Include -I../../CAMD/Include \
     -I../../CCOLAMD/Include -I../../metis-4.0/Lib -I../Include -I../User
-
-PRETTY = grep -v "^\#" | indent -bl -nce -bli0 -i4 -sob 
 
 all: purge libs klutest klultest
 	- ./klultests > klultests.out
@@ -47,6 +46,7 @@ libs:
 	( cd ../../CCOLAMD && $(MAKE) library )
 	( cd ../../metis-4.0 && $(MAKE) )
 	( cd ../../CHOLMOD && $(MAKE) library )
+	( cd ../../SuiteSparse_config && $(MAKE) library )
 
 purge: distclean
 

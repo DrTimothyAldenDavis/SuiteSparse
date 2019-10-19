@@ -1,5 +1,7 @@
 SuiteSparse:  A Suite of Sparse matrix packages at http://www.suitesparse.com
 
+March 26, 2014.  SuiteSparse VERSION 4.3.0
+
 ------------------
 SuiteSparse/README
 ------------------
@@ -18,9 +20,13 @@ in /usr/local.
 QUICK START FOR MAC:  Delete the SuiteSparse_config/SuiteSparse_config.mk
 file, and then remove "_Mac" from the *Mac.mk file in that directory.  Then
 continue as the 'QUICK START FOR LINUX' above.
+
+QUICK START FOR GPU:  Delete the SuiteSparse_config/SuiteSparse_config.mk
+file, and then remove "_GPU" from the *GPU.mk file in that directory.
+Locate and modify CUDA library and include paths in the *.mk file.
+Then continue as the 'QUICK START FOR LINUX' above.
 ================================================================================
 
-April 25, 2013.  SuiteSparse VERSION 4.2.1
 
     spqr_rank   MATLAB toolbox for rank deficient sparse matrices: null spaces,
                 reliable factorizations, etc.  With Leslie Foster, San Jose

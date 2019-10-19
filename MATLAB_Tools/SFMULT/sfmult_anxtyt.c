@@ -78,7 +78,7 @@ mxArray *sfmult_AN_XT_YT    // y = (A*x')'
 	return (Y) ;
     }
 
-    if (k > 12 && Ap [n] < 8 * MAX (m,n))	// TODO check overflow
+    if (k > 12 && Ap [n] < 8 * MAX (m,n))	// (TO DO) check overflow
     {
 	// Y = (A * X')' when A is moderately sparse and X is large
 	mxArray *C ;
@@ -86,7 +86,7 @@ mxArray *sfmult_AN_XT_YT    // y = (A*x')'
 	Int *Cp, *Ci ;
 	// C = A' ;
 	C = ssmult_transpose (A, 0) ;
-	// TODO if C is NULL, skip this and try using (A*X')' below
+	// (TO DO) if C is NULL, skip this and try using (A*X')' below
 	// Y = (C' * X')' when A is moderately sparse and X is large
 	Cp = mxGetJc (C) ;
 	Ci = mxGetIr (C) ;
@@ -102,7 +102,7 @@ mxArray *sfmult_AN_XT_YT    // y = (A*x')'
     //--------------------------------------------------------------------------
 
     sfmult_walloc (4, m, &Wx, &Wz) ;
-    // TODO if walloc fails, use a workspace-free technique.
+    // (TO DO) if walloc fails, use a workspace-free technique.
     // This may require new sparse-times-vector kernels (both x and y with
     // non-unit strides)
 

@@ -14,15 +14,27 @@ d = '' ;
 if (~isempty (strfind (computer, '64')))
     d = '-largeArrayDims' ;
 end
-src = '../Source/colamd.c ../Source/colamd_global.c' ;
+src = '../Source/colamd.c ../../SuiteSparse_config/SuiteSparse_config.c' ;
 cmd = sprintf ( ...
     'mex -DDLONG -O %s -I../../SuiteSparse_config -I../Include -output ', d) ;
 s = [cmd 'colamd2mex colamdmex.c ' src] ;
+
+if (~(ispc || ismac))
+    % for POSIX timing routine
+    s = [s ' -lrt'] ;
+end
+
 if (details)
     fprintf ('%s\n', s) ;
 end
 eval (s) ;
 s = [cmd 'symamd2mex symamdmex.c ' src] ;
+
+if (~(ispc || ismac))
+    % for POSIX timing routine
+    s = [s ' -lrt'] ;
+end
+
 if (details)
     fprintf ('%s\n', s) ;
 end

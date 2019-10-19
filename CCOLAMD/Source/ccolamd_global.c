@@ -8,17 +8,5 @@
  * See License.txt for the Version 2.1 of the GNU Lesser General Public License
  * -------------------------------------------------------------------------- */
 
-/* Global variables for CCOLAMD */
-
-#ifndef NPRINT
-#ifdef MATLAB_MEX_FILE
-#include "mex.h"
-int (*ccolamd_printf) (const char *, ...) = mexPrintf ;
-#else
-#include <stdio.h>
-int (*ccolamd_printf) (const char *, ...) = printf ;
-#endif
-#else
-int (*ccolamd_printf) (const char *, ...) = ((void *) 0) ;
-#endif
-
+/* Global variables for CCOLAMD : ccolamd_printf replaced with
+    a function in SuiteSparse_config. */

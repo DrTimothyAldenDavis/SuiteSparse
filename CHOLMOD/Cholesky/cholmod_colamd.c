@@ -118,9 +118,6 @@ int CHOLMOD(colamd)
     /* allocate COLAMD workspace */
     /* ---------------------------------------------------------------------- */
 
-    /* colamd_printf is only available in colamd v2.4 or later */
-    colamd_printf = Common->print_function ;
-
     C = CHOLMOD(allocate_sparse) (ncol, nrow, alen, TRUE, TRUE, 0,
 	    CHOLMOD_PATTERN, Common) ;
 

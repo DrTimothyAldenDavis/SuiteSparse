@@ -211,7 +211,7 @@ else
     fprintf (f, '<th><a href=%slist_by_symmetry.html>spd?</a></th>\n', loc) ;
 end
 
-yifan_graphs = 'http://www.research.att.com/~yifanhu/GALLERY/GRAPHS/' ;
+yifan_graphs = 'http://yifanhu.net/GALLERY/GRAPHS/' ;
 yifan_thumb = [yifan_graphs 'GIF_THUMBNAIL/'] ;
 
 for id = list

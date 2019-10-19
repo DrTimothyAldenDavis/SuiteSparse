@@ -268,7 +268,7 @@ void mexFunction
 
     if (nargout > 1)
     {
-        double flops = cc->other1 [0] ;
+        double flops = cc->SPQR_flopcount ;
         double t = SuiteSparse_time ( ) - t0 ;
         pargout [1] = spqr_mx_info (cc, t, flops) ;
     }
@@ -283,7 +283,7 @@ void mexFunction
         // snprintf would be safer, but Windows is oblivious to safety ...
         // (Visual Studio C++ 2008 does not recognize snprintf!)
         sprintf (msg, "rank deficient. rank = %ld tol = %g\n", rank,
-            cc->SPQR_xstat [1]) ;
+            cc->SPQR_tol_used) ;
         mexWarnMsgIdAndTxt ("MATLAB:rankDeficientMatrix", msg) ;
     }
 

@@ -14,7 +14,7 @@ mxArray *ssmult_transpose	// returns C = A' or A.'
 )
 {
     Int *Cp, *Ci, *Ap, *Ai, *W ;
-    double *Cx, *Cz, *Ax, *Az ;	    // TODO: do single too
+    double *Cx, *Cz, *Ax, *Az ;	    // (TO DO): do single too
     mxArray *C ;
     Int p, pend, q, i, j, n, m, anz, cnz ;
     int C_is_complex ;

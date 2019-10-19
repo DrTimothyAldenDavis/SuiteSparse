@@ -29,9 +29,6 @@ CAMDL = $(addsuffix .o, $(subst camd_,camd_l_,$(CAMD)))
 # compile each int and long routine (with no real/complex version)
 #-------------------------------------------------------------------------------
 
-camd_global.o: ../Source/camd_global.c $(INC)
-	$(C) -c $< -o $@
-
 camd_i_%.o: ../Source/camd_%.c $(INC)
 	$(C) -DDINT -c $< -o $@
 
@@ -42,7 +39,7 @@ camd_l_%.o: ../Source/camd_%.c $(INC)
 # Create the libcamd.a library (C versions only)
 #-------------------------------------------------------------------------------
 
-libcamd.a: camd_global.o $(CAMDI) $(CAMDL)
+libcamd.a: $(CAMDI) $(CAMDL)
 	$(ARCHIVE)  libcamd.a $^
 	- $(RANLIB) libcamd.a
 

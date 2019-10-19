@@ -67,8 +67,6 @@ void *KLU_malloc        /* returns pointer to the newly malloc'd block */
 )
 {
     void *p ;
-    size_t s ;
-    Int ok = TRUE ;
 
     if (Common == NULL)
     {
@@ -90,8 +88,7 @@ void *KLU_malloc        /* returns pointer to the newly malloc'd block */
     else
     {
         /* call malloc, or its equivalent */
-        s = KLU_mult_size_t (MAX (1,n), size, &ok) ;
-        p = ok ? ((Common->malloc_memory) (s)) : NULL ;
+        p = SuiteSparse_malloc (n, size) ;
         if (p == NULL)
         {
             /* failure: out of memory */
@@ -99,7 +96,7 @@ void *KLU_malloc        /* returns pointer to the newly malloc'd block */
         }
         else
         {
-            Common->memusage += s ;
+            Common->memusage += (MAX (1,n) * size) ;
             Common->mempeak = MAX (Common->mempeak, Common->memusage) ;
         }
     }
@@ -128,15 +125,12 @@ void *KLU_free          /* always returns NULL */
     KLU_common *Common
 )
 {
-    size_t s ;
-    Int ok = TRUE ;
     if (p != NULL && Common != NULL)
     {
         /* only free the object if the pointer is not NULL */
         /* call free, or its equivalent */
-        (Common->free_memory) (p) ;
-        s = KLU_mult_size_t (MAX (1,n), size, &ok) ;
-        Common->memusage -= s ;
+        SuiteSparse_free (p) ;
+        Common->memusage -= (MAX (1,n) * size) ;
     }
     /* return NULL, and the caller should assign this to p.  This avoids
      * freeing the same pointer twice. */
@@ -178,8 +172,7 @@ void *KLU_realloc       /* returns pointer to reallocated block */
 )
 {
     void *pnew ;
-    size_t snew, sold ;
-    Int ok = TRUE ;
+    int ok = TRUE ;
 
     if (Common == NULL)
     {
@@ -205,20 +198,18 @@ void *KLU_realloc       /* returns pointer to reallocated block */
     {
         /* The object exists, and is changing to some other nonzero size. */
         /* call realloc, or its equivalent */
-        snew = KLU_mult_size_t (MAX (1,nnew), size, &ok) ;
-        sold = KLU_mult_size_t (MAX (1,nold), size, &ok) ;
-        pnew = ok ? ((Common->realloc_memory) (p, snew)) : NULL ;
-        if (pnew == NULL)
+        pnew = SuiteSparse_realloc (nnew, nold, size, p, &ok) ;
+        if (ok)
         {
-            /* Do not change p, since it still points to allocated memory */
-            Common->status = KLU_OUT_OF_MEMORY ;
+            /* success: return the new p and change the size of the block */
+            Common->memusage += ((nnew-nold) * size) ;
+            Common->mempeak = MAX (Common->mempeak, Common->memusage) ;
+            p = pnew ;
         }
         else
         {
-            /* success: return the new p and change the size of the block */
-            Common->memusage += (snew - sold) ;
-            Common->mempeak = MAX (Common->mempeak, Common->memusage) ;
-            p = pnew ;
+            /* Do not change p, since it still points to allocated memory */
+            Common->status = KLU_OUT_OF_MEMORY ;
         }
     }
     return (p) ;
