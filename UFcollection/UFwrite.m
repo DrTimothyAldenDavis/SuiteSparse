@@ -1,5 +1,5 @@
 function UFwrite (Problem, Master, arg3, arg4)
-%UFwrite: write a problem in the UF Sparse Matrix Collection to a directory
+%UFWRITE write a Problem in Matrix Market or Rutherford/Boeing format
 % containing a set of text files in either Matrix Market or Rutherford/Boeing
 % format.  The Problem can be read from the files back into MATLAB via UFread.
 % See http://www.cise.ufl.edu/research/sparse/matrices for the UF Sparse
@@ -147,7 +147,7 @@ function UFwrite (Problem, Master, arg3, arg4)
 % Optionally uses the CHOLMOD mwrite mexFunction, for writing Problems in
 % Matrix Market format.
 
-% Copyright 2006, Timothy A. Davis, University of Florida.
+% Copyright 2006-2007, Timothy A. Davis, University of Florida.
 
 %-------------------------------------------------------------------------------
 % check inputs
@@ -262,10 +262,10 @@ if (RB)
     ptitle = [Problem.name '; ' Problem.date '; ' etal(Problem.author)] ;
     ptitle = [ptitle '; ed: ' etal(Problem.ed)] ;
     % note that b, g, and x are NOT written to the RB file
-    mtype = RBwrite ([probname '.rb'], A, Z, ptitle, key) ;
+    RBwrite ([probname '.rb'], A, Z, ptitle, key) ;
 else
     % write the files in Matrix Market form
-    mtype = mwrite ([probname '.mtx'], A, Z, cfile) ;
+    mwrite ([probname '.mtx'], A, Z, cfile) ;
     delete (cfile) ;    % the comments file has been included in the .mtx file.
 end
 
@@ -333,7 +333,8 @@ if (do_tar)
 	tar ([probdir '.tar.gz'], probdir) ;
 	rmdir (probdir, 's') ;
     catch
-	warning ('unable to create tar file; directly left uncompressed') ;
+	warning ('SuiteSparse:UFwrite', ...
+	    'unable to create tar file; directly left uncompressed') ;
     end
 end
 

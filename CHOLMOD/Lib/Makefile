@@ -115,10 +115,9 @@ libcholmod.a: $(OBJ)
 
 $(OBJ): $(INC)
 
-I = -I../../AMD/Include -I../../AMD/Source -I../../COLAMD \
-	-I$(METIS_PATH)/Lib -I../../CCOLAMD -I../../CAMD/Include -I../Include \
-	-I../../UFconfig
-
+I = -I../../AMD/Include -I../../AMD/Source -I../../COLAMD/Include \
+	-I$(METIS_PATH)/Lib -I../../CCOLAMD/Include -I../../CAMD/Include \
+	-I../Include -I../../UFconfig
 
 #-------------------------------------------------------------------------------
 # Check Module:

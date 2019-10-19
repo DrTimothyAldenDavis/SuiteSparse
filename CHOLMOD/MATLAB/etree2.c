@@ -37,10 +37,10 @@ void mexFunction
 )
 {
     double dummy = 0 ;
-    int *Parent ;
+    Int *Parent ;
     cholmod_sparse *A, Amatrix, *S ;
     cholmod_common Common, *cm ;
-    int n, coletree, c ;
+    Int n, coletree, c ;
     char buf [LEN] ;
 
     /* ---------------------------------------------------------------------- */
@@ -48,7 +48,7 @@ void mexFunction
     /* ---------------------------------------------------------------------- */
 
     cm = &Common ;
-    cholmod_start (cm) ;
+    cholmod_l_start (cm) ;
     sputil_config (SPUMONI, cm) ;
 
     /* ---------------------------------------------------------------------- */
@@ -119,12 +119,12 @@ void mexFunction
     /* compute the etree */
     /* ---------------------------------------------------------------------- */
 
-    Parent = cholmod_malloc (n, sizeof (int), cm) ;
+    Parent = cholmod_l_malloc (n, sizeof (Int), cm) ;
     if (A->stype == 1 || coletree)
     {
 	/* symmetric case: find etree of A, using triu(A) */
 	/* column case: find column etree of A, which is etree of A'*A */
-	cholmod_etree (A, Parent, cm) ;
+	cholmod_l_etree (A, Parent, cm) ;
     }
     else
     {
@@ -132,9 +132,9 @@ void mexFunction
 	/* row case: find row etree of A, which is etree of A*A' */
 	/* R = A' */
 	cholmod_sparse *R ;
-	R = cholmod_transpose (A, 0, cm) ;
-	cholmod_etree (R, Parent, cm) ;
-	cholmod_free_sparse (&R, cm) ;
+	R = cholmod_l_transpose (A, 0, cm) ;
+	cholmod_l_etree (R, Parent, cm) ;
+	cholmod_l_free_sparse (&R, cm) ;
     }
 
     if (cm->status < CHOLMOD_OK)
@@ -155,24 +155,24 @@ void mexFunction
 
     if (nargout > 1)
     {
-	int *Post ;
-	Post = cholmod_malloc (n, sizeof (int), cm) ;
-	if (cholmod_postorder (Parent, n, NULL, Post, cm) != n)
+	Int *Post ;
+	Post = cholmod_l_malloc (n, sizeof (Int), cm) ;
+	if (cholmod_l_postorder (Parent, n, NULL, Post, cm) != n)
 	{
 	    /* out of memory or Parent invalid */
 	    mexErrMsgTxt ("etree2 postorder failed!") ;
 	}
 	pargout [1] = sputil_put_int (Post, n, 1) ;
-	cholmod_free (n, sizeof (int), Post, cm) ;
+	cholmod_l_free (n, sizeof (Int), Post, cm) ;
     }
 
     /* ---------------------------------------------------------------------- */
     /* free workspace */
     /* ---------------------------------------------------------------------- */
 
-    cholmod_free (n, sizeof (int), Parent, cm) ;
-    cholmod_free_sparse (&S, cm) ;
-    cholmod_finish (cm) ;
-    cholmod_print_common (" ", cm) ;
+    cholmod_l_free (n, sizeof (Int), Parent, cm) ;
+    cholmod_l_free_sparse (&S, cm) ;
+    cholmod_l_finish (cm) ;
+    cholmod_l_print_common (" ", cm) ;
     /* if (cm->malloc_count != 0) mexErrMsgTxt ("!") ; */
 }

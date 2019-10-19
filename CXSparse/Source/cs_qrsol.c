@@ -40,7 +40,7 @@ CS_INT cs_qrsol (CS_INT order, const cs *A, CS_ENTRY *b)
 	    cs_utsolve (N->U, x) ;	    /* x = R'\x */
 	    for (k = m-1 ; k >= 0 ; k--)    /* apply Householder refl. to x */
 	    {
-		cs_happly (N->L, k, CS_CONJ (N->B [k]), x) ;
+		cs_happly (N->L, k, N->B [k], x) ;
 	    }
 	    cs_pvec (S->pinv, x, b, n) ;    /* b(0:n-1) = x(p(0:n-1)) */
 	}

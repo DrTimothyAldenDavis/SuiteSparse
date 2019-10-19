@@ -1,18 +1,18 @@
 function UFexport (list, check, tmp)
-%UFexport: export the MATLAB version of the collection to the MM and RB formats.
+%UFEXPORT export to Matrix Market and Rutherford/Boeing formats
 %
 % Example:
-%   UFexport ;		% export the entire collection
-%   UFexport (list) ;	% just export matrices whose id's are given in the list
-%   UFexport (list, 'check') ;	    % also read them back in, to check
+%   UFexport ;          % export the entire collection
+%   UFexport (list) ;   % just export matrices whose id's are given in the list
+%   UFexport (list, 'check') ;      % also read them back in, to check
 %
 % If the list is empty, all matrices in the collection are exported.
+% A 3rd argument tmp changes the tmp directory for UFread.
 %
 % See also UFget, UFwrite, RBio, mwrite.
 
-% A 3rd argument tmp changes the tmp directory for UFread.
 
-% Copyright 2006, Timothy A. Davis
+% Copyright 2006-2007, Timothy A. Davis
 
 %-------------------------------------------------------------------------------
 % get the input arguments
@@ -44,7 +44,8 @@ end
 for id = list
 
     % get the MATLAB version
-    Problem = UFget (id, index)
+    Problem = UFget (id, index) ;
+    disp (Problem) ;
 
     % create the MM and RB versions
     UFwrite (Problem, [topdir 'MM'], 'MM', 'tar') ;

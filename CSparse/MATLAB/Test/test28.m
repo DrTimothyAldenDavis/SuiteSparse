@@ -5,7 +5,7 @@ function test28
 %   test28
 % See also: testall
 
-%   Copyright 2006, Timothy A. Davis.
+%   Copyright 2006-2007, Timothy A. Davis.
 %   http://www.cise.ufl.edu/research/sparse
 
 clear functions
@@ -65,7 +65,7 @@ for k = 1:nmat
     fprintf (' %8.2f', t3) ;
     T3 (k) = t3 ;
 
-    if (sprank1 ~= sprank2 || sprank1 ~= sprank3)
+    if (sprank1 ~= sprank2 | sprank1 ~= sprank3)			    %#ok
 	error ('!') ;
     end
 
@@ -92,7 +92,7 @@ for k = 1:nmat
 	nz2 = nnz (diag (A (p2,q2))) ;
 	nz3 = nnz (diag (A (p3,q3))) ;
 
-	if (nz1 ~= sprank1 || nz2 ~= sprank2 || nz3 ~= sprank3)
+	if (nz1 ~= sprank1 | nz2 ~= sprank2 | nz3 ~= sprank3)		    %#ok
 	    error ('!')
 	end
     end

@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Version 5.0, Copyright (c) 1995-2006 by Timothy A. Davis.  CISE,   */
+/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
 /* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
 /* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
 /* -------------------------------------------------------------------------- */
@@ -97,7 +97,7 @@ extern "C" {
 /* Version, copyright, and license */
 /* -------------------------------------------------------------------------- */
 
-#define UMFPACK_VERSION "UMFPACK V5.0.3 (Dec 12, 2006)"
+#define UMFPACK_VERSION "UMFPACK V5.1.0 (May 31, 2007)"
 
 #define UMFPACK_COPYRIGHT \
 "UMFPACK:  Copyright (c) 2005-2006 by Timothy A. Davis.  All Rights Reserved.\n"
@@ -163,11 +163,11 @@ extern "C" {
  * above.
  */
 
-#define UMFPACK_DATE "Dec 12, 2006"
+#define UMFPACK_DATE "May 31, 2007"
 #define UMFPACK_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define UMFPACK_MAIN_VERSION 5
-#define UMFPACK_SUB_VERSION 0
-#define UMFPACK_SUBSUB_VERSION 3
+#define UMFPACK_SUB_VERSION 1
+#define UMFPACK_SUBSUB_VERSION 0
 #define UMFPACK_VER UMFPACK_VER_CODE(UMFPACK_MAIN_VERSION,UMFPACK_SUB_VERSION)
 
 /* -------------------------------------------------------------------------- */

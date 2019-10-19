@@ -4,7 +4,7 @@ function test9
 %   test9
 % See also cholmod_test
 
-% Copyright 2006, Timothy A. Davis, University of Florida
+% Copyright 2006-2007, Timothy A. Davis, University of Florida
 
 fprintf ('=================================================================\n');
 fprintf ('test9: test metis, etree, bisect, nesdis\n') ;
@@ -33,21 +33,25 @@ tic ; p4 = metis (A, 'col') ; toc					    %#ok
 
 fprintf ('\nmetis(A):\n') ;
 [m n] = size(A) ;
-if (m == n && nnz (A-A') == 0)
-    tic ; p5 = metis (A) ; toc
-    % figure (1)
-    % spy (A (p5,p5)) ;
-    [ignore q] = etree (A(p5,p5)) ;
-    p5post = p5 (q) ;							    %#ok
-    % figure (2)
-    % spy (A (p5post,p5post)) ;
-    lnz0 = sum (symbfact (A (p5,p5)))					    %#ok
+if (m == n)
+    if (nnz (A-A') == 0)
+	tic ; p5 = metis (A) ; toc
+	% figure (1)
+	% spy (A (p5,p5)) ;
+	[ignore q] = etree (A(p5,p5)) ;
+	p5post = p5 (q) ;						    %#ok
+	% figure (2)
+	% spy (A (p5post,p5post)) ;
+	lnz0 = sum (symbfact (A (p5,p5)))				    %#ok
+    end
 end
 
 fprintf ('\namd:\n') ;
-if (m == n && nnz (A-A') == 0)
-    tic ; z0 = amd (A) ; toc						    %#ok
-    lnz = sum (symbfact (A (z0,z0)))					    %#ok
+if (m == n)
+    if (nnz (A-A') == 0)
+	tic ; z0 = amd (A) ; toc					    %#ok
+	lnz = sum (symbfact (A (z0,z0)))				    %#ok
+    end
 end
 
 fprintf ('\nbisect:\n') ;
@@ -66,9 +70,11 @@ tic ; [c3 cp3 cmem3] = nesdis (A, 'row') ; toc				    %#ok
 tic ; [c4 cp4 cmem4] = nesdis (A, 'col') ; toc				    %#ok
 
 fprintf ('\nnested_dissection(A):\n') ;
-if (m == n && nnz (A-A') == 0)
-    tic ; c5 = nesdis (A) ; toc						    %#ok
-    lnz1 = sum (symbfact (A (c5,c5)))					    %#ok
+if (m == n)
+    if (nnz (A-A') == 0)
+	tic ; c5 = nesdis (A) ; toc					    %#ok
+	lnz1 = sum (symbfact (A (c5,c5)))				    %#ok
+    end
 end
 
 fprintf ('test9 passed\n') ;

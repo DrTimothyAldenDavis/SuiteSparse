@@ -5,7 +5,8 @@ function dg(A)
 %   dg(A)
 % See also cholmod_test
 
-% Copyright 2006, Timothy A. Davis, University of Florida
+% Copyright 2006-2007, Timothy A. Davis, University of Florida
+
 A = spones (A) ;
 [p cp cm] = nesdis (A, 'row') ;
 

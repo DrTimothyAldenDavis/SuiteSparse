@@ -1,4 +1,4 @@
-% RBio - MATLAB toolbox for reading/writing sparse matrices in the Rutherford/
+% RBio: MATLAB toolbox for reading/writing sparse matrices in the Rutherford/
 %   Boeing format, and for reading/writing problems in the UF Sparse Matrix
 %   Collection from/to a set of files in a directory.
 %
@@ -9,6 +9,7 @@
 %   RBraw     - read the raw contents of a Rutherford/Boeing file
 %   RBfix     - read a possibly corrupted matrix from a R/B file
 %   RBinstall - install the RBio toolbox for use in MATLAB
+%   RBmake    - compile the RBio toolbox for use in MATLAB
 %
 % Example:
 %
@@ -20,4 +21,4 @@
 %
 % See also UFget, mread, mwrite.
 
-% Copyright 2006, Timothy A. Davis
+% Copyright 2007, Timothy A. Davis

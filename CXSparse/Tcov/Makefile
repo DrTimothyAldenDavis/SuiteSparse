@@ -8,7 +8,7 @@ CC = gcc
 CFLAGS = -O -g -fprofile-arcs -ftest-coverage \
     	-Wall -W -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
     	-Wredundant-decls -Wnested-externs -Wdisabled-optimization -ansi \
-	-Wno-unused-parameter -Werror -I../Source -I../Demo -I../../UFconfig
+	-Wno-unused-parameter -Werror -I../Include -I../Demo -I../../UFconfig
 
 run: all run_convert run_di run_dl run_ci run_cl
 	./covall
@@ -73,7 +73,7 @@ CS_CL = cs_add_cl.o cs_amd_cl.o cs_chol_cl.o cs_cholsol_cl.o cs_counts_cl.o \
 
 OBJ = $(CS_DI) $(CS_DL) $(CS_CI) $(CS_CL) cs_convert.o
 
-$(OBJ): ../Source/cs.h cstcov_malloc_test.h Makefile
+$(OBJ): ../Include/cs.h cstcov_malloc_test.h Makefile
 
 
 .PRECIOUS: %demo.c %demo1.c %demo2.c %demo3.c cs_%.c cs_%_ci.c cs_%_cl.c cs_%_di.c cs_%_dl.c cstcov_%.c
@@ -259,6 +259,8 @@ run_ci: cs_demo1_ci cs_demo2_ci cs_demo3_ci cstcov_test_ci
 	- $(V) ./cs_demo2_ci < ../Matrix/young1c
 	- $(V) ./cs_demo2_ci < ../Matrix/qc324
 	- $(V) ./cs_demo2_ci < ../Matrix/neumann
+	- $(V) ./cs_demo2_ci < ../Matrix/c4
+	- $(V) ./cs_demo3_ci < ../Matrix/c4
 	- $(V) ./cs_demo2_ci < ../Matrix/mhd1280b
 	- $(V) ./cs_demo3_ci < ../Matrix/mhd1280b
 	- $(V) ./cstcov_test_ci ../Matrix/t2 > test_ci_t2.out
@@ -283,6 +285,8 @@ run_cl: cs_demo1_cl cs_demo2_cl cs_demo3_cl cstcov_test_cl
 	- $(V) ./cs_demo2_cl < ../Matrix/young1c
 	- $(V) ./cs_demo2_cl < ../Matrix/qc324
 	- $(V) ./cs_demo2_cl < ../Matrix/neumann
+	- $(V) ./cs_demo2_cl < ../Matrix/c4
+	- $(V) ./cs_demo3_cl < ../Matrix/c4
 	- $(V) ./cs_demo2_cl < ../Matrix/mhd1280b
 	- $(V) ./cs_demo3_cl < ../Matrix/mhd1280b
 	- $(V) ./cstcov_test_cl ../Matrix/t2 > test_cl_t2.out

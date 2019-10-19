@@ -212,7 +212,7 @@ size_t cholmod_l_add_size_t (size_t a, size_t b, int *ok) ;
 size_t cholmod_l_mult_size_t (size_t a, size_t k, int *ok) ;
 
 /* -------------------------------------------------------------------------- */
-/* double, UF_long */
+/* double (also complex double), UF_long */
 /* -------------------------------------------------------------------------- */
 
 #ifdef DLONG
@@ -255,7 +255,7 @@ size_t cholmod_l_mult_size_t (size_t a, size_t k, int *ok) ;
 #error "single-precision not yet supported"
 
 /* -------------------------------------------------------------------------- */
-/* double, int: this is the default */
+/* double (also complex double), int: this is the default */
 /* -------------------------------------------------------------------------- */
 
 #else

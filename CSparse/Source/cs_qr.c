@@ -2,7 +2,7 @@
 /* sparse QR factorization [V,beta,pinv,R] = qr (A) */
 csn *cs_qr (const cs *A, const css *S)
 {
-    double *Rx, *Vx, *Ax, *Beta, *x ;
+    double *Rx, *Vx, *Ax, *x,  *Beta ;
     int i, k, p, m, n, vnz, p1, top, m2, len, col, rnz, *s, *leftmost, *Ap, *Ai,
 	*parent, *Rp, *Ri, *Vp, *Vi, *w, *pinv, *q ;
     cs *R, *V ;

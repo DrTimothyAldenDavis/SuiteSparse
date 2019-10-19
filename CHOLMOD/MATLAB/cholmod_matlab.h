@@ -4,6 +4,13 @@
 
 /* Shared prototypes and definitions for CHOLMOD mexFunctions */
 
+#include "UFconfig.h"
+#ifndef DLONG
+#define DLONG
+#endif
+#define Int UF_long
+#define Int_max UF_long_max
+
 /* Ensure cholmod_read_* and cholmod_write_* work for large files.  This
  * requires MATLAB 7.0 or later.  If you are using MATLAB 6.5 or earlier,
  * you must delete the following line, or compile CHOLMOD with -DNLARGEFILE */
@@ -18,6 +25,7 @@
 #include <limits.h>
 #include <string.h>
 #include <ctype.h>
+#include <float.h>
 #include "mex.h"
 #define EMPTY (-1)
 #define TRUE 1
@@ -44,52 +52,52 @@ extern FILE *sputil_file ;
 
 void sputil_error   /* reports an error */
 (
-    int error,	    /* kind of error */
-    int is_index    /* TRUE if a matrix index, FALSE if a matrix dimension */
+    Int error,  /* kind of error */
+    Int is_index /* TRUE if a matrix index, FALSE if a matrix dimension */
 ) ;
 
-int sputil_double_to_int   /* returns integer value of x */
+Int sputil_double_to_int   /* returns integer value of x */
 (
     double x,	    /* double value to convert */
-    int is_index,   /* TRUE if a matrix index, FALSE if a matrix dimension */
-    int n	    /* if a matrix index, x cannot exceed this dimension */
+    Int is_index, /* TRUE if a matrix index, FALSE if a matrix dimension */
+    Int n	    /* if a matrix index, x cannot exceed this dimension */
 ) ;
 
 double sputil_get_double (const mxArray *arg) ;	/* like mxGetScalar */
 
-int sputil_get_integer	    /* returns the integer value of a MATLAB argument */
+Int sputil_get_integer  /* returns the integer value of a MATLAB argument */
 (
     const mxArray *arg,	    /* MATLAB argument to convert */
-    int is_index,	    /* TRUE if an index, FALSE if a matrix dimension */
-    int n		    /* maximum value, if an index */
+    Int is_index,	    /* TRUE if an index, FALSE if a matrix dimension */
+    Int n		    /* maximum value, if an index */
 ) ;
 
 
-int sputil_copy_ij    /* returns the dimension, n */
+Int sputil_copy_ij    /* returns the dimension, n */
 (
-    int is_scalar,	/* TRUE if argument is a scalar, FALSE otherwise */
-    int scalar,		/* scalar value of the argument */
+    Int is_scalar,	/* TRUE if argument is a scalar, FALSE otherwise */
+    Int scalar,		/* scalar value of the argument */
     void *vector,	/* vector value of the argument */
     mxClassID category,	/* type of vector */
-    int nz,		/* length of output vector I */
-    int n,		/* maximum dimension, EMPTY if not yet known */
-    int *I		/* vector of length nz to copy into */
+    Int nz,		/* length of output vector I */
+    Int n,		/* maximum dimension, EMPTY if not yet known */
+    Int *I		/* vector of length nz to copy into */
 ) ;
 
 /* converts a triplet matrix to a compressed-column matrix */
 cholmod_sparse *sputil_triplet_to_sparse
 (
-    int nrow, int ncol, int nz, int nzmax,
-    int i_is_scalar, int i, void *i_vector, mxClassID i_class,
-    int j_is_scalar, int j, void *j_vector, mxClassID j_class,
-    int s_is_scalar, double x, double z, void *x_vector, double *z_vector,
-    mxClassID s_class, int s_complex,
+    Int nrow, Int ncol, Int nz, Int nzmax,
+    Int i_is_scalar, Int i, void *i_vector, mxClassID i_class,
+    Int j_is_scalar, Int j, void *j_vector, mxClassID j_class,
+    Int s_is_scalar, double x, double z, void *x_vector, double *z_vector,
+    mxClassID s_class, Int s_complex,
     cholmod_common *cm
 ) ;
 
 mxArray *sputil_copy_sparse (const mxArray *A) ;    /* copy a sparse matrix */
 
-int sputil_nelements (const mxArray *arg) ; /* like mxGetNumberOfElements */
+Int sputil_nelements (const mxArray *arg) ; /* like mxGetNumberOfElements */
 
 void sputil_sparse		/* top-level wrapper for "sparse" function */
 (
@@ -101,7 +109,7 @@ void sputil_sparse		/* top-level wrapper for "sparse" function */
 
 void sputil_error_handler (int status, char *file, int line, char *message) ;
 
-void sputil_config (int spumoni, cholmod_common *cm) ;
+void sputil_config (Int spumoni, cholmod_common *cm) ;
 
 mxArray *sputil_sparse_to_dense (const mxArray *S) ;
 
@@ -110,7 +118,7 @@ cholmod_sparse *sputil_get_sparse
     const mxArray *Amatlab, /* MATLAB version of the matrix */
     cholmod_sparse *A,	    /* CHOLMOD version of the matrix */
     double *dummy,	    /* a pointer to a valid scalar double */
-    int stype		    /* -1: lower, 0: unsymmetric, 1: upper */
+    Int stype		    /* -1: lower, 0: unsymmetric, 1: upper */
 ) ;
 
 cholmod_dense *sputil_get_dense
@@ -137,11 +145,11 @@ void sputil_drop_zeros	    /* drop numerical zeros from a CHOLMOD matrix */
     cholmod_sparse *S
 ) ;
 
-mxArray *sputil_put_int	/* copy int vector to mxArray */
+mxArray *sputil_put_int	/* copy Int vector to mxArray */
 (
-    int *P,		/* vector to convert */
-    int n,		/* length of P */
-    int one_based	/* 1 if convert from 0-based to 1-based, 0 otherwise */
+    Int *P,		/* vector to convert */
+    Int n,		/* length of P */
+    Int one_based	/* 1 if convert from 0-based to 1-based, 0 otherwise */
 ) ;
 
 mxArray *sputil_dense_to_sparse (const mxArray *arg) ;
@@ -151,7 +159,7 @@ void sputil_check_ijvector (const mxArray *arg) ;
 void sputil_trim
 (
     cholmod_sparse *S,
-    int k,
+    Int k,
     cholmod_common *cm
 ) ;
 

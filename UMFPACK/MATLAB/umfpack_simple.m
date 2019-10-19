@@ -1,10 +1,9 @@
-% umfpack_simple:  a simple demo of UMFPACK
+%UMFPACK_SIMPLE a simple demo
 %
 % Example:
 %   umfpack_simple
 %
-% Copyright (c) 1995-2006 by Timothy A. Davis.
-% All Rights Reserved.  Type umfpack_details for License.
+% Copyright 1995-2007 by Timothy A. Davis.
 %
 % UMFPACK License:
 %
@@ -21,11 +20,6 @@
 
 help umfpack_simple
 
-% i = input ('Hit enter to agree to the above License: ', 's') ;
-% if (~isempty (i))
-%     error ('terminating') ;
-% end
-
 format short
 
 A = [
@@ -34,21 +28,25 @@ A = [
  0 -1 -3  2  0
  0  0  1  0  0
  0  4  2  0  1
-]
+] ;
+fprintf ('A = \n') ; disp (A) ;
 
 A = sparse (A) ;
 
-b = [8 45 -3 3 19]'
+b = [8 45 -3 3 19]' ;
+fprintf ('b = \n') ; disp (b) ;
 
 fprintf ('Solution to Ax=b via UMFPACK:\n') ;
 fprintf ('x1 = umfpack2 (A, ''\\'', b)\n') ;
 
-x1 = umfpack2 (A, '\', b)
+x1 = umfpack2 (A, '\', b) ;
+fprintf ('x1 = \n') ; disp (x1) ;
 
 fprintf ('Solution to Ax=b via MATLAB:\n') ;
 fprintf ('x2 = A\\b\n') ;
 
-x2 = A\b
+x2 = A\b ;
+fprintf ('x2 = \n') ; disp (x2) ;
 
 fprintf ('norm (x1-x2) should be small: %g\n', norm (x1-x2)) ;
 

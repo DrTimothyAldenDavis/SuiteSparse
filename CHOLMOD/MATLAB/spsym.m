@@ -78,7 +78,7 @@ function result = spsym (A, quick)					    %#ok
 %           result = 1 ;            % unsymmetric
 %       end
 
-%   Copyright 2006, Timothy A. Davis
+%   Copyright 2006-2007, Timothy A. Davis
 %   http://www.cise.ufl.edu/research/sparse
 
 error ('spsym mexFunction not found') ;

@@ -1,51 +1,49 @@
+#------------------------------------------------------------------------------
+# CCOLAMD Makefile
+#------------------------------------------------------------------------------
 
-default: ccolamd_example ccolamd_l_example libccolamd.a
+default: demo
 
 include ../UFconfig/UFconfig.mk
 
-I = -I../UFconfig
+# Compile all C code, including the C-callable routine and the mexFunctions.
+# Do not the MATLAB interface.
+demo:
+	( cd Lib    ; $(MAKE) )
+	( cd Demo   ; $(MAKE) )
 
-ccolamd_example:  ccolamd_example.c libccolamd.a
-	$(CC) $(CFLAGS) $(I) -o ccolamd_example ccolamd_example.c libccolamd.a -lm
-	- ./ccolamd_example > my_ccolamd_example.out
-	- diff ccolamd_example.out my_ccolamd_example.out
+# Compile all C code, including the C-callable routine and the mexFunctions.
+all:
+	( cd Lib    ; $(MAKE) )
+	( cd Demo   ; $(MAKE) )
+	( cd MATLAB ; $(MAKE) )
 
-ccolamd_l_example:  ccolamd_l_example.c libccolamd.a
-	$(CC) $(CFLAGS) $(I) -o ccolamd_l_example ccolamd_l_example.c libccolamd.a -lm
-	- ./ccolamd_l_example > my_ccolamd_l_example.out
-	- diff ccolamd_l_example.out my_ccolamd_l_example.out
+# compile just the C-callable libraries (not mexFunctions or Demos)
+library:
+	( cd Lib    ; $(MAKE) )
 
-purge: distclean
-
-distclean: clean2
-	- $(RM) libccolamd.a
-
-clean2: clean
-	- $(RM) *.o *.dll ccolamd_example ccolamd_l_example
-	- $(RM) ccolamd.mex* csymamd.mex*
-	- $(RM) ccolamdtestmex.mex* csymamdtestmex.mex*
-	- $(RM) my_ccolamd_example.out my_ccolamd_l_example.out
-
-# Compiles the MATLAB-callable routines
-mex: ccolamdmex.c csymamdmex.c libccolamd.a
-	$(MEX) $(I) -output ccolamd ccolamdmex.c libccolamd.a
-	$(MEX) $(I) -output csymamd csymamdmex.c libccolamd.a
-
-# Compiles the extensive test code
-test: mex ccolamdtestmex.c csymamdtestmex.c libccolamd.a
-	$(MEX) $(I) ccolamdtestmex.c libccolamd.a
-	$(MEX) $(I) csymamdtestmex.c libccolamd.a
-
-# creates libccolamd.a, a C-callable CCOLAMD library
-libccolamd.a:  ccolamd.c ccolamd_global.c ccolamd.h
-	$(CC) $(CFLAGS) $(I) -c ccolamd_global.c
-	$(CC) $(CFLAGS) $(I) -c ccolamd.c
-	$(CC) $(CFLAGS) $(I) -c ccolamd.c -DDLONG -o ccolamd_l.o
-	$(AR) libccolamd.a ccolamd.o ccolamd_l.o ccolamd_global.o
-
-ccode: libccolamd.a
-
-library: libccolamd.a
-
+# remove object files, but keep the compiled programs and library archives
 clean:
-	- $(RM) $(CLEAN)
+	( cd Lib    ; $(MAKE) clean )
+	( cd Demo   ; $(MAKE) clean )
+	( cd MATLAB ; $(MAKE) clean )
+
+# clean, and then remove compiled programs and library archives
+purge:
+	( cd Lib    ; $(MAKE) purge )
+	( cd Demo   ; $(MAKE) purge )
+	( cd MATLAB ; $(MAKE) purge )
+
+distclean: purge
+
+# get ready for distribution
+dist: purge
+	( cd Demo   ; $(MAKE) dist )
+
+ccode: library
+
+lib: library
+
+# compile the MATLAB mexFunction
+mex:
+	( cd MATLAB ; $(MAKE) )

@@ -1,5 +1,5 @@
 function rho = lu_normest (A, L, U)
-% LU_NORMEST:  estimate the 1-norm of A-L*U without computing L*U
+%LU_NORMEST estimates norm (L*U-A, 1) without forming L*U-A
 %
 % Example:
 %
@@ -30,9 +30,13 @@ function rho = lu_normest (A, L, U)
 % For a detailed description, see Davis, T. A. and Hager, W. W.,
 % Modifying a sparse Cholesky factorization, SIAM J. Matrix Analysis and
 % Applications, 1999, vol. 20, no. 3, 606-627.
+%
+% See also normest
 
 % The three places that the matrix-vector multiply E*x is used are highlighted.
 % Note that E is never formed explicity.
+
+% Copyright 1995-2007 by William W. Hager and Timothy A. Davis
 
 [m n] = size (A) ;
 
@@ -49,13 +53,10 @@ if (m ~= n)
     end
 end
 
-[m n] = size (A) ;
+[m n] = size (A) ;	    %#ok
 
 notvisited = ones (m, 1) ;  % nonvisited(j) is zero if j is visited, 1 otherwise
 rho = 0 ;    % the global rho
-
-At = A' ;
-Lt = L' ;
 
 for trial = 1:3 % {
 

@@ -35,13 +35,14 @@ void mexFunction
     cholmod_sparse *S, Smatrix ;
     cholmod_dense *F, Fmatrix, *C ;
     cholmod_common Common, *cm ;
-    int srow, scol, frow, fcol, crow, transpose ; 
+    Int srow, scol, frow, fcol, crow, transpose ; 
+
     /* ---------------------------------------------------------------------- */
     /* start CHOLMOD and set parameters */ 
     /* ---------------------------------------------------------------------- */
 
     cm = &Common ;
-    cholmod_start (cm) ;
+    cholmod_l_start (cm) ;
     sputil_config (SPUMONI, cm) ;
 
     /* ---------------------------------------------------------------------- */
@@ -69,10 +70,6 @@ void mexFunction
     {
 	mexErrMsgTxt ("sdmult (S,F): S must be sparse, F must be full") ;
     }
-    if (!mxIsDouble (pargin [0]) || !mxIsDouble (pargin [1]))
-    {
-    	mexErrMsgTxt ("sdmult (S,F): S and F must be double (or complex double)") ;
-    }
 
     /* ---------------------------------------------------------------------- */
     /* get S and F */
@@ -86,16 +83,16 @@ void mexFunction
     /* ---------------------------------------------------------------------- */
 
     crow = transpose ? scol : srow ;
-    C = cholmod_allocate_dense (crow, fcol, crow, F->xtype, cm) ;
-    cholmod_sdmult (S, transpose, one, zero, F, C, cm) ;
+    C = cholmod_l_allocate_dense (crow, fcol, crow, F->xtype, cm) ;
+    cholmod_l_sdmult (S, transpose, one, zero, F, C, cm) ;
     pargout [0] = sputil_put_dense (&C, cm) ;
 
     /* ---------------------------------------------------------------------- */
     /* free workspace and the CHOLMOD L, except for what is copied to MATLAB */
     /* ---------------------------------------------------------------------- */
 
-    cholmod_finish (cm) ;
-    cholmod_print_common (" ", cm) ;
+    cholmod_l_finish (cm) ;
+    cholmod_l_print_common (" ", cm) ;
     /*
     if (cm->malloc_count != (mxIsComplex (pargout [0]) + 1)) mexErrMsgTxt ("!");
     */

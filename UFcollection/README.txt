@@ -1,4 +1,4 @@
-UFcollection, Version 1.0.1, Dec 12, 2006.
+UFcollection, Version 1.1.0, May 31, 2007.
 
 UFcollection is a MATLAB toolbox for managing the UF Sparse Matrix Collection.
 If you are a MATLAB user of the collection, you would not normally need to use
@@ -54,7 +54,7 @@ MATLAB help for the UFcollection toolbox:
 
   Requires UFget, CSparse, CHOLMOD, AMD, COLAMD, RBio, and METIS.
 
-  Copyright 2006, Timothy A. Davis
+  Copyright 2007, Timothy A. Davis
 
 --------------------------------------------------------------------------------
 Files:

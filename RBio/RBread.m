@@ -1,5 +1,5 @@
 function [A Z title key mtype] = RBread (filename)			    %#ok
-%RBread: read a sparse matrix from a Rutherford/Boeing file
+%RBREAD read a sparse matrix from a Rutherford/Boeing file
 % Usage:
 %   [A Z title key mtype] = RBread (filename)
 %
@@ -21,7 +21,7 @@ function [A Z title key mtype] = RBread (filename)			    %#ok
 %
 % See also RBwrite, RBreade, RBtype.
 
-% Copyright 2006, Timothy A. Davis
+% Copyright 2007, Timothy A. Davis
 
 error ('RBread mexFunction not found') ;
 

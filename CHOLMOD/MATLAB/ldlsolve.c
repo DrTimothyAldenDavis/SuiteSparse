@@ -31,19 +31,19 @@ void mexFunction
 )
 {
     double dummy = 0, rcond ;
-    int *Lp, *Lnz, *Lprev, *Lnext ;
+    Int *Lp, *Lnz, *Lprev, *Lnext ;
     cholmod_sparse *Bs, Bspmatrix, *Xs ;
     cholmod_dense *B, Bmatrix, *X ;
     cholmod_factor *L ;
     cholmod_common Common, *cm ;
-    int j, k, n, B_is_sparse, head, tail ;
+    Int j, k, n, B_is_sparse, head, tail ;
 
     /* ---------------------------------------------------------------------- */
     /* start CHOLMOD and set parameters */ 
     /* ---------------------------------------------------------------------- */
 
     cm = &Common ;
-    cholmod_start (cm) ;
+    cholmod_l_start (cm) ;
     sputil_config (SPUMONI, cm) ;
 
     /* ---------------------------------------------------------------------- */
@@ -61,10 +61,6 @@ void mexFunction
     if (!mxIsSparse (pargin [0]) || n != mxGetM (pargin [0]))
     {
 	mexErrMsgTxt ("ldlsolve: LD must be sparse and square") ;
-    }
-    if (!mxIsDouble (pargin [0]))
-    {
-    	mexErrMsgTxt ("ldlsolve: LD must be double (or complex double)") ;
     }
     if (n != mxGetM (pargin [1]))
     {
@@ -97,7 +93,7 @@ void mexFunction
     /* the construction of the CHOLMOD takes O(n) time and memory */
 
     /* allocate the CHOLMOD symbolic L */
-    L = cholmod_allocate_factor (n, cm) ;
+    L = cholmod_l_allocate_factor (n, cm) ;
     L->ordering = CHOLMOD_NATURAL ;
 
     /* get the MATLAB L */
@@ -107,15 +103,15 @@ void mexFunction
     L->z = mxGetPi (pargin [0]) ;
 
     /* allocate and initialize the rest of L */
-    L->nz = cholmod_malloc (n, sizeof (int), cm) ;
+    L->nz = cholmod_l_malloc (n, sizeof (Int), cm) ;
     Lp = L->p ;
     Lnz = L->nz ;
     for (j = 0 ; j < n ; j++)
     {
 	Lnz [j] = Lp [j+1] - Lp [j] ;
     }
-    L->prev = cholmod_malloc (n+2, sizeof (int), cm) ;
-    L->next = cholmod_malloc (n+2, sizeof (int), cm) ;
+    L->prev = cholmod_l_malloc (n+2, sizeof (Int), cm) ;
+    L->next = cholmod_l_malloc (n+2, sizeof (Int), cm) ;
     Lprev = L->prev ;
     Lnext = L->next ;
 
@@ -142,17 +138,17 @@ void mexFunction
     if (B_is_sparse)
     {
 	/* solve LDL'X=B with sparse X and B; return sparse X to MATLAB */
-	Xs = cholmod_spsolve (CHOLMOD_LDLt, L, Bs, cm) ;
+	Xs = cholmod_l_spsolve (CHOLMOD_LDLt, L, Bs, cm) ;
 	pargout [0] = sputil_put_sparse (&Xs, cm) ;
     }
     else
     {
 	/* solve AX=B with dense X and B; return dense X to MATLAB */
-	X = cholmod_solve (CHOLMOD_LDLt, L, B, cm) ;
+	X = cholmod_l_solve (CHOLMOD_LDLt, L, B, cm) ;
 	pargout [0] = sputil_put_dense (&X, cm) ;
     }
 
-    rcond = cholmod_rcond (L, cm) ;
+    rcond = cholmod_l_rcond (L, cm) ;
     if (rcond == 0)
     {
 	mexWarnMsgTxt ("Matrix is indefinite or singular to working precision");
@@ -171,9 +167,9 @@ void mexFunction
     L->i = NULL ;
     L->x = NULL ;
     L->z = NULL ;
-    cholmod_free_factor (&L, cm) ;
-    cholmod_finish (cm) ;
-    cholmod_print_common (" ", cm) ;
+    cholmod_l_free_factor (&L, cm) ;
+    cholmod_l_finish (cm) ;
+    cholmod_l_print_common (" ", cm) ;
     /*
     if (cm->malloc_count !=
 	(mxIsComplex (pargout [0]) + (mxIsSparse (pargout[0]) ? 3:1)))

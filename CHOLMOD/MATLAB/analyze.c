@@ -47,7 +47,7 @@ void mexFunction
     cholmod_factor *L ;
     cholmod_sparse *A, Amatrix, *C, *S ;
     cholmod_common Common, *cm ;
-    int n, transpose, c ;
+    Int n, transpose, c ;
     char buf [LEN] ;
 
     /* ---------------------------------------------------------------------- */
@@ -55,7 +55,7 @@ void mexFunction
     /* ---------------------------------------------------------------------- */
 
     cm = &Common ;
-    cholmod_start (cm) ;
+    cholmod_l_start (cm) ;
     sputil_config (SPUMONI, cm) ;
 
     /* only do the simplicial analysis (L->Perm and L->ColCount) */
@@ -150,7 +150,7 @@ void mexFunction
     if (transpose)
     {
 	/* C = A', and then order C*C' */
-	C = cholmod_transpose (A, 0, cm) ;
+	C = cholmod_l_transpose (A, 0, cm) ;
 	if (C == NULL)
 	{
 	    mexErrMsgTxt ("analyze failed") ;
@@ -164,7 +164,7 @@ void mexFunction
     /* analyze and order the matrix */
     /* ---------------------------------------------------------------------- */
 
-    L = cholmod_analyze (A, cm) ;
+    L = cholmod_l_analyze (A, cm) ;
 
     /* ---------------------------------------------------------------------- */
     /* return Perm */
@@ -180,10 +180,10 @@ void mexFunction
     /* free workspace */
     /* ---------------------------------------------------------------------- */
 
-    cholmod_free_factor (&L, cm) ;
-    cholmod_free_sparse (&C, cm) ;
-    cholmod_free_sparse (&S, cm) ;
-    cholmod_finish (cm) ;
-    cholmod_print_common (" ", cm) ;
+    cholmod_l_free_factor (&L, cm) ;
+    cholmod_l_free_sparse (&C, cm) ;
+    cholmod_l_free_sparse (&S, cm) ;
+    cholmod_l_finish (cm) ;
+    cholmod_l_print_common (" ", cm) ;
     /* if (cm->malloc_count != 0) mexErrMsgTxt ("!") ; */
 }

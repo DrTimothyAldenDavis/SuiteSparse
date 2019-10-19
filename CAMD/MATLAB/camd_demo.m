@@ -7,13 +7,9 @@ function camd_demo
 %   camd_demo
 %
 % See also: camd, camd_make
-%
-% --------------------------------------------------------------------------
-% Copyright 2006 by Timothy A. Davis, Yanqing Chen,
-% Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.
-% email: davis at cise.ufl.edu    CISE Department, Univ. of Florida.
-% web: http://www.cise.ufl.edu/research/sparse/camd
-% --------------------------------------------------------------------------
+
+% Copyright 1994-2007, Tim Davis, University of Florida,
+% Patrick R. Amestoy, Iain S. Duff, and Yanqing Chen.
 
 % This orders the same matrix as the ANSI C demo, camd_demo.c.  It includes an
 % additional analysis of the matrix via MATLAB's symbfact routine.
@@ -39,7 +35,7 @@ spy (A)
 title ('HB/can24 matrix') ;
 
 % print the details during CAMD ordering and SYMBFACT
-spparms ('spumoni', 1) ;
+% spparms ('spumoni', 1) ;
 
 % order the matrix.  Note that the Info argument is optional.
 fprintf ('\nIf the next step fails, then you have\n') ;
@@ -62,16 +58,16 @@ end
 for j = 1:n
     fprintf (' %2d', C (p (j))) ;
 end
-fprintf ('\n\n') ;
+fprintf ('\n\n\n') ;
 
 subplot (2,2,2) ;
 spy (A (p,p)) ;
-title ('permuted matrix') ;
+title ('Permuted matrix') ;
 
 % The camd_demo.c program stops here.
 
-fprintf ('analyze A(p,p) with MATLAB''s symbfact routine:\n') ;
-[cn, height, parent, post, R] = symbfact (A (p,p)) ;
+fprintf ('Analyze A(p,p) with MATLAB symbfact routine:\n') ;
+[cn, height, parent, post, R] = symbfact (A(p,p)) ;
 
 subplot (2,2,3) ;
 spy (R') ; 
@@ -79,9 +75,9 @@ title ('Cholesky factor L') ;
 
 subplot (2,2,4) ;
 treeplot (parent) ;
-title ('Elimination tree') ;
+title ('etree') ;
 
-% symbfact results
+% results from symbfact
 lnz = sum (cn) ;                % number of nonzeros in L, incl. diagonal
 cn = cn - 1 ;                   % get the count of off-diagonal entries
 fl = n + sum (cn.^2 + 2*cn) ;   % flop count for chol (A (p,p)
@@ -99,7 +95,7 @@ fprintf ('\nNote that the ordering quality is not as good as p=amd(A).\n') ;
 fprintf ('This is only because the ordering constraints, C, have been\n') ;
 fprintf ('randomly selected.\n') ;
 
-if (lnz2 ~= lnz || fl ~= fl2)
+if (lnz2 ~= lnz | fl ~= fl2)						    %#ok
     fprintf ('Note that the nonzero and flop counts from CAMD are slight\n') ;
     fprintf ('upper bounds.  This is due to the approximate minimum degree\n');
     fprintf ('method used, in conjunction with "mass elimination".\n') ;
@@ -108,7 +104,7 @@ if (lnz2 ~= lnz || fl ~= fl2)
 end
 
 % turn off diagnostic output in MATLAB's sparse matrix routines
-spparms ('spumoni', 0) ;
+% spparms ('spumoni', 0) ;
 
 %-------------------------------------------------------------------------------
 

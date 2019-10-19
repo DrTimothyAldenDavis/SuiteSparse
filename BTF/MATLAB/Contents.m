@@ -1,21 +1,20 @@
-% BTF ordering toolbox, including test codes
+% BTF ordering toolbox:
 %
 % Primary functions:
 %
-%   maxtrans   - finds a permutation of the columns of a sparse matrix
-%   strongcomp - Find a symmetric permutation to upper block triangular form.
+%   btf        - permute a square sparse matrix into upper block triangular form
+%   maxtrans   - permute the columns of a sparse matrix so it has a zero-free diagonal
+%   strongcomp - symmetric permutation to upper block triangular form
 %
-% helper and test functions:
-%
-%   checkbtf   - ensure A(p,q) is in BTF form
-%   drawbtf    - plot the BTF form of a matrix
-%   td         - test script for BTF
-%   toobig     - list of matrices that are too big for dmperm
-%   trav       - exhaustive test script for BTF
-%   dp         - dmperm on a sparse matrix
+% Other:
+%   btf_install - compile and install BTF for use in MATLAB.
+%   btf_demo    - demo for BTF
+%   drawbtf     - plot the BTF form of a matrix
+%   btf_make    - compile BTF for use in MATLAB
 %
 % Example:
-%   Match = maxtrans (A)
-%   [p,q,r] = strongcomp (A)
+%   q = maxtrans (A)
+%   [p,q,r] = btf (A)
+%   [p,r] = strongcomp (A)
 
-% Copyright 2006, Timothy A. Davis, University of Florida
+% Copyright 2004-2007, Tim Davis, University of Florida

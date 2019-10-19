@@ -1,12 +1,12 @@
 function [url, topdir] = UFlocation
-%UFlocation: URL and top-level directory of the UF Sparse Matrix Collection
+%UFLOCATION URL and top-level directory of the UF Sparse Matrix Collection
 %
 % Example:
 %   [url, topdir] = UFlocation
 %
 % See also UFget.
 
-% Copyright 2006, Timothy A. Davis
+% Copyright 2006-2007, Timothy A. Davis
 
 params = UFget_defaults ;
 t = find (params.dir == filesep) ;

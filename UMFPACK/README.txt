@@ -189,9 +189,6 @@ Files and directories in the UMFPACK distribution:
     Source directory:
     ----------------------------------------------------------------------------
 
-    GNUmakefile			a nice Makefile, for GNU make
-    Makefile			an ugly Unix Makefile (for older make's)
-
     cholmod_blas.h		an exact copy of CHOLMOD/Include/cholmod_blas.h
 
     umfpack_col_to_triplet.c	convert col form to triplet
@@ -370,8 +367,6 @@ Files and directories in the UMFPACK distribution:
 				version of UMFPACK (useful prototype for
 				Microsoft Visual Studio project)
 
-    Opteron64/			demo output files on an AMD Opteron
-
     ----------------------------------------------------------------------------
     MATLAB directory:
     ----------------------------------------------------------------------------
@@ -396,7 +391,6 @@ Files and directories in the UMFPACK distribution:
     west0067.mat		sparse matrix for umfpack_demo.m
 
     umfpack_demo.m.out		output of umfpack_demo.m
-    umfpack_demo.m.out_verbose	ditto, but with print level 2, on AMD Opteron
     umfpack_simple.m.out	output of umfpack_simple
 
     lcc_lib/lapacksyms.def	LAPACK definitions for lcc compiler (Windows)
@@ -406,4 +400,6 @@ Files and directories in the UMFPACK distribution:
     Lib directory:  libumfpack.a library placed here
     ----------------------------------------------------------------------------
 
+    GNUmakefile			a nice Makefile, for GNU make
+    Makefile			an ugly Unix Makefile (for older make's)
     libumfpack.def		UMPFACK definitions for Windows

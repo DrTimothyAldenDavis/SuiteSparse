@@ -4,7 +4,7 @@ function [v,beta,s] = house (x)
 %   [v,beta,s] = house (x)
 % See also: cs_demo
 
-%   Copyright 2006, Timothy A. Davis.
+%   Copyright 2006-2007, Timothy A. Davis.
 %   http://www.cise.ufl.edu/research/sparse
 
 n = length (x) ;

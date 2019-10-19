@@ -1,6 +1,6 @@
 #include "cs.h"
 /* create a Householder reflection [v,beta,s]=house(x), overwrite x with v,
- * where (I-beta*v*v')*x = s*x.  See Algo 5.1.1, Golub & Van Loan, 3rd ed. */
+ * where (I-beta*v*v')*x = s*e1.  See Algo 5.1.1, Golub & Van Loan, 3rd ed. */
 double cs_house (double *x, double *beta, int n)
 {
     double s, sigma = 0 ;

@@ -3,7 +3,7 @@
 /* ========================================================================= */
 
 /* ------------------------------------------------------------------------- */
-/* AMD Version 2.0, Copyright (c) 2006 by Timothy A. Davis,		     */
+/* AMD Version 2.2, Copyright (c) 2007 by Timothy A. Davis,                  */
 /* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
 /* email: davis at cise.ufl.edu    CISE Department, Univ. of Florida.        */
 /* web: http://www.cise.ufl.edu/research/sparse/amd                          */
@@ -398,11 +398,11 @@ void amd_l_info     (double Info [ ]) ;
  * Versions 1.1 and earlier of AMD do not include a #define'd version number.
  */
 
-#define AMD_DATE "Dec 12, 2006"
+#define AMD_DATE "May 31, 2007"
 #define AMD_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
 #define AMD_MAIN_VERSION 2
-#define AMD_SUB_VERSION 0
-#define AMD_SUBSUB_VERSION 4
+#define AMD_SUB_VERSION 2
+#define AMD_SUBSUB_VERSION 0
 #define AMD_VERSION AMD_VERSION_CODE(AMD_MAIN_VERSION,AMD_SUB_VERSION)
 
 #ifdef __cplusplus

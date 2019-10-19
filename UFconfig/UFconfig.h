@@ -30,7 +30,7 @@
  *
  * This file also defines the SUITESPARSE_VERSION and related definitions.
  *
- * Copyright (c) 2006, University of Florida.  No licensing restrictions
+ * Copyright (c) 2007, University of Florida.  No licensing restrictions
  * apply to this file or to the UFconfig directory.  Author: Timothy A. Davis.
  */
 
@@ -76,33 +76,33 @@ extern "C" {
  * version of SuiteSparse, with another package from another version of
  * SuiteSparse, may or may not work.
  *
- * SuiteSparse Version 2.4 contains the following packages:
+ * SuiteSparse Version 3.0.0 contains the following packages:
  *
- *  AMD		    version 2.0.4
- *  CAMD	    version 2.1.3
- *  COLAMD	    version 2.6.0
- *  CCOLAMD	    version 2.5.2
- *  CHOLMOD	    version 1.4.0
- *  CSparse	    version 2.0.7
- *  CXSparse	    version 2.0.7
- *  KLU		    version 0.11
- *  BTF		    version 0.11
- *  LDL		    version 1.3.4
+ *  AMD		    version 2.2.0
+ *  CAMD	    version 2.2.0
+ *  COLAMD	    version 2.7.0
+ *  CCOLAMD	    version 2.7.0
+ *  CHOLMOD	    version 1.5.0
+ *  CSparse	    version 2.2.0
+ *  CXSparse	    version 2.2.0
+ *  KLU		    version 1.0.0
+ *  BTF		    version 1.0.0
+ *  LDL		    version 2.0.0
  *  UFconfig	    version number is the same as SuiteSparse
- *  UMFPACK	    version 5.0.3
- *  RBio	    version 1.0.0
- *  UFcollection    version 1.0.1
+ *  UMFPACK	    version 5.1.0
+ *  RBio	    version 1.1.0
+ *  UFcollection    version 1.1.0
  *
  * Other package dependencies:
  *  BLAS	    required by CHOLMOD and UMFPACK
  *  LAPACK	    required by CHOLMOD
- *  METIS 4.0.1	    required by CHOLMOD (optional)
+ *  METIS 4.0.1	    required by CHOLMOD (optional) and KLU (optional)
  */
 
-#define SUITESPARSE_DATE "Dec 13, 2006"
+#define SUITESPARSE_DATE "May 31, 2007"
 #define SUITESPARSE_VER_CODE(main,sub) ((main) * 1000 + (sub))
-#define SUITESPARSE_MAIN_VERSION 2
-#define SUITESPARSE_SUB_VERSION 4
+#define SUITESPARSE_MAIN_VERSION 3
+#define SUITESPARSE_SUB_VERSION 0
 #define SUITESPARSE_SUBSUB_VERSION 0
 #define SUITESPARSE_VERSION \
     SUITESPARSE_VER_CODE(SUITESPARSE_MAIN_VERSION,SUITESPARSE_SUB_VERSION)
@@ -110,6 +110,4 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-
-
 #endif

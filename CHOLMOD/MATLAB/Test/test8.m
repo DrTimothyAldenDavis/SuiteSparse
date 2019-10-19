@@ -5,7 +5,7 @@ function test8 (nmat)
 %   test8(nmat)
 % See also cholmod_test
 
-% Copyright 2006, Timothy A. Davis, University of Florida
+% Copyright 2006-2007, Timothy A. Davis, University of Florida
 
 fprintf ('=================================================================\n');
 fprintf ('test8: factorize a large range of sparse matrices\n') ;

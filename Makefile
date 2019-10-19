@@ -24,7 +24,7 @@ default:
 
 library: default
 
-# Compile the MATLAB mexFunctions
+# Compile the MATLAB mexFunctions (except RBio and UFcollection)
 mex:
 	( cd AMD ; $(MAKE) mex )
 	( cd CAMD ; $(MAKE) mex )
@@ -35,9 +35,8 @@ mex:
 	( cd CCOLAMD ; $(MAKE) mex )
 	( cd CHOLMOD ; $(MAKE) mex )
 	( cd UMFPACK ; $(MAKE) mex )
+	( cd CXSparse ; $(MAKE) mex )
 	( cd CSparse ; $(MAKE) mex )
-	( cd RBio ; $(MAKE) )
-	( cd UFcollection ; $(MAKE) )
 
 # Remove all files not in the original distribution
 purge:
@@ -54,8 +53,8 @@ purge:
 	( cd CHOLMOD ; $(MAKE) purge )
 	( cd CSparse ; $(MAKE) purge )
 	( cd CXSparse ; $(MAKE) purge )
-	( cd RBio ; $(MAKE) purge )
-	( cd UFcollection ; $(MAKE) purge )
+	( cd RBio ; $(RM) *.mex* )
+	( cd UFcollection ; $(RM) *.mex* )
 #	( cd LPDASA ; $(MAKE) purge )
 #	( cd PARAKLETE ; $(MAKE) purge )
 
@@ -74,8 +73,6 @@ clean:
 	( cd CHOLMOD ; $(MAKE) clean )
 	( cd CSparse ; $(MAKE) clean )
 	( cd CXSparse ; $(MAKE) clean )
-	( cd RBio ; $(MAKE) clean )
-	( cd UFcollection ; $(MAKE) clean )
 #	( cd LPDASA ; $(MAKE) clean )
 #	( cd PARAKLETE ; $(MAKE) clean )
 

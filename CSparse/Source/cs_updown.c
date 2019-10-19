@@ -3,7 +3,7 @@
 int cs_updown (cs *L, int sigma, const cs *C, const int *parent)
 {
     int n, p, f, j, *Lp, *Li, *Cp, *Ci ;
-    double *Lx, *Cx, alpha, beta = 1, delta, gamma, w1, w2, *w,  beta2 = 1 ;
+    double *Lx, *Cx, alpha, beta = 1, delta, gamma, w1, w2, *w, beta2 = 1 ;
     if (!CS_CSC (L) || !CS_CSC (C) || !parent) return (0) ;  /* check inputs */
     Lp = L->p ; Li = L->i ; Lx = L->x ; n = L->n ;
     Cp = C->p ; Ci = C->i ; Cx = C->x ;

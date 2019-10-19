@@ -1,3 +1,11 @@
+May 31, 2007: version 2.2.0
+
+    * port to 64-bit MATLAB
+
+    * Makefile moved from Source/ to Lib/
+
+    * minor changes to printing routines (amd_control.c, amd_info.c)
+
 Dec 12, 2006, version 2.0.4
 
     * minor MATLAB code cleanup

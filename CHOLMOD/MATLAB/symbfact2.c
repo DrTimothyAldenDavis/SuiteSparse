@@ -50,11 +50,11 @@ void mexFunction
 )
 {
     double dummy = 0 ;
-    double *Lx ;
-    int *Parent, *Post, *ColCount, *First, *Level, *Rp, *Ri, *Lp, *Li, *W ;
+    double *Lx, *px ;
+    Int *Parent, *Post, *ColCount, *First, *Level, *Rp, *Ri, *Lp, *Li, *W ;
     cholmod_sparse *A, Amatrix, *F, *Aup, *Alo, *R, *A1, *A2, *L, *S ;
     cholmod_common Common, *cm ;
-    int n, i, coletree, j, lnz, p, k, height, c ;
+    Int n, i, coletree, j, lnz, p, k, height, c ;
     char buf [LEN] ;
 
     /* ---------------------------------------------------------------------- */
@@ -62,7 +62,7 @@ void mexFunction
     /* ---------------------------------------------------------------------- */
 
     cm = &Common ;
-    cholmod_start (cm) ;
+    cholmod_l_start (cm) ;
     sputil_config (SPUMONI, cm) ;
 
     /* ---------------------------------------------------------------------- */
@@ -134,14 +134,14 @@ void mexFunction
     /* compute the etree, its postorder, and the row/column counts */
     /* ---------------------------------------------------------------------- */
 
-    Parent = cholmod_malloc (n, sizeof (int), cm) ;
-    Post = cholmod_malloc (n, sizeof (int), cm) ;
-    ColCount = cholmod_malloc (n, sizeof (int), cm) ;
-    First = cholmod_malloc (n, sizeof (int), cm) ;
-    Level = cholmod_malloc (n, sizeof (int), cm) ;
+    Parent = cholmod_l_malloc (n, sizeof (Int), cm) ;
+    Post = cholmod_l_malloc (n, sizeof (Int), cm) ;
+    ColCount = cholmod_l_malloc (n, sizeof (Int), cm) ;
+    First = cholmod_l_malloc (n, sizeof (Int), cm) ;
+    Level = cholmod_l_malloc (n, sizeof (Int), cm) ;
 
     /* F = A' */
-    F = cholmod_transpose (A, 0, cm) ;
+    F = cholmod_l_transpose (A, 0, cm) ;
 
     if (A->stype == 1 || coletree)
     {
@@ -158,7 +158,7 @@ void mexFunction
 	Alo = A ;
     }
 
-    cholmod_etree (Aup, Parent, cm) ;
+    cholmod_l_etree (Aup, Parent, cm) ;
 
     if (cm->status < CHOLMOD_OK)
     {
@@ -166,7 +166,7 @@ void mexFunction
 	mexErrMsgTxt ("symbfact2 failed: matrix corrupted!") ;
     }
 
-    if (cholmod_postorder (Parent, n, NULL, Post, cm) != n)
+    if (cholmod_l_postorder (Parent, n, NULL, Post, cm) != n)
     {
 	/* out of memory or Parent invalid */
 	mexErrMsgTxt ("symbfact2 postorder failed!") ;
@@ -176,7 +176,7 @@ void mexFunction
     /* column case: analyze F*F', which is A'*A */
     /* symmetric lower case: analyze tril(A) */
     /* row case: analyze A*A' */
-    cholmod_rowcolcounts (Alo, NULL, 0, Parent, Post, NULL, ColCount,
+    cholmod_l_rowcolcounts (Alo, NULL, 0, Parent, Post, NULL, ColCount,
 		First, Level, cm) ;
 
     if (cm->status < CHOLMOD_OK)
@@ -199,7 +199,9 @@ void mexFunction
 	    height = MAX (height, Level [i]) ;
 	}
 	height++ ;
-	pargout [1] = mxCreateDoubleScalar ((double) height) ;
+	pargout [1] = mxCreateDoubleMatrix (1, 1, mxREAL) ;
+	px = mxGetPr (pargout [1]) ;
+	px [0] = height ;
     }
     if (nargout > 2)
     {
@@ -250,8 +252,8 @@ void mexFunction
 	}
 
 	/* allocate the output matrix L (pattern-only) */
-	L = cholmod_allocate_sparse (n, n, lnz, TRUE, TRUE, 0, CHOLMOD_PATTERN,
-		cm) ;
+	L = cholmod_l_allocate_sparse (n, n, lnz, TRUE, TRUE, 0,
+	    CHOLMOD_PATTERN, cm) ;
 	Lp = L->p ;
 	Li = L->i ;
 
@@ -272,7 +274,7 @@ void mexFunction
 	}
 
 	/* get workspace for computing one row of L */
-	R = cholmod_allocate_sparse (n, 1, n, FALSE, TRUE, 0, CHOLMOD_PATTERN,
+	R = cholmod_l_allocate_sparse (n, 1, n, FALSE, TRUE, 0, CHOLMOD_PATTERN,
 		cm) ;
 	Rp = R->p ;
 	Ri = R->i ;
@@ -281,7 +283,7 @@ void mexFunction
 	for (k = 0 ; k < n ; k++)
 	{
 	    /* get the kth row of L and store in the columns of L */
-	    cholmod_row_subtree (A1, A2, k, Parent, R, cm) ;
+	    cholmod_l_row_subtree (A1, A2, k, Parent, R, cm) ;
 	    for (p = 0 ; p < Rp [1] ; p++)
 	    {
 		Li [W [Ri [p]]++] = k ;
@@ -291,19 +293,19 @@ void mexFunction
 	}
 
 	/* free workspace */
-	cholmod_free_sparse (&R, cm) ;
+	cholmod_l_free_sparse (&R, cm) ;
 
 	/* transpose L to get R, or leave as is */
 	if (nargin < 3)
 	{
 	    /* R = L' */
-	    R = cholmod_transpose (L, 0, cm) ;
-	    cholmod_free_sparse (&L, cm) ;
+	    R = cholmod_l_transpose (L, 0, cm) ;
+	    cholmod_l_free_sparse (&L, cm) ;
 	    L = R ;
 	}
 
 	/* fill numerical values of L with one's (only MATLAB needs this...) */
-	L->x = cholmod_malloc (lnz, sizeof (double), cm) ;
+	L->x = cholmod_l_malloc (lnz, sizeof (double), cm) ;
 	Lx = L->x ;
 	for (p = 0 ; p < lnz ; p++)
 	{
@@ -319,15 +321,15 @@ void mexFunction
     /* free workspace */
     /* ---------------------------------------------------------------------- */
 
-    cholmod_free (n, sizeof (int), Parent, cm) ;
-    cholmod_free (n, sizeof (int), Post, cm) ;
-    cholmod_free (n, sizeof (int), ColCount, cm) ;
-    cholmod_free (n, sizeof (int), First, cm) ;
-    cholmod_free (n, sizeof (int), Level, cm) ;
-    cholmod_free_sparse (&F, cm) ;
-    cholmod_free_sparse (&S, cm) ;
-    cholmod_finish (cm) ;
-    cholmod_print_common (" ", cm) ;
+    cholmod_l_free (n, sizeof (Int), Parent, cm) ;
+    cholmod_l_free (n, sizeof (Int), Post, cm) ;
+    cholmod_l_free (n, sizeof (Int), ColCount, cm) ;
+    cholmod_l_free (n, sizeof (Int), First, cm) ;
+    cholmod_l_free (n, sizeof (Int), Level, cm) ;
+    cholmod_l_free_sparse (&F, cm) ;
+    cholmod_l_free_sparse (&S, cm) ;
+    cholmod_l_finish (cm) ;
+    cholmod_l_print_common (" ", cm) ;
     /*
     if (cm->malloc_count != ((nargout == 5) ? 3:0)) mexErrMsgTxt ("!") ;
     */

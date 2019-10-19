@@ -13,6 +13,6 @@ distclean:
 	( cd MATLAB ; $(MAKE) distclean )
 
 mex:
-	( cd MATLAB ; $(MAKE) distclean )
+	( cd MATLAB ; $(MAKE) )
 
 purge: distclean

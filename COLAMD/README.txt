@@ -1,4 +1,4 @@
-The COLAMD ordering method - Version 2.6
+The COLAMD ordering method - Version 2.7
 -------------------------------------------------------------------------------
 
 The COLAMD column approximate minimum degree ordering algorithm computes
@@ -18,17 +18,24 @@ and symamd.  This will work on any computer with MATLAB (Unix, PC, or Mac).
 Alternatively, type "make" (in Unix) to compile and run a simple example C
 code, without using MATLAB.
 
+To compile and install the colamd m-files and mexFunctions, just cd to
+COLAMD/MATLAB and type colamd_install in the MATLAB command window.
+A short demo will run.  Optionally, type colamd_test to run an extensive tests.
+Type "make" in Unix in the COLAMD directory to compile the C-callable
+library and to run a short demo.
+
+If you have MATLAB 7.2 or earlier, you must first edit UFconfig/UFconfig.h to
+remove the "-largeArrayDims" option from the MEX command (or just use
+colamd_make.m inside MATLAB).
+
 Colamd is a built-in routine in MATLAB, available from The 
-Mathworks, Inc.  Under most cases, the compiled COLAMD from Versions 2.0
-through 2.6 do not differ.  Colamd Versions 2.2 and 2.3 differ only in their
+Mathworks, Inc.  Under most cases, the compiled COLAMD from Versions 2.0 to the
+current version do not differ.  Colamd Versions 2.2 and 2.3 differ only in their
 mexFunction interaces to MATLAB.  v2.4 fixes a bug in the symamd routine in
 v2.3.  The bug (in v2.3 and earlier) has no effect on the MATLAB symamd
 mexFunction.  v2.5 adds additional checks for integer overflow, so that
 the "int" version can be safely used with 64-bit pointers.  Refer to the
 ChangeLog for more details.
-
-    NOTE: DO NOT ATTEMPT TO USE THIS CODE IN 64-BIT MATLAB (v7.3).
-    It is not yet ported to that version of MATLAB.
 
 To use colamd and symamd within an application written in C, all you need are
 colamd.c, colamd_global.c, and colamd.h, which are the C-callable
@@ -37,7 +44,7 @@ colamd from a C program.
 
 Requires UFconfig, in the ../UFconfig directory relative to this directory.
 
-	Copyright (c) 1998-2006, Timothy A. Davis, All Rights Reserved.
+	Copyright (c) 1998-2007, Timothy A. Davis, All Rights Reserved.
 
 	See http://www.cise.ufl.edu/research/sparse/colamd (the colamd.c
 	file) for the License.
@@ -72,37 +79,49 @@ in collaboration with John Gilbert, Xerox PARC (now at UC Santa Barbara),
 and Esmong Ng, Lawrence Berkeley National Laboratory (much of this work
 he did while at Oak Ridge National Laboratory). 
 
-COLAMD files
+COLAMD files:
 
-	colamd.c: the primary colamd computational kernel.
+    Demo	    simple demo
+    Doc		    additional documentation (see colamd.c for more)
+    Include	    include file
+    Lib		    compiled C-callable library
+    Makefile	    primary Unix Makefile
+    MATLAB	    MATLAB functions
+    README.txt	    this file
+    Source	    C source code
 
-	colamd.h: include file for colamd/symamd library.
+    ./Demo:
+    colamd_example.c	    simple example
+    colamd_example.out	    output of colamd_example.c
+    colamd_l_example.c	    simple example, long integers
+    colamd_l_example.out    output of colamd_l_example.c
+    Makefile		    Makefile for C demos
 
-	colamd.m: the MATLAB interface to colamd.
+    ./Doc:
+    ChangeLog	    change log
+    lesser.txt	    license
 
-	colamd_demo.m: MATLAB demo file for colamd and symamd
-		(also compiles the colamdmex and symamdmex mexFunctions).
+    ./Include:
+    colamd.h	    include file
 
-	colamdmex.c: colamd mexFunction for use in MATLAB.
+    ./Lib:
+    Makefile	    Makefile for C-callable library
 
-	colamd_example.c: example C main program that calls colamd and symamd.
+    ./MATLAB:
+    colamd2.m		MATLAB interface for colamd2
+    colamd_demo.m	simple demo
+    colamd_install.m	compile and install colamd2 and symamd2
+    colamd_make.m	compile colamd2 and symamd2
+    colamdmex.ca	MATLAB mexFunction for colamd2
+    colamd_test.m	extensive test
+    colamdtestmex.c	test function for colamd
+    Contents.m		contents of the MATLAB directory
+    luflops.m		test code
+    Makefile		Makefile for MATLAB functions
+    symamd2.m		MATLAB interface for symamd2
+    symamdmex.c		MATLAB mexFunction for symamd2
+    symamdtestmex.c	test function for symamd
 
-	colamd_example.out: output of colamd_example.c.
-
-	Makefile: Makefile for colamd_example.c
-
-	symamd.m: the MATLAB interface to symamd.
-
-	symamdmex.c: symamd mexFunction for use in MATLAB.
-
-	README:  this file
-
-	ChangeLog: a log of changes since Version 1.0.
-
-	colamd_test.m:	test code
-
-	colamdtestmex.c:  test code
-
-	luflops.m:  test code
-
-	symamdtestmex.c:  test code
+    ./Source:
+    colamd.c		primary source code
+    colamd_global.c	globally defined function pointers (malloc, free, ...)

@@ -4,7 +4,7 @@
 % See also mread.
 % Requires the mmread MATLAB m-file from http://www.nist.gov
 
-% Copyright 2006, Timothy A. Davis, University of Florida
+% Copyright 2006-2007, Timothy A. Davis, University of Florida
 
 matrices = {
     'M/Harwell-Boeing/acoust/young1c.mtx', ...

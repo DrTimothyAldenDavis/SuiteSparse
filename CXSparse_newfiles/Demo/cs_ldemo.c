@@ -5,7 +5,7 @@ int main (void)
     cs_cl *T, *A, *A1, *A2, *B ;
     cs_dl *C1, *C2, *Treal, *Timag ;
 
-    printf ("\n--- cs_ldemo\n") ;
+    printf ("\n--- cs_ldemo, size of CS_INT: %d\n", (int) sizeof (CS_INT)) ;
 
     T = cs_cl_load (stdin) ;		/* load a complex triplet matrix, T */
     printf ("\nT:\n") ;

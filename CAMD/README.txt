@@ -1,3 +1,7 @@
+CAMD Version 2.2, Copyright (c) 2007 by Timothy A.  Davis, Yanqing Chen,
+Patrick R. Amestoy, and Iain S. Duff.  All Rights Reserved.
+CAMD is available under alternate licences; contact T. Davis for details.
+
 CAMD:  a set of routines for permuting sparse matrices prior to
     factorization.  Includes a version in C, a version in Fortran, and a MATLAB
     mexFunction.
@@ -18,14 +22,11 @@ Quick start (for MATLAB users);
     To compile, test, and install the CAMD mexFunction, cd to the
     CAMD/MATLAB directory and type camd_make at the MATLAB prompt.
 
-    NOTE: DO NOT ATTEMPT TO USE THIS CODE IN 64-BIT MATLAB (v7.3).
-    It is not yet ported to that version of MATLAB.
+If you have MATLAB 7.2 or earlier and use "make mex", you must first edit
+UFconfig/UFconfig.h to remove the "-largeArrayDims" option from the MEX command
+(or just use camd_make.m inside MATLAB).
 
 -------------------------------------------------------------------------------
-
-CAMD Version 2.1, Copyright (c) 2006 by Timothy A.  Davis, Yanqing Chen,
-Patrick R. Amestoy, and Iain S. Duff.  All Rights Reserved.
-CAMD is available under alternate licences; contact T. Davis for details.
 
 CAMD License:
 
@@ -135,9 +136,6 @@ Files and directories in the CAMD distribution:
     Source directory:
     ---------------------------------------------------------------------------
 
-    GNUmakefile			a nice Makefile, for GNU make
-    Makefile			an ugly Unix Makefile (for older make's)
-
     camd_order.c		user-callable, primary CAMD ordering routine
     camd_control.c		user-callable, prints the control parameters
     camd_defaults.c		user-callable, sets default control parameters
@@ -189,6 +187,7 @@ Files and directories in the CAMD distribution:
 
     camd.m			MATLAB help file for CAMD
     camd_make.m			MATLAB m-file for compiling CAMD mexFunction
+    camd_install.m		compile and install CAMD mexFunctions
 
     camd_mex.c			CAMD mexFunction for MATLAB
 
@@ -200,4 +199,6 @@ Files and directories in the CAMD distribution:
     Lib directory:  libcamd.a library placed here
     ---------------------------------------------------------------------------
 
+    GNUmakefile			a nice Makefile, for GNU make
+    Makefile			an ugly Unix Makefile (for older make's)
     libcamd.def			CAMD definitions for Windows

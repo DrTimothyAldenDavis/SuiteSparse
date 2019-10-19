@@ -6,11 +6,17 @@ void cs_mex_check (int nel, int m, int n, int square, int sparse, int values,
     int nnel, mm = mxGetM (A), nn = mxGetN (A) ;
     if (values)
     {
-	if (mxIsComplex (A)) mexErrMsgTxt ("matrix must be real") ;
-	if (!mxIsDouble (A)) mexErrMsgTxt ("matrix must be double") ;
+	if (mxIsComplex (A))
+	{
+	    mexErrMsgTxt ("matrix must be real; try CXSparse instead") ;
+	}
     }
     if (sparse && !mxIsSparse (A)) mexErrMsgTxt ("matrix must be sparse") ;
-    if (!sparse && mxIsSparse (A)) mexErrMsgTxt ("matrix must be full") ;
+    if (!sparse)
+    {
+	if (mxIsSparse (A)) mexErrMsgTxt ("matrix must be full") ;
+	if (values && !mxIsDouble (A)) mexErrMsgTxt ("matrix must be double") ;
+    }
     if (nel)
     {
 	/* check number of elements */
@@ -86,18 +92,18 @@ double *cs_mex_put_double (int n, const double *b, mxArray **X)
 int *cs_mex_get_int (int n, const mxArray *Imatlab, int *imax, int lo)
 {
     double *p ;
-    int i, k, *I = cs_malloc (n, sizeof (int)) ;
+    int i, k, *C = cs_malloc (n, sizeof (int)) ;
     cs_mex_check (1, n, 1, 0, 0, 1, Imatlab) ;
     p = mxGetPr (Imatlab) ;
     *imax = 0 ;
     for (k = 0 ; k < n ; k++)
     {
 	i = p [k] ;
-	I [k] = i - 1 ;
+	C [k] = i - 1 ;
 	if (i < lo) mexErrMsgTxt ("index out of bounds") ;
 	*imax = CS_MAX (*imax, i) ;
     }
-    return (I) ;
+    return (C) ;
 }
 
 /* return an int array to MATLAB as a flint row vector */

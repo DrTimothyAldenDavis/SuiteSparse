@@ -133,7 +133,7 @@ int cholmod_sdmult
 (
     /* ---- input ---- */
     cholmod_sparse *A,	/* sparse matrix to multiply */
-    int transpose,	/* use A if 0, or A' if 1, or A.' if -1 */
+    int transpose,	/* use A if 0, or A' otherwise */
     double alpha [2],   /* scale factor for A */
     double beta [2],    /* scale factor for Y */
     cholmod_dense *X,	/* dense matrix to multiply */

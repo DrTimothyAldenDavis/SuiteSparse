@@ -35,5 +35,5 @@
 %
 % Requires UFget, CSparse, CHOLMOD, AMD, COLAMD, METIS.
 
-% Copyright 2006, Timothy A. Davis
+% Copyright 2006-2007, Timothy A. Davis
 

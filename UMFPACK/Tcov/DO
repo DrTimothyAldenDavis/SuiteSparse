@@ -1,7 +1,7 @@
 #!/bin/csh
 
 echo '################################################################################'
-echo 'Tcov test:' $1 $2
+echo 'Tcov test:' $1 $2 $3
 echo '################################################################################'
 
 #-------------------------------------------------------------------------------
@@ -21,9 +21,17 @@ mkdir Out/$1_$2/UMFPACK/Doc
 /bin/cp -prL ../Lib Out/$1_$2/UMFPACK
 /bin/cp -prL ../Include Out/$1_$2/UMFPACK
 /bin/cp -prL ../Demo Out/$1_$2/UMFPACK
-/bin/cp -prL ../Makefile Out/$1_$2/UMFPACK/Makefile
+/bin/cp -prL Top_Makefile Out/$1_$2/UMFPACK/Makefile
+/bin/cp -prL Out/$1_$2/UMFPACK/Lib/GNUmakefile Out/$1_$2/UMFPACK/Source/Makefile
+/bin/cp -prL Demo_Makefile Out/$1_$2/UMFPACK/Demo/Makefile
 /bin/cp -prL ../Doc/License Out/$1_$2/UMFPACK/Doc
+
+# put in AMD
 /bin/cp -prL ../../AMD Out/$1_$2
+/bin/cp -prL Top_Makefile Out/$1_$2/AMD/Makefile
+/bin/cp -prL Out/$1_$2/AMD/Lib/GNUmakefile Out/$1_$2/AMD/Source/Makefile
+/bin/cp -prL AMD_Demo_Makefile Out/$1_$2/AMD/Demo/Makefile
+
 /bin/cp debug.* Out/$1_$2
 
 # put in the makefile

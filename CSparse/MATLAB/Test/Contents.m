@@ -98,3 +98,5 @@
 
 % Example:
 %   help chol_update
+
+%   Copyright 2006-2007, Timothy A. Davis

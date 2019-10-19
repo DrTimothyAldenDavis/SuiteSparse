@@ -1,4 +1,5 @@
 CHOLMOD: a sparse CHOLesky MODification package 
+Version 1.5, May 31, 2007.  Copyright (c) 2005-2007.
 -----------------------------------------------
 
     CHOLMOD is a set of routines for factorizing sparse symmetric positive
@@ -12,7 +13,6 @@ CHOLMOD: a sparse CHOLesky MODification package
     C and MATLAB interfaces.  This code works on Microsoft Windows and many
     versions of Unix and Linux.
 
-Version 1.4, Dec 12, 2006.  Copyright (c) 2005-2006.
 
 Some Modules of CHOLMOD are copyrighted by the University of Florida (the
 Core and Partition Modules).  The rest are copyrighted by the authors:
@@ -54,8 +54,9 @@ also ensures your mexFunctions are compiled with -fexceptions, so that
 exceptions are handled properly (when hitting control-C in the MATLAB command
 window, for example).
 
-    NOTE: DO NOT ATTEMPT TO USE THIS CODE IN 64-BIT MATLAB (v7.3).
-    It is not yet ported to that version of MATLAB.
+If you have MATLAB 7.2 or earlier and use "make mex", you must first edit
+UFconfig/UFconfig.h to remove the "-largeArrayDims" option from the MEX command
+(or just use cholmod_make.m inside MATLAB).
 
 On the Pentium, do NOT use the Intel MKL BLAS prior to MKL Version 8.0 with
 CHOLMOD.  Older versions (prior to 8.0) have a bug in dgemm when computing

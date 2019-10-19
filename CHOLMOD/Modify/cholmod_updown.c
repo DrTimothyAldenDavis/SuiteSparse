@@ -299,11 +299,9 @@ static void dfs
  *
  * The solution to Lx=b is not modified if either X or DeltaB are NULL.
  *
-
---------------------------------------------------------------------------------
-TODO update this discussion about rowmark/colmark:
---------------------------------------------------------------------------------
-
+ * Rowmark and colmark:
+ * --------------------
+ *
  * rowmark and colmark affect which portions of L take part in the update/
  * downdate of the solution to Lx=b.  They do not affect how L itself is
  * updated/downdated.  They are both ignored if X or DeltaB are NULL.
@@ -364,10 +362,6 @@ TODO update this discussion about rowmark/colmark:
  * Unless it leads to no changes in rowmark, colmark should be used only if
  * C->ncol <= Common->maxrank, because the update/downdate is done with maxrank
  * columns at a time.  Otherwise, the results are undefined.
-
---------------------------------------------------------------------------------
---------------------------------------------------------------------------------
-
  *
  * This routine is an "expert" routine.  It is meant for use in LPDASA only.
  */
@@ -377,7 +371,7 @@ int CHOLMOD(updown_mark)
     /* ---- input ---- */
     int update,		/* TRUE for update, FALSE for downdate */
     cholmod_sparse *C,	/* the incoming sparse update */
-    Int *colmark,	/* Int array of size n.  See cholmod_updown.c */
+    Int *colmark,	/* Int array of size n. */
     /* ---- in/out --- */
     cholmod_factor *L,	/* factor to modify */
     cholmod_dense *X,	/* solution to Lx=b (size n-by-1) */

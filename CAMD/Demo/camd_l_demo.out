@@ -1,7 +1,7 @@
-CAMD version 2.1, date: Dec 12, 2006
+CAMD version 2.2, date: May 31, 2007
 CAMD demo, with the 24-by-24 Harwell/Boeing matrix, can_24:
 
-camd version 2.1, Dec 12, 2006:  approximate minimum degree ordering:
+camd version 2.2, May 31, 2007:  approximate minimum degree ordering:
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -122,7 +122,7 @@ camd:  approximate minimum degree ordering, results:
     number of nonzeros on diagonal:                     24
     nonzeros in pattern of A+A' (excl. diagonal):       136
     # dense rows/columns of A+A':                       0
-    memory used, in bytes:                              1644
+    memory used, in bytes:                              3288
     # of memory compactions:                            0
 
     The following approximate statistics are for a subsequent

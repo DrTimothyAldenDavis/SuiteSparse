@@ -1,5 +1,5 @@
  Matrix key: QC324                         
-UMFPACK V5.0.2 (Dec 2, 2006), Control:
+UMFPACK V5.1.0 (May 31, 2007), Control:
     Matrix entry defined as: double complex
     Int (generic integer) defined as: int
 
@@ -31,11 +31,11 @@ UMFPACK V5.0.2 (Dec 2, 2006), Control:
     10: CPU timer is POSIX times ( ) routine.
     11: compiled for normal operation (debugging disabled)
     computer/operating system: Linux
-    size of int: 4 UF_long: 4 Int: 4 pointer: 4 double: 8 Entry: 16 (in bytes)
+    size of int: 4 UF_long: 8 Int: 4 pointer: 8 double: 8 Entry: 16 (in bytes)
 
 symbolic analysis:
    status:     0.
-   time:      0.10E-01 (sec)
+   time:      0.00E+00 (sec)
    estimates (upper bound) for numeric LU:
    size of LU:          1.17 (MB)
    memory needed:       2.40 (MB)
@@ -51,7 +51,7 @@ numeric factorization:
    flop count:      0.14E+08
    nnz (L):           23247.
    nnz (U):           23247.
-UMFPACK V5.0.2 (Dec 2, 2006), Info:
+UMFPACK V5.1.0 (May 31, 2007), Info:
     matrix entry defined as:          double complex
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -62,8 +62,8 @@ UMFPACK V5.0.2 (Dec 2, 2006), Info:
     entries in matrix A:              26730
     memory usage reported in:         8-byte Units
     size of int:                      4 bytes
-    size of UF_long:                  4 bytes
-    size of pointer:                  4 bytes
+    size of UF_long:                  8 bytes
+    size of pointer:                  8 bytes
     size of numerical entry:          16 bytes
 
     strategy used:                    symmetric
@@ -90,12 +90,12 @@ UMFPACK V5.0.2 (Dec 2, 2006), Info:
         est. max nz in any column of L:            121
         number of "dense" rows/columns in S+S':    0
     symbolic factorization defragmentations:       0
-    symbolic memory usage (Units):                 63466
+    symbolic memory usage (Units):                 63473
     symbolic memory usage (MBytes):                0.5
-    Symbolic size (Units):                         1418
+    Symbolic size (Units):                         1425
     Symbolic size (MBytes):                        0
-    symbolic factorization CPU time (sec):         0.01
-    symbolic factorization wallclock time(sec):    0.01
+    symbolic factorization CPU time (sec):         0.00
+    symbolic factorization wallclock time(sec):    0.00
 
     matrix scaled: yes (divided each row by sum of abs values in each row)
     minimum sum (abs (rows of A)):              2.55982e-01
@@ -103,12 +103,12 @@ UMFPACK V5.0.2 (Dec 2, 2006), Info:
 
     symbolic/numeric factorization:      upper bound               actual      %
     variable-sized part of Numeric object:
-        initial size (Units)                   98017                97692   100%
+        initial size (Units)                   98341                97691    99%
         peak size (Units)                     307744               142557    46%
         final size (Units)                    150384                92058    61%
-    Numeric final size (Units)                153181                94693    62%
+    Numeric final size (Units)                153188                94700    62%
     Numeric final size (MBytes)                  1.2                  0.7    62%
-    peak memory usage (Units)                 314850               149663    48%
+    peak memory usage (Units)                 314864               149677    48%
     peak memory usage (MBytes)                   2.4                  1.1    48%
     numeric factorization flops          2.56313e+07          1.43519e+07    56%
     nz in L (incl diagonal)                    24027                23247    97%
@@ -137,10 +137,6 @@ UMFPACK V5.0.2 (Dec 2, 2006), Info:
     numeric factorization wallclock time (sec):    0.02
     numeric factorization mflops (CPU time):       1435.19
     numeric factorization mflops (wallclock):      717.60
-    symbolic + numeric CPU time (sec):             0.02
-    symbolic + numeric mflops (CPU time):          717.60
-    symbolic + numeric wall clock time (sec):      0.03
-    symbolic + numeric mflops (wall clock):        478.40
 
     solve flops:                                   3.70332e+05
     iterative refinement steps taken:              0
@@ -150,4 +146,4 @@ UMFPACK V5.0.2 (Dec 2, 2006), Info:
 
     total symbolic + numeric + solve flops:        1.47223e+07
 
- norm (A*x-b):   4.14427277E-13
+ norm (A*x-b):   0.

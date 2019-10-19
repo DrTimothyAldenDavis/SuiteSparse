@@ -1,11 +1,12 @@
-AMD version 2.0, date: Dec 12, 2006
+AMD version 2.2, date: May 31, 2007
 AMD demo, with the 24-by-24 Harwell/Boeing matrix, can_24:
 
-amd version 2.0, Dec 12, 2006:  approximate minimum degree ordering:
+AMD version 2.2.0, May 31, 2007: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
     aggressive absorption:  yes
+    size of AMD integer: 8
 
 
 Input matrix:  24-by-24, with 160 entries.
@@ -114,7 +115,7 @@ Plot of input matrix pattern:
 23:  . . . . . . X . . . . X X . . . . . . . . . . X
 return value from amd_l_order: 0 (should be 0)
 
-amd:  approximate minimum degree ordering, results:
+AMD version 2.2.0, May 31, 2007, results:
     status: OK
     n, dimension of A:                                  24
     nz, number of nonzeros in A:                        160
@@ -122,7 +123,7 @@ amd:  approximate minimum degree ordering, results:
     number of nonzeros on diagonal:                     24
     nonzeros in pattern of A+A' (excl. diagonal):       136
     # dense rows/columns of A+A':                       0
-    memory used, in bytes:                              1516
+    memory used, in bytes:                              3032
     # of memory compactions:                            0
 
     The following approximate statistics are for a subsequent

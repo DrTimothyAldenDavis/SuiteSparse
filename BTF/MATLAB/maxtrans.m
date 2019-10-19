@@ -1,27 +1,30 @@
-function Match = maxtrans (A)						    %#ok
-%MAXTRANS finds a permutation of the columns of a sparse matrix
-% so that it has a zero-free diagonal. 
-%
-% Usage:  Match = maxtrans (A)
+function q = maxtrans (A)						    %#ok
+%MAXTRANS permute the columns of a sparse matrix so it has a zero-free diagonal
+% (if it exists).   If no zero-free diagonal exists, then a maximum matching is
+% found.  Note that this differs from p=dmperm(A), which returns a row
+% permutation.
 %
 % Example:
-%	Match = maxtrans (A) ;	% has entries in the range 1:n and -(1:n)
-%	p = abs (Match) ;	% the permutation (either full rank or singular)
-%	B = A (:, p) ;		% permuted matrix (either full rank or singular)
-%	find (Match < 0) ;	% gives a list of zero diagonal entries of B
-%	sum (Match > 0) ;	% same as "sprank (A)"
+%   q = maxtrans (A)
+%   q = maxtrans (A,maxwork)
 %
-% This behaviour differs from p = dmperm (A) in MATLAB, which returns p(i)=0
-% if row i is unmatched.  Thus:
+% If row i and column j are matched, then q(i) = j.  Otherwise, if row is
+% unmatched, then q(i) = 0.  This is similar to dmperm, except that
+% p = dmperm(A) returns p(j)=i if row i and column j are matched, or p(j)=0 if
+% column j is unmatched.
 %
-%	p = dmperm (A) ;	% has entries in the range 0:n
-%	p                       % the permutation (only if full rank)
-%	B = A (:, p) ;		% permuted matrix (only if full rank)
-%	find (p == 0) ;		% gives a list of zero diagonal entries of B
-%	sum (p > 0) ;		% definition of sprank (A)
+% If A is structurally nonsingular, then A(:,maxtrans(A)) has a zero-free
+% diagonal, as does A (dmperm(A),:).
 %
-% See also: strongcomp, dmperm 
+% The second input limits the maximum amount of work the function does
+% (excluding the O(nnz(A)) cheap match phase) to be maxwork*nnz(A), or no limit
+% at all if maxwork <= 0.  If the function terminates early as a result, a
+% maximum matching may not be found.  An optional second output
+% [q,work] = maxtrans (...) returns the amount of work performed, or -1 if the
+% maximum work limit is reached.
+%
+% See also: btf, strongcomp, dmperm, sprank
 
-% Copyright 2006, Timothy A. Davis, University of Florida
+% Copyright 2004-2007, Tim Davis, University of Florida
 
 error ('maxtrans mexfunction not found') ;

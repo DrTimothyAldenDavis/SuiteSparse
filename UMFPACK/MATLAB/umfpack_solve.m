@@ -1,5 +1,5 @@
 function x = umfpack_solve (arg1, op, arg2, Control)
-% UMFPACK_SOLVE
+%UMFPACK_SOLVE x = A\b or x = b/A
 %
 % Example:
 %   x = umfpack_solve (A, '\', b, Control)
@@ -11,8 +11,7 @@ function x = umfpack_solve (arg1, op, arg2, Control)
 % See also umfpack, umfpack2, umfpack_make, umfpack_details, umfpack_report,
 % and umfpack_simple.
 
-% Copyright (c) 1995-2006 by Timothy A. Davis.
-% All Rights Reserved.  Type umfpack_details for License.
+% Copyright 1995-2007 by Timothy A. Davis.
 
 %-------------------------------------------------------------------------------
 % check inputs and get default control parameters
@@ -36,7 +35,7 @@ if (m ~= n)
 end
 
 [m1 n1] = size (b) ;
-if ((op == '\' && n ~= m1) || (op == '/' && n1 ~= m))
+if ((op == '\' & n ~= m1) | (op == '/' & n1 ~= m))			    %#ok
     help umfpack_solve
     error ('umfpack_solve:  b has the wrong dimensions') ;
 end
@@ -56,7 +55,7 @@ if (op == '\')
 	% A is not sparse, so just use MATLAB
 	x = A\b ;
 
-    elseif (n1 == 1 && ~issparse (b))
+    elseif (n1 == 1 & ~issparse (b))					    %#ok
 
 	% the UMFPACK '\' requires b to be a dense column vector
 	x = umfpack2 (A, '\', b, Control) ;
@@ -76,7 +75,7 @@ else
 	% A is not sparse, so just use MATLAB
 	x = b/A ;
 
-    elseif (m1 == 1 && ~issparse (b))
+    elseif (m1 == 1 & ~issparse (b))					    %#ok
 
 	% the UMFPACK '\' requires b to be a dense column vector
 	x = umfpack2 (b, '/', A, Control) ;

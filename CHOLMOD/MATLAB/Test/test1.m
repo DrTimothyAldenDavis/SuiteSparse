@@ -4,7 +4,7 @@ function test1 (wait)
 %   test1
 % See also cholmod_test
 
-% Copyright 2006, Timothy A. Davis, University of Florida
+% Copyright 2006-2007, Timothy A. Davis, University of Florida
 
 fprintf ('=================================================================\n');
 fprintf ('test1: test sparse2\n') ;
@@ -72,7 +72,7 @@ for ki = 1:length (ii)
 		pause
 	    end
 
-	    if (~isequal (A1,A2) | ~isequal (B1,B2))
+	    if (~isequal (A1,A2) | ~isequal (B1,B2))			    %#ok
 		fprintf (...
 		'========================== SPARSE AND SPARSE2 DIFFER\n') ;
 	    end

@@ -1,5 +1,5 @@
 function s = UFint (x)
-%UFint: print an integer to a string, adding commas every 3 digits
+%UFINT print an integer to a string, adding commas every 3 digits
 % If negative, the result is the single character '-'.
 %
 % Example:
@@ -8,7 +8,7 @@ function s = UFint (x)
 %
 % See also sprintf.
 
-% Copyright 2006, Timothy A. Davis
+% Copyright 2006-2007, Timothy A. Davis
 
 if (x < 0)
     s = '-' ;

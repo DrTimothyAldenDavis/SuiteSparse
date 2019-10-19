@@ -67,16 +67,17 @@ amd_demo
 If the next step fails, then you have
 not yet compiled the AMD mexFunction.
 
-amd version 2.0, Dec 12, 2006:  approximate minimum degree ordering:
+AMD version 2.2.0, May 31, 2007: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
     aggressive absorption:  yes
+    size of AMD integer: 4
 
     input matrix A is 24-by-24
     input matrix A has 160 nonzero entries
 
-amd:  approximate minimum degree ordering, results:
+AMD version 2.2.0, May 31, 2007, results:
     status: OK
     n, dimension of A:                                  24
     nz, number of nonzeros in A:                        160
@@ -109,51 +110,6 @@ Permutation vector:
  23 21 11 24 13  6 17  9 15  5 16  8  2 10 14 18  1  3  4  7 12 19 22 20
 
 Analyze A(p,p) with MATLAB's symbfact routine:
-
-CHOLMOD version 1.1.0, May 5, 2006:  : status: OK
-  Architecture: Linux
-    sizeof(int):      4
-    sizeof(UF_long):  4
-    sizeof(void *):   4
-    sizeof(double):   8
-    sizeof(Int):      4 (CHOLMOD's basic integer)
-    sizeof(BLAS_INT): 4 (integer used in the BLAS)
-  Results from most recent analysis:
-    Cholesky flop count: 656
-    Nonzeros in L:       120
-  memory blocks in use:           3
-  memory in use (MB):           0.0
-  peak memory usage (MB):       0.0
-  maxrank:    update/downdate rank:   8
-  supernodal control: 1 40 (supernodal if flops/lnz >= 40)
-  nmethods=0: default strategy:  Try user permutation if given.  Try AMD.
-    Select best ordering tried.
-    method 0: user permutation (if given)
-    method 1: AMD (or COLAMD if factorizing AA')
-        prune_dense: for pruning dense nodes:   10
-        a dense node has degree >= max(16,(10)*sqrt(n))
-  OK
-
-CHOLMOD version 1.1.0, May 5, 2006:  : status: OK
-  Architecture: Linux
-    sizeof(int):      4
-    sizeof(UF_long):  4
-    sizeof(void *):   4
-    sizeof(double):   8
-    sizeof(Int):      4 (CHOLMOD's basic integer)
-    sizeof(BLAS_INT): 4 (integer used in the BLAS)
-  memory blocks in use:           0
-  memory in use (MB):           0.0
-  peak memory usage (MB):       0.0
-  maxrank:    update/downdate rank:   8
-  supernodal control: 1 40 (supernodal if flops/lnz >= 40)
-  nmethods=0: default strategy:  Try user permutation if given.  Try AMD.
-    Select best ordering tried.
-    method 0: user permutation (if given)
-    method 1: AMD (or COLAMD if factorizing AA')
-        prune_dense: for pruning dense nodes:   10
-        a dense node has degree >= max(16,(10)*sqrt(n))
-  OK
 number of nonzeros in L (including diagonal):      120
 floating point operation count for chol (A (p,p)): 656
 

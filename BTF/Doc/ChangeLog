@@ -1,3 +1,28 @@
+May 31, 2007:  version 1.0 released
+
+    * the C application program interface has modified (see below)
+
+    * maxtrans function renamed to btf_maxtrans
+
+    * strongcomp function renamed to btf_strongcomp
+
+    * full statement coverage tests (KLU/Tcov)
+
+    * maxwork parameter added to btf_maxtrans and btf_order
+
+    * btf_maxtrans modified; now returns Q[i] = -1 if row i is unmatched;
+	code to complete the permutation moved to btf_order.  This also
+	changes the maxtrans mexFunction.
+
+    * btf_install added for easy MATLAB installation
+
+    * illustrative recursive version of maxtrans removed (see the recursive
+	version of cs_maxtrans in CSparse instead)
+
+    * MAXTRANS_* macros renamed BTF_*
+
+    * no bug fixes in this release
+
 Dec 12, 2006: version 0.11
 
     * minor MATLAB cleanup

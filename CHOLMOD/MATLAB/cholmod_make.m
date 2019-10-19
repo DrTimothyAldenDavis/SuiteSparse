@@ -4,13 +4,11 @@ function cholmod_make (metis_path)
 % Example:
 %   cholmod_make
 %
-% CHOLMOD relies on AMD, COLAMD, CCOLAMD, CAMD, and METIS for its
-% ordering options.
-%
-% All but METIS are distributed with CHOLMOD.  To compile CHOLMOD
-% to use METIS you must first place a copy of the metis-4.0
-% directory (METIS version 4.0.1) in same directory that contains
-% the AMD, COLAMD, CCOLAMD, and CHOLMOD directories.  Next, type
+% CHOLMOD relies on AMD and COLAMD, and optionally CCOLAMD, CAMD, and METIS.
+% All but METIS are distributed with CHOLMOD.  To compile CHOLMOD to use METIS
+% you must first place a copy of the metis-4.0 directory (METIS version 4.0.1)
+% in same directory that contains the AMD, COLAMD, CCOLAMD, and CHOLMOD
+% directories.  Next, type
 %
 %   cholmod_make
 %
@@ -24,54 +22,38 @@ function cholmod_make (metis_path)
 %   cholmod_make ('')
 %   cholmod_make ('no metis')
 %
-% You must type the cholmod_make command while in the
-% CHOLMOD/MATLAB directory.
+% You must type the cholmod_make command while in the CHOLMOD/MATLAB directory.
 %
-% See also cholmod2
+% See also analyze, bisect, chol2, cholmod2, etree2, lchol, ldlchol, ldlsolve,
+%   ldlupdate, metis, spsym, nesdis, septree, resymbol, sdmult, sparse2,
+%   symbfact2, mread, mwrite
 
-%   Copyright 2006, Timothy A. Davis
+%   Copyright 2006-2007, Timothy A. Davis
 %   http://www.cise.ufl.edu/research/sparse
 
-help cholmod_make
+details = 0 ;	    % 1 if details of each command are to be printed
 
+[v,pc] = getversion ;
+
+d = '' ;
 if (~isempty (strfind (computer, '64')))
-    error ('64-bit version not yet supported') ;
+    % 64-bit MATLAB
+    d = '-largeArrayDims' ;
 end
 
-try
-    % determine if this is MATLAB 7.0 or greater
-    v = str2double (strtok (version, '.')) ;
-    old = (isempty (v) | v < 7) ;
-catch
-    % if the above failed, this must be an old version of MATLAB
-    old = 1 ;
-end
+include = '-I. -I../../AMD/Include -I../../COLAMD/Include -I../../CCOLAMD/Include -I../../CAMD/Include -I../Include -I../../UFconfig' ;
 
-if (ispc)
-
-    %---------------------------------------------------------------------------
-    % edit this definition, if necessary:
-    lapack = 'libmwlapack.lib' ;
-    %---------------------------------------------------------------------------
-
-    fprintf ('Using LAPACK library:\n%s\n', lapack) ;
-    fprintf ('If this does not work, edit cholmod_make.m and\n') ;
-    fprintf ('modify the definition of lapack=''...''.\n') ;
-else
-    % For other systems, mex can find lapack on its own.
-    lapack = '' ;
-end
-
-fprintf ('Now compiling CHOLMOD:\n') ;
-
-include = '-I. -I../../AMD/Include -I../../AMD/Source -I../../COLAMD -I../../CCOLAMD -I../../CAMD/Include -I../Include -I../../UFconfig' ;
-
-if (old)
+if (v < 7.0)
     % do not attempt to compile CHOLMOD with large file support
     include = [include ' -DNLARGEFILE'] ;
-elseif (~ispc)
+elseif (~pc)
     % Linux/Unix require these flags for large file support
     include = [include ' -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE'] ;
+end
+
+if (v < 6.5)
+    % logical class does not exist in MATLAB 6.1 or earlie
+    include = [include ' -DMATLAB6p1_OR_EARLIER'] ;
 end
 
 % Determine the METIS path, and whether or not METIS is available
@@ -85,6 +67,7 @@ have_metis = (~isempty (metis_path)) ;
 
 % fix the METIS 4.0.1 rename.h file
 if (have_metis)
+    fprintf ('Compiling CHOLMOD with METIS on MATLAB Version %g\n', v) ;
     f = fopen ('rename.h', 'w') ;
     if (f == -1)
         error ('unable to create rename.h in current directory') ;
@@ -102,8 +85,24 @@ if (have_metis)
     fclose (f) ;
     include = [include ' -I' metis_path '/Lib'] ;
 else
-    fprintf ('Compiling CHOLMOD without METIS\n') ;
+    fprintf ('Compiling CHOLMOD without METIS on MATLAB Version %g\n', v) ;
     include = ['-DNPARTITION ' include] ;
+end
+
+if (pc)
+    if (v < 6.5)
+	% MATLAB 6.1 and earlier: use the version supplied here
+	lapack = 'lcc_lib/libmwlapack.lib' ;
+	fprintf ('Using %s.  If this fails with dgemm and others\n', lapack) ;
+	fprintf ('undefined, then edit cholmod_make.m and modify the') ;
+	fprintf (' statement:\nlapack = ''%s'' ;\n', lapack) ;
+    else
+	lapack = 'libmwlapack.lib' ;
+    end
+else
+    % For other systems, mex should find lapack on its own, but this has been
+    % broken in MATLAB R2007a; the following is now required.
+    lapack = '-lmwlapack' ;
 end
 
 include = strrep (include, '/', filesep) ;
@@ -138,12 +137,12 @@ camd_src = { ...
     '../../CAMD/Source/camd_valid' } ;
 
 colamd_src = {
-    '../../COLAMD/colamd', ...
-    '../../COLAMD/colamd_global' } ;
+    '../../COLAMD/Source/colamd', ...
+    '../../COLAMD/Source/colamd_global' } ;
 
 ccolamd_src = {
-    '../../CCOLAMD/ccolamd', ...
-    '../../CCOLAMD/ccolamd_global' } ;
+    '../../CCOLAMD/Source/ccolamd', ...
+    '../../CCOLAMD/Source/ccolamd_global' } ;
 
 metis_src = {
     'Lib/balance', ...
@@ -277,7 +276,7 @@ cholmod_mex_src = { ...
     'mread', ...
     'mwrite' } ;
 
-if (ispc)
+if (pc)
     % Windows does not have drand48 and srand48, required by METIS.  Use
     % drand48 and srand48 in CHOLMOD/MATLAB/Windows/rand48.c instead.
     obj_extension = '.obj' ;
@@ -289,12 +288,13 @@ end
 
 % compile each library source file
 obj = '' ;
-k = 0 ;
 
 source = [amd_src colamd_src ccolamd_src camd_src cholmod_src cholmod_matlab] ;
 if (have_metis)
     source = [metis_src source] ;
 end
+
+kk = 0 ;
 
 for f = source
     ff = strrep (f {1}, '/', filesep) ;
@@ -306,65 +306,52 @@ for f = source
     end
     o = ff (slash:end) ;
     obj = [obj  ' ' o obj_extension] ;					    %#ok
-    s = sprintf ('mex -O %s -c %s.c', include, ff);
-    % fprintf ('.') ;
-    fprintf ('%s\n', s) ;
-    k = k + 1 ;
-    if (mod (k,50) == 0)
-        fprintf ('\n') ;
-    end
-    eval (s) ;
+    s = sprintf ('mex %s -DDLONG -O %s -c %s.c', d, include, ff) ;
+    kk = do_cmd (s, kk, details) ;
 end
 
 % compile each mexFunction
 for f = cholmod_mex_src
-    s = sprintf ('mex -O %s %s.c', include, f{1}) ;
+    s = sprintf ('mex %s -DDLONG -O %s %s.c', d, include, f{1}) ;
     s = [s obj ' ' lapack] ;						    %#ok
-    % fprintf ('.') ;
-    fprintf ('%s\n', s) ;
-    k = k + 1 ;
-    if (mod (k,50) == 0)
-        fprintf ('\n') ;
-    end
-    eval (s) ;
+    kk = do_cmd (s, kk, details) ;
 end
 
 % clean up
-eval (['delete ' obj]) ;
+s = ['delete ' obj] ;
+do_cmd (s, kk, details) ;
+fprintf ('\nCHOLMOD successfully compiled\n') ;
 
-fprintf ('\nNow compiling the AMD, COLAMD, CCOLAMD, and CAMD mexFunctions:\n') ;
-cholmod_path = pwd ;
-addpath (cholmod_path)
+%-------------------------------------------------------------------------------
+function kk = do_cmd (s, kk, details)
+%DO_CMD: evaluate a command, and either print it or print a "."
+if (details)
+    fprintf ('%s\n', s) ;
+else
+    if (mod (kk, 60) == 0)
+	fprintf ('\n') ;
+    end
+    kk = kk + 1 ;
+    fprintf ('.') ;
+end
+eval (s) ;
 
-cd ../../AMD/MATLAB
-amd_make
-amd_path = pwd ;
-addpath (amd_path)
+%-------------------------------------------------------------------------------
+function [v,pc] = getversion
+% determine the MATLAB version, and return it as a double.
+% only the primary and secondary version numbers are kept.
+% MATLAB 7.0.4 becomes 7.0, version 6.5.2 becomes 6.5, etc.
+v = version ;
+t = find (v == '.') ;
+if (length (t) > 1)
+    v = v (1:(t(2)-1)) ;
+end
+v = str2double (v) ;
+try
+    % ispc does not appear in MATLAB 5.3
+    pc = ispc ;
+catch
+    % if ispc fails, assume we are on a Windows PC if it's not unix
+    pc = ~isunix ;
+end
 
-cd ../../COLAMD
-colamd_make
-colamd_path = pwd ;
-addpath (colamd_path)
-
-cd ../CCOLAMD
-ccolamd_make
-ccolamd_path = pwd ;
-addpath (ccolamd_path)
-
-cd ../CAMD/MATLAB
-camd_make
-camd_path = pwd ;
-addpath (camd_path)
-
-cd (cholmod_path)
-
-fprintf ('\nThe following paths have been added.  You may wish to add them\n') ;
-fprintf ('permanently, using the MATLAB pathtool command.\n') ;
-fprintf ('%s\n', cholmod_path) ;
-fprintf ('%s\n', amd_path) ;
-fprintf ('%s\n', colamd_path) ;
-fprintf ('%s\n', ccolamd_path) ;
-fprintf ('%s\n', camd_path) ;
-
-fprintf ('\nTo try your new mexFunctions, cut-and-paste this command:\n') ;
-fprintf ('amd_demo, colamd_demo, ccolamd_demo, camd_demo, graph_demo, cholmod_demo\n') ;

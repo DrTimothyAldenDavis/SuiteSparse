@@ -1,10 +1,9 @@
 /* ========================================================================== */
-/* === RBio/UFfull ========================================================== */
+/* === UFcollection/UFfull ================================================== */
 /* ========================================================================== */
 
-/* RBio: a MATLAB toolbox for reading and writing sparse matrices in
- * Rutherford/Boeing format.
- * Copyright (c) 2006, Timothy A. Davis, Univ. Florida.  Version 1.0. */
+/* UFcollection: a MATLAB toolbox for managing the UF Sparse Matrix Collection.
+ * Copyright (c) 2007, Timothy A. Davis, Univ. Florida.  */
 
 /* ========================================================================== */
 
@@ -22,6 +21,11 @@
  * used.
  */
 
+#ifndef NLARGEFILE
+#include "io64.h"
+#endif
+
+#include "UFconfig.h"
 #include "mex.h"
 #include <math.h>
 #define MAXLINE 1030
@@ -81,7 +85,8 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    int iscomplex, nrow, ncol, i, j ;
+    int iscomplex ;
+    size_t nrow, ncol, i, j ;
     double *Ax, *Az ;
     char filename [MAXLINE], s [MAXLINE] ;
     FILE *f ;

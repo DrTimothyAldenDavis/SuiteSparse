@@ -1,5 +1,5 @@
 function UFallpages (figures)
-%UFallpages: create all web pages for the UF Sparse Matrix Collection
+%UFALLPAGES create all web pages for the UF Sparse Matrix Collection
 % with the exception of the top-level index.html file (which is created
 % manually).
 %
@@ -10,7 +10,7 @@ function UFallpages (figures)
 %
 % See also UFget, UFlists, UFpages.
 
-% Copyright 2006, Timothy A. Davis
+% Copyright 2006-2007, Timothy A. Davis
 
 if (nargin < 1)
     figures = 1 ;

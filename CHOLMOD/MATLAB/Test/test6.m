@@ -5,7 +5,7 @@ function test6
 %   test6
 % See also cholmod_test
 
-% Copyright 2006, Timothy A. Davis, University of Florida
+% Copyright 2006-2007, Timothy A. Davis, University of Florida
 
 fprintf ('=================================================================\n');
 fprintf ('test6: test sparse with large matrix, both real and complex\n') ;

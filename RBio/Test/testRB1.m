@@ -27,8 +27,13 @@ for k = 1:length(files)
     fprintf ('%s\n', RBtype (A)) ;
     RBwrite ('temp.rb', A, Z) ;
     [A2 Z2] = RBread ('temp.rb') ;
-    if (~isequal (A, A2) || ~isequal (Z, Z2))
-	error ('test failed: %s', file) ;
+    if (~isequal (A, A2))
+	fprintf ('test failed: %s (A differs)\n', file) ;
+	error ('!') ;
+    end
+    if (~isequal (Z, Z2))
+	fprintf ('test failed: %s (Z differs)\n', file) ;
+	error ('!') ;
     end
 end
 

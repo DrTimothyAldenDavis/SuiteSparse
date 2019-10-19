@@ -4,17 +4,20 @@ function graph_demo (n)
 %   plots them in one-second intervals.  n is optional; it defaults to 60.
 %
 %   Example:
-%	graph_demo
+%       graph_demo
 %
 %   See also DELSQ, NUMGRID, GPLOT, TREEPLOT
 
-%   Copyright 2006, Timothy A. Davis
+%   Copyright 2006-2007, Timothy A. Davis
 %   http://www.cise.ufl.edu/research/sparse
 
 if (nargin < 1)
     % construct a 60-by-60 grid
     n = 60 ;
 end
+
+figure (1)
+clf
 
 for regions = {'Square', 'C' 'Disc', 'Annulus', 'Heart', 'Butterfly', 'L'}
 
@@ -30,7 +33,7 @@ for regions = {'Square', 'C' 'Disc', 'Annulus', 'Heart', 'Butterfly', 'L'}
     % plot the original grid
     clf
     subplot (2,2,1)
-    gplot (A, [x y]) ;
+    my_gplot (A, x, y)
     title (sprintf ('%s-shaped 2D grid', region)) ;
     axis equal
     axis off
@@ -39,7 +42,7 @@ for regions = {'Square', 'C' 'Disc', 'Annulus', 'Heart', 'Butterfly', 'L'}
     s = bisect (A) ;
     [i j] = find (A) ;
     subplot (2,2,2)
-    gplot (sparse (i, j, s(i) == s(j)), [x y]) ;
+    my_gplot (sparse (i, j, s(i) == s(j)), x, y) ;
     title ('node bisection') ;
     axis equal
     axis off
@@ -57,7 +60,7 @@ for regions = {'Square', 'C' 'Disc', 'Annulus', 'Heart', 'Butterfly', 'L'}
 
         % plot the components
         subplot (2,2,3)
-        gplot (sparse (i, j, cmember(i) == cmember (j)), [x y]) ;
+        my_gplot (sparse (i, j, cmember(i) == cmember (j)), x, y) ;
         if (defaults)
             title ('nested dissection (defaults)') ;
         else
@@ -74,7 +77,7 @@ for regions = {'Square', 'C' 'Disc', 'Annulus', 'Heart', 'Butterfly', 'L'}
         axis off
 
         drawnow
-        pause (1)
+        pause (0.1)
 
         if (defaults)
             break ;
@@ -83,7 +86,20 @@ for regions = {'Square', 'C' 'Disc', 'Annulus', 'Heart', 'Butterfly', 'L'}
         nsmall = floor (nsmall / 2) ;
         if (nsmall < 20)
             defaults = 1 ;
-            pause (2)
+            pause (0.2)
         end
     end
 end
+
+%-------------------------------------------------------------------------------
+
+function my_gplot (A, x, y)
+% my_gplot : like gplot, just a lot faster
+[i, j] = find (A) ;
+[ignore, p] = sort (max(i, j)) ;
+i = i (p) ;
+j = j (p) ;
+nans = repmat (NaN, size (i)) ;
+x = [ x(i) x(j) nans ]' ;
+y = [ y(i) y(j) nans ]' ;
+plot (x (:), y (:)) ;

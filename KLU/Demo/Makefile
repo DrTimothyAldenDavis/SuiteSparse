@@ -1,38 +1,66 @@
+# KLU Demo Makefile.  The klu_simple demo is stand-alone.  The other demos
+# require CHOLMOD.
+
 
 default: all
 
-ccode: all
-
 include ../../UFconfig/UFconfig.mk
 
-all: kludemo
+LIB = ../Lib/libklu.a  ../../BTF/Lib/libbtf.a \
+	../../AMD/Lib/libamd.a ../../COLAMD/Lib/libcolamd.a
 
-I = -I../Include -I../../AMD/Include -I../../COLAMD -I../../BTF/Include \
-	-I../User -I../../CHOLMOD/Include -I$(METIS_PATH) -I../../CCOLAMD \
-	-I../../CAMD -I../../UFconfig
+CHOLMOD = ../../CHOLMOD/Lib/libcholmod.a
 
-LIBS = ../Lib/libklu.a ../../AMD/Lib/libamd.a ../../COLAMD/libcolamd.a \
-	../../BTF/Lib/libbtf.a ../User/libklu_cholmod.a \
-	../../CHOLMOD/Lib/libcholmod.a ../../CCOLAMD/libccolamd.a \
-	../../CAMD/Lib/libcamd.a $(METIS) $(LIB)
+I = -I../../UFconfig -I../../AMD/Include -I../../COLAMD/Include \
+	-I../../BTF/Include -I../Include -I../../CHOLMOD/Include
 
-kludemo: library kludemo.c
-	$(CC) $(CFLAGS) $(I) kludemo.c dsecnd.c -o kludemo $(LIBS)
+all: $(LIB) klu_simple $(CHOLMOD) kludemo kluldemo
+	- ./klu_simple
+	- ./kludemo < ../Matrix/1c.mtx
+	- ./kludemo < ../Matrix/arrowc.mtx
+	- ./kludemo < ../Matrix/arrow.mtx
+	- ./kludemo < ../Matrix/impcol_a.mtx
+	- ./kludemo < ../Matrix/w156.mtx
+	- ./kludemo < ../Matrix/ctina.mtx
+	- ./kluldemo < ../Matrix/1c.mtx
+	- ./kluldemo < ../Matrix/arrowc.mtx
+	- ./kluldemo < ../Matrix/arrow.mtx
+	- ./kluldemo < ../Matrix/impcol_a.mtx
+	- ./kluldemo < ../Matrix/w156.mtx
+	- ./kluldemo < ../Matrix/ctina.mtx
 
-purge: clean
-	- $(RM) kludemo
+../Lib/libklu.a:
+	( cd ../Lib ; $(MAKE) )
 
-distclean: purge
+../../BTF/Lib/libbtf.a:
+	( cd ../../BTF ; $(MAKE) library )
+
+../../AMD/Lib/libamd.a:
+	( cd ../../AMD ; $(MAKE) library )
+
+../../COLAMD/Lib/libcolamd.a:
+	( cd ../../COLAMD ; $(MAKE) library )
+
+../../CHOLMOD/Lib/libcholmod.a:
+	( cd ../../CHOLMOD ; $(MAKE) library )
+#	( cd ../../CAMD ; $(MAKE) )
+#	( cd ../../CCOLAMD ; $(MAKE) )
+#	( cd ../../metis-4.0 ; $(MAKE) )
+
+purge: distclean
+
+distclean: clean
+	- $(RM) kludemo kluldemo klu_simple
 
 clean:
 	- $(RM) $(CLEAN)
 
-library:
-	( cd ../Lib ; $(MAKE))
-	( cd ../../AMD ; $(MAKE) library)
-	( cd ../../CAMD ; $(MAKE) library)
-	( cd ../../COLAMD ; $(MAKE) library)
-	( cd ../../CCOLAMD ; $(MAKE) library)
-	( cd ../../BTF ; $(MAKE))
-	( cd ../../CHOLMOD/Lib ; $(MAKE))
-	( cd ../User ; $(MAKE))
+kludemo: kludemo.c Makefile $(LIB)
+	$(CC) $(CFLAGS) $(I) kludemo.c -o kludemo $(LIB) $(CHOLMOD) -lm
+
+kluldemo: kludemo.c Makefile $(LIB)
+	$(CC) $(CFLAGS) $(I) kluldemo.c -o kluldemo $(LIB) $(CHOLMOD) -lm
+
+klu_simple: klu_simple.c Makefile $(LIB)
+	$(CC) $(CFLAGS) $(I) klu_simple.c -o klu_simple $(LIB) -lm
+	- ./klu_simple

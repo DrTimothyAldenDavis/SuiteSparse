@@ -4,7 +4,7 @@ function test27
 %   test27
 % See also cholmod_test
 
-% Copyright 2006, Timothy A. Davis, University of Florida
+% Copyright 2006-2007, Timothy A. Davis, University of Florida
 
 fprintf ('=================================================================\n');
 fprintf ('test27: test nesdis\n') ;

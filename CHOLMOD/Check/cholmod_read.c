@@ -518,7 +518,7 @@ static cholmod_triplet *read_triplet
     cholmod_triplet *T ;
     double l1, l2 ;
     Int nitems, xtype, unknown, k, nshould, is_lower, is_upper, one_based, i, j,
-	imax, jmax, ignore, skew_symmetric, p, complex_symmetric ;
+	imax, jmax, skew_symmetric, p, complex_symmetric ;
     size_t s, nnz2, extra ;
     int ok = TRUE ;
 
@@ -895,9 +895,9 @@ static cholmod_dense *read_dense
 )
 {
     double x, z ;
-    double *Xx ;
+    double *Xx = NULL ;
     cholmod_dense *X ;
-    Int nitems, xtype, nshould, i, j, k, kup, first ;
+    Int nitems, xtype = -1, nshould = 0, i, j, k, kup, first ;
 
     /* ---------------------------------------------------------------------- */
     /* quick return for empty matrix */
@@ -1286,7 +1286,8 @@ void *CHOLMOD(read_matrix)
 
     if (*mtype == CHOLMOD_TRIPLET)
     {
-	/* read in the triplet matrix */
+	/* read in the triplet matrix, converting to unsymmetric format if
+	 * prefer == 1 */
 	T = read_triplet (f, nrow, ncol, nnz, stype, prefer == 1, buf, Common) ;
 	if (prefer == 0)
 	{

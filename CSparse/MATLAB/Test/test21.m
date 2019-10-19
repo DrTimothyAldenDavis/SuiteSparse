@@ -5,7 +5,7 @@ function test21
 %   test21
 % See also: testall
 
-%   Copyright 2006, Timothy A. Davis.
+%   Copyright 2006-2007, Timothy A. Davis.
 %   http://www.cise.ufl.edu/research/sparse
 
 
@@ -56,7 +56,7 @@ for trials = 1:10
     for trials2 = 1:10
 
 	k = 1+fix (n * rand (1)) ;
-	if (k <= 0 || k > n)
+	if (k <= 0 | k > n)						    %#ok
 	    k = 1 ;
 	end
 

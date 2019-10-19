@@ -19,6 +19,7 @@ C = $(CC) $(CFLAGS) $(CHOLMOD_CONFIG) $(NANTESTS)
 # LAPACK and the Fortran reference BLAS, compiled with gfortran -g -O:
 # LIB = $(METIS) -lm -llapack_plain -lblas_plain -lg2c
 LIB = $(METIS) -lm -llapack_plain -lblas_plain -lgfortran -lgfortranbegin
+LIB = $(METIS) -lm -llapack -lblas -lgfortran -lgfortranbegin
 
 # Solaris
 # LIB = $(METIS) -xlic_lib=sunperf
@@ -28,9 +29,9 @@ PRETTY = grep -v "^\#" | indent -bl -nce -ss -bli0 -i4 -sob -l120
 # PRETTY = grep -v "^\#" | ssh persimmon indent -bl -nce -ss -bli0 -i4 -sob -l120
 # PRETTY = grep -v "^\#"
 
-I = -I../../AMD/Include -I../../COLAMD \
-	-I$(METIS_PATH)/Lib -I../../CCOLAMD -I../../CAMD/Include -I../Include \
-	-I../../UFconfig
+I = -I../../AMD/Include -I../../COLAMD/Include \
+	-I$(METIS_PATH)/Lib -I../../CCOLAMD/Include -I../../CAMD/Include \
+	-I../Include -I../../UFconfig
 
 default: cm cl z_demo l_demo cmread clread
 
@@ -96,7 +97,7 @@ LAMDOBJ = \
 	zl_amd_preprocess.o \
 	zl_amd_valid.o
 
-COLAMDSRC = ../../COLAMD/colamd.c ../../COLAMD/colamd.h
+COLAMDSRC = ../../COLAMD/Source/colamd.c ../../COLAMD/Source/colamd_global.c
 
 COLAMDOBJ = zz_colamd.o yz_colamd_global.o
 
@@ -106,9 +107,9 @@ LCOLAMDOBJ = zl_colamd.o yl_colamd_global.o
 # When using the Partition Module:
 
 CCOLAMDSRC = \
-	../../CCOLAMD/ccolamd.c \
-	../../CCOLAMD/ccolamd_global.c \
-	../../CCOLAMD/ccolamd.h
+	../../CCOLAMD/Source/ccolamd.c \
+	../../CCOLAMD/Source/ccolamd_global.c \
+	../../CCOLAMD/Include/ccolamd.h
 
 CCOLAMDOBJ = zz_ccolamd.o yz_ccolamd_global.o
 
@@ -747,37 +748,37 @@ zl_camd_valid.o: ../../CAMD/Source/camd_valid.c
 
 #-------------------------------------------------------------------------------
 
-zz_colamd.o: ../../COLAMD/colamd.c
+zz_colamd.o: ../../COLAMD/Source/colamd.c
 	$(C) -E $(I) $< | $(PRETTY) > zz_colamd.c
 	$(C) -c $(I) zz_colamd.c
 
-yz_colamd_global.o: ../../COLAMD/colamd_global.c
+yz_colamd_global.o: ../../COLAMD/Source/colamd_global.c
 	$(C) -E $(I) $< | $(PRETTY) > yz_colamd_global.c
 	$(C) -c $(I) yz_colamd_global.c
 
-zl_colamd.o: ../../COLAMD/colamd.c
+zl_colamd.o: ../../COLAMD/Source/colamd.c
 	$(C) -DDLONG -E $(I) $< | $(PRETTY) > zl_colamd.c
 	$(C) -c $(I) zl_colamd.c
 
-yl_colamd_global.o: ../../COLAMD/colamd_global.c
+yl_colamd_global.o: ../../COLAMD/Source/colamd_global.c
 	$(C) -DDLONG -E $(I) $< | $(PRETTY) > yl_colamd_global.c
 	$(C) -c $(I) yl_colamd_global.c
 
 #-------------------------------------------------------------------------------
 
-zz_ccolamd.o: ../../CCOLAMD/ccolamd.c
+zz_ccolamd.o: ../../CCOLAMD/Source/ccolamd.c
 	$(C) -E $(I) $< | $(PRETTY) > zz_ccolamd.c
 	$(C) -c $(I) zz_ccolamd.c
 
-yz_ccolamd_global.o: ../../CCOLAMD/ccolamd_global.c
+yz_ccolamd_global.o: ../../CCOLAMD/Source/ccolamd_global.c
 	$(C) -E $(I) $< | $(PRETTY) > yz_ccolamd_global.c
 	$(C) -c $(I) yz_ccolamd_global.c
 
-zl_ccolamd.o: ../../CCOLAMD/ccolamd.c
+zl_ccolamd.o: ../../CCOLAMD/Source/ccolamd.c
 	$(C) -DDLONG -E $(I) $< | $(PRETTY) > zl_ccolamd.c
 	$(C) -c $(I) zl_ccolamd.c
 
-yl_ccolamd_global.o: ../../CCOLAMD/ccolamd_global.c
+yl_ccolamd_global.o: ../../CCOLAMD/Source/ccolamd_global.c
 	$(C) -DDLONG -E $(I) $< | $(PRETTY) > yl_ccolamd_global.c
 	$(C) -c $(I) yl_ccolamd_global.c
 

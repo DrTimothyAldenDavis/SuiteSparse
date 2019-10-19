@@ -18,8 +18,8 @@
 \author{Timothy A. Davis \\
 Dept. of Computer and Information Science and Engineering \\
 Univ. of Florida, Gainesville, FL}
-\title{UMFPACK Version 5.0 Quick Start Guide}
-\date{May 5, 2006}
+\title{UMFPACK Version 5.1 Quick Start Guide}
+\date{May 31, 2007}
 \maketitle
 
 %-------------------------------------------------------------------------------
@@ -35,7 +35,7 @@ Univ. of Florida, Gainesville, FL}
 \end{abstract}
 %-------------------------------------------------------------------------------
 
-UMFPACK Version 5.0, Copyright\copyright 1995-2006 by Timothy A. Davis.
+UMFPACK Version 5.1, Copyright\copyright 1995-2006 by Timothy A. Davis.
 All Rights Reserved.  Refer to the UMFPACK User Guide
 for the License. See \newline
 http://www.cise.ufl.edu/research/sparse/umfpack
@@ -234,8 +234,8 @@ for more details.
 \label{Install}
 %-------------------------------------------------------------------------------
 
-You will need to install both UMFPACK v5.0 and AMD v2.0 to use UMFPACK.
-Note that UMFPACK v5.0 cannot use AMD v1.2 or earlier.
+You will need to install both UMFPACK v5.1 and AMD v2.2 to use UMFPACK.
+Note that UMFPACK v5.1 cannot use AMD v1.2 or earlier.
 The {\tt UMFPACK} and {\tt AMD} subdirectories must be placed side-by-side
 within the same parent directory.  AMD is a stand-alone package that
 is required by UMFPACK.  UMFPACK can be compiled without the
@@ -243,8 +243,8 @@ BLAS but your performance will be much less than what it should be.
 
 System-dependent configurations are in the {\tt UFconfig/UFconfig.mk}
 file.  The default
-settings will work on most systems, except that UMFPACK will be compiled so
-that it does not use the BLAS.  Sample configurations are provided
+settings will work on most systems, except for the BLAS definition.
+Sample configurations are provided
 for Linux, Sun Solaris, SGI IRIX, IBM AIX, and the DEC/Compaq Alpha.
 
 To compile and install both packages,
@@ -256,9 +256,15 @@ compiled and tested in the {\tt UMFPACK/Demo} directory.
 The outputs of these demo programs will then be compared with output
 files in the distribution.  Expect to see a few differences, such as
 residual norms, compile-time control settings, and perhaps memory usage
-differences.  The AMD and MATLAB mexFunctions for
-use in MATLAB will also be compiled.  If you do not have MATLAB,
-type {\tt make lib} instead.
+differences.
+
+To use {\tt make} to compile the MATLAB mexFunctions for MATLAB
+and AMD, you can either type {\tt make mex} in the UMFPACK directory.
+You may first need to edit the {\tt UFconfig/UFconfig.mk} file to
+modify the definition of the {\tt MEX}, if you have a version of MATLAB
+older than Version 7.2.  Remove the {\tt -largeArrayDims} definition.
+If you use the MATLAB command {\tt umfpack\_make} in the MATLAB directory,
+then this case is handled for you automatically.
 
 If you compile UMFPACK and AMD and then later change the
 {\tt UFconfig/UFconfig.mk} file

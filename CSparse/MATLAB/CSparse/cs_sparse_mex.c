@@ -9,7 +9,6 @@ void mexFunction
 )
 {
     cs *A, *C, *T, Tmatrix ;
-    int m, n, nz ;
     if (nargout > 1 || nargin != 3)
     {
 	mexErrMsgTxt ("Usage: A = cs_sparse(i,j,x)") ;
@@ -20,7 +19,7 @@ void mexFunction
     T->i = cs_mex_get_int (T->nz, pargin [1], &(T->m), 1) ;
     cs_mex_check (1, T->nz, 1, 0, 0, 1, pargin [2]) ;
     T->x = mxGetPr (pargin [2]) ;
-    T->nzmax = nz ;
+    T->nzmax = T->nz ;
     C = cs_compress (T) ;		/* create sparse matrix C */
     cs_dupl (C) ;			/* remove duplicates from C */
     cs_dropzeros (C) ;			/* remove zeros from C */

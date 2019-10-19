@@ -44,17 +44,18 @@ void mexFunction
     cholmod_sparse *A = NULL, *Z = NULL ;
     cholmod_triplet *T ;
     cholmod_common Common, *cm ;
-    int *Ti, *Tj, *Ap, *Ai, *Zp, *Zi ;
+    Int *Ti, *Tj, *Ap, *Ai, *Zp, *Zi ;
     double *Tx, *Tz, *Ax, *Az, *Zx ;
     char filename [MAXLEN] ;
-    int nz, i, j, k, is_complex, p, nrow, ncol, pz, nzeros, mtype, allzero ;
+    Int nz, i, j, k, is_complex, p, nrow, ncol, pz, nzeros, allzero ;
+    int mtype ;
 
     /* ---------------------------------------------------------------------- */
     /* start CHOLMOD and set parameters */ 
     /* ---------------------------------------------------------------------- */
 
     cm = &Common ;
-    cholmod_start (cm) ;
+    cholmod_l_start (cm) ;
     sputil_config (SPUMONI, cm) ;
 
     /* ---------------------------------------------------------------------- */
@@ -84,7 +85,7 @@ void mexFunction
     /* read the matrix, as either a dense or sparse matrix */
     /* ---------------------------------------------------------------------- */
 
-    G = cholmod_read_matrix (sputil_file, 1, &mtype, cm) ;
+    G = cholmod_l_read_matrix (sputil_file, 1, &mtype, cm) ;
     fclose (sputil_file) ;
     sputil_file = NULL ;
     if (G == NULL)
@@ -104,7 +105,7 @@ void mexFunction
 	if (is_complex)
 	{
 	    /* if complex, ensure A is ZOMPLEX */
-	    cholmod_sparse_xtype (CHOLMOD_ZOMPLEX, A, cm) ;
+	    cholmod_l_sparse_xtype (CHOLMOD_ZOMPLEX, A, cm) ;
 	}
 	Ax = A->x ;
 	Az = A->z ;
@@ -118,7 +119,7 @@ void mexFunction
 	if (is_complex)
 	{
 	    /* if complex, ensure X is ZOMPLEX */
-	    cholmod_dense_xtype (CHOLMOD_ZOMPLEX, X, cm) ;
+	    cholmod_l_dense_xtype (CHOLMOD_ZOMPLEX, X, cm) ;
 	}
 	Ax = X->x ;
 	Az = X->z ;
@@ -142,7 +143,7 @@ void mexFunction
 	else
 	{
 	    /* input is full; just return an empty Z matrix */
-	    Z = cholmod_spzeros (nrow, ncol, 0, CHOLMOD_REAL, cm) ;
+	    Z = cholmod_l_spzeros (nrow, ncol, 0, CHOLMOD_REAL, cm) ;
 	}
     }
 
@@ -153,7 +154,7 @@ void mexFunction
     if (mtype == CHOLMOD_SPARSE)
     {
 	sputil_drop_zeros (A) ;
-	cholmod_reallocate_sparse (cholmod_nnz (A, cm), A, cm) ;
+	cholmod_l_reallocate_sparse (cholmod_l_nnz (A, cm), A, cm) ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -184,11 +185,11 @@ void mexFunction
 	    /* discard the all-zero imaginary part */
 	    if (mtype == CHOLMOD_SPARSE)
 	    {
-		cholmod_sparse_xtype (CHOLMOD_REAL, A, cm) ;
+		cholmod_l_sparse_xtype (CHOLMOD_REAL, A, cm) ;
 	    }
 	    else
 	    {
-		cholmod_dense_xtype (CHOLMOD_REAL, X, cm) ;
+		cholmod_l_dense_xtype (CHOLMOD_REAL, X, cm) ;
 	    }
 	}
     }
@@ -214,6 +215,6 @@ void mexFunction
     /* free workspace */
     /* ---------------------------------------------------------------------- */
 
-    cholmod_finish (cm) ;
-    cholmod_print_common (" ", cm) ;
+    cholmod_l_finish (cm) ;
+    cholmod_l_print_common (" ", cm) ;
 }

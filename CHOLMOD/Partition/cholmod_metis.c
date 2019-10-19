@@ -256,7 +256,7 @@ UF_long CHOLMOD(metis_bisector)	/* returns separator size */
     nz = Ap [n] ;
 
     /* ---------------------------------------------------------------------- */
-    /* METIS does not have a UF_long integer version */
+    /* METIS does not have a 64-bit integer version */
     /* ---------------------------------------------------------------------- */
 
 #ifdef LONG

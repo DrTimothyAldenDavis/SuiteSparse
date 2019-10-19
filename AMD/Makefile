@@ -6,26 +6,26 @@ default: demo
 
 include ../UFconfig/UFconfig.mk
 
-# Compile all C code, including the C-callable routine and the mexFunctions.
+# Compile all C code, including the C-callable routines.
 # Do not compile the FORTRAN versions, or MATLAB interface.
 demo:
-	( cd Source ; $(MAKE) )
+	( cd Lib    ; $(MAKE) )
 	( cd Demo   ; $(MAKE) )
 
 # Compile all C code, including the C-callable routine and the mexFunctions.
 # Do not compile the FORTRAN versions.
 all:
-	( cd Source ; $(MAKE) )
+	( cd Lib    ; $(MAKE) )
 	( cd Demo   ; $(MAKE) )
 	( cd MATLAB ; $(MAKE) )
 
 # compile just the C-callable libraries (not mexFunctions or Demos)
 library:
-	( cd Source ; $(MAKE) )
+	( cd Lib    ; $(MAKE) )
 
 # compile the FORTRAN libraries and demo programs (not compiled by "make all")
 fortran:
-	( cd Source ; $(MAKE) fortran )
+	( cd Lib    ; $(MAKE) fortran )
 	( cd Demo   ; $(MAKE) fortran )
 
 # compile a FORTRAN demo program that calls the C version of AMD
@@ -35,14 +35,14 @@ cross:
 
 # remove object files, but keep the compiled programs and library archives
 clean:
-	( cd Source ; $(MAKE) clean )
+	( cd Lib    ; $(MAKE) clean )
 	( cd Demo   ; $(MAKE) clean )
 	( cd MATLAB ; $(MAKE) clean )
 	( cd Doc    ; $(MAKE) clean )
 
 # clean, and then remove compiled programs and library archives
 purge:
-	( cd Source ; $(MAKE) purge )
+	( cd Lib    ; $(MAKE) purge )
 	( cd Demo   ; $(MAKE) purge )
 	( cd MATLAB ; $(MAKE) purge )
 	( cd Doc    ; $(MAKE) purge )

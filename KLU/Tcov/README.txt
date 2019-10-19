@@ -1,8 +1,5 @@
-To run the test suite, first type "make" in the Unix shell.
-Next, run MATLAB and type "testklu".  When finished, type
-"coverage" to find the statement coverage.  "make clean"
-or "make distclean" will remove all unnecessary files.
+Test suite for KLU
 
-Requires the UF_sparse interface to the UF sparse matrix collection.
-
-Requires the lu_normest function in the UMFPACK/MATLAB directory.
+To compile and run the test suite, first type "make" in the Linux/Unix shell.
+The libraries must be compiled first (if they aren't use "make libs").
+"make clean" or "make distclean" will remove all unnecessary files.

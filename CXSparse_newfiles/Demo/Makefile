@@ -1,9 +1,9 @@
 CC = cc
 CFLAGS = -O
 
-I = -I../Source -I../../UFconfig
+I = -I../Include -I../../UFconfig
 
-CS = ../Source/libcxsparse.a
+CS = ../Lib/libcxsparse.a
 
 all: $(CS) cs_demo1 cs_demo2 cs_demo3 \
 	cs_di_demo1 cs_di_demo2 cs_di_demo3 \
@@ -63,6 +63,8 @@ test_ci: cs_ci_demo1 cs_ci_demo2 cs_ci_demo3
 	- ./cs_ci_demo2 < ../Matrix/young1c
 	- ./cs_ci_demo2 < ../Matrix/qc324
 	- ./cs_ci_demo2 < ../Matrix/neumann
+	- ./cs_ci_demo2 < ../Matrix/c4
+	- ./cs_ci_demo3 < ../Matrix/c4
 	- ./cs_ci_demo2 < ../Matrix/mhd1280b
 	- ./cs_ci_demo3 < ../Matrix/mhd1280b
 
@@ -76,6 +78,8 @@ test_cl: cs_cl_demo1 cs_cl_demo2 cs_cl_demo3
 	- ./cs_cl_demo2 < ../Matrix/young1c
 	- ./cs_cl_demo2 < ../Matrix/qc324
 	- ./cs_cl_demo2 < ../Matrix/neumann
+	- ./cs_cl_demo2 < ../Matrix/c4
+	- ./cs_cl_demo3 < ../Matrix/c4
 	- ./cs_cl_demo2 < ../Matrix/mhd1280b
 	- ./cs_cl_demo3 < ../Matrix/mhd1280b
 
@@ -84,7 +88,7 @@ test_convert: cs_idemo cs_ldemo
 	- ./cs_ldemo < ../Matrix/t2
 
 $(CS):
-	( cd ../Source ; $(MAKE) )
+	( cd ../Lib ; $(MAKE) )
 
 cs_demo1: $(CS) cs_demo1.c Makefile $(CS)
 	$(CC) $(I) -o cs_demo1 cs_demo1.c $(CS) -lm
@@ -147,7 +151,7 @@ cs_idemo: $(CS) cs_idemo.c Makefile $(CS)
 	$(CC) $(I) -o cs_idemo cs_idemo.c $(CS) -lm
 
 cs_ldemo: $(CS) cs_ldemo.c Makefile $(CS)
-	$(CC) $(I) -o cs_ldemo cs_ldemo.c $(CS) -lm
+	$(CC) $(I) -DCS_LONG -o cs_ldemo cs_ldemo.c $(CS) -lm
 
 
 clean:

@@ -9,7 +9,7 @@ function C = cs_transpose (A)						    %#ok
 %
 %   See also TRANSPOSE, CTRANSPOSE.
 
-%   Copyright 2006, Timothy A. Davis.
+%   Copyright 2006-2007, Timothy A. Davis.
 %   http://www.cise.ufl.edu/research/sparse
 
 error ('cs_transpose mexFunction not found') ;

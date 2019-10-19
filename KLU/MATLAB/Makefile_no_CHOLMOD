@@ -1,0 +1,263 @@
+#===============================================================================
+# KLU/MATLAB/Makefile_no_CHOLMOD
+#===============================================================================
+
+# Makefile for klu mexFunction, without the use of CHOLMOD.  Ordering options
+# 3 and 4 for klu will not be available.  See "help klu" in MATLAB for more
+# details.  Usage:
+#
+# make -f Makefile_no_CHOLMOD
+
+default: all
+
+include ../../UFconfig/UFconfig.mk
+
+# without CHOLMOD
+I = -I. -I../../AMD/Include -I../../AMD/Source -I../../COLAMD/Include \
+    -I../Include -I../../UFconfig -I../../BTF/Include
+
+all: klu
+
+MX = $(MEX) -DDLONG -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE $(I)
+
+distclean: purge
+
+purge: clean
+	- $(RM) *.mex* rename.h
+
+clean:
+	- $(RM) $(CLEAN)
+
+#===============================================================================
+
+AMD_INC = ../../AMD/Include/amd.h ../../AMD/Include/amd_internal.h
+
+AMD = \
+	amd_1.o \
+	amd_2.o \
+	amd_aat.o \
+	amd_control.o \
+	amd_defaults.o \
+	amd_dump.o \
+	amd_global.o \
+	amd_info.o \
+	amd_order.o \
+	amd_postorder.o \
+	amd_post_tree.o \
+	amd_preprocess.o \
+	amd_valid.o
+
+$(AMD): $(AMD_INC)
+amd_1.o: ../../AMD/Source/amd_1.c
+	$(MX) -c $<
+
+amd_2.o: ../../AMD/Source/amd_2.c
+	$(MX) -c $<
+
+amd_aat.o: ../../AMD/Source/amd_aat.c
+	$(MX) -c $<
+
+amd_control.o: ../../AMD/Source/amd_control.c
+	$(MX) -c $<
+
+amd_defaults.o: ../../AMD/Source/amd_defaults.c
+	$(MX) -c $<
+
+amd_dump.o: ../../AMD/Source/amd_dump.c
+	$(MX) -c $<
+
+amd_global.o: ../../AMD/Source/amd_global.c
+	$(MX) -c $<
+
+amd_info.o: ../../AMD/Source/amd_info.c
+	$(MX) -c $<
+
+amd_order.o: ../../AMD/Source/amd_order.c
+	$(MX) -c $<
+
+amd_postorder.o: ../../AMD/Source/amd_postorder.c
+	$(MX) -c $<
+
+amd_post_tree.o: ../../AMD/Source/amd_post_tree.c
+	$(MX) -c $<
+
+amd_preprocess.o: ../../AMD/Source/amd_preprocess.c
+	$(MX) -c $<
+
+amd_valid.o: ../../AMD/Source/amd_valid.c
+	$(MX) -c $<
+
+#===============================================================================
+
+COLAMD_INC = ../../COLAMD/Include/colamd.h
+
+COLAMD = colamd.o colamd_global.o
+
+$(COLAMD): $(COLAMD_INC)
+
+colamd.o: ../../COLAMD/Source/colamd.c
+	$(MX) -c $<
+
+colamd_global.o: ../../COLAMD/Source/colamd_global.c
+	$(MX) -c $<
+
+#===============================================================================
+
+BTF_INC = ../../BTF/Include/btf.h ../../BTF/Include/btf_internal.h
+
+BTF = btf_maxtrans.o btf_order.o btf_strongcomp.o
+
+$(BTF): $(BTF_INC)
+
+btf_maxtrans.o: ../../BTF/Source/btf_maxtrans.c
+	$(MX) -c $<
+
+btf_order.o: ../../BTF/Source/btf_order.c
+	$(MX) -c $<
+
+btf_strongcomp.o: ../../BTF/Source/btf_strongcomp.c
+	$(MX) -c $<
+
+#===============================================================================
+
+KLU_INC = ../Include/klu.h ../Include/klu_internal.h ../Include/klu_version.h
+
+KLU_L = klu_l.o klu_l_kernel.o klu_l_dump.o \
+    klu_l_factor.o klu_l_free_numeric.o klu_l_solve.o \
+    klu_l_scale.o klu_l_refactor.o \
+    klu_l_tsolve.o klu_l_diagnostics.o klu_l_sort.o klu_l_extract.o
+
+KLU_ZL = klu_zl.o klu_zl_kernel.o klu_zl_dump.o \
+    klu_zl_factor.o klu_zl_free_numeric.o klu_zl_solve.o \
+    klu_zl_scale.o klu_zl_refactor.o \
+    klu_zl_tsolve.o klu_zl_diagnostics.o klu_zl_sort.o klu_zl_extract.o
+
+COMMON = klu_free_symbolic.o klu_defaults.o klu_analyze_given.o \
+    klu_analyze.o klu_memory.o
+
+KLU = $(COMMON) $(KLU_L) $(KLU_ZL)
+
+$(KLU): $(KLU_INC)
+
+#-------------------------------------------------------------------------------
+
+klu_l.o: ../Source/klu.c
+	$(MX) -c $<
+	$(MV) klu.o $@
+
+klu_zl.o: ../Source/klu.c
+	$(MX) -c -DCOMPLEX $<
+	$(MV) klu.o $@
+
+klu_l_kernel.o: ../Source/klu_kernel.c
+	$(MX) -c $<
+	$(MV) klu_kernel.o $@
+
+klu_zl_kernel.o: ../Source/klu_kernel.c
+	$(MX) -c -DCOMPLEX $<
+	$(MV) klu_kernel.o $@
+
+klu_l_sort.o: ../Source/klu_sort.c
+	$(MX) -c $<
+	$(MV) klu_sort.o $@
+
+klu_zl_sort.o: ../Source/klu_sort.c
+	$(MX) -c -DCOMPLEX $<
+	$(MV) klu_sort.o $@
+
+klu_l_diagnostics.o: ../Source/klu_diagnostics.c
+	$(MX) -c $<
+	$(MV) klu_diagnostics.o $@
+
+klu_zl_diagnostics.o: ../Source/klu_diagnostics.c
+	$(MX) -c -DCOMPLEX $<
+	$(MV) klu_diagnostics.o $@
+
+klu_l_dump.o: ../Source/klu_dump.c
+	$(MX) -c $<
+	$(MV) klu_dump.o $@
+
+klu_zl_dump.o: ../Source/klu_dump.c
+	$(MX) -c -DCOMPLEX $<
+	$(MV) klu_dump.o $@
+
+klu_l_factor.o: ../Source/klu_factor.c
+	$(MX) -c $<
+	$(MV) klu_factor.o $@
+
+klu_zl_factor.o: ../Source/klu_factor.c
+	$(MX) -c -DCOMPLEX $<
+	$(MV) klu_factor.o $@
+
+klu_l_free_numeric.o: ../Source/klu_free_numeric.c
+	$(MX) -c $<
+	$(MV) klu_free_numeric.o $@
+
+klu_zl_free_numeric.o: ../Source/klu_free_numeric.c
+	$(MX) -c -DCOMPLEX $<
+	$(MV) klu_free_numeric.o $@
+
+klu_l_extract.o: ../Source/klu_extract.c
+	$(MX) -c $<
+	$(MV) klu_extract.o $@
+
+klu_zl_extract.o: ../Source/klu_extract.c
+	$(MX) -c -DCOMPLEX $<
+	$(MV) klu_extract.o $@
+
+klu_l_refactor.o: ../Source/klu_refactor.c
+	$(MX) -c $<
+	$(MV) klu_refactor.o $@
+
+klu_zl_refactor.o: ../Source/klu_refactor.c
+	$(MX) -c -DCOMPLEX $<
+	$(MV) klu_refactor.o $@
+
+klu_l_scale.o: ../Source/klu_scale.c
+	$(MX) -c $<
+	$(MV) klu_scale.o $@
+
+klu_zl_scale.o: ../Source/klu_scale.c
+	$(MX) -c -DCOMPLEX $<
+	$(MV) klu_scale.o $@
+
+klu_l_solve.o: ../Source/klu_solve.c
+	$(MX) -c $<
+	$(MV) klu_solve.o $@
+
+klu_zl_solve.o: ../Source/klu_solve.c
+	$(MX) -c -DCOMPLEX $<
+	$(MV) klu_solve.o $@
+
+klu_l_tsolve.o: ../Source/klu_tsolve.c
+	$(MX) -c $<
+	$(MV) klu_tsolve.o $@
+
+klu_zl_tsolve.o: ../Source/klu_tsolve.c
+	$(MX) -c -DCOMPLEX $<
+	$(MV) klu_tsolve.o $@
+
+#-------------------------------------------------------------------------------
+
+klu_analyze.o: ../Source/klu_analyze.c
+	$(MX) -c $<
+
+klu_analyze_given.o: ../Source/klu_analyze_given.c
+	$(MX) -c $<
+
+klu_defaults.o: ../Source/klu_defaults.c
+	$(MX) -c $<
+
+klu_free_symbolic.o: ../Source/klu_free_symbolic.c
+	$(MX) -c $<
+
+klu_memory.o: ../Source/klu_memory.c
+	$(MX) -c $<
+
+#===============================================================================
+
+OBJ = $(AMD) $(COLAMD) $(KLU) $(BTF)
+
+klu: klu_mex.c $(OBJ)
+	$(MX) -DNCHOLMOD -output klu klu_mex.c $(OBJ)
+

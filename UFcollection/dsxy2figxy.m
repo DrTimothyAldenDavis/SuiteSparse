@@ -16,7 +16,7 @@ function varargout = dsxy2figxy(varargin)
 %
 % See also annotation, plot, ginput.
 
-% Copyright 2006, The MathWorks, Inc.  Used by permission (see
+% Copyright 2006-2007, The MathWorks, Inc.  Used by permission (see
 % http://www.mathworks.com/access/helpdesk/help/techdoc/creating_plots/
 % bquk5ia-4.html).
 

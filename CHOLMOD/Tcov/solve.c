@@ -512,9 +512,11 @@ double solve (cholmod_sparse *A)
     /* convert L to LDL' packed or LL packed */
     /* ---------------------------------------------------------------------- */
 
+    printf ("before change factor : %d\n", L ? L->is_super : -1) ;
     is_ll = (L == NULL) ? FALSE : (L->is_ll) ;
     Lxtype = (L == NULL) ? CHOLMOD_REAL : (L->xtype) ;
     CHOLMOD(change_factor) (Lxtype, is_ll, FALSE, TRUE, TRUE, Lcopy, cm) ;
+    printf ("after change factor : %d\n", L ? L->is_super : -1) ;
 
     /* ---------------------------------------------------------------------- */
     /* extract L, D, and L' as matrices from Lcopy */
@@ -742,36 +744,42 @@ double solve (cholmod_sparse *A)
 
 	/* solve LDL'x=b */
 	X = CHOLMOD(solve) (CHOLMOD_LDLt, L, B, cm) ;
+	/* printf ("LDL'x=b %p %p %p\n", Lo, X, B) ; */
 	r = resid3 (Lo, D, Up, X, B) ;
 	MAXERR (maxerr, r, 1) ;
 	CHOLMOD(free_dense) (&X, cm) ;
 
 	/* solve LDx=b */
 	X = CHOLMOD(solve) (CHOLMOD_LD, L, B, cm) ;
+	/* printf ("LDx=b %p %p %p\n", Lo, X, B) ; */
 	r = resid3 (Lo, D, NULL, X, B) ;
 	MAXERR (maxerr, r, 1) ;
 	CHOLMOD(free_dense) (&X, cm) ;
 
 	/* solve DL'x=b */
 	X = CHOLMOD(solve) (CHOLMOD_DLt, L, B, cm) ;
+	/* printf ("DL'x=b %p %p %p\n", D, X, B) ; */
 	r = resid3 (D, Up, NULL, X, B) ;
 	MAXERR (maxerr, r, 1) ;
 	CHOLMOD(free_dense) (&X, cm) ;
 
 	/* solve Lx=b */
 	X = CHOLMOD(solve) (CHOLMOD_L, L, B, cm) ;
+	/* printf ("Lx=b %p %p %p\n", Lo, X, B) ; */
 	r = resid3 (Lo, NULL, NULL, X, B) ;
 	MAXERR (maxerr, r, 1) ;
 	CHOLMOD(free_dense) (&X, cm) ;
 
 	/* solve L'x=b */
 	X = CHOLMOD(solve) (CHOLMOD_Lt, L, B, cm) ;
+	/* printf ("L'x=b %p %p %p\n", Up, X, B) ; */
 	r = resid3 (Up, NULL, NULL, X, B) ;
 	MAXERR (maxerr, r, 1) ;
 	CHOLMOD(free_dense) (&X, cm) ;
 
 	/* solve Dx=b */
 	X = CHOLMOD(solve) (CHOLMOD_D, L, B, cm) ;
+	/* printf ("Dx=b %p %p %p\n", D, X, B) ; */
 	r = resid3 (D, NULL, NULL, X, B) ;
 	MAXERR (maxerr, r, 1) ;
 	CHOLMOD(free_dense) (&X, cm) ;

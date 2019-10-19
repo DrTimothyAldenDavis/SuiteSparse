@@ -3,7 +3,7 @@
 /* ========================================================================= */
 
 /* ------------------------------------------------------------------------- */
-/* CAMD Version 2.1, Copyright (c) 2006 by Timothy A. Davis, Yanqing Chen,   */
+/* CAMD Version 2.2, Copyright (c) 2007 by Timothy A. Davis, Yanqing Chen,   */
 /* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
 /* email: davis at cise.ufl.edu    CISE Department, Univ. of Florida.        */
 /* web: http://www.cise.ufl.edu/research/sparse/camd                         */
@@ -405,11 +405,11 @@ void camd_l_info     (double Info [ ]) ;
  *	#endif
  */
 
-#define CAMD_DATE "Dec 12, 2006"
+#define CAMD_DATE "May 31, 2007"
 #define CAMD_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
 #define CAMD_MAIN_VERSION 2
-#define CAMD_SUB_VERSION 1
-#define CAMD_SUBSUB_VERSION 3
+#define CAMD_SUB_VERSION 2
+#define CAMD_SUBSUB_VERSION 0
 #define CAMD_VERSION CAMD_VERSION_CODE(CAMD_MAIN_VERSION,CAMD_SUB_VERSION)
 
 #ifdef __cplusplus

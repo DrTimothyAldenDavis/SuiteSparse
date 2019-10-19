@@ -1062,7 +1062,7 @@ cholmod_dense *CHOLMOD(solve)
 	/* ------------------------------------------------------------------ */
 
 #ifndef NSUPERNODAL
-	Int ok ;
+	Int blas_ok = TRUE ;
 
 	/* allocate workspace */
 	cholmod_dense *E ;
@@ -1085,24 +1085,31 @@ cholmod_dense *CHOLMOD(solve)
 
 	if (sys == CHOLMOD_A || sys == CHOLMOD_LDLt)
 	{
-	    ok = CHOLMOD(super_lsolve) (L, Y, E, Common) ;	   /* Y = L\Y */
-	    ok = ok && CHOLMOD(super_ltsolve) (L, Y, E, Common) ;  /* Y = L'\Y*/
+	    blas_ok = CHOLMOD(super_lsolve) (L, Y, E, Common) ;	   /* Y = L\Y */
+	    blas_ok = blas_ok &&
+		CHOLMOD(super_ltsolve) (L, Y, E, Common) ;	   /* Y = L'\Y*/
 	}
 	else if (sys == CHOLMOD_L || sys == CHOLMOD_LD)
 	{
-	    ok = CHOLMOD(super_lsolve) (L, Y, E, Common) ;	   /* Y = L\Y */
+	    blas_ok = CHOLMOD(super_lsolve) (L, Y, E, Common) ;	   /* Y = L\Y */
 	}
 	else if (sys == CHOLMOD_Lt || sys == CHOLMOD_DLt)
 	{
-	    ok = CHOLMOD(super_ltsolve) (L, Y, E, Common) ;	   /* Y = L'\Y*/
+	    blas_ok = CHOLMOD(super_ltsolve) (L, Y, E, Common) ;   /* Y = L'\Y*/
 	}
 	CHOLMOD(free_dense) (&E, Common) ;
 
 	iperm (Y, Perm, 0, nrhs, X) ;			    /* X = P'*Y */
 
-	if (CHECK_BLAS_INT && !ok)
+	if (CHECK_BLAS_INT && !blas_ok)
 	{
-	    /* integer overflow in the BLAS */
+	    /* Integer overflow in the BLAS.  This is probably impossible,
+	     * since the BLAS were used to create the supernodal factorization.
+	     * It might be possible for the calls to the BLAS to differ between
+	     * factorization and forward/backsolves, however.  This statement
+	     * is untested; it does not appear in the compiled code if
+	     * CHECK_BLAS_INT is true (when the same integer is used in CHOLMOD
+	     * and the BLAS. */
 	    CHOLMOD(free_dense) (&X, Common) ;
 	}
 

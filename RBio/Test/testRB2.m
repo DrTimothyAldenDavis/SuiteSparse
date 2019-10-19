@@ -1,7 +1,7 @@
 function testRB2
 %testRB2: test the RBio toolbox.  UFget is required.
-% Note that UFget requires the Nov 25, 2006, revision of the UF_Index.mat file, or later,
-% to access all the Problems used by this test.
+% Note that UFget requires the Nov 25, 2006, revision of the UF_Index.mat file,
+% or later, to access all the Problems used by this test.
 %
 % Example:
 %   testRB2
@@ -10,21 +10,24 @@ function testRB2
 
 % Copyright 2006, Timothy A. Davis
 
-Problem = UFget ('Meszaros/farm')
+Problem = UFget ('Meszaros/farm') ;
+disp (Problem) ;
 A = RBread ('farm.rb') ;
 if (~isequal (A, Problem.A))
     error ('test failure: farm.rb') ;
 end
 fprintf ('mtype: %s\n', RBtype (A)) ;
 
-Problem = UFget ('HB/bcsstk01')
+Problem = UFget ('HB/bcsstk01') ;
+disp (Problem) ;
 A = RBread ('bcsstk01.rb') ;
 if (~isequal (A, Problem.A))
     error ('test failure: bcsstk01.rb') ;
 end
 fprintf ('mtype: %s\n', RBtype (A)) ;
 
-Problem = UFget ('HB/lap_25')
+Problem = UFget ('HB/lap_25') ;
+disp (Problem) ;
 A = RBread ('lap_25.rb') ;
 if (~isequal (A, Problem.A))
     error ('test failure: lap_25.rb') ;
@@ -35,7 +38,8 @@ if (~isequal (A, Problem.A))
 end
 fprintf ('mtype: %s\n', RBtype (A)) ;
 
-Problem = UFget ('HB/west0479')
+Problem = UFget ('HB/west0479') ;
+disp (Problem) ;
 [A Z] = RBread ('west0479.rb') ;
 if (~isequal (A, Problem.A))
     error ('test failure: west0479.rb') ;

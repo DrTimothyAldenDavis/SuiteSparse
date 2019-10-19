@@ -1,9 +1,9 @@
 /* ========================================================================== */
-/* === klu_scale ============================================================ */
+/* === KLU_scale ============================================================ */
 /* ========================================================================== */
 
 /* Scale a matrix and check to see if it is valid.  Can be called by the user.
- * This is called by klu_factor and klu_refactor.  Returns TRUE if the input
+ * This is called by KLU_factor and KLU_refactor.  Returns TRUE if the input
  * matrix is valid, FALSE otherwise.  If the W input argument is non-NULL,
  * then the input matrix is checked for duplicate entries.
  *
@@ -16,25 +16,29 @@
 
 #include "klu_internal.h"
 
-int KLU_scale		/* return TRUE if successful, FALSE otherwise */
+Int KLU_scale		/* return TRUE if successful, FALSE otherwise */
 (
     /* inputs, not modified */
-    int scale,		/* 0: none, 1: sum, 2: max */
-    int n,
-    int Ap [ ],		/* size n+1, column pointers */
-    int Ai [ ],		/* size nz, row indices */
+    Int scale,		/* 0: none, 1: sum, 2: max */
+    Int n,
+    Int Ap [ ],		/* size n+1, column pointers */
+    Int Ai [ ],		/* size nz, row indices */
     double Ax [ ],
     /* outputs, not defined on input */
     double Rs [ ],	/* size n, can be NULL if scale <= 0 */
     /* workspace, not defined on input or output */
-    int W [ ],		/* size n, can be NULL */
+    Int W [ ],		/* size n, can be NULL */
     /* --------------- */
-    klu_common *Common
+    KLU_common *Common
 )
 {
     double a ;
     Entry *Az ;
-    int row, col, p, pend, check_duplicates ;
+    Int row, col, p, pend, check_duplicates ;
+
+    /* ---------------------------------------------------------------------- */
+    /* check inputs */
+    /* ---------------------------------------------------------------------- */
 
     if (Common == NULL)
     {
@@ -51,9 +55,10 @@ int KLU_scale		/* return TRUE if successful, FALSE otherwise */
 
     Az = (Entry *) Ax ;
 
-    if (n <= 0 || (Ap == NULL) || (Ai == NULL) || (Az == NULL))
+    if (n <= 0 || Ap == NULL || Ai == NULL || Az == NULL ||
+	(scale > 0 && Rs == NULL))
     {
-	/* Ap, Ai, and Ax must be present, and n must be > 0 */
+	/* Ap, Ai, Ax and Rs must be present, and n must be > 0 */
 	Common->status = KLU_INVALID ;
 	return (FALSE) ;
     }
@@ -73,6 +78,10 @@ int KLU_scale		/* return TRUE if successful, FALSE otherwise */
 	}
     }
 
+    /* ---------------------------------------------------------------------- */
+    /* scale */
+    /* ---------------------------------------------------------------------- */
+
     if (scale > 0)
     {
 	/* initialize row sum or row max */
@@ -83,7 +92,7 @@ int KLU_scale		/* return TRUE if successful, FALSE otherwise */
     }
 
     /* check for duplicates only if W is present */
-    check_duplicates = (W != (int *) NULL) ;
+    check_duplicates = (W != (Int *) NULL) ;
     if (check_duplicates)
     {
 	for (row = 0 ; row < n ; row++)

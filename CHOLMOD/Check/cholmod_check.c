@@ -562,6 +562,7 @@ static int check_common
 
     /* workspace and parameters are valid */
     P3 ("%s", "  OK\n") ;
+    P4 ("%s", "\n") ;
     return (TRUE) ;
 }
 
@@ -842,6 +843,7 @@ static UF_long check_sparse
     /* matrix is valid */
     P4 ("  nnz on diagonal: "ID"\n", dnz) ;
     P3 ("%s", "  OK\n") ;
+    P4 ("%s", "\n") ;
     *nnzdiag = dnz ;
     return (TRUE) ;
 }
@@ -980,6 +982,7 @@ static int check_dense
 
     /* dense  is valid */
     P3 ("%s", "  OK\n") ;
+    P4 ("%s", "\n") ;
     return (TRUE) ;
 }
 
@@ -1068,6 +1071,7 @@ static int check_subset
     if (len <= 0 || S == NULL)
     {
 	P3 ("%s", "  OK\n") ;
+	P4 ("%s", "\n") ;
 	return (TRUE) ;
     }
 
@@ -1098,6 +1102,7 @@ static int check_subset
 	}
     }
     P3 ("%s", "  OK\n") ;
+    P4 ("%s", "\n") ;
     return (TRUE) ;
 }
 
@@ -1317,6 +1322,7 @@ int CHOLMOD(print_perm)
     if (ok)
     {
 	P3 ("%s", "  OK\n") ;
+	P4 ("%s", "\n") ;
     }
     return (ok) ;
 }
@@ -1381,6 +1387,7 @@ static int check_parent
 	}
     }
     P3 ("%s", "  OK\n") ;
+    P4 ("%s", "\n") ;
     return (TRUE) ;
 }
 
@@ -1933,6 +1940,7 @@ static int check_factor
     /* factor is valid */
     P3 ("  nz "ID"", lnz) ;
     P3 ("%s", "  OK\n") ;
+    P4 ("%s", "\n") ;
     return (TRUE) ;
 }
 
@@ -2118,6 +2126,7 @@ static int check_triplet
 
     /* triplet matrix is valid */
     P3 ("%s", "  OK\n") ;
+    P4 ("%s", "\n") ;
     return (TRUE) ;
 }
 

@@ -1,6 +1,6 @@
 function [out1, out2, out3, out4, out5] = umfpack2(in1, in2, in3, in4, in5) %#ok
-% UMFPACK is a MATLAB mexFunction for solving sparse linear systems.  It is
-% also a built-in function in MATLAB, used in x=A\b.
+%UMFPACK2 computes x=A\b, x=A/b, or lu (A) for a sparse matrix A
+% It is also a built-in function in MATLAB, used in x=A\b.
 %
 % Example:
 %
@@ -39,8 +39,7 @@ function [out1, out2, out3, out4, out5] = umfpack2(in1, in2, in3, in4, in5) %#ok
 % See also: lu_normest, colamd, amd, umfpack.
 % To use UMFPACK for an arbitrary b, see umfpack_solve.
 
-% Copyright (c) 1995-2006 by Timothy A. Davis.
-% All Rights Reserved.  Type umfpack_details for License.
+% Copyright 1995-2007 by Timothy A. Davis.
 
 help umfpack2
 error ('umfpack2 mexFunction not found') ;

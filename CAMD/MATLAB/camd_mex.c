@@ -3,7 +3,7 @@
 /* ========================================================================= */
 
 /* ------------------------------------------------------------------------- */
-/* CAMD Version 2.1, Copyright (c) 2006 by Timothy A. Davis, Yanqing Chen,   */
+/* CAMD, Copyright (c) Timothy A. Davis, Yanqing Chen,			     */
 /* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
 /* email: davis at cise.ufl.edu    CISE Department, Univ. of Florida.        */
 /* web: http://www.cise.ufl.edu/research/sparse/camd                         */
@@ -30,6 +30,7 @@
 #include "camd.h"
 #include "mex.h"
 #include "matrix.h"
+#include "UFconfig.h"
 
 void mexFunction
 (
@@ -39,7 +40,7 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    int i, m, n, *Ap, *Ai, *P, nc, result, spumoni, full, *C, Clen ;
+    UF_long i, m, n, *Ap, *Ai, *P, nc, result, spumoni, full, *C, Clen ;
     double *Pout, *InfoOut, Control [CAMD_CONTROL], Info [CAMD_INFO],
 	*ControlIn, *Cin ;
     mxArray *A ;
@@ -59,15 +60,15 @@ void mexFunction
     {
 	/* get the default control parameters, and return */
 	pargout [0] = mxCreateDoubleMatrix (CAMD_CONTROL, 1, mxREAL) ;
-	camd_defaults (mxGetPr (pargout [0])) ;
+	camd_l_defaults (mxGetPr (pargout [0])) ;
 	if (nargout == 0)
 	{
-	    camd_control (mxGetPr (pargout [0])) ;
+	    camd_l_control (mxGetPr (pargout [0])) ;
 	}
 	return ;
     }
 
-    camd_defaults (Control) ;
+    camd_l_defaults (Control) ;
     if (nargin > 1)
     {
 	ControlIn = mxGetPr (pargin [1]) ;
@@ -81,7 +82,7 @@ void mexFunction
 
     if (spumoni > 0)
     {
-	camd_control (Control) ;
+	camd_l_control (Control) ;
     }
 
     /* --------------------------------------------------------------------- */
@@ -102,11 +103,11 @@ void mexFunction
 	Clen = mxGetNumberOfElements (pargin [2]) ;
 	if (Clen != 0)
 	{
-	    C = (int *) mxCalloc (Clen, sizeof (int)) ;
+	    C = (UF_long *) mxCalloc (Clen, sizeof (UF_long)) ;
 	    for (i = 0 ; i < Clen ; i++)
 	    {
 		/* convert c from 1-based to 0-based */
-		C [i] = (int) Cin [i] - 1 ;
+		C [i] = (UF_long) Cin [i] - 1 ;
 	    }
 	}
     }
@@ -132,7 +133,7 @@ void mexFunction
     /* allocate workspace for output permutation */
     /* --------------------------------------------------------------------- */
 
-    P = mxMalloc ((n+1) * sizeof (int)) ;
+    P = mxMalloc ((n+1) * sizeof (UF_long)) ;
 
     /* --------------------------------------------------------------------- */
     /* if A is full, convert to a sparse matrix */
@@ -148,8 +149,8 @@ void mexFunction
 	}
 	mexCallMATLAB (1, &A, 1, (mxArray **) pargin, "sparse") ;
     }
-    Ap = mxGetJc (A) ;
-    Ai = mxGetIr (A) ;
+    Ap = (UF_long *) mxGetJc (A) ;
+    Ai = (UF_long *) mxGetIr (A) ;
     if (spumoni > 0)
     {
 	mexPrintf ("    input matrix A has %d nonzero entries\n", Ap [n]) ;
@@ -159,7 +160,7 @@ void mexFunction
     /* order the matrix */
     /* --------------------------------------------------------------------- */
 
-    result = camd_order (n, Ap, Ai, P, Control, Info, C) ;
+    result = camd_l_order (n, Ap, Ai, P, Control, Info, C) ;
 
     /* --------------------------------------------------------------------- */
     /* if A is full, free the sparse copy of A */
@@ -176,7 +177,7 @@ void mexFunction
 
     if (spumoni > 0)
     {
-	camd_info (Info) ;
+	camd_l_info (Info) ;
     }
 
     /* --------------------------------------------------------------------- */

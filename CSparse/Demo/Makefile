@@ -1,9 +1,9 @@
 CC = cc
 CFLAGS = -O
 
-I = -I../Source
+I = -I../Include
 
-CS = ../Source/libcsparse.a
+CS = ../Lib/libcsparse.a
 
 all: lib cs_demo1 cs_demo2 cs_demo3
 	- ./cs_demo1 < ../Matrix/t1
@@ -19,7 +19,7 @@ all: lib cs_demo1 cs_demo2 cs_demo3
 	- ./cs_demo3 < ../Matrix/bcsstk16
 
 lib:
-	( cd ../Source ; $(MAKE) )
+	( cd ../Lib ; $(MAKE) )
 
 cs_demo1: lib cs_demo1.c Makefile
 	$(CC) $(CFLAGS) $(I) -o cs_demo1 cs_demo1.c $(CS) -lm

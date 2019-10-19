@@ -2,11 +2,11 @@
 /* === klu ================================================================== */
 /* ========================================================================== */
 
-/* KLU: factorizes P*A into L*U, using the Gilbert-Peierls algorithm, with
- * optional symmetric pruning by Eisenstat and Liu.  The code is by Tim Davis.
- * This algorithm is what appears as the default sparse LU routine in MATLAB
- * version 6.0, and still appears in MATLAB 6.5 as [L,U,P] = lu (A).  Note
- * that no column ordering is provided (see COLAMD or AMD for suitable
+/* KLU: factorizes P*A into L*U, using the Gilbert-Peierls algorithm [1], with
+ * optional symmetric pruning by Eisenstat and Liu [2].  The code is by Tim
+ * Davis.  This algorithm is what appears as the default sparse LU routine in
+ * MATLAB version 6.0, and still appears in MATLAB 6.5 as [L,U,P] = lu (A).
+ * Note that no column ordering is provided (see COLAMD or AMD for suitable
  * orderings).  SuperLU is based on this algorithm, except that it adds the
  * use of dense matrix operations on "supernodes" (adjacent columns with
  * identical).  This code doesn't use supernodes, thus its name ("Kent" LU,
@@ -17,23 +17,27 @@
  * SuperLU and UMFPACK, since in this case there is little chance to exploit
  * dense matrix kernels (the BLAS).
  *
+ * Only one block of A is factorized, in the BTF form.  The input n is the
+ * size of the block; k1 is the first row and column in the block.
+ *
  * NOTE: no error checking is done on the inputs.  This version is not meant to
  * be called directly by the user.  Use klu_factor instead.
  *
  * No fill-reducing ordering is provided.  The ordering quality of
- * klu_kernel_factor is your responsibility.  You must pre-permute A to reduce
- * fill-in, or provide a fill-reducing input permutation Q.
+ * klu_kernel_factor is the responsibility of the caller.  The input A must
+ * pre-permuted to reduce fill-in, or fill-reducing input permutation Q must
+ * be provided.
  *
  * The input matrix A must be in compressed-column form, with either sorted
  * or unsorted row indices.  Row indices for column j of A is in
  * Ai [Ap [j] ... Ap [j+1]-1] and the same range of indices in Ax holds the
  * numerical values.  No duplicate entries are allowed.
  *
- * Copyright August 2004, Tim Davis.  All rights reserved.  See the README
+ * Copyright 2004-2007, Tim Davis.  All rights reserved.  See the README
  * file for details on permitted use.  Note that no code from The MathWorks,
  * Inc, or from SuperLU, or from any other source appears here.  The code is
  * written from scratch, from the algorithmic description in Gilbert & Peierls'
- * and Eisenstat & Liu's journal papers.
+ * and Eisenstat & Liu's journal papers [1,2].
  *
  * If an input permutation Q is provided, the factorization L*U = A (P,Q)
  * is computed, where P is determined by partial pivoting, and Q is the input
@@ -41,82 +45,72 @@
  * KLU attempts to choose is the diagonal of A (Q,Q).  In other words, the
  * input permutation is applied symmetrically to the input matrix.  The output
  * permutation P includes both the partial pivoting ordering and the input
- * permutation.  If Q is (int *) NULL, then it is assumed to be the identity
+ * permutation.  If Q is NULL, then it is assumed to be the identity
  * permutation.  Q is not modified.
  *
- * TODO: Cite Gilbert, Eisenstat here.  Write README file.
+ * [1] Gilbert, J. R. and Peierls, T., "Sparse Partial Pivoting in Time
+ *	Proportional to Arithmetic Operations," SIAM J. Sci. Stat. Comp.,
+ *	vol 9, pp.  862-874, 1988.
+ * [2] Eisenstat, S. C. and Liu, J. W. H., "Exploiting Structural Symmetry in
+ *	Unsymmetric Sparse Symbolic Factorization," SIAM J. Matrix Analysis &
+ *	Applic., vol 13, pp.  202-211, 1992.
  */
 
 /* ========================================================================== */
 
 #include "klu_internal.h"
 
-int KLU_kernel_factor
+size_t KLU_kernel_factor	    /* 0 if failure, size of LU if OK */
 (
     /* inputs, not modified */
-    int n,	    /* A is n-by-n. n must be > 0. */
-    int Ap [ ],	    /* size n+1, column pointers for A */
-    int Ai [ ],	    /* size nz = Ap [n], row indices for A */
-    Entry Ax [ ],  /* size nz, values of A */
-    int Q [ ],	    /* size n, optional column permutation */
-
-    double Lsize,
+    Int n,	    /* A is n-by-n. n must be > 0. */
+    Int Ap [ ],	    /* size n+1, column pointers for A */
+    Int Ai [ ],	    /* size nz = Ap [n], row indices for A */
+    Entry Ax [ ],   /* size nz, values of A */
+    Int Q [ ],	    /* size n, optional column permutation */
+    double Lsize,   /* estimate of number of nonzeros in L */
 
     /* outputs, not defined on input */
-    Unit **p_LU,	/* row indices and values of L and U*/
-    Unit Udiag [ ],	/* size n, diagonal of U */
-    int Llen [ ],	/* size n, column length of L */
-    int Ulen [ ],	/* size n, column length of U */
-    int Lip [ ],	/* size n+1, column pointers for L*/
-    int Uip [ ],	/* size n+1, column pointers for U*/
-    int P [ ],	    	/* row permutation, size n */
-    int *lnz,	    	/* size of L*/
-    int *unz,	    	/* size of U*/
+    Unit **p_LU,	/* row indices and values of L and U */
+    Entry Udiag [ ],	/* size n, diagonal of U */
+    Int Llen [ ],	/* size n, column length of L */
+    Int Ulen [ ],	/* size n, column length of U */
+    Int Lip [ ],	/* size n, column pointers for L */
+    Int Uip [ ],	/* size n, column pointers for U */
+    Int P [ ],		/* row permutation, size n */
+    Int *lnz,		/* size of L */
+    Int *unz,		/* size of U */
 
     /* workspace, undefined on input */
     Entry *X,	    /* size n double's, zero on output */
-    int *Work,	    /* size 5n int's */
-
-    /* ---- the following are only used in the BTF case --- */
+    Int *Work,	    /* size 5n Int's */
 
     /* inputs, not modified on output */
-    int k1,	    	/* the block of A is from k1 to k2-1 */
-    int PSinv [ ],  	/* inverse of P from symbolic factorization */
+    Int k1,		/* the block of A is from k1 to k2-1 */
+    Int PSinv [ ],  	/* inverse of P from symbolic factorization */
     double Rs [ ],  	/* scale factors for A */
 
     /* inputs, modified on output */
-    int Offp [ ],   /* off-diagonal matrix (modified by this routine) */
-    int Offi [ ],
+    Int Offp [ ],   /* off-diagonal matrix (modified by this routine) */
+    Int Offi [ ],
     Entry Offx [ ],
     /* --------------- */
-    klu_common *Common
+    KLU_common *Common
 )
 {
     double maxlnz, dunits ;
     Unit *LU ;
-    int *Pinv, *Lpend, *Stack, *Flag, *Ap_pos, *W ;
-    int lsize, usize, anz, no_btf ;
+    Int *Pinv, *Lpend, *Stack, *Flag, *Ap_pos, *W ;
+    Int lsize, usize, anz, ok ;
     size_t lusize ;
+    ASSERT (Common != NULL) ;
 
     /* ---------------------------------------------------------------------- */
     /* get control parameters, or use defaults */
     /* ---------------------------------------------------------------------- */
 
-    if (Common == NULL)
-    {
-	return (FALSE) ;
-    }
-    no_btf = (Offp == (int *) NULL) ;
     n = MAX (1, n) ;
-
-    if (no_btf)
-    {
-	anz = Ap [n] ;
-    }
-    else
-    {
-	anz = Ap [n+k1] - Ap [k1] ;
-    }
+    anz = Ap [n+k1] - Ap [k1] ;
 
     if (Lsize <= 0)
     {
@@ -128,6 +122,7 @@ int KLU_kernel_factor
     {
 	lsize = Lsize ;
     }
+
     usize = lsize ;
 
     lsize  = MAX (n+1, lsize) ;
@@ -150,26 +145,23 @@ int KLU_kernel_factor
 
     /* these computations are safe from size_t overflow */
     W = Work ;
-    Pinv = (int *) W ;	    W += n ;
-    Stack = (int *) W ;	    W += n ;
-    Flag = (int *) W ;	    W += n ;
-    Lpend = (int *) W ;	    W += n ;
-    Ap_pos = (int *) W ;    W += n ;
+    Pinv = (Int *) W ;	    W += n ;
+    Stack = (Int *) W ;	    W += n ;
+    Flag = (Int *) W ;	    W += n ;
+    Lpend = (Int *) W ;	    W += n ;
+    Ap_pos = (Int *) W ;    W += n ;
 
-    dunits = DUNITS (int, lsize) + DUNITS (Entry, lsize) +
-             DUNITS (int, usize) + DUNITS (Entry, usize) ;
-
-    if (INT_OVERFLOW (dunits))
+    dunits = DUNITS (Int, lsize) + DUNITS (Entry, lsize) +
+             DUNITS (Int, usize) + DUNITS (Entry, usize) ;
+    lusize = (size_t) dunits ;
+    ok = !INT_OVERFLOW (dunits) ; 
+    LU = ok ? KLU_malloc (lusize, sizeof (Unit), Common) : NULL ;
+    if (LU == NULL)
     {
-	/* problem is too large, lusize is larger than INT_MAX */
-	Common->status = KLU_TOO_LARGE ;
-	return (FALSE) ;
-    }
-    lusize = dunits ;
-    LU = klu_malloc (lusize, sizeof (Unit), Common) ;
-    if (Common->status < KLU_OK)
-    {
-	return (FALSE) ;
+	/* out of memory, or problem too large */
+	Common->status = KLU_OUT_OF_MEMORY ;
+	lusize = 0 ;
+	return (lusize) ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -177,11 +169,10 @@ int KLU_kernel_factor
     /* ---------------------------------------------------------------------- */
 
     /* with pruning, and non-recursive depth-first-search */
-    KLU_kernel (n, Ap, Ai, Ax, Q, lusize,
+    lusize = KLU_kernel (n, Ap, Ai, Ax, Q, lusize,
 	    Pinv, P, &LU, Udiag, Llen, Ulen, Lip, Uip, lnz, unz,
 	    X, Stack, Flag, Ap_pos, Lpend,
-	    /* BTF and scaling case: */
-	    no_btf, k1, PSinv, Rs, Offp, Offi, Offx, Common) ;
+	    k1, PSinv, Rs, Offp, Offi, Offx, Common) ;
 
     /* ---------------------------------------------------------------------- */
     /* return LU factors, or return nothing if an error occurred */
@@ -189,16 +180,17 @@ int KLU_kernel_factor
 
     if (Common->status < KLU_OK)
     {
-	LU = klu_free (LU, Common) ;
+	LU = KLU_free (LU, lusize, sizeof (Unit), Common) ;
+	lusize = 0 ;
     }
     *p_LU = LU ;
     PRINTF ((" in klu noffdiag %d\n", Common->noffdiag)) ;
-    return (TRUE) ;
+    return (lusize) ;
 }
 
 
 /* ========================================================================== */
-/* === klu_lsolve =========================================================== */
+/* === KLU_lsolve =========================================================== */
 /* ========================================================================== */
 
 /* Solve Lx=b.  Assumes L is unit lower triangular and where the unit diagonal
@@ -209,19 +201,19 @@ int KLU_kernel_factor
 void KLU_lsolve
 (
     /* inputs, not modified: */
-    int n,
-    int Lip [ ],
-    int Llen [ ],
+    Int n,
+    Int Lip [ ],
+    Int Llen [ ],
     Unit LU [ ],
-    int nrhs,
+    Int nrhs,
     /* right-hand-side on input, solution to Lx=b on output */
     Entry X [ ]
 )
 {
     Entry x [4], lik ;
-    int *Li ;
+    Int *Li ;
     Entry *Lx ;
-    int k, p, len, i ;
+    Int k, p, len, i ;
 
     switch (nrhs)
     {
@@ -301,7 +293,7 @@ void KLU_lsolve
 }
 
 /* ========================================================================== */
-/* === klu_usolve =========================================================== */
+/* === KLU_usolve =========================================================== */
 /* ========================================================================== */
 
 /* Solve Ux=b.  Assumes U is non-unit upper triangular and where the diagonal
@@ -312,22 +304,20 @@ void KLU_lsolve
 void KLU_usolve
 (
     /* inputs, not modified: */
-    int n,
-    int Uip [ ],
-    int Ulen [ ],
+    Int n,
+    Int Uip [ ],
+    Int Ulen [ ],
     Unit LU [ ],
-    Unit Udiag [ ],
-    int nrhs,
+    Entry Udiag [ ],
+    Int nrhs,
     /* right-hand-side on input, solution to Ux=b on output */
     Entry X [ ]
 )
 {
     Entry x [4], uik, ukk ;
-    int *Ui ;
-    Entry *Ux, *Udiag_entry ;
-    int k, p, len, i ;
-
-    Udiag_entry = (Entry *) Udiag ;
+    Int *Ui ;
+    Entry *Ux ;
+    Int k, p, len, i ;
 
     switch (nrhs)
     {
@@ -337,8 +327,8 @@ void KLU_usolve
 	    for (k = n-1 ; k >= 0 ; k--)
 	    {
 		GET_POINTER (LU, Uip, Ulen, Ui, Ux, k, len) ;
-		/* x [0] = X [k] / Udiag_entry [k] ; */
-		DIV (x [0], X [k], Udiag_entry [k]) ;
+		/* x [0] = X [k] / Udiag [k] ; */
+		DIV (x [0], X [k], Udiag [k]) ;
 		X [k] = x [0] ;
 		for (p = 0 ; p < len ; p++)
 		{
@@ -355,7 +345,7 @@ void KLU_usolve
 	    for (k = n-1 ; k >= 0 ; k--)
 	    {
 		GET_POINTER (LU, Uip, Ulen, Ui, Ux, k, len) ;
-		ukk = Udiag_entry [k] ;
+		ukk = Udiag [k] ;
 		/* x [0] = X [2*k    ] / ukk ;
 		x [1] = X [2*k + 1] / ukk ; */
 		DIV (x [0], X [2*k], ukk) ;
@@ -381,7 +371,7 @@ void KLU_usolve
 	    for (k = n-1 ; k >= 0 ; k--)
 	    {
 		GET_POINTER (LU, Uip, Ulen, Ui, Ux, k, len) ;
-		ukk = Udiag_entry [k] ;
+		ukk = Udiag [k] ;
 
 		DIV (x [0], X [3*k], ukk) ;
 		DIV (x [1], X [3*k + 1], ukk) ;
@@ -407,7 +397,7 @@ void KLU_usolve
 	    for (k = n-1 ; k >= 0 ; k--)
 	    {
 		GET_POINTER (LU, Uip, Ulen, Ui, Ux, k, len) ;
-		ukk = Udiag_entry [k] ;
+		ukk = Udiag [k] ;
 
 		DIV (x [0], X [4*k], ukk) ;
 		DIV (x [1], X [4*k + 1], ukk) ;
@@ -437,7 +427,7 @@ void KLU_usolve
 
 
 /* ========================================================================== */
-/* === klu_ltsolve ========================================================== */
+/* === KLU_ltsolve ========================================================== */
 /* ========================================================================== */
 
 /* Solve L'x=b.  Assumes L is unit lower triangular and where the unit diagonal
@@ -448,22 +438,22 @@ void KLU_usolve
 void KLU_ltsolve
 (
     /* inputs, not modified: */
-    int n,
-    int Lip [ ],
-    int Llen [ ],
+    Int n,
+    Int Lip [ ],
+    Int Llen [ ],
     Unit LU [ ],
-    int nrhs,
+    Int nrhs,
 #ifdef COMPLEX
-    int conj_solve,
+    Int conj_solve,
 #endif
     /* right-hand-side on input, solution to L'x=b on output */
     Entry X [ ]
 )
 {
     Entry x [4], lik ;
-    int *Li ;
+    Int *Li ;
     Entry *Lx ;
-    int k, p, len, i ;
+    Int k, p, len, i ;
 
     switch (nrhs)
     {
@@ -590,7 +580,7 @@ void KLU_ltsolve
 
 
 /* ========================================================================== */
-/* === klu_utsolve ========================================================== */
+/* === KLU_utsolve ========================================================== */
 /* ========================================================================== */
 
 /* Solve U'x=b.  Assumes U is non-unit upper triangular and where the diagonal
@@ -601,25 +591,23 @@ void KLU_ltsolve
 void KLU_utsolve
 (
     /* inputs, not modified: */
-    int n,
-    int Uip [ ],
-    int Ulen [ ],
+    Int n,
+    Int Uip [ ],
+    Int Ulen [ ],
     Unit LU [ ],
-    Unit Udiag [ ],
-    int nrhs,
+    Entry Udiag [ ],
+    Int nrhs,
 #ifdef COMPLEX
-    int conj_solve,
+    Int conj_solve,
 #endif
     /* right-hand-side on input, solution to Ux=b on output */
     Entry X [ ]
 )
 {
     Entry x [4], uik, ukk ;
-    int k, p, len, i ;
-    int *Ui ;
-    Entry *Ux, *Udiag_entry ;
-
-    Udiag_entry = (Entry *) Udiag ;
+    Int k, p, len, i ;
+    Int *Ui ;
+    Entry *Ux ;
 
     switch (nrhs)
     {
@@ -648,12 +636,12 @@ void KLU_utsolve
 #ifdef COMPLEX
 		if (conj_solve)
 		{
-		    CONJ (ukk, Udiag_entry [k]) ;
+		    CONJ (ukk, Udiag [k]) ;
 		}
 		else
 #endif
 		{
-		    ukk = Udiag_entry [k] ;
+		    ukk = Udiag [k] ;
 		}
 		DIV (X [k], x [0], ukk) ;
 	    }
@@ -685,12 +673,12 @@ void KLU_utsolve
 #ifdef COMPLEX
 		if (conj_solve)
 		{
-		    CONJ (ukk, Udiag_entry [k]) ;
+		    CONJ (ukk, Udiag [k]) ;
 		}
 		else
 #endif
 		{
-		    ukk = Udiag_entry [k] ;
+		    ukk = Udiag [k] ;
 		}
 		DIV (X [2*k], x [0], ukk) ;
 		DIV (X [2*k + 1], x [1], ukk) ;
@@ -725,12 +713,12 @@ void KLU_utsolve
 #ifdef COMPLEX
 		if (conj_solve)
 		{
-		    CONJ (ukk, Udiag_entry [k]) ;
+		    CONJ (ukk, Udiag [k]) ;
 		}
 		else
 #endif
 		{
-		    ukk = Udiag_entry [k] ;
+		    ukk = Udiag [k] ;
 		}
 		DIV (X [3*k], x [0], ukk) ;
 		DIV (X [3*k + 1], x [1], ukk) ;
@@ -768,12 +756,12 @@ void KLU_utsolve
 #ifdef COMPLEX
 		if (conj_solve)
 		{
-		    CONJ (ukk, Udiag_entry [k]) ;
+		    CONJ (ukk, Udiag [k]) ;
 		}
 		else
 #endif
 		{
-		    ukk = Udiag_entry [k] ;
+		    ukk = Udiag [k] ;
 		}
 		DIV (X [4*k], x [0], ukk) ;
 		DIV (X [4*k + 1], x [1], ukk) ;

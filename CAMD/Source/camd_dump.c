@@ -3,7 +3,7 @@
 /* ========================================================================= */
 
 /* ------------------------------------------------------------------------- */
-/* CAMD Version 2.1, Copyright (c) 2006 by Timothy A. Davis, Yanqing Chen,   */
+/* CAMD, Copyright (c) Timothy A. Davis, Yanqing Chen,			     */
 /* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
 /* email: davis at cise.ufl.edu    CISE Department, Univ. of Florida.        */
 /* web: http://www.cise.ufl.edu/research/sparse/camd                         */
@@ -40,8 +40,10 @@ GLOBAL void CAMD_debug_init ( char *s )
 	fscanf (f, ID, &CAMD_debug) ;
 	fclose (f) ;
     }
-    /* if (CAMD_debug >= 0) */
-    printf ("%s: CAMD_debug_init, D= "ID"\n", s, CAMD_debug);
+    if (CAMD_debug >= 0)
+    {
+	printf ("%s: CAMD_debug_init, D= "ID"\n", s, CAMD_debug) ;
+    }
 }
 
 /* ========================================================================= */

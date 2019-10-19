@@ -1,5 +1,5 @@
 function UFgplot (A, xyz, directed, nodename)
-%UFgplot: draw a plot of the graph of a sparse matrix
+%UFGPLOT draw a plot of the graph of a sparse matrix
 % Usage:
 %   UFgplot (A, xyz, directed, nodename)
 %
@@ -16,7 +16,7 @@ function UFgplot (A, xyz, directed, nodename)
 %
 % See also gplot, UFget.
 
-% Copyright 2006, Timothy A. Davis
+% Copyright 2006-2007, Timothy A. Davis
 
 %-------------------------------------------------------------------------------
 % check inputs

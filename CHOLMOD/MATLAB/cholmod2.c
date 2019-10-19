@@ -62,14 +62,14 @@ void mexFunction
     cholmod_dense Bmatrix, *X, *B ;
     cholmod_factor *L ;
     cholmod_common Common, *cm ;
-    int n, B_is_sparse, ordering, k, *Perm ;
+    Int n, B_is_sparse, ordering, k, *Perm ;
 
     /* ---------------------------------------------------------------------- */
     /* start CHOLMOD and set parameters */ 
     /* ---------------------------------------------------------------------- */
 
     cm = &Common ;
-    cholmod_start (cm) ;
+    cholmod_l_start (cm) ;
     sputil_config (SPUMONI, cm) ;
 
     /* There is no supernodal LDL'.  If cm->final_ll = FALSE (the default), then
@@ -93,10 +93,6 @@ void mexFunction
     if (!mxIsSparse (pargin [0]) || (n != mxGetN (pargin [0])))
     {
     	mexErrMsgTxt ("A must be square and sparse") ;
-    }
-    if (!mxIsDouble (pargin [0]))
-    {
-	mexErrMsgTxt ("A must be double (or complex double)") ;
     }
     if (n != mxGetM (pargin [1]))
     {
@@ -189,13 +185,13 @@ void mexFunction
 	}
 	/* copy from double to integer, and convert to 0-based */
 	p = mxGetPr (pargin [2]) ;
-	Perm = cholmod_malloc (n, sizeof (int), cm) ;
+	Perm = cholmod_l_malloc (n, sizeof (Int), cm) ;
 	for (k = 0 ; k < n ; k++)
 	{
 	    Perm [k] = p [k] - 1 ;
 	}
 	/* check the permutation */
-	if (!cholmod_check_perm (Perm, n, n, cm))
+	if (!cholmod_l_check_perm (Perm, n, n, cm))
 	{
 	    mexErrMsgTxt ("invalid input permutation") ;
 	}
@@ -213,11 +209,11 @@ void mexFunction
     /* analyze and factorize */
     /* ---------------------------------------------------------------------- */
 
-    L = cholmod_analyze_p (A, Perm, NULL, 0, cm) ;
-    cholmod_free (n, sizeof (int), Perm, cm) ;
-    cholmod_factorize (A, L, cm) ;
+    L = cholmod_l_analyze_p (A, Perm, NULL, 0, cm) ;
+    cholmod_l_free (n, sizeof (Int), Perm, cm) ;
+    cholmod_l_factorize (A, L, cm) ;
 
-    rcond = cholmod_rcond (L, cm) ;
+    rcond = cholmod_l_rcond (L, cm) ;
 
     if (rcond == 0)
     {
@@ -236,13 +232,13 @@ void mexFunction
     if (B_is_sparse)
     {
 	/* solve AX=B with sparse X and B; return sparse X to MATLAB */
-	Xs = cholmod_spsolve (CHOLMOD_A, L, Bs, cm) ;
+	Xs = cholmod_l_spsolve (CHOLMOD_A, L, Bs, cm) ;
 	pargout [0] = sputil_put_sparse (&Xs, cm) ;
     }
     else
     {
 	/* solve AX=B with dense X and B; return dense X to MATLAB */
-	X = cholmod_solve (CHOLMOD_A, L, B, cm) ;
+	X = cholmod_l_solve (CHOLMOD_A, L, B, cm) ;
 	pargout [0] = sputil_put_dense (&X, cm) ;
     }
 
@@ -258,9 +254,9 @@ void mexFunction
 	p [4] = cm->memory_usage / 1048576. ;
     }
 
-    cholmod_free_factor (&L, cm) ;
-    cholmod_finish (cm) ;
-    cholmod_print_common (" ", cm) ;
+    cholmod_l_free_factor (&L, cm) ;
+    cholmod_l_finish (cm) ;
+    cholmod_l_print_common (" ", cm) ;
     /*
     if (cm->malloc_count !=
 	(mxIsComplex (pargout [0]) + (mxIsSparse (pargout[0]) ? 3:1)))

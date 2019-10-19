@@ -1,5 +1,5 @@
 function umfpack_report (Control, Info)
-% UMFPACK_REPORT
+%UMFPACK_REPORT prints optional control settings and statistics
 %
 %   Example:
 %       umfpack_report (Control, Info) ;
@@ -21,8 +21,7 @@ function umfpack_report (Control, Info)
 % See also umfpack, umfpack2, umfpack_make, umfpack_details,
 % umfpack_demo, and umfpack_simple.
 
-% Copyright (c) 1995-2006 by Timothy A. Davis.
-% All Rights Reserved.  Type umfpack_details for License.
+% Copyright 1995-2007 by Timothy A. Davis.
 
 %-------------------------------------------------------------------------------
 % get inputs, use defaults if input arguments not present
@@ -153,7 +152,7 @@ elseif (status == -5)
     fprintf ('ERROR    required argument is missing\n') ;
 elseif (status == -6)
     fprintf ('ERROR    n <= 0\n') ;
-elseif (status <= -7 && status >= -12 || status == -14)
+elseif (status <= -7 & status >= -12 | status == -14)			    %#ok
     fprintf ('ERROR    matrix A is corrupted\n') ;
 elseif (status == -13)
     fprintf ('ERROR    invalid system\n') ;
@@ -269,7 +268,7 @@ fprintf ('    Info (64): %d, integer indices in compressed pattern of L and U\n'
 fprintf ('    Info (65): %d, numerical values stored in L and U\n', Info (65)) ;
 fprintf ('    Info (66): %.2f, numeric factorization CPU time (seconds)\n', Info (66)) ;
 fprintf ('    Info (76): %.2f, numeric factorization wall clock time (seconds)\n', Info (76)) ;
-if (Info (66) > 0.05 && Info (43) > 0)
+if (Info (66) > 0.05 & Info (43) > 0)					    %#ok
 fprintf ('    mflops in numeric factorization phase: %.2f\n', 1e-6 * Info (43) / Info (66)) ;
 end
 fprintf ('    Info (67): %d, nnz (diag (U))\n', Info (67)) ;
@@ -307,6 +306,7 @@ fprintf ('\n    Info (88:90): unused\n\n') ;
 %-------------------------------------------------------------------------------
 
 function prstrat (fmt, strategy)
+% prstrat print the ordering strategy
 fprintf (fmt, strategy) ;
 if (strategy == 1)
     fprintf ('(unsymmetric)\n') ;
@@ -322,13 +322,14 @@ elseif (strategy == 3)
     fprintf ('        Q = AMD (A+A''), Q not refined during numeric factorization,\n') ;
     fprintf ('        and diagonal pivoting (P=Q'') attempted.\n') ;
 else
-    strategy = 0 ;
+    % strategy = 0 ;
     fprintf ('(auto)\n') ;
 end
 
 %-------------------------------------------------------------------------------
 
 function yes_no (s)
+% yes_no print yes or no
 if (s == 0)
     fprintf ('(no)\n') ;
 else

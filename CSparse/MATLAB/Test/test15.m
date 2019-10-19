@@ -5,7 +5,7 @@ function test15
 %   test15
 % See also: testall
 
-%   Copyright 2006, Timothy A. Davis.
+%   Copyright 2006-2007, Timothy A. Davis.
 %   http://www.cise.ufl.edu/research/sparse
 
 

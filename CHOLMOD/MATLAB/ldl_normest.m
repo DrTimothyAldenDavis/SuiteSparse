@@ -16,13 +16,16 @@ function rho = ldl_normest (A, L, D)
 %
 % See also condest, normest
 
-%   Copyright 2006, William W. Hager and Timothy A. Davis
+%   Copyright 2006-2007, William W. Hager and Timothy A. Davis
 %   http://www.cise.ufl.edu/research/sparse
 
 [m n] = size (A) ;
 
-if (m ~= n || nnz (A-A') ~= 0)
-    error ('A must be square and symmetric') ;
+if (m ~= n)
+    error ('A must be square') ;
+end
+if (nnz (A-A') ~= 0)
+    error ('A must be symmetric') ;
 end
 
 if (nargin < 3)

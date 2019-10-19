@@ -1,5 +1,5 @@
 function [mtype mkind skind] = RBtype (A)                                   %#ok
-%RBtype: determine the Rutherford/Boeing type of a sparse matrix
+%RBTYPE determine the Rutherford/Boeing type of a sparse matrix
 % Usage:
 %   [mtype mkind skind] = RBtype (A)
 %
@@ -33,7 +33,7 @@ function [mtype mkind skind] = RBtype (A)                                   %#ok
 %
 % See also RBread, RBwrite.
 
-% Copyright 2006, Timothy A. Davis, University of Florida
+% Copyright 2007, Timothy A. Davis, University of Florida
 
 error ('RBtype mexFunction not found') ;
 

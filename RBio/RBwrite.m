@@ -1,5 +1,5 @@
 function mtype = RBwrite (filename, A, Z, title, key)			    %#ok
-%RBwrite: write a sparse matrix to a Rutherford/Boeing file
+%RBWRITE write a sparse matrix to a Rutherford/Boeing file
 % Usage:
 %   mtype = RBwrite (filename, A, Z, title, key)
 %
@@ -30,7 +30,7 @@ function mtype = RBwrite (filename, A, Z, title, key)			    %#ok
 %
 % See also RBread, RBtype.
 
-% Copyright 2006, Timothy A. Davis, University of Florida
+% Copyright 2007, Timothy A. Davis, University of Florida
 
 error ('RBwrite mexFunction not found') ;
 

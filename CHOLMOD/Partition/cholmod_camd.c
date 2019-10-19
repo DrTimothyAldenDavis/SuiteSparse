@@ -43,7 +43,7 @@
 #endif
 
 /* ========================================================================== */
-/* === cholmod_amd ========================================================== */
+/* === cholmod_camd ========================================================= */
 /* ========================================================================== */
 
 int CHOLMOD(camd)
@@ -52,8 +52,8 @@ int CHOLMOD(camd)
     cholmod_sparse *A,	/* matrix to order */
     Int *fset,		/* subset of 0:(A->ncol)-1 */
     size_t fsize,	/* size of fset */
-    /* ---- output --- */
-    Int *Cmember,	/* size nrow.  see cholmod_ccolamd.c for description */
+    Int *Cmember,	/* size nrow.  see cholmod_ccolamd.c for description.*/
+    /* ---- output ---- */
     Int *Perm,		/* size A->nrow, output permutation */
     /* --------------- */
     cholmod_common *Common

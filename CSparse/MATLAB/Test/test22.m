@@ -5,7 +5,7 @@ function test22
 %   test22
 % See also: testall
 
-%   Copyright 2006, Timothy A. Davis.
+%   Copyright 2006-2007, Timothy A. Davis.
 %   http://www.cise.ufl.edu/research/sparse
 
 
@@ -29,7 +29,7 @@ for k = 1:length (f)
     disp (Prob) ;
     A = Prob.A ;
     [m n] = size (A) ;
-    if (~isreal (A) || m ~= n)
+    if (~isreal (A) | m ~= n)						    %#ok
 	continue
     end
 

@@ -4,7 +4,7 @@
 %   nn
 % See also cholmod_test
 
-% Copyright 2006, Timothy A. Davis, University of Florida
+% Copyright 2006-2007, Timothy A. Davis, University of Florida
 
 index = UFget ;
 f = find (index.amd_lnz > 0) ;

@@ -1,5 +1,5 @@
 function UFpages (figures, list)
-%UFpages create web page for each matrix in UF Sparse Matrix Collection
+%UFPAGES create web page for each matrix in UF Sparse Matrix Collection
 % Usage: UFpages (figures, list)
 %
 % figures: 1 if figures are to be created, 0 otherwise
@@ -15,7 +15,7 @@ function UFpages (figures, list)
 %
 % See also UFpage, UFget.
 
-% Copyright 2006, Timothy A. Davis
+% Copyright 2006-2007, Timothy A. Davis
 
 if (nargin < 1)
     figures = 1 ;

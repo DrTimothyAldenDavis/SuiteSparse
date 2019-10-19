@@ -6,17 +6,15 @@ default: amd_simple amd_demo amd_demo2 amd_l_demo
 
 include ../../UFconfig/UFconfig.mk
 
-C = $(CC) $(CFLAGS) $(CONFIG) -I../Include -I../../UFconfig
+C = $(CC) $(CFLAGS) -I../Include -I../../UFconfig
 
-UFCONFIG = ../../UFconfig/UFconfig.h
-
-INC = ../Include/amd.h $(UFCONFIG)
+INC = ../Include/amd.h ../../UFconfig/UFconfig.h
 
 library:
-	( cd ../Source ; $(MAKE) )
+	( cd ../Lib ; $(MAKE) )
 
 f77lib:
-	( cd ../Source ; $(MAKE) fortran )
+	( cd ../Lib ; $(MAKE) fortran )
 
 #------------------------------------------------------------------------------
 # Create the demo program, run it, and compare the output

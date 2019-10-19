@@ -1,6 +1,6 @@
 #include "cs.h"
 /* apply the ith Householder vector to x */
-CS_INT cs_happly (const cs *V, CS_INT i, CS_ENTRY beta, CS_ENTRY *x)
+CS_INT cs_happly (const cs *V, CS_INT i, double beta, CS_ENTRY *x)
 {
     CS_INT p, *Vp, *Vi ;
     CS_ENTRY *Vx, tau = 0 ;

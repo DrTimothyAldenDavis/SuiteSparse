@@ -2,7 +2,7 @@ MEX = mex -O
 AR = ar cr
 RANLIB = ranlib
 
-I = -I../../Source
+I = -I../../Include
 
 all: mexcsparse.a cs_mex.h
 	$(MEX) cs_thumb_mex.c $(I) mexcsparse.a -output cs_thumb
@@ -32,6 +32,7 @@ all: mexcsparse.a cs_mex.h
 	$(MEX) cs_dmperm_mex.c $(I) mexcsparse.a -output cs_dmperm
 	$(MEX) cs_scc_mex.c $(I) mexcsparse.a -output cs_scc
 	$(MEX) cs_sqr_mex.c $(I) mexcsparse.a -output cs_sqr
+	$(MEX) cs_randperm_mex.c $(I) mexcsparse.a -output cs_randperm
 
 CS = cs_mex.o \
 	cs_amd.o \
@@ -90,7 +91,7 @@ mexcsparse.a: $(CS)
 	$(AR) mexcsparse.a $(CS)
 	$(RANLIB) mexcsparse.a
 
-$(CS): ../../Source/cs.h
+$(CS): ../../Include/cs.h
 
 
 cs_mex.o: cs_mex.c cs_mex.h

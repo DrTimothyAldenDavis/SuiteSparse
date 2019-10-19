@@ -1,5 +1,5 @@
 /* ========================================================================== */
-/* === klu_dump ============================================================= */
+/* === KLU_dump ============================================================= */
 /* ========================================================================== */
 
 /* Debug routines for klu.  Only used when NDEBUG is not defined at
@@ -11,7 +11,7 @@
 #ifndef NDEBUG
 
 /* ========================================================================== */
-/* === klu_valid ============================================================ */
+/* === KLU_valid ============================================================ */
 /* ========================================================================== */
 
 /* Check if a column-form matrix is valid or not.  The matrix A is
@@ -24,14 +24,14 @@
  *	Ap [j] <= Ap [j+1] for all j in the range 0 to n_col.
  *	row indices in Ai [Ap [j] ... Ap [j+1]-1]
  *	    must be in the range 0 to n_row-1,
- *	    and no duplicate entries can exist (TODO not yet checked).
+ *	    and no duplicate entries can exist (duplicates not checked here).
  *
- * Not user-callable.
+ * Not user-callable.  Only used when debugging.
  */
 
-int KLU_valid (int n, int Ap [ ], int Ai [ ], Entry Ax [ ])
+Int KLU_valid (Int n, Int Ap [ ], Int Ai [ ], Entry Ax [ ])
 {
-    int nz, j, p1, p2, i, p ;
+    Int nz, j, p1, p2, i, p ;
     PRINTF (("\ncolumn oriented matrix, n = %d\n", n)) ;
     if (n <= 0)
     {
@@ -78,21 +78,21 @@ int KLU_valid (int n, int Ap [ ], int Ai [ ], Entry Ax [ ])
 
 
 /* ========================================================================== */
-/* === klu_valid_LU ========================================================= */
+/* === KLU_valid_LU ========================================================= */
 /* ========================================================================== */
 
-/* This function does the same validity tests as klu_valid but for the
+/* This function does the same validity tests as KLU_valid but for the
  * LU factor storage format. The flag flag_test_start_ptr is used to
- * test if Xip [0] = 0. This is not applicable for U. So when calling
- * this function for U, the flag should be set to false.
+ * test if Xip [0] = 0. This is not applicable for U. So when calling this
+ * function for U, the flag should be set to false.  Only used when debugging.
  */
 
-int KLU_valid_LU (int n, int flag_test_start_ptr, int Xip [ ],
-		   int Xlen [ ],  Unit LU [ ])
+Int KLU_valid_LU (Int n, Int flag_test_start_ptr, Int Xip [ ],
+		   Int Xlen [ ],  Unit LU [ ])
 {
-    int *Xi ;
+    Int *Xi ;
     Entry *Xx ;
-    int j, p1, p2, i, p, len ;
+    Int j, p1, p2, i, p, len ;
 
     PRINTF (("\ncolumn oriented matrix, n = %d\n", n)) ;
     if (n <= 0)

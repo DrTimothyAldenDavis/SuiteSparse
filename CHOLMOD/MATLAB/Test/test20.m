@@ -4,7 +4,7 @@ function test20
 %   test20
 % See also cholmod_test
 
-% Copyright 2006, Timothy A. Davis, University of Florida
+% Copyright 2006-2007, Timothy A. Davis, University of Florida
 
 fprintf ('=================================================================\n');
 fprintf ('test20: test symbfact2, cholmod2, and lu on a few large matrices\n') ;
@@ -49,7 +49,6 @@ for i = f
     end
     err = norm (A*x-b,1) ;
     clear L U P Q A x b
-    pack
     fprintf ('lnz %d unz %d nnz(L+U) %d fl %g gflop %g\n t %g err %e\n', ...
 	lnz, unz, lnz+unz-n, fl, 1e-9*fl/t, t, err) ;
     % pause

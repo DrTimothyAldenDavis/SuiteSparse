@@ -1,5 +1,5 @@
 C ----------------------------------------------------------------------
-C AMD Version 2.0, Copyright (c) 2006 by Timothy A. Davis, Patrick R.
+C AMD, Copyright (c) by Timothy A. Davis, Patrick R.
 C Amestoy, and Iain S. Duff.  See ../README.txt for
 C License.  email: davis at cise.ufl.edu    CISE Department, Univ. of
 C Florida.  web: http://www.cise.ufl.edu/research/sparse/amd

@@ -4,9 +4,9 @@ typedef struct problem_struct
     cs_ci *A ;
     cs_ci *C ;
     int sym ;
-    double _Complex *x ;
-    double _Complex *b ;
-    double _Complex *resid ;
+    cs_complex_t *x ;
+    cs_complex_t *b ;
+    cs_complex_t *resid ;
 } problem ;
 
 problem *get_problem (FILE *f, double tol) ;

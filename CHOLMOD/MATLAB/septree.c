@@ -46,17 +46,17 @@ void mexFunction
 {
 #ifndef NPARTITION
     double *p ;
-    int *Cmember, *CParent ;
+    Int *Cmember, *CParent ;
     cholmod_common Common, *cm ;
     double nd_oksep ;
-    int nd_small, nc, n, c, j, nc_new ;
+    Int nd_small, nc, n, c, j, nc_new ;
 
     /* ---------------------------------------------------------------------- */
     /* start CHOLMOD and set defaults */
     /* ---------------------------------------------------------------------- */
 
     cm = &Common ;
-    cholmod_start (cm) ;
+    cholmod_l_start (cm) ;
     sputil_config (SPUMONI, cm) ;
 
     /* ---------------------------------------------------------------------- */
@@ -79,8 +79,8 @@ void mexFunction
 	mexErrMsgTxt ("invalid inputs") ;
     }
 
-    CParent = cholmod_malloc (nc, sizeof (int), cm) ;
-    Cmember = cholmod_malloc (n, sizeof (int), cm) ;
+    CParent = cholmod_l_malloc (nc, sizeof (Int), cm) ;
+    Cmember = cholmod_l_malloc (n, sizeof (Int), cm) ;
 
     p = mxGetPr (pargin [0]) ;
     for (c = 0 ; c < nc ; c++)
@@ -106,7 +106,7 @@ void mexFunction
     /* collapse the tree */
     /* ---------------------------------------------------------------------- */
 
-    nc_new = cholmod_collapse_septree (n, nc, nd_oksep, nd_small, CParent,
+    nc_new = cholmod_l_collapse_septree (n, nc, nd_oksep, nd_small, CParent,
 	Cmember, cm) ; 
     if (nc_new < 0)
     {
@@ -128,10 +128,10 @@ void mexFunction
     /* free workspace */
     /* ---------------------------------------------------------------------- */
 
-    cholmod_free (nc, sizeof (int), CParent, cm) ;
-    cholmod_free (n, sizeof (int), Cmember, cm) ;
-    cholmod_finish (cm) ;
-    cholmod_print_common (" ", cm) ;
+    cholmod_l_free (nc, sizeof (Int), CParent, cm) ;
+    cholmod_l_free (n, sizeof (Int), Cmember, cm) ;
+    cholmod_l_finish (cm) ;
+    cholmod_l_print_common (" ", cm) ;
     /*
     if (cm->malloc_count != 0) mexErrMsgTxt ("!") ;
     */

@@ -46,7 +46,7 @@ function cholmod_test (nmat)
 % This extensive test is not included:
 % test28: test nesdis
 
-% Copyright 2006, Timothy A. Davis, University of Florida
+% Copyright 2006-2007, Timothy A. Davis, University of Florida
 
 diary off
 s = date ;

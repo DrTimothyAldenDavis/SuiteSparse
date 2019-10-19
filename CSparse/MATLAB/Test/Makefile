@@ -14,7 +14,7 @@ all: cs_sparse2.mexglx \
 mexcsparse:
 	( cd ../CSparse ; make mexcsparse.a )
 
-I = -I../../Source -I../CSparse
+I = -I../../Include -I../CSparse
 
 cs_ipvec.mexglx: cs_ipvec_mex.c mexcsparse
 	$(MEX) -output cs_ipvec $< $(I) ../CSparse/mexcsparse.a

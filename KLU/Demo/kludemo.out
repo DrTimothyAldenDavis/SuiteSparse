@@ -1,0 +1,78 @@
+./klu_simple
+x [0] = 1
+x [1] = 2
+x [2] = 3
+x [3] = 4
+x [4] = 5
+./kludemo < ../Matrix/1c.mtx
+KLU: May 31, 2007, version: 1.0.0
+n 1 nnz(A) 1 nnz(L+U+F) 1 resid 0
+recip growth 1 condest 1 rcond 1 flops 0
+peak memory usage: 396 bytes
+
+./kludemo < ../Matrix/arrowc.mtx
+KLU: May 31, 2007, version: 1.0.0
+n 100 nnz(A) 298 nnz(L+U+F) 298 resid 3.19129e-14
+recip growth 0.019999 condest 295.99 rcond 0.019999 flops 297
+peak memory usage: 32148 bytes
+
+./kludemo < ../Matrix/arrow.mtx
+KLU: May 31, 2007, version: 1.0.0
+n 100 nnz(A) 298 nnz(L+U+F) 298 resid 3.27516e-14
+recip growth 0.0204082 condest 303 rcond 0.0204082 flops 297
+peak memory usage: 20316 bytes
+
+./kludemo < ../Matrix/impcol_a.mtx
+KLU: May 31, 2007, version: 1.0.0
+n 207 nnz(A) 572 nnz(L+U+F) 615 resid 5.85715e-10
+recip growth 0.00957447 condest 4.35093e+07 rcond 4.5277e-05 flops 259
+peak memory usage: 32876 bytes
+
+./kludemo < ../Matrix/w156.mtx
+KLU: May 31, 2007, version: 1.0.0
+n 156 nnz(A) 362 nnz(L+U+F) 396 resid 1.39106e-08
+recip growth 0.00889922 condest 1.79787e+09 rcond 0.000124785 flops 175
+peak memory usage: 38356 bytes
+
+./kludemo < ../Matrix/ctina.mtx
+KLU: May 31, 2007, version: 1.0.0
+n 11 nnz(A) 36 nnz(L+U+F) 45 resid 4.96507e-16
+recip growth 1 condest 56 rcond 1 flops 73
+peak memory usage: 4156 bytes
+
+./kluldemo < ../Matrix/1c.mtx
+KLU: May 31, 2007, version: 1.0.0
+n 1 nnz(A) 1 nnz(L+U+F) 1 resid 0
+recip growth 1 condest 1 rcond 1 flops 0
+peak memory usage: 396 bytes
+
+./kluldemo < ../Matrix/arrowc.mtx
+KLU: May 31, 2007, version: 1.0.0
+n 100 nnz(A) 298 nnz(L+U+F) 298 resid 3.19129e-14
+recip growth 0.019999 condest 295.99 rcond 0.019999 flops 297
+peak memory usage: 32148 bytes
+
+./kluldemo < ../Matrix/arrow.mtx
+KLU: May 31, 2007, version: 1.0.0
+n 100 nnz(A) 298 nnz(L+U+F) 298 resid 3.27516e-14
+recip growth 0.0204082 condest 303 rcond 0.0204082 flops 297
+peak memory usage: 20316 bytes
+
+./kluldemo < ../Matrix/impcol_a.mtx
+KLU: May 31, 2007, version: 1.0.0
+n 207 nnz(A) 572 nnz(L+U+F) 615 resid 5.85715e-10
+recip growth 0.00957447 condest 4.35093e+07 rcond 4.5277e-05 flops 259
+peak memory usage: 32876 bytes
+
+./kluldemo < ../Matrix/w156.mtx
+KLU: May 31, 2007, version: 1.0.0
+n 156 nnz(A) 362 nnz(L+U+F) 396 resid 1.39106e-08
+recip growth 0.00889922 condest 1.79787e+09 rcond 0.000124785 flops 175
+peak memory usage: 38356 bytes
+
+./kluldemo < ../Matrix/ctina.mtx
+KLU: May 31, 2007, version: 1.0.0
+n 11 nnz(A) 36 nnz(L+U+F) 45 resid 4.96507e-16
+recip growth 1 condest 56 rcond 1 flops 73
+peak memory usage: 4156 bytes
+

@@ -2,9 +2,9 @@
 /* cs_dmperm: maximum matching or Dulmage-Mendelsohn permutation. */
 void mexFunction
 (
-    int	nargout,
+    int nargout,
     mxArray *pargout [ ],
-    int	nargin,
+    int nargin,
     const mxArray *pargin [ ]
 )
 {

@@ -1,0 +1,54 @@
+%test3: KLU test script
+% Example:
+%   test3
+% See also klu
+
+% Copyright 2004-2007 Timothy A. Davis, Univ. of Florida
+% http://www.cise.ufl.edu/research/sparse
+
+clear
+rand ('state', 0) ;
+
+load west0479
+A = west0479 ;
+% A = sparse (rand (4)) ;
+% A (3:4, 1:2) = 0 ;
+
+n = size (A,1) ;
+b = rand (n,1) ;
+spparms ('spumoni',2)
+x = A\b ;
+spparms ('spumoni',0)
+fprintf ('MATLAB resid %g\n', norm (A*x-b,1)) ;
+
+[LU,info,cond_estimate] = klu (A) ;
+fprintf ('\nLU = \n') ; disp (LU) ;
+fprintf ('\ninfo = \n') ; disp (info) ;
+fprintf ('KLU condest    %g\n', cond_estimate) ;
+matlab_condest = condest (A) ;
+matlab_cond = cond (full (A)) ;
+fprintf ('MATLAB condest %g cond %g\n', matlab_condest, matlab_cond) ;
+
+for nrhs = 1:10
+    b = rand (n,nrhs) ;
+    x = klu (LU,'\',b) ;
+    fprintf ('nrhs: %d resid: %g\n', ...
+	nrhs, norm (A*x-b,1) / norm (A,1)) ;
+end
+
+[x,info,cond_estimate] = klu (A, '\', b) ;
+fprintf ('\ninfo = \n') ; disp (info) ;
+fprintf ('KLU cond_estimate %g\n', cond_estimate) ;
+
+[x,info] = klu (A, '\', b, struct ('ordering',1)) ;
+fprintf ('\ninfo = \n') ; disp (info) ;
+[x,info,cond_estimate] = klu (A, '\', b, struct ('ordering',2)) ;
+fprintf ('\ninfo = \n') ; disp (info) ;
+try
+    [x,info,cond_estimate] = klu (A, '\', b, struct ('ordering',3)) ;
+    fprintf ('\ninfo = \n') ; disp (info) ;
+    [x,info,cond_estimate] = klu (A, '\', b, struct ('ordering',4)) ;
+    fprintf ('\ninfo = \n') ; disp (info) ;
+catch
+    fprintf ('KLU test with CHOLMOD skipped (CHOLMOD not installed)\n') ;
+end

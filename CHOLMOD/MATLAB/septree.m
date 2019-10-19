@@ -20,7 +20,7 @@ function [cp_new, cmember_new] = septree (cp, cmember, nd_oksep, nd_small)  %#ok
 %
 %   See also NESDIS.
 
-%   Copyright 2006, Timothy A. Davis
+%   Copyright 2006-2007, Timothy A. Davis
 %   http://www.cise.ufl.edu/research/sparse
 
 error ('septree mexFunction not found') ;

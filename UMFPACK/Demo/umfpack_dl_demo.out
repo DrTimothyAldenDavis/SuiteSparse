@@ -1,5 +1,5 @@
 
-UMFPACK V5.0 (Dec 2, 2006) demo: _dl_ version
+UMFPACK V5.1 (May 31, 2007) demo: _dl_ version
 
 UMFPACK:  Copyright (c) 2005-2006 by Timothy A. Davis.  All Rights Reserved.
 
@@ -39,9 +39,9 @@ UMFPACK License:
 
 Availability: http://www.cise.ufl.edu/research/sparse/umfpack
 
-UMFPACK V5.0.2 (Dec 2, 2006): OK
+UMFPACK V5.1.0 (May 31, 2007): OK
 
-UMFPACK V5.0.2 (Dec 2, 2006), Control:
+UMFPACK V5.1.0 (May 31, 2007), Control:
     Matrix entry defined as: double
     Int (generic integer) defined as: UF_long
 
@@ -73,7 +73,7 @@ UMFPACK V5.0.2 (Dec 2, 2006), Control:
     10: CPU timer is POSIX times ( ) routine.
     11: compiled for normal operation (debugging disabled)
     computer/operating system: Linux
-    size of int: 4 UF_long: 4 Int: 4 pointer: 4 double: 8 Entry: 8 (in bytes)
+    size of int: 4 UF_long: 8 Int: 8 pointer: 8 double: 8 Entry: 8 (in bytes)
 
 
 b: dense vector, n = 5. 
@@ -138,10 +138,10 @@ Symbolic factorization of A: Symbolic object:
     performn column etree postorder:            yes
     prefer diagonal pivoting (attempt P=Q):     no
     variable-size part of Numeric object:
-	minimum initial size (Units): 74  (MBytes): 0.0
-	estimated peak size (Units):  1301  (MBytes): 0.0
-	estimated final size (Units): 15  (MBytes): 0.0
-    symbolic factorization memory usage (Units): 144  (MBytes): 0.0
+	minimum initial size (Units): 69  (MBytes): 0.0
+	estimated peak size (Units):  681  (MBytes): 0.0
+	estimated final size (Units): 10  (MBytes): 0.0
+    symbolic factorization memory usage (Units): 138  (MBytes): 0.0
     frontal matrices / supercolumns:
 	number of frontal chains: 1
 	number of frontal matrices: 1
@@ -185,9 +185,9 @@ Numeric factorization of A: Numeric object:
     maximum sum (abs (rows of A)):              1.30000e+01
     initial allocation parameter used:          0.7
     frontal matrix allocation parameter used:   0.5
-    final total size of Numeric object (Units): 80
+    final total size of Numeric object (Units): 67
     final total size of Numeric object (MBytes): 0.0
-    peak size of variable-size part (Units):    1292
+    peak size of variable-size part (Units):    675
     peak size of variable-size part (MBytes):   0.0
     largest actual frontal matrix size:         4
     memory defragmentations:                    1
@@ -280,7 +280,7 @@ diagonal of U: dense vector, n = 5.
 
     Numeric object:  OK
 
-UMFPACK V5.0.2 (Dec 2, 2006), Info:
+UMFPACK V5.1.0 (May 31, 2007), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: UF_long
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -289,10 +289,10 @@ UMFPACK V5.0.2 (Dec 2, 2006), Info:
     number of rows in matrix A:       5
     number of columns in matrix A:    5
     entries in matrix A:              12
-    memory usage reported in:         8-byte Units
+    memory usage reported in:         16-byte Units
     size of int:                      4 bytes
-    size of UF_long:                  4 bytes
-    size of pointer:                  4 bytes
+    size of UF_long:                  8 bytes
+    size of pointer:                  8 bytes
     size of numerical entry:          8 bytes
 
     strategy used:                    unsymmetric
@@ -320,9 +320,9 @@ UMFPACK V5.0.2 (Dec 2, 2006), Info:
         nz on diagonal of P2*S:                    3
         fraction of nz on diag of P2*S:            1.000000
     symbolic factorization defragmentations:       0
-    symbolic memory usage (Units):                 144
+    symbolic memory usage (Units):                 138
     symbolic memory usage (MBytes):                0.0
-    Symbolic size (Units):                         45
+    Symbolic size (Units):                         41
     Symbolic size (MBytes):                        0
     symbolic factorization CPU time (sec):         0.00
     symbolic factorization wallclock time(sec):    0.00
@@ -333,12 +333,12 @@ UMFPACK V5.0.2 (Dec 2, 2006), Info:
 
     symbolic/numeric factorization:      upper bound               actual      %
     variable-sized part of Numeric object:
-        initial size (Units)                      74                   69    93%
-        peak size (Units)                       1301                 1292    99%
-        final size (Units)                        15                   13    87%
-    Numeric final size (Units)                    85                   81    95%
-    Numeric final size (MBytes)                  0.0                  0.0    95%
-    peak memory usage (Units)                   1473                 1464    99%
+        initial size (Units)                      69                   64    93%
+        peak size (Units)                        681                  675    99%
+        final size (Units)                        10                   11   110%
+    Numeric final size (Units)                    69                   68    99%
+    Numeric final size (MBytes)                  0.0                  0.0    99%
+    peak memory usage (Units)                    832                  826    99%
     peak memory usage (MBytes)                   0.0                  0.0    99%
     numeric factorization flops          1.30000e+01          6.00000e+00    46%
     nz in L (incl diagonal)                       10                    9    90%
@@ -368,7 +368,7 @@ UMFPACK V5.0.2 (Dec 2, 2006), Info:
     solve flops:                                   1.19000e+02
     iterative refinement steps taken:              0
     iterative refinement steps attempted:          0
-    sparse backward error omega1:                  4.67e-17
+    sparse backward error omega1:                  1.18e-16
     sparse backward error omega2:                  0.00e+00
     solve CPU time (sec):                          0.00
     solve wall clock time (sec):                   0.00
@@ -378,7 +378,7 @@ UMFPACK V5.0.2 (Dec 2, 2006), Info:
 
 UMFPACK:  Copyright (c) 2005-2006 by Timothy A. Davis.  All Rights Reserved.
 
-UMFPACK V5.0.2 (Dec 2, 2006): OK
+UMFPACK V5.1.0 (May 31, 2007): OK
 
 
 x (solution of Ax=b): dense vector, n = 5. 
@@ -389,12 +389,12 @@ x (solution of Ax=b): dense vector, n = 5.
     4 : (5)
     dense vector OK
 
-maxnorm of residual: 1.77636e-15
+maxnorm of residual: 1.06581e-14
 
 
 UMFPACK:  Copyright (c) 2005-2006 by Timothy A. Davis.  All Rights Reserved.
 
-UMFPACK V5.0.2 (Dec 2, 2006): OK
+UMFPACK V5.1.0 (May 31, 2007): OK
 
 determinant: (1.14) * 10^(2)
 
@@ -406,9 +406,9 @@ x (solution of Ax=b, solve is split into 3 steps): dense vector, n = 5.
     4 : (5)
     dense vector OK
 
-maxnorm of residual: 1.77636e-15
+maxnorm of residual: 1.06581e-14
 
-UMFPACK V5.0.2 (Dec 2, 2006), Info:
+UMFPACK V5.1.0 (May 31, 2007), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: UF_long
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -417,10 +417,10 @@ UMFPACK V5.0.2 (Dec 2, 2006), Info:
     number of rows in matrix A:       5
     number of columns in matrix A:    5
     entries in matrix A:              12
-    memory usage reported in:         8-byte Units
+    memory usage reported in:         16-byte Units
     size of int:                      4 bytes
-    size of UF_long:                  4 bytes
-    size of pointer:                  4 bytes
+    size of UF_long:                  8 bytes
+    size of pointer:                  8 bytes
     size of numerical entry:          8 bytes
 
     strategy used:                    unsymmetric
@@ -448,9 +448,9 @@ UMFPACK V5.0.2 (Dec 2, 2006), Info:
         nz on diagonal of P2*S:                    3
         fraction of nz on diag of P2*S:            1.000000
     symbolic factorization defragmentations:       0
-    symbolic memory usage (Units):                 144
+    symbolic memory usage (Units):                 138
     symbolic memory usage (MBytes):                0.0
-    Symbolic size (Units):                         45
+    Symbolic size (Units):                         41
     Symbolic size (MBytes):                        0
     symbolic factorization CPU time (sec):         0.00
     symbolic factorization wallclock time(sec):    0.00
@@ -461,12 +461,12 @@ UMFPACK V5.0.2 (Dec 2, 2006), Info:
 
     symbolic/numeric factorization:      upper bound               actual      %
     variable-sized part of Numeric object:
-        initial size (Units)                      74                   69    93%
-        peak size (Units)                       1301                 1292    99%
-        final size (Units)                        15                   13    87%
-    Numeric final size (Units)                    85                   81    95%
-    Numeric final size (MBytes)                  0.0                  0.0    95%
-    peak memory usage (Units)                   1473                 1464    99%
+        initial size (Units)                      69                   64    93%
+        peak size (Units)                        681                  675    99%
+        final size (Units)                        10                   11   110%
+    Numeric final size (Units)                    69                   68    99%
+    Numeric final size (MBytes)                  0.0                  0.0    99%
+    peak memory usage (Units)                    832                  826    99%
     peak memory usage (MBytes)                   0.0                  0.0    99%
     numeric factorization flops          1.30000e+01          6.00000e+00    46%
     nz in L (incl diagonal)                       10                    9    90%
@@ -496,7 +496,7 @@ UMFPACK V5.0.2 (Dec 2, 2006), Info:
     solve flops:                                   1.11000e+02
     iterative refinement steps taken:              0
     iterative refinement steps attempted:          0
-    sparse backward error omega1:                  5.84e-17
+    sparse backward error omega1:                  7.64e-17
     sparse backward error omega2:                  0.00e+00
     solve CPU time (sec):                          0.00
     solve wall clock time (sec):                   0.00
@@ -512,7 +512,7 @@ x (solution of A'x=b): dense vector, n = 5.
     4 : (10.2632)
     dense vector OK
 
-maxnorm of residual: 3.9968e-15
+maxnorm of residual: 7.10543e-15
 
 
 changing A (1,4) to zero
@@ -552,9 +552,9 @@ Numeric factorization of modified A: Numeric object:
     maximum sum (abs (rows of A)):              7.00000e+00
     initial allocation parameter used:          0.7
     frontal matrix allocation parameter used:   0.5
-    final total size of Numeric object (Units): 79
+    final total size of Numeric object (Units): 66
     final total size of Numeric object (MBytes): 0.0
-    peak size of variable-size part (Units):    1292
+    peak size of variable-size part (Units):    675
     peak size of variable-size part (MBytes):   0.0
     largest actual frontal matrix size:         4
     memory defragmentations:                    1
@@ -646,7 +646,7 @@ diagonal of U: dense vector, n = 5.
 
     Numeric object:  OK
 
-UMFPACK V5.0.2 (Dec 2, 2006), Info:
+UMFPACK V5.1.0 (May 31, 2007), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: UF_long
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -655,10 +655,10 @@ UMFPACK V5.0.2 (Dec 2, 2006), Info:
     number of rows in matrix A:       5
     number of columns in matrix A:    5
     entries in matrix A:              12
-    memory usage reported in:         8-byte Units
+    memory usage reported in:         16-byte Units
     size of int:                      4 bytes
-    size of UF_long:                  4 bytes
-    size of pointer:                  4 bytes
+    size of UF_long:                  8 bytes
+    size of pointer:                  8 bytes
     size of numerical entry:          8 bytes
 
     strategy used:                    unsymmetric
@@ -686,9 +686,9 @@ UMFPACK V5.0.2 (Dec 2, 2006), Info:
         nz on diagonal of P2*S:                    3
         fraction of nz on diag of P2*S:            1.000000
     symbolic factorization defragmentations:       0
-    symbolic memory usage (Units):                 144
+    symbolic memory usage (Units):                 138
     symbolic memory usage (MBytes):                0.0
-    Symbolic size (Units):                         45
+    Symbolic size (Units):                         41
     Symbolic size (MBytes):                        0
     symbolic factorization CPU time (sec):         0.00
     symbolic factorization wallclock time(sec):    0.00
@@ -699,12 +699,12 @@ UMFPACK V5.0.2 (Dec 2, 2006), Info:
 
     symbolic/numeric factorization:      upper bound               actual      %
     variable-sized part of Numeric object:
-        initial size (Units)                      74                   69    93%
-        peak size (Units)                       1301                 1292    99%
-        final size (Units)                        15                   12    80%
-    Numeric final size (Units)                    85                   80    94%
-    Numeric final size (MBytes)                  0.0                  0.0    94%
-    peak memory usage (Units)                   1473                 1464    99%
+        initial size (Units)                      69                   64    93%
+        peak size (Units)                        681                  675    99%
+        final size (Units)                        10                   10   100%
+    Numeric final size (Units)                    69                   67    97%
+    Numeric final size (MBytes)                  0.0                  0.0    97%
+    peak memory usage (Units)                    832                  826    99%
     peak memory usage (MBytes)                   0.0                  0.0    99%
     numeric factorization flops          1.30000e+01          4.00000e+00    31%
     nz in L (incl diagonal)                       10                    9    90%
@@ -734,7 +734,7 @@ UMFPACK V5.0.2 (Dec 2, 2006), Info:
     solve flops:                                   1.17000e+02
     iterative refinement steps taken:              0
     iterative refinement steps attempted:          0
-    sparse backward error omega1:                  5.92e-17
+    sparse backward error omega1:                  7.89e-17
     sparse backward error omega2:                  0.00e+00
     solve CPU time (sec):                          0.00
     solve wall clock time (sec):                   0.00
@@ -750,7 +750,7 @@ x (with modified A): dense vector, n = 5.
     4 : (31.6667)
     dense vector OK
 
-maxnorm of residual: 5.32907e-15
+maxnorm of residual: 7.10543e-15
 
 changing A (0,0) from 2 to 2
 changing A (1,0) from 3 to 2
@@ -808,9 +808,9 @@ Numeric factorization of completely modified A: Numeric object:
     maximum sum (abs (rows of A)):              6.50000e+01
     initial allocation parameter used:          0.7
     frontal matrix allocation parameter used:   0.5
-    final total size of Numeric object (Units): 80
+    final total size of Numeric object (Units): 67
     final total size of Numeric object (MBytes): 0.0
-    peak size of variable-size part (Units):    1292
+    peak size of variable-size part (Units):    675
     peak size of variable-size part (MBytes):   0.0
     largest actual frontal matrix size:         4
     memory defragmentations:                    1
@@ -903,7 +903,7 @@ diagonal of U: dense vector, n = 5.
 
     Numeric object:  OK
 
-UMFPACK V5.0.2 (Dec 2, 2006), Info:
+UMFPACK V5.1.0 (May 31, 2007), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: UF_long
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -912,10 +912,10 @@ UMFPACK V5.0.2 (Dec 2, 2006), Info:
     number of rows in matrix A:       5
     number of columns in matrix A:    5
     entries in matrix A:              12
-    memory usage reported in:         8-byte Units
+    memory usage reported in:         16-byte Units
     size of int:                      4 bytes
-    size of UF_long:                  4 bytes
-    size of pointer:                  4 bytes
+    size of UF_long:                  8 bytes
+    size of pointer:                  8 bytes
     size of numerical entry:          8 bytes
 
     strategy used:                    unsymmetric
@@ -943,9 +943,9 @@ UMFPACK V5.0.2 (Dec 2, 2006), Info:
         nz on diagonal of P2*S:                    3
         fraction of nz on diag of P2*S:            1.000000
     symbolic factorization defragmentations:       0
-    symbolic memory usage (Units):                 144
+    symbolic memory usage (Units):                 138
     symbolic memory usage (MBytes):                0.0
-    Symbolic size (Units):                         45
+    Symbolic size (Units):                         41
     Symbolic size (MBytes):                        0
     symbolic factorization CPU time (sec):         0.00
     symbolic factorization wallclock time(sec):    0.00
@@ -956,12 +956,12 @@ UMFPACK V5.0.2 (Dec 2, 2006), Info:
 
     symbolic/numeric factorization:      upper bound               actual      %
     variable-sized part of Numeric object:
-        initial size (Units)                      74                   69    93%
-        peak size (Units)                       1301                 1292    99%
-        final size (Units)                        15                   13    87%
-    Numeric final size (Units)                    85                   81    95%
-    Numeric final size (MBytes)                  0.0                  0.0    95%
-    peak memory usage (Units)                   1473                 1464    99%
+        initial size (Units)                      69                   64    93%
+        peak size (Units)                        681                  675    99%
+        final size (Units)                        10                   11   110%
+    Numeric final size (Units)                    69                   68    99%
+    Numeric final size (MBytes)                  0.0                  0.0    99%
+    peak memory usage (Units)                    832                  826    99%
     peak memory usage (MBytes)                   0.0                  0.0    99%
     numeric factorization flops          1.30000e+01          6.00000e+00    46%
     nz in L (incl diagonal)                       10                    9    90%
@@ -991,7 +991,7 @@ UMFPACK V5.0.2 (Dec 2, 2006), Info:
     solve flops:                                   1.19000e+02
     iterative refinement steps taken:              0
     iterative refinement steps attempted:          0
-    sparse backward error omega1:                  3.70e-17
+    sparse backward error omega1:                  1.04e-16
     sparse backward error omega2:                  0.00e+00
     solve CPU time (sec):                          0.00
     solve wall clock time (sec):                   0.00
@@ -1007,7 +1007,7 @@ x (with completely modified A): dense vector, n = 5.
     4 : (0.619594)
     dense vector OK
 
-maxnorm of residual: 3.33067e-15
+maxnorm of residual: 3.55271e-15
 
 
 C (transpose of A): column-form matrix, n_row 5 n_col 5, nz = 12. 
@@ -1047,10 +1047,10 @@ Symbolic factorization of C: Symbolic object:
     performn column etree postorder:            yes
     prefer diagonal pivoting (attempt P=Q):     no
     variable-size part of Numeric object:
-	minimum initial size (Units): 75  (MBytes): 0.0
-	estimated peak size (Units):  1302  (MBytes): 0.0
-	estimated final size (Units): 16  (MBytes): 0.0
-    symbolic factorization memory usage (Units): 144  (MBytes): 0.0
+	minimum initial size (Units): 71  (MBytes): 0.0
+	estimated peak size (Units):  683  (MBytes): 0.0
+	estimated final size (Units): 12  (MBytes): 0.0
+    symbolic factorization memory usage (Units): 138  (MBytes): 0.0
     frontal matrices / supercolumns:
 	number of frontal chains: 1
 	number of frontal matrices: 1
@@ -1116,9 +1116,9 @@ Numeric factorization of C: Numeric object:
     maximum sum (abs (rows of A)):              7.60000e+01
     initial allocation parameter used:          0.7
     frontal matrix allocation parameter used:   0.5
-    final total size of Numeric object (Units): 81
+    final total size of Numeric object (Units): 69
     final total size of Numeric object (MBytes): 0.0
-    peak size of variable-size part (Units):    1293
+    peak size of variable-size part (Units):    677
     peak size of variable-size part (MBytes):   0.0
     largest actual frontal matrix size:         4
     memory defragmentations:                    1
@@ -1304,7 +1304,7 @@ Freeing numeric object:
 Loading numeric object:
 
 Done loading numeric object
-UMFPACK V5.0.2 (Dec 2, 2006), Info:
+UMFPACK V5.1.0 (May 31, 2007), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: UF_long
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -1313,10 +1313,10 @@ UMFPACK V5.0.2 (Dec 2, 2006), Info:
     number of rows in matrix A:       5
     number of columns in matrix A:    5
     entries in matrix A:              12
-    memory usage reported in:         8-byte Units
+    memory usage reported in:         16-byte Units
     size of int:                      4 bytes
-    size of UF_long:                  4 bytes
-    size of pointer:                  4 bytes
+    size of UF_long:                  8 bytes
+    size of pointer:                  8 bytes
     size of numerical entry:          8 bytes
 
     strategy used:                    unsymmetric
@@ -1344,9 +1344,9 @@ UMFPACK V5.0.2 (Dec 2, 2006), Info:
         nz on diagonal of P2*S:                    3
         fraction of nz on diag of P2*S:            1.000000
     symbolic factorization defragmentations:       0
-    symbolic memory usage (Units):                 144
+    symbolic memory usage (Units):                 138
     symbolic memory usage (MBytes):                0.0
-    Symbolic size (Units):                         45
+    Symbolic size (Units):                         41
     Symbolic size (MBytes):                        0
     symbolic factorization CPU time (sec):         0.00
     symbolic factorization wallclock time(sec):    0.00
@@ -1357,12 +1357,12 @@ UMFPACK V5.0.2 (Dec 2, 2006), Info:
 
     symbolic/numeric factorization:      upper bound               actual      %
     variable-sized part of Numeric object:
-        initial size (Units)                      75                   70    93%
-        peak size (Units)                       1302                 1293    99%
-        final size (Units)                        16                   14    88%
-    Numeric final size (Units)                    86                   82    95%
-    Numeric final size (MBytes)                  0.0                  0.0    95%
-    peak memory usage (Units)                   1474                 1465    99%
+        initial size (Units)                      71                   66    93%
+        peak size (Units)                        683                  677    99%
+        final size (Units)                        12                   13   108%
+    Numeric final size (Units)                    71                   70    99%
+    Numeric final size (MBytes)                  0.0                  0.0    99%
+    peak memory usage (Units)                    834                  828    99%
     peak memory usage (MBytes)                   0.0                  0.0    99%
     numeric factorization flops          1.30000e+01          6.00000e+00    46%
     nz in L (incl diagonal)                        9                    8    89%
@@ -1392,7 +1392,7 @@ UMFPACK V5.0.2 (Dec 2, 2006), Info:
     solve flops:                                   1.11000e+02
     iterative refinement steps taken:              0
     iterative refinement steps attempted:          0
-    sparse backward error omega1:                  7.60e-17
+    sparse backward error omega1:                  8.07e-17
     sparse backward error omega2:                  0.00e+00
     solve CPU time (sec):                          0.00
     solve wall clock time (sec):                   0.00
@@ -1408,11 +1408,11 @@ x (solution of C'x=b): dense vector, n = 5.
     4 : (0.619594)
     dense vector OK
 
-maxnorm of residual: 5.52336e-15
+maxnorm of residual: 3.55271e-15
 
 
 Solving C'x=b again, using umfpack_dl_wsolve instead:
-UMFPACK V5.0.2 (Dec 2, 2006), Info:
+UMFPACK V5.1.0 (May 31, 2007), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: UF_long
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -1421,10 +1421,10 @@ UMFPACK V5.0.2 (Dec 2, 2006), Info:
     number of rows in matrix A:       5
     number of columns in matrix A:    5
     entries in matrix A:              12
-    memory usage reported in:         8-byte Units
+    memory usage reported in:         16-byte Units
     size of int:                      4 bytes
-    size of UF_long:                  4 bytes
-    size of pointer:                  4 bytes
+    size of UF_long:                  8 bytes
+    size of pointer:                  8 bytes
     size of numerical entry:          8 bytes
 
     strategy used:                    unsymmetric
@@ -1452,9 +1452,9 @@ UMFPACK V5.0.2 (Dec 2, 2006), Info:
         nz on diagonal of P2*S:                    3
         fraction of nz on diag of P2*S:            1.000000
     symbolic factorization defragmentations:       0
-    symbolic memory usage (Units):                 144
+    symbolic memory usage (Units):                 138
     symbolic memory usage (MBytes):                0.0
-    Symbolic size (Units):                         45
+    Symbolic size (Units):                         41
     Symbolic size (MBytes):                        0
     symbolic factorization CPU time (sec):         0.00
     symbolic factorization wallclock time(sec):    0.00
@@ -1465,12 +1465,12 @@ UMFPACK V5.0.2 (Dec 2, 2006), Info:
 
     symbolic/numeric factorization:      upper bound               actual      %
     variable-sized part of Numeric object:
-        initial size (Units)                      75                   70    93%
-        peak size (Units)                       1302                 1293    99%
-        final size (Units)                        16                   14    88%
-    Numeric final size (Units)                    86                   82    95%
-    Numeric final size (MBytes)                  0.0                  0.0    95%
-    peak memory usage (Units)                   1474                 1465    99%
+        initial size (Units)                      71                   66    93%
+        peak size (Units)                        683                  677    99%
+        final size (Units)                        12                   13   108%
+    Numeric final size (Units)                    71                   70    99%
+    Numeric final size (MBytes)                  0.0                  0.0    99%
+    peak memory usage (Units)                    834                  828    99%
     peak memory usage (MBytes)                   0.0                  0.0    99%
     numeric factorization flops          1.30000e+01          6.00000e+00    46%
     nz in L (incl diagonal)                        9                    8    89%
@@ -1500,7 +1500,7 @@ UMFPACK V5.0.2 (Dec 2, 2006), Info:
     solve flops:                                   1.11000e+02
     iterative refinement steps taken:              0
     iterative refinement steps attempted:          0
-    sparse backward error omega1:                  7.60e-17
+    sparse backward error omega1:                  8.07e-17
     sparse backward error omega2:                  0.00e+00
     solve CPU time (sec):                          0.00
     solve wall clock time (sec):                   0.00
@@ -1516,8 +1516,8 @@ x (solution of C'x=b): dense vector, n = 5.
     4 : (0.619594)
     dense vector OK
 
-maxnorm of residual: 5.52336e-15
+maxnorm of residual: 3.55271e-15
 
 
 umfpack_dl_demo complete.
-Total time:  0.00 seconds (CPU time),  0.00 seconds (wallclock time)
+Total time:  0.00 seconds (CPU time),  0.01 seconds (wallclock time)

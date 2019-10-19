@@ -1,4 +1,4 @@
-LDL Version 1.3: a sparse LDL' factorization and solve package.
+LDL Version 2.0: a sparse LDL' factorization and solve package.
     Written in C, with both a C and MATLAB mexFunction interface. 
 
 These routines are not terrifically fast (they do not use dense matrix kernels),
@@ -22,14 +22,13 @@ Quick start (Unix, or Windows with Cygwin):
 
 Quick start (for MATLAB users);
 
-    To compile, test, and install the LDL mexFunction, start MATLAB in this
-    directory and type ldldemo and/or ldltest.  This works on any system
-    supported by MATLAB.
+    To compile, test, and install the LDL mexFunctions (ldlsparse and
+    ldlsymbol), start MATLAB in this directory and type ldl_install.
+    This works on any system supported by MATLAB.
 
 --------------------------------------------------------------------------------
 
-LDL Version 1.3 (Apr. 30, 2006),  Copyright (c) 2005 by Timothy A. Davis.
-All Rights Reserved.
+LDL Copyright (c) 2005 by Timothy A. Davis.  All Rights Reserved.
 
 LDL License:
 
@@ -82,9 +81,10 @@ Files and directories in this distribution:
 
     Documentation, and compiling:
 
-	README		this file
+	README.txt	this file
 	Makefile	for compiling LDL
 	ChangeLog	changes since V1.0 (Dec 31, 2003)
+	License		license
 	lesser.txt	the GNU LGPL license
 
 	ldl_userguide.pdf   user guide in PDF
@@ -102,12 +102,15 @@ Files and directories in this distribution:
 	ldlsimple.c	a stand-alone C program, uses the basic features of LDL
 	ldlsimple.out	output of ldlsimple
 
+	ldllsimple.c	long integer version of ldlsimple.c
+
     Demo C program, for testing LDL and providing an example of its use
 
 	ldlmain.c	a stand-alone C main program that uses and tests LDL
-	Matrix		a directory containing 12 matrices used by ldlmain.c
+	Matrix		a directory containing matrices used by ldlmain.c
 	ldlmain.out	output of ldlmain
-	ldlamd.out	output of ldlamd (ldlmain.c compiled with AMD v2.0)
+	ldlamd.out	output of ldlamd (ldlmain.c compiled with AMD)
+	ldllamd.out	output of ldllamd (ldlmain.c compiled with AMD, long)
 
     MATLAB-related, not required for use in a regular C program
 
@@ -123,6 +126,11 @@ Files and directories in this distribution:
 	ldlmain2.out	output of ldlmain2.m
 	ldlsymbolmex.c	symbolic factorization using LDL (see SYMBFACT, ETREE)
 	ldlsymbol.m	help file for the LDLSYMBOL mexFunction
+
+	ldl_install.m	compile, install, and test LDL functions
+	ldl_make.m	compile LDL (ldlsparse and ldlsymbol)
+
+	ldlsparse.m	help for ldlsparse
 
 See ldl.c for a description of how to use the code from a C program.  Type
 "help ldl" in MATLAB for information on how to use LDL in a MATLAB program.

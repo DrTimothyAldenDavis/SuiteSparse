@@ -19,7 +19,7 @@ static UF_long is_sym (cs_cl *A)
 }
 
 /* true for off-diagonal entries */
-static UF_long dropdiag (UF_long i, UF_long j, double _Complex aij, void *other) { return (i != j) ;}
+static UF_long dropdiag (UF_long i, UF_long j, cs_complex_t aij, void *other) { return (i != j) ;}
 
 /* C = A + triu(A,1)' */
 static cs_cl *make_sym (cs_cl *A)
@@ -33,7 +33,7 @@ static cs_cl *make_sym (cs_cl *A)
 }
 
 /* create a right-hand side */
-static void rhs (double _Complex *x, double _Complex *b, UF_long m)
+static void rhs (cs_complex_t *x, cs_complex_t *b, UF_long m)
 {
     UF_long i ;
     for (i = 0 ; i < m ; i++) b [i] = 1 + ((double) i) / m ;
@@ -41,7 +41,7 @@ static void rhs (double _Complex *x, double _Complex *b, UF_long m)
 }
 
 /* infinity-norm of x */
-static double norm (double _Complex *x, UF_long n)
+static double norm (cs_complex_t *x, UF_long n)
 {
     UF_long i ;
     double normx = 0 ;
@@ -50,7 +50,7 @@ static double norm (double _Complex *x, UF_long n)
 }
 
 /* compute residual, norm(A*x-b,inf) / (norm(A,1)*norm(x,inf) + norm(b,inf)) */
-static void print_resid (UF_long ok, cs_cl *A, double _Complex *x, double _Complex *b, double _Complex *resid)
+static void print_resid (UF_long ok, cs_cl *A, cs_complex_t *x, cs_complex_t *b, cs_complex_t *resid)
 {
     UF_long i, m, n ;
     if (!ok) { printf ("    (failed)\n") ; return ; }
@@ -100,9 +100,9 @@ problem *get_problem (FILE *f, double tol)
 	    m, n, A->p [n], sym, sym ? C->p [n] : 0, cs_cl_norm (C)) ;
     if (nz1 != nz2) printf ("zero entries dropped: %ld\n", nz1 - nz2) ;
     if (nz2 != A->p [n]) printf ("tiny entries dropped: %ld\n", nz2 - A->p [n]) ;
-    Prob->b = cs_cl_malloc (mn, sizeof (double _Complex)) ;
-    Prob->x = cs_cl_malloc (mn, sizeof (double _Complex)) ;
-    Prob->resid = cs_cl_malloc (mn, sizeof (double _Complex)) ;
+    Prob->b = cs_cl_malloc (mn, sizeof (cs_complex_t)) ;
+    Prob->x = cs_cl_malloc (mn, sizeof (cs_complex_t)) ;
+    Prob->resid = cs_cl_malloc (mn, sizeof (cs_complex_t)) ;
     return ((!Prob->b || !Prob->x || !Prob->resid) ? free_problem (Prob) : Prob) ;
 }
 
@@ -122,7 +122,7 @@ problem *free_problem (problem *Prob)
 UF_long demo2 (problem *Prob)
 {
     cs_cl *A, *C ;
-    double _Complex *b, *x, *resid ;
+    cs_complex_t *b, *x, *resid ;
     double t, tol ;
     UF_long k, m, n, ok, order, nb, ns, *r, *s, *rr, sprank ;
     cs_cld *D ;
@@ -179,7 +179,7 @@ UF_long demo2 (problem *Prob)
 } 
 
 /* free workspace for demo3 */
-static UF_long done3 (UF_long ok, cs_cls *S, cs_cln *N, double _Complex *y, cs_cl *W, cs_cl *E, UF_long *p)
+static UF_long done3 (UF_long ok, cs_cls *S, cs_cln *N, cs_complex_t *y, cs_cl *W, cs_cl *E, UF_long *p)
 {
     cs_cl_sfree (S) ;
     cs_cl_nfree (N) ;
@@ -195,7 +195,7 @@ UF_long demo3 (problem *Prob)
 {
     cs_cl *A, *C, *W = NULL, *WW, *WT, *E = NULL, *W2 ;
     UF_long n, k, *Li, *Lp, *Wi, *Wp, p1, p2, *p = NULL, ok ;
-    double _Complex *b, *x, *resid, *y = NULL, *Lx, *Wx, s ;
+    cs_complex_t *b, *x, *resid, *y = NULL, *Lx, *Wx, s ;
     double t, t1 ;
     cs_cls *S = NULL ;
     cs_cln *N = NULL ;
@@ -206,7 +206,7 @@ UF_long demo3 (problem *Prob)
     rhs (x, b, n) ;				/* compute right-hand side */
     printf ("\nchol then update/downdate ") ;
     print_order (1) ;
-    y = cs_cl_malloc (n, sizeof (double _Complex)) ;
+    y = cs_cl_malloc (n, sizeof (cs_complex_t)) ;
     t = tic () ;
     S = cs_cl_schol (1, C) ;			/* symbolic Chol, amd(A+A') */
     printf ("\nsymbolic chol time %8.2f\n", toc (t)) ;

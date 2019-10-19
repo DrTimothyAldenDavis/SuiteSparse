@@ -68,18 +68,18 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    double dummy = 0, beta [2] ;
+    double dummy = 0, beta [2], *px ;
     cholmod_sparse Amatrix, *A, *Lsparse ;
     cholmod_factor *L ;
     cholmod_common Common, *cm ;
-    int n, minor ;
+    Int n, minor ;
 
     /* ---------------------------------------------------------------------- */
     /* start CHOLMOD and set parameters */ 
     /* ---------------------------------------------------------------------- */
 
     cm = &Common ;
-    cholmod_start (cm) ;
+    cholmod_l_start (cm) ;
     sputil_config (SPUMONI, cm) ;
 
     /* convert to packed LDL' when done */
@@ -118,10 +118,6 @@ void mexFunction
     {
     	mexErrMsgTxt ("A must be square") ;
     }
-    if (!mxIsDouble (pargin [0]))
-    {
-	mexErrMsgTxt ("A must be double (or complex double)") ;
-    }
 
     /* get sparse matrix A, use tril(A)  */
     A = sputil_get_sparse (pargin [0], &Amatrix, &dummy, -1) ; 
@@ -151,8 +147,8 @@ void mexFunction
     /* analyze and factorize */
     /* ---------------------------------------------------------------------- */
 
-    L = cholmod_analyze (A, cm) ;
-    cholmod_factorize_p (A, beta, NULL, 0, L, cm) ;
+    L = cholmod_l_analyze (A, cm) ;
+    cholmod_l_factorize_p (A, beta, NULL, 0, L, cm) ;
 
     if (nargout < 2 && cm->status != CHOLMOD_OK)
     {
@@ -165,11 +161,11 @@ void mexFunction
 
     /* the conversion sets L->minor back to n, so get a copy of it first */
     minor = L->minor ;
-    Lsparse = cholmod_factor_to_sparse (L, cm) ;
+    Lsparse = cholmod_l_factor_to_sparse (L, cm) ;
     if (Lsparse->xtype == CHOLMOD_COMPLEX)
     {
 	/* convert Lsparse from complex to zomplex */
-	cholmod_sparse_xtype (CHOLMOD_ZOMPLEX, Lsparse, cm) ;
+	cholmod_l_sparse_xtype (CHOLMOD_ZOMPLEX, Lsparse, cm) ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -182,7 +178,9 @@ void mexFunction
     /* return minor (translate to MATLAB convention) */
     if (nargout > 1)
     {
-	pargout [1] = mxCreateDoubleScalar ((minor == n) ? 0 : (minor+1)) ;
+	pargout [1] = mxCreateDoubleMatrix (1, 1, mxREAL) ;
+	px = mxGetPr (pargout [1]) ;
+	px [0] = ((minor == n) ? 0 : (minor+1)) ;
     }
 
     /* return permutation */
@@ -195,9 +193,9 @@ void mexFunction
     /* free workspace and the CHOLMOD L, except for what is copied to MATLAB */
     /* ---------------------------------------------------------------------- */
 
-    cholmod_free_factor (&L, cm) ;
-    cholmod_finish (cm) ;
-    cholmod_print_common (" ", cm) ;
+    cholmod_l_free_factor (&L, cm) ;
+    cholmod_l_finish (cm) ;
+    cholmod_l_print_common (" ", cm) ;
     /*
     if (cm->malloc_count != 3 + mxIsComplex (pargout[0])) mexErrMsgTxt ("!") ;
     */

@@ -13,7 +13,7 @@
 \begin{document}
 %------------------------------------------------------------------------------
 
-\title{CAMD Version 2.1 User Guide}
+\title{CAMD Version 2.2 User Guide}
 \author{Patrick R. Amestoy\thanks{ENSEEIHT-IRIT,
 2 rue Camichel 31017 Toulouse, France.
 email: amestoy@enseeiht.fr.  http://www.enseeiht.fr/$\sim$amestoy.}
@@ -36,7 +36,7 @@ http://www.numerical.rl.ac.uk/people/isd/isd.html.
 This work was supported by the EPSRC under grant GR/R46441.
 }}
 
-\date{May 5, 2006}
+\date{May 31, 2007}
 \maketitle
 
 %------------------------------------------------------------------------------
@@ -48,7 +48,7 @@ A MATLAB interface is included.
 \end{abstract}
 %------------------------------------------------------------------------------
 
-CAMD Version 2.1, Copyright\copyright 2006 by Timothy A.  Davis,
+CAMD Version 2.2, Copyright\copyright 2007 by Timothy A.  Davis,
 Yanqing (Morris) Chen,
 Patrick R. Amestoy, and Iain S. Duff.  All Rights Reserved.
 CAMD is available under alternate licences; contact T. Davis for details.
@@ -183,7 +183,7 @@ see \cite{GeorgeLiu89}.
 \section{Availability}
 %------------------------------------------------------------------------------
 
-CAMD Version 2.1 is available at http://www.cise.ufl.edu/research/sparse.
+CAMD is available at http://www.cise.ufl.edu/research/sparse.
 The Fortran version is available as the routine {\tt MC47} in HSL
 (formerly the Harwell Subroutine Library) \cite{hsl:2002}. {\tt MC47} does
 not include ordering constraints.
@@ -572,6 +572,11 @@ the use of the {\tt make} command entirely.  Simply type
 This works on any system with MATLAB, including Windows.
 Alternately, type {\tt make} in the {\tt CAMD/MATLAB} directory.
 
+If you have MATLAB 7.2 or earlier, you must first edit UFconfig/UFconfig.h to
+remove the "-largeArrayDims" option from the MEX command, prior to
+{\tt make mex} or {\tt make} in the MATLAB directory
+(or just use {\tt camd\_make.m} inside MATLAB.
+
 If you are including CAMD as a subset of a larger library and do not want
 to link the C standard I/O library, or if you simply do not need to use
 them, you can safely remove the {\tt camd\_control.c} and {\tt camd\_info.c}
@@ -617,7 +622,7 @@ and gives details on their use.
 /* ========================================================================= */
 
 /* ------------------------------------------------------------------------- */
-/* CAMD Version 2.1, Copyright (c) 2006 by Timothy A. Davis, Yanqing Chen,   */
+/* CAMD Version 2.2, Copyright (c) 2007 by Timothy A. Davis, Yanqing Chen,   */
 /* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
 /* email: davis at cise.ufl.edu    CISE Department, Univ. of Florida.        */
 /* web: http://www.cise.ufl.edu/research/sparse/camd                         */
@@ -1019,10 +1024,11 @@ void camd_l_info     (double Info [ ]) ;
  *      #endif
  */
 
-#define CAMD_DATE "June 27, 2006"
+#define CAMD_DATE "May 31, 2007"
 #define CAMD_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
 #define CAMD_MAIN_VERSION 2
-#define CAMD_SUB_VERSION 1
+#define CAMD_SUB_VERSION 2
+#define CAMD_SUBSUB_VERSION 0
 #define CAMD_VERSION CAMD_VERSION_CODE(CAMD_MAIN_VERSION,CAMD_SUB_VERSION)
 
 #ifdef __cplusplus

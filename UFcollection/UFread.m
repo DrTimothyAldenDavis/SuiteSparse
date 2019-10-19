@@ -1,5 +1,5 @@
 function Problem = UFread (directory, tmp)
-%UFread: read a problem in the UF Sparse Matrix Collection from a directory
+%UFREAD read a Problem in Matrix Market or Rutherford/Boeing format
 % containing a set of files created by UFwrite, in either Matrix Market or
 % Rutherford/Boeing format. See UFwrite for a description of the Problem struct.
 %
@@ -12,7 +12,7 @@ function Problem = UFread (directory, tmp)
 %   Problem.name = 'HB/west0479' ;
 %   Problem.title = '8 STAGE COLUMN SECTION, ALL SECTIONS RIGOROUS (CHEM.ENG.)';
 %   Problem.A = west0479 ;
-%   Problem.id = 267 ;	    % the id number of west0479 in the UF collection
+%   Problem.id = 267 ;          % the id number of west0479 in the UF collection
 %   Problem.date = '1983' ;
 %   Problem.author = 'A. Westerberg' ;
 %   Problem.ed = 'I. Duff, R. Grimes, J. Lewis'
@@ -57,7 +57,7 @@ function Problem = UFread (directory, tmp)
 % Optionally uses the CHOLMOD mread mexFunction, for reading Problems in
 % Matrix Market format.
 
-% Copyright 2006, Timothy A. Davis, Univ. of Florida
+% Copyright 2006-2007, Timothy A. Davis, Univ. of Florida
 
 %-------------------------------------------------------------------------------
 % determine the Problem name from the directory name
@@ -394,7 +394,7 @@ while (1)
 	    end
 	    % add the line to the notes
 	    k = k + 1 ;
-	    notes {k} = s ;
+	    notes {k} = s ;						    %#ok
 	end
     end
 end

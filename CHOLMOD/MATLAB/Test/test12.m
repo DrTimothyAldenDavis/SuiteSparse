@@ -4,7 +4,7 @@ function test12 (nmat)
 %   test12(nmat)
 % See also cholmod_test
 
-% Copyright 2006, Timothy A. Davis, University of Florida
+% Copyright 2006-2007, Timothy A. Davis, University of Florida
 
 fprintf ('=================================================================\n');
 fprintf ('test12: test etree2 and compare with etree\n') ;
@@ -76,7 +76,7 @@ for i = f
 	amd (sparse (1)) ;
 
 	% test column etree
-	skip = any (i == col_skip) || m > 109000 ;
+	skip = any (i == col_skip) | m > 109000 ;			    %#ok
 	if (~skip)
 	    tic ;
 	    [parent post] = etree (A, 'col') ;
@@ -104,7 +104,7 @@ for i = f
 	fprintf ('\n') ;
 
 	% test row etree
-	skip = any (i == row_skip) || m > 109000 ;
+	skip = any (i == row_skip) | m > 109000 ;			    %#ok
 	if (~skip)
 	    tic ;
 	    [parent post] = etree (A', 'col') ;
@@ -138,11 +138,11 @@ for i = f
 	    for trial = 1:2
 
 		if (trial == 1)
-		    skip1 = any (i == sym_skip)  || m > 109000 ;
-		    skip2 = any (i == symt_skip) || m > 109000 ;
+		    skip1 = any (i == sym_skip) | m > 109000 ;		    %#ok
+		    skip2 = any (i == symt_skip) | m > 109000 ;		    %#ok
 		else
-		    skip1 = any (i == p_sym_skip)  || m > 109000 ;
-		    skip2 = any (i == p_symt_skip) || m > 109000 ;
+		    skip1 = any (i == p_sym_skip) | m > 109000 ;	    %#ok
+		    skip2 = any (i == p_symt_skip) | m > 109000 ;	    %#ok
 		    fprintf ('after amd:\n') ;
 		    p = amd (A) ;
 		    A = A (p,p) ;

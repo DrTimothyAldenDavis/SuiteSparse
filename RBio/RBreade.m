@@ -1,5 +1,5 @@
 function [A Z title key mtype] = RBreade (filename)
-%RBreade: read a symmetric unassembled finite-element matrix from a R/B file
+%RBREADE read a symmetric finite-element matrix from a R/B file
 % Usage:
 %   [A Z title key mtype] = RBreade (filename)
 %
@@ -16,7 +16,7 @@ function [A Z title key mtype] = RBreade (filename)
 
 % Optionally uses the CHOLMOD sparse2 mexFunction.
 
-% Copyright 2006, Timothy A. Davis
+% Copyright 2007, Timothy A. Davis
 
 %-------------------------------------------------------------------------------
 % read in the raw contents of the Rutherford/Boeing file
@@ -24,7 +24,7 @@ function [A Z title key mtype] = RBreade (filename)
 
 [mtype Ap Ai Ax title key n] = RBraw (filename) ;
 mtype = lower (mtype) ;
-if (~(mtype (2) == 's' || mtype (2) == 'h') || (mtype (3) ~= 'e'))
+if (~(mtype (2) == 's' | mtype (2) == 'h') | (mtype (3) ~= 'e'))	    %#ok
     error ('RBreade is only for symmetric unassembled finite-element matrices');
 end
 
@@ -32,11 +32,14 @@ end
 % determine dimension, number of elements, and convert numerical entries
 %-------------------------------------------------------------------------------
 
+Ap = double (Ap) ;
+Ai = double (Ai) ;
+
 % number of elements
 ne = length (Ap) - 1 ;
 
-% dimension.  Note that Ap and Ai are of type int32
-if (double (max (Ai)) > n)
+% dimension.
+if (max (Ai) > n)
     error ('invalid dimension') ;
 end
 

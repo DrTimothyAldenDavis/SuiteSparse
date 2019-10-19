@@ -4,7 +4,7 @@ function test4
 %   test4
 % See also cholmod_test
 
-% Copyright 2006, Timothy A. Davis, University of Florida
+% Copyright 2006-2007, Timothy A. Davis, University of Florida
 
 fprintf ('=================================================================\n');
 fprintf ('test4: test cholmod2 with multiple and sparse right-hand-sides\n') ;
@@ -49,7 +49,7 @@ end
 
 fprintf ('maxerr %e %e\n', m1, m2) ;
 
-if (m1 > 1e-11 || m2 > 1e-11)
+if (m1 > 1e-11 | m2 > 1e-11)						    %#ok
     error ('!') ;
 end
 

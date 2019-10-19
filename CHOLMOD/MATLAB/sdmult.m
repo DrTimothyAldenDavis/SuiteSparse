@@ -12,7 +12,7 @@ function C = sdmult (S,F,transpose)					    %#ok
 %
 %   See also MTIMES
 
-%   Copyright 2006, Timothy A. Davis
+%   Copyright 2006-2007, Timothy A. Davis
 %   http://www.cise.ufl.edu/research/sparse
 
 error ('sdmult mexFunction not found') ;

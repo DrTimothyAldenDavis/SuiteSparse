@@ -3,8 +3,8 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * CHOLMOD/Include/cholmod_blas.h.  Version 1.2.
- * Copyright (C) 2005-2006, Univ. of Florida.  Author: Timothy A. Davis
+ * CHOLMOD/Include/cholmod_blas.h.
+ * Copyright (C) Univ. of Florida.  Author: Timothy A. Davis
  * CHOLMOD/Include/cholmod_blas.h is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.

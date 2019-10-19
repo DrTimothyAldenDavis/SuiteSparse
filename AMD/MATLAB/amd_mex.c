@@ -3,7 +3,7 @@
 /* ========================================================================= */
 
 /* ------------------------------------------------------------------------- */
-/* AMD Version 2.0, Copyright (c) 2006 by Timothy A. Davis,		     */
+/* AMD, Copyright (c) Timothy A. Davis,					     */
 /* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
 /* email: davis at cise.ufl.edu    CISE Department, Univ. of Florida.        */
 /* web: http://www.cise.ufl.edu/research/sparse/amd                          */
@@ -30,6 +30,7 @@
 #include "amd.h"
 #include "mex.h"
 #include "matrix.h"
+#include "UFconfig.h"
 
 void mexFunction
 (
@@ -39,9 +40,8 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    int i, m, n, *Ap, *Ai, *P, nc, result, spumoni, full ;
-    double *Pout, *InfoOut, Control [AMD_CONTROL], Info [AMD_INFO],
-	*ControlIn ;
+    UF_long i, m, n, *Ap, *Ai, *P, nc, result, spumoni, full ;
+    double *Pout, *InfoOut, Control [AMD_CONTROL], Info [AMD_INFO], *ControlIn ;
     mxArray *A ;
 
     /* --------------------------------------------------------------------- */
@@ -59,15 +59,15 @@ void mexFunction
     {
 	/* get the default control parameters, and return */
 	pargout [0] = mxCreateDoubleMatrix (AMD_CONTROL, 1, mxREAL) ;
-	amd_defaults (mxGetPr (pargout [0])) ;
+	amd_l_defaults (mxGetPr (pargout [0])) ;
 	if (nargout == 0)
 	{
-	    amd_control (mxGetPr (pargout [0])) ;
+	    amd_l_control (mxGetPr (pargout [0])) ;
 	}
 	return ;
     }
 
-    amd_defaults (Control) ;
+    amd_l_defaults (Control) ;
     if (nargin > 1)
     {
 	ControlIn = mxGetPr (pargin [1]) ;
@@ -81,7 +81,7 @@ void mexFunction
 
     if (spumoni > 0)
     {
-	amd_control (Control) ;
+	amd_l_control (Control) ;
     }
 
     /* --------------------------------------------------------------------- */
@@ -113,7 +113,7 @@ void mexFunction
     /* allocate workspace for output permutation */
     /* --------------------------------------------------------------------- */
 
-    P = mxMalloc ((n+1) * sizeof (int)) ;
+    P = mxMalloc ((n+1) * sizeof (UF_long)) ;
 
     /* --------------------------------------------------------------------- */
     /* if A is full, convert to a sparse matrix */
@@ -129,8 +129,8 @@ void mexFunction
 	}
 	mexCallMATLAB (1, &A, 1, (mxArray **) pargin, "sparse") ;
     }
-    Ap = mxGetJc (A) ;
-    Ai = mxGetIr (A) ;
+    Ap = (UF_long *) mxGetJc (A) ;
+    Ai = (UF_long *) mxGetIr (A) ;
     if (spumoni > 0)
     {
 	mexPrintf ("    input matrix A has %d nonzero entries\n", Ap [n]) ;
@@ -140,7 +140,7 @@ void mexFunction
     /* order the matrix */
     /* --------------------------------------------------------------------- */
 
-    result = amd_order (n, Ap, Ai, P, Control, Info) ;
+    result = amd_l_order (n, Ap, Ai, P, Control, Info) ;
 
     /* --------------------------------------------------------------------- */
     /* if A is full, free the sparse copy of A */
@@ -157,7 +157,7 @@ void mexFunction
 
     if (spumoni > 0)
     {
-	amd_info (Info) ;
+	amd_l_info (Info) ;
     }
 
     /* --------------------------------------------------------------------- */

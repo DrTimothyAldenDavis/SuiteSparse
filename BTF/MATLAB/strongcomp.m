@@ -1,19 +1,18 @@
 function [p,q,r] = strongcomp (A, qin)					    %#ok
-%STRONGCOMP Find a symmetric permutation to upper block triangular form.
+%STRONGCOMP symmetric permutation to upper block triangular form
+% The matrix must be sparse and square.
 %
-% Usage:
-%
-%	[p,r] = strongcomp (A) ;
-%
-%	[p,q,r] = strongcomp (A,qin) ;
+% Example:
+%    [p,r] = strongcomp (A) ;
+%    [p,q,r] = strongcomp (A,qin) ;
 %
 % In the first usage, the permuted matrix is C = A (p,p).  In the second usage,
 % the matrix A (:,qin) is symmetrically permuted to upper block triangular
 % form, where qin is an input column permutation, and the final permuted
 % matrix is C = A (p,q).  This second usage is equivalent to
 %
-%	[p,r] = strongcomp (A (:,qin)) ;
-%	q = qin (p) ;
+%    [p,r] = strongcomp (A (:,qin)) ;
+%    q = qin (p) ;
 %
 % That is, if qin is not present it is assumed to be qin = 1:n.
 %
@@ -23,14 +22,13 @@ function [p,q,r] = strongcomp (A, qin)					    %#ok
 % The diagonal of A (or A (:,qin)) is ignored.
 %
 % strongcomp is normally proceeded by a maximum transversal.
+% Assuming A is square and structurally nonsingular,
 %
-% Example:
-%
-%	[p,q,r] = strongcomp (A, maxtrans (A))
+%    [p,q,r] = strongcomp (A, maxtrans (A))
 %
 % is essentially identical to
 %
-%	[p,q,r] = dmperm (A)
+%    [p,q,r] = dmperm (A)
 %
 % except that p, q, and r will differ.  Both return an upper block triangular
 % form with a zero-free diagonal.  The number and sizes of the blocks will be
@@ -40,9 +38,8 @@ function [p,q,r] = strongcomp (A, qin)					    %#ok
 % permutation of 1:n, and find(q<0) gives a list of the indices of the
 % diagonal of A(p,q) that are zero.
 %
-% See also maxtrans, dmperm
+% See also btf, maxtrans, dmperm
 
-% Copyright 2006, Timothy A. Davis, University of Florida
+% Copyright 2004-2007, Tim Davis, University of Florida
 
 error ('strongcomp mexFunction not found') ;
-

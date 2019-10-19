@@ -6,7 +6,7 @@ function test22(nmat)
 % if nmat <= 0, just test problematic matrices
 % See also cholmod_test
 
-% Copyright 2006, Timothy A. Davis, University of Florida
+% Copyright 2006-2007, Timothy A. Davis, University of Florida
 
 fprintf ('=================================================================\n');
 fprintf ('test22: test pos.def and indef. matrices\n') ;
@@ -107,7 +107,7 @@ for i = f
     % MATLAB
     k = 0 ;
     t1 = 0 ;
-    while (t1 < tlimit && k < klimit) ;
+    while (t1 < tlimit & k < klimit)					    %#ok
 	tic ;
 	[R1,p1] = chol (A) ;
 	t = toc ;
@@ -119,7 +119,7 @@ for i = f
     % CHOLMOD
     k = 0 ;
     t2 = 0 ;
-    while (t2 < tlimit && k < klimit) ;
+    while (t2 < tlimit & k < klimit)					    %#ok
 	tic ;
 	[R2,p2] = chol2 (A) ;
 	t = toc ;
@@ -131,7 +131,7 @@ for i = f
     if (klimit == 1)
 	rmin = full (min (abs (diag (R2)))) ;
 	rmax = full (max (abs (diag (R2)))) ;
-	if (p2 ~= 0 || isnan (rmin) || isnan (rmax) || rmax == 0)
+	if (p2 ~= 0 | isnan (rmin) | isnan (rmax) | rmax == 0)		    %#ok
 	    rcond = 0 ;
 	else
 	    rcond = rmin / rmax ;

@@ -6,6 +6,7 @@ cs *cs_add (const cs *A, const cs *B, double alpha, double beta)
     double *x, *Bx, *Cx ;
     cs *C ;
     if (!CS_CSC (A) || !CS_CSC (B)) return (NULL) ;	    /* check inputs */
+    if (A->m != B->m || A->n != B->n) return (NULL) ;
     m = A->m ; anz = A->p [A->n] ;
     n = B->n ; Bp = B->p ; Bx = B->x ; bnz = Bp [n] ;
     w = cs_calloc (m, sizeof (int)) ;			    /* get workspace */

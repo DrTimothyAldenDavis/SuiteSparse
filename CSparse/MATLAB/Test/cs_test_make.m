@@ -6,7 +6,7 @@ function cs_test_make (force)
 %   cs_test_make
 % See also: testall
 
-%   Copyright 2006, Timothy A. Davis.
+%   Copyright 2006-2007, Timothy A. Davis.
 %   http://www.cise.ufl.edu/research/sparse
 
 if (nargin < 1)
@@ -23,9 +23,9 @@ mexfunc = { 'cs_ipvec', 'cs_pvec', 'cs_sparse2', ...
 for i = 1:length(mexfunc)
     [s t tobj] = cs_must_compile ('', mexfunc{i}, '_mex', ...
  	['.' mexext], 'cs_test_make.m', force) ;
-    if (s || tobj < timestamp)
+    if (s | tobj < timestamp)						    %#ok
 	cmd = ['mex -O -output ' mexfunc{i} ' ' mexfunc{i} '_mex.c -I..' ...
-	    filesep '..' filesep 'Source -I..' ...
+	    filesep '..' filesep 'Include -I..' ...
 	    filesep 'CSparse ' object_files] ;
  	fprintf ('%s\n', cmd) ;
  	eval (cmd) ;

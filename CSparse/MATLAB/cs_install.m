@@ -23,17 +23,16 @@ function cs_install (do_pause)
 %
 %   See also: cs_demo
 %
-%   Copyright 2006, Timothy A. Davis.
+%   Copyright 2006-2007, Timothy A. Davis.
 %   http://www.cise.ufl.edu/research/sparse
 
+fprintf ('Compiling and installing CSparse\n') ;
 if (nargin < 1)
     do_pause = 0 ;
 end
 
-help cs_install
-
 if (~isempty (strfind (computer, '64')))
-    error ('64-bit version not yet supported') ;
+    error ('64-bit version not supported; use CXSparse instead') ;
 end
 
 if (do_pause)
@@ -41,9 +40,34 @@ if (do_pause)
 end
 addpath ([pwd filesep 'CSparse']) ;
 addpath ([pwd filesep 'Demo']) ;
-addpath ([pwd filesep 'UFget']) ;
+
+v = getversion ;
+if (v >= 7.0)
+    addpath ([pwd filesep 'UFget']) ;
+else
+    fprintf ('UFget not installed (MATLAB 7.0 or later required)\n') ;
+end
 
 cd ('CSparse') ;
-cs_make
+cs_make (1) ;
 cd ('../Demo') ;
 cs_demo (do_pause)
+
+%-------------------------------------------------------------------------------
+function [v,pc] = getversion
+% determine the MATLAB version, and return it as a double.
+% only the primary and secondary version numbers are kept.
+% MATLAB 7.0.4 becomes 7.0, version 6.5.2 becomes 6.5, etc.
+v = version ;
+t = find (v == '.') ;
+if (length (t) > 1)
+    v = v (1:(t(2)-1)) ;
+end
+v = str2double (v) ;
+try
+    % ispc does not appear in MATLAB 5.3
+    pc = ispc ;
+catch
+    % if ispc fails, assume we are on a Windows PC if it's not unix
+    pc = ~isunix ;
+end

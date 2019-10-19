@@ -1,0 +1,11 @@
+#-------------------------------------------------------------------------------
+# UMFPACK and AMD top-level makefile (for Tcov tests)
+#-------------------------------------------------------------------------------
+
+default: library
+
+include ../UFconfig/UFconfig.mk
+
+library:
+	( cd Source ; $(MAKE) )
+	( cd Demo   ; $(MAKE) )

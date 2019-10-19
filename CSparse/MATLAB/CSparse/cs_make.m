@@ -1,4 +1,4 @@
-function [objfiles, timestamp] = cs_make (f)
+function [objfiles, timestamp_out] = cs_make (f)
 %CS_MAKE compiles CSparse for use in MATLAB.
 %   Usage:
 %       cs_make
@@ -19,7 +19,7 @@ function [objfiles, timestamp] = cs_make (f)
 %       (1) Create a source code file CSparse/Source/cs_mynewfunc.c.
 %       (2) Create a help file, CSparse/MATLAB/CSparse/cs_mynewfunc.m.
 %           This is very useful, but not strictly required.
-%       (3) Add the prototype of cs_mynewfunc to CSparse/Source/cs.h.
+%       (3) Add the prototype of cs_mynewfunc to CSparse/Include/cs.h.
 %       (4) Create its MATLAB mexFunction, CSparse/MATLAB/cs_mynewfunc_mex.c.
 %       (5) Edit cs_make.m, and add 'cs_mynewfunc' to the 'cs' and 'csm' lists.
 %       (6) Type 'cs_make' in the CSparse/MATLAB/CSparse directory.
@@ -39,8 +39,10 @@ function [objfiles, timestamp] = cs_make (f)
 %
 %   See also MEX.
 
-%   Copyright 2006, Timothy A. Davis.
+%   Copyright 2006-2007, Timothy A. Davis.
 %   http://www.cise.ufl.edu/research/sparse
+
+fprintf ('Compiling CSparse\n') ;
 
 % CSparse source files, in ../../Source, such as ../../Source/cs_add.c.
 % Note that not all CSparse source files have their own mexFunction.
@@ -56,6 +58,8 @@ cs = { 'cs_add', 'cs_amd', 'cs_chol', 'cs_cholsol', 'cs_counts', ...
     'cs_leaf', 'cs_randperm' } ;
     % add cs_mynewfunc to the above list
 
+details = 1 ;
+kk = 0 ;
 csm = { } ;
 if (nargin == 0)
     force = 0 ;
@@ -65,9 +69,13 @@ elseif (ischar (f))
     csm = {f} ;
 else
     force = f ;
-    if (force)
+    details = details | (force > 1) ;					    %#ok
+    if (force & details)						    %#ok
 	fprintf ('cs_make: re-compiling everything\n') ;
     end
+end
+if (force)
+    fprintf ('Compiling CSparse\n') ;
 end
 
 if (isempty (csm))
@@ -81,26 +89,35 @@ if (isempty (csm))
 	% add cs_mynewfunc to the above list
 end
 
-if (ispc)
+try
+    % ispc does not appear in MATLAB 5.3
+    pc = ispc ;
+catch
+    % if ispc fails, assume we are on a Windows PC if it's not unix
+    pc = ~isunix ;
+end
+
+if (pc)
     obj = '.obj' ;
 else
     obj = '.o' ;
 end
 
-srcdir = sprintf ('..%s..%sSource%s', filesep, filesep, filesep) ;
-hfile = [srcdir 'cs.h'] ;
+srcdir = '../../Source/' ;
+hfile = '../../Include/cs.h' ;
 
 % compile each CSparse source file
-[anysrc timestamp] = compile_source ('', 'cs_mex', obj, hfile, force) ;
+[anysrc timestamp kk] = compile_source ('', 'cs_mex', obj, hfile, force, ...
+    kk, details) ;
 CS = ['cs_mex' obj] ;
 if (nargout > 0)
     objfiles = ['..' filesep 'CSparse' filesep 'cs_mex' obj] ;
 end
 for i = 1:length (cs)
-    [s t] = compile_source (srcdir, cs {i}, obj, hfile, force) ;
+    [s t kk] = compile_source (srcdir, cs {i}, obj, hfile, force, kk, details) ;
     timestamp = max (timestamp, t) ;
-    anysrc = anysrc || s ;
-    CS = [CS ' ' cs{i} obj] ;	    %#ok
+    anysrc = anysrc | s ;						    %#ok
+    CS = [CS ' ' cs{i} obj] ;						    %#ok
     if (nargout > 0)
 	objfiles = [objfiles ' ..' filesep 'CSparse' filesep cs{i} obj] ;   %#ok
     end
@@ -111,21 +128,42 @@ obj = ['.' mexext] ;
 for i = 1:length (csm)
     [s t] = cs_must_compile ('', csm{i}, '_mex', obj, hfile, force) ;
     timestamp = max (timestamp, t) ;
-    if (anysrc || s)
-	cmd = sprintf ('mex -O -I../../Source %s_mex.c %s -output %s\n', ...
+    if (anysrc | s)							    %#ok
+	cmd = sprintf ('mex -O -I../../Include %s_mex.c %s -output %s', ...
 	    csm{i}, CS, csm{i}) ;
-	fprintf ('%s', cmd) ;
-	eval (cmd) ;
+	kk = do_cmd (cmd, kk, details) ;
     end
 end
 
+fprintf ('\n') ;
+if (nargout > 1)
+    timestamp_out = timestamp ;
+end
+
+if (force)
+    fprintf ('CSparse successfully compiled.\n') ;
+end
+
 %-------------------------------------------------------------------------------
-function [s,t] = compile_source (srcdir, f, obj, hfile, force)
+function [s,t,kk] = compile_source (srcdir, f, obj, hfile, force, kk, details)
 % compile a source code file in ../../Source, leaving object file in
 % this directory.
 [s t] = cs_must_compile (srcdir, f, '', obj, hfile, force) ;
 if (s)
-    cmd = sprintf ('mex -O -c -I../../Source %s%s.c\n', srcdir, f) ;
-    fprintf ('%s', cmd) ;
-    eval (cmd) ;
+    cmd = sprintf ('mex -O -c -I../../Include %s%s.c', srcdir, f) ;
+    kk = do_cmd (cmd, kk, details) ;
 end
+
+%-------------------------------------------------------------------------------
+function kk = do_cmd (s, kk, details)
+%DO_CMD: evaluate a command, and either print it or print a "."
+if (details)
+    fprintf ('%s\n', s) ;
+else
+    if (mod (kk, 60) == 0)
+	fprintf ('\n') ;
+    end
+    kk = kk + 1 ;
+    fprintf ('.') ;
+end
+eval (s) ;

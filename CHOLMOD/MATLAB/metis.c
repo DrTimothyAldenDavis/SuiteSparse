@@ -37,10 +37,10 @@ void mexFunction
 {
 #ifndef NPARTITION
     double dummy = 0 ;
-    int *Perm ;
+    Int *Perm ;
     cholmod_sparse *A, Amatrix, *C, *S ;
     cholmod_common Common, *cm ;
-    int n, transpose, c, postorder ;
+    Int n, transpose, c, postorder ;
     char buf [LEN] ;
 
     /* ---------------------------------------------------------------------- */
@@ -48,7 +48,7 @@ void mexFunction
     /* ---------------------------------------------------------------------- */
 
     cm = &Common ;
-    cholmod_start (cm) ;
+    cholmod_l_start (cm) ;
     sputil_config (SPUMONI, cm) ;
 
     /* ---------------------------------------------------------------------- */
@@ -115,7 +115,7 @@ void mexFunction
     if (transpose)
     {
 	/* C = A', and then order C*C' with METIS */
-	C = cholmod_transpose (A, 0, cm) ;
+	C = cholmod_l_transpose (A, 0, cm) ;
 	if (C == NULL)
 	{
 	    mexErrMsgTxt ("metis failed") ;
@@ -129,14 +129,14 @@ void mexFunction
     /* get workspace */
     /* ---------------------------------------------------------------------- */
 
-    Perm = cholmod_malloc (n, sizeof (int), cm) ;
+    Perm = cholmod_l_malloc (n, sizeof (Int), cm) ;
 
     /* ---------------------------------------------------------------------- */
     /* order the matrix with CHOLMOD's interface to METIS_NodeND */ 
     /* ---------------------------------------------------------------------- */
 
     postorder = (nargin < 3) ;
-    if (!cholmod_metis (A, NULL, 0, postorder, Perm, cm))
+    if (!cholmod_l_metis (A, NULL, 0, postorder, Perm, cm))
     {
 	mexErrMsgTxt ("metis failed") ;
 	return ;
@@ -152,11 +152,11 @@ void mexFunction
     /* free workspace */
     /* ---------------------------------------------------------------------- */
 
-    cholmod_free (n, sizeof (int), Perm, cm) ;
-    cholmod_free_sparse (&C, cm) ;
-    cholmod_free_sparse (&S, cm) ;
-    cholmod_finish (cm) ;
-    cholmod_print_common (" ", cm) ;
+    cholmod_l_free (n, sizeof (Int), Perm, cm) ;
+    cholmod_l_free_sparse (&C, cm) ;
+    cholmod_l_free_sparse (&S, cm) ;
+    cholmod_l_finish (cm) ;
+    cholmod_l_print_common (" ", cm) ;
     /*
     if (cm->malloc_count != 0) mexErrMsgTxt ("!") ;
     */

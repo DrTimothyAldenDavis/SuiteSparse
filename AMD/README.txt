@@ -1,3 +1,7 @@
+AMD Version 2.2, Copyright (c) 2007 by Timothy A.
+Davis, Patrick R. Amestoy, and Iain S. Duff.  All Rights Reserved.
+AMD is available under alternate licences; contact T. Davis for details.
+
 AMD:  a set of routines for permuting sparse matrices prior to
     factorization.  Includes a version in C, a version in Fortran, and a MATLAB
     mexFunction.
@@ -19,14 +23,11 @@ Quick start (for MATLAB users);
     To compile, test, and install the AMD mexFunction, cd to the
     AMD/MATLAB directory and type amd_make at the MATLAB prompt.
 
-    NOTE: DO NOT ATTEMPT TO USE THIS CODE IN 64-BIT MATLAB (v7.3).
-    It is not yet ported to that version of MATLAB.
+If you have MATLAB 7.2 or earlier and use "make mex", you must first edit
+UFconfig/UFconfig.h to remove the "-largeArrayDims" option from the MEX command
+(or just use amd_make.m inside MATLAB).
 
 -------------------------------------------------------------------------------
-
-AMD Version 2.0, Copyright (c) 2006 by Timothy A.
-Davis, Patrick R. Amestoy, and Iain S. Duff.  All Rights Reserved.
-AMD is available under alternate licences; contact T. Davis for details.
 
 AMD License:
 
@@ -132,9 +133,6 @@ Files and directories in the AMD distribution:
     Source directory:
     ---------------------------------------------------------------------------
 
-    GNUmakefile			a nice Makefile, for GNU make
-    Makefile			an ugly Unix Makefile (for older make's)
-
     amd_order.c			user-callable, primary AMD ordering routine
     amd_control.c		user-callable, prints the control parameters
     amd_defaults.c		user-callable, sets default control parameters
@@ -200,6 +198,7 @@ Files and directories in the AMD distribution:
 
     amd2.m			MATLAB help file for AMD
     amd_make.m			MATLAB m-file for compiling AMD mexFunction
+    amd_install.m		compile and install the AMD mexFunction
 
     amd_mex.c			AMD mexFunction for MATLAB
 
@@ -211,4 +210,6 @@ Files and directories in the AMD distribution:
     Lib directory:  libamd.a and libamdf77.a libraries placed here
     ---------------------------------------------------------------------------
 
+    GNUmakefile			a nice Makefile, for GNU make
+    Makefile			an ugly Unix Makefile (for older make's)
     libamd.def			AMD definitions for Windows

@@ -13,7 +13,7 @@ UFCONFIG = ../../UFconfig/UFconfig.h
 INC = ../Include/camd.h $(UFCONFIG)
 
 library:
-	( cd ../Source ; $(MAKE) )
+	( cd ../Lib ; $(MAKE) )
 
 #------------------------------------------------------------------------------
 # Create the demo program, run it, and compare the output

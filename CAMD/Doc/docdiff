@@ -12,7 +12,7 @@
 ./cdiff  ../Include/camd_internal.h ../../AMD/Include/amd_internal.h
 ./cdiff  ../Lib/libcamd.def ../../AMD/Lib/libamd.def
 ./cdiff  ../MATLAB/camd_demo.m ../../AMD/MATLAB/amd_demo.m
-./cdiff  ../MATLAB/camd.m ../../AMD/MATLAB/amd.m
+./cdiff  ../MATLAB/camd.m ../../AMD/MATLAB/amd2.m
 ./cdiff  ../MATLAB/camd_make.m ../../AMD/MATLAB/amd_make.m
 ./cdiff  ../MATLAB/camd_mex.c ../../AMD/MATLAB/amd_mex.c
 ./cdiff  ../MATLAB/can_24 ../../AMD/MATLAB/can_24

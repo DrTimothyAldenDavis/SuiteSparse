@@ -35,18 +35,18 @@ void mexFunction
 {
     double dummy = 0 ;
     double *Lx, *Lx2, *Lz, *Lz2 ;
-    int *Li, *Lp, *Lnz2, *Li2, *Lp2, *ColCount ;
+    Int *Li, *Lp, *Lnz2, *Li2, *Lp2, *ColCount ;
     cholmod_sparse *A, Amatrix, *Lsparse, *S ;
     cholmod_factor *L ;
     cholmod_common Common, *cm ;
-    int j, s, n, lnz, is_complex ;
+    Int j, s, n, lnz, is_complex ;
 
     /* ---------------------------------------------------------------------- */
     /* start CHOLMOD and set parameters */ 
     /* ---------------------------------------------------------------------- */
 
     cm = &Common ;
-    cholmod_start (cm) ;
+    cholmod_l_start (cm) ;
     sputil_config (SPUMONI, cm) ;
 
     /* ---------------------------------------------------------------------- */
@@ -67,10 +67,6 @@ void mexFunction
     {
 	mexErrMsgTxt ("resymbol: A and L must have same dimensions") ;
     }
-    if (!mxIsDouble (pargin [0]))
-    {
-	mexErrMsgTxt ("resymbol: L must be double (or complex double)") ;
-    }
 
     /* ---------------------------------------------------------------------- */
     /* get the sparse matrix A */
@@ -88,14 +84,14 @@ void mexFunction
     /* ---------------------------------------------------------------------- */
 
     /* get the MATLAB L */
-    Lp = mxGetJc (pargin [0]) ;
-    Li = mxGetIr (pargin [0]) ;
+    Lp = (Int *) mxGetJc (pargin [0]) ;
+    Li = (Int *) mxGetIr (pargin [0]) ;
     Lx = mxGetPr (pargin [0]) ;
     Lz = mxGetPi (pargin [0]) ;
     is_complex = mxIsComplex (pargin [0]) ;
 
     /* allocate the CHOLMOD symbolic L */
-    L = cholmod_allocate_factor (n, cm) ;
+    L = cholmod_l_allocate_factor (n, cm) ;
     L->ordering = CHOLMOD_NATURAL ;
     ColCount = L->ColCount ;
     for (j = 0 ; j < n ; j++)
@@ -105,7 +101,7 @@ void mexFunction
 
     /* allocate space for a CHOLMOD LDL' packed factor */
     /* (LL' and LDL' are treated identically) */
-    cholmod_change_factor (is_complex ? CHOLMOD_ZOMPLEX : CHOLMOD_REAL,
+    cholmod_l_change_factor (is_complex ? CHOLMOD_ZOMPLEX : CHOLMOD_REAL,
 	    FALSE, FALSE, TRUE, TRUE, L, cm) ;
 
     /* copy MATLAB L into CHOLMOD L */
@@ -143,13 +139,13 @@ void mexFunction
     /* resymbolic factorization */
     /* ---------------------------------------------------------------------- */
 
-    cholmod_resymbol (A, NULL, 0, TRUE, L, cm) ;
+    cholmod_l_resymbol (A, NULL, 0, TRUE, L, cm) ;
 
     /* ---------------------------------------------------------------------- */
     /* copy the results back to MATLAB */
     /* ---------------------------------------------------------------------- */
 
-    Lsparse = cholmod_factor_to_sparse (L, cm) ;
+    Lsparse = cholmod_l_factor_to_sparse (L, cm) ;
 
     /* return L as a sparse matrix */
     pargout [0] = sputil_put_sparse (&Lsparse, cm) ;
@@ -158,10 +154,10 @@ void mexFunction
     /* free workspace and the CHOLMOD L, except for what is copied to MATLAB */
     /* ---------------------------------------------------------------------- */
 
-    cholmod_free_factor (&L, cm) ;
-    cholmod_free_sparse (&S, cm) ;
-    cholmod_finish (cm) ;
-    cholmod_print_common (" ", cm) ;
+    cholmod_l_free_factor (&L, cm) ;
+    cholmod_l_free_sparse (&S, cm) ;
+    cholmod_l_finish (cm) ;
+    cholmod_l_print_common (" ", cm) ;
     /*
     if (cm->malloc_count != 3 + mxIsComplex (pargout[0])) mexErrMsgTxt ("!") ;
     */

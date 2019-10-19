@@ -21,7 +21,7 @@ Dept. of Computer and Information Science and Engineering \\
 Univ. of Florida, Gainesville, FL}
 \title{User Guide for CHOLMOD: a sparse Cholesky factorization and
 modification package}
-\date{Version 1.4, Dec 12, 2006}
+\date{Version 1.5, May 31, 2007}
 \maketitle
 
 %-------------------------------------------------------------------------------
@@ -374,7 +374,6 @@ directory.  The following functions are provided:
 {\tt ldlsolve}	    & {\tt x = L'}$\backslash${\tt (D}$\backslash${\tt (L}$\backslash${\tt b))} \\
 {\tt ldlsplit}	    & split the output of {\tt ldlchol} into {\tt L} and {\tt D} \\
 {\tt ldlupdate}	    & update/downdate an {\tt L*D*L'} factorization \\
-{\tt lu\_normest}   & estimate {\tt norm(A-L*U')} \\
 {\tt metis}	    & interface to {\tt METIS\_NodeND} ordering \\
 {\tt mread}	    & read a sparse or dense Matrix Market file \\
 {\tt mwrite}	    & write a sparse or dense Matrix Market file \\
@@ -406,13 +405,10 @@ Each function is described in the next sections.
 \subsection{{\tt lchol}: $\m{LL}\tr$ factorization}				\input{_lchol_m.tex}
 \subsection{{\tt ldlchol}: $\m{LDL}\tr$ factorization}				\input{_ldlchol_m.tex}
 \newpage
-\subsection{{\tt ldl\_normest}: estimate $||\m{A}-\m{LDL}\tr||$}		\input{_ldl_normest_m.tex}
 \subsection{{\tt ldlsolve}: solve using an $\m{LDL}\tr$ factorization}		\input{_ldlsolve_m.tex}
 \subsection{{\tt ldlsplit}: split an $\m{LDL}\tr$ factorization}		\input{_ldlsplit_m.tex}
 \newpage
 \subsection{{\tt ldlupdate}: update/downdate an $\m{LDL}\tr$ factorization}	\input{_ldlupdate_m.tex}
-\newpage
-\subsection{{\tt lu\_normest}: estimate $||\m{A}-\m{LU}||$}			\input{_lu_normest_m.tex}
 \newpage
 \subsection{{\tt mread}: read a sparse or dense matrix from a Matrix Market file}\input{_mread_m.tex}
 \subsection{{\tt mwrite}: write a sparse or densematrix to a Matrix Market file}	\input{_mwrite_m.tex}
@@ -487,6 +483,13 @@ Also ensure {\tt -fexceptions} is in the {\tt CFLAGS} option in the
 {\tt UFconfig/UFconfig.mk} file that comes with CHOLMOD.
 If you do not make these modifications, the CHOLMOD mexFunctions
 will terminate MATLAB if they encounter an error.
+
+If you have MATLAB 7.2 or earlier and use {\tt make mex} in the
+{\tt CHOLMOD} directory (equivalently, {\tt make} in {\tt CHOLMOD/MATLAB}),
+you must first edit
+{\tt UFconfig/UFconfig.h} to remove the {\tt -largeArrayDims}
+option from the MEX command
+(or just use {\tt cholmod\_make.m} inside MATLAB).
 
 Next, compile your METIS 4.0.1 library by typing {\tt make} in the
 {\tt metis-4.0} directory.  Then type {\tt make} in the {\tt CHOLMOD/MATLAB}

@@ -1,3 +1,46 @@
+May 31, 2007, version 1.0
+
+    * Overview:  this is the first clean release of KLU.  Only one bug was
+	fixed since in the last pre-1.0 version (see below).  This release adds
+	a 64-bit version, a better Demo, a 100% statement coverage test, new
+	parameters and statistics in the KLU Common object, reduced memory
+	usage, a method for limiting worst-case work in the BTF ordering, and a
+	completely redesigned MATLAB interface.
+
+    * scaling default changed from no scaling, to max row scaling
+
+    * C-callable API modified for klu_malloc, klu_free, klu_realloc, klu_rcond,
+	klu_rgrowth, klu_condest.  API of other user-callable KLU functions not
+	modified.
+
+    * user ordering function prototype modified (final argument is now
+	klu_common, not Common->user_data)
+
+    * User Guide added.
+
+    * KLU Demo completely rewritten.  Now depends on CHOLMOD to read in its
+	matrices, in Matrix Market format.
+
+    * port to 64-bit version
+
+    * reduction in memory usage, particularly when the BTF form results in
+	many small diagonal blocks
+
+    * new Common parameter (maxwork) and statistics (work, memusage, mempeak)
+
+    * Makefile and object files (*.o) now placed in KLU/Lib, not KLU/Source
+
+    * added klu_install.m, klu_demo.m, klu_make.m to KLU/MATLAB.
+
+    * klu mexFunction now returns a struct for LU, not a lengthy list of
+	matrices.  MATLAB interface completely rewritten.
+
+    * Tcov tests completely rewritten
+
+    * bug fix in complex klu_z_refactor, when both btf and scaling are in use
+
+    * bug fix in klu_rgrowth, when the matrix is scaled
+
 Dec 12, 2006: version 0.11
 
     * minor MATLAB cleanup

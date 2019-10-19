@@ -42,10 +42,10 @@ void mexFunction
 #ifndef NPARTITION
 
     double dummy = 0 ;
-    int *Partition ;
+    Int *Partition ;
     cholmod_sparse *A, Amatrix, *C, *S ;
     cholmod_common Common, *cm ;
-    int n, transpose, c ;
+    Int n, transpose, c ;
     char buf [LEN] ;
 
     /* ---------------------------------------------------------------------- */
@@ -53,7 +53,7 @@ void mexFunction
     /* ---------------------------------------------------------------------- */
 
     cm = &Common ;
-    cholmod_start (cm) ;
+    cholmod_l_start (cm) ;
     sputil_config (SPUMONI, cm) ;
 
     /* ---------------------------------------------------------------------- */
@@ -120,7 +120,7 @@ void mexFunction
     if (transpose)
     {
 	/* C = A', and then bisect C*C' */
-	C = cholmod_transpose (A, 0, cm) ;
+	C = cholmod_l_transpose (A, 0, cm) ;
 	if (C == NULL)
 	{
 	    mexErrMsgTxt ("bisect failed") ;
@@ -134,13 +134,13 @@ void mexFunction
     /* get workspace */
     /* ---------------------------------------------------------------------- */
 
-    Partition = cholmod_malloc (n, sizeof (int), cm) ;
+    Partition = cholmod_l_malloc (n, sizeof (Int), cm) ;
 
     /* ---------------------------------------------------------------------- */
     /* order the matrix with CHOLMOD's interface to METIS_NodeND */ 
     /* ---------------------------------------------------------------------- */
 
-    if (cholmod_bisect (A, NULL, 0, TRUE, Partition, cm) < 0)
+    if (cholmod_l_bisect (A, NULL, 0, TRUE, Partition, cm) < 0)
     {
 	mexErrMsgTxt ("bisect failed") ;
     }
@@ -155,11 +155,11 @@ void mexFunction
     /* free workspace */
     /* ---------------------------------------------------------------------- */
 
-    cholmod_free (n, sizeof (int), Partition, cm) ;
-    cholmod_free_sparse (&C, cm) ;
-    cholmod_free_sparse (&S, cm) ;
-    cholmod_finish (cm) ;
-    cholmod_print_common (" ", cm) ;
+    cholmod_l_free (n, sizeof (Int), Partition, cm) ;
+    cholmod_l_free_sparse (&C, cm) ;
+    cholmod_l_free_sparse (&S, cm) ;
+    cholmod_l_finish (cm) ;
+    cholmod_l_print_common (" ", cm) ;
     /* if (cm->malloc_count != 0) mexErrMsgTxt ("!") ; */
 
 #else

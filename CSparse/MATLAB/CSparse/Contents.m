@@ -46,7 +46,7 @@
 % Example:
 %   help cs_add
 
-%   Copyright 2006, Timothy A. Davis.
+%   Copyright 2006-2007, Timothy A. Davis.
 %   http://www.cise.ufl.edu/research/sparse
 
 % helper function:

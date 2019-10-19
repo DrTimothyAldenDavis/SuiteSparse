@@ -11,17 +11,17 @@ include ../UFconfig/UFconfig.mk
 # compile all C code (except hb, fortran, and fortran64), including AMD and the
 # MATLAB mexFunctions
 all:
-	( cd ../AMD ; $(MAKE) )
-	( cd ../AMD/MATLAB ; $(MAKE) )
-	( cd Source ; $(MAKE) )
+	( cd ../AMD ; $(MAKE) library )
+	( cd ../AMD ; $(MAKE) mex )
+	( cd Lib    ; $(MAKE) )
 	( cd Demo   ; $(MAKE) )
 	( cd MATLAB ; $(MAKE) )
 	- cat Doc/License
 
 # compile just the C-callable libraries and demo programs (not mexFunctions)
 library:
-	( cd ../AMD ; $(MAKE) )
-	( cd Source ; $(MAKE) )
+	( cd ../AMD ; $(MAKE) library )
+	( cd Lib    ; $(MAKE) )
 	( cd Demo   ; $(MAKE) )
 	- cat Doc/License
 
@@ -40,7 +40,7 @@ hb:
 # remove object files, but keep the compiled programs and library archives
 clean:
 	( cd ../AMD ; $(MAKE) clean )
-	( cd Source ; $(MAKE) clean )
+	( cd Lib    ; $(MAKE) clean )
 	( cd Demo   ; $(MAKE) clean )
 	( cd MATLAB ; $(MAKE) clean )
 	( cd Doc    ; $(MAKE) clean )
@@ -48,7 +48,7 @@ clean:
 # clean, and then remove compiled programs and library archives
 purge:
 	( cd ../AMD ; $(MAKE) purge )
-	( cd Source ; $(MAKE) purge )
+	( cd Lib    ; $(MAKE) purge )
 	( cd Demo   ; $(MAKE) purge )
 	( cd MATLAB ; $(MAKE) purge )
 	( cd Doc    ; $(MAKE) purge )

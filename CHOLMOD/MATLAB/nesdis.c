@@ -62,10 +62,10 @@ void mexFunction
 {
 #ifndef NPARTITION
     double dummy = 0 ;
-    int *Perm, *Cmember, *CParent ;
+    Int *Perm, *Cmember, *CParent ;
     cholmod_sparse *A, Amatrix, *C, *S ;
     cholmod_common Common, *cm ;
-    int n, transpose, c, ncomp ;
+    Int n, transpose, c, ncomp ;
     char buf [LEN] ;
 
     /* ---------------------------------------------------------------------- */
@@ -73,7 +73,7 @@ void mexFunction
     /* ---------------------------------------------------------------------- */
 
     cm = &Common ;
-    cholmod_start (cm) ;
+    cholmod_l_start (cm) ;
     sputil_config (SPUMONI, cm) ;
 
     /* ---------------------------------------------------------------------- */
@@ -148,8 +148,8 @@ void mexFunction
     C = NULL ;
     if (transpose)
     {
-	/* C = A', and then order C*C' with cholmod_nested_dissection */
-	C = cholmod_transpose (A, 0, cm) ;
+	/* C = A', and then order C*C' with cholmod_l_nested_dissection */
+	C = cholmod_l_transpose (A, 0, cm) ;
 	if (C == NULL)
 	{
 	    mexErrMsgTxt ("nesdis failed") ;
@@ -163,15 +163,15 @@ void mexFunction
     /* get workspace */
     /* ---------------------------------------------------------------------- */
 
-    CParent = cholmod_malloc (n, sizeof (int), cm) ;
-    Cmember = cholmod_malloc (n, sizeof (int), cm) ;
-    Perm = cholmod_malloc (n, sizeof (int), cm) ;
+    CParent = cholmod_l_malloc (n, sizeof (Int), cm) ;
+    Cmember = cholmod_l_malloc (n, sizeof (Int), cm) ;
+    Perm = cholmod_l_malloc (n, sizeof (Int), cm) ;
 
     /* ---------------------------------------------------------------------- */
     /* order the matrix with CHOLMOD's nested dissection */
     /* ---------------------------------------------------------------------- */
 
-    ncomp = cholmod_nested_dissection (A, NULL, 0, Perm, CParent, Cmember, cm) ;
+    ncomp = cholmod_l_nested_dissection (A, NULL, 0, Perm, CParent, Cmember,cm);
     if (ncomp < 0)
     {
 	mexErrMsgTxt ("nesdis failed") ;
@@ -196,13 +196,13 @@ void mexFunction
     /* free workspace */
     /* ---------------------------------------------------------------------- */
 
-    cholmod_free (n, sizeof (int), Perm, cm) ;
-    cholmod_free (n, sizeof (int), CParent, cm) ;
-    cholmod_free (n, sizeof (int), Cmember, cm) ;
-    cholmod_free_sparse (&C, cm) ;
-    cholmod_free_sparse (&S, cm) ;
-    cholmod_finish (cm) ;
-    cholmod_print_common (" ", cm) ;
+    cholmod_l_free (n, sizeof (Int), Perm, cm) ;
+    cholmod_l_free (n, sizeof (Int), CParent, cm) ;
+    cholmod_l_free (n, sizeof (Int), Cmember, cm) ;
+    cholmod_l_free_sparse (&C, cm) ;
+    cholmod_l_free_sparse (&S, cm) ;
+    cholmod_l_finish (cm) ;
+    cholmod_l_print_common (" ", cm) ;
     /*
     if (cm->malloc_count != 0) mexErrMsgTxt ("!") ;
     */

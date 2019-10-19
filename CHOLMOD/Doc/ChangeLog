@@ -1,3 +1,22 @@
+May 31, 2007, version 1.5.0
+
+    * 64-bit MATLAB interface
+    
+    * MATLAB interface back-ported to MATLAB 6.1.
+
+    * bug fix: solving Dx=b using a supernodal factorization, in
+	cholmod_l_solve, when sizeof(UF_long) > sizeof(BLAS integer)
+
+    * changes to Makefiles to reflect directory changes in COLAMD and CCOLAMD
+	v2.7.0 directory structure (CHOLMOD v1.5 requires v2.7.0 of those
+	two packages)
+
+    * update to Modify/cholmod_updown.c, to allow input vector R to be packed
+	or unpacked.
+
+    * bug fix to Tcov/huge.c test code, for 64-bit case (this has no effect
+	on the CHOLMOD library itself, just the test code)
+
 Dec 12, 2006, version 1.4.0
 
     * added support for large files (larger than 2GB)

@@ -28,14 +28,14 @@ void mexFunction
     double dummy = 0 ;
     cholmod_sparse Amatrix, *A ;
     cholmod_common Common, *cm ;
-    int result, quick, option, xmatched, pmatched, nzoffdiag, nzdiag ;
+    Int result, quick, option, xmatched, pmatched, nzoffdiag, nzdiag ;
 
     /* ---------------------------------------------------------------------- */
     /* start CHOLMOD and set parameters */ 
     /* ---------------------------------------------------------------------- */
 
     cm = &Common ;
-    cholmod_start (cm) ;
+    cholmod_l_start (cm) ;
     sputil_config (SPUMONI, cm) ;
 
     /* ---------------------------------------------------------------------- */
@@ -46,7 +46,7 @@ void mexFunction
     {
 	mexErrMsgTxt ("usage: [s xmatch pmatch nzoff nzd] = spsym (A,quick)") ;
     }
-    if (!mxIsSparse (pargin [0]) || !mxIsDouble (pargin [0]))
+    if (!mxIsSparse (pargin [0]))
     {
     	mexErrMsgTxt ("A must be sparse and double") ;
     }
@@ -79,7 +79,7 @@ void mexFunction
     nzoffdiag = 0 ;
     nzdiag = 0 ;
 
-    result = cholmod_symmetry (A, option, &xmatched, &pmatched, &nzoffdiag,
+    result = cholmod_l_symmetry (A, option, &xmatched, &pmatched, &nzoffdiag,
 	&nzdiag, cm) ;
 
     /* ---------------------------------------------------------------------- */
@@ -97,6 +97,6 @@ void mexFunction
     /* free workspace */
     /* ---------------------------------------------------------------------- */
 
-    cholmod_finish (cm) ;
-    cholmod_print_common (" ", cm) ;
+    cholmod_l_finish (cm) ;
+    cholmod_l_print_common (" ", cm) ;
 }

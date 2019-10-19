@@ -4,7 +4,7 @@ function test25
 %   test25
 % See also cholmod_test
 
-% Copyright 2006, Timothy A. Davis, University of Florida
+% Copyright 2006-2007, Timothy A. Davis, University of Florida
 
 fprintf ('=================================================================\n');
 fprintf ('test25: test sdmult on a large matrix\n') ;

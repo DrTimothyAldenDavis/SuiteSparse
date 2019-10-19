@@ -42,7 +42,7 @@
  * workspace: none
  */
 
-int CHOLMOD(super_lsolve)
+int CHOLMOD(super_lsolve)   /* TRUE if OK, FALSE if BLAS overflow occured */
 (
     /* ---- input ---- */
     cholmod_factor *L,	/* factor to use for the forward solve */
@@ -54,7 +54,7 @@ int CHOLMOD(super_lsolve)
     cholmod_common *Common
 )
 {
-    int ok = TRUE ;
+    int blas_ok = TRUE ;
 
     /* ---------------------------------------------------------------------- */
     /* check inputs */
@@ -108,19 +108,19 @@ int CHOLMOD(super_lsolve)
     {
 
 	case CHOLMOD_REAL:
-	    ok = r_cholmod_super_lsolve (L, X, E, Common) ;
+	    blas_ok = r_cholmod_super_lsolve (L, X, E, Common) ;
 	    break ;
 
 	case CHOLMOD_COMPLEX:
-	    ok = c_cholmod_super_lsolve (L, X, E, Common) ;
+	    blas_ok = c_cholmod_super_lsolve (L, X, E, Common) ;
 	    break ;
     }
 
-    if (CHECK_BLAS_INT && !ok)
+    if (CHECK_BLAS_INT && !blas_ok)
     {
 	ERROR (CHOLMOD_TOO_LARGE, "problem too large for the BLAS") ;
     }
-    return (ok) ;
+    return (blas_ok) ;
 }
 
 
@@ -137,7 +137,7 @@ int CHOLMOD(super_lsolve)
  * workspace: none
  */
 
-int CHOLMOD(super_ltsolve)
+int CHOLMOD(super_ltsolve)  /* TRUE if OK, FALSE if BLAS overflow occured */
 (
     /* ---- input ---- */
     cholmod_factor *L,	/* factor to use for the backsolve */
@@ -149,7 +149,7 @@ int CHOLMOD(super_ltsolve)
     cholmod_common *Common
 )
 {
-    int ok = TRUE ;
+    int blas_ok = TRUE ;
 
     /* ---------------------------------------------------------------------- */
     /* check inputs */
@@ -203,19 +203,19 @@ int CHOLMOD(super_ltsolve)
     {
 
 	case CHOLMOD_REAL:
-	    ok = r_cholmod_super_ltsolve (L, X, E, Common) ;
+	    blas_ok = r_cholmod_super_ltsolve (L, X, E, Common) ;
 	    break ;
 
 	case CHOLMOD_COMPLEX:
-	    ok = c_cholmod_super_ltsolve (L, X, E, Common) ;
+	    blas_ok = c_cholmod_super_ltsolve (L, X, E, Common) ;
 	    break ;
     }
 
-    if (CHECK_BLAS_INT && !ok)
+    if (CHECK_BLAS_INT && !blas_ok)
     {
 	ERROR (CHOLMOD_TOO_LARGE, "problem too large for the BLAS") ;
     }
 
-    return (ok) ;
+    return (blas_ok) ;
 }
 #endif

@@ -1,11 +1,10 @@
 %TEST8 test cs_cholsol, cs_lusol
-%TEST8 test cs_cholsol, cs_lusol
 %
 % Example:
 %   test8
 % See also: testall
 
-%   Copyright 2006, Timothy A. Davis.
+%   Copyright 2006-2007, Timothy A. Davis.
 %   http://www.cise.ufl.edu/research/sparse
 
 index = UFget ;
@@ -19,19 +18,21 @@ for i = f
     disp (Prob) ;
     A = Prob.A ;
     [m n] = size (A) ;
-    if (~isreal (A) || m ~= n)
+    if (~isreal (A) | m ~= n)						    %#ok
 	continue
     end
 
     spd = 0 ;
-    if (m == n && nnz (A-A') == 0)
-	try
-	    p = amd (A) ;
-	catch
-	    p = symamd (A) ;
+    if (m == n)
+	if (nnz (A-A') == 0)
+	    try
+		p = amd (A) ;
+	    catch
+		p = symamd (A) ;
+	    end
+	    [R,p] = chol (A (p,p)) ;
+	    spd = (p == 0) ;
 	end
-	[R,p] = chol (A (p,p)) ;
-	spd = (p == 0) ;
     end
 
     if (spd)

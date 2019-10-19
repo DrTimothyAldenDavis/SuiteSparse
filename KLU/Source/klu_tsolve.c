@@ -1,9 +1,9 @@
 /* ========================================================================== */
-/* === klu_tsolve =========================================================== */
+/* === KLU_tsolve =========================================================== */
 /* ========================================================================== */
 
-/* Solve A'x=b using the symbolic and numeric objects from klu_analyze
- * (or klu_analyze_given) and klu_factor.  Note that no iterative refinement is
+/* Solve A'x=b using the symbolic and numeric objects from KLU_analyze
+ * (or KLU_analyze_given) and KLU_factor.  Note that no iterative refinement is
  * performed.  Uses Numeric->Xwork as workspace (undefined on input and output),
  * of size 4n Entry's (note that columns 2 to 4 of Xwork overlap with
  * Numeric->Iwork).
@@ -11,53 +11,54 @@
 
 #include "klu_internal.h"
 
-int KLU_tsolve
+Int KLU_tsolve
 (
     /* inputs, not modified */
-    klu_symbolic *Symbolic,
-    klu_numeric *Numeric,
-    int d,		    /* leading dimension of B */
-    int nrhs,		    /* number of right-hand-sides */
+    KLU_symbolic *Symbolic,
+    KLU_numeric *Numeric,
+    Int d,		    /* leading dimension of B */
+    Int nrhs,		    /* number of right-hand-sides */
 
     /* right-hand-side on input, overwritten with solution to Ax=b on output */
     double B [ ],	    /* size n*nrhs, in column-oriented form, with
 			     * leading dimension d. */
 #ifdef COMPLEX
-    int conj_solve,	    /* TRUE for conjugate transpose solve, FALSE for
+    Int conj_solve,	    /* TRUE for conjugate transpose solve, FALSE for
 			     * array transpose solve.  Used for the complex
 			     * case only. */
 #endif
     /* --------------- */
-    klu_common *Common
+    KLU_common *Common
 )
 {
     Entry x [4], offik, s ;
     double rs, *Rs ;
-    Entry *Singleton, *Offx, *X, *Bz ;
-    int *Q, *R, *Pnum, *Offp, *Offi ;
-    int **Lbip, **Ubip, **Lblen, **Ublen ;
-    Unit **LUbx, **Udiag ;
-    int k1, k2, nk, k, block, pend, n, p, nblocks, chunk, nr, i ;
+    Entry *Offx, *X, *Bz, *Udiag ;
+    Int *Q, *R, *Pnum, *Offp, *Offi, *Lip, *Uip, *Llen, *Ulen ;
+    Unit **LUbx ;
+    Int k1, k2, nk, k, block, pend, n, p, nblocks, chunk, nr, i ;
+
+    /* ---------------------------------------------------------------------- */
+    /* check inputs */
+    /* ---------------------------------------------------------------------- */
 
     if (Common == NULL)
     {
 	return (FALSE) ;
     }
-    Common->status = KLU_OK ;
-
-    if (Numeric == NULL)
+    if (Numeric == NULL || Symbolic == NULL || d < Symbolic->n || nrhs < 0 ||
+	B == NULL)
     {
-	/* invalid Numeric object */
 	Common->status = KLU_INVALID ;
 	return (FALSE) ;
     }
-
-    Bz = (Entry *) B ;
+    Common->status = KLU_OK ;
 
     /* ---------------------------------------------------------------------- */
     /* get the contents of the Symbolic object */
     /* ---------------------------------------------------------------------- */
 
+    Bz = (Entry *) B ;
     n = Symbolic->n ;
     nblocks = Symbolic->nblocks ;
     Q = Symbolic->Q ;
@@ -72,14 +73,13 @@ int KLU_tsolve
     Offp = Numeric->Offp ;
     Offi = Numeric->Offi ;
     Offx = (Entry *) Numeric->Offx ;
-    Singleton = (Entry *) Numeric->Singleton ;
 
-    Lbip = Numeric->Lbip ;
-    Lblen = Numeric->Lblen ;
-    Ubip = Numeric->Ubip ;
-    Ublen = Numeric->Ublen ;
+    Lip  = Numeric->Lip ;
+    Llen = Numeric->Llen ;
+    Uip  = Numeric->Uip ;
+    Ulen = Numeric->Ulen ;
     LUbx = (Unit **) Numeric->LUbx ;
-    Udiag = (Unit **) Numeric->Udiag ;
+    Udiag = Numeric->Udiag ;
 
     Rs = Numeric->Rs ;
     X = (Entry *) Numeric->Xwork ;
@@ -299,12 +299,12 @@ int KLU_tsolve
 #ifdef COMPLEX
 		if (conj_solve)
 		{
-		    CONJ (s, Singleton [block]) ;
+		    CONJ (s, Udiag [k1]) ;
 		}
 		else
 #endif
 		{
-		    s = Singleton [block] ;
+		    s = Udiag [k1] ;
 		}
 		switch (nr)
 		{
@@ -335,13 +335,13 @@ int KLU_tsolve
 	    }
 	    else
 	    {
-		KLU_utsolve (nk, Ubip [block], Ublen [block], LUbx [block],
-			Udiag [block], nr,
+		KLU_utsolve (nk, Uip + k1, Ulen + k1, LUbx [block],
+			Udiag + k1, nr,
 #ifdef COMPLEX
 			conj_solve,
 #endif
 			X + nr*k1) ;
-		KLU_ltsolve (nk, Lbip [block], Lblen [block], LUbx [block], nr,
+		KLU_ltsolve (nk, Lip + k1, Llen + k1, LUbx [block], nr,
 #ifdef COMPLEX
 			conj_solve,
 #endif

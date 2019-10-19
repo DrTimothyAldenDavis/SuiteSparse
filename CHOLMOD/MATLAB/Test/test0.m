@@ -4,7 +4,7 @@ function test0 (nmat)
 %   test0(nmat)
 % See also cholmod_test
 
-% Copyright 2006, Timothy A. Davis, University of Florida
+% Copyright 2006-2007, Timothy A. Davis, University of Florida
 
 fprintf ('=================================================================\n');
 fprintf ('test0: test most CHOLMOD functions\n') ;
@@ -14,7 +14,7 @@ fprintf ('test0: test most CHOLMOD functions\n') ;
 % http://www.cise.ufl.edu/research/sparse/matrices.
 
 s = exist ('amd') ;	%#ok
-use_amd = (s == 3 || s == 5) ;
+use_amd = (s == 3 | s == 5) ;						    %#ok
 if (use_amd)
 fprintf ('Testing CHOLMOD with AMD and the UF sparse matrix collection\n') ;
 else
@@ -208,7 +208,7 @@ for i = f
 	row = 1 + floor (rand (1) * n) ;
 	C (row,1) = 1 ;
 
-	if (~isreal (C) || ~isreal (LD))
+	if (~isreal (C) | ~isreal (LD))					    %#ok
 	    fprintf ('skip update/downdate of complex matrix ...\n') ;
 	    continue ;
 	end

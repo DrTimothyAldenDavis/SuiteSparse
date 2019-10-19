@@ -1,8 +1,10 @@
 umfpack_simple
-  umfpack_simple:  a simple demo of UMFPACK
+ UMFPACK_SIMPLE a simple demo
  
-  UMFPACK Version 5.0, Copyright (c) 1995-2006 by Timothy A. Davis.
-  All Rights Reserved.  Type umfpack_details for License.
+  Example:
+    umfpack_simple
+ 
+  Copyright 1995-2007 by Timothy A. Davis.
  
   UMFPACK License:
  
@@ -13,49 +15,34 @@ umfpack_simple
       License as published by the Free Software Foundation; either
       version 2.1 of the License, or (at your option) any later version.
 
-
-
-Hit enter to agree to the above License: 
-
-A =
-
+A = 
      2     3     0     0     0
      3     0     4     0     6
      0    -1    -3     2     0
      0     0     1     0     0
      0     4     2     0     1
-
-
-b =
-
+b = 
      8
     45
     -3
      3
     19
-
 Solution to Ax=b via UMFPACK:
-x1 = umfpack (A, '\', b)
-
-x1 =
-
+x1 = umfpack2 (A, '\', b)
+x1 = 
     1.0000
     2.0000
     3.0000
     4.0000
     5.0000
-
 Solution to Ax=b via MATLAB:
 x2 = A\b
-
-x2 =
-
+x2 = 
     1.0000
     2.0000
     3.0000
     4.0000
     5.0000
-
 norm (x1-x2) should be small: 1.28037e-15
 Type 'umfpack_demo' for a full demo of UMFPACK
 diary off

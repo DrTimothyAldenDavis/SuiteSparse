@@ -179,10 +179,15 @@ void huge ( )
     CHOLMOD (postorder) (&junk, Size_max, &junk, &junk, cm) ;
     OK (cm->status == CHOLMOD_TOO_LARGE) ;
 
+    /* causes overflow in 32-bit version, but not 64-bit */
     f = fopen ("../Tcov/Matrix/mega.tri", "r") ;
     T = CHOLMOD (read_triplet) (f, cm) ;
-    NOP (T) ;
-    OK (cm->status != CHOLMOD_OK) ;
+    if (sizeof (Int) == sizeof (int))
+    {
+	NOP (T) ;
+	OK (cm->status != CHOLMOD_OK) ;
+    }
+    CHOLMOD (free_triplet) (&T, cm) ;
     fclose (f) ;
 
     n = Size_max ;

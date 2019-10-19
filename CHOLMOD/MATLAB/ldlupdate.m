@@ -48,7 +48,7 @@ function LD = ldlupdate (LD,C,updown)					    %#ok
 %   solve, so ldlupdate and ldlsolve simply assume the propertly holds.
 %   ===========================================================================
 
-%   Copyright 2006, Timothy A. Davis
+%   Copyright 2006-2007, Timothy A. Davis, William W. Hager
 %   http://www.cise.ufl.edu/research/sparse
 
 error ('ldlupdate mexFunction not found') ;

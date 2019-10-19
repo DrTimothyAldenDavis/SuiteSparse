@@ -20,8 +20,8 @@
 \author{Timothy A. Davis \\
 Dept. of Computer and Information Science and Engineering \\
 Univ. of Florida, Gainesville, FL}
-\title{UMFPACK Version 5.0 User Guide}
-\date{May 5, 2006}
+\title{UMFPACK Version 5.1 User Guide}
+\date{May 31, 2007}
 \maketitle
 
 %-------------------------------------------------------------------------------
@@ -38,7 +38,7 @@ Univ. of Florida, Gainesville, FL}
 
 Technical Report TR-04-003 (revised)
 
-UMFPACK Version 5.0, Copyright\copyright 1995-2006 by Timothy A. Davis.
+UMFPACK Version 5.1, Copyright\copyright 1995-2006 by Timothy A. Davis.
 All Rights Reserved.
 UMFPACK is available under alternate licences; contact T. Davis for details.
 
@@ -295,6 +295,12 @@ Subroutine Library.
 %-------------------------------------------------------------------------------
 
 A detailed list of changes is in the {\tt ChangeLog} file.
+
+%-------------------------------------------------------------------------------
+\subsection{Version 5.1.0}
+%-------------------------------------------------------------------------------
+
+Port of MATLAB interface to 64-bit MATLAB.
 
 %-------------------------------------------------------------------------------
 \subsection{Version 5.0.3}
@@ -1500,7 +1506,7 @@ In this case, no {\tt Symbolic} or {\tt Numeric} object was created.
 \item {\tt UMFPACK\_ERROR\_internal\_error},  (-911):  
     An internal error has occurred, of unknown cause.  This is either a bug
     in UMFPACK, or the result of a memory overrun from your program.
-    Try modifying the file {\tt AMD/Source/amd\_internal.h} and adding
+    Try modifying the file {\tt AMD/Include/amd\_internal.h} and adding
     the statement {\tt \#undef NDEBUG}, to enable the debugging mode.
     Recompile UMFPACK and rerun your program.
     A failed assertion might occur which
@@ -2052,14 +2058,20 @@ compiled and tested in the {\tt UMFPACK/Demo} directory.
 The outputs of these demo programs will then be compared with output
 files in the distribution.  Expect to see a few differences, such as
 residual norms, compile-time control settings, and perhaps memory usage
-differences.  The AMD and UMFPACK mexFunctions for
-use in MATLAB will also be compiled.  If you do not have MATLAB 6.0 or
-later, type {\tt make lib} instead.
+differences.
 
-If you have the GNU version of {\tt make}, the {\tt Source/GNUmakefile} and
+To use {\tt make} to compile the MATLAB mexFunctions for MATLAB
+and AMD, you can either type {\tt make mex} in the UMFPACK directory.
+You may first need to edit the {\tt UFconfig/UFconfig.mk} file to
+modify the definition of the {\tt MEX}, if you have a version of MATLAB
+older than Version 7.2.  Remove the {\tt -largeArrayDims} definition.
+If you use the MATLAB command {\tt umfpack\_make} in the MATLAB directory,
+then this case is handled for you automatically.
+
+If you have the GNU version of {\tt make}, the {\tt Lib/GNUmakefile} and
 {\tt MATLAB/GNUmakefile} files are used.  These are much more concise than
 what the ``old'' version of {\tt make} can handle.  If you do not have
-GNU {\tt make}, the {\tt Source/Makefile} and {\tt MATLAB/Makefile} files
+GNU {\tt make}, the {\tt Lib/Makefile} and {\tt MATLAB/Makefile} files
 are used instead.  Each UMFPACK source file is compiled into four
 versions ({\tt double} / complex, and {\tt int} / {\tt UF\_long}).  A proper
 old-style {\tt Makefile} is cumbersome in this case, so these two
@@ -2200,13 +2212,13 @@ to compile the stand-alone AMD mexFunction (this is not required to
 compile the UMFPACK mexFunction).  This works on any computer with MATLAB,
 including Windows.
 
-You will be prompted to select several configuration options, including
-whether or not to use the BLAS.
-MATLAB 5.3 (or earlier) does not include the BLAS, so you either have to
-compile UMFPACK without the BLAS (UMFPACK will be slow), or modify your
-{\tt <matlab>/bin/mexopts.sh} by adding your BLAS library
-to the {\tt CLIBS} string,
-where {\tt <matlab>} is the directory in which MATLAB is installed.
+% You will be prompted to select several configuration options, including
+% whether or not to use the BLAS.
+% MATLAB 5.3 (or earlier) does not include the BLAS, so you either have to
+% compile UMFPACK without the BLAS (UMFPACK will be slow), or modify your
+% {\tt <matlab>/bin/mexopts.sh} by adding your BLAS library
+% to the {\tt CLIBS} string,
+% where {\tt <matlab>} is the directory in which MATLAB is installed.
 
 If you are using Windows and the {\tt lcc} compiler bundled with
 MATLAB 6.1, then you may need to copy the

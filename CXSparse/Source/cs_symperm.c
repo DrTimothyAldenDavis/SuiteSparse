@@ -32,7 +32,7 @@ cs *cs_symperm (const cs *A, const CS_INT *pinv, CS_INT values)
 	    if (i > j) continue ;	/* skip lower triangular part of A*/
 	    i2 = pinv ? pinv [i] : i ;	/* row i of A is row i2 of C */
 	    Ci [q = w [CS_MAX (i2, j2)]++] = CS_MIN (i2, j2) ;
-	    if (Cx) Cx [q] = Ax [p] ;
+	    if (Cx) Cx [q] = (i2 <= j2) ? Ax [p] : CS_CONJ (Ax [p]) ;
 	}
     }
     return (cs_done (C, w, NULL, 1)) ;	/* success; free workspace, return C */

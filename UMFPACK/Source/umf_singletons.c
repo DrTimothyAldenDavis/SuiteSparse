@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Version 5.0, Copyright (c) 1995-2006 by Timothy A. Davis.  CISE,   */
+/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
 /* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
 /* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
 /* -------------------------------------------------------------------------- */
@@ -13,27 +13,28 @@
  * that the matrix is in the following form:
  *
  *	x x x x x x x x x
- *	0 x x x x x x x x
- *	0 0 x x x x x x x
- *	0 0 0 x 0 0 0 0 0
- *	0 0 0 x x 0 0 0 0
- *	0 0 0 x x s s s s
- *	0 0 0 x x s s s s
- *	0 0 0 x x s s s s
- *	0 0 0 x x s s s s
+ *	. x x x x x x x x
+ *	. . x x x x x x x
+ *	. . . x . . . . .
+ *	. . . x x . . . .
+ *	. . . x x s s s s
+ *	. . . x x s s s s
+ *	. . . x x s s s s
+ *	. . . x x s s s s
  *
  * The above example has 3 column singletons (the first three columns and
  * their corresponding pivot rows) and 2 row singletons.  The singletons are
  * ordered first, because they have zero Markowitz cost.  The LU factorization
  * for these first five rows and columns is free - there is no work to do
  * (except to scale the pivot columns for the 2 row singletons), and no
- * fill-in occurs.  * The remaining * submatrix (4-by-4 in the above example)
+ * fill-in occurs.  The remaining submatrix (4-by-4 in the above example)
  * has no rows or columns with degree one.  It may have empty rows or columns.
  *
  * This algorithm does not perform a full permutation to block triangular
  * form.  If there are one or more singletons, then the matrix can be
  * permuted to block triangular form, but UMFPACK does not perform the full
- * BTF permutation (see also "dmperm" in MATLAB).
+ * BTF permutation (see also "dmperm" in MATLAB, CSparse cs_dmperm,
+ * and SuiteSparse/BTF).
  */
 
 #include "umf_internal.h"

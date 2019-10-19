@@ -1434,7 +1434,7 @@ UF_long CHOLMOD(nested_dissection) /* returns # of components, or -1 if error */
 #endif
 
 	PRINT0 (("consider cn %d nd_small %d ", cn, nd_small)) ;
-	if (cn < nd_small)  /* TODO should be 'total_weight < nd_small' */
+	if (cn < nd_small)  /* could be 'total_weight < nd_small' instead */
 	{
 	    /* place all nodes in the separator */
 	    PRINT0 ((" too small\n")) ;

@@ -39,7 +39,7 @@ void mexFunction
     cholmod_sparse Amatrix, Zmatrix, *A, *Z ;
     cholmod_dense Xmatrix, *X ;
     cholmod_common Common, *cm ;
-    int arg_z, arg_comments, sym ;
+    Int arg_z, arg_comments, sym ;
     char filename [MAXLEN], comments [MAXLEN] ;
 
     /* ---------------------------------------------------------------------- */
@@ -47,7 +47,7 @@ void mexFunction
     /* ---------------------------------------------------------------------- */
 
     cm = &Common ;
-    cholmod_start (cm) ;
+    cholmod_l_start (cm) ;
     sputil_config (SPUMONI, cm) ;
 
     /* ---------------------------------------------------------------------- */
@@ -73,10 +73,6 @@ void mexFunction
     /* get the A matrix (sparse or dense) */
     /* ---------------------------------------------------------------------- */
 
-    if (!mxIsDouble (pargin [1]))
-    {
-	mexErrMsgTxt ("A must be double") ;
-    }
     if (mxIsSparse (pargin [1]))
     {
 	A = sputil_get_sparse (pargin [1], &Amatrix, &dummy, 0) ;
@@ -132,9 +128,9 @@ void mexFunction
     else
     {
 	/* A is sparse and Z is present and not empty */
-	if (!mxIsDouble (pargin [arg_z]) || !mxIsSparse (pargin [arg_z]))
+	if (!mxIsSparse (pargin [arg_z]))
 	{
-	    mexErrMsgTxt ("Z must be sparse and double") ;
+	    mexErrMsgTxt ("Z must be sparse") ;
 	}
 	Z = sputil_get_sparse (pargin [arg_z], &Zmatrix, &dummy, 0) ;
     }
@@ -164,11 +160,11 @@ void mexFunction
     }
     if (A != NULL)
     {
-	sym = cholmod_write_sparse (sputil_file, A, Z, comments, cm) ;
+	sym = cholmod_l_write_sparse (sputil_file, A, Z, comments, cm) ;
     }
     else
     {
-	sym = cholmod_write_dense (sputil_file, X, comments, cm) ;
+	sym = cholmod_l_write_dense (sputil_file, X, comments, cm) ;
     }
     fclose (sputil_file) ;
     sputil_file = NULL ;
@@ -182,6 +178,6 @@ void mexFunction
     /* ---------------------------------------------------------------------- */
 
     pargout [0] = sputil_put_int (&sym, 1, 0) ;
-    cholmod_finish (cm) ;
-    cholmod_print_common (" ", cm) ;
+    cholmod_l_finish (cm) ;
+    cholmod_l_print_common (" ", cm) ;
 }

@@ -63,7 +63,8 @@ int CHOLMOD(rowadd)
 
 /* Does the same as cholmod_rowadd, and also updates the solution to Lx=b
  * See cholmod_updown for a description of how Lx=b is updated.  There is on
- * additional parameter:  bk specifies the new kth entry of b. */
+ * additional parameter:  bk specifies the new kth entry of b.
+ */
 
 int CHOLMOD(rowadd_solve)
 (
@@ -126,7 +127,7 @@ int CHOLMOD(rowadd_mark)
 {
     double dk, yj, l_kj, lx, l_ij, sqrt_dk, dj, xk, rnz, fl ;
     double *Lx, *W, *Cx, *Rx, *Xx, *Nx ;
-    Int *Li, *Lp, *Lnz, *Flag, *Stack, *Ci, *Rj, *Rp, *Lnext, *Iwork ;
+    Int *Li, *Lp, *Lnz, *Flag, *Stack, *Ci, *Rj, *Rp, *Lnext, *Iwork, *Rnz ;
     cholmod_sparse *C, Cmatrix ;
     Int i, j, p, pend, top, len, kk, li, lnz, mark, k, n, parent, Cp [2],
 	do_solve, do_update ;
@@ -158,7 +159,8 @@ int CHOLMOD(rowadd_mark)
     Rj = R->i ;
     Rx = R->x ;
     Rp = R->p ;
-    rnz = Rp [1] ;  /* TODO: should check if R->packed or not */
+    Rnz = R->nz ;
+    rnz = (R->packed) ? (Rp [1]) : (Rnz [0]) ;
     do_solve = (X != NULL) && (DeltaB != NULL) ;
     if (do_solve)
     {

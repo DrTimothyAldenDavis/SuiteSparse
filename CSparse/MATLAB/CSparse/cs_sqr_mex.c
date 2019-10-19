@@ -8,6 +8,7 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
+    double s ;
     css *S ;
     cs Amatrix, *A ;
     int m, n, order, *p ;
@@ -22,8 +23,10 @@ void mexFunction
     order = (nargout == 7) ? 3 : 0 ;	    /* determine ordering */
     S = cs_sqr (order, A, 1) ;		    /* symbolic QR ordering & analysis*/
     if (!S) mexErrMsgTxt ("cs_sqr failed") ;
-    pargout [0] = mxCreateDoubleScalar (S->lnz) ;	    /* return nnz(V) */
-    pargout [1] = mxCreateDoubleScalar (S->unz) ;	    /* return nnz(R) */
+    s = S->lnz ;
+    cs_mex_put_double (1, &s, &(pargout [0])) ; 	    /* return nnz(V) */
+    s = S->unz ;
+    cs_mex_put_double (1, &s, &(pargout [1])) ; 	    /* return nnz(R) */
     pargout [2] = cs_mex_put_int (S->parent, n, 1, 0) ;	    /* return parent */
     pargout [3] = cs_mex_put_int (S->cp, n, 0, 0) ;	    /* return c */
     pargout [4] = cs_mex_put_int (S->leftmost, m, 1, 0) ;   /* return leftmost*/

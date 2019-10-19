@@ -5,7 +5,7 @@ function test19
 %   test19
 % See also: testall
 
-%   Copyright 2006, Timothy A. Davis.
+%   Copyright 2006-2007, Timothy A. Davis.
 %   http://www.cise.ufl.edu/research/sparse
 
 
@@ -73,10 +73,6 @@ for trials = 1:1000
 	    error ('# fine blocks!') ;
 	end
     end
-
-%    if (any (p2 ~= p4) || any (q2 ~= q4) || any (cp ~= cp4) || any (rp ~= rp4))
-%	error ('recur!') ;
-%    end
 
     if (rp (4) - 1 ~= sprnk)
 	rp		%#ok

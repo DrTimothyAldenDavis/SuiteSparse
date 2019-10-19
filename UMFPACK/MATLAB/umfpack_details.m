@@ -1,5 +1,5 @@
 function umfpack_details
-% UMFPACK:  details on each usage.
+%UMFPACK_DETAILS details on all the options for using umfpack2 in MATLAB
 %
 % Factor or solve a sparse linear system, returning either the solution x to
 % Ax=b or A'x'=b', the factorization LU=PAQ, or LU=P(R\A)Q.  A must be sparse.
@@ -13,15 +13,15 @@ function umfpack_details
 % submatrix S is then analyzed, based on the symmetry of the nonzero pattern of
 % the submatrix and the values on the diagaonal.  The strategies include:
 %
-%	(1) unsymmetric:  use a COLAMD pre-ordering, a column elimination tree
-%	    post-ordering, refine the column ordering during factorization,
-%	    and make no effort at selecting pivots on the diagonal.
-%	(2) 2-by-2:  like the symmetric strategy (see below), except that local
-%	    row permutations are first made to attempt to place large entries
-%	    on the diagonal.
-%	(3) symmetric:  use an AMD pre-ordering on the matrix S+S', an
-%	    elimination tree post-ordering, do not refine the column ordering
-%	    during factorization, and attempt to select pivots on the diagonal.
+%       (1) unsymmetric:  use a COLAMD pre-ordering, a column elimination tree
+%           post-ordering, refine the column ordering during factorization,
+%           and make no effort at selecting pivots on the diagonal.
+%       (2) 2-by-2:  like the symmetric strategy (see below), except that local
+%           row permutations are first made to attempt to place large entries
+%           on the diagonal.
+%       (3) symmetric:  use an AMD pre-ordering on the matrix S+S', an
+%           elimination tree post-ordering, do not refine the column ordering
+%           during factorization, and attempt to select pivots on the diagonal.
 %
 % Each of the following uses of umfpack2 (except for "Control = umfpack2") is
 % stand-alone.  That is, no call to umfpack2 is required for any subsequent
@@ -50,10 +50,10 @@ function umfpack_details
 %
 %       Returns the LU factorization of A.  P and Q are returned as permutation
 %       matrices.  R is a diagonal sparse matrix of scale factors for the rows
-%	of A, L is lower triangular, and U is upper triangular.  The
-%	factorization is L*U = P*(R\A)*Q.  You can turn off scaling by setting
-%	Control (17) to zero (in which case R = speye (m)), or by using the
-%	following syntaxes (in which case Control (17) is ignored):
+%       of A, L is lower triangular, and U is upper triangular.  The
+%       factorization is L*U = P*(R\A)*Q.  You can turn off scaling by setting
+%       Control (17) to zero (in which case R = speye (m)), or by using the
+%       following syntaxes (in which case Control (17) is ignored):
 %
 % [L, U, P, Q] = umfpack2 (A) ;
 % [L, U, P, Q] = umfpack2 (A, Control) ;
@@ -61,7 +61,7 @@ function umfpack_details
 % [L, U, P, Q] = umfpack2 (A, Qinit, Control) ;
 %
 %       Same as above, except that no row scaling is performed.  The Info array
-%	is not returned, either.
+%       is not returned, either.
 %
 % [P1, Q1, Fr, Ch, Info] = umfpack2 (A, 'symbolic') ;
 % [P1, Q1, Fr, Ch, Info] = umfpack2 (A, 'symbolic', Control) ;
@@ -70,15 +70,15 @@ function umfpack_details
 %
 %       Performs only the fill-reducing column pre-ordering (including the
 %       elimination tree post-ordering) and symbolic factorization.  Q1 is the
-%	initial column permutation (either from colamd, amd, or the input
-%	ordering Qinit), possibly followed by a column elimination tree post-
-%	ordering or a symmetric elimination tree post-ordering, depending on
-%	the strategy used.
+%       initial column permutation (either from colamd, amd, or the input
+%       ordering Qinit), possibly followed by a column elimination tree post-
+%       ordering or a symmetric elimination tree post-ordering, depending on
+%       the strategy used.
 %
-%	For the unsymmetric strategy, P1 is the row ordering induced by Q1
-%	(row-merge order). For the 2-by-2 strategy, P1 is the row ordering that
-%	places large entries on the diagonal of P1*A*Q1.  For the symmetric
-%	strategy, P1 = Q1.
+%       For the unsymmetric strategy, P1 is the row ordering induced by Q1
+%       (row-merge order). For the 2-by-2 strategy, P1 is the row ordering that
+%       places large entries on the diagonal of P1*A*Q1.  For the symmetric
+%       strategy, P1 = Q1.
 %
 %       Fr is a (nfr+1)-by-4 array containing information about each frontal
 %       matrix, where nfr <= n is the number of frontal matrices.  Fr (:,1) is
@@ -88,14 +88,14 @@ function umfpack_details
 %       columns for the first front, the next Fr (2,1) columns of P1*A*Q1
 %       are the pivot columns for the second front, and so on.
 %
-%	For the unsymmetric strategy, Fr (:,3) is the row index of the first
-%	row in P1*A*Q1 whose leftmost nonzero entry is in a pivot column for
-%	the kth front.  Fr (:,4) is the leftmost descendent of the kth front.
-%	Rows in the range Fr (Fr (k,4),3) to Fr (k+1,3)-1 form the entire set
-%	of candidate pivot rows for the kth front (some of these will typically
-%	have been selected as pivot rows of fronts Fr (k,3) to k-1, before the
-%	factorization reaches the kth front.  If front k is a leaf node, then
-%	Fr (k,4) is k.
+%       For the unsymmetric strategy, Fr (:,3) is the row index of the first
+%       row in P1*A*Q1 whose leftmost nonzero entry is in a pivot column for
+%       the kth front.  Fr (:,4) is the leftmost descendent of the kth front.
+%       Rows in the range Fr (Fr (k,4),3) to Fr (k+1,3)-1 form the entire set
+%       of candidate pivot rows for the kth front (some of these will typically
+%       have been selected as pivot rows of fronts Fr (k,3) to k-1, before the
+%       factorization reaches the kth front.  If front k is a leaf node, then
+%       Fr (k,4) is k.
 %
 %       Ch is a (nchains+1)-by-3 array containing information about each "chain"
 %       (unifrontal sequence) of frontal matrices, and where nchains <= nfr
@@ -119,10 +119,10 @@ function umfpack_details
 % det = umfpack2 (A, 'det') ;
 % [det dexp] = umfpack2 (A, 'det') ;
 %
-%	Computes the determinant of A.  The 2nd form returns the determinant
-%	in the form det*10^dexp, where det is in the range +/- 1 to 10,
-%	which helps to avoid overflow/underflow when dexp is out of range of
-%	normal floating-point numbers.
+%       Computes the determinant of A.  The 2nd form returns the determinant
+%       in the form det*10^dexp, where det is in the range +/- 1 to 10,
+%       which helps to avoid overflow/underflow when dexp is out of range of
+%       normal floating-point numbers.
 %
 % If present, Qinit is a user-supplied 1-by-n permutation vector.  It is an
 % initial fill-reducing column pre-ordering for A; if not present, then colamd
@@ -131,7 +131,7 @@ function umfpack_details
 % are used.  If a Control entry is NaN, then the default is used for that entry.
 %
 %
-% UMFPACK, Copyright (c) 1995-2006 by Timothy A. Davis.
+% Copyright 1995-2007 by Timothy A. Davis, University of Florida.
 % All Rights Reserved.
 % UMFPACK is available under alternate licenses, contact T. Davis for details.
 %

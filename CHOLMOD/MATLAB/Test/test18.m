@@ -4,7 +4,7 @@ function test18
 %   test18
 % See also cholmod_test
 
-% Copyright 2006, Timothy A. Davis, University of Florida
+% Copyright 2006-2007, Timothy A. Davis, University of Florida
 
 fprintf ('=================================================================\n');
 fprintf ('test18: test cholmod2 on a few large matrices\n') ;

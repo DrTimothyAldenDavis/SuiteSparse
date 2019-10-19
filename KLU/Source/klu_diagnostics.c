@@ -1,12 +1,12 @@
 /* ========================================================================== */
-/* === klu_diagnostics ====================================================== */
+/* === KLU_diagnostics ====================================================== */
 /* ========================================================================== */
 
 /* Linear algebraic diagnostics:
- * klu_growth:	reciprocal pivot growth, takes O(|A|+|U|) time
- * klu_condest:	condition number estimator, takes about O(|A|+5*(|L|+|U|)) time
- * klu_flops:	compute # flops required to factorize A into L*U
- * klu_rcond:	compute a really cheap estimate of the reciprocal of the
+ * KLU_rgrowth:	reciprocal pivot growth, takes O(|A|+|U|) time
+ * KLU_condest:	condition number estimator, takes about O(|A|+5*(|L|+|U|)) time
+ * KLU_flops:	compute # flops required to factorize A into L*U
+ * KLU_rcond:	compute a really cheap estimate of the reciprocal of the
  *		condition number, min(abs(diag(U))) / max(abs(diag(U))).
  *		Takes O(n) time.
  */
@@ -14,93 +14,99 @@
 #include "klu_internal.h"
 
 /* ========================================================================== */
-/* === klu_growth =========================================================== */
+/* === KLU_rgrowth ========================================================== */
 /* ========================================================================== */
 
-/* Compute the reciprocal pivot growth factor */
+/* Compute the reciprocal pivot growth factor.  In MATLAB notation:
+ *
+ *   rgrowth = min (max (abs ((R \ A (p,q)) - F))) ./ max (abs (U)))
+ */
 
-int KLU_growth		/* return TRUE if successful, FALSE otherwise */
+Int KLU_rgrowth		/* return TRUE if successful, FALSE otherwise */
 (
-    int *Ap,
-    int *Ai,
+    Int *Ap,
+    Int *Ai,
     double *Ax,
-    klu_symbolic *Symbolic,
-    klu_numeric *Numeric,
-    double *growth,
-    klu_common *Common
+    KLU_symbolic *Symbolic,
+    KLU_numeric *Numeric,
+    KLU_common *Common
 )
 {
-    double temp, max_ai, max_ui, min_block_growth ;
+    double temp, max_ai, max_ui, min_block_rgrowth ;
     Entry aik ;
-    int *Q, *Ui, *Uip, *Ulen, *Pinv ;
+    Int *Q, *Ui, *Uip, *Ulen, *Pinv ;
     Unit *LU ;
     Entry *Aentry, *Ux, *Ukk ;
     double *Rs ;
-    int **Ubip ;
-    int i, newrow, oldrow, k1, k2, nk, j, oldcol, k, pend, len ;
+    Int i, newrow, oldrow, k1, k2, nk, j, oldcol, k, pend, len ;
+
+    /* ---------------------------------------------------------------------- */
+    /* check inputs */
+    /* ---------------------------------------------------------------------- */
 
     if (Common == NULL)
     {
 	return (FALSE) ;
     }
-    Common->status = KLU_OK ;
+
+    if (Symbolic == NULL || Ap == NULL || Ai == NULL || Ax == NULL)
+    {
+	Common->status = KLU_INVALID ;
+	return (FALSE) ;
+    }
 
     if (Numeric == NULL)
     {
-	*growth = 0 ;
+	/* treat this as a singular matrix */
+	Common->rgrowth = 0 ;
 	Common->status = KLU_SINGULAR ;
 	return (TRUE) ;
     }
+    Common->status = KLU_OK ;
+
+    /* ---------------------------------------------------------------------- */
+    /* compute the reciprocal pivot growth */
+    /* ---------------------------------------------------------------------- */
 
     Aentry = (Entry *) Ax ;
     Pinv = Numeric->Pinv ;
     Rs = Numeric->Rs ;
     Q = Symbolic->Q ;
-    *growth = 1 ;
-
-    /* The method of calculating the reciprocal pivot growth is :
-     * Iterate over each of the blocks.  Within each block, iterate over each
-     * column to find the minimum value for the block.  Compare the value of
-     * the block with the minimum value computed for all the blocks till now,
-     * to find out the new minimum.
-     */
+    Common->rgrowth = 1 ;
 
     for (i = 0 ; i < Symbolic->nblocks ; i++)
     {
 	k1 = Symbolic->R[i] ;
 	k2 = Symbolic->R[i+1] ;
 	nk = k2 - k1 ;
-	/* skip singleton blocks*/
 	if (nk == 1)
 	{
-	    continue ;
+	    continue ;	    /* skip singleton blocks */
 	}
 	LU = (Unit *) Numeric->LUbx[i] ;
-	Ubip = Numeric->Ubip ;
-	Uip = Ubip [i] ;
-	Ulen = Numeric->Ublen [i] ;
-	Ukk = (Entry *) Numeric->Udiag [i] ;
-	min_block_growth = 1 ;
+	Uip = Numeric->Uip + k1 ;
+	Ulen = Numeric->Ulen + k1 ;
+	Ukk = ((Entry *) Numeric->Udiag) + k1 ;
+	min_block_rgrowth = 1 ;
 	for (j = 0 ; j < nk ; j++)
 	{
 	    max_ai = 0 ;
 	    max_ui = 0 ;
 	    oldcol = Q[j + k1] ;
 	    pend = Ap [oldcol + 1] ;
-	    for (k = Ap[oldcol] ; k < pend ; k++)
+	    for (k = Ap [oldcol] ; k < pend ; k++)
 	    {
 		oldrow = Ai [k] ;
 		newrow = Pinv [oldrow] ;
-		/* skip entry outside the block */
                 if (newrow < k1)
 		{
-	 	    continue ;
+	 	    continue ;	/* skip entry outside the block */
 		}
 		ASSERT (newrow < k2) ;
 		if (Rs != NULL)
 		{
 		    /* aik = Aentry [k] / Rs [oldrow] */
-		    SCALE_DIV_ASSIGN (aik, Aentry [k], Rs [oldrow]) ;
+		    SCALE_DIV_ASSIGN (aik, Aentry [k], Rs [newrow]) ;
 		}
 		else
 		{
@@ -137,15 +143,15 @@ int KLU_growth		/* return TRUE if successful, FALSE otherwise */
 		continue ;
 	    }
 	    temp = max_ai / max_ui ;
-	    if (temp < min_block_growth)
+	    if (temp < min_block_rgrowth)
 	    {
-		min_block_growth = temp ;
+		min_block_rgrowth = temp ;
 	    }
 	}
 
-	if (min_block_growth < *growth)
+	if (min_block_rgrowth < Common->rgrowth)
 	{
-	    *growth = min_block_growth ;
+	    Common->rgrowth = min_block_rgrowth ;
 	}
     }
     return (TRUE) ;
@@ -153,7 +159,7 @@ int KLU_growth		/* return TRUE if successful, FALSE otherwise */
 
 
 /* ========================================================================== */
-/* === klu_condest ========================================================== */
+/* === KLU_condest ========================================================== */
 /* ========================================================================== */
 
 /* Estimate the condition number.  Uses Higham and Tisseur's algorithm
@@ -161,39 +167,45 @@ int KLU_growth		/* return TRUE if successful, FALSE otherwise */
  * 1-norm pseudospectra, SIAM J. Matrix Anal. Appl., 21(4):1185-1201, 2000.
  */
 
-int KLU_condest		/* return TRUE if successful, FALSE otherwise */
+Int KLU_condest		/* return TRUE if successful, FALSE otherwise */
 (
-    int Ap [ ],
+    Int Ap [ ],
     double Ax [ ],
-    klu_symbolic *Symbolic,
-    klu_numeric *Numeric,
-    double *condest,
-    klu_common *Common
+    KLU_symbolic *Symbolic,
+    KLU_numeric *Numeric,
+    KLU_common *Common
 )
 {
     double xj, Xmax, csum, anorm, ainv_norm, est_old, est_new, abs_value ;
-    Unit **Udiag ;
-    Entry *Ukk, *Aentry, *X, *S ;
-    int *R ;
-    int nblocks, nk, block, i, j, jmax, jnew, pend, n ;
+    Entry *Udiag, *Aentry, *X, *S ;
+    Int *R ;
+    Int nblocks, i, j, jmax, jnew, pend, n ;
 #ifndef COMPLEX
-    int unchanged ;
+    Int unchanged ;
 #endif
+
+    /* ---------------------------------------------------------------------- */
+    /* check inputs */
+    /* ---------------------------------------------------------------------- */
 
     if (Common == NULL)
     {
 	return (FALSE) ;
     }
-    Common->status = KLU_OK ;
+    if (Symbolic == NULL || Ap == NULL || Ax == NULL)
+    {
+	Common->status = KLU_INVALID ;
+	return (FALSE) ;
+    }
     abs_value = 0 ;
-
     if (Numeric == NULL)
     {
 	/* treat this as a singular matrix */
-	*condest = 1 / abs_value ;
+	Common->condest = 1 / abs_value ;
 	Common->status = KLU_SINGULAR ;
 	return (TRUE) ;
     }
+    Common->status = KLU_OK ;
 
     /* ---------------------------------------------------------------------- */
     /* get inputs */
@@ -202,29 +214,20 @@ int KLU_condest		/* return TRUE if successful, FALSE otherwise */
     n = Symbolic->n ;
     nblocks = Symbolic->nblocks ;
     R = Symbolic->R ;
-    Udiag = (Unit **) Numeric->Udiag ;
+    Udiag = Numeric->Udiag ;
 
     /* ---------------------------------------------------------------------- */
     /* check if diagonal of U has a zero on it */
     /* ---------------------------------------------------------------------- */
 
-    for (block = 0 ; block < nblocks ; block++)
+    for (i = 0 ; i < n ; i++)
     {
-	Ukk = (Entry *) Udiag [block] ;
-	nk =  R [block + 1] - R [block] ;
-	if (nk == 1)
+	ABS (abs_value, Udiag [i]) ;
+	if (SCALAR_IS_ZERO (abs_value))
 	{
-	    continue ; /* singleton block */
-	}
-	for (i = 0 ; i < nk ; i++)
-	{
-	    ABS (abs_value, Ukk [i]) ;
-	    if (SCALAR_IS_ZERO (abs_value))
-	    {
-		*condest = 1 / abs_value ;
-		Common->status = KLU_SINGULAR ;
-		return (TRUE) ;
-	    }
+	    Common->condest = 1 / abs_value ;
+	    Common->status = KLU_SINGULAR ;
+	    return (TRUE) ;
 	}
     }
 
@@ -253,8 +256,8 @@ int KLU_condest		/* return TRUE if successful, FALSE otherwise */
     /* compute estimate of 1-norm of inv (A) */
     /* ---------------------------------------------------------------------- */
 
-    /* get workspace */
-    X = Numeric->Xwork ;	    /* size n space used in klu_solve, tsolve */
+    /* get workspace (size 2*n Entry's) */
+    X = Numeric->Xwork ;	    /* size n space used in KLU_solve, tsolve */
     X += n ;			    /* X is size n */
     S = X + n ;			    /* S is size n */
 
@@ -297,7 +300,7 @@ int KLU_condest		/* return TRUE if successful, FALSE otherwise */
 	for (j = 0 ; j < n ; j++)
 	{
 	    double s = (X [j] >= 0) ? 1 : -1 ;
-	    if (s != (int) REAL (S [j]))
+	    if (s != (Int) REAL (S [j]))
 	    {
 		S [j] = s ;
 		unchanged = FALSE ;
@@ -344,9 +347,8 @@ int KLU_condest		/* return TRUE if successful, FALSE otherwise */
 
 	/* jnew = the position of the largest entry in X */
 	jnew = 0 ;
-	/* Xmax = ABS (X [0]) ;*/
-	ABS (Xmax, X [0]) ;
-	for (j = 1 ; j < n ; j++)
+	Xmax = 0 ;
+	for (j = 0 ; j < n ; j++)
 	{
 	    /* xj = ABS (X [j]) ;*/
 	    ABS (xj, X [j]) ;
@@ -364,6 +366,10 @@ int KLU_condest		/* return TRUE if successful, FALSE otherwise */
 	}
 	jmax = jnew ;
     }
+
+    /* ---------------------------------------------------------------------- */
+    /* compute another estimate of norm(inv(A),1), and take the largest one */
+    /* ---------------------------------------------------------------------- */
 
     for (j = 0 ; j < n ; j++)
     {
@@ -388,46 +394,51 @@ int KLU_condest		/* return TRUE if successful, FALSE otherwise */
 	est_new += abs_value ;
     }
     est_new = 2 * est_new / (3 * n) ;
-    if (est_new > ainv_norm)
-    {
-	ainv_norm = est_new ;
-    }
+    ainv_norm = MAX (est_new, ainv_norm) ;
 
     /* ---------------------------------------------------------------------- */
     /* compute estimate of condition number */
     /* ---------------------------------------------------------------------- */
 
-    *condest = ainv_norm * anorm ;
+    Common->condest = ainv_norm * anorm ;
     return (TRUE) ;
 }
 
 
 /* ========================================================================== */
-/* === klu_flops ============================================================ */
+/* === KLU_flops ============================================================ */
 /* ========================================================================== */
 
 /* Compute the flop count for the LU factorization (in Common->flops) */
 
-int KLU_flops		/* return TRUE if successful, FALSE otherwise */
+Int KLU_flops		/* return TRUE if successful, FALSE otherwise */
 (
-    klu_symbolic *Symbolic,
-    klu_numeric *Numeric,
-    klu_common *Common
+    KLU_symbolic *Symbolic,
+    KLU_numeric *Numeric,
+    KLU_common *Common
 )
 {
     double flops = 0 ;
-    int **Ubip, **Lblen, **Ublen ;
-    int *R, *Ui, *Uip, *Llen, *Ulen ;
+    Int *R, *Ui, *Uip, *Llen, *Ulen ;
     Unit **LUbx ;
     Unit *LU ;
-    int k, ulen, p, n, nk, block, nblocks ;
+    Int k, ulen, p, n, nk, block, nblocks, k1 ;
+
+    /* ---------------------------------------------------------------------- */
+    /* check inputs */
+    /* ---------------------------------------------------------------------- */
 
     if (Common == NULL)
     {
 	return (FALSE) ;
     }
-    Common->status = KLU_OK ;
     Common->flops = EMPTY ;
+    if (Numeric == NULL || Symbolic == NULL)
+    {
+	Common->status = KLU_INVALID ;
+	return (FALSE) ;
+    }
+    Common->status = KLU_OK ;
 
     /* ---------------------------------------------------------------------- */
     /* get the contents of the Symbolic object */
@@ -441,9 +452,6 @@ int KLU_flops		/* return TRUE if successful, FALSE otherwise */
     /* get the contents of the Numeric object */
     /* ---------------------------------------------------------------------- */
 
-    Lblen = Numeric->Lblen ;
-    Ubip = Numeric->Ubip ;
-    Ublen = Numeric->Ublen ;
     LUbx = (Unit **) Numeric->LUbx ;
 
     /* ---------------------------------------------------------------------- */
@@ -452,12 +460,13 @@ int KLU_flops		/* return TRUE if successful, FALSE otherwise */
 
     for (block = 0 ; block < nblocks ; block++)
     {
-	nk = R [block+1] - R [block] ;
+	k1 = R [block] ;
+	nk = R [block+1] - k1 ;
 	if (nk > 1)
 	{
-	    Llen = Lblen [block] ;
-	    Uip = Ubip [block] ;
-	    Ulen = Ublen [block] ;
+	    Llen = Numeric->Llen + k1 ;
+	    Uip  = Numeric->Uip  + k1 ;
+	    Ulen = Numeric->Ulen + k1 ;
 	    LU = LUbx [block] ;
 	    for (k = 0 ; k < nk ; k++)
 	    {
@@ -479,7 +488,7 @@ int KLU_flops		/* return TRUE if successful, FALSE otherwise */
 
 
 /* ========================================================================== */
-/* === klu_rcond ============================================================ */
+/* === KLU_rcond ============================================================ */
 /* ========================================================================== */
 
 /* Compute a really cheap estimate of the reciprocal of the condition number,
@@ -487,77 +496,74 @@ int KLU_flops		/* return TRUE if successful, FALSE otherwise */
  * pivot, or a NaN pivot, rcond will be zero.  Takes O(n) time.
  */   
 
-int KLU_rcond			/* return TRUE if successful, FALSE otherwise */
+Int KLU_rcond		/* return TRUE if successful, FALSE otherwise */
 (
-    klu_symbolic *Symbolic,	/* input, not modified */
-    klu_numeric *Numeric,	/* input, not modified */
-    double *rcond,		/* output (pointer to a scalar) */
-    klu_common *Common
+    KLU_symbolic *Symbolic,	/* input, not modified */
+    KLU_numeric *Numeric,	/* input, not modified */
+    KLU_common *Common		/* result in Common->rcond */
 )
 {
     double ukk, umin, umax ;
-    Entry *Ukk ;
-    int block, k1, k2, nk, j ;
+    Entry *Udiag ;
+    Int j, n ;
+
+    /* ---------------------------------------------------------------------- */
+    /* check inputs */
+    /* ---------------------------------------------------------------------- */
 
     if (Common == NULL)
     {
 	return (FALSE) ;
     }
-    Common->status = KLU_OK ;
-
+    if (Symbolic == NULL)
+    {
+	Common->status = KLU_INVALID ;
+	return (FALSE) ;
+    }
     if (Numeric == NULL)
     {
-	*rcond = 0 ;
+	Common->rcond = 0 ;
 	Common->status = KLU_SINGULAR ;
 	return (TRUE) ;
     }
+    Common->status = KLU_OK ;
 
-    for (block = 0 ; block < Symbolic->nblocks ; block++)
+    /* ---------------------------------------------------------------------- */
+    /* compute rcond */
+    /* ---------------------------------------------------------------------- */
+
+    n = Symbolic->n ;
+    Udiag = Numeric->Udiag ;
+    for (j = 0 ; j < n ; j++)
     {
-	k1 = Symbolic->R [block] ;
-	k2 = Symbolic->R [block+1] ;
-	nk = k2 - k1 ;
-	if (nk == 1)
+	/* get the magnitude of the pivot */
+	ABS (ukk, Udiag [j]) ;
+	if (SCALAR_IS_NAN (ukk) || SCALAR_IS_ZERO (ukk))
 	{
-	    /* get the singleton */
-	    Ukk = ((Entry *) Numeric->Singleton) + block ;
+	    /* if NaN, or zero, the rcond is zero */
+	    Common->rcond = 0 ;
+	    Common->status = KLU_SINGULAR ;
+	    return (TRUE) ;
+	}
+	if (j == 0)
+	{
+	    /* first pivot entry */
+	    umin = ukk ;
+	    umax = ukk ;
 	}
 	else
 	{
-	    /* get the diagonal of U for a non-singleton block */
-	    Ukk = (Entry *) Numeric->Udiag [block] ;
-	}
-	for (j = 0 ; j < nk ; j++)
-	{
-	    /* get the magnitude of the pivot */
-	    ABS (ukk, Ukk [j]) ;
-	    if (SCALAR_IS_NAN (ukk) || SCALAR_IS_ZERO (ukk))
-	    {
-		/* if NaN, or zero, the rcond is zero */
-		*rcond = 0 ;
-		Common->status = KLU_SINGULAR ;
-		return (TRUE) ;
-	    }
-	    if (block == 0 && j == 0)
-	    {
-		/* first pivot entry in the first block */
-		umin = ukk ;
-		umax = ukk ;
-	    }
-	    else
-	    {
-		/* subsequent pivots */
-		umin = MIN (umin, ukk) ;
-		umax = MAX (umax, ukk) ;
-	    }
+	    /* subsequent pivots */
+	    umin = MIN (umin, ukk) ;
+	    umax = MAX (umax, ukk) ;
 	}
     }
 
-    *rcond = umin / umax ;
-    if (SCALAR_IS_NAN (*rcond) || SCALAR_IS_ZERO (*rcond))
+    Common->rcond = umin / umax ;
+    if (SCALAR_IS_NAN (Common->rcond) || SCALAR_IS_ZERO (Common->rcond))
     {
 	/* this can occur if umin or umax are Inf or NaN */
-	*rcond = 0 ;
+	Common->rcond = 0 ;
 	Common->status = KLU_SINGULAR ;
     }
     return (TRUE) ;

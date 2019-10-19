@@ -1,5 +1,5 @@
 function f = luflop (L, U)						    %#ok
-%LUFLOP: compute LU flop count
+%LUFLOP given L and U, computes # of flops required to compute them
 %
 % Example:
 % f = luflop (L, U)
@@ -17,9 +17,10 @@ function f = luflop (L, U)						    %#ok
 % Note: the above expression has a subtle undercount when exact numerical
 % cancelation occurs.  Try [L,U,P] = lu (sparse (ones (10))) and then
 % luflop (L,U).
+%
+% See also LU
 
-% Copyright (c) 1995-2006 by Timothy A. Davis.
-% All Rights Reserved.  Type umfpack_details for License.
+% Copyright 1995-2007 by Timothy A. Davis.
 
 help luflop
 error ('luflop mexFunction not found!  Use umfpack_make to compile luflop.') ;

@@ -1,5 +1,5 @@
 function UFlist (what, group)
-%UFlist: create a web page index for the UF Sparse Matrix Collection
+%UFLIST create a web page index for the UF Sparse Matrix Collection
 %
 % Usage: UFlist (what)
 %
@@ -26,7 +26,7 @@ function UFlist (what, group)
 %
 % See also UFget, UFint.
 
-% Copyright 2006, Timothy A. Davis
+% Copyright 2006-2007, Timothy A. Davis
 
 index = UFget ;
 

@@ -4,7 +4,7 @@ function test19
 %   test19
 % See also cholmod_test
 
-% Copyright 2006, Timothy A. Davis, University of Florida
+% Copyright 2006-2007, Timothy A. Davis, University of Florida
 
 fprintf ('=================================================================\n');
 fprintf ('test19: look for NaN''s from lchol (caused by Intel MKL 7.x bug)\n') ;

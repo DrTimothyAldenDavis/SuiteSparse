@@ -3,7 +3,7 @@
 /* ========================================================================= */
 
 /* ------------------------------------------------------------------------- */
-/* AMD Version 2.0, Copyright (c) 2006 by Timothy A. Davis,		     */
+/* AMD, Copyright (c) Timothy A. Davis,					     */
 /* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
 /* email: davis at cise.ufl.edu    CISE Department, Univ. of Florida.        */
 /* web: http://www.cise.ufl.edu/research/sparse/amd                          */
@@ -35,9 +35,9 @@ GLOBAL void AMD_control
 	aggressive = AMD_DEFAULT_AGGRESSIVE ;
     }
 
-    PRINTF (("\namd version %d.%d, %s:  approximate minimum degree ordering:\n"
+    PRINTF (("\nAMD version %d.%d.%d, %s: approximate minimum degree ordering\n"
 	"    dense row parameter: %g\n", AMD_MAIN_VERSION, AMD_SUB_VERSION,
-	AMD_DATE, alpha)) ;
+	AMD_SUBSUB_VERSION, AMD_DATE, alpha)) ;
 
     if (alpha < 0)
     {
@@ -53,10 +53,12 @@ GLOBAL void AMD_control
 
     if (aggressive)
     {
-	PRINTF (("    aggressive absorption:  yes\n\n")) ;
+	PRINTF (("    aggressive absorption:  yes\n")) ;
     }
     else
     {
-	PRINTF (("    aggressive absorption:  no\n\n")) ;
+	PRINTF (("    aggressive absorption:  no\n")) ;
     }
+
+    PRINTF (("    size of AMD integer: %d\n\n", sizeof (Int))) ;
 }

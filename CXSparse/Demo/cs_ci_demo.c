@@ -19,7 +19,7 @@ static int is_sym (cs_ci *A)
 }
 
 /* true for off-diagonal entries */
-static int dropdiag (int i, int j, double _Complex aij, void *other) { return (i != j) ;}
+static int dropdiag (int i, int j, cs_complex_t aij, void *other) { return (i != j) ;}
 
 /* C = A + triu(A,1)' */
 static cs_ci *make_sym (cs_ci *A)
@@ -33,7 +33,7 @@ static cs_ci *make_sym (cs_ci *A)
 }
 
 /* create a right-hand side */
-static void rhs (double _Complex *x, double _Complex *b, int m)
+static void rhs (cs_complex_t *x, cs_complex_t *b, int m)
 {
     int i ;
     for (i = 0 ; i < m ; i++) b [i] = 1 + ((double) i) / m ;
@@ -41,7 +41,7 @@ static void rhs (double _Complex *x, double _Complex *b, int m)
 }
 
 /* infinity-norm of x */
-static double norm (double _Complex *x, int n)
+static double norm (cs_complex_t *x, int n)
 {
     int i ;
     double normx = 0 ;
@@ -50,7 +50,7 @@ static double norm (double _Complex *x, int n)
 }
 
 /* compute residual, norm(A*x-b,inf) / (norm(A,1)*norm(x,inf) + norm(b,inf)) */
-static void print_resid (int ok, cs_ci *A, double _Complex *x, double _Complex *b, double _Complex *resid)
+static void print_resid (int ok, cs_ci *A, cs_complex_t *x, cs_complex_t *b, cs_complex_t *resid)
 {
     int i, m, n ;
     if (!ok) { printf ("    (failed)\n") ; return ; }
@@ -100,9 +100,9 @@ problem *get_problem (FILE *f, double tol)
 	    m, n, A->p [n], sym, sym ? C->p [n] : 0, cs_ci_norm (C)) ;
     if (nz1 != nz2) printf ("zero entries dropped: %d\n", nz1 - nz2) ;
     if (nz2 != A->p [n]) printf ("tiny entries dropped: %d\n", nz2 - A->p [n]) ;
-    Prob->b = cs_ci_malloc (mn, sizeof (double _Complex)) ;
-    Prob->x = cs_ci_malloc (mn, sizeof (double _Complex)) ;
-    Prob->resid = cs_ci_malloc (mn, sizeof (double _Complex)) ;
+    Prob->b = cs_ci_malloc (mn, sizeof (cs_complex_t)) ;
+    Prob->x = cs_ci_malloc (mn, sizeof (cs_complex_t)) ;
+    Prob->resid = cs_ci_malloc (mn, sizeof (cs_complex_t)) ;
     return ((!Prob->b || !Prob->x || !Prob->resid) ? free_problem (Prob) : Prob) ;
 }
 
@@ -122,7 +122,7 @@ problem *free_problem (problem *Prob)
 int demo2 (problem *Prob)
 {
     cs_ci *A, *C ;
-    double _Complex *b, *x, *resid ;
+    cs_complex_t *b, *x, *resid ;
     double t, tol ;
     int k, m, n, ok, order, nb, ns, *r, *s, *rr, sprank ;
     cs_cid *D ;
@@ -179,7 +179,7 @@ int demo2 (problem *Prob)
 } 
 
 /* free workspace for demo3 */
-static int done3 (int ok, cs_cis *S, cs_cin *N, double _Complex *y, cs_ci *W, cs_ci *E, int *p)
+static int done3 (int ok, cs_cis *S, cs_cin *N, cs_complex_t *y, cs_ci *W, cs_ci *E, int *p)
 {
     cs_ci_sfree (S) ;
     cs_ci_nfree (N) ;
@@ -195,7 +195,7 @@ int demo3 (problem *Prob)
 {
     cs_ci *A, *C, *W = NULL, *WW, *WT, *E = NULL, *W2 ;
     int n, k, *Li, *Lp, *Wi, *Wp, p1, p2, *p = NULL, ok ;
-    double _Complex *b, *x, *resid, *y = NULL, *Lx, *Wx, s ;
+    cs_complex_t *b, *x, *resid, *y = NULL, *Lx, *Wx, s ;
     double t, t1 ;
     cs_cis *S = NULL ;
     cs_cin *N = NULL ;
@@ -206,7 +206,7 @@ int demo3 (problem *Prob)
     rhs (x, b, n) ;				/* compute right-hand side */
     printf ("\nchol then update/downdate ") ;
     print_order (1) ;
-    y = cs_ci_malloc (n, sizeof (double _Complex)) ;
+    y = cs_ci_malloc (n, sizeof (cs_complex_t)) ;
     t = tic () ;
     S = cs_ci_schol (1, C) ;			/* symbolic Chol, amd(A+A') */
     printf ("\nsymbolic chol time %8.2f\n", toc (t)) ;

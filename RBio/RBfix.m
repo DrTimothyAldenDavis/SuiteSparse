@@ -1,5 +1,5 @@
 function [A Z title key mtype] = RBfix (filename)
-%RBfix: read a possibly corrupted matrix from a Rutherford/Boeing file
+%RBFIX read a possibly corrupted matrix from a R/B file
 % (assembled format only).  Usage:
 %
 % [A Z title key mtype] = RBfix (filename)
@@ -29,7 +29,7 @@ function [A Z title key mtype] = RBfix (filename)
 
 % Optionally uses the CHOLMOD sparse2 mexFunction.
 
-% Copyright 2006, Timothy A. Davis
+% Copyright 2007, Timothy A. Davis
 
 %-------------------------------------------------------------------------------
 % read in the raw contents of the Rutherford/Boeing file
@@ -49,12 +49,12 @@ ncol = length (Ap) - 1 ;
 nz = length (Ai) ;
 
 % check column pointers
-if (any (Ap ~= sort (Ap)) || (Ap (1) ~= 1) || (Ap (ncol+1) - 1 ~= nz))
+if (any (Ap ~= sort (Ap)) | (Ap (1) ~= 1) | (Ap (ncol+1) - 1 ~= nz))	    %#ok
     error ('invalid column pointers') ;
 end
 
 % check row indices
-if ((double (max (Ai)) > nrow) || double (min (Ai)) < 1)
+if ((double (max (Ai)) > nrow) | double (min (Ai)) < 1)			    %#ok
     error ('invalid row indices') ;
 end
 
@@ -117,8 +117,8 @@ else
 end
 
 % check for entries in upper part
-if (any (mtype (2) == 'shz') && nnz (triu (A,1) > 0))
-    fprintf ('warning: entries in upper triangular part of %s matrix\n', mtype);
+if (any (mtype (2) == 'shz') & nnz (triu (A,1) > 0))			    %#ok
+    fprintf ('entries in upper triangular part of %s matrix ignored\n', mtype);
 end
 
 % add the upper triangular part

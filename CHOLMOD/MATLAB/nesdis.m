@@ -48,7 +48,7 @@ function [p cparent cmember] = nesdis (A, mode, opts)			    %#ok
 %
 %   See also METIS, BISECT, AMD
 
-%   Copyright 2006, Timothy A. Davis
+%   Copyright 2006-2007, Timothy A. Davis
 %   http://www.cise.ufl.edu/research/sparse
 
 error ('nesdis mexFunction not found') ;

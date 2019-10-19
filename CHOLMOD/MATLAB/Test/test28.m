@@ -4,7 +4,7 @@ function test28
 %   test28
 % See also cholmod_test
 
-% Copyright 2006, Timothy A. Davis, University of Florida
+% Copyright 2006-2007, Timothy A. Davis, University of Florida
 
 index = UFget ;
 
@@ -53,11 +53,7 @@ for i = f
 	subplot (2,3,3) ; treeplot (cp1) ;
 	subplot (2,3,5) ; spy (A (p2,p2)) ;
 	subplot (2,3,6) ; treeplot (cp2) ;
-
 	drawnow
-    %    if (any (p1 ~= p2) || length (cp1) ~= length (cp2) || any (cp1 ~= cp2))
-    %	pause (1) ;
-    %    end
 
     catch
 	fprintf ('%4d failed\n', i) ;

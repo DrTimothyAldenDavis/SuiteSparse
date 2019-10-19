@@ -3,7 +3,7 @@
 /* ========================================================================= */
 
 /* ------------------------------------------------------------------------- */
-/* AMD Version 2.0, Copyright (c) 2006 by Timothy A. Davis,		     */
+/* AMD, Copyright (c) Timothy A. Davis,					     */
 /* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
 /* email: davis at cise.ufl.edu    CISE Department, Univ. of Florida.        */
 /* web: http://www.cise.ufl.edu/research/sparse/amd                          */
@@ -46,6 +46,7 @@ GLOBAL Int AMD_valid
 )
 {
     Int nz, j, p1, p2, ilast, i, p, result = AMD_OK ;
+
     if (n_row < 0 || n_col < 0 || Ap == NULL || Ai == NULL)
     {
 	return (AMD_INVALID) ;

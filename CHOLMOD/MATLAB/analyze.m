@@ -59,7 +59,7 @@ function [p count] = analyze (A, mode, k)				    %#ok
 %
 %   See also METIS, NESDIS, BISECT, SYMBFACT, AMD
 
-%   Copyright 2006, Timothy A. Davis
+%   Copyright 2006-2007, Timothy A. Davis
 %   http://www.cise.ufl.edu/research/sparse
 
 error ('analyze mexFunction not found') ;

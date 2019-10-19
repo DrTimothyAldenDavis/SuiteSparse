@@ -5,7 +5,7 @@ function test12
 %   test12
 % See also: testall
 
-%   Copyright 2006, Timothy A. Davis.
+%   Copyright 2006-2007, Timothy A. Davis.
 %   http://www.cise.ufl.edu/research/sparse
 
 fprintf ('test 12\n') ;
@@ -21,7 +21,7 @@ for trial = 1:100
     if (m < n)
 	continue ;
     end
-    if (m == 0 || n == 0)
+    if (m == 0 | n == 0)						    %#ok
 	continue ;
     end
     % save A A

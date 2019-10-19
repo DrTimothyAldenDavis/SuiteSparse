@@ -7,7 +7,7 @@ function [x1,x2,e1,e2] = testsolve (A,b)
 %   [x1,x2,e1,e2] = testsolve (A,b) ;
 % See also cholmod_test
 
-% Copyright 2006, Timothy A. Davis, University of Florida
+% Copyright 2006-2007, Timothy A. Davis, University of Florida
 
 fprintf ('A: [n %6d real %d]    B: [sp:%d nrhs %d real %d]  ', ...
     size(A,1), isreal(A), issparse(b), size(b,2), isreal(b)) ;
@@ -21,7 +21,7 @@ tic
 e1 = norm (A*x1-b,1) ;
 t3 = toc ;
 e2 = norm (A*x2-b,1) ;
-if (e2 == 0 || e1 == 0)
+if (e2 == 0 | e1 == 0)							    %#ok
     e12 = 0 ;
 else
     e12 = log2 (e1/e2) ;
@@ -32,7 +32,7 @@ else
     t12 = t1 / t2 ;
 end
 if (t2 == 0)
-    t32 = 1 ;								%#ok
+    t32 = 1 ;								    %#ok
 else
     t32 = t3 / t2 ;							    %#ok
 end

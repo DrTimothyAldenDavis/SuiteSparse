@@ -5,7 +5,7 @@ function test11
 %   test11
 % See also: testall
 
-%   Copyright 2006, Timothy A. Davis.
+%   Copyright 2006-2007, Timothy A. Davis.
 %   http://www.cise.ufl.edu/research/sparse
 
 clear
@@ -19,7 +19,7 @@ for i = f
     disp (Prob) ;
     A = Prob.A ;
     [m n] = size (A) ;
-    if (~isreal (A) || m ~= n)
+    if (~isreal (A) | m ~= n)						    %#ok
 	continue
     end
 

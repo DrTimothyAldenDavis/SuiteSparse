@@ -11,8 +11,8 @@ include ../../UFconfig/UFconfig.mk
 
 #-------------------------------------------------------------------------------
 # With METIS, CCOLAMD, CAMD, and the Partition Module:
-LIB2 = ../Lib/libcholmod.a ../../AMD/Lib/libamd.a ../../COLAMD/libcolamd.a \
-	../../CCOLAMD/libccolamd.a ../../CAMD/Lib/libcamd.a \
+LIB2 = ../Lib/libcholmod.a ../../AMD/Lib/libamd.a ../../COLAMD/Lib/libcolamd.a \
+	../../CCOLAMD/Lib/libccolamd.a ../../CAMD/Lib/libcamd.a \
 	$(METIS) $(LAPACK) $(BLAS) $(XERBLA) $(LIB)
 # Use this instead, if you compile with -DNPARTITION:
 # LIB2 = ../Lib/libcholmod.a ../../AMD/Lib/libamd.a ../../COLAMD/libcolamd.a \
@@ -54,8 +54,8 @@ library:
 	( cd ../Lib ; $(MAKE) )
 	( cd ../../AMD ; $(MAKE) library )
 	( cd ../../CAMD ; $(MAKE) library )
-	( cd ../../COLAMD ; $(MAKE) )
-	( cd ../../CCOLAMD ; $(MAKE) )
+	( cd ../../COLAMD ; $(MAKE) library )
+	( cd ../../CCOLAMD ; $(MAKE) library )
 # use this rule instead, if you compile with -DNPARTITION:
 # library:
 # 	( cd ../../UFconfig/xerbla ; $(MAKE) )

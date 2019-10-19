@@ -36,7 +36,6 @@ M = \
 	../MATLAB/ldlsolve.m \
 	../MATLAB/ldlsplit.m \
 	../MATLAB/ldlupdate.m \
-	../MATLAB/lu_normest.m \
 	../MATLAB/metis.m \
 	../MATLAB/nesdis.m \
 	../MATLAB/resymbol.m \
@@ -62,7 +61,6 @@ UserGuide.pdf: UserGuide.tex UserGuide.bib $(I) $(C) $(M) Makefile getproto rule
 	./getmproto ../MATLAB/ldlsolve.m > _ldlsolve_m.tex
 	./getmproto ../MATLAB/ldlsplit.m > _ldlsplit_m.tex
 	./getmproto ../MATLAB/ldlupdate.m > _ldlupdate_m.tex
-	./getmproto ../MATLAB/lu_normest.m > _lu_normest_m.tex
 	./getmproto ../MATLAB/metis.m > _metis_m.tex
 	./getmproto ../MATLAB/mread.m > _mread_m.tex
 	./getmproto ../MATLAB/spsym.m > _spsym_m.tex

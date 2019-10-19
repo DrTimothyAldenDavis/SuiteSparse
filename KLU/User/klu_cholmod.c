@@ -27,33 +27,35 @@ int klu_cholmod
     /* outputs */
     int Perm [ ],	    /* fill-reducing permutation */
     /* user-defined */
-    void *user_datap	    /* this is KLU's Common->user_data, unchanged.
-			     * You may use this to pass additional parameters
-			     * to your ordering routine.  KLU does not access
-			     * Common->user_data, except to pass it here. */
+    klu_common *Common	    /* user-defined data is in Common->user_data */
 )
 {
-    double one [2] = {1,0}, zero [2] = {0,0} ;
-    cholmod_sparse *A, *AT, *S ;
+    double one [2] = {1,0}, zero [2] = {0,0}, lnz = 0 ;
+    cholmod_sparse Amatrix, *A, *AT, *S ;
     cholmod_factor *L ;
-    cholmod_common *cm, Common ;
-    int *P, *user_data ;
+    cholmod_common cm ;
+    int *P ;
     int k, symmetric ;
 
-    /* start CHOLMOD */
-    cm = &Common ;
-    cholmod_start (cm) ;
-    cm->supernodal = CHOLMOD_SIMPLICIAL ;
-
-    /* cm->print = 5 ; */
-
-    /* construct a CHOLMOD version of the input matrix A */
-    A = cholmod_malloc (1, sizeof (cholmod_sparse), cm) ;
-    if (A == NULL)
+    if (Ap == NULL || Ai == NULL || Perm == NULL || n < 0)
     {
-	/* out of memory */
+	/* invalid inputs */
 	return (0) ;
     }
+
+    /* start CHOLMOD */
+    cholmod_start (&cm) ;
+    cm.supernodal = CHOLMOD_SIMPLICIAL ;
+    cm.print = 0 ;
+
+    /* use KLU memory management routines for CHOLMOD */
+    cm.malloc_memory = Common->malloc_memory ;
+    cm.realloc_memory = Common->realloc_memory ;
+    cm.calloc_memory = Common->calloc_memory ;
+    cm.free_memory = Common->free_memory ;
+
+    /* construct a CHOLMOD version of the input matrix A */
+    A = &Amatrix ;
     A->nrow = n ;		    /* A is n-by-n */
     A->ncol = n ;
     A->nzmax = Ap [n] ;		    /* with nzmax entries */
@@ -69,20 +71,21 @@ int klu_cholmod
     A->z = NULL ;
     A->sorted = FALSE ;		    /* columns of A are not sorted */
 
-    /* cholmod_print_sparse (A, "A for user order", cm) ; */
-
-    /* get the user_data */
-    user_data = user_datap ;
-    symmetric = (user_data == NULL) ? TRUE : (user_data [0] != 0) ;
+    /* get the user_data; default is symmetric if user_data is NULL */
+    symmetric = (Common->user_data == NULL) ? TRUE :
+	(((int *) (Common->user_data)) [0] != 0) ;
 
     /* AT = pattern of A' */
-    AT = cholmod_transpose (A, 0, cm) ;
-
+    AT = cholmod_transpose (A, 0, &cm) ;
     if (symmetric)
     {
 	/* S = the symmetric pattern of A+A' */
-	S = cholmod_add (A, AT, one, zero, FALSE, FALSE, cm) ;
-	cholmod_free_sparse (&AT, cm) ;
+	S = cholmod_add (A, AT, one, zero, FALSE, FALSE, &cm) ;
+	cholmod_free_sparse (&AT, &cm) ;
+	if (S != NULL)
+	{
+	    S->stype = 1 ;
+	}
     }
     else
     {
@@ -90,61 +93,22 @@ int klu_cholmod
 	S = AT ;
     }
 
-    /* free the header for A, but not Ap and Ai */
-    A->p = NULL ;
-    A->i = NULL ;
-    cholmod_free_sparse (&A, cm) ;
-
-    if (S == NULL)
-    {
-	/* out of memory */
-	return (0) ;
-    }
-
-    if (symmetric)
-    {
-	S->stype = 1 ;
-    }
-
-    /* cholmod_print_sparse (S, "S", cm) ; */
-
-    cm->nmethods = 10 ;
-    /*
-    cm->nmethods = 1 ;
-    cm->method [0].ordering = CHOLMOD_AMD ;
-    cm->method [0].ordering = CHOLMOD_METIS ;
-    cm->method [0].ordering = CHOLMOD_NESDIS ;
-    */
-
     /* order and analyze S or S*S' */
-    L = cholmod_analyze (S, cm) ;
-    if (L == NULL)
-    {
-	return (0) ;
-    }
-
-/*
-printf ("L->ordering %d\n", L->ordering) ; 
-*/
-
-    /* cholmod_print_factor (L, "L, symbolic analysis only", cm) ; */
+    L = cholmod_analyze (S, &cm) ;
 
     /* copy the permutation from L to the output */
-    P = L->Perm ;
-    for (k = 0 ; k < n ; k++)
+    if (L != NULL)
     {
-	Perm [k] = P [k] ;
+	P = L->Perm ;
+	for (k = 0 ; k < n ; k++)
+	{
+	    Perm [k] = P [k] ;
+	}
+	lnz = cm.lnz ;
     }
 
-    /* cholmod_print_perm (Perm, n, n, "Final permutation", cm) ; */
-
-    cholmod_free_sparse (&S, cm) ;
-    cholmod_free_factor (&L, cm) ;
-    cholmod_finish (cm) ;
-
-    /*
-    if (n > 100) cholmod_print_common ("Final statistics", cm) ;
-    if (cm->malloc_count != 0) printf ("CHOLMOD memory leak!") ;
-    */
-    return ((int) (cm->lnz)) ;
+    cholmod_free_sparse (&S, &cm) ;
+    cholmod_free_factor (&L, &cm) ;
+    cholmod_finish (&cm) ;
+    return (lnz) ;
 }

@@ -1,37 +1,37 @@
 /* ========================================================================== */
-/* === klu_factor =========================================================== */
+/* === KLU_factor =========================================================== */
 /* ========================================================================== */
 
-/* Factor the matrix, after ordering and analyzing it with klu_analyze
- * or klu_analyze_given.
+/* Factor the matrix, after ordering and analyzing it with KLU_analyze
+ * or KLU_analyze_given.
  */
 
 #include "klu_internal.h"
 
 /* ========================================================================== */
-/* === klu_factor2 ========================================================== */
+/* === KLU_factor2 ========================================================== */
 /* ========================================================================== */
 
-static void klu_factor2
+static void factor2
 (
     /* inputs, not modified */
-    int Ap [ ],		/* size n+1, column pointers */
-    int Ai [ ],		/* size nz, row indices */
+    Int Ap [ ],		/* size n+1, column pointers */
+    Int Ai [ ],		/* size nz, row indices */
     Entry Ax [ ],
-    klu_symbolic *Symbolic,
+    KLU_symbolic *Symbolic,
 
     /* inputs, modified on output: */
-    klu_numeric *Numeric,
-    klu_common *Common
+    KLU_numeric *Numeric,
+    KLU_common *Common
 )
 {
     double lsize ;
     double *Lnz, *Rs ;
-    int *P, *Q, *R, *Pnum, *Offp, *Offi, *Pblock, *Pinv, *Iwork ;
-    int **Lbip, **Ubip, **Lblen, **Ublen ;
-    Entry *Offx, *Singleton, *X, s ;
-    Unit **LUbx, **Udiag ;
-    int k1, k2, nk, k, block, oldcol, pend, oldrow, n, lnz, unz, p, newrow,
+    Int *P, *Q, *R, *Pnum, *Offp, *Offi, *Pblock, *Pinv, *Iwork,
+	*Lip, *Uip, *Llen, *Ulen ;
+    Entry *Offx, *X, s, *Udiag ;
+    Unit **LUbx ;
+    Int k1, k2, nk, k, block, oldcol, pend, oldrow, n, lnz, unz, p, newrow,
 	nblocks, poff, nzoff, lnz_block, unz_block, scale, max_lnz_block,
 	max_unz_block ;
 
@@ -52,19 +52,18 @@ static void klu_factor2
     Offp = Numeric->Offp ;
     Offi = Numeric->Offi ;
     Offx = (Entry *) Numeric->Offx ;
-    Singleton = (Entry *) Numeric->Singleton ;
 
-    Lbip = Numeric->Lbip ;
-    Ubip = Numeric->Ubip ;
-    Lblen = Numeric->Lblen ;
-    Ublen = Numeric->Ublen ;
+    Lip = Numeric->Lip ;
+    Uip = Numeric->Uip ;
+    Llen = Numeric->Llen ;
+    Ulen = Numeric->Ulen ;
     LUbx = (Unit **) Numeric->LUbx ;
-    Udiag = (Unit **) Numeric->Udiag ;
+    Udiag = Numeric->Udiag ;
 
     Rs = Numeric->Rs ;
     Pinv = Numeric->Pinv ;
     X = (Entry *) Numeric->Xwork ;		/* X is of size n */
-    Iwork = Numeric->Iwork ;			/* 5*maxblock for klu_factor */
+    Iwork = Numeric->Iwork ;			/* 5*maxblock for KLU_factor */
 						/* 1*maxblock for Pblock */
     Pblock = Iwork + 5*((size_t) Symbolic->maxblock) ;
     Common->nrealloc = 0 ;
@@ -74,7 +73,7 @@ static void klu_factor2
 
     /* compute the inverse of P from symbolic analysis.  Will be updated to
      * become the inverse of the numerical factorization when the factorization
-     * is done, for use in klu_refactor */
+     * is done, for use in KLU_refactor */
 #ifndef NDEBUG
     for (k = 0 ; k < n ; k++)
     {
@@ -90,12 +89,6 @@ static void klu_factor2
     for (k = 0 ; k < n ; k++) ASSERT (Pinv [k] != EMPTY) ;
 #endif
 
-    for (block = 0 ; block < nblocks ; block++)
-    {
-	/* Singleton [block] = 0 ; */
-	CLEAR (Singleton [block]) ;
-    }
-
     lnz = 0 ;
     unz = 0 ;
     Common->noffdiag = 0 ;
@@ -107,7 +100,13 @@ static void klu_factor2
 
     if (scale >= 0)
     {
-	/* use Pnum as workspace */
+	/* use Pnum as workspace. NOTE: scale factors are not yet permuted
+	 * according to the final pivot row ordering, so Rs [oldrow] is the
+	 * scale factor for A (oldrow,:), for the user's matrix A.  Pnum is
+	 * used as workspace in KLU_scale.  When the factorization is done,
+	 * the scale factors are permuted according to the final pivot row
+	 * permutation, so that Rs [k] is the scale factor for the kth row of
+	 * A(p,q) where p and q are the final row and column permutations. */
 	KLU_scale (scale, n, Ap, Ai, (double *) Ax, Rs, Pnum, Common) ;
 	if (Common->status < KLU_OK)
 	{
@@ -167,7 +166,7 @@ static void klu_factor2
 		    else
 		    {
 			ASSERT (newrow == k1) ;
-			PRINTF (("Singleton block %d", block)) ;
+			PRINTF (("singleton block %d", block)) ;
 			PRINT_ENTRY (Ax [p]) ;
 			s = Ax [p] ;
 		    }
@@ -175,7 +174,11 @@ static void klu_factor2
 	    }
 	    else
 	    {
-		/* row scaling */
+		/* row scaling.  NOTE: scale factors are not yet permuted
+		 * according to the pivot row permutation, so Rs [oldrow] is
+		 * used below.  When the factorization is done, the scale
+		 * factors are permuted, so that Rs [newrow] will be used in
+		 * klu_solve, klu_tsolve, and klu_rgrowth */
 		for (p = Ap [oldcol] ; p < pend ; p++)
 		{
 		    oldrow = Ai [p] ;
@@ -183,21 +186,21 @@ static void klu_factor2
 		    if (newrow < k1)
 		    {
 			Offi [poff] = oldrow ;
-			/*Offx [poff] = Ax [p] / Rs [oldrow] ; */
+			/* Offx [poff] = Ax [p] / Rs [oldrow] ; */
 			SCALE_DIV_ASSIGN (Offx [poff], Ax [p], Rs [oldrow]) ;
 			poff++ ;
 		    }
 		    else
 		    {
 			ASSERT (newrow == k1) ;
-			PRINTF (("Singleton block %d ", block)) ;
+			PRINTF (("singleton block %d ", block)) ;
 			PRINT_ENTRY (Ax[p]) ;
 			SCALE_DIV_ASSIGN (s, Ax [p], Rs [oldrow]) ;
 		    }
 		}
 	    }
 
-	    Singleton [block] = s ;
+	    Udiag [k1] = s ;
 
 	    if (IS_ZERO (s))
 	    {
@@ -235,15 +238,11 @@ static void klu_factor2
 		lsize = Common->initmem_amd * Lnz [block] + nk ;
 	    }
 
-	    /* allocates 5 arrays:
-	     * Lbip [block], Ubip [block], Lblen [block], Ublen [block],
-	     * LUbx [block] */
-	    KLU_kernel_factor (nk, Ap, Ai, Ax, Q, lsize,
-		    &LUbx [block], Udiag [block], Lblen [block], Ublen [block],
-		    Lbip [block], Ubip [block], Pblock, &lnz_block, &unz_block,
-		    X, Iwork,
-		    /* BTF and scale-related arguments: */
-		    k1, Pinv, Rs, Offp, Offi, Offx, Common) ;
+	    /* allocates 1 arrays: LUbx [block] */
+	    Numeric->LUsize [block] = KLU_kernel_factor (nk, Ap, Ai, Ax, Q,
+		    lsize, &LUbx [block], Udiag + k1, Llen + k1, Ulen + k1,
+		    Lip + k1, Uip + k1, Pblock, &lnz_block, &unz_block,
+		    X, Iwork, k1, Pinv, Rs, Offp, Offi, Offx, Common) ;
 
 	    if (Common->status < KLU_OK ||
 	       (Common->status == KLU_SINGULAR && Common->halt_if_singular))
@@ -253,11 +252,9 @@ static void klu_factor2
 	    }
 
 	    PRINTF (("\n----------------------- L %d:\n", block)) ;
-	    ASSERT (KLU_valid_LU (nk, TRUE, Lbip [block],
-		    Lblen [block], LUbx [block])) ;
+	    ASSERT (KLU_valid_LU (nk, TRUE, Lip+k1, Llen+k1, LUbx [block])) ;
 	    PRINTF (("\n----------------------- U %d:\n", block)) ;
-	    ASSERT (KLU_valid_LU (nk, FALSE, Ubip [block],
-		    Ublen [block], LUbx [block])) ;
+	    ASSERT (KLU_valid_LU (nk, FALSE, Uip+k1, Ulen+k1, LUbx [block])) ;
 
 	    /* -------------------------------------------------------------- */
 	    /* get statistics */
@@ -299,8 +296,6 @@ static void klu_factor2
     Numeric->unz = unz ;
     Numeric->max_lnz_block = max_lnz_block ;
     Numeric->max_unz_block = max_unz_block ;
-
-    /* Numeric->flops = EMPTY ;		TODO not yet computed */
 
     /* compute the inverse of Pnum */
 #ifndef NDEBUG
@@ -347,30 +342,31 @@ static void klu_factor2
 #ifndef NDEBUG
     {
 	PRINTF (("\n ############# KLU_BTF_FACTOR done, nblocks %d\n",nblocks));
-	Entry *singleton = Numeric->Singleton ;
+	Entry ss, *Udiag = Numeric->Udiag ;
 	for (block = 0 ; block < nblocks && Common->status == KLU_OK ; block++)
 	{
 	    k1 = R [block] ;
 	    k2 = R [block+1] ;
 	    nk = k2 - k1 ;
-	    PRINTF (("\n======================klu_factor output: k1 %d k2 %d nk %d\n",k1,k2,nk)) ;
+	    PRINTF (("\n======================KLU_factor output: k1 %d k2 %d nk %d\n",k1,k2,nk)) ;
 	    if (nk == 1)
 	    {
 		PRINTF (("singleton  ")) ;
 		/* ENTRY_PRINT (singleton [block]) ; */
-		PRINT_ENTRY (singleton [block]) ;
+		ss = Udiag [k1] ;
+		PRINT_ENTRY (ss) ;
 	    }
 	    else
 	    {
-		int *Lip, *Uip, *Llen, *Ulen ;
+		Int *Lip, *Uip, *Llen, *Ulen ;
 		Unit *LU ;
-		Lip = Lbip [block] ;
-		Llen = Lblen [block] ;
+		Lip = Numeric->Lip + k1 ;
+		Llen = Numeric->Llen + k1 ;
 		LU = (Unit *) Numeric->LUbx [block] ;
 		PRINTF (("\n---- L block %d\n", block));
 		ASSERT (KLU_valid_LU (nk, TRUE, Lip, Llen, LU)) ;
-		Uip = Ubip [block] ;
-		Ulen = Ublen [block] ;
+		Uip = Numeric->Uip + k1 ;
+		Ulen = Numeric->Ulen + k1 ;
 		PRINTF (("\n---- U block %d\n", block)) ;
 		ASSERT (KLU_valid_LU (nk, FALSE, Uip, Ulen, LU)) ;
 	    }
@@ -380,47 +376,27 @@ static void klu_factor2
 }
 
 
-/* ========================================================================== */
-/* === CLEAR_PTR ============================================================ */
-/* ========================================================================== */
-
-/* Set an array of pointers to NULL */
-
-#define CLEAR_PTR(Ptr,size) \
-{ \
-    int ii ; \
-    if (Ptr != NULL) \
-    { \
-	for (ii = 0 ; ii < size ; ii++) \
-	{ \
-	    Ptr [ii] = NULL ; \
-	} \
-    } \
-}
-
 
 /* ========================================================================== */
-/* === klu_factor =========================================================== */
+/* === KLU_factor =========================================================== */
 /* ========================================================================== */
 
-klu_numeric *KLU_factor		/* returns NULL if error, or a valid
-				   klu_numeric object if successful */
+KLU_numeric *KLU_factor		/* returns NULL if error, or a valid
+				   KLU_numeric object if successful */
 (
     /* --- inputs --- */
-    int Ap [ ],		/* size n+1, column pointers */
-    int Ai [ ],		/* size nz, row indices */
+    Int Ap [ ],		/* size n+1, column pointers */
+    Int Ai [ ],		/* size nz, row indices */
     double Ax [ ],
-    klu_symbolic *Symbolic,
+    KLU_symbolic *Symbolic,
     /* -------------- */
-    klu_common *Common
+    KLU_common *Common
 )
 {
-    int n, nzoff, nblocks, maxblock, block, k1, k2, nk, ok = TRUE ;
-    int *R ;
-    int **Lbip, **Ubip, **Lblen, **Ublen ;
-    klu_numeric *Numeric ;
-    Unit **Udiag ;
-    size_t n1, nzoff1, nunits, s, b6, n3, nk1 ;
+    Int n, nzoff, nblocks, maxblock, k, ok = TRUE ;
+    Int *R ;
+    KLU_numeric *Numeric ;
+    size_t n1, nzoff1, s, b6, n3 ;
 
     if (Common == NULL)
     {
@@ -446,7 +422,7 @@ klu_numeric *KLU_factor		/* returns NULL if error, or a valid
     nblocks = Symbolic->nblocks ;
     maxblock = Symbolic->maxblock ;
     R = Symbolic->R ;
-    PRINTF (("klu_factor:  n %d nzoff %d nblocks %d maxblock %d\n",
+    PRINTF (("KLU_factor:  n %d nzoff %d nblocks %d maxblock %d\n",
 	n, nzoff, nblocks, maxblock)) ;
 
     /* ---------------------------------------------------------------------- */
@@ -457,40 +433,52 @@ klu_numeric *KLU_factor		/* returns NULL if error, or a valid
     Common->initmem = MAX (1.0, Common->initmem) ;
     Common->tol = MIN (Common->tol, 1.0) ;
     Common->tol = MAX (0.0, Common->tol) ;
-    Common->growth = MAX (1.0, Common->growth) ;
+    Common->memgrow = MAX (1.0, Common->memgrow) ;
 
     /* ---------------------------------------------------------------------- */
     /* allocate the Numeric object  */
     /* ---------------------------------------------------------------------- */
 
-    /* this will not cause size_t overflow (already checked by klu_symbolic) */
+    /* this will not cause size_t overflow (already checked by KLU_symbolic) */
     n1 = ((size_t) n) + 1 ;
     nzoff1 = ((size_t) nzoff) + 1 ;
 
-    Numeric = klu_malloc (sizeof (klu_numeric), 1, Common) ;
+    Numeric = KLU_malloc (sizeof (KLU_numeric), 1, Common) ;
     if (Common->status < KLU_OK)
     {
 	/* out of memory */
 	Common->status = KLU_OUT_OF_MEMORY ;
 	return (NULL) ;
     }
+    Numeric->n = n ;
     Numeric->nblocks = nblocks ;
-    Numeric->Pnum = klu_malloc (n, sizeof (int), Common) ;
-    Numeric->Offp = klu_malloc (n1, sizeof (int), Common) ;
-    Numeric->Offi = klu_malloc (nzoff1, sizeof (int), Common) ;
-    Numeric->Offx = klu_malloc (nzoff1, sizeof (Entry), Common) ;
-    Numeric->Singleton = klu_malloc (nblocks, sizeof (Entry), Common) ;
+    Numeric->nzoff = nzoff ;
+    Numeric->Pnum = KLU_malloc (n, sizeof (Int), Common) ;
+    Numeric->Offp = KLU_malloc (n1, sizeof (Int), Common) ;
+    Numeric->Offi = KLU_malloc (nzoff1, sizeof (Int), Common) ;
+    Numeric->Offx = KLU_malloc (nzoff1, sizeof (Entry), Common) ;
 
-    Numeric->Lbip  = klu_malloc (nblocks, sizeof (int *), Common) ;
-    Numeric->Ubip  = klu_malloc (nblocks, sizeof (int *), Common) ;
-    Numeric->Lblen = klu_malloc (nblocks, sizeof (int *), Common) ;
-    Numeric->Ublen = klu_malloc (nblocks, sizeof (int *), Common) ;
-    Numeric->LUbx  = klu_malloc (nblocks, sizeof (Unit *), Common) ;
-    Numeric->Udiag = klu_malloc (nblocks, sizeof (Unit *), Common) ;
+    Numeric->Lip  = KLU_malloc (n, sizeof (Int), Common) ;
+    Numeric->Uip  = KLU_malloc (n, sizeof (Int), Common) ;
+    Numeric->Llen = KLU_malloc (n, sizeof (Int), Common) ;
+    Numeric->Ulen = KLU_malloc (n, sizeof (Int), Common) ;
+
+    Numeric->LUsize = KLU_malloc (nblocks, sizeof (size_t), Common) ;
+
+    Numeric->LUbx = KLU_malloc (nblocks, sizeof (Unit *), Common) ;
+    if (Numeric->LUbx != NULL)
+    {
+	for (k = 0 ; k < nblocks ; k++)
+	{
+	    Numeric->LUbx [k] = NULL ;
+	}
+    }
+
+    Numeric->Udiag = KLU_malloc (n, sizeof (Entry), Common) ;
 
     if (Common->scale > 0)
     {
-	Numeric->Rs = klu_malloc (n, sizeof (double), Common) ;
+	Numeric->Rs = KLU_malloc (n, sizeof (double), Common) ;
     }
     else
     {
@@ -498,84 +486,35 @@ klu_numeric *KLU_factor		/* returns NULL if error, or a valid
 	Numeric->Rs = NULL ;
     }
 
-    Numeric->Pinv = klu_malloc (n, sizeof (int), Common) ;
+    Numeric->Pinv = KLU_malloc (n, sizeof (Int), Common) ;
 
-    /* allocate permanent workspace for factorization and solve.
-     * Note that the solver will use an Xwork of size 4n, whereas
-     * the factorization codes use an Xwork of size n and integer space
-     * (Iwork) of size 6n. klu_condest uses an Xwork of size 2n. */
-
-    s = klu_mult_size_t (n, sizeof (Entry), &ok) ;
-    n3 = klu_mult_size_t (n, 3 * sizeof (Entry), &ok) ;
-    b6 = klu_mult_size_t (maxblock, 6 * sizeof (int), &ok) ;
-    Numeric->worksize = klu_add_size_t (s, MAX (n3, b6), &ok) ;
-    if (!ok)
-    {
-	/* problem too large (almost impossible to happen here) */
-	Common->status = KLU_TOO_LARGE ;
-	KLU_free_numeric (&Numeric, Common) ;
-	return (NULL) ;
-    }
-
-/*
-    Numeric->worksize = n * sizeof (Entry) +
-	MAX (n * 3 *sizeof (Entry), 6*maxblock * sizeof (int)) ;
-*/
-
-    Numeric->Work = klu_malloc (Numeric->worksize, 1, Common) ;
+    /* allocate permanent workspace for factorization and solve.  Note that the
+     * solver will use an Xwork of size 4n, whereas the factorization codes use
+     * an Xwork of size n and integer space (Iwork) of size 6n. KLU_condest
+     * uses an Xwork of size 2n.  Total size is:
+     *
+     *    n*sizeof(Entry) + max (6*maxblock*sizeof(Int), 3*n*sizeof(Entry))
+     */
+    s = KLU_mult_size_t (n, sizeof (Entry), &ok) ;
+    n3 = KLU_mult_size_t (n, 3 * sizeof (Entry), &ok) ;
+    b6 = KLU_mult_size_t (maxblock, 6 * sizeof (Int), &ok) ;
+    Numeric->worksize = KLU_add_size_t (s, MAX (n3, b6), &ok) ;
+    Numeric->Work = KLU_malloc (Numeric->worksize, 1, Common) ;
     Numeric->Xwork = Numeric->Work ;
-    Numeric->Iwork = (int *) ((Entry *) Numeric->Xwork + n) ;
-
-    if (Common->status < KLU_OK)
+    Numeric->Iwork = (Int *) ((Entry *) Numeric->Xwork + n) ;
+    if (!ok || Common->status < KLU_OK)
     {
-	/* out of memory */
+	/* out of memory or problem too large */
+	Common->status = ok ? KLU_OUT_OF_MEMORY : KLU_TOO_LARGE ;
 	KLU_free_numeric (&Numeric, Common) ;
 	return (NULL) ;
-    }
-
-    /* clear the pointer arrays, so that klu_free_numeric works OK */
-    CLEAR_PTR (Numeric->Lbip,  nblocks) ;
-    CLEAR_PTR (Numeric->Ubip,  nblocks) ;
-    CLEAR_PTR (Numeric->Lblen, nblocks) ;
-    CLEAR_PTR (Numeric->Ublen, nblocks) ;
-    CLEAR_PTR (Numeric->LUbx,  nblocks) ;
-    CLEAR_PTR (Numeric->Udiag, nblocks) ;
-
-    /* allocate the column pointer arrays for each block */
-    Lbip = Numeric->Lbip ;
-    Ubip = Numeric->Ubip ;
-    Lblen = Numeric->Lblen ;
-    Ublen = Numeric->Ublen ;
-    Udiag = (Unit **) Numeric->Udiag ;
-
-    for (block = 0 ; block < nblocks ; block++)
-    {
-	k1 = R [block] ;
-	k2 = R [block+1] ;
-	nk = k2 - k1 ;
-	nk1 = ((size_t) nk) + 1 ;   /* cannot overflow */
-	if (nk > 1)
-	{
-	    nunits = UNITS (Entry, nk) ;
-	    Lbip [block]  = klu_malloc (nk1, sizeof (int), Common) ;
-	    Ubip [block]  = klu_malloc (nk1, sizeof (int), Common) ;
-	    Lblen [block] = klu_malloc (nk1, sizeof (int), Common) ;
-	    Ublen [block] = klu_malloc (nk1, sizeof (int), Common) ;
-	    Udiag [block] = klu_malloc (nunits, sizeof (Unit), Common) ;
-	    if (Common->status < KLU_OK)
-	    {
-		/* out of memory */
-	 	KLU_free_numeric (&Numeric, Common) ;
-		return (NULL) ;
-	    }
-	}
     }
 
     /* ---------------------------------------------------------------------- */
     /* factorize the blocks */
     /* ---------------------------------------------------------------------- */
 
-    klu_factor2 (Ap, Ai, (Entry *) Ax, Symbolic, Numeric, Common) ;
+    factor2 (Ap, Ai, (Entry *) Ax, Symbolic, Numeric, Common) ;
 
     /* ---------------------------------------------------------------------- */
     /* return or free the Numeric object */

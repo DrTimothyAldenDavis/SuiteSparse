@@ -4,7 +4,7 @@ function test24
 %   test24
 % See also cholmod_test
 
-% Copyright 2006, Timothy A. Davis, University of Florida
+% Copyright 2006-2007, Timothy A. Davis, University of Florida
 
 fprintf ('=================================================================\n');
 fprintf ('test24: test sdmult\n') ;
@@ -35,7 +35,7 @@ for trials = 1:1000
 	    end
 
 	    % MATLAB does not support empty complex matrices
-	    if (isempty (S) || isempty (F))
+	    if (isempty (S) | isempty (F))				    %#ok
 		S = sparse (real (S)) ;
 		F = real (F) ;
 	    end

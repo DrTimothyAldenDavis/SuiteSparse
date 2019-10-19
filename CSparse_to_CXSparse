@@ -29,11 +29,10 @@ my $out_dir = @ARGV[1];
 my $tar_file = @ARGV[2];
 
 #-------------------------------------------------------------------------------
-# copy all files from CSparse to CXSparse (except MATLAB directory).
+# copy all files from CSparse to CXSparse
 #-------------------------------------------------------------------------------
 
 system ("cp -pr $in_dir $out_dir") ;
-system ("rm -rf $out_dir/MATLAB") ;
 
 #-------------------------------------------------------------------------------
 # Add the new files from the tar file given by the third argument
@@ -109,20 +108,20 @@ foreach my $fff ( @demo_files )
 		s/cs_ci\.h/cs.h/ ;
 		# fabs becomes cabs
 		s/fabs/cabs/g;
-		# change double to double _Complex
-		s/\bdouble\b/double _Complex/g;
+		# change double to cs_complex_t
+		s/\bdouble\b/cs_complex_t/g;
 		# (double) typecasts stay double
-		s/\(double _Complex\) /(double) /g;
-		# tic, toc, tol, and norm are double, not double _Complex
-		s/double _Complex norm/double norm/;
-		s/double _Complex tic/double tic/;
-		s/double _Complex toc \(double _Complex/double toc (double/;
-		s/double _Complex s = tic/double s = tic/;
-		s/double _Complex tol/double tol/;
+		s/\(cs_complex_t\) /(double) /g;
+		# tic, toc, tol, and norm are double, not cs_complex_t
+		s/cs_complex_t norm/double norm/;
+		s/cs_complex_t tic/double tic/;
+		s/cs_complex_t toc \(cs_complex_t/double toc (double/;
+		s/cs_complex_t s = tic/double s = tic/;
+		s/cs_complex_t tol/double tol/;
 		# cumsum, S->lnz, S->unz are double
-		s/double _Complex lnz/double lnz/;
-		s/double _Complex unz/double unz/;
-		s/double _Complex cs_cumsum/double cs_cumsum/;
+		s/cs_complex_t lnz/double lnz/;
+		s/cs_complex_t unz/double unz/;
+		s/cs_complex_t cs_cumsum/double cs_cumsum/;
 		# local variable declarations that stay double
 		s/,  / ;\n    double / ;
 		print OUT $_;
@@ -150,20 +149,20 @@ foreach my $fff ( @demo_files )
 		s/\%d/\%ld/g;
 		# fabs becomes cabs
 		s/fabs/cabs/g;
-		# change double to double _Complex
-		s/\bdouble\b/double _Complex/g;
+		# change double to cs_complex_t
+		s/\bdouble\b/cs_complex_t/g;
 		# (double) typecasts stay double
-		s/\(double _Complex\) /(double) /g;
-		# tic, toc, tol, and norm are double, not double _Complex
-		s/double _Complex norm/double norm/;
-		s/double _Complex tic/double tic/;
-		s/double _Complex toc \(double _Complex/double toc (double/;
-		s/double _Complex s = tic/double s = tic/;
-		s/double _Complex tol/double tol/;
+		s/\(cs_complex_t\) /(double) /g;
+		# tic, toc, tol, and norm are double, not cs_complex_t
+		s/cs_complex_t norm/double norm/;
+		s/cs_complex_t tic/double tic/;
+		s/cs_complex_t toc \(cs_complex_t/double toc (double/;
+		s/cs_complex_t s = tic/double s = tic/;
+		s/cs_complex_t tol/double tol/;
 		# cumsum, S->lnz, S->unz are double
-		s/double _Complex lnz/double lnz/;
-		s/double _Complex unz/double unz/;
-		s/double _Complex cs_cumsum/double cs_cumsum/;
+		s/cs_complex_t lnz/double lnz/;
+		s/cs_complex_t unz/double unz/;
+		s/cs_complex_t cs_cumsum/double cs_cumsum/;
 		# local variable declarations that stay double
 		s/,  / ;\n    double / ;
 		print OUT $_;
@@ -178,30 +177,37 @@ foreach my $fff ( @demo_files )
 # Convert Source/*.c files (except cs_house.c)
 #-------------------------------------------------------------------------------
 
-# note that cs.h and cs_house.c are not included in this list
-my @src_files = ('cs_add.c', 'cs_amd.c', 'cs_chol.c', 'cs_cholsol.c',
-    'cs_counts.c', 'cs_cumsum.c', 'cs_dfs.c', 'cs_dmperm.c', 'cs_droptol.c',
-    'cs_dropzeros.c', 'cs_dupl.c', 'cs_entry.c', 'cs_etree.c', 'cs_fkeep.c',
-    'cs_gaxpy.c', 'cs_happly.c', 'cs_ipvec.c', 'cs_load.c', 'cs_lsolve.c',
-    'cs_ltsolve.c', 'cs_lu.c', 'cs_lusol.c', 'cs_malloc.c', 'cs_maxtrans.c',
-    'cs_multiply.c', 'cs_norm.c', 'cs_permute.c', 'cs_pinv.c', 'cs_post.c',
-    'cs_print.c', 'cs_pvec.c', 'cs_qr.c', 'cs_qrsol.c', 'cs_scatter.c',
-    'cs_scc.c', 'cs_schol.c', 'cs_sqr.c', 'cs_symperm.c', 'cs_tdfs.c',
-    'cs_transpose.c', 'cs_compress.c', 'cs_updown.c', 'cs_usolve.c',
-    'cs_util.c', 'cs_utsolve.c', 'cs_reach.c', 'cs_spsolve.c',
-    'cs_leaf.c', 'cs_ereach.c', 'cs_randperm.c' ) ;
+# note that cs.h, cs_house.c, cs_updown.c, ...
+# are not included in this list
+my @src_files = ('Source/cs_add.c', 'Source/cs_amd.c', 'Source/cs_chol.c',
+    'Source/cs_cholsol.c', 'Source/cs_counts.c', 'Source/cs_cumsum.c',
+    'Source/cs_dfs.c', 'Source/cs_dmperm.c', 'Source/cs_droptol.c',
+    'Source/cs_dropzeros.c', 'Source/cs_dupl.c', 'Source/cs_entry.c',
+    'Source/cs_etree.c', 'Source/cs_fkeep.c', 'Source/cs_gaxpy.c',
+    'Source/cs_happly.c', 'Source/cs_ipvec.c', 'Source/cs_load.c',
+    'Source/cs_lsolve.c', 'Source/cs_ltsolve.c', 'Source/cs_lu.c',
+    'Source/cs_lusol.c', 'Source/cs_malloc.c', 'Source/cs_maxtrans.c',
+    'Source/cs_multiply.c', 'Source/cs_norm.c', 'Source/cs_permute.c',
+    'Source/cs_pinv.c', 'Source/cs_post.c', 'Source/cs_print.c',
+    'Source/cs_pvec.c', 'Source/cs_qr.c', 'Source/cs_qrsol.c',
+    'Source/cs_scatter.c', 'Source/cs_scc.c', 'Source/cs_schol.c',
+    'Source/cs_sqr.c', 'Source/cs_symperm.c', 'Source/cs_tdfs.c',
+    'Source/cs_transpose.c', 'Source/cs_compress.c',
+    'Source/cs_usolve.c', 'Source/cs_util.c', 'Source/cs_utsolve.c',
+    'Source/cs_reach.c', 'Source/cs_spsolve.c', 'Source/cs_leaf.c',
+    'Source/cs_ereach.c', 'Source/cs_randperm.c' ) ;
 
 foreach my $file ( @src_files )
 {
-    my $infile  = sprintf ("%s/Source/%s", $in_dir, $file) ;
-    my $outfile = sprintf ("%s/Source/%s", $out_dir, $file) ;
+    my $infile  = sprintf ("%s/%s", $in_dir, $file) ;
+    my $outfile = sprintf ("%s/%s", $out_dir, $file) ;
     my $fbase = basename($file,('.c'));
 
     if (open(OUT,">$outfile"))
     {
 	if (open(IN,$infile))
 	{
-	    my $qrsol_beta_seen = 0;
+	    # my $qrsol_beta_seen = 0;
 	    while (<IN>)
 	    {
 
@@ -231,15 +237,36 @@ foreach my $file ( @src_files )
 		# local variable declarations that stay double
 		s/,  / ;\n    double / ;
 
+		# nargin and nargout stay "int" for MATLAB mexFunctions
+		s/CS_INT nargin/int nargin/;
+		s/CS_INT nargout/int nargout/;
+
 		#---------------------------------------------------------------
 		# Special cases.  Some undo changes made above.
 		#---------------------------------------------------------------
+
+		# cs_mex.c
+		if ($fbase =~ /cs_mex/)
+		{
+		    s/matrix must be CS_ENTRY/matrix must be double/;
+		    s/A->p =/A->p = (CS_INT *)/;
+		    s/A->i =/A->i = (CS_INT *)/;
+		    s/, A->p/, (mwIndex *) A->p/;
+		    s/, A->i/, (mwIndex *) A->i/;
+		}
+
+		# fix comments in cs_add_mex.c and cs_permute_mex.c
+		if ($fbase =~ /cs_add_mex/ || $fbase =~ /cs_permute_mex/)
+		{
+		    s/via CS_ENTRY transpose/via double transpose/;
+		}
 
 		# cs_chol
 		if ($fbase =~ /cs_chol/)
 		{
 		    s/\(d <= 0\)/(CS_REAL (d) <= 0 || CS_IMAG (d) != 0)\n\t   /;
 		    s/lki \* lki/lki * CS_CONJ (lki)/;
+		    s/ = lki/ = CS_CONJ (lki)/;
 		}
 
 		# cs_norm
@@ -251,7 +278,7 @@ foreach my $file ( @src_files )
 		# cs_cumsum
 		if ($fbase =~ /cs_cumsum/)
 		{
-		    s/^CS_ENTRY cs_cumsum/double cs_cumsum/;
+		    s/CS_ENTRY/double/;
 		}
 
 		# cs_transpose
@@ -260,33 +287,23 @@ foreach my $file ( @src_files )
 		    s/Ax \[p\]/(values > 0) ? CS_CONJ (Ax [p]) : Ax [p]/;
 		}
 
-		# cs_updown
-		if ($fbase =~ /cs_updown/)
+		# cs_symperm
+		if ($fbase =~ /cs_symperm/)
 		{
-		    s/beta\*beta/beta*CS_CONJ(beta)/ ;
-		    s/alpha\*alpha/alpha*CS_CONJ(alpha)/ ;
+		    s/Ax \[p\]/(i2 <= j2) ? Ax [p] : CS_CONJ (Ax [p])/;
 		}
 
-		# cs_qrsol
-		if ($fbase =~ /cs_qrsol/)
+		# cs_qr
+		if ($fbase =~ /cs_qr/)
 		{
-		    if ($qrsol_beta_seen ne 0)
-		    {
-			s/(N->B \[k\])/CS_CONJ ($1)/;
-		    }
-		    else
-		    {
-			if (/N->B \[k\]/)
-			{
-			    $qrsol_beta_seen = 1;
-			}
-		    }
+		    s/n, sizeof \(CS_ENTRY\)/n, sizeof (double)/;
 		}
 
 		# cs_happly
 		if ($fbase =~ /cs_happly/)
 		{
 		    s/^(.*tau.*)(Vx\s*\[p\])/$1CS_CONJ ($2)/;
+		    s/CS_ENTRY beta/double beta/;
 		}
 
 		# cs_ltsolve

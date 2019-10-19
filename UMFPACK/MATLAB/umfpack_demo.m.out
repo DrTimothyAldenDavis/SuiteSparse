@@ -1,7 +1,7 @@
 umfpack_demo
 
 Enter the printing level for UMFPACK's output statistics:
-0: none, 1: errors only, 2: statistics, 4: print some of outputs
+0: none, 1: errors only, 2: statistics, 4: print some outputs
 5: print all output [default is 1]: 
 
 --------------------------------------------------------------
@@ -31,7 +31,7 @@ q = colmmd (A) ;
 
 Solution to Ax=b via MATLAB factorization:
 x = U \ (L \ (P * b)) ; x (q) = x ;
-Difference between UMFPACK and MATLAB solution: 3.55271e-14
+Difference between UMFPACK and MATLAB solution: 5.55112e-15
 
 MATLAB LU flop count: 3160
 
@@ -39,7 +39,7 @@ MATLAB LU flop count: 3160
 Solve A'x=b:
 Solving A'x=b via UMFPACK:
 Solving A'x=b via MATLAB:
-Difference between UMFPACK and MATLAB solution: 3.55271e-15
+Difference between UMFPACK and MATLAB solution: 1.77636e-15
 
 --------------------------------------------------------------
 Compute C = A', and compute the LU factorization of C.
@@ -53,22 +53,22 @@ norm (P*(R\C)*Q - L*U, 1) = 1.17961e-16 (exact) 5.60533e-17 (estimated)
 Solution to Ax=b via UMFPACK, using the factors of C:
 x = R \ (P' * (L' \ (U' \ (Q' * b)))) ;
 Solution to Ax=b via MATLAB:
-Difference between UMFPACK and MATLAB solution: 8.88178e-15
+Difference between UMFPACK and MATLAB solution: 3.55271e-15
 
 --------------------------------------------------------------
 
 Solve AX=B, where B is n-by-10, and sparse
-Difference between UMFPACK and MATLAB solution: 7.40106e-14
+Difference between UMFPACK and MATLAB solution: 6.3926e-14
 
 --------------------------------------------------------------
 
 Solve AX=B, where B is n-by-10, and sparse, using umfpack_btf
-Difference between UMFPACK and MATLAB solution: 7.66136e-14
+Difference between UMFPACK and MATLAB solution: 4.41347e-14
 
 --------------------------------------------------------------
 
 Solve A'X=B, where B is n-by-10, and sparse
-Difference between UMFPACK and MATLAB solution: 4.5599e-14
+Difference between UMFPACK and MATLAB solution: 8.90054e-14
 
 --------------------------------------------------------------
 det(A): -4.07453e-05  UMFPACK determinant: -4.07453e-05

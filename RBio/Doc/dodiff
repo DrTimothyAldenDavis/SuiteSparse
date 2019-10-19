@@ -1,0 +1,15 @@
+
+# complex vs real
+diff ../RBcread_64.f ../RBrread_64.f
+diff ../RBcread_32.f ../RBrread_32.f
+
+# 32 vs 64 bit
+diff ../RBcread_32.f ../RBcread_64.f
+diff ../RBcsplit_32.f ../RBcsplit_64.f
+diff ../RBraw_mex_32.f ../RBraw_mex_64.f
+diff ../RBread_32.f ../RBread_64.f
+diff ../RBread_mex_32.f ../RBread_mex_64.f
+diff ../RBrread_32.f ../RBrread_64.f
+diff ../RBtype_mex_32.f ../RBtype_mex_64.f
+diff ../RBwrite_32.f ../RBwrite_64.f
+diff ../RBwrite_mex_32.f ../RBwrite_mex_64.f

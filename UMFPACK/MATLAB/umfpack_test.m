@@ -1,12 +1,10 @@
-% UMFPACK_TEST: test UMFPACK solve: b/A, A\b with iterative refinement
-% Requires the UFsparse package for downloading matrices from the UF
-% sparse matrix library.
+%UMFPACK_TEST for testing umfpack2 (requires UFget)
 %
 % Example:
 %   umfpack_test
-%
-% Copyright (c) 1995-2006 by Timothy A. Davis.
-% All Rights Reserved.  Type umfpack_details for License.
+% See also umfpack2
+
+% Copyright 1995-2007 by Timothy A. Davis.
 
 index = UFget ;
 
@@ -17,7 +15,6 @@ f = f (i) ;
 Control = umfpack2 ;
 Control (1) = 0 ;
 
-warning ('off', 'all') ;
 figure (1)
 clf
 
@@ -142,18 +139,15 @@ for i = f
 	end
 	err = err / denom ;
 	err3 = err3 / denom ;
-	fprintf ('det:  %24.16e + (%24.16e)i MATLAB\n', ...
+	fprintf ('det:  %20.12e + (%20.12e)i MATLAB\n', ...
 	    real(det1), imag(det1)) ;
-	fprintf ('det:  %24.16e + (%24.16e)i umfpack2\n', ...
+	fprintf ('det:  %20.12e + (%20.12e)i umfpack2\n', ...
 	    real(det2), imag(det2)) ;
-	fprintf ('det: (%24.16e + (%24.16e)i) * 10^(%g) umfpack2\n', ...
+	fprintf ('det: (%20.12e + (%20.12e)i) * 10^(%g) umfpack2\n', ...
 	    real(det3), imag(det3), dexp3) ;
 	fprintf ('diff %g %g\n', err, err3) ;
 
     catch
 	fprintf ('failed\n') ;
     end
-
-%   pause
-
 end

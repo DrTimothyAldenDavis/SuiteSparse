@@ -1,4 +1,0 @@
-#!/bin/csh
-foreach file ($argv[1-])
-    gcov -f $file >&
-end

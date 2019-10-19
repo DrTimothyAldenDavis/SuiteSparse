@@ -1,5 +1,5 @@
 function [mtype Ap Ai Ax title key nrow] = RBraw (filename)		    %#ok
-%RBraw: read the raw contents of a Rutherford/Boeing file
+%RBRAW read the raw contents of a Rutherford/Boeing file
 %
 %   [mtype Ap Ai Ax title key nrow] = RBraw (filename)
 %
@@ -27,6 +27,6 @@ function [mtype Ap Ai Ax title key nrow] = RBraw (filename)		    %#ok
 %
 % See also RBfix, RBread, RBreade.
 
-% Copyright 2006, Timothy A. Davis
+% Copyright 2007, Timothy A. Davis
 
 error ('RBraw mexFunction not found') ;

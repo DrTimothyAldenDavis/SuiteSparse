@@ -1,5 +1,5 @@
 function x = umfpack_btf (A, b, Control)
-% UMFPACK_BTF
+%UMFPACK_BTF factorize A using a block triangular form
 %
 % Example:
 %   x = umfpack_btf (A, b, Control)
@@ -10,10 +10,9 @@ function x = umfpack_btf (A, b, Control)
 % MATLAB's \ operator.  The Control parameter is optional (Type umfpack_details
 % and umfpack_report for details on its use).  A must be square.
 %
-% See also umfpack, umfpack2, umfpack_factorize, umfpack_details, dmperm
+% See also umfpack, umfpack2, umfpack_details, dmperm
 
-% Copyright (c) 1995-2006 by Timothy A. Davis.
-% All Rights Reserved.  Type umfpack_details for License.
+% Copyright 1995-2007 by Timothy A. Davis.
 
 if (nargin < 2)
     help umfpack_btf
@@ -25,7 +24,7 @@ if (m ~= n)
     help umfpack_btf
     error ('umfpack_btf:  A must be square') ;
 end
-[m1 n1] = size (b) ;
+m1 = size (b,1) ;
 if (m1 ~= n)
     help umfpack_btf
     error ('umfpack_btf:  b has the wrong dimensions') ;
@@ -46,7 +45,7 @@ nblocks = length (r) - 1 ;
 % solve the system
 %-------------------------------------------------------------------------------
 
-if (nblocks == 1 || sprank (A) < n)
+if (nblocks == 1 | sprank (A) < n)					    %#ok
 
     %---------------------------------------------------------------------------
     % matrix is irreducible or structurally singular

@@ -6,6 +6,7 @@ cs *cs_multiply (const cs *A, const cs *B)
     double *x, *Bx, *Cx ;
     cs *C ;
     if (!CS_CSC (A) || !CS_CSC (B)) return (NULL) ;	 /* check inputs */
+    if (A->n != B->m) return (NULL) ;
     m = A->m ; anz = A->p [A->n] ;
     n = B->n ; Bp = B->p ; Bi = B->i ; Bx = B->x ; bnz = Bp [n] ;
     w = cs_calloc (m, sizeof (int)) ;			 /* get workspace */

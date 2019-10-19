@@ -1,13 +1,13 @@
 function UFfull_write (filename, A)					    %#ok
-%UFfull_write: write a full matrix to a file
+%UFFULL_WRITE write a full matrix using a subset of Matrix Market format
 % Usage:
 %
 %   UFfull_write (filename, A)
 %
 % A small subset of the Matrix Market format is used.  The first line is one of:
 %
-%	%%MatrixMarket matrix real complex general
-%	%%MatrixMarket matrix array complex general
+%    %%MatrixMarket matrix real complex general
+%    %%MatrixMarket matrix array complex general
 % 
 % The second line contains two numbers: m and n, where A is m-by-n.  The next
 % m*n lines contain the numerical values (one per line if real, two per line
@@ -23,7 +23,7 @@ function UFfull_write (filename, A)					    %#ok
 %
 % See also mread, mwrite, RBwrite, RBread.
 
-% Copyright 2006, Timothy A. Davis
+% Copyright 2006-2007, Timothy A. Davis
 
 error ('UFfull_write mexFunction not found') ;
 

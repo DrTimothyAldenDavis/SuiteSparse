@@ -17,6 +17,7 @@
 # BTF	  0.8 or later  permutation to block triangular form
 # LDL	  1.2 or later	concise sparse LDL'
 # LPDASA  any		linear program solve (dual active set algorithm)
+# CXSparse any		extended version of CSparse (int/long, real/complex)
 #
 # The UFconfig directory and the above packages should all appear in a single
 # directory, in order for the Makefile's within each package to find this file.
@@ -50,8 +51,15 @@ F77LIB =
 # C and Fortran libraries
 LIB = -lm
 
-# For compiling MATLAB mexFunctions
-MEX = mex -O
+# For compiling MATLAB mexFunctions (MATLAB 7.4 or later)
+MEX = mex -O -largeArrayDims -lmwlapack
+
+# For compiling MATLAB mexFunctions (MATLAB 7.3, but the 7.4 might work OK)
+# MEX = mex -O -largeArrayDims
+
+# For MATLAB 7.2 or earlier, you must use one of these options:
+# MEX = mex -O -lmwlapack
+# MEX = mex -O
 
 # Which version of MAKE you are using (default is "make")
 # MAKE = make
@@ -71,9 +79,13 @@ MEX = mex -O
 # on a 2.5Ghz dual-core AMD Opteron.
 
 # These settings will probably not work, since there is no fixed convention for
-# naming the BLAS and LAPACK library (*.a or *.so) files.  Assume the Goto
-# BLAS are available.
-BLAS = -lgoto -lgfortran -lgfortranbegin
+# naming the BLAS and LAPACK library (*.a or *.so) files.
+
+# Using the Goto BLAS:
+# BLAS = -lgoto -lgfortran -lgfortranbegin
+
+# This is probably slow ... it might connect to the Standard Reference BLAS:
+BLAS = -lblas -lgfortran -lgfortranbegin
 LAPACK = -llapack
 
 # The BLAS might not contain xerbla, an error-handling routine for LAPACK and

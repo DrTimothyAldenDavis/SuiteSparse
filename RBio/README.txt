@@ -1,16 +1,11 @@
-RBio: Version 1.0, Dec 2, 2006.
-A MATLAB Toolbox for reading/writing sparse matrices in Rutherford/Boeing
-format.
+RBio: Version 1.1, May 31, 2007.  A MATLAB Toolbox for reading/writing sparse
+matrices in Rutherford/Boeing format.
 
-NOTE: RBio is not yet ported to 64-bit MATLAB.
-
-To install, using MATLAB:
-
-    type "RBinstall" in the MATLAB command window.
-
-To install, using the Makefile:
-
-    type "make" at the Unix/Linux prompt.
+To install, cd to the RBio directory and type "RBinstall" in the MATLAB
+command window.  RBio is written in Fortran because the Rutherford/Boeing
+format can require Fortran I/O statements, depending on how the files are
+stored.  Files created by RBio do not require the Fortran I/O library to read
+them, however.
 
 --------------------------------------------------------------------------------
 MATLAB help for RBio:
@@ -38,38 +33,53 @@ MATLAB help for RBio:
 
   See also UFget, mread, mwrite.
 
-  Copyright 2006, Timothy A. Davis
+  Copyright 2007, Timothy A. Davis
 
 --------------------------------------------------------------------------------
 Files and directories:
 --------------------------------------------------------------------------------
 
-
     README.txt	    this file
     Contents.m	    MATLAB help for the RBio toolbox
 
-    Test	    test matrices
-
-    Makefile	    Makefile for compiling RBio (or use RBinstall in MATLAB)
-    RBcread.f	    read a complex sparse matrix
-    RBcsplit.f	    split a complex matrix into its real and imaginary parts
     RBfix.m	    read a possibly corrupted R/B file
-    RBinstall.m	    compile RBio for use in MATLAB
-    RBint.f	    determine the appropriate integer class
-    RBraw.f	    read the raw contents of a R/B file
+    RBinstall.m	    compile and install RBio for use in MATLAB, and run tests
+    RBmake.m	    compile RBio for use in MATLAB
     RBraw.m	    MATLAB help for RBraw
     RBreade.m	    read a finite-element sparse matrix
-    RBread.f	    utility routines for either real or complex matrices
-    RBread.m	    MATLAB help for RBread_mex.f
-    RBread_mex.f    mexFunction to read a real or complex sparse matrix
-    RBrread.f	    read a real sparse matrix, compare with RBcread.f
-    RBtype.f	    determine the Rutherford/Boeing type
+    RBread.m	    MATLAB help for RBread
     RBtype.m	    MATLAB help for RBtype
-    RBwrite.f	    write a real or complex sparse matrix
-    RBwrite.m	    MATLAB help for RBwrite_mex.f
-    RBwrite_mex.f   mexFunction to write a real or complex sparse matrix
+    RBwrite.m	    MATLAB help for RBwrite
 
-./Test:
+    RBcread_32.f    read a complex sparse matrix, compare with RBrread_*.f
+    RBcread_64.f
+
+    RBcsplit_32.f   split a complex matrix into its real and imaginary parts
+    RBcsplit_64.f
+
+    RBraw_mex_32.f  mexFunction to read the raw contents of a R/B file
+    RBraw_mex_64.f
+
+    RBread_32.f	    utility routines for either real or complex matrices
+    RBread_64.f
+
+    RBread_mex_32.f mexFunction to read a real or complex sparse matrix
+    RBread_mex_64.f
+
+    RBrread_32.f    read a real sparse matrix, compare with RBcread_*.f
+    RBrread_64.f
+
+    RBtype_mex_32.f mexFunction to determine the Rutherford/Boeing type
+    RBtype_mex_64.f
+
+    RBwrite_32.f    write a real or complex sparse matrix
+    RBwrite_64.f
+
+    RBwrite_mex_32.f mexFunction to write a real or complex sparse matrix
+    RBwrite_mex_64.f
+
+./Test: directory with test codes and matrices
+
     testRB1.m	    simple test script for RBio
     testRB2.m	    simple test script for RBio (requires UFget)
     bcsstk01.rb	    HB/bcsstk01 Problem.A from UF Sparse Matrix Collection
@@ -82,4 +92,11 @@ Files and directories:
     Note that the west0479 matrix provided in the Test directory is the correct
     version.  The MATLAB statement "load west0479" gives you a matrix that is
     slightly incorrect (as of MATLAB Version 7.3, R2006b).
+
+./Doc: directory with additional documentation and license
+
+    ChangeLog	    changes since first release
+    dodiff	    compare 32-bit and 64-bit codes, real and complex
+    gpl.txt	    GNU license
+    License.txt	    license
 

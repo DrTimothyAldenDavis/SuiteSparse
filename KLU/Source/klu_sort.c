@@ -1,5 +1,5 @@
 /* ========================================================================== */
-/* === klu_sort ============================================================= */
+/* === KLU_sort ============================================================= */
 /* ========================================================================== */
 
 /* sorts the columns of L and U so that the row indices appear in strictly
@@ -14,12 +14,12 @@
 
 /* Sort L or U using a double-transpose */
 
-static void sort (int n, int *Xip, int *Xlen, Unit *LU, int *Tp, int *Tj,
-    Entry *Tx, int *W)
+static void sort (Int n, Int *Xip, Int *Xlen, Unit *LU, Int *Tp, Int *Tj,
+    Entry *Tx, Int *W)
 {
-    int *Xi ;
+    Int *Xi ;
     Entry *Xx ;
-    int p, i, j, len, nz, tp, xlen, pend ;
+    Int p, i, j, len, nz, tp, xlen, pend ;
 
     ASSERT (KLU_valid_LU (n, FALSE, Xip, Xlen, LU)) ;
 
@@ -85,21 +85,20 @@ static void sort (int n, int *Xip, int *Xlen, Unit *LU, int *Tp, int *Tj,
 
 
 /* ========================================================================== */
-/* === klu_sort ============================================================= */
+/* === KLU_sort ============================================================= */
 /* ========================================================================== */
 
-int KLU_sort
+Int KLU_sort
 (
-    klu_symbolic *Symbolic,
-    klu_numeric *Numeric,
-    klu_common *Common
+    KLU_symbolic *Symbolic,
+    KLU_numeric *Numeric,
+    KLU_common *Common
 )
 {
-    int *R, *W, *Tp, *Ti ;
+    Int *R, *W, *Tp, *Ti, *Lip, *Uip, *Llen, *Ulen ;
     Entry *Tx ;
-    int **Lbip, **Ubip, **Lblen, **Ublen ;
     Unit **LUbx ;
-    int n, nk, nz, block, nblocks, maxblock ;
+    Int n, nk, nz, block, nblocks, maxblock, k1 ;
     size_t m1 ;
 
     if (Common == NULL)
@@ -113,20 +112,20 @@ int KLU_sort
     nblocks = Symbolic->nblocks ;
     maxblock = Symbolic->maxblock ;
 
-    Lbip = Numeric->Lbip ;
-    Lblen = Numeric->Lblen ;
-    Ubip = Numeric->Ubip ;
-    Ublen = Numeric->Ublen ;
+    Lip  = Numeric->Lip ;
+    Llen = Numeric->Llen ;
+    Uip  = Numeric->Uip ;
+    Ulen = Numeric->Ulen ;
     LUbx = (Unit **) Numeric->LUbx ;
 
     m1 = ((size_t) maxblock) + 1 ;
 
     /* allocate workspace */
     nz = MAX (Numeric->max_lnz_block, Numeric->max_unz_block) ;
-    W  = klu_malloc (maxblock, sizeof (int), Common) ;
-    Tp = klu_malloc (m1, sizeof (int), Common) ;
-    Ti = klu_malloc (nz, sizeof (int), Common) ;
-    Tx = klu_malloc (nz, sizeof (Entry), Common) ;
+    W  = KLU_malloc (maxblock, sizeof (Int), Common) ;
+    Tp = KLU_malloc (m1, sizeof (Int), Common) ;
+    Ti = KLU_malloc (nz, sizeof (Int), Common) ;
+    Tx = KLU_malloc (nz, sizeof (Entry), Common) ;
 
     PRINTF (("\n======================= Start sort:\n")) ;
 
@@ -135,14 +134,13 @@ int KLU_sort
 	/* sort each block of L and U */
 	for (block = 0 ; block < nblocks ; block++)
 	{
-	    nk = R [block+1] - R [block] ;
+	    k1 = R [block] ;
+	    nk = R [block+1] - k1 ;
 	    if (nk > 1)
 	    {
 		PRINTF (("\n-------------------block: %d nk %d\n", block, nk)) ;
-		sort (nk, Lbip [block], Lblen [block], LUbx [block],
-		    Tp, Ti, Tx, W) ;
-		sort (nk, Ubip [block], Ublen [block], LUbx [block],
-		    Tp, Ti, Tx, W) ;
+		sort (nk, Lip + k1, Llen + k1, LUbx [block], Tp, Ti, Tx, W) ;
+		sort (nk, Uip + k1, Ulen + k1, LUbx [block], Tp, Ti, Tx, W) ;
 	    }
 	}
     }
@@ -150,9 +148,9 @@ int KLU_sort
     PRINTF (("\n======================= sort done.\n")) ;
 
     /* free workspace */
-    klu_free (W, Common) ;
-    klu_free (Tp, Common) ;
-    klu_free (Ti, Common) ;
-    klu_free (Tx, Common) ;
+    KLU_free (W, maxblock, sizeof (Int), Common) ;
+    KLU_free (Tp, m1, sizeof (Int), Common) ;
+    KLU_free (Ti, nz, sizeof (Int), Common) ;
+    KLU_free (Tx, nz, sizeof (Entry), Common) ;
     return (Common->status == KLU_OK) ;
 }

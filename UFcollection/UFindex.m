@@ -1,5 +1,5 @@
 function UF_Index = UFindex (matrixlist)
-%UFindex: create the index for the UF Sparse Matrix Collection
+%UFINDEX create the index for the UF Sparse Matrix Collection
 %
 % UF_Index = UFindex (matrixlist)
 %
@@ -61,7 +61,7 @@ function UF_Index = UFindex (matrixlist)
 %
 % See also UFstats, amd, metis, RBtype, cs_scc, cs_sqr, cs_dmperm.
 
-% Copyright 2006, Timothy A. Davis
+% Copyright 2006-2007, Timothy A. Davis
 
 % Requires the SuiteSparse set of packages: CHOLMOD, AMD, COLAMD, RBio, CSparse;
 % and METIS.
@@ -233,7 +233,7 @@ for i = matrixlist
     UF_Index.Name {i} = matrixN ;
     UF_Index.Group {i} = groupN ;
 
-    if (length (fileInfo) > 0)
+    if (length (fileInfo) > 0)						    %#ok
 	filesize (i) = fileInfo.bytes ;
     else
 	filesize (i) = 9999999999 ;

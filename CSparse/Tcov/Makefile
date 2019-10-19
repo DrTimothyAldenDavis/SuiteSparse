@@ -7,7 +7,7 @@ CC = gcc
 CFLAGS = -O -g -fprofile-arcs -ftest-coverage \
     	-Wall -W -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
     	-Wredundant-decls -Wnested-externs -Wdisabled-optimization -ansi \
-	-Wno-unused-parameter -Werror -I../Source -I../Demo
+	-Wno-unused-parameter -Werror -I../Include -I../Demo
 
 run: all run1 runbook run3 runtest
 	./covall
@@ -25,7 +25,7 @@ CS = cs_add.o cs_amd.o cs_chol.o cs_cholsol.o cs_counts.o cs_cumsum.o \
 	cstcov_malloc_test.o cs_utsolve.o cs_reach.o cs_spsolve.o cs_ereach.o \
 	cs_leaf.o cs_randperm.o
 
-$(CS): ../Source/cs.h cstcov_malloc_test.h
+$(CS): ../Include/cs.h cstcov_malloc_test.h
 
 .PRECIOUS: cs_%.c cs_dem%.c
 

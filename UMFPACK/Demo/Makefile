@@ -5,8 +5,7 @@
 # UMFPACK Version 4.4, Copyright (c) 2005 by Timothy A. Davis.
 # All Rights Reserved.  See ../Doc/License for License.
 
-default: libs umfpack_di_demo umfpack_zi_demo umfpack_dl_demo umfpack_zl_demo \
-	umfpack_simple
+default: libs run
 
 include ../../UFconfig/UFconfig.mk
 
@@ -18,16 +17,16 @@ INC = ../Include/umfpack.h ../../AMD/Include/amd.h ../../UFconfig/UFconfig.h
 LIBS = $(BLAS) $(XERBLA) $(LIB)
 
 ../Lib/libumfpack.a:
-	( cd ../Source ; $(MAKE) )
+	( cd ../Lib ; $(MAKE) )
 
 ../../AMD/Lib/libamd.a:
-	( cd ../../AMD/Source ; $(MAKE) )
+	( cd ../../AMD ; $(MAKE) library )
 
 UMFPACK = ../Lib/libumfpack.a ../../AMD/Lib/libamd.a
 
 libs:
-	( cd ../Source ; $(MAKE) )
-	( cd ../../AMD/Source ; $(MAKE) )
+	( cd ../Lib ; $(MAKE) )
+	( cd ../../AMD ; $(MAKE) library )
 
 #-------------------------------------------------------------------------------
 # Create the demo programs, run them, and compare the output
@@ -37,7 +36,6 @@ dist: umfpack_di_demo.c umfpack_dl_demo.c umfpack_zi_demo.c umfpack_zl_demo.c
 
 umfpack_simple: umfpack_simple.c $(INC) $(UMFPACK)
 	$(C) -o umfpack_simple umfpack_simple.c $(UMFPACK) $(LIBS)
-	./umfpack_simple
 
 # the GNU rules are simpler:
 # umfpack_%_demo.c: umfpack_xx_demo.c umfpack_%_demo.sed
@@ -55,8 +53,6 @@ umfpack_di_demo.c: umfpack_xx_demo.c umfpack_di_demo.sed
 
 umfpack_di_demo: umfpack_di_demo.c $(INC) $(UMFPACK)
 	$(C) -o umfpack_di_demo umfpack_di_demo.c $(UMFPACK) $(LIBS)
-	./umfpack_di_demo > my_umfpack_di_demo.out
-	- diff umfpack_di_demo.out my_umfpack_di_demo.out
 
 # double-precision, UF_long verion:
 umfpack_dl_demo.c: umfpack_xx_demo.c umfpack_dl_demo.sed
@@ -64,8 +60,6 @@ umfpack_dl_demo.c: umfpack_xx_demo.c umfpack_dl_demo.sed
 
 umfpack_dl_demo: umfpack_dl_demo.c $(INC) $(UMFPACK)
 	$(C) -o umfpack_dl_demo umfpack_dl_demo.c $(UMFPACK) $(LIBS)
-	./umfpack_dl_demo > my_umfpack_dl_demo.out
-	- diff umfpack_dl_demo.out my_umfpack_dl_demo.out
 
 # complex, int verion:
 umfpack_zi_demo.c: umfpack_xx_demo.c umfpack_zi_demo.sed
@@ -73,8 +67,6 @@ umfpack_zi_demo.c: umfpack_xx_demo.c umfpack_zi_demo.sed
 
 umfpack_zi_demo: umfpack_zi_demo.c $(INC) $(UMFPACK)
 	$(C) -o umfpack_zi_demo umfpack_zi_demo.c $(UMFPACK) $(LIBS)
-	./umfpack_zi_demo > my_umfpack_zi_demo.out
-	- diff umfpack_zi_demo.out my_umfpack_zi_demo.out
 
 # complex, UF_long verion:
 umfpack_zl_demo.c: umfpack_xx_demo.c umfpack_zl_demo.sed
@@ -82,6 +74,15 @@ umfpack_zl_demo.c: umfpack_xx_demo.c umfpack_zl_demo.sed
 
 umfpack_zl_demo: umfpack_zl_demo.c $(INC) $(UMFPACK)
 	$(C) -o umfpack_zl_demo umfpack_zl_demo.c $(UMFPACK) $(LIBS)
+
+run: umfpack_di_demo umfpack_zi_demo umfpack_dl_demo umfpack_zl_demo umfpack_simple
+	./umfpack_simple
+	./umfpack_di_demo > my_umfpack_di_demo.out
+	- diff umfpack_di_demo.out my_umfpack_di_demo.out
+	./umfpack_dl_demo > my_umfpack_dl_demo.out
+	- diff umfpack_dl_demo.out my_umfpack_dl_demo.out
+	./umfpack_zi_demo > my_umfpack_zi_demo.out
+	- diff umfpack_zi_demo.out my_umfpack_zi_demo.out
 	./umfpack_zl_demo > my_umfpack_zl_demo.out
 	- diff umfpack_zl_demo.out my_umfpack_zl_demo.out
 

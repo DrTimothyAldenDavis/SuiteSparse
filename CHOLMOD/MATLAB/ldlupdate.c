@@ -37,11 +37,11 @@ void mexFunction
 {
     double dummy = 0 ;
     double *Lx, *Lx2 ;
-    int *Li, *Lp, *Li2, *Lp2, *Lnz2, *ColCount ;
+    Int *Li, *Lp, *Li2, *Lp2, *Lnz2, *ColCount ;
     cholmod_sparse Cmatrix, *C, *Lsparse ;
     cholmod_factor *L ;
     cholmod_common Common, *cm ;
-    int j, k, s, update, n, lnz ;
+    Int j, k, s, update, n, lnz ;
     char buf [LEN] ;
 
     /* ---------------------------------------------------------------------- */
@@ -49,7 +49,7 @@ void mexFunction
     /* ---------------------------------------------------------------------- */
 
     cm = &Common ;
-    cholmod_start (cm) ;
+    cholmod_l_start (cm) ;
     sputil_config (SPUMONI, cm) ;
 
     /* ---------------------------------------------------------------------- */
@@ -101,12 +101,12 @@ void mexFunction
     /* ---------------------------------------------------------------------- */
 
     /* get the MATLAB L */
-    Lp = mxGetJc (pargin [0]) ;
-    Li = mxGetIr (pargin [0]) ;
+    Lp = (Int *) mxGetJc (pargin [0]) ;
+    Li = (Int *) mxGetIr (pargin [0]) ;
     Lx = mxGetPr (pargin [0]) ;
 
     /* allocate the CHOLMOD symbolic L */
-    L = cholmod_allocate_factor (n, cm) ;
+    L = cholmod_l_allocate_factor (n, cm) ;
     L->ordering = CHOLMOD_NATURAL ;
     ColCount = L->ColCount ;
     for (j = 0 ; j < n ; j++)
@@ -115,7 +115,7 @@ void mexFunction
     }
 
     /* allocate space for a CHOLMOD LDL' packed factor */
-    cholmod_change_factor (CHOLMOD_REAL, FALSE, FALSE, TRUE, TRUE, L, cm) ;
+    cholmod_l_change_factor (CHOLMOD_REAL, FALSE, FALSE, TRUE, TRUE, L, cm) ;
 
     /* copy MATLAB L into CHOLMOD L */
     Lp2 = L->p ;
@@ -144,7 +144,7 @@ void mexFunction
     /* update/downdate the LDL' factorization */
     /* ---------------------------------------------------------------------- */
 
-    if (!cholmod_updown (update, C, L, cm))
+    if (!cholmod_l_updown (update, C, L, cm))
     {
 	mexErrMsgTxt ("ldlupdate failed\n") ;
     }
@@ -156,7 +156,7 @@ void mexFunction
     /* change L back to packed LDL' (it may have become unpacked if the
      * sparsity pattern changed).  This change takes O(n) time if the pattern
      * of L wasn't updated. */
-    Lsparse = cholmod_factor_to_sparse (L, cm) ;
+    Lsparse = cholmod_l_factor_to_sparse (L, cm) ;
 
     /* return L as a sparse matrix */
     pargout [0] = sputil_put_sparse (&Lsparse, cm) ;
@@ -165,9 +165,9 @@ void mexFunction
     /* free workspace and the CHOLMOD L, except for what is copied to MATLAB */
     /* ---------------------------------------------------------------------- */
 
-    cholmod_free_factor (&L, cm) ;
-    cholmod_finish (cm) ;
-    cholmod_print_common (" ", cm) ;
+    cholmod_l_free_factor (&L, cm) ;
+    cholmod_l_finish (cm) ;
+    cholmod_l_print_common (" ", cm) ;
     /*
     if (cm->malloc_count != 3 + mxIsComplex (pargout[0])) mexErrMsgTxt ("!") ;
     */

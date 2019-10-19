@@ -1,5 +1,5 @@
 function UFlists
-%UFlists: create the web pages for each matrix list (group, name, etc.)
+%UFLISTS create the web pages for each matrix list (group, name, etc.)
 % Places the web pages in the matrices/ subdirectory of the current directory.
 %
 % Example:
@@ -7,7 +7,7 @@ function UFlists
 %
 % See also UFget, UFlist
 
-% Copyright 2006, Timothy A. Davis
+% Copyright 2006-2007, Timothy A. Davis
 
 % create all the web pages for the lists
 UFlist ('group') ;

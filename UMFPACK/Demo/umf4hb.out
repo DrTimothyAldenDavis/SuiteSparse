@@ -1,5 +1,5 @@
  Matrix key: WEST0067                      
-UMFPACK V5.0.2 (Dec 2, 2006), Control:
+UMFPACK V5.1.0 (May 31, 2007), Control:
     Matrix entry defined as: double
     Int (generic integer) defined as: int
 
@@ -31,7 +31,7 @@ UMFPACK V5.0.2 (Dec 2, 2006), Control:
     10: CPU timer is POSIX times ( ) routine.
     11: compiled for normal operation (debugging disabled)
     computer/operating system: Linux
-    size of int: 4 UF_long: 4 Int: 4 pointer: 4 double: 8 Entry: 8 (in bytes)
+    size of int: 4 UF_long: 8 Int: 4 pointer: 8 double: 8 Entry: 8 (in bytes)
 
 symbolic analysis:
    status:     0.
@@ -49,9 +49,9 @@ numeric factorization:
    size of LU:          0.01 (MB)
    memory needed:       0.04 (MB)
    flop count:      0.25E+04
-   nnz (L):             324.
+   nnz (L):             323.
    nnz (U):             339.
-UMFPACK V5.0.2 (Dec 2, 2006), Info:
+UMFPACK V5.1.0 (May 31, 2007), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -62,8 +62,8 @@ UMFPACK V5.0.2 (Dec 2, 2006), Info:
     entries in matrix A:              294
     memory usage reported in:         8-byte Units
     size of int:                      4 bytes
-    size of UF_long:                  4 bytes
-    size of pointer:                  4 bytes
+    size of UF_long:                  8 bytes
+    size of pointer:                  8 bytes
     size of numerical entry:          8 bytes
 
     strategy used:                    unsymmetric
@@ -78,9 +78,9 @@ UMFPACK V5.0.2 (Dec 2, 2006), Info:
         number of empty columns                    0
         submatrix S not square or diagonal not preserved
     symbolic factorization defragmentations:       1
-    symbolic memory usage (Units):                 1632
+    symbolic memory usage (Units):                 1639
     symbolic memory usage (MBytes):                0.0
-    Symbolic size (Units):                         245
+    Symbolic size (Units):                         252
     Symbolic size (MBytes):                        0
     symbolic factorization CPU time (sec):         0.00
     symbolic factorization wallclock time(sec):    0.00
@@ -91,31 +91,31 @@ UMFPACK V5.0.2 (Dec 2, 2006), Info:
 
     symbolic/numeric factorization:      upper bound               actual      %
     variable-sized part of Numeric object:
-        initial size (Units)                    1643                 1574    96%
+        initial size (Units)                    1711                 1577    92%
         peak size (Units)                       6115                 3581    59%
-        final size (Units)                      1628                  681    42%
-    Numeric final size (Units)                  2101                 1121    53%
-    Numeric final size (MBytes)                  0.0                  0.0    53%
-    peak memory usage (Units)                   7462                 4928    66%
+        final size (Units)                      1628                  682    42%
+    Numeric final size (Units)                  2108                 1129    54%
+    Numeric final size (MBytes)                  0.0                  0.0    54%
+    peak memory usage (Units)                   7476                 4942    66%
     peak memory usage (MBytes)                   0.1                  0.0    66%
-    numeric factorization flops          1.41920e+04          2.51800e+03    18%
-    nz in L (incl diagonal)                      542                  324    60%
+    numeric factorization flops          1.41920e+04          2.50100e+03    18%
+    nz in L (incl diagonal)                      542                  323    60%
     nz in U (incl diagonal)                      902                  339    38%
-    nz in L+U (incl diagonal)                   1377                  596    43%
+    nz in L+U (incl diagonal)                   1377                  595    43%
     largest front (# entries)                    483                   80    17%
     largest # rows in front                       21                   10    48%
     largest # columns in front                    23                   11    48%
 
     initial allocation ratio used:                 0.7
     # of forced updates due to frontal growth:     0
-    nz in L (incl diagonal), if none dropped       324
+    nz in L (incl diagonal), if none dropped       323
     nz in U (incl diagonal), if none dropped       339
     number of small entries dropped                0
     nonzeros on diagonal of U:                     67
     min abs. value on diagonal of U:               2.74e-02
     max abs. value on diagonal of U:               2.28e+00
     estimate of reciprocal of condition number:    1.20e-02
-    indices in compressed pattern:                 260
+    indices in compressed pattern:                 263
     numerical values stored in Numeric object:     599
     numeric factorization defragmentations:        1
     numeric factorization reallocations:           1
@@ -123,14 +123,14 @@ UMFPACK V5.0.2 (Dec 2, 2006), Info:
     numeric factorization CPU time (sec):          0.00
     numeric factorization wallclock time (sec):    0.00
 
-    solve flops:                                   1.19200e+03
+    solve flops:                                   1.19000e+03
     iterative refinement steps taken:              0
     iterative refinement steps attempted:          0
     solve CPU time (sec):                          0.00
     solve wall clock time (sec):                   0.00
 
-    total symbolic + numeric + solve flops:        3.71000e+03
+    total symbolic + numeric + solve flops:        3.69100e+03
 
- norm (A*x-b):   3.10862447E-15
- norm (A*x-b):   7.05425302E-15
- norm (A*x-b):   7.05425302E-15
+ norm (A*x-b):   0.
+ norm (A*x-b):   0.
+ norm (A*x-b):   0.

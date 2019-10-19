@@ -3,25 +3,25 @@
 % Only the primary MATLAB functions are listed below.
 %
 % Example:
-%   SuiteSparse_install - compiles and installs all of SuiteSparse, and runs
-%               several demos and tests.
+%   SuiteSparse_install
+% compiles and installs all of SuiteSparse, and runs several demos and tests.
 %
-%-------------------
+%-------------------------------------------------------------------------------
 % Ordering methods:
-%-------------------
+%-------------------------------------------------------------------------------
 %
-%   amd          - approximate minimum degree ordering.
-%   colamd       - column approximate minimum degree ordering.
-%   symamd       - symmetrix approximate min degree ordering based on colamd.
+%   amd2         - approximate minimum degree ordering.
+%   colamd2      - column approximate minimum degree ordering.
+%   symamd2      - symmetrix approximate min degree ordering based on colamd.
 %   camd         - constrained amd.
 %   ccolamd      - constrained colamd.
 %   csymamd      - constrained symamd.
 %
-%---------------------------------------------------------------
+%-------------------------------------------------------------------------------
 % CHOLMOD: a sparse supernodal Cholesky update/downdate package:
-%---------------------------------------------------------------
+%-------------------------------------------------------------------------------
 %
-%   cholmod      - computes x=A\b when A is symmetric and positive definite.
+%   cholmod2     - computes x=A\b when A is symmetric and positive definite.
 %   chol2        - same as MATLAB chol(sparse(A)), just faster.
 %   lchol        - computes an LL' factorization.
 %   ldlchol      - computes an LDL' factorization.
@@ -44,12 +44,13 @@
 %   mwrite       - write a sparse matrix in Matrix Market format
 %   spsym        - determine the symmetry of a sparse matrix
 %
-%------------------------------------------
-% CSPARSE: a Concise Sparse matrix package:
-%------------------------------------------
+%-------------------------------------------------------------------------------
+% CSPARSE / CXSPARSE: a Concise Sparse matrix package:
+%-------------------------------------------------------------------------------
 %
-%   Matrices used in CSparse must in general be either sparse and real,
-%   or dense vectors.  Ordering methods can accept any sparse matrix.
+%   Matrices used in CSparse must in general be either sparse and real, or
+%   dense vectors.  Ordering methods can accept any sparse matrix.  CXSparse
+%   supports complex matrices and 64-bit MATLAB; it is installed by default.
 %
 %   cs_add       - sparse matrix addition.
 %   cs_amd       - approximate minimum degree ordering.
@@ -84,25 +85,25 @@
 %   cs_sparse    - convert a triplet form into a sparse matrix.
 %   cs_sqr       - symbolic sparse QR factorization.
 %   cs_symperm   - symmetric permutation of a symmetric matrix.
-%   cs_transpose - transpose a real sparse matrix.
+%   cs_transpose - transpose a sparse matrix.
 %   cs_updown    - rank-1 update/downdate of a sparse Cholesky factorization.
 %   cs_usolve    - solve a sparse upper triangular system U*x=b.
 %   cs_utsolve   - solve a sparse lower triangular system U'*x=b.
 %   cspy         - plot a sparse matrix in color.
-%   ccspy	 - plot the connected components of a matrix.
+%   ccspy        - plot the connected components of a matrix.
 %
-%-------------------------------
+%-------------------------------------------------------------------------------
 % LDL: Sparse LDL factorization:
-%-------------------------------
+%-------------------------------------------------------------------------------
 % 
 %   ldlsparse   - LDL' factorization of a real, sparse, symmetric matrix.
 %   ldlrow      - an m-file description of the algorithm used by LDL.
 %
-%-----------------------------------------------
+%-------------------------------------------------------------------------------
 % UMFPACK: the Unsymmetric MultiFrontal Package:
-%-----------------------------------------------
+%-------------------------------------------------------------------------------
 %
-%   umfpack           - computes x=A\b, x=A/b, or lu (A) for a sparse matrix A
+%   umfpack2          - computes x=A\b, x=A/b, or lu (A) for a sparse matrix A
 %   umfpack_details   - details on all the options for using umfpack in MATLAB
 %   umfpack_report    - prints optional control settings and statistics
 %   umfpack_btf       - factorize A using a block triangular form
@@ -111,24 +112,15 @@
 %                       (duplicate of CHOLMOD/lu_normest, for completeness)
 %   luflop            - given L and U, computes # of flops required
 %
-%------------------------------------------------------
-% RBio: read/write matrices in Rutherford/Boeing format
-%------------------------------------------------------
-%
-%   RBread    - read a sparse matrix from a Rutherford/Boeing file
-%   RBreade   - read a symmetric finite-element matrix from a R/B file
-%   RBtype    - determine the Rutherford/Boeing type of a sparse matrix
-%   RBwrite   - write a sparse matrix to a Rutherford/Boeing file
-%
+%-------------------------------------------------------------------------------
+% UFGET: MATLAB interface to the UF Sparse Matrix Collection
 %-------------------------------------------------------------------------------
 %
 % For help on compiling SuiteSparse or the demos, testing functions, etc.,
-% please see the help for each individual package. 
+% please see the help for each individual package.   UFcollection and RBio
+% are two additional toolboxes, for managing the UF Sparse Matrix Collection.
 %
-% NOTE: None of the packages above have yet been ported to 64-bit MATLAB.
-% Do not attempt to use these in 64-bit MATLAB.
-%
-% Copyright 2006, Timothy A. Davis
+% Copyright 2007, Timothy A. Davis
 % http://www.cise.ufl.edu/research/sparse
 
 help SuiteSparse

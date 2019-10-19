@@ -1,5 +1,5 @@
-CCOLAMD version 2.5: constrained column approximate minimum degree ordering
-Copyright (C) 2005, Univ. of Florida.  Authors: Timothy A. Davis,
+CCOLAMD version 2.7: constrained column approximate minimum degree ordering
+Copyright (C) 2005-2007, Univ. of Florida.  Authors: Timothy A. Davis,
 Sivasankaran Rajamanickam, and Stefan Larimore.  Closely based on COLAMD by
 Davis, Stefan Larimore, in collaboration with Esmond Ng, and John Gilbert.
 http://www.cise.ufl.edu/research/sparse
@@ -16,30 +16,30 @@ ordering of M.
 
 Requires UFconfig, in the ../UFconfig directory relative to this directory.
 
-To compile and test the colamd m-files and mexFunctions, just unpack the
-CCOLAMD/ directory from the CCOLAMD.tar.gz file, and run MATLAB from
-within that directory.  Next, type ccolamd_test to compile and test ccolamd
-and csymamd.  This will work on any computer with MATLAB (Unix, PC, or Mac).
-Alternatively, type "make" (in Unix) to compile and run a simple example C
-code, and to compile the C-callable library (libccolamd.a).
+To compile and install the ccolamd m-files and mexFunctions, just cd to
+CCOLAMD/MATLAB and type ccolamd_install in the MATLAB command window.
+A short demo will run.  Optionally, type ccolamd_test to run an extensive tests.
+Type "make" in Unix in the CCOLAMD directory to compile the C-callable
+library and to run a short demo.
+
+If you have MATLAB 7.2 or earlier, you must first edit UFconfig/UFconfig.h to
+remove the "-largeArrayDims" option from the MEX command (or just use
+ccolamd_install.m inside MATLAB).
 
 Other "make" targets:
 
-    make matlab		compiles MATLAB mexFunctions only
+    make mex		compiles MATLAB mexFunctions only
     make libccolamd.a	compiles a C-callable library containing ccolamd
     make clean		removes all files not in the distribution, except for
 			libccolamd.a
     make distclean	removes all files not in the distribution
 
-    NOTE: DO NOT ATTEMPT TO USE THIS CODE IN 64-BIT MATLAB (v7.3).
-    It is not yet ported to that version of MATLAB.
-
 To use ccolamd and csymamd within an application written in C, all you need are
-colamd.c and colamd.h, which are the C-callable ccolamd/csymamd codes.
+ccolamd.c and ccolamd.h, which are the C-callable ccolamd/csymamd codes.
 See ccolamd.c for more information on how to call ccolamd from a C program.
 It contains a complete description of the C-interface to CCOLAMD and CSYMAMD.
 
-	Copyright (c) 1998-2005 by the University of Florida.
+	Copyright (c) 1998-2007 by the University of Florida.
 	All Rights Reserved.
 
 	Licensed under the GNU LESSER GENERAL PUBLIC LICENSE.
@@ -65,11 +65,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 Related papers:
 
-	T. A. Davis, W. W. Hager, and S. Rajamanickam, Multiple-rank updates
-	to a supernodal sparse Cholesky factorization, under preparation.
+	T. A. Davis and W. W. Hager, Rajamanickam, Multiple-rank updates
+	to a supernodal sparse Cholesky factorization, submitted.
 
-	T. A. Davis, W. W. Hager, and S. Rajamanickam, CHOLMOD: a sparse
-	Cholesky update/downdate package, under preparation.  CHOLMOD's
+	T. A. Davis, W. W. Hager, S. Rajamanickam, and Y. Chen, CHOLMOD: a
+	sparse Cholesky update/downdate package, submitted.  CHOLMOD's
 	nested dissection ordering relies on CCOLAMD and CSYMAMD to order
 	the matrix after graph partitioning is used to find the ordering
 	constraints.
@@ -102,43 +102,49 @@ Authors:  Timothy A. Davis, Sivasankaran Rajamanickam, and Stefan Larimore.
 	Laboratory (much of this work he did while at Oak Ridge National
 	Laboratory). 
 
-COLAMD files:
+CCOLAMD files:
 
-	CCOLAMD.tar.gz:
-		All files, as a gzipped, Unix tar file.
-		The *.m, and *mex.c files are for use in MATLAB.
+    Demo	    simple demo
+    Doc		    additional documentation (see ccolamd.c for more)
+    Include	    include file
+    Lib		    compiled C-callable library
+    Makefile	    primary Unix Makefile
+    MATLAB	    MATLAB functions
+    README.txt	    this file
+    Source	    C source code
 
-	ccolamd.c: the primary ccolamd computational kernel.
+    ./Demo:
+    ccolamd_example.c	    simple example
+    ccolamd_example.out	    output of colamd_example.c
+    ccolamd_l_example.c	    simple example, long integers
+    ccolamd_l_example.out   output of colamd_l_example.c
+    Makefile		    Makefile for C demos
 
-	ccolamd.h: include file for ccolamd/csymamd library.
+    ./Doc:
+    ChangeLog	    change log
+    lesser.txt	    license
 
-	ccolamd.m: the MATLAB interface to ccolamd.
+    ./Include:
+    ccolamd.h	    include file
 
-	ccolamd_demo.m: MATLAB demo file for ccolamd and csymamd
-		(also compiles the ccolamdmex and csymamdmex mexFunctions).
+    ./Lib:
+    Makefile	    Makefile for C-callable library
 
-	ccolamdmex.c: ccolamd mexFunction for use in MATLAB.
+    ./MATLAB:
+    ccolamd.m		MATLAB interface for ccolamd
+    ccolamd_demo.m	simple demo
+    ccolamd_install.m	compile and install ccolamd and csymamd
+    ccolamd_make.m	compile colamd2 and symamd2
+    ccolamdmex.c	MATLAB mexFunction for ccolamd
+    ccolamd_test.m	extensive test
+    ccolamdtestmex.c	test function for ccolamd
+    Contents.m		contents of the MATLAB directory
+    luflops.m		test code
+    Makefile		Makefile for MATLAB functions
+    csymamd.m		MATLAB interface for csymamd
+    csymamdmex.c	MATLAB mexFunction for csymamd
+    symamdtestmex.c	test function for csymamd
 
-	ccolamd_example.c: example C main program that calls ccolamd and csymamd
-
-	ccolamd_example.out: output of ccolamd_example.c.
-
-	Makefile: Makefile for ccolamd_example.c
-
-	csymamd.m: the MATLAB interface to csymamd.
-
-	csymamdmex.c: csymamd mexFunction for use in MATLAB.
-
-	README:  this file
-
-	ChangeLog: a log of changes since Version 1.0.
-
-	ccolamd_test.m:	test code
-
-	ccolamdtestmex.c:  test code
-
-	luflops.m:  test code
-
-	csymamdtestmex.c:  test code
-
-	lesser.txt: a verbatim copy of the GNU LGPL Version 2.1 license
+    ./Source:
+    ccolamd.c		primary source code
+    ccolamd_global.c	globally defined function pointers (malloc, free, ...)

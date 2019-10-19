@@ -4,7 +4,7 @@ function test3
 %   test3
 % See also cholmod_test
 
-% Copyright 2006, Timothy A. Davis, University of Florida
+% Copyright 2006-2007, Timothy A. Davis, University of Florida
 
 fprintf ('=================================================================\n');
 fprintf ('test3: test sparse on int8, int16, and logical\n') ;

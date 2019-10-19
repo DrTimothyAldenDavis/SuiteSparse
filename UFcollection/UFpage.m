@@ -1,5 +1,5 @@
 function UFpage (matrix, index, figures)
-%UFpage: create web page for a matrix in UF Sparse Matrix Collection
+%UFPAGE create web page for a matrix in UF Sparse Matrix Collection
 %
 % Usage:
 %      UFpage (matrix, index, figures)
@@ -19,7 +19,7 @@ function UFpage (matrix, index, figures)
 % the same parent directory, given by the download directory specified by
 % UFget_defaults.
 
-% Copyright 2006, Timothy A. Davis
+% Copyright 2006-2007, Timothy A. Davis
 
 %-------------------------------------------------------------------------------
 % get inputs
@@ -563,10 +563,9 @@ fclose (f) ;
 
 
 %-------------------------------------------------------------------------------
-% fsize: print the filesize
-%-------------------------------------------------------------------------------
 
 function fsize (f, filename)
+% fsize: print the filesize
 d = dir (regexprep (filename, '[\/\\]', filesep)) ;
 if (isempty (d))
     fprintf ('\n') ;
@@ -580,10 +579,9 @@ end
 
 
 %-------------------------------------------------------------------------------
-% stat: print one row of a table
-%-------------------------------------------------------------------------------
 
 function stat (f, what, format, value1, value2, value3)
+% stat: print one row of a table
 s = val (format, value1) ;
 fprintf (f, '<tr><td>%s</td><td align=right>%s</td>\n', what, s) ;
 if (nargin > 4)
@@ -596,10 +594,9 @@ fprintf (f, '</tr>\n') ;
 
 
 %-------------------------------------------------------------------------------
-% val: print a value in a table
-%-------------------------------------------------------------------------------
 
 function s = val (format, value)
+% val: print a value in a table
 if (~ischar (value) && value < 0)
     s = '-' ;
 else

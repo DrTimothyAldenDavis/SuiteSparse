@@ -45,7 +45,7 @@ csn *cs_chol (const cs *A, const css *S)
 	    d -= lki * CS_CONJ (lki) ;		/* d = d - L(k,i)*L(k,i) */
 	    p = c [i]++ ;
 	    Li [p] = k ;		/* store L(k,i) in column i */
-	    Lx [p] = lki ;
+	    Lx [p] = CS_CONJ (lki) ;
 	}
 	/* --- Compute L(k,k) ----------------------------------------------- */
 	if (CS_REAL (d) <= 0 || CS_IMAG (d) != 0)

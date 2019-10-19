@@ -1,3 +1,6 @@
+# If the libraries (AMD, COLAMD, CAMD, CCOLAMD, metis, and CHOLMOD) are not
+# yet built, use "make libs" first.  Then "make" to compile and run all tests.
+
 default: all
 
 include ../../UFconfig/UFconfig.mk
@@ -13,25 +16,40 @@ CFLAGS = -Wall -W -Werror -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
 
 C = $(CC) $(CFLAGS)
 
-LIB = ../../AMD/Lib/libamd.a ../../COLAMD/libcolamd.a -lm
+LIB = ../../AMD/Lib/libamd.a ../../COLAMD/Lib/libcolamd.a \
+    ../../CHOLMOD/Lib/libcholmod.a \
+    ../../CAMD/Lib/libcamd.a ../../CCOLAMD/Lib/libccolamd.a \
+    ../../metis-4.0/libmetis.a \
+    -lm
+
+I = -I../../UFconfig -I../../AMD/Include -I../../COLAMD/Include \
+    -I../../BTF/Include -I../../CHOLMOD/Include -I../../CAMD/Include \
+    -I../../CCOLAMD/Include -I../../metis-4.0/Lib -I../Include -I../User
 
 PRETTY = grep -v "^\#" | indent -bl -nce -ss -bli0 -i4 -sob 
 
-all: ut
+all: purge klutest klultest
+	- ./klultests > klultests.out
+	- ./klutests > klutests.out
+	- ./coverage
 
-TEST = ut.c
+valgrind: purge klutest klultest
+	- ./vklutests > klutests.out
+	- ./vklultests > klultests.out
+	- ./coverage
 
-ut: cov_klu.a ut.c Makefile
-	( cd ../../AMD ; $(MAKE) )
-	( cd ../../COLAMD ; $(MAKE) )
-	$(C) $(I) ut.c -o ut cov_klu.a $(LIB)
+libs:
+	( cd ../../AMD ; $(MAKE) library )
+	( cd ../../COLAMD ; $(MAKE) library )
+	( cd ../../CAMD ; $(MAKE) library )
+	( cd ../../CCOLAMD ; $(MAKE) library )
+	( cd ../../metis-4.0 ; $(MAKE) )
+	( cd ../../CHOLMOD ; $(MAKE) library )
 
 purge: distclean
 
 distclean: clean
-	- $(RM) Afile cnum pgrowth options x xt xz xtz
-	- $(RM) ut *.c.gcov *.out tmp/*.output *.sort *.a 
-	- $(RM) cov_*.c
+	- $(RM) klutest klultest *.c.gcov *.out *.a cov_*.c *.gcda *.gcno
 
 clean:
 	- $(RM) $(CLEAN)
@@ -41,17 +59,17 @@ INC =  \
 	../Include/klu_internal.h \
 	../Include/klu_version.h
 
-BTFSRC = \
-	../../BTF/Source/btf_order.c \
-	../../BTF/Source/maxtrans.c \
-	../../BTF/Source/strongcomp.c
-
 BTFOBJ = \
 	cov_btf_order.o \
-	cov_maxtrans.o \
-	cov_strongcomp.o
+	cov_btf_maxtrans.o \
+	cov_btf_strongcomp.o \
 
-OBJ = \
+BTFLOBJ = \
+	cov_btf_l_order.o \
+	cov_btf_l_maxtrans.o \
+	cov_btf_l_strongcomp.o
+
+KLUOBJ = \
 	cov_klu_analyze.o \
 	cov_klu_analyze_given.o \
 	cov_klu_defaults.o \
@@ -80,16 +98,52 @@ OBJ = \
 	cov_klu_z_solve.o \
 	cov_klu_z_tsolve.o
 
-LIB2 = cov_klu.a $(LIB)
+KLULOBJ = \
+	cov_klu_l_analyze.o \
+	cov_klu_l_analyze_given.o \
+	cov_klu_l_defaults.o \
+	cov_klu_l_free_symbolic.o \
+	cov_klu_l_memory.o \
+	cov_klu_l.o \
+	cov_klu_l_diagnostics.o \
+	cov_klu_l_dump.o \
+	cov_klu_l_factor.o \
+	cov_klu_l_free_numeric.o \
+	cov_klu_l_kernel.o \
+	cov_klu_l_extract.o \
+	cov_klu_l_refactor.o \
+	cov_klu_l_scale.o \
+	cov_klu_l_solve.o \
+	cov_klu_l_tsolve.o \
+	cov_klu_zl.o \
+	cov_klu_zl_diagnostics.o \
+	cov_klu_zl_dump.o \
+	cov_klu_zl_factor.o \
+	cov_klu_zl_free_numeric.o \
+	cov_klu_zl_kernel.o \
+	cov_klu_zl_extract.o \
+	cov_klu_zl_refactor.o \
+	cov_klu_zl_scale.o \
+	cov_klu_zl_solve.o \
+	cov_klu_zl_tsolve.o
 
-cov_klu.a: $(OBJ) $(BTFOBJ)
-	$(AR) cov_klu.a $(OBJ) $(BTFOBJ)
-	$(RANLIB) cov_klu.a
+KLUCHOLMODOBJ = cov_klu_cholmod.o
+
+KLUCHOLMODLOBJ = cov_klu_l_cholmod.o
+
+OBJ = $(BTFOBJ) $(KLUOBJ) $(KLUCHOLMODOBJ)
+
+LOBJ = $(BTFLOBJ) $(KLULOBJ) $(KLUCHOLMODLOBJ)
 
 $(OBJ): $(INC)
 
-I = -I../../AMD/Include -I../../AMD/Source -I../../COLAMD -I../../BTF/Include \
-	-I../Include
+$(LOBJ): $(INC)
+
+klutest: $(OBJ) klutest.c
+	$(C) $(I) klutest.c -o klutest $(OBJ) $(LIB)
+
+klultest: $(LOBJ) klutest.c
+	$(C) -DDLONG $(I) klutest.c -o klultest $(LOBJ) $(LIB)
 
 .c.o:
 	$(C) -c $(I) $*.c
@@ -212,12 +266,155 @@ cov_btf_order.o: ../../BTF/Source/btf_order.c
 	$(C) -E $(I) $< | $(PRETTY) > cov_btf_order.c
 	$(C) -c $(I) cov_btf_order.c
 
-cov_maxtrans.o: ../../BTF/Source/maxtrans.c
-	$(C) -E $(I) $< | $(PRETTY) > cov_maxtrans.c
-	$(C) -c $(I) cov_maxtrans.c
+cov_btf_maxtrans.o: ../../BTF/Source/btf_maxtrans.c
+	$(C) -E $(I) $< | $(PRETTY) > cov_btf_maxtrans.c
+	$(C) -c $(I) cov_btf_maxtrans.c
 
-cov_strongcomp.o: ../../BTF/Source/strongcomp.c
-	$(C) -E $(I) $< | $(PRETTY) > cov_strongcomp.c
-	$(C) -c $(I) cov_strongcomp.c
+cov_btf_strongcomp.o: ../../BTF/Source/btf_strongcomp.c
+	$(C) -E $(I) $< | $(PRETTY) > cov_btf_strongcomp.c
+	$(C) -c $(I) cov_btf_strongcomp.c
 
 #-------------------------------------------------------------------------------
+
+cov_klu_cholmod.o: ../User/klu_cholmod.c
+	$(C) -E $(I) $< | $(PRETTY) > cov_klu_cholmod.c
+	$(C) -c $(I) cov_klu_cholmod.c
+
+
+
+
+
+
+
+#-------------------------------------------------------------------------------
+
+cov_klu_l.o: ../Source/klu.c
+	$(C) -E $(I) -DDLONG $< | $(PRETTY) > cov_klu_l.c
+	$(C) -c $(I) cov_klu_l.c
+
+cov_klu_zl.o: ../Source/klu.c
+	$(C) -E $(I) -DDLONG -DCOMPLEX $< | $(PRETTY) > cov_klu_zl.c
+	$(C) -c $(I) cov_klu_zl.c
+
+cov_klu_l_kernel.o: ../Source/klu_kernel.c
+	$(C) -E $(I) -DDLONG $< | $(PRETTY) > cov_klu_l_kernel.c
+	$(C) -c $(I) cov_klu_l_kernel.c
+
+cov_klu_zl_kernel.o: ../Source/klu_kernel.c
+	$(C) -E $(I) -DDLONG -DCOMPLEX $< | $(PRETTY) > cov_klu_zl_kernel.c
+	$(C) -c $(I) cov_klu_zl_kernel.c
+
+cov_klu_l_diagnostics.o: ../Source/klu_diagnostics.c
+	$(C) -E $(I) -DDLONG $< | $(PRETTY) > cov_klu_l_diagnostics.c
+	$(C) -c $(I) cov_klu_l_diagnostics.c
+
+cov_klu_zl_diagnostics.o: ../Source/klu_diagnostics.c
+	$(C) -E $(I) -DDLONG -DCOMPLEX $< | $(PRETTY) > cov_klu_zl_diagnostics.c
+	$(C) -c $(I) cov_klu_zl_diagnostics.c
+
+cov_klu_l_dump.o: ../Source/klu_dump.c
+	$(C) -E $(I) -DDLONG $< | $(PRETTY) > cov_klu_l_dump.c
+	$(C) -c $(I) cov_klu_l_dump.c
+
+cov_klu_zl_dump.o: ../Source/klu_dump.c
+	$(C) -E $(I) -DDLONG -DCOMPLEX $< | $(PRETTY) > cov_klu_zl_dump.c
+	$(C) -c $(I) cov_klu_zl_dump.c
+
+cov_klu_l_factor.o: ../Source/klu_factor.c
+	$(C) -E $(I) -DDLONG $< | $(PRETTY) > cov_klu_l_factor.c
+	$(C) -c $(I) cov_klu_l_factor.c
+
+cov_klu_zl_factor.o: ../Source/klu_factor.c
+	$(C) -E $(I) -DDLONG -DCOMPLEX $< | $(PRETTY) > cov_klu_zl_factor.c
+	$(C) -c $(I) cov_klu_zl_factor.c
+
+cov_klu_l_free_numeric.o: ../Source/klu_free_numeric.c
+	$(C) -E $(I) -DDLONG $< | $(PRETTY) > cov_klu_l_free_numeric.c
+	$(C) -c $(I) cov_klu_l_free_numeric.c
+
+cov_klu_zl_free_numeric.o: ../Source/klu_free_numeric.c
+	$(C) -E $(I) -DDLONG -DCOMPLEX $< | $(PRETTY) > cov_klu_zl_free_numeric.c
+	$(C) -c $(I) cov_klu_zl_free_numeric.c
+
+cov_klu_l_extract.o: ../Source/klu_extract.c
+	$(C) -E $(I) -DDLONG $< | $(PRETTY) > cov_klu_l_extract.c
+	$(C) -c $(I) cov_klu_l_extract.c
+
+cov_klu_zl_extract.o: ../Source/klu_extract.c
+	$(C) -E $(I) -DDLONG -DCOMPLEX $< | $(PRETTY) > cov_klu_zl_extract.c
+	$(C) -c $(I) cov_klu_zl_extract.c
+
+cov_klu_l_refactor.o: ../Source/klu_refactor.c
+	$(C) -E $(I) -DDLONG $< | $(PRETTY) > cov_klu_l_refactor.c
+	$(C) -c $(I) cov_klu_l_refactor.c
+
+cov_klu_zl_refactor.o: ../Source/klu_refactor.c
+	$(C) -E $(I) -DDLONG -DCOMPLEX $< | $(PRETTY) > cov_klu_zl_refactor.c
+	$(C) -c $(I) cov_klu_zl_refactor.c
+
+cov_klu_l_scale.o: ../Source/klu_scale.c
+	$(C) -E $(I) -DDLONG $< | $(PRETTY) > cov_klu_l_scale.c
+	$(C) -c $(I) cov_klu_l_scale.c
+
+cov_klu_zl_scale.o: ../Source/klu_scale.c
+	$(C) -E $(I) -DDLONG -DCOMPLEX $< | $(PRETTY) > cov_klu_zl_scale.c
+	$(C) -c $(I) cov_klu_zl_scale.c
+
+cov_klu_l_solve.o: ../Source/klu_solve.c
+	$(C) -E $(I) -DDLONG $< | $(PRETTY) > cov_klu_l_solve.c
+	$(C) -c $(I) cov_klu_l_solve.c
+
+cov_klu_zl_solve.o: ../Source/klu_solve.c
+	$(C) -E $(I) -DDLONG -DCOMPLEX $< | $(PRETTY) > cov_klu_zl_solve.c
+	$(C) -c $(I) cov_klu_zl_solve.c
+
+cov_klu_l_tsolve.o: ../Source/klu_tsolve.c
+	$(C) -E $(I) -DDLONG $< | $(PRETTY) > cov_klu_l_tsolve.c
+	$(C) -c $(I) cov_klu_l_tsolve.c
+
+cov_klu_zl_tsolve.o: ../Source/klu_tsolve.c
+	$(C) -E $(I) -DDLONG -DCOMPLEX $< | $(PRETTY) > cov_klu_zl_tsolve.c
+	$(C) -c $(I) cov_klu_zl_tsolve.c
+
+#-------------------------------------------------------------------------------
+
+cov_klu_l_analyze.o: ../Source/klu_analyze.c
+	$(C) -E $(I) -DDLONG $< | $(PRETTY) > cov_klu_l_analyze.c
+	$(C) -c $(I) cov_klu_l_analyze.c
+
+cov_klu_l_analyze_given.o: ../Source/klu_analyze_given.c
+	$(C) -E $(I) -DDLONG $< | $(PRETTY) > cov_klu_l_analyze_given.c
+	$(C) -c $(I) cov_klu_l_analyze_given.c
+
+cov_klu_l_defaults.o: ../Source/klu_defaults.c
+	$(C) -E $(I) -DDLONG $< | $(PRETTY) > cov_klu_l_defaults.c
+	$(C) -c $(I) cov_klu_l_defaults.c
+
+cov_klu_l_free_symbolic.o: ../Source/klu_free_symbolic.c
+	$(C) -E $(I) -DDLONG $< | $(PRETTY) > cov_klu_l_free_symbolic.c
+	$(C) -c $(I) cov_klu_l_free_symbolic.c
+
+cov_klu_l_memory.o: ../Source/klu_memory.c
+	$(C) -E $(I) -DDLONG $< | $(PRETTY) > cov_klu_l_memory.c
+	$(C) -c $(I) cov_klu_l_memory.c
+
+#-------------------------------------------------------------------------------
+
+cov_btf_l_order.o: ../../BTF/Source/btf_order.c
+	$(C) -E $(I) -DDLONG $< | $(PRETTY) > cov_btf_l_order.c
+	$(C) -c $(I) cov_btf_l_order.c
+
+cov_btf_l_maxtrans.o: ../../BTF/Source/btf_maxtrans.c
+	$(C) -E $(I) -DDLONG $< | $(PRETTY) > cov_btf_l_maxtrans.c
+	$(C) -c $(I) cov_btf_l_maxtrans.c
+
+cov_btf_l_strongcomp.o: ../../BTF/Source/btf_strongcomp.c
+	$(C) -E $(I) -DDLONG $< | $(PRETTY) > cov_btf_l_strongcomp.c
+	$(C) -c $(I) cov_btf_l_strongcomp.c
+
+#-------------------------------------------------------------------------------
+
+cov_klu_l_cholmod.o: ../User/klu_l_cholmod.c
+	$(C) -E $(I) -DDLONG $< | $(PRETTY) > cov_klu_l_cholmod.c
+	$(C) -c $(I) cov_klu_l_cholmod.c
+

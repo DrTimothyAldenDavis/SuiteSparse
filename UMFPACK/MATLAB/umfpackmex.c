@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK, Copyright (c) 1995-2006 by Timothy A. Davis.  CISE,               */
+/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
 /* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
 /* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
 /* -------------------------------------------------------------------------- */
@@ -61,9 +61,13 @@
     Modified for v4.3.1, Jan 10, 2005: default has been changed to
     NO_TRANSPOSE_FORWARD_SLASH, to test iterative refinement for b/A.
     v4.4: added method for computing the determinant.
+
+    v5.1: port to 64-bit MATLAB
 */
+
 #define NO_TRANSPOSE_FORWARD_SLASH  /* default has changed for v4.3.1 */
 
+#include "UFconfig.h"
 #include "umfpack.h"
 #include "mex.h"
 #include "matrix.h"
@@ -90,26 +94,26 @@
 static void error
 (
     char *s,
-    int A_is_complex,
+    UF_long A_is_complex,
     int nargout,
     mxArray *pargout [ ],
     double Control [UMFPACK_CONTROL],
     double Info [UMFPACK_INFO],
-    int status,
-    int do_info
+    UF_long status,
+    UF_long do_info
 )
 {
-    int i ;
+    UF_long i ;
     double *Out_Info ;
     if (A_is_complex)
     {
-	umfpack_zi_report_status (Control, status) ;
-	umfpack_zi_report_info (Control, Info) ;
+	umfpack_zl_report_status (Control, status) ;
+	umfpack_zl_report_info (Control, Info) ;
     }
     else
     {
-	umfpack_di_report_status (Control, status) ;
-	umfpack_di_report_info (Control, Info) ;
+	umfpack_dl_report_status (Control, status) ;
+	umfpack_dl_report_info (Control, Info) ;
     }
     if (do_info > 0)
     {
@@ -146,7 +150,7 @@ void mexFunction
     double *Lx, *Lz, *Ux, *Uz, *Ax, *Az, *Bx, *Bz, *Xx, *Xz, *User_Control,
 	*p, *q, *Out_Info, *p1, *p2, *p3, *p4, *Ltx, *Ltz, *Rs, *Px, *Qx ;
     void *Symbolic, *Numeric ;
-    int *Lp, *Li, *Up, *Ui, *Ap, *Ai, *P, *Q, do_solve, lnz, unz, nn, i,
+    UF_long *Lp, *Li, *Up, *Ui, *Ap, *Ai, *P, *Q, do_solve, lnz, unz, nn, i,
 	transpose, size, do_info, do_numeric, *Front_npivcol, op, k, *Rp, *Ri,
 	*Front_parent, *Chain_start, *Chain_maxrows, *Chain_maxcols, nz, status,
 	nfronts, nchains, *Ltp, *Ltj, *Qinit, print_level, status2, no_scale,
@@ -159,7 +163,7 @@ void mexFunction
     char warning [200] ;
 
 #ifndef NO_TRANSPOSE_FORWARD_SLASH
-    int *Cp, *Ci ;
+    UF_long *Cp, *Ci ;
     double *Cx, *Cz ;
 #endif
 
@@ -432,7 +436,7 @@ void mexFunction
 
 	pargout [0] = mxCreateDoubleMatrix (UMFPACK_CONTROL, 1, mxREAL) ;
 	User_Control = mxGetPr (pargout [0]) ;
-	umfpack_di_defaults (User_Control) ;
+	umfpack_dl_defaults (User_Control) ;
 
 	return ;
     }
@@ -463,11 +467,11 @@ void mexFunction
     }
 
     /* The real/complex status of A determines which version to use, */
-    /* (umfpack_di_* or umfpack_zi_*). */
+    /* (umfpack_dl_* or umfpack_zl_*). */
     A_is_complex = mxIsComplex (Amatrix) ;
     Atype = A_is_complex ? mxCOMPLEX : mxREAL ;
-    Ap = mxGetJc (Amatrix) ;
-    Ai = mxGetIr (Amatrix) ;
+    Ap = (UF_long *) mxGetJc (Amatrix) ;
+    Ai = (UF_long *) mxGetIr (Amatrix) ;
     Ax = mxGetPr (Amatrix) ;
     Az = mxGetPi (Amatrix) ;
 
@@ -519,11 +523,11 @@ void mexFunction
 
     if (A_is_complex)
     {
-	umfpack_zi_defaults (Control) ;
+	umfpack_zl_defaults (Control) ;
     }
     else
     {
-	umfpack_di_defaults (Control) ;
+	umfpack_dl_defaults (Control) ;
     }
     if (User_Control_matrix)
     {
@@ -555,7 +559,7 @@ void mexFunction
     }
     else
     {
-	print_level = (int) Control [UMFPACK_PRL] ;
+	print_level = (UF_long) Control [UMFPACK_PRL] ;
     }
 
     Control [UMFPACK_PRL] = print_level ;
@@ -586,12 +590,12 @@ void mexFunction
 	{
 	    mexErrMsgTxt ("input Qinit must be dense") ;
 	}
-	Qinit = (int *) mxMalloc (n_col * sizeof (int)) ;
+	Qinit = (UF_long *) mxMalloc (n_col * sizeof (UF_long)) ;
 	p = mxGetPr (User_Qinit) ;
 	for (k = 0 ; k < n_col ; k++)
 	{
 	    /* convert from 1-based to 0-based indexing */
-	    Qinit [k] = ((int) (p [k])) - 1 ;
+	    Qinit [k] = ((UF_long) (p [k])) - 1 ;
 	}
 
     }
@@ -599,7 +603,7 @@ void mexFunction
     {
 	/* umfpack_*_qsymbolic will call colamd to get Qinit. This is the */
 	/* same as calling umfpack_*_symbolic with Qinit set to NULL*/
-	Qinit = (int *) NULL ;
+	Qinit = (UF_long *) NULL ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -614,26 +618,26 @@ void mexFunction
 
     if (A_is_complex)
     {
-	umfpack_zi_report_control (Control) ;
+	umfpack_zl_report_control (Control) ;
 	if (print_level >= 3) mexPrintf ("\nA: ") ;
-	(void) umfpack_zi_report_matrix (n_row, n_col, Ap, Ai, Ax, Az,
+	(void) umfpack_zl_report_matrix (n_row, n_col, Ap, Ai, Ax, Az,
 	    1, Control) ;
 	if (Qinit)
 	{
 	    if (print_level >= 3) mexPrintf ("\nQinit: ") ;
-	    (void) umfpack_zi_report_perm (n_col, Qinit, Control) ;
+	    (void) umfpack_zl_report_perm (n_col, Qinit, Control) ;
 	}
     }
     else
     {
-	umfpack_di_report_control (Control) ;
+	umfpack_dl_report_control (Control) ;
 	if (print_level >= 3) mexPrintf ("\nA: ") ;
-	(void) umfpack_di_report_matrix (n_row, n_col, Ap, Ai, Ax,
+	(void) umfpack_dl_report_matrix (n_row, n_col, Ap, Ai, Ax,
 	    1, Control) ;
 	if (Qinit)
 	{
 	    if (print_level >= 3) mexPrintf ("\nQinit: ") ;
-	    (void) umfpack_di_report_perm (n_col, Qinit, Control) ;
+	    (void) umfpack_dl_report_perm (n_col, Qinit, Control) ;
 	}
     }
 
@@ -650,19 +654,19 @@ void mexFunction
 	/* make sure Ci and Cx exist, avoid malloc of zero-sized arrays. */
 	nz = MAX (Ap [nn], 1) ;
 
-	Cp = (int *) mxMalloc ((nn+1) * sizeof (int)) ;
-	Ci = (int *) mxMalloc (nz * sizeof (int)) ;
+	Cp = (UF_long *) mxMalloc ((nn+1) * sizeof (UF_long)) ;
+	Ci = (UF_long *) mxMalloc (nz * sizeof (UF_long)) ;
 	Cx = (double *) mxMalloc (nz * sizeof (double)) ;
 	if (A_is_complex)
 	{
 	    Cz = (double *) mxMalloc (nz * sizeof (double)) ;
-	    status = umfpack_zi_transpose (nn, nn, Ap, Ai, Ax, Az,
-	        (int *) NULL, (int *) NULL, Cp, Ci, Cx, Cz, FALSE) ;
+	    status = umfpack_zl_transpose (nn, nn, Ap, Ai, Ax, Az,
+	        (UF_long *) NULL, (UF_long *) NULL, Cp, Ci, Cx, Cz, FALSE) ;
 	}
 	else
 	{
-	    status = umfpack_di_transpose (nn, nn, Ap, Ai, Ax,
-	        (int *) NULL, (int *) NULL, Cp, Ci, Cx) ;
+	    status = umfpack_dl_transpose (nn, nn, Ap, Ai, Ax,
+	        (UF_long *) NULL, (UF_long *) NULL, Cp, Ci, Cx) ;
 	}
 
 	if (status != UMFPACK_OK)
@@ -689,12 +693,12 @@ void mexFunction
 
     if (A_is_complex)
     {
-	status = umfpack_zi_qsymbolic (n_row, n_col, Ap, Ai, Ax, Az,
+	status = umfpack_zl_qsymbolic (n_row, n_col, Ap, Ai, Ax, Az,
 	    Qinit, &Symbolic, Control, Info) ;
     }
     else
     {
-	status = umfpack_di_qsymbolic (n_row, n_col, Ap, Ai, Ax,
+	status = umfpack_dl_qsymbolic (n_row, n_col, Ap, Ai, Ax,
 	    Qinit, &Symbolic, Control, Info) ;
     }
 
@@ -716,11 +720,11 @@ void mexFunction
 
     if (A_is_complex)
     {
-	(void) umfpack_zi_report_symbolic (Symbolic, Control) ;
+	(void) umfpack_zl_report_symbolic (Symbolic, Control) ;
     }
     else
     {
-	(void) umfpack_di_report_symbolic (Symbolic, Control) ;
+	(void) umfpack_dl_report_symbolic (Symbolic, Control) ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -736,12 +740,12 @@ void mexFunction
 
 	if (A_is_complex)
 	{
-	    status = umfpack_zi_numeric (Ap, Ai, Ax, Az, Symbolic, &Numeric,
+	    status = umfpack_zl_numeric (Ap, Ai, Ax, Az, Symbolic, &Numeric,
 		Control, Info) ;
 	}
 	else
 	{
-	    status = umfpack_di_numeric (Ap, Ai, Ax, Symbolic, &Numeric,
+	    status = umfpack_dl_numeric (Ap, Ai, Ax, Symbolic, &Numeric,
 		Control, Info) ;
 	}
 
@@ -751,11 +755,11 @@ void mexFunction
 
 	if (A_is_complex)
 	{
-	    umfpack_zi_free_symbolic (&Symbolic) ;
+	    umfpack_zl_free_symbolic (&Symbolic) ;
 	}
 	else
 	{
-	    umfpack_di_free_symbolic (&Symbolic) ;
+	    umfpack_dl_free_symbolic (&Symbolic) ;
 	}
 
 	/* ------------------------------------------------------------------ */
@@ -771,11 +775,11 @@ void mexFunction
 
 	if (A_is_complex)
 	{
-	    (void) umfpack_zi_report_numeric (Numeric, Control) ;
+	    (void) umfpack_zl_report_numeric (Numeric, Control) ;
 	}
 	else
 	{
-	    (void) umfpack_di_report_numeric (Numeric, Control) ;
+	    (void) umfpack_dl_report_numeric (Numeric, Control) ;
 	}
 
 	/* ------------------------------------------------------------------ */
@@ -831,11 +835,11 @@ void mexFunction
 	    if (print_level >= 3) mexPrintf ("\nright-hand side, b: ") ;
 	    if (B_is_complex)
 	    {
-		(void) umfpack_zi_report_vector (nn, Bx, Bz, Control) ;
+		(void) umfpack_zl_report_vector (nn, Bx, Bz, Control) ;
 	    }
 	    else
 	    {
-		(void) umfpack_di_report_vector (nn, Bx, Control) ;
+		(void) umfpack_dl_report_vector (nn, Bx, Control) ;
 	    }
 
 	    /* -------------------------------------------------------------- */
@@ -850,10 +854,10 @@ void mexFunction
 	    {
 		if (!B_is_complex)
 		{
-		    /* umfpack_zi_solve expects a complex B */
+		    /* umfpack_zl_solve expects a complex B */
 		    Bz = (double *) mxCalloc (nn, sizeof (double)) ;
 		}
-		status = umfpack_zi_solve (sys, Ap, Ai, Ax, Az, Xx, Xz, Bx, Bz,
+		status = umfpack_zl_solve (sys, Ap, Ai, Ax, Az, Xx, Xz, Bx, Bz,
 		    Numeric, Control, Info) ;
 		if (!B_is_complex)
 		{
@@ -867,10 +871,10 @@ void mexFunction
 		    /* Ax=b when b is complex and A is sparse can be split */
 		    /* into two systems, A*xr=br and A*xi=bi, where r denotes */
 		    /* the real part and i the imaginary part of x and b. */
-		    status2 = umfpack_di_solve (sys, Ap, Ai, Ax, Xz, Bz,
+		    status2 = umfpack_dl_solve (sys, Ap, Ai, Ax, Xz, Bz,
 		    Numeric, Control, Info) ;
 		}
-		status = umfpack_di_solve (sys, Ap, Ai, Ax, Xx, Bx,
+		status = umfpack_dl_solve (sys, Ap, Ai, Ax, Xx, Bx,
 		    Numeric, Control, Info) ;
 	    }
 
@@ -897,11 +901,11 @@ void mexFunction
 
 	    if (A_is_complex)
 	    {
-		umfpack_zi_free_numeric (&Numeric) ;
+		umfpack_zl_free_numeric (&Numeric) ;
 	    }
 	    else
 	    {
-		umfpack_di_free_numeric (&Numeric) ;
+		umfpack_dl_free_numeric (&Numeric) ;
 	    }
 
 	    /* -------------------------------------------------------------- */
@@ -923,11 +927,11 @@ void mexFunction
 	    if (print_level >= 3) mexPrintf ("\nsolution, x: ") ;
 	    if (X_is_complex)
 	    {
-		(void) umfpack_zi_report_vector (nn, Xx, Xz, Control) ;
+		(void) umfpack_zl_report_vector (nn, Xx, Xz, Control) ;
 	    }
 	    else
 	    {
-		(void) umfpack_di_report_vector (nn, Xx, Control) ;
+		(void) umfpack_dl_report_vector (nn, Xx, Control) ;
 	    }
 
 	    /* -------------------------------------------------------------- */
@@ -984,15 +988,15 @@ void mexFunction
 	    }
 	    if (A_is_complex)
 	    {
-		status = umfpack_zi_get_determinant (&dx, &dz, p,
+		status = umfpack_zl_get_determinant (&dx, &dz, p,
 			Numeric, Info) ;
-		umfpack_zi_free_numeric (&Numeric) ;
+		umfpack_zl_free_numeric (&Numeric) ;
 	    }
 	    else
 	    {
-		status = umfpack_di_get_determinant (&dx, p,
+		status = umfpack_dl_get_determinant (&dx, p,
 			Numeric, Info) ;
-		umfpack_di_free_numeric (&Numeric) ;
+		umfpack_dl_free_numeric (&Numeric) ;
 		dz = 0 ;
 	    }
 	    if (status < 0)
@@ -1031,12 +1035,12 @@ void mexFunction
 
 	    if (A_is_complex)
 	    {
-	        status = umfpack_zi_get_lunz (&lnz, &unz, &ignore1, &ignore2,
+	        status = umfpack_zl_get_lunz (&lnz, &unz, &ignore1, &ignore2,
 		    &ignore3, Numeric) ;
 	    }
 	    else
 	    {
-	        status = umfpack_di_get_lunz (&lnz, &unz, &ignore1, &ignore2,
+	        status = umfpack_dl_get_lunz (&lnz, &unz, &ignore1, &ignore2,
 		    &ignore3, Numeric) ;
 	    }
 
@@ -1044,11 +1048,11 @@ void mexFunction
 	    {
 		if (A_is_complex)
 		{
-		    umfpack_zi_free_numeric (&Numeric) ;
+		    umfpack_zl_free_numeric (&Numeric) ;
 		}
 		else
 		{
-		    umfpack_di_free_numeric (&Numeric) ;
+		    umfpack_dl_free_numeric (&Numeric) ;
 		}
 		error ("extracting LU factors failed", A_is_complex, nargout,
 		    pargout, Control, Info, status, do_info) ;
@@ -1060,8 +1064,8 @@ void mexFunction
 	    unz = MAX (unz, 1) ;
 
 	    /* get temporary space, for the *** ROW *** form of L */
-	    Ltp = (int *) mxMalloc ((n_row+1) * sizeof (int)) ;
-	    Ltj = (int *) mxMalloc (lnz * sizeof (int)) ;
+	    Ltp = (UF_long *) mxMalloc ((n_row+1) * sizeof (UF_long)) ;
+	    Ltj = (UF_long *) mxMalloc (lnz * sizeof (UF_long)) ;
 	    Ltx = (double *) mxMalloc (lnz * sizeof (double)) ;
 	    if (A_is_complex)
 	    {
@@ -1074,14 +1078,14 @@ void mexFunction
 
 	    /* create permanent copy of the output matrix U */
 	    pargout [1] = mxCreateSparse (n_inner, n_col, unz, Atype) ;
-	    Up = mxGetJc (pargout [1]) ;
-	    Ui = mxGetIr (pargout [1]) ;
+	    Up = (UF_long *) mxGetJc (pargout [1]) ;
+	    Ui = (UF_long *) mxGetIr (pargout [1]) ;
 	    Ux = mxGetPr (pargout [1]) ;
 	    Uz = mxGetPi (pargout [1]) ;
 
 	    /* temporary space for the integer permutation vectors */
-	    P = (int *) mxMalloc (n_row * sizeof (int)) ;
-	    Q = (int *) mxMalloc (n_col * sizeof (int)) ;
+	    P = (UF_long *) mxMalloc (n_row * sizeof (UF_long)) ;
+	    Q = (UF_long *) mxMalloc (n_col * sizeof (UF_long)) ;
 
 	    /* get scale factors, if requested */
 	    status2 = UMFPACK_OK ;
@@ -1089,8 +1093,8 @@ void mexFunction
 	    {
 		/* create a diagonal sparse matrix for the scale factors */
 		pargout [4] = mxCreateSparse (n_row, n_row, n_row, mxREAL) ;
-		Rp = mxGetJc (pargout [4]) ;
-		Ri = mxGetIr (pargout [4]) ;
+		Rp = (UF_long *) mxGetJc (pargout [4]) ;
+		Ri = (UF_long *) mxGetIr (pargout [4]) ;
 		for (i = 0 ; i < n_row ; i++)
 		{
 		    Rp [i] = i ;
@@ -1107,17 +1111,17 @@ void mexFunction
 	    /* get Lt, U, P, Q, and Rs from the numeric object */
 	    if (A_is_complex)
 	    {
-		status = umfpack_zi_get_numeric (Ltp, Ltj, Ltx, Ltz, Up, Ui, Ux,
+		status = umfpack_zl_get_numeric (Ltp, Ltj, Ltx, Ltz, Up, Ui, Ux,
 		    Uz, P, Q, (double *) NULL, (double *) NULL,
 		    &do_recip, Rs, Numeric) ;
-		umfpack_zi_free_numeric (&Numeric) ;
+		umfpack_zl_free_numeric (&Numeric) ;
 	    }
 	    else
 	    {
-		status = umfpack_di_get_numeric (Ltp, Ltj, Ltx, Up, Ui,
+		status = umfpack_dl_get_numeric (Ltp, Ltj, Ltx, Up, Ui,
 		    Ux, P, Q, (double *) NULL,
 		    &do_recip, Rs, Numeric) ;
-		umfpack_di_free_numeric (&Numeric) ;
+		umfpack_dl_free_numeric (&Numeric) ;
 	    }
 
 	    /* for the mexFunction, -DNRECIPROCAL must be set,
@@ -1139,8 +1143,8 @@ void mexFunction
 
 	    /* create sparse permutation matrix for P */
 	    pargout [2] = mxCreateSparse (n_row, n_row, n_row, mxREAL) ;
-	    Pp = mxGetJc (pargout [2]) ;
-	    Pi = mxGetIr (pargout [2]) ;
+	    Pp = (UF_long *) mxGetJc (pargout [2]) ;
+	    Pi = (UF_long *) mxGetIr (pargout [2]) ;
 	    Px = mxGetPr (pargout [2]) ;
 	    for (k = 0 ; k < n_row ; k++)
 	    {
@@ -1152,8 +1156,8 @@ void mexFunction
 
 	    /* create sparse permutation matrix for Q */
 	    pargout [3] = mxCreateSparse (n_col, n_col, n_col, mxREAL) ;
-	    Qp = mxGetJc (pargout [3]) ;
-	    Qi = mxGetIr (pargout [3]) ;
+	    Qp = (UF_long *) mxGetJc (pargout [3]) ;
+	    Qi = (UF_long *) mxGetIr (pargout [3]) ;
 	    Qx = mxGetPr (pargout [3]) ;
 	    for (k = 0 ; k < n_col ; k++)
 	    {
@@ -1165,8 +1169,8 @@ void mexFunction
 
 	    /* permanent copy of L */
 	    pargout [0] = mxCreateSparse (n_row, n_inner, lnz, Atype) ;
-	    Lp = mxGetJc (pargout [0]) ;
-	    Li = mxGetIr (pargout [0]) ;
+	    Lp = (UF_long *) mxGetJc (pargout [0]) ;
+	    Li = (UF_long *) mxGetIr (pargout [0]) ;
 	    Lx = mxGetPr (pargout [0]) ;
 	    Lz = mxGetPi (pargout [0]) ;
 
@@ -1174,13 +1178,14 @@ void mexFunction
 	    if (A_is_complex)
 	    {
 		/* non-conjugate array transpose */
-	        status = umfpack_zi_transpose (n_inner, n_row, Ltp, Ltj, Ltx,
-		    Ltz, (int *) NULL, (int *) NULL, Lp, Li, Lx, Lz, FALSE) ;
+	        status = umfpack_zl_transpose (n_inner, n_row, Ltp, Ltj, Ltx,
+		    Ltz, (UF_long *) NULL, (UF_long *) NULL, Lp, Li, Lx, Lz,
+		    FALSE) ;
 	    }
 	    else
 	    {
-	        status = umfpack_di_transpose (n_inner, n_row, Ltp, Ltj, Ltx,
-		    (int *) NULL, (int *) NULL, Lp, Li, Lx) ;
+	        status = umfpack_dl_transpose (n_inner, n_row, Ltp, Ltj, Ltx,
+		    (UF_long *) NULL, (UF_long *) NULL, Lp, Li, Lx) ;
 	    }
 
 	    mxFree (Ltp) ;
@@ -1208,28 +1213,28 @@ void mexFunction
 	    if (A_is_complex)
 	    {
 		if (print_level >= 3) mexPrintf ("\nL: ") ;
-	        (void) umfpack_zi_report_matrix (n_row, n_inner, Lp, Li,
+	        (void) umfpack_zl_report_matrix (n_row, n_inner, Lp, Li,
 		    Lx, Lz, 1, Control) ;
 		if (print_level >= 3) mexPrintf ("\nU: ") ;
-	        (void) umfpack_zi_report_matrix (n_inner, n_col,  Up, Ui,
+	        (void) umfpack_zl_report_matrix (n_inner, n_col,  Up, Ui,
 		    Ux, Uz, 1, Control) ;
 		if (print_level >= 3) mexPrintf ("\nP: ") ;
-	        (void) umfpack_zi_report_perm (n_row, P, Control) ;
+	        (void) umfpack_zl_report_perm (n_row, P, Control) ;
 		if (print_level >= 3) mexPrintf ("\nQ: ") ;
-	        (void) umfpack_zi_report_perm (n_col, Q, Control) ;
+	        (void) umfpack_zl_report_perm (n_col, Q, Control) ;
 	    }
 	    else
 	    {
 		if (print_level >= 3) mexPrintf ("\nL: ") ;
-	        (void) umfpack_di_report_matrix (n_row, n_inner, Lp, Li,
+	        (void) umfpack_dl_report_matrix (n_row, n_inner, Lp, Li,
 		    Lx, 1, Control) ;
 		if (print_level >= 3) mexPrintf ("\nU: ") ;
-	        (void) umfpack_di_report_matrix (n_inner, n_col,  Up, Ui,
+	        (void) umfpack_dl_report_matrix (n_inner, n_col,  Up, Ui,
 		    Ux, 1, Control) ;
 		if (print_level >= 3) mexPrintf ("\nP: ") ;
-	        (void) umfpack_di_report_perm (n_row, P, Control) ;
+	        (void) umfpack_dl_report_perm (n_row, P, Control) ;
 		if (print_level >= 3) mexPrintf ("\nQ: ") ;
-	        (void) umfpack_di_report_perm (n_col, Q, Control) ;
+	        (void) umfpack_dl_report_perm (n_col, Q, Control) ;
 	    }
 
 	    mxFree (P) ;
@@ -1245,31 +1250,31 @@ void mexFunction
 	/* return the symbolic factorization */
 	/* ------------------------------------------------------------------ */
 
-	Q = (int *) mxMalloc (n_col * sizeof (int)) ;
-	P = (int *) mxMalloc (n_row * sizeof (int)) ;
-	Front_npivcol = (int *) mxMalloc ((nn+1) * sizeof (int)) ;
-	Front_parent = (int *) mxMalloc ((nn+1) * sizeof (int)) ;
-	Front_1strow = (int *) mxMalloc ((nn+1) * sizeof (int)) ;
-	Front_leftmostdesc = (int *) mxMalloc ((nn+1) * sizeof (int)) ;
-	Chain_start = (int *) mxMalloc ((nn+1) * sizeof (int)) ;
-	Chain_maxrows = (int *) mxMalloc ((nn+1) * sizeof (int)) ;
-	Chain_maxcols = (int *) mxMalloc ((nn+1) * sizeof (int)) ;
+	Q = (UF_long *) mxMalloc (n_col * sizeof (UF_long)) ;
+	P = (UF_long *) mxMalloc (n_row * sizeof (UF_long)) ;
+	Front_npivcol = (UF_long *) mxMalloc ((nn+1) * sizeof (UF_long)) ;
+	Front_parent = (UF_long *) mxMalloc ((nn+1) * sizeof (UF_long)) ;
+	Front_1strow = (UF_long *) mxMalloc ((nn+1) * sizeof (UF_long)) ;
+	Front_leftmostdesc = (UF_long *) mxMalloc ((nn+1) * sizeof (UF_long)) ;
+	Chain_start = (UF_long *) mxMalloc ((nn+1) * sizeof (UF_long)) ;
+	Chain_maxrows = (UF_long *) mxMalloc ((nn+1) * sizeof (UF_long)) ;
+	Chain_maxcols = (UF_long *) mxMalloc ((nn+1) * sizeof (UF_long)) ;
 
 	if (A_is_complex)
 	{
-	    status = umfpack_zi_get_symbolic (&ignore1, &ignore2, &ignore3,
+	    status = umfpack_zl_get_symbolic (&ignore1, &ignore2, &ignore3,
 	        &nz, &nfronts, &nchains, P, Q, Front_npivcol,
 	        Front_parent, Front_1strow, Front_leftmostdesc,
 	        Chain_start, Chain_maxrows, Chain_maxcols, Symbolic) ;
-	    umfpack_zi_free_symbolic (&Symbolic) ;
+	    umfpack_zl_free_symbolic (&Symbolic) ;
 	}
 	else
 	{
-	    status = umfpack_di_get_symbolic (&ignore1, &ignore2, &ignore3,
+	    status = umfpack_dl_get_symbolic (&ignore1, &ignore2, &ignore3,
 	        &nz, &nfronts, &nchains, P, Q, Front_npivcol,
 	        Front_parent, Front_1strow, Front_leftmostdesc,
 	        Chain_start, Chain_maxrows, Chain_maxcols, Symbolic) ;
-	    umfpack_di_free_symbolic (&Symbolic) ;
+	    umfpack_dl_free_symbolic (&Symbolic) ;
 	}
 
 	if (status < 0)
@@ -1290,8 +1295,8 @@ void mexFunction
 
 	/* create sparse permutation matrix for P */
 	pargout [0] = mxCreateSparse (n_row, n_row, n_row, mxREAL) ;
-	Pp = mxGetJc (pargout [0]) ;
-	Pi = mxGetIr (pargout [0]) ;
+	Pp = (UF_long *) mxGetJc (pargout [0]) ;
+	Pi = (UF_long *) mxGetIr (pargout [0]) ;
 	Px = mxGetPr (pargout [0]) ;
 	for (k = 0 ; k < n_row ; k++)
 	{
@@ -1303,8 +1308,8 @@ void mexFunction
 
 	/* create sparse permutation matrix for Q */
 	pargout [1] = mxCreateSparse (n_col, n_col, n_col, mxREAL) ;
-	Qp = mxGetJc (pargout [1]) ;
-	Qi = mxGetIr (pargout [1]) ;
+	Qp = (UF_long *) mxGetJc (pargout [1]) ;
+	Qi = (UF_long *) mxGetIr (pargout [1]) ;
 	Qx = mxGetPr (pargout [1]) ;
 	for (k = 0 ; k < n_col ; k++)
 	{
@@ -1362,11 +1367,11 @@ void mexFunction
 
     if (A_is_complex)
     {
-	umfpack_zi_report_info (Control, Info) ;
+	umfpack_zl_report_info (Control, Info) ;
     }
     else
     {
-	umfpack_di_report_info (Control, Info) ;
+	umfpack_dl_report_info (Control, Info) ;
     }
 
     if (do_info > 0)

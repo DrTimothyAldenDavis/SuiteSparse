@@ -10,7 +10,7 @@ function [p,v,d] = cs_fiedler (A)
 %
 %   See also CS_SCC, EIGS, SYMRCM, UNMESH.
 
-%   Copyright 2006, Timothy A. Davis.
+%   Copyright 2006-2007, Timothy A. Davis.
 %   http://www.cise.ufl.edu/research/sparse
 
 n = size (A,1) ;

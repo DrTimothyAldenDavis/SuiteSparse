@@ -26,6 +26,6 @@ function mtype = mwrite (filename, A, Z, comments_filename)		    %#ok
 %
 % See also mread.
 
-% Copyright 2006, Timothy A. Davis
+% Copyright 2006-2007, Timothy A. Davis
 
 error ('mwrite mexFunction not found') ;

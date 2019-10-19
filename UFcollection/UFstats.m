@@ -1,5 +1,5 @@
 function stats = UFstats (A, nometis, Z)
-%UFstats compute matrix statistics for the UF Sparse Matrix Collection
+%UFSTATS compute matrix statistics for the UF Sparse Matrix Collection
 % Example:
 %   stats = UFstats (A,nometis,Z)
 %
@@ -50,7 +50,7 @@ function stats = UFstats (A, nometis, Z)
 %
 % See also UFget, UFindex, amd, metis, RBtype, cs_scc, cs_sqr, dmperm.
 
-% Copyright 2006, Timothy A. Davis
+% Copyright 2006-2007, Timothy A. Davis
 
 % Requires the SuiteSparse set of packages: CHOLMOD, AMD, COLAMD, RBio, CSparse;
 % and METIS.
