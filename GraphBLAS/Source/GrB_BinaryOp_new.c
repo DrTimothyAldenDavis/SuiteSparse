@@ -19,12 +19,12 @@
 GrB_Info GrB_BinaryOp_new
 (
     GrB_BinaryOp *binaryop,         // handle for the new binary operator
-    void *function,                 // pointer to the binary function
+    GxB_binary_function function,   // pointer to the binary function
     const GrB_Type ztype,           // type of output z
     const GrB_Type xtype,           // type of input x
     const GrB_Type ytype            // type of input y
 )
-{
+{ 
     return (GB_BinaryOp_new (binaryop, function, ztype, xtype, ytype, "f")) ;
 }
 

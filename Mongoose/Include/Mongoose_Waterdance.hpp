@@ -9,7 +9,9 @@
  * Mongoose is also available under other licenses; contact authors for details.
  * -------------------------------------------------------------------------- */
 
-#pragma once
+// #pragma once
+#ifndef MONGOOSE_WATERDANCE_HPP
+#define MONGOOSE_WATERDANCE_HPP
 
 #include "Mongoose_EdgeCutOptions.hpp"
 #include "Mongoose_EdgeCutProblem.hpp"
@@ -21,3 +23,5 @@ namespace Mongoose
 void waterdance(EdgeCutProblem *, const EdgeCut_Options *);
 
 } // end namespace Mongoose
+
+#endif

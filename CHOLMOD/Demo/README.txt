@@ -20,10 +20,9 @@ Demos for CHOLMOD
 
 To compile and run the demos on the CPU, do "make" in this directory.
 To run the demos on the GPU, you must first download the ND/ND6k matrix
-from the UF Sparse Matrix Collection, currently hosted at
-http://www.cise.ufl.edu/research/sparse/matrices
-(note that the will move soon to Texas A&M, but the plan is for it to
-still be mirrored at UF).  Unpack the nd6k.mtx to your home directory.
+from the SuiteSparse Matrix Collection, hosted at https://sparse.tamu.edu
+
+Unpack the nd6k.mtx to your home directory.
 Then do "make big" in this directory.  If you want to put the nd6k.mtx
 file somewhere else, then simply edit the gpu.sh file.
 

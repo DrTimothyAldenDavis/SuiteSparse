@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// GraphBLAS/Demo/Program/bfs_demo.c: breadth first search using mxv with a mask
+// GraphBLAS/Demo/Program/bfs_demo.c: breadth first search using vxm with a mask
 //------------------------------------------------------------------------------
 
 // SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
@@ -62,6 +62,8 @@ int main (int argc, char **argv)
     GrB_Index n ;
     OK (GrB_Matrix_nrows (&n, A)) ;
 
+    printf ("number of nodes: %g\n", (double) n) ;
+
     // typecast A to boolean, if needed.  This is not required but it
     // speeds up the BFS
     A2 = A ;
@@ -70,8 +72,8 @@ int main (int argc, char **argv)
     OK (GxB_Matrix_type (&atype, A)) ;
     if (atype != GrB_BOOL)
     {
-        GrB_Matrix_new (&Abool, GrB_BOOL, n, n) ;
-        GrB_apply (Abool, NULL, NULL, GrB_IDENTITY_BOOL, A, NULL) ;
+        OK (GrB_Matrix_new (&Abool, GrB_BOOL, n, n)) ;
+        OK (GrB_apply (Abool, NULL, NULL, GrB_IDENTITY_BOOL, A, NULL)) ;
         A2 = Abool ;
     }
 
@@ -116,6 +118,10 @@ int main (int argc, char **argv)
                 simple_tic (tic) ;
                 OK (bfs6_check (&v, A2, s)) ;
                 break ;
+
+            default:
+                CHECK (false, GrB_INVALID_VALUE) ;
+                break ;
         }
 
         //----------------------------------------------------------------------
@@ -129,7 +135,8 @@ int main (int argc, char **argv)
 
         OK (GrB_Vector_new (&is_reachable, GrB_BOOL, n)) ;
         OK (GrB_apply (is_reachable, NULL, NULL, GrB_IDENTITY_BOOL, v, NULL)) ;
-        OK (GrB_reduce (&nreachable, NULL, GxB_PLUS_INT32_MONOID, is_reachable, NULL)) ;
+        OK (GrB_reduce (&nreachable, NULL, GxB_PLUS_INT32_MONOID,
+            is_reachable, NULL)) ;
         OK (GrB_free (&is_reachable)) ;
         // OK (GrB_Vector_nvals (&nreachable, v)) ;
         printf ("nodes reachable from node %.16g: %.16g out of %.16g\n",
@@ -170,7 +177,8 @@ int main (int argc, char **argv)
 
         // this selects the correct GrB_Monoid_new_BOOL function
         info = GrB_Monoid_new (&Lor, GrB_LOR, (bool) false) ;        
-        printf ("\n------------------- this is OK:\n%s\n", GrB_error ( )) ;
+        printf ("\n------------------- this is OK: %d (should be"
+            " GrB_SUCCESS = %d)\n", info, GrB_SUCCESS) ;
         GrB_free (&Lor) ;
     }
 

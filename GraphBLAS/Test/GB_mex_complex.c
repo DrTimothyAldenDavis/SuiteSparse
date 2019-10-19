@@ -18,6 +18,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define USAGE "C = GB_mex_complex (A)"
+
 void mexFunction
 (
     int nargout,
@@ -30,7 +32,7 @@ void mexFunction
     // check inputs
     if (nargout > 1 || nargin != 1)
     {
-        mexErrMsgTxt ("Usage: C = GB_mex_complex (A)") ;
+        mexErrMsgTxt ("Usage: " USAGE) ;
     }
 
     // get the input matrix

@@ -24,12 +24,12 @@ n = 0 ;
 
 for k = 1:length (numeric)
 
-    xx = upper (numeric {k}) ;
-    fprintf ('    // %s monoids:\n', xx) ;
+    x2 = upper (numeric {k}) ;
+    fprintf ('    // %s monoids:\n', x2) ;
 
     for i = 1:length (ints)
         cc = upper (ints {i}) ;
-        name = sprintf ('GxB_%s_%s_MONOID,', xx, cc) ;
+        name = sprintf ('GxB_%s_%s_MONOID,', x2, cc) ;
         fprintf ('    %-25s     // identity: ', name) ;
         id = numeric_ids {k} ;
         switch id
@@ -49,7 +49,7 @@ for k = 1:length (numeric)
 
     for i = 1:length (floats)
         cc = upper (floats {i}) ;
-        name = sprintf ('GxB_%s_%s_MONOID,', xx, cc) ;
+        name = sprintf ('GxB_%s_%s_MONOID,', x2, cc) ;
         fprintf ('    %-25s     // identity: ', name) ;
         id = numeric_ids {k} ;
         switch id

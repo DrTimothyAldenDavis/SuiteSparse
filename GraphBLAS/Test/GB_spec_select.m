@@ -17,9 +17,7 @@ end
 
 C = GB_spec_matrix (C) ;
 A = GB_spec_matrix (A) ;
-
-% Mask is a dense logical matrix, not a struct
-Mask = GB_mex_cast (full (Mask), 'logical') ;
+Mask = GB_spec_getmask (Mask) ;
 [C_replace Mask_comp Atrans ~] = GB_spec_descriptor (descriptor) ;
 
 %-------------------------------------------------------------------------------

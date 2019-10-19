@@ -9,7 +9,9 @@
  * Mongoose is also available under other licenses; contact authors for details.
  * -------------------------------------------------------------------------- */
 
-#pragma once
+// #pragma once
+#ifndef MONGOOSE_DEBUG_HPP
+#define MONGOOSE_DEBUG_HPP
 
 #include "Mongoose_CSparse.hpp"
 #include "Mongoose_EdgeCutOptions.hpp"
@@ -94,3 +96,5 @@ void FreeSet_dump(const char *where, Int n, Int *FreeSet_list, Int nFreeSet,
                   Int *FreeSet_status, Int verbose, double *x);
 
 } // end namespace Mongoose
+
+#endif

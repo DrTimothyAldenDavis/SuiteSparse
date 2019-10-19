@@ -9,7 +9,9 @@
  * Mongoose is also available under other licenses; contact authors for details.
  * -------------------------------------------------------------------------- */
 
-#pragma once
+// #pragma once
+#ifndef MONGOOSE_IMPROVEQP_HPP
+#define MONGOOSE_IMPROVEQP_HPP
 
 #include "Mongoose_EdgeCutOptions.hpp"
 #include "Mongoose_EdgeCutProblem.hpp"
@@ -23,3 +25,5 @@ namespace Mongoose
 bool improveCutUsingQP(EdgeCutProblem *, const EdgeCut_Options *, bool isInitial = false);
 
 } // end namespace Mongoose
+
+#endif

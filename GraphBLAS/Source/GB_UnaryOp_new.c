@@ -18,23 +18,23 @@
 GrB_Info GB_UnaryOp_new             // create a new user-defined unary operator
 (
     GrB_UnaryOp *unaryop,           // handle for the new unary operator
-    void *function,                 // pointer to the unary function
+    GxB_unary_function function,    // pointer to the unary function
     const GrB_Type ztype,           // type of output z
     const GrB_Type xtype,           // type of input x
     const char *name                // name of the function
 )
-{
+{ 
 
     //--------------------------------------------------------------------------
     // check inputs
     //--------------------------------------------------------------------------
 
-    WHERE ("GrB_UnaryOp_new (unaryop, function, ztype, xtype)") ;
-    RETURN_IF_NULL (unaryop) ;
+    GB_WHERE ("GrB_UnaryOp_new (unaryop, function, ztype, xtype)") ;
+    GB_RETURN_IF_NULL (unaryop) ;
     (*unaryop) = NULL ;
-    RETURN_IF_NULL (function) ;
-    RETURN_IF_NULL_OR_UNINITIALIZED (ztype) ;
-    RETURN_IF_NULL_OR_UNINITIALIZED (xtype) ;
+    GB_RETURN_IF_NULL (function) ;
+    GB_RETURN_IF_NULL_OR_FAULTY (ztype) ;
+    GB_RETURN_IF_NULL_OR_FAULTY (xtype) ;
 
     //--------------------------------------------------------------------------
     // create the unary op
@@ -43,19 +43,19 @@ GrB_Info GB_UnaryOp_new             // create a new user-defined unary operator
     // allocate the unary operator
     GB_CALLOC_MEMORY (*unaryop, 1, sizeof (struct GB_UnaryOp_opaque)) ;
     if (*unaryop == NULL)
-    {
-        return (ERROR (GrB_OUT_OF_MEMORY, (LOG, "out of memory"))) ;
+    { 
+        return (GB_NO_MEMORY) ;
     }
 
     // initialize the unary operator
     GrB_UnaryOp op = *unaryop ;
-    op->magic = MAGIC ;
+    op->magic = GB_MAGIC ;
     op->xtype = xtype ;
     op->ztype = ztype ;
     op->function = function ;
     strncpy (op->name, name, GB_LEN-1) ;
-    op->opcode = GB_USER_opcode ;           // generic opcode for all user ops
-    ASSERT_OK (GB_check (op, "new user-defined unary op", 0)) ;
-    return (REPORT_SUCCESS) ;
+    op->opcode = GB_USER_R_opcode ;     // run-time user-defined operator
+    ASSERT_OK (GB_check (op, "new user-defined unary op", GB0)) ;
+    return (GrB_SUCCESS) ;
 }
 

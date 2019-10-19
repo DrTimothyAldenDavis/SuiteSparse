@@ -65,6 +65,8 @@ Graph *Graph::create(const Int _n, const Int _nz, Int *_p, Int *_i, double *_x,
     return graph;
 }
 
+// Creates graph using a shallow copy of the matrix
+// Note that this does not free the matrix arrays when done
 Graph *Graph::create(cs *matrix)
 {
     Graph *graph = create(std::max(matrix->n, matrix->m), matrix->p[matrix->n],
@@ -73,6 +75,33 @@ Graph *Graph::create(cs *matrix)
     {
         return NULL;
     }
+
+    return graph;
+}
+
+Graph *Graph::create(cs *matrix, bool free_when_done)
+{
+    void *memoryLocation = SuiteSparse_malloc(1, sizeof(Graph));
+    if (!memoryLocation)
+        return NULL;
+
+    // Placement new
+    Graph *graph = new (memoryLocation) Graph();
+
+    if (!graph)
+    {
+        return NULL;
+    }
+
+    graph->n = std::max(matrix->n, matrix->m);
+    graph->nz = matrix->p[matrix->n];
+    graph->p = matrix->p;
+    graph->i = matrix->i;
+    graph->x = matrix->x;
+
+    graph->shallow_p = !free_when_done;
+    graph->shallow_i = !free_when_done;
+    graph->shallow_x = !free_when_done;
 
     return graph;
 }

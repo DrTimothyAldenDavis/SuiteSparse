@@ -1,8 +1,15 @@
 //------------------------------------------------------------------------------
-// GraphBLAS/Demo/usercomplex.c:  complex numbers as a user-defined type
+// GraphBLAS/Demo/Source/usercomplex.c:  complex numbers as a user-defined type
 //------------------------------------------------------------------------------
 
 #include "usercomplex.h"
+
+#if defined __INTEL_COMPILER
+#pragma warning (disable: 58 167 144 177 181 186 188 589 593 869 981 1418 1419 1572 1599 2259 2282 2557 2547 3280 )
+#elif defined __GNUC__
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#pragma GCC diagnostic ignored "-Wincompatible-pointer-types"
+#endif
 
 #define C double complex
 #define X *x
@@ -192,7 +199,9 @@ GrB_UnaryOp Complex_complex_real = NULL, Complex_complex_imag = NULL ;
 // Complex type, scalars, monoids, and semiring
 //------------------------------------------------------------------------------
 
+#ifndef MY_COMPLEX
 GrB_Type Complex = NULL ;
+#endif
 GrB_Monoid   Complex_plus_monoid = NULL, Complex_times_monoid = NULL ;
 GrB_Semiring Complex_plus_times = NULL ;
 C Complex_1  = ONE ;
@@ -219,9 +228,12 @@ GrB_Info Complex_init ( )
     // create the Complex type
     //--------------------------------------------------------------------------
 
+    #ifndef MY_COMPLEX
     OK (GrB_Type_new (&Complex, sizeof (C))) ;    
+    #endif
 
     #undef C
+    #undef D
     #define C Complex
     #define D GrB_FP64
 
@@ -418,17 +430,4 @@ GrB_Info Complex_finalize ( )
 
     return (GrB_SUCCESS) ;
 }
-
-#undef C
-#undef D
-#undef X
-#undef Y
-#undef Z
-#undef T
-#undef F
-#undef R
-#undef OK
-#undef ONE
-#undef ZERO
-#undef BOOL
 

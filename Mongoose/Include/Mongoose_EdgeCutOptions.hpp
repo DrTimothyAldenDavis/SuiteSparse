@@ -9,7 +9,9 @@
  * Mongoose is also available under other licenses; contact authors for details.
  * -------------------------------------------------------------------------- */
 
-#pragma once
+// #pragma once
+#ifndef MONGOOSE_EDGECUTOPTIONS_HPP
+#define MONGOOSE_EDGECUTOPTIONS_HPP
 
 #include "Mongoose_Internal.hpp"
 
@@ -56,3 +58,5 @@ struct EdgeCut_Options
 };
 
 } // end namespace Mongoose
+
+#endif

@@ -70,13 +70,21 @@ function stats = ssstats (A, kind, skip_chol, skip_dmperm, Z)
 if (~issparse (A))
     A = sparse (A) ;
 end
+[m n] = size (A) ;
 
 uncomputed = -2 ;
 failure = -1 ;
 
 if (nargin < 5)
-    Z = [ ] ;
+    Z = sparse (m,n) ;
+    AZ = A ;
+else
+    AZ = A + Z ;
+    if (nnz (AZ) ~= nnz (A) + nnz (Z))
+        error ('A and Z overlap!')
+    end
 end
+
 if (nargin < 4)
     skip_dmperm = 0 ;
 end
@@ -92,11 +100,10 @@ end
 %-------------------------------------------------------------------------------
 
 tic ;
-[m n] = size (A) ;
 stats.nrows = m ;
 stats.ncols = n ;
 stats.nnz = nnz (A) ;
-stats.RBtype = RBtype (A) ;                     % Rutherford/Boeing type
+stats.RBtype = RBtype (AZ) ;                    % Rutherford/Boeing type
 stats.isBinary = (stats.RBtype (1) == 'p') ;
 stats.isReal = (stats.RBtype (1) ~= 'c') ;
 
@@ -122,11 +129,7 @@ end
 psym_A = stats.pattern_symmetry ;   % symmetry of the pattern of A (excluding Z)
 stats.nnzdiag = nnzdiag ;
 stats.cholcand = (s >= 6) ;         % check if Cholesky candidate
-if (nargin >= 5)
-    stats.nzero = nnz (Z) ;
-else
-    stats.nzero = 0 ;
-end
+stats.nzero = nnz (Z) ;
 
 fprintf ('cholcand: %d\n', stats.cholcand) ;
 fprintf ('numerical_symmetry: %g pattern_symmetry: %g time: %g\n', ...
@@ -134,16 +137,7 @@ fprintf ('numerical_symmetry: %g pattern_symmetry: %g time: %g\n', ...
 
 % recompute the pattern symmetry with Z included
 tic ;
-if (stats.nzero > 0)
-    AZ = A + Z ;
-else
-    AZ = A ;
-end
 if (m == n && stats.nzero > 0)
-    AZ = A+Z ;
-    if (nnz (AZ) ~= nnz (A) + nnz (Z))
-        error ('A and Z overlap!')
-    end
     [s xmatched pmatched nzoffdiag] = spsym (AZ) ;
     if (nzoffdiag > 0)
         stats.pattern_symmetry = pmatched / nzoffdiag ;
@@ -151,6 +145,7 @@ if (m == n && stats.nzero > 0)
         stats.pattern_symmetry = 1 ;
     end
 end
+fprintf ('stats with A+Zeros:\n') ;
 fprintf ('numerical_symmetry: %g pattern_symmetry: %g time: %g\n', ...
     stats.numerical_symmetry, stats.pattern_symmetry, toc) ;
 

@@ -9,7 +9,9 @@
  * Mongoose is also available under other licenses; contact authors for details.
  * -------------------------------------------------------------------------- */
 
-#pragma once
+// #pragma once
+#ifndef MONGOOSE_QPMINHEAP_HPP
+#define MONGOOSE_QPMINHEAP_HPP
 
 #include "Mongoose_Internal.hpp"
 
@@ -45,3 +47,5 @@ void QPminheap_check(Int *heap,   /* vector of size n+1 */
 );
 
 } // end namespace Mongoose
+
+#endif

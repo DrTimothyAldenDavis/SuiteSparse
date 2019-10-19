@@ -27,9 +27,7 @@ end
 % and with where X(~X.pattern)==identity for all matrices A, B, and C.
 C = GB_spec_matrix (C) ;
 A = GB_spec_matrix (A) ;
-
-% Mask is a dense logical matrix, not a struct
-Mask = GB_mex_cast (full (Mask), 'logical') ;
+Mask = GB_spec_getmask (Mask) ;
 [C_replace Mask_comp Atrans ignore] = GB_spec_descriptor (descriptor) ;
 
 %-------------------------------------------------------------------------------
@@ -41,11 +39,19 @@ if (Atrans)
 end
 
 % expand I and J if empty
-if (isempty (I))
+if (ischar (I) & isempty (I))
+    % I = '' is treated as the empty list
+    I = [ ] ;
+elseif (isempty (I) || isequal (I, ':'))
+    % I = [ ] is treated as ":"
     nrows = size (C.matrix, 1) ;
     I = 1:nrows ;
 end
-if (isempty (J))
+if (ischar (J) & isempty (J))
+    % J = '' is treated as the empty list
+    J = [ ] ;
+elseif (isempty (J) || isequal (J, ':'))
+    % J = [ ] is treated as the ":"
     ncols = size (C.matrix, 2) ;
     J = 1:ncols ;
 end

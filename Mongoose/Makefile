@@ -11,13 +11,15 @@
 # simple Makefile for Mongoose, relies on cmake to do the actual build.  Use
 # the CMAKE_OPTIONS argument to this Makefile to pass options to cmake.
 
+JOBS ?= 1
+
 # build the Mongoose library (static and dynamic) and run a quick test
 default:
-	( cd build ; cmake $(CMAKE_OPTIONS) .. ; $(MAKE) ; ./bin/demo )
+	( cd build ; CC=$(CC) CXX=$(CXX) cmake $(CMAKE_OPTIONS) .. ; $(MAKE) --jobs=$(JOBS) ; ./bin/demo )
 
 # just build the static and dynamic libraries; do not run the demo
 library:
-	( cd build ; cmake $(CMAKE_OPTIONS) .. ; $(MAKE) )
+	( cd build ; CC=$(CC) CXX=$(CXX) cmake $(CMAKE_OPTIONS) .. ; $(MAKE) --jobs=$(JOBS) )
 
 # the same as "make library"
 static: library
@@ -25,7 +27,7 @@ static: library
 # installs Mongoose to the install location defined by cmake, usually
 # /usr/local/lib and /usr/local/include
 install:
-	( cd build ; cmake $(CMAKE_OPTIONS) .. ; $(MAKE) ; $(MAKE) install )
+	( cd build ; CC=$(CC) CXX=$(CXX) cmake $(CMAKE_OPTIONS) .. ; $(MAKE) --jobs=$(JOBS) ; $(MAKE) install )
 
 # create the Doc/Mongoose_UserGuide.pdf
 docs:
@@ -37,7 +39,7 @@ uninstall:
 
 # run the extensive tests
 test:
-	( cd build ; cmake $(CMAKE_OPTIONS) .. ; $(MAKE) test )
+	( cd build ; CC=$(CC) CXX=$(CXX) cmake $(CMAKE_OPTIONS) .. ; $(MAKE) test )
 
 clean: distclean
 

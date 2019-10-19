@@ -23,19 +23,19 @@ bool GB_size_t_multiply     // true if ok, false if overflow
 
     (*c) = 0 ;
     if (a == 0 || b == 0)
-    {
+    { 
         return (true) ;
     }
 
     if (a > SIZE_MAX / 2 || b > SIZE_MAX / 2)
-    {
+    { 
         // a or b are out of range
         return (false) ;
     }
 
     // a + b is now safe to compute
-    if ((a + b) > (SIZE_MAX / IMIN (a,b)))
-    {
+    if ((a + b) > (SIZE_MAX / GB_IMIN (a,b)))
+    { 
         // a * b may overflow
         return (false) ;
     }

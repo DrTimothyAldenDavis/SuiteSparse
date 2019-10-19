@@ -9,7 +9,9 @@
  * Mongoose is also available under other licenses; contact authors for details.
  * -------------------------------------------------------------------------- */
 
-#pragma once
+// #pragma once
+#ifndef MONGOOSE_IMPROVEFM_HPP
+#define MONGOOSE_IMPROVEFM_HPP
 
 #include "Mongoose_CutCost.hpp"
 #include "Mongoose_EdgeCutOptions.hpp"
@@ -51,3 +53,5 @@ void calculateGain(EdgeCutProblem *, const EdgeCut_Options *, Int vertex, double
                    Int *out_externalDegree);
 
 } // end namespace Mongoose
+
+#endif

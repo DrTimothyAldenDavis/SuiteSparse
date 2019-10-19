@@ -1,6 +1,6 @@
 SuiteSparse:  A Suite of Sparse matrix packages at http://www.suitesparse.com
 
-July 5, 2018.  SuiteSparse VERSION 5.3.0
+Dec 20, 2018.  SuiteSparse VERSION 5.4.0
 
 Now includes GraphBLAS and a new interface to the SuiteSparse Matrix
 Collection (ssget), via MATLAB and a Java GUI, to http://sparse.tamu.edu.
@@ -296,6 +296,13 @@ your library search patch, you can do the following (for example):
 
     S = /home/myself/SuiteSparse
     cc myprogram.c -I$(S)/include -lumfpack -lamd -lcholmod -lsuitesparseconfig -lm
+
+To change the C and C++ compilers, and to compile in parallel use:
+
+    AUTOCC=no CC=gcc CX=g++ JOBS=32 make
+
+for example, which changes the compiler to gcc and g++, and runs make with
+'make -j32', in parallel with 32 jobs.
 
 Now you can install the libraries, if you wish, in a location other than
 SuiteSparse/lib, SuiteSparse/include, and SuiteSparse/share/doc, using

@@ -53,6 +53,9 @@ for id = list
     clear Problem
     Problem = ssget (id, index) ;
     disp (Problem) ;
+    if (isfield (Problem, 'aux'))
+        disp (Problem.aux) ;
+    end
 
     % create the MM and RB versions
     for k = 1:2

@@ -27,10 +27,11 @@ if (POLICY CMP0048)
     cmake_policy(SET CMP0048 NEW)
 endif (POLICY CMP0048)
 
-set(Mongoose_DATE "July 5, 2018")
+set(Mongoose_DATE "Dec 28, 2018")
+set(Mongoose_NUMERIC_DATE "2018-12-28")
 set(Mongoose_VERSION_MAJOR 2)
 set(Mongoose_VERSION_MINOR 0)
-set(Mongoose_VERSION_PATCH 2)
+set(Mongoose_VERSION_PATCH 3)
 
 if(CMAKE_MAJOR_VERSION GREATER 2)
 project(Mongoose
@@ -40,14 +41,18 @@ else()
 project(Mongoose CXX C)
 endif()
 
-# Configure a header file to pass CMake information
+# Configure files to pass CMake information
 configure_file (
-        "Include/Mongoose_Version.hpp.in"
+        "Version/Mongoose_Version.hpp.in"
         "${PROJECT_SOURCE_DIR}/Include/Mongoose_Version.hpp"
 )
 configure_file (
-        "Doc/title-info.tex.in"
+        "Version/title-info.tex.in"
         "${PROJECT_SOURCE_DIR}/Doc/title-info.tex"
+)
+configure_file (
+        "Version/codemeta.json.in"
+        "${PROJECT_SOURCE_DIR}/codemeta.json"
 )
 
 include_directories("${PROJECT_BINARY_DIR}")
@@ -142,68 +147,27 @@ include_directories(Include
 set(CMAKE_CXX_STANDARD 11)
 #set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Look for common SuiteSparse_config - otherwise, use our own
-set(SUITESPARSE_CONFIG_INCLUDE_DIRS
-        ${SUITESPARSE_CONFIG_INCLUDE_DIR_HINT}
-        /usr/local/include
-        /usr/include
-        /include
-        /opt/include
-        )
-
-set(SUITESPARSE_CONFIG_LIBRARY_DIRS
-        ${SUITESPARSE_CONFIG_LIBRARY_DIR_HINT}
-        /usr/local/lib
-        /usr/lib
-        /lib
-        /opt/lib
-        )
-
-find_path(SUITESPARSE_CONFIG_INCLUDE_DIR
-        NAMES SuiteSparse_config.h
-        PATHS ${SUITESPARSE_CONFIG_INCLUDE_DIRS}
-        )
-
-find_library(SUITESPARSE_CONFIG_LIBRARY
-        NAMES libsuitesparseconfig.a libsuitesparseconfig.dylib libsuitesparseconfig.so
-        PATHS ${SUITESPARSE_CONFIG_LIBRARY_DIRS}
-        )
-
-if (EXISTS ${SUITESPARSE_CONFIG_INCLUDE_DIR} AND EXISTS ${SUITESPARSE_CONFIG_LIBRARY})
-    message(STATUS "Installed SuiteSparse_config" ${BoldGreen} " found" ${ColourReset} " in " ${SUITESPARSE_CONFIG_INCLUDE_DIR} " and " ${SUITESPARSE_CONFIG_LIBRARY})
-    include_directories(${SUITESPARSE_CONFIG_INCLUDE_DIR})
-elseif (EXISTS ${PROJECT_SOURCE_DIR}/../SuiteSparse_config)
-    set(SUITESPARSE_CONFIG_DIR ${PROJECT_SOURCE_DIR}/../SuiteSparse_config)
-    include_directories(${SUITESPARSE_CONFIG_DIR})
-
-    if (EXISTS ${SUITESPARSE_CONFIG_DIR}/libsuitesparseconfig.a)
-        set(SUITESPARSE_CONFIG_LIBRARY ${SUITESPARSE_CONFIG_DIR}/libsuitesparseconfig.a)
-        message(STATUS "External SuiteSparse_config" ${BoldGreen} " found already compiled" ${ColourReset} ", compiling as a SuiteSparse module.")
-    else ()
-        message(STATUS "External SuiteSparse_config" ${BoldGreen} " found " ${BoldRed} "uncompiled" ${ColourReset} ", compiling as a SuiteSparse module.")
-        set(SUITESPARSE_CONFIG_FILES
-                ${SUITESPARSE_CONFIG_DIR}/SuiteSparse_config.c
-                ${SUITESPARSE_CONFIG_DIR}/SuiteSparse_config.h
-                )
-
-        set(MONGOOSE_LIB_FILES
-                ${MONGOOSE_LIB_FILES}
-                ${SUITESPARSE_CONFIG_FILES}
-                )
-    endif ()
+# determine which SuiteSparse_config to use
+if (EXISTS ${PROJECT_SOURCE_DIR}/../SuiteSparse_config)
+    message(STATUS "External ../SuiteSparse_config" ${BoldBlue} " found" ${ColourReset} ".")
+    set ( SUITESPARSE_CONFIG_DIR ${PROJECT_SOURCE_DIR}/../SuiteSparse_config )
+    link_directories ( ${PROJECT_SOURCE_DIR}/../lib )
+    message ( STATUS "Note: ../SuiteSparse_config must be compiled before compiling Mongoose" )
+    set ( SUITESPARSE_CONFIG_LIBRARY suitesparseconfig )
 else ()
-    message(STATUS "External SuiteSparse_config" ${BoldRed} " not found" ${ColourReset} ", compiling stand-alone Mongoose.")
+    message(STATUS "External ../SuiteSparse_config" ${BoldRed} " not found" ${ColourReset} ", compiling stand-alone Mongoose.")
     set(SUITESPARSE_CONFIG_DIR ${PROJECT_SOURCE_DIR}/SuiteSparse_config)
     set(SUITESPARSE_CONFIG_FILES
             ${SUITESPARSE_CONFIG_DIR}/SuiteSparse_config.c
             ${SUITESPARSE_CONFIG_DIR}/SuiteSparse_config.h
             )
-    include_directories(${SUITESPARSE_CONFIG_DIR})
     set(MONGOOSE_LIB_FILES
             ${MONGOOSE_LIB_FILES}
             ${SUITESPARSE_CONFIG_FILES}
             )
 endif ()
+
+include_directories(${SUITESPARSE_CONFIG_DIR})
 
 # set the output directories
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -215,7 +179,7 @@ add_library(mongoose_lib ${MONGOOSE_LIB_FILES})
 set_property(TARGET mongoose_lib PROPERTY POSITION_INDEPENDENT_CODE ON)
 set_target_properties(mongoose_lib
         PROPERTIES OUTPUT_NAME mongoose)
-if (EXISTS ${SUITESPARSE_CONFIG_LIBRARY})
+if ( SUITESPARSE_CONFIG_LIBRARY )
     target_link_libraries(mongoose_lib ${SUITESPARSE_CONFIG_LIBRARY})
 endif ()
 
@@ -229,7 +193,7 @@ add_library(mongoose_dylib SHARED ${MONGOOSE_LIB_FILES})
 set_property(TARGET mongoose_dylib PROPERTY POSITION_INDEPENDENT_CODE ON)
 set_target_properties(mongoose_dylib
         PROPERTIES OUTPUT_NAME mongoose)
-if (EXISTS ${SUITESPARSE_CONFIG_LIBRARY})
+if ( SUITESPARSE_CONFIG_LIBRARY )
     target_link_libraries(mongoose_dylib ${SUITESPARSE_CONFIG_LIBRARY})
 endif ()
 
@@ -262,7 +226,7 @@ install ( TARGETS mongoose_dylib mongoose_lib
 add_library(mongoose_lib_dbg ${MONGOOSE_LIB_FILES})
 set_target_properties(mongoose_lib_dbg
         PROPERTIES OUTPUT_NAME mongoose_dbg)
-if (EXISTS ${SUITESPARSE_CONFIG_LIBRARY})
+if ( SUITESPARSE_CONFIG_LIBRARY )
     target_link_libraries(mongoose_lib_dbg ${SUITESPARSE_CONFIG_LIBRARY})
 endif ()
 
@@ -275,6 +239,9 @@ add_executable(mongoose_exe ${EXE_FILES})
 set_target_properties(mongoose_exe
         PROPERTIES OUTPUT_NAME mongoose)
 target_link_libraries(mongoose_exe mongoose_lib)
+
+install(TARGETS mongoose_exe
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Build the Demo executable
 add_executable(demo_exe ${DEMO_FILES})

@@ -20,7 +20,7 @@ end
 
 I = uint64 (floor ((imax-imin+1) * rand (m, n)) + imin) ;
 
-assert (min (I) >= imin) ;
-assert (max (I) <= imax) ;
+assert (min (min (I)) >= imin) ;
+assert (max (max (I)) <= imax) ;
 
 

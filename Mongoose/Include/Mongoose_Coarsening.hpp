@@ -18,7 +18,9 @@
  * random, etc.), coarsening constructs the new, coarsened graph.
  */
 
-#pragma once
+// #pragma once
+#ifndef MONGOOSE_COARSENING_HPP
+#define MONGOOSE_COARSENING_HPP
 
 #include "Mongoose_EdgeCutOptions.hpp"
 #include "Mongoose_EdgeCutProblem.hpp"
@@ -31,3 +33,5 @@ namespace Mongoose
 EdgeCutProblem *coarsen(EdgeCutProblem *, const EdgeCut_Options *);
 
 } // end namespace Mongoose
+
+#endif

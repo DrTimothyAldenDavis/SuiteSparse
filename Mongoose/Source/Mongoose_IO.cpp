@@ -56,7 +56,7 @@ Graph *read_graph(const char *filename)
     if (!sanitized_A)
         return NULL;
 
-    Graph *G = Graph::create(sanitized_A);
+    Graph *G = Graph::create(sanitized_A, true);
 
     if (!G)
     {

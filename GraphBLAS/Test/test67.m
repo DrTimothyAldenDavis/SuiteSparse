@@ -13,6 +13,19 @@ C0 = GB_mex_apply (C, [ ], '', 'ainv', A) ;
 C1 = -A ;
 assert (isequal (full (C0.matrix), C1))
 
+% compile time; requires User/my_scale.m4 to be present
+ok = true ;
+try
+    % value of my_scalar in GB_mex_apply is 2
+    C0 = GB_mex_apply (C, [ ], '', 'my_scale', A) ;
+    C1 = 2*A ;
+    ok = isequal (full (C0.matrix), C1) ;
+    fprintf ('user compile-time my_scale.m4 is available\n') ;
+catch
+    fprintf ('user compile-time my_scale.m4 not available\n') ;
+end
+assert (ok) ;
+
 C0 = GB_mex_apply (C, [ ], 'plus', 'identity', A) ;
 C1 = C + A ;
 assert (isequal (full (C0.matrix), C1))

@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------------- */
-/* GraphBLAS/Demo/simple_timer.h: a timer for performance measurements        */
+/* GraphBLAS/Demo/Include/simple_timer.h: a timer for performance measurements*/
 /* -------------------------------------------------------------------------- */
 
 /* SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved*/
@@ -43,6 +43,11 @@
 
 #if defined ( _OPENMP )
 #include <omp.h>
+#endif
+
+#if defined ( __MACH__ )
+#include <mach/clock.h>
+#include <mach/mach.h>
 #endif
 
 void simple_tic         /* returns current time in seconds and nanoseconds */

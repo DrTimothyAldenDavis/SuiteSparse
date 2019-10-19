@@ -80,12 +80,12 @@ Requires most of SuiteSparse (ssget, CHOLMOD, AMD, COLAMD, CSparse, RBio, and
 SuiteSparseCollection), and METIS.
 
 The location of the primary archive of the collection is
-backslash.cse.tamu.edu:/research/davisgroup/SuiteSparseCollection,
+backslash.cse.tamu.edu:/archive/davis/SuiteSparseCollection,
 which is only accessible to the maintainers of the collection.
 
 A local copy of ssget should be installed where the mat, MM, RB, and svd
 directories are replaced with symbolic links to the directories in
-backslash.cse.tamu.edu:/research/davisgroup/SuiteSparseCollection.  The
+backslash.cse.tamu.edu:/archive/davis/SuiteSparseCollection.  The
 ssget/files directory should not be a symbolic link.
 
 1) Get the matrix into MATLAB (method depending on how the matrix was
@@ -93,13 +93,13 @@ ssget/files directory should not be a symbolic link.
     written just for that matrix.
 
 2) Add the full matrix name to the end of the file:
-    backslash:/research/davisgroup/SuiteSparseCollection/files/ss_listing.txt
+    backslash:/archive/davis/SuiteSparseCollection/files/ss_listing.txt
     Each line in the file has the form Group/Name.  The line number in
     ss_listing.txt must match the matrix Problem.id number, and full name
     must match the Problem.name in the MATLAB struct.
 
 3) Create a new directory
-    backslash:/research/davisgroup/SuiteSparseCollection/mat/Group,
+    backslash:/archive/davis/SuiteSparseCollection/mat/Group,
     where Group is the new matrix group.  Add a README.txt file to this
     directory, the first line of which is a one-line summary that will appear
     in the top-level web page for the collection.  Skip this step if adding a
@@ -133,7 +133,7 @@ ssget/files directory should not be a symbolic link.
     save (Problem.name, 'Problem', '-v7.3') ;
 
     Move the new *.mat files into
-    backslash:/research/davisgroup/SuiteSparseCollection/mat/Group.
+    backslash:/archive/davis/SuiteSparseCollection/mat/Group.
 
 5) Compute matrix statistics and extend the ss_index. Do this in MATLAB:
 
@@ -142,7 +142,7 @@ ssget/files directory should not be a symbolic link.
     where ids is a list of the new matrix id's.  Updated ss_index.mat and
     ssstats.csv files are placed in the current working directory.
     Move the new ss_index.mat and ssstats.csv files to 
-    backslash:/research/davisgroup/SuiteSparseCollection/files,
+    backslash:/archive/davis/SuiteSparseCollection/files,
     overwriting the old copies there.  Also copy them into
     [path to ssget]/files/ so they will be found by the MATLAB ssget.m.
 
@@ -171,7 +171,7 @@ ssget/files directory should not be a symbolic link.
     sspages (ids)
 
 8) Make the collection world-readable.  In 
-    backslash:/research/davisgroup/SuiteSparseCollection/ do:
+    backslash:/archive/davis/SuiteSparseCollection/ do:
 
     chmod -R og+rX mat files MM RB
 
@@ -233,11 +233,19 @@ Graph problems
         permutation (unsymmetric or symmetric) of the matrix is meaningful.
 
         random: This Problem has been randomly generated. It is included in the
-        SuiteSparse Matrix Collection only because it has been used as a standard
-        benchmark. Randomly generated problems are otherwise excluded from the
-        collection.  multigraph or graph: If the matrix represents a
+        SuiteSparse Matrix Collection only because it has been used as a
+        standard benchmark. Randomly generated problems are otherwise excluded
+        from the collection.  multigraph or graph: If the matrix represents a
         multigraph, then A(i,j) reflects the number of edges (i,j). The edges
         themselves are always unweighted. If the matrix represents a graph,
         then A(i,j) is either 0 or 1 for an unweighted graph, or the weight of
         edge (i,j) otherwise. 
+
+        temporal:  If the edges have time stamps.  The edges are usually
+        held in Problem.aux.temporal_edges, an e-by-3 or by-4 dense matrix,
+        if there are e temporal edges.  Each row is a single edge, with
+        [source target time] or [source target weight time].
+
+        multigraph:  If there can be multiple edges (i,j) in the graph.
+        If the graph is unweighted, then A(i,j) is the number of (i,j) edges.
 

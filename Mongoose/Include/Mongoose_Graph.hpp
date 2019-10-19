@@ -15,7 +15,9 @@
  * Stores graph adjacency and weight information.
  */
 
-#pragma once
+// #pragma once
+#ifndef MONGOOSE_GRAPH_HPP
+#define MONGOOSE_GRAPH_HPP
 
 #include "Mongoose_CSparse.hpp"
 #include "Mongoose_Internal.hpp"
@@ -38,6 +40,7 @@ public:
     static Graph *create(const Int _n, const Int _nz, Int *_p = NULL,
                          Int *_i = NULL, double *_x = NULL, double *_w = NULL);
     static Graph *create(cs *matrix);
+    static Graph *create(cs *matrix, bool free_when_done);
     ~Graph();
 
 private:
@@ -51,3 +54,5 @@ private:
 };
 
 } // end namespace Mongoose
+
+#endif

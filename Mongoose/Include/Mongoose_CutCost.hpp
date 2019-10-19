@@ -9,7 +9,9 @@
  * Mongoose is also available under other licenses; contact authors for details.
  * -------------------------------------------------------------------------- */
 
-#pragma once
+// #pragma once
+#ifndef MONGOOSE_CUTCOST_HPP
+#define MONGOOSE_CUTCOST_HPP
 
 namespace Mongoose
 {
@@ -24,3 +26,5 @@ struct CutCost
 };
 
 } // end namespace Mongoose
+
+#endif

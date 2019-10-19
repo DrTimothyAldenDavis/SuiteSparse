@@ -10,15 +10,15 @@ default: all
 include ../SuiteSparse_config/SuiteSparse_config.mk
 
 all:
-	( cd Lib ; $(MAKE) )
+	( cd Lib ; $(MAKE) --jobs=$(JOBS) )
 	( cd Demo ; $(MAKE) )
 
 library:
-	( cd Lib ; $(MAKE) )
+	( cd Lib ; $(MAKE) --jobs=$(JOBS) )
 
 # compile the static libraries only
 static:
-	( cd Lib    ; $(MAKE) static )
+	( cd Lib    ; $(MAKE) static --jobs=$(JOBS) )
 
 demos:
 	( cd Demo ; $(MAKE) )

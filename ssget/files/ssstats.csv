@@ -1,5 +1,5 @@
-2757
-03-Jun-2015 15:41:38
+2833
+20-Jul-2018 14:33:25
 HB,1138_bus,1138,1138,4054,1,0,0,1,1,1,power network problem
 HB,494_bus,494,494,1666,1,0,0,1,1,1,power network problem
 HB,662_bus,662,662,2474,1,0,0,1,1,1,power network problem
@@ -2757,3 +2757,79 @@ VDOL,tumorAntiAngiogenesis_7,475,475,4597,1,0,0,0,1,1,optimal control problem
 VDOL,tumorAntiAngiogenesis_8,490,490,4776,1,0,0,0,1,1,optimal control problem
 Meng,iChem_Jacobian,274087,274087,4137369,0,0,0,0,0.9801722990969854,0.6457048695901567,computational chemistry problem
 Harvard_Seismology,JP,87616,67320,13734559,1,0,0,0,0,0,tomography problem
+Mycielski,mycielskian2,2,2,2,1,1,0,0,1,1,undirected graph
+Mycielski,mycielskian3,5,5,10,1,1,0,0,1,1,undirected graph
+Mycielski,mycielskian4,11,11,40,1,1,0,0,1,1,undirected graph
+Mycielski,mycielskian5,23,23,142,1,1,0,0,1,1,undirected graph
+Mycielski,mycielskian6,47,47,472,1,1,0,0,1,1,undirected graph
+Mycielski,mycielskian7,95,95,1510,1,1,0,0,1,1,undirected graph
+Mycielski,mycielskian8,191,191,4720,1,1,0,0,1,1,undirected graph
+Mycielski,mycielskian9,383,383,14542,1,1,0,0,1,1,undirected graph
+Mycielski,mycielskian10,767,767,44392,1,1,0,0,1,1,undirected graph
+Mycielski,mycielskian11,1535,1535,134710,1,1,0,0,1,1,undirected graph
+Mycielski,mycielskian12,3071,3071,407200,1,1,0,0,1,1,undirected graph
+Mycielski,mycielskian13,6143,6143,1227742,1,1,0,0,1,1,undirected graph
+Mycielski,mycielskian14,12287,12287,3695512,1,1,0,0,1,1,undirected graph
+Mycielski,mycielskian15,24575,24575,11111110,1,1,0,0,1,1,undirected graph
+Mycielski,mycielskian16,49151,49151,33382480,1,1,0,0,1,1,undirected graph
+Mycielski,mycielskian17,98303,98303,100245742,1,1,0,0,1,1,undirected graph
+Mycielski,mycielskian18,196607,196607,300933832,1,1,0,0,1,1,undirected graph
+Mycielski,mycielskian19,393215,393215,903194710,1,1,0,0,1,1,undirected graph
+Mycielski,mycielskian20,786431,786431,2710370560,1,1,0,0,1,1,undirected graph
+SNAP,CollegeMsg,1899,1899,20296,1,0,0,0,0.6363815530153725,0.263204572329523,directed temporal multigraph
+SNAP,com-Amazon,334863,334863,1851744,1,1,0,0,1,1,undirected graph with communities
+SNAP,com-DBLP,317080,317080,2099732,1,1,0,0,1,1,undirected graph with communities
+SNAP,com-Friendster,65608366,65608366,3612134270,1,1,0,0,1,1,undirected graph with communities
+SNAP,com-LiveJournal,3997962,3997962,69362378,1,1,0,0,1,1,undirected graph with communities
+SNAP,com-Orkut,3072441,3072441,234370166,1,1,0,0,1,1,undirected graph with communities
+SNAP,com-Youtube,1134890,1134890,5975248,1,1,0,0,1,1,undirected graph with communities
+SNAP,email-Eu-core,1005,1005,25571,1,1,0,0,0.7112198644149385,0.7112198644149385,directed graph with communities
+SNAP,email-Eu-core-temporal,1005,1005,24929,1,0,0,0,0.7112198644149385,0.1435276184363592,directed temporal multigraph
+SNAP,higgs-twitter,456626,456626,14855842,1,1,0,0,0.3160251211999823,0.3160251211999823,directed temporal multigraph
+SNAP,loc-Brightkite,58228,58228,428156,1,1,0,0,1,1,undirected graph
+SNAP,loc-Gowalla,196591,196591,1900654,1,1,0,0,1,1,undirected graph
+SNAP,soc-Pokec,1632803,1632803,30622564,1,1,0,0,0.5434293483720044,0.5434293483720044,directed graph
+SNAP,soc-sign-bitcoin-alpha,3783,3783,24186,1,0,0,0,0.832051600099231,0.5957165302240965,directed weighted temporal graph
+SNAP,soc-sign-bitcoin-otc,5881,5881,35592,1,0,0,0,0.7923128792987189,0.5689480782198246,directed weighted temporal graph
+SNAP,sx-askubuntu,159316,159316,596933,1,0,0,0,0.3265757288095759,0.1849102403322678,directed temporal multigraph
+SNAP,sx-mathoverflow,24818,24818,239978,1,0,0,0,0.3509349053252102,0.1609975832379348,directed temporal multigraph
+SNAP,sx-stackoverflow,2601977,2601977,36233450,1,0,0,0,0.3837726021373516,0.2153393177894375,directed temporal multigraph
+SNAP,sx-superuser,194085,194085,924886,1,0,0,0,0.3272723867800749,0.197851768013418,directed temporal multigraph
+SNAP,twitter7,41652230,41652230,1468365182,1,1,0,0,0.3621059600332965,0.3621059600332965,directed graph
+SNAP,wiki-RfA,11380,11380,188077,1,0,0,0,0.07451698016852498,0.06452676823559451,directed weighted temporal multigraph
+SNAP,wiki-talk-temporal,1140149,1140149,3309592,1,0,0,0,0.2189736490582744,0.07817954976807415,directed temporal multigraph
+SNAP,wiki-topcats,1791489,1791489,28511807,1,1,0,0,0.2149515115699757,0.2149515115699757,directed graph with communities
+MAWI,mawi_201512012345,18571154,18571154,38040320,1,0,0,0,1,1,undirected weighted graph
+MAWI,mawi_201512020000,35991342,35991342,74485420,1,0,0,0,1,1,undirected weighted graph
+MAWI,mawi_201512020030,68863315,68863315,143414960,1,0,0,0,1,1,undirected weighted graph
+MAWI,mawi_201512020130,128568730,128568730,270234840,1,0,0,0,1,1,undirected weighted graph
+MAWI,mawi_201512020330,226196185,226196185,480047894,1,0,0,0,1,1,undirected weighted graph
+GenBank,kmer_A2a,170728175,170728175,360585172,1,1,0,0,1,1,undirected graph
+GenBank,kmer_P1a,139353211,139353211,297829984,1,1,0,0,1,1,undirected graph
+GenBank,kmer_U1a,67716231,67716231,138778562,1,1,0,0,1,1,undirected graph
+GenBank,kmer_V1r,214005017,214005017,465410904,1,1,0,0,1,1,undirected graph
+GenBank,kmer_V2a,55042369,55042369,117217600,1,1,0,0,1,1,undirected graph
+Sybrandt,MOLIERE_2016,30239687,30239687,6669254694,1,0,0,0,1,1,undirected weighted graph
+Guettel,TEM27623,27623,27623,439469,1,0,1,0,1,1,electromagnetics problem
+Guettel,TEM152078,152078,152078,6459326,1,0,1,0,1,1,electromagnetics problem
+Guettel,TEM181302,181302,181302,7839010,1,0,1,0,1,1,electromagnetics problem
+Grueninger,windtunnel_evap2d,8256,8256,109368,1,0,1,0,1,0,computational fluid dynamics problem
+Grueninger,windtunnel_evap3d,40816,40816,803978,1,0,1,0,1,0,computational fluid dynamics problem
+PowerSystem,power197k,197156,197156,805839,1,0,0,0,0.2139400937122758,0.02415229830828888,power network problem
+Goodwin,Goodwin_010,1182,1182,32282,1,0,1,0,0.9018121596229179,0.05496990350011147,computational fluid dynamics
+Goodwin,Goodwin_013,1965,1965,56069,1,0,1,0,0.9250320454129281,0.05779161325764512,computational fluid dynamics
+Goodwin,Goodwin_017,3317,3317,97773,1,0,1,0,0.9419021841757411,0.06036381947504249,computational fluid dynamics
+Goodwin,Goodwin_023,6005,6005,182168,1,0,1,0,0.9572036973485083,0.06214380952916754,computational fluid dynamics
+Goodwin,Goodwin_030,10142,10142,312814,1,0,1,0,0.966280360610536,0.06332624905442888,computational fluid dynamics
+Goodwin,Goodwin_040,17922,17922,561677,1,0,1,0,0.9746314856878265,0.06442027585251406,computational fluid dynamics
+Goodwin,Goodwin_054,32510,32510,1030878,1,0,1,0,0.9804679703906704,0.06537882962720246,computational fluid dynamics
+Goodwin,Goodwin_071,56021,56021,1797934,1,0,1,0,0.9849308636424431,0.06556841497181332,computational fluid dynamics
+Goodwin,Goodwin_095,100037,100037,3226066,1,0,1,0,0.9880933163299772,0.06443620776105316,computational fluid dynamics
+Goodwin,Goodwin_127,178437,178437,5778545,1,0,1,0,0.9902002197399873,0.06589012929818107,computational fluid dynamics
+TAMU_SmartGridCenter,ACTIVSg2000,4000,4000,28505,1,0,0,0,1,0.007345439706182412,power network problem
+TAMU_SmartGridCenter,ACTIVSg10K,20000,20000,135888,1,0,0,0,1,0.02328109899213033,power network problem
+TAMU_SmartGridCenter,ACTIVSg70K,69999,69999,238627,1,0,0,0,1,1,power network problem
+Embree,ifiss_mat,96307,96307,3599932,1,0,1,0,1,0.2845118352876235,computational fluid dynamics
+Hardesty,Hardesty1,938905,938905,12143314,1,0,1,0,1,1,computer graphics/vision problem
+Hardesty,Hardesty2,929901,303645,4020731,1,0,1,0,0,0,computer graphics/vision problem
+Hardesty,Hardesty3,8217820,7591564,40451632,1,0,1,0,0,0,computer graphics/vision problem

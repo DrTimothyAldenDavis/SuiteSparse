@@ -1,3 +1,8 @@
+Dec 28, 2018: version 2.0.9
+
+    * SuiteSparseQR.hpp: changed where CUDA files are #include'd,
+	controlled by SUITESPARSE_GPU_EXTERN_ON (see also CHOLMOD).
+
 Dec 8, 2016: version 2.0.8
 
     * minor changes to documentation and compile scripts

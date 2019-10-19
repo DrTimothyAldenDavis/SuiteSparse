@@ -77,7 +77,7 @@ GrB_Semiring GB_mx_builtin_semiring // built-in semiring, or NULL if error
     // or not this function handles the semiring as hard-coded.  Now return for
     // cases this function does not handle.
 
-    if (add_opcode == GB_USER_opcode || mult_opcode == GB_USER_opcode)
+    if (add_opcode >= GB_USER_C_opcode || mult_opcode >= GB_USER_C_opcode)
     {
         // This function handles only built-in operators.
         return (NULL) ;

@@ -1,3 +1,8 @@
+Dec 20, 2018: version 3.0.13
+
+    * bug fix to cholmod_core.h: so that a CUDA include file is properly
+        included in a C++ caller; also required for SPQR.
+
 Mar 12, 2018: version 3.0.12
 
     * bug fix to cholmod_rowcolcounts.c (int overflow was possible)

@@ -9,7 +9,9 @@
  * Mongoose is also available under other licenses; contact authors for details.
  * -------------------------------------------------------------------------- */
 
-#pragma once
+// #pragma once
+#ifndef MONGOOSE_INTERNAL_HPP
+#define MONGOOSE_INTERNAL_HPP
 
 #define FREESET_DEBUG 0
 
@@ -62,3 +64,5 @@ enum MatchType
 };
 
 } // end namespace Mongoose
+
+#endif

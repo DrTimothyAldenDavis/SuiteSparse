@@ -18,13 +18,16 @@ Prob = ssget (2662) ;
 A = Prob.A ;
 tic
 [I1, J1, X1] = find (A) ;
-toc
+tm = toc ;
 tic
 [I2, J2, X2] = GB_mex_extractTuples (A) ;
 toc
+t = gbresults
 assert (isequal (I1, double (I2+1)))
 assert (isequal (J1, double (J2+1)))
 assert (isequal (X1, X2))
+
+fprintf ('GraphBLAS speedup over MATLAB; %g\n', tm/t) ;
 
 fprintf ('\ntest35: all tests passed\n') ;
 

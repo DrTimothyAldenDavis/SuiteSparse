@@ -202,17 +202,6 @@ GraphBLAS/Demo/tri_demo.out
 GraphBLAS/Test/errlog.txt
 GraphBLAS/Test/log.txt
 GraphBLAS/Doc/GraphBLAS_UserGuide.out
-GraphBLAS/Tcov/cover_GB_2type_template.c
-GraphBLAS/Tcov/cover_GB_AxB_compare_template.c
-GraphBLAS/Tcov/cover_GB_AxB_factory.c
-GraphBLAS/Tcov/cover_GB_AxB_template.c
-GraphBLAS/Tcov/cover_GB_assoc_template.c
-GraphBLAS/Tcov/cover_GB_ops_template.c
-GraphBLAS/Tcov/cover_GB_qsort_template.c
-GraphBLAS/Tcov/cover_GB_semiring_template.c
-GraphBLAS/Tcov/cover_GB_subref_template.c
-GraphBLAS/Tcov/cover_gb.c
-GraphBLAS/Tcov/cover_gb_exp.c
 GraphBLAS/Tcov/errlog.txt
 GraphBLAS/Tcov/log.txt
 GraphBLAS/Tcov/gbstat.mat

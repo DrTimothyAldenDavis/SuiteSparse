@@ -20,6 +20,7 @@
 #include "cholmod_gpu.h"
 #include "stdio.h"
 #ifdef GPU_BLAS
+#include <cuda.h>
 #include <cuda_runtime.h>
 #endif
 

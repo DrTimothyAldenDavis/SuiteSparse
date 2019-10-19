@@ -18,14 +18,14 @@ GrB_Info GB_Type_new
     const size_t sizeof_ctype,  // size of the user type
     const char *name            // name of the type, as "sizeof (ctype)"
 )
-{
+{ 
 
     //--------------------------------------------------------------------------
     // check inputs
     //--------------------------------------------------------------------------
 
-    WHERE ("GrB_Type_new (&type, sizeof (ctype))") ;
-    RETURN_IF_NULL (type) ;
+    GB_WHERE ("GrB_Type_new (&type, sizeof (ctype))") ;
+    GB_RETURN_IF_NULL (type) ;
     (*type) = NULL ;
 
     //--------------------------------------------------------------------------
@@ -35,15 +35,15 @@ GrB_Info GB_Type_new
     // allocate the type
     GB_CALLOC_MEMORY (*type, 1, sizeof (struct GB_Type_opaque)) ;
     if (*type == NULL)
-    {
-        return (ERROR (GrB_OUT_OF_MEMORY, (LOG, "out of memory"))) ;
+    { 
+        return (GB_NO_MEMORY) ;
     }
 
     // initialize the type
     GrB_Type t = *type ;
-    t->magic = MAGIC ;
-    t->size = IMAX (sizeof_ctype, 1) ;
-    t->code = GB_UDT_code ;
+    t->magic = GB_MAGIC ;
+    t->size = GB_IMAX (sizeof_ctype, 1) ;
+    t->code = GB_UDT_code ;     // run-time user-defined type
 
     //--------------------------------------------------------------------------
     // get the name
@@ -57,29 +57,29 @@ GrB_Info GB_Type_new
 
     // look for "sizeof" in the input string
     if (name != NULL)
-    {
+    { 
         strncpy (input2, name, GB_LEN) ;
         p = strstr (input2, "sizeof") ;
     }
 
     if (p != NULL)
-    {
+    { 
 
         // "sizeof" appears in the input string, advance past it
         p += 6 ;
 
         // find leading "(" if it appears, and advance to one character past it
-        char *p2 = strstr (p, "(") ; 
+        char *p2 = strstr (p, "(") ;
         if (p2 != NULL) p = p2 + 1 ;
 
         // find trailing ")" if it appears, and delete it
-        p2 = strstr (p, ")") ; 
+        p2 = strstr (p, ")") ;
         if (p2 != NULL) *p2 = '\0' ;
 
         // p now contains the final name, copy it to the output name
         strncpy (t->name, p, GB_LEN-1) ;
     }
 
-    return (REPORT_SUCCESS) ;
+    return (GrB_SUCCESS) ;
 }
 

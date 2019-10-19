@@ -3,7 +3,7 @@
 #===============================================================================
 
 LIBRARY = libcholmod
-VERSION = 3.0.12
+VERSION = 3.0.13
 SO_VERSION = 3
 
 default: library

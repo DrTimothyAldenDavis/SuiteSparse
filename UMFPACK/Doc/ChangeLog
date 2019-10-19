@@ -1,3 +1,7 @@
+Nov 9, 2018: version 5.7.8
+
+    * minor change to umf_analyze.h
+
 Mar 23, 2018: version 5.7.7
 
     * revised comments in umfpack*symbolic.h

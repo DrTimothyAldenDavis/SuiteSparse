@@ -8,6 +8,6 @@
 //------------------------------------------------------------------------------
 
 #include "GB.h"
-#define SYMBOLIC
+#define GB_SYMBOLIC
 #include "GB_subref_template.c"
 

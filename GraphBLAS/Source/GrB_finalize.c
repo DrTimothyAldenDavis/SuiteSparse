@@ -7,22 +7,24 @@
 
 //------------------------------------------------------------------------------
 
-// GrB_finalize must be called as the last GraphBLAS function.
-
-// In this version of SuiteSparse:GraphBLAS, GrB_finalize frees the workspace
-// held internally in thread-local storage.  It can be called at any time and
-// can be followed by GraphBLAS function.
+// GrB_finalize must be called as the last GraphBLAS function, per the
+// GraphBLAS C API Specification.  
 
 #include "GB.h"
 
 GrB_Info GrB_finalize ( )
-{
+{ 
 
-    // free all workspace
-    GB_Mark_free ( ) ;
-    GB_Work_free ( ) ;
-    GB_Flag_free ( ) ;
+    //--------------------------------------------------------------------------
+    // destroy the queue
+    //--------------------------------------------------------------------------
 
-    return (GrB_SUCCESS) ;      // method always succeeds
+    GB_CRITICAL (GB_queue_destroy ( )) ;
+
+    //--------------------------------------------------------------------------
+    // return result
+    //--------------------------------------------------------------------------
+
+    return (GrB_SUCCESS) ;
 }
 

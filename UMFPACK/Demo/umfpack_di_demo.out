@@ -1,5 +1,5 @@
 
-UMFPACK V5.7 (May 4, 2016) demo: _di_ version
+UMFPACK V5.7 (Nov 9, 2018) demo: _di_ version
 
 UMFPACK:  Copyright (c) 2005-2013 by Timothy A. Davis.  All Rights Reserved.
 
@@ -10,9 +10,9 @@ UMFPACK License:  refer to UMFPACK/Doc/License.txt for the license.
 
 
 Availability: http://www.suitesparse.com
-UMFPACK V5.7.6 (May 4, 2016): OK
+UMFPACK V5.7.8 (Nov 9, 2018): OK
 
-UMFPACK V5.7.6 (May 4, 2016), Control:
+UMFPACK V5.7.8 (Nov 9, 2018), Control:
     Matrix entry defined as: double
     Int (generic integer) defined as: int
 
@@ -42,8 +42,8 @@ UMFPACK V5.7.6 (May 4, 2016), Control:
     The following options can only be changed at compile-time:
     8: BLAS library used:  Fortran BLAS.  size of BLAS integer: 4
     compiled for ANSI C
-    POSIX C clock_getttime.
-    computer/operating system: Linux
+    no timer used.
+    computer/operating system: Mac
     size of int: 4 SuiteSparse_long: 8 Int: 4 pointer: 8 double: 8 Entry: 8 (in bytes)
 
 
@@ -251,12 +251,12 @@ diagonal of U: dense vector, n = 5.
 
     Numeric object:  OK
 
-UMFPACK V5.7.6 (May 4, 2016), Info:
+UMFPACK V5.7.8 (Nov 9, 2018), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
     MATLAB:                           no.
-    CPU timer:                        POSIX C clock_getttime ( ) routine.
+    CPU timer:                        none.
     number of rows in matrix A:       5
     number of columns in matrix A:    5
     entries in matrix A:              12
@@ -326,7 +326,6 @@ UMFPACK V5.7.6 (May 4, 2016), Info:
     numeric factorization reallocations:           1
     costly numeric factorization reallocations:    0
     numeric factorization wallclock time (sec):    0.00
-    numeric factorization mflops (wallclock):      0.00
 
     solve flops:                                   1.19000e+02
     iterative refinement steps taken:              0
@@ -340,7 +339,7 @@ UMFPACK V5.7.6 (May 4, 2016), Info:
 
 UMFPACK:  Copyright (c) 2005-2013 by Timothy A. Davis.  All Rights Reserved.
 
-UMFPACK V5.7.6 (May 4, 2016): OK
+UMFPACK V5.7.8 (Nov 9, 2018): OK
 
 
 x (solution of Ax=b): dense vector, n = 5. 
@@ -356,7 +355,7 @@ maxnorm of residual: 1.06581e-14
 
 UMFPACK:  Copyright (c) 2005-2013 by Timothy A. Davis.  All Rights Reserved.
 
-UMFPACK V5.7.6 (May 4, 2016): OK
+UMFPACK V5.7.8 (Nov 9, 2018): OK
 
 determinant: (1.14) * 10^(2)
 
@@ -370,12 +369,12 @@ x (solution of Ax=b, solve is split into 3 steps): dense vector, n = 5.
 
 maxnorm of residual: 1.06581e-14
 
-UMFPACK V5.7.6 (May 4, 2016), Info:
+UMFPACK V5.7.8 (Nov 9, 2018), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
     MATLAB:                           no.
-    CPU timer:                        POSIX C clock_getttime ( ) routine.
+    CPU timer:                        none.
     number of rows in matrix A:       5
     number of columns in matrix A:    5
     entries in matrix A:              12
@@ -445,7 +444,6 @@ UMFPACK V5.7.6 (May 4, 2016), Info:
     numeric factorization reallocations:           1
     costly numeric factorization reallocations:    0
     numeric factorization wallclock time (sec):    0.00
-    numeric factorization mflops (wallclock):      0.00
 
     solve flops:                                   1.11000e+02
     iterative refinement steps taken:              0
@@ -512,7 +510,7 @@ Numeric factorization of modified A: Numeric object:
     largest actual frontal matrix size:         4
     memory defragmentations:                    1
     memory reallocations:                       1
-    costly memory reallocations:                1
+    costly memory reallocations:                0
     entries in compressed pattern (L and U):    2
     number of nonzeros in L (excl diag):        4
     number of entries stored in L (excl diag):  2
@@ -599,12 +597,12 @@ diagonal of U: dense vector, n = 5.
 
     Numeric object:  OK
 
-UMFPACK V5.7.6 (May 4, 2016), Info:
+UMFPACK V5.7.8 (Nov 9, 2018), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
     MATLAB:                           no.
-    CPU timer:                        POSIX C clock_getttime ( ) routine.
+    CPU timer:                        none.
     number of rows in matrix A:       5
     number of columns in matrix A:    5
     entries in matrix A:              12
@@ -672,7 +670,7 @@ UMFPACK V5.7.6 (May 4, 2016), Info:
     numerical values stored in Numeric object:     8
     numeric factorization defragmentations:        1
     numeric factorization reallocations:           1
-    costly numeric factorization reallocations:    1
+    costly numeric factorization reallocations:    0
     numeric factorization wallclock time (sec):    0.00
 
     solve flops:                                   1.17000e+02
@@ -758,7 +756,7 @@ Numeric factorization of completely modified A: Numeric object:
     largest actual frontal matrix size:         4
     memory defragmentations:                    1
     memory reallocations:                       1
-    costly memory reallocations:                1
+    costly memory reallocations:                0
     entries in compressed pattern (L and U):    2
     number of nonzeros in L (excl diag):        4
     number of entries stored in L (excl diag):  2
@@ -846,12 +844,12 @@ diagonal of U: dense vector, n = 5.
 
     Numeric object:  OK
 
-UMFPACK V5.7.6 (May 4, 2016), Info:
+UMFPACK V5.7.8 (Nov 9, 2018), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
     MATLAB:                           no.
-    CPU timer:                        POSIX C clock_getttime ( ) routine.
+    CPU timer:                        none.
     number of rows in matrix A:       5
     number of columns in matrix A:    5
     entries in matrix A:              12
@@ -919,7 +917,7 @@ UMFPACK V5.7.6 (May 4, 2016), Info:
     numerical values stored in Numeric object:     9
     numeric factorization defragmentations:        1
     numeric factorization reallocations:           1
-    costly numeric factorization reallocations:    1
+    costly numeric factorization reallocations:    0
     numeric factorization wallclock time (sec):    0.00
 
     solve flops:                                   1.19000e+02
@@ -1237,12 +1235,12 @@ Freeing numeric object:
 Loading numeric object:
 
 Done loading numeric object
-UMFPACK V5.7.6 (May 4, 2016), Info:
+UMFPACK V5.7.8 (Nov 9, 2018), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
     MATLAB:                           no.
-    CPU timer:                        POSIX C clock_getttime ( ) routine.
+    CPU timer:                        none.
     number of rows in matrix A:       5
     number of columns in matrix A:    5
     entries in matrix A:              12
@@ -1335,12 +1333,12 @@ maxnorm of residual: 3.55271e-15
 
 
 Solving C'x=b again, using umfpack_di_wsolve instead:
-UMFPACK V5.7.6 (May 4, 2016), Info:
+UMFPACK V5.7.8 (Nov 9, 2018), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
     MATLAB:                           no.
-    CPU timer:                        POSIX C clock_getttime ( ) routine.
+    CPU timer:                        none.
     number of rows in matrix A:       5
     number of columns in matrix A:    5
     entries in matrix A:              12
@@ -1433,4 +1431,4 @@ maxnorm of residual: 3.55271e-15
 
 
 umfpack_di_demo complete.
-Total time:  0.01 seconds (CPU time),  0.01 seconds (wallclock time)
+Total time:  0.00 seconds (CPU time),  0.00 seconds (wallclock time)

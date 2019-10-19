@@ -28,7 +28,7 @@ GrB_Info GrB_Type_new           // create a new GraphBLAS type
     GrB_Type *type,             // handle of user type to create
     size_t sizeof_ctype         // size = sizeof (ctype) of the C type
 )
-{
+{ 
     return (GB_Type_new (type, sizeof_ctype, NULL)) ;
 }
 

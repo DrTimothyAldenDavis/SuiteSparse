@@ -28,5 +28,18 @@ end
 
 assert (isequal (A1.matrix, B)) 
 
+A2.matrix = A ;
+
+for A_is_hyper = 0:1
+    for A_is_csc = 0:1
+        A2.is_csc   = A_is_csc ;
+        A2.is_hyper = A_is_hyper ;
+
+        A3 = GB_mex_setElement (A2, I0, J0, int8(X))  ;
+        assert (isequal (A3.matrix, B)) 
+
+    end
+end
+
 fprintf ('\ntest05: all tests passed\n') ;
 

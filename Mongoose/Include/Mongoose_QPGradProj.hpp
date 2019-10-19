@@ -9,7 +9,9 @@
  * Mongoose is also available under other licenses; contact authors for details.
  * -------------------------------------------------------------------------- */
 
-#pragma once
+// #pragma once
+#ifndef MONGOOSE_QPGRADPROJ_HPP
+#define MONGOOSE_QPGRADPROJ_HPP
 
 #include "Mongoose_EdgeCutOptions.hpp"
 #include "Mongoose_EdgeCutProblem.hpp"
@@ -22,3 +24,5 @@ namespace Mongoose
 double QPGradProj(EdgeCutProblem *, const EdgeCut_Options *, QPDelta *);
 
 } // end namespace Mongoose
+
+#endif

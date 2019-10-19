@@ -11,16 +11,16 @@ include ../SuiteSparse_config/SuiteSparse_config.mk
 
 # compile all C code (except hb, fortran, and fortran64), incl. AMD and demos
 all:
-	( cd Lib    ; $(MAKE) )
+	( cd Lib    ; $(MAKE) --jobs=$(JOBS) )
 	( cd Demo   ; $(MAKE) )
 
 # compile just the C-callable UMFPACK library
 library:
-	( cd Lib    ; $(MAKE) )
+	( cd Lib    ; $(MAKE) --jobs=$(JOBS) )
 
 # compile the static libraries only
 static:
-	( cd Lib    ; $(MAKE) static )
+	( cd Lib    ; $(MAKE) static --jobs=$(JOBS) )
 
 # compile the FORTRAN interface and demo program
 fortran:

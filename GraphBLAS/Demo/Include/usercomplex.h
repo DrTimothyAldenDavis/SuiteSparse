@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// GraphBLAS/Demo/usercomplex.h:  complex numbers as a user-defined type
+// GraphBLAS/Demo/Include/usercomplex.h:  complex numbers as a user-defined type
 //------------------------------------------------------------------------------
 
 #ifndef USERCOMPLEX_H
@@ -86,7 +86,13 @@ extern GrB_UnaryOp Complex_complex_real, Complex_complex_imag ;
 // Complex type, scalars, monoids, and semiring
 //------------------------------------------------------------------------------
 
+#ifdef MY_COMPLEX
+// use the pre-defined type in User/my_complex.m4
+#define Complex My_Complex
+#else
 extern GrB_Type Complex ;
+#endif
+
 extern GrB_Monoid   Complex_plus_monoid, Complex_times_monoid ;
 extern GrB_Semiring Complex_plus_times ;
 extern double complex Complex_1  ;

@@ -7,7 +7,7 @@
     Example:  Suppose there are 3 pivot columns in F (5, 6, 7), and 4
     non-pivotal columns of F (8, 9, 11, 12).  We have fn = 7.
 
-    col1 = 3.  fp = 3, so pivot columns are [5 6 7].
+    col1 = 5.  fp = 3, so pivot columns are [5 6 7].
     Rj [Rp [f]...Rp[f+1]-1] = [5 6 7 8 9 11 12]. 
 
     Seven rows of S are to be assembled (rows 16 to 22).  The rows of S are
@@ -270,7 +270,7 @@ template <typename Entry> void spqr_assemble
     /* ---------------------------------------------------------------------- */
 
     /* pivotal columns Super [f] ... Super [f+1]-1 */
-    col1 = Super [f] ;      /* front F has columns col1:col2-1 */
+    col1 = Super [f] ;      /* front F has pivot columns col1:col2-1 */
     col2 = Super [f+1] ;
     p1 = Rp [f] ;           /* Rj [p1:p2-1] = columns in F */
     p2 = Rp [f+1] ;

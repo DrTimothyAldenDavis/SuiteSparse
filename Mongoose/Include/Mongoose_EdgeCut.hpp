@@ -9,7 +9,9 @@
  * Mongoose is also available under other licenses; contact authors for details.
  * -------------------------------------------------------------------------- */
 
-#pragma once
+// #pragma once
+#ifndef MONGOOSE_EDGECUT_HPP
+#define MONGOOSE_EDGECUT_HPP
 
 #include "Mongoose_Graph.hpp"
 #include "Mongoose_EdgeCutOptions.hpp"
@@ -41,3 +43,5 @@ EdgeCut *edge_cut(const Graph *, const EdgeCut_Options *);
 EdgeCut *edge_cut(EdgeCutProblem *problem, const EdgeCut_Options *options);
 
 } // end namespace Mongoose
+
+#endif

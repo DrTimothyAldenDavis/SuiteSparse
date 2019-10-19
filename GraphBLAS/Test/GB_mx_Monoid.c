@@ -9,9 +9,9 @@
 
 // Also defines the identity of the monoid
 
-// See Source/GB_AxB_builtin.c for a description of the built-in monoids.
-// This function can contruct all 52 of them (note that 8 of those are
-// redudant).
+// See Source/GB_AxB_Gustavson_builtin.c for a description of the built-in
+// monoids.  This function can construct all 52 of them (note that 8 of those
+// are redudant).
 
 #define GET_DEEP_COPY ;
 #define FREE_DEEP_COPY ;
@@ -187,7 +187,7 @@ bool GB_mx_Monoid               // true if successful, false otherwise
             return (false) ;
     }
 
-    ASSERT_OK (GB_check (M, "monoid", 0)) ;
+    ASSERT_OK (GB_check (M, "monoid", GB0)) ;
     (*handle) = M ;
     return (true) ;
 }

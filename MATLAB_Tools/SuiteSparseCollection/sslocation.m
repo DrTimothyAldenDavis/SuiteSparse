@@ -9,5 +9,5 @@ function topdir = sslocation
 % Copyright 2006-2018, Timothy A. Davis
 
 % on backslash.cse.tamu.edu:
-topdir = '/research/davisgroup/SuiteSparseCollection/' ;
+topdir = '/archive/davis/SuiteSparseCollection/' ;
 

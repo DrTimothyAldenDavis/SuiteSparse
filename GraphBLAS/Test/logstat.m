@@ -39,6 +39,9 @@ end
 if (malloc)
     fprintf (' [malloc]') ;
 end
+if (covered)
+    fprintf (' [cover]') ;
+end
 fprintf ('\n') ;
 
 t1 = cputime ;

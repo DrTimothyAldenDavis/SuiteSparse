@@ -15,7 +15,7 @@ clean:
 	$(RM) *.o *.obj
 
 distclean: clean
-	$(RM) *.mex* errlog.txt spok/*.mex* log.txt
+	$(RM) *.mex* errlog.txt spok/*.mex* log.txt fprint.txt
 
 purge: distclean
 

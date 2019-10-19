@@ -18,7 +18,9 @@
  * here with a tic/toc pattern.
  */
 
-#pragma once
+// #pragma once
+#ifndef MONGOOSE_LOGGER_HPP
+#define MONGOOSE_LOGGER_HPP
 
 #include <iostream>
 #include <string>
@@ -173,3 +175,5 @@ inline int Logger::getDebugLevel()
 }
 
 } // end namespace Mongoose
+
+#endif

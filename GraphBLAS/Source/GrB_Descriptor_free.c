@@ -18,9 +18,9 @@ GrB_Info GrB_Descriptor_free            // free a descriptor
     if (descriptor != NULL)
     {
         GrB_Descriptor desc = *descriptor ;
-        if (desc != NULL && desc->magic == MAGIC)
-        {
-            desc->magic = FREED ;     // to help detect dangling pointers
+        if (desc != NULL && desc->magic == GB_MAGIC)
+        { 
+            desc->magic = GB_FREED ;     // to help detect dangling pointers
             GB_FREE_MEMORY (*descriptor, 1,
                 sizeof (struct GB_Descriptor_opaque)) ;
         }

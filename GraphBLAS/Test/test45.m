@@ -104,9 +104,11 @@ for trial = 1:2
     tic
     S = GB_mex_setElement (S, I0, J0, X) ;
     t5 = toc ;
-    fprintf ('GraphBLAS setElement: %g sec from scratch, nnz %d\n', ...
+    fprintf ('GraphBLAS setElement:: %g sec from scratch, nnz %d\n', ...
         t5, nnz (S.matrix)) ;
 
+    % fprintf ('spok it 1\n') ;
+    assert (spok (S.matrix*1) == 1) ;
     assert (isequal (G, S.matrix)) ;
 
     tic
@@ -114,6 +116,9 @@ for trial = 1:2
     t4 = toc ;
     fprintf ('GraphBLAS build:      %g sec from scratch, nnz %d\n', ...
         t4, nnz (T.matrix)) ;
+
+    % fprintf ('spok it 2\n') ;
+    assert (spok (T.matrix*1) == 1) ;
     assert (isequal (G, T.matrix)) ;
 
     fprintf ('\n------------------- now try a vector B = A(:)\n') ;
@@ -142,12 +147,15 @@ for trial = 1:2
     I0 = uint64 (I)-1 ;
     J0 = uint64 (J)-1 ;
     S = sparse (blen,1) ;
+
     tic
     S = GB_mex_setElement (S, I0, J0, X) ;
     t5 = toc ;
     fprintf ('GraphBLAS setElement: %g sec from scratch, nnz %d\n', ...
         t5, nnz (S.matrix)) ;
 
+    % fprintf ('spok it 3\n') ;
+    assert (spok (S.matrix*1) == 1) ;
     assert (isequal (G, S.matrix)) ;
 
     tic
@@ -155,6 +163,9 @@ for trial = 1:2
     t4 = toc ;
     fprintf ('GraphBLAS build:      %g sec from scratch, nnz %d\n', ...
         t4, nnz (T.matrix)) ;
+
+    % fprintf ('spok it 4\n') ;
+    assert (spok (T.matrix*1) == 1) ;
     assert (isequal (G, T.matrix)) ;
 
 end

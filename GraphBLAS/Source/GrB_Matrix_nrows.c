@@ -14,20 +14,21 @@ GrB_Info GrB_Matrix_nrows   // get the number of rows of a matrix
     GrB_Index *nrows,       // matrix has nrows rows
     const GrB_Matrix A      // matrix to query
 )
-{
+{ 
 
     //--------------------------------------------------------------------------
     // check inputs
     //--------------------------------------------------------------------------
 
-    WHERE ("GrB_Matrix_nrows (&nrows, A)") ;
-    RETURN_IF_NULL (nrows) ;
-    RETURN_IF_NULL_OR_UNINITIALIZED (A) ;
+    GB_WHERE ("GrB_Matrix_nrows (&nrows, A)") ;
+    GB_RETURN_IF_NULL (nrows) ;
+    GB_RETURN_IF_NULL_OR_FAULTY (A) ;
 
     //--------------------------------------------------------------------------
     // get the number of rows
     //--------------------------------------------------------------------------
 
-    return (GB_Matrix_nrows (nrows, A)) ;
+    (*nrows) = GB_NROWS (A) ;
+    return (GrB_SUCCESS) ;
 }
 

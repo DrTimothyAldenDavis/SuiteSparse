@@ -9,7 +9,9 @@
  * Mongoose is also available under other licenses; contact authors for details.
  * -------------------------------------------------------------------------- */
 
-#pragma once
+// #pragma once
+#ifndef MONGOOSE_QPDELTA_HPP
+#define MONGOOSE_QPDELTA_HPP
 
 #include "Mongoose_Internal.hpp"
 
@@ -59,3 +61,5 @@ public:
 };
 
 } // end namespace Mongoose
+
+#endif

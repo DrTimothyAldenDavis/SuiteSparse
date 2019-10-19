@@ -266,7 +266,7 @@ metis: include/metis.h
 # hardcoded below.
 include/metis.h:
 ifeq (,$(MY_METIS_LIB))
-	- ( cd metis-5.1.0 && $(MAKE) config shared=1 prefix=$(SUITESPARSE) )
+	- ( cd metis-5.1.0 && $(MAKE) config shared=1 prefix=$(SUITESPARSE) cc=$(CC) )
 	- ( cd metis-5.1.0 && $(MAKE) )
 	- ( cd metis-5.1.0 && $(MAKE) install )
 	- $(SO_INSTALL_NAME) $(SUITESPARSE)/lib/libmetis.dylib \

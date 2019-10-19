@@ -560,6 +560,16 @@ Lastly, Mongoose will NOT free pointers passed to it, and that all pointers are 
 
 \section{Using Mongoose in MATLAB}
 
+\subsection{To Install the MATLAB Interface}
+
+To compile Mongoose for MATLAB, go to the \texttt{MATLAB} directory and type
+\texttt{mongoose\_make} in the MATLAB command window.  Be sure to use a
+compiler supported by MATLAB.  Type \texttt{doc mex} in MATLAB, or visit
+\url{https://www.mathworks.com/support/compilers.html} for details.  For
+example, GCC 5.5.0 on Linux is not supported by MATLAB R2017A, and it will not
+successfully compile Mongoose for that version of MATLAB.  MATLAB R2018b
+supports GCC 6.3.x on Linux.
+
 \subsection{Sample MATLAB Program}
 
 Below is a sample MATLAB program using the Mongoose MATLAB API. First, it loads in a matrix, sanitizes it, and then partitions it using edge and vertex weights, then only edge weights, and the no weights.

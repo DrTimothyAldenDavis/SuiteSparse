@@ -9,7 +9,9 @@
  * Mongoose is also available under other licenses; contact authors for details.
  * -------------------------------------------------------------------------- */
 
-#pragma once
+// #pragma once
+#ifndef MONGOOSE_RANDOM_HPP
+#define MONGOOSE_RANDOM_HPP
 
 #include "Mongoose_Internal.hpp"
 
@@ -20,3 +22,5 @@ Int random();
 void setRandomSeed(Int seed);
 
 } // end namespace Mongoose
+
+#endif

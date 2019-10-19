@@ -184,42 +184,8 @@ try
 
 	    if (strcmp (ext, '.txt'))
 
-		% get a txt file
-		% first, determine the longest line in the file
-		f = fopen (fullfilename) ;
-		if (f < 0)
-		    error (['cannot open ' fullfilename]) ;
-		end
-		len = 0 ;
-		nline = 0 ;
-		while (1)
-		    s = fgetl (f) ;
-		    if (~ischar (s))
-			break 
-		    end
-		    len = max (len, length (s)) ;
-		    nline = nline + 1 ;
-		end
-		fclose (f) ;
-		% next, read in the file as a char array
-		C = repmat (' ', nline, len) ;
-		f = fopen (fullfilename) ;
-		if (f < 0)
-		    error (['cannot open ' fullfilename]) ;
-		end
-		i = 0 ;
-		while (1)
-		    s = fgetl (f) ;
-		    if (~ischar (s))
-			break 
-		    end
-		    i = i + 1 ;
-		    len = length (s) ;
-		    if (len > 0)
-			C (i, 1:len) = s ;
-		    end
-		end
-		fclose (f) ;
+                % get a txt file as either a char array or cell array of strings
+                C = sstextread (fullfilename, Problem.id > 2776) ;
 
 	    elseif (strcmp (ext, '.mtx'))
 

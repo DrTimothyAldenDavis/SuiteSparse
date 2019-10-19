@@ -14,22 +14,22 @@ GrB_Info GxB_BinaryOp_ytype         // return the type of y
     GrB_Type *ytype,                // return type of input y
     const GrB_BinaryOp binaryop     // binary operator to query
 )
-{
+{ 
 
     //--------------------------------------------------------------------------
     // check inputs
     //--------------------------------------------------------------------------
 
-    WHERE ("GxB_BinaryOp_ytype (&ytype, binaryop)") ;
-    RETURN_IF_NULL (ytype) ;
-    RETURN_IF_NULL_OR_UNINITIALIZED (binaryop) ;
-    ASSERT_OK (GB_check (binaryop, "binaryop for ytype", 0)) ;
+    GB_WHERE ("GxB_BinaryOp_ytype (&ytype, binaryop)") ;
+    GB_RETURN_IF_NULL (ytype) ;
+    GB_RETURN_IF_NULL_OR_FAULTY (binaryop) ;
+    ASSERT_OK (GB_check (binaryop, "binaryop for ytype", GB0)) ;
 
     //--------------------------------------------------------------------------
     // return the ytype
     //--------------------------------------------------------------------------
 
     (*ytype) = binaryop->ytype ;
-    return (REPORT_SUCCESS) ;
+    return (GrB_SUCCESS) ;
 }
 

@@ -36,7 +36,7 @@ You can use Mongoose in one of three ways:
 2. **The C++ API.** A static library is built at `Lib/libmongoose.a`. Include the header file `Include/Mongoose.hpp` and link to this library to access the C++ API.
 3. **The MATLAB API.** From MATLAB, navigate to the `Mongoose/MATLAB/` directory and build the Mongoose MEX functions by calling `mongoose_make`. This will build Mongoose, run a demo, and allows access to the MATLAB API.
 
-For more details about the specific APIs and their available functionality, see the Mongoose user guide located at [`Doc/UserGuide.pdf`](Doc/UserGuide.pdf).
+For more details about the specific APIs and their available functionality, see the Mongoose user guide located at [`Doc/Mongoose_UserGuide.pdf`](Doc/Mongoose_UserGuide.pdf).
 
 
 ## Credits
