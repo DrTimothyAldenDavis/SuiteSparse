@@ -19,20 +19,17 @@ LAPACK = -llapack
 # for statement coverage, picky tests
 CF = -Wall -W -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
    	-Wredundant-decls -Wnested-externs -Wdisabled-optimization \
- 	-ansi -g -ftest-coverage -fprofile-arcs -fexceptions
+ 	-ansi -g -ftest-coverage -fprofile-arcs -fexceptions \
+	-fopenmp
 
 C = $(CC) $(CF)
 
-LIB = ../../AMD/Lib/libamd.a ../../COLAMD/Lib/libcolamd.a \
-    ../../CHOLMOD/Lib/libcholmod.a \
-    ../../CAMD/Lib/libcamd.a ../../CCOLAMD/Lib/libccolamd.a \
-    ../../metis-4.0/libmetis.a \
-    ../../SuiteSparse_config/libsuitesparseconfig.a \
-    $(LAPACK) $(BLAS) $(CUDART_LIB) $(CUBLAS_LIB) -lm -lrt
+LDLIBS = -L../../lib -lamd -lcolamd -lcholmod -lcamd -lccolamd \
+    -lmetis -lsuitesparseconfig \
+    $(LAPACK) $(BLAS) $(CUDART_LIB) $(CUBLAS_LIB) -lm -lrt \
+    -Wl,-rpath=$(SUITESPARSE)/lib
 
-I = -I../../SuiteSparse_config -I../../AMD/Include -I../../COLAMD/Include \
-    -I../../BTF/Include -I../../CHOLMOD/Include -I../../CAMD/Include \
-    -I../../CCOLAMD/Include -I../../metis-4.0/Lib -I../Include -I../User
+I = -I../../include -I../Include -I../User -I../../BTF/Include
 
 all: purge libs klutest klultest
 	- ./klultests > klultests.out
@@ -49,9 +46,9 @@ libs:
 	( cd ../../COLAMD && $(MAKE) library TCOV=yes)
 	( cd ../../CAMD && $(MAKE) library TCOV=yes)
 	( cd ../../CCOLAMD && $(MAKE) library TCOV=yes)
-	( cd ../../metis-4.0 && $(MAKE) TCOV=yes)
+	( cd ../.. && $(MAKE) metis )
 	( cd ../../CHOLMOD && $(MAKE) library TCOV=yes)
-	( cd ../../SuiteSparse_config && $(MAKE) library TCOV=yes)
+	( cd ../../SuiteSparse_config && $(MAKE) TCOV=yes)
 
 purge: distclean
 
@@ -148,10 +145,10 @@ $(OBJ): $(INC)
 $(LOBJ): $(INC)
 
 klutest: $(OBJ) klutest.c
-	$(C) $(I) klutest.c -o klutest $(OBJ) $(LIB)
+	$(C) $(I) klutest.c -o klutest $(OBJ) $(LDLIBS)
 
 klultest: $(LOBJ) klutest.c
-	$(C) -DDLONG $(I) klutest.c -o klultest $(LOBJ) $(LIB)
+	$(C) -DDLONG $(I) klutest.c -o klultest $(LOBJ) $(LDLIBS)
 
 .c.o:
 	$(C) -c $(I) $*.c

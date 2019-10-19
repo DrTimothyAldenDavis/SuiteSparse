@@ -3,9 +3,12 @@
 #-------------------------------------------------------------------------------
 
 LIBRARY = libamd
-VERSION = 2.4.2
+VERSION = 2.4.3
+SO_VERSION = 2
 
 default: library
+	$(MAKE) install INSTALL=$(CURDIR)/../.. \
+		INSTALL_DOC=$(CURDIR)/../../doc
 
 include ../../SuiteSparse_config/SuiteSparse_config.mk
 
@@ -17,12 +20,12 @@ C = $(CC) $(CF) -I../Include -I../../SuiteSparse_config
 # source files
 #-------------------------------------------------------------------------------
 
-AMD = amd_aat amd_1 amd_2 amd_dump amd_postorder amd_post_tree amd_defaults \
+AMD = amd_aat amd_1 amd_2 amd_dump amd_postorder amd_defaults \
+        amd_post_tree  \
 	amd_order amd_control amd_info amd_valid amd_preprocess
 
-CONFIG = ../../SuiteSparse_config/SuiteSparse_config.h
-
-INC = ../Include/amd.h ../Include/amd_internal.h $(CONFIG)
+INC = ../Include/amd.h ../Include/amd_internal.h \
+      ../../SuiteSparse_config/SuiteSparse_config.h
 
 #-------------------------------------------------------------------------------
 # object files for each version
@@ -75,19 +78,32 @@ libamdf77.a: $(AMDF77)
 #-------------------------------------------------------------------------------
 
 # install AMD
-install: uninstall $(SO_TARGET)
+install: $(INSTALL_LIB)/$(SO_TARGET)
+
+$(INSTALL_LIB)/$(SO_TARGET): $(SO_TARGET)
+	@mkdir -p $(INSTALL_LIB)
+	@mkdir -p $(INSTALL_INCLUDE)
+	@mkdir -p $(INSTALL_DOC)
 	$(CP) $(SO_TARGET) $(INSTALL_LIB)
+	$(SO_INSTALL_NAME) $(INSTALL_LIB)/$(SO_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
+	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_MAIN) )
 	$(CP) ../Include/amd.h $(INSTALL_INCLUDE)
-	chmod 644 $(INSTALL_LIB)/$(SO_TARGET)
-	chmod 644 $(INSTALL_LIB)/$(SO_PLAIN)
+	$(CP) ../Doc/AMD_UserGuide.pdf $(INSTALL_DOC)
+	$(CP) ../README.txt $(INSTALL_DOC)/AMD_README.txt
+	chmod 755 $(INSTALL_LIB)/$(SO_TARGET)
 	chmod 644 $(INSTALL_INCLUDE)/amd.h
+	chmod 644 $(INSTALL_DOC)/AMD_UserGuide.pdf
+	chmod 644 $(INSTALL_DOC)/AMD_README.txt
 
 # uninstall AMD
 uninstall:
 	$(RM) $(INSTALL_LIB)/$(SO_TARGET)
 	$(RM) $(INSTALL_LIB)/$(SO_PLAIN)
+	$(RM) $(INSTALL_LIB)/$(SO_MAIN)
 	$(RM) $(INSTALL_INCLUDE)/amd.h
+	$(RM) $(INSTALL_DOC)/AMD_UserGuide.pdf
+	$(RM) $(INSTALL_DOC)/AMD_README.txt
 
 #-------------------------------------------------------------------------------
 # Remove all but the files in the original distribution
@@ -100,3 +116,4 @@ purge: distclean
 
 distclean: clean
 	- $(RM) -r $(PURGE)
+

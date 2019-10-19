@@ -11,36 +11,36 @@ UMFPACK :  a set of routines solving sparse linear systems via LU
     2.0 or later.
 
     Unless you compile with -DNCHOLMOD, addtional packages are required:
-    CHOLMOD, CAMD, CCOLAMD, COLAMD, and metis-4.0.
+    CHOLMOD, CAMD, CCOLAMD, COLAMD, and metis-5.1.0.
 
 The AMD, SuiteSparse_config, and UMFPACK directories must all reside in the
 same parent directory.  If the -DNCHOLMOD is not used, the CHOLMOD, CAMD,
-CCOLAMD, COLAMD, and metis-4.0 also also exist in the same parent.
+CCOLAMD, COLAMD, and metis-5.1.0 also also exist in the same parent.
 
 Quick start (Unix, or Windows with Cygwin):
 
     To compile, test, and install both UMFPACK and AMD, the UMFPACK and AMD
     directories must be in the same parent directory.  To configure, you may
-    need to edit the
-    SuiteSparse_config/SuiteSparse_config.mk file (otherwise, you may get
-    warnings that the BLAS (dgemm, etc) are not found).  You may use
-    UMFPACK_CONFIG = -DNBLAS in the SuiteSparse_config/SuiteSparse_config.mk
-    file, to avoid using the BLAS, but UMFPACK will be slow.  Next, cd to this
-    directory (UMFPACK) and type "make".  To compile and run a FORTRAN demo
-    program for Harwell/Boeing matrices, type "make hb".  To compile a FORTRAN
-    main program that calls the 32-bit C-callable UMFPACK library, type "make
-    fortran".  When done, type "make clean" to remove unused *.o files (keeps
-    the compiled libraries and demo programs).  See the User Guide
-    (Doc/UserGuide.pdf), or ../SuiteSparse_config/SuiteSparse_config.mk for
-    more details (including options for compiling in 64-bit mode).
+    need to edit the SuiteSparse_config/SuiteSparse_config.mk file, but the
+    defaults should work on most systems.   Next, type 'make' in this
+    directory.
+
+    To compile and run a FORTRAN demo program for Harwell/Boeing matrices, type
+    "make hb".  To compile a FORTRAN main program that calls the 32-bit
+    C-callable UMFPACK library, type "make fortran".  When done, type "make
+    clean" to remove unused *.o files (keeps the compiled libraries and demo
+    programs).  See the User Guide (Doc/UserGuide.pdf), or
+    ../SuiteSparse_config/SuiteSparse_config.mk for more details.
 
     To install into /usr/local/lib and /usr/local/include, use
     "make install".  To remove, do "make uninstall"
+    For installing in other locations, see SuiteSparse/README.txt.
 
 Quick start (for MATLAB users):
 
     To compile, test, and install the UMFPACK mexFunction, cd to the
-    UMFPACK/MATLAB directory and type umfpack_make at the MATLAB prompt.
+    UMFPACK/MATLAB directory and type umfpack_install at the MATLAB prompt.
+    Then save your path for future sessions.
 
 --------------------------------------------------------------------------------
 

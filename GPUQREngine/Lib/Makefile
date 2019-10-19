@@ -3,9 +3,12 @@
 #-------------------------------------------------------------------------------
 
 LIBRARY = libGPUQREngine
-VERSION = 1.0.1
+VERSION = 1.0.2
+SO_VERSION = 1
 
-default: all
+default: library
+	$(MAKE) install INSTALL=$(CURDIR)/../.. \
+		INSTALL_DOC=$(CURDIR)/../../doc
 
 ccode: all
 
@@ -39,8 +42,8 @@ OBJS = GPUQREngine_GraphVizHelper.o                        \
        TaskDescriptor_flops.o                              \
        GPUQREngine_UberKernel.o
 
-LIBS = $(CUDART_LIB) \
-    ../../SuiteSparse_GPURuntime/Lib/libSuiteSparse_GPURuntime.a
+# LIBS = $(CUDART_LIB) \
+#     ../../SuiteSparse_GPURuntime/Lib/libSuiteSparse_GPURuntime.a
 
 INC  = -I../../SuiteSparse_GPURuntime/Include -I../Include \
     -I../../SuiteSparse_config
@@ -128,16 +131,26 @@ $(SO_TARGET): $(OBJS)
 #-------------------------------------------------------------------------------
 
 # install GPUQREngine.  Note that the include files are not installed.
-install: uninstall $(SO_TARGET)
+install: $(INSTALL_LIB)/$(SO_TARGET)
+
+$(INSTALL_LIB)/$(SO_TARGET): $(SO_TARGET)
+	@mkdir -p $(INSTALL_LIB)
+	@mkdir -p $(INSTALL_INCLUDE)
+	@mkdir -p $(INSTALL_DOC)
 	$(CP) $(SO_TARGET) $(INSTALL_LIB)
+	$(SO_INSTALL_NAME) $(INSTALL_LIB)/$(SO_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
-	chmod 644 $(INSTALL_LIB)/$(SO_TARGET)
-	chmod 644 $(INSTALL_LIB)/$(SO_PLAIN)
+	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_MAIN) )
+	$(CP) ../README.txt $(INSTALL_DOC)/GPUQRENGINE_README.txt
+	chmod 755 $(INSTALL_LIB)/$(SO_TARGET)
+	chmod 644 $(INSTALL_DOC)/GPUQRENGINE_README.txt
 
 # uninstall GPUQREngine
 uninstall:
 	$(RM) $(INSTALL_LIB)/$(SO_TARGET)
 	$(RM) $(INSTALL_LIB)/$(SO_PLAIN)
+	$(RM) $(INSTALL_LIB)/$(SO_MAIN)
+	$(RM) $(INSTALL_DOC)/GPUQRENGINE_README.txt
 
 #-------------------------------------------------------------------------------
 

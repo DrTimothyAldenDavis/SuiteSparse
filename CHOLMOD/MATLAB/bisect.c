@@ -13,7 +13,7 @@
  * -------------------------------------------------------------------------- */
 
 /* Find an node separator of an undirected graph, using
- * METIS_NodeComputeSeparator.
+ * METIS_ComputeVertexSeparator.
  *
  * Usage:
  *

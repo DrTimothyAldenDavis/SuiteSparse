@@ -12,7 +12,7 @@
 %   metis           - nested dissection ordering via METIS_NodeND.
 %   nesdis          - nested dissection ordering via CHOLMOD's nested dissection.
 %   septree         - prune a separator tree.
-%   bisect          - computes a node separator based on METIS_NodeComputeSeparator.
+%   bisect          - computes a node separator based on METIS_ComputeVertexSeparator.
 %   analyze         - order and analyze a matrix using CHOLMOD's best-effort ordering.
 %   etree2          - sparse elimination tree.
 %   sparse2         - replacement for SPARSE

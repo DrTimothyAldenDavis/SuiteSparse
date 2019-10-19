@@ -1,4 +1,6 @@
 
+default: spqr_user_guide.pdf
+
 include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 spqr_user_guide.pdf: spqr_user_guide.tex spqr_user_guide.bib Makefile

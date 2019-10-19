@@ -2,9 +2,9 @@
 # SuiteSparseQR Makefile
 #-------------------------------------------------------------------------------
 
-include ../SuiteSparse_config/SuiteSparse_config.mk
-
 default: all
+
+include ../SuiteSparse_config/SuiteSparse_config.mk
 
 all:
 	( cd Lib ; $(MAKE) )

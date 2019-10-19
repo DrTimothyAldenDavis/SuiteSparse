@@ -440,8 +440,8 @@ int SuiteSparse_version
  * to ANSI C99.  However, SuiteSparse does not assume that ANSI C99 is
  * available.  You can use the ANSI C99 hypot routine with:
  *
- *	#include <math.h>
- *	SuiteSparse_config.hypot_func = hypot ;
+ *      #include <math.h>
+ *i     SuiteSparse_config.hypot_func = hypot ;
  *
  * Default value of the SuiteSparse_config.hypot_func pointer is
  * SuiteSparse_hypot, defined below.
@@ -460,27 +460,27 @@ double SuiteSparse_hypot (double x, double y)
     y = fabs (y) ;
     if (x >= y)
     {
-	if (x + y == x)
-	{
-	    s = x ;
-	}
-	else
-	{
-	    r = y / x ;
-	    s = x * sqrt (1.0 + r*r) ;
-	}
+        if (x + y == x)
+        {
+            s = x ;
+        }
+        else
+        {
+            r = y / x ;
+            s = x * sqrt (1.0 + r*r) ;
+        }
     }
     else
     {
-	if (y + x == y)
-	{
-	    s = y ;
-	}
-	else
-	{
-	    r = x / y ;
-	    s = y * sqrt (1.0 + r*r) ;
-	}
+        if (y + x == y)
+        {
+            s = y ;
+        }
+        else
+        {
+            r = x / y ;
+            s = y * sqrt (1.0 + r*r) ;
+        }
     } 
     return (s) ;
 }
@@ -505,25 +505,25 @@ double SuiteSparse_hypot (double x, double y)
 
 int SuiteSparse_divcomplex
 (
-    double ar, double ai,	/* real and imaginary parts of a */
-    double br, double bi,	/* real and imaginary parts of b */
-    double *cr, double *ci	/* real and imaginary parts of c */
+    double ar, double ai,       /* real and imaginary parts of a */
+    double br, double bi,       /* real and imaginary parts of b */
+    double *cr, double *ci      /* real and imaginary parts of c */
 )
 {
     double tr, ti, r, den ;
     if (fabs (br) >= fabs (bi))
     {
-	r = bi / br ;
-	den = br + r * bi ;
-	tr = (ar + ai * r) / den ;
-	ti = (ai - ar * r) / den ;
+        r = bi / br ;
+        den = br + r * bi ;
+        tr = (ar + ai * r) / den ;
+        ti = (ai - ar * r) / den ;
     }
     else
     {
-	r = br / bi ;
-	den = r * br + bi ;
-	tr = (ar * r + ai) / den ;
-	ti = (ai * r - ar) / den ;
+        r = br / bi ;
+        den = r * br + bi ;
+        tr = (ar * r + ai) / den ;
+        ti = (ai * r - ar) / den ;
     }
     *cr = tr ;
     *ci = ti ;

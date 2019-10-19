@@ -2,16 +2,13 @@
 # CHOLMOD Makefile
 #-------------------------------------------------------------------------------
 
-# Note: If you want to use METIS, then first place it in SuiteSparse/ as the
-# SuiteSparse/metis-4.0 folder.  It will then be automatically detected by
-# ../SuiteSparse_config/SuiteSparse_config.mk .
-
 default: all
 
 include ../SuiteSparse_config/SuiteSparse_config.mk
 
 # Compile the C-callable libraries and the Demo programs.
 all:
+	( cd Lib ; $(MAKE) )
 	( cd Demo ; $(MAKE) )
 
 # Compile the C-callable libraries only.
@@ -25,7 +22,7 @@ purge:
 	( cd Valgrind ; $(MAKE) dopurge )
 	( cd Demo ; $(MAKE) purge )
 	( cd Doc ; $(MAKE) purge )
-	( cd MATLAB ; $(RM) $(CLEAN) rename.h *.mex* )
+	( cd MATLAB ; $(RM) $(CLEAN) rename.h *.mex* GKlib_util.c GKlib_graph.c )
 
 # Remove all files not in the original distribution, except keep the 
 # compiled libraries.

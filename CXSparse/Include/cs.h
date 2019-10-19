@@ -1,3 +1,23 @@
+/* ========================================================================== */
+/* CXSparse/Include/cs.h file */
+/* ========================================================================== */
+
+/* This is the CXSparse/Include/cs.h file.  It has the same name (cs.h) as
+   the CSparse/Include/cs.h file.  The 'make install' for SuiteSparse installs
+   CXSparse, and this file, instead of CSparse.  The two packages have the same
+   cs.h include filename, because CXSparse is a superset of CSparse.  Any user
+   program that uses CSparse can rely on CXSparse instead, with no change to the
+   user code.  The #include "cs.h" line will work for both versions, in user
+   code, and the function names and user-visible typedefs from CSparse all
+   appear in CXSparse.  For experimenting and changing the package itself, I
+   recommend using CSparse since it's simpler and easier to modify.  For
+   using the package in production codes, I recommend CXSparse since it has
+   more features (support for complex matrices, and both int and long
+   versions).
+ */
+
+/* ========================================================================== */
+
 #ifndef _CXS_H
 #define _CXS_H
 #include <stdlib.h>
@@ -24,8 +44,8 @@ extern "C" {
 
 #define CS_VER 3                    /* CXSparse Version */
 #define CS_SUBVER 1
-#define CS_SUBSUB 5
-#define CS_DATE "Jan 1, 2016"       /* CXSparse release date */
+#define CS_SUBSUB 6
+#define CS_DATE "Jan 30, 2016"       /* CXSparse release date */
 #define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006-2016"
 #define CXSPARSE
 

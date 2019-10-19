@@ -1,3 +1,10 @@
+Jan 30, 2016: versions 2.0.4
+
+    * modifications to Makefiles
+    * correction to mexFunctions required for MATLAB R2015b,
+	for sparse empty matrices and NULL mxGetPr
+    * added "#include <algorithm>" to spqr_tol.cpp.
+
 Jan 1, 2016: version 2.0.3
 
     * modified Makefile to create shared libraries

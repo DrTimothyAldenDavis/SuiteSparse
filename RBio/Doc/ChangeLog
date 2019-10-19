@@ -1,3 +1,7 @@
+Jan 30, 2016: version 2.2.3
+
+    * modifications to Makefiles
+
 Jan 1, 2016: version 2.2.2
 
     * modified Makefile to create shared libraries
@@ -5,7 +9,7 @@ Jan 1, 2016: version 2.2.2
 
 Oct 10, 2014: version 2.2.1
 
-    modified RBmake.m.  No change to C code except version number.
+    * modified RBmake.m.  No change to C code except version number.
 
 July 31, 2013: version 2.2.0
 

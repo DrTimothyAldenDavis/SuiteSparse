@@ -19,24 +19,10 @@ h = waitbar (0, 'SuiteSparse test:') ;
 SuiteSparse = pwd ;
 package = 0 ;
 
-if (verLessThan ('matlab', '7.0'))
-    error ('SuiteSparse_test requires MATLAB 7.0 or later') ;
-end
-
-% if at UF, ensure pre-installed UF Sparse Matrix Collection is used
-uf = { '/cise/homes/davis/Install/UFget', 'd:/UFget', '/share/UFget', ...
-    '/windows/UFget', '/cise/research/sparse/UFget' } ;
-for k = 1:length(uf)
-    if (exist (uf {k}, 'dir'))
-        addpath (uf {k}) ;
-        break ;
-    end
-end
-
 try
 
     %---------------------------------------------------------------------------
-    % CSparse (both 64-bit and 32-bit MATLAB)
+    % CSparse
     %---------------------------------------------------------------------------
 
     % compile and install CSparse (not installed by SuiteSparse_install)

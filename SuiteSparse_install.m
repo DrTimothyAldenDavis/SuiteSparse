@@ -59,22 +59,7 @@ help SuiteSparse_install
 
 fprintf ('\nInstalling SuiteSparse for MATLAB version %s\n\n', v) ;
 
-% check if METIS 4.0.1 is present where it's supposed to be
-have_metis = exist ('metis-4.0/Lib', 'dir') ;
-if (~have_metis)
-    fprintf ('METIS 4.0.1 is not present.  CHOLMOD, KLU, UMFPACK and SPQR\n') ;
-    fprintf ('optionally use it as an ordering method.  To use METIS,\n') ;
-    fprintf ('download it from http://glaros.dtc.umn.edu/gkhome/views/metis\n');
-    fprintf ('and place the metis-4.0 directory in this directory\n') ;
-    fprintf ('so that ./metis-4.0/Lib exists.\n\n') ;
-    fprintf ('Now compiling without METIS.\n') ;
-else
-    fprintf ('\nCompiling with METIS 4.0.1.  You may safely ignore warnings\n');
-    fprintf ('in metis-4.0/Lib/util.c regarding a malformed format string.\n') ;
-end
-
 % add SuiteSparse to the path
-fprintf ('\n\nPlease wait while SuiteSparse is compiled and installed.\n\n') ;
 paths = add_to_path (paths, SuiteSparse) ;
 
 %-------------------------------------------------------------------------------

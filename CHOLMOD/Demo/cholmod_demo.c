@@ -97,7 +97,7 @@ int main (int argc, char **argv)
 
     cm = &Common ;
     cholmod_start (cm) ;
-    CHOLMOD_FUNCTION_DEFAULTS (cm) ;    /* just for testing (not required) */
+    CHOLMOD_FUNCTION_DEFAULTS ;     /* just for testing (not required) */
 
     /* use default parameter settings, except for the error handler.  This
      * demo program terminates if an error occurs (out of memory, not positive

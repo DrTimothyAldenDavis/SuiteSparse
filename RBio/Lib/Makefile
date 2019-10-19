@@ -3,9 +3,12 @@
 #===============================================================================
 
 LIBRARY = librbio
-VERSION = 2.2.2
+VERSION = 2.2.3
+SO_VERSION = 2
 
-default: all
+default: library
+	$(MAKE) install INSTALL=$(CURDIR)/../.. \
+		INSTALL_DOC=$(CURDIR)/../../doc
 
 ccode: all
 
@@ -55,17 +58,26 @@ RBio_i.o: ../Source/RBio.c
 #-------------------------------------------------------------------------------
 
 # install RBio
-install: uninstall $(SO_TARGET)
+install: $(INSTALL_LIB)/$(SO_TARGET)
+
+$(INSTALL_LIB)/$(SO_TARGET): $(SO_TARGET)
+	@mkdir -p $(INSTALL_LIB)
+	@mkdir -p $(INSTALL_INCLUDE)
+	@mkdir -p $(INSTALL_DOC)
 	$(CP) $(SO_TARGET) $(INSTALL_LIB)
+	$(SO_INSTALL_NAME) $(INSTALL_LIB)/$(SO_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
+	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_MAIN) )
 	$(CP) ../Include/RBio.h $(INSTALL_INCLUDE)
-	chmod 644 $(INSTALL_LIB)/$(SO_TARGET)
-	chmod 644 $(INSTALL_LIB)/$(SO_PLAIN)
+	$(CP) ../README.txt $(INSTALL_DOC)/RBIO_README.txt
+	chmod 755 $(INSTALL_LIB)/$(SO_TARGET)
 	chmod 644 $(INSTALL_INCLUDE)/RBio.h
+	chmod 644 $(INSTALL_DOC)/RBIO_README.txt
 
 # uninstall RBio
 uninstall:
 	$(RM) $(INSTALL_LIB)/$(SO_TARGET)
 	$(RM) $(INSTALL_LIB)/$(SO_PLAIN)
+	$(RM) $(INSTALL_LIB)/$(SO_MAIN)
 	$(RM) $(INSTALL_INCLUDE)/RBio.h
-
+	$(RM) $(INSTALL_DOC)/RBIO_README.txt

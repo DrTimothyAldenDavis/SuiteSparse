@@ -6,7 +6,7 @@ function umfpack_demo (c)
 % Example:
 %   umfpack_demo
 %
-% See also umfpack, umfpack2, umfpack_make, umfpack_details, umfpack_report,
+% See also umfpack, umfpack_make, umfpack_details, umfpack_report,
 % and umfpack_simple.
 
 % Copyright 1995-2009 by Timothy A. Davis.
@@ -15,7 +15,7 @@ function umfpack_demo (c)
 % get default control parameters
 %-------------------------------------------------------------------------------
 
-control = umfpack2 ;
+control = umfpack ;
 if (nargin < 1)
     fprintf ('\nEnter the printing level for UMFPACK''s output statistics:\n') ;
     fprintf ('0: none, 1: errors only, 2: statistics, 4: print some outputs\n');
@@ -44,7 +44,7 @@ n = size (A, 1) ;
 b = rand (n, 1) ;
 
 fprintf ('Solving Ax=b via UMFPACK:\n') ;
-xu = umfpack2 (A, '\', b, control) ;
+xu = umfpack (A, '\', b, control) ;
 
 fprintf ('Solving Ax=b via MATLAB:\n') ;
 xm = A\b ;
@@ -63,7 +63,7 @@ spy (A)
 title ('The matrix A') ;
 
 subplot (2,3,2)
-[P1, Q1, Fr, Ch, Info] = umfpack2 (A, 'symbolic') ;			    %#ok
+[P1, Q1, Fr, Ch, Info] = umfpack (A, 'symbolic') ;			    %#ok
 treeplot (Fr (1:end-1,2)') ;
 title ('Supernodal column elimination tree') ;
 
@@ -73,8 +73,8 @@ title ('A, with initial row and column order') ;
 
 subplot (2,3,4)
 fprintf ('\n--------------------------------------------------------------\n') ;
-fprintf ('\nFactorizing [L, U, P, Q, R] = umfpack2 (A)\n') ;
-[L, U, P, Q, R] = umfpack2 (A) ;
+fprintf ('\nFactorizing [L, U, P, Q, R] = umfpack (A)\n') ;
+[L, U, P, Q, R] = umfpack (A) ;
 spy (P*A*Q)
 title ('A, with final row/column order') ;
 
@@ -122,7 +122,7 @@ fprintf ('\n--------------------------------------------------------------\n') ;
 fprintf ('Solve A''x=b:\n') ;
 
 fprintf ('Solving A''x=b via UMFPACK:\n') ;
-xu = umfpack2 (b', '/', A, control) ;
+xu = umfpack (b', '/', A, control) ;
 xu = xu' ;
 
 fprintf ('Solving A''x=b via MATLAB:\n') ;
@@ -144,7 +144,7 @@ fprintf ('same as the solution to Ax=b for the original A.\n');
 C = A' ;
 
 % factorize C (P,Q) = L*U
-[L, U, P, Q, R, info] = umfpack2 (C, control) ;				    %#ok
+[L, U, P, Q, R, info] = umfpack (C, control) ;				    %#ok
 
 fprintf ('\nP * (R\\C) * Q - L*U should be zero:\n') ;
 fprintf ('norm (P*(R\\C)*Q - L*U, 1) = %g (exact) %g (estimated)\n', ...
@@ -193,4 +193,4 @@ fprintf ('Difference between UMFPACK and MATLAB solution: %g\n', ...
 %-------------------------------------------------------------------------------
 
 fprintf ('\n--------------------------------------------------------------\n') ;
-fprintf ('det(A): %g  UMFPACK determinant: %g\n', det (A), umfpack2 (A, 'det'));
+fprintf ('det(A): %g  UMFPACK determinant: %g\n', det (A), umfpack (A, 'det'));

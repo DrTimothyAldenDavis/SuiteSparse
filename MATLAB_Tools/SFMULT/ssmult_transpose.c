@@ -38,14 +38,14 @@ mxArray *ssmult_transpose	// returns C = A' or A.'
 
     cnz = MAX (anz, 1) ;
     C = mxCreateSparse (0, 0, 0, C_is_complex ? mxCOMPLEX : mxREAL) ;
-    mxFree (mxGetJc (C)) ;
-    mxFree (mxGetIr (C)) ;
-    mxFree (mxGetPr (C)) ;
-    mxFree (mxGetPi (C)) ;
+    MXFREE (mxGetJc (C)) ;
+    MXFREE (mxGetIr (C)) ;
+    MXFREE (mxGetPr (C)) ;
+    MXFREE (mxGetPi (C)) ;
     Cp = mxMalloc ((m+1) * sizeof (Int)) ;
-    Ci = mxMalloc (cnz * sizeof (Int)) ;
-    Cx = mxMalloc (cnz * sizeof (double)) ;
-    Cz = C_is_complex ? mxMalloc (cnz * sizeof (double)) : NULL ;
+    Ci = mxMalloc (MAX (cnz,1) * sizeof (Int)) ;
+    Cx = mxMalloc (MAX (cnz,1) * sizeof (double)) ;
+    Cz = C_is_complex ? mxMalloc (MAX (cnz,1) * sizeof (double)) : NULL ;
     mxSetJc (C, Cp) ;
     mxSetIr (C, Ci) ;
     mxSetPr (C, Cx) ;
@@ -58,7 +58,7 @@ mxArray *ssmult_transpose	// returns C = A' or A.'
     // allocate workspace
     //--------------------------------------------------------------------------
 
-    W = mxCalloc (m, sizeof (Int)) ;
+    W = mxCalloc (MAX (m,1), sizeof (Int)) ;
 
     //--------------------------------------------------------------------------
     // compute row counts
@@ -135,6 +135,6 @@ mxArray *ssmult_transpose	// returns C = A' or A.'
     // free workspace and return result
     //--------------------------------------------------------------------------
 
-    mxFree (W) ;
+    MXFREE (W) ;
     return (C) ;
 }

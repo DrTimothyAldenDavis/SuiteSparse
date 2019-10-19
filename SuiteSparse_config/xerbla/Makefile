@@ -4,9 +4,12 @@
   USE_FORTRAN = 0
 # USE_FORTRAN = 1
 
-VERSION = 1.0
+VERSION = 1.0.1
+SO_VERSION = 1
 
-default: ccode
+default:
+	$(MAKE) install INSTALL=$(CURDIR)/../..
+
 all: ccode fortran
 
 ifeq ($(USE_FORTRAN),0)
@@ -41,12 +44,18 @@ $(SO_TARGET): $(DEPENDS)
 	- $(RM) xerbla.o
 
 # install libcerbla / libxerbla
-install: uninstall ccode
+install: $(INSTALL_LIB)/$(SO_TARGET)
+
+$(INSTALL_LIB)/$(SO_TARGET): $(SO_TARGET)
+	@mkdir -p $(INSTALL_LIB)
+	@mkdir -p $(INSTALL_INCLUDE)
+	@mkdir -p $(INSTALL_DOC)
 	$(CP) $(SO_TARGET) $(INSTALL_LIB)
+	$(SO_INSTALL_NAME) $(INSTALL_LIB)/$(SO_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
+	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_MAIN) )
 	$(CP) xerbla.h $(INSTALL_INCLUDE)
-	chmod 644 $(INSTALL_LIB)/$(SO_TARGET)
-	chmod 644 $(INSTALL_LIB)/$(SO_PLAIN)
+	chmod 755 $(INSTALL_LIB)/$(SO_TARGET)
 	chmod 644 $(INSTALL_INCLUDE)/xerbla.h
 
 # uninstall libcerbla / libxerbla
@@ -62,3 +71,4 @@ purge: clean
 
 clean:
 	- $(RM) -r $(CLEAN)
+

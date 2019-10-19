@@ -30,7 +30,7 @@ b =
     19
 
 Solution to Ax=b via UMFPACK:
-x1 = umfpack2 (A, '\', b)
+x1 = umfpack (A, '\', b)
 x1 = 
     1.0000
     2.0000

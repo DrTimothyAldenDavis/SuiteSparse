@@ -31,11 +31,8 @@ CAMD is authored by T. Davis and Y. Chen.
 LAPACK and the BLAS are authored by Jack Dongarra and many others.
 LAPACK is available at http://www.netlib.org/lapack
 
-METIS is authored by George Karypis, Univ. of Minnesota.  Its use in CHOLMOD
-is optional.  See http://www-users.cs.umn.edu/~karypis/metis.
-Place a copy of the metis-4.0 directory in the same directory that
-contains the CHOLMOD, AMD, COLAMD, and CCOLAMD directories prior to compiling
-with "make".
+METIS 5.1.0 is authored by George Karypis, Univ. of Minnesota.  Its use in
+CHOLMOD is optional.  A copy is in SuiteSparse/metis-5.1.0.
 
 If you do not wish to use METIS, you must edit SuiteSparse_config and change
 the line:
@@ -61,18 +58,6 @@ your program (and thus MATLAB) if it runs out of memory.  Using cholmod_make
 also ensures your mexFunctions are compiled with -fexceptions, so that
 exceptions are handled properly (when hitting control-C in the MATLAB command
 window, for example).
-
-On the Pentium, do NOT use the Intel MKL BLAS prior to MKL Version 8.0 with
-CHOLMOD.  Older versions (prior to 8.0) have a bug in dgemm when computing
-A*B'.  The bug generates a NaN result, when the inputs are well-defined.  Use
-the Goto BLAS or the MKL v8.0 BLAS instead.  The Goto BLAS is faster and more
-reliable.  See http://www.tacc.utexas.edu/~kgoto/ or
-http://www.cs.utexas.edu/users/flame/goto/.
-Sadly, the Intel MKL BLAS 7.x is the default for MATLAB 7.0.4.  See
-http://www.mathworks.com/support/bugreports/details.html?rp=252103 for more
-details.  To workaround this problem on Linux, set environment variable
-BLAS_VERSION to libmkl_p3.so:libguide.so. On Windows, set environment variable
-BLAS_VERSION to mkl_p3.dll.  Better yet, get MATLAB 7sp3 (MATLAB 7.1) or later.
 
 Acknowledgements:  this work was supported in part by the National Science
 Foundation (NFS CCR-0203270 and DMS-9803599), and a grant from Sandia National

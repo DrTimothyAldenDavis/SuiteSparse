@@ -1,4 +1,6 @@
 #!/bin/csh
+#
+# usage: covall tempdirectory
 
 #  only print those lines that are "#####" in all tests.
 
@@ -34,11 +36,11 @@ foreach file ( \
     echo '================================================================================'
     echo $file
     echo '================================================================================'
-	cat /dev/null > Out/tcov_tmp
-	foreach fdirs (Out/?_??)
-	    cat -n $fdirs/UMFPACK/Source/$file.gcov | grep '#####' >> Out/tcov_tmp
+	cat /dev/null > $1/UMFPACK_TCOV_TMP/tcov_tmp
+	foreach fdirs ($1/UMFPACK_TCOV_TMP/?_??)
+	    cat -n $fdirs/UMFPACK/Source/$file.gcov | grep '#####' >> $1/UMFPACK_TCOV_TMP/tcov_tmp
 	end
-	sort -n Out/tcov_tmp | uniq -c
+	sort -n $1/UMFPACK_TCOV_TMP/tcov_tmp | uniq -c
 end
 
 foreach file ( \
@@ -49,11 +51,11 @@ foreach file ( \
     echo '================================================================================'
     echo $file
     echo '================================================================================'
-	cat /dev/null > Out/tcov_tmp
-	foreach fdirs (Out/?_??)
-	    cat -n $fdirs/AMD/Source/$file.gcov | grep '#####' >> Out/tcov_tmp
+	cat /dev/null > $1/UMFPACK_TCOV_TMP/tcov_tmp
+	foreach fdirs ($1/UMFPACK_TCOV_TMP/?_??)
+	    cat -n $fdirs/AMD/Source/$file.gcov | grep '#####' >> $1/UMFPACK_TCOV_TMP/tcov_tmp
 	end
-	sort -n Out/tcov_tmp | uniq -c
+	sort -n $1/UMFPACK_TCOV_TMP/tcov_tmp | uniq -c
 end
 
 
@@ -61,7 +63,7 @@ echo '==========================================================================
 echo 'Last line of each output file: '
 echo '================================================================================'
 
-foreach file (Out/*_*/ut.out)
+foreach file ($1/UMFPACK_TCOV_TMP/*_*/ut.out)
 	echo $file 
 	tail -1 $file 
 	echo '================================================================='

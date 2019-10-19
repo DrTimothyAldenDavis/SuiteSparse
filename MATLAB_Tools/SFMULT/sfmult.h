@@ -16,6 +16,12 @@
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
 #define MIN(a,b) (((a) < (b)) ? (a) : (b))
 
+#define MXFREE(a) { \
+    double *ptr ; \
+    ptr = (a) ; \
+    if (ptr != NULL) mxFree (ptr) ; \
+}
+
 // -----------------------------------------------------------------------------
 // primary sparse-times-full and full-times-sparse
 // -----------------------------------------------------------------------------

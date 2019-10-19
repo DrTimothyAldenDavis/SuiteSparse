@@ -48,7 +48,6 @@ lib: library
 
 # install CAMD
 install:
-	echo here
 	( cd Lib ; $(MAKE) install )
 
 # uninstall CAMD

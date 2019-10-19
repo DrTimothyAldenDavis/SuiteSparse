@@ -234,12 +234,12 @@ mxArray *ssmult_dot     /* returns C = A'*B */
 
     cnz = MAX (cnz, 1) ;
     C = mxCreateSparse (0, 0, 0, C_is_complex ? mxCOMPLEX : mxREAL) ;
-    mxFree (mxGetJc (C)) ;
-    mxFree (mxGetIr (C)) ;
-    mxFree (mxGetPr (C)) ;
-    mxFree (mxGetPi (C)) ;
+    MXFREE (mxGetJc (C)) ;
+    MXFREE (mxGetIr (C)) ;
+    MXFREE (mxGetPr (C)) ;
+    MXFREE (mxGetPi (C)) ;
     Cp = mxMalloc ((k + 1) * sizeof (Int)) ;
-    Ci = mxMalloc (cnz * sizeof (Int)) ;
+    Ci = mxMalloc (MAX (cnz,1) * sizeof (Int)) ;
     mxSetJc (C, (mwIndex *) Cp) ;
     mxSetIr (C, (mwIndex *) Ci) ;
     mxSetM (C, n) ;

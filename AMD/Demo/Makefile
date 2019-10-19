@@ -4,13 +4,14 @@
 
 default: amd_simple amd_demo amd_demo2 amd_l_demo
 
+gak:
+	echo $(SUITESPARSE)
+
 include ../../SuiteSparse_config/SuiteSparse_config.mk
 
-C = $(CC) $(CF) -I../Include -I../../SuiteSparse_config
+C = $(CC) $(CF) -I../../include
 
-INC = ../Include/amd.h ../../SuiteSparse_config/SuiteSparse_config.h
-
-LIB2 = ../../SuiteSparse_config/libsuitesparseconfig.a $(LIB)
+LIB2 = $(LDFLAGS) -L../../lib -lamd -lsuitesparseconfig $(LDLIBS)
 
 library:
 	( cd ../../SuiteSparse_config ; $(MAKE) )
@@ -25,23 +26,24 @@ f77lib:
 
 dist:
 
-amd_demo: amd_demo.c library $(INC)
-	$(C) -o amd_demo amd_demo.c ../Lib/libamd.a $(LIB2)
+amd_demo: amd_demo.c library
+	$(C) -o amd_demo amd_demo.c $(LIB2)
 	./amd_demo > my_amd_demo.out
 	- diff amd_demo.out my_amd_demo.out
 
-amd_l_demo: amd_l_demo.c library $(INC)
-	$(C) -o amd_l_demo amd_l_demo.c ../Lib/libamd.a $(LIB2)
+amd_l_demo: amd_l_demo.c library
+	$(C) -o amd_l_demo amd_l_demo.c $(LIB2)
 	./amd_l_demo > my_amd_l_demo.out
 	- diff amd_l_demo.out my_amd_l_demo.out
 
-amd_demo2: amd_demo2.c library $(INC)
-	$(C) -o amd_demo2 amd_demo2.c ../Lib/libamd.a $(LIB2)
+amd_demo2: amd_demo2.c library
+	$(C) -o amd_demo2 amd_demo2.c $(LIB2)
 	./amd_demo2 > my_amd_demo2.out
 	- diff amd_demo2.out my_amd_demo2.out
 
-amd_simple: amd_simple.c library $(INC)
-	$(C) -o amd_simple amd_simple.c ../Lib/libamd.a $(LIB2)
+amd_simple: amd_simple.c library
+	echo $(LD_LIBRARY_PATH)
+	$(C) -o amd_simple amd_simple.c $(LIB2)
 	./amd_simple > my_amd_simple.out
 	- diff amd_simple.out my_amd_simple.out
 

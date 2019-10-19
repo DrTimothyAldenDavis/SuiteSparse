@@ -6,18 +6,16 @@ function klu_install (metis_path)
 %
 % KLU relies on AMD, COLAMD, and BTF for its ordering options, and can
 % optionally use CHOLMOD, CCOLAMD, CAMD, and METIS as well.  By default,
-% CHOLMOD, CCOLAMD, CAMD, and METIS are not used.
-%
-% See http://www-users.cs.umn.edu/~karypis/metis for a copy of METIS 4.0.1.
+% CHOLMOD, CCOLAMD, CAMD, and METIS are compiled and used by KLU.
 %
 % You must type the klu_install command while in the KLU/MATLAB directory.
 %
 % See also klu, btf
 
-% Copyright 2004-2009, Univ. of Florida
+% Copyright 2004-2016, Univ. of Florida
 
 if (nargin < 1)
-    metis_path = ['no metis'] ;
+    metis_path = ['../../metis-5.1.0'] ;
 end
 
 % compile KLU and add to the path

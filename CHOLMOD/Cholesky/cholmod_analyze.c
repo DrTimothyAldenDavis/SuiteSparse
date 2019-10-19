@@ -33,7 +33,7 @@
  *	AMD:	    approximate minumum degree (AMD for the symmetric case,
  *		    COLAMD for the AA' case).
  *	METIS:	    nested dissection with METIS_NodeND
- *	NESDIS:	    nested dissection using METIS_NodeComputeSeparator,
+ *	NESDIS:	    nested dissection using METIS_ComputeVertexSeparator,
  *		    typically followed by a constrained minimum degree
  *		    (CAMD for the symmetric case, CCOLAMD for the AA' case).
  *
@@ -697,7 +697,7 @@ cholmod_factor *CHOLMOD(analyze_p2)
 	    /* -------------------------------------------------------------- */
 
 	    /* this method is based on METIS' node bissection routine
-	     * (METIS_NodeComputeSeparator).  In contrast to METIS_NodeND,
+	     * (METIS_ComputeVertexSeparator).  In contrast to METIS_NodeND,
 	     * it calls CAMD or CCOLAMD on the whole graph, instead of MMD
 	     * on just the leaves. */
 #ifndef NPARTITION

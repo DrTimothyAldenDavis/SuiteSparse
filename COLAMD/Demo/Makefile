@@ -2,15 +2,17 @@
 # compile the COLAMD demo
 #-----------------------------------------------------------------------------
 
-default: colamd_example colamd_l_example
+default: all
 
 include ../../SuiteSparse_config/SuiteSparse_config.mk
 
-I = -I../Include -I../../SuiteSparse_config
+I = -I../../include
 
 C = $(CC) $(CF) $(I)
 
-LIB2 = ../../SuiteSparse_config/libsuitesparseconfig.a $(LIB)
+LIB2 = $(LDFLAGS) -L../../lib -lcolamd -lsuitesparseconfig $(LDLIBS)
+
+all: library colamd_example colamd_l_example
 
 library:
 	( cd ../../SuiteSparse_config ; $(MAKE) )
@@ -22,13 +24,13 @@ library:
 
 dist:
 
-colamd_example: colamd_example.c library
-	$(C) -o colamd_example colamd_example.c ../Lib/libcolamd.a $(LIB2)
+colamd_example: colamd_example.c
+	$(C) -o colamd_example colamd_example.c $(LIB2)
 	- ./colamd_example > my_colamd_example.out
 	- diff colamd_example.out my_colamd_example.out
 
-colamd_l_example: colamd_l_example.c library
-	$(C) -o colamd_l_example colamd_l_example.c ../Lib/libcolamd.a $(LIB2)
+colamd_l_example: colamd_l_example.c
+	$(C) -o colamd_l_example colamd_l_example.c $(LIB2)
 	- ./colamd_l_example > my_colamd_l_example.out
 	- diff colamd_l_example.out my_colamd_l_example.out
 

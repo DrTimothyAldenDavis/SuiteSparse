@@ -5,10 +5,10 @@
 # This test requires METIS, and it only works on Linux.
 
 # run statement-coverage test without Valgrind
-default: $(METIS) go
+default: go
 
 # to run with Valgrind as well
-valgrind: $(METIS) vgo
+valgrind: vgo
 
 ccode: all
 
@@ -25,7 +25,7 @@ CF = -pg \
 	-O0 -g -fprofile-arcs -ftest-coverage \
 	-Wall -W -Wshadow -Winline -Wno-unused-parameter \
 	-Wredundant-decls -Wdisabled-optimization \
-	-ansi -fexceptions
+	-ansi -fexceptions -fopenmp
 
 # Using an optimized BLAS can cause problems in Valgrind
 # FLIB = -llapack_plain -lblas_plain -lgfortran
@@ -41,13 +41,7 @@ NVCC = /usr/local/cuda/bin/nvcc -g --profile --generate-line-info $(NV20) \
 
 #-------------------------------------------------------------------------------
 
-CLIB = ../../CHOLMOD/Lib/libcholmod.a \
-       ../../AMD/Lib/libamd.a \
-       ../../COLAMD/Lib/libcolamd.a \
-       ../../CCOLAMD/Lib/libccolamd.a \
-       ../../CAMD/Lib/libcamd.a \
-       ../../SuiteSparse_config/libsuitesparseconfig.a \
-       $(METIS)
+CLIB = -L../../lib -lcholmod -lamd -lcolamd -lccolamd -lcamd -lmetis -lsuitesparseconfig
 
 all: qrtest gpudemo qrdemo_gpu
 
@@ -57,7 +51,7 @@ purge: distclean
 
 distclean: clean
 	- $(RM) qrtest qrtest_out.txt pfile tfile cov.out qrtest_out1.txt
-	- $(RM) gpuqrengine_demo troll.m qrdemo_gpu gpu_results.txt
+	- $(RM) gpuqrengine_demo troll.m qrdemo_gpu gpu_results.txt X.mtx
 	- $(RM) -r $(PURGE)
 
 clean:
@@ -160,12 +154,12 @@ endif
 
 C = $(CXX) $(CF) $(I) $(SPQR_CONFIG)
 
-LIBS = $(CLIB) $(FLIB) $(LIB) $(CUDA_LIB)
+LIBS = $(CLIB) $(FLIB) $(LDLIBS) $(CUDA_LIB)
 
 qrtestc.o: qrtestc.c $(INC)
 	$(CC) $(CF) $(I) -c $<
 
-qrtest: $(CLIB) qrtest.cpp $(INC) $(OBJ)
+qrtest: libraries qrtest.cpp $(INC) $(OBJ)
 	$(C) qrtest.cpp -o qrtest $(OBJ) $(LIBS) -lm
 
 ifneq ($(GPU_CONFIG),)
@@ -180,7 +174,7 @@ else
 gpu:
 endif
 
-gpuqrengine_demo: $(CLIB) \
+gpuqrengine_demo: libraries \
         ../../GPUQREngine/Demo/gpuqrengine_demo.cpp $(INC) $(OBJ)
 	$(C) $(GPUQRDEMO)/gpuqrengine_demo.cpp -o gpuqrengine_demo \
                 $(OBJ) $(LIBS) -lm
@@ -340,25 +334,13 @@ spqrgpu_computeFrontStaging.o: ../SPQRGPU/spqrgpu_computeFrontStaging.cpp
 # libraries compiled without test coverage
 #-------------------------------------------------------------------------------
 
-$(METIS):
-	( cd ../../metis-4.0/Lib && $(MAKE) )
-
-../../CHOLMOD/Lib/libcholmod.a:
+libraries:
+	( cd ../.. && $(MAKE) metis )
 	( cd ../../CHOLMOD && $(MAKE) library TCOV=yes )
-
-../../AMD/Lib/libamd.a:
 	( cd ../../AMD && $(MAKE) library TCOV=yes )
-
-../../COLAMD/Lib/libcolamd.a:
 	( cd ../../COLAMD && $(MAKE) library TCOV=yes )
-
-../../CCOLAMD/Lib/libccolamd.a:
 	( cd ../../CCOLAMD && $(MAKE) library TCOV=yes )
-
-../../CAMD/Lib/libcamd.a:
 	( cd ../../CAMD && $(MAKE) library TCOV=yes )
-
-../../SuiteSparse_config/libsuitesparseconfig.a:
 	( cd ../../SuiteSparse_config ; $(MAKE) library TCOV=yes )
 
 #-------------------------------------------------------------------------------

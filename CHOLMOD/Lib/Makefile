@@ -3,46 +3,16 @@
 #===============================================================================
 
 LIBRARY = libcholmod
-VERSION = 3.0.7
+VERSION = 3.0.8
+SO_VERSION = 3
 
-default: all
+default: library
+	$(MAKE) install INSTALL=$(CURDIR)/../.. \
+		INSTALL_DOC=$(CURDIR)/../../doc
 
 ccode: all
 
 include ../../SuiteSparse_config/SuiteSparse_config.mk
-
-#-------------------------------------------------------------------------------
-# the optional Partition module requires METIS, CAMD, and CCOLAMD.
-# CAMD and CCOLAMD can be installed without METIS, but are optional.
-I_WITH_PARTITION = 
-LIB_WITH_PARTITION =
-CONFIG = -DNPARTITION -DNCAMD
-# check if CAMD/CCOLAMD and METIS are requested and available
-ifeq (,$(findstring -DNCAMD, $(CHOLMOD_CONFIG)))
-    # CAMD and CCOLAMD are requested.  See if they are available
-    ifeq (../../CAMD, $(wildcard ../../CAMD))
-        ifeq (../../CCOLAMD, $(wildcard ../../CCOLAMD))
-            # CAMD and CCOLAMD are requested and available
-            LIB_WITH_PARTITION = \
-                        ../../CCOLAMD/Lib/libccolamd.a ../../CAMD/Lib/libcamd.a
-            I_WITH_PARTITION = \
-                        -I../../CCOLAMD/Include -I../../CAMD/Include
-            CONFIG = -DNPARTITION
-            # check if METIS is requested and available
-            ifeq (,$(findstring -DNPARTITION, $(CHOLMOD_CONFIG)))
-                # METIS is requested.  See if it is available
-                ifeq ($(METIS_PATH), $(wildcard $(METIS_PATH)))
-                    # METIS is available
-                    LIB_WITH_PARTITION = $(METIS) \
-                        ../../CCOLAMD/Lib/libccolamd.a ../../CAMD/Lib/libcamd.a
-                    I_WITH_PARTITION = -I$(METIS_PATH)/Lib \
-                        -I../../CCOLAMD/Include -I../../CAMD/Include
-                    CONFIG =
-                endif
-            endif
-        endif
-    endif
-endif
 
 #-------------------------------------------------------------------------------
 
@@ -52,7 +22,7 @@ I = -I../../AMD/Include -I../../AMD/Source -I../../COLAMD/Include \
 
 #-------------------------------------------------------------------------------
 
-C = $(CC) $(CF) $(CHOLMOD_CONFIG) $(CONFIG)
+C = $(CC) $(CF) $(CHOLMOD_CONFIG) $(CONFIG_PARTITION)
 
 all: library
 
@@ -552,18 +522,31 @@ cholmod_l_gpu.o: ../GPU/cholmod_gpu.c
 #-------------------------------------------------------------------------------
 
 # install CHOLMOD
-install: uninstall $(SO_TARGET)
+install: $(INSTALL_LIB)/$(SO_TARGET)
+
+$(INSTALL_LIB)/$(SO_TARGET): $(SO_TARGET)
+	@mkdir -p $(INSTALL_LIB)
+	@mkdir -p $(INSTALL_INCLUDE)
+	@mkdir -p $(INSTALL_DOC)
 	$(CP) $(SO_TARGET) $(INSTALL_LIB)
+	$(SO_INSTALL_NAME) $(INSTALL_LIB)/$(SO_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
+	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_MAIN) )
 	$(CP) ../Include/cholmod*.h $(INSTALL_INCLUDE)
 	$(RM) $(INSTALL_INCLUDE)/cholmod_internal.h
-	chmod 644 $(INSTALL_LIB)/$(SO_TARGET)
-	chmod 644 $(INSTALL_LIB)/$(SO_PLAIN)
+	$(CP) ../Doc/CHOLMOD_UserGuide.pdf $(INSTALL_DOC)
+	$(CP) ../README.txt $(INSTALL_DOC)/CHOLMOD_README.txt
+	chmod 755 $(INSTALL_LIB)/$(SO_TARGET)
 	chmod 644 $(INSTALL_INCLUDE)/cholmod*.h
+	chmod 644 $(INSTALL_DOC)/CHOLMOD_UserGuide.pdf
+	chmod 644 $(INSTALL_DOC)/CHOLMOD_README.txt
 
 # uninstall CHOLMOD
 uninstall:
 	$(RM) $(INSTALL_LIB)/$(SO_TARGET)
 	$(RM) $(INSTALL_LIB)/$(SO_PLAIN)
+	$(RM) $(INSTALL_LIB)/$(SO_MAIN)
 	$(RM) $(INSTALL_INCLUDE)/cholmod*.h
+	$(RM) $(INSTALL_DOC)/CHOLMOD_UserGuide.pdf
+	$(RM) $(INSTALL_DOC)/CHOLMOD_README.txt
 

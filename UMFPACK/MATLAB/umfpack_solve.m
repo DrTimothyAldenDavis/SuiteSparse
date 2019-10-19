@@ -8,7 +8,7 @@ function [x, info] = umfpack_solve (arg1, op, arg2, Control)
 % Computes x = A\b, or b/A, where A is square.  Uses UMFPACK if A is sparse.
 % The Control argument is optional.
 %
-% See also umfpack, umfpack2, umfpack_make, umfpack_details, umfpack_report,
+% See also umfpack, umfpack_make, umfpack_details, umfpack_report,
 % and umfpack_simple.
 
 % Copyright 1995-2007 by Timothy A. Davis.
@@ -42,7 +42,7 @@ end
 
 if (nargin < 4)
     % get default controls
-    Control = umfpack2 ;
+    Control = umfpack ;
 end
 
 %-------------------------------------------------------------------------------
@@ -60,12 +60,12 @@ if (op == '\')
     elseif (n1 == 1 & ~issparse (b))					    %#ok
 
 	% the UMFPACK '\' requires b to be a dense column vector
-	[x info] = umfpack2 (A, '\', b, Control) ;
+	[x info] = umfpack (A, '\', b, Control) ;
 
     else
 
 	% factorize with UMFPACK and do the forward/back solves in MATLAB
-	[L, U, P, Q, R, info] = umfpack2 (A, Control) ;
+	[L, U, P, Q, R, info] = umfpack (A, Control) ;
 	x = Q * (U \ (L \ (P * (R \ b)))) ;
 
     end
@@ -81,17 +81,17 @@ else
     elseif (m1 == 1 & ~issparse (b))					    %#ok
 
 	% the UMFPACK '\' requires b to be a dense column vector
-	[x info] = umfpack2 (b, '/', A, Control) ;
+	[x info] = umfpack (b, '/', A, Control) ;
 
     else
 
 	% factorize with UMFPACK and do the forward/back solves in MATLAB
 	% this mimics the behavior of x = b/A, except for the row scaling
-	[L, U, P, Q, R, info] = umfpack2 (A.', Control) ;
+	[L, U, P, Q, R, info] = umfpack (A.', Control) ;
 	x = (Q * (U \ (L \ (P * (R \ (b.')))))).' ;
 
 	% an alternative method:
-	% [L, U, P, Q, r] = umfpack2 (A, Control) ;
+	% [L, U, P, Q, r] = umfpack (A, Control) ;
 	% x = (R \ (P' * (L.' \ (U.' \ (Q' * b.'))))).' ;
 
     end

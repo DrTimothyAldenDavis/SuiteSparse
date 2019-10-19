@@ -36,12 +36,12 @@ mxArray *sfmult_yalloc	// return Y
 {
     // (TO DO): guard against integer overflow
     mxArray *Y = mxCreateDoubleMatrix (0, 0, Ycomplex ? mxCOMPLEX : mxREAL) ;
-    mxFree (mxGetPr (Y)) ;
-    mxSetPr (Y, mxMalloc (m * n * sizeof (double))) ;
+    MXFREE (mxGetPr (Y)) ;
+    mxSetPr (Y, mxMalloc (MAX (m*n, 1) * sizeof (double))) ;
     if (Ycomplex)
     {
-	mxFree (mxGetPi (Y)) ;
-	mxSetPi (Y, mxMalloc (m * n * sizeof (double))) ;
+	MXFREE (mxGetPi (Y)) ;
+	mxSetPi (Y, mxMalloc (MAX (m*n, 1) * sizeof (double))) ;
     }
     mxSetM (Y, m) ;
     mxSetN (Y, n) ;

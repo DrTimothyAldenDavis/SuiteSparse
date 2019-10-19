@@ -21,7 +21,7 @@
  * cholmod_nested_dissection	CHOLMOD nested dissection ordering
  * cholmod_metis		METIS nested dissection ordering (METIS_NodeND)
  * cholmod_bisect		graph partitioner (currently based on METIS)
- * cholmod_metis_bisector	direct interface to METIS_NodeComputeSeparator
+ * cholmod_metis_bisector	direct interface to METIS_ComputeVertexSeparator
  *
  * Requires the Core and Cholesky modules, and three packages: METIS, CAMD,
  * and CCOLAMD.  Optionally used by the Cholesky module.
@@ -122,16 +122,21 @@ SuiteSparse_long cholmod_l_bisect (cholmod_sparse *, SuiteSparse_long *,
 /* -------------------------------------------------------------------------- */
 
 /* Find a set of nodes that bisects the graph of A or AA' (direct interface
- * to METIS_NodeComputeSeparator). */
+ * to METIS_ComputeVertexSeperator). */
 
 SuiteSparse_long cholmod_metis_bisector	/* returns separator size */
 (
     /* ---- input ---- */
     cholmod_sparse *A,	/* matrix to bisect */
-    int *Anw,		/* size A->nrow, node weights */
-    int *Aew,		/* size nz, edge weights */
+    int *Anw,		/* size A->nrow, node weights, can be NULL, */
+                        /* which means the graph is unweighted. */ 
+    int *Aew,		/* size nz, edge weights (silently ignored). */
+                        /* This option was available with METIS 4, but not */
+                        /* in METIS 5.  This argument is now unused, but */
+                        /* it remains for backward compatibilty, so as not */
+                        /* to change the API for cholmod_metis_bisector. */
     /* ---- output --- */
-    int *Partition,	/* size A->nrow.  see cholmod_bisect above. */
+    int *Partition,	/* size A->nrow */
     /* --------------- */
     cholmod_common *Common
 ) ;

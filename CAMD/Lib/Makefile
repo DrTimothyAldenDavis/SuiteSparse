@@ -3,9 +3,12 @@
 #-------------------------------------------------------------------------------
 
 LIBRARY = libcamd
-VERSION = 2.4.2
+VERSION = 2.4.3
+SO_VERSION = 2
 
 default: library
+	$(MAKE) install INSTALL=$(CURDIR)/../.. \
+		INSTALL_DOC=$(CURDIR)/../../doc
 
 include ../../SuiteSparse_config/SuiteSparse_config.mk
 
@@ -56,19 +59,32 @@ $(SO_TARGET): $(CAMDI) $(CAMDL)
 #-------------------------------------------------------------------------------
 
 # install CAMD
-install: uninstall $(SO_TARGET)
+install: $(INSTALL_LIB)/$(SO_TARGET)
+
+$(INSTALL_LIB)/$(SO_TARGET): $(SO_TARGET)
+	@mkdir -p $(INSTALL_LIB)
+	@mkdir -p $(INSTALL_INCLUDE)
+	@mkdir -p $(INSTALL_DOC)
 	$(CP) $(SO_TARGET) $(INSTALL_LIB)
+	$(SO_INSTALL_NAME) $(INSTALL_LIB)/$(SO_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
+	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_MAIN) )
 	$(CP) ../Include/camd.h $(INSTALL_INCLUDE)
-	chmod 644 $(INSTALL_LIB)/$(SO_TARGET)
-	chmod 644 $(INSTALL_LIB)/$(SO_PLAIN)
+	$(CP) ../Doc/CAMD_UserGuide.pdf $(INSTALL_DOC)
+	$(CP) ../README.txt $(INSTALL_DOC)/CAMD_README.txt
+	chmod 755 $(INSTALL_LIB)/$(SO_TARGET)
 	chmod 644 $(INSTALL_INCLUDE)/camd.h
+	chmod 644 $(INSTALL_DOC)/CAMD_UserGuide.pdf
+	chmod 644 $(INSTALL_DOC)/CAMD_README.txt
 
 # uninstall CAMD
 uninstall:
 	$(RM) $(INSTALL_LIB)/$(SO_TARGET)
 	$(RM) $(INSTALL_LIB)/$(SO_PLAIN)
+	$(RM) $(INSTALL_LIB)/$(SO_MAIN)
 	$(RM) $(INSTALL_INCLUDE)/camd.h
+	$(RM) $(INSTALL_DOC)/CAMD_UserGuide.pdf
+	$(RM) $(INSTALL_DOC)/CAMD_README.txt
 
 #-------------------------------------------------------------------------------
 # Remove all but the files in the original distribution

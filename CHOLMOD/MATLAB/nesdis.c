@@ -12,7 +12,7 @@
  * METIS (Copyright 1998, G. Karypis) is not distributed with CHOLMOD.
  * -------------------------------------------------------------------------- */
 
-/* CHOLMOD's nested dissection, based on METIS_NodeComputerSeparator, CAMD, and
+/* CHOLMOD's nested dissection, based on METIS_ComputeVertexSeparator, CAMD, and
  * CCOLAMD.
  *
  * Usage:

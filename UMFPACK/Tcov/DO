@@ -1,65 +1,66 @@
 #!/bin/csh
 
 echo '################################################################################'
-echo 'Tcov test:' $1 $2 $3
+echo 'Tcov test:' $1 $2 $3 $4
 echo '################################################################################'
 
 #-------------------------------------------------------------------------------
 
-# get a clean directory
-# /bin/mv Out/$1_$2 `mktemp -d Trash/XXXXXX`
+mkdir -p $1/UMFPACK_TCOV_TMP
 
-# delete the directory
-/bin/rm -rf Out/$1_$2
+# delete the target directory
+/bin/rm -rf $1/UMFPACK_TCOV_TMP/$2_$3
 
-mkdir Out/$1_$2
+# copy in the pre-compiled libraries
+mkdir $1/UMFPACK_TCOV_TMP/$2_$3
+mkdir $1/UMFPACK_TCOV_TMP/$2_$3/doc
+mkdir $1/UMFPACK_TCOV_TMP/$2_$3/bin
+/bin/cp -pr ../../lib     $1/UMFPACK_TCOV_TMP/$2_$3/lib
+/bin/cp -pr ../../include $1/UMFPACK_TCOV_TMP/$2_$3/include
 
-# put in UMFPACK (excluding Tcov and MATLAB directories) and AMD
-mkdir Out/$1_$2/UMFPACK
-mkdir Out/$1_$2/UMFPACK/Doc
-/bin/cp -pr ../Source Out/$1_$2/UMFPACK
-## /bin/cp -pr ../Lib Out/$1_$2/UMFPACK
-( cd Out/$1_$2/UMFPACK ; ln -s Source Lib )
-/bin/cp -pr ../Include Out/$1_$2/UMFPACK
-/bin/cp -pr ../Demo Out/$1_$2/UMFPACK
-/bin/cp -pr ../Makefile Out/$1_$2/UMFPACK/Makefile
-/bin/cp -pr ../Lib/Makefile Out/$1_$2/UMFPACK/Source/Makefile
-/bin/cp -pr ../Doc/License Out/$1_$2/UMFPACK/Doc
+# put in UMFPACK (excluding Tcov and MATLAB directories)
+mkdir -p $1/UMFPACK_TCOV_TMP/$2_$3/UMFPACK/Doc
+/bin/cp -pr ../Source       $1/UMFPACK_TCOV_TMP/$2_$3/UMFPACK
+/bin/cp -pr ../Include      $1/UMFPACK_TCOV_TMP/$2_$3/UMFPACK
+/bin/cp -pr ../Demo         $1/UMFPACK_TCOV_TMP/$2_$3/UMFPACK
+/bin/cp -pr ../Doc          $1/UMFPACK_TCOV_TMP/$2_$3/UMFPACK
+/bin/cp -pr ../Makefile     $1/UMFPACK_TCOV_TMP/$2_$3/UMFPACK
+/bin/cp -pr ../README.txt   $1/UMFPACK_TCOV_TMP/$2_$3/UMFPACK
+( cd $1/UMFPACK_TCOV_TMP/$2_$3/UMFPACK ; ln -s Source Lib )
+/bin/cp -pr ../Lib/Makefile $1/UMFPACK_TCOV_TMP/$2_$3/UMFPACK/Source/Makefile
 
 # put in AMD
-/bin/cp -pr ../../AMD Out/$1_$2
-/bin/rm -rf  Out/$1_$2/AMD/Lib
-( cd Out/$1_$2/AMD ; ln -s Source Lib )
-/bin/cp -pr ../../AMD/Lib/Makefile Out/$1_$2/AMD/Source/Makefile
+/bin/cp -pr ../../AMD $1/UMFPACK_TCOV_TMP/$2_$3
+/bin/rm -rf  $1/UMFPACK_TCOV_TMP/$2_$3/AMD/Lib
+( cd $1/UMFPACK_TCOV_TMP/$2_$3/AMD ; ln -s Source Lib )
+/bin/cp -pr ../../AMD/Lib/Makefile $1/UMFPACK_TCOV_TMP/$2_$3/AMD/Source/Makefile
 
-# links to CHOLMOD, CAMD, CCOLAMD, and metis
-ln -s ../../../../CHOLMOD Out/$1_$2/CHOLMOD
-ln -s ../../../../CAMD Out/$1_$2/CAMD
-ln -s ../../../../CCOLAMD Out/$1_$2/CCOLAMD
-ln -s ../../../../COLAMD Out/$1_$2/COLAMD
-ln -s ../../../../metis-4.0 Out/$1_$2/metis-4.0
+# put in links to include files
+mkdir $1/UMFPACK_TCOV_TMP/$2_$3/CHOLMOD
+( cd $1/UMFPACK_TCOV_TMP/$2_$3/CHOLMOD ; ln -s ../include Include )
 
-/bin/cp debug.* Out/$1_$2
+# put in the debug settings
+/bin/cp debug.* $1/UMFPACK_TCOV_TMP/$2_$3
 
-# put in the makefile
-/bin/cp Makefile.$2 Out/$1_$2/Makefile
+# put in the SuiteSparse Makefile
+/bin/cp Makefile.$3 $1/UMFPACK_TCOV_TMP/$2_$3/Makefile
 
-# put in SuiteSparse_config
-/bin/cp -pr ../../SuiteSparse_config Out/$1_$2
-/bin/rm -rf  Out/$1_$2/SuiteSparse_config/xerbla
-/bin/cp -f  Make.$1 Out/$1_$2/SuiteSparse_config/SuiteSparse_config.mk
+# put in SuiteSparse_config and the replacement SuiteSparse_config.mk file
+/bin/cp -pr ../../SuiteSparse_config $1/UMFPACK_TCOV_TMP/$2_$3
+/bin/cp -f  Make.$2 $1/UMFPACK_TCOV_TMP/$2_$3/SuiteSparse_config/SuiteSparse_config.mk
+( cd $1/UMFPACK_TCOV_TMP/$2_$3/SuiteSparse_config ; make purge > $2_$3.out )
 
 # put in the main program
-/bin/cp ut.c Out/$1_$2
+/bin/cp ut.c $1/UMFPACK_TCOV_TMP/$2_$3
 
 # put in the test matrices
-/bin/cp -f badnum*.umf Out/$1_$2
-/bin/cp -f badsym*.umf Out/$1_$2
-/bin/cp -pr TestMat Out/$1_$2
+/bin/cp -f badnum*.umf $1/UMFPACK_TCOV_TMP/$2_$3
+/bin/cp -f badsym*.umf $1/UMFPACK_TCOV_TMP/$2_$3
+/bin/cp -pr TestMat $1/UMFPACK_TCOV_TMP/$2_$3
 
 # put in the gcov files
-/bin/cp -f ucov.* Out/$1_$2/UMFPACK/Source
-/bin/cp -f acov.* Out/$1_$2/AMD/Source
+/bin/cp -f ucov.* $1/UMFPACK_TCOV_TMP/$2_$3/UMFPACK/Source
+/bin/cp -f acov.* $1/UMFPACK_TCOV_TMP/$2_$3/AMD/Source
 
 # compile and run
-( cd Out/$1_$2 ; time make $3 > $1_$2.out )
+( cd $1/UMFPACK_TCOV_TMP/$2_$3 ; time make $4 >> $2_$3.out )

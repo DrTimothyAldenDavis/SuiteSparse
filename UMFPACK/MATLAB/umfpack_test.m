@@ -1,10 +1,10 @@
 function umfpack_test (nmat)
-%UMFPACK_TEST for testing umfpack2 (requires UFget)
+%UMFPACK_TEST for testing umfpack (requires UFget)
 %
 % Example:
 %   umfpack_test
 %   umfpack_test (100)  % runs the first 100 matrices
-% See also umfpack2
+% See also umfpack
 
 % Copyright 1995-2007 by Timothy A. Davis.
 
@@ -22,7 +22,7 @@ end
 nmat = max (nmat, 1) ;
 f = f (1:nmat) ;
 
-Control = umfpack2 ;
+Control = umfpack ;
 Control.prl = 0 ;
 
 clf
@@ -50,7 +50,7 @@ for k = 1:nmat
 	% symbolic factorization
 	%-----------------------------------------------------------------------
 
-	[P1, Q1, Fr, Ch, Info] = umfpack2 (A, 'symbolic') ;
+	[P1, Q1, Fr, Ch, Info] = umfpack (A, 'symbolic') ;
 	subplot (2,2,1)
 	spy (A)
 	title ('A')
@@ -63,7 +63,7 @@ for k = 1:nmat
 	% P(R\A)Q = LU
 	%-----------------------------------------------------------------------
 
-	[L,U,P,Q,R,Info] = umfpack2 (A, struct ('details',1)) ;
+	[L,U,P,Q,R,Info] = umfpack (A, struct ('details',1)) ;
 	err = lu_normest (P*(R\A)*Q, L, U) ;
 	fprintf ('norm est PR\\AQ-LU: %g relative: %g\n', ...
 	    err, err / norm (A,1)) ;
@@ -96,7 +96,7 @@ for k = 1:nmat
 	% PAQ = LU
 	%-----------------------------------------------------------------------
 
-	[L,U,P,Q] = umfpack2 (A) ;
+	[L,U,P,Q] = umfpack (A) ;
 	err = lu_normest (P*A*Q, L, U) ;
 	fprintf ('norm est PAQ-LU:   %g relative: %g\n', ...
 	    err, err / norm (A,1)) ;
@@ -112,7 +112,7 @@ for k = 1:nmat
 
 	% factor the transpose
 	Control.irstep = 2 ;
-	[x, info] = umfpack2 (A', '\', c, Control) ;
+	[x, info] = umfpack (A', '\', c, Control) ;
 	lunz0 = info.nnz_in_L_plus_U ;
 	r = norm (A'*x-c) ;
 
@@ -121,7 +121,7 @@ for k = 1:nmat
 	% factor the original matrix and solve xA=b
 	for ir = 0:4
             Control.irstep = ir ;
-	    [x, info] = umfpack2 (b, '/', A, Control) ;
+	    [x, info] = umfpack (b, '/', A, Control) ;
 	    r = norm (b-x*A) ;
 	    if (ir == 0)
 		lunz1 = info.nnz_in_L_plus_U ;
@@ -132,7 +132,7 @@ for k = 1:nmat
 	% factor the original matrix and solve Ax=b
 	for ir = 0:4
             Control.irstep = ir ;
-	    [x, info] = umfpack2 (A, '\', c, Control) ;
+	    [x, info] = umfpack (A, '\', c, Control) ;
 	    r = norm (A*x-c) ;
 	    fprintf ('%d: %8.2e %d\n', ir, r, info.iterative_refinement_steps) ;
 	end
@@ -146,8 +146,8 @@ for k = 1:nmat
 	%-----------------------------------------------------------------------
 
 	det1 = det (A) ;
-	det2 = umfpack2 (A, 'det') ;
-	[det3 dexp3] = umfpack2 (A, 'det') ;
+	det2 = umfpack (A, 'det') ;
+	[det3 dexp3] = umfpack (A, 'det') ;
 	err = abs (det1-det2) ;
 	err3 = abs (det1 - (det3 * 10^dexp3)) ;
 	denom = det1 ;
@@ -158,9 +158,9 @@ for k = 1:nmat
 	err3 = err3 / denom ;
 	fprintf ('det:  %20.12e + (%20.12e)i MATLAB\n', ...
 	    real(det1), imag(det1)) ;
-	fprintf ('det:  %20.12e + (%20.12e)i umfpack2\n', ...
+	fprintf ('det:  %20.12e + (%20.12e)i umfpack\n', ...
 	    real(det2), imag(det2)) ;
-	fprintf ('det: (%20.12e + (%20.12e)i) * 10^(%g) umfpack2\n', ...
+	fprintf ('det: (%20.12e + (%20.12e)i) * 10^(%g) umfpack\n', ...
 	    real(det3), imag(det3), dexp3) ;
 	fprintf ('diff %g %g\n', err, err3) ;
 

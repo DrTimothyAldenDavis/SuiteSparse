@@ -29,7 +29,7 @@ Portions of this work were supported by the National
 Science Foundation, under grants 0203270, 0620286, and 0619080.},
 Sencer Nuri Yeralan, and Sanjay Ranka}
 
-\date{VERSION 2.0.3, Jan 1, 2016}
+\date{VERSION 2.0.4, Jan 30, 2016}
 
 %-------------------------------------------------------------------------------
 \begin{document}
@@ -101,17 +101,10 @@ and then type \verb'mex -setup' in the MATLAB Command Window.
 \subsubsection{Optional instructions on using METIS for any operating system}
 %-------------------------------------------------------------------------------
 
-To use METIS \cite{KarypisKumar98e}, obtain a copy of the metis-4.0.1
-distribution from \newline
-\htmladdnormallink{http://glaros.dtc.umn.edu/gkhome/views/metis}{http://glaros.dtc.umn.edu/gkhome/views/metis}.
-Do not get the \verb'metis-4.0.zip' file since it does not contain source code;
-you must download the \verb'metis-4.0.tar.gz' file instead.  Uncompress this
-file and place the \verb'metis-4.0' directory in the SuiteSparse directory.
-You must not have a nested \verb'SuiteSparse/metis-4.0/metis-4.0' directory;
-this can occur on Windows when you extract a compressed archive.  If you have
-this directory, move the lowest \verb'metis-4.0' directory up one level so that
-(for example) the file \newline \verb'SuiteSparse/metis-4.0/Lib/metis.h'
-exists.
+SuiteSparse now relies on METIS 5.1.0, which is distributed along with
+SuiteSparse itself.  Its use is optional, however.  If you compile with
+{\tt -DNPARTITION}, or if you delete or move the {\tt SuiteSparse/metis-5.1.0}
+folder, then SuiteSparse will be compiled without it.
 
 METIS tends to give orderings that are good for the parallelism exploited by
 TBB, so its use with TBB is recommended.  Note however that METIS is not
@@ -658,6 +651,7 @@ directory and type \verb'make'.  This will work for Linux only.
 To install the shared library
 into /usr/local/lib and /usr/local/include, do {\tt make install}.
 To uninstall, do {\tt make uninstall}.
+For more options, see the {\tt SuiteSparse/README.txt} file.
 
 %-------------------------------------------------------------------------------
 \subsection{C/C++ Example}

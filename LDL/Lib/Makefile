@@ -3,9 +3,12 @@
 #-------------------------------------------------------------------------------
 
 LIBRARY = libldl
-VERSION = 2.2.2
+VERSION = 2.2.3
+SO_VERSION = 2
 
-default: all
+default: library
+	$(MAKE) install INSTALL=$(CURDIR)/../.. \
+		INSTALL_DOC=$(CURDIR)/../../doc
 
 include ../../SuiteSparse_config/SuiteSparse_config.mk
 
@@ -41,17 +44,30 @@ clean:
 	- $(RM) -r $(CLEAN)
 
 # install LDL
-install: uninstall $(SO_TARGET)
+install: $(INSTALL_LIB)/$(SO_TARGET)
+
+$(INSTALL_LIB)/$(SO_TARGET): $(SO_TARGET)
+	@mkdir -p $(INSTALL_LIB)
+	@mkdir -p $(INSTALL_INCLUDE)
+	@mkdir -p $(INSTALL_DOC)
 	$(CP) $(SO_TARGET) $(INSTALL_LIB)
+	$(SO_INSTALL_NAME) $(INSTALL_LIB)/$(SO_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
+	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_MAIN) )
 	$(CP) ../Include/ldl.h $(INSTALL_INCLUDE)
-	chmod 644 $(INSTALL_LIB)/$(SO_TARGET)
-	chmod 644 $(INSTALL_LIB)/$(SO_PLAIN)
+	$(CP) ../Doc/ldl_userguide.pdf $(INSTALL_DOC)
+	$(CP) ../README.txt $(INSTALL_DOC)/LDL_README.txt
+	chmod 755 $(INSTALL_LIB)/$(SO_TARGET)
 	chmod 644 $(INSTALL_INCLUDE)/ldl.h
+	chmod 644 $(INSTALL_DOC)/ldl_userguide.pdf
+	chmod 644 $(INSTALL_DOC)/LDL_README.txt
 
 # uninstall LDL
 uninstall:
 	$(RM) $(INSTALL_LIB)/$(SO_TARGET)
 	$(RM) $(INSTALL_LIB)/$(SO_PLAIN)
+	$(RM) $(INSTALL_LIB)/$(SO_MAIN)
 	$(RM) $(INSTALL_INCLUDE)/ldl.h
+	$(RM) $(INSTALL_DOC)/ldl_userguide.pdf
+	$(RM) $(INSTALL_DOC)/LDL_README.txt
 

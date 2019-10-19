@@ -3,9 +3,12 @@
 #-------------------------------------------------------------------------------
 
 LIBRARY = libumfpack
-VERSION = 5.7.2
+VERSION = 5.7.3
+SO_VERSION = 5
 
 default: library
+	$(MAKE) install INSTALL=$(CURDIR)/../.. \
+		INSTALL_DOC=$(CURDIR)/../../doc
 
 include ../../SuiteSparse_config/SuiteSparse_config.mk
 
@@ -281,18 +284,36 @@ purge: clean
 clean:
 	- $(RM) -r $(CLEAN)
 
+#-------------------------------------------------------------------------------
 # install UMFPACK
-install: uninstall $(SO_TARGET)
+install: $(INSTALL_LIB)/$(SO_TARGET)
+
+$(INSTALL_LIB)/$(SO_TARGET): $(SO_TARGET)
+	@mkdir -p $(INSTALL_LIB)
+	@mkdir -p $(INSTALL_INCLUDE)
+	@mkdir -p $(INSTALL_DOC)
 	$(CP) $(SO_TARGET) $(INSTALL_LIB)
+	$(SO_INSTALL_NAME) $(INSTALL_LIB)/$(SO_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
-	$(CP) ../Include/*.h $(INSTALL_INCLUDE)
-	chmod 644 $(INSTALL_LIB)/$(SO_TARGET)
-	chmod 644 $(INSTALL_LIB)/$(SO_PLAIN)
+	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_MAIN) )
+	$(CP) ../Include/umfpack*.h $(INSTALL_INCLUDE)
+	$(CP) ../Doc/UMFPACK_UserGuide.pdf $(INSTALL_DOC)
+	$(CP) ../Doc/UMFPACK_QuickStart.pdf $(INSTALL_DOC)
+	$(CP) ../README.txt $(INSTALL_DOC)/UMFPACK_README.txt
+	chmod 755 $(INSTALL_LIB)/$(SO_TARGET)
 	chmod 644 $(INSTALL_INCLUDE)/umfpack*.h
+	chmod 644 $(INSTALL_DOC)/UMFPACK_UserGuide.pdf
+	chmod 644 $(INSTALL_DOC)/UMFPACK_QuickStart.pdf
+	chmod 644 $(INSTALL_DOC)/UMFPACK_README.txt
 
 # uninstall UMFPACK
 uninstall:
 	$(RM) $(INSTALL_LIB)/$(SO_TARGET)
 	$(RM) $(INSTALL_LIB)/$(SO_PLAIN)
+	$(RM) $(INSTALL_LIB)/$(SO_MAIN)
 	$(RM) $(INSTALL_INCLUDE)/umfpack*.h
+	$(RM) $(INSTALL_DOC)/UMFPACK_UserGuide.pdf
+	$(RM) $(INSTALL_DOC)/UMFPACK_QuickStart.pdf
+	$(RM) $(INSTALL_DOC)/UMFPACK_README.txt
+
 

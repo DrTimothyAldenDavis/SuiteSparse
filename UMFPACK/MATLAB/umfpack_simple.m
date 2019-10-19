@@ -14,7 +14,7 @@
 %     License as published by the Free Software Foundation; either
 %     version 2 of the License, or (at your option) any later version.
 %
-% See also: umfpack, umfpack2, umfpack_details
+% See also: umfpack, umfpack_details
 
 help umfpack_simple
 
@@ -35,9 +35,9 @@ b = [8 45 -3 3 19]' ;
 fprintf ('b = \n') ; disp (b) ;
 
 fprintf ('Solution to Ax=b via UMFPACK:\n') ;
-fprintf ('x1 = umfpack2 (A, ''\\'', b)\n') ;
+fprintf ('x1 = umfpack (A, ''\\'', b)\n') ;
 
-x1 = umfpack2 (A, '\', b) ;
+x1 = umfpack (A, '\', b) ;
 fprintf ('x1 = \n') ; disp (x1) ;
 
 fprintf ('Solution to Ax=b via MATLAB:\n') ;

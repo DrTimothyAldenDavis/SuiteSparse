@@ -7806,12 +7806,12 @@ int main (int argc, char **argv)
     ttt = umfpack_timer ( ) ;
 
     fprintf (stderr,
-	    "ALL TESTS PASSED: rnorm %8.2e (%8.2e shl0, %8.2e arc130 %8.2e omega2) cputime %g\n",
-	    maxrnorm, maxrnorm_shl0, maxrnorm_arc130, rnorm_omega2, ttt) ;
+        "ALL TESTS PASSED: rnorm %8.2e (%8.2e %8.2e %8.2e )\n",
+        maxrnorm, maxrnorm_shl0, maxrnorm_arc130, rnorm_omega2) ;
 
     printf (
-	    "ALL TESTS PASSED: rnorm %8.2e (%8.2e shl0, %8.2e arc130 %8.2e omega2) cputime %g\n",
-	    maxrnorm, maxrnorm_shl0, maxrnorm_arc130, rnorm_omega2, ttt) ;
+        "ALL TESTS PASSED: rnorm %8.2e (%8.2e %8.2e %8.2e)\n",
+        maxrnorm, maxrnorm_shl0, maxrnorm_arc130, rnorm_omega2) ;
 
 #if defined (UMF_MALLOC_COUNT) || !defined (NDEBUG)
     if (UMF_malloc_count != 0) error ("umfpack memory leak!!\n",0.) ;

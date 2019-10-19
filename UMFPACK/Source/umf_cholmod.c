@@ -226,7 +226,7 @@ int UMF_cholmod
     CHOLMOD_finish (&cm) ;
     return (TRUE) ;
 #else
-    /* CHOLMOD and its supporting packages (CAMD, CCOLAMD, COLAMD, metis-4.0)
+    /* CHOLMOD and its supporting packages (CAMD, CCOLAMD, COLAMD, METIS)
       not installed */
     return (FALSE) ;
 #endif

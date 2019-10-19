@@ -2778,8 +2778,6 @@ if (do_nantests)
 	}
 	lr = CHOLMOD(metis_bisector)(Abad2, Anw, Aew, Pok, cm) ;NOT (lr >= 0);
 	lr = CHOLMOD(metis_bisector)(NULL, Anw, Aew, Pok, cm) ;	NOT (lr >= 0);
-	lr = CHOLMOD(metis_bisector)(A, NULL, Aew, Pok, cm) ;	NOT (lr >= 0);
-	lr = CHOLMOD(metis_bisector)(A, Anw, NULL, Pok, cm) ;	NOT (lr >= 0);
 	lr = CHOLMOD(metis_bisector)(A, Anw, Aew, NULL, cm) ;	NOT (lr >= 0);
 
 	if (A->stype)

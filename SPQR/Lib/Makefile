@@ -3,36 +3,16 @@
 #===============================================================================
 
 LIBRARY = libspqr
-VERSION = 2.0.3
+VERSION = 2.0.4
+SO_VERSION = 2
 
-default: all
+default: library
+	$(MAKE) install INSTALL=$(CURDIR)/../.. \
+		INSTALL_DOC=$(CURDIR)/../../doc
 
 ccode: all
 
 include ../../SuiteSparse_config/SuiteSparse_config.mk
-
-#-------------------------------------------------------------------------------
-# the optional Partition module requires METIS, CAMD, and CCOLAMD
-I_WITH_PARTITION = 
-LIB_WITH_PARTITION =
-CONFIG_PARTITION = -DNPARTITION
-# check if METIS is requested and available
-ifeq (,$(findstring -DNPARTITION, $(CHOLMOD_CONFIG)))
-    # METIS is requested.  See if it is available
-    ifeq ($(METIS_PATH), $(wildcard $(METIS_PATH)))
-        ifeq (../../CAMD, $(wildcard ../../CAMD))
-            ifeq (../../CCOLAMD, $(wildcard ../../CCOLAMD))
-                # METIS, CAMD, and CCOLAMD are available
-                LIB_WITH_PARTITION = $(METIS) ../../CCOLAMD/Lib/libccolamd.a \
-                    ../../CAMD/Lib/libcamd.a
-                I_WITH_PARTITION = -I$(METIS_PATH)/Lib \
-                    -I../../CCOLAMD/Include -I../../CAMD/Include
-                CONFIG_PARTITION =
-            endif
-        endif
-    endif
-endif
-#-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
 
@@ -261,26 +241,39 @@ spqrgpu_computeFrontStaging.o: ../SPQRGPU/spqrgpu_computeFrontStaging.cpp
 #-------------------------------------------------------------------------------
 
 # install SPQR
-install: uninstall $(SO_TARGET)
+install: $(INSTALL_LIB)/$(SO_TARGET)
+
+$(INSTALL_LIB)/$(SO_TARGET): $(SO_TARGET)
+	@mkdir -p $(INSTALL_LIB)
+	@mkdir -p $(INSTALL_INCLUDE)
+	@mkdir -p $(INSTALL_DOC)
 	$(CP) $(SO_TARGET) $(INSTALL_LIB)
+	$(SO_INSTALL_NAME) $(INSTALL_LIB)/$(SO_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
+	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_MAIN) )
 	$(CP) ../Include/SuiteSparseQR.hpp $(INSTALL_INCLUDE)
 	$(CP) ../Include/SuiteSparseQR_C.h $(INSTALL_INCLUDE)
 	$(CP) ../Include/SuiteSparseQR_definitions.h $(INSTALL_INCLUDE)
 	$(CP) ../Include/spqr.hpp $(INSTALL_INCLUDE)
-	chmod 644 $(INSTALL_LIB)/$(SO_TARGET)
-	chmod 644 $(INSTALL_LIB)/$(SO_PLAIN)
+	$(CP) ../Doc/spqr_user_guide.pdf $(INSTALL_DOC)
+	$(CP) ../README.txt $(INSTALL_DOC)/SPQR_README.txt
+	chmod 755 $(INSTALL_LIB)/$(SO_TARGET)
 	chmod 644 $(INSTALL_INCLUDE)/SuiteSparseQR.hpp
 	chmod 644 $(INSTALL_INCLUDE)/SuiteSparseQR_C.h
 	chmod 644 $(INSTALL_INCLUDE)/SuiteSparseQR_definitions.h
 	chmod 644 $(INSTALL_INCLUDE)/spqr.hpp
+	chmod 644 $(INSTALL_DOC)/spqr_user_guide.pdf
+	chmod 644 $(INSTALL_DOC)/SPQR_README.txt
 
 # uninstall SPQR
 uninstall:
 	$(RM) $(INSTALL_LIB)/$(SO_TARGET)
 	$(RM) $(INSTALL_LIB)/$(SO_PLAIN)
+	$(RM) $(INSTALL_LIB)/$(SO_MAIN)
 	$(RM) $(INSTALL_INCLUDE)/SuiteSparseQR.hpp
 	$(RM) $(INSTALL_INCLUDE)/SuiteSparseQR_C.h
 	$(RM) $(INSTALL_INCLUDE)/SuiteSparseQR_definitions.h
 	$(RM) $(INSTALL_INCLUDE)/spqr.hpp
+	$(RM) $(INSTALL_DOC)/spqr_user_guide.pdf
+	$(RM) $(INSTALL_DOC)/SPQR_README.txt
 

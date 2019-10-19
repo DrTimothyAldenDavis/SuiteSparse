@@ -32,7 +32,7 @@ http://www.numerical.rl.ac.uk/people/isd/isd.html.
 This work was supported by the EPSRC under grant GR/R46441.
 }}
 
-\date{VERSION 2.4.2, Jan 1, 2016}
+\date{VERSION 2.4.3, Jan 30, 2016}
 \maketitle
 
 %------------------------------------------------------------------------------
@@ -692,8 +692,7 @@ The system you are on is detected automatically.
 
 To compile and install the C-callable AMD library,
 go to the {\tt AMD} directory and type {\tt make}.
-The library will be placed in {\tt AMD/Lib/libamd.a},
-and a dynamic library is placed in
+A dynamic library is placed in
 in {\tt AMD/Lib/libamd.so.*}, ({\tt *.dylib} for the Mac).
 Three demo programs of the AMD ordering routine will be compiled and tested in
 the {\tt AMD/Demo} directory.
@@ -714,15 +713,20 @@ If you compile AMD and then later change the
 then you should type {\tt make purge} and then {\tt make} to recompile.
 
 When you compile your program that uses the C-callable AMD library,
-you need to add the {\tt AMD/Lib/libamd.a} library
+you need to add the {\tt AMD/Lib/libamd.*} library
 and you need to tell your compiler to look in the
 {\tt AMD/Include} directory for include
 files.   To compile a Fortran program that calls the Fortran AMD library,
 you need to add the {\tt AMD/Lib/libamdf77.a} library.
 See {\tt AMD/Demo/Makefile} for an example.
 
-Alternatively, you can install the shared library (libamd.so)
-and include files in /usr/local/lib and /usr/local/include.
+By doing {\tt make}, all compiled dynamic libraries are also copied into {\tt
+SuiteSparse/lib} the include files are coped into {\tt SuiteSparse/include},
+and documentation is copied into {\tt SuiteSparse/doc}.
+
+Alternatively, you can install the shared library
+and include files in /usr/local/lib and /usr/local/include, and
+the documenation in /usr/local/doc.
 Just do {\tt make} then {\tt make install}.
 Now you can simply use {\tt -lamd} when you compile your own program.
 

@@ -2,8 +2,7 @@ GPUQREngine Copyright (c) 2013, Timothy A. Davis, Sencer Nuri Yeralan,
 and Sanjay Ranka.
 http://www.suitesparse.com
 
-NOTE: this is version 0.1.0, an alpha release.  Some changes to the API
-may occur in the 1.0.0 release.
+GPUQREngine VERSION  1.0.2
 
 GPUQREngine is a gpu-accelerated QR factorization engine supporting
 SuiteSparseQR.

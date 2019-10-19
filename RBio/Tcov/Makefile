@@ -2,6 +2,8 @@
 # RBio/Tcov/Makefile
 #===============================================================================
 
+default: all
+
 include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 # valgrind is not used
@@ -72,10 +74,10 @@ SuiteSparse_config.h:
 	ln -s ../../SuiteSparse_config/SuiteSparse_config.h
 
 RBdemo: RBdemo.c $(OBJ) $(INC) Makefile
-	$(C) -o RBdemo RBdemo.c $(OBJ) $(LIB)
+	$(C) -o RBdemo RBdemo.c $(OBJ) $(LDLIBS)
 
 RBtest: RBtest.c $(OBJ) $(INC) Makefile
-	$(C) -o RBtest RBtest.c $(OBJ) $(LIB)
+	$(C) -o RBtest RBtest.c $(OBJ) $(LDLIBS)
 
 RBio.o: RBio.c $(INC)
 	$(C) -c RBio.c

@@ -1,3 +1,10 @@
+Jan 30, 2016: version 3.0.8
+
+    * better Makefiles for creating and installing shared libraries
+    * CHOLMOD now uses METIS 5.1.0, which is distributed with SuiteSparse
+    * correction to mexFunctions required for MATLAB R2015b,
+	for sparse empty matrices and NULL mxGetPr
+
 Jan 1, 2016: version 3.0.7
 
     * modified Makefile to create shared libraries

@@ -33,6 +33,12 @@
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
 #define LEN 16
 
+#define MXFREE(a) { \
+    void *ptr ; \
+    ptr = (void *) (a) ; \
+    if (ptr != NULL) mxFree (ptr) ; \
+}
+
 #define ERROR_TOO_SMALL 0
 #define ERROR_HUGE 1
 #define ERROR_NOT_INTEGER 2

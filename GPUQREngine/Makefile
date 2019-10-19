@@ -17,11 +17,13 @@ library:
 # Remove all files not in the original distribution
 purge:
 	( cd Lib ; $(MAKE) purge )
+	( cd Demo ; $(MAKE) purge )
 
 # Remove all files not in the original distribution, except keep the 
 # compiled libraries.
 clean:
 	( cd Lib ; $(MAKE) clean )
+	( cd Demo ; $(MAKE) clean )
 
 distclean: purge
 

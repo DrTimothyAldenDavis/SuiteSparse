@@ -2,39 +2,44 @@
 # GPUQREngine/Demo Makefile
 #-------------------------------------------------------------------------------
 
+default: all
+
 include ../../SuiteSparse_config/SuiteSparse_config.mk
 
-LIBS = $(CUDART_LIB) ../Lib/libGPUQREngine.a \
-    ../../SuiteSparse_GPURuntime/Lib/libSuiteSparse_GPURuntime.a \
-    ../../CHOLMOD/Lib/libcholmod.a \
-    ../../SuiteSparse_config/libsuitesparseconfig.a \
-    $(CUDART_LIB) $(CUBLAS_LIB) -lm -lrt
+LIBS = $(LDFLAGS) -L../../lib $(CUDART_LIB) -lGPUQREngine \
+	-lSuiteSparse_GPURuntime -lcholmod -lsuitesparseconfig \
+	-lamd -lcolamd -lcamd -lccolamd $(LIB_WITH_PARTIION) \
+	-lmetis $(CUDART_LIB) $(CUBLAS_LIB) $(BLAS) $(LAPACK) -lgomp \
+	-liomp5 $(LDLIBS)
 
-INC  = -I../../SuiteSparse_GPURuntime/Include -I../Include \
-       -I../../SuiteSparse_config -I../../CHOLMOD/Include
+INC  = -I../../SuiteSparse_GPURuntime/Include -I../Include -I../../include \
+	$(CUDA_INC)
 
 #-------------------------------------------------------------------------------
 
-all: lib demo
-
-library: lib
+all: library demo
 
 clean:
 	$(RM) -r $(CLEAN)
 
 purge: clean
 	$(RM) -r gpuqrengine_demo troll.m $(PURGE)
- 
-lib:
-	( cd ../Lib ; $(MAKE) library )
+
+library:
+	( cd ../Lib ; $(MAKE) )
 	( cd ../../CHOLMOD ; $(MAKE) library )
-	( cd ../../SuiteSparse_config ; $(MAKE) library )
-	( cd ../../SuiteSparse_GPURuntime/Lib ; $(MAKE) library )
+	( cd ../../AMD ; $(MAKE) library )
+	( cd ../../COLAMD ; $(MAKE) library )
+	( cd ../../CAMD ; $(MAKE) library )
+	( cd ../../CCOLAMD ; $(MAKE) library )
+	( cd ../.. ; $(MAKE) metis )
+	( cd ../../SuiteSparse_config ; $(MAKE) )
+	( cd ../../SuiteSparse_GPURuntime ; $(MAKE) library )
 
 demo: gpuqrengine_demo
 	./gpuqrengine_demo
 
-gpuqrengine_demo: lib
-	$(NVCC) $(INC) -o gpuqrengine_demo gpuqrengine_demo.cpp $(LIBS)
+gpuqrengine_demo: library gpuqrengine_demo.cpp
+	$(CC) $(CF) $(INC) -o gpuqrengine_demo gpuqrengine_demo.cpp $(LIBS)
 
 

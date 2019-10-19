@@ -52,8 +52,8 @@ mxArray *cs_dl_mex_put_sparse (cs_dl **Ahandle)
 {
     cs_dl *A ;
     mxArray *Amatlab ;
+    if (!Ahandle || !CS_CSC ((*Ahandle))) mexErrMsgTxt ("invalid sparse matrix") ;
     A = *Ahandle ;
-    if (!A) mexErrMsgTxt ("failed") ;
     Amatlab = mxCreateSparse (0, 0, 0, mxREAL) ;
     mxSetM (Amatlab, A->m) ;
     mxSetN (Amatlab, A->n) ;
@@ -63,6 +63,17 @@ mxArray *cs_dl_mex_put_sparse (cs_dl **Ahandle)
     cs_free (mxGetPr (Amatlab)) ;
     mxSetJc (Amatlab, (void *) (A->p)) ; /* assign A->p pointer to MATLAB A */
     mxSetIr (Amatlab, (void *) (A->i)) ;
+    if (A->x == NULL)
+    {
+        /* A is a pattern only matrix; return all 1's to MATLAB */
+        CS_INT i, nz ;
+        nz = A->p [A->n] ;
+        A->x = cs_dl_malloc (CS_MAX (nz,1), sizeof (double)) ;
+        for (i = 0 ; i < nz ; i++)
+        {
+            A->x [i] = 1 ;
+        }
+    }
     mxSetPr (Amatlab, A->x) ;
     cs_free (A) ;                       /* frees A struct only, not A->p, etc */
     *Ahandle = NULL ;
@@ -161,9 +172,9 @@ mxArray *cs_cl_mex_put_sparse (cs_cl **Ahandle)
     double *x, *z ;
     mxArray *Amatlab ;
     CS_INT k ;
-
+    if (!Ahandle || !CS_CSC ((*Ahandle))) mexErrMsgTxt ("invalid sparse matrix") ;
     A = *Ahandle ;
-    if (!A) mexErrMsgTxt ("failed") ;
+    if (A->x == NULL) mexErrMsgTxt ("invalid complex sparse matrix") ;
     Amatlab = mxCreateSparse (0, 0, 0, mxCOMPLEX) ;
     mxSetM (Amatlab, A->m) ;
     mxSetN (Amatlab, A->n) ;
@@ -182,7 +193,7 @@ mxArray *cs_cl_mex_put_sparse (cs_cl **Ahandle)
         z [k] = cimag (A->x [k]) ;
     }
     cs_cl_free (A->x) ;                 /* free copy of complex values */
-    mxSetPr (Amatlab, x) ;
+    mxSetPr (Amatlab, x) ;              /* x and z will not be NULL, even if nz==0 */
     mxSetPi (Amatlab, z) ;
     cs_cl_free (A) ;                    /* frees A struct only, not A->p, etc */
     *Ahandle = NULL ;

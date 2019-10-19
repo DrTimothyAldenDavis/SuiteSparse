@@ -1,25 +1,22 @@
-# KLU Demo Makefile.  The klu_simple demo is stand-alone.  The other demos
-# require CHOLMOD.
+# KLU Demo Makefile
 
 default: all
 
 include ../../SuiteSparse_config/SuiteSparse_config.mk
 
-CLIB = ../Lib/libklu.a  ../../BTF/Lib/libbtf.a \
-	../../AMD/Lib/libamd.a ../../COLAMD/Lib/libcolamd.a \
-        ../../SuiteSparse_config/libsuitesparseconfig.a
+CLIB = $(LDFLAGS) -L../../lib -lklu -lbtf -lamd -lcolamd -lsuitesparseconfig \
+	$(LIB_WITH_PARTITION) $(LDLIBS)
 
-CHOLMOD_LIB = ../../CHOLMOD/Lib/libcholmod.a
-CHOLMOD = $(CHOLMOD_LIB) $(LAPACK) $(BLAS) $(XERBLA)
+CHOLMOD_LIB = -lcholmod
+CHOLMOD = $(CHOLMOD_LIB) $(LAPACK) $(BLAS)
 
 ifneq ($(GPU_CONFIG),)
 CHOLMOD += $(CUDART_LIB) $(CUBLAS_LIB) 
 endif
 
-I = -I../../SuiteSparse_config -I../../AMD/Include -I../../COLAMD/Include \
-	-I../../BTF/Include -I../Include -I../../CHOLMOD/Include
+I = -I../../include
 
-all: $(CLIB) klu_simple $(CHOLMOD_LIB) kludemo kluldemo
+all: library klu_simple kludemo kluldemo
 	- ./klu_simple
 	- ./kludemo < ../Matrix/1c.mtx
 	- ./kludemo < ../Matrix/arrowc.mtx
@@ -34,26 +31,16 @@ all: $(CLIB) klu_simple $(CHOLMOD_LIB) kludemo kluldemo
 	- ./kluldemo < ../Matrix/w156.mtx
 	- ./kluldemo < ../Matrix/ctina.mtx
 
-../Lib/libklu.a:
-	( cd ../Lib ; $(MAKE) )
-
-../../BTF/Lib/libbtf.a:
-	( cd ../../BTF ; $(MAKE) library )
-
-../../AMD/Lib/libamd.a:
-	( cd ../../AMD ; $(MAKE) library )
-
-../../COLAMD/Lib/libcolamd.a:
-	( cd ../../COLAMD ; $(MAKE) library )
-
-../../CHOLMOD/Lib/libcholmod.a:
-	( cd ../../CHOLMOD ; $(MAKE) library )
-#	( cd ../../CAMD ; $(MAKE) )
-#	( cd ../../CCOLAMD ; $(MAKE) )
-#	( cd ../../metis-4.0 ; $(MAKE) )
-
-../../SuiteSparse_config/libsuitesparseconfig.a:
+library:
 	( cd ../../SuiteSparse_config ; $(MAKE) )
+	( cd ../Lib ; $(MAKE) )
+	( cd ../../BTF ; $(MAKE) library )
+	( cd ../../AMD ; $(MAKE) library )
+	( cd ../../COLAMD ; $(MAKE) library )
+	( cd ../../CHOLMOD ; $(MAKE) library )
+	- ( cd ../../CAMD ; $(MAKE) )
+	- ( cd ../../CCOLAMD ; $(MAKE) )
+	- ( cd ../.. ; $(MAKE) metis )
 
 purge: distclean
 
@@ -64,12 +51,13 @@ distclean: clean
 clean:
 	- $(RM) -r $(CLEAN)
 
-kludemo: kludemo.c Makefile $(CLIB)
-	$(CC) $(CF) $(I) kludemo.c -o kludemo $(CLIB) $(CHOLMOD) $(LIB)
+kludemo: kludemo.c Makefile
+	$(CC) $(CF) $(I) kludemo.c -o kludemo $(CLIB) $(CHOLMOD)
 
-kluldemo: kludemo.c Makefile $(CLIB)
-	$(CC) $(CF) $(I) kluldemo.c -o kluldemo $(CLIB) $(CHOLMOD) $(LIB)
+kluldemo: kludemo.c Makefile
+	$(CC) $(CF) $(I) kluldemo.c -o kluldemo $(CLIB) $(CHOLMOD)
 
-klu_simple: klu_simple.c Makefile $(CLIB)
-	$(CC) $(CF) $(I) klu_simple.c -o klu_simple $(CLIB) $(LIB)
+klu_simple: klu_simple.c Makefile
+	$(CC) $(CF) $(I) klu_simple.c -o klu_simple $(CLIB)
 	- ./klu_simple
+

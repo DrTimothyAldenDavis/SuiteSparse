@@ -14,7 +14,7 @@ include ../../SuiteSparse_config/SuiteSparse_config.mk
 distclean: purge
 
 purge: clean
-	- $(RM) *.mex* rename.h
+	- $(RM) luflop.mex* umfpack.mex* rename.h GKlib_util.c GKlib_graph.c
 	- $(RM) -r $(PURGE)
 
 clean:

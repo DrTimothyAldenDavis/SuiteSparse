@@ -1,3 +1,7 @@
+Jan 30, 2016: version 2.9.3
+
+    * modifications to Makefiles
+
 Jan 1, 2016: version 2.9.2
 
     * modified Makefile to create shared libraries

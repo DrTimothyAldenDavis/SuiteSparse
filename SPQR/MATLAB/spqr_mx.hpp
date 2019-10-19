@@ -27,6 +27,12 @@ typedef std::complex<double> Complex ;
 #define MIN(a,b) (((a) < (b)) ? (a) : (b))
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
 
+#define MXFREE(a) { \
+    void *ptr ; \
+    ptr = (void *) (a) ; \
+    if (ptr != NULL) mxFree (ptr) ; \
+}
+
 typedef struct spqr_mx_options_struct
 {
     double tol ;            // <= -2 means to use default tol

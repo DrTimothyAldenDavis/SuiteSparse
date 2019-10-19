@@ -5,18 +5,22 @@ default: all
 
 include ../../SuiteSparse_config/SuiteSparse_config.mk
 
-I = -I../Include -I../../SuiteSparse_config
+I = -I../../include
 
-CS = ../Lib/libcxsparse.a
+CS = $(LDFLAGS) -L../../lib -lcxsparse $(LDLIBS)
 
-all: $(CS) cs_demo1 cs_demo2 cs_demo3 \
+all: library cs_demo1 cs_demo2 cs_demo3 \
 	cs_di_demo1 cs_di_demo2 cs_di_demo3 \
 	cs_dl_demo1 cs_dl_demo2 cs_dl_demo3 \
 	cs_ci_demo1 cs_ci_demo2 cs_ci_demo3 \
 	cs_cl_demo1 cs_cl_demo2 cs_cl_demo3  \
 	tests cs_idemo
 
-tests: test_convert test test_di test_dl test_ci test_cl
+library:
+	( cd ../Lib ; $(MAKE) )
+	( cd ../../SuiteSparse_config ; $(MAKE) )
+
+tests: library test_convert test test_di test_dl test_ci test_cl
 
 test: cs_demo1 cs_demo2 cs_demo3
 	- ./cs_demo1 < ../Matrix/t1
@@ -91,71 +95,68 @@ test_convert: cs_idemo cs_ldemo
 	- ./cs_idemo < ../Matrix/t2
 	- ./cs_ldemo < ../Matrix/t2
 
-$(CS):
-	( cd ../Lib ; $(MAKE) )
+cs_demo1: cs_demo1.c Makefile
+	$(CC) $(CF) $(I) -o cs_demo1 cs_demo1.c $(CS)
 
-cs_demo1: $(CS) cs_demo1.c Makefile $(CS)
-	$(CC) $(CF) $(I) -o cs_demo1 cs_demo1.c $(CS) -lm
+cs_demo2: cs_demo2.c cs_demo.c cs_demo.h Makefile
+	$(CC) $(CF) $(I) -o cs_demo2 cs_demo2.c cs_demo.c $(CS)
 
-cs_demo2: $(CS) cs_demo2.c cs_demo.c cs_demo.h Makefile $(CS)
-	$(CC) $(CF) $(I) -o cs_demo2 cs_demo2.c cs_demo.c $(CS) -lm
-
-cs_demo3: $(CS) cs_demo3.c cs_demo.c cs_demo.h Makefile $(CS)
-	$(CC) $(CF) $(I) -o cs_demo3 cs_demo3.c cs_demo.c $(CS) -lm
+cs_demo3: cs_demo3.c cs_demo.c cs_demo.h Makefile
+	$(CC) $(CF) $(I) -o cs_demo3 cs_demo3.c cs_demo.c $(CS)
 
 
 
 
-cs_di_demo1: $(CS) cs_di_demo1.c Makefile $(CS)
-	$(CC) $(CF) $(I) -o cs_di_demo1 cs_di_demo1.c $(CS) -lm
+cs_di_demo1: cs_di_demo1.c Makefile
+	$(CC) $(CF) $(I) -o cs_di_demo1 cs_di_demo1.c $(CS)
 
-cs_di_demo2: $(CS) cs_di_demo2.c cs_di_demo.c cs_di_demo.h Makefile $(CS)
-	$(CC) $(CF) $(I) -o cs_di_demo2 cs_di_demo2.c cs_di_demo.c $(CS) -lm
+cs_di_demo2: cs_di_demo2.c cs_di_demo.c cs_di_demo.h Makefile
+	$(CC) $(CF) $(I) -o cs_di_demo2 cs_di_demo2.c cs_di_demo.c $(CS)
 
-cs_di_demo3: $(CS) cs_di_demo3.c cs_di_demo.c cs_di_demo.h Makefile $(CS)
-	$(CC) $(CF) $(I) -o cs_di_demo3 cs_di_demo3.c cs_di_demo.c $(CS) -lm
-
-
-
-
-cs_ci_demo1: $(CS) cs_ci_demo1.c Makefile $(CS)
-	$(CC) $(CF) $(I) -o cs_ci_demo1 cs_ci_demo1.c $(CS) -lm
-
-cs_ci_demo2: $(CS) cs_ci_demo2.c cs_ci_demo.c cs_ci_demo.h Makefile $(CS)
-	$(CC) $(CF) $(I) -o cs_ci_demo2 cs_ci_demo2.c cs_ci_demo.c $(CS) -lm
-
-cs_ci_demo3: $(CS) cs_ci_demo3.c cs_ci_demo.c cs_ci_demo.h Makefile $(CS)
-	$(CC) $(CF) $(I) -o cs_ci_demo3 cs_ci_demo3.c cs_ci_demo.c $(CS) -lm
-
-
-
-cs_dl_demo1: $(CS) cs_dl_demo1.c Makefile $(CS)
-	$(CC) $(CF) $(I) -o cs_dl_demo1 cs_dl_demo1.c $(CS) -lm
-
-cs_dl_demo2: $(CS) cs_dl_demo2.c cs_dl_demo.c cs_dl_demo.h Makefile $(CS)
-	$(CC) $(CF) $(I) -o cs_dl_demo2 cs_dl_demo2.c cs_dl_demo.c $(CS) -lm
-
-cs_dl_demo3: $(CS) cs_dl_demo3.c cs_dl_demo.c cs_dl_demo.h Makefile $(CS)
-	$(CC) $(CF) $(I) -o cs_dl_demo3 cs_dl_demo3.c cs_dl_demo.c $(CS) -lm
-
-
-cs_cl_demo1: $(CS) cs_cl_demo1.c Makefile $(CS)
-	$(CC) $(CF) $(I) -o cs_cl_demo1 cs_cl_demo1.c $(CS) -lm
-
-cs_cl_demo2: $(CS) cs_cl_demo2.c cs_cl_demo.c cs_cl_demo.h Makefile $(CS)
-	$(CC) $(CF) $(I) -o cs_cl_demo2 cs_cl_demo2.c cs_cl_demo.c $(CS) -lm
-
-cs_cl_demo3: $(CS) cs_cl_demo3.c cs_cl_demo.c cs_cl_demo.h Makefile $(CS)
-	$(CC) $(CF) $(I) -o cs_cl_demo3 cs_cl_demo3.c cs_cl_demo.c $(CS) -lm
+cs_di_demo3: cs_di_demo3.c cs_di_demo.c cs_di_demo.h Makefile
+	$(CC) $(CF) $(I) -o cs_di_demo3 cs_di_demo3.c cs_di_demo.c $(CS)
 
 
 
 
-cs_idemo: $(CS) cs_idemo.c Makefile $(CS)
-	$(CC) $(CF) $(I) -o cs_idemo cs_idemo.c $(CS) -lm
+cs_ci_demo1: cs_ci_demo1.c Makefile
+	$(CC) $(CF) $(I) -o cs_ci_demo1 cs_ci_demo1.c $(CS)
 
-cs_ldemo: $(CS) cs_ldemo.c Makefile $(CS)
-	$(CC) $(CF) $(I) -DCS_LONG -o cs_ldemo cs_ldemo.c $(CS) -lm
+cs_ci_demo2: cs_ci_demo2.c cs_ci_demo.c cs_ci_demo.h Makefile
+	$(CC) $(CF) $(I) -o cs_ci_demo2 cs_ci_demo2.c cs_ci_demo.c $(CS)
+
+cs_ci_demo3: cs_ci_demo3.c cs_ci_demo.c cs_ci_demo.h Makefile
+	$(CC) $(CF) $(I) -o cs_ci_demo3 cs_ci_demo3.c cs_ci_demo.c $(CS)
+
+
+
+cs_dl_demo1: cs_dl_demo1.c Makefile
+	$(CC) $(CF) $(I) -o cs_dl_demo1 cs_dl_demo1.c $(CS)
+
+cs_dl_demo2: cs_dl_demo2.c cs_dl_demo.c cs_dl_demo.h Makefile
+	$(CC) $(CF) $(I) -o cs_dl_demo2 cs_dl_demo2.c cs_dl_demo.c $(CS)
+
+cs_dl_demo3: cs_dl_demo3.c cs_dl_demo.c cs_dl_demo.h Makefile
+	$(CC) $(CF) $(I) -o cs_dl_demo3 cs_dl_demo3.c cs_dl_demo.c $(CS)
+
+
+cs_cl_demo1: cs_cl_demo1.c Makefile
+	$(CC) $(CF) $(I) -o cs_cl_demo1 cs_cl_demo1.c $(CS)
+
+cs_cl_demo2: cs_cl_demo2.c cs_cl_demo.c cs_cl_demo.h Makefile
+	$(CC) $(CF) $(I) -o cs_cl_demo2 cs_cl_demo2.c cs_cl_demo.c $(CS)
+
+cs_cl_demo3: cs_cl_demo3.c cs_cl_demo.c cs_cl_demo.h Makefile
+	$(CC) $(CF) $(I) -o cs_cl_demo3 cs_cl_demo3.c cs_cl_demo.c $(CS)
+
+
+
+
+cs_idemo: cs_idemo.c Makefile
+	$(CC) $(CF) $(I) -o cs_idemo cs_idemo.c $(CS)
+
+cs_ldemo: cs_ldemo.c Makefile
+	$(CC) $(CF) $(I) -DCS_LONG -o cs_ldemo cs_ldemo.c $(CS)
 
 
 clean:

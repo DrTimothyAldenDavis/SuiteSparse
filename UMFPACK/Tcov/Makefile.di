@@ -1,3 +1,6 @@
+SUITESPARSE = $(CURDIR)
+export SUITESPARSE
+
 KIND = -DDINT
 
 all: go
@@ -11,18 +14,16 @@ go: run
 run: prog
 	- ./ut > ut.out
 	- tail ut.out
-	#- $(RM) ut.out
 
 prog:
-	( cd CHOLMOD ; $(MAKE) library TCOV=yes )
-	( cd CAMD ; $(MAKE) library TCOV=yes )
-	( cd CCOLAMD ; $(MAKE) library TCOV=yes )
-	( cd COLAMD ; $(MAKE) library TCOV=yes )
-	( cd SuiteSparse_config ; $(MAKE) TCOV=yes )
-	( cd metis-4.0/Lib ; $(MAKE) )
-	( cd UMFPACK ; $(MAKE) library TCOV=yes )
-	( cd AMD ; $(MAKE) library TCOV=yes )
-	$(CC) $(KIND) $(CF) $(UMFPACK_CONFIG) -IUMFPACK/Source -IUMFPACK/Include -IAMD/Source -IAMD/Include -ISuiteSparse_config -o ut ut.c UMFPACK/Lib/libumfpack.a AMD/Lib/libamd.a CHOLMOD/Lib/libcholmod.a CAMD/Lib/libcamd.a COLAMD/Lib/libcolamd.a metis-4.0/libmetis.a CCOLAMD/Lib/libccolamd.a SuiteSparse_config/libsuitesparseconfig.a $(LIB)
+	( cd SuiteSparse_config ; $(MAKE) )
+	( cd UMFPACK ; $(MAKE) library )
+	( cd AMD ; $(MAKE) library )
+	$(CC) $(KIND) $(CF) $(UMFPACK_CONFIG) -IUMFPACK/Source -IAMD/Include \
+		-Iinclude -o ut ut.c UMFPACK/Lib/*.o \
+		SuiteSparse_config/*.o AMD/Lib/*.o \
+		-Llib -lcholmod -lcolamd -lmetis -lccolamd -lcamd \
+		$(LDLIBS)
 
 utcov:
 	- ( cd UMFPACK/Source ; ./ucov.di )

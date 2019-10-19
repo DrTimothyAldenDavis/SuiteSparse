@@ -4,41 +4,8 @@ Using CHOLMOD in MATLAB                         http://www.suitesparse.com
 
 See Contents.m for a description of each CHOLMOD function.
 
-To compile CHOLMOD for use in MATLAB, you may optionally use METIS.  If you
-do not use METIS, compile CHOLMOD with the -DNPARTITION flag.
-
-There are two ways of compiling the CHOLMOD mexFunctions.  The 2nd one is best.
-
-(1) Using the Unix "make" command.  This will compile the AMD, COLAMD, CCOLAMD,
-    and CHOLMOD libraries (*.a).  You must first add -fexceptions to the
-    CFLAGS definition in SuiteSparse_config/SuiteSparse_config.mk first
-    (for Linux).  Otherwise,
-    MATLAB will not be able to handle exceptions properly (CHOLMOD may terminate
-    MATLAB if it encounters an error).  The METIS library must also be compiled
-    with -fexceptions (see metis-4.0/Makefile.in).
-    For other operating systems, see your default MATLAB mexopts.sh file
-    (type "mex -v").  Next, simply type "make" in the operating system command
-    window in this directory.
-
-    On Linux (with gcc), you must compile all codes with the -fexceptions flag.
-    See option (2) if you have problems compiling METIS.
-
-(2) using the "cholmod_make" m-file in MATLAB.  First, place a copy of
-    METIS 4.0.1 in the ../../metis-4.0 directory (the same directory that
-    contains AMD, COLAMD, CCOLAMD, and CHOLMOD).
-    Then, type "cholmod_make" in the MATLAB command window.
-    All source files (including METIS) will be compiled with the MATLAB mex
-    commnand.  This works on all operating systems, including Windows.
-    You can use an alternate location for METIS, if you pass the pathname
-    as the first argument to cholmod_make, as in
-
-	cholmod_make ('path to your copy of metis-4.0 goes here') ;
-
-    Option (2) is better because it allows for several workarounds for METIS.
-    With Option (1), METIS terminates MATLAB if it runs out of memory.  That
-    does not happen with Option (2).
-
-You should also add CHOLMOD/MATLAB to your MATLAB path.
+To compile CHOLMOD for use in MATLAB, simply type cholmod_install at
+the MATLAB command line, while in the CHOLMOD/MATLAB directory.
 
 cholmod_demo is a short demo program for CHOLMOD.  Type "cholmod_demo" in
 your MATLAB command window to test your newly compiling CHOLMOD functions.
@@ -53,16 +20,23 @@ Using AMD, CCOLAMD, and COLAMD in MATLAB
 
 The following steps are not required to use CHOLMOD in MATLAB.
 
-To use AMD in MATLAB, go to the AMD/MATLAB directory and either type "amd_make"
-in the MATLAB command window, or type "make" in the Unix shell.  Add AMD/MATLAB
-to your MATLAB path.
+To use AMD in MATLAB, go to the AMD/MATLAB directory and either type "amd_install"
+in the MATLAB command window, or type "make" in the Unix shell.
 
-To use CCOLAMD in MATLAB, go to the CCOLAMD directory and either type
-"ccolamd_demo" in the MATLAB command window, or type "make" in the Unix shell.
-Add CCOLAMD to your MATLAB path.
+To use CCOLAMD in MATLAB, go to the CCOLAMD directory and type ccolamd_install.
 
 COLAMD is already an integral part of MATLAB, but you can upgrade to the most
-recent version.  Go to the COLAMD directory and either type "colamd_demo" in
-the MATLAB command window, or type "make" in the Unix shell.
-Add COLAMD to your MATLAB path.
+recent version.  Go to the COLAMD directory and type "colamd_install" in
+
+----------------------------------------
+To install all of SuiteSparse for MATLAB
+----------------------------------------
+
+To install all these packages and more, simply go the the top level folder of
+SuiteSparse.  You should see the SuiteSparse_install.m file there.  Type
+SuiteSparse_install in the MATLAB command window.
+
+After installing SuiteSparse, your path has been updated, but the changes
+will not be saved for your next MATLAB session unless you save your path.
+Type 'pathtool' and click 'save'.
 

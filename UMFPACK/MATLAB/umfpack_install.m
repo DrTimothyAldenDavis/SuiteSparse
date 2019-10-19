@@ -1,23 +1,18 @@
 function umfpack_install
-%UMFPACK_INSTALL to compile and install umfpack2 and amd2 for use in MATLAB
+%UMFPACK_INSTALL to compile and install umfpack and amd2 for use in MATLAB
 %   Your current directory must be UMFPACK/MATLAB for this function to work.
 %
 % Example:
 %   umfpack_install
 %
-% See also umfpack2, amd2.
+% See also umfpack, amd2.
 
 % Copyright 1995-2007 by Timothy A. Davis.
 
 % compile and install UMFPACK
 umfpack_path = pwd ;
 addpath (umfpack_path) ;
-try
-    umfpack_make
-catch
-    fprintf ('Trying to install with lcc_lib/libmwlapack.lib instead\n') ;
-    umfpack_make ('lcc_lib/libmwlapack.lib') ;
-end
+umfpack_make
 
 % compile and install AMD
 cd ../../AMD/MATLAB

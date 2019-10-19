@@ -6,9 +6,6 @@ default: all
 
 include ../SuiteSparse_config/SuiteSparse_config.mk
 
-query:
-	echo $(MKLROOT)
-
 demos: all
 
 # Compile all C code.  Do not compile the FORTRAN versions.

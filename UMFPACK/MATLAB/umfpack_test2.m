@@ -1,6 +1,6 @@
 function umfpack_test2
 %UMFPACK_TEST2 try all UMFPACK strategies and orderings.
-% Requires UFget, CHOLMOD, CAMD, CCOLAMD, COLAMD, metis-4.0.
+% Requires UFget, CHOLMOD, CAMD, CCOLAMD, COLAMD, METIS.
 
 Prob = UFget (45) ;
 A = Prob.A ;
@@ -31,7 +31,7 @@ for k1 = 1:length (Strategy)
 
             try
                 tic ;
-                [L,U,P,Q,R] = umfpack2 (A, opts) ;
+                [L,U,P,Q,R] = umfpack (A, opts) ;
                 t = toc ;
                 lunz = nnz (L+U) ;
             catch

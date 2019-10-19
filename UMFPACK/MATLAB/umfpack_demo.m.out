@@ -11,7 +11,7 @@ Difference between UMFPACK and MATLAB solution: 0
 
 --------------------------------------------------------------
 
-Factorizing [L, U, P, Q, R] = umfpack2 (A)
+Factorizing [L, U, P, Q, R] = umfpack (A)
 
 P * (R\A) * Q - L*U should be zero:
 norm (P*(R\A)*Q - L*U, 1) = 2.77556e-16 (exact) 1.21864e-16 (estimated)

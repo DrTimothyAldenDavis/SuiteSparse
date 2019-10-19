@@ -1,5 +1,17 @@
-Jan 2016: SuiteSparse 4.4.7
+Jan 30, 2016: SuiteSparse 4.5.0
 
+    * better Makefiles for creating and installing shared libraries
+    * CHOLMOD now uses METIS 5.1.0, which is distributed with SuiteSparse
+    * fix for MATLAB R2015b, which changed how it creates empty matrices,
+	as compared to prior versions of MATLAB.  This change in MATLAB
+	breaks many of the mexFunctions in prior versions of SuiteSparse.
+	If you use MATLAB R2015b, you must upgrade to SuiteSparse 4.5.0
+	or later.
+
+Jan 1, 2016: SuiteSparse 4.4.7
+
+    * note that this minor update fails on the Mac, so its
+        listed on my web page as a 'beta' release.
     * Improved the Makefiles of all packages.  They now create *.so
         shared libraries (*.dylib on the Mac).  Also, there is now
         only a single SuiteSparse_config.mk file.  It now determines

@@ -2,7 +2,7 @@ default: all
 
 include ../../SuiteSparse_config/SuiteSparse_config.mk
 
-all: UserGuide.pdf purge
+all: CHOLMOD_UserGuide.pdf purge
 
 I = \
 	../Include/cholmod.h \
@@ -47,7 +47,7 @@ M = \
 	../MATLAB/mwrite.m \
 	../MATLAB/symbfact2.m
 
-UserGuide.pdf: UserGuide.tex UserGuide.bib $(I) $(C) $(M) Makefile getproto rule.awk header.tex footer.tex getmproto mfooter.tex mheader.tex mfile.awk
+CHOLMOD_UserGuide.pdf: CHOLMOD_UserGuide.tex UserGuide.bib $(I) $(C) $(M) Makefile getproto rule.awk header.tex footer.tex getmproto mfooter.tex mheader.tex mfile.awk
 	./getmproto ../MATLAB/analyze.m > _analyze_m.tex
 	./getmproto ../MATLAB/bisect.m > _bisect_m.tex
 	./getmproto ../MATLAB/chol2.m > _chol2_m.tex
@@ -217,10 +217,10 @@ UserGuide.pdf: UserGuide.tex UserGuide.bib $(I) $(C) $(M) Makefile getproto rule
 	./getproto '/long cholmod_bisect/, /\*\) ;/' ../Include/cholmod_partition.h > _bisect.tex
 	./getproto '/long cholmod_metis_bisector/, /\*\) ;/' ../Include/cholmod_partition.h > _metis_bisector.tex
 	./getproto '/long cholmod_collapse_septree/, /\*\) ;/' ../Include/cholmod_partition.h > _collapse_septree.tex
-	pdflatex UserGuide
-	bibtex UserGuide
-	pdflatex UserGuide
-	pdflatex UserGuide
+	pdflatex CHOLMOD_UserGuide
+	bibtex CHOLMOD_UserGuide
+	pdflatex CHOLMOD_UserGuide
+	pdflatex CHOLMOD_UserGuide
 
 distclean: purge
 

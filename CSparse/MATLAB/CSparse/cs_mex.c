@@ -51,6 +51,7 @@ mxArray *cs_mex_put_sparse (cs **Ahandle)
 {
     cs *A ;
     mxArray *Amatlab ;
+    if (!Ahandle || !CS_CSC ((*Ahandle))) mexErrMsgTxt ("invalid sparse matrix") ;
     A = *Ahandle ;
     Amatlab = mxCreateSparse (0, 0, 0, mxREAL) ;
     mxSetM (Amatlab, A->m) ;
@@ -58,9 +59,20 @@ mxArray *cs_mex_put_sparse (cs **Ahandle)
     mxSetNzmax (Amatlab, A->nzmax) ;
     cs_free (mxGetJc (Amatlab)) ;
     cs_free (mxGetIr (Amatlab)) ;
-    cs_free (mxGetPr (Amatlab)) ;
     mxSetJc (Amatlab, (mwIndex *) A->p) ;  /* assign A->p pointer to MATLAB A */
     mxSetIr (Amatlab, (mwIndex *) A->i) ;
+    cs_free (mxGetPr (Amatlab)) ;
+    if (A->x == NULL)
+    {
+        /* A is a pattern only matrix; return all 1's to MATLAB */
+        csi i, nz ;
+        nz = A->p [A->n] ;
+        A->x = cs_malloc (CS_MAX (nz,1), sizeof (double)) ;
+        for (i = 0 ; i < nz ; i++)
+        {
+            A->x [i] = 1 ;
+        }
+    }
     mxSetPr (Amatlab, A->x) ;
     mexMakeMemoryPersistent (A->p) ;    /* ensure MATLAB does not free A->p */
     mexMakeMemoryPersistent (A->i) ;

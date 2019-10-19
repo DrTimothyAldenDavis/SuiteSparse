@@ -26,7 +26,7 @@ University and the SciDAC program).
 }
 \and Eka Palamadai Natarajan}
 
-\date{VERSION 1.3.4, Jan 1, 2016}
+\date{VERSION 1.3.5, Jan 30, 2016}
 \maketitle
 
 %------------------------------------------------------------------------------
@@ -322,11 +322,7 @@ To use the KLU and BTF functions in MATLAB, you must first compile and install
 them.  In the {\tt BTF/MATLAB} directory, type {\tt btf\_install}, and then
 type {\tt klu\_install} in the {\tt KLU/MATLAB} directory.  Alternatively, if
 you have the entire SuiteSparse, simply run the {\tt SuiteSparse\_install}
-function in the {\tt SuiteSparse} directory.   To use METIS 4.0.1 with KLU (and
-CHOLMOD, another part of SuiteSparse) you must first download it from {\tt
-http://glaros.dtc.umn.edu/gkhome/views/metis} and place the {\tt metis-4.0}
-directory in the {\tt SuiteSparse} directory, alongside the {\tt KLU} and {\tt
-BTF} directories.
+function in the {\tt SuiteSparse} directory.
 
 After running the installation scripts, type {\tt pathtool} and save your path
 for future MATLAB sessions.  If you cannot save your path because of file
@@ -1268,8 +1264,7 @@ So it's not likely that you will need to edit that file.
 
 To compile and install the C-callable KLU, BTF, AMD, and COLAMD libraries, go
 to the {\tt KLU} directory and type {\tt make}.  The KLU and BTF libraries are
-placed in {\tt KLU/Lib/libklu.a} and {\tt BTF/Lib/libbtf.a}, and in corresponding
-{\tt *.so} files (Linux/Unix) or {\tt *.dylib} (Mac), for the shared libraries.
+placed in {\tt KLU/Lib/libklu.*} and {\tt BTF/Lib/libbtf.*}.
 Two KLU demo
 programs will be compiled and tested in the {\tt KLU/Demo} directory.  You can
 compare the output of {\tt make} with the results in the KLU distribution, {\tt
@@ -1283,12 +1278,14 @@ file then you should type {\tt
 make purge} and then {\tt make} to recompile.
 
 When you compile your program that uses the C-callable KLU library, you need to
-add the {\tt KLU/Lib/libklu.a}, {\tt BTF/Lib/libbtf.a}, {\tt AMD/Lib/libamd.a},
-and {\tt COLAMD/Lib/libamd.a} libraries, a nd you need to tell your compiler to
+add the {\tt KLU/Lib/libklu.*}, {\tt BTF/Lib/libbtf.*}, {\tt AMD/Lib/libamd.*},
+and {\tt COLAMD/Lib/libcolamd.*} libraries, and you need to tell your compiler to
 look in the {\tt KLU/Include} and {\tt BTF/Include} directory for include
 files.
 Alternatively, do {\tt make install}, and KLU will be installed in
-/usr/local/lib and /usr/local/include.
+/usr/local/lib and /usr/local/include, and documentation is placed in
+/usr/local/doc.  These installation locations can be changed;
+see {\tt SuiteSparse/README.txt} for details.
 
 If all you want to use is the KLU mexFunction in MATLAB, you can skip the use
 of the {\tt make} command entirely.  Simply type {\tt klu\_install} in the

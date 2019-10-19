@@ -6,6 +6,7 @@
 
 #include "spqr.hpp"
 #include <limits>
+#include <algorithm>
 
 // return the default tol (-1 if error)
 template <typename Entry> double spqr_tol

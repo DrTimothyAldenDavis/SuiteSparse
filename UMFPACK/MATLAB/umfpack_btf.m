@@ -10,7 +10,7 @@ function [x, info] = umfpack_btf (A, b, Control)
 % MATLAB's \ operator.  The Control parameter is optional (Type umfpack_details
 % and umfpack_report for details on its use).  A must be square.
 %
-% See also umfpack, umfpack2, umfpack_details, dmperm
+% See also umfpack, umfpack_details, dmperm
 
 % Copyright 1995-2009 by Timothy A. Davis.
 
@@ -31,7 +31,7 @@ if (m1 ~= n)
 end
 
 if (nargin < 3)
-    Control = umfpack2 ;
+    Control = umfpack ;
 end
 
 %-------------------------------------------------------------------------------
@@ -56,7 +56,7 @@ if (nblocks == 1 | sprank (A) < n)					    %#ok
     % matrix is irreducible or structurally singular
     %---------------------------------------------------------------------------
 
-    [x info2] = umfpack2 (A, '\', b, Control) ;
+    [x info2] = umfpack (A, '\', b, Control) ;
     info.nnz_in_L_plus_U = info2.nnz_in_L_plus_U ;
 
 else

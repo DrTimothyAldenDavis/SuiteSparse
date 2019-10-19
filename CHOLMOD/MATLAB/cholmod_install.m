@@ -2,13 +2,13 @@ function cholmod_install (metis_path)
 %CHOLMOD_INSTALL compile and install CHOLMOD, AMD, COLAMD, CCOLAMD, CAMD
 %
 % Example:
-%   cholmod_install                 % compiles using ../../metis-4.0
+%   cholmod_install                 % compiles using METIS
 %   cholmod_install ('/my/metis')   % using non-default path to METIS
 %   cholmod_install ('no metis')    % do not use METIS at all
 %
 % CHOLMOD relies on AMD and COLAMD, for its ordering options, and can
 % optionally use CCOLAMD, CAMD, and METIS as well.  By default, CCOLAMD, CAMD,
-% and METIS are used.  METIS is assumed to be in the ../../metis-4.0 directory.
+% and METIS are used.
 %
 % See http://www-users.cs.umn.edu/~karypis/metis for a copy of METIS 4.0.1.
 %
@@ -21,7 +21,7 @@ function cholmod_install (metis_path)
 %   Copyright 2006-2015, Timothy A. Davis
 
 if (nargin < 1)
-    metis_path = '../../metis-4.0' ;
+    metis_path = '../../metis-5.1.0' ;
 end
 
 % compile CHOLMOD and add to the path

@@ -1,153 +1,274 @@
 SuiteSparse:  A Suite of Sparse matrix packages at http://www.suitesparse.com
 
-Jan 1, 2016.  SuiteSparse VERSION 4.4.7
+Jan 30, 2016.  SuiteSparse VERSION 4.5.0
 
 ------------------
 SuiteSparse/README
 ------------------
 
 ================================================================================
-QUICK START FOR MATLAB USERS (Linux, Mac, or Windows):  uncompress the
-SuiteSparse.zip or SuiteSparse.tar.gz archive file (they contain the same
-thing), then in the MATLAB Command Window, cd to the SuiteSparse directory and
-type SuiteSparse_install.  All packages will be compiled, and several demos
-will be run.
-
-QUICK START FOR THE C/C++ LIBRARIES:  Just type 'make' in this directory.  Then
-do 'make install' if you want to install the libraries and include files in
-/usr/local/lib and /usr/local/include.  This will work on Linux/Unix and the
-Mac.  It should automatically detect if you have the Intel compilers or not,
-and whether or not you have CUDA.  If this fails, see the
-SuiteSparse_config/SuiteSparse_config.mk file.
+Packages in SuiteSparse, and files in this directory:
 ================================================================================
 
+    AMD         approximate minimum degree ordering.  This is the built-in AMD
+                function in MATLAB.
 
-    spqr_rank   MATLAB toolbox for rank deficient sparse matrices: null spaces,
-                reliable factorizations, etc.  With Leslie Foster, San Jose
-                State Univ.
+    bin         where the metis-5.1.0 programs are placed when METIS is compiled
 
-    AMD         approximate minimum degree ordering
+    BTF         permutation to block triangular form
 
     CAMD        constrained approximate minimum degree ordering
 
-    COLAMD      column approximate minimum degree ordering
-
     CCOLAMD     constrained column approximate minimum degree ordering
 
-    BTF         permutation to block triangular form
+    ChangeLog   a summary of changes to SuiteSparse.  See */Doc/ChangeLog
+                for details for each package.
+
+    CHOLMOD     sparse Cholesky factorization.  Requires AMD, COLAMD, CCOLAMD,
+                the BLAS, and LAPACK.  Optionally uses METIS.  This is chol and
+                x=A\b in MATLAB.
+
+    COLAMD      column approximate minimum degree ordering.  This is the
+                built-in COLAMD function in MATLAB.
+
+    Contents.m  a list of contents for 'help SuiteSparse' in MATLAB.
+
+    CSparse     a concise sparse matrix package, developed for my
+                book, "Direct Methods for Sparse Linear Systems",
+                published by SIAM.  Intended primarily for teaching.
+                It does have a 'make install' but I recommend using
+                CXSparse instead.  In particular, both CSparse and CXSparse
+                have the same include filename: cs.h.
+
+                This package is used for the built-in DMPERM in MATLAB.
+
+    CSparse_to_CXSparse
+                a Perl script to create CXSparse from CSparse and
+                CXSparse_newfiles
+
+    CXSparse    CSparse Extended.  Includes support for complex matrices
+                and both int or long integers.  Use this instead of CSparse
+                for production use; it creates a libcsparse.so (or *dylib on
+                the Mac) with the same name as CSparse.  It is a superset
+                of CSparse.  Any code that links against CSparse should
+                also be able to link against CXSparse instead.
+
+    CXSparse_newfiles
+                Files unique to CXSparse
+
+    doc         'make' places documentation for each package here
+
+    GPUQREngine GPU support package for SPQR (not built into MATLAB, however)
+
+    include     'make' places user-visible include fomes for each package here
 
     KLU         sparse LU factorization, primarily for circuit simulation.
                 Requires AMD, COLAMD, and BTF.  Optionally uses CHOLMOD,
                 CAMD, CCOLAMD, and METIS.
 
-    UMFPACK     sparse LU factorization.  Requires AMD and the BLAS.
+    LDL         a very concise LDL' factorization package
 
-    CHOLMOD     sparse Cholesky factorization.  Requires AMD, COLAMD, CCOLAMD,
-                the BLAS, and LAPACK.  Optionally uses METIS.
+    lib         'make' places shared libraries for each package here
+
+    Makefile    to compile all of SuiteSparse:
+                make            compiles SuiteSparse libraries and runs demos
+                make install    compiles SuiteSparse and installs in /usr/local
+                make uninstall  undoes 'make install'
+                make library    compiles SuiteSparse libraries (not demos)
+                make distclean  removes all files not in distribution, including
+                                ./bin, ./doc, ./lib, and ./include.
+                make purge      same as 'make distclean'
+                make clean      removes all files not in distribution, but
+                                keeps compiled libraries and demoes, ./lib,
+                                ./doc, and ./include.
+                make config     displays parameter settings; does not compile
+
+                Each individual package also has each of the above 'make'
+                targets.  Doing 'make config' in each package */Lib directory
+                displays the exact shared and static library names.
+
+                Things you don't need to do:
+                make cx         creates CXSparse from CSparse
+                make docs       creates user guides from LaTeX files
+                make cov        runs statement coverage tests (Linux only)
+                make metis      compiles METIS (also done by 'make')
+
+    MATLAB_Tools    various m-files for use in MATLAB
+
+                Contents.m      list of contents
+                dimacs10        loads matrices for DIMACS10 collection
+                Factorize       object-oriented x=A\b for MATLAB
+                find_components finds connected components in an image
+                GEE             simple Gaussian elimination
+                getversion.m    determine MATLAB version
+                gipper.m        create MATLAB archive
+                hprintf.m       print hyperlinks in command window
+                LINFACTOR       predecessor to Factorize package
+                MESHND          nested dissection ordering of regular meshes
+                pagerankdemo.m  illustrates how PageRank works
+                SFMULT          C=S*F where S is sparse and F is full
+                shellgui        display a seashell
+                sparseinv       sparse inverse subset
+                spok            check if a sparse matrix is valid
+                spqr_rank       SPQR_RANK package.  MATLAB toolbox for rank
+                                deficient sparse matrices: null spaces,
+                                reliable factorizations, etc.  With Leslie
+                                Foster, San Jose State Univ.
+                SSMULT          C=A*B where A and B are both sparse
+                UFcollection    maitains the SuiteSparse matrix collection
+                waitmex         waitbar for use inside a mexFunction
+
+                The SSMULT and SFMULT functions are the basis for the
+                built-in C=A*B functions in MATLAB.
+
+    metis-5.1.0 a modified version of METIS.  See the README.txt files for
+                details.
+
+    RBio        read/write sparse matrices in Rutherford/Boeing format
+
+    README.txt  this file
+
+    SPQR        sparse QR factorization.  This the built-in qr and x=A\b in
+                MATLAB.
 
     SuiteSparse_config    configuration file for all the above packages.  The
                 SuiteSparse_config/SuiteSparse_config.mk is included in the
                 Makefile's of all packages.  CSparse and MATLAB_Tools do not
-                use SuiteSparse_config.  Prior to SuiteSparse Version 4.0.0,
-                this configuration directory was called 'UFconfig'.
-                Version 4.0.0 and later use SuiteSparse_config instead,
-                which is upward compatible with UFconfig.
+                use SuiteSparse_config.
 
-    CSparse     a concise sparse matrix package, developed for my
-                book, "Direct Methods for Sparse Linear Systems",
-                published by SIAM.  Intended primarily for teaching.
-
-    CXSparse    CSparse Extended.  Includes support for complex matrices
-                and both int or long integers.  Use this instead of CSparse
-                for production use.
-
-    RBio        read/write sparse matrices in Rutherford/Boeing format
-
-    UFcollection    toolbox for managing the UF Sparse Matrix Collection
-
-    LPDASA      LP dual active set algorithm (to appear)
-
-    MESHND      2D and 3D mesh generation and nested dissection ordering
-
-    SSMULT      sparse matrix multiply for MATLAB
-
-    LINFACTOR   simple m-file demonstrating how to use LU and CHOL in
-                MATLAB to solve Ax=b
-
-    MATLAB_Tools    various simple m-files for use in MATLAB
-
-    SPQR        sparse QR factorization
-    GPUQREngine                 GPU support package for SPQR
     SuiteSparse_GPURuntime      GPU support package for SPQR
+                (not builtin to MATLAB, however).
 
-Some codes optionally use METIS 4.0.1
-(http://www-users.cs.umn.edu/~karypis/metis).  To use METIS, place a copy of
-the metis-4.0 directory in the same directory containing this README file.
-Be sure that you do not have a nested metis-4.0/metis-4.0 directory; SuiteSparse
-won't find METIS if you do this, which can happen with a zip file of metis-4.0
-on Windows.  The use of METIS will improve the ordering quality.
+    SuiteSparse_install.m       install SuiteSparse for MATLAB
+
+    SuiteSparse_test.m          exhaustive test for SuiteSparse in MATLAB
+
+    UFget       MATLAB interface to the SuiteSparse Matrix Collection
+                (formerly called the UF Sparse Matrix Collection).
+
+    UMFPACK     sparse LU factorization.  Requires AMD and the BLAS.
+                This is the built-in lu and x=A\b in MATLAB.
+
+Some codes optionally use METIS 5.1.0.  This package is located in SuiteSparse
+in the metis-5.1.0 directory.  Its use is optional, so you can remove it before
+compiling SuiteSparse, if you desire.  The use of METIS will improve the
+ordering quality.  METIS has been slightly modified for use in SuiteSparse; see
+the metis-5.1.0/README.txt file for details.  SuiteSparse can use the
+unmodified METIS 5.1.0, however.  Use 'make METIS_PATH=/my/stuff/metis-5.1.0'.
+If you want to use METIS in MATLAB, however, you must use the version provided
+here, with SuiteSparse.
 
 Refer to each package for license, copyright, and author information.  All
 codes are authored or co-authored by Timothy A. Davis.
-email: DrTimothyAldenDavis@gmail.com
+email: davis@tamu.edu
+
 
 ================================================================================
-If you use SuiteSparse_install in MATLAB, stop reading here.
+QUICK START FOR MATLAB USERS (Linux, Mac, or Windows):  uncompress the
+SuiteSparse.zip or SuiteSparse.tar.gz archive file (they contain the same
+thing), then in the MATLAB Command Window, cd to the SuiteSparse directory and
+type SuiteSparse_install.  All packages will be compiled, and several demos
+will be run.  To run a (long!) exhaustive test, do SuiteSparse_test.
 ================================================================================
 
 
+================================================================================
+QUICK START FOR THE C/C++ LIBRARIES:  Just type 'make' in this directory.  All
+libraries will be created and copied into SuiteSparse/lib.  All include files
+need by the applications that use SuiteSparse are copied into
+SuiteSparse/include.   All user documenation is copied into SuiteSparse/doc.
+Any program that uses SuiteSparse can thus use a simpler rule as compared to
+earlier versions of SuiteSparse.  If you add /home/myself/SuiteSparse/lib to
+your library search patch, you can do the following (for example):
 
-----------------------------
-To use "make" in Unix/Linux:
-----------------------------
+    S = /home/myself/SuiteSparse
+    cc myprogram.c -I$(S)/include -lumfpack -lamd -lcholmod -lsuitesparseconfig -lm
+
+Do 'make install' if you want to install the libraries and include files in
+/usr/local/lib and /usr/local/include, and the documentation in
+/usr/share/doc/suitesparse-VERSION.
+This will work on Linux/Unix and the Mac.  It should automatically detect if
+you have the Intel compilers or not, and whether or not you have CUDA.  If this
+fails, see the SuiteSparse_config/SuiteSparse_config.mk file.  There are many
+options that you can either list on the 'make' command line, or you can just
+edit that file.  For example, to compile with your own BLAS:
+
+    make BLAS=-lmyblaslibraryhere
+
+To list the primary configuration options (but not compile anything), do:
+
+    make config
+
+If you do "make install" by itself, then the packages are all installed in
+/usr/local/lib (libraries), /usr/local/include (include *.h files), and
+/usr/share/doc/suitesparse-VERSION (documentation).  If you want to install
+elsewhere, do:
+
+    make install INSTALL=/my/path
+
+which puts the files in /my/path/lib, /my/path/include, and /my/path/doc.
+If you want to selectively put the libraries, include files, and doc files
+in different locations, do:
+
+    make install INSTALL_LIB=/my/libs INSTALL_INCLUDE=/myotherstuff/include INSTALL_DOC=/mydocs
+
+for example.  Any term not defined will be set to its default, so if you don't
+want to install the documentation, but wish to install the libraries and
+includes in /usr/local/lib and /usr/local/include, do:
+
+    make install INSTALL_DOC=/tmp/doc
+
+which copies the documentation to /tmp/doc where you can then remove it later.
+
+The 'make uninstall' takes the same command-line arguments.
+
+----------------------------------
+Step-by-step details:
+----------------------------------
 
 (1) Use the right BLAS and LAPACK libraries
 
-    Edit your SuiteSparse_config/SuiteSparse_config.mk file to point to the
-    right compilers, and to the correct BLAS and LAPACK libraries.  There are
-    many examples of different computer architectures there.  Scroll through to
-    find yours, and uncomment those lines.
+    Determine where your BLAS and LAPACK libraries are.  If the default
+    'make' does not find them, use
+    'make BLAS=-lmyblaslibraryhere LAPACK=-lmylapackgoeshere'
 
 (2) Install Intel's Threading Building Blocks (TBB)
 
     This is optionally used by SuiteSparseQR.  Refer to the User Guide in 
     SuiteSparse/SPQR/Doc/spqr_user_guide.pdf for details.
 
-(3) Configure METIS (or don't use METIS)
+(3) Make other changes to SuiteSparse_config/SuiteSparse_config.mk as needed,
+    or determine what other command line options you need for 'make'.  All
+    options can be set at the 'make' command line without the need to edit this
+    file.  Browse that file to see what options you can control.  If you
+    choose different options and wish to recompile, be sure to do 'make
+    distclean' in this directory first, to remove all files not in the 
+    original distribution.
 
-    If you don't download METIS, skip this step.  Otherwise,
-    cd to metis-4.0 and edit the Makefile.in file.  I recommend making these
-    changes to metis-4.0/Makefile.in, but this is optional.
-
-        CC = gcc
-        OPTFLAGS = -O3
-
-(4) Make other changes to SuiteSparse_config/SuiteSparse_config.mk as needed
-
-    Edit the SuiteSparse_config/SuiteSparse_config.mk file as needed.
-    Directions are in that file.  If you have compiled SuiteSparse already
-    (partially or completely), then whenever you edit the
-    SuiteSparse_config/SuiteSparse_config.mk file, you should then type "make
-    purge" (or "make realclean") in this directory.
-
-(5) Type "make" in this directory.  All packages will be be compiled.  METIS
-    will be compiled if you have it.  Several demos will be run.
+(4) Type "make" in this directory.  All packages will be be compiled.  METIS
+    5.1.0 will be compiled if you have it (note that METIS require CMake to
+    build it).  Several demos will be run.
 
     To compile just the libraries, without running any demos, use
     "make library".
 
-    The libraries will appear in */Lib/*.a and in */Lib/*.so.* (*.dylib for the
-    Mac).  Include files, as needed by user programs that use CHOLMOD, AMD,
-    CAMD, COLAMD, CCOLAMD, BTF, KLU, UMFPACK, LDL, etc. are in */Include/*.h.
-
-    The METIS library is in metis-4.0/libmetis.a.  METIS Include files (not
-    needed by the end user of SuiteSparse) are in located in metis-4.0/Lib/*.h.
+    The libraries will appear in */Lib/*.so.* (*.dylib for the Mac).  Include
+    files, as needed by user programs that use CHOLMOD, AMD, CAMD, COLAMD,
+    CCOLAMD, BTF, KLU, UMFPACK, LDL, etc. are in */Include/*.h.  The include
+    files required by user programs are then copied into SuiteSparse/include,
+    and the compiled libraries are copied into SuiteSparse/lib.  Documentation
+    is copied into SuiteSparse/doc.
 
 (6) To install, type "make install".  This will place copies of all
-    libraries in /usr/local/lib, and all include files in /usr/local/include.
-    You can change the install location by editting SuiteSparse_config.mk.
-    These directories must already exist.
+    libraries in /usr/local/lib, and all include files in /usr/local/include,
+    and all documentation in /usr/share/doc/suitesparse-VERSION.  You can
+    change the install location by editting SuiteSparse_config.mk.  You can
+    also do "make install INSTALL=/my/path" which puts the libraries in
+    /my/path/lib and the include files in /my/path/include.  These directories
+    need not already exist.
 
 (7) To uninstall, type "make uninstall", which reverses "make install"
-    by removing the SuiteSparse libraries from /usr/local/lib, and the
-    include files from /usr/local/include.
+    by removing the SuiteSparse libraries from /usr/local/lib, the
+    include files from /usr/local/include, and the documentaion from
+    /usr/share/doc.
+

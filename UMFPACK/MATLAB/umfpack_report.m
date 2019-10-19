@@ -4,8 +4,8 @@ function umfpack_report (Control, Info)
 %   Example:
 %       umfpack_report (Control, Info) ;
 %
-% Prints the current Control settings for umfpack2, and the statistical
-% information returned by umfpack2 in the Info array.  If Control is
+% Prints the current Control settings for umfpack, and the statistical
+% information returned by umfpack in the Info array.  If Control is
 % an empty matrix, then the default control settings are printed.
 %
 % Control and Info are structs.
@@ -17,7 +17,7 @@ function umfpack_report (Control, Info)
 %       umfpack_report (Control) ;      print the control parameters only.
 %       umfpack_report ;                print the default control parameters
 %
-% See also umfpack, umfpack2, umfpack_make, umfpack_details,
+% See also umfpack, umfpack_make, umfpack_details,
 % umfpack_demo, and umfpack_simple.
 
 % Copyright 1995-2007 by Timothy A. Davis.
@@ -28,7 +28,7 @@ function umfpack_report (Control, Info)
 
 % The contents of Control and Info are defined in umfpack.h
 if (nargin < 1 || isempty (Control))
-    Control = umfpack2 ;
+    Control = umfpack ;
 end
 fprintf ('\nUMFPACK Control:\n') ;
 disp (Control) ;

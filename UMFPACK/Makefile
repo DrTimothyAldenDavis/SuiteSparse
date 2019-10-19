@@ -34,6 +34,7 @@ clean:
 	( cd Lib    ; $(MAKE) clean )
 	( cd Demo   ; $(MAKE) clean )
 	( cd Doc    ; $(MAKE) clean )
+	( cd MATLAB ; $(MAKE) clean )
 	( cd MATLAB ; $(RM) $(CLEAN) rename.h )
 
 # clean, and then remove compiled programs and library archives
@@ -42,7 +43,7 @@ purge:
 	( cd Demo   ; $(MAKE) purge )
 	( cd Doc    ; $(MAKE) purge )
 	( cd Tcov   ; $(MAKE) purge )
-	( cd MATLAB ; $(RM) $(CLEAN) rename.h *.mex* )
+	( cd MATLAB ; $(MAKE) purge )
 
 # create PDF documents for the original distribution
 docs:
@@ -61,7 +62,7 @@ lib: library
 
 # statement coverage (requires Linux; takes a lot of time and disk space)
 cov: purge
-	( cd Tcov ; ./DO.all )
+	( cd Tcov ; ./DO.all $(TCOV_TMP) )
 
 # install UMFPACK
 install:

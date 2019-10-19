@@ -6,7 +6,7 @@ default: all
 
 include ../../SuiteSparse_config/SuiteSparse_config.mk
 
-CLIB = ../Lib/librbio.a ../../SuiteSparse_config/libsuitesparseconfig.a $(LIB)
+CLIB = $(LDFLAGS) -L../../lib -lrbio -lsuitesparseconfig $(LDLIBS)
 
 C = $(CC) $(CF)
 
@@ -29,8 +29,8 @@ library:
 	( cd ../Lib ; $(MAKE) )
 #-------------------------------------------------------------------------------
 
-I = -I../Include -I../../SuiteSparse_config
+I = -I../../include
 
-RBdemo: library RBdemo.c
+RBdemo: RBdemo.c
 	$(C) -o RBdemo $(I) RBdemo.c $(CLIB)
 

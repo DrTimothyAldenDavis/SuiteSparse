@@ -1,24 +1,27 @@
 This is the UMFPACK Tcov directory.  It runs a large number of tests on
-UMFPACK and checks the statement coverage (using gcc and gcov on Linux
-or the Mac, or tcov on Solaris).
+UMFPACK and checks the statement coverage (using gcc and gcov on Linux).
 
 Timothy A. Davis, http://www.suitesparse.com
 
-METIS is required for this test.
+To run the tests, type "make" in this directory.  The METIS, CAMD, CCOLAMD,
+COLAMD, and CHOLMOD libraries will be compiled with TCOV=yes (using gcc)
+and placed in ../../lib.  This will delete any prior compiled libraries placed
+there.  Compiled versions of UMFPACK and its output are placed in
+$(TCOV_TMP)/UMFPACK_TCOV_TMP, where $(TCOV_TMP) defaults to /tmp
+(it can be changed via 'make TCOV_TMP=/home/myself/mytempdirectory' for
+example).
 
-You must first do "make purge" in AMD and UMFPACK.  Then type "make" in
-this directory.
+To remove the compiled copies (in $(TCOV_TMP)/UMFPACK_TCOV_TMP) do 'make clean'.
+This will keep the statement coverage summary, ./cover.out.
+
+To remove all but the distributed files, do 'make purge' or 'make distclean'.
 
 You terminal output will look something like this:
 
 ################################################################################
 Tcov test: 1 di
 ################################################################################
-make[2]: [run] Error 1 (ignored)
-make[2]: [run] Error 1 (ignored)
-make[2]: [run] Error 1 (ignored)
-make[2]: [run] Error 1 (ignored)
-ALL TESTS PASSED: rnorm 2.22e-10 (1.79e-07 shl0, 9.16e-05 arc130 8.81e-08 omega2) cputime 45.7908
+ALL TESTS PASSED: rnorm 2.22e-10 (1.79e-07 shl0, 9.16e-05 arc130 8.81e-08 omega2)
 58.048u 26.549s 1:59.54 70.7%   0+0k 3+340io 0pf+0w
 ################################################################################
 Tcov test: 1 dl
@@ -36,21 +39,15 @@ ALL TESTS PASSED: rnorm 1e-07 ( ... )
 These lines are summarized at the end of the "DO.all" test.
 
 If you see "TEST FAILURE" then something went wrong.  "ERROR" messages
-in the output files tmp/*.out are OK.  Those are supposed to be there;
+in the output files $(TCOV_TMP)/*.out are OK.  Those are supposed to be there;
 the test exercises the error-reporting features of UMFPACK.
 
 Files and directories:
-
-../../UMFPACK	UMFPACK original distribution
-../../AMD	AMD original distribution
-../../SuiteSparse_config	configuration directory for all of SuiteSparse
 
 acov.di         AMD test coverage scripts
 acov.dl
 acov.zi
 acov.zl
-
-AMD_Demo_Makefile   replacement for AMD/Demo/Makefile, for testing
 
 badnum2.umf     intentionally corrupted files to test umfpack_load_* functions
 badnum.umf
@@ -61,10 +58,8 @@ cov		for summarizing tcov output
 covall
 cover.awk
 
-debug.amd
+debug.amd       sets the debug levels in AMD and UMFPACK
 debug.umf
-
-Demo_Makefile   replacement for UMFPACK/Demo/Makefile, for testing
 
 DO              runs one test
 DO.all          run all tests
@@ -85,12 +80,50 @@ Make.8          no optimize, no test for int overflow, no divide-by-zero
 
 Makefile        top-level Makefile for Tcov tests
 
-Out/*		subdirectories for each test,
+$(TCOV_TMP)/UMFPACK_TCOV_TMP/*	    subdirectories for each test,
 		contents can be destroyed when done.
 
 README.txt      this file
 
-TestMat		test matrices for ut.c
+TestMat		test matrices for ut.c:
+
+                adlittle
+                arc130
+                cage3
+                d_dyn
+                galenet
+                matrix1
+                matrix10
+                matrix11
+                matrix12
+                matrix13
+                matrix14
+                matrix15
+                matrix16
+                matrix17
+                matrix18
+                matrix19
+                matrix2
+                matrix20
+                matrix21
+                matrix22
+                matrix23
+                matrix24
+                matrix25
+                matrix26
+                matrix27
+                matrix28
+                matrix29
+                matrix3
+                matrix30
+                matrix4
+                matrix5
+                matrix6
+                matrix7
+                matrix8
+                nug07
+                S_d2q06c
+                shl0
 
 Top_Makefile    replacement for AMD/Makefile and UMFPACK/Makefile, for testing
 
