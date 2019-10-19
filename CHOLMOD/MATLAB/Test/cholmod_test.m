@@ -13,6 +13,7 @@ function cholmod_test (nmat, do_diary)
 % do_diary: 1 to save results in a diary, 0 otherwise.  Default 0.
 %
 % cholmod_demo: run tests on a few random matrices
+% cholmod_updown_demo: run tests for update/downdate and row add/delete
 % graph_demo: graph partitioning demo
 % test0:  test most CHOLMOD functions
 % test1:  test sparse2
@@ -112,7 +113,8 @@ h = waitbar (0.5/tt, 'CHOLMOD demo:') ;
 
 try
 
-    cholmod_demo                    ; waitbar ( 1/tt, h, 'CHOLMOD graph demo');
+    cholmod_demo                    ; waitbar ( 1/tt, h, 'CHOLMOD up/down demo');
+    cholmod_update_demo             ; waitbar ( 1/tt, h, 'CHOLMOD graph demo');
     if (do_metis)
         graph_demo ;
     end

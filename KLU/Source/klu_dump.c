@@ -110,14 +110,19 @@ Int KLU_valid_LU (Int n, Int flag_test_start_ptr, Int Xip [ ],
     for (j = 0 ; j < n ; j++)
     {
         p1 = Xip [j] ;
-        p2 = Xip [j+1] ;
-        PRINTF (("\nColumn: %d p1: %d p2: %d\n", j, p1, p2)) ;
-        if (p1 > p2)
+        PRINTF (("\nColumn of factor: %d p1: %d ", j, p1)) ;
+        if (j < n-1)
         {
-            /* column pointers must be ascending */
-            PRINTF (("column %d pointer bad\n", j)) ;
-            return (FALSE) ;
+            p2 = Xip [j+1] ;
+            PRINTF (("p2: %d ", p2)) ;
+            if (p1 > p2)
+            {
+                /* column pointers must be ascending */
+                PRINTF (("column %d pointer bad\n", j)) ;
+                return (FALSE) ;
+            }
         }
+        PRINTF (("\n")) ;
         GET_POINTER (LU, Xip, Xlen, Xi, Xx, j, len) ;
         for (p = 0 ; p < len ; p++)
         {

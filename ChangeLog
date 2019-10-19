@@ -1,3 +1,17 @@
+Aug 2015: SuiteSparse version 4.4.6
+
+    * SPQR: changed default tol when A has infs, from inf to realmax (~1e308)
+
+July 2015: SuiteSparse version 4.4.5
+
+    * CHOLMOD 3.0.6:
+        - minor fix to CHOLMOD (-DNGPL did not work as expected)
+        - added MATLAB interface for row add/delete (lurowmod)
+    * KLU 1.3.3: Fix for klu_dump.c (debugging case only)
+    * UFcollection:  added additional stats for matrix collection
+    * AMD: changed the license.  Was LGPL only, now either LGPL or BSD,
+        at the user's option.  See AMD/Doc/License.txt for details.
+
 Mar 24, 2015: SuiteSparse version 4.4.4
 
     * CHOLMOD version number corrected.  In 4.4.3, the CHOLMOD_SUBSUB_VERSION

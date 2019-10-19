@@ -206,7 +206,6 @@ for i = f
 	else
 	    fprintf ('  no fill-in\n') ;
 	end
-	clear LD
 
 	% check the factorization, LD2 has LDL' factorization of S+C*C'
 	[L,D] = ldlsplit (LD2) ;
@@ -275,11 +274,52 @@ for i = f
 	err2 = norm (S2*x-b,1) / norm (S,1) ;
 	fprintf ('MATLAB  residual:  %6.1e (sparse b)\n', err2) ;
 
+        % ----------------------------------------------------------------------
+        % test the row delete
+        k = max (1, fix (n/2)) ;
+        tic
+        LD6 = ldlrowmod (LD,k) ;
+        t6 = toc ;
+	fprintf ('\nCHOLMOD time: ldlrowmod, delete    %10.4f  nnz(L) %d', ...
+	    t6, nnz (LD6)) ;
+
+        I = speye (n) ;
+        S2 = S ;
+        S2 (k,:) = I (k,:) ;
+        S2 (:,k) = I (:,k) ;
+
+	% check the factorization, LD6 has LDL' factorization of S2
+	[L,D] = ldlsplit (LD6) ;
+	err = ldl_normest (S2, L, D) / lnorm ;
+	if (err > 1e-6)
+	    error ('!') ;
+	end
+
+        % test the row add, by adding the row back in again
+        Ck = S (:,k) ;
+        S2 (:,k) = Ck ;
+        S2 (k,:) = Ck' ;
+
+        tic
+        LD7 = ldlrowmod (LD6,k,Ck) ;
+        t7 = toc ;
+	fprintf ('\nCHOLMOD time: ldlrowmod, add       %10.4f  nnz(L) %d', ...
+	    t7, nnz (LD7)) ;
+
+	% check the factorization, LD7 has LDL' factorization of S
+	[L,D] = ldlsplit (LD7) ;
+	err = ldl_normest (S, L, D) / lnorm ;
+	if (err > 1e-6)
+	    error ('!') ;
+	end
+
+        % ----------------------------------------------------------------------
+
     % catch
     %	fprintf ('failed\n') ;
     % end
 
-    clear A S C L R LD LD2 LD3 D p q C1 C2 LD3 S2 LD4 b x LD5
+    clear A S C L R LD LD2 LD3 D p q C1 C2 LD3 S2 LD4 b x LD5 I LDL6 LD7 Ck
 
 end
 

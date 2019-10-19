@@ -21,7 +21,7 @@ DrTimothyAldenDavis@gmail.com, http://www.suitesparse.com }
 \title{User Guide for CHOLMOD: a sparse Cholesky factorization and
 modification package}
 
-\date{VERSION 3.0.5, Jan 19, 2015}
+\date{VERSION 3.0.6, July 14, 2015}
 \maketitle
 
 %-------------------------------------------------------------------------------
@@ -329,7 +329,9 @@ the Partition module.   License: GNU LGPL.
 \item {\tt -DCAMD}:   do not include the interfaces to CAMD, CCOLAMD,
 and CSYMAMD in the Partition module.   License: GNU LGPL.
 \item {\tt -DNGPL}:	    do not include any GNU GPL Modules in the CHOLMOD library.
+Note that the Demo requires the MatrixOps module.
 \item {\tt -DNMATRIXOPS}:   do not include the MatrixOps module.   License: GNU GPL.
+Note that the Demo requires the MatrixOps module.
 \item {\tt -DNMODIFY}:	    do not include the Modify module.      License: GNU GPL.
 \item {\tt -DNSUPERNODAL}:  do not include the Supernodal module.  License: GNU GPL.
 \item {\tt -DNPRINT}:	    do not print anything.
@@ -397,6 +399,7 @@ directory.  The following functions are provided:
 {\tt ldlsolve}	    & {\tt x = L'}$\backslash${\tt (D}$\backslash${\tt (L}$\backslash${\tt b))} \\
 {\tt ldlsplit}	    & split the output of {\tt ldlchol} into {\tt L} and {\tt D} \\
 {\tt ldlupdate}	    & update/downdate an {\tt L*D*L'} factorization \\
+{\tt ldlrowmod}	    & add/delete a row from an {\tt L*D*L'} factorization \\
 {\tt metis}	    & interface to {\tt METIS\_NodeND} ordering \\
 {\tt mread}	    & read a sparse or dense Matrix Market file \\
 {\tt mwrite}	    & write a sparse or dense Matrix Market file \\
@@ -433,6 +436,8 @@ Each function is described in the next sections.
 \subsection{{\tt ldlsplit}: split an $\m{LDL}\tr$ factorization}		\input{_ldlsplit_m.tex}
 \newpage
 \subsection{{\tt ldlupdate}: update/downdate an $\m{LDL}\tr$ factorization}	\input{_ldlupdate_m.tex}
+\newpage
+\subsection{{\tt ldlrowmod}: add/delete a row from an $\m{LDL}\tr$ factorization}	\input{_ldlrowmod_m.tex}
 \newpage
 \subsection{{\tt mread}: read a sparse or dense matrix from a Matrix Market file}\input{_mread_m.tex}
 \subsection{{\tt mwrite}: write a sparse or dense matrix to a Matrix Market file}	\input{_mwrite_m.tex}

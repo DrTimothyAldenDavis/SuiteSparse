@@ -1,3 +1,9 @@
+July 14, 2015: version 3.0.6
+
+    * NGPL did not disable MatrixOps, Modify, and Supernodal modules,
+        contradicting its definition in the User Guide.  Fixed in this release.
+    * added MATLAB interface for row add/delete (lurowmod mexFunction)
+
 Jan 19, 2015: version 3.0.5
 
     * minor bug fix to cholmod_symmetry.c for the 'quick return'

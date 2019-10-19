@@ -20,6 +20,7 @@
  * numeric identity matrix before the row is added.
  */
 
+#ifndef NGPL
 #ifndef NMODIFY
 
 #include "cholmod_internal.h"
@@ -675,4 +676,5 @@ int CHOLMOD(rowadd_mark)
     ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 2*n, Common)) ;
     return (ok) ;
 }
+#endif
 #endif

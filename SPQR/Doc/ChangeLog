@@ -1,3 +1,7 @@
+Aug 28, 2015: version 2.0.2
+
+    * changed the default tol when A has inf's
+
 Mar 24, 2015: version 2.0.1
 
     * minor changes to documentation

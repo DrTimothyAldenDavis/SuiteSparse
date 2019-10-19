@@ -36,6 +36,8 @@ function stats = UFstats (A, kind, skip_chol, skip_dmperm, Z)
 %   upperbandwidth      upper bandwidth, [i j]=find(A), max(0,max(j-i))
 %   rcm_lowerbandwidth  lower bandwidth after symrcm
 %   rcm_upperbandwidth  upper bandwidth after symrcm
+%   xmin            smallest nonzero value
+%   xmax            largest nonzero value
 %
 % amd_lnz and amd_flops are not computed for rectangular matrices.
 %
@@ -179,6 +181,7 @@ if (m == n)
     fprintf ('rcm: lo %d up %d', ...
         stats.rcm_lowerbandwidth, stats.rcm_upperbandwidth) ;
 end
+fprintf ('\n') ;
 clear AZ i j p
 
 %-------------------------------------------------------------------------------
@@ -439,5 +442,19 @@ end
 
 fprintf ('nblocks %d\n', stats.nblocks) ;
 fprintf ('sprank %d, time: %g\n', stats.sprank, toc) ;
-fprintf ('UFstats done\n') ;
 
+%-------------------------------------------------------------------------------
+% xmin and xmax
+%-------------------------------------------------------------------------------
+
+[i,j,x] = find (A) ;
+stats.xmin = min (x) ;
+stats.xmax = max (x) ;
+fprintf ('xmin %32.16g xmax %32.16g\n', stats.xmin, stats.xmax) ;
+if (stats.xmin == 0 || stats.xmax == 0)
+    error ('explicit zeros in the matrix!') ;
+end
+
+%-------------------------------------------------------------------------------
+
+fprintf ('UFstats done\n') ;

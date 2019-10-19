@@ -115,13 +115,33 @@ fprintf ('CHOLMOD ldlchol(sparse(A))     time: %6.2f    mflop %8.1f\n', ...
     t2, 1e-6 * fl / t2) ;
 
 tic
-LD = ldlupdate (LD,C) ;
+LD2 = ldlupdate (LD,C) ;
 t3 = toc ;
 fprintf ('CHOLMOD ldlupdate(sparse(A),C) time: %6.2f (rank-1, C dense)\n', t3) ;
 
-[L,D] = ldlsplit (LD) ;
-L = full (L) ;
+[L,D] = ldlsplit (LD2) ;
+% L = full (L) ;
 err = norm ((S+C*C') - L*D*L', 1) / norm (S,1) ;
+fprintf ('err: %g\n', err) ;
+
+k = max (1,fix(n/2))  ;
+tic
+LD3 = ldlrowmod (LD, k) ;
+t4 = toc ;
+fprintf ('CHOLMOD ldlrowmod(LD,k)        time: %6.2f\n', t4) ;
+
+[L,D] = ldlsplit (LD3) ;
+S2 = S ;
+I = speye (n) ;
+S2 (k,:) = I (k,:) ;
+S2 (:,k) = I (:,k) ;
+err = norm (S2 - L*D*L', 1) / norm (S,1) ;
+fprintf ('err: %g\n', err) ;
+
+LD4 = ldlchol (S2) ;
+[L,D] = ldlsplit (LD4) ;
+% L = full (L) ;
+err = norm (S2 - L*D*L', 1) / norm (S,1) ;
 fprintf ('err: %g\n', err) ;
 
 tic

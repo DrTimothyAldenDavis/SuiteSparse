@@ -8,11 +8,12 @@ function L = resymbol (L, A)						    %#ok
 %   symmetric.  Only tril(A) is used.  Entries in L that are not in the Cholesky
 %   factorization of A are removed from L.  L can be from an LL' or LDL'
 %   factorization (lchol or ldlchol).  resymbol is useful after a series of
-%   downdates via ldlupdate, since downdates do not remove any entries in L.
-%   The numerical values of A are ignored; only its nonzero pattern is used.
+%   downdates via ldlupdate or ldlrowmod, since downdates do not remove any
+%   entries in L.  The numerical values of A are ignored; only its nonzero
+%   pattern is used.
 %
-% See also LCHOL, LDLUPDATE
+% See also LCHOL, LDLUPDATE, LDLROWMOD
 
-%   Copyright 2006-2007, Timothy A. Davis, http://www.suitesparse.com
+%   Copyright 2006-2015, Timothy A. Davis, http://www.suitesparse.com
 
 error ('resymbol not found') ;

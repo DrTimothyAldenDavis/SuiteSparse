@@ -42,6 +42,12 @@ function UF_Index = UFindex (matrixlist)
 %   posdef          1 if positive definite, 0 otherwise
 %   isND            1 if a 2D/3D problem, 0 otherwise
 %   isGraph         1 if a graph, 0 otherwise
+%   lowerbandwidth      lower bandwidth, [i j]=find(A), max(0,max(i-j))
+%   upperbandwidth      upper bandwidth, [i j]=find(A), max(0,max(j-i))
+%   rcm_lowerbandwidth  lower bandwidth after symrcm
+%   rcm_upperbandwidth  upper bandwidth after symrcm
+%   xmin            smallest nonzero value
+%   xmax            largest nonzero value
 %
 % If the statistic is intentionally not computed, it is set to -2.  Some
 % statistics are not computed for rectangular or structurally singular
@@ -154,6 +160,8 @@ if (create_new)
     UF_Index.upperbandwidth = nothing ;
     UF_Index.rcm_lowerbandwidth = nothing ;
     UF_Index.rcm_upperbandwidth = nothing ;
+    UF_Index.xmin = nothing ;
+    UF_Index.xmax = nothing ;
 
 else
 
@@ -189,10 +197,12 @@ else
             UF_Index.ncc        = [UF_Index.ncc nothing] ;
             UF_Index.isND       = [UF_Index.isND nothing] ;
             UF_Index.isGraph    = [UF_Index.isGraph nothing] ;
-            UF_Index.lowerbandwidth     = [UF_Index.lowerbandwidth nothing ;
-            UF_Index.upperbandwidth     = [UF_Index.upperbandwidth nothing ;
-            UF_Index.rcm_lowerbandwidth = [UF_Index.rcm_upperbandwidth nothing ;
-            UF_Index.rcm_upperbandwidth = [UF_Index.rcm_upperbandwidth nothing ;
+            UF_Index.lowerbandwidth     = [UF_Index.lowerbandwidth nothing] ;
+            UF_Index.upperbandwidth     = [UF_Index.upperbandwidth nothing] ;
+            UF_Index.rcm_lowerbandwidth = [UF_Index.rcm_upperbandwidth nothing];
+            UF_Index.rcm_upperbandwidth = [UF_Index.rcm_upperbandwidth nothing];
+            UF_Index.xmin = [UF_Index.xmin nothing] ;
+            UF_Index.xmax = [UF_Index.xmax nothing] ;
         end
     end
 end
@@ -362,6 +372,8 @@ for k = 1:length (matrixlist)
     UF_Index.upperbandwidth (id) = stats.upperbandwidth ;
     UF_Index.rcm_lowerbandwidth (id) = stats.rcm_lowerbandwidth ;
     UF_Index.rcm_upperbandwidth (id) = stats.rcm_upperbandwidth ;
+    UF_Index.xmin (id) = stats.xmin ;
+    UF_Index.xmax (id) = stats.xmax ;
 
     %---------------------------------------------------------------------------
     % clear the problem and save the index and UFstats.csv

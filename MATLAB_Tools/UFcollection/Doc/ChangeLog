@@ -1,3 +1,8 @@
+June 3, 2015:
+
+    * correction in SuiteSparse 4.4.5 to UFindex.m, introduced a typo in
+	UFindex.m in SuiteSparse 4.3.0.
+
 Jun 20, 2012: verison 1.6.2
 
     * minor update for Windows (removed filesep)

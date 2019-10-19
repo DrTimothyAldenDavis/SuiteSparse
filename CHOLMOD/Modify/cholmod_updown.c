@@ -61,6 +61,7 @@
  * numeric identity matrix.
  */
 
+#ifndef NGPL
 #ifndef NMODIFY
 
 #include "cholmod_internal.h"
@@ -1592,4 +1593,5 @@ int CHOLMOD(updown_mask2)
     DEBUG (CHOLMOD(dump_factor) (L, "output L for updown", Common)) ;
     return (TRUE) ;
 }
+#endif
 #endif

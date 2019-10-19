@@ -9,12 +9,12 @@ function x = ldlsolve (LD,b)						    %#ok
 %   [L,D] = ldlsplit (LD) ;
 %   x = L' \ (D \ (L \ b)) ;
 %
-%   LD is from ldlchol, or as updated by ldlupdate.  You must not modify LD as
-%   obtained from ldlchol or ldlupdate prior to passing it to this function.
-%   See ldlupdate for more details.
+%   LD is from ldlchol, or as updated by ldlupdate or ldlrowmod.  You must not
+%   modify LD as obtained from ldlchol, ldlupdate, or ldlrowmod prior to passing
+%   it to this function.  See ldlupdate for more details.
 %
-%   See also LDLCHOL, LDLUPDATE, LDLSPLIT
+%   See also LDLCHOL, LDLUPDATE, LDLSPLIT, LDLROWMOD
 
-%   Copyright 2006-2007, Timothy A. Davis, http://www.suitesparse.com
+%   Copyright 2006-2017, Timothy A. Davis, http://www.suitesparse.com
 
 error ('ldlsolve mexFunction not found') ;
