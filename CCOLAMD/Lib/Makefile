@@ -14,10 +14,11 @@ SRC = ../Source/ccolamd.c ../Source/ccolamd_global.c
 
 # creates libccolamd.a, a C-callable COLAMD library
 libccolamd.a:  $(SRC) $(INC)
-	$(CC) $(CFLAGS) $(I) -c ../Source/ccolamd_global.c
-	$(CC) $(CFLAGS) $(I) -c ../Source/ccolamd.c
-	$(CC) $(CFLAGS) $(I) -c ../Source/ccolamd.c -DDLONG -o ccolamd_l.o
-	$(AR) libccolamd.a ccolamd.o ccolamd_l.o ccolamd_global.o
+	$(CC) $(CF) $(I) -c ../Source/ccolamd_global.c
+	$(CC) $(CF) $(I) -c ../Source/ccolamd.c
+	$(CC) $(CF) $(I) -c ../Source/ccolamd.c -DDLONG -o ccolamd_l.o
+	$(ARCHIVE)  libccolamd.a ccolamd.o ccolamd_l.o ccolamd_global.o
+	- $(RANLIB) libccolamd.a 
 
 ccode: libccolamd.a
 

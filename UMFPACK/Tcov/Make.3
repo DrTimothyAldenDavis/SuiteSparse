@@ -3,15 +3,14 @@
 #===============================================================================
 
 CC = gcc
-CFLAGS = -O0 -g -ftest-coverage -fprofile-arcs -O0
+CF = -O0 -g -ftest-coverage -fprofile-arcs -O0
 UMFPACK_CONFIG = -DCBLAS -DTESTING -I/cise/research/sparse/Install/ATLAS/Linux_P4SSE2/include
 LIB = -lcblas -latlas -lm
 
 RANLIB = ranlib
 MV = mv -f
-RM = rm -f
 MEX = mex -inline -g
-AR = ar cr
+ARCHIVE = ar rv
 
 #===============================================================================
 

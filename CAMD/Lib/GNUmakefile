@@ -6,7 +6,7 @@ default: libcamd.a
 
 include ../../UFconfig/UFconfig.mk
 
-C = $(CC) $(CFLAGS) $(CONFIG) -I../Include -I../../UFconfig
+C = $(CC) $(CF) -I../Include -I../../UFconfig
 
 #-------------------------------------------------------------------------------
 # source files
@@ -44,7 +44,7 @@ camd_l_%.o: ../Source/camd_%.c $(INC)
 #-------------------------------------------------------------------------------
 
 libcamd.a: camd_global.o $(CAMDI) $(CAMDL)
-	$(AR) libcamd.a $^
+	$(ARCHIVE)  libcamd.a $^
 	- $(RANLIB) libcamd.a
 
 #-------------------------------------------------------------------------------

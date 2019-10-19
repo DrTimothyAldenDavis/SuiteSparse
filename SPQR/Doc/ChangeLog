@@ -1,3 +1,10 @@
+Dec 7, 2011: version 1.2.3
+
+    * fixed the Makefile to better align with CFLAGS and other standards
+    * minor fix to SPQR/MATLAB/spqr_make.m
+    * Makefile now detects whether or not METIS is present, and
+        sets -DNPARTITION if it is not
+
 May 10, 2011: version 1.2.2
 
     * minor fix to SPQR/Include/SuiteSparseQR_C.h to accomodate the mixing

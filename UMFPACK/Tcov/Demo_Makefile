@@ -9,7 +9,7 @@ default: libs run
 
 include ../../UFconfig/UFconfig.mk
 
-C = $(CC) $(CFLAGS) $(UMFPACK_CONFIG) -I../Include -I../../AMD/Include \
+C = $(CC) $(CF) $(UMFPACK_CONFIG) -I../Include -I../../AMD/Include \
     -I../../UFconfig
 
 INC = ../Include/umfpack.h ../../AMD/Include/amd.h ../../UFconfig/UFconfig.h
@@ -17,25 +17,25 @@ INC = ../Include/umfpack.h ../../AMD/Include/amd.h ../../UFconfig/UFconfig.h
 LIBS = $(BLAS) $(XERBLA) $(LIB)
 
 ../Lib/libumfpack.a:
-	( cd ../Lib ; $(MAKE) )
+	( cd ../Lib && $(MAKE) )
 
 ../../AMD/Lib/libamd.a:
-	( cd ../../AMD ; $(MAKE) library )
+	( cd ../../AMD && $(MAKE) library )
 
 ../../CHOLMOD/Lib/libcholmod.a:
-	( cd ../../CHOLMOD ; $(MAKE) library )
+	( cd ../../CHOLMOD && $(MAKE) library )
 
 ../../COLAMD/Lib/libcolamd.a:
-	( cd ../../COLAMD ; $(MAKE) library )
+	( cd ../../COLAMD && $(MAKE) library )
 
 ../../CCOLAMD/Lib/libccolamd.a:
-	( cd ../../CCOLAMD ; $(MAKE) library )
+	( cd ../../CCOLAMD && $(MAKE) library )
 
 ../../CAMD/Lib/libcamd.a:
-	( cd ../../CAMD ; $(MAKE) library )
+	( cd ../../CAMD && $(MAKE) library )
 
 ../../metis-4.0/libmetis.a:
-	( cd ../../metis-4.0/Lib ; $(MAKE) )
+	( cd ../../metis-4.0/Lib && $(MAKE) )
 
 UMFPACK = ../Lib/libumfpack.a ../../AMD/Lib/libamd.a \
     ../../CHOLMOD/Lib/libcholmod.a ../../COLAMD/Lib/libcolamd.a \
@@ -44,8 +44,8 @@ UMFPACK = ../Lib/libumfpack.a ../../AMD/Lib/libamd.a \
 
 
 libs:
-	( cd ../Lib ; $(MAKE) )
-	( cd ../../AMD ; $(MAKE) library )
+	( cd ../Lib && $(MAKE) )
+	( cd ../../AMD && $(MAKE) library )
 
 #-------------------------------------------------------------------------------
 # Create the demo programs, run them, and compare the output

@@ -3,7 +3,9 @@
 #===============================================================================
 
 # If you compile CHOLMOD with -DNPARTITION, then you do not need METIS,
-# CCOLAMD, or the Partition module.
+# CCOLAMD, or the Partition module, but by default this test requres METIS.
+#
+# To compile: use "make".  To run the test: "make go"
 
 include ../../UFconfig/UFconfig.mk
 include Make.inc
@@ -11,7 +13,7 @@ include Make.inc
 # Tcov requires gcc
 CC = gcc
 
-C = $(CC) $(CFLAGS) $(CHOLMOD_CONFIG) $(NANTESTS)
+C = $(CC) $(CF) $(CHOLMOD_CONFIG) $(NANTESTS)
 
 # optimized LAPACK and BLAS
 # LIB = $(METIS) -lm $(LAPACK) $(BLAS) $(XERBLA)
@@ -297,24 +299,24 @@ IALL = $(IOBJ) $(AMDOBJ)  $(COLAMDOBJ)  $(CCOLAMDOBJ)  $(CAMDOBJ)
 LALL = $(LOBJ) $(LAMDOBJ) $(LCOLAMDOBJ) $(LCCOLAMDOBJ) $(LCAMDOBJ)
 
 
-cm: $(IALL) $(TEST) cm.h Makefile
+cm: $(METIS) $(IALL) $(TEST) cm.h Makefile
 	$(C) $(I) $(TEST) -o cm $(IALL) $(LIB)
 
-cl: $(LALL) $(TEST) cm.h Makefile
+cl: $(METIS) $(LALL) $(TEST) cm.h Makefile
 	$(C) -DDLONG $(I) $(TEST) -o cl $(LALL) $(LIB)
 
-cmread: $(IALL) cmread.c Makefile
+cmread: $(METIS) $(IALL) cmread.c Makefile
 	$(C) $(I) cmread.c -o cmread $(IALL) $(LIB)
 
-clread: $(LALL) cmread.c Makefile
+clread: $(METIS) $(LALL) cmread.c Makefile
 	$(C) -DDLONG $(I) cmread.c -o clread $(LALL) $(LIB)
 
-z_demo: $(IALL) ../Demo/cholmod_demo.c cm.h Makefile \
+z_demo: $(METIS) $(IALL) ../Demo/cholmod_demo.c cm.h Makefile \
 	../Demo/cholmod_demo.h
 	cat ../Demo/cholmod_demo.c > z_demo.c
 	$(C) $(I) -I../Demo z_demo.c -o z_demo $(IALL) $(LIB)
 
-l_demo: $(LALL) ../Demo/cholmod_l_demo.c cm.h Makefile \
+l_demo: $(METIS) $(LALL) ../Demo/cholmod_l_demo.c cm.h Makefile \
 	../Demo/cholmod_demo.h
 	cat ../Demo/cholmod_l_demo.c > l_demo.c
 	$(C) -DDLONG $(I) -I../Demo l_demo.c -o l_demo $(LALL) $(LIB)
@@ -503,10 +505,10 @@ go: z_demo l_demo cmread clread cm cl
 	- $(COVER)
 	$(V) ./cl -n < Matrix/galenet > tmp/l_galenet_nan.out
 	- $(COVER)
-	$(V) ./cm    < Matrix/a1      > tmp/a1.out
-	- $(COVER)
-	$(V) ./cl    < Matrix/a1      > tmp/l_a1.out
-	- $(COVER)
+	# $(V) ./cm    < Matrix/a1      > tmp/a1.out
+	# - $(COVER)
+	# $(V) ./cl    < Matrix/a1      > tmp/l_a1.out
+	# - $(COVER)
 	$(V) ./cm    < Matrix/zero    > tmp/zero.out
 	$(V) ./cl    < Matrix/zero    > tmp/zero.out
 	- $(COVER)
@@ -1215,3 +1217,6 @@ l_super_solve.o: ../Supernodal/cholmod_super_solve.c
 	$(C) -c $(I) l_super_solve.c
 
 #-------------------------------------------------------------------------------
+
+$(METIS):
+	( cd ../../metis-4.0/Lib && $(MAKE) )

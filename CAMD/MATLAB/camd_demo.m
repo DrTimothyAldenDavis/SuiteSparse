@@ -27,7 +27,6 @@ n = size (A,1) ;
 rand ('state', 0) ;
 C = irand (6, n) ;
 
-figure (1)
 clf
 hold off
 subplot (2,2,1) ;

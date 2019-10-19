@@ -7,7 +7,7 @@ include ../../UFconfig/UFconfig.mk
 # for testing only:
 # TEST = -DTESTING
 
-C = $(CC) $(CFLAGS)
+C = $(CC) $(CF)
 
 INC = ../Include/btf.h ../Include/btf_internal.h
 
@@ -21,8 +21,8 @@ OBJ = btf_order.o btf_maxtrans.o btf_strongcomp.o \
     btf_l_order.o btf_l_maxtrans.o btf_l_strongcomp.o
 
 libbtf.a: $(OBJ)
-	$(AR) libbtf.a $(OBJ)
-	$(RANLIB) libbtf.a
+	$(ARCHIVE)  libbtf.a $(OBJ)
+	- $(RANLIB) libbtf.a
 
 $(OBJ): $(INC)
 

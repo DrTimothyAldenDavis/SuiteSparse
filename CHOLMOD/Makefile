@@ -2,7 +2,7 @@
 # CHOLMOD Makefile
 #-------------------------------------------------------------------------------
 
-VERSION = 1.7.3
+VERSION = 1.7.4
 
 # Note: If you do not have METIS, or do not wish to use it in CHOLMOD, you must
 # compile CHOLMOD with the -DNPARTITION flag.  See ../UFconfig/UFconfig.mk.
@@ -13,7 +13,6 @@ include ../UFconfig/UFconfig.mk
 
 # Compile the C-callable libraries and the Demo programs.
 all:
-	( cd Lib ; $(MAKE) )
 	( cd Demo ; $(MAKE) )
 
 # Compile the C-callable libraries only.
@@ -66,6 +65,8 @@ install:
 	( cd $(INSTALL_LIB) ; ln -sf libcholmod.$(VERSION).a libcholmod.a )
 	$(CP) Include/cholmod*.h $(INSTALL_INCLUDE)
 	$(RM) $(INSTALL_INCLUDE)/cholmod_internal.h
+	chmod 644 $(INSTALL_LIB)/libcholmod*.a
+	chmod 644 $(INSTALL_INCLUDE)/cholmod*.h
 
 # uninstall CHOLMOD
 uninstall:

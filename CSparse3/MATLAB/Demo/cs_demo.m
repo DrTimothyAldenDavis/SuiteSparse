@@ -17,7 +17,6 @@ if (nargin < 2)
     matrixpath = [] ;
 end
 
-figure (1)
 clf
 
 fprintf ('\n\n-------------------------------------------------------\n') ;

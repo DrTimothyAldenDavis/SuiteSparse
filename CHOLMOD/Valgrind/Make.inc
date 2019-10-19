@@ -5,4 +5,4 @@ V = valgrind --suppressions=suppress --quiet
 COVER =
 
 # no test coverage needed
-CFLAGS = -O0 -g
+CF = -O0 -g

@@ -1,12 +1,8 @@
-# Use cs_make (or cs_install) in MATLAB instead of this file.
-
 # for 64-bit MATLAB use this instead:
 # MEX = mex -O -largeArrayDims
 MEX = mex -O
-
-AR = ar cr
+ARCHIVE = ar rv
 RANLIB = ranlib
-
 I = -I../../Include
 
 all: mexcsparse.a cs_mex.h
@@ -93,8 +89,8 @@ CS = cs_mex.o \
 	cs_randperm.o
 
 mexcsparse.a: $(CS)
-	$(AR) mexcsparse.a $(CS)
-	$(RANLIB) mexcsparse.a
+	$(ARCHIVE)  mexcsparse.a $(CS)
+	- $(RANLIB) mexcsparse.a
 
 $(CS): ../../Include/cs.h
 
@@ -256,9 +252,9 @@ cs_load.o: ../../Source/cs_load.c
 	$(MEX) -c $(I) $<
 
 clean:
-	rm -f *.o
+	- $(RM) *.o
 
 distclean: clean
-	rm -f *.mex* *.dll *.a *.obj
+	- $(RM) *.mex* *.dll *.a *.obj
 
 purge: distclean

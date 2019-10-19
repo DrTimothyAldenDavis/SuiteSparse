@@ -2,25 +2,27 @@
 # SuiteSparseQR/Tcov/Makefile
 #===============================================================================
 
+# This test requires METIS
+
 # run statement-coverage test without Valgrind
-default: go
+default: $(METIS) go
 
 # to run with Valgrind as well
-valgrind: vgo
+valgrind: $(METIS) vgo
 
 ccode: all
 
 include ../../UFconfig/UFconfig.mk
 
 # without SuiteSparseQR_expert.cpp functions:
-CFLAGS = -DNEXPERT \
+CF = -DNEXPERT \
 	-O0 -g -fprofile-arcs -ftest-coverage \
 	-Wall -W -Wshadow -Winline -Wno-unused-parameter \
 	-Wredundant-decls -Wdisabled-optimization \
 	-ansi -fexceptions
 
 # for statement coverage (with gcov; see go) and picky compiler warnings
-CFLAGS = \
+CF = \
 	-O0 -g -fprofile-arcs -ftest-coverage \
 	-Wall -W -Wshadow -Winline -Wno-unused-parameter \
 	-Wredundant-decls -Wdisabled-optimization \
@@ -35,9 +37,12 @@ CFLAGS = \
 # because of how the BLAS is optimized:
   FLIB = $(LAPACK) $(BLAS)
 
-CLIB = ../../CHOLMOD/Lib/libcholmod.a ../../AMD/Lib/libamd.a \
-	../../COLAMD/Lib/libcolamd.a $(METIS) \
-	../../CCOLAMD/Lib/libccolamd.a ../../CAMD/Lib/libcamd.a -lm
+CLIB =  ../../CHOLMOD/Lib/libcholmod.a \
+        ../../AMD/Lib/libamd.a \
+	../../COLAMD/Lib/libcolamd.a \
+	../../CCOLAMD/Lib/libccolamd.a \
+        ../../CAMD/Lib/libcamd.a \
+        $(METIS)
 
 all: qrtest
 
@@ -103,15 +108,15 @@ $(OBJ): $(INC)
 
 I = -I../../CHOLMOD/Include -I../../UFconfig -I../Include
 
-C = $(CPLUSPLUS) $(CFLAGS) $(I) $(SPQR_CONFIG)
+C = $(CXX) $(CF) $(I) $(SPQR_CONFIG)
 
 LIBS = $(CLIB) $(FLIB) $(RTLIB)
 
 qrtestc.o: qrtestc.c $(INC)
-	$(CC) $(CFLAGS) $(I) -c $<
+	$(CC) $(CF) $(I) -c $<
 
-qrtest: qrtest.cpp $(INC) $(OBJ)
-	$(C) qrtest.cpp -o qrtest $(OBJ) $(LIBS)
+qrtest: $(CLIB) qrtest.cpp $(INC) $(OBJ)
+	$(C) qrtest.cpp -o qrtest $(OBJ) $(LIBS) -lm
 
 go: qrtest
 	- ./qrtest matrixlist.txt > qrtest_out.txt
@@ -248,3 +253,22 @@ SuiteSparseQR_C.o: ../Source/SuiteSparseQR_C.cpp
 
 spqr_rmap.o: ../Source/spqr_rmap.cpp
 	$(C) -c $<
+
+$(METIS):
+	( cd ../../metis-4.0/Lib && $(MAKE) )
+
+../../CHOLMOD/Lib/libcholmod.a:
+	( cd ../../CHOLMOD && $(MAKE) lib )
+
+../../AMD/Lib/libamd.a:
+	( cd ../../AMD && $(MAKE) lib )
+
+../../COLAMD/Lib/libcolamd.a:
+	( cd ../../COLAMD && $(MAKE) lib )
+
+../../CCOLAMD/Lib/libccolamd.a:
+	( cd ../../CCOLAMD && $(MAKE) lib )
+
+../../CAMD/Lib/libcamd.a:
+	( cd ../../CAMD && $(MAKE) lib )
+

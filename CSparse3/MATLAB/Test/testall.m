@@ -44,6 +44,7 @@ testwait (27, ntests, h) ; test27 ;
 testwait (28, ntests, h) ; test28 ;
 
 close (h)
+fprintf ('All CSparse tests passed\n') ;
 
 function testwait (n,ntests,h)
 fprintf ('\n------------------------ test%d\n', n) ;

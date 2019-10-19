@@ -1,0 +1,8 @@
+Dec 7, 2011
+
+    * minor fix to ssmult_install.m
+
+Nov 2, 2010
+
+    * changed mxCreateScalarDouble (which is obsolete) to mxCreateDoubleScalar,
+	in ssmultsym.c

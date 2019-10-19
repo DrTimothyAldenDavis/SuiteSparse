@@ -9,14 +9,12 @@ function spqr_demo
 %   Copyright 2008, Timothy A. Davis
 %   http://www.cise.ufl.edu/research/sparse
 
-more on
 help spqr
 help spqr_solve
 help spqr_qmult
 help spqr_demo
-more off
 
-input ('Hit enter to start the SuiteSparseQR demo: ', 's') ;
+% input ('Hit enter to start the SuiteSparseQR demo: ', 's') ;
 fprintf ('\nTesting SuiteSparseQR functions ... please wait ...\n') ;
 
 load west0479 ;
@@ -24,7 +22,6 @@ A = west0479 ;
 rand ('state', 0) ;     %#ok
 m = size (A,1) ;
 
-figure (1)
 clf
 
 maxerr = 0 ;

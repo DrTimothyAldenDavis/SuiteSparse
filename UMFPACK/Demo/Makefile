@@ -15,12 +15,45 @@ all64: libs run hb fortran64
 
 include ../../UFconfig/UFconfig.mk
 
-C = $(CC) $(CFLAGS) $(UMFPACK_CONFIG) -I../Include -I../../AMD/Include \
-    -I../../UFconfig
+#-------------------------------------------------------------------------------
+# the optional Partition module requires METIS, CAMD, and CCOLAMD
+LIB_WITH_PARTITION =
+CONFIG1 = -DNCHOLMOD
+CONFIG2 = -DNPARTITION
+LIB_WITH_CHOLMOD =
+ifeq (,$(findstring -DNCHOLMOD, $(UMFPACK_CONFIG)))
+    # CHOLMOD is requested.  See if it is available
+    ifeq (../../CHOLMOD, $(wildcard ../../CHOLMOD))
+        ifeq (../../COLAMD, $(wildcard ../../COLAMD))
+            # CHOLMOD and COLAMD are available
+            CONFIG1 =
+            LIB_WITH_CHOLMOD = ../../CHOLMOD/Lib/libcholmod.a \
+                ../../COLAMD/Lib/libcolamd.a
+            # check if METIS is requested and available
+            ifeq (,$(findstring -DNPARTITION, $(CHOLMOD_CONFIG)))
+                # METIS is requested.  See if it is available
+                ifeq ($(METIS), $(wildcard $(METIS)))
+                    ifeq (../../CAMD, $(wildcard ../../CAMD))
+                        ifeq (../../CCOLAMD, $(wildcard ../../CCOLAMD))
+                            CONFIG2 =
+                            LIB_WITH_PARTITION = $(METIS) \
+                                ../../CCOLAMD/Lib/libccolamd.a \
+                                ../../CAMD/Lib/libcamd.a
+                        endif
+                    endif
+                endif
+            endif
+        endif
+    endif
+endif
+#-------------------------------------------------------------------------------
+
+C = $(CC) $(CF) $(UMFPACK_CONFIG) $(CONFIG1) $(CONFIG2) \
+    -I../Include -I../../AMD/Include -I../../UFconfig
 
 INC = ../Include/umfpack.h ../../AMD/Include/amd.h ../../UFconfig/UFconfig.h
 
-LIBS = $(BLAS) $(XERBLA) $(LIB)
+LIBS = $(BLAS) $(XERBLA) $(LIB) $(LIB_WITH_CHOLMOD) $(LIB_WITH_PARTITION)
 
 ../Lib/libumfpack.a:
 	( cd ../Lib ; $(MAKE) )
@@ -29,24 +62,23 @@ LIBS = $(BLAS) $(XERBLA) $(LIB)
 	( cd ../../AMD ; $(MAKE) library )
 
 ../../CHOLMOD/Lib/libcholmod.a:
-	( cd ../../CHOLMOD ; $(MAKE) library )
+	- ( cd ../../CHOLMOD && $(MAKE) library )
 
 ../../COLAMD/Lib/libcolamd.a:
-	( cd ../../COLAMD ; $(MAKE) library )
+	- ( cd ../../COLAMD && $(MAKE) library )
+
 
 ../../CCOLAMD/Lib/libccolamd.a:
-	( cd ../../CCOLAMD ; $(MAKE) library )
+	- ( cd ../../CCOLAMD && $(MAKE) library )
 
 ../../CAMD/Lib/libcamd.a:
-	( cd ../../CAMD ; $(MAKE) library )
+	- ( cd ../../CAMD && $(MAKE) library )
 
 $(METIS):
-	( cd $(METIS_PATH) ; $(MAKE) )
+	( cd $(METIS_PATH) && $(MAKE) )
 
 UMFPACK = ../Lib/libumfpack.a ../../AMD/Lib/libamd.a \
-    ../../CHOLMOD/Lib/libcholmod.a ../../COLAMD/Lib/libcolamd.a \
-    ../../CAMD/Lib/libcamd.a $(METIS) \
-    ../../CCOLAMD/Lib/libccolamd.a
+    $(WITH_CHOLMOD) $(WITH_PARTITION)
 
 libs: $(UMFPACK)
 
@@ -194,7 +226,7 @@ purge: clean
 	- $(RM) umf4hb umf4zhb *.umf my_umf4hb.out
 	- $(RM) umf4hb64 my_umf4hb64.out my_umf4zhb.out
 	- $(RM) umf4 readhb readhb_nozeros readhb_size tmp/*
-	- $(RM) -rf *.dSYM
+	- $(RM) -r *.dSYM
 
 clean:
 	- $(RM) $(CLEAN)

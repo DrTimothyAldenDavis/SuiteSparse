@@ -10,9 +10,9 @@ go: prog
 	- ( cd AMD/Source     ; gcovs amd*.c )
 
 prog:
-	( cd UMFPACK ; make library )
-	( cd AMD ; make library )
-	$(CC) -DDINT $(CFLAGS) $(UMFPACK_CONFIG) -IUMFPACK/Source -IUMFPACK/Include -IAMD/Source -IAMD/Include -o ut ut.c UMFPACK/Lib/libumfpack.a AMD/Lib/libamd.a $(LIB)
+	( cd UMFPACK ; $(MAKE) library )
+	( cd AMD ; $(MAKE) library )
+	$(CC) -DDINT $(CF) $(UMFPACK_CONFIG) -IUMFPACK/Source -IUMFPACK/Include -IAMD/Source -IAMD/Include -o ut ut.c UMFPACK/Lib/libumfpack.a AMD/Lib/libamd.a $(LIB)
 
 utcov:
 	- ( cd UMFPACK/Source ; gcovs umf*.c )
@@ -20,5 +20,5 @@ utcov:
 
 
 purge:
-	( cd UMFPACK ; make purge )
-	( cd AMD ; make purge )
+	( cd UMFPACK ; $(MAKE) purge )
+	( cd AMD ; $(MAKE) purge )

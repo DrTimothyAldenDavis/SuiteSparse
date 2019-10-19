@@ -1,3 +1,8 @@
+Dec 7, 2011: version 2.2.6
+
+    * fixed the Makefile to better align with CFLAGS and other standards
+    * minor fix to cs_install.m
+
 Jan 25, 2011: version 2.2.5
 
     * minor fix to "make install"

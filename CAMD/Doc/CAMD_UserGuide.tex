@@ -13,7 +13,7 @@
 \begin{document}
 %------------------------------------------------------------------------------
 
-\title{CAMD Version 2.2 User Guide}
+\title{CAMD User Guide}
 \author{Patrick R. Amestoy\thanks{ENSEEIHT-IRIT,
 2 rue Camichel 31017 Toulouse, France.
 email: amestoy@enseeiht.fr.  http://www.enseeiht.fr/$\sim$amestoy.}
@@ -36,7 +36,7 @@ http://www.numerical.rl.ac.uk/people/isd/isd.html.
 This work was supported by the EPSRC under grant GR/R46441.
 }}
 
-\date{May 31, 2007}
+\date{VERSION 2.2.3, Dec 7, 2011}
 \maketitle
 
 %------------------------------------------------------------------------------
@@ -48,7 +48,7 @@ A MATLAB interface is included.
 \end{abstract}
 %------------------------------------------------------------------------------
 
-CAMD Version 2.2, Copyright\copyright 2007 by Timothy A.  Davis,
+CAMD Copyright\copyright 2011 by Timothy A.  Davis,
 Yanqing (Morris) Chen,
 Patrick R. Amestoy, and Iain S. Duff.  All Rights Reserved.
 CAMD is available under alternate licences; contact T. Davis for details.
@@ -617,6 +617,7 @@ and gives details on their use.
 
 {\footnotesize
 \begin{verbatim}
+
 /* ========================================================================= */
 /* === CAMD:  approximate minimum degree ordering ========================== */
 /* ========================================================================= */
@@ -1024,11 +1025,11 @@ void camd_l_info     (double Info [ ]) ;
  *      #endif
  */
 
-#define CAMD_DATE "May 31, 2007"
+#define CAMD_DATE "Dec 7, 2011"
 #define CAMD_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
 #define CAMD_MAIN_VERSION 2
 #define CAMD_SUB_VERSION 2
-#define CAMD_SUBSUB_VERSION 0
+#define CAMD_SUBSUB_VERSION 3
 #define CAMD_VERSION CAMD_VERSION_CODE(CAMD_MAIN_VERSION,CAMD_SUB_VERSION)
 
 #ifdef __cplusplus

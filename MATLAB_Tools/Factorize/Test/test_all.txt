@@ -1,0 +1,1160 @@
+ TEST_ALL test the Factorize package (factorize, inverse, and related)
+ 
+  If you have editted the Factorize package, type "clear classes" before
+  running any tests.
+ 
+  Example
+    test_all                % run all tests
+    test_all (0) ;          % do not run performance tests
+ 
+  See also factorize, inverse, test_factorize,
+  test_performance, test_accuracy, test_disp, test_errors
+
+
+----------Dense LU factorization:
+
+factorize: strategy default, A has size 3-by-3, full.
+factorize: try LU ... OK.
+
+F = 
+
+  class: factorization_lu_dense
+  dense LU factorization: P*A = L*U
+  A: [3x3 double]
+  Factors:
+    L: [3x3 double]
+    U: [3x3 double]
+    P: [3x3 double]
+
+  is_inverse: 0
+  is_ctrans: 0
+  alpha: 1
+  A_rank: 3
+  A_condest: 2.628578e+00
+
+S = 
+
+  class: factorization_lu_dense
+  dense LU factorization: P*A = L*U
+  A: [3x3 double]
+  Factors:
+    L: [3x3 double]
+    U: [3x3 double]
+    P: [3x3 double]
+
+  is_inverse: 1
+  is_ctrans: 0
+  alpha: 1
+  A_rank: 3
+  A_condest: 2.628578e+00
+
+Dense LU With an imaginary F.alpha:
+
+F = 
+
+  class: factorization_lu_dense
+  dense LU factorization: P*A = L*U
+  A: [3x3 double]
+  Factors:
+    L: [3x3 double]
+    U: [3x3 double]
+    P: [3x3 double]
+
+  is_inverse: 0
+  is_ctrans: 0
+  alpha: 3.14159 + (2)i
+  A_rank: 3
+  A_condest: 2.628578e+00
+
+----------Sparse LU factorization:
+
+factorize: strategy default, A has size 3-by-3, sparse with 9 nonzeros.
+factorize: try LU ... OK.
+
+F = 
+
+  class: factorization_lu_sparse
+  sparse LU factorization: P*A*Q = L*U
+  A: [3x3 double]
+  Factors:
+    L: [3x3 double]
+    U: [3x3 double]
+    P: [3x3 double]
+    Q: [3x3 double]
+
+  is_inverse: 0
+  is_ctrans: 0
+  alpha: 1
+  A_rank: 3
+  A_condest: 2.313529e+00
+
+S = 
+
+  class: factorization_lu_sparse
+  sparse LU factorization: P*A*Q = L*U
+  A: [3x3 double]
+  Factors:
+    L: [3x3 double]
+    U: [3x3 double]
+    P: [3x3 double]
+    Q: [3x3 double]
+
+  is_inverse: 1
+  is_ctrans: 0
+  alpha: 1
+  A_rank: 3
+  A_condest: 2.313529e+00
+
+----------Dense Cholesky factorization:
+
+factorize: strategy default, A has size 3-by-3, full.
+factorize: try CHOL ... OK.
+
+F = 
+
+  class: factorization_chol_dense
+  dense Cholesky factorization: A = R'*R
+  A: [3x3 double]
+  Factors:
+    R: [3x3 double]
+
+  is_inverse: 0
+  is_ctrans: 0
+  alpha: 1
+  A_rank: 3
+
+S = 
+
+  class: factorization_chol_dense
+  dense Cholesky factorization: A = R'*R
+  A: [3x3 double]
+  Factors:
+    R: [3x3 double]
+
+  is_inverse: 1
+  is_ctrans: 0
+  alpha: 1
+  A_rank: 3
+
+----------Sparse Cholesky factorization:
+
+factorize: strategy default, A has size 3-by-3, sparse with 9 nonzeros.
+factorize: try CHOL ... OK.
+
+F = 
+
+  class: factorization_chol_sparse
+  sparse Cholesky factorization: P'*A*P = L*L'
+  A: [3x3 double]
+  Factors:
+    L: [3x3 double]
+    P: [3x3 double]
+
+  is_inverse: 0
+  is_ctrans: 0
+  alpha: 1
+  A_rank: 3
+
+S = 
+
+  class: factorization_chol_sparse
+  sparse Cholesky factorization: P'*A*P = L*L'
+  A: [3x3 double]
+  Factors:
+    L: [3x3 double]
+    P: [3x3 double]
+
+  is_inverse: 1
+  is_ctrans: 0
+  alpha: 1
+  A_rank: 3
+
+----------Dense QR factorization:
+
+factorize: strategy default, A has size 3-by-2, full.
+factorize: try QR of A ... OK.
+
+F = 
+
+  class: factorization_qr_dense
+  dense economy QR factorization: A = Q*R
+  A: [3x2 double]
+  Factors:
+    Q: [3x2 double]
+    R: [2x2 double]
+
+  is_inverse: 0
+  is_ctrans: 0
+  alpha: 1
+  A_rank: 2
+  A_condest: 2.133489e+00
+
+S = 
+
+  class: factorization_qr_dense
+  dense economy QR factorization: A = Q*R
+  A: [3x2 double]
+  Factors:
+    Q: [3x2 double]
+    R: [2x2 double]
+
+  is_inverse: 1
+  is_ctrans: 0
+  alpha: 1
+  A_rank: 2
+  A_condest: 2.133489e+00
+
+----------Dense COD factorization:
+
+factorize: strategy cod, A has size 3-by-2, full.
+factorize: try COD ... OK.
+
+F = 
+
+  class: factorization_cod_dense
+  dense COD factorization: A = U*R*V'
+  A: [3x2 double]
+  Factors:
+    U: [3x2 double]
+    R: [2x2 double]
+    V: [2x2 double]
+
+  is_inverse: 0
+  is_ctrans: 0
+  alpha: 1
+  A_rank: 2
+
+S = 
+
+  class: factorization_cod_dense
+  dense COD factorization: A = U*R*V'
+  A: [3x2 double]
+  Factors:
+    U: [3x2 double]
+    R: [2x2 double]
+    V: [2x2 double]
+
+  is_inverse: 1
+  is_ctrans: 0
+  alpha: 1
+  A_rank: 2
+
+----------Sparse COD factorization:
+
+factorize: strategy cod, A has size 3-by-2, sparse with 6 nonzeros.
+factorize: try COD ... OK.
+
+F = 
+
+  class: factorization_cod_sparse
+  sparse COD factorization: A = U*R*V'
+  A: [3x2 double]
+  Factors:
+    U: [1x1 struct]
+    R: [3x2 double]
+    V: [1x1 struct]
+    r: 2
+
+  is_inverse: 0
+  is_ctrans: 0
+  alpha: 1
+  A_rank: 2
+
+S = 
+
+  class: factorization_cod_sparse
+  sparse COD factorization: A = U*R*V'
+  A: [3x2 double]
+  Factors:
+    U: [1x1 struct]
+    R: [3x2 double]
+    V: [1x1 struct]
+    r: 2
+
+  is_inverse: 1
+  is_ctrans: 0
+  alpha: 1
+  A_rank: 2
+
+U = 
+
+      H: [3x2 double]
+    Tau: [1.7150 1.3542]
+      P: [1 2 3]
+
+
+V = 
+
+      H: [2x0 double]
+    Tau: [1x0 double]
+      P: [1 2]
+
+
+U =
+
+   (1,1)      -0.7150
+   (2,1)      -0.3626
+   (3,1)      -0.5978
+   (1,2)       0.6875
+   (2,2)      -0.2089
+   (3,2)      -0.6955
+   (1,3)       0.1273
+   (2,3)      -0.9083
+   (3,3)       0.3986
+
+
+V =
+
+   (1,1)        1
+   (2,2)        1
+
+
+----------Dense QR factorization of A':
+
+factorize: strategy default, A has size 2-by-3, full.
+factorize: try QR of A' ... OK.
+
+F = 
+
+  class: factorization_qrt_dense
+  dense economy QR factorization: A' = Q*R
+  A: [2x3 double]
+  Factors:
+    Q: [3x2 double]
+    R: [2x2 double]
+
+  is_inverse: 0
+  is_ctrans: 0
+  alpha: 1
+  A_rank: 2
+  A_condest: 2.133489e+00
+
+S = 
+
+  class: factorization_qrt_dense
+  dense economy QR factorization: A' = Q*R
+  A: [2x3 double]
+  Factors:
+    Q: [3x2 double]
+    R: [2x2 double]
+
+  is_inverse: 1
+  is_ctrans: 0
+  alpha: 1
+  A_rank: 2
+  A_condest: 2.133489e+00
+
+----------Sparse QR factorization:
+
+factorize: strategy default, A has size 3-by-2, sparse with 6 nonzeros.
+factorize: try QR of A ... OK.
+
+F = 
+
+  class: factorization_qr_sparse
+  sparse QR factorization of A: (A*P)'*A*P = R'*R
+  A: [3x2 double]
+  Factors:
+    P: [2x2 double]
+    R: [2x2 double]
+
+  is_inverse: 0
+  is_ctrans: 0
+  alpha: 1
+  A_rank: 2
+  A_condest: 2.133489e+00
+
+S = 
+
+  class: factorization_qr_sparse
+  sparse QR factorization of A: (A*P)'*A*P = R'*R
+  A: [3x2 double]
+  Factors:
+    P: [2x2 double]
+    R: [2x2 double]
+
+  is_inverse: 1
+  is_ctrans: 0
+  alpha: 1
+  A_rank: 2
+  A_condest: 2.133489e+00
+
+----------Sparse QR factorization of A':
+
+factorize: strategy default, A has size 2-by-3, sparse with 6 nonzeros.
+factorize: try QR of A' ... OK.
+
+F = 
+
+  class: factorization_qrt_sparse
+  sparse QR factorization of A': (P*A)*(P*A)' = R'*R
+  A: [2x3 double]
+  Factors:
+    P: [2x2 double]
+    R: [2x2 double]
+
+  is_inverse: 0
+  is_ctrans: 0
+  alpha: 1
+  A_rank: 2
+  A_condest: 2.133489e+00
+
+S = 
+
+  class: factorization_qrt_sparse
+  sparse QR factorization of A': (P*A)*(P*A)' = R'*R
+  A: [2x3 double]
+  Factors:
+    P: [2x2 double]
+    R: [2x2 double]
+
+  is_inverse: 1
+  is_ctrans: 0
+  alpha: 1
+  A_rank: 2
+  A_condest: 2.133489e+00
+
+----------SVD factorization:
+
+factorize: strategy svd, A has size 3-by-2, sparse with 6 nonzeros.
+factorize: try SVD ... OK.
+
+F = 
+
+  class: factorization_svd
+  singular value decomposition: A = U*S*V'
+  A: [3x2 double]
+  Factors:
+    U: [3x3 double]
+    S: [2x1 double]
+    V: [2x2 double]
+    r: 2
+
+  is_inverse: 0
+  is_ctrans: 0
+  alpha: 1
+  A_rank: 2
+  A_cond: 3.038340e+00
+
+S = 
+
+  class: factorization_qrt_sparse
+  sparse QR factorization of A': (P*A)*(P*A)' = R'*R
+  A: [2x3 double]
+  Factors:
+    P: [2x2 double]
+    R: [2x2 double]
+
+  is_inverse: 1
+  is_ctrans: 0
+  alpha: 1
+  A_rank: 2
+  A_condest: 2.133489e+00
+
+----------Dense LDL factorization:
+
+factorize: strategy ldl, A has size 6-by-6, full.
+factorize: try LDL ... OK.
+
+F = 
+
+  class: factorization_ldl_dense
+  dense LDL factorization: P'*A*P = L*D*L'
+  A: [6x6 double]
+  Factors:
+    L: [6x6 double]
+    D: [6x6 double]
+    P: [6x6 double]
+
+  is_inverse: 0
+  is_ctrans: 0
+  alpha: 1
+  A_rank: 6
+  A_condest: 3.784949e+00
+
+S = 
+
+  class: factorization_ldl_dense
+  dense LDL factorization: P'*A*P = L*D*L'
+  A: [6x6 double]
+  Factors:
+    L: [6x6 double]
+    D: [6x6 double]
+    P: [6x6 double]
+
+  is_inverse: 1
+  is_ctrans: 0
+  alpha: 1
+  A_rank: 6
+  A_condest: 3.784949e+00
+
+----------Sparse LDL factorization:
+
+factorize: strategy ldl, A has size 6-by-6, sparse with 18 nonzeros.
+factorize: try LDL ... OK.
+
+F = 
+
+  class: factorization_ldl_sparse
+  sparse LDL factorization: P'*A*P = L*D*L'
+  A: [6x6 double]
+  Factors:
+    L: [6x6 double]
+    D: [6x6 double]
+    P: [6x6 double]
+
+  is_inverse: 0
+  is_ctrans: 0
+  alpha: 1
+  A_rank: 6
+  A_condest: 2.571699e+00
+
+S = 
+
+  class: factorization_ldl_sparse
+  sparse LDL factorization: P'*A*P = L*D*L'
+  A: [6x6 double]
+  Factors:
+    L: [6x6 double]
+    D: [6x6 double]
+    P: [6x6 double]
+
+  is_inverse: 1
+  is_ctrans: 0
+  alpha: 1
+  A_rank: 6
+  A_condest: 2.571699e+00
+
+All disp tests passed, err: 3.33067e-16
+
+Testing error handling (error messages are expected)
+
+Expected error: [Matrix must be 2D.]
+
+factorize: strategy gunk, A has size 4-by-4, full.
+Expected error: [unrecognized strategy.]
+Expected error: [COD is not designed for sparse matrices.  Use COD_SPARSE instead.]
+Expected error: [RQ is not designed for sparse matrices.]
+Expected error: [B\F where F=inverse(A) requires the explicit computation of the inverse.
+This is ill-advised, so it is never done automatically.
+To force it, use B\double(F) instead of B\F.
+]
+Expected error: [F/B where F=inverse(A) requires the explicit computation of the inverse.
+This is ill-advised, so it is never done automatically.
+To force it, use double(F)/B instead of F/B.
+]
+Expected error: [COD_SPARSE is not designed for full matrices.  Use COD instead.]
+
+factorize: strategy default, A has size 3-by-3, full.
+factorize: try CHOL ... failed.
+factorize: Undefined function or method 'chol' for input arguments of type 'logical'.
+factorize: try LDL ... failed.
+factorize: Undefined function or method 'ldl' for input arguments of type 'char'.
+factorize: try LU ... failed.
+factorize: Undefined function or method 'lu' for input arguments of type 'char'.
+factorize: try COD ... failed.
+factorize: First argument must be single or double.
+
+Expected error: [First argument must be single or double.]
+
+factorize: strategy default, A has size 3-by-3, sparse with 9 nonzeros.
+factorize: try CHOL ... failed.
+factorize: Undefined function or method 'chol' for input arguments of type 'char'.
+factorize: try LDL ... failed.
+factorize: Undefined function or method 'ldl' for input arguments of type 'logical'.
+factorize: try LU ... failed.
+factorize: Undefined function or method 'lu' for input arguments of type 'logical'.
+factorize: try COD ... failed.
+factorize: matrix type not supported
+
+Expected error: [matrix type not supported]
+
+factorize: strategy symmetric, A has size 3-by-3, full.
+factorize: try CHOL ... failed.
+factorize: Undefined function or method 'chol' for input arguments of type 'logical'.
+factorize: try LDL ... failed.
+factorize: Undefined function or method 'ldl' for input arguments of type 'char'.
+factorize: try LU ... failed.
+factorize: Undefined function or method 'lu' for input arguments of type 'char'.
+factorize: try COD ... failed.
+factorize: First argument must be single or double.
+
+Expected error: [First argument must be single or double.]
+
+factorize: strategy symmetric, A has size 3-by-3, sparse with 9 nonzeros.
+factorize: try CHOL ... failed.
+factorize: Undefined function or method 'chol' for input arguments of type 'char'.
+factorize: try LDL ... failed.
+factorize: Undefined function or method 'ldl' for input arguments of type 'logical'.
+factorize: try LU ... failed.
+factorize: Undefined function or method 'lu' for input arguments of type 'logical'.
+factorize: try COD ... failed.
+factorize: matrix type not supported
+
+Expected error: [matrix type not supported]
+
+factorize: strategy qr, A has size 3-by-3, full.
+factorize: try QR of A ... failed.
+factorize: First argument must be single or double.
+
+Expected error: [First argument must be single or double.]
+
+factorize: strategy qr, A has size 3-by-3, sparse with 9 nonzeros.
+factorize: try QR of A ... failed.
+factorize: A must be double
+
+Expected error: [A must be double]
+
+factorize: strategy lu, A has size 3-by-3, full.
+factorize: try LU ... failed.
+factorize: Undefined function or method 'lu' for input arguments of type 'char'.
+
+Expected error: [Undefined function or method 'lu' for input arguments of type 'char'.]
+
+factorize: strategy lu, A has size 3-by-3, sparse with 9 nonzeros.
+factorize: try LU ... failed.
+factorize: Undefined function or method 'lu' for input arguments of type 'logical'.
+
+Expected error: [Undefined function or method 'lu' for input arguments of type 'logical'.]
+
+factorize: strategy ldl, A has size 3-by-3, full.
+factorize: try LDL ... failed.
+factorize: Undefined function or method 'ldl' for input arguments of type 'char'.
+
+Expected error: [Undefined function or method 'ldl' for input arguments of type 'char'.]
+
+factorize: strategy ldl, A has size 3-by-3, sparse with 9 nonzeros.
+factorize: try LDL ... failed.
+factorize: Undefined function or method 'ldl' for input arguments of type 'logical'.
+
+Expected error: [Undefined function or method 'ldl' for input arguments of type 'logical'.]
+
+factorize: strategy chol, A has size 3-by-3, full.
+factorize: try CHOL ... failed.
+factorize: Undefined function or method 'chol' for input arguments of type 'logical'.
+
+Expected error: [Undefined function or method 'chol' for input arguments of type 'logical'.]
+
+factorize: strategy chol, A has size 3-by-3, sparse with 9 nonzeros.
+factorize: try CHOL ... failed.
+factorize: Undefined function or method 'chol' for input arguments of type 'char'.
+
+Expected error: [Undefined function or method 'chol' for input arguments of type 'char'.]
+
+factorize: strategy svd, A has size 3-by-3, full.
+factorize: try SVD ... failed.
+factorize: Undefined function or method 'svd' for input arguments of type 'logical'.
+
+Expected error: [Undefined function or method 'svd' for input arguments of type 'logical'.]
+
+factorize: strategy svd, A has size 3-by-3, sparse with 9 nonzeros.
+factorize: try SVD ... failed.
+factorize: Undefined function or method 'svd' for input arguments of type 'logical'.
+
+Expected error: [Undefined function or method 'svd' for input arguments of type 'logical'.]
+
+factorize: strategy cod, A has size 3-by-3, full.
+factorize: try COD ... failed.
+factorize: First argument must be single or double.
+
+Expected error: [First argument must be single or double.]
+
+factorize: strategy cod, A has size 3-by-3, sparse with 9 nonzeros.
+factorize: try COD ... failed.
+factorize: matrix type not supported
+
+Expected error: [matrix type not supported]
+
+factorize: strategy qr, A has size 3-by-4, sparse with 12 nonzeros.
+factorize: try QR of A' ... failed.
+factorize: A must be double
+
+Expected error: [A must be double]
+
+factorize: strategy ldl, A has size 3-by-3, full.
+factorize: try LDL ... failed.
+factorize: Matrix is singular to working precision.
+
+factorize: strategy ldl, A has size 3-by-2, full.
+factorize: try LDL ... failed.
+factorize: Matrix must be square.
+
+factorize: strategy ldl, A has size 2-by-3, full.
+factorize: try LDL ... failed.
+factorize: Matrix must be square.
+
+factorize: strategy ldl, A has size 3-by-3, sparse with 9 nonzeros.
+factorize: try LDL ... failed.
+factorize: Matrix is singular to working precision.
+
+factorize: strategy ldl, A has size 3-by-2, sparse with 0 nonzeros.
+factorize: try LDL ... failed.
+factorize: Matrix must be square.
+
+factorize: strategy ldl, A has size 2-by-3, sparse with 0 nonzeros.
+factorize: try LDL ... failed.
+factorize: Matrix must be square.
+
+factorize: strategy chol, A has size 3-by-3, full.
+factorize: try CHOL ... failed.
+factorize: Matrix must be positive definite.
+
+factorize: strategy chol, A has size 3-by-2, full.
+factorize: try CHOL ... failed.
+factorize: Matrix must be square.
+
+factorize: strategy chol, A has size 2-by-3, full.
+factorize: try CHOL ... failed.
+factorize: Matrix must be square.
+
+factorize: strategy chol, A has size 3-by-3, sparse with 9 nonzeros.
+factorize: try CHOL ... failed.
+factorize: Matrix must be positive definite.
+
+factorize: strategy chol, A has size 3-by-2, sparse with 0 nonzeros.
+factorize: try CHOL ... failed.
+factorize: Matrix must be square.
+
+factorize: strategy chol, A has size 2-by-3, sparse with 0 nonzeros.
+factorize: try CHOL ... failed.
+factorize: Matrix must be square.
+
+factorize: strategy lu, A has size 3-by-2, full.
+factorize: try LU ... failed.
+factorize: LU for rectangular matrices not supported.  Use QR.
+
+Expected error: [LU for rectangular matrices not supported.  Use QR.]
+
+factorize: strategy lu, A has size 3-by-2, sparse with 6 nonzeros.
+factorize: try LU ... failed.
+factorize: LU for rectangular matrices not supported.  Use QR.
+
+Expected error: [LU for rectangular matrices not supported.  Use QR.]
+
+factorize: strategy ldl, A has size 3-by-2, full.
+factorize: try LDL ... failed.
+factorize: Matrix must be square.
+
+Expected error: [Matrix must be square.]
+
+factorize: strategy ldl, A has size 3-by-2, sparse with 6 nonzeros.
+factorize: try LDL ... failed.
+factorize: Matrix must be square.
+
+Expected error: [Matrix must be square.]
+
+factorize: strategy chol, A has size 3-by-2, full.
+factorize: try CHOL ... failed.
+factorize: Matrix must be square.
+
+Expected error: [Matrix must be square.]
+
+factorize: strategy chol, A has size 3-by-2, sparse with 6 nonzeros.
+factorize: try CHOL ... failed.
+factorize: Matrix must be square.
+
+Expected error: [Matrix must be square.]
+
+Expected error: [QR(A) method requires m >= n.]
+
+Expected error: [QR of A requires m >= n.]
+
+Expected error: [QR(A') method requires m<n.]
+
+Expected error: [QR of A' requires m < n.]
+
+factorize: strategy ldl, A has size 2-by-2, full.
+factorize: try LDL ... failed.
+factorize: Matrix is singular to working precision.
+
+Expected error: [Matrix is singular to working precision.]
+
+factorize: strategy ldl, A has size 2-by-2, sparse with 0 nonzeros.
+factorize: try LDL ... failed.
+factorize: Matrix is singular to working precision.
+
+Expected error: [Matrix is singular to working precision.]
+
+factorize: strategy chol, A has size 2-by-2, full.
+factorize: try CHOL ... failed.
+factorize: Matrix must be positive definite.
+
+Expected error: [Matrix must be positive definite.]
+
+factorize: strategy chol, A has size 2-by-2, sparse with 0 nonzeros.
+factorize: try CHOL ... failed.
+factorize: Matrix must be positive definite.
+
+Expected error: [Matrix must be positive definite.]
+
+factorize: strategy default, A has size 3-by-2, full.
+factorize: try QR of A ... OK.
+
+Expected error: [Cell contents reference from a non-cell array object.]
+Expected error: [Improper index matrix reference.]
+Expected error: [Reference to non-existent field 'L'.]
+Expected error: [Reference to non-existent field 'junk'.]
+
+factorize: strategy default, A has size 2-by-2, full.
+factorize: try LU ... OK.
+
+Expected error: [Undefined function or method 'cholupdate' for input arguments of type 'factorization_lu_dense'.]
+Expected error: [Undefined function or method 'choldowndate' for input arguments of type 'factorization_lu_dense'.]
+
+Expected error: [Matrix must be square.]
+
+Expected error: [A is rectangular.  Use the 2 norm.]
+
+Expected error: [unrecognized kind]
+
+Expected error: [Third argument must be '+' or '-'.]
+
+All error-handing tests passed
+
+----- Test functions:
+
+norm(A,1), exact:             -1
+  MATLAB normest1(A)          0
+
+norm (inv(A),1) exact:        -1
+  MATLAB normest1 (inv (A)):  -1
+  normest1 (inverse (F)):     0
+
+  cond (A,1), exact:          -1
+  MATLAB condest(A):          0
+  condest(F):                 0
+  condest(inverse(A)):        0
+  cond (A,2), exact:          -1
+  cond (F,2), exact:          -1
+  rankest 0 0
+  cheap condest:              0
+K =
+             A: []
+       Factors: [1x1 struct]
+    is_inverse: 0
+     is_ctrans: 0
+         alpha: 1
+        A_rank: 0
+        A_cond: []
+          kind: 'dense LDL factorization: P'*A*P = L*D*L''
+
+K =
+             A: []
+       Factors: [1x1 struct]
+    is_inverse: 1
+     is_ctrans: 1
+         alpha: 1
+        A_rank: 0
+        A_cond: []
+          kind: 'dense LDL factorization: P'*A*P = L*D*L''
+
+
+norm(A,1), exact:             -1
+  MATLAB normest1(A)          4.84454
+
+norm (inv(A),1) exact:        -1
+  MATLAB normest1 (inv (A)):  8.65527
+  normest1 (inverse (F)):     8.65527
+
+  cond (A,1), exact:          -1
+  MATLAB condest(A):          41.9308
+  condest(F):                 41.9308
+  condest(inverse(A)):        41.9308
+  cond (A,2), exact:          -1
+  cond (F,2), exact:          -1
+  rankest 3 3
+K =
+             A: [3x3 double]
+       Factors: [1x1 struct]
+    is_inverse: 0
+     is_ctrans: 0
+         alpha: 1
+        A_rank: 3
+        A_cond: []
+          kind: 'dense Cholesky factorization: A = R'*R'
+
+K =
+             A: [3x3 double]
+       Factors: [1x1 struct]
+    is_inverse: 1
+     is_ctrans: 1
+         alpha: 1
+        A_rank: 3
+        A_cond: []
+          kind: 'dense Cholesky factorization: A = R'*R'
+
+
+norm(A,1), exact:             2.40744
+  MATLAB normest1(A)          2.40744
+
+norm (inv(A),1) exact:        3.27677
+  MATLAB normest1 (inv (A)):  3.27677
+  normest1 (inverse (F)):     3.27677
+
+  cond (A,1), exact:          7.88863
+  MATLAB condest(A):          7.88863
+  condest(F):                 7.88863
+  condest(inverse(A)):        7.88863
+  cond (A,2), exact:          5.71374
+  cond (F,2), exact:          5.71374
+  rankest 3 3
+K =
+             A: [3x3 double]
+       Factors: [1x1 struct]
+    is_inverse: 0
+     is_ctrans: 0
+         alpha: 1
+        A_rank: 3
+        A_cond: 5.7137
+          kind: 'singular value decomposition: A = U*S*V''
+
+K =
+             A: [3x3 double]
+       Factors: [1x1 struct]
+    is_inverse: 1
+     is_ctrans: 1
+         alpha: 1
+        A_rank: 3
+        A_cond: 5.7137
+          kind: 'singular value decomposition: A = U*S*V''
+
+
+norm(A,1), exact:             -1
+  MATLAB normest1(A)          6.60211
+
+norm (inv(A),1) exact:        -1
+  MATLAB normest1 (inv (A)):  12.6593
+  normest1 (inverse (F)):     12.6593
+
+  cond (A,1), exact:          -1
+  MATLAB condest(A):          83.5782
+  condest(F):                 83.5782
+  condest(inverse(A)):        83.5782
+  cond (A,2), exact:          -1
+  cond (F,2), exact:          -1
+  rankest 10 10
+  cheap condest:              3.75655
+K =
+             A: [10x10 double]
+       Factors: [1x1 struct]
+    is_inverse: 0
+     is_ctrans: 0
+         alpha: 1
+        A_rank: 10
+        A_cond: []
+          kind: 'dense LU factorization: P*A = L*U'
+
+K =
+             A: [10x10 double]
+       Factors: [1x1 struct]
+    is_inverse: 1
+     is_ctrans: 1
+         alpha: 1
+        A_rank: 10
+        A_cond: []
+          kind: 'dense LU factorization: P*A = L*U'
+
+........................................................................
+test_functions, max error: 1.2981e-12
+
+Testing accuracy:
+
+factorize: strategy ldl, A has size 4-by-4, full.
+factorize: try LDL ... OK.
+............
+..........
+..........
+..........
+..........
+..........
+..........
+.
+err so far: 2.99849e-12
+please wait ..........
+max error is OK: 8.6972e-09
+................
+..............
+..............
+..............
+..............
+..............
+..............
+..............
+..............
+..............
+..............
+..............
+..............
+..............
+....................................
+.........
+test_all_svd error so far: 7.51305e-14
+Testing on gallery ('randsvd',50) matrices:
+..
+Final test_all_svd error: 1.37806e-09
+test COD, COD_SPARSE, and RQ: error 1.56923e-15
+
+Performance comparisons of 4 methods:
+    backslash:  A\b, or L\b (and related) for solve times.
+    linsolve:   a built-in MATLAB function
+    factorize:  the factorization object
+    inv:        x=inv(A)*b, the explicit inverse (ack!)
+Run times are in seconds.
+Time relative to best time is in parentheses (lower is better).
+
+------------------ For unsymmetric matrices:
+
+Compare factorization times:
+n   50 tbest   0.000201 :
+    backslash ( 1.00)
+    linsolve  ( 1.00)
+    factorize ( 3.84)
+    inv       ( 1.39)
+n  100 tbest   0.000565 :
+    backslash ( 1.03)
+    linsolve  ( 1.00)
+    factorize ( 2.31)
+    inv       ( 2.12)
+n  500 tbest   0.022074 :
+    backslash ( 1.04)
+    linsolve  ( 1.00)
+    factorize ( 1.07)
+    inv       ( 2.56)
+n 1000 tbest   0.135542 :
+    backslash ( 1.03)
+    linsolve  ( 1.00)
+    factorize ( 1.00)
+    inv       ( 2.76)
+
+Compare solve times:
+n   50 tbest   0.000006 :
+    backslash ( 3.20)
+    linsolve  ( 3.71)
+    factorize (25.23)
+    inv       ( 1.00)
+n  100 tbest   0.000014 :
+    backslash ( 3.42)
+    linsolve  ( 2.64)
+    factorize (12.04)
+    inv       ( 1.00)
+n  500 tbest   0.000535 :
+    backslash ( 3.00)
+    linsolve  ( 1.44)
+    factorize ( 2.00)
+    inv       ( 1.00)
+n 1000 tbest   0.002161 :
+    backslash ( 2.79)
+    linsolve  ( 1.24)
+    factorize ( 1.33)
+    inv       ( 1.00)
+
+Break-even values K for inv vs the other methods
+(# of solves must exceed K for inv(A)*b to be faster):
+n   50
+    # solves vs backslash       6.0
+    # solves vs linsolve:       4.9
+    # solves vs factorize:      1.0
+n  100
+    # solves vs backslash      18.6
+    # solves vs linsolve:      28.2
+    # solves vs factorize:      1.0
+n  500
+    # solves vs backslash      31.5
+    # solves vs linsolve:     145.8
+    # solves vs factorize:     61.9
+n 1000
+    # solves vs backslash      60.7
+    # solves vs linsolve:     460.8
+    # solves vs factorize:    332.2
+
+------------------ For positive definite matrices:
+
+Compare factorization times:
+n   50 tbest   0.000110 :
+    backslash ( 1.01)
+    linsolve  ( 1.00)
+    factorize ( 3.82)
+    inv       ( 1.75)
+n  100 tbest   0.000282 :
+    backslash ( 1.10)
+    linsolve  ( 1.00)
+    factorize ( 2.17)
+    inv       ( 2.61)
+n  500 tbest   0.010716 :
+    backslash ( 1.16)
+    linsolve  ( 1.00)
+    factorize ( 1.06)
+    inv       ( 5.09)
+n 1000 tbest   0.064040 :
+    backslash ( 1.15)
+    linsolve  ( 1.02)
+    factorize ( 1.00)
+    inv       ( 8.37)
+
+Compare solve times:
+n   50 tbest   0.000006 :
+    backslash ( 4.07)
+    linsolve  ( 3.47)
+    factorize (26.22)
+    inv       ( 1.00)
+n  100 tbest   0.000014 :
+    backslash ( 3.46)
+    linsolve  ( 2.23)
+    factorize (11.86)
+    inv       ( 1.00)
+n  500 tbest   0.000433 :
+    backslash ( 3.85)
+    linsolve  ( 1.00)
+    factorize ( 1.64)
+    inv       ( 1.21)
+n 1000 tbest   0.002213 :
+    backslash ( 2.81)
+    linsolve  ( 1.11)
+    factorize ( 1.18)
+    inv       ( 1.00)
+
+Break-even values K for inv vs the other methods
+(# of solves must exceed K for inv(A)*b to be faster):
+n   50
+    # solves vs backslash       4.7
+    # solves vs linsolve:       5.8
+    # solves vs factorize:      1.0
+n  100
+    # solves vs backslash      12.7
+    # solves vs linsolve:      26.9
+    # solves vs factorize:      1.0
+n  500
+    # solves vs backslash      37.0
+    # solves vs linsolve:       Inf
+    # solves vs factorize:    235.8
+n 1000
+    # solves vs backslash     115.4
+    # solves vs linsolve:    1972.5
+    # solves vs factorize:   1211.4
+
+Schur complement, S=A-B*inv(D)*C or A-B(D\C),
+where A, B, C, and D are square and unsymmetric.
+"inverse" means S=A-B*inverse(D)*C, which does not actually
+use the inverse, but uses the factorization object instead.
+n   50 tbest   0.000363 :
+    backslash ( 1.00)
+    linsolve  ( 1.02)
+    factorize ( 3.04)
+    inv       ( 3.47)
+n  100 tbest   0.001352 :
+    backslash ( 1.00)
+    linsolve  ( 1.15)
+    factorize ( 2.19)
+    inv       ( 2.36)
+n  500 tbest   0.103426 :
+    backslash ( 1.02)
+    linsolve  ( 1.00)
+    factorize ( 1.12)
+    inv       ( 1.14)
+n 1000 tbest   0.692702 :
+    backslash ( 1.02)
+    linsolve  ( 1.00)
+    factorize ( 1.01)
+    inv       ( 1.00)
+
+All tests passed, maximum error OK: 8.6972e-09

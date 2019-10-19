@@ -13,6 +13,7 @@
 %   find_components find connected components in an image
 %   dimacs10        tools for accessing the DIMACS10 subset of matrices
 %   Factorize       object-oriented x=A\b solver
+%   UFcollection    tools for managing the UF Sparse Matrix Collection
 %
 % Examples:
 %   gipper              % add all files in current directory X to X.zip

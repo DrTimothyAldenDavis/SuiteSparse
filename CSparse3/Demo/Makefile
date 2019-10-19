@@ -1,6 +1,4 @@
-CC = cc
-CFLAGS = -O
-
+CF = $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -O
 I = -I../Include
 
 CS = ../Lib/libcsparse.a
@@ -22,18 +20,18 @@ lib:
 	( cd ../Lib ; $(MAKE) )
 
 cs_demo1: lib cs_demo1.c Makefile
-	$(CC) $(CFLAGS) $(I) -o cs_demo1 cs_demo1.c $(CS) -lm
+	$(CC) $(CF) $(I) -o cs_demo1 cs_demo1.c $(CS) -lm
 
 cs_demo2: lib cs_demo2.c cs_demo.c cs_demo.h Makefile
-	$(CC) $(CFLAGS) $(I) -o cs_demo2 cs_demo2.c cs_demo.c $(CS) -lm
+	$(CC) $(CF) $(I) -o cs_demo2 cs_demo2.c cs_demo.c $(CS) -lm
 
 cs_demo3: lib cs_demo3.c cs_demo.c cs_demo.h Makefile
-	$(CC) $(CFLAGS) $(I) -o cs_demo3 cs_demo3.c cs_demo.c $(CS) -lm
+	$(CC) $(CF) $(I) -o cs_demo3 cs_demo3.c cs_demo.c $(CS) -lm
 
 clean:
-	rm -f *.o
+	- $(RM) *.o
 
 purge: distclean
 
 distclean: clean
-	rm -rf cs_demo1 cs_demo2 cs_demo3 *.a *.dSYM *.obj *.dll
+	- $(RM) -r cs_demo1 cs_demo2 cs_demo3 *.a *.dSYM *.obj *.dll

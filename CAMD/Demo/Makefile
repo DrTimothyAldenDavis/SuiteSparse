@@ -6,7 +6,7 @@ default: camd_simple camd_demo camd_demo2 camd_l_demo
 
 include ../../UFconfig/UFconfig.mk
 
-C = $(CC) $(CFLAGS) $(CONFIG) -I../Include -I../../UFconfig
+C = $(CC) $(CF) -I../Include -I../../UFconfig
 
 UFCONFIG = ../../UFconfig/UFconfig.h
 

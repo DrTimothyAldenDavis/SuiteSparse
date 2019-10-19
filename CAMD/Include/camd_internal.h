@@ -3,7 +3,7 @@
 /* ========================================================================= */
 
 /* ------------------------------------------------------------------------- */
-/* CAMD, Copyright (c) Timothy A. Davis, Yanqing Chen,			     */
+/* CAMD, Copyright (c) Timothy A. Davis, Yanqing Chen,                       */
 /* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
 /* email: davis at cise.ufl.edu    CISE Department, Univ. of Florida.        */
 /* web: http://www.cise.ufl.edu/research/sparse/camd                         */
@@ -15,17 +15,17 @@
  *
  * The following compile-time definitions affect how CAMD is compiled.
  *
- *	-DNPRINT
+ *      -DNPRINT
  *
- *	    Disable all printing.  stdio.h will not be included.  Printing can
- *	    be re-enabled at run-time by setting the global pointer camd_printf
- *	    to printf (or mexPrintf for a MATLAB mexFunction).
+ *          Disable all printing.  stdio.h will not be included.  Printing can
+ *          be re-enabled at run-time by setting the global pointer camd_printf
+ *          to printf (or mexPrintf for a MATLAB mexFunction).
  *
- *	-DNMALLOC
+ *      -DNMALLOC
  *
- *	    No memory manager is defined at compile-time.  You MUST define the
- *	    function pointers camd_malloc, camd_free, camd_realloc, and
- *	    camd_calloc at run-time for CAMD to work properly.
+ *          No memory manager is defined at compile-time.  You MUST define the
+ *          function pointers camd_malloc, camd_free, camd_realloc, and
+ *          camd_calloc at run-time for CAMD to work properly.
  */
 
 /* ========================================================================= */

@@ -10,7 +10,6 @@
 load west0479 ;
 A = west0479 ;
 
-figure (1)
 clf
 
 subplot (2,3,1) ;

@@ -16,7 +16,6 @@ if (nargin < 1)
     n = 60 ;
 end
 
-figure (1)
 clf
 
 for regions = {'Square', 'C' 'Disc', 'Annulus', 'Heart', 'Butterfly', 'L'}

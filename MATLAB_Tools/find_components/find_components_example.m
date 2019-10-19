@@ -1,4 +1,4 @@
-function find_components_example(example)
+function find_components_example(example, dopause)
 %FIND_COMPONENTS_EXAMPLE gives an example usage of find_components.
 %
 % Example:
@@ -54,7 +54,9 @@ fprintf ('Image size: %d-by-%d, time taken: %g seconds\n', m, n, t) ;
 
 prompt = 'hit enter to single-step, ''a'' to show all, ''q'' to quit: ' ;
 small = (max (m,n) <= 10) ;
-dopause = 1 ;
+if (nargin < 2)
+    dopause = 1 ;
+end
 
 for k = 1:nc
 

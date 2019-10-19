@@ -106,30 +106,19 @@ if (nargout > 0)
         stats.numerical_symmetry = UF_Index.numerical_symmetry (id) ;
         stats.isBinary = UF_Index.isBinary (id) ;
         stats.isReal = UF_Index.isReal (id) ;
-
         stats.nnzdiag = UF_Index.nnzdiag (id) ;
         stats.posdef = UF_Index.posdef (id) ;
-
         stats.amd_lnz = UF_Index.amd_lnz (id) ;
         stats.amd_flops = UF_Index.amd_flops (id) ;
         stats.amd_vnz = UF_Index.amd_vnz (id) ;
         stats.amd_rnz = UF_Index.amd_rnz (id) ;
-        stats.metis_lnz = UF_Index.metis_lnz (id) ;
-        stats.metis_flops = UF_Index.metis_flops (id) ;
-        stats.metis_vnz = UF_Index.metis_vnz (id) ;
-        stats.metis_rnz = UF_Index.metis_rnz (id) ;
         stats.nblocks = UF_Index.nblocks (id) ;
         stats.sprank = UF_Index.sprank (id) ;
-        stats.nzoff = UF_Index.nzoff (id) ;
-        stats.dmperm_lnz = UF_Index.dmperm_lnz (id) ;
-        stats.dmperm_unz = UF_Index.dmperm_unz (id) ;
-        stats.dmperm_flops = UF_Index.dmperm_flops (id) ;
-        stats.dmperm_vnz = UF_Index.dmperm_vnz (id) ;
-        stats.dmperm_rnz = UF_Index.dmperm_rnz (id) ;
-
         stats.RBtype = UF_Index.RBtype (id,:) ;
         stats.cholcand = UF_Index.cholcand (id) ;
         stats.ncc = UF_Index.ncc (id) ;
+        stats.isND = UF_Index.isND (id) ;
+        stats.isGraph = UF_Index.isGraph (id) ;
 
     end
 end

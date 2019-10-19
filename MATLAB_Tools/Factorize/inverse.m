@@ -1,11 +1,12 @@
-function S = inverse (X)
-%INVERSE factorized representation of inv(A).
-% INVERSE is a fast and accurate replacement for INV when you want to solve
-% a linear system or least squares problem, or when you want to multiply
-% something by the inverse of A.  The inverse itself is NOT computed,
-% UNLESS the factorized form of the inverse is converted into a matrix via
-% double(inverse(A)).  If A is rectangular and has full rank, inverse(A) is
-% a factorized form of the pseudo-inverse of A.
+function S = inverse (A, varargin)
+%INVERSE factorized representation of inv(A) or pinv(A).
+% INVERSE is a fast and accurate replacement for INV or PINV when you want to
+% solve a linear system or least squares problem, or when you want to multiply
+% something by the inverse of A.  The inverse itself is NOT computed, UNLESS
+% the factorized form of the inverse is converted into a matrix via
+% double(inverse(A)).  If A is rectangular and has full rank, or rank deficient
+% and COD is able to accurately estimate the rank, then inverse(A) is a
+% factorized form of the pseudo-inverse of A, pinv(A).
 %
 % Example
 %
@@ -23,18 +24,21 @@ function S = inverse (X)
 %   F = factorize(A) ;  % computes the factorization of A
 %   S = inverse(F) ;    % no flops, flags S as a factorized form of inv(A)
 %
+% An optional 2nd input selects the strategy used to factorize the matrix,
+% and an optional 3rd input tells the function to display how it factorizes
+% the matrix.  See the 'strategy' and 'burble' of the factorize function.
+%
 % Never use inv to multiply the inverse of a matrix A by another matrix.
 % There are rare uses for the explicit inv(A), but never do inv(A)*B or
 % B*inv(A).  Never do Z=A\eye(n), which is just the same thing as Z=inv(A).
 %
 % "Don't let that inv go past your eyes; to solve that system, factorize!"
 %
-% See also factorize, factorize1, mldivide, pinv
-% Do not see inv!
+% See also factorize, slash, inv, pinv.
 
-% Copyright 2009, Timothy A. Davis, University of Florida
+% Copyright 2011, Timothy A. Davis, University of Florida.
 
-% This function is only called when X is a matrix.  If X is a factorize
+% This function is only called when A is a matrix.  If A is a factorize
 % object, then factorize.inverse is called instead.
 
-S = inverse (factorize (X)) ;
+S = inverse (factorize (A, varargin {:})) ;

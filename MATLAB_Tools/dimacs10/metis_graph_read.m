@@ -24,7 +24,7 @@ function [A w fmt] = metis_graph_read (file)
 %
 % Example
 %
-%   % in the metis_graph/private directory:
+%   % in the dimacs10/ directory:
 %   [A w fmt] = metis_graph_read ('fig8d.graph')
 %
 % See also sprand, gallery

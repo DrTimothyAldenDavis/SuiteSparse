@@ -36,11 +36,9 @@ fprintf ('\nmetis(A):\n') ;
 if (m == n)
     if (nnz (A-A') == 0)
 	tic ; p5 = metis (A) ; toc
-	% figure (1)
 	% spy (A (p5,p5)) ;
 	[ignore q] = etree (A(p5,p5)) ;
 	p5post = p5 (q) ;						    %#ok
-	% figure (2)
 	% spy (A (p5post,p5post)) ;
 	lnz0 = sum (symbfact (A (p5,p5)))				    %#ok
     end

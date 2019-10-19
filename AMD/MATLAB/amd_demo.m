@@ -24,9 +24,7 @@ A = spconvert (can_24) ;
 
 n = size (A,1) ;
 
-figure (1)
 clf
-hold off
 subplot (2,2,1) ;
 spy (A)
 title ('HB/can24 matrix') ;

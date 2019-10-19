@@ -8,7 +8,7 @@ include ../../UFconfig/UFconfig.mk
 
 I = -I../../UFconfig -I../Include
 
-C = $(CC) $(CFLAGS) $(I)
+C = $(CC) $(CF) $(I)
 
 all: ldlsimple ldllsimple ldlmain ldllmain ldlamd ldllamd
 

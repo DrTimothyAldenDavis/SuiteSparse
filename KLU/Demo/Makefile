@@ -56,11 +56,11 @@ clean:
 	- $(RM) $(CLEAN)
 
 kludemo: kludemo.c Makefile $(LIB)
-	$(CC) $(CFLAGS) $(I) kludemo.c -o kludemo $(LIB) $(CHOLMOD) -lm
+	$(CC) $(CF) $(I) kludemo.c -o kludemo $(LIB) $(CHOLMOD) -lm
 
 kluldemo: kludemo.c Makefile $(LIB)
-	$(CC) $(CFLAGS) $(I) kluldemo.c -o kluldemo $(LIB) $(CHOLMOD) -lm
+	$(CC) $(CF) $(I) kluldemo.c -o kluldemo $(LIB) $(CHOLMOD) -lm
 
 klu_simple: klu_simple.c Makefile $(LIB)
-	$(CC) $(CFLAGS) $(I) klu_simple.c -o klu_simple $(LIB) -lm
+	$(CC) $(CF) $(I) klu_simple.c -o klu_simple $(LIB) -lm
 	- ./klu_simple

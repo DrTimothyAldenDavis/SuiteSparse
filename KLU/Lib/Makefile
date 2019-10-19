@@ -7,7 +7,7 @@ include ../../UFconfig/UFconfig.mk
 # for testing only:
 # TEST = -DTESTING
 
-C = $(CC) $(CFLAGS)
+C = $(CC) $(CF)
 
 INC = ../Include/klu.h ../Include/klu_internal.h ../Include/klu_version.h \
     ../../UFconfig/UFconfig.h Makefile
@@ -48,8 +48,8 @@ COMMON = \
 OBJ = $(COMMON) $(KLU_D) $(KLU_Z) $(KLU_L) $(KLU_ZL)
 
 libklu.a: $(OBJ)
-	$(AR) libklu.a $(OBJ)
-	$(RANLIB) libklu.a
+	$(ARCHIVE)  libklu.a $(OBJ)
+	- $(RANLIB) libklu.a
 
 $(OBJ): $(INC)
 

@@ -9,7 +9,7 @@ function test3
 
 h = waitbar (1/12, 'KLU test 3 of 5') ;
 
-rand ('state', 0) ;
+% rand ('state', 0) ;
 
 load west0479
 A = west0479 ;
@@ -39,23 +39,24 @@ for nrhs = 1:10
         nrhs, norm (A*x-b,1) / norm (A,1)) ;
 end
 
-[x,info,cond_estimate] = klu (A, '\', b) ;
+[x,info,cond_estimate] = klu (A, '\', b) ;                                  %#ok
 fprintf ('\ninfo = \n') ; disp (info) ;
 fprintf ('KLU cond_estimate %g\n', cond_estimate) ;
 
 waitbar (11/12, h) ;
 
-[x,info] = klu (A, '\', b, struct ('ordering',1)) ;
+[x,info] = klu (A, '\', b, struct ('ordering',1)) ;                         %#ok
 fprintf ('\ninfo = \n') ; disp (info) ;
-[x,info,cond_estimate] = klu (A, '\', b, struct ('ordering',2)) ;
+[x,info,cond_estimate] = klu (A, '\', b, struct ('ordering',2)) ;           %#ok
 fprintf ('\ninfo = \n') ; disp (info) ;
 try
-    [x,info,cond_estimate] = klu (A, '\', b, struct ('ordering',3)) ;
+    [x,info,cond_estimate] = klu (A, '\', b, struct ('ordering',3)) ;       %#ok
     fprintf ('\ninfo = \n') ; disp (info) ;
-    [x,info,cond_estimate] = klu (A, '\', b, struct ('ordering',4)) ;
+    [x,info,cond_estimate] = klu (A, '\', b, struct ('ordering',4)) ;       %#ok
     fprintf ('\ninfo = \n') ; disp (info) ;
-catch
-    fprintf ('KLU test with CHOLMOD skipped (CHOLMOD not installed)\n') ;
+catch me
+    disp (me.message) ;
+    fprintf ('test with CHOLMOD skipped (CHOLMOD or METIS not installed)\n') ;
 end
 
 close (h) ;

@@ -1,6 +1,11 @@
+Dec 7, 2011: version 3.0.2
+
+    * fixed the Makefile to better align with CFLAGS and other standards
+    * minor fix to MATLAB cs_install.m
+
 Jan 18, 2010: version 3.0.0
 
-    * changed "int" to "csi", which is normally "ptddiff_t".  This way,
+    * changed "int" to "csi", which is normally "ptrdiff_t".  This way,
         CSparse can be used on a 64-bit platform (and in 64-bit MATLAB
         in particular), without the need to use CXSparse.  If you wish
         to use "int", simply edit CSparse/Include/cs.h and change the

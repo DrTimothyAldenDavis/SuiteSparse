@@ -465,7 +465,7 @@ else
 
         % remove the diagonal, if present, and make binary
         if (any (id == removediag))
-            S = convert_to_graph (S, any (id == makebinary)) ; 
+            S = dimacs10_convert_to_graph (S, any (id == makebinary)) ; 
         elseif (any (id == makebinary))
             S = spones (S) ;
         end

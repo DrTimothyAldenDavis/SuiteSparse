@@ -4,16 +4,15 @@
 
 # Using Intel's icc compiler:
 CC = icc
-CFLAGS = -ansi -O3 -ip -tpp7 -xW -vec_report0
+CF = -ansi -O3 -ip -tpp7 -xW -vec_report0
 
 UMFPACK_CONFIG = -DTESTING
 LIB = -lf77blas -latlas -lfrtbegin -lg2c -lm
 
 RANLIB = ranlib
 MV = mv -f
-RM = rm -f
 MEX = mex -inline -g
-AR = ar cr
+ARCHIVE = ar rv
 
 #===============================================================================
 

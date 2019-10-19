@@ -71,7 +71,7 @@
 /* -------------------------------------------------------------------------- */
 
 #define ALLOC_MEMORY(p,type,size) \
-p = (type *) malloc ((((size) <= 0) ? 1 : (size)) * sizeof (type)) ; \
+p = (type *) calloc ((((size) <= 0) ? 1 : (size)) , sizeof (type)) ; \
 if (p == (type *) NULL) \
 { \
     printf (PROGRAM ": out of memory\n") ; \
@@ -116,9 +116,9 @@ int main (void)
     double r, rnorm, flops, maxrnorm = 0. ;
     double *Ax, *Lx, *B, *D, *X, *Y ;
     LDL_int matrix, *Ai, *Ap, *Li, *Lp, *P, *Pinv, *Perm, *PermInv, n, i, j, p,
-	nz, *Flag, *Pattern, *Lnz, *Parent, trial, lnz, d, jumbled ;
+	nz, *Flag, *Pattern, *Lnz, *Parent, trial, lnz, d, jumbled, ok ;
     FILE *f ;
-    char s [LEN] ;
+    char s [LEN], filename [LEN] ;
 
     /* ---------------------------------------------------------------------- */
     /* check the error-checking routines with null matrices */
@@ -146,40 +146,55 @@ int main (void)
 	/* read in the matrix and the permutation */
 	/* ------------------------------------------------------------------ */
 
-	sprintf (s, "../Matrix/A%02d", (int) matrix) ;
-	if ((f = fopen (s, "r")) == (FILE *) NULL)
+	sprintf (filename, "../Matrix/A%02d", (int) matrix) ;
+	if ((f = fopen (filename, "r")) == (FILE *) NULL)
 	{
-	    printf (PROGRAM ": could not open file: %s\n", s) ;
+	    printf (PROGRAM ": could not open file: %s\n", filename) ;
 	    EXIT_ERROR ;
 	}
-	fgets (s, LEN, f) ;
-	printf ("\n\n--------------------------------------------------------");
-	printf ("\nInput matrix: %s", s) ;
-	printf ("--------------------------------------------------------\n\n");
-	fscanf (f, LDL_ID " " LDL_ID, &n, &jumbled) ;
-	n = (n < 0) ? (0) : (n) ;
-	ALLOC_MEMORY (P, LDL_int, n) ;
-	ALLOC_MEMORY (Ap, LDL_int, n+1) ;
-	for (j = 0 ; j <= n ; j++)
+        printf ("\n\n--------------------------------------------------------");
+        printf ("\nInput file: %s\n", filename) ;
+        s [0] = 0 ;
+        ok = (fgets (s, LEN, f) != NULL) ;
+        printf ("%s", s) ;
+        printf ("--------------------------------------------------------\n\n");
+        n = 0 ;
+        if (ok)
+        {
+            ok = ok && (fscanf (f, LDL_ID " " LDL_ID, &n, &jumbled) == 2) ;
+            n = (n < 0) ? (0) : (n) ;
+            ALLOC_MEMORY (P, LDL_int, n) ;
+            ALLOC_MEMORY (Ap, LDL_int, n+1) ;
+        }
+	for (j = 0 ; ok && j <= n ; j++)
 	{
-	    fscanf (f, LDL_ID, &Ap [j]) ;
+	    ok = ok && (fscanf (f, LDL_ID, &Ap [j]) == 1) ;
 	}
-	nz = Ap [n] ;
-	ALLOC_MEMORY (Ai, LDL_int, nz) ;
-	ALLOC_MEMORY (Ax, double, nz) ;
-	for (p = 0 ; p < nz ; p++)
+        nz = 0 ;
+        if (ok)
+        {
+            nz = Ap [n] ;
+            ALLOC_MEMORY (Ai, LDL_int, nz) ;
+            ALLOC_MEMORY (Ax, double, nz) ;
+        }
+	for (p = 0 ; ok && p < nz ; p++)
 	{
-	    fscanf (f, LDL_ID , &Ai [p]) ;
+	    ok = ok && (fscanf (f, LDL_ID , &Ai [p]) == 1) ;
 	}
-	for (p = 0 ; p < nz ; p++)
+	for (p = 0 ; ok && p < nz ; p++)
 	{
-	    fscanf (f, "%lg", &Ax [p]) ;
+	    ok = ok && (fscanf (f, "%lg", &Ax [p]) == 1) ;
 	}
-	for (j = 0 ; j < n  ; j++)
+	for (j = 0 ; ok && j < n  ; j++)
 	{
-	    fscanf (f, LDL_ID , &P  [j]) ;
+	    ok = ok && (fscanf (f, LDL_ID , &P  [j]) == 1) ;
 	}
 	fclose (f) ;
+	if (!ok)
+        {
+	    printf (PROGRAM ": error reading file: %s\n", filename) ;
+	    EXIT_ERROR ;
+        }
 
 	/* ------------------------------------------------------------------ */
 	/* check the matrix A and the permutation P */

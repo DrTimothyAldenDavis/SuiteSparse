@@ -2,12 +2,13 @@ function err = test_factorize (A)
 %TEST_FACTORIZE test the accuracy of the factorization object
 %
 % Example
-%   test_factorize (A) ;    % where A is a square matrix (sparse or dense)
+%   test_factorize (A) ;    % where A is square or rectangular, sparse or dense
 %
-% See also test_all, factorize1, factorize, inverse, mldivide
+% See also test_all, factorize, inverse, mldivide
 
-% Copyright 2009, Timothy A. Davis, University of Florida
+% Copyright 2011, Timothy A. Davis, University of Florida.
 
+reset_rand ;
 if (nargin < 1)
     A = rand (100) ;
 end
@@ -19,6 +20,8 @@ if (min (m,n) > 0)
 else
     anorm = 1 ;
 end
+
+is_symmetric = ((m == n) && (nnz (A-A') == 0)) ;
 
 for nrhs = 1:3
 
@@ -33,77 +36,118 @@ for nrhs = 1:3
         % test backslash and related methods
         %------------------------------------------------------------------
 
-        % method 0:
-        x = A\b ;           err = check_resid (err, anorm, A, x, b) ;
+        for a = [1 pi (pi+1i)]
 
-        % method 1:
-        S = inverse (A) ;
-        x = S*b ;           err = check_resid (err, anorm, A, x, b) ;
+            % method 0:
+            x = (a*A)\b ;       err = check_resid (err, anorm, a*A, x, b) ;
 
-        % method 2:
-        if (m == n)
-            F = factorize1 (A) ;
-            x = F\b ;       err = check_resid (err, anorm, A, x, b) ;
-        end
+            % method 1:
+            S = inverse (A)/a ;
+            x = S*b ;           err = check_resid (err, anorm, a*A, x, b) ;
 
-        % method 3:
-        if (m == n)
+            % method 3:
+            F = factorize (A) ;
+            S = inverse (F)/a ;
+            x = S*b ;           err = check_resid (err, anorm, a*A, x, b) ;
+
+            % method 4:
+            F = a*factorize (A) ;
+            x = F\b ;           err = check_resid (err, anorm, a*A, x, b) ;
+
+            % method 5:
             S = inverse (F) ;
-            x = S*b ;       err = check_resid (err, anorm, A, x, b) ;
-        end
+            x = S*b ;           err = check_resid (err, anorm, a*A, x, b) ;
 
-        % method 4:
-        F = factorize (A) ;
-        x = F\b ;           err = check_resid (err, anorm, A, x, b) ;
+            % method 6:
+            if (m == n)
+                [L,U,p] = lu (A, 'vector') ;
+                x = a * (U \ (L \ (b (p,:)))) ;
+                err = check_resid (err, anorm, A/a, x, b) ;
 
-        % method 5:
-        S = inverse (F) ;
-        x = S*b ;           err = check_resid (err, anorm, A, x, b) ;
-
-        % method 6:
-        if (m == n)
-            [L,U,p] = lu (A, 'vector') ;
-            x = U \ (L \ (b (p,:))) ;
-            err = check_resid (err, anorm, A, x, b) ;
-        end
-
-        % method 7 (ack!)
-        if (m == n)
-            S = inv (A) ;
-        else
-            S = pinv (full (A)) ;
-            if (issparse (A))
-                S = sparse (S) ;
+            % method 7:
+                if (is_symmetric)
+                    F = a*factorize (A, 'symmetric') ;
+                    x = F\b ;       err = check_resid (err, anorm, a*A, x, b) ;
+                else
+                    F = a*factorize (A, 'unsymmetric') ;
+                    x = F\b ;       err = check_resid (err, anorm, a*A, x, b) ;
+                end
             end
-        end
-        x = S*b ;           err = check_resid (err, anorm, A, x, b) ;
 
-        %------------------------------------------------------------------
-        % test mtimes
-        %------------------------------------------------------------------
-
-        S = inverse (F) ;
-        d = rand (n,1) ;
-        x = F*d ;
-        y = A*d ;
-        z = S\d ;
-        e = max (norm (x-y,1), norm (x-z,1)) ;
-        if (e > 0)
-            error ('mtimes error') ;
         end
 
-        if (m == n)
-            F = factorize1 (A) ;
+        clear S F
+
+        %------------------------------------------------------------------
+        % test transposed backslash and related methods
+        %------------------------------------------------------------------
+
+        b = rand (n,nrhs) ;
+        if (bsparse)
+            b = sparse (b) ;
+        end
+
+        for a = [1 pi (pi+1i)]
+
+            % method 0:
+            x = (a*A)'\b ;      err = check_resid (err, anorm, (a*A)', x, b) ;
+
+            % method 1:
+            S = inverse (A) / a ;
+            x = S'*b ;          err = check_resid (err, anorm, (a*A)', x, b) ;
+
+            % method 2:
+            F = a*factorize (A) ;
+            x = F'\b ;          err = check_resid (err, anorm, (a*A)', x, b) ;
+
+            % method 3:
+            S = inverse (F') ;
+            x = S*b ;           err = check_resid (err, anorm, (a*A)', x, b) ;
+        end
+
+        clear S F
+
+        %------------------------------------------------------------------
+        % test mtimes, times, plus, minus, rdivide, and ldivide
+        %------------------------------------------------------------------
+
+        for a = [1 pi pi+2i]
+
+            F = a*factorize (A) ;
             S = inverse (F) ;
-            d = rand (n,1) ;
+            B = a*A ;   % F is the factorization of a*A
+
+            % test mtimes
+            d = rand (n,1)  ;
             x = F*d ;
-            y = A*d ;
+            y = B*d ;
             z = S\d ;
-            e = max (norm (x-y,1), norm (x-z,1)) ;
-            if (e > 0)
-                error ('mtimes error') ;
+            err = check_error (err, norm (mtx(x)-mtx(y),1)) ;
+            err = check_error (err, norm (mtx(x)-mtx(z),1)) ;
+
+            % test mtimes transpose
+            d = rand (m,1)  ;
+            x = F'*d ;
+            y = B'*d ;
+            z = S'\d ;
+            err = check_error (err, norm (mtx(x)-mtx(y),1)) ;
+            err = check_error (err, norm (mtx(x)-mtx(z),1)) ;
+
+            % test for scalars
+            for s = [1 42 3-2i]
+                E = s\B  - double (s\F) ; err = check_error (err, norm (E,1)) ;
+                E = B/s  - double (F/s) ; err = check_error (err, norm (E,1)) ;
+%               E = B.*s - F.*s ;       err = check_error (err, norm (E,1)) ;
+%               E = s.*B - s.*F ;       err = check_error (err, norm (E,1)) ;
+%               E = s.\B - s.\F ;       err = check_error (err, norm (E,1)) ;
+%               E = B./s - F./s ;       err = check_error (err, norm (E,1)) ;
+                E = B*s  - double (F*s) ; err = check_error (err, norm (E,1)) ;
+                E = s*B  - double (s*F) ; err = check_error (err, norm (E,1)) ;
             end
+
         end
+
+        clear S F C
 
         %------------------------------------------------------------------
         % test slash and related methods
@@ -115,49 +159,50 @@ for nrhs = 1:3
         end
 
         % method 0:
-        x = b/A ;           err = check_resid (err, anorm, A, x, b, 1) ;
+        x = b/A ;           err = check_resid (err, anorm, A', x', b') ;
 
         % method 1:
         S = inverse (A) ;
-        x = b*S ;           err = check_resid (err, anorm, A, x, b, 1) ;
-
-        % method 2:
-        if (m == n)
-            F = factorize1 (A) ;
-            x = b/F ;       err = check_resid (err, anorm, A, x, b, 1) ;
-        end
-
-        % method 3:
-        if (m == n)
-            S = inverse (F) ;
-            x = b*S ;       err = check_resid (err, anorm, A, x, b, 1) ;
-        end
+        x = b*S ;           err = check_resid (err, anorm, A', x', b') ;
 
         % method 4:
         F = factorize (A) ;
-        x = b/F ;           err = check_resid (err, anorm, A, x, b, 1) ;
+        x = b/F ;           err = check_resid (err, anorm, A', x', b') ;
 
         % method 5:
         S = inverse (F) ;
-        x = b*S ;           err = check_resid (err, anorm, A, x, b, 1) ;
+        x = b*S ;           err = check_resid (err, anorm, A', x', b') ;
 
         % method 6:
         if (m == n)
             [L,U,p] = lu (A, 'vector') ;
             x = (b / U) / L ; x (:,p) = x ;
-            err = check_resid (err, anorm, A, x, b, 1) ;
+            err = check_resid (err, anorm, A', x', b') ;
         end
 
-        % method 7 (ack!)
-        if (m == n)
-            S = inv (A) ;
-        else
-            S = pinv (full (A)) ;
-            if (issparse (A))
-                S = sparse (S) ;
-            end
+        %------------------------------------------------------------------
+        % test transpose slash and related methods
+        %------------------------------------------------------------------
+
+        b = rand (nrhs,m) ;
+        if (bsparse)
+            b = sparse (b) ;
         end
-        x = b*S ;           err = check_resid (err, anorm, A, x, b, 1) ;
+
+        % method 0:
+        x = b/A' ;          err = check_resid (err, anorm, A, x', b') ;
+
+        % method 1:
+        S = inverse (A)' ;
+        x = b*S ;           err = check_resid (err, anorm, A, x', b') ;
+
+        % method 4:
+        F = factorize (A)' ;
+        x = b/F ;           err = check_resid (err, anorm, A, x', b') ;
+
+        % method 5:
+        S = inverse (F) ;
+        x = b*S ;           err = check_resid (err, anorm, A, x', b') ;
 
         %------------------------------------------------------------------
         % test double
@@ -173,7 +218,7 @@ for nrhs = 1:3
         if (n > 0)
             e = e / norm (Z,1) ;
         end
-        err = max (e, err) ;
+        err = check_error (e, err) ;
 
         %------------------------------------------------------------------
         % test subsref
@@ -197,10 +242,10 @@ for nrhs = 1:3
                 error ('factorization subsref error') ;
             end
             e = abs (Y (1,1) - Z (1,1)) ;
-            err = max (e,err) ;
+            err = check_error (e,err) ;
             if (m > 1 && n > 1)
                 e = norm (Y (1:2,1:2) - Z (1:2,1:2), 1) ;
-                err = max (e,err) ;
+                err = check_error (e,err) ;
             end
         end
         if (m > 3 && n > 1)
@@ -216,17 +261,61 @@ for nrhs = 1:3
         end
 
         %------------------------------------------------------------------
+        % test transposed subsref
+        %------------------------------------------------------------------
+
+        FT = F' ;
+        YT = Y' ;
+        AT = A' ;
+        ZT = Z' ;
+        if (numel (AT) > 1)
+            if (FT (end) ~= AT (end))
+                error ('factorization subsref error') ;
+            end
+            if (F.A (end) ~= A (end))
+                error ('factorization subsref error') ;
+            end
+        end
+
+        if (n > 0)
+            if (FT (1,1) ~= AT (1,1))
+                error ('factorization subsref error') ;
+            end
+            if (F.A (1,1) ~= A (1,1))
+                error ('factorization subsref error') ;
+            end
+            e = abs (YT (1,1) - ZT (1,1)) ;
+            err = check_error (e,err) ;
+            if (m > 1 && n > 1)
+                e = norm (YT (1:2,1:2) - ZT (1:2,1:2), 1) ;
+                err = check_error (e,err) ;
+            end
+        end
+
+        if (m > 1 && n > 3)
+            if (any (FT (2:end, 1:2) - AT (2:end, 1:2)))
+                error ('factorization subsref error') ;
+            end
+            if (any (FT (2:4, :) - AT (2:4, :)))
+                error ('factorization subsref error') ;
+            end
+            if (any (FT (:, 1:2) - AT (:, 1:2)))
+                error ('factorization subsref error') ;
+            end
+        end
+
+        %------------------------------------------------------------------
         % test update/downdate
         %------------------------------------------------------------------
 
-        if (isa (F, 'factorization_dense_chol'))
+        if (isa (F, 'factorization_chol_dense'))
             w = rand (n,1) ;
             b = rand (n,1) ;
             % update
-            G = F + w ;
+            G = cholupdate (F,w) ;
             x = G\b ;       err = check_resid (err, anorm, A+w*w', x, b) ;
             % downdate
-            G = G - w ;
+            G = cholupdate (G,w,'-') ;
             x = G\b ;       err = check_resid (err, anorm, A, x, b) ;
             clear G
         end
@@ -255,26 +344,28 @@ for nrhs = 1:3
         % test mtimes
         %------------------------------------------------------------------
 
-        d = rand (1,m) ;
-        x = d*F ;
-        y = d*A ;
-        z = d/Y ;
-        e = max (norm (x-y,1), norm (x-z,1)) ;
-        if (e > 0)
-            error ('mtimes error') ;
-        end
+        clear S F Y
 
-        if (m == n)
-            F = factorize1 (A) ;
-            Y = inverse (F) ;
+        for a = [1 pi pi+2i]
+
+            F = a * factorize (A) ;
+            S = inverse (F) ;
             d = rand (1,m) ;
             x = d*F ;
-            y = d*A ;
-            z = d/Y ;
-            e = max (norm (x-y,1), norm (x-z,1)) ;
-            if (e > 0)
-                error ('mtimes error') ;
-            end
+            y = d*(A*a) ;
+            z = d/S ;
+
+            err = check_error (err, norm (mtx(x)-mtx(y),1)) ;
+            err = check_error (err, norm (mtx(x)-mtx(z),1)) ;
+
+            d = rand (1,n) ;
+            x = d*F' ;
+            y = d*(A*a)' ;
+            z = d/S' ;
+
+            err = check_error (err, norm (mtx(x)-mtx(y),1)) ;
+            err = check_error (err, norm (mtx(x)-mtx(z),1)) ;
+
         end
 
         %------------------------------------------------------------------
@@ -287,36 +378,33 @@ for nrhs = 1:3
             error ('inverse error') ;
         end
 
+        %------------------------------------------------------------------
+        % test mldivide and mrdivide with a matrix b, transpose, etc
+        %------------------------------------------------------------------
+
+        if (max (m,n) < 100)
+            F = factorize (A) ;
+            B = rand (m,n) ;
+            err = check_error (err, norm (B\A - mtx(B\F), 1) / anorm) ;
+            err = check_error (err, norm (A/B - mtx(F/B), 1) / anorm) ;
+            err = check_error (err, norm (B*pinv(full(A))-mtx(B/F), 1) / anorm);
+        end
     end
 end
 
 fprintf ('.') ;
 
-if (err > 1e-8)
-    fprintf ('error: %8.3e\n', err) ;
-    error ('error is too high!') ;
-end
-
 %--------------------------------------------------------------------------
 
-function err = check_resid (err, anorm, A, x, b, transposed)
-if (nargin < 6)
-    transposed = 0 ;
-end
+function err = check_resid (err, anorm, A, x, b)
 [m n] = size (A) ;
 
-if (transposed)
-    if (m >= n)
-        e = norm (A'*x'-b',1) / (anorm + norm (x,1)) ;
-    else
-        e = norm (A*(A'*x')-A*b',1) / (anorm + norm (x,1)) ;
-    end
+x = mtx (x) ;
+
+if (m <= n)
+    e = norm (A*x-b,1) / (anorm + norm (x,1)) ;
 else
-    if (m <= n)
-        e = norm (A*x-b,1) / (anorm + norm (x,1)) ;
-    else
-        e = norm (A'*(A*x)-A'*b,1) / (anorm + norm (x,1)) ;
-    end
+    e = norm (A'*(A*x)-A'*b,1) / (anorm + norm (x,1)) ;
 end
 
 if (min (m,n) > 1)
@@ -330,5 +418,22 @@ if (min (m,n) > 1)
         end
     end
 end
-err = max (err, e) ;
+err = check_error (e, err) ;
 
+%--------------------------------------------------------------------------
+
+function x = mtx (x)
+% make sure that x is a matrix.  It might be a factorization.
+if (isobject (x))
+    x = double (x) ;
+end
+
+%--------------------------------------------------------------------------
+
+function err = check_error (err1, err2)
+err = max (err1, err2) ;
+if (err > 1e-8)
+    fprintf ('error: %8.3e\n', full (err)) ;
+    error ('error too high') ;
+end
+err = full (err) ;

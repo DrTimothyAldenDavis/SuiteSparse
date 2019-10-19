@@ -1,4 +1,8 @@
-VERSION = 1.1.2
+#------------------------------------------------------------------------------
+# BTF Makefile
+#------------------------------------------------------------------------------
+
+VERSION = 1.1.3
 
 default: library
 
@@ -24,6 +28,8 @@ install:
 	$(CP) Lib/libbtf.a $(INSTALL_LIB)/libbtf.$(VERSION).a
 	( cd $(INSTALL_LIB) ; ln -sf libbtf.$(VERSION).a libbtf.a )
 	$(CP) Include/btf.h $(INSTALL_INCLUDE)
+	chmod 644 $(INSTALL_LIB)/libbtf*.a
+	chmod 644 $(INSTALL_INCLUDE)/btf.h
 
 # uninstall BTF
 uninstall:

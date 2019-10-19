@@ -25,7 +25,6 @@ f = f (1:nmat) ;
 Control = umfpack2 ;
 Control.prl = 0 ;
 
-figure (1)
 clf
 
 h = waitbar (0, 'UMFPACK test') ;

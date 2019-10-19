@@ -15,7 +15,7 @@ function test4 (nmat)
 
 index = UFget ;
 f = find (index.nrows == index.ncols & index.isReal & index.amd_lnz > 0) ;
-[ignore i] = sort (index.amd_lnz (f)) ;
+[ignore i] = sort (index.amd_lnz (f)) ;                                     %#ok
 f = f (i) ;
 % f = f (1:100) ;
 
@@ -43,10 +43,9 @@ end
 
 h = waitbar (0, 'KLU test 4 of 5') ;
 
-figure (1)
 clf
 
-try
+% try
 
     for kk = 1:nmat
 
@@ -86,13 +85,13 @@ try
                 tic
                 [L,U,p,q,R1] = lu (A, 'vector') ;
                 t1 = max (1e-6, toc) ;
-            catch
+            catch                                                           %#ok
                 % older version of MATLAB, which doesn't have 'vector' option
                 tic
                 [L,U,P,Q] = lu (A) ;
                 t1 = max (1e-6, toc) ;
-                [p ignore1 ignore2] = find (P') ;
-                [q ignore1 ignore2] = find (Q) ;
+                [p ignore1 ignore2] = find (P') ;                           %#ok
+                [q ignore1 ignore2] = find (Q) ;                            %#ok
                 clear ignore1 ignore2 P Q
                 R1 = speye (n) ;
             end
@@ -208,14 +207,8 @@ try
 
     end
 
-catch
-    % out-of-memory is OK, other errors are not
-    disp (lasterr) ;
-    if (isempty (strfind (lasterr, 'Out of memory')))
-        error (lasterr) ;                                                   %#ok
-    else
-        fprintf ('test terminated early, but otherwise OK\n') ;
-    end
-end
+% catch me
+%     disp (me.message) ;
+% end
 
 close (h) ;

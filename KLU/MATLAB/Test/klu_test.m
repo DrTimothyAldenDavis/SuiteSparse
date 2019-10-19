@@ -9,7 +9,7 @@ function klu_test (nmat)
 % http://www.cise.ufl.edu/research/sparse
 
 if (nargin < 1)
-    nmat = 500 ;
+    nmat = 200 ;
 end
 
 test1 (nmat) ;

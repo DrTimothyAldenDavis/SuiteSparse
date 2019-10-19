@@ -8,7 +8,7 @@ include ../../UFconfig/UFconfig.mk
 
 I = -I../Include -I../../UFconfig
 
-C = $(CC) $(CFLAGS) $(I)
+C = $(CC) $(CF) $(I)
 
 library:
 	( cd ../Lib ; $(MAKE) )

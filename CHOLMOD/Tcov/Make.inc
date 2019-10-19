@@ -5,4 +5,4 @@ V =
 COVER = ./covall
 
 # with test coverage
-CFLAGS = -O0 -g --coverage
+CF = -O0 -g --coverage

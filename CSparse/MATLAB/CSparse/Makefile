@@ -1,5 +1,5 @@
 MEX = mex -O
-AR = ar cr
+ARCHIVE = ar rv
 RANLIB = ranlib
 
 I = -I../../Include
@@ -88,7 +88,7 @@ CS = cs_mex.o \
 	cs_randperm.o
 
 mexcsparse.a: $(CS)
-	$(AR) mexcsparse.a $(CS)
+	$(ARCHIVE) mexcsparse.a $(CS)
 	$(RANLIB) mexcsparse.a
 
 $(CS): ../../Include/cs.h
@@ -251,9 +251,9 @@ cs_load.o: ../../Source/cs_load.c
 	$(MEX) -c $(I) $<
 
 clean:
-	rm -f *.o
+	- $(RM) *.o
 
 distclean: clean
-	rm -f *.mex* *.dll *.a
+	- $(RM) *.mex* *.dll *.a
 
 purge: distclean

@@ -81,7 +81,7 @@ function [Q,R,P,info] = spqr (A,arg2,arg3)                                  %#ok
 %   'metis': METIS(S'*S), only if METIS is installed. 'best': try all three
 %   (AMD, COLAMD, METIS) and take the best 'bestamd': try AMD and COLAMD and
 %   take the best. 'fixed': P=I; this is the only option if P is not present in
-%   the output. 'natural': singleton removal only The singleton pre-ordering
+%   the output. 'natural': singleton removal only.  The singleton pre-ordering
 %   permutes A prior to factorization into the form [A11 A12 ; 0 A22] where A11
 %   is upper triangular with all(abs(diag(A11)) > opts.tol) (see
 %   spqr_singletons).

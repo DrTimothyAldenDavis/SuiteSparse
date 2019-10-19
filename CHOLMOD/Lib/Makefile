@@ -8,7 +8,28 @@ ccode: all
 
 include ../../UFconfig/UFconfig.mk
 
-C = $(CC) $(CFLAGS) $(CHOLMOD_CONFIG)
+#-------------------------------------------------------------------------------
+# the optional Partition module requires METIS, CAMD, and CCOLAMD
+I_WITH_PARTITION =
+CONFIG =
+ifeq (,$(findstring -DNPARTITION, $(CHOLMOD_CONFIG)))
+    # METIS is check if METIS is available
+    ifeq (../../metis-4.0, $(wildcard ../../metis-4.0))
+        I_WITH_PARTITION = -I$(METIS_PATH)/Lib \
+            -I../../CCOLAMD/Include -I../../CAMD/Include
+    else
+        # METIS is not available, but CHOLMOD_CONFIG does not specify
+        # -DNPARTITION.  Add it here so we can still compile CHOLMOD.
+        CONFIG = -DNPARTITION
+    endif
+endif
+
+I = -I../../AMD/Include -I../../AMD/Source -I../../COLAMD/Include \
+	$(I_WITH_PARTITION) -I../Include -I../../UFconfig
+
+#-------------------------------------------------------------------------------
+
+C = $(CC) $(CF) $(CHOLMOD_CONFIG) $(CONFIG)
 
 all: libcholmod.a
 
@@ -110,14 +131,10 @@ DL = $(LCORE) $(LCHECK) $(LCHOLESKY) $(LMATRIXOPS) $(LMODIFY) $(LSUPERNODAL) \
 OBJ = $(DI) $(DL)
 
 libcholmod.a: $(OBJ)
-	$(AR) libcholmod.a $(OBJ)
-	$(RANLIB) libcholmod.a
+	$(ARCHIVE)  libcholmod.a $(OBJ)
+	- $(RANLIB) libcholmod.a
 
 $(OBJ): $(INC)
-
-I = -I../../AMD/Include -I../../AMD/Source -I../../COLAMD/Include \
-	-I$(METIS_PATH)/Lib -I../../CCOLAMD/Include -I../../CAMD/Include \
-	-I../Include -I../../UFconfig
 
 #-------------------------------------------------------------------------------
 # Check Module:

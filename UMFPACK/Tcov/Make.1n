@@ -4,7 +4,7 @@
 
 # Using Intel's icc compiler:
 CC = icc
-CFLAGS = -ansi
+CF = -ansi
 
 UMFPACK_CONFIG = -DNBLAS -DTEST_FOR_INTEGER_OVERFLOW -DTESTING
 # LIB = -lm -lunwind -lcprts
@@ -12,9 +12,8 @@ LIB = -lm
 
 RANLIB = ranlib
 MV = mv -f
-RM = rm -f
 MEX = mex -inline -g
-AR = ar cr
+ARCHIVE = ar rv
 
 #===============================================================================
 

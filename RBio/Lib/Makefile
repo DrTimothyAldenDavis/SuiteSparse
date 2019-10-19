@@ -8,7 +8,7 @@ ccode: all
 
 include ../../UFconfig/UFconfig.mk
 
-C = $(CC) $(CFLAGS)
+C = $(CC) $(CF)
 
 all: librbio.a
 
@@ -46,8 +46,8 @@ DL = $(LCORE)
 OBJ = $(DI)
 
 librbio.a: $(OBJ)
-	$(AR) librbio.a $(OBJ)
-	$(RANLIB) librbio.a
+	$(ARCHIVE)  librbio.a $(OBJ)
+	- $(RANLIB) librbio.a
 
 $(OBJ): $(INC)
 

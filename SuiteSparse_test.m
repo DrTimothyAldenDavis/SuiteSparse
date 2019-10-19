@@ -12,18 +12,18 @@ function SuiteSparse_test
 
 % Copyright 2007, Tim Davis, University of Florida
 
-npackages = 13 ;
+npackages = 18 ;
 h = waitbar (0, 'SuiteSparse test:') ;
 SuiteSparse = pwd ;
+package = 0 ;
 
-v = getversion ;
-if (v < 7)
+if (verLessThan ('matlab', '7.0'))
     error ('SuiteSparse_test requires MATLAB 7.0 or later') ;
 end
 
 % if at UF, ensure pre-installed UF Sparse Matrix Collection is used
 uf = { '/cise/homes/davis/Install/UFget', 'd:/UFget', '/share/UFget', ...
-    '/windows/UFget' } ;
+    '/windows/UFget', '/cise/research/sparse/UFget' } ;
 for k = 1:length(uf)
     if (exist (uf {k}, 'dir'))
         addpath (uf {k}) ;
@@ -37,28 +37,48 @@ try
     % CSparse (32-bit MATLAB only)
     %---------------------------------------------------------------------------
 
+    package = package + 1 ;
+
     if (isempty (strfind (computer, '64')))
         % compile and install CSparse (not installed by SuiteSparse_install)
-        waitbar (1/(npackages+1), h, 'SuiteSparse test: CSparse') ;
+        waitbar (package/(npackages+1), h, 'SuiteSparse test: CSparse') ;
         addpath ([SuiteSparse '/CSparse/MATLAB/CSparse']) ;
         addpath ([SuiteSparse '/CSparse/MATLAB/Demo']) ;
         cd ([SuiteSparse '/CSparse/MATLAB/CSparse']) ;
         cs_make ;
-
         % test CSparse
         cd ([SuiteSparse '/CSparse/MATLAB/Test']) ;
         testall ;
-
         % uninstall CSparse by removing it from path
         rmpath ([SuiteSparse '/CSparse/MATLAB/CSparse']) ;
         rmpath ([SuiteSparse '/CSparse/MATLAB/Demo']) ;
     end
 
     %---------------------------------------------------------------------------
+    % CSparse3 (both 64-bit and 32-bit MATLAB)
+    %---------------------------------------------------------------------------
+
+    package = package + 1 ;
+
+        % compile and install CSparse3 (not installed by SuiteSparse_install)
+        waitbar (package/(npackages+1), h, 'SuiteSparse test: CSparse3') ;
+        addpath ([SuiteSparse '/CSparse3/MATLAB/CSparse']) ;
+        addpath ([SuiteSparse '/CSparse3/MATLAB/Demo']) ;
+        cd ([SuiteSparse '/CSparse3/MATLAB/CSparse']) ;
+        cs_make ;
+        % test CSparse
+        cd ([SuiteSparse '/CSparse3/MATLAB/Test']) ;
+        testall ;
+        % uninstall CSparse by removing it from path
+        rmpath ([SuiteSparse '/CSparse3/MATLAB/CSparse']) ;
+        rmpath ([SuiteSparse '/CSparse3/MATLAB/Demo']) ;
+
+    %---------------------------------------------------------------------------
     % CXSparse
     %---------------------------------------------------------------------------
 
-    waitbar (2/(npackages+1), h, 'SuiteSparse test: CXSparse') ;
+    package = package + 1 ;
+    waitbar (package/(npackages+1), h, 'SuiteSparse test: CXSparse') ;
     cd ([SuiteSparse '/CXSparse/MATLAB/Test']) ;
     testall ;
 
@@ -66,7 +86,8 @@ try
     % COLAMD
     %---------------------------------------------------------------------------
 
-    waitbar (3/(npackages+1), h, 'SuiteSparse test: COLAMD') ;
+    package = package + 1 ;
+    waitbar (package/(npackages+1), h, 'SuiteSparse test: COLAMD') ;
     cd ([SuiteSparse '/COLAMD/MATLAB']) ;
     colamd_test ;
 
@@ -74,7 +95,8 @@ try
     % CCOLAMD
     %---------------------------------------------------------------------------
 
-    waitbar (4/(npackages+1), h, 'SuiteSparse test: CCOLAMD') ;
+    package = package + 1 ;
+    waitbar (package/(npackages+1), h, 'SuiteSparse test: CCOLAMD') ;
     cd ([SuiteSparse '/CCOLAMD/MATLAB']) ;
     ccolamd_test ;
 
@@ -82,15 +104,17 @@ try
     % UMFPACK
     %---------------------------------------------------------------------------
 
-    waitbar (5/(npackages+1), h, 'SuiteSparse test: UMFPACK') ;
+    package = package + 1 ;
+    waitbar (package/(npackages+1), h, 'SuiteSparse test: UMFPACK') ;
     cd ([SuiteSparse '/UMFPACK/MATLAB']) ;
-    umfpack_test (800) ;
+    umfpack_test (100) ;
 
     %---------------------------------------------------------------------------
     % CHOLMOD
     %---------------------------------------------------------------------------
 
-    waitbar (6/(npackages+1), h, 'SuiteSparse test: CHOLMOD') ;
+    package = package + 1 ;
+    waitbar (package/(npackages+1), h, 'SuiteSparse test: CHOLMOD') ;
     cd ([SuiteSparse '/CHOLMOD/MATLAB/Test']) ;
     cholmod_test ;
 
@@ -98,7 +122,8 @@ try
     % BTF
     %---------------------------------------------------------------------------
 
-    waitbar (7/(npackages+1), h, 'SuiteSparse test: BTF') ;
+    package = package + 1 ;
+    waitbar (package/(npackages+1), h, 'SuiteSparse test: BTF') ;
     cd ([SuiteSparse '/BTF/MATLAB/Test']) ;
     btf_test ;
 
@@ -106,15 +131,17 @@ try
     % KLU
     %---------------------------------------------------------------------------
 
-    waitbar (8/(npackages+1), h, 'SuiteSparse test: KLU') ;
+    package = package + 1 ;
+    waitbar (package/(npackages+1), h, 'SuiteSparse test: KLU') ;
     cd ([SuiteSparse '/KLU/MATLAB/Test']) ;
-    klu_test ;
+    klu_test (100) ;
 
     %---------------------------------------------------------------------------
     % LDL
     %---------------------------------------------------------------------------
 
-    waitbar (9/(npackages+1), h, 'SuiteSparse test: LDL') ;
+    package = package + 1 ;
+    waitbar (package/(npackages+1), h, 'SuiteSparse test: LDL') ;
     cd ([SuiteSparse '/LDL/MATLAB']) ;
     ldlmain2 ;
     ldltest ;
@@ -123,9 +150,12 @@ try
     % LINFACTOR:  MATLAB 7.3 (R2006b) or later required
     %---------------------------------------------------------------------------
 
-    if (v > 7.2)
-        waitbar (10/(npackages+1), h, 'SuiteSparse test: LINFACTOR') ;
-        cd ([SuiteSparse '/LINFACTOR']) ;
+    package = package + 1 ;
+    if (verLessThan ('matlab', '7.3'))
+        % skip test of LINFACTOR
+    else
+        waitbar (package/(npackages+1), h, 'SuiteSparse test: LINFACTOR') ;
+        cd ([SuiteSparse '/MATLAB_Tools/LINFACTOR']) ;
         lintests ;
     end
 
@@ -133,29 +163,28 @@ try
     % MESHND
     %---------------------------------------------------------------------------
 
-    waitbar (11/(npackages+1), h, 'SuiteSparse test: MESHND') ;
-    cd ([SuiteSparse '/MESHND']) ;
+    package = package + 1 ;
+    waitbar (package/(npackages+1), h, 'SuiteSparse test: MESHND') ;
+    cd ([SuiteSparse '/MATLAB_Tools/MESHND']) ;
     meshnd_quality ;
 
     %---------------------------------------------------------------------------
     % SSMULT
     %---------------------------------------------------------------------------
 
-    waitbar (12/(npackages+1), h, 'SuiteSparse test: SSMULT') ;
-    cd ([SuiteSparse '/SSMULT']) ;
-    ssmult_test ;
+    package = package + 1 ;
+    waitbar (package/(npackages+1), h, 'SuiteSparse test: SSMULT') ;
+    cd ([SuiteSparse '/MATLAB_Tools/SSMULT']) ;
+    sstest3 ;
 
     %---------------------------------------------------------------------------
-    % MATLAB_Tools
+    % other MATLAB_Tools
     %---------------------------------------------------------------------------
 
-    waitbar (13/(npackages+1), h, 'SuiteSparse test: MATLAB Tools') ;
+    package = package + 1 ;
+    waitbar (package/(npackages+1), h, 'SuiteSparse test: MATLAB Tools') ;
     cd ([SuiteSparse '/MATLAB_Tools']) ;
-    figure (1) ;
-    clf
-    pagerankdemo (1000) ;
-    figure (2) ;
-    clf
+    fprintf ('getversion: %g\n', getversion) ;
     seashell ;
     shellgui ;
     cd ([SuiteSparse '/MATLAB_Tools/waitmex']) ;
@@ -163,6 +192,37 @@ try
     url = 'http://www.cise.ufl.edu/research/sparse' ;
     fprintf ('<a href="%s">Click here for more details</a>\n', url) ;
     hprintf ('or see <a href="%s">\n', url) ;
+    cd ([SuiteSparse '/MATLAB_Tools/find_components']) ;
+    find_components_example (1, 0) ;
+    cd ([SuiteSparse '/MATLAB_Tools/spok']) ;
+    spok_test ;
+
+    %---------------------------------------------------------------------------
+    % FACTORIZE
+    %---------------------------------------------------------------------------
+
+    package = package + 1 ;
+    waitbar (package/(npackages+1), h, 'SuiteSparse test: FACTORIZE') ;
+    cd ([SuiteSparse '/MATLAB_Tools/Factorize/Test']) ;
+    test_all ;
+
+    %---------------------------------------------------------------------------
+    % SPARSEINV
+    %---------------------------------------------------------------------------
+
+    package = package + 1 ;
+    waitbar (package/(npackages+1), h, 'SuiteSparse test: SPARSEINV') ;
+    cd ([SuiteSparse '/MATLAB_Tools/sparseinv']) ;
+    sparseinv_test
+
+    %---------------------------------------------------------------------------
+    % SPQR_RANK
+    %---------------------------------------------------------------------------
+
+    package = package + 1 ;
+    waitbar (package/(npackages+1), h, 'SuiteSparse test: spqr_rank') ;
+    cd ([SuiteSparse '/MATLAB_Tools/spqr_rank']) ;
+    demo_spqr_rank ;
 
     %---------------------------------------------------------------------------
     % AMD, CAMD, UFcollection, UFget

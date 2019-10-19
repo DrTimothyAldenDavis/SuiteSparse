@@ -56,7 +56,6 @@ fprintf ('Difference between UMFPACK and MATLAB solution: %g\n', ...
 % spy the results
 %-------------------------------------------------------------------------------
 
-figure (1)
 clf
 
 subplot (2,3,1)

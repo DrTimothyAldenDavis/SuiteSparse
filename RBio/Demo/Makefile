@@ -8,7 +8,7 @@ include ../../UFconfig/UFconfig.mk
 
 LIB = ../Lib/librbio.a ../../UFconfig/libufconfig.a
 
-C = $(CC) $(CFLAGS)
+C = $(CC) $(CF)
 
 all: library RBdemo
 	./RBdemo < ../RBio/private/west0479.rua
@@ -19,7 +19,7 @@ distclean:nnz,  purge
 
 purge: clean
 	- $(RM) RBdemo
-	- $(RM) -rf *.dSYM
+	- $(RM) -r *.dSYM
 
 clean:
 	- $(RM) $(CLEAN) temp.rb

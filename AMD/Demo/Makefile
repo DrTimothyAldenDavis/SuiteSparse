@@ -6,7 +6,7 @@ default: amd_simple amd_demo amd_demo2 amd_l_demo
 
 include ../../UFconfig/UFconfig.mk
 
-C = $(CC) $(CFLAGS) -I../Include -I../../UFconfig
+C = $(CC) $(CF) -I../Include -I../../UFconfig
 
 INC = ../Include/amd.h ../../UFconfig/UFconfig.h
 

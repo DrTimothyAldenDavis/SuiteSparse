@@ -7,4 +7,4 @@ spqr_user_guide.pdf: spqr_user_guide.tex spqr_user_guide.bib Makefile
 clean: purge
 
 purge:
-	rm -f *.aux *.bbl *.blg *.log *.out
+	- $(RM) *.aux *.bbl *.blg *.log *.out

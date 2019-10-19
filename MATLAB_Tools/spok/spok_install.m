@@ -10,15 +10,12 @@ function spok_install
 
 % Copyright 2008-2011, Tim Davis, University of Florida
 
-help spok_install
 is64 = ~isempty (strfind (computer, '64')) ;
 if (is64)
-    mex -largeArrayDims  spok.c spok_mex.c
+    fprintf ('Compiling spok (64-bit)\n') ;
+    mex -largeArrayDims spok.c spok_mex.c
 else
+    fprintf ('Compiling spok (32-bit)\n') ;
     mex spok.c spok_mex.c
 end
-addpath (pwd)
-
-fprintf ('Added the following directory to your path:\n') ;
-disp (pwd) ;
-fprintf ('Use pathtool and click "save" to save this for future sessions.\n') ;
+addpath (pwd) ;

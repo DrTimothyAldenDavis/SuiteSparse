@@ -22,7 +22,6 @@ A = sprandn (n, n, d) ;
 A = speye (n) + A*A' ;
 b = randn (n, 1) ;
 
-figure (1)
 clf
 subplot (2,2,1) ;
 spy (A) ;

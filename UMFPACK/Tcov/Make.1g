@@ -3,15 +3,14 @@
 #===============================================================================
 
 CC = gcc
-CFLAGS = -O3 -fPIC
+CF = -O3 -fPIC
 UMFPACK_CONFIG = -DNBLAS -DTEST_FOR_INTEGER_OVERFLOW -DTESTING
 LIB = -lm
 
 RANLIB = ranlib
 MV = mv -f
-RM = rm -f
 MEX = mex -inline -g
-AR = ar cr
+ARCHIVE = ar rv
 
 #===============================================================================
 

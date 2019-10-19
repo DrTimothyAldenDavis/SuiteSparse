@@ -37,20 +37,13 @@ end
 addpath ([pwd filesep 'CSparse']) ;
 addpath ([pwd filesep 'Demo']) ;
 
-v = getversion ;
-if (v >= 7.0)
-    addpath ([pwd filesep 'UFget']) ;
-else
+if (verLessThan ('matlab', '7.0'))
     fprintf ('UFget not installed (MATLAB 7.0 or later required)\n') ;
+else
+    addpath ([pwd filesep 'UFget']) ;
 end
 
 cd ('CSparse') ;
 cs_make (1) ;
 cd ('../Demo') ;
 cs_demo (do_pause)
-
-%-------------------------------------------------------------------------------
-function v = getversion
-% determine the MATLAB version, and return it as a double.
-v = sscanf (version, '%d.%d.%d') ;
-v = 10.^(0:-1:-(length(v)-1)) * v ;

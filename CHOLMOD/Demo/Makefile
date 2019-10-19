@@ -10,16 +10,28 @@ default: all
 include ../../UFconfig/UFconfig.mk
 
 #-------------------------------------------------------------------------------
-# With METIS, CCOLAMD, CAMD, and the Partition Module:
-LIB2 = ../Lib/libcholmod.a ../../AMD/Lib/libamd.a ../../COLAMD/Lib/libcolamd.a \
-	../../CCOLAMD/Lib/libccolamd.a ../../CAMD/Lib/libcamd.a \
-	$(METIS) $(LAPACK) $(BLAS) $(XERBLA) $(LIB)
-# Use this instead, if you compile with -DNPARTITION:
-# LIB2 = ../Lib/libcholmod.a ../../AMD/Lib/libamd.a ../../COLAMD/libcolamd.a \
-	$(LAPACK) $(BLAS) $(XERBLA) $(LIB)
+# the optional Partition module requires METIS, CAMD, and CCOLAMD
+LIB_WITH_PARTITION =
+CONFIG =
+ifeq (,$(findstring -DNPARTITION, $(CHOLMOD_CONFIG)))
+    # check if METIS is available
+    ifeq (../../metis-4.0, $(wildcard ../../metis-4.0))
+        LIB_WITH_PARTITION = $(METIS) ../../CCOLAMD/Lib/libccolamd.a \
+            ../../CAMD/Lib/libcamd.a
+    else
+        # METIS is not available, but CHOLMOD_CONFIG does not specify
+        # -DNPARTITION.  Add it here so we can still compile CHOLMOD.
+        CONFIG = -DNPARTITION
+    endif
+endif
 #-------------------------------------------------------------------------------
 
-C = $(CC) $(CFLAGS) $(CHOLMOD_CONFIG)
+LIB2 = ../Lib/libcholmod.a ../../AMD/Lib/libamd.a ../../COLAMD/Lib/libcolamd.a \
+	$(LIB_WITH_PARTITION) $(LAPACK) $(BLAS) $(XERBLA) $(LIB)
+
+#-------------------------------------------------------------------------------
+
+C = $(CC) $(CF) $(CHOLMOD_CONFIG) $(CONFIG)
 
 code: library cholmod_demo cholmod_l_demo cholmod_simple
 
@@ -54,15 +66,12 @@ library:
 	( cd ../../UFconfig/xerbla ; $(MAKE) )
 	( cd ../Lib ; $(MAKE) )
 	( cd ../../AMD ; $(MAKE) library )
-	( cd ../../CAMD ; $(MAKE) library )
 	( cd ../../COLAMD ; $(MAKE) library )
+ifneq (,$(findstring -DNPARTITION, $(CHOLMOD_CONFIG)))
+else
 	( cd ../../CCOLAMD ; $(MAKE) library )
-# use this rule instead, if you compile with -DNPARTITION:
-# library:
-# 	( cd ../../UFconfig/xerbla ; $(MAKE) )
-# 	( cd ../Lib ; $(MAKE) )
-# 	( cd ../../AMD ; $(MAKE) library )
-# 	( cd ../../COLAMD ; $(MAKE) )
+	( cd ../../CAMD ; $(MAKE) library )
+endif
 #-------------------------------------------------------------------------------
 
 I = -I../Include -I../../UFconfig

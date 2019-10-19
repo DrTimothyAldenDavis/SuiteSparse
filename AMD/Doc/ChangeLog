@@ -1,3 +1,7 @@
+Dec 7, 2011: version 2.2.3
+
+    * fixed the Makefile to better align with CFLAGS and other standards
+
 Jan 25, 2011: version 2.2.2
 
     * minor fix to "make install"

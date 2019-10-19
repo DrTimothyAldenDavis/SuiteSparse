@@ -10,10 +10,9 @@ default: everything
 
 include ../../UFconfig/UFconfig.mk
 
-C = $(CC) $(CFLAGS) $(UMFPACK_CONFIG) \
+C = $(CC) $(CF) $(UMFPACK_CONFIG) \
     -I../Include -I../Source -I../../AMD/Include -I../../UFconfig \
-    -I../../CCOLAMD/Include -I../../CAMD/Include -I../../CHOLMOD/Include \
-    -I../../metis-4.0/Lib -I../../COLAMD/Include
+    -I../../CHOLMOD/Include
 
 everything:
 	$(C) -c ../Source/umfpack_global.c -o umfpack_gn_global.o
@@ -333,7 +332,7 @@ everything:
 	$(C) -DZLONG -c ../Source/umfpack_save_numeric.c -o umfpack_zl_save_numeric.o
 	$(C) -DZLONG -c ../Source/umfpack_load_symbolic.c -o umfpack_zl_load_symbolic.o
 	$(C) -DZLONG -c ../Source/umfpack_save_symbolic.c -o umfpack_zl_save_symbolic.o
-	$(AR) ../Lib/libumfpack.a \
+	$(ARCHIVE)  ../Lib/libumfpack.a \
 	    umfpack_gn_global.o \
 	    umf_i_analyze.o umf_i_apply_order.o umf_i_colamd.o umf_i_free.o \
             umf_i_cholmod.o umf_i_fsize.o umf_i_is_permutation.o \

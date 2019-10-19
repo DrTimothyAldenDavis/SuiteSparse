@@ -1,5 +1,5 @@
-2379
-14-Jan-2011 15:51:12
+2547
+06-Jul-2011 14:40:37
 HB,1138_bus,1138,1138,4054,1,0,0,1,1,1,power network problem
 HB,494_bus,494,494,1666,1,0,0,1,1,1,power network problem
 HB,662_bus,662,662,2474,1,0,0,1,1,1,power network problem
@@ -1410,7 +1410,7 @@ Bindel,ted_AB,10605,10605,522387,0,0,1,0,0.6415700434950818,0,thermal problem
 Bindel,ted_A_unscaled,10605,10605,424587,1,0,1,0,0.5657922767749357,0.1057079149564699,thermal problem
 Bindel,ted_B_unscaled,10605,10605,144579,1,0,1,1,1,1,thermal problem
 Bindel,ted_AB_unscaled,10605,10605,522387,0,0,1,0,0.6415700434950818,0,thermal problem
-Koutsovasilis,F1,343791,343791,26837113,1,0,1,1,1,1,structural problem
+Koutsovasilis,F1,343791,343791,26837113,1,0,1,0,1,1,structural problem
 AMD,G2_circuit,150102,150102,726674,1,0,0,1,1,1,circuit simulation problem
 IBM_EDA,ckt11752_dc_1,49702,49702,333029,1,0,0,0,0.9838102263462359,0.7355387943965807,circuit simulation problem
 IBM_EDA,ckt11752_tr_0,49702,49702,332807,1,0,0,0,0.9838102263462359,0.7360237367761078,circuit simulation problem
@@ -2249,12 +2249,12 @@ Lee,fem_hifreq_circuit,491100,491100,20239237,0,0,1,0,0.999999037883928,0.499093
 Buss,connectus,512,394792,1127525,1,1,0,0,0,0,undirected bipartite graph
 Yoshiyasu,image_interp,240000,120000,711683,1,0,1,0,0,0,computer graphics/vision problem
 Yoshiyasu,mesh_deform,234023,9393,853829,1,0,1,0,0,0,computer graphics/vision problem
-Priebel,130bit,584,575,6120,1,1,0,0,0,0,combinatorics problem
-Priebel,145bit,1002,993,11315,1,1,0,0,0,0,combinatorics problem
-Priebel,162bit,3606,3597,37118,1,1,0,0,0,0,combinatorics problem
-Priebel,176bit,7441,7431,82270,1,1,0,0,0,0,combinatorics problem
-Priebel,192bit,13691,13682,154303,1,1,0,0,0,0,combinatorics problem
-Priebel,208bit,24430,24421,299756,1,1,0,0,0,0,combinatorics problem
+Priebel,130bit,584,575,6120,1,1,0,0,0,0,combinatorial problem
+Priebel,145bit,1002,993,11315,1,1,0,0,0,0,combinatorial problem
+Priebel,162bit,3606,3597,37118,1,1,0,0,0,0,combinatorial problem
+Priebel,176bit,7441,7431,82270,1,1,0,0,0,0,combinatorial problem
+Priebel,192bit,13691,13682,154303,1,1,0,0,0,0,combinatorial problem
+Priebel,208bit,24430,24421,299756,1,1,0,0,0,0,combinatorial problem
 MathWorks,TS,2142,2142,45262,1,0,0,0,0.9525732031943213,0.04130434782608695,counter-example problem
 Botonakis,thermomech_TC,102158,102158,711558,1,0,1,1,1,1,thermal problem
 Botonakis,thermomech_TK,102158,102158,711558,1,0,1,1,1,1,thermal problem
@@ -2379,3 +2379,171 @@ Williams,mac_econ_fwd500,206500,206500,1273389,1,0,0,0,0.05995735832675801,0.005
 Williams,mc2depi,525825,525825,2100225,1,0,1,0,0,0,2D/3D problem
 Williams,cop20k_A,121192,121192,2624331,1,0,1,0,1,1,2D/3D problem
 Williams,webbase-1M,1000005,1000005,3105536,1,0,0,0,0.09552554676231316,0.01588957844838191,weighted directed graph
+Freescale,FullChip,2987012,2987012,26621983,1,0,0,0,0.9999996192108144,0.005614865134161801,circuit simulation problem
+Dattorro,EternityII_E,11077,262144,1503732,1,0,0,0,0,0,optimization problem
+Dattorro,EternityII_Etilde,10054,204304,1170516,1,0,0,0,0,0,optimization problem
+Dattorro,EternityII_A,7362,150638,782087,1,0,0,0,0,0,optimization problem
+Fluorem,HV15R,2017169,2017169,283073458,1,0,1,0,0.8446615474952066,0.0007082780488857875,computational fluid dynamics problem
+Dziekonski,dielFilterV2clx,607232,607232,25309272,0,0,1,0,1,0.9712899015627859,electromagnetics problem
+Dziekonski,dielFilterV2real,1157456,1157456,48538952,1,0,1,0,1,1,electromagnetics problem
+Dziekonski,dielFilterV3clx,420408,420408,32886208,0,0,1,0,1,0.8873627016737613,electromagnetics problem
+Dziekonski,dielFilterV3real,1102824,1102824,89306020,1,0,1,0,1,1,electromagnetics problem
+Newman,adjnoun,112,112,850,1,1,0,0,1,1,undirected graph
+Newman,as-22july06,22963,22963,96872,1,1,0,0,1,1,undirected graph
+Newman,astro-ph,16706,16706,242502,1,0,0,0,1,1,undirected weighted graph
+Newman,celegansneural,297,297,2345,1,0,0,0,0.1680170575692964,0.04946695095948828,directed weighted graph
+Newman,cond-mat,16726,16726,95188,1,0,0,0,1,1,undirected weighted graph
+Newman,cond-mat-2003,31163,31163,240058,1,0,0,0,1,1,undirected weighted graph
+Newman,cond-mat-2005,40421,40421,351382,1,0,0,0,1,1,undirected weighted graph
+Newman,dolphins,62,62,318,1,1,0,0,1,1,undirected graph
+Newman,football,115,115,1226,1,0,0,0,1,1,undirected multigraph
+Newman,hep-th,8361,8361,31502,1,0,0,0,1,1,undirected weighted graph
+Newman,karate,34,34,156,1,1,0,0,1,1,undirected graph
+Newman,lesmis,77,77,508,1,0,0,0,1,1,undirected weighted graph
+Newman,netscience,1589,1589,5484,1,0,0,0,1,1,undirected weighted graph
+Newman,polblogs,1490,1490,19025,1,0,0,0,0.242561244874356,0.2414046893071181,directed multigraph
+Newman,polbooks,105,105,882,1,1,0,0,1,1,undirected graph
+Newman,power,4941,4941,13188,1,1,0,0,1,1,undirected graph
+Arenas,PGPgiantcompo,10680,10680,48632,1,0,0,0,1,1,undirected multigraph
+Arenas,jazz,198,198,5484,1,0,0,0,1,1,undirected multigraph
+Arenas,celegans_metabolic,453,453,4065,1,0,0,0,1,1,undirected multigraph
+Arenas,email,1133,1133,10902,1,1,0,0,1,1,undirected graph
+AG-Monien,3elt,4720,4720,27444,1,1,1,0,1,1,2D/3D problem
+AG-Monien,3elt_dual,9000,9000,26556,1,1,1,0,1,1,2D/3D problem
+AG-Monien,airfoil1,4253,4253,24578,1,1,1,0,1,1,2D/3D problem
+AG-Monien,airfoil1_dual,8034,8034,23626,1,1,1,0,1,1,2D/3D problem
+AG-Monien,big_dual,30269,30269,89858,1,1,1,0,1,1,2D/3D problem
+AG-Monien,crack,10240,10240,60760,1,1,1,0,1,1,2D/3D problem
+AG-Monien,crack_dual,20141,20141,60086,1,1,1,0,1,1,2D/3D problem
+AG-Monien,grid1,252,252,952,1,1,1,0,1,1,2D/3D problem
+AG-Monien,grid1_dual,224,224,840,1,1,1,0,1,1,2D/3D problem
+AG-Monien,grid2,3296,3296,12864,1,1,1,0,1,1,2D/3D problem
+AG-Monien,grid2_dual,3136,3136,12224,1,1,1,0,1,1,2D/3D problem
+AG-Monien,netz4504,1961,1961,5156,1,1,1,0,1,1,2D/3D problem
+AG-Monien,netz4504_dual,615,615,2342,1,1,1,0,1,1,2D/3D problem
+AG-Monien,ukerbe1,5981,5981,15704,1,1,1,0,1,1,2D/3D problem
+AG-Monien,ukerbe1_dual,1866,1866,7076,1,1,1,0,1,1,2D/3D problem
+AG-Monien,whitaker3,9800,9800,57978,1,1,1,0,1,1,2D/3D problem
+AG-Monien,whitaker3_dual,19190,19190,57162,1,1,1,0,1,1,2D/3D problem
+AG-Monien,brack2,62631,62631,733118,1,1,1,0,1,1,2D/3D problem
+AG-Monien,wave,156317,156317,2118662,1,1,1,0,1,1,2D/3D problem
+AG-Monien,diag,2559,2559,8184,1,1,1,0,1,1,2D/3D problem
+AG-Monien,L,956,956,3640,1,1,1,0,1,1,2D/3D problem
+AG-Monien,L-9,17983,17983,71192,1,1,1,0,1,1,2D/3D problem
+AG-Monien,stufe,1036,1036,3736,1,1,1,0,1,1,2D/3D problem
+AG-Monien,stufe-10,24010,24010,92828,1,1,1,0,1,1,2D/3D problem
+AG-Monien,biplane-9,21701,21701,84076,1,1,1,0,1,1,2D/3D problem
+AG-Monien,shock-9,36476,36476,142580,1,1,1,0,1,1,2D/3D problem
+AG-Monien,bfly,49152,49152,196608,1,1,0,0,1,1,undirected graph sequence
+AG-Monien,cage,366,366,5124,1,1,0,0,1,1,undirected graph sequence
+AG-Monien,cca,49152,49152,139264,1,1,0,0,1,1,undirected graph sequence
+AG-Monien,ccc,49152,49152,147456,1,1,0,0,1,1,undirected graph sequence
+AG-Monien,debr,1048576,1048576,4194298,1,1,0,0,1,1,undirected graph sequence
+AG-Monien,se,32768,32768,98300,1,1,0,0,1,1,undirected graph sequence
+LAW,cnr-2000,325557,325557,3216152,1,1,0,0,0.2491384628169437,0.2491384628169437,directed graph
+LAW,in-2004,1382908,1382908,16917053,1,1,0,0,0.3564974165403691,0.3564974165403691,directed graph
+LAW,eu-2005,862664,862664,19235140,1,1,0,0,0.277066804642518,0.277066804642518,directed graph
+LAW,enron,69244,69244,276143,1,1,0,0,0.1468201946046729,0.1468201946046729,directed graph
+LAW,amazon-2008,735323,735323,5158388,1,1,0,0,0.6338864001699756,0.6338864001699756,directed graph
+LAW,ljournal-2008,5363260,5363260,79023142,1,1,0,0,0.7302651670539438,0.7302651670539438,directed graph
+LAW,hollywood-2009,1139905,1139905,113891327,1,1,0,-1,1,1,undirected graph
+LAW,dblp-2010,326186,326186,1615400,1,1,0,0,1,1,undirected graph
+LAW,webbase-2001,118142155,118142155,1019903190,1,1,0,0,0.2780598082364509,0.2780598082364509,directed graph
+LAW,uk-2002,18520486,18520486,298113762,1,1,0,0,0.2084315853924949,0.2084315853924949,directed graph
+LAW,indochina-2004,7414866,7414866,194109311,1,1,0,0,0.4240142027924715,0.4240142027924715,directed graph
+LAW,it-2004,41291594,41291594,1150725436,1,1,0,0,0.1906175218924703,0.1906175218924703,directed graph
+LAW,arabic-2005,22744080,22744080,639999458,1,1,0,0,0.2447917196533005,0.2447917196533005,directed graph
+LAW,sk-2005,50636154,50636154,1949412601,1,1,0,0,0.1245713694644861,0.1245713694644861,directed graph
+LAW,uk-2005,39459925,39459925,936364282,1,1,0,0,0.3002522210250522,0.3002522210250522,directed graph
+DIMACS10,caidaRouterLevel,192244,192244,1218132,1,1,0,0,1,1,undirected graph
+DIMACS10,chesapeake,39,39,340,1,1,0,0,1,1,undirected graph
+DIMACS10,road_central,14081816,14081816,33866826,1,1,0,0,1,1,undirected graph
+DIMACS10,road_usa,23947347,23947347,57708624,1,1,0,0,1,1,undirected graph
+DIMACS10,citationCiteseer,268495,268495,2313294,1,1,0,0,1,1,undirected graph
+DIMACS10,coAuthorsCiteseer,227320,227320,1628268,1,1,0,0,1,1,undirected graph
+DIMACS10,coAuthorsDBLP,299067,299067,1955352,1,1,0,0,1,1,undirected graph
+DIMACS10,coPapersCiteseer,434102,434102,32073440,1,1,0,0,1,1,undirected graph
+DIMACS10,coPapersDBLP,540486,540486,30491458,1,1,0,0,1,1,undirected graph
+DIMACS10,delaunay_n10,1024,1024,6112,1,1,0,0,1,1,undirected graph
+DIMACS10,delaunay_n11,2048,2048,12254,1,1,0,0,1,1,undirected graph
+DIMACS10,delaunay_n12,4096,4096,24528,1,1,0,0,1,1,undirected graph
+DIMACS10,delaunay_n13,8192,8192,49094,1,1,0,0,1,1,undirected graph
+DIMACS10,delaunay_n14,16384,16384,98244,1,1,0,0,1,1,undirected graph
+DIMACS10,delaunay_n15,32768,32768,196548,1,1,0,0,1,1,undirected graph
+DIMACS10,delaunay_n16,65536,65536,393150,1,1,0,0,1,1,undirected graph
+DIMACS10,delaunay_n17,131072,131072,786352,1,1,0,0,1,1,undirected graph
+DIMACS10,delaunay_n18,262144,262144,1572792,1,1,0,0,1,1,undirected graph
+DIMACS10,delaunay_n19,524288,524288,3145646,1,1,0,0,1,1,undirected graph
+DIMACS10,delaunay_n20,1048576,1048576,6291372,1,1,0,0,1,1,undirected graph
+DIMACS10,delaunay_n21,2097152,2097152,12582816,1,1,0,0,1,1,undirected graph
+DIMACS10,delaunay_n22,4194304,4194304,25165738,1,1,0,0,1,1,undirected graph
+DIMACS10,delaunay_n23,8388608,8388608,50331568,1,1,0,0,1,1,undirected graph
+DIMACS10,delaunay_n24,16777216,16777216,100663202,1,1,0,0,1,1,undirected graph
+DIMACS10,hugebubbles-00000,18318143,18318143,54940162,1,1,0,0,1,1,undirected graph
+DIMACS10,hugebubbles-00010,19458087,19458087,58359528,1,1,0,0,1,1,undirected graph
+DIMACS10,hugebubbles-00020,21198119,21198119,63580358,1,1,0,0,1,1,undirected graph
+DIMACS10,hugetrace-00000,4588484,4588484,13758266,1,1,0,0,1,1,undirected graph
+DIMACS10,hugetrace-00010,12057441,12057441,36164358,1,1,0,0,1,1,undirected graph
+DIMACS10,hugetrace-00020,16002413,16002413,47997626,1,1,0,0,1,1,undirected graph
+DIMACS10,hugetric-00000,5824554,5824554,17467046,1,1,0,0,1,1,undirected graph
+DIMACS10,hugetric-00010,6592765,6592765,19771708,1,1,0,0,1,1,undirected graph
+DIMACS10,hugetric-00020,7122792,7122792,21361554,1,1,0,0,1,1,undirected graph
+DIMACS10,kron_g500-logn16,65536,65536,4912469,1,0,0,0,1,1,undirected multigraph
+DIMACS10,kron_g500-logn17,131072,131072,10228360,1,0,0,0,1,1,undirected multigraph
+DIMACS10,kron_g500-logn18,262144,262144,21165908,1,0,0,0,1,1,undirected multigraph
+DIMACS10,kron_g500-logn19,524288,524288,43562265,1,0,0,0,1,1,undirected multigraph
+DIMACS10,kron_g500-logn20,1048576,1048576,89239674,1,0,0,0,1,1,undirected multigraph
+DIMACS10,kron_g500-logn21,2097152,2097152,182082942,1,0,0,0,1,1,undirected multigraph
+DIMACS10,adaptive,6815744,6815744,27248640,1,1,0,0,1,1,undirected graph
+DIMACS10,channel-500x100x100-b050,4802000,4802000,85362744,1,1,0,0,1,1,undirected graph
+DIMACS10,packing-500x100x100-b050,2145852,2145852,34976486,1,1,0,0,1,1,undirected graph
+DIMACS10,venturiLevel3,4026819,4026819,16108474,1,1,0,0,1,1,undirected graph
+DIMACS10,rgg_n_2_15_s0,32768,32768,320480,1,1,0,0,1,1,undirected random graph
+DIMACS10,rgg_n_2_16_s0,65536,65536,684254,1,1,0,0,1,1,undirected random graph
+DIMACS10,rgg_n_2_17_s0,131072,131072,1457506,1,1,0,0,1,1,undirected random graph
+DIMACS10,rgg_n_2_18_s0,262144,262144,3094566,1,1,0,0,1,1,undirected random graph
+DIMACS10,rgg_n_2_19_s0,524288,524288,6539532,1,1,0,0,1,1,undirected random graph
+DIMACS10,rgg_n_2_20_s0,1048576,1048576,13783240,1,1,0,0,1,1,undirected random graph
+DIMACS10,rgg_n_2_21_s0,2097152,2097152,28975990,1,1,0,0,1,1,undirected random graph
+DIMACS10,rgg_n_2_22_s0,4194304,4194304,60718396,1,1,0,0,1,1,undirected random graph
+DIMACS10,rgg_n_2_23_s0,8388608,8388608,127002786,1,1,0,0,1,1,undirected random graph
+DIMACS10,rgg_n_2_24_s0,16777216,16777216,265114400,1,1,0,0,1,1,undirected random graph
+DIMACS10,asia_osm,11950757,11950757,25423206,1,1,0,0,1,1,undirected graph
+DIMACS10,belgium_osm,1441295,1441295,3099940,1,1,0,0,1,1,undirected graph
+DIMACS10,europe_osm,50912018,50912018,108109320,1,1,0,0,1,1,undirected graph
+DIMACS10,germany_osm,11548845,11548845,24738362,1,1,0,0,1,1,undirected graph
+DIMACS10,great-britain_osm,7733822,7733822,16313034,1,1,0,0,1,1,undirected graph
+DIMACS10,italy_osm,6686493,6686493,14027956,1,1,0,0,1,1,undirected graph
+DIMACS10,luxembourg_osm,114599,114599,239332,1,1,0,0,1,1,undirected graph
+DIMACS10,netherlands_osm,2216688,2216688,4882476,1,1,0,0,1,1,undirected graph
+DIMACS10,144,144649,144649,2148786,1,1,0,0,1,1,undirected graph
+DIMACS10,598a,110971,110971,1483868,1,1,0,0,1,1,undirected graph
+DIMACS10,auto,448695,448695,6629222,1,1,0,0,1,1,undirected graph
+DIMACS10,cs4,22499,22499,87716,1,1,0,0,1,1,undirected graph
+DIMACS10,cti,16840,16840,96464,1,1,0,0,1,1,undirected graph
+DIMACS10,data,2851,2851,30186,1,1,0,0,1,1,undirected graph
+DIMACS10,fe_4elt2,11143,11143,65636,1,1,0,0,1,1,undirected graph
+DIMACS10,fe_body,45087,45087,327468,1,1,0,0,1,1,undirected graph
+DIMACS10,fe_ocean,143437,143437,819186,1,1,0,0,1,1,undirected graph
+DIMACS10,fe_rotor,99617,99617,1324862,1,1,0,0,1,1,undirected graph
+DIMACS10,fe_sphere,16386,16386,98304,1,1,0,0,1,1,undirected graph
+DIMACS10,fe_tooth,78136,78136,905182,1,1,0,0,1,1,undirected graph
+DIMACS10,m14b,214765,214765,3358036,1,1,0,0,1,1,undirected graph
+DIMACS10,t60k,60005,60005,178880,1,1,0,0,1,1,undirected graph
+DIMACS10,uk,4824,4824,13674,1,1,0,0,1,1,undirected graph
+DIMACS10,wing,62032,62032,243088,1,1,0,0,1,1,undirected graph
+DIMACS10,wing_nodal,10937,10937,150976,1,1,0,0,1,1,undirected graph
+IPSO,HTC_336_4438,226340,226340,783496,1,0,0,0,1,1,power network problem
+IPSO,HTC_336_9129,226340,226340,762969,1,0,0,0,1,1,power network problem
+IPSO,OPF_10000,43887,43887,426898,1,0,0,0,1,1,power network problem
+IPSO,OPF_3754,15435,15435,141478,1,0,0,0,1,1,power network problem
+IPSO,OPF_6000,29902,29902,274697,1,0,0,0,1,1,power network problem
+IPSO,TSC_OPF_1047,8140,8140,2012833,1,0,0,0,1,1,power network problem
+IPSO,TSC_OPF_300,9774,9774,820783,1,0,0,0,1,1,power network problem
+Janna,Serena,1391349,1391349,64131971,1,0,1,1,1,1,structural problem
+Janna,Emilia_923,923136,923136,40373538,1,0,1,1,1,1,structural problem
+Janna,Fault_639,638802,638802,27245944,1,0,1,1,1,1,structural problem
+Janna,Flan_1565,1564794,1564794,114165372,1,0,1,1,1,1,structural problem
+Janna,Geo_1438,1437960,1437960,60236322,1,0,1,1,1,1,structural problem
+Janna,Hook_1498,1498023,1498023,59374451,1,0,1,1,1,1,structural problem
+Janna,StocF-1465,1465137,1465137,21005389,1,0,1,1,1,1,computational fluid dynamics problem

@@ -8,12 +8,12 @@ include ../../UFconfig/UFconfig.mk
 V =
 
 # with test coverage
-CFLAGS = -O0 -g --coverage
+CF = -O0 -g --coverage
 
 # Tcov requires gcc
 CC = gcc
 
-C = $(CC) $(CFLAGS)
+C = $(CC) $(CF)
 TAR = tar -O -xvvzf
 
 SRC = RBio.c UFconfig.c
@@ -90,5 +90,5 @@ clean:
 
 purge: clean
 	- $(RM) $(SRC) $(INC) RBdemo *.gcov gcov.out RBtest RBdemo.c
-	- $(RM) -rf RBdemo.dSYM RBtest.dSYM
+	- $(RM) -r RBdemo.dSYM RBtest.dSYM
 

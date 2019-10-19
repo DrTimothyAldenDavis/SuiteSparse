@@ -1,9 +1,8 @@
-function klu_install (with_cholmod)
+function klu_install (metis_path)
 %KLU_INSTALL compiles and installs the KLU, BTF, AMD, and COLAMD mexFunctions
 %
 % Example:
-%   klu_install         % compiles KLU without CHOLMOD
-%   klu_install (1)     % with CHOLMOD, CCAMD, CCOLAMD, and METIS
+%   klu_install
 %
 % KLU relies on AMD, COLAMD, and BTF for its ordering options, and can
 % optionally use CHOLMOD, CCOLAMD, CAMD, and METIS as well.  By default,
@@ -18,11 +17,11 @@ function klu_install (with_cholmod)
 % Copyright 2004-2009 Timothy A. Davis, Univ. of Florida
 
 if (nargin < 1)
-    with_cholmod = 0 ;
+    metis_path = ['no metis'] ;
 end
 
 % compile KLU and add to the path
-klu_make (with_cholmod) ;
+klu_make (metis_path) ;
 klu_path = pwd ;
 addpath (klu_path)
 

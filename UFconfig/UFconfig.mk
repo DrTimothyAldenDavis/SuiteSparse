@@ -20,41 +20,62 @@
 # CXSparse any		extended version of CSparse (int/long, real/complex)
 # SuiteSparseQR	any	sparse QR factorization
 #
+# By design, this file is NOT included in the CSparse / CSparse3 makefiles.
+# Those packages are fully stand-alone.
+#
 # The UFconfig directory and the above packages should all appear in a single
 # directory, in order for the Makefile's within each package to find this file.
 #
 # To enable an option of the form "# OPTION = ...", edit this file and
 # delete the "#" in the first column of the option you wish to use.
+#
+# The use of METIS 4.0.1 is optional.  To exclude METIS, you must compile with
+# CHOLMOD_CONFIG set to -DNPARTITION.  See below for details.
 
 #------------------------------------------------------------------------------
 # Generic configuration
 #------------------------------------------------------------------------------
 
-# C compiler and compiler flags:  These will normally not give you optimal
-# performance.  You should select the optimization parameters that are best
-# for your system.  On Linux, use "CFLAGS = -O3 -fexceptions" for example.
-CC = cc
-CFLAGS = -O3 -fexceptions
+# Using standard definitions from the make environment, typically:
+#
+#   CC              cc      C compiler
+#   CXX             g++     C++ compiler
+#   CFLAGS          [ ]     flags for C and C++ compiler
+#   CPPFLAGS        [ ]     flags for C and C++ compiler
+#   TARGET_ARCH     [ ]     target architecture
+#   FFLAGS          [ ]     flags for Fortran compiler
+#   RM              rm -f   delete a file
+#   AR              ar      create a static *.a library archive
+#   ARFLAGS         rv      flags for ar
+#   MAKE            make    make itself (sometimes called gmake)
+#
+# You can redefine them here, but by default they are used from the
+# default make environment.
 
-# C++ compiler (also uses CFLAGS)
-CPLUSPLUS = g++
+# C and C++ compiler flags.  The first three are standard for *.c and *.cpp
+CF = $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -O3 -fexceptions -fPIC
 
-# ranlib, and ar, for generating libraries
+# ranlib, and ar, for generating libraries.  If you don't need ranlib,
+# just change it to RANLAB = echo
 RANLIB = ranlib
-AR = ar cr
+ARCHIVE = $(AR) $(ARFLAGS)
 
 # copy, delete, and rename a file
 CP = cp -f
-RM = rm -f
 MV = mv -f
+# RM = rm -f
 
-# Fortran compiler (not normally required)
-F77 = f77
-F77FLAGS = -O
+# Fortran compiler (not required for 'make' or 'make library')
+F77 = gfortran
+F77FLAGS = $(FFLAGS) -O
 F77LIB =
 
 # C and Fortran libraries
 LIB = -lm
+
+# For "make install"
+INSTALL_LIB = /usr/local/lib
+INSTALL_INCLUDE = /usr/local/include
 
 # For compiling MATLAB mexFunctions (MATLAB 7.5 or later)
 MEX = mex -O -largeArrayDims -lmwlapack -lmwblas
@@ -69,10 +90,6 @@ MEX = mex -O -largeArrayDims -lmwlapack -lmwblas
 # Which version of MAKE you are using (default is "make")
 # MAKE = make
 # MAKE = gmake
-
-# For "make install"
-INSTALL_LIB = /usr/local/lib
-INSTALL_INCLUDE = /usr/local/include
 
 #------------------------------------------------------------------------------
 # BLAS and LAPACK configuration:
@@ -126,19 +143,13 @@ XERBLA =
 #------------------------------------------------------------------------------
 
 # If you do not have METIS, or do not wish to use it in CHOLMOD, you must
-# compile CHOLMOD with the -DNPARTITION flag.  You must also use the
-# "METIS =" option, below.
+# compile CHOLMOD with the -DNPARTITION flag.
 
 # The path is relative to where it is used, in CHOLMOD/Lib, CHOLMOD/MATLAB, etc.
 # You may wish to use an absolute path.  METIS is optional.  Compile
 # CHOLMOD with -DNPARTITION if you do not wish to use METIS.
 METIS_PATH = ../../metis-4.0
 METIS = ../../metis-4.0/libmetis.a
-
-# If you use CHOLMOD_CONFIG = -DNPARTITION then you must use the following
-# options:
-# METIS_PATH =
-# METIS =
 
 #------------------------------------------------------------------------------
 # UMFPACK configuration:
@@ -155,8 +166,14 @@ METIS = ../../metis-4.0/libmetis.a
 # -DNO_TIMER	do not use any timing routines
 # -DNRECIPROCAL	do not multiply by the reciprocal
 # -DNO_DIVIDE_BY_ZERO	do not divide by zero
+# -DNCHOLMOD    do not use CHOLMOD as a ordering method.  If -DNCHOLMOD is
+#               included in UMFPACK_CONFIG, then UMFPACK  does not rely on
+#               CHOLMOD, CAMD, CCOLAMD, COLAMD, and METIS.
 
-UMFPACK_CONFIG = 
+UMFPACK_CONFIG =
+
+# uncomment this line to compile UMFPACK without CHOLMOD:
+# UMFPACK_CONFIG = -DNCHOLMOD
 
 #------------------------------------------------------------------------------
 # CHOLMOD configuration
@@ -195,6 +212,9 @@ UMFPACK_CONFIG =
 #			Performance Library
 
 CHOLMOD_CONFIG =
+
+# uncomment this line to compile CHOLMOD without METIS:
+# CHOLMOD_CONFIG = -DNPARTITION
 
 #------------------------------------------------------------------------------
 # SuiteSparseQR configuration:

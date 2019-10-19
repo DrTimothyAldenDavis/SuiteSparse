@@ -6,7 +6,7 @@ default: libamd.a
 
 include ../../UFconfig/UFconfig.mk
 
-C = $(CC) $(CFLAGS) $(CONFIG) -I../Include -I../../UFconfig
+C = $(CC) $(CF) -I../Include -I../../UFconfig
 
 #-------------------------------------------------------------------------------
 # source files
@@ -44,7 +44,7 @@ amd_l_%.o: ../Source/amd_%.c $(INC)
 #-------------------------------------------------------------------------------
 
 libamd.a: amd_global.o $(AMDI) $(AMDL)
-	$(AR) libamd.a $^
+	$(ARCHIVE) libamd.a $^
 	- $(RANLIB) libamd.a
 
 #-------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ amdbar.o: ../Source/amdbar.f
 	$(F77) $(F77FLAGS) -c ../Source/amdbar.f -o amdbar.o
 
 libamdf77.a: $(AMDF77)
-	$(AR) libamdf77.a $^
+	$(ARCHIVE) libamdf77.a $^
 	- $(RANLIB) libamdf77.a
 
 #-------------------------------------------------------------------------------

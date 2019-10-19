@@ -10,9 +10,9 @@
 #endif
 #define CS_VER 3                    /* CSparse Version */
 #define CS_SUBVER 0
-#define CS_SUBSUB 1
-#define CS_DATE "Jan 19, 2010"     /* CSparse release date */
-#define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006-2010"
+#define CS_SUBSUB 2
+#define CS_DATE "Dec 7, 2011"       /* CSparse release date */
+#define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006-2011"
 
 /* -------------------------------------------------------------------------- */
 /* In version 3.0.0 of CSparse, "int" is no longer used.  32-bit MATLAB is

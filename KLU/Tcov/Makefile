@@ -1,20 +1,22 @@
 # If the libraries (AMD, COLAMD, CAMD, CCOLAMD, metis, and CHOLMOD) are not
 # yet built, use "make libs" first.  Then "make" to compile and run all tests.
+#
+# This test requires BTF, METIS, CHOLMOD, AMD, COLAMD, CAMD, and CCOLAMD.
 
 default: all
 
 include ../../UFconfig/UFconfig.mk
 
-# CFLAGS = -Wall -W -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
+# CF = -Wall -W -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
 # 	-Wredundant-decls -Wnested-externs -Wdisabled-optimization \
 # 	-pedantic -ansi -O3 -pg
 
 # for statement coverage, picky tests
-CFLAGS = -Wall -W -Werror -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
+CF = -Wall -W -Werror -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
    	-Wredundant-decls -Wnested-externs -Wdisabled-optimization \
  	-ansi -g -ftest-coverage -fprofile-arcs -fexceptions
 
-C = $(CC) $(CFLAGS)
+C = $(CC) $(CF)
 
 LIB = ../../AMD/Lib/libamd.a ../../COLAMD/Lib/libcolamd.a \
     ../../CHOLMOD/Lib/libcholmod.a \
@@ -39,12 +41,12 @@ valgrind: purge klutest klultest
 	- ./coverage
 
 libs:
-	( cd ../../AMD ; $(MAKE) library )
-	( cd ../../COLAMD ; $(MAKE) library )
-	( cd ../../CAMD ; $(MAKE) library )
-	( cd ../../CCOLAMD ; $(MAKE) library )
-	( cd ../../metis-4.0 ; $(MAKE) )
-	( cd ../../CHOLMOD ; $(MAKE) library )
+	( cd ../../AMD && $(MAKE) library )
+	( cd ../../COLAMD && $(MAKE) library )
+	( cd ../../CAMD && $(MAKE) library )
+	( cd ../../CCOLAMD && $(MAKE) library )
+	( cd ../../metis-4.0 && $(MAKE) )
+	( cd ../../CHOLMOD && $(MAKE) library )
 
 purge: distclean
 

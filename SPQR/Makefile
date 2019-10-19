@@ -2,7 +2,7 @@
 # SuiteSparseQR Makefile
 #-------------------------------------------------------------------------------
 
-VERSION = 1.2.1
+VERSION = 1.2.3
 
 include ../UFconfig/UFconfig.mk
 
@@ -47,6 +47,11 @@ install:
 	$(CP) Include/SuiteSparseQR_C.h $(INSTALL_INCLUDE)
 	$(CP) Include/SuiteSparseQR_definitions.h $(INSTALL_INCLUDE)
 	$(CP) Include/spqr.hpp $(INSTALL_INCLUDE)
+	chmod 644 $(INSTALL_LIB)/libspqr*.a
+	chmod 644 $(INSTALL_INCLUDE)/SuiteSparseQR.hpp
+	chmod 644 $(INSTALL_INCLUDE)/SuiteSparseQR_C.h
+	chmod 644 $(INSTALL_INCLUDE)/SuiteSparseQR_definitions.h
+	chmod 644 $(INSTALL_INCLUDE)/spqr.hpp
 
 # uninstall SPQR
 uninstall:

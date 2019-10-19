@@ -143,7 +143,6 @@ if (any (Parent2 ~= Parent))
     error ('?') ;
 end
 
-figure (1)
 clf
 subplot (2,2,1), spy (A),           title ('original matrix') ;
 subplot (2,2,2), spy (A (P,P)),     title ('permuted matrix') ;

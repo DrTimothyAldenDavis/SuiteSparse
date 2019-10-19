@@ -21,7 +21,7 @@ if (do_diary)
 end
 
 % ATandT frequency-domain circuits, exclude these:
-freq = [ 283     284     285     286      ] ;
+% freq = [ 283     284     285     286      ] ;
 
 % sorted in order of MATLAB 7.3 x=A\b time on storm
 % (AMD Opteron, 64-bit, 8GB mem, 2 cores)
@@ -85,13 +85,14 @@ circ = [
 1369    % Rajat/rajat20 n: 86916 nz 604299
 1374    % Rajat/rajat25 n: 87190 nz 606489
 1370    % Rajat/rajat21 n: 411676 nz 1876011
-1419
-1396
-1201
-1397
-1421
-1398
-1373    % Rajat/rajat24 n: 358172 nz 1946979
+1419    % Sandia/ASIC_680k n: 682862 nz 2638997
+% these are large, so are skipped for this test:
+% 1396    % Rajat/rajat29 n: 643994 nz 3760246
+% 1201    % Hamrle/Hamrle3 n: 1447360 nz 5514242
+% 1397    % Rajat/rajat30 n: 643994 nz 6175244
+% 1421    % AMD/G3_circuit n: 1585478 nz 7660826
+% 1398    % Rajat/rajat31 n: 4690002 nz 20316253
+% 1373    % Rajat/rajat24 n: 358172 nz 1946979
 ]' ;
 
 fprintf ('Running KLU on %d circuits.\n', length (circ)) ;
@@ -124,9 +125,9 @@ try
             x2 = klu (A, '\', b, opts_noscale) ;
             t2 = toc ;
             e2 = norm (A*x2-b) ;
-        catch
-            t2 = 0 ;
-            e2 = 0 ;
+        catch                                                               %#ok
+            t2 = inf ;
+            e2 = inf ;
         end
         fprintf ('KLU no scale:  err %8.2e t: %8.4f\n', e2, t2) ;
 
@@ -135,9 +136,9 @@ try
             x4 = klu (A, '\', b, opts_max) ;
             t4 = toc ;
             e4 = norm (A*x4-b) ;
-        catch
-            t4 = 0 ;
-            e4 = 0 ;
+        catch                                                               %#ok
+            t4 = inf ;
+            e4 = inf ;
         end
         fprintf ('KLU max scale: err %8.2e t: %8.4f\n', e4, t4) ;
 
@@ -146,9 +147,9 @@ try
             x3 = klu (A, '\', b, opts_sum) ;
             t3 = toc ;
             e3 = norm (A*x3-b) ;
-        catch
-            t3 = 0 ;
-            e3 = 0 ;
+        catch                                                               %#ok
+            t3 = inf ;
+            e3 = inf ;
         end
         fprintf ('KLU sum scale: err %8.2e t: %8.4f\n', e3, t3) ;
 
@@ -167,14 +168,8 @@ try
         end
     end
 
-catch
-    % out-of-memory is OK, other errors are not
-    disp (lasterr) ;
-    if (isempty (strfind (lasterr, 'Out of memory')))
-        error (lasterr) ;                                                   %#ok
-    else
-        fprintf ('test terminated early, but otherwise OK\n') ;
-    end
+catch me
+    disp (me.message) ;
 end
 
 close (h) ;

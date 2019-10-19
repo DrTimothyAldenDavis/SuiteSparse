@@ -40,7 +40,6 @@ for k = bad
 	index.Group{i}, index.Name{i}) ;
 end
 
-% figure (3)
 clf
 loglog (fl_per_lnz (good), speedup (good), 'x') ;
 axis ([1 4000 .1 50]) ;

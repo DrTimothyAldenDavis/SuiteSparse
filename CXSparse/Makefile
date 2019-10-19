@@ -1,6 +1,8 @@
+#------------------------------------------------------------------------------
 # CXSparse Makefile
+#------------------------------------------------------------------------------
 
-VERSION = 2.2.5
+VERSION = 2.2.6
 
 default: C
 
@@ -40,6 +42,8 @@ install:
 	$(CP) Lib/libcxsparse.a $(INSTALL_LIB)/libcxsparse.$(VERSION).a
 	( cd $(INSTALL_LIB) ; ln -sf libcxsparse.$(VERSION).a libcxsparse.a )
 	$(CP) Include/cs.h $(INSTALL_INCLUDE)
+	chmod 644 $(INSTALL_LIB)/libcxsparse*.a
+	chmod 644 $(INSTALL_INCLUDE)/cs.h
 
 # uninstall CSparse
 uninstall:

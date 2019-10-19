@@ -4,9 +4,6 @@
 # MEX = mex -O -largeArrayDims
 MEX = mex -O
 
-AR = ar cr
-RANLIB = ranlib
-
 all: cs_sparse2.mexglx \
 	cs_ipvec.mexglx \
 	cs_pvec.mexglx \
@@ -17,7 +14,7 @@ all: cs_sparse2.mexglx \
 	cs_frand.mexglx
 
 mexcsparse:
-	( cd ../CSparse ; make mexcsparse.a )
+	( cd ../CSparse ; $(MAKE) mexcsparse.a )
 
 I = -I../../Include -I../CSparse
 
@@ -48,9 +45,9 @@ cs_frand.mexglx: cs_frand_mex.c mexcsparse
 
 
 clean:
-	rm -f *.o
+	- $(RM) *.o
 
 distclean: clean
-	rm -f *.mex* *.dll *.a *.obj
+	- $(RM) *.mex* *.dll *.a *.obj
 
 purge: distclean

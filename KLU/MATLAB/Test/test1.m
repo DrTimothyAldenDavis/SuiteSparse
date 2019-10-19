@@ -9,11 +9,11 @@ function test1 (nmat)
 % http://www.cise.ufl.edu/research/sparse
 
 clear functions
-rand ('state', 0) ;
+% rand ('state', 0) ;
 
 index = UFget ;
 f = find (index.nrows == index.ncols & index.isReal) ;
-[ignore i] = sort (index.nnz (f)) ;
+[ignore i] = sort (index.nnz (f)) ;                                         %#ok
 f = f (i) ;
 
 h = waitbar (0, 'KLU test 1 of 5') ;
@@ -36,17 +36,16 @@ nmat = length (f) ;
 conds_klu = ones (1,nmat) ;
 conds_matlab = ones (1,nmat) ;
 
-figure (1)
 clf
 
-try
+% try
 
     for k = 1:nmat
 
         waitbar (k/nmat, h) ;
 
         i = f (k) ;
-        try
+%       try
             c = -1 ;
             blocks = 0 ;
             rho = 0 ;
@@ -58,6 +57,11 @@ try
             Prob = UFget (i,index) ;
             A = Prob.A ;
             c = condest (A) ;
+            fprintf ('condest %8.2e :', c) ;
+            if (c > 1e20)
+                fprintf ('skipped\n') ;
+                continue
+            end
             % klu (A)
             % [L,U,p,q,R,F,r,info] = klu (A) ;
 
@@ -90,13 +94,13 @@ try
             conds_klu (k) = c2 ;
             conds_matlab (k) = c ;
 
-        catch
-            disp (lasterr) ;
-        end
+%       catch me
+%           disp (me.message) ;
+%       end
 
         fprintf (...
-        'blocks %6d err %8.2e condest %8.2e %8.2e rcond %8.2e %8.2e err %8.2e\n', ...
-        blocks, rho, c2, c, r1, r2, err) ;
+        'blocks %6d err %8.2e %8.2e rcond %8.2e %8.2e err %8.2e\n', ...
+        blocks, rho, c2, r1, r2, err) ;
 
     end
 
@@ -104,14 +108,8 @@ try
     plot (1:k, log10 (conds_klu (1:k) ./ conds_matlab (1:k)), 'o') ;
     drawnow
 
-catch
-    % out-of-memory is OK, other errors are not
-    disp (lasterr) ;
-    if (isempty (strfind (lasterr, 'Out of memory')))
-        error (lasterr) ;                                                   %#ok
-    else
-        fprintf ('test terminated early, but otherwise OK\n') ;
-    end
-end
+% catch me
+%     disp (me.message) ;
+% end
 
 close (h) ;

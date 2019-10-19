@@ -18,8 +18,7 @@ ChangeLog                   changes since first release
 gpl.txt                     the GNU GPL license
 
 spqr_user_guide.pdf         User Guide; start here
-algo_spqr.pdf               Algorithm paper, submitted to ACM TOMS
-spqr.pdf                    Theory paper, submitted to ACM TOMS
+spqr.pdf                    Algorithm/Theory paper, appears in ACM TOMS
 
 Makefile                    for creating the user guide
 spqr_user_guide.bib

@@ -1,0 +1,2814 @@
+test_spqr_coverage
+Exhaustive test of spqr_rank functions
+SJget from the SJSU Singular Matrix Database and some of
+its matrices from the database need to be installed
+to run the tests and demos.  This requires about
+2.5 Mbytes of disk space and an internet connection.
+The current MATLAB path will be augmented to include a path
+to access these matrices and the new path will be saved.
+ 
+ 
+downloading http://www.math.sjsu.edu/singular/matrices/mat/SJ_Index.mat
+to /Users/davis/sparse/MyPapers/Foster/spqr_rank/SJget/mat/SJ_Index.mat
+
+SJSU Singular matrix collection index:  18-Apr-2009 20:02:50
+
+Legend:
+num. rank:    numerical rank 
+struc. rank:  structural rank 
+type:      real
+           complex
+           binary:  all entries are 0 or 1
+
+ID   Group/Name                       nrows-by-  ncols  num. rank  struct. rank  type
+   1 Pajek/CSphd                       1882-by-   1882        705           706  binary
+   2 Pajek/EPA                         4772-by-   4772        951           986  binary
+   3 Pajek/Erdos971                     472-by-    472        413           414  binary
+   4 Pajek/Erdos981                     485-by-    485        427           427  binary
+   5 Pajek/Erdos991                     492-by-    492        435           436  binary
+   6 Gset/G48                          3000-by-   3000       2982          3000  binary
+   7 Gset/G49                          3000-by-   3000       2982          3000  binary
+   8 Gset/G50                          3000-by-   3000       2991          3000  binary
+   9 Gset/G55                          5000-by-   5000       4966          4966  binary
+  10 Gset/G56                          5000-by-   5000       4966          4966  real
+  11 Pajek/GD00_a                       352-by-    352        178           179  binary
+  12 Pajek/GD00_c                       638-by-    638        300           302  real
+  13 Pajek/GD01_a                       311-by-    311        155           158  real
+  14 Pajek/GD01_b                        18-by-     18         17            17  binary
+  15 Pajek/GD01_c                        33-by-     33         25            27  real
+  16 Pajek/GD02_a                        23-by-     23         18            19  binary
+  17 Pajek/GD02_b                        80-by-     80         77            77  binary
+  18 Pajek/GD06_Java                   1538-by-   1538        744           759  binary
+  19 Pajek/GD06_theory                  101-by-    101         20            20  binary
+  20 Pajek/GD95_a                        36-by-     36         31            32  binary
+  21 Pajek/GD95_b                        73-by-     73         34            34  binary
+  22 Pajek/GD96_a                      1096-by-   1096        827           827  real
+  23 Pajek/GD96_b                       111-by-    111         19            20  binary
+  24 Pajek/GD96_c                        65-by-     65         63            64  binary
+  25 Pajek/GD96_d                       180-by-    180         73            73  binary
+
+ID   Group/Name                       nrows-by-  ncols  num. rank  struct. rank  type
+  26 Pajek/GD97_a                        84-by-     84         80            84  binary
+  27 Pajek/GD97_b                        47-by-     47         44            44  real
+  28 Pajek/GD97_c                       452-by-    452         63            63  real
+  29 Pajek/GD98_a                        38-by-     38         14            14  binary
+  30 Pajek/GD98_b                       121-by-    121         87            87  binary
+  31 Pajek/GD98_c                       112-by-    112        100           112  binary
+  32 Pajek/GD99_b                        64-by-     64         45            64  real
+  33 Pajek/GD99_c                       105-by-    105         64            64  binary
+  34 Pajek/GlossGT                       72-by-     72         35            35  binary
+  35 MathWorks/Harvard500               500-by-    500        170           233  binary
+  36 Pajek/Kohonen                     4470-by-   4470       1652          1658  binary
+  37 Barabasi/NotreDame_yeast          2114-by-   2114       1263          1273  binary
+  38 Pajek/ODLIS                       2909-by-   2909       1959          1961  real
+  39 Pajek/Ragusa16                      24-by-     24         18            18  real
+  40 Pajek/Ragusa18                      23-by-     23         15            15  real
+  41 Pajek/Roget                       1022-by-   1022        984           986  binary
+  42 Pajek/Sandi_authors                 86-by-     86         72            72  real
+  43 Pajek/SciMet                      3084-by-   3084       1569          1573  real
+  44 Pajek/SmaGri                      1059-by-   1059        511           513  real
+  45 Pajek/SmallW                       396-by-    396         92            93  real
+  46 Pajek/Tina_AskCal                   11-by-     11          9             9  binary
+  47 Pajek/Tina_DisCal                   11-by-     11         10            10  binary
+  48 Pajek/Tina_DisCog                   11-by-     11         10            11  binary
+  49 Pajek/USAir97                      332-by-    332        281           281  real
+  50 Pajek/USpowerGrid                 4941-by-   4941       4348          4366  binary
+
+ID   Group/Name                       nrows-by-  ncols  num. rank  struct. rank  type
+  51 Sandia/adder_dcop_02              1813-by-   1813       1790          1813  real
+  52 HB/ash292                          292-by-    292        289           292  binary
+  53 Grund/b_dyn                       1089-by-   1089       1028          1089  real
+  54 Grund/bayer05                     3268-by-   3268       1666          3268  real
+  55 Grund/bayer06                     3008-by-   3008       1710          3008  real
+  56 Grund/bayer07                     3268-by-   3268       1666          3268  real
+  57 Grund/bayer08                     3008-by-   3008       2563          3008  real
+  58 Grund/bayer09                     3083-by-   3083       2667          3083  real
+  59 HB/bcspwr02                         49-by-     49         48            49  binary
+  60 HB/bcspwr04                        274-by-    274        262           274  binary
+  61 HB/bcspwr05                        443-by-    443        437           443  binary
+  62 HB/bcspwr06                       1454-by-   1454       1446          1454  binary
+  63 HB/bcspwr07                       1612-by-   1612       1601          1612  binary
+  64 HB/bcspwr08                       1624-by-   1624       1613          1624  binary
+  65 HB/bcspwr09                       1723-by-   1723       1712          1723  binary
+  66 HB/bcsstm01                         48-by-     48         24            24  real
+  67 HB/bcsstm03                        112-by-    112         72            72  real
+  68 HB/bcsstm04                        132-by-    132         66            66  real
+  69 HB/bcsstm13                       2003-by-   2003       1241          1241  real
+  70 HB/can_1054                       1054-by-   1054       1031          1054  binary
+  71 HB/can_1072                       1072-by-   1072       1050          1072  binary
+  72 HB/can_144                         144-by-    144         96           144  binary
+  73 HB/can_187                         187-by-    187        184           187  binary
+  74 HB/can_229                         229-by-    229        200           229  binary
+  75 HB/can_256                         256-by-    256        250           256  binary
+
+ID   Group/Name                       nrows-by-  ncols  num. rank  struct. rank  type
+  76 HB/can_268                         268-by-    268        261           268  binary
+  77 HB/can_292                         292-by-    292        272           292  binary
+  78 HB/can_445                         445-by-    445        443           445  binary
+  79 HB/can_61                           61-by-     61         49            61  binary
+  80 HB/can_634                         634-by-    634        586           634  binary
+  81 HB/can_715                         715-by-    715        702           715  binary
+  82 HB/cegb2802                       2802-by-   2802        289          2694  binary
+  83 HB/cegb2919                       2919-by-   2919        444          2859  binary
+  84 HB/cegb3024                       3024-by-   3024       1411          2996  binary
+  85 HB/cegb3306                       3306-by-   3306        537          3222  binary
+  86 Brethour/coater1                  1348-by-   1348       1330          1331  real
+  87 Bai/cryg2500                      2500-by-   2500       2499          2500  real
+  88 Boeing/crystk01                   4875-by-   4875       4869          4875  real
+  89 HB/curtis54                         54-by-     54         50            54  binary
+  90 Bai/dwg961a                        961-by-    961        705           705  complex
+  91 HB/dwt_1005                       1005-by-   1005        995          1005  binary
+  92 HB/dwt_1007                       1007-by-   1007       1000          1007  binary
+  93 HB/dwt_1242                       1242-by-   1242       1178          1242  binary
+  94 HB/dwt_162                         162-by-    162        144           162  binary
+  95 HB/dwt_193                         193-by-    193        136           193  binary
+  96 HB/dwt_198                         198-by-    198        192           198  binary
+  97 HB/dwt_209                         209-by-    209        208           209  binary
+  98 HB/dwt_221                         221-by-    221        220           221  binary
+  99 HB/dwt_245                         245-by-    245        239           245  binary
+ 100 HB/dwt_2680                       2680-by-   2680       2640          2680  binary
+
+ID   Group/Name                       nrows-by-  ncols  num. rank  struct. rank  type
+ 101 HB/dwt_307                         307-by-    307        288           307  binary
+ 102 HB/dwt_346                         346-by-    346        341           346  binary
+ 103 HB/dwt_361                         361-by-    361        358           361  binary
+ 104 HB/dwt_419                         419-by-    419        370           419  binary
+ 105 HB/dwt_492                         492-by-    492        488           492  binary
+ 106 HB/dwt_503                         503-by-    503        499           503  binary
+ 107 HB/dwt_512                         512-by-    512        477           512  binary
+ 108 HB/dwt_592                         592-by-    592        580           592  binary
+ 109 HB/dwt_607                         607-by-    607        547           607  binary
+ 110 HB/dwt_72                           72-by-     72         70            72  binary
+ 111 HB/dwt_758                         758-by-    758        700           758  binary
+ 112 HB/dwt_869                         869-by-    869        845           869  binary
+ 113 HB/dwt_878                         878-by-    878        850           878  binary
+ 114 HB/dwt_918                         918-by-    918        891           918  binary
+ 115 HB/dwt_992                         992-by-    992        496           992  binary
+ 116 HB/eris1176                       1176-by-   1176        774          1176  binary
+ 117 FIDAP/ex12                        3973-by-   3973       3972          3973  real
+ 118 FIDAP/ex13                        2568-by-   2568       1434          2568  real
+ 119 FIDAP/ex14                        3251-by-   3251       2925          3251  real
+ 120 FIDAP/ex26                        2163-by-   2163       2162          2163  real
+ 121 FIDAP/ex32                        1159-by-   1159       1158          1159  real
+ 122 FIDAP/ex6                         1651-by-   1651       1650          1651  real
+ 123 Pajek/football                      35-by-     35         19            19  real
+ 124 Sandia/fpga_dcop_01               1220-by-   1220       1219          1220  real
+ 125 Sandia/fpga_dcop_02               1220-by-   1220       1219          1220  real
+
+ID   Group/Name                       nrows-by-  ncols  num. rank  struct. rank  type
+ 126 Sandia/fpga_dcop_04               1220-by-   1220       1209          1220  real
+ 127 Sandia/fpga_dcop_07               1220-by-   1220       1210          1220  real
+ 128 HB/fs_760_2                        760-by-    760        411           760  real
+ 129 HB/fs_760_3                        760-by-    760        381           760  real
+ 130 Hollinger/g7jac010                2880-by-   2880       2282          2880  real
+ 131 HB/gent113                         113-by-    113        107           113  binary
+ 132 HB/gre_216b                        216-by-    216        215           216  real
+ 133 Meszaros/iprob                    3001-by-   3001       3000          3001  real
+ 134 HB/jgl009                            9-by-      9          5             9  binary
+ 135 HB/jgl011                           11-by-     11          5            11  binary
+ 136 HB/lap_25                           25-by-     25         16            25  binary
+ 137 GHS_indef/laser                   3002-by-   3002       3000          3000  real
+ 138 Mallya/lhr04                      4101-by-   4101       4096          4101  real
+ 139 HB/lns_131                         131-by-    131        125           131  real
+ 140 HB/lns_3937                       3937-by-   3937       2895          3937  real
+ 141 HB/lns_511                         511-by-    511        469           511  real
+ 142 HB/lnsp3937                       3937-by-   3937       2895          3937  real
+ 143 HB/lnsp_131                        131-by-    131        125           131  real
+ 144 HB/lnsp_511                        511-by-    511        469           511  real
+ 145 HB/lock1074                       1074-by-   1074        155          1038  binary
+ 146 HB/lock2232                       2232-by-   2232        368          2208  binary
+ 147 HB/lock3491                       3491-by-   3491        603          3416  binary
+ 148 HB/lock_700                        700-by-    700        165           691  binary
+ 149 HB/mbeacxc                         496-by-    496        448           448  real
+ 150 HB/mbeaflw                         496-by-    496        448           448  real
+
+ID   Group/Name                       nrows-by-  ncols  num. rank  struct. rank  type
+ 151 HB/mbeause                         496-by-    496        447           447  real
+ 152 HB/mcca                            180-by-    180        143           180  real
+ 153 HB/mcfe                            765-by-    765        759           765  real
+ 154 Bai/mhd1280a                      1280-by-   1280        963          1280  complex
+ 155 Bai/mhd3200a                      3200-by-   3200       2244          3200  real
+ 156 Bai/mhd4800a                      4800-by-   4800       3302          4800  real
+ 157 Bai/mhd4800b                      4800-by-   4800       4798          4800  real
+ 158 Bai/mhda416                        416-by-    416        322           416  real
+ 159 Boeing/msc01050                   1050-by-   1050       1049          1050  real
+ 160 HB/nnc1374                        1374-by-   1374       1308          1374  real
+ 161 HB/nnc261                          261-by-    261        260           261  real
+ 162 Bai/odepb400                       400-by-    400        399           399  real
+ 163 Sandia/oscil_dcop_06               430-by-    430        426           430  real
+ 164 Sandia/oscil_dcop_07               430-by-    430        426           430  real
+ 165 Sandia/oscil_dcop_08               430-by-    430        428           430  real
+ 166 Sandia/oscil_dcop_17               430-by-    430        427           430  real
+ 167 Sandia/oscil_dcop_18               430-by-    430        427           430  real
+ 168 Sandia/oscil_dcop_19               430-by-    430        427           430  real
+ 169 Sandia/oscil_dcop_20               430-by-    430        427           430  real
+ 170 Sandia/oscil_dcop_21               430-by-    430        427           430  real
+ 171 Sandia/oscil_dcop_22               430-by-    430        427           430  real
+ 172 Sandia/oscil_dcop_23               430-by-    430        426           430  real
+ 173 Sandia/oscil_dcop_24               430-by-    430        425           430  real
+ 174 Sandia/oscil_dcop_25               430-by-    430        427           430  real
+ 175 Sandia/oscil_dcop_26               430-by-    430        427           430  real
+
+ID   Group/Name                       nrows-by-  ncols  num. rank  struct. rank  type
+ 176 Sandia/oscil_dcop_27               430-by-    430        427           430  real
+ 177 Sandia/oscil_dcop_28               430-by-    430        425           430  real
+ 178 Sandia/oscil_dcop_29               430-by-    430        425           430  real
+ 179 Sandia/oscil_dcop_30               430-by-    430        423           430  real
+ 180 Sandia/oscil_dcop_31               430-by-    430        423           430  real
+ 181 Sandia/oscil_dcop_32               430-by-    430        422           430  real
+ 182 Sandia/oscil_dcop_33               430-by-    430        422           430  real
+ 183 Sandia/oscil_dcop_34               430-by-    430        420           430  real
+ 184 Sandia/oscil_dcop_35               430-by-    430        418           430  real
+ 185 Sandia/oscil_dcop_36               430-by-    430        415           430  real
+ 186 Sandia/oscil_dcop_37               430-by-    430        413           430  real
+ 187 Sandia/oscil_dcop_38               430-by-    430        412           430  real
+ 188 Sandia/oscil_dcop_39               430-by-    430        411           430  real
+ 189 Sandia/oscil_dcop_40               430-by-    430        411           430  real
+ 190 Sandia/oscil_dcop_41               430-by-    430        410           430  real
+ 191 Sandia/oscil_dcop_42               430-by-    430        410           430  real
+ 192 Sandia/oscil_dcop_43               430-by-    430        410           430  real
+ 193 Sandia/oscil_dcop_44               430-by-    430        410           430  real
+ 194 Sandia/oscil_dcop_45               430-by-    430        410           430  real
+ 195 Sandia/oscil_dcop_46               430-by-    430        410           430  real
+ 196 Sandia/oscil_dcop_47               430-by-    430        410           430  real
+ 197 Sandia/oscil_dcop_48               430-by-    430        410           430  real
+ 198 Sandia/oscil_dcop_49               430-by-    430        410           430  real
+ 199 Sandia/oscil_dcop_50               430-by-    430        410           430  real
+ 200 Sandia/oscil_dcop_51               430-by-    430        410           430  real
+
+ID   Group/Name                       nrows-by-  ncols  num. rank  struct. rank  type
+ 201 Sandia/oscil_dcop_52               430-by-    430        410           430  real
+ 202 Sandia/oscil_dcop_53               430-by-    430        410           430  real
+ 203 Sandia/oscil_dcop_54               430-by-    430        410           430  real
+ 204 Sandia/oscil_dcop_55               430-by-    430        410           430  real
+ 205 Sandia/oscil_dcop_56               430-by-    430        410           430  real
+ 206 Sandia/oscil_dcop_57               430-by-    430        410           430  real
+ 207 HB/plat1919                       1919-by-   1919       1916          1919  real
+ 208 HB/plsk1919                       1919-by-   1919       1918          1919  real
+ 209 FEMLAB/problem1                    415-by-    415        414           415  real
+ 210 Bai/qh1484                        1484-by-   1484        708          1484  real
+ 211 Bai/qh768                          768-by-    768        644           768  real
+ 212 Bai/qh882                          882-by-    882        821           882  real
+ 213 Simon/raefsky6                    3402-by-   3402       2586          3402  real
+ 214 Rajat/rajat02                     1960-by-   1960       1508          1960  binary
+ 215 HB/rgg010                           10-by-     10          4            10  binary
+ 216 HB/saylr3                         1000-by-   1000        998          1000  real
+ 217 Shyy/shyy41                       4720-by-   4720       4712          4720  real
+ 218 Pothen/sphere2                      66-by-     66         64            66  binary
+ 219 Pothen/sphere3                     258-by-    258        253           258  binary
+ 220 HB/sstmodel                       3345-by-   3345       3326          3345  binary
+ 221 Oberwolfach/t2dal                 4257-by-   4257       4256          4257  real
+ 222 Oberwolfach/t2dal_a               4257-by-   4257       4256          4257  real
+ 223 Oberwolfach/t2dal_bci             4257-by-   4257       4256          4257  real
+ 224 HB/west0156                        156-by-    156        154           156  real
+ 225 HB/will199                         199-by-    199        191           199  binary
+
+ID   Group/Name                       nrows-by-  ncols  num. rank  struct. rank  type
+ 226 HB/will57                           57-by-     57         50            57  binary
+ 227 Pajek/yeast                       2361-by-   2361       1644          1659  binary
+ 228 HB/zenios                         2873-by-   2873        265           266  real
+ 229 Regtools/foxgood_100               100-by-    100         23           100  real
+ 230 Regtools/foxgood_200               200-by-    200         26           200  real
+ 231 Regtools/foxgood_500               500-by-    500         29           500  real
+ 232 Regtools/foxgood_1000             1000-by-   1000         30          1000  real
+ 233 Regtools/baart_100                 100-by-    100         12           100  real
+ 234 Regtools/baart_200                 200-by-    200         12           200  real
+ 235 Regtools/baart_500                 500-by-    500         12           500  real
+ 236 Regtools/baart_1000               1000-by-   1000         13          1000  real
+ 237 Regtools/gravity_100               100-by-    100         48           100  real
+ 238 Regtools/gravity_200               200-by-    200         47           200  real
+ 239 Regtools/gravity_500               500-by-    500         46           500  real
+ 240 Regtools/gravity_1000             1000-by-   1000         45          1000  real
+ 241 Regtools/heat_100                  100-by-    100         97           100  real
+ 242 Regtools/heat_200                  200-by-    200        195           200  real
+ 243 Regtools/heat_500                  500-by-    500        492           500  real
+ 244 Regtools/heat_1000                1000-by-   1000        588          1000  real
+ 245 Regtools/i_laplace_100             100-by-    100         28           100  real
+ 246 Regtools/i_laplace_200             200-by-    200         34           193  real
+ 247 Regtools/i_laplace_500             500-by-    500         39           363  real
+ 248 Regtools/i_laplace_1000           1000-by-   1000         43           581  real
+ 249 Regtools/parallax_100               26-by-    100         25            26  real
+ 250 Regtools/parallax_200               26-by-    200         25            26  real
+
+ID   Group/Name                       nrows-by-  ncols  num. rank  struct. rank  type
+ 251 Regtools/parallax_500               26-by-    500         24            26  real
+ 252 Regtools/parallax_1000              26-by-   1000         24            26  real
+ 253 Regtools/shaw_100                  100-by-    100         20           100  real
+ 254 Regtools/shaw_200                  200-by-    200         20           200  real
+ 255 Regtools/shaw_500                  500-by-    500         20           500  real
+ 256 Regtools/shaw_1000                1000-by-   1000         20          1000  real
+ 257 Regtools/ursell_100                100-by-    100         98           100  real
+ 258 Regtools/ursell_200                200-by-    200        198           200  real
+ 259 Regtools/ursell_500                500-by-    500        497           500  real
+ 260 Regtools/ursell_1000              1000-by-   1000        999          1000  real
+ 261 Regtools/wing_100                  100-by-    100          8           100  real
+ 262 Regtools/wing_200                  200-by-    200          8           200  real
+ 263 Regtools/wing_500                  500-by-    500          8           500  real
+ 264 Regtools/wing_1000                1000-by-   1000          8          1000  real
+ 265 Regtools/tomo_100                  100-by-    100         98           100  real
+ 266 Regtools/tomo_900                  900-by-    900        893           900  real
+ 267 Regtools/tomo_2500                2500-by-   2500       2496          2500  real
+ 268 Regtools/tomo_4900                4900-by-   4900       4897          4900  real
+ 269 Pajek/Sandi_sandi                  314-by-    360        239           246  binary
+ 270 LPnetlib/lpi_ex73a                 193-by-    211        188           193  real
+ 271 LPnetlib/lpi_ex72a                 197-by-    215        192           197  real
+ 272 LPnetlib/lpi_box1                  231-by-    261        214           231  real
+ 273 LPnetlib/lpi_mondou2               312-by-    604        311           312  real
+ 274 LPnetlib/lp_scorpion               388-by-    466        358           388  real
+ 275 LPnetlib/lpi_cplex2                224-by-    378        223           224  real
+
+ID   Group/Name                       nrows-by-  ncols  num. rank  struct. rank  type
+ 276 HB/abb313                          313-by-    176        128           176  binary
+ 277 HB/fs_183_3                        183-by-    183        182           183  real
+ 278 LPnetlib/lp_bore3d                 233-by-    334        231           232  real
+ 279 Muite/Chebyshev1                   261-by-    261        259           261  real
+ 280 Sandia/oscil_dcop_05               430-by-    430        428           430  real
+ 281 Sandia/oscil_dcop_16               430-by-    430        428           430  real
+ 282 LPnetlib/lp_brandy                 220-by-    303        193           193  real
+ 283 LPnetlib/lp_standgub               361-by-   1383        360           360  real
+ 284 Pajek/EVA                         8497-by-   8497       1301          1303  binary
+ 285 Cunningham/m3plates              11107-by-  11107       6639          6639  real
+ 286 LPnetlib/lp_ship04s                402-by-   1506        360           360  real
+ 287 Sandia/fpga_dcop_08               1220-by-   1220       1210          1220  real
+ 288 Sandia/fpga_dcop_05               1220-by-   1220       1206          1220  real
+ 289 Sandia/fpga_dcop_10               1220-by-   1220       1207          1220  real
+ 290 Boeing/bcsstm38                   8032-by-   8032       5112          5199  real
+ 291 Sandia/fpga_dcop_06               1220-by-   1220       1208          1220  real
+ 292 Sandia/fpga_dcop_09               1220-by-   1220       1208          1220  real
+ 293 Sandia/fpga_dcop_12               1220-by-   1220       1219          1220  real
+ 294 Sandia/fpga_dcop_03               1220-by-   1220       1214          1220  real
+ 295 HB/bcsstm24                       3562-by-   3562       3496          3562  real
+ 296 HB/mahindas                       1258-by-   1258       1257          1258  real
+ 297 Pajek/California                  9664-by-   9664       1647          1686  binary
+ 298 LPnetlib/lp_modszk1                687-by-   1620        686           686  real
+ 299 LPnetlib/lp_tuff                   333-by-    628        302           302  real
+ 300 LPnetlib/lp_shell                  536-by-   1777        535           536  real
+
+ID   Group/Name                       nrows-by-  ncols  num. rank  struct. rank  type
+ 301 Norris/lung1                      1650-by-   1650       1549          1650  real
+ 302 Pajek/Lederberg                   8843-by-   8843       4170          4179  real
+ 303 LPnetlib/lp_ship04l                402-by-   2166        360           360  real
+ 304 Pajek/Zewail                      6752-by-   6752       4301          4325  real
+ 305 MathWorks/Pd_rhs                  8081-by-  12406       4368          4368  real
+ 306 Pajek/geom                        7343-by-   7343       5499          5517  real
+ 307 LPnetlib/lp_ship12s               1151-by-   2869       1042          1042  real
+ 308 LPnetlib/lp_ship08s                778-by-   2467        712           712  real
+ 309 Zitney/extr1                      2837-by-   2837       2836          2837  real
+ 310 Bai/mhd3200b                      3200-by-   3200       3199          3200  real
+ 311 Meszaros/de063155                  852-by-   1848        841           852  real
+ 312 LPnetlib/lp_degen2                 444-by-    757        442           444  real
+ 313 Boeing/bcsstm35                  30237-by-  30237      15609         15803  real
+ 314 Zitney/extr1b                     2836-by-   2836       2835          2836  real
+ 315 Muite/Chebyshev2                  2053-by-   2053       2051          2053  real
+ 316 LPnetlib/lp_ship08l                778-by-   4363        712           712  real
+ 317 LPnetlib/lp_sierra                1227-by-   2735       1217          1227  real
+ 318 LPnetlib/lp_ken_07                2426-by-   3602       2377          2426  real
+ 319 Gleich/wb-cs-stanford             9914-by-   9914       5475          5782  binary
+ 320 FIDAP/ex33                        1733-by-   1733       1732          1733  real
+ 321 GHS_indef/aug2dc                 30200-by-  30200      20000         20000  real
+ 322 LPnetlib/lp_ship12l               1151-by-   5533       1042          1042  real
+ 323 LPnetlib/lp_bnl1                   643-by-   1586        642           642  real
+ 324 HB/bcspwr10                       5300-by-   5300       5276          5300  binary
+ 325 Nasa/barth                        6691-by-   6691       6690          6691  binary
+
+ID   Group/Name                       nrows-by-  ncols  num. rank  struct. rank  type
+ 326 GHS_indef/aug2d                  29008-by-  29008      19208         19208  real
+ 327 Rajat/rajat01                     6833-by-   6833       6777          6833  binary
+ 328 Meszaros/model2                    379-by-   1321        377           379  real
+ 329 Zitney/hydr1                      5308-by-   5308       5191          5308  real
+ 330 Zitney/hydr1c                     5308-by-   5308       5191          5308  real
+ 331 Meszaros/de063157                  936-by-   1908        111           936  real
+ 332 Muite/Chebyshev3                  4101-by-   4101       4099          4101  real
+ 333 Nasa/barth4                       6019-by-   6019       6018          6019  binary
+ 334 Bates/Chem97Zt                    2541-by-  31022       2410          2541  binary
+ 335 Grund/bayer03                     6747-by-   6747       5680          6747  real
+ 336 HB/sherman3                       5005-by-   5005       2898          5005  real
+ 337 Schenk_IBMNA/c-30                 5321-by-   5321       5320          5321  real
+ 338 Andrianov/fxm3_6                  5026-by-   5026       4087          5026  binary
+ 339 LPnetlib/lp_25fv47                 821-by-   1876        820           820  real
+ 340 MathWorks/Kaufhold                8765-by-   8765       8759          8765  real
+ 341 Hollinger/g7jac010sc              2880-by-   2880       2878          2880  real
+ 342 GHS_indef/bloweybq               10001-by-  10001       9964         10001  real
+ 343 Boeing/nasa2910                   2910-by-   2910       1623          2910  binary
+ 344 FIDAP/ex9                         3363-by-   3363       3344          3363  real
+ 345 LPnetlib/lp_cre_c                 3068-by-   6411       2981          2986  real
+ 346 Lucifora/cell1                    7055-by-   7055       7054          7055  real
+ 347 Lucifora/cell2                    7055-by-   7055       7054          7055  real
+ 348 LPnetlib/lp_cre_a                 3516-by-   7248       3423          3428  real
+ 349 Mallya/lhr04c                     4101-by-   4101       4100          4101  real
+ 350 Hollinger/jan99jac020             6774-by-   6774       6525          6774  real
+
+ID   Group/Name                       nrows-by-  ncols  num. rank  struct. rank  type
+ 351 HB/beacxc                          497-by-    506        449           449  real
+ 352 FIDAP/ex18                        5773-by-   5773       5772          5773  real
+ 353 HB/beause                          497-by-    507        459           459  real
+ 354 Pajek/internet                  124651-by- 124651      66598         66679  real
+ 355 FIDAP/ex23                        1409-by-   1409       1408          1409  real
+ 356 Gaertner/nopoly                  10774-by-  10774      10773         10774  real
+ 357 HB/beaflw                          497-by-    507        460           460  real
+ 358 LPnetlib/lp_wood1p                 244-by-   2595        243           244  real
+ 359 Grund/bayer10                    13436-by-  13436      13309         13436  real
+ 360 LPnetlib/lp_cycle                 1903-by-   3371       1875          1875  real
+ 361 LPnetlib/lp_pds_02                2953-by-   7716       2942          2953  real
+ 362 Pothen/shuttle_eddy              10429-by-  10429       9757         10429  binary
+ 363 Nasa/shuttle_eddy                10429-by-  10429       9757         10429  binary
+ 364 Grund/bayer02                    13935-by-  13935      12610         13935  real
+ 365 Grund/bayer04                    20545-by-  20545      14831         20545  real
+ 366 Rajat/rajat27                    20640-by-  20640      20542         20640  real
+ 367 Mallya/lhr07c                     7337-by-   7337       7336          7337  real
+ 368 Mallya/lhr07                      7337-by-   7337       7315          7337  real
+ 369 Bai/cryg10000                    10000-by-  10000       9999         10000  real
+ 370 Meszaros/model9                   2879-by-  10939       2787          2787  real
+ 371 Meszaros/stormg2-8                4409-by-  11322       4393          4393  real
+ 372 LPnetlib/lpi_greenbea             2393-by-   5596       2390          2390  real
+ 373 Bindel/ted_A                     10605-by-  10605      10604         10605  real
+ 374 Okunbor/aft01                     8205-by-   8205          1          8205  real
+ 375 Mallya/lhr14                     14270-by-  14270      13996         14270  real
+
+ID   Group/Name                       nrows-by-  ncols  num. rank  struct. rank  type
+ 376 Boeing/bcsstm36                  23052-by-  23052      12172         12172  real
+ 377 LPnetlib/lp_greenbeb              2392-by-   5598       2389          2389  real
+ 378 Hollinger/g7jac020                5850-by-   5850       4488          5850  real
+ 379 LPnetlib/lp_greenbea              2392-by-   5598       2389          2389  real
+ 380 Hollinger/jan99jac040            13694-by-  13694      13044         13694  real
+ 381 FIDAP/ex19                       12005-by-  12005      11966         12005  real
+ 382 LPnetlib/lp_degen3                1503-by-   2604       1501          1503  real
+ 383 GHS_psdef/ford1                  18728-by-  18728      18194         18728  binary
+ 384 Hollinger/g7jac020sc              5850-by-   5850       5848          5850  real
+ 385 Mallya/lhr10c                    10672-by-  10672      10670         10672  real
+ 386 Andrianov/fxm4_6                 18892-by-  18892      14569         18892  binary
+ 387 Mallya/lhr10                     10672-by-  10672      10602         10672  real
+ 388 Hohn/fd15                        11532-by-  11532      11519         11532  real
+ 389 Mallya/lhr11                     10964-by-  10964      10810         10964  real
+ 390 Boeing/nasa4704                   4704-by-   4704       2264          4704  binary
+ 391 LPnetlib/lpi_gran                 2658-by-   2525       1938          2311  real
+ 392 HB/man_5976                       5976-by-   5976       2341          5882  binary
+ 393 HB/bcsstk23                       3134-by-   3134       3133          3134  real
+ 394 Pothen/skirt                     12598-by-  12598       9831         12598  binary
+ 395 Nasa/skirt                       12598-by-  12598       9831         12598  binary
+ 396 Hohn/fd18                        16428-by-  16428      16356         16428  real
+ 397 Sandia/mult_dcop_01              25187-by-  25187      25165         25187  real
+ 398 GHS_indef/ncvxqp9                16554-by-  16554      14617         16554  real
+ 399 Oberwolfach/t2dah                11445-by-  11445      11444         11445  real
+ 400 Mallya/lhr11c                    10964-by-  10964      10961         10964  real
+
+ID   Group/Name                       nrows-by-  ncols  num. rank  struct. rank  type
+ 401 Schenk_IBMNA/c-52                23948-by-  23948          9         23948  real
+ 402 Cunningham/k3plates              11107-by-  11107      11101         11107  real
+ 403 Meszaros/model6                   2096-by-   5289       2094          2094  real
+ 404 Mallya/lhr14c                    14270-by-  14270      14267         14270  real
+ 405 DNVS/trdheim                     22098-by-  22098       2819         22098  binary
+ 406 Rajat/rajat22                    39899-by-  39899      39827         39899  real
+ 407 Hollinger/jan99jac060            20614-by-  20614      19484         20614  real
+ 408 Oberwolfach/t2dah_a              11445-by-  11445      11444         11445  real
+ 409 Mallya/lhr17                     17576-by-  17576      17182         17576  real
+ 410 Mallya/lhr17c                    17576-by-  17576      17572         17576  real
+ 411 Meszaros/nemspmm1                 2372-by-   8903       2362          2362  real
+ 412 Rajat/rajat26                    51032-by-  51032      50853         51032  real
+ 413 Schenk_IBMNA/c-41                 9769-by-   9769       9705          9769  real
+ 414 IBM_EDA/ckt11752_tr_0            49702-by-  49702      49698         49702  real
+ 415 FIDAP/ex35                       19716-by-  19716      19673         19716  real
+ 416 Brethour/coater2                  9540-by-   9540       9426          9434  real
+ 417 GHS_indef/sit100                 10262-by-  10262      10261         10262  real
+ 418 Grund/bayer01                    57735-by-  57735      51609         57735  real
+ 419 Boeing/bcsstk38                   8032-by-   8032       8008          8032  real
+ 420 Andrianov/net25                   9520-by-   9520       9058          9520  binary
+ 421 Gset/G61                          7000-by-   7000       6953          6953  real
+ 422 Gset/G60                          7000-by-   7000       6953          6953  binary
+ 423 HB/bcsstk25                      15439-by-  15439      15435         15439  real
+ 424 Hollinger/mark3jac020             9129-by-   9129       8934          9129  real
+ 425 Sandia/mult_dcop_03              25187-by-  25187      18271         25187  real
+
+ID   Group/Name                       nrows-by-  ncols  num. rank  struct. rank  type
+ 426 LPnetlib/lp_d6cube                 415-by-   6184        404           404  real
+ 427 Mallya/lhr34                     35152-by-  35152      34366         35152  real
+ 428 Hollinger/jan99jac100            34454-by-  34454      32490         34454  real
+ 429 Mallya/lhr71                     70304-by-  70304      68728         70304  real
+ 430 Hollinger/mark3jac020sc           9129-by-   9129       9102          9129  real
+ 431 Norris/lung2                    109460-by- 109460      55103        109460  real
+ 432 Schenk_ISEI/igbt3                10938-by-  10938       7592         10938  real
+ 433 VanVelzen/std1_Jac2_db           21982-by-  21982       8940         21982  real
+ 434 Hollinger/jan99jac120            41374-by-  41374      38925         41374  real
+ 435 Schenk_IBMNA/c-56                35910-by-  35910      35904         35910  real
+ 436 Bomhof/circuit_4                 80209-by-  80209      80185         80209  real
+ 437 GHS_indef/stokes64s              12546-by-  12546      12544         12546  real
+ 438 Shyy/shyy161                     76480-by-  76480      76432         76480  real
+ 439 Mallya/lhr34c                    35152-by-  35152      35143         35152  real
+ 440 Hollinger/g7jac040sc             11790-by-  11790      11786         11790  real
+ 441 Schenk_IBMNA/c-67                57975-by-  57975      57348         57975  real
+ 442 Meszaros/model5                   1888-by-  11802       1744          1744  real
+ 443 GHS_indef/stokes64               12546-by-  12546      12544         12546  real
+ 444 IBM_EDA/ckt11752_dc_1            49702-by-  49702      48868         49702  real
+ 445 Rajat/rajat23                   110355-by- 110355     109820        110355  real
+ 446 Meszaros/aa4                       426-by-   7195        367           426  binary
+ 447 VanVelzen/Zd_Jac2_db             22835-by-  22835      22360         22835  real
+ 448 Boeing/bcsstk35                  30237-by-  30237      30231         30237  real
+ 449 Meszaros/air05                     426-by-   7195        367           426  binary
+ 450 Graham/graham1                    9035-by-   9035       8924          9035  real
+
+ID   Group/Name                       nrows-by-  ncols  num. rank  struct. rank  type
+ 451 Chen/pkustk02                    10800-by-  10800       1224         10800  binary
+ 452 Hollinger/g7jac050sc             14760-by-  14760      14754         14760  real
+ 453 Meszaros/stormg2-27              14441-by-  37485      14387         14387  real
+ 454 Hollinger/g7jac040               11790-by-  11790       8838         11790  real
+ 455 GHS_indef/aug3dcqp               35543-by-  35543      28387         35543  real
+ 456 Simon/olafu                      16146-by-  16146      16145         16146  real
+ 457 Meszaros/nsir                     4453-by-  10057       4391          4453  real
+ 458 Mallya/lhr71c                    70304-by-  70304      70284         70304  real
+ 459 Hollinger/mark3jac040sc          18289-by-  18289      18223         18289  real
+ 460 Hollinger/g7jac060sc             17730-by-  17730      17724         17730  real
+ 461 Nasa/pwt                         36519-by-  36519      35475         36519  binary
+ 462 GHS_psdef/pwt                    36519-by-  36519      35475         36519  binary
+ 463 Pothen/pwt                       36519-by-  36519      35475         36519  binary
+ 464 DNVS/crplat2                     18010-by-  18010       2912         18010  binary
+ 465 Meszaros/aa6                       646-by-   7292        563           646  binary
+ 466 Pajek/dictionary28               52652-by-  52652      37774         38108  binary
+ 467 DNVS/tsyl201                     20685-by-  20685       2866         20685  binary
+ 468 GHS_psdef/finance256             37376-by-  37376      35822         37376  binary
+ 469 Schenk_IBMNA/c-64                51035-by-  51035      50941         51035  real
+ 470 Boeing/crystk02                  13965-by-  13965      13959         13965  real
+ 471 Boeing/bcsstk36                  23052-by-  23052      23020         23052  real
+ 472 Andrianov/net4-1                 88343-by-  88343      86176         88343  binary
+ 473 Mulvey/pfinan512                 74752-by-  74752      71614         74752  binary
+ 474 Hollinger/mark3jac060sc          27449-by-  27449      27335         27449  real
+ 475 Sandia/ASIC_680ks               682712-by- 682712     583662        682712  real
+
+ID   Group/Name                       nrows-by-  ncols  num. rank  struct. rank  type
+ 476 Hollinger/g7jac080sc             23670-by-  23670      23661         23670  real
+ 477 Boeing/bcsstk37                  25503-by-  25503      25395         25503  real
+ 478 Simon/raefsky4                   19779-by-  19779      19771         19779  real
+ 479 Schenk_IBMSDS/2D_27628_bjtcai    27628-by-  27628      18442         27628  real
+ 480 GHS_indef/k1_san                 67759-by-  67759      67758         67758  real
+ 481 GHS_indef/ncvxqp1                12111-by-  12111       7087         12111  real
+ 482 GHS_psdef/ford2                 100196-by- 100196      97892        100196  binary
+ 483 Meszaros/air06                     825-by-   8627        706           822  binary
+ 484 Hollinger/g7jac100sc             29610-by-  29610      29596         29610  real
+ 485 Meszaros/aa3                       825-by-   8627        706           822  binary
+ 486 Chen/pkustk01                    22044-by-  22044       3732         22044  binary
+ 487 GHS_psdef/opt1                   15449-by-  15449       3442         15449  binary
+ 488 Oberwolfach/t3dl                 20360-by-  20360      20359         20360  real
+ 489 Hollinger/mark3jac080sc          36609-by-  36609      36451         36609  real
+ 490 Schenk_IBMNA/c-54                31793-by-  31793      31404         31793  real
+ 491 Hollinger/mark3jac100sc          45769-by-  45769      45571         45769  real
+ 492 GHS_psdef/pds10                  16558-by-  16558      16519         16558  binary
+ 493 VanVelzen/Zd_Jac6_db             22835-by-  22835      22505         22835  real
+ 494 VanVelzen/std1_Jac3_db           21982-by-  21982       8940         21982  real
+ 495 HB/bcsstk33                       8738-by-   8738       3979          8738  binary
+ 496 Hollinger/g7jac120sc             35550-by-  35550      35530         35550  real
+ 497 Goodwin/rim                      22560-by-  22560      22479         22560  real
+ 498 VanVelzen/Zd_Jac3_db             22835-by-  22835      22374         22835  real
+ 499 HB/bcsstk30                      28924-by-  28924       8935         28924  binary
+ 500 Boeing/crystk03                  24696-by-  24696      24690         24696  real
+
+ID   Group/Name                       nrows-by-  ncols  num. rank  struct. rank  type
+ 501 Hollinger/mark3jac120sc          54929-by-  54929      54691         54929  real
+ 502 Chen/pkustk09                    33960-by-  33960       5583         33960  binary
+ 503 Sandia/ASIC_320ks               321671-by- 321671      99190        321671  real
+ 504 GHS_psdef/srb1                   54924-by-  54924       9154         54924  binary
+ 505 Hollinger/g7jac180               53370-by-  53370      39522         53370  real
+ 506 GHS_indef/olesnik0               88263-by-  88263      88262         88263  real
+ 507 Meszaros/pf2177                   9728-by-  10178       9662          9728  binary
+ 508 Andrianov/lpl1                   32460-by-  32460      31143         32460  binary
+ 509 HB/bcsstk32                      44609-by-  44609      14152         44609  binary
+ 510 Rothberg/struct3                 53570-by-  53570      41593         53570  binary
+ 511 Chen/pkustk03                    63336-by-  63336       9477         63336  binary
+ 512 LPnetlib/lp_dfl001                6071-by-  12230       6058          6071  real
+ 513 Boeing/pcrystk02                 13965-by-  13965       4624         13965  binary
+ 514 GHS_indef/c-68                   64810-by-  64810      64801         64810  real
+ 515 Meszaros/stormg2-125             66185-by- 172431      65935         65935  real
+ 516 HB/bcsstk31                      35588-by-  35588      16803         35588  binary
+ 517 Schenk_IBMSDS/3D_28984_Tetra     28984-by-  28984        846         28984  real
+ 518 GHS_indef/exdata_1                6001-by-   6001       6000          6001  real
+ 519 Schenk_IBMSDS/2D_54019_highK     54019-by-  54019         45         54019  real
+ 520 Gupta/gupta1                     31802-by-  31802      30782         31802  binary
+ 521 Boeing/pcrystk03                 24696-by-  24696       7301         24696  binary
+ 522 NYPA/Maragal_1                      32-by-     14         10            14  real
+ 523 NYPA/Maragal_2                     555-by-    350        171           220  real
+ 524 NYPA/Maragal_3                    1690-by-    860        613           765  real
+ 525 NYPA/Maragal_4                    1964-by-   1034        801           995  real
+
+ID   Group/Name                       nrows-by-  ncols  num. rank  struct. rank  type
+ 526 NYPA/Maragal_5                    4654-by-   3320       2147          2690  real
+ 527 Mancktelow/viscorocks            37762-by-  37762      37752         37762  real
+ 528 Pajek/GD01_A                       953-by-    953        155           158  real
+ 529 Pajek/Erdos972                    5488-by-   5488        882           882  binary
+ 530 Pajek/Erdos982                    5822-by-   5822        908           908  binary
+ 531 Pajek/Erdos992                    6100-by-   6100        922           922  binary
+ 532 Pajek/Erdos02                     6927-by-   6927        938           938  binary
+ 533 Meszaros/aa5                       801-by-   8308        692           800  binary
+ 534 Meszaros/aa03                      825-by-   8627        706           822  binary
+ 535 Meszaros/us04                      163-by-  28016        115           162  binary
+ 536 LPnetlib/lpi_gosh                 3792-by-  13455       3790          3790  real
+ 537 Pereyra/landmark                 71952-by-   2704       2671          2673  real
+ 538 Meszaros/stat96v5                 2307-by-  75779       2305          2305  real
+ 539 TKK/g3rmt3m3                      5357-by-   5357        938          5357  binary
+ 540 JGD_Relat/rel3                      12-by-      5          1             3  real
+ 541 JGD_Relat/relat3                    12-by-      5          1             3  real
+ 542 JGD_Homology/n3c4-b1                15-by-      6          5             6  real
+ 543 JGD_Homology/n3c4-b4                 6-by-     15          5             6  real
+ 544 JGD_Homology/ch3-3-b1               18-by-      9          8             9  real
+ 545 JGD_Homology/klein-b1               30-by-     10          9            10  real
+ 546 JGD_Homology/n3c4-b2                20-by-     15         10            15  real
+ 547 JGD_Homology/n3c4-b3                15-by-     20         10            15  real
+ 548 JGD_Homology/n3c5-b1                45-by-     10          9            10  real
+ 549 JGD_Relat/rel4                      66-by-     12          5            10  real
+ 550 JGD_Relat/relat4                    66-by-     12          5            10  real
+
+ID   Group/Name                       nrows-by-  ncols  num. rank  struct. rank  type
+ 551 JGD_Margulies/wheel_3_1             21-by-     25         20            21  binary
+ 552 JGD_Homology/ch4-4-b1               72-by-     16         15            16  real
+ 553 JGD_Homology/n2c6-b1               105-by-     15         14            15  real
+ 554 JGD_Homology/n4c5-b1               105-by-     15         14            15  real
+ 555 JGD_Margulies/wheel_4_1             36-by-     41         32            36  binary
+ 556 JGD_Homology/cis-n4c6-b1           210-by-     21         20            21  real
+ 557 JGD_Homology/n4c6-b1               210-by-     21         20            21  real
+ 558 JGD_Homology/ch5-5-b1              200-by-     25         24            25  real
+ 559 JGD_Margulies/wheel_5_1             57-by-     61         51            57  binary
+ 560 JGD_Homology/n3c5-b2               120-by-     45         36            45  real
+ 561 JGD_Relat/rel5                     340-by-     35         24            33  real
+ 562 JGD_Relat/relat5                   340-by-     35         24            33  real
+ 563 JGD_Homology/mk9-b1                378-by-     36         35            36  real
+ 564 JGD_Homology/ch4-4-b2               96-by-     72         57            72  real
+ 565 JGD_Homology/ch6-6-b1              450-by-     36         35            36  real
+ 566 JGD_Margulies/wheel_6_1             83-by-     85         72            80  binary
+ 567 JGD_Margulies/cat_ears_2_1          85-by-     85         74            82  binary
+ 568 JGD_Homology/ch7-6-b1              630-by-     42         41            42  real
+ 569 JGD_Homology/n3c6-b1               105-by-    105         14            15  real
+ 570 JGD_Homology/mk10-b1               630-by-     45         44            45  real
+ 571 JGD_Margulies/wheel_7_1            114-by-    113         99           107  binary
+ 572 JGD_Margulies/flower_4_1           121-by-    129        108           121  binary
+ 573 JGD_Homology/ch7-7-b1              882-by-     49         48            49  real
+ 574 JGD_Homology/mk11-b1               990-by-     55         54            55  real
+ 575 JGD_Homology/n3c5-b3               210-by-    120         84           120  real
+
+ID   Group/Name                       nrows-by-  ncols  num. rank  struct. rank  type
+ 576 JGD_Homology/n3c5-b6               120-by-    210         84           120  real
+ 577 JGD_GL7d/GL7d11                   1019-by-     60         59            60  real
+ 578 JGD_Homology/ch7-8-b1             1176-by-     56         55            56  real
+ 579 JGD_Homology/n2c6-b2               455-by-    105         91           105  real
+ 580 JGD_Homology/n3c6-b2               455-by-    105         91           105  real
+ 581 JGD_Homology/n4c5-b2               455-by-    105         91           105  real
+ 582 JGD_SL6/D_5                        434-by-    115         95           114  real
+ 583 JGD_Homology/ch7-9-b1             1512-by-     63         62            63  real
+ 584 JGD_Homology/ch8-8-b1             1568-by-     64         63            64  real
+ 585 JGD_Homology/mk12-b1              1485-by-     66         65            66  real
+ 586 JGD_Margulies/cat_ears_3_1         204-by-    181        165           175  binary
+ 587 JGD_G5/IG5-8                       156-by-    292        154           156  real
+ 588 JGD_Margulies/flower_5_1           211-by-    201        179           191  binary
+ 589 JGD_GL6/GL6_D_10                   163-by-    341        120           158  real
+ 590 JGD_Homology/n4c5-b10              120-by-    630        110           120  real
+ 591 JGD_Homology/n3c5-b4               252-by-    210        126           210  real
+ 592 JGD_Homology/n3c5-b5               210-by-    252        126           210  real
+ 593 JGD_SL6/D_11                       169-by-    461        136           168  real
+ 594 JGD_GL6/GL6_D_6                    469-by-    201        156           199  real
+ 595 JGD_Homology/ch5-5-b2              600-by-    200        176           200  real
+ 596 JGD_Margulies/cat_ears_4_1         377-by-    313        291           304  binary
+ 597 JGD_Relat/rel6                    2340-by-    157        137           155  real
+ 598 JGD_Relat/relat6                  2340-by-    157        137           155  real
+ 599 JGD_Homology/cis-n4c6-b2          1330-by-    210        190           210  real
+ 600 JGD_Homology/n4c6-b2              1330-by-    210        190           210  real
+
+ID   Group/Name                       nrows-by-  ncols  num. rank  struct. rank  type
+ 601 JGD_GL6/GL6_D_9                    340-by-    545        220           337  real
+ 602 JGD_G5/IG5-9                       342-by-    540        308           310  real
+ 603 JGD_Margulies/flower_7_1           463-by-    393        363           379  binary
+ 604 JGD_Homology/n2c6-b9               306-by-   1470        276           306  real
+ 605 JGD_GL6/GL6_D_7                    636-by-    470        312           467  real
+ 606 JGD_Margulies/flower_8_1           625-by-    513        479           497  binary
+ 607 JGD_SL6/D_10                       460-by-    816        323           455  real
+ 608 JGD_SPG/EX1                        560-by-    560        547           560  binary
+ 609 JGD_SPG/EX2                        560-by-    560        553           560  binary
+ 610 JGD_Homology/mk9-b2               1260-by-    378        343           378  real
+ 611 JGD_SL6/D_6                        970-by-    435        339           433  real
+ 612 JGD_GL6/GL6_D_8                    544-by-    637        324           542  real
+ 613 JGD_Homology/ch5-5-b3              600-by-    600        424           600  real
+ 614 JGD_Margulies/kneser_6_2_1         601-by-    676        540           601  binary
+ 615 JGD_GL7d/GL7d26                    305-by-   2798        273           303  real
+ 616 JGD_Homology/n4c5-b3              1350-by-    455        364           455  real
+ 617 JGD_Homology/n2c6-b3              1365-by-    455        364           455  real
+ 618 JGD_Homology/n3c6-b3              1365-by-    455        364           455  real
+ 619 JGD_G5/IG5-10                      652-by-    976        527           527  real
+ 620 JGD_Homology/ch6-6-b2             2400-by-    450        415           450  real
+ 621 JGD_Homology/n4c5-b9               630-by-   1895        520           630  real
+ 622 JGD_SL6/D_9                        815-by-   1133        491           810  real
+ 623 JGD_Kocay/Trec12                   551-by-   2726        550           551  real
+ 624 JGD_Homology/mk9-b3                945-by-   1260        875           945  real
+ 625 JGD_Homology/n3c6-b10              675-by-   2511        615           675  real
+
+ID   Group/Name                       nrows-by-  ncols  num. rank  struct. rank  type
+ 626 JGD_SL6/D_7                       1270-by-    971        629           968  real
+ 627 JGD_Homology/mk10-b2              3150-by-    630        586           630  real
+ 628 JGD_Franz/Franz1                  2240-by-    768        755           768  real
+ 629 JGD_Homology/shar_te2-b1         17160-by-    286        285           286  real
+ 630 JGD_SL6/D_8                       1132-by-   1271        641          1126  real
+ 631 JGD_Homology/ch7-6-b2             4200-by-    630        589           630  real
+ 632 JGD_G5/IG5-11                     1227-by-   1692        902           902  real
+ 633 JGD_Franz/Franz3                  1280-by-   2800       1025          1280  real
+ 634 JGD_Homology/n4c5-b4              2852-by-   1350        986          1350  real
+ 635 JGD_Homology/cis-n4c6-b14          920-by-   6300        860           920  real
+ 636 JGD_Homology/n4c6-b14              920-by-   6300        860           920  real
+ 637 JGD_Homology/n2c6-b4              3003-by-   1365       1001          1365  real
+ 638 JGD_Homology/n3c6-b4              3003-by-   1365       1001          1365  real
+ 639 JGD_Homology/ch7-7-b2             7350-by-    882        834           882  real
+ 640 JGD_Homology/mk11-b2              6930-by-    990        936           990  real
+ 641 JGD_Homology/n2c6-b8              1470-by-   3990       1194          1470  real
+ 642 JGD_Homology/lutz30-23-b6         1716-by-   3003       1702          1716  real
+ 643 JGD_GL7d/GL7d12                   8899-by-   1019        960          1019  real
+ 644 JGD_Homology/cis-n4c6-b3          5970-by-   1330       1140          1330  real
+ 645 JGD_Homology/n4c6-b3              5970-by-   1330       1140          1330  real
+ 646 JGD_Kocay/Trec13                  1301-by-   6561       1295          1301  real
+ 647 JGD_Homology/n4c5-b8              1895-by-   3635       1374          1895  real
+ 648 JGD_Groebner/f855_mat9            2456-by-   2511       2228          2456  real
+ 649 JGD_Groebner/f855_mat9_I          2456-by-   2511       2228          2456  real
+ 650 JGD_G5/IG5-12                     2296-by-   2875       1578          1578  real
+
+ID   Group/Name                       nrows-by-  ncols  num. rank  struct. rank  type
+ 651 JGD_Homology/ch7-8-b2            11760-by-   1176       1121          1176  real
+ 652 JGD_Groebner/HFE18_96_in          2372-by-   4096       2371          2371  binary
+ 653 JGD_Relat/rel7                   21924-by-   1045       1012          1043  real
+ 654 JGD_Relat/relat7b                21924-by-   1045       1012          1043  real
+ 655 JGD_Relat/relat7                 21924-by-   1045       1012          1043  real
+ 656 JGD_Homology/mk12-b2             13860-by-   1485       1420          1485  real
+ 657 JGD_Franz/Franz7                 10164-by-   1740       1627          1740  real
+ 658 JGD_Homology/ch6-6-b3             5400-by-   2400       1985          2400  real
+ 659 JGD_Homology/n3c6-b9              2511-by-   4935       1896          2511  real
+ 660 JGD_Homology/n4c5-b5              4340-by-   2852       1866          2852  real
+ 661 JGD_Homology/ch7-9-b2            17640-by-   1512       1450          1512  real
+ 662 JGD_Homology/n2c6-b5              4945-by-   3003       2002          3003  real
+ 663 JGD_Homology/n3c6-b5              5005-by-   3003       2002          3003  real
+ 664 JGD_Homology/ch8-8-b2            18816-by-   1568       1505          1568  real
+ 665 JGD_Homology/mk10-b3              4725-by-   3150       2564          3150  real
+ 666 JGD_Franz/Franz5                  7382-by-   2882       2229          2882  real
+ 667 JGD_Homology/n4c5-b7              3635-by-   4735       2261          3635  real
+ 668 JGD_Franz/Franz6                  7576-by-   3016       2327          3016  real
+ 669 JGD_Franz/Franz2                  4032-by-   4480       2631          4032  real
+ 670 JGD_G5/IG5-13                     3994-by-   4731       2532          2532  real
+ 671 JGD_Homology/n4c5-b6              4735-by-   4340       2474          4340  real
+ 672 JGD_Homology/n2c6-b7              3990-by-   5715       2772          3990  real
+ 673 JGD_Homology/ch6-6-b4             4320-by-   5400       3390          4320  real
+ 674 JGD_Homology/n2c6-b6              5715-by-   4945       2943          4945  real
+ 675 JGD_Homology/n3c6-b8              4935-by-   6435       3003          4935  real
+
+ID   Group/Name                       nrows-by-  ncols  num. rank  struct. rank  type
+ 676 JGD_Kocay/Trec14                  3159-by-  15905       3133          3159  real
+ 677 JGD_Homology/n3c6-b6              6435-by-   5005       3003          5005  real
+ 678 JGD_GL7d/GL7d25                   2798-by-  21074       2525          2798  real
+ 679 TKK/t520                          5563-by-   5563        882          5563  real
+ 680 JGD_Franz/Franz4                  6784-by-   5252       3297          5252  real
+ 681 JGD_Homology/ch7-6-b3            12600-by-   4200       3611          4200  real
+ 682 JGD_Homology/n3c6-b7              6435-by-   6435       3432          6435  real
+ 683 JGD_SPG/EX5                       6545-by-   6545       4740          6545  binary
+ 684 JGD_SPG/EX6                       6545-by-   6545       4740          6545  binary
+ 685 JGD_Franz/Franz9                 19588-by-   4164       3545          4164  real
+ 686 JGD_Franz/Franz10                19588-by-   4164       3545          4164  real
+ 687 JGD_G5/IG5-14                     6735-by-   7621       3906          3906  real
+ 688 Marini/eurqsa                     7245-by-   7245       7035          7245  real
+ 689 JGD_Homology/ch7-6-b5             5040-by-  15120       5039          5040  real
+ 690 JGD_Homology/cis-n4c6-b4         20058-by-   5970       4830          5970  real
+ 691 JGD_Homology/n4c6-b4             20058-by-   5970       4830          5970  real
+ 692 JGD_Homology/mk11-b3             17325-by-   6930       5994          6930  real
+ 693 JGD_Franz/Franz8                 16728-by-   7176       5463          7176  real
+ 694 TKK/cyl6                         13681-by-  13681       2243         13681  real
+ 695 QY/case9                         14454-by-  14454      14444         14454  real
+ 696 TSOPF/TSOPF_FS_b9_c6             14454-by-  14454      14444         14454  real
+ 697 TKK/tube1                        21498-by-  21498       3583         21498  binary
+ 698 TKK/tube2                        21498-by-  21498       3583         21498  real
+ 699 JGD_Homology/D6-6               120576-by-  23740      14409         18660  real
+ 
+ 
+Your path has been modified by:
+addpath /Users/davis/sparse/MyPapers/Foster/spqr_rank/SJget
+ 
+SJget toolbox successfully installed.
+Remember to save your path using savepath or pathtool!
+ 
+Saving the current MATLAB path so that access to the matrices
+is available when restarting MATLAB.
+ 
+ 
+downloading http://www.math.sjsu.edu/singular/matrices/mat/Pajek/Erdos971.mat
+to /Users/davis/sparse/MyPapers/Foster/spqr_rank/SJget/mat/Pajek/Erdos971.mat
+Expected error caught: Input argument "A" is undefined.
+Expected error caught: invalid stats
+Expected error caught: usage: [x,stats,NT] = spqr_basic (A,B,opts)
+Expected error caught: A and B must have the same number of rows
+Expected error caught: usage: [x,stats,NT] = spqr_basic (A,B,opts)
+Expected error caught: usage: [U,S,V,stats] = spqr_ssi (R,opts)
+Expected error caught: usage: [x,stats,N,NT] = spqr_cod (A,B,opts)
+Expected error caught: usage: [N,stats] = spqr_null (A,opts)
+Expected error caught: usage: [U,S,V,stats] = spqr_ssp (A,N,k,opts)
+Expected error caught: usage: [x,stats,N,NT] = spqr_pinv (A,B,opts)
+Expected error caught: R must be square
+
+opts for spqr_ssi with get_details = 1:
+options for the spqr_rank functions:
+
+  get_details : 1 : extensive statistics returned
+  tol : default : max(m,n)*eps(normest(A,0.01))
+  nsvals_large : 1 : # of large singular values to estimate.
+  nsvals_small : 1 : # of small singular values to estimate.
+  implicit_null_space_basis : true : N represented in Householder form.
+  start_with_A_transpose : false : spqr_cod computes qr(A).
+  ssi_tol : default : same as tol.
+  ssi_min_block : 3 : ssi initial block size.
+  ssi_max_block : 10 : spqr_ssi max block size.
+  ssi_min_iters : 3 : min # of iterations before checking convergence
+  ssi_max_iters : 100 : max # of iterations before stopping spqr_ssi iterations
+  ssi_nblock_increment : 5 : block size inc. if convergence not met.
+  ssi_convergence_factor : 0.1 : spqr_ssi termination criterion.
+  k :   ssp_min_iters : 4 : min # of iterations before checking convergence
+  ssp_max_iters : 10 : max # of ssp iterations before stopping iterations
+  ssp_convergence_factor : 0.1 ssp terminates when relative error drops below this value.
+  repeatable : true : internal random stream used to guarantee repeatability
+
+  flag : 0 : ok.  stats.rank very likely to be correct.
+  rank : 4 : estimate of numerical rank.
+  tol : 2.84217e-14 : numerical tolerance used.
+  normest_R : 51.6479 : estimate of Euclidean norm of R (calculated for spqr_ssi).
+  est_svals_of_R :  3.22608
+      : estimated singular value(s) of triangular matrix R.
+  est_error_bounds :  5.77104e-05
+      : error bounds for each singular value.
+  sval_numbers_for_bounds :  4
+      : index of singular value(s), for bounds.
+  norm_R_times_N : 0 : norm of (R*N), from spqr_ssi.
+  norm_R_transpose_times_NT : 0 : norm of (R'*NT), from spqr_ssi.
+  iters : 3 : iterations in spqr_ssi or spqr_ssp.
+  nsvals_large_found : 1 : number of large singular values found.
+  final_blocksize : 3 : final block size in spqr_ssi.
+  ssi_max_block_used : 4 : max block size for spqr_ssi.
+  ssi_min_block_used : 3 : initial block size for spqr_ssi.
+  time : 0.155409 : total time taken (includes all timings below).
+  time_initialize : 0.00524966 : time to initialize including estimating the norm of A or R.
+  time_svd : 0.0301843 : total time taken by svd.
+  time_iters : 0.0882315 : time for spqr_ssi iterations.
+  time_est_error_bounds : 0.0150126 : time taken to estimate error bounds in spqr_ssi.
+
+opts for spqr_cod with get_details = 0:
+options for the spqr_rank functions:
+
+  get_details : 0 : basic statistics returned
+  tol : 1e-06
+  nsvals_large : 1 : # of large singular values to estimate.
+  nsvals_small : 1 : # of small singular values to estimate.
+  implicit_null_space_basis : true : N represented in Householder form.
+  start_with_A_transpose : false : spqr_cod computes qr(A).
+  ssi_tol : default : same as tol.
+  ssi_min_block : 3 : ssi initial block size.
+  ssi_max_block : 10 : spqr_ssi max block size.
+  ssi_min_iters : 3 : min # of iterations before checking convergence
+  ssi_max_iters : 100 : max # of iterations before stopping spqr_ssi iterations
+  ssi_nblock_increment : 5 : block size inc. if convergence not met.
+  ssi_convergence_factor : 0.1 : spqr_ssi termination criterion.
+  k :   ssp_min_iters : 4 : min # of iterations before checking convergence
+  ssp_max_iters : 10 : max # of ssp iterations before stopping iterations
+  ssp_convergence_factor : 0.1 ssp terminates when relative error drops below this value.
+  repeatable : true : internal random stream used to guarantee repeatability
+
+results from spqr_cod with get_details = 0: err 2.1528e-15
+
+  flag : 0 : ok.  stats.rank very likely to be correct.
+  rank : 4 : estimate of numerical rank.
+  tol : 1e-06 : numerical tolerance used.
+  est_sval_upper_bounds :  13.135
+      : estimated upper bounds on singular value(s).
+  est_sval_lower_bounds :  13.0823
+      : estimated lower bounds on singular value(s).
+  sval_numbers_for_bounds :  4
+      : index of singular value(s), for bounds.
+
+results from spqr_pinv with get_details = 0: err 1.40433e-15
+
+  flag : 0 : ok.  stats.rank very likely to be correct.
+  rank : 4 : estimate of numerical rank.
+  tol : 1e-06 : numerical tolerance used.
+  est_sval_upper_bounds :  17.1615
+      : estimated upper bounds on singular value(s).
+  est_sval_lower_bounds :  3.60039
+      : estimated lower bounds on singular value(s).
+  sval_numbers_for_bounds :  4
+      : index of singular value(s), for bounds.
+  est_norm_A_times_N : 4.98489e-15 : estimated norm(A*N).
+  est_norm_A_transpose_times_NT : 0 : estimated norm(A'*NT).
+
+results from spqr_basic with get_details = 0: err 2.22045e-16
+
+  flag : 0 : ok.  stats.rank very likely to be correct.
+  rank : 4 : estimate of numerical rank.
+  tol : 1e-06 : numerical tolerance used.
+  est_sval_upper_bounds :  17.1615
+      : estimated upper bounds on singular value(s).
+  est_sval_lower_bounds :  3.60039
+      : estimated lower bounds on singular value(s).
+  sval_numbers_for_bounds :  4
+      : index of singular value(s), for bounds.
+  est_norm_A_transpose_times_NT : 0 : estimated norm(A'*NT).
+
+opts for spqr_cod with get_details = 1:
+options for the spqr_rank functions:
+
+  get_details : 1 : extensive statistics returned
+  tol : 1e-06
+  nsvals_large : 1 : # of large singular values to estimate.
+  nsvals_small : 1 : # of small singular values to estimate.
+  implicit_null_space_basis : true : N represented in Householder form.
+  start_with_A_transpose : false : spqr_cod computes qr(A).
+  ssi_tol : default : same as tol.
+  ssi_min_block : 3 : ssi initial block size.
+  ssi_max_block : 10 : spqr_ssi max block size.
+  ssi_min_iters : 3 : min # of iterations before checking convergence
+  ssi_max_iters : 100 : max # of iterations before stopping spqr_ssi iterations
+  ssi_nblock_increment : 5 : block size inc. if convergence not met.
+  ssi_convergence_factor : 0.1 : spqr_ssi termination criterion.
+  k :   ssp_min_iters : 4 : min # of iterations before checking convergence
+  ssp_max_iters : 10 : max # of ssp iterations before stopping iterations
+  ssp_convergence_factor : 0.1 ssp terminates when relative error drops below this value.
+  repeatable : true : internal random stream used to guarantee repeatability
+
+results from spqr_cod with get_details = 1: err 2.1528e-15
+
+  flag : 0 : ok.  stats.rank very likely to be correct.
+  rank : 4 : estimate of numerical rank.
+  rank_spqr : 4 : estimate of numerical rank from spqr.
+      This is normally an upper bound on the true rank.
+  tol : 1e-06 : numerical tolerance used.
+  est_sval_upper_bounds :  13.135
+      : estimated upper bounds on singular value(s).
+  est_sval_lower_bounds :  13.0823
+      : estimated lower bounds on singular value(s).
+  sval_numbers_for_bounds :  4
+      : index of singular value(s), for bounds.
+  est_norm_A_times_N : 1.35229e-14 : estimated norm(A*N).
+  est_err_bound_norm_A_times_N : 2.68461e-15 : estimated error bound for norm(A*N).
+  time : 0.0766464 : total time taken (includes all timings below).
+  time_initialize : 0.000894783 : time to initialize.
+  time_svd : 0.021441 : total time taken by svd.
+  time_basis : 0.00508991 : time to compute basis.
+
+info_spqr1 : statistics from first QR factorization.
+
+               nnzR_upper_bound: 18
+               nnzH_upper_bound: 6
+     number_of_frontal_matrices: 1
+            number_of_TBB_tasks: 1
+                rank_A_estimate: 4
+    number_of_column_singletons: 0
+       number_of_singleton_rows: 0
+                       ordering: 'colamd'
+          memory_usage_in_bytes: 2518
+              flops_upper_bound: 190
+                            tol: 1.0000e-06
+          number_of_TBB_threads: 'default'
+                     norm_E_fro: 0
+         spqr_compiled_with_TBB: 'no'
+       spqr_compiled_with_METIS: 'yes'
+                           time: 3.6561e-04
+
+
+info_spqr2 : statistics from second QR factorization.
+
+               nnzR_upper_bound: 10
+               nnzH_upper_bound: 8
+     number_of_frontal_matrices: 1
+            number_of_TBB_tasks: 1
+                rank_A_estimate: 4
+    number_of_column_singletons: 0
+       number_of_singleton_rows: 0
+                       ordering: 'colamd'
+          memory_usage_in_bytes: 2420
+              flops_upper_bound: 116
+                            tol: 0
+          number_of_TBB_threads: 'default'
+                     norm_E_fro: 0
+         spqr_compiled_with_TBB: 'no'
+       spqr_compiled_with_METIS: 'yes'
+                           time: 2.6390e-04
+
+
+stats_ssi : statistics from spqr_ssi.
+
+  flag : 0 : ok.  stats.rank very likely to be correct.
+  rank : 4 : estimate of numerical rank.
+  tol : 1e-06 : numerical tolerance used.
+  est_svals_of_R :  13.1087
+      : estimated singular value(s) of triangular matrix R.
+  est_error_bounds :  0.0263153
+      : error bounds for each singular value.
+  sval_numbers_for_bounds :  4
+      : index of singular value(s), for bounds.
+  norm_R_times_N : 0 : norm of (R*N), from spqr_ssi.
+  norm_R_transpose_times_NT : 0 : norm of (R'*NT), from spqr_ssi.
+  iters : 3 : iterations in spqr_ssi or spqr_ssp.
+  nsvals_large_found : 1 : number of large singular values found.
+  final_blocksize : 3 : final block size in spqr_ssi.
+  ssi_max_block_used : 4 : max block size for spqr_ssi.
+  ssi_min_block_used : 3 : initial block size for spqr_ssi.
+  time : 0.0260141 : total time taken (includes all timings below).
+  time_initialize : 0.000476977 : time to initialize.
+  time_svd : 0.0139333 : total time taken by svd.
+  time_iters : 0.0149111 : time for spqr_ssi iterations.
+  time_est_error_bounds : 0.00068853 : time taken to estimate error bounds in spqr_ssi.
+
+stats_ssp_N : statistics from spqr_ssp (A,N).
+
+  flag : 1 : spqr_ssp did not converge with est. relative error <= opts_ssp.convergence_factor.
+  est_svals :  1.35229e-14
+      : estimated singular value(s) of A*N or A'*NT, from spqr_ssp.
+  est_error_bounds :  2.68461e-15
+      : error bounds for each singular value.
+  sval_numbers_for_bounds :  1
+      : index of singular value(s), for bounds.
+  iters : 10 : iterations in spqr_ssi or spqr_ssp.
+  time : 0.0200954 : total time taken (includes all timings below).
+  time_initialize : 0.00130859 : time to initialize.
+  time_svd : 0.00750766 : total time taken by svd.
+  time_iters : 0.0151055 : time for spqr_ssi iterations.
+  time_est_error_bounds : 3.1059e-05 : time taken to estimate error bounds in spqr_ssi.
+
+results from spqr_pinv with get_details = 1: err 1.40433e-15
+
+  flag : 0 : ok.  stats.rank very likely to be correct.
+  rank : 4 : estimate of numerical rank.
+  rank_spqr : 4 : estimate of numerical rank from spqr.
+      This is normally an upper bound on the true rank.
+  tol : 1e-06 : numerical tolerance used.
+  est_sval_upper_bounds :  17.1615
+      : estimated upper bounds on singular value(s).
+  est_sval_lower_bounds :  3.60039
+      : estimated lower bounds on singular value(s).
+  sval_numbers_for_bounds :  4
+      : index of singular value(s), for bounds.
+  est_norm_A_times_N : 4.98489e-15 : estimated norm(A*N).
+  est_err_bound_norm_A_times_N : 2.26877e-15 : estimated error bound for norm(A*N).
+  est_norm_A_transpose_times_NT : 0 : estimated norm(A'*NT).
+  est_err_bound_norm_A_transpose_times_NT : 0 :  estimated error bound for norm(A'*NT).
+  time : 0.0526774 : total time taken (includes all timings below).
+  time_initialize : 0.000870357 : time to initialize.
+  time_svd : 0.00369433 : total time taken by svd.
+  time_basis : 0.00482744 : time to compute basis.
+
+opts_used : options for the spqr_rank functions:
+
+  get_details : 1 : extensive statistics returned
+  tol : 1e-06
+  nsvals_large : 1 : # of large singular values to estimate.
+  nsvals_small : 1 : # of small singular values to estimate.
+  implicit_null_space_basis : true : N represented in Householder form.
+  start_with_A_transpose : false : spqr_cod computes qr(A).
+  ssi_tol : 1e-06
+  ssi_min_block : 3 : ssi initial block size.
+  ssi_max_block : 10 : spqr_ssi max block size.
+  ssi_min_iters : 3 : min # of iterations before checking convergence
+  ssi_max_iters : 100 : max # of iterations before stopping spqr_ssi iterations
+  ssi_nblock_increment : 5 : block size inc. if convergence not met.
+  ssi_convergence_factor : 0.1 : spqr_ssi termination criterion.
+  k :   ssp_min_iters : 4 : min # of iterations before checking convergence
+  ssp_max_iters : 10 : max # of ssp iterations before stopping iterations
+  ssp_convergence_factor : 0.1 ssp terminates when relative error drops below this value.
+  repeatable : true : internal random stream used to guarantee repeatability
+
+stats_spqr_basic : statistics from spqr_basic.
+
+  flag : 0 : ok.  stats.rank very likely to be correct.
+  rank : 4 : estimate of numerical rank.
+  rank_spqr : 4 : estimate of numerical rank from spqr.
+      This is normally an upper bound on the true rank.
+  tol : 1e-06 : numerical tolerance used.
+  est_sval_upper_bounds :  17.1615
+      : estimated upper bounds on singular value(s).
+  est_sval_lower_bounds :  3.60039
+      : estimated lower bounds on singular value(s).
+  sval_numbers_for_bounds :  4
+      : index of singular value(s), for bounds.
+  est_norm_A_transpose_times_NT : 0 : estimated norm(A'*NT).
+  est_err_bound_norm_A_transpose_times_NT : 0 :  estimated error bound for norm(A'*NT).
+  time : 0.0208919 : total time taken (includes all timings below).
+  time_initialize : 0.000480994 : time to initialize.
+  time_svd : 0.000530932 : total time taken by svd.
+  time_basis : 0.00470466 : time to compute basis.
+
+info_spqr1 : statistics from first QR factorization.
+
+               nnzR_upper_bound: 14
+               nnzH_upper_bound: 6
+     number_of_frontal_matrices: 1
+            number_of_TBB_tasks: 1
+                rank_A_estimate: 4
+    number_of_column_singletons: 0
+       number_of_singleton_rows: 0
+                       ordering: 'colamd'
+          memory_usage_in_bytes: 2645
+              flops_upper_bound: 150
+                            tol: 1.0000e-06
+          number_of_TBB_threads: 'default'
+                     norm_E_fro: 0
+         spqr_compiled_with_TBB: 'no'
+       spqr_compiled_with_METIS: 'yes'
+                           time: 4.0852e-04
+
+
+stats_ssi : statistics from spqr_ssi.
+
+  flag : 0 : ok.  stats.rank very likely to be correct.
+  rank : 4 : estimate of numerical rank.
+  tol : 1e-06 : numerical tolerance used.
+  est_svals_of_R :  3.6005
+      : estimated singular value(s) of triangular matrix R.
+  est_error_bounds :  0.000103967
+      : error bounds for each singular value.
+  sval_numbers_for_bounds :  4
+      : index of singular value(s), for bounds.
+  norm_R_times_N : 0 : norm of (R*N), from spqr_ssi.
+  norm_R_transpose_times_NT : 0 : norm of (R'*NT), from spqr_ssi.
+  iters : 3 : iterations in spqr_ssi or spqr_ssp.
+  nsvals_large_found : 1 : number of large singular values found.
+  final_blocksize : 3 : final block size in spqr_ssi.
+  ssi_max_block_used : 4 : max block size for spqr_ssi.
+  ssi_min_block_used : 3 : initial block size for spqr_ssi.
+  time : 0.00467957 : total time taken (includes all timings below).
+  time_initialize : 0.000453893 : time to initialize.
+  time_svd : 0.000462889 : total time taken by svd.
+  time_iters : 0.00147939 : time for spqr_ssi iterations.
+  time_est_error_bounds : 0.000284898 : time taken to estimate error bounds in spqr_ssi.
+
+stats_ssp_NT : statistics from spqr_ssp (A',NT).
+
+  flag : 0 : ok. spqr_ssp converged with est. relative error <= opts_ssp.convergence_factor.
+  est_svals :  0
+      : estimated singular value(s) of A*N or A'*NT, from spqr_ssp.
+  est_error_bounds :  0
+      : error bounds for each singular value.
+  sval_numbers_for_bounds :  0
+      : index of singular value(s), for bounds.
+  iters : 0 : iterations in spqr_ssi or spqr_ssp.
+  time : 0 : total time taken (includes all timings below).
+  time_initialize : 0.000458996 : time to initialize.
+  time_svd : 0 : total time taken by svd.
+  time_iters : 0 : time for spqr_ssi iterations.
+  time_est_error_bounds : 0 : time taken to estimate error bounds in spqr_ssi.
+
+stats_spqr_null : statistics from spqr_null.
+
+  stats_spqr_null.opts_used.ssi_min_block : 3 : initial block size in spqr_ssi as used by spqr_null.
+  flag : 0 : ok.  stats.rank very likely to be correct.
+  rank : 4 : estimate of numerical rank.
+  rank_spqr : 4 : estimate of numerical rank from spqr.
+      This is normally an upper bound on the true rank.
+  tol : 1e-06 : numerical tolerance used.
+  est_sval_upper_bounds :  13.1087
+      : estimated upper bounds on singular value(s).
+  est_sval_lower_bounds :  13.0996
+      : estimated lower bounds on singular value(s).
+  sval_numbers_for_bounds :  4
+      : index of singular value(s), for bounds.
+  est_norm_A_times_N : 4.98489e-15 : estimated norm(A*N).
+  est_err_bound_norm_A_times_N : 2.26877e-15 : estimated error bound for norm(A*N).
+  time : 0.0252396 : total time taken (includes all timings below).
+  time_initialize : 0.000428747 : time to initialize.
+  time_svd : 0.00137542 : total time taken by svd.
+  time_basis : 0.000122782 : time to compute basis.
+
+info_spqr1 : statistics from first QR factorization.
+
+               nnzR_upper_bound: 10
+               nnzH_upper_bound: 10
+     number_of_frontal_matrices: 1
+            number_of_TBB_tasks: 1
+                rank_A_estimate: 4
+    number_of_column_singletons: 0
+       number_of_singleton_rows: 0
+                       ordering: 'colamd'
+          memory_usage_in_bytes: 2516
+              flops_upper_bound: 146
+                            tol: 1.0000e-06
+          number_of_TBB_threads: 'default'
+                     norm_E_fro: 0
+         spqr_compiled_with_TBB: 'no'
+       spqr_compiled_with_METIS: 'yes'
+                           time: 3.1628e-04
+
+
+stats_ssi : statistics from spqr_ssi.
+
+  flag : 0 : ok.  stats.rank very likely to be correct.
+  rank : 4 : estimate of numerical rank.
+  tol : 1e-06 : numerical tolerance used.
+  est_svals_of_R :  13.1087
+      : estimated singular value(s) of triangular matrix R.
+  est_error_bounds :  0.00909203
+      : error bounds for each singular value.
+  sval_numbers_for_bounds :  4
+      : index of singular value(s), for bounds.
+  norm_R_times_N : 0 : norm of (R*N), from spqr_ssi.
+  norm_R_transpose_times_NT : 0 : norm of (R'*NT), from spqr_ssi.
+  iters : 3 : iterations in spqr_ssi or spqr_ssp.
+  nsvals_large_found : 1 : number of large singular values found.
+  final_blocksize : 3 : final block size in spqr_ssi.
+  ssi_max_block_used : 4 : max block size for spqr_ssi.
+  ssi_min_block_used : 3 : initial block size for spqr_ssi.
+  time : 0.00448574 : total time taken (includes all timings below).
+  time_initialize : 0.00044112 : time to initialize.
+  time_svd : 0.000463685 : total time taken by svd.
+  time_iters : 0.0014619 : time for spqr_ssi iterations.
+  time_est_error_bounds : 0.000277138 : time taken to estimate error bounds in spqr_ssi.
+
+stats_ssp_N : statistics from spqr_ssp (A,N).
+
+  flag : 1 : spqr_ssp did not converge with est. relative error <= opts_ssp.convergence_factor.
+  est_svals :  4.98489e-15
+      : estimated singular value(s) of A*N or A'*NT, from spqr_ssp.
+  est_error_bounds :  2.26877e-15
+      : error bounds for each singular value.
+  sval_numbers_for_bounds :  1
+      : index of singular value(s), for bounds.
+  iters : 10 : iterations in spqr_ssi or spqr_ssp.
+  time : 0.00891953 : total time taken (includes all timings below).
+  time_initialize : 0.000435418 : time to initialize.
+  time_svd : 0.000861395 : total time taken by svd.
+  time_iters : 0.00746511 : time for spqr_ssi iterations.
+  time_est_error_bounds : 2.9307e-05 : time taken to estimate error bounds in spqr_ssi.
+
+results from spqr_basic with get_details = 1: err 2.22045e-16
+
+  flag : 0 : ok.  stats.rank very likely to be correct.
+  rank : 4 : estimate of numerical rank.
+  rank_spqr : 4 : estimate of numerical rank from spqr.
+      This is normally an upper bound on the true rank.
+  tol : 1e-06 : numerical tolerance used.
+  est_sval_upper_bounds :  17.1615
+      : estimated upper bounds on singular value(s).
+  est_sval_lower_bounds :  3.60039
+      : estimated lower bounds on singular value(s).
+  sval_numbers_for_bounds :  4
+      : index of singular value(s), for bounds.
+  est_norm_A_transpose_times_NT : 0 : estimated norm(A'*NT).
+  est_err_bound_norm_A_transpose_times_NT : 0 :  estimated error bound for norm(A'*NT).
+  time : 0.0116915 : total time taken (includes all timings below).
+  time_initialize : 0.000849542 : time to initialize.
+  time_svd : 0.000528542 : total time taken by svd.
+  time_basis : 0.000127805 : time to compute basis.
+
+opts_used : options for the spqr_rank functions:
+
+  get_details : 1 : extensive statistics returned
+  tol : 1e-06
+  nsvals_large : 1 : # of large singular values to estimate.
+  nsvals_small : 1 : # of small singular values to estimate.
+  implicit_null_space_basis : true : N represented in Householder form.
+  start_with_A_transpose : false : spqr_cod computes qr(A).
+  ssi_tol : 1e-06
+  ssi_min_block : 3 : ssi initial block size.
+  ssi_max_block : 10 : spqr_ssi max block size.
+  ssi_min_iters : 3 : min # of iterations before checking convergence
+  ssi_max_iters : 100 : max # of iterations before stopping spqr_ssi iterations
+  ssi_nblock_increment : 5 : block size inc. if convergence not met.
+  ssi_convergence_factor : 0.1 : spqr_ssi termination criterion.
+  k :   ssp_min_iters : 4 : min # of iterations before checking convergence
+  ssp_max_iters : 10 : max # of ssp iterations before stopping iterations
+  ssp_convergence_factor : 0.1 ssp terminates when relative error drops below this value.
+  repeatable : true : internal random stream used to guarantee repeatability
+
+info_spqr1 : statistics from first QR factorization.
+
+               nnzR_upper_bound: 14
+               nnzH_upper_bound: 6
+     number_of_frontal_matrices: 1
+            number_of_TBB_tasks: 1
+                rank_A_estimate: 4
+    number_of_column_singletons: 0
+       number_of_singleton_rows: 0
+                       ordering: 'colamd'
+          memory_usage_in_bytes: 2645
+              flops_upper_bound: 150
+                            tol: 1.0000e-06
+          number_of_TBB_threads: 'default'
+                     norm_E_fro: 0
+         spqr_compiled_with_TBB: 'no'
+       spqr_compiled_with_METIS: 'yes'
+                           time: 4.1654e-04
+
+
+stats_ssi : statistics from spqr_ssi.
+
+  flag : 0 : ok.  stats.rank very likely to be correct.
+  rank : 4 : estimate of numerical rank.
+  tol : 1e-06 : numerical tolerance used.
+  est_svals_of_R :  3.6005
+      : estimated singular value(s) of triangular matrix R.
+  est_error_bounds :  0.000103967
+      : error bounds for each singular value.
+  sval_numbers_for_bounds :  4
+      : index of singular value(s), for bounds.
+  norm_R_times_N : 0 : norm of (R*N), from spqr_ssi.
+  norm_R_transpose_times_NT : 0 : norm of (R'*NT), from spqr_ssi.
+  iters : 3 : iterations in spqr_ssi or spqr_ssp.
+  nsvals_large_found : 1 : number of large singular values found.
+  final_blocksize : 3 : final block size in spqr_ssi.
+  ssi_max_block_used : 4 : max block size for spqr_ssi.
+  ssi_min_block_used : 3 : initial block size for spqr_ssi.
+  time : 0.00464281 : total time taken (includes all timings below).
+  time_initialize : 0.000448914 : time to initialize.
+  time_svd : 0.000473298 : total time taken by svd.
+  time_iters : 0.00149702 : time for spqr_ssi iterations.
+  time_est_error_bounds : 0.000288067 : time taken to estimate error bounds in spqr_ssi.
+
+stats_ssp_NT : statistics from spqr_ssp (A',NT).
+
+  flag : 0 : ok. spqr_ssp converged with est. relative error <= opts_ssp.convergence_factor.
+  est_svals :  0
+      : estimated singular value(s) of A*N or A'*NT, from spqr_ssp.
+  est_error_bounds :  0
+      : error bounds for each singular value.
+  sval_numbers_for_bounds :  0
+      : index of singular value(s), for bounds.
+  iters : 0 : iterations in spqr_ssi or spqr_ssp.
+  time : 0 : total time taken (includes all timings below).
+  time_initialize : 0.000433066 : time to initialize.
+  time_svd : 0 : total time taken by svd.
+  time_iters : 0 : time for spqr_ssi iterations.
+  time_est_error_bounds : 0 : time taken to estimate error bounds in spqr_ssi.
+  stats_ssp_NT.opts_used.k : 1 : number of singular values to compute in spqr_ssp(A',NT).
+
+opts for spqr_cod with get_details = 2:
+options for the spqr_rank functions:
+
+  get_details : 2 : basic statistics and a few additional statisticsreturned
+  tol : 1e-06
+  nsvals_large : 1 : # of large singular values to estimate.
+  nsvals_small : 1 : # of small singular values to estimate.
+  implicit_null_space_basis : true : N represented in Householder form.
+  start_with_A_transpose : false : spqr_cod computes qr(A).
+  ssi_tol : default : same as tol.
+  ssi_min_block : 3 : ssi initial block size.
+  ssi_max_block : 10 : spqr_ssi max block size.
+  ssi_min_iters : 3 : min # of iterations before checking convergence
+  ssi_max_iters : 100 : max # of iterations before stopping spqr_ssi iterations
+  ssi_nblock_increment : 5 : block size inc. if convergence not met.
+  ssi_convergence_factor : 0.1 : spqr_ssi termination criterion.
+  k :   ssp_min_iters : 4 : min # of iterations before checking convergence
+  ssp_max_iters : 10 : max # of ssp iterations before stopping iterations
+  ssp_convergence_factor : 0.1 ssp terminates when relative error drops below this value.
+  repeatable : true : internal random stream used to guarantee repeatability
+
+results from spqr_cod with get_details = 2: err 2.1528e-15
+
+  flag : 0 : ok.  stats.rank very likely to be correct.
+  rank : 4 : estimate of numerical rank.
+  rank_spqr : 4 : estimate of numerical rank from spqr.
+      This is normally an upper bound on the true rank.
+  tol : 1e-06 : numerical tolerance used.
+  est_sval_upper_bounds :  13.135
+      : estimated upper bounds on singular value(s).
+  est_sval_lower_bounds :  13.0823
+      : estimated lower bounds on singular value(s).
+  sval_numbers_for_bounds :  4
+      : index of singular value(s), for bounds.
+
+stats_ssi : statistics from spqr_ssi.
+
+  flag : 0 : ok.  stats.rank very likely to be correct.
+  rank : 4 : estimate of numerical rank.
+  tol : 1e-06 : numerical tolerance used.
+  est_svals_of_R :  13.1087
+      : estimated singular value(s) of triangular matrix R.
+  est_error_bounds :  0.0263153
+      : error bounds for each singular value.
+  sval_numbers_for_bounds :  4
+      : index of singular value(s), for bounds.
+  ssi_max_block_used : 4 : max block size for spqr_ssi.
+  ssi_min_block_used : 3 : initial block size for spqr_ssi.
+
+results from spqr_pinv with get_details = 2: err 1.40433e-15
+
+  flag : 0 : ok.  stats.rank very likely to be correct.
+  rank : 4 : estimate of numerical rank.
+  rank_spqr : 4 : estimate of numerical rank from spqr.
+      This is normally an upper bound on the true rank.
+  tol : 1e-06 : numerical tolerance used.
+  est_sval_upper_bounds :  17.1615
+      : estimated upper bounds on singular value(s).
+  est_sval_lower_bounds :  3.60039
+      : estimated lower bounds on singular value(s).
+  sval_numbers_for_bounds :  4
+      : index of singular value(s), for bounds.
+  est_norm_A_times_N : 4.98489e-15 : estimated norm(A*N).
+  est_norm_A_transpose_times_NT : 0 : estimated norm(A'*NT).
+
+results from spqr_basic with get_details = 2: err 2.22045e-16
+
+  flag : 0 : ok.  stats.rank very likely to be correct.
+  rank : 4 : estimate of numerical rank.
+  rank_spqr : 4 : estimate of numerical rank from spqr.
+      This is normally an upper bound on the true rank.
+  tol : 1e-06 : numerical tolerance used.
+  est_sval_upper_bounds :  17.1615
+      : estimated upper bounds on singular value(s).
+  est_sval_lower_bounds :  3.60039
+      : estimated lower bounds on singular value(s).
+  sval_numbers_for_bounds :  4
+      : index of singular value(s), for bounds.
+  est_norm_A_transpose_times_NT : 0 : estimated norm(A'*NT).
+
+stats_ssi : statistics from spqr_ssi.
+
+  flag : 0 : ok.  stats.rank very likely to be correct.
+  rank : 4 : estimate of numerical rank.
+  tol : 1e-06 : numerical tolerance used.
+  est_svals_of_R :  3.6005
+      : estimated singular value(s) of triangular matrix R.
+  est_error_bounds :  0.000103967
+      : error bounds for each singular value.
+  sval_numbers_for_bounds :  4
+      : index of singular value(s), for bounds.
+  ssi_max_block_used : 4 : max block size for spqr_ssi.
+  ssi_min_block_used : 3 : initial block size for spqr_ssi.
+
+opts for spqr_null with explicit basis N:
+options for the spqr_rank functions:
+
+  get_details : 1 : extensive statistics returned
+  tol : default : max(m,n)*eps(normest(A,0.01))
+  nsvals_large : 1 : # of large singular values to estimate.
+  nsvals_small : 1 : # of small singular values to estimate.
+  implicit_null_space_basis : false : N represented as an explicit matrix.
+  start_with_A_transpose : true : spqr_cod computes qr(A').
+  ssi_tol : 1e-06
+  ssi_min_block : 3 : ssi initial block size.
+  ssi_max_block : 10 : spqr_ssi max block size.
+  ssi_min_iters : 3 : min # of iterations before checking convergence
+  ssi_max_iters : 100 : max # of iterations before stopping spqr_ssi iterations
+  ssi_nblock_increment : 5 : block size inc. if convergence not met.
+  ssi_convergence_factor : 0.1 : spqr_ssi termination criterion.
+  k :   ssp_min_iters : 4 : min # of iterations before checking convergence
+  ssp_max_iters : 10 : max # of ssp iterations before stopping iterations
+  ssp_convergence_factor : 0.1 ssp terminates when relative error drops below this value.
+  repeatable : false : use whatever current random stream is in effect.
+Expected error caught: unrecognized method
+Expected error caught: unrecognized method
+Expected error caught: unrecognized N struct
+Expected error caught: unrecognized N struct
+Expected error caught: unrecognized N struct
+Expected error caught: unrecognized N struct
+
+detailed stats from spqr_cod:
+
+  flag : 0 : ok.  stats.rank very likely to be correct.
+  rank : 3 : estimate of numerical rank.
+  rank_spqr : 3 : estimate of numerical rank from spqr.
+      This is normally an upper bound on the true rank.
+  tol : 5.68434e-14 : numerical tolerance used.
+  est_sval_upper_bounds :  1.77763 4.44089e-15
+      : estimated upper bounds on singular value(s).
+  est_sval_lower_bounds :  1.77763 0
+      : estimated lower bounds on singular value(s).
+  sval_numbers_for_bounds :  3 4
+      : index of singular value(s), for bounds.
+  est_norm_A_times_N : 4.18953e-15 : estimated norm(A*N).
+  est_norm_A_transpose_times_NT : 9.67173e-15 : estimated norm(A'*NT).
+
+stats_ssi : statistics from spqr_ssi.
+
+  flag : 0 : ok.  stats.rank very likely to be correct.
+  rank : 3 : estimate of numerical rank.
+  tol : 1e-06 : numerical tolerance used.
+  est_svals_of_R :  1.77763
+      : estimated singular value(s) of triangular matrix R.
+  est_error_bounds :  5.44614e-15
+      : error bounds for each singular value.
+  sval_numbers_for_bounds :  3
+      : index of singular value(s), for bounds.
+  ssi_max_block_used : 3 : max block size for spqr_ssi.
+  ssi_min_block_used : 3 : initial block size for spqr_ssi.
+
+default options for the spqr_rank functions:
+
+  get_details : 0 : basic statistics returned
+  tol : default : max(m,n)*eps(normest(A,0.01))
+  nsvals_large : 1 : # of large singular values to estimate.
+  nsvals_small : 1 : # of small singular values to estimate.
+  implicit_null_space_basis : true : N represented in Householder form.
+  start_with_A_transpose : false : spqr_cod computes qr(A).
+  ssi_tol : default : same as tol.
+  ssi_min_block : 3 : ssi initial block size.
+  ssi_max_block : 10 : spqr_ssi max block size.
+  ssi_min_iters : 3 : min # of iterations before checking convergence
+  ssi_max_iters : 100 : max # of iterations before stopping spqr_ssi iterations
+  ssi_nblock_increment : 5 : block size inc. if convergence not met.
+  ssi_convergence_factor : 0.1 : spqr_ssi termination criterion.
+  k :   ssp_min_iters : 4 : min # of iterations before checking convergence
+  ssp_max_iters : 10 : max # of ssp iterations before stopping iterations
+  ssp_convergence_factor : 0.1 ssp terminates when relative error drops below this value.
+  repeatable : true : internal random stream used to guarantee repeatability
+
+(default for spqr_ssp): options for the spqr_rank functions:
+
+  get_details : 0 : basic statistics returned
+  tol : default : max(m,n)*eps(normest(A,0.01))
+  nsvals_large : 1 : # of large singular values to estimate.
+  nsvals_small : 1 : # of small singular values to estimate.
+  implicit_null_space_basis : true : N represented in Householder form.
+  start_with_A_transpose : false : spqr_cod computes qr(A).
+  ssi_tol : default : same as tol.
+  ssi_min_block : 3 : ssi initial block size.
+  ssi_max_block : 10 : spqr_ssi max block size.
+  ssi_min_iters : 3 : min # of iterations before checking convergence
+  ssi_max_iters : 100 : max # of iterations before stopping spqr_ssi iterations
+  ssi_nblock_increment : 5 : block size inc. if convergence not met.
+  ssi_convergence_factor : 0.1 : spqr_ssi termination criterion.
+  k :   ssp_min_iters : 4 : min # of iterations before checking convergence
+  ssp_max_iters : 10 : max # of ssp iterations before stopping iterations
+  ssp_convergence_factor : 0.1 ssp terminates when relative error drops below this value.
+  repeatable : true : internal random stream used to guarantee repeatability
+
+description of statistics:
+
+Description of basic stats returned by spqr_basic, spqr_null,  spqr_pinv 
+or spqr_cod:
+
+stats.flag (for all routines except spqr_ssp) -- 
+   if stats.flag is 0 if it is likely, although not
+   guaranteed, that stats.rank is the correct numerical rank for
+   tolerance stats.tol (i.e. agrees with the numerical rank
+   determined by the singular values of R).
+   
+   stats.flag is 1 if the calculated numerical rank stats.rank may
+   be correct for the tolerance stats.tol but the estimated error
+   bounds are too large to confirm this.  However stats.rank appears
+   to be correct for an alternate tolerance stats.tol_alt.  More
+   generally stats.rank appears to be correct for any tolerance
+   between stats.est_sval_lower_bounds(nsvals_large) and
+   stats.est_sval_upper_bounds(nsvals_large+1).
+   
+   stats.flag is 2 if the calculated numerical rank stats.numerical
+   may be correct but estimated error bounds are too large to confirm
+   this.  The conditions for stats.flag to be 0 or 1 are not
+   satisfied.
+   
+   stats.flag is 3 if is likely that the numerical rank returned,
+   stats.rank, is too large.
+   
+   stats.flag is 4 if overflow occurred during the inverse power
+   method.  The method fails in this case, and all parameters other
+   stats are returned as empty ([ ]).
+   
+   stats.flag is 5 if a catastrophic failure occurred.
+
+stats.rank -- the estimated numerical rank when stats.flag is
+   0, 1 or 2.  stats.rank is typically an upper bound on the
+   numerical rank when stats.flag is 3.  Note that stats.rank is a
+   correction to the rank returned by spqr (stats.rank_spqr) in the
+   case that the calculations in the routine inidicate that the rank
+   returned by spqr not correct.
+
+stats.tol -- the tolerance used to define the numerical rank.
+
+stat.tol_alt -- an alternate tolerance that corresponds to the
+   calculated numerical rank when stats.flag is 1.
+
+stats.est_sval_upper_bounds -- stats.est_sval_upper_bounds(i) is an
+   estimate of an upper bound on singular value number
+   stats.sval_numbers_for_bounds(i) of A.
+
+stats.est_sval_lower_bounds -- stats.est_sval_lower_bounds(i) is an
+   estimate of an lower bound on singular value number
+   stats.sval_numbers_for_bounds(i) of A.
+
+   Note that stats.est_sval_upper_bounds(i) is a rigorous upper bound
+   on some singular value of (A+E) where where E is O(norm(A)*eps)
+   Also stats.est_sval_lower_bounds(i) is a rigorous lower bound on
+   some singular value of (A+E).  In both cases the singular value is
+   normally singular value number sval_numbers_for_bounds(i) of A,
+   but the singular value number is not guaranteed.  For i such that
+   sval_numbers_for_bounds(i) = stats.rank (that is for estimates
+   of singular value stats.rank) if stats.est_sval_upper_bounds(i)
+   is a large multiple of stats.est_sval_lower_bounds(i) then
+   solution vectors x produced by spqr_basic may be inferior (i.e.
+   be significanty larger) than solutions produced by spqr_pinv or
+   spqr_cod.
+
+stats.sval_numbers_for_bounds -- component i in the error bounds is an estimated
+   error bound for singular value number sval_numbers_for_bounds(i).
+
+stats.est_norm_A_transpose_times_NT -- an estimate of norm(A'*NT).
+
+stats.est_norm_A_times_N -- an estimate of norm(A*N).
+
+Description of basic stats returned by spqr_ssi:
+
+stats.flag (for all routines except spqr_ssp) -- 
+   if stats.flag is 0 if it is likely, although not
+   guaranteed, that stats.rank is the correct numerical rank for
+   tolerance stats.tol (i.e. agrees with the numerical rank
+   determined by the singular values of R).
+   
+   stats.flag is 1 if the calculated numerical rank stats.rank may
+   be correct for the tolerance stats.tol but the estimated error
+   bounds are too large to confirm this.  However stats.rank appears
+   to be correct for an alternate tolerance stats.tol_alt.  More
+   generally stats.rank appears to be correct for any tolerance
+   between stats.est_sval_lower_bounds(nsvals_large) and
+   stats.est_sval_upper_bounds(nsvals_large+1).
+   
+   stats.flag is 2 if the calculated numerical rank stats.numerical
+   may be correct but estimated error bounds are too large to confirm
+   this.  The conditions for stats.flag to be 0 or 1 are not
+   satisfied.
+   
+   stats.flag is 3 if is likely that the numerical rank returned,
+   stats.rank, is too large.
+   
+   stats.flag is 4 if overflow occurred during the inverse power
+   method.  The method fails in this case, and all parameters other
+   stats are returned as empty ([ ]).
+   
+   stats.flag is 5 if a catastrophic failure occurred.
+
+stats.rank -- the estimated numerical rank when stats.flag is
+   0, 1 or 2.  stats.rank is typically an upper bound on the
+   numerical rank when stats.flag is 3.  Note that stats.rank is a
+   correction to the rank returned by spqr (stats.rank_spqr) in the
+   case that the calculations in the routine inidicate that the rank
+   returned by spqr not correct.
+
+stats.tol -- the tolerance used to define the numerical rank.
+
+stats.est_svals_of_R -- computed by spqr_ssi.
+   stats.est_svals_of_R contains estimates of the smallest singular
+   of R.
+
+stats.est_error_bounds -- computed by spqr_ssi and spqr_ssp.
+   stats.est_error_bounds(i) is an estimated bound on the absolute
+   error in singular value number stats.sval_numbers_for_bounds(i).
+   of R (for spqr_ssi) or of A or A*N (for spqr_ssp). It is also a
+   rigorous bound on abs (s(i) - some true singular value of (B+E)),
+   where E is O(norm(B)*eps) and B = R (for spqr_ssi) and B =
+   A or A*N (for spqr_ssp).
+
+stats.sval_numbers_for_bounds -- component i in the error bounds is an estimated
+   error bound for singular value number sval_numbers_for_bounds(i).
+
+Description of basic stats returned by spqr_ssp:
+
+stats.flag -- (for spqr_ssp) 
+   stats.flag is 0 if spqr_ssp converged with estimated relative
+   error in singular value opts.k of A (or of A*N) <=
+   opts_ssp.convergence_factor. stats.flag is 1 if this is not true.
+
+stats.est_svals -- computed by spqr_ssp.
+   stats.est_svals(i) is an estimate of the ith largest singular of
+   A or of A*N.  Also for i = 1:nsval, stats.est_svals(i) is a lower
+   bound on the ith largest singular value of A (or A*N).
+
+stats.est_error_bounds -- computed by spqr_ssi and spqr_ssp.
+   stats.est_error_bounds(i) is an estimated bound on the absolute
+   error in singular value number stats.sval_numbers_for_bounds(i).
+   of R (for spqr_ssi) or of A or A*N (for spqr_ssp). It is also a
+   rigorous bound on abs (s(i) - some true singular value of (B+E)),
+   where E is O(norm(B)*eps) and B = R (for spqr_ssi) and B =
+   A or A*N (for spqr_ssp).
+
+stats.sval_numbers_for_bounds -- component i in the error bounds is an estimated
+   error bound for singular value number sval_numbers_for_bounds(i).
+
+Description of basic stats returned by spqr_basic, spqr_null,  spqr_pinv 
+or spqr_cod:
+
+stats.flag (for all routines except spqr_ssp) -- 
+   if stats.flag is 0 if it is likely, although not
+   guaranteed, that stats.rank is the correct numerical rank for
+   tolerance stats.tol (i.e. agrees with the numerical rank
+   determined by the singular values of R).
+   
+   stats.flag is 1 if the calculated numerical rank stats.rank may
+   be correct for the tolerance stats.tol but the estimated error
+   bounds are too large to confirm this.  However stats.rank appears
+   to be correct for an alternate tolerance stats.tol_alt.  More
+   generally stats.rank appears to be correct for any tolerance
+   between stats.est_sval_lower_bounds(nsvals_large) and
+   stats.est_sval_upper_bounds(nsvals_large+1).
+   
+   stats.flag is 2 if the calculated numerical rank stats.numerical
+   may be correct but estimated error bounds are too large to confirm
+   this.  The conditions for stats.flag to be 0 or 1 are not
+   satisfied.
+   
+   stats.flag is 3 if is likely that the numerical rank returned,
+   stats.rank, is too large.
+   
+   stats.flag is 4 if overflow occurred during the inverse power
+   method.  The method fails in this case, and all parameters other
+   stats are returned as empty ([ ]).
+   
+   stats.flag is 5 if a catastrophic failure occurred.
+
+stats.rank -- the estimated numerical rank when stats.flag is
+   0, 1 or 2.  stats.rank is typically an upper bound on the
+   numerical rank when stats.flag is 3.  Note that stats.rank is a
+   correction to the rank returned by spqr (stats.rank_spqr) in the
+   case that the calculations in the routine inidicate that the rank
+   returned by spqr not correct.
+
+stats.tol -- the tolerance used to define the numerical rank.
+
+stat.tol_alt -- an alternate tolerance that corresponds to the
+   calculated numerical rank when stats.flag is 1.
+
+stats.est_sval_upper_bounds -- stats.est_sval_upper_bounds(i) is an
+   estimate of an upper bound on singular value number
+   stats.sval_numbers_for_bounds(i) of A.
+
+stats.est_sval_lower_bounds -- stats.est_sval_lower_bounds(i) is an
+   estimate of an lower bound on singular value number
+   stats.sval_numbers_for_bounds(i) of A.
+
+   Note that stats.est_sval_upper_bounds(i) is a rigorous upper bound
+   on some singular value of (A+E) where where E is O(norm(A)*eps)
+   Also stats.est_sval_lower_bounds(i) is a rigorous lower bound on
+   some singular value of (A+E).  In both cases the singular value is
+   normally singular value number sval_numbers_for_bounds(i) of A,
+   but the singular value number is not guaranteed.  For i such that
+   sval_numbers_for_bounds(i) = stats.rank (that is for estimates
+   of singular value stats.rank) if stats.est_sval_upper_bounds(i)
+   is a large multiple of stats.est_sval_lower_bounds(i) then
+   solution vectors x produced by spqr_basic may be inferior (i.e.
+   be significanty larger) than solutions produced by spqr_pinv or
+   spqr_cod.
+
+stats.sval_numbers_for_bounds -- component i in the error bounds is an estimated
+   error bound for singular value number sval_numbers_for_bounds(i).
+
+stats.est_norm_A_transpose_times_NT -- an estimate of norm(A'*NT).
+
+stats.est_norm_A_times_N -- an estimate of norm(A*N).
+
+Description of basic stats returned by all spqr_functions:
+
+stats.flag (for all routines except spqr_ssp) -- 
+   if stats.flag is 0 if it is likely, although not
+   guaranteed, that stats.rank is the correct numerical rank for
+   tolerance stats.tol (i.e. agrees with the numerical rank
+   determined by the singular values of R).
+   
+   stats.flag is 1 if the calculated numerical rank stats.rank may
+   be correct for the tolerance stats.tol but the estimated error
+   bounds are too large to confirm this.  However stats.rank appears
+   to be correct for an alternate tolerance stats.tol_alt.  More
+   generally stats.rank appears to be correct for any tolerance
+   between stats.est_sval_lower_bounds(nsvals_large) and
+   stats.est_sval_upper_bounds(nsvals_large+1).
+   
+   stats.flag is 2 if the calculated numerical rank stats.numerical
+   may be correct but estimated error bounds are too large to confirm
+   this.  The conditions for stats.flag to be 0 or 1 are not
+   satisfied.
+   
+   stats.flag is 3 if is likely that the numerical rank returned,
+   stats.rank, is too large.
+   
+   stats.flag is 4 if overflow occurred during the inverse power
+   method.  The method fails in this case, and all parameters other
+   stats are returned as empty ([ ]).
+   
+   stats.flag is 5 if a catastrophic failure occurred.
+
+stats.flag -- (for spqr_ssp) 
+   stats.flag is 0 if spqr_ssp converged with estimated relative
+   error in singular value opts.k of A (or of A*N) <=
+   opts_ssp.convergence_factor. stats.flag is 1 if this is not true.
+
+stats.rank -- the estimated numerical rank when stats.flag is
+   0, 1 or 2.  stats.rank is typically an upper bound on the
+   numerical rank when stats.flag is 3.  Note that stats.rank is a
+   correction to the rank returned by spqr (stats.rank_spqr) in the
+   case that the calculations in the routine inidicate that the rank
+   returned by spqr not correct.
+
+stats.tol -- the tolerance used to define the numerical rank.
+
+stat.tol_alt -- an alternate tolerance that corresponds to the
+   calculated numerical rank when stats.flag is 1.
+
+stats.est_sval_upper_bounds -- stats.est_sval_upper_bounds(i) is an
+   estimate of an upper bound on singular value number
+   stats.sval_numbers_for_bounds(i) of A.
+
+stats.est_sval_lower_bounds -- stats.est_sval_lower_bounds(i) is an
+   estimate of an lower bound on singular value number
+   stats.sval_numbers_for_bounds(i) of A.
+
+   Note that stats.est_sval_upper_bounds(i) is a rigorous upper bound
+   on some singular value of (A+E) where where E is O(norm(A)*eps)
+   Also stats.est_sval_lower_bounds(i) is a rigorous lower bound on
+   some singular value of (A+E).  In both cases the singular value is
+   normally singular value number sval_numbers_for_bounds(i) of A,
+   but the singular value number is not guaranteed.  For i such that
+   sval_numbers_for_bounds(i) = stats.rank (that is for estimates
+   of singular value stats.rank) if stats.est_sval_upper_bounds(i)
+   is a large multiple of stats.est_sval_lower_bounds(i) then
+   solution vectors x produced by spqr_basic may be inferior (i.e.
+   be significanty larger) than solutions produced by spqr_pinv or
+   spqr_cod.
+
+stats.est_svals_of_R -- computed by spqr_ssi.
+   stats.est_svals_of_R contains estimates of the smallest singular
+   of R.
+
+stats.est_svals -- computed by spqr_ssp.
+   stats.est_svals(i) is an estimate of the ith largest singular of
+   A or of A*N.  Also for i = 1:nsval, stats.est_svals(i) is a lower
+   bound on the ith largest singular value of A (or A*N).
+
+stats.est_error_bounds -- computed by spqr_ssi and spqr_ssp.
+   stats.est_error_bounds(i) is an estimated bound on the absolute
+   error in singular value number stats.sval_numbers_for_bounds(i).
+   of R (for spqr_ssi) or of A or A*N (for spqr_ssp). It is also a
+   rigorous bound on abs (s(i) - some true singular value of (B+E)),
+   where E is O(norm(B)*eps) and B = R (for spqr_ssi) and B =
+   A or A*N (for spqr_ssp).
+
+stats.sval_numbers_for_bounds -- component i in the error bounds is an estimated
+   error bound for singular value number sval_numbers_for_bounds(i).
+
+stats.est_norm_A_transpose_times_NT -- an estimate of norm(A'*NT).
+
+stats.est_norm_A_times_N -- an estimate of norm(A*N).
+
+***** Additional statistics when opts.get_details is 2: *****
+
+stats.rank_spqr -- the rough estimate of the numerical rank
+   computed by spqr.  This is typically correct if the numerical
+   rank is well-defined.
+
+stats.stats_ssi -- statistics returned by spqr_ssi.
+
+stats_ssi.ssi_max_block_used -- the maximum block size used by spqr_ssi.
+
+stats_ssi.ssi_min_block_used -- the initial block size used by spqr_ssi.
+
+***** Additions statistics when opts.get_details is 1: *****
+
+stats.normest_A  -- an estimate of the Euclidean norm of A. Calculated using
+   normest(A,0.01).
+
+stats.normest_R  -- an estimate of the Euclidean norm of R. Calculated for spqr_ssi
+   using normest(R,0.01).
+
+stats.est_err_bound_norm_A_times_N  -- an estimate of an
+   error bound on stats.est_norm_A_times_N.  It is also a
+   rigorous bound on abs (stats.est_norm_A_times_N - s)
+   where s is some singular value of (A+E)*N and where E is
+   O(norm(A)*eps). Usually the singular value is the first singular
+   value but this is not guaranteed.
+
+stats.est_err_bound_norm_A_transpose_times_NT  -- an estimate of an
+   error bound on stats.est_norm_A_transpose_times_NT.  It is also a
+   rigorous bound on abs (stats.est_norm_A_transpose_times_NT - s)
+   where s is some singular value of (A+E)'*NT and where E is
+   O(norm(A)*eps). Usually the singular value is the first singular
+   value but this is not guaranteed.
+
+stats_ssi.norm_R_times_N -- Euclidean norm of (R*N), from spqr_ssi.
+
+stats_ssi.norm_R_transpose_times_NT -- Eucliean norm of (R'*NT), from spqr_ssi.
+
+stats_ssi.iters or stats_ssp_N.iters or stats_ssp_NT.iters -- number of
+    iterations for subspace iteration in spqr_ssi or spqr_ssp.
+
+stats_ssi.nsvals_large_found -- the number of 'large' (larger than tol) singular
+   values found, from spqr_ssi.
+
+stats_ssi.final_blocksize -- final block size for subspace iteration in 
+   spqr_ssi. 
+
+stats.stats_spqr_basic -- statistics returned when spqr_basic is called by spqr_pinv.
+
+stats.stats_spqr_null -- statistics returned when spqr_null is called by spqr_pinv.
+
+stats.info_spqr1 -- statistics from spqr for the first QR factorization.
+   See 'help spqr' for details.
+
+stats.info_spqr2 -- statistics from spqr for the second QR factorization, if
+   required.  See 'help spqr' for details.
+
+stats.stats_ssp_N -- statistics from spqr_ssp when calculating the basis
+   N for the null space of A.
+
+stats.stats_ssp_NT -- statistics from spqr_ssp when calculating the basis
+   NT for the null space of A transpose.
+
+stats.opts_used, stats_ssi.opts_used, or stats_ssp.opts_used -- values of
+   options used.  These can be different from values in opts since, for example,
+   the size of A can restrict some values in opts.
+
+stats.time, stats_ssi.time, etc.  -- the total time of the routine including
+   the times described below.
+
+stats.time_initialize, stats_ssi.time_initialize, etc. -- the time to
+   set default values of opts, including calculating normest(A,0.01),
+   or normest(R,0.01) if needed.
+
+stats.time_basis -- the time to compute the basis for the numerical null space
+   following any calls to spqr and spqr_ssi. This will be small
+   if the null space basis is returned in implicit form but can, in some cases,
+   be significant if the null space basis is returned as an explicit matrix.
+
+stats_ssi.time_iters, stats_ssp_N.time_iters, etc.  -- the time for the
+   subspace iterations in spqr_ssi or spqr_ssp. Excludes time for initialization,
+   error flag calculation, etc..
+
+stats_ssi.time_est_error_bounds, stats_ssp_N.time_est_error_bounds, etc.  -- the time
+   for estimating the singular value error bounds in spqr_ssi or spqr_ssp.
+
+stats.time_svd, stats_ssi.time_svd, etc.  -- the total time for calls to MATLAB's SVD
+   in the current routine and its subroutines.
+
+Description of basic stats returned by all spqr_functions:
+
+stats.flag (for all routines except spqr_ssp) -- 
+   if stats.flag is 0 if it is likely, although not
+   guaranteed, that stats.rank is the correct numerical rank for
+   tolerance stats.tol (i.e. agrees with the numerical rank
+   determined by the singular values of R).
+   
+   stats.flag is 1 if the calculated numerical rank stats.rank may
+   be correct for the tolerance stats.tol but the estimated error
+   bounds are too large to confirm this.  However stats.rank appears
+   to be correct for an alternate tolerance stats.tol_alt.  More
+   generally stats.rank appears to be correct for any tolerance
+   between stats.est_sval_lower_bounds(nsvals_large) and
+   stats.est_sval_upper_bounds(nsvals_large+1).
+   
+   stats.flag is 2 if the calculated numerical rank stats.numerical
+   may be correct but estimated error bounds are too large to confirm
+   this.  The conditions for stats.flag to be 0 or 1 are not
+   satisfied.
+   
+   stats.flag is 3 if is likely that the numerical rank returned,
+   stats.rank, is too large.
+   
+   stats.flag is 4 if overflow occurred during the inverse power
+   method.  The method fails in this case, and all parameters other
+   stats are returned as empty ([ ]).
+   
+   stats.flag is 5 if a catastrophic failure occurred.
+
+stats.flag -- (for spqr_ssp) 
+   stats.flag is 0 if spqr_ssp converged with estimated relative
+   error in singular value opts.k of A (or of A*N) <=
+   opts_ssp.convergence_factor. stats.flag is 1 if this is not true.
+
+stats.rank -- the estimated numerical rank when stats.flag is
+   0, 1 or 2.  stats.rank is typically an upper bound on the
+   numerical rank when stats.flag is 3.  Note that stats.rank is a
+   correction to the rank returned by spqr (stats.rank_spqr) in the
+   case that the calculations in the routine inidicate that the rank
+   returned by spqr not correct.
+
+stats.tol -- the tolerance used to define the numerical rank.
+
+stat.tol_alt -- an alternate tolerance that corresponds to the
+   calculated numerical rank when stats.flag is 1.
+
+stats.est_sval_upper_bounds -- stats.est_sval_upper_bounds(i) is an
+   estimate of an upper bound on singular value number
+   stats.sval_numbers_for_bounds(i) of A.
+
+stats.est_sval_lower_bounds -- stats.est_sval_lower_bounds(i) is an
+   estimate of an lower bound on singular value number
+   stats.sval_numbers_for_bounds(i) of A.
+
+   Note that stats.est_sval_upper_bounds(i) is a rigorous upper bound
+   on some singular value of (A+E) where where E is O(norm(A)*eps)
+   Also stats.est_sval_lower_bounds(i) is a rigorous lower bound on
+   some singular value of (A+E).  In both cases the singular value is
+   normally singular value number sval_numbers_for_bounds(i) of A,
+   but the singular value number is not guaranteed.  For i such that
+   sval_numbers_for_bounds(i) = stats.rank (that is for estimates
+   of singular value stats.rank) if stats.est_sval_upper_bounds(i)
+   is a large multiple of stats.est_sval_lower_bounds(i) then
+   solution vectors x produced by spqr_basic may be inferior (i.e.
+   be significanty larger) than solutions produced by spqr_pinv or
+   spqr_cod.
+
+stats.est_svals_of_R -- computed by spqr_ssi.
+   stats.est_svals_of_R contains estimates of the smallest singular
+   of R.
+
+stats.est_svals -- computed by spqr_ssp.
+   stats.est_svals(i) is an estimate of the ith largest singular of
+   A or of A*N.  Also for i = 1:nsval, stats.est_svals(i) is a lower
+   bound on the ith largest singular value of A (or A*N).
+
+stats.est_error_bounds -- computed by spqr_ssi and spqr_ssp.
+   stats.est_error_bounds(i) is an estimated bound on the absolute
+   error in singular value number stats.sval_numbers_for_bounds(i).
+   of R (for spqr_ssi) or of A or A*N (for spqr_ssp). It is also a
+   rigorous bound on abs (s(i) - some true singular value of (B+E)),
+   where E is O(norm(B)*eps) and B = R (for spqr_ssi) and B =
+   A or A*N (for spqr_ssp).
+
+stats.sval_numbers_for_bounds -- component i in the error bounds is an estimated
+   error bound for singular value number sval_numbers_for_bounds(i).
+
+stats.est_norm_A_transpose_times_NT -- an estimate of norm(A'*NT).
+
+stats.est_norm_A_times_N -- an estimate of norm(A*N).
+
+***** Additional statistics when opts.get_details is 2: *****
+
+stats.rank_spqr -- the rough estimate of the numerical rank
+   computed by spqr.  This is typically correct if the numerical
+   rank is well-defined.
+
+stats.stats_ssi -- statistics returned by spqr_ssi.
+
+stats_ssi.ssi_max_block_used -- the maximum block size used by spqr_ssi.
+
+stats_ssi.ssi_min_block_used -- the initial block size used by spqr_ssi.
+
+---------------------------------------------------------------
+test that illustrates the rare case of a miscalculated rank:
+downloading http://www.math.sjsu.edu/singular/matrices/mat/Sandia/oscil_dcop_33.mat
+to /Users/davis/sparse/MyPapers/Foster/spqr_rank/SJget/mat/Sandia/oscil_dcop_33.mat
+
+Problem = 
+
+         name: 'Sandia/oscil_dcop_33'
+        title: 'Sandia/oscil_dcop_33 circuit simulation matrix. Sandia National Lab.'
+            A: [430x430 double]
+            b: [430x1 double]
+         SJid: 182
+         UFid: 1144
+         kind: 'subsequent circuit simulation problem'
+        notes: 'next: Sandia/oscil_dcop_34 first: Sandia/oscil_dcop_01'
+         date: '2003'
+       author: 'R. Hoekstra'
+           ed: 'T. Davis'
+        svals: [430x1 double]
+    sval_info: 'Routine svd from Matlab 7.6.0.324 (R2008a) used to calculate the singular values.'
+
+
+  flag : 0 : ok.  stats.rank very likely to be correct.
+  rank : 423 : estimate of numerical rank.
+  rank_spqr : 425 : estimate of numerical rank from spqr.
+      This is normally an upper bound on the true rank.
+  tol : 1.00117e-07 : numerical tolerance used.
+  est_sval_upper_bounds :  2.13431e-07 7.15797e-08
+      : estimated upper bounds on singular value(s).
+  est_sval_lower_bounds :  1.26859e-07 3.33239e-08
+      : estimated lower bounds on singular value(s).
+  sval_numbers_for_bounds :  423 424
+      : index of singular value(s), for bounds.
+  est_norm_A_times_N : 7.155e-08 : estimated norm(A*N).
+  est_err_bound_norm_A_times_N : 2.96843e-11 : estimated error bound for norm(A*N).
+  time : 0.0411242 : total time taken (includes all timings below).
+  time_initialize : 0.000724137 : time to initialize.
+  time_svd : 0.00166625 : total time taken by svd.
+  time_basis : 0.000198297 : time to compute basis.
+
+opts_used : options for the spqr_rank functions:
+
+  get_details : 1 : extensive statistics returned
+  tol : 1.00117e-07
+  nsvals_large : 1 : # of large singular values to estimate.
+  nsvals_small : 1 : # of small singular values to estimate.
+  implicit_null_space_basis : true : N represented in Householder form.
+  start_with_A_transpose : false : spqr_cod computes qr(A).
+  ssi_tol : 1.00117e-07
+  ssi_min_block : 3 : ssi initial block size.
+  ssi_max_block : 10 : spqr_ssi max block size.
+  ssi_min_iters : 3 : min # of iterations before checking convergence
+  ssi_max_iters : 100 : max # of iterations before stopping spqr_ssi iterations
+  ssi_nblock_increment : 5 : block size inc. if convergence not met.
+  ssi_convergence_factor : 0.1 : spqr_ssi termination criterion.
+  k :   ssp_min_iters : 4 : min # of iterations before checking convergence
+  ssp_max_iters : 10 : max # of ssp iterations before stopping iterations
+  ssp_convergence_factor : 0.1 ssp terminates when relative error drops below this value.
+  repeatable : true : internal random stream used to guarantee repeatability
+
+info_spqr1 : statistics from first QR factorization.
+
+               nnzR_upper_bound: 6338
+               nnzH_upper_bound: 3664
+     number_of_frontal_matrices: 50
+            number_of_TBB_tasks: 1
+                rank_A_estimate: 425
+    number_of_column_singletons: 8
+       number_of_singleton_rows: 8
+                       ordering: 'colamd'
+          memory_usage_in_bytes: 274334
+              flops_upper_bound: 197791
+                            tol: 1.0012e-07
+          number_of_TBB_threads: 'default'
+                     norm_E_fro: 8.3997e-08
+         spqr_compiled_with_TBB: 'no'
+       spqr_compiled_with_METIS: 'yes'
+                           time: 0.0016
+
+
+stats_ssi : statistics from spqr_ssi.
+
+  flag : 0 : ok.  stats.rank very likely to be correct.
+  rank : 423 : estimate of numerical rank.
+  tol : 1.00117e-07 : numerical tolerance used.
+  est_svals_of_R :  1.29434e-07 3.33299e-08 1.96839e-08
+      : estimated singular value(s) of triangular matrix R.
+  est_error_bounds :  2.57485e-09 5.97769e-12 1.72923e-13
+      : error bounds for each singular value.
+  sval_numbers_for_bounds :  423 424 425
+      : index of singular value(s), for bounds.
+  norm_R_times_N : 3.33299e-08 : norm of (R*N), from spqr_ssi.
+  norm_R_transpose_times_NT : 3.33299e-08 : norm of (R'*NT), from spqr_ssi.
+  iters : 5 : iterations in spqr_ssi or spqr_ssp.
+  nsvals_large_found : 1 : number of large singular values found.
+  final_blocksize : 3 : final block size in spqr_ssi.
+  ssi_max_block_used : 10 : max block size for spqr_ssi.
+  ssi_min_block_used : 3 : initial block size for spqr_ssi.
+  time : 0.017417 : total time taken (includes all timings below).
+  time_initialize : 0.000412213 : time to initialize.
+  time_svd : 0.00111743 : total time taken by svd.
+  time_iters : 0.00362718 : time for spqr_ssi iterations.
+  time_est_error_bounds : 0.000383958 : time taken to estimate error bounds in spqr_ssi.
+
+stats_ssp_N : statistics from spqr_ssp (A,N).
+
+  flag : 0 : ok. spqr_ssp converged with est. relative error <= opts_ssp.convergence_factor.
+  est_svals :  7.155e-08
+      : estimated singular value(s) of A*N or A'*NT, from spqr_ssp.
+  est_error_bounds :  2.96843e-11
+      : error bounds for each singular value.
+  sval_numbers_for_bounds :  1
+      : index of singular value(s), for bounds.
+  iters : 4 : iterations in spqr_ssi or spqr_ssp.
+  time : 0.0117262 : total time taken (includes all timings below).
+  time_initialize : 0.000420176 : time to initialize.
+  time_svd : 0.000410698 : total time taken by svd.
+  time_iters : 0.00978757 : time for spqr_ssi iterations.
+  time_est_error_bounds : 2.8997e-05 : time taken to estimate error bounds in spqr_ssi.
+  stats_ssp_N.opts_used.k : 1 : number of singular values to compute in spqr_ssp(A,N).
+
+expected rank mismatch 423 422
+
+---------------------------------------------------------------
+another rare case:
+downloading http://www.math.sjsu.edu/singular/matrices/mat/Regtools/gravity_1000.mat
+to /Users/davis/sparse/MyPapers/Foster/spqr_rank/SJget/mat/Regtools/gravity_1000.mat
+
+Problem = 
+
+        title: 'GRAVITY 1000x1000 Test problem: 1-D gravity surveying model problem'
+            A: [1000x1000 double]
+            b: [1000x1 double]
+            x: [1000x1 double]
+         SJid: 240
+         UFid: -1
+         name: 'Regtools/gravity_1000'
+         date: '2002'
+       author: 'Hansen'
+           ed: 'Per Christian Hansen'
+         kind: 'ill-posed problem'
+        notes: [29x73 char]
+        svals: [1000x1 double]
+    sval_info: 'Routine svd from Matlab 7.6.0.324 (R2008a) used to calculate the singular values.'
+
+
+  flag : 2 : stats.rank may be correct for tolerance stats.tol,
+      but error bounds are too high to confirm this.
+  rank : 96 : estimate of numerical rank.
+  rank_spqr : 105 : estimate of numerical rank from spqr.
+      This is normally an upper bound on the true rank.
+  tol : 8.88178e-13 : numerical tolerance used.
+  normest_A : 6.45915 : estimate of Euclidean norm of A.
+  est_sval_upper_bounds :  1.12062e-11 1.04414e-12
+      : estimated upper bounds on singular value(s).
+  est_sval_lower_bounds :  0 0
+      : estimated lower bounds on singular value(s).
+  sval_numbers_for_bounds :  96 97
+      : index of singular value(s), for bounds.
+  est_norm_A_times_N : 9.53893e-13 : estimated norm(A*N).
+  est_err_bound_norm_A_times_N : 9.02516e-14 : estimated error bound for norm(A*N).
+  time : 0.916144 : total time taken (includes all timings below).
+  time_initialize : 0.0294718 : time to initialize including estimating the norm of A or R.
+  time_svd : 0.0392797 : total time taken by svd.
+  time_basis : 0.00807209 : time to compute basis.
+
+opts_used : options for the spqr_rank functions:
+
+  get_details : 1 : extensive statistics returned
+  tol : 8.88178e-13
+  nsvals_large : 1 : # of large singular values to estimate.
+  nsvals_small : 1 : # of small singular values to estimate.
+  implicit_null_space_basis : true : N represented in Householder form.
+  start_with_A_transpose : false : spqr_cod computes qr(A).
+  ssi_tol : 8.88178e-13
+  ssi_min_block : 3 : ssi initial block size.
+  ssi_max_block : 10 : spqr_ssi max block size.
+  ssi_min_iters : 3 : min # of iterations before checking convergence
+  ssi_max_iters : 100 : max # of iterations before stopping spqr_ssi iterations
+  ssi_nblock_increment : 5 : block size inc. if convergence not met.
+  ssi_convergence_factor : 0.1 : spqr_ssi termination criterion.
+  k :   ssp_min_iters : 4 : min # of iterations before checking convergence
+  ssp_max_iters : 10 : max # of ssp iterations before stopping iterations
+  ssp_convergence_factor : 0.1 ssp terminates when relative error drops below this value.
+  repeatable : true : internal random stream used to guarantee repeatability
+
+info_spqr1 : statistics from first QR factorization.
+
+               nnzR_upper_bound: 501500
+               nnzH_upper_bound: 499500
+     number_of_frontal_matrices: 1
+            number_of_TBB_tasks: 1
+                rank_A_estimate: 105
+    number_of_column_singletons: 0
+       number_of_singleton_rows: 0
+                       ordering: 'colamd'
+          memory_usage_in_bytes: 32184856
+              flops_upper_bound: 1.3368e+09
+                            tol: 8.8818e-13
+          number_of_TBB_threads: 'default'
+                     norm_E_fro: 1.0304e-11
+         spqr_compiled_with_TBB: 'no'
+       spqr_compiled_with_METIS: 'yes'
+                           time: 0.6314
+
+
+info_spqr2 : statistics from second QR factorization.
+
+               nnzR_upper_bound: 5565
+               nnzH_upper_bound: 93047
+     number_of_frontal_matrices: 1
+            number_of_TBB_tasks: 1
+                rank_A_estimate: 105
+    number_of_column_singletons: 0
+       number_of_singleton_rows: 0
+                       ordering: 'colamd'
+          memory_usage_in_bytes: 2900145
+              flops_upper_bound: 18787808
+                            tol: 0
+          number_of_TBB_threads: 'default'
+                     norm_E_fro: 0
+         spqr_compiled_with_TBB: 'no'
+       spqr_compiled_with_METIS: 'yes'
+                           time: 0.0279
+
+
+stats_ssi : statistics from spqr_ssi.
+
+  flag : 2 : stats.rank may be correct for tolerance stats.tol,
+      but error bounds are too high to confirm this.
+  rank : 96 : estimate of numerical rank.
+  tol : 8.88178e-13 : numerical tolerance used.
+  est_svals_of_R :  8.90935e-13 8.86406e-13 8.83128e-13 8.76611e-13 8.52567e-13 8.33851e-13 7.9034e-13 7.87582e-13 7.7819e-13 7.65881e-13
+      : estimated singular value(s) of triangular matrix R.
+  est_error_bounds :  1.11465e-14 1.18174e-14 4.12246e-15 7.32091e-15 4.85468e-17 5.12503e-17 2.04029e-17 1.17029e-16 2.89358e-16 1.31374e-16
+      : error bounds for each singular value.
+  sval_numbers_for_bounds :  96 97 98 99 100 101 102 103 104 105
+      : index of singular value(s), for bounds.
+  norm_R_times_N : 8.86564e-13 : norm of (R*N), from spqr_ssi.
+  norm_R_transpose_times_NT : 8.86406e-13 : norm of (R'*NT), from spqr_ssi.
+  iters : 100 : iterations in spqr_ssi or spqr_ssp.
+  nsvals_large_found : 1 : number of large singular values found.
+  final_blocksize : 10 : final block size in spqr_ssi.
+  ssi_max_block_used : 10 : max block size for spqr_ssi.
+  ssi_min_block_used : 3 : initial block size for spqr_ssi.
+  time : 0.102325 : total time taken (includes all timings below).
+  time_initialize : 0.000494758 : time to initialize.
+  time_svd : 0.0345215 : total time taken by svd.
+  time_iters : 0.0981155 : time for spqr_ssi iterations.
+  time_est_error_bounds : 0.00048222 : time taken to estimate error bounds in spqr_ssi.
+
+stats_ssp_N : statistics from spqr_ssp (A,N).
+
+  flag : 0 : ok. spqr_ssp converged with est. relative error <= opts_ssp.convergence_factor.
+  est_svals :  9.53893e-13
+      : estimated singular value(s) of A*N or A'*NT, from spqr_ssp.
+  est_error_bounds :  9.02516e-14
+      : error bounds for each singular value.
+  sval_numbers_for_bounds :  1
+      : index of singular value(s), for bounds.
+  iters : 6 : iterations in spqr_ssi or spqr_ssp.
+  time : 0.0786006 : total time taken (includes all timings below).
+  time_initialize : 0.000449645 : time to initialize.
+  time_svd : 0.00475822 : total time taken by svd.
+  time_iters : 0.0765276 : time for spqr_ssi iterations.
+  time_est_error_bounds : 3.1375e-05 : time taken to estimate error bounds in spqr_ssi.
+  stats_ssp_N.opts_used.k : 1 : number of singular values to compute in spqr_ssp(A,N).
+
+---------------------------------------------------------------
+another rare case:
+downloading http://www.math.sjsu.edu/singular/matrices/mat/Regtools/heat_200.mat
+to /Users/davis/sparse/MyPapers/Foster/spqr_rank/SJget/mat/Regtools/heat_200.mat
+
+Problem = 
+
+        title: 'HEAT 200x200 Test problem: inverse heat equation.'
+            A: [200x200 double]
+            b: [200x1 double]
+            x: [200x1 double]
+         SJid: 242
+         UFid: -1
+         name: 'Regtools/heat_200'
+         date: '1982'
+       author: 'Carasso, Elden'
+           ed: 'Per Christian Hansen'
+         kind: 'ill-posed problem'
+        notes: [17x73 char]
+        svals: [200x1 double]
+    sval_info: 'Routine svd from Matlab 7.6.0.324 (R2008a) used to calculate the singular values.'
+
+
+  flag : 4 : failure.  Overflow during inverse power method.
+  rank : -1 : estimate of numerical rank.
+  rank_spqr : 198 : estimate of numerical rank from spqr.
+      This is normally an upper bound on the true rank.
+  tol : 1.11022e-14 : numerical tolerance used.
+  tol_alt : -1 : alternate numerical tolerance used.
+  normest_A : 0.355517 : estimate of Euclidean norm of A.
+  est_sval_upper_bounds :  -1
+      : estimated upper bounds on singular value(s).
+  est_sval_lower_bounds :  -1
+      : estimated lower bounds on singular value(s).
+  sval_numbers_for_bounds :  -1
+      : index of singular value(s), for bounds.
+  est_norm_A_times_N : -1 : estimated norm(A*N).
+  time : 0.0405573 : total time taken (includes all timings below).
+  time_initialize : 0.0107148 : time to initialize including estimating the norm of A or R.
+  time_svd : 0 : total time taken by svd.
+  time_basis : 0 : time to compute basis.
+
+opts_used : options for the spqr_rank functions:
+
+  get_details : 1 : extensive statistics returned
+  tol : 1.11022e-14
+  nsvals_large : 1 : # of large singular values to estimate.
+  nsvals_small : 1 : # of small singular values to estimate.
+  implicit_null_space_basis : true : N represented in Householder form.
+  start_with_A_transpose : false : spqr_cod computes qr(A).
+  ssi_tol : 1.11022e-14
+  ssi_min_block : 3 : ssi initial block size.
+  ssi_max_block : 10 : spqr_ssi max block size.
+  ssi_min_iters : 3 : min # of iterations before checking convergence
+  ssi_max_iters : 100 : max # of iterations before stopping spqr_ssi iterations
+  ssi_nblock_increment : 5 : block size inc. if convergence not met.
+  ssi_convergence_factor : 0.1 : spqr_ssi termination criterion.
+  k :   ssp_min_iters : 4 : min # of iterations before checking convergence
+  ssp_max_iters : 10 : max # of ssp iterations before stopping iterations
+  ssp_convergence_factor : 0.1 ssp terminates when relative error drops below this value.
+  repeatable : true : internal random stream used to guarantee repeatability
+
+info_spqr1 : statistics from first QR factorization.
+
+               nnzR_upper_bound: 20100
+               nnzH_upper_bound: 0
+     number_of_frontal_matrices: 1
+            number_of_TBB_tasks: 1
+                rank_A_estimate: 198
+    number_of_column_singletons: 0
+       number_of_singleton_rows: 0
+                       ordering: 'colamd'
+          memory_usage_in_bytes: 727512
+              flops_upper_bound: 80200
+                            tol: 1.1102e-14
+          number_of_TBB_threads: 'default'
+                     norm_E_fro: 7.2492e-15
+         spqr_compiled_with_TBB: 'no'
+       spqr_compiled_with_METIS: 'yes'
+                           time: 0.0097
+
+
+stats_ssi : statistics from spqr_ssi.
+
+  flag : 4 : failure.  Overflow during inverse power method.
+  rank :  : estimate of numerical rank.
+  tol : 1.11022e-14 : numerical tolerance used.
+  tol_alt : -1 : alternate numerical tolerance used.
+  est_svals_of_R :  0
+      : estimated singular value(s) of triangular matrix R.
+  est_error_bounds :  -1
+      : error bounds for each singular value.
+  sval_numbers_for_bounds :  -1
+      : index of singular value(s), for bounds.
+  norm_R_times_N : -1 : norm of (R*N), from spqr_ssi.
+  norm_R_transpose_times_NT : -1 : norm of (R'*NT), from spqr_ssi.
+  iters : 1 : iterations in spqr_ssi or spqr_ssp.
+  nsvals_large_found : 0 : number of large singular values found.
+  final_blocksize : 3 : final block size in spqr_ssi.
+  ssi_max_block_used : 10 : max block size for spqr_ssi.
+  ssi_min_block_used : 3 : initial block size for spqr_ssi.
+  time : 0.00625787 : total time taken (includes all timings below).
+  time_initialize : 0.000474455 : time to initialize.
+  time_svd : 0 : total time taken by svd.
+  time_iters : 0.00088613 : time for spqr_ssi iterations.
+  time_est_error_bounds : 0 : time taken to estimate error bounds in spqr_ssi.
+
+  flag : 4 : failure.  Overflow during inverse power method.
+  rank :  : estimate of numerical rank.
+  tol : 1e-14 : numerical tolerance used.
+  tol_alt : -1 : alternate numerical tolerance used.
+  est_svals_of_R :  0
+      : estimated singular value(s) of triangular matrix R.
+  est_error_bounds :  -1
+      : error bounds for each singular value.
+  sval_numbers_for_bounds :  -1
+      : index of singular value(s), for bounds.
+  norm_R_times_N : -1 : norm of (R*N), from spqr_ssi.
+  norm_R_transpose_times_NT : -1 : norm of (R'*NT), from spqr_ssi.
+  iters : 1 : iterations in spqr_ssi or spqr_ssp.
+  nsvals_large_found : 0 : number of large singular values found.
+  final_blocksize : 3 : final block size in spqr_ssi.
+  ssi_max_block_used : 10 : max block size for spqr_ssi.
+  ssi_min_block_used : 3 : initial block size for spqr_ssi.
+  time : 0.0162294 : total time taken (includes all timings below).
+  time_initialize : 0.000768599 : time to initialize.
+  time_svd : 0 : total time taken by svd.
+  time_iters : 0.00321402 : time for spqr_ssi iterations.
+  time_est_error_bounds : 0 : time taken to estimate error bounds in spqr_ssi.
+
+opts_used : options for the spqr_rank functions:
+
+  get_details : 1 : extensive statistics returned
+  tol : 1e-14
+  nsvals_large : 1 : # of large singular values to estimate.
+  nsvals_small : 1 : # of small singular values to estimate.
+  implicit_null_space_basis : true : N represented in Householder form.
+  start_with_A_transpose : false : spqr_cod computes qr(A).
+  ssi_tol : 1e-14
+  ssi_min_block : 3 : ssi initial block size.
+  ssi_max_block : 10 : spqr_ssi max block size.
+  ssi_min_iters : 3 : min # of iterations before checking convergence
+  ssi_max_iters : 100 : max # of iterations before stopping spqr_ssi iterations
+  ssi_nblock_increment : 5 : block size inc. if convergence not met.
+  ssi_convergence_factor : 0.1 : spqr_ssi termination criterion.
+  k :   ssp_min_iters : 4 : min # of iterations before checking convergence
+  ssp_max_iters : 10 : max # of ssp iterations before stopping iterations
+  ssp_convergence_factor : 0.1 ssp terminates when relative error drops below this value.
+  repeatable : true : internal random stream used to guarantee repeatability
+
+---------------------------------------------------------------
+Near-overflow in spqr_ssi, 2nd test:
+downloading http://www.math.sjsu.edu/singular/matrices/mat/GHS_indef/laser.mat
+to /Users/davis/sparse/MyPapers/Foster/spqr_rank/SJget/mat/GHS_indef/laser.mat
+
+Problem = 
+
+         name: 'GHS_indef/laser'
+        title: 'Gould, Hu, & Scott:'
+            A: [3002x3002 double]
+         SJid: 137
+         UFid: 1239
+         date: '2004'
+       author: ''
+           ed: 'N. Gould, Y. Hu, J. Scott'
+         kind: 'materials problem'
+        svals: [3002x1 double]
+    sval_info: 'Routine svd from Matlab 7.6.0.324 (R2008a) used to calculate the singular values.'
+
+
+  flag : 3 : poor results.  stats.rank is likely too high.
+  rank : 2990 : estimate of numerical rank.
+  tol : 2.66454e-12 : numerical tolerance used.
+  normest_R : 4.24912 : estimate of Euclidean norm of R (calculated for spqr_ssi).
+  est_svals_of_R :  1.98996e-252 8.38236e-253 6.11455e-253 3.17976e-253 1.10908e-253 4.70703e-254 5.73529e-255 2.30014e-256 5.15646e-287 4.69716e-287
+      : estimated singular value(s) of triangular matrix R.
+  est_error_bounds :  0.644895 0.619061 0.782134 0.644269 0.776826 0.707497 0.921243 0.966076 6.96139e-16 3.66017e-17
+      : error bounds for each singular value.
+  sval_numbers_for_bounds :  2991 2992 2993 2994 2995 2996 2997 2998 2999 3000
+      : index of singular value(s), for bounds.
+  norm_R_times_N : 0.935774 : norm of (R*N), from spqr_ssi.
+  norm_R_transpose_times_NT : 1.2243 : norm of (R'*NT), from spqr_ssi.
+  iters : 3 : iterations in spqr_ssi or spqr_ssp.
+  nsvals_large_found : 0 : number of large singular values found.
+  final_blocksize : 10 : final block size in spqr_ssi.
+  ssi_max_block_used : 10 : max block size for spqr_ssi.
+  ssi_min_block_used : 3 : initial block size for spqr_ssi.
+  time : 0.116426 : total time taken (includes all timings below).
+  time_initialize : 0.00408767 : time to initialize including estimating the norm of A or R.
+  time_svd : 0.0533761 : total time taken by svd.
+  time_iters : 0.0743084 : time for spqr_ssi iterations.
+  time_est_error_bounds : 0.0113516 : time taken to estimate error bounds in spqr_ssi.
+
+opts_used : options for the spqr_rank functions:
+
+  get_details : 1 : extensive statistics returned
+  tol : 2.66454e-12
+  nsvals_large : 1 : # of large singular values to estimate.
+  nsvals_small : 1 : # of small singular values to estimate.
+  implicit_null_space_basis : true : N represented in Householder form.
+  start_with_A_transpose : false : spqr_cod computes qr(A).
+  ssi_tol : 2.66454e-12
+  ssi_min_block : 3 : ssi initial block size.
+  ssi_max_block : 10 : spqr_ssi max block size.
+  ssi_min_iters : 3 : min # of iterations before checking convergence
+  ssi_max_iters : 100 : max # of iterations before stopping spqr_ssi iterations
+  ssi_nblock_increment : 5 : block size inc. if convergence not met.
+  ssi_convergence_factor : 0.1 : spqr_ssi termination criterion.
+  k :   ssp_min_iters : 4 : min # of iterations before checking convergence
+  ssp_max_iters : 10 : max # of ssp iterations before stopping iterations
+  ssp_convergence_factor : 0.1 ssp terminates when relative error drops below this value.
+  repeatable : true : internal random stream used to guarantee repeatability
+
+  flag : 3 : poor results.  stats.rank is likely too high.
+  rank : 2990 : estimate of numerical rank.
+  tol : 2.66454e-12 : numerical tolerance used.
+  normest_R : 4.24912 : estimate of Euclidean norm of R (calculated for spqr_ssi).
+  est_svals_of_R :  1.98996e-252 8.38236e-253 6.11455e-253 3.17976e-253 1.10908e-253 4.70703e-254 5.73529e-255 2.30014e-256 5.15646e-287 4.69716e-287
+      : estimated singular value(s) of triangular matrix R.
+  est_error_bounds :  0.644895 0.619061 0.782134 0.644269 0.776826 0.707497 0.921243 0.966076 6.96139e-16 3.66017e-17
+      : error bounds for each singular value.
+  sval_numbers_for_bounds :  2991 2992 2993 2994 2995 2996 2997 2998 2999 3000
+      : index of singular value(s), for bounds.
+  norm_R_times_N : 0.935774 : norm of (R*N), from spqr_ssi.
+  norm_R_transpose_times_NT : 1.2243 : norm of (R'*NT), from spqr_ssi.
+  iters : 3 : iterations in spqr_ssi or spqr_ssp.
+  nsvals_large_found : 0 : number of large singular values found.
+  final_blocksize : 10 : final block size in spqr_ssi.
+  ssi_max_block_used : 10 : max block size for spqr_ssi.
+  ssi_min_block_used : 3 : initial block size for spqr_ssi.
+  time : 0.0834376 : total time taken (includes all timings below).
+  time_initialize : 0.0033231 : time to initialize including estimating the norm of A or R.
+  time_svd : 0.058933 : total time taken by svd.
+  time_iters : 0.0558443 : time for spqr_ssi iterations.
+  time_est_error_bounds : 0.0087643 : time taken to estimate error bounds in spqr_ssi.
+
+opts_used : options for the spqr_rank functions:
+
+  get_details : 1 : extensive statistics returned
+  tol : 2.66454e-12
+  nsvals_large : 1 : # of large singular values to estimate.
+  nsvals_small : 1 : # of small singular values to estimate.
+  implicit_null_space_basis : true : N represented in Householder form.
+  start_with_A_transpose : false : spqr_cod computes qr(A).
+  ssi_tol : 2.66454e-12
+  ssi_min_block : 3 : ssi initial block size.
+  ssi_max_block : 10 : spqr_ssi max block size.
+  ssi_min_iters : 3 : min # of iterations before checking convergence
+  ssi_max_iters : 100 : max # of iterations before stopping spqr_ssi iterations
+  ssi_nblock_increment : 5 : block size inc. if convergence not met.
+  ssi_convergence_factor : 0.1 : spqr_ssi termination criterion.
+  k :   ssp_min_iters : 4 : min # of iterations before checking convergence
+  ssp_max_iters : 10 : max # of ssp iterations before stopping iterations
+  ssp_convergence_factor : 0.1 ssp terminates when relative error drops below this value.
+  repeatable : true : internal random stream used to guarantee repeatability
+
+  flag : 3 : poor results.  stats.rank is likely too high.
+  rank : 2990 : estimate of numerical rank.
+  tol : 2.66454e-12 : numerical tolerance used.
+  normest_R : 4.24912 : estimate of Euclidean norm of R (calculated for spqr_ssi).
+  est_svals_of_R :  1.98996e-252 8.38236e-253 6.11455e-253 3.17976e-253 1.10908e-253 4.70703e-254 5.73529e-255 2.30014e-256 5.15646e-287 4.69716e-287
+      : estimated singular value(s) of triangular matrix R.
+  est_error_bounds :  0.644895 0.619061 0.782134 0.644269 0.776826 0.707497 0.921243 0.966076 6.96139e-16 3.66017e-17
+      : error bounds for each singular value.
+  sval_numbers_for_bounds :  2991 2992 2993 2994 2995 2996 2997 2998 2999 3000
+      : index of singular value(s), for bounds.
+  norm_R_times_N : 0.935774 : norm of (R*N), from spqr_ssi.
+  norm_R_transpose_times_NT : 1.2243 : norm of (R'*NT), from spqr_ssi.
+  iters : 3 : iterations in spqr_ssi or spqr_ssp.
+  nsvals_large_found : 0 : number of large singular values found.
+  final_blocksize : 10 : final block size in spqr_ssi.
+  ssi_max_block_used : 10 : max block size for spqr_ssi.
+  ssi_min_block_used : 3 : initial block size for spqr_ssi.
+  time : 0.080309 : total time taken (includes all timings below).
+  time_initialize : 0.00337819 : time to initialize including estimating the norm of A or R.
+  time_svd : 0.0375243 : total time taken by svd.
+  time_iters : 0.0526907 : time for spqr_ssi iterations.
+  time_est_error_bounds : 0.00869351 : time taken to estimate error bounds in spqr_ssi.
+
+opts_used : options for the spqr_rank functions:
+
+  get_details : 1 : extensive statistics returned
+  tol : 2.66454e-12
+  nsvals_large : 1 : # of large singular values to estimate.
+  nsvals_small : 1 : # of small singular values to estimate.
+  implicit_null_space_basis : true : N represented in Householder form.
+  start_with_A_transpose : false : spqr_cod computes qr(A).
+  ssi_tol : 2.66454e-12
+  ssi_min_block : 3 : ssi initial block size.
+  ssi_max_block : 10 : spqr_ssi max block size.
+  ssi_min_iters : 3 : min # of iterations before checking convergence
+  ssi_max_iters : 100 : max # of iterations before stopping spqr_ssi iterations
+  ssi_nblock_increment : 5 : block size inc. if convergence not met.
+  ssi_convergence_factor : 0.1 : spqr_ssi termination criterion.
+  k :   ssp_min_iters : 4 : min # of iterations before checking convergence
+  ssp_max_iters : 10 : max # of ssp iterations before stopping iterations
+  ssp_convergence_factor : 0.1 ssp terminates when relative error drops below this value.
+  repeatable : true : internal random stream used to guarantee repeatability
+
+  flag : 3 : poor results.  stats.rank is likely too high.
+  rank : 2990 : estimate of numerical rank.
+  tol : 2.66454e-12 : numerical tolerance used.
+  normest_R : 4.24912 : estimate of Euclidean norm of R (calculated for spqr_ssi).
+  est_svals_of_R :  1.98996e-252 8.38236e-253 6.11455e-253 3.17976e-253 1.10908e-253 4.70703e-254 5.73529e-255 2.30014e-256 5.15646e-287 4.69716e-287
+      : estimated singular value(s) of triangular matrix R.
+  est_error_bounds :  0.644895 0.619061 0.782134 0.644269 0.776826 0.707497 0.921243 0.966076 6.96139e-16 3.66017e-17
+      : error bounds for each singular value.
+  sval_numbers_for_bounds :  2991 2992 2993 2994 2995 2996 2997 2998 2999 3000
+      : index of singular value(s), for bounds.
+  norm_R_times_N : 0.935774 : norm of (R*N), from spqr_ssi.
+  norm_R_transpose_times_NT : 1.2243 : norm of (R'*NT), from spqr_ssi.
+  iters : 3 : iterations in spqr_ssi or spqr_ssp.
+  nsvals_large_found : 0 : number of large singular values found.
+  final_blocksize : 10 : final block size in spqr_ssi.
+  ssi_max_block_used : 10 : max block size for spqr_ssi.
+  ssi_min_block_used : 3 : initial block size for spqr_ssi.
+  time : 0.0908939 : total time taken (includes all timings below).
+  time_initialize : 0.00313181 : time to initialize including estimating the norm of A or R.
+  time_svd : 0.0562253 : total time taken by svd.
+  time_iters : 0.0635849 : time for spqr_ssi iterations.
+  time_est_error_bounds : 0.00869098 : time taken to estimate error bounds in spqr_ssi.
+
+opts_used : options for the spqr_rank functions:
+
+  get_details : 1 : extensive statistics returned
+  tol : 2.66454e-12
+  nsvals_large : 1 : # of large singular values to estimate.
+  nsvals_small : 1 : # of small singular values to estimate.
+  implicit_null_space_basis : true : N represented in Householder form.
+  start_with_A_transpose : false : spqr_cod computes qr(A).
+  ssi_tol : 2.66454e-12
+  ssi_min_block : 3 : ssi initial block size.
+  ssi_max_block : 10 : spqr_ssi max block size.
+  ssi_min_iters : 3 : min # of iterations before checking convergence
+  ssi_max_iters : 100 : max # of iterations before stopping spqr_ssi iterations
+  ssi_nblock_increment : 5 : block size inc. if convergence not met.
+  ssi_convergence_factor : 0.1 : spqr_ssi termination criterion.
+  k :   ssp_min_iters : 4 : min # of iterations before checking convergence
+  ssp_max_iters : 10 : max # of ssp iterations before stopping iterations
+  ssp_convergence_factor : 0.1 ssp terminates when relative error drops below this value.
+  repeatable : true : internal random stream used to guarantee repeatability
+
+---------------------------------------------------------------
+case where rank appears correct but with alternate tolerance:
+downloading http://www.math.sjsu.edu/singular/matrices/mat/Sandia/oscil_dcop_34.mat
+to /Users/davis/sparse/MyPapers/Foster/spqr_rank/SJget/mat/Sandia/oscil_dcop_34.mat
+
+Problem = 
+
+         name: 'Sandia/oscil_dcop_34'
+        title: 'Sandia/oscil_dcop_34 circuit simulation matrix. Sandia National Lab.'
+            A: [430x430 double]
+            b: [430x1 double]
+         SJid: 183
+         UFid: 1145
+         kind: 'subsequent circuit simulation problem'
+        notes: 'next: Sandia/oscil_dcop_35 first: Sandia/oscil_dcop_01'
+         date: '2003'
+       author: 'R. Hoekstra'
+           ed: 'T. Davis'
+        svals: [430x1 double]
+    sval_info: 'Routine svd from Matlab 7.6.0.324 (R2008a) used to calculate the singular values.'
+
+
+  flag : 2 : stats.rank may be correct for tolerance stats.tol,
+      but error bounds are too high to confirm this.
+  rank : 420 : estimate of numerical rank.
+  rank_spqr : 422 : estimate of numerical rank from spqr.
+      This is normally an upper bound on the true rank.
+  tol : 1.00117e-07 : numerical tolerance used.
+  normest_A : 2.001e+06 : estimate of Euclidean norm of A.
+  est_sval_upper_bounds :  2.38962e-07 1.00766e-07
+      : estimated upper bounds on singular value(s).
+  est_sval_lower_bounds :  2.03094e-08 0
+      : estimated lower bounds on singular value(s).
+  sval_numbers_for_bounds :  420 421
+      : index of singular value(s), for bounds.
+  est_norm_A_times_N : 9.99216e-08 : estimated norm(A*N).
+  est_err_bound_norm_A_times_N : 8.44851e-10 : estimated error bound for norm(A*N).
+  time : 0.0505359 : total time taken (includes all timings below).
+  time_initialize : 0.00408757 : time to initialize including estimating the norm of A or R.
+  time_svd : 0.0017679 : total time taken by svd.
+  time_basis : 0.000282482 : time to compute basis.
+
+opts_used : options for the spqr_rank functions:
+
+  get_details : 1 : extensive statistics returned
+  tol : 1.00117e-07
+  nsvals_large : 1 : # of large singular values to estimate.
+  nsvals_small : 1 : # of small singular values to estimate.
+  implicit_null_space_basis : true : N represented in Householder form.
+  start_with_A_transpose : false : spqr_cod computes qr(A).
+  ssi_tol : 1.00117e-07
+  ssi_min_block : 3 : ssi initial block size.
+  ssi_max_block : 10 : spqr_ssi max block size.
+  ssi_min_iters : 3 : min # of iterations before checking convergence
+  ssi_max_iters : 100 : max # of iterations before stopping spqr_ssi iterations
+  ssi_nblock_increment : 5 : block size inc. if convergence not met.
+  ssi_convergence_factor : 0.1 : spqr_ssi termination criterion.
+  k :   ssp_min_iters : 4 : min # of iterations before checking convergence
+  ssp_max_iters : 10 : max # of ssp iterations before stopping iterations
+  ssp_convergence_factor : 0.1 ssp terminates when relative error drops below this value.
+  repeatable : true : internal random stream used to guarantee repeatability
+
+info_spqr1 : statistics from first QR factorization.
+
+               nnzR_upper_bound: 6559
+               nnzH_upper_bound: 3129
+     number_of_frontal_matrices: 47
+            number_of_TBB_tasks: 1
+                rank_A_estimate: 422
+    number_of_column_singletons: 20
+       number_of_singleton_rows: 20
+                       ordering: 'colamd'
+          memory_usage_in_bytes: 199859
+              flops_upper_bound: 177357
+                            tol: 1.0012e-07
+          number_of_TBB_threads: 'default'
+                     norm_E_fro: 1.0836e-07
+         spqr_compiled_with_TBB: 'no'
+       spqr_compiled_with_METIS: 'yes'
+                           time: 0.0018
+
+
+info_spqr2 : statistics from second QR factorization.
+
+               nnzR_upper_bound: 16363
+               nnzH_upper_bound: 11663
+     number_of_frontal_matrices: 33
+            number_of_TBB_tasks: 1
+                rank_A_estimate: 422
+    number_of_column_singletons: 6
+       number_of_singleton_rows: 6
+                       ordering: 'colamd'
+          memory_usage_in_bytes: 645040
+              flops_upper_bound: 1490925
+                            tol: 0
+          number_of_TBB_threads: 'default'
+                     norm_E_fro: 0
+         spqr_compiled_with_TBB: 'no'
+       spqr_compiled_with_METIS: 'yes'
+                           time: 0.0034
+
+
+stats_ssi : statistics from spqr_ssi.
+
+  flag : 1 : stats.rank may be correct for tolerance stats.tol,
+      but error bounds are too high to confirm this.
+      However, stats.rank appears to be correct for tolerance stats.tol_alt.
+  rank : 420 : estimate of numerical rank.
+  tol : 1.00117e-07 : numerical tolerance used.
+  tol_alt : 1.28674e-07 : alternate numerical tolerance used.
+  est_svals_of_R :  1.29636e-07 9.98811e-08 6.10815e-08
+      : estimated singular value(s) of triangular matrix R.
+  est_error_bounds :  9.61685e-10 1.05907e-08 3.36933e-11
+      : error bounds for each singular value.
+  sval_numbers_for_bounds :  420 421 422
+      : index of singular value(s), for bounds.
+  norm_R_times_N : 1.00998e-07 : norm of (R*N), from spqr_ssi.
+  norm_R_transpose_times_NT : 9.98811e-08 : norm of (R'*NT), from spqr_ssi.
+  iters : 6 : iterations in spqr_ssi or spqr_ssp.
+  nsvals_large_found : 1 : number of large singular values found.
+  final_blocksize : 3 : final block size in spqr_ssi.
+  ssi_max_block_used : 10 : max block size for spqr_ssi.
+  ssi_min_block_used : 3 : initial block size for spqr_ssi.
+  time : 0.00941014 : total time taken (includes all timings below).
+  time_initialize : 0.000496846 : time to initialize.
+  time_svd : 0.00134638 : total time taken by svd.
+  time_iters : 0.00568262 : time for spqr_ssi iterations.
+  time_est_error_bounds : 0.000479269 : time taken to estimate error bounds in spqr_ssi.
+
+stats_ssp_N : statistics from spqr_ssp (A,N).
+
+  flag : 0 : ok. spqr_ssp converged with est. relative error <= opts_ssp.convergence_factor.
+  est_svals :  9.99216e-08
+      : estimated singular value(s) of A*N or A'*NT, from spqr_ssp.
+  est_error_bounds :  8.44851e-10
+      : error bounds for each singular value.
+  sval_numbers_for_bounds :  1
+      : index of singular value(s), for bounds.
+  iters : 4 : iterations in spqr_ssi or spqr_ssp.
+  time : 0.0149239 : total time taken (includes all timings below).
+  time_initialize : 0.000427153 : time to initialize.
+  time_svd : 0.000421518 : total time taken by svd.
+  time_iters : 0.012899 : time for spqr_ssi iterations.
+  time_est_error_bounds : 2.9054e-05 : time taken to estimate error bounds in spqr_ssi.
+  stats_ssp_N.opts_used.k : 1 : number of singular values to compute in spqr_ssp(A,N).
+
+Please wait ...
+ 1 of 10 : id:  215 HB/rgg010
+downloading http://www.math.sjsu.edu/singular/matrices/mat/HB/rgg010.mat
+to /Users/davis/sparse/MyPapers/Foster/spqr_rank/SJget/mat/HB/rgg010.mat
+ 2 of 10 : id:  229 Regtools/foxgood_100
+downloading http://www.math.sjsu.edu/singular/matrices/mat/Regtools/foxgood_100.mat
+to /Users/davis/sparse/MyPapers/Foster/spqr_rank/SJget/mat/Regtools/foxgood_100.mat
+ 3 of 10 : id:  241 Regtools/heat_100
+downloading http://www.math.sjsu.edu/singular/matrices/mat/Regtools/heat_100.mat
+to /Users/davis/sparse/MyPapers/Foster/spqr_rank/SJget/mat/Regtools/heat_100.mat
+ 4 of 10 : id:  245 Regtools/i_laplace_100
+downloading http://www.math.sjsu.edu/singular/matrices/mat/Regtools/i_laplace_100.mat
+to /Users/davis/sparse/MyPapers/Foster/spqr_rank/SJget/mat/Regtools/i_laplace_100.mat
+ 5 of 10 : id:  249 Regtools/parallax_100
+downloading http://www.math.sjsu.edu/singular/matrices/mat/Regtools/parallax_100.mat
+to /Users/davis/sparse/MyPapers/Foster/spqr_rank/SJget/mat/Regtools/parallax_100.mat
+ 6 of 10 : id:  242 Regtools/heat_200
+ 7 of 10 : id:  173 Sandia/oscil_dcop_24
+downloading http://www.math.sjsu.edu/singular/matrices/mat/Sandia/oscil_dcop_24.mat
+to /Users/davis/sparse/MyPapers/Foster/spqr_rank/SJget/mat/Sandia/oscil_dcop_24.mat
+ 8 of 10 : id:  183 Sandia/oscil_dcop_34
+ 9 of 10 : id:  263 Regtools/wing_500
+downloading http://www.math.sjsu.edu/singular/matrices/mat/Regtools/wing_500.mat
+to /Users/davis/sparse/MyPapers/Foster/spqr_rank/SJget/mat/Regtools/wing_500.mat
+10 of 10 : id:  134 HB/jgl009
+downloading http://www.math.sjsu.edu/singular/matrices/mat/HB/jgl009.mat
+to /Users/davis/sparse/MyPapers/Foster/spqr_rank/SJget/mat/HB/jgl009.mat
+
+All tests passed.
+diary off

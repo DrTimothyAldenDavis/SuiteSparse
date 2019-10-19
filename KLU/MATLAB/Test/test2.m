@@ -8,14 +8,14 @@ function test2 (nmat)
 % http://www.cise.ufl.edu/research/sparse
 
 clear functions
-rand ('state', 0) ;
+% rand ('state', 0) ;
 % warning ('off', 'MATLAB:singularMatrix') ;
 % warning ('off', 'MATLAB:nearlySingularMatrix') ;
 % warning ('off', 'MATLAB:divideByZero') ;
 
 index = UFget ;
 f = find (index.nrows == index.ncols) ;
-[ignore i] = sort (index.nnz (f)) ;
+[ignore i] = sort (index.nnz (f)) ;                                         %#ok
 f = f (i) ;
 
 if (nargin < 1)
@@ -38,10 +38,9 @@ k = 0 ;
 
 h = waitbar (0, 'KLU test 2 of 5') ;
 
-figure (1)
 clf
 
-try
+% try
 
     for kk = 1:nmat
 
@@ -67,11 +66,11 @@ try
 
             try
                 [L,U,p,q] = lu (A, 'vector') ;
-            catch
+            catch                                                           %#ok
                 % older version of MATLAB, which doesn't have 'vector' option
                 [L,U,P,Q] = lu (A) ;
-                [p ignore1 ignore2] = find (P') ;
-                [q ignore1 ignore2] = find (Q) ;
+                [p ignore1 ignore2] = find (P') ;                           %#ok
+                [q ignore1 ignore2] = find (Q) ;                            %#ok
                 clear ignore1 ignore2 P Q
             end
 
@@ -84,7 +83,6 @@ try
                 LU.p = int32 (p) ;
                 LU.q = int32 (q) ;
             end
-            C = A (p,q) ;
             LUnz (k) = nnz (L) + nnz (U) ;
 
             n = size (A,1) ;
@@ -154,8 +152,6 @@ try
             else
                 err = Inf ;
                 er2 = Inf ;
-                er3 = Inf ;
-                er4 = Inf ;
                 erc = Inf ;
             end
 
@@ -171,14 +167,8 @@ try
         end
     end
 
-catch
-    % out-of-memory is OK, other errors are not
-    disp (lasterr) ;
-    if (isempty (strfind (lasterr, 'Out of memory')))
-        error (lasterr) ;                                                   %#ok
-    else
-        fprintf ('test terminated early, but otherwise OK\n') ;
-    end
-end
+% catch me
+%     disp (me.message) ;
+% end
 
 close (h) ;

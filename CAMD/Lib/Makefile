@@ -10,7 +10,7 @@ default: everything
 
 include ../../UFconfig/UFconfig.mk
 
-C = $(CC) $(CFLAGS) $(CONFIG) -I../Include -I../../UFconfig
+C = $(CC) $(CF) -I../Include -I../../UFconfig
 
 everything:
 	$(C) -DDINT -c ../Source/camd_aat.c -o camd_i_aat.o
@@ -36,7 +36,8 @@ everything:
 	$(C) -DDLONG -c ../Source/camd_valid.c -o camd_l_valid.o
 	$(C) -DDLONG -c ../Source/camd_preprocess.c -o camd_l_preprocess.o
 	$(C) -c ../Source/camd_global.c
-	$(AR) libcamd.a camd_i_aat.o camd_i_1.o camd_i_2.o camd_i_dump.o \
+	$(ARCHIVE)  libcamd.a \
+            camd_i_aat.o camd_i_1.o camd_i_2.o camd_i_dump.o \
 	    camd_i_postorder.o camd_i_defaults.o camd_i_order.o \
 	    camd_i_control.o camd_i_info.o camd_i_valid.o camd_l_aat.o \
 	    camd_l_1.o camd_l_2.o camd_l_dump.o camd_l_postorder.o \

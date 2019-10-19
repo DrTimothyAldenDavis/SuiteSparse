@@ -4,16 +4,15 @@
 
 # Using Intel's icc compiler:
 CC = icc
-CFLAGS = -ansi -O3 -ip -tpp7 -xW -vec_report0
+CF = -ansi -O3 -ip -tpp7 -xW -vec_report0
 
 UMFPACK_CONFIG = -DCBLAS -DTESTING -I/cise/research/sparse/Install/ATLAS/Linux_P4SSE2/include
 LIB = -lcblas -latlas -lm 
 
 RANLIB = ranlib
 MV = mv -f
-RM = rm -f
 MEX = mex -inline -g
-AR = ar cr
+ARCHIVE = ar rv
 
 #===============================================================================
 

@@ -46,6 +46,13 @@ for ii = f
     i = i (p) ;
     j = j (p) ;
     x = x (p) ;
+    if (m == 1)
+        % find returns rows vectors if A is 1-by-n,
+        % but cs_sparse requires column vectors
+        i = i (:) ;
+        j = j (:) ;
+        x = x (:) ;
+    end
     D = sparse (i,j,x) ;
     E = cs_sparse (i,j,x) ;
     % [i j x]

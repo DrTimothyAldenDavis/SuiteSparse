@@ -2,7 +2,7 @@
 # AMD Makefile (for GNU Make or original make)
 #------------------------------------------------------------------------------
 
-VERSION = 2.2.2
+VERSION = 2.2.3
 
 default: demos
 
@@ -73,6 +73,8 @@ install:
 	$(CP) Lib/libamd.a $(INSTALL_LIB)/libamd.$(VERSION).a
 	( cd $(INSTALL_LIB) ; ln -sf libamd.$(VERSION).a libamd.a )
 	$(CP) Include/amd.h $(INSTALL_INCLUDE)
+	chmod 644 $(INSTALL_LIB)/libamd*
+	chmod 644 $(INSTALL_INCLUDE)/amd.h
 
 # uninstall AMD
 uninstall:

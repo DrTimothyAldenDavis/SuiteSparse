@@ -8,8 +8,6 @@
 
 include ../../UFconfig/UFconfig.mk
 
-RM = rm -f
-
 OBJ = \
     spqr_rmap.o \
     SuiteSparseQR_expert.o \

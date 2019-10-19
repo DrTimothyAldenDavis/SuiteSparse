@@ -1,7 +1,7 @@
 CAMD demo, with a jumbled version of the 24-by-24
 Harwell/Boeing matrix, can_24:
 
-camd version 2.2, Jan 25, 2011:  approximate minimum degree ordering:
+camd version 2.2, Dec 7, 2011:  approximate minimum degree ordering:
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)

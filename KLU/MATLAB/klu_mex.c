@@ -412,7 +412,7 @@ void mexFunction
         /* ------------------------------------------------------------------ */
 
 #define INFO(i,x) \
-        mxSetFieldByNumber (pargout [1], 0, i, mxCreateScalarDouble (x))
+        mxSetFieldByNumber (pargout [1], 0, i, mxCreateDoubleScalar (x))
 
         if (nargout > 1)
         {

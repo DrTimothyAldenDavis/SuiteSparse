@@ -2,6 +2,8 @@ This is the UMFPACK Tcov directory.  It runs a large number of tests on
 UMFPACK and checks the statement coverage (using gcc and gcov on Linux
 or the Mac, or tcov on Solaris).
 
+METIS is required for this test.
+
 You must first do "make purge" in AMD and UMFPACK.  You must also make
 sure the "Out" symbolic link is a valid link.  It should point to a large
 scratch space, for temporary files.  Finally, type DO.linux or DO.solaris.

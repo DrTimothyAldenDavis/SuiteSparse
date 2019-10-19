@@ -1,8 +1,8 @@
 #------------------------------------------------------------------------------
-# CAMD Makefile (for GNU Make or original make)
+# CAMD Makefile
 #------------------------------------------------------------------------------
 
-VERSION = 2.2.2
+VERSION = 2.2.3
 
 default: demos
 
@@ -63,6 +63,8 @@ install:
 	$(CP) Lib/libcamd.a $(INSTALL_LIB)/libcamd.$(VERSION).a
 	( cd $(INSTALL_LIB) ; ln -sf libcamd.$(VERSION).a libcamd.a )
 	$(CP) Include/camd.h $(INSTALL_INCLUDE)
+	chmod 644 $(INSTALL_LIB)/libcamd*.a
+	chmod 644 $(INSTALL_INCLUDE)/camd.h
 
 # uninstall CAMD
 uninstall:

@@ -12,7 +12,11 @@ SuiteSparse_install.  All packages will be compiled, and several demos will be
 run.
 ================================================================================
 
-May 10, 2011.  SuiteSparse VERSION 3.6.1
+Dec 15, 2011.  SuiteSparse VERSION 3.7.0
+
+    spqr_rank   MATLAB toolbox for rank deficient sparse matrices: null spaces,
+                reliable factorizations, etc.  With Leslie Foster, San Jose
+                State Univ.
 
     AMD         approximate minimum degree ordering
 
@@ -98,37 +102,12 @@ To use "make" in Unix/Linux:
 
 (3) Configure METIS (or don't use METIS)
 
+    If you don't download METIS, skip this step.  Otherwise,
     cd to metis-4.0 and edit the Makefile.in file.  I recommend making these
-    changes to metis-4.0/Makefile.in:
+    changes to metis-4.0/Makefile.in, but this is optional.
 
         CC = gcc
         OPTFLAGS = -O3
-
-    And, if you want to use METIS in MATLAB and compile with "make" instead
-    of using SuiteSparse_install.m:
-
-        COPTIONS = -fexceptions -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
-
-    Next, cd to metis-4.0 and type "make".
-
-    If you do not wish to use METIS, then edit the UFconfig/UFconfig.mk file,
-    and change the lines
-
-        CHOLMOD_CONFIG =
-        SPQR_CONFIG =
-
-    to
-
-        CHOLMOD_CONFIG = -DNPARTITION
-        SPQR_CONFIG = -DNPARTITION
-
-    Also change the line
-
-        METIS = ../../metis-4.0/libmetis.a
-
-    to
-
-        METIS =
 
 (4) Make other changes to UFconfig/UFconfig.mk as needed
 

@@ -8,10 +8,30 @@ ccode: all
 
 include ../../UFconfig/UFconfig.mk
 
+#-------------------------------------------------------------------------------
+# the optional Partition module requires METIS, CAMD, and CCOLAMD
+LIB_WITH_PARTITION =
+CONFIG = -DNPARTITION
+# check if METIS is requested and available
+ifeq (,$(findstring -DNPARTITION, $(CHOLMOD_CONFIG)))
+    # METIS is requested.  See if it is available
+    ifeq ($(METIS), $(wildcard $(METIS)))
+        ifeq (../../CAMD, $(wildcard ../../CAMD))
+            ifeq (../../CCOLAMD, $(wildcard ../../CCOLAMD))
+                # METIS, CAMD, and CCOLAMD is available
+                CONFIG =
+                LIB_WITH_PARTITION = $(METIS) \
+                    ../../CCOLAMD/Lib/libccolamd.a \
+                    ../../CAMD/Lib/libcamd.a
+            endif
+        endif
+    endif
+endif
+#-------------------------------------------------------------------------------
+
 CLIB = ../Lib/libspqr.a \
 	../../CHOLMOD/Lib/libcholmod.a ../../AMD/Lib/libamd.a \
-	../../COLAMD/Lib/libcolamd.a $(METIS) \
-	../../CCOLAMD/Lib/libccolamd.a ../../CAMD/Lib/libcamd.a -lm
+	../../COLAMD/Lib/libcolamd.a $(LIB_WITH_PARTITION) -lm
 
 # use the BLAS and LAPACK defined by UFconfig.mk; do not use valgrind 
 FLIB = $(LAPACK) $(BLAS)
@@ -101,7 +121,7 @@ INC = ../Include/spqr.hpp ../Include/SuiteSparseQR_C.h \
 
 I = -I../../CHOLMOD/Include -I../../UFconfig -I../Include
 
-C = $(CPLUSPLUS) $(CFLAGS) $(SPQR_CONFIG) $(I)
+C = $(CXX) $(CF) $(SPQR_CONFIG) $(CONFIG) $(I)
 
 LIBS = $(CLIB) $(FLIB) $(TBB) $(RTLIB)
 
@@ -114,13 +134,13 @@ qrdemo: qrdemo.cpp library $(INC)
 # compile the C code with gcc, but link with g++ to use SuiteSparseQR:
 
 qrdemoc.o: qrdemoc.c $(INC)
-	$(CC) $(CFLAGS) $(SPQR_CONFIG) -ansi $(I) -c $<
+	$(CC) $(CF) $(SPQR_CONFIG) -ansi $(I) -c $<
 
 qrdemoc: qrdemoc.o library $(INC)
 	$(C) -o qrdemoc qrdemoc.o $(LIBS)
 
 qrsimplec.o: qrsimplec.c $(INC)
-	$(CC) $(CFLAGS) $(SPQR_CONFIG) -ansi $(I) -c $<
+	$(CC) $(CF) $(SPQR_CONFIG) -ansi $(I) -c $<
 
 qrsimplec: qrsimplec.o library $(INC)
 	$(C) -o qrsimplec qrsimplec.o $(LIBS)

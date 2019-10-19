@@ -1,4 +1,8 @@
-VERSION = 1.1.2
+#------------------------------------------------------------------------------
+# KLU Makefile
+#------------------------------------------------------------------------------
+
+VERSION = 1.1.3
 
 default: demos
 
@@ -36,6 +40,8 @@ install:
 	$(CP) Lib/libklu.a $(INSTALL_LIB)/libklu.$(VERSION).a
 	( cd $(INSTALL_LIB) ; ln -sf libklu.$(VERSION).a libklu.a )
 	$(CP) Include/klu.h $(INSTALL_INCLUDE)
+	chmod 644 $(INSTALL_LIB)/libklu*.a
+	chmod 644 $(INSTALL_INCLUDE)/klu.h
 
 # uninstall KLU
 uninstall:

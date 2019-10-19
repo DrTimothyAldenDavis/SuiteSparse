@@ -8,8 +8,25 @@ ccode: all
 
 include ../../UFconfig/UFconfig.mk
 
+#-------------------------------------------------------------------------------
+# the optional Partition module requires METIS, CAMD, and CCOLAMD
+CONFIG = -DNPARTITION
+# check if METIS is requested and available
+ifeq (,$(findstring -DNPARTITION, $(CHOLMOD_CONFIG)))
+    # METIS is requested.  See if it is available
+    ifeq ($(METIS), $(wildcard $(METIS)))
+        ifeq (../../CAMD, $(wildcard ../../CAMD))
+            ifeq (../../CCOLAMD, $(wildcard ../../CCOLAMD))
+                # METIS, CAMD, and CCOLAMD is available
+                CONFIG =
+            endif
+        endif
+    endif
+endif
+#-------------------------------------------------------------------------------
+
 # no statement coverage, high optimization
-# CFLAGS = -O3 \
+# CF = -O3 \
 # 	-Wall -W -Wshadow -Winline -Wno-unused-parameter \
 # 	-Wredundant-decls -Wdisabled-optimization \
 # 	-ansi -fexceptions
@@ -76,11 +93,11 @@ $(OBJ): $(INC)
 
 I = -I../../CHOLMOD/Include -I../../UFconfig -I../Include
 
-C = $(CPLUSPLUS) $(CFLAGS) $(SPQR_CONFIG) $(I)
+C = $(CXX) $(CF) $(SPQR_CONFIG) $(CONFIG) $(I)
 
 libspqr.a: $(OBJ)
-	$(AR) libspqr.a $(OBJ)
-	$(RANLIB) libspqr.a
+	$(ARCHIVE)  libspqr.a $(OBJ)
+	- $(RANLIB) libspqr.a
 
 spqr_1colamd.o: ../Source/spqr_1colamd.cpp
 	$(C) -c $<

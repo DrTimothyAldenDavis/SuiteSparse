@@ -3,15 +3,14 @@
 #===============================================================================
 
 CC = cc
-CFLAGS = -Xc -g -xprofile=tcov -dalign
+CF = -Xc -g -xprofile=tcov -dalign
 UMFPACK_CONFIG = -DNBLAS -DTEST_FOR_INTEGER_OVERFLOW -DTESTING -DNRECIPROCAL
 LIB = -lm
 
 RANLIB = ranlib
 MV = mv -f
-RM = rm -f
 MEX = mex -inline -g
-AR = ar cr
+ARCHIVE = ar rv
 
 #===============================================================================
 

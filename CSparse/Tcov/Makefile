@@ -92,12 +92,12 @@ readhb.f:
 	- ln -s readhb.f
 
 clean:
-	rm -f *.o *.bbg *.da *.gcov *.gcda *.gcno
+	- $(RM) *.o *.bbg *.da *.gcov *.gcda *.gcno
 
 purge: distclean
 
 # remove everything for distribution, including all symbolic links
 distclean: clean
-	rm -f cs_demo1 cs_demo2 readhb *.out *.a cs_demo3 cstcov_test cov.sort
-	rm -f cs_*.c
-	rm -rf *.dSYM
+	- $(RM) cs_demo1 cs_demo2 readhb *.out *.a cs_demo3 cstcov_test cov.sort
+	- $(RM) cs_*.c
+	- $(RM) -r  *.dSYM

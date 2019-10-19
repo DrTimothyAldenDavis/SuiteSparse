@@ -45,6 +45,7 @@ testwait (28, ntests, h) ; test28 ;
 testwait (29, ntests, h) ; test_qr ;
 
 close (h)
+fprintf ('\nCXSparse: all tests passed\n') ;
 
 function testwait (n,ntests,h)
 fprintf ('\n------------------------ test%d\n', n) ;

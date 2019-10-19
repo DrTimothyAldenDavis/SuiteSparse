@@ -10,7 +10,7 @@ default: everything
 
 include ../../UFconfig/UFconfig.mk
 
-C = $(CC) $(CFLAGS) $(CONFIG) -I../Include -I../../UFconfig
+C = $(CC) $(CF) -I../Include -I../../UFconfig
 
 everything:
 	$(C) -DDINT -c ../Source/amd_aat.c -o amd_i_aat.o
@@ -38,7 +38,8 @@ everything:
 	$(C) -DDLONG -c ../Source/amd_valid.c -o amd_l_valid.o
 	$(C) -DDLONG -c ../Source/amd_preprocess.c -o amd_l_preprocess.o
 	$(C) -c ../Source/amd_global.c
-	$(AR) ../Lib/libamd.a amd_i_aat.o amd_i_1.o amd_i_2.o amd_i_dump.o \
+	$(ARCHIVE)  ../Lib/libamd.a \
+            amd_i_aat.o amd_i_1.o amd_i_2.o amd_i_dump.o \
 	    amd_i_postorder.o amd_i_post_tree.o amd_i_defaults.o amd_i_order.o \
 	    amd_i_control.o amd_i_info.o amd_i_valid.o amd_l_aat.o amd_l_1.o \
 	    amd_l_2.o amd_l_dump.o amd_l_postorder.o amd_l_post_tree.o \
@@ -53,7 +54,7 @@ everything:
 fortran:
 	$(F77) $(F77FLAGS) -c ../Source/amd.f -o amd.o
 	$(F77) $(F77FLAGS) -c ../Source/amdbar.f -o amdbar.o
-	$(AR) ../Lib/libamdf77.a amd.o amdbar.o
+	$(ARCHIVE)  ../Lib/libamdf77.a amd.o amdbar.o
 	- $(RANLIB) ../Lib/libamdf77.a
 
 #-------------------------------------------------------------------------------

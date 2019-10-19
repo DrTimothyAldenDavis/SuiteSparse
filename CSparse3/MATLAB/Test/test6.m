@@ -37,7 +37,9 @@ for trial = 1:201
         else
             x3 = cs_usolve (L,b) ;
         end
-        x3 = x3'' ;
+        % cs_lsolve and cs_usolve return sparse vectors with
+        % unsorted indices and possibly with explicit zeros.
+        x3 = 1 * x3'' ;
 
         spy ([L b x x3])
         drawnow

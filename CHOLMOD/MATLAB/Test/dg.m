@@ -22,7 +22,6 @@ end
 [ignore q] = sort (qmin) ;
 
 C = C (:,q) ;
-% figure (1)
 clf
 subplot (2,3,1) ; treeplot (cp)
 drawnow
@@ -66,7 +65,6 @@ drawnow
 % subplot (2,3,4) ; spy (E*E')
 % fprintf ('bisect: %d\n', length (find (s == 2))) ;
 
-% figure (2)
 % spy (C*C')
 % hold on
 % for j = cboundaries

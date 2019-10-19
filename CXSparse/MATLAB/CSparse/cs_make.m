@@ -73,8 +73,9 @@ else
     try
         % try with complex support
         [objfiles, timestamp] = cs_make_helper (f, 1) ;
-    catch
+    catch me
         % oops - that failed, try without complex support
+        disp (me.message)
         fprintf ('retrying without complex matrix support\n') ;
         [objfiles, timestamp] = cs_make_helper (f, 0) ;
     end

@@ -56,6 +56,11 @@ for trial = 1:201
             x3 = L\b ;
         end
 
+        % x3 is NOT returned in sorted order, so it is not a valid MATLAB
+        % sparse matrix.  It might also have explicit zeros.  Double-transpose
+        % it to sort it, and multiply one to remove explicit zeros.
+        x3 = 1 * (x3')' ;
+
         spy ([L b x x3])
         drawnow
 

@@ -1,7 +1,8 @@
 
 
 --------------------------------------------------------
-Input matrix: name: Dense/0  n: 0 entries: 0
+Input file: ../Matrix/A01
+name: Dense/0  n: 0 entries: 0
 --------------------------------------------------------
 
 Factorize PAP'=LDL' and solve Ax=b
@@ -13,7 +14,8 @@ relative maxnorm of residual: 0
 
 
 --------------------------------------------------------
-Input matrix: name: Dense/0  n: 0 entries: 0  (jumbled version)
+Input file: ../Matrix/A02
+name: Dense/0  n: 0 entries: 0  (jumbled version)
 --------------------------------------------------------
 
 Factorize PAP'=LDL' and solve Ax=b
@@ -25,7 +27,8 @@ relative maxnorm of residual: 0
 
 
 --------------------------------------------------------
-Input matrix: name: Dense/1  n: 1 entries: 1
+Input file: ../Matrix/A03
+name: Dense/1  n: 1 entries: 1
 --------------------------------------------------------
 
 Factorize PAP'=LDL' and solve Ax=b
@@ -37,7 +40,8 @@ relative maxnorm of residual: 0
 
 
 --------------------------------------------------------
-Input matrix: name: Dense/1  n: 1 entries: 2  (jumbled version)
+Input file: ../Matrix/A04
+name: Dense/1  n: 1 entries: 2  (jumbled version)
 --------------------------------------------------------
 
 Factorize PAP'=LDL' and solve Ax=b
@@ -49,7 +53,8 @@ relative maxnorm of residual: 8.32667e-17
 
 
 --------------------------------------------------------
-Input matrix: name: Dense/2  n: 2 entries: 4
+Input file: ../Matrix/A05
+name: Dense/2  n: 2 entries: 4
 --------------------------------------------------------
 
 Factorize PAP'=LDL' and solve Ax=b
@@ -61,7 +66,8 @@ relative maxnorm of residual: 5.55112e-17
 
 
 --------------------------------------------------------
-Input matrix: name: Dense/2  n: 2 entries: 5  (jumbled version)
+Input file: ../Matrix/A06
+name: Dense/2  n: 2 entries: 5  (jumbled version)
 --------------------------------------------------------
 
 Factorize PAP'=LDL' and solve Ax=b
@@ -73,7 +79,8 @@ relative maxnorm of residual: 1.11022e-16
 
 
 --------------------------------------------------------
-Input matrix: name: Dense/3  n: 3 entries: 9
+Input file: ../Matrix/A07
+name: Dense/3  n: 3 entries: 9
 --------------------------------------------------------
 
 Factorize PAP'=LDL' and solve Ax=b
@@ -85,7 +92,8 @@ relative maxnorm of residual: 1.11022e-16
 
 
 --------------------------------------------------------
-Input matrix: name: Dense/3  n: 3 entries: 11  (jumbled version)
+Input file: ../Matrix/A08
+name: Dense/3  n: 3 entries: 11  (jumbled version)
 --------------------------------------------------------
 
 Factorize PAP'=LDL' and solve Ax=b
@@ -97,7 +105,8 @@ relative maxnorm of residual: 1.38778e-16
 
 
 --------------------------------------------------------
-Input matrix: name: HB/can_24  n: 24 entries: 160
+Input file: ../Matrix/A09
+name: HB/can_24  n: 24 entries: 160
 --------------------------------------------------------
 
 Factorize PAP'=LDL' and solve Ax=b
@@ -109,7 +118,8 @@ Ax=b not solved since D(5,5) is zero.
 
 
 --------------------------------------------------------
-Input matrix: name: HB/can_24  n: 24 entries: 188  (jumbled version)
+Input file: ../Matrix/A10
+name: HB/can_24  n: 24 entries: 188  (jumbled version)
 --------------------------------------------------------
 
 Factorize PAP'=LDL' and solve Ax=b
@@ -121,7 +131,8 @@ Ax=b not solved since D(5,5) is zero.
 
 
 --------------------------------------------------------
-Input matrix: name: FIDAP/ex5  n: 27 entries: 279
+Input file: ../Matrix/A11
+name: FIDAP/ex5  n: 27 entries: 279
 --------------------------------------------------------
 
 Factorize PAP'=LDL' and solve Ax=b
@@ -133,7 +144,8 @@ relative maxnorm of residual: 2.72848e-10
 
 
 --------------------------------------------------------
-Input matrix: name: FIDAP/ex5  n: 27 entries: 325  (jumbled version)
+Input file: ../Matrix/A12
+name: FIDAP/ex5  n: 27 entries: 325  (jumbled version)
 --------------------------------------------------------
 
 Factorize PAP'=LDL' and solve Ax=b
@@ -145,7 +157,8 @@ relative maxnorm of residual: 2.32376e-10
 
 
 --------------------------------------------------------
-Input matrix: name: HB/bcsstk01  n: 48 entries: 400
+Input file: ../Matrix/A13
+name: HB/bcsstk01  n: 48 entries: 400
 --------------------------------------------------------
 
 Factorize PAP'=LDL' and solve Ax=b
@@ -157,7 +170,8 @@ relative maxnorm of residual: 2.27374e-13
 
 
 --------------------------------------------------------
-Input matrix: name: HB/bcsstk01  n: 48 entries: 472  (jumbled version)
+Input file: ../Matrix/A14
+name: HB/bcsstk01  n: 48 entries: 472  (jumbled version)
 --------------------------------------------------------
 
 Factorize PAP'=LDL' and solve Ax=b
@@ -169,7 +183,8 @@ relative maxnorm of residual: 3.83693e-13
 
 
 --------------------------------------------------------
-Input matrix: name: HB/bcsstm01  n: 48 entries: 24
+Input file: ../Matrix/A15
+name: HB/bcsstm01  n: 48 entries: 24
 --------------------------------------------------------
 
 Factorize PAP'=LDL' and solve Ax=b
@@ -181,7 +196,8 @@ Ax=b not solved since D(3,3) is zero.
 
 
 --------------------------------------------------------
-Input matrix: name: HB/bcsstm01  n: 48 entries: 26  (jumbled version)
+Input file: ../Matrix/A16
+name: HB/bcsstm01  n: 48 entries: 26  (jumbled version)
 --------------------------------------------------------
 
 Factorize PAP'=LDL' and solve Ax=b
@@ -193,7 +209,8 @@ Ax=b not solved since D(3,3) is zero.
 
 
 --------------------------------------------------------
-Input matrix: name: Pothen/mesh1e1  n: 48 entries: 306
+Input file: ../Matrix/A17
+name: Pothen/mesh1e1  n: 48 entries: 306
 --------------------------------------------------------
 
 Factorize PAP'=LDL' and solve Ax=b
@@ -205,7 +222,8 @@ relative maxnorm of residual: 6.93889e-16
 
 
 --------------------------------------------------------
-Input matrix: name: Pothen/mesh1e1  n: 48 entries: 359  (jumbled version)
+Input file: ../Matrix/A18
+name: Pothen/mesh1e1  n: 48 entries: 359  (jumbled version)
 --------------------------------------------------------
 
 Factorize PAP'=LDL' and solve Ax=b
@@ -217,7 +235,8 @@ relative maxnorm of residual: 5.55112e-16
 
 
 --------------------------------------------------------
-Input matrix: name: Bai/bfwb62  n: 62 entries: 342
+Input file: ../Matrix/A19
+name: Bai/bfwb62  n: 62 entries: 342
 --------------------------------------------------------
 
 Factorize PAP'=LDL' and solve Ax=b
@@ -229,7 +248,8 @@ relative maxnorm of residual: 1.11022e-15
 
 
 --------------------------------------------------------
-Input matrix: name: Bai/bfwb62  n: 62 entries: 407  (jumbled version)
+Input file: ../Matrix/A20
+name: Bai/bfwb62  n: 62 entries: 407  (jumbled version)
 --------------------------------------------------------
 
 Factorize PAP'=LDL' and solve Ax=b
@@ -241,7 +261,8 @@ relative maxnorm of residual: 2.15827e-12
 
 
 --------------------------------------------------------
-Input matrix: name: HB/bcsstk02  n: 66 entries: 4356
+Input file: ../Matrix/A21
+name: HB/bcsstk02  n: 66 entries: 4356
 --------------------------------------------------------
 
 Factorize PAP'=LDL' and solve Ax=b
@@ -253,7 +274,8 @@ relative maxnorm of residual: 7.50219e-13
 
 
 --------------------------------------------------------
-Input matrix: name: HB/bcsstk02  n: 66 entries: 5175  (jumbled version)
+Input file: ../Matrix/A22
+name: HB/bcsstk02  n: 66 entries: 5175  (jumbled version)
 --------------------------------------------------------
 
 Factorize PAP'=LDL' and solve Ax=b
@@ -265,7 +287,8 @@ relative maxnorm of residual: 8.59759e-13
 
 
 --------------------------------------------------------
-Input matrix: name: HB/bcsstm02  n: 66 entries: 66
+Input file: ../Matrix/A23
+name: HB/bcsstm02  n: 66 entries: 66
 --------------------------------------------------------
 
 Factorize PAP'=LDL' and solve Ax=b
@@ -277,7 +300,8 @@ relative maxnorm of residual: 2.22045e-16
 
 
 --------------------------------------------------------
-Input matrix: name: HB/bcsstm02  n: 66 entries: 72  (jumbled version)
+Input file: ../Matrix/A24
+name: HB/bcsstm02  n: 66 entries: 72  (jumbled version)
 --------------------------------------------------------
 
 Factorize PAP'=LDL' and solve Ax=b
@@ -289,42 +313,48 @@ relative maxnorm of residual: 2.22045e-16
 
 
 --------------------------------------------------------
-Input matrix: name: Dense/0  n: 0 entries: 0 (invalid matrix, Ap [0] = 99)
+Input file: ../Matrix/A25
+name: Dense/0  n: 0 entries: 0 (invalid matrix, Ap [0] = 1)
 --------------------------------------------------------
 
 ldlmain: invalid matrix and/or permutation
 
 
 --------------------------------------------------------
-Input matrix: name: Dense/2  n: 2 entries: 4 (invalid perm, P[1]=99)
+Input file: ../Matrix/A26
+name: Dense/2  n: 2 entries: 4 (invalid perm, P[1]=99)
 --------------------------------------------------------
 
 ldlmain: invalid matrix and/or permutation
 
 
 --------------------------------------------------------
-Input matrix: name: Dense/3  n: 3 entries: 9 (invalid perm)
+Input file: ../Matrix/A27
+name: Dense/3  n: 3 entries: 9 (invalid perm)
 --------------------------------------------------------
 
 ldlmain: invalid matrix and/or permutation
 
 
 --------------------------------------------------------
-Input matrix: name: Dense/3  n: 3 entries: 9 (invalid Ap)
+Input file: ../Matrix/A28
+name: Dense/3  n: 3 entries: 9 (invalid Ap)
 --------------------------------------------------------
 
 ldlmain: invalid matrix and/or permutation
 
 
 --------------------------------------------------------
-Input matrix: name: Dense/3  n: 3 entries: 9 (invalid Ai)
+Input file: ../Matrix/A29
+name: Dense/3  n: 3 entries: 9 (invalid Ai)
 --------------------------------------------------------
 
 ldlmain: invalid matrix and/or permutation
 
 
 --------------------------------------------------------
-Input matrix: name: Dense/3  n: 3 entries: 9 (invalid Ai)
+Input file: ../Matrix/A30
+name: Dense/3  n: 3 entries: 9 (invalid Ai)
 --------------------------------------------------------
 
 ldlmain: invalid matrix and/or permutation

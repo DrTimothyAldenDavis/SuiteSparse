@@ -1,8 +1,6 @@
 include ../../../UFconfig/UFconfig.mk
 
 MX = $(MEX) -DCS_LONG
-AR = ar cr
-RANLIB = ranlib
 
 I = -I../../Include -I../../../UFconfig -I../CSparse
 
@@ -16,7 +14,7 @@ all: cs_sparse2.mexglx \
 	cs_frand.mexglx
 
 mexcsparse:
-	( cd ../CSparse ; make mexcsparse.a )
+	( cd ../CSparse ; $(MAKE) mexcsparse.a )
 
 cs_ipvec.mexglx: cs_ipvec_mex.c mexcsparse
 	$(MX) -output cs_ipvec $< $(I) ../CSparse/mexcsparse.a
@@ -45,9 +43,9 @@ cs_frand.mexglx: cs_frand_mex.c mexcsparse
 
 
 clean:
-	rm -f *.o
+	- $(RM) *.o
 
 distclean: clean
-	rm -f *.mex* *.a cs_cl_*.c
+	- $(RM) *.mex* *.a cs_cl_*.c
 
 purge: distclean

@@ -1,14 +1,11 @@
 # CC = cc
-# CFLAGS = -O
+# CF = -O
 
 default: all
 
 include ../../UFconfig/UFconfig.mk
 
 I = -I../../UFconfig -I../Include
-
-# AR = ar cr
-# RANLIB = ranlib
 
 all: libcxsparse.a
 
@@ -75,28 +72,28 @@ CS = cs_convert.o $(CS_DI_OBJ) $(CS_DL_OBJ) $(CS_CI_OBJ) $(CS_CL_OBJ)
 $(CS): ../Include/cs.h Makefile
 
 cs_convert.o: ../Source/cs_convert.c
-	$(CC) $(CFLAGS) $(I) -c $< -o $@
+	$(CC) $(CF) $(I) -c $< -o $@
 
 %_di.o : ../Source/%.c
-	$(CC) $(CFLAGS) $(I) -c $< -o $@
+	$(CC) $(CF) $(I) -c $< -o $@
 
 %_dl.o : ../Source/%.c
-	$(CC) $(CFLAGS) $(I) -DCS_LONG -c $< -o $@
+	$(CC) $(CF) $(I) -DCS_LONG -c $< -o $@
 
 %_ci.o : ../Source/%.c
-	$(CC) $(CFLAGS) $(I) -DCS_COMPLEX -c $< -o $@
+	$(CC) $(CF) $(I) -DCS_COMPLEX -c $< -o $@
 
 %_cl.o : ../Source/%.c
-	$(CC) $(CFLAGS) $(I) -DCS_LONG -DCS_COMPLEX -c $< -o $@
+	$(CC) $(CF) $(I) -DCS_LONG -DCS_COMPLEX -c $< -o $@
 
 libcxsparse.a: $(CS)
-	$(AR) libcxsparse.a $(CS)
-	$(RANLIB) libcxsparse.a
+	$(ARCHIVE)  libcxsparse.a $(CS)
+	- $(RANLIB) libcxsparse.a
 
 clean:
-	rm -f *.o
+	- $(RM) *.o
 
 purge: distclean
 
 distclean: clean
-	rm -f *.a
+	- $(RM) *.a

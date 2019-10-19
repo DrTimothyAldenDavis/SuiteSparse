@@ -8,9 +8,9 @@ sol: distclean
 	./DO.solaris
 
 distclean:
-	- ( cd .. ; make purge )
-	- ( cd ../../AMD ; make purge )
-	- $(RM) -rf Out/*
+	- ( cd .. ; $(MAKE) purge )
+	- ( cd ../../AMD ; $(MAKE) purge )
+	- $(RM) -r Out/*
 
 purge: distclean
 

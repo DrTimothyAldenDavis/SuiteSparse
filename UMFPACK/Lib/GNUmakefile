@@ -6,10 +6,15 @@ default: libumfpack.a
 
 include ../../UFconfig/UFconfig.mk
 
-C = $(CC) $(CFLAGS) $(UMFPACK_CONFIG) \
-    -I../Include -I../Source -I../../AMD/Include -I../../UFconfig \
-    -I../../CCOLAMD/Include -I../../CAMD/Include -I../../CHOLMOD/Include \
-    -I../../metis-4.0/Lib -I../../COLAMD/Include
+# UMFPACK can use CHOLMOD by default as an ordering option
+ifneq (,$(findstring -DNCHOLMOD, $(UMFPACK_CONFIG)))
+    I = -I../Include -I../Source -I../../AMD/Include -I../../UFconfig
+else
+    I = -I../Include -I../Source -I../../AMD/Include -I../../UFconfig \
+        -I../../CHOLMOD/Include
+endif
+
+C = $(CC) $(CF) $(UMFPACK_CONFIG) $(I)
 
 #-------------------------------------------------------------------------------
 # source files
@@ -246,7 +251,7 @@ umfpack_gn_%.o: ../Source/umfpack_%.c $(INC)
 #-------------------------------------------------------------------------------
 
 libumfpack.a: $(II) $(LL) $(GN) $(DI) $(DL) $(ZI) $(ZL)
-	$(AR) libumfpack.a $^
+	$(ARCHIVE)  libumfpack.a $^
 	- $(RANLIB) libumfpack.a
 
 so: $(II) $(LL) $(GN) $(DI) $(DL) $(ZI) $(ZL)

@@ -29,9 +29,9 @@ f = f (1:nmat) ;
 T0 = zeros (nmat,1) ;
 T1 = zeros (nmat,1) ;
 Anz = zeros (nmat,1) ;
-figure (1) ;
 MN = zeros (nmat, 2) ;
 Nzdiag = zeros (nmat,1) ;
+clf
 
 % warmup
 p = maxtrans (sparse (1)) ;         %#ok

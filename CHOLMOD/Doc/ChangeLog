@@ -1,3 +1,9 @@
+Dec 7, 2011: version 1.7.4
+
+    * fixed the Makefile to better align with CFLAGS and other standards
+    * Makefile now detects whether or not METIS is present, and
+        sets -DNPARTITION if it is not
+
 Jan 25, 2011: version 1.7.3
 
     * minor fix to "make install"

@@ -9,9 +9,9 @@
 #endif
 #define CS_VER 2                    /* CSparse Version */
 #define CS_SUBVER 2
-#define CS_SUBSUB 4
-#define CS_DATE "Nov 30, 2009"     /* CSparse release date */
-#define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006-2009"
+#define CS_SUBSUB 6
+#define CS_DATE "Dec 7, 2011"     /* CSparse release date */
+#define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006-2011"
 
 /* --- primary CSparse routines and data structures ------------------------- */
 typedef struct cs_sparse    /* matrix in compressed-column or triplet form */

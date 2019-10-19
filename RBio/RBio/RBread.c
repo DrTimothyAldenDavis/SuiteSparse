@@ -73,6 +73,7 @@ void mexFunction
 
     if (status != RBIO_OK)
     {
+        RBerror (status) ;
         mexErrMsgTxt ("error reading file") ;
     }
 

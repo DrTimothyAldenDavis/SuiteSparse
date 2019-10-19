@@ -1,9 +1,7 @@
-# Modify the "-O" optimization option for best performance (-O3 on Linux):
-CC = cc
-CFLAGS = -O -I../Include
-
-AR = ar cr
+CF = $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -O
+I = -I../Include
 RANLIB = ranlib
+ARCHIVE = $(AR) $(ARFLAGS)
 
 all: libcsparse.a
 
@@ -20,16 +18,16 @@ CS = cs_add.o cs_amd.o cs_chol.o cs_cholsol.o cs_counts.o cs_cumsum.o \
 $(CS): ../Include/cs.h Makefile
 
 %.o: ../Source/%.c ../Include/cs.h
-	$(CC) $(CFLAGS) -c $<
+	$(CC) $(CF) $(I) -c $<
 
 libcsparse.a: $(CS)
-	$(AR) libcsparse.a $(CS)
-	$(RANLIB) libcsparse.a
+	$(ARCHIVE)  libcsparse.a $(CS)
+	- $(RANLIB) libcsparse.a
 
 clean:
-	rm -f *.o
+	- $(RM) *.o
 
 purge: distclean
 
 distclean: clean
-	rm -f *.a
+	- $(RM) *.a *.obj *.dll

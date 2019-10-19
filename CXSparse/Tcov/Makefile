@@ -10,6 +10,8 @@ CFLAGS = -O -g -fprofile-arcs -ftest-coverage \
     	-Wredundant-decls -Wnested-externs -Wdisabled-optimization -ansi \
 	-Wno-unused-parameter -Werror -I../Include -I../Demo -I../../UFconfig
 
+C = $(CC) $(CFLAGS)
+
 run: all run_convert run_di run_dl run_ci run_cl
 	./covall
 
@@ -112,75 +114,75 @@ cs_%_cl.c:
 
 
 %_di.o: %_di.c
-	$(CC) $(CFLAGS) -c $<
+	$(C) -c $<
 
 %_dl.o: %_dl.c
-	$(CC) $(CFLAGS) -DCS_LONG -c $<
+	$(C) -DCS_LONG -c $<
 
 %_ci.o: %_ci.c
-	$(CC) $(CFLAGS) -DCS_COMPLEX -c $<
+	$(C) -DCS_COMPLEX -c $<
 
 %_cl.o: %_cl.c
-	$(CC) $(CFLAGS) -DCS_LONG -DCS_COMPLEX -c $<
+	$(C) -DCS_LONG -DCS_COMPLEX -c $<
 
 
 cs_idemo: $(OBJ) cs_idemo.c
-	$(CC) $(CFLAGS) -o cs_idemo cs_idemo.c $(OBJ) -lm
+	$(C) -o cs_idemo cs_idemo.c $(OBJ) -lm
 
 cs_ldemo: $(OBJ) cs_ldemo.c
-	$(CC) $(CFLAGS) -o cs_ldemo cs_ldemo.c $(OBJ) -lm
+	$(C) -o cs_ldemo cs_ldemo.c $(OBJ) -lm
 
 
 cs_demo1_di: $(CS_DI) cs_di_demo1.c
-	$(CC) $(CFLAGS) -o cs_demo1_di cs_di_demo1.c $(CS_DI) -lm
+	$(C) -o cs_demo1_di cs_di_demo1.c $(CS_DI) -lm
 
 cs_demo2_di: $(CS_DI) cs_di_demo2.c cs_di_demo.c
-	$(CC) $(CFLAGS) -o cs_demo2_di cs_di_demo2.c cs_di_demo.c $(CS_DI) -lm
+	$(C) -o cs_demo2_di cs_di_demo2.c cs_di_demo.c $(CS_DI) -lm
 
 cs_demo3_di: $(CS_DI) cs_di_demo3.c cs_di_demo.c
-	$(CC) $(CFLAGS) -o cs_demo3_di cs_di_demo3.c cs_di_demo.c $(CS_DI) -lm
+	$(C) -o cs_demo3_di cs_di_demo3.c cs_di_demo.c $(CS_DI) -lm
 
 cstcov_test_di: $(CS_DI) cstcov_test.c cs_di_demo.c
-	$(CC) $(CFLAGS) -o cstcov_test_di cstcov_test.c cs_di_demo.c $(CS_DI) -lm
+	$(C) -o cstcov_test_di cstcov_test.c cs_di_demo.c $(CS_DI) -lm
 
 
 cs_demo1_dl: $(CS_DL) cs_dl_demo1.c
-	$(CC) $(CFLAGS) -DCS_LONG -o cs_demo1_dl cs_dl_demo1.c $(CS_DL) -lm
+	$(C) -DCS_LONG -o cs_demo1_dl cs_dl_demo1.c $(CS_DL) -lm
 
 cs_demo2_dl: $(CS_DL) cs_dl_demo2.c cs_dl_demo.c
-	$(CC) $(CFLAGS) -DCS_LONG -o cs_demo2_dl cs_dl_demo2.c cs_dl_demo.c $(CS_DL) -lm
+	$(C) -DCS_LONG -o cs_demo2_dl cs_dl_demo2.c cs_dl_demo.c $(CS_DL) -lm
 
 cs_demo3_dl: $(CS_DL) cs_dl_demo3.c cs_dl_demo.c
-	$(CC) $(CFLAGS) -DCS_LONG -o cs_demo3_dl cs_dl_demo3.c cs_dl_demo.c $(CS_DL) -lm
+	$(C) -DCS_LONG -o cs_demo3_dl cs_dl_demo3.c cs_dl_demo.c $(CS_DL) -lm
 
 cstcov_test_dl: $(CS_DL) cstcov_test.c cs_dl_demo.c
-	$(CC) $(CFLAGS) -DCS_LONG -o cstcov_test_dl cstcov_test.c cs_dl_demo.c $(CS_DL) -lm
+	$(C) -DCS_LONG -o cstcov_test_dl cstcov_test.c cs_dl_demo.c $(CS_DL) -lm
 
 
 cs_demo1_ci: $(CS_CI) cs_ci_demo1.c
-	$(CC) $(CFLAGS) -DCS_COMPLEX -o cs_demo1_ci cs_ci_demo1.c $(CS_CI) -lm
+	$(C) -DCS_COMPLEX -o cs_demo1_ci cs_ci_demo1.c $(CS_CI) -lm
 
 cs_demo2_ci: $(CS_CI) cs_ci_demo2.c cs_ci_demo.c
-	$(CC) $(CFLAGS) -DCS_COMPLEX -o cs_demo2_ci cs_ci_demo2.c cs_ci_demo.c $(CS_CI) -lm
+	$(C) -DCS_COMPLEX -o cs_demo2_ci cs_ci_demo2.c cs_ci_demo.c $(CS_CI) -lm
 
 cs_demo3_ci: $(CS_CI) cs_ci_demo3.c cs_ci_demo.c
-	$(CC) $(CFLAGS) -DCS_COMPLEX -o cs_demo3_ci cs_ci_demo3.c cs_ci_demo.c $(CS_CI) -lm
+	$(C) -DCS_COMPLEX -o cs_demo3_ci cs_ci_demo3.c cs_ci_demo.c $(CS_CI) -lm
 
 cstcov_test_ci: $(CS_CI) cstcov_test.c cs_ci_demo.c
-	$(CC) $(CFLAGS) -DCS_COMPLEX -o cstcov_test_ci cstcov_test.c cs_ci_demo.c $(CS_CI) -lm
+	$(C) -DCS_COMPLEX -o cstcov_test_ci cstcov_test.c cs_ci_demo.c $(CS_CI) -lm
 
 
 cs_demo1_cl: $(CS_CL) cs_cl_demo1.c
-	$(CC) $(CFLAGS) -DCS_LONG -DCS_COMPLEX -o cs_demo1_cl cs_cl_demo1.c $(CS_CL) -lm
+	$(C) -DCS_LONG -DCS_COMPLEX -o cs_demo1_cl cs_cl_demo1.c $(CS_CL) -lm
 
 cs_demo2_cl: $(CS_CL) cs_cl_demo2.c cs_cl_demo.c
-	$(CC) $(CFLAGS) -DCS_LONG -DCS_COMPLEX -o cs_demo2_cl cs_cl_demo2.c cs_cl_demo.c $(CS_CL) -lm
+	$(C) -DCS_LONG -DCS_COMPLEX -o cs_demo2_cl cs_cl_demo2.c cs_cl_demo.c $(CS_CL) -lm
 
 cs_demo3_cl: $(CS_CL) cs_cl_demo3.c cs_cl_demo.c
-	$(CC) $(CFLAGS) -DCS_LONG -DCS_COMPLEX -o cs_demo3_cl cs_cl_demo3.c cs_cl_demo.c $(CS_CL) -lm
+	$(C) -DCS_LONG -DCS_COMPLEX -o cs_demo3_cl cs_cl_demo3.c cs_cl_demo.c $(CS_CL) -lm
 
 cstcov_test_cl: $(CS_CL) cstcov_test.c cs_cl_demo.c
-	$(CC) $(CFLAGS) -DCS_LONG -DCS_COMPLEX -o cstcov_test_cl cstcov_test.c cs_cl_demo.c $(CS_CL) -lm
+	$(C) -DCS_LONG -DCS_COMPLEX -o cstcov_test_cl cstcov_test.c cs_cl_demo.c $(CS_CL) -lm
 
 
 run_convert: cs_idemo cs_ldemo
@@ -303,17 +305,17 @@ readhb.f:
 	- ln -s ../Demo/readhb.f
 
 clean:
-	rm -f *.o *.bbg *.da *.gcov *.gcda *.gcno
+	- $(RM) *.o *.bbg *.da *.gcov *.gcda *.gcno
 
 purge: distclean
 
 distclean: clean
-	rm -f readhb *.out *.a cov.sort
-	rm -f cs_demo1_di cs_demo2_di cs_demo3_di cstcov_test_di
-	rm -f cs_demo1_dl cs_demo2_dl cs_demo3_dl cstcov_test_dl
-	rm -f cs_demo1_ci cs_demo2_ci cs_demo3_ci cstcov_test_ci
-	rm -f cs_demo1_cl cs_demo2_cl cs_demo3_cl cstcov_test_cl
-	rm -f cs_idemo cs_ldemo
-	rm -f cs_*.c
-	rm -f cs*_di.c cs*_dl.c cs*_ci.c cs*_cl.c
-	rm -rf *.dSYM
+	- $(RM) readhb *.out *.a cov.sort
+	- $(RM) cs_demo1_di cs_demo2_di cs_demo3_di cstcov_test_di
+	- $(RM) cs_demo1_dl cs_demo2_dl cs_demo3_dl cstcov_test_dl
+	- $(RM) cs_demo1_ci cs_demo2_ci cs_demo3_ci cstcov_test_ci
+	- $(RM) cs_demo1_cl cs_demo2_cl cs_demo3_cl cstcov_test_cl
+	- $(RM) cs_idemo cs_ldemo
+	- $(RM) cs_*.c
+	- $(RM) cs*_di.c cs*_dl.c cs*_ci.c cs*_cl.c
+	- $(RM) -r *.dSYM

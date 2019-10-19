@@ -1,8 +1,6 @@
 include ../../../UFconfig/UFconfig.mk
 
 MX = $(MEX) -DCS_LONG
-AR = ar cr
-RANLIB = ranlib
 
 I = -I../../Include -I../../../UFconfig
 
@@ -145,7 +143,7 @@ CSC = \
 CS = $(CSD) $(CSC)
 
 mexcsparse.a: $(CS)
-	$(AR) mexcsparse.a $(CS)
+	$(ARCHIVE) mexcsparse.a $(CS)
 	$(RANLIB) mexcsparse.a
 
 $(CS): ../../Include/cs.h
@@ -163,9 +161,9 @@ cs_%.o: ../../Source/cs_%.c
 
 
 clean:
-	- rm -f *.o
+	- $(RM) *.o
 
 distclean: clean
-	- rm -f *.mex* *.dll *.a cs_cl_*.c
+	- $(RM) *.mex* *.dll *.a cs_cl_*.c
 
 purge: distclean

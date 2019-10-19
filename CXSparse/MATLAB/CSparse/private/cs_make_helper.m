@@ -144,7 +144,7 @@ for i = 1:length (cs)
             objfiles = [objfiles ' ..' filesep 'CSparse' filesep csrc obj] ;%#ok
         end
         if (s)
-            copyfile (['../../Source/' cs{i} '.c'], [csrc '.c'], 'f') ;
+            cpfile (['../../Source/' cs{i} '.c'], [csrc '.c']) ;
             if (details)
                 fprintf ('%s\n', ['cp -f ../../Source/' cs{i} '.c ' csrc '.c']);
             end
@@ -199,3 +199,29 @@ else
     fprintf ('.') ;
 end
 eval (s) ;
+
+%-------------------------------------------------------------------------------
+function rmfile (file)
+% rmfile:  delete a file, but only if it exists
+if (length (dir (file)) > 0)                                                %#ok
+    delete (file) ;
+end
+
+%-------------------------------------------------------------------------------
+function cpfile (src, dst)
+% cpfile:  copy the src file to the filename dst, overwriting dst if it exists
+%% fprintf ('cp %s %s\n', src, dst) ; return ;
+rmfile (dst)
+if (length (dir (src)) == 0)	%#ok
+    fprintf ('File does not exist: %s\n', src) ;
+    error ('File does not exist') ;
+end
+try
+    copyfile (src, dst) ;
+catch ME
+    % ignore errors of the form "cp: preserving permissions: ...
+    % Operation not supported".  rethrow all other errors.
+    if (isempty (strfind (ME.message, 'Operation not supported')))
+        rethrow (ME) ;
+    end
+end

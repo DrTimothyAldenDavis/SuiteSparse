@@ -18,8 +18,6 @@ f = find (index.nrows == index.ncols) ;
 f = f (i) ;
 clear i
 
-figure (1)
-
 % short test set: seg faults, lots of blocks, lots of work, and so on:
 nasty = [
         % --- various test matrices (no seg fault, quick run time)
@@ -279,7 +277,6 @@ try
         singular = s1 < n ;
 
         if (doplot)
-            % figure (1)
             clf
             subplot (2,4,1)
             spy (A)

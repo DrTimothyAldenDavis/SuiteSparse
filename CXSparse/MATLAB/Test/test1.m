@@ -70,6 +70,13 @@ for ii = f
         i = i (p) ;
         j = j (p) ;
         x = x (p) ;
+        if (m <= 1)
+            % The find function returns row vectors i,j,x when size(A,1) is 1.
+            % This is fine for the MATLAB 'sparse', but not for cs_sparse.
+            i = i (:) ;
+            j = j (:) ;
+            x = x (:) ;
+        end
         D = sparse (i,j,x) ;
         E = cs_sparse (i,j,x) ;
         % [i j x]

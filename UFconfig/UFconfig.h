@@ -75,10 +75,10 @@ extern "C" {
 
 typedef struct UFconfig_struct
 {
-    void *(*malloc_memory) (size_t) ;		/* pointer to malloc */
+    void *(*malloc_memory) (size_t) ;           /* pointer to malloc */
     void *(*realloc_memory) (void *, size_t) ;  /* pointer to realloc */
-    void (*free_memory) (void *) ;		/* pointer to free */
-    void *(*calloc_memory) (size_t, size_t) ;	/* pointer to calloc */
+    void (*free_memory) (void *) ;              /* pointer to free */
+    void *(*calloc_memory) (size_t, size_t) ;   /* pointer to calloc */
 
 } UFconfig ;
 
@@ -109,40 +109,39 @@ void *UFfree                /* always returns NULL */
  * version of SuiteSparse, with another package from another version of
  * SuiteSparse, may or may not work.
  *
- * SuiteSparse Version 3.6.1 contains the following packages:
+ * SuiteSparse Version 3.7.0 contains the following packages:
  *
- *  AMD		    version 2.2.2
- *  BTF		    version 1.1.2
- *  CAMD	    version 2.2.2
- *  CCOLAMD	    version 2.7.3
- *  CHOLMOD	    version 1.7.3
- *  COLAMD	    version 2.7.3
- *  CSparse	    version 2.2.5
- *  CSparse3	    version 3.0.1
- *  CXSparse	    version 2.2.5
- *  KLU		    version 1.1.2
- *  LDL		    version 2.0.3
- *  RBio	    version 2.0.1
- *  SPQR            version 1.2.2 (also called SuiteSparseQR)
- *  UFcollection    version 1.5.0
- *  UFconfig	    version number is the same as SuiteSparse
- *  UMFPACK	    version 5.5.1
- *  LINFACTOR       version 1.1.0
- *  MESHND          version 1.1.1
- *  SSMULT          version 2.0.2
- *  MATLAB_Tools    no specific version number
+ *  UFconfig        version 3.7.0 (version always the same as SuiteSparse)
+ *  AMD             version 2.2.3
+ *  CAMD            version 2.2.3
+ *  CCOLAMD         version 2.7.4
+ *  COLAMD          version 2.7.4
+ *  BTF             version 1.1.3
+ *  CHOLMOD         version 1.7.4
+ *  CSparse3        version 3.0.2
+ *  CSparse         version 2.2.6
+ *  CXSparse        version 2.2.6
+ *  KLU             version 1.1.3
+ *  LDL             version 2.0.4
+ *  RBio            version 2.0.2
+ *  SPQR            version 1.2.3 (also called SuiteSparseQR)
+ *  UFcollection    version 1.6.0
+ *  UMFPACK         version 5.5.2
+ *  SSMULT          version 2.0.3
+ *  spqr_rank       version 1.0.0
+ *  MATLAB_Tools    various packages & M-files.  No specific version number.
  *
  * Other package dependencies:
- *  BLAS	    required by CHOLMOD and UMFPACK
- *  LAPACK	    required by CHOLMOD
- *  METIS 4.0.1	    required by CHOLMOD (optional) and KLU (optional)
+ *  BLAS            required by CHOLMOD and UMFPACK
+ *  LAPACK          required by CHOLMOD
+ *  METIS 4.0.1     required by CHOLMOD (optional) and KLU (optional)
  */
 
-#define SUITESPARSE_DATE "May 10, 2011"
+#define SUITESPARSE_DATE "Dec 15, 2011"
 #define SUITESPARSE_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define SUITESPARSE_MAIN_VERSION 3
-#define SUITESPARSE_SUB_VERSION 6
-#define SUITESPARSE_SUBSUB_VERSION 1
+#define SUITESPARSE_SUB_VERSION 7
+#define SUITESPARSE_SUBSUB_VERSION 0
 #define SUITESPARSE_VERSION \
     SUITESPARSE_VER_CODE(SUITESPARSE_MAIN_VERSION,SUITESPARSE_SUB_VERSION)
 

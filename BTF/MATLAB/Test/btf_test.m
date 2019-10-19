@@ -7,7 +7,7 @@ function btf_test (nmat)
 %   test1, test2, test3, test4, test5, test6.
 
 if (nargin < 1)
-    nmat = 800 ;
+    nmat = 200 ;
 end
 
 test1 (nmat) ;
