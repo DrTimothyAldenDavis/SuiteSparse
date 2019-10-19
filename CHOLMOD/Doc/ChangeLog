@@ -1,3 +1,11 @@
+Apr 16, 2013: version 2.1.1
+
+    * bug fix to Lib/Makefile and Demo/Makefile, to handle -DNCAMD correctly.
+    * changes to Supernodal/t_cholmod_gpu.c: to fix a GPU memory leak,
+        to fix the statistics on TRSM timing, and to reduce CPU-GPU memory
+        traffic.
+    * added cholmod_version function.
+
 Mar 27, 2013: version 2.1.0
 
     * added the -DNCAMD option.  Formerly, the -DNPARTITION option disabled

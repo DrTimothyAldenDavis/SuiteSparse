@@ -143,15 +143,15 @@ double SuiteSparse_time  /* returns current wall clock time in seconds */
  *
  * SuiteSparse contains the following packages:
  *
- *  SuiteSparse_config version 4.1.0 (version always the same as SuiteSparse)
+ *  SuiteSparse_config version 4.2.0 (version always the same as SuiteSparse)
  *  AMD             version 2.3.1
  *  BTF             version 1.2.0
  *  CAMD            version 2.3.1
  *  CCOLAMD         version 2.8.0
- *  CHOLMOD         version 2.1.0
+ *  CHOLMOD         version 2.1.1
  *  COLAMD          version 2.8.0
- *  CSparse         version 3.1.1
- *  CXSparse        version 3.1.1
+ *  CSparse         version 3.1.2
+ *  CXSparse        version 3.1.2
  *  KLU             version 1.2.1
  *  LDL             version 2.1.0
  *  RBio            version 2.1.1
@@ -165,10 +165,33 @@ double SuiteSparse_time  /* returns current wall clock time in seconds */
  *  METIS 4.0.1     required by CHOLMOD (optional) and KLU (optional)
  */
 
-#define SUITESPARSE_DATE "March 27, 2013"
+
+int SuiteSparse_version     /* returns SUITESPARSE_VERSION */
+(
+    /* output, not defined on input.  Not used if NULL.  Returns
+       the three version codes in version [0..2]:
+       version [0] is SUITESPARSE_MAIN_VERSION
+       version [1] is SUITESPARSE_SUB_VERSION
+       version [2] is SUITESPARSE_SUBSUB_VERSION
+       */
+    int version [3]
+) ;
+
+/* Versions prior to 4.2.0 do not have the above function.  The following
+   code fragment will work with any version of SuiteSparse:
+
+   #ifdef SUITESPARSE_HAS_VERSION_FUNCTION
+   v = SuiteSparse_version (NULL) ;
+   #else
+   v = SUITESPARSE_VERSION ;
+   #endif
+*/
+#define SUITESPARSE_HAS_VERSION_FUNCTION
+
+#define SUITESPARSE_DATE "April 16, 2013"
 #define SUITESPARSE_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define SUITESPARSE_MAIN_VERSION 4
-#define SUITESPARSE_SUB_VERSION 1
+#define SUITESPARSE_SUB_VERSION 2
 #define SUITESPARSE_SUBSUB_VERSION 0
 #define SUITESPARSE_VERSION \
     SUITESPARSE_VER_CODE(SUITESPARSE_MAIN_VERSION,SUITESPARSE_SUB_VERSION)

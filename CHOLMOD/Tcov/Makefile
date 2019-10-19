@@ -215,6 +215,7 @@ $(LCAMDOBJ): $(CAMDSRC)
 
 IOBJ = \
 	z_common.o \
+	z_version.o \
 	z_dense.o \
 	z_factor.o \
 	z_change_factor.o \
@@ -262,6 +263,7 @@ IOBJ = \
 
 LOBJ = \
 	l_common.o \
+	l_version.o \
 	l_dense.o \
 	l_factor.o \
 	l_change_factor.o \
@@ -833,6 +835,10 @@ z_common.o: ../Core/cholmod_common.c
 	$(C) -E $(I) $< | $(PRETTY) > z_common.c
 	$(C) -c $(I) z_common.c
 
+z_version.o: ../Core/cholmod_version.c
+	$(C) -E $(I) $< | $(PRETTY) > z_version.c
+	$(C) -c $(I) z_version.c
+
 z_dense.o: ../Core/cholmod_dense.c ../Core/t_cholmod_dense.c
 	$(C) -E $(I) $< | $(PRETTY) > z_dense.c
 	$(C) -c $(I) z_dense.c
@@ -1047,6 +1053,10 @@ l_write.o: ../Check/cholmod_write.c
 l_common.o: ../Core/cholmod_common.c
 	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_common.c
 	$(C) -c $(I) l_common.c
+
+l_version.o: ../Core/cholmod_version.c
+	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_version.c
+	$(C) -c $(I) l_version.c
 
 l_dense.o: ../Core/cholmod_dense.c ../Core/t_cholmod_dense.c
 	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_dense.c

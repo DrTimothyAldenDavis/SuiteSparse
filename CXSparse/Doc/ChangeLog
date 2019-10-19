@@ -1,3 +1,8 @@
+Apr 16, 2013: verison 3.1.2
+
+    * removed a useless line from cs_sqr.c (no integer overflow can
+        occur in S->lnz, S->unz at that point)
+
 Jun 20, 2012: verison 3.1.1
 
     * minor update for Windows (removed filesep)

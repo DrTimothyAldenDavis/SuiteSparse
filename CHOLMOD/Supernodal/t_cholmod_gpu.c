@@ -152,6 +152,7 @@ void TEMPLATE (CHOLMOD (gpu_end))
     cholmod_common *Common
 )
 {
+    int i;
     /* unpin the Host memory */
     GPU_Printf ("gpu_end %p\n", Common->HostPinnedMemory) ;
     cudaError_t cudaErr = cudaHostUnregister (Common->HostPinnedMemory) ;
@@ -160,6 +161,53 @@ void TEMPLATE (CHOLMOD (gpu_end))
         ERROR (CHOLMOD_GPU_PROBLEM, "CUDA Unpinning Memory") ;
         Common->HostPinnedMemory = NULL ;
     }
+    /* ------------------------------------------------------------------ */
+    /* destroy Cublas Handle */
+    /* ------------------------------------------------------------------ */
+    
+    if (Common->cublasHandle) {
+        cublasDestroy(Common->cublasHandle);
+        Common->cublasHandle = NULL ;
+    }
+    /* ------------------------------------------------------------------ */
+    /* destroy each CUDA stream */
+    /* ------------------------------------------------------------------ */
+    if (Common->cudaStreamSyrk) 
+    {
+        cudaStreamDestroy (Common->cudaStreamSyrk) ;
+        Common->cudaStreamSyrk = NULL ;
+    }
+    if (Common->cudaStreamGemm) 
+    {
+        cudaStreamDestroy (Common->cudaStreamGemm) ;
+    }
+    if (Common->cudaStreamTrsm) 
+    {
+        cudaStreamDestroy (Common->cudaStreamTrsm) ;
+        Common->cudaStreamTrsm = NULL ;
+    }        
+
+    for (i = 0 ; i < 3 ; i++)
+    {
+        if (Common->cudaStreamPotrf [i]) 
+        {
+            cudaStreamDestroy(Common->cudaStreamPotrf [i]) ;
+            Common->cudaStreamPotrf [i] = NULL ;
+        }
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* destroy each CUDA event */
+    /* ------------------------------------------------------------------ */
+
+    for (i = 0 ; i < 2 ; i++)
+    {
+        if (Common->cublasEventPotrf [i]) 
+        {
+            cudaEventDestroy( Common->cublasEventPotrf [i] ) ;
+            Common->cublasEventPotrf [i] = NULL ;
+        }
+    }    
 }
 
 
@@ -222,7 +270,7 @@ int TEMPLATE (CHOLMOD (gpu_updateC))
         ndrow2 * ndrow1 * L_ENTRY * sizeof (devPtrC [0])) ;
     Common->devSyrkGemmPtrLx = devPtrLx ;
     Common->devSyrkGemmPtrC  = devPtrC ;
-
+    
     if (cudaStat [0] || cudaStat [1])
     {
         /* one or both cudaMalloc's failed */
@@ -248,7 +296,7 @@ int TEMPLATE (CHOLMOD (gpu_updateC))
     cudaStat [0] = cudaMemcpy2DAsync (devPtrLx,
         ndrow2 * L_ENTRY * sizeof (devPtrLx [0]),
         Lx + L_ENTRY * pdx1, ndrow * L_ENTRY * sizeof (Lx [0]),
-        ndrow2 * L_ENTRY * sizeof (devPtrLx [0]),
+        ndrow1 * L_ENTRY * sizeof (devPtrLx [0]),
         ndcol, cudaMemcpyHostToDevice, Common->cudaStreamSyrk) ;
     if (cudaStat [0])
     {
@@ -828,16 +876,17 @@ int TEMPLATE (CHOLMOD (gpu_triangular_solve))
 #else
     cuDoubleComplex calpha  = {1.0,0.0} ;
 #endif
-#ifndef NTIMER
-    double tstart = SuiteSparse_time ( ) ;
-    Common->CHOLMOD_GPU_TRSM_CALLS++ ;
-#endif
 
     if (!Common->devPotrfWork)
     {
         /* no workspace for triangular solve */
         return (0) ;
     }
+
+#ifndef NTIMER
+    double tstart = SuiteSparse_time ( ) ;
+    Common->CHOLMOD_GPU_TRSM_CALLS++ ;
+#endif
 
     gpu_lda = ((nscol2+31)/32)*32 ;
     gpu_ldb = ((nsrow2+31)/32)*32 ;
@@ -909,7 +958,7 @@ int TEMPLATE (CHOLMOD (gpu_triangular_solve))
     /* ---------------------------------------------------------------------- */
     /* free workspace and return */
     /* ---------------------------------------------------------------------- */
-
+    
     cudaFree (Common->devPotrfWork) ;
     Common->devPotrfWork = NULL ;
 #ifndef NTIMER

@@ -171,3 +171,21 @@ double SuiteSparse_time  /* returns current wall clock time in seconds */
     return (toc [0] + 1e-9 * toc [1]) ;
 }
 
+
+/* -------------------------------------------------------------------------- */
+/* SuiteSparse_version: return the current version of SuiteSparse */
+/* -------------------------------------------------------------------------- */
+
+int SuiteSparse_version
+(
+    int version [3]
+)
+{
+    if (version != NULL)
+    {
+        version [0] = SUITESPARSE_MAIN_VERSION ;
+        version [1] = SUITESPARSE_SUB_VERSION ;
+        version [2] = SUITESPARSE_SUBSUB_VERSION ;
+    }
+    return (SUITESPARSE_VERSION) ;
+}

@@ -9,26 +9,38 @@ ccode: all
 include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 #-------------------------------------------------------------------------------
-# the optional Partition module requires METIS, CAMD, and CCOLAMD
+# the optional Partition module requires METIS, CAMD, and CCOLAMD.
+# CAMD and CCOLAMD can be installed without METIS, but are optional.
 I_WITH_PARTITION = 
 LIB_WITH_PARTITION =
-CONFIG = -DNPARTITION
-# check if METIS is requested and available
-ifeq (,$(findstring -DNPARTITION, $(CHOLMOD_CONFIG)))
-    # METIS is requested.  See if it is available
-    ifeq ($(METIS_PATH), $(wildcard $(METIS_PATH)))
-        ifeq (../../CAMD, $(wildcard ../../CAMD))
-            ifeq (../../CCOLAMD, $(wildcard ../../CCOLAMD))
-                # METIS, CAMD, and CCOLAMD are available
-                LIB_WITH_PARTITION = $(METIS) ../../CCOLAMD/Lib/libccolamd.a \
-                    ../../CAMD/Lib/libcamd.a
-                I_WITH_PARTITION = -I$(METIS_PATH)/Lib \
-                    -I../../CCOLAMD/Include -I../../CAMD/Include
-                CONFIG =
+CONFIG = -DNPARTITION -DNCAMD
+# check if CAMD/CCOLAMD and METIS are requested and available
+ifeq (,$(findstring -DNCAMD, $(CHOLMOD_CONFIG)))
+    # CAMD and CCOLAMD are requested.  See if they are available
+    ifeq (../../CAMD, $(wildcard ../../CAMD))
+        ifeq (../../CCOLAMD, $(wildcard ../../CCOLAMD))
+            # CAMD and CCOLAMD are requested and available
+            LIB_WITH_PARTITION = \
+                        ../../CCOLAMD/Lib/libccolamd.a ../../CAMD/Lib/libcamd.a
+            I_WITH_PARTITION = \
+                        -I../../CCOLAMD/Include -I../../CAMD/Include
+            CONFIG = -DNPARTITION
+            # check if METIS is requested and available
+            ifeq (,$(findstring -DNPARTITION, $(CHOLMOD_CONFIG)))
+                # METIS is requested.  See if it is available
+                ifeq ($(METIS_PATH), $(wildcard $(METIS_PATH)))
+                    # METIS is available
+                    LIB_WITH_PARTITION = $(METIS) \
+                        ../../CCOLAMD/Lib/libccolamd.a ../../CAMD/Lib/libcamd.a
+                    I_WITH_PARTITION = -I$(METIS_PATH)/Lib \
+                        -I../../CCOLAMD/Include -I../../CAMD/Include
+                    CONFIG =
+                endif
             endif
         endif
     endif
 endif
+
 #-------------------------------------------------------------------------------
 
 I = -I../../AMD/Include -I../../AMD/Source -I../../COLAMD/Include \
@@ -76,7 +88,8 @@ CORE = cholmod_aat.o cholmod_add.o cholmod_band.o \
 	cholmod_change_factor.o cholmod_common.o cholmod_complex.o \
 	cholmod_copy.o cholmod_dense.o cholmod_error.o cholmod_factor.o \
 	cholmod_memory.o cholmod_sparse.o \
-	cholmod_transpose.o cholmod_triplet.o
+	cholmod_transpose.o cholmod_triplet.o \
+        cholmod_version.o
 
 CHECK = cholmod_check.o cholmod_read.o cholmod_write.o
 
@@ -108,7 +121,8 @@ LCORE = cholmod_l_aat.o cholmod_l_add.o cholmod_l_band.o \
 	cholmod_l_change_factor.o cholmod_l_common.o cholmod_l_complex.o \
 	cholmod_l_copy.o cholmod_l_dense.o cholmod_l_error.o \
 	cholmod_l_factor.o cholmod_l_memory.o \
-	cholmod_l_sparse.o cholmod_l_transpose.o cholmod_l_triplet.o
+	cholmod_l_sparse.o cholmod_l_transpose.o cholmod_l_triplet.o \
+        cholmod_l_version.o
 
 LCHECK = cholmod_l_check.o cholmod_l_read.o cholmod_l_write.o
 
@@ -215,6 +229,9 @@ cholmod_aat.o: ../Core/cholmod_aat.c
 cholmod_add.o: ../Core/cholmod_add.c
 	$(C) -c $(I) $<
 
+cholmod_version.o: ../Core/cholmod_version.c
+	$(C) -c $(I) $<
+
 #-------------------------------------------------------------------------------
 
 cholmod_l_common.o: ../Core/cholmod_common.c
@@ -258,6 +275,9 @@ cholmod_l_aat.o: ../Core/cholmod_aat.c
 	$(C) -DDLONG -c $(I) $< -o $@
 
 cholmod_l_add.o: ../Core/cholmod_add.c
+	$(C) -DDLONG -c $(I) $< -o $@
+
+cholmod_l_version.o: ../Core/cholmod_version.c
 	$(C) -DDLONG -c $(I) $< -o $@
 
 

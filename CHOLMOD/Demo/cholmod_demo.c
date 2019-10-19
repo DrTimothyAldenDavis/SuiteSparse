@@ -66,6 +66,7 @@ int main (int argc, char **argv)
     double *Bx, *Rx, *Xx ;
     int i, n, isize, xsize, ordering, xtype, s, ss, lnz ;
     int trial, method, L_is_super ;
+    int ver [3] ;
 
     /* ---------------------------------------------------------------------- */
     /* get the file containing the input matrix */
@@ -121,6 +122,10 @@ int main (int argc, char **argv)
     /* ---------------------------------------------------------------------- */
 
     printf ("\n---------------------------------- cholmod_demo:\n") ;
+    cholmod_version (ver) ;
+    printf ("cholmod version %d.%d.%d\n", ver [0], ver [1], ver [2]) ;
+    SuiteSparse_version (ver) ;
+    printf ("SuiteSparse version %d.%d.%d\n", ver [0], ver [1], ver [2]) ;
     A = cholmod_read_sparse (f, cm) ;
     if (ff != NULL)
     {

@@ -1,4 +1,4 @@
-SuiteSparse_config, 2012, Timothy A. Davis, http://www.suitesparse.com
+SuiteSparse_config, 2013, Timothy A. Davis, http://www.suitesparse.com
 (formerly the UFconfig package)
 
 SuiteSparse_config contains configuration settings for all many of the software
@@ -32,6 +32,10 @@ the BLAS or LAPACK.  The xerbla provided here does not print any message, so
 the entire Fortran I/O library does not need to be linked into a C application.
 Most versions of the BLAS contain xerbla, but those from K. Goto do not.  Use
 this if you need too.
+
+If you edit this directory (SuiteSparse_config.mk in particular) then you
+must do "make purge ; make" in the parent directory to recompile all of
+SuiteSparse.  Otherwise, the changes will not necessarily be applied.
 
 --------------------------------------------------------------------------------
 A note on the update to SuiteSparse Version 4.0.0:  The SuiteSparse_long macro

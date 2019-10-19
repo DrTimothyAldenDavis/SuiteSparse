@@ -1,5 +1,5 @@
 CSparse: a Concise Sparse Matrix package.
-VERSION 3.1.1, Copyright (c) 2006-2012, Timothy A. Davis, Jun 20, 2012.
+VERSION 3.1.2, Copyright (c) 2006-2013, Timothy A. Davis, Apr 16, 2013
 http://www.suitesparse.com
 
 Refer to "Direct Methods for Sparse Linear Systems," Timothy A. Davis,

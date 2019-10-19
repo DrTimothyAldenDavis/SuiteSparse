@@ -76,7 +76,6 @@ css *cs_sqr (csi order, const cs *A, csi qr)
         cs_free (post) ;
         ok = C && S->parent && S->cp && cs_vcount (C, S) ;
         if (ok) for (S->unz = 0, k = 0 ; k < n ; k++) S->unz += S->cp [k] ;
-        ok = ok && S->lnz >= 0 && S->unz >= 0 ;     /* csi overflow guard */
         if (order) cs_spfree (C) ;
     }
     else

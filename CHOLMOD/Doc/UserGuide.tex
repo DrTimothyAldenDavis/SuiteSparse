@@ -21,7 +21,7 @@ DrTimothyAldenDavis@gmail.com, http://www.suitesparse.com }
 \title{User Guide for CHOLMOD: a sparse Cholesky factorization and
 modification package}
 
-\date{VERSION 2.1.0, March 27, 2013}
+\date{VERSION 2.1.1, April 16, 2013}
 \maketitle
 
 %-------------------------------------------------------------------------------
@@ -860,6 +860,11 @@ and is required by all six other CHOLMOD library Modules:
     \item {\tt cholmod\_realloc}: {\tt realloc} wrapper.
     \item {\tt cholmod\_realloc\_multiple}: {\tt realloc} wrapper for multiple objects.
     \end{itemize}
+
+%-------------------------------------------------------------------------------
+\subsubsection{{\tt cholmod\_version:} Version control}
+%-------------------------------------------------------------------------------
+The {\tt cholmod\_version} function returns the current version of CHOLMOD.
 
 %-------------------------------------------------------------------------------
 \newpage \subsection{{\tt Check} Module: print/check the CHOLMOD objects}
@@ -1991,6 +1996,38 @@ A value of {\tt nnew=0} is treated as {\tt nnew=1}.
 Reallocates multiple blocks of memory, all with the same number of items
 (but with different item sizes).  Either all reallocations succeed,
 or all are returned to their original size.
+
+%-------------------------------------------------------------------------------
+\newpage \section{{\tt Core} Module: version control}
+%-------------------------------------------------------------------------------
+
+\subsection{{\tt cholmod\_version}: return current CHOLMOD version}
+
+\input{_version.tex}
+Returns the CHOLMOD version number, so that it can be tested at run time, even
+if the caller does not have access to the CHOLMOD include files.  For example,
+for a CHOLMOD version 3.2.1, the {\tt version} array will contain 3, 2, and 1,
+in that order.  This function appears in CHOLMOD 2.1.1 and later.  You can
+check if the function exists with the {\tt CHOLMOD\_HAS\_VERSION\_FUNCTION}
+macro, so that the following code fragment works in any version of CHOLMOD:
+
+\begin{verbatim}
+   #ifdef CHOLMOD_HAS_VERSION_FUNCTION
+   v = cholmod_version (NULL) ;
+   #else
+   v = CHOLMOD_VERSION ;
+   #endif
+\end{verbatim}
+
+Note that {\tt cholmod\_version} and {\tt cholmod\_l\_version} have identical
+prototypes.  Both use {\tt int}'s.  Unlike all other CHOLMOD functions, this
+function does not take the {\tt Common} object as an input parameter, and it
+does not use any defintions from any include files.  Thus, the caller can
+access this function even if the caller does not include any CHOLMOD include
+files.
+
+The above code fragment does require the {\tt \#include "cholmod.h"},
+of course, but {\tt cholmod\_version} can be called without it, if necessary.
 
 %-------------------------------------------------------------------------------
 \newpage \section{{\tt Check} Module routines}

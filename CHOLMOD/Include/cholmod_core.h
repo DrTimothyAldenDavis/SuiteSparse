@@ -244,11 +244,13 @@
  *	#endif
  */
 
-#define CHOLMOD_DATE "Mar 27, 2013"
+#define CHOLMOD_HAS_VERSION_FUNCTION
+
+#define CHOLMOD_DATE "April 16, 2013"
 #define CHOLMOD_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define CHOLMOD_MAIN_VERSION 2
 #define CHOLMOD_SUB_VERSION 1
-#define CHOLMOD_SUBSUB_VERSION 0
+#define CHOLMOD_SUBSUB_VERSION 1
 #define CHOLMOD_VERSION \
     CHOLMOD_VER_CODE(CHOLMOD_MAIN_VERSION,CHOLMOD_SUB_VERSION)
 
@@ -2291,6 +2293,31 @@ int cholmod_realloc_multiple
 
 int cholmod_l_realloc_multiple (size_t, int, int, void **, void **, void **,
     void **, size_t *, cholmod_common *) ;
+
+/* ========================================================================== */
+/* === version control ====================================================== */
+/* ========================================================================== */
+
+int cholmod_version     /* returns CHOLMOD_VERSION */
+(
+    /* output, contents not defined on input.  Not used if NULL.
+        version [0] = CHOLMOD_MAIN_VERSION
+        version [1] = CHOLMOD_SUB_VERSION
+        version [2] = CHOLMOD_SUBSUB_VERSION
+    */
+    int version [3]
+) ;
+
+int cholmod_l_version (int version [3]) ;
+
+/* Versions prior to 2.1.1 do not have the above function.  The following
+   code fragment will work with any version of CHOLMOD:
+   #ifdef CHOLMOD_HAS_VERSION_FUNCTION
+   v = cholmod_version (NULL) ;
+   #else
+   v = CHOLMOD_VERSION ;
+   #endif
+*/
 
 /* ========================================================================== */
 /* === symmetry types ======================================================= */

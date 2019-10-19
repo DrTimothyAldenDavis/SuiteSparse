@@ -22,11 +22,11 @@ extern "C" {
 #endif
 #endif
 
-#define CS_VER 2                    /* CXSparse Version */
-#define CS_SUBVER 3
-#define CS_SUBSUB 0
-#define CS_DATE "Jun 1, 2012"       /* CXSparse release date */
-#define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006-2012"
+#define CS_VER 3                    /* CXSparse Version */
+#define CS_SUBVER 1
+#define CS_SUBSUB 2
+#define CS_DATE "April 16, 2013"       /* CXSparse release date */
+#define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006-2013"
 #define CXSPARSE
 
 #include "SuiteSparse_config.h"

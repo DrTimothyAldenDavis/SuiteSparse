@@ -1367,8 +1367,13 @@ int main (int argc, char **argv)
     Int n = 0, nmin = 0, nrow = 0, ncol = 0, save ;
     int singular, do_memory, i, do_nantests ;
     double v = CHOLMOD_VERSION ;
+    int version [3] ;
 
-    printf ("Testing CHOLMOD (%g)\n", v) ;
+    printf ("Testing CHOLMOD (%g): %d ", v, CHOLMOD(version) (version)) ;
+    printf ("(%d.%d.%d)\n", version [0], version [1], version [2]) ;
+    v = SUITESPARSE_VERSION ;
+    printf ("for SuiteSparse (%g): %d ", v, SuiteSparse_version (version)) ;
+    printf ("(%d.%d.%d)\n", version [0], version [1], version [2]) ;
     printf ("%s: argc: %d\n", argv [0], argc) ;
     my_srand (42) ;						/* RAND */
     fflush (stdout) ;
