@@ -3,7 +3,7 @@ function C = cs_transpose (A)                                               %#ok
 %   C = cs_transpose(A), computes C = A' where A must be sparse and real.
 %
 %   Example:
-%       Prob = UFget ('HB/ibm32') ; A = Prob.A ;
+%       Prob = ssget ('HB/ibm32') ; A = Prob.A ;
 %       C = cs_transpose (A) ;
 %       C-A'
 %

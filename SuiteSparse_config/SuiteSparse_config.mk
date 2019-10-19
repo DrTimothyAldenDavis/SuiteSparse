@@ -5,7 +5,7 @@
 # This file contains all configuration settings for all packages in SuiteSparse,
 # except for CSparse (which is stand-alone) and the packages in MATLAB_Tools.
 
-SUITESPARSE_VERSION = 4.5.6
+SUITESPARSE_VERSION = 5.0.0
 
 #===============================================================================
 # Options you can change without editing this file:
@@ -116,6 +116,7 @@ SUITESPARSE_VERSION = 4.5.6
             CXX = $(CC)
             CFOPENMP = -qopenmp -I$(MKLROOT)/include
 	    LDFLAGS += -openmp
+            LDLIBS += -lm -lirc
         endif
         ifneq ($(shell which ifort 2>/dev/null),)
             # use the Intel ifort compiler for Fortran codes
@@ -223,12 +224,16 @@ SUITESPARSE_VERSION = 4.5.6
         CUBLAS_LIB    = $(CUDA_PATH)/lib64/libcublas.so
         CUDA_INC_PATH = $(CUDA_PATH)/include/
         CUDA_INC      = -I$(CUDA_INC_PATH)
+		MAGMA_INC     = -I/opt/magma-2.2.0/include/
+		MAGMA_LIB     = -L/opt/magma-2.2.0/lib/ -lmagma
         NVCC          = $(CUDA_PATH)/bin/nvcc
         NVCCFLAGS     = -Xcompiler -fPIC -O3 \
                             -gencode=arch=compute_30,code=sm_30 \
                             -gencode=arch=compute_35,code=sm_35 \
                             -gencode=arch=compute_50,code=sm_50 \
-                            -gencode=arch=compute_50,code=compute_50
+                            -gencode=arch=compute_53,code=sm_53 \
+                            -gencode=arch=compute_53,code=sm_53 \
+                            -gencode=arch=compute_60,code=compute_60
     endif
 
     #---------------------------------------------------------------------------

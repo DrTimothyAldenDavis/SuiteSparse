@@ -6,7 +6,7 @@ function [p,r] = cs_scc (A)                                                 %#ok
 %   For bipartite or rectangular graphs, use cs_scc2.
 %
 %   Example:
-%       Prob = UFget ('HB/arc130') ; A = Prob.A ; [p r] = cs_scc (A) ;
+%       Prob = ssget ('HB/arc130') ; A = Prob.A ; [p r] = cs_scc (A) ;
 %       cspy (A (p,p)) ;
 %
 %   See also CS_DMPERM, DMPERM, CS_SCC2.

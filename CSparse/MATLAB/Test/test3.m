@@ -7,7 +7,7 @@ function test3
 
 % Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
-index = UFget ;
+index = ssget ;
 [ignore f] = sort (max (index.nrows, index.ncols)) ;
 f = f (1:100) ;
 
@@ -15,7 +15,7 @@ clf
 % f = f(1)
 
 for i = f
-    Prob = UFget (i) ;
+    Prob = ssget (i) ;
     disp (Prob) ;
     A = Prob.A ;
     [m n] = size (A) ;

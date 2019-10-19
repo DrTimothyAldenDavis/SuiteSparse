@@ -1,5 +1,5 @@
 CSparse: a Concise Sparse Matrix package.
-Copyright (c) 2006-2016, Timothy A. Davis.
+Copyright (c) 2006-2017, Timothy A. Davis.
 http://www.suitesparse.com
 
 Refer to "Direct Methods for Sparse Linear Systems," Timothy A. Davis,
@@ -152,8 +152,7 @@ Demo/           MATLAB demos for CSparse
 Makefile        MATLAB interface Makefile
 README.txt      MATLAB README file
 Test/           MATLAB test for CSparse, and "textbook" routines
-UFget/          MATLAB interface to UF Sparse Matrix Collection
-
+ssget/          MATLAB interface to SuiteSparse Matrix Collection
 
 --------------------------------------------------------------------------------
 ./MATLAB/CSparse:   MATLAB interface for CSparse
@@ -376,22 +375,10 @@ test28.m            test cs_randperm, cs_dmperm
 
 
 --------------------------------------------------------------------------------
-./MATLAB/UFget:     MATLAB interface for the UF Sparse Matrix Collection
+./MATLAB/ssget:     MATLAB interface for the SuiteSparse Matrix Collection
 --------------------------------------------------------------------------------
 
-Contents.m          Contents of UFget
-mat/                default directory where downloaded matrices will be put
-README.txt          README file for UFget
-UFget_defaults.m    default parameter settings
-UFget_example.m     example of use
-UFget_install.m     installs UFget temporarily (for current session)
-UFget_java.class    read a url and load it in into MATLAB (compiled Java code)
-UFget_java.java     read a url and load it in into MATLAB (Java source code)
-UFget_lookup.m      look up a matrix in the index
-UFget.m             UFget itself (primary user interface)
-UFweb.m             open url for a matrix or collection
-mat/UF_Index.mat    index of matrices in UF Sparse Matrix Collection
-
+See MATLAB/ssget/README.txt for details
 
 --------------------------------------------------------------------------------
 ./Matrix:           Sample matrices, most from Rutherford/Boeing collection

@@ -1,0 +1,611 @@
+--------------------------------------------------------------
+Wathen: nx 4 ny 4 n 65 nz 817 method 0, time: 0.000 sec
+
+total time to read A matrix:       0.000265 sec
+
+n 65 # edges 376
+U=triu(A) time:        0.000026 sec
+L=U' time :            0.000012 sec
+# triangles 872
+
+tricount time:         0.000047 sec (outer product method)
+tri+prep time:         0.000073 sec (incl time to compute U)
+compute C time:        0.000040 sec
+reduce (C) time:       0.000007 sec
+rate       5.15 million edges/sec (incl time for U=triu(A))
+rate       8.00 million edges/sec (just tricount itself)
+
+
+tricount time:         0.000041 sec (dot product method)
+tri+prep time:         0.000079 sec (incl time to compute L and U)
+compute C time:        0.000036 sec
+reduce (C) time:       0.000005 sec
+rate       4.76 million edges/sec (incl time for U=triu(A))
+rate       9.17 million edges/sec (just tricount itself)
+
+
+--------------------------------------------------------------
+random 5 by 5, nz: 16, method 1 time 0.000 sec
+
+total time to read A matrix:       0.000070 sec
+
+n 5 # edges 8
+U=triu(A) time:        0.000014 sec
+L=U' time :            0.000008 sec
+# triangles 4
+
+tricount time:         0.000021 sec (outer product method)
+tri+prep time:         0.000035 sec (incl time to compute U)
+compute C time:        0.000013 sec
+reduce (C) time:       0.000008 sec
+rate       0.23 million edges/sec (incl time for U=triu(A))
+rate       0.38 million edges/sec (just tricount itself)
+
+
+tricount time:         0.000007 sec (dot product method)
+tri+prep time:         0.000029 sec (incl time to compute L and U)
+compute C time:        0.000005 sec
+reduce (C) time:       0.000002 sec
+rate       0.28 million edges/sec (incl time for U=triu(A))
+rate       1.14 million edges/sec (just tricount itself)
+
+
+--------------------------------------------------------------
+ntuples: 3
+nrows 3 ncols 3
+time to prune self-edges:     0.000002
+time to build the graph with GrB_Matrix_build:     0.000024
+make symmetric
+A = (C+C')/2
+A = (C+C')/2 time     0.000027
+matrix 3 by 3, 0 entries, from stdin
+
+total time to read A matrix:       0.000105 sec
+
+n 3 # edges 0
+U=triu(A) time:        0.000015 sec
+L=U' time :            0.000003 sec
+# triangles 0
+
+tricount time:         0.000038 sec (outer product method)
+tri+prep time:         0.000053 sec (incl time to compute U)
+compute C time:        0.000031 sec
+reduce (C) time:       0.000007 sec
+rate       0.00 million edges/sec (incl time for U=triu(A))
+rate       0.00 million edges/sec (just tricount itself)
+
+
+tricount time:         0.000005 sec (dot product method)
+tri+prep time:         0.000023 sec (incl time to compute L and U)
+compute C time:        0.000003 sec
+reduce (C) time:       0.000002 sec
+rate       0.00 million edges/sec (incl time for U=triu(A))
+rate       0.00 million edges/sec (just tricount itself)
+
+
+--------------------------------------------------------------
+ntuples: 8
+nrows 4 ncols 4
+time to prune self-edges:     0.000000
+time to build the graph with GrB_Matrix_build:     0.000026
+make symmetric
+A = (C+C')/2
+A = (C+C')/2 time     0.000032
+matrix 4 by 4, 4 entries, from stdin
+
+total time to read A matrix:       0.000141 sec
+
+n 4 # edges 2
+U=triu(A) time:        0.000014 sec
+L=U' time :            0.000005 sec
+# triangles 0
+
+tricount time:         0.000016 sec (outer product method)
+tri+prep time:         0.000030 sec (incl time to compute U)
+compute C time:        0.000011 sec
+reduce (C) time:       0.000005 sec
+rate       0.07 million edges/sec (incl time for U=triu(A))
+rate       0.13 million edges/sec (just tricount itself)
+
+
+tricount time:         0.000005 sec (dot product method)
+tri+prep time:         0.000024 sec (incl time to compute L and U)
+compute C time:        0.000004 sec
+reduce (C) time:       0.000001 sec
+rate       0.08 million edges/sec (incl time for U=triu(A))
+rate       0.40 million edges/sec (just tricount itself)
+
+
+--------------------------------------------------------------
+ntuples: 10
+nrows 4 ncols 4
+time to prune self-edges:     0.000000
+time to build the graph with GrB_Matrix_build:     0.000034
+make symmetric
+A = (C+C')/2
+A = (C+C')/2 time     0.000052
+matrix 4 by 4, 10 entries, from stdin
+
+total time to read A matrix:       0.000173 sec
+
+n 4 # edges 5
+U=triu(A) time:        0.000017 sec
+L=U' time :            0.000006 sec
+# triangles 2
+
+tricount time:         0.000026 sec (outer product method)
+tri+prep time:         0.000043 sec (incl time to compute U)
+compute C time:        0.000019 sec
+reduce (C) time:       0.000007 sec
+rate       0.12 million edges/sec (incl time for U=triu(A))
+rate       0.19 million edges/sec (just tricount itself)
+
+
+tricount time:         0.000007 sec (dot product method)
+tri+prep time:         0.000030 sec (incl time to compute L and U)
+compute C time:        0.000006 sec
+reduce (C) time:       0.000001 sec
+rate       0.17 million edges/sec (incl time for U=triu(A))
+rate       0.71 million edges/sec (just tricount itself)
+
+
+--------------------------------------------------------------
+ntuples: 8
+nrows 4 ncols 3
+time to prune self-edges:     0.000001
+time to build the graph with GrB_Matrix_build:     0.000031
+make symmetric
+A = [0 C ; C' 0], a bipartite graph
+time to construct augmented system:     0.000032
+matrix 7 by 7, 16 entries, from stdin
+
+total time to read A matrix:       0.000147 sec
+
+n 7 # edges 8
+U=triu(A) time:        0.000015 sec
+L=U' time :            0.000006 sec
+# triangles 0
+
+tricount time:         0.000024 sec (outer product method)
+tri+prep time:         0.000039 sec (incl time to compute U)
+compute C time:        0.000016 sec
+reduce (C) time:       0.000008 sec
+rate       0.21 million edges/sec (incl time for U=triu(A))
+rate       0.33 million edges/sec (just tricount itself)
+
+
+tricount time:         0.000008 sec (dot product method)
+tri+prep time:         0.000029 sec (incl time to compute L and U)
+compute C time:        0.000007 sec
+reduce (C) time:       0.000001 sec
+rate       0.28 million edges/sec (incl time for U=triu(A))
+rate       1.00 million edges/sec (just tricount itself)
+
+
+--------------------------------------------------------------
+ntuples: 438
+nrows 219 ncols 85
+time to prune self-edges:     0.000000
+time to build the graph with GrB_Matrix_build:     0.000043
+make symmetric
+A = [0 C ; C' 0], a bipartite graph
+time to construct augmented system:     0.000087
+matrix 304 by 304, 876 entries, from stdin
+
+total time to read A matrix:       0.000459 sec
+
+n 304 # edges 438
+U=triu(A) time:        0.000027 sec
+L=U' time :            0.000008 sec
+# triangles 0
+
+tricount time:         0.000035 sec (outer product method)
+tri+prep time:         0.000062 sec (incl time to compute U)
+compute C time:        0.000028 sec
+reduce (C) time:       0.000007 sec
+rate       7.06 million edges/sec (incl time for U=triu(A))
+rate      12.51 million edges/sec (just tricount itself)
+
+
+tricount time:         0.000014 sec (dot product method)
+tri+prep time:         0.000049 sec (incl time to compute L and U)
+compute C time:        0.000013 sec
+reduce (C) time:       0.000001 sec
+rate       8.94 million edges/sec (incl time for U=triu(A))
+rate      31.29 million edges/sec (just tricount itself)
+
+
+--------------------------------------------------------------
+ntuples: 224
+nrows 48 ncols 48
+time to prune self-edges:     0.000001
+time to build the graph with GrB_Matrix_build:     0.000039
+make symmetric
+A = (C+C')/2
+A = (C+C')/2 time     0.000041
+matrix 48 by 48, 352 entries, from stdin
+
+total time to read A matrix:       0.000285 sec
+
+n 48 # edges 176
+U=triu(A) time:        0.000018 sec
+L=U' time :            0.000007 sec
+# triangles 160
+
+tricount time:         0.000026 sec (outer product method)
+tri+prep time:         0.000044 sec (incl time to compute U)
+compute C time:        0.000019 sec
+reduce (C) time:       0.000007 sec
+rate       4.00 million edges/sec (incl time for U=triu(A))
+rate       6.77 million edges/sec (just tricount itself)
+
+
+tricount time:         0.000030 sec (dot product method)
+tri+prep time:         0.000055 sec (incl time to compute L and U)
+compute C time:        0.000027 sec
+reduce (C) time:       0.000003 sec
+rate       3.20 million edges/sec (incl time for U=triu(A))
+rate       5.87 million edges/sec (just tricount itself)
+
+
+--------------------------------------------------------------
+ntuples: 147631
+nrows 4884 ncols 4884
+time to prune self-edges:     0.003637
+time to build the graph with GrB_Matrix_build:     0.002540
+make symmetric
+A = (C+C')/2
+A = (C+C')/2 time     0.006897
+matrix 4884 by 4884, 285494 entries, from stdin
+
+total time to read A matrix:       0.093778 sec
+
+n 4884 # edges 142747
+U=triu(A) time:        0.003440 sec
+L=U' time :            0.000934 sec
+# triangles 1512964
+
+tricount time:         0.023825 sec (outer product method)
+tri+prep time:         0.027265 sec (incl time to compute U)
+compute C time:        0.023010 sec
+reduce (C) time:       0.000815 sec
+rate       5.24 million edges/sec (incl time for U=triu(A))
+rate       5.99 million edges/sec (just tricount itself)
+
+
+tricount time:         0.037564 sec (dot product method)
+tri+prep time:         0.041938 sec (incl time to compute L and U)
+compute C time:        0.036396 sec
+reduce (C) time:       0.001168 sec
+rate       3.40 million edges/sec (incl time for U=triu(A))
+rate       3.80 million edges/sec (just tricount itself)
+
+
+--------------------------------------------------------------
+ntuples: 1069
+nrows 183 ncols 183
+time to prune self-edges:     0.000003
+time to build the graph with GrB_Matrix_build:     0.000047
+make symmetric
+A = (C+C')/2
+A = (C+C')/2 time     0.000070
+matrix 183 by 183, 1402 entries, from stdin
+
+total time to read A matrix:       0.000901 sec
+
+n 183 # edges 701
+U=triu(A) time:        0.000033 sec
+L=U' time :            0.000012 sec
+# triangles 863
+
+tricount time:         0.000084 sec (outer product method)
+tri+prep time:         0.000117 sec (incl time to compute U)
+compute C time:        0.000069 sec
+reduce (C) time:       0.000015 sec
+rate       5.99 million edges/sec (incl time for U=triu(A))
+rate       8.35 million edges/sec (just tricount itself)
+
+
+tricount time:         0.000115 sec (dot product method)
+tri+prep time:         0.000160 sec (incl time to compute L and U)
+compute C time:        0.000110 sec
+reduce (C) time:       0.000005 sec
+rate       4.38 million edges/sec (incl time for U=triu(A))
+rate       6.10 million edges/sec (just tricount itself)
+
+
+--------------------------------------------------------------
+ntuples: 123
+nrows 32 ncols 31
+time to prune self-edges:     0.000001
+time to build the graph with GrB_Matrix_build:     0.000059
+make symmetric
+A = [0 C ; C' 0], a bipartite graph
+time to construct augmented system:     0.000056
+matrix 63 by 63, 246 entries, from stdin
+
+total time to read A matrix:       0.000313 sec
+
+n 63 # edges 123
+U=triu(A) time:        0.000025 sec
+L=U' time :            0.000007 sec
+# triangles 0
+
+tricount time:         0.000097 sec (outer product method)
+tri+prep time:         0.000122 sec (incl time to compute U)
+compute C time:        0.000079 sec
+reduce (C) time:       0.000018 sec
+rate       1.01 million edges/sec (incl time for U=triu(A))
+rate       1.27 million edges/sec (just tricount itself)
+
+
+tricount time:         0.000036 sec (dot product method)
+tri+prep time:         0.000068 sec (incl time to compute L and U)
+compute C time:        0.000034 sec
+reduce (C) time:       0.000002 sec
+rate       1.81 million edges/sec (incl time for U=triu(A))
+rate       3.42 million edges/sec (just tricount itself)
+
+
+--------------------------------------------------------------
+ntuples: 123
+nrows 31 ncols 32
+time to prune self-edges:     0.000000
+time to build the graph with GrB_Matrix_build:     0.000038
+make symmetric
+A = [0 C ; C' 0], a bipartite graph
+time to construct augmented system:     0.000043
+matrix 63 by 63, 246 entries, from stdin
+
+total time to read A matrix:       0.000205 sec
+
+n 63 # edges 123
+U=triu(A) time:        0.000027 sec
+L=U' time :            0.000009 sec
+# triangles 0
+
+tricount time:         0.000026 sec (outer product method)
+tri+prep time:         0.000053 sec (incl time to compute U)
+compute C time:        0.000020 sec
+reduce (C) time:       0.000006 sec
+rate       2.32 million edges/sec (incl time for U=triu(A))
+rate       4.73 million edges/sec (just tricount itself)
+
+
+tricount time:         0.000010 sec (dot product method)
+tri+prep time:         0.000046 sec (incl time to compute L and U)
+compute C time:        0.000008 sec
+reduce (C) time:       0.000002 sec
+rate       2.67 million edges/sec (incl time for U=triu(A))
+rate      12.30 million edges/sec (just tricount itself)
+
+
+--------------------------------------------------------------
+ntuples: 102
+nrows 27 ncols 51
+time to prune self-edges:     0.000001
+time to build the graph with GrB_Matrix_build:     0.000029
+make symmetric
+A = [0 C ; C' 0], a bipartite graph
+time to construct augmented system:     0.000072
+matrix 78 by 78, 204 entries, from stdin
+
+total time to read A matrix:       0.000211 sec
+
+n 78 # edges 102
+U=triu(A) time:        0.000021 sec
+L=U' time :            0.000008 sec
+# triangles 0
+
+tricount time:         0.000052 sec (outer product method)
+tri+prep time:         0.000073 sec (incl time to compute U)
+compute C time:        0.000045 sec
+reduce (C) time:       0.000007 sec
+rate       1.40 million edges/sec (incl time for U=triu(A))
+rate       1.96 million edges/sec (just tricount itself)
+
+
+tricount time:         0.000010 sec (dot product method)
+tri+prep time:         0.000039 sec (incl time to compute L and U)
+compute C time:        0.000009 sec
+reduce (C) time:       0.000001 sec
+rate       2.62 million edges/sec (incl time for U=triu(A))
+rate      10.20 million edges/sec (just tricount itself)
+
+
+--------------------------------------------------------------
+ntuples: 49920
+nrows 492 ncols 490
+time to prune self-edges:     0.000002
+time to build the graph with GrB_Matrix_build:     0.000896
+make symmetric
+A = [0 C ; C' 0], a bipartite graph
+time to construct augmented system:     0.005180
+matrix 982 by 982, 99840 entries, from stdin
+
+total time to read A matrix:       0.030604 sec
+
+n 982 # edges 49920
+U=triu(A) time:        0.002114 sec
+L=U' time :            0.000318 sec
+# triangles 0
+
+tricount time:         0.000476 sec (outer product method)
+tri+prep time:         0.002590 sec (incl time to compute U)
+compute C time:        0.000470 sec
+reduce (C) time:       0.000006 sec
+rate      19.27 million edges/sec (incl time for U=triu(A))
+rate     104.87 million edges/sec (just tricount itself)
+
+
+tricount time:         0.000360 sec (dot product method)
+tri+prep time:         0.002792 sec (incl time to compute L and U)
+compute C time:        0.000358 sec
+reduce (C) time:       0.000002 sec
+rate      17.88 million edges/sec (incl time for U=triu(A))
+rate     138.67 million edges/sec (just tricount itself)
+
+
+--------------------------------------------------------------
+ntuples: 299
+nrows 67 ncols 67
+time to prune self-edges:     0.000002
+time to build the graph with GrB_Matrix_build:     0.000051
+make symmetric
+A = (C+C')/2
+A = (C+C')/2 time     0.000039
+matrix 67 by 67, 574 entries, from stdin
+
+total time to read A matrix:       0.000316 sec
+
+n 67 # edges 287
+U=triu(A) time:        0.000024 sec
+L=U' time :            0.000009 sec
+# triangles 120
+
+tricount time:         0.000043 sec (outer product method)
+tri+prep time:         0.000067 sec (incl time to compute U)
+compute C time:        0.000037 sec
+reduce (C) time:       0.000006 sec
+rate       4.28 million edges/sec (incl time for U=triu(A))
+rate       6.67 million edges/sec (just tricount itself)
+
+
+tricount time:         0.000022 sec (dot product method)
+tri+prep time:         0.000055 sec (incl time to compute L and U)
+compute C time:        0.000020 sec
+reduce (C) time:       0.000002 sec
+rate       5.22 million edges/sec (incl time for U=triu(A))
+rate      13.05 million edges/sec (just tricount itself)
+
+
+--------------------------------------------------------------
+Wathen: nx 200 ny 200 n 120801 nz 1883201 method 0, time: 0.305 sec
+
+total time to read A matrix:       0.372661 sec
+
+n 120801 # edges 881200
+U=triu(A) time:        0.034735 sec
+L=U' time :            0.007189 sec
+# triangles 2160400
+
+tricount time:         0.043954 sec (outer product method)
+tri+prep time:         0.078689 sec (incl time to compute U)
+compute C time:        0.039183 sec
+reduce (C) time:       0.004771 sec
+rate      11.20 million edges/sec (incl time for U=triu(A))
+rate      20.05 million edges/sec (just tricount itself)
+
+
+tricount time:         0.054829 sec (dot product method)
+tri+prep time:         0.096753 sec (incl time to compute L and U)
+compute C time:        0.050540 sec
+reduce (C) time:       0.004289 sec
+rate       9.11 million edges/sec (incl time for U=triu(A))
+rate      16.07 million edges/sec (just tricount itself)
+
+
+--------------------------------------------------------------
+random 10000 by 10000, nz: 199746, method 0 time 0.035 sec
+
+total time to read A matrix:       0.037346 sec
+
+n 10000 # edges 99873
+U=triu(A) time:        0.003833 sec
+L=U' time :            0.003316 sec
+# triangles 1301
+
+tricount time:         0.005017 sec (outer product method)
+tri+prep time:         0.008850 sec (incl time to compute U)
+compute C time:        0.004924 sec
+reduce (C) time:       0.000093 sec
+rate      11.29 million edges/sec (incl time for U=triu(A))
+rate      19.91 million edges/sec (just tricount itself)
+
+
+tricount time:         0.013202 sec (dot product method)
+tri+prep time:         0.020351 sec (incl time to compute L and U)
+compute C time:        0.013192 sec
+reduce (C) time:       0.000010 sec
+rate       4.91 million edges/sec (incl time for U=triu(A))
+rate       7.56 million edges/sec (just tricount itself)
+
+
+--------------------------------------------------------------
+random 10000 by 10000, nz: 199746, method 1 time 0.030 sec
+
+total time to read A matrix:       0.031984 sec
+
+n 10000 # edges 99873
+U=triu(A) time:        0.003223 sec
+L=U' time :            0.003558 sec
+# triangles 1301
+
+tricount time:         0.005279 sec (outer product method)
+tri+prep time:         0.008502 sec (incl time to compute U)
+compute C time:        0.005249 sec
+reduce (C) time:       0.000030 sec
+rate      11.75 million edges/sec (incl time for U=triu(A))
+rate      18.92 million edges/sec (just tricount itself)
+
+
+tricount time:         0.015104 sec (dot product method)
+tri+prep time:         0.021885 sec (incl time to compute L and U)
+compute C time:        0.015093 sec
+reduce (C) time:       0.000011 sec
+rate       4.56 million edges/sec (incl time for U=triu(A))
+rate       6.61 million edges/sec (just tricount itself)
+
+
+--------------------------------------------------------------
+random 100000 by 100000, nz: 19979838, method 0 time 4.453 sec
+
+total time to read A matrix:       4.713745 sec
+
+n 100000 # edges 9989919
+U=triu(A) time:        0.463484 sec
+L=U' time :            0.437929 sec
+# triangles 1328523
+
+tricount time:         2.445643 sec (outer product method)
+tri+prep time:         2.909127 sec (incl time to compute U)
+compute C time:        2.429495 sec
+reduce (C) time:       0.016148 sec
+rate       3.43 million edges/sec (incl time for U=triu(A))
+rate       4.08 million edges/sec (just tricount itself)
+
+
+tricount time:        24.631576 sec (dot product method)
+tri+prep time:        25.532989 sec (incl time to compute L and U)
+compute C time:       24.622927 sec
+reduce (C) time:       0.008649 sec
+rate       0.39 million edges/sec (incl time for U=triu(A))
+rate       0.41 million edges/sec (just tricount itself)
+
+
+--------------------------------------------------------------
+random 100000 by 100000, nz: 19979838, method 1 time 3.887 sec
+
+total time to read A matrix:       4.130590 sec
+
+n 100000 # edges 9989919
+U=triu(A) time:        0.455335 sec
+L=U' time :            0.439813 sec
+# triangles 1328523
+
+tricount time:         2.440143 sec (outer product method)
+tri+prep time:         2.895478 sec (incl time to compute U)
+compute C time:        2.424204 sec
+reduce (C) time:       0.015939 sec
+rate       3.45 million edges/sec (incl time for U=triu(A))
+rate       4.09 million edges/sec (just tricount itself)
+
+
+tricount time:        25.179597 sec (dot product method)
+tri+prep time:        26.074745 sec (incl time to compute L and U)
+compute C time:       25.172452 sec
+reduce (C) time:       0.007145 sec
+rate       0.38 million edges/sec (incl time for U=triu(A))
+rate       0.40 million edges/sec (just tricount itself)
+
+

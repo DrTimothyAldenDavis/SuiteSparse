@@ -7,12 +7,12 @@ function test11
 
 % Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
-index = UFget ;
+index = ssget ;
 [ignore f] = sort (max (index.nrows, index.ncols)) ;
 f = f (1:200) ;
 
 for i = f
-    Prob = UFget (i, index) ;
+    Prob = ssget (i, index) ;
     disp (Prob) ;
     A = Prob.A ;
     [m n] = size (A) ;

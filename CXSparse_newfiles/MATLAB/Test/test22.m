@@ -7,7 +7,7 @@ function test22
 
 % Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
-index = UFget ;
+index = ssget ;
 [ignore f] = sort (max (index.nrows, index.ncols)) ;
 f = f (1:200) ;
 
@@ -23,7 +23,7 @@ C3 = zeros (nprob,1) ;
 for k = 1:length (f)
     
     i = f (k) ;
-    Prob = UFget (i) ;
+    Prob = ssget (i) ;
     disp (Prob) ;
     A = Prob.A ;
     [m n] = size (A) ;

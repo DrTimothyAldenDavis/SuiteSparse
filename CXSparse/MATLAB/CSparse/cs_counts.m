@@ -8,7 +8,7 @@ function c = cs_counts (A,mode)                                             %#ok
 %   c = cs_counts(A,'sym'), same as cs_counts(A).
 %
 %   Example:
-%       Prob = UFget ('HB/bcsstk01') ; A = Prob.A ; c = cs_counts (A)
+%       Prob = ssget ('HB/bcsstk01') ; A = Prob.A ; c = cs_counts (A)
 %       full (sum (spones (chol (A)')))
 %
 %   See also SYMBFACT.

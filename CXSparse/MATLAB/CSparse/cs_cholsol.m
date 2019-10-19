@@ -6,7 +6,7 @@ function x = cs_cholsol (A,b,order)                                         %#ok
 %   with no dense rows, 3:amd(A'*A).  The default ordering option is 1.
 %
 %   Example:
-%       Prob = UFget ('HB/bcsstk01') ; A = Prob.A ; b = rand (size (A,1),1) ;
+%       Prob = ssget ('HB/bcsstk01') ; A = Prob.A ; b = rand (size (A,1),1) ;
 %       x = cs_cholsol (A,b) ; norm (A*x-b)
 %
 %   See also CS_CHOL, CS_AMD, CS_LUSOL, CS_QRSOL, MLDIVIDE.

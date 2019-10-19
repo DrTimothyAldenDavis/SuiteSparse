@@ -3,7 +3,7 @@ function z = cs_gaxpy (A,x,y)                                               %#ok
 %   z = cs_gaxpy(A,x,y) computes z = A*x+y where x and y are full vectors.
 %
 %   Example:
-%       Prob = UFget ('HB/arc130') ; A = Prob.A ; [m n] = size (A) ;
+%       Prob = ssget ('HB/arc130') ; A = Prob.A ; [m n] = size (A) ;
 %       x = rand (n,1) ; y = rand (m,1) ;
 %       z = cs_gaxpy (A, x, y) ;
 %       

@@ -7,7 +7,7 @@ function cs_install (do_pause)
 %
 %       CSparse/MATLAB/CSparse
 %       CSparse/MATLAB/Demo
-%       CSparse/MATLAB/UFget
+%       CSparse/MATLAB/ssget
 %
 %   are added to your MATLAB path (see the "pathtool" command to add these to
 %   your path permanently, for future MATLAB sessions).
@@ -36,26 +36,26 @@ end
 addpath ([pwd '/CSparse']) ;
 addpath ([pwd '/Demo']) ;
 
-if (verLessThan ('matlab', '7.0'))
-    fprintf ('UFget not installed (MATLAB 7.0 or later required)\n') ;
+if (verLessThan ('matlab', '8.4'))
+    fprintf ('ssget not installed (MATLAB 8.4 or later required)\n') ;
 else
-    % install UFget, unless it's already in the path
+    % install ssget, unless it's already in the path
     try
-        % if this fails, then UFget is not yet installed
-        index = UFget ;
-        fprintf ('UFget already installed:\n') ;
-        which UFget
+        % if this fails, then ssget is not yet installed
+        index = ssget ;
+        fprintf ('ssget already installed:\n') ;
+        which ssget
     catch
         index = [ ] ;
     end
     if (isempty (index))
-        % UFget is not installed.  Use ./UFget
-        fprintf ('Installing ./UFget\n') ;
+        % ssget is not installed.  Use ./ssget
+        fprintf ('Installing ./ssget\n') ;
         try
-            addpath ([pwd '/UFget']) ;
+            addpath ([pwd '/ssget']) ;
         catch me
             disp (me.message) ;
-            fprintf ('UFget not installed\n') ;
+            fprintf ('ssget not installed\n') ;
         end
     end
 end

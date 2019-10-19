@@ -5,7 +5,7 @@ function [a,b] = cs_esep (A)
 %   set of entries in A(a,b).
 %
 %   Example:
-%       Prob = UFget ('HB/bcsstk01') ; A = Prob.A ;
+%       Prob = ssget ('HB/bcsstk01') ; A = Prob.A ;
 %       [a,b] = cs_esep (A) ;
 %       cspy (A (a,b)) ;
 %

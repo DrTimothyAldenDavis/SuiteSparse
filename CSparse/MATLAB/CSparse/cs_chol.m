@@ -7,7 +7,7 @@ function [L,p] = cs_chol (A,drop)                                           %#ok
 %   cs_chol(A,0) keeps them.  They must be kept for cs_updown to work properly.
 %
 %   Example:
-%       Prob = UFget ('HB/bcsstk01') ; A = Prob.A ; [L,p] = cs_chol (A) ;
+%       Prob = ssget ('HB/bcsstk01') ; A = Prob.A ; [L,p] = cs_chol (A) ;
 %       cspy (A (p,p)) ;
 %       cspy (L) ;
 %

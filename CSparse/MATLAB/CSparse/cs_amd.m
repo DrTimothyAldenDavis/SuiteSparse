@@ -12,7 +12,7 @@ function p = cs_amd (A,order)                                               %#ok
 %                   where [m n] = size(A), except that colamd does not form A'*A
 %                   explicitly.
 %   Example:
-%       Prob = UFget ('HB/bcsstk01') ; A = Prob.A ;
+%       Prob = ssget ('HB/bcsstk01') ; A = Prob.A ;
 %       p = cs_amd (A) ;
 %       nnz (chol (A))
 %       nnz (chol (A (p,p)))

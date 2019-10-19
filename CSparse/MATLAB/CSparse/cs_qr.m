@@ -13,7 +13,7 @@ function [V,beta,p,R,q] = cs_qr (A)                                         %#ok
 %
 %   Example:
 %
-%       Prob = UFget ('HB/well1033') ; A = Prob.A ; [m n] = size (A) ;
+%       Prob = ssget ('HB/well1033') ; A = Prob.A ; [m n] = size (A) ;
 %       b = rand (m,1) ;
 %       [V,beta,p,R,q] = cs_qr (A) ; % QR factorization of A(p,q)
 %       b1 = cs_qleft (V, beta, p, b) ;

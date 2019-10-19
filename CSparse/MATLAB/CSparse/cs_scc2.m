@@ -12,9 +12,9 @@ function [p, q, r, s] = cs_scc2 (A, bipartite)
 %   block is given by A(r(k):r(k+1)-1,s(k):s(k+1)-1).  A can be rectangular.
 %
 %   Example:
-%       Prob = UFget ('HB/arc130') ; A = Prob.A ; [p q r s] = cs_scc2 (A) ;
+%       Prob = ssget ('HB/arc130') ; A = Prob.A ; [p q r s] = cs_scc2 (A) ;
 %       cspy (A (p,q)) ;
-%       Prob = UFget ('HB/wm1') ; A = Prob.A ; [p q r s] = cs_scc2 (A) ;
+%       Prob = ssget ('HB/wm1') ; A = Prob.A ; [p q r s] = cs_scc2 (A) ;
 %       cspy (A (p,q)) ;
 %
 %   See also CS_DMPERM, DMPERM, CS_SCC, CCSPY.

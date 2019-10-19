@@ -3,7 +3,7 @@ function C = cs_permute (A,p,q)                                             %#ok
 %   C = cs_permute(A,p,q) computes C = A(p,q)
 %
 %   Example:
-%       Prob = UFget ('HB/arc130') ; A = Prob.A ; [m n] = size (A) ;
+%       Prob = ssget ('HB/arc130') ; A = Prob.A ; [m n] = size (A) ;
 %       p = randperm (m) ; q = randperm (n) ;
 %       C = cs_permute (A,p,q) ;    % C = A(p,q)
 %

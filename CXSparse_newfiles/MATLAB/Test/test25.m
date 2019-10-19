@@ -9,7 +9,7 @@ function test25
 
 clear functions
 
-index = UFget ;
+index = ssget ;
 [ignore f] = sort (max (index.nrows, index.ncols)) ;
 f = f (1:400) ;
 
@@ -19,7 +19,7 @@ clf
 for k = 1:length (f)
     
     i = f (k) ;
-    Prob = UFget (i) ;
+    Prob = ssget (i) ;
     disp (Prob) ;
     A = real (Prob.A) ;
     [m n] = size (A) ;

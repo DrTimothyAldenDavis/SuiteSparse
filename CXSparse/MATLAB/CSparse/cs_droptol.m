@@ -4,7 +4,7 @@ function C = cs_droptol (A, tol)                                            %#ok
 %   equal to tol.  Same as A = A .* (abs (A) >= tol).
 %
 %   Example:
-%       Prob = UFget ('HB/arc130') ; A = Prob.A ;
+%       Prob = ssget ('HB/arc130') ; A = Prob.A ;
 %       cspy (abs (A) >= 1e-10) ;
 %       C = cs_droptol (A, 1e-10) ;
 %       cspy (C) ;

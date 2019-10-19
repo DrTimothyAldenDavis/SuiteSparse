@@ -985,7 +985,8 @@ int CHOLMOD(super_symbolic)
     cholmod_common *Common
 )
 {
-    return (CHOLMOD(super_symbolic2) (TRUE, A, F, Parent, L, Common)) ;
+    return (CHOLMOD(super_symbolic2) (CHOLMOD_ANALYZE_FOR_CHOLESKY,
+        A, F, Parent, L, Common)) ;
 }
 #endif
 #endif

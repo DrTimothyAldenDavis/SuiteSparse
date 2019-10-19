@@ -21,7 +21,7 @@ for n = 1:100
     end
 end
 
-index = UFget ;
+index = ssget ;
 [ignore f] = sort (index.nnz) ;
 
 fprintf ('p=dmperm (std, rand, rev)  [p,q,r,s]=dmperm (std, rand, rev)\n') ;
@@ -39,7 +39,7 @@ D3 = zeros (nmat,1) ;
 for k = 1:nmat
 
     i = f (k) ;
-    Prob = UFget (i,index) ;
+    Prob = ssget (i,index) ;
     A = Prob.A ;
     [m n] = size (A) ;
     fprintf ('%35s: ', Prob.name) ;

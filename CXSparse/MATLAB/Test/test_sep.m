@@ -11,7 +11,7 @@ function test_sep
 
 clear functions
 
-index = UFget ;
+index = ssget ;
 [ignore f] = sort (max (index.nrows, index.ncols)) ;
 
 clf
@@ -19,7 +19,7 @@ clf
 for k = 1:length(f)
     
     i = f (k) ;
-    Prob = UFget (i) ;
+    Prob = ssget (i) ;
     disp (Prob) ;
     A = spones (Prob.A) ;
     [m n] = size (A) ;

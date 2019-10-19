@@ -8,7 +8,7 @@ function [parent, post] = cs_etree (A, mode)                                %#ok
 %   [parent,post] = cs_etree(...) also returns a postorder of the tree.
 %
 %   Example:
-%       Prob = UFget ('HB/bcsstk01') ; A = Prob.A ;
+%       Prob = ssget ('HB/bcsstk01') ; A = Prob.A ;
 %       parent = cs_etree (A) ; treeplot (parent) ;
 %
 %   See also ETREE, TREEPLOT.

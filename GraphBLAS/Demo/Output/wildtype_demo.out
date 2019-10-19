@@ -1,0 +1,78 @@
+WildType size: 128
+
+a wildtype scalar: scalar1 [this is from scalar1]
+       0.0        1.0        2.0        3.0 
+     100.0      101.0      102.0      103.0 
+     200.0      201.0      202.0      203.0 
+     300.0      301.0      302.0      303.0 
+
+a wildtype scalar: got scalar2 = C(7,2) [this is from scalar1]
+       0.0        1.0        2.0        3.0 
+     100.0      101.0      102.0      103.0 
+     200.0      201.0      202.0      203.0 
+     300.0      301.0      302.0      303.0 
+
+a wildtype scalar: scalar2 [here is scalar2]
+       0.5        1.5        2.5        3.5 
+      -0.5        0.5        1.5        2.5 
+      -1.5       -0.5        0.5        1.5 
+      -2.5       -1.5       -0.5        0.5 
+
+a wildtype scalar: scalar_identity for the monoid [identity]
+       0.0        0.0        0.0        0.0 
+       0.0        0.0        0.0        0.0 
+       0.0        0.0        0.0        0.0 
+       0.0        0.0        0.0        0.0 
+
+multiplication C=A*B InTheWild semiring:
+
+============= printing the WildType matrix: input A (10-by-10 with 1 entries)
+
+----------- input A(2,7):
+
+a wildtype scalar:  [this is from scalar1]
+       0.0        1.0        2.0        3.0 
+     100.0      101.0      102.0      103.0 
+     200.0      201.0      202.0      203.0 
+     300.0      301.0      302.0      303.0 
+
+============= that was the WildType matrix input A
+
+============= printing the WildType matrix: input B (10-by-10 with 1 entries)
+
+----------- input B(7,2):
+
+a wildtype scalar:  [here is scalar2]
+       0.5        1.5        2.5        3.5 
+      -0.5        0.5        1.5        2.5 
+      -1.5       -0.5        0.5        1.5 
+      -2.5       -1.5       -0.5        0.5 
+
+============= that was the WildType matrix input B
+[this was multiplied] = [this is from scalar1] * [here is scalar2]
+[this was added] = [identity] + [this was multiplied]
+
+============= printing the WildType matrix: output C (10-by-10 with 1 entries)
+
+----------- output C(2,2):
+
+a wildtype scalar:  [this was added]
+     -11.0       -5.0        1.0        7.0 
+    -411.0       -5.0      401.0      807.0 
+    -811.0       -5.0      801.0     1607.0 
+   -1211.0       -5.0     1201.0     2407.0 
+
+============= that was the WildType matrix output C
+
+The matrix D is not wild enough to print.
+
+This supposed to fail, as a demo of GrB_error:
+
+=================================================================
+GraphBLAS error: GrB_DOMAIN_MISMATCH
+function: GrB_eWiseAdd_Matrix_BinaryOp (C, Mask, accum, add, A, B, desc)
+incompatible type for z=wildtype_add(x,y):
+second input of type [float]
+cannot be typecast to y input of type [wildtype]
+=================================================================
+

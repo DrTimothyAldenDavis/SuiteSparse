@@ -1,7 +1,7 @@
 CXSparse/MATLAB directory, which contains the MATLAB mexFunction interfaces
 for CXSparse, demos, and tests.  It includes various "textbook" files
 that are printed in the book, but not a proper part of CSparse itself.
-It also includes "UFget", a MATLAB interface for the UF Sparse Matrix
+It also includes "ssget", a MATLAB interface for the UF Sparse Matrix
 Collection.
 
 Type the command "cs_install" while in this directory.  It will compile
@@ -9,7 +9,7 @@ CSparse, and add the directories:
 
     CXSparse/MATLAB/CSparse
     CXSparse/MATLAB/Demo
-    CXSparse/MATLAB/UFget
+    CXSparse/MATLAB/ssget
 
 to your MATLAB path (see the "pathtool" command to add these to your path
 permanently, for future MATLAB sessions).

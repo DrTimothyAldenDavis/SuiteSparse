@@ -5,7 +5,7 @@ function X = cs_qleft (V, Beta, p, Y)
 %   permutation p.  p can be [], which denotes the identity permutation.
 %
 %   Example:
-%       Prob = UFget ('HB/well1033') ; A = Prob.A ; [m n] = size (A) ;
+%       Prob = ssget ('HB/well1033') ; A = Prob.A ; [m n] = size (A) ;
 %       b = rand (m,1) ;
 %       [V,beta,p,R] = cs_qr (A) ; % QR factorization of A(p,:)
 %       b1 = cs_qleft (V, beta, p, b) ;

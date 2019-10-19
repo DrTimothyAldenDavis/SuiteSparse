@@ -10,7 +10,7 @@ function test27
 clear functions
 rand ('state', 0) ;
 
-Prob = UFget ('HB/ibm32') ;
+Prob = ssget ('HB/ibm32') ;
 A = Prob.A ;
 A = A (1:10,:) ;
 [m n] = size (A) ;

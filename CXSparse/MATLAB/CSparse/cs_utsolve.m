@@ -4,7 +4,7 @@ function x = cs_utsolve (U,b)                                               %#ok
 %   zero-free diagonal.  b must be a full vector.
 %
 %   Example:
-%       Prob = UFget ('HB/arc130') ; A = Prob.A ; n = size (A,1) ;
+%       Prob = ssget ('HB/arc130') ; A = Prob.A ; n = size (A,1) ;
 %       b = rand (n,1);
 %       [L U p q] = cs_lu (A) ;
 %       x = cs_ltsolve (L, cs_utsolve (U, b(q))) ;   % x = L' \ (U' \ b(q)) ;

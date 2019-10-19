@@ -5,7 +5,7 @@ function C = cs_transpose (A)                                               %#ok
 %   C = cs_transpose(A,1) computes C=A'
 %
 %   Example:
-%       Prob = UFget ('HB/ibm32') ; A = Prob.A ;
+%       Prob = ssget ('HB/ibm32') ; A = Prob.A ;
 %       C = cs_transpose (A) ;
 %       C-A'
 %

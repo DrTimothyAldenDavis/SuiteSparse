@@ -13,7 +13,7 @@ function [vnz,rnz,parent,c,leftmost,p,q] = cs_sqr (A)                       %#ok
 %   q is the fill-reducing ordering, if requested.
 %
 %   Example:
-%       Prob = UFget ('HB/ibm32') ; A = Prob.A ;
+%       Prob = ssget ('HB/ibm32') ; A = Prob.A ;
 %       [vnz, rnz, parent, c, leftmost, p, q] = cs_sqr (A) ;
 %       cspy (A (p,q)) ;
 %

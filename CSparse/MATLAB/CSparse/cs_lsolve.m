@@ -6,7 +6,7 @@ function x = cs_lsolve (L,b)                                                %#ok
 %   is returned in topological order).
 %
 %   Example:
-%       Prob = UFget ('HB/bcsstk01') ; L = cs_chol (Prob.A) ; n = size (L,1) ;
+%       Prob = ssget ('HB/bcsstk01') ; L = cs_chol (Prob.A) ; n = size (L,1) ;
 %       b = rand (n,1) ; x = cs_lsolve (L,b) ; norm (L*x-b)
 %
 %   See also CS_LTSOLVE, CS_USOLVE, CS_UTSOLVE, MLDIVIDE.

@@ -1,3 +1,8 @@
+Nov 25, 2017: SuiteSparse 5.0.0
+
+    * added GraphBLAS Version 1.0.0
+    * replaced UFget with ssget
+
 Oct 3, 2017: SuiteSparse 4.5.6
 
     * changed COLAMD, CAMD, and CCOLAMD to BSD 3-clause,

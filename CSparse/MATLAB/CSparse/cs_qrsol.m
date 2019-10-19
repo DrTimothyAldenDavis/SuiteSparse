@@ -7,7 +7,7 @@ function x = cs_qrsol (A,b,order)                                           %#ok
 %   (0: natural, 3: amd(A'*A)).  The default ordering is 3.
 %
 %   Example:
-%       Prob = UFget ('HB/well1033') ; A = Prob.A ; [m n] = size (A) ;
+%       Prob = ssget ('HB/well1033') ; A = Prob.A ; [m n] = size (A) ;
 %       b = rand (m,1) ;
 %       x1 = cs_qrsol (A,b) ;
 %       x2 = A\b ;

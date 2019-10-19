@@ -7,13 +7,13 @@ function test1
 
 % Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
-index = UFget ;
+index = ssget ;
 [ignore f] = sort (max (index.nrows, index.ncols)) ;
 f = f (1:100) ;
 
 for ii = f
 
-    Prob = UFget (ii) ;
+    Prob = ssget (ii) ;
     disp (Prob) ;
     for cmplex = 0:double(~ispc)
 
@@ -46,7 +46,7 @@ for ii = f
             q = cs_gaxpy (A,x,y) ;
             err = norm (z-q,1) / norm (z,1) ;
             disp (err) ;
-            if (err > 1e-14)
+            if (err > 1e-13)
                 error ('!')
             end
         % end
@@ -58,7 +58,7 @@ for ii = f
             q = cs_gaxpy (A,x,y) ;
             err = norm (z-q,1) / norm (z,1) ;
             disp (err) ;
-            if (err > 1e-14)
+            if (err > 1e-13)
                 error ('!')
             end
         end

@@ -5,7 +5,7 @@ function C = cs_symperm (A,p)                                               %#ok
 %   symmetric with just their upper triangular parts stored).  A must be square.
 %
 %   Example:
-%       Prob = UFget ('HB/bcsstk01') ; A = Prob.A ;
+%       Prob = ssget ('HB/bcsstk01') ; A = Prob.A ;
 %       p = cs_amd (A) ;
 %       C = cs_symperm (A, p) ;
 %       cspy (A (p,p)) ;

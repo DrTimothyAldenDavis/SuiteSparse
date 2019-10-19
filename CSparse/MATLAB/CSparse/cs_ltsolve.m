@@ -4,7 +4,7 @@ function x = cs_ltsolve (L,b)                                               %#ok
 %   zero-free diagonal.  b must be a full vector.
 %
 %   Example:
-%       Prob = UFget ('HB/bcsstk01') ; L = cs_chol (Prob.A) ; n = size (L,1) ;
+%       Prob = ssget ('HB/bcsstk01') ; L = cs_chol (Prob.A) ; n = size (L,1) ;
 %       b = rand (n,1) ; x = cs_ltsolve (L,b) ; norm (L'*x-b)
 %
 %   See also CS_LSOLVE, CS_USOLVE, CS_UTSOLVE, MLDIVIDE.

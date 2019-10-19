@@ -6,7 +6,7 @@ function x = cs_usolve (U,b)                                                %#ok
 %   returned in topological order).
 %
 %   Example:
-%       Prob = UFget ('HB/arc130') ; A = Prob.A ; n = size (A,1) ;
+%       Prob = ssget ('HB/arc130') ; A = Prob.A ; n = size (A,1) ;
 %       b = rand (n,1);
 %       [L U p q] = cs_lu (A) ;
 %       x = cs_usolve (U, cs_lsolve (L, b(p))) ;   % x = U \ (L \ b(p)) ;

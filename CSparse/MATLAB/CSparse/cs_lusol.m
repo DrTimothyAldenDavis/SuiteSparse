@@ -12,7 +12,7 @@ function x = cs_lusol (A,b,order,tol)                                       %#ok
 %   dense rows, 3: amd(A'*A).
 %
 %   Example:
-%       Prob = UFget ('HB/arc130') ; A = Prob.A ; n = size(A,1) ;
+%       Prob = ssget ('HB/arc130') ; A = Prob.A ; n = size(A,1) ;
 %       b = rand (n,1) ; x = cs_lusol (A,b) ; norm (A*x-b)
 %
 %   See also CS_LU, CS_AMD, CS_CHOLSOL, CS_QRSOL, MLDIVIDE.

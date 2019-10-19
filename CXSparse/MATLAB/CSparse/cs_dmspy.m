@@ -11,7 +11,7 @@ function [p,q,r,s,cc,rr] = cs_dmspy (A,res,seed)
 %   used by cs_dmperm.
 %
 %   Example:
-%       Prob = UFget ('HB/arc130') ; cs_dmspy (Prob.A) ;
+%       Prob = ssget ('HB/arc130') ; cs_dmspy (Prob.A) ;
 %
 %   See also CS_DMPERM, CS_DMSOL, DMPERM, SPRANK, SPY.
 

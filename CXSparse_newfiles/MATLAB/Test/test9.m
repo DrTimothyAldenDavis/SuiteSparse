@@ -9,7 +9,7 @@ function test9
 
 rand ('state', 0) ;
 
-index = UFget ;
+index = ssget ;
 [ignore f] = sort (max (index.nrows, index.ncols)) ;
 f = f (1:100) ;
 clf
@@ -19,7 +19,7 @@ clf
 % f = 186
 
 for i = f
-    Prob = UFget (i) ;
+    Prob = ssget (i) ;
     disp (Prob) ;
     A = Prob.A ;
     [m n] = size (A) ;

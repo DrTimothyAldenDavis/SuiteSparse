@@ -1,6 +1,9 @@
 SuiteSparse:  A Suite of Sparse matrix packages at http://www.suitesparse.com
 
-Oct 3, 2017.  SuiteSparse VERSION 4.5.6
+Nov 25, 2017.  SuiteSparse VERSION 5.0.0
+
+Now includes GraphBLAS 1.0.0 and a new interface to the SuiteSparse Matrix
+Collection (ssget), via MATLAB and a Java GUI, to http://sparse.tamu.edu.
 
 ------------------
 SuiteSparse/README
@@ -9,6 +12,12 @@ SuiteSparse/README
 ================================================================================
 Packages in SuiteSparse, and files in this directory:
 ================================================================================
+
+    GraphBLAS   graph algorithms in the language of linear algebra.
+                https://graphblas.org
+                A stand-alone package that uses cmake to compile; see
+                GraphBLAS/README.txt.  The rest of SuiteSparse still uses
+                'make'.  A cmake setup for all of SuiteSparse is in progress.
 
     AMD         approximate minimum degree ordering.  This is the built-in AMD
                 function in MATLAB.
@@ -70,7 +79,7 @@ Packages in SuiteSparse, and files in this directory:
 
     lib         'make' places shared libraries for each package here
 
-    Makefile    to compile all of SuiteSparse:
+    Makefile    to compile all of SuiteSparse (except GraphBLAS)
                 make            compiles SuiteSparse libraries and runs demos
                 make install    compiles SuiteSparse and installs in /usr/local
                 make uninstall  undoes 'make install'
@@ -143,8 +152,9 @@ Packages in SuiteSparse, and files in this directory:
 
     SuiteSparse_test.m          exhaustive test for SuiteSparse in MATLAB
 
-    UFget       MATLAB interface to the SuiteSparse Matrix Collection
+    ssget       MATLAB interface to the SuiteSparse Matrix Collection
                 (formerly called the UF Sparse Matrix Collection).
+                Includes a UFget function for backward compatibility.
 
     UMFPACK     sparse LU factorization.  Requires AMD and the BLAS.
                 This is the built-in lu and x=A\b in MATLAB.
@@ -185,15 +195,16 @@ PACKAGENAME/Doc/License.txt:
     RBio/Doc/License.txt
     SPQR/Doc/License.txt
     SuiteSparse_GPURuntime/Doc/License.txt
-    UFget/Doc/License.txt
+    ssget/Doc/License.txt
     UMFPACK/Doc/License.txt
+    GraphBLAS/Doc/License.txt
 
 These files are also present, but they are simply copies of the above license
-files for CXSparse and UFget:
+files for CXSparse and ssget:
 
     CXSparse_newfiles/Doc/License.txt
-    CSparse/MATLAB/UFget/Doc/License.txt
-    CXSparse/MATLAB/UFget/Doc/License.txt
+    CSparse/MATLAB/ssget/Doc/License.txt
+    CXSparse/MATLAB/ssget/Doc/License.txt
 
 METIS 5.0.1 is distributed with SuiteSparse, and is Copyright (c)
 by George Karypis.  Please refer to that package for its License.
@@ -208,11 +219,17 @@ will be run.  To run a (long!) exhaustive test, do SuiteSparse_test.
 
 
 ================================================================================
-QUICK START FOR THE C/C++ LIBRARIES:  Just type 'make' in this directory.  All
-libraries will be created and copied into SuiteSparse/lib.  All include files
-need by the applications that use SuiteSparse are copied into
-SuiteSparse/include.   All user documenation is copied into
-SuiteSparse/share/doc.
+QUICK START FOR THE C/C++ LIBRARIES:
+
+For just GraphBLAS, do this:
+
+    cd GraphBLAS/build ; cmake .. ; make ; cd ../Demo ; ./demo 
+    cd ../build ; sudo make install
+
+For all other packages, type 'make' in this directory.  All libraries will be
+created and copied into SuiteSparse/lib.  All include files need by the
+applications that use SuiteSparse are copied into SuiteSparse/include.   All
+user documenation is copied into SuiteSparse/share/doc.
 
 When compiling the libraries, do NOT use the INSTALL=... options for
 installing. Just do:

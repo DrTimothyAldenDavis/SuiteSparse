@@ -38,7 +38,7 @@ try
     % uninstall CSparse by removing it from path
     rmpath ([SuiteSparse '/CSparse/MATLAB/CSparse']) ;
     rmpath ([SuiteSparse '/CSparse/MATLAB/Demo']) ;
-    rmpath ([SuiteSparse '/CSparse/MATLAB/UFget']) ;
+    rmpath ([SuiteSparse '/CSparse/MATLAB/ssget']) ;
 
     %---------------------------------------------------------------------------
     % CXSparse

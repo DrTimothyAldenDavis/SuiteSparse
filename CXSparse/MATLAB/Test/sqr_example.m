@@ -6,7 +6,7 @@ function sqr_example
 
 % Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
-Prob = UFget (706) ;
+Prob = ssget (706) ;
 
 A = Prob.A' ;
 q = colamd (A) ;

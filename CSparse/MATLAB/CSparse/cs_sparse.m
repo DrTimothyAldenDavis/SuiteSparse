@@ -4,7 +4,7 @@ function A = cs_sparse (i,j,x)                                              %#ok
 %   be real, and the length of i, j, and x must be the same.
 %
 %   Example:
-%       Prob = UFget ('HB/arc130') ; S = Prob.A ;
+%       Prob = ssget ('HB/arc130') ; S = Prob.A ;
 %       [i j x] = find (S) ;
 %       A = cs_sparse (i,j,x) ;
 %       S-A

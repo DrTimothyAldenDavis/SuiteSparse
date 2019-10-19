@@ -7,7 +7,7 @@ function dmperm_test
 
 % Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
-index = UFget ;
+index = ssget ;
 
 f = find (index.nrows ~= index.ncols) ;
 [ignore i] = sort (index.nrows(f) ./ index.ncols(f)) ;
@@ -31,7 +31,7 @@ for k = 1:length(f)
     
     i = f(k) ;
 
-    Prob = UFget (i)                                                        %#ok
+    Prob = ssget (i)                                                        %#ok
 
     A = Prob.A ;
     [m n] = size (A) ;

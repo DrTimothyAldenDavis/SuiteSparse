@@ -17,7 +17,7 @@ function [L,U,p,q] = cs_lu (A,tol)                                          %#ok
 %   pivoting; the diagonal is selected if it is >= tol * max(abs(A(:,k))).
 %
 %   Example:
-%       Prob = UFget ('HB/arc130') ; A = Prob.A ; [L,U,p,q] = cs_lu (A) ;
+%       Prob = ssget ('HB/arc130') ; A = Prob.A ; [L,U,p,q] = cs_lu (A) ;
 %       cspy (A (p,q)) ; cspy (L+U) ;
 %       norm (L*U - A(p,q), 1)
 %

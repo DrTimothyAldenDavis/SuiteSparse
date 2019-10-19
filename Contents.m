@@ -136,13 +136,15 @@
 %
 %   UFcollection    for managing the SuiteSparse Matrix Collection
 %   RBio            for reading/writing Rutherford/Boeing sparse matrices
-%   UFget           MATLAB interface to the SuiteSparse Matrix Collection
+%   ssget           MATLAB interface to the SuiteSparse Matrix Collection
+%   GraphBLAS       graph algorithms via sparse linear algebra (graphblas.org),
+%                   does not yet have a MATLAB interface
 %
 %-------------------------------------------------------------------------------
 %
 % For help on compiling SuiteSparse or the demos, testing functions, etc.,
 % please see the help for each individual package.
 %
-% Copyright 2014, Timothy A. Davis, http://www.suitesparse.com.
+% Copyright 2017, Timothy A. Davis, http://www.suitesparse.com.
 
 help SuiteSparse

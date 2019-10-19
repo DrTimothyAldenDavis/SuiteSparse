@@ -49,7 +49,7 @@ function [p,q,r,s,cc,rr] = cs_dmperm (A,seed)                               %#ok
 %
 %
 %   Example:
-%       Prob = UFget ('HB/west0479') ; A = Prob.A ;  cspy (A) ;
+%       Prob = ssget ('HB/west0479') ; A = Prob.A ;  cspy (A) ;
 %       p = cs_dmperm (A) ;
 %       cspy (A (p,:)) ;
 %       [p q r s cc rr] = cs_dmperm (A) ;

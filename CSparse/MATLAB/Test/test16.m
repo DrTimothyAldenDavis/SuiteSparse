@@ -11,7 +11,7 @@ rand ('state', 0) ;
 randn ('state', 0) ;
 clf
 
-index = UFget ;
+index = ssget ;
 [ignore f] = sort (max (index.nrows, index.ncols)) ;
 f = f (1:200) ;
 skip = 811 ;
@@ -22,7 +22,7 @@ for i = f
     if (any (i == skip))
         continue
     end
-    Prob = UFget (i) ;
+    Prob = ssget (i) ;
     A = spones (Prob.A) ;
     Aorig = A ;
     [m n] = size (A) ;

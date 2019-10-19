@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# Makefile for all SuiteSparse packages
+# Makefile for all SuiteSparse packages (except GraphBLAS)
 #-------------------------------------------------------------------------------
 
 SUITESPARSE = $(CURDIR)

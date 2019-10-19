@@ -1,0 +1,191 @@
+Wathen: nx 4 ny 4 n 65 nz 817 method 0, time: 0.000 sec
+MIS time in seconds:       0.000178
+isize: 11
+independent set found: 11 of 65 nodes
+maximal independent set status verified
+random 5 by 5, nz: 16, method 1 time 0.000 sec
+MIS time in seconds:       0.000112
+isize: 2
+independent set found: 2 of 5 nodes
+maximal independent set status verified
+ntuples: 3
+nrows 3 ncols 3
+time to prune self-edges:     0.000000
+time to build the graph with GrB_Matrix_build:     0.000020
+make symmetric
+A = (C+C')/2
+A = (C+C')/2 time     0.000025
+matrix 3 by 3, 0 entries, from stdin
+MIS time in seconds:       0.000062
+isize: 3
+independent set found: 3 of 3 nodes
+maximal independent set status verified
+ntuples: 8
+nrows 4 ncols 4
+time to prune self-edges:     0.000001
+time to build the graph with GrB_Matrix_build:     0.000038
+make symmetric
+A = (C+C')/2
+A = (C+C')/2 time     0.000037
+matrix 4 by 4, 4 entries, from stdin
+MIS time in seconds:       0.000100
+isize: 2
+independent set found: 2 of 4 nodes
+maximal independent set status verified
+ntuples: 10
+nrows 4 ncols 4
+time to prune self-edges:     0.000000
+time to build the graph with GrB_Matrix_build:     0.000027
+make symmetric
+A = (C+C')/2
+A = (C+C')/2 time     0.000031
+matrix 4 by 4, 10 entries, from stdin
+MIS time in seconds:       0.000072
+isize: 2
+independent set found: 2 of 4 nodes
+maximal independent set status verified
+ntuples: 8
+nrows 4 ncols 3
+time to prune self-edges:     0.000001
+time to build the graph with GrB_Matrix_build:     0.000025
+make symmetric
+A = [0 C ; C' 0], a bipartite graph
+time to construct augmented system:     0.000025
+matrix 7 by 7, 16 entries, from stdin
+MIS time in seconds:       0.000071
+isize: 3
+independent set found: 3 of 7 nodes
+maximal independent set status verified
+ntuples: 438
+nrows 219 ncols 85
+time to prune self-edges:     0.000001
+time to build the graph with GrB_Matrix_build:     0.000046
+make symmetric
+A = [0 C ; C' 0], a bipartite graph
+time to construct augmented system:     0.000106
+matrix 304 by 304, 876 entries, from stdin
+MIS time in seconds:       0.000282
+isize: 216
+independent set found: 216 of 304 nodes
+maximal independent set status verified
+ntuples: 224
+nrows 48 ncols 48
+time to prune self-edges:     0.000003
+time to build the graph with GrB_Matrix_build:     0.000051
+make symmetric
+A = (C+C')/2
+A = (C+C')/2 time     0.000056
+matrix 48 by 48, 352 entries, from stdin
+MIS time in seconds:       0.000168
+isize: 12
+independent set found: 12 of 48 nodes
+maximal independent set status verified
+ntuples: 147631
+nrows 4884 ncols 4884
+time to prune self-edges:     0.003113
+time to build the graph with GrB_Matrix_build:     0.002345
+make symmetric
+A = (C+C')/2
+A = (C+C')/2 time     0.011046
+matrix 4884 by 4884, 285494 entries, from stdin
+MIS time in seconds:       0.015651
+isize: 274
+independent set found: 274 of 4884 nodes
+maximal independent set status verified
+ntuples: 1069
+nrows 183 ncols 183
+time to prune self-edges:     0.000003
+time to build the graph with GrB_Matrix_build:     0.000041
+make symmetric
+A = (C+C')/2
+A = (C+C')/2 time     0.000062
+matrix 183 by 183, 1402 entries, from stdin
+MIS time in seconds:       0.000322
+isize: 88
+independent set found: 88 of 183 nodes
+maximal independent set status verified
+ntuples: 123
+nrows 32 ncols 31
+time to prune self-edges:     0.000001
+time to build the graph with GrB_Matrix_build:     0.000037
+make symmetric
+A = [0 C ; C' 0], a bipartite graph
+time to construct augmented system:     0.000046
+matrix 63 by 63, 246 entries, from stdin
+MIS time in seconds:       0.000186
+isize: 27
+independent set found: 27 of 63 nodes
+maximal independent set status verified
+ntuples: 123
+nrows 31 ncols 32
+time to prune self-edges:     0.000002
+time to build the graph with GrB_Matrix_build:     0.000035
+make symmetric
+A = [0 C ; C' 0], a bipartite graph
+time to construct augmented system:     0.000036
+matrix 63 by 63, 246 entries, from stdin
+MIS time in seconds:       0.000144
+isize: 25
+independent set found: 25 of 63 nodes
+maximal independent set status verified
+ntuples: 102
+nrows 27 ncols 51
+time to prune self-edges:     0.000000
+time to build the graph with GrB_Matrix_build:     0.000024
+make symmetric
+A = [0 C ; C' 0], a bipartite graph
+time to construct augmented system:     0.000058
+matrix 78 by 78, 204 entries, from stdin
+MIS time in seconds:       0.000145
+isize: 49
+independent set found: 49 of 78 nodes
+maximal independent set status verified
+ntuples: 49920
+nrows 492 ncols 490
+time to prune self-edges:     0.000002
+time to build the graph with GrB_Matrix_build:     0.001430
+make symmetric
+A = [0 C ; C' 0], a bipartite graph
+time to construct augmented system:     0.005309
+matrix 982 by 982, 99840 entries, from stdin
+MIS time in seconds:       0.004667
+isize: 329
+independent set found: 329 of 982 nodes
+maximal independent set status verified
+ntuples: 299
+nrows 67 ncols 67
+time to prune self-edges:     0.000002
+time to build the graph with GrB_Matrix_build:     0.000081
+make symmetric
+A = (C+C')/2
+A = (C+C')/2 time     0.000081
+matrix 67 by 67, 574 entries, from stdin
+MIS time in seconds:       0.000221
+isize: 15
+independent set found: 15 of 67 nodes
+maximal independent set status verified
+Wathen: nx 200 ny 200 n 120801 nz 1883201 method 0, time: 0.305 sec
+MIS time in seconds:       0.143966
+isize: 18446
+independent set found: 18446 of 120801 nodes
+maximal independent set status verified
+random 10000 by 10000, nz: 199746, method 0 time 0.034 sec
+MIS time in seconds:       0.016528
+isize: 1671
+independent set found: 1671 of 10000 nodes
+maximal independent set status verified
+random 10000 by 10000, nz: 199746, method 1 time 0.035 sec
+MIS time in seconds:       0.017525
+isize: 1671
+independent set found: 1671 of 10000 nodes
+maximal independent set status verified
+random 100000 by 100000, nz: 19979838, method 0 time 4.407 sec
+MIS time in seconds:       1.224757
+isize: 2838
+independent set found: 2838 of 100000 nodes
+maximal independent set status verified
+random 100000 by 100000, nz: 19979838, method 1 time 3.880 sec
+MIS time in seconds:       1.227401
+isize: 2838
+independent set found: 2838 of 100000 nodes
+maximal independent set status verified

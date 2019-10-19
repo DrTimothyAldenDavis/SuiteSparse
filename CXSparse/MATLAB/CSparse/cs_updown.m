@@ -10,7 +10,7 @@ function L = cs_updown (L, c, parent, sigma)                                %#ok
 %   cancellation (use cs_chol(A,0)).
 %
 %   Example:
-%       Prob = UFget ('HB/bcsstk01') ; A = Prob.A ; n = size (A,1) ;
+%       Prob = ssget ('HB/bcsstk01') ; A = Prob.A ; n = size (A,1) ;
 %       L = cs_chol (A,0) ;
 %       parent = cs_etree (A) ;
 %       c = sprand (L (:, floor(n/2))) ;

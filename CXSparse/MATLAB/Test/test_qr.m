@@ -7,7 +7,7 @@ function test_qr
 
 % Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
-index = UFget ;
+index = ssget ;
 [ignore f] = sort (max (index.nrows,index.ncols)) ;
 
 % f = 276 
@@ -16,8 +16,8 @@ f = f (1:100) ;
 
 for i = f 
 
-    % Prob = UFget (i,index)
-    Prob = UFget (i) ;
+    % Prob = ssget (i,index)
+    Prob = ssget (i) ;
     disp (Prob) ;
     A = Prob.A ;
     [m n] = size (A) ;
@@ -48,7 +48,7 @@ for i = f
     e3 = norm (A'*A-R3'*R3,1) / norm (A,1) ;
     fprintf ('error %6.2e %6.2e %6.2e %6.2e\n', e0, e1, e2, e3) ;
     drawnow
-    if (e1 > e0*1e3 | e2 > e0*1e3)                                          %#ok
+    if (e0 > 0 && (e1 > e0*1e3 | e2 > e0*1e3))                              %#ok
         pause
     end
 end
