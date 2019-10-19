@@ -5,8 +5,7 @@
 /* ------------------------------------------------------------------------- */
 /* CAMD, Copyright (c) Timothy A. Davis, Yanqing Chen,                       */
 /* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
-/* email: davis at cise.ufl.edu    CISE Department, Univ. of Florida.        */
-/* web: http://www.cise.ufl.edu/research/sparse/camd                         */
+/* email: DrTimothyAldenDavis@gmail.com                                      */
 /* ------------------------------------------------------------------------- */
 
 /* This file is for internal use in CAMD itself, and does not normally need to
@@ -164,17 +163,16 @@
 #endif
 
 /* ------------------------------------------------------------------------- */
-/* integer type for CAMD: int or UF_long */
+/* integer type for CAMD: int or SuiteSparse_long */
 /* ------------------------------------------------------------------------- */
 
-/* define UF_long */
-#include "UFconfig.h"
+#include "camd.h"
 
 #if defined (DLONG) || defined (ZLONG)
 
-#define Int UF_long
-#define ID  UF_long_id
-#define Int_MAX UF_long_max
+#define Int SuiteSparse_long
+#define ID  SuiteSparse_long_id
+#define Int_MAX SuiteSparse_long_max
 
 #define CAMD_order camd_l_order
 #define CAMD_defaults camd_l_defaults
@@ -222,12 +220,6 @@
 
 /* All output goes through the PRINTF macro.  */
 #define PRINTF(params) { if (camd_printf != NULL) (void) camd_printf params ; }
-
-/* ------------------------------------------------------------------------- */
-/* CAMD routine definitions (user-callable) */
-/* ------------------------------------------------------------------------- */
-
-#include "camd.h"
 
 /* ------------------------------------------------------------------------- */
 /* CAMD routine definitions (not user-callable) */

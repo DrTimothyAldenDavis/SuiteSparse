@@ -4,14 +4,14 @@
 
 default: libumfpack.a
 
-include ../../UFconfig/UFconfig.mk
+include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 # UMFPACK can use CHOLMOD by default as an ordering option
 ifneq (,$(findstring -DNCHOLMOD, $(UMFPACK_CONFIG)))
-    I = -I../Include -I../Source -I../../AMD/Include -I../../UFconfig
+    I = -I../Include -I../Source -I../../AMD/Include -I../../SuiteSparse_config
 else
-    I = -I../Include -I../Source -I../../AMD/Include -I../../UFconfig \
-        -I../../CHOLMOD/Include
+    I = -I../Include -I../Source -I../../AMD/Include \
+        -I../../SuiteSparse_config -I../../CHOLMOD/Include
 endif
 
 C = $(CC) $(CF) $(UMFPACK_CONFIG) $(I)
@@ -33,21 +33,23 @@ UMFCH = umf_assemble umf_blas3_update umf_build_tuples umf_create_element \
 	umf_valid_symbolic umf_grow_front umf_start_front \
 	umf_store_lu umf_scale
 
-# non-user-callable umf_*.[ch] files, int/UF_long versions only (no real/complex):
+# non-user-callable umf_*.[ch] files, int/SuiteSparse_long versions only
+# (no real/complex):
 UMFINT = umf_analyze umf_apply_order umf_colamd umf_free umf_fsize \
 	umf_is_permutation umf_malloc umf_realloc umf_report_perm \
 	umf_singletons umf_cholmod
 
 # non-user-callable, created from umf_ltsolve.c, umf_utsolve.c,
-# umf_triplet.c, and umf_assemble.c , with int/UF_long and real/complex versions:
+# umf_triplet.c, and umf_assemble.c , with int/SuiteSparse_long
+# and real/complex versions:
 UMF_CREATED = umf_lhsolve umf_uhsolve umf_triplet_map_nox \
 	umf_triplet_nomap_x umf_triplet_nomap_nox umf_triplet_map_x \
 	umf_assemble_fixq umf_store_lu_drop
 
-# non-user-callable, int/UF_long and real/complex versions:
+# non-user-callable, int/SuiteSparse_long and real/complex versions:
 UMF = $(UMF_CREATED) $(UMFCH)
 
-# user-callable umfpack_*.[ch] files (int/UF_long and real/complex):
+# user-callable umfpack_*.[ch] files (int/SuiteSparse_long and real/complex):
 UMFPACK = umfpack_col_to_triplet umfpack_defaults umfpack_free_numeric \
 	umfpack_free_symbolic umfpack_get_numeric umfpack_get_lunz \
 	umfpack_get_symbolic umfpack_get_determinant umfpack_numeric \
@@ -60,19 +62,20 @@ UMFPACK = umfpack_col_to_triplet umfpack_defaults umfpack_free_numeric \
 	umfpack_load_symbolic umfpack_save_symbolic
 
 # user-callable, created from umfpack_solve.c (umfpack_wsolve.h exists, though):
-# with int/UF_long and real/complex versions:
+# with int/SuiteSparse_long and real/complex versions:
 UMFPACKW = umfpack_wsolve
 
 USER = $(UMFPACKW) $(UMFPACK)
 
-# user-callable, only one version for int/UF_long, real/complex, *.[ch] files:
+# user-callable, only one version for int/SuiteSparse_long,
+# real/complex, *.[ch] files:
 GENERIC = umfpack_timer umfpack_tictoc umfpack_global
 
 #-------------------------------------------------------------------------------
 # include files:
 #-------------------------------------------------------------------------------
 
-INC = ../Include/umfpack.h ../../UFconfig/UFconfig.h \
+INC = ../Include/umfpack.h ../../SuiteSparse_config/SuiteSparse_config.h \
 	../Source/umf_config.h ../Source/umf_version.h \
 	../Source/umf_internal.h ../Source/umf_triplet.h \
 	$(addprefix ../Source/,  $(addsuffix .h,$(UMFCH))) \
@@ -94,7 +97,7 @@ LL = $(addsuffix .o, $(subst umf_,umf_l_,$(UMFINT)))
 GN = $(addsuffix .o, $(subst umfpack_,umfpack_gn_,$(GENERIC)))
 
 #-------------------------------------------------------------------------------
-# compile each int and UF_long routine (with no real/complex version)
+# compile each int and SuiteSparse_long routine (with no real/complex version)
 #-------------------------------------------------------------------------------
 
 umf_i_%.o: ../Source/umf_%.c $(INC)

@@ -9,8 +9,7 @@ function x = cs_dmsol (A,b)
 %
 %   See also CS_QRSOL, CS_LUSOL, CS_DMPERM, SPRANK, RANK.
 
-%   Copyright 2006-2007, Timothy A. Davis.
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
 [m n] = size (A) ;
 [p q r s cc rr] = cs_dmperm (A) ;

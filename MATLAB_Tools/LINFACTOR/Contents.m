@@ -13,7 +13,7 @@
 %   x = linfactor (F,b) ;   % solve Ax=b using F (the factorization of A)
 %   lintests ;              % test linfactor with various kinds of systems
 
-% Copyright 2007, Timothy A. Davis, University of Florida.
+% Copyright 2008, Timothy A. Davis, http://www.suitesparse.com
 %
 % License: this software is free for any use.  No warranty included or implied.
 % You must agree to only one condition to use this software: you must be aware

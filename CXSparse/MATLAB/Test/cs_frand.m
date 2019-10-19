@@ -8,8 +8,7 @@ function A = cs_frand (n,nel,s)                                             %#ok
 %   A = cs_frand (100, 100, 3) ;
 % See also cs_demo.
 
-%   Copyright 2006-2007, Timothy A. Davis.
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
 error ('cs_frand mexFunction not found') ;
 

@@ -48,6 +48,4 @@
 %
 % See also: lu, mldivide, rcond
 
-% Copyright 2006-2007, Timothy A. Davis.
-% http://www.cise.ufl.edu/research/sparse
-% Dec 3, 2007
+% Copyright 2006-2007, Timothy A. Davis, http://www.suitesparse.com

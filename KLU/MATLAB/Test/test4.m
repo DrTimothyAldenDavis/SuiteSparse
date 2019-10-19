@@ -4,8 +4,7 @@ function test4 (nmat)
 %   test4
 % See also klu
 
-% Copyright 2004-2007 Timothy A. Davis, Univ. of Florida
-% http://www.cise.ufl.edu/research/sparse
+% Copyright 2004-2012, University of Florida
 
 % rand ('state', 0) ;
 % warning ('off', 'MATLAB:singularMatrix') ;

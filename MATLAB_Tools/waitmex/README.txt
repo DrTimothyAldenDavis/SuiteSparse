@@ -21,6 +21,4 @@ These functions should be easily adaptable to any of the many replacements for
 waitbar posted on the MATLAB Central File Exchange, particularly if they use
 the same input and output arguments as the MATLAB waitbar.
 
-Copyright 2007, Tim Davis, University of Florida.
-http://www.cise.ufl.edu/~davis
-Aug 27, 2007
+Copyright 2007, Timothy A. Davis, http://www.suitesparse.com

@@ -4,8 +4,7 @@ function R = qr_givens (A)
 %   R = qr_givens (A)
 % See also: cs_demo
 
-%   Copyright 2006-2007, Timothy A. Davis.
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
 [m n] = size (A) ;
 parent = cs_etree (sparse (A), 'col') ;

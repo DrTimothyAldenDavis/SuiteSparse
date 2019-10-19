@@ -40,6 +40,6 @@ function [p,q,r] = strongcomp (A, qin)                                      %#ok
 %
 % See also btf, maxtrans, dmperm
 
-% Copyright 2004-2007, Tim Davis, University of Florida
+% Copyright 2004-2007, University of Florida
 
 error ('strongcomp mexFunction not found') ;

@@ -4,8 +4,7 @@ function s = signum (x)
 %   s = signum(x)
 % See also: testall
 
-%   Copyright 2006-2007, Timothy A. Davis.
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
 s = ones (length (x),1) ;
 s (find (x < 0)) = -1 ;     %#ok

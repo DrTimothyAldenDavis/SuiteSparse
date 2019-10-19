@@ -10,8 +10,7 @@ function gee_its_simple_test
 %
 % See also: gee_its_simple, gee_its_short, rand, mldivide, gee_its_simple_resid
 
-% Copyright 2007, Timothy A. Davis.
-% http://www.cise.ufl.edu/research/sparse
+% Copyright 2007, Timothy A. Davis, http://www.suitesparse.com
 
 %-------------------------------------------------------------------------------
 % error-handling tests

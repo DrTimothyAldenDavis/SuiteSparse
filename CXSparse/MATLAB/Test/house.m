@@ -5,8 +5,7 @@ function [v,beta,s] = house (x)
 %   [v,beta,s] = house (x)
 % See also: cs_demo
 
-%   Copyright 2006-2007, Timothy A. Davis.
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
 v = x ;
 s = norm (x) ;

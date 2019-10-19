@@ -1,11 +1,11 @@
+function test8
 %TEST8 test cs_cholsol, cs_lusol
 %
 % Example:
 %   test8
 % See also: testall
 
-%   Copyright 2006-2007, Timothy A. Davis.
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
 index = UFget ;
 [ignore f] = sort (max (index.nrows, index.ncols)) ;

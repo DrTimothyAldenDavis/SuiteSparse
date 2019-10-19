@@ -10,9 +10,10 @@
 #include "mex.h"
 #include "SuiteSparseQR.hpp"
 
-// UF_long is defined in UFconfig.h, included by SuiteSparseQR.hpp:
-#define Int UF_long
-#define Int_max UF_long_max
+// SuiteSparse_long is defined in SuiteSparse_config.h, included by
+// SuiteSparseQR.hpp:
+
+#define Long SuiteSparse_long
 
 // get the BLAS_INT definition from CHOLMOD (this is for spumoni output only)
 #include "cholmod_blas.h"
@@ -29,7 +30,7 @@ typedef std::complex<double> Complex ;
 typedef struct spqr_mx_options_struct
 {
     double tol ;            // <= -2 means to use default tol
-    Int econ ;
+    Long econ ;
     int ordering ;
     int permvector ;
     int Qformat ;
@@ -54,7 +55,7 @@ int spqr_mx_get_options
 (
     const mxArray *mxopts,
     spqr_mx_options *opts,
-    Int m,
+    Long m,
     int nargout,
 
     // workspace and parameters
@@ -69,8 +70,8 @@ mxArray *spqr_mx_put_sparse
 
 mxArray *spqr_mx_put_dense2
 (
-    Int m,
-    Int n,
+    Long m,
+    Long n,
     double *Ax,         // size nz if real; size 2*nz if complex (and freed)
     int is_complex,
 
@@ -86,8 +87,8 @@ mxArray *spqr_mx_put_dense
 
 mxArray *spqr_mx_put_permutation
 (
-    Int *P,
-    Int n,
+    Long *P,
+    Long n,
     int vector,
 
     // workspace and parameters
@@ -101,13 +102,13 @@ double *spqr_mx_merge_if_complex
     int make_complex,
 
     // output
-    Int *p_nz,              // number of entries in A
+    Long *p_nz,              // number of entries in A
 
     // workspace and parameters
     cholmod_common *cc
 ) ;
 
-int spqr_mx_config (Int spumoni, cholmod_common *cc) ;
+int spqr_mx_config (Long spumoni, cholmod_common *cc) ;
 
 cholmod_sparse *spqr_mx_get_sparse
 (
@@ -127,8 +128,8 @@ void spqr_mx_get_usage
 (
     mxArray *A,         // mxArray to check
     int tight,          // if true, then nnz(A) must equal nzmax(A)
-    Int *p_usage,       // bytes used
-    Int *p_count,       // # of malloc'd blocks
+    Long *p_usage,      // bytes used
+    Long *p_count,      // # of malloc'd blocks
     cholmod_common *cc
 ) ;
 

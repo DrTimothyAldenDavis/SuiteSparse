@@ -17,12 +17,11 @@
 \begin{document}
 
 \author{Timothy A. Davis \\
-Dept. of Computer and Information Science and Engineering \\
-Univ. of Florida, Gainesville, FL}
+DrTimothyAldenDavis@gmail.com, http://www.suitesparse.com }
 \title{User Guide for CHOLMOD: a sparse Cholesky factorization and
 modification package}
 
-\date{VERSION 1.7.4, Dec 7, 2011}
+\date{VERSION 2.0.0, Jun 1, 2012}
 \maketitle
 
 %-------------------------------------------------------------------------------
@@ -48,7 +47,7 @@ modification package}
 \end{abstract}
 %-------------------------------------------------------------------------------
 
-CHOLMOD Copyright\copyright 2005-2011 by Timothy A. Davis.  Portions are also
+CHOLMOD Copyright\copyright 2005-2012 by Timothy A. Davis.  Portions are also
 copyrighted by William W. Hager (the {\tt Modify} Module),
 and the University of Florida (the {\tt Partition} and {\tt Core} Modules).
 All Rights Reserved.  Some of CHOLMOD's Modules are distributed under the GNU
@@ -56,7 +55,7 @@ General Public License, and others under the GNU Lesser General Public License.
 Refer to each Module for details.
 CHOLMOD is also available under other licenses that permit its use in
 proprietary applications; contact the authors for details.
-See http://www.cise.ufl.edu/research/sparse for the code and all documentation,
+See http://www.suitesparse.com for the code and all documentation,
 including this User Guide.
 
 \newpage
@@ -254,7 +253,8 @@ along with CHOLMOD, but three of which are not.  Those included with CHOLMOD are
     by Tim Davis and Yanqing Chen, based directly on AMD.
     This package is not required if CHOLMOD is compiled with the
     {\tt -DNPARTITION} flag.
-\item {\tt UFconfig}: a single place where all sparse matrix packages authored
+\item {\tt SuiteSparse\_config}:
+    a single place where all sparse matrix packages authored
     or co-authored by Davis are configured.  Also includes a version of the
     {\tt xerbla} routine for the BLAS.
 \end{itemize}
@@ -278,17 +278,21 @@ Three other packages are required for optimal performance:
 \item LAPACK: the Basic Linear Algebra Subprograms.
     Not needed if {\tt -DNSUPERNODAL} is used.
     See http://www.netlib.org.
+\item CUDA BLAS:  CHOLMOD can exploit an NVIDIA GPU by using the CUDA BLAS
+    for large supernodes.  This feature is new to CHOLMOD v2.0.0.
 \end{itemize}
 
 You must first obtain and install METIS, LAPACK, and the BLAS.
 Next edit the system-dependent configurations in the
-{\tt UFconfig/UFconfig.mk} file.  Sample configurations are provided
+{\tt SuiteSparse\_config/SuiteSparse\_config.mk} file.
+Sample configurations are provided
 for Linux, Macintosh, Sun Solaris, SGI IRIX, IBM AIX, and the DEC/Compaq Alpha.
 The most important configuration is the location of the BLAS, LAPACK, and METIS
 packages, since in its default configuration CHOLMOD cannot be compiled without them.
 
 \noindent
-Here are the various parameters that you can control in your {\tt UFconfig/UFconfig.mk} file:
+Here are the various parameters that you can control in your
+{\tt SuiteSparse\_config/SuiteSparse\_config.mk} file:
 \begin{itemize}
 \item {\tt CC = } your C compiler, such as {\tt cc}.
 \item {\tt CFLAGS = } optimization flags, such as {\tt -O}.
@@ -300,12 +304,18 @@ Here are the various parameters that you can control in your {\tt UFconfig/UFcon
 \item {\tt F77FLAGS =} the Fortran compiler flags (optional).
 \item {\tt F77LIB =} the Fortran libraries (optional).
 \item {\tt LIB = } basic libraries, such as {\tt -lm}.
-\item {\tt MEX =} the command to compile a MATLAB mexFunction.
 \item {\tt BLAS =} your BLAS library.
 \item {\tt LAPACK =} your LAPACK library.
 \item {\tt XERBLA =} a library containing the BLAS {\tt xerbla} routine, if required.
 \item {\tt METIS\_PATH =} the path to your copy of the METIS 4.0.1 source code.
 \item {\tt METIS =} your METIS library.
+\item {\tt GPU\_CONFIG = } configuration settings specific to the CUDA BLAS.
+    To enable the CUDA BLAS, use {\tt GPU\_CONFIG = -DGPU\_BLAS
+    -I\$(GPU\_BLAS\_PACK)/include}, and set
+    {\tt GPU\_BLAS\_PATH =} to your CUDA library installation path.
+    Then include {\tt \$(GPU\_CONFIG)} as one of the settings for
+    {\tt CHOLMOD\_CONFIG}.  See the {\tt SuiteSparse\_config.mk}
+    file for details.
 \item {\tt CHOLMOD\_CONFIG = } configuration settings specific to CHOLMOD.
 \end{itemize}
 
@@ -344,16 +354,17 @@ your programs with the
 {\tt CHOLMOD/Lib/libcholmod.a},
 {\tt AMD/Lib/libamd.a},
 {\tt COLAMD/libcolamd.a},
-{\tt CAMD/libcamd.a}, \newline
-{\tt CCOLAMD/libccolamd.a},
-{\tt metis-4.0/libmetis.a},
 LAPACK,
 and
 BLAS libraries,
 as well as the {\tt xerbla} library if you need it
-({\tt UFconfig/xerlib/libcerbla.a} for the C version or
+({\tt SuiteSparse\_config/xerlib/libcerbla.a} for the C version or
 \newline
- {\tt UFconfig/xerlib/libxerbla.a} for the Fortran version).
+ {\tt SuiteSparse\_config/xerlib/libxerbla.a} for the Fortran version).
+Unless you use {\tt -DNPARTITION}, you must also link with
+{\tt metis-4.0/libmetis.a},
+{\tt CAMD/libcamd.a}, and
+{\tt CCOLAMD/libccolamd.a}.
 Your compiler needs to know the location of the CHOLMOD {\tt Include} directory,
 so that it can find the {\tt cholmod.h} include file, by
 adding the {\tt -ICHOLMOD/Include} to your C compiler options
@@ -489,16 +500,9 @@ command.  When using the {\tt gcc} compiler, I strongly recommend editing the
         COPTIONS = -fexceptions
 \end{verbatim}
 Also ensure {\tt -fexceptions} is in the {\tt CFLAGS} option in the
-{\tt UFconfig/UFconfig.mk} file that comes with CHOLMOD.
+{\tt SuiteSparse\_config/SuiteSparse\_config.mk} file that comes with CHOLMOD.
 If you do not make these modifications, the CHOLMOD mexFunctions
 will terminate MATLAB if they encounter an error.
-
-If you have MATLAB 7.2 or earlier and use {\tt make mex} in the
-{\tt CHOLMOD} directory (equivalently, {\tt make} in {\tt CHOLMOD/MATLAB}),
-you must first edit
-{\tt UFconfig/UFconfig.h} to remove the {\tt -largeArrayDims}
-option from the MEX command
-(or just use {\tt cholmod\_make.m} inside MATLAB).
 
 Next, compile your METIS 4.0.1 library by typing {\tt make} in the
 {\tt metis-4.0} directory.  Then type {\tt make} in the {\tt CHOLMOD/MATLAB}
@@ -518,11 +522,11 @@ routines with the prefix {\tt cholmod\_} use {\tt int} integers,
 {\tt cholmod\_l\_} routines use {\tt long}.  All floating-point
 values are {\tt double}.
 
-The {\tt long} integer is redefinable, via {\tt UFconfig.h}.
-That file defines a C preprocessor token {\tt UF\_long} which is
+The {\tt long} integer is redefinable, via {\tt SuiteSparse\_config.h}.
+That file defines a C preprocessor token {\tt SuiteSparse\_long} which is
 {\tt long} on all systems except for Windows-64, in which case it is
 defined as {\tt \_\_int64}.  The intent is that with suitable compile-time
-switches, {\tt int} is a 32-bit integer and {\tt UF\_long} is a 64-bit
+switches, {\tt int} is a 32-bit integer and {\tt SuiteSparse\_long} is a 64-bit
 integer.  The term {\tt long} is used to describe the latter
 integer throughout this document (except in the prototypes).
 

@@ -3,9 +3,8 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
+/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
+/* All Rights Reserved.  See ../Doc/License for License.                      */
 /* -------------------------------------------------------------------------- */
 
 int umfpack_di_report_vector
@@ -15,9 +14,9 @@ int umfpack_di_report_vector
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-UF_long umfpack_dl_report_vector
+SuiteSparse_long umfpack_dl_report_vector
 (
-    UF_long n,
+    SuiteSparse_long n,
     const double X [ ],
     const double Control [UMFPACK_CONTROL]
 ) ;
@@ -29,9 +28,9 @@ int umfpack_zi_report_vector
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-UF_long umfpack_zl_report_vector
+SuiteSparse_long umfpack_zl_report_vector
 (
-    UF_long n,
+    SuiteSparse_long n,
     const double Xx [ ], const double Xz [ ],
     const double Control [UMFPACK_CONTROL]
 ) ;
@@ -44,10 +43,10 @@ double int Syntax:
     double *X, Control [UMFPACK_CONTROL] ;
     status = umfpack_di_report_vector (n, X, Control) ;
 
-double UF_long Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    UF_long n, status ;
+    SuiteSparse_long n, status ;
     double *X, Control [UMFPACK_CONTROL] ;
     status = umfpack_dl_report_vector (n, X, Control) ;
 
@@ -58,10 +57,10 @@ complex int Syntax:
     double *Xx, *Xz, Control [UMFPACK_CONTROL] ;
     status = umfpack_zi_report_vector (n, Xx, Xz, Control) ;
 
-complex UF_long Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    UF_long n, status ;
+    SuiteSparse_long n, status ;
     double *Xx, *Xz, Control [UMFPACK_CONTROL] ;
     status = umfpack_zl_report_vector (n, Xx, Xz, Control) ;
 

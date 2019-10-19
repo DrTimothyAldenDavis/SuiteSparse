@@ -7,7 +7,7 @@
  * The CHOLMOD/MATLAB Module is licensed under Version 2.0 of the GNU
  * General Public License.  See gpl.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
- * http://www.cise.ufl.edu/research/sparse
+ * http://www.suitesparse.com
  * MATLAB(tm) is a Trademark of The MathWorks, Inc.
  * -------------------------------------------------------------------------- */
 
@@ -37,10 +37,10 @@ void mexFunction
 )
 {
     double dummy = 0 ;
-    Int *Parent ;
+    Long *Parent ;
     cholmod_sparse *A, Amatrix, *S ;
     cholmod_common Common, *cm ;
-    Int n, coletree, c ;
+    Long n, coletree, c ;
     char buf [LEN] ;
 
     /* ---------------------------------------------------------------------- */
@@ -119,7 +119,7 @@ void mexFunction
     /* compute the etree */
     /* ---------------------------------------------------------------------- */
 
-    Parent = cholmod_l_malloc (n, sizeof (Int), cm) ;
+    Parent = cholmod_l_malloc (n, sizeof (Long), cm) ;
     if (A->stype == 1 || coletree)
     {
 	/* symmetric case: find etree of A, using triu(A) */
@@ -155,22 +155,22 @@ void mexFunction
 
     if (nargout > 1)
     {
-	Int *Post ;
-	Post = cholmod_l_malloc (n, sizeof (Int), cm) ;
+	Long *Post ;
+	Post = cholmod_l_malloc (n, sizeof (Long), cm) ;
 	if (cholmod_l_postorder (Parent, n, NULL, Post, cm) != n)
 	{
 	    /* out of memory or Parent invalid */
 	    mexErrMsgTxt ("etree2 postorder failed!") ;
 	}
 	pargout [1] = sputil_put_int (Post, n, 1) ;
-	cholmod_l_free (n, sizeof (Int), Post, cm) ;
+	cholmod_l_free (n, sizeof (Long), Post, cm) ;
     }
 
     /* ---------------------------------------------------------------------- */
     /* free workspace */
     /* ---------------------------------------------------------------------- */
 
-    cholmod_l_free (n, sizeof (Int), Parent, cm) ;
+    cholmod_l_free (n, sizeof (Long), Parent, cm) ;
     cholmod_l_free_sparse (&S, cm) ;
     cholmod_l_finish (cm) ;
     cholmod_l_print_common (" ", cm) ;

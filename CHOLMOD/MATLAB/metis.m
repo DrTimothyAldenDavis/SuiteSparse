@@ -17,7 +17,6 @@ function p = metis (A, mode)						    %#ok
 %
 %   See also NESDIS, BISECT
 
-%   Copyright 2006-2007, Timothy A. Davis
-%   http://www.cise.ufl.edu/research/sparse
+%   Copyright 2006-2007, Timothy A. Davis, http://www.suitesparse.com
 
 error ('metis mexFunction not found') ;

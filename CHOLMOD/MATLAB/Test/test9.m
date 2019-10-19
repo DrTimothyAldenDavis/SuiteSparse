@@ -4,7 +4,7 @@ function test9
 %   test9
 % See also cholmod_test
 
-% Copyright 2006-2007, Timothy A. Davis, University of Florida
+% Copyright 2007, Timothy A. Davis, http://www.suitesparse.com
 
 fprintf ('=================================================================\n');
 fprintf ('test9: test metis, etree, bisect, nesdis\n') ;

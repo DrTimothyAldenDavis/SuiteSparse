@@ -2,7 +2,7 @@ default: all
 
 ccode: all
 
-include ../../UFconfig/UFconfig.mk
+include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 # for testing only:
 # TEST = -DTESTING
@@ -11,7 +11,7 @@ C = $(CC) $(CF)
 
 INC = ../Include/btf.h ../Include/btf_internal.h
 
-I = -I../Include -I../../UFconfig
+I = -I../Include -I../../SuiteSparse_config
 
 all: library
 

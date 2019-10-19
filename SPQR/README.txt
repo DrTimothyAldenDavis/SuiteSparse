@@ -1,4 +1,5 @@
-SuiteSparseQR Copyright (c) 2008-2011, Timothy A. Davis
+SuiteSparseQR Copyright (c) 2008-2012, Timothy A. Davis,
+http://www.suitesparse.com
 
 SuiteSparseQR is a a multithread, multifrontal, rank-revealing sparse QR
 factorization method.
@@ -26,8 +27,8 @@ FOR LINUX/UNIX/Mac USERS who want to use the C++ callable library:
 
         cd Tcov ; make
 
-    Compilation options in UFconfig/UFconfig.mk, SPQR/*/Makefile,
-    or SPQR/MATLAB/spqr_make.m:
+    Compilation options in SuiteSparse_config/SuiteSparse_config.mk,
+    SPQR/*/Makefile, or SPQR/MATLAB/spqr_make.m:
 
         -DNPARTITION    to compile without METIS (default is to use METIS)
 

@@ -7,19 +7,19 @@
 //  Overwrite a vector of length n with its cumulative sum of length n+1.
 //  On input, X [0:n-1] contains the counts.  On output, X [k] is replaced with
 //  the sum of the input counts X [0:k-1].  No work is done if n < 0 or if
-//  X is NULL.  Int overflow is not checked (SuiteSparseQR doesn't need it;
+//  X is NULL.  Long overflow is not checked (SuiteSparseQR doesn't need it;
 //  it has already been checked whereever this function is used).
 
-Int spqr_cumsum
+Long spqr_cumsum
 (
     // input, not modified
-    Int n,
+    Long n,
 
     // input/output
-    Int *X                      // size n+1. X = cumsum ([0 X])
+    Long *X                         // size n+1. X = cumsum ([0 X])
 )
 {
-    Int itot, t, x, k ;
+    Long itot, t, x, k ;
 
     // -------------------------------------------------------------------------
     // X = cumsum ([0 X])

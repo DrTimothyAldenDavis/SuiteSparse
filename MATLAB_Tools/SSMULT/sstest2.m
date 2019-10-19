@@ -1,14 +1,13 @@
 function sstest2
 %SSTEST2 exhaustive performance test for SSMULT.  Requires UFget.
-% UFget is available at http://www.cise.ufl.edu/research/sparse, or in MATLAB
-% Central.
+% UFget is available at http://www.suitesparse.com or in MATLAB Central.
 %
 % Example
 %   sstest2
 %
 % See also ssmult, ssmultsym, ssmult_install, sstest, UFget, mtimes.
 
-% Copyright 2009, Timothy A. Davis, University of Florida.
+% Copyright 2007-2009, Timothy A. Davis, http://www.suitesparse.com
 
 help sstest2
 
@@ -16,7 +15,7 @@ try
     index = UFget ;
 catch
     fprintf ('\nsstest2 requires UFget.\n') ;
-    fprintf ('see http://www.cise.ufl.edu/research/sparse\n') ;
+    fprintf ('see http://www.suitesparse.com\n') ;
     return ;
 end
 [ignore, f] = sort (index.nnz) ;                                            %#ok

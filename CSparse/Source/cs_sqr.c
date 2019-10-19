@@ -1,12 +1,12 @@
 #include "cs.h"
 /* compute nnz(V) = S->lnz, S->pinv, S->leftmost, S->m2 from A and S->parent */
-static int cs_vcount (const cs *A, css *S)
+static csi cs_vcount (const cs *A, css *S)
 {
-    int i, k, p, pa, n = A->n, m = A->m, *Ap = A->p, *Ai = A->i, *next, *head,
+    csi i, k, p, pa, n = A->n, m = A->m, *Ap = A->p, *Ai = A->i, *next, *head,
         *tail, *nque, *pinv, *leftmost, *w, *parent = S->parent ;
-    S->pinv = pinv = cs_malloc (m+n, sizeof (int)) ;        /* allocate pinv, */
-    S->leftmost = leftmost = cs_malloc (m, sizeof (int)) ;  /* and leftmost */
-    w = cs_malloc (m+3*n, sizeof (int)) ;   /* get workspace */
+    S->pinv = pinv = cs_malloc (m+n, sizeof (csi)) ;        /* allocate pinv, */
+    S->leftmost = leftmost = cs_malloc (m, sizeof (csi)) ;  /* and leftmost */
+    w = cs_malloc (m+3*n, sizeof (csi)) ;   /* get workspace */
     if (!pinv || !w || !leftmost)
     {
         cs_free (w) ;                       /* pinv and leftmost freed later */
@@ -57,9 +57,9 @@ static int cs_vcount (const cs *A, css *S)
 }
 
 /* symbolic ordering and analysis for QR or LU */
-css *cs_sqr (int order, const cs *A, int qr)
+css *cs_sqr (csi order, const cs *A, csi qr)
 {
-    int n, k, ok = 1, *post ;
+    csi n, k, ok = 1, *post ;
     css *S ;
     if (!CS_CSC (A)) return (NULL) ;        /* check inputs */
     n = A->n ;
@@ -76,7 +76,7 @@ css *cs_sqr (int order, const cs *A, int qr)
         cs_free (post) ;
         ok = C && S->parent && S->cp && cs_vcount (C, S) ;
         if (ok) for (S->unz = 0, k = 0 ; k < n ; k++) S->unz += S->cp [k] ;
-        ok = ok && S->lnz >= 0 && S->unz >= 0 ;     /* int overflow guard */
+        ok = ok && S->lnz >= 0 && S->unz >= 0 ;     /* csi overflow guard */
         if (order) cs_spfree (C) ;
     }
     else

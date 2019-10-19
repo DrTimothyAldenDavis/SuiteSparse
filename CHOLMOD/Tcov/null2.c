@@ -7,7 +7,7 @@
  * The CHOLMOD/Tcov Module is licensed under Version 2.0 of the GNU
  * General Public License.  See gpl.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
- * http://www.cise.ufl.edu/research/sparse
+ * http://www.suitesparse.com
  * -------------------------------------------------------------------------- */
 
 /* Null and error tests, continued. */
@@ -43,7 +43,7 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
 	*R2p, *R2i ;
     double *Xwork, *Cx, *x, *Lx, *Tx, *Az, *R2x ;
     size_t size, nznew, gsave2 ;
-    UF_long lr ;
+    SuiteSparse_long lr ;
     void *pp, *ii, *jj, *xx ;
     Int p, i, j, d, nrhs, nrow, ncol, stype, fsizeok, nz, ok, n2, trial, anz,
 	nzmax, cset [CSETSIZE], Axbad_type, isreal, xtype, enz, Lxtype, Cxtype,
@@ -1178,7 +1178,7 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
     OK (L->is_super) ;
 
     L->itype = CHOLMOD_INTLONG ;
-    ok = CHOLMOD(print_factor)(L, "L int/UF_long", cm) ;	    NOT (ok) ;
+    ok = CHOLMOD(print_factor)(L, "L int/long", cm) ;	            NOT (ok) ;
     L->itype = -1 ;
     ok = CHOLMOD(print_factor)(L, "L int unknown", cm) ;	    NOT (ok) ;
     L->itype = cm->itype ;

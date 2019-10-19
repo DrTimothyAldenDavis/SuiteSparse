@@ -13,8 +13,7 @@ function X = cs_qright (V, Beta, p, Y)
 %
 %   See also CS_QR, CS_QLEFT.
 
-%   Copyright 2006-2007, Timothy A. Davis.
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
 [m n] = size (V) ;
 X = Y ;

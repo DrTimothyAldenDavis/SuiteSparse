@@ -9,7 +9,7 @@ void mexFunction
 )
 {
     cs *A, Amatrix ;
-    int order ;
+    csi order ;
     double *x, *b, tol ;
     if (nargout > 1 || nargin < 2 || nargin > 4)
     {

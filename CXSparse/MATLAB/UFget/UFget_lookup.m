@@ -6,7 +6,7 @@ function [group, name, id] = UFget_lookup (matrix, UF_Index)
 %
 %   See also UFget.
 
-%   Copyright 2009, Tim Davis, University of Florida.
+% Copyright 2009-2012, Timothy A. Davis, http://www.suitesparse.com
 
 if (isnumeric (matrix))
 

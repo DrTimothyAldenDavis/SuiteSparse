@@ -7,7 +7,7 @@
  * The CHOLMOD/MATLAB Module is licensed under Version 2.0 of the GNU
  * General Public License.  See gpl.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
- * http://www.cise.ufl.edu/research/sparse
+ * http://www.suitesparse.com
  * MATLAB(tm) is a Trademark of The MathWorks, Inc.
  * -------------------------------------------------------------------------- */
 
@@ -47,7 +47,7 @@ void mexFunction
     cholmod_factor *L ;
     cholmod_sparse *A, Amatrix, *C, *S ;
     cholmod_common Common, *cm ;
-    Int n, transpose, c ;
+    Long n, transpose, c ;
     char buf [LEN] ;
 
     /* ---------------------------------------------------------------------- */

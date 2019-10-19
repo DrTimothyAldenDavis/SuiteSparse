@@ -9,7 +9,7 @@ void mexFunction
 )
 {
     cs Lmatrix, *Lin, Cmatrix, *C, *L, Cvector, *Cvec ;
-    int ignore, j, k, n, lnz, *parent, sigma = 1, cp [2] ;
+    csi ignore, j, k, n, lnz, *parent, sigma = 1, cp [2] ;
     char sigma_string [20] ;
 
     if (nargout > 1 || nargin < 3 || nargin > 4)

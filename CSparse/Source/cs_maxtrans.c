@@ -1,9 +1,9 @@
 #include "cs.h"
 /* find an augmenting path starting at column k and extend the match if found */
-static void cs_augment (int k, const cs *A, int *jmatch, int *cheap, int *w,
-        int *js, int *is, int *ps)
+static void cs_augment (csi k, const cs *A, csi *jmatch, csi *cheap, csi *w,
+        csi *js, csi *is, csi *ps)
 {
-    int found = 0, p, i = -1, *Ap = A->p, *Ai = A->i, head = 0, j ;
+    csi found = 0, p, i = -1, *Ap = A->p, *Ai = A->i, head = 0, j ;
     js [0] = k ;                        /* start with just node k in jstack */
     while (head >= 0)
     {
@@ -41,14 +41,14 @@ static void cs_augment (int k, const cs *A, int *jmatch, int *cheap, int *w,
 }
 
 /* find a maximum transveral */
-int *cs_maxtrans (const cs *A, int seed)  /*[jmatch [0..m-1]; imatch [0..n-1]]*/
+csi *cs_maxtrans (const cs *A, csi seed)  /*[jmatch [0..m-1]; imatch [0..n-1]]*/
 {
-    int i, j, k, n, m, p, n2 = 0, m2 = 0, *Ap, *jimatch, *w, *cheap, *js, *is,
+    csi i, j, k, n, m, p, n2 = 0, m2 = 0, *Ap, *jimatch, *w, *cheap, *js, *is,
         *ps, *Ai, *Cp, *jmatch, *imatch, *q ;
     cs *C ;
     if (!CS_CSC (A)) return (NULL) ;                /* check inputs */
     n = A->n ; m = A->m ; Ap = A->p ; Ai = A->i ;
-    w = jimatch = cs_calloc (m+n, sizeof (int)) ;   /* allocate result */
+    w = jimatch = cs_calloc (m+n, sizeof (csi)) ;   /* allocate result */
     if (!jimatch) return (NULL) ;
     for (k = 0, j = 0 ; j < n ; j++)    /* count nonempty rows and columns */
     {
@@ -74,7 +74,7 @@ int *cs_maxtrans (const cs *A, int seed)  /*[jmatch [0..m-1]; imatch [0..n-1]]*/
     n = C->n ; m = C->m ; Cp = C->p ;
     jmatch = (m2 < n2) ? jimatch + n : jimatch ;
     imatch = (m2 < n2) ? jimatch : jimatch + m ;
-    w = cs_malloc (5*n, sizeof (int)) ;             /* get workspace */
+    w = cs_malloc (5*n, sizeof (csi)) ;             /* get workspace */
     if (!w) return (cs_idone (jimatch, (m2 < n2) ? C : NULL, w, 0)) ;
     cheap = w + n ; js = w + 2*n ; is = w + 3*n ; ps = w + 4*n ;
     for (j = 0 ; j < n ; j++) cheap [j] = Cp [j] ;  /* for cheap assignment */

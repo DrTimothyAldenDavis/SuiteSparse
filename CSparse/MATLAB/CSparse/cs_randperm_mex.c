@@ -14,7 +14,7 @@ void mexFunction
 )
 {
     double seed ;
-    int iseed, n, *p ;
+    csi iseed, n, *p ;
     if (nargout > 1 || nargin < 1 || nargin > 2)
     {
         mexErrMsgTxt ("Usage: p = cs_randperm(n,seed)") ;

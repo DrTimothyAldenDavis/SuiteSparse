@@ -1,5 +1,4 @@
 #include "umfpack.h"
-#include "UFconfig.h"
 
 int umf_i_cholmod
 (
@@ -22,13 +21,13 @@ int umf_i_cholmod
 int umf_l_cholmod
 (
     /* inputs */
-    UF_long nrow,               /* A is nrow-by-ncol */
-    UF_long ncol,               /* A is nrow-by-ncol */
-    UF_long symmetric,          /* if true and nrow=ncol do A+A', else do A'A */
-    UF_long Ap [ ],             /* column pointers, size ncol+1 */
-    UF_long Ai [ ],             /* row indices, size nz = Ap [ncol] */
+    SuiteSparse_long nrow,      /* A is nrow-by-ncol */
+    SuiteSparse_long ncol,      /* A is nrow-by-ncol */
+    SuiteSparse_long symmetric, /* if true and nrow=ncol do A+A', else do A'A */
+    SuiteSparse_long Ap [ ],    /* column pointers, size ncol+1 */
+    SuiteSparse_long Ai [ ],    /* row indices, size nz = Ap [ncol] */
     /* output */
-    UF_long Perm [ ],           /* fill-reducing permutation, size ncol */
+    SuiteSparse_long Perm [ ],  /* fill-reducing permutation, size ncol */
     /* user-defined */
     void *ignore,           /* not needed */
     double user_info [3]    /* [0]: max col count for L=chol(P(A+A')P')

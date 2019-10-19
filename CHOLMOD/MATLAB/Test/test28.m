@@ -4,7 +4,7 @@ function test28
 %   test28
 % See also cholmod_test
 
-% Copyright 2006-2007, Timothy A. Davis, University of Florida
+% Copyright 2007, Timothy A. Davis, http://www.suitesparse.com
 
 index = UFget ;
 

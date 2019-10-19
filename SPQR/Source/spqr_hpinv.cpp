@@ -15,11 +15,11 @@ template <typename Entry> void spqr_hpinv
     // input/output
     spqr_numeric <Entry> *QRnum,
     // workspace
-    Int *W              // size QRnum->m
+    Long *W              // size QRnum->m
 )
 {
-    Int *Hi, *Hii, *Hip, *HPinv, *Hr, *Super, *Rp, *Hm, *Sleft, *PLinv ;
-    Int nf, m, n, f, rm, i, row1, row2, fm, fn, fp, cm, cn, maxfm ;
+    Long *Hi, *Hii, *Hip, *HPinv, *Hr, *Super, *Rp, *Hm, *Sleft, *PLinv ;
+    Long nf, m, n, f, rm, i, row1, row2, fm, fn, fp, cm, cn, maxfm ;
 
     // -------------------------------------------------------------------------
     // get the contents of the QRsym and QRnum objects
@@ -45,7 +45,7 @@ template <typename Entry> void spqr_hpinv
 #ifndef NDEBUG
     for (f = 0 ; f < nf ; f++)
     {
-        Int j ;
+        Long j ;
         rm = 0 ;
         for (j = Super [f] ; j < Super [f+1] ; j++)
         {
@@ -173,7 +173,7 @@ template void spqr_hpinv <double>
     // input/output
     spqr_numeric <double> *QRnum,
     // workspace
-    Int *W              // size QRnum->m
+    Long *W              // size QRnum->m
 ) ;
 
 // =============================================================================
@@ -185,5 +185,5 @@ template void spqr_hpinv <Complex>
     // input/output
     spqr_numeric <Complex> *QRnum,
     // workspace
-    Int *W              // size QRnum->m
+    Long *W              // size QRnum->m
 ) ;

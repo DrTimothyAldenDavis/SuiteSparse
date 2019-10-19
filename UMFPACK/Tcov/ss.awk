@@ -1,3 +1,0 @@
-/TestMat/
-
-/final det/

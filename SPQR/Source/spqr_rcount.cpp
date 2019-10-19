@@ -13,28 +13,28 @@ template <typename Entry> void spqr_rcount
     spqr_symbolic *QRsym,
     spqr_numeric <Entry> *QRnum,
 
-    Int n1rows,         // added to each row index of Ra and Rb
-    Int econ,           // only get entries in rows n1rows to econ-1
-    Int n2,             // Ra = R (:,0:n2-1), Rb = R (:,n2:n-1)
+    Long n1rows,        // added to each row index of Ra and Rb
+    Long econ,          // only get entries in rows n1rows to econ-1
+    Long n2,            // Ra = R (:,0:n2-1), Rb = R (:,n2:n-1)
     int getT,           // if true, count Rb' instead of Rb
 
     // input/output
     // FUTURE : make Ra, Rb, H2 cholmod_sparse
-    Int *Ra,            // size n2; Ra [j] += nnz (R (:,j)) if j < n2
-    Int *Rb,            // If getT is false: size n-n2 and
+    Long *Ra,           // size n2; Ra [j] += nnz (R (:,j)) if j < n2
+    Long *Rb,           // If getT is false: size n-n2 and
                         // Rb [j-n2] += nnz (R (:,j)) if j >= n2.
                         // If getT is true: size econ, and
                         // Rb [i] += nnz (R (i, n2:n-1))
-    Int *H2p,           // size rjsize+1.  Column pointers for H.
+    Long *H2p,          // size rjsize+1.  Column pointers for H.
                         // Only computed if H was kept during factorization.
                         // Only H2p [0..nh] is used.
-    Int *p_nh           // number of Householder vectors (nh <= rjsize)
+    Long *p_nh          // number of Householder vectors (nh <= rjsize)
 )
 {
     Entry **Rblock, *R, *Tau, *HTau ;
-    Int *Rp, *Rj, *Super, *HStair, *Stair, *Hm ;
+    Long *Rp, *Rj, *Super, *HStair, *Stair, *Hm ;
     char *Rdead ;
-    Int nf, n, j, f, col1, fp, pr, fn, rm, k, i, t, fm, h, getRa, getRb, nh,
+    Long nf, n, j, f, col1, fp, pr, fn, rm, k, i, t, fm, h, getRa, getRb, nh,
         row1, keepH, getH, hnz ;
 
     // -------------------------------------------------------------------------
@@ -223,21 +223,21 @@ template void spqr_rcount <double>
     spqr_symbolic *QRsym,
     spqr_numeric <double> *QRnum,
 
-    Int n1rows,         // added to each row index of Ra and Rb
-    Int econ,           // only get entries in rows n1rows to econ-1
-    Int n2,             // Ra = R (:,0:n2-1), Rb = R (:,n2:n-1)
+    Long n1rows,        // added to each row index of Ra and Rb
+    Long econ,          // only get entries in rows n1rows to econ-1
+    Long n2,            // Ra = R (:,0:n2-1), Rb = R (:,n2:n-1)
     int getT,           // if true, count Rb' instead of Rb
 
     // input/output
-    Int *Ra,            // size n2; Ra [j] += nnz (R (:,j)) if j < n2
-    Int *Rb,            // If getT is false: size n-n2 and
+    Long *Ra,           // size n2; Ra [j] += nnz (R (:,j)) if j < n2
+    Long *Rb,           // If getT is false: size n-n2 and
                         // Rb [j-n2] += nnz (R (:,j)) if j >= n2.
                         // If getT is true: size econ, and
                         // Rb [i] += nnz (R (i, n2:n-1))
-    Int *H2p,           // size rjsize+1.  Column pointers for H.
+    Long *H2p,          // size rjsize+1.  Column pointers for H.
                         // Only computed if H was kept during factorization.
                         // Only H2p [0..nh] is used.
-    Int *p_nh           // number of Householder vectors (nh <= rjsize)
+    Long *p_nh          // number of Householder vectors (nh <= rjsize)
 ) ;
 
 // =============================================================================
@@ -248,19 +248,19 @@ template void spqr_rcount <Complex>
     spqr_symbolic *QRsym,
     spqr_numeric <Complex> *QRnum,
 
-    Int n1rows,         // added to each row index of Ra and Rb
-    Int econ,           // only get entries in rows n1rows to econ-1
-    Int n2,             // Ra = R (:,0:n2-1), Rb = R (:,n2:n-1)
+    Long n1rows,        // added to each row index of Ra and Rb
+    Long econ,          // only get entries in rows n1rows to econ-1
+    Long n2,            // Ra = R (:,0:n2-1), Rb = R (:,n2:n-1)
     int getT,           // if true, count Rb' instead of Rb
 
     // input/output
-    Int *Ra,            // size n2; Ra [j] += nnz (R (:,j)) if j < n2
-    Int *Rb,            // If getT is false: size n-n2 and
+    Long *Ra,           // size n2; Ra [j] += nnz (R (:,j)) if j < n2
+    Long *Rb,           // If getT is false: size n-n2 and
                         // Rb [j-n2] += nnz (R (:,j)) if j >= n2.
                         // If getT is true: size econ, and
                         // Rb [i] += nnz (R (i, n2:n-1))
-    Int *H2p,           // size rjsize+1.  Column pointers for H.
+    Long *H2p,          // size rjsize+1.  Column pointers for H.
                         // Only computed if H was kept during factorization.
                         // Only H2p [0..nh] is used.
-    Int *p_nh           // number of Householder vectors (nh <= rjsize)
+    Long *p_nh          // number of Householder vectors (nh <= rjsize)
 ) ;

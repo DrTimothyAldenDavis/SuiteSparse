@@ -3,7 +3,7 @@
 csn *cs_qr (const cs *A, const css *S)
 {
     double *Rx, *Vx, *Ax, *x,  *Beta ;
-    int i, k, p, m, n, vnz, p1, top, m2, len, col, rnz, *s, *leftmost, *Ap, *Ai,
+    csi i, k, p, m, n, vnz, p1, top, m2, len, col, rnz, *s, *leftmost, *Ap, *Ai,
         *parent, *Rp, *Ri, *Vp, *Vi, *w, *pinv, *q ;
     cs *R, *V ;
     csn *N ;
@@ -11,7 +11,7 @@ csn *cs_qr (const cs *A, const css *S)
     m = A->m ; n = A->n ; Ap = A->p ; Ai = A->i ; Ax = A->x ;
     q = S->q ; parent = S->parent ; pinv = S->pinv ; m2 = S->m2 ;
     vnz = S->lnz ; rnz = S->unz ; leftmost = S->leftmost ;
-    w = cs_malloc (m2+n, sizeof (int)) ;            /* get int workspace */
+    w = cs_malloc (m2+n, sizeof (csi)) ;            /* get csi workspace */
     x = cs_malloc (m2, sizeof (double)) ;           /* get double workspace */
     N = cs_calloc (1, sizeof (csn)) ;               /* allocate result */
     if (!w || !x || !N) return (cs_ndone (N, NULL, w, x, 0)) ;

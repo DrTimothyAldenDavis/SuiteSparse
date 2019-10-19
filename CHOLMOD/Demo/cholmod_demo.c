@@ -7,7 +7,6 @@
  * The CHOLMOD/Demo Module is licensed under Version 2.0 of the GNU
  * General Public License.  See gpl.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
- * http://www.cise.ufl.edu/research/sparse
  * -------------------------------------------------------------------------- */
 
 /* Read in a matrix from a file, and use CHOLMOD to solve Ax=b if A is
@@ -387,6 +386,12 @@ int main (int argc, char **argv)
 		" after iterative refinement\n", resid2) ;
     }
     printf ("rcond    %8.1e\n\n", cholmod_rcond (L, cm)) ;
+
+    if (L->is_super)
+    {
+        cholmod_gpu_stats (cm) ;
+    }
+
     cholmod_free_factor (&L, cm) ;
     cholmod_free_dense (&X, cm) ;
 

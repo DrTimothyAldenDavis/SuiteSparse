@@ -1,9 +1,9 @@
 #include "cs_demo.h"
 #include <time.h>
 /* 1 if A is square & upper tri., -1 if square & lower tri., 0 otherwise */
-static int is_sym (cs *A)
+static csi is_sym (cs *A)
 {
-    int is_upper, is_lower, j, p, n = A->n, m = A->m, *Ap = A->p, *Ai = A->i ;
+    csi is_upper, is_lower, j, p, n = A->n, m = A->m, *Ap = A->p, *Ai = A->i ;
     if (m != n) return (0) ;
     is_upper = 1 ;
     is_lower = 1 ;
@@ -19,7 +19,7 @@ static int is_sym (cs *A)
 }
 
 /* true for off-diagonal entries */
-static int dropdiag (int i, int j, double aij, void *other) { return (i != j) ;}
+static csi dropdiag (csi i, csi j, double aij, void *other) { return (i != j) ;}
 
 /* C = A + triu(A,1)' */
 static cs *make_sym (cs *A)
@@ -33,26 +33,26 @@ static cs *make_sym (cs *A)
 }
 
 /* create a right-hand side */
-static void rhs (double *x, double *b, int m)
+static void rhs (double *x, double *b, csi m)
 {
-    int i ;
+    csi i ;
     for (i = 0 ; i < m ; i++) b [i] = 1 + ((double) i) / m ;
     for (i = 0 ; i < m ; i++) x [i] = b [i] ;
 }
 
 /* infinity-norm of x */
-static double norm (double *x, int n)
+static double norm (double *x, csi n)
 {
-    int i ;
+    csi i ;
     double normx = 0 ;
     for (i = 0 ; i < n ; i++) normx = CS_MAX (normx, fabs (x [i])) ;
     return (normx) ;
 }
 
 /* compute residual, norm(A*x-b,inf) / (norm(A,1)*norm(x,inf) + norm(b,inf)) */
-static void print_resid (int ok, cs *A, double *x, double *b, double *resid)
+static void print_resid (csi ok, cs *A, double *x, double *b, double *resid)
 {
-    int i, m, n ;
+    csi i, m, n ;
     if (!ok) { printf ("    (failed)\n") ; return ; }
     m = A->m ; n = A->n ;
     for (i = 0 ; i < m ; i++) resid [i] = -b [i] ;  /* resid = -b */
@@ -64,7 +64,7 @@ static void print_resid (int ok, cs *A, double *x, double *b, double *resid)
 static double tic (void) { return (clock () / (double) CLOCKS_PER_SEC) ; }
 static double toc (double t) { double s = tic () ; return (CS_MAX (0, s-t)) ; }
 
-static void print_order (int order)
+static void print_order (csi order)
 {
     switch (order)
     {
@@ -75,11 +75,11 @@ static void print_order (int order)
     }
 }
 
-/* read a problem from a file */
+/* read a problem from a file; use %g for integers to avoid csi conflicts */
 problem *get_problem (FILE *f, double tol)
 {
     cs *T, *A, *C ;
-    int sym, m, n, mn, nz1, nz2 ;
+    csi sym, m, n, mn, nz1, nz2 ;
     problem *Prob ;
     Prob = cs_calloc (1, sizeof (problem)) ;
     if (!Prob) return (NULL) ;
@@ -96,10 +96,12 @@ problem *get_problem (FILE *f, double tol)
     if (tol > 0) cs_droptol (A, tol) ;  /* drop tiny entries (just to test) */
     Prob->C = C = sym ? make_sym (A) : A ;  /* C = A + triu(A,1)', or C=A */
     if (!C) return (free_problem (Prob)) ;
-    printf ("\n--- Matrix: %d-by-%d, nnz: %d (sym: %d: nnz %d), norm: %8.2e\n",
-            m, n, A->p [n], sym, sym ? C->p [n] : 0, cs_norm (C)) ;
-    if (nz1 != nz2) printf ("zero entries dropped: %d\n", nz1 - nz2) ;
-    if (nz2 != A->p [n]) printf ("tiny entries dropped: %d\n", nz2 - A->p [n]) ;
+    printf ("\n--- Matrix: %g-by-%g, nnz: %g (sym: %g: nnz %g), norm: %8.2e\n",
+            (double) m, (double) n, (double) (A->p [n]), (double) sym,
+            (double) (sym ? C->p [n] : 0), cs_norm (C)) ;
+    if (nz1 != nz2) printf ("zero entries dropped: %g\n", (double) (nz1 - nz2));
+    if (nz2 != A->p [n]) printf ("tiny entries dropped: %g\n",
+            (double) (nz2 - A->p [n])) ;
     Prob->b = cs_malloc (mn, sizeof (double)) ;
     Prob->x = cs_malloc (mn, sizeof (double)) ;
     Prob->resid = cs_malloc (mn, sizeof (double)) ;
@@ -119,11 +121,11 @@ problem *free_problem (problem *Prob)
 }
 
 /* solve a linear system using Cholesky, LU, and QR, with various orderings */
-int demo2 (problem *Prob)
+csi demo2 (problem *Prob)
 {
     cs *A, *C ;
     double *b, *x, *resid,  t, tol ;
-    int k, m, n, ok, order, nb, ns, *r, *s, *rr, sprank ;
+    csi k, m, n, ok, order, nb, ns, *r, *s, *rr, sprank ;
     csd *D ;
     if (!Prob) return (0) ;
     A = Prob->A ; C = Prob->C ; b = Prob->b ; x = Prob->x ; resid = Prob->resid;
@@ -137,7 +139,8 @@ int demo2 (problem *Prob)
     {
         ns += ((r [k+1] == r [k]+1) && (s [k+1] == s [k]+1)) ;
     }
-    printf ("blocks: %d singletons: %d structural rank: %d\n", nb, ns, sprank) ;
+    printf ("blocks: %g singletons: %g structural rank: %g\n",
+        (double) nb, (double) ns, (double) sprank) ;
     cs_dfree (D) ;
     for (order = 0 ; order <= 3 ; order += 3)   /* natural and amd(A'*A) */
     {
@@ -178,7 +181,7 @@ int demo2 (problem *Prob)
 } 
 
 /* free workspace for demo3 */
-static int done3 (int ok, css *S, csn *N, double *y, cs *W, cs *E, int *p)
+static csi done3 (csi ok, css *S, csn *N, double *y, cs *W, cs *E, csi *p)
 {
     cs_sfree (S) ;
     cs_nfree (N) ;
@@ -190,10 +193,10 @@ static int done3 (int ok, css *S, csn *N, double *y, cs *W, cs *E, int *p)
 }
 
 /* Cholesky update/downdate */
-int demo3 (problem *Prob)
+csi demo3 (problem *Prob)
 {
     cs *A, *C, *W = NULL, *WW, *WT, *E = NULL, *W2 ;
-    int n, k, *Li, *Lp, *Wi, *Wp, p1, p2, *p = NULL, ok ;
+    csi n, k, *Li, *Lp, *Wi, *Wp, p1, p2, *p = NULL, ok ;
     double *b, *x, *resid, *y = NULL, *Lx, *Wx, s,  t, t1 ;
     css *S = NULL ;
     csn *N = NULL ;

@@ -5,12 +5,12 @@
  * See also MATLAB/Demo/private/frand.m */
 
 static
-cs *cs_frand (int n, int nel, int s)
+cs *cs_frand (csi n, csi nel, csi s)
 {
-    int ss = s*s, nz = nel*ss, e, i, j, *P ;
+    csi ss = s*s, nz = nel*ss, e, i, j, *P ;
     cs *A, *T = cs_spalloc (n, n, nz, 1, 1) ;
     if (!T) return (NULL) ;
-    P = cs_malloc (s, sizeof (int)) ;
+    P = cs_malloc (s, sizeof (csi)) ;
     if (!P) return (cs_spfree (T)) ;
     for (e = 0 ; e < nel ; e++)
     {
@@ -37,7 +37,7 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    int n, nel, s ;
+    csi n, nel, s ;
     cs *A, *AT ;
     if (nargout > 1 || nargin != 3)
     {

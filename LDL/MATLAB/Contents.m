@@ -18,15 +18,11 @@
 %
 %       [L, D, Parent, fl] = ldlsparse (A)
 
-% Copyright 2006-2007 by Timothy A. Davis, Univ. of Florida
+% Copyright 2006-2007 by Timothy A. Davis, http://www.suitesparse.com
 
 % LDL License:  GNU Lesser General Public License as published by the
 %   Free Software Foundation; either version 2.1 of the License, or
 %   (at your option) any later version.
-%
-% Availability:
-%
-%   http://www.cise.ufl.edu/research/sparse/ldl
 %
 % Acknowledgements:
 %

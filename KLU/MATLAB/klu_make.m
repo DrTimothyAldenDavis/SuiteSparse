@@ -13,8 +13,7 @@ function klu_make
 %
 % See also klu.
 
-% Copyright 2004-2009 Timothy A. Davis, Univ. of Florida
-% http://www.cise.ufl.edu/research/sparse
+% Copyright 2004-2009, Univ. of Florida
 
 metis_path = '../../metis-4.0' ;
 with_cholmod = exist ([metis_path '/Lib'], 'dir') ;
@@ -30,10 +29,10 @@ end
 fprintf ('Compiling KLU ') ;
 kk = 0 ; 
 
-include = '-I. -I../../AMD/Include -I../../COLAMD/Include -I../Include -I../../UFconfig -I../../BTF/Include' ;
+include = '-I. -I../../AMD/Include -I../../COLAMD/Include -I../Include -I../../SuiteSparse_config -I../../BTF/Include' ;
 
 if (with_cholmod)
-    include = [include ' -I../../CCOLAMD/Include -I../../CAMD/Include -I../../CHOLMOD/Include -I../../UFconfig -I' metis_path '/Lib -I../User'] ;
+    include = [include ' -I../../CCOLAMD/Include -I../../CAMD/Include -I../../CHOLMOD/Include -I../../SuiteSparse_config -I' metis_path '/Lib -I../User'] ;
 end
 
 % do not attempt to compile CHOLMOD with large file support (not needed)

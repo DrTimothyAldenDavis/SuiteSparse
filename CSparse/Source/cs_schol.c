@@ -1,8 +1,8 @@
 #include "cs.h"
 /* ordering and symbolic analysis for a Cholesky factorization */
-css *cs_schol (int order, const cs *A)
+css *cs_schol (csi order, const cs *A)
 {
-    int n, *c, *post, *P ;
+    csi n, *c, *post, *P ;
     cs *C ;
     css *S ;
     if (!CS_CSC (A)) return (NULL) ;        /* check inputs */
@@ -19,7 +19,7 @@ css *cs_schol (int order, const cs *A)
     c = cs_counts (C, S->parent, post, 0) ; /* find column counts of chol(C) */
     cs_free (post) ;
     cs_spfree (C) ;
-    S->cp = cs_malloc (n+1, sizeof (int)) ; /* allocate result S->cp */
+    S->cp = cs_malloc (n+1, sizeof (csi)) ; /* allocate result S->cp */
     S->unz = S->lnz = cs_cumsum (S->cp, c, n) ; /* find column pointers for L */
     cs_free (c) ;
     return ((S->lnz >= 0) ? S : cs_sfree (S)) ;

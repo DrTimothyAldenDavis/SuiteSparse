@@ -1,8 +1,8 @@
 default: all
 
-include ../../UFconfig/UFconfig.mk
+include ../../SuiteSparse_config/SuiteSparse_config.mk
 
-all: UserGuide.pdf
+all: UserGuide.pdf purge
 
 I = \
 	../Include/cholmod.h \
@@ -219,7 +219,8 @@ UserGuide.pdf: UserGuide.tex UserGuide.bib $(I) $(C) $(M) Makefile getproto rule
 distclean: purge
 
 purge: clean
-	- $(RM) _temp.awk _*.tex *.dvi *.aux *.log *.lof *.lot *.toc *.bak *.bbl *.blg
+	- $(RM) _temp.awk _*.tex *.dvi *.aux *.log *.lof *.lot *.toc *.bak 
+	- $(RM) *.bbl *.blg
 	- $(RM) -r *.dSYM
 
 clean:

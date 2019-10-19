@@ -8,7 +8,6 @@
  * The CHOLMOD/Partition Module is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
- * http://www.cise.ufl.edu/research/sparse
  * -------------------------------------------------------------------------- */
 
 /* CHOLMOD interface to the METIS package (Version 4.0.1):
@@ -76,10 +75,10 @@
 #ifdef DUMP_GRAPH
 #include <stdio.h>
 /* After dumping the graph with this routine, run "onmetis metisgraph" */
-static void dumpgraph (idxtype *Mp, idxtype *Mi, UF_long n,
+static void dumpgraph (idxtype *Mp, idxtype *Mi, SuiteSparse_long n,
     cholmod_common *Common)
 {
-    UF_long i, j, p, nz ;
+    SuiteSparse_long i, j, p, nz ;
     FILE *f ;
     nz = Mp [n] ;
     printf ("Dumping METIS graph n %ld nz %ld\n", n, nz) ;    /* DUMP_GRAPH */
@@ -198,7 +197,7 @@ static int metis_memory_ok
  * checked.
  */
 
-UF_long CHOLMOD(metis_bisector)	/* returns separator size */
+SuiteSparse_long CHOLMOD(metis_bisector)	/* returns separator size */
 (
     /* ---- input ---- */
     cholmod_sparse *A,	/* matrix to bisect */
@@ -597,7 +596,7 @@ int CHOLMOD(metis)
     nz = Bp [n] ;
 
     /* ---------------------------------------------------------------------- */
-    /* METIS does not have a UF_long integer version */
+    /* METIS does not have a SuiteSparse_long integer version */
     /* ---------------------------------------------------------------------- */
 
 #ifdef LONG

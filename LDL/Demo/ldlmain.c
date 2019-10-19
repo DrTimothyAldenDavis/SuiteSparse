@@ -33,8 +33,8 @@
  * "mex ldlmain.c ldl.c".  You can then run the program in MATLAB, with the
  * command "ldlmain".
  *
- * LDL Copyright (c) by Timothy A Davis,
- * University of Florida.  All Rights Reserved.  See README for the License.
+ * Copyright (c) 2006 by Timothy A Davis, http://www.suitesparse.com.
+ * All Rights Reserved.  See README for the License.
  */
 
 #ifdef MATLAB_MEX_FILE

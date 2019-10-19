@@ -1,6 +1,6 @@
 all: go
 
-include UFconfig/UFconfig.mk
+include SuiteSparse_config/SuiteSparse_config.mk
 
 go: run
 	- ( cd UMFPACK/Source ; ./ucov.dl )
@@ -14,7 +14,7 @@ run: prog
 prog:
 	( cd UMFPACK ; $(MAKE) library )
 	( cd AMD ; $(MAKE) library )
-	$(CC) -DDLONG $(CF) $(UMFPACK_CONFIG) -IUMFPACK/Source -IUMFPACK/Include -IAMD/Source -IAMD/Include -IUFconfig -o ut ut.c UMFPACK/Lib/libumfpack.a AMD/Lib/libamd.a CHOLMOD/Lib/libcholmod.a CAMD/Lib/libcamd.a COLAMD/Lib/libcolamd.a metis-4.0/libmetis.a CCOLAMD/Lib/libccolamd.a $(LIB)
+	$(CC) -DDLONG $(CF) $(UMFPACK_CONFIG) -IUMFPACK/Source -IUMFPACK/Include -IAMD/Source -IAMD/Include -ISuiteSparse_config -o ut ut.c UMFPACK/Lib/libumfpack.a AMD/Lib/libamd.a CHOLMOD/Lib/libcholmod.a CAMD/Lib/libcamd.a COLAMD/Lib/libcolamd.a metis-4.0/libmetis.a CCOLAMD/Lib/libccolamd.a SuiteSparse_config/libsuitesparseconfig.a $(LIB)
 
 utcov:
 	- ( cd UMFPACK/Source ; ./ucov.dl )

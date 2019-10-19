@@ -10,7 +10,9 @@ function SuiteSparse_test
 %
 % See also SuiteSparse_install, SuiteSparse_demo.
 
-% Copyright 2007, Tim Davis, University of Florida
+% Copyright 1990-2012, Timothy A. Davis, http://www.suitesparse.com.
+
+help SuiteSparse_test
 
 npackages = 18 ;
 h = waitbar (0, 'SuiteSparse test:') ;
@@ -34,44 +36,23 @@ end
 try
 
     %---------------------------------------------------------------------------
-    % CSparse (32-bit MATLAB only)
+    % CSparse (both 64-bit and 32-bit MATLAB)
     %---------------------------------------------------------------------------
 
+    % compile and install CSparse (not installed by SuiteSparse_install)
     package = package + 1 ;
-
-    if (isempty (strfind (computer, '64')))
-        % compile and install CSparse (not installed by SuiteSparse_install)
-        waitbar (package/(npackages+1), h, 'SuiteSparse test: CSparse') ;
-        addpath ([SuiteSparse '/CSparse/MATLAB/CSparse']) ;
-        addpath ([SuiteSparse '/CSparse/MATLAB/Demo']) ;
-        cd ([SuiteSparse '/CSparse/MATLAB/CSparse']) ;
-        cs_make ;
-        % test CSparse
-        cd ([SuiteSparse '/CSparse/MATLAB/Test']) ;
-        testall ;
-        % uninstall CSparse by removing it from path
-        rmpath ([SuiteSparse '/CSparse/MATLAB/CSparse']) ;
-        rmpath ([SuiteSparse '/CSparse/MATLAB/Demo']) ;
-    end
-
-    %---------------------------------------------------------------------------
-    % CSparse3 (both 64-bit and 32-bit MATLAB)
-    %---------------------------------------------------------------------------
-
-    package = package + 1 ;
-
-        % compile and install CSparse3 (not installed by SuiteSparse_install)
-        waitbar (package/(npackages+1), h, 'SuiteSparse test: CSparse3') ;
-        addpath ([SuiteSparse '/CSparse3/MATLAB/CSparse']) ;
-        addpath ([SuiteSparse '/CSparse3/MATLAB/Demo']) ;
-        cd ([SuiteSparse '/CSparse3/MATLAB/CSparse']) ;
-        cs_make ;
-        % test CSparse
-        cd ([SuiteSparse '/CSparse3/MATLAB/Test']) ;
-        testall ;
-        % uninstall CSparse by removing it from path
-        rmpath ([SuiteSparse '/CSparse3/MATLAB/CSparse']) ;
-        rmpath ([SuiteSparse '/CSparse3/MATLAB/Demo']) ;
+    waitbar (package/(npackages+1), h, 'SuiteSparse test: CSparse') ;
+    addpath ([SuiteSparse '/CSparse/MATLAB/CSparse']) ;
+    addpath ([SuiteSparse '/CSparse/MATLAB/Demo']) ;
+    cd ([SuiteSparse '/CSparse/MATLAB/CSparse']) ;
+    cs_make ;
+    % test CSparse
+    cd ([SuiteSparse '/CSparse/MATLAB/Test']) ;
+    testall ;
+    % uninstall CSparse by removing it from path
+    rmpath ([SuiteSparse '/CSparse/MATLAB/CSparse']) ;
+    rmpath ([SuiteSparse '/CSparse/MATLAB/Demo']) ;
+    rmpath ([SuiteSparse '/CSparse/MATLAB/UFget']) ;
 
     %---------------------------------------------------------------------------
     % CXSparse
@@ -189,7 +170,7 @@ try
     shellgui ;
     cd ([SuiteSparse '/MATLAB_Tools/waitmex']) ;
     waitmex ;
-    url = 'http://www.cise.ufl.edu/research/sparse' ;
+    url = 'http://www.suitesparse.com' ;
     fprintf ('<a href="%s">Click here for more details</a>\n', url) ;
     hprintf ('or see <a href="%s">\n', url) ;
     cd ([SuiteSparse '/MATLAB_Tools/find_components']) ;

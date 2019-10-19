@@ -38,6 +38,7 @@ catch
     pc = ~isunix ;
     mac = 0 ;
 end
+
 fprintf ('Compiling UMFPACK for MATLAB Version %s\n', v) ;
 
 if (pc)
@@ -85,15 +86,9 @@ if (is64 && ~verLessThan ('matlab', '7.8'))
     flags = [flags ' -DBLAS64'] ;
 end
 
-%-------------------------------------------------------------------------------
-% -DNPOSIX option (for sysconf and times timer routines)
-%-------------------------------------------------------------------------------
-
-posix = ' ' ;
-if (~ (pc || mac))
-    % added for timing routine:
+if (~(pc || mac))
+    % for POSIX timing routine
     lapack = [lapack ' -lrt'] ;
-    posix = ' -DLIBRT' ;
 end
 
 %-------------------------------------------------------------------------------
@@ -102,10 +97,11 @@ end
 
 umfdir = '../Source/' ;
 amddir = '../../AMD/Source/' ;
-incdir = ' -I. -I../Include -I../Source -I../../AMD/Include -I../../UFconfig' ;
+incdir = ' -I. -I../Include -I../Source -I../../AMD/Include -I../../SuiteSparse_config' ;
 
 if (with_cholmod)
-    incdir = [incdir ' -I../../CCOLAMD/Include -I../../CAMD/Include -I../../CHOLMOD/Include -I' metis_path '/Lib -I../../COLAMD/Include'] ;
+    incdir = [incdir ' -I../../CCOLAMD/Include -I../../CAMD/Include ' ...
+    ' -I../../CHOLMOD/Include -I' metis_path '/Lib -I../../COLAMD/Include'] ;
 end
 
 %-------------------------------------------------------------------------------
@@ -181,11 +177,13 @@ generic = { 'timer', 'tictoc', 'global' } ;
 
 M = cell (0) ;
 
+% add the SuiteSparse_timer function
+other_source = { '../../SuiteSparse_config/SuiteSparse_config' } ;
+
+% add CHOLMOD and its supporting libraries
 if (with_cholmod)
 
-    % other source:
-
-    camd_src = { ...
+    ordering_src = { ...
         '../../CAMD/Source/camd_1', ...
         '../../CAMD/Source/camd_2', ...
         '../../CAMD/Source/camd_aat', ...
@@ -197,13 +195,9 @@ if (with_cholmod)
         '../../CAMD/Source/camd_order', ...
         '../../CAMD/Source/camd_postorder', ...
         '../../CAMD/Source/camd_preprocess', ...
-        '../../CAMD/Source/camd_valid' } ;
-
-    colamd_src = {
+        '../../CAMD/Source/camd_valid', ...
         '../../COLAMD/Source/colamd', ...
-        '../../COLAMD/Source/colamd_global' } ;
-
-    ccolamd_src = {
+        '../../COLAMD/Source/colamd_global', ...
         '../../CCOLAMD/Source/ccolamd', ...
         '../../CCOLAMD/Source/ccolamd_global' } ;
 
@@ -293,14 +287,11 @@ if (with_cholmod)
         '../../CHOLMOD/Partition/cholmod_metis', ...
         '../../CHOLMOD/Partition/cholmod_nesdis' } ;
 
-    other_source = [cholmod_src metis_src ccolamd_src camd_src colamd_src] ;
-    % other_source = [other_source { '../User/umfpack_l_cholmod' }] ;         %#ok
-
-else
-    other_source = { } ;
+    other_source = [other_source cholmod_src metis_src ordering_src] ;
+    % other_source = [other_source { '../User/umfpack_l_cholmod' }] ;       %#ok
 end
 
-if (pc)
+if (pc && with_cholmod)
     % Windows does not have drand48 and srand48, required by METIS.  Use
     % drand48 and srand48 in CHOLMOD/MATLAB/Windows/rand48.c instead.
     other_source = [other_source {'../../CHOLMOD/MATLAB/Windows/rand48'}] ;
@@ -314,24 +305,22 @@ incdir = strrep (incdir, '/', filesep) ;
 %-------------------------------------------------------------------------------
 
 % with optimization:
-mx = sprintf ('mex -O%s%s%s ', posix, incdir, flags) ;
+mx = sprintf ('mex -O%s%s ', incdir, flags) ;
 % no optimization:
-%% mx = sprintf ('mex -g %s%s%s ', posix, incdir, flags) ;
+%% mx = sprintf ('mex -g %s%s%s ', incdir, flags) ;
 fprintf ('compile options:\n%s\n', mx) ;
 
-%----------------------------------------
-% CHOLMOD, CAMD, CCOLAMD, and METIS
-%----------------------------------------
+%-------------------------------------------------------------------------------
+% CHOLMOD, CAMD, C*OLAMD, METIS, SuiteSparse_config, and rand48 for Windows
+%-------------------------------------------------------------------------------
 
-if (with_cholmod)
-    for k = 1:length(other_source)
-        fs = strrep (other_source {k}, '/', filesep) ;
-        slash = strfind (fs, filesep) ;
-        slash = slash (end) + 1 ;
-        o = fs (slash:end) ;
-        kk = cmd (sprintf ('%s -DDLONG -c %s.c', mx, fs), kk, details) ;
-        M {end+1} = [o '.' obj] ;
-    end
+for k = 1:length(other_source)
+    fs = strrep (other_source {k}, '/', filesep) ;
+    slash = strfind (fs, filesep) ;
+    slash = slash (end) + 1 ;
+    o = fs (slash:end) ;
+    kk = cmd (sprintf ('%s -DDLONG -c %s.c', mx, fs), kk, details) ;
+    M {end+1} = [o '.' obj] ;
 end
 
 %-------------------------------------------------------------------------------

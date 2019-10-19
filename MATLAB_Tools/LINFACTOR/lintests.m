@@ -36,7 +36,7 @@ for n = [100 1000 2000]
 
 end
 
-for n = [1000 2000 1e5]
+for n = [1000 2000]
 
     % note that UMFPACK is not particularly fast for tridiagonal matrices
     % (see "doc mldivide", which uses a specialized tridiagonal solver)

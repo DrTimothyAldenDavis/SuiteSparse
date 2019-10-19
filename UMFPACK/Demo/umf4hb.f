@@ -3,9 +3,9 @@ c== umf4hb =============================================================
 c=======================================================================
 
 c-----------------------------------------------------------------------
-c UMFPACK Version 4.4, Copyright (c) 2005 by Timothy A. Davis.  CISE
-c Dept, Univ. of Florida.  All Rights Reserved.  See ../Doc/License for
-c License.  web: http://www.cise.ufl.edu/research/sparse/umfpack
+c UMFPACK Copyright (c) 2005-2012 by Timothy A. Davis,
+c http://www.suitesparse.com.  All Rights Reserved.  See ../Doc/License
+c for License.
 c-----------------------------------------------------------------------
 
 c umf4hb:

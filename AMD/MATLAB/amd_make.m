@@ -6,8 +6,7 @@ function amd_make
 %
 % See also amd, amd2.
 
-% Copyright 1994-2007, Tim Davis, University of Florida,
-% Patrick R. Amestoy, and Iain S. Duff. 
+% Copyright 1994-2007, Tim Davis, Patrick R. Amestoy, and Iain S. Duff. 
 
 details = 0 ;	    % 1 if details of each command are to be printed
 
@@ -16,7 +15,8 @@ if (~isempty (strfind (computer, '64')))
     d = '-largeArrayDims' ;
 end
 
-i = sprintf ('-I..%sInclude -I..%s..%sUFconfig', filesep, filesep, filesep) ;
+i = sprintf ('-I..%sInclude -I..%s..%sSuiteSparse_config', ...
+    filesep, filesep, filesep) ;
 cmd = sprintf ('mex -O %s -DDLONG -output amd2 %s amd_mex.c', d, i) ;
 files = {'amd_order', 'amd_dump', 'amd_postorder', 'amd_post_tree', ...
     'amd_aat', 'amd_2', 'amd_1', 'amd_defaults', 'amd_control', ...

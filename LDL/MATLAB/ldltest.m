@@ -5,7 +5,7 @@ function ldltest
 %   ldltest
 % See also ldlsparse.
 
-% Copyright 2006-2007 by Timothy A. Davis, Univ. of Florida
+% Copyright 2006-2007 by Timothy A. Davis, http://www.suitesparse.com
 
 help ldlsparse
 

@@ -21,7 +21,7 @@ function Problem = UFget (matrix, UF_Index)
 %
 %   See also UFgrep, UFweb, UFget_example, UFget_defaults, urlwrite.
 
-%   Copyright 2009, Tim Davis, University of Florida.
+% Copyright 2009-2012, Timothy A. Davis, http://www.suitesparse.com
 
 %-------------------------------------------------------------------------------
 % get the parameter settings

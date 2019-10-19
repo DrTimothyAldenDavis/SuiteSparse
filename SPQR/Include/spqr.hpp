@@ -52,11 +52,10 @@ typedef std::complex<double> Complex ;
 */
 
 // -----------------------------------------------------------------------------
-// Int is defined at UF_long, from UFconfig.h
+// Long is defined at SuiteSparse_long, from SuiteSparse_config.h
 // -----------------------------------------------------------------------------
 
-#define Int UF_long
-#define Int_max UF_long_max
+#define Long SuiteSparse_long
 
 // -----------------------------------------------------------------------------
 // basic macros
@@ -95,7 +94,7 @@ typedef std::complex<double> Complex ;
 
 #define ITYPE CHOLMOD_LONG
 #define DTYPE CHOLMOD_DOUBLE
-#define ID UF_long_id
+#define ID SuiteSparse_long_id
 
 // -----------------------------------------------------------------------------
 
@@ -200,14 +199,10 @@ typedef std::complex<double> Complex ;
 #endif
 
 // -----------------------------------------------------------------------------
-// For counting flops; disabled if TBB is used or timing not enabled
+// For counting flops; disabled if TBB is used
 // -----------------------------------------------------------------------------
 
-#if defined(TIMING)
 #define FLOP_COUNT(f) { if (cc->SPQR_grain <= 1) cc->other1 [0] += (f) ; }
-#else
-#define FLOP_COUNT(f)
-#endif
 
 // =============================================================================
 // === spqr_work ===============================================================
@@ -216,16 +211,16 @@ typedef std::complex<double> Complex ;
 // workspace required for each stack in spqr_factorize and spqr_kernel
 template <typename Entry> struct spqr_work
 {
-    Int *Stair1 ;           // size maxfn if H not kept
-    Int *Cmap ;             // size maxfn
-    Int *Fmap ;             // size n
+    Long *Stair1 ;          // size maxfn if H not kept
+    Long *Cmap ;            // size maxfn
+    Long *Fmap ;            // size n
     Entry *WTwork ;         // size (fchunk + (keepH ? 0:1)) * maxfn
 
     Entry *Stack_head ;     // head of Stack
     Entry *Stack_top ;      // top of Stack
 
-    Int sumfrank ;          // sum of ranks of the fronts in this stack
-    Int maxfrank ;          // largest rank of fronts in this stack
+    Long sumfrank ;         // sum of ranks of the fronts in this stack
+    Long maxfrank ;         // largest rank of fronts in this stack
 
     // for computing the 2-norm of w, the vector of the dead column norms
     double wscale ;         // scale factor for norm (w (of this stack))
@@ -245,11 +240,11 @@ template <typename Entry> struct spqr_blob
     spqr_symbolic *QRsym ;
     spqr_numeric <Entry> *QRnum ;
     spqr_work <Entry> *Work ;
-    Int *Cm ;
+    Long *Cm ;
     Entry **Cblock ;
     Entry *Sx ;
-    Int ntol ;
-    Int fchunk ;
+    Long ntol ;
+    Long fchunk ;
     cholmod_common *cc ;
 } ;
 
@@ -263,7 +258,7 @@ spqr_symbolic *spqr_analyze
     // inputs, not modified
     cholmod_sparse *A,
     int ordering,           // all ordering options available
-    Int *Quser,             // user provided ordering, if given (may be NULL)
+    Long *Quser,            // user provided ordering, if given (may be NULL)
 
     int do_rank_detection,  // if TRUE, then rank deficient matrices may be
                             // considered during numerical factorization,
@@ -283,9 +278,9 @@ template <typename Entry> spqr_numeric <Entry> *spqr_factorize
     cholmod_sparse **Ahandle,
 
     // inputs, not modified
-    Int freeA,                      // if TRUE, free A on output
+    Long freeA,                     // if TRUE, free A on output
     double tol,                     // for rank detection
-    Int ntol,                       // apply tol only to first ntol columns
+    Long ntol,                      // apply tol only to first ntol columns
     spqr_symbolic *QRsym,
 
     // workspace and parameters
@@ -313,13 +308,13 @@ template <typename Entry> double spqr_maxcolnorm
 
 template <typename Entry> void spqr_kernel
 (
-    Int task,
+    Long task,
     spqr_blob <Entry> *Blob
 ) ;
 
 template <typename Entry> void spqr_parallel
 (
-    Int ntasks,
+    Long ntasks,
     int nthreads,
     spqr_blob <Entry> *Blob
 ) ;
@@ -352,16 +347,16 @@ void spqr_stranspose1
 (
     // input, not modified
     cholmod_sparse *A,  // m-by-n
-    Int *Qfill,         // size n, fill-reducing column permutation;
+    Long *Qfill,        // size n, fill-reducing column permutation;
                         // Qfill [k] = j if the kth column of S is the jth
                         // column of A.  Identity permutation is used if
                         // Qfill is NULL.
 
     // output, contents not defined on input
-    Int *Sp,            // size m+1, row pointers of S
-    Int *Sj,            // size nz, column indices of S
-    Int *PLinv,         // size m, inverse row permutation, PLinv [i] = k
-    Int *Sleft,         // size n+2, Sleft [j] ... Sleft [j+1]-1 is the list of
+    Long *Sp,           // size m+1, row pointers of S
+    Long *Sj,           // size nz, column indices of S
+    Long *PLinv,        // size m, inverse row permutation, PLinv [i] = k
+    Long *Sleft,        // size n+2, Sleft [j] ... Sleft [j+1]-1 is the list of
                         // rows of S whose leftmost column index is j.  The list
                         // can be empty (that is, Sleft [j] == Sleft [j+1]).
                         // Sleft [n] is the number of non-empty rows of S, and
@@ -369,7 +364,7 @@ void spqr_stranspose1
                         // Sleft [n+1]-1 gives the empty rows of S.
 
     // workspace, not defined on input or output
-    Int *W             // size m
+    Long *W             // size m
 ) ;
 
 
@@ -377,19 +372,19 @@ template <typename Entry> void spqr_stranspose2
 (
     // input, not modified
     cholmod_sparse *A,  // m-by-n
-    Int *Qfill,         // size n, fill-reducing column permutation;
+    Long *Qfill,        // size n, fill-reducing column permutation;
                         // Qfill [k] = j
                         // if the kth column of S is the jth column of A.
                         // Identity permutation is used if Qfill is NULL.
 
-    Int *Sp,            // size m+1, row pointers of S
-    Int *PLinv,         // size m, inverse row permutation, PLinv [i] = k
+    Long *Sp,           // size m+1, row pointers of S
+    Long *PLinv,        // size m, inverse row permutation, PLinv [i] = k
 
     // output, contents not defined on input
     Entry *Sx,          // size nz, numerical values of S
 
     // workspace, not defined on input or output
-    Int *W              // size m
+    Long *W             // size m
 ) ;
 
 
@@ -401,19 +396,19 @@ template <typename Entry> void spqr_stranspose2
 template <typename Entry> void spqrDebug_dumpdense
 (
     Entry *A,
-    Int m,
-    Int n,
-    Int lda,
+    Long m,
+    Long n,
+    Long lda,
     cholmod_common *cc
 ) ;
 
 template <typename Entry> void spqrDebug_dumpsparse
 (
-    Int *Ap,
-    Int *Ai,
+    Long *Ap,
+    Long *Ai,
     Entry *Ax,
-    Int m,
-    Int n,
+    Long m,
+    Long n,
     cholmod_common *cc
 ) ;
 
@@ -423,91 +418,91 @@ void spqrDebug_printf (double x, cholmod_common *cc) ;
 void spqrDebug_printf (Complex x, cholmod_common *cc) ;
 // #endif
 
-void spqrDebug_dump_Parent (Int n, Int *Parent, const char *filename) ;
+void spqrDebug_dump_Parent (Long n, Long *Parent, const char *filename) ;
 
-Int spqrDebug_rhsize             // returns # of entries in R+H block
+Long spqrDebug_rhsize             // returns # of entries in R+H block
 (
     // input, not modified
-    Int m,                  // # of rows in F
-    Int n,                  // # of columns in F
-    Int npiv,               // number of pivotal columns in F
-    Int *Stair,             // size n; column j is dead if Stair [j] == 0.
+    Long m,                 // # of rows in F
+    Long n,                 // # of columns in F
+    Long npiv,              // number of pivotal columns in F
+    Long *Stair,            // size n; column j is dead if Stair [j] == 0.
                             // Only the first npiv columns can be dead.
     cholmod_common *cc
 ) ;
 #endif
 
 #ifdef DEBUG_EXPENSIVE
-Int spqrDebug_listcount
+Long spqrDebug_listcount
 (
-    Int x, Int *List, Int len, Int what,
+    Long x, Long *List, Long len, Long what,
     cholmod_common *cc
 ) ;
 #endif
 
 // =============================================================================
 
-Int spqr_fsize     // returns # of rows of F
+Long spqr_fsize     // returns # of rows of F
 (
     // inputs, not modified
-    Int f,
-    Int *Super,             // size nf, from QRsym
-    Int *Rp,                // size nf, from QRsym
-    Int *Rj,                // size rjsize, from QRsym
-    Int *Sleft,             // size n+2, from QRsym
-    Int *Child,             // size nf, from QRsym
-    Int *Childp,            // size nf+1, from QRsym
-    Int *Cm,                // size nf, from QRwork
+    Long f,
+    Long *Super,            // size nf, from QRsym
+    Long *Rp,               // size nf, from QRsym
+    Long *Rj,               // size rjsize, from QRsym
+    Long *Sleft,            // size n+2, from QRsym
+    Long *Child,            // size nf, from QRsym
+    Long *Childp,           // size nf+1, from QRsym
+    Long *Cm,               // size nf, from QRwork
 
     // outputs, not defined on input
-    Int *Fmap,              // size n, from QRwork
-    Int *Stair              // size fn, from QRwork
+    Long *Fmap,             // size n, from QRwork
+    Long *Stair             // size fn, from QRwork
 ) ;
 
 
 template <typename Entry> void spqr_assemble
 (
     // inputs, not modified
-    Int f,                  // front to assemble F
-    Int fm,                 // number of rows of F
+    Long f,                 // front to assemble F
+    Long fm,                // number of rows of F
     int keepH,              // if TRUE, then construct row pattern of H
-    Int *Super,
-    Int *Rp,
-    Int *Rj,
-    Int *Sp,
-    Int *Sj,
-    Int *Sleft,
-    Int *Child,
-    Int *Childp,
+    Long *Super,
+    Long *Rp,
+    Long *Rj,
+    Long *Sp,
+    Long *Sj,
+    Long *Sleft,
+    Long *Child,
+    Long *Childp,
     Entry *Sx,
-    Int *Fmap,
-    Int *Cm,
+    Long *Fmap,
+    Long *Cm,
     Entry **Cblock,
 #ifndef NDEBUG
     char *Rdead,
 #endif
-    Int *Hr,
+    Long *Hr,
 
     // input/output
-    Int *Stair,
-    Int *Hii,               // if keepH, construct list of row indices for F
+    Long *Stair,
+    Long *Hii,              // if keepH, construct list of row indices for F
     // input only
-    Int *Hip,
+    Long *Hip,
 
     // outputs, not defined on input
     Entry *F,
 
     // workspace, not defined on input or output
-    Int *Cmap
+    Long *Cmap
 ) ;
 
-template <typename Entry> Int spqr_cpack     // returns # of rows in C
+template <typename Entry> Long spqr_cpack     // returns # of rows in C
 (
     // input, not modified
-    Int m,                  // # of rows in F
-    Int n,                  // # of columns in F
-    Int npiv,               // number of pivotal columns in F
-    Int g,                  // the C block starts at F (g,npiv)
+    Long m,                 // # of rows in F
+    Long n,                 // # of columns in F
+    Long npiv,              // number of pivotal columns in F
+    Long g,                 // the C block starts at F (g,npiv)
 
     // input, not modified unless the pack occurs in-place
     Entry *F,               // m-by-n frontal matrix in column-major order
@@ -517,22 +512,22 @@ template <typename Entry> Int spqr_cpack     // returns # of rows in C
                             // trapezoidal form.
 ) ;
 
-Int spqr_fcsize    // returns # of entries in C of current front F
+Long spqr_fcsize    // returns # of entries in C of current front F
 (
     // input, not modified
-    Int m,                  // # of rows in F
-    Int n,                  // # of columns in F
-    Int npiv,               // number of pivotal columns in F
-    Int g                   // the C block starts at F (g,npiv)
+    Long m,                 // # of rows in F
+    Long n,                 // # of columns in F
+    Long npiv,              // number of pivotal columns in F
+    Long g                  // the C block starts at F (g,npiv)
 ) ;
 
-Int spqr_csize     // returns # of entries in C of a child
+Long spqr_csize     // returns # of entries in C of a child
 (
     // input, not modified
-    Int c,                  // child c
-    Int *Rp,                // size nf+1, pointers for pattern of R
-    Int *Cm,                // size nf, Cm [c] = # of rows in child C
-    Int *Super              // size nf, pivotal columns in each front
+    Long c,                 // child c
+    Long *Rp,               // size nf+1, pointers for pattern of R
+    Long *Cm,               // size nf, Cm [c] = # of rows in child C
+    Long *Super             // size nf, pivotal columns in each front
 ) ;
 
 template <typename Entry> void spqr_rcount
@@ -541,21 +536,21 @@ template <typename Entry> void spqr_rcount
     spqr_symbolic *QRsym,
     spqr_numeric <Entry> *QRnum,
 
-    Int n1rows,         // added to each row index of Ra and Rb
-    Int econ,           // only get entries in rows n1rows to econ-1
-    Int n2,             // Ra = R (:,0:n2-1), Rb = R (:,n2:n-1)
+    Long n1rows,        // added to each row index of Ra and Rb
+    Long econ,          // only get entries in rows n1rows to econ-1
+    Long n2,            // Ra = R (:,0:n2-1), Rb = R (:,n2:n-1)
     int getT,           // if true, count Rb' instead of Rb
 
     // input/output
-    Int *Ra,            // size n2; Ra [j] += nnz (R (:,j)) if j < n2
-    Int *Rb,            // If getT is false: size n-n2 and
+    Long *Ra,           // size n2; Ra [j] += nnz (R (:,j)) if j < n2
+    Long *Rb,           // If getT is false: size n-n2 and
                         // Rb [j-n2] += nnz (R (:,j)) if j >= n2.
                         // If getT is true: size econ, and
                         // Rb [i] += nnz (R (i, n2:n-1))
-    Int *Hp,            // size rjsize+1.  Column pointers for H.
+    Long *Hp,           // size rjsize+1.  Column pointers for H.
                         // Only computed if H was kept during factorization.
                         // Only Hp [0..nh] is used.
-    Int *p_nh           // number of Householder vectors (nh <= rjsize)
+    Long *p_nh          // number of Householder vectors (nh <= rjsize)
 ) ;
 
 template <typename Entry> void spqr_rconvert
@@ -564,22 +559,22 @@ template <typename Entry> void spqr_rconvert
     spqr_symbolic *QRsym,
     spqr_numeric <Entry> *QRnum,
 
-    Int n1rows,         // added to each row index of Ra, Rb, and H
-    Int econ,           // only get entries in rows n1rows to econ-1
-    Int n2,             // Ra = R (:,0:n2-1), Rb = R (:,n2:n-1)
+    Long n1rows,        // added to each row index of Ra, Rb, and H
+    Long econ,          // only get entries in rows n1rows to econ-1
+    Long n2,            // Ra = R (:,0:n2-1), Rb = R (:,n2:n-1)
     int getT,           // if true, get Rb' instead of Rb
 
     // input/output
-    Int *Rap,           // size n2+1; on input, Rap [j] is the column pointer
+    Long *Rap,          // size n2+1; on input, Rap [j] is the column pointer
                         // for Ra.  Incremented on output by the number of
                         // entries added to column j of Ra.
 
     // output, not defined on input
-    Int *Rai,           // size rnz1 = nnz(Ra); row indices of Ra
+    Long *Rai,          // size rnz1 = nnz(Ra); row indices of Ra
     Entry *Rax,         // size rnz; numerical values of Ra
 
     // input/output
-    Int *Rbp,           // if getT is false:
+    Long *Rbp,          // if getT is false:
                         // size (n-n2)+1; on input, Rbp [j] is the column
                         // pointer for Rb.  Incremented on output by the number
                         // of entries added to column j of Rb.
@@ -589,28 +584,28 @@ template <typename Entry> void spqr_rconvert
                         // of entries added to row i of Rb.
 
     // output, not defined on input
-    Int *Rbi,           // size rnz2 = nnz(Rb); indices of Rb
+    Long *Rbi,          // size rnz2 = nnz(Rb); indices of Rb
     Entry *Rbx,         // size rnz2; numerical values of Rb
 
     // input
-    Int *H2p,           // size nh+1; H2p [j] is the column pointer for H.
+    Long *H2p,          // size nh+1; H2p [j] is the column pointer for H.
                         // H2p, H2i, and H2x are ignored if H was not kept
                         // during factorization.  nh computed by rcount
 
     // output, not defined on input
-    Int *H2i,           // size hnz = nnz(H); indices of H
+    Long *H2i,           // size hnz = nnz(H); indices of H
     Entry *H2x,         // size hnz; numerical values of H
     Entry *H2Tau        // size nh; Householder coefficients
 ) ;
 
-template <typename Entry> Int spqr_rhpack    // returns # of entries in R+H
+template <typename Entry> Long spqr_rhpack    // returns # of entries in R+H
 (
     // input, not modified
     int keepH,              // if true, then H is packed
-    Int m,                  // # of rows in F
-    Int n,                  // # of columns in F
-    Int npiv,               // number of pivotal columns in F
-    Int *Stair,             // size npiv; column j is dead if Stair [j] == 0.
+    Long m,                 // # of rows in F
+    Long n,                 // # of columns in F
+    Long npiv,              // number of pivotal columns in F
+    Long *Stair,            // size npiv; column j is dead if Stair [j] == 0.
                             // Only the first npiv columns can be dead.
 
     // input, not modified (unless the pack occurs in-place)
@@ -618,7 +613,7 @@ template <typename Entry> Int spqr_rhpack    // returns # of entries in R+H
 
     // output, contents not defined on input
     Entry *R,               // packed columns of R+H
-    Int *p_rm               // number of rows in R block
+    Long *p_rm              // number of rows in R block
 ) ;
 
 template <typename Entry> void spqr_hpinv
@@ -628,7 +623,7 @@ template <typename Entry> void spqr_hpinv
     // input/output
     spqr_numeric <Entry> *QRnum,
     // workspace
-    Int *W              // size QRnum->m
+    Long *W              // size QRnum->m
 ) ;
 
 template <typename Entry> int spqr_1colamd
@@ -637,17 +632,17 @@ template <typename Entry> int spqr_1colamd
     int ordering,           // all available, except 0:fixed and 3:given
                             // treated as 1:natural
     double tol,             // only accept singletons above tol
-    Int bncols,             // number of columns of B
+    Long bncols,            // number of columns of B
     cholmod_sparse *A,      // m-by-n sparse matrix
 
     // output arrays, neither allocated nor defined on input.
 
-    Int **p_Q1fill,         // size n+bncols, fill-reducing
+    Long **p_Q1fill,        // size n+bncols, fill-reducing
                             // or natural ordering
 
-    Int **p_R1p,            // size n1rows+1, R1p [k] = # of nonzeros in kth
+    Long **p_R1p,           // size n1rows+1, R1p [k] = # of nonzeros in kth
                             // row of R1.  NULL if n1cols == 0.
-    Int **p_P1inv,          // size m, singleton row inverse permutation.
+    Long **p_P1inv,         // size m, singleton row inverse permutation.
                             // If row i of A is the kth singleton row, then
                             // P1inv [i] = k.  NULL if n1cols is zero.
 
@@ -656,8 +651,8 @@ template <typename Entry> int spqr_1colamd
                             // Y = [A B] or Y = [A2 B2].  If B is empty and
                             // there are no column singletons, Y is NULL
 
-    Int *p_n1cols,          // number of column singletons found
-    Int *p_n1rows,          // number of corresponding rows found
+    Long *p_n1cols,         // number of column singletons found
+    Long *p_n1rows,         // number of corresponding rows found
 
     // workspace and parameters
     cholmod_common *cc
@@ -667,14 +662,14 @@ template <typename Entry> int spqr_1fixed
 (
     // inputs, not modified
     double tol,             // only accept singletons above tol
-    Int bncols,             // number of columns of B
+    Long bncols,            // number of columns of B
     cholmod_sparse *A,      // m-by-n sparse matrix
 
     // output arrays, neither allocated nor defined on input.
 
-    Int **p_R1p,            // size n1rows+1, R1p [k] = # of nonzeros in kth
+    Long **p_R1p,           // size n1rows+1, R1p [k] = # of nonzeros in kth
                             // row of R1.  NULL if n1cols == 0.
-    Int **p_P1inv,          // size m, singleton row inverse permutation.
+    Long **p_P1inv,         // size m, singleton row inverse permutation.
                             // If row i of A is the kth singleton row, then
                             // P1inv [i] = k.  NULL if n1cols is zero.
 
@@ -683,8 +678,8 @@ template <typename Entry> int spqr_1fixed
                             // Y = [A B] or Y = [A2 B2].  If B is empty and
                             // there are no column singletons, Y is NULL
 
-    Int *p_n1cols,          // number of column singletons found
-    Int *p_n1rows,          // number of corresponding rows found
+    Long *p_n1cols,         // number of column singletons found
+    Long *p_n1rows,         // number of corresponding rows found
 
     // workspace and parameters
     cholmod_common *cc
@@ -695,47 +690,47 @@ template <typename Entry> SuiteSparseQR_factorization <Entry> *spqr_1factor
     // inputs, not modified
     int ordering,           // all ordering options available
     double tol,             // only accept singletons above tol
-    Int bncols,             // number of columns of B
+    Long bncols,            // number of columns of B
     int keepH,              // if TRUE, keep the Householder vectors
     cholmod_sparse *A,      // m-by-n sparse matrix
-    Int ldb,                // leading dimension of B, if dense
-    Int *Bp,                // size bncols+1, column pointers of B
-    Int *Bi,                // size bnz = Bp [bncols], row indices of B
+    Long ldb,               // leading dimension of B, if dense
+    Long *Bp,               // size bncols+1, column pointers of B
+    Long *Bi,               // size bnz = Bp [bncols], row indices of B
     Entry *Bx,              // size bnz, numerical values of B
 
     // workspace and parameters
     cholmod_common *cc
 ) ;
 
-Int spqr_cumsum             // returns total sum
+Long spqr_cumsum            // returns total sum
 (
     // input, not modified
-    Int n,
+    Long n,
 
     // input/output
-    Int *X                  // size n+1. X = cumsum ([0 X])
+    Long *X                 // size n+1. X = cumsum ([0 X])
 ) ;
 
 void spqr_shift
 (
     // input, not modified
-    Int n,
+    Long n,
 
     // input/output
-    Int *X                      // size n+1
+    Long *X                 // size n+1
 ) ;
 
 template <typename Entry> void spqr_larftb
 (
     // inputs, not modified (V is modified and then restored on output)
     int method,     // 0,1,2,3
-    Int m,          // C is m-by-n
-    Int n,
-    Int k,          // V is v-by-k
+    Long m,         // C is m-by-n
+    Long n,
+    Long k,         // V is v-by-k
                     // for methods 0 and 1, v = m,
                     // for methods 2 and 3, v = n
-    Int ldc,        // leading dimension of C
-    Int ldv,        // leading dimension of V
+    Long ldc,       // leading dimension of C
+    Long ldv,       // leading dimension of V
     Entry *V,       // V is v-by-k, unit lower triangular (diag not stored)
     Entry *Tau,     // size k, the k Householder coefficients
 
@@ -753,18 +748,18 @@ int spqr_happly_work
     // input
     int method,     // 0,1,2,3 
 
-    Int m,          // X is m-by-n
-    Int n,
+    Long m,         // X is m-by-n
+    Long n,
 
     // FUTURE : make H cholmod_sparse:
-    Int nh,         // number of Householder vectors
-    Int *Hp,        // size nh+1, column pointers for H
-    Int hchunk, 
+    Long nh,        // number of Householder vectors
+    Long *Hp,       // size nh+1, column pointers for H
+    Long hchunk, 
 
     // outputs; sizes of workspaces needed
-    Int *p_vmax, 
-    Int *p_vsize, 
-    Int *p_csize
+    Long *p_vmax, 
+    Long *p_vsize, 
+    Long *p_csize
 ) ;
 
 template <typename Entry> void spqr_happly
@@ -772,12 +767,12 @@ template <typename Entry> void spqr_happly
     // input
     int method,     // 0,1,2,3 
 
-    Int m,          // X is m-by-n
-    Int n,
+    Long m,         // X is m-by-n
+    Long n,
 
-    Int nh,         // number of Householder vectors
-    Int *Hp,        // size nh+1, column pointers for H
-    Int *Hi,        // size hnz = Hp [nh], row indices of H
+    Long nh,        // number of Householder vectors
+    Long *Hp,       // size nh+1, column pointers for H
+    Long *Hi,       // size hnz = Hp [nh], row indices of H
     Entry *Hx,      // size hnz, Householder values.  Note that the first
                     // entry in each column must be equal to 1.0
 
@@ -787,10 +782,10 @@ template <typename Entry> void spqr_happly
     Entry *X,       // size m-by-n with leading dimension m
 
     // workspace
-    Int vmax,
-    Int hchunk,
-    Int *Wi,        // size vmax
-    Int *Wmap,      // size MAX(mh,1) where H is mh-by-nh
+    Long vmax,
+    Long hchunk,
+    Long *Wi,       // size vmax
+    Long *Wmap,     // size MAX(mh,1) where H is mh-by-nh
     Entry *C,       // size csize
     Entry *V,       // size vsize
     cholmod_common *cc
@@ -800,14 +795,14 @@ template <typename Entry> void spqr_panel
 (
     // input
     int method,
-    Int m,
-    Int n,
-    Int v,
-    Int h,              // number of Householder vectors in the panel
-    Int *Vi,            // Vi [0:v-1] defines the pattern of the panel
+    Long m,
+    Long n,
+    Long v,
+    Long h,             // number of Householder vectors in the panel
+    Long *Vi,           // Vi [0:v-1] defines the pattern of the panel
     Entry *V,           // v-by-h, panel of Householder vectors
     Entry *Tau,         // size h, Householder coefficients for the panel
-    Int ldx,
+    Long ldx,
 
     // input/output
     Entry *X,           // m-by-n with leading dimension ldx
@@ -823,29 +818,29 @@ template <typename Entry> int spqr_append       // TRUE if OK, FALSE otherwise
 (
     // inputs, not modified
     Entry *X,       // size m-by-1
-    Int *P,         // size m, or NULL; permutation to apply to X.
+    Long *P,        // size m, or NULL; permutation to apply to X.
                     // P [k] = i if row k of A is row i of X
 
     // input/output
     cholmod_sparse *A,    // size m-by-n2 where n2 > n
-    Int *p_n,       // number of columns of A; increased by one
+    Long *p_n,       // number of columns of A; increased by one
 
     // workspace and parameters
     cholmod_common *cc
 ) ;
 
-template <typename Entry> Int spqr_trapezoidal       // rank of R, or EMPTY
+template <typename Entry> Long spqr_trapezoidal       // rank of R, or EMPTY
 (
     // inputs, not modified
 
-    Int n,          // R is m-by-n (m is not needed here; can be economy R)
-    Int *Rp,        // size n+1, column pointers of R
-    Int *Ri,        // size rnz = Rp [n], row indices of R
+    Long n,         // R is m-by-n (m is not needed here; can be economy R)
+    Long *Rp,       // size n+1, column pointers of R
+    Long *Ri,       // size rnz = Rp [n], row indices of R
     Entry *Rx,      // size rnz, numerical values of R
 
-    Int bncols,     // number of columns of B
+    Long bncols,    // number of columns of B
 
-    Int *Qfill,     // size n+bncols, fill-reducing ordering.  Qfill [k] = j if
+    Long *Qfill,    // size n+bncols, fill-reducing ordering.  Qfill [k] = j if
                     // the jth column of A is the kth column of R.  If Qfill is
                     // NULL, then it is assumed to be the identity
                     // permutation.
@@ -855,11 +850,11 @@ template <typename Entry> Int spqr_trapezoidal       // rank of R, or EMPTY
                                     // the matrix T is not created.
 
     // outputs, not allocated on input
-    Int **p_Tp,     // size n+1, column pointers of T
-    Int **p_Ti,     // size rnz, row indices of T
+    Long **p_Tp,    // size n+1, column pointers of T
+    Long **p_Ti,    // size rnz, row indices of T
     Entry **p_Tx,   // size rnz, numerical values of T
 
-    Int **p_Qtrap,  // size n+bncols, modified Qfill
+    Long **p_Qtrap, // size n+bncols, modified Qfill
 
     // workspace and parameters
     cholmod_common *cc
@@ -873,8 +868,8 @@ template <typename Entry> void spqr_rsolve
     SuiteSparseQR_factorization <Entry> *QR,
     int use_Q1fill,
 
-    Int nrhs,               // number of columns of B
-    Int ldb,                // leading dimension of B
+    Long nrhs,              // number of columns of B
+    Long ldb,               // leading dimension of B
     Entry *B,               // size m-by-nrhs with leading dimesion ldb
 
     // output
@@ -882,27 +877,27 @@ template <typename Entry> void spqr_rsolve
 
     // workspace
     Entry **Rcolp,
-    Int *Rlive,
+    Long *Rlive,
     Entry *W,
 
     cholmod_common *cc
 ) ;
 
 // returns rank of F, or 0 on error
-template <typename Entry> Int spqr_front
+template <typename Entry> Long spqr_front
 (
     // input, not modified
-    Int m,              // F is m-by-n with leading dimension m
-    Int n,
-    Int npiv,           // number of pivot columns
+    Long m,             // F is m-by-n with leading dimension m
+    Long n,
+    Long npiv,          // number of pivot columns
     double tol,         // a column is flagged as dead if its norm is <= tol
-    Int ntol,           // apply tol only to first ntol pivot columns
-    Int fchunk,         // block size for compact WY Householder reflections,
+    Long ntol,          // apply tol only to first ntol pivot columns
+    Long fchunk,        // block size for compact WY Householder reflections,
                         // treated as 1 if fchunk <= 1
 
     // input/output
     Entry *F,           // frontal matrix F of size m-by-n
-    Int *Stair,         // size n, entries F (Stair[k]:m-1, k) are all zero,
+    Long *Stair,        // size n, entries F (Stair[k]:m-1, k) are all zero,
                         // and remain zero on output.
     char *Rdead,        // size npiv; all zero on input.  If k is dead,
                         // Rdead [k] is set to 1
@@ -978,12 +973,12 @@ inline Complex spqr_divide (Complex a, Complex b, cholmod_common *cc)
 // === spqr_add ================================================================
 // =============================================================================
 
-// Add two non-negative Int's, and return the result.  Checks for Int overflow
+// Add two non-negative Long's, and return the result.  Checks for Long overflow
 // and sets ok to FALSE if it occurs.
 
-inline Int spqr_add (Int a, Int b, int *ok)
+inline Long spqr_add (Long a, Long b, int *ok)
 {
-    Int c = a + b ;
+    Long c = a + b ;
     if (c < 0)
     {
         (*ok) = FALSE ;
@@ -997,12 +992,12 @@ inline Int spqr_add (Int a, Int b, int *ok)
 // === spqr_mult ===============================================================
 // =============================================================================
 
-// Multiply two positive Int's, and return the result.  Checks for Int overflow
-// and sets ok to FALSE if it occurs.
+// Multiply two positive Long's, and return the result.  Checks for Long
+// overflow and sets ok to FALSE if it occurs.
 
-inline Int spqr_mult (Int a, Int b, int *ok)
+inline Long spqr_mult (Long a, Long b, int *ok)
 {
-    Int c = a * b ;
+    Long c = a * b ;
     if (((double) c) != ((double) a) * ((double) b))
     {
         (*ok) = FALSE ;
@@ -1022,6 +1017,11 @@ inline Int spqr_mult (Int a, Int b, int *ok)
 extern "C" {
 #include "cholmod_blas.h"
 }
+
+#undef CHECK_BLAS_INT
+#undef EQ
+#define CHECK_BLAS_INT (sizeof (BLAS_INT) < sizeof (Long))
+#define EQ(K,k) (((BLAS_INT) K) == ((Long) k))
 
 #ifdef SUN64
 

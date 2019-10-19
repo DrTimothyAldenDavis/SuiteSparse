@@ -9,7 +9,6 @@
 %
 % See also:  camd, amd, colamd, symamd, colmmd, symmmd, umfpack
 
-% Copyright 1994-2007, Tim Davis, University of Florida,
-% Patrick R. Amestoy, Iain S. Duff, and Yanqing Chen.
+% Copyright 1994-2007, Tim Davis, Patrick R. Amestoy, Iain S. Duff, and Y. Chen.
 
 help Contents

@@ -10,22 +10,22 @@ template <typename Entry> void spqr_stranspose2
 (
     // input, not modified
     cholmod_sparse *A,  // m-by-n
-    Int *Qfill,         // size n, fill-reducing column permutation;
+    Long *Qfill,        // size n, fill-reducing column permutation;
                         // Qfill [k] = j
                         // if the kth column of S is the jth column of A.
                         // Identity permutation is used if Qfill is NULL.
 
-    Int *Sp,            // size m+1, row pointers of S
-    Int *PLinv,         // size m, inverse row permutation, PLinv [i] = k
+    Long *Sp,           // size m+1, row pointers of S
+    Long *PLinv,        // size m, inverse row permutation, PLinv [i] = k
 
     // output, contents not defined on input
     Entry *Sx,          // size nz, numerical values of S
 
     // workspace, not defined on input or output
-    Int *W              // size m
+    Long *W             // size m
 )
 {
-    Int i, j, p, pend, row, col, s, m, n, *Ap, *Ai ;
+    Long i, j, p, pend, row, col, s, m, n, *Ap, *Ai ;
     Entry *Ax ;
 
     // -------------------------------------------------------------------------
@@ -34,8 +34,8 @@ template <typename Entry> void spqr_stranspose2
 
     m = A->nrow ;
     n = A->ncol ;
-    Ap = (Int *) A->p ;
-    Ai = (Int *) A->i ;
+    Ap = (Long *) A->p ;
+    Ai = (Long *) A->i ;
     Ax = (Entry *) A->x ;
 
     // -------------------------------------------------------------------------
@@ -68,19 +68,19 @@ template void spqr_stranspose2 <double>
 (
     // input, not modified
     cholmod_sparse *A,  // m-by-n
-    Int *Qfill,         // size n, fill-reducing column permutation;
+    Long *Qfill,        // size n, fill-reducing column permutation;
                         // Qfill [k] = j
                         // if the kth column of S is the jth column of A.
                         // Identity permutation is used if Qfill is NULL.
 
-    Int *Sp,            // size m+1, row pointers of S
-    Int *PLinv,         // size m, inverse row permutation, PLinv [i] = k
+    Long *Sp,           // size m+1, row pointers of S
+    Long *PLinv,        // size m, inverse row permutation, PLinv [i] = k
 
     // output, contents not defined on input
     double *Sx,         // size nz, numerical values of S
 
     // workspace, not defined on input or output
-    Int *W              // size m
+    Long *W             // size m
 ) ;
 
 // =============================================================================
@@ -89,18 +89,18 @@ template void spqr_stranspose2 <Complex>
 (
     // input, not modified
     cholmod_sparse *A,  // m-by-n
-    Int *Qfill,         // size n, fill-reducing column permutation;
+    Long *Qfill,        // size n, fill-reducing column permutation;
                         // Qfill [k] = j
                         // if the kth column of S is the jth column of A.
                         // Identity permutation is used if Qfill is NULL.
 
-    Int *Sp,            // size m+1, row pointers of S
-    Int *PLinv,         // size m, inverse row permutation, PLinv [i] = k
+    Long *Sp,           // size m+1, row pointers of S
+    Long *PLinv,        // size m, inverse row permutation, PLinv [i] = k
 
     // output, contents not defined on input
     Complex *Sx,        // size nz, numerical values of S
 
     // workspace, not defined on input or output
-    Int *W              // size m
+    Long *W             // size m
 ) ;
 

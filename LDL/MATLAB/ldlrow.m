@@ -54,7 +54,7 @@ function [L, D] = ldlrow (A)
 %
 % See also ldlsparse.
 
-% Copyright 2006-2007 by Timothy A. Davis, Univ. of Florida
+% Copyright 2006-2007 by Timothy A. Davis, http://www.suitesparse.com
 
 [m n] = size (A) ;
 L = zeros (n, n) ;

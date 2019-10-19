@@ -1,7 +1,7 @@
 classdef factorization_chol_sparse < factorization
 %FACTORIZATION_CHOL_SPARSE P'*A*P = L*L' where A is sparse and sym. pos. def.
 
-% Copyright 2011, Timothy A. Davis, University of Florida.
+% Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
 
     methods
 

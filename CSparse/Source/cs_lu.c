@@ -5,17 +5,17 @@ csn *cs_lu (const cs *A, const css *S, double tol)
     cs *L, *U ;
     csn *N ;
     double pivot, *Lx, *Ux, *x,  a, t ;
-    int *Lp, *Li, *Up, *Ui, *pinv, *xi, *q, n, ipiv, k, top, p, i, col, lnz,unz;
+    csi *Lp, *Li, *Up, *Ui, *pinv, *xi, *q, n, ipiv, k, top, p, i, col, lnz,unz;
     if (!CS_CSC (A) || !S) return (NULL) ;          /* check inputs */
     n = A->n ;
     q = S->q ; lnz = S->lnz ; unz = S->unz ;
     x = cs_malloc (n, sizeof (double)) ;            /* get double workspace */
-    xi = cs_malloc (2*n, sizeof (int)) ;            /* get int workspace */
+    xi = cs_malloc (2*n, sizeof (csi)) ;            /* get csi workspace */
     N = cs_calloc (1, sizeof (csn)) ;               /* allocate result */
     if (!x || !xi || !N) return (cs_ndone (N, NULL, xi, x, 0)) ;
     N->L = L = cs_spalloc (n, n, lnz, 1, 0) ;       /* allocate result L */
     N->U = U = cs_spalloc (n, n, unz, 1, 0) ;       /* allocate result U */
-    N->pinv = pinv = cs_malloc (n, sizeof (int)) ;  /* allocate result pinv */
+    N->pinv = pinv = cs_malloc (n, sizeof (csi)) ;  /* allocate result pinv */
     if (!L || !U || !pinv) return (cs_ndone (N, NULL, xi, x, 0)) ;
     Lp = L->p ; Up = U->p ;
     for (i = 0 ; i < n ; i++) x [i] = 0 ;           /* clear workspace */

@@ -4,7 +4,7 @@ function test2
 %   test2
 % See also cholmod_test
 
-% Copyright 2006-2007, Timothy A. Davis, University of Florida
+% Copyright 2007, Timothy A. Davis, http://www.suitesparse.com
 
 fprintf ('=================================================================\n');
 fprintf ('test2: test sparse2\n') ;

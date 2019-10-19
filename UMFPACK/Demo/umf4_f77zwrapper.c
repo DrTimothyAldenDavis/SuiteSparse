@@ -3,15 +3,15 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
+/* UMFPACK Copyright (c) 2005-2012 by Timothy A. Davis,                       */
+/* http://www.suitesparse.com. All Rights Reserved.  See ../Doc/License       */
+/* for License.                                                               */
 /* -------------------------------------------------------------------------- */
 
 /* FORTRAN interface for the C-callable UMFPACK library (complex / int version
- * only and complex / UF_long versions only).  This is HIGHLY non-portable.  You
- * will need to modify this depending on how your FORTRAN and C compilers
- * behave.
+ * only and complex / SuiteSparse_long versions only).  This is HIGHLY
+ * non-portable.  You will need to modify this depending on how your FORTRAN
+ * and C compilers behave.
  *
  * See umf4z_f77wrapper.c for more information.
  *
@@ -32,12 +32,12 @@
 #define LEN 200
 
 /* -------------------------------------------------------------------------- */
-/* integer type: int or UF_long */
+/* integer type: int or SuiteSparse_long */
 /* -------------------------------------------------------------------------- */
 
 #if defined (ZLONG)
 
-#define Int UF_long
+#define Int SuiteSparse_long
 #define UMFPACK_defaults	 umfpack_zl_defaults
 #define UMFPACK_free_numeric	 umfpack_zl_free_numeric
 #define UMFPACK_free_symbolic	 umfpack_zl_free_symbolic

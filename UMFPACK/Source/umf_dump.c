@@ -3,9 +3,8 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
+/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
+/* All Rights Reserved.  See ../Doc/License for License.                      */
 /* -------------------------------------------------------------------------- */
 
 /* These routines, and external variables, are used only when debugging. */
@@ -1091,8 +1090,10 @@ GLOBAL void UMF_dump_start
     sizeof (int), sizeof (int) / sizeof (int), UNITS (int, 1) )) ;
     DEBUG2 (("sizeof (size_t)        %u %u %u\n",
     sizeof (size_t), sizeof (size_t) / sizeof (size_t), UNITS (size_t, 1) )) ;
-    DEBUG2 (("sizeof (UF_long)       %u %u %u\n",
-    sizeof (UF_long), sizeof (UF_long) / sizeof (UF_long), UNITS (UF_long, 1)));
+    DEBUG2 (("sizeof (SuiteSparse_long)       %u %u %u\n",
+    sizeof (SuiteSparse_long),
+    sizeof (SuiteSparse_long) / sizeof (SuiteSparse_long),
+    UNITS (SuiteSparse_long, 1)));
     DEBUG2 (("sizeof (double)        %u %u %u\n",
     sizeof (double), sizeof (double) / sizeof (int), UNITS (double, 1) )) ;
     DEBUG2 (("sizeof (Unit)          %u %u %u\n",

@@ -8,7 +8,7 @@ function spok_install
 %
 % See also sparse, spok, spok_test
 
-% Copyright 2008-2011, Tim Davis, University of Florida
+% Copyright 2008-2011, Timothy A. Davis, http://www.suitesparse.com
 
 is64 = ~isempty (strfind (computer, '64')) ;
 if (is64)

@@ -33,8 +33,8 @@
  * of 4 to 40 (median speedup of 9) in MATLAB 6.5 on a Pentium 4 Linux laptop
  * (excluding the B=A(P,P) time), on a wide range of symmetric sparse matrices.
  *
- * LDL Version 1.3, Copyright (c) 2006 by Timothy A Davis,
- * University of Florida.  All Rights Reserved.  See README for the License.
+ * Copyright (c) 2006 by Timothy A Davis, http://www.suitesparse.com.
+ * All Rights Reserved.  See README for the License.
  */
 
 #ifndef LDL_LONG
@@ -43,6 +43,7 @@
 
 #include "ldl.h"
 #include "mex.h"
+#define Long SuiteSparse_long
 
 /* ========================================================================== */
 /* === LDLSYMBOL mexFunction ================================================ */
@@ -56,7 +57,7 @@ void mexFunction
     const mxArray *pargin[ ]
 )
 {
-    UF_long i, n, *Pattern, *Flag, *Lp, *Ap, *Ai, *Lnz, *Parent,
+    Long i, n, *Pattern, *Flag, *Lp, *Ap, *Ai, *Lnz, *Parent,
 	*P, *Pinv, nn, k, j, permute ;
     double flops, *p ;
 
@@ -80,8 +81,8 @@ void mexFunction
     nn = (n == 0) ? 1 : n ;
 
     /* get sparse matrix A */
-    Ap = (UF_long *) mxGetJc (pargin [0]) ;
-    Ai = (UF_long *) mxGetIr (pargin [0]) ;
+    Ap = (Long *) mxGetJc (pargin [0]) ;
+    Ai = (Long *) mxGetIr (pargin [0]) ;
 
     /* get fill-reducing ordering, if present */
     permute = ((nargin > 1) && !mxIsEmpty (pargin [1])) ;
@@ -92,8 +93,8 @@ void mexFunction
 	{
 	    mexErrMsgTxt ("ldlsymbol: invalid input permutation\n") ;
 	}
-	P    = (UF_long *) mxMalloc (nn * sizeof (UF_long)) ;
-	Pinv = (UF_long *) mxMalloc (nn * sizeof (UF_long)) ;
+	P    = (Long *) mxMalloc (nn * sizeof (Long)) ;
+	Pinv = (Long *) mxMalloc (nn * sizeof (Long)) ;
 	p = mxGetPr (pargin [1]) ;
 	for (k = 0 ; k < n ; k++)
 	{
@@ -102,18 +103,18 @@ void mexFunction
     }
     else
     {
-	P    = (UF_long *) NULL ;
-	Pinv = (UF_long *) NULL ;
+	P    = (Long *) NULL ;
+	Pinv = (Long *) NULL ;
     }
 
     /* allocate first part of L */
-    Lp      = (UF_long *) mxMalloc ((n+1) * sizeof (UF_long)) ;
-    Parent  = (UF_long *) mxMalloc (nn * sizeof (UF_long)) ;
+    Lp      = (Long *) mxMalloc ((n+1) * sizeof (Long)) ;
+    Parent  = (Long *) mxMalloc (nn * sizeof (Long)) ;
 
     /* get workspace */
-    Flag    = (UF_long *) mxMalloc (nn * sizeof (UF_long)) ;
-    Pattern = (UF_long *) mxMalloc (nn * sizeof (UF_long)) ;
-    Lnz     = (UF_long *) mxMalloc (nn * sizeof (UF_long)) ;
+    Flag    = (Long *) mxMalloc (nn * sizeof (Long)) ;
+    Pattern = (Long *) mxMalloc (nn * sizeof (Long)) ;
+    Lnz     = (Long *) mxMalloc (nn * sizeof (Long)) ;
 
     /* make sure the input P is valid */
     if (permute && !ldl_l_valid_perm (n, P, Flag))

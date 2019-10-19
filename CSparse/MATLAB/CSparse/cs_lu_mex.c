@@ -11,7 +11,7 @@ void mexFunction
     css *S ;
     csn *N ;
     cs Amatrix, *A, *D ;
-    int n, order, *p ;
+    csi n, order, *p ;
     double tol ;
     if (nargout > 4 || nargin > 3 || nargin < 1)
     {

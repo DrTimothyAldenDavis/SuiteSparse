@@ -6,7 +6,7 @@ function err = test_accuracy
 %
 % See also test_all, test_factorize.
 
-% Copyright 2011, Timothy A. Davis, University of Florida.
+% Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
 
 fprintf ('\nTesting accuracy:\n') ;
 reset_rand ;

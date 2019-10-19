@@ -13,7 +13,6 @@
 % Example:
 %   p = amd2 (A) ;
 
-% Copyright 1994-2007, Tim Davis, University of Florida,
-% Patrick R. Amestoy, and Iain S. Duff. 
+% Copyright 1994-2007, Tim Davis, Patrick R. Amestoy, and Iain S. Duff. 
 
 help Contents

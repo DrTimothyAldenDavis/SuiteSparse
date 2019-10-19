@@ -11,7 +11,7 @@ void mexFunction
 {
     double *Tx ;
     cs *A, *C, *T ;
-    int k, m, n, nz, *Ti, *Tj ;
+    csi k, m, n, nz, *Ti, *Tj ;
     if (nargout > 1 || nargin != 3)
     {
         mexErrMsgTxt ("Usage: A = cs_sparse2(i,j,x)") ;

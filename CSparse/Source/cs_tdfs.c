@@ -1,8 +1,8 @@
 #include "cs.h"
 /* depth-first search and postorder of a tree rooted at node j */
-int cs_tdfs (int j, int k, int *head, const int *next, int *post, int *stack)
+csi cs_tdfs (csi j, csi k, csi *head, const csi *next, csi *post, csi *stack)
 {
-    int i, p, top = 0 ;
+    csi i, p, top = 0 ;
     if (!head || !next || !post || !stack) return (-1) ;    /* check inputs */
     stack [0] = j ;                 /* place j on the stack */
     while (top >= 0)                /* while (stack is not empty) */

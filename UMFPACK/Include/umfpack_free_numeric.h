@@ -3,9 +3,8 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
+/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
+/* All Rights Reserved.  See ../Doc/License for License.                      */
 /* -------------------------------------------------------------------------- */
 
 void umfpack_di_free_numeric
@@ -35,7 +34,7 @@ double int Syntax:
     void *Numeric ;
     umfpack_di_free_numeric (&Numeric) ;
 
-double UF_long Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Numeric ;
@@ -47,7 +46,7 @@ complex int Syntax:
     void *Numeric ;
     umfpack_zi_free_numeric (&Numeric) ;
 
-complex UF_long Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Numeric ;

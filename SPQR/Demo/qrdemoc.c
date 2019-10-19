@@ -8,11 +8,12 @@
 
 #include "SuiteSparseQR_C.h"
 
-/* SuiteSparseQR uses an integer defined in UFconfig.h called UF_long.  It is a
- * 32-bit integer on a 32-bit platform, and a 64-bit integer on a 64-bit
- * platform.  For most platforms (except Windows), UF_long is just "long". */
+/* SuiteSparseQR uses an integer defined in SuiteSparse_config.h called
+ * SuiteSparse_long.  It is a 32-bit integer on a 32-bit platform, and a 64-bit
+ * integer on a 64-bit platform.  For most platforms (except Windows),
+ * SuiteSparse_long is just "long". */
 
-#define Int UF_long
+#define Long SuiteSparse_long
 
 int main (int argc, char **argv)
 {
@@ -21,7 +22,7 @@ int main (int argc, char **argv)
     cholmod_dense *X, *B, *Residual ;
     double anorm, xnorm, rnorm, one [2] = {1,0}, minusone [2] = {-1,0} ;
     int mtype ;
-    Int m, n, rnk ;
+    Long m, n, rnk ;
 
     /* start CHOLMOD */
     cc = &Common ;

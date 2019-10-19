@@ -6,7 +6,7 @@ function klu_demo
 %
 % See also klu, btf
 
-% Copyright 2004-2009 Timothy A. Davis, Univ. of Florida
+% Copyright 2004-2009, Univ. of Florida
 
 load west0479
 A = west0479 ;

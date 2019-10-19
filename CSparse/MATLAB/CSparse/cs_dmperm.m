@@ -58,7 +58,6 @@ function [p,q,r,s,cc,rr] = cs_dmperm (A,seed)                               %#ok
 %
 %   See also CS_DMSPY, CS_DMSOL, DMPERM, SPRANK, CS_RANDPERM, RAND
 
-%   Copyright 2006-2007, Timothy A. Davis.
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
 error ('cs_dmperm mexFunction not found') ;

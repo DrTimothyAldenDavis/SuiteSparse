@@ -1,15 +1,14 @@
-function spqr_install (metis_path, tbb)
+function spqr_install (tbb)
 %SPQR_INSTALL compile and install SuiteSparseQR
 %
 % Example:
 %   spqr_install                        % compiles using ../../metis-4.0, no TBB
-%   spqr_install ('/my/metis')          % using non-default path to METIS
-%   spqr_install ('no metis')           % do not use METIS at all
-%   spqr_install ('../../metis-4.0',1)  % with METIS, and TBB multithreading
+%   spqr_install ('tbb')                % compiles with TBB
 %
 % SuiteSparseQR relies on CHOLMOD, AMD, and COLAMD, and can optionally use
-% CCOLAMD, CAMD, and METIS as well.  By default, CCOLAMD, CAMD,
-% and METIS are used.  METIS is assumed to be in the ../../metis-4.0 directory.
+% CCOLAMD, CAMD, and METIS as well.  By default, CCOLAMD, CAMD, and METIS are
+% used.  METIS is assumed to be in the ../../metis-4.0 directory.  If not
+% present there, it is not used.
 %
 % See http://www-users.cs.umn.edu/~karypis/metis for a copy of METIS 4.0.1.
 %
@@ -21,19 +20,14 @@ function spqr_install (metis_path, tbb)
 %
 % See also spqr, spqr_solve, spqr_qmult.
 
-%   Copyright 2008, Timothy A. Davis
-%   http://www.cise.ufl.edu/research/sparse
-
-if (nargin < 1)
-    metis_path = '../../metis-4.0' ;
-end
+% Copyright 2008, Timothy A. Davis, http://www.suitesparse.com
 
 if (nargin < 2)
     tbb = 0 ;
 end
 
 % compile SuiteSparseQR and add to the path
-spqr_make (metis_path, tbb) ;
+spqr_make (tbb) ;
 spqr_path = pwd ;
 addpath (spqr_path)
 

@@ -2,7 +2,7 @@
 # RBio/Tcov/Makefile
 #===============================================================================
 
-include ../../UFconfig/UFconfig.mk
+include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 # valgrind is not used
 V =
@@ -16,9 +16,9 @@ CC = gcc
 C = $(CC) $(CF)
 TAR = tar -O -xvvzf
 
-SRC = RBio.c UFconfig.c
-OBJ = RBio.o UFconfig.o
-INC = RBio.h UFconfig.h
+SRC = RBio.c SuiteSparse_config.c
+OBJ = RBio.o SuiteSparse_config.o
+INC = RBio.h SuiteSparse_config.h
 
 all: RBdemo RBtest
 	- ./RBdemo ../RBio/private/bcsstk01.rb
@@ -65,23 +65,23 @@ RBio.c:
 RBio.h:
 	ln -s ../Include/RBio.h
 
-UFconfig.c:
-	ln -s ../../UFconfig/UFconfig.c
+SuiteSparse_config.c:
+	ln -s ../../SuiteSparse_config/SuiteSparse_config.c
 
-UFconfig.h:
-	ln -s ../../UFconfig/UFconfig.h
+SuiteSparse_config.h:
+	ln -s ../../SuiteSparse_config/SuiteSparse_config.h
 
 RBdemo: RBdemo.c $(OBJ) $(INC) Makefile
-	$(C) -o RBdemo RBdemo.c $(OBJ)
+	$(C) -o RBdemo RBdemo.c $(OBJ) $(LIB)
 
 RBtest: RBtest.c $(OBJ) $(INC) Makefile
-	$(C) -o RBtest RBtest.c $(OBJ)
+	$(C) -o RBtest RBtest.c $(OBJ) $(LIB)
 
 RBio.o: RBio.c $(INC)
 	$(C) -c RBio.c
 
-UFconfig.o: UFconfig.c $(INC)
-	$(C) -c UFconfig.c
+SuiteSparse_config.o: SuiteSparse_config.c $(INC)
+	$(C) -c SuiteSparse_config.c
 
 code: RBdemo RBtest
 

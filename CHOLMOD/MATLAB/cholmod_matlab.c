@@ -30,7 +30,7 @@ FILE *sputil_file = NULL ;
 
 /* Define function pointers and other parameters for a mexFunction */
 
-void sputil_config (Int spumoni, cholmod_common *cm)
+void sputil_config (Long spumoni, cholmod_common *cm)
 {
     /* cholmod_l_solve must return a real or zomplex X for MATLAB */
     cm->prefer_zomplex = TRUE ;
@@ -124,14 +124,14 @@ cholmod_sparse *sputil_get_sparse
     const mxArray *Amatlab, /* MATLAB version of the matrix */
     cholmod_sparse *A,	    /* CHOLMOD version of the matrix */
     double *dummy,	    /* a pointer to a valid scalar double */
-    Int stype		    /* -1: lower, 0: unsymmetric, 1: upper */
+    Long stype		    /* -1: lower, 0: unsymmetric, 1: upper */
 )
 {
-    Int *Ap ;
+    Long *Ap ;
     A->nrow = mxGetM (Amatlab) ;
     A->ncol = mxGetN (Amatlab) ;
-    A->p = (Int *) mxGetJc (Amatlab) ;
-    A->i = (Int *) mxGetIr (Amatlab) ;
+    A->p = (Long *) mxGetJc (Amatlab) ;
+    A->i = (Long *) mxGetIr (Amatlab) ;
     Ap = A->p ;
     A->nzmax = Ap [A->ncol] ;
     A->packed = TRUE ;
@@ -297,8 +297,8 @@ cholmod_sparse *sputil_get_sparse_pattern
 	    /* (this is copied and modified from t_cholmod_dense.c) */
 
 	    char *x ;
-	    Int *Ap, *Ai ;
-	    Int nrow, ncol, i, j, nz, nzmax, p ;
+	    Long *Ap, *Ai ;
+	    Long nrow, ncol, i, j, nz, nzmax, p ;
 
 	    /* -------------------------------------------------------------- */
 	    /* count the number of nonzeros in the result */
@@ -463,18 +463,18 @@ mxArray *sputil_put_dense
 /* === sputil_put_int ======================================================= */
 /* ========================================================================== */
 
-/* Convert an Int vector into a double mxArray */
+/* Convert a Long vector into a double mxArray */
 
 mxArray *sputil_put_int
 (
-    Int *P,		/* vector to convert */
-    Int n,		/* length of P */
-    Int one_based	/* 1 if convert from 0-based to 1-based, 0 otherwise */
+    Long *P,		/* vector to convert */
+    Long n,		/* length of P */
+    Long one_based	/* 1 if convert from 0-based to 1-based, 0 otherwise */
 )
 {
     double *p ;
     mxArray *Q ;
-    Int i ;
+    Long i ;
     Q = mxCreateDoubleMatrix (1, n, mxREAL) ;
     p = mxGetPr (Q) ;
     for (i = 0 ; i < n ; i++)
@@ -493,8 +493,8 @@ mxArray *sputil_put_int
 
 void sputil_error
 (
-    Int error,	    /* kind of error */
-    Int is_index    /* TRUE if a matrix index, FALSE if a matrix dimension */
+    Long error,	    /* kind of error */
+    Long is_index    /* TRUE if a matrix index, FALSE if a matrix dimension */
 )
 {
     if (error == ERROR_TOO_SMALL)
@@ -546,15 +546,15 @@ void sputil_error
 
 /* convert a double into an integer */
 
-Int sputil_double_to_int   /* returns integer value of x */
+Long sputil_double_to_int   /* returns integer value of x */
 (
     double x,	    /* double value to convert */
-    Int is_index,   /* TRUE if a matrix index, FALSE if a matrix dimension */
-    Int n	    /* if a matrix index, x cannot exceed this dimension,
+    Long is_index,  /* TRUE if a matrix index, FALSE if a matrix dimension */
+    Long n	    /* if a matrix index, x cannot exceed this dimension,
 		     * except that -1 is treated as infinity */
 )
 {
-    Int i ;
+    Long i ;
     if (x > INT_MAX)
     {
 	/* x is way too big for an integer */
@@ -565,7 +565,7 @@ Int sputil_double_to_int   /* returns integer value of x */
 	/* x must be non-negative */
 	sputil_error (ERROR_TOO_SMALL, is_index) ;
     }
-    i = (Int) x ;
+    i = (Long) x ;
     if (x != (double) i)
     {
 	/* x must be an integer */
@@ -593,13 +593,13 @@ Int sputil_double_to_int   /* returns integer value of x */
 /* return the number of elements in an mxArray.  Trigger an error on integer
  * overflow (in case the argument is sparse) */
 
-Int sputil_nelements (const mxArray *arg)
+Long sputil_nelements (const mxArray *arg)
 {
     double size ;
-    const Int *dims ;
-    Int k, ndims ;
+    const Long *dims ;
+    Long k, ndims ;
     ndims = mxGetNumberOfDimensions (arg) ;
-    dims = (Int *) mxGetDimensions (arg) ;
+    dims = (Long *) mxGetDimensions (arg) ;
     size = 1 ;
     for (k = 0 ; k < ndims ; k++)
     {
@@ -631,11 +631,11 @@ double sputil_get_double (const mxArray *arg)
 
 /* return an argument as a non-negative integer scalar, or -1 if error */
 
-Int sputil_get_integer
+Long sputil_get_integer
 (
     const mxArray *arg,	    /* MATLAB argument to convert */
-    Int is_index,	    /* TRUE if an index, FALSE if a matrix dimension */
-    Int n		    /* maximum value, if an index */
+    Long is_index,	    /* TRUE if an index, FALSE if a matrix dimension */
+    Long n		    /* maximum value, if an index */
 )
 {
     double x = sputil_get_double (arg) ;
@@ -659,12 +659,12 @@ Int sputil_get_integer
 void sputil_trim
 (
     cholmod_sparse *S,
-    Int k,
+    Long k,
     cholmod_common *cm
 )
 {
-    Int *Sp ;
-    Int ncol ;
+    Long *Sp ;
+    Long ncol ;
     size_t n1, nznew ;
 
     if (S == NULL)
@@ -681,7 +681,7 @@ void sputil_trim
 
     /* reduce S->p in size.  This cannot fail. */
     n1 = ncol + 1 ;
-    S->p = cholmod_l_realloc (k+1, sizeof (Int), S->p, &n1, cm) ;
+    S->p = cholmod_l_realloc (k+1, sizeof (Long), S->p, &n1, cm) ;
 
     /* get the new number of entries in S */
     Sp = S->p ;
@@ -708,9 +708,9 @@ cholmod_sparse *sputil_extract_zeros
     cholmod_common *cm
 )
 {
-    Int *Ap, *Ai, *Zp, *Zi ;
+    Long *Ap, *Ai, *Zp, *Zi ;
     double *Ax, *Az, *Zx ;
-    Int j, p, nzeros = 0, is_complex, pz, nrow, ncol ;
+    Long j, p, nzeros = 0, is_complex, pz, nrow, ncol ;
     cholmod_sparse *Z ;
 
     if (A == NULL || A->xtype == CHOLMOD_PATTERN || A->xtype == CHOLMOD_COMPLEX)
@@ -783,15 +783,15 @@ cholmod_sparse *sputil_extract_zeros
  * Returns the number of entries dropped.
  */
 
-Int sputil_drop_zeros
+Long sputil_drop_zeros
 (
     cholmod_sparse *S
 )
 {
     double sik, zik ;
-    Int *Sp, *Si ;
+    Long *Sp, *Si ;
     double *Sx, *Sz ;
-    Int pdest, k, ncol, p, pend, nz ;
+    Long pdest, k, ncol, p, pend, nz ;
 
     if (S == NULL)
     {
@@ -861,29 +861,29 @@ Int sputil_drop_zeros
 /* === sputil_copy_ij ======================================================= */
 /* ========================================================================== */
 
-/* copy i or j arguments into an Int vector.  For small integer types, i and
+/* copy i or j arguments into an Long vector.  For small integer types, i and
  * and j can be returned with negative entries; this error condition is caught
  * later, in cholmod_triplet_to_sparse.
  *
- * TODO: if the mxClassID matches the default Int integer (INT32 for 32-bit
+ * Future work: if the mxClassID matches the default integer (INT32 for 32-bit
  * MATLAB and INT64 for 64-bit), then it would save memory to patch in the
  * vector with a pointer copy, rather than making a copy of the whole vector.
  * This would require that the 1-based i and j vectors be converted on the fly
  * to 0-based vectors in cholmod_triplet_to_sparse.
  */
 
-Int sputil_copy_ij		/* returns the dimension, n */
+Long sputil_copy_ij		/* returns the dimension, n */
 (
-    Int is_scalar,	/* TRUE if argument is a scalar, FALSE otherwise */
-    Int scalar,		/* scalar value of the argument */
+    Long is_scalar,	/* TRUE if argument is a scalar, FALSE otherwise */
+    Long scalar,        /* scalar value of the argument */
     void *vector,	/* vector value of the argument */
     mxClassID category,	/* type of vector */
-    Int nz,		/* length of output vector I */
-    Int n,		/* maximum dimension, EMPTY if not yet known */
-    Int *I		/* vector of length nz to copy into */
+    Long nz,		/* length of output vector I */
+    Long n,		/* maximum dimension, EMPTY if not yet known */
+    Long *I		/* vector of length nz to copy into */
 )
 {
-    Int i, k, ok, ok2, ok3, n2 ;
+    Long i, k, ok, ok2, ok3, n2 ;
 
     if (is_scalar)
     {
@@ -900,7 +900,7 @@ Int sputil_copy_ij		/* returns the dimension, n */
     }
     else
     {
-	/* copy double input into Int vector (convert to 0-based) */
+	/* copy double input into Long vector (convert to 0-based) */
 	ok = TRUE ;
 	ok2 = TRUE ;
 	ok3 = TRUE ;
@@ -916,7 +916,7 @@ Int sputil_copy_ij		/* returns the dimension, n */
 
 		for (k = 0 ; k < nz ; k++)
 		{
-		    i = (Int) (((mxLogical *) vector) [k]) ;
+		    i = (Long) (((mxLogical *) vector) [k]) ;
 		    I [k] = i - 1 ;
 		    n2 = MAX (n2, i) ;
 		}
@@ -928,7 +928,7 @@ Int sputil_copy_ij		/* returns the dimension, n */
 
 		for (k = 0 ; k < nz ; k++)
 		{
-		    i = (Int) (((mxChar *) vector) [k]) ;
+		    i = (Long) (((mxChar *) vector) [k]) ;
 		    I [k] = i - 1 ;
 		    n2 = MAX (n2, i) ;
 		}
@@ -938,7 +938,7 @@ Int sputil_copy_ij		/* returns the dimension, n */
 
 		for (k = 0 ; k < nz ; k++)
 		{
-		    i = (Int) (((INT8_T *) vector) [k]) ;
+		    i = (Long) (((INT8_T *) vector) [k]) ;
 		    I [k] = i - 1 ;
 		    n2 = MAX (n2, i) ;
 		}
@@ -948,7 +948,7 @@ Int sputil_copy_ij		/* returns the dimension, n */
 
 		for (k = 0 ; k < nz ; k++)
 		{
-		    i = (Int) (((UINT8_T *) vector) [k]) ;
+		    i = (Long) (((UINT8_T *) vector) [k]) ;
 		    I [k] = i - 1 ;
 		    n2 = MAX (n2, i) ;
 		}
@@ -958,7 +958,7 @@ Int sputil_copy_ij		/* returns the dimension, n */
 
 		for (k = 0 ; k < nz ; k++)
 		{
-		    i = (Int) (((INT16_T *) vector) [k]) ;
+		    i = (Long) (((INT16_T *) vector) [k]) ;
 		    I [k] = i - 1 ;
 		    n2 = MAX (n2, i) ;
 		}
@@ -968,7 +968,7 @@ Int sputil_copy_ij		/* returns the dimension, n */
 
 		for (k = 0 ; k < nz ; k++)
 		{
-		    i = (Int) (((UINT16_T *) vector) [k]) ;
+		    i = (Long) (((UINT16_T *) vector) [k]) ;
 		    I [k] = i - 1 ;
 		    n2 = MAX (n2, i) ;
 		}
@@ -978,7 +978,7 @@ Int sputil_copy_ij		/* returns the dimension, n */
 
 		for (k = 0 ; k < nz ; k++)
 		{
-		    i = (Int) (((INT32_T *) vector) [k]) ;
+		    i = (Long) (((INT32_T *) vector) [k]) ;
 		    I [k] = i - 1 ;
 		    n2 = MAX (n2, i) ;
 		}
@@ -989,8 +989,8 @@ Int sputil_copy_ij		/* returns the dimension, n */
 		for (k = 0 ; ok3 && k < nz ; k++)
 		{
 		    double y = (((UINT32_T *) vector) [k]) ;
-		    i = (Int) y ;
-		    ok3 = (y < Int_max) ;
+		    i = (Long) y ;
+		    ok3 = (y < Long_max) ;
 		    I [k] = i - 1 ;
 		    n2 = MAX (n2, i) ;
 		}
@@ -1001,9 +1001,9 @@ Int sputil_copy_ij		/* returns the dimension, n */
 		for (k = 0 ; ok2 && ok3 && k < nz ; k++)
 		{
 		    INT64_T y = ((INT64_T *) vector) [k] ;
-		    i = (Int) y ;
+		    i = (Long) y ;
 		    ok2 = (y > 0) ;
-		    ok3 = (y < Int_max) ;
+		    ok3 = (y < Long_max) ;
 		    I [k] = i - 1 ;
 		    n2 = MAX (n2, i) ;
 		}
@@ -1014,9 +1014,9 @@ Int sputil_copy_ij		/* returns the dimension, n */
 		for (k = 0 ; ok2 && ok3 && k < nz ; k++)
 		{
 		    unsigned INT64_T y = ((unsigned INT64_T *) vector) [k] ;
-		    i = (Int) y ;
+		    i = (Long) y ;
 		    ok2 = (y > 0) ;
-		    ok3 = (y < Int_max) ;
+		    ok3 = (y < Long_max) ;
 		    I [k] = i - 1 ;
 		    n2 = MAX (n2, i) ;
 		}
@@ -1027,10 +1027,10 @@ Int sputil_copy_ij		/* returns the dimension, n */
 		for (k = 0 ; ok && ok2 && ok3 && k < nz ; k++)
 		{
 		    float y = ((float *) vector) [k] ;
-		    i = (Int) y ;
+		    i = (Long) y ;
 		    ok = (y == (float) i) ;
 		    ok2 = (y > 0) ;
-		    ok3 = (y < Int_max) ;
+		    ok3 = (y < Long_max) ;
 		    I [k] = i - 1 ;
 		    n2 = MAX (n2, i) ;
 		}
@@ -1041,10 +1041,10 @@ Int sputil_copy_ij		/* returns the dimension, n */
 		for (k = 0 ; ok && ok2 && ok3 && k < nz ; k++)
 		{
 		    double y = ((double *) vector) [k] ;
-		    i = (Int) y ;
+		    i = (Long) y ;
 		    ok = (y == (double) i) ;
 		    ok2 = (y > 0) ;
-		    ok3 = (y < Int_max) ;
+		    ok3 = (y < Long_max) ;
 		    I [k] = i - 1 ;
 		    n2 = MAX (n2, i) ;
 		}
@@ -1103,8 +1103,8 @@ Int sputil_copy_ij		/* returns the dimension, n */
 #define COPY_DENSE_TO_SPARSE(stype) \
 { \
     stype *Sx ; \
-    Sp = (Int *) mxGetJc (S) ; \
-    Si = (Int *) mxGetIr (S) ; \
+    Sp = (Long *) mxGetJc (S) ; \
+    Si = (Long *) mxGetIr (S) ; \
     Sx = (stype *) mxGetData (S) ; \
     nz = 0 ; \
     for (j = 0 ; j < ncol ; j++) \
@@ -1136,8 +1136,8 @@ Int sputil_copy_ij		/* returns the dimension, n */
 mxArray *sputil_dense_to_sparse (const mxArray *arg)
 {
     mxArray *S = NULL ;
-    Int *Sp, *Si ;
-    Int nrow, ncol, nz, i, j ;
+    Long *Sp, *Si ;
+    Long nrow, ncol, nz, i, j ;
 
     nrow = mxGetM (arg) ;
     ncol = mxGetN (arg) ;
@@ -1176,8 +1176,8 @@ mxArray *sputil_dense_to_sparse (const mxArray *arg)
 	    }
 	} 
 	S = mxCreateSparse (nrow, ncol, nz, mxCOMPLEX) ;
-	Sp = (Int *) mxGetJc (S) ;
-	Si = (Int *) mxGetIr (S) ;
+	Sp = (Long *) mxGetJc (S) ;
+	Si = (Long *) mxGetIr (S) ;
 	Sx = mxGetPr (S) ;
 	Sz = mxGetPi (S) ;
 	nz = 0 ;
@@ -1300,11 +1300,11 @@ mxArray *sputil_dense_to_sparse (const mxArray *arg)
 
 cholmod_sparse *sputil_triplet_to_sparse
 (
-    Int nrow, Int ncol, Int nz, Int nzmax,
-    Int i_is_scalar, Int i, void *i_vector, mxClassID i_class,
-    Int j_is_scalar, Int j, void *j_vector, mxClassID j_class,
-    Int s_is_scalar, double x, double z, void *x_vector, double *z_vector,
-    mxClassID s_class, Int s_complex,
+    Long nrow, Long ncol, Long nz, Long nzmax,
+    Long i_is_scalar, Long i, void *i_vector, mxClassID i_class,
+    Long j_is_scalar, Long j, void *j_vector, mxClassID j_class,
+    Long s_is_scalar, double x, double z, void *x_vector, double *z_vector,
+    mxClassID s_class, Long s_complex,
     cholmod_common *cm
 )
 {
@@ -1312,8 +1312,8 @@ cholmod_sparse *sputil_triplet_to_sparse
     cholmod_triplet *T ;
     cholmod_sparse *S ;
     double *Tx, *Tz ;
-    Int *Ti, *Tj ;
-    Int k, x_patch ;
+    Long *Ti, *Tj ;
+    Long k, x_patch ;
 
     /* ---------------------------------------------------------------------- */
     /* allocate the triplet form */
@@ -1533,8 +1533,8 @@ mxArray *sputil_copy_sparse (const mxArray *A)
     double aij, zij ;
     mxArray *S ;
     double *Ax, *Az, *Sx, *Sz ;
-    Int *Ap, *Ai, *Sp, *Si ;
-    Int anz, snz, p, j, nrow, ncol, pend ;
+    Long *Ap, *Ai, *Sp, *Si ;
+    Long anz, snz, p, j, nrow, ncol, pend ;
 
 #ifndef MATLAB6p1_OR_EARLIER
 
@@ -1551,8 +1551,8 @@ mxArray *sputil_copy_sparse (const mxArray *A)
 
     nrow = mxGetM (A) ;
     ncol = mxGetN (A) ;
-    Ap = (Int *) mxGetJc (A) ;
-    Ai = (Int *) mxGetIr (A) ;
+    Ap = (Long *) mxGetJc (A) ;
+    Ai = (Long *) mxGetIr (A) ;
     anz = Ap [ncol] ;
 
     snz = 0 ;
@@ -1580,8 +1580,8 @@ mxArray *sputil_copy_sparse (const mxArray *A)
 
 	/* allocate S */
 	S = mxCreateSparseLogicalMatrix (nrow, ncol, snz) ;
-	Sp = (Int *) mxGetJc (S) ;
-	Si = (Int *) mxGetIr (S) ;
+	Sp = (Long *) mxGetJc (S) ;
+	Si = (Long *) mxGetIr (S) ;
 	Sl = mxGetLogicals (S) ;
 
 	/* copy A into S, dropping zero entries */
@@ -1628,8 +1628,8 @@ mxArray *sputil_copy_sparse (const mxArray *A)
 
 	/* allocate S */
 	S = mxCreateSparse (nrow, ncol, snz, mxCOMPLEX) ;
-	Sp = (Int *) mxGetJc (S) ;
-	Si = (Int *) mxGetIr (S) ;
+	Sp = (Long *) mxGetJc (S) ;
+	Si = (Long *) mxGetIr (S) ;
 	Sx = mxGetPr (S) ;
 	Sz = mxGetPi (S) ;
 
@@ -1674,8 +1674,8 @@ mxArray *sputil_copy_sparse (const mxArray *A)
 
 	/* allocate S */
 	S = mxCreateSparse (nrow, ncol, snz, mxREAL) ;
-	Sp = (Int *) mxGetJc (S) ;
-	Si = (Int *) mxGetIr (S) ;
+	Sp = (Long *) mxGetJc (S) ;
+	Si = (Long *) mxGetIr (S) ;
 	Sx = mxGetPr (S) ;
 
 	/* copy A into S, dropping zero entries */
@@ -1712,8 +1712,8 @@ mxArray *sputil_sparse_to_dense (const mxArray *S)
 {
     mxArray *X ;
     double *Sx, *Sz, *Xx, *Xz ;
-    Int *Sp, *Si ;
-    Int nrow, ncol, i, j, p, pend, j2 ;
+    Long *Sp, *Si ;
+    Long nrow, ncol, i, j, p, pend, j2 ;
 
 #ifndef MATLAB6p1_OR_EARLIER
 
@@ -1729,8 +1729,8 @@ mxArray *sputil_sparse_to_dense (const mxArray *S)
 
     nrow = mxGetM (S) ;
     ncol = mxGetN (S) ;
-    Sp = (Int *) mxGetJc (S) ;
-    Si = (Int *) mxGetIr (S) ;
+    Sp = (Long *) mxGetJc (S) ;
+    Si = (Long *) mxGetIr (S) ;
 
 #ifndef MATLAB6p1_OR_EARLIER
 
@@ -1815,11 +1815,11 @@ void sputil_check_ijvector (const mxArray *arg)
 	/* the i and j arguments for sparse(i,j,s,...) can be sparse, but if so
 	 * they must have no zero entries. */
 	double mn, m, nz ;
-	Int *p, n ;
+	Long *p, n ;
 	m = (double) mxGetM (arg) ;
 	n =  mxGetN (arg) ;
 	mn = m*n ;
-	p = (Int *) mxGetJc (arg) ;
+	p = (Long *) mxGetJc (arg) ;
 	nz = p [n] ;
 	if (mn != nz)
 	{
@@ -1850,7 +1850,7 @@ void sputil_sparse
     mxArray *s_array ;
     cholmod_sparse *S, *Z ;
     cholmod_common Common, *cm ;
-    Int nrow, ncol, k, nz, i_is_scalar, j_is_scalar, s_is_sparse,
+    Long nrow, ncol, k, nz, i_is_scalar, j_is_scalar, s_is_sparse,
 	s_is_scalar, ilen, jlen, slen, nzmax, i, j, s_complex, ndropped ;
     mxClassID i_class, j_class, s_class ;
 
@@ -1918,11 +1918,11 @@ void sputil_sparse
 	/* S = sparse (m,n) */
 	/* ------------------------------------------------------------------ */
 
-	Int *Sp ;
+	Long *Sp ;
 	nrow = sputil_get_integer (pargin [0], FALSE, 0) ;
 	ncol = sputil_get_integer (pargin [1], FALSE, 0) ;
 	pargout [0] = mxCreateSparse (nrow, ncol, 1, mxREAL) ;
-	Sp = (Int *) mxGetJc (pargout [0]) ;
+	Sp = (Long *) mxGetJc (pargout [0]) ;
 	Sp [0] = 0 ;
 
     }
@@ -2087,7 +2087,7 @@ void sputil_sparse
 	    mxLogical *s_logical ;
 	    pargout [0] = mxCreateSparseLogicalMatrix (0, 0, 0) ;
 	    s_logical = cholmod_l_malloc (S->nzmax, sizeof (mxLogical), cm) ;
-	    for (k = 0 ; k < (Int) (S->nzmax) ; k++)
+	    for (k = 0 ; k < (Long) (S->nzmax) ; k++)
 	    {
 		s_logical [k] = 1 ;
 	    }

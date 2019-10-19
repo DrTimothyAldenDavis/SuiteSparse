@@ -4,8 +4,7 @@ function cspy_test
 %   cspy_test
 % See also: testall
 
-%   Copyright 2006-2007, Timothy A. Davis.
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
 index = UFget ;
 

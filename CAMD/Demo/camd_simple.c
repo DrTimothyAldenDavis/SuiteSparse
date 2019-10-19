@@ -1,8 +1,7 @@
 /* ------------------------------------------------------------------------- */
 /* CAMD, Copyright (c) Timothy A. Davis, Yanqing Chen,			     */
 /* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
-/* email: davis at cise.ufl.edu    CISE Department, Univ. of Florida.        */
-/* web: http://www.cise.ufl.edu/research/sparse/camd                         */
+/* email: DrTimothyAldenDavis@gmail.com                                      */
 /* ------------------------------------------------------------------------- */
 
 #include <stdio.h>

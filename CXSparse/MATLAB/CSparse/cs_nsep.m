@@ -11,8 +11,7 @@ function [s,a,b] = cs_nsep (A)
 %
 %   See also CS_SEP, CS_ESEP, CS_ND.
 
-%   Copyright 2006-2007, Timothy A. Davis.
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
 [a b] = cs_esep (A) ;
 [s a b] = cs_sep (A, a, b) ;

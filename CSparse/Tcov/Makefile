@@ -99,5 +99,4 @@ purge: distclean
 # remove everything for distribution, including all symbolic links
 distclean: clean
 	- $(RM) cs_demo1 cs_demo2 readhb *.out *.a cs_demo3 cstcov_test cov.sort
-	- $(RM) cs_*.c
-	- $(RM) -r  *.dSYM
+	- $(RM) -r cs_*.c *.dSYM

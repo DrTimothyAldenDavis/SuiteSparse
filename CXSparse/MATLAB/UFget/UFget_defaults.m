@@ -15,7 +15,7 @@ function params = UFget_defaults
 %
 %   See also UFget.
 
-%   Copyright 2009, Tim Davis, University of Florida.
+% Copyright 2009-2012, Timothy A. Davis, http://www.suitesparse.com
 
 % decode the current directory for this M-file
 s = which (mfilename) ;

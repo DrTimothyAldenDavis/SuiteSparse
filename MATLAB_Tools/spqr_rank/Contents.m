@@ -36,7 +36,7 @@
 %   test_spqr_coverage  - statement coverage test of spqr_rank functions
 %
 % To install this package, simply install all of SuiteSparse from
-% http://www.cise.ufl.edu/research/sparse/SuiteSparse , the spqr_rank package
+% http://www.suitesparse.com, the spqr_rank package
 % in SuiteSparse/MATLAB_TOOLS/spqr_rank will be installed, along with
 % SuiteSparseQR (spqr) and all its dependent packages.
 

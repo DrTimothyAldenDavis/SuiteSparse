@@ -24,7 +24,7 @@ void mexFunction
 {
     cs Lmatrix, Bmatrix, *L, *B, *X ;
     double *x, *b ;
-    int top, nz, p, *xi ;
+    csi top, nz, p, *xi ;
     if (nargout > 1 || nargin != 2)
     {
         mexErrMsgTxt ("Usage: x = cs_lsolve(L,b)") ;
@@ -34,7 +34,7 @@ void mexFunction
     {
         B = cs_mex_get_sparse (&Bmatrix, 0, 1, pargin [1]) ;/* get sparse b */
         cs_mex_check (0, L->n, 1, 0, 1, 1, pargin [1]) ;
-        xi = cs_malloc (2*L->n, sizeof (int)) ;             /* get workspace */
+        xi = cs_malloc (2*L->n, sizeof (csi)) ;             /* get workspace */
         x  = cs_malloc (L->n, sizeof (double)) ;
         top = cs_spsolve (L, B, 0, xi, x, NULL, 1) ;        /* x = L\b */
         X = cs_spalloc (L->n, 1, L->n-top, 1, 0) ;          /* create sparse x*/

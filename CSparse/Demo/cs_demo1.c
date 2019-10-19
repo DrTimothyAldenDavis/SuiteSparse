@@ -2,7 +2,7 @@
 int main (void)
 {
     cs *T, *A, *Eye, *AT, *C, *D ;
-    int i, m ;
+    csi i, m ;
     T = cs_load (stdin) ;               /* load triplet matrix T from stdin */
     printf ("T:\n") ; cs_print (T, 0) ; /* print T */
     A = cs_compress (T) ;               /* A = compressed-column form of T */

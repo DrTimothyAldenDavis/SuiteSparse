@@ -8,7 +8,7 @@
 %
 %   See also UFget, UFweb, UFgrep.
 
-%   Copyright 2009, Tim Davis, University of Florida.
+% Copyright 2009-2012, Timothy A. Davis, http://www.suitesparse.com
 
 type UFget_example ;
 

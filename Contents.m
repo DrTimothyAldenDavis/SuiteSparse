@@ -144,7 +144,6 @@
 % For help on compiling SuiteSparse or the demos, testing functions, etc.,
 % please see the help for each individual package.
 %
-% Copyright 2011, Timothy A. Davis
-% http://www.cise.ufl.edu/research/sparse
+% Copyright 2012, Timothy A. Davis, http://www.suitesparse.com.
 
 help SuiteSparse

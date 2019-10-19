@@ -7,8 +7,7 @@ function [C, sym] = get_problem (prefix, name, tol)
 %    [C, sym] = get_problem ('', 'west0067') ;
 % See also: cs_demo
 
-%   Copyright 2006-2007, Timothy A. Davis.
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
 fprintf ('\n------------------- Matrix: %s\n', name) ;
 

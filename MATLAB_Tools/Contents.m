@@ -14,6 +14,7 @@
 %   dimacs10        tools for accessing the DIMACS10 subset of matrices
 %   Factorize       object-oriented x=A\b solver
 %   UFcollection    tools for managing the UF Sparse Matrix Collection
+%   spqr_rank       rank-determination, null space.  Les Foster, primary author
 %
 % Examples:
 %   gipper              % add all files in current directory X to X.zip
@@ -23,4 +24,5 @@
 %   waitmex             % example mexFunction that creates a waitbar
 %   find_commponents_example
 %
-% Copyright 2008-2011, Tim Davis, University of Florida
+% Copyright 2008-2012, Tim Davis, exceot for spqr_rank which is
+% Copyright by Les Foster (San Jose State Univ) and Tim Davis.

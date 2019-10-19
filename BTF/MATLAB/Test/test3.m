@@ -6,7 +6,7 @@ function test3 (nmat)
 % See also btf, maxtrans, strongcomp, dmperm, UFget,
 %   test1, test2, test3, test4, test5.
 
-% Copyright 2007, Timothy A. Davis, Univ. of Florida
+% Copyright 2007, Timothy A. Davis, http://www.suitesparse.com
 
 doplot = 1 ;
 dopause = 0 ;

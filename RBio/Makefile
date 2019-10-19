@@ -2,11 +2,11 @@
 # RBio Makefile
 #-------------------------------------------------------------------------------
 
-VERSION = 2.0.2
+VERSION = 2.1.0
 
 default: all
 
-include ../UFconfig/UFconfig.mk
+include ../SuiteSparse_config/SuiteSparse_config.mk
 
 # Compile the C-callable libraries and the Demo programs.
 all:
@@ -19,26 +19,22 @@ library:
 
 # Remove all files not in the original distribution
 purge:
-	( cd RBio ; $(MAKE) purge )
 	( cd Tcov ; $(MAKE) purge )
 	( cd Lib ; $(MAKE) purge )
 	( cd Demo ; $(MAKE) purge )
+	( cd RBio ; $(RM) $(CLEAN) private/temp.rb *.mex* )
 
 # Remove all files not in the original distribution, except keep the 
 # compiled libraries.
 clean:
-	( cd RBio ; $(MAKE) clean )
 	( cd Tcov ; $(MAKE) clean )
 	( cd Lib ; $(MAKE) clean )
 	( cd Demo ; $(MAKE) clean )
+	( cd RBio ; $(RM) $(CLEAN) private/temp.rb )
 
 distclean: purge
 
 ccode: all
-
-# Compile the MATLAB mexFunctions (you can also use RBinstall.m in MATLAB)
-mex:
-	( cd RBio ; $(MAKE) )
 
 # Run the test coverage suite.
 cov:

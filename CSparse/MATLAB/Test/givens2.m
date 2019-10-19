@@ -4,8 +4,7 @@ function g = givens2(a,b)
 %   g = givens2(a,b)
 % See also: cs_demo
 
-%   Copyright 2006-2007, Timothy A. Davis.
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
 if (b == 0)
     c = 1 ; s = 0 ;

@@ -7,7 +7,7 @@ function SuiteSparse_demo (matrixpath, dopause)
 % See also umfpack, cholmod, amd, camd, colamd, ccolamd, btf, klu,
 %   CSparse, CXSparse, ldlsparse
 
-% Copyright (c) Timothy A. Davis, Univ. of Florida
+% Copyright 2012, Timothy A. Davis, http://www.suitesparse.com.
 
 if (nargin < 1 || isempty (matrixpath) || ~ischar (matrixpath))
     try

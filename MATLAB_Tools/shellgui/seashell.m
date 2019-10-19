@@ -1,5 +1,5 @@
 function seashell (a, b, c, n, azimuth, elevation, res)
-% SEASHELL draws a pretty Florida seashell, using a 3D parametric surface.
+% SEASHELL draws a pretty seashell, using a 3D parametric surface.
 %
 % Usage:
 %
@@ -46,7 +46,7 @@ function seashell (a, b, c, n, azimuth, elevation, res)
 % See also SHELLGUI, SURF, VIEW, LINSPACE, MESHGRID, SHADING, LIGHTING,
 %   LIGHTANGLE, COLORMAP, AXIS, MATERIAL, SIN, COS, PI.
 
-% Copyright 2006, Tim Davis, University of Florida
+% Copyright 2006, Timothy A. Davis, http://www.suitesparse.com
 
 % use default input parameters, if not present
 if (nargin == 1 && ischar (a))

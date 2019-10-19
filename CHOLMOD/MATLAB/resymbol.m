@@ -13,7 +13,6 @@ function L = resymbol (L, A)						    %#ok
 %
 % See also LCHOL, LDLUPDATE
 
-%   Copyright 2006-2007, Timothy A. Davis
-%   http://www.cise.ufl.edu/research/sparse
+%   Copyright 2006-2007, Timothy A. Davis, http://www.suitesparse.com
 
 error ('resymbol not found') ;

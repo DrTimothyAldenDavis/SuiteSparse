@@ -1,16 +1,14 @@
 #===============================================================================
-# Fortran interface to ATLAS BLAS, do not test for integer overflow.
+# BLAS, do not test for integer overflow.
 #===============================================================================
 
 CC = gcc
-CF = -O0 -g -ftest-coverage -fprofile-arcs -O0
+CF = -O3 -fPIC
 UMFPACK_CONFIG = -DTESTING
-CONFIG = -DTESTING -I/cise/research/sparse/Install/ATLAS/Linux_P4SSE2/include
-LIB = -lf77blas -latlas -lfrtbegin -lg2c -lm
+LIB = -lblas -lgfortran -lgfortranbegin -lm -lrt
 
 RANLIB = ranlib
 MV = mv -f
-MEX = mex -inline -g
 ARCHIVE = ar rv
 
 #===============================================================================

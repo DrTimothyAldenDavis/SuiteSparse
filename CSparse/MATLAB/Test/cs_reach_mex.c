@@ -12,7 +12,7 @@ void mexFunction
 {
     cs Lmatrix, Bmatrix, *L, *B ;
     double *x ;
-    int k, i, j, top, *xi, *perm ;
+    csi k, i, j, top, *xi, *perm ;
 
     if (nargout > 1 || nargin != 2)
     {
@@ -23,10 +23,10 @@ void mexFunction
     L = cs_mex_get_sparse (&Lmatrix, 1, 1, pargin [0]) ;
     B = cs_mex_get_sparse (&Bmatrix, 0, 1, pargin [1]) ;
     cs_mex_check (0, L->n, 1, 0, 1, 1, pargin [1]) ;
-    perm = cs_malloc (L->n, sizeof (int)) ;
+    perm = cs_malloc (L->n, sizeof (csi)) ;
     for (k = 0 ; k < L->n ; k++) perm [k] = k ;
 
-    xi = cs_calloc (3*L->n, sizeof (int)) ;
+    xi = cs_calloc (3*L->n, sizeof (csi)) ;
 
     top = cs_reach (L, B, 0, xi, perm) ;
 

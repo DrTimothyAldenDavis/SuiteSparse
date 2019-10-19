@@ -5,8 +5,7 @@
 /* ------------------------------------------------------------------------- */
 /* CAMD, Copyright (c) Timothy A. Davis, Yanqing Chen,			     */
 /* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
-/* email: davis at cise.ufl.edu    CISE Department, Univ. of Florida.        */
-/* web: http://www.cise.ufl.edu/research/sparse/camd                         */
+/* email: DrTimothyAldenDavis@gmail.com                                      */
 /* ------------------------------------------------------------------------- */
 
 /*
@@ -30,7 +29,7 @@
 #include "camd.h"
 #include "mex.h"
 #include "matrix.h"
-#include "UFconfig.h"
+#define Long SuiteSparse_long
 
 void mexFunction
 (
@@ -40,7 +39,7 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    UF_long i, m, n, *Ap, *Ai, *P, nc, result, spumoni, full, *C, Clen ;
+    Long i, m, n, *Ap, *Ai, *P, nc, result, spumoni, full, *C, Clen ;
     double *Pout, *InfoOut, Control [CAMD_CONTROL], Info [CAMD_INFO],
 	*ControlIn, *Cin ;
     mxArray *A ;
@@ -103,11 +102,11 @@ void mexFunction
 	Clen = mxGetNumberOfElements (pargin [2]) ;
 	if (Clen != 0)
 	{
-	    C = (UF_long *) mxCalloc (Clen, sizeof (UF_long)) ;
+	    C = (Long *) mxCalloc (Clen, sizeof (Long)) ;
 	    for (i = 0 ; i < Clen ; i++)
 	    {
 		/* convert c from 1-based to 0-based */
-		C [i] = (UF_long) Cin [i] - 1 ;
+		C [i] = (Long) Cin [i] - 1 ;
 	    }
 	}
     }
@@ -133,7 +132,7 @@ void mexFunction
     /* allocate workspace for output permutation */
     /* --------------------------------------------------------------------- */
 
-    P = mxMalloc ((n+1) * sizeof (UF_long)) ;
+    P = mxMalloc ((n+1) * sizeof (Long)) ;
 
     /* --------------------------------------------------------------------- */
     /* if A is full, convert to a sparse matrix */
@@ -149,8 +148,8 @@ void mexFunction
 	}
 	mexCallMATLAB (1, &A, 1, (mxArray **) pargin, "sparse") ;
     }
-    Ap = (UF_long *) mxGetJc (A) ;
-    Ai = (UF_long *) mxGetIr (A) ;
+    Ap = (Long *) mxGetJc (A) ;
+    Ai = (Long *) mxGetIr (A) ;
     if (spumoni > 0)
     {
 	mexPrintf ("    input matrix A has %d nonzero entries\n", Ap [n]) ;

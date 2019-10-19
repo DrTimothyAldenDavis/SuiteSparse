@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* Include file for ssmult.c and ssmultsym.c
- * Copyright 2007, Timothy A. Davis, University of Florida
+ * Copyright 2007-2009, Timothy A. Davis, http://www.suitesparse.com
  */
 
 #include "mex.h"

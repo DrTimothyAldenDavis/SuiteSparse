@@ -6,13 +6,13 @@ function ldl_make
 %
 % See also ldlsparse, ldlsymbol
 
-% Copyright 2006-2007 by Timothy A. Davis, Univ. of Florida
+% Copyright 2006-2007 by Timothy A. Davis, http://www.suitesparse.com
 
 d = '' ;
 if (~isempty (strfind (computer, '64')))
     d = '-largeArrayDims' ;
 end
-eval (sprintf ('mex -O %s -DLDL_LONG -I../../UFconfig -I../Include -output ldlsparse ../Source/ldl.c ldlmex.c', d)) ;
-eval (sprintf ('mex -O %s -DLDL_LONG -I../../UFconfig -I../Include -output ldlsymbol ../Source/ldl.c ldlsymbolmex.c', d)) ;
+eval (sprintf ('mex -O %s -DLDL_LONG -I../../SuiteSparse_config -I../Include -output ldlsparse ../Source/ldl.c ldlmex.c', d)) ;
+eval (sprintf ('mex -O %s -DLDL_LONG -I../../SuiteSparse_config -I../Include -output ldlsymbol ../Source/ldl.c ldlsymbolmex.c', d)) ;
 fprintf ('LDL successfully compiled.\n') ;
 

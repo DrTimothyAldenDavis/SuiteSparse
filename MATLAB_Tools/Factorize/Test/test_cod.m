@@ -8,7 +8,7 @@ function err = test_cod (A, tol)
 %
 % See also test_all_cod, test_all.
 
-% Copyright 2011, Timothy A. Davis, University of Florida.
+% Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
 
 if (nargin < 1)
     A = magic (4) ;

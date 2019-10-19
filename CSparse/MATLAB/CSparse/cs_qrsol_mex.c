@@ -10,7 +10,7 @@ void mexFunction
 {
     cs *A, Amatrix ;
     double *x, *b ;
-    int k, order ;
+    csi k, order ;
     if (nargout > 1 || nargin < 2 || nargin > 3)
     {
         mexErrMsgTxt ("Usage: x = cs_qrsol(A,b,order)") ;

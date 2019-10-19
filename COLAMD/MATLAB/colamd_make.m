@@ -15,7 +15,8 @@ if (~isempty (strfind (computer, '64')))
     d = '-largeArrayDims' ;
 end
 src = '../Source/colamd.c ../Source/colamd_global.c' ;
-cmd = sprintf ('mex -DDLONG -O %s -I../../UFconfig -I../Include -output ', d) ;
+cmd = sprintf ( ...
+    'mex -DDLONG -O %s -I../../SuiteSparse_config -I../Include -output ', d) ;
 s = [cmd 'colamd2mex colamdmex.c ' src] ;
 if (details)
     fprintf ('%s\n', s) ;

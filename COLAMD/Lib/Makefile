@@ -4,11 +4,11 @@
 
 default: libcolamd.a
 
-include ../../UFconfig/UFconfig.mk
+include ../../SuiteSparse_config/SuiteSparse_config.mk
 
-I = -I../Include -I../../UFconfig
+I = -I../Include -I../../SuiteSparse_config
 
-INC = ../Include/colamd.h ../../UFconfig/UFconfig.h
+INC = ../Include/colamd.h ../../SuiteSparse_config/SuiteSparse_config.h
 
 SRC = ../Source/colamd.c ../Source/colamd_global.c
 

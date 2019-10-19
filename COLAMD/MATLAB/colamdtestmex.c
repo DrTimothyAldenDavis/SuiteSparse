@@ -26,7 +26,7 @@
     Authors:
 
 	The authors of the code itself are Stefan I. Larimore and Timothy A.
-	Davis (davis at cise.ufl.edu), University of Florida.  The algorithm was
+	Davis (DrTimothyAldenDavis@gmail.com).  The algorithm was
 	developed in collaboration with John Gilbert, Xerox PARC, and Esmond
 	Ng, Oak Ridge National Laboratory.
 
@@ -38,19 +38,11 @@
     Notice:
 
 	Copyright (c) 1998-2007, Timothy A. Davis, All Rights Reserved.
-
-	See http://www.cise.ufl.edu/research/sparse/colamd (the colamd.c
-	file) for the License.
+	See the colamd.c file for the License.
 
     Availability:
 
-	The colamd/symamd library is available at
-
-	    http://www.cise.ufl.edu/research/sparse/colamd/
-
-	This is the
-	http://www.cise.ufl.edu/research/sparse/colamd/colamdtestmex.c
-       	file.  It requires the colamd.c and colamd.h files.
+	The colamd/symamd library is available at http://www.suitesparse.com
 
 */
 
@@ -63,16 +55,16 @@
 #include "matrix.h"
 #include <stdlib.h>
 #include <string.h>
-#include "UFconfig.h"
+#define Long SuiteSparse_long
 
 static void dump_matrix
 (
-    UF_long A [ ],
-    UF_long p [ ],
-    UF_long n_row,
-    UF_long n_col,
-    UF_long Alen,
-    UF_long limit
+    Long A [ ],
+    Long p [ ],
+    Long n_row,
+    Long n_col,
+    Long Alen,
+    Long limit
 ) ;
 
 /* ========================================================================== */
@@ -91,27 +83,27 @@ void mexFunction
 {
     /* === Local variables ================================================== */
 
-    UF_long *A ;		/* colamd's copy of the matrix, and workspace */
-    UF_long *p ;		/* colamd's copy of the column pointers */
-    UF_long Alen ;		/* size of A */
-    UF_long n_col ;		/* number of columns of A */
-    UF_long n_row ;		/* number of rows of A */
-    UF_long nnz ;		/* number of entries in A */
-    UF_long full ;		/* TRUE if input matrix full, FALSE if sparse */
+    Long *A ;                   /* colamd's copy of the matrix, and workspace */
+    Long *p ;                   /* colamd's copy of the column pointers */
+    Long Alen ;                 /* size of A */
+    Long n_col ;                /* number of columns of A */
+    Long n_row ;                /* number of rows of A */
+    Long nnz ;                  /* number of entries in A */
+    Long full ;                 /* TRUE if input matrix full, FALSE if sparse */
     double knobs [COLAMD_KNOBS] ; /* colamd user-controllable parameters */
-    double *out_perm ;		/* output permutation vector */
-    double *out_stats ;		/* output stats vector */
-    double *in_knobs ;		/* input knobs vector */
-    UF_long i ;			/* loop counter */
-    mxArray *Ainput ;		/* input matrix handle */
-    UF_long spumoni ;		/* verbosity variable */
-    UF_long stats2 [COLAMD_STATS] ;	/* stats for colamd */
+    double *out_perm ;          /* output permutation vector */
+    double *out_stats ;         /* output stats vector */
+    double *in_knobs ;          /* input knobs vector */
+    Long i ;                    /* loop counter */
+    mxArray *Ainput ;           /* input matrix handle */
+    Long spumoni ;              /* verbosity variable */
+    Long stats2 [COLAMD_STATS] ;/* stats for colamd */
 
-    UF_long *cp, *cp_end, result, col, length ;
-    UF_long *stats ;
+    Long *cp, *cp_end, result, col, length ;
+    Long *stats ;
     stats = stats2 ;
 
-    colamd_printf = mexPrintf ;	/* COLAMD printf routine */
+    colamd_printf = mexPrintf ; /* COLAMD printf routine */
 
     /* === Check inputs ===================================================== */
 
@@ -143,7 +135,7 @@ void mexFunction
 	i = mxGetNumberOfElements (prhs [1]) ;
 	if (i > 0) knobs [COLAMD_DENSE_ROW] = in_knobs [0] ;
 	if (i > 1) knobs [COLAMD_DENSE_COL] = in_knobs [1] ;
-	if (i > 2) spumoni = (UF_long) in_knobs [2] ;
+	if (i > 2) spumoni = (Long) in_knobs [2] ;
     }
 
     /* print knob settings if spumoni is set */
@@ -195,10 +187,10 @@ void mexFunction
     n_col = mxGetN (Ainput) ;
 
     /* get column pointer vector so we can find nnz */
-    p = (UF_long *) mxCalloc (n_col+1, sizeof (UF_long)) ;
-    (void) memcpy (p, mxGetJc (Ainput), (n_col+1)*sizeof (UF_long)) ;
+    p = (Long *) mxCalloc (n_col+1, sizeof (Long)) ;
+    (void) memcpy (p, mxGetJc (Ainput), (n_col+1)*sizeof (Long)) ;
     nnz = p [n_col] ;
-    Alen = (UF_long) colamd_l_recommended (nnz, n_row, n_col) ;
+    Alen = (Long) colamd_l_recommended (nnz, n_row, n_col) ;
     if (Alen == 0)
     {
     	mexErrMsgTxt ("colamd: problem too large") ;
@@ -216,8 +208,8 @@ void mexFunction
 
 /* Here only for testing */
 /* size of the Col and Row structures */
-#define COLAMD_C(n_col) (((n_col) + 1) * 24 / sizeof (UF_long))
-#define COLAMD_R(n_row) (((n_row) + 1) * 16 / sizeof (UF_long))
+#define COLAMD_C(n_col) (((n_col) + 1) * 24 / sizeof (Long))
+#define COLAMD_R(n_row) (((n_row) + 1) * 16 / sizeof (Long))
 #ifdef MIN
 #undef MIN
 #endif
@@ -239,8 +231,8 @@ void mexFunction
 
     /* === Copy input matrix into workspace ================================= */
 
-    A = (UF_long *) mxCalloc (Alen, sizeof (UF_long)) ;
-    (void) memcpy (A, mxGetIr (Ainput), nnz*sizeof (UF_long)) ;
+    A = (Long *) mxCalloc (Alen, sizeof (Long)) ;
+    (void) memcpy (A, mxGetIr (Ainput), nnz*sizeof (Long)) ;
 
     if (full)
     {
@@ -270,7 +262,7 @@ void mexFunction
 */
 
     /* jumble appropriately */
-    switch ((UF_long) in_knobs [4])
+    switch ((Long) in_knobs [4])
     {
 
 	case 0 :
@@ -368,7 +360,7 @@ void mexFunction
 		mexPrintf ("colamdtest: A not present\n") ;
 	    }
 	    result = 0 ;		/* A not present */
-	    A = (UF_long *) NULL ;
+	    A = (Long *) NULL ;
 	    break ;
 
 	case 8 :
@@ -377,7 +369,7 @@ void mexFunction
 		mexPrintf ("colamdtest: p not present\n") ;
 	    }
 	    result = 0 ;		/* p not present */
-	    p = (UF_long *) NULL ;
+	    p = (Long *) NULL ;
 	    break ;
 
 	case 9 :
@@ -465,7 +457,7 @@ void mexFunction
 		mexPrintf ("colamdtest: stats not present\n") ;
 	    }
 	    result = 0 ;		/* stats not present */
-	    stats = (UF_long *) NULL ;
+	    stats = (Long *) NULL ;
 	    break ;
 
 	case 13 :
@@ -551,15 +543,15 @@ void mexFunction
 
 static void dump_matrix
 (
-    UF_long A [ ],
-    UF_long p [ ],
-    UF_long n_row,
-    UF_long n_col,
-    UF_long Alen,
-    UF_long limit
+    Long A [ ],
+    Long p [ ],
+    Long n_row,
+    Long n_col,
+    Long Alen,
+    Long limit
 )
 {
-    UF_long col, k, row ;
+    Long col, k, row ;
 
     mexPrintf ("dump matrix: nrow %d ncol %d Alen %d\n", n_row, n_col, Alen) ;
 

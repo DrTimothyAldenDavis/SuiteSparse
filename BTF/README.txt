@@ -1,6 +1,6 @@
-BTF, by Timothy A. Davis, Copyright (C) 2004-2011, University of Florida
+BTF, by Timothy A. Davis, Copyright (C) 2004-2012, University of Florida
 BTF is also available under other licenses; contact the author for details.
-http://www.cise.ufl.edu/research/sparse
+http://www.suitesparse.com
 
 BTF is a software package for permuting a matrix into block upper triangular
 form.  It includes a maximum transversal algorithm, which finds a permutation
@@ -10,8 +10,9 @@ nonzeros on the diagonal.  The package also includes a method for finding the
 strongly connected components of a graph.  These two methods together give the
 permutation to block upper triangular form.
 
-Requires UFconfig, in the ../UFconfig directory relative to this directory.
-KLU relies on this package to permute
+Requires SuiteSparse_config, in the ../SuiteSparse_config directory relative to
+this directory.  KLU relies on the BTF package to permute the matrix prior to
+factorization.
 
 To compile the libbtf.a library, type "make".  The compiled library is located
 in BTF/Lib/libbtf.a.  Compile code that uses BTF with -IBTF/Include.

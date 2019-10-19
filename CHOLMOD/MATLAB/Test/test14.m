@@ -4,7 +4,7 @@ function test14 (nmat)
 %   test14(nmat)
 % See also cholmod_test
 
-% Copyright 2006-2007, Timothy A. Davis, University of Florida
+% Copyright 2007, Timothy A. Davis, http://www.suitesparse.com
 
 fprintf ('=================================================================\n');
 fprintf ('test14: test metis, symbfact2, and etree2\n') ;

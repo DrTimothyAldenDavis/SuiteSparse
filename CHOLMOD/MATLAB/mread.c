@@ -7,7 +7,7 @@
  * The CHOLMOD/MATLAB Module is licensed under Version 2.0 of the GNU
  * General Public License.  See gpl.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
- * http://www.cise.ufl.edu/research/sparse
+ * http://www.suitesparse.com
  * MATLAB(tm) is a Trademark of The MathWorks, Inc.
  * -------------------------------------------------------------------------- */
 
@@ -43,10 +43,10 @@ void mexFunction
     cholmod_dense *X = NULL ;
     cholmod_sparse *A = NULL, *Z = NULL ;
     cholmod_common Common, *cm ;
-    Int *Ap = NULL, *Ai ;
+    Long *Ap = NULL, *Ai ;
     double *Ax, *Az = NULL ;
     char filename [MAXLEN] ;
-    Int nz, k, is_complex = FALSE, nrow = 0, ncol = 0, allzero ;
+    Long nz, k, is_complex = FALSE, nrow = 0, ncol = 0, allzero ;
     int mtype ;
 
     /* ---------------------------------------------------------------------- */

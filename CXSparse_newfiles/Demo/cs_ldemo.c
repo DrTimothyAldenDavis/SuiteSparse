@@ -1,5 +1,5 @@
 #include "cs.h"
-/* test real/complex conversion routines (int version) */
+/* test real/complex conversion routines (cs_long_t version) */
 int main (void)
 {
     cs_cl *T, *A, *A1, *A2, *B ;

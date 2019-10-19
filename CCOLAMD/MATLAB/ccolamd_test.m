@@ -23,7 +23,8 @@ csymamd_default_knobs = [10 1 0] ;
 	d = '-largeArrayDims' ;
     end
     src = '../Source/ccolamd.c ../Source/ccolamd_global.c' ;
-    cmd = sprintf ('mex -DDLONG -O %s -I../../UFconfig -I../Include ', d) ;
+    cmd = sprintf ( ...
+        'mex -DDLONG -O %s -I../../SuiteSparse_config -I../Include ', d) ;
     eval ([cmd 'ccolamdtestmex.c ' src]) ;
     eval ([cmd 'csymamdtestmex.c ' src]) ;
     fprintf ('Done compiling.\n') ; 

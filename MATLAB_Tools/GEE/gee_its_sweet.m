@@ -10,7 +10,7 @@ function x = gee_its_sweet (A, b)
 % I include the copyright below ... just to silence the Help Report ...  Yes,
 % it's kind of silly to copyright a one-line code :-)  ... but then I do hold
 % the copyright to perhaps a third to a half of the code used internally in
-% MATLAB itself, to do x=A\b (UMFPACK, CHOLMOD, AMD, COLAMD) along with
+% MATLAB itself, to do x=A\b (UMFPACK, CHOLMOD, AMD, COLAMD, SPQR) along with
 % co-authors Iain Duff, Patrick Amestoy, John Gilbert, Esmond Ng, and Stefan
 % Larimore (CHOLMOD includes other code modules co-authored by Bill Hager,
 % Morris Chen, and Siva Rajamanickam, but these do not appear in x=A\b).  The
@@ -23,7 +23,6 @@ function x = gee_its_sweet (A, b)
 % thousands because I haven't seen the code for mldivide (aka backslash), just
 % LAPACK, the BLAS, and my codes.
 
-% Copyright 2006-2007, Timothy A. Davis.
-% http://www.cise.ufl.edu/research/sparse
+% Copyright 2007, Timothy A. Davis, http://www.suitesparse.com
 
 x = A\b ;   % I hearby call upon 250k lines of code (or so) to solve Ax=b

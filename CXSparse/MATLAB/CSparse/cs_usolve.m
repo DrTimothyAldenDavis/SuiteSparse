@@ -15,7 +15,6 @@ function x = cs_usolve (U,b)                                                %#ok
 %
 %   See also CS_LSOLVE, CS_LTSOLVE, CS_UTSOLVE, MLDIVIDE.
 
-%   Copyright 2006-2007, Timothy A. Davis.
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
 error ('cs_usolve mexFunction not found') ;

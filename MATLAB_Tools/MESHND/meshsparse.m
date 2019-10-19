@@ -24,7 +24,7 @@ function A = meshsparse (G, stencil)
 %
 % See also meshnd.
 
-% Copyright 2007, Timothy A. Davis, Univ. of Florida
+% Copyright 2007-2009, Timothy A. Davis, http://www.suitesparse.com
 
 if (nargin < 2)
     [m n k] = size (G) ;

@@ -22,3 +22,5 @@ However, you may run the tests in the Test directory only if your compiler
 supports the ANSI C99 complex type.  If it does not support the ANSI C99
 complex type, the tests in the Test directory will fail, since the codes there
 test both the real and complex cases in CXSparse.
+
+Timothy A. Davis, http://www.suitesparse.com

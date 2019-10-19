@@ -5,8 +5,7 @@
 /* ------------------------------------------------------------------------- */
 /* AMD, Copyright (c) Timothy A. Davis,					     */
 /* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
-/* email: davis at cise.ufl.edu    CISE Department, Univ. of Florida.        */
-/* web: http://www.cise.ufl.edu/research/sparse/amd                          */
+/* email: DrTimothyAldenDavis@gmail.com                                      */
 /* ------------------------------------------------------------------------- */
 
 /* AMD_2:  performs the AMD ordering on a symmetric sparse matrix A, followed
@@ -120,9 +119,9 @@ GLOBAL void AMD_2
  *	ouput.  Many of these functions are also provided by the Fortran
  *	Harwell Subroutine Library routine MC47A.
  *
- * (6) both int and UF_long versions are provided.  In the descriptions below
- *	and integer is and int or UF_long depending on which version is
- *	being used.
+ * (6) both int and SuiteSparse_long versions are provided.  In the
+ *      descriptions below and integer is and int or SuiteSparse_long depending
+ *      on which version is being used.
 
  **********************************************************************
  ***** CAUTION:  ARGUMENTS ARE NOT CHECKED FOR ERRORS ON INPUT.  ******
@@ -495,8 +494,9 @@ GLOBAL void AMD_2
  * nvj:		the number of variables in a supervariable j (= Nv [j])
  * nvpiv:	number of pivots in current element
  * slenme:	number of variables in variable list of pivotal variable
- * wbig:	= INT_MAX - n for the int version, UF_long_max - n for the
- *		    UF_long version.  wflg is not allowed to be >= wbig.
+ * wbig:	= (INT_MAX - n) for the int version, (SuiteSparse_long_max - n)
+ *                  for the SuiteSparse_long version.  wflg is not allowed to
+ *                  be >= wbig.
  * we:		W [e]
  * wflg:	used for flagging the W array.  See description of Iw.
  * wnvi:	wflg - Nv [i]

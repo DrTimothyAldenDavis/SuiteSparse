@@ -75,7 +75,7 @@ static void print_order (int order)
     }
 }
 
-/* read a problem from a file */
+/* read a problem from a file; use %g for integers to avoid int conflicts */
 problem *get_problem (FILE *f, double tol)
 {
     cs_ci *T, *A, *C ;
@@ -96,10 +96,12 @@ problem *get_problem (FILE *f, double tol)
     if (tol > 0) cs_ci_droptol (A, tol) ;  /* drop tiny entries (just to test) */
     Prob->C = C = sym ? make_sym (A) : A ;  /* C = A + triu(A,1)', or C=A */
     if (!C) return (free_problem (Prob)) ;
-    printf ("\n--- Matrix: %d-by-%d, nnz: %d (sym: %d: nnz %d), norm: %8.2e\n",
-            m, n, A->p [n], sym, sym ? C->p [n] : 0, cs_ci_norm (C)) ;
-    if (nz1 != nz2) printf ("zero entries dropped: %d\n", nz1 - nz2) ;
-    if (nz2 != A->p [n]) printf ("tiny entries dropped: %d\n", nz2 - A->p [n]) ;
+    printf ("\n--- Matrix: %g-by-%g, nnz: %g (sym: %g: nnz %g), norm: %8.2e\n",
+            (double) m, (double) n, (double) (A->p [n]), (double) sym,
+            (double) (sym ? C->p [n] : 0), cs_ci_norm (C)) ;
+    if (nz1 != nz2) printf ("zero entries dropped: %g\n", (double) (nz1 - nz2));
+    if (nz2 != A->p [n]) printf ("tiny entries dropped: %g\n",
+            (double) (nz2 - A->p [n])) ;
     Prob->b = cs_ci_malloc (mn, sizeof (cs_complex_t)) ;
     Prob->x = cs_ci_malloc (mn, sizeof (cs_complex_t)) ;
     Prob->resid = cs_ci_malloc (mn, sizeof (cs_complex_t)) ;
@@ -138,7 +140,8 @@ int demo2 (problem *Prob)
     {
         ns += ((r [k+1] == r [k]+1) && (s [k+1] == s [k]+1)) ;
     }
-    printf ("blocks: %d singletons: %d structural rank: %d\n", nb, ns, sprank) ;
+    printf ("blocks: %g singletons: %g structural rank: %g\n",
+        (double) nb, (double) ns, (double) sprank) ;
     cs_ci_dfree (D) ;
     for (order = 0 ; order <= 3 ; order += 3)   /* natural and amd(A'*A) */
     {

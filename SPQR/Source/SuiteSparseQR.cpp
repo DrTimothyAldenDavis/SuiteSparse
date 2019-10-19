@@ -40,7 +40,7 @@
 
 #define FREE_ALL \
         spqr_freefac (&QR, cc) ; \
-        cholmod_l_free (rjsize+1, sizeof (Int),  H2p, cc) ; \
+        cholmod_l_free (rjsize+1, sizeof (Long),  H2p, cc) ; \
         cholmod_l_free_dense  (&HTau, cc) ; \
         cholmod_l_free_sparse (&H, cc) ; \
         cholmod_l_free_sparse (&R, cc) ; \
@@ -50,18 +50,18 @@
         cholmod_l_free (xsize, sizeof (Entry), Xwork, cc) ; \
         cholmod_l_free (csize, sizeof (Entry), C, cc) ; \
         cholmod_l_free (wsize, sizeof (Entry), W, cc) ; \
-        cholmod_l_free (maxfrank, sizeof (Int), Rlive, cc) ; \
+        cholmod_l_free (maxfrank, sizeof (Long), Rlive, cc) ; \
         cholmod_l_free (maxfrank, sizeof (Entry *), Rcolp, cc) ; \
-        cholmod_l_free (n+bncols, sizeof (Int), E, cc) ; \
-        cholmod_l_free (m, sizeof (Int), HP1inv, cc) ;
+        cholmod_l_free (n+bncols, sizeof (Long), E, cc) ; \
+        cholmod_l_free (m, sizeof (Long), HP1inv, cc) ;
 
 // returns rank(A) estimate if successful, EMPTY otherwise
-template <typename Entry> Int SuiteSparseQR
+template <typename Entry> Long SuiteSparseQR
 (
     // inputs, not modified
     int ordering,           // all, except 3:given treated as 0:fixed
     double tol,             // columns with 2-norm <= tol are treated as zero
-    Int econ,               // number of rows of C and R to return; a value
+    Long econ,              // number of rows of C and R to return; a value
                             // less than the rank r of A is treated as r, and
                             // a value greater than m is treated as m.
                             // That is, e = max(min(m,econ),rank(A)) gives the
@@ -89,22 +89,22 @@ template <typename Entry> Int SuiteSparseQR
     cholmod_dense  **p_Zdense,
 
     cholmod_sparse **p_R,   // the R factor
-    Int **p_E,              // size n; fill-reducing ordering of A.
+    Long **p_E,             // size n; fill-reducing ordering of A.
     cholmod_sparse **p_H,   // the Householder vectors (m-by-nh)
-    Int **p_HPinv,          // size m; row permutation for H
+    Long **p_HPinv,         // size m; row permutation for H
     cholmod_dense **p_HTau, // size 1-by-nh, Householder coefficients
 
     // workspace and parameters
     cholmod_common *cc
 )
 {
-    Int *Q1fill, *R1p, *R1j, *P1inv, *Zp, *Zi, *Rp, *Ri, *Rap, *Hp, *H2p,
+    Long *Q1fill, *R1p, *R1j, *P1inv, *Zp, *Zi, *Rp, *Ri, *Rap, *Hp, *H2p,
         *Hi, *HP1inv, *Ap, *Ai, *Rlive, *E, *Bp, *Bi ;
     Entry *R1x, *B, *Zx, *Rx, *X2, *C, *Hx, *C1, *X1, *Xwork, *Ax, *W, **Rcolp,
         *Bx ;
-    Int i, j, k, d, p, p2, n1cols, n1rows, B_is_sparse, Z_is_sparse, getC, getR,
-        getH, getE, getX, getZ, iold, inew, rank, n2, rnz, znz, zn, zm, pr,
-        xsize, getT, nh, k1, k2, xchunk, xncol, m, n, csize, wsize, ldb,
+    Long i, j, k, d, p, p2, n1cols, n1rows, B_is_sparse, Z_is_sparse, getC,
+        getR, getH, getE, getX, getZ, iold, inew, rank, n2, rnz, znz, zn, zm,
+        pr, xsize, getT, nh, k1, k2, xchunk, xncol, m, n, csize, wsize, ldb,
         maxfrank, rjsize, bncols, bnrows ;
     spqr_symbolic *QRsym ;
     spqr_numeric <Entry> *QRnum ;
@@ -112,9 +112,7 @@ template <typename Entry> Int SuiteSparseQR
     cholmod_sparse *Xsparse, *Zsparse, *R, *H ;
     cholmod_dense *Zdense, *HTau ;
 
-#ifdef TIMING
-    double t0 = spqr_time ( ) ;
-#endif
+    double t0 = SuiteSparse_time ( ) ;
 
     int ok = TRUE ;
 
@@ -132,7 +130,7 @@ template <typename Entry> Int SuiteSparseQR
 
     RETURN_IF_NULL_COMMON (EMPTY) ;
     RETURN_IF_NULL (A, EMPTY) ;
-    Int xtype = spqr_type <Entry> ( ) ;
+    Long xtype = spqr_type <Entry> ( ) ;
     RETURN_IF_XTYPE_INVALID (A, EMPTY) ;
     if (Bsparse != NULL) RETURN_IF_XTYPE_INVALID (Bsparse, EMPTY) ;
     if (Bdense  != NULL) RETURN_IF_XTYPE_INVALID (Bdense,  EMPTY) ;
@@ -182,8 +180,8 @@ template <typename Entry> Int SuiteSparseQR
 
     m = A->nrow ;
     n = A->ncol ;
-    Ap = (Int *) A->p ;
-    Ai = (Int *) A->i ;
+    Ap = (Long *) A->p ;
+    Ai = (Long *) A->i ;
     Ax = (Entry *) A->x ;
 
     // B is an optional input.  It can be sparse or dense
@@ -193,8 +191,8 @@ template <typename Entry> Int SuiteSparseQR
         // B is sparse
         bncols = Bsparse->ncol ;
         bnrows = Bsparse->nrow ;
-        Bp = (Int *) Bsparse->p ;
-        Bi = (Int *) Bsparse->i ;
+        Bp = (Long *) Bsparse->p ;
+        Bi = (Long *) Bsparse->i ;
         Bx = (Entry *) Bsparse->x ;
         ldb = 0 ;       // unused
     }
@@ -313,14 +311,14 @@ template <typename Entry> Int SuiteSparseQR
         // Zsparse is zm-by-zn, but with no entries so far
         Zsparse = cholmod_l_allocate_sparse (zm, zn, 0, TRUE, TRUE, 0, xtype,
             cc) ;
-        Zp = Zsparse ? ((Int *) Zsparse->p) : NULL ;
+        Zp = Zsparse ? ((Long *) Zsparse->p) : NULL ;
     }
 
     if (getR)
     {
         // R is econ-by-n, but with no entries so far
         R = cholmod_l_allocate_sparse (econ, n, 0, TRUE, TRUE, 0, xtype, cc) ;
-        Rp = R ? ((Int *) R->p) : NULL ;
+        Rp = R ? ((Long *) R->p) : NULL ;
         Rap = Rp + n1cols ;
     }
 
@@ -328,7 +326,7 @@ template <typename Entry> Int SuiteSparseQR
 
     if (getH)
     {
-        H2p = (Int *) cholmod_l_malloc (rjsize+1, sizeof (Int), cc) ;
+        H2p = (Long *) cholmod_l_malloc (rjsize+1, sizeof (Long), cc) ;
     }
 
     if (cc->status < CHOLMOD_OK)
@@ -427,7 +425,7 @@ template <typename Entry> Int SuiteSparseQR
     // compute the Rp and Zp column pointers (skip if NULL)
     // -------------------------------------------------------------------------
 
-    // no Int overflow can occur
+    // no Long overflow can occur
     rnz = spqr_cumsum (n, Rp) ;     // Rp = cumsum ([0 Rp])
     znz = spqr_cumsum (zn, Zp) ;    // Zp = cumsum ([0 Zp])
 
@@ -439,7 +437,7 @@ template <typename Entry> Int SuiteSparseQR
     {
         // R now has space for rnz entries
         cholmod_l_reallocate_sparse (rnz, R, cc) ;
-        Ri = (Int   *) R->i ;
+        Ri = (Long  *) R->i ;
         Rx = (Entry *) R->x ;
     }
 
@@ -447,20 +445,20 @@ template <typename Entry> Int SuiteSparseQR
     {
         // Zsparse now has space for znz entries
         cholmod_l_reallocate_sparse (znz, Zsparse, cc) ;
-        Zi = (Int   *) Zsparse->i ;
+        Zi = (Long  *) Zsparse->i ;
         Zx = (Entry *) Zsparse->x ;
     }
 
     if (getH)
     {
         // H is m-by-nh with hnz entries, where nh <= rjsize
-        Int hnz = H2p [nh] ;
+        Long hnz = H2p [nh] ;
         H = cholmod_l_allocate_sparse (m, nh, hnz, TRUE, TRUE, 0, xtype, cc) ;
         // copy the column pointers from H2p to Hp
         if (cc->status == CHOLMOD_OK)
         {
-            Hp = (Int   *) H->p ;
-            Hi = (Int   *) H->i ;
+            Hp = (Long  *) H->p ;
+            Hi = (Long  *) H->i ;
             Hx = (Entry *) H->x ;
             for (k = 0 ; k <= nh ; k++)
             {
@@ -468,7 +466,7 @@ template <typename Entry> Int SuiteSparseQR
             }
         }
         // free the H2p workspace, and allocate HTau
-        cholmod_l_free (rjsize+1, sizeof (Int), H2p, cc) ;
+        cholmod_l_free (rjsize+1, sizeof (Long), H2p, cc) ;
         H2p = NULL ;
         HTau = cholmod_l_allocate_dense (1, nh, 1, xtype, cc) ;
     }
@@ -687,7 +685,7 @@ template <typename Entry> Int SuiteSparseQR
             X2 = Zdense ? ((Entry *) Zdense->x) : NULL ;
         }
 
-        Rlive = (Int *)    cholmod_l_malloc (maxfrank, sizeof (Int),     cc) ;
+        Rlive = (Long *)   cholmod_l_malloc (maxfrank, sizeof (Long),    cc) ;
         Rcolp = (Entry **) cholmod_l_malloc (maxfrank, sizeof (Entry *), cc) ;
 
         if (!ok || cc->status < CHOLMOD_OK)
@@ -790,7 +788,7 @@ template <typename Entry> Int SuiteSparseQR
 
         C     = (Entry *)  cholmod_l_free (csize,    sizeof (Entry), C, cc) ;
         W     = (Entry *)  cholmod_l_free (wsize,    sizeof (Entry), W, cc) ;
-        Rlive = (Int *)    cholmod_l_free (maxfrank, sizeof (Int),   Rlive, cc);
+        Rlive = (Long *)   cholmod_l_free (maxfrank, sizeof (Long),  Rlive, cc);
         Rcolp = (Entry **) cholmod_l_free (maxfrank, sizeof (Entry *), Rcolp,
             cc) ;
 
@@ -892,7 +890,7 @@ template <typename Entry> Int SuiteSparseQR
 
     if (getR && ordering != SPQR_ORDERING_FIXED && rank < n && tol >= 0)
     {
-        Int *Rtrapp, *Rtrapi, *Qtrap, rank2 ;
+        Long *Rtrapp, *Rtrapi, *Qtrap, rank2 ;
         Entry *Rtrapx ;
 
         // find Rtrap and Qtrap. This may fail if tol < 0 and the matrix
@@ -918,10 +916,10 @@ template <typename Entry> Int SuiteSparseQR
             // trapezoidal form)
 
             // free the old R and Q1fill
-            cholmod_l_free (n+1,      sizeof (Int),   Rp, cc) ;
-            cholmod_l_free (rnz,      sizeof (Int),   Ri, cc) ;
+            cholmod_l_free (n+1,      sizeof (Long),  Rp, cc) ;
+            cholmod_l_free (rnz,      sizeof (Long),  Ri, cc) ;
             cholmod_l_free (rnz,      sizeof (Entry), Rx, cc) ;
-            cholmod_l_free (n+bncols, sizeof (Int),   E,  cc) ;
+            cholmod_l_free (n+bncols, sizeof (Long),  E,  cc) ;
 
             // replace R and Q1fill with Rtrap and Qtrap
             R->p = Rtrapp ;
@@ -968,22 +966,20 @@ template <typename Entry> Int SuiteSparseQR
         *p_E = E ;
     }
 
-#ifdef TIMING
-    double t3 = spqr_time ( ) ;
+    double t3 = SuiteSparse_time ( ) ;
     double total_time = t3 - t0 ;
     cc->other1 [3] = total_time - cc->other1 [1] - cc->other1 [2] ;
-#endif
 
     return (rank) ;
 }
 
 
-template Int SuiteSparseQR <double>
+template Long SuiteSparseQR <double>
 (
     // inputs, not modified
     int ordering,           // all, except 3:given treated as 0:fixed
     double tol,             // columns with 2-norm <= tol are treated as zero
-    Int econ,               // number of rows of C and R to return; a value
+    Long econ,              // number of rows of C and R to return; a value
                             // less than the rank r of A is treated as r, and
                             // a value greater than m is treated as m.
 
@@ -1001,21 +997,21 @@ template Int SuiteSparseQR <double>
     cholmod_sparse **p_Zsparse,
     cholmod_dense  **p_Zdense,
     cholmod_sparse **p_R,   // the R factor
-    Int **p_E,              // size n; fill-reducing ordering of A.
+    Long **p_E,             // size n; fill-reducing ordering of A.
     cholmod_sparse **p_H,   // the Householder vectors (m-by-nh)
-    Int **p_HPinv,          // size m; row permutation for H
+    Long **p_HPinv,         // size m; row permutation for H
     cholmod_dense **p_HTau, // size 1-by-nh, Householder coefficients
 
     // workspace and parameters
     cholmod_common *cc
 ) ;
 
-template Int SuiteSparseQR <Complex>
+template Long SuiteSparseQR <Complex>
 (
     // inputs, not modified
     int ordering,           // all, except 3:given treated as 0:fixed
     double tol,             // columns with 2-norm <= tol are treated as zero
-    Int econ,               // number of rows of C and R to return; a value
+    Long econ,              // number of rows of C and R to return; a value
                             // less than the rank r of A is treated as r, and
                             // a value greater than m is treated as m.
 
@@ -1033,9 +1029,9 @@ template Int SuiteSparseQR <Complex>
     cholmod_sparse **p_Zsparse,
     cholmod_dense  **p_Zdense,
     cholmod_sparse **p_R,   // the R factor
-    Int **p_E,              // size n; fill-reducing ordering of A.
+    Long **p_E,             // size n; fill-reducing ordering of A.
     cholmod_sparse **p_H,   // the Householder vectors (m-by-nh)
-    Int **p_HPinv,          // size m; row permutation for H
+    Long **p_HPinv,         // size m; row permutation for H
     cholmod_dense **p_HTau, // size 1-by-nh, Householder coefficients
 
     // workspace and parameters
@@ -1158,54 +1154,54 @@ template cholmod_sparse *SuiteSparseQR <Complex>
 // [Q,R,E] = qr(A), returning Q as a sparse matrix
 // -----------------------------------------------------------------------------
 
-template <typename Entry> Int SuiteSparseQR     // returns rank(A) estimate
+template <typename Entry> Long SuiteSparseQR     // returns rank(A) estimate
 (
     int ordering,           // all, except 3:given treated as 0:fixed
     double tol,             // columns with 2-norm <= tol are treated as zero
-    Int econ,               // e = max(min(m,econ),rank(A))
+    Long econ,              // e = max(min(m,econ),rank(A))
     cholmod_sparse *A,      // m-by-n sparse matrix
     // outputs
     cholmod_sparse **Q,     // m-by-e sparse matrix
     cholmod_sparse **R,     // e-by-n sparse matrix
-    Int **E,                // permutation of 0:n-1, NULL if identity
+    Long **E,               // permutation of 0:n-1, NULL if identity
     cholmod_common *cc      // workspace and parameters
 )
 {
     cholmod_sparse *I ;
-    Int xtype = spqr_type <Entry> ( ) ;
+    Long xtype = spqr_type <Entry> ( ) ;
     RETURN_IF_NULL_COMMON (EMPTY) ;
     RETURN_IF_NULL (A, EMPTY) ;
-    Int m = A->nrow ;
+    Long m = A->nrow ;
     I = cholmod_l_speye (m, m, xtype, cc) ;
-    Int rank = (I == NULL) ? EMPTY : SuiteSparseQR <Entry> (ordering, tol,
+    Long rank = (I == NULL) ? EMPTY : SuiteSparseQR <Entry> (ordering, tol,
         econ, 1, A, I, NULL, Q, NULL, R, E, NULL, NULL, NULL, cc) ;
     cholmod_l_free_sparse (&I, cc) ;
     return (rank) ;
 }
 
-template Int SuiteSparseQR <Complex>     // returns rank(A) estimate
+template Long SuiteSparseQR <Complex>     // returns rank(A) estimate
 (
     int ordering,           // all, except 3:given treated as 0:fixed
     double tol,             // columns with 2-norm <= tol are treated as zero
-    Int econ,               // e = max(min(m,econ),rank(A))
+    Long econ,              // e = max(min(m,econ),rank(A))
     cholmod_sparse *A,      // m-by-n sparse matrix
     // outputs
     cholmod_sparse **Q,     // m-by-e sparse matrix
     cholmod_sparse **R,     // e-by-n sparse matrix
-    Int **E,                // permutation of 0:n-1
+    Long **E,               // permutation of 0:n-1
     cholmod_common *cc      // workspace and parameters
 ) ;
 
-template Int SuiteSparseQR <double>     // returns rank(A) estimate
+template Long SuiteSparseQR <double>     // returns rank(A) estimate
 (
     int ordering,           // all, except 3:given treated as 0:fixed
     double tol,             // columns with 2-norm <= tol are treated as zero
-    Int econ,               // e = max(min(m,econ),rank(A))
+    Long econ,              // e = max(min(m,econ),rank(A))
     cholmod_sparse *A,      // m-by-n sparse matrix
     // outputs
     cholmod_sparse **Q,     // m-by-e sparse matrix where e=max(econ,rank(A))
     cholmod_sparse **R,     // e-by-n sparse matrix
-    Int **E,                // permutation of 0:n-1
+    Long **E,               // permutation of 0:n-1
     cholmod_common *cc      // workspace and parameters
 ) ;
 
@@ -1213,15 +1209,15 @@ template Int SuiteSparseQR <double>     // returns rank(A) estimate
 // [Q,R,E] = qr(A), discarding Q
 // -----------------------------------------------------------------------------
 
-template <typename Entry> Int SuiteSparseQR     // returns rank(A) estimate
+template <typename Entry> Long SuiteSparseQR     // returns rank(A) estimate
 (
     int ordering,           // all, except 3:given treated as 0:fixed
     double tol,             // columns with 2-norm <= tol are treated as zero
-    Int econ,               // e = max(min(m,econ),rank(A))
+    Long econ,              // e = max(min(m,econ),rank(A))
     cholmod_sparse *A,      // m-by-n sparse matrix
     // outputs
     cholmod_sparse **R,     // e-by-n sparse matrix
-    Int **E,                // permutation of 0:n-1, NULL if identity
+    Long **E,               // permutation of 0:n-1, NULL if identity
     cholmod_common *cc      // workspace and parameters
 )
 {
@@ -1229,27 +1225,27 @@ template <typename Entry> Int SuiteSparseQR     // returns rank(A) estimate
         NULL, NULL, NULL, NULL, R, E, NULL, NULL, NULL, cc)) ;
 }
 
-template Int SuiteSparseQR <Complex>     // returns rank(A) estimate
+template Long SuiteSparseQR <Complex>     // returns rank(A) estimate
 (
     int ordering,           // all, except 3:given treated as 0:fixed
     double tol,             // columns with 2-norm <= tol are treated as zero
-    Int econ,               // e = max(min(m,econ),rank(A))
+    Long econ,              // e = max(min(m,econ),rank(A))
     cholmod_sparse *A,      // m-by-n sparse matrix
     // outputs
     cholmod_sparse **R,     // e-by-n sparse matrix
-    Int **E,                // permutation of 0:n-1, NULL if identity
+    Long **E,               // permutation of 0:n-1, NULL if identity
     cholmod_common *cc      // workspace and parameters
 ) ;
 
-template Int SuiteSparseQR <double>     // returns rank(A) estimate
+template Long SuiteSparseQR <double>     // returns rank(A) estimate
 (
     int ordering,           // all, except 3:given treated as 0:fixed
     double tol,             // columns with 2-norm <= tol are treated as zero
-    Int econ,               // e = max(min(m,econ),rank(A))
+    Long econ,              // e = max(min(m,econ),rank(A))
     cholmod_sparse *A,      // m-by-n sparse matrix
     // outputs
     cholmod_sparse **R,     // e-by-n sparse matrix
-    Int **E,                // permutation of 0:n-1, NULL if identity
+    Long **E,               // permutation of 0:n-1, NULL if identity
     cholmod_common *cc      // workspace and parameters
 ) ;
 
@@ -1258,18 +1254,18 @@ template Int SuiteSparseQR <double>     // returns rank(A) estimate
 // -----------------------------------------------------------------------------
 
 // returns rank(A) estimate if successful, EMPTY otherwise
-template <typename Entry> Int SuiteSparseQR
+template <typename Entry> Long SuiteSparseQR
 (
     // inputs, not modified
     int ordering,           // all, except 3:given treated as 0:fixed
     double tol,             // columns with 2-norm <= tol are treated as zero
-    Int econ,               // e = max(min(m,econ),rank(A))
+    Long econ,              // e = max(min(m,econ),rank(A))
     cholmod_sparse *A,      // m-by-n sparse matrix
     cholmod_dense  *B,      // m-by-nrhs dense matrix
     // outputs
     cholmod_dense  **C,     // C = Q'*B, an e-by-nrhs dense matrix
     cholmod_sparse **R,     // e-by-n sparse matrix where e=max(econ,rank(A))
-    Int **E,                // permutation of 0:n-1, NULL if identity
+    Long **E,               // permutation of 0:n-1, NULL if identity
     cholmod_common *cc      // workspace and parameters
 )
 {
@@ -1277,34 +1273,34 @@ template <typename Entry> Int SuiteSparseQR
         NULL, C, R, E, NULL, NULL, NULL, cc)) ;
 }
 
-template Int SuiteSparseQR <double>
+template Long SuiteSparseQR <double>
 (
     // inputs, not modified
     int ordering,           // all, except 3:given treated as 0:fixed
     double tol,             // columns with 2-norm <= tol are treated as zero
-    Int econ,               // e = max(min(m,econ),rank(A))
+    Long econ,              // e = max(min(m,econ),rank(A))
     cholmod_sparse *A,      // m-by-n sparse matrix
     cholmod_dense  *B,      // m-by-nrhs dense matrix
     // outputs
     cholmod_dense  **C,     // C = Q'*B, an e-by-nrhs dense matrix
     cholmod_sparse **R,     // e-by-n sparse matrix where e=max(econ,rank(A))
-    Int **E,                // permutation of 0:n-1, NULL if identity
+    Long **E,               // permutation of 0:n-1, NULL if identity
     cholmod_common *cc      // workspace and parameters
 ) ;
 
 
-template Int SuiteSparseQR <Complex>
+template Long SuiteSparseQR <Complex>
 (
     // inputs, not modified
     int ordering,           // all, except 3:given treated as 0:fixed
     double tol,             // columns with 2-norm <= tol are treated as zero
-    Int econ,               // e = max(min(m,econ),rank(A))
+    Long econ,              // e = max(min(m,econ),rank(A))
     cholmod_sparse *A,      // m-by-n sparse matrix
     cholmod_dense  *B,      // m-by-nrhs dense matrix
     // outputs
     cholmod_dense  **C,     // C = Q'*B, an e-by-nrhs dense matrix
     cholmod_sparse **R,     // e-by-n sparse matrix where e=max(econ,rank(A))
-    Int **E,                // permutation of 0:n-1, NULL if identity
+    Long **E,               // permutation of 0:n-1, NULL if identity
     cholmod_common *cc      // workspace and parameters
 ) ;
 
@@ -1314,18 +1310,18 @@ template Int SuiteSparseQR <Complex>
 // -----------------------------------------------------------------------------
 
 // returns rank(A) estimate if successful, EMPTY otherwise
-template <typename Entry> Int SuiteSparseQR
+template <typename Entry> Long SuiteSparseQR
 (
     // inputs, not modified
     int ordering,           // all, except 3:given treated as 0:fixed
     double tol,             // columns with 2-norm <= tol are treated as zero
-    Int econ,               // e = max(min(m,econ),rank(A))
+    Long econ,              // e = max(min(m,econ),rank(A))
     cholmod_sparse *A,      // m-by-n sparse matrix
     cholmod_sparse *B,      // m-by-nrhs sparse matrix
     // outputs
     cholmod_sparse **C,     // C = Q'*B, an e-by-nrhs sparse matrix
     cholmod_sparse **R,     // e-by-n sparse matrix where e=max(econ,rank(A))
-    Int **E,                // permutation of 0:n-1, NULL if identity
+    Long **E,               // permutation of 0:n-1, NULL if identity
     cholmod_common *cc      // workspace and parameters
 )
 {
@@ -1333,34 +1329,34 @@ template <typename Entry> Int SuiteSparseQR
         C, NULL, R, E, NULL, NULL, NULL, cc)) ;
 }
 
-template Int SuiteSparseQR <double>
+template Long SuiteSparseQR <double>
 (
     // inputs, not modified
     int ordering,           // all, except 3:given treated as 0:fixed
     double tol,             // columns with 2-norm <= tol are treated as zero
-    Int econ,               // e = max(min(m,econ),rank(A))
+    Long econ,              // e = max(min(m,econ),rank(A))
     cholmod_sparse *A,      // m-by-n sparse matrix
     cholmod_sparse *B,      // m-by-nrhs sparse matrix
     // outputs
     cholmod_sparse **C,     // C = Q'*B, an e-by-nrhs sparse matrix
     cholmod_sparse **R,     // e-by-n sparse matrix where e=max(econ,rank(A))
-    Int **E,                // permutation of 0:n-1, NULL if identity
+    Long **E,               // permutation of 0:n-1, NULL if identity
     cholmod_common *cc      // workspace and parameters
 ) ;
 
 
-template Int SuiteSparseQR <Complex>
+template Long SuiteSparseQR <Complex>
 (
     // inputs, not modified
     int ordering,           // all, except 3:given treated as 0:fixed
     double tol,             // columns with 2-norm <= tol are treated as zero
-    Int econ,               // e = max(min(m,econ),rank(A))
+    Long econ,              // e = max(min(m,econ),rank(A))
     cholmod_sparse *A,      // m-by-n sparse matrix
     cholmod_sparse *B,      // m-by-nrhs sparse matrix
     // outputs
     cholmod_sparse **C,     // C = Q'*B, an e-by-nrhs sparse matrix
     cholmod_sparse **R,     // e-by-n sparse matrix where e=max(econ,rank(A))
-    Int **E,                // permutation of 0:n-1, NULL if identity
+    Long **E,               // permutation of 0:n-1, NULL if identity
     cholmod_common *cc      // workspace and parameters
 ) ;
 
@@ -1369,18 +1365,18 @@ template Int SuiteSparseQR <Complex>
 // -----------------------------------------------------------------------------
 
 // returns rank(A) estimate if successful, EMPTY otherwise
-template <typename Entry> Int SuiteSparseQR
+template <typename Entry> Long SuiteSparseQR
 (
     // inputs, not modified
     int ordering,           // all, except 3:given treated as 0:fixed
     double tol,             // columns with 2-norm <= tol are treated as zero
-    Int econ,               // e = max(min(m,econ),rank(A))
+    Long econ,              // e = max(min(m,econ),rank(A))
     cholmod_sparse *A,      // m-by-n sparse matrix
     // outputs
     cholmod_sparse **R,     // the R factor
-    Int **E,                // permutation of 0:n-1, NULL if identity
+    Long **E,               // permutation of 0:n-1, NULL if identity
     cholmod_sparse **H,     // the Householder vectors (m-by-nh)
-    Int **HPinv,            // size m; row permutation for H
+    Long **HPinv,           // size m; row permutation for H
     cholmod_dense **HTau,   // size 1-by-nh, Householder coefficients
     cholmod_common *cc      // workspace and parameters
 )
@@ -1389,34 +1385,34 @@ template <typename Entry> Int SuiteSparseQR
         NULL, NULL, NULL, NULL, R, E, H, HPinv, HTau, cc)) ;
 }
 
-template Int SuiteSparseQR <double>
+template Long SuiteSparseQR <double>
 (
     // inputs, not modified
     int ordering,           // all, except 3:given treated as 0:fixed
     double tol,             // columns with 2-norm <= tol are treated as zero
-    Int econ,               // e = max(min(m,econ),rank(A))
+    Long econ,              // e = max(min(m,econ),rank(A))
     cholmod_sparse *A,      // m-by-n sparse matrix
     // outputs
     cholmod_sparse **R,     // the R factor
-    Int **E,                // permutation of 0:n-1, NULL if identity
+    Long **E,               // permutation of 0:n-1, NULL if identity
     cholmod_sparse **H,     // the Householder vectors (m-by-nh)
-    Int **HPinv,            // size m; row permutation for H
+    Long **HPinv,           // size m; row permutation for H
     cholmod_dense **HTau,   // size 1-by-nh, Householder coefficients
     cholmod_common *cc      // workspace and parameters
 ) ;
 
-template Int SuiteSparseQR <Complex>
+template Long SuiteSparseQR <Complex>
 (
     // inputs, not modified
     int ordering,           // all, except 3:given treated as 0:fixed
     double tol,             // columns with 2-norm <= tol are treated as zero
-    Int econ,               // e = max(min(m,econ),rank(A))
+    Long econ,              // e = max(min(m,econ),rank(A))
     cholmod_sparse *A,      // m-by-n sparse matrix
     // outputs
     cholmod_sparse **R,     // the R factor
-    Int **E,                // permutation of 0:n-1, NULL if identity
+    Long **E,               // permutation of 0:n-1, NULL if identity
     cholmod_sparse **H,     // the Householder vectors (m-by-nh)
-    Int **HPinv,            // size m; row permutation for H
+    Long **HPinv,           // size m; row permutation for H
     cholmod_dense **HTau,   // size 1-by-nh, Householder coefficients
     cholmod_common *cc      // workspace and parameters
 ) ;

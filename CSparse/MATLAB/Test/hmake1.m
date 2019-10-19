@@ -4,8 +4,7 @@ function [v,beta,xnorm] = hmake1 (x)
 %   [v,beta,xnorm] = hmake1 (x)
 % See also: testall
 
-%   Copyright 2006-2007, Timothy A. Davis.
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
 n = length (x) ;
 if (n == 1)

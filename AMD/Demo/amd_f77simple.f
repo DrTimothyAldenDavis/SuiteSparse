@@ -1,8 +1,7 @@
 C ----------------------------------------------------------------------
 C AMD, Copyright (c) by Timothy A. Davis, Patrick R.
-C Amestoy, and Iain S. Duff.  See ../README.txt for
-C License.  email: davis at cise.ufl.edu    CISE Department, Univ. of
-C Florida.  web: http://www.cise.ufl.edu/research/sparse/amd
+C Amestoy, and Iain S. Duff.  See ../README.txt for License.
+C email: DrTimothyAldenDavis@gmail.com
 C ----------------------------------------------------------------------
 
 C This program provides an example of how to call the Fortran version

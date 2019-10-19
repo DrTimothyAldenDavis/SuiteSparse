@@ -1,8 +1,8 @@
 #include "cs.h"
 /* clear w */
-static int cs_wclear (int mark, int lemax, int *w, int n)
+static csi cs_wclear (csi mark, csi lemax, csi *w, csi n)
 {
-    int k ;
+    csi k ;
     if (mark < 2 || (mark + lemax < 0))
     {
         for (k = 0 ; k < n ; k++) if (w [k] != 0) w [k] = 1 ;
@@ -12,17 +12,17 @@ static int cs_wclear (int mark, int lemax, int *w, int n)
 }
 
 /* keep off-diagonal entries; drop diagonal entries */
-static int cs_diag (int i, int j, double aij, void *other) { return (i != j) ; }
+static csi cs_diag (csi i, csi j, double aij, void *other) { return (i != j) ; }
 
 /* p = amd(A+A') if symmetric is true, or amd(A'A) otherwise */
-int *cs_amd (int order, const cs *A)  /* order 0:natural, 1:Chol, 2:LU, 3:QR */
+csi *cs_amd (csi order, const cs *A)  /* order 0:natural, 1:Chol, 2:LU, 3:QR */
 {
     cs *C, *A2, *AT ;
-    int *Cp, *Ci, *last, *W, *len, *nv, *next, *P, *head, *elen, *degree, *w,
+    csi *Cp, *Ci, *last, *W, *len, *nv, *next, *P, *head, *elen, *degree, *w,
         *hhead, *ATp, *ATi, d, dk, dext, lemax = 0, e, elenk, eln, i, j, k, k1,
         k2, k3, jlast, ln, dense, nzmax, mindeg = 0, nvi, nvj, nvk, mark, wnvi,
         ok, cnz, nel = 0, p, p1, p2, p3, p4, pj, pk, pk1, pk2, pn, q, n, m, t ;
-    unsigned int h ;
+    csi h ;
     /* --- Construct matrix C ----------------------------------------------- */
     if (!CS_CSC (A) || order <= 0 || order > 3) return (NULL) ; /* check */
     AT = cs_transpose (A, 0) ;              /* compute A' */
@@ -59,8 +59,8 @@ int *cs_amd (int order, const cs *A)  /* order 0:natural, 1:Chol, 2:LU, 3:QR */
     cs_fkeep (C, &cs_diag, NULL) ;          /* drop diagonal entries */
     Cp = C->p ;
     cnz = Cp [n] ;
-    P = cs_malloc (n+1, sizeof (int)) ;     /* allocate result */
-    W = cs_malloc (8*(n+1), sizeof (int)) ; /* get workspace */
+    P = cs_malloc (n+1, sizeof (csi)) ;     /* allocate result */
+    W = cs_malloc (8*(n+1), sizeof (csi)) ; /* get workspace */
     t = cnz + cnz/5 + 2*n ;                 /* add elbow room to C */
     if (!P || !W || !cs_sprealloc (C, t)) return (cs_idone (P, C, W, 0)) ;
     len  = W           ; nv     = W +   (n+1) ; next   = W + 2*(n+1) ;
@@ -267,7 +267,7 @@ int *cs_amd (int order, const cs *A)  /* order 0:natural, 1:Chol, 2:LU, 3:QR */
                 Ci [p3] = Ci [p1] ;         /* move 1st el. to end of Ei */
                 Ci [p1] = k ;               /* add k as 1st element in of Ei */
                 len [i] = pn - p1 + 1 ;     /* new len of adj. list of node i */
-                h %= n ;                    /* finalize hash of i */
+                h = ((h<0) ? (-h):h) % n ;  /* finalize hash of i */
                 next [i] = hhead [h] ;      /* place i in hash bucket */
                 hhead [h] = i ;
                 last [i] = h ;              /* save hash of i in last[i] */

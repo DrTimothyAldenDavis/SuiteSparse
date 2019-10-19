@@ -23,7 +23,6 @@ function [L,U,p,q] = cs_lu (A,tol)                                          %#ok
 %
 %   See also CS_AMD, LU, UMFPACK, AMD, COLAMD.
 
-%   Copyright 2006-2007, Timothy A. Davis.
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
 error ('cs_lu mexFunction not found') ;

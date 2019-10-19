@@ -7,13 +7,13 @@
 #define Size_max ((size_t) (-1))
 
 /* -------------------------------------------------------------------------- */
-/* double, UF_long */
+/* double, SuiteSparse_long */
 /* -------------------------------------------------------------------------- */
 
 #ifdef DLONG
 #define Real double
-#define Int UF_long
-#define Int_max UF_long_max
+#define Int SuiteSparse_long
+#define Int_max SuiteSparse_long_max
 #define CHOLMOD(name) cholmod_l_ ## name
 #define LONG
 #define DOUBLE

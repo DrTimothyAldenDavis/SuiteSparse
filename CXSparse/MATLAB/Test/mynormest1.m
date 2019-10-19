@@ -5,9 +5,7 @@ function est = mynormest1 (L, U, P, Q)
 %   est = mynormest1 (L, U, P, Q)
 % See also: testall
 
-%   Copyright 2006-2007, Timothy A. Davis.
-%   http://www.cise.ufl.edu/research/sparse
-
+% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
 n = size (L,1) ;
 est = 0 ;

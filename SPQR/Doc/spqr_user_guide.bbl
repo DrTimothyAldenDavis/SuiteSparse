@@ -1,0 +1,91 @@
+\begin{thebibliography}{10}
+
+\bibitem{AmestoyDavisDuff96}
+P.~R. Amestoy, T.~A. Davis, and I.~S. Duff.
+\newblock An approximate minimum degree ordering algorithm.
+\newblock {\em {SIAM} J. Matrix Anal. Appl.}, 17(4):886--905, 1996.
+
+\bibitem{AmestoyDavisDuff03}
+P.~R. Amestoy, T.~A. Davis, and I.~S. Duff.
+\newblock Algorithm 837: {AMD}, an approximate minimum degree ordering
+  algorithm.
+\newblock {\em {ACM} Trans. Math. Software}, 30(3):381--388, 2004.
+
+\bibitem{LAPACK}
+E.~Anderson, Z.~Bai, C.~H. Bischof, S.~Blackford, J.~W. Demmel, J.~J. Dongarra,
+  J.~{Du Croz}, A.~Greenbaum, S.~Hammarling, A.~McKenney, and D.~C. Sorensen.
+\newblock {\em {LAPACK} Users' Guide}.
+\newblock SIAM, Philadelphia, 3rd edition, 1999.
+
+\bibitem{BoisvertPozoRemingtonBarrettDongarra97}
+R.~F. Boisvert, R.~Pozo, K.~Remington, R.~Barrett, and J.~J. Dongarra.
+\newblock The {M}atrix {M}arket: A web resource for test matrix collections.
+\newblock In R.~F. Boisvert, editor, {\em Quality of Numerical Software,
+  Assessment and Enhancement}, pages 125--137. Chapman \& Hall, London, 1997.
+\newblock ({\tt http://math.nist.gov/MatrixMarket}).
+
+\bibitem{ChenDavisHagerRajamanickam09}
+Y.~Chen, T.~A. Davis, W.~W. Hager, and S.~Rajamanickam.
+\newblock Algorithm 887: {CHOLMOD}, supernodal sparse {Cholesky} factorization
+  and update/downdate.
+\newblock {\em {ACM} Trans. Math. Software}, 35(3), 2009.
+
+\bibitem{Davis08b}
+T.~A. Davis.
+\newblock Algorithm 8xx: {SuiteSparseQR}, a multifrontal multithreaded sparse
+  qr factorization package.
+\newblock {\em {ACM} Trans. Math. Software}, 2008.
+\newblock under submission.
+
+\bibitem{Davis08a}
+T.~A. Davis.
+\newblock Multifrontal multithreaded rank-revealing sparse {QR} factorization.
+\newblock {\em {ACM} Trans. Math. Software}, 2008.
+\newblock under submission.
+
+\bibitem{DavisGilbertLarimoreNg00_algo}
+T.~A. Davis, J.~R. Gilbert, S.~I. Larimore, and E.~G. Ng.
+\newblock Algorithm 836: {COLAMD}, a column approximate minimum degree ordering
+  algorithm.
+\newblock {\em {ACM} Trans. Math. Software}, 30(3):377--380, 2004.
+
+\bibitem{DavisGilbertLarimoreNg00}
+T.~A. Davis, J.~R. Gilbert, S.~I. Larimore, and E.~G. Ng.
+\newblock A column approximate minimum degree ordering algorithm.
+\newblock {\em {ACM} Trans. Math. Software}, 30(3):353--376, 2004.
+
+\bibitem{DavisHager09}
+T.~A. Davis and W.~W. Hager.
+\newblock Dynamic supernodes in sparse {Cholesky} update/downdate and
+  triangular solves.
+\newblock {\em {ACM} Trans. Math. Software}, 35(4), 2009.
+
+\bibitem{dddh:90}
+J.~J. Dongarra, J.~J. {Du Croz}, I.~S. Duff, and S.~Hammarling.
+\newblock A set of {L}evel 3 {B}asic {L}inear {A}lgebra {S}ubprograms.
+\newblock {\em {ACM} Trans. Math. Software}, 16:1--17, 1990.
+
+\bibitem{GilbertMolerSchreiber}
+J.~R. Gilbert, C.~Moler, and R.~Schreiber.
+\newblock Sparse matrices in {MATLAB}: design and implementation.
+\newblock {\em {SIAM} J. Matrix Anal. Appl.}, 13(1):333--356, 1992.
+
+\bibitem{GotoVanDeGeijn08}
+K.~Goto and R.~van~de Geijn.
+\newblock High performance implementation of the level-3 {BLAS}.
+\newblock {\em {ACM} Trans. Math. Software}, 35(1):4, July 2008.
+\newblock Article 4, 14 pages.
+
+\bibitem{KarypisKumar98e}
+G.~Karypis and V.~Kumar.
+\newblock A fast and high quality multilevel scheme for partitioning irregular
+  graphs.
+\newblock {\em {SIAM} J. Sci. Comput.}, 20:359--392, 1998.
+
+\bibitem{Reinders07}
+J.~Reinders.
+\newblock {\em Intel Threading Building Blocks: Outfitting C++ for Multi-core
+  Processor Parallelism}.
+\newblock O'Reilly Media, Sebastopol, CA, 2007.
+
+\end{thebibliography}

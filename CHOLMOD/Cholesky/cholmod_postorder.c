@@ -7,7 +7,6 @@
  * The CHOLMOD/Cholesky Module is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
- * http://www.cise.ufl.edu/research/sparse
  * -------------------------------------------------------------------------- */
 
 /* Compute the postorder of a tree. */
@@ -139,7 +138,7 @@ static Int dfs		/* return the new value of k */
  * workspace: Head (n), Iwork (2*n)
  */
 
-UF_long CHOLMOD(postorder)	/* return # of nodes postordered */
+SuiteSparse_long CHOLMOD(postorder)	/* return # of nodes postordered */
 (
     /* ---- input ---- */
     Int *Parent,	/* size n. Parent [j] = p if p is the parent of j */

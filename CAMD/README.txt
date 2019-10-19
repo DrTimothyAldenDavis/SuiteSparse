@@ -1,30 +1,29 @@
-CAMD, Copyright (c) 2007-2011 by Timothy A.  Davis, Yanqing Chen,
-Patrick R. Amestoy, and Iain S. Duff.  All Rights Reserved.
-CAMD is available under alternate licences; contact T. Davis for details.
+CAMD, Copyright (c) 2007-2012, University of Florida.
+Written by Timothy A. Davis (http://www.suitesparse.com), Yanqing Chen, Patrick
+R. Amestoy, and Iain S. Duff.  All Rights Reserved.  CAMD is available under
+alternate licences; contact T. Davis for details.
 
 CAMD:  a set of routines for permuting sparse matrices prior to
     factorization.  Includes a version in C, a version in Fortran, and a MATLAB
     mexFunction.
 
-Requires UFconfig, in the ../UFconfig directory relative to this directory.
+Requires SuiteSparse_config, in the ../SuiteSparse_config directory relative to
+this directory.
 
 Quick start (Unix, or Windows with Cygwin):
 
     To compile, test, and install CAMD, you may wish to first configure the
-    installation by editting the ../UFconfig/UFconfig.mk file.  Next, cd to
-    this directory (CAMD) and type "make" (or "make lib" if you do not have
-    MATLAB).  When done, type "make clean" to remove unused *.o files
-    (keeps the compiled libraries and demo programs).  See the User Guide
-    (Doc/CAMD_UserGuide.pdf), or ../UFconfig/UFconfig.mk for more details.
+    installation by editting the ../SuiteSparse_config/SuiteSparse_config.mk
+    file.  Next, cd to this directory (CAMD) and type "make" (or "make lib" if
+    you do not have MATLAB).  When done, type "make clean" to remove unused *.o
+    files (keeps the compiled libraries and demo programs).  See the User Guide
+    (Doc/CAMD_UserGuide.pdf), or ../SuiteSparse_config/SuiteSparse_config.mk
+    for more details.
 
 Quick start (for MATLAB users);
 
     To compile, test, and install the CAMD mexFunction, cd to the
     CAMD/MATLAB directory and type camd_make at the MATLAB prompt.
-
-If you have MATLAB 7.2 or earlier and use "make mex", you must first edit
-UFconfig/UFconfig.h to remove the "-largeArrayDims" option from the MEX command
-(or just use camd_make.m inside MATLAB).
 
 -------------------------------------------------------------------------------
 
@@ -60,7 +59,7 @@ CAMD License:
 
 Availability:
 
-    http://www.cise.ufl.edu/research/sparse/camd
+    http://www.suitesparse.com
 
 -------------------------------------------------------------------------------
 
@@ -77,7 +76,7 @@ Description:
 
 Authors:
 
-    Timothy A. Davis (davis at cise.ufl.edu), University of Florida.
+    Timothy A. Davis (DrTimothyAldenDavis@gmail.com)
     Patrick R. Amestory, ENSEEIHT, Toulouse, France.
     Iain S. Duff, Rutherford Appleton Laboratory, UK.
 

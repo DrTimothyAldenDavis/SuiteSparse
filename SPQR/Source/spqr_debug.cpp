@@ -4,29 +4,10 @@
 
 #include "spqr.hpp"
 
-// This file contains routines used only when debugging and/or timing is
-// enabled.
-
-#ifdef TIMING
-
-extern "C" {
-
 // =============================================================================
-// === high-resolution timing ==================================================
+// This file is for debugging only.
 // =============================================================================
 
-// High-resolution timing for POSIX systems.  On Linux, link with -lrt
-
-double spqr_time ( ) // returns time in seconds
-{
-    // get the current real time and return as a double
-    struct timespec now ;
-    clock_gettime (CLOCK_REALTIME, &now) ;
-    return ((double) (now.tv_sec ) + (double) (now.tv_nsec) * 1e-9) ;
-}
-
-}
-#endif
 
 #ifndef NDEBUG
 
@@ -83,13 +64,13 @@ void spqrDebug_printf
 template <typename Entry> void spqrDebug_dumpdense
 (
     Entry *A,
-    Int m,
-    Int n,
-    Int lda,
+    Long m,
+    Long n,
+    Long lda,
     cholmod_common *cc
 )
 {
-    Int i, j ;
+    Long i, j ;
     // if (cc == NULL) return ;
     // PR (("Dense: m %ld n %ld lda %ld p %p\n", m, n, lda, A)) ;
     printf ("Dense: m %ld n %ld lda %ld p %p\n", m, n, lda, A) ;
@@ -121,18 +102,18 @@ template <typename Entry> void spqrDebug_dumpdense
 template void spqrDebug_dumpdense <double>
 (
     double *A,
-    Int m,
-    Int n,
-    Int lda,
+    Long m,
+    Long n,
+    Long lda,
     cholmod_common *cc
 ) ;
 
 template void spqrDebug_dumpdense <Complex>
 (
     Complex *A,
-    Int m,
-    Int n,
-    Int lda,
+    Long m,
+    Long n,
+    Long lda,
     cholmod_common *cc
 ) ;
 
@@ -142,15 +123,15 @@ template void spqrDebug_dumpdense <Complex>
 
 template <typename Entry> void spqrDebug_dumpsparse
 (
-    Int *Ap,
-    Int *Ai,
+    Long *Ap,
+    Long *Ai,
     Entry *Ax,
-    Int m,
-    Int n,
+    Long m,
+    Long n,
     cholmod_common *cc
 )
 {
-    Int p, i, j ;
+    Long p, i, j ;
     if (cc == NULL) return ;
     PR (("\nSparse: m %ld n %ld nz %ld Ap %p Ai %p Ax %p\n",
         m, n, Ap [n], Ap, Ai,Ax)) ;
@@ -171,21 +152,21 @@ template <typename Entry> void spqrDebug_dumpsparse
 
 template void spqrDebug_dumpsparse <double>
 (
-    Int *Ap,
-    Int *Ai,
+    Long *Ap,
+    Long *Ai,
     double *Ax,
-    Int m,
-    Int n,
+    Long m,
+    Long n,
     cholmod_common *cc
 ) ;
 
 template void spqrDebug_dumpsparse <Complex>
 (
-    Int *Ap,
-    Int *Ai,
+    Long *Ap,
+    Long *Ai,
     Complex *Ax,
-    Int m,
-    Int n,
+    Long m,
+    Long n,
     cholmod_common *cc
 ) ;
 
@@ -198,13 +179,13 @@ template void spqrDebug_dumpsparse <Complex>
 #ifdef DEBUG_EXPENSIVE
 
 // returns # of times x is in the List [0..len-1]
-Int spqrDebug_listcount
+Long spqrDebug_listcount
 (
-    Int x, Int *List, Int len, Int what,
+    Long x, Long *List, Long len, Long what,
     cholmod_common *cc
 )
 {
-    Int k, nfound = 0 ;
+    Long k, nfound = 0 ;
     if (cc == NULL) return (EMPTY) ;
     if (what == 0)
     {
@@ -232,18 +213,18 @@ Int spqrDebug_listcount
 
 // Count the number of entries in the R+H block for a single front.
 
-Int spqrDebug_rhsize             // returns # of entries in R+H
+Long spqrDebug_rhsize       // returns # of entries in R+H
 (
     // input, not modified
-    Int m,                  // # of rows in F
-    Int n,                  // # of columns in F
-    Int npiv,               // number of pivotal columns in F
-    Int *Stair,             // size n; column j is dead if Stair [j] == 0.
+    Long m,                 // # of rows in F
+    Long n,                 // # of columns in F
+    Long npiv,              // number of pivotal columns in F
+    Long *Stair,            // size n; column j is dead if Stair [j] == 0.
                             // Only the first npiv columns can be dead.
     cholmod_common *cc
 )
 {
-    Int k, h, t, rm, rhsize = 0 ;
+    Long k, h, t, rm, rhsize = 0 ;
 
     ASSERT (m >= 0 && n >= 0 && npiv <= n && npiv >= 0) ;
 
@@ -300,7 +281,7 @@ Int spqrDebug_rhsize             // returns # of entries in R+H
 // === spqrDebug_dump_Parent ===================================================
 // =============================================================================
 
-void spqrDebug_dump_Parent (Int n, Int *Parent, const char *filename)
+void spqrDebug_dump_Parent (Long n, Long *Parent, const char *filename)
 {
     FILE *pfile = fopen (filename, "w") ;
     if (Parent == NULL)
@@ -309,7 +290,7 @@ void spqrDebug_dump_Parent (Int n, Int *Parent, const char *filename)
     }
     else
     {
-        for (Int f = 0 ; f < n ; f++)
+        for (Long f = 0 ; f < n ; f++)
         {
             fprintf (pfile, "%ld\n", 1+Parent [f]) ;
         }

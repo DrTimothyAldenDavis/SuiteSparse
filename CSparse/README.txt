@@ -1,4 +1,6 @@
-CSparse: Copyright (c) 2006-2011, Timothy A. Davis.
+CSparse: a Concise Sparse Matrix package.
+VERSION 3.1.0, Copyright (c) 2006-2012, Timothy A. Davis, Jun 1, 2012.
+http://www.suitesparse.com
 
 Refer to "Direct Methods for Sparse Linear Systems," Timothy A. Davis,
 SIAM, Philadelphia, 2006.  No detailed user guide is included in this
@@ -28,7 +30,7 @@ competitive with UMFPACK or CHOLMOD, but the codes are much more concise and
 easy to understand (see the above goals).  Other methods are competitive.
 
 Some of the MATLAB tests require the AMD package.
-See http://www.cise.ufl.edu/research/sparse for CSparse and the AMD ordering
+See http://www.suitesparse.com for CSparse and the AMD ordering
 package.  See the Doc/License.txt file for the license (GNU LGPL).
 
 To compile the C-library (./Source) and C demo programs (./Demo) just type

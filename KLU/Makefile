@@ -2,13 +2,15 @@
 # KLU Makefile
 #------------------------------------------------------------------------------
 
-VERSION = 1.1.4
+VERSION = 1.2.0
 
-default: demos
+default: all
 
-include ../UFconfig/UFconfig.mk
+include ../SuiteSparse_config/SuiteSparse_config.mk
 
-demos:
+demos: all
+
+all:
 	( cd Lib ; $(MAKE) )
 	( cd Demo ; $(MAKE) )
 
@@ -19,21 +21,23 @@ clean:
 	( cd Demo ; $(MAKE) clean )
 	( cd Lib ; $(MAKE) clean )
 	( cd Tcov ; $(MAKE) clean )
+	( cd MATLAB ; $(RM) $(CLEAN) rename.h )
 
 distclean:
 	( cd Demo ; $(MAKE) distclean )
 	( cd Lib ; $(MAKE) distclean )
 	( cd Tcov ; $(MAKE) distclean )
 	( cd User ; $(MAKE) distclean )
-	( cd MATLAB ; $(MAKE) distclean )
-
-mex:
-	( cd MATLAB ; $(MAKE) )
+	( cd MATLAB ; $(RM) $(CLEAN) rename.h *.mex* )
 
 purge: distclean
 
 cov: library
 	( cd Tcov ; $(MAKE) )
+
+# create PDF documents for the original distribution
+docs:
+	( cd Doc    ; $(MAKE) )
 
 # install KLU
 install:

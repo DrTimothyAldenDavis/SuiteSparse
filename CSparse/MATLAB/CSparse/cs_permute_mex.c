@@ -9,7 +9,7 @@ void mexFunction
 )
 {
     cs Amatrix, *A, *C, *D ;
-    int ignore, *P, *Q, *Pinv ;
+    csi ignore, *P, *Q, *Pinv ;
     if (nargout > 1 || nargin != 3)
     {
         mexErrMsgTxt ("Usage: C = cs_permute(A,p,q)") ;

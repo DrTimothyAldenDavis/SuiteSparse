@@ -15,4 +15,4 @@
 % Example:
 %   C = ssmult(A,B) ;    % computes C = A*B
 %
-% Copyright 2011, Timothy A. Davis, University of Florida
+% Copyright 2011, Timothy A. Davis, http://www.suitesparse.com

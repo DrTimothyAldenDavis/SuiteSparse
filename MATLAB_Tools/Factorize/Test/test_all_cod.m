@@ -10,7 +10,7 @@ function err = test_all_cod
 % See also factorize, inverse, test_factorize,
 % test_performance, test_accuracy, test_disp, test_errors
 
-% Copyright 2011, Timothy A. Davis, University of Florida.
+% Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
 
 err = 0 ;
 for m = 0:10

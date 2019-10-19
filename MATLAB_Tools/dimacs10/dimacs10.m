@@ -2,7 +2,7 @@ function [S name kind Problem] = dimacs10 (matrix)
 %DIMACS10 returns a graph from the DIMACS10 test set, via the UF Collection.
 % The original graphs are at http://www.cc.gatech.edu/dimacs10 ; this function
 % downloads them from the UF Sparse Matrix Collection, converting them as
-% needed.  See http://www.cise.ufl.edu/research/sparse/matrices .
+% needed.
 %
 %   [S name kind Problem] = dimacs10 (matrix) ;
 %   index = dimacs10 ;
@@ -51,7 +51,7 @@ function [S name kind Problem] = dimacs10 (matrix)
 %
 % See also gallery, UFget.
 
-% Copyright 2011, Timothy A Davis
+% Copyright 2011, Timothy A. Davis, http://www.suitesparse.com
 
 % DIMACS graph                         UF matrix
 graphs = {

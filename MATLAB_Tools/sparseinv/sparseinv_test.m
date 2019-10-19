@@ -7,7 +7,7 @@ function sparseinv_test (extensive)
 %
 % See also sparseinv, sparseinv_install, UFget.
 
-% Copyright 2011, Timothy A. Davis, University of Florida
+% Copyright 2011, Timothy A. Davis, http://www.suitesparse.com
 
 if (nargin < 1)
     extensive = 0 ;

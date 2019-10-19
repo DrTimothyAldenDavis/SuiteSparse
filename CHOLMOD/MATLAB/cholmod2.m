@@ -36,7 +36,6 @@ function [x,stats] = cholmod2 (A, b, ordering)				    %#ok
 %
 %   See also CHOL, MLDIVIDE.
 
-%   Copyright 2006-2007, Timothy A. Davis
-%   http://www.cise.ufl.edu/research/sparse
+%   Copyright 2006-2007, Timothy A. Davis, http://www.suitesparse.com
 
 error ('cholmod2 mexFunction not found\n') ;

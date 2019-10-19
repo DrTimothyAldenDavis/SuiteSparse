@@ -7,7 +7,6 @@
  * The CHOLMOD/Demo Module is licensed under Version 2.0 of the GNU
  * General Public License.  See gpl.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
- * http://www.cise.ufl.edu/research/sparse
  * -------------------------------------------------------------------------- */
 
 /* Read in a matrix from a file, and use CHOLMOD to solve Ax=b if A is
@@ -31,7 +30,7 @@
  *
  * See cholmod_simple.c for a simpler demo program.
  *
- * UF_long is normally defined as long, except for WIN64.
+ * SuiteSparse_long is normally defined as long, except for WIN64.
  */
 
 #include "cholmod_demo.h"
@@ -63,7 +62,7 @@ int main (int argc, char **argv)
     cholmod_common Common, *cm ;
     cholmod_factor *L ;
     double *Bx, *Rx, *Xx ;
-    UF_long i, n, isize, xsize, ordering, xtype, s, ss, lnz ;
+    SuiteSparse_long i, n, isize, xsize, ordering, xtype, s, ss, lnz ;
 
     /* ---------------------------------------------------------------------- */
     /* get the file containing the input matrix */
@@ -389,6 +388,12 @@ int main (int argc, char **argv)
 		" after iterative refinement\n", resid2) ;
     }
     printf ("rcond    %8.1e\n\n", cholmod_l_rcond (L, cm)) ;
+
+    if (L->is_super)
+    {
+        cholmod_l_gpu_stats (cm) ;
+    }
+
     cholmod_l_free_factor (&L, cm) ;
     cholmod_l_free_dense (&X, cm) ;
 
@@ -399,5 +404,6 @@ int main (int argc, char **argv)
     cholmod_l_free_sparse (&A, cm) ;
     cholmod_l_free_dense (&B, cm) ;
     cholmod_l_finish (cm) ;
+    
     return (0) ;
 }

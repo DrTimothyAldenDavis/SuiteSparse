@@ -10,8 +10,7 @@ function [s,as,bs] = cs_sep (A,a,b)
 %
 %   See also CS_DMPERM, CS_NSEP, CS_ESEP, CS_ND.
 
-%   Copyright 2006-2007, Timothy A. Davis.
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
 [p q r s cc rr] = cs_dmperm (A (a,b)) ;
 s = [(a (p (1:rr(2)-1))) (b (q (cc(3):(cc(5)-1))))] ;

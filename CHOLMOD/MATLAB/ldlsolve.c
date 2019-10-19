@@ -7,7 +7,7 @@
  * The CHOLMOD/MATLAB Module is licensed under Version 2.0 of the GNU
  * General Public License.  See gpl.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
- * http://www.cise.ufl.edu/research/sparse
+ * http://www.suitesparse.com
  * MATLAB(tm) is a Trademark of The MathWorks, Inc.
  * -------------------------------------------------------------------------- */
 
@@ -31,12 +31,12 @@ void mexFunction
 )
 {
     double dummy = 0, rcond ;
-    Int *Lp, *Lnz, *Lprev, *Lnext ;
+    Long *Lp, *Lnz, *Lprev, *Lnext ;
     cholmod_sparse *Bs, Bspmatrix, *Xs ;
     cholmod_dense *B, Bmatrix, *X ;
     cholmod_factor *L ;
     cholmod_common Common, *cm ;
-    Int j, k, n, B_is_sparse, head, tail ;
+    Long j, k, n, B_is_sparse, head, tail ;
 
     /* ---------------------------------------------------------------------- */
     /* start CHOLMOD and set parameters */ 
@@ -103,15 +103,15 @@ void mexFunction
     L->z = mxGetPi (pargin [0]) ;
 
     /* allocate and initialize the rest of L */
-    L->nz = cholmod_l_malloc (n, sizeof (Int), cm) ;
+    L->nz = cholmod_l_malloc (n, sizeof (Long), cm) ;
     Lp = L->p ;
     Lnz = L->nz ;
     for (j = 0 ; j < n ; j++)
     {
 	Lnz [j] = Lp [j+1] - Lp [j] ;
     }
-    L->prev = cholmod_l_malloc (n+2, sizeof (Int), cm) ;
-    L->next = cholmod_l_malloc (n+2, sizeof (Int), cm) ;
+    L->prev = cholmod_l_malloc (n+2, sizeof (Long), cm) ;
+    L->next = cholmod_l_malloc (n+2, sizeof (Long), cm) ;
     Lprev = L->prev ;
     Lnext = L->next ;
 

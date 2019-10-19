@@ -1,7 +1,7 @@
 function d = get_diag (A)
 %GET_DIAG extracts the diagonal of a matrix or vector.
 
-% Copyright 2011, Timothy A. Davis, University of Florida.
+% Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
 
 if (isempty (A))
     d = [ ] ;

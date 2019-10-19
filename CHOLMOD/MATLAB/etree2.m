@@ -36,7 +36,6 @@ function [parent, post] = etree2 (A, mode)				    %#ok
 %
 %   See also TREELAYOUT, TREEPLOT, ETREEPLOT, ETREE
 
-%   Copyright 2006-2007, Timothy A. Davis
-%   http://www.cise.ufl.edu/research/sparse
+%   Copyright 2006-2007, Timothy A. Davis, http://www.suitesparse.com
 
 error ('etree2 mexFunction not found') ;

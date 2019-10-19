@@ -44,8 +44,7 @@ function [objfiles, timestamp] = cs_make (f, docomplex)
 %
 %   See also MEX.
 
-%   Copyright 2006-2007, Timothy A. Davis.
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
 if (nargin < 1)
     f = 0 ;

@@ -18,7 +18,6 @@ function [A, Z] = mread (filename,prefer_binary)			    %#ok
 %
 %   See also load
 
-%   Copyright 2006-2007, Timothy A. Davis
-%   http://www.cise.ufl.edu/research/sparse
+%   Copyright 2006-2007, Timothy A. Davis, http://www.suitesparse.com
 
 error ('mread mexFunction not found') ;

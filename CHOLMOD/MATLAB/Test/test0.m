@@ -4,16 +4,15 @@ function test0 (nmat)
 %   test0(nmat)
 % See also cholmod_test
 
-% Copyright 2006-2007, Timothy A. Davis, University of Florida
+% Copyright 2007, Timothy A. Davis, http://www.suitesparse.com
 
 fprintf ('=================================================================\n');
 fprintf ('test0: test most CHOLMOD functions\n') ;
 
 % This test requires UFget, the MATLAB interface to the UF sparse matrix
-% collection.  You can obtain UFget from
-% http://www.cise.ufl.edu/research/sparse/matrices.
+% collection.  You can obtain UFget from http://www.suitesparse.com.
 
-try % load UF index
+try
     index = UFget ;
 catch
     error ('Test aborted.  UF sparse matrix collection not available.\n') ;

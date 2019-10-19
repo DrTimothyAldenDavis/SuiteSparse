@@ -41,7 +41,7 @@ c-----------------------------------------------------------------------
 
 #include "RBio.h"
 #define LEN 1024
-#define Int mwSignedIndex
+#define Long SuiteSparse_long
 
 void mexFunction
 (
@@ -51,14 +51,14 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    Int *Ap, *Ai ;
+    Long *Ap, *Ai ;
     double *Ax ;
-    Int p, j, nrow, ncol, mkind, skind, xsize, status, nelnz, fem,
+    Long p, j, nrow, ncol, mkind, skind, xsize, status, nelnz, fem,
         iclass, nnz ;
     mwSize dims [2] = { 0, 1 } ;
     char filename [LEN+1], title [73], key [9], mtype [4] ;
 
-    UFconfig config ;
+    SuiteSparse_config config ;
     config.malloc_memory = mxMalloc ;
     config.free_memory = mxFree ;
 
@@ -105,7 +105,7 @@ void mexFunction
     /* return results to MATLAB */
     /* ---------------------------------------------------------------------- */
 
-    iclass = (sizeof (Int) == 4) ? mxINT32_CLASS : mxINT64_CLASS ;
+    iclass = (sizeof (Long) == 4) ? mxINT32_CLASS : mxINT64_CLASS ;
 
     /* return mtype */
     pargout [0] = mxCreateString (mtype) ;

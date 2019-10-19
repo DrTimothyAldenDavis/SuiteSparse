@@ -11,8 +11,7 @@ function [a,b] = cs_esep (A)
 %
 %   See also CS_NSEP, CS_SEP, CS_ND, SYMRCM.
 
-%   Copyright 2006-2007, Timothy A. Davis.
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
 if (~isreal (A))
     A = spones (A) ;

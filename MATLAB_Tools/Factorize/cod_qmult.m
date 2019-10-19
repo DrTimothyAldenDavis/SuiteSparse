@@ -18,7 +18,7 @@ function Y = cod_qmult (Q, X, method)
 %
 % See also cod_sparse, spqr, spqr_qmult
 
-% Copyright 2011, Timothy A. Davis, University of Florida.
+% Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
 
 if (nargin < 3)
     method = 0 ;

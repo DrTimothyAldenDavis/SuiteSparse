@@ -3,10 +3,8 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
-/* UMFPACK_get_determinant contributed by David Bateman, Motorola, Paris. */
+/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
+/* All Rights Reserved.  See ../Doc/License for License.                      */
 /* -------------------------------------------------------------------------- */
 
 int umfpack_di_get_determinant
@@ -17,7 +15,7 @@ int umfpack_di_get_determinant
     double User_Info [UMFPACK_INFO]
 ) ;
 
-UF_long umfpack_dl_get_determinant
+SuiteSparse_long umfpack_dl_get_determinant
 (
     double *Mx,
     double *Ex,
@@ -34,7 +32,7 @@ int umfpack_zi_get_determinant
     double User_Info [UMFPACK_INFO]
 ) ;
 
-UF_long umfpack_zl_get_determinant
+SuiteSparse_long umfpack_zl_get_determinant
 (
     double *Mx,
     double *Mz,
@@ -52,11 +50,11 @@ double int Syntax:
     double Mx, Ex, Info [UMFPACK_INFO] ;
     status = umfpack_di_get_determinant (&Mx, &Ex, Numeric, Info) ;
 
-double UF_long Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Numeric ;
-    UF_long status ;
+    SuiteSparse_long status ;
     double Mx, Ex, Info [UMFPACK_INFO] ;
     status = umfpack_dl_get_determinant (&Mx, &Ex, Numeric, Info) ;
 
@@ -72,7 +70,7 @@ complex int Syntax:
 
     #include "umfpack.h"
     void *Numeric ;
-    UF_long status ;
+    SuiteSparse_long status ;
     double *Mx, *Mz, *Ex, Info [UMFPACK_INFO] ;
     status = umfpack_zl_get_determinant (&Mx, &Mz, &Ex, Numeric, Info) ;
 

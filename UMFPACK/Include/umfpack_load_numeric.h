@@ -3,9 +3,8 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
+/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
+/* All Rights Reserved.  See ../Doc/License for License.                      */
 /* -------------------------------------------------------------------------- */
 
 int umfpack_di_load_numeric
@@ -14,7 +13,7 @@ int umfpack_di_load_numeric
     char *filename
 ) ;
 
-UF_long umfpack_dl_load_numeric
+SuiteSparse_long umfpack_dl_load_numeric
 (
     void **Numeric,
     char *filename
@@ -26,7 +25,7 @@ int umfpack_zi_load_numeric
     char *filename
 ) ;
 
-UF_long umfpack_zl_load_numeric
+SuiteSparse_long umfpack_zl_load_numeric
 (
     void **Numeric,
     char *filename
@@ -41,10 +40,10 @@ double int Syntax:
     void *Numeric ;
     status = umfpack_di_load_numeric (&Numeric, filename) ;
 
-double UF_long Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    UF_long status ;
+    SuiteSparse_long status ;
     char *filename ;
     void *Numeric ;
     status = umfpack_dl_load_numeric (&Numeric, filename) ;
@@ -57,10 +56,10 @@ complex int Syntax:
     void *Numeric ;
     status = umfpack_zi_load_numeric (&Numeric, filename) ;
 
-complex UF_long Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    UF_long status ;
+    SuiteSparse_long status ;
     char *filename ;
     void *Numeric ;
     status = umfpack_zl_load_numeric (&Numeric, filename) ;

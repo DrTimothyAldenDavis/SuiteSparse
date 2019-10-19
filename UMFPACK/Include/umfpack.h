@@ -3,9 +3,8 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
+/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
+/* All Rights Reserved.  See ../Doc/License for License.                      */
 /* -------------------------------------------------------------------------- */
 
 /*
@@ -27,8 +26,7 @@
 extern "C" {
 #endif
 
-/* define UF_long */
-#include "UFconfig.h"
+#include "SuiteSparse_config.h"
 
 /* -------------------------------------------------------------------------- */
 /* size of Info and Control arrays */
@@ -97,10 +95,10 @@ extern "C" {
 /* Version, copyright, and license */
 /* -------------------------------------------------------------------------- */
 
-#define UMFPACK_VERSION "UMFPACK V5.5.2 (Dec 7, 2011)"
+#define UMFPACK_VERSION "UMFPACK V5.6.0 (Jun 1, 2012)"
 
 #define UMFPACK_COPYRIGHT \
-"UMFPACK:  Copyright (c) 2005-2011 by Timothy A. Davis.  All Rights Reserved.\n"
+"UMFPACK:  Copyright (c) 2005-2012 by Timothy A. Davis.  All Rights Reserved.\n"
 
 #define UMFPACK_LICENSE_PART1 \
 "\nUMFPACK License:\n" \
@@ -140,7 +138,7 @@ extern "C" {
 
 #define UMFPACK_LICENSE_PART3 \
 "\n" \
-"Availability: http://www.cise.ufl.edu/research/sparse/umfpack\n" \
+"Availability: http://www.suitesparse.com" \
 "\n"
 
 /* UMFPACK Version 4.5 and later will include the following definitions.
@@ -163,11 +161,11 @@ extern "C" {
  * above.
  */
 
-#define UMFPACK_DATE "Dec 7, 2011"
+#define UMFPACK_DATE "Jun 1, 2012"
 #define UMFPACK_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define UMFPACK_MAIN_VERSION 5
-#define UMFPACK_SUB_VERSION 5
-#define UMFPACK_SUBSUB_VERSION 2
+#define UMFPACK_SUB_VERSION 6
+#define UMFPACK_SUBSUB_VERSION 0
 #define UMFPACK_VER UMFPACK_VER_CODE(UMFPACK_MAIN_VERSION,UMFPACK_SUB_VERSION)
 
 /* -------------------------------------------------------------------------- */
@@ -188,7 +186,7 @@ extern "C" {
 
 /* computed in UMFPACK_*symbolic: */
 #define UMFPACK_SIZE_OF_INT 4		/* sizeof (int) */
-#define UMFPACK_SIZE_OF_LONG 5		/* sizeof (UF_long) */
+#define UMFPACK_SIZE_OF_LONG 5		/* sizeof (SuiteSparse_long) */
 #define UMFPACK_SIZE_OF_POINTER 6	/* sizeof (void *) */
 #define UMFPACK_SIZE_OF_ENTRY 7		/* sizeof (Entry), real or complex */
 #define UMFPACK_NDENSE_ROW 8		/* number of dense rows */

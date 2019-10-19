@@ -22,7 +22,7 @@ CS_INT *cs_amd (CS_INT order, const cs *A)  /* order 0:natural, 1:Chol, 2:LU, 3:
         *hhead, *ATp, *ATi, d, dk, dext, lemax = 0, e, elenk, eln, i, j, k, k1,
         k2, k3, jlast, ln, dense, nzmax, mindeg = 0, nvi, nvj, nvk, mark, wnvi,
         ok, cnz, nel = 0, p, p1, p2, p3, p4, pj, pk, pk1, pk2, pn, q, n, m, t ;
-    unsigned CS_INT h ;
+    CS_INT h ;
     /* --- Construct matrix C ----------------------------------------------- */
     if (!CS_CSC (A) || order <= 0 || order > 3) return (NULL) ; /* check */
     AT = cs_transpose (A, 0) ;              /* compute A' */
@@ -267,7 +267,7 @@ CS_INT *cs_amd (CS_INT order, const cs *A)  /* order 0:natural, 1:Chol, 2:LU, 3:
                 Ci [p3] = Ci [p1] ;         /* move 1st el. to end of Ei */
                 Ci [p1] = k ;               /* add k as 1st element in of Ei */
                 len [i] = pn - p1 + 1 ;     /* new len of adj. list of node i */
-                h %= n ;                    /* finalize hash of i */
+                h = ((h<0) ? (-h):h) % n ;  /* finalize hash of i */
                 next [i] = hhead [h] ;      /* place i in hash bucket */
                 hhead [h] = i ;
                 last [i] = h ;              /* save hash of i in last[i] */

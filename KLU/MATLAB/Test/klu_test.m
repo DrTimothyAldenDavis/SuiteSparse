@@ -5,8 +5,7 @@ function klu_test (nmat)
 %
 % See also klu
 
-% Copyright 2004-2007 Timothy A. Davis, Univ. of Florida
-% http://www.cise.ufl.edu/research/sparse
+% Copyright 2004-2012, University of Florida
 
 if (nargin < 1)
     nmat = 200 ;

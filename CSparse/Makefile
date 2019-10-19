@@ -2,7 +2,7 @@
 # CSparse Makefile
 #------------------------------------------------------------------------------
 
-VERSION = 2.2.6
+VERSION = 3.1.0
 
 C:
 	( cd Lib ; $(MAKE) )
@@ -16,20 +16,19 @@ library:
 cov:
 	( cd Tcov ; $(MAKE) )
 
-mex:
-	( cd MATLAB ; $(MAKE) )
-
 clean:
 	( cd Lib ; $(MAKE) clean )
 	( cd Demo ; $(MAKE) clean )
 	( cd Tcov ; $(MAKE) clean )
-	( cd MATLAB ; $(MAKE) clean )
+	( cd MATLAB/CSparse ; $(RM) *.o )
+	( cd MATLAB/Test    ; $(RM) *.o )
 
 purge:
 	( cd Lib ; $(MAKE) purge )
 	( cd Demo ; $(MAKE) purge )
 	( cd Tcov ; $(MAKE) purge )
-	( cd MATLAB ; $(MAKE) purge )
+	( cd MATLAB/CSparse ; $(RM) *.o *.mex* )
+	( cd MATLAB/Test    ; $(RM) *.o *.mex* )
 
 distclean: purge
 

@@ -85,7 +85,7 @@ classdef factorization
 %
 % See also mldivide, lu, chol, ldl, qr, svd.
 
-% Copyright 2011, Timothy A. Davis, University of Florida.
+% Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
 
     properties (SetAccess = protected)
         % The abstract class holds a QR, LU, Cholesky factorization:

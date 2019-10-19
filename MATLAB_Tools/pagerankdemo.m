@@ -35,7 +35,7 @@ function pagerankdemo (steps)
 % I suggest single-stepping a dozen times or so to see the link traversal in
 % process, and then type "1000".  Hit control-C to quit.
 %
-% Copyright 2007, Tim Davis, University of Florida
+% Copyright 2007, Tim Davis
 
 % Initial graph
 Graph = graphinit ;

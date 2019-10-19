@@ -35,7 +35,7 @@ function [R, Q] = rq (A, m, n)
 %
 % See also qr.
 
-% Copyright 2011, Timothy A. Davis, University of Florida.
+% Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
 
 if (issparse (A))
     % RQ would actually work, but it would be very inefficient since no fill

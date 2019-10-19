@@ -7,7 +7,7 @@
  *      upper triangular form.
  * BTF_ORDER: do both of the above (btf_maxtrans then btf_strongcomp).
  *
- * Copyright (c) 2004-2007.  Tim Davis, University of Florida,
+ * By Tim Davis.  Copyright (c) 2004-2007, University of Florida.
  * with support from Sandia National Laboratories.  All Rights Reserved.
  */
 
@@ -93,7 +93,7 @@
 extern "C" {
 #endif
 
-#include "UFconfig.h"
+#include "SuiteSparse_config.h"
 
 int btf_maxtrans    /* returns # of columns matched */
 (
@@ -117,9 +117,10 @@ int btf_maxtrans    /* returns # of columns matched */
     int Work [ ]    /* size 5*ncol */
 ) ;
 
-/* long integer version (all "int" parameters become "UF_long") */
-UF_long btf_l_maxtrans (UF_long, UF_long, UF_long *, UF_long *, double,
-    double *, UF_long *, UF_long *) ;
+/* long integer version (all "int" parameters become "SuiteSparse_long") */
+SuiteSparse_long btf_l_maxtrans (SuiteSparse_long, SuiteSparse_long,
+    SuiteSparse_long *, SuiteSparse_long *, double, double *,
+    SuiteSparse_long *, SuiteSparse_long *) ;
 
 
 /* ========================================================================== */
@@ -164,8 +165,9 @@ int btf_strongcomp  /* return # of strongly connected components */
     int Work [ ]    /* size 4n */
 ) ;
 
-UF_long btf_l_strongcomp (UF_long, UF_long *, UF_long *, UF_long *, UF_long *,
-    UF_long *, UF_long *) ;
+SuiteSparse_long btf_l_strongcomp (SuiteSparse_long, SuiteSparse_long *,
+    SuiteSparse_long *, SuiteSparse_long *, SuiteSparse_long *,
+    SuiteSparse_long *, SuiteSparse_long *) ;
 
 
 /* ========================================================================== */
@@ -211,8 +213,10 @@ int btf_order       /* returns number of blocks found */
     int Work [ ]    /* size 5n */
 ) ;
 
-UF_long btf_l_order (UF_long, UF_long *, UF_long *, double , double *,
-    UF_long *, UF_long *, UF_long *, UF_long *, UF_long *) ;
+SuiteSparse_long btf_l_order (SuiteSparse_long, SuiteSparse_long *,
+    SuiteSparse_long *, double , double *, SuiteSparse_long *,
+    SuiteSparse_long *, SuiteSparse_long *, SuiteSparse_long *,
+    SuiteSparse_long *) ;
 
 
 /* ========================================================================== */
@@ -250,11 +254,11 @@ UF_long btf_l_order (UF_long, UF_long *, UF_long *, double , double *,
  *      #endif
  */
 
-#define BTF_DATE "Dec 7, 2011"
+#define BTF_DATE "Jun 1, 2012"
 #define BTF_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
 #define BTF_MAIN_VERSION 1
-#define BTF_SUB_VERSION 1
-#define BTF_SUBSUB_VERSION 3
+#define BTF_SUB_VERSION 2
+#define BTF_SUBSUB_VERSION 0
 #define BTF_VERSION BTF_VERSION_CODE(BTF_MAIN_VERSION,BTF_SUB_VERSION)
 
 #ifdef __cplusplus

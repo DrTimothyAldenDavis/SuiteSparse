@@ -1,4 +1,4 @@
-function spqr_make (opt1,opt2)
+function spqr_make (opt1)
 %SPQR_MAKE compiles the SuiteSparseQR mexFunctions
 %
 % Example:
@@ -19,20 +19,17 @@ function spqr_make (opt1,opt2)
 % To compile using Intel's Threading Building Blocks (TBB) use:
 %
 %   spqr_make ('tbb')
-%   spqr_make ('tbb','timing')  % with TBB, & timing
 %
 % TBB parallelism is not the default, since it conflicts with the multithreaded
 % BLAS (the Intel MKL are OpenMP based, for example).  This may change in
-% future versions.  The 'timing' string, if present, enables timing and
-% exact flop counts (disabled by default; works for Linux only).
+% future versions.
 %
 % You must type the spqr_make command while in the SuiteSparseQR/MATLAB
 % directory.
 %
 % See also spqr, spqr_solve, spqr_qmult, qr, mldivide
 
-%   Copyright 2008, Timothy A. Davis
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2008, Timothy A. Davis, http://www.suitesparse.com
 
 details = 0 ;       % 1 if details of each command are to be printed, 0 if not
 
@@ -40,9 +37,11 @@ v = version ;
 try
     % ispc does not appear in MATLAB 5.3
     pc = ispc ;
+    mac = ismac ;
 catch                                                                       %#ok
     % if ispc fails, assume we are on a Windows PC if it's not unix
     pc = ~isunix ;
+    mac = 0 ;
 end
 
 flags = '' ;
@@ -52,22 +51,17 @@ if (is64)
     flags = '-largeArrayDims' ;
 end
 
-include = '-DNMATRIXOPS -DNMODIFY -I. -I../../AMD/Include -I../../COLAMD/Include -I../../CHOLMOD/Include -I../Include -I../../UFconfig' ;
+include = '-DNMATRIXOPS -DNMODIFY -I. -I../../AMD/Include -I../../COLAMD/Include -I../../CHOLMOD/Include -I../Include -I../../SuiteSparse_config' ;
 
 % Determine if METIS is available
 metis_path = '../../metis-4.0' ;
 have_metis = exist ([metis_path '/Lib'], 'dir') ;
 
-% Determine if TBB and/or timing is to be used
+% Determine if TBB is to be used
 if (nargin < 1)
     tbb = 0 ;
-    timing = 0 ;
 elseif (nargin < 2)
     tbb = strcmp (opt1, 'tbb') ;
-    timing = strcmp (opt1, 'timing') ;
-elseif (nargin < 3)
-    tbb = strcmp (opt1, 'tbb') | strcmp (opt2, 'tbb') ;
-    timing = strcmp (opt1, 'timing') | strcmp (opt2, 'timing') ;
 end
 
 % fix the METIS 4.0.1 rename.h file
@@ -182,13 +176,8 @@ if (tbb)
     include = [include ' -I' tbb_include_path ' -DHAVE_TBB' ] ;
 end
 
-%-------------------------------------------------------------------------------
-% TIMING option (for performance testing on Linux only)
-%-------------------------------------------------------------------------------
-
-if (timing && ~pc)
-    fprintf ('with timing enabled\n') ;
-    include = [include ' -DTIMING'] ;
+if (~(pc || mac))
+    % for POSIX timing routine
     lib = [lib ' -lrt'] ;
 end
 
@@ -202,6 +191,8 @@ lib = strrep (lib, '/', filesep) ;
 %-------------------------------------------------------------------------------
 % ready to compile ...
 %-------------------------------------------------------------------------------
+
+config_src = { '../../SuiteSparse_config/SuiteSparse_config' } ;
 
 amd_c_src = { ...
     '../../AMD/Source/amd_1', ...
@@ -424,7 +415,7 @@ include = strrep (include, '/', filesep) ;
 % compile each library source file
 obj = '' ;
 
-c_source = [amd_c_src colamd_c_src cholmod_c_src spqr_c_mx_src ] ;
+c_source = [config_src amd_c_src colamd_c_src cholmod_c_src spqr_c_mx_src ] ;
 if (have_metis)
     c_source = [c_source cholmod_c_partition_src ccolamd_c_src ] ;
     c_source = [c_source camd_c_src metis_c_src] ;

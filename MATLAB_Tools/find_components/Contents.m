@@ -11,4 +11,4 @@
 %   find_components_example         % prints and plots and small example
 %   find_components_example(2)      % a large example, just plotting
 
-% Copyright 2008, Tim Davis, University of Florida
+% Copyright 2008, Timothy A. Davis, http://www.suitesparse.com

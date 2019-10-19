@@ -7,7 +7,7 @@
 
 default: all
 
-include ../../UFconfig/UFconfig.mk
+include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 #-------------------------------------------------------------------------------
 # the optional Partition module requires METIS, CAMD, and CCOLAMD
@@ -27,8 +27,14 @@ endif
 #-------------------------------------------------------------------------------
 
 LIB2 = ../Lib/libcholmod.a ../../AMD/Lib/libamd.a ../../COLAMD/Lib/libcolamd.a \
+        ../../SuiteSparse_config/libsuitesparseconfig.a \
 	$(LIB_WITH_PARTITION) $(LAPACK) $(BLAS) $(XERBLA) $(LIB)
 
+#-------------------------------------------------------------------------------
+# With the CUDA BLAS:
+ifneq ($(GPU_CONFIG),)
+LIB2 += $(GPU_BLAS_PATH)/lib64/libcudart.so $(GPU_BLAS_PATH)/lib64/libcublas.so
+endif
 #-------------------------------------------------------------------------------
 
 C = $(CC) $(CF) $(CHOLMOD_CONFIG) $(CONFIG)
@@ -63,7 +69,8 @@ clean:
 #-------------------------------------------------------------------------------
 # See below if you compile with -DNPARTITION
 library:
-	( cd ../../UFconfig/xerbla ; $(MAKE) )
+	( cd ../../SuiteSparse_config/xerbla ; $(MAKE) )
+	( cd ../../SuiteSparse_config ; $(MAKE) )
 	( cd ../Lib ; $(MAKE) )
 	( cd ../../AMD ; $(MAKE) library )
 	( cd ../../COLAMD ; $(MAKE) library )
@@ -74,7 +81,7 @@ else
 endif
 #-------------------------------------------------------------------------------
 
-I = -I../Include -I../../UFconfig
+I = -I../Include -I../../SuiteSparse_config
 
 cholmod_demo: library cholmod_demo.c cholmod_demo.h
 	$(C) -o cholmod_demo $(I) cholmod_demo.c $(LIB2)

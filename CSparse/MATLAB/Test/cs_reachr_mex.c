@@ -3,9 +3,9 @@
  * triangular.  b must be a real sparse vector. */
 
 static
-void dfsr (int j, const cs *L, int *top, int *xi, int *w)
+void dfsr (csi j, const cs *L, csi *top, csi *xi, csi *w)
 {
-    int p ;
+    csi p ;
     w [j] = 1 ;                                 /* mark node j */
     for (p = L->p [j] ; p < L->p [j+1] ; p++)   /* for each i in L(:,j) */
     {
@@ -19,10 +19,10 @@ void dfsr (int j, const cs *L, int *top, int *xi, int *w)
 
 /* w [0..n-1] == 0 on input, <= 1 on output.  size n */
 static
-int reachr (const cs *L, const cs *B, int *xi, int *w)
+csi reachr (const cs *L, const cs *B, csi *xi, csi *w)
 {
-    int p, n = L->n ;
-    int top = n ;                               /* stack is empty */
+    csi p, n = L->n ;
+    csi top = n ;                               /* stack is empty */
     for (p = B->p [0] ; p < B->p [1] ; p++)     /* for each i in pattern of b */
     {
         if (w [B->i [p]] != 1)                  /* if i is unmarked */
@@ -43,7 +43,7 @@ void mexFunction
 {
     cs Lmatrix, Bmatrix, *L, *B ;
     double *x ;
-    int i, j, top, *xi ;
+    csi i, j, top, *xi ;
 
     if (nargout > 1 || nargin != 2)
     {
@@ -55,7 +55,7 @@ void mexFunction
     B = cs_mex_get_sparse (&Bmatrix, 0, 1, pargin [1]) ;
     cs_mex_check (0, L->n, 1, 0, 1, 1, pargin [1]) ;
 
-    xi = cs_calloc (2*L->n, sizeof (int)) ;
+    xi = cs_calloc (2*L->n, sizeof (csi)) ;
 
     top = reachr (L, B, xi, xi + L->n) ;
 

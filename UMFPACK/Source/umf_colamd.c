@@ -3,9 +3,8 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
+/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
+/* All Rights Reserved.  See ../Doc/License for License.                      */
 /* -------------------------------------------------------------------------- */
 
 /*
@@ -38,7 +37,7 @@ Purpose:
 Authors:
 
     The authors of the COLAMD code itself are Stefan I. Larimore and Timothy A.
-    Davis, University of Florida.  The algorithm was developed in collaboration
+    Davis.  The algorithm was developed in collaboration
     with John Gilbert, Xerox PARC, and Esmond Ng, Oak Ridge National Laboratory.
     The AMD metric on which this is based is by Patrick Amestoy, T. Davis,
     and Iain Duff.
@@ -60,7 +59,7 @@ See the UMFPACK README file for the License for your use of this code.
 Availability:
 
     Both UMFPACK and the original unmodified colamd/symamd library are
-    available at http://www.cise.ufl.edu/research/sparse.
+    available at http://www.suitesparse.com.
 
 Changes for inclusion in UMFPACK:
 
@@ -83,8 +82,7 @@ For more information, see:
 
 	Davis, T. A. and Gilbert, J. R. and Larimore, S. I. and Ng, E. G.,
 	A column approximate minimum degree ordering algorithm,
-	Univ. of Florida, CISE Dept., TR-00-005, Gainesville, FL
-	Oct. 2000.  Submitted to ACM Trans. Math. Softw.
+	ACM Trans. Math. Softw., vol 3, no 3, 2004
 
 */
 
@@ -313,8 +311,7 @@ For more information, see:
 
 	Example:
 
-	    See http://www.cise.ufl.edu/~davis/colamd/example.c
-	    for a complete example.
+	    See colamd_example.c for a complete example.
 
 	    To order the columns of a 5-by-4 matrix with 11 nonzero entries in
 	    the following nonzero pattern

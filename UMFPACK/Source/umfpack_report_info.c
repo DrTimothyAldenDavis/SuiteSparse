@@ -3,9 +3,8 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
+/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
+/* All Rights Reserved.  See ../Doc/License for License.                      */
 /* -------------------------------------------------------------------------- */
 
 /*
@@ -81,7 +80,7 @@ GLOBAL void UMFPACK_report_info
 {
 
     double lnz_est, unz_est, lunz_est, lnz, unz, lunz, tsym, tnum, fnum, tsolve,
-	fsolve, ttot, ftot, twsym, twnum, twsolve, twtot, n2 ;
+	fsolve, ftot, twsym, twnum, twsolve, twtot, n2 ;
     Int n_row, n_col, n_inner, prl, is_sym, strategy ;
 
     /* ---------------------------------------------------------------------- */
@@ -120,7 +119,7 @@ GLOBAL void UMFPACK_report_info
 #endif
 #ifdef DLONG
     PRINTF (("    matrix entry defined as:          double\n")) ;
-    PRINTF (("    Int (generic integer) defined as: UF_long\n")) ;
+    PRINTF (("    Int (generic integer) defined as: SuiteSparse_long\n")) ;
 #endif
 #ifdef ZINT
     PRINTF (("    matrix entry defined as:          double complex\n")) ;
@@ -128,7 +127,7 @@ GLOBAL void UMFPACK_report_info
 #endif
 #ifdef ZLONG
     PRINTF (("    matrix entry defined as:          double complex\n")) ;
-    PRINTF (("    Int (generic integer) defined as: UF_long\n")) ;
+    PRINTF (("    Int (generic integer) defined as: SuiteSparse_long\n")) ;
 #endif
 
     /* ---------------------------------------------------------------------- */
@@ -156,18 +155,10 @@ GLOBAL void UMFPACK_report_info
 #endif
 
     PRINTF (("    CPU timer:                        ")) ;
-#ifdef NO_TIMER
+#ifdef SUITESPARSE_TIMER_ENABLED
+    PRINTF (("POSIX C clock_getttime ( ) routine.\n")) ;
+#else
     PRINTF (("none.\n")) ;
-#else
-#ifndef NPOSIX
-    PRINTF (("POSIX times ( ) routine.\n")) ;
-#else
-#ifdef GETRUSAGE
-    PRINTF (("getrusage ( ) routine.\n")) ;
-#else
-    PRINTF (("ANSI clock ( ) routine.\n")) ;
-#endif
-#endif
 #endif
 
     /* ---------------------------------------------------------------------- */
@@ -187,7 +178,7 @@ GLOBAL void UMFPACK_report_info
 
     PRINT_INFO ("    size of int:                      "ID" bytes\n",
 	(Int) Info [UMFPACK_SIZE_OF_INT]) ;
-    PRINT_INFO ("    size of UF_long:                  "ID" bytes\n",
+    PRINT_INFO ("    size of SuiteSparse_long:         "ID" bytes\n",
 	(Int) Info [UMFPACK_SIZE_OF_LONG]) ;
     PRINT_INFO ("    size of pointer:                  "ID" bytes\n",
 	(Int) Info [UMFPACK_SIZE_OF_POINTER]) ;
@@ -365,8 +356,6 @@ GLOBAL void UMFPACK_report_info
 	Info [UMFPACK_SYMBOLIC_SIZE]) ;
     PRINT_INFO ("    Symbolic size (MBytes):                        %.0f\n",
 	MBYTES (Info [UMFPACK_SYMBOLIC_SIZE])) ;
-    PRINT_INFO ("    symbolic factorization CPU time (sec):         %.2f\n",
-	tsym) ;
     PRINT_INFO ("    symbolic factorization wallclock time(sec):    %.2f\n",
 	twsym) ;
 
@@ -499,19 +488,11 @@ GLOBAL void UMFPACK_report_info
 	Info [UMFPACK_NUMERIC_REALLOC]) ;
     PRINT_INFO ("    costly numeric factorization reallocations:    %.0f\n",
 	Info [UMFPACK_NUMERIC_COSTLY_REALLOC]) ;
-    PRINT_INFO ("    numeric factorization CPU time (sec):          %.2f\n",
-	tnum) ;
     PRINT_INFO ("    numeric factorization wallclock time (sec):    %.2f\n",
 	twnum) ;
 
 #define TMIN 0.001
 
-    if (tnum > TMIN && fnum > 0)
-    {
-	PRINT_INFO (
-	   "    numeric factorization mflops (CPU time):       %.2f\n",
-	   1e-6 * fnum / tnum) ;
-    }
     if (twnum > TMIN && fnum > 0)
     {
 	PRINT_INFO (
@@ -519,20 +500,7 @@ GLOBAL void UMFPACK_report_info
 	   1e-6 * fnum / twnum) ;
     }
 
-    ttot = EMPTY ;
     ftot = fnum ;
-    if (tsym >= TMIN && tnum >= 0)
-    {
-	ttot = tsym + tnum ;
-	PRINT_INFO ("    symbolic + numeric CPU time (sec):             %.2f\n",
-	    ttot) ;
-	if (ftot > 0 && ttot > TMIN)
-	{
-	    PRINT_INFO (
-		"    symbolic + numeric mflops (CPU time):          %.2f\n",
-		1e-6 * ftot / ttot) ;
-	}
-    }
 
     twtot = EMPTY ;
     if (twsym >= TMIN && twnum >= TMIN)
@@ -566,16 +534,8 @@ GLOBAL void UMFPACK_report_info
 	Info [UMFPACK_OMEGA1]) ;
     PRINT_INFO ("    sparse backward error omega2:                  %.2e\n",
 	Info [UMFPACK_OMEGA2]) ;
-    PRINT_INFO ("    solve CPU time (sec):                          %.2f\n",
-	tsolve) ;
     PRINT_INFO ("    solve wall clock time (sec):                   %.2f\n",
 	twsolve) ;
-    if (fsolve > 0 && tsolve > TMIN)
-    {
-	PRINT_INFO (
-	    "    solve mflops (CPU time):                       %.2f\n",
-	    1e-6 * fsolve / tsolve) ;
-    }
     if (fsolve > 0 && twsolve > TMIN)
     {
 	PRINT_INFO (
@@ -588,23 +548,6 @@ GLOBAL void UMFPACK_report_info
 	ftot += fsolve ;
 	PRINT_INFO (
 	"\n    total symbolic + numeric + solve flops:        %.5e\n", ftot) ;
-    }
-
-    if (tsolve >= TMIN)
-    {
-	if (ttot >= TMIN && ftot >= 0)
-	{
-	    ttot += tsolve ;
-	    PRINT_INFO (
-		"    total symbolic + numeric + solve CPU time:     %.2f\n",
-		ttot) ;
-	    if (ftot > 0 && ttot > TMIN)
-	    {
-		PRINT_INFO (
-		"    total symbolic + numeric + solve mflops (CPU): %.2f\n",
-		1e-6 * ftot / ttot) ;
-	    }
-	}
     }
 
     if (twsolve >= TMIN)

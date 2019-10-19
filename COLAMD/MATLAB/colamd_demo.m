@@ -16,8 +16,7 @@
 %                       Typical usage:  p = symamd (A) ;
 %
 % For a description of the methods used, see the colamd.c file.
-%
-% http://www.cise.ufl.edu/research/sparse/colamd/
+% http://www.suitesparse.com
 %
 % See also colamd, symamd
 

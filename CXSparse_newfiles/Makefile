@@ -2,11 +2,11 @@
 # CXSparse Makefile
 #------------------------------------------------------------------------------
 
-VERSION = 2.2.6
+VERSION = 3.1.0
 
 default: C
 
-include ../UFconfig/UFconfig.mk
+include ../SuiteSparse_config/SuiteSparse_config.mk
 
 C:
 	( cd Lib ; $(MAKE) )
@@ -20,20 +20,19 @@ library:
 cov:
 	( cd Tcov ; $(MAKE) )
 
-mex:
-	( cd MATLAB ; $(MAKE) )
-
 clean:
 	( cd Lib ; $(MAKE) clean )
 	( cd Demo ; $(MAKE) clean )
 	( cd Tcov ; $(MAKE) clean )
-	( cd MATLAB ; $(MAKE) clean )
+	( cd MATLAB/CSparse ; $(RM) *.o cs_cl_*.c )
+	( cd MATLAB/Test    ; $(RM) *.o cs_cl_*.c )
 
 purge:
 	( cd Lib ; $(MAKE) purge )
 	( cd Demo ; $(MAKE) purge )
 	( cd Tcov ; $(MAKE) purge )
-	( cd MATLAB ; $(MAKE) purge )
+	( cd MATLAB/CSparse ; $(RM) *.o cs_cl_*.c *.mex* )
+	( cd MATLAB/Test    ; $(RM) *.o cs_cl_*.c *.mex* )
 
 distclean: purge
 

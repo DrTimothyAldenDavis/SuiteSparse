@@ -4,7 +4,7 @@
 
 default: library
 
-include ../UFconfig/UFconfig.mk
+include ../SuiteSparse_config/SuiteSparse_config.mk
 
 library:
 	( cd Source ; $(MAKE) )

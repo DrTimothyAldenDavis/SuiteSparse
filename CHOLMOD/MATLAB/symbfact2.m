@@ -41,8 +41,7 @@ function [count, h, parent, post, L] = symbfact2 (A, mode, Lmode)	    %#ok
 %
 %   See also CHOL, ETREE, TREELAYOUT, SYMBFACT
 
-%   Copyright 2006-2007, Timothy A. Davis
-%   http://www.cise.ufl.edu/research/sparse
+%   Copyright 2006-2007, Timothy A. Davis, http://www.suitesparse.com
 
 error ('symbfact2 mexFunction not found!') ;
 

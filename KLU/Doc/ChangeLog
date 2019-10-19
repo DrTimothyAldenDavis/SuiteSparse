@@ -1,3 +1,7 @@
+Jun 1, 2012: version 1.2.0
+
+    * changed from UFconfig to SuiteSparse_config
+
 Jan 20, 2012: version 1.1.4
 
     * bug fix:  INT_MAX changed to Int_MAX (used for checking Int overflow).

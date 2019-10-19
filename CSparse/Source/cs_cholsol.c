@@ -1,11 +1,11 @@
 #include "cs.h"
 /* x=A\b where A is symmetric positive definite; b overwritten with solution */
-int cs_cholsol (int order, const cs *A, double *b)
+csi cs_cholsol (csi order, const cs *A, double *b)
 {
     double *x ;
     css *S ;
     csn *N ;
-    int n, ok ;
+    csi n, ok ;
     if (!CS_CSC (A) || !b) return (0) ;     /* check inputs */
     n = A->n ;
     S = cs_schol (order, A) ;               /* ordering and symbolic analysis */

@@ -1,7 +1,7 @@
 classdef factorization_lu_sparse < factorization
 %FACTORIZATION_LU_SPARSE P*A*Q = L*U where A is square and sparse.
 
-% Copyright 2011, Timothy A. Davis, University of Florida.
+% Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
 
     methods
 

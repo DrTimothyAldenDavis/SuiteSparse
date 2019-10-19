@@ -10,7 +10,7 @@ void mexFunction
 {
     cs *A, Amatrix ;
     double *x, *b ;
-    int order ;
+    csi order ;
     if (nargout > 1 || nargin < 2 || nargin > 3)
     {
         mexErrMsgTxt ("Usage: x = cs_cholsol(A,b,order)") ;

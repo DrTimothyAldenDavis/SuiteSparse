@@ -2,16 +2,15 @@
 # UMFPACK Makefile
 #-------------------------------------------------------------------------------
 
-VERSION = 5.5.2
+VERSION = 5.6.0
 
 # UMFPACK requires the AMD package to be in ../AMD
 
 default: all
 
-include ../UFconfig/UFconfig.mk
+include ../SuiteSparse_config/SuiteSparse_config.mk
 
-# compile all C code (except hb, fortran, and fortran64), including AMD and the
-# demos, but not the MATLAB mexFunctions
+# compile all C code (except hb, fortran, and fortran64), incl. AMD and demos
 all:
 	( cd Demo   ; $(MAKE) )
 
@@ -35,15 +34,16 @@ hb:
 clean:
 	( cd Lib    ; $(MAKE) clean )
 	( cd Demo   ; $(MAKE) clean )
-	( cd MATLAB ; $(MAKE) clean )
 	( cd Doc    ; $(MAKE) clean )
+	( cd MATLAB ; $(RM) $(CLEAN) rename.h )
 
 # clean, and then remove compiled programs and library archives
 purge:
 	( cd Lib    ; $(MAKE) purge )
 	( cd Demo   ; $(MAKE) purge )
-	( cd MATLAB ; $(MAKE) purge )
 	( cd Doc    ; $(MAKE) purge )
+	( cd Tcov   ; $(MAKE) purge )
+	( cd MATLAB ; $(RM) $(CLEAN) rename.h *.mex* )
 
 # create PDF documents for the original distribution
 docs:

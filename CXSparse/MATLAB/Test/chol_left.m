@@ -4,8 +4,7 @@ function L = chol_left (A)
 %   L = chol_left (A)
 % See also: cs_demo
 
-%   Copyright 2006-2007, Timothy A. Davis.
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
 n = size (A,1) ;
 L = zeros (n) ;

@@ -6,7 +6,7 @@
    Refer to RBio/Doc/license.txt for the RBio license. */
 
 #include "RBio.h"
-#define Int UF_long
+#define Long SuiteSparse_long
 #define ID "%ld"
 
 #define SLEN 4096
@@ -15,13 +15,13 @@ int main (int argc, char **argv)
 {
     double xr, xz, xmin, xmax ;
     double *Ax, *Az ;
-    Int nrow, ncol, mkind, skind, *Ap, *Ai, i, *Zp, *Zi, asize, mkind2, skind2,
+    Long nrow, ncol, mkind, skind, *Ap, *Ai, i, *Zp, *Zi, asize, mkind2, skind2,
         znz, j, p, status, njumbled, nzeros, build_upper, zero_handling, fem,
         xsize, nelnz, nnz, kk, anz ;
     int ok ;
     char title [73], key [9], mtype [4], mtype2 [4], *filename, s [100], *As ;
 
-    UFconfig config ;
+    SuiteSparse_config config ;
     config.malloc_memory = malloc ;
     config.free_memory = free ;
 
@@ -82,11 +82,11 @@ int main (int argc, char **argv)
         &Ap, &Ai, &Ax, NULL, &Zp, &Zi, &config) ;
     if (status != 0)
     {
-        UFfree (Ap, &config) ;
-        UFfree (Ai, &config) ;
-        UFfree (Ax, &config) ;
-        UFfree (Zp, &config) ;
-        UFfree (Zi, &config) ;
+        SuiteSparse_free (Ap, &config) ;
+        SuiteSparse_free (Ai, &config) ;
+        SuiteSparse_free (Ax, &config) ;
+        SuiteSparse_free (Zp, &config) ;
+        SuiteSparse_free (Zi, &config) ;
         printf ("RBread test failure (7) "ID"\n", status) ;
         return (1) ;
     }
@@ -190,11 +190,11 @@ int main (int argc, char **argv)
         return (1) ;
     }
 
-    UFfree (Ap, &config) ;
-    UFfree (Ai, &config) ;
-    UFfree (Ax, &config) ;
-    UFfree (Zp, &config) ;
-    UFfree (Zi, &config) ;
+    SuiteSparse_free (Ap, &config) ;
+    SuiteSparse_free (Ai, &config) ;
+    SuiteSparse_free (Ax, &config) ;
+    SuiteSparse_free (Zp, &config) ;
+    SuiteSparse_free (Zi, &config) ;
 
     /* re-read a valid matrix */
     status = RBread ("matrices/m4.rb", 1, 0, title, key, mtype,
@@ -202,11 +202,11 @@ int main (int argc, char **argv)
         &Ap, &Ai, &Ax, NULL, NULL, NULL, &config) ;
     if (status != 0)
     {
-        UFfree (Ap, &config) ;
-        UFfree (Ai, &config) ;
-        UFfree (Ax, &config) ;
-        UFfree (Zp, &config) ;
-        UFfree (Zi, &config) ;
+        SuiteSparse_free (Ap, &config) ;
+        SuiteSparse_free (Ai, &config) ;
+        SuiteSparse_free (Ax, &config) ;
+        SuiteSparse_free (Zp, &config) ;
+        SuiteSparse_free (Zi, &config) ;
         printf ("RBread test failure (14) "ID"\n", status) ;
         return (1) ;
     }
@@ -270,7 +270,7 @@ int main (int argc, char **argv)
     Ai [1] = i ;
 
     ok = 1 ;
-    As = (char *) UFmalloc (asize, sizeof (char), &ok, &config) ;
+    As = (char *) SuiteSparse_malloc (asize, sizeof (char), &ok, &config) ;
     for (i = 0 ; i < asize ; i++) As [i] = 1 ;
     status = RBok (nrow, ncol, asize, Ap, Ai, Ax, Az, As, 1,
         &njumbled, &nzeros) ;
@@ -278,7 +278,7 @@ int main (int argc, char **argv)
     {
         printf ("RBread test failure (22) "ID"\n", status) ;
     }
-    UFfree (As, &config) ;
+    SuiteSparse_free (As, &config) ;
 
     printf ("RBtest OK\n") ;
     return (0) ;

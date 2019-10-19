@@ -1,8 +1,8 @@
 #include "cs.h"
 /* depth-first-search of the graph of a matrix, starting at node j */
-int cs_dfs (int j, cs *G, int top, int *xi, int *pstack, const int *pinv)
+csi cs_dfs (csi j, cs *G, csi top, csi *xi, csi *pstack, const csi *pinv)
 {
-    int i, p, p2, done, jnew, head = 0, *Gp, *Gi ;
+    csi i, p, p2, done, jnew, head = 0, *Gp, *Gi ;
     if (!CS_CSC (G) || !xi || !pstack) return (-1) ;    /* check inputs */
     Gp = G->p ; Gi = G->i ;
     xi [0] = j ;                /* initialize the recursion stack */

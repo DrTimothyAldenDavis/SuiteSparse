@@ -30,6 +30,6 @@ function ok = spok (A)                                                      %#ok
 %
 % See also sparse.
 
-% Copyright 2008-2011, Tim Davis, University of Florida
+% Copyright 2008-2011, Timothy A. Davis, http://www.suitesparse.com
 
 error ('spok mexFunction not installed') ;

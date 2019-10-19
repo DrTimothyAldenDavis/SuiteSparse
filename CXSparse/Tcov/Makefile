@@ -8,7 +8,8 @@ CC = gcc
 CFLAGS = -O -g -fprofile-arcs -ftest-coverage \
     	-Wall -W -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
     	-Wredundant-decls -Wnested-externs -Wdisabled-optimization -ansi \
-	-Wno-unused-parameter -Werror -I../Include -I../Demo -I../../UFconfig
+	-Wno-unused-parameter -Werror -I../Include \
+        -I../Demo -I../../SuiteSparse_config
 
 C = $(CC) $(CFLAGS)
 

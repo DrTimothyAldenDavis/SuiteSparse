@@ -7,7 +7,7 @@ function btf_install
 %
 % See also btf, maxtrans, stroncomp, dmperm.
 
-% Copyright 2004-2007, Tim Davis, University of Florida
+% Copyright 2004-2007, University of Florida
 
 btf_make
 addpath (pwd) ;

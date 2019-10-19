@@ -5,7 +5,7 @@
 %
 % See also btf, dmperm, strongcomp, maxtrans
 
-% Copyright 2004-2007, Tim Davis, University of Florida
+% Copyright 2004-2007, University of Florida
 
 load west0479 ;
 A = west0479 ;

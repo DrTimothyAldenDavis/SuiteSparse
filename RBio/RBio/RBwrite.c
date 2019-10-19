@@ -42,7 +42,7 @@ function mtype = RBwrite (filename, A, Z, title, key)                       %#ok
 #include "RBio.h"
 #define LEN 1024
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
-#define Int mwSignedIndex
+#define Long SuiteSparse_long
 
 void mexFunction
 (
@@ -52,12 +52,12 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    Int nrow, ncol, ititle, ok, zrow, zcol, i, mkind ;
-    Int *Ap, *Ai, *Zp, *Zi, *w, *cp ;
+    Long nrow, ncol, ititle, ok, zrow, zcol, i, mkind ;
+    Long *Ap, *Ai, *Zp, *Zi, *w, *cp ;
     double *Ax, *Az ;
     char filename [LEN+1], title [73], key [9], mtype [4] ;
 
-    UFconfig config ;
+    SuiteSparse_config config ;
     config.malloc_memory = mxMalloc ;
     config.free_memory = mxFree ;
 
@@ -88,8 +88,8 @@ void mexFunction
         mexErrMsgTxt ("A must be sparse and double") ;
     }
 
-    Ap = (Int *) mxGetJc (pargin [1]) ;
-    Ai = (Int *) mxGetIr (pargin [1]) ;
+    Ap = (Long *) mxGetJc (pargin [1]) ;
+    Ai = (Long *) mxGetIr (pargin [1]) ;
     Ax = mxGetPr (pargin [1]) ;
     nrow = mxGetM (pargin [1]) ;
     ncol = mxGetN (pargin [1]) ;
@@ -149,8 +149,8 @@ void mexFunction
                 mexErrMsgTxt
                     ("Z must be sparse, double, real, and same size as A") ;
             }
-            Zp = (Int *) mxGetJc (pargin [2]) ;
-            Zi = (Int *) mxGetIr (pargin [2]) ;
+            Zp = (Long *) mxGetJc (pargin [2]) ;
+            Zi = (Long *) mxGetIr (pargin [2]) ;
         }
     }
 

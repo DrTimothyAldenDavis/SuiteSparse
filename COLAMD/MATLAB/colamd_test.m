@@ -27,7 +27,8 @@ help colamd_test
     if (~isempty (strfind (computer, '64')))
 	d = '-largeArrayDims' ;
     end
-    cmd = sprintf ('mex -DDLONG -O %s -I../../UFconfig -I../Include ', d) ;
+    cmd = sprintf (...
+        'mex -DDLONG -O %s -I../../SuiteSparse_config -I../Include ', d) ;
     src = '../Source/colamd.c ../Source/colamd_global.c' ;
     eval ([cmd 'colamdtestmex.c ' src]) ;
     eval ([cmd 'symamdtestmex.c ' src]) ;

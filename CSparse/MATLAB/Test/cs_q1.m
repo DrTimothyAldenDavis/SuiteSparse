@@ -4,8 +4,7 @@ function Q = cs_q1 (V, Beta, p)
 %   Q = cs_q1 (V, beta, p)
 % See also: testall
 
-%   Copyright 2006-2007, Timothy A. Davis.
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
 [m n] = size (V) ;
 Q = speye (m) ;

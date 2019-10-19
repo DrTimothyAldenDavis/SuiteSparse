@@ -33,7 +33,7 @@
  * work performed, or -1 if the maximum work limit is reached (in which case
  * the maximum matching might not have been found).
  *
- * Copyright (c) 2004-2007.  Tim Davis, University of Florida,
+ * By Tim Davis.  Copyright (c) 2004-2007, University of Florida.
  * with support from Sandia National Laboratories.  All Rights Reserved.
  *
  * See also maxtrans, strongcomp, dmperm
@@ -43,6 +43,7 @@
 
 #include "mex.h"
 #include "btf.h"
+#define Long SuiteSparse_long
 
 void mexFunction
 (
@@ -53,7 +54,7 @@ void mexFunction
 )
 {
     double work, maxwork ;
-    UF_long b, n, k, *Ap, *Ai, *P, *R, nblocks, *Work, *Q, nmatch ;
+    Long b, n, k, *Ap, *Ai, *P, *R, nblocks, *Work, *Q, nmatch ;
     double *Px, *Rx, *Qx, *w ;
 
     /* ---------------------------------------------------------------------- */
@@ -71,16 +72,16 @@ void mexFunction
     }
 
     /* get sparse matrix A */
-    Ap = (UF_long *) mxGetJc (pargin [0]) ;
-    Ai = (UF_long *) mxGetIr (pargin [0]) ;
+    Ap = (Long *) mxGetJc (pargin [0]) ;
+    Ai = (Long *) mxGetIr (pargin [0]) ;
 
     /* get output arrays */
-    Q = mxMalloc (n * sizeof (UF_long)) ;
-    P = mxMalloc (n * sizeof (UF_long)) ;
-    R = mxMalloc ((n+1) * sizeof (UF_long)) ;
+    Q = mxMalloc (n * sizeof (Long)) ;
+    P = mxMalloc (n * sizeof (Long)) ;
+    R = mxMalloc ((n+1) * sizeof (Long)) ;
 
     /* get workspace */
-    Work = mxMalloc (5*n * sizeof (UF_long)) ;
+    Work = mxMalloc (5*n * sizeof (Long)) ;
 
     maxwork = 0 ;
     if (nargin > 1)

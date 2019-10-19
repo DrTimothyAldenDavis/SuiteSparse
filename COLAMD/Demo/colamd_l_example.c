@@ -26,14 +26,14 @@
     (where x denotes a nonzero value).
 
 
-    See http://www.cise.ufl.edu/research/sparse/colamd/ (the colamd.c file)
-    for the routines this program calls, and for the License.
+    See the colamd.c for the routines this program calls, and for the License.
 */
 
 /* ========================================================================== */
 
 #include <stdio.h>
 #include "colamd.h"
+#define Long SuiteSparse_long
 
 #define A_NNZ 11
 #define A_NROW 5
@@ -43,9 +43,6 @@
 #define B_NNZ 4
 #define B_N 5
 
-/* define UF_long */
-#include "UFconfig.h"
-
 int main (void)
 {
 
@@ -53,14 +50,14 @@ int main (void)
     /* input matrix A definition */
     /* ====================================================================== */
 
-    UF_long A [ALEN] = {
+    Long A [ALEN] = {
 
     	0, 1, 4,		/* row indices of nonzeros in column 0 */
 	2, 4,			/* row indices of nonzeros in column 1 */
 	0, 1, 2, 3,		/* row indices of nonzeros in column 2 */
 	1, 3} ;			/* row indices of nonzeros in column 3 */
 
-    UF_long p [ ] = {
+    Long p [ ] = {
 
     	0,			/* column 0 is in A [0..2] */
 	3,			/* column 1 is in A [3..4] */ 
@@ -72,7 +69,7 @@ int main (void)
     /* input matrix B definition */
     /* ====================================================================== */
 
-    UF_long B [ ] = {		/* Note: only strictly lower triangular part */
+    Long B [ ] = {              /* Note: only strictly lower triangular part */
     				/* is included, since symamd ignores the */
 				/* diagonal and upper triangular part of B. */
 
@@ -82,7 +79,7 @@ int main (void)
     	4			/* row indices of nonzeros in column 3 */
     	} ;			/* row indices of nonzeros in column 4 (none) */
 
-    UF_long q [ ] = {
+    Long q [ ] = {
 
     	0,			/* column 0 is in B [0] */
 	1,			/* column 1 is in B [1..2] */ 
@@ -95,10 +92,10 @@ int main (void)
     /* other variable definitions */
     /* ====================================================================== */
 
-    UF_long perm [B_N+1] ;	/* note the size is N+1 */
-    UF_long stats [COLAMD_STATS] ;/* for colamd and symamd output statistics */
+    Long perm [B_N+1] ;	        /* note the size is N+1 */
+    Long stats [COLAMD_STATS] ; /* for colamd and symamd output statistics */
 
-    UF_long row, col, pp, length, ok ;
+    Long row, col, pp, length, ok ;
 
     /* ====================================================================== */
     /* dump the input matrix A */

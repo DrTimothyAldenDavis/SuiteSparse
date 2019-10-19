@@ -15,7 +15,6 @@ function [R,p,q] = chol2 (A)						    %#ok
 %
 %   See also LCHOL, LDLCHOL, CHOL, LDLUPDATE.
 
-%   Copyright 2006-2007, Timothy A. Davis
-%   http://www.cise.ufl.edu/research/sparse
+%   Copyright 2006-2007, Timothy A. Davis, http://www.suitesparse.com
 
 error ('chol2 mexFunction not found') ;

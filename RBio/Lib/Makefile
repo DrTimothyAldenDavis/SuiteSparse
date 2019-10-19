@@ -6,7 +6,7 @@ default: all
 
 ccode: all
 
-include ../../UFconfig/UFconfig.mk
+include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 C = $(CC) $(CF)
 
@@ -51,7 +51,7 @@ librbio.a: $(OBJ)
 
 $(OBJ): $(INC)
 
-I = -I../Include -I../../UFconfig
+I = -I../Include -I../../SuiteSparse_config
 
 #-------------------------------------------------------------------------------
 

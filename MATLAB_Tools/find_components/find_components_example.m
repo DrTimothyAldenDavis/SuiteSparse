@@ -12,7 +12,7 @@ function find_components_example(example, dopause)
 %
 % See also FIND_COMPONENTS, LARGEST_COMPONENT, DMPERM, GPLOT
 
-% Copyright 2008, Tim Davis, University of Florida
+% Copyright 2008, Timothy A. Davis, http://www.suitesparse.com
 
 %-------------------------------------------------------------------------------
 % construct an image

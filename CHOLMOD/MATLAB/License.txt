@@ -2,7 +2,7 @@ CHOLMOD/MATLAB Module.
 Copyright (C) 2005-2006, Timothy A. Davis
 CHOLMOD is also available under other licenses; contact authors for details.
 MATLAB(tm) is a Registered Trademark of The MathWorks, Inc.
-http://www.cise.ufl.edu/research/sparse
+http://www.suitesparse.com
 
 Note that this license is for the CHOLMOD/MATLAB module only.
 All CHOLMOD modules are licensed separately.

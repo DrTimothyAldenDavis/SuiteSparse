@@ -2,7 +2,7 @@ default: all
 
 ccode: all
 
-include ../../UFconfig/UFconfig.mk
+include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 # for testing only:
 # TEST = -DTESTING
@@ -10,10 +10,10 @@ include ../../UFconfig/UFconfig.mk
 C = $(CC) $(CF)
 
 INC = ../Include/klu.h ../Include/klu_internal.h ../Include/klu_version.h \
-    ../../UFconfig/UFconfig.h Makefile
+    ../../SuiteSparse_config/SuiteSparse_config.h Makefile
 
 I = -I../../AMD/Include -I../../COLAMD/Include -I../../BTF/Include \
-    -I../Include -I../../UFconfig
+    -I../Include -I../../SuiteSparse_config
 
 all: library
 

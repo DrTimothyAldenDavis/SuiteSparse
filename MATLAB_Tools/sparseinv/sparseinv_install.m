@@ -8,7 +8,7 @@ function sparseinv_install
 %
 % See also sparseinv, sparseinv_test
 
-% Copyright 2011, Timothy A. Davis, University of Florida
+% Copyright 2011, Timothy A. Davis, http://www.suitesparse.com
 
 is64 = ~isempty (strfind (computer, '64')) ;
 if (is64)

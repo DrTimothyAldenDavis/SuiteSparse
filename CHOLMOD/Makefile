@@ -2,14 +2,15 @@
 # CHOLMOD Makefile
 #-------------------------------------------------------------------------------
 
-VERSION = 1.7.4
+VERSION = 2.0.0
 
 # Note: If you do not have METIS, or do not wish to use it in CHOLMOD, you must
-# compile CHOLMOD with the -DNPARTITION flag.  See ../UFconfig/UFconfig.mk.
+# compile CHOLMOD with the -DNPARTITION flag.
+# See ../SuiteSparse_config/SuiteSparse_config.mk .
 
 default: all
 
-include ../UFconfig/UFconfig.mk
+include ../SuiteSparse_config/SuiteSparse_config.mk
 
 # Compile the C-callable libraries and the Demo programs.
 all:
@@ -21,34 +22,30 @@ library:
 
 # Remove all files not in the original distribution
 purge:
-	( cd MATLAB ; $(MAKE) purge )
 	( cd Tcov ; $(MAKE) purge )
 	( cd Lib ; $(MAKE) purge )
 	( cd Valgrind ; $(MAKE) dopurge )
 	( cd Demo ; $(MAKE) purge )
 	( cd Doc ; $(MAKE) purge )
+	( cd MATLAB ; $(RM) $(CLEAN) rename.h *.mex* )
 
 # Remove all files not in the original distribution, except keep the 
 # compiled libraries.
 clean:
-	( cd MATLAB ; $(MAKE) clean )
 	( cd Tcov ; $(MAKE) clean )
 	( cd Lib ; $(MAKE) clean )
 	( cd Valgrind ; $(MAKE) clean )
 	( cd Demo ; $(MAKE) clean )
+	( cd MATLAB ; $(RM) $(CLEAN) )
 
 distclean: purge
 
 ccode: all
 
-# Compile the MATLAB mexFunctions (you can also use cholmod_make.m in MATLAB)
-mex:
-	( cd MATLAB ; $(MAKE) )
-
 # Run the test coverage suite.  Takes about 40 minutes on a 3.2GHz Pentium.
 # Requires Linux (gcc, gcov).
 cov:
-	( cd Tcov ; $(MAKE) go )
+	( cd Tcov ; $(MAKE) )
 
 # Run the test coverage suite using Valgrind.  This takes a *** long *** time.
 valgrind:
@@ -58,6 +55,9 @@ valgrind:
 demos:
 	( cd Demo ; $(MAKE) )
 
+# create PDF documents for the original distribution
+docs:
+	( cd Doc    ; $(MAKE) )
 
 # install CHOLMOD
 install:

@@ -14,8 +14,7 @@ function cholmod_demo
 %
 % See also BENCH
 
-%   Copyright 2006-2007, Timothy A. Davis
-%   http://www.cise.ufl.edu/research/sparse
+%   Copyright 2006-2007, Timothy A. Davis, http://www.suitesparse.com
 
 help cholmod_demo
 
@@ -44,31 +43,24 @@ end
 
 fprintf ('\n--------------------------------------------------------------\n') ;
 fprintf ('\nWith the matrix used in the MATLAB 7.2 "bench" program.\n') ;
-fprintf ('No fill-reducing orderings are used; type "help bench" for more') ;
-fprintf (' information.\n') ;
 
 n = 300 ;
 A = delsq (numgrid ('L', n)) ;
 b = sum (A)' ;
 
-spparms ('default') ;
-spparms ('autommd',0) ;
-spparms ('autoamd',0) ;
 tic ;
 x = A\b ;
 t1 = toc ;
 e1 = norm (A*x-b) ;
 
 tic ;
-x = cholmod2 (A,b,0) ; 
+x = cholmod2 (A,b) ; 
 t2 = toc ;
 e2 = norm (A*x-b) ;
 
 fprintf ('MATLAB  x=A\\b      time: %8.4f  resid: %8.0e\n', t1, e1) ;
 fprintf ('CHOLMOD x=A\\b      time: %8.4f  resid: %8.0e\n', t2, e2) ;
 fprintf ('CHOLMOD speedup: %8.2f\n', t1/t2) ;
-
-spparms ('default') ;
 
 fprintf ('\ncholmod_demo finished: all tests passed\n') ;
 fprintf ('\nFor more accurate timings, run this test again.\n') ;

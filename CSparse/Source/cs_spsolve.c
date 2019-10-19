@@ -1,9 +1,9 @@
 #include "cs.h"
 /* solve Gx=b(:,k), where G is either upper (lo=0) or lower (lo=1) triangular */
-int cs_spsolve (cs *G, const cs *B, int k, int *xi, double *x, const int *pinv,
-    int lo)
+csi cs_spsolve (cs *G, const cs *B, csi k, csi *xi, double *x, const csi *pinv,
+    csi lo)
 {
-    int j, J, p, q, px, top, n, *Gp, *Gi, *Bp, *Bi ;
+    csi j, J, p, q, px, top, n, *Gp, *Gi, *Bp, *Bi ;
     double *Gx, *Bx ;
     if (!CS_CSC (G) || !CS_CSC (B) || !xi || !x) return (-1) ;
     Gp = G->p ; Gi = G->i ; Gx = G->x ; n = G->n ;

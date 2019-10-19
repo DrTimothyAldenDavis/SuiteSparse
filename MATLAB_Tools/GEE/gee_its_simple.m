@@ -19,8 +19,7 @@ function [x, rcnd] = gee_its_simple (A, b)
 %
 % See also: lu, mldivide, rcond, gee_its_short
 
-% Copyright 2007, Timothy A. Davis.
-% http://www.cise.ufl.edu/research/sparse
+% Copyright 2007, Timothy A. Davis, http://www.suitesparse.com
 
 % check inputs
 if (nargin ~= 2 | nargout > 2)                                              %#ok

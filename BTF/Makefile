@@ -2,24 +2,22 @@
 # BTF Makefile
 #------------------------------------------------------------------------------
 
-VERSION = 1.1.3
+VERSION = 1.2.0
 
 default: library
 
-include ../UFconfig/UFconfig.mk
+include ../SuiteSparse_config/SuiteSparse_config.mk
 
 library:
 	( cd Lib ; $(MAKE) )
 
 clean:
 	( cd Lib ; $(MAKE) clean )
+	( cd MATLAB ; $(RM) $(CLEAN) )
 
 distclean:
 	( cd Lib ; $(MAKE) distclean )
-	( cd MATLAB ; $(MAKE) distclean )
-
-mex:
-	( cd MATLAB ; $(MAKE) )
+	( cd MATLAB ; $(RM) $(CLEAN) ; $(RM) *.mex* )
 
 purge: distclean
 

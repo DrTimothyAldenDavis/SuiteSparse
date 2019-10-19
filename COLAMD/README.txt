@@ -1,4 +1,4 @@
-The COLAMD ordering method, Copyright 1998-2011, Timothy A. Davis.
+COLAMD, Copyright 1998-2012, Timothy A. Davis.  http://www.suitesparse.com
 -------------------------------------------------------------------------------
 
 The COLAMD column approximate minimum degree ordering algorithm computes
@@ -24,10 +24,6 @@ A short demo will run.  Optionally, type colamd_test to run an extensive tests.
 Type "make" in Unix in the COLAMD directory to compile the C-callable
 library and to run a short demo.
 
-If you have MATLAB 7.2 or earlier, you must first edit UFconfig/UFconfig.h to
-remove the "-largeArrayDims" option from the MEX command (or just use
-colamd_make.m inside MATLAB).
-
 Colamd is a built-in routine in MATLAB, available from The 
 Mathworks, Inc.  Under most cases, the compiled COLAMD from Versions 2.0 to the
 current version do not differ.  Colamd Versions 2.2 and 2.3 differ only in their
@@ -42,11 +38,10 @@ colamd.c, colamd_global.c, and colamd.h, which are the C-callable
 colamd/symamd codes.  See colamd.c for more information on how to call
 colamd from a C program.
 
-Requires UFconfig, in the ../UFconfig directory relative to this directory.
+Requires SuiteSparse_config, in the ../SuiteSparse_config directory relative to
+this directory.
 
-	See http://www.cise.ufl.edu/research/sparse/colamd (the colamd.c
-	file) for the License.
-
+See the colamd.c file or http://www.suitesparse.com for the license to COLAMD.
 
 Related papers:
 
@@ -62,17 +57,15 @@ Related papers:
 	"An approximate minimum degree column ordering algorithm",
 	S. I. Larimore, MS Thesis, Dept. of Computer and Information
 	Science and Engineering, University of Florida, Gainesville, FL,
-	1998.  CISE Tech Report TR-98-016.  Available at 
-	ftp://ftp.cise.ufl.edu/cis/tech-reports/tr98/tr98-016.ps
-	via anonymous ftp.
+	1998.  CISE Tech Report TR-98-016.
 
 	Approximate Deficiency for Ordering the Columns of a Matrix,
 	J. L. Kern, Senior Thesis, Dept. of Computer and Information
 	Science and Engineering, University of Florida, Gainesville, FL,
-	1999.  Available at http://www.cise.ufl.edu/~davis/Kern/kern.ps 
+	1999.
 
 
-Authors:  Stefan I. Larimore and Timothy A. Davis, University of Florida,
+Authors:  Stefan I. Larimore and Timothy A. Davis,
 in collaboration with John Gilbert, Xerox PARC (now at UC Santa Barbara),
 and Esmong Ng, Lawrence Berkeley National Laboratory (much of this work
 he did while at Oak Ridge National Laboratory). 

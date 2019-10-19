@@ -10,8 +10,7 @@ function qrdemo (matrix_name)
 %
 % See also spqr, spqr_solve, mldivide
 
-%   Copyright 2008, Timothy A. Davis
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2008, Timothy A. Davis, http://www.suitesparse.com
 
 if (nargin == 0)
 

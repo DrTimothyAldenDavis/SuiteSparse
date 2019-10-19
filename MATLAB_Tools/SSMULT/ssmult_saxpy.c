@@ -9,7 +9,7 @@
  * part of C is computed to be zero, then C is returned as a real sparse matrix
  * (as in MATLAB).
  *
- * Copyright 2007, Timothy A. Davis, University of Florida
+ * Copyright 2007-2009, Timothy A. Davis, http://www.suitesparse.com
  */
 
 #include "ssmult.h"

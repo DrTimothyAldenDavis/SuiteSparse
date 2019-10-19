@@ -8,10 +8,10 @@
 
 default: everything
 
-include ../../UFconfig/UFconfig.mk
+include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 C = $(CC) $(CF) $(UMFPACK_CONFIG) \
-    -I../Include -I../Source -I../../AMD/Include -I../../UFconfig \
+    -I../Include -I../Source -I../../AMD/Include -I../../SuiteSparse_config \
     -I../../CHOLMOD/Include
 
 everything:

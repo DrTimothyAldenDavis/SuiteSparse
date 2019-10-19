@@ -35,7 +35,7 @@
     Authors:
 
 	The authors of the code itself are Stefan I. Larimore and Timothy A.
-	Davis (davis at cise.ufl.edu), University of Florida.  The algorithm was
+	Davis (DrTimothyAldenDavis@gmail.com).  The algorithm was
 	developed in collaboration with John Gilbert, Xerox PARC, and Esmond
 	Ng, Oak Ridge National Laboratory.
 
@@ -77,13 +77,7 @@
 
     Availability:
 
-	The colamd/symamd library is available at
-
-	    http://www.cise.ufl.edu/research/sparse/colamd/
-
-	This is the http://www.cise.ufl.edu/research/sparse/colamd/colamd.c
-	file.  It requires the colamd.h file.  It is required by the colamdmex.c
-	and symamdmex.c files, for the MATLAB interface to colamd and symamd.
+	The colamd/symamd library is available at http://www.suitesparse.com
 	Appears as ACM Algorithm 836.
 
     See the ChangeLog file for changes since Version 1.0.
@@ -105,9 +99,10 @@
 /* === Description of user-callable routines ================================ */
 /* ========================================================================== */
 
-/* COLAMD includes both int and UF_long versions of all its routines.  The
- * description below is for the int version.  For UF_long, all int arguments
- * become UF_long.  UF_long is normally defined as long, except for WIN64.
+/* COLAMD includes both int and SuiteSparse_long versions of all its routines.
+    The description below is for the int version.  For SuiteSparse_long, all
+    int arguments become SuiteSparse_long.  SuiteSparse_long is normally
+    defined as long, except for WIN64.
 
     ----------------------------------------------------------------------------
     colamd_recommended:
@@ -117,8 +112,8 @@
 
 	    #include "colamd.h"
 	    size_t colamd_recommended (int nnz, int n_row, int n_col) ;
-	    size_t colamd_l_recommended (UF_long nnz, UF_long n_row,
-		UF_long n_col) ;
+	    size_t colamd_l_recommended (SuiteSparse_long nnz,
+                SuiteSparse_long n_row, SuiteSparse_long n_col) ;
 
 	Purpose:
 
@@ -201,9 +196,10 @@
 	    #include "colamd.h"
 	    int colamd (int n_row, int n_col, int Alen, int *A, int *p,
 	    	double knobs [COLAMD_KNOBS], int stats [COLAMD_STATS]) ;
-	    UF_long colamd_l (UF_long n_row, UF_long n_col, UF_long Alen,
-		UF_long *A, UF_long *p, double knobs [COLAMD_KNOBS],
-		UF_long stats [COLAMD_STATS]) ;
+	    SuiteSparse_long colamd_l (SuiteSparse_long n_row,
+                SuiteSparse_long n_col, SuiteSparse_long Alen,
+                SuiteSparse_long *A, SuiteSparse_long *p, double knobs
+                [COLAMD_KNOBS], SuiteSparse_long stats [COLAMD_STATS]) ;
 
 	Purpose:
 
@@ -379,8 +375,7 @@
 
 	Example:
 	
-	    See http://www.cise.ufl.edu/research/sparse/colamd/example.c
-	    for a complete example.
+	    See colamd_example.c for a complete example.
 
 	    To order the columns of a 5-by-4 matrix with 11 nonzero entries in
 	    the following nonzero pattern
@@ -412,9 +407,10 @@
 	    int symamd (int n, int *A, int *p, int *perm,
 	    	double knobs [COLAMD_KNOBS], int stats [COLAMD_STATS],
 		void (*allocate) (size_t, size_t), void (*release) (void *)) ;
-	    UF_long symamd_l (UF_long n, UF_long *A, UF_long *p, UF_long *perm,
-	    	double knobs [COLAMD_KNOBS], UF_long stats [COLAMD_STATS],
-		void (*allocate) (size_t, size_t), void (*release) (void *)) ;
+	    SuiteSparse_long symamd_l (SuiteSparse_long n, SuiteSparse_long *A,
+                SuiteSparse_long *p, SuiteSparse_long *perm, double knobs
+                [COLAMD_KNOBS], SuiteSparse_long stats [COLAMD_STATS], void
+                (*allocate) (size_t, size_t), void (*release) (void *)) ;
 
 	Purpose:
 
@@ -581,7 +577,7 @@
 
 	    #include "colamd.h"
 	    colamd_report (int stats [COLAMD_STATS]) ;
-	    colamd_l_report (UF_long stats [COLAMD_STATS]) ;
+	    colamd_l_report (SuiteSparse_long stats [COLAMD_STATS]) ;
 
 	Purpose:
 
@@ -602,7 +598,7 @@
 
 	    #include "colamd.h"
 	    symamd_report (int stats [COLAMD_STATS]) ;
-	    symamd_l_report (UF_long stats [COLAMD_STATS]) ;
+	    symamd_l_report (SuiteSparse_long stats [COLAMD_STATS]) ;
 
 	Purpose:
 
@@ -681,17 +677,14 @@
 #endif
 
 /* ========================================================================== */
-/* === int or UF_long ======================================================= */
+/* === int or SuiteSparse_long ============================================== */
 /* ========================================================================== */
-
-/* define UF_long */
-#include "UFconfig.h"
 
 #ifdef DLONG
 
-#define Int UF_long
-#define ID  UF_long_id
-#define Int_MAX UF_long_max
+#define Int SuiteSparse_long
+#define ID  SuiteSparse_long_id
+#define Int_MAX SuiteSparse_long_max
 
 #define COLAMD_recommended colamd_l_recommended
 #define COLAMD_set_defaults colamd_l_set_defaults

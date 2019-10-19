@@ -7,7 +7,7 @@ function err = test_functions
 %
 % See also test_all, factorize, inverse, mldivide
 
-% Copyright 2011, Timothy A. Davis, University of Florida.
+% Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
 
 fprintf ('\n----- Test functions:\n') ;
 reset_rand ;

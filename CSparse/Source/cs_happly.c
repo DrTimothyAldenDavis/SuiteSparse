@@ -1,8 +1,8 @@
 #include "cs.h"
 /* apply the ith Householder vector to x */
-int cs_happly (const cs *V, int i, double beta, double *x)
+csi cs_happly (const cs *V, csi i, double beta, double *x)
 {
-    int p, *Vp, *Vi ;
+    csi p, *Vp, *Vi ;
     double *Vx, tau = 0 ;
     if (!CS_CSC (V) || !x) return (0) ;     /* check inputs */
     Vp = V->p ; Vi = V->i ; Vx = V->x ;

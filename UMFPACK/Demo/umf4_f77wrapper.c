@@ -3,19 +3,19 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
+/* UMFPACK Copyright (c) 2005-2012 by Timothy A. Davis,                       */
+/* http://www.suitesparse.com. All Rights Reserved.  See ../Doc/License       */
+/* for License.                                                               */
 /* -------------------------------------------------------------------------- */
 
 /* FORTRAN interface for the C-callable UMFPACK library (double / int version
- * only and double / UF_long versions only).  This is HIGHLY non-portable.  You
- * will need to modify this depending on how your FORTRAN and C compilers
- * behave.  This has been tested in Linux, Sun Solaris, SGI IRIX, and IBM AIX,
- * with various compilers.  It has not been exhaustively tested on all possible
- * combinations of C and FORTRAN compilers.  The UF_long version works on
- * Solaris, SGI IRIX, and IBM AIX when the UMFPACK library is compiled in
- * 64-bit mode.
+ * only and double / SuiteSparse_long versions only).  This is HIGHLY
+ * non-portable.  You will need to modify this depending on how your FORTRAN
+ * and C compilers behave.  This has been tested in Linux, Sun Solaris, SGI
+ * IRIX, and IBM AIX, with various compilers.  It has not been exhaustively
+ * tested on all possible combinations of C and FORTRAN compilers.  The
+ * SuiteSparse_long version works on Solaris, SGI IRIX, and IBM AIX when the
+ * UMFPACK library is compiled in 64-bit mode.
  *
  * Only a subset of UMFPACK's capabilities are provided.  Refer to the UMFPACK
  * User Guide for details.
@@ -55,7 +55,8 @@
  * compiled in 64-bit mode.
  *
  * If you want to use 64-bit integers, try compiling this file with the -DDLONG
- * compiler option (via "make fortran64").  First modify your UFconfig.mk
+ * compiler option (via "make fortran64").  First modify your
+ * SuiteSparse_config.mk
  * file to compile UMFPACK in LP64 mode (see the User Guide for details).
  * Your FORTRAN code should use integer*8.  See umf4hb64.f for an example.
  *
@@ -84,12 +85,12 @@
 #define LEN 200
 
 /* -------------------------------------------------------------------------- */
-/* integer type: int or UF_long */
+/* integer type: int or SuiteSparse_long */
 /* -------------------------------------------------------------------------- */
 
 #if defined (DLONG)
 
-#define Int UF_long
+#define Int SuiteSparse_long
 #define UMFPACK_defaults	 umfpack_dl_defaults
 #define UMFPACK_free_numeric	 umfpack_dl_free_numeric
 #define UMFPACK_free_symbolic	 umfpack_dl_free_symbolic

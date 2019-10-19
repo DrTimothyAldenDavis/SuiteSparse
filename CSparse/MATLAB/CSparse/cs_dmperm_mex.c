@@ -11,7 +11,7 @@ void mexFunction
     double seed ;
     cs *A, Amatrix ;
     csd *D ;
-    int m, n, *jmatch, iseed ;
+    csi m, n, *jmatch, iseed ;
     if (nargin < 1 || nargin > 2 || nargout > 6)
     {
         mexErrMsgTxt ("Usage: [p,q,r,s,cc,rr] = cs_dmperm (A,seed)") ;

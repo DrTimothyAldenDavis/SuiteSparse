@@ -5,9 +5,7 @@ function test15
 %   test15
 % See also: testall
 
-%   Copyright 2006-2007, Timothy A. Davis.
-%   http://www.cise.ufl.edu/research/sparse
-
+% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
 rand ('state', 0) ;
 randn ('state', 0) ;

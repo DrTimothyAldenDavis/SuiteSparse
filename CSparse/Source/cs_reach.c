@@ -1,9 +1,9 @@
 #include "cs.h"
 /* xi [top...n-1] = nodes reachable from graph of G*P' via nodes in B(:,k).
  * xi [n...2n-1] used as workspace */
-int cs_reach (cs *G, const cs *B, int k, int *xi, const int *pinv)
+csi cs_reach (cs *G, const cs *B, csi k, csi *xi, const csi *pinv)
 {
-    int p, n, top, *Bp, *Bi, *Gp ;
+    csi p, n, top, *Bp, *Bi, *Gp ;
     if (!CS_CSC (G) || !CS_CSC (B) || !xi) return (-1) ;    /* check inputs */
     n = G->n ; Bp = B->p ; Bi = B->i ; Gp = G->p ;
     top = n ;

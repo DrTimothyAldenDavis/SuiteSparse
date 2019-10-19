@@ -9,15 +9,9 @@ function rho = ldl_normest (A, L, D)
 %
 %       rho = norm (A-L*D*L', 1)
 %
-% Authors:  William W. Hager, Math Dept., Univ. of Florida
-%       Timothy A. Davis, CISE Dept., Univ. of Florida
-%       Gainesville, FL, 32611, USA.
-%       based on normest1, contributed on November, 1997
-%
 % See also condest, normest
 
-%   Copyright 2006-2007, William W. Hager and Timothy A. Davis
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2006-2007, William W. Hager and Timothy A. Davis
 
 [m n] = size (A) ;
 

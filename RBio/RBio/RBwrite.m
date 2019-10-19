@@ -30,7 +30,7 @@ function mtype = RBwrite (filename, A, Z, title, key)			    %#ok
 %
 % See also RBread, RBtype.
 
-% Copyright 2009, Timothy A. Davis, University of Florida
+% Copyright 2009-2011, Timothy A. Davis, http://www.suitesparse.com
 
 error ('RBwrite mexFunction not found') ;
 

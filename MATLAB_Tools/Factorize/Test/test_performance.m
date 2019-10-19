@@ -7,7 +7,7 @@ function err = test_performance
 %
 % See also test_all, test_factorize, factorize, inverse, mldivide
 
-% Copyright 2011, Timothy A. Davis, University of Florida.
+% Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
 
 fprintf ('\nPerformance comparisons of 4 methods:\n') ;
 fprintf ('    backslash:  A\\b, or L\\b (and related) for solve times.\n') ;

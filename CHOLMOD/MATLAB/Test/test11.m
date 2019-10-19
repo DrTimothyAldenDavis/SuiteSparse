@@ -5,7 +5,7 @@ function test11 (nmat)
 %   test11(nmat)
 % See also cholmod_test
 
-% Copyright 2006-2007, Timothy A. Davis, University of Florida
+% Copyright 2007, Timothy A. Davis, http://www.suitesparse.com
 
 fprintf ('=================================================================\n');
 fprintf ('test11 : compare CHOLMOD and MATLAB, save results in Results.mat\n');

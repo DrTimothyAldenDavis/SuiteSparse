@@ -36,6 +36,6 @@ function s = ssmultsym (A,B)                                                %#ok
 %
 % See also ssmult, mtimes.
 
-% Copyright 2009, Timothy A. Davis, University of Florida
+% Copyright 2007-2009, Timothy A. Davis, http://www.suitesparse.com
 
 error ('ssmultsym mexFunction not found') ;

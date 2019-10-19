@@ -25,3 +25,4 @@ qrdemo_diary.txt    diary of "qrdemo" in MATLAB
 qrdemoc.c           C demo program, compile and test it with "make cdemo"
 qrdemoc_out.txt     output of "make cdemo"
 
+Timothy A. Davis, http://www.suitesparse.com

@@ -3,7 +3,7 @@
 % Example:
 %   umfpack_simple
 %
-% Copyright 1995-2007 by Timothy A. Davis.
+% Copyright 1995-2007 by Timothy A. Davis, http://www.suitesparse.com
 %
 % UMFPACK License:
 %
@@ -13,8 +13,6 @@
 %     modify it under the terms of the GNU General Public
 %     License as published by the Free Software Foundation; either
 %     version 2 of the License, or (at your option) any later version.
-
-% Availability: http://www.cise.ufl.edu/research/sparse/umfpack
 %
 % See also: umfpack, umfpack2, umfpack_details
 

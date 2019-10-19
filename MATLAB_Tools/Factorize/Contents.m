@@ -38,7 +38,7 @@
 %
 % The cod function for sparse matrices requires the SPQR mexFunction from the
 % SuiteSparse library.  The simplest way to get this is to install all of
-% SuiteSparse from http://www.cise.ufl.edu/research/sparse .
+% SuiteSparse from http://www.suitesparse.com.
 %
 % The Test/ subdirectory contains functions that test this package.
 %
@@ -62,4 +62,4 @@
 %   factorization_qrt_sparse  - (P*A)*(P*A)'=R'*R where A is sparse.
 %   factorization_svd         - A = U*S*V'
 
-% Copyright 2011, Timothy A. Davis, University of Florida.
+% Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com

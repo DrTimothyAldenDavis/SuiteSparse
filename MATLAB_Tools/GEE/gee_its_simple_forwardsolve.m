@@ -14,8 +14,7 @@ function b = gee_its_simple_forwardsolve (L, b)
 %
 % See also: mldivide, gee_its_simple, gee_its_short, gee_its_simple_backsolve
 
-% Copyright 2007, Timothy A. Davis.
-% http://www.cise.ufl.edu/research/sparse
+% Copyright 2007, Timothy A. Davis, http://www.suitesparse.com
 
 %-------------------------------------------------------------------------------
 % check inputs

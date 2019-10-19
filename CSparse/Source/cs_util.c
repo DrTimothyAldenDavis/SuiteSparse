@@ -1,6 +1,6 @@
 #include "cs.h"
 /* allocate a sparse matrix (triplet form or compressed-column form) */
-cs *cs_spalloc (int m, int n, int nzmax, int values, int triplet)
+cs *cs_spalloc (csi m, csi n, csi nzmax, csi values, csi triplet)
 {
     cs *A = cs_calloc (1, sizeof (cs)) ;    /* allocate the cs struct */
     if (!A) return (NULL) ;                 /* out of memory */
@@ -8,20 +8,20 @@ cs *cs_spalloc (int m, int n, int nzmax, int values, int triplet)
     A->n = n ;
     A->nzmax = nzmax = CS_MAX (nzmax, 1) ;
     A->nz = triplet ? 0 : -1 ;              /* allocate triplet or comp.col */
-    A->p = cs_malloc (triplet ? nzmax : n+1, sizeof (int)) ;
-    A->i = cs_malloc (nzmax, sizeof (int)) ;
+    A->p = cs_malloc (triplet ? nzmax : n+1, sizeof (csi)) ;
+    A->i = cs_malloc (nzmax, sizeof (csi)) ;
     A->x = values ? cs_malloc (nzmax, sizeof (double)) : NULL ;
     return ((!A->p || !A->i || (values && !A->x)) ? cs_spfree (A) : A) ;
 }
 
 /* change the max # of entries sparse matrix */
-int cs_sprealloc (cs *A, int nzmax)
+csi cs_sprealloc (cs *A, csi nzmax)
 {
-    int ok, oki, okj = 1, okx = 1 ;
+    csi ok, oki, okj = 1, okx = 1 ;
     if (!A) return (0) ;
     if (nzmax <= 0) nzmax = (CS_CSC (A)) ? (A->p [A->n]) : A->nz ;
-    A->i = cs_realloc (A->i, nzmax, sizeof (int), &oki) ;
-    if (CS_TRIPLET (A)) A->p = cs_realloc (A->p, nzmax, sizeof (int), &okj) ;
+    A->i = cs_realloc (A->i, nzmax, sizeof (csi), &oki) ;
+    if (CS_TRIPLET (A)) A->p = cs_realloc (A->p, nzmax, sizeof (csi), &okj) ;
     if (A->x) A->x = cs_realloc (A->x, nzmax, sizeof (double), &okx) ;
     ok = (oki && okj && okx) ;
     if (ok) A->nzmax = nzmax ;
@@ -62,15 +62,15 @@ css *cs_sfree (css *S)
 }
 
 /* allocate a cs_dmperm or cs_scc result */
-csd *cs_dalloc (int m, int n)
+csd *cs_dalloc (csi m, csi n)
 {
     csd *D ;
     D = cs_calloc (1, sizeof (csd)) ;
     if (!D) return (NULL) ;
-    D->p = cs_malloc (m, sizeof (int)) ;
-    D->r = cs_malloc (m+6, sizeof (int)) ;
-    D->q = cs_malloc (n, sizeof (int)) ;
-    D->s = cs_malloc (n+6, sizeof (int)) ;
+    D->p = cs_malloc (m, sizeof (csi)) ;
+    D->r = cs_malloc (m+6, sizeof (csi)) ;
+    D->q = cs_malloc (n, sizeof (csi)) ;
+    D->s = cs_malloc (n+6, sizeof (csi)) ;
     return ((!D->p || !D->r || !D->q || !D->s) ? cs_dfree (D) : D) ;
 }
 
@@ -86,23 +86,23 @@ csd *cs_dfree (csd *D)
 }
 
 /* free workspace and return a sparse matrix result */
-cs *cs_done (cs *C, void *w, void *x, int ok)
+cs *cs_done (cs *C, void *w, void *x, csi ok)
 {
     cs_free (w) ;                       /* free workspace */
     cs_free (x) ;
     return (ok ? C : cs_spfree (C)) ;   /* return result if OK, else free it */
 }
 
-/* free workspace and return int array result */
-int *cs_idone (int *p, cs *C, void *w, int ok)
+/* free workspace and return csi array result */
+csi *cs_idone (csi *p, cs *C, void *w, csi ok)
 {
     cs_spfree (C) ;                     /* free temporary matrix */
     cs_free (w) ;                       /* free workspace */
-    return (ok ? p : (int *) cs_free (p)) ; /* return result, or free it */
+    return (ok ? p : (csi *) cs_free (p)) ; /* return result, or free it */
 }
 
 /* free workspace and return a numeric factorization (Cholesky, LU, or QR) */
-csn *cs_ndone (csn *N, cs *C, void *w, void *x, int ok)
+csn *cs_ndone (csn *N, cs *C, void *w, void *x, csi ok)
 {
     cs_spfree (C) ;                     /* free temporary matrix */
     cs_free (w) ;                       /* free workspace */
@@ -111,7 +111,7 @@ csn *cs_ndone (csn *N, cs *C, void *w, void *x, int ok)
 }
 
 /* free workspace and return a csd result */
-csd *cs_ddone (csd *D, cs *C, void *w, int ok)
+csd *cs_ddone (csd *D, cs *C, void *w, csi ok)
 {
     cs_spfree (C) ;                     /* free temporary matrix */
     cs_free (w) ;                       /* free workspace */

@@ -4,7 +4,7 @@ function test11results
 %   test11results
 % See also test11, cholmod_test
 
-% Copyright 2006-2007, Timothy A. Davis, University of Florida
+% Copyright 2007, Timothy A. Davis, http://www.suitesparse.com
 
 load Results
 index = UFget ;

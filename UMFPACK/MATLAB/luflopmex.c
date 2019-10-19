@@ -3,9 +3,8 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
+/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
+/* All Rights Reserved.  See ../Doc/License for License.                      */
 /* -------------------------------------------------------------------------- */
 
 /*
@@ -18,12 +17,11 @@
         f = 2*Lnz*Unz + sum (Lnz) ;
 
     without allocating O (lunz) space.
-
-    v5.1: port to 64-bit MATLAB
 */
 
 #include "mex.h"
-#include "UFconfig.h"
+#include "SuiteSparse_config.h"
+#define Long SuiteSparse_long
 
 #ifndef TRUE
 #define TRUE (1)
@@ -47,7 +45,7 @@ void mexFunction
 
     double flop_count ;
     double *pflop ;
-    UF_long *Lp, *Li, *Up, *Ui, *Unz, n, k, row, col, p, Lnz_k, Unz_k ;
+    Long *Lp, *Li, *Up, *Ui, *Unz, n, k, row, col, p, Lnz_k, Unz_k ;
     mxArray *Lmatrix, *Umatrix ;
 
     /* ---------------------------------------------------------------------- */
@@ -73,13 +71,13 @@ void mexFunction
 	mexErrMsgTxt ("Usage:  f = luflop (L, U) ;  L and U must be sparse") ;
     }
 
-    Lp = (UF_long *) mxGetJc (Lmatrix) ;
-    Li = (UF_long *) mxGetIr (Lmatrix) ;
+    Lp = (Long *) mxGetJc (Lmatrix) ;
+    Li = (Long *) mxGetIr (Lmatrix) ;
 
-    Up = (UF_long *) mxGetJc (Umatrix) ;
-    Ui = (UF_long *) mxGetIr (Umatrix) ;
+    Up = (Long *) mxGetJc (Umatrix) ;
+    Ui = (Long *) mxGetIr (Umatrix) ;
 
-    Unz = (UF_long *) mxMalloc (n * sizeof (UF_long)) ;
+    Unz = (Long *) mxMalloc (n * sizeof (Long)) ;
 
     /* ---------------------------------------------------------------------- */
     /* count the nonzeros in each row of U */

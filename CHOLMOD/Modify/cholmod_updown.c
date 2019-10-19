@@ -8,7 +8,7 @@
  * The CHOLMOD/Modify Module is licensed under Version 2.0 of the GNU
  * General Public License.  See gpl.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
- * http://www.cise.ufl.edu/research/sparse
+ * http://www.suitesparse.com
  * -------------------------------------------------------------------------- */
 
 /* Updates/downdates the LDL' factorization (symbolic, then numeric), by

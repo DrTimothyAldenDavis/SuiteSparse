@@ -3,9 +3,8 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
+/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
+/* All Rights Reserved.  See ../Doc/License for License.                      */
 /* -------------------------------------------------------------------------- */
 
 int umfpack_di_get_numeric
@@ -24,18 +23,18 @@ int umfpack_di_get_numeric
     void *Numeric
 ) ;
 
-UF_long umfpack_dl_get_numeric
+SuiteSparse_long umfpack_dl_get_numeric
 (
-    UF_long Lp [ ],
-    UF_long Lj [ ],
+    SuiteSparse_long Lp [ ],
+    SuiteSparse_long Lj [ ],
     double Lx [ ],
-    UF_long Up [ ],
-    UF_long Ui [ ],
+    SuiteSparse_long Up [ ],
+    SuiteSparse_long Ui [ ],
     double Ux [ ],
-    UF_long P [ ],
-    UF_long Q [ ],
+    SuiteSparse_long P [ ],
+    SuiteSparse_long Q [ ],
     double Dx [ ],
-    UF_long *do_recip,
+    SuiteSparse_long *do_recip,
     double Rs [ ],
     void *Numeric
 ) ;
@@ -56,18 +55,18 @@ int umfpack_zi_get_numeric
     void *Numeric
 ) ;
 
-UF_long umfpack_zl_get_numeric
+SuiteSparse_long umfpack_zl_get_numeric
 (
-    UF_long Lp [ ],
-    UF_long Lj [ ],
+    SuiteSparse_long Lp [ ],
+    SuiteSparse_long Lj [ ],
     double Lx [ ], double Lz [ ],
-    UF_long Up [ ],
-    UF_long Ui [ ],
+    SuiteSparse_long Up [ ],
+    SuiteSparse_long Ui [ ],
     double Ux [ ], double Uz [ ],
-    UF_long P [ ],
-    UF_long Q [ ],
+    SuiteSparse_long P [ ],
+    SuiteSparse_long Q [ ],
     double Dx [ ], double Dz [ ],
-    UF_long *do_recip,
+    SuiteSparse_long *do_recip,
     double Rs [ ],
     void *Numeric
 ) ;
@@ -82,11 +81,11 @@ double int Syntax:
     status = umfpack_di_get_numeric (Lp, Lj, Lx, Up, Ui, Ux, P, Q, Dx,
 	&do_recip, Rs, Numeric) ;
 
-double UF_long Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Numeric ;
-    UF_long *Lp, *Lj, *Up, *Ui, *P, *Q, status, do_recip ;
+    SuiteSparse_long *Lp, *Lj, *Up, *Ui, *P, *Q, status, do_recip ;
     double *Lx, *Ux, *Dx, *Rs ;
     status = umfpack_dl_get_numeric (Lp, Lj, Lx, Up, Ui, Ux, P, Q, Dx,
 	&do_recip, Rs, Numeric) ;
@@ -100,16 +99,16 @@ complex int Syntax:
     status = umfpack_zi_get_numeric (Lp, Lj, Lx, Lz, Up, Ui, Ux, Uz, P, Q,
 	Dx, Dz, &do_recip, Rs, Numeric) ;
 
-complex UF_long Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Numeric ;
-    UF_long *Lp, *Lj, *Up, *Ui, *P, *Q, status, do_recip ;
+    SuiteSparse_long *Lp, *Lj, *Up, *Ui, *P, *Q, status, do_recip ;
     double *Lx, *Lz, *Ux, *Uz, *Dx, *Dz, *Rs ;
     status = umfpack_zl_get_numeric (Lp, Lj, Lx, Lz, Up, Ui, Ux, Uz, P, Q,
 	Dx, Dz, &do_recip, Rs, Numeric) ;
 
-packed complex int/UF_long Syntax:
+packed complex int/SuiteSparse_long Syntax:
 
     Same as above, except Lz, Uz, and Dz are all NULL.
 

@@ -9,7 +9,7 @@ function checkbtf (A, p, q, r)
 %
 % See also drawbtf, maxtrans, strongcomp.
 
-% Copyright 2007, Timothy A. Davis, University of Florida
+% Copyright 2007, Timothy A. Davis, http://www.suitesparse.com
 
 [m n] = size (A) ;
 if (m ~= n)

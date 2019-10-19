@@ -11,21 +11,21 @@ int spqr_happly_work
     // input
     int method,     // 0,1,2,3 
 
-    Int m,          // X is m-by-n
-    Int n,
+    Long m,         // X is m-by-n
+    Long n,
 
     // FUTURE : make H cholmod_sparse:
-    Int nh,         // number of Householder vectors
-    Int *Hp,        // size nh+1, column pointers for H
-    Int hchunk, 
+    Long nh,        // number of Householder vectors
+    Long *Hp,       // size nh+1, column pointers for H
+    Long hchunk,
 
     // outputs; sizes of workspaces needed
-    Int *p_vmax, 
-    Int *p_vsize, 
-    Int *p_csize
+    Long *p_vmax, 
+    Long *p_vsize, 
+    Long *p_csize
 )
 {
-    Int maxhlen, h, hlen, vmax, mh, vsize, csize, vsize1, vsize2 ;
+    Long maxhlen, h, hlen, vmax, mh, vsize, csize, vsize1, vsize2 ;
     int ok = TRUE ;
 
     // -------------------------------------------------------------------------
@@ -60,7 +60,7 @@ int spqr_happly_work
     // determine workspace sizes
     // -------------------------------------------------------------------------
 
-    // Int overflow cannot occur with vmax since H is already allocated
+    // Long overflow cannot occur with vmax since H is already allocated
     if (method == 0 || method == 3)
     {
         // apply H in the forward direction; H(0) first, H(nh-1) last

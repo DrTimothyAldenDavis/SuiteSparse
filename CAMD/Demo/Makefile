@@ -4,13 +4,11 @@
 
 default: camd_simple camd_demo camd_demo2 camd_l_demo
 
-include ../../UFconfig/UFconfig.mk
+include ../../SuiteSparse_config/SuiteSparse_config.mk
 
-C = $(CC) $(CF) -I../Include -I../../UFconfig
+C = $(CC) $(CF) -I../Include -I../../SuiteSparse_config
 
-UFCONFIG = ../../UFconfig/UFconfig.h
-
-INC = ../Include/camd.h $(UFCONFIG)
+INC = ../Include/camd.h ../../SuiteSparse_config/SuiteSparse_config.h
 
 library:
 	( cd ../Lib ; $(MAKE) )

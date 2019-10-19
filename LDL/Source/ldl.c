@@ -97,7 +97,7 @@
  * an example in MATLAB, and the ldlmain.c stand-alone C program for examples of
  * how to find P.  Routines for manipulating compressed-column matrices are
  * available in UMFPACK.  AMD, SYMAMD, UMFPACK, and this LDL package are all
- * available at http://www.cise.ufl.edu/research/sparse.
+ * available at http://www.suitesparse.com.
  *
  * -------------------------
  * Possible simplifications:
@@ -148,11 +148,10 @@
  * Compare ldl_symbolic with the first part of ldl_numeric, and note that the
  * while (len > 0) loop is not present in ldl_symbolic.
  *
- * LDL Version 1.3, Copyright (c) 2006 by Timothy A Davis,
- * University of Florida.  All Rights Reserved.  Developed while on sabbatical
+ * Copyright (c) 2006 by Timothy A Davis, http://www.suitesparse.com.
+ * All Rights Reserved.  Developed while on sabbatical
  * at Stanford University and Lawrence Berkeley National Laboratory.  Refer to
- * the README file for the License.  Available at
- * http://www.cise.ufl.edu/research/sparse.
+ * the README file for the License.
  */
 
 #include "ldl.h"

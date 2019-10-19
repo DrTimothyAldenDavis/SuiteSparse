@@ -1,9 +1,9 @@
 #include "cs_mex.h"
 /* find an augmenting path starting at column j and extend the match if found */
 static
-int augment (int k, cs *A, int *jmatch, int *cheap, int *w, int j)
+csi augment (csi k, cs *A, csi *jmatch, csi *cheap, csi *w, csi j)
 {
-    int found = 0, p, i = -1, *Ap = A->p, *Ai = A->i ;
+    csi found = 0, p, i = -1, *Ap = A->p, *Ai = A->i ;
     /* --- Start depth-first-search at node j ------------------------------- */
     w [j] = k ;                             /* mark j as visited for kth path */
     for (p = cheap [j] ; p < Ap [j+1] && !found ; p++)
@@ -25,13 +25,13 @@ int augment (int k, cs *A, int *jmatch, int *cheap, int *w, int j)
 
 /* find a maximum transveral */
 static
-int *maxtrans (cs *A)   /* returns jmatch [0..m-1] */
+csi *maxtrans (cs *A)   /* returns jmatch [0..m-1] */
 {
-    int i, j, k, n, m, *Ap, *jmatch, *w, *cheap ;
+    csi i, j, k, n, m, *Ap, *jmatch, *w, *cheap ;
     if (!A) return (NULL) ;                         /* check inputs */
     n = A->n ; m = A->m ; Ap = A->p ;
-    jmatch = cs_malloc (m, sizeof (int)) ;          /* allocate result */
-    w = cs_malloc (2*n, sizeof (int)) ;             /* allocate workspace */
+    jmatch = cs_malloc (m, sizeof (csi)) ;          /* allocate result */
+    w = cs_malloc (2*n, sizeof (csi)) ;             /* allocate workspace */
     if (!w || !jmatch) return (cs_idone (jmatch, NULL, w, 0)) ;
     cheap = w + n ;
     for (j = 0 ; j < n ; j++) cheap [j] = Ap [j] ;  /* for cheap assignment */
@@ -42,11 +42,11 @@ int *maxtrans (cs *A)   /* returns jmatch [0..m-1] */
 }
 
 /* invert a maximum matching */
-static int *invmatch (int *jmatch, int m, int n)
+static csi *invmatch (csi *jmatch, csi m, csi n)
 {
-    int i, j, *imatch ;
+    csi i, j, *imatch ;
     if (!jmatch) return (NULL) ;
-    imatch = cs_malloc (n, sizeof (int)) ;
+    imatch = cs_malloc (n, sizeof (csi)) ;
     if (!imatch) return (NULL) ;
     for (j = 0 ; j < n ; j++) imatch [j] = -1 ;
     for (i = 0 ; i < m ; i++) if (jmatch [i] >= 0) imatch [jmatch [i]] = i ;
@@ -63,7 +63,7 @@ void mexFunction
 {
     cs *A, Amatrix ;
     double *x ;
-    int i, m, n, *imatch, *jmatch ;
+    csi i, m, n, *imatch, *jmatch ;
 
     if (nargout > 1 || nargin != 1)
     {

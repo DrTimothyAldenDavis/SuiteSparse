@@ -18,8 +18,7 @@ function Y = spqr_qmult (H,X,method)                                        %#ok
 %
 % See also SPQR, SPQR_SOLVE, QR, MTIMES
 
-%   Copyright 2008, Timothy A. Davis
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2008, Timothy A. Davis, http://www.suitesparse.com
 
 help spqr_qmult
 error ('spqr_qmult mexFunction not found') ;

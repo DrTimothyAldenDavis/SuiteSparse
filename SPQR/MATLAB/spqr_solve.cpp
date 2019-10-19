@@ -57,9 +57,9 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    Int *Bp, *Bi ;
+    Long *Bp, *Bi ;
     double *Ax, *Bx, dummy ;
-    Int m, n, k, bncols, p, i, rank, A_complex, B_complex, is_complex,
+    Long m, n, k, bncols, p, i, rank, A_complex, B_complex, is_complex,
         anz, bnz ;
     spqr_mx_options opts ;
     cholmod_sparse *A, Amatrix, *Xsparse ; 
@@ -67,9 +67,7 @@ void mexFunction
     cholmod_common Common, *cc ;
     char msg [LEN+1] ;
 
-#ifdef TIMING
-    double t0 = (nargout > 1) ? spqr_time ( ) : 0 ;
-#endif
+    double t0 = (nargout > 1) ? SuiteSparse_time ( ) : 0 ;
 
     // -------------------------------------------------------------------------
     // start CHOLMOD and set parameters
@@ -270,13 +268,8 @@ void mexFunction
 
     if (nargout > 1)
     {
-#ifdef TIMING
         double flops = cc->other1 [0] ;
-        double t = spqr_time ( ) - t0 ;
-#else
-        double flops = -1 ;
-        double t = -1 ;
-#endif
+        double t = SuiteSparse_time ( ) - t0 ;
         pargout [1] = spqr_mx_info (cc, t, flops) ;
     }
 

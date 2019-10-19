@@ -5,9 +5,11 @@
 # If you compile CHOLMOD with -DNPARTITION, then you do not need METIS,
 # CCOLAMD, or the Partition module, but by default this test requres METIS.
 #
-# To compile: use "make".  To run the test: "make go"
+# To compile and run: use "make".
 
-include ../../UFconfig/UFconfig.mk
+default: go
+
+include ../../SuiteSparse_config/SuiteSparse_config.mk
 include Make.inc
 
 # Tcov requires gcc
@@ -23,7 +25,7 @@ C = $(CC) $(CF) $(CHOLMOD_CONFIG) $(NANTESTS)
 # LIB = $(METIS) -lm -llapack_plain -lblas_plain -lgfortran -lgfortranbegin
 # LIB = $(METIS) -lm -llapack -lblas -lgfortran -lgfortranbegin
 # Linux:
-  LIB = $(METIS) -lm -llapack_plain -lblas_plain -lgfortran -lgfortranbegin -lpthread
+  LIB = $(METIS) -lm -llapack_plain -lblas_plain -lgfortran -lgfortranbegin -lpthread -lrt
 # Mac:
 # LIB = $(METIS) -lm -llapack -lblas -lgfortran -lgfortranbegin -lpthread
 
@@ -38,9 +40,9 @@ PRETTY = grep -v "^\#" | indent -bl -nce -bli0 -i4 -sob -l120
 
 I = -I../../AMD/Include -I../../COLAMD/Include \
 	-I$(METIS_PATH)/Lib -I../../CCOLAMD/Include -I../../CAMD/Include \
-	-I../Include -I../../UFconfig
+	-I../Include -I../../SuiteSparse_config
 
-default: cm cl z_demo l_demo cmread clread
+ccode: cm cl z_demo l_demo cmread clread
 
 TEST = cm.c test_ops.c null.c null2.c lpdemo.c memory.c solve.c aug.c unpack.c \
 	raw_factor.c cctest.c ctest.c amdtest.c camdtest.c huge.c
@@ -294,9 +296,11 @@ LOBJ = \
 	l_super_symbolic.o \
 	$(LPARTITION_OBJ)
 
-IALL = $(IOBJ) $(AMDOBJ)  $(COLAMDOBJ)  $(CCOLAMDOBJ)  $(CAMDOBJ)
+CONFIG = zz_SuiteSparse_config.o
 
-LALL = $(LOBJ) $(LAMDOBJ) $(LCOLAMDOBJ) $(LCCOLAMDOBJ) $(LCAMDOBJ)
+IALL = $(IOBJ) $(AMDOBJ)  $(COLAMDOBJ)  $(CCOLAMDOBJ)  $(CAMDOBJ)   $(CONFIG)
+
+LALL = $(LOBJ) $(LAMDOBJ) $(LCOLAMDOBJ) $(LCCOLAMDOBJ) $(LCAMDOBJ)  $(CONFIG)
 
 
 cm: $(METIS) $(IALL) $(TEST) cm.h Makefile
@@ -540,6 +544,15 @@ $(LOBJ): $(INC)
 
 .c.o:
 	$(C) -c $(I) $*.c
+
+#-------------------------------------------------------------------------------
+# SUITESPARSE_CONFIG
+#-------------------------------------------------------------------------------
+
+zz_SuiteSparse_config.o: ../../SuiteSparse_config/SuiteSparse_config.c \
+    ../../SuiteSparse_config/SuiteSparse_config.h
+	$(C) -E $(I) $< | $(PRETTY) > zz_SuiteSparse_config.c
+	$(C) -c $(I) zz_SuiteSparse_config.c
 
 #-------------------------------------------------------------------------------
 # AMD

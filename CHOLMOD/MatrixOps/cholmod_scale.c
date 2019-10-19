@@ -7,7 +7,7 @@
  * The CHOLMOD/MatrixOps Module is licensed under Version 2.0 of the GNU
  * General Public License.  See gpl.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
- * http://www.cise.ufl.edu/research/sparse
+ * http://www.suitesparse.com
  * -------------------------------------------------------------------------- */
 
 /* scale a matrix:  A = diag(s)*A, A*diag(s), s*A, or diag(s)*A*diag(s)

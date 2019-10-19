@@ -34,8 +34,8 @@ template <typename Entry> int spqr_rmap
     cholmod_common *cc
 )
 {
-    Int n, j, i, p, n1rows, n1cols ;
-    Int *Rmap, *RmapInv, *R1p, *R1j ;
+    Long n, j, i, p, n1rows, n1cols ;
+    Long *Rmap, *RmapInv, *R1p, *R1j ;
 
     n = QR->nacols ;
     Rmap = QR->Rmap ;
@@ -44,8 +44,8 @@ template <typename Entry> int spqr_rmap
     if (Rmap == NULL)
     {
         ASSERT (RmapInv == NULL) ;
-        QR->Rmap    = Rmap    = (Int *) cholmod_l_malloc (n, sizeof (Int), cc) ;
-        QR->RmapInv = RmapInv = (Int *) cholmod_l_malloc (n, sizeof (Int), cc) ;
+        QR->Rmap    = Rmap    = (Long *) cholmod_l_malloc (n, sizeof(Long), cc);
+        QR->RmapInv = RmapInv = (Long *) cholmod_l_malloc (n, sizeof(Long), cc);
         if (cc->status < CHOLMOD_OK)
         {
             // out of memory

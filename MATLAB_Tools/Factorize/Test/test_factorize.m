@@ -6,7 +6,7 @@ function err = test_factorize (A)
 %
 % See also test_all, factorize, inverse, mldivide
 
-% Copyright 2011, Timothy A. Davis, University of Florida.
+% Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
 
 reset_rand ;
 if (nargin < 1)

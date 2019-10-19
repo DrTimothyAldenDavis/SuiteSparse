@@ -2,10 +2,9 @@ function UFwrite (Problem, Master, arg3, arg4)
 %UFWRITE write a Problem in Matrix Market or Rutherford/Boeing format
 % containing a set of text files in either Matrix Market or Rutherford/Boeing
 % format.  The Problem can be read from the files back into MATLAB via UFread.
-% See http://www.cise.ufl.edu/research/sparse/matrices for the UF Sparse
-% Matrix Collection home page.  The Problem directory is optionally compressed
-% via tar and gzip.  Arguments 3 and 4, below, are optional and can appear in
-% any order.
+% See http://www.suitesparse.com for the UF Sparse Matrix Collection home page.
+% The Problem directory is optionally compressed via tar and gzip.  Arguments 3
+% and 4, below, are optional and can appear in any order.
 %
 %    UFwrite (Problem)          % Matrix Market format, no tar, use current dir.
 %
@@ -33,10 +32,7 @@ function UFwrite (Problem, Master, arg3, arg4)
 %       A       an m-by-n sparse matrix, real or complex
 %
 %       id      an integer in the range of 1 to the # of problems in the
-%               collection.  Identical to the line number of
-%               http://www.cise.ufl.edu/research/sparse/mat/UF_Listing.txt
-%               containing the Problem.name.  New matrices are always added at
-%               the end of this list.
+%               collection.  Once assigned, the id never changes.
 %
 %       date    a string containing the date the matrix was created, or added
 %               to the collection if the creating date is unknown (but is likely
@@ -52,8 +48,7 @@ function UFwrite (Problem, Master, arg3, arg4)
 %
 %       kind    a string (i.e. 'directed graph') describing the type of problem;
 %               a list of words from a well-defined set (see the UF Sparse
-%               Matrix Collection home page for a description, or
-%               http://www.cise.ufl.edu/research/sparse/matrices/kind.html).
+%               Matrix Collection home page for a description).
 %
 % A Problem struct may also have the following optional fields.
 %
@@ -147,7 +142,7 @@ function UFwrite (Problem, Master, arg3, arg4)
 % Optionally uses the CHOLMOD mwrite mexFunction, for writing Problems in
 % Matrix Market format.
 
-% Copyright 2006-2007, Timothy A. Davis, University of Florida.
+% Copyright 2006-2007, Timothy A. Davis, http://www.suitesparse.com
 
 %-------------------------------------------------------------------------------
 % check inputs

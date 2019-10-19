@@ -1,11 +1,11 @@
 #include "cs.h"
 /* x=A\b where A is unsymmetric; b overwritten with solution */
-int cs_lusol (int order, const cs *A, double *b, double tol)
+csi cs_lusol (csi order, const cs *A, double *b, double tol)
 {
     double *x ;
     css *S ;
     csn *N ;
-    int n, ok ;
+    csi n, ok ;
     if (!CS_CSC (A) || !b) return (0) ;     /* check inputs */
     n = A->n ;
     S = cs_sqr (order, A, 0) ;              /* ordering and symbolic analysis */

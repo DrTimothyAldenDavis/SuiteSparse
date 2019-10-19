@@ -9,7 +9,7 @@ void mexFunction
 )
 {
     cs Amatrix, *A ;
-    int *P, order ;
+    csi *P, order ;
     if (nargout > 1 || nargin < 1 || nargin > 2)
     {
         mexErrMsgTxt ("Usage: p = cs_amd(A,order)") ;

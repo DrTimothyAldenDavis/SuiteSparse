@@ -10,7 +10,6 @@ function C = cs_multiply (A,B)                                              %#ok
 %
 %   See also CS_GAXPY, CS_ADD, MTIMES.
 
-%   Copyright 2006-2007, Timothy A. Davis.
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
 error ('cs_mult mexFunction not found') ;

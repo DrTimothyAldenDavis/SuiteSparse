@@ -19,17 +19,17 @@ void spqr_stranspose1
 (
     // input, not modified
     cholmod_sparse *A,  // m-by-n
-    Int *Qfill,         // size n, fill-reducing column permutation;
+    Long *Qfill,        // size n, fill-reducing column permutation;
                         // Qfill [k] = j
                         // if the kth column of S is the jth column of A.
                         // Identity permutation is used if Qfill is NULL.
 
     // output, contents not defined on input
     // FUTURE : make S cholmod_sparse
-    Int *Sp,            // size m+1, row pointers of S
-    Int *Sj,            // size nz, column indices of S
-    Int *PLinv,         // size m, inverse row permutation, PLinv [i] = k
-    Int *Sleft,         // size n+2, Sleft [j] ... Sleft [j+1]-1 is the list of
+    Long *Sp,           // size m+1, row pointers of S
+    Long *Sj,           // size nz, column indices of S
+    Long *PLinv,        // size m, inverse row permutation, PLinv [i] = k
+    Long *Sleft,        // size n+2, Sleft [j] ... Sleft [j+1]-1 is the list of
                         // rows of S whose leftmost column index is j.  The list
                         // can be empty (that is, Sleft [j] == Sleft [j+1]).
                         // Sleft [n] is the number of non-empty rows of S, and
@@ -37,10 +37,10 @@ void spqr_stranspose1
                         // Sleft [n+1]-1 gives the empty rows of S.
 
     // workspace, not defined on input or output
-    Int *W              // size m
+    Long *W              // size m
 )
 {
-    Int i, j, p, pend, t, k, row, col, kstart, s, m, n, *Ap, *Ai ;
+    Long i, j, p, pend, t, k, row, col, kstart, s, m, n, *Ap, *Ai ;
 
     // -------------------------------------------------------------------------
     // get inputs
@@ -48,8 +48,8 @@ void spqr_stranspose1
 
     m = A->nrow ;
     n = A->ncol ;
-    Ap = (Int *) A->p ;
-    Ai = (Int *) A->i ;
+    Ap = (Long *) A->p ;
+    Ai = (Long *) A->i ;
 
     // -------------------------------------------------------------------------
     // clear the inverse permutation

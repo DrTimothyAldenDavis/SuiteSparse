@@ -3,9 +3,8 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
+/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
+/* All Rights Reserved.  See ../Doc/License for License.                      */
 /* -------------------------------------------------------------------------- */
 
 int umfpack_di_triplet_to_col
@@ -22,18 +21,18 @@ int umfpack_di_triplet_to_col
     int Map [ ]
 ) ;
 
-UF_long umfpack_dl_triplet_to_col
+SuiteSparse_long umfpack_dl_triplet_to_col
 (
-    UF_long n_row,
-    UF_long n_col,
-    UF_long nz,
-    const UF_long Ti [ ],
-    const UF_long Tj [ ],
+    SuiteSparse_long n_row,
+    SuiteSparse_long n_col,
+    SuiteSparse_long nz,
+    const SuiteSparse_long Ti [ ],
+    const SuiteSparse_long Tj [ ],
     const double Tx [ ],
-    UF_long Ap [ ],
-    UF_long Ai [ ],
+    SuiteSparse_long Ap [ ],
+    SuiteSparse_long Ai [ ],
     double Ax [ ],
-    UF_long Map [ ]
+    SuiteSparse_long Map [ ]
 ) ;
 
 int umfpack_zi_triplet_to_col
@@ -50,18 +49,18 @@ int umfpack_zi_triplet_to_col
     int Map [ ]
 ) ;
 
-UF_long umfpack_zl_triplet_to_col
+SuiteSparse_long umfpack_zl_triplet_to_col
 (
-    UF_long n_row,
-    UF_long n_col,
-    UF_long nz,
-    const UF_long Ti [ ],
-    const UF_long Tj [ ],
+    SuiteSparse_long n_row,
+    SuiteSparse_long n_col,
+    SuiteSparse_long nz,
+    const SuiteSparse_long Ti [ ],
+    const SuiteSparse_long Tj [ ],
     const double Tx [ ], const double Tz [ ],
-    UF_long Ap [ ],
-    UF_long Ai [ ],
+    SuiteSparse_long Ap [ ],
+    SuiteSparse_long Ai [ ],
     double Ax [ ], double Az [ ],
-    UF_long Map [ ]
+    SuiteSparse_long Map [ ]
 ) ;
 
 /*
@@ -73,10 +72,10 @@ double int Syntax:
     status = umfpack_di_triplet_to_col (n_row, n_col, nz, Ti, Tj, Tx,
 	Ap, Ai, Ax, Map) ;
 
-double UF_long Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    UF_long n_row, n_col, nz, *Ti, *Tj, *Ap, *Ai, status, *Map ;
+    SuiteSparse_long n_row, n_col, nz, *Ti, *Tj, *Ap, *Ai, status, *Map ;
     double *Tx, *Ax ;
     status = umfpack_dl_triplet_to_col (n_row, n_col, nz, Ti, Tj, Tx,
 	Ap, Ai, Ax, Map) ;
@@ -89,10 +88,10 @@ complex int Syntax:
     status = umfpack_zi_triplet_to_col (n_row, n_col, nz, Ti, Tj, Tx, Tz,
 	Ap, Ai, Ax, Az, Map) ;
 
-UF_long Syntax:
+SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    UF_long n_row, n_col, nz, *Ti, *Tj, *Ap, *Ai, status, *Map ;
+    SuiteSparse_long n_row, n_col, nz, *Ti, *Tj, *Ap, *Ai, status, *Map ;
     double *Tx, *Tz, *Ax, *Az ;
     status = umfpack_zl_triplet_to_col (n_row, n_col, nz, Ti, Tj, Tx, Tz,
 	Ap, Ai, Ax, Az, Map) ;

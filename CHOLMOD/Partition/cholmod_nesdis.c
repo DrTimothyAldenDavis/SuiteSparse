@@ -8,7 +8,6 @@
  * The CHOLMOD/Partition Module is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
- * http://www.cise.ufl.edu/research/sparse
  * -------------------------------------------------------------------------- */
 
 /* CHOLMOD nested dissection and graph partitioning.
@@ -69,7 +68,7 @@
  * cholmod_metis_bisector).
  */
 
-static UF_long partition    /* size of separator or -1 if failure */
+static SuiteSparse_long partition    /* size of separator or -1 if failure */
 (
     /* inputs, not modified on output */
 #ifndef NDEBUG
@@ -590,7 +589,7 @@ static UF_long partition    /* size of separator or -1 if failure */
  * workspace: Flag (nrow)
  */
 
-static UF_long clear_flag (Int *Map, Int cn, cholmod_common *Common)
+static SuiteSparse_long clear_flag (Int *Map, Int cn, cholmod_common *Common)
 {
     Int nrow, i ;
     Int *Flag ;
@@ -840,7 +839,7 @@ static void find_components
  *	and O(nnz(A)) temporary memory space.
  */
 
-UF_long CHOLMOD(bisect)	/* returns # of nodes in separator */
+SuiteSparse_long CHOLMOD(bisect)	/* returns # of nodes in separator */
 (
     /* ---- input ---- */
     cholmod_sparse *A,	/* matrix to bisect */
@@ -1037,7 +1036,8 @@ UF_long CHOLMOD(bisect)	/* returns # of nodes in separator */
  *	Allocates an additional 3*n*sizeof(Int) temporary workspace
  */
 
-UF_long CHOLMOD(nested_dissection) /* returns # of components, or -1 if error */
+SuiteSparse_long CHOLMOD(nested_dissection)
+    /* returns # of components, or -1 if error */
 (
     /* ---- input ---- */
     cholmod_sparse *A,	/* matrix to order */
@@ -1956,7 +1956,7 @@ UF_long CHOLMOD(nested_dissection) /* returns # of components, or -1 if error */
  * Returns the new number of nodes in the separator tree.
  */
 
-UF_long CHOLMOD(collapse_septree)
+SuiteSparse_long CHOLMOD(collapse_septree)
 (
     /* ---- input ---- */
     size_t n,		/* # of nodes in the graph */

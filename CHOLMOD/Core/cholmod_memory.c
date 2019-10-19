@@ -8,7 +8,6 @@
  * The CHOLMOD/Core Module is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
- * http://www.cise.ufl.edu/research/sparse
  * -------------------------------------------------------------------------- */
 
 /* Core memory management routines:
@@ -401,11 +400,11 @@ int CHOLMOD(realloc_multiple)
 (
     /* ---- input ---- */
     size_t nnew,	/* requested # of items in reallocated blocks */
-    int nint,		/* number of int/UF_long blocks */
+    int nint,		/* number of int/SuiteSparse_long blocks */
     int xtype,		/* CHOLMOD_PATTERN, _REAL, _COMPLEX, or _ZOMPLEX */
     /* ---- in/out --- */
-    void **Iblock,	/* int or UF_long block */
-    void **Jblock,	/* int or UF_long block */
+    void **Iblock,	/* int or SuiteSparse_long block */
+    void **Jblock,	/* int or SuiteSparse_long block */
     void **Xblock,	/* complex or double block */
     void **Zblock,	/* zomplex case only: double block */
     size_t *nold_p,	/* current size of the I,J,X,Z blocks on input,

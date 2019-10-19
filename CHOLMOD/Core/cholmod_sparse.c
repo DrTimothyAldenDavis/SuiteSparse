@@ -8,7 +8,6 @@
  * The CHOLMOD/Core Module is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
- * http://www.cise.ufl.edu/research/sparse
  * -------------------------------------------------------------------------- */
 
 /* Core utility routines for the cholmod_sparse object:
@@ -414,7 +413,7 @@ cholmod_sparse *CHOLMOD(spzeros)
  * integer overflow cannot occur, since the matrix is already allocated.
  */
 
-UF_long CHOLMOD(nnz)
+SuiteSparse_long CHOLMOD(nnz)
 (
     /* ---- input ---- */
     cholmod_sparse *A,

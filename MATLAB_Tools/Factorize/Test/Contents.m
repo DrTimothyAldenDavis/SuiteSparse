@@ -6,7 +6,6 @@
 % output of this test in MATLAB R2011a is given in test_all.txt.
 %
 % Files
-%   reset_rand       - resets the state of rand
 %   test_accuracy    - test the accuracy of the factorize object
 %   test_all         - test the Factorize package (factorize, inverse, and related)
 %   test_all_cod     - test the COD factorization
@@ -20,4 +19,4 @@
 %   test_performance - compare performance of factorization/solve methods.
 %   test_svd         - test factorize(A,'svd') and factorize(A,'cod') for a given matrix
 
-% Copyright 2011, Timothy A. Davis, University of Florida
+% Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com

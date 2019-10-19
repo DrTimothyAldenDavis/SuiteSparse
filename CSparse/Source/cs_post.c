@@ -1,11 +1,11 @@
 #include "cs.h"
 /* post order a forest */
-int *cs_post (const int *parent, int n)
+csi *cs_post (const csi *parent, csi n)
 {
-    int j, k = 0, *post, *w, *head, *next, *stack ;
+    csi j, k = 0, *post, *w, *head, *next, *stack ;
     if (!parent) return (NULL) ;                        /* check inputs */
-    post = cs_malloc (n, sizeof (int)) ;                /* allocate result */
-    w = cs_malloc (3*n, sizeof (int)) ;                 /* get workspace */
+    post = cs_malloc (n, sizeof (csi)) ;                /* allocate result */
+    w = cs_malloc (3*n, sizeof (csi)) ;                 /* get workspace */
     if (!w || !post) return (cs_idone (post, NULL, w, 0)) ;
     head = w ; next = w + n ; stack = w + 2*n ;
     for (j = 0 ; j < n ; j++) head [j] = -1 ;           /* empty linked lists */

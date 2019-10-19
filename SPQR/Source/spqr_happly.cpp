@@ -34,22 +34,22 @@ template <typename Entry> void spqr_private_do_panel
 (
     // inputs, not modified
     int method,         // which method to use (0,1,2,3)
-    Int m,
-    Int n,
-    Int v,              // number of Householder vectors in the panel
-    Int *Wi,            // Wi [0:v-1] defines the pattern of the panel
-    Int h1,             // load H (h1) to H (h2-1) into V
-    Int h2,
+    Long m,
+    Long n,
+    Long v,             // number of Householder vectors in the panel
+    Long *Wi,           // Wi [0:v-1] defines the pattern of the panel
+    Long h1,            // load H (h1) to H (h2-1) into V
+    Long h2,
 
     // FUTURE : make H cholmod_sparse:
-    Int *Hp,            // Householder vectors: mh-by-nh sparse matrix
-    Int *Hi,
+    Long *Hp,           // Householder vectors: mh-by-nh sparse matrix
+    Long *Hi,
     Entry *Hx,
 
     Entry *Tau,         // Householder coefficients (size nh)
 
     // input/output
-    Int *Wmap,          // inverse of Wi on input, set to all EMPTY on output
+    Long *Wmap,         // inverse of Wi on input, set to all EMPTY on output
     Entry *X,           // m-by-n with leading dimension m
 
     // workspace, undefined on input and output
@@ -60,7 +60,7 @@ template <typename Entry> void spqr_private_do_panel
 )
 {
     Entry *V1 ;
-    Int h, k, p, i ;
+    Long h, k, p, i ;
 
     // -------------------------------------------------------------------------
     // load the panel with Householder vectors h1 ... h2-1
@@ -117,13 +117,13 @@ template <typename Entry> void spqr_happly
     // input
     int method,     // 0,1,2,3
 
-    Int m,          // X is m-by-n with leading dimension m
-    Int n,
+    Long m,         // X is m-by-n with leading dimension m
+    Long n,
 
     // FUTURE : make H cholmod_sparse:
-    Int nh,         // number of Householder vectors
-    Int *Hp,        // size nh+1, column pointers for H
-    Int *Hi,        // size hnz = Hp [nh], row indices of H
+    Long nh,        // number of Householder vectors
+    Long *Hp,       // size nh+1, column pointers for H
+    Long *Hi,       // size hnz = Hp [nh], row indices of H
     Entry *Hx,      // size hnz, Householder values.  Note that the first
                     // entry in each column must be equal to 1.0
 
@@ -133,17 +133,17 @@ template <typename Entry> void spqr_happly
     Entry *X,       // size m-by-n with leading dimension m
 
     // workspace
-    Int vmax,
-    Int hchunk,
-    Int *Wi,        // size vmax
-    Int *Wmap,      // size MAX(mh,1) where H is mh-by-nh; all EMPTY
+    Long vmax,
+    Long hchunk,
+    Long *Wi,       // size vmax
+    Long *Wmap,     // size MAX(mh,1) where H is mh-by-nh; all EMPTY
     Entry *C,       // size csize
     Entry *V,       // size vsize
     cholmod_common *cc
 )
 {
     Entry *W ;
-    Int h, h1, h2, i, k, hmax, hmin, v, v1, p, done, v2, mh ;
+    Long h, h1, h2, i, k, hmax, hmin, v, v1, p, done, v2, mh ;
 
     // -------------------------------------------------------------------------
     // get inputs
@@ -193,7 +193,7 @@ template <typename Entry> void spqr_happly
                 Wi [v] = i ;
                 v++ ;
             }
-            Int this_vmax = 2*v + 8 ;               // max # rows in this panel
+            Long this_vmax = 2*v + 8 ;               // max # rows in this panel
             this_vmax = MIN (this_vmax, mh) ;
             ASSERT (this_vmax <= vmax) ;
 
@@ -285,7 +285,7 @@ template <typename Entry> void spqr_happly
                 Wmap [i] = v ;              // this will be shifted later
                 Wi [v] = i ;
             }
-            Int this_vmin = v - 32 ;
+            Long this_vmin = v - 32 ;
             this_vmin = MAX (this_vmin, 0) ;
 
             // -----------------------------------------------------------------
@@ -303,7 +303,7 @@ template <typename Entry> void spqr_happly
                 p = Hp [h1] ;
 
                 // check to see that this vector fits in the lower triangle
-                Int hlen = Hp [h1+1] - p ;
+                Long hlen = Hp [h1+1] - p ;
                 if (hlen > 1 && Hi [p+1] != Wi [v])
                 {
                     // h1 will not be part of this panel
@@ -387,12 +387,12 @@ template void spqr_happly <double>
     // input
     int method,     // 0,1,2,3
 
-    Int m,          // X is m-by-n
-    Int n,
+    Long m,         // X is m-by-n
+    Long n,
 
-    Int nh,         // number of Householder vectors
-    Int *Hp,        // size nh+1, column pointers for H
-    Int *Hi,        // size hnz = Hp [nh], row indices of H
+    Long nh,        // number of Householder vectors
+    Long *Hp,       // size nh+1, column pointers for H
+    Long *Hi,       // size hnz = Hp [nh], row indices of H
     double *Hx,     // size hnz, Householder values.  Note that the first
                     // entry in each column must be equal to 1.0
 
@@ -402,10 +402,10 @@ template void spqr_happly <double>
     double *X,      // size m-by-n with leading dimension m
 
     // workspace
-    Int vmax,
-    Int hchunk,
-    Int *Wi,        // size vmax
-    Int *Wmap,      // size MAX(mh,1) where H is mh-by-nh
+    Long vmax,
+    Long hchunk,
+    Long *Wi,       // size vmax
+    Long *Wmap,     // size MAX(mh,1) where H is mh-by-nh
     double *C,      // size csize
     double *V,      // size vsize
     cholmod_common *cc
@@ -418,12 +418,12 @@ template void spqr_happly <Complex>
     // input
     int method,     // 0,1,2,3
 
-    Int m,          // X is m-by-n
-    Int n,
+    Long m,         // X is m-by-n
+    Long n,
 
-    Int nh,         // number of Householder vectors
-    Int *Hp,        // size nh+1, column pointers for H
-    Int *Hi,        // size hnz = Hp [nh], row indices of H
+    Long nh,        // number of Householder vectors
+    Long *Hp,       // size nh+1, column pointers for H
+    Long *Hi,       // size hnz = Hp [nh], row indices of H
     Complex *Hx,    // size hnz, Householder values.  Note that the first
                     // entry in each column must be equal to 1.0
 
@@ -433,10 +433,10 @@ template void spqr_happly <Complex>
     Complex *X,     // size m-by-n with leading dimension m
 
     // workspace
-    Int vmax,
-    Int hchunk,
-    Int *Wi,        // size vmax
-    Int *Wmap,      // size MAX(mh,1) where H is mh-by-nh
+    Long vmax,
+    Long hchunk,
+    Long *Wi,       // size vmax
+    Long *Wmap,     // size MAX(mh,1) where H is mh-by-nh
     Complex *C,     // size csize
     Complex *V,     // size vsize
     cholmod_common *cc

@@ -7,7 +7,6 @@
  * The CHOLMOD/Demo Module is licensed under Version 2.0 of the GNU
  * General Public License.  See gpl.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
- * http://www.cise.ufl.edu/research/sparse
  * -------------------------------------------------------------------------- */
 
 #include "cholmod.h"
@@ -19,7 +18,7 @@
 #define TRUE 1
 #define FALSE 0
 
-#define CPUTIME ((double) (clock ( )) / CLOCKS_PER_SEC)
+#define CPUTIME (SuiteSparse_time ( ))
 
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
 

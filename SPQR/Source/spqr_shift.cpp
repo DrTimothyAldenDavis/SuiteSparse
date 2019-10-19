@@ -10,13 +10,13 @@
 void spqr_shift
 (
     // input, not modified
-    Int n,
+    Long n,
 
     // input/output
-    Int *X                      // size n+1
+    Long *X                     // size n+1
 )
 {
-    Int k ;
+    Long k ;
     if (X != NULL)
     {
         for (k = n ; k >= 1 ; k--)

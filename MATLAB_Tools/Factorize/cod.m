@@ -30,7 +30,7 @@ function [U, R, V, r] = cod (A, tol)
 %
 % See also qr, svd, rq, spqr, cod_sparse.
 
-% Copyright 2011, Timothy A. Davis, University of Florida.
+% Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
 
 if (issparse (A))
     error ('FACTORIZE:cod:sparse', ...

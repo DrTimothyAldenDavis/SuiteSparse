@@ -2,25 +2,20 @@
 # COLAMD Makefile
 #------------------------------------------------------------------------------
 
-VERSION = 2.7.4
+VERSION = 2.8.0
 
-default: demos
+default: all
 
-include ../UFconfig/UFconfig.mk
+include ../SuiteSparse_config/SuiteSparse_config.mk
 
-# Compile all C code, including the C-callable routine and the mexFunctions.
-# Do not the MATLAB interface.
-demos:
-	( cd Lib    ; $(MAKE) )
-	( cd Demo   ; $(MAKE) )
+demos: all
 
-# Compile all C code, including the C-callable routine and the mexFunctions.
+# Compile all C code
 all:
 	( cd Lib    ; $(MAKE) )
 	( cd Demo   ; $(MAKE) )
-	( cd MATLAB ; $(MAKE) )
 
-# compile just the C-callable libraries (not mexFunctions or Demos)
+# compile just the C-callable libraries (not Demos)
 library:
 	( cd Lib    ; $(MAKE) )
 
@@ -28,13 +23,13 @@ library:
 clean:
 	( cd Lib    ; $(MAKE) clean )
 	( cd Demo   ; $(MAKE) clean )
-	( cd MATLAB ; $(MAKE) clean )
+	( cd MATLAB ; $(RM) $(CLEAN) )
 
 # clean, and then remove compiled programs and library archives
 purge:
 	( cd Lib    ; $(MAKE) purge )
 	( cd Demo   ; $(MAKE) purge )
-	( cd MATLAB ; $(MAKE) purge )
+	( cd MATLAB ; $(RM) $(CLEAN) ; $(RM) *.mex* )
 
 distclean: purge
 
@@ -45,10 +40,6 @@ dist: purge
 ccode: library
 
 lib: library
-
-# compile the MATLAB mexFunction
-mex:
-	( cd MATLAB ; $(MAKE) )
 
 # install COLAMD
 install:

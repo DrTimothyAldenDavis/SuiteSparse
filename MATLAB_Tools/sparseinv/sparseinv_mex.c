@@ -12,7 +12,7 @@
     This mexFunction is only meant to be called from the sparsinv m-file.
     An optional 2nd output argument returns the flop count.
 
-    Copyright 2011, Timothy A. Davis, University of Florida
+    Copyright 2011, Timothy A. Davis, http://www.suitesparse.com
 */
 
 void mexFunction

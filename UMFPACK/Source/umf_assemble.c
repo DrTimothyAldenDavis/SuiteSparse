@@ -3,14 +3,13 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
+/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
+/* All Rights Reserved.  See ../Doc/License for License.                      */
 /* -------------------------------------------------------------------------- */
 
 /*  Degree update and numerical assembly.  This is compiled twice (with and
- *  without FIXQ) for each real/complex int/UF_long version, for a total of 8
- *  versions.*/
+ *  without FIXQ) for each real/complex int/SuiteSparse_long version, for a
+ *  total of 8 versions.*/
 
 #include "umf_internal.h"
 #include "umf_assemble.h"

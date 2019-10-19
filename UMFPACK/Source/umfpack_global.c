@@ -3,9 +3,8 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
+/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
+/* All Rights Reserved.  See ../Doc/License for License.                      */
 /* -------------------------------------------------------------------------- */
 
 /*
@@ -26,7 +25,7 @@
     umfpack_divcomplex	    umf_divcomplex  umf_divcomplex
 
     This routine is compiled just once for all four versions of UMFPACK
-    (int/UF_long, double/complex).
+    (int/SuiteSparse_long, double/complex).
 */
 
 #include "umf_internal.h"

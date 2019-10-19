@@ -7,7 +7,7 @@
  * The CHOLMOD/MATLAB Module is licensed under Version 2.0 of the GNU
  * General Public License.  See gpl.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
- * http://www.cise.ufl.edu/research/sparse
+ * http://www.suitesparse.com
  * MATLAB(tm) is a Trademark of The MathWorks, Inc.
  * METIS (Copyright 1998, G. Karypis) is not distributed with CHOLMOD.
  * -------------------------------------------------------------------------- */
@@ -37,10 +37,10 @@ void mexFunction
 {
 #ifndef NPARTITION
     double dummy = 0 ;
-    Int *Perm ;
+    Long *Perm ;
     cholmod_sparse *A, Amatrix, *C, *S ;
     cholmod_common Common, *cm ;
-    Int n, transpose, c, postorder ;
+    Long n, transpose, c, postorder ;
     char buf [LEN] ;
 
     /* ---------------------------------------------------------------------- */
@@ -129,7 +129,7 @@ void mexFunction
     /* get workspace */
     /* ---------------------------------------------------------------------- */
 
-    Perm = cholmod_l_malloc (n, sizeof (Int), cm) ;
+    Perm = cholmod_l_malloc (n, sizeof (Long), cm) ;
 
     /* ---------------------------------------------------------------------- */
     /* order the matrix with CHOLMOD's interface to METIS_NodeND */ 
@@ -152,7 +152,7 @@ void mexFunction
     /* free workspace */
     /* ---------------------------------------------------------------------- */
 
-    cholmod_l_free (n, sizeof (Int), Perm, cm) ;
+    cholmod_l_free (n, sizeof (Long), Perm, cm) ;
     cholmod_l_free_sparse (&C, cm) ;
     cholmod_l_free_sparse (&S, cm) ;
     cholmod_l_finish (cm) ;

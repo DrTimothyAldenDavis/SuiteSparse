@@ -1,8 +1,11 @@
-UMFPACK, Copyright (c) 1995-2011 by Timothy A.  Davis.  All Rights Reserved.
+UMFPACK, Copyright (c) 1995-2012 by Timothy A. Davis,
+http://www.suitesparse.com
 
 UMFPACK :  a set of routines solving sparse linear systems via LU
     factorization.  Requires three other packages:  the BLAS (dense matrix
-    operations), AMD (sparse matrix minimum degree ordering), and UFconfig.
+    operations), AMD (sparse matrix minimum degree ordering), and
+    SuiteSparse_config.
+
     Includes a C-callable and MATLAB interface, and a basic FORTRAN 77
     interface to a subset of the C-callable routines.  Requires AMD Version
     2.0 or later.
@@ -10,24 +13,25 @@ UMFPACK :  a set of routines solving sparse linear systems via LU
     Unless you compile with -DNCHOLMOD, addtional packages are required:
     CHOLMOD, CAMD, CCOLAMD, COLAMD, and metis-4.0.
 
-The AMD, UFconfig, and UMFPACK directories must all reside in the same parent
-directory.  If the -DNCHOLMOD is not used, the CHOLMOD, CAMD, CCOLAMD, COLAMD,
-and metis-4.0 also also exist in the same parent.
+The AMD, SuiteSparse_config, and UMFPACK directories must all reside in the
+same parent directory.  If the -DNCHOLMOD is not used, the CHOLMOD, CAMD,
+CCOLAMD, COLAMD, and metis-4.0 also also exist in the same parent.
 
 Quick start (Unix, or Windows with Cygwin):
 
     To compile, test, and install both UMFPACK and AMD, the UMFPACK and AMD
-    directories must be in the same parent directory.  To configure, edit
-    the UFconfig/UFconfig.mk file (otherwise, you may get warnings that the
-    BLAS (dgemm, etc) are not found).  You may use UMFPACK_CONFIG = -DNBLAS in
-    the UFconfig/UFconfig.mk file, to avoid using the BLAS, but UMFPACK will be
-    slow.  Next, cd to this directory (UMFPACK) and type "make".  To compile
-    and run a FORTRAN demo program for Harwell/Boeing matrices, type "make hb".
-    To compile a FORTRAN main program that calls the 32-bit C-callable UMFPACK
-    library, type "make fortran".  When done, type "make clean" to remove
-    unused *.o files (keeps the compiled libraries and demo programs).  See
-    the User Guide (Doc/UserGuide.pdf), or ../UFconfig/UFconfig.mk for more
-    details (including options for compiling in 64-bit mode).
+    directories must be in the same parent directory.  To configure, edit the
+    SuiteSparse_config/SuiteSparse_config.mk file (otherwise, you may get
+    warnings that the BLAS (dgemm, etc) are not found).  You may use
+    UMFPACK_CONFIG = -DNBLAS in the SuiteSparse_config/SuiteSparse_config.mk
+    file, to avoid using the BLAS, but UMFPACK will be slow.  Next, cd to this
+    directory (UMFPACK) and type "make".  To compile and run a FORTRAN demo
+    program for Harwell/Boeing matrices, type "make hb".  To compile a FORTRAN
+    main program that calls the 32-bit C-callable UMFPACK library, type "make
+    fortran".  When done, type "make clean" to remove unused *.o files (keeps
+    the compiled libraries and demo programs).  See the User Guide
+    (Doc/UserGuide.pdf), or ../SuiteSparse_config/SuiteSparse_config.mk for
+    more details (including options for compiling in 64-bit mode).
 
 Quick start (for MATLAB users):
 
@@ -70,13 +74,13 @@ UMFPACK License:
 
 Availability:
 
-    http://www.cise.ufl.edu/research/sparse/umfpack
+    http://www.suitesparse.com
 
     UMFPACK (including versions 2.2.1 and earlier, in FORTRAN) is available at
-    http://www.cise.ufl.edu/research/sparse.  MA38 is available in the Harwell
+    http://www.suitesparse.com.  MA38 is available in the Harwell
     Subroutine Library.  This version of UMFPACK includes a modified form of
     COLAMD Version 2.0, originally released on Jan. 31, 2000, also available at
-    http://www.cise.ufl.edu/research/sparse.  COLAMD V2.0 is also incorporated
+    http://www.suitesparse.com.  COLAMD V2.0 is also incorporated
     as a built-in function in MATLAB version 6.1, by The MathWorks, Inc.
     (http://www.mathworks.com).  COLAMD V1.0 appears as a column-preordering
     in SuperLU (SuperLU is available at http://www.netlib.org).
@@ -107,10 +111,10 @@ Description:
 
 Authors:
 
-    Timothy A. Davis (davis@cise.ufl.edu), University of Florida.
+    Timothy A. Davis (DrTimothyAldenDavis@gmail.com)
 
     Includes a modified version of COLAMD V2.0, by Stefan I. Larimore and
-    Timothy A. Davis, University of Florida.  The COLAMD algorithm was developed
+    Timothy A. Davis.  The COLAMD algorithm was developed
     in collaboration with John Gilbert, Xerox Palo Alto Research Center, and
     Esmond Ng, Lawrence Berkeley National Laboratory.
 
@@ -132,7 +136,7 @@ Acknowledgements:
     I would also like to thank the many researchers who provided sparse
     matrices from a wide range of domains and used earlier versions of UMFPACK/
     MA38 in their applications, and thus assisted in the practical development
-    of the algorithm (see http://www.cise.ufl.edu/research/sparse, future
+    of the algorithm (see http://www.suitesparse.com, future
     contributions of matrices are always welcome).
 
     The MathWorks, Inc., provided a pre-release of MATLAB V6 which allowed me
@@ -226,7 +230,7 @@ Files and directories in the UMFPACK distribution:
 
     umf_config.h		configuration file (BLAS, memory, timer)
     umf_internal.h		definitions internal to UMFPACK
-    umf_version.h		version definitions (int/UF_long, real/complex)
+    umf_version.h		version definitions (int/long, real/complex)
 
     umf_analyze.[ch]		symbolic factorization of A'*A
     umf_apply_order.[ch]	apply column etree postorder
@@ -336,9 +340,9 @@ Files and directories in the UMFPACK distribution:
     umfpack_zl_demo.sed		for creating umfpack_zl_demo.c
 
     umfpack_di_demo.c		a full demo (real/int version)
-    umfpack_dl_demo.c		a full demo (real/UF_long version)
+    umfpack_dl_demo.c		a full demo (real/long version)
     umfpack_zi_demo.c		a full demo (complex/int version)
-    umfpack_zl_demo.c		a full demo (complex/UF_long version)
+    umfpack_zl_demo.c		a full demo (complex/long version)
 
     umfpack_di_demo.out		umfpack_di_demo output
     umfpack_dl_demo.out		umfpack_dl_demo output
@@ -388,7 +392,7 @@ Files and directories in the UMFPACK distribution:
     umfpack_report.m		report statistics
     umfpack_simple.m		a simple umfpack demo
     umfpack_solve.m		x=A\b or b/A for arbitrary b
-    umfpack_test.m		extensive test, requires UF sparse matrices
+    umfpack_test.m		extensive test, requires UFget
     umfpackmex.c		the umfpack mexFunction
     west0067.mat		sparse matrix for umfpack_demo.m
 

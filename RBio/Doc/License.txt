@@ -1,6 +1,6 @@
 RBio toolbox.  Copyright (C) 2006-2009, Timothy A. Davis
 RBio is also available under other licenses; contact authors for details.
-http://www.cise.ufl.edu/research/sparse
+http://www.suitesparse.com
 
 --------------------------------------------------------------------------------
 

@@ -8,7 +8,7 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    int n, k, *p ;
+    csi n, k, *p ;
     double *x, *b, *xx ;
 
     if (nargout > 1 || nargin != 2)
@@ -27,7 +27,7 @@ void mexFunction
     pargout [0] = mxCreateDoubleMatrix (n, 1, mxREAL) ;
 
     xx = mxGetPr (pargin [1]) ;
-    p = cs_malloc (n, sizeof (int)) ;
+    p = cs_malloc (n, sizeof (csi)) ;
     for (k = 0 ; k < n ; k++) p [k] = xx [k] - 1 ;
 
     x = mxGetPr (pargout [0]) ;

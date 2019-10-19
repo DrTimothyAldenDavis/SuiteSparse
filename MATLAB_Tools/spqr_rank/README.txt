@@ -1,7 +1,6 @@
 QUICK INSTALL:
 
-    (1) Download all of SuiteSparse at
-        http://www.cise.ufl.edu/research/sparse/SuiteSparse
+    (1) Download all of SuiteSparse at http://www.suitesparse.com.
 
     (2) Extract SuiteSparse from the SuiteSparse.tar.gz archive file.
 

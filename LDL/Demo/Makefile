@@ -4,9 +4,9 @@
 
 default: all
 
-include ../../UFconfig/UFconfig.mk
+include ../../SuiteSparse_config/SuiteSparse_config.mk
 
-I = -I../../UFconfig -I../Include
+I = -I../../SuiteSparse_config -I../Include
 
 C = $(CC) $(CF) $(I)
 

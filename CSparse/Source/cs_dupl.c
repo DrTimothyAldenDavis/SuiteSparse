@@ -1,12 +1,12 @@
 #include "cs.h"
 /* remove duplicate entries from A */
-int cs_dupl (cs *A)
+csi cs_dupl (cs *A)
 {
-    int i, j, p, q, nz = 0, n, m, *Ap, *Ai, *w ;
+    csi i, j, p, q, nz = 0, n, m, *Ap, *Ai, *w ;
     double *Ax ;
     if (!CS_CSC (A)) return (0) ;               /* check inputs */
     m = A->m ; n = A->n ; Ap = A->p ; Ai = A->i ; Ax = A->x ;
-    w = cs_malloc (m, sizeof (int)) ;           /* get workspace */
+    w = cs_malloc (m, sizeof (csi)) ;           /* get workspace */
     if (!w) return (0) ;                        /* out of memory */
     for (i = 0 ; i < m ; i++) w [i] = -1 ;      /* row i not yet seen */
     for (j = 0 ; j < n ; j++)

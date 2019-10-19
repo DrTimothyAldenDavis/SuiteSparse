@@ -12,7 +12,7 @@
 
 // Define function pointers and other parameters for a mexFunction
 
-int spqr_mx_config (Int spumoni, cholmod_common *cc)
+int spqr_mx_config (Long spumoni, cholmod_common *cc)
 {
     if (cc == NULL) return (FALSE) ;
 
@@ -94,7 +94,7 @@ void spqr_mx_spumoni
     mexPrintf (
     "\nSuiteSparseQR, version %d.%d.%d (%s), a multithreaded\n"
     "multifrontal sparse QR factorization method, (c) Timothy A. Davis,\n"
-    "University of Florida\n\n",
+    "http://www.suitesparse.com\n\n",
         SPQR_MAIN_VERSION, SPQR_SUB_VERSION, SPQR_SUBSUB_VERSION, SPQR_DATE) ;
 
     // -------------------------------------------------------------------------
@@ -247,7 +247,7 @@ static int get_option
 
     // outputs:
     double *x,                  // double value of the field, if present
-    Int *x_present,             // true if x is present
+    Long *x_present,            // true if x is present
     char **s,                   // char value of the field, if present;
                                 // must be mxFree'd by caller when done
 
@@ -255,7 +255,7 @@ static int get_option
     cholmod_common *cc
 )
 {
-    Int f ;
+    Long f ;
     mxArray *p ;
 
     if (cc == NULL) return (FALSE) ;
@@ -341,14 +341,14 @@ int spqr_mx_get_options
 (
     const mxArray *mxopts,
     spqr_mx_options *opts,
-    Int m,
+    Long m,
     int nargout,
     cholmod_common *cc
 )
 {
     double x ;
     char *s ;
-    Int x_present ;
+    Long x_present ;
 
     if (cc == NULL) return (FALSE) ;
 
@@ -357,7 +357,7 @@ int spqr_mx_get_options
     // -------------------------------------------------------------------------
 
     get_option (mxopts, "spumoni", &x, &x_present, NULL, cc) ;
-    opts->spumoni = x_present ? ((Int) x) : SPUMONI ;
+    opts->spumoni = x_present ? ((Long) x) : SPUMONI ;
     spqr_spumoni = opts->spumoni ;
 
     // -------------------------------------------------------------------------
@@ -365,7 +365,7 @@ int spqr_mx_get_options
     // -------------------------------------------------------------------------
 
     get_option (mxopts, "econ", &x, &x_present, NULL, cc) ;
-    opts->econ = x_present ? ((Int) x) : m ;
+    opts->econ = x_present ? ((Long) x) : m ;
 
     // -------------------------------------------------------------------------
     // tol: a double with default computed later
@@ -562,20 +562,20 @@ int spqr_mx_get_options
 
 static int put_values
 (
-    Int nz,
+    Long nz,
     mxArray *A,
     double *Ax,         // complex case: size 2*nz and freed on return,
                         // real case: size nz, not freed on return.
-    Int is_complex,
+    Long is_complex,
     cholmod_common *cc
 )
 {
-    Int imag_all_zero = TRUE ;
+    Long imag_all_zero = TRUE ;
 
     if (is_complex)
     {
         // A is complex, stored in interleaved form; split it for MATLAB
-        Int k ;
+        Long k ;
         double z, *Ax2, *Az2 ;
         mxFree (mxGetPi (A)) ;
         Ax2 = (double *) cholmod_l_malloc (nz, sizeof (double), cc) ;
@@ -625,7 +625,7 @@ mxArray *spqr_mx_put_sparse
 {
     mxArray *Amatlab ;
     cholmod_sparse *A ;
-    Int nz, is_complex ;
+    Long nz, is_complex ;
 
     A = *Ahandle ;
     is_complex = (A->xtype != CHOLMOD_REAL) ;
@@ -659,8 +659,8 @@ mxArray *spqr_mx_put_sparse
 
 mxArray *spqr_mx_put_dense2
 (
-    Int m,
-    Int n,
+    Long m,
+    Long n,
     double *Ax,         // size nz if real; size 2*nz if complex
     int is_complex,
     cholmod_common *cc
@@ -722,8 +722,8 @@ mxArray *spqr_mx_put_dense
 
 mxArray *spqr_mx_put_permutation
 (
-    Int *P,         // size n permutation vector
-    Int n, 
+    Long *P,        // size n permutation vector
+    Long n, 
     int vector,     // if TRUE, return a vector; otherwise return a matrix
 
     // workspace and parameters
@@ -732,7 +732,7 @@ mxArray *spqr_mx_put_permutation
 {
     mxArray *Pmatlab ;
     double *Ex ;
-    Int *Ep, *Ei, j, k ;
+    Long *Ep, *Ei, j, k ;
 
     if (cc == NULL) return (NULL) ;
 
@@ -750,8 +750,8 @@ mxArray *spqr_mx_put_permutation
     {
         // return E as a permutation matrix
         Pmatlab = mxCreateSparse (n, n, MAX (n,1), mxREAL) ;
-        Ep = (Int *) mxGetJc (Pmatlab) ;
-        Ei = (Int *) mxGetIr (Pmatlab) ;
+        Ep = (Long *) mxGetJc (Pmatlab) ;
+        Ei = (Long *) mxGetIr (Pmatlab) ;
         Ex = mxGetPr (Pmatlab) ;
         for (k = 0 ; k < n ; k++)
         {
@@ -782,13 +782,13 @@ double *spqr_mx_merge_if_complex
     const mxArray *A,
     int make_complex,       // if TRUE, return value is Complex
     // output
-    Int *p_nz,              // number of entries in A
+    Long *p_nz,             // number of entries in A
 
     // workspace and parameters
     cholmod_common *cc
 )
 {
-    Int nz, m, n ;
+    Long nz, m, n ;
     double *X, *Xx, *Xz ;
 
     if (cc == NULL) return (NULL) ;
@@ -800,7 +800,7 @@ double *spqr_mx_merge_if_complex
 
     if (mxIsSparse (A))
     {
-        Int *Ap = (Int *) mxGetJc (A) ;
+        Long *Ap = (Long *) mxGetJc (A) ;
         nz = Ap [n] ;
     }
     else
@@ -811,7 +811,7 @@ double *spqr_mx_merge_if_complex
     {
         // Note the typecast and sizeof (...) intentionally do not match
         X = (double *) cholmod_l_malloc (nz, sizeof (Complex), cc) ;
-        for (Int k = 0 ; k < nz ; k++)
+        for (Long k = 0 ; k < nz ; k++)
         {
             X [2*k  ] = Xx [k] ;
             X [2*k+1] = Xz ? (Xz [k]) : 0 ;
@@ -840,12 +840,12 @@ cholmod_sparse *spqr_mx_get_sparse
     double *dummy 	    // a pointer to a valid scalar double
 )
 {
-    Int *Ap ;
+    Long *Ap ;
     A->nrow = mxGetM (Amatlab) ;
     A->ncol = mxGetN (Amatlab) ;
-    A->p = (Int *) mxGetJc (Amatlab) ;
-    A->i = (Int *) mxGetIr (Amatlab) ;
-    Ap = (Int *) A->p ;
+    A->p = (Long *) mxGetJc (Amatlab) ;
+    A->i = (Long *) mxGetIr (Amatlab) ;
+    Ap = (Long *) A->p ;
     A->nzmax = Ap [A->ncol] ;
     A->packed = TRUE ;
     A->sorted = TRUE ;
@@ -929,26 +929,26 @@ void spqr_mx_get_usage
 (
     mxArray *A,         // mxArray to check
     int tight,          // if true, then nnz(A) must equal nzmax(A)
-    Int *p_usage,       // bytes used
-    Int *p_count,       // # of malloc'd blocks
+    Long *p_usage,      // bytes used
+    Long *p_count,      // # of malloc'd blocks
     cholmod_common *cc
 )
 {
-    Int nz, m, n, nzmax, is_complex, usage, count, *Ap ;
+    Long nz, m, n, nzmax, is_complex, usage, count, *Ap ;
     m = mxGetM (A) ;
     n = mxGetN (A) ;
     is_complex = mxIsComplex (A) ;
     if (mxIsSparse (A))
     {
         nzmax = mxGetNzmax (A) ;
-        Ap = (Int *) mxGetJc (A) ;
+        Ap = (Long *) mxGetJc (A) ;
         nz = MAX (Ap [n], 1) ;
         if (tight && nz != nzmax)
         {
             // This should never occur.
             mexErrMsgIdAndTxt ("QR:internalError", "nnz (A) < nzmax (A)!") ;
         }
-        usage = sizeof (Int) * (n+1 + nz) ;
+        usage = sizeof (Long) * (n+1 + nz) ;
         count = 2 ;
     }
     else
@@ -997,7 +997,7 @@ mxArray *spqr_mx_info       // return a struct with info statistics
     double flops            // flop count, < 0 if not computed
 )
 {
-    Int ninfo ;
+    Long ninfo ;
     mxArray *s ;
 
     const char *info_struct [ ] =
@@ -1033,7 +1033,7 @@ mxArray *spqr_mx_info       // return a struct with info statistics
 
     s = mxCreateStructMatrix (1, 1, ninfo, info_struct) ;
 
-    for (Int k = 0 ; k <= 6 ; k++)
+    for (Long k = 0 ; k <= 6 ; k++)
     {
         mxSetFieldByNumber (s, 0, k,
             mxCreateDoubleScalar ((double) cc->SPQR_istat [k])) ;
@@ -1100,7 +1100,7 @@ mxArray *spqr_mx_info       // return a struct with info statistics
 
     if (flops >= 0)
     {
-        for (Int k = 1 ; k <= 3 ; k++)
+        for (Long k = 1 ; k <= 3 ; k++)
         {
             mxSetFieldByNumber (s, 0, 14+k,
                 mxCreateDoubleScalar (cc->other1 [k])) ;

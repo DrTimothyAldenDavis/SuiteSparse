@@ -18,10 +18,9 @@
 \begin{document}
 
 \author{Timothy A. Davis \\
-Dept. of Computer and Information Science and Engineering \\
-Univ. of Florida, Gainesville, FL}
+DrTimothyAldenDavis@gmail.com, http://www.suitesparse.com}
 \title{UMFPACK User Guide}
-\date{VERSION 5.5.2, Dec 7, 2011}
+\date{VERSION 5.6.0, Jun 1, 2012}
 \maketitle
 
 %-------------------------------------------------------------------------------
@@ -72,7 +71,7 @@ UMFPACK is available under alternate licences; contact T. Davis for details.
     and a notice that the code was modified is included.
 
 {\bf Availability:}
-    http://www.cise.ufl.edu/research/sparse/umfpack
+    http://www.suitesparse.com
 
 {\bf Acknowledgments:}
 
@@ -151,7 +150,7 @@ Each strategy is described below:
 \begin{itemize}
 \item {\em unsymmetric}:
 The column pre-ordering of $\m{S}$ is computed by a modified version of COLAMD
-\cite{DavisGilbertLarimoreNg00_algo,DavisGilbertLarimoreNg00,Larimore98}.
+\cite{DavisGilbertLarimoreNg00_algo,DavisGilbertLarimoreNg00}.
 The method finds a symmetric permutation $\m{Q}$ of the matrix $\m{S}\tr\m{S}$
 (without forming $\m{S}\tr\m{S}$ explicitly).  This is a good choice for
 $\m{Q}$, since the Cholesky factors of $\m{(SQ)\tr(SQ)}$ are an upper bound (in
@@ -230,14 +229,14 @@ diagonal entry is too small.
 
 More details of the method, including experimental results, are
 described in \cite{Davis03,Davis03_algo}, available at
-http://www.cise.ufl.edu/tech-reports.
+http://www.suitesparse.com.
 
 %-------------------------------------------------------------------------------
 \section{Availability}
 %-------------------------------------------------------------------------------
 
 In addition to appearing as a Collected Algorithm of the ACM,
-UMFPACK is available at \newline http://www.cise.ufl.edu/research/sparse.
+UMFPACK is available at \newline http://www.suitesparse.com.
 It is included as a built-in routine in MATLAB.
 Version 4.0 (in MATLAB 6.5)
 does not have the symmetric strategy and it takes
@@ -250,11 +249,11 @@ Version 3.0 and following make
 use of a modified version of COLAMD V2.0 by Timothy A.~Davis, Stefan
 Larimore, John Gilbert, and Esmond Ng.  The original COLAMD V2.1 is available in
 as a built-in routine in MATLAB V6.0 (or later), and at
-http://www.cise.ufl.edu/research/sparse.
+http://www.suitesparse.com.
 These codes are also available in Netlib \cite{netlib} at
 http://www.netlib.org.
 UMFPACK Versions 2.2.1 and earlier, co-authored with Iain Duff,
-are available at http://www.cise.ufl.edu/research/sparse and as
+are available as
 MA38 (functionally equivalent to Version 2.2.1) in the Harwell
 Subroutine Library.
 
@@ -266,6 +265,18 @@ an old version of AMD with a newer version of UMFPACK can fail.}
 %-------------------------------------------------------------------------------
 
 A detailed list of changes is in the {\tt ChangeLog} file.
+
+%-------------------------------------------------------------------------------
+\subsection{Version 5.6.0}
+%-------------------------------------------------------------------------------
+
+Replaced {\tt UFconfig} with {\tt SuiteSparse\_config}, for {\tt
+SuiteSparse\_timer}.  The {\tt UF\_long} type is replaced with {\tt
+SuiteSparse\_long} to avoid potential name conflicts with the {\tt UF\_}
+prefix, but the former is still available for user programs.
+User programs may safely {\tt \#undef} the {\tt UF\_long} macro and
+use {\tt SuiteSparse\_long} instead.  In future versions, {\tt UF\_long} will
+be removed completely from {\tt SuiteSparse\_config.h}.
 
 %-------------------------------------------------------------------------------
 \subsection{Version 5.5.0}
@@ -691,9 +702,9 @@ include file.  All but three of the routines come in four versions, with
 different sizes of integers and for real or complex floating-point numbers:
 \begin{enumerate}
 \item {\tt umfpack\_di\_*}: real double precision, {\tt int} integers.
-\item {\tt umfpack\_dl\_*}: real double precision, {\tt UF\_long} integers.
+\item {\tt umfpack\_dl\_*}: real double precision, {\tt SuiteSparse\_long} integers.
 \item {\tt umfpack\_zi\_*}: complex double precision, {\tt int} integers.
-\item {\tt umfpack\_zl\_*}: complex double precision, {\tt UF\_long} integers.
+\item {\tt umfpack\_zl\_*}: complex double precision, {\tt SuiteSparse\_long} integers.
 \end{enumerate}
 where {\tt *} denotes the specific name of one of the routines.
 Routine names beginning with {\tt umf\_} are internal to the package,
@@ -703,7 +714,7 @@ The other three routines are the same for all four versions.
 
 In addition, the C-callable AMD library distributed with UMFPACK
 includes 4 user-callable routines (in two versions with {\tt int} and
-{\tt UF\_long} integers) and one include file.  Refer to the AMD documentation
+{\tt SuiteSparse\_long} integers) and one include file.  Refer to the AMD documentation
 for more details.
 
 Use only one version for any one problem; do not attempt to use one version
@@ -712,7 +723,7 @@ to analyze the matrix and another version to factorize the matrix, for example.
 The notation {\tt umfpack\_di\_*} refers to all user-callable routines
 for the real double precision and {\tt int} integer case.  The notation
 {\tt umfpack\_*\_numeric}, for example, refers all four versions
-(real/complex, int/UF\_long) of a single operation
+(real/complex, int/SuiteSparse\_long) of a single operation
 (in this case numeric factorization).
 
 %-------------------------------------------------------------------------------
@@ -721,7 +732,7 @@ for the real double precision and {\tt int} integer case.  The notation
 
 The {\tt umfpack\_di\_*} and {\tt umfpack\_zi\_*} routines use {\tt int} integer
 arguments; those starting with {\tt umfpack\_dl\_} or {\tt umfpack\_zl\_}
-use {\tt UF\_long} integer arguments.  If you compile UMFPACK in the standard
+use {\tt SuiteSparse\_long} integer arguments.  If you compile UMFPACK in the standard
 ILP32 mode (32-bit {\tt int}'s, {\tt long}'s, and pointers) then the versions
 are essentially identical.  You will be able to solve problems using up to 2GB
 of memory.  If you compile UMFPACK in the standard LP64 mode, the size of an
@@ -736,7 +747,7 @@ architectures, and are not portable.  UMFPACK and AMD should be compiled
 in the same mode.
 If you compile UMFPACK and AMD in the LP64 mode,
 be sure to add {\tt -DLP64} to the compilation command.  See the examples in
-the {\tt UFconfig/UFconfig.mk} file.
+the {\tt SuiteSparse\_config/SuiteSparse\_config.mk} file.
 
 %-------------------------------------------------------------------------------
 \subsection{Real and complex floating-point}
@@ -834,12 +845,12 @@ with {\tt nz} entries.  For the {\tt int} version of UMFPACK:
 \end{verbatim}
 }
 
-For the {\tt UF\_long} version of UMFPACK:
+For the {\tt SuiteSparse\_long} version of UMFPACK:
 
 {\footnotesize
 \begin{verbatim}
-     UF_long Ap [n+1] ;
-     UF_long Ai [nz] ;
+     SuiteSparse_long Ap [n+1] ;
+     SuiteSparse_long Ai [nz] ;
      double Ax [nz] ;
 \end{verbatim}
 }
@@ -1077,12 +1088,12 @@ four arrays.  For the {\tt int} version of UMFPACK:
 \end{verbatim}
 }
 
-For the {\tt UF\_long} version:
+For the {\tt SuiteSparse\_long} version:
 
 {\footnotesize
 \begin{verbatim}
-     UF_long Ti [nz] ;
-     UF_long Tj [nz] ;
+     SuiteSparse_long Ti [nz] ;
+     SuiteSparse_long Tj [nz] ;
      double Tx [nz] ;
 \end{verbatim}
 }
@@ -1348,17 +1359,10 @@ printed (similar to the MATLAB commands
 \subsection{Utility routines}
 %-------------------------------------------------------------------------------
 
-UMFPACK v4.0 included a routine that returns the time used by the process,
-{\tt umfpack\_timer}.  The routine uses either {\tt getrusage} (which is
-preferred), or the ANSI C {\tt clock} routine if that is not available.
-It is fully described in Section~\ref{Utility}.  It is still available in
-UMFPACK v4.1 and following, but not used internally.
-Two new timing routines are provided in UMFPACK Version 4.1 and following,
-{\tt umfpack\_tic} and {\tt umfpack\_toc}.  They use POSIX-compliant
-{\tt sysconf} and {\tt times} routines to find both the CPU time
-and wallclock time.
+Three timing routines are provided in UMFPACK Version 4.1 and following,
+{\tt umfpack\_tic}, {\tt umfpack\_toc}, and {\tt umfpack\_timer}.
 These three routines are the only user-callable
-routine that is identical in all four {\tt int}/{\tt UF\_long}, real/complex
+routine that is identical in all four {\tt int}/{\tt SuiteSparse\_long}, real/complex
 versions (there is no {\tt umfpack\_di\_timer} routine, for example).
 
 %-------------------------------------------------------------------------------
@@ -1575,8 +1579,8 @@ In this case, no {\tt Symbolic} or {\tt Numeric} object was created.
     A failed assertion might occur which
     can give you a better indication as to what is going wrong.  Be aware that
     UMFPACK will be extraordinarily slow when running in debug mode.
-    If all else fails, contact the developer (davis@cise.ufl.edu) with
-    as many details as possible.
+    If all else fails, contact the developer (DrTimothyAldenDavis@gmail.com)
+    with as many details as possible.
 
 \end{itemize}
 
@@ -1606,7 +1610,7 @@ The {\tt umf4.c} program for reading matrices in Harwell/Boeing format
 ({\tt readhb.f}, {\tt readhb\_nozeros.f}, and {\tt readhb\_size.f})
 for reading in the sample Harwell/Boeing files in the {\tt UMFPACK/Demo/HB}
 directory.  More matrices are available at
-http://www.cise.ufl.edu/research/sparse/matrices.
+http://www.suitesparse.com.
 Type {\tt make hb} in the {\tt UMFPACK/Demo/HB} directory
 to compile and run this demo.  This program was used for the experimental
 results in \cite{Davis03}.
@@ -1621,15 +1625,15 @@ values, and calling sequences of the routines in one category.  Variables with
 the same name as those already listed in a prior category have the same size
 and type.
 
-The real, {\tt UF\_long} integer {\tt umfpack\_dl\_*} routines are
+The real, {\tt SuiteSparse\_long} integer {\tt umfpack\_dl\_*} routines are
 identical to the real, {\tt int} routines, except that {\tt \_di\_} is replaced
 with {\tt \_dl\_} in the name, and all {\tt int} arguments become
-{\tt UF\_long}.
-Similarly, the complex, {\tt UF\_long} integer {\tt umfpack\_zl\_*} routines are
+{\tt SuiteSparse\_long}.
+Similarly, the complex, {\tt SuiteSparse\_long} integer {\tt umfpack\_zl\_*} routines are
 identical to the complex, {\tt int} routines, except that {\tt \_zi\_} is
 replaced
 with {\tt \_zl\_} in the name, and all {\tt int} arguments become
-{\tt UF\_long}.
+{\tt SuiteSparse\_long}.
 Only the real and complex {\tt int} versions are listed in the synopsis below.
 
 The matrix $\m{A}$ is {\tt m}-by-{\tt n} with {\tt nz} entries.
@@ -1917,7 +1921,7 @@ UMFPACK makes use of the AMD ordering package for its symmetric ordering
 strategy.  You may also use these four user-callable routines in your own C
 programs.  You need to include the {\tt amd.h} file only if you make direct
 calls to the AMD routines themselves.  The {\tt int} versions are summarized
-below; {\tt UF\_long} versions are also available.  Refer to the AMD User Guide
+below; {\tt SuiteSparse\_long} versions are also available.  Refer to the AMD User Guide
 for more information, or to the file {\tt amd.h} which documents these routines.
 
 {\footnotesize
@@ -2114,9 +2118,9 @@ but your performance will be much less than what it should be.
 UMFPACK also requires CHOLMOD, CCAMD, CCOLAMD, COLAMD, and metis-4.0
 by default.  You can remove this dependency by compiling with
 {\tt -DNCHOLMOD}.  Add this to the {\tt UMFPACK\_CONFIG} definition
-in {\tt UFconfig/UFconfig.mk}.
+in {\tt SuiteSparse\_config/SuiteSparse\_config.mk}.
 
-System-dependent configurations are in the {\tt UFconfig/UFconfig.mk}
+System-dependent configurations are in the {\tt SuiteSparse\_config/SuiteSparse\_config.mk}
 file.  The default
 settings will work on most systems, except that UMFPACK will be compiled so
 that it does not use the BLAS.  Sample configurations are provided
@@ -2145,18 +2149,18 @@ If you have the GNU version of {\tt make}, the {\tt Lib/GNUmakefile} and
 what the ``old'' version of {\tt make} can handle.  If you do not have
 GNU {\tt make}, the {\tt Lib/Makefile} and {\tt MATLAB/Makefile} files
 are used instead.  Each UMFPACK source file is compiled into four
-versions ({\tt double} / complex, and {\tt int} / {\tt UF\_long}).  A proper
+versions ({\tt double} / complex, and {\tt int} / {\tt SuiteSparse\_long}).  A proper
 old-style {\tt Makefile} is cumbersome in this case, so these two
 {\tt Makefile}'s have been constructed by brute force.  They ignore
 dependencies, and simply compile everything.  I highly recommend using GNU
 {\tt make} if you wish to modify UMFPACK.
 
 If you compile UMFPACK and AMD and then later change the
-{\tt UFconfig/UFconfig.mk} file
+{\tt SuiteSparse\_config/SuiteSparse\_config.mk} file
 then you should type {\tt make purge} and then {\tt make} to recompile.
 
 Here are the various parameters that you can control in your
-{\tt UFconfig/UFconfig.mk} file:
+{\tt SuiteSparse\_config/SuiteSparse\_config.mk} file:
 
 \begin{itemize}
 \item {\tt CC = } your C compiler, such as {\tt cc}.
@@ -2167,9 +2171,6 @@ Here are the various parameters that you can control in your
 \item {\tt LIB = } your libraries, such as {\tt -lm} or {\tt -lblas}.
 \item {\tt RM =} the command to delete a file.
 \item {\tt MV =} the command to rename a file.
-\item {\tt MEX =} the command to compile a MATLAB mexFunction.
-    If you are using MATLAB 5, you need to add {\tt -DNBLAS} and
-    {\tt -DNUTIL} to this command.
 \item {\tt F77 =} the command to compile a Fortran program (optional).
 \item {\tt F77FLAGS =} the Fortran compiler flags (optional).
 \item {\tt F77LIB =} the Fortran libraries (optional).
@@ -2190,10 +2191,6 @@ most deal with how the BLAS are called:
     Sun Solaris, SGI Irix, Red Hat Linux, Compaq Alpha, and
     AIX (the IBM RS 6000).
 
-\item {\tt -DGETRUSAGE} if you have the {\tt getrusage} function.
-\item {\tt -DNPOSIX} if you do not have the POSIX-compliant
-    {\tt sysconf} and {\tt times} routines used by
-    {\tt umfpack\_tic} and {\tt umfpack\_toc}.
 \item {\tt -DNRECIPROCAL} controls a trade-off between speed and accuracy.
     If defined (or if the pivot value itself is less than $10^{-12}$),
     then the pivot column is divided by the pivot value during numeric
@@ -2216,9 +2213,7 @@ most deal with how the BLAS are called:
     zero is performed (a zero entry on the diagonal of $\m{U}$ is
     treated as if it were equal to one).  By default,
     UMFPACK will divide by zero.
-\item {\tt -DNO\_TIMER} controls whether or not timing routines
-    are to be called.  If defined, no timers are used.
-    Timers are included by default.
+
 \end{itemize}
 
 If a Fortran BLAS package is used you may see compiler warnings.  The BLAS
@@ -2259,11 +2254,11 @@ program, unless you directly call AMD routines.  You only need the
 statement, as described in Section~\ref{Synopsis}.
 
 If you would like to compile both 32-bit and 64-bit versions of the libraries,
-you will need to do it in two steps.  Modify your {\tt UFconfig/UFconfig.mk}
+you will need to do it in two steps.  Modify your {\tt SuiteSparse\_config/SuiteSparse\_config.mk}
 file, and select the 32-bit option.  Type {\tt make} in the {\tt UMFPACK}
 directory, which creates the {\tt UMFPACK/Lib/libumfpack.a} and
 {\tt AMD/Lib/libamd.a} libraries.  Rename those two files.  Edit your
-{\tt UFconfig/UFconfig.mk} file and select the 64-bit option.
+{\tt SuiteSparse\_config/SuiteSparse\_config.mk} file and select the 64-bit option.
 Type {\tt make purge},
 and then {\tt make}, and you will create the 64-bit libraries.
 You can use the same {\tt umfpack.h} include file for both 32-bit and
@@ -2462,7 +2457,7 @@ let me know and I could consider including them:
 
 The include files are the same for all four versions of
 UMFPACK.  The generic integer type is {\tt Int}, which is an {\tt int} or
-{\tt UF\_long}, depending on which version of UMFPACK you are using.
+{\tt SuiteSparse\_long}, depending on which version of UMFPACK you are using.
 
 \subsection{umfpack\_*\_symbolic}
 

@@ -8,7 +8,6 @@
  * CHOLMOD/Include/cholmod_io64.h is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
- * http://www.cise.ufl.edu/research/sparse
  * -------------------------------------------------------------------------- */
 
 /* Definitions required for large file I/O, which must come before any other
@@ -27,7 +26,7 @@
 
 #if defined(MATLAB_MEX_FILE) || defined(MATHWORKS)
 
-/* CHOLMOD is being compiled as a MATLAB MEX file, or for use inside MATLAB */
+/* CHOLMOD is being compiled as a MATLAB mexFunction, or for use in MATLAB */
 #include "io64.h"
 
 #else

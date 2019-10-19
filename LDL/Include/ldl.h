@@ -2,15 +2,15 @@
 /* === ldl.h:  include file for the LDL package ============================= */
 /* ========================================================================== */
 
-/* LDL Copyright (c) Timothy A Davis,
- * University of Florida.  All Rights Reserved.  See README for the License.
+/* Copyright (c) Timothy A Davis, http://www.suitesparse.com.
+ * All Rights Reserved.  See README for the License.
  */
 
-#include "UFconfig.h"
+#include "SuiteSparse_config.h"
 
 #ifdef LDL_LONG
-#define LDL_int UF_long
-#define LDL_ID UF_long_id
+#define LDL_int SuiteSparse_long
+#define LDL_ID SuiteSparse_long_id
 
 #define LDL_symbolic ldl_l_symbolic
 #define LDL_numeric ldl_l_numeric
@@ -68,37 +68,45 @@ int ldl_valid_matrix ( int n, int Ap [ ], int Ai [ ]) ;
 /* === long version ========================================================= */
 /* ========================================================================== */
 
-void ldl_l_symbolic (UF_long n, UF_long Ap [ ], UF_long Ai [ ], UF_long Lp [ ],
-    UF_long Parent [ ], UF_long Lnz [ ], UF_long Flag [ ], UF_long P [ ],
-    UF_long Pinv [ ]) ;
+void ldl_l_symbolic (SuiteSparse_long n, SuiteSparse_long Ap [ ],
+    SuiteSparse_long Ai [ ], SuiteSparse_long Lp [ ],
+    SuiteSparse_long Parent [ ], SuiteSparse_long Lnz [ ],
+    SuiteSparse_long Flag [ ], SuiteSparse_long P [ ],
+    SuiteSparse_long Pinv [ ]) ;
 
-UF_long ldl_l_numeric (UF_long n, UF_long Ap [ ], UF_long Ai [ ], double Ax [ ],
-    UF_long Lp [ ], UF_long Parent [ ], UF_long Lnz [ ], UF_long Li [ ],
-    double Lx [ ], double D [ ], double Y [ ], UF_long Pattern [ ],
-    UF_long Flag [ ], UF_long P [ ], UF_long Pinv [ ]) ;
+SuiteSparse_long ldl_l_numeric (SuiteSparse_long n, SuiteSparse_long Ap [ ],
+    SuiteSparse_long Ai [ ], double Ax [ ], SuiteSparse_long Lp [ ],
+    SuiteSparse_long Parent [ ], SuiteSparse_long Lnz [ ],
+    SuiteSparse_long Li [ ], double Lx [ ], double D [ ], double Y [ ],
+    SuiteSparse_long Pattern [ ], SuiteSparse_long Flag [ ],
+    SuiteSparse_long P [ ], SuiteSparse_long Pinv [ ]) ;
 
-void ldl_l_lsolve (UF_long n, double X [ ], UF_long Lp [ ], UF_long Li [ ],
-    double Lx [ ]) ;
+void ldl_l_lsolve (SuiteSparse_long n, double X [ ], SuiteSparse_long Lp [ ],
+    SuiteSparse_long Li [ ], double Lx [ ]) ;
 
-void ldl_l_dsolve (UF_long n, double X [ ], double D [ ]) ;
+void ldl_l_dsolve (SuiteSparse_long n, double X [ ], double D [ ]) ;
 
-void ldl_l_ltsolve (UF_long n, double X [ ], UF_long Lp [ ], UF_long Li [ ],
-    double Lx [ ]) ;
+void ldl_l_ltsolve (SuiteSparse_long n, double X [ ], SuiteSparse_long Lp [ ],
+    SuiteSparse_long Li [ ], double Lx [ ]) ;
 
-void ldl_l_perm  (UF_long n, double X [ ], double B [ ], UF_long P [ ]) ;
-void ldl_l_permt (UF_long n, double X [ ], double B [ ], UF_long P [ ]) ;
+void ldl_l_perm  (SuiteSparse_long n, double X [ ], double B [ ],
+    SuiteSparse_long P [ ]) ;
+void ldl_l_permt (SuiteSparse_long n, double X [ ], double B [ ],
+    SuiteSparse_long P [ ]) ;
 
-UF_long ldl_l_valid_perm (UF_long n, UF_long P [ ], UF_long Flag [ ]) ;
-UF_long ldl_l_valid_matrix ( UF_long n, UF_long Ap [ ], UF_long Ai [ ]) ;
+SuiteSparse_long ldl_l_valid_perm (SuiteSparse_long n, SuiteSparse_long P [ ],
+    SuiteSparse_long Flag [ ]) ;
+SuiteSparse_long ldl_l_valid_matrix ( SuiteSparse_long n,
+    SuiteSparse_long Ap [ ], SuiteSparse_long Ai [ ]) ;
 
 /* ========================================================================== */
 /* === LDL version ========================================================== */
 /* ========================================================================== */
 
-#define LDL_DATE "Dec 7, 2011"
+#define LDL_DATE "Jun 1, 2012"
 #define LDL_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
 #define LDL_MAIN_VERSION 2
-#define LDL_SUB_VERSION 0
-#define LDL_SUBSUB_VERSION 4
+#define LDL_SUB_VERSION 1
+#define LDL_SUBSUB_VERSION 0
 #define LDL_VERSION LDL_VERSION_CODE(LDL_MAIN_VERSION,LDL_SUB_VERSION)
 

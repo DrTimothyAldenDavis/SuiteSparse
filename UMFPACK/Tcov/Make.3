@@ -1,15 +1,14 @@
 #===============================================================================
-# C interface /ATLAS BLAS, do not test for integer overflow.
+# no BLAS, test for integer overflow.
 #===============================================================================
 
 CC = gcc
-CF = -O0 -g -ftest-coverage -fprofile-arcs -O0
-UMFPACK_CONFIG = -DCBLAS -DTESTING -I/cise/research/sparse/Install/ATLAS/Linux_P4SSE2/include
-LIB = -lcblas -latlas -lm
+CF = -O3 -fPIC
+UMFPACK_CONFIG = -DNBLAS -DTEST_FOR_INTEGER_OVERFLOW -DTESTING
+LIB = -lm -lrt
 
 RANLIB = ranlib
 MV = mv -f
-MEX = mex -inline -g
 ARCHIVE = ar rv
 
 #===============================================================================

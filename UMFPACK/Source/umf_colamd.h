@@ -3,9 +3,8 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
+/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
+/* All Rights Reserved.  See ../Doc/License for License.                      */
 /* -------------------------------------------------------------------------- */
 
 /*
@@ -13,7 +12,7 @@
 Authors:
 
     The authors of the COLAMD code itself are Stefan I. Larimore and Timothy A.
-    Davis, University of Florida.  The algorithm was developed in collaboration
+    Davis.  The algorithm was developed in collaboration
     with John Gilbert, Xerox PARC, and Esmond Ng, Oak Ridge National Laboratory.
 
 Date:
@@ -33,7 +32,7 @@ See the UMFPACK README file for the License for your use of this code.
 Availability:
 
     Both UMFPACK and the original unmodified colamd/symamd library are
-    available at http://www.cise.ufl.edu/research/sparse.
+    available at http://www.suitesparse.com.
 
 */
 

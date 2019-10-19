@@ -37,17 +37,15 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    Int *Ap, *Ai, *E, *Bp, *Bi, *HPinv ;
+    Long *Ap, *Ai, *E, *Bp, *Bi, *HPinv ;
     double *Ax, *Bx, dummy, tol ;
-    Int m, n, anz, bnz, is_complex, econ, A_complex, B_complex ;
+    Long m, n, anz, bnz, is_complex, econ, A_complex, B_complex ;
     spqr_mx_options opts ;
     cholmod_sparse *A, Amatrix, *R, *Q, *Csparse, Bsmatrix, *Bsparse, *H ;
     cholmod_dense *Cdense, Bdmatrix, *Bdense, *HTau ;
     cholmod_common Common, *cc ;
 
-#ifdef TIMING
-    double t0 = (nargout > 3) ? spqr_time ( ) : 0 ;
-#endif
+    double t0 = (nargout > 3) ? SuiteSparse_time ( ) : 0 ;
 
     // -------------------------------------------------------------------------
     // start CHOLMOD and set parameters
@@ -87,8 +85,8 @@ void mexFunction
     }
 
     A = spqr_mx_get_sparse (pargin [0], &Amatrix, &dummy) ;
-    Ap = (Int *) A->p ;
-    Ai = (Int *) A->i ;
+    Ap = (Long *) A->p ;
+    Ai = (Long *) A->i ;
     m = A->nrow ;
     n = A->ncol ;
     A_complex = mxIsComplex (pargin [0]) ;
@@ -435,7 +433,7 @@ void mexFunction
             // Q.P contains the inverse row permutation
             P = mxCreateDoubleMatrix (1, m, mxREAL) ;
             double *Tx = mxGetPr (P) ;
-            for (Int i = 0 ; i < m ; i++)
+            for (Long i = 0 ; i < m ; i++)
             {
                 Tx [i] = HPinv [i] + 1 ;
             }
@@ -480,13 +478,8 @@ void mexFunction
 
     if (nargout > 3)
     {
-#ifdef TIMING
         double flops = cc->other1 [0] ;
-        double t = spqr_time ( ) - t0 ;
-#else
-        double flops = -1 ;
-        double t = -1 ;
-#endif
+        double t = SuiteSparse_time ( ) - t0 ;
         pargout [3] = spqr_mx_info (cc, t, flops) ;
     }
 

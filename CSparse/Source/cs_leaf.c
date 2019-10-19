@@ -1,9 +1,9 @@
 #include "cs.h"
 /* consider A(i,j), node j in ith row subtree and return lca(jprev,j) */
-int cs_leaf (int i, int j, const int *first, int *maxfirst, int *prevleaf,
-    int *ancestor, int *jleaf)
+csi cs_leaf (csi i, csi j, const csi *first, csi *maxfirst, csi *prevleaf,
+    csi *ancestor, csi *jleaf)
 {
-    int q, s, sparent, jprev ;
+    csi q, s, sparent, jprev ;
     if (!first || !maxfirst || !prevleaf || !ancestor || !jleaf) return (-1) ;
     *jleaf = 0 ;
     if (i <= j || first [j] <= maxfirst [i]) return (-1) ;  /* j not a leaf */

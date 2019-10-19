@@ -39,10 +39,23 @@ function [objfiles, timestamp_out] = cs_make (f)
 %
 %   See also MEX.
 
-%   Copyright 2006-2007, Timothy A. Davis.
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
-fprintf ('Compiling CSparse\n') ;
+try
+    % ispc does not appear in MATLAB 5.3
+    pc = ispc ;
+catch
+    % if ispc fails, assume we are on a Windows PC if it's not unix
+    pc = ~isunix ;
+end
+
+if (~isempty (strfind (computer, '64')))
+    fprintf ('Compiling CSparse (64-bit)\n') ;
+    mexcmd = 'mex -largeArrayDims' ;
+else
+    fprintf ('Compiling CSparse (32-bit)\n') ;
+    mexcmd = 'mex' ;
+end
 
 % CSparse source files, in ../../Source, such as ../../Source/cs_add.c.
 % Note that not all CSparse source files have their own mexFunction.
@@ -75,7 +88,7 @@ else
     end
 end
 if (force)
-    fprintf ('Compiling CSparse\n') ;
+    fprintf ('(compiling all of CSparse from scratch)\n') ;
 end
 
 if (isempty (csm))
@@ -89,14 +102,6 @@ if (isempty (csm))
         % add cs_mynewfunc to the above list
 end
 
-try
-    % ispc does not appear in MATLAB 5.3
-    pc = ispc ;
-catch
-    % if ispc fails, assume we are on a Windows PC if it's not unix
-    pc = ~isunix ;
-end
-
 if (pc)
     obj = '.obj' ;
 else
@@ -106,15 +111,41 @@ end
 srcdir = '../../Source/' ;
 hfile = '../../Include/cs.h' ;
 
+%-------------------------------------------------------------------------------
+% With a current Microsoft compiler installed in the UF CISE lab, when CSparse
+% is located in a shared network folder, the -I../../Include option fails.  The
+% compiler -I or /I switch cannot use a relative path, even when using
+% /I..\..\Include.  Relative paths work fine in the same setup for the source
+% code files, which are in ../../Source/*.c.  This is very odd.  As a
+% work-around, absolute paths are now used in this version.
+
+% Change the following to 0 if relative paths work fine with /I on Windows:
+relative_paths_do_not_work = 1 ;
+
+if (pc & relative_paths_do_not_work)
+    % begin pain
+    here = pwd ;
+    cd ../../Include
+    % use quotes in case the path has spaces
+    mexcmd = [mexcmd ' -I"' pwd '"'] ;
+    cd (here)
+    % end pain
+else
+    % Linux, Unix, and Mac, are just fine.
+    mexcmd = [mexcmd ' -I../../Include'] ;
+end
+%-------------------------------------------------------------------------------
+
 % compile each CSparse source file
 [anysrc timestamp kk] = compile_source ('', 'cs_mex', obj, hfile, force, ...
-    kk, details) ;
+    kk, details, mexcmd) ;
 CS = ['cs_mex' obj] ;
 if (nargout > 0)
     objfiles = ['..' filesep 'CSparse' filesep 'cs_mex' obj] ;
 end
 for i = 1:length (cs)
-    [s t kk] = compile_source (srcdir, cs {i}, obj, hfile, force, kk, details) ;
+    [s t kk] = compile_source (srcdir, cs {i}, obj, hfile, force, ...
+        kk, details, mexcmd) ;
     timestamp = max (timestamp, t) ;
     anysrc = anysrc | s ;                                                   %#ok
     CS = [CS ' ' cs{i} obj] ;                                               %#ok
@@ -129,8 +160,8 @@ for i = 1:length (csm)
     [s t] = cs_must_compile ('', csm{i}, '_mex', obj, hfile, force) ;
     timestamp = max (timestamp, t) ;
     if (anysrc | s)                                                         %#ok
-        cmd = sprintf ('mex -O -I../../Include %s_mex.c %s -output %s', ...
-            csm{i}, CS, csm{i}) ;
+        cmd = sprintf ('%s -O %s_mex.c %s -output %s', ...
+            mexcmd, csm{i}, CS, csm{i}) ;
         kk = do_cmd (cmd, kk, details) ;
     end
 end
@@ -145,12 +176,13 @@ if (force)
 end
 
 %-------------------------------------------------------------------------------
-function [s,t,kk] = compile_source (srcdir, f, obj, hfile, force, kk, details)
+function [s,t,kk] = compile_source (srcdir, f, obj, hfile, force, ...
+    kk, details, mexcmd)
 % compile a source code file in ../../Source, leaving object file in
 % this directory.
 [s t] = cs_must_compile (srcdir, f, '', obj, hfile, force) ;
 if (s)
-    cmd = sprintf ('mex -O -c -I../../Include %s%s.c', srcdir, f) ;
+    cmd = sprintf ('%s -O -c %s%s.c', mexcmd, srcdir, f) ;
     kk = do_cmd (cmd, kk, details) ;
 end
 

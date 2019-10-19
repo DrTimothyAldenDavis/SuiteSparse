@@ -2,26 +2,20 @@
 # CAMD Makefile
 #------------------------------------------------------------------------------
 
-VERSION = 2.2.4
+VERSION = 2.3.0
 
 default: demos
 
-include ../UFconfig/UFconfig.mk
+include ../SuiteSparse_config/SuiteSparse_config.mk
 
-# Compile all C code, including the C-callable routine and the mexFunctions.
-# Do not compile the FORTRAN versions, or MATLAB interface.
-demos:
-	( cd Lib    ; $(MAKE) )
-	( cd Demo   ; $(MAKE) )
+demos: all
 
-# Compile all C code, including the C-callable routine and the mexFunctions.
-# Do not compile the FORTRAN versions.
+# Compile all C code.  Do not compile the FORTRAN versions.
 all:
 	( cd Lib    ; $(MAKE) )
 	( cd Demo   ; $(MAKE) )
-	( cd MATLAB ; $(MAKE) )
 
-# compile just the C-callable libraries (not mexFunctions or Demos)
+# compile just the C-callable libraries (not Demos)
 library:
 	( cd Lib    ; $(MAKE) )
 
@@ -29,20 +23,20 @@ library:
 clean:
 	( cd Lib    ; $(MAKE) clean )
 	( cd Demo   ; $(MAKE) clean )
-	( cd MATLAB ; $(MAKE) clean )
+	( cd MATLAB ; $(RM) $(CLEAN) )
 	( cd Doc    ; $(MAKE) clean )
 
 # clean, and then remove compiled programs and library archives
 purge:
 	( cd Lib    ; $(MAKE) purge )
 	( cd Demo   ; $(MAKE) purge )
-	( cd MATLAB ; $(MAKE) purge )
+	( cd MATLAB ; $(RM) $(CLEAN) ; $(RM) *.mex* )
 	( cd Doc    ; $(MAKE) purge )
 
 distclean: purge
 
 # create PDF documents for the original distribution
-dodoc:
+docs:
 	( cd Doc    ; $(MAKE) )
 
 # get ready for distribution
@@ -53,10 +47,6 @@ dist: purge
 ccode: library
 
 lib: library
-
-# compile the MATLAB mexFunction
-mex:
-	( cd MATLAB ; $(MAKE) )
 
 # install CAMD
 install:

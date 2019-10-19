@@ -8,7 +8,6 @@
  * CHOLMOD/Include/cholmod_blas.h is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
- * http://www.cise.ufl.edu/research/sparse
  * -------------------------------------------------------------------------- */
 
 /* This does not need to be included in the user's program. */
@@ -154,7 +153,7 @@
  * uses 64-bit integers */
 
 #if defined (LONGBLAS) || defined (BLAS64)
-#define BLAS_INT UF_long
+#define BLAS_INT SuiteSparse_long
 #else
 #define BLAS_INT int
 #endif

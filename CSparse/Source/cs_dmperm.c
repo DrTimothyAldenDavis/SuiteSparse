@@ -1,9 +1,9 @@
 #include "cs.h"
 /* breadth-first search for coarse decomposition (C0,C1,R1 or R0,R3,C3) */
-static int cs_bfs (const cs *A, int n, int *wi, int *wj, int *queue,
-    const int *imatch, const int *jmatch, int mark)
+static csi cs_bfs (const cs *A, csi n, csi *wi, csi *wj, csi *queue,
+    const csi *imatch, const csi *jmatch, csi mark)
 {
-    int *Ap, *Ai, head = 0, tail = 0, j, i, p, j2 ;
+    csi *Ap, *Ai, head = 0, tail = 0, j, i, p, j2 ;
     cs *C ;
     for (j = 0 ; j < n ; j++)           /* place all unmatched nodes in queue */
     {
@@ -34,11 +34,11 @@ static int cs_bfs (const cs *A, int n, int *wi, int *wj, int *queue,
 }
 
 /* collect matched rows and columns into p and q */
-static void cs_matched (int n, const int *wj, const int *imatch, int *p, int *q,
-    int *cc, int *rr, int set, int mark)
+static void cs_matched (csi n, const csi *wj, const csi *imatch, csi *p, csi *q,
+    csi *cc, csi *rr, csi set, csi mark)
 {
-    int kc = cc [set], j ;
-    int kr = rr [set-1] ;
+    csi kc = cc [set], j ;
+    csi kr = rr [set-1] ;
     for (j = 0 ; j < n ; j++)
     {
         if (wj [j] != mark) continue ;      /* skip if j is not in C set */
@@ -50,24 +50,24 @@ static void cs_matched (int n, const int *wj, const int *imatch, int *p, int *q,
 }
 
 /* collect unmatched rows into the permutation vector p */
-static void cs_unmatched (int m, const int *wi, int *p, int *rr, int set)
+static void cs_unmatched (csi m, const csi *wi, csi *p, csi *rr, csi set)
 {
-    int i, kr = rr [set] ;
+    csi i, kr = rr [set] ;
     for (i = 0 ; i < m ; i++) if (wi [i] == 0) p [kr++] = i ;
     rr [set+1] = kr ;
 }
 
 /* return 1 if row i is in R2 */
-static int cs_rprune (int i, int j, double aij, void *other)
+static csi cs_rprune (csi i, csi j, double aij, void *other)
 {
-    int *rr = (int *) other ;
+    csi *rr = (csi *) other ;
     return (i >= rr [1] && i < rr [2]) ;
 }
 
 /* Given A, compute coarse and then fine dmperm */
-csd *cs_dmperm (const cs *A, int seed)
+csd *cs_dmperm (const cs *A, csi seed)
 {
-    int m, n, i, j, k, cnz, nc, *jmatch, *imatch, *wi, *wj, *pinv, *Cp, *Ci,
+    csi m, n, i, j, k, cnz, nc, *jmatch, *imatch, *wi, *wj, *pinv, *Cp, *Ci,
         *ps, *rs, nb1, nb2, *p, *q, *cc, *rr, *r, *s, ok ;
     cs *C ;
     csd *D, *scc ;

@@ -1,8 +1,7 @@
 /* ------------------------------------------------------------------------- */
 /* AMD Copyright (c) by Timothy A. Davis,				     */
 /* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
-/* email: davis at cise.ufl.edu    CISE Department, Univ. of Florida.        */
-/* web: http://www.cise.ufl.edu/research/sparse/amd                          */
+/* email: DrTimothyAldenDavis@gmail.com                                      */
 /* ------------------------------------------------------------------------- */
 
 #include <stdio.h>

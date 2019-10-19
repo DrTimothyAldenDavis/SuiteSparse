@@ -41,7 +41,7 @@
  * are typically structurally non-singular, maxtrans is preferred.  A partial
  * maxtrans can still be very useful when solving a sparse linear system.
  *
- * Copyright (c) 2004-2007.  Tim Davis, University of Florida,
+ * By Tim Davis.  Copyright (c) 2004-2007, University of Florida.
  * with support from Sandia National Laboratories.  All Rights Reserved.
  */ 
 

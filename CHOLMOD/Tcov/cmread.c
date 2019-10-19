@@ -7,7 +7,7 @@
  * The CHOLMOD/Tcov Module is licensed under Version 2.0 of the GNU
  * General Public License.  See gpl.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
- * http://www.cise.ufl.edu/research/sparse
+ * http://www.suitesparse.com
  * -------------------------------------------------------------------------- */
 
 /* Read in a matrix from a file and print it out.
@@ -21,7 +21,7 @@
 
 #ifdef DLONG
 #define CHOLMOD(routine) cholmod_l_ ## routine
-#define Int UF_long
+#define Int SuiteSparse_long
 #else
 #define CHOLMOD(routine) cholmod_ ## routine
 #define Int int

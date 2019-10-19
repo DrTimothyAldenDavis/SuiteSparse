@@ -11,8 +11,7 @@ function [L,D] = ldlsplit (LD)						    %#ok
 %
 %   See also LDLCHOL, LDLSOLVE, LDLUPDATE.
 
-%   Copyright 2006-2007, Timothy A. Davis
-%   http://www.cise.ufl.edu/research/sparse
+%   Copyright 2006-2007, Timothy A. Davis, http://www.suitesparse.com
 
 n = size (LD,1) ;
 D = diag (diag (LD)) ;

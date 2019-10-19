@@ -53,11 +53,11 @@ function [U, R, V, r] = cod_sparse (A, arg)
 %   norm (A - cod_qmult (U, cod_qmult (V, R, 2), 1), 1)
 %
 % Requires the SPQR and SPQR_QMULT functions from SuiteSparse,
-% See http://www.cise.ufl.edu/research/sparse.
+% http://www.suitesparse.com
 %
 % See also qr, cod, cod_qmult, spqr, spqr_qmult.
 
-% Copyright 2011, Timothy A. Davis, University of Florida.
+% Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
 
 %-------------------------------------------------------------------------------
 % get the inputs

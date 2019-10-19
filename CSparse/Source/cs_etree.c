@@ -1,12 +1,12 @@
 #include "cs.h"
 /* compute the etree of A (using triu(A), or A'A without forming A'A */
-int *cs_etree (const cs *A, int ata)
+csi *cs_etree (const cs *A, csi ata)
 {
-    int i, k, p, m, n, inext, *Ap, *Ai, *w, *parent, *ancestor, *prev ;
+    csi i, k, p, m, n, inext, *Ap, *Ai, *w, *parent, *ancestor, *prev ;
     if (!CS_CSC (A)) return (NULL) ;        /* check inputs */
     m = A->m ; n = A->n ; Ap = A->p ; Ai = A->i ;
-    parent = cs_malloc (n, sizeof (int)) ;              /* allocate result */
-    w = cs_malloc (n + (ata ? m : 0), sizeof (int)) ;   /* get workspace */
+    parent = cs_malloc (n, sizeof (csi)) ;              /* allocate result */
+    w = cs_malloc (n + (ata ? m : 0), sizeof (csi)) ;   /* get workspace */
     if (!w || !parent) return (cs_idone (parent, NULL, w, 0)) ;
     ancestor = w ; prev = w + n ;
     if (ata) for (i = 0 ; i < m ; i++) prev [i] = -1 ;

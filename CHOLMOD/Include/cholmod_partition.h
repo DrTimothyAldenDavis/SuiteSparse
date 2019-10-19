@@ -8,7 +8,6 @@
  * CHOLMOD/Include/cholmod_partition.h is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
- * http://www.cise.ufl.edu/research/sparse
  * -------------------------------------------------------------------------- */
 
 /* CHOLMOD Partition module.
@@ -29,11 +28,12 @@
  * Requires the Core and Cholesky modules, and three packages: METIS, CAMD,
  * and CCOLAMD.  Optionally used by the Cholesky module.
  *
- * Note that METIS does not have a version that uses UF_long integers.  If you
- * try to use cholmod_nested_dissection, cholmod_metis, cholmod_bisect, or
- * cholmod_metis_bisector on a matrix that is too large, an error code will be
- * returned.  METIS does have an "idxtype", which could be redefined as UF_long,
- * if you wish to edit METIS or use compile-time flags to redefine idxtype.
+ * Note that METIS does not have a version that uses SuiteSparse_long integers.
+ * If you try to use cholmod_nested_dissection, cholmod_metis, cholmod_bisect,
+ * or cholmod_metis_bisector on a matrix that is too large, an error code will
+ * be returned.  METIS does have an "idxtype", which could be redefined as
+ * SuiteSparse_long, if you wish to edit METIS or use compile-time flags to
+ * redefine idxtype.
  */
 
 #ifndef CHOLMOD_PARTITION_H
@@ -51,7 +51,7 @@
  * finds better orderings than METIS_NodeND, but takes longer.
  */
 
-UF_long cholmod_nested_dissection	/* returns # of components */
+SuiteSparse_long cholmod_nested_dissection	/* returns # of components */
 (
     /* ---- input ---- */
     cholmod_sparse *A,	/* matrix to order */
@@ -68,8 +68,9 @@ UF_long cholmod_nested_dissection	/* returns # of components */
     cholmod_common *Common
 ) ;
 
-UF_long cholmod_l_nested_dissection (cholmod_sparse *, UF_long *, size_t,
-    UF_long *, UF_long *, UF_long *, cholmod_common *) ;
+SuiteSparse_long cholmod_l_nested_dissection (cholmod_sparse *,
+    SuiteSparse_long *, size_t, SuiteSparse_long *, SuiteSparse_long *,
+    SuiteSparse_long *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_metis */
@@ -90,8 +91,8 @@ int cholmod_metis
     cholmod_common *Common
 ) ;
 
-int cholmod_l_metis (cholmod_sparse *, UF_long *, size_t, int, UF_long *,
-    cholmod_common *) ;
+int cholmod_l_metis (cholmod_sparse *, SuiteSparse_long *, size_t, int,
+    SuiteSparse_long *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_ccolamd */
@@ -116,8 +117,8 @@ int cholmod_ccolamd
     cholmod_common *Common
 ) ;
 
-int cholmod_l_ccolamd (cholmod_sparse *, UF_long *, size_t, UF_long *,
-    UF_long *, cholmod_common *) ;
+int cholmod_l_ccolamd (cholmod_sparse *, SuiteSparse_long *, size_t,
+    SuiteSparse_long *, SuiteSparse_long *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_csymamd */
@@ -136,8 +137,8 @@ int cholmod_csymamd
     cholmod_common *Common
 ) ;
 
-int cholmod_l_csymamd (cholmod_sparse *, UF_long *, UF_long *,
-    cholmod_common *) ;
+int cholmod_l_csymamd (cholmod_sparse *, SuiteSparse_long *,
+    SuiteSparse_long *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_camd */
@@ -158,8 +159,8 @@ int cholmod_camd
     cholmod_common *Common
 ) ;
 
-int cholmod_l_camd (cholmod_sparse *, UF_long *, size_t, UF_long *, UF_long *,
-    cholmod_common *) ;
+int cholmod_l_camd (cholmod_sparse *, SuiteSparse_long *, size_t,
+    SuiteSparse_long *, SuiteSparse_long *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_bisect */
@@ -167,7 +168,7 @@ int cholmod_l_camd (cholmod_sparse *, UF_long *, size_t, UF_long *, UF_long *,
 
 /* Finds a node bisector of A, A*A', A(:,f)*A(:,f)'. */
 
-UF_long cholmod_bisect	/* returns # of nodes in separator */
+SuiteSparse_long cholmod_bisect	/* returns # of nodes in separator */
 (
     /* ---- input ---- */
     cholmod_sparse *A,	/* matrix to bisect */
@@ -182,8 +183,8 @@ UF_long cholmod_bisect	/* returns # of nodes in separator */
     cholmod_common *Common
 ) ;
 
-UF_long cholmod_l_bisect (cholmod_sparse *, UF_long *, size_t, int, UF_long *,
-    cholmod_common *) ;
+SuiteSparse_long cholmod_l_bisect (cholmod_sparse *, SuiteSparse_long *,
+    size_t, int, SuiteSparse_long *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_metis_bisector */
@@ -192,7 +193,7 @@ UF_long cholmod_l_bisect (cholmod_sparse *, UF_long *, size_t, int, UF_long *,
 /* Find a set of nodes that bisects the graph of A or AA' (direct interface
  * to METIS_NodeComputeSeparator). */
 
-UF_long cholmod_metis_bisector	/* returns separator size */
+SuiteSparse_long cholmod_metis_bisector	/* returns separator size */
 (
     /* ---- input ---- */
     cholmod_sparse *A,	/* matrix to bisect */
@@ -204,8 +205,9 @@ UF_long cholmod_metis_bisector	/* returns separator size */
     cholmod_common *Common
 ) ;
 
-UF_long cholmod_l_metis_bisector (cholmod_sparse *, UF_long *, UF_long *,
-    UF_long *, cholmod_common *) ;
+SuiteSparse_long cholmod_l_metis_bisector (cholmod_sparse *,
+    SuiteSparse_long *, SuiteSparse_long *, SuiteSparse_long *,
+    cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_collapse_septree */
@@ -213,7 +215,7 @@ UF_long cholmod_l_metis_bisector (cholmod_sparse *, UF_long *, UF_long *,
 
 /* Collapse nodes in a separator tree. */
 
-UF_long cholmod_collapse_septree
+SuiteSparse_long cholmod_collapse_septree
 (
     /* ---- input ---- */
     size_t n,		/* # of nodes in the graph */
@@ -227,7 +229,7 @@ UF_long cholmod_collapse_septree
     cholmod_common *Common
 ) ;
 
-UF_long cholmod_l_collapse_septree (size_t, size_t, double, size_t, UF_long *,
-    UF_long *, cholmod_common *) ;
+SuiteSparse_long cholmod_l_collapse_septree (size_t, size_t, double, size_t,
+    SuiteSparse_long *, SuiteSparse_long *, cholmod_common *) ;
 
 #endif

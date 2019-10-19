@@ -1,31 +1,29 @@
-AMD, Copyright (c) 2009-2011 by Timothy A.
-Davis, Patrick R. Amestoy, and Iain S. Duff.  All Rights Reserved.
-AMD is available under alternate licences; contact T. Davis for details.
+AMD, Copyright (c) 2009-2012 by Timothy A. Davis (http://www.suitesparse.com),
+Patrick R. Amestoy, and Iain S. Duff.  All Rights Reserved.  AMD is available
+under alternate licences; contact T. Davis for details.
 
 AMD:  a set of routines for permuting sparse matrices prior to
     factorization.  Includes a version in C, a version in Fortran, and a MATLAB
     mexFunction.
 
-Requires UFconfig, in the ../UFconfig directory relative to this directory.
+Requires SuiteSparse_config, in the ../SuiteSparse_config directory relative to
+this directory.
 
 Quick start (Unix, or Windows with Cygwin):
 
     To compile, test, and install AMD, you may wish to first configure the
-    installation by editting the ../UFconfig/UFconfig.mk file.  Next, cd to this
-    directory (AMD) and type "make" (or "make lib" if you do not have MATLAB).
-    To compile and run a demo program for the Fortran version, type
-    "make fortran".  When done, type "make clean" to remove unused *.o files
-    (keeps the compiled libraries and demo programs).  See the User Guide
-    (Doc/AMD_UserGuide.pdf), or ../UFconfig/UFconfig.mk for more details.
+    installation by editting the ../SuiteSparse_config/SuiteSparse_config.mk
+    file.  Next, cd to this directory (AMD) and type "make" (or "make lib" if
+    you do not have MATLAB).  To compile and run a demo program for the Fortran
+    version, type "make fortran".  When done, type "make clean" to remove
+    unused *.o files (keeps the compiled libraries and demo programs).  See the
+    User Guide (Doc/AMD_UserGuide.pdf), or
+    ../SuiteSparse_config/SuiteSparse_config.mk for more details.
 
 Quick start (for MATLAB users);
 
     To compile, test, and install the AMD mexFunction, cd to the
     AMD/MATLAB directory and type amd_make at the MATLAB prompt.
-
-If you have MATLAB 7.2 or earlier and use "make mex", you must first edit
-UFconfig/UFconfig.h to remove the "-largeArrayDims" option from the MEX command
-(or just use amd_make.m inside MATLAB).
 
 -------------------------------------------------------------------------------
 
@@ -61,7 +59,7 @@ AMD License:
 
 Availability:
 
-    http://www.cise.ufl.edu/research/sparse/amd
+    http://www.suitesparse.com
 
 -------------------------------------------------------------------------------
 
@@ -78,7 +76,7 @@ Description:
 
 Authors:
 
-    Timothy A. Davis (davis at cise.ufl.edu), University of Florida.
+    Timothy A. Davis (DrTimothyAldenDavis@gmail.com)
     Patrick R. Amestory, ENSEEIHT, Toulouse, France.
     Iain S. Duff, Rutherford Appleton Laboratory, UK.
 
@@ -171,7 +169,7 @@ Files and directories in the AMD distribution:
     amd_demo2.c			C demo program for AMD, jumbled matrix
     amd_demo2.out		output of amd_demo2.c
 
-    amd_l_demo.c		C demo program for AMD (UF_long version)
+    amd_l_demo.c		C demo program for AMD (long integer version)
     amd_l_demo.out		output of amd_l_demo.c
 
     amd_simple.c		simple C demo program for AMD

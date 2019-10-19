@@ -1,4 +1,5 @@
 UFget:  MATLAB and Java interfaces to the UF sparse matrix collection.
+Copyright 2005-2012, Timothy A. Davis, http://www.suitesparse.com
 
 REQUIREMENTS:
 
@@ -6,10 +7,7 @@ REQUIREMENTS:
     UFget requires MATLAB 7.0.  A few of the largest matrices require MATLAB
     7.3 or later.
 
-Copyright 2005-2009, Tim Davis, University of Florida.
-Availability: http://www.cise.ufl.edu/research/sparse/mat/UFget.html
-
-See http://www.cise.ufl.edu/research/sparse/mat/UFget
+See http://www.suitesparse.com
 for a single archive file with all the files listed below:
 
     UFget/README.txt            this file
@@ -123,4 +121,4 @@ For the UFget.m MATLAB interface:
     To search for matrices
 
 For more information on how the matrix statistics were created, see
-http://www.cise.ufl.edu/research/sparse/SuiteSparse.
+http://www.suitesparse.com.

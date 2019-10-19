@@ -17,7 +17,6 @@ function x = cs_qrsol (A,b,order)                                           %#ok
 %
 %   See also CS_QR, CS_AMD, CS_LUSOL, CS_CHOLSOL, MLDIVIDE.
 
-%   Copyright 2006-2007, Timothy A. Davis.
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
 error ('cs_qrsol mexFunction not found') ;

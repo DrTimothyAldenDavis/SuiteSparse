@@ -3,9 +3,8 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
+/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
+/* All Rights Reserved.  See ../Doc/License for License.                      */
 /* -------------------------------------------------------------------------- */
 
 /*
@@ -49,7 +48,7 @@ GLOBAL void UMFPACK_report_control
 #endif
 #ifdef DLONG
     PRINTF (("    Matrix entry defined as: double\n")) ;
-    PRINTF (("    Int (generic integer) defined as: UF_long\n")) ;
+    PRINTF (("    Int (generic integer) defined as: SuiteSparse_long\n")) ;
 #endif
 #ifdef ZINT
     PRINTF (("    Matrix entry defined as: double complex\n")) ;
@@ -57,7 +56,7 @@ GLOBAL void UMFPACK_report_control
 #endif
 #ifdef ZLONG
     PRINTF (("    Matrix entry defined as: double complex\n")) ;
-    PRINTF (("    Int (generic integer) defined as: UF_long\n")) ;
+    PRINTF (("    Int (generic integer) defined as: SuiteSparse_long\n")) ;
 #endif
 
     /* ---------------------------------------------------------------------- */
@@ -356,24 +355,16 @@ GLOBAL void UMFPACK_report_control
     PRINTF (("    compiled for ANSI C\n")) ;
 #endif
 
-#ifdef NO_TIMER
-    PRINTF (("    no CPU timer \n")) ;
+#ifdef SUITESPARSE_TIMER_ENABLED
+    PRINTF (("    POSIX C clock_getttime.\n")) ;
 #else
-#ifndef NPOSIX
-    PRINTF (("    CPU timer is POSIX times ( ) routine.\n")) ;
-#else
-#ifdef GETRUSAGE
-    PRINTF (("    CPU timer is getrusage.\n")) ;
-#else
-    PRINTF (("    CPU timer is ANSI C clock (may wrap around).\n")) ;
-#endif
-#endif
+    PRINTF (("    no timer used.\n")) ;
 #endif
 
     PRINTF (("    computer/operating system: %s\n", UMFPACK_ARCHITECTURE)) ;
-    PRINTF (("    size of int: %g UF_long: %g Int: %g pointer: %g"
+    PRINTF (("    size of int: %g SuiteSparse_long: %g Int: %g pointer: %g"
 	" double: %g Entry: %g (in bytes)\n\n", (double) sizeof (int),
-	(double) sizeof (UF_long), (double) sizeof (Int),
+	(double) sizeof (SuiteSparse_long), (double) sizeof (Int),
 	(double) sizeof (void *), (double) sizeof (double),
 	(double) sizeof (Entry))) ;
 }

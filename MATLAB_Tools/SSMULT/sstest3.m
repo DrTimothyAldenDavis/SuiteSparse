@@ -6,7 +6,7 @@ function sstest3                                                            %#ok
 %
 % See also ssmult, mtimes.
 
-% Copyright 2009, Timothy A. Davis, University of Florida
+% Copyright 2007-2009, Timothy A. Davis, http://www.suitesparse.com
 
 fprintf ('\nsstest3: Please wait ') ;
 

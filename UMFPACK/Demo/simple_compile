@@ -9,7 +9,7 @@
 # No BLAS is used here.  You should modify this to add your BLAS.
 # Otherwise your performance will be low.
 
-cc -DDINT -DNBLAS -I../../UFconfig \
+cc -DDINT -DNBLAS -I../../SuiteSparse_config \
     -I../Include -I../Source -I../../AMD/Include -I../../AMD/Source \
 	umfpack_di_demo.c \
 	../Source/umf_multicompile.c \

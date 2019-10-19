@@ -4,9 +4,9 @@
 #include "cs_mex.h"
 
 static
-void firstdesc (int n, int *parent, int *post, int *first, int *level)
+void firstdesc (csi n, csi *parent, csi *post, csi *first, csi *level)
 {
-    int len, i, k, r, s ;
+    csi len, i, k, r, s ;
     for (i = 0 ; i < n ; i++) first [i] = -1 ;
     for (k = 0 ; k < n ; k++)
     {
@@ -20,15 +20,15 @@ void firstdesc (int n, int *parent, int *post, int *first, int *level)
 }
 
 static
-int *rowcnt (cs *A, int *parent, int *post) /* return rowcount [0..n-1] */
+csi *rowcnt (cs *A, csi *parent, csi *post) /* return rowcount [0..n-1] */
 {
-    int i, j, k, p, q, n, jleaf, *Ap, *Ai, *maxfirst,
+    csi i, j, k, p, q, n, jleaf, *Ap, *Ai, *maxfirst,
         *ancestor, *prevleaf, *w, *first, *level, *rowcount ;
     n = A->n ; Ap = A->p ; Ai = A->i ;                  /* get A */
-    w = cs_malloc (5*n, sizeof (int)) ;                 /* get workspace */
+    w = cs_malloc (5*n, sizeof (csi)) ;                 /* get workspace */
     ancestor = w ; maxfirst = w+n ; prevleaf = w+2*n ; first = w+3*n ;
     level = w+4*n ;
-    rowcount = cs_malloc (n, sizeof (int)) ;    /* allocate result */
+    rowcount = cs_malloc (n, sizeof (csi)) ;    /* allocate result */
     firstdesc (n, parent, post, first, level) ; /* find first and level */
     for (i = 0 ; i < n ; i++)
     {
@@ -62,7 +62,7 @@ void mexFunction
 {
     cs *A, Amatrix ;
     double *x ;
-    int i, n, *parent, *post, *rowcount ;
+    csi i, n, *parent, *post, *rowcount ;
 
     if (nargout > 1 || nargin != 3)
     {

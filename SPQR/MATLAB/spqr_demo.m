@@ -6,8 +6,7 @@ function spqr_demo
 %
 % See also SPQR, SPQR_SOLVE, SPQR_QMULT, SPQR_MAKE, SPQR_INSTALL.
 
-%   Copyright 2008, Timothy A. Davis
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2008, Timothy A. Davis, http://www.suitesparse.com
 
 help spqr
 help spqr_solve

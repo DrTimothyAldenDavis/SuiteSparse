@@ -6,8 +6,7 @@ function cs_demo (do_pause, matrixpath)
 %   cs_demo
 % See also: cs_demo1, cs_demo2, cs_demo3
 
-%   Copyright 2006-2007, Timothy A. Davis.
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
 help cs_demo
 if (nargin < 1)

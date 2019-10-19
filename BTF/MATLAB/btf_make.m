@@ -7,11 +7,11 @@ function btf_make
 %
 % See also btf, maxtrans, stroncomp, dmperm.
 
-% Copyright 2004-2007, Tim Davis, University of Florida
+% Copyright 2004-2007, University of Florida
 
 details = 0 ;       % if 1, print details of each command
 
-mexcmd = 'mex -O -DDLONG -I../Include -I../../UFconfig ' ;
+mexcmd = 'mex -O -DDLONG -I../Include -I../../SuiteSparse_config ' ;
 if (~isempty (strfind (computer, '64')))
     mexcmd = [mexcmd '-largeArrayDims '] ;
 end

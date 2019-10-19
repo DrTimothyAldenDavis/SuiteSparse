@@ -6,8 +6,7 @@ function [s, t, tobj] = cs_must_compile (srcdir, f, suffix, obj, hfile, force)
 %        none, not meant for end users.
 %   See also: CS_MAKE.
 
-%   Copyright 2006-2007, Timothy A. Davis.
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
 dobj = dir ([f obj]) ;
 if (force | isempty (dobj))                                                 %#ok

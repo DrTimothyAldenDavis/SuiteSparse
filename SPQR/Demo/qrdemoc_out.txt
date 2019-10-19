@@ -1,9 +1,3 @@
-cc -O3 -fexceptions  -ansi -I../../CHOLMOD/Include -I../../UFconfig -I../Include -c qrdemoc.c
-( cd ../Lib ; make )
-make[1]: Entering directory `/cise/research/sparse2/SuiteSparse/SPQR/Lib'
-make[1]: Nothing to be done for `default'.
-make[1]: Leaving directory `/cise/research/sparse2/SuiteSparse/SPQR/Lib'
-g++ -O3 -fexceptions  -I../../CHOLMOD/Include -I../../UFconfig -I../Include -o qrdemoc qrdemoc.o ../Lib/libspqr.a ../../CHOLMOD/Lib/libcholmod.a ../../AMD/Lib/libamd.a ../../COLAMD/Lib/libcolamd.a ../../metis-4.0/libmetis.a ../../CCOLAMD/Lib/libccolamd.a ../../CAMD/Lib/libcamd.a -lm -llapack_plain -lblas_plain -lgfortran -lgfortranbegin  
 ./qrdemoc < ../Matrix/a2.mtx
 Matrix      2-by-2      nnz:      3 residual:  0.0e+00 rank:      2
 ./qrdemoc < ../Matrix/r2.mtx

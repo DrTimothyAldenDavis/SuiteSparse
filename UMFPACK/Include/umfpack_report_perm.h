@@ -3,9 +3,8 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
+/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
+/* All Rights Reserved.  See ../Doc/License for License.                      */
 /* -------------------------------------------------------------------------- */
 
 int umfpack_di_report_perm
@@ -15,10 +14,10 @@ int umfpack_di_report_perm
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-UF_long umfpack_dl_report_perm
+SuiteSparse_long umfpack_dl_report_perm
 (
-    UF_long np,
-    const UF_long Perm [ ],
+    SuiteSparse_long np,
+    const SuiteSparse_long Perm [ ],
     const double Control [UMFPACK_CONTROL]
 ) ;
 
@@ -29,10 +28,10 @@ int umfpack_zi_report_perm
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-UF_long umfpack_zl_report_perm
+SuiteSparse_long umfpack_zl_report_perm
 (
-    UF_long np,
-    const UF_long Perm [ ],
+    SuiteSparse_long np,
+    const SuiteSparse_long Perm [ ],
     const double Control [UMFPACK_CONTROL]
 ) ;
 
@@ -44,10 +43,10 @@ double int Syntax:
     double Control [UMFPACK_CONTROL] ;
     status = umfpack_di_report_perm (np, Perm, Control) ;
 
-double UF_long Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    UF_long np, *Perm, status ;
+    SuiteSparse_long np, *Perm, status ;
     double Control [UMFPACK_CONTROL] ;
     status = umfpack_dl_report_perm (np, Perm, Control) ;
 
@@ -58,10 +57,10 @@ complex int Syntax:
     double Control [UMFPACK_CONTROL] ;
     status = umfpack_zi_report_perm (np, Perm, Control) ;
 
-complex UF_long Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    UF_long np, *Perm, status ;
+    SuiteSparse_long np, *Perm, status ;
     double Control [UMFPACK_CONTROL] ;
     status = umfpack_zl_report_perm (np, Perm, Control) ;
 

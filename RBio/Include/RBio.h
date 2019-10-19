@@ -24,7 +24,7 @@
 
 #if defined(MATLAB_MEX_FILE) || defined(MATHWORKS)
 
-/* RBio is being compiled as a MATLAB MEX file, or for use inside MATLAB */
+/* RBio is being compiled as a MATLAB mexFunction, or for use in MATLAB */
 #include "io64.h"
 
 #else
@@ -44,7 +44,7 @@
 /* include files */
 /* -------------------------------------------------------------------------- */
 
-#include "UFconfig.h"
+#include "SuiteSparse_config.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -86,11 +86,11 @@ extern "C" {
 #define RBIO_VALUE_IOERROR (-94)  /* I/O error: numerical values */
 #define RBIO_FILE_IOERROR (-95)   /* I/O error: cannot read/write the file */
 
-#define RBIO_DATE "Dec 7, 2011"
+#define RBIO_DATE "Jun 1, 2012"
 #define RBIO_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define RBIO_MAIN_VERSION 2
-#define RBIO_SUB_VERSION 0
-#define RBIO_SUBSUB_VERSION 2
+#define RBIO_SUB_VERSION 1
+#define RBIO_SUBSUB_VERSION 0
 #define RBIO_VERSION RBIO_VER_CODE(RBIO_MAIN_VERSION,RBIO_SUB_VERSION)
 
 
@@ -113,9 +113,9 @@ extern "C" {
     RBok:           test the validity of a sparse matrix
 
     Each function comes in two versions: one with "int" integers, the other
-    with "UF_long" integers.  UF_long is "long", except for Windows (for
-    which it is __int64).  The default type is UF_long.  Functions for "int"
-    integers have the _i suffix appended to their names.
+    with "SuiteSparse_long" integers.  SuiteSparse_long is "long", except for
+    Windows (for which it is __int64).  The default type is SuiteSparse_long.
+    Functions for "int" integers have the _i suffix appended to their names.
 */
 
 int RBkind_i        /* 0: OK, < 0: error, > 0: warning */
@@ -140,12 +140,14 @@ int RBkind_i        /* 0: OK, < 0: error, > 0: warning */
     /* workspace: allocated internally if NULL */
     int *cp,        /* workspace of size ncol+1, undefined on input and output*/
 
-    UFconfig *config    /* SuiteSparse configuration parameters */
+    SuiteSparse_config *config    /* SuiteSparse configuration parameters */
 ) ;
 
-UF_long RBkind (UF_long nrow, UF_long ncol, UF_long *Ap, UF_long *Ai,
-    double *Ax, double *Az, UF_long mkind_in, UF_long *mkind, UF_long *skind,
-    char mtype [4], double *xmin, double *xmax, UF_long *cp, UFconfig *config) ;
+SuiteSparse_long RBkind (SuiteSparse_long nrow, SuiteSparse_long ncol,
+    SuiteSparse_long *Ap, SuiteSparse_long *Ai, double *Ax, double *Az,
+    SuiteSparse_long mkind_in, SuiteSparse_long *mkind, SuiteSparse_long *skind,
+    char mtype [4], double *xmin, double *xmax, SuiteSparse_long *cp,
+    SuiteSparse_config *config) ;
 
 
 int RBread_i            /* 0: OK, < 0: error, > 0: warning */
@@ -174,14 +176,16 @@ int RBread_i            /* 0: OK, < 0: error, > 0: warning */
     int **Zp,           /* column pointers of Z */
     int **Zi,           /* row indices of Z */
 
-    UFconfig *config    /* SuiteSparse configuration parameters */
+    SuiteSparse_config *config    /* SuiteSparse configuration parameters */
 ) ;
 
-UF_long RBread (char *filename, UF_long build_upper, UF_long zero_handling,
-    char title [73], char key [9], char mtype [4], UF_long *nrow, UF_long *ncol,
-    UF_long *mkind, UF_long *skind, UF_long *asize, UF_long *znz, UF_long **Ap,
-    UF_long **Ai, double **Ax, double **Az, UF_long **Zp, UF_long **Zi,
-    UFconfig *config) ;
+SuiteSparse_long RBread (char *filename, SuiteSparse_long build_upper,
+    SuiteSparse_long zero_handling, char title [73], char key [9],
+    char mtype [4], SuiteSparse_long *nrow, SuiteSparse_long *ncol,
+    SuiteSparse_long *mkind, SuiteSparse_long *skind, SuiteSparse_long *asize,
+    SuiteSparse_long *znz, SuiteSparse_long **Ap, SuiteSparse_long **Ai,
+    double **Ax, double **Az, SuiteSparse_long **Zp, SuiteSparse_long **Zi,
+    SuiteSparse_config *config) ;
 
 
 int RBreadraw_i         /* 0: OK, < 0: error, > 0: warning */
@@ -207,14 +211,16 @@ int RBreadraw_i         /* 0: OK, < 0: error, > 0: warning */
     int **p_Ai,         /* size nnz, row indices of A */
     double **p_Ax,      /* size xsize, numerical values of A */
 
-    UFconfig *config    /* SuiteSparse configuration parameters */
+    SuiteSparse_config *config    /* SuiteSparse configuration parameters */
 ) ;
 
 
-UF_long RBreadraw (char *filename, char title [73], char key [9], char mtype[4],
-    UF_long *nrow, UF_long *ncol, UF_long *nnz, UF_long *nelnz, UF_long *mkind,
-    UF_long *skind, UF_long *fem, UF_long *xsize, UF_long **p_Ap,
-    UF_long **p_Ai, double **p_Ax, UFconfig *config) ;
+SuiteSparse_long RBreadraw (char *filename, char title [73], char key [9],
+    char mtype[4], SuiteSparse_long *nrow, SuiteSparse_long *ncol,
+    SuiteSparse_long *nnz, SuiteSparse_long *nelnz, SuiteSparse_long *mkind,
+    SuiteSparse_long *skind, SuiteSparse_long *fem, SuiteSparse_long *xsize,
+    SuiteSparse_long **p_Ap, SuiteSparse_long **p_Ai, double **p_Ax,
+    SuiteSparse_config *config) ;
 
 
 int RBwrite_i       /* 0:OK, < 0: error, > 0: warning */
@@ -236,12 +242,14 @@ int RBwrite_i       /* 0:OK, < 0: error, > 0: warning */
     /* output */
     char mtype [4], /* matrix type (RUA, RSA, etc), may be NULL */
 
-    UFconfig *config    /* SuiteSparse configuration parameters */
+    SuiteSparse_config *config    /* SuiteSparse configuration parameters */
 ) ;
 
-UF_long RBwrite (char *filename, char *title, char *key, UF_long nrow,
-    UF_long ncol, UF_long *Ap, UF_long *Ai, double *Ax, double *Az, UF_long *Zp,
-    UF_long *Zi, UF_long mkind_in, char mtype [4], UFconfig *config) ;
+SuiteSparse_long RBwrite (char *filename, char *title, char *key,
+    SuiteSparse_long nrow, SuiteSparse_long ncol, SuiteSparse_long *Ap,
+    SuiteSparse_long *Ai, double *Ax, double *Az, SuiteSparse_long *Zp,
+    SuiteSparse_long *Zi, SuiteSparse_long mkind_in, char mtype [4],
+    SuiteSparse_config *config) ;
 
 
 void RBget_entry_i
@@ -254,8 +262,8 @@ void RBget_entry_i
     double *xz          /* imaginary part */
 ) ;
 
-void RBget_entry (UF_long mkind, double *Ax, double *Az, UF_long p,
-    double *xr, double *xz) ;
+void RBget_entry (SuiteSparse_long mkind, double *Ax, double *Az,
+    SuiteSparse_long p, double *xr, double *xz) ;
 
 
 void RBput_entry_i
@@ -268,8 +276,8 @@ void RBput_entry_i
     double xz           /* imaginary part */
 ) ;
 
-void RBput_entry ( UF_long mkind, double *Ax, double *Az, UF_long p,
-    double xr, double xz) ;
+void RBput_entry (SuiteSparse_long mkind, double *Ax, double *Az,
+    SuiteSparse_long p, double xr, double xz) ;
 
 
 int RBok_i          /* 0:OK, < 0: error, > 0: warning */
@@ -291,9 +299,10 @@ int RBok_i          /* 0:OK, < 0: error, > 0: warning */
     int *p_nzeros      /* number of explicit zeros (-1 if not computed) */
 ) ;
 
-UF_long RBok (UF_long nrow, UF_long ncol, UF_long nzmax, UF_long *Ap,
-    UF_long *Ai, double *Ax, double *Az, char *As, UF_long mkind,
-    UF_long *p_njumbled, UF_long *p_nzeros) ;
+SuiteSparse_long RBok (SuiteSparse_long nrow, SuiteSparse_long ncol,
+    SuiteSparse_long nzmax, SuiteSparse_long *Ap, SuiteSparse_long *Ai,
+    double *Ax, double *Az, char *As, SuiteSparse_long mkind,
+    SuiteSparse_long *p_njumbled, SuiteSparse_long *p_nzeros) ;
 
 #ifdef MATLAB_MEX_FILE
 void RBerror (int status) ;     /* only for MATLAB mexFunctions */

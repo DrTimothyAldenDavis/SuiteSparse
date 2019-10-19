@@ -53,7 +53,7 @@ function [p, r, nc, G, xy] = find_components (A,sorted)
 %
 % See also LARGEST_COMPONENT, FIND_COMPONENTS_EXAMPLE, DMPERM, GPLOT
 
-% Copyright 2008, Tim Davis, University of Florida
+% Copyright 2008, Timothy A. Davis, http://www.suitesparse.com
 
 %-------------------------------------------------------------------------------
 % number the nodes

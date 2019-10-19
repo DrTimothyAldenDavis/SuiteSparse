@@ -2,9 +2,9 @@
 #define _KLU_VERSION_H
 
 #ifdef DLONG
-#define Int UF_long
-#define Int_id UF_long_id
-#define Int_MAX UF_long_max
+#define Int SuiteSparse_long
+#define Int_id SuiteSparse_long_id
+#define Int_MAX SuiteSparse_long_max
 #else
 #define Int int
 #define Int_id "%d"

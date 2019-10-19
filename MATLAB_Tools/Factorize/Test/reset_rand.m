@@ -4,8 +4,12 @@ function reset_rand
 % Example
 %   reset_rand
 %
-% See also RandStream
+% See also RandStream, rand, rng
 
-% Copyright 2011, Timothy A. Davis, University of Florida.
+% Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
 
-reset (RandStream.getDefaultStream) ;
+if (verLessThan ('matlab', '7.12'))
+    rand ('seed', 0) ;                                                      %#ok
+else
+    rng ('default') ;
+end

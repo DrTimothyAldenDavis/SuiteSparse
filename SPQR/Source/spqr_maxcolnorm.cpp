@@ -6,7 +6,7 @@
 
 #include "spqr.hpp"
 
-inline double spqr_private_nrm2 (Int n, double *X, cholmod_common *cc)
+inline double spqr_private_nrm2 (Long n, double *X, cholmod_common *cc)
 {
     double norm = 0 ;
     BLAS_INT N = n, one = 1 ;
@@ -21,7 +21,7 @@ inline double spqr_private_nrm2 (Int n, double *X, cholmod_common *cc)
     return (norm) ;
 }
 
-inline double spqr_private_nrm2 (Int n, Complex *X, cholmod_common *cc)
+inline double spqr_private_nrm2 (Long n, Complex *X, cholmod_common *cc)
 {
     double norm = 0 ;
     BLAS_INT N = n, one = 1 ;
@@ -51,7 +51,7 @@ template <typename Entry> double spqr_maxcolnorm
 )
 {
     double norm, maxnorm ;
-    Int j, p, len, n, *Ap ;
+    Long j, p, len, n, *Ap ;
     Entry *Ax ;
 
     RETURN_IF_NULL_COMMON (EMPTY) ;
@@ -59,7 +59,7 @@ template <typename Entry> double spqr_maxcolnorm
 
     cc->blas_ok = TRUE ;
     n = A->ncol ;
-    Ap = (Int *) A->p ;
+    Ap = (Long *) A->p ;
     Ax = (Entry *) A->x ;
 
     maxnorm = 0 ;

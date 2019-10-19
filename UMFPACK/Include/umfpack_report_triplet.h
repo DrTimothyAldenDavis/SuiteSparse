@@ -3,9 +3,8 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
+/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
+/* All Rights Reserved.  See ../Doc/License for License.                      */
 /* -------------------------------------------------------------------------- */
 
 int umfpack_di_report_triplet
@@ -19,13 +18,13 @@ int umfpack_di_report_triplet
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-UF_long umfpack_dl_report_triplet
+SuiteSparse_long umfpack_dl_report_triplet
 (
-    UF_long n_row,
-    UF_long n_col,
-    UF_long nz,
-    const UF_long Ti [ ],
-    const UF_long Tj [ ],
+    SuiteSparse_long n_row,
+    SuiteSparse_long n_col,
+    SuiteSparse_long nz,
+    const SuiteSparse_long Ti [ ],
+    const SuiteSparse_long Tj [ ],
     const double Tx [ ],
     const double Control [UMFPACK_CONTROL]
 ) ;
@@ -41,13 +40,13 @@ int umfpack_zi_report_triplet
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-UF_long umfpack_zl_report_triplet
+SuiteSparse_long umfpack_zl_report_triplet
 (
-    UF_long n_row,
-    UF_long n_col,
-    UF_long nz,
-    const UF_long Ti [ ],
-    const UF_long Tj [ ],
+    SuiteSparse_long n_row,
+    SuiteSparse_long n_col,
+    SuiteSparse_long nz,
+    const SuiteSparse_long Ti [ ],
+    const SuiteSparse_long Tj [ ],
     const double Tx [ ], const double Tz [ ],
     const double Control [UMFPACK_CONTROL]
 ) ;
@@ -60,10 +59,10 @@ double int Syntax:
     double *Tx, Control [UMFPACK_CONTROL] ;
     status = umfpack_di_report_triplet (n_row, n_col, nz, Ti, Tj, Tx, Control) ;
 
-double UF_long Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    UF_long n_row, n_col, nz, *Ti, *Tj, status ;
+    SuiteSparse_long n_row, n_col, nz, *Ti, *Tj, status ;
     double *Tx, Control [UMFPACK_CONTROL] ;
     status = umfpack_dl_report_triplet (n_row, n_col, nz, Ti, Tj, Tx, Control) ;
 
@@ -75,10 +74,10 @@ complex int Syntax:
     status = umfpack_zi_report_triplet (n_row, n_col, nz, Ti, Tj, Tx, Tz,
 	Control) ;
 
-complex UF_long Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    UF_long n_row, n_col, nz, *Ti, *Tj, status ;
+    SuiteSparse_long n_row, n_col, nz, *Ti, *Tj, status ;
     double *Tx, *Tz, Control [UMFPACK_CONTROL] ;
     status = umfpack_zl_report_triplet (n_row, n_col, nz, Ti, Tj, Tx, Tz,
 	Control) ;

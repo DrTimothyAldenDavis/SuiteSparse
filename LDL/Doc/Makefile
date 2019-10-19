@@ -4,7 +4,7 @@
 
 default: ldl_userguide.pdf
 
-include ../../UFconfig/UFconfig.mk
+include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 #-------------------------------------------------------------------------------
 # clean-up:

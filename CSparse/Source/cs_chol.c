@@ -3,13 +3,13 @@
 csn *cs_chol (const cs *A, const css *S)
 {
     double d, lki, *Lx, *x, *Cx ;
-    int top, i, p, k, n, *Li, *Lp, *cp, *pinv, *s, *c, *parent, *Cp, *Ci ;
+    csi top, i, p, k, n, *Li, *Lp, *cp, *pinv, *s, *c, *parent, *Cp, *Ci ;
     cs *L, *C, *E ;
     csn *N ;
     if (!CS_CSC (A) || !S || !S->cp || !S->parent) return (NULL) ;
     n = A->n ;
     N = cs_calloc (1, sizeof (csn)) ;       /* allocate result */
-    c = cs_malloc (2*n, sizeof (int)) ;     /* get int workspace */
+    c = cs_malloc (2*n, sizeof (csi)) ;     /* get csi workspace */
     x = cs_malloc (n, sizeof (double)) ;    /* get double workspace */
     cp = S->cp ; pinv = S->pinv ; parent = S->parent ;
     C = pinv ? cs_symperm (A, pinv, 1) : ((cs *) A) ;

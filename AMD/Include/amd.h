@@ -5,15 +5,14 @@
 /* ------------------------------------------------------------------------- */
 /* AMD Version 2.2, Copyright (c) 2007 by Timothy A. Davis,                  */
 /* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
-/* email: davis at cise.ufl.edu    CISE Department, Univ. of Florida.        */
-/* web: http://www.cise.ufl.edu/research/sparse/amd                          */
+/* email: DrTimothyAldenDavis@gmail.com                                      */
 /* ------------------------------------------------------------------------- */
 
 /* AMD finds a symmetric ordering P of a matrix A so that the Cholesky
  * factorization of P*A*P' has fewer nonzeros and takes less work than the
  * Cholesky factorization of A.  If A is not symmetric, then it performs its
  * ordering on the matrix A+A'.  Two sets of user-callable routines are
- * provided, one for int integers and the other for UF_long integers.
+ * provided, one for int integers and the other for SuiteSparse_long integers.
  *
  * The method is based on the approximate minimum degree algorithm, discussed
  * in Amestoy, Davis, and Duff, "An approximate degree ordering algorithm",
@@ -44,8 +43,7 @@ extern "C" {
 /* get the definition of size_t: */
 #include <stddef.h>
 
-/* define UF_long */
-#include "UFconfig.h"
+#include "SuiteSparse_config.h"
 
 int amd_order                  /* returns AMD_OK, AMD_OK_BUT_JUMBLED,
                                 * AMD_INVALID, or AMD_OUT_OF_MEMORY */
@@ -58,12 +56,12 @@ int amd_order                  /* returns AMD_OK, AMD_OK_BUT_JUMBLED,
     double Info [ ]            /* output Info statistics, of size AMD_INFO */
 ) ;
 
-UF_long amd_l_order            /* see above for description of arguments */
+SuiteSparse_long amd_l_order    /* see above for description of arguments */
 (
-    UF_long n,
-    const UF_long Ap [ ],
-    const UF_long Ai [ ],
-    UF_long P [ ],
+    SuiteSparse_long n,
+    const SuiteSparse_long Ap [ ],
+    const SuiteSparse_long Ai [ ],
+    SuiteSparse_long P [ ],
     double Control [ ],
     double Info [ ]
 ) ;
@@ -71,17 +69,18 @@ UF_long amd_l_order            /* see above for description of arguments */
 /* Input arguments (not modified):
  *
  *       n: the matrix A is n-by-n.
- *       Ap: an int/UF_long array of size n+1, containing column pointers of A.
- *       Ai: an int/UF_long array of size nz, containing the row indices of A,
- *           where nz = Ap [n].
+ *       Ap: an int/SuiteSparse_long array of size n+1, containing column
+ *              pointers of A.
+ *       Ai: an int/SuiteSparse_long array of size nz, containing the row
+ *              indices of A, where nz = Ap [n].
  *       Control:  a double array of size AMD_CONTROL, containing control
  *           parameters.  Defaults are used if Control is NULL.
  *
  * Output arguments (not defined on input):
  *
- *       P: an int/UF_long array of size n, containing the output permutation. If
- *           row i is the kth pivot row, then P [k] = i.  In MATLAB notation,
- *           the reordered matrix is A (P,P).
+ *       P: an int/SuiteSparse_long array of size n, containing the output
+ *           permutation. If row i is the kth pivot row, then P [k] = i.  In
+ *           MATLAB notation, the reordered matrix is A (P,P).
  *       Info: a double array of size AMD_INFO, containing statistical
  *           information.  Ignored if Info is NULL.
  *
@@ -105,7 +104,7 @@ UF_long amd_l_order            /* see above for description of arguments */
  * pattern of the matrix A is the same as that used internally by MATLAB.
  * If you wish to use a more flexible input structure, please see the
  * umfpack_*_triplet_to_col routines in the UMFPACK package, at
- * http://www.cise.ufl.edu/research/sparse/umfpack.
+ * http://www.suitesparse.com.
  *
  * Restrictions:  n >= 0.  Ap [0] = 0.  Ap [j] <= Ap [j+1] for all j in the
  *       range 0 to n-1.  nz = Ap [n] >= 0.  Ai [0..nz-1] must be in the range 0
@@ -257,19 +256,19 @@ void amd_2
 
 void amd_l2
 (
-    UF_long n,
-    UF_long Pe [ ],
-    UF_long Iw [ ],
-    UF_long Len [ ],
-    UF_long iwlen,
-    UF_long pfree,
-    UF_long Nv [ ],
-    UF_long Next [ ], 
-    UF_long Last [ ],
-    UF_long Head [ ],
-    UF_long Elen [ ],
-    UF_long Degree [ ],
-    UF_long W [ ],
+    SuiteSparse_long n,
+    SuiteSparse_long Pe [ ],
+    SuiteSparse_long Iw [ ],
+    SuiteSparse_long Len [ ],
+    SuiteSparse_long iwlen,
+    SuiteSparse_long pfree,
+    SuiteSparse_long Nv [ ],
+    SuiteSparse_long Next [ ], 
+    SuiteSparse_long Last [ ],
+    SuiteSparse_long Head [ ],
+    SuiteSparse_long Elen [ ],
+    SuiteSparse_long Degree [ ],
+    SuiteSparse_long W [ ],
     double Control [ ],
     double Info [ ]
 ) ;
@@ -296,12 +295,12 @@ int amd_valid
     const int Ai [ ]           /* row indices, of size Ap [n_col] */
 ) ;
 
-UF_long amd_l_valid
+SuiteSparse_long amd_l_valid
 (
-    UF_long n_row,
-    UF_long n_col,
-    const UF_long Ap [ ],
-    const UF_long Ai [ ]
+    SuiteSparse_long n_row,
+    SuiteSparse_long n_col,
+    const SuiteSparse_long Ap [ ],
+    const SuiteSparse_long Ai [ ]
 ) ;
 
 /* ------------------------------------------------------------------------- */
@@ -398,11 +397,11 @@ void amd_l_info     (double Info [ ]) ;
  * Versions 1.1 and earlier of AMD do not include a #define'd version number.
  */
 
-#define AMD_DATE "May 15, 2012"
+#define AMD_DATE "Jun 1, 2012"
 #define AMD_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
 #define AMD_MAIN_VERSION 2
-#define AMD_SUB_VERSION 2
-#define AMD_SUBSUB_VERSION 4
+#define AMD_SUB_VERSION 3
+#define AMD_SUBSUB_VERSION 0
 #define AMD_VERSION AMD_VERSION_CODE(AMD_MAIN_VERSION,AMD_SUB_VERSION)
 
 #ifdef __cplusplus

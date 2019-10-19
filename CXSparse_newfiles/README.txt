@@ -1,4 +1,5 @@
-CXSparse: Copyright (c) 2006-2011, Timothy A. Davis.
+CXSparse: Copyright (c) 2006-2012, Timothy A. Davis.
+http://www.suitesparse.com
 
 Derived from CSparse.  Conversion originally by David Bateman, Motorola,
 and then modified by Tim Davis.  ANSI C99 is required, with support for
@@ -6,10 +7,10 @@ the _Complex data type.
 (if you use a C++ compiler, the C++ complex type is used instead).
 
 CXSparse is a version of CSparse that operates on both real and complex
-matrices, using either int or UF_long integers.  A UF_long is normally
-just a long on most platforms, but becomes __int64 on WIN64.
-It now includes a MATLAB interface, enabling the use of CXSparse functions on
-both 32-bit and 64-bit platforms.
+matrices, using either int or SuiteSparse_long integers.  A SuiteSparse_long is
+normally just a long on most platforms, but becomes __int64 on WIN64.  It now
+includes a MATLAB interface, enabling the use of CXSparse functions on both
+32-bit and 64-bit platforms.
 
 To install for use in MATLAB, simply type "cs_install" in the MATLAB Command
 Window, while in the CXSparse/MATLAB directory.  (NOTE: Windows users cannot
@@ -39,26 +40,29 @@ uses CSparse may switch to using CXSparse without any changes to the user code.
 Each CXSparse function has a generic version with the same name as the CSparse
 function, and four type-specific versions.  For example:
 
-    cs_add      same as cs_add_di by default, but can be changed to use UF_long
+    cs_add      same as cs_add_di by default, but can be changed to use
+                SuiteSparse_long
                 integers if user code is compiled with -DCS_LONG, and/or can
                 be changed to operate on complex matrices with -DCS_COMPLEX.
 
     cs_di_add   double/int version of cs_add
-    cs_dl_add   double/UF_long version of cs_add
+    cs_dl_add   double/SuiteSparse_long version of cs_add
     cs_ci_add   complex/int version of cs_add
-    cs_cl_add   complex/UF_long version of cs_add
+    cs_cl_add   complex/SuiteSparse_long version of cs_add
 
 The sparse matrix data structures are treated in the same way:  cs, css,
 csn, and csd become cs_di, cs_dis, cs_din, and cs_did for the double/int case,
-cs_cl, cs_cls, cs_cln, and cs_cld for the complex/UF_long case, and so on.
+cs_cl, cs_cls, cs_cln, and cs_cld for the complex/SuiteSparse_long case, and so
+on.
 
 See cs_demo.c for a type-generic user program, and cs_cl_demo.c for a
-type-specific version of the same program (complex/UF_long).
+type-specific version of the same program (complex/SuiteSparse_long).
 
 Several macros are available in CXSparse (but not in CSparse) to allow user
 code to be written in a type-generic manner:
 
-    CS_INT      int by default, UF_long if -DCS_LONG compiler flag is used
+    CS_INT      int by default, SuiteSparse_long if -DCS_LONG compiler flag
+                is used
     CS_ENTRY    double by default, double complex if -DCS_COMPLEX flag is used.
     CS_ID       "%d" or "%ld", for printf and scanf of the CS_INT type.
     CS_INT_MAX  INT_MAX or LONG_MAX, the largest possible value of CS_INT.
@@ -96,7 +100,7 @@ The Householder reflection constructed by cs_house.c also differs slightly, to
 accomodate both the real and complex cases properly.
 
 CXSparse is generated automatically from CSparse.  Refer to
-http://www.cise.ufl.edu/research/sparse/CSparse for details.
+http://www.suitesparse.com for details.
 
 --------------------------------------------------------------------------------
 Contents:
@@ -189,11 +193,11 @@ cs_ci_demo3.c   complex/int version of cs_demo3.c
 cs_ci_demo.c    complex/int version of cs_demo.c
 cs_ci_demo.h    complex/int version of cs_demo.h
 
-cs_cl_demo1.c   complex/UF_long version of cs_demo1.c
-cs_cl_demo2.c   complex/UF_long version of cs_demo2.c
-cs_cl_demo3.c   complex/UF_long version of cs_demo3.c
-cs_cl_demo.c    complex/UF_long version of cs_demo.c
-cs_cl_demo.h    complex/UF_long version of cs_demo.h
+cs_cl_demo1.c   complex/SuiteSparse_long version of cs_demo1.c
+cs_cl_demo2.c   complex/SuiteSparse_long version of cs_demo2.c
+cs_cl_demo3.c   complex/SuiteSparse_long version of cs_demo3.c
+cs_cl_demo.c    complex/SuiteSparse_long version of cs_demo.c
+cs_cl_demo.h    complex/SuiteSparse_long version of cs_demo.h
 
 cs_demo1.c      read a matrix from a file and perform basic matrix operations
 cs_demo2.c      read a matrix from a file and solve a linear system
@@ -209,14 +213,14 @@ cs_di_demo3.c   double/int version of cs_demo3.c
 cs_di_demo.c    double/int version of cs_demo.c
 cs_di_demo.h    double/int version of cs_demo.h
 
-cs_dl_demo1.c   double/UF_long version of cs_demo1.c
-cs_dl_demo2.c   double/UF_long version of cs_demo2.c
-cs_dl_demo3.c   double/UF_long version of cs_demo3.c
-cs_dl_demo.c    double/UF_long version of cs_demo.c
-cs_dl_demo.h    double/UF_long version of cs_demo.h
+cs_dl_demo1.c   double/SuiteSparse_long version of cs_demo1.c
+cs_dl_demo2.c   double/SuiteSparse_long version of cs_demo2.c
+cs_dl_demo3.c   double/SuiteSparse_long version of cs_demo3.c
+cs_dl_demo.c    double/SuiteSparse_long version of cs_demo.c
+cs_dl_demo.h    double/SuiteSparse_long version of cs_demo.h
 
 cs_idemo.c      convert real matrices to/from complex (int version)
-cs_ldemo.c      convert real matrices to/from complex (UF_long version)
+cs_ldemo.c      convert real matrices to/from complex (SuiteSparse_long version)
 
 Makefile        Makefile for Demo programs
 readhb.f        read a Rutherford-Boeing matrix (real matrices only)
@@ -524,6 +528,16 @@ Change Log:
 
 Refer to CSparse for changes in CSparse, which are immediately propagated
 into CXSparse (those Change Log entries are not repeated here).
+
+Jun 1, 2012.  version 3.1.0
+
+    * now based on CSparse v3.1.0
+    * This version of CXSparse changes the 'long' integer from UF_long to
+        cs_long_t.  UF_long is still available to user codes, however, so this
+        change is backward compatible with user codes.  Future user codes
+        should use cs_long_t instead of UF_long.
+    * changed unsigned integer in cs_amd.c to signed, for hash code.
+    * in Source, only changes are to cs_demo*.c, cs_print.c
 
 Nov 1, 2007.  version 2.2.1
 

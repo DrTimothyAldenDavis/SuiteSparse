@@ -1,7 +1,7 @@
 CHOLMOD/Partition Module.
 Copyright (C) 2005-2006, Univ. of Florida.  Author: Timothy A. Davis
 CHOLMOD is also available under other licenses; contact authors for details.
-http://www.cise.ufl.edu/research/sparse
+http://www.suitesparse.com
 
 Note that this license is for the CHOLMOD/Partition module only.
 All CHOLMOD modules are licensed separately.

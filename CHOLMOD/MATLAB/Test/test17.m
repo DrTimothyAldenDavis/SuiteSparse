@@ -4,7 +4,7 @@ function test17
 %   test17
 % See also cholmod_test
 
-% Copyright 2006-2007, Timothy A. Davis, University of Florida
+% Copyright 2007, Timothy A. Davis, http://www.suitesparse.com
 
 fprintf ('=================================================================\n');
 fprintf ('test17: test lchol on a few large matrices\n') ;

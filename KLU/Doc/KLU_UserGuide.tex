@@ -16,10 +16,8 @@
 \title{User Guide for KLU and BTF}
 \author{
 Timothy A. Davis\thanks{
-Dept.~of Computer and Information Science and Engineering,
-Univ.~of Florida, Gainesville, FL, USA.
-email: davis@cise.ufl.edu.
-http://www.cise.ufl.edu/$\sim$davis.
+DrTimothyAldenDavis@gmail.com,
+http://www.suitesparse.com.
 This work was supported by Sandia National Labs, and the National
 Science Foundation.
 Portions of the work were done while on sabbatical at Stanford University
@@ -28,7 +26,7 @@ University and the SciDAC program).
 }
 \and Eka Palamadai Natarajan}
 
-\date{VERSION 1.1.4, Jan 20, 2012}
+\date{VERSION 1.2.0, Jun 1, 2012}
 \maketitle
 
 %------------------------------------------------------------------------------
@@ -85,11 +83,7 @@ KLU is available under alternate licenses; contact T. Davis for details.
     Copyright, this License, and the Availability note are retained,
     and a notice that the code was modified is included.
 
-{\bf Availability:}
-
-    {\tt http://www.cise.ufl.edu/research/sparse/klu}
-
-    {\tt http://www.cise.ufl.edu/research/sparse/btf}
+{\bf Availability:} {\tt http://www.suitesparse.com}
 
 {\bf Acknowledgments:}
 
@@ -249,8 +243,9 @@ simulation problems}, ACM Transactions on Mathematical Software, vol 37, no 3,
 \section{Availability}
 %------------------------------------------------------------------------------
 
-KLU and its required ordering packages (BTF, COLAMD, AMD, and UFconfig) are
-available at \newline {\tt http://www.cise.ufl.edu/research/sparse.}  In
+KLU and its required ordering packages (BTF, COLAMD, AMD, and
+SuiteSparse\_config) are
+available at \newline {\tt http://www.suitesparse.com.}  In
 addition, KLU can make use of any user-provided ordering function.  One such
 function is included, which provides KLU with an interface to the ordering
 methods used in CHOLMOD \cite{ChenDavisHagerRajamanickam06}, such as METIS, a
@@ -261,9 +256,10 @@ time to compute than the AMD ordering, but if the ordering is reused many times
 (typical in circuit simulation) the better-quality ordering can pay off in
 lower total simulation time. 
 
-To use KLU, you must obtain the KLU, BTF, UFconfig, AMD, and COLAMD packages
+To use KLU, you must obtain the KLU, BTF, SuiteSparse\_config,
+AMD, and COLAMD packages
 in the SuiteSparse suite of sparse matrix libraries.  See 
-{\tt http://www.cise.ufl.edu/research/sparse} for each of these packages.
+{\tt http://www.suitesparse.com} for each of these packages.
 They are also all contained within the single {\tt SuiteSparse.zip} or
 {\tt SuiteSparse.tar.gz} distribution.
 
@@ -345,18 +341,18 @@ permissions, edit your {\tt startup.m} by adding {\tt addpath} commands (type
 KLU and BTF include the following C-callable functions.  Each function is
 available in two or four versions: with {\tt int} or {\tt long} integers, and
 (for functions that deal with numerical values), with {\tt double} or complex
-{\tt double} values.  The {\tt long} integer is actually a {\tt UF\_long},
+{\tt double} values.  The {\tt long} integer is actually a {\tt SuiteSparse\_long},
 which is typically a {\tt long}, defined with a {\tt \#define} statement.  It
 becomes an {\tt \_\_int64} on Microsoft Windows 64, however.
 
-The usage of real and complex, and {\tt int} and {\tt UF\_long}, must not be
+The usage of real and complex, and {\tt int} and {\tt SuiteSparse\_long}, must not be
 mixed, except that some functions can be used for both real and complex cases.
 
 %------------------------------------------------------------------------------
 \subsection{KLU Common object}
 %------------------------------------------------------------------------------
 
-The {\tt klu\_common} object ({\tt klu\_l\_common} for the {\tt UF\_long}
+The {\tt klu\_common} object ({\tt klu\_l\_common} for the {\tt SuiteSparse\_long}
 version) contains user-definable parameters and statistics returned from
 KLU functions.  This object appears in every KLU function as the last
 parameter.  Details are given in the {\tt klu.h} include file, which also
@@ -401,7 +397,7 @@ Default: 0.
 
 \item {\tt user\_order}: a pointer to a function that can be provided by the
 application that uses KLU, to redefine the fill-reducing ordering used by KLU
-for each diagonal block.  The {\tt int} and {\tt UF\_long} prototypes must be
+for each diagonal block.  The {\tt int} and {\tt SuiteSparse\_long} prototypes must be
 as follows:
 
 {\footnotesize
@@ -409,8 +405,9 @@ as follows:
 int my_ordering_function (int n, int Ap [ ], int Ai [ ], int Perm [ ], klu_common *Common) ;
 
 
-UF_long my_long_ordering_function (UF_long n, UF_long Ap [ ], UF_long Ai [ ],
-    UF_long Perm [ ], klu_l_common *Common);
+SuiteSparse_long my_long_ordering_function (SuiteSparse_long n,
+    SuiteSparse_long Ap [ ], SuiteSparse_long Ai [ ],
+    SuiteSparse_long Perm [ ], klu_l_common *Common);
 \end{verbatim}
 }
 
@@ -450,7 +447,7 @@ provides an interface to the ordering method in CHOLMOD.
 
 KLU performs its sparse LU factorization in two steps.  The first is purely
 symbolic, and does not depend on the numerical values.  This analysis returns a
-{\tt klu\_symbolic} object ({\tt klu\_l\_symbolic} in the {\tt UF\_long}
+{\tt klu\_symbolic} object ({\tt klu\_l\_symbolic} in the {\tt SuiteSparse\_long}
 version).  The {\tt Symbolic} object contains a pre-ordering which combines the
 block triangular form with the fill-reducing ordering, and an estimate of the
 number of nonzeros in the factors of each block.  Its size is thus modest, only
@@ -471,11 +468,11 @@ and {\tt Numeric} objects are required.
 \subsection{A sparse matrix in KLU}
 %------------------------------------------------------------------------------
 
-% From here on, only the {\tt int} version is described.  In the {\tt UF\_long}
+% From here on, only the {\tt int} version is described.  In the {\tt SuiteSparse\_long}
 % version, the function names change slightly ({\tt klu\_factor} becomes
 % {\tt klu\_l\_factor}, and the {\tt int}/complex version {\tt klu\_z\_factor}
 % becomes {\tt klu\_zl\_factor}, for example).  For more details on the
-% {\tt UF\_long} version, refer to Section~\ref{klu_include}.
+% {\tt SuiteSparse\_long} version, refer to Section~\ref{klu_include}.
 
 The input matrix provided to KLU is in sparse compressed-column form, which is
 the same data structure used internally in MATLAB, except that the version used
@@ -533,7 +530,7 @@ any other KLU function can be called.
 
 
     #include "klu.h"
-    UF_long ok ;
+    SuiteSparse_long ok ;
     klu_l_common Common ;
     ok = klu_l_defaults (&Common) ;                                           /* real or complex */
 \end{verbatim}
@@ -561,7 +558,7 @@ the user-provided {\tt Common.user\_ordering} is used if it is 3.
 
 
     #include "klu.h"
-    UF_long n, Ap [n+1], Ai [nz] ;
+    SuiteSparse_long n, Ap [n+1], Ai [nz] ;
     klu_l_symbolic *Symbolic ;
     klu_l_common Common ;
     Symbolic = klu_l_analyze (n, Ap, Ai, &Common) ;                           /* real or complex */
@@ -589,7 +586,7 @@ error occurs.  These functions may be used for both real and complex cases.
 
 
     #include "klu.h"
-    UF_long n, Ap [n+1], Ai [nz], P [n], Q [n] ;
+    SuiteSparse_long n, Ap [n+1], Ai [nz], P [n], Q [n] ;
     klu_l_symbolic *Symbolic ;
     klu_l_common Common ;
     Symbolic = klu_l_analyze_given (n, Ap, Ai, P, Q, &Common) ;               /* real or complex */
@@ -618,7 +615,7 @@ Symbolic} object.  A NULL pointer is returned if an error occurs.
 
 
     #include "klu.h"
-    UF_long Ap [n+1], Ai [nz] ;
+    SuiteSparse_long Ap [n+1], Ai [nz] ;
     double Ax [nz], Az [2*nz] ;
     klu_l_symbolic *Symbolic ;
     klu_l_numeric *Numeric ;
@@ -654,7 +651,7 @@ entry $b_{ij}$ is stored in {\tt B [2*(i+j*ldim)]} and {\tt B [2*(i+j*ldim)+1]}
 
 
     #include "klu.h"
-    UF_long ldim, nrhs, ok ;
+    SuiteSparse_long ldim, nrhs, ok ;
     double B [ldim*nrhs], Bz [2*ldim*nrhs] ;
     klu_symbolic *Symbolic ;
     klu_numeric *Numeric ;
@@ -686,7 +683,7 @@ identical to {\tt klu\_solve}.
 
 
     #include "klu.h"
-    UF_long ldim, nrhs, ok ;
+    SuiteSparse_long ldim, nrhs, ok ;
     double B [ldim*nrhs], Bz [2*ldim*nrhs] ;
     klu_symbolic *Symbolic ;
     klu_numeric *Numeric ;
@@ -725,7 +722,7 @@ and requires no dynamic memory allocation.
 
 
     #include "klu.h"
-    UF_long ok, Ap [n+1], Ai [nz] ;
+    SuiteSparse_long ok, Ap [n+1], Ai [nz] ;
     double Ax [nz], Az [2*nz] ;
     klu_l_symbolic *Symbolic ;
     klu_l_numeric *Numeric ;
@@ -810,7 +807,7 @@ of this function is optional.
 
 
     #include "klu.h"
-    UF_long ok ;
+    SuiteSparse_long ok ;
     klu_l_symbolic *Symbolic ;
     klu_l_numeric *Numeric ;
     klu_l_common Common ;
@@ -840,7 +837,7 @@ The result is returned in {\tt Common.flops}.
 
 
     #include "klu.h"
-    UF_long ok ;
+    SuiteSparse_long ok ;
     klu_l_symbolic *Symbolic ;
     klu_l_numeric *Numeric ;
     klu_l_common Common ;
@@ -880,7 +877,7 @@ result is returned in {\tt Common.rgrowth}.
 
 
     #include "klu.h"
-    UF_long ok, Ap [n+1], Ai [nz] ;
+    SuiteSparse_long ok, Ap [n+1], Ai [nz] ;
     double Ax [nz], Az [2*nz] ;
     klu_l_symbolic *Symbolic ;
     klu_l_numeric *Numeric ;
@@ -914,7 +911,7 @@ complex case) must be unchanged since the last call to {\tt klu\_factor} or
 
 
     #include "klu.h"
-    UF_long ok, Ap [n+1] ;
+    SuiteSparse_long ok, Ap [n+1] ;
     double Ax [nz], Az [2*nz] ;
     klu_l_symbolic *Symbolic ;
     klu_l_numeric *Numeric ;
@@ -949,7 +946,7 @@ in {\tt Common.rcond}.
 
 
     #include "klu.h"
-    UF_long ok ;
+    SuiteSparse_long ok ;
     klu_l_symbolic *Symbolic ;
     klu_l_numeric *Numeric ;
     klu_l_common Common ;
@@ -994,7 +991,7 @@ NULL on input, the check for duplicate entries is skipped.
 
 
     #include "klu.h"
-    UF_long scale, ok, n, Ap [n+1], Ai [nz], W [n] ;
+    SuiteSparse_long scale, ok, n, Ap [n+1], Ai [nz], W [n] ;
     double Ax [nz], Az [2*nz], Rs [n] ;
     klu_l_common Common ;
     ok = klu_l_scale (scale, n, Ap, Ai, Ax, Symbolic, Numeric, &Common) ;             /* real */
@@ -1039,7 +1036,8 @@ use to the end user who wishes to examine the contents of the LU factors.
 
 
     #include "klu.h"
-    UF_long ok, Lp [n+1], Li [lnz], Up [n+1], Ui [unz], Fp [n+1], Fi [nzoff], P [n], Q [n], R [n] ;
+    SuiteSparse_long ok, Lp [n+1], Li [lnz], Up [n+1], Ui [unz], Fp [n+1],
+        Fi [nzoff], P [n], Q [n], R [n] ;
     double Lx [lnz], Lz [lnz], Ux [unz], Uz [unz], Fx [nzoff], Fz [nzoff], Rs [n] ;
     klu_l_symbolic *Symbolic ;
     klu_l_numeric *Numeric ;
@@ -1097,7 +1095,7 @@ Common.status}.
 %-------------------------------------------------------------------------------
 
 The BTF package includes three user-callable functions (each with {\tt int}
-and {\tt UF\_long} versions).  They do not need to be called directly by an
+and {\tt SuiteSparse\_long} versions).  They do not need to be called directly by an
 application that uses KLU.  KLU will call these functions to perform the
 permutation into upper block triangular form.
 
@@ -1128,7 +1126,7 @@ are undefined on input and output.
     nmatch = btf_maxtrans (nrow, ncol, Ap, Ai, maxwork, &work, Match, Work) ;
 
 
-    UF_long nrow, ncol, Ap [ncol+1], Ai [nz], Match [nrow], Work [5*ncol], nmatch ;
+    SuiteSparse_long nrow, ncol, Ap [ncol+1], Ai [nz], Match [nrow], Work [5*ncol], nmatch ;
     double maxwork, work ;
     nmatch = btf_l_maxtrans (nrow, ncol, Ap, Ai, maxwork, &work, Match, Work) ;
 \end{verbatim}
@@ -1155,7 +1153,7 @@ The function returns the number of strongly connected components found
     ncomp = btf_strongcomp (n, Ap, Ai, Q, P, R, Work) ;
 
 
-    UF_long n, Ap [n+1], Ai [nz], Q [n], P [n], R [n+1], Work [4*n], ncomp ;
+    SuiteSparse_long n, Ap [n+1], Ai [nz], Q [n], P [n], R [n+1], Work [4*n], ncomp ;
     ncomp = btf_l_strongcomp (n, Ap, Ai, Q, P, R, Work) ;
 \end{verbatim}
 }
@@ -1184,7 +1182,7 @@ are the same as {\tt btf\_strongcomp}.
     ncomp = btf_order (n, Ap, Ai, maxwork, &work, P, Q, R, &nfound, Work) ;
 
 
-    UF_long n, Ap [n+1], Ai [nz], P [n], Q [n], R [n+1], nfound, Work [5*n], ncomp, nfound ;
+    SuiteSparse_long n, Ap [n+1], Ai [nz], P [n], Q [n], R [n+1], nfound, Work [5*n], ncomp, nfound ;
     double maxwork, work ;
     ncomp = btf_l_order (n, Ap, Ai, maxwork, &work, P, Q, R, &nfound, Work) ;
 \end{verbatim}
@@ -1246,7 +1244,7 @@ matrix).
 
 For a more complete program that uses KLU, see {\tt KLU/Demo/kludemo.c} for an
 {\tt int} version, and {\tt KLU/Demo/kluldemo.c} for a version that uses {\tt
-UF\_long} instead.  The top-level main routine uses CHOLMOD to read in a
+SuiteSparse\_long} instead.  The top-level main routine uses CHOLMOD to read in a
 compressed-column sparse matrix from a Matrix Market file, because KLU does not
 include such a function.  Otherwise, no CHOLMOD functions are used.  Unlike
 {\tt klu\_simple.c}, CHOLMOD is required to run the {\tt kludemo.c} and {\tt
@@ -1263,7 +1261,8 @@ The MATLAB installation in any platform, including Windows is simple; just
 type {\tt klu\_install} to compile and install KLU, BTF, AMD, and COLAMD.
 
 For {\tt make}, system-dependent configurations are in the {\tt
-../UFconfig/UFconfig.mk} file.  You can edit that file to customize the
+../SuiteSparse\_config/SuiteSparse\_config.mk} file.
+You can edit that file to customize the
 compilation.  The default settings will work on most systems.  Sample
 configuration files are provided for Linux, Sun Solaris, SGI IRIX, IBM AIX, and
 the DEC/Compaq Alpha.
@@ -1278,7 +1277,8 @@ kludemo.out}.
 Typing {\tt make clean} will remove all but the final compiled libraries and
 demo programs.  Typing {\tt make purge} or {\tt make distclean} removes all
 files not in the original distribution.  If you compile KLU or BTF and then
-later change the {\tt ../UFconfig/UFconfig.mk} file then you should type {\tt
+later change the {\tt ../SuiteSparse\_config/SuiteSparse\_config.mk}
+file then you should type {\tt
 make purge} and then {\tt make} to recompile.
 
 When you compile your program that uses the C-callable KLU library, you need to
@@ -1292,11 +1292,6 @@ of the {\tt make} command entirely.  Simply type {\tt klu\_install} in the
 MATLAB command window while in the {\tt KLU/MATLAB} directory.  This works on
 any system with MATLAB, including Windows.  Alternately, type {\tt make} in the
 {\tt KLU/MATLAB} directory.
-
-If you have MATLAB 7.2 or earlier, you must first edit UFconfig/UFconfig.h to
-remove the {\tt -largeArrayDims} option from the {\tt MEX} command, prior to
-{\tt make mex} or {\tt make} in the MATLAB directory (or just use {\tt
-klu\_install.m} inside MATLAB, which handles this case).
 
 %------------------------------------------------------------------------------
 \newpage

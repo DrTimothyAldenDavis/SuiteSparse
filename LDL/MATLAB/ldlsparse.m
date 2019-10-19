@@ -28,6 +28,6 @@ function [arg1, arg2, arg3, arg4] = ldlsparse (A, P, b)			    %#ok
 %
 % See also chol, ldl, ldlsymbol, symbfact, etree
 
-% Copyright 2006-2007 by Timothy A. Davis, Univ. of Florida
+% Copyright 2006-2007 by Timothy A. Davis, http://www.suitesparse.com
 
 error ('ldlsparse mexFunction not found') ;

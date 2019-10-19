@@ -16,7 +16,7 @@ template <typename Entry> void spqr_freefac
 
 {
     SuiteSparseQR_factorization <Entry> *QR ;
-    Int n, m, bncols, n1rows, r1nz ;
+    Long n, m, bncols, n1rows, r1nz ;
 
     if (QR_handle == NULL || *QR_handle == NULL)
     {
@@ -34,14 +34,14 @@ template <typename Entry> void spqr_freefac
     spqr_freenum (& (QR->QRnum), cc) ;
     spqr_freesym (& (QR->QRsym), cc) ;
 
-    cholmod_l_free (n+bncols, sizeof (Int),   QR->Q1fill,  cc) ; 
-    cholmod_l_free (m,        sizeof (Int),   QR->P1inv,   cc) ;
-    cholmod_l_free (m,        sizeof (Int),   QR->HP1inv,  cc) ;
-    cholmod_l_free (n1rows+1, sizeof (Int),   QR->R1p,     cc) ;
-    cholmod_l_free (r1nz,     sizeof (Int),   QR->R1j,     cc) ;
+    cholmod_l_free (n+bncols, sizeof (Long),  QR->Q1fill,  cc) ; 
+    cholmod_l_free (m,        sizeof (Long),  QR->P1inv,   cc) ;
+    cholmod_l_free (m,        sizeof (Long),  QR->HP1inv,  cc) ;
+    cholmod_l_free (n1rows+1, sizeof (Long),  QR->R1p,     cc) ;
+    cholmod_l_free (r1nz,     sizeof (Long),  QR->R1j,     cc) ;
     cholmod_l_free (r1nz,     sizeof (Entry), QR->R1x,     cc) ;
-    cholmod_l_free (n,        sizeof (Int),   QR->Rmap,    cc) ;
-    cholmod_l_free (n,        sizeof (Int),   QR->RmapInv, cc) ;
+    cholmod_l_free (n,        sizeof (Long),  QR->Rmap,    cc) ;
+    cholmod_l_free (n,        sizeof (Long),  QR->RmapInv, cc) ;
 
     cholmod_l_free (1, sizeof (SuiteSparseQR_factorization <Entry>), QR, cc) ;
     *QR_handle = NULL ;

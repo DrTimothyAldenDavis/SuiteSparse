@@ -6,7 +6,7 @@ function sstest
 %
 % See also ssmult, ssmultsym, ssmult_install, sstest2, mtimes.
 
-% Copyright 2009, Timothy A. Davis, University of Florida.
+% Copyright 2007-2009, Timothy A. Davis, http://www.suitesparse.com
 
 N = [500:50:1000 1100:100:3000 3200:200:5000 ] ;
 

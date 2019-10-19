@@ -3,9 +3,8 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
+/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
+/* All Rights Reserved.  See ../Doc/License for License.                      */
 /* -------------------------------------------------------------------------- */
 
 int umfpack_di_scale
@@ -15,7 +14,7 @@ int umfpack_di_scale
     void *Numeric
 ) ;
 
-UF_long umfpack_dl_scale
+SuiteSparse_long umfpack_dl_scale
 (
     double X [ ],
     const double B [ ],
@@ -29,7 +28,7 @@ int umfpack_zi_scale
     void *Numeric
 ) ;
 
-UF_long umfpack_zl_scale
+SuiteSparse_long umfpack_zl_scale
 (
     double Xx [ ],	 double Xz [ ],
     const double Bx [ ], const double Bz [ ],
@@ -44,7 +43,7 @@ double int Syntax:
     double *B, *X ;
     status = umfpack_di_scale (X, B, Numeric) ;
 
-double UF_long Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Numeric ;
@@ -58,7 +57,7 @@ complex int Syntax:
     double *Bx, *Bz, *Xx, *Xz ;
     status = umfpack_zi_scale (Xx, Xz, Bx, Bz, Numeric) ;
 
-complex UF_long Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Numeric ;

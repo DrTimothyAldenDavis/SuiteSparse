@@ -22,7 +22,6 @@ function S = sparse2 (i,j,s,m,n,nzmax)					    %#ok
 %
 %   See also sparse.
 
-%   Copyright 2006-2007, Timothy A. Davis
-%   http://www.cise.ufl.edu/research/sparse
+%   Copyright 2006-2007, Timothy A. Davis, http://www.suitesparse.com
 
 error ('sparse2 mexFunction not found') ;

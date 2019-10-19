@@ -22,7 +22,7 @@
  *
  * See btf.h for more details.
  *
- * Copyright (c) 2004-2007.  Tim Davis, University of Florida,
+ * By Tim Davis.  Copyright (c) 2004-2007, University of Florida.
  * with support from Sandia National Laboratories.  All Rights Reserved.
  */
 

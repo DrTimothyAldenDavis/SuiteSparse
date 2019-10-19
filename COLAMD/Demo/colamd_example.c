@@ -25,8 +25,7 @@
 
     (where x denotes a nonzero value).
 
-    See http://www.cise.ufl.edu/research/sparse/colamd/ (the colamd.c file)
-    for the routines this program calls, and for the License.
+    See the colamd.c for the routines this program calls, and for the License.
 */
 
 /* ========================================================================== */

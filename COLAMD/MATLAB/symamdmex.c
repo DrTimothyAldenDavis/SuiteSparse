@@ -14,7 +14,7 @@
     Authors:
 
 	The authors of the code itself are Stefan I. Larimore and Timothy A.
-	Davis (davis at cise.ufl.edu), University of Florida.  The algorithm was
+	Davis (DrTimothyAldenDavis@gmail.com).  The algorithm was
 	developed in collaboration with John Gilbert, Xerox PARC, and Esmond
 	Ng, Oak Ridge National Laboratory.
 
@@ -26,18 +26,11 @@
     Notice:
 
 	Copyright (c) 1998-2007, Timothy A. Davis.  All Rights Reserved.
-
-	See http://www.cise.ufl.edu/research/sparse/colamd (the colamd.c
-	file) for the License.
+	See the colamd.c file for the License.
 
     Availability:
 
-	The colamd/symamd library is available at
-
-	    http://www.cise.ufl.edu/research/sparse/colamd/
-
-	This is the http://www.cise.ufl.edu/research/sparse/colamd/symamdmex.c
-	file.  It requires the colamd.c and colamd.h files.
+	The colamd/symamd library is available at http://www.suitesparse.com
 
 */
 
@@ -49,7 +42,7 @@
 #include "mex.h"
 #include "matrix.h"
 #include <stdlib.h>
-#include "UFconfig.h"
+#define Long SuiteSparse_long
 
 /* ========================================================================== */
 /* === symamd mexFunction =================================================== */
@@ -67,22 +60,22 @@ void mexFunction
 {
     /* === Local variables ================================================== */
 
-    UF_long *perm ;		/* column ordering of M and ordering of A */
-    UF_long *A ;		/* row indices of input matrix A */
-    UF_long *p ;		/* column pointers of input matrix A */
-    UF_long n_col ;		/* number of columns of A */
-    UF_long n_row ;		/* number of rows of A */
-    UF_long full ;		/* TRUE if input matrix full, FALSE if sparse */
+    Long *perm ;                /* column ordering of M and ordering of A */
+    Long *A ;                   /* row indices of input matrix A */
+    Long *p ;                   /* column pointers of input matrix A */
+    Long n_col ;                /* number of columns of A */
+    Long n_row ;                /* number of rows of A */
+    Long full ;                 /* TRUE if input matrix full, FALSE if sparse */
     double knobs [COLAMD_KNOBS] ; /* colamd user-controllable parameters */
-    double *out_perm ;		/* output permutation vector */
-    double *out_stats ;		/* output stats vector */
-    double *in_knobs ;		/* input knobs vector */
-    UF_long i ;			/* loop counter */
-    mxArray *Ainput ;		/* input matrix handle */
-    UF_long spumoni ;		/* verbosity variable */
-    UF_long stats [COLAMD_STATS] ;	/* stats for symamd */
+    double *out_perm ;          /* output permutation vector */
+    double *out_stats ;         /* output stats vector */
+    double *in_knobs ;          /* input knobs vector */
+    Long i ;                    /* loop counter */
+    mxArray *Ainput ;           /* input matrix handle */
+    Long spumoni ;              /* verbosity variable */
+    Long stats [COLAMD_STATS] ; /* stats for symamd */
 
-    colamd_printf = mexPrintf ;	/* COLAMD printf routine */
+    colamd_printf = mexPrintf ; /* COLAMD printf routine */
 
     /* === Check inputs ===================================================== */
 
@@ -103,7 +96,7 @@ void mexFunction
 	in_knobs = mxGetPr (prhs [1]) ;
 	i = mxGetNumberOfElements (prhs [1]) ;
 	if (i > 0) knobs [COLAMD_DENSE_ROW] = in_knobs [0] ;
-	if (i > 1) spumoni = (UF_long) (in_knobs [1] != 0) ;
+	if (i > 1) spumoni = (Long) (in_knobs [1] != 0) ;
     }
 
     /* print knob settings if spumoni is set */
@@ -148,9 +141,9 @@ void mexFunction
 	mexErrMsgTxt ("symamd: matrix must be square.") ;
     }
 
-    A = (UF_long *) mxGetIr (Ainput) ;
-    p = (UF_long *) mxGetJc (Ainput) ;
-    perm = (UF_long *) mxCalloc (n_col+1, sizeof (UF_long)) ;
+    A = (Long *) mxGetIr (Ainput) ;
+    p = (Long *) mxGetJc (Ainput) ;
+    perm = (Long *) mxCalloc (n_col+1, sizeof (Long)) ;
 
     /* === Order the rows and columns of A (does not destroy A) ============= */
 

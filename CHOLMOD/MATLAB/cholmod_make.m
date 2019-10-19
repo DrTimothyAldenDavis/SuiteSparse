@@ -17,8 +17,7 @@ function cholmod_make
 %   ldlupdate, metis, spsym, nesdis, septree, resymbol, sdmult, sparse2,
 %   symbfact2, mread, mwrite
 
-%   Copyright 2006-2007, Timothy A. Davis
-%   http://www.cise.ufl.edu/research/sparse
+%   Copyright 2006-2007, Timothy A. Davis, http://www.suitesparse.com
 
 details = 0 ;	    % 1 if details of each command are to be printed
 
@@ -26,9 +25,11 @@ v = version ;
 try
     % ispc does not appear in MATLAB 5.3
     pc = ispc ;
-catch
+    mac = ismac ;
+catch                                                                       %#ok
     % if ispc fails, assume we are on a Windows PC if it's not unix
     pc = ~isunix ;
+    mac = 0 ;
 end
 
 flags = '' ;
@@ -38,7 +39,7 @@ if (is64)
     flags = '-largeArrayDims' ;
 end
 
-include = '-I. -I../../AMD/Include -I../../COLAMD/Include -I../../CCOLAMD/Include -I../../CAMD/Include -I../Include -I../../UFconfig' ;
+include = '-I. -I../../AMD/Include -I../../COLAMD/Include -I../../CCOLAMD/Include -I../../CAMD/Include -I../Include -I../../SuiteSparse_config' ;
 
 if (verLessThan ('matlab', '7.0'))
     % do not attempt to compile CHOLMOD with large file support
@@ -112,11 +113,18 @@ if (is64 && ~verLessThan ('matlab', '7.8'))
     flags = [flags ' -DBLAS64'] ;
 end
 
+if (~(pc || mac))
+    % for POSIX timing routine
+    lapack = [lapack ' -lrt'] ;
+end
+
 %-------------------------------------------------------------------------------
 
 include = strrep (include, '/', filesep) ;
 
-amd_src = { ...
+config_src = { '../../SuiteSparse_config/SuiteSparse_config' } ;
+
+ordering_src = { ...
     '../../AMD/Source/amd_1', ...
     '../../AMD/Source/amd_2', ...
     '../../AMD/Source/amd_aat', ...
@@ -129,9 +137,7 @@ amd_src = { ...
     '../../AMD/Source/amd_postorder', ...
     '../../AMD/Source/amd_post_tree', ...
     '../../AMD/Source/amd_preprocess', ...
-    '../../AMD/Source/amd_valid' } ;
-
-camd_src = { ...
+    '../../AMD/Source/amd_valid', ...
     '../../CAMD/Source/camd_1', ...
     '../../CAMD/Source/camd_2', ...
     '../../CAMD/Source/camd_aat', ...
@@ -143,13 +149,9 @@ camd_src = { ...
     '../../CAMD/Source/camd_order', ...
     '../../CAMD/Source/camd_postorder', ...
     '../../CAMD/Source/camd_preprocess', ...
-    '../../CAMD/Source/camd_valid' } ;
-
-colamd_src = {
+    '../../CAMD/Source/camd_valid', ...
     '../../COLAMD/Source/colamd', ...
-    '../../COLAMD/Source/colamd_global' } ;
-
-ccolamd_src = {
+    '../../COLAMD/Source/colamd_global', ...
     '../../CCOLAMD/Source/ccolamd', ...
     '../../CCOLAMD/Source/ccolamd_global' } ;
 
@@ -301,7 +303,7 @@ end
 % compile each library source file
 obj = '' ;
 
-source = [amd_src colamd_src ccolamd_src camd_src cholmod_src cholmod_matlab] ;
+source = [ordering_src config_src cholmod_src cholmod_matlab] ;
 if (have_metis)
     source = [metis_src source] ;
 end

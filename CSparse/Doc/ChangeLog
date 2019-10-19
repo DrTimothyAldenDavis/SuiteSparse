@@ -1,7 +1,19 @@
-Dec 7, 2011: version 2.2.6
+Jun 1, 2012: version 3.1.0
+
+    * minor changes to enable the creation of CXSparse 3.1.0
+
+Dec 7, 2011: version 3.0.2
 
     * fixed the Makefile to better align with CFLAGS and other standards
-    * minor fix to cs_install.m
+    * minor fix to MATLAB cs_install.m
+
+Jan 18, 2010: version 3.0.0
+
+    * changed "int" to "csi", which is normally "ptrdiff_t".  This way,
+        CSparse can be used on a 64-bit platform (and in 64-bit MATLAB
+        in particular), without the need to use CXSparse.  If you wish
+        to use "int", simply edit CSparse/Include/cs.h and change the
+        definition of csi, or compile with -Dcsi=int.
 
 Jan 25, 2011: version 2.2.5
 
@@ -11,7 +23,7 @@ Jan 25, 2011: version 2.2.5
 
 Nov 30, 2009: version 2.2.4
 
-    * added "make install" and "make uninstall" to CXSparse
+    * added "make install" and "make uninstall"
     * minor change to cs_make.m
 
 Jan 20, 2009, v2.2.3

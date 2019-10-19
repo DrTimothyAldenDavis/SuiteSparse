@@ -227,43 +227,43 @@
 template <typename Entry> void spqr_assemble
 (
     /* inputs, not modified */
-    Int f,                  /* front to assemble F */
-    Int fm,                 /* number of rows of F */
+    Long f,                 /* front to assemble F */
+    Long fm,                /* number of rows of F */
     int keepH,              /* if TRUE, then construct row pattern of H */
-    Int *Super,
-    Int *Rp,
-    Int *Rj,
-    Int *Sp,
-    Int *Sj,
-    Int *Sleft,
-    Int *Child,
-    Int *Childp,
+    Long *Super,
+    Long *Rp,
+    Long *Rj,
+    Long *Sp,
+    Long *Sj,
+    Long *Sleft,
+    Long *Child,
+    Long *Childp,
     Entry *Sx,
-    Int *Fmap,
-    Int *Cm,
+    Long *Fmap,
+    Long *Cm,
     Entry **Cblock,
 #ifndef NDEBUG
     char *Rdead,
 #endif
-    Int *Hr,
+    Long *Hr,
 
     /* input/output */
-    Int *Stair,
-    Int *Hii,               /* if keepH, construct list of row indices for F */
+    Long *Stair,
+    Long *Hii,              /* if keepH, construct list of row indices for F */
     // input only
-    Int *Hip,
+    Long *Hip,
 
     /* outputs, not defined on input */
     Entry *F,
 
     /* workspace, not defined on input or output */
-    Int *Cmap
+    Long *Cmap
 )
 {
     Entry *Fi, *Fj, *C ;
-    Int k, fsize, fn, col1, col2, p, p1, p2, fp, j, leftcol, row, col, i,
+    Long k, fsize, fn, col1, col2, p, p1, p2, fp, j, leftcol, row, col, i,
         cm, cn, ci, cj, c, pc, fnc, fpc, rmc ;
-    Int *Hi = NULL, *Hichild = NULL ;
+    Long *Hi = NULL, *Hichild = NULL ;
 
     /* ---------------------------------------------------------------------- */
     /* get the front F */
@@ -360,7 +360,7 @@ template <typename Entry> void spqr_assemble
             rmc = Hr [c] ;
 #ifndef NDEBUG
             {
-                Int rmc2 = 0 ;
+                Long rmc2 = 0 ;
                 for (j = Super [c] ; j < Super [c+1] ; j++)
                 {
                     if (!Rdead [j])
@@ -447,37 +447,37 @@ template <typename Entry> void spqr_assemble
 template void spqr_assemble <double>
 (
     /* inputs, not modified */
-    Int f,                  /* front to assemble F */
-    Int fm,                 /* number of rows of F */
+    Long f,                 /* front to assemble F */
+    Long fm,                /* number of rows of F */
     int keepH,              /* if TRUE, then construct row pattern of H */
-    Int *Super,
-    Int *Rp,
-    Int *Rj,
-    Int *Sp,
-    Int *Sj,
-    Int *Sleft,
-    Int *Child,
-    Int *Childp,
+    Long *Super,
+    Long *Rp,
+    Long *Rj,
+    Long *Sp,
+    Long *Sj,
+    Long *Sleft,
+    Long *Child,
+    Long *Childp,
     double *Sx,
-    Int *Fmap,
-    Int *Cm,
+    Long *Fmap,
+    Long *Cm,
     double **Cblock,
 #ifndef NDEBUG
     char *Rdead,
 #endif
-    Int *Hr,
+    Long *Hr,
 
     /* input/output */
-    Int *Stair,
-    Int *Hii,               /* if keepH, construct list of row indices for F */
+    Long *Stair,
+    Long *Hii,              /* if keepH, construct list of row indices for F */
     // input only
-    Int *Hip,
+    Long *Hip,
 
     /* outputs, not defined on input */
     double *F,
 
     /* workspace, not defined on input or output */
-    Int *Cmap
+    Long *Cmap
 ) ;
 
 /* ========================================================================== */
@@ -485,35 +485,35 @@ template void spqr_assemble <double>
 template void spqr_assemble <Complex>
 (
     /* inputs, not modified */
-    Int f,                  /* front to assemble F */
-    Int fm,                 /* number of rows of F */
+    Long f,                 /* front to assemble F */
+    Long fm,                /* number of rows of F */
     int keepH,              /* if TRUE, then construct row pattern of H */
-    Int *Super,
-    Int *Rp,
-    Int *Rj,
-    Int *Sp,
-    Int *Sj,
-    Int *Sleft,
-    Int *Child,
-    Int *Childp,
+    Long *Super,
+    Long *Rp,
+    Long *Rj,
+    Long *Sp,
+    Long *Sj,
+    Long *Sleft,
+    Long *Child,
+    Long *Childp,
     Complex *Sx,
-    Int *Fmap,
-    Int *Cm,
+    Long *Fmap,
+    Long *Cm,
     Complex **Cblock,
 #ifndef NDEBUG
     char *Rdead,
 #endif
-    Int *Hr,
+    Long *Hr,
 
     /* input/output */
-    Int *Stair,
-    Int *Hii,               /* if keepH, construct list of row indices for F */
+    Long *Stair,
+    Long *Hii,              /* if keepH, construct list of row indices for F */
     // input only
-    Int *Hip,
+    Long *Hip,
 
     /* outputs, not defined on input */
     Complex *F,
 
     /* workspace, not defined on input or output */
-    Int *Cmap
+    Long *Cmap
 ) ;

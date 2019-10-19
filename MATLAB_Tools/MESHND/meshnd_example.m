@@ -6,7 +6,7 @@ function meshnd_example
 %
 % See also meshnd.
 
-% Copyright 2007, Timothy A. Davis, Univ. of Florida
+% Copyright 2009, Timothy A. Davis, http://www.suitesparse.com
 
 help meshnd
 

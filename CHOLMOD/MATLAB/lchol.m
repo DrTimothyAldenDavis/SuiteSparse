@@ -12,7 +12,6 @@ function [L,p,q] = lchol (A)						    %#ok
 %
 %   See also CHOL2, LDLCHOL, CHOL.
 
-%   Copyright 2006-2007, Timothy A. Davis
-%   http://www.cise.ufl.edu/research/sparse
+%   Copyright 2006-2007, Timothy A. Davis, http://www.suitesparse.com
 
 error ('lchol mexFunction not found') ;

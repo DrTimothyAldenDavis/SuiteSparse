@@ -1,5 +1,5 @@
 -----------------------
-Using CHOLMOD in MATLAB
+Using CHOLMOD in MATLAB                         http://www.suitesparse.com
 -----------------------
 
 See Contents.m for a description of each CHOLMOD function.
@@ -11,7 +11,8 @@ There are two ways of compiling the CHOLMOD mexFunctions.  The 2nd one is best.
 
 (1) Using the Unix "make" command.  This will compile the AMD, COLAMD, CCOLAMD,
     and CHOLMOD libraries (*.a).  You must first add -fexceptions to the
-    CFLAGS definition in UFconfig/UFconfig.mk first (for Linux).  Otherwise,
+    CFLAGS definition in SuiteSparse_config/SuiteSparse_config.mk first
+    (for Linux).  Otherwise,
     MATLAB will not be able to handle exceptions properly (CHOLMOD may terminate
     MATLAB if it encounters an error).  The METIS library must also be compiled
     with -fexceptions (see metis-4.0/Makefile.in).
@@ -44,7 +45,7 @@ your MATLAB command window to test your newly compiling CHOLMOD functions.
 Test/cholmod_test.m runs the test suite for the MATLAB interface to CHOLMOD.
 It requires the "UFget" interface to the UF sparse matrix collection, but
 provides a more extensive test for CHOLMOD.  To obtain a copy of UFget, see
-http://www.cise.ufl.edu/research/sparse .
+http://www.suitesparse.com .
 
 ----------------------------------------
 Using AMD, CCOLAMD, and COLAMD in MATLAB

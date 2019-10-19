@@ -7,15 +7,15 @@
 :: four different C demo programs:
 ::
 :: umfpack_di_demo.c:  double precision, int integers
-:: umfpack_dl_demo.c:  double precision, UF_long integers
+:: umfpack_dl_demo.c:  double precision, SuiteSparse_long integers
 :: umfpack_zi_demo.c:  complex double precision, int integers
-:: umfpack_zl_demo.c:  complex double precision, UF_long integers
+:: umfpack_zl_demo.c:  complex double precision, SuiteSparse_long integers
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
+/* UMFPACK Copyright (c) 2005-2012 by Timothy A. Davis,                       */
+/* http://www.suitesparse.com. All Rights Reserved.  See ../Doc/License       */
+/* for License.                                                               */
 /* -------------------------------------------------------------------------- */
 
 /*
@@ -71,7 +71,7 @@
 /* -------------------------------------------------------------------------- */
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:: Int is either int or UF_long:
+:: Int is either int or SuiteSparse_long:
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 static Int n = 5, nz = 12 ;
 static Int Arow [ ] = { 0,  4,  1,  1,   2,   2,  0,  1,  2,  3,  4,  4} ;

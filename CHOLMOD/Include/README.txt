@@ -1,4 +1,4 @@
-CHOLMOD: a sparse Cholesky factorization package.
+CHOLMOD: a sparse Cholesky factorization package.  http://www.suitesparse.com
 
 The Include/*.h files in this directory provide a basic documentation of all
 user-callable routines and user-visible data structures in the CHOLMOD

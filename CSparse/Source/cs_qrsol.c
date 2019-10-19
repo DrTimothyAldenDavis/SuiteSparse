@@ -1,12 +1,12 @@
 #include "cs.h"
 /* x=A\b where A can be rectangular; b overwritten with solution */
-int cs_qrsol (int order, const cs *A, double *b)
+csi cs_qrsol (csi order, const cs *A, double *b)
 {
     double *x ;
     css *S ;
     csn *N ;
     cs *AT = NULL ;
-    int k, m, n, ok ;
+    csi k, m, n, ok ;
     if (!CS_CSC (A) || !b) return (0) ; /* check inputs */
     n = A->n ;
     m = A->m ;

@@ -1,11 +1,12 @@
 default: all
 
-include ../../UFconfig/UFconfig.mk
+include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 all: libklu_cholmod.a
 
-I = -I../../CHOLMOD/Include -I../../UFconfig -I../Include -I../../AMD/Include \
-    -I../../BTF/Include -I../../COLAMD
+I = -I../../CHOLMOD/Include -I../../SuiteSparse_config \
+    -I../Include -I../../AMD/Include \
+    -I../../BTF/Include -I../../COLAMD/Include
 
 libklu_cholmod.a:  library klu_cholmod.c klu_cholmod.h
 	$(CC) $(CF) $(I) -c klu_cholmod.c
@@ -25,3 +26,4 @@ library:
 	( cd ../../AMD ; $(MAKE) library )
 	( cd ../../COLAMD ; $(MAKE) library )
 	( cd ../../CHOLMOD/Lib ; $(MAKE) )
+	( cd ../../SuiteSparse_config ; $(MAKE) )

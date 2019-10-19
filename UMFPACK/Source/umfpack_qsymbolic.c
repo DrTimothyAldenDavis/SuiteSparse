@@ -3,9 +3,8 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
+/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
+/* All Rights Reserved.  See ../Doc/License for License.                      */
 /* -------------------------------------------------------------------------- */
 
 /*
@@ -812,7 +811,7 @@ PRIVATE Int symbolic_analysis
     Info [UMFPACK_NCOL] = n_col ;
     Info [UMFPACK_SIZE_OF_UNIT] = (double) (sizeof (Unit)) ;
     Info [UMFPACK_SIZE_OF_INT] = (double) (sizeof (int)) ;
-    Info [UMFPACK_SIZE_OF_LONG] = (double) (sizeof (UF_long)) ;
+    Info [UMFPACK_SIZE_OF_LONG] = (double) (sizeof (SuiteSparse_long)) ;
     Info [UMFPACK_SIZE_OF_POINTER] = (double) (sizeof (void *)) ;
     Info [UMFPACK_SIZE_OF_ENTRY] = (double) (sizeof (Entry)) ;
     Info [UMFPACK_SYMBOLIC_DEFRAG] = 0 ;
@@ -912,7 +911,8 @@ PRIVATE Int symbolic_analysis
 	/* :: int overflow, Clen too large :: */
 	/* Problem is too large for array indexing (Ci [i]) with an Int i. */
 	/* Cannot even analyze the problem to determine upper bounds on */
-	/* memory usage. Need to use the UF_long version, umfpack_*l_*. */
+	/* memory usage. Need to use the SuiteSparse_long version, */
+        /* umfpack_*l_*. */
 	DEBUGm4 (("out of memory: symbolic int overflow\n")) ;
 	Info [UMFPACK_STATUS] = UMFPACK_ERROR_out_of_memory ;
 	return (UMFPACK_ERROR_out_of_memory) ;

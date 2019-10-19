@@ -8,10 +8,12 @@
 #include "SuiteSparseQR.hpp"
 #include <complex>
 
-// SuiteSparseQR uses an integer defined in UFconfig.h called UF_long.  It is a
-// 32-bit integer on a 32-bit platform, and a 64-bit integer on a 64-bit
-// platform.  For most platforms (except Windows), UF_long is just "long".
-#define Int UF_long
+// SuiteSparseQR uses an integer defined in SuiteSparse_config.h called
+// SuiteSparse_long.  It is a 32-bit integer on a 32-bit platform, and a 64-bit
+// integer on a 64-bit platform.  For most platforms (except Windows),
+// SuiteSparse_long is just "long".
+
+#define Long SuiteSparse_long
 
 // =============================================================================
 // check_residual:  print the relative residual, norm (A*x-b)/norm(x)
@@ -25,9 +27,9 @@ void check_residual
     cholmod_common *cc
 )
 {
-    Int m = A->nrow ;
-    Int n = A->ncol ;
-    Int rnk ;
+    Long m = A->nrow ;
+    Long n = A->ncol ;
+    Long rnk ;
     double rnorm, anorm, xnorm ;
     double one [2] = {1,0}, minusone [2] = {-1,0} ;
     cholmod_dense *Residual ;
@@ -63,7 +65,7 @@ int main (int argc, char **argv)
     cholmod_sparse *A ;
     cholmod_dense *X, *B ;
     int mtype ;
-    Int m, n ;
+    Long m, n ;
 
     // start CHOLMOD
     cc = &Common ;
@@ -112,7 +114,7 @@ int main (int argc, char **argv)
     {
         SuiteSparseQR_factorization <double> *QR ;
         cholmod_dense *Y ;
-        Int i ;
+        Long i ;
         double *Bx ;
 
         // factorize once

@@ -5,14 +5,14 @@
 
 default: all
 
-include ../../UFconfig/UFconfig.mk
+include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 # CF = -Wall -W -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
 # 	-Wredundant-decls -Wnested-externs -Wdisabled-optimization \
 # 	-pedantic -ansi -O3 -pg
 
 # for statement coverage, picky tests
-CF = -Wall -W -Werror -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
+CF = -Wall -W -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
    	-Wredundant-decls -Wnested-externs -Wdisabled-optimization \
  	-ansi -g -ftest-coverage -fprofile-arcs -fexceptions
 
@@ -24,7 +24,7 @@ LIB = ../../AMD/Lib/libamd.a ../../COLAMD/Lib/libcolamd.a \
     ../../metis-4.0/libmetis.a \
     -lm
 
-I = -I../../UFconfig -I../../AMD/Include -I../../COLAMD/Include \
+I = -I../../SuiteSparse_config -I../../AMD/Include -I../../COLAMD/Include \
     -I../../BTF/Include -I../../CHOLMOD/Include -I../../CAMD/Include \
     -I../../CCOLAMD/Include -I../../metis-4.0/Lib -I../Include -I../User
 

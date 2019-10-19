@@ -11,7 +11,6 @@ function C = cs_add (A,B,alpha,beta)                                        %#ok
 %
 %   See also CS_MULTIPLY, CS_GAXPY, PLUS, MINUS.
 
-%   Copyright 2006-2007, Timothy A. Davis.
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
 error ('cs_add mexFunction not found') ;

@@ -3,9 +3,8 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
+/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
+/* All Rights Reserved.  See ../Doc/License for License.                      */
 /* -------------------------------------------------------------------------- */
 
 int umfpack_di_symbolic
@@ -20,12 +19,12 @@ int umfpack_di_symbolic
     double Info [UMFPACK_INFO]
 ) ;
 
-UF_long umfpack_dl_symbolic
+SuiteSparse_long umfpack_dl_symbolic
 (
-    UF_long n_row,
-    UF_long n_col,
-    const UF_long Ap [ ],
-    const UF_long Ai [ ],
+    SuiteSparse_long n_row,
+    SuiteSparse_long n_col,
+    const SuiteSparse_long Ap [ ],
+    const SuiteSparse_long Ai [ ],
     const double Ax [ ],
     void **Symbolic,
     const double Control [UMFPACK_CONTROL],
@@ -44,12 +43,12 @@ int umfpack_zi_symbolic
     double Info [UMFPACK_INFO]
 ) ;
 
-UF_long umfpack_zl_symbolic
+SuiteSparse_long umfpack_zl_symbolic
 (
-    UF_long n_row,
-    UF_long n_col,
-    const UF_long Ap [ ],
-    const UF_long Ai [ ],
+    SuiteSparse_long n_row,
+    SuiteSparse_long n_col,
+    const SuiteSparse_long Ap [ ],
+    const SuiteSparse_long Ai [ ],
     const double Ax [ ], const double Az [ ],
     void **Symbolic,
     const double Control [UMFPACK_CONTROL],
@@ -66,11 +65,11 @@ double int Syntax:
     status = umfpack_di_symbolic (n_row, n_col, Ap, Ai, Ax,
 	&Symbolic, Control, Info) ;
 
-double UF_long Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Symbolic ;
-    UF_long n_row, n_col, *Ap, *Ai, status ;
+    SuiteSparse_long n_row, n_col, *Ap, *Ai, status ;
     double Control [UMFPACK_CONTROL], Info [UMFPACK_INFO], *Ax ;
     status = umfpack_dl_symbolic (n_row, n_col, Ap, Ai, Ax,
 	&Symbolic, Control, Info) ;
@@ -84,11 +83,11 @@ complex int Syntax:
     status = umfpack_zi_symbolic (n_row, n_col, Ap, Ai, Ax, Az,
 	&Symbolic, Control, Info) ;
 
-complex UF_long Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Symbolic ;
-    UF_long n_row, n_col, *Ap, *Ai, status ;
+    SuiteSparse_long n_row, n_col, *Ap, *Ai, status ;
     double Control [UMFPACK_CONTROL], Info [UMFPACK_INFO], *Ax, *Az ;
     status = umfpack_zl_symbolic (n_row, n_col, Ap, Ai, Ax, Az,
 	&Symbolic, Control, Info) ;
@@ -312,7 +311,7 @@ Arguments:
 	    UMFPACK_ERROR_internal_error
 
 		Something very serious went wrong.  This is a bug.
-		Please contact the author (davis@cise.ufl.edu).
+		Please contact the author (DrTimothyAldenDavis@gmail.com).
 
 	Info [UMFPACK_NROW]:  the value of the input argument n_row.
 
@@ -326,7 +325,7 @@ Arguments:
 
 	Info [UMFPACK_SIZE_OF_INT]:  the number of bytes in an int.
 
-	Info [UMFPACK_SIZE_OF_LONG]:  the number of bytes in a UF_long.
+	Info [UMFPACK_SIZE_OF_LONG]:  the number of bytes in a SuiteSparse_long.
 
 	Info [UMFPACK_SIZE_OF_POINTER]:  the number of bytes in a void *
 	    pointer.

@@ -7,7 +7,7 @@
  * The CHOLMOD/Tcov Module is licensed under Version 2.0 of the GNU
  * General Public License.  See gpl.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
- * http://www.cise.ufl.edu/research/sparse
+ * http://www.suitesparse.com
  * -------------------------------------------------------------------------- */
 
 /* Test CHOLMOD matrix operators. */
@@ -831,7 +831,7 @@ double test_ops (cholmod_sparse *A)
 #ifndef NPARTITION
     if (A != NULL && A->nrow == A->ncol)
     {
-	UF_long nc, nc_new ;
+	SuiteSparse_long nc, nc_new ;
 	Int cnz, csep, save2 ;
 	Int *Cnw, *Cew, *Cmember, *CParent, *Perm ;
 	double save1 ;

@@ -25,6 +25,6 @@ function q = maxtrans (A)                                                   %#ok
 %
 % See also: btf, strongcomp, dmperm, sprank
 
-% Copyright 2004-2007, Tim Davis, University of Florida
+% Copyright 2004-2007, University of Florida
 
 error ('maxtrans mexfunction not found') ;

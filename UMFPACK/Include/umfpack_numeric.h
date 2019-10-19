@@ -3,9 +3,8 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
+/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
+/* All Rights Reserved.  See ../Doc/License for License.                      */
 /* -------------------------------------------------------------------------- */
 
 int umfpack_di_numeric
@@ -19,10 +18,10 @@ int umfpack_di_numeric
     double Info [UMFPACK_INFO]
 ) ;
 
-UF_long umfpack_dl_numeric
+SuiteSparse_long umfpack_dl_numeric
 (
-    const UF_long Ap [ ],
-    const UF_long Ai [ ],
+    const SuiteSparse_long Ap [ ],
+    const SuiteSparse_long Ai [ ],
     const double Ax [ ],
     void *Symbolic,
     void **Numeric,
@@ -41,10 +40,10 @@ int umfpack_zi_numeric
     double Info [UMFPACK_INFO]
 ) ;
 
-UF_long umfpack_zl_numeric
+SuiteSparse_long umfpack_zl_numeric
 (
-    const UF_long Ap [ ],
-    const UF_long Ai [ ],
+    const SuiteSparse_long Ap [ ],
+    const SuiteSparse_long Ai [ ],
     const double Ax [ ], const double Az [ ],
     void *Symbolic,
     void **Numeric,
@@ -61,11 +60,11 @@ double int Syntax:
     double *Ax, Control [UMFPACK_CONTROL], Info [UMFPACK_INFO] ;
     status = umfpack_di_numeric (Ap, Ai, Ax, Symbolic, &Numeric, Control, Info);
 
-double UF_long Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Symbolic, *Numeric ;
-    UF_long *Ap, *Ai, status ;
+    SuiteSparse_long *Ap, *Ai, status ;
     double *Ax, Control [UMFPACK_CONTROL], Info [UMFPACK_INFO] ;
     status = umfpack_dl_numeric (Ap, Ai, Ax, Symbolic, &Numeric, Control, Info);
 
@@ -78,11 +77,11 @@ complex int Syntax:
     status = umfpack_zi_numeric (Ap, Ai, Ax, Az, Symbolic, &Numeric,
 	Control, Info) ;
 
-complex UF_long Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Symbolic, *Numeric ;
-    UF_long *Ap, *Ai, status ;
+    SuiteSparse_long *Ap, *Ai, status ;
     double *Ax, *Az, Control [UMFPACK_CONTROL], Info [UMFPACK_INFO] ;
     status = umfpack_zl_numeric (Ap, Ai, Ax, Az, Symbolic, &Numeric,
 	Control, Info) ;

@@ -1,4 +1,4 @@
-UFcollection, Copyright 2007-2011, Timothy A. Davis
+UFcollection, Copyright 2007-2012, Timothy A. Davis, http://www.suitesparse.com
 
 UFcollection is a MATLAB toolbox for managing the UF Sparse Matrix Collection.
 If you are a MATLAB user of the collection, you would not normally need to use
@@ -116,9 +116,7 @@ UFcollection), and METIS 4.0.1.
     Problem.date    date the matrix was created, or added to the collection
     Problem.author  matrix author
     Problem.ed	    matrix editor/collector
-    Problem.kind    a string.  For a description, see:
-
-	http://www.cise.ufl.edu/research/sparse/matrices/kind.html
+    Problem.kind    a string.  For a description, see below.
 
     optional fields:
 
@@ -173,4 +171,69 @@ UFcollection), and METIS 4.0.1.
     /cise/research/sparse/public_html/matrices/index.html file, adding a
     new thumbnail image to the Sample Gallery.  If a new Problem.kind was
     introduced, describe it in the matrices/kind.html file.
+
+
+--------------------------------------------------------------------------------
+Problem.kind
+--------------------------------------------------------------------------------
+
+Problems with 2D/3D geometry
+
+    2D/3D problem
+    acoustics problem
+    computational fluid dynamics problem
+    computer graphics/vision problem
+    electromagnetics problem
+    materials problem
+    model reduction problem
+    robotics problem
+    semiconductor device problem
+    structural problem
+    thermal problem 
+
+Problems that normally do not have 2D/3D geometry
+
+    chemical process simulation problem
+    circuit simulation problem
+    counter-example problem: Some of these may have 2D/3D geometry.
+    economic problem
+    frequency-domain circuit simulation problem
+    least squares problem
+    linear programming problem
+    optimization problem
+    power network problem
+    statistical/mathematical problem
+    theoretical/quantum chemistry problem
+    combinatorial problem
+
+Graph problems
+
+    This problem includes the graph or multigraph keyword. It is a network or
+    graph. A graph may or may not have 2D/3D geometry (typically it does not).
+    Several secondary phrases can be included in Problem.kind:
+
+        directed or undirected: A graph is either directed, undirected, or
+        bipartite. (bipartite graphs are always undirected). If not bipartite,
+        the matrix will always be square. Unsymmetric permutations of the
+        matrix have no meaning. If directed, the edge (i,j) is not the same as
+        (j,i), and the matrix will normally be unsymmetric. If undirected, the
+        edges (i,j) and (j,i) are the same, and the matrix is always symmetric.
+
+        weighted: If the graph has edge weights, this word will appear. The
+        edge weight of edge (i,j) is the value of A(i,j). This phrase is used
+        for a graph only, never for a multigraph. If the graph is not weighted,
+        the matrix is binary.
+
+        bipartite: If the rows and columns of the matrix reflect different sets
+        of nodes. The matrix A is normally rectangular, but can be square. Any
+        permutation (unsymmetric or symmetric) of the matrix is meaningful.
+
+        random: This Problem has been randomly generated. It is included in the
+        UF Sparse Matrix Collection only because it has been used as a standard
+        benchmark. Randomly generated problems are otherwise excluded from the
+        collection.  multigraph or graph: If the matrix represents a
+        multigraph, then A(i,j) reflects the number of edges (i,j). The edges
+        themselves are always unweighted. If the matrix represents a graph,
+        then A(i,j) is either 0 or 1 for an unweighted graph, or the weight of
+        edge (i,j) otherwise. 
 

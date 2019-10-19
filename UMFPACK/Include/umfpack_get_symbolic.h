@@ -3,9 +3,8 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
+/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
+/* All Rights Reserved.  See ../Doc/License for License.                      */
 /* -------------------------------------------------------------------------- */
 
 int umfpack_di_get_symbolic
@@ -28,23 +27,23 @@ int umfpack_di_get_symbolic
     void *Symbolic
 ) ;
 
-UF_long umfpack_dl_get_symbolic
+SuiteSparse_long umfpack_dl_get_symbolic
 (
-    UF_long *n_row,
-    UF_long *n_col,
-    UF_long *n1,
-    UF_long *nz,
-    UF_long *nfr,
-    UF_long *nchains,
-    UF_long P [ ],
-    UF_long Q [ ],
-    UF_long Front_npivcol [ ],
-    UF_long Front_parent [ ],
-    UF_long Front_1strow [ ],
-    UF_long Front_leftmostdesc [ ],
-    UF_long Chain_start [ ],
-    UF_long Chain_maxrows [ ],
-    UF_long Chain_maxcols [ ],
+    SuiteSparse_long *n_row,
+    SuiteSparse_long *n_col,
+    SuiteSparse_long *n1,
+    SuiteSparse_long *nz,
+    SuiteSparse_long *nfr,
+    SuiteSparse_long *nchains,
+    SuiteSparse_long P [ ],
+    SuiteSparse_long Q [ ],
+    SuiteSparse_long Front_npivcol [ ],
+    SuiteSparse_long Front_parent [ ],
+    SuiteSparse_long Front_1strow [ ],
+    SuiteSparse_long Front_leftmostdesc [ ],
+    SuiteSparse_long Chain_start [ ],
+    SuiteSparse_long Chain_maxrows [ ],
+    SuiteSparse_long Chain_maxcols [ ],
     void *Symbolic
 ) ;
 
@@ -68,23 +67,23 @@ int umfpack_zi_get_symbolic
     void *Symbolic
 ) ;
 
-UF_long umfpack_zl_get_symbolic
+SuiteSparse_long umfpack_zl_get_symbolic
 (
-    UF_long *n_row,
-    UF_long *n_col,
-    UF_long *n1,
-    UF_long *nz,
-    UF_long *nfr,
-    UF_long *nchains,
-    UF_long P [ ],
-    UF_long Q [ ],
-    UF_long Front_npivcol [ ],
-    UF_long Front_parent [ ],
-    UF_long Front_1strow [ ],
-    UF_long Front_leftmostdesc [ ],
-    UF_long Chain_start [ ],
-    UF_long Chain_maxrows [ ],
-    UF_long Chain_maxcols [ ],
+    SuiteSparse_long *n_row,
+    SuiteSparse_long *n_col,
+    SuiteSparse_long *n1,
+    SuiteSparse_long *nz,
+    SuiteSparse_long *nfr,
+    SuiteSparse_long *nchains,
+    SuiteSparse_long P [ ],
+    SuiteSparse_long Q [ ],
+    SuiteSparse_long Front_npivcol [ ],
+    SuiteSparse_long Front_parent [ ],
+    SuiteSparse_long Front_1strow [ ],
+    SuiteSparse_long Front_leftmostdesc [ ],
+    SuiteSparse_long Chain_start [ ],
+    SuiteSparse_long Chain_maxrows [ ],
+    SuiteSparse_long Chain_maxcols [ ],
     void *Symbolic
 ) ;
 
@@ -102,10 +101,10 @@ double int Syntax:
 	Front_leftmostdesc, Chain_start, Chain_maxrows, Chain_maxcols,
 	Symbolic) ;
 
-double UF_long Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    UF_long status, n_row, n_col, nz, nfr, nchains, *P, *Q,
+    SuiteSparse_long status, n_row, n_col, nz, nfr, nchains, *P, *Q,
 	*Front_npivcol, *Front_parent, *Front_1strow, *Front_leftmostdesc,
 	*Chain_start, *Chain_maxrows, *Chain_maxcols ;
     void *Symbolic ;
@@ -126,10 +125,10 @@ complex int Syntax:
 	Front_leftmostdesc, Chain_start, Chain_maxrows, Chain_maxcols,
 	Symbolic) ;
 
-complex UF_long Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    UF_long status, n_row, n_col, nz, nfr, nchains, *P, *Q,
+    SuiteSparse_long status, n_row, n_col, nz, nfr, nchains, *P, *Q,
 	*Front_npivcol, *Front_parent, *Front_1strow, *Front_leftmostdesc,
 	*Chain_start, *Chain_maxrows, *Chain_maxcols ;
     void *Symbolic ;

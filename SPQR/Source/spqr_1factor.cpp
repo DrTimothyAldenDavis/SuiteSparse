@@ -88,12 +88,12 @@ template <typename Entry> SuiteSparseQR_factorization <Entry> *spqr_1factor
     int ordering,           // all, except 3:given treated as 0:fixed
     double tol,             // only accept singletons above tol.  If tol <= -2,
                             // then use the default tolerance
-    Int bncols,             // number of columns of B
+    Long bncols,            // number of columns of B
     int keepH,              // if TRUE, keep the Householder vectors
     cholmod_sparse *A,      // m-by-n sparse matrix
-    Int ldb,                // if dense, the leading dimension of B
-    Int *Bp,                // size bncols+1, column pointers of B
-    Int *Bi,                // size bnz = Bp [bncols], row indices of B
+    Long ldb,               // if dense, the leading dimension of B
+    Long *Bp,               // size bncols+1, column pointers of B
+    Long *Bi,               // size bnz = Bp [bncols], row indices of B
     Entry *Bx,              // size bnz, numerical values of B
 
     // workspace and parameters
@@ -103,16 +103,14 @@ template <typename Entry> SuiteSparseQR_factorization <Entry> *spqr_1factor
     spqr_symbolic *QRsym ;
     spqr_numeric <Entry> *QRnum ;
     SuiteSparseQR_factorization <Entry> *QR ;
-    Int *Yp, *Yi, *Q1fill, *R1p, *R1j, *P1inv, *Ap, *Ai ;
+    Long *Yp, *Yi, *Q1fill, *R1p, *R1j, *P1inv, *Ap, *Ai ;
     Entry *Yx, *R1x, *Ax ;
-    Int noY, anz, a2nz, r1nz, ynz, i, j, k, p, p2, bnz, py, n1rows,
+    Long noY, anz, a2nz, r1nz, ynz, i, j, k, p, p2, bnz, py, n1rows,
         n1cols, n2, Bsparse, d, iold, inew, m, n ;
     cholmod_sparse *Y ;
 
-#ifdef TIMING
-    double t0 = spqr_time ( ) ;
+    double t0 = SuiteSparse_time ( ) ;
     double t1, t2 ;
-#endif
 
     // -------------------------------------------------------------------------
     // get inputs and allocate result
@@ -120,8 +118,8 @@ template <typename Entry> SuiteSparseQR_factorization <Entry> *spqr_1factor
 
     m = A->nrow ;
     n = A->ncol ;
-    Ap = (Int *) A->p ;
-    Ai = (Int *) A->i ;
+    Ap = (Long *) A->p ;
+    Ai = (Long *) A->i ;
     Ax = (Entry *) A->x ;
 
     QR = (SuiteSparseQR_factorization <Entry> *)
@@ -188,7 +186,7 @@ template <typename Entry> SuiteSparseQR_factorization <Entry> *spqr_1factor
 
     // These return R1p, P1inv, and Y; but they are all NULL if out of memory.
     // Note that only Y->p is allocated (Y->i and Y->x are dummy placeholders
-    // of one Int and one Entry, each, actually).  The entries of Y are
+    // of one Long and one Entry, each, actually).  The entries of Y are
     // allocated later, below.
 
     if (ordering == SPQR_ORDERING_GIVEN)
@@ -228,14 +226,14 @@ template <typename Entry> SuiteSparseQR_factorization <Entry> *spqr_1factor
 
     noY = (Y == NULL) ;                         // A will be factorized, not Y
     ASSERT (noY == (n1cols == 0 && bncols == 0)) ;
-    Yp = noY ? NULL : (Int *) Y->p ;
+    Yp = noY ? NULL : (Long *) Y->p ;
     anz = Ap [n] ;                              // nonzeros in A
     a2nz = noY ? anz : Yp [n-n1cols] ;          // nonzeros in S2
     n2 = n - n1cols ;                           // number of columns of S2
 
     // Y is NULL, or of size (m-n1rows)-by-(n-n1cols+bncols)
-    ASSERT (IMPLIES (Y != NULL, ((Int) Y->nrow == m-n1rows))) ;
-    ASSERT (IMPLIES (Y != NULL, ((Int) Y->ncol == n-n1cols+bncols))) ;
+    ASSERT (IMPLIES (Y != NULL, ((Long) Y->nrow == m-n1rows))) ;
+    ASSERT (IMPLIES (Y != NULL, ((Long) Y->ncol == n-n1cols+bncols))) ;
 
     // Y, if allocated, has no space for any entries yet
     ynz = 0 ;
@@ -371,7 +369,7 @@ template <typename Entry> SuiteSparseQR_factorization <Entry> *spqr_1factor
     else
     {
         cholmod_l_reallocate_sparse (ynz, Y, cc) ;
-        Yi = (Int   *) Y->i ;
+        Yi = (Long  *) Y->i ;
         Yx = (Entry *) Y->x ;
     }
 
@@ -478,14 +476,14 @@ template <typename Entry> SuiteSparseQR_factorization <Entry> *spqr_1factor
         // R1p = cumsum ([0 R1p])
         // ---------------------------------------------------------------------
 
-        r1nz = spqr_cumsum (n1rows, R1p) ;      // Int overflow cannot occur
+        r1nz = spqr_cumsum (n1rows, R1p) ;      // Long overflow cannot occur
         PR (("total nonzeros in R1: %ld\n", r1nz)) ;
 
         // ---------------------------------------------------------------------
         // allocate R1
         // ---------------------------------------------------------------------
 
-        R1j = (Int   *) cholmod_l_malloc (r1nz, sizeof (Int  ), cc) ;
+        R1j = (Long  *) cholmod_l_malloc (r1nz, sizeof (Long ), cc) ;
         R1x = (Entry *) cholmod_l_malloc (r1nz, sizeof (Entry), cc) ;
         QR->R1j = R1j ;
         QR->R1x = R1x ;
@@ -504,7 +502,7 @@ template <typename Entry> SuiteSparseQR_factorization <Entry> *spqr_1factor
         // ---------------------------------------------------------------------
 
         // At this point, R1p [i] points to the start of row i:
-        // for (Int t = 0 ; t <= n1rows ; t++) Rsave [t] = R1p [t] ;
+        // for (Long t = 0 ; t <= n1rows ; t++) Rsave [t] = R1p [t] ;
 
         for (k = 0 ; k < n1cols ; k++)
         {
@@ -564,7 +562,7 @@ template <typename Entry> SuiteSparseQR_factorization <Entry> *spqr_1factor
         spqr_shift (n1rows, R1p) ;
 
         // the row pointers are back to what they were:
-        // for (Int t = 0 ; t <= n1rows ; t++) ASSERT (Rsave [t] == R1p [t]) ;
+        // for (Long t = 0 ; t <= n1rows ; t++) ASSERT (Rsave [t] == R1p [t]) ;
 
         // ---------------------------------------------------------------------
         // construct the B2 part of Y = [S2 B2]
@@ -627,9 +625,7 @@ template <typename Entry> SuiteSparseQR_factorization <Entry> *spqr_1factor
         // factorize A, with fill-reducing ordering already given in Q1fill
         QRsym = spqr_analyze (A, SPQR_ORDERING_GIVEN, Q1fill,
             tol >= 0, keepH, cc) ;
-#ifdef TIMING
-        t1 = spqr_time ( ) ;
-#endif
+        t1 = SuiteSparse_time ( ) ;
         QRnum = spqr_factorize <Entry> (&A, FALSE, tol, n, QRsym, cc) ;
     }
     else
@@ -637,9 +633,7 @@ template <typename Entry> SuiteSparseQR_factorization <Entry> *spqr_1factor
         // fill-reducing ordering is already applied to Y; free Y when loaded
         QRsym = spqr_analyze (Y, SPQR_ORDERING_FIXED, NULL,
             tol >= 0, keepH, cc) ;
-#ifdef TIMING
-        t1 = spqr_time ( ) ;
-#endif
+        t1 = SuiteSparse_time ( ) ;
         QRnum = spqr_factorize <Entry> (&Y, TRUE, tol, n2, QRsym, cc) ;
         // Y has been freed
         ASSERT (Y == NULL) ;
@@ -684,9 +678,9 @@ template <typename Entry> SuiteSparseQR_factorization <Entry> *spqr_1factor
         // row of R2 = QRnum->HPinv (row of Y).   Combine these two into
         // HP1inv, where a global row of R = HP1inv (a row of A)
 
-        Int kk ;
-        Int *HP1inv, *HPinv ;
-        QR->HP1inv = HP1inv = (Int *) cholmod_l_malloc (m, sizeof (Int), cc) ;
+        Long kk ;
+        Long *HP1inv, *HPinv ;
+        QR->HP1inv = HP1inv = (Long *) cholmod_l_malloc (m, sizeof (Long), cc) ;
         HPinv = QRnum->HPinv ;
 
         if (cc->status < CHOLMOD_OK)
@@ -739,11 +733,9 @@ template <typename Entry> SuiteSparseQR_factorization <Entry> *spqr_1factor
     cc->SPQR_istat [6] = n1rows ;           // number of singleton rows
     cc->SPQR_xstat [1] = tol ;              // tol used
 
-#ifdef TIMING
-    t2 = spqr_time ( ) ;
+    t2 = SuiteSparse_time ( ) ;
     cc->other1 [1] = t1 - t0 ;  // analyze time, including singletons
     cc->other1 [2] = t2 - t1 ;  // factorize time
-#endif
 
     return (QR) ;
 }
@@ -756,12 +748,12 @@ template SuiteSparseQR_factorization <double> *spqr_1factor <double>
     // inputs, not modified
     int ordering,           // all, except 3:given treated as 0:fixed
     double tol,             // only accept singletons above tol
-    Int bncols,             // number of columns of B
+    Long bncols,            // number of columns of B
     int keepH,              // if TRUE, keep the Householder vectors
     cholmod_sparse *A,      // m-by-n sparse matrix
-    Int ldb,                // if dense, the leading dimension of B
-    Int *Bp,                // size bncols+1, column pointers of B
-    Int *Bi,                // size bnz = Bp [bncols], row indices of B
+    Long ldb,               // if dense, the leading dimension of B
+    Long *Bp,               // size bncols+1, column pointers of B
+    Long *Bi,               // size bnz = Bp [bncols], row indices of B
     double *Bx,             // size bnz, numerical values of B
 
     // workspace and parameters
@@ -775,12 +767,12 @@ template SuiteSparseQR_factorization <Complex> *spqr_1factor <Complex>
     // inputs, not modified
     int ordering,           // all, except 3:given treated as 0:fixed
     double tol,             // only accept singletons above tol
-    Int bncols,             // number of columns of B
+    Long bncols,            // number of columns of B
     int keepH,              // if TRUE, keep the Householder vectors
     cholmod_sparse *A,      // m-by-n sparse matrix
-    Int ldb,                // if dense, the leading dimension of B
-    Int *Bp,                // size bncols+1, column pointers of B
-    Int *Bi,                // size bnz = Bp [bncols], row indices of B
+    Long ldb,               // if dense, the leading dimension of B
+    Long *Bp,               // size bncols+1, column pointers of B
+    Long *Bi,               // size bnz = Bp [bncols], row indices of B
     Complex *Bx,            // size bnz, numerical values of B
 
     // workspace and parameters

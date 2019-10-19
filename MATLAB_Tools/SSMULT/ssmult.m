@@ -31,6 +31,6 @@ function C = ssmult (A,B, at,ac, bt,bc, ct,cc)                              %#ok
 %
 % See also ssmultsym, mtimes.  See sstest3 for a list of all 64 variants.
 
-% Copyright 2009, Timothy A. Davis, University of Florida
+% Copyright 2007-2009, Timothy A. Davis, http://www.suitesparse.com
 
 error ('ssmult mexFunction not found') ;

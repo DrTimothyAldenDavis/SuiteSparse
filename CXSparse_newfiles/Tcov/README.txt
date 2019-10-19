@@ -11,3 +11,5 @@ Note that you will get warnings about unused parameters for some functions.
 These warnings can be safely ignored.  They are parameters for functions that
 are passed to cs_fkeep, and all functions used in this manner must have the
 same calling sequence, even if some of the parameters are not used.
+
+Timothy A. Davis, http://www.suitesparse.com

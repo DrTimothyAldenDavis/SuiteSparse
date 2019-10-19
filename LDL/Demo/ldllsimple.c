@@ -26,8 +26,8 @@
  * ldl_symbolic has analyzed the matrix.  The size of Li and Lx must be greater
  * than or equal to lnz = Lp [N], which is 13 for this matrix L.
  *
- * LDL Version 1.3, Copyright (c) 2006 by Timothy A Davis,
- * University of Florida.  All Rights Reserved.  See README for the License.
+ * Copyright (c) 2006 by Timothy A Davis, http://www.suitesparse.com.
+ * All Rights Reserved.  See README for the License.
  */
 
 #ifndef LDL_LONG
@@ -39,17 +39,18 @@
 #define N 10	/* A is 10-by-10 */
 #define ANZ 19	/* # of nonzeros on diagonal and upper triangular part of A */
 #define LNZ 13	/* # of nonzeros below the diagonal of L */
+#define Long SuiteSparse_long
 
 int main (void)
 {
     /* only the upper triangular part of A is required */
-    UF_long Ap[N+1] = {0, 1, 2, 3, 4,   6, 7,   9,   11,      15,     ANZ},
+    Long Ap[N+1] = {0, 1, 2, 3, 4,   6, 7,   9,   11,      15,     ANZ},
            Ai [ANZ] = {0, 1, 2, 3, 1,4, 5, 4,6, 4,7, 0,4,7,8, 1,4,6,9 } ;
     double Ax [ANZ] = {1.7, 1., 1.5, 1.1, .02,2.6, 1.2, .16,1.3, .09,1.6,
 		     .13,.52,.11,1.4, .01,.53,.56,3.1},
            b [N] = {.287, .22, .45, .44, 2.486, .72, 1.55, 1.424, 1.621, 3.759};
     double Lx [LNZ], D [N], Y [N] ;
-    UF_long Li [LNZ], Lp [N+1], Parent [N], Lnz [N], Flag [N], Pattern [N], d, i ;
+    Long Li [LNZ], Lp [N+1], Parent [N], Lnz [N], Flag [N], Pattern [N], d, i ;
 
     /* factorize A into LDL' (P and Pinv not used) */
     ldl_l_symbolic (N, Ap, Ai, Lp, Parent, Lnz, Flag, NULL, NULL) ;

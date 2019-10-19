@@ -12,7 +12,6 @@
 // -----------------------------------------------------------------------------
 
 #include "cholmod.h"
-#include "UFconfig.h"
 #include "SuiteSparseQR_definitions.h"
 
 // =============================================================================
@@ -26,9 +25,9 @@
 // have access to this object without synchronization.
 //
 // The total size of the Symbolic object is (10 + 2*m + anz + 2*n + 5*nf + rnz)
-// Int's, where the user's input A matrix is m-by-n with anz nonzeros, nf <=
+// Long's, where the user's input A matrix is m-by-n with anz nonzeros, nf <=
 // MIN(m,n) is the number of frontal matrices, and rnz <= nnz(R) is the number
-// of column indices used to represent the supernodal form of R (one Int per
+// of column indices used to represent the supernodal form of R (one Long per
 // non-pivotal column index in the leading row of each block of R).
 
 struct spqr_symbolic
@@ -46,21 +45,21 @@ struct spqr_symbolic
     // indices in each row of S are in strictly ascending order, even though
     // the input matrix A need not be sorted.
 
-    UF_long m, n, anz ; // S is m-by-n with anz entries
+    SuiteSparse_long m, n, anz ; // S is m-by-n with anz entries
 
-    UF_long *Sp ;       // size m+1, row pointers of S
+    SuiteSparse_long *Sp ;       // size m+1, row pointers of S
 
-    UF_long *Sj ;       // size anz = Sp [n], column indices of S
+    SuiteSparse_long *Sj ;       // size anz = Sp [n], column indices of S
 
-    UF_long *Qfill ;    // size n, fill-reducing column permutation.
+    SuiteSparse_long *Qfill ;    // size n, fill-reducing column permutation.
                         // Qfill [k] = j if column k of A is column j of S.
 
-    UF_long *PLinv ;    // size m, inverse row permutation that places S=A(P,Q)
-                        // in increasing order of leftmost column index.
-                        // PLinv [i] = k if row i of A is row k of S.
+    SuiteSparse_long *PLinv ;    // size m, inverse row permutation that places
+                        // S=A(P,Q) in increasing order of leftmost column
+                        // index.  PLinv [i] = k if row i of A is row k of S.
 
-    UF_long *Sleft ;    // size n+2.  The list of rows of S whose leftmost
-                        // column index is j is given by
+    SuiteSparse_long *Sleft ;    // size n+2.  The list of rows of S whose
+            // leftmost column index is j is given by
             // Sleft [j] ... Sleft [j+1]-1.  This can be empty (that is, Sleft
             // [j] can equal Sleft [j+1]).  Sleft [n] is the number of
             // non-empty rows of S, and Sleft [n+1] == m.  That is, Sleft [n]
@@ -79,13 +78,13 @@ struct spqr_symbolic
     // vectors are kept, the row indices are computed dynamically during
     // numerical factorization.
 
-    UF_long nf ;        // number of frontal matrices; nf <= MIN (m,n)
-    UF_long maxfn ;     // max # of columns in any front
+    SuiteSparse_long nf ;        // number of frontal matrices; nf <= MIN (m,n)
+    SuiteSparse_long maxfn ;     // max # of columns in any front
 
     // parent, child, and childp define the row merge tree or etree (A'A)
-    UF_long *Parent ;   // size nf+1
-    UF_long *Child ;    // size nf+1
-    UF_long *Childp ;   // size nf+2
+    SuiteSparse_long *Parent ;   // size nf+1
+    SuiteSparse_long *Child ;    // size nf+1
+    SuiteSparse_long *Childp ;   // size nf+2
 
     // The parent of a front f is Parent [f], or EMPTY if f=nf.
     // A list of children of f can be obtained in the list
@@ -96,29 +95,30 @@ struct spqr_symbolic
     // placeholder node nf as their parent.  Thus, the tree of nodes 0:nf is
     // truly a tree, with just one parent (node nf).
 
-    UF_long *Super ;    // size nf+1.  Super [f] gives the first pivot column
-                        // in the front F.  This refers to a column of S.  The
+    SuiteSparse_long *Super ;    // size nf+1.  Super [f] gives the first
+        // pivot column in the front F.  This refers to a column of S.  The
         // number of expected pivot columns in F is thus
         // Super [f+1] - Super [f].
 
-    UF_long *Rp ;       // size nf+1
-    UF_long *Rj ;       // size rjsize; compressed supernodal form of R
+    SuiteSparse_long *Rp ;       // size nf+1
+    SuiteSparse_long *Rj ;       // size rjsize; compressed supernodal form of R
 
-    UF_long *Post ;     // size nf+1, post ordering of frontal tree. f=Post[k]
-                        // gives the kth node in the postordered tree
+    SuiteSparse_long *Post ;     // size nf+1, post ordering of frontal tree.
+                        // f=Post[k] gives the kth node in the postordered tree
 
-    UF_long rjsize ;    // size of Rj
+    SuiteSparse_long rjsize ;    // size of Rj
 
-    UF_long do_rank_detection ; // TRUE: allow for tol >= 0. FALSE: ignore tol
+    SuiteSparse_long do_rank_detection ; // TRUE: allow for tol >= 0.
+                                         // FALSE: ignore tol
 
     // the rest depends on whether or not rank-detection is allowed:
-    UF_long maxstack  ; // max stack size (sequential case)
-    UF_long hisize ;    // size of Hii
+    SuiteSparse_long maxstack  ; // max stack size (sequential case)
+    SuiteSparse_long hisize ;    // size of Hii
 
-    UF_long keepH ;     // TRUE if H is present
+    SuiteSparse_long keepH ;     // TRUE if H is present
 
-    UF_long *Hip ;      // size nf+1.  If H is kept, the row indices of frontal
-                        // matrix f are in Hii [Hip [f] ... Hip [f] + Hm [f]],
+    SuiteSparse_long *Hip ;      // size nf+1.  If H is kept, the row indices
+        // of frontal matrix f are in Hii [Hip [f] ... Hip [f] + Hm [f]],
         // where Hii and Hm are stored in the numeric object.
 
         // There is one block row of R per frontal matrix.
@@ -130,27 +130,28 @@ struct spqr_symbolic
         // The number of columns in the contribution block C is always
         // cn = fn - fp, where fn = Rp [f+1] - Rp [f].
 
-    UF_long ntasks ;    // number of tasks in task graph
-    UF_long ns ;        // number of stacks
+    SuiteSparse_long ntasks ;    // number of tasks in task graph
+    SuiteSparse_long ns ;        // number of stacks
 
     // -------------------------------------------------------------------------
     // the rest of the QR symbolic object is present only if ntasks > 1
     // -------------------------------------------------------------------------
 
     // Task tree (nodes 0:ntasks), including placeholder node
-    UF_long *TaskChildp ;       // size ntasks+2
-    UF_long *TaskChild ;        // size ntasks+1
+    SuiteSparse_long *TaskChildp ;       // size ntasks+2
+    SuiteSparse_long *TaskChild ;        // size ntasks+1
 
-    UF_long *TaskStack ;        // size ntasks+1
+    SuiteSparse_long *TaskStack ;        // size ntasks+1
 
     // list of fronts for each task
-    UF_long *TaskFront ;        // size nf+1
-    UF_long *TaskFrontp  ;      // size ntasks+2
+    SuiteSparse_long *TaskFront ;        // size nf+1
+    SuiteSparse_long *TaskFrontp  ;      // size ntasks+2
 
-    UF_long *On_stack  ;        // size nf+1, front f is on stack On_stack [f]
+    SuiteSparse_long *On_stack  ;        // size nf+1, front f is on
+                                         // stack On_stack [f]
 
     // size of each stack
-    UF_long *Stack_maxstack ;   // size ns+2
+    SuiteSparse_long *Stack_maxstack ;   // size ns+2
 
 } ;
 
@@ -182,16 +183,17 @@ template <typename Entry> struct spqr_numeric
                         // factorization is complete, only the R and H part at
                         // the head of each stack is left.
 
-    UF_long *Stack_size ;   // size ns; Stack_size [s] is the size of Stacks [s]
+    SuiteSparse_long *Stack_size ;   // size ns; Stack_size [s] is the size
+                                     // of Stacks [s]
 
-    UF_long hisize ;        // size of Hii
+    SuiteSparse_long hisize ;        // size of Hii
 
-    UF_long n ;             // A is m-by-n
-    UF_long m ;
-    UF_long nf ;            // number of frontal matrices
-    UF_long ntasks ;        // number of tasks in task graph actually used
-    UF_long ns ;            // number of stacks actually used
-    UF_long maxstack ;      // size of sequential stack, if used
+    SuiteSparse_long n ;             // A is m-by-n
+    SuiteSparse_long m ;
+    SuiteSparse_long nf ;            // number of frontal matrices
+    SuiteSparse_long ntasks ;        // # of tasks in task graph actually used
+    SuiteSparse_long ns ;            // number of stacks actually used
+    SuiteSparse_long maxstack ;      // size of sequential stack, if used
 
     // -------------------------------------------------------------------------
     // for rank detection and m < n case
@@ -202,11 +204,11 @@ template <typename Entry> struct spqr_numeric
                         // this is NULL.  If m < n, then at least m-n columns
                         // will be dead. 
 
-    UF_long rank ;      // number of live pivot columns
-    UF_long rank1 ;     // number of live pivot columns in first ntol columns
-                        // of A
+    SuiteSparse_long rank ;      // number of live pivot columns
+    SuiteSparse_long rank1 ;     // number of live pivot columns in first ntol
+                                 // columns of A
 
-    UF_long maxfrank ;  // max number of rows in any R block
+    SuiteSparse_long maxfrank ;  // max number of rows in any R block
 
     double norm_E_fro ; // 2-norm of w, the vector of dead column 2-norms
 
@@ -218,26 +220,27 @@ template <typename Entry> struct spqr_numeric
     // where P_H is the permutation HPinv, and H_1, ... H_s are the Householder
     // vectors (s = rjsize).
 
-    UF_long keepH ;     // TRUE if H is present
+    SuiteSparse_long keepH ;     // TRUE if H is present
 
-    UF_long rjsize ;    // size of Hstair and HTau
+    SuiteSparse_long rjsize ;    // size of Hstair and HTau
 
-    UF_long *HStair ;   // size rjsize.  The list Hstair [Rp [f] ... Rp [f+1]-1]
-                        // gives the staircase for front F
+    SuiteSparse_long *HStair ;   // size rjsize.  The list Hstair [Rp [f] ... 
+                        // Rp [f+1]-1] gives the staircase for front F
 
     Entry *HTau ;       // size rjsize.  The list HTau [Rp [f] ... Rp [f+1]-1]
                         // gives the Householder coefficients for front F
 
-    UF_long *Hii ;      // size hisize, row indices of H.
+    SuiteSparse_long *Hii ;      // size hisize, row indices of H.
 
-    UF_long *HPinv ;    // size m.  HPinv [i] = k if row i of A and H is row k
-                        // of R.  This permutation includes QRsym->PLinv, and
-                        // the permutation constructed via pivotal row ordering
-                        // during factorization.
+    SuiteSparse_long *HPinv ;    // size m.  HPinv [i] = k if row i of A and H
+                        // is row k of R.  This permutation includes
+                        // QRsym->PLinv, and the permutation constructed via
+                        // pivotal row ordering during factorization.
 
-    UF_long *Hm ;       // size nf, Hm [f] = # of rows in front F
-    UF_long *Hr ;       // size nf, Hr [f] = # of rows in R block of front F
-    UF_long maxfm ;     // max (Hm [0:nf-1]), computed only if H kept
+    SuiteSparse_long *Hm ;       // size nf, Hm [f] = # of rows in front F
+    SuiteSparse_long *Hr ;       // size nf, Hr [f] = # of rows in R block of
+                                 // front F
+    SuiteSparse_long maxfm ;     // max (Hm [0:nf-1]), computed only if H kept
 
 } ;
 
@@ -258,31 +261,33 @@ template <typename Entry> struct SuiteSparseQR_factorization
     spqr_numeric <Entry> *QRnum ;
 
     // singletons, in compressed-row form; R is n1rows-by-n
-    UF_long *R1p ;      // size n1rows+1
-    UF_long *R1j ;
+    SuiteSparse_long *R1p ;      // size n1rows+1
+    SuiteSparse_long *R1j ;
     Entry *R1x ;
-    UF_long r1nz ;      // nnz (R1)
+    SuiteSparse_long r1nz ;      // nnz (R1)
 
     // combined singleton and fill-reducing permutation
-    UF_long *Q1fill ;
-    UF_long *P1inv ;
-    UF_long *HP1inv ;   // NULL if n1cols == 0, in which case QRnum->HPinv
-                        // serves in its place.
+    SuiteSparse_long *Q1fill ;
+    SuiteSparse_long *P1inv ;
+    SuiteSparse_long *HP1inv ;   // NULL if n1cols == 0, in which case
+                        // QRnum->HPinv serves in its place.
 
     // Rmap and RmapInv are NULL if QR->rank == A->ncol
-    UF_long *Rmap ;     // size n.  Rmap [j] = k if column j of R is the kth
-                        // live column and where k < QR->rank; otherwise, if
-                        // j is a dead column, then k >= QR->rank.
-    UF_long *RmapInv ;
+    SuiteSparse_long *Rmap ;     // size n.  Rmap [j] = k if column j of R is
+                        // the kth live column and where k < QR->rank;
+                        // otherwise, if j is a dead column, then
+                        // k >= QR->rank.
 
-    UF_long n1rows ;    // number of singleton rows of [A B]
-    UF_long n1cols ;    // number of singleton columns of [A B]
+    SuiteSparse_long *RmapInv ;
 
-    UF_long narows ;    // number of rows of A
-    UF_long nacols ;    // number of columns of A
-    UF_long bncols ;    // number of columns of B
-    UF_long rank ;      // rank estimate of A (n1rows + QRnum->rank1), ranges
-                        // from 0 to min(m,n)
+    SuiteSparse_long n1rows ;    // number of singleton rows of [A B]
+    SuiteSparse_long n1cols ;    // number of singleton columns of [A B]
+
+    SuiteSparse_long narows ;    // number of rows of A
+    SuiteSparse_long nacols ;    // number of columns of A
+    SuiteSparse_long bncols ;    // number of columns of B
+    SuiteSparse_long rank ;      // rank estimate of A (n1rows + QRnum->rank1),
+                                 // ranges from 0 to min(m,n)
 
     int allow_tol ;     // if TRUE, do rank detection
 } ;
@@ -296,13 +301,13 @@ template <typename Entry> struct SuiteSparseQR_factorization
 //  SuiteSparseQR_qmult     Q*X, Q'*X, X*Q, or X*Q' for X full or sparse
 
 // returns rank(A) estimate, or EMPTY on failure
-template <typename Entry> UF_long SuiteSparseQR
+template <typename Entry> SuiteSparse_long SuiteSparseQR
 (
     // inputs, not modified
     int ordering,           // all, except 3:given treated as 0:fixed
     double tol,             // only accept singletons above tol
 
-    UF_long econ,           // number of rows of C and R to return; a value
+    SuiteSparse_long econ,  // number of rows of C and R to return; a value
                             // less than the rank r of A is treated as r, and
                             // a value greater than m is treated as m.
 
@@ -324,9 +329,9 @@ template <typename Entry> UF_long SuiteSparseQR
     cholmod_sparse **Zsparse,
     cholmod_dense  **Zdense,
     cholmod_sparse **R,     // the R factor
-    UF_long **E,            // size n; fill-reducing ordering of A.
+    SuiteSparse_long **E,   // size n; fill-reducing ordering of A.
     cholmod_sparse **H,     // the Householder vectors (m-by-nh)
-    UF_long **HPinv,        // size m; row permutation for H
+    SuiteSparse_long **HPinv,// size m; row permutation for H
     cholmod_dense **HTau,   // size nh, Householder coefficients
 
     // workspace and parameters
@@ -362,77 +367,79 @@ template <typename Entry> cholmod_sparse *SuiteSparseQR
 ) ;
 
 // [Q,R,E] = qr(A), returning Q as a sparse matrix
-template <typename Entry> UF_long SuiteSparseQR     // returns rank(A) estimate
+template <typename Entry> SuiteSparse_long SuiteSparseQR
+    // returns rank(A) estimate
 (
     int ordering,           // all, except 3:given treated as 0:fixed
     double tol,
-    UF_long econ,
+    SuiteSparse_long econ,
     cholmod_sparse *A,      // m-by-n sparse matrix
     // outputs
     cholmod_sparse **Q,     // m-by-e sparse matrix where e=max(econ,rank(A))
     cholmod_sparse **R,     // e-by-n sparse matrix
-    UF_long **E,            // permutation of 0:n-1, NULL if identity
+    SuiteSparse_long **E,   // permutation of 0:n-1, NULL if identity
     cholmod_common *cc      // workspace and parameters
 ) ;
 
 // [Q,R,E] = qr(A), discarding Q
-template <typename Entry> UF_long SuiteSparseQR     // returns rank(A) estimate
+template <typename Entry> SuiteSparse_long SuiteSparseQR
+    // returns rank(A) estimate
 (
     int ordering,           // all, except 3:given treated as 0:fixed
     double tol,
-    UF_long econ,
+    SuiteSparse_long econ,
     cholmod_sparse *A,      // m-by-n sparse matrix
     // outputs
     cholmod_sparse **R,     // e-by-n sparse matrix
-    UF_long **E,            // permutation of 0:n-1, NULL if identity
+    SuiteSparse_long **E,   // permutation of 0:n-1, NULL if identity
     cholmod_common *cc      // workspace and parameters
 ) ;
 
 // [C,R,E] = qr(A,B), where C and B are dense
-template <typename Entry> UF_long SuiteSparseQR
+template <typename Entry> SuiteSparse_long SuiteSparseQR
 (
     // inputs, not modified
     int ordering,           // all, except 3:given treated as 0:fixed
     double tol,             // only accept singletons above tol
-    UF_long econ,           // number of rows of C and R to return
+    SuiteSparse_long econ,  // number of rows of C and R to return
     cholmod_sparse *A,      // m-by-n sparse matrix
     cholmod_dense  *B,      // m-by-nrhs dense matrix
     // outputs
     cholmod_dense  **C,     // C = Q'*B, an e-by-nrhs dense matrix
     cholmod_sparse **R,     // e-by-n sparse matrix where e=max(econ,rank(A))
-    UF_long **E,            // permutation of 0:n-1, NULL if identity
+    SuiteSparse_long **E,   // permutation of 0:n-1, NULL if identity
     cholmod_common *cc      // workspace and parameters
 ) ;
 
 // [C,R,E] = qr(A,B), where C and B are sparse
-template <typename Entry> UF_long SuiteSparseQR
+template <typename Entry> SuiteSparse_long SuiteSparseQR
 (
     // inputs, not modified
     int ordering,           // all, except 3:given treated as 0:fixed
     double tol,             // only accept singletons above tol
-    UF_long econ,           // number of rows of C and R to return
+    SuiteSparse_long econ,  // number of rows of C and R to return
     cholmod_sparse *A,      // m-by-n sparse matrix
     cholmod_sparse *B,      // m-by-nrhs sparse matrix
     // outputs
     cholmod_sparse **C,     // C = Q'*B, an e-by-nrhs sparse matrix
     cholmod_sparse **R,     // e-by-n sparse matrix where e=max(econ,rank(A))
-    UF_long **E,            // permutation of 0:n-1, NULL if identity
+    SuiteSparse_long **E,   // permutation of 0:n-1, NULL if identity
     cholmod_common *cc      // workspace and parameters
 ) ;
 
 // [Q,R,E] = qr(A) where Q is returned in Householder form
-template <typename Entry> UF_long SuiteSparseQR
+template <typename Entry> SuiteSparse_long SuiteSparseQR
 (
     // inputs, not modified
     int ordering,           // all, except 3:given treated as 0:fixed
     double tol,             // only accept singletons above tol
-    UF_long econ,           // number of rows of C and R to return
+    SuiteSparse_long econ,  // number of rows of C and R to return
     cholmod_sparse *A,      // m-by-n sparse matrix
     // outputs
     cholmod_sparse **R,     // the R factor
-    UF_long **E,            // permutation of 0:n-1, NULL if identity
+    SuiteSparse_long **E,   // permutation of 0:n-1, NULL if identity
     cholmod_sparse **H,     // the Householder vectors (m-by-nh)
-    UF_long **HPinv,        // size m; row permutation for H
+    SuiteSparse_long **HPinv,// size m; row permutation for H
     cholmod_dense **HTau,   // size nh, Householder coefficients
     cholmod_common *cc      // workspace and parameters
 ) ;
@@ -451,7 +458,7 @@ template <typename Entry> cholmod_dense *SuiteSparseQR_qmult
     int method,         // 0,1,2,3
     cholmod_sparse *H,      // either m-by-nh or n-by-nh
     cholmod_dense *HTau,    // size 1-by-nh
-    UF_long *HPinv,         // size mh
+    SuiteSparse_long *HPinv,// size mh
     cholmod_dense *Xdense,  // size m-by-n
 
     // workspace and parameters
@@ -464,7 +471,7 @@ template <typename Entry> cholmod_sparse *SuiteSparseQR_qmult
     int method,             // 0,1,2,3
     cholmod_sparse *H,      // either m-by-nh or n-by-nh
     cholmod_dense *HTau,    // size 1-by-nh
-    UF_long *HPinv,         // size mh
+    SuiteSparse_long *HPinv,// size mh
     cholmod_sparse *X,
 
     // workspace and parameters
@@ -583,22 +590,6 @@ template <typename Entry> int SuiteSparseQR_numeric
     cholmod_common *cc      // workspace and parameters
 ) ;
 
-#endif
-
-// =============================================================================
-// === high-resolution timing ==================================================
-// =============================================================================
-
-#ifdef TIMING
-
-extern "C" {
-
-#include <time.h>
-#include <sys/time.h>
-
-double spqr_time ( ) ;   // returns current time in seconds
-
-}
 #endif
 
 #endif

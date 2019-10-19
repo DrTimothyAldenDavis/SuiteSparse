@@ -34,8 +34,8 @@
 
 #include "spqr.hpp"
 
-inline void spqr_private_larft (char direct, char storev, Int n, Int k,
-    double *V, Int ldv, double *Tau, double *T, Int ldt, cholmod_common *cc)
+inline void spqr_private_larft (char direct, char storev, Long n, Long k,
+    double *V, Long ldv, double *Tau, double *T, Long ldt, cholmod_common *cc)
 {
     BLAS_INT N = n, K = k, LDV = ldv, LDT = ldt ;
     if (CHECK_BLAS_INT &&
@@ -49,8 +49,9 @@ inline void spqr_private_larft (char direct, char storev, Int n, Int k,
     }
 }
 
-inline void spqr_private_larft (char direct, char storev, Int n, Int k,
-    Complex *V, Int ldv, Complex *Tau, Complex *T, Int ldt, cholmod_common *cc)
+inline void spqr_private_larft (char direct, char storev, Long n, Long k,
+    Complex *V, Long ldv, Complex *Tau, Complex *T, Long ldt,
+    cholmod_common *cc)
 {
     BLAS_INT N = n, K = k, LDV = ldv, LDT = ldt ;
     if (CHECK_BLAS_INT &&
@@ -66,8 +67,8 @@ inline void spqr_private_larft (char direct, char storev, Int n, Int k,
 
 
 inline void spqr_private_larfb (char side, char trans, char direct, char storev,
-    Int m, Int n, Int k, double *V, Int ldv, double *T, Int ldt, double *C,
-    Int ldc, double *Work, Int ldwork, cholmod_common *cc)
+    Long m, Long n, Long k, double *V, Long ldv, double *T, Long ldt, double *C,
+    Long ldc, double *Work, Long ldwork, cholmod_common *cc)
 {
     BLAS_INT M = m, N = n, K = k, LDV = ldv, LDT = ldt, LDC = ldc,
         LDWORK = ldwork ;
@@ -86,8 +87,8 @@ inline void spqr_private_larfb (char side, char trans, char direct, char storev,
 
 
 inline void spqr_private_larfb (char side, char trans, char direct, char storev,
-    Int m, Int n, Int k, Complex *V, Int ldv, Complex *T, Int ldt, Complex *C,
-    Int ldc, Complex *Work, Int ldwork, cholmod_common *cc)
+    Long m, Long n, Long k, Complex *V, Long ldv, Complex *T, Long ldt,
+    Complex *C, Long ldc, Complex *Work, Long ldwork, cholmod_common *cc)
 {
     char tr = (trans == 'T') ? 'C' : 'N' ;      // change T to C
     BLAS_INT M = m, N = n, K = k, LDV = ldv, LDT = ldt, LDC = ldc,
@@ -112,13 +113,13 @@ template <typename Entry> void spqr_larftb
 (
     // inputs, not modified (V is modified and then restored on output)
     int method,     // 0,1,2,3
-    Int m,          // C is m-by-n
-    Int n,
-    Int k,          // V is v-by-k
+    Long m,         // C is m-by-n
+    Long n,
+    Long k,         // V is v-by-k
                     // for methods 0 and 1, v = m,
                     // for methods 2 and 3, v = n
-    Int ldc,        // leading dimension of C
-    Int ldv,        // leading dimension of V
+    Long ldc,       // leading dimension of C
+    Long ldv,       // leading dimension of V
     Entry *V,       // V is v-by-k, unit lower triangular (diag not stored)
     Entry *Tau,     // size k, the k Householder coefficients
 
@@ -191,13 +192,13 @@ template void spqr_larftb <double>
 (
     // inputs, not modified (V is modified and then restored on output)
     int method,     // 0,1,2,3
-    Int m,          // C is m-by-n
-    Int n,
-    Int k,          // V is v-by-k
+    Long m,         // C is m-by-n
+    Long n,
+    Long k,         // V is v-by-k
                     // for methods 0 and 1, v = m,
                     // for methods 2 and 3, v = n
-    Int ldc,        // leading dimension of C
-    Int ldv,        // leading dimension of V
+    Long ldc,       // leading dimension of C
+    Long ldv,       // leading dimension of V
     double *V,      // V is v-by-k, unit lower triangular (diag not stored)
     double *Tau,    // size k, the k Householder coefficients
 
@@ -216,13 +217,13 @@ template void spqr_larftb <Complex>
 (
     // inputs, not modified (V is modified and then restored on output)
     int method,     // 0,1,2,3
-    Int m,          // C is m-by-n
-    Int n,
-    Int k,          // V is v-by-k
+    Long m,         // C is m-by-n
+    Long n,
+    Long k,         // V is v-by-k
                     // for methods 0 and 1, v = m,
                     // for methods 2 and 3, v = n
-    Int ldc,        // leading dimension of C
-    Int ldv,        // leading dimension of V
+    Long ldc,       // leading dimension of C
+    Long ldv,       // leading dimension of V
     Complex *V,     // V is v-by-k, unit lower triangular (diag not stored)
     Complex *Tau,   // size k, the k Householder coefficients
 

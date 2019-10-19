@@ -9,7 +9,7 @@ void mexFunction
 )
 {
     cs Amatrix, *A ;
-    int brief ;
+    csi brief ;
     if (nargout > 0 || nargin < 1 || nargin > 2)
     {
         mexErrMsgTxt ("Usage: cs_print(A,brief)") ;

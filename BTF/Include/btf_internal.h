@@ -6,15 +6,15 @@
 #define _BTF_INTERNAL_H
 
 /*
- * Copyright (c) 2004-2007.  Tim Davis, University of Florida,
+ * By Tim Davis.  Copyright (c) 2004-2007, University of Florida.
  * with support from Sandia National Laboratories.  All Rights Reserved.
  */
 
 /* Not to be included in any user program. */
 
 #ifdef DLONG
-#define Int UF_long
-#define Int_id UF_long_id
+#define Int SuiteSparse_long
+#define Int_id SuiteSparse_long_id
 #define BTF(name) btf_l_ ## name
 #else
 #define Int int

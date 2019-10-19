@@ -10,8 +10,7 @@ function SuiteSparse_install (do_demo)
 % COLAMD         sparse column approximate minimum degree ordering
 % CAMD           constrained AMD
 % CCOLAMD        constrained COLAMD
-% CSparse        a Concise Sparse matrix package (32-bit, real only)
-% CSparse3       a Concise Sparse matrix package (32-bit or 64-bit, real only)
+% CSparse        a Concise Sparse matrix package (32-bit or 64-bit, real only)
 % CXSparse       extended version of CSparse (32-bit/64-bit/real/complex)
 % UFget          interface to UF Sparse Matrix Collection (MATLAB 7.0 or later)
 % KLU            sparse LU factorization (left-looking)
@@ -37,8 +36,9 @@ function SuiteSparse_install (do_demo)
 %      UFget, RBio, UFcollection, KLU, BTF, MESHND, SSMULT, LINFACTOR, SPOK,
 %      SPQR_RANK, SuiteSparse, SPQR, PATHTOOL, PATH, FACTORIZE, SPARSEINV.
 %
-% Copyright 1990-2011, Timothy A. Davis.
-% http://www.cise.ufl.edu/research/sparse
+% This script installs the full-featured CXSparse rather than CSparse.
+%
+% Copyright 1990-2012, Timothy A. Davis, http://www.suitesparse.com.
 % In collaboration with Patrick Amestoy, Yanqing Chen, Iain Duff, John Gilbert,
 % Steve Hadfield, William Hager, Stefan Larimore, Leslie Foster,
 % Eka Palamadai Natarajan, Esmond Ng, and Siva Rajamanickam.

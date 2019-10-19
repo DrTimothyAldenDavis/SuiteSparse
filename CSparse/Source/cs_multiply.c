@@ -2,14 +2,14 @@
 /* C = A*B */
 cs *cs_multiply (const cs *A, const cs *B)
 {
-    int p, j, nz = 0, anz, *Cp, *Ci, *Bp, m, n, bnz, *w, values, *Bi ;
+    csi p, j, nz = 0, anz, *Cp, *Ci, *Bp, m, n, bnz, *w, values, *Bi ;
     double *x, *Bx, *Cx ;
     cs *C ;
     if (!CS_CSC (A) || !CS_CSC (B)) return (NULL) ;      /* check inputs */
     if (A->n != B->m) return (NULL) ;
     m = A->m ; anz = A->p [A->n] ;
     n = B->n ; Bp = B->p ; Bi = B->i ; Bx = B->x ; bnz = Bp [n] ;
-    w = cs_calloc (m, sizeof (int)) ;                    /* get workspace */
+    w = cs_calloc (m, sizeof (csi)) ;                    /* get workspace */
     values = (A->x != NULL) && (Bx != NULL) ;
     x = values ? cs_malloc (m, sizeof (double)) : NULL ; /* get workspace */
     C = cs_spalloc (m, n, anz + bnz, values, 0) ;        /* allocate result */

@@ -3,9 +3,8 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
+/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
+/* All Rights Reserved.  See ../Doc/License for License.                      */
 /* -------------------------------------------------------------------------- */
 
 int umfpack_di_report_numeric
@@ -14,7 +13,7 @@ int umfpack_di_report_numeric
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-UF_long umfpack_dl_report_numeric
+SuiteSparse_long umfpack_dl_report_numeric
 (
     void *Numeric,
     const double Control [UMFPACK_CONTROL]
@@ -26,7 +25,7 @@ int umfpack_zi_report_numeric
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-UF_long umfpack_zl_report_numeric
+SuiteSparse_long umfpack_zl_report_numeric
 (
     void *Numeric,
     const double Control [UMFPACK_CONTROL]
@@ -41,12 +40,12 @@ double int Syntax:
     int status ;
     status = umfpack_di_report_numeric (Numeric, Control) ;
 
-double UF_long Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Numeric ;
     double Control [UMFPACK_CONTROL] ;
-    UF_long status ;
+    SuiteSparse_long status ;
     status = umfpack_dl_report_numeric (Numeric, Control) ;
 
 complex int Syntax:
@@ -57,12 +56,12 @@ complex int Syntax:
     int status ;
     status = umfpack_zi_report_numeric (Numeric, Control) ;
 
-complex UF_long Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Numeric ;
     double Control [UMFPACK_CONTROL] ;
-    UF_long status ;
+    SuiteSparse_long status ;
     status = umfpack_zl_report_numeric (Numeric, Control) ;
 
 Purpose:

@@ -12,7 +12,7 @@ int main (int argc, char **argv)
     printf ("cs_test, file: %s\n", argv [1]) ;
     for (demo = 2 ; demo <= 3 ; demo++)
     {
-        printf ("demo: %d\n", demo) ;
+        printf ("demo: %g\n", (double) demo) ;
         for (trials = 0 ; trials < 4000 ; trials++)
         {
             malloc_count = trials ;
@@ -24,7 +24,7 @@ int main (int argc, char **argv)
             free_problem (Prob) ;
             if (malloc_count > 0) break ;
         }
-        printf ("demo %d # trials: %d\n", demo, trials) ;
+        printf ("demo %g # trials: %g\n", (double) demo, (double) trials) ;
     }
     return (0) ;
 }

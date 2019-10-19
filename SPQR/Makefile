@@ -2,9 +2,9 @@
 # SuiteSparseQR Makefile
 #-------------------------------------------------------------------------------
 
-VERSION = 1.2.3
+VERSION = 1.3.0
 
-include ../UFconfig/UFconfig.mk
+include ../SuiteSparse_config/SuiteSparse_config.mk
 
 default: all
 
@@ -21,23 +21,24 @@ demos:
 cov:
 	( cd Tcov ; $(MAKE) )
 
-mex:
-	( cd MATLAB ; $(MAKE) )
-
 purge:
-	( cd MATLAB ; $(MAKE) purge )
 	( cd Lib ; $(MAKE) purge )
 	( cd Demo ; $(MAKE) purge )
 	( cd Tcov ; $(MAKE) purge )
+	( cd MATLAB ; $(RM) $(CLEAN) rename.h *.mex* )
 
 clean:
-	( cd MATLAB ; $(MAKE) clean )
 	( cd Lib ; $(MAKE) clean )
 	( cd Demo ; $(MAKE) clean )
+	( cd MATLAB ; $(RM) $(CLEAN) rename.h )
 
 distclean: purge
 
 ccode: demos
+
+# create PDF documents for the original distribution
+docs:
+	( cd Doc    ; $(MAKE) )
 
 # install SPQR
 install:

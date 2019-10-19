@@ -4,7 +4,7 @@ void mexFunction (int nargout, mxArray *pargout [ ], int nargin,
     const mxArray *pargin [ ])
 {
     cs Amatrix, *A ;
-    int order, n, drop, *p ;
+    csi order, n, drop, *p ;
     css *S ;
     csn *N ;
     if (nargout > 2 || nargin < 1 || nargin > 2)

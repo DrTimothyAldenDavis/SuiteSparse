@@ -47,7 +47,7 @@
  * diagonal that is above the main diagonal; btf always returns the matching as
  * the main diagonal (which will thus contain zeros).
  *
- * Copyright (c) 2004-2007.  Tim Davis, University of Florida,
+ * By Tim Davis.  Copyright (c) 2004-2007, University of Florida.
  * with support from Sandia National Laboratories.  All Rights Reserved.
  *
  * See also maxtrans, btf, dmperm
@@ -57,6 +57,7 @@
 
 #include "mex.h"
 #include "btf.h"
+#define Long SuiteSparse_long
 
 void mexFunction
 (
@@ -66,7 +67,7 @@ void mexFunction
     const mxArray *pargin[]
 )
 {
-    UF_long b, n, i, k, j, *Ap, *Ai, *P, *R, nblocks, *Work, *Q, jj ;
+    Long b, n, i, k, j, *Ap, *Ai, *P, *R, nblocks, *Work, *Q, jj ;
     double *Px, *Rx, *Qx ;
 
     /* ---------------------------------------------------------------------- */
@@ -85,15 +86,15 @@ void mexFunction
     }
 
     /* get sparse matrix A */
-    Ap = (UF_long *) mxGetJc (pargin [0]) ;
-    Ai = (UF_long *) mxGetIr (pargin [0]) ;
+    Ap = (Long *) mxGetJc (pargin [0]) ;
+    Ai = (Long *) mxGetIr (pargin [0]) ;
 
     /* get output arrays */
-    P = mxMalloc (n * sizeof (UF_long)) ;
-    R = mxMalloc ((n+1) * sizeof (UF_long)) ;
+    P = mxMalloc (n * sizeof (Long)) ;
+    R = mxMalloc ((n+1) * sizeof (Long)) ;
 
     /* get workspace of size 4n (recursive code only needs 2n) */
-    Work = mxMalloc (4*n * sizeof (UF_long)) ;
+    Work = mxMalloc (4*n * sizeof (Long)) ;
 
     /* get the input column permutation Q */
     if (nargin == 2)
@@ -104,7 +105,7 @@ void mexFunction
                 ("strongcomp: qin must be a permutation vector of size n") ;
         }
         Qx = mxGetPr (pargin [1]) ;
-        Q = mxMalloc (n * sizeof (UF_long)) ;
+        Q = mxMalloc (n * sizeof (Long)) ;
         /* connvert Qin to 0-based and check validity */
         for (i = 0 ; i < n ; i++)
         {
@@ -126,7 +127,7 @@ void mexFunction
     else
     {
         /* no input column permutation */
-        Q = (UF_long *) NULL ;
+        Q = (Long *) NULL ;
     }
 
     /* ---------------------------------------------------------------------- */

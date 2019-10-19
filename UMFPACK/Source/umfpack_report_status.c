@@ -3,9 +3,8 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
+/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
+/* All Rights Reserved.  See ../Doc/License for License.                      */
 /* -------------------------------------------------------------------------- */
 
 /*
@@ -111,7 +110,8 @@ GLOBAL void UMFPACK_report_status
 	    "umfpack_*_report_* routines before calling the umfpack_*\n"
 	    "computational routines.  Recompile UMFPACK with debugging\n"
 	    "enabled, and look for failed assertions.  If all else fails\n"
-	    "please report this error to Tim Davis (davis@cise.ufl.edu).\n"
+	    "please report this error to Tim Davis\n"
+            "(DrTimothyAldenDavis@gmail.com).\n"
 	    )) ;
 	    break ;
 

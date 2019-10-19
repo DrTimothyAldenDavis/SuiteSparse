@@ -10,7 +10,7 @@ void mexFunction
 {
     cs Amatrix, *A ;
     csd *D ;
-    int n, j, *Ap2 ;
+    csi n, j, *Ap2 ;
     if (nargout > 2 || nargin != 1)
     {
         mexErrMsgTxt ("Usage: [p,r] = cs_scc(A)") ;
@@ -21,7 +21,7 @@ void mexFunction
      * of A->p.  This issue does not arise in cs_dmperm, because that function
      * applies cs_scc to a submatrix C, not to A directly. */
     n = A->n ;
-    Ap2 = cs_malloc (n+1, sizeof (int)) ;
+    Ap2 = cs_malloc (n+1, sizeof (csi)) ;
     for (j = 0 ; j <= n ; j++) Ap2 [j] = A->p [j] ;
     A->p = Ap2 ;
     D = cs_scc (A) ;                                    /* find conn. comp. */

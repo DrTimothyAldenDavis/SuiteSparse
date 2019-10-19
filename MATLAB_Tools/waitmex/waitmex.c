@@ -17,7 +17,7 @@
     waitbar_destroy (h)             close (h)
     waitbar_return (h)              for returning h from a mexFunction
 
-    Tim Davis, 2007, University of Florida.
+    Copyright 2007, Timothy A. Davis, http://www.suitesparse.com
 */
 
 #include "waitmex.h"

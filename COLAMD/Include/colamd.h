@@ -10,7 +10,7 @@
     Authors:
 
 	The authors of the code itself are Stefan I. Larimore and Timothy A.
-	Davis (davis at cise.ufl.edu), University of Florida.  The algorithm was
+	Davis (DrTimothyAldenDavis@gmail.com).  The algorithm was
 	developed in collaboration with John Gilbert, Xerox PARC, and Esmond
 	Ng, Oak Ridge National Laboratory.
 
@@ -34,12 +34,8 @@
 
     Availability:
 
-	The colamd/symamd library is available at
-
-	    http://www.cise.ufl.edu/research/sparse/colamd/
-
-	This is the http://www.cise.ufl.edu/research/sparse/colamd/colamd.h
-	file.  It is required by the colamd.c, colamdmex.c, and symamdmex.c
+	The colamd/symamd library is available at http://www.suitesparse.com
+	This file is required by the colamd.c, colamdmex.c, and symamdmex.c
 	files, and by any C code that calls the routines whose prototypes are
 	listed below, or that uses the colamd/symamd definitions listed below.
 
@@ -81,11 +77,11 @@ extern "C" {
  * Versions 2.3 and earlier of COLAMD do not include a #define'd version number.
  */
 
-#define COLAMD_DATE "Dec 7, 2011"
+#define COLAMD_DATE "Jun 1, 2012"
 #define COLAMD_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
 #define COLAMD_MAIN_VERSION 2
-#define COLAMD_SUB_VERSION 7
-#define COLAMD_SUBSUB_VERSION 4
+#define COLAMD_SUB_VERSION 8
+#define COLAMD_SUBSUB_VERSION 0
 #define COLAMD_VERSION \
 	COLAMD_VERSION_CODE(COLAMD_MAIN_VERSION,COLAMD_SUB_VERSION)
 
@@ -139,8 +135,7 @@ extern "C" {
 /* === Prototypes of user-callable routines ================================= */
 /* ========================================================================== */
 
-/* define UF_long */
-#include "UFconfig.h"
+#include "SuiteSparse_config.h"
 
 size_t colamd_recommended	/* returns recommended value of Alen, */
 				/* or 0 if input arguments are erroneous */
@@ -153,9 +148,9 @@ size_t colamd_recommended	/* returns recommended value of Alen, */
 size_t colamd_l_recommended	/* returns recommended value of Alen, */
 				/* or 0 if input arguments are erroneous */
 (
-    UF_long nnz,		/* nonzeros in A */
-    UF_long n_row,		/* number of rows in A */
-    UF_long n_col		/* number of columns in A */
+    SuiteSparse_long nnz,       /* nonzeros in A */
+    SuiteSparse_long n_row,     /* number of rows in A */
+    SuiteSparse_long n_col      /* number of columns in A */
 ) ;
 
 void colamd_set_defaults	/* sets default parameters */
@@ -179,15 +174,16 @@ int colamd			/* returns (1) if successful, (0) otherwise*/
     int stats [COLAMD_STATS]	/* colamd output statistics and error codes */
 ) ;
 
-UF_long colamd_l		/* returns (1) if successful, (0) otherwise*/
+SuiteSparse_long colamd_l       /* returns (1) if successful, (0) otherwise*/
 (				/* A and p arguments are modified on output */
-    UF_long n_row,		/* number of rows in A */
-    UF_long n_col,		/* number of columns in A */
-    UF_long Alen,		/* size of the array A */
-    UF_long A [],		/* row indices of A, of size Alen */
-    UF_long p [],		/* column pointers of A, of size n_col+1 */
+    SuiteSparse_long n_row,     /* number of rows in A */
+    SuiteSparse_long n_col,     /* number of columns in A */
+    SuiteSparse_long Alen,      /* size of the array A */
+    SuiteSparse_long A [],      /* row indices of A, of size Alen */
+    SuiteSparse_long p [],      /* column pointers of A, of size n_col+1 */
     double knobs [COLAMD_KNOBS],/* parameter settings for colamd */
-    UF_long stats [COLAMD_STATS]/* colamd output statistics and error codes */
+    SuiteSparse_long stats [COLAMD_STATS]   /* colamd output statistics
+                                             * and error codes */
 ) ;
 
 int symamd				/* return (1) if OK, (0) otherwise */
@@ -206,14 +202,14 @@ int symamd				/* return (1) if OK, (0) otherwise */
     					/* mxFree (for MATLAB mexFunction) */
 ) ;
 
-UF_long symamd_l			/* return (1) if OK, (0) otherwise */
+SuiteSparse_long symamd_l               /* return (1) if OK, (0) otherwise */
 (
-    UF_long n,				/* number of rows and columns of A */
-    UF_long A [],			/* row indices of A */
-    UF_long p [],			/* column pointers of A */
-    UF_long perm [],			/* output permutation, size n_col+1 */
+    SuiteSparse_long n,                 /* number of rows and columns of A */
+    SuiteSparse_long A [],              /* row indices of A */
+    SuiteSparse_long p [],              /* column pointers of A */
+    SuiteSparse_long perm [],           /* output permutation, size n_col+1 */
     double knobs [COLAMD_KNOBS],	/* parameters (uses defaults if NULL) */
-    UF_long stats [COLAMD_STATS],	/* output statistics and error codes */
+    SuiteSparse_long stats [COLAMD_STATS],  /* output stats and error codes */
     void * (*allocate) (size_t, size_t),
     					/* pointer to calloc (ANSI C) or */
 					/* mxCalloc (for MATLAB mexFunction) */
@@ -229,7 +225,7 @@ void colamd_report
 
 void colamd_l_report
 (
-    UF_long stats [COLAMD_STATS]
+    SuiteSparse_long stats [COLAMD_STATS]
 ) ;
 
 void symamd_report
@@ -239,7 +235,7 @@ void symamd_report
 
 void symamd_l_report
 (
-    UF_long stats [COLAMD_STATS]
+    SuiteSparse_long stats [COLAMD_STATS]
 ) ;
 
 #ifndef EXTERN

@@ -3,17 +3,17 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
+/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
+/* All Rights Reserved.  See ../Doc/License for License.                      */
 /* -------------------------------------------------------------------------- */
 
 /*
     This file controls the compile-time configuration of UMFPACK.  Modify the
-    UFconfig/UFconfig.mk file and this file if necessary, to control these
-    options.  The following flags may be given as options to your C compiler
-    (as in "cc -DNSUNPERF", for example).  These flags are normally placed in
-    your UMFPACK_CONFIG string, defined in the UFconfig/UFconfig.mk file.
+    SuiteSparse_config/SuiteSparse_config.mk file and this file if necessary,
+    to control these options.  The following flags may be given as options to
+    your C compiler (as in "cc -DNSUNPERF", for example).  These flags are
+    normally placed in your UMFPACK_CONFIG string, defined in the
+    SuiteSparse_config/SuiteSparse_config.mk file.
 
     All of these options, except for the timer, are for accessing the BLAS.
 
@@ -26,29 +26,6 @@
 	    the C-callable libumfpack.a library on Sun Solaris.
 
 	-DLONGBLAS
-
-	-DNPOSIX
-
-	    If -DNPOSIX is set, then your Unix operating system is not POSIX-
-	    compliant, and the POSIX routines sysconf ( ) and times ( )
-	    routines are not used.  These routines provide CPU time and
-	    wallclock time information.  If -DNPOSIX is set, then the ANSI
-	    C clock ( ) routine is used.  If -DNPOSIX is not set, then
-	    sysconf ( ) and times ( ) are used in umfpack_tic and umfpack_toc.
-	    See umfpack_tictoc.c for more information.
-	    The default is to use the POSIX routines, except for Windows,
-	    which is not POSIX-compliant.
-
-	-DGETRUSAGE
-
-	    If -DGETRUSAGE is set, then your system's getrusage ( ) routine
-	    will be used for getting the process CPU time.  Otherwise the ANSI
-	    C clock ( ) routine will be used.  The default is to use getrusage
-	    ( ) on Unix systems, and to use clock on all other architectures.
-
-	-DNO_TIMER
-
-	    If -DNO_TIMER is set, then no timing routines are used at all.
 
 	-DNRECIPROCAL
 
@@ -155,30 +132,6 @@
 /* This mode is also used for debug mode, and if MATHWORKS is defined rather */
 /* than MATLAB_MEX_FILE. */
 #define INDEX(i) (i)
-#endif
-
-/* ========================================================================== */
-/* === Timer ================================================================ */
-/* ========================================================================== */
-
-/*
-    If you have the getrusage routine (all Unix systems I've test do), then use
-    that.  Otherwise, use the ANSI C clock function.   Note that on many
-    systems, the ANSI clock function wraps around after only 2147 seconds, or
-    about 36 minutes.  BE CAREFUL:  if you compare the run time of UMFPACK with
-    other sparse matrix packages, be sure to use the same timer.  See
-    umfpack_tictoc.c for the timer used internally by UMFPACK.  See also
-    umfpack_timer.c for the timer used in an earlier version of UMFPACK.
-    That timer is still available as a user-callable routine, but it is no
-    longer used internally by UMFPACK.
-*/
-
-/* Sun Solaris, SGI Irix, Linux, Compaq Alpha, and IBM RS 6000 all have */
-/* getrusage.  It's in BSD unix, so perhaps all unix systems have it. */
-#if defined (UMF_SOL2) || defined (UMF_SGI) || defined (UMF_LINUX) \
-|| defined (UMF_ALPHA) || defined (UMF_AIX) || defined (UMF_CYGWIN) \
-|| defined (UMF_MAC)
-#define GETRUSAGE
 #endif
 
 

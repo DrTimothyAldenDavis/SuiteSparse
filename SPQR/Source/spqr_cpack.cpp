@@ -31,13 +31,13 @@
 
 #include "spqr.hpp"
 
-template <typename Entry> Int spqr_cpack     // returns # of rows in C
+template <typename Entry> Long spqr_cpack     // returns # of rows in C
 (
     // input, not modified
-    Int m,                  // # of rows in F
-    Int n,                  // # of columns in F
-    Int npiv,               // number of pivotal columns in F
-    Int rank,               // the C block starts at F (rank,npiv)
+    Long m,                 // # of rows in F
+    Long n,                 // # of columns in F
+    Long npiv,              // number of pivotal columns in F
+    Long rank,              // the C block starts at F (rank,npiv)
 
     // input, not modified unless the pack occurs in-place
     Entry *F,               // m-by-n frontal matrix in column-major order
@@ -47,7 +47,7 @@ template <typename Entry> Int spqr_cpack     // returns # of rows in C
                             // trapezoidal form.
 )
 {
-    Int i, k, cm, cn ;
+    Long i, k, cm, cn ;
 
     // -------------------------------------------------------------------------
     // get inputs
@@ -105,13 +105,13 @@ template <typename Entry> Int spqr_cpack     // returns # of rows in C
 
 // =============================================================================
 
-template Int spqr_cpack <double>     // returns # of rows in C
+template Long spqr_cpack <double>     // returns # of rows in C
 (
     // input, not modified
-    Int m,                  // # of rows in F
-    Int n,                  // # of columns in F
-    Int npiv,               // number of pivotal columns in F
-    Int rank,               // the C block starts at F (rank,npiv)
+    Long m,                 // # of rows in F
+    Long n,                 // # of columns in F
+    Long npiv,              // number of pivotal columns in F
+    Long rank,              // the C block starts at F (rank,npiv)
 
     // input, not modified unless the pack occurs in-place
     double *F,              // m-by-n frontal matrix in column-major order
@@ -123,13 +123,13 @@ template Int spqr_cpack <double>     // returns # of rows in C
 
 // =============================================================================
 
-template Int spqr_cpack <Complex>    // returns # of rows in C
+template Long spqr_cpack <Complex>    // returns # of rows in C
 (
     // input, not modified
-    Int m,                  // # of rows in F
-    Int n,                  // # of columns in F
-    Int npiv,               // number of pivotal columns in F
-    Int rank,               // the C block starts at F (rank,npiv)
+    Long m,                 // # of rows in F
+    Long n,                 // # of columns in F
+    Long npiv,              // number of pivotal columns in F
+    Long rank,              // the C block starts at F (rank,npiv)
 
     // input, not modified unless the pack occurs in-place
     Complex *F,             // m-by-n frontal matrix in column-major order

@@ -3,9 +3,8 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
+/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
+/* All Rights Reserved.  See ../Doc/License for License.                      */
 /* -------------------------------------------------------------------------- */
 
 int umfpack_di_load_symbolic
@@ -14,7 +13,7 @@ int umfpack_di_load_symbolic
     char *filename
 ) ;
 
-UF_long umfpack_dl_load_symbolic
+SuiteSparse_long umfpack_dl_load_symbolic
 (
     void **Symbolic,
     char *filename
@@ -26,7 +25,7 @@ int umfpack_zi_load_symbolic
     char *filename
 ) ;
 
-UF_long umfpack_zl_load_symbolic
+SuiteSparse_long umfpack_zl_load_symbolic
 (
     void **Symbolic,
     char *filename
@@ -41,10 +40,10 @@ double int Syntax:
     void *Symbolic ;
     status = umfpack_di_load_symbolic (&Symbolic, filename) ;
 
-double UF_long Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    UF_long status ;
+    SuiteSparse_long status ;
     char *filename ;
     void *Symbolic ;
     status = umfpack_dl_load_symbolic (&Symbolic, filename) ;
@@ -57,10 +56,10 @@ complex int Syntax:
     void *Symbolic ;
     status = umfpack_zi_load_symbolic (&Symbolic, filename) ;
 
-complex UF_long Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    UF_long status ;
+    SuiteSparse_long status ;
     char *filename ;
     void *Symbolic ;
     status = umfpack_zl_load_symbolic (&Symbolic, filename) ;

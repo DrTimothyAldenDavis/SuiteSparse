@@ -20,7 +20,7 @@
    The total work is flops + O(n + nnz(Z)).  Since flops > n and flops > nnz(Z),
    this is O(flops).
 
-   Copyright 2011, Timothy A. Davis, University of Florida
+   Copyright 2011, Timothy A. Davis, http://www.suitesparse.com
 */
 
 Int sparseinv       /* returns -1 on error, or flop count if OK */

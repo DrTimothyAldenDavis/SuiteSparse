@@ -4,9 +4,9 @@
 
 default: libcamd.a
 
-include ../../UFconfig/UFconfig.mk
+include ../../SuiteSparse_config/SuiteSparse_config.mk
 
-C = $(CC) $(CF) -I../Include -I../../UFconfig
+C = $(CC) $(CF) -I../Include -I../../SuiteSparse_config
 
 #-------------------------------------------------------------------------------
 # source files
@@ -15,9 +15,8 @@ C = $(CC) $(CF) -I../Include -I../../UFconfig
 CAMD = camd_aat camd_1 camd_2 camd_dump camd_postorder camd_defaults \
 	camd_order camd_control camd_info camd_valid camd_preprocess
 
-UFCONFIG = ../../UFconfig/UFconfig.h
-
-INC = ../Include/camd.h ../Include/camd_internal.h $(UFCONFIG)
+INC = ../Include/camd.h ../Include/camd_internal.h \
+      ../../SuiteSparse_config/SuiteSparse_config.h
 
 #-------------------------------------------------------------------------------
 # object files for each version

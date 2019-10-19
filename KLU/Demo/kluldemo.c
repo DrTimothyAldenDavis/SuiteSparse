@@ -3,11 +3,12 @@
 /* ========================================================================== */
 
 /* Read in a Matrix Market matrix (using CHOLMOD) and solve a linear system.
- * UF_long is normally a "long", but it becomes "_int64" on Windows 64. */
+ * SuiteSparse_long is normally a "long", but it becomes "_int64" on Windows 64. */
 
 #include <math.h>
 #include <stdio.h>
 #include "klu.h"
+#define Long SuiteSparse_long
 
 /* for handling complex matrices */
 #define REAL(X,i) (X [2*(i)])
@@ -20,14 +21,14 @@
 /* === klu_l_backslash ====================================================== */
 /* ========================================================================== */
 
-static UF_long klu_l_backslash    /* return 1 if successful, 0 otherwise */
+static Long klu_l_backslash    /* return 1 if successful, 0 otherwise */
 (
     /* --- input ---- */
-    UF_long n,          /* A is n-by-n */
-    UF_long *Ap,                /* size n+1, column pointers */
-    UF_long *Ai,                /* size nz = Ap [n], row indices */
+    Long n,             /* A is n-by-n */
+    Long *Ap,           /* size n+1, column pointers */
+    Long *Ai,           /* size nz = Ap [n], row indices */
     double *Ax,         /* size nz, numerical values */
-    UF_long isreal,             /* nonzero if A is real, 0 otherwise */
+    Long isreal,        /* nonzero if A is real, 0 otherwise */
     double *B,          /* size n, right-hand-side */
 
     /* --- output ---- */
@@ -35,18 +36,18 @@ static UF_long klu_l_backslash    /* return 1 if successful, 0 otherwise */
     double *R,          /* size n, residual r = b-A*x */
 
     /* --- scalar output --- */
-    UF_long *lunz,              /* nnz (L+U+F) */
+    Long *lunz,         /* nnz (L+U+F) */
     double *rnorm,      /* norm (b-A*x,1) / norm (A,1) */
 
     /* --- workspace - */
 
-    klu_l_common *Common        /* default parameters and statistics */
+    klu_l_common *Common    /* default parameters and statistics */
 )
 {
     double anorm = 0, asum ;
     klu_l_symbolic *Symbolic ;
     klu_l_numeric *Numeric ;
-    UF_long i, j, p ;
+    Long i, j, p ;
 
     if (!Ap || !Ai || !Ax || !B || !X || !B) return (0) ;
 
@@ -208,13 +209,12 @@ static UF_long klu_l_backslash    /* return 1 if successful, 0 otherwise */
 
 /* Given a sparse matrix A, set up a right-hand-side and solve X = A\b */
 
-static void klu_l_demo (UF_long n, UF_long *Ap, UF_long *Ai, double *Ax,
-    UF_long isreal)
+static void klu_l_demo (Long n, Long *Ap, Long *Ai, double *Ax, Long isreal)
 {
     double rnorm ;
     klu_l_common Common ;
     double *B, *X, *R ;
-    UF_long i, lunz ;
+    Long i, lunz ;
 
     printf ("KLU: %s, version: %d.%d.%d\n", KLU_DATE, KLU_MAIN_VERSION,
         KLU_SUB_VERSION, KLU_SUBSUB_VERSION) ;

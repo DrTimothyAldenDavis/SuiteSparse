@@ -3,9 +3,9 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
+/* UMFPACK Copyright (c) 2005-2012 by Timothy A. Davis,                       */
+/* http://www.suitesparse.com. All Rights Reserved.  See ../Doc/License       */
+/* for License.                                                               */
 /* -------------------------------------------------------------------------- */
 
 /* Demo program for UMFPACK.  Reads in a triplet-form matrix in the

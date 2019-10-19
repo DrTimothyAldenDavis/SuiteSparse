@@ -4,7 +4,7 @@ function test23
 %   test23
 % See also cholmod_test
 
-% Copyright 2006-2007, Timothy A. Davis, University of Florida
+% Copyright 2007-2012, Timothy A. Davis, http://www.suitesparse.com
 
 fprintf ('=================================================================\n');
 fprintf ('test23: test chol & cholmod2 on the sparse matrix used in "bench"\n');

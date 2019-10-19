@@ -41,10 +41,9 @@ function [objfiles, timestamp_out] = cs_make_helper (f, docomplex)
 %
 %   See also MEX.
 
-%   Copyright 2006-2007, Timothy A. Davis.
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
-mexcmd = 'mex -DCS_LONG -I../../../UFconfig' ;
+mexcmd = 'mex -DCS_LONG -I../../../SuiteSparse_config' ;
 if (~isempty (strfind (computer, '64')))
     mexcmd = [mexcmd ' -largeArrayDims'] ;
 end

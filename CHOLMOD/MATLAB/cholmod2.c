@@ -7,7 +7,7 @@
  * The CHOLMOD/MATLAB Module is licensed under Version 2.0 of the GNU
  * General Public License.  See gpl.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
- * http://www.cise.ufl.edu/research/sparse
+ * http://www.suitesparse.com
  * MATLAB(tm) is a Trademark of The MathWorks, Inc.
  * -------------------------------------------------------------------------- */
 
@@ -62,7 +62,7 @@ void mexFunction
     cholmod_dense Bmatrix, *X, *B ;
     cholmod_factor *L ;
     cholmod_common Common, *cm ;
-    Int n, B_is_sparse, ordering, k, *Perm ;
+    Long n, B_is_sparse, ordering, k, *Perm ;
 
     /* ---------------------------------------------------------------------- */
     /* start CHOLMOD and set parameters */ 
@@ -193,7 +193,7 @@ void mexFunction
 	}
 	/* copy from double to integer, and convert to 0-based */
 	p = mxGetPr (pargin [2]) ;
-	Perm = cholmod_l_malloc (n, sizeof (Int), cm) ;
+	Perm = cholmod_l_malloc (n, sizeof (Long), cm) ;
 	for (k = 0 ; k < n ; k++)
 	{
 	    Perm [k] = p [k] - 1 ;
@@ -218,7 +218,7 @@ void mexFunction
     /* ---------------------------------------------------------------------- */
 
     L = cholmod_l_analyze_p (A, Perm, NULL, 0, cm) ;
-    cholmod_l_free (n, sizeof (Int), Perm, cm) ;
+    cholmod_l_free (n, sizeof (Long), Perm, cm) ;
     cholmod_l_factorize (A, L, cm) ;
 
     rcond = cholmod_l_rcond (L, cm) ;

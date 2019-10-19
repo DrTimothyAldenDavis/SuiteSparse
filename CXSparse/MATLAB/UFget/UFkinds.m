@@ -3,8 +3,7 @@ function kinds = UFkinds
 %
 % A problem 'kind' is the domain from which the problem arises.  Examples
 % include 'circuit simulation', 'optimization', 'least squares', and 'robotics'.
-% See http://www.cise.ufl.edu/research/sparse/matrices/kind.html for a
-% complete list.
+% See UFget/README.txt for a complete list.
 %
 % A 'kind' is related to the matrix 'Group'.  The latter is determined by
 % person, persons, or organization that created the matrix.  'Group' may also
@@ -50,7 +49,7 @@ function kinds = UFkinds
 %
 % See also UFget.
 
-% Copyright 2009, Tim Davis, University of Florida.
+% Copyright 2009-2012, Timothy A. Davis, http://www.suitesparse.com
 
 params = UFget_defaults ;
 statfile = sprintf ('%smatrices/UFstats.csv', params.topdir) ;

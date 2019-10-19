@@ -6,7 +6,6 @@
  * CCOLAMD Copyright (C), Univ. of Florida.  Authors: Timothy A. Davis,
  * Sivasankaran Rajamanickam, and Stefan Larimore
  * See License.txt for the Version 2.1 of the GNU Lesser General Public License
- * http://www.cise.ufl.edu/research/sparse
  * -------------------------------------------------------------------------- */
 
 /* Global variables for CCOLAMD */

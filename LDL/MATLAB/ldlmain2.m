@@ -6,7 +6,7 @@ function ldlmain2
 %
 % See also ldlsparse.
 
-% Copyright 2006-2007 by Timothy A. Davis, Univ. of Florida
+% Copyright 2006-2007 by Timothy A. Davis, http://www.suitesparse.com
 
 help ldlmain2
 
@@ -19,7 +19,8 @@ if (~isempty (strfind (computer, '64')))
     d = '-largeArrayDims' ;
 end
 
-mx = sprintf ('mex -O %s -DLDL_LONG -DDLONG -I../../UFconfig -I../Include', d) ;
+mx = sprintf (...
+    'mex -O %s -DLDL_LONG -DDLONG -I../../SuiteSparse_config -I../Include', d) ;
 
 % compile ldlmain without AMD
 cmd = sprintf ('%s ../Demo/ldlmain.c ../Source/ldl.c', mx) ;

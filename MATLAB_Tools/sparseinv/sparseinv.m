@@ -29,7 +29,7 @@ function [Z, Zpattern, L, D, U, P, Q, stats] = sparseinv (A)
 %
 % See also inv, lu, chol.
 
-% Copyright 2011, Timothy A. Davis, University of Florida
+% Copyright 2011, Timothy A. Davis, http://www.suitesparse.com
 
 get_stats = (nargout > 7) ;
 if (get_stats)

@@ -4,11 +4,11 @@
 
 default: libccolamd.a
 
-include ../../UFconfig/UFconfig.mk
+include ../../SuiteSparse_config/SuiteSparse_config.mk
 
-I = -I../Include -I../../UFconfig
+I = -I../Include -I../../SuiteSparse_config
 
-INC = ../Include/ccolamd.h ../../UFconfig/UFconfig.h
+INC = ../Include/ccolamd.h ../../SuiteSparse_config/SuiteSparse_config.h
 
 SRC = ../Source/ccolamd.c ../Source/ccolamd_global.c
 

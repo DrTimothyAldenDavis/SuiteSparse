@@ -6,7 +6,7 @@ default: all
 
 ccode: all
 
-include ../../UFconfig/UFconfig.mk
+include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 #-------------------------------------------------------------------------------
 # the optional Partition module requires METIS, CAMD, and CCOLAMD
@@ -30,10 +30,11 @@ endif
 #-------------------------------------------------------------------------------
 
 CLIB = ../Lib/libspqr.a \
+        ../../SuiteSparse_config/libsuitesparseconfig.a \
 	../../CHOLMOD/Lib/libcholmod.a ../../AMD/Lib/libamd.a \
-	../../COLAMD/Lib/libcolamd.a $(LIB_WITH_PARTITION) -lm
+	../../COLAMD/Lib/libcolamd.a $(LIB_WITH_PARTITION)
 
-# use the BLAS and LAPACK defined by UFconfig.mk; do not use valgrind 
+# use the BLAS and LAPACK defined by SuiteSparse_config.mk; do not use valgrind 
 FLIB = $(LAPACK) $(BLAS)
 V = 
 
@@ -41,7 +42,7 @@ V =
 # FLIB = -lgfortran -llapack_plain -lblas_plain -lg2c
 # V = valgrind --quiet
 
-all: qrdemo qrsimple qrsimplec
+all: library qrdemo qrsimple qrsimplec
 	- $(V) ./qrsimple < ../Matrix/ash219.mtx
 	- $(V) ./qrsimplec < ../Matrix/ash219.mtx
 	- $(V) ./qrsimple < ../Matrix/west0067.mtx
@@ -103,8 +104,28 @@ cdemo: qrdemoc
 	- $(V) ./qrdemoc < ../Matrix/Ragusa16.mtx
 	- $(V) ./qrdemoc < ../Matrix/young1c.mtx
 
-library:
+../Lib/libspqr.a:
 	( cd ../Lib ; $(MAKE) )
+
+../../AMD/Lib/libamd.a:
+	( cd ../../AMD ; $(MAKE) library )
+
+../../SuiteSparse_config/libsuitesparseconfig.a:
+	( cd ../../SuiteSparse_config ; $(MAKE) library )
+
+../../CHOLMOD/Lib/libcholmod.a:
+	- ( cd ../../CHOLMOD && $(MAKE) library )
+
+../../COLAMD/Lib/libcolamd.a:
+	- ( cd ../../COLAMD && $(MAKE) library )
+
+../../CCOLAMD/Lib/libccolamd.a:
+	- ( cd ../../CCOLAMD && $(MAKE) library )
+
+../../CAMD/Lib/libcamd.a:
+	- ( cd ../../CAMD && $(MAKE) library )
+
+library: $(CLIB)
 
 purge: distclean
 
@@ -119,11 +140,11 @@ INC = ../Include/spqr.hpp ../Include/SuiteSparseQR_C.h \
 	../Include/SuiteSparseQR_definitions.h \
 	../Include/SuiteSparseQR.hpp Makefile
 
-I = -I../../CHOLMOD/Include -I../../UFconfig -I../Include
+I = -I../../CHOLMOD/Include -I../../SuiteSparse_config -I../Include
 
 C = $(CXX) $(CF) $(SPQR_CONFIG) $(CONFIG) $(I)
 
-LIBS = $(CLIB) $(FLIB) $(TBB) $(RTLIB)
+LIBS = $(CLIB) $(LIB) $(FLIB) $(TBB)
 
 qrsimple: qrsimple.cpp library $(INC)
 	$(C) qrsimple.cpp -o qrsimple $(LIBS)

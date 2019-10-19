@@ -11,7 +11,7 @@ void mexFunction
     double s ;
     css *S ;
     cs Amatrix, *A ;
-    int m, n, order, *p ;
+    csi m, n, order, *p ;
     if (nargout > 7 || nargin != 1)
     {
         mexErrMsgTxt ("Usage: [vnz,rnz,parent,c,leftmost,p,q] = cs_sqr(A)") ;

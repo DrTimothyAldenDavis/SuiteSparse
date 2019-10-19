@@ -6,7 +6,7 @@ function test1 (nmat)
 % See also btf, maxtrans, strongcomp, dmperm, UFget,
 %   test1, test2, test3, test4, test5.
 
-% Copyright 2007, Timothy A. Davis, University of Florida
+% Copyright 2007, Timothy A. Davis, http://www.suitesparse.com
 
 index = UFget ;
 % f = find (index.sprank < min (index.nrows, index.ncols)) ;

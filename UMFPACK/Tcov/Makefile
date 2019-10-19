@@ -1,16 +1,14 @@
 
-include ../../UFconfig/UFconfig.mk
+include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 linux: distclean
-	./DO.linux
+	./DO.all
 
-sol: distclean
-	./DO.solaris
+clean:
+	- $(RM) -r Out/*
 
 distclean:
-	- ( cd .. ; $(MAKE) purge )
-	- ( cd ../../AMD ; $(MAKE) purge )
-	- $(RM) -r Out/*
+	- $(RM) -r Out/* cover.out
 
 purge: distclean
 

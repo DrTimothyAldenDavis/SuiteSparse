@@ -2,7 +2,7 @@ UFcollection toolbox.  Version 1.0.  Copyright (C) 2006,
 Timothy A. Davis
 UFcollection is also available under other licenses; contact authors for
 details.
-http://www.cise.ufl.edu/research/sparse
+http://www.suitesparse.com.
 
 --------------------------------------------------------------------------------
 

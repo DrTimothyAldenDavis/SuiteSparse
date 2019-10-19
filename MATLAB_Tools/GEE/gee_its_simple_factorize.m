@@ -65,8 +65,7 @@ function [A, p, rcnd] = gee_its_simple_factorize (A)
 %
 % See also: lu, rcond
 
-% Copyright 2007, Timothy A. Davis.
-% http://www.cise.ufl.edu/research/sparse
+% Copyright 2006-2007, Timothy A. Davis, http://www.suitesparse.com
 
 %-------------------------------------------------------------------------------
 % check the inputs

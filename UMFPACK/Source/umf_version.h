@@ -3,17 +3,16 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
+/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
+/* All Rights Reserved.  See ../Doc/License for License.                      */
 /* -------------------------------------------------------------------------- */
 
 /*
    Define routine names, depending on version being compiled.
 
    DINT:	double precision, int's as integers
-   DLONG:	double precision, UF_long's as integers
-   ZLONG:	complex double precision, UF_long's as integers
+   DLONG:	double precision, SuiteSparse_long's as integers
+   ZLONG:	complex double precision, SuiteSparse_long's as integers
    ZINT:	complex double precision, int's as integers
 */
 
@@ -28,7 +27,7 @@
 #endif
 
 /* -------------------------------------------------------------------------- */
-/* integer type (Int is int or UF_long) now defined in amd_internal.h */
+/* integer type (Int is int or SuiteSparse_long) defined in amd_internal.h */
 /* -------------------------------------------------------------------------- */
 
 #if defined (DLONG) || defined (ZLONG)
@@ -530,7 +529,7 @@ typedef struct
 #endif
 
 /* -------------------------------------------------------------------------- */
-/* Double precision, with UF_long's as integers */
+/* Double precision, with SuiteSparse_long's as integers */
 /* -------------------------------------------------------------------------- */
 
 #ifdef DLONG
@@ -762,7 +761,7 @@ typedef struct
 #endif
 
 /* -------------------------------------------------------------------------- */
-/* Complex double precision, with UF_long's as integers */
+/* Complex double precision, with SuiteSparse_long's as integers */
 /* -------------------------------------------------------------------------- */
 
 #ifdef ZLONG

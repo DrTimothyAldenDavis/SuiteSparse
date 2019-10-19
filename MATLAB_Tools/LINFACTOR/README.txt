@@ -1,4 +1,5 @@
 LINFACTOR factorize a matrix, or use the factors to solve Ax=b.
+Timothy A. Davis, http://www.suitesparse.com
 
 Uses LU or CHOL to factorize A, or uses a previously computed factorization to
 solve a linear system.  This function automatically selects an LU or Cholesky

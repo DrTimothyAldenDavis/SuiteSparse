@@ -13,7 +13,7 @@ all32: libs run hb fortran
 
 all64: libs run hb fortran64
 
-include ../../UFconfig/UFconfig.mk
+include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 #-------------------------------------------------------------------------------
 # the optional Partition module requires METIS, CAMD, and CCOLAMD
@@ -49,9 +49,9 @@ endif
 #-------------------------------------------------------------------------------
 
 C = $(CC) $(CF) $(UMFPACK_CONFIG) $(CONFIG1) $(CONFIG2) \
-    -I../Include -I../../AMD/Include -I../../UFconfig
+    -I../Include -I../../AMD/Include -I../../SuiteSparse_config
 
-INC = ../Include/umfpack.h ../../AMD/Include/amd.h ../../UFconfig/UFconfig.h
+INC = ../Include/umfpack.h ../../AMD/Include/amd.h ../../SuiteSparse_config/SuiteSparse_config.h
 
 LIBS = $(BLAS) $(XERBLA) $(LIB) $(LIB_WITH_CHOLMOD) $(LIB_WITH_PARTITION)
 
@@ -60,6 +60,9 @@ LIBS = $(BLAS) $(XERBLA) $(LIB) $(LIB_WITH_CHOLMOD) $(LIB_WITH_PARTITION)
 
 ../../AMD/Lib/libamd.a:
 	( cd ../../AMD ; $(MAKE) library )
+
+../../SuiteSparse_config/libsuitesparseconfig.a:
+	( cd ../../SuiteSparse_config ; $(MAKE) library )
 
 ../../CHOLMOD/Lib/libcholmod.a:
 	- ( cd ../../CHOLMOD && $(MAKE) library )
@@ -78,7 +81,8 @@ $(METIS):
 	( cd $(METIS_PATH) && $(MAKE) )
 
 UMFPACK = ../Lib/libumfpack.a ../../AMD/Lib/libamd.a \
-    $(WITH_CHOLMOD) $(WITH_PARTITION)
+    ../../SuiteSparse_config/libsuitesparseconfig.a \
+    $(LIB_WITH_CHOLMOD) $(LIB_WITH_PARTITION)
 
 libs: $(UMFPACK)
 
@@ -108,7 +112,7 @@ umfpack_di_demo.c: umfpack_xx_demo.c umfpack_di_demo.sed
 umfpack_di_demo: umfpack_di_demo.c $(INC) $(UMFPACK)
 	$(C) -o umfpack_di_demo umfpack_di_demo.c $(UMFPACK) $(LIBS)
 
-# double-precision, UF_long verion:
+# double-precision, SuiteSparse_long verion:
 umfpack_dl_demo.c: umfpack_xx_demo.c umfpack_dl_demo.sed
 	- sed -f umfpack_dl_demo.sed < umfpack_xx_demo.c > umfpack_dl_demo.c
 
@@ -122,7 +126,7 @@ umfpack_zi_demo.c: umfpack_xx_demo.c umfpack_zi_demo.sed
 umfpack_zi_demo: umfpack_zi_demo.c $(INC) $(UMFPACK)
 	$(C) -o umfpack_zi_demo umfpack_zi_demo.c $(UMFPACK) $(LIBS)
 
-# complex, UF_long verion:
+# complex, SuiteSparse_long verion:
 umfpack_zl_demo.c: umfpack_xx_demo.c umfpack_zl_demo.sed
 	- sed -f umfpack_zl_demo.sed < umfpack_xx_demo.c > umfpack_zl_demo.c
 

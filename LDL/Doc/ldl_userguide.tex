@@ -15,10 +15,8 @@
 
 \title{User Guide for LDL, a concise sparse Cholesky package}
 \author{Timothy A. Davis\thanks{
-Dept.~of Computer and Information Science and Engineering,
-Univ.~of Florida, Gainesville, FL, USA.
-email: davis@cise.ufl.edu.
-http://www.cise.ufl.edu/$\sim$davis.
+email: DrTimothyAldenDavis@gmail.com,
+http://www.suitesparse.com.
 This work was supported by the National
 Science Foundation, under grant CCR-0203270.
 Portions of the work were done while on sabbatical at Stanford University
@@ -26,7 +24,7 @@ and Lawrence Berkeley National Laboratory (with funding from Stanford
 University and the SciDAC program).
 }}
 
-\date{VERSION 2.0.4, Dec 7, 2011}
+\date{VERSION 2.1.0, Jun 1, 2012}
 
 \maketitle
 
@@ -475,7 +473,7 @@ void ldl_ltsolve
 \end{figure}
 
 In addition to appearing as a Collected Algorithm of the ACM \cite{Davis05},
-{\tt LDL} is available at http://www.cise.ufl.edu/research/sparse.
+{\tt LDL} is available at http://www.suitesparse.com.
 
 %-------------------------------------------------------------------------------
 \section{Using LDL in MATLAB}
@@ -563,7 +561,7 @@ passing it {\tt ldl\_symbolic} and {\tt ldl\_numeric}.
 An additional set of routines is available for use in a 64-bit environment.
 Each routine name changes uniformly; {\tt ldl\_symbolic} becomes
 {\tt ldl\_l\_symbolic}, and each {\tt int} parameter becomes type
-{\tt UF\_long}.  The {\tt UF\_long} type is {\tt long}, except for
+{\tt SuiteSparse\_long}.  The {\tt SuiteSparse\_long} type is {\tt long}, except for
 Microsoft Windows 64, where it becomes {\tt \_\_int64}.
 
 \begin{figure}

@@ -3,7 +3,8 @@
 /* ========================================================================== */
 
 /* UFcollection: a MATLAB toolbox for managing the UF Sparse Matrix Collection.
- * Copyright (c) 2007, Timothy A. Davis, Univ. Florida.  */
+ * Copyright 2007, Timothy A. Davis, http://www.suitesparse.com
+ */
 
 /* ========================================================================== */
 

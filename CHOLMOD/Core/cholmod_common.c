@@ -8,7 +8,6 @@
  * The CHOLMOD/Core Module is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
- * http://www.cise.ufl.edu/research/sparse
  * -------------------------------------------------------------------------- */
 
 /* Core utility routines for the cholmod_common object:
@@ -177,10 +176,40 @@ int CHOLMOD(start)
 
     for (k = 0 ; k < 4  ; k++) Common->SPQR_xstat [k] = 0 ;
     for (k = 0 ; k < 10 ; k++) Common->SPQR_istat [k] = 0 ;
+
+    for (k = 0 ; k < 10 ; k++) Common->other1 [k] = 0 ;
+    for (k = 0 ; k < 6  ; k++) Common->other2 [k] = 0 ;
+    for (k = 0 ; k < 10 ; k++) Common->other3 [k] = 0 ;
+    for (k = 0 ; k < 16 ; k++) Common->other4 [k] = 0 ;
+    for (k = 0 ; k < 16 ; k++) Common->other5 [k] = (void *) NULL ;
+
     Common->SPQR_grain = 1 ;    /* no Intel TBB multitasking, by default */
     Common->SPQR_small = 1e6 ;  /* target min task size for TBB */
     Common->SPQR_shrink = 1 ;   /* controls SPQR shrink realloc */
     Common->SPQR_nthreads = 0 ; /* 0: let TBB decide how many threads to use */
+
+    /* ---------------------------------------------------------------------- */
+    /* GPU initializations */
+    /* ---------------------------------------------------------------------- */
+
+#ifdef GPU_BLAS
+    Common->cublasHandle = NULL ;
+    Common->cudaStreamSyrk = NULL ;
+    Common->cudaStreamGemm = NULL ;
+    Common->cudaStreamTrsm = NULL ;
+    Common->cudaStreamPotrf [0] = NULL ;
+    Common->cudaStreamPotrf [1] = NULL ;
+    Common->cudaStreamPotrf [2] = NULL ;
+    Common->cublasEventPotrf [0] = NULL ;
+    Common->cublasEventPotrf [2] = NULL ;
+    Common->HostPinnedMemory = NULL ;
+    Common->devPotrfWork = NULL ;
+    Common->devSyrkGemmPtrLx = NULL ;
+    Common->devSyrkGemmPtrC = NULL ;
+    Common->GemmUsed = 0 ;
+    Common->SyrkUsed = 0 ;
+    Common->syrkStart = 0 ;
+#endif
 
     DEBUG_INIT ("cholmod start", Common) ;
     return (TRUE) ;
@@ -547,7 +576,7 @@ int CHOLMOD(free_work)
  * workspace: Flag (nrow).  Does not modify Flag if nrow is zero.
  */
 
-UF_long CHOLMOD(clear_flag)
+SuiteSparse_long CHOLMOD(clear_flag)
 (
     cholmod_common *Common
 )

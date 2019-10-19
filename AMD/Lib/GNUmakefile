@@ -4,9 +4,9 @@
 
 default: libamd.a
 
-include ../../UFconfig/UFconfig.mk
+include ../../SuiteSparse_config/SuiteSparse_config.mk
 
-C = $(CC) $(CF) -I../Include -I../../UFconfig
+C = $(CC) $(CF) -I../Include -I../../SuiteSparse_config
 
 #-------------------------------------------------------------------------------
 # source files
@@ -15,9 +15,9 @@ C = $(CC) $(CF) -I../Include -I../../UFconfig
 AMD = amd_aat amd_1 amd_2 amd_dump amd_postorder amd_post_tree amd_defaults \
 	amd_order amd_control amd_info amd_valid amd_preprocess
 
-UFCONFIG = ../../UFconfig/UFconfig.h
+CONFIG = ../../SuiteSparse_config/SuiteSparse_config.h
 
-INC = ../Include/amd.h ../Include/amd_internal.h $(UFCONFIG)
+INC = ../Include/amd.h ../Include/amd_internal.h $(CONFIG)
 
 #-------------------------------------------------------------------------------
 # object files for each version

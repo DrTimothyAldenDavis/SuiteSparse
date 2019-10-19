@@ -8,9 +8,9 @@
 
 default: everything
 
-include ../../UFconfig/UFconfig.mk
+include ../../SuiteSparse_config/SuiteSparse_config.mk
 
-C = $(CC) $(CF) -I../Include -I../../UFconfig
+C = $(CC) $(CF) -I../Include -I../../SuiteSparse_config
 
 everything:
 	$(C) -DDINT -c ../Source/amd_aat.c -o amd_i_aat.o

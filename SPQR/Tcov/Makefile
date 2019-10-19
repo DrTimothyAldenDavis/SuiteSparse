@@ -12,7 +12,7 @@ valgrind: $(METIS) vgo
 
 ccode: all
 
-include ../../UFconfig/UFconfig.mk
+include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 # without SuiteSparseQR_expert.cpp functions:
 CF = -DNEXPERT \
@@ -42,6 +42,7 @@ CLIB =  ../../CHOLMOD/Lib/libcholmod.a \
 	../../COLAMD/Lib/libcolamd.a \
 	../../CCOLAMD/Lib/libccolamd.a \
         ../../CAMD/Lib/libcamd.a \
+        ../../SuiteSparse_config/libsuitesparseconfig.a \
         $(METIS)
 
 all: qrtest
@@ -106,11 +107,11 @@ OBJ = \
 
 $(OBJ): $(INC)
 
-I = -I../../CHOLMOD/Include -I../../UFconfig -I../Include
+I = -I../../CHOLMOD/Include -I../../SuiteSparse_config -I../Include
 
 C = $(CXX) $(CF) $(I) $(SPQR_CONFIG)
 
-LIBS = $(CLIB) $(FLIB) $(RTLIB)
+LIBS = $(CLIB) $(FLIB) $(LIB)
 
 qrtestc.o: qrtestc.c $(INC)
 	$(CC) $(CF) $(I) -c $<
@@ -258,17 +259,19 @@ $(METIS):
 	( cd ../../metis-4.0/Lib && $(MAKE) )
 
 ../../CHOLMOD/Lib/libcholmod.a:
-	( cd ../../CHOLMOD && $(MAKE) lib )
+	( cd ../../CHOLMOD && $(MAKE) library )
 
 ../../AMD/Lib/libamd.a:
-	( cd ../../AMD && $(MAKE) lib )
+	( cd ../../AMD && $(MAKE) library )
 
 ../../COLAMD/Lib/libcolamd.a:
-	( cd ../../COLAMD && $(MAKE) lib )
+	( cd ../../COLAMD && $(MAKE) library )
 
 ../../CCOLAMD/Lib/libccolamd.a:
-	( cd ../../CCOLAMD && $(MAKE) lib )
+	( cd ../../CCOLAMD && $(MAKE) library )
 
 ../../CAMD/Lib/libcamd.a:
-	( cd ../../CAMD && $(MAKE) lib )
+	( cd ../../CAMD && $(MAKE) library )
 
+../../SuiteSparse_config/libsuitesparseconfig.a:
+	( cd ../../SuiteSparse_config ; $(MAKE) library )

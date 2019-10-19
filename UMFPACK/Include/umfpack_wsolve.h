@@ -3,9 +3,8 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
+/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
+/* All Rights Reserved.  See ../Doc/License for License.                      */
 /* -------------------------------------------------------------------------- */
 
 int umfpack_di_wsolve
@@ -23,18 +22,18 @@ int umfpack_di_wsolve
     double W [ ]
 ) ;
 
-UF_long umfpack_dl_wsolve
+SuiteSparse_long umfpack_dl_wsolve
 (
-    UF_long sys,
-    const UF_long Ap [ ],
-    const UF_long Ai [ ],
+    SuiteSparse_long sys,
+    const SuiteSparse_long Ap [ ],
+    const SuiteSparse_long Ai [ ],
     const double Ax [ ],
     double X [ ],
     const double B [ ],
     void *Numeric,
     const double Control [UMFPACK_CONTROL],
     double Info [UMFPACK_INFO],
-    UF_long Wi [ ],
+    SuiteSparse_long Wi [ ],
     double W [ ]
 ) ;
 
@@ -53,18 +52,18 @@ int umfpack_zi_wsolve
     double W [ ]
 ) ;
 
-UF_long umfpack_zl_wsolve
+SuiteSparse_long umfpack_zl_wsolve
 (
-    UF_long sys,
-    const UF_long Ap [ ],
-    const UF_long Ai [ ],
+    SuiteSparse_long sys,
+    const SuiteSparse_long Ap [ ],
+    const SuiteSparse_long Ai [ ],
     const double Ax [ ], const double Az [ ],
     double Xx [ ],	 double Xz [ ],
     const double Bx [ ], const double Bz [ ],
     void *Numeric,
     const double Control [UMFPACK_CONTROL],
     double Info [UMFPACK_INFO],
-    UF_long Wi [ ],
+    SuiteSparse_long Wi [ ],
     double W [ ]
 ) ;
 
@@ -78,11 +77,11 @@ double int Syntax:
     status = umfpack_di_wsolve (sys, Ap, Ai, Ax, X, B, Numeric,
 	Control, Info, Wi, W) ;
 
-double UF_long Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Numeric ;
-    UF_long status, *Ap, *Ai, *Wi, sys ;
+    SuiteSparse_long status, *Ap, *Ai, *Wi, sys ;
     double *B, *X, *Ax, *W, Info [UMFPACK_INFO], Control [UMFPACK_CONTROL] ;
     status = umfpack_dl_wsolve (sys, Ap, Ai, Ax, X, B, Numeric,
 	Control, Info, Wi, W) ;
@@ -97,11 +96,11 @@ complex int Syntax:
     status = umfpack_zi_wsolve (sys, Ap, Ai, Ax, Az, Xx, Xz, Bx, Bz, Numeric,
 	Control, Info, Wi, W) ;
 
-complex UF_long Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Numeric ;
-    UF_long status, *Ap, *Ai, *Wi, sys ;
+    SuiteSparse_long status, *Ap, *Ai, *Wi, sys ;
     double *Bx, *Bz, *Xx, *Xz, *Ax, *Az, *W,
 	Info [UMFPACK_INFO], Control [UMFPACK_CONTROL] ;
     status = umfpack_zl_wsolve (sys, Ap, Ai, Ax, Az, Xx, Xz, Bx, Bz, Numeric,

@@ -2,7 +2,7 @@ classdef factorization_chol_dense < factorization
 %FACTORIZATION_CHOL_DENSE A = R'*R where A is full and symmetric pos. def.
 % Adds an extra method, cholupdate, which acts just like the builtin cholupdate.
 
-% Copyright 2011, Timothy A. Davis, University of Florida.
+% Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
 
     methods
 

@@ -10,25 +10,45 @@ function RBmake
 %
 % Copyright 2009, Timothy A. Davis
 
+mexcmd = ['mex -O %s %s RBerror.c ../Source/RBio.c ' ...
+    '../../SuiteSparse_config/SuiteSparse_config.c ' ...
+    '-I../../SuiteSparse_config -I../Include'] ;
+mexcmd = strrep (mexcmd, '/', filesep) ;
+
+try
+    % ispc does not appear in MATLAB 5.3
+    pc = ispc ;
+    mac = ismac ;
+catch
+    % if ispc fails, assume we are on a Windows PC if it's not unix
+    pc = ~isunix ;
+    mac = 0 ;
+end
+
+if (~(pc || mac))
+    % for POSIX timing routine
+    mexcmd = [mexcmd ' -lrt'] ;
+end
+
+files = { 'RBread.c', 'RBwrite.c', 'RBraw.c', 'RBtype.c' } ;
+n = length (files) ;
+
 if (~isempty (strfind (computer, '64')))
     try
         % try with -largeArrayDims (will fail on old MATLAB versions)
-        mex -O -largeArrayDims RBread.c  RBerror.c ../Source/RBio.c ../../UFconfig/UFconfig.c -I../../UFconfig -I../Include
-        mex -O -largeArrayDims RBwrite.c RBerror.c ../Source/RBio.c ../../UFconfig/UFconfig.c -I../../UFconfig -I../Include
-        mex -O -largeArrayDims RBraw.c   RBerror.c ../Source/RBio.c ../../UFconfig/UFconfig.c -I../../UFconfig -I../Include
-        mex -O -largeArrayDims RBtype.c  RBerror.c ../Source/RBio.c ../../UFconfig/UFconfig.c -I../../UFconfig -I../Include
+        for k = 1:n
+            eval (sprintf (mexcmd, '-largeArrayDims', files {k})) ;
+        end
     catch %#ok<CTCH>
         % try without -largeArrayDims (will fail on recent MATLAB versions)
-        mex -O RBread.c  RBerror.c ../Source/RBio.c ../../UFconfig/UFconfig.c -I../../UFconfig -I../Include
-        mex -O RBwrite.c RBerror.c ../Source/RBio.c ../../UFconfig/UFconfig.c -I../../UFconfig -I../Include
-        mex -O RBraw.c   RBerror.c ../Source/RBio.c ../../UFconfig/UFconfig.c -I../../UFconfig -I../Include
-        mex -O RBtype.c  RBerror.c ../Source/RBio.c ../../UFconfig/UFconfig.c -I../../UFconfig -I../Include
+        for k = 1:n
+            eval (sprintf (mexcmd, '', files {k})) ;
+        end
     end
 else
-    mex -O RBread.c  RBerror.c ../Source/RBio.c ../../UFconfig/UFconfig.c -I../../UFconfig -I../Include
-    mex -O RBwrite.c RBerror.c ../Source/RBio.c ../../UFconfig/UFconfig.c -I../../UFconfig -I../Include
-    mex -O RBraw.c   RBerror.c ../Source/RBio.c ../../UFconfig/UFconfig.c -I../../UFconfig -I../Include
-    mex -O RBtype.c  RBerror.c ../Source/RBio.c ../../UFconfig/UFconfig.c -I../../UFconfig -I../Include
+    for k = 1:n
+        eval (sprintf (mexcmd, '', files {k})) ;
+    end
 end
 
 fprintf ('RBio successfully compiled.\n') ;

@@ -57,7 +57,7 @@ function Problem = UFread (directory, tmp)
 % Optionally uses the CHOLMOD mread mexFunction, for reading Problems in
 % Matrix Market format.
 
-% Copyright 2006-2007, Timothy A. Davis, Univ. of Florida
+% Copyright 2006-2007, Timothy A. Davis, http://www.suitesparse.com
 
 %-------------------------------------------------------------------------------
 % determine the Problem name from the directory name

@@ -19,8 +19,7 @@ function [p, q, r, s] = cs_scc2 (A, bipartite)
 %
 %   See also CS_DMPERM, DMPERM, CS_SCC, CCSPY.
 
-%   Copyright 2006-2007, Timothy A. Davis.
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
 [m n] = size (A) ;
 if (nargin < 2)

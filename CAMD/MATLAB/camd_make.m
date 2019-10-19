@@ -6,8 +6,7 @@ function camd_make
 %
 % See also camd.
 
-% Copyright 1994-2007, Tim Davis, University of Florida,
-% Patrick R. Amestoy, Iain S. Duff, and Yanqing Chen.
+% Copyright 1994-2007, Tim Davis, Patrick R. Amestoy, Iain S. Duff, and Y. Chen.
 
 details = 0 ;	    % 1 if details of each command are to be printed
 
@@ -16,7 +15,8 @@ if (~isempty (strfind (computer, '64')))
     d = '-largeArrayDims' ;
 end
 
-i = sprintf ('-I..%sInclude -I..%s..%sUFconfig', filesep, filesep, filesep) ;
+i = sprintf ('-I..%sInclude -I..%s..%sSuiteSparse_config', ...
+    filesep, filesep, filesep) ;
 cmd = sprintf ('mex -O %s -DDLONG -output camd %s camd_mex.c', d, i) ;
 files = {'camd_order', 'camd_dump', 'camd_postorder', ...
     'camd_aat', 'camd_2', 'camd_1', 'camd_defaults', 'camd_control', ...

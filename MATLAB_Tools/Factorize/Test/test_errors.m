@@ -6,7 +6,7 @@ function test_errors
 %
 % See also test_all, factorize.
 
-% Copyright 2011, Timothy A. Davis, University of Florida.
+% Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
 
 fprintf ('\nTesting error handling (error messages are expected)\n\n') ;
 reset_rand ;

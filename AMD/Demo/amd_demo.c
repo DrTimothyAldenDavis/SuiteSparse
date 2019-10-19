@@ -5,8 +5,7 @@
 /* ------------------------------------------------------------------------- */
 /* AMD Copyright (c) by Timothy A. Davis,				     */
 /* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
-/* email: davis at cise.ufl.edu    CISE Department, Univ. of Florida.        */
-/* web: http://www.cise.ufl.edu/research/sparse/amd                          */
+/* DrTimothyAldenDavis@gmail.com, http://www.suitesparse.com                 */
 /* ------------------------------------------------------------------------- */
 
 /* A simple C main program that illustrates the use of the ANSI C interface
@@ -58,8 +57,8 @@ int main (void)
     /* here is an example of how to use AMD_VERSION.  This code will work in
      * any version of AMD. */
 #if defined(AMD_VERSION) && (AMD_VERSION >= AMD_VERSION_CODE(1,2))
-    printf ("AMD version %d.%d, date: %s\n", AMD_MAIN_VERSION, AMD_SUB_VERSION,
-	    AMD_DATE) ;
+    printf ("AMD version %d.%d.%d, date: %s\n",
+        AMD_MAIN_VERSION, AMD_SUB_VERSION, AMD_SUBSUB_VERSION, AMD_DATE) ;
 #else
     printf ("AMD version: 1.1 or earlier\n") ;
 #endif

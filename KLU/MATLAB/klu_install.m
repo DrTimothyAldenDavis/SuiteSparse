@@ -14,7 +14,7 @@ function klu_install (metis_path)
 %
 % See also klu, btf
 
-% Copyright 2004-2009 Timothy A. Davis, Univ. of Florida
+% Copyright 2004-2009, Univ. of Florida
 
 if (nargin < 1)
     metis_path = ['no metis'] ;

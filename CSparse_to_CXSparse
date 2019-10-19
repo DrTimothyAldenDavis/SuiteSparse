@@ -1,7 +1,7 @@
 #! /usr/bin/perl
 # Constructs the CXSparse package from CSparse, adding four different sets of
-# functions (int/UF_long, and double/complex).  Backward compatible with
-# CSparse.  No MATLAB interface is provided for CXSparse, however.
+# functions (int/cs_long_t, and double/complex).  Backward compatible
+# with CSparse.  No MATLAB interface is provided for CXSparse, however.
 #
 # To create CXSparse from CSparse, the ./CXSparse directory should not (yet)
 # exist.  Use the following commands, where CSparse is the CSparse directory:
@@ -10,11 +10,11 @@
 #   cd CXSparse/Demo
 #   make > cs_demo.out
 #
-# Alternatively, use "make cx", using the UFsparse/Makefile, while in the
-# UFsparse directory.
+# Alternatively, use "make cx" in the SuiteSparse directory.
 #
-# Created by David Bateman, Feb. 2006, David dot Bateman atsign motorola
-# dot com.  Modified by Tim Davis, Aug 23, 2006.
+# Created by David Bateman, Feb. 2006, David dot Bateman atsign motorola dot
+# com, and released by him to Tim Davis' copyright.  Modified by Tim Davis,
+# 2006-2012, http://www.suitesparse.com.
 
 use strict;
 use Cwd;
@@ -52,16 +52,37 @@ my @demo_files = ('demo1.c', 'demo2.c', 'demo3.c', 'demo.c', 'demo.h') ;
 
 foreach my $fff ( @demo_files )
 {
-    my $infile  = sprintf ("%s/Demo/cs_%s", $out_dir, $fff) ;
+    my $infile  = sprintf ("%s/Demo/cs_%s", $in_dir, $fff) ;
 
-    # create di version
-    my $outfile = sprintf ("%s/Demo/cs_di_%s", $out_dir, $fff) ;
+    # create the plain version
+    my $outfile = sprintf ("%s/Demo/cs_%s", $out_dir, $fff) ;
+    printf ("%s to %s\n", $infile, $outfile) ;
     if (open (OUT, ">$outfile"))
     {
 	if (open (IN, $infile))
 	{
 	    while (<IN>)
 	    {
+		# change csi to int
+		s/\bcsi\b/int/g;
+		print OUT $_;
+	    }
+	    close (IN);
+	}
+	close (OUT);
+    }
+
+    # create di version
+    my $outfile = sprintf ("%s/Demo/cs_di_%s", $out_dir, $fff) ;
+    printf ("%s to %s\n", $infile, $outfile) ;
+    if (open (OUT, ">$outfile"))
+    {
+	if (open (IN, $infile))
+	{
+	    while (<IN>)
+	    {
+		# change csi to int
+		s/\bcsi\b/int/g;
 		# change all "cs*" names to "cs_di*", except #include "cs.h"
 		s/\bcs/cs_di/g ;
 		s/cs_di\.h/cs.h/ ;
@@ -74,20 +95,19 @@ foreach my $fff ( @demo_files )
 
     # create dl version
     my $outfile = sprintf ("%s/Demo/cs_dl_%s", $out_dir, $fff) ;
+    printf ("%s to %s\n", $infile, $outfile) ;
     if (open (OUT, ">$outfile"))
     {
 	if (open (IN, $infile))
 	{
 	    while (<IN>)
 	    {
+		# change csi to cs_long_t
+		s/\bcsi\b/cs_long_t/g;
 		# change all "cs*" names to "cs_dl*", except #include "cs.h"
 		s/\bcs/cs_dl/g ;
+		s/cs_dl_long_t/cs_long_t/g;
 		s/cs_dl\.h/cs.h/ ;
-		# change int to UF_long, except for "int main"
-		s/\bint\b/UF_long/g;
-		s/UF_long main/int main/;
-		# change %d to %ld in printf and scanf
-		s/\%d/\%ld/g;
 		print OUT $_;
 	    }
 	    close (IN);
@@ -97,14 +117,18 @@ foreach my $fff ( @demo_files )
 
     # create ci version
     my $outfile = sprintf ("%s/Demo/cs_ci_%s", $out_dir, $fff) ;
+    printf ("%s to %s\n", $infile, $outfile) ;
     if (open (OUT, ">$outfile"))
     {
 	if (open (IN, $infile))
 	{
 	    while (<IN>)
 	    {
+		# change csi to int
+		s/\bcsi\b/int/g;
 		# change all "cs*" names to "cs_ci*", except #include "cs.h"
 		s/\bcs/cs_ci/g ;
+		s/cs_ci_long_t/cs_long_t/g;
 		s/cs_ci\.h/cs.h/ ;
 		# fabs becomes cabs
 		s/fabs/cabs/g;
@@ -133,20 +157,19 @@ foreach my $fff ( @demo_files )
 
     # create cl version
     my $outfile = sprintf ("%s/Demo/cs_cl_%s", $out_dir, $fff) ;
+    printf ("%s to %s\n", $infile, $outfile) ;
     if (open (OUT, ">$outfile"))
     {
 	if (open (IN, $infile))
 	{
 	    while (<IN>)
 	    {
+		# change csi to cs_long_t
+		s/\bcsi\b/cs_long_t/g;
 		# change all "cs*" names to "cs_cl*", except #include "cs.h"
 		s/\bcs/cs_cl/g ;
+		s/cs_cl_long_t/cs_long_t/g;
 		s/cs_cl\.h/cs.h/ ;
-		# change int to UF_long, except for "int main"
-		s/\bint\b/UF_long/g;
-		s/UF_long main/int main/;
-		# change %d to %ld in printf and scanf
-		s/\%d/\%ld/g;
 		# fabs becomes cabs
 		s/fabs/cabs/g;
 		# change double to cs_complex_t
@@ -174,7 +197,7 @@ foreach my $fff ( @demo_files )
 }
 
 #-------------------------------------------------------------------------------
-# Convert Source/*.c files (except cs_house.c)
+# Convert Source/*.c files (except cs_house.c, cs_print.c, and cs_load.c)
 #-------------------------------------------------------------------------------
 
 # note that cs.h, cs_house.c, cs_updown.c, ...
@@ -184,11 +207,11 @@ my @src_files = ('Source/cs_add.c', 'Source/cs_amd.c', 'Source/cs_chol.c',
     'Source/cs_dfs.c', 'Source/cs_dmperm.c', 'Source/cs_droptol.c',
     'Source/cs_dropzeros.c', 'Source/cs_dupl.c', 'Source/cs_entry.c',
     'Source/cs_etree.c', 'Source/cs_fkeep.c', 'Source/cs_gaxpy.c',
-    'Source/cs_happly.c', 'Source/cs_ipvec.c', 'Source/cs_load.c',
+    'Source/cs_happly.c', 'Source/cs_ipvec.c',
     'Source/cs_lsolve.c', 'Source/cs_ltsolve.c', 'Source/cs_lu.c',
     'Source/cs_lusol.c', 'Source/cs_malloc.c', 'Source/cs_maxtrans.c',
     'Source/cs_multiply.c', 'Source/cs_norm.c', 'Source/cs_permute.c',
-    'Source/cs_pinv.c', 'Source/cs_post.c', 'Source/cs_print.c',
+    'Source/cs_pinv.c', 'Source/cs_post.c',
     'Source/cs_pvec.c', 'Source/cs_qr.c', 'Source/cs_qrsol.c',
     'Source/cs_scatter.c', 'Source/cs_scc.c', 'Source/cs_schol.c',
     'Source/cs_sqr.c', 'Source/cs_symperm.c', 'Source/cs_tdfs.c',
@@ -217,12 +240,8 @@ foreach my $file ( @src_files )
 		# fabs becomes CS_ABS
 		s/fabs/CS_ABS/g;
 
-		# change int to CS_INT
-		s/\bint\b/CS_INT/g;
-
-		# change %d to "CS_ID" in printf and scanf (except version #'s)
-		s/\%d/"CS_ID"/g;
-		s/"CS_ID"\."CS_ID"\."CS_ID"/%d.%d.%d/;
+		# change csi to CS_INT
+		s/\bcsi\b/CS_INT/g;
 
 		# change double to CS_ENTRY
 		s/\bdouble\b/CS_ENTRY/g;
@@ -236,10 +255,6 @@ foreach my $file ( @src_files )
 
 		# local variable declarations that stay double
 		s/,  / ;\n    double / ;
-
-		# nargin and nargout stay "int" for MATLAB mexFunctions
-		s/CS_INT nargin/int nargin/;
-		s/CS_INT nargout/int nargout/;
 
 		#---------------------------------------------------------------
 		# Special cases.  Some undo changes made above.
@@ -316,20 +331,6 @@ foreach my $file ( @src_files )
 		if ($fbase =~ /cs_utsolve/)
 		{
 		    s/(Ux \[.*?\])(\s+[\*;])/CS_CONJ ($1)$2/;
-		}
-
-		# cs_load
-		if ($fbase =~ /cs_load/)
-		{
-		    s/CS_ENTRY x ;/double x ;\n#ifdef CS_COMPLEX\n    double xi ;\n#endif/ ;
-		    s/^(\s*while.*)%lg(.*)&x\) == 3(.*)$/#ifdef CS_COMPLEX\n$1%lg %lg$2&x, &xi) == 4$3\n#else\n$1%lg$2&x) == 3$3\n#endif/;
-		    s/(.*cs_entry.*), x(.*)$/#ifdef CS_COMPLEX\n$1, x + xi*I$2\n#else\n$1, x$2\n#endif/
-		}
-
-		# cs_print
-		if ($fbase =~ /cs_print/)
-		{
-		    s/^(.*)%g(.*)Ax\s*\?\s*Ax\s*\[p\]\s*:\s*1(.*)/#ifdef CS_COMPLEX\n$1(%g, %g)$2\n\t\t    Ax ? CS_REAL (Ax [p]) : 1, Ax ? CS_IMAG (Ax [p]) : 0$3\n#else\n$1%g$2Ax ? Ax [p] : 1$3\n#endif/;
 		}
 
 		print OUT $_;

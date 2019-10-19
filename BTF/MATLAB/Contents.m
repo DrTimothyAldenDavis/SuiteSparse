@@ -17,4 +17,4 @@
 %   [p,q,r] = btf (A)
 %   [p,r] = strongcomp (A)
 
-% Copyright 2004-2007, Tim Davis, University of Florida
+% Copyright 2004-2007, University of Florida

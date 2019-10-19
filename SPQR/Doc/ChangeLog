@@ -1,3 +1,10 @@
+Jun 1, 2012: version 1.3.0
+
+    * changed from UFconfig to SuiteSparse_config
+    * removed -DTIMING option.  Timing is now enabled by default.
+    * added SuiteSparse_tic, SuiteSparse_toc, SuiteSparse_time timing functions
+    * spqr_time removed (use SuiteSparse_time instead)
+
 Dec 7, 2011: version 1.2.3
 
     * fixed the Makefile to better align with CFLAGS and other standards

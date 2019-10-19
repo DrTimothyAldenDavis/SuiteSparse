@@ -60,7 +60,7 @@ function F = factorize (A,strategy,burble)
 %                   rank-deficient matrices, as long as it correctly estimates
 %                   the rank.  If the rank is ill-defined, use the SVD instead.
 %                   Sparse COD requires the SPQR package to be installed
-%                   (see http://www.cise.ufl.edu/research/sparse/SuiteSparse).
+%                   (see http://www.suitesparse.com).
 %
 %   'qr'        use QR.  Reports a warning if A is singular.
 %
@@ -81,7 +81,7 @@ function F = factorize (A,strategy,burble)
 %
 % See also inverse, slash, linsolve, spqr.
 
-% Copyright 2011, Timothy A. Davis, University of Florida.
+% Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
 
 assert (ndims (A) == 2, 'Matrix must be 2D.') ;
 

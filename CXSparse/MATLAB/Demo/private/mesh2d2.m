@@ -4,8 +4,7 @@ function A = mesh2d2 (n)
 %   A = mesh2d2 (30) ;  % a 30-by-30 mesh
 % See also: cs_demo
 
-%   Copyright 2006-2007, Timothy A. Davis.
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
 nn = 1:n^2 ;
 ii = [nn-n ; nn-1 ; nn ; nn+1 ; nn+n] ;

@@ -1,8 +1,8 @@
 #include "cs.h"
 /* drop entries for which fkeep(A(i,j)) is false; return nz if OK, else -1 */
-int cs_fkeep (cs *A, int (*fkeep) (int, int, double, void *), void *other)
+csi cs_fkeep (cs *A, csi (*fkeep) (csi, csi, double, void *), void *other)
 {
-    int j, p, nz = 0, n, *Ap, *Ai ;
+    csi j, p, nz = 0, n, *Ap, *Ai ;
     double *Ax ;
     if (!CS_CSC (A) || !fkeep) return (-1) ;    /* check inputs */
     n = A->n ; Ap = A->p ; Ai = A->i ; Ax = A->x ;

@@ -3,11 +3,11 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * CHOLMOD/MATLAB Module.  Copyright (C) 2005-2006, Timothy A. Davis
+ * CHOLMOD/MATLAB Module.  Copyright (C) 2005-2006, Timothy A. Davis.
  * The CHOLMOD/MATLAB Module is licensed under Version 2.0 of the GNU
  * General Public License.  See gpl.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
- * http://www.cise.ufl.edu/research/sparse
+ * http://www.suitesparse.com
  * MATLAB(tm) is a Trademark of The MathWorks, Inc.
  * -------------------------------------------------------------------------- */
 
@@ -37,11 +37,11 @@ void mexFunction
 {
     double dummy = 0 ;
     double *Lx, *Lx2 ;
-    Int *Li, *Lp, *Li2, *Lp2, *Lnz2, *ColCount ;
+    Long *Li, *Lp, *Li2, *Lp2, *Lnz2, *ColCount ;
     cholmod_sparse Cmatrix, *C, *Lsparse ;
     cholmod_factor *L ;
     cholmod_common Common, *cm ;
-    Int j, k, s, update, n, lnz ;
+    Long j, k, s, update, n, lnz ;
     char buf [LEN] ;
 
     /* ---------------------------------------------------------------------- */
@@ -101,8 +101,8 @@ void mexFunction
     /* ---------------------------------------------------------------------- */
 
     /* get the MATLAB L */
-    Lp = (Int *) mxGetJc (pargin [0]) ;
-    Li = (Int *) mxGetIr (pargin [0]) ;
+    Lp = (Long *) mxGetJc (pargin [0]) ;
+    Li = (Long *) mxGetIr (pargin [0]) ;
     Lx = mxGetPr (pargin [0]) ;
 
     /* allocate the CHOLMOD symbolic L */

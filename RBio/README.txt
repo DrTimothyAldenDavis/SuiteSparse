@@ -1,6 +1,6 @@
-RBio: Copyright 2011, Timothy A. Davis
-A MATLAB Toolbox for reading/writing sparse
-matrices in Rutherford/Boeing format.
+RBio: Copyright 2011, Timothy A. Davis, http://www.suitesparse.com
+A MATLAB Toolbox for reading/writing sparse matrices in Rutherford/Boeing
+format.
 
 To install the MATLAB functions, cd to the RBio directory (the one containing
 RBinstall.m, not the top-level directory) and type "RBinstall" in the MATLAB

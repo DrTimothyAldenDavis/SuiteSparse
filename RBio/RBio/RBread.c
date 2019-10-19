@@ -21,7 +21,7 @@
 #define LEN 1024
 #define TRUE (1)
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
-#define Int mwSignedIndex
+#define Long SuiteSparse_long
 
 void mexFunction
 (
@@ -31,14 +31,14 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    Int *Ap, *Ai, *Zp, *Zi ;
+    Long *Ap, *Ai, *Zp, *Zi ;
     double *Ax, *Az, *Zx ;
-    Int p, j, build_upper, zero_handling, nrow, ncol, mkind, skind, asize, znz,
+    Long p, j, build_upper, zero_handling, nrow, ncol, mkind, skind, asize, znz,
         status ;
     int ok = TRUE ;
     char filename [LEN+1], title [73], key [9], mtype [4] ;
 
-    UFconfig config ;
+    SuiteSparse_config config ;
     config.malloc_memory = mxMalloc ;
     config.free_memory = mxFree ;
 
@@ -100,7 +100,7 @@ void mexFunction
 
     if (nargout > 1)
     {
-        Zx = (double *) UFmalloc (znz, sizeof (double), &ok, &config) ;
+        Zx = (double *) SuiteSparse_malloc (znz, sizeof (double), &ok, &config);
         for (p = 0 ; p < znz ; p++)
         {
             Zx [p] = 1 ;

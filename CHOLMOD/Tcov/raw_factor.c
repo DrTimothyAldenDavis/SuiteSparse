@@ -7,7 +7,7 @@
  * The CHOLMOD/Tcov Module is licensed under Version 2.0 of the GNU
  * General Public License.  See gpl.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
- * http://www.cise.ufl.edu/research/sparse
+ * http://www.suitesparse.com
  * -------------------------------------------------------------------------- */
 
 /* Factorize A using cholmod_rowfac for the simplicial case, and the 
@@ -130,9 +130,9 @@ double raw_factor (cholmod_sparse *A, Int check_errors)
 	prefer_zomplex, Bxtype ;
     Int *Parent, *Post, *First, *Level, *Ri, *Rp, *LTp = NULL, *LTi = NULL, *P,
 	*mask, *RLinkUp ;
-    UF_long lr ;
+    SuiteSparse_long lr ;
     double beta [2] ;
-    unsigned UF_long save ;
+    unsigned SuiteSparse_long save ;
 
     /* ---------------------------------------------------------------------- */
     /* create the problem */

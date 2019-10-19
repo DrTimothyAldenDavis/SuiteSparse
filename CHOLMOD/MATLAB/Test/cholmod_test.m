@@ -48,7 +48,7 @@ function cholmod_test (nmat, do_diary)
 % This extensive test is not included:
 % test28: test nesdis
 
-% Copyright 2006-2007, Timothy A. Davis, University of Florida
+% Copyright 2006-2007, Timothy A. Davis, http://www.suitesparse.com
 
 if (nargin < 2)
     do_diary = 0 ;

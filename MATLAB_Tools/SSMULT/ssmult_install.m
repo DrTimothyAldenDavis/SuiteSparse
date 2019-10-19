@@ -11,7 +11,7 @@ function ssmult_install (dotests)
 %
 % See also ssmult, ssmultsym, sstest, sstest2, mtimes.
 
-% Copyright 2009, Timothy A. Davis, University of Florida
+% Copyright 2007-2009, Timothy A. Davis, http://www.suitesparse.com
 
 fprintf ('Compiling SSMULT:\n') ;
 

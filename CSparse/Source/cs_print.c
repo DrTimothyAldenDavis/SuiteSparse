@@ -1,8 +1,8 @@
 #include "cs.h"
-/* print a sparse matrix */
-int cs_print (const cs *A, int brief)
+/* print a sparse matrix; use %g for integers to avoid differences with csi */
+csi cs_print (const cs *A, csi brief)
 {
-    int p, j, m, n, nzmax, nz, *Ap, *Ai ;
+    csi p, j, m, n, nzmax, nz, *Ap, *Ai ;
     double *Ax ;
     if (!A) { printf ("(null)\n") ; return (0) ; }
     m = A->m ; n = A->n ; Ap = A->p ; Ai = A->i ; Ax = A->x ;
@@ -11,24 +11,27 @@ int cs_print (const cs *A, int brief)
         CS_SUBSUB, CS_DATE, CS_COPYRIGHT) ;
     if (nz < 0)
     {
-        printf ("%d-by-%d, nzmax: %d nnz: %d, 1-norm: %g\n", m, n, nzmax,
-                Ap [n], cs_norm (A)) ;
+        printf ("%g-by-%g, nzmax: %g nnz: %g, 1-norm: %g\n", (double) m,
+            (double) n, (double) nzmax, (double) (Ap [n]), cs_norm (A)) ;
         for (j = 0 ; j < n ; j++)
         {
-            printf ("    col %d : locations %d to %d\n", j, Ap [j], Ap [j+1]-1);
+            printf ("    col %g : locations %g to %g\n", (double) j, 
+                (double) (Ap [j]), (double) (Ap [j+1]-1)) ;
             for (p = Ap [j] ; p < Ap [j+1] ; p++)
             {
-                printf ("      %d : %g\n", Ai [p], Ax ? Ax [p] : 1) ;
+                printf ("      %g : %g\n", (double) (Ai [p]), Ax ? Ax [p] : 1) ;
                 if (brief && p > 20) { printf ("  ...\n") ; return (1) ; }
             }
         }
     }
     else
     {
-        printf ("triplet: %d-by-%d, nzmax: %d nnz: %d\n", m, n, nzmax, nz) ;
+        printf ("triplet: %g-by-%g, nzmax: %g nnz: %g\n", (double) m,
+            (double) n, (double) nzmax, (double) nz) ;
         for (p = 0 ; p < nz ; p++)
         {
-            printf ("    %d %d : %g\n", Ai [p], Ap [p], Ax ? Ax [p] : 1) ;
+            printf ("    %g %g : %g\n", (double) (Ai [p]), (double) (Ap [p]),
+                Ax ? Ax [p] : 1) ;
             if (brief && p > 20) { printf ("  ...\n") ; return (1) ; }
         }
     }

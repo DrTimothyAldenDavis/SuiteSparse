@@ -4,9 +4,9 @@
 
 default: colamd_example colamd_l_example
 
-include ../../UFconfig/UFconfig.mk
+include ../../SuiteSparse_config/SuiteSparse_config.mk
 
-I = -I../Include -I../../UFconfig
+I = -I../Include -I../../SuiteSparse_config
 
 C = $(CC) $(CF) $(I)
 

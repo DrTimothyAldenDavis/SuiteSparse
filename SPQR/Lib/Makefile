@@ -6,7 +6,7 @@ default: all
 
 ccode: all
 
-include ../../UFconfig/UFconfig.mk
+include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 #-------------------------------------------------------------------------------
 # the optional Partition module requires METIS, CAMD, and CCOLAMD
@@ -91,7 +91,7 @@ OBJ = \
 
 $(OBJ): $(INC)
 
-I = -I../../CHOLMOD/Include -I../../UFconfig -I../Include
+I = -I../../CHOLMOD/Include -I../../SuiteSparse_config -I../Include
 
 C = $(CXX) $(CF) $(SPQR_CONFIG) $(CONFIG) $(I)
 

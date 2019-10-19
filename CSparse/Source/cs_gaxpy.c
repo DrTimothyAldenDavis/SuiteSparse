@@ -1,8 +1,8 @@
 #include "cs.h"
 /* y = A*x+y */
-int cs_gaxpy (const cs *A, const double *x, double *y)
+csi cs_gaxpy (const cs *A, const double *x, double *y)
 {
-    int p, j, n, *Ap, *Ai ;
+    csi p, j, n, *Ap, *Ai ;
     double *Ax ;
     if (!CS_CSC (A) || !x || !y) return (0) ;       /* check inputs */
     n = A->n ; Ap = A->p ; Ai = A->i ; Ax = A->x ;

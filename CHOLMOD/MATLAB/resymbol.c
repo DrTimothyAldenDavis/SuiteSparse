@@ -7,7 +7,7 @@
  * The CHOLMOD/MATLAB Module is licensed under Version 2.0 of the GNU
  * General Public License.  See gpl.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
- * http://www.cise.ufl.edu/research/sparse
+ * http://www.suitesparse.com
  * MATLAB(tm) is a Trademark of The MathWorks, Inc.
  * -------------------------------------------------------------------------- */
 
@@ -35,11 +35,11 @@ void mexFunction
 {
     double dummy = 0 ;
     double *Lx, *Lx2, *Lz, *Lz2 ;
-    Int *Li, *Lp, *Lnz2, *Li2, *Lp2, *ColCount ;
+    Long *Li, *Lp, *Lnz2, *Li2, *Lp2, *ColCount ;
     cholmod_sparse *A, Amatrix, *Lsparse, *S ;
     cholmod_factor *L ;
     cholmod_common Common, *cm ;
-    Int j, s, n, lnz, is_complex ;
+    Long j, s, n, lnz, is_complex ;
 
     /* ---------------------------------------------------------------------- */
     /* start CHOLMOD and set parameters */ 
@@ -84,8 +84,8 @@ void mexFunction
     /* ---------------------------------------------------------------------- */
 
     /* get the MATLAB L */
-    Lp = (Int *) mxGetJc (pargin [0]) ;
-    Li = (Int *) mxGetIr (pargin [0]) ;
+    Lp = (Long *) mxGetJc (pargin [0]) ;
+    Li = (Long *) mxGetIr (pargin [0]) ;
     Lx = mxGetPr (pargin [0]) ;
     Lz = mxGetPi (pargin [0]) ;
     is_complex = mxIsComplex (pargin [0]) ;

@@ -26,8 +26,8 @@
  * ldl_symbolic has analyzed the matrix.  The size of Li and Lx must be greater
  * than or equal to lnz = Lp [N], which is 13 for this matrix L.
  *
- * LDL Version 1.3, Copyright (c) 2006 by Timothy A Davis,
- * University of Florida.  All Rights Reserved.  See README for the License.
+ * Copyright (c) 2006 by Timothy A Davis, http://www.suitesparse.com.
+ * All Rights Reserved.  See README for the License.
  */
 
 #include <stdio.h>

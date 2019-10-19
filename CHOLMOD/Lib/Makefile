@@ -6,7 +6,7 @@ default: all
 
 ccode: all
 
-include ../../UFconfig/UFconfig.mk
+include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 #-------------------------------------------------------------------------------
 # the optional Partition module requires METIS, CAMD, and CCOLAMD
@@ -25,7 +25,7 @@ ifeq (,$(findstring -DNPARTITION, $(CHOLMOD_CONFIG)))
 endif
 
 I = -I../../AMD/Include -I../../AMD/Source -I../../COLAMD/Include \
-	$(I_WITH_PARTITION) -I../Include -I../../UFconfig
+	$(I_WITH_PARTITION) -I../Include -I../../SuiteSparse_config
 
 #-------------------------------------------------------------------------------
 
@@ -465,6 +465,7 @@ cholmod_l_updown.o: ../Modify/cholmod_updown.c \
 #-------------------------------------------------------------------------------
 
 cholmod_super_numeric.o: ../Supernodal/cholmod_super_numeric.c \
+        ../Supernodal/t_cholmod_gpu.c \
 	../Supernodal/t_cholmod_super_numeric.c
 	$(C) -c $(I) $<
 

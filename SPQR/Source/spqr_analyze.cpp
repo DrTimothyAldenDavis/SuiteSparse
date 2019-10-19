@@ -13,9 +13,9 @@
 #define FREE_WORK \
     cholmod_l_free_factor (&Sc, cc) ; \
     cholmod_l_free (2*(nf+1), sizeof (double), Flops,         cc) ; \
-    cholmod_l_free (ns+2,     sizeof (Int),    Stack_stack,   cc) ; \
-    cholmod_l_free (nf,       sizeof (Int),    Rh,            cc) ; \
-    cholmod_l_free (ntasks,   sizeof (Int),    TaskParent,    cc) ;
+    cholmod_l_free (ns+2,     sizeof (Long),    Stack_stack,   cc) ; \
+    cholmod_l_free (nf,       sizeof (Long),    Rh,            cc) ; \
+    cholmod_l_free (ntasks,   sizeof (Long),    TaskParent,    cc) ;
 
 // =============================================================================
 // === spqr_analyze ============================================================
@@ -26,7 +26,7 @@ spqr_symbolic *spqr_analyze
     // inputs, not modified
     cholmod_sparse *A,
     int ordering,           // all options available
-    Int *Quser,             // user provided ordering, if given (may be NULL)
+    Long *Quser,             // user provided ordering, if given (may be NULL)
 
     int do_rank_detection,  // if TRUE, then rank deficient matrices may be
                             // considered during numerical factorization,
@@ -41,12 +41,12 @@ spqr_symbolic *spqr_analyze
 )
 {
     spqr_symbolic *QRsym ;
-    Int *Parent, *Child, *Childp, *W, *Rj, *Rp, *Super, *Stair, *Fmap, *Sleft,
+    Long *Parent, *Child, *Childp, *W, *Rj, *Rp, *Super, *Stair, *Fmap, *Sleft,
         *Post, *Ap, *Ai, *Weight, *On_stack, *Task, *TaskParent,
         *TaskChildp, *TaskChild, *Fm, *Cm, *TaskFront, *TaskFrontp, *Rh,
         *Stack_stack, *Stack_maxstack, *Hip,
         *TaskStack, *InvPost ;
-    Int nf, f, j, col1, col2, p, p1, p2, t, parent, anz, fp, csize_max,
+    Long nf, f, j, col1, col2, p, p1, p2, t, parent, anz, fp, csize_max,
         fmc, fnc, fpc, cm, cn, ci, fm, fn, cm_min, cm_max, csize_min, kf,
         rm, rn, col, c, pc, rsize, maxfn, csize, m, n, k, klast,
         stack, maxstack, rxsize, hisize,
@@ -69,8 +69,8 @@ spqr_symbolic *spqr_analyze
 
     m = A->nrow ;
     n = A->ncol ;
-    Ap = (Int *) A->p ;
-    Ai = (Int *) A->i ;
+    Ap = (Long *) A->p ;
+    Ai = (Long *) A->i ;
     anz = Ap [n] ;
 
     do_parallel_analysis = (cc->SPQR_grain > 1) ;
@@ -119,7 +119,7 @@ spqr_symbolic *spqr_analyze
     AT = cholmod_l_transpose (A, 0, cc) ;   // AT = spones (A') [
 
     // save the current CHOLMOD settings
-    Int save [6] ;
+    Long save [6] ;
     save [0] = cc->supernodal ;
     save [1] = cc->nmethods ;
     save [2] = cc->postorder ;
@@ -251,7 +251,7 @@ spqr_symbolic *spqr_analyze
 #endif
 
     // multifrontal QR ordering and analysis
-    Sc = cholmod_l_analyze_p2 (FALSE, AT, (UF_long *) Quser, NULL, 0, cc) ;
+    Sc = cholmod_l_analyze_p2 (FALSE, AT, (SuiteSparse_long *) Quser, NULL, 0, cc) ;
 
     // record the actual ordering used
     if (Sc != NULL)
@@ -308,16 +308,16 @@ spqr_symbolic *spqr_analyze
     QRsym->rjsize = Sc->ssize ;         // size of int part of supernodal R
     QRsym->keepH = keepH ;
 
-    QRsym->Qfill = (Int *) Sc->Perm ;           // size n column perm
+    QRsym->Qfill = (Long *) Sc->Perm ;           // size n column perm
     Sc->Perm = NULL ;
 
-    QRsym->Super = Super = (Int *) Sc->super ;  // Super is size nf+1
+    QRsym->Super = Super = (Long *) Sc->super ;  // Super is size nf+1
     Sc->super = NULL ;
 
-    QRsym->Rp = Rp = (Int *) Sc->pi ;           // Rp is size nf+1
+    QRsym->Rp = Rp = (Long *) Sc->pi ;           // Rp is size nf+1
     Sc->pi = NULL ;
 
-    QRsym->Rj = Rj = (Int *) Sc->s ;            // Rj is size rjsize
+    QRsym->Rj = Rj = (Long *) Sc->s ;            // Rj is size rjsize
     Sc->s = NULL ;
 
     // Sc->ColCount and Sc->px not needed
@@ -329,18 +329,18 @@ spqr_symbolic *spqr_analyze
     // -------------------------------------------------------------------------
 
     ASSERT (nf <= n) ;
-    QRsym->Parent = Parent = (Int *) cholmod_l_malloc (nf+1, sizeof (Int), cc) ;
-    QRsym->Childp = Childp = (Int *) cholmod_l_calloc (nf+2, sizeof (Int), cc) ;
-    QRsym->Child  = Child  = (Int *) cholmod_l_calloc (nf+1, sizeof (Int), cc) ;
-    QRsym->Post   = Post   = (Int *) cholmod_l_malloc (nf+1, sizeof (Int), cc) ;
-    QRsym->PLinv           = (Int *) cholmod_l_malloc (m,    sizeof (Int), cc) ;
-    QRsym->Sleft  = Sleft  = (Int *) cholmod_l_malloc (n+2,  sizeof (Int), cc) ;
-    QRsym->Sp              = (Int *) cholmod_l_malloc (m+1,  sizeof (Int), cc) ;
-    QRsym->Sj              = (Int *) cholmod_l_malloc (anz,  sizeof (Int), cc) ;
+    QRsym->Parent = Parent = (Long *) cholmod_l_malloc (nf+1, sizeof(Long), cc);
+    QRsym->Childp = Childp = (Long *) cholmod_l_calloc (nf+2, sizeof(Long), cc);
+    QRsym->Child  = Child  = (Long *) cholmod_l_calloc (nf+1, sizeof(Long), cc);
+    QRsym->Post   = Post   = (Long *) cholmod_l_malloc (nf+1, sizeof(Long), cc);
+    QRsym->PLinv           = (Long *) cholmod_l_malloc (m,    sizeof(Long), cc);
+    QRsym->Sleft  = Sleft  = (Long *) cholmod_l_malloc (n+2,  sizeof(Long), cc);
+    QRsym->Sp              = (Long *) cholmod_l_malloc (m+1,  sizeof(Long), cc);
+    QRsym->Sj              = (Long *) cholmod_l_malloc (anz,  sizeof(Long), cc);
 
     if (keepH)
     {
-        QRsym->Hip = Hip = (Int *) cholmod_l_malloc (nf+1, sizeof (Int), cc) ;
+        QRsym->Hip = Hip = (Long *) cholmod_l_malloc (nf+1, sizeof (Long), cc) ;
     }
     else
     {
@@ -370,7 +370,7 @@ spqr_symbolic *spqr_analyze
         if (keepH)
         {
             // Rh, size nf; Rh [f] is the size of R and H for front f
-            Rh = (Int *) cholmod_l_malloc (nf, sizeof (Int), cc) ;
+            Rh = (Long *) cholmod_l_malloc (nf, sizeof (Long), cc) ;
         }
     }
 
@@ -393,7 +393,7 @@ spqr_symbolic *spqr_analyze
     // children in order of increasing row count of R, so that bigger children
     // come later, and the biggest child of front f is front f-1.
 
-    W = (Int *) cc->Iwork ;
+    W = (Long *) cc->Iwork ;
 
     // use W [0:n-1] for SuperMap [
 
@@ -457,8 +457,8 @@ spqr_symbolic *spqr_analyze
 
     // uses CHOLMOD workspace: Head (nf+1), Iwork (2*(nf+1)).  Guaranteed
     // to succeed since enough workspace has already been allocated above.
-    cholmod_l_postorder ((UF_long *) Parent, nf+1, (UF_long *) Weight,
-        (UF_long *) Post, cc) ;
+    cholmod_l_postorder ((SuiteSparse_long *) Parent, nf+1, (SuiteSparse_long *) Weight,
+        (SuiteSparse_long *) Post, cc) ;
     ASSERT (cc->status == CHOLMOD_OK) ;
     ASSERT (Post [nf] == nf) ;          // placeholder is last
 
@@ -594,7 +594,7 @@ spqr_symbolic *spqr_analyze
             col = j + col1 ;
             Stair [j] = Sleft [col+1] - Sleft [col] ;
 #ifndef NDEBUG
-            for (Int row = Sleft [col] ; row < Sleft [col+1] ; row++)
+            for (Long row = Sleft [col] ; row < Sleft [col+1] ; row++)
             {
                 PR (("Assemble row %ld into stair [%ld] col %ld\n",
                     row,j, col)) ;
@@ -633,7 +633,7 @@ spqr_symbolic *spqr_analyze
             {
                 // with no pivot failures
                 // fmc is the exact # of rows in child F
-                Int rc = MIN (fmc, fpc) ;   // exact # of rows in child R
+                Long rc = MIN (fmc, fpc) ;   // exact # of rows in child R
                 cm = MAX (fmc - rc, 0) ;
                 cm = MIN (cm, cn) ;         // exact # rows in C
             }
@@ -660,7 +660,7 @@ spqr_symbolic *spqr_analyze
 
             // Keep track of total sizes of C blocks of all children.  The
             // C block of this child has at most cm rows, and always has
-            // (fnc-fpc) columns.  Int overflow cannot occur because csize
+            // (fnc-fpc) columns.  Long overflow cannot occur because csize
             // < fsize of the child and fsize has already been checked.
             csize = cm*(cm+1)/2 + cm*(cn-cm) ;
             ctot += csize ;
@@ -711,7 +711,7 @@ spqr_symbolic *spqr_analyze
         ASSERT (rm <= rn) ;
         ASSERT (rm >= 0) ;
         ASSERT (rm <= fm) ;
-        rsize = rm*(rm+1)/2 + rm*(rn-rm) ;  // Int overflow cannot occur
+        rsize = rm*(rm+1)/2 + rm*(rn-rm) ;  // Long overflow cannot occur
         ASSERT (rsize >= 0 && rsize <= fsize) ;
         rxsize += rsize ;
         PR ((" rm %ld rn %ld rsize %ld\n", rm, rn, rsize)) ;
@@ -731,7 +731,7 @@ spqr_symbolic *spqr_analyze
         cm_min = MAX (fm - rm, 0) ;
         cm_min = MIN (cm_min, cn) ;         // exact # rows in C block
 
-        // Int overflow cannot occur:
+        // Long overflow cannot occur:
         csize_max = cm_max*(cm_max+1)/2 + cm_max*(cn-cm_max) ;
         csize_min = cm_min*(cm_min+1)/2 + cm_min*(cn-cm_min) ;
         csize = do_rank_detection ? csize_max : csize_min ;
@@ -754,13 +754,13 @@ spqr_symbolic *spqr_analyze
         // ---------------------------------------------------------------------
 
         double fflops = 0 ;                 // flop count for this front
-        Int rhsize = 0 ;                    // count entire staircase
+        Long rhsize = 0 ;                   // count entire staircase
         for (j = 0 ; j < fn ; j++)
         {
             t = MAX (j+1, Stair [j]) ;      // assume diagonal is present
             t = MIN (t, fm) ;               // except t cannot exceed fm
             PR (("   j %ld Stair %ld t %ld\n", j, Stair [j], t)) ;
-            rhsize += t ;                   // Int overflow cannot occur
+            rhsize += t ;                   // Long overflow cannot occur
             if (t > j)
             {
                 double h = (t-j) ;          // length of Householder vector
@@ -854,7 +854,7 @@ spqr_symbolic *spqr_analyze
     }
 
     // -------------------------------------------------------------------------
-    // check for Int overflow
+    // check for Long overflow
     // -------------------------------------------------------------------------
 
     PR (("stack     %ld\n", stack)) ;
@@ -865,7 +865,7 @@ spqr_symbolic *spqr_analyze
 
     if (!ok)
     {
-        // Int overflow has occured
+        // Long overflow has occured
         spqr_freesym (&QRsym, cc) ;
         FREE_WORK ;
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
@@ -1013,7 +1013,7 @@ spqr_symbolic *spqr_analyze
 
     for (kf = 0 ; kf < nf ; kf++)
     {
-        Int fstart = Post [kf] ;
+        Long fstart = Post [kf] ;
         if (Task [fstart] != EMPTY)
         {
             // fstart is already assigned to a task, or it's a pending big
@@ -1039,7 +1039,7 @@ spqr_symbolic *spqr_analyze
             ASSERT (!TASK_IS_PENDING (f)) ;
         }
 
-        Int flast = f ;
+        Long flast = f ;
         parent = Parent [flast] ;
 
         PR (("    >>> flast is %ld  flops: %g parent: %ld\n", flast,
@@ -1239,14 +1239,14 @@ spqr_symbolic *spqr_analyze
     // During factorization, just get On_stack [f] for first f in the task.
 
     // TaskParent is temporary workspace:
-    TaskParent = (Int *) cholmod_l_malloc (ntasks,   sizeof (Int), cc) ;
+    TaskParent = (Long *) cholmod_l_malloc (ntasks,   sizeof (Long), cc) ;
 
-    TaskChildp = (Int *) cholmod_l_calloc (ntasks+2, sizeof (Int), cc) ;
-    TaskChild  = (Int *) cholmod_l_calloc (ntasks+1, sizeof (Int), cc) ;
-    TaskFront  = (Int *) cholmod_l_malloc (nf+1,     sizeof (Int), cc) ;
-    TaskFrontp = (Int *) cholmod_l_calloc (ntasks+2, sizeof (Int), cc) ;
-    TaskStack  = (Int *) cholmod_l_malloc (ntasks+1, sizeof (Int), cc) ;
-    On_stack   = (Int *) cholmod_l_malloc (nf+1,     sizeof (Int), cc) ;
+    TaskChildp = (Long *) cholmod_l_calloc (ntasks+2, sizeof (Long), cc) ;
+    TaskChild  = (Long *) cholmod_l_calloc (ntasks+1, sizeof (Long), cc) ;
+    TaskFront  = (Long *) cholmod_l_malloc (nf+1,     sizeof (Long), cc) ;
+    TaskFrontp = (Long *) cholmod_l_calloc (ntasks+2, sizeof (Long), cc) ;
+    TaskStack  = (Long *) cholmod_l_malloc (ntasks+1, sizeof (Long), cc) ;
+    On_stack   = (Long *) cholmod_l_malloc (nf+1,     sizeof (Long), cc) ;
 
     QRsym->TaskFront  = TaskFront ;
     QRsym->TaskFrontp = TaskFrontp ;
@@ -1274,8 +1274,8 @@ spqr_symbolic *spqr_analyze
 
     for (f = 0 ; f < nf ; f++)
     {
-        Int my_task = Task [f] ;
-        Int parent_task = Task [Parent [f]] ;
+        Long my_task = Task [f] ;
+        Long parent_task = Task [Parent [f]] ;
         PR (("f %ld Task %ld parent %ld, Task of parent %ld\n",
             f, my_task, Parent [f], Task [Parent [f]])) ;
         if (my_task != parent_task)
@@ -1300,7 +1300,7 @@ spqr_symbolic *spqr_analyze
     spqr_cumsum (ntasks, TaskChildp) ;
 
     // create the child lists
-    for (Int child_task = 0 ; child_task < ntasks ; child_task++)
+    for (Long child_task = 0 ; child_task < ntasks ; child_task++)
     {
         // place the child c in the list of its parent
         parent = TaskParent [child_task] ;
@@ -1359,12 +1359,12 @@ spqr_symbolic *spqr_analyze
         TaskStack [task] = EMPTY ;
     }
 
-    for (Int task_start = 0 ; task_start < ntasks ; task_start++)
+    for (Long task_start = 0 ; task_start < ntasks ; task_start++)
     {
         if (TaskStack [task_start] == EMPTY)
         {
             // start a new stack
-            Int s = ns++ ;
+            Long s = ns++ ;
             for (task = task_start ;
                 task != EMPTY && TaskStack [task] == EMPTY ;
                 task = TaskParent [task])
@@ -1386,7 +1386,7 @@ spqr_symbolic *spqr_analyze
 
     for (task = 0 ; task < ntasks ; task++)
     {
-        Int s = TaskStack [task] ;
+        Long s = TaskStack [task] ;
         PR (("\nTask %ld children:\n", task)) ;
         for (p = TaskChildp [task] ; p < TaskChildp [task+1] ; p++)
         {
@@ -1408,11 +1408,11 @@ spqr_symbolic *spqr_analyze
 
     // temporary workspace:
     // Stack_stack (s): current stack usage
-    Stack_stack = (Int *) cholmod_l_calloc (ns+2, sizeof (Int), cc) ;
+    Stack_stack = (Long *) cholmod_l_calloc (ns+2, sizeof (Long), cc) ;
 
     // permanent part of QRsym:
     // Stack_maxstack (s): peak stack usage if H not kept
-    Stack_maxstack = (Int *) cholmod_l_calloc (ns+2, sizeof (Int), cc) ;
+    Stack_maxstack = (Long *) cholmod_l_calloc (ns+2, sizeof (Long), cc) ;
 
     // FUTURE: keep track of maxfn for each stack
 
@@ -1438,7 +1438,7 @@ spqr_symbolic *spqr_analyze
         // ---------------------------------------------------------------------
 
         f = Post [kf] ;
-        Int s = On_stack [f] ;
+        Long s = On_stack [f] ;
         PR (("\n----------------------- front: %ld on stack %ld\n", f, s)) ;
         ASSERT (f >= 0 && f < nf) ;
         ASSERT (s >= 0 && s < ns) ;
@@ -1518,7 +1518,7 @@ spqr_symbolic *spqr_analyze
         cm_min = MAX (fm - rm, 0) ;
         cm_min = MIN (cm_min, cn) ;         // exact # rows in C block
 
-        // Int overflow cannot occur:
+        // Long overflow cannot occur:
         csize_max = cm_max*(cm_max+1)/2 + cm_max*(cn-cm_max) ;
         csize_min = cm_min*(cm_min+1)/2 + cm_min*(cn-cm_min) ;
         csize = do_rank_detection ? csize_max : csize_min ;
@@ -1548,8 +1548,8 @@ spqr_symbolic *spqr_analyze
         // estimate stack usage for parallel case
         // ---------------------------------------------------------------------
 
-        Int ss = Stack_stack [s] ;  // current size of stack
-        Int sm = Stack_maxstack [s] ;  // max size of stack
+        Long ss = Stack_stack [s] ;  // current size of stack
+        Long sm = Stack_maxstack [s] ;  // max size of stack
         PR (("current ss: %ld fsize %ld ctot %ld csize %ld rsize %ld\n",
             ss, fsize, ctot, csize, rsize)) ;
 

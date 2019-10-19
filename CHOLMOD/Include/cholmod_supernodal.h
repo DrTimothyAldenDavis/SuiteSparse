@@ -8,7 +8,7 @@
  * CHOLMOD/Include/cholmod_supernodal.h is licensed under Version 2.0 of the GNU
  * General Public License.  See gpl.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
- * http://www.cise.ufl.edu/research/sparse
+ * http://www.suitesparse.com
  * -------------------------------------------------------------------------- */
 
 /* CHOLMOD Supernodal module.
@@ -71,8 +71,8 @@ int cholmod_super_symbolic
     cholmod_common *Common
 ) ;
 
-int cholmod_l_super_symbolic (cholmod_sparse *, cholmod_sparse *, UF_long *,
-    cholmod_factor *, cholmod_common *) ;
+int cholmod_l_super_symbolic (cholmod_sparse *, cholmod_sparse *,
+    SuiteSparse_long *, cholmod_factor *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_super_symbolic2 */
@@ -97,7 +97,7 @@ int cholmod_super_symbolic2
 ) ;
 
 int cholmod_l_super_symbolic2 (int, cholmod_sparse *, cholmod_sparse *,
-    UF_long *, cholmod_factor *, cholmod_common *) ;
+    SuiteSparse_long *, cholmod_factor *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_super_numeric */

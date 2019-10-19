@@ -26,7 +26,7 @@ function [G, p, pinv, Gnew] = meshnd (arg1,n,k)
 %
 % See also nested, numgrid.
 
-% Copyright 2007-2009, Timothy A. Davis, Univ. of Florida
+% Copyright 2007-2009, Timothy A. Davis, http://www.suitesparse.com
 
 % get the inputs and create the mesh if not provided on input
 if (nargin == 0)

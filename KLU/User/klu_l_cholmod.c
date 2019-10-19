@@ -18,14 +18,14 @@
 #define TRUE 1
 #define FALSE 0
 
-UF_long klu_l_cholmod
+SuiteSparse_long klu_l_cholmod
 (
     /* inputs */
-    UF_long n,              /* A is n-by-n */
-    UF_long Ap [ ],                 /* column pointers */
-    UF_long Ai [ ],                 /* row indices */
+    SuiteSparse_long n,              /* A is n-by-n */
+    SuiteSparse_long Ap [ ],         /* column pointers */
+    SuiteSparse_long Ai [ ],         /* row indices */
     /* outputs */
-    UF_long Perm [ ],       /* fill-reducing permutation */
+    SuiteSparse_long Perm [ ],       /* fill-reducing permutation */
     /* user-defined */
     klu_l_common *Common    /* user-defined data is in Common->user_data */
 )
@@ -34,8 +34,8 @@ UF_long klu_l_cholmod
     cholmod_sparse Amatrix, *A, *AT, *S ;
     cholmod_factor *L ;
     cholmod_common cm ;
-    UF_long *P ;
-    UF_long k, symmetric ;
+    SuiteSparse_long *P ;
+    SuiteSparse_long k, symmetric ;
 
     if (Ap == NULL || Ai == NULL || Perm == NULL || n < 0)
     {
@@ -73,7 +73,7 @@ UF_long klu_l_cholmod
 
     /* get the user_data; default is symmetric if user_data is NULL */
     symmetric = (Common->user_data == NULL) ? TRUE :
-        (((UF_long *) (Common->user_data)) [0] != 0) ;
+        (((SuiteSparse_long *) (Common->user_data)) [0] != 0) ;
 
     /* AT = pattern of A' */
     AT = cholmod_l_transpose (A, 0, &cm) ;

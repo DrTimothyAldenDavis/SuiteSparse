@@ -1,4 +1,5 @@
 Torture test for CHOLMOD, using valgrind.  Requires Linux.
+http://www.suitesparse.com
 
 Type "make" to compile and run CHOLMOMD with valgrind.
 Every line of CHOLMOD will be exercised, and its results

@@ -3,9 +3,8 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
+/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
+/* All Rights Reserved.  See ../Doc/License for License.                      */
 /* -------------------------------------------------------------------------- */
 
 void umfpack_di_report_info
@@ -39,7 +38,7 @@ double int Syntax:
     double Control [UMFPACK_CONTROL], Info [UMFPACK_INFO] ;
     umfpack_di_report_info (Control, Info) ;
 
-double UF_long Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     double Control [UMFPACK_CONTROL], Info [UMFPACK_INFO] ;
@@ -51,7 +50,7 @@ complex int Syntax:
     double Control [UMFPACK_CONTROL], Info [UMFPACK_INFO] ;
     umfpack_zi_report_info (Control, Info) ;
 
-complex UF_long Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     double Control [UMFPACK_CONTROL], Info [UMFPACK_INFO] ;

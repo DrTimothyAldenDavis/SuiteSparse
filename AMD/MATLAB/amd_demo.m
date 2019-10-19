@@ -8,8 +8,7 @@ function amd_demo
 %
 % See also: amd, amd2, amd_make
 
-% Copyright 1994-2007, Tim Davis, University of Florida,
-% Patrick R. Amestoy, and Iain S. Duff. 
+% Copyright 1994-2007, Tim Davis, Patrick R. Amestoy, and Iain S. Duff. 
 
 % This orders the same matrix as the ANSI C demo, amd_demo.c.  It includes an
 % additional analysis of the matrix via MATLAB's symbfact routine.

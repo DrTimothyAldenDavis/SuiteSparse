@@ -32,7 +32,7 @@ function [p,q,r] = btf (A)                                                  %#ok
 %
 % See also maxtrans, strongcomp, dmperm, sprank
 
-% Copyright 2004-2007, Tim Davis, University of Florida
+% Copyright 2004-2007, University of Florida
 % with support from Sandia National Laboratories.  All Rights Reserved.
 
 error ('btf mexFunction not found') ;

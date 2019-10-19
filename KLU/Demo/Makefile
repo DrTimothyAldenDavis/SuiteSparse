@@ -3,17 +3,18 @@
 
 default: all
 
-include ../../UFconfig/UFconfig.mk
+include ../../SuiteSparse_config/SuiteSparse_config.mk
 
-LIB = ../Lib/libklu.a  ../../BTF/Lib/libbtf.a \
+CLIB = ../Lib/libklu.a  ../../BTF/Lib/libbtf.a \
 	../../AMD/Lib/libamd.a ../../COLAMD/Lib/libcolamd.a
 
-CHOLMOD = ../../CHOLMOD/Lib/libcholmod.a
+CHOLMOD = ../../CHOLMOD/Lib/libcholmod.a \
+        ../../SuiteSparse_config/libsuitesparseconfig.a
 
-I = -I../../UFconfig -I../../AMD/Include -I../../COLAMD/Include \
+I = -I../../SuiteSparse_config -I../../AMD/Include -I../../COLAMD/Include \
 	-I../../BTF/Include -I../Include -I../../CHOLMOD/Include
 
-all: $(LIB) klu_simple $(CHOLMOD) kludemo kluldemo
+all: $(CLIB) klu_simple $(CHOLMOD) kludemo kluldemo
 	- ./klu_simple
 	- ./kludemo < ../Matrix/1c.mtx
 	- ./kludemo < ../Matrix/arrowc.mtx
@@ -46,6 +47,9 @@ all: $(LIB) klu_simple $(CHOLMOD) kludemo kluldemo
 #	( cd ../../CCOLAMD ; $(MAKE) )
 #	( cd ../../metis-4.0 ; $(MAKE) )
 
+../../SuiteSparse_config/libsuitesparseconfig.a:
+	( cd ../../SuiteSparse_config ; $(MAKE) )
+
 purge: distclean
 
 distclean: clean
@@ -55,12 +59,12 @@ distclean: clean
 clean:
 	- $(RM) $(CLEAN)
 
-kludemo: kludemo.c Makefile $(LIB)
-	$(CC) $(CF) $(I) kludemo.c -o kludemo $(LIB) $(CHOLMOD) -lm
+kludemo: kludemo.c Makefile $(CLIB)
+	$(CC) $(CF) $(I) kludemo.c -o kludemo $(CLIB) $(CHOLMOD) $(LIB)
 
-kluldemo: kludemo.c Makefile $(LIB)
-	$(CC) $(CF) $(I) kluldemo.c -o kluldemo $(LIB) $(CHOLMOD) -lm
+kluldemo: kludemo.c Makefile $(CLIB)
+	$(CC) $(CF) $(I) kluldemo.c -o kluldemo $(CLIB) $(CHOLMOD) $(LIB)
 
-klu_simple: klu_simple.c Makefile $(LIB)
-	$(CC) $(CF) $(I) klu_simple.c -o klu_simple $(LIB) -lm
+klu_simple: klu_simple.c Makefile $(CLIB)
+	$(CC) $(CF) $(I) klu_simple.c -o klu_simple $(CLIB) $(LIB)
 	- ./klu_simple

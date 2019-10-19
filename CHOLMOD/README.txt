@@ -1,4 +1,5 @@
-CHOLMOD: a sparse CHOLesky MODification package, Copyright (c) 2005-2011.
+CHOLMOD: a sparse CHOLesky MODification package, Copyright (c) 2005-2012.
+http://www.suitesparse.com
 -----------------------------------------------
 
     CHOLMOD is a set of routines for factorizing sparse symmetric positive
@@ -17,9 +18,9 @@ Some Modules of CHOLMOD are copyrighted by the University of Florida (the
 Core and Partition Modules).  The rest are copyrighted by the authors:
 Timothy A. Davis (all of them), and William W. Hager (the Modify Module).
 
-CHOLMOD relies on several other packages:  AMD, CAMD, COLAMD, CCOLAMD, UFconfig,
-METIS, the BLAS, and LAPACK.  All but METIS, the BLAS, and LAPACK are part of
-SuiteSparse.
+CHOLMOD relies on several other packages:  AMD, CAMD, COLAMD, CCOLAMD,
+SuiteSparse_config, METIS, the BLAS, and LAPACK.  All but METIS, the BLAS, and
+LAPACK are part of SuiteSparse.
 
 AMD is authored by T. Davis, Iain Duff, and Patrick Amestoy.
 COLAMD is authored by T. Davis and Stefan Larimore, with algorithmic design
@@ -36,7 +37,8 @@ Place a copy of the metis-4.0 directory in the same directory that
 contains the CHOLMOD, AMD, COLAMD, and CCOLAMD directories prior to compiling
 with "make".
 
-If you do not wish to use METIS, you must edit UFconfig and change the line:
+If you do not wish to use METIS, you must edit SuiteSparse_config and change
+the line:
 
     CHOLMOD_CONFIG =
 
@@ -44,12 +46,12 @@ to
 
     CHOLMOD_CONFIG = -DNPARTITION
 
-The CHOLMOD, AMD, COLAMD, CCOLAMD, and UFconfig directories must all reside
-in a common parent directory.  To compile all these libraries,
-edit UFconfig/UFconfig.mk to reflect your environment (C compiler, location
-of the BLAS, and so on) and then type "make" in either the CHOLMOD directory
-or in the parent directory of CHOLMOD.  See each package for more details on
-how to compile them.
+The CHOLMOD, AMD, COLAMD, CCOLAMD, and SuiteSparse)config directories must all
+reside in a common parent directory.  To compile all these libraries, edit
+SuiteSparse)config/SuiteSparse)config.mk to reflect your environment (C
+compiler, location of the BLAS, and so on) and then type "make" in either the
+CHOLMOD directory or in the parent directory of CHOLMOD.  See each package for
+more details on how to compile them.
 
 For use in MATLAB (on any system, including Windows):  start MATLAB,
 cd to the CHOLMOD/MATLAB directory, and type cholmod_make in the MATLAB
@@ -59,10 +61,6 @@ your program (and thus MATLAB) if it runs out of memory.  Using cholmod_make
 also ensures your mexFunctions are compiled with -fexceptions, so that
 exceptions are handled properly (when hitting control-C in the MATLAB command
 window, for example).
-
-If you have MATLAB 7.2 or earlier and use "make mex", you must first edit
-UFconfig/UFconfig.h to remove the "-largeArrayDims" option from the MEX command
-(or just use cholmod_make.m inside MATLAB).
 
 On the Pentium, do NOT use the Intel MKL BLAS prior to MKL Version 8.0 with
 CHOLMOD.  Older versions (prior to 8.0) have a bug in dgemm when computing

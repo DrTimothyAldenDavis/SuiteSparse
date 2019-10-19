@@ -9,8 +9,7 @@ function r = gee_its_simple_resid (A, x, b)
 %
 % See also: norm, gee_its_simple
 
-% Copyright 2007, Timothy A. Davis.
-% http://www.cise.ufl.edu/research/sparse
+% Copyright 2007, Timothy A. Davis, http://www.suitesparse.com
 
 r = norm (A*x-b,inf) / (norm (A,inf) * norm (x, inf) + norm (b, inf)) ;
 

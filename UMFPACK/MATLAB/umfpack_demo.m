@@ -94,11 +94,6 @@ title ('UMFPACK LU factors') ;
 
 subplot (2,3,6)
 fprintf ('\nFactorizing [L, U, P] = lu (A (:, q))\n') ;
-fprintf ('If you are using a version of MATLAB prior to V6.0, then the\n') ;
-fprintf ('following statement (q = colamd (A)) may fail.  Either download\n');
-fprintf ('colamd from http://www.cise.ufl.edu/research/sparse, upgrade to\n') ;
-fprintf ('MATLAB V6.0 or later, or replace the statement with\n') ;
-fprintf ('q = colmmd (A) ;\n') ;
 try
     q = colamd (A) ;
 catch

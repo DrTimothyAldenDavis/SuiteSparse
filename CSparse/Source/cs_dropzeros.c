@@ -1,9 +1,9 @@
 #include "cs.h"
-static int cs_nonzero (int i, int j, double aij, void *other)
+static csi cs_nonzero (csi i, csi j, double aij, void *other)
 {
     return (aij != 0) ;
 }
-int cs_dropzeros (cs *A)
+csi cs_dropzeros (cs *A)
 {
     return (cs_fkeep (A, &cs_nonzero, NULL)) ;  /* keep all nonzero entries */
 } 

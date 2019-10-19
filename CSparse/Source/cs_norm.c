@@ -2,7 +2,7 @@
 /* 1-norm of a sparse matrix = max (sum (abs (A))), largest column sum */
 double cs_norm (const cs *A)
 {
-    int p, j, n, *Ap ;
+    csi p, j, n, *Ap ;
     double *Ax,  norm = 0, s ;
     if (!CS_CSC (A) || !A->x) return (-1) ;             /* check inputs */
     n = A->n ; Ap = A->p ; Ax = A->x ;

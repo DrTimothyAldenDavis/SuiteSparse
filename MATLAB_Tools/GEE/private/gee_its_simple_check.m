@@ -8,8 +8,7 @@ function gee_its_simple_check (A, name, b)
 %
 % See also: gee_its_simple
 
-% Copyright 2007, Timothy A. Davis.
-% http://www.cise.ufl.edu/research/sparse
+% Copyright 2007, Timothy A. Davis, http://www.suitesparse.com
 
 [m n] = size (A) ;
 if (m ~= n)

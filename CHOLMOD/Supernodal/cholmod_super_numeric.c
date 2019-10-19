@@ -7,7 +7,7 @@
  * The CHOLMOD/Supernodal Module is licensed under Version 2.0 of the GNU
  * General Public License.  See gpl.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
- * http://www.cise.ufl.edu/research/sparse
+ * http://www.suitesparse.com
  * -------------------------------------------------------------------------- */
 
 /* Computes the Cholesky factorization of A+beta*I or A*F+beta*I.  Only the
@@ -62,8 +62,17 @@
 #include "cholmod_supernodal.h"
 
 /* ========================================================================== */
-/* === TEMPLATE ============================================================= */
+/* === TEMPLATE codes for GPU and regular numeric factorization ============= */
 /* ========================================================================== */
+
+#ifdef GPU_BLAS
+#define REAL
+#include "t_cholmod_gpu.c"
+#define COMPLEX
+#include "t_cholmod_gpu.c"
+#define ZOMPLEX
+#include "t_cholmod_gpu.c"
+#endif
 
 #define REAL
 #include "t_cholmod_super_numeric.c"

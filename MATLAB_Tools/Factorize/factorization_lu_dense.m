@@ -1,7 +1,7 @@
 classdef factorization_lu_dense < factorization
 %FACTORIZATION_LU_DENSE P*A = L*U where A is square and full.
 
-% Copyright 2011, Timothy A. Davis, University of Florida.
+% Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
 
     methods
 

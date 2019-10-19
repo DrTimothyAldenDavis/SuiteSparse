@@ -26,3 +26,5 @@ Files in this directory:
     qrtestc.c           for testing the C interface
     qrtest.cpp          the test program itself.  Rather lengthy.
     README.txt          this file
+
+Timothy A. Davis, http://www.suitesparse.com

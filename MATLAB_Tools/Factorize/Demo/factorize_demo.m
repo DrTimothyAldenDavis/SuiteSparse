@@ -1,8 +1,7 @@
 %% THE FACTORIZE OBJECT for solving linear systems
 %
-% Copyright 2011, Timothy A. Davis, University of Florida.
-% davis@cise.ufl.edu
-% http://www.cise.ufl.edu/~davis
+% Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
+% DrTimothyAldenDavis@gmail.com
 %
 % This is a demonstration of the FACTORIZE object for solving linear
 % systems and least-squares problems, and for computations with the

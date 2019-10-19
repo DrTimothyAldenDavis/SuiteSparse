@@ -1,14 +1,14 @@
 #include "cs.h"
 /* C = A' */
-cs *cs_transpose (const cs *A, int values)
+cs *cs_transpose (const cs *A, csi values)
 {
-    int p, q, j, *Cp, *Ci, n, m, *Ap, *Ai, *w ;
+    csi p, q, j, *Cp, *Ci, n, m, *Ap, *Ai, *w ;
     double *Cx, *Ax ;
     cs *C ;
     if (!CS_CSC (A)) return (NULL) ;    /* check inputs */
     m = A->m ; n = A->n ; Ap = A->p ; Ai = A->i ; Ax = A->x ;
     C = cs_spalloc (n, m, Ap [n], values && Ax, 0) ;       /* allocate result */
-    w = cs_calloc (m, sizeof (int)) ;                      /* get workspace */
+    w = cs_calloc (m, sizeof (csi)) ;                      /* get workspace */
     if (!C || !w) return (cs_done (C, w, NULL, 0)) ;       /* out of memory */
     Cp = C->p ; Ci = C->i ; Cx = C->x ;
     for (p = 0 ; p < Ap [n] ; p++) w [Ai [p]]++ ;          /* row counts */

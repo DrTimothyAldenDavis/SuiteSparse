@@ -22,8 +22,7 @@ function [X,info] = spqr_solve (A,B,opts)                                   %#ok
 %
 % See also SPQR, SPQR_QMULT, QR, MLDIVIDE.
 
-%   Copyright 2008, Timothy A. Davis
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2008, Timothy A. Davis, http://www.suitesparse.com
 
 type spqr_solve
 error ('spqr_solve mexFunction not found') ;

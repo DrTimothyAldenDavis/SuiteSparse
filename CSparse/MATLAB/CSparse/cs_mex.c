@@ -1,9 +1,9 @@
 #include "cs_mex.h"
 /* check MATLAB input argument */
-void cs_mex_check (int nel, int m, int n, int square, int sparse, int values,
+void cs_mex_check (csi nel, csi m, csi n, csi square, csi sparse, csi values,
     const mxArray *A)
 {
-    int nnel, mm = mxGetM (A), nn = mxGetN (A) ;
+    csi nnel, mm = mxGetM (A), nn = mxGetN (A) ;
     if (values)
     {
         if (mxIsComplex (A))
@@ -33,13 +33,13 @@ void cs_mex_check (int nel, int m, int n, int square, int sparse, int values,
 }
 
 /* get a MATLAB sparse matrix and convert to cs */
-cs *cs_mex_get_sparse (cs *A, int square, int values, const mxArray *Amatlab)
+cs *cs_mex_get_sparse (cs *A, csi square, csi values, const mxArray *Amatlab)
 {
     cs_mex_check (0, -1, -1, square, 1, values, Amatlab) ;
     A->m = mxGetM (Amatlab) ;
     A->n = mxGetN (Amatlab) ;
-    A->p = mxGetJc (Amatlab) ;
-    A->i = mxGetIr (Amatlab) ;
+    A->p = (csi *) mxGetJc (Amatlab) ;
+    A->i = (csi *) mxGetIr (Amatlab) ;
     A->x = values ? mxGetPr (Amatlab) : NULL ;
     A->nzmax = mxGetNzmax (Amatlab) ;
     A->nz = -1 ;    /* denotes a compressed-col matrix, instead of triplet */
@@ -59,8 +59,8 @@ mxArray *cs_mex_put_sparse (cs **Ahandle)
     cs_free (mxGetJc (Amatlab)) ;
     cs_free (mxGetIr (Amatlab)) ;
     cs_free (mxGetPr (Amatlab)) ;
-    mxSetJc (Amatlab, A->p) ;           /* assign A->p pointer to MATLAB A */
-    mxSetIr (Amatlab, A->i) ;
+    mxSetJc (Amatlab, (mwIndex *) A->p) ;  /* assign A->p pointer to MATLAB A */
+    mxSetIr (Amatlab, (mwIndex *) A->i) ;
     mxSetPr (Amatlab, A->x) ;
     mexMakeMemoryPersistent (A->p) ;    /* ensure MATLAB does not free A->p */
     mexMakeMemoryPersistent (A->i) ;
@@ -71,28 +71,28 @@ mxArray *cs_mex_put_sparse (cs **Ahandle)
 }
 
 /* get a MATLAB dense column vector */
-double *cs_mex_get_double (int n, const mxArray *X)
+double *cs_mex_get_double (csi n, const mxArray *X)
 {
     cs_mex_check (0, n, 1, 0, 0, 1, X) ;
     return (mxGetPr (X)) ;
 }
 
 /* return a double vector to MATLAB */
-double *cs_mex_put_double (int n, const double *b, mxArray **X)
+double *cs_mex_put_double (csi n, const double *b, mxArray **X)
 {
     double *x ;
-    int k ;
+    csi k ;
     *X = mxCreateDoubleMatrix (n, 1, mxREAL) ;      /* create x */
     x = mxGetPr (*X) ;
     for (k = 0 ; k < n ; k++) x [k] = b [k] ;       /* copy x = b */
     return (x) ;
 }
 
-/* get a MATLAB flint array and convert to int */
-int *cs_mex_get_int (int n, const mxArray *Imatlab, int *imax, int lo)
+/* get a MATLAB flint array and convert to csi */
+csi *cs_mex_get_int (csi n, const mxArray *Imatlab, csi *imax, csi lo)
 {
     double *p ;
-    int i, k, *C = cs_malloc (n, sizeof (int)) ;
+    csi i, k, *C = cs_malloc (n, sizeof (csi)) ;
     cs_mex_check (1, n, 1, 0, 0, 1, Imatlab) ;
     p = mxGetPr (Imatlab) ;
     *imax = 0 ;
@@ -106,12 +106,12 @@ int *cs_mex_get_int (int n, const mxArray *Imatlab, int *imax, int lo)
     return (C) ;
 }
 
-/* return an int array to MATLAB as a flint row vector */
-mxArray *cs_mex_put_int (int *p, int n, int offset, int do_free)
+/* return an csi array to MATLAB as a flint row vector */
+mxArray *cs_mex_put_int (csi *p, csi n, csi offset, csi do_free)
 {
     mxArray *X = mxCreateDoubleMatrix (1, n, mxREAL) ;
     double *x = mxGetPr (X) ;
-    int k ;
+    csi k ;
     for (k = 0 ; k < n ; k++) x [k] = (p ? p [k] : k) + offset ;
     if (do_free) cs_free (p) ;
     return (X) ;

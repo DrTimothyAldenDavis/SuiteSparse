@@ -36,7 +36,7 @@
 
 #include "RBio.h"
 #define TRUE (1)
-#define Int mwSignedIndex
+#define Long SuiteSparse_long
 
 void mexFunction
 (
@@ -47,12 +47,12 @@ void mexFunction
 )
 {
     double xmin, xmax ;
-    Int *Ap, *Ai ;
+    Long *Ap, *Ai ;
     double *Ax, *Az ;
-    Int nrow, ncol, nnz, mkind, skind, mkind_in, ok = TRUE ;
+    Long nrow, ncol, nnz, mkind, skind, mkind_in, ok = TRUE ;
     char mtype [4] ;
 
-    UFconfig config ;
+    SuiteSparse_config config ;
     config.malloc_memory = mxMalloc ;
     config.free_memory = mxFree ;
 
@@ -74,8 +74,8 @@ void mexFunction
         mexErrMsgTxt ("A must be sparse and double") ;
     }
 
-    Ap = (Int *) mxGetJc (pargin [0]) ;
-    Ai = (Int *) mxGetIr (pargin [0]) ;
+    Ap = (Long *) mxGetJc (pargin [0]) ;
+    Ai = (Long *) mxGetIr (pargin [0]) ;
     Ax = mxGetPr (pargin [0]) ;
     Az = mxGetPi (pargin [0]) ;
     nrow = mxGetM (pargin [0]) ;

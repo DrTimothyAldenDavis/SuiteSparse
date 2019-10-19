@@ -131,7 +131,7 @@ function umfpack_details
 % are used.  If a Control entry is NaN, then the default is used for that entry.
 %
 %
-% Copyright 1995-2009 by Timothy A. Davis, University of Florida.
+% Copyright 1995-2012 by Timothy A. Davis, http://www.suitesparse.com
 % All Rights Reserved.
 % UMFPACK is available under alternate licenses, contact T. Davis for details.
 %
@@ -165,7 +165,7 @@ function umfpack_details
 %   Copyright, this License, and the Availability note are retained,
 %   and a notice that the code was modified is included.
 %
-% Availability: http://www.cise.ufl.edu/research/sparse/umfpack
+% Availability: http://www.suitesparse.com
 %
 % See also umfpack, umfpack2, umfpack_make, umfpack_report,
 %    umfpack_demo, and umfpack_simple.

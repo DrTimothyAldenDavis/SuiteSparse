@@ -7,7 +7,7 @@
  * The CHOLMOD/MatrixOps Module is licensed under Version 2.0 of the GNU
  * General Public License.  See gpl.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
- * http://www.cise.ufl.edu/research/sparse
+ * http://www.suitesparse.com
  * -------------------------------------------------------------------------- */
 
 /* C = A (rset,cset), where C becomes length(rset)-by-length(cset) in dimension.
@@ -76,9 +76,9 @@ cholmod_sparse *CHOLMOD(submatrix)
     /* ---- input ---- */
     cholmod_sparse *A,	/* matrix to subreference */
     Int *rset,		/* set of row indices, duplicates OK */
-    UF_long rsize,	/* size of rset, or -1 for ":" */
+    SuiteSparse_long rsize,	/* size of rset, or -1 for ":" */
     Int *cset,		/* set of column indices, duplicates OK */
-    UF_long csize,	/* size of cset, or -1 for ":" */
+    SuiteSparse_long csize,	/* size of cset, or -1 for ":" */
     int values,		/* if TRUE compute the numerical values of C */
     int sorted,		/* if TRUE then return C with sorted columns */
     /* --------------- */

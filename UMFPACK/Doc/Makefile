@@ -7,7 +7,7 @@
 
 default: dist
 
-include ../../UFconfig/UFconfig.mk
+include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 #-------------------------------------------------------------------------------
 # Remove all but the files in the original distribution

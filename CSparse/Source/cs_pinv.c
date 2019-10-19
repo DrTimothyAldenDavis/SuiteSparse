@@ -1,10 +1,10 @@
 #include "cs.h"
 /* pinv = p', or p = pinv' */
-int *cs_pinv (int const *p, int n)
+csi *cs_pinv (csi const *p, csi n)
 {
-    int k, *pinv ;
+    csi k, *pinv ;
     if (!p) return (NULL) ;                     /* p = NULL denotes identity */
-    pinv = cs_malloc (n, sizeof (int)) ;        /* allocate result */
+    pinv = cs_malloc (n, sizeof (csi)) ;        /* allocate result */
     if (!pinv) return (NULL) ;                  /* out of memory */
     for (k = 0 ; k < n ; k++) pinv [p [k]] = k ;/* invert the permutation */
     return (pinv) ;                             /* return result */

@@ -7,7 +7,7 @@
  * complex.  Memory usage includes C itself, and workspace.  If C is m-by-n,
  * ssmultsym requires only 4*m bytes for 32-bit MATLAB, 8*m for 64-bit MATLAB.
  *
- * Copyright 2007, Timothy A. Davis, University of Florida.
+ * Copyright 2007-2009, Timothy A. Davis, http://www.suitesparse.com
  */
 
 #include "ssmult.h"

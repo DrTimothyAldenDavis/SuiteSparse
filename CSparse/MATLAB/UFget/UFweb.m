@@ -33,7 +33,7 @@ function stats = UFweb (matrix, opts)
 %
 %   See also web, UFget, UFget_defaults.
 
-%   Copyright 2009, Tim Davis, University of Florida.
+% Copyright 2009-2012, Timothy A. Davis, http://www.suitesparse.com
 
 params = UFget_defaults ;
 UF_Index = UFget ;

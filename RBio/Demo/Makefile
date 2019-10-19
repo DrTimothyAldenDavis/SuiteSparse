@@ -4,9 +4,9 @@
 
 default: all
 
-include ../../UFconfig/UFconfig.mk
+include ../../SuiteSparse_config/SuiteSparse_config.mk
 
-LIB = ../Lib/librbio.a ../../UFconfig/libufconfig.a
+CLIB = ../Lib/librbio.a ../../SuiteSparse_config/libsuitesparseconfig.a $(LIB)
 
 C = $(CC) $(CF)
 
@@ -26,12 +26,12 @@ clean:
 
 #-------------------------------------------------------------------------------
 library:
-	( cd ../../UFconfig ; $(MAKE) )
+	( cd ../../SuiteSparse_config ; $(MAKE) )
 	( cd ../Lib ; $(MAKE) )
 #-------------------------------------------------------------------------------
 
-I = -I../Include -I../../UFconfig
+I = -I../Include -I../../SuiteSparse_config
 
 RBdemo: library RBdemo.c
-	$(C) -o RBdemo $(I) RBdemo.c $(LIB)
+	$(C) -o RBdemo $(I) RBdemo.c $(CLIB)
 

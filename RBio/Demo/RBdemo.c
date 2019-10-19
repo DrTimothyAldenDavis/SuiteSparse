@@ -9,7 +9,7 @@
    to test the RBio C-callable functions. */
 
 #include "RBio.h"
-#define Int UF_long
+#define Long SuiteSparse_long
 #define ID "%ld"
 
 #define SLEN 4096
@@ -18,12 +18,12 @@ int main (int argc, char **argv)
 {
     double xr, xz, xmin, xmax ;
     double *Ax, *Az ;
-    Int nrow, ncol, mkind, skind, *Ap, *Ai, i, *Zp, *Zi, asize, mkind2, skind2,
+    Long nrow, ncol, mkind, skind, *Ap, *Ai, i, *Zp, *Zi, asize, mkind2, skind2,
         znz, j, p, status, njumbled, nzeros, build_upper, zero_handling, fem,
         xsize, nelnz, nnz ;
     char title [73], key [9], mtype [4], mtype2 [4], *filename ;
 
-    UFconfig config ;
+    SuiteSparse_config config ;
     config.malloc_memory = malloc ;
     config.free_memory = free ;
 
@@ -43,12 +43,12 @@ int main (int argc, char **argv)
     if (status != RBIO_OK)
     {
         printf ("RBread Error! "ID"\n", status) ;
-        UFfree (Ap, &config) ;
-        UFfree (Ai, &config) ;
-        UFfree (Ax, &config) ;
-        UFfree (Az, &config) ;
-        UFfree (Zp, &config) ;
-        UFfree (Zi, &config) ;
+        SuiteSparse_free (Ap, &config) ;
+        SuiteSparse_free (Ai, &config) ;
+        SuiteSparse_free (Ax, &config) ;
+        SuiteSparse_free (Az, &config) ;
+        SuiteSparse_free (Zp, &config) ;
+        SuiteSparse_free (Zi, &config) ;
 
         if (filename != NULL)
         {
@@ -61,9 +61,9 @@ int main (int argc, char **argv)
             }
             printf ("raw nrow "ID" ncol "ID" nnz "ID" nelnz "ID" xsize "ID"\n",
                 nrow, ncol, nnz, nelnz, xsize) ;
-            UFfree (Ap, &config) ;
-            UFfree (Ai, &config) ;
-            UFfree (Ax, &config) ;
+            SuiteSparse_free (Ap, &config) ;
+            SuiteSparse_free (Ai, &config) ;
+            SuiteSparse_free (Ax, &config) ;
             return (0) ;
         }
         return (1) ;
@@ -125,12 +125,12 @@ int main (int argc, char **argv)
 
     printf ("mtype from examining matrix:   [%s]\n", mtype2) ;
 
-    UFfree (Ap, &config) ;
-    UFfree (Ai, &config) ;
-    UFfree (Ax, &config) ;
-    UFfree (Az, &config) ;
-    UFfree (Zp, &config) ;
-    UFfree (Zi, &config) ;
+    SuiteSparse_free (Ap, &config) ;
+    SuiteSparse_free (Ai, &config) ;
+    SuiteSparse_free (Ax, &config) ;
+    SuiteSparse_free (Az, &config) ;
+    SuiteSparse_free (Zp, &config) ;
+    SuiteSparse_free (Zi, &config) ;
 
     zero_handling = 1 ;     /* prune zeros */
     status = RBread ("temp.rb", build_upper, zero_handling, title, key, mtype,
@@ -138,9 +138,9 @@ int main (int argc, char **argv)
         &Ap, &Ai, &Ax, NULL, NULL, NULL, &config) ;
     if (status != 0)
     {
-        UFfree (Ap, &config) ;
-        UFfree (Ai, &config) ;
-        UFfree (Ax, &config) ;
+        SuiteSparse_free (Ap, &config) ;
+        SuiteSparse_free (Ai, &config) ;
+        SuiteSparse_free (Ax, &config) ;
         printf ("RBread Error! "ID"\n", status) ;
         return (1) ;
     }
@@ -153,9 +153,9 @@ int main (int argc, char **argv)
     }
     printf ("mtype after reading from file: [%s]\n", mtype2) ;
 
-    UFfree (Ap, NULL) ;
-    UFfree (Ai, NULL) ;
-    UFfree (Ax, NULL) ;
+    SuiteSparse_free (Ap, NULL) ;
+    SuiteSparse_free (Ai, NULL) ;
+    SuiteSparse_free (Ax, NULL) ;
 
     status = RBreadraw ("temp.rb", title, key, mtype, &nrow, &ncol, &nnz,
         &nelnz, &mkind, &skind, &fem, &xsize, &Ap, &Ai, &Ax, NULL) ;
@@ -182,9 +182,9 @@ int main (int argc, char **argv)
         printf ("mtype from raw read from file: [%s]\n", mtype2) ;
     }
 
-    UFfree (Ap, NULL) ;
-    UFfree (Ai, NULL) ;
-    UFfree (Ax, NULL) ;
+    SuiteSparse_free (Ap, NULL) ;
+    SuiteSparse_free (Ai, NULL) ;
+    SuiteSparse_free (Ax, NULL) ;
 
     /* read in just the pattern */
     status = RBread ("temp.rb", build_upper, zero_handling, title, key, mtype,
@@ -210,8 +210,8 @@ int main (int argc, char **argv)
     printf ("mtype of pattern:              [%s]\n", mtype2) ;
 
 
-    UFfree (Ap, NULL) ;
-    UFfree (Ai, NULL) ;
+    SuiteSparse_free (Ap, NULL) ;
+    SuiteSparse_free (Ai, NULL) ;
 
     /* read in just the lower triangular part for symmetric case */
     build_upper = 0 ;
@@ -243,9 +243,9 @@ int main (int argc, char **argv)
         return (1) ;
     }
 
-    UFfree (Ap, NULL) ;
-    UFfree (Ai, NULL) ;
-    UFfree (Ax, NULL) ;
+    SuiteSparse_free (Ap, NULL) ;
+    SuiteSparse_free (Ai, NULL) ;
+    SuiteSparse_free (Ax, NULL) ;
 
     printf ("RBdemo OK\n") ;
     return (0) ;

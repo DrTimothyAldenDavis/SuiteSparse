@@ -68,8 +68,7 @@ function [p, Info] = camd (A, Control, C)				    %#ok
 %    See also AMD, COLMMD, COLAMD, COLPERM, SYMAMD, SYMMMD, SYMRCM.
 
 
-% Copyright 1994-2007, Tim Davis, University of Florida,
-% Patrick R. Amestoy, Iain S. Duff, and Yanqing Chen.
+% Copyright 1994-2007, Tim Davis, Patrick R. Amestoy, Iain S. Duff, and Y. Chen.
 %
 %    Acknowledgements: This work was supported by the National Science
 %       Foundation, under grants ASC-9111263, DMS-9223088, and CCR-0203270,

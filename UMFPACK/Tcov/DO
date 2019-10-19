@@ -47,10 +47,10 @@ ln -s ../../../../metis-4.0 Out/$1_$2/metis-4.0
 # put in the makefile
 /bin/cp GNUmakefile.$2 Out/$1_$2/GNUmakefile
 
-# put in the UFconfig.mk and UFconfig.h files
-mkdir Out/$1_$2/UFconfig
-/bin/cp -f Make.$1 Out/$1_$2/UFconfig/UFconfig.mk
-/bin/cp -f ../../UFconfig/UFconfig.h Out/$1_$2/UFconfig
+# put in SuiteSparse_config
+/bin/cp -pr ../../SuiteSparse_config Out/$1_$2
+/bin/rm -rf  Out/$1_$2/SuiteSparse_config/xerbla
+/bin/cp -f  Make.$1 Out/$1_$2/SuiteSparse_config/SuiteSparse_config.mk
 
 # put in the main program
 /bin/cp ut.c Out/$1_$2

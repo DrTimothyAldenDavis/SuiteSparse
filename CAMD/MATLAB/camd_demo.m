@@ -8,8 +8,7 @@ function camd_demo
 %
 % See also: camd, camd_make
 
-% Copyright 1994-2007, Tim Davis, University of Florida,
-% Patrick R. Amestoy, Iain S. Duff, and Yanqing Chen.
+% Copyright 1994-2007, Tim Davis, Patrick R. Amestoy, Iain S. Duff, and Y. Chen.
 
 % This orders the same matrix as the ANSI C demo, camd_demo.c.  It includes an
 % additional analysis of the matrix via MATLAB's symbfact routine.

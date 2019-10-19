@@ -9,8 +9,7 @@ function dimacs10_install (demo)
 %
 % See also dimacs10, metis_graph_read, UFget.
 
-%   Copyright 2011, Timothy A. Davis.
-%   http://www.cise.ufl.edu/research/sparse
+% Copyright 2011, Timothy A. Davis, http://www.suitesparse.com
 
 if (nargin < 1)
     demo = 1 ;

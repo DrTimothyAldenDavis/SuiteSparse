@@ -1,8 +1,8 @@
 #include "cs.h"
 /* find nonzero pattern of Cholesky L(k,1:k-1) using etree and triu(A(:,k)) */
-int cs_ereach (const cs *A, int k, const int *parent, int *s, int *w)
+csi cs_ereach (const cs *A, csi k, const csi *parent, csi *s, csi *w)
 {
-    int i, p, n, len, top, *Ap, *Ai ;
+    csi i, p, n, len, top, *Ap, *Ai ;
     if (!CS_CSC (A) || !parent || !s || !w) return (-1) ;   /* check inputs */
     top = n = A->n ; Ap = A->p ; Ai = A->i ;
     CS_MARK (w, k) ;                /* mark node k as visited */

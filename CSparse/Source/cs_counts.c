@@ -2,9 +2,9 @@
 /* column counts of LL'=A or LL'=A'A, given parent & post ordering */
 #define HEAD(k,j) (ata ? head [k] : j)
 #define NEXT(J)   (ata ? next [J] : -1)
-static void init_ata (cs *AT, const int *post, int *w, int **head, int **next)
+static void init_ata (cs *AT, const csi *post, csi *w, csi **head, csi **next)
 {
-    int i, k, p, m = AT->n, n = AT->m, *ATp = AT->p, *ATi = AT->i ;
+    csi i, k, p, m = AT->n, n = AT->m, *ATp = AT->p, *ATi = AT->i ;
     *head = w+4*n, *next = w+5*n+1 ;
     for (k = 0 ; k < n ; k++) w [post [k]] = k ;    /* invert post */
     for (i = 0 ; i < m ; i++)
@@ -14,16 +14,16 @@ static void init_ata (cs *AT, const int *post, int *w, int **head, int **next)
         (*head) [k] = i ;
     }
 }
-int *cs_counts (const cs *A, const int *parent, const int *post, int ata)
+csi *cs_counts (const cs *A, const csi *parent, const csi *post, csi ata)
 {
-    int i, j, k, n, m, J, s, p, q, jleaf, *ATp, *ATi, *maxfirst, *prevleaf,
+    csi i, j, k, n, m, J, s, p, q, jleaf, *ATp, *ATi, *maxfirst, *prevleaf,
         *ancestor, *head = NULL, *next = NULL, *colcount, *w, *first, *delta ;
     cs *AT ;
     if (!CS_CSC (A) || !parent || !post) return (NULL) ;    /* check inputs */
     m = A->m ; n = A->n ;
     s = 4*n + (ata ? (n+m+1) : 0) ;
-    delta = colcount = cs_malloc (n, sizeof (int)) ;    /* allocate result */
-    w = cs_malloc (s, sizeof (int)) ;                   /* get workspace */
+    delta = colcount = cs_malloc (n, sizeof (csi)) ;    /* allocate result */
+    w = cs_malloc (s, sizeof (csi)) ;                   /* get workspace */
     AT = cs_transpose (A, 0) ;                          /* AT = A' */
     if (!AT || !colcount || !w) return (cs_idone (colcount, AT, w, 0)) ;
     ancestor = w ; maxfirst = w+n ; prevleaf = w+2*n ; first = w+3*n ;

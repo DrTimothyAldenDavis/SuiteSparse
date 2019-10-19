@@ -1,5 +1,4 @@
- Matrix key: QC324                         
-UMFPACK V5.3.0 (Mar 24, 2009), Control:
+UMFPACK V5.6.0 (Jun 1, 2012), Control:
     Matrix entry defined as: double complex
     Int (generic integer) defined as: int
 
@@ -11,9 +10,10 @@ UMFPACK V5.3.0 (Mar 24, 2009), Control:
     3: pivot tolerance: 0.1
     4: block size for dense matrix kernels: 32
     5: strategy: 0 (auto)
+    10: ordering: 1 AMD/COLAMD
+    11: singleton filter: enabled
     6: initial allocation ratio: 0.7
     7: max iterative refinement steps: 2
-    12: 2-by-2 pivot tolerance: 0.01
     13: Q fixed during numerical factorization: 0 (auto)
     14: AMD dense row/col parameter:    10
        "dense" rows/columns have > max (16, (10)*sqrt(n)) entries
@@ -27,42 +27,23 @@ UMFPACK V5.3.0 (Mar 24, 2009), Control:
 
     The following options can only be changed at compile-time:
     8: BLAS library used:  Fortran BLAS.  size of BLAS integer: 4
-    9: compiled for ANSI C
-    10: CPU timer is POSIX times ( ) routine.
-    11: compiled for normal operation (debugging disabled)
+    compiled for ANSI C
+    POSIX C clock_getttime.
     computer/operating system: Linux
-    size of int: 4 UF_long: 8 Int: 4 pointer: 8 double: 8 Entry: 16 (in bytes)
+    size of int: 4 SuiteSparse_long: 8 Int: 4 pointer: 8 double: 8 Entry: 16 (in bytes)
 
-symbolic analysis:
-   status:     0.
-   time:      0.00E+00 (sec)
-   estimates (upper bound) for numeric LU:
-   size of LU:          1.17 (MB)
-   memory needed:       2.40 (MB)
-   flop count:      0.26E+08
-   nnz (L):           24027.
-   nnz (U):           39609.
-numeric factorization:
-   status:     0.
-   time:      0.10E-01
-   actual numeric LU statistics:
-   size of LU:          0.72 (MB)
-   memory needed:       1.14 (MB)
-   flop count:      0.14E+08
-   nnz (L):           23247.
-   nnz (U):           23247.
-UMFPACK V5.3.0 (Mar 24, 2009), Info:
+UMFPACK V5.6.0 (Jun 1, 2012), Info:
     matrix entry defined as:          double complex
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
     MATLAB:                           no.
-    CPU timer:                        POSIX times ( ) routine.
+    CPU timer:                        POSIX C clock_getttime ( ) routine.
     number of rows in matrix A:       324
     number of columns in matrix A:    324
     entries in matrix A:              26730
     memory usage reported in:         8-byte Units
     size of int:                      4 bytes
-    size of UF_long:                  8 bytes
+    size of SuiteSparse_long:         8 bytes
     size of pointer:                  8 bytes
     size of numerical entry:          16 bytes
 
@@ -90,11 +71,10 @@ UMFPACK V5.3.0 (Mar 24, 2009), Info:
         est. max nz in any column of L:            121
         number of "dense" rows/columns in S+S':    0
     symbolic factorization defragmentations:       0
-    symbolic memory usage (Units):                 63473
-    symbolic memory usage (MBytes):                0.5
+    symbolic memory usage (Units):                 50109
+    symbolic memory usage (MBytes):                0.4
     Symbolic size (Units):                         1425
     Symbolic size (MBytes):                        0
-    symbolic factorization CPU time (sec):         0.00
     symbolic factorization wallclock time(sec):    0.00
 
     matrix scaled: yes (divided each row by sum of abs values in each row)
@@ -133,18 +113,35 @@ UMFPACK V5.3.0 (Mar 24, 2009), Info:
     numeric factorization defragmentations:        0
     numeric factorization reallocations:           0
     costly numeric factorization reallocations:    0
-    numeric factorization CPU time (sec):          0.01
-    numeric factorization wallclock time (sec):    0.02
-    numeric factorization mflops (CPU time):       1435.19
-    numeric factorization mflops (wallclock):      717.60
+    numeric factorization wallclock time (sec):    0.01
+    numeric factorization mflops (wallclock):      1530.21
+    symbolic + numeric wall clock time (sec):      0.01
+    symbolic + numeric mflops (wall clock):        1083.99
 
     solve flops:                                   3.70332e+05
     iterative refinement steps taken:              0
     iterative refinement steps attempted:          0
-    solve CPU time (sec):                          0.00
-    solve wall clock time (sec):                   0.01
-    solve mflops (wall clock time):                37.03
+    solve wall clock time (sec):                   0.00
 
     total symbolic + numeric + solve flops:        1.47223e+07
 
- norm (A*x-b):   0.
+ Matrix key: QC324                         
+symbolic analysis:
+   status:     0.
+   time:      0.39E-02 (sec)
+   estimates (upper bound) for numeric LU:
+   size of LU:          1.17 (MB)
+   memory needed:       2.40 (MB)
+   flop count:      0.26E+08
+   nnz (L):           24027.
+   nnz (U):           39609.
+numeric factorization:
+   status:     0.
+   time:      0.94E-02
+   actual numeric LU statistics:
+   size of LU:          0.72 (MB)
+   memory needed:       1.14 (MB)
+   flop count:      0.14E+08
+   nnz (L):           23247.
+   nnz (U):           23247.
+ norm (A*x-b):   2.42925031304605699E-013

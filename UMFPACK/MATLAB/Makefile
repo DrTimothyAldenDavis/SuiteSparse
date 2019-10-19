@@ -5,7 +5,7 @@
 default:
 	- echo "Use umfpack_make.m in MATLAB to compile the UMFPACK mexFunction"
 
-include ../../UFconfig/UFconfig.mk
+include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 #-------------------------------------------------------------------------------
 # Remove all but the files in the original distribution

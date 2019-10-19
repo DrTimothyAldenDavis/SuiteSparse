@@ -16,10 +16,9 @@
 \begin{document}
 
 \author{Timothy A. Davis \\
-Dept. of Computer and Information Science and Engineering \\
-Univ. of Florida, Gainesville, FL}
+DrTimothyAldenDavis@gmail.com, http://www.suitesparse.com}
 \title{UMFPACK Quick Start Guide}
-\date{VERSION 5.5.2, Dec 7, 2011}
+\date{VERSION 5.6.0, Jun 1, 2012}
 \maketitle
 
 %-------------------------------------------------------------------------------
@@ -37,8 +36,7 @@ Univ. of Florida, Gainesville, FL}
 
 Copyright\copyright 1995-2011 by Timothy A. Davis.
 All Rights Reserved.  Refer to the UMFPACK User Guide
-for the License. See \newline
-http://www.cise.ufl.edu/research/sparse/umfpack
+for the License. See http://www.suitesparse.com
 for the code and full documentation.
 
 %-------------------------------------------------------------------------------
@@ -244,9 +242,9 @@ but your performance will be much less than what it should be.
 UMFPACK also requires CHOLMOD, CCAMD, CCOLAMD, COLAMD, and metis-4.0
 by default.  You can remove this dependency by compiling with
 {\tt -DNCHOLMOD}.  Add this to the {\tt UMFPACK\_CONFIG} definition
-in {\tt UFconfig/UFconfig.mk}.
+in {\tt SuiteSparse\_config/SuiteSparse\_config.mk}.
 
-System-dependent configurations are in the {\tt UFconfig/UFconfig.mk}
+System-dependent configurations are in the {\tt SuiteSparse\_config/SuiteSparse\_config.mk}
 file.  The default
 settings will work on most systems, except for the BLAS definition.
 Sample configurations are provided
@@ -271,11 +269,11 @@ Use the MATLAB command {\tt umfpack\_make} in the MATLAB directory
 to compile UMFPACK and AMD for use in MATLAB.
 
 If you compile UMFPACK and AMD and then later change the
-{\tt UFconfig/UFconfig.mk} file
+{\tt SuiteSparse\_config/SuiteSparse\_config.mk} file
 then you should type {\tt make purge} and then {\tt make} to recompile.
 
 Here are the various parameters that you can control in your
-{\tt UFconfig/UFconfig.mk} file:
+{\tt SuiteSparse\_config/SuiteSparse\_config.mk} file:
 
 \begin{itemize}
 \item {\tt CC = } your C compiler, such as {\tt cc}.
@@ -286,7 +284,6 @@ Here are the various parameters that you can control in your
 \item {\tt LIB = } your libraries, such as {\tt -lm} or {\tt -lblas}.
 \item {\tt RM =} the command to delete a file.
 \item {\tt MV =} the command to rename a file.
-\item {\tt MEX =} the command to compile a MATLAB mexFunction.
 \item {\tt F77 =} the command to compile a Fortran program (optional).
 \item {\tt F77FLAGS =} the Fortran compiler flags (optional).
 \item {\tt F77LIB =} the Fortran libraries (optional).
@@ -307,9 +304,6 @@ most deal with how the BLAS are called:
     Sun Solaris, SGI Irix, Red Hat Linux, Compaq Alpha, and
     AIX (the IBM RS 6000).
 
-\item {\tt -DGETRUSAGE} if you have the {\tt getrusage} function.
-\item {\tt -DNPOSIX} if you do not have the POSIX-compliant
-    {\tt sysconf} and {\tt times} routines.
 \item {\tt -DNRECIPROCAL} controls a trade-off between speed and accuracy.
     This is off by default (speed preferred over accuracy) except when
     compiling for MATLAB.
@@ -510,7 +504,7 @@ Arguments:
             UMFPACK_ERROR_internal_error
 
                 Something very serious went wrong.  This is a bug.
-                Please contact the author (davis@cise.ufl.edu).
+                Please contact the author (DrTimothyAldenDavis@gmail.com).
 
         Info [UMFPACK_SIZE_OF_UNIT]:  the number of bytes in a Unit,
             for memory usage statistics below.

@@ -5,10 +5,7 @@ function test27
 %   test27
 % See also: testall
 
-%   Copyright 2006-2007, Timothy A. Davis.
-%   http://www.cise.ufl.edu/research/sparse
-
-
+% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
 
 clear functions
 rand ('state', 0) ;

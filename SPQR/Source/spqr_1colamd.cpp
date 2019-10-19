@@ -21,17 +21,17 @@ template <typename Entry> int spqr_1colamd  // TRUE if OK, FALSE otherwise
     int ordering,           // all available, except 0:fixed and 3:given
                             // treated as 1:natural
     double tol,             // only accept singletons above tol
-    Int bncols,             // number of columns of B
+    Long bncols,            // number of columns of B
     cholmod_sparse *A,      // m-by-n sparse matrix
 
     // outputs, neither allocated nor defined on input
 
-    Int **p_Q1fill,         // size n+bncols, fill-reducing
+    Long **p_Q1fill,        // size n+bncols, fill-reducing
                             // or natural ordering
 
-    Int **p_R1p,            // size n1rows+1, R1p [k] = # of nonzeros in kth
+    Long **p_R1p,           // size n1rows+1, R1p [k] = # of nonzeros in kth
                             // row of R1.  NULL if n1cols == 0.
-    Int **p_P1inv,          // size m, singleton row inverse permutation.
+    Long **p_P1inv,         // size m, singleton row inverse permutation.
                             // If row i of A is the kth singleton row, then
                             // P1inv [i] = k.  NULL if n1cols is zero.
 
@@ -40,17 +40,17 @@ template <typename Entry> int spqr_1colamd  // TRUE if OK, FALSE otherwise
                             // Y = [A B] or Y = [A2 B2].  If B is empty and
                             // there are no column singletons, Y is NULL
 
-    Int *p_n1cols,          // number of column singletons found
-    Int *p_n1rows,          // number of corresponding rows found
+    Long *p_n1cols,         // number of column singletons found
+    Long *p_n1rows,         // number of corresponding rows found
 
     // workspace and parameters
     cholmod_common *cc
 )
 {
-    Int *Q1fill, *Degree, *Qrows, *W, *Winv, *ATp, *ATj, *R1p, *P1inv, *Yp,
+    Long *Q1fill, *Degree, *Qrows, *W, *Winv, *ATp, *ATj, *R1p, *P1inv, *Yp,
         *Ap, *Ai, *Work ;
     Entry *Ax ;
-    Int p, d, j, i, k, n1cols, n1rows, row, col, pend, n2rows, n2cols = EMPTY,
+    Long p, d, j, i, k, n1cols, n1rows, row, col, pend, n2rows, n2cols = EMPTY,
         nz2, kk, p2, col2, ynz, fill_reducing_ordering, m, n, xtype, worksize ;
     cholmod_sparse *AT, *Y ;
 
@@ -62,8 +62,8 @@ template <typename Entry> int spqr_1colamd  // TRUE if OK, FALSE otherwise
 
     m = A->nrow ;
     n = A->ncol ;
-    Ap = (Int *) A->p ;
-    Ai = (Int *) A->i ;
+    Ap = (Long *) A->p ;
+    Ai = (Long *) A->i ;
     Ax = (Entry *) A->x ;
 
     // set outputs to NULL in case of early return
@@ -78,7 +78,7 @@ template <typename Entry> int spqr_1colamd  // TRUE if OK, FALSE otherwise
     // allocate result Q1fill (Y, R1p, P1inv allocated later)
     // -------------------------------------------------------------------------
 
-    Q1fill = (Int *) cholmod_l_malloc (n+bncols, sizeof (Int), cc) ;
+    Q1fill = (Long *) cholmod_l_malloc (n+bncols, sizeof (Long), cc) ;
 
     // -------------------------------------------------------------------------
     // allocate workspace
@@ -91,7 +91,7 @@ template <typename Entry> int spqr_1colamd  // TRUE if OK, FALSE otherwise
 
     worksize = ((fill_reducing_ordering) ? 3:2) * n ;
 
-    Work = (Int *) cholmod_l_malloc (worksize, sizeof (Int), cc) ;
+    Work = (Long *) cholmod_l_malloc (worksize, sizeof (Long), cc) ;
     Degree = Work ;         // size n
     Qrows  = Work + n ;     // size n
     Winv   = Qrows ;        // Winv and Qrows not needed at the same time
@@ -100,8 +100,8 @@ template <typename Entry> int spqr_1colamd  // TRUE if OK, FALSE otherwise
     if (cc->status < CHOLMOD_OK)
     {
         // out of memory; free everything and return
-        cholmod_l_free (worksize, sizeof (Int), Work, cc) ;
-        cholmod_l_free (n+bncols, sizeof (Int), Q1fill, cc) ;
+        cholmod_l_free (worksize, sizeof (Long), Work, cc) ;
+        cholmod_l_free (n+bncols, sizeof (Long), Q1fill, cc) ;
         return (FALSE) ;
     }
 
@@ -153,13 +153,13 @@ template <typename Entry> int spqr_1colamd  // TRUE if OK, FALSE otherwise
     if (cc->status < CHOLMOD_OK)
     {
         // out of memory; free everything and return
-        cholmod_l_free (worksize, sizeof (Int), Work, cc) ;
-        cholmod_l_free (n+bncols, sizeof (Int), Q1fill, cc) ;
+        cholmod_l_free (worksize, sizeof (Long), Work, cc) ;
+        cholmod_l_free (n+bncols, sizeof (Long), Q1fill, cc) ;
         return (FALSE) ;
     }
 
-    ATp = (Int *) AT->p ;
-    ATj = (Int *) AT->i ;
+    ATp = (Long *) AT->p ;
+    ATj = (Long *) AT->i ;
 
     // -------------------------------------------------------------------------
     // remove column singletons via breadth-first-search
@@ -306,17 +306,17 @@ template <typename Entry> int spqr_1colamd  // TRUE if OK, FALSE otherwise
         // ---------------------------------------------------------------------
 
         // allocate result arrays R1p and P1inv
-        R1p   = (Int *) cholmod_l_malloc (n1rows+1, sizeof (Int), cc) ;
-        P1inv = (Int *) cholmod_l_malloc (m,        sizeof (Int), cc) ;
+        R1p   = (Long *) cholmod_l_malloc (n1rows+1, sizeof (Long), cc) ;
+        P1inv = (Long *) cholmod_l_malloc (m,        sizeof (Long), cc) ;
 
         if (cc->status < CHOLMOD_OK)
         {
             // out of memory; free everything and return
             cholmod_l_free_sparse (&AT, cc) ;
-            cholmod_l_free (worksize, sizeof (Int), Work, cc) ;
-            cholmod_l_free (n+bncols, sizeof (Int), Q1fill, cc) ;
-            cholmod_l_free (n1rows+1, sizeof (Int), R1p, cc) ;
-            cholmod_l_free (m,        sizeof (Int), P1inv, cc) ;
+            cholmod_l_free (worksize, sizeof (Long), Work, cc) ;
+            cholmod_l_free (n+bncols, sizeof (Long), Q1fill, cc) ;
+            cholmod_l_free (n1rows+1, sizeof (Long), R1p, cc) ;
+            cholmod_l_free (m,        sizeof (Long), P1inv, cc) ;
             return (FALSE) ;
         }
 
@@ -476,14 +476,14 @@ template <typename Entry> int spqr_1colamd  // TRUE if OK, FALSE otherwise
 
         PR (("n1cols %ld n1rows %ld n2cols %ld n2rows %ld\n",
             n1cols, n1rows, n2cols, n2rows)) ;
-        ASSERT ((Int) AT->nrow == n) ;
-        ASSERT ((Int) AT->ncol == m) ;
+        ASSERT ((Long) AT->nrow == n) ;
+        ASSERT ((Long) AT->ncol == m) ;
 
         AT->nrow = n2cols ;
         AT->ncol = n2rows ;
 
         // save the current CHOLMOD settings
-        Int save [6] ;
+        Long save [6] ;
         save [0] = cc->supernodal ;
         save [1] = cc->nmethods ;
         save [2] = cc->postorder ;
@@ -556,14 +556,14 @@ template <typename Entry> int spqr_1colamd  // TRUE if OK, FALSE otherwise
         if (ordering == SPQR_ORDERING_AMD)
         {
             // use CHOLMOD's interface to AMD to order A'*A
-            cholmod_l_amd (AT, NULL, 0, (UF_long *) (Q1fill + n1cols), cc) ;
+            cholmod_l_amd (AT, NULL, 0, (Long *) (Q1fill + n1cols), cc) ;
         }
 #ifndef NPARTITION
         else if (ordering == SPQR_ORDERING_METIS)
         {
             // use CHOLMOD's interface to METIS to order A'*A (if installed)
             cholmod_l_metis (AT, NULL, 0, TRUE,
-                (UF_long *) (Q1fill + n1cols), cc) ;
+                (Long *) (Q1fill + n1cols), cc) ;
         }
 #endif
         else if (ordering == SPQR_ORDERING_CHOLMOD)
@@ -577,7 +577,7 @@ template <typename Entry> int spqr_1colamd  // TRUE if OK, FALSE otherwise
             if (Sc != NULL)
             {
                 // copy perm from Sc->Perm [0:n2cols-1] to Q1fill (n1cols:n)
-                Int *Sc_perm = (Int *) Sc->Perm ;
+                Long *Sc_perm = (Long *) Sc->Perm ;
                 for (k = 0 ; k < n2cols ; k++)
                 {
                     Q1fill [k + n1cols] = Sc_perm [k] ;
@@ -599,7 +599,7 @@ template <typename Entry> int spqr_1colamd  // TRUE if OK, FALSE otherwise
             // use CHOLMOD's interface to COLAMD to order AT
             ordering = SPQR_ORDERING_COLAMD ;
             cholmod_l_colamd (AT, NULL, 0, TRUE,
-                (UF_long *) (Q1fill + n1cols), cc) ;
+                (Long *) (Q1fill + n1cols), cc) ;
         }
 
         cc->SPQR_istat [7] = ordering ;
@@ -629,10 +629,10 @@ template <typename Entry> int spqr_1colamd  // TRUE if OK, FALSE otherwise
     if (cc->status < CHOLMOD_OK)
     {
         // out of memory; free everything and return
-        cholmod_l_free (worksize, sizeof (Int), Work, cc) ;
-        cholmod_l_free (n+bncols, sizeof (Int), Q1fill, cc) ;
-        cholmod_l_free (n1rows+1, sizeof (Int), R1p, cc) ;
-        cholmod_l_free (m,        sizeof (Int), P1inv, cc) ;
+        cholmod_l_free (worksize, sizeof (Long), Work, cc) ;
+        cholmod_l_free (n+bncols, sizeof (Long), Q1fill, cc) ;
+        cholmod_l_free (n1rows+1, sizeof (Long), R1p, cc) ;
+        cholmod_l_free (m,        sizeof (Long), P1inv, cc) ;
         return (FALSE) ;
     }
 
@@ -699,14 +699,14 @@ template <typename Entry> int spqr_1colamd  // TRUE if OK, FALSE otherwise
         if (cc->status < CHOLMOD_OK)
         {
             // out of memory; free everything and return
-            cholmod_l_free (worksize, sizeof (Int), Work, cc) ;
-            cholmod_l_free (n+bncols, sizeof (Int), Q1fill, cc) ;
-            cholmod_l_free (n1rows+1, sizeof (Int), R1p, cc) ;
-            cholmod_l_free (m,        sizeof (Int), P1inv, cc) ;
+            cholmod_l_free (worksize, sizeof (Long), Work, cc) ;
+            cholmod_l_free (n+bncols, sizeof (Long), Q1fill, cc) ;
+            cholmod_l_free (n1rows+1, sizeof (Long), R1p, cc) ;
+            cholmod_l_free (m,        sizeof (Long), P1inv, cc) ;
             return (FALSE) ;
         }
 
-        Yp = (Int *) Y->p ; 
+        Yp = (Long *) Y->p ; 
 
         ynz = 0 ;
         PR (("1c wrapup: n1cols %ld n %ld\n", n1cols, n)) ;
@@ -725,7 +725,7 @@ template <typename Entry> int spqr_1colamd  // TRUE if OK, FALSE otherwise
     // free workspace and return results
     // -------------------------------------------------------------------------
 
-    cholmod_l_free (worksize, sizeof (Int), Work, cc) ;
+    cholmod_l_free (worksize, sizeof (Long), Work, cc) ;
 
     *p_Q1fill = Q1fill ;
     *p_R1p    = R1p ;
@@ -745,17 +745,17 @@ template int spqr_1colamd <double>
     int ordering,           // all available, except 0:fixed and 3:given
                             // treated as 1:natural
     double tol,             // only accept singletons above tol
-    Int bncols,             // number of columns of B
+    Long bncols,            // number of columns of B
     cholmod_sparse *A,      // m-by-n sparse matrix
 
     // output arrays, neither allocated nor defined on input.
 
-    Int **p_Q1fill,         // size n+bncols, fill-reducing
+    Long **p_Q1fill,        // size n+bncols, fill-reducing
                             // or natural ordering
 
-    Int **p_R1p,            // size n1rows+1, R1p [k] = # of nonzeros in kth
+    Long **p_R1p,           // size n1rows+1, R1p [k] = # of nonzeros in kth
                             // row of R1.  NULL if n1cols == 0.
-    Int **p_P1inv,          // size m, singleton row inverse permutation.
+    Long **p_P1inv,         // size m, singleton row inverse permutation.
                             // If row i of A is the kth singleton row, then
                             // P1inv [i] = k.  NULL if n1cols is zero.
 
@@ -764,8 +764,8 @@ template int spqr_1colamd <double>
                             // Y = [A B] or Y = [A2 B2].  If B is empty and
                             // there are no column singletons, Y is NULL
 
-    Int *p_n1cols,          // number of column singletons found
-    Int *p_n1rows,          // number of corresponding rows found
+    Long *p_n1cols,         // number of column singletons found
+    Long *p_n1rows,         // number of corresponding rows found
 
     // workspace and parameters
     cholmod_common *cc
@@ -779,17 +779,17 @@ template int spqr_1colamd <Complex>
     int ordering,           // all available, except 0:fixed and 3:given
                             // treated as 1:natural
     double tol,             // only accept singletons above tol
-    Int bncols,             // number of columns of B
+    Long bncols,            // number of columns of B
     cholmod_sparse *A,      // m-by-n sparse matrix
 
     // output arrays, neither allocated nor defined on input.
 
-    Int **p_Q1fill,         // size n+bncols, fill-reducing
+    Long **p_Q1fill,        // size n+bncols, fill-reducing
                             // or natural ordering
 
-    Int **p_R1p,            // size n1rows+1, R1p [k] = # of nonzeros in kth
+    Long **p_R1p,           // size n1rows+1, R1p [k] = # of nonzeros in kth
                             // row of R1.  NULL if n1cols == 0.
-    Int **p_P1inv,          // size m, singleton row inverse permutation.
+    Long **p_P1inv,         // size m, singleton row inverse permutation.
                             // If row i of A is the kth singleton row, then
                             // P1inv [i] = k.  NULL if n1cols is zero.
 
@@ -798,8 +798,8 @@ template int spqr_1colamd <Complex>
                             // Y = [A B] or Y = [A2 B2].  If B is empty and
                             // there are no column singletons, Y is NULL
 
-    Int *p_n1cols,          // number of column singletons found
-    Int *p_n1rows,          // number of corresponding rows found
+    Long *p_n1cols,         // number of column singletons found
+    Long *p_n1rows,         // number of corresponding rows found
 
     // workspace and parameters
     cholmod_common *cc

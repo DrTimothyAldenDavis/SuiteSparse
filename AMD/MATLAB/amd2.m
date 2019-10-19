@@ -63,12 +63,8 @@ function [p, Info] = amd2 (A, Control)					    %#ok
 %
 % See also AMD, COLMMD, COLAMD, COLPERM, SYMAMD, SYMMMD, SYMRCM.
 
-% --------------------------------------------------------------------------
-% Copyright 1994-2007, Tim Davis, University of Florida
+% Copyright 1994-2012, Timothy A. Davis, http://www.suitesparse.com,
 % Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.
-% email: davis at cise.ufl.edu    CISE Department, Univ. of Florida.
-% web: http://www.cise.ufl.edu/research/sparse/amd
-% --------------------------------------------------------------------------
 %
 %    Acknowledgements: This work was supported by the National Science
 %       Foundation, under grants ASC-9111263, DMS-9223088, and CCR-0203270.

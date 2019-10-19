@@ -7,7 +7,6 @@
  * The CHOLMOD/Cholesky Module is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
- * http://www.cise.ufl.edu/research/sparse
  * -------------------------------------------------------------------------- */
 
 /* Solve one of the following systems:
@@ -1106,8 +1105,8 @@ cholmod_dense *CHOLMOD(solve)
 	     * It might be possible for the calls to the BLAS to differ between
 	     * factorization and forward/backsolves, however.  This statement
 	     * is untested; it does not appear in the compiled code if
-	     * CHECK_BLAS_INT is true (when the same integer is used in CHOLMOD
-	     * and the BLAS. */
+             * CHECK_BLAS_INT is true (when the same integer is used in
+             * CHOLMOD and the BLAS. */
 	    CHOLMOD(free_dense) (&X, Common) ;
 	}
 

@@ -8,7 +8,7 @@
  * CHOLMOD/Include/cholmod_matrixops.h is licensed under Version 2.0 of the GNU
  * General Public License.  See gpl.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
- * http://www.cise.ufl.edu/research/sparse
+ * http://www.suitesparse.com
  * -------------------------------------------------------------------------- */
 
 /* CHOLMOD MatrixOps module.
@@ -182,17 +182,18 @@ cholmod_sparse *cholmod_submatrix
     /* ---- input ---- */
     cholmod_sparse *A,	/* matrix to subreference */
     int *rset,		/* set of row indices, duplicates OK */
-    UF_long rsize,	/* size of r; rsize < 0 denotes ":" */
+    SuiteSparse_long rsize,	/* size of r; rsize < 0 denotes ":" */
     int *cset,		/* set of column indices, duplicates OK */
-    UF_long csize,	/* size of c; csize < 0 denotes ":" */
+    SuiteSparse_long csize,	/* size of c; csize < 0 denotes ":" */
     int values,		/* if TRUE compute the numerical values of C */
     int sorted,		/* if TRUE then return C with sorted columns */
     /* --------------- */
     cholmod_common *Common
 ) ;
 
-cholmod_sparse *cholmod_l_submatrix (cholmod_sparse *, UF_long *, UF_long,
-    UF_long *, UF_long, int, int, cholmod_common *) ;
+cholmod_sparse *cholmod_l_submatrix (cholmod_sparse *, SuiteSparse_long *,
+    SuiteSparse_long, SuiteSparse_long *, SuiteSparse_long, int, int,
+    cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_vertcat:  C = [A ; B] */
@@ -229,7 +230,8 @@ int cholmod_symmetry
     cholmod_common *Common
 ) ;
 
-int cholmod_l_symmetry (cholmod_sparse *, int, UF_long *, UF_long *, UF_long *,
-    UF_long *, cholmod_common *) ;
+int cholmod_l_symmetry (cholmod_sparse *, int, SuiteSparse_long *,
+    SuiteSparse_long *, SuiteSparse_long *, SuiteSparse_long *,
+    cholmod_common *) ;
 
 #endif

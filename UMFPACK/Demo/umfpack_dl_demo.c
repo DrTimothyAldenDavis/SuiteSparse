@@ -4,9 +4,9 @@
 
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
+/* UMFPACK Copyright (c) 2005-2012 by Timothy A. Davis,                       */
+/* http://www.suitesparse.com. All Rights Reserved.  See ../Doc/License       */
+/* for License.                                                               */
 /* -------------------------------------------------------------------------- */
 
 /*
@@ -57,9 +57,9 @@
 /* triplet form of the matrix.  The triplets can be in any order. */
 /* -------------------------------------------------------------------------- */
 
-static UF_long n = 5, nz = 12 ;
-static UF_long Arow [ ] = { 0,  4,  1,  1,   2,   2,  0,  1,  2,  3,  4,  4} ;
-static UF_long Acol [ ] = { 0,  4,  0,  2,   1,   2,  1,  4,  3,  2,  1,  2} ;
+static SuiteSparse_long n = 5, nz = 12 ;
+static SuiteSparse_long Arow [ ] = { 0,  4,  1,  1,   2,   2,  0,  1,  2,  3,  4,  4} ;
+static SuiteSparse_long Acol [ ] = { 0,  4,  0,  2,   1,   2,  1,  4,  3,  2,  1,  2} ;
 static double Aval [ ] = {2., 1., 3., 4., -1., -3., 3., 6., 2., 1., 4., 2.} ;
 static double b [ ] = {8., 45., -3., 3., 19.}, x [5], r [5] ;
 
@@ -84,13 +84,13 @@ static void error
 
 static double resid
 (
-    UF_long transpose,
-    UF_long Ap [ ],
-    UF_long Ai [ ],
+    SuiteSparse_long transpose,
+    SuiteSparse_long Ap [ ],
+    SuiteSparse_long Ai [ ],
     double Ax [ ]
 )
 {
-    UF_long i, j, p ;
+    SuiteSparse_long i, j, p ;
     double norm ;
 
     for (i = 0 ; i < n ; i++)
@@ -136,7 +136,7 @@ int main (int argc, char **argv)
 {
     double Info [UMFPACK_INFO], Control [UMFPACK_CONTROL], *Ax, *Cx, *Lx, *Ux,
 	*W, t [2], *Dx, rnorm, *Rb, *y, *Rs ;
-    UF_long *Ap, *Ai, *Cp, *Ci, row, col, p, lnz, unz, nr, nc, *Lp, *Li, *Ui, *Up,
+    SuiteSparse_long *Ap, *Ai, *Cp, *Ci, row, col, p, lnz, unz, nr, nc, *Lp, *Li, *Ui, *Up,
 	*P, *Q, *Lj, i, j, k, anz, nfr, nchains, *Qinit, fnpiv, lnz1, unz1, nz1,
 	status, *Front_npivcol, *Front_parent, *Chain_start, *Wi, *Pinit, n1,
 	*Chain_maxrows, *Chain_maxcols, *Front_1strow, *Front_leftmostdesc,
@@ -181,8 +181,8 @@ int main (int argc, char **argv)
 
     /* convert to column form */
     nz1 = MAX (nz,1) ;	/* ensure arrays are not of size zero. */
-    Ap = (UF_long *) malloc ((n+1) * sizeof (UF_long)) ;
-    Ai = (UF_long *) malloc (nz1 * sizeof (UF_long)) ;
+    Ap = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
+    Ai = (SuiteSparse_long *) malloc (nz1 * sizeof (SuiteSparse_long)) ;
     Ax = (double *) malloc (nz1 * sizeof (double)) ;
     if (!Ap || !Ai || !Ax)
     {
@@ -190,7 +190,7 @@ int main (int argc, char **argv)
     }
 
     status = umfpack_dl_triplet_to_col (n, n, nz, Arow, Acol, Aval,
-	Ap, Ai, Ax, (UF_long *) NULL) ;
+	Ap, Ai, Ax, (SuiteSparse_long *) NULL) ;
 
     if (status < 0)
     {
@@ -454,15 +454,15 @@ int main (int argc, char **argv)
     /* C = transpose of A */
     /* ---------------------------------------------------------------------- */
 
-    Cp = (UF_long *) malloc ((n+1) * sizeof (UF_long)) ;
-    Ci = (UF_long *) malloc (nz1 * sizeof (UF_long)) ;
+    Cp = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
+    Ci = (SuiteSparse_long *) malloc (nz1 * sizeof (SuiteSparse_long)) ;
     Cx = (double *) malloc (nz1 * sizeof (double)) ;
     if (!Cp || !Ci || !Cx)
     {
 	error ("out of memory") ;
     }
     status = umfpack_dl_transpose (n, n, Ap, Ai, Ax,
-	(UF_long *) NULL, (UF_long *) NULL, Cp, Ci, Cx) ;
+	(SuiteSparse_long *) NULL, (SuiteSparse_long *) NULL, Cp, Ci, Cx) ;
     if (status < 0)
     {
 	umfpack_dl_report_status (Control, status) ;
@@ -492,15 +492,15 @@ int main (int argc, char **argv)
 
     printf ("\nGet the contents of the Symbolic object for C:\n") ;
     printf ("(compare with umfpack_dl_report_symbolic output, above)\n") ;
-    Pinit = (UF_long *) malloc ((n+1) * sizeof (UF_long)) ;
-    Qinit = (UF_long *) malloc ((n+1) * sizeof (UF_long)) ;
-    Front_npivcol = (UF_long *) malloc ((n+1) * sizeof (UF_long)) ;
-    Front_1strow = (UF_long *) malloc ((n+1) * sizeof (UF_long)) ;
-    Front_leftmostdesc = (UF_long *) malloc ((n+1) * sizeof (UF_long)) ;
-    Front_parent = (UF_long *) malloc ((n+1) * sizeof (UF_long)) ;
-    Chain_start = (UF_long *) malloc ((n+1) * sizeof (UF_long)) ;
-    Chain_maxrows = (UF_long *) malloc ((n+1) * sizeof (UF_long)) ;
-    Chain_maxcols = (UF_long *) malloc ((n+1) * sizeof (UF_long)) ;
+    Pinit = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
+    Qinit = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
+    Front_npivcol = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
+    Front_1strow = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
+    Front_leftmostdesc = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
+    Front_parent = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
+    Chain_start = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
+    Chain_maxrows = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
+    Chain_maxcols = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
     if (!Pinit || !Qinit || !Front_npivcol || !Front_parent || !Chain_start ||
 	!Chain_maxrows || !Chain_maxcols || !Front_1strow ||
 	!Front_leftmostdesc)
@@ -578,14 +578,14 @@ int main (int argc, char **argv)
     /* ensure arrays are not of zero size */
     lnz1 = MAX (lnz,1) ;
     unz1 = MAX (unz,1) ;
-    Lp = (UF_long *) malloc ((n+1) * sizeof (UF_long)) ;
-    Lj = (UF_long *) malloc (lnz1 * sizeof (UF_long)) ;
+    Lp = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
+    Lj = (SuiteSparse_long *) malloc (lnz1 * sizeof (SuiteSparse_long)) ;
     Lx = (double *) malloc (lnz1 * sizeof (double)) ;
-    Up = (UF_long *) malloc ((n+1) * sizeof (UF_long)) ;
-    Ui = (UF_long *) malloc (unz1 * sizeof (UF_long)) ;
+    Up = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
+    Ui = (SuiteSparse_long *) malloc (unz1 * sizeof (SuiteSparse_long)) ;
     Ux = (double *) malloc (unz1 * sizeof (double)) ;
-    P = (UF_long *) malloc (n * sizeof (UF_long)) ;
-    Q = (UF_long *) malloc (n * sizeof (UF_long)) ;
+    P = (SuiteSparse_long *) malloc (n * sizeof (SuiteSparse_long)) ;
+    Q = (SuiteSparse_long *) malloc (n * sizeof (SuiteSparse_long)) ;
     Dx = (double *) NULL ;	/* D vector not requested */
     Rs  = (double *) malloc (n * sizeof (double)) ;
     if (!Lp || !Lj || !Lx || !Up || !Ui || !Ux || !P || !Q || !Rs)
@@ -626,7 +626,7 @@ int main (int argc, char **argv)
     /* by umfpack_dl_col_to_triplet. */
 
     printf ("\nConverting L to triplet form, and printing it:\n") ;
-    Li = (UF_long *) malloc (lnz1 * sizeof (UF_long)) ;
+    Li = (SuiteSparse_long *) malloc (lnz1 * sizeof (SuiteSparse_long)) ;
     if (!Li)
     {
 	error ("out of memory") ;
@@ -683,7 +683,7 @@ int main (int argc, char **argv)
     /* ---------------------------------------------------------------------- */
 
     printf ("\nSolving C'x=b again, using umfpack_dl_wsolve instead:\n") ;
-    Wi = (UF_long *) malloc (n * sizeof (UF_long)) ;
+    Wi = (SuiteSparse_long *) malloc (n * sizeof (SuiteSparse_long)) ;
     W = (double *) malloc (5*n * sizeof (double)) ;
     if (!Wi || !W)
     {

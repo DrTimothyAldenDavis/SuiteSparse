@@ -25,3 +25,5 @@ spqr_user_guide.bib
 spqr_user_guide.tex
 
 README.txt                  this file
+
+Timothy A. Davis, http://www.suitesparse.com

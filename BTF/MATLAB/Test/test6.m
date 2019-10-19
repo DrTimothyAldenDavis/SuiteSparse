@@ -6,7 +6,7 @@ function test6
 % See also btf, maxtrans, strongcomp, dmperm, UFget,
 %   test1, test2, test3, test4, test5.
 
-% Copyright 2007, Timothy A. Davis, University of Florida
+% Copyright 2007, Timothy A. Davis, http://www.suitesparse.com
 
 quick2 = [ ...
  1522 -272  1463  1521   460 1507  -838 1533 -1533 -1456 -1512   734   211 ...

@@ -1,7 +1,7 @@
 classdef factorization_qr_sparse < factorization
 %FACTORIZATION_QR_SPARSE (A*P)'*(A*P) = R'*R where A is sparse.
 
-% Copyright 2011, Timothy A. Davis, University of Florida.
+% Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
 
     methods
 

@@ -7,24 +7,24 @@
 
 #include "spqr.hpp"
 
-Int spqr_fsize     // returns # of rows of F
+Long spqr_fsize     // returns # of rows of F
 (
     // inputs, not modified
-    Int f,
-    Int *Super,             // size nf, from QRsym
-    Int *Rp,                // size nf, from QRsym
-    Int *Rj,                // size rjsize, from QRsym
-    Int *Sleft,             // size n+2, from QRsym
-    Int *Child,             // size nf, from QRsym
-    Int *Childp,            // size nf+1, from QRsym
-    Int *Cm,                // size nf
+    Long f,
+    Long *Super,            // size nf, from QRsym
+    Long *Rp,               // size nf, from QRsym
+    Long *Rj,               // size rjsize, from QRsym
+    Long *Sleft,            // size n+2, from QRsym
+    Long *Child,            // size nf, from QRsym
+    Long *Childp,           // size nf+1, from QRsym
+    Long *Cm,               // size nf
 
     // outputs, not defined on input
-    Int *Fmap,              // size n
-    Int *Stair              // size fn
+    Long *Fmap,             // size n
+    Long *Stair             // size fn
 )
 {
-    Int col1, col2, p1, p2, fp, fn, fm, col, p, j, c, pc, cm, ci, t, fpc, fnc,
+    Long col1, col2, p1, p2, fp, fn, fm, col, p, j, c, pc, cm, ci, t, fpc, fnc,
         cn ;
 
     // -------------------------------------------------------------------------

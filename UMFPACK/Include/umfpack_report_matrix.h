@@ -3,9 +3,8 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) Timothy A. Davis, CISE,                              */
-/* Univ. of Florida.  All Rights Reserved.  See ../Doc/License for License.   */
-/* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
+/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
+/* All Rights Reserved.  See ../Doc/License for License.                      */
 /* -------------------------------------------------------------------------- */
 
 int umfpack_di_report_matrix
@@ -19,14 +18,14 @@ int umfpack_di_report_matrix
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-UF_long umfpack_dl_report_matrix
+SuiteSparse_long umfpack_dl_report_matrix
 (
-    UF_long n_row,
-    UF_long n_col,
-    const UF_long Ap [ ],
-    const UF_long Ai [ ],
+    SuiteSparse_long n_row,
+    SuiteSparse_long n_col,
+    const SuiteSparse_long Ap [ ],
+    const SuiteSparse_long Ai [ ],
     const double Ax [ ],
-    UF_long col_form,
+    SuiteSparse_long col_form,
     const double Control [UMFPACK_CONTROL]
 ) ;
 
@@ -41,14 +40,14 @@ int umfpack_zi_report_matrix
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-UF_long umfpack_zl_report_matrix
+SuiteSparse_long umfpack_zl_report_matrix
 (
-    UF_long n_row,
-    UF_long n_col,
-    const UF_long Ap [ ],
-    const UF_long Ai [ ],
+    SuiteSparse_long n_row,
+    SuiteSparse_long n_col,
+    const SuiteSparse_long Ap [ ],
+    const SuiteSparse_long Ai [ ],
     const double Ax [ ], const double Az [ ],
-    UF_long col_form,
+    SuiteSparse_long col_form,
     const double Control [UMFPACK_CONTROL]
 ) ;
 
@@ -62,10 +61,10 @@ double int Syntax:
 or:
     status = umfpack_di_report_matrix (n_row, n_col, Ap, Ai, Ax, 0, Control) ;
 
-double UF_long Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    UF_long n_row, n_col, *Ap, *Ai, status ;
+    SuiteSparse_long n_row, n_col, *Ap, *Ai, status ;
     double *Ax, Control [UMFPACK_CONTROL] ;
     status = umfpack_dl_report_matrix (n_row, n_col, Ap, Ai, Ax, 1, Control) ;
 or:
@@ -82,10 +81,10 @@ or:
     status = umfpack_zi_report_matrix (n_row, n_col, Ap, Ai, Ax, Az, 0,
         Control) ;
 
-complex UF_long Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    UF_long n_row, n_col, *Ap, *Ai, status ;
+    SuiteSparse_long n_row, n_col, *Ap, *Ai, status ;
     double *Ax, Control [UMFPACK_CONTROL] ;
     status = umfpack_zl_report_matrix (n_row, n_col, Ap, Ai, Ax, Az, 1,
 	Control) ;

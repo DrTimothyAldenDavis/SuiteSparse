@@ -6,7 +6,6 @@
  * CCOLAMD, Copyright (C) Univ. of Florida.  Authors: Timothy A. Davis,
  * Sivasankaran Rajamanickam, and Stefan Larimore
  * See License.txt for the Version 2.1 of the GNU Lesser General Public License
- * http://www.cise.ufl.edu/research/sparse
  * -------------------------------------------------------------------------- */
 
 /*
@@ -87,10 +86,7 @@
  *
  *	The CCOLAMD/CSYMAMD library is available at
  *
- *	    http://www.cise.ufl.edu/research/sparse/ccolamd/
- *
- *	This is the http://www.cise.ufl.edu/research/sparse/ccolamd/ccolamd.c
- *	file.
+ *	    http://www.suitesparse.com
  *
  *   See the ChangeLog file for changes since Version 1.0.
  */
@@ -99,10 +95,10 @@
 /* === Description of user-callable routines ================================ */
 /* ========================================================================== */
 
-/* CCOLAMD includes both int and UF_long versions of all its routines.  The
- * description below is for the int version.   For UF_long, all int arguments
- * become UF_long integers.  UF_long is normally defined as long, except for
- * WIN64 */
+/* CCOLAMD includes both int and SuiteSparse_long versions of all its routines.
+ * The description below is for the int version.   For SuiteSparse_long, all
+ * int arguments become SuiteSparse_long integers.  SuiteSparse_long is
+ * normally defined as long, except for WIN64 */
 
 /*  ----------------------------------------------------------------------------
  *  ccolamd_recommended:
@@ -112,8 +108,8 @@
  *
  *	    #include "ccolamd.h"
  *	    size_t ccolamd_recommended (int nnz, int n_row, int n_col) ;
- *	    size_t ccolamd_l_recommended (UF_long nnz, UF_long n_row,
- *		UF_long n_col) ;
+ *	    size_t ccolamd_l_recommended (SuiteSparse_long nnz,
+ *              SuiteSparse_long n_row, SuiteSparse_long n_col) ;
  *
  *	Purpose:
  *
@@ -209,9 +205,12 @@
  *	    	double knobs [CCOLAMD_KNOBS], int stats [CCOLAMD_STATS],
  *		int *cmember) ;
  *
- *	    UF_long ccolamd_l (UF_long n_row, UF_long n_col, UF_long Alen,
- *		UF_long *A, UF_long *p, double knobs [CCOLAMD_KNOBS],
- *		UF_long stats [CCOLAMD_STATS], UF_long *cmember) ;
+ *	    SuiteSparse_long ccolamd_l (SuiteSparse_long n_row,
+ *	        SuiteSparse_long n_col, SuiteSparse_long Alen,
+ *              SuiteSparse_long *A, SuiteSparse_long *p,
+ *              double knobs [CCOLAMD_KNOBS],
+ *              SuiteSparse_long stats [CCOLAMD_STATS],
+ *              SuiteSparse_long *cmember) ;
  *
  *	Purpose:
  *
@@ -385,9 +384,7 @@
  *
  *	Example:
  *
- *	    See
- *	    http://www.cise.ufl.edu/research/sparse/ccolamd/ccolamd_example.c
- *	    for a complete example.
+ *	    See ccolamd_example.c for a complete example.
  *
  *	    To order the columns of a 5-by-4 matrix with 11 nonzero entries in
  *	    the following nonzero pattern
@@ -423,10 +420,12 @@
  *		void (*allocate) (size_t, size_t), void (*release) (void *),
  *		int *cmember, int stype) ;
  *
- *	    UF_long csymamd_l (UF_long n, UF_long *A, UF_long *p, UF_long *perm,
- *	    	double knobs [CCOLAMD_KNOBS], UF_long stats [CCOLAMD_STATS],
- *		void (*allocate) (size_t, size_t), void (*release) (void *),
- *		UF_long *cmember, UF_long stype) ;
+ *	    SuiteSparse_long csymamd_l (SuiteSparse_long n,
+ *              SuiteSparse_long *A, SuiteSparse_long *p,
+ *              SuiteSparse_long *perm, double knobs [CCOLAMD_KNOBS],
+ *              SuiteSparse_long stats [CCOLAMD_STATS], void (*allocate)
+ *              (size_t, size_t), void (*release) (void *),
+ *              SuiteSparse_long *cmember, SuiteSparse_long stype) ;
  *
  *	Purpose:
  *
@@ -562,7 +561,7 @@
  *
  *	    #include "ccolamd.h"
  *	    ccolamd_report (int stats [CCOLAMD_STATS]) ;
- *	    ccolamd_l_report (UF_long stats [CCOLAMD_STATS]) ;
+ *	    ccolamd_l_report (SuiteSparse_long stats [CCOLAMD_STATS]) ;
  *
  *	Purpose:
  *
@@ -583,7 +582,7 @@
  *
  *	    #include "ccolamd.h"
  *	    csymamd_report (int stats [CCOLAMD_STATS]) ;
- *	    csymamd_l_report (UF_long stats [CCOLAMD_STATS]) ;
+ *	    csymamd_l_report (SuiteSparse_long stats [CCOLAMD_STATS]) ;
  *
  *	Purpose:
  *
@@ -635,17 +634,14 @@
 #endif
 
 /* ========================================================================== */
-/* === int or UF_long ======================================================= */
+/* === int or SuiteSparse_long ============================================== */
 /* ========================================================================== */
-
-/* define UF_long */
-#include "UFconfig.h"
 
 #ifdef DLONG
 
-#define Int UF_long
-#define ID  UF_long_id
-#define Int_MAX UF_long_max
+#define Int SuiteSparse_long
+#define ID  SuiteSparse_long_id
+#define Int_MAX SuiteSparse_long_max
 
 #define CCOLAMD_recommended ccolamd_l_recommended
 #define CCOLAMD_set_defaults ccolamd_l_set_defaults

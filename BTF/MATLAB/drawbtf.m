@@ -9,7 +9,7 @@ function drawbtf (A, p, q, r)
 %
 % See also btf, maxtrans, strongcomp, dmperm.
 
-% Copyright 2004-2007, Tim Davis, University of Florida
+% Copyright 2004-2007, University of Florida
 
 nblocks = length (r) - 1 ;
 

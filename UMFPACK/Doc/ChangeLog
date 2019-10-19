@@ -1,3 +1,8 @@
+Jun 1, 2012: version 5.6.0
+
+    * UFconfig replaced with SuiteSparse_config
+    * -DNO_TIMER option removed.  See SuiteSparse_config to configure the timer.
+
 Dec 7, 2011, version 5.5.2
 
     * fixed the Makefile to better align with CFLAGS and other standards

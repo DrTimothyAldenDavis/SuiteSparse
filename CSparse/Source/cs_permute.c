@@ -1,8 +1,8 @@
 #include "cs.h"
 /* C = A(p,q) where p and q are permutations of 0..m-1 and 0..n-1. */
-cs *cs_permute (const cs *A, const int *pinv, const int *q, int values)
+cs *cs_permute (const cs *A, const csi *pinv, const csi *q, csi values)
 {
-    int t, j, k, nz = 0, m, n, *Ap, *Ai, *Cp, *Ci ;
+    csi t, j, k, nz = 0, m, n, *Ap, *Ai, *Cp, *Ci ;
     double *Cx, *Ax ;
     cs *C ;
     if (!CS_CSC (A)) return (NULL) ;    /* check inputs */

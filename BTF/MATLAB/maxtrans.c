@@ -19,7 +19,7 @@
  * work performed, or -1 if the maximum work limit is reached (in which case
  * the maximum matching might not have been found).
  *
- * Copyright (c) 2004-2007.  Tim Davis, University of Florida,
+ * By Tim Davis.  Copyright (c) 2004-2007, University of Florida.
  * with support from Sandia National Laboratories.  All Rights Reserved.
  */
 
@@ -27,6 +27,7 @@
 
 #include "mex.h"
 #include "btf.h"
+#define Long SuiteSparse_long
 
 void mexFunction
 (
@@ -37,7 +38,7 @@ void mexFunction
 )
 {
     double maxwork, work ;
-    UF_long nrow, ncol, i, *Ap, *Ai, *Match, nmatch, *Work ;
+    Long nrow, ncol, i, *Ap, *Ai, *Match, nmatch, *Work ;
     double *Matchx, *w ;
 
     /* ---------------------------------------------------------------------- */
@@ -56,14 +57,14 @@ void mexFunction
     }
 
     /* get sparse matrix A */
-    Ap = (UF_long *) mxGetJc (pargin [0]) ;
-    Ai = (UF_long *) mxGetIr (pargin [0]) ;
+    Ap = (Long *) mxGetJc (pargin [0]) ;
+    Ai = (Long *) mxGetIr (pargin [0]) ;
 
     /* get output array */
-    Match = mxMalloc (nrow * sizeof (UF_long)) ;
+    Match = mxMalloc (nrow * sizeof (Long)) ;
 
     /* get workspace of size 5n (recursive version needs only 2n) */
-    Work = mxMalloc (5*ncol * sizeof (UF_long)) ;
+    Work = mxMalloc (5*ncol * sizeof (Long)) ;
 
     maxwork = 0 ;
     if (nargin > 1)

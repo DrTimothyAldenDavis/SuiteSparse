@@ -8,7 +8,7 @@ Availability: http://www.math.sjsu.edu/singular/matrices/software/SJget
 Derived from the UFget toolbox on March 18, 2008:
   Copyright 2005-2007, Tim Davis, University of Florida.
   Authors: Tim Davis and Erich Mirable.
-  Availability: http://www.cise.ufl.edu/research/sparse/mat/UFget
+  Availability: http://www.suitesparse.com
 
 See http://www.math.sjsu.edu/singular/matrices/software/SJget.tar.gz
 for a single archive file with all the files listed below.
@@ -81,5 +81,4 @@ To open the web page for one matrix, use either of these formats:
 
 For more information on how some of the index entries were created, see
 http://www.math.sjsu.edu/singular/matrices/SJsingular.html
-and
-http://www.cise.ufl.edu/research/sparse/SuiteSparse.
+and http://www.suitesparse.com.
