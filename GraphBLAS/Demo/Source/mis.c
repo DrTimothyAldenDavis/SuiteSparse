@@ -17,7 +17,7 @@
 // Given a numeric n x n adjacency matrix A of an unweighted and undirected
 // graph (where the value true represents an edge), compute a maximal set of
 // independent nodes and return it in a boolean n-vector, 'iset' where
-// set[i] == true implies nodes i is a member of the set (the iset vector
+// set[i] == true implies node i is a member of the set (the iset vector
 // should be uninitialized on input.)
 
 // The graph cannot have any self edges, and it must be symmetric.  These
@@ -137,6 +137,9 @@ GrB_Info mis                    // compute a maximal independent set
         if (last_nvals == nvals) { printf ("stall!\n") ; exit (1) ; }
         last_nvals = nvals ;
     }
+
+    // drop explicit false values
+    GrB_apply (iset, iset, NULL, GrB_IDENTITY_BOOL, iset, r_desc) ;
 
     // return result
     *iset_output = iset ;

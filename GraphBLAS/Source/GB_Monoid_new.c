@@ -2,7 +2,7 @@
 // GB_Monoid_new: create a Monoid with a specific type of identity
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 // http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 //------------------------------------------------------------------------------
@@ -59,7 +59,7 @@ GrB_Info GB_Monoid_new          // create a monoid
     //--------------------------------------------------------------------------
 
     // allocate the monoid
-    GB_CALLOC_MEMORY (*monoid, 1, sizeof (GB_Monoid_opaque)) ;
+    GB_CALLOC_MEMORY (*monoid, 1, sizeof (struct GB_Monoid_opaque)) ;
     if (*monoid == NULL)
     {
         return (ERROR (GrB_OUT_OF_MEMORY, (LOG, "out of memory"))) ;
@@ -73,7 +73,7 @@ GrB_Info GB_Monoid_new          // create a monoid
     GB_MALLOC_MEMORY (mon->identity, 1, op->ztype->size) ;
     if (mon->identity == NULL)
     {
-        GB_FREE_MEMORY (*monoid, 1, sizeof (GB_Monoid_opaque)) ;
+        GB_FREE_MEMORY (*monoid, 1, sizeof (struct GB_Monoid_opaque)) ;
         return (ERROR (GrB_OUT_OF_MEMORY, (LOG, "out of memory"))) ;
     }
 

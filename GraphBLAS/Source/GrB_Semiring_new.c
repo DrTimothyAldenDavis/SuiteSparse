@@ -2,7 +2,7 @@
 // GrB_Semiring_new: create a new semiring
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 // http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 //------------------------------------------------------------------------------
@@ -63,7 +63,7 @@ GrB_Info GrB_Semiring_new           // create a semiring
     //--------------------------------------------------------------------------
 
     // allocate the semiring
-    GB_CALLOC_MEMORY (*semiring, 1, sizeof (GB_Semiring_opaque)) ;
+    GB_CALLOC_MEMORY (*semiring, 1, sizeof (struct GB_Semiring_opaque)) ;
     if (*semiring == NULL)
     {
         return (ERROR (GrB_OUT_OF_MEMORY, (LOG, "out of memory"))) ;

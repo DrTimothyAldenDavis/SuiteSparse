@@ -1,6 +1,9 @@
 function test70_plot (T, Nedges, Nnodes)
 %TEST70_PLOT plot the results from test70
 
+%  SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
+%  http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+
 if (nargin == 0)
     % load test70_results
     load test70_results_big

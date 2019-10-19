@@ -1,7 +1,7 @@
 function test54
 %TEST54 test AxB, qsort vs bucket sort
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 fprintf ('\n======================= qsort vs C transpose for C=A*B\n') ;

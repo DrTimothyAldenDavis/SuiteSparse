@@ -1,7 +1,7 @@
 function test11
 %TEST11 test GrB_*_extractTuples
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 fprintf ('\n ------------ testing GrB_extractTuples\n') ;

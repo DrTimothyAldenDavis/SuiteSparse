@@ -2,7 +2,7 @@
 // GB.h: definitions visible only inside GraphBLAS
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 // http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 //------------------------------------------------------------------------------
@@ -38,6 +38,131 @@
 
 // uncomment this for code development (additional diagnostics are printed):
 // #define DEVELOPER
+
+//------------------------------------------------------------------------------
+// opaque content of GraphBLAS objects
+//------------------------------------------------------------------------------
+
+#define GB_LEN 128
+
+struct GB_Type_opaque       // content of GrB_Type
+{
+    int64_t magic ;         // for detecting uninitialized objects
+    size_t size ;           // size of the type
+    int code ;              // the type code
+    char name [GB_LEN] ;    // name of the type
+} ;
+
+struct GB_UnaryOp_opaque    // content of GrB_UnaryOp
+{
+    int64_t magic ;         // for detecting uninitialized objects
+    GrB_Type xtype ;        // type of x
+    GrB_Type ztype ;        // type of z
+    void *function ;        // a pointer to the unary function
+    char name [GB_LEN] ;    // name of the unary operator
+    int opcode ;            // operator opcode
+} ;
+
+struct GB_BinaryOp_opaque   // content of GrB_BinaryOp
+{
+    int64_t magic ;         // for detecting uninitialized objects
+    GrB_Type xtype ;        // type of x
+    GrB_Type ytype ;        // type of y
+    GrB_Type ztype ;        // type of z
+    void *function ;        // a pointer to the binary function
+    char name [GB_LEN] ;    // name of the binary operator
+    int opcode ;            // operator opcode
+} ;
+
+struct GB_SelectOp_opaque   // content of GxB_SelectOp
+{
+    int64_t magic ;         // for detecting uninitialized objects
+    GrB_Type xtype ;        // type of x, or NULL if generic
+    void *function ;        // a pointer to the select function
+    char name [GB_LEN] ;    // name of the select operator
+    int opcode ;            // operator opcode
+} ;
+
+struct GB_Monoid_opaque     // content of GrB_Monoid
+{
+    int64_t magic ;         // for detecting uninitialized objects
+    GrB_BinaryOp op ;       // binary operator of the monoid
+    void *identity ;        // identity of the monoid; size is op->ztype->size
+    bool identity_is_zero ; // true if all bits of identity are zero
+    bool user_defined ;     // true if monoid is user-defined
+} ;
+
+struct GB_Semiring_opaque   // content of GrB_Semiring
+{
+    int64_t magic ;         // for detecting uninitialized objects
+    GrB_Monoid add ;        // add operator of the semiring
+    GrB_BinaryOp multiply ; // multiply operator of the semiring
+    bool user_defined ;     // true if semiring is user-defined
+} ;
+
+// The GraphBLAS GrB_Vector and GrB_Matrix objects are identical so that
+// SuiteSparse:GraphBLAS can typecast from one to the other.
+
+struct GB_Vector_opaque     // content of GrB_Vector
+{
+    int64_t magic ;         // for detecting uninitialized objects
+    GrB_Type type ;         // the type of each numerical entry
+    int64_t nrows ;         // number of rows
+    int64_t ncols ;         // always 1
+    int64_t nzmax ;         // size of i and x arrays
+    int64_t *p ;            // column pointers, array of size ncols+1 == 2
+    int64_t *i ;            // row indices, array of size nzmax
+    void *x ;               // values, size nzmax; each size A->type->size
+    bool p_shallow ;        // true if p is a shallow copy
+    bool i_shallow ;        // true if i is a shallow copy
+    bool x_shallow ;        // true if x is a shallow copy
+    int64_t npending ;      // number of pending tuples to add to the matrix
+    int64_t max_npending ;  // size of ipending, jpending, and xpending arrays
+    bool sorted_pending ;   // true if pending tuples are in sorted order
+    int64_t *ipending ;     // row indices of pending tuples
+    int64_t *jpending ;     // always NULL
+    void *xpending ;        // values of pending tuples
+    GrB_BinaryOp operator_pending ; // operator to assemble duplications
+    int64_t nzombies ;      // number of zombines marked for deletion
+    void *queue_next ;      // next matrix in the matrix queue
+    void *queue_prev ;      // prev matrix in the matrix queue
+    bool enqueued ;         // true if the matrix is in the queue
+} ;
+
+struct GB_Matrix_opaque     // content of GrB_Matrix
+{
+    int64_t magic ;         // for detecting uninitialized objects
+    GrB_Type type ;         // the type of each numerical entry
+    int64_t nrows ;         // number of rows
+    int64_t ncols ;         // number of columns
+    int64_t nzmax ;         // size of i and x arrays
+    int64_t *p ;            // column pointers, array of size ncols+1
+    int64_t *i ;            // row indices, array of size nzmax
+    void *x ;               // values, size nzmax; each size A->type->size
+    bool p_shallow ;        // true if p is a shallow copy
+    bool i_shallow ;        // true if i is a shallow copy
+    bool x_shallow ;        // true if x is a shallow copy
+    int64_t npending ;      // number of pending tuples to add to the matrix
+    int64_t max_npending ;  // size of ipending, jpending, and xpending arrays
+    bool sorted_pending ;   // true if pending tuples are in sorted order
+    int64_t *ipending ;     // row indices of pending tuples
+    int64_t *jpending ;     // col indices of pending tuples; NULL if ncols <= 1
+    void *xpending ;        // values of pending tuples
+    GrB_BinaryOp operator_pending ; // operator to assemble duplications
+    int64_t nzombies ;      // number of zombines marked for deletion
+    void *queue_next ;      // next matrix in the matrix queue
+    void *queue_prev ;      // prev matrix in the matrix queue
+    bool enqueued ;         // true if the matrix is in the queue
+} ;
+
+struct GB_Descriptor_opaque // content of GrB_Descriptor
+{
+    int64_t magic ;         // for detecting uninitialized objects
+    GrB_Desc_Value out ;    // output descriptor
+    GrB_Desc_Value mask ;   // mask descriptor
+    GrB_Desc_Value in0 ;    // first input descriptor (A for C=A*B, for example)
+    GrB_Desc_Value in1 ;    // second input descriptor (B for C=A*B)
+} ;
 
 //------------------------------------------------------------------------------
 // GB_INDEX_MAX
@@ -318,7 +443,7 @@ typedef enum
 GB_Type_code ;                  // enumerated type code
 
 // predefined type objects
-extern GB_Type_opaque
+extern struct GB_Type_opaque
     GB_opaque_BOOL   ,  // GrB_BOOL is a pointer to this object, etc.
     GB_opaque_INT8   ,
     GB_opaque_UINT8  ,
@@ -1364,6 +1489,35 @@ GrB_Info GB_ijsort
 char *GB_code_string            // return a static string for a type name
 (
     const GB_Type_code code     // code to convert to string
+) ;
+
+GrB_Info GB_resize              // change the size of a matrix
+(
+    GrB_Matrix A,               // matrix to modify
+    const GrB_Index nrows_new,  // new number of rows in matrix
+    const GrB_Index ncols_new   // new number of columns in matrix
+) ;
+
+GrB_Info GB_kron                    // C<Mask> = accum (C, kron(A,B))
+(
+    GrB_Matrix C,                   // input/output matrix for results
+    const bool C_replace,           // if true, clear C before writing to it
+    const GrB_Matrix Mask,          // optional mask for C, unused if NULL
+    const bool Mask_comp,           // if true, use ~Mask
+    const GrB_BinaryOp accum,       // optional accum for Z=accum(C,T)
+    const GrB_BinaryOp op,          // defines '*' for kron(A,B)
+    const GrB_Matrix A,             // input matrix
+    const bool A_transpose,         // if true, use A' instead of A
+    const GrB_Matrix B,             // input matrix
+    const bool B_transpose          // if true, use B' instead of B
+) ;
+
+void GB_kron_kernel                 // C = kron (A,B)
+(
+    GrB_Matrix C,                   // output matrix
+    const GrB_BinaryOp op,          // multiply operator
+    const GrB_Matrix A,             // input matrix
+    const GrB_Matrix B              // input matrix
 ) ;
 
 //------------------------------------------------------------------------------

@@ -2,7 +2,7 @@
 // GB_Matrix_AdotB: compute C = Mask.*(A'*B) without forming A' via dot products
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 // http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 //------------------------------------------------------------------------------
@@ -481,8 +481,10 @@ GrB_Info GB_Matrix_AdotB            // C = A'*B using dot product method
                 }
             }
         }
+
         // log the end of the last column
         Cp [n] = cnz ;
+        ASSERT (cnz <= C->nzmax) ;
     }
 
     //--------------------------------------------------------------------------
@@ -490,7 +492,6 @@ GrB_Info GB_Matrix_AdotB            // C = A'*B using dot product method
     //--------------------------------------------------------------------------
 
     C->magic = MAGIC ;          // C is now initialized ]
-    ASSERT (cnz <= C->nzmax) ;
     bool ok = GB_Matrix_realloc (C, NNZ (C), true, NULL) ;
     ASSERT (ok) ;
     ASSERT_OK (GB_check (C, "C = A'*B output", 0)) ;

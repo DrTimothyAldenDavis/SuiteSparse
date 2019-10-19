@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# Makefile for all SuiteSparse packages (except GraphBLAS)
+# Makefile for all SuiteSparse packages
 #-------------------------------------------------------------------------------
 
 SUITESPARSE = $(CURDIR)
@@ -12,7 +12,7 @@ include SuiteSparse_config/SuiteSparse_config.mk
 # Compile the default rules for each package
 go: metis
 	( cd SuiteSparse_config && $(MAKE) )
-	( cd GraphBLAS && $(MAKE) )
+	( cd GraphBLAS && $(MAKE) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' )
 	( cd AMD && $(MAKE) )
 	( cd BTF && $(MAKE) )
 	( cd CAMD && $(MAKE) )
@@ -37,7 +37,7 @@ endif
 # (note that CSparse is not installed; CXSparse is installed instead)
 install: metisinstall
 	( cd SuiteSparse_config && $(MAKE) install )
-	( cd GraphBLAS && $(MAKE) install )
+	( cd GraphBLAS && $(MAKE) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' install )
 	( cd AMD && $(MAKE) install )
 	( cd BTF && $(MAKE) install )
 	( cd CAMD && $(MAKE) install )
@@ -113,7 +113,7 @@ endif
 # static library
 library: metis
 	( cd SuiteSparse_config && $(MAKE) )
-	( cd GraphBLAS && $(MAKE) library )
+	( cd GraphBLAS && $(MAKE) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' library )
 	( cd AMD && $(MAKE) library )
 	( cd BTF && $(MAKE) library )
 	( cd CAMD && $(MAKE) library )
@@ -265,4 +265,14 @@ ifeq (,$(MY_METIS_LIB))
 else
 	@echo 'Using pre-installed METIS 5.1.0 library at ' '[$(MY_METIS_LIB)]'
 endif
+
+# just compile GraphBLAS
+gb:
+	echo $(CMAKE_OPTIONS)
+	( cd GraphBLAS && $(MAKE) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' )
+
+# just install GraphBLAS
+gbinstall:
+	echo $(CMAKE_OPTIONS)
+	( cd GraphBLAS && $(MAKE) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' install )
 

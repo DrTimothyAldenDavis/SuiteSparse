@@ -1,7 +1,7 @@
 function test48
 %TEST48 test GrB_mxm
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 d = struct ('inp1', 'tran', 'inp0', 'tran') ;

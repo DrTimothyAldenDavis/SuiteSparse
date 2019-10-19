@@ -1,3 +1,21 @@
+Version 2.0.1: Mar 15, 2018
+
+    * bug fix in GxB_kron: computed C incorrectly when A and B had pending
+        updates on input
+
+Version 2.0.0: Mar 12, 2018
+
+    * moved opaque object definitions from Include/GraphBLAS.h to Source/GB.h
+    * modifications to meet changes in the Nov 14, 2017, API specification:
+        GrB_Monoid_TYPE_new changed to GrB_Monoid_new_TYPE
+        GrB_Type_new modified: 2nd argument no longer a type, but sizeof(type)
+    * to allow non-C applications to access all GraphBLAS functions:
+        These were just macros, now defined as both macros and functions:
+        GrB_Type_new, GrB_UnaryOp_new, GrB_BinaryOp_new, and GxB_SelectOp_new.
+    * added GxB_kron, GxB_resize (GxB_Matrix_resize and GxB_Vector_resize)
+    * bug fix to mask:  GrB_anymethod (C, C, ... , r_desc) where r_desc.outp
+        is 'replace', and C is aliased to the Mask, was incorrect.
+
 Version 1.1.2: Dec 28, 2017
 
     * build issues with cmake
@@ -29,7 +47,8 @@ Version 1.0.0: Nov 25, 2017
     * tested on many compilers (gcc 4.9 to 7.2 on Linux, clang 8 and gcc 6.2.0
         on the Mac, xlc 13.01 on IBM Power)
     * changed printf formats in Demo/ to silence warnings from older compilers
-    * complex.h in gcc-6.2.0 on the Mac doesn't #define CMPLX; added to usercomplex.h
+    * complex.h in gcc-6.2.0 on the Mac doesn't #define CMPLX;
+        added to usercomplex.h
     * mergesort removed, quicksort performance improved
     * performance improvement for masked matrix-matrix multiply
     * bug fix for masked matrix-matrix multiply. In 0.5.0 only the Mask

@@ -2,7 +2,7 @@
 // GB_mask: apply a mask: C<Mask> = Z
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 // http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 //------------------------------------------------------------------------------
@@ -150,6 +150,8 @@ GrB_Info GB_mask                // C<Mask> = Z
         ASSERT_OK_OR_NULL (GB_check (*Zhandle, "Z", 0)) ;
         ASSERT (!PENDING (*Zhandle)) ; ASSERT (!ZOMBIES (*Zhandle)) ;
         ASSERT ((*Zhandle)->type == C->type) ;
+        // *Zhandle and C are never aliased. C and Mask might be, however.
+        ASSERT ((*Zhandle) != C) ;
     }
 
     // Mask must be compatible with C
@@ -215,10 +217,32 @@ GrB_Info GB_mask                // C<Mask> = Z
         // the Mask is present
         //----------------------------------------------------------------------
 
+        GrB_Info info ;
+        GrB_Matrix C2 = C ;
+        GrB_Matrix C_cleared = NULL ;
+
         if (C_replace)
         {
-            // C = 0
-            GB_Matrix_clear (C) ;
+            if (C == Mask)
+            {
+                // C and Mask are aliased.  This is OK, unless C_replace is
+                // true.  In this case, Mask mst be left unchanged but C must
+                // be cleared.  To resolve this, a new matrix C_cleared is
+                // created, which is what C would look like if cleared.  C is
+                // left unchanged since changing it would change the Mask.
+                GB_NEW (&C_cleared, C->type, C->nrows, C->ncols, true, false) ;
+                if (info != GrB_SUCCESS)
+                {
+                    GB_MATRIX_FREE (Zhandle) ;
+                    return (info) ;
+                }
+                C2 = C_cleared ;
+            }
+            else
+            {
+                // Clear all entries from C
+                GB_Matrix_clear (C) ;
+            }
         }
 
         // these conditions must be enforced in the caller
@@ -232,10 +256,10 @@ GrB_Info GB_mask                // C<Mask> = Z
         // [ allocate the result R; R->p is malloc'd
         double memory = GBYTES (C->ncols + 1, sizeof (int64_t)) ;
         GrB_Matrix R ;
-        GrB_Info info ;
         GB_NEW (&R, C->type, C->nrows, C->ncols, false, true) ;
         if (info != GrB_SUCCESS)
         {
+            GB_MATRIX_FREE (&C_cleared) ;
             GB_MATRIX_FREE (Zhandle) ;
             return (info) ;
         }
@@ -244,6 +268,7 @@ GrB_Info GB_mask                // C<Mask> = Z
         if (!GB_Matrix_alloc (R, NNZ (Z) + NNZ (C), true, &memory))
         {
             GB_MATRIX_FREE (&R) ;
+            GB_MATRIX_FREE (&C_cleared) ;
             GB_MATRIX_FREE (Zhandle) ;
             return (ERROR (GrB_OUT_OF_MEMORY, (LOG,
                 "out of memory, %g GBytes required", memory))) ;
@@ -265,9 +290,9 @@ GrB_Info GB_mask                // C<Mask> = Z
         int64_t *Ri = R->i ;
         void    *Rx = R->x ;
 
-        const int64_t *Cp = C->p ;
-        const int64_t *Ci = C->i ;
-        const void    *Cx = C->x ;
+        const int64_t *Cp = C2->p ;
+        const int64_t *Ci = C2->i ;
+        const void    *Cx = C2->x ;
 
         const int64_t *Zp = Z->p ;
         const int64_t *Zi = Z->i ;
@@ -748,10 +773,14 @@ GrB_Info GB_mask                // C<Mask> = Z
         // transplant takes no time.  It just does pointer transplants.
         // The header of R is freed by GB_Matrix_transplant.
 
-        ASSERT (R->type == C->type) ;
+        ASSERT (R->type == C2->type) ;
         ASSERT (R->p != NULL && !R->p_shallow) ;
-        ASSERT (C->p != NULL && !C->p_shallow) ;
-        return (GB_Matrix_transplant (C, C->type, &R)) ;
+        ASSERT (C2->p != NULL && !C2->p_shallow) ;
+
+        // free the cleared version of C, if created 
+        GB_MATRIX_FREE (&C_cleared) ;
+
+        return (GB_Matrix_transplant (C, R->type, &R)) ;
     }
 }
 

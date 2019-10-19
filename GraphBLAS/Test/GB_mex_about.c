@@ -2,7 +2,7 @@
 // GB_mex_about: print the 'about' information
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 // http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 //------------------------------------------------------------------------------
@@ -10,7 +10,6 @@
 // Test lots of random stuff.  The function otherwise serves no purpose.
 
 #include "GB_mex.h"
-#include "../Source/GB.h"
 
 GrB_Info ack (int64_t *stuff, GrB_Matrix GunkIt)
 {
@@ -50,15 +49,24 @@ void mexFunction
 
     printf ("in %s:\n%s", __FILE__, GrB_error ( )) ;
 
-    printf ("sizeof (GB_UnaryOp_opaque) %d\n",  sizeof (GB_UnaryOp_opaque)) ;
-    printf ("sizeof (GB_BinaryOp_opaque) %d\n", sizeof (GB_BinaryOp_opaque)) ;
-    printf ("sizeof (GB_Type_opaque) %d\n",     sizeof (GB_Type_opaque)) ;
-    printf ("sizeof (GB_Monoid_opaque) %d\n",   sizeof (GB_Monoid_opaque)) ;
-    printf ("sizeof (GB_Semiring_opaque) %d\n", sizeof (GB_Semiring_opaque)) ;
-    printf ("sizeof (GB_Vector_opaque) %d\n",   sizeof (GB_Vector_opaque)) ;
-    printf ("sizeof (GB_Matrix_opaque) %d\n",   sizeof (GB_Matrix_opaque)) ;
-    printf ("sizeof (GB_Descriptor_opaque) %d\n",
-        sizeof (GB_Descriptor_opaque)) ;
+    printf ("sizeof (struct GB_Type_opaque) %d\n",
+             sizeof (struct GB_Type_opaque)) ;
+    printf ("sizeof (struct GB_UnaryOp_opaque) %d\n",
+             sizeof (struct GB_UnaryOp_opaque)) ;
+    printf ("sizeof (struct GB_BinaryOp_opaque) %d\n",
+             sizeof (struct GB_BinaryOp_opaque)) ;
+    printf ("sizeof (struct GB_SelectOp_opaque) %d\n",
+             sizeof (struct GB_SelectOp_opaque)) ;
+    printf ("sizeof (struct GB_Monoid_opaque) %d\n",
+             sizeof (struct GB_Monoid_opaque)) ;
+    printf ("sizeof (struct GB_Semiring_opaque) %d\n",
+             sizeof (struct GB_Semiring_opaque)) ;
+    printf ("sizeof (struct GB_Vector_opaque) %d\n",
+             sizeof (struct GB_Vector_opaque)) ;
+    printf ("sizeof (struct GB_Matrix_opaque) %d\n",
+             sizeof (struct GB_Matrix_opaque)) ;
+    printf ("sizeof (struct GB_Descriptor_opaque) %d\n",
+             sizeof (struct GB_Descriptor_opaque)) ;
 
     WHERE ("GB_mex_about") ;
     GrB_Info info = ERROR (GrB_PANIC, (LOG,
@@ -126,7 +134,7 @@ void mexFunction
     GrB_free (&m) ;
 
     int16_t id0 = MINUS_INF (id0) ;
-    
+
     GrB_Monoid_new (&m, GrB_MAX_INT16, id0) ;
     GB_check (m, "max int16 monoid", 3) ;
     int16_t id1 ;
@@ -219,7 +227,7 @@ void mexFunction
     info = ack (NULL, Gunk) ;
 
     printf ("%s", GrB_error ( )) ;
-    
+
     Gunk->magic = 999 ;
     info = ack (&ok, Gunk) ;
     printf ("%s", GrB_error ( )) ;

@@ -2,7 +2,7 @@
 // GB_mex_errors: test error handling
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 // http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 //------------------------------------------------------------------------------
@@ -231,11 +231,11 @@ void mexFunction
 
     expected = GrB_NULL_POINTER ;
 
-    ERR (GrB_Type_new (NULL, int)) ;
+    ERR (GrB_Type_new (NULL, sizeof (int))) ;
     ERR (GxB_Type_size (NULL, NULL)) ;
     ERR (GxB_Type_size (&s, NULL)) ;
 
-    OK (GrB_Type_new (&T, int)) ;
+    OK (GrB_Type_new (&T, sizeof (int))) ;
     CHECK (T != NULL) ;
 
     expected = GrB_UNINITIALIZED_OBJECT ;
@@ -250,7 +250,7 @@ void mexFunction
     CHECK (GrB_INT32 == T) ;
     T = NULL ;
 
-    OK (GrB_Type_new (&T, int)) ;
+    OK (GrB_Type_new (&T, sizeof (int))) ;
     CHECK (T != NULL) ;
 
     OK (GxB_Type_size (&s, T)) ;
@@ -465,55 +465,55 @@ void mexFunction
 
     expected = GrB_NULL_POINTER ;
 
-    ERR (GrB_Monoid_BOOL_new    (NULL, NULL, 0)) ;
-    ERR (GrB_Monoid_INT8_new    (NULL, NULL, 0)) ;
-    ERR (GrB_Monoid_UINT8_new   (NULL, NULL, 0)) ;
-    ERR (GrB_Monoid_INT16_new   (NULL, NULL, 0)) ;
-    ERR (GrB_Monoid_UINT16_new  (NULL, NULL, 0)) ;
-    ERR (GrB_Monoid_INT32_new   (NULL, NULL, 0)) ;
-    ERR (GrB_Monoid_UINT32_new  (NULL, NULL, 0)) ;
-    ERR (GrB_Monoid_INT64_new   (NULL, NULL, 0)) ;
-    ERR (GrB_Monoid_UINT64_new  (NULL, NULL, 0)) ;
-    ERR (GrB_Monoid_FP32_new    (NULL, NULL, 0)) ;
-    ERR (GrB_Monoid_FP64_new    (NULL, NULL, 0)) ;
-    ERR (GrB_Monoid_UDT_new     (NULL, NULL, NULL)) ;
+    ERR (GrB_Monoid_new_BOOL    (NULL, NULL, 0)) ;
+    ERR (GrB_Monoid_new_INT8    (NULL, NULL, 0)) ;
+    ERR (GrB_Monoid_new_UINT8   (NULL, NULL, 0)) ;
+    ERR (GrB_Monoid_new_INT16   (NULL, NULL, 0)) ;
+    ERR (GrB_Monoid_new_UINT16  (NULL, NULL, 0)) ;
+    ERR (GrB_Monoid_new_INT32   (NULL, NULL, 0)) ;
+    ERR (GrB_Monoid_new_UINT32  (NULL, NULL, 0)) ;
+    ERR (GrB_Monoid_new_INT64   (NULL, NULL, 0)) ;
+    ERR (GrB_Monoid_new_UINT64  (NULL, NULL, 0)) ;
+    ERR (GrB_Monoid_new_FP32    (NULL, NULL, 0)) ;
+    ERR (GrB_Monoid_new_FP64    (NULL, NULL, 0)) ;
+    ERR (GrB_Monoid_new_UDT     (NULL, NULL, NULL)) ;
     ERR (GrB_Monoid_new         (NULL, NULL, NULL)) ;
 
-    ERR (GrB_Monoid_BOOL_new    (&monoid, NULL, 0)) ; CHECK (monoid == NULL) ;
-    ERR (GrB_Monoid_INT8_new    (&monoid, NULL, 0)) ; CHECK (monoid == NULL) ;
-    ERR (GrB_Monoid_UINT8_new   (&monoid, NULL, 0)) ; CHECK (monoid == NULL) ;
-    ERR (GrB_Monoid_INT16_new   (&monoid, NULL, 0)) ; CHECK (monoid == NULL) ;
-    ERR (GrB_Monoid_UINT16_new  (&monoid, NULL, 0)) ; CHECK (monoid == NULL) ;
-    ERR (GrB_Monoid_INT32_new   (&monoid, NULL, 0)) ; CHECK (monoid == NULL) ;
-    ERR (GrB_Monoid_UINT32_new  (&monoid, NULL, 0)) ; CHECK (monoid == NULL) ;
-    ERR (GrB_Monoid_INT64_new   (&monoid, NULL, 0)) ; CHECK (monoid == NULL) ;
-    ERR (GrB_Monoid_UINT64_new  (&monoid, NULL, 0)) ; CHECK (monoid == NULL) ;
-    ERR (GrB_Monoid_FP32_new    (&monoid, NULL, 0)) ; CHECK (monoid == NULL) ;
-    ERR (GrB_Monoid_FP64_new    (&monoid, NULL, 0)) ; CHECK (monoid == NULL) ;
-    ERR (GrB_Monoid_UDT_new     (&monoid, NULL, NULL)) ; CHECK (monoid == NULL);
+    ERR (GrB_Monoid_new_BOOL    (&monoid, NULL, 0)) ; CHECK (monoid == NULL) ;
+    ERR (GrB_Monoid_new_INT8    (&monoid, NULL, 0)) ; CHECK (monoid == NULL) ;
+    ERR (GrB_Monoid_new_UINT8   (&monoid, NULL, 0)) ; CHECK (monoid == NULL) ;
+    ERR (GrB_Monoid_new_INT16   (&monoid, NULL, 0)) ; CHECK (monoid == NULL) ;
+    ERR (GrB_Monoid_new_UINT16  (&monoid, NULL, 0)) ; CHECK (monoid == NULL) ;
+    ERR (GrB_Monoid_new_INT32   (&monoid, NULL, 0)) ; CHECK (monoid == NULL) ;
+    ERR (GrB_Monoid_new_UINT32  (&monoid, NULL, 0)) ; CHECK (monoid == NULL) ;
+    ERR (GrB_Monoid_new_INT64   (&monoid, NULL, 0)) ; CHECK (monoid == NULL) ;
+    ERR (GrB_Monoid_new_UINT64  (&monoid, NULL, 0)) ; CHECK (monoid == NULL) ;
+    ERR (GrB_Monoid_new_FP32    (&monoid, NULL, 0)) ; CHECK (monoid == NULL) ;
+    ERR (GrB_Monoid_new_FP64    (&monoid, NULL, 0)) ; CHECK (monoid == NULL) ;
+    ERR (GrB_Monoid_new_UDT     (&monoid, NULL, NULL)) ; CHECK (monoid == NULL);
     ERR (GrB_Monoid_new         (&monoid, NULL, NULL)) ; CHECK (monoid == NULL);
 
     expected = GrB_UNINITIALIZED_OBJECT ;
 
-    ERR (GrB_Monoid_BOOL_new    (&monoid, op2gunk, 0)) ; CHECK (monoid == NULL);
-    ERR (GrB_Monoid_INT8_new    (&monoid, op2gunk, 0)) ; CHECK (monoid == NULL);
-    ERR (GrB_Monoid_UINT8_new   (&monoid, op2gunk, 0)) ; CHECK (monoid == NULL);
-    ERR (GrB_Monoid_INT16_new   (&monoid, op2gunk, 0)) ; CHECK (monoid == NULL);
-    ERR (GrB_Monoid_UINT16_new  (&monoid, op2gunk, 0)) ; CHECK (monoid == NULL);
-    ERR (GrB_Monoid_INT32_new   (&monoid, op2gunk, 0)) ; CHECK (monoid == NULL);
-    ERR (GrB_Monoid_UINT32_new  (&monoid, op2gunk, 0)) ; CHECK (monoid == NULL);
-    ERR (GrB_Monoid_INT64_new   (&monoid, op2gunk, 0)) ; CHECK (monoid == NULL);
-    ERR (GrB_Monoid_UINT64_new  (&monoid, op2gunk, 0)) ; CHECK (monoid == NULL);
-    ERR (GrB_Monoid_FP32_new    (&monoid, op2gunk, 0)) ; CHECK (monoid == NULL);
-    ERR (GrB_Monoid_FP64_new    (&monoid, op2gunk, 0)) ; CHECK (monoid == NULL);
+    ERR (GrB_Monoid_new_BOOL    (&monoid, op2gunk, 0)) ; CHECK (monoid == NULL);
+    ERR (GrB_Monoid_new_INT8    (&monoid, op2gunk, 0)) ; CHECK (monoid == NULL);
+    ERR (GrB_Monoid_new_UINT8   (&monoid, op2gunk, 0)) ; CHECK (monoid == NULL);
+    ERR (GrB_Monoid_new_INT16   (&monoid, op2gunk, 0)) ; CHECK (monoid == NULL);
+    ERR (GrB_Monoid_new_UINT16  (&monoid, op2gunk, 0)) ; CHECK (monoid == NULL);
+    ERR (GrB_Monoid_new_INT32   (&monoid, op2gunk, 0)) ; CHECK (monoid == NULL);
+    ERR (GrB_Monoid_new_UINT32  (&monoid, op2gunk, 0)) ; CHECK (monoid == NULL);
+    ERR (GrB_Monoid_new_INT64   (&monoid, op2gunk, 0)) ; CHECK (monoid == NULL);
+    ERR (GrB_Monoid_new_UINT64  (&monoid, op2gunk, 0)) ; CHECK (monoid == NULL);
+    ERR (GrB_Monoid_new_FP32    (&monoid, op2gunk, 0)) ; CHECK (monoid == NULL);
+    ERR (GrB_Monoid_new_FP64    (&monoid, op2gunk, 0)) ; CHECK (monoid == NULL);
 
-    ERR (GrB_Monoid_UDT_new (&monoid, op2gunk, NULL)) ; CHECK (monoid == NULL) ;
+    ERR (GrB_Monoid_new_UDT (&monoid, op2gunk, NULL)) ; CHECK (monoid == NULL) ;
     ERR (GrB_Monoid_new     (&monoid, op2gunk, NULL)) ; CHECK (monoid == NULL) ;
     ERR (GrB_Monoid_new     (&monoid, op2gunk, 0)) ;    CHECK (monoid == NULL) ;
 
     expected = GrB_NULL_POINTER ;
 
-    ERR (GrB_Monoid_UDT_new (&monoid, GrB_PLUS_FP64, NULL)) ;
+    ERR (GrB_Monoid_new_UDT (&monoid, GrB_PLUS_FP64, NULL)) ;
     CHECK (monoid == NULL) ;
 
     expected = GrB_DOMAIN_MISMATCH ;
@@ -1858,6 +1858,58 @@ void mexFunction
     // desc, dgunk, A, B, C, E, F, Z, v, u, dnt, dtn, dtt
 
     //--------------------------------------------------------------------------
+    // GxB_kron
+    //--------------------------------------------------------------------------
+
+    m2 = GxB_MIN_FP64_MONOID ;
+    s2 = GxB_PLUS_ISEQ_FP32 ;
+
+    m0 = NULL ;
+    s0 = NULL ;
+    v0 = NULL ;
+    A0 = NULL ;
+    op0 = NULL ;
+
+    expected = GrB_NULL_POINTER ;
+
+    info = (GxB_kron (A0, NULL, NULL, op0, A0, A0, d0)) ;  // matrix op
+    printf ("dod %d %s\n", info, GrB_error ( )) ;
+    ERR (GxB_kron (A0, NULL, NULL, o2 , A0, A0, d0)) ;
+    ERR (GxB_kron (A , NULL, NULL, o2 , A0, A0, d0)) ;
+    ERR (GxB_kron (A , NULL, NULL, o2 , A , A0, d0)) ;
+
+    expected = GrB_UNINITIALIZED_OBJECT ;
+
+    m0 = monoid_gunk ;
+    s0 = semigunk ;
+    v0 = vgunk ;
+    A0 = Agunk ;
+    op0 = op2gunk ;
+
+    ERR (GxB_kron (A0, NULL, NULL, op0, A0, A0, d0)) ;  // matrix op
+    ERR (GxB_kron (A0, NULL, NULL, o2 , A0, A0, d0)) ;
+    ERR (GxB_kron (A , NULL, NULL, o2 , A0, A0, d0)) ;
+    ERR (GxB_kron (A , NULL, NULL, o2 , A , A0, d0)) ;
+    ERR (GxB_kron (A , A0  , NULL, o2 , A , A , d0)) ;
+    ERR (GxB_kron (A , NULL, op0 , o2 , A , A , NULL)) ;
+
+    expected = GrB_DOMAIN_MISMATCH ;
+
+    ERR (GxB_kron  (A , NULL, NULL, o2 , Z , A , d0)) ;
+    ERR (GxB_kron  (A , NULL, NULL, o2 , A , Z , d0)) ;
+    ERR (GxB_kron  (A , NULL, NULL, Complex_plus, Z , A , d0)) ;
+    ERR (GxB_kron  (A , NULL, NULL, Complex_plus, A , Z , d0)) ;
+    ERR (GxB_kron  (A , NULL, NULL, Complex_plus, Z , Z , d0)) ;
+    ERR (GxB_kron  (Z , Z   , NULL, Complex_plus, Z , Z , d0)) ;
+
+    expected = GrB_DIMENSION_MISMATCH ;
+
+    ERR (GxB_kron  (C , NULL, NULL, o2 , A , B , d0)) ;
+    ERR (GxB_kron  (C , NULL, NULL, o2 , A , B , dtn)) ;
+    ERR (GxB_kron  (C , NULL, NULL, o2 , A , B , dnt)) ;
+    ERR (GxB_kron  (C , NULL, NULL, o2 , A , B , dtt)) ;
+
+    //--------------------------------------------------------------------------
     // extract
     //--------------------------------------------------------------------------
 
@@ -2688,6 +2740,7 @@ void mexFunction
     CHECK (selectop == NULL) ;
     OK (GxB_SelectOp_new (&selectop, fselect, GrB_FP64)) ;
     CHECK (selectop != NULL) ;
+    OK (GB_SelectOp_check (selectop, "select op OK", 3)) ;
 
     expected = GrB_NULL_POINTER ;
 
@@ -3129,10 +3182,12 @@ void mexFunction
     ERR (GB_Type_check (Tgunk, "Tgunk", 1)) ;
 
     CHECK (T == NULL) ;
-    OK (GrB_Type_new (&T, int)) ;
+    // test the function instead of the macro:
+    #undef GrB_Type_new
+    OK (GrB_Type_new (&T, sizeof (int))) ;
 
     WHERE ("GB_Type_check") ;
-    OK (GB_Type_check (T, "T ok", 3)) ;
+    OK (GB_Type_check (T, "T ok (via function)", 3)) ;
 
     T->magic = FREED ;
     ERR (GB_Type_check (T, "T freed", 1)) ;
@@ -3167,11 +3222,13 @@ void mexFunction
     CHECK (info == GrB_NULL_POINTER) ;
 
     CHECK (op1b == NULL) ;
+    // test the function instead of the macro:
+    #undef GrB_UnaryOp_new
     OK (GrB_UnaryOp_new (&op1b, f1, GrB_FP64, GrB_UINT32)) ;
     CHECK (op1b != NULL) ;
 
     WHERE ("GB_UnaryOp_check") ;
-    OK (GB_UnaryOp_check (op1b, "op1b ok", 1)) ;
+    OK (GB_UnaryOp_check (op1b, "op1b ok (via function)", 3)) ;
 
     expected = GrB_UNINITIALIZED_OBJECT ;
 
@@ -3211,11 +3268,13 @@ void mexFunction
     CHECK (info == GrB_NULL_POINTER) ;
 
     CHECK (op2b == NULL) ;
+    // test the function instead of the macro:
+    #undef GrB_BinaryOp_new
     OK (GrB_BinaryOp_new (&op2b, f2, GrB_INT32, GrB_UINT8, GrB_INT16)) ;
     CHECK (op2b != NULL) ;
 
     WHERE ("GB_BinaryOp_check") ;
-    OK (GB_BinaryOp_check (op2b, "op2b ok", 1)) ;
+    OK (GB_BinaryOp_check (op2b, "op2b ok (via function)", 3)) ;
 
     expected = GrB_UNINITIALIZED_OBJECT ;
 
@@ -3259,11 +3318,13 @@ void mexFunction
     CHECK (info == GrB_NULL_POINTER) ;
 
     CHECK (selectop == NULL) ;
+    // test the function instead of the macro:
+    #undef GxB_SelectOp_new
     OK (GxB_SelectOp_new (&selectop, fselect, GrB_FP64)) ;
     CHECK (selectop != NULL) ;
 
     WHERE ("GB_SelectOp_check") ;
-    OK (GB_SelectOp_check (selectop, "user selectop ok", 3)) ;
+    OK (GB_SelectOp_check (selectop, "user selectop ok (via function)", 3)) ;
 
     expected = GrB_UNINITIALIZED_OBJECT ;
 

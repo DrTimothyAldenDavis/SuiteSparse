@@ -1,7 +1,7 @@
 function test10
 %TEST10 test GrB_apply
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 fprintf ('\nquick GrB_apply tests\n') ;
@@ -13,6 +13,7 @@ rng ('default') ;
 m = 8 ;
 n = 4 ;
 dt = struct ('inp0', 'tran') ;
+dr = struct ('outp', 'replace') ;
 
 for k1 = 1:length(classes)
     aclass = classes {k1} ;
@@ -49,6 +50,16 @@ for k1 = 1:length(classes)
             % with mask and accum
             C1 = GB_spec_apply (Cin, Mask, 'plus', op, A, []) ;
             C2 = GB_mex_apply  (Cin, Mask, 'plus', op, A, []) ;
+            GB_spec_compare (C1, C2) ;
+
+            % with C == mask, and outp = replace
+            C1 = GB_spec_apply (Cin, Cin.pattern, [], op, A, dr) ;
+            C2 = GB_mex_apply2 (Cin,              [], op, A, dr) ;
+            GB_spec_compare (C1, C2) ;
+
+            % with C == mask and accum, and outp = replace
+            C1 = GB_spec_apply (Cin, Cin.pattern, 'plus', op, A, dr) ;
+            C2 = GB_mex_apply2 (Cin,              'plus', op, A, dr) ;
             GB_spec_compare (C1, C2) ;
 
             % no mask, transpose

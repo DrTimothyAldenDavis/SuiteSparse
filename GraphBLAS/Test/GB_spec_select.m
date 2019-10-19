@@ -4,7 +4,7 @@ function C = GB_spec_select (C, Mask, accum, opname, A, k, descriptor)
 % Usage:
 % C = GB_spec_select (C, Mask, accum, opname, A, k, descriptor)
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 %-------------------------------------------------------------------------------

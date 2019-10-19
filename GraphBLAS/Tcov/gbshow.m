@@ -1,6 +1,9 @@
 function gbshow
 %GBSHOW create a test coverage report in cover_gb_report.c
 
+%  SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
+%  http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+
 f_input = fopen ('cover_gb_exp.c', 'r') ;
 f_output = fopen ('cover_gb_report.c', 'w') ;
 

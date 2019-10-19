@@ -2,7 +2,7 @@
 // GrB_Monoid_new:  create a new monoid
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 // http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 //------------------------------------------------------------------------------
@@ -15,14 +15,14 @@
 
 #undef MONOID
 #define MONOID(type,T)                                                  \
-GrB_Info GrB_Monoid_ ## T ##_new    /* create a new boolean monoid   */ \
+GrB_Info GrB_Monoid_new_ ## T       /* create a new boolean monoid   */ \
 (                                                                       \
     GrB_Monoid *monoid,             /* handle of monoid to create    */ \
     const GrB_BinaryOp op,          /* binary operator of the monoid */ \
     const type identity             /* identity value of the monoid  */ \
 )                                                                       \
 {                                                                       \
-    WHERE ("GrB_Monoid_" GB_STR(T) "_new (&monoid, op, identity)") ;    \
+    WHERE ("GrB_Monoid_new_" GB_STR(T) " (&monoid, op, identity)") ;    \
     type id = identity ;                                                \
     return (GB_Monoid_new (monoid, op, &id, GB_ ## T ## _code)) ;       \
 }
@@ -39,14 +39,14 @@ MONOID (uint64_t , UINT64 ) ;
 MONOID (float    , FP32   ) ;
 MONOID (double   , FP64   ) ;
 
-GrB_Info GrB_Monoid_UDT_new         // create a monoid with a user-defined type
+GrB_Info GrB_Monoid_new_UDT         // create a monoid with a user-defined type
 (
     GrB_Monoid *monoid,             // handle of monoid to create
     const GrB_BinaryOp op,          // binary operator of the monoid
     const void *identity            // identity value of the monoid
 )
 {
-    WHERE ("GrB_Monoid_UDT_new (&monoid, op, identity)") ;
+    WHERE ("GrB_Monoid_new_UDT (&monoid, op, identity)") ;
     return (GB_Monoid_new (monoid, op, identity, GB_UDT_code)) ;
 }
 

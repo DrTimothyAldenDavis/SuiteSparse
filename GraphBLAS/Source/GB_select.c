@@ -2,7 +2,7 @@
 // GB_select: apply a select operator; optionally transpose a matrix
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 // http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 //------------------------------------------------------------------------------
@@ -58,14 +58,6 @@ GrB_Info GB_select          // C<Mask> = accum (C, select(A,k)) or select(A',k)
     ASSERT_OK_OR_NULL (GB_check (accum, "accum for GB_select", 0)) ;
     ASSERT_OK (GB_check (op, "selectop for GB_select", 0)) ;
     ASSERT_OK (GB_check (A, "A input for GB_select", 0)) ;
-
-/*
-(GB_check (C, "C input for GB_select", 3)) ;
-if (Mask  != NULL) (GB_check (Mask, "Mask for GB_select", 3)) ;
-if (accum != NULL) (GB_check (accum, "accum for GB_select", 3)) ;
-(GB_check (op, "selectop for GB_select", 3)) ;
-(GB_check (A, "A input for GB_select", 3)) ;
-*/
 
     // check domains and dimensions for C<Mask> = accum (C,T)
     GrB_Info info = GB_compatible (C->type, C, Mask, accum, A->type) ;

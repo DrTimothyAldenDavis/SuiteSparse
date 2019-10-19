@@ -2,7 +2,7 @@
 // GB_SelectOp_new: create a new select operator
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 // http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 //------------------------------------------------------------------------------
@@ -35,14 +35,13 @@ GrB_Info GB_SelectOp_new        // create a new user-defined select operator
     (*selectop) = NULL ;
     RETURN_IF_NULL (function) ;
     RETURN_IF_UNINITIALIZED (xtype) ;   // xtype may be NULL
-    ASSERT (name != NULL) ;
 
     //--------------------------------------------------------------------------
     // create the select op
     //--------------------------------------------------------------------------
 
     // allocate the select operator
-    GB_CALLOC_MEMORY (*selectop, 1, sizeof (GB_SelectOp_opaque)) ;
+    GB_CALLOC_MEMORY (*selectop, 1, sizeof (struct GB_SelectOp_opaque)) ;
     if (*selectop == NULL)
     {
         return (ERROR (GrB_OUT_OF_MEMORY, (LOG, "out of memory"))) ;

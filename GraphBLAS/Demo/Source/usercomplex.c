@@ -219,7 +219,7 @@ GrB_Info Complex_init ( )
     // create the Complex type
     //--------------------------------------------------------------------------
 
-    OK (GrB_Type_new (&Complex, C)) ;    
+    OK (GrB_Type_new (&Complex, sizeof (C))) ;    
 
     #undef C
     #define C Complex
@@ -306,8 +306,8 @@ GrB_Info Complex_init ( )
     // create the Complex monoids
     //--------------------------------------------------------------------------
 
-    OK (GrB_Monoid_UDT_new (&Complex_plus_monoid,  Complex_plus,  &Complex_0)) ;
-    OK (GrB_Monoid_UDT_new (&Complex_times_monoid, Complex_times, &Complex_1)) ;
+    OK (GrB_Monoid_new_UDT (&Complex_plus_monoid,  Complex_plus,  &Complex_0)) ;
+    OK (GrB_Monoid_new_UDT (&Complex_times_monoid, Complex_times, &Complex_1)) ;
 
     //--------------------------------------------------------------------------
     // create the Complex plus-times semiring

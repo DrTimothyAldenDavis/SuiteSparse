@@ -1,7 +1,7 @@
 function test49
 %TEST49 performance test of GrB_mxm (dot product method, A'*B)
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 d = struct ('inp0', 'tran') ;

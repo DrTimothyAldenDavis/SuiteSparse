@@ -2,7 +2,7 @@
 // GB_builtin.c: built-in types, functions, operators, and other externs
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 // http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 //------------------------------------------------------------------------------
@@ -17,7 +17,7 @@
 //------------------------------------------------------------------------------
 
 // extern predefined type objects but opaque to the user
-GB_Type_opaque
+struct GB_Type_opaque
 GB_opaque_BOOL   = { MAGIC, sizeof (bool),     GB_BOOL_code   , "bool"     },
 GB_opaque_INT8   = { MAGIC, sizeof (int8_t),   GB_INT8_code   , "int8_t"   },
 GB_opaque_UINT8  = { MAGIC, sizeof (uint8_t),  GB_UINT8_code  , "uint8_t"  },
@@ -50,7 +50,7 @@ GrB_Type
 
 // helper macro to define unary operators; z and x have the same type
 #define UNARY(PREFIX,OPERATOR,OPNAME)                                       \
-GB_UnaryOp_opaque GB (OPERATOR ## _opaque) =                                \
+struct GB_UnaryOp_opaque GB (OPERATOR ## _opaque) =                         \
 {                                                                           \
     MAGIC,                                                                  \
     & GB (opaque),                                                          \
@@ -64,7 +64,7 @@ GrB_UnaryOp GRB_NAME (PREFIX,OPERATOR) = & GB (OPERATOR ## _opaque) ;
 
 // helper macro to define binary operators: all x,y,z types the same
 #define BINARY(PREFIX,OPERATOR,OPNAME)                                      \
-GB_BinaryOp_opaque GB (OPERATOR ## _opaque) =                               \
+struct GB_BinaryOp_opaque GB (OPERATOR ## _opaque) =                        \
 {                                                                           \
     MAGIC,                                                                  \
     & GB (opaque),                                                          \
@@ -78,7 +78,7 @@ GrB_BinaryOp GRB_NAME (PREFIX,OPERATOR) = & GB (OPERATOR ## _opaque) ;
 
 // helper macro to define binary operators that return BOOL
 #define BINARY_BOOL(PREFIX,OPERATOR,OPNAME)                                 \
-GB_BinaryOp_opaque GB (OPERATOR ## _opaque) =                               \
+struct GB_BinaryOp_opaque GB (OPERATOR ## _opaque) =                        \
 {                                                                           \
     MAGIC,                                                                  \
     & GB (opaque),                                                          \
@@ -184,27 +184,27 @@ GrB_BinaryOp GrB_LXOR = & GB_LXOR_opaque_BOOL ;
 // built-in select operators
 //------------------------------------------------------------------------------
 
-GB_SelectOp_opaque GB_TRIL_opaque =
+struct GB_SelectOp_opaque GB_TRIL_opaque =
 {
     MAGIC, NULL, NULL, "tril", GB_TRIL_opcode
 } ;
 
-GB_SelectOp_opaque GB_TRIU_opaque =
+struct GB_SelectOp_opaque GB_TRIU_opaque =
 {
     MAGIC, NULL, NULL, "triu", GB_TRIU_opcode
 } ;
 
-GB_SelectOp_opaque GB_DIAG_opaque =
+struct GB_SelectOp_opaque GB_DIAG_opaque =
 {
     MAGIC, NULL, NULL, "diag", GB_DIAG_opcode
 } ;
 
-GB_SelectOp_opaque GB_OFFDIAG_opaque =
+struct GB_SelectOp_opaque GB_OFFDIAG_opaque =
 {
     MAGIC, NULL, NULL, "offdiag", GB_OFFDIAG_opcode
 } ;
 
-GB_SelectOp_opaque GB_NONZERO_opaque =
+struct GB_SelectOp_opaque GB_NONZERO_opaque =
 {
     MAGIC, NULL, NULL, "nonzero", GB_NONZERO_opcode
 } ;
@@ -232,7 +232,7 @@ const GrB_Index *GrB_ALL = & GB_ALL_opaque ;
 // helper macro to define built-in monoids
 #define MONOID(OP,T,CTYPE,IDENTITY,IDZERO)                                  \
 CTYPE GB_identity_ ## OP ## opaque_ ## T = IDENTITY ;                       \
-GB_Monoid_opaque GB_ ## OP ## T ## _MONOID_opaque =                         \
+struct GB_Monoid_opaque GB_ ## OP ## T ## _MONOID_opaque =                  \
 {                                                                           \
     MAGIC,                                                                  \
     & GB_ ## OP ## opaque_ ## T,                                            \
@@ -302,7 +302,7 @@ MONOID ( EQ_    , BOOL   , bool     , true       , true  ) ;
 
 // helper macro to define semirings: all x,y,z types the same
 #define SEMIRING(ADD,MULT)                                                  \
-GB_Semiring_opaque GB (ADD ## _ ## MULT ## _opaque) =                       \
+struct GB_Semiring_opaque GB (ADD ## _ ## MULT ## _opaque) =                \
 {                                                                           \
     MAGIC,                                                                  \
     & GM (ADD),                                                             \
@@ -313,7 +313,7 @@ GrB_Semiring GRB (ADD ## _ ## MULT) = & GB (ADD ## _ ## MULT ## _opaque) ;
 
 // helper macro to define semirings: x,y types the same, z boolean
 #define SEMIRING_COMPARE(ADD,MULT)                                          \
-GB_Semiring_opaque GB (ADD ## _ ## MULT ## _opaque) =                       \
+struct GB_Semiring_opaque GB (ADD ## _ ## MULT ## _opaque) =                \
 {                                                                           \
     MAGIC,                                                                  \
     & GMBOOL (ADD),                                                         \

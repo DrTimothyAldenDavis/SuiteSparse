@@ -2,7 +2,7 @@
 // GraphBLAS/Demo/read_matrix.c: read a matrix from stdin
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 // http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 //------------------------------------------------------------------------------
@@ -52,7 +52,8 @@ GrB_Info read_matrix        // read a double-precision or boolean matrix
     bool make_symmetric,    // if true, return A as symmetric
     bool no_self_edges,     // if true, then remove self edges from A
     bool one_based,         // if true, input matrix is 1-based
-    bool boolean            // if true, input is GrB_BOOL, otherwise GrB_FP64
+    bool boolean,           // if true, input is GrB_BOOL, otherwise GrB_FP64
+    bool pr                 // if true, print status to stdout
 )
 {
 
@@ -83,7 +84,7 @@ GrB_Info read_matrix        // read a double-precision or boolean matrix
     if (I == NULL || J == NULL || X == NULL)
     {
         // out of memory
-        printf ("out of memory for initial tuples\n") ;
+        if (pr) printf ("out of memory for initial tuples\n") ;
         FREE_ALL ;
         return (GrB_OUT_OF_MEMORY) ;
     }
@@ -108,7 +109,7 @@ GrB_Info read_matrix        // read a double-precision or boolean matrix
             X2 = realloc (X, 2 * len * xsize) ;
             if (I2 == NULL || J2 == NULL || X2 == NULL)
             {
-                printf ("out of memory for tuples\n") ;
+                if (pr) printf ("out of memory for tuples\n") ;
                 FREE_ALL ;
                 return (GrB_OUT_OF_MEMORY) ;
             }
@@ -141,7 +142,7 @@ GrB_Info read_matrix        // read a double-precision or boolean matrix
     // find the dimensions
     //--------------------------------------------------------------------------
 
-    printf ("ntuples: %.16g\n", (double) ntuples) ;
+    if (pr) printf ("ntuples: %.16g\n", (double) ntuples) ;
     int64_t nrows = 0 ;
     int64_t ncols = 0 ;
     for (int64_t k = 0 ; k < ntuples ; k++)
@@ -152,7 +153,8 @@ GrB_Info read_matrix        // read a double-precision or boolean matrix
     nrows++ ;
     ncols++ ;
 
-    printf ("nrows %.16g ncols %.16g\n", (double) nrows, (double) ncols) ;
+    if (pr) printf ("nrows %.16g ncols %.16g\n",
+        (double) nrows, (double) ncols) ;
 
     //--------------------------------------------------------------------------
     // prune self edges
@@ -185,7 +187,7 @@ GrB_Info read_matrix        // read a double-precision or boolean matrix
         ntuples = ntuples2 ;
     }
     t1 = simple_toc (tic) ;
-    printf ("time to prune self-edges: %12.6f\n", t1) ;
+    if (pr) printf ("time to prune self-edges: %12.6f\n", t1) ;
 
     //--------------------------------------------------------------------------
     // build the matrix, summing up duplicates, and then free the tuples
@@ -201,7 +203,7 @@ GrB_Info read_matrix        // read a double-precision or boolean matrix
     }
     else
     {
-        xtype = xtype ;
+        xtype = GrB_FP64 ;
         xop   = GrB_PLUS_FP64 ;
         xop2  = GrB_FIRST_FP64 ;
     }
@@ -218,7 +220,8 @@ GrB_Info read_matrix        // read a double-precision or boolean matrix
         OK (GrB_Matrix_build (C, I, J, Xdouble, ntuples, xop)) ;
     }
     t1 = simple_toc (tic) ;
-    printf ("time to build the graph with GrB_Matrix_build: %12.6f\n", t1) ;
+    if (pr) printf ("time to build the graph with GrB_Matrix_build: %12.6f\n",
+        t1) ;
 
 #ifdef TEST_SETELEMENT
     {
@@ -241,7 +244,8 @@ GrB_Info read_matrix        // read a double-precision or boolean matrix
         // force completion of B
         GrB_Matrix_nvals (&nvals, B) ;
         double t2 = simple_toc (tic) ;
-        printf ("time to build the graph with GrB_setElement:   %12.6f\n", t2) ;
+        if (pr) printf ("time to build the graph with GrB_setElement:"
+            "   %12.6f\n", t2) ;
         GrB_free (&B) ;
     }
 #endif
@@ -273,7 +277,7 @@ GrB_Info read_matrix        // read a double-precision or boolean matrix
         // ensure the matrix is symmetric
         //----------------------------------------------------------------------
 
-        printf ("make symmetric\n") ;
+        if (pr) printf ("make symmetric\n") ;
         if (nrows == ncols)
         {
 
@@ -281,7 +285,7 @@ GrB_Info read_matrix        // read a double-precision or boolean matrix
             // A = (C+C')/2
             //------------------------------------------------------------------
 
-            printf ("A = (C+C')/2\n") ;
+            if (pr) printf ("A = (C+C')/2\n") ;
             double tic [2], t ;
             simple_tic (tic) ;
             OK (GrB_Matrix_new (&A, xtype, nrows, nrows)) ;
@@ -305,7 +309,7 @@ GrB_Info read_matrix        // read a double-precision or boolean matrix
             }
 
             t = simple_toc (tic) ;
-            printf ("A = (C+C')/2 time %12.6f\n", t) ;
+            if (pr) printf ("A = (C+C')/2 time %12.6f\n", t) ;
 
         }
         else
@@ -316,7 +320,7 @@ GrB_Info read_matrix        // read a double-precision or boolean matrix
             //------------------------------------------------------------------
 
             // no self edges will exist
-            printf ("A = [0 C ; C' 0], a bipartite graph\n") ;
+            if (pr) printf ("A = [0 C ; C' 0], a bipartite graph\n") ;
 
             double tic [2], t ;
             simple_tic (tic) ;
@@ -331,7 +335,7 @@ GrB_Info read_matrix        // read a double-precision or boolean matrix
             // J = nrows:(nrows+ncols-1)
             if (I == NULL || J == NULL)
             {
-                printf ("out of memory for index ranges\n") ;
+                if (pr) printf ("out of memory for index ranges\n") ;
                 FREE_ALL ;
                 return (GrB_OUT_OF_MEMORY) ;
             }
@@ -364,7 +368,7 @@ GrB_Info read_matrix        // read a double-precision or boolean matrix
             GrB_Matrix_nvals (&nvals, A) ;
             t = simple_toc (tic) ;
 
-            printf ("time to construct augmented system: %12.6f\n", t) ;
+            if (pr) printf ("time to construct augmented system: %12.6f\n", t) ;
             *A_output = A ;
             // set A to NULL so the FREE_ALL macro does not free *A_output
             A = NULL ;
@@ -378,7 +382,7 @@ GrB_Info read_matrix        // read a double-precision or boolean matrix
         // return the matrix as-is
         //----------------------------------------------------------------------
 
-        printf ("leave A as-is\n") ;
+        if (pr) printf ("leave A as-is\n") ;
         *A_output = C ;
         // set C to NULL so the FREE_ALL macro does not free *A_output
         C = NULL ;

@@ -2,6 +2,11 @@
 // GB_AxB_factory
 //------------------------------------------------------------------------------
 
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
+// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+
+//------------------------------------------------------------------------------
+
 // This is used by GB_AxB_builtin.c and GB_Matrix_AdotB.c to create built-in
 // versions of sparse matrix-matrix multiplication.  The #include'ing file
 // #define's the AxB macro, and mult_opcode, add_opcode, xycode, and zcode

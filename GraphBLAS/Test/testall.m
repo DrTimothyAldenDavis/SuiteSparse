@@ -5,7 +5,7 @@ function testall (longtests)
 % testall ;         % runs just the shorter tests (about 15 minutes)
 % testall(1) ;      % runs all the tests (overnight).  Requires SuiteSparse.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 t = cputime ;
@@ -60,12 +60,14 @@ logstat ('test00') ;  % GB_mex_mis
 logstat ('test19') ;  % GxB_subassign, many pending operators
 logstat ('test12') ;  % Wathen finite-element matrices (short test)
 logstat ('test10') ;  % GrB_apply
+logstat ('test76') ;  % GxB_resize
 logstat ('test27') ;  % quick test of GxB_select (band)
 logstat ('test25') ;  % quick test of GxB_select
 logstat ('test74') ;  % test GrB_mxm on all semirings, just dot product method
 logstat ('test99') ;  % GB_mex_transpose with explicit zeros in the Mask
 logstat ('test23') ;  % quick test of GB_*_build
 logstat ('test18') ;  % quick tests of GrB_eWiseAdd and eWiseMult
+logstat ('test77') ;  % quick tests of GxB_kron
 logstat ('test16') ;  % user-defined complex operators
 logstat ('test24') ;  % test of GrB_Matrix_reduce
 logstat ('test21') ;  % quick test of GB_mex_subassign

@@ -1,4 +1,4 @@
-# SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+# SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 # http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 #
 # CMakeLists.tx: instructions for cmake to build GraphBLAS.
@@ -82,18 +82,18 @@ endif ( )
 # create the dynamic graphblas library.  Requires ANSI C11
 file ( GLOB GRAPHBLAS_SOURCES "Source/*.c" "Source/Generated/*.c" )
 add_library ( graphblas SHARED ${GRAPHBLAS_SOURCES} )
-SET_TARGET_PROPERTIES ( graphblas PROPERTIES VERSION 1.1.2
-    SOVERSION 1
+SET_TARGET_PROPERTIES ( graphblas PROPERTIES VERSION 2.0.1
+    SOVERSION 2
     C_STANDARD_REQUIRED 11
     PUBLIC_HEADER "Include/GraphBLAS.h" )
 set_property ( TARGET graphblas PROPERTY C_STANDARD 11 )
 
 # create the static graphblas library.  Requires ANSI C11
 add_library ( graphblas_static STATIC ${GRAPHBLAS_SOURCES} )
-SET_TARGET_PROPERTIES ( graphblas_static PROPERTIES VERSION 1.1.2
+SET_TARGET_PROPERTIES ( graphblas_static PROPERTIES VERSION 2.0.1
     OUTPUT_NAME graphblas
     POSITION_INDEPENDENT_CODE OFF
-    SOVERSION 1
+    SOVERSION 2
     C_STANDARD_REQUIRED 11
     PUBLIC_HEADER "Include/GraphBLAS.h" )
 set_property ( TARGET graphblas_static PROPERTY C_STANDARD 11 )
@@ -145,6 +145,7 @@ add_executable ( bfs_demo      "Demo/Program/bfs_demo.c" )
 add_executable ( tri_demo      "Demo/Program/tri_demo.c" )
 add_executable ( mis_demo      "Demo/Program/mis_demo.c" )
 add_executable ( complex_demo  "Demo/Program/complex_demo.c" )
+add_executable ( kron_demo     "Demo/Program/kron_demo.c" )
 add_executable ( simple_demo   "Demo/Program/simple_demo.c" )
 add_executable ( wildtype_demo "Demo/Program/wildtype_demo.c" )
 
@@ -153,6 +154,7 @@ target_link_libraries ( bfs_demo      graphblas graphblasdemo )
 target_link_libraries ( tri_demo      graphblas graphblasdemo )
 target_link_libraries ( mis_demo      graphblas graphblasdemo )
 target_link_libraries ( complex_demo  graphblas graphblasdemo )
+target_link_libraries ( kron_demo     graphblas graphblasdemo )
 target_link_libraries ( simple_demo   graphblasdemo )
 target_link_libraries ( wildtype_demo graphblas )
 

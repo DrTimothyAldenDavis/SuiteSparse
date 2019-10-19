@@ -25,7 +25,7 @@ function gbmake (what, flags, mexfunctions, cfiles, hfiles, inc)
 % GraphBLAS requires an ANSI C11 compliant compiler.  On the Mac, clang 8.0
 % suffices.  GCC should be version 4.9.3 or later
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 if (~isempty (strfind (pwd, 'Tcov')) && nargin ~= 6)
@@ -37,6 +37,7 @@ fprintf ('\nCompiling GraphBLAS tests\nplease wait [') ;
 
 if (nargin < 2)
     flags = '-O' ;
+    % flags = '-g' ;
 end
 
 flags = [flags ' -largeArrayDims'] ;

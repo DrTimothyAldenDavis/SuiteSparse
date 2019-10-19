@@ -7,7 +7,7 @@
 # and GraphBLAS.  The configuration settings for GraphBLAS are determined by
 # GraphBLAS/CMakeLists.txt
 
-SUITESPARSE_VERSION = 5.1.2
+SUITESPARSE_VERSION = 5.2.0
 
 #===============================================================================
 # Options you can change without editing this file:
@@ -58,6 +58,8 @@ SUITESPARSE_VERSION = 5.1.2
     INSTALL_LIB ?= $(INSTALL)/lib
     INSTALL_INCLUDE ?= $(INSTALL)/include
     INSTALL_DOC ?= $(INSTALL)/share/doc/suitesparse-$(SUITESPARSE_VERSION)
+
+    CMAKE_OPTIONS ?= -DCMAKE_INSTALL_PREFIX=$(INSTALL)
 
     #---------------------------------------------------------------------------
     # optimization level

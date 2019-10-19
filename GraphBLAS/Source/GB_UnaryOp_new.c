@@ -2,7 +2,7 @@
 // GB_UnaryOp_new: create a new unary operator
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 // http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 //------------------------------------------------------------------------------
@@ -35,14 +35,13 @@ GrB_Info GB_UnaryOp_new             // create a new user-defined unary operator
     RETURN_IF_NULL (function) ;
     RETURN_IF_NULL_OR_UNINITIALIZED (ztype) ;
     RETURN_IF_NULL_OR_UNINITIALIZED (xtype) ;
-    ASSERT (name != NULL) ;
 
     //--------------------------------------------------------------------------
     // create the unary op
     //--------------------------------------------------------------------------
 
     // allocate the unary operator
-    GB_CALLOC_MEMORY (*unaryop, 1, sizeof (GB_UnaryOp_opaque)) ;
+    GB_CALLOC_MEMORY (*unaryop, 1, sizeof (struct GB_UnaryOp_opaque)) ;
     if (*unaryop == NULL)
     {
         return (ERROR (GrB_OUT_OF_MEMORY, (LOG, "out of memory"))) ;

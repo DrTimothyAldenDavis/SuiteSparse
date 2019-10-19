@@ -122,7 +122,7 @@ int main (void)
     fprintf (stderr, "wildtype_demo:\n") ;
 
     // create the WildType
-    GrB_Type_new (&WildType, wildtype) ;
+    GrB_Type_new (&WildType, sizeof (wildtype)) ;
 
     // get its properties
     size_t s ;
@@ -193,7 +193,7 @@ int main (void)
     }
     sprintf (scalar_identity.whatstuff, "identity") ;
     wildtype_print (&scalar_identity, "scalar_identity for the monoid") ;
-    GrB_Monoid_UDT_new (&WildAdder, WildAdd, &scalar_identity) ;
+    GrB_Monoid_new_UDT (&WildAdder, WildAdd, &scalar_identity) ;
 
     // create the InTheWild semiring
     GrB_Semiring InTheWild ;

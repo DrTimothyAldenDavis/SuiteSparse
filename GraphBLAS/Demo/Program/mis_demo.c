@@ -2,7 +2,7 @@
 // GraphBLAS/Demo/Program/mis_demo.c: maximal independent set
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 // http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 //------------------------------------------------------------------------------
@@ -105,7 +105,7 @@ int main (int argc, char **argv)
 
     bool a ;
     OK (GrB_reduce (&a, NULL, GxB_LAND_BOOL_MONOID, e, NULL)) ;
-    if (!a) { printf ("error!\n") ; exit (1) ; }
+    if (!a) { printf ("error! mismatch\n") ; exit (1) ; }
 
     int64_t isize1 ;
     OK (GrB_reduce (&isize1, NULL, GxB_PLUS_INT64_MONOID, iset,
@@ -145,7 +145,8 @@ int main (int argc, char **argv)
     {
         if (X [k]) 
         {
-            I [isize++] = k ;
+            // printf ("I [%lld] = %lld\n", isize, I [k]) ;
+            I [isize++] = I [k] ;
         }
     }
 

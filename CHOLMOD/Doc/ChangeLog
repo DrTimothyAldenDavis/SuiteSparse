@@ -1,3 +1,7 @@
+Mar 12, 2018: version 3.0.12
+
+    * bug fix to cholmod_rowcolcounts.c (int overflow was possible)
+
 May 4, 2016: version 3.0.11
 
     * minor changes to Makefile

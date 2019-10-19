@@ -2,7 +2,7 @@
 // GraphBLAS/Demo/demos.h: include file for all demo programs
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 // http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 //------------------------------------------------------------------------------
@@ -54,7 +54,8 @@ GrB_Info read_matrix        // read a double-precision matrix
     bool make_symmetric,    // if true, return A as symmetric
     bool no_self_edges,     // if true, then remove self edges from A
     bool one_based,         // if true, input matrix is 1-based
-    bool boolean            // if true, input is GrB_BOOL, otherwise GrB_FP64
+    bool boolean,           // if true, input is GrB_BOOL, otherwise GrB_FP64
+    bool printstuff         // if true, print status to stdout
 ) ;
 
 GrB_Info mis                    // compute a maximal independent set

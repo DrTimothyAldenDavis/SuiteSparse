@@ -16,6 +16,9 @@ function test71
 %
 % Edit ll_memory_limit and nz_limit to match the memory on your machine.
 
+%  SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
+%  http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+
 % matrices are too big for some methods.  Edit memory sizes as needed.
 if (ismac || ispc)
     % assume this is a laptop with limited memory

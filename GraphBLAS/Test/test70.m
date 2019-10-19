@@ -16,6 +16,9 @@ function test70
 %   % without doing any work, and requiring almost no memory
 %   % See SuiteSparse/MATLAB_tools/SSMULT
 
+%  SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
+%  http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+
 addpath ('../Demo/MATLAB') ;
 
 % get all square matrices and sort by nnz(A)

@@ -2,7 +2,7 @@
 // GraphBLAS.h: definitions for the GraphBLAS package
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 // http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 //------------------------------------------------------------------------------
@@ -72,9 +72,9 @@
     (((major)*1000ULL + (minor))*1000ULL + (sub))
 
 // The version of this implementation:
-#define GXB_IMPLEMENTATION_MAJOR 1
-#define GXB_IMPLEMENTATION_MINOR 1
-#define GXB_IMPLEMENTATION_SUB   2
+#define GXB_IMPLEMENTATION_MAJOR 2
+#define GXB_IMPLEMENTATION_MINOR 0
+#define GXB_IMPLEMENTATION_SUB   1
 #define GXB_IMPLEMENTATION \
         GXB_VERSION (GXB_IMPLEMENTATION_MAJOR, \
                      GXB_IMPLEMENTATION_MINOR, \
@@ -82,15 +82,16 @@
 
 // The 'about' string the describes this particular implementation of GraphBLAS:
 #define GXB_ABOUT \
-"SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.\n" \
+"SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, "                   \
+"All Rights Reserved.\n"                                                     \
 "http://suitesparse.com  Dept of Computer Sci. & Eng, Texas A&M University\n"
 
 // and its date:
-#define GXB_DATE "Dec 28, 2017"
+#define GXB_DATE "Mar 15, 2018"
 
 // The GraphBLAS license for this particular implementation of GraphBLAS:
 #define GXB_LICENSE \
-"SuiteSparse:GraphBLAS, Copyright 2017, Timothy A. Davis\n"                  \
+"SuiteSparse:GraphBLAS, Copyright 2017-2018, Timothy A. Davis\n"             \
 "\n"                                                                         \
 "Licensed under the Apache License, Version 2.0 (the \"License\");\n"        \
 "you may not use SuiteSparse:GraphBLAS except in compliance with the\n"      \
@@ -121,7 +122,7 @@
 "\"GraphBLAS Mathematics\" by Jeremy Kepner.\n"
 
 // and its date:
-#define GXB_SPEC_DATE "Oct 10, 2017"
+#define GXB_SPEC_DATE "Nov 14, 2017"
 
 //------------------------------------------------------------------------------
 // include files required by GraphBLAS
@@ -297,20 +298,7 @@ const char *GrB_error ( ) ;     // return a string describing the last error
 // also define new types based on any typedef in the C language whose values
 // are held in a contiguous region of memory.
 
-// USER CODE SHOULD NOT RELY ON GB_LEN
-#define GB_LEN 128
-
-typedef struct
-{
-    int64_t magic ;         // for detecting uninitialized objects
-    size_t size ;           // size of the type
-    int code ;              // the type code
-    char name [GB_LEN] ;    // name of the type
-}
-GB_Type_opaque ;            // CONTENT NOT USER-ACCESSIBLE
-
-// The GrB_Type handle is user-accessible, but GB_Type_opaque is not:
-typedef GB_Type_opaque *GrB_Type ;
+typedef struct GB_Type_opaque *GrB_Type ;
 
 // GraphBLAS predefined types and the counterparts in pure C and in MATLAB
 extern GrB_Type
@@ -326,34 +314,47 @@ extern GrB_Type
     GrB_FP32   ,        // in C: float      in MATLAB: single
     GrB_FP64   ;        // in C: double     in MATLAB: double
 
-// The user-callable function has the following signature.
-// It is actually implemented as a macro.
+// GrB_Type_new is implemented both as a macro and a function.  Both are
+// user-callable.  The default is to use the macro, since this allows the name
+// of the type to be saved as a string, for subsequent error reporting by
+// GrB_error.  It is also provided as a function so that applications that
+// require a function instead of macro can access it.  User code can simply do
+// #undef GrB_Type_new before using the function.  This approach also places
+// the function GrB_Type_new in the linkable SuiteSparse:GraphBLAS library so
+// that it is visible for linking with applications in languages other than
+// ANSI C99.  The function version does not allow the name of the ctype to be
+// saved in the new GraphBLAS type, however.  It is given a generic name.
 
-/*
+// If SuiteSparse:GraphBLAS is compiled with -DNMACRO then the macro versions
+// of GrB_Type_new, GrB_UnaryOp_new, GrB_BinaryOp_new, and GxB_SelectOp_new
+// are not made available.  The function versions are always used instead.
+// #define NMACRO
+
+#undef GrB_Type_new
 
 GrB_Info GrB_Type_new           // create a new GraphBLAS type
 (
     GrB_Type *type,             // handle of user type to create
-    <ctype>                     // a C type
+    size_t sizeof_ctype         // size = sizeof (ctype) of the C type
 ) ;
 
-*/
-// USER CODE SHOULD NOT RELY ON GB_STR OR GB_XSTR
+// user code should not directly use GB_STR or GB_XSTR
 // GB_STR: convert the content of x into a string "x"
 #define GB_XSTR(x) GB_STR(x)
 #define GB_STR(x) #x
 
-// GrB_Type_new is user-callable; GB_Type_new should not be called directly.
-#define GrB_Type_new(utype, ctype) \
-    GB_Type_new (utype, sizeof (ctype), GB_STR(ctype))
+// GrB_Type_new as a user-callable macro, which allows the name of the ctype
+// to be added to the new type. 
+#ifndef NMACRO
+#define GrB_Type_new(utype, sizeof_ctype) \
+    GB_Type_new (utype, sizeof_ctype, GB_STR(sizeof_ctype))
+#endif
 
-// This function is not user-callable; use GrB_Type_new instead
-
-GrB_Info GB_Type_new        // USER CODE SHOULD NOT USE THIS FUNCTION DIRECTLY
+GrB_Info GB_Type_new            // not user-callable; use GrB_Type_new instead
 (
     GrB_Type *type,             // handle of user type to create
-    const size_t size,          // size of the user type
-    const char *name            // name of the type
+    const size_t sizeof_ctype,  // size of the user type
+    const char *name            // name of the type, as "sizeof (ctype)"
 ) ;
 
 // SPEC: GxB_Type_size is an extension to the spec
@@ -396,19 +397,7 @@ GrB_Info GrB_Type_free          // free a user-defined type
 // ztype and xtype, respectively.  The function must typecast its arguments as
 // needed from void* to ztype* and xtype*.
 
-typedef struct
-{
-    int64_t magic ;         // for detecting uninitialized objects
-    GrB_Type xtype ;        // type of x
-    GrB_Type ztype ;        // type of z
-    void *function ;        // a pointer to the unary function
-    char name [GB_LEN] ;    // name of the unary operator
-    int opcode ;            // operator opcode
-}
-GB_UnaryOp_opaque ;         // CONTENT NOT USER-ACCESSIBLE
-
-// The GrB_UnaryOp handle (user-accesible)
-typedef GB_UnaryOp_opaque *GrB_UnaryOp ;
+typedef struct GB_UnaryOp_opaque *GrB_UnaryOp ;
 
 //------------------------------------------------------------------------------
 // built-in unary operators, z = f(x)
@@ -461,11 +450,12 @@ extern GrB_UnaryOp
 // methods for unary operators
 //------------------------------------------------------------------------------
 
-// The user-callable function GrB_UnaryOp_new has the following signature.  It
-// is actually implemented as a macro so that the name of the unary function
-// can be kept by GraphBLAS.
+// GrB_UnaryOp_new is implemented both as a macro and a function.  Both are
+// user-callable.  The default is to use the macro, since this allows the name
+// of the unary function to be kept in the new operator as a string.  See the
+// discussion of GrB_Type_new above.
 
-/*
+#undef GrB_UnaryOp_new
 
 GrB_Info GrB_UnaryOp_new            // create a new user-defined unary operator
 (
@@ -475,13 +465,11 @@ GrB_Info GrB_UnaryOp_new            // create a new user-defined unary operator
     const GrB_Type xtype            // type of input x
 ) ;
 
-*/
-
+#ifndef NMACRO
 #define GrB_UnaryOp_new(op,f,z,x) GB_UnaryOp_new (op,f,z,x, GB_STR(f))
+#endif
 
-// This function is NOT user-callable:
-
-GrB_Info GB_UnaryOp_new     // USER CODE SHOULD NOT USE THIS FUNCTION DIRECTLY
+GrB_Info GB_UnaryOp_new             // not user-callable; use GrB_UnaryOp_new
 (
     GrB_UnaryOp *unaryop,           // handle for the new unary operator
     void *function,                 // pointer to the unary function
@@ -522,20 +510,7 @@ GrB_Info GrB_UnaryOp_free           // free a user-created unary operator
 // The pointers are void * but they are always of pointers to objects of type
 // ztype, xtype, and ytype, respectively.  See Demo/usercomplex.c for examples.
 
-typedef struct
-{
-    int64_t magic ;         // for detecting uninitialized objects
-    GrB_Type xtype ;        // type of x
-    GrB_Type ytype ;        // type of y
-    GrB_Type ztype ;        // type of z
-    void *function ;        // a pointer to the binary function
-    char name [GB_LEN] ;    // name of the binary operator
-    int opcode ;            // operator opcode
-}
-GB_BinaryOp_opaque ;        // CONTENT NOT USER-ACCESSIBLE
-
-// The GrB_BinaryOp handle (user-accesible)
-typedef GB_BinaryOp_opaque *GrB_BinaryOp ;
+typedef struct GB_BinaryOp_opaque *GrB_BinaryOp ;
 
 //------------------------------------------------------------------------------
 // built-in binary operators, z = f(x,y)
@@ -757,11 +732,12 @@ extern GrB_BinaryOp
 // methods for binary operators
 //------------------------------------------------------------------------------
 
-// The user-callable function GxB_BinaryOp_new has the following signature.  It
-// is implemented as a macro so that the name of the select function can be
-// kept by GraphBLAS.
+// GrB_BinaryOp_new is implemented both as a macro and a function.  Both are
+// user-callable.  The default is to use the macro, since this allows the name
+// of the unary function to be kept in the new operator as a string.  See the
+// discussion of GrB_Type_new above.
 
-/*
+#undef GrB_BinaryOp_new
 
 GrB_Info GrB_BinaryOp_new
 (
@@ -772,13 +748,11 @@ GrB_Info GrB_BinaryOp_new
     const GrB_Type ytype            // type of input y
 ) ;
 
-*/
-
+#ifndef NMACRO
 #define GrB_BinaryOp_new(op,f,z,x,y) GB_BinaryOp_new (op,f,z,x,y, GB_STR(f))
+#endif
 
-// This function is NOT user-callable:
-
-GrB_Info GB_BinaryOp_new    // USER CODE SHOULD NOT USE THIS FUNCTION DIRECTLY
+GrB_Info GB_BinaryOp_new            // not user-callable; use GrB_BinaryOp_new
 (
     GrB_BinaryOp *binaryop,         // handle for the new binary operator
     void *function,                 // pointer to the binary function
@@ -787,7 +761,6 @@ GrB_Info GB_BinaryOp_new    // USER CODE SHOULD NOT USE THIS FUNCTION DIRECTLY
     const GrB_Type ytype,           // type of input y
     const char *name                // name of the underlying function
 ) ;
-
 
 // SPEC: GxB_BinaryOp_ztype is an extension to the spec
 
@@ -844,18 +817,7 @@ GrB_Info GrB_BinaryOp_free          // free a user-created binary operator
 //              const GrB_Index nrows, const GrB_Index ncols,
 //              const void *x, const void *k) ;
 
-typedef struct
-{
-    int64_t magic ;         // for detecting uninitialized objects
-    GrB_Type xtype ;        // type of x, or NULL if generic
-    void *function ;        // a pointer to the select function
-    char name [GB_LEN] ;    // name of the select operator
-    int opcode ;            // operator opcode
-}
-GB_SelectOp_opaque ;        // CONTENT NOT USER-ACCESSIBLE
-
-// The GxB_SelectOp handle (user-accesible)
-typedef GB_SelectOp_opaque *GxB_SelectOp ;
+typedef struct GB_SelectOp_opaque *GxB_SelectOp ;
 
 //------------------------------------------------------------------------------
 // built-in select operators
@@ -886,11 +848,12 @@ extern GxB_SelectOp
 // select operators
 //------------------------------------------------------------------------------
 
-// The user-callable function GxB_SelectOp_new has the following signature.  It
-// is implemented as a macro so that the name of the select function can be
-// kept by GraphBLAS.
+// GxB_SelectOp_new is implemented both as a macro and a function.  Both are
+// user-callable.  The default is to use the macro, since this allows the name
+// of the select function to be kept in the new operator as a string.  See the
+// discussion of GrB_Type_new above.
 
-/*
+#undef GxB_SelectOp_new
 
 GrB_Info GxB_SelectOp_new       // create a new user-defined select operator
 (
@@ -899,13 +862,11 @@ GrB_Info GxB_SelectOp_new       // create a new user-defined select operator
     const GrB_Type xtype        // type of input x, or NULL if type-generic
 ) ;
 
-*/
-
+#ifndef NMACRO
 #define GxB_SelectOp_new(op,f,x) GB_SelectOp_new (op,f,x, GB_STR(f))
+#endif
 
-// This function is NOT user-callable:
-
-GrB_Info GB_SelectOp_new    // USER CODE SHOULD NOT USE THIS FUNCTION DIRECTLY
+GrB_Info GB_SelectOp_new        // not user-callable; use GxB_SelectOp_new
 (
     GxB_SelectOp *selectop,     // handle for the new select operator
     void *function,             // pointer to the select function
@@ -932,100 +893,89 @@ GrB_Info GxB_SelectOp_free      // free a user-created select operator
 // and y are identical.  The monoid also has an identity element, such that
 // op(x,identity) = op(identity,x) = x.
 
-typedef struct
-{
-    int64_t magic ;         // for detecting uninitialized objects
-    GrB_BinaryOp op ;       // binary operator of the monoid
-    void *identity ;        // identity of the monoid; size is op->ztype->size
-    bool identity_is_zero ; // true if all bits of identity are zero
-    bool user_defined ;     // true if monoid is user-defined
-}
-GB_Monoid_opaque ;          // CONTENT NOT USER-ACCESSIBLE
-
-// The GrB_Monoid handle (user-accesible)
-typedef GB_Monoid_opaque *GrB_Monoid ;
+typedef struct GB_Monoid_opaque *GrB_Monoid ;
 
 // Create a new Monoid with a specific type of identity, which must match
 // the binary_op type.  The binary_op's three types must all be the same.
 
-GrB_Info GrB_Monoid_BOOL_new        // create a new boolean monoid
+GrB_Info GrB_Monoid_new_BOOL        // create a new boolean monoid
 (
     GrB_Monoid *monoid,             // handle of monoid to create
     const GrB_BinaryOp op,          // binary operator of the monoid
     const bool identity             // identity value of the monoid
 ) ;
 
-GrB_Info GrB_Monoid_INT8_new        // create a new int8 monoid
+GrB_Info GrB_Monoid_new_INT8        // create a new int8 monoid
 (
     GrB_Monoid *monoid,             // handle of monoid to create
     const GrB_BinaryOp op,          // binary operator of the monoid
     const int8_t identity           // identity value of the monoid
 ) ;
 
-GrB_Info GrB_Monoid_UINT8_new       // create a new uint8 monoid
+GrB_Info GrB_Monoid_new_UINT8       // create a new uint8 monoid
 (
     GrB_Monoid *monoid,             // handle of monoid to create
     const GrB_BinaryOp op,          // binary operator of the monoid
     const uint8_t identity          // identity value of the monoid
 ) ;
 
-GrB_Info GrB_Monoid_INT16_new       // create a new int16 monoid
+GrB_Info GrB_Monoid_new_INT16       // create a new int16 monoid
 (
     GrB_Monoid *monoid,             // handle of monoid to create
     const GrB_BinaryOp op,          // binary operator of the monoid
     const int16_t identity          // identity value of the monoid
 ) ;
 
-GrB_Info GrB_Monoid_UINT16_new      // create a new uint16 monoid
+GrB_Info GrB_Monoid_new_UINT16      // create a new uint16 monoid
 (
     GrB_Monoid *monoid,             // handle of monoid to create
     const GrB_BinaryOp op,          // binary operator of the monoid
     const uint16_t identity         // identity value of the monoid
 ) ;
 
-GrB_Info GrB_Monoid_INT32_new       // create a new int32 monoid
+GrB_Info GrB_Monoid_new_INT32       // create a new int32 monoid
 (
     GrB_Monoid *monoid,             // handle of monoid to create
     const GrB_BinaryOp op,          // binary operator of the monoid
     const int32_t identity          // identity value of the monoid
 ) ;
 
-GrB_Info GrB_Monoid_UINT32_new      // create a new uint32 monoid
+GrB_Info GrB_Monoid_new_UINT32      // create a new uint32 monoid
 (
     GrB_Monoid *monoid,             // handle of monoid to create
     const GrB_BinaryOp op,          // binary operator of the monoid
     const uint32_t identity         // identity value of the monoid
 ) ;
 
-GrB_Info GrB_Monoid_INT64_new       // create a new int64 monoid
+GrB_Info GrB_Monoid_new_INT64       // create a new int64 monoid
 (
     GrB_Monoid *monoid,             // handle of monoid to create
     const GrB_BinaryOp op,          // binary operator of the monoid
     const int64_t identity          // identity value of the monoid
 ) ;
 
-GrB_Info GrB_Monoid_UINT64_new      // create a new uint64 monoid
+GrB_Info GrB_Monoid_new_UINT64      // create a new uint64 monoid
 (
     GrB_Monoid *monoid,             // handle of monoid to create
     const GrB_BinaryOp op,          // binary operator of the monoid
     const uint64_t identity         // identity value of the monoid
 ) ;
 
-GrB_Info GrB_Monoid_FP32_new        // create a new float monoid
+GrB_Info GrB_Monoid_new_FP32        // create a new float monoid
 (
     GrB_Monoid *monoid,             // handle of monoid to create
     const GrB_BinaryOp op,          // binary operator of the monoid
     const float identity            // identity value of the monoid
 ) ;
 
-GrB_Info GrB_Monoid_FP64_new        // create a new double monoid
+GrB_Info GrB_Monoid_new_FP64        // create a new double monoid
 (
     GrB_Monoid *monoid,             // handle of monoid to create
     const GrB_BinaryOp op,          // binary operator of the monoid
     const double identity           // identity value of the monoid
 ) ;
 
-GrB_Info GrB_Monoid_UDT_new         // create a monoid with a user-defined type
+GrB_Info GrB_Monoid_new_UDT         // create a monoid with a user-defined type
 (
     GrB_Monoid *monoid,             // handle of monoid to create
     const GrB_BinaryOp op,          // binary operator of the monoid
@@ -1049,30 +999,30 @@ GrB_Info GrB_Monoid_new             // create a monoid
     _Generic                                        \
     (                                               \
         (identity),                                 \
-        const bool     : GrB_Monoid_BOOL_new   ,    \
-              bool     : GrB_Monoid_BOOL_new   ,    \
-        const int8_t   : GrB_Monoid_INT8_new   ,    \
-              int8_t   : GrB_Monoid_INT8_new   ,    \
-        const uint8_t  : GrB_Monoid_UINT8_new  ,    \
-              uint8_t  : GrB_Monoid_UINT8_new  ,    \
-        const int16_t  : GrB_Monoid_INT16_new  ,    \
-              int16_t  : GrB_Monoid_INT16_new  ,    \
-        const uint16_t : GrB_Monoid_UINT16_new ,    \
-              uint16_t : GrB_Monoid_UINT16_new ,    \
-        const int32_t  : GrB_Monoid_INT32_new  ,    \
-              int32_t  : GrB_Monoid_INT32_new  ,    \
-        const uint32_t : GrB_Monoid_UINT32_new ,    \
-              uint32_t : GrB_Monoid_UINT32_new ,    \
-        const int64_t  : GrB_Monoid_INT64_new  ,    \
-              int64_t  : GrB_Monoid_INT64_new  ,    \
-        const uint64_t : GrB_Monoid_UINT64_new ,    \
-              uint64_t : GrB_Monoid_UINT64_new ,    \
-        const float    : GrB_Monoid_FP32_new   ,    \
-              float    : GrB_Monoid_FP32_new   ,    \
-        const double   : GrB_Monoid_FP64_new   ,    \
-              double   : GrB_Monoid_FP64_new   ,    \
-        const void *   : GrB_Monoid_UDT_new    ,    \
-              void *   : GrB_Monoid_UDT_new         \
+        const bool     : GrB_Monoid_new_BOOL   ,    \
+              bool     : GrB_Monoid_new_BOOL   ,    \
+        const int8_t   : GrB_Monoid_new_INT8   ,    \
+              int8_t   : GrB_Monoid_new_INT8   ,    \
+        const uint8_t  : GrB_Monoid_new_UINT8  ,    \
+              uint8_t  : GrB_Monoid_new_UINT8  ,    \
+        const int16_t  : GrB_Monoid_new_INT16  ,    \
+              int16_t  : GrB_Monoid_new_INT16  ,    \
+        const uint16_t : GrB_Monoid_new_UINT16 ,    \
+              uint16_t : GrB_Monoid_new_UINT16 ,    \
+        const int32_t  : GrB_Monoid_new_INT32  ,    \
+              int32_t  : GrB_Monoid_new_INT32  ,    \
+        const uint32_t : GrB_Monoid_new_UINT32 ,    \
+              uint32_t : GrB_Monoid_new_UINT32 ,    \
+        const int64_t  : GrB_Monoid_new_INT64  ,    \
+              int64_t  : GrB_Monoid_new_INT64  ,    \
+        const uint64_t : GrB_Monoid_new_UINT64 ,    \
+              uint64_t : GrB_Monoid_new_UINT64 ,    \
+        const float    : GrB_Monoid_new_FP32   ,    \
+              float    : GrB_Monoid_new_FP32   ,    \
+        const double   : GrB_Monoid_new_FP64   ,    \
+              double   : GrB_Monoid_new_FP64   ,    \
+        const void *   : GrB_Monoid_new_UDT    ,    \
+              void *   : GrB_Monoid_new_UDT         \
     )                                               \
     (monoid, op, identity) ;
 
@@ -1107,17 +1057,7 @@ GrB_Info GrB_Monoid_free            // free a user-created monoid
 // defines a function z=fmult(x,y) where the type of z matches the exactly with
 // the monoid type.
 
-typedef struct
-{
-    int64_t magic ;                 // for detecting uninitialized objects
-    GrB_Monoid add ;                // add operator of the semiring
-    GrB_BinaryOp multiply ;         // multiply operator of the semiring
-    bool user_defined ;             // true if semiring is user-defined
-}
-GB_Semiring_opaque ;                // CONTENT NOT USER-ACCESSIBLE
-
-// The GrB_Semiring handle (user-accesible)
-typedef GB_Semiring_opaque *GrB_Semiring ;
+typedef struct GB_Semiring_opaque *GrB_Semiring ;
 
 GrB_Info GrB_Semiring_new           // create a semiring
 (
@@ -1170,71 +1110,9 @@ GrB_Info GrB_Semiring_free          // free a user-created semiring
 
 typedef uint64_t GrB_Index ;
 
-// The GraphBLAS GrB_Matrix object; content not user-accessible
+typedef struct GB_Matrix_opaque *GrB_Matrix ;
 
-typedef struct
-{
-    int64_t magic ;         // for detecting uninitialized objects
-    GrB_Type type ;         // the type of each numerical entry
-    int64_t nrows ;         // number of rows
-    int64_t ncols ;         // number of columns
-    int64_t nzmax ;         // size of i and x arrays
-    int64_t *p ;            // column pointers, array of size ncols+1
-    int64_t *i ;            // row indices, array of size nzmax
-    void *x ;               // values, size nzmax; each size A->type->size
-    bool p_shallow ;        // true if p is a shallow copy
-    bool i_shallow ;        // true if i is a shallow copy
-    bool x_shallow ;        // true if x is a shallow copy
-    int64_t npending ;      // number of pending tuples to add to the matrix
-    int64_t max_npending ;  // size of ipending, jpending, and xpending arrays
-    bool sorted_pending ;   // true if pending tuples are in sorted order
-    int64_t *ipending ;     // row indices of pending tuples
-    int64_t *jpending ;     // col indices of pending tuples; NULL if ncols <= 1
-    void *xpending ;        // values of pending tuples
-    GrB_BinaryOp operator_pending ; // operator to assemble duplications
-    int64_t nzombies ;      // number of zombines marked for deletion
-    void *queue_next ;      // next matrix in the matrix queue
-    void *queue_prev ;      // prev matrix in the matrix queue
-    bool enqueued ;         // true if the matrix is in the queue
-}
-GB_Matrix_opaque ;          // CONTENT NOT USER-ACCESSIBLE
-
-// The GrB_Matrix handle (user-accesible)
-typedef GB_Matrix_opaque *GrB_Matrix ;
-
-// The GraphBLAS GrB_Vector object; content not user-accessible.  The content
-// is exactly the same as a GrB_Matrix (SuiteSparse:GraphBLAS requires these
-// to objects to be identical in size and content).
-
-typedef struct
-{
-    int64_t magic ;         // for detecting uninitialized objects
-    GrB_Type type ;         // the type of each numerical entry
-    int64_t nrows ;         // number of rows
-    int64_t ncols ;         // always 1
-    int64_t nzmax ;         // size of i and x arrays
-    int64_t *p ;            // column pointers, array of size ncols+1 == 2
-    int64_t *i ;            // row indices, array of size nzmax
-    void *x ;               // values, size nzmax; each size A->type->size
-    bool p_shallow ;        // true if p is a shallow copy
-    bool i_shallow ;        // true if i is a shallow copy
-    bool x_shallow ;        // true if x is a shallow copy
-    int64_t npending ;      // number of pending tuples to add to the matrix
-    int64_t max_npending ;  // size of ipending, jpending, and xpending arrays
-    bool sorted_pending ;   // true if pending tuples are in sorted order
-    int64_t *ipending ;     // row indices of pending tuples
-    int64_t *jpending ;     // always NULL
-    void *xpending ;        // values of pending tuples
-    GrB_BinaryOp operator_pending ; // operator to assemble duplications
-    int64_t nzombies ;      // number of zombines marked for deletion
-    void *queue_next ;      // next matrix in the matrix queue
-    void *queue_prev ;      // prev matrix in the matrix queue
-    bool enqueued ;         // true if the matrix is in the queue
-}
-GB_Vector_opaque ;          // CONTENT NOT USER-ACCESSIBLE
-
-// The GrB_Vector handle (user-accesible)
-typedef GB_Vector_opaque *GrB_Vector ;
+typedef struct GB_Vector_opaque *GrB_Vector ;
 
 //==============================================================================
 //=== GraphBLAS Vector methods =================================================
@@ -2625,18 +2503,7 @@ typedef enum
 }
 GrB_Desc_Value ;
 
-typedef struct
-{
-    int64_t magic ;         // for detecting uninitialized objects
-    GrB_Desc_Value out ;    // output descriptor
-    GrB_Desc_Value mask ;   // mask descriptor
-    GrB_Desc_Value in0 ;    // first input descriptor (A for C=A*B, for example)
-    GrB_Desc_Value in1 ;    // second input descriptor (B for C=A*B)
-}
-GB_Descriptor_opaque ;      // CONTENT NOT USER-ACCESSIBLE
-
-// The GrB_Descriptor handle (user-accesible)
-typedef GB_Descriptor_opaque *GrB_Descriptor ;
+typedef struct GB_Descriptor_opaque *GrB_Descriptor ;
 
 GrB_Info GrB_Descriptor_new     // create a new descriptor
 (
@@ -4179,7 +4046,6 @@ GrB_Info GxB_Matrix_select          // C<Mask> = accum (C, op(A,k)) or op(A',k)
     )                                           \
     (C, Mask, accum, op, A, k, desc)
 
-
 //------------------------------------------------------------------------------
 // matrix and vector reduction
 //------------------------------------------------------------------------------
@@ -5002,6 +4868,55 @@ GxB_Statistics ;
 GrB_Info GxB_stats
 (
     GxB_Statistics *stats
+) ;
+
+//------------------------------------------------------------------------------
+// GxB_resize:  change the size of a matrix or vector
+//------------------------------------------------------------------------------
+
+// If the dimensions decrease, entries that fall outside the resized matrix or
+// vector are deleted
+
+GrB_Info GxB_Matrix_resize      // change the size of a matrix
+(
+    GrB_Matrix A,               // matrix to modify
+    const GrB_Index nrows_new,  // new number of rows in matrix
+    const GrB_Index ncols_new   // new number of columns in matrix
+) ;
+
+GrB_Info GxB_Vector_resize      // change the size of a vector
+(
+    GrB_Vector u,               // vector to modify
+    const GrB_Index nrows_new   // new number of rows in vector
+) ;
+
+// GxB_resize is a generic function for resizing a matrix or vector
+
+// GrB_Vector_resize (u,nrows_new)
+// GrB_Matrix_resize (A,nrows_new,ncols_new)
+
+#define GxB_resize(arg1,...)                                \
+    _Generic                                                \
+    (                                                       \
+        (arg1),                                             \
+              GrB_Vector : GxB_Vector_resize ,              \
+              GrB_Matrix : GxB_Matrix_resize                \
+    )                                                       \
+    (arg1, __VA_ARGS__)
+
+//------------------------------------------------------------------------------
+// GxB_kron:  Kronecker product
+//------------------------------------------------------------------------------
+
+GrB_Info GxB_kron                   // C<Mask> = accum (C, kron(A,B))
+(
+    GrB_Matrix C,                   // input/output matrix for results
+    const GrB_Matrix Mask,          // optional mask for C, unused if NULL
+    const GrB_BinaryOp accum,       // optional accum for Z=accum(C,T)
+    const GrB_BinaryOp op,          // defines '*' for T=kron(A,B)
+    const GrB_Matrix A,             // first input:  matrix A
+    const GrB_Matrix B,             // second input: matrix B
+    const GrB_Descriptor desc       // descriptor for C, Mask, A, and B
 ) ;
 
 #endif

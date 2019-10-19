@@ -6,7 +6,7 @@ function test12 (cover)
 % if cover=1, do quick statement coverage tests
 % if cover=0, run larger problems
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 if (nargin < 1)
@@ -30,14 +30,14 @@ debug = GB_mex_debug ;
 
 fprintf ('\nWathen matrices:\n') ;
 
-if (debug)
-    
-    fprintf ('Wathen test skipped when GraphBLAS compiled with NDEBUG\n') ;
+% if (debug)
+%     fprintf ('Wathen test skipped when GraphBLAS compiled with NDEBUG\n') ;
+% else
 
-else
-
-    for nx = 1:20
-        for ny = 1:20
+    for nx = [1 5 10] % 1:20
+        fprintf ('%d:', nx) ;
+        for ny = [1 5 10] % 1:20
+            fprintf ('%d', ny) ;
 
             for scale = 0:1
                 % reset the random number generator so RHO can be found
@@ -47,6 +47,7 @@ else
                 A = gallery ('wathen' ,nx, ny, scale) ;
                 anorm = norm (A,1) ;
                 for method = 0:3
+                    fprintf ('.') ;
                     B = GB_mex_wathen (nx, ny, method, scale, rho) ;
                     assert (norm (A-B,1) < 16 * eps (norm (A,1))) ;
                 end
@@ -82,7 +83,7 @@ else
         end
     end
 
-end
+% end
 
 fprintf ('test12: all tests passed\n') ;
 

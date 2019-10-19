@@ -2,7 +2,7 @@
 // GB_BinaryOp_new: create a new binary operator
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 // http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 //------------------------------------------------------------------------------
@@ -43,7 +43,7 @@ GrB_Info GB_BinaryOp_new
     //--------------------------------------------------------------------------
 
     // allocate the binary operator
-    GB_CALLOC_MEMORY (*binaryop, 1, sizeof (GB_BinaryOp_opaque)) ;
+    GB_CALLOC_MEMORY (*binaryop, 1, sizeof (struct GB_BinaryOp_opaque)) ;
     if (*binaryop == NULL)
     {
         return (ERROR (GrB_OUT_OF_MEMORY, (LOG, "out of memory"))) ;

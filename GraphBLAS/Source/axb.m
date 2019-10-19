@@ -9,7 +9,7 @@ fprintf (f, '//-----------------------------------------------------------------
 fprintf (f, '// GB_AxB__semirings.h: definitions for GB_AxB__*.c\n') ;
 fprintf (f, '//------------------------------------------------------------------------------\n') ;
 fprintf (f, '\n') ;
-fprintf (f, '// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.\n') ;
+fprintf (f, '// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.\n') ;
 fprintf (f, '// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.\n') ;
 fprintf (f, '\n') ;
 fprintf (f, '// This file has been automatically generated from Template/GB_AxB.h') ;

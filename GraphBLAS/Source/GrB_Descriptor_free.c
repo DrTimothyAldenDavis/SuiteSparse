@@ -2,7 +2,7 @@
 // GrB_Descriptor_free: free a descriptor
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 // http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 //------------------------------------------------------------------------------
@@ -21,7 +21,8 @@ GrB_Info GrB_Descriptor_free            // free a descriptor
         if (desc != NULL && desc->magic == MAGIC)
         {
             desc->magic = FREED ;     // to help detect dangling pointers
-            GB_FREE_MEMORY (*descriptor, 1, sizeof (GB_Descriptor_opaque)) ;
+            GB_FREE_MEMORY (*descriptor, 1,
+                sizeof (struct GB_Descriptor_opaque)) ;
         }
         (*descriptor) = NULL ;
     }

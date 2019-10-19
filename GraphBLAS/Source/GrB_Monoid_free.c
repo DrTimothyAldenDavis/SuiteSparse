@@ -2,7 +2,7 @@
 // GrB_Monoid_free:  free a monoid
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 // http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 //------------------------------------------------------------------------------
@@ -26,7 +26,7 @@ GrB_Info GrB_Monoid_free            // free a user-created monoid
                 // are statically allocated and cannot be freed.
                 mon->magic = FREED ; // to help detect dangling pointers
                 GB_FREE_MEMORY (mon->identity, 1, mon->op->ztype->size) ;
-                GB_FREE_MEMORY (*monoid, 1, sizeof (GB_Monoid_opaque)) ;
+                GB_FREE_MEMORY (*monoid, 1, sizeof (struct GB_Monoid_opaque)) ;
             }
             (*monoid) = NULL ;
         }

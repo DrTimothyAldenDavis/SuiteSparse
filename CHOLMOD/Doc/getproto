@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 echo -n $1 > _temp.awk
 cat rule.awk >> _temp.awk
 cat header.tex

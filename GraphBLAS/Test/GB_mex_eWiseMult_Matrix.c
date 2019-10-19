@@ -2,20 +2,20 @@
 // GB_mex_eWiseMult_Matrix: C<Mask> = accum(C,A.*B)
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 // http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 //------------------------------------------------------------------------------
 
 #include "GB_mex.h"
 
-#define FREE_ALL            \
-{                           \
-    GB_MATRIX_FREE (&A) ;         \
-    GB_MATRIX_FREE (&B) ;         \
-    GB_MATRIX_FREE (&C) ;         \
-    GrB_free (&desc) ;      \
-    GB_MATRIX_FREE (&Mask) ;      \
+#define FREE_ALL                    \
+{                                   \
+    GB_MATRIX_FREE (&A) ;           \
+    GB_MATRIX_FREE (&B) ;           \
+    GB_MATRIX_FREE (&C) ;           \
+    GrB_free (&desc) ;              \
+    GB_MATRIX_FREE (&Mask) ;        \
     GB_mx_put_global (malloc_debug) ; \
 }
 

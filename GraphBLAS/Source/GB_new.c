@@ -2,7 +2,7 @@
 // GB_new: create a new GraphBLAS matrix
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 // http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 //------------------------------------------------------------------------------
@@ -22,16 +22,16 @@
 // descriptor, for example, and are typically not transposed internally as well
 // since it is costly to do so.
 
-// Two structs with identical content must be defined.  so that the two types
+// Two structs with identical content must be defined so that the two types
 // can be safely typecasted from one to the other.  It would be much cleaner to
 // declare a single struct GrB_object_opaque, and then do
 
-// typedef GB_object_opaque *GrB_Vector ;
-// typedef GB_object_opaque *GrB_Matrix ;
+// typedef struct GB_object_opaque *GrB_Vector ;
+// typedef struct GB_object_opaque *GrB_Matrix ;
 
 // However, in this case the compiler complains that _Generic(x) can't
 // distinguish between GrB_Vector and GrB_Matrix.  Therefore, GrB_Matrix
-// and GrB_Vector are defined separately in GraphBLAS.h.
+// and GrB_Vector are defined separately in GB.h.
 
 // Below are details of the content of a GrB_Matrix as defined in GraphBLAS.h:
 
@@ -246,7 +246,7 @@ GrB_Info GB_new                 // create a new matrix
     //--------------------------------------------------------------------------
 
     // allocate the matrix
-    GB_CALLOC_MEMORY (*matrix_handle, 1, sizeof (GB_Matrix_opaque)) ;
+    GB_CALLOC_MEMORY (*matrix_handle, 1, sizeof (struct GB_Matrix_opaque)) ;
     if (*matrix_handle == NULL)
     {
         // out of memory
@@ -312,7 +312,7 @@ GrB_Info GB_new                 // create a new matrix
     if ((Ap_calloc || Ap_malloc) && A->p == NULL)
     {
         // out of memory
-        GB_FREE_MEMORY (*matrix_handle, 1, sizeof (GB_Matrix_opaque)) ;
+        GB_FREE_MEMORY (*matrix_handle, 1, sizeof (struct GB_Matrix_opaque)) ;
         return (ERROR (GrB_OUT_OF_MEMORY, (LOG,
             "out of memory, %g GBytes required",
             GBYTES (A->ncols+1, sizeof (int64_t))))) ;

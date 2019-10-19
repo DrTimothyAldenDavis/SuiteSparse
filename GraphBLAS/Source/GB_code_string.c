@@ -2,6 +2,11 @@
 // GB_code_string: convert a type code into a string
 //------------------------------------------------------------------------------
 
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
+// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+
+//------------------------------------------------------------------------------
+
 // Given GB_Type_code, return a string with the name of the type
 
 #include "GB.h"

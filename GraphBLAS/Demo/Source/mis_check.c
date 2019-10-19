@@ -178,6 +178,9 @@ GrB_Info mis_check              // compute a maximal independent set
         last_nvals = nvals ;
     }
 
+    // drop explicit false values
+    OK (GrB_apply (iset, iset, NULL, GrB_IDENTITY_BOOL, iset, r_desc)) ;
+
     // return result
     *iset_output = iset ;
     iset = NULL ;           // set to NULL so FREE_ALL doesn't free it

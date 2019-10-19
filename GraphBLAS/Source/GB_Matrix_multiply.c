@@ -2,7 +2,7 @@
 // GB_Matrix_multiply: symbolic and numeric C=A*B, A'*B, A*B', or A'*B'
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 // http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 //------------------------------------------------------------------------------
@@ -133,15 +133,26 @@ GrB_Info GB_Matrix_multiply         // C = A*B, A'*B, A*B', or A'*B'
             bool use_adotb ;
             if (Mask != NULL)
             {
-                // C<M> = A'*B always uses the dot product method
+                // C<M> = A'*B always uses the dot product method.  This might
+                // not be the fastest method, but if the outer product method
+                // is faster, the user can always transpose A first (AT=A') and
+                // then compute C<M> = AT*B, which uses the case above.
+                use_adotb = true ;
+            }
+            else if (C->nrows == 1 || C->ncols == 1)
+            {
+                // C = A'*B uses the dot product method if C is a vector
                 use_adotb = true ;
             }
             else
             {
-                // C = A'*B uses the dot product method only if C is small
+                // when C is a matrix, C = A'*B uses the dot product method if
+                // the workspace required for C is much smaller than the
+                // workspace for transposing A or B.
                 GrB_Index cwork ;
                 bool ok = GB_Index_multiply (&cwork, C->nrows, C->ncols) ;
-                use_adotb = ok && cwork < IMIN (at_workspace, 4 * bt_workspace);
+                use_adotb = ok
+                    && cwork < IMIN (at_workspace, 4 * bt_workspace) / 10000 ;
             }
 
             if (use_adotb)
@@ -208,8 +219,8 @@ GrB_Info GB_Matrix_multiply         // C = A*B, A'*B, A*B', or A'*B'
 
                 // C = CT', no typecasting, no operator
                 OK (GB_Matrix_transpose (C, CT, NULL, true)) ;
-            }
 
+            }
         }
     }
     else

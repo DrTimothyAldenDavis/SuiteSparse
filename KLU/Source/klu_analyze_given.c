@@ -96,7 +96,7 @@ KLU_symbolic *KLU_alloc_symbolic
     /* allocate the Symbolic object */
     /* ---------------------------------------------------------------------- */
 
-    Symbolic = KLU_malloc (sizeof (KLU_symbolic), 1, Common) ;
+    Symbolic = KLU_malloc (1, sizeof (KLU_symbolic), Common) ;
     if (Common->status < KLU_OK)
     {
         /* out of memory */

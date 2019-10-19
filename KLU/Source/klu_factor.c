@@ -441,7 +441,7 @@ KLU_numeric *KLU_factor         /* returns NULL if error, or a valid
     n1 = ((size_t) n) + 1 ;
     nzoff1 = ((size_t) nzoff) + 1 ;
 
-    Numeric = KLU_malloc (sizeof (KLU_numeric), 1, Common) ;
+    Numeric = KLU_malloc (1, sizeof (KLU_numeric), Common) ;
     if (Common->status < KLU_OK)
     {
         /* out of memory */

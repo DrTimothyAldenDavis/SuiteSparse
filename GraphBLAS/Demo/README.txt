@@ -1,4 +1,4 @@
-SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 This is the GraphBLAS/Demo folder.  It contains a set of simple demo programs
@@ -46,6 +46,7 @@ mis_demo.c              demo program to test mis
 tri_demo.c              demo program to test tricount
 simple_demo.c           demo program to test  simple_rand and simple_timer
 wildtype_demo.c         demo program with arbitrary struct as user-defined type
+kron_demo.c             demo program to test GxB_kron
 
 --------------------------------------------------------------------------------
 in Demo/Output:

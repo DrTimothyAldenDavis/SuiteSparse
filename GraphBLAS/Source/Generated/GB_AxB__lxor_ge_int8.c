@@ -2,7 +2,7 @@
 // GB_AxB__lxor_ge_int8:  hard-coded C=A*B
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 // http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 // If this filename has a double underscore in its name ("__") then it has
@@ -200,6 +200,7 @@ void GB_AxB__lxor_ge_int8
         GB_queue_insert (C) ;
         #else
         Cp [n] = cnz ;
+        C->magic = MAGIC ;
         #endif
 
     }

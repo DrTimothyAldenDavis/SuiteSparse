@@ -1,7 +1,7 @@
 function test21b
 %TEST21B test GrB_assign
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 fprintf ('\n--------------exhaustive test of GB_mex_assign\n') ;

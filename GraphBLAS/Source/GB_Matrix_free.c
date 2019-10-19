@@ -2,7 +2,7 @@
 // GB_Matrix_free: free a matrix
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 // http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 //------------------------------------------------------------------------------
@@ -30,7 +30,7 @@ void GB_Matrix_free             // free a matrix
             }
             A->p = NULL ;
             GB_Matrix_ixfree (A) ;
-            GB_FREE_MEMORY (*matrix, 1, sizeof (GB_Matrix_opaque)) ;
+            GB_FREE_MEMORY (*matrix, 1, sizeof (struct GB_Matrix_opaque)) ;
         }
         (*matrix) = NULL ;
     }

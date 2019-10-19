@@ -2,7 +2,7 @@
 // GraphBLAS/Demo/Program/bfs_demo.c: breadth first search using mxv with a mask
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 // http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 //------------------------------------------------------------------------------
@@ -158,16 +158,17 @@ int main (int argc, char **argv)
     // now break something on purpose and report the error:
     //--------------------------------------------------------------------------
 
-    // this fails because the compiler selects the INT32 Monoid_new function
-    // (clang 8.0 on MacOSX, at least), since false is merely the constant "0".
     if (n == 4)
     {
+        // this fails because the compiler selects the GrB_Monoid_new_INT32
+        // function (clang 8.0 on MacOSX, at least), since false is merely the
+        // constant "0".
         GrB_Monoid Lor ;
         info = GrB_Monoid_new (&Lor, GrB_LOR, false) ;        
         printf ("\n------------------- this fails:\n%s\n", GrB_error ( )) ;
         GrB_free (&Lor) ;
 
-        // this selects the correct GrB_Monoid_BOOL_new function
+        // this selects the correct GrB_Monoid_new_BOOL function
         info = GrB_Monoid_new (&Lor, GrB_LOR, (bool) false) ;        
         printf ("\n------------------- this is OK:\n%s\n", GrB_error ( )) ;
         GrB_free (&Lor) ;

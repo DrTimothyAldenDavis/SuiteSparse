@@ -8,7 +8,7 @@ function ok = GB_spec_compare (C_spec, C_mex, identity)
 % some GraphBLAS method.  C_mex = GrG_mex_* (...) is the output of the
 % corresponding MATLAB interface to the true GraphBLAS method, in C.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 % get the semiring identity

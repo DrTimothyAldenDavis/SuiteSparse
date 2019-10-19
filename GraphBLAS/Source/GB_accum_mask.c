@@ -2,7 +2,7 @@
 // GB_accum_mask: accumulate results via the Mask and accum operator
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 // http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 //------------------------------------------------------------------------------
@@ -127,7 +127,7 @@ GrB_Info GB_accum_mask          // C<Mask> = accum (C,T)
     // check inputs
     //--------------------------------------------------------------------------
 
-    ASSERT_OK (GB_check (C, "C input", 0)) ;
+    ASSERT_OK (GB_check (C, "C input for C<Mask>=accum(C,T)", 0)) ;
     ASSERT_OK_OR_NULL (GB_check (Mask, "Mask", 0)) ;
     ASSERT_OK_OR_NULL (GB_check (accum, "accum", 0)) ;
     ASSERT (Thandle != NULL) ;
@@ -170,6 +170,7 @@ GrB_Info GB_accum_mask          // C<Mask> = accum (C,T)
         // T may have zombies, which are transplanted into Z.
         info = GB_Matrix_transplant (Z, C->type, Thandle) ;
         // Z is now initialized, and Z->p, Z->i, and Z->x are allocated ]
+
     }
     else
     {
