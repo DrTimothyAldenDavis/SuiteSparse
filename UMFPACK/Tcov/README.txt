@@ -1,25 +1,47 @@
 This is the UMFPACK Tcov directory.  It runs a large number of tests on
-UMFPACK and checks the statement coverage (using gcc and gcov on Linux,
-or tcov on Solaris).
+UMFPACK and checks the statement coverage (using gcc and gcov on Linux
+or the Mac, or tcov on Solaris).
 
 You must first do "make purge" in AMD and UMFPACK.  You must also make
 sure the "Out" symbolic link is a valid link.  It should point to a large
 scratch space, for temporary files.  Finally, type DO.linux or DO.solaris.
+Use DO.linux for the Mac.
 
-Alternatively, just type "make" in this directory, for Linux, or "make sol"
-for Solaris.
+Alternatively, just type "make" in this directory, for Linux or the Mac,
+or "make sol" for Solaris.
 
-The last line of each */ut.out file should read
-ALL TESTS PASSED largest maxrnorm 1e-07
+You terminal output will look something like this:
+
+################################################################################
+Tcov test: 1 di
+################################################################################
+make[2]: [run] Error 1 (ignored)
+make[2]: [run] Error 1 (ignored)
+make[2]: [run] Error 1 (ignored)
+make[2]: [run] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 2.22e-10 (1.79e-07 shl0, 9.16e-05 arc130 8.81e-08 omega2) cputime 45.7908
+58.048u 26.549s 1:59.54 70.7%   0+0k 3+340io 0pf+0w
+################################################################################
+Tcov test: 1 dl
+################################################################################
+
+The ignored errors are OK (these are from diff's that do not need to be
+identical, since the output files include timing information, sizeof(void *)
+which can differ on different platforms, and so on).  You may also see warnings
+that *dump.o files have no symbols.  This is normal.  These files contain
+debugging functions only, and debugging is disabled by default.
+
+The last line of each */ut.out file should read something like
+ALL TESTS PASSED: rnorm 1e-07 ( ... )
 These lines are summarized at the end of the "DO.linux" test.
 
 If you see "TEST FAILURE" then something went wrong.  "ERROR" messages
 in the output files tmp/*.out are OK.  Those are supposed to be there;
 the test exercises the error-reporting features of UMFPACK.
 
-DO.all		does all tests
+./DO.all	does all tests
 
-DO 1 di		runs one test (Make.1 and GNUmakefile.di, in this case)
+./DO 1 di	runs one test (Make.1 and GNUmakefile.di, in this case)
 
 Out/*		subdirectories for each test,
 		contents can be destroyed when done.

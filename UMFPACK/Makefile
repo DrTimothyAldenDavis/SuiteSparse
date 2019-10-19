@@ -2,28 +2,26 @@
 # UMFPACK makefile (for GNU make or original make)
 #-------------------------------------------------------------------------------
 
+VERSION = 5.5.0
+
 # UMFPACK requires the AMD package to be in ../AMD
 
-default: library
+default: all
 
 include ../UFconfig/UFconfig.mk
 
 # compile all C code (except hb, fortran, and fortran64), including AMD and the
-# MATLAB mexFunctions
+# demos, but not the MATLAB mexFunctions
 all:
 	( cd ../AMD ; $(MAKE) library )
-	( cd ../AMD ; $(MAKE) mex )
 	( cd Lib    ; $(MAKE) )
 	( cd Demo   ; $(MAKE) )
-	( cd MATLAB ; $(MAKE) )
 	- cat Doc/License
 
 # compile just the C-callable libraries and demo programs (not mexFunctions)
 library:
 	( cd ../AMD ; $(MAKE) library )
 	( cd Lib    ; $(MAKE) )
-	( cd Demo   ; $(MAKE) )
-	- cat Doc/License
 
 # compile the FORTRAN interface and demo program
 fortran:
@@ -54,7 +52,7 @@ purge:
 	( cd Doc    ; $(MAKE) purge )
 
 # create PDF documents for the original distribution
-doc:
+docs:
 	( cd ../AMD ; $(MAKE) doc )
 	( cd Doc    ; $(MAKE) )
 
@@ -68,12 +66,23 @@ distclean: purge
 
 ccode: library
 
-# compile the MATLAB mexFunction
+# compile the MATLAB mexFunction for AMD (but not UMFPACK)
 mex:
 	( cd ../AMD/MATLAB ; $(MAKE) )
-	( cd MATLAB ; $(MAKE) )
+	# ( cd MATLAB ; $(MAKE) )
 
 # statement coverage (requires Linux; takes a lot of time and disk space)
 cov: purge
-	( cd Tcov ; ./DO.linux ; ./covall )
+	( cd Tcov ; ./DO.linux )
+
+# install UMFPACK
+install:
+	$(CP) Lib/libumfpack.a $(INSTALL_LIB)/libumfpack.$(VERSION).a
+	( cd $(INSTALL_LIB) ; ln -s libumfpack.$(VERSION).a libumfpack.a )
+	$(CP) Include/*.h $(INSTALL_INCLUDE)
+
+# uninstall UMFPACK
+uninstall:
+	$(RM) $(INSTALL_LIB)/libumfpack*.a
+	$(RM) $(INSTALL_INCLUDE)/umfpack*.h
 

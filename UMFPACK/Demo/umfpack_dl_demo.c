@@ -314,7 +314,7 @@ int main (int argc, char **argv)
     /* modify one numerical value in the column-form of A */
     /* ---------------------------------------------------------------------- */
 
-    /* change A (1,4), look for row index 1 in column 4. */
+    /* change A (1,4), look for row 1 in column 4. */
     row = 1 ;
     col = 4 ;
     for (p = Ap [col] ; p < Ap [col+1] ; p++)

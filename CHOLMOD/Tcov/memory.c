@@ -268,7 +268,7 @@ void memory_tests (cholmod_triplet *T)
 	CHOLMOD(free_sparse) (&A, cm) ;
 	OK (CHOLMOD(print_common) ("cm", cm)) ;
 	CHOLMOD(free_work) (cm) ;
-	printf ("inuse "ID" "ID"\n", inuse, cm->memory_inuse) ;
+	printf ("inuse "ID" "ID"\n", (Int) inuse, (Int) (cm->memory_inuse)) ;
 	OK (count == cm->malloc_count) ;
 	OK (inuse == cm->memory_inuse) ;
     }

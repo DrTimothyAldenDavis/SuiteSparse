@@ -208,6 +208,8 @@ template <typename Entry> struct spqr_numeric
 
     UF_long maxfrank ;  // max number of rows in any R block
 
+    double norm_E_fro ; // 2-norm of w, the vector of dead column 2-norms
+
     // -------------------------------------------------------------------------
     // for keeping Householder vectors
     // -------------------------------------------------------------------------

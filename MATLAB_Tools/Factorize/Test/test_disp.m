@@ -8,6 +8,8 @@ function test_disp
 
 % Copyright 2009, Timothy A. Davis, University of Florida
 
+tol = 1e-12 ;
+
 fprintf ('Dense LU factorization:\n') ;
 A = rand (3) ;
 F = factorize1 (A) ;
@@ -24,16 +26,16 @@ U = F.U ;
 p = F.p ;
 C = F.A ;
 err = norm (p*C - L*U, 1) ;
-if (err > 1e-14)
+if (err > tol)
     error ('error too high: %g\n', err) ;
 end
 if (~isempty (F.Q) || ~isempty (F.R) || ~isempty (F.q))
     error ('invalid contents') ;
 end
-if (F.is_inverse || F.kind ~= 8)
+if (F.is_inverse || ~isa (F, 'factorization_dense_lu'))
     error ('invalid contents') ;
 end
-if (~(S.is_inverse) || S.kind ~= 8)
+if (~(S.is_inverse) || ~isa (S, 'factorization_dense_lu'))
     error ('invalid contents') ;
 end
 
@@ -54,16 +56,16 @@ p = F.p ;
 q = F.q ;
 C = F.A ;
 err = norm (p*C*q - L*U, 1) ;
-if (err > 1e-14)
+if (err > tol)
     error ('error too high: %g\n', err) ;
 end
 if (~isempty (F.Q) || ~isempty (F.R))
     error ('invalid contents') ;
 end
-if (F.is_inverse || F.kind ~= 7)
+if (F.is_inverse || ~isa (F, 'factorization_sparse_lu'))
     error ('invalid contents') ;
 end
-if (~(S.is_inverse) || S.kind ~= 7)
+if (~(S.is_inverse) || ~isa (S, 'factorization_sparse_lu'))
     error ('invalid contents') ;
 end
 
@@ -77,17 +79,17 @@ disp (S) ;
 R = F.R ;
 C = F.A ;
 err = norm (C - R'*R, 1) ;
-if (err > 1e-14)
+if (err > tol)
     error ('error too high: %g\n', err) ;
 end
 if (~isempty (F.Q) || ~isempty (F.L) || ~isempty (F.U) || ~isempty (F.q) ...
  || ~isempty (F.p))
     error ('invalid contents') ;
 end
-if (F.is_inverse || F.kind ~= 6)
+if (F.is_inverse || ~isa (F, 'factorization_dense_chol'))
     error ('invalid contents') ;
 end
-if (~(S.is_inverse) || S.kind ~= 6)
+if (~(S.is_inverse) || ~isa (S, 'factorization_dense_chol'))
     error ('invalid contents') ;
 end
 
@@ -102,16 +104,16 @@ L = F.L ;
 q = F.q ;
 C = F.A ;
 err = norm (q*C*q' - L*L', 1) ;
-if (err > 1e-14)
+if (err > tol)
     error ('error too high: %g\n', err) ;
 end
 if (~isempty (F.Q) || ~isempty (F.R) || ~isempty (F.U) || ~isempty (F.p))
     error ('invalid contents') ;
 end
-if (F.is_inverse || F.kind ~= 5)
+if (F.is_inverse || ~isa (F, 'factorization_sparse_chol'))
     error ('invalid contents') ;
 end
-if (~(S.is_inverse) || S.kind ~= 5)
+if (~(S.is_inverse) || ~isa (F, 'factorization_sparse_chol'))
     error ('invalid contents') ;
 end
 
@@ -126,19 +128,20 @@ Q = F.Q ;
 R = F.R ;
 C = F.A ;
 err = norm (C - Q*R, 1) ;
-if (err > 1e-14)
+if (err > tol)
     error ('error too high: %g\n', err) ;
 end
 if (~isempty (F.L) || ~isempty (F.U) || ~isempty (F.p) || ~isempty (F.q))
     error ('invalid contents') ;
 end
-if (F.is_inverse || F.kind ~= 2)
+if (F.is_inverse || ~isa (F, 'factorization_dense_qr'))
     error ('invalid contents') ;
 end
-if (~(S.is_inverse) || S.kind ~= 2)
+if (~(S.is_inverse) || ~isa (S, 'factorization_dense_qr'))
     error ('invalid contents') ;
 end
 
+fprintf ('Dense QR factorization of A'':\n') ;
 F = factorize (A') ;
 disp (F) ;
 S = inverse (F) ;
@@ -148,16 +151,16 @@ Q = F.Q ;
 R = F.R ;
 C = F.A ;
 err = norm (C' - Q*R, 1) ;
-if (err > 1e-14)
+if (err > tol)
     error ('error too high: %g\n', err) ;
 end
 if (~isempty (F.L) || ~isempty (F.U) || ~isempty (F.p) || ~isempty (F.q))
     error ('invalid contents') ;
 end
-if (F.is_inverse || F.kind ~= 4)
+if (F.is_inverse || ~isa (F, 'factorization_dense_qrt'))
     error ('invalid contents') ;
 end
-if (~(S.is_inverse) || S.kind ~= 4)
+if (~(S.is_inverse) || ~isa (S, 'factorization_dense_qrt'))
     error ('invalid contents') ;
 end
 
@@ -173,19 +176,20 @@ R = F.R ;
 q = F.q ;
 C = F.A ;
 err = norm ((C*q)'*(C*q) - R'*R, 1) ;
-if (err > 1e-14)
+if (err > tol)
     error ('error too high: %g\n', err) ;
 end
 if (~isempty (F.L) || ~isempty (F.U) || ~isempty (F.p))
     error ('invalid contents') ;
 end
-if (F.is_inverse || F.kind ~= 1)
+if (F.is_inverse || ~isa (F, 'factorization_sparse_qr'))
     error ('invalid contents') ;
 end
-if (~(S.is_inverse) || S.kind ~= 1)
+if (~(S.is_inverse) || ~isa (S, 'factorization_sparse_qr'))
     error ('invalid contents') ;
 end
 
+fprintf ('Sparse QR factorization of A'':\n') ;
 F = factorize (A') ;
 disp (F) ;
 S = inverse (F) ;
@@ -196,16 +200,16 @@ R = F.R ;
 p = F.p ;
 C = F.A ;
 err = norm ((p*C)*(p*C)' - R'*R, 1) ;
-if (err > 1e-14)
+if (err > tol)
     error ('error too high: %g\n', err) ;
 end
 if (~isempty (F.L) || ~isempty (F.U) || ~isempty (F.q))
     error ('invalid contents') ;
 end
-if (F.is_inverse || F.kind ~= 3)
+if (F.is_inverse || ~isa (F, 'factorization_sparse_qrt'))
     error ('invalid contents') ;
 end
-if (~(S.is_inverse) || S.kind ~= 3)
+if (~(S.is_inverse) || ~isa (S, 'factorization_sparse_qrt'))
     error ('invalid contents') ;
 end
 

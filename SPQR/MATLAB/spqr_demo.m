@@ -103,21 +103,24 @@ tic
 x = spqr_solve (S, b) ;
 t1 = toc ;
 r1 = norm (A*x-b,1) ;
-fprintf ('%% time %8.3f residual %8.3e\n', t1,r1) ;
+r1b = norm (A'*(A*x)-A'*b,1) / norm (A'*A,1) ;
+fprintf ('%% time %8.3f residual %8.3e normal eqn resid %8.3e\n', t1,r1, r1b) ;
 
 fprintf ('tic, x = A\\b ; toc              ') ;
 tic
 x = A\b ;
 t2 = toc ;
 r2 = norm (A*x-b,1) ;
-fprintf ('%% time %8.3f residual %8.3e\n', t2,r2) ;
+r2b = norm (A'*(A*x)-A'*b,1) / norm (A'*A,1) ;
+fprintf ('%% time %8.3f residual %8.3e normal eqn resid %8.3e\n', t2,r2,r2b) ;
 
 fprintf ('tic, x = S\\b ; toc              ') ;
 tic
 x = S\b ;
 t3 = toc ;
 r3 = norm (A*x-b,1) ;
-fprintf ('%% time %8.3f residual %8.3e\n', t3,r3) ;
+r3b = norm (A'*(A*x)-A'*b,1) / norm (A'*A,1) ;
+fprintf ('%% time %8.3f residual %8.3e normal eqn resid %8.3e\n', t3,r3,r3b) ;
 
 % ------------------------------------------------------------------------------
 % compare spqr with 1000-by-2000 system

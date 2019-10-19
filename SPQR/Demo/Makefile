@@ -90,6 +90,7 @@ purge: distclean
 
 distclean: clean
 	- $(RM) qrdemo qrdemoc qrsimple qrsimplec
+	- $(RM) -r *.dSYM
 
 clean:
 	- $(RM) $(CLEAN)

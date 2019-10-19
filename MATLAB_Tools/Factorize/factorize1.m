@@ -120,14 +120,10 @@ methods
     function F = factorize1 (A)
         % constructor: computes a factorization of A
         [m n] = size (A) ;
-        if (ndims (A) > 2 || m ~= n)
-            error ('Matrix must be square and 2D.') ;
-        end
+        assert (ndims (A) == 2 && m == n, 'Matrix must be square and 2D.');
         F.A = A ;
         [F.L F.U F.p] = lu (A, 'vector') ;  % gives A(p,:) = L*U
-        if (nnz (diag (F.U)) ~= n)
-            error ('Matrix is rank deficient.') ;
-        end
+        assert (nnz (diag (F.U)) == n, 'Matrix is rank deficient.') ;
     end
 
     function x = mldivide (F,b)

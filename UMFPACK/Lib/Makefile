@@ -10,14 +10,17 @@ default: everything
 
 include ../../UFconfig/UFconfig.mk
 
-C = $(CC) $(CFLAGS) $(UMFPACK_CONFIG) -I../Include -I../../AMD/Include \
-    -I../Source
+C = $(CC) $(CFLAGS) $(UMFPACK_CONFIG) \
+    -I../Include -I../Source -I../../AMD/Include -I../../UFconfig \
+    -I../../CCOLAMD/Include -I../../CAMD/Include -I../../CHOLMOD/Include \
+    -I../../metis-4.0/Lib -I../../COLAMD/Include
 
 everything:
 	$(C) -c ../Source/umfpack_global.c -o umfpack_gn_global.o
 	$(C) -DDINT -c ../Source/umf_analyze.c -o umf_i_analyze.o
 	$(C) -DDINT -c ../Source/umf_apply_order.c -o umf_i_apply_order.o
 	$(C) -DDINT -c ../Source/umf_colamd.c -o umf_i_colamd.o
+	$(C) -DDINT -c ../Source/umf_cholmod.c -o umf_i_cholmod.o
 	$(C) -DDINT -c ../Source/umf_free.c -o umf_i_free.o
 	$(C) -DDINT -c ../Source/umf_fsize.c -o umf_i_fsize.o
 	$(C) -DDINT -c ../Source/umf_is_permutation.c -o umf_i_is_permutation.o
@@ -28,6 +31,7 @@ everything:
 	$(C) -DDLONG -c ../Source/umf_analyze.c -o umf_l_analyze.o
 	$(C) -DDLONG -c ../Source/umf_apply_order.c -o umf_l_apply_order.o
 	$(C) -DDLONG -c ../Source/umf_colamd.c -o umf_l_colamd.o
+	$(C) -DDLONG -c ../Source/umf_cholmod.c -o umf_l_cholmod.o
 	$(C) -DDLONG -c ../Source/umf_free.c -o umf_l_free.o
 	$(C) -DDLONG -c ../Source/umf_fsize.c -o umf_l_fsize.o
 	$(C) -DDLONG -c ../Source/umf_is_permutation.c -o umf_l_is_permutation.o
@@ -79,7 +83,6 @@ everything:
 	$(C) -DDINT -c ../Source/umf_valid_symbolic.c -o umf_di_valid_symbolic.o
 	$(C) -DDINT -c ../Source/umf_grow_front.c -o umf_di_grow_front.o
 	$(C) -DDINT -c ../Source/umf_start_front.c -o umf_di_start_front.o
-	$(C) -DDINT -c ../Source/umf_2by2.c -o umf_di_2by2.o
 	$(C) -DDINT -c ../Source/umf_store_lu.c -o umf_di_store_lu.o
 	$(C) -DDINT -c ../Source/umf_scale.c -o umf_di_scale.o
 	$(C) -DDINT -DWSOLVE -c ../Source/umfpack_solve.c -o umfpack_di_wsolve.o
@@ -153,7 +156,6 @@ everything:
 	$(C) -DDLONG -c ../Source/umf_valid_symbolic.c -o umf_dl_valid_symbolic.o
 	$(C) -DDLONG -c ../Source/umf_grow_front.c -o umf_dl_grow_front.o
 	$(C) -DDLONG -c ../Source/umf_start_front.c -o umf_dl_start_front.o
-	$(C) -DDLONG -c ../Source/umf_2by2.c -o umf_dl_2by2.o
 	$(C) -DDLONG -c ../Source/umf_store_lu.c -o umf_dl_store_lu.o
 	$(C) -DDLONG -c ../Source/umf_scale.c -o umf_dl_scale.o
 	$(C) -DDLONG -DWSOLVE -c ../Source/umfpack_solve.c -o umfpack_dl_wsolve.o
@@ -227,7 +229,6 @@ everything:
 	$(C) -DZINT -c ../Source/umf_valid_symbolic.c -o umf_zi_valid_symbolic.o
 	$(C) -DZINT -c ../Source/umf_grow_front.c -o umf_zi_grow_front.o
 	$(C) -DZINT -c ../Source/umf_start_front.c -o umf_zi_start_front.o
-	$(C) -DZINT -c ../Source/umf_2by2.c -o umf_zi_2by2.o
 	$(C) -DZINT -c ../Source/umf_store_lu.c -o umf_zi_store_lu.o
 	$(C) -DZINT -c ../Source/umf_scale.c -o umf_zi_scale.o
 	$(C) -DZINT -DWSOLVE -c ../Source/umfpack_solve.c -o umfpack_zi_wsolve.o
@@ -301,7 +302,6 @@ everything:
 	$(C) -DZLONG -c ../Source/umf_valid_symbolic.c -o umf_zl_valid_symbolic.o
 	$(C) -DZLONG -c ../Source/umf_grow_front.c -o umf_zl_grow_front.o
 	$(C) -DZLONG -c ../Source/umf_start_front.c -o umf_zl_start_front.o
-	$(C) -DZLONG -c ../Source/umf_2by2.c -o umf_zl_2by2.o
 	$(C) -DZLONG -c ../Source/umf_store_lu.c -o umf_zl_store_lu.o
 	$(C) -DZLONG -c ../Source/umf_scale.c -o umf_zl_scale.o
 	$(C) -DZLONG -DWSOLVE -c ../Source/umfpack_solve.c -o umfpack_zl_wsolve.o
@@ -336,10 +336,12 @@ everything:
 	$(AR) ../Lib/libumfpack.a \
 	    umfpack_gn_global.o \
 	    umf_i_analyze.o umf_i_apply_order.o umf_i_colamd.o umf_i_free.o \
-	    umf_i_fsize.o umf_i_is_permutation.o umf_i_malloc.o umf_i_realloc.o \
+            umf_i_cholmod.o umf_i_fsize.o umf_i_is_permutation.o \
+            umf_i_malloc.o umf_i_realloc.o \
 	    umf_i_report_perm.o umf_i_singletons.o \
 	    umf_l_analyze.o umf_l_apply_order.o umf_l_colamd.o umf_l_free.o \
-	    umf_l_fsize.o umf_l_is_permutation.o umf_l_malloc.o umf_l_realloc.o \
+            umf_l_cholmod.o umf_l_fsize.o umf_l_is_permutation.o \
+            umf_l_malloc.o umf_l_realloc.o \
 	    umf_l_report_perm.o umf_l_singletons.o \
 	    umfpack_gn_timer.o umfpack_gn_tictoc.o \
 	    umf_di_lhsolve.o \
@@ -358,7 +360,7 @@ everything:
 	    umf_di_set_stats.o umf_di_solve.o umf_di_symbolic_usage.o \
 	    umf_di_transpose.o umf_di_tuple_lengths.o umf_di_usolve.o \
 	    umf_di_utsolve.o umf_di_valid_numeric.o umf_di_valid_symbolic.o \
-	    umf_di_grow_front.o umf_di_start_front.o umf_di_2by2.o \
+	    umf_di_grow_front.o umf_di_start_front.o \
 	    umf_di_store_lu.o umf_di_scale.o umfpack_di_wsolve.o \
 	    umfpack_di_col_to_triplet.o umfpack_di_defaults.o \
 	    umfpack_di_free_numeric.o umfpack_di_free_symbolic.o \
@@ -390,7 +392,7 @@ everything:
 	    umf_dl_set_stats.o umf_dl_solve.o umf_dl_symbolic_usage.o \
 	    umf_dl_transpose.o umf_dl_tuple_lengths.o umf_dl_usolve.o \
 	    umf_dl_utsolve.o umf_dl_valid_numeric.o umf_dl_valid_symbolic.o \
-	    umf_dl_grow_front.o umf_dl_start_front.o umf_dl_2by2.o \
+	    umf_dl_grow_front.o umf_dl_start_front.o \
 	    umf_dl_store_lu.o umf_dl_scale.o umfpack_dl_wsolve.o \
 	    umfpack_dl_col_to_triplet.o umfpack_dl_defaults.o \
 	    umfpack_dl_free_numeric.o umfpack_dl_free_symbolic.o \
@@ -422,7 +424,7 @@ everything:
 	    umf_zi_set_stats.o umf_zi_solve.o umf_zi_symbolic_usage.o \
 	    umf_zi_transpose.o umf_zi_tuple_lengths.o umf_zi_usolve.o \
 	    umf_zi_utsolve.o umf_zi_valid_numeric.o umf_zi_valid_symbolic.o \
-	    umf_zi_grow_front.o umf_zi_start_front.o umf_zi_2by2.o \
+	    umf_zi_grow_front.o umf_zi_start_front.o \
 	    umf_zi_store_lu.o umf_zi_scale.o umfpack_zi_wsolve.o \
 	    umfpack_zi_col_to_triplet.o umfpack_zi_defaults.o \
 	    umfpack_zi_free_numeric.o umfpack_zi_free_symbolic.o \
@@ -454,7 +456,7 @@ everything:
 	    umf_zl_set_stats.o umf_zl_solve.o umf_zl_symbolic_usage.o \
 	    umf_zl_transpose.o umf_zl_tuple_lengths.o umf_zl_usolve.o \
 	    umf_zl_utsolve.o umf_zl_valid_numeric.o umf_zl_valid_symbolic.o \
-	    umf_zl_grow_front.o umf_zl_start_front.o umf_zl_2by2.o \
+	    umf_zl_grow_front.o umf_zl_start_front.o \
 	    umf_zl_store_lu.o umf_zl_scale.o umfpack_zl_wsolve.o \
 	    umfpack_zl_col_to_triplet.o umfpack_zl_defaults.o \
 	    umfpack_zl_free_numeric.o umfpack_zl_free_symbolic.o \

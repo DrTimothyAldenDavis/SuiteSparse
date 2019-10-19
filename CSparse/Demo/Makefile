@@ -36,4 +36,4 @@ clean:
 purge: distclean
 
 distclean: clean
-	rm -f cs_demo1 cs_demo2 cs_demo3 *.a
+	rm -rf cs_demo1 cs_demo2 cs_demo3 *.a *.dSYM

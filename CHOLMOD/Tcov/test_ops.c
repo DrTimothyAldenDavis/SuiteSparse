@@ -298,7 +298,7 @@ double test_ops (cholmod_sparse *A)
     f = fopen ("temp1.mtx", "w") ;
     asym = CHOLMOD(write_sparse) (f, A, NULL, "comments.txt", cm) ;
     fclose (f) ;
-    printf ("write_sparse, asym: %d\n", asym) ;
+    printf ("write_sparse, asym: "ID"\n", asym) ;
     OK (IMPLIES (A != NULL, asym > EMPTY)) ;
 
     f = fopen ("temp1.mtx", "r") ;
@@ -313,7 +313,7 @@ double test_ops (cholmod_sparse *A)
     asym = CHOLMOD(write_sparse) (f, A, NULL, "comments.txt", cm) ;
     A->xtype = save3 ;
     fclose (f) ;
-    printf ("write_sparse3, asym: %d\n", asym) ;
+    printf ("write_sparse3, asym: "ID"\n", asym) ;
 
     f = fopen ("temp3.mtx", "r") ;
     C = CHOLMOD(read_sparse) (f, cm) ;
@@ -360,8 +360,9 @@ double test_ops (cholmod_sparse *A)
     {
 	asym = CHOLMOD(symmetry) (A, option, &xmatched, &pmatched, &nzoffdiag,
 	    &nz_diag, cm);
-	printf ("symmetry, asym: %d matched %d %d offdiag %d diag %d\n", asym,
-	    xmatched, pmatched, nzoffdiag, nz_diag) ;
+	printf
+        ("symmetry, asym: "ID" matched "ID" "ID" offdiag "ID" diag "ID"\n",
+            asym, xmatched, pmatched, nzoffdiag, nz_diag) ;
     }
 
     /* ---------------------------------------------------------------------- */

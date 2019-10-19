@@ -42,10 +42,11 @@ catch
     pc = ~isunix ;
 end
 
-d = '' ;
-if (~isempty (strfind (computer, '64')))
+flags = '' ;
+is64 = ~isempty (strfind (computer, '64')) ;
+if (is64)
     % 64-bit MATLAB
-    d = '-largeArrayDims' ;
+    flags = '-largeArrayDims' ;
 end
 
 include = '-I. -I../../AMD/Include -I../../COLAMD/Include -I../../CCOLAMD/Include -I../../CAMD/Include -I../Include -I../../UFconfig' ;
@@ -119,6 +120,12 @@ else
     else
         lapack = '-lmwlapack -lmwblas' ;
     end
+end
+
+if (is64 && v > 7.7)
+    % versions 7.8 and later on 64-bit platforms use a 64-bit BLAS
+    fprintf ('with 64-bit BLAS\n') ;
+    flags = [flags ' -DBLAS64'] ;
 end
 
 %-------------------------------------------------------------------------------
@@ -325,13 +332,13 @@ for f = source
     end
     o = ff (slash:end) ;
     obj = [obj  ' ' o obj_extension] ;					    %#ok
-    s = sprintf ('mex %s -DDLONG -O %s -c %s.c', d, include, ff) ;
+    s = sprintf ('mex %s -DDLONG -O %s -c %s.c', flags, include, ff) ;
     kk = do_cmd (s, kk, details) ;
 end
 
 % compile each mexFunction
 for f = cholmod_mex_src
-    s = sprintf ('mex %s -DDLONG -O %s %s.c', d, include, f{1}) ;
+    s = sprintf ('mex %s -DDLONG -O %s %s.c', flags, include, f{1}) ;
     s = [s obj ' ' lapack] ;						    %#ok
     kk = do_cmd (s, kk, details) ;
 end

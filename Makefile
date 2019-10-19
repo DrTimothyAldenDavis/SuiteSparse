@@ -7,6 +7,7 @@ include UFconfig/UFconfig.mk
 # Compile the default rules for each package
 default:
 	( cd UFconfig/xerbla ; $(MAKE) )
+	( cd UFconfig ; $(MAKE) )
 #	( cd metis-4.0 ; $(MAKE) )
 	( cd AMD ; $(MAKE) )
 	( cd CAMD ; $(MAKE) )
@@ -20,14 +21,62 @@ default:
 	( cd CSparse ; $(MAKE) )
 	( cd CXSparse ; $(MAKE) )
 	( cd SPQR ; $(MAKE) )
-#	( cd LPDASA ; $(MAKE) )
-#	( cd PARAKLETE ; $(MAKE) )
+	( cd RBio ; $(MAKE) )
 
-library: default
+# install all packages in /usr/local/lib and /usr/local/include
+install:
+	( cd UFconfig ; $(MAKE) install )
+	( cd AMD ; $(MAKE) install )
+	( cd CAMD ; $(MAKE) install )
+	( cd COLAMD ; $(MAKE) install )
+	( cd BTF ; $(MAKE) install )
+	( cd KLU ; $(MAKE) install )
+	( cd LDL ; $(MAKE) install )
+	( cd CCOLAMD ; $(MAKE) install )
+	( cd UMFPACK ; $(MAKE) install )
+	( cd CHOLMOD ; $(MAKE) install )
+	( cd CXSparse ; $(MAKE) install )
+	( cd SPQR ; $(MAKE) install )
+	( cd RBio ; $(MAKE) install )
+
+# uninstall all packages
+uninstall:
+	( cd UFconfig ; $(MAKE) uninstall )
+	( cd AMD ; $(MAKE) uninstall )
+	( cd CAMD ; $(MAKE) uninstall )
+	( cd COLAMD ; $(MAKE) uninstall )
+	( cd BTF ; $(MAKE) uninstall )
+	( cd KLU ; $(MAKE) uninstall )
+	( cd LDL ; $(MAKE) uninstall )
+	( cd CCOLAMD ; $(MAKE) uninstall )
+	( cd UMFPACK ; $(MAKE) uninstall )
+	( cd CHOLMOD ; $(MAKE) uninstall )
+	( cd CXSparse ; $(MAKE) uninstall )
+	( cd SPQR ; $(MAKE) uninstall )
+	( cd RBio ; $(MAKE) uninstall )
+
+library:
+	( cd UFconfig/xerbla ; $(MAKE) )
+	( cd UFconfig ; $(MAKE) )
+#	( cd metis-4.0 ; $(MAKE) )
+	( cd AMD ; $(MAKE) library )
+	( cd BTF ; $(MAKE) library )
+	( cd CAMD ; $(MAKE) library )
+	( cd CCOLAMD ; $(MAKE) library )
+	( cd COLAMD ; $(MAKE) library )
+	( cd CHOLMOD ; $(MAKE) library )
+	( cd KLU ; $(MAKE) library )
+	( cd LDL ; $(MAKE) library )
+	( cd UMFPACK ; $(MAKE) library )
+	( cd CSparse ; $(MAKE) library )
+	( cd CXSparse ; $(MAKE) library )
+	( cd SPQR ; $(MAKE) library )
+	( cd RBio ; $(MAKE) library )
 
 # Compile the MATLAB mexFunctions (except RBio and UFcollection)
 # CHOLMOD and KLU will fail if you don't have METIS (use SuiteSparse_install.m
 # in the MATLAB Command Window instead to compile them without METIS)
+# For UMFPACK, you must use SuiteSparse_install.m or umfpack_make.m.
 mex:
 	( cd AMD ; $(MAKE) mex )
 	( cd CAMD ; $(MAKE) mex )
@@ -37,7 +86,7 @@ mex:
 	( cd CCOLAMD ; $(MAKE) mex )
 	( cd CXSparse ; $(MAKE) mex )
 	( cd CSparse ; $(MAKE) mex )
-	( cd UMFPACK ; $(MAKE) mex )
+	# ( cd UMFPACK ; $(MAKE) mex )
 	( cd SPQR ; $(MAKE) mex )
 	( cd CHOLMOD ; $(MAKE) mex )
 	( cd KLU ; $(MAKE) mex )
@@ -45,6 +94,7 @@ mex:
 # Remove all files not in the original distribution
 purge:
 	( cd UFconfig/xerbla ; $(MAKE) purge )
+	( cd UFconfig ; $(MAKE) purge )
 #	( cd metis-4.0 ; $(MAKE) realclean )
 	( cd AMD ; $(MAKE) purge )
 	( cd CAMD ; $(MAKE) purge )
@@ -64,10 +114,12 @@ purge:
 	- $(RM) MATLAB_Tools/spok/*.mex* MATLAB_Tools/spok/private/*.mex*
 #	( cd LPDASA ; $(MAKE) purge )
 #	( cd PARAKLETE ; $(MAKE) purge )
+	( cd RBio ; $(MAKE) purge )
 
 # Remove all files not in the original distribution, but keep the libraries
 clean:
 	( cd UFconfig/xerbla ; $(MAKE) clean )
+	( cd UFconfig ; $(MAKE) clean )
 #	( cd metis-4.0 ; $(MAKE) clean )
 	( cd AMD ; $(MAKE) clean )
 	( cd CAMD ; $(MAKE) clean )
@@ -83,6 +135,7 @@ clean:
 	( cd SPQR ; $(MAKE) clean )
 #	( cd LPDASA ; $(MAKE) clean )
 #	( cd PARAKLETE ; $(MAKE) clean )
+	( cd RBio ; $(MAKE) clean )
 
 distclean: purge
 

@@ -40,15 +40,13 @@ GLOBAL void UMFPACK_defaults
     /* used in UMFPACK_report_* routines: */
     Control [UMFPACK_PRL] = UMFPACK_DEFAULT_PRL ;
 
-    /* used in UMFPACK_*symbolic: */
     Control [UMFPACK_DENSE_ROW] = UMFPACK_DEFAULT_DENSE_ROW ;
     Control [UMFPACK_DENSE_COL] = UMFPACK_DEFAULT_DENSE_COL ;
     Control [UMFPACK_AMD_DENSE] = UMFPACK_DEFAULT_AMD_DENSE ;
     Control [UMFPACK_STRATEGY] = UMFPACK_DEFAULT_STRATEGY ;
-    Control [UMFPACK_2BY2_TOLERANCE] = UMFPACK_DEFAULT_2BY2_TOLERANCE ;
     Control [UMFPACK_AGGRESSIVE] = UMFPACK_DEFAULT_AGGRESSIVE ;
-
-    /* used in UMFPACK_numeric: */
+    Control [UMFPACK_SINGLETONS] = UMFPACK_DEFAULT_SINGLETONS ;
+    Control [UMFPACK_ORDERING] = UMFPACK_DEFAULT_ORDERING ;
     Control [UMFPACK_PIVOT_TOLERANCE] = UMFPACK_DEFAULT_PIVOT_TOLERANCE ;
     Control [UMFPACK_SYM_PIVOT_TOLERANCE] = UMFPACK_DEFAULT_SYM_PIVOT_TOLERANCE;
     Control [UMFPACK_BLOCK_SIZE] = UMFPACK_DEFAULT_BLOCK_SIZE ;
@@ -69,46 +67,5 @@ GLOBAL void UMFPACK_defaults
 #else
     /* use externally-provided BLAS (dgemm, dger, dgemv, zgemm, zgeru, zgemv) */
     Control [UMFPACK_COMPILED_WITH_BLAS] = 1 ;
-#endif
-
-#ifdef MATLAB_MEX_FILE
-    /* compiled as a MATLAB mexFunction */ 
-    Control [UMFPACK_COMPILED_FOR_MATLAB] = 1 ;
-#else
-#ifdef MATHWORKS
-    /* compiled for internal use in MATLAB */ 
-    Control [UMFPACK_COMPILED_FOR_MATLAB] = 2 ;
-#else
-    /* use ANSI C malloc, free, realloc, and printf */
-    Control [UMFPACK_COMPILED_FOR_MATLAB] = 0 ;
-#endif
-#endif
-
-#ifdef NO_TIMER
-    /* no timer used */
-    Control [UMFPACK_COMPILED_WITH_GETRUSAGE] = 3 ;
-#ifndef NPOSIX
-    /* uses the POSIX sysconf ( ) and times ( ) routines in UMFPACK_tic, toc */
-    Control [UMFPACK_COMPILED_WITH_GETRUSAGE] = 2 ;
-#else
-#ifdef GETRUSAGE
-    /* uses the non-standard getrusage to get CPU time (Solaris) */
-    Control [UMFPACK_COMPILED_WITH_GETRUSAGE] = 1 ;
-#else
-    /* uses the ANSI standard clock routine to get CPU time */
-    /* this may wrap around */
-    Control [UMFPACK_COMPILED_WITH_GETRUSAGE] = 0 ;
-#endif
-#endif
-#endif
-
-#ifndef NDEBUG
-    /* UMFPACK is compiled in debug mode. */
-    /* This is exceedingly slow. */
-    DEBUG0 (("UMFPACK is running in debug mode.  This is very slow!\n")) ;
-    Control [UMFPACK_COMPILED_IN_DEBUG_MODE] = 1 ;
-#else
-    /* UMFPACK is compiled in normal (non-debug) mode */
-    Control [UMFPACK_COMPILED_IN_DEBUG_MODE] = 0 ;
 #endif
 }

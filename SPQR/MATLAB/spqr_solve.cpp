@@ -58,7 +58,7 @@ void mexFunction
 )
 {
     Int *Bp, *Bi ;
-    double *Ax, *Bx, dummy, flops = 0 ;
+    double *Ax, *Bx, dummy ;
     Int m, n, k, bncols, p, i, rank, A_complex, B_complex, is_complex,
         anz, bnz ;
     spqr_mx_options opts ;
@@ -68,7 +68,7 @@ void mexFunction
     char msg [LEN+1] ;
 
 #ifdef TIMING
-    double t0 = spqr_time ( ) ;
+    double t0 = (nargout > 1) ? spqr_time ( ) : 0 ;
 #endif
 
     // -------------------------------------------------------------------------
@@ -264,112 +264,20 @@ void mexFunction
         }
     }
 
-#ifdef TIMING
-    flops = cc->other1 [0] ;
-    double t = spqr_time ( ) - t0 ;
-#endif
-
     // -------------------------------------------------------------------------
     // info output
     // -------------------------------------------------------------------------
 
     if (nargout > 1)
     {
-        const char *info_struct [ ] =
-        {
-            "nnzR_upper_bound",             // 0: nnz(R) bound
-            "nnzH_upper_bound",             // 1: nnz(H) bound
-            "number_of_frontal_matrices",   // 2: nf
-            "number_of_TBB_tasks",          // 3: ntasks
-            "rank_A_estimate",              // 4: rank
-            "number_of_column_singletons",  // 5: n1cols
-            "number_of_singleton_rows",     // 6: n1rows
-            "ordering",                     // 7: ordering used
-            "memory_usage_in_bytes",        // 8: memory usage
-            "flops_upper_bound",            // 9: upper bound on flop count
-                                            //    (excluding backsolve)
-            "tol",                          // 10: column norm tolerance used
-            "number_of_TBB_threads"         // 11: # threads used
 #ifdef TIMING
-            , "analyze_time"                // 12: analyze time
-            , "factorize_time"              // 13: factorize time (and apply Q')
-            , "solve_time"                  // 14: R\C backsolve only
-            , "total_time"                  // 15: total x=A\b in seconds
-            , "flops"                       // 16: actual flops (incl backsolve)
-#endif
-        } ;
-
-#ifdef TIMING
-#define NINFO 17
+        double flops = cc->other1 [0] ;
+        double t = spqr_time ( ) - t0 ;
 #else
-#define NINFO 12
+        double flops = -1 ;
+        double t = -1 ;
 #endif
-
-        pargout [1] = mxCreateStructMatrix (1, 1, NINFO, info_struct) ;
-
-        for (Int k = 0 ; k <= 6 ; k++)
-        {
-            mxSetFieldByNumber (pargout [1], 0, k,
-                mxCreateDoubleScalar ((double) cc->SPQR_istat [k])) ;
-        }
-
-        // get the ordering used.  Note that "default", "best", and "cholmod"
-        // are not among the possible results, since they are meta-orderings
-        // that select among AMD, COLAMD, and/or METIS.
-        mxArray *ord ;
-        switch (cc->SPQR_istat [7])
-        {
-            case SPQR_ORDERING_FIXED:
-            case SPQR_ORDERING_GIVEN: 
-                ord = mxCreateString ("fixed") ;
-                break ;
-            case SPQR_ORDERING_NATURAL:
-                ord = mxCreateString ("natural") ;
-                break ;
-            case SPQR_ORDERING_COLAMD:
-                ord = mxCreateString ("colamd") ;
-                break ;
-            case SPQR_ORDERING_AMD:
-                ord = mxCreateString ("amd") ;
-                break ;
-#ifndef NPARTITION
-            case SPQR_ORDERING_METIS:
-                ord = mxCreateString ("metis") ;
-                break ;
-#endif
-            default:
-                ord = mxCreateString ("unknown") ;
-                break ;
-        }
-        mxSetFieldByNumber (pargout [1], 0, 7, ord) ;
-
-        mxSetFieldByNumber (pargout [1], 0, 8,
-            mxCreateDoubleScalar ((double) cc->memory_usage)) ;
-        mxSetFieldByNumber (pargout [1], 0, 9,
-            mxCreateDoubleScalar (cc->SPQR_xstat [0])) ;
-        mxSetFieldByNumber (pargout [1], 0, 10,
-            mxCreateDoubleScalar (cc->SPQR_xstat [1])) ;
-
-        int nthreads = cc->SPQR_nthreads ;
-        if (nthreads <= 0)
-        {
-            mxSetFieldByNumber (pargout [1], 0, 11, mxCreateString ("default"));
-        }
-        else
-        {
-            mxSetFieldByNumber (pargout [1], 0, 11,
-                mxCreateDoubleScalar ((double) nthreads)) ;
-        }
-
-#ifdef TIMING
-        for (Int k = 1 ; k <= 3 ; k++)
-        {
-            mxSetFieldByNumber (pargout [1], 0, 11+k,
-                mxCreateDoubleScalar (cc->other1 [k])) ;
-        }
-        mxSetFieldByNumber (pargout [1], 0, 15, mxCreateDoubleScalar (t)) ;
-        mxSetFieldByNumber (pargout [1], 0, 16, mxCreateDoubleScalar (flops)) ;
-#endif            
+        pargout [1] = spqr_mx_info (cc, t, flops) ;
     }
 
     // -------------------------------------------------------------------------

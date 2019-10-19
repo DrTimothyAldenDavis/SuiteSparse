@@ -53,11 +53,11 @@ catch                                                                       %#ok
     pc = ~isunix ;
 end
 
-d = '' ;
+flags = '' ;
 is64 = (~isempty (strfind (computer, '64'))) ;
 if (is64)
     % 64-bit MATLAB
-    d = '-largeArrayDims' ;
+    flags = '-largeArrayDims' ;
 end
 
 include = '-DNMATRIXOPS -DNMODIFY -I. -I../../AMD/Include -I../../COLAMD/Include -I../../CHOLMOD/Include -I../Include -I../../UFconfig' ;
@@ -139,6 +139,12 @@ else
     end
 end
 
+if (is64 && v > 7.7)
+    % versions 7.8 and later on 64-bit platforms use a 64-bit BLAS
+    fprintf ('with 64-bit BLAS\n') ;
+    flags = [flags ' -DBLAS64'] ;
+end
+
 %-------------------------------------------------------------------------------
 % TBB option
 %-------------------------------------------------------------------------------
@@ -180,7 +186,8 @@ else
         else
             tbb_lib_path = '/ia32/cc4.1.0_libc2.4_kernel2.6.16.21/lib' ;
         end
-        tbb_include_path = [tbb_path '\include\'] ;
+        tbb_lib_path = [tbb_path tbb_lib_path] ;
+        tbb_include_path = [tbb_path '/include/'] ;
     end
 end
 
@@ -449,7 +456,7 @@ for f = cpp_source
     end
     o = ff (slash:end) ;
     obj = [obj  ' ' o obj_extension] ;                                      %#ok
-    s = sprintf ('mex %s -O %s -c %s.cpp', d, include, ff) ;
+    s = sprintf ('mex %s -O %s -c %s.cpp', flags, include, ff) ;
     kk = do_cmd (s, kk, details) ;
 end
 
@@ -463,13 +470,13 @@ for f = c_source
     end
     o = ff (slash:end) ;
     obj = [obj  ' ' o obj_extension] ;                                      %#ok
-    s = sprintf ('mex %s -DDLONG -O %s -c %s.c', d, include, ff) ;
+    s = sprintf ('mex %s -DDLONG -O %s -c %s.c', flags, include, ff) ;
     kk = do_cmd (s, kk, details) ;
 end
 
 % compile each mexFunction
 for f = spqr_mex_cpp_src
-    s = sprintf ('mex %s -O %s %s.cpp', d, include, f{1}) ;
+    s = sprintf ('mex %s -O %s %s.cpp', flags, include, f{1}) ;
     s = [s obj ' ' lib] ;                                                   %#ok
     kk = do_cmd (s, kk, details) ;
 end

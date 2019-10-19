@@ -41,10 +41,9 @@ if ((op == '\' & n ~= m1) | (op == '/' & n1 ~= m))			    %#ok
 end
 
 if (nargin < 4)
+    % get default controls
     Control = umfpack2 ;
 end
-
-info = [0 0 0] ; % [nnz(L), nnz(U), 0], optional 2nd output
 
 %-------------------------------------------------------------------------------
 % solve the system
@@ -56,19 +55,18 @@ if (op == '\')
 
 	% A is not sparse, so just use MATLAB
 	x = A\b ;
+        info.nnz_in_L_plus_U = n^2 ;
 
     elseif (n1 == 1 & ~issparse (b))					    %#ok
 
 	% the UMFPACK '\' requires b to be a dense column vector
 	[x info] = umfpack2 (A, '\', b, Control) ;
-        info = [info(78) info(79) 0] ;
 
     else
 
 	% factorize with UMFPACK and do the forward/back solves in MATLAB
 	[L, U, P, Q, R, info] = umfpack2 (A, Control) ;
 	x = Q * (U \ (L \ (P * (R \ b)))) ;
-        info = [info(78) info(79) 0] ;
 
     end
 
@@ -78,12 +76,12 @@ else
 
 	% A is not sparse, so just use MATLAB
 	x = b/A ;
+        info.nnz_in_L_plus_U = n^2 ;
 
     elseif (m1 == 1 & ~issparse (b))					    %#ok
 
 	% the UMFPACK '\' requires b to be a dense column vector
 	[x info] = umfpack2 (b, '/', A, Control) ;
-        info = [info(78) info(79) 0] ;
 
     else
 
@@ -91,7 +89,6 @@ else
 	% this mimics the behavior of x = b/A, except for the row scaling
 	[L, U, P, Q, R, info] = umfpack2 (A.', Control) ;
 	x = (Q * (U \ (L \ (P * (R \ (b.')))))).' ;
-        info = [info(78) info(79) 0] ;
 
 	% an alternative method:
 	% [L, U, P, Q, r] = umfpack2 (A, Control) ;

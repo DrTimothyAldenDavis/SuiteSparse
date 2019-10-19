@@ -176,7 +176,8 @@
 /* Sun Solaris, SGI Irix, Linux, Compaq Alpha, and IBM RS 6000 all have */
 /* getrusage.  It's in BSD unix, so perhaps all unix systems have it. */
 #if defined (UMF_SOL2) || defined (UMF_SGI) || defined (UMF_LINUX) \
-|| defined (UMF_ALPHA) || defined (UMF_AIX) || defined (UMF_CYGWIN)
+|| defined (UMF_ALPHA) || defined (UMF_AIX) || defined (UMF_CYGWIN) \
+|| defined (UMF_MAC)
 #define GETRUSAGE
 #endif
 
@@ -185,6 +186,7 @@
 /* === BLAS ================================================================= */
 /* ========================================================================== */
 
+#define BLAS_OK blas_ok
 #include "cholmod_blas.h"
 
 

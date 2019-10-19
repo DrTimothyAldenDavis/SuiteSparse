@@ -11,7 +11,7 @@ include ../../UFconfig/UFconfig.mk
 #------------------------------------------------------------------------------
 
 clean:
-	- $(RM) $(CLEAN)
+	- $(RM) -r $(CLEAN)
 
 purge: distclean
 

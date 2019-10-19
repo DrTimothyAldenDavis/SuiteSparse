@@ -55,3 +55,4 @@ distclean: clean
 	- $(RM) camd_l_demo my_camd_l_demo.out
 	- $(RM) camd_demo2 my_camd_demo2.out
 	- $(RM) camd_simple my_camd_simple.out
+	- $(RM) -r *.dSYM

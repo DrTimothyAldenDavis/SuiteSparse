@@ -382,7 +382,6 @@ double solve (cholmod_sparse *A)
 	    if (A3 != NULL && C3 != NULL && E3 != NULL)
 	    {
 		/* E3 = A3*C3-I */
-                cholmod_common *Common = cm ;
 		if (isreal)
 		{
 		    BLAS_dgemm ("N", "N", n, n, n, one, A3->x, n, C3->x, n,

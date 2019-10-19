@@ -78,14 +78,14 @@ mxArray *ssmult_dot     /* returns C = A'*B */
 
     if (m != mxGetM (B)) ssmult_invalid (ERROR_DIMENSIONS) ;
 
-    Ap = mxGetJc (A) ;
-    Ai = mxGetIr (A) ;
+    Ap = (Int *) mxGetJc (A) ;
+    Ai = (Int *) mxGetIr (A) ;
     Ax = mxGetPr (A) ;
     Az = mxGetPi (A) ;
     A_is_complex = mxIsComplex (A) ;
 
-    Bp = mxGetJc (B) ;
-    Bi = mxGetIr (B) ;
+    Bp = (Int *) mxGetJc (B) ;
+    Bi = (Int *) mxGetIr (B) ;
     Bx = mxGetPr (B) ;
     Bz = mxGetPi (B) ;
     B_is_complex = mxIsComplex (B) ;
@@ -146,7 +146,7 @@ mxArray *ssmult_dot     /* returns C = A'*B */
             cz = 0 ;
             while (pa < paend && pb < pbend)
             {
-                /* The dot product looks like the merge in mergesort, except */
+                /* The dot product looks like the merge in ssmergesort, except*/
                 /* no "clean-up" phase is need when one list is exhausted. */
                 ai = Ai [pa] ;
                 bi = Bi [pb] ;
@@ -240,8 +240,8 @@ mxArray *ssmult_dot     /* returns C = A'*B */
     mxFree (mxGetPi (C)) ;
     Cp = mxMalloc ((k + 1) * sizeof (Int)) ;
     Ci = mxMalloc (cnz * sizeof (Int)) ;
-    mxSetJc (C, Cp) ;
-    mxSetIr (C, Ci) ;
+    mxSetJc (C, (mwIndex *) Cp) ;
+    mxSetIr (C, (mwIndex *) Ci) ;
     mxSetM (C, n) ;
     mxSetN (C, k) ;
 

@@ -1,3 +1,16 @@
+Nov 30, 2009, version 5.5.0
+
+    * changed and simplified how UMFPACK connects to 64-bit BLAS
+    * added user-ordering function option (umfpack_*_fsymbolic)
+    * added interface to CHOLMOD's ordering methods (METIS, in particular)
+    * added an option to disable the search for singletons.  Disabling this
+        search for singletons can slow UMFPACK down quite a bit for some
+        matrices, but it does ensure that L is well-conditioned and that
+        any ill-conditioning of A is captured only in U.
+    * removed UMFPACK/MATLAB/GNUmakefile and UMFPACK/MATLAB/Makefile;
+        to compile the UMFPACK mexFunction, use umfpack_make.m in MATLAB.
+    * added "make install" and "make uninstall"
+
 May 20, 2009, version 5.4.0
 
     * bug fix in umfpack_make.m for Windows

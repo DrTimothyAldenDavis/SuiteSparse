@@ -1,9 +1,9 @@
 #===============================================================================
-# ILP32 mode, no BLAS, test for integer overflow.
+# no BLAS, test for integer overflow.
 #===============================================================================
 
 CC = gcc
-CFLAGS = -O0 -ftest-coverage -fprofile-arcs -O0
+CFLAGS = -O0 -g -ftest-coverage -fprofile-arcs -O0
 UMFPACK_CONFIG = -DNBLAS -DTEST_FOR_INTEGER_OVERFLOW -DTESTING
 LIB = -lm
 

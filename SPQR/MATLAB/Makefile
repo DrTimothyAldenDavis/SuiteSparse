@@ -271,5 +271,8 @@ spqr_mx_error.o: spqr_mx_error.c $(INC)
 
 #-------------------------------------------------------------------------------
 
+clean:
+	- $(RM) $(CLEAN)
+
 purge:
 	$(RM) *.o rename.h *.mex* pfile tfile

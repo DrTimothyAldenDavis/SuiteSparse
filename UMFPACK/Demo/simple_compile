@@ -33,7 +33,6 @@ cc -DDINT -DNBLAS -I../../UFconfig \
 	../../AMD/Source/amd_postorder.c \
 	../../AMD/Source/amd_preprocess.c \
 	../../AMD/Source/amd_valid.c \
-	../Source/umf_2by2.c \
 	../Source/umf_analyze.c \
 	../Source/umf_apply_order.c \
 	../Source/umf_blas3_update.c \

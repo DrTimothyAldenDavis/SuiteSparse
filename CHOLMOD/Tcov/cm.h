@@ -43,6 +43,7 @@
 
 /* -------------------------------------------------------------------------- */
 
+#define BLAS_OK cm->blas_ok
 #include "cholmod_blas.h"
 
 #define EMPTY (-1)

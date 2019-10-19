@@ -45,6 +45,10 @@ void mexFunction
     cholmod_dense *Cdense, Bdmatrix, *Bdense, *HTau ;
     cholmod_common Common, *cc ;
 
+#ifdef TIMING
+    double t0 = (nargout > 3) ? spqr_time ( ) : 0 ;
+#endif
+
     // -------------------------------------------------------------------------
     // start CHOLMOD and set parameters
     // -------------------------------------------------------------------------
@@ -58,10 +62,9 @@ void mexFunction
     // -------------------------------------------------------------------------
 
     // nargin can be 1, 2, or 3
-    // nargout can be 0, 1, 2, or 3
-    // or 4: [C or Q, R, E, info] = qr (A,B,opts)
+    // nargout can be 0, 1, 2, 3, or 4
 
-    if (nargout > 3)
+    if (nargout > 4)
     {
         mexErrMsgIdAndTxt ("MATLAB:maxlhs", "Too many output arguments") ;
     }
@@ -469,6 +472,22 @@ void mexFunction
         {
             cholmod_l_free (bnz, sizeof (Complex), Bx, cc) ;
         }
+    }
+
+    // -------------------------------------------------------------------------
+    // info output
+    // -------------------------------------------------------------------------
+
+    if (nargout > 3)
+    {
+#ifdef TIMING
+        double flops = cc->other1 [0] ;
+        double t = spqr_time ( ) - t0 ;
+#else
+        double flops = -1 ;
+        double t = -1 ;
+#endif
+        pargout [3] = spqr_mx_info (cc, t, flops) ;
     }
 
     cholmod_l_finish (cc) ;

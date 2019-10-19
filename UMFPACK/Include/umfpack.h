@@ -97,7 +97,7 @@ extern "C" {
 /* Version, copyright, and license */
 /* -------------------------------------------------------------------------- */
 
-#define UMFPACK_VERSION "UMFPACK V5.4.0 (May 20, 2009)"
+#define UMFPACK_VERSION "UMFPACK V5.5.0 (Nov 30, 2009)"
 
 #define UMFPACK_COPYRIGHT \
 "UMFPACK:  Copyright (c) 2005-2009 by Timothy A. Davis.  All Rights Reserved.\n"
@@ -163,10 +163,10 @@ extern "C" {
  * above.
  */
 
-#define UMFPACK_DATE "May 20, 2009"
+#define UMFPACK_DATE "Nov 30, 2009"
 #define UMFPACK_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define UMFPACK_MAIN_VERSION 5
-#define UMFPACK_SUB_VERSION 4
+#define UMFPACK_SUB_VERSION 5
 #define UMFPACK_SUBSUB_VERSION 0
 #define UMFPACK_VER UMFPACK_VER_CODE(UMFPACK_MAIN_VERSION,UMFPACK_SUB_VERSION)
 
@@ -200,7 +200,7 @@ extern "C" {
 #define UMFPACK_SYMBOLIC_SIZE 14	/* size of Symbolic object, in Units */
 #define UMFPACK_SYMBOLIC_TIME 15	/* time (sec.) for symbolic analysis */
 #define UMFPACK_SYMBOLIC_WALLTIME 17	/* wall clock time for sym. analysis */
-#define UMFPACK_STRATEGY_USED 18	/* strategy used: sym, unsym, 2by2 */
+#define UMFPACK_STRATEGY_USED 18	/* strategy used: sym, unsym */
 #define UMFPACK_ORDERING_USED 19	/* ordering used: colamd, amd, given */
 #define UMFPACK_QFIXED 31		/* whether Q is fixed or refined */
 #define UMFPACK_DIAG_PREFERRED 32	/* whether diagonal pivoting attempted*/
@@ -214,12 +214,7 @@ extern "C" {
 #define UMFPACK_SYMMETRIC_NDENSE 38	/* # of "dense" rows/cols in S+S' */
 #define UMFPACK_SYMMETRIC_DMAX 39	/* max nz in cols of L, for AMD */
 
-/* statistics for 2-by-2 strategy */
-#define UMFPACK_2BY2_NWEAK 51		    /* number of weak diagonal entries*/
-#define UMFPACK_2BY2_UNMATCHED 52	    /* # of weak diagonals not matched*/
-#define UMFPACK_2BY2_PATTERN_SYMMETRY 53    /* symmetry of pattern of P*S */
-#define UMFPACK_2BY2_NZ_PA_PLUS_PAT 54	    /* nz in PS+(PS)' */
-#define UMFPACK_2BY2_NZDIAG 55		    /* nz on diagonal of PS+(PS)' */
+/* 51:55 unused */
 
 /* statistcs for singleton pruning */
 #define UMFPACK_COL_SINGLETONS 56	/* # of column singletons */
@@ -290,13 +285,6 @@ extern "C" {
 /* Unused parts of Info may be used in future versions of UMFPACK. */
 
 /* -------------------------------------------------------------------------- */
-
-/* Info [UMFPACK_ORDERING_USED] is one of the following: */
-#define UMFPACK_ORDERING_COLAMD 0	/* COLAMD(A) */
-#define UMFPACK_ORDERING_AMD 1		/* AMD(A+A') */
-#define UMFPACK_ORDERING_GIVEN 2	/* Q is provided on input */
-
-/* -------------------------------------------------------------------------- */
 /* contents of Control */
 /* -------------------------------------------------------------------------- */
 
@@ -307,12 +295,12 @@ extern "C" {
 #define UMFPACK_DENSE_ROW 1		/* dense row parameter */
 #define UMFPACK_DENSE_COL 2		/* dense col parameter */
 #define UMFPACK_BLOCK_SIZE 4		/* BLAS-3 block size */
-#define UMFPACK_STRATEGY 5		/* auto, symmetric, unsym., or 2by2 */
-#define UMFPACK_2BY2_TOLERANCE 12	/* 2-by-2 pivot tolerance */
+#define UMFPACK_STRATEGY 5		/* auto, symmetric, or unsym. */
+#define UMFPACK_ORDERING 10             /* ordering method to use */
 #define UMFPACK_FIXQ 13			/* -1: no fixQ, 0: default, 1: fixQ */
 #define UMFPACK_AMD_DENSE 14		/* for AMD ordering */
-#define UMFPACK_AGGRESSIVE 19		/* whether or not to use aggressive
-					 * absorption in AMD and COLAMD */
+#define UMFPACK_AGGRESSIVE 19		/* whether or not to use aggressive */
+#define UMFPACK_SINGLETONS 11           /* singleton filter on if true */
 
 /* used in UMFPACK_numeric only: */
 #define UMFPACK_PIVOT_TOLERANCE 3	/* threshold partial pivoting setting */
@@ -327,9 +315,8 @@ extern "C" {
 
 /* compile-time settings - Control [8..11] cannot be changed at run time: */
 #define UMFPACK_COMPILED_WITH_BLAS 8	    /* uses the BLAS */
-#define UMFPACK_COMPILED_FOR_MATLAB 9	    /* 1 if MATLAB mexFunction, etc. */
-#define UMFPACK_COMPILED_WITH_GETRUSAGE 10  /* uses getrusage timer, or not */
-#define UMFPACK_COMPILED_IN_DEBUG_MODE 11   /* debugging enabled (very slow!) */
+
+/* 9,12: unused */
 
 /* -------------------------------------------------------------------------- */
 
@@ -337,9 +324,7 @@ extern "C" {
 #define UMFPACK_STRATEGY_AUTO 0		/* use sym. or unsym. strategy */
 #define UMFPACK_STRATEGY_UNSYMMETRIC 1	/* COLAMD(A), coletree postorder,
 					   not prefer diag*/
-#define UMFPACK_STRATEGY_2BY2 2		/* AMD(PA+PA'), no coletree postorder,
-					   prefer diag(PA) where P is pseudo
-					   max transversal */
+#define UMFPACK_STRATEGY_OBSOLETE 2     /* 2-by-2 is no longer available */
 #define UMFPACK_STRATEGY_SYMMETRIC 3	/* AMD(A+A'), no coletree postorder,
 					   prefer diagonal */
 
@@ -347,6 +332,16 @@ extern "C" {
 #define UMFPACK_SCALE_NONE 0	/* no scaling */
 #define UMFPACK_SCALE_SUM 1	/* default: divide each row by sum (abs (row))*/
 #define UMFPACK_SCALE_MAX 2	/* divide each row by max (abs (row)) */
+
+/* Control [UMFPACK_ORDERING] and Info [UMFPACK_ORDERING_USED] are one of: */
+#define UMFPACK_ORDERING_CHOLMOD 0      /* use CHOLMOD (AMD/COLAMD then METIS)*/
+#define UMFPACK_ORDERING_AMD 1          /* use AMD/COLAMD */
+#define UMFPACK_ORDERING_GIVEN 2        /* user-provided Qinit */
+#define UMFPACK_ORDERING_METIS 3        /* use METIS */
+#define UMFPACK_ORDERING_BEST 4         /* try many orderings, pick best */
+#define UMFPACK_ORDERING_NONE 5         /* natural ordering */
+#define UMFPACK_ORDERING_USER 6         /* user-provided function */
+/* AMD/COLAMD means: use AMD for symmetric strategy, COLAMD for unsymmetric */
 
 /* -------------------------------------------------------------------------- */
 /* default values of Control: */
@@ -356,7 +351,6 @@ extern "C" {
 #define UMFPACK_DEFAULT_DENSE_ROW 0.2
 #define UMFPACK_DEFAULT_DENSE_COL 0.2
 #define UMFPACK_DEFAULT_PIVOT_TOLERANCE 0.1
-#define UMFPACK_DEFAULT_2BY2_TOLERANCE 0.01
 #define UMFPACK_DEFAULT_SYM_PIVOT_TOLERANCE 0.001
 #define UMFPACK_DEFAULT_BLOCK_SIZE 32
 #define UMFPACK_DEFAULT_ALLOC_INIT 0.7
@@ -368,6 +362,8 @@ extern "C" {
 #define UMFPACK_DEFAULT_FIXQ 0
 #define UMFPACK_DEFAULT_AGGRESSIVE 1
 #define UMFPACK_DEFAULT_DROPTOL 0
+#define UMFPACK_DEFAULT_ORDERING UMFPACK_ORDERING_AMD
+#define UMFPACK_DEFAULT_SINGLETONS TRUE
 
 /* default values of Control may change in future versions of UMFPACK. */
 
@@ -398,6 +394,8 @@ extern "C" {
 #define UMFPACK_ERROR_invalid_permutation (-15)
 #define UMFPACK_ERROR_internal_error (-911) /* yes, call me if you get this! */
 #define UMFPACK_ERROR_file_IO (-17)
+
+#define UMFPACK_ERROR_ordering_failed (-18)
 
 /* -------------------------------------------------------------------------- */
 /* solve codes */

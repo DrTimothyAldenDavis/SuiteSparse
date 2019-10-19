@@ -13,7 +13,7 @@ fprintf ('\nTesting error-handling, error messages expected:\n') ;
 ok = true ;
 A = rand (3,2) ;
 try
-    F = factorize1 (A) ;                                                %#ok
+    F = factorize1 (A) ;                                               %#ok
     ok = false ;
 catch me
     fprintf ('Expected error: [%s]\n', me.message) ;
@@ -22,7 +22,7 @@ end
 % the matrix A must be 2D for factorize
 A = ones (2,2,2) ; 
 try
-    F = factorize (A) ;                                                 %#ok
+    F = factorize (A) ;                                                %#ok
     ok = false ;
 catch me
     fprintf ('Expected error: [%s]\n', me.message) ;
@@ -31,14 +31,14 @@ end
 % the matrix A must be full-rank
 A = ones (3) ;
 try
-    F = factorize (A) ;                                                 %#ok
+    F = factorize (A) ;                                                %#ok
     ok = false ;
 catch me
     fprintf ('Expected error: [%s]\n', me.message) ;
 end
 
 try
-    F = factorize1 (A) ;                                                %#ok
+    F = factorize1 (A) ;                                               %#ok
     ok = false ;
 catch me
     fprintf ('Expected error: [%s]\n', me.message) ;
@@ -46,7 +46,7 @@ end
 
 A = ones (3,2) ;
 try
-    F = factorize (A) ;                                                 %#ok
+    F = factorize (A) ;                                                %#ok
     ok = false ;
 catch me
     fprintf ('Expected error: [%s]\n', me.message) ;
@@ -54,7 +54,7 @@ end
 
 A = ones (2,3) ;
 try
-    F = factorize (A) ;                                                 %#ok
+    F = factorize (A) ;                                                %#ok
     ok = false ;
 catch me
     fprintf ('Expected error: [%s]\n', me.message) ;
@@ -64,7 +64,7 @@ end
 A = rand (3,2) ;
 F = factorize (A) ;
 try
-    C = F {1} ;                                                         %#ok
+    C = F {1} ;                                                        %#ok
     ok = false ;
 catch me
     fprintf ('Expected error: [%s]\n', me.message) ;
@@ -73,7 +73,7 @@ end
 % cannot use linear indexing of the inverse
 S = inverse (A) ;
 try
-    C = S (1) ;                                                         %#ok
+    C = S (1) ;                                                        %#ok
     ok = false ;
 catch me
     fprintf ('Expected error: [%s]\n', me.message) ;
@@ -81,7 +81,7 @@ end
 
 % invalid indexing
 try
-    C = F (1,1).L ;                                                     %#ok
+    C = F (1,1).L ;                                                    %#ok
     ok = false ;
 catch me
     fprintf ('Expected error: [%s]\n', me.message) ;
@@ -89,7 +89,7 @@ end
 
 % invalid indexing
 try
-    C = F.L (1,1).stuff ;                                               %#ok
+    C = F.L (1,1).stuff ;                                              %#ok
     ok = false ;
 catch me
     fprintf ('Expected error: [%s]\n', me.message) ;
@@ -97,7 +97,7 @@ end
 
 % non-existent field
 try
-    C = F.junk ;                                                        %#ok
+    C = F.junk ;                                                       %#ok
     ok = false ;
 catch me
     fprintf ('Expected error: [%s]\n', me.message) ;

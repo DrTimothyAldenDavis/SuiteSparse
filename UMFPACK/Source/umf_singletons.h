@@ -12,6 +12,7 @@ GLOBAL Int UMF_singletons
     const Int Ai [ ],
     const Int Quser [ ],
     Int strategy,
+    Int do_singletons,
     Int Cdeg [ ],
     Int Cperm [ ],
     Int Rdeg [ ],

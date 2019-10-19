@@ -44,3 +44,18 @@ this directory, type "make clean".  To remove all but the
 files in the original distribution, type "make distclean".
 
 The output of "make go" is in the "make_go.output" file.
+
+On the Mac (OSX 10.6.1, Snow Leopard), you may see errors like this:
+
+    cl(32662) malloc: *** mmap(size=121600000000000) failed (error code=12)
+    *** error: can't allocate region
+    *** set a breakpoint in malloc_error_break to debug
+
+    That is not an error.  The test code is rigorously testing the CHOLMOD
+    memory management wrappers, by trying to allocate a huge amount of space
+    with the expectation that it must fail.  This to ensure the memory
+    management routines properly handle that case.  For some reason unknown to
+    me, the Mac "malloc" function feels the need to print an error on stdout
+    when attempting to malloc something too big.  It should simply and quietly
+    return a NULL instead, as Linux does.  Thus, ignore these errors.
+

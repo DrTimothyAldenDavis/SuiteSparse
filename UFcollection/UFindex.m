@@ -52,17 +52,25 @@ function UF_Index = UFindex (matrixlist)
 %   posdef          1 if positive definite, 0 otherwise
 %   isND	    1 if a 2D/3D problem, 0 otherwise
 %
-% If the statistic is not computed, it is set to -2.  Some statistics are not
-% computed for rectangular or structurally singular matrices, for example.
-% If an attempt to compute the statistic was made, but failed, it is set to -1.
+% If the statistic is intentionally not computed, it is set to -2.  Some
+% statistics are not computed for rectangular or structurally singular
+% matrices, for example.  If an attempt to compute the statistic was made, but
+% failed, it is set to -1.
 %
 % Example:
 %   UFindex
 %   UFindex (267:300)
 %
+% If updating the UF_Index.mat file, the function first loads it from its
+% default location, via UFget.  This function then saves the new UF_Index into
+% the UF_Index.mat file in the current working directory (not overwriting the
+% old copy, unless it resides in the current working directory).  It creates
+% the UFstats.csv file used by UFgui.java and UFkinds.m and places it in the
+% current working directory.
+%
 % See also UFstats, amd, metis, RBtype, cs_scc, cs_sqr, cs_dmperm.
 
-% Copyright 2006-2007, Timothy A. Davis
+% Copyright 2006-2009, Timothy A. Davis
 
 % Requires the SuiteSparse set of packages: CHOLMOD, AMD, COLAMD, RBio, CSparse;
 % and METIS.
@@ -83,7 +91,7 @@ create_new = 0 ;
 if (nargin < 1)
     matrixlist = 1:length(files) ;
     create_new = 1 ;
-else
+elseif (~isempty (matrixlist))
     % validate the input : range is limited by the files variable
     if (min (matrixlist) < 1) || (max (matrixlist) > length (files))
         error ('%s: %s', mfilename, 'Invalid input parameter.') ;
@@ -93,8 +101,20 @@ end
 if (~create_new)
     % load the index from file
     fprintf ('Loading existing UF_Index.mat file\n') ;
-    UF_Index = load ('UF_Index.mat') ;
-    UF_Index = UF_Index.UF_Index ;
+    %% UF_Index = load ('UF_Index.mat') ;
+    %% UF_Index = UF_Index.UF_Index ;
+    UF_Index = UFget ;
+end
+
+% get the current UFkinds
+if (create_new)
+    kinds = cell (length (files),1) ;
+else
+    try
+        kinds = UFkinds ;
+    catch
+        kinds = cell (2,1) ;
+    end
 end
 
 % revision tracking device
@@ -209,7 +229,9 @@ else
     end
 end
 
-fprintf ('Will process %d files\n', length (matrixlist)) ;
+if (length (matrixlist) > 0)
+    fprintf ('Will process %d files\n', length (matrixlist)) ;
+end
 
 nmat = length (UF_Index.nrows) ;
 filesize = zeros (nmat,1) ;
@@ -248,14 +270,16 @@ for i = matrixlist
 
 end
 
-fprintf ('\n======================================================\n') ;
-fprintf ('Matrices will processed in the following order:\n') ;
-for i = matrixlist
-    ffile = deblank (files {i}) ;
-    fprintf ('Matrix %d: %s filesize %d\n', i, ffile, filesize (i)) ;
-    if (filesize (i) == 9999999999)
-	fprintf ('skip this file\n') ;
-	continue ;
+if (length (matrixlist) > 0)
+    fprintf ('\n======================================================\n') ;
+    fprintf ('Matrices will processed in the following order:\n') ;
+    for i = matrixlist
+        ffile = deblank (files {i}) ;
+        fprintf ('Matrix %d: %s filesize %d\n', i, ffile, filesize (i)) ;
+        if (filesize (i) == 9999999999)
+            fprintf ('skip this file\n') ;
+            continue ;
+        end
     end
 end
 
@@ -296,6 +320,8 @@ for k = 1:length (matrixlist)
     %---------------------------------------------------------------------------
     % get all stats
     %---------------------------------------------------------------------------
+
+    kinds {id} = Problem.kind ;
 
     nometis = any (id == skip_metis) ;
     if (nometis)
@@ -401,4 +427,30 @@ for k = 1:length (matrixlist)
     end
 end
 
+%-------------------------------------------------------------------------------
+% create the UFstats.csv file
+%-------------------------------------------------------------------------------
 
+fprintf ('\nCreating UFstats.csv in current directory:\n')
+fprintf ('%s/UFstats.csv\n', pwd) ;
+f = fopen ('UFstats.csv', 'w') ;
+fprintf (f, '%d\n', nmat) ;
+fprintf (f, '%s\n', UF_Index.LastRevisionDate) ;
+for id = 1:nmat
+    fprintf (f,'%s,%s,%d,%d,%d,%d,%d,%d,%d,%.16g,%.16g,%s\n', ...
+        UF_Index.Group {id}, ...
+        UF_Index.Name {id}, ...
+        UF_Index.nrows (id), ...
+        UF_Index.ncols (id), ...
+        UF_Index.nnz (id), ...
+        UF_Index.isReal (id), ...
+        UF_Index.isBinary (id), ...
+        UF_Index.isND (id), ...
+        UF_Index.posdef (id), ...
+        UF_Index.pattern_symmetry (id), ...         % formatted with %.16g
+        UF_Index.numerical_symmetry (id), ...       % formatted with %.16g
+        kinds {id}) ;
+end
+fclose (f) ;
+
+fprintf ('\n\nUF_Index.mat and UFstats.csv created in current directory.\n') ;

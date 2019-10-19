@@ -262,7 +262,7 @@ void camdtest (cholmod_sparse *A)
 	    {
 		Cp [n] = Int_max ;
 		ok = CAMD_order (n, Cp, Ci, P, Control, Info, NULL) ;
-		printf ("CAMD status is %d\n", ok) ;
+		printf ("CAMD status is "ID"\n", ok) ;
 		OK (ok == CAMD_OUT_OF_MEMORY) ;
 	    }
 

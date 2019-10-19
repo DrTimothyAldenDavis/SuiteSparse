@@ -34,7 +34,7 @@ err = 0 ;                       % largest relative residual seen
 for posdef = 0:1
 
     if (posdef)
-        fprintf ('\n------------------ For positive definite matrices:\n') ;
+        fprintf ('\n------------------ For positive definite matrices:\n');
     else
         fprintf ('\n------------------ For unsymmetric matrices:\n') ;
     end
@@ -42,9 +42,9 @@ for posdef = 0:1
     Tfactor = zeros (ns,5) ;
     Tsolve  = zeros (ns,5) ;
 
-    %-----------------------------------------------------------------------
+    %----------------------------------------------------------------------
     % compare factorizations times (plus a single solve)
-    %-----------------------------------------------------------------------
+    %----------------------------------------------------------------------
 
     fprintf ('\nCompare factorization times:\n') ;
     for i = 1:ns
@@ -138,7 +138,7 @@ for posdef = 0:1
         tic
         while (t < tmax)
             S = inv (A) ;
-            x = S*b ;               %#ok
+            x = S*b ;                                                  %#ok
             k = k + 1 ;
             t = toc ;
         end
@@ -156,9 +156,9 @@ for posdef = 0:1
 
     end
 
-    %-----------------------------------------------------------------------
+    %----------------------------------------------------------------------
     % compare solve times
-    %-----------------------------------------------------------------------
+    %----------------------------------------------------------------------
 
     fprintf ('\nCompare solve times:\n') ;
     for i = 1:ns
@@ -321,9 +321,9 @@ for posdef = 0:1
 
 end
 
-%---------------------------------------------------------------------------
+%--------------------------------------------------------------------------
 % compute the Schur complement, S = A-B*inv(D)*C
-%---------------------------------------------------------------------------
+%--------------------------------------------------------------------------
 
 fprintf ('\nSchur complement, S=A-B*inv(D)*C or A-B(D\\C),\n') ;
 fprintf ('where A, B, C, and D are square and unsymmetric.\n') ;
@@ -346,7 +346,7 @@ for i = 1:ns
     k = 0 ;
     tic
     while (t < tmax)
-        S = A - B*(D\C) ;                                               %#ok
+        S = A - B*(D\C) ;                                              %#ok
         k = k + 1 ;
         t = toc ;
     end
@@ -358,7 +358,7 @@ for i = 1:ns
     k = 0 ;
     tic
     while (t < tmax)
-        S = A - B * linsolve (D,C) ;                                    %#ok
+        S = A - B * linsolve (D,C) ;                                   %#ok
         k = k + 1 ;
         t = toc ;
     end
@@ -370,7 +370,7 @@ for i = 1:ns
     k = 0 ;
     tic
     while (t < tmax)
-        S = A - B*(factorize1(D)\C) ;                                   %#ok
+        S = A - B*(factorize1(D)\C) ;                                  %#ok
         k = k + 1 ;
         t = toc ;
     end
@@ -382,7 +382,7 @@ for i = 1:ns
     k = 0 ;
     tic
     while (t < tmax)
-        S = A - B*(factorize(D)\C) ;                                    %#ok
+        S = A - B*(factorize(D)\C) ;                                   %#ok
         k = k + 1 ;
         t = toc ;
     end
@@ -394,7 +394,7 @@ for i = 1:ns
     k = 0 ;
     tic
     while (t < tmax)
-        S = A - B*inverse(D)*C ;                                        %#ok
+        S = A - B*inverse(D)*C ;                                       %#ok
         k = k + 1 ;
         t = toc ;
     end
@@ -406,7 +406,7 @@ for i = 1:ns
     k = 0 ;
     tic
     while (t < tmax)
-        S = A - B*inv(D)*C ;                                            %#ok
+        S = A - B*inv(D)*C ;                                           %#ok
         k = k + 1 ;
         t = toc ;
     end

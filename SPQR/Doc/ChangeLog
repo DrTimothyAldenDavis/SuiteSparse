@@ -1,3 +1,13 @@
+Nov 30, 2009: version 1.2.0
+
+    * fixed interface to 64-bit BLAS for MATLAB 7.8
+    * added "make install" and "make uninstall"
+    * added info struct output to spqr mexFunction
+    * added 2-norm of w statistic
+    * changed default ordering back to always use COLAMD.  Default in v1.1.2
+        and v1.1.1 was to use COLAMD if m < 2*n and use AMD(A'A)
+        or METIS(A'A) otherwise.
+
 May 1, 2009, version 1.1.2
 
     * added more examples to user guide and to spqr.m

@@ -18,11 +18,9 @@
  *	umf4 a		default "auto" strategy, 1-norm row scaling
  *	umf4 u		unsymmetric strategy, 1-norm row scaling
  *	umf4 s		symmetric strategy, 1-norm row scaling
- *	umf4 2		2-by-2 strategy, maxnorm row scaling
  *	umf4 A		default "auto" strategy, maxnorm row scaling
  *	umf4 U		unsymmetric strategy, maxnorm row scaling
  *	umf4 S		symmetric strategy, maxnorm row scaling
- *	umf4 T		2-by-2 strategy , maxnorm row scaling
  *
  * To test a matrix in the Harwell/Boeing format, do the following:
  *
@@ -67,6 +65,7 @@
 #define SMAX 256
 #define ABS(x) ((x) >= 0 ? (x) : -(x))
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
+#define ISNAN(x) ((x) != (x))
 
 #define XTRUE(i,n) (1.0 + ((double) i) / ((double) n))
 
@@ -95,7 +94,7 @@ static double err
 
     for (i = 0 ; i < n ; i++)
     {
-	if (isnan (x [i]))
+	if (ISNAN (x [i]))
 	{
 	    enorm = x [i] ;
 	    break ;
@@ -174,7 +173,7 @@ static double resid
     bnorm = 0. ;
     for (i = 0 ; i < n ; i++)
     {
-	if (isnan (r [i]))
+	if (ISNAN (r [i]))
 	{
 	    rnorm = r [i] ;
 	    break ;
@@ -184,7 +183,7 @@ static double resid
     }
     for (i = 0 ; i < n ; i++)
     {
-	if (isnan (b [i]))
+	if (ISNAN (b [i]))
 	{
 	    bnorm = b [i] ;
 	    break ;
@@ -283,51 +282,50 @@ int main (int argc, char **argv)
 
     if (argc > 1)
     {
-	char *s = argv [1] ;
+	char *t = argv [1] ;
 
 	/* get the strategy */
-	if (s [0] == 'u')
+	if (t [0] == 'u')
 	{
 	    Control [UMFPACK_STRATEGY] = UMFPACK_STRATEGY_UNSYMMETRIC ;
 	}
-	else if (s [0] == 'a')
+	else if (t [0] == 'a')
 	{
 	    Control [UMFPACK_STRATEGY] = UMFPACK_STRATEGY_AUTO ;
 	}
-	else if (s [0] == 's')
+	else if (t [0] == 's')
 	{
 	    Control [UMFPACK_STRATEGY] = UMFPACK_STRATEGY_SYMMETRIC ;
 	}
-	else if (s [0] == '2')
+	else if (t [0] == '2')
 	{
-	    Control [UMFPACK_STRATEGY] = UMFPACK_STRATEGY_2BY2 ;
+	    printf ("unrecognized strategy: %s\n", argv [1]) ;
 	}
-	else if (s [0] == 'U')
+	else if (t [0] == 'U')
 	{
 	    Control [UMFPACK_STRATEGY] = UMFPACK_STRATEGY_UNSYMMETRIC ;
 	    Control [UMFPACK_SCALE] = UMFPACK_SCALE_MAX ;
 	}
-	else if (s [0] == 'A')
+	else if (t [0] == 'A')
 	{
 	    Control [UMFPACK_STRATEGY] = UMFPACK_STRATEGY_AUTO ;
 	    Control [UMFPACK_SCALE] = UMFPACK_SCALE_MAX ;
 	}
-	else if (s [0] == 'S')
+	else if (t [0] == 'S')
 	{
 	    Control [UMFPACK_STRATEGY] = UMFPACK_STRATEGY_SYMMETRIC ;
 	    Control [UMFPACK_SCALE] = UMFPACK_SCALE_MAX ;
 	}
-	else if (s [0] == 'T')
+	else if (t [0] == 'T')
 	{
-	    Control [UMFPACK_STRATEGY] = UMFPACK_STRATEGY_2BY2 ;
-	    Control [UMFPACK_SCALE] = UMFPACK_SCALE_MAX ;
+	    printf ("unrecognized strategy: %s\n", argv [1]) ;
 	}
 	else
 	{
 	    printf ("unrecognized strategy: %s\n", argv [1]) ;
 	}
 
-	if (s [1] == 'n')
+	if (t [1] == 'n')
 	{
 	    /* no aggressive absorption */
 	    Control [UMFPACK_AGGRESSIVE] = FALSE ;

@@ -130,6 +130,10 @@ spqr_symbolic *spqr_analyze
     // SuiteSparseQR requires a supernodal analysis to find its frontal matrices
     cc->supernodal = CHOLMOD_SUPERNODAL ;
 
+    /* ---------------------------------------------------------------------- */
+    /* determine ordering */
+    /* ---------------------------------------------------------------------- */
+
     // 1:natural and 3:given become the same as 1:fixed
     if (ordering == SPQR_ORDERING_NATURAL ||
        (ordering == SPQR_ORDERING_GIVEN && Quser == NULL))
@@ -160,6 +164,10 @@ spqr_symbolic *spqr_analyze
         cc->method [0].ordering = CHOLMOD_COLAMD ;
         cc->method [1].ordering = CHOLMOD_AMD ;
     }
+
+    /* ---------------------------------------------------------------------- */
+    /* set up the ordering */
+    /* ---------------------------------------------------------------------- */
 
     if (ordering == SPQR_ORDERING_FIXED)
     {
@@ -201,14 +209,21 @@ spqr_symbolic *spqr_analyze
         Quser = NULL ;
     }
 #endif
-    else if (ordering == SPQR_ORDERING_COLAMD)
+    else // if (ordering == SPQR_ORDERING_COLAMD)
+         // or ordering == SPQR_ORDERING_DEFAULT
+         // or ordering == SPQR_ORDERING_METIS and METIS not installed
     {
+        // Version 1.2.0: default is COLAMD
         // COLAMD (A)
+        ordering = SPQR_ORDERING_COLAMD ;
         cc->nmethods = 1 ;
         cc->method [0].ordering = CHOLMOD_COLAMD ;
         cc->postorder = TRUE ;
         Quser = NULL ;
     }
+
+#if 0
+    // Version 1.1.2 and earlier:
     else // if (ordering == SPQR_ORDERING_DEFAULT)
          // order SPQR_ORDERING_METIS but METIS not installed
     {
@@ -233,6 +248,7 @@ spqr_symbolic *spqr_analyze
         cc->postorder = TRUE ;
         Quser = NULL ;
     }
+#endif
 
     // multifrontal QR ordering and analysis
     Sc = cholmod_l_analyze_p2 (FALSE, AT, (UF_long *) Quser, NULL, 0, cc) ;

@@ -425,7 +425,7 @@ static int TEMPLATE (cholmod_super_numeric)
 	     * Ls [pdi1 ... pdi2-1], of size ndrow1.  Nonzero rows in the range
 	     * k2:n-1 are in the list Ls [pdi2 ... pdend], of size ndrow2.  Let
 	     * L1 = L (Ls [pdi1 ... pdi2-1], kd1:kd2-1), and let
-	     * L2 = L (Ls [pdi2 ... pdend],  kd1:kd2-1).  C is ndrow2-by-ndcol.
+	     * L2 = L (Ls [pdi2 ... pdend],  kd1:kd2-1).  C is ndrow2-by-ndrow1.
 	     * Let C1 be the first ndrow1 rows of C and let C2 be the last
 	     * ndrow2-ndrow1 rows of C.  Only the lower triangular part of C1
 	     * needs to be computed since C1 is symmetric.
@@ -453,7 +453,7 @@ static int TEMPLATE (cholmod_super_numeric)
 		C, ndrow2) ;			/* C, LDC: C1 */
 #endif
 
-	    /* compute remaining (ndrow3-ndrow1)-by-ndrow1 block of C,
+	    /* compute remaining (ndrow2-ndrow1)-by-ndrow1 block of C,
 	     * C2 = L2*L1' */
 	    ndrow3 = ndrow2 - ndrow1 ;
 	    if (ndrow3 > 0)
@@ -558,7 +558,7 @@ static int TEMPLATE (cholmod_super_numeric)
 	 * holds rows k1:n-1 and columns k1:k2-1 of the updated matrix.   It
 	 * splits into two parts:  the square diagonal block S1, and the
 	 * rectangular part S2.  Here, S1 is factorized into L1*L1' and
-	 * overwritten by S1.
+	 * overwritten by L1.
 	 *
 	 * If supernode s is being repeated, only factorize it up to but not
 	 * including the column containing the problematic entry.

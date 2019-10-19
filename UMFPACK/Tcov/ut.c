@@ -59,6 +59,45 @@ static double divide (double x, double y)
 }
 
 /* ========================================================================== */
+/* my_ordering */
+/* ========================================================================== */
+
+int my_ordering
+(
+    Int nrow,
+    Int ncol,
+    Int sym,
+    Int *Ap,
+    Int *Ai,
+    Int *P,         /* size ncol */
+    void *params,
+    double *info
+)
+{
+    /* return a valid permutation for use by UMFPACK ... using AMD/COLAMD */
+    return (UMF_cholmod (nrow, ncol, sym, Ap, Ai, P, params, info)) ;
+}
+
+int my_bad_ordering
+(
+    Int nrow,
+    Int ncol,
+    Int sym,
+    Int *Ap,
+    Int *Ai,
+    Int *P,         /* size ncol */
+    void *params,
+    double *info
+)
+{
+    /* return an invalid permutation, for testing */
+    Int k, *p ;
+    for (k = 0 ; k < ncol ; k++) P [k] = EMPTY ;
+    p = (Int *) params ;
+    return (p [0]) ;
+}
+
+/* ========================================================================== */
 /* inv_umfpack_dense: inverse of UMFPACK_DENSE_COUNT */
 /* ========================================================================== */
 
@@ -1068,8 +1107,20 @@ static double do_solvers
 		dump_mat ("C", n, n, Cp, Ci, CARG(Cx,Cz)) ;
 		dump_mat ("L", n, n, Lp, Li, CARG(Lx,Lz)) ;
 		dump_mat ("U", n, n, Up, Ui, CARG(Ux,Uz)) ;
-		printf ("P = [ ") ; for (k = 0 ; k < n ; k++) printf ("%d ", P [k]) ; printf ("]\n") ;
-		printf ("Q = [ ") ; for (k = 0 ; k < n ; k++) printf ("%d ", Q [k]) ; printf ("]\n") ;
+
+		printf ("P = [ ") ;
+                for (k = 0 ; k < n ; k++)
+                {
+                    printf (ID" ", P [k]) ;
+                }
+                printf ("]\n") ;
+		printf ("Q = [ ") ;
+                for (k = 0 ; k < n ; k++)
+                {
+                    printf (ID" ", Q [k]) ;
+                }
+                printf ("]\n") ;
+
 		error ("transposed (PAQ)'x=b inaccurate\n",rnorm) ;
 	    }
 	    maxrnorm = MAX (rnorm, maxrnorm) ;
@@ -1111,8 +1162,18 @@ static double do_solvers
 		dump_mat ("C", n, n, Cp, Ci, CARG(Cx,Cz)) ;
 		dump_mat ("L", n, n, Lp, Li, CARG(Lx,Lz)) ;
 		dump_mat ("U", n, n, Up, Ui, CARG(Ux,Uz)) ;
-		printf ("P = [ ") ; for (k = 0 ; k < n ; k++) printf ("%d ", P [k]) ; printf ("]\n") ;
-		printf ("Q = [ ") ; for (k = 0 ; k < n ; k++) printf ("%d ", Q [k]) ; printf ("]\n") ;
+		printf ("P = [ ") ;
+                for (k = 0 ; k < n ; k++)
+                {
+                    printf (ID" ", P [k]) ;
+                }
+                printf ("]\n") ;
+		printf ("Q = [ ") ;
+                for (k = 0 ; k < n ; k++)
+                {
+                    printf (ID" ", Q [k]) ;
+                }
+                printf ("]\n") ;
 		error ("transposed (PAQ).'x=b inaccurate\n",rnorm) ;
 	    }
 	    maxrnorm = MAX (rnorm, maxrnorm) ;
@@ -1624,11 +1685,23 @@ static double do_symnum
     if (Qinit)
     {
 	/* dump_perm ("Qinit", n_col, Qinit) ; */
-	status = UMFPACK_qsymbolic (n_row, n_col, Ap, Ai, CARG(Ax,Az), Qinit, &Symbolic, Control, Info) ; /* ( */
+	status = UMFPACK_qsymbolic (n_row, n_col, Ap, Ai, CARG(Ax,Az), Qinit,
+            &Symbolic, Control, Info) ; /* ( */
+    }
+    else if (Control != NULL &&
+        Control [UMFPACK_ORDERING] == UMFPACK_ORDERING_USER)
+    {
+        Int params [3] ;
+        params [0] = UMFPACK_ORDERING_AMD ;
+        params [1] = prl-1 ;
+        params [2] = EMPTY ;
+        status = UMFPACK_fsymbolic (n_row, n_col, Ap, Ai, CARG(Ax,Az),
+            &my_ordering, (void *) params, &Symbolic, Control, Info) ;
     }
     else
     {
-	status = UMFPACK_symbolic (n_row, n_col, Ap, Ai, CARG(Ax,Az), &Symbolic, Control, Info) ;
+	status = UMFPACK_symbolic (n_row, n_col, Ap, Ai, CARG(Ax,Az),
+            &Symbolic, Control, Info) ;
     }
 
     UMFPACK_report_status (Control, status) ;
@@ -1858,7 +1931,7 @@ static double do_symnum
 
 		if (deterr > 1e-7)
 		{
-		    printf ("det: real err %g i: %d\n", deterr, i) ;
+		    printf ("det: real err %g i: "ID"\n", deterr, i) ;
 		    error ("det: bad real part", det_x) ;
 		}
 
@@ -2380,12 +2453,13 @@ static double do_matrix
     Int do_dense
 )
 {
-    double Control [UMFPACK_CONTROL], *b, *bz, maxrnorm, rnorm, tol, init ;
+    double Control [UMFPACK_CONTROL], *b, *bz, maxrnorm, rnorm, tol, init,
+        psave ;
     Int *colhist, *rowhist, *rowdeg, *noQinit, *Qinit, *cknob, *rknob,
 	c, r, cs, rs, row, col, i, coldeg, p, d, nb, ck, rk, *Head, *Next,
 	col1, col2, d1, d2, k, status, n_amd,
 	i_tol, i_nb, i_init, n_tol, n_nb, n_init, n_scale, i_scale, scale,
-	i_pivot, n_pivot, pivopt ;
+	i_pivot, n_pivot, pivopt, ordering, singletons ;
 
     /* ---------------------------------------------------------------------- */
     /* initializations */
@@ -2562,9 +2636,30 @@ static double do_matrix
     printf ("with defaults:\n") ;
     rnorm = do_many (n, n, Ap, Ai, Ax,Az, b,bz, Control, noQinit, MemControl, FALSE, FALSE, 0., 0.) ;
     maxrnorm = MAX (rnorm, maxrnorm) ;
+
     printf ("with defaults and qinit:\n") ;
     rnorm = do_many (n, n, Ap, Ai, Ax,Az, b,bz, Control, Qinit, MemControl, FALSE, FALSE, 0., 0.) ;
     maxrnorm = MAX (rnorm, maxrnorm) ;
+
+    /* with lots of ordering options */
+    psave = Control [UMFPACK_PRL] ;
+    if (n < 15) Control [UMFPACK_PRL] = 4 ;
+    for (singletons = 0 ; singletons <= 1 ; singletons++)
+    {
+        for (ordering = EMPTY ; ordering <= UMFPACK_ORDERING_USER ; ordering++)
+        {
+            Control [UMFPACK_ORDERING] = ordering ;
+            Control [UMFPACK_SINGLETONS] = singletons ;
+            printf ("with ordering method "ID" singletons "ID"\n", ordering,
+                singletons) ;
+            UMFPACK_report_control (Control) ;
+            rnorm = do_many (n, n, Ap, Ai, Ax,Az, b,bz, Control, noQinit, MemControl, FALSE, FALSE, 0., 0.) ;
+            maxrnorm = MAX (rnorm, maxrnorm) ;
+        }
+    }
+    Control [UMFPACK_ORDERING] = UMFPACK_DEFAULT_ORDERING ;
+    Control [UMFPACK_SINGLETONS] = UMFPACK_DEFAULT_SINGLETONS ;
+    Control [UMFPACK_PRL] = psave ;
 
     printf ("starting lengthy tests\n") ;
 
@@ -2616,6 +2711,10 @@ static double do_matrix
 
 			    for (strategy = UMFPACK_STRATEGY_AUTO ; strategy <= UMFPACK_STRATEGY_SYMMETRIC ; strategy ++)
 			    {
+                                if (strategy == UMFPACK_STRATEGY_OBSOLETE)
+                                {
+                                    continue ;
+                                }
 				Control [UMFPACK_STRATEGY] = strategy ;
 				{
 				    rnorm = do_once (n, n, Ap, Ai, Ax,Az, b,bz, Control, noQinit, MemControl, FALSE, TRUE, FALSE, 0., 0.) ;
@@ -4294,8 +4393,9 @@ static double do_file
     else
     {
 	/* full test */
-	for (strategy = -1 ; strategy <= UMFPACK_STRATEGY_SYMMETRIC ; strategy ++)
+	for (strategy=-1 ; strategy <= UMFPACK_STRATEGY_SYMMETRIC ; strategy++)
 	{
+            if (strategy == UMFPACK_STRATEGY_OBSOLETE) continue ;
 	    Control [UMFPACK_STRATEGY] = strategy ;
 	    if (strategy == UMFPACK_STRATEGY_SYMMETRIC)
 	    {
@@ -4442,6 +4542,7 @@ int main (int argc, char **argv)
 	MemOK [6], MemBad [6], nnrow, nncol, nzud, n_row, n_col, n_row2,
 	n_col2, scale, *Front_1strow, *Front_leftmostdesc, strategy,
 	t, aggressive, *Pamd, mem1, mem2, do_recip ;
+    int ok ;
     void *Symbolic, *Numeric ;
     SymbolicType *Sym ;
     NumericType *Num ;
@@ -4449,6 +4550,8 @@ int main (int argc, char **argv)
     struct dirent *direntp ;
     char filename [200] ;
     FILE *f ;
+    Int my_params [3], csave ;
+    double my_info [3] ;
 
     /* turn off debugging */
     { f = fopen ("debug.umf", "w") ; fprintf (f, "-45\n") ; fclose (f) ; }
@@ -4668,7 +4771,7 @@ int main (int argc, char **argv)
 
     n = 30 ;
 
-	printf ("sparse %7d 4*n nz's", n) ;
+	printf ("sparse "ID" 4*n nz's", n) ;
 	matgen_sparse (n, 4*n, 0, 0, 0, 0, &Ap, &Ai, &Ax, &Az, 1, 0) ;	/* [[[[ */
 	rnorm = do_and_free (n, Ap, Ai, Ax, Az, Controls, Ncontrols, MemOK, 1) ; /* ]]]] */
 	maxrnorm = MAX (rnorm, maxrnorm) ;
@@ -5012,7 +5115,7 @@ int main (int argc, char **argv)
     if (s != Info [UMFPACK_STATUS]) error ("huh", (double) __LINE__)  ;
     UMFPACK_report_status (Control, s) ;
     UMFPACK_report_info (Control, Info) ;
-    printf ("p1b status: "ID" Numeric handle bad "ID"\n", s, !Numeric) ;
+    printf ("p1b status: "ID" Numeric handle bad %d\n", s, !Numeric) ;
     s2 = UMFPACK_report_numeric (Numeric, Control) ;
     if (!Numeric || s != UMFPACK_OK) error ("p1b",0.) ;
     printf ("Good numeric, pattern test: ") ;
@@ -5359,7 +5462,7 @@ int main (int argc, char **argv)
 
     n = 10 ;
 
-    printf ("\n all realloc fails sparse %7d 4*n nz's\n", n) ;
+    printf ("\n all realloc fails sparse "ID" 4*n nz's\n", n) ;
     matgen_sparse (n, 4*n, 0, 0, 0, 0, &Ap, &Ai, &Ax, &Az, 1, 0) ;
     rnorm = do_and_free (n, Ap, Ai, Ax,Az, Controls, Ncontrols, MemBad, 1) ;
     printf ("rnorm %g for all-realloc-fails\n", rnorm) ;
@@ -5411,6 +5514,7 @@ int main (int argc, char **argv)
       for (strategy = UMFPACK_STRATEGY_AUTO ; strategy <= UMFPACK_STRATEGY_SYMMETRIC ; strategy++)
       {
         Int *Rp, *Ri ;
+        if (strategy == UMFPACK_STRATEGY_OBSOLETE) continue ;
 
 	printf ("\n[[[[ PRL = "ID" strategy = "ID"\n", prl, strategy) ;
 	for (k = 0 ; k < n ; k++) Pamd [k] = EMPTY ;
@@ -5579,6 +5683,51 @@ int main (int argc, char **argv)
         UMFPACK_report_status (Con, s) ;
 	UMFPACK_report_info (Con, Info) ;
 	if (Symbolic || s != UMFPACK_ERROR_argument_missing) error ("4c",0.) ;
+
+	/* ------------------------------------------------------------------ */
+
+        if (prl >= 0)
+        {
+
+            csave = Con [UMFPACK_ORDERING] ;
+            my_params [0] = 1 ;
+            Con [UMFPACK_ORDERING] = UMFPACK_ORDERING_USER ;
+	    s = UMFPACK_fsymbolic (n, n, Ap, Ai, CARG(Ax,Az), 
+                &my_bad_ordering, my_params, &Symbolic, Con, Info) ;
+            if (s != Info [UMFPACK_STATUS]) error ("huh", (double) __LINE__)  ;
+            UMFPACK_report_status (Con, s) ;
+            UMFPACK_report_info (Con, Info) ;
+            if (Symbolic || s != UMFPACK_ERROR_ordering_failed)error ("6d",0.) ;
+
+            my_params [0] = 0 ;
+	    s = UMFPACK_fsymbolic (n, n, Ap, Ai, CARG(Ax,Az), 
+                &my_bad_ordering, my_params, &Symbolic, Con, Info) ;
+            if (s != Info [UMFPACK_STATUS]) error ("huh", (double) __LINE__)  ;
+            UMFPACK_report_status (Con, s) ;
+            UMFPACK_report_info (Con, Info) ;
+            if (Symbolic || s != UMFPACK_ERROR_ordering_failed)error ("6e",0.) ;
+
+            Con [UMFPACK_ORDERING] = csave ;
+
+        }
+
+	/* ------------------------------------------------------------------ */
+
+        my_params [0] = UMFPACK_ORDERING_AMD ;
+        my_params [1] = prl ;
+        my_params [2] = EMPTY ;
+        my_info [0] = EMPTY ;
+        my_info [1] = EMPTY ;
+        my_info [2] = EMPTY ;
+
+        ok = UMF_cholmod (n, n, TRUE, Ap, Ai, Pamd, my_params, my_info) ;
+        if (!ok) error ("6f", 0.) ;
+
+        ok = UMF_cholmod (n+1, n, TRUE, Ap, Ai, Pamd, my_params, my_info) ;
+        if (!ok) error ("6g", 0.) ;
+
+        ok = UMF_cholmod (n, n, TRUE, NULL, Ai, Pamd, my_params, my_info) ;
+        if (ok) error ("6h", 0.) ;
 
 	/* ------------------------------------------------------------------ */
 
@@ -5768,7 +5917,7 @@ int main (int argc, char **argv)
 	if (s != UMFPACK_ERROR_invalid_matrix) error ("51k",0.); 
 
 	s = do_amd (n, Ap, Ai, Pamd) ;
-	printf ("amd jumbled: %d\n", s) ;
+	printf ("amd jumbled: "ID"\n", s) ;
 	if (s != AMD_OK_BUT_JUMBLED) error ("amd 11", (double) s) ;
 
 	Ai [Ap [3] + 1] = c ;	/* Ai fixed ] */
@@ -7050,7 +7199,7 @@ int main (int argc, char **argv)
 	for (i = 1 ; i <= 24 ; i++)
 	{
 	    umf_fail = i ;
-	    printf ("umf_fail starts at "ID"\n", umf_fail) ;
+	    printf ("umf_fail starts at %d\n", umf_fail) ;
 	    fflush (stdout) ;
 #if defined (UMF_MALLOC_COUNT) || !defined (NDEBUG)
 	    if (UMF_malloc_count != 0) error ("umfpack mem test starts memory leak!!\n",0.) ;
@@ -7085,7 +7234,7 @@ int main (int argc, char **argv)
 	for (i = 1 ; i <= 29 ; i++)
 	{
 	    umf_fail = i ;
-	    printf ("\nDoing numeric, umf_fail = "ID"\n", umf_fail) ;
+	    printf ("\nDoing numeric, umf_fail = %d\n", umf_fail) ;
 	    s = UMFPACK_numeric (Ap, Ai, CARG(Ax,Az), Symbolic, &Numeric, Control, Info) ;
 	    if (s != Info [UMFPACK_STATUS]) error ("huh", (double) __LINE__)  ;
 	    UMFPACK_report_status (Control, s) ;
@@ -7164,7 +7313,7 @@ int main (int argc, char **argv)
 	for (i = 1 ; i <= 2 ; i++)
 	{
 	    umf_fail = i ;
-	    printf ("\nTest 109, "ID"\n", umf_fail) ;
+	    printf ("\nTest 109, %d\n", umf_fail) ;
 	    s = UMFPACK_solve (UMFPACK_A, Ap, Ai, CARG(Ax,Az), CARG(x,xz), CARG(b,bz), Numeric, Control, Info) ;
 	    if (s != Info [UMFPACK_STATUS]) error ("huh", (double) __LINE__)  ;
 	    UMFPACK_report_status (Control, s) ;
@@ -7210,7 +7359,7 @@ int main (int argc, char **argv)
 	s = UMFPACK_get_determinant (CARG (&Mx, &Mz), &Exp, Numeric, Info) ;
 	if (s != Info [UMFPACK_STATUS])
 	{
-	    printf ("s %d %g\n", s, Info [UMFPACK_STATUS]) ;
+	    printf ("s "ID" %g\n", s, Info [UMFPACK_STATUS]) ;
 	    error ("huh", (double) __LINE__)  ;
 	}
 	if (s != UMFPACK_ERROR_out_of_memory) error ("73det",0.) ;
@@ -7260,7 +7409,7 @@ int main (int argc, char **argv)
     n = 100 ;
     for (k = 0 ; k <= 100 ; k++)
     {
-	printf ("NaN/Inf %7d 4*n nz's, k= "ID"\n", n, k) ;
+	printf ("NaN/Inf "ID" 4*n nz's, k= "ID"\n", n, k) ;
 	matgen_sparse (n, 4*n, 0, 0, 0, 0, &Ap, &Ai, &Ax, &Az, 1, 1) ; /* [[[[  */
 	if (k == 100)
 	{
@@ -7411,7 +7560,7 @@ int main (int argc, char **argv)
 
     n = 30 ;
 
-	printf ("sparse %7d 4*n nz's", n) ;
+	printf ("sparse "ID" 4*n nz's", n) ;
 	matgen_sparse (n, 4*n, 0, 0, 0, 0, &Ap, &Ai, &Ax, &Az, 1, 0) ;	/* [[[[ */
 	rnorm = do_and_free (n, Ap, Ai, Ax, Az, Controls, Ncontrols, MemOK, 1) ; /* ]]]] */
 	maxrnorm = MAX (rnorm, maxrnorm) ;
@@ -7419,7 +7568,7 @@ int main (int argc, char **argv)
 
     n = 200 ;
 
-	printf ("sparse %7d 4*n nz's", n) ;
+	printf ("sparse "ID" 4*n nz's", n) ;
 	matgen_sparse (n, 4*n, 0, 0, 0, 0, &Ap, &Ai, &Ax, &Az, 1, 0) ;	/* [[[[ */
 
 	/*
@@ -7611,7 +7760,7 @@ int main (int argc, char **argv)
 
     n = 100 ;
 
-	printf ("tri-diagonal+dense row and col %7d ", n) ;
+	printf ("tri-diagonal+dense row and col "ID" ", n) ;
 	matgen_band (n, 1, 1, 1, n, 1, n, &Ap, &Ai, &Ax, &Az) ;
 	rnorm = do_and_free (n, Ap, Ai, Ax,Az, Controls, Ncontrols, MemOK, 1) ;
 	maxrnorm = MAX (rnorm, maxrnorm) ;
@@ -7624,7 +7773,7 @@ int main (int argc, char **argv)
 
     for (n = 1 ; n < 16 ; n++)
     {
-	printf ("dense %7d ", n) ;
+	printf ("dense "ID" ", n) ;
 	matgen_dense (n, &Ap, &Ai, &Ax, &Az) ;
 	rnorm = do_and_free (n, Ap, Ai, Ax,Az, Controls, Ncontrols, MemOK, 1) ;
 	maxrnorm = MAX (rnorm, maxrnorm) ;
@@ -7633,7 +7782,7 @@ int main (int argc, char **argv)
 
     for (n = 20 ; n <= 80 ; n += 20 )
     {
-	printf ("dense %7d ", n) ;
+	printf ("dense "ID" ", n) ;
 	matgen_dense (n, &Ap, &Ai, &Ax, &Az) ;
 	rnorm = do_and_free (n, Ap, Ai, Ax,Az, Controls, Ncontrols, MemOK, 1) ;
 	maxrnorm = MAX (rnorm, maxrnorm) ;
@@ -7642,7 +7791,7 @@ int main (int argc, char **argv)
 
     n = 130 ;
 
-	printf ("dense %7d ", n) ;
+	printf ("dense "ID" ", n) ;
 	matgen_dense (n, &Ap, &Ai, &Ax, &Az) ;
 	rnorm = do_and_free (n, Ap, Ai, Ax,Az, Controls, Ncontrols, MemOK, 1) ;
 	maxrnorm = MAX (rnorm, maxrnorm) ;

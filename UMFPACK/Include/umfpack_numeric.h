@@ -179,8 +179,8 @@ Arguments:
 	    sqrt (a_real^2 + a_imag^2)).
 
 	Control [UMFPACK_SYM_PIVOT_TOLERANCE]:
-	    If diagonal pivoting is attempted (the symmetric or symmetric-2by2
-	    strategies are used) then this parameter is used to control when the
+	    If diagonal pivoting is attempted (the symmetric
+	    strategy is used) then this parameter is used to control when the
 	    diagonal entry is selected in a given pivot column.  The absolute
 	    value of the entry must be >= Control [UMFPACK_SYM_PIVOT_TOLERANCE]
 	    times the largest absolute value in the column.  A value of zero
@@ -525,7 +525,7 @@ Arguments:
 	    grew larger than its current working array.
 
 	Info [UMFPACK_NOFF_DIAG]: number of off-diagonal pivots selected, if the
-	    symmetric or 2-by-2 strategies are used.
+	    symmetric strategy is used.
 
 	Info [UMFPACK_NZDROPPED]: the number of entries smaller in absolute
 	    value than Control [UMFPACK_DROPTOL] that were dropped from L and U.

@@ -175,7 +175,7 @@ int CHOLMOD(start)
     /* default SuiteSparseQR knobs and statististics */
     /* ---------------------------------------------------------------------- */
 
-    for (k = 0 ; k < 2  ; k++) Common->SPQR_xstat [k] = 0 ;
+    for (k = 0 ; k < 4  ; k++) Common->SPQR_xstat [k] = 0 ;
     for (k = 0 ; k < 10 ; k++) Common->SPQR_istat [k] = 0 ;
     Common->SPQR_grain = 1 ;    /* no Intel TBB multitasking, by default */
     Common->SPQR_small = 1e6 ;  /* target min task size for TBB */

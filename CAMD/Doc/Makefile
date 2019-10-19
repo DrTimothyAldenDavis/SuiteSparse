@@ -11,13 +11,14 @@ include ../../UFconfig/UFconfig.mk
 #------------------------------------------------------------------------------
 
 clean:
-	- $(RM) $(CLEAN)
+	- $(RM) -r $(CLEAN)
 	- $(RM) camd_temp
 
 purge: distclean
 
 distclean: clean
 	- $(RM) *.aux *.bbl *.blg *.log *.toc
+	- $(RM) -r *.dSYM
 
 #------------------------------------------------------------------------------
 # Create the User Guide and Quick Start Guide

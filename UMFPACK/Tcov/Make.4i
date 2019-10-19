@@ -1,5 +1,5 @@
 #===============================================================================
-# ILP32 mode, Fortran interface to ATLAS BLAS, do not test for integer overflow.
+# Fortran interface to ATLAS BLAS, do not test for integer overflow.
 #===============================================================================
 
 # Using Intel's icc compiler:

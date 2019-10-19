@@ -10,6 +10,7 @@ umfpack_di_get_symbolic
 umfpack_di_get_determinant
 umfpack_di_numeric
 umfpack_di_qsymbolic
+umfpack_di_fsymbolic
 umfpack_di_report_control
 umfpack_di_report_info
 umfpack_di_report_matrix
@@ -35,6 +36,7 @@ umfpack_dl_get_symbolic
 umfpack_dl_get_determinant
 umfpack_dl_numeric
 umfpack_dl_qsymbolic
+umfpack_dl_fsymbolic
 umfpack_dl_report_control
 umfpack_dl_report_info
 umfpack_dl_report_matrix
@@ -60,6 +62,7 @@ umfpack_zi_get_symbolic
 umfpack_zi_get_determinant
 umfpack_zi_numeric
 umfpack_zi_qsymbolic
+umfpack_zi_fsymbolic
 umfpack_zi_report_control
 umfpack_zi_report_info
 umfpack_zi_report_matrix
@@ -85,6 +88,7 @@ umfpack_zl_get_symbolic
 umfpack_zl_get_determinant
 umfpack_zl_numeric
 umfpack_zl_qsymbolic
+umfpack_zl_fsymbolic
 umfpack_zl_report_control
 umfpack_zl_report_info
 umfpack_zl_report_matrix

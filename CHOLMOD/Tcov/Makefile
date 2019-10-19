@@ -20,13 +20,17 @@ C = $(CC) $(CFLAGS) $(CHOLMOD_CONFIG) $(NANTESTS)
 # LIB = $(METIS) -lm -llapack_plain -lblas_plain -lg2c
 # LIB = $(METIS) -lm -llapack_plain -lblas_plain -lgfortran -lgfortranbegin
 # LIB = $(METIS) -lm -llapack -lblas -lgfortran -lgfortranbegin
-LIB = $(METIS) -lm -llapack -lblas_plain -lgfortran -lgfortranbegin -lpthread -lg2c
+# Linux:
+  LIB = $(METIS) -lm -llapack_plain -lblas_plain -lgfortran -lgfortranbegin -lpthread
+# Mac:
+# LIB = $(METIS) -lm -llapack -lblas -lgfortran -lgfortranbegin -lpthread
 
 # Solaris
 # LIB = $(METIS) -xlic_lib=sunperf
 
 # Use "grep" only, if you do not have "indent"
-PRETTY = grep -v "^\#" | indent -bl -nce -ss -bli0 -i4 -sob -l120
+# PRETTY = grep -v "^\#" | indent -bl -nce -ss -bli0 -i4 -sob -l120
+PRETTY = grep -v "^\#" | indent -bl -nce -bli0 -i4 -sob -l120
 # PRETTY = grep -v "^\#" | ssh persimmon indent -bl -nce -ss -bli0 -i4 -sob -l120
 # PRETTY = grep -v "^\#"
 
@@ -516,12 +520,12 @@ distclean: clean
 	- $(RM) cm cl cmread clread *.c.gcov *.out tmp/*.out z_demo l_demo
 	- $(RM) leak zz_*.c z_*.c *.a l_*.c zl_*.c cov.sort yl_*.c yz_*.c
 	- $(RM) -r cm.profile cmread.profile z_demo.profile 
-	- $(RM) -r cl.profile clread.profile l_demo.profile 
+	- $(RM) -r cl.profile clread.profile l_demo.profile  *.dSYM
 	- $(RM) *.gcda *.gcno
 	- $(RM) temp*.mtx
 
 clean:
-	- $(RM) $(CLEAN)
+	- $(RM) -r $(CLEAN)
 
 
 $(AMDOBJ): $(AMDSRC)

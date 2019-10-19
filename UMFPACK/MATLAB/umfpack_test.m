@@ -23,7 +23,7 @@ nmat = max (nmat, 1) ;
 f = f (1:nmat) ;
 
 Control = umfpack2 ;
-Control (1) = 0 ;
+Control.prl = 0 ;
 
 figure (1)
 clf
@@ -35,7 +35,7 @@ for k = 1:nmat
     i = f (k) ;
     waitbar (k/nmat, h, 'UMFPACK test') ;
 
-    try
+%    try
 
         fprintf ('\nmatrix: %s %s %d\n', ...
             index.Group{i}, index.Name{i}, index.nrows(i)) ;
@@ -64,7 +64,7 @@ for k = 1:nmat
 	% P(R\A)Q = LU
 	%-----------------------------------------------------------------------
 
-	[L,U,P,Q,R,Info] = umfpack2 (A) ;
+	[L,U,P,Q,R,Info] = umfpack2 (A, struct ('details',1)) ;
 	err = lu_normest (P*(R\A)*Q, L, U) ;
 	fprintf ('norm est PR\\AQ-LU: %g relative: %g\n', ...
 	    err, err / norm (A,1)) ;
@@ -73,8 +73,8 @@ for k = 1:nmat
 	spy (P*A*Q)
 	title ('PAQ') ;
 
-	cs = Info (57) ;
-	rs = Info (58) ;
+	cs = Info.number_of_column_singletons ; % (57) ;
+	rs = Info.number_of_row_singletons ; % (58) ;
 
 	subplot (2,2,4)
 	hold off
@@ -112,30 +112,30 @@ for k = 1:nmat
 	m2 = norm (A*y1-c) ;
 
 	% factor the transpose
-	Control (8) = 2 ;
+	Control.irstep = 2 ;
 	[x, info] = umfpack2 (A', '\', c, Control) ;
-	lunz0 = info (44) + info (45) - info (67) ;
+	lunz0 = info.nnz_in_L_plus_U ;
 	r = norm (A'*x-c) ;
 
 	fprintf (':: %8.2e  matlab: %8.2e %8.2e\n',  r, m1, m2) ;
 
 	% factor the original matrix and solve xA=b
 	for ir = 0:4
-	    Control (8) = ir ;
+            Control.irstep = ir ;
 	    [x, info] = umfpack2 (b, '/', A, Control) ;
 	    r = norm (b-x*A) ;
 	    if (ir == 0)
-		lunz1 = info (44) + info (45) - info (67) ;
+		lunz1 = info.nnz_in_L_plus_U ;
 	    end
-	    fprintf ('%d: %8.2e %d %d\n', ir, r, info (81), info (82)) ;
+	    fprintf ('%d: %8.2e %d\n', ir, r, info.iterative_refinement_steps) ;
 	end
 
 	% factor the original matrix and solve Ax=b
 	for ir = 0:4
-	    Control (8) = ir ;
+            Control.irstep = ir ;
 	    [x, info] = umfpack2 (A, '\', c, Control) ;
 	    r = norm (A*x-c) ;
-	    fprintf ('%d: %8.2e %d %d\n', ir, r, info (81), info (82)) ;
+	    fprintf ('%d: %8.2e %d\n', ir, r, info.iterative_refinement_steps) ;
 	end
 
 	fprintf (...
@@ -165,15 +165,15 @@ for k = 1:nmat
 	    real(det3), imag(det3), dexp3) ;
 	fprintf ('diff %g %g\n', err, err3) ;
 
-    catch
-        % out-of-memory is OK, other errors are not
-        disp (lasterr) ;
-        if (isempty (strfind (lasterr, 'Out of memory')))
-            error (lasterr) ;                                               %#ok
-        else
-            fprintf ('test terminated early, but otherwise OK\n') ;
-        end
-    end
+%    catch
+%        % out-of-memory is OK, other errors are not
+%        disp (lasterr) ;
+%        if (isempty (strfind (lasterr, 'Out of memory')))
+%            error (lasterr) ;                                               %#ok
+%        else
+%            fprintf ('test terminated early, but otherwise OK\n') ;
+%        end
+%    end
 
 end
 

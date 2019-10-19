@@ -26,9 +26,9 @@ function [p q m1 n1 tol] = spqr_singletons (A,tol)                          %#ok
 %
 % In this example, C11 is 2-by-3.  One of the 3 column singletons (the 2nd on
 % in C) has no corresponding row singleton.  This is an auxiliary routine that
-% illustrates the singleton removal step used by SuiteSparseQR.  It is not need
-% to solve a least-squares problem or find a sparse QR factorization; use
-% SPQR_SOLVE or SPQR for those tasks, respectively.
+% illustrates the singleton removal step used by SuiteSparseQR.  It is not
+% needed to solve a least-squares problem or find a sparse QR factorization;
+% use SPQR_SOLVE or SPQR for those tasks, respectively.
 %
 % See also DMPERM, SPQR, SPQR_SOLVE.
 

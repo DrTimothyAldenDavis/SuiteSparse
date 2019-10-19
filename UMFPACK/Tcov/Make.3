@@ -1,9 +1,9 @@
 #===============================================================================
-# ILP32 mode, C interface /ATLAS BLAS, do not test for integer overflow.
+# C interface /ATLAS BLAS, do not test for integer overflow.
 #===============================================================================
 
 CC = gcc
-CFLAGS = -O0 -ftest-coverage -fprofile-arcs -O0
+CFLAGS = -O0 -g -ftest-coverage -fprofile-arcs -O0
 UMFPACK_CONFIG = -DCBLAS -DTESTING -I/cise/research/sparse/Install/ATLAS/Linux_P4SSE2/include
 LIB = -lcblas -latlas -lm
 

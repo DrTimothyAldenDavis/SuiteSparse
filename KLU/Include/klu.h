@@ -818,11 +818,11 @@ void *klu_l_realloc (size_t, size_t, size_t, void *, klu_l_common *) ;
  *      #endif
  */
 
-#define KLU_DATE "Mar 24, 2009"
+#define KLU_DATE "Nov 30, 2009"
 #define KLU_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
 #define KLU_MAIN_VERSION 1
 #define KLU_SUB_VERSION 1
-#define KLU_SUBSUB_VERSION 0
+#define KLU_SUBSUB_VERSION 1
 #define KLU_VERSION KLU_VERSION_CODE(KLU_MAIN_VERSION,KLU_SUB_VERSION)
 
 #ifdef __cplusplus

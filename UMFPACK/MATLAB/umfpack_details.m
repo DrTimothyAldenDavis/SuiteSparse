@@ -110,7 +110,7 @@ function umfpack_details
 %
 % Control = umfpack2 ;
 %
-%       Returns a 20-by-1 vector of default parameter settings for umfpack2.
+%       Returns a struct of default parameter settings for umfpack2.
 %
 % umfpack_report (Control, Info) ;
 %
@@ -126,12 +126,12 @@ function umfpack_details
 %
 % If present, Qinit is a user-supplied 1-by-n permutation vector.  It is an
 % initial fill-reducing column pre-ordering for A; if not present, then colamd
-% or amd are used instead.  If present, Control is a user-supplied 20-by-1
-% array.   Control and Info are optional; if Control is not present, defaults
+% or amd are used instead.  If present, Control is a user-supplied struct.
+% Control and Info are optional; if Control is not present, defaults
 % are used.  If a Control entry is NaN, then the default is used for that entry.
 %
 %
-% Copyright 1995-2007 by Timothy A. Davis, University of Florida.
+% Copyright 1995-2009 by Timothy A. Davis, University of Florida.
 % All Rights Reserved.
 % UMFPACK is available under alternate licenses, contact T. Davis for details.
 %

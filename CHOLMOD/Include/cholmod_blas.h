@@ -32,6 +32,10 @@
 #define CHOLMOD_LINUX
 #define CHOLMOD_ARCHITECTURE "Linux"
 
+#elif defined (__APPLE__)
+#define CHOLMOD_MAC
+#define CHOLMOD_ARCHITECTURE "Mac"
+
 #elif defined (_AIX) || defined (MIBM_RS) || defined (ARCH_IBM_RS)
 #define CHOLMOD_AIX
 #define CHOLMOD_ARCHITECTURE "IBM AIX"
@@ -69,7 +73,6 @@
 #define CHOLMOD_ARCHITECTURE "unknown"
 #endif
 
-
 /* ========================================================================== */
 /* === BLAS and LAPACK names ================================================ */
 /* ========================================================================== */
@@ -77,7 +80,7 @@
 /* Prototypes for the various versions of the BLAS.  */
 
 /* Determine if the 64-bit Sun Performance BLAS is to be used */
-#if defined(CHOLMOD_SOL2) && !defined(NSUNPERF) && defined(LONG) && defined(LONGBLAS)
+#if defined(CHOLMOD_SOL2) && !defined(NSUNPERF) && defined(BLAS64)
 #define SUN64
 #endif
 
@@ -147,23 +150,19 @@
 /* === BLAS and LAPACK integer arguments ==================================== */
 /* ========================================================================== */
 
-/* CHOLMOD can be compiled with -D'LONGBLAS=long' for the Sun Performance
- * Library, or -D'LONGBLAS=long long' for SGI's SCSL BLAS.  This defines the
- * integer used in the BLAS for the cholmod_l_* routines.
- *
- * The "int" version of CHOLMOD always uses the "int" version of the BLAS.
- */
+/* Compile CHOLMOD, UMFPACK, and SPQR with -DBLAS64 if you have a BLAS that
+ * uses 64-bit integers */
 
-#if defined (LONGBLAS) && defined (LONG)
-#define BLAS_INT LONGBLAS
+#if defined (LONGBLAS) || defined (BLAS64)
+#define BLAS_INT UF_long
 #else
 #define BLAS_INT int
 #endif
 
 /* If the BLAS integer is smaller than the basic CHOLMOD integer, then we need
  * to check for integer overflow when converting from Int to BLAS_INT.  If
- * any integer overflows, the externally-defined Common->blas_ok variable is
- * set to FALSE.  Common->blas_ok should be set to TRUE before calling any
+ * any integer overflows, the externally-defined BLAS_OK variable is
+ * set to FALSE.  BLAS_OK should be set to TRUE before calling any
  * BLAS_* macro.
  */
 
@@ -184,9 +183,9 @@ void BLAS_DGEMV (char *trans, BLAS_INT *m, BLAS_INT *n, double *alpha,
     if (CHECK_BLAS_INT && !(EQ (M,m) && EQ (N,n) && EQ (LDA,lda) && \
         EQ (INCX,incx) && EQ (INCY,incy))) \
     { \
-	Common->blas_ok = FALSE ; \
+	BLAS_OK = FALSE ; \
     } \
-    if (!CHECK_BLAS_INT || Common->blas_ok) \
+    if (!CHECK_BLAS_INT || BLAS_OK) \
     { \
 	BLAS_DGEMV (trans, &M, &N, alpha, A, &LDA, X, &INCX, beta, Y, &INCY) ; \
     } \
@@ -202,9 +201,9 @@ void BLAS_ZGEMV (char *trans, BLAS_INT *m, BLAS_INT *n, double *alpha,
     if (CHECK_BLAS_INT && !(EQ (M,m) && EQ (N,n) && EQ (LDA,lda) && \
         EQ (INCX,incx) && EQ (INCY,incy))) \
     { \
-	Common->blas_ok = FALSE ; \
+	BLAS_OK = FALSE ; \
     } \
-    if (!CHECK_BLAS_INT || Common->blas_ok) \
+    if (!CHECK_BLAS_INT || BLAS_OK) \
     { \
 	BLAS_ZGEMV (trans, &M, &N, alpha, A, &LDA, X, &INCX, beta, Y, &INCY) ; \
     } \
@@ -218,9 +217,9 @@ void BLAS_DTRSV (char *uplo, char *trans, char *diag, BLAS_INT *n, double *A,
     BLAS_INT N = n, LDA = lda, INCX = incx ; \
     if (CHECK_BLAS_INT && !(EQ (N,n) && EQ (LDA,lda) && EQ (INCX,incx))) \
     { \
-	Common->blas_ok = FALSE ; \
+	BLAS_OK = FALSE ; \
     } \
-    if (!CHECK_BLAS_INT || Common->blas_ok) \
+    if (!CHECK_BLAS_INT || BLAS_OK) \
     { \
 	BLAS_DTRSV (uplo, trans, diag, &N, A, &LDA, X, &INCX) ; \
     } \
@@ -234,9 +233,9 @@ void BLAS_ZTRSV (char *uplo, char *trans, char *diag, BLAS_INT *n, double *A,
     BLAS_INT N = n, LDA = lda, INCX = incx ; \
     if (CHECK_BLAS_INT && !(EQ (N,n) && EQ (LDA,lda) && EQ (INCX,incx))) \
     { \
-	Common->blas_ok = FALSE ; \
+	BLAS_OK = FALSE ; \
     } \
-    if (!CHECK_BLAS_INT || Common->blas_ok) \
+    if (!CHECK_BLAS_INT || BLAS_OK) \
     { \
 	BLAS_ZTRSV (uplo, trans, diag, &N, A, &LDA, X, &INCX) ; \
     } \
@@ -252,9 +251,9 @@ void BLAS_DTRSM (char *side, char *uplo, char *transa, char *diag, BLAS_INT *m,
     if (CHECK_BLAS_INT && !(EQ (M,m) && EQ (N,n) && EQ (LDA,lda) && \
         EQ (LDB,ldb))) \
     { \
-	Common->blas_ok = FALSE ; \
+	BLAS_OK = FALSE ; \
     } \
-    if (!CHECK_BLAS_INT || Common->blas_ok) \
+    if (!CHECK_BLAS_INT || BLAS_OK) \
     { \
 	BLAS_DTRSM (side, uplo, transa, diag, &M, &N, alpha, A, &LDA, B, &LDB);\
     } \
@@ -270,9 +269,9 @@ void BLAS_ZTRSM (char *side, char *uplo, char *transa, char *diag, BLAS_INT *m,
     if (CHECK_BLAS_INT && !(EQ (M,m) && EQ (N,n) && EQ (LDA,lda) && \
         EQ (LDB,ldb))) \
     { \
-	Common->blas_ok = FALSE ; \
+	BLAS_OK = FALSE ; \
     } \
-    if (!CHECK_BLAS_INT || Common->blas_ok) \
+    if (!CHECK_BLAS_INT || BLAS_OK) \
     { \
 	BLAS_ZTRSM (side, uplo, transa, diag, &M, &N, alpha, A, &LDA, B, &LDB);\
     } \
@@ -288,9 +287,9 @@ void BLAS_DGEMM (char *transa, char *transb, BLAS_INT *m, BLAS_INT *n,
     if (CHECK_BLAS_INT && !(EQ (M,m) && EQ (N,n) && EQ (K,k) && \
         EQ (LDA,lda) && EQ (LDB,ldb) && EQ (LDC,ldc))) \
     { \
-	Common->blas_ok = FALSE ; \
+	BLAS_OK = FALSE ; \
     } \
-    if (!CHECK_BLAS_INT || Common->blas_ok) \
+    if (!CHECK_BLAS_INT || BLAS_OK) \
     { \
 	BLAS_DGEMM (transa, transb, &M, &N, &K, alpha, A, &LDA, B, &LDB, beta, \
 	    C, &LDC) ; \
@@ -307,9 +306,9 @@ void BLAS_ZGEMM (char *transa, char *transb, BLAS_INT *m, BLAS_INT *n,
     if (CHECK_BLAS_INT && !(EQ (M,m) && EQ (N,n) && EQ (K,k) && \
         EQ (LDA,lda) && EQ (LDB,ldb) && EQ (LDC,ldc))) \
     { \
-	Common->blas_ok = FALSE ; \
+	BLAS_OK = FALSE ; \
     } \
-    if (!CHECK_BLAS_INT || Common->blas_ok) \
+    if (!CHECK_BLAS_INT || BLAS_OK) \
     { \
 	BLAS_ZGEMM (transa, transb, &M, &N, &K, alpha, A, &LDA, B, &LDB, beta, \
 	    C, &LDC) ; \
@@ -326,9 +325,9 @@ void BLAS_DSYRK (char *uplo, char *trans, BLAS_INT *n, BLAS_INT *k,
     if (CHECK_BLAS_INT && !(EQ (N,n) && EQ (K,k) && EQ (LDA,lda) && \
         EQ (LDC,ldc))) \
     { \
-	Common->blas_ok = FALSE ; \
+	BLAS_OK = FALSE ; \
     } \
-    if (!CHECK_BLAS_INT || Common->blas_ok) \
+    if (!CHECK_BLAS_INT || BLAS_OK) \
     { \
 	BLAS_DSYRK (uplo, trans, &N, &K, alpha, A, &LDA, beta, C, &LDC) ; \
     } \
@@ -344,9 +343,9 @@ void BLAS_ZHERK (char *uplo, char *trans, BLAS_INT *n, BLAS_INT *k,
     if (CHECK_BLAS_INT && !(EQ (N,n) && EQ (K,k) && EQ (LDA,lda) && \
         EQ (LDC,ldc))) \
     { \
-	Common->blas_ok = FALSE ; \
+	BLAS_OK = FALSE ; \
     } \
-    if (!CHECK_BLAS_INT || Common->blas_ok) \
+    if (!CHECK_BLAS_INT || BLAS_OK) \
     { \
 	BLAS_ZHERK (uplo, trans, &N, &K, alpha, A, &LDA, beta, C, &LDC) ; \
     } \
@@ -360,9 +359,9 @@ void LAPACK_DPOTRF (char *uplo, BLAS_INT *n, double *A, BLAS_INT *lda,
     BLAS_INT N = n, LDA = lda, INFO = 1 ; \
     if (CHECK_BLAS_INT && !(EQ (N,n) && EQ (LDA,lda))) \
     { \
-	Common->blas_ok = FALSE ; \
+	BLAS_OK = FALSE ; \
     } \
-    if (!CHECK_BLAS_INT || Common->blas_ok) \
+    if (!CHECK_BLAS_INT || BLAS_OK) \
     { \
 	LAPACK_DPOTRF (uplo, &N, A, &LDA, &INFO) ; \
     } \
@@ -377,9 +376,9 @@ void LAPACK_ZPOTRF (char *uplo, BLAS_INT *n, double *A, BLAS_INT *lda,
     BLAS_INT N = n, LDA = lda, INFO = 1 ; \
     if (CHECK_BLAS_INT && !(EQ (N,n) && EQ (LDA,lda))) \
     { \
-	Common->blas_ok = FALSE ; \
+	BLAS_OK = FALSE ; \
     } \
-    if (!CHECK_BLAS_INT || Common->blas_ok) \
+    if (!CHECK_BLAS_INT || BLAS_OK) \
     { \
 	LAPACK_ZPOTRF (uplo, &N, A, &LDA, &INFO) ; \
     } \
@@ -395,9 +394,9 @@ void BLAS_DSCAL (BLAS_INT *n, double *alpha, double *Y, BLAS_INT *incy) ;
     BLAS_INT N = n, INCY = incy ; \
     if (CHECK_BLAS_INT && !(EQ (N,n) && EQ (INCY,incy))) \
     { \
-	Common->blas_ok = FALSE ; \
+	BLAS_OK = FALSE ; \
     } \
-    if (!CHECK_BLAS_INT || Common->blas_ok) \
+    if (!CHECK_BLAS_INT || BLAS_OK) \
     { \
 	BLAS_DSCAL (&N, alpha, Y, &INCY) ; \
     } \
@@ -410,9 +409,9 @@ void BLAS_ZSCAL (BLAS_INT *n, double *alpha, double *Y, BLAS_INT *incy) ;
     BLAS_INT N = n, INCY = incy ; \
     if (CHECK_BLAS_INT && !(EQ (N,n) && EQ (INCY,incy))) \
     { \
-	Common->blas_ok = FALSE ; \
+	BLAS_OK = FALSE ; \
     } \
-    if (!CHECK_BLAS_INT || Common->blas_ok) \
+    if (!CHECK_BLAS_INT || BLAS_OK) \
     { \
 	BLAS_ZSCAL (&N, alpha, Y, &INCY) ; \
     } \
@@ -428,9 +427,9 @@ void BLAS_DGER (BLAS_INT *m, BLAS_INT *n, double *alpha,
     if (CHECK_BLAS_INT && !(EQ (M,m) && EQ (N,n) && EQ (LDA,lda) && \
           EQ (INCX,incx) && EQ (INCY,incy))) \
     { \
-	Common->blas_ok = FALSE ; \
+	BLAS_OK = FALSE ; \
     } \
-    if (!CHECK_BLAS_INT || Common->blas_ok) \
+    if (!CHECK_BLAS_INT || BLAS_OK) \
     { \
 	BLAS_DGER (&M, &N, alpha, X, &INCX, Y, &INCY, A, &LDA) ; \
     } \
@@ -446,9 +445,9 @@ void BLAS_ZGER (BLAS_INT *m, BLAS_INT *n, double *alpha,
     if (CHECK_BLAS_INT && !(EQ (M,m) && EQ (N,n) && EQ (LDA,lda) && \
           EQ (INCX,incx) && EQ (INCY,incy))) \
     { \
-	Common->blas_ok = FALSE ; \
+	BLAS_OK = FALSE ; \
     } \
-    if (!CHECK_BLAS_INT || Common->blas_ok) \
+    if (!CHECK_BLAS_INT || BLAS_OK) \
     { \
 	BLAS_ZGER (&M, &N, alpha, X, &INCX, Y, &INCY, A, &LDA) ; \
     } \

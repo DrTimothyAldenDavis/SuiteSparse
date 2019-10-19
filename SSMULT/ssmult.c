@@ -47,7 +47,7 @@ static int ssmult_use_dot (const mxArray *A, const mxArray *B)
     m = mxGetM (A) ;
     n = mxGetN (A) ;
     k = mxGetN (B) ;
-    Ap = mxGetJc (A) ;
+    Ap = (Int *) mxGetJc (A) ;
     anz = Ap [n] ;
 
     /* ssmult_dot requires a full array C of n*k Reals */

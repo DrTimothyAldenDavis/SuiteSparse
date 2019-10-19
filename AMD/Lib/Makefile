@@ -26,7 +26,7 @@ everything:
 	$(C) -DDINT -c ../Source/amd_valid.c -o amd_i_valid.o
 	$(C) -DDINT -c ../Source/amd_preprocess.c -o amd_i_preprocess.o
 	$(C) -DDLONG -c ../Source/amd_aat.c -o amd_l_aat.o
-	$(C) -DDLONG -c ../Source/amd_1.c -o ../Source/amd_l_1.o
+	$(C) -DDLONG -c ../Source/amd_1.c -o amd_l_1.o
 	$(C) -DDLONG -c ../Source/amd_2.c -o amd_l_2.o
 	$(C) -DDLONG -c ../Source/amd_dump.c -o amd_l_dump.o
 	$(C) -DDLONG -c ../Source/amd_postorder.c -o amd_l_postorder.o

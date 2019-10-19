@@ -10,7 +10,7 @@
 %   fdemo      - a demo of how to use the FACTORIZE object
 %
 % Example
-%   fdemo       % run the demo in the Factorize/Demo directory.
+%   fdemo       % run the demo
 %
 % "Don't let that INV go past your eyes; to solve that system, FACTORIZE!"
 
@@ -34,4 +34,4 @@
 % The html/ subdirectory contains a document that illustrates how to use
 % the package (the output of fdemo).
 
-% Copyright 2009, Timothy A. Davis, University of Florida.  May 19, 2009.
+% Copyright 2009, Timothy A. Davis, University of Florida.  June 4, 2009.

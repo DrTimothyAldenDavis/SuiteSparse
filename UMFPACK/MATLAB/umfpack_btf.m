@@ -12,7 +12,7 @@ function [x, info] = umfpack_btf (A, b, Control)
 %
 % See also umfpack, umfpack2, umfpack_details, dmperm
 
-% Copyright 1995-2007 by Timothy A. Davis.
+% Copyright 1995-2009 by Timothy A. Davis.
 
 if (nargin < 2)
     help umfpack_btf
@@ -43,7 +43,8 @@ end
 [p,q,r] = dmperm (A) ;
 nblocks = length (r) - 1 ;
 
-info = [0 0 0] ;    % [nnz(L), nnz(U), nnz(F)], optional 2nd output
+info.nnz_in_L_plus_U = 0 ;
+info.offnz = 0 ;
 
 %-------------------------------------------------------------------------------
 % solve the system
@@ -56,7 +57,7 @@ if (nblocks == 1 | sprank (A) < n)					    %#ok
     %---------------------------------------------------------------------------
 
     [x info2] = umfpack2 (A, '\', b, Control) ;
-    info = [info2(78) info2(79) 0] ;
+    info.nnz_in_L_plus_U = info2.nnz_in_L_plus_U ;
 
 else
 
@@ -93,8 +94,8 @@ else
         F2 = A (1:k1-1, k1:k2) ;
         b (1:k1-1,:) = b (1:k1-1,:) - F2 * x (k1:k2,:) ;
 
-        info (1:2) = info (1:2) + info2 (1:2) ;
-        info (3) = info (3) + nnz (F2) ;
+        info.nnz_in_L_plus_U = info.nnz_in_L_plus_U + info2.nnz_in_L_plus_U ;
+        info.offnz = info.offnz + nnz (F2) ;
 
     end
 
@@ -130,12 +131,12 @@ function [x, info] = solver (A, b, is_triangular, Control)
 if (is_triangular)
     % back substitution only
     x = A \ b ;
-    info = [nnz(A) 0 0] ;
+    info.nnz_in_L_plus_U = nnz (A) ;
 elseif (size (A,1) < 4)
     % a very small matrix, solve it as a dense linear system
     x = full (A) \ b ;
     n = size (A,1) ;
-    info = [(n^2+n)/2 (n^2+n)/2 0] ;
+    info.nnz_in_L_plus_U = n^2 ;
 else
     % solve it as a sparse linear system
     [x info] = umfpack_solve (A, '\', b, Control) ;

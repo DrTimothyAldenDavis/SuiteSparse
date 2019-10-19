@@ -238,7 +238,7 @@ void amdtest (cholmod_sparse *A)
 	    {
 		Cp [n] = Int_max ;
 		ok = AMD_order (n, Cp, Ci, P, Control, Info) ;
-		printf ("AMD status is %d\n", ok) ;
+		printf ("AMD status is "ID"\n", ok) ;
 		OK (ok == AMD_OUT_OF_MEMORY) ;
 	    }
 

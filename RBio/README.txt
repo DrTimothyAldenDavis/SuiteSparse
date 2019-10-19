@@ -1,11 +1,10 @@
-RBio: Version 1.1.2, May 1, 2009.  A MATLAB Toolbox for reading/writing sparse
+RBio: Version 2.0.0, Oct 20, 2009.  A MATLAB Toolbox for reading/writing sparse
 matrices in Rutherford/Boeing format.
 
-To install, cd to the RBio directory and type "RBinstall" in the MATLAB
-command window.  RBio is written in Fortran because the Rutherford/Boeing
-format can require Fortran I/O statements, depending on how the files are
-stored.  Files created by RBio do not require the Fortran I/O library to read
-them, however.
+To install the MATLAB functions, cd to the RBio directory and type "RBinstall"
+in the MATLAB command window.  To install the C codes, type "make" (requires
+Unix).  For examples on how to use the C interface, see Include/RBio.h and
+Demo/RBdemo.c.
 
 --------------------------------------------------------------------------------
 MATLAB help for RBio:
@@ -33,15 +32,18 @@ MATLAB help for RBio:
 
   See also UFget, mread, mwrite.
 
-  Copyright 2007, Timothy A. Davis
+  Copyright 2009, Timothy A. Davis
 
 --------------------------------------------------------------------------------
 Files and directories:
 --------------------------------------------------------------------------------
 
     README.txt	    this file
-    Contents.m	    MATLAB help for the RBio toolbox
+    Makefile        for Unix; 
 
+./RBio: MATLAB interface
+
+    Contents.m	    MATLAB help for the RBio toolbox
     RBfix.m	    read a possibly corrupted R/B file
     RBinstall.m	    compile and install RBio for use in MATLAB, and run tests
     RBmake.m	    compile RBio for use in MATLAB
@@ -51,37 +53,19 @@ Files and directories:
     RBtype.m	    MATLAB help for RBtype
     RBwrite.m	    MATLAB help for RBwrite
 
-    RBcread_32.f    read a complex sparse matrix, compare with RBrread_*.f
-    RBcread_64.f
+    Makefile        for Unix; see also RBinstall.m and RBmake.m
+    RBerror.c       error handling
+    RBraw.c         RBraw mexFunction
+    RBread.c        RBread mexFunction
+    RBtype.c        RBtype mexFunction
+    RBwrite.c       RBwrite mexFunction
 
-    RBcsplit_32.f   split a complex matrix into its real and imaginary parts
-    RBcsplit_64.f
+./RBio/private:  test directory for MATLAB
 
-    RBraw_mex_32.f  mexFunction to read the raw contents of a R/B file
-    RBraw_mex_64.f
+    testRB1.m	    simple test for RBio
+    testRB2.m	    simple test for RBio (requires UFget)
+    testRB3.m       extensive test for RBio (requires UFget)
 
-    RBread_32.f	    utility routines for either real or complex matrices
-    RBread_64.f
-
-    RBread_mex_32.f mexFunction to read a real or complex sparse matrix
-    RBread_mex_64.f
-
-    RBrread_32.f    read a real sparse matrix, compare with RBcread_*.f
-    RBrread_64.f
-
-    RBtype_mex_32.f mexFunction to determine the Rutherford/Boeing type
-    RBtype_mex_64.f
-
-    RBwrite_32.f    write a real or complex sparse matrix
-    RBwrite_64.f
-
-    RBwrite_mex_32.f mexFunction to write a real or complex sparse matrix
-    RBwrite_mex_64.f
-
-./Test: directory with test codes and matrices
-
-    testRB1.m	    simple test script for RBio
-    testRB2.m	    simple test script for RBio (requires UFget)
     bcsstk01.rb	    HB/bcsstk01 Problem.A from UF Sparse Matrix Collection
     farm.rb	    Meszaros/farm Problem.A from UF Sparse Matrix Collection
     lap_25.pse	    original Harwell/Boeing version of lap_25 (finite-element)
@@ -96,7 +80,60 @@ Files and directories:
 ./Doc: directory with additional documentation and license
 
     ChangeLog	    changes since first release
-    dodiff	    compare 32-bit and 64-bit codes, real and complex
     gpl.txt	    GNU license
     License.txt	    license
+
+./Demo: C demo program
+
+    Makefile        for compiling the demo
+    RBdemo.c        the demo itself
+
+./Include: include files for user programs
+
+    RBio.h
+
+./Lib:
+
+    Makefile        for compiling the RBio library
+
+./Source: C source codes
+
+    RBio.c          C-callable RBio functions
+
+./Tcov: extensive test of C-callable RBio functions
+
+    Makefile        for compiling the test
+    RBtest.c        the test program
+    README.txt      short help for Tcov
+
+./Tcov/mangled: erroneous matrices for testing error-handling
+
+    1.rb
+    2.rb
+    3.rb
+    4.rb
+    5.rb
+    6.rb
+    7.rb
+    8.rb
+    9.rb
+    10.rb
+    11.rb
+    12.rb
+    13.rb
+    14.rb
+    15.rb
+
+./Tcov/matrices: test matrices
+
+    Tina_DisCog.tar.gz
+    dwg961a.tar.gz
+    m4.rb
+    m4b.rb
+    mhd1280a.tar.gz
+    mhd1280b.tar.gz
+    plskz362.tar.gz
+    qc324.tar.gz
+    s4.rb
+    west0067.tar.gz
 

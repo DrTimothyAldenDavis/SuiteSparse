@@ -27,7 +27,7 @@ ccolamd_example: ccolamd_example.c library
 ccolamd_l_example: ccolamd_l_example.c library
 	$(C) -o ccolamd_l_example ccolamd_l_example.c ../Lib/libccolamd.a -lm
 	- ./ccolamd_l_example > my_ccolamd_l_example.out
-	- diff ccolamd_example.out my_ccolamd_example.out
+	- diff ccolamd_l_example.out my_ccolamd_l_example.out
 
 #------------------------------------------------------------------------------
 # Remove all but the files in the original distribution
@@ -41,3 +41,4 @@ purge: distclean
 distclean: clean
 	- $(RM) ccolamd_example ccolamd_l_example
 	- $(RM) my_ccolamd_example.out my_ccolamd_l_example.out
+	- $(RM) -r *.dSYM

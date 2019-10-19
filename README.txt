@@ -12,7 +12,7 @@ SuiteSparse_install.  All packages will be compiled, and several demos will be
 run.
 ================================================================================
 
-May 20, 2009.  SuiteSparse version 3.4.0
+Nov 30, 2009.  SuiteSparse version 3.5.0
 
     AMD         approximate minimum degree ordering
 
@@ -138,13 +138,11 @@ To use "make" in Unix/Linux:
     whenever you edit the UFconfig/UFconfig.mk file, you should then type
     "make purge" (or "make realclean") in this directory.
 
-    If you want to use "make" to compile mexFunctions, I recommend adding
-    these options to the CFLAGS = line:
-
-        -fexceptions -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
-
 (5) Type "make" in this directory.  All packages will be be compiled.  METIS
     will be compiled if you have it.  Several demos will be run.
+
+    To compile just the libraries, without running any demos, use
+    "make library".
 
     The libraries will appear in */Lib/*.a.  Include files, as needed by user
     programs that use CHOLMOD, AMD, CAMD, COLAMD, CCOLAMD, BTF, KLU, UMFPACK,
@@ -153,10 +151,11 @@ To use "make" in Unix/Linux:
     The METIS library is in metis-4.0/libmetis.a.  METIS Include files (not
     needed by the end user of SuiteSparse) are in located in metis-4.0/Lib/*.h.
 
+(6) To install, type "sudo make install".  This will place copies of all
+    libraries in /usr/local/lib, and all include files in /usr/local/include.
+    You can change the install location by editting UFconfig.mk.  These
+    directories must already exist.
 
-In a future version, I will include a "make install" that will create *.so
-libraries and place them in /usr/lib.  The libraries should be called
-libPACKAGE.so.VERSION.SUBVERSION.SUBSUBVERSION.  For example, 
-libcolamd.so.2.7.1 should be the library name for COLAMD version 2.7.1.
-The version numbers are located in UFconfig.h (in comments) and in each
-package (as a #define).
+(7) To uninstall, type "sudo make uninstall", which reverses "make install"
+    by removing the SuiteSparse libraries from /usr/local/lib, and the
+    include files from /usr/local/include.

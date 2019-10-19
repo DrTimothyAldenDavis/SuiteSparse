@@ -2,6 +2,8 @@
 # SuiteSparseQR Makefile
 #-------------------------------------------------------------------------------
 
+VERSION = 1.2.0
+
 include ../UFconfig/UFconfig.mk
 
 default: all
@@ -13,7 +15,7 @@ all:
 library:
 	( cd Lib ; $(MAKE) )
 
-demo:
+demos:
 	( cd Demo ; $(MAKE) )
 
 cov:
@@ -35,4 +37,22 @@ clean:
 
 distclean: purge
 
-ccode: demo
+ccode: demos
+
+# install SPQR
+install:
+	$(CP) Lib/libspqr.a $(INSTALL_LIB)/libspqr.$(VERSION).a
+	( cd $(INSTALL_LIB) ; ln -s libspqr.$(VERSION).a libspqr.a )
+	$(CP) Include/SuiteSparseQR.hpp $(INSTALL_INCLUDE)
+	$(CP) Include/SuiteSparseQR_C.h $(INSTALL_INCLUDE)
+	$(CP) Include/SuiteSparseQR_definitions.h $(INSTALL_INCLUDE)
+	$(CP) Include/spqr.hpp $(INSTALL_INCLUDE)
+
+# uninstall SPQR
+uninstall:
+	$(RM) $(INSTALL_LIB)/libspqr*.a
+	$(RM) $(INSTALL_INCLUDE)/SuiteSparseQR.hpp
+	$(RM) $(INSTALL_INCLUDE)/SuiteSparseQR_C.h
+	$(RM) $(INSTALL_INCLUDE)/SuiteSparseQR_definitions.h
+	$(RM) $(INSTALL_INCLUDE)/spqr.hpp
+

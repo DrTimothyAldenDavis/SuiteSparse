@@ -4,6 +4,7 @@
 gcov -o umf_i_analyze umf_analyze.c
 gcov -o umf_i_apply_order umf_apply_order.c
 gcov -o umf_i_colamd umf_colamd.c
+gcov -o umf_i_cholmod umf_cholmod.c
 gcov -o umf_i_free umf_free.c
 gcov -o umf_i_fsize umf_fsize.c
 gcov -o umf_i_is_permutation umf_is_permutation.c
@@ -12,7 +13,6 @@ gcov -o umf_i_realloc umf_realloc.c
 gcov -o umf_i_report_perm umf_report_perm.c
 gcov -o umf_i_singletons umf_singletons.c
 
-gcov -o umf_di_2by2 umf_2by2.c
 gcov -o umf_di_blas3_update umf_blas3_update.c
 gcov -o umf_di_build_tuples umf_build_tuples.c
 gcov -o umf_di_create_element umf_create_element.c

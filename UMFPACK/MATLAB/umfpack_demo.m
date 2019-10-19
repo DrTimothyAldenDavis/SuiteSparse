@@ -9,7 +9,7 @@ function umfpack_demo (c)
 % See also umfpack, umfpack2, umfpack_make, umfpack_details, umfpack_report,
 % and umfpack_simple.
 
-% Copyright 1995-2007 by Timothy A. Davis.
+% Copyright 1995-2009 by Timothy A. Davis.
 
 %-------------------------------------------------------------------------------
 % get default control parameters
@@ -25,7 +25,7 @@ end
 if (isempty (c))
     c = 1 ;
 end
-control (1) = c ;
+control.prl = c ;
 
 %-------------------------------------------------------------------------------
 % solve a simple system
@@ -33,7 +33,7 @@ control (1) = c ;
 
 fprintf ('\n--------------------------------------------------------------\n') ;
 fprintf ('Factor and solve a small system, Ax=b, using default parameters\n') ;
-if (control (1) > 1)
+if (control.prl > 1)
     fprintf ('(except for verbose printing enabled)\n') ;
 end
 

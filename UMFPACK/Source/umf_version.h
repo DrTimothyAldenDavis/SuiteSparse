@@ -475,7 +475,7 @@ typedef struct
 #define UMF_triplet_map_nox	 umfdi_triplet_map_nox
 #define UMF_triplet_nomap_x	 umfdi_triplet_nomap_x
 #define UMF_triplet_nomap_nox	 umfdi_triplet_nomap_nox
-#define UMF_2by2		 umfdi_2by2
+#define UMF_cholmod		 umf_i_cholmod
 
 #define UMFPACK_col_to_triplet	 umfpack_di_col_to_triplet
 #define UMFPACK_defaults	 umfpack_di_defaults
@@ -487,6 +487,7 @@ typedef struct
 #define UMFPACK_get_determinant	 umfpack_di_get_determinant
 #define UMFPACK_numeric		 umfpack_di_numeric
 #define UMFPACK_qsymbolic	 umfpack_di_qsymbolic
+#define UMFPACK_fsymbolic	 umfpack_di_fsymbolic
 #define UMFPACK_report_control	 umfpack_di_report_control
 #define UMFPACK_report_info	 umfpack_di_report_info
 #define UMFPACK_report_matrix	 umfpack_di_report_matrix
@@ -590,7 +591,7 @@ typedef struct
 #define UMF_triplet_map_nox	 umfdl_triplet_map_nox
 #define UMF_triplet_nomap_x	 umfdl_triplet_nomap_x
 #define UMF_triplet_nomap_nox	 umfdl_triplet_nomap_nox
-#define UMF_2by2		 umfdl_2by2
+#define UMF_cholmod		 umf_l_cholmod
 
 #define UMFPACK_col_to_triplet	 umfpack_dl_col_to_triplet
 #define UMFPACK_defaults	 umfpack_dl_defaults
@@ -602,6 +603,7 @@ typedef struct
 #define UMFPACK_get_determinant	 umfpack_dl_get_determinant
 #define UMFPACK_numeric		 umfpack_dl_numeric
 #define UMFPACK_qsymbolic	 umfpack_dl_qsymbolic
+#define UMFPACK_fsymbolic	 umfpack_dl_fsymbolic
 #define UMFPACK_report_control	 umfpack_dl_report_control
 #define UMFPACK_report_info	 umfpack_dl_report_info
 #define UMFPACK_report_matrix	 umfpack_dl_report_matrix
@@ -705,7 +707,7 @@ typedef struct
 #define UMF_triplet_map_nox	 umfzi_triplet_map_nox
 #define UMF_triplet_nomap_x	 umfzi_triplet_nomap_x
 #define UMF_triplet_nomap_nox	 umfzi_triplet_nomap_nox
-#define UMF_2by2		 umfzi_2by2
+#define UMF_cholmod		 umf_i_cholmod
 
 #define UMFPACK_col_to_triplet	 umfpack_zi_col_to_triplet
 #define UMFPACK_defaults	 umfpack_zi_defaults
@@ -717,6 +719,7 @@ typedef struct
 #define UMFPACK_get_determinant	 umfpack_zi_get_determinant
 #define UMFPACK_numeric		 umfpack_zi_numeric
 #define UMFPACK_qsymbolic	 umfpack_zi_qsymbolic
+#define UMFPACK_fsymbolic	 umfpack_zi_fsymbolic
 #define UMFPACK_report_control	 umfpack_zi_report_control
 #define UMFPACK_report_info	 umfpack_zi_report_info
 #define UMFPACK_report_matrix	 umfpack_zi_report_matrix
@@ -820,7 +823,7 @@ typedef struct
 #define UMF_triplet_map_nox	 umfzl_triplet_map_nox
 #define UMF_triplet_nomap_x	 umfzl_triplet_nomap_x
 #define UMF_triplet_nomap_nox	 umfzl_triplet_nomap_nox
-#define UMF_2by2		 umfzl_2by2
+#define UMF_cholmod		 umf_l_cholmod
 
 #define UMFPACK_col_to_triplet	 umfpack_zl_col_to_triplet
 #define UMFPACK_defaults	 umfpack_zl_defaults
@@ -832,6 +835,7 @@ typedef struct
 #define UMFPACK_get_determinant	 umfpack_zl_get_determinant
 #define UMFPACK_numeric		 umfpack_zl_numeric
 #define UMFPACK_qsymbolic	 umfpack_zl_qsymbolic
+#define UMFPACK_fsymbolic	 umfpack_zl_fsymbolic
 #define UMFPACK_report_control	 umfpack_zl_report_control
 #define UMFPACK_report_info	 umfpack_zl_report_info
 #define UMFPACK_report_matrix	 umfpack_zl_report_matrix

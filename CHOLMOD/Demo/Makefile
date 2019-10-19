@@ -43,6 +43,7 @@ distclean: purge
 purge: clean
 	- $(RM) cholmod_demo cholmod_l_demo readhb readhb2 reade
 	- $(RM) cholmod_simple
+	- $(RM) -r *.dSYM
 
 clean:
 	- $(RM) $(CLEAN)

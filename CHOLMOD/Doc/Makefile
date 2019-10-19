@@ -220,6 +220,7 @@ distclean: purge
 
 purge: clean
 	- $(RM) _temp.awk _*.tex *.dvi *.aux *.log *.lof *.lot *.toc *.bak *.bbl *.blg
+	- $(RM) -r *.dSYM
 
 clean:
-	- $(RM) $(CLEAN)
+	- $(RM) -r $(CLEAN)

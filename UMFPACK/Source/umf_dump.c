@@ -245,7 +245,7 @@ GLOBAL void UMF_dump_rowcol
 {
     Entry value ;
     Entry *C ;
-    Int f, nrows, j, jj, len, e, deg, index, n_row, n_col, *Cols, *Rows, nn,
+    Int f, nrows, j, jj, len, e, deg, rowcol, n_row, n_col, *Cols, *Rows, nn,
 	dumpdeg, ncols, preve, *E, tpi, *Pattern, approx_deg, not_in_use ;
     Tuple *tp, *tend ;
     Element *ep ;
@@ -382,31 +382,31 @@ GLOBAL void UMF_dump_rowcol
 		{
 		    for (j = 0 ; j < jj ; j++)
 		    {
-			index = Pattern [j] ;
+			rowcol = Pattern [j] ;
 			value =
 			    C [ (dumpwhich == 0) ? (f+nrows*j) : (j+nrows*f) ] ;
-			if (index >= 0)
+			if (rowcol >= 0)
 			{
-			    DEBUG8 (("\t\t"ID":", index)) ;
+			    DEBUG8 (("\t\t"ID":", rowcol)) ;
 			    EDEBUG8 (value) ;
 			    DEBUG8 (("\n")) ;
 			    if (dumpwhich == 0)
 			    {
 				/* col must be in the range 0..n_col-1 */
-				ASSERT (index < n_col) ;
+				ASSERT (rowcol < n_col) ;
 			    }
 			    else
 			    {
 				/* row must be in the range 0..n_row-1 */
-				ASSERT (index < n_row) ;
+				ASSERT (rowcol < n_row) ;
 			    }
 
 			    if (nn <= UMF_DBMAX)
 			    {
-				if (UMF_DBscatter [index] != UMF_DBflag)
+				if (UMF_DBscatter [rowcol] != UMF_DBflag)
 				{
-				    UMF_DBpacked [deg++] = index ;
-				    UMF_DBscatter [index] = UMF_DBflag ;
+				    UMF_DBpacked [deg++] = rowcol ;
+				    UMF_DBscatter [rowcol] = UMF_DBflag ;
 				}
 			    }
 			}
@@ -430,10 +430,10 @@ GLOBAL void UMF_dump_rowcol
 	    DEBUG7 ((" Assembled, actual deg: "ID" : ", deg)) ;
 	    for (j = 0 ; j < deg ; j++)
 	    {
-		index = UMF_DBpacked [j] ;
-		DEBUG8 ((ID" ", index)) ;
+		rowcol = UMF_DBpacked [j] ;
+		DEBUG8 ((ID" ", rowcol)) ;
 		if (j % 20 == 19) DEBUG8 (("\n ")) ;
-		ASSERT (UMF_DBscatter [index] == UMF_DBflag) ;
+		ASSERT (UMF_DBscatter [rowcol] == UMF_DBflag) ;
 	    }
 	    DEBUG7 (("\n")) ;
 	}

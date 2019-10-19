@@ -23,11 +23,11 @@
     scaled matrix has an infinity norm of 1.  The scale factors r (i) are
     returned in a diagonal sparse matrix.  If the factorization is:
 
-	[L, U, P, Q, R] = umfpack (A) ;
+        [L, U, P, Q, R] = umfpack (A) ;
 
     then the factorization is
 
-	L*U = P * (R \ A) * Q
+        L*U = P * (R \ A) * Q
 
     This is safer than returning a matrix R such that L*U = P*R*A*Q, because
     it avoids the division by small entries.  If r(i) is subnormal, multiplying
@@ -35,7 +35,7 @@
 
     The factorization
 
-	[L, U, P, Q] = umfpack (A) ;
+        [L, U, P, Q] = umfpack (A) ;
 
     returns LU factors such that L*U = P*A*Q, with no scaling.
 
@@ -45,27 +45,12 @@
     Thus, is also provides another example of how user C code can access
     UMFPACK.
 
-    If NO_TRANSPOSE_FORWARD_SLASH is not defined at compile time, then the
-    forward slash (/) operator acts almost like x = b/A in MATLAB 6.1.  It is
-    solved by factorizing the array transpose, and then x = (A.'\b.').' is
-    solved.  This is the default behavior (for historical reasons), since
-    factorizing A can behave perform much differently than factorizing its
-    transpose.
-
-    If NO_TRANSPOSE_FORWARD_SLASH is defined at compile time, then the forward
-    slash operator does not act like x=b/A in MATLAB 6.1.  It is solved by
-    factorizing A, and then solving via the transposed L and U matrices.
-    The solution is still x = (A.'\b.').', except that A is factorized instead
-    of A.'.
-
-    Modified for v4.3.1, Jan 10, 2005: default has been changed to
-    NO_TRANSPOSE_FORWARD_SLASH, to test iterative refinement for b/A.
-    v4.4: added method for computing the determinant.
+    Unlike MATLAB, x=b/A is solved by factorizing A, and then solving via the
+    transposed L and U matrices.  The solution is still x = (A.'\b.').', except
+    that A is factorized instead of A.'.
 
     v5.1: port to 64-bit MATLAB
 */
-
-#define NO_TRANSPOSE_FORWARD_SLASH  /* default has changed for v4.3.1 */
 
 #include "UFconfig.h"
 #include "umfpack.h"
@@ -77,13 +62,14 @@
 
 #define MIN(a,b) (((a) < (b)) ? (a) : (b))
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
-#define STRING_MATCH(s1,s2) (strcmp ((s1), (s2)) == 0)
+#define MATCH(s1,s2) (strcmp ((s1), (s2)) == 0)
 #ifndef TRUE
 #define TRUE (1)
 #endif
 #ifndef FALSE
 #define FALSE (0)
 #endif
+#define Int UF_long
 
 /* ========================================================================== */
 /* === error ================================================================ */
@@ -94,16 +80,15 @@
 static void error
 (
     char *s,
-    UF_long A_is_complex,
+    Int A_is_complex,
     int nargout,
     mxArray *pargout [ ],
     double Control [UMFPACK_CONTROL],
     double Info [UMFPACK_INFO],
-    UF_long status,
-    UF_long do_info
+    Int status
 )
 {
-    UF_long i ;
+    Int i ;
     double *Out_Info ;
     if (A_is_complex)
     {
@@ -115,17 +100,756 @@ static void error
 	umfpack_dl_report_status (Control, status) ;
 	umfpack_dl_report_info (Control, Info) ;
     }
-    if (do_info > 0)
-    {
-	/* return Info */
-	pargout [do_info] = mxCreateDoubleMatrix (1, UMFPACK_INFO, mxREAL) ;
-	Out_Info = mxGetPr (pargout [do_info]) ;
-	for (i = 0 ; i < UMFPACK_INFO ; i++)
-	{
-	    Out_Info [i] = Info [i] ;
-	}
-    }
+
     mexErrMsgTxt (s) ;
+}
+
+
+/* ========================================================================== */
+/* === get_option =========================================================== */
+/* ========================================================================== */
+
+/* get a single string or numeric option from the MATLAB options struct */
+
+static int get_option
+(
+    /* inputs: */
+    const mxArray *mxopts,      /* the MATLAB struct */
+    const char *field,          /* the field to get from the MATLAB struct */
+
+    /* outputs: */
+    double *x,                  /* double value of the field, if present */
+    Int *x_present,             /* true if double x is present */
+    char **s                    /* char value of the field, if present; */
+                                /* must be mxFree'd by caller when done */
+)
+{
+    Int f ;
+    mxArray *p ;
+
+    /* find the field number */
+    if (mxopts == NULL || mxIsEmpty (mxopts) || !mxIsStruct (mxopts))
+    {
+        /* mxopts is not present, or [ ], or not a struct */
+        f = -1 ;
+    }
+    else
+    {
+        /* f will be -1 if the field is not present */
+        f = mxGetFieldNumber (mxopts, field) ;
+    }
+
+    /* get the field, or NULL if not present */
+    if (f == -1)
+    {
+        p = NULL ;
+    }
+    else
+    {
+        p = mxGetFieldByNumber (mxopts, 0, f) ;
+    }
+
+    *x_present = FALSE ;
+    if (s != NULL)
+    {
+        *s = NULL ;
+    }
+
+    if (p == NULL)
+    {
+        /* option not present */
+        return (TRUE) ;
+    }
+    if (mxIsNumeric (p))
+    {
+        /* option is numeric */
+        if (x == NULL)
+        {
+            mexPrintf ("opts.%s field must be a string\n", field) ;
+            mexErrMsgIdAndTxt ("UMFPACK:invalidInput", "invalid option") ;
+        }
+        *x = mxGetScalar (p) ;
+        *x_present = TRUE ;
+    }
+    else if (mxIsChar (p))
+    {
+        /* option is a MATLAB string; convert it to a C-style string */
+        if (s == NULL)
+        {
+            mexPrintf ("opts.%s field must be a numeric value\n", field) ;
+            mexErrMsgIdAndTxt ("UMFPACK:invalidInput", "invalid option") ;
+        }
+        *s = mxArrayToString (p) ;
+    }
+    return (TRUE) ;
+}
+
+
+/* ========================================================================== */
+/* === get_all_options ====================================================== */
+/* ========================================================================== */
+
+/* get all the options from the MATLAB struct.
+
+    opts.prl        >= 0, default 1 (errors only)
+    opts.strategy   'auto', 'unsymmetric', 'symmetric', default auto
+    opts.ordering   'amd'       AMD for A+A', COLAMD for A'A
+                    'default'   use CHOLMOD (AMD then METIS; take best fount)
+                    'metis'     use METIS
+                    'none'      no fill-reducing ordering
+                    'given'     use Qinit (this is default if Qinit present)
+                    'best'      try AMD/COLAMD, METIS, and NESDIS; take best
+    opts.tol        default 0.1
+    opts.symtol     default 0.001
+    opts.scale      row scaling: 'none', 'sum', 'max'
+    opts.irstep     max # of steps of iterative refinement, default 2
+    opts.singletons 'yes','no' default 'yes'
+ */
+
+int get_all_options
+(
+    const mxArray *mxopts,
+    double *Control
+)
+{
+    double x ;
+    char *s ;
+    Int x_present, i, info_details ;
+
+    /* ---------------------------------------------------------------------- */
+    /* prl: an integer, default 1 */
+    /* ---------------------------------------------------------------------- */
+
+    get_option (mxopts, "prl", &x, &x_present, NULL) ;
+    Control [UMFPACK_PRL] = x_present ? ((Int) x) : UMFPACK_DEFAULT_PRL ;
+    if (mxIsNaN (Control [UMFPACK_PRL]))
+    {
+	Control [UMFPACK_PRL] = UMFPACK_DEFAULT_PRL ;
+    }
+
+    /* ---------------------------------------------------------------------- */
+    /* strategy: a string */
+    /* ---------------------------------------------------------------------- */
+
+    get_option (mxopts, "strategy", NULL, &x_present, &s) ;
+    if (s != NULL)
+    {
+        if (MATCH (s, "auto"))
+        {
+            Control [UMFPACK_STRATEGY] = UMFPACK_STRATEGY_AUTO ;
+        }
+        else if (MATCH (s, "unsymmetric"))
+        {
+            Control [UMFPACK_STRATEGY] = UMFPACK_STRATEGY_UNSYMMETRIC ;
+        }
+        else if (MATCH (s, "symmetric"))
+        {
+            Control [UMFPACK_STRATEGY] = UMFPACK_STRATEGY_SYMMETRIC ;
+        }
+        else if (MATCH (s, "default"))
+        {
+            Control [UMFPACK_STRATEGY] = UMFPACK_DEFAULT_STRATEGY ;
+        }
+        else
+        {
+            mexErrMsgIdAndTxt ("UMFPACK:invalidInput","invalid strategy") ;
+        }
+        mxFree (s) ;
+    }
+
+    /* ---------------------------------------------------------------------- */
+    /* ordering: a string */
+    /* ---------------------------------------------------------------------- */
+
+    get_option (mxopts, "ordering", NULL, &x_present, &s) ;
+    if (s != NULL)
+    {
+        if (MATCH (s, "amd") || MATCH (s, "colamd") || MATCH (s,"bestamd"))
+        {
+            Control [UMFPACK_ORDERING] = UMFPACK_ORDERING_AMD ;
+        }
+#ifndef NCHOLMOD
+        else if (MATCH (s, "fixed") || MATCH (s, "none") || MATCH (s,"natural"))
+        {
+            Control [UMFPACK_ORDERING] = UMFPACK_ORDERING_NONE ;
+        }
+        else if (MATCH (s, "metis"))
+        {
+            Control [UMFPACK_ORDERING] = UMFPACK_ORDERING_METIS ;
+        }
+        else if (MATCH (s, "cholmod"))
+        {
+            Control [UMFPACK_ORDERING] = UMFPACK_ORDERING_CHOLMOD ;
+        }
+        else if (MATCH (s, "best"))
+        {
+            Control [UMFPACK_ORDERING] = UMFPACK_ORDERING_BEST ;
+        }
+#endif
+        else if (MATCH (s, "given"))
+        {
+            Control [UMFPACK_ORDERING] = UMFPACK_ORDERING_GIVEN ;
+        }
+        else if (MATCH (s, "default"))
+        {
+            Control [UMFPACK_ORDERING] = UMFPACK_DEFAULT_ORDERING ;
+        }
+        else
+        {
+            mexErrMsgIdAndTxt ("UMFPACK:invalidInput","invalid ordering") ;
+        }
+        mxFree (s) ;
+    }
+
+    /* ---------------------------------------------------------------------- */
+    /* scale: a string */
+    /* ---------------------------------------------------------------------- */
+
+    get_option (mxopts, "scale", NULL, &x_present, &s) ;
+    if (s != NULL)
+    {
+        if (MATCH (s, "none"))
+        {
+            Control [UMFPACK_SCALE] = UMFPACK_SCALE_NONE ;
+        }
+        else if (MATCH (s, "sum"))
+        {
+            Control [UMFPACK_SCALE] = UMFPACK_SCALE_SUM ;
+        }
+        else if (MATCH (s, "max"))
+        {
+            Control [UMFPACK_SCALE] = UMFPACK_SCALE_MAX ;
+        }
+        else if (MATCH (s, "default"))
+        {
+            Control [UMFPACK_SCALE] = UMFPACK_DEFAULT_SCALE ;
+        }
+        else
+        {
+            mexErrMsgIdAndTxt ("UMFPACK:invalidInput","invalid scale") ;
+        }
+        mxFree (s) ;
+    }
+
+    /* ---------------------------------------------------------------------- */
+    /* tol: a double */
+    /* ---------------------------------------------------------------------- */
+
+    get_option (mxopts, "tol", &x, &x_present, NULL) ;
+    Control [UMFPACK_PIVOT_TOLERANCE]
+        = x_present ? x : UMFPACK_DEFAULT_PIVOT_TOLERANCE ;
+
+    /* ---------------------------------------------------------------------- */
+    /* symtol: a double */
+    /* ---------------------------------------------------------------------- */
+
+    get_option (mxopts, "symtol", &x, &x_present, NULL) ;
+    Control [UMFPACK_SYM_PIVOT_TOLERANCE]
+        = x_present ? x : UMFPACK_DEFAULT_SYM_PIVOT_TOLERANCE ;
+
+    /* ---------------------------------------------------------------------- */
+    /* irstep: an integer */
+    /* ---------------------------------------------------------------------- */
+
+    get_option (mxopts, "irstep", &x, &x_present, NULL) ;
+    Control [UMFPACK_IRSTEP] = x_present ? x : UMFPACK_DEFAULT_IRSTEP ;
+
+    /* ---------------------------------------------------------------------- */
+    /* singletons: a string */
+    /* ---------------------------------------------------------------------- */
+
+    get_option (mxopts, "singletons", NULL, &x_present, &s) ;
+    if (s != NULL)
+    {
+        if (MATCH (s, "enable"))
+        {
+            Control [UMFPACK_SINGLETONS] = TRUE ;
+        }
+        else if (MATCH (s, "disable"))
+        {
+            Control [UMFPACK_SINGLETONS] = FALSE ;
+        }
+        else if (MATCH (s, "default"))
+        {
+            Control [UMFPACK_SINGLETONS] = UMFPACK_DEFAULT_SINGLETONS ;
+        }
+        mxFree (s) ;
+    }
+
+    /* ---------------------------------------------------------------------- */
+    /* details: an int */
+    /* ---------------------------------------------------------------------- */
+
+    get_option (mxopts, "details", &x, &x_present, NULL) ;
+    info_details = x_present ? x : 0 ;
+    return (info_details) ;
+}
+
+
+/* ========================================================================== */
+/* === umfpack_mx_info_details ============================================== */
+/* ========================================================================== */
+
+/* Return detailed info struct; useful for UMFPACK development only  */
+
+#define XFIELD(x) mxSetFieldByNumber (info, 0, k++, mxCreateDoubleScalar (x))
+#define SFIELD(s) mxSetFieldByNumber (info, 0, k++, mxCreateString (s))
+#define YESNO(x) ((x) ? "yes" : "no")
+
+mxArray *umfpack_mx_info_details    /* return a struct with info statistics */
+(
+    double *Control,
+    double *Info
+)
+{
+    Int k = 0 ;
+    mxArray *info ;
+    Int sizeof_unit = (Int) Info [UMFPACK_SIZE_OF_UNIT] ;
+
+    const char *info_struct [ ] =
+    {
+        "control_prl",
+        "control_dense_row",
+        "control_dense_col",
+        "control_tol",
+        "control_block_size",
+        "control_strategy",
+        "control_alloc_init",
+        "control_irstep",
+        "umfpack_compiled_with_BLAS",
+        "control_ordering",
+        "control_singletons",
+        "control_fixQ",
+        "control_amd_dense",
+        "control_symtol",
+        "control_scale",
+        "control_front_alloc",
+        "control_droptol",
+        "control_aggressive",
+
+        "status",
+
+        "nrow",
+        "ncol",
+        "anz",
+
+        "sizeof_unit",
+        "sizeof_int",
+        "sizeof_long",
+        "sizeof_pointer",
+        "sizeof_entry",
+        "number_of_dense_rows",
+        "number_of_empty_rows",
+        "number_of_dense_cols",
+        "number_of_empty_cols",
+
+        "number_of_memory_defragmentations_during_symbolic_analysis",
+        "memory_usage_for_symbolic_analysis_in_bytes",
+        "size_of_symbolic_factorization_in_bytes",
+        "symbolic_time",
+        "symbolic_walltime",
+        "strategy_used",
+        "ordering_used",
+        "Qfixed",
+        "diagonol_pivots_preferred",
+
+        "number_of_column_singletons",
+        "number_of_row_singletons",
+
+        /* only computed if symmetric strategy used */
+        "symmetric_strategy_S_size",
+        "symmetric_strategy_S_symmetric",
+        "symmetric_strategy_pattern_symmetry",
+        "symmetric_strategy_nnz_A_plus_AT",
+        "symmetric_strategy_nnz_diag",
+        "symmetric_strategy_lunz",
+        "symmetric_strategy_flops",
+        "symmetric_strategy_ndense",
+        "symmetric_strategy_dmax",
+
+        "estimated_size_of_numeric_factorization_in_bytes",
+        "estimated_peak_memory_in_bytes",
+        "estimated_number_of_floating_point_operations",
+        "estimated_number_of_entries_in_L",
+        "estimated_number_of_entries_in_U",
+        "estimated_variable_init_in_bytes",
+        "estimated_variable_peak_in_bytes",
+        "estimated_variable_final_in_bytes",
+        "estimated_number_of_entries_in_largest_frontal_matrix",
+        "estimated_largest_frontal_matrix_row_dimension",
+        "estimated_largest_frontal_matrix_col_dimension",
+
+        "size_of_numeric_factorization_in_bytes",
+        "total_memory_usage_in_bytes",
+        "number_of_floating_point_operations",
+        "number_of_entries_in_L",
+        "number_of_entries_in_U",
+        "variable_init_in_bytes",
+        "variable_peak_in_bytes",
+        "variable_final_in_bytes",
+        "number_of_entries_in_largest_frontal_matrix",
+        "largest_frontal_matrix_row_dimension",
+        "largest_frontal_matrix_col_dimension",
+
+        "number_of_memory_defragmentations_during_numeric_factorization",
+        "number_of_memory_reallocations_during_numeric_factorization",
+        "number_of_costly_memory_reallocations_during_numeric_factorization",
+        "number_of_integers_in_compressed_pattern_of_L_and_U",
+        "number_of_entries_in_LU_data_structure",
+        "numeric_time",
+        "nnz_diagonal_of_U",
+        "rcond",
+        "scaling_used",
+        "min_abs_row_sum_of_A",
+        "max_abs_row_sum_of_A",
+        "min_abs_diagonal_of_U",
+        "max_abs_diagonal_of_U",
+        "alloc_init_used",
+        "number_of_forced_updates",
+        "numeric_walltime",
+        "symmetric_strategy_number_off_diagonal_pivots",
+
+        "number_of_entries_in_L_including_dropped_entries",
+        "number_of_entries_in_U_including_dropped_entries",
+        "number_of_small_entries_dropped_from_L_and_U",
+
+        "number_of_iterative_refinement_steps_taken",
+        "number_of_iterative_refinement_steps_attempted",
+        "omega1",
+        "omega2",
+        "solve_flops",
+        "solve_time",
+        "solve_walltime"
+    } ;
+
+    info = mxCreateStructMatrix (1, 1, 100, info_struct) ;
+
+    XFIELD (Control [UMFPACK_PRL]) ;
+    XFIELD (Control [UMFPACK_DENSE_ROW]) ;
+    XFIELD (Control [UMFPACK_DENSE_COL]) ;
+    XFIELD (Control [UMFPACK_PIVOT_TOLERANCE]) ;
+    XFIELD (Control [UMFPACK_BLOCK_SIZE]) ;
+
+    switch ((int) Control [UMFPACK_STRATEGY])
+    {
+        case UMFPACK_STRATEGY_UNSYMMETRIC: SFIELD ("unsymmetric") ;  break ;
+        case UMFPACK_STRATEGY_SYMMETRIC:   SFIELD ("symmetric") ;    break ;
+        default:
+        case UMFPACK_DEFAULT_STRATEGY:     SFIELD ("auto") ;         break ;
+    }
+
+    XFIELD (Control [UMFPACK_ALLOC_INIT]) ;
+    XFIELD (Control [UMFPACK_IRSTEP]) ;
+    SFIELD (YESNO (Control [UMFPACK_COMPILED_WITH_BLAS])) ;
+
+    switch ((int) Control [UMFPACK_ORDERING])
+    {
+        case UMFPACK_ORDERING_NONE:     SFIELD ("none") ;    break ;
+        case UMFPACK_ORDERING_AMD:      SFIELD ("amd") ;     break ;
+        case UMFPACK_ORDERING_METIS:    SFIELD ("metis") ;   break ;
+        default:
+        case UMFPACK_ORDERING_CHOLMOD:  SFIELD ("cholmod") ; break ;
+        case UMFPACK_ORDERING_BEST:     SFIELD ("best") ;    break ;
+        case UMFPACK_ORDERING_GIVEN:    SFIELD ("given") ;   break ;
+    }
+
+    SFIELD (YESNO (Control [UMFPACK_SINGLETONS])) ;
+
+    if (Control [UMFPACK_FIXQ] > 0)
+    {
+        SFIELD ("forced true") ;
+    }
+    else if (Control [UMFPACK_FIXQ] < 0)
+    {
+        SFIELD ("forced false") ;
+    }
+    else
+    {
+        SFIELD ("auto") ;
+    }
+
+    XFIELD (Control [UMFPACK_AMD_DENSE]) ;
+    XFIELD (Control [UMFPACK_SYM_PIVOT_TOLERANCE]) ;
+
+    switch ((int) Control [UMFPACK_SCALE])
+    {
+        case UMFPACK_SCALE_NONE: SFIELD ("none") ;  break ;
+        case UMFPACK_SCALE_MAX:  SFIELD ("max") ;   break ;
+        default:
+        case UMFPACK_SCALE_SUM:  SFIELD ("sum") ;   break ;
+    }
+
+    XFIELD (Control [UMFPACK_FRONT_ALLOC_INIT]) ;
+    XFIELD (Control [UMFPACK_DROPTOL]) ;
+    SFIELD (YESNO (Control [UMFPACK_AGGRESSIVE])) ;
+
+    switch ((int) Info [UMFPACK_STATUS])
+    {
+        case UMFPACK_OK:
+            SFIELD ("ok") ; break ;
+        case UMFPACK_WARNING_singular_matrix:
+            SFIELD ("singular matrix") ; break ;
+        case UMFPACK_WARNING_determinant_underflow:
+            SFIELD ("determinant underflow") ; break ;
+        case UMFPACK_WARNING_determinant_overflow:
+            SFIELD ("determinant overflow") ; break ;
+        case UMFPACK_ERROR_out_of_memory:
+            SFIELD ("out of memory") ; break ;
+        case UMFPACK_ERROR_invalid_Numeric_object:
+            SFIELD ("invalid numeric LU object") ; break ;
+        case UMFPACK_ERROR_invalid_Symbolic_object:
+            SFIELD ("invalid symbolic LU object") ; break ;
+        case UMFPACK_ERROR_argument_missing:
+            SFIELD ("argument missing") ; break ;
+        case UMFPACK_ERROR_n_nonpositive:
+            SFIELD ("n < 0") ; break ;
+        case UMFPACK_ERROR_invalid_matrix:
+            SFIELD ("invalid matrix") ; break ;
+        case UMFPACK_ERROR_different_pattern:
+            SFIELD ("pattern changed") ; break ;
+        case UMFPACK_ERROR_invalid_system:
+            SFIELD ("invalid system") ; break ;
+        case UMFPACK_ERROR_invalid_permutation:
+            SFIELD ("invalid permutation") ; break ;
+        case UMFPACK_ERROR_internal_error:
+            SFIELD ("internal error; contact davis@cise.ufl.edu") ; break ;
+        case UMFPACK_ERROR_file_IO:
+            SFIELD ("file I/O error") ; break ;
+        case UMFPACK_ERROR_ordering_failed:
+            SFIELD ("ordering failed") ; break ;
+        default:
+            if (Info [UMFPACK_STATUS] < 0)
+            {
+                SFIELD ("unknown error") ;
+            }
+            else
+            {
+                SFIELD ("unknown warning") ;
+            }
+        break ;
+    }
+
+    XFIELD (Info [UMFPACK_NROW]) ;
+    XFIELD (Info [UMFPACK_NCOL]) ;
+    XFIELD (Info [UMFPACK_NZ]) ;
+
+    XFIELD (Info [UMFPACK_SIZE_OF_UNIT]) ;
+    XFIELD (Info [UMFPACK_SIZE_OF_INT]) ;
+    XFIELD (Info [UMFPACK_SIZE_OF_LONG]) ;
+    XFIELD (Info [UMFPACK_SIZE_OF_POINTER]) ;
+    XFIELD (Info [UMFPACK_SIZE_OF_ENTRY]) ;
+    XFIELD (Info [UMFPACK_NDENSE_ROW]) ;
+    XFIELD (Info [UMFPACK_NEMPTY_ROW]) ;
+    XFIELD (Info [UMFPACK_NDENSE_COL]) ;
+    XFIELD (Info [UMFPACK_NEMPTY_COL]) ;
+
+    XFIELD (Info [UMFPACK_SYMBOLIC_DEFRAG]) ;
+    XFIELD (Info [UMFPACK_SYMBOLIC_PEAK_MEMORY] * sizeof_unit) ;
+    XFIELD (Info [UMFPACK_SYMBOLIC_SIZE] * sizeof_unit) ;
+    XFIELD (Info [UMFPACK_SYMBOLIC_TIME]) ;
+    XFIELD (Info [UMFPACK_SYMBOLIC_WALLTIME]) ;
+
+    switch ((int) Info [UMFPACK_STRATEGY_USED])
+    {
+        default:
+        case UMFPACK_STRATEGY_UNSYMMETRIC: SFIELD ("unsymmetric") ;  break ;
+        case UMFPACK_STRATEGY_SYMMETRIC:   SFIELD ("symmetric") ;    break ;
+    }
+
+    switch ((int) Info [UMFPACK_ORDERING_USED])
+    {
+        case UMFPACK_ORDERING_AMD:      SFIELD ("amd") ;     break ;
+        case UMFPACK_ORDERING_METIS:    SFIELD ("metis") ;   break ;
+        case UMFPACK_ORDERING_GIVEN:    SFIELD ("given") ;   break ;
+        default:                        SFIELD ("none") ;    break ;
+    }
+
+    SFIELD (YESNO (Info [UMFPACK_QFIXED])) ;
+    SFIELD (YESNO (Info [UMFPACK_DIAG_PREFERRED])) ;
+
+    XFIELD (Info [UMFPACK_COL_SINGLETONS]) ;
+    XFIELD (Info [UMFPACK_ROW_SINGLETONS]) ;
+
+    /* only computed if symmetric ordering is used */
+    XFIELD (Info [UMFPACK_N2]) ;
+    SFIELD (YESNO (Info [UMFPACK_S_SYMMETRIC])) ;
+    XFIELD (Info [UMFPACK_PATTERN_SYMMETRY]) ;
+    XFIELD (Info [UMFPACK_NZ_A_PLUS_AT]) ;
+    XFIELD (Info [UMFPACK_NZDIAG]) ;
+    XFIELD (Info [UMFPACK_SYMMETRIC_LUNZ]) ;
+    XFIELD (Info [UMFPACK_SYMMETRIC_FLOPS]) ;
+    XFIELD (Info [UMFPACK_SYMMETRIC_NDENSE]) ;
+    XFIELD (Info [UMFPACK_SYMMETRIC_DMAX]) ;
+
+    XFIELD (Info [UMFPACK_NUMERIC_SIZE_ESTIMATE] * sizeof_unit) ;
+    XFIELD (Info [UMFPACK_PEAK_MEMORY_ESTIMATE] * sizeof_unit) ;
+    XFIELD (Info [UMFPACK_FLOPS_ESTIMATE]) ;
+    XFIELD (Info [UMFPACK_LNZ_ESTIMATE]) ;
+    XFIELD (Info [UMFPACK_UNZ_ESTIMATE]) ;
+    XFIELD (Info [UMFPACK_VARIABLE_INIT_ESTIMATE] * sizeof_unit) ;
+    XFIELD (Info [UMFPACK_VARIABLE_PEAK_ESTIMATE] * sizeof_unit) ;
+    XFIELD (Info [UMFPACK_VARIABLE_FINAL_ESTIMATE] * sizeof_unit) ;
+    XFIELD (Info [UMFPACK_MAX_FRONT_SIZE_ESTIMATE]) ;
+    XFIELD (Info [UMFPACK_MAX_FRONT_NROWS_ESTIMATE]) ;
+    XFIELD (Info [UMFPACK_MAX_FRONT_NCOLS_ESTIMATE]) ;
+
+    XFIELD (Info [UMFPACK_NUMERIC_SIZE] * sizeof_unit) ;
+    XFIELD (Info [UMFPACK_PEAK_MEMORY] * sizeof_unit) ;
+    XFIELD (Info [UMFPACK_FLOPS]) ;
+    XFIELD (Info [UMFPACK_LNZ]) ;
+    XFIELD (Info [UMFPACK_UNZ]) ;
+    XFIELD (Info [UMFPACK_VARIABLE_INIT] * sizeof_unit) ;
+    XFIELD (Info [UMFPACK_VARIABLE_PEAK] * sizeof_unit) ;
+    XFIELD (Info [UMFPACK_VARIABLE_FINAL] * sizeof_unit) ;
+    XFIELD (Info [UMFPACK_MAX_FRONT_SIZE]) ;
+    XFIELD (Info [UMFPACK_MAX_FRONT_NROWS]) ;
+    XFIELD (Info [UMFPACK_MAX_FRONT_NCOLS]) ;
+
+    XFIELD (Info [UMFPACK_NUMERIC_DEFRAG]) ;
+    XFIELD (Info [UMFPACK_NUMERIC_REALLOC]) ;
+    XFIELD (Info [UMFPACK_NUMERIC_COSTLY_REALLOC]) ;
+    XFIELD (Info [UMFPACK_COMPRESSED_PATTERN]) ;
+    XFIELD (Info [UMFPACK_LU_ENTRIES]) ;
+    XFIELD (Info [UMFPACK_NUMERIC_TIME]) ;
+    XFIELD (Info [UMFPACK_UDIAG_NZ]) ;
+    XFIELD (Info [UMFPACK_RCOND]) ;
+
+    switch ((int) Info [UMFPACK_WAS_SCALED])
+    {
+        case UMFPACK_SCALE_NONE: SFIELD ("none") ;  break ;
+        case UMFPACK_SCALE_MAX:  SFIELD ("max") ;   break ;
+        default:
+        case UMFPACK_SCALE_SUM:  SFIELD ("sum") ;   break ;
+    }
+
+    XFIELD (Info [UMFPACK_RSMIN]) ;
+    XFIELD (Info [UMFPACK_RSMAX]) ;
+    XFIELD (Info [UMFPACK_UMIN]) ;
+    XFIELD (Info [UMFPACK_UMAX]) ;
+    XFIELD (Info [UMFPACK_ALLOC_INIT_USED]) ;
+    XFIELD (Info [UMFPACK_FORCED_UPDATES]) ;
+    XFIELD (Info [UMFPACK_NUMERIC_WALLTIME]) ;
+    XFIELD (Info [UMFPACK_NOFF_DIAG]) ;
+
+    XFIELD (Info [UMFPACK_ALL_LNZ]) ;
+    XFIELD (Info [UMFPACK_ALL_UNZ]) ;
+    XFIELD (Info [UMFPACK_NZDROPPED]) ;
+
+    XFIELD (Info [UMFPACK_IR_TAKEN]) ;
+    XFIELD (Info [UMFPACK_IR_ATTEMPTED]) ;
+    XFIELD (Info [UMFPACK_OMEGA1]) ;
+    XFIELD (Info [UMFPACK_OMEGA2]) ;
+    XFIELD (Info [UMFPACK_SOLVE_FLOPS]) ;
+    XFIELD (Info [UMFPACK_SOLVE_TIME]) ;
+    XFIELD (Info [UMFPACK_SOLVE_WALLTIME]) ;
+
+    return (info) ;
+}
+
+
+/* ========================================================================== */
+/* === umfpack_mx_info_user ================================================= */
+/* ========================================================================== */
+
+/* Return user-friendly info struct */
+
+mxArray *umfpack_mx_info_user    /* return a struct with info statistics */
+(
+    double *Control,
+    double *Info,
+    Int do_solve
+)
+{
+    Int k = 0 ;
+    mxArray *info ;
+    Int sizeof_unit = (Int) Info [UMFPACK_SIZE_OF_UNIT] ;
+
+    const char *info_struct [ ] =
+    {
+        "analysis_time",
+        "strategy_used",
+        "ordering_used",
+        "memory_usage_in_bytes",
+        "factorization_flop_count",
+        "nnz_in_L_plus_U",
+        "rcond_estimate",
+        "factorization_time",
+        /* if solve */
+        "iterative_refinement_steps",
+        "solve_flop_count",
+        "solve_time"
+    } ;
+
+    info = mxCreateStructMatrix (1, 1, do_solve ? 11 : 8, info_struct) ;
+
+    XFIELD (Info [UMFPACK_SYMBOLIC_WALLTIME]) ;
+
+    switch ((int) Info [UMFPACK_STRATEGY_USED])
+    {
+        default:
+        case UMFPACK_STRATEGY_UNSYMMETRIC: SFIELD ("unsymmetric") ;  break ;
+        case UMFPACK_STRATEGY_SYMMETRIC:   SFIELD ("symmetric") ;    break ;
+    }
+
+    switch ((int) Info [UMFPACK_ORDERING_USED])
+    {
+        case UMFPACK_ORDERING_AMD:      SFIELD ("amd") ;     break ;
+        case UMFPACK_ORDERING_METIS:    SFIELD ("metis") ;   break ;
+        case UMFPACK_ORDERING_GIVEN:    SFIELD ("given") ;   break ;
+        default:                        SFIELD ("none") ;    break ;
+    }
+
+    XFIELD (Info [UMFPACK_PEAK_MEMORY] * sizeof_unit) ;
+    XFIELD (Info [UMFPACK_FLOPS]) ;
+    XFIELD (Info [UMFPACK_LNZ] + Info [UMFPACK_UNZ] - Info [UMFPACK_UDIAG_NZ]) ;
+    XFIELD (Info [UMFPACK_RCOND]) ;
+    XFIELD (Info [UMFPACK_NUMERIC_WALLTIME]) ;
+
+    if (do_solve)
+    {
+        XFIELD (Info [UMFPACK_IR_TAKEN]) ;
+        XFIELD (Info [UMFPACK_SOLVE_FLOPS]) ;
+        XFIELD (Info [UMFPACK_SOLVE_WALLTIME]) ;
+    }
+
+    return (info) ;
+}
+
+
+/* ========================================================================== */
+/* === umfpack_mx_defaults ================================================== */
+/* ========================================================================== */
+
+/* Return a struct with default Control settings (except opts.details). */
+
+mxArray *umfpack_mx_defaults ( void )
+{
+    mxArray *opts ;
+    const char *opts_struct [ ] =
+    {
+        "prl",
+        "strategy",
+        "ordering",
+        "tol",
+        "symtol",
+        "scale",
+        "irstep",
+        "singletons"
+    } ;
+    opts = mxCreateStructMatrix (1, 1, 8, opts_struct) ;
+    mxSetFieldByNumber (opts, 0, 0,
+        mxCreateDoubleScalar (UMFPACK_DEFAULT_PRL)) ;
+    mxSetFieldByNumber (opts, 0, 1, mxCreateString ("auto")) ;
+    mxSetFieldByNumber (opts, 0, 2, mxCreateString ("default")) ;
+    mxSetFieldByNumber (opts, 0, 3,
+        mxCreateDoubleScalar (UMFPACK_DEFAULT_PIVOT_TOLERANCE)) ;
+    mxSetFieldByNumber (opts, 0, 4,
+        mxCreateDoubleScalar (UMFPACK_DEFAULT_SYM_PIVOT_TOLERANCE)) ;
+    mxSetFieldByNumber (opts, 0, 5, mxCreateString ("sum")) ;
+    mxSetFieldByNumber (opts, 0, 6,
+        mxCreateDoubleScalar (UMFPACK_DEFAULT_IRSTEP)) ;
+    mxSetFieldByNumber (opts, 0, 7, mxCreateString ("enable")) ;
+    return (opts) ;
 }
 
 
@@ -150,22 +874,18 @@ void mexFunction
     double *Lx, *Lz, *Ux, *Uz, *Ax, *Az, *Bx, *Bz, *Xx, *Xz, *User_Control,
 	*p, *q, *Out_Info, *p1, *p2, *p3, *p4, *Ltx, *Ltz, *Rs, *Px, *Qx ;
     void *Symbolic, *Numeric ;
-    UF_long *Lp, *Li, *Up, *Ui, *Ap, *Ai, *P, *Q, do_solve, lnz, unz, nn, i,
+    Int *Lp, *Li, *Up, *Ui, *Ap, *Ai, *P, *Q, do_solve, lnz, unz, nn, i,
 	transpose, size, do_info, do_numeric, *Front_npivcol, op, k, *Rp, *Ri,
 	*Front_parent, *Chain_start, *Chain_maxrows, *Chain_maxcols, nz, status,
 	nfronts, nchains, *Ltp, *Ltj, *Qinit, print_level, status2, no_scale,
 	*Front_1strow, *Front_leftmostdesc, n_row, n_col, n_inner, sys,
 	ignore1, ignore2, ignore3, A_is_complex, B_is_complex, X_is_complex,
 	*Pp, *Pi, *Qp, *Qi, do_recip, do_det ;
-    mxArray *Amatrix, *Bmatrix, *User_Control_matrix, *User_Qinit ;
+    mxArray *Amatrix, *Bmatrix, *User_Control_struct, *User_Qinit ;
     char *operator, *operation ;
     mxComplexity Atype, Xtype ;
     char warning [200] ;
-
-#ifndef NO_TRANSPOSE_FORWARD_SLASH
-    UF_long *Cp, *Ci ;
-    double *Cx, *Cz ;
-#endif
+    int info_details ;
 
     /* ---------------------------------------------------------------------- */
     /* define the memory manager and printf functions for UMFPACK and AMD */ 
@@ -191,7 +911,15 @@ void mexFunction
     /* get inputs A, b, and the operation to perform */
     /* ---------------------------------------------------------------------- */
 
-    User_Control_matrix = (mxArray *) NULL ;
+    if (nargin > 1 && mxIsStruct (pargin [nargin-1]))
+    {
+        User_Control_struct = (mxArray *) (pargin [nargin-1]) ;
+    }
+    else
+    {
+        User_Control_struct = (mxArray *) NULL ;
+    }
+
     User_Qinit = (mxArray *) NULL ;
 
     do_info = 0 ;
@@ -216,7 +944,7 @@ void mexFunction
     {
 	operator = mxArrayToString (pargin [op]) ;
 
-	if (STRING_MATCH (operator, "\\"))
+	if (MATCH (operator, "\\"))
 	{
 
 	    /* -------------------------------------------------------------- */
@@ -226,8 +954,8 @@ void mexFunction
 	    /*
 		[x, Info] = umfpack (A, '\', b) ;
 		[x, Info] = umfpack (A, '\', b, Control) ;
-		[x, Info] = umfpack (A, Qinit, '\', b, Control) ;
 		[x, Info] = umfpack (A, Qinit, '\', b) ;
+		[x, Info] = umfpack (A, Qinit, '\', b, Control) ;
 	    */
 
 	    operation = "x = A\\b" ;
@@ -243,17 +971,13 @@ void mexFunction
 	    {
 		User_Qinit = (mxArray *) pargin [1] ;
 	    }
-	    if ((op == 1 && nargin == 4) || (op == 2 && nargin == 5))
-	    {
-		User_Control_matrix = (mxArray *) pargin [nargin-1] ;
-	    }
 	    if (nargin < 3 || nargin > 5 || nargout > 2)
 	    {
 		mexErrMsgTxt ("wrong number of arguments") ;
 	    }
 
 	}
-	else if (STRING_MATCH (operator, "/"))
+	else if (MATCH (operator, "/"))
 	{
 
 	    /* -------------------------------------------------------------- */
@@ -277,30 +1001,17 @@ void mexFunction
 	    {
 		do_info = 1 ;
 	    }
-	    if (nargin == 5)
+	    if (nargin >= 4 && mxIsDouble (pargin [3]))
 	    {
 		User_Qinit = (mxArray *) pargin [3] ;
-		User_Control_matrix = (mxArray *) pargin [4] ;
 	    }
-	    else if (nargin == 4)
-	    {
-		/* Control is k-by-1 where k > 1, Qinit is 1-by-n */
-		if (mxGetM (pargin [3]) == 1)
-		{
-		    User_Qinit = (mxArray *) pargin [3] ;
-		}
-		else
-		{
-		    User_Control_matrix = (mxArray *) pargin [3] ;
-		}
-	    }
-	    else if (nargin < 3 || nargin > 5 || nargout > 2)
+	    if (nargin < 3 || nargin > 5 || nargout > 2)
 	    {
 		mexErrMsgTxt ("wrong number of arguments") ;
 	    }
 
 	}
-	else if (STRING_MATCH (operator, "symbolic"))
+	else if (MATCH (operator, "symbolic"))
 	{
 
 	    /* -------------------------------------------------------------- */
@@ -326,17 +1037,13 @@ void mexFunction
 	    {
 		User_Qinit = (mxArray *) pargin [1] ;
 	    }
-	    if ((op == 1 && nargin == 3) || (op == 2 && nargin == 4))
-	    {
-		User_Control_matrix = (mxArray *) pargin [nargin-1] ;
-	    }
 	    if (nargin < 2 || nargin > 4 || nargout > 5 || nargout < 4)
 	    {
 		mexErrMsgTxt ("wrong number of arguments") ;
 	    }
 
 	}
-	else if (STRING_MATCH (operator, "det"))
+	else if (MATCH (operator, "det"))
 	{
 
 	    /* -------------------------------------------------------------- */
@@ -390,30 +1097,17 @@ void mexFunction
 	operation = "numeric factorization" ;
 	Amatrix = (mxArray *) pargin [0] ;
 
-	no_scale = nargout <= 4 ;
+	no_scale = (nargout <= 4) ;
 
 	if (nargout == 6)
 	{
 	    do_info = 5 ;
 	}
-	if (nargin == 3)
-	{
-	    User_Qinit = (mxArray *) pargin [1] ;
-	    User_Control_matrix = (mxArray *) pargin [2] ;
-	}
-	else if (nargin == 2)
-	{
-	    /* Control is k-by-1 where k > 1, Qinit is 1-by-n */
-	    if (mxGetM (pargin [1]) == 1)
-	    {
-		User_Qinit = (mxArray *) pargin [1] ;
-	    }
-	    else
-	    {
-		User_Control_matrix = (mxArray *) pargin [1] ;
-	    }
-	}
-	else if (nargin > 3 || nargout > 6 || nargout < 4)
+        if (nargin >= 2 && mxIsDouble (pargin [1]))
+        {
+            User_Qinit = (mxArray *) pargin [1] ;
+        }
+	if (nargin > 3 || nargout > 6 || nargout < 4)
 	{
 	    mexErrMsgTxt ("wrong number of arguments") ;
 	}
@@ -436,10 +1130,8 @@ void mexFunction
 	    mexErrMsgTxt ("wrong number of arguments") ;
 	}
 
-	pargout [0] = mxCreateDoubleMatrix (UMFPACK_CONTROL, 1, mxREAL) ;
-	User_Control = mxGetPr (pargout [0]) ;
-	umfpack_dl_defaults (User_Control) ;
-
+        /* return default opts struct */
+	pargout [0] = umfpack_mx_defaults ( ) ;
 	return ;
     }
 
@@ -472,8 +1164,8 @@ void mexFunction
     /* (umfpack_dl_* or umfpack_zl_*). */
     A_is_complex = mxIsComplex (Amatrix) ;
     Atype = A_is_complex ? mxCOMPLEX : mxREAL ;
-    Ap = (UF_long *) mxGetJc (Amatrix) ;
-    Ai = (UF_long *) mxGetIr (Amatrix) ;
+    Ap = (Int *) mxGetJc (Amatrix) ;
+    Ai = (Int *) mxGetIr (Amatrix) ;
     Ax = mxGetPr (Amatrix) ;
     Az = mxGetPi (Amatrix) ;
 
@@ -531,20 +1223,11 @@ void mexFunction
     {
 	umfpack_dl_defaults (Control) ;
     }
-    if (User_Control_matrix)
+
+    info_details = 0 ;
+    if (User_Control_struct != NULL)
     {
-	if (mxGetClassID (User_Control_matrix) != mxDOUBLE_CLASS ||
-	    mxIsSparse (User_Control_matrix))
-	{
-	    mexErrMsgTxt ("Control must be a dense real matrix") ;
-	}
-	size = UMFPACK_CONTROL ;
-	size = MIN (size, mxGetNumberOfElements (User_Control_matrix)) ;
-	User_Control = mxGetPr (User_Control_matrix) ;
-	for (i = 0 ; i < size ; i++)
-	{
-	    Control [i] = User_Control [i] ;
-	}
+        info_details = get_all_options (User_Control_struct, Control) ;
     }
 
     if (no_scale)
@@ -555,16 +1238,7 @@ void mexFunction
 	Control [UMFPACK_SCALE] = UMFPACK_SCALE_NONE ;
     }
 
-    if (mxIsNaN (Control [UMFPACK_PRL]))
-    {
-	print_level = UMFPACK_DEFAULT_PRL ;
-    }
-    else
-    {
-	print_level = (UF_long) Control [UMFPACK_PRL] ;
-    }
-
-    Control [UMFPACK_PRL] = print_level ;
+    print_level = (Int) Control [UMFPACK_PRL] ;
 
     /* ---------------------------------------------------------------------- */
     /* get Qinit, if present */
@@ -592,20 +1266,20 @@ void mexFunction
 	{
 	    mexErrMsgTxt ("input Qinit must be dense") ;
 	}
-	Qinit = (UF_long *) mxMalloc (n_col * sizeof (UF_long)) ;
+	Qinit = (Int *) mxMalloc (n_col * sizeof (Int)) ;
 	p = mxGetPr (User_Qinit) ;
 	for (k = 0 ; k < n_col ; k++)
 	{
-	    /* convert from 1-based to 0-based indexing */
-	    Qinit [k] = ((UF_long) (p [k])) - 1 ;
+	    /* convert from 1-based to 0-based */
+	    Qinit [k] = ((Int) (p [k])) - 1 ;
 	}
-
+        Control [UMFPACK_ORDERING] = UMFPACK_ORDERING_GIVEN ;
     }
     else
     {
 	/* umfpack_*_qsymbolic will call colamd to get Qinit. This is the */
 	/* same as calling umfpack_*_symbolic with Qinit set to NULL*/
-	Qinit = (UF_long *) NULL ;
+	Qinit = (Int *) NULL ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -643,52 +1317,6 @@ void mexFunction
 	}
     }
 
-#ifndef NO_TRANSPOSE_FORWARD_SLASH
-    /* ---------------------------------------------------------------------- */
-    /* create the array transpose for x = b/A */
-    /* ---------------------------------------------------------------------- */
-
-    if (transpose)
-    {
-	/* note that in this case A will be square (nn = n_row = n_col) */
-	/* x = (A.'\b.').' will be computed */
-
-	/* make sure Ci and Cx exist, avoid malloc of zero-sized arrays. */
-	nz = MAX (Ap [nn], 1) ;
-
-	Cp = (UF_long *) mxMalloc ((nn+1) * sizeof (UF_long)) ;
-	Ci = (UF_long *) mxMalloc (nz * sizeof (UF_long)) ;
-	Cx = (double *) mxMalloc (nz * sizeof (double)) ;
-	if (A_is_complex)
-	{
-	    Cz = (double *) mxMalloc (nz * sizeof (double)) ;
-	    status = umfpack_zl_transpose (nn, nn, Ap, Ai, Ax, Az,
-	        (UF_long *) NULL, (UF_long *) NULL, Cp, Ci, Cx, Cz, FALSE) ;
-	}
-	else
-	{
-	    status = umfpack_dl_transpose (nn, nn, Ap, Ai, Ax,
-	        (UF_long *) NULL, (UF_long *) NULL, Cp, Ci, Cx) ;
-	}
-
-	if (status != UMFPACK_OK)
-	{
-	    error ("transpose of A failed", A_is_complex, nargout, pargout,
-		Control, Info, status, do_info);
-	    return ;
-	}
-
-	/* modify pointers so that C will be factorized and solved, not A */
-	Ap = Cp ;
-	Ai = Ci ;
-	Ax = Cx ;
-	if (A_is_complex)
-	{
-	    Az = Cz ;
-	}
-    }
-#endif
-
     /* ---------------------------------------------------------------------- */
     /* perform the symbolic factorization */
     /* ---------------------------------------------------------------------- */
@@ -712,7 +1340,7 @@ void mexFunction
     if (status < 0)
     {
 	error ("symbolic factorization failed", A_is_complex, nargout, pargout,
-	    Control, Info, status, do_info) ;
+	    Control, Info, status) ;
 	return ;
     }
 
@@ -771,7 +1399,7 @@ void mexFunction
 	if (status < 0)
 	{
 	    error ("numeric factorization failed", A_is_complex, nargout,
-		pargout, Control, Info, status, do_info);
+		pargout, Control, Info, status);
 	    return ;
 	}
 
@@ -794,20 +1422,6 @@ void mexFunction
 	    /* solve Ax=b or A'x'=b', and return just the solution x */
 	    /* -------------------------------------------------------------- */
 
-#ifndef NO_TRANSPOSE_FORWARD_SLASH
-	    if (transpose)
-	    {
-		/* A.'x.'=b.' gives the same x=b/A as solving A'x'=b' */
-		/* since C=A.' was factorized, solve with sys = UMFPACK_A */
-		/* since x and b are vectors, x.' and b.' are implicit */
-		pargout [0] = mxCreateDoubleMatrix (1, nn, Xtype) ;
-	    }
-	    else
-	    {
-		pargout [0] = mxCreateDoubleMatrix (nn, 1, Xtype) ;
-	    }
-	    sys = UMFPACK_A ;
-#else
 	    if (transpose)
 	    {
 		/* If A is real, A'x=b is the same as A.'x=b. */
@@ -828,7 +1442,6 @@ void mexFunction
 		pargout [0] = mxCreateDoubleMatrix (nn, 1, Xtype) ;
 		sys = UMFPACK_A ;
 	    }
-#endif
 
 	    /* -------------------------------------------------------------- */
 	    /* print the right-hand-side, B */
@@ -880,23 +1493,6 @@ void mexFunction
 		    Numeric, Control, Info) ;
 	    }
 
-#ifndef NO_TRANSPOSE_FORWARD_SLASH
-	    /* -------------------------------------------------------------- */
-	    /* free the transposed matrix C */
-	    /* -------------------------------------------------------------- */
-
-	    if (transpose)
-	    {
-	        mxFree (Cp) ;
-	        mxFree (Ci) ;
-	        mxFree (Cx) ;
-	        if (A_is_complex)
-	        {
-	            mxFree (Cz) ;
-	        }
-	    }
-#endif
-
 	    /* -------------------------------------------------------------- */
 	    /* free the Numeric object */
 	    /* -------------------------------------------------------------- */
@@ -918,7 +1514,7 @@ void mexFunction
 	    {
 		mxDestroyArray (pargout [0]) ;
 		error ("solve failed", A_is_complex, nargout, pargout, Control,
-			Info, status, do_info) ;
+			Info, status) ;
 		return ;
 	    }
 
@@ -942,27 +1538,21 @@ void mexFunction
 
 	    /* no warning is given if Control (1) is zero */
 
-	    if (Control [UMFPACK_PRL] >= 1)
+	    if (print_level >= 1)
 	    {
 		if (status == UMFPACK_WARNING_singular_matrix)
 		{
-		    sprintf (warning, "matrix is singular\n"
-			"Try increasing Control (%d) and Control (%d).\n"
-			"(Suppress this warning with Control (%d) = 0.)\n",
-			1+UMFPACK_PIVOT_TOLERANCE,
-			1+UMFPACK_SYM_PIVOT_TOLERANCE,
-			1+UMFPACK_PRL) ;
-		    mexWarnMsgTxt (warning) ;
+		    mexWarnMsgTxt (
+                        "matrix is singular\n"
+			"Try increasing opts.tol and opts.symtol.\n"
+                        "Suppress this warning with opts.prl=0\n") ;
 		}
 		else if (Info [UMFPACK_RCOND] < DBL_EPSILON)
 		{
 		    sprintf (warning, "matrix is nearly singular, rcond = %g\n"
-			"Try increasing Control (%d) and Control (%d).\n"
-			"(Suppress this warning with Control (%d) = 0.)\n",
-			Info [UMFPACK_RCOND],
-			1+UMFPACK_PIVOT_TOLERANCE,
-			1+UMFPACK_SYM_PIVOT_TOLERANCE,
-			1+UMFPACK_PRL) ;
+			"Try increasing opts.tol and opts.symtol.\n"
+                        "Suppress this warning with opts.prl=0\n",
+			Info [UMFPACK_RCOND]) ;
 		    mexWarnMsgTxt (warning) ;
 		}
 	    }
@@ -1004,7 +1594,7 @@ void mexFunction
 	    if (status < 0)
 	    {
 		error ("extracting LU factors failed", A_is_complex, nargout,
-		    pargout, Control, Info, status, do_info) ;
+		    pargout, Control, Info, status) ;
 	    }
 	    if (A_is_complex)
 	    {
@@ -1057,7 +1647,7 @@ void mexFunction
 		    umfpack_dl_free_numeric (&Numeric) ;
 		}
 		error ("extracting LU factors failed", A_is_complex, nargout,
-		    pargout, Control, Info, status, do_info) ;
+		    pargout, Control, Info, status) ;
 		return ;
 	    }
 
@@ -1066,8 +1656,8 @@ void mexFunction
 	    unz = MAX (unz, 1) ;
 
 	    /* get temporary space, for the *** ROW *** form of L */
-	    Ltp = (UF_long *) mxMalloc ((n_row+1) * sizeof (UF_long)) ;
-	    Ltj = (UF_long *) mxMalloc (lnz * sizeof (UF_long)) ;
+	    Ltp = (Int *) mxMalloc ((n_row+1) * sizeof (Int)) ;
+	    Ltj = (Int *) mxMalloc (lnz * sizeof (Int)) ;
 	    Ltx = (double *) mxMalloc (lnz * sizeof (double)) ;
 	    if (A_is_complex)
 	    {
@@ -1080,14 +1670,14 @@ void mexFunction
 
 	    /* create permanent copy of the output matrix U */
 	    pargout [1] = mxCreateSparse (n_inner, n_col, unz, Atype) ;
-	    Up = (UF_long *) mxGetJc (pargout [1]) ;
-	    Ui = (UF_long *) mxGetIr (pargout [1]) ;
+	    Up = (Int *) mxGetJc (pargout [1]) ;
+	    Ui = (Int *) mxGetIr (pargout [1]) ;
 	    Ux = mxGetPr (pargout [1]) ;
 	    Uz = mxGetPi (pargout [1]) ;
 
 	    /* temporary space for the integer permutation vectors */
-	    P = (UF_long *) mxMalloc (n_row * sizeof (UF_long)) ;
-	    Q = (UF_long *) mxMalloc (n_col * sizeof (UF_long)) ;
+	    P = (Int *) mxMalloc (n_row * sizeof (Int)) ;
+	    Q = (Int *) mxMalloc (n_col * sizeof (Int)) ;
 
 	    /* get scale factors, if requested */
 	    status2 = UMFPACK_OK ;
@@ -1095,8 +1685,8 @@ void mexFunction
 	    {
 		/* create a diagonal sparse matrix for the scale factors */
 		pargout [4] = mxCreateSparse (n_row, n_row, n_row, mxREAL) ;
-		Rp = (UF_long *) mxGetJc (pargout [4]) ;
-		Ri = (UF_long *) mxGetIr (pargout [4]) ;
+		Rp = (Int *) mxGetJc (pargout [4]) ;
+		Ri = (Int *) mxGetIr (pargout [4]) ;
 		for (i = 0 ; i < n_row ; i++)
 		{
 		    Rp [i] = i ;
@@ -1139,14 +1729,14 @@ void mexFunction
 		mxFree (Q) ;
 		mxDestroyArray (pargout [1]) ;
 		error ("extracting LU factors failed", A_is_complex, nargout,
-		    pargout, Control, Info, status, do_info) ;
+		    pargout, Control, Info, status) ;
 		return ;
 	    }
 
 	    /* create sparse permutation matrix for P */
 	    pargout [2] = mxCreateSparse (n_row, n_row, n_row, mxREAL) ;
-	    Pp = (UF_long *) mxGetJc (pargout [2]) ;
-	    Pi = (UF_long *) mxGetIr (pargout [2]) ;
+	    Pp = (Int *) mxGetJc (pargout [2]) ;
+	    Pi = (Int *) mxGetIr (pargout [2]) ;
 	    Px = mxGetPr (pargout [2]) ;
 	    for (k = 0 ; k < n_row ; k++)
 	    {
@@ -1158,8 +1748,8 @@ void mexFunction
 
 	    /* create sparse permutation matrix for Q */
 	    pargout [3] = mxCreateSparse (n_col, n_col, n_col, mxREAL) ;
-	    Qp = (UF_long *) mxGetJc (pargout [3]) ;
-	    Qi = (UF_long *) mxGetIr (pargout [3]) ;
+	    Qp = (Int *) mxGetJc (pargout [3]) ;
+	    Qi = (Int *) mxGetIr (pargout [3]) ;
 	    Qx = mxGetPr (pargout [3]) ;
 	    for (k = 0 ; k < n_col ; k++)
 	    {
@@ -1171,8 +1761,8 @@ void mexFunction
 
 	    /* permanent copy of L */
 	    pargout [0] = mxCreateSparse (n_row, n_inner, lnz, Atype) ;
-	    Lp = (UF_long *) mxGetJc (pargout [0]) ;
-	    Li = (UF_long *) mxGetIr (pargout [0]) ;
+	    Lp = (Int *) mxGetJc (pargout [0]) ;
+	    Li = (Int *) mxGetIr (pargout [0]) ;
 	    Lx = mxGetPr (pargout [0]) ;
 	    Lz = mxGetPi (pargout [0]) ;
 
@@ -1181,13 +1771,13 @@ void mexFunction
 	    {
 		/* non-conjugate array transpose */
 	        status = umfpack_zl_transpose (n_inner, n_row, Ltp, Ltj, Ltx,
-		    Ltz, (UF_long *) NULL, (UF_long *) NULL, Lp, Li, Lx, Lz,
+		    Ltz, (Int *) NULL, (Int *) NULL, Lp, Li, Lx, Lz,
 		    FALSE) ;
 	    }
 	    else
 	    {
 	        status = umfpack_dl_transpose (n_inner, n_row, Ltp, Ltj, Ltx,
-		    (UF_long *) NULL, (UF_long *) NULL, Lp, Li, Lx) ;
+		    (Int *) NULL, (Int *) NULL, Lp, Li, Lx) ;
 	    }
 
 	    mxFree (Ltp) ;
@@ -1204,7 +1794,7 @@ void mexFunction
 		mxDestroyArray (pargout [2]) ;
 		mxDestroyArray (pargout [3]) ;
 		error ("constructing L failed", A_is_complex, nargout, pargout,
-		    Control, Info, status, do_info) ;
+		    Control, Info, status) ;
 		return ;
 	    }
 
@@ -1252,15 +1842,15 @@ void mexFunction
 	/* return the symbolic factorization */
 	/* ------------------------------------------------------------------ */
 
-	Q = (UF_long *) mxMalloc (n_col * sizeof (UF_long)) ;
-	P = (UF_long *) mxMalloc (n_row * sizeof (UF_long)) ;
-	Front_npivcol = (UF_long *) mxMalloc ((nn+1) * sizeof (UF_long)) ;
-	Front_parent = (UF_long *) mxMalloc ((nn+1) * sizeof (UF_long)) ;
-	Front_1strow = (UF_long *) mxMalloc ((nn+1) * sizeof (UF_long)) ;
-	Front_leftmostdesc = (UF_long *) mxMalloc ((nn+1) * sizeof (UF_long)) ;
-	Chain_start = (UF_long *) mxMalloc ((nn+1) * sizeof (UF_long)) ;
-	Chain_maxrows = (UF_long *) mxMalloc ((nn+1) * sizeof (UF_long)) ;
-	Chain_maxcols = (UF_long *) mxMalloc ((nn+1) * sizeof (UF_long)) ;
+	Q = (Int *) mxMalloc (n_col * sizeof (Int)) ;
+	P = (Int *) mxMalloc (n_row * sizeof (Int)) ;
+	Front_npivcol = (Int *) mxMalloc ((nn+1) * sizeof (Int)) ;
+	Front_parent = (Int *) mxMalloc ((nn+1) * sizeof (Int)) ;
+	Front_1strow = (Int *) mxMalloc ((nn+1) * sizeof (Int)) ;
+	Front_leftmostdesc = (Int *) mxMalloc ((nn+1) * sizeof (Int)) ;
+	Chain_start = (Int *) mxMalloc ((nn+1) * sizeof (Int)) ;
+	Chain_maxrows = (Int *) mxMalloc ((nn+1) * sizeof (Int)) ;
+	Chain_maxcols = (Int *) mxMalloc ((nn+1) * sizeof (Int)) ;
 
 	if (A_is_complex)
 	{
@@ -1291,14 +1881,14 @@ void mexFunction
 	    mxFree (Chain_maxrows) ;
 	    mxFree (Chain_maxcols) ;
 	    error ("extracting symbolic factors failed", A_is_complex, nargout,
-		pargout, Control, Info, status, do_info) ;
+		pargout, Control, Info, status) ;
 	    return ;
 	}
 
 	/* create sparse permutation matrix for P */
 	pargout [0] = mxCreateSparse (n_row, n_row, n_row, mxREAL) ;
-	Pp = (UF_long *) mxGetJc (pargout [0]) ;
-	Pi = (UF_long *) mxGetIr (pargout [0]) ;
+	Pp = (Int *) mxGetJc (pargout [0]) ;
+	Pi = (Int *) mxGetIr (pargout [0]) ;
 	Px = mxGetPr (pargout [0]) ;
 	for (k = 0 ; k < n_row ; k++)
 	{
@@ -1310,8 +1900,8 @@ void mexFunction
 
 	/* create sparse permutation matrix for Q */
 	pargout [1] = mxCreateSparse (n_col, n_col, n_col, mxREAL) ;
-	Qp = (UF_long *) mxGetJc (pargout [1]) ;
-	Qi = (UF_long *) mxGetIr (pargout [1]) ;
+	Qp = (Int *) mxGetJc (pargout [1]) ;
+	Qi = (Int *) mxGetIr (pargout [1]) ;
 	Qx = mxGetPr (pargout [1]) ;
 	for (k = 0 ; k < n_col ; k++)
 	{
@@ -1379,11 +1969,13 @@ void mexFunction
     if (do_info > 0)
     {
 	/* return Info */
-	pargout [do_info] = mxCreateDoubleMatrix (1, UMFPACK_INFO, mxREAL) ;
-	Out_Info = mxGetPr (pargout [do_info]) ;
-	for (i = 0 ; i < UMFPACK_INFO ; i++)
-	{
-	    Out_Info [i] = Info [i] ;
-	}
+        if (info_details > 0)
+        {
+            pargout [do_info] = umfpack_mx_info_details (Control, Info) ;
+        }
+        else
+        {
+            pargout [do_info] = umfpack_mx_info_user (Control, Info, do_solve) ;
+        }
     }
 }

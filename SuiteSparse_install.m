@@ -18,7 +18,7 @@ function SuiteSparse_install (do_demo)
 % BTF            permutation to block triangular form (like dmperm)
 % LDL            sparse LDL' factorization
 % UFcollection   tools for managing the UF Sparse Matrix Collection
-% RBio           read/write Rutherford/Boeing files (requires Fortran compiler)
+% RBio           read/write Rutherford/Boeing files
 % SSMULT         sparse matrix times sparse matrix
 % MESHND         2D and 3D regular mesh generation and nested dissection
 % LINFACTOR      illustrates the use of LU and CHOL (MATLAB 7.3 or later)
@@ -160,6 +160,7 @@ try
     else
 	fprintf ('UFget skipped; requires MATLAB 7.0 or later\n') ;
     end
+    fprintf ('Compiling CXSparse:\n') ;
     if (pc)
 	% Windows does not support ANSI C99 complex, which CXSparse requires
 	fprintf ('Compiling CXSparse without complex support\n') ;
@@ -270,17 +271,17 @@ catch                                                                       %#ok
     fprintf ('SuiteSparseQR not installed\n') ;
 end
 
-% compile and install RBio (not on Windows ... no default Fortran compiler)
-if (~pc)
-    try
-	cd ([SuiteSparse '/RBio']) ;
-	RBmake
-	paths = add_to_path (paths, pwd) ;
-    catch                                                                   %#ok
-	disp (lasterr) ;                                                    %#ok
-	fprintf ('RBio not installed (Fortran compiler required).\n') ;
-    end
+% compile and install RBio
+
+try
+    cd ([SuiteSparse '/RBio/RBio']) ;
+    RBmake
+    paths = add_to_path (paths, pwd) ;
+catch                                                                   %#ok
+    disp (lasterr) ;                                                    %#ok
+    fprintf ('RBio not installed.\n') ;
 end
+
 
 % post-install wrapup
 

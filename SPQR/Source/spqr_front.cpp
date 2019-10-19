@@ -301,10 +301,15 @@ template <typename Entry> Int spqr_front
     // workspace, undefined on input and output
     Entry *W,           // size b*n, where b = min (fchunk,n,m)
 
+    // input/output
+    double *wscale,
+    double *wssq,
+
     cholmod_common *cc  // for cc->hypotenuse function
 )
 {
     Entry tau ;
+    double wk ;
     Entry *V ;
     Int k, t, g, g1, nv, k1, k2, i, t0, vzeros, mleft, nleft, vsize, minchunk,
         rank ;
@@ -416,12 +421,34 @@ template <typename Entry> Int spqr_front
         // check to see if the kth column is OK
         // ---------------------------------------------------------------------
 
-        if (k < ntol && spqr_abs (F [INDEX (g,k,m)], cc) <= tol)
+        if (k < ntol && (wk = spqr_abs (F [INDEX (g,k,m)], cc)) <= tol)
         {
 
             // -----------------------------------------------------------------
             // norm (F (g:t-1, k)) is too tiny; the kth pivot column is dead
             // -----------------------------------------------------------------
+
+            // keep track of the 2-norm of w, the dead column 2-norms
+            if (wk != 0)
+            {
+                // see also LAPACK's dnrm2 function
+                if ((*wscale) == 0)
+                {
+                    // this is the nonzero first entry in w
+                    (*wssq) = 1 ;
+                }
+                if ((*wscale) < wk)
+                {
+                    double rr = (*wscale) / wk ;
+                    (*wssq) = 1 + (*wssq) * rr * rr ;
+                    (*wscale) = wk ;
+                }
+                else
+                {
+                    double rr = wk / (*wscale) ;
+                    (*wssq) += rr * rr ;
+                }
+            }
 
             // zero out F (g:m-1,k) and flag it as dead
             for (i = g ; i < m ; i++)
@@ -586,6 +613,10 @@ template Int spqr_front <double>
     // workspace, undefined on input and output
     double *W,          // size b*n, where b = min (fchunk,n,m)
 
+    // input/output
+    double *wscale,
+    double *wssq,
+
     cholmod_common *cc  // for cc->hypotenuse function
 ) ;
 
@@ -615,6 +646,10 @@ template Int spqr_front <Complex>
 
     // workspace, undefined on input and output
     Complex *W,         // size b*n, where b = min (fchunk,n,m)
+
+    // input/output
+    double *wscale,
+    double *wssq,
 
     cholmod_common *cc  // for cc->hypotenuse function
 ) ;

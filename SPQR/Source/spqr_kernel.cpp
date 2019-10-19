@@ -110,6 +110,10 @@ template <typename Entry> void spqr_kernel
     Int     sumfrank = Work [stack].sumfrank ;
     Int     maxfrank = Work [stack].maxfrank ;
 
+    // for keeping track of norm(w) for dead column 2-norms
+    double wscale = Work [stack].wscale ;
+    double wssq   = Work [stack].wssq   ;
+
     // -------------------------------------------------------------------------
     // factorize all the fronts in this task
     // -------------------------------------------------------------------------
@@ -219,7 +223,8 @@ template <typename Entry> void spqr_kernel
         // ---------------------------------------------------------------------
 
         Int frank = spqr_front (fm, fn, fp, tol, ntol - col1,
-            fchunk, F, Stair, Rdead + col1, Tau, W, cc) ;
+            fchunk, F, Stair, Rdead + col1, Tau, W,
+            &wscale, &wssq, cc) ;
 
 #ifndef NDEBUG
 #ifndef NPRINT
@@ -310,6 +315,10 @@ template <typename Entry> void spqr_kernel
     Work [stack].Stack_top = Stack_top ;
     Work [stack].sumfrank = sumfrank ;  // sum rank of fronts for this stack
     Work [stack].maxfrank = maxfrank ;  // max rank of fronts for this stack
+
+    // for keeping track of norm(w) for dead column 2-norms
+    Work [stack].wscale = wscale ;
+    Work [stack].wssq   = wssq   ;
 }
 
 

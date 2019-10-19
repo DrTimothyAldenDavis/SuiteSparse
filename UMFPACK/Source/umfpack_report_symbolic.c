@@ -83,32 +83,45 @@ GLOBAL Int UMFPACK_report_symbolic
 	/* strategy cannot be auto */
 	if (Symbolic->strategy == UMFPACK_STRATEGY_SYMMETRIC)
 	{
-	    PRINTF (("symmetric")) ;
+	    PRINTF (("symmetric\n")) ;
+            PRINTF (("    ordering used:                              ")) ;
+            if (Symbolic->ordering == UMFPACK_ORDERING_AMD)
+            {
+                PRINTF (("amd on A\n")) ;
+            }
+            else if (Symbolic->ordering == UMFPACK_ORDERING_GIVEN)
+            {
+                PRINTF (("user permutation")) ;
+            }
+            else if (Symbolic->ordering == UMFPACK_ORDERING_USER)
+            {
+                PRINTF (("user function")) ;
+            }
+            else if (Symbolic->ordering == UMFPACK_ORDERING_METIS)
+            {
+                PRINTF (("metis on A")) ;
+            }
 	}
 	else /* if (Symbolic->strategy == UMFPACK_STRATEGY_UNSYMMETRIC) */
 	{
-	    PRINTF (("unsymmetric")) ;
-	}
-#if 0
-	else if (Symbolic->strategy == UMFPACK_STRATEGY_2BY2)
-	{
-	    PRINTF (("symmetric 2-by-2")) ;
-	}
-#endif
-	PRINTF (("\n")) ;
-
-	PRINTF (("    ordering used:                              ")) ;
-	if (Symbolic->ordering == UMFPACK_ORDERING_COLAMD)
-	{
-	    PRINTF (("colamd on A\n")) ;
-	}
-	else if (Symbolic->ordering == UMFPACK_ORDERING_AMD)
-	{
-	    PRINTF (("amd on A+A'\n")) ;
-	}
-	else if (Symbolic->ordering == UMFPACK_ORDERING_GIVEN)
-	{
-	    PRINTF (("provided by user")) ;
+	    PRINTF (("unsymmetric\n")) ;
+            PRINTF (("    ordering used:                              ")) ;
+            if (Symbolic->ordering == UMFPACK_ORDERING_AMD)
+            {
+                PRINTF (("colamd on A\n")) ;
+            }
+            else if (Symbolic->ordering == UMFPACK_ORDERING_GIVEN)
+            {
+                PRINTF (("user permutation")) ;
+            }
+            else if (Symbolic->ordering == UMFPACK_ORDERING_USER)
+            {
+                PRINTF (("user function")) ;
+            }
+            else if (Symbolic->ordering == UMFPACK_ORDERING_METIS)
+            {
+                PRINTF (("metis on A'A")) ;
+            }
 	}
 	PRINTF (("\n")) ;
 

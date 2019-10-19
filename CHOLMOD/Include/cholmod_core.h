@@ -244,11 +244,11 @@
  *	#endif
  */
 
-#define CHOLMOD_DATE "Sept 30, 2008"
+#define CHOLMOD_DATE "Nov 30, 2009"
 #define CHOLMOD_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define CHOLMOD_MAIN_VERSION 1
 #define CHOLMOD_SUB_VERSION 7
-#define CHOLMOD_SUBSUB_VERSION 1
+#define CHOLMOD_SUBSUB_VERSION 2
 #define CHOLMOD_VERSION \
     CHOLMOD_VER_CODE(CHOLMOD_MAIN_VERSION,CHOLMOD_SUB_VERSION)
 
@@ -903,9 +903,9 @@ typedef struct cholmod_common_struct
      */
 
     /* ---------------------------------------------------------------------- */
-    double other1 [12] ;        /* reduced from size 16 in v1.6 */
+    double other1 [10] ;
 
-    double SPQR_xstat [2] ;     /* for SuiteSparseQR statistics */
+    double SPQR_xstat [4] ;     /* for SuiteSparseQR statistics */
 
     /* SuiteSparseQR control parameters: */
     double SPQR_grain ;         /* task size is >= max (total flops / grain) */

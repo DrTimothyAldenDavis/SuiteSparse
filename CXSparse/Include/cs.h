@@ -22,10 +22,10 @@ extern "C" {
 #endif
 #endif
 
-#define CS_VER 2                    /* CXSparse Version 2.2.3 */
+#define CS_VER 2                    /* CXSparse Version */
 #define CS_SUBVER 2
-#define CS_SUBSUB 3
-#define CS_DATE "Mar 24, 2009"      /* CXSparse release date */
+#define CS_SUBSUB 4
+#define CS_DATE "Nov 30, 2009"      /* CXSparse release date */
 #define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006-2009"
 #define CXSPARSE
 

@@ -26,7 +26,7 @@
 
 /* tol options */
 #define SPQR_DEFAULT_TOL (-2)       /* if tol <= -2, the default tol is used */
-#define SPQR_NO_TOL (-1)            /* if 2 < tol < 0, then no tol is used */
+#define SPQR_NO_TOL (-1)            /* if -2 < tol < 0, then no tol is used */
 
 /* for qmult, method can be 0,1,2,3: */
 #define SPQR_QTX 0
@@ -59,11 +59,11 @@
         #endif
  */
 
-#define SPQR_DATE "May 1, 2009"
+#define SPQR_DATE "Nov 30, 2009"
 #define SPQR_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define SPQR_MAIN_VERSION 1
-#define SPQR_SUB_VERSION 1
-#define SPQR_SUBSUB_VERSION 2
+#define SPQR_SUB_VERSION 2
+#define SPQR_SUBSUB_VERSION 0
 #define SPQR_VERSION SPQR_VER_CODE(SPQR_MAIN_VERSION,SPQR_SUB_VERSION)
 
 #endif

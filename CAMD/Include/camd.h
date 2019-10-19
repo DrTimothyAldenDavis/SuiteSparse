@@ -405,11 +405,11 @@ void camd_l_info     (double Info [ ]) ;
  *	#endif
  */
 
-#define CAMD_DATE "May 31, 2007"
+#define CAMD_DATE "Nov 30, 2009"
 #define CAMD_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
 #define CAMD_MAIN_VERSION 2
 #define CAMD_SUB_VERSION 2
-#define CAMD_SUBSUB_VERSION 0
+#define CAMD_SUBSUB_VERSION 1
 #define CAMD_VERSION CAMD_VERSION_CODE(CAMD_MAIN_VERSION,CAMD_SUB_VERSION)
 
 #ifdef __cplusplus

@@ -51,6 +51,3 @@
 % Copyright 2006-2007, Timothy A. Davis.
 % http://www.cise.ufl.edu/research/sparse
 % Dec 3, 2007
-% Licensed under the GNU GPL, which means that if you use this code in your
-% own projects (or homework assignments ...) you must provide proper academic
-% citation.

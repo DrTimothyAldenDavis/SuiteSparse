@@ -29,11 +29,11 @@ CFLAGS = \
 # Use the standard reference BLAS, and LAPACK, both compiled with -g,
 # for best diagnostics.  Also, some BLAS (such as the Goto BLAS) cause
 # problems for Valgrind (using instructions that Valgrind doesn't understand).
-FLIB = -lgfortran -llapack_plain -lblas_plain -lg2c
+# FLIB = -lgfortran -llapack_plain -lblas_plain -lg2c
 
 # This can be used, but severe valgrind failures may occur in the BLAS,
 # because of how the BLAS is optimized:
-# FLIB = $(LAPACK) $(BLAS)
+  FLIB = $(LAPACK) $(BLAS)
 
 CLIB = ../../CHOLMOD/Lib/libcholmod.a ../../AMD/Lib/libamd.a \
 	../../COLAMD/Lib/libcolamd.a $(METIS) \
@@ -50,6 +50,7 @@ distclean: clean
 
 clean:
 	- $(RM) $(CLEAN)
+	- $(RM) -r *.dSYM
 
 INC = ../Include/spqr.hpp ../Include/SuiteSparseQR_C.h \
 	../Include/SuiteSparseQR_definitions.h \

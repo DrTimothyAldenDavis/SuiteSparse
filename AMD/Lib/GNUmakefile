@@ -2,7 +2,7 @@
 # AMD Makefile for compiling on Unix systems (for GNU make only)
 #-------------------------------------------------------------------------------
 
-default: ../Lib/libamd.a
+default: libamd.a
 
 include ../../UFconfig/UFconfig.mk
 
@@ -43,15 +43,15 @@ amd_l_%.o: ../Source/amd_%.c $(INC)
 # Create the libamd.a library (C versions only)
 #-------------------------------------------------------------------------------
 
-../Lib/libamd.a: amd_global.o $(AMDI) $(AMDL)
-	$(AR) ../Lib/libamd.a $^
-	- $(RANLIB) ../Lib/libamd.a
+libamd.a: amd_global.o $(AMDI) $(AMDL)
+	$(AR) libamd.a $^
+	- $(RANLIB) libamd.a
 
 #-------------------------------------------------------------------------------
 # compile the Fortran versions and the libamdf77.a library
 #-------------------------------------------------------------------------------
 
-fortran: ../Lib/libamdf77.a
+fortran: libamdf77.a
 
 AMDF77 = amd.o amdbar.o
 
@@ -61,9 +61,9 @@ amd.o: ../Source/amd.f
 amdbar.o: ../Source/amdbar.f
 	$(F77) $(F77FLAGS) -c ../Source/amdbar.f -o amdbar.o
 
-../Lib/libamdf77.a: $(AMDF77)
-	$(AR) ../Lib/libamdf77.a $^
-	- $(RANLIB) ../Lib/libamdf77.a
+libamdf77.a: $(AMDF77)
+	$(AR) libamdf77.a $^
+	- $(RANLIB) libamdf77.a
 
 #-------------------------------------------------------------------------------
 # Remove all but the files in the original distribution
@@ -75,4 +75,4 @@ clean:
 purge: distclean
 
 distclean: clean
-	- $(RM) ../Lib/libamd.a ../Lib/libamdf77.a
+	- $(RM) libamd.a libamdf77.a

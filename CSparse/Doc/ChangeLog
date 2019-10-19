@@ -1,3 +1,8 @@
+Nov 30, 2009: version 2.2.4
+
+    * added "make install" and "make uninstall"
+    * minor change to cs_make.m
+
 Jan 20, 2009, v2.2.3
 
     * all tabs expanded to 8 spaces (except for Makefiles)

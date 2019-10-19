@@ -30,10 +30,9 @@ GLOBAL Int UMFPACK_symbolic
     double Info [UMFPACK_INFO]
 )
 {
-    Int *Qinit = (Int *) NULL ;
     return (UMFPACK_qsymbolic (n_row, n_col, Ap, Ai, Ax,
 #ifdef COMPLEX
-	Az,
+        Az,
 #endif
-	Qinit, SymbolicHandle, Control, Info)) ;
+        (Int *) NULL, SymbolicHandle, Control, Info)) ;
 }

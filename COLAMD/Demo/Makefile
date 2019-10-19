@@ -27,7 +27,7 @@ colamd_example: colamd_example.c library
 colamd_l_example: colamd_l_example.c library
 	$(C) -o colamd_l_example colamd_l_example.c ../Lib/libcolamd.a -lm
 	- ./colamd_l_example > my_colamd_l_example.out
-	- diff colamd_example.out my_colamd_example.out
+	- diff colamd_l_example.out my_colamd_l_example.out
 
 #------------------------------------------------------------------------------
 # Remove all but the files in the original distribution
@@ -41,3 +41,4 @@ purge: distclean
 distclean: clean
 	- $(RM) colamd_example colamd_l_example
 	- $(RM) my_colamd_example.out my_colamd_l_example.out
+	- $(RM) -r *.dSYM

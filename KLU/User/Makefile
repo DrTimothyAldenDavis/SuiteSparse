@@ -19,6 +19,7 @@ purge: clean
 
 clean:
 	- $(RM) $(CLEAN)
+	- $(RM) -r *.dSYM
 
 library:
 	( cd ../../AMD ; $(MAKE) library )

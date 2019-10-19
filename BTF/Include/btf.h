@@ -250,11 +250,11 @@ UF_long btf_l_order (UF_long, UF_long *, UF_long *, double , double *,
  *      #endif
  */
 
-#define BTF_DATE "Mar 24, 2009"
+#define BTF_DATE "Nov 30, 2009"
 #define BTF_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
 #define BTF_MAIN_VERSION 1
 #define BTF_SUB_VERSION 1
-#define BTF_SUBSUB_VERSION 0
+#define BTF_SUBSUB_VERSION 1
 #define BTF_VERSION BTF_VERSION_CODE(BTF_MAIN_VERSION,BTF_SUB_VERSION)
 
 #ifdef __cplusplus

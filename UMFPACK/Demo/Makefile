@@ -2,10 +2,16 @@
 # compile the UMFPACK demos (for GNU make and original make)
 #-------------------------------------------------------------------------------
 
-# UMFPACK Version 4.4, Copyright (c) 2005 by Timothy A. Davis.
+# UMFPACK Copyright (c) Timothy A. Davis.
 # All Rights Reserved.  See ../Doc/License for License.
 
 default: libs run
+
+all: libs run hb
+
+all32: libs run hb fortran
+
+all64: libs run hb fortran64
 
 include ../../UFconfig/UFconfig.mk
 
@@ -22,11 +28,27 @@ LIBS = $(BLAS) $(XERBLA) $(LIB)
 ../../AMD/Lib/libamd.a:
 	( cd ../../AMD ; $(MAKE) library )
 
-UMFPACK = ../Lib/libumfpack.a ../../AMD/Lib/libamd.a
+../../CHOLMOD/Lib/libcholmod.a:
+	( cd ../../CHOLMOD ; $(MAKE) library )
 
-libs:
-	( cd ../Lib ; $(MAKE) )
-	( cd ../../AMD ; $(MAKE) library )
+../../COLAMD/Lib/libcolamd.a:
+	( cd ../../COLAMD ; $(MAKE) library )
+
+../../CCOLAMD/Lib/libccolamd.a:
+	( cd ../../CCOLAMD ; $(MAKE) library )
+
+../../CAMD/Lib/libcamd.a:
+	( cd ../../CAMD ; $(MAKE) library )
+
+../../metis-4.0/libmetis.a:
+	( cd ../../metis-4.0/Lib ; $(MAKE) )
+
+UMFPACK = ../Lib/libumfpack.a ../../AMD/Lib/libamd.a \
+    ../../CHOLMOD/Lib/libcholmod.a ../../COLAMD/Lib/libcolamd.a \
+    ../../CAMD/Lib/libcamd.a ../../metis-4.0/libmetis.a \
+    ../../CCOLAMD/Lib/libccolamd.a
+
+libs: $(UMFPACK)
 
 #-------------------------------------------------------------------------------
 # Create the demo programs, run them, and compare the output
@@ -130,6 +152,7 @@ readhb_nozeros:  readhb_nozeros.f
 # compile the FORTRAN interface and demo
 #-------------------------------------------------------------------------------
 
+# This doesn't seem to work on the Mac (Snow Leopard, OS X 10.6.1)
 fortran: $(UMFPACK) umf4hb.f umf4_f77wrapper.o umf4zhb.f umf4_f77zwrapper.o $(UMFPACK)
 	$(F77) $(F77FLAGS) -o umf4hb umf4hb.f umf4_f77wrapper.o \
 	    $(UMFPACK) $(LIBS)
@@ -171,6 +194,7 @@ purge: clean
 	- $(RM) umf4hb umf4zhb *.umf my_umf4hb.out
 	- $(RM) umf4hb64 my_umf4hb64.out my_umf4zhb.out
 	- $(RM) umf4 readhb readhb_nozeros readhb_size tmp/*
+	- $(RM) -rf *.dSYM
 
 clean:
 	- $(RM) $(CLEAN)

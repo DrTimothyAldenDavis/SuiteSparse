@@ -225,7 +225,11 @@ template <typename Entry> struct spqr_work
     Entry *Stack_top ;      // top of Stack
 
     Int sumfrank ;          // sum of ranks of the fronts in this stack
-    Int maxfrank ;          // large rank of fronts in this stack
+    Int maxfrank ;          // largest rank of fronts in this stack
+
+    // for computing the 2-norm of w, the vector of the dead column norms
+    double wscale ;         // scale factor for norm (w (of this stack))
+    double wssq ;           // sum-of-squares for norm (w (of this stack))
 } ;
 
 
@@ -909,6 +913,10 @@ template <typename Entry> Int spqr_front
     // workspace, undefined on input and output
     Entry *W,           // size b*(n+b), where b = min (fchunk,n,m)
 
+    // input/output
+    double *wscale,
+    double *wssq,
+
     cholmod_common *cc  // for cc->hypotenuse function
 ) ;
 
@@ -1008,9 +1016,7 @@ inline Int spqr_mult (Int a, Int b, int *ok)
 // === BLAS interface ==========================================================
 // =============================================================================
 
-// To compile SuiteSparseQR with 64-bit BLAS, use -D'LONGBLAS=whatever'.  For
-// example, for SGI's 64 bit BLAS use -D'LONGBLAS=long long', and for
-// the Sun Performance Library use -D'LONGBLAS=long'.  See also
+// To compile SuiteSparseQR with 64-bit BLAS, use -DBLAS64.  See also
 // CHOLMOD/Include/cholmod_blas.h
 
 extern "C" {

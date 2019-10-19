@@ -169,4 +169,4 @@ distclean: clean
 	rm -f cs_dl_demo1 cs_dl_demo2 cs_dl_demo3
 	rm -f cs_ci_demo1 cs_ci_demo2 cs_ci_demo3
 	rm -f cs_cl_demo1 cs_cl_demo2 cs_cl_demo3
-	rm -f cs_idemo cs_ldemo
+	rm -rf cs_idemo cs_ldemo *.dSYM

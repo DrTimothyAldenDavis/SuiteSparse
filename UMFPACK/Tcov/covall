@@ -3,9 +3,9 @@
 #  only print those lines that are "#####" in all tests.
 
 foreach file ( \
-    umf_2by2.c umf_analyze.c umf_apply_order.c umf_assemble.c \
+    umf_analyze.c umf_apply_order.c umf_assemble.c \
     umf_assemble_fixq.c umf_blas3_update.c umf_build_tuples.c \
-    umf_colamd.c umf_create_element.c umf_extend_front.c \
+    umf_cholmod.c umf_colamd.c umf_create_element.c umf_extend_front.c \
     umf_free.c umf_fsize.c umf_garbage_collection.c umf_get_memory.c \
     umf_grow_front.c umf_init_front.c umf_is_permutation.c umf_kernel.c \
     umf_kernel_init.c umf_kernel_wrapup.c umf_lhsolve.c umf_local_search.c \

@@ -1,3 +1,14 @@
+Nov 30, 2009: version 2.0.0
+
+    * rewrote the entire package in C.  The advantage is that the code is
+	now more portable.  It does not rely on a Fortran compiler that
+	supports the non-standard %val construct.  The minor disadvantage is
+	it can no longer read older Harwell/Boeing matrices if the Fortran
+	format they use does not put at least one space between the values.
+	The Rutherford/Boeing format does require at least one space, so the
+	package can read any Rutherford/Boeing matrix.  No changes to MATLAB
+	m-file interface.
+
 May 1, 2009: version 1.1.2
 
     * minor change to RBmake.m to compile 64-bit version

@@ -1,6 +1,6 @@
 %% THE FACTORIZE OBJECT for solving linear systems
 %
-% Copyright 2009, Timothy A. Davis, University of Florida.  May 19, 2009.
+% Copyright 2009, Timothy A. Davis, University of Florida.  June 4, 2009.
 % davis@cise.ufl.edu
 % http://www.cise.ufl.edu/~davis
 %
@@ -15,10 +15,11 @@
 %% Rule Number Two:  never break Rule Number One
 %
 % However, the problem with Rule Number One is that it can be hard to
-% figure out which matrix factorization to use and how to use it.
-% BACKSLASH (MLDIVIDE) is great, but it can't be reused when solving
-% multiple systems (x=A\b and y=A\c).  Its syntax doesn't match the use of
-% the inverse in mathematical expressions, either.
+% figure out which matrix factorization to use and how to use it.  Using
+% LU, CHOL, or QR is complicated, particularly if you want the best
+% performance.  BACKSLASH (MLDIVIDE) is great, but it can't be reused when
+% solving multiple systems (x=A\b and y=A\c).  Its syntax doesn't match
+% the use of the inverse in mathematical expressions, either.
 %
 % The goal of the FACTORIZE object is to solve this problem ...
 %
@@ -27,10 +28,10 @@
 %% How to use BACKSLASH solve A*x=b
 %
 % First, let's create a square matrix A and a right-hand-side b for a
-% linear system A*x=b.  There are many ways to solve this system.  The best
-% way is to use x=A\b.  The residual r is a vector of what's left over in
-% each equation, and its norm tells you how accurately the system was
-% solved.
+% linear system A*x=b.  There are many ways to solve this system.  The
+% best way is to use x=A\b.  The residual r is a vector of what's left
+% over in each equation, and its norm tells you how accurately the system
+% was solved.
 
 format compact ;
 A = rand (3)
@@ -63,8 +64,8 @@ x = A\b
 
 A = gallery ('frank',16) ; xtrue = ones (16,1) ; b = A*xtrue ;
 
-x = inv(A)*b ; norm (A*x-b)
-x = A\b      ; norm (A*x-b)
+x = inv(A)*b ; norm (b-A*x)
+x = A\b      ; norm (b-A*x)
 
 %%
 % The performance difference between BACKSLASH and INV for even small
@@ -150,7 +151,7 @@ tic ; S3 = A - (B/D)*C ;    toc ;
 %% So the winner is ... nobody
 %
 % BACKSLASH: mostly simple to use (except remember that Schur complement
-%       formuala?).  Fast and accurate ... but slow if you want to solve
+%       formula?).  Fast and accurate ... but slow if you want to solve
 %       two linear systems with the same matrix A.
 %
 % LU, QR, CHOL: fast and accurate.  Awful syntax to use.  Drag out your
@@ -234,12 +235,12 @@ tic ; x = pinv(A)*b      ; toc, norm (x)
 tic ; x = inverse(A)*b   ; toc, norm (x)
 tic ; x = factorize(A)\b ; toc, norm (x)
 
-%% Computing selected entries in the inverse or pseudo-invers
+%% Computing selected entries in the inverse or pseudo-inverse
 %
 % If you want just a few entries from the inverse, it's still better to
-% formulate the problem as a system of linear equations and to use a
-% matrix factorization instead of computing inv(A).  The FACTORIZE object
-% does this for you, by overloading the subsref operator.
+% formulate the problem as a system of linear equations and use a matrix
+% factorization instead of computing inv(A).  The FACTORIZE object does
+% this for you, by overloading the subsref operator.
 
 A = rand (1000) ;
 
@@ -251,8 +252,13 @@ tic ; S = inverse (A) ; S (2:3,4), toc
 % Rarely, and I mean RARELY, you really do need the inverse.  More
 % frequently what you want is the pseudo-inverse.  You can force a
 % factorization to become a plain matrix by converting it to double.  Note
-% that inverse(A) only handles full-rank matrices (either dense or sparse),
-% whereas pinv(A) works for all dense matrices (not sparse).
+% that inverse(A) only handles full-rank matrices (either dense or
+% sparse), whereas pinv(A) works for all dense matrices (not sparse).
+%
+% The explicit need for inv(A) (or S=A\eye(n), which is the same thing) is
+% RARE.  If you ever find yourself multiplying by the inverse, then you
+% know one thing for sure.  You know with certainty that you don't know
+% what you're doing.
 
 A = rand (500) ;
 tic ; S1 = inv (A) ;            ; toc
@@ -294,8 +300,7 @@ norm (x-y)
 % the object-oriented overhead of creating and using an object can dominate
 % the run time, at least in MATLAB R2009a.  For this case, if you want the
 % best performance, stick with BACKSLASH, or LU and LINSOLVE (just extract
-% the appropriate formulas from factorize.m and mldivide.m in the
-% @factorize directory).
+% the appropriate formulas from the M-files in the FACTORIZE package).
 %
 % Hopefully the object-oriented overhead will drop in future versions of
 % MATLAB, and you can ignore this caveat.

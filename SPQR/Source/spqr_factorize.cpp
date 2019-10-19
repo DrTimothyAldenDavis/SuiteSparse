@@ -116,6 +116,9 @@ template <typename Entry> spqr_work <Entry> *get_Work
             (Entry *) cholmod_l_malloc (wtsize, sizeof (Entry), cc) ;
         Work [stack].sumfrank = 0 ;
         Work [stack].maxfrank = 0 ;
+
+        Work [stack].wscale = 0 ;
+        Work [stack].wssq   = 0 ;
     }
 
     *p_wtsize = wtsize ;
@@ -529,6 +532,36 @@ template <typename Entry> spqr_numeric <Entry> *spqr_factorize
     QRnum->rank = rank ;                    // required by spqr_hpinv
     QRnum->maxfrank = maxfrank ;
     PR (("m %ld n %ld my QR rank %ld\n", m, n, rank)) ;
+
+    // -------------------------------------------------------------------------
+    // finalize norm(w) for the dead column 2-norms
+    // -------------------------------------------------------------------------
+
+    double wscale = 0 ;
+    double wssq = 1 ;
+    for (stack = 0 ; stack < ns ; stack++)
+    {
+        // norm_E_fro = norm (s.*sqrt(q)) ; see also LAPACK's dnrm2
+        double ws = Work [stack].wscale ;
+        double wq = Work [stack].wssq ;
+        if (wq != 0)
+        {
+            double wk = ws * sqrt (wq) ;
+            if (wscale < wk)
+            {
+                double rr = wscale / wk ;
+                wssq = 1 + wssq * rr * rr ;
+                wscale = wk ;
+            }
+            else
+            {
+                double rr = wk / wscale ;
+                wssq += rr * rr ;
+            }
+        }
+    }
+    QRnum->norm_E_fro = wscale * sqrt (wssq) ;
+    cc->SPQR_xstat [2] = QRnum->norm_E_fro ;
 
     // -------------------------------------------------------------------------
     // free all workspace, except Cblock and Work

@@ -10,7 +10,7 @@
 \newcommand{\implies}{\rightarrow}
 
 \topmargin 0in
-\textheight 9in
+\textheight 8.5in
 \oddsidemargin 0pt
 \evensidemargin 0pt
 \textwidth 6.5in
@@ -20,8 +20,8 @@
 \author{Timothy A. Davis \\
 Dept. of Computer and Information Science and Engineering \\
 Univ. of Florida, Gainesville, FL}
-\title{UMFPACK Version 5.4.0 User Guide}
-\date{May 20, 2009}
+\title{UMFPACK Version 5.5.0 User Guide}
+\date{Nov 30, 2009}
 \maketitle
 
 %-------------------------------------------------------------------------------
@@ -140,8 +140,8 @@ the strategy.
     may be numerically zero.
     Let $d$ be the number of nonzero entries on the diagonal of $\m{S}$.
     Let $\m{S}$ be $\nu$-by-$\nu$.
-    Rule 3: $(\sigma_1 \ge 0.7) \:\wedge\: (d \ge 0.9 \nu) \implies$ symmetric.
-    The matrix has a nearly symmetric nonzero pattern (70\% or more),
+    Rule 3: $(\sigma_1 \ge 0.5) \:\wedge\: (d \ge 0.9 \nu) \implies$ symmetric.
+    The matrix has a nearly symmetric nonzero pattern (50\% or more),
     and a mostly-zero-free diagonal (90\% or more nonzero).
 \item Rule 4:
     Otherwise, the unsymmetric strategy is used.
@@ -266,6 +266,15 @@ an old version of AMD with a newer version of UMFPACK can fail.}
 %-------------------------------------------------------------------------------
 
 A detailed list of changes is in the {\tt ChangeLog} file.
+
+%-------------------------------------------------------------------------------
+\subsection{Version 5.5.0}
+%-------------------------------------------------------------------------------
+
+Added more user ordering options (interface to CHOLMOD and METIS orderings,
+and the ability to pass in a user ordering function).
+Minor change to how the 64-bit BLAS is used.
+Added an option to disable the search for singletons.
 
 %-------------------------------------------------------------------------------
 \subsection{Version 5.4.0}
@@ -428,16 +437,9 @@ and with nonzero entries that are not confined in a narrow band.
 It is also used for the {\tt [L,U,P,Q] = lu (A)} usage of {\tt lu}.
 Type {\tt help lu} in MATLAB 6.5 or later for more details.
 
-To use the UMFPACK mexFunction, you must download and compile it,
-since the mexFunction itself is not part of MATLAB.
-The following discussion assumes that
-you have MATLAB Version 6.0 or later (which includes the BLAS, and the
-{\tt colamd} ordering routine).  To compile both the UMFPACK and AMD
-mexFunctions, just type {\tt make} in the Unix system shell,
-while in the {\tt UMFPACK} directory.
-You can also type {\tt umfpack\_make} in MATLAB, if you are in the
-{\tt UMFPACK/MATLAB} directory, or if that directory is in your MATLAB path.
-This works on any system with MATLAB, including Windows.
+To compile both the UMFPACK and AMD mexFunctions, just type {\tt umfpack\_make}
+in MATLAB, while in the {\tt UMFPACK/MATLAB} directory.
+
 See Section~\ref{Install} for more details on how to install UMFPACK.
 Once installed, the UMFPACK mexFunction can analyze, factor, and solve linear
 systems.  Table~\ref{matlab} summarizes some of the more common uses
@@ -480,7 +482,7 @@ x = A \ b ;
  & & \\
 \begin{minipage}[t]{1.5in}
 Solve $\m{Ax}=\m{b}$ using a different row and column pre-ordering
-(symmetric ordering).
+(symmetric strategy).
 \end{minipage}
 &
 \begin{minipage}[t]{2.2in}
@@ -488,7 +490,7 @@ Solve $\m{Ax}=\m{b}$ using a different row and column pre-ordering
 S = spones (A) ;
 Q = symamd (S+S') ;
 Control = umfpack ;
-Control (6) = 3 ;
+Control.strategy = 'symmetric' ;
 x = umfpack (A,Q,'\',b,Control) ;
 \end{verbatim}
 \end{minipage}
@@ -971,7 +973,64 @@ behavior.  They are fully described in Section~\ref{Alternative}:
     nearly always give about the same quality of results.  There may be
     cases where the automatic strategy fails to pick a good strategy. Also,
     you can save some computing time if you know the right strategy for your
-    set of matrix problems.
+    set of matrix problems.  The default is \verb'UMFPACK_STRATEGY_AUTO',
+    in which UMFPACK selects the strategy by itself.
+    \verb'UMFPACK_STRATEGY_UNSYMMETRIC' gives the unsymmetric
+    strategy, which is to use a column pre-ordering (such as COLAMD)
+    and to give no preference to the diagonal during partial pivoting.
+    \verb'UMFPACK_STRATEGY_SYMMETRIC' gives the symmetric strategy,
+    which is to use a symmetric row and column ordering (such as AMD)
+    and to give strong preference to the diagonal during partial pivoting.
+
+    The parameter {\tt Control [UMFPACK\_ORDERING]} defines what ordering
+    method UMFPACK should use.  The options are:
+
+    \begin{itemize}
+    \item \verb'UMFPACK_ORDERING_CHOLMOD' (0).
+        This is the method used by CHOLMOD.  It first tries AMD or COLAMD
+        (depending on what strategy is used).  If that method gives low
+        fill-in, it is used without trying METIS at all.
+        Otherwise METIS is tried (on $\m{A}^T\m{A}$ for the unsymmetric
+        strategy, or $\m{A}+\m{A}^T$ for the symmetric strategy),
+        and the ordering (AMD/COLAMD or METIS) giving the lowest fill-in is
+        used.
+
+    \item \verb'UMFPACK_ORDERING_DEFAULT'.  This is the same as
+    \verb'UMFPACK_ORDERING_AMD'.
+
+    \item \verb'UMFPACK_ORDERING_AMD' (1).  This is the default.
+        AMD is used for the symmetric strategy, on the pattern of
+        $\m{A}+\m{A}^T$.  COLAMD is used on $\m{A}$ for the unsymmetric
+        strategy.
+
+    \item \verb'UMFPACK_ORDERING_GIVEN' (2).  This is assumed if
+        a permutation is provided to \newline
+        {\tt umfpack\_*\_qsymbolic}.
+
+    \item \verb'UMFPACK_ORDERING_METIS' (3).
+        Use METIS (on $\m{A}^T\m{A}$ for the unsymmetric
+        strategy, or $\m{A}+\m{A}^T$ for the symmetric strategy).
+
+    \item \verb'UMFPACK_ORDERING_BEST' (4).
+        Try three methods and take the best.  The three methods are
+        AMD/COLAMD, METIS, and NESDIS (CHOLMOD's nested dissection
+        ordering, based on METIS and CCAMD/CCOLAMD).  This results the
+        highest analysis time, but the lowest numerical factorization time.
+
+    \item \verb'UMFPACK_ORDERING_NONE' (5).
+        The matrix is factorized as-is, except that singletons are still
+        removed.
+
+    \item \verb'UMFPACK_ORDERING_USER' (6).  Use the user-ordering function
+        passed to \newline {\tt umfpack\_*\_fsymbolic}.    Refer to 
+        \verb'UMFPACK/Source/umf_cholmod.c' for an example.
+
+    \end{itemize}
+
+    To disable the singleton filter, set \verb'Control [UMFPACK_SINGLETONS]' to
+    0.  Disabling this search for singletons can slow UMFPACK down quite a bit
+    for some matrices, but it does ensure that $\m{L}$ is well-conditioned and
+    that any ill-conditioning of $\m{A}$ is captured only in $\m{U}$.
 
 \item {\tt umfpack\_*\_qsymbolic}:
 
@@ -981,6 +1040,13 @@ behavior.  They are fully described in Section~\ref{Alternative}:
     of $\m{A}\tr\m{A}$ would be suitable for UMFPACK's unsymmetric strategy.
     A partitioning of $\m{A}+\m{A}\tr$ would be suitable for UMFPACK's
     symmetric strategy.
+
+\item {\tt umfpack\_*\_fsymbolic}:
+
+    An alternative to {\tt umfpack\_*\_symbolic}.
+    Allows the user to pass a pointer to a function,
+    which is called to compute the ordering on the matrix
+    (or on a submatrix with singletons removed, if any exist).
 
 \item {\tt umfpack\_*\_wsolve}:
 
@@ -1328,31 +1394,27 @@ indexing.  Thus, {\tt Control(1)} in MATLAB is the same as
 \hline
 
 MATLAB & ANSI C & default & description \\
+\verb'struct' & & & \\
 \hline
-{\tt Control(1)}  & {\tt Control[UMFPACK\_PRL]} & 1 & printing level \\
-{\tt Control(2)}  & {\tt Control[UMFPACK\_DENSE\_ROW]} & 0.2 & dense row parameter \\
-{\tt Control(3)}  & {\tt Control[UMFPACK\_DENSE\_COL]} & 0.2 & dense column parameter \\
-{\tt Control(4)}  & {\tt Control[UMFPACK\_PIVOT\_TOLERANCE]} & 0.1 & partial pivoting tolerance \\
-{\tt Control(5)}  & {\tt Control[UMFPACK\_BLOCK\_SIZE]} & 32 & BLAS block size \\
-{\tt Control(6)}  & {\tt Control[UMFPACK\_STRATEGY]} & 0 (auto) & select strategy \\
-{\tt Control(7)}  & {\tt Control[UMFPACK\_ALLOC\_INIT]} & 0.7 & initial memory allocation  \\
-{\tt Control(8)}  & {\tt Control[UMFPACK\_IRSTEP]} & 2 & max iter. refinement steps \\
-{\tt Control(13)} & ignored & & \\
-{\tt Control(14)} & {\tt Control[UMFPACK\_FIXQ]} & 0 (auto) & fix or modify Q \\
-{\tt Control(15)} & {\tt Control[UMFPACK\_AMD\_DENSE]} & 10 & AMD dense row/column parameter \\
-{\tt Control(16)} & {\tt Control[UMFPACK\_SYM\_PIVOT\_TOLERANCE]} & 0.001 & for diagonal entries \\
-{\tt Control(17)} & {\tt Control[UMFPACK\_SCALE]} & 1 (sum) & row scaling (none, sum, or max) \\
-{\tt Control(18)} & {\tt Control[UMFPACK\_FRONT\_ALLOC\_INIT]} & 0.5 & frontal matrix allocation ratio \\
-{\tt Control(19)} & {\tt Control[UMFPACK\_DROPTOL]} & 0 & drop tolerance \\
-{\tt Control(20)} & {\tt Control[UMFPACK\_AGGRESSIVE]} & 1 (yes) & aggressive absorption \\
- & & & in AMD and COLAMD \\
+{\tt prl}           & {\tt Control[UMFPACK\_PRL]} & 1 & printing level \\
+-                   & {\tt Control[UMFPACK\_DENSE\_ROW]} & 0.2 & dense row parameter \\
+-                   & {\tt Control[UMFPACK\_DENSE\_COL]} & 0.2 & dense column parameter \\
+{\tt tol}           & {\tt Control[UMFPACK\_PIVOT\_TOLERANCE]} & 0.1 & partial pivoting tolerance \\
+-                   & {\tt Control[UMFPACK\_BLOCK\_SIZE]} & 32 & BLAS block size \\
+{\tt strategy}      & {\tt Control[UMFPACK\_STRATEGY]} & 0 (auto) & select strategy \\
+{\tt ordering}      & {\tt Control[UMFPACK\_ORDERING]} & 1 (AMD) & select ordering \\
+-                   & {\tt Control[UMFPACK\_ALLOC\_INIT]} & 0.7 & initial memory allocation  \\
+{\tt irstep}        & {\tt Control[UMFPACK\_IRSTEP]} & 2 & max iter. refinement steps \\
+% {\tt Control(13)} & ignored & & \\
+-                   & {\tt Control[UMFPACK\_FIXQ]} & 0 (auto) & fix or modify Q \\
+-                   & {\tt Control[UMFPACK\_AMD\_DENSE]} & 10 & AMD dense row/col param. \\
+{\tt symtol}        & {\tt Control[UMFPACK\_SYM\_PIVOT\_TOLERANCE]} & 0.001 & for diagonal entries \\
+{\tt scale}         & {\tt Control[UMFPACK\_SCALE]} & 1 (sum) & row scaling (none, sum, max) \\
+-                   & {\tt Control[UMFPACK\_FRONT\_ALLOC\_INIT]} & 0.5 & frontal matrix allocation ratio \\
+-                   & {\tt Control[UMFPACK\_DROPTOL]} & 0 & drop tolerance \\
+-                   & {\tt Control[UMFPACK\_AGGRESSIVE]} & 1 (yes) & aggressive absorption \\
+{\tt singletons}    & {\tt Control[UMFPACK\_SINGLETONS]} & 1 (enable) & enable singleton filter \\
 %
-\hline
-\multicolumn{4}{l}{Can only be changed at compile time:} \\
-{\tt Control(9)}  & {\tt Control[UMFPACK\_COMPILED\_WITH\_BLAS]} & - & true if BLAS is used \\
-{\tt Control(10)} & {\tt Control[UMFPACK\_COMPILED\_FOR\_MATLAB]} & - & true for mexFunction \\
-{\tt Control(11)} & {\tt Control[UMFPACK\_COMPILED\_WITH\_GETRUSAGE]} & - & 1 if {\tt getrusage} used \\
-{\tt Control(12)} & {\tt Control[UMFPACK\_COMPILED\_IN\_DEBUG\_MODE]} & - & true if debug mode enabled \\
 \hline
 \end{tabular}
 }
@@ -1375,7 +1437,9 @@ In AMD, a row/column of the square matrix $\m{S}+\m{S}\tr$ is
 considered ``dense'' if it has more than $\max (16, \alpha \sqrt{n})$ entries.
 These rows/columns are placed last in AMD's output ordering.
 For more details on the control parameters, refer to the documentation of
-{\tt umfpack\_*\_qsymbolic}, {\tt umfpack\_*\_numeric}, {\tt umfpack\_*\_solve},
+{\tt umfpack\_*\_qsymbolic},
+{\tt umfpack\_*\_fsymbolic},
+{\tt umfpack\_*\_numeric}, {\tt umfpack\_*\_solve},
 and the {\tt umfpack\_*\_report\_*} routines,
 in Sections~\ref{Primary}~through~\ref{Report}, below.
 
@@ -1499,6 +1563,9 @@ In this case, no {\tt Symbolic} or {\tt Numeric} object was created.
     be the wrong one, and an earlier end-of-file condition would then result
     in this error.
 
+\item {\tt UMFPACK\_ERROR\_ordering\_failed},  (-18):
+    The ordering method failed.
+
 \item {\tt UMFPACK\_ERROR\_internal\_error},  (-911):  
     An internal error has occurred, of unknown cause.  This is either a bug
     in UMFPACK, or the result of a memory overrun from your program.
@@ -1525,7 +1592,10 @@ user-callable C interface to UMFPACK.  The only features that it does not use
 are the support for the triplet form (MATLAB's sparse arrays are already in the
 compressed column form) and the ability to reuse the {\tt Symbolic} object to
 numerically factorize a matrix whose pattern is the same as a prior matrix
-analyzed by {\tt umfpack\_*\_symbolic} or {\tt umfpack\_*\_qsymbolic}.  The
+analyzed by {\tt umfpack\_*\_symbolic},
+{\tt umfpack\_*\_qsymbolic} or
+{\tt umfpack\_*\_fsymbolic}.
+The
 latter is an important feature, but the mexFunction does not return its opaque
 {\tt Symbolic} and {\tt Numeric} objects to MATLAB.  Instead, it gets the
 contents of these objects after extracting them via the {\tt umfpack\_*\_get\_*}
@@ -1642,6 +1712,7 @@ double W [5*n] ;
 
 umfpack_di_defaults (Control) ;
 status = umfpack_di_qsymbolic (m, n, Ap, Ai, Ax, Qinit, &Symbolic, Control, Info) ;
+status = umfpack_di_fsymbolic (m, n, Ap, Ai, Ax, &user_ordering, user_params, &Symbolic, Control, Info) ;
 status = umfpack_di_wsolve (sys, Ap, Ai, Ax, X, B, Numeric, Control, Info, Wi, W) ;
 \end{verbatim}
 }
@@ -1745,6 +1816,7 @@ double Wz [10*n] ;
 
 umfpack_zi_defaults (Control) ;
 status = umfpack_zi_qsymbolic (m, n, Ap, Ai, Ax, Az, Qinit, &Symbolic, Control, Info) ;
+status = umfpack_zi_fsymbolic (m, n, Ap, Ai, Ax, Az, &user_ordering, user_params, &Symbolic, Control, Info) ;
 status = umfpack_zi_wsolve (sys, Ap, Ai, Ax, Az, Xx, Xz, Bx, Bz, Numeric, Control, Info, Wi, Wz) ;
 \end{verbatim}
 }
@@ -2034,16 +2106,21 @@ the UMFPACK and AMD mexFunctions in MATLAB.
 
 You will need to install both UMFPACK and AMD to use UMFPACK.
 The {\tt UMFPACK} and {\tt AMD} subdirectories must be placed side-by-side
-within the same directory.  AMD is a stand-alone package that
+within the same parent directory.  AMD is a stand-alone package that
 is required by UMFPACK.  UMFPACK can be compiled without the
 BLAS \cite{DaydeDuff99,ACM679a,ATLAS,GotoVandeGeijn02},
 but your performance will be much less than what it should be.
+
+UMFPACK also requires CHOLMOD, CCAMD, CCOLAMD, COLAMD, and metis-4.0
+by default.  You can remove this dependency by compiling with
+{\tt -DNCHOLMOD}.  Add this to the {\tt UMFPACK\_CONFIG} definition
+in {\tt UFconfig/UFconfig.mk}.
 
 System-dependent configurations are in the {\tt UFconfig/UFconfig.mk}
 file.  The default
 settings will work on most systems, except that UMFPACK will be compiled so
 that it does not use the BLAS.  Sample configurations are provided
-for Linux, Sun Solaris, SGI IRIX, IBM AIX, and the DEC/Compaq Alpha.
+for Linux, Mac, Sun Solaris, SGI IRIX, IBM AIX, and the DEC/Compaq Alpha.
 
 To compile and install both packages,
 go to the {\tt UMFPACK} directory and type {\tt make}.  This will compile the
@@ -2056,13 +2133,12 @@ files in the distribution.  Expect to see a few differences, such as
 residual norms, compile-time control settings, and perhaps memory usage
 differences.
 
-To use {\tt make} to compile the MATLAB mexFunctions for MATLAB
-and AMD, you can either type {\tt make mex} in the UMFPACK directory.
-You may first need to edit the {\tt UFconfig/UFconfig.mk} file to
-modify the definition of the {\tt MEX}, if you have a version of MATLAB
-older than Version 7.2.  Remove the {\tt -largeArrayDims} definition.
-If you use the MATLAB command {\tt umfpack\_make} in the MATLAB directory,
-then this case is handled for you automatically.
+If you have trouble with {\tt make} for UMFPACK,
+try using the plain {\tt Makefile} instead of {\tt GNUmakefile}.
+Go to the UMFPACK/Lib directory and type {\tt make -f Makefile}.
+
+Use the MATLAB command {\tt umfpack\_make} in the MATLAB directory
+to compile UMFPACK and AMD for use in MATLAB.
 
 If you have the GNU version of {\tt make}, the {\tt Lib/GNUmakefile} and
 {\tt MATLAB/GNUmakefile} files are used.  These are much more concise than
@@ -2163,9 +2239,16 @@ a dense matrix (stored in sparse format) is 900 Mflops, as compared to
 when {\tt A} is stored as a regular full matrix.
 
 When you compile your program that uses the C-callable UMFPACK library,
-you need to link your program with both libraries
-({\tt UMFPACK/Lib/libumfpack.a} and {\tt AMD/Lib/libamd.a})
-and you need to tell your compiler to look in the
+you need to link your program with all libraries
+({\tt UMFPACK/Lib/libumfpack.a} and {\tt AMD/Lib/libamd.a},
+and unless you compile with \verb'-DNCHOLMOD' you also must link with
+{\tt CHOLMOD/Lib/libcholmod.a}, \newline
+{\tt COLAMD/Lib/libcolamd.a},
+{\tt CCOLAMD/Lib/libccolamd.a},
+{\tt CAMD/Lib/libcamd.a},
+and \newline
+{\tt metis-4.0/libmetis.a}).
+You need to tell your compiler to look in the
 directories {\tt UMFPACK/Include} and {\tt AMD/Include} for include
 files.  See {\tt UMFPACK/Demo/Makefile} for an example.
 You do not need to directly include any AMD include files in your
@@ -2200,13 +2283,11 @@ compilation of UMFPACK in Microsoft Visual Studio, for Windows.
 \subsection{Installing the MATLAB interface}
 %-------------------------------------------------------------------------------
 
-If all you want to do is use the UMFPACK mexFunction in MATLAB, you can skip
-the use of the {\tt make} command described above.  Simply type
+Simply type
 {\tt umfpack\_make} in MATLAB while in the {\tt UMFPACK/MATLAB} directory.
 You can also type {\tt amd\_make} in the {\tt AMD/MATLAB} directory
 to compile the stand-alone AMD mexFunction (this is not required to
-compile the UMFPACK mexFunction).  This works on any computer with MATLAB,
-including Windows.
+compile the UMFPACK mexFunction).
 
 If you are using Windows and the {\tt lcc} compiler bundled with
 MATLAB 6.1, then you may need to copy the
@@ -2245,6 +2326,9 @@ as stand-alone compiled files ({\tt umf4\_f77wrapper.o} and
 You may need to modify the interface routines in the file
 {\tt umf4\_f77wrapper.c} if you are using compilers for which this interface
 has not been tested.
+
+In particular, I was not able to get C and Fortran to work together on
+the Mac (Snow Leopard).
 
 %-------------------------------------------------------------------------------
 \subsection{Known Issues}
@@ -2439,7 +2523,7 @@ INCLUDE umfpack_defaults.h via sed
 }
 
 \newpage
-\subsection{umfpack\_*\_qsymbolic}
+\subsection{umfpack\_*\_qsymbolic and umfpack\_*\_fsymbolic}
 
 {\footnotesize
 \begin{verbatim}

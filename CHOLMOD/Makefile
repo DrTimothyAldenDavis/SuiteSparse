@@ -2,6 +2,8 @@
 # CHOLMOD Makefile
 #-------------------------------------------------------------------------------
 
+VERSION = 1.7.2
+
 # Note: If you do not have METIS, or do not wish to use it in CHOLMOD, you must
 # compile CHOLMOD with the -DNPARTITION flag.  See ../UFconfig/UFconfig.mk.
 
@@ -54,6 +56,19 @@ valgrind:
 	( cd Valgrind ; $(MAKE) )
 
 # Compile the C-callable libraries and the Demo programs.
-demo:
+demos:
 	( cd Demo ; $(MAKE) )
+
+
+# install CHOLMOD
+install:
+	$(CP) Lib/libcholmod.a $(INSTALL_LIB)/libcholmod.$(VERSION).a
+	( cd $(INSTALL_LIB) ; ln -s libcholmod.$(VERSION).a libcholmod.a )
+	$(CP) Include/cholmod*.h $(INSTALL_INCLUDE)
+	$(RM) $(INSTALL_INCLUDE)/cholmod_internal.h
+
+# uninstall CHOLMOD
+uninstall:
+	$(RM) $(INSTALL_LIB)/libcholmod*.a
+	$(RM) $(INSTALL_INCLUDE)/cholmod*.h
 

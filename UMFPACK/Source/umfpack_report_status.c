@@ -100,6 +100,10 @@ GLOBAL void UMFPACK_report_status
 	    PRINTF (("ERROR: pattern of matrix (Ap and/or Ai) has changed\n")) ;
 	    break ;
 
+        case UMFPACK_ERROR_ordering_failed:
+	    PRINTF (("ERROR: ordering failed\n")) ;
+	    break ;
+
 	case UMFPACK_ERROR_internal_error:
 	    PRINTF (("INTERNAL ERROR!\n"
 	    "Input arguments might be corrupted or aliased, or an internal\n"

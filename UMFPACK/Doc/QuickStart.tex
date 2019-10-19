@@ -8,7 +8,7 @@
 \newcommand{\tr}{^{\sf T}}          % transpose
 
 \topmargin 0in
-\textheight 9in
+\textheight 8.5in
 \oddsidemargin 0pt
 \evensidemargin 0pt
 \textwidth 6.5in
@@ -18,8 +18,8 @@
 \author{Timothy A. Davis \\
 Dept. of Computer and Information Science and Engineering \\
 Univ. of Florida, Gainesville, FL}
-\title{UMFPACK Version 5.4.0 Quick Start Guide}
-\date{May 20, 2009}
+\title{UMFPACK Version 5.5.0 Quick Start Guide}
+\date{Nov 30, 2009}
 \maketitle
 
 %-------------------------------------------------------------------------------
@@ -234,21 +234,26 @@ for more details.
 \label{Install}
 %-------------------------------------------------------------------------------
 
-You will need to install AMD v2.2 to use UMFPACK.
-Note that this version of UMFPACK cannot use AMD v1.2 or earlier.
+You will need to install both UMFPACK and AMD to use UMFPACK.
 The {\tt UMFPACK} and {\tt AMD} subdirectories must be placed side-by-side
 within the same parent directory.  AMD is a stand-alone package that
 is required by UMFPACK.  UMFPACK can be compiled without the
-BLAS but your performance will be much less than what it should be.
+BLAS
+but your performance will be much less than what it should be.
+
+UMFPACK also requires CHOLMOD, CCAMD, CCOLAMD, COLAMD, and metis-4.0
+by default.  You can remove this dependency by compiling with
+{\tt -DNCHOLMOD}.  Add this to the {\tt UMFPACK\_CONFIG} definition
+in {\tt UFconfig/UFconfig.mk}.
 
 System-dependent configurations are in the {\tt UFconfig/UFconfig.mk}
 file.  The default
 settings will work on most systems, except for the BLAS definition.
 Sample configurations are provided
-for Linux, Sun Solaris, SGI IRIX, IBM AIX, and the DEC/Compaq Alpha.
+for Linux, Mac, Sun Solaris, SGI IRIX, IBM AIX, and the DEC/Compaq Alpha.
 
 To compile and install both packages,
-go to the UMFPACK directory and type {\tt make}.  This will compile the
+go to the {\tt UMFPACK} directory and type {\tt make}.  This will compile the
 libraries ({\tt AMD/Lib/libamd.a} and {\tt UMFPACK/Lib/libumfpack.a}).
 A demo of the AMD ordering routine will be compiled and tested in
 the {\tt AMD/Demo} directory, and five demo programs will then be
@@ -258,13 +263,12 @@ files in the distribution.  Expect to see a few differences, such as
 residual norms, compile-time control settings, and perhaps memory usage
 differences.
 
-To use {\tt make} to compile the MATLAB mexFunctions for MATLAB
-and AMD, you can either type {\tt make mex} in the UMFPACK directory.
-You may first need to edit the {\tt UFconfig/UFconfig.mk} file to
-modify the definition of the {\tt MEX}, if you have a version of MATLAB
-older than Version 7.2.  Remove the {\tt -largeArrayDims} definition.
-If you use the MATLAB command {\tt umfpack\_make} in the MATLAB directory,
-then this case is handled for you automatically.
+If you have trouble with {\tt make} for UMFPACK,
+try using the plain {\tt Makefile} instead of {\tt GNUmakefile}.
+Go to the UMFPACK/Lib directory and type {\tt make -f Makefile}.
+
+Use the MATLAB command {\tt umfpack\_make} in the MATLAB directory
+to compile UMFPACK and AMD for use in MATLAB.
 
 If you compile UMFPACK and AMD and then later change the
 {\tt UFconfig/UFconfig.mk} file
@@ -277,7 +281,7 @@ Here are the various parameters that you can control in your
 \item {\tt CC = } your C compiler, such as {\tt cc}.
 \item {\tt RANLIB = } your system's {\tt ranlib} program, if needed.
 \item {\tt CFLAGS = } optimization flags, such as {\tt -O}.
-\item {\tt UMFPACK\_CONFIG = } configuration settings, for the BLAS,
+\item {\tt UMFPACK\_CONFIG = } configuration settings for the BLAS,
     memory allocation routines, and timing routines.
 \item {\tt LIB = } your libraries, such as {\tt -lm} or {\tt -lblas}.
 \item {\tt RM =} the command to delete a file.
@@ -312,9 +316,16 @@ most deal with how the BLAS are called:
 \end{itemize}
 
 When you compile your program that uses the C-callable UMFPACK library,
-you need to add the both {\tt UMFPACK/Lib/libumfpack.a} and
-{\tt AMD/Lib/libamd.a}
-libraries, and you need to tell your compiler to look in the
+you need to link your program with all libraries
+({\tt UMFPACK/Lib/libumfpack.a} and {\tt AMD/Lib/libamd.a},
+and unless you compile with \verb'-DNCHOLMOD' you also must link with
+{\tt CHOLMOD/Lib/libcholmod.a}, \newline
+{\tt COLAMD/Lib/libcolamd.a},
+{\tt CCOLAMD/Lib/libccolamd.a},
+{\tt CAMD/Lib/libcamd.a},
+and \newline
+{\tt metis-4.0/libmetis.a}).
+You need to tell your compiler to look in the
 directories {\tt UMFPACK/Include} and {\tt AMD/Include} for include
 files.  See {\tt UMFPACK/Demo/Makefile} for an example.
 You do not need to directly include any AMD include files in your
@@ -450,10 +461,6 @@ Arguments:
                 off-diagonal pivot is selected with magnitude >= Control
                 [UMFPACK_PIVOT_TOLERANCE] (default 0.1) times the largest entry
                 in its column.
-
-            UMFPACK_STRATEGY_2BY2:  option disabled.
-
-        Control [UMFPACK_2BY2_TOLERANCE]:  ignored.
 
         Control [UMFPACK_SCALE]:  This parameter is new to V4.1.  See
             umfpack_numeric.h for a description.  Only affects the 2-by-2
@@ -652,8 +659,8 @@ Arguments:
             increase in the total work.
 
         Control [UMFPACK_SYM_PIVOT_TOLERANCE]:  This parameter is new to V4.1.
-            If diagonal pivoting is attempted (the symmetric or symmetric-2by2
-            strategies are used) then this parameter is used to control when the
+            If diagonal pivoting is attempted (the symmetric
+            strategy is used) then this parameter is used to control when the
             diagonal entry is selected in a given pivot column.  The absolute
             value of the entry must be >= Control [UMFPACK_SYM_PIVOT_TOLERANCE]
             times the largest absolute value in the column.  A value of zero

@@ -2,13 +2,15 @@
 # AMD Makefile (for GNU Make or original make)
 #------------------------------------------------------------------------------
 
-default: demo
+VERSION = 2.2.1
+
+default: demos
 
 include ../UFconfig/UFconfig.mk
 
 # Compile all C code, including the C-callable routines.
 # Do not compile the FORTRAN versions, or MATLAB interface.
-demo:
+demos:
 	( cd Lib    ; $(MAKE) )
 	( cd Demo   ; $(MAKE) )
 
@@ -50,7 +52,7 @@ purge:
 distclean: purge
 
 # create PDF documents for the original distribution
-doc:
+docs:
 	( cd Doc    ; $(MAKE) )
 
 # get ready for distribution
@@ -65,3 +67,15 @@ lib: library
 # compile the MATLAB mexFunction
 mex:
 	( cd MATLAB ; $(MAKE) )
+
+# install AMD
+install:
+	$(CP) Lib/libamd.a $(INSTALL_LIB)/libamd.$(VERSION).a
+	( cd $(INSTALL_LIB) ; ln -s libamd.$(VERSION).a libamd.a )
+	$(CP) Include/amd.h $(INSTALL_INCLUDE)
+
+# uninstall AMD
+uninstall:
+	$(RM) $(INSTALL_LIB)/libamd*.a
+	$(RM) $(INSTALL_INCLUDE)/amd.h
+

@@ -2,12 +2,14 @@
 # LDL Makefile
 #------------------------------------------------------------------------------
 
-default: demo
+VERSION = 2.0.2
+
+default: demos
 
 include ../UFconfig/UFconfig.mk
 
 # Compile all C code, including the C-callable routine.
-demo:
+demos:
 	( cd Lib    ; $(MAKE) )
 	( cd Demo   ; $(MAKE) )
 
@@ -38,7 +40,7 @@ purge:
 distclean: purge
 
 # create PDF documents for the original distribution
-doc:
+docs:
 	( cd Doc    ; $(MAKE) )
 
 # get ready for distribution
@@ -53,3 +55,15 @@ lib: library
 # compile the MATLAB mexFunction
 mex:
 	( cd MATLAB ; $(MAKE) )
+
+# install LDL
+install:
+	$(CP) Lib/libldl.a $(INSTALL_LIB)/libldl.$(VERSION).a
+	( cd $(INSTALL_LIB) ; ln -s libldl.$(VERSION).a libldl.a )
+	$(CP) Include/ldl.h $(INSTALL_INCLUDE)
+
+# uninstall LDL
+uninstall:
+	$(RM) $(INSTALL_LIB)/libldl*.a
+	$(RM) $(INSTALL_INCLUDE)/ldl.h
+

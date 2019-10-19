@@ -2,12 +2,14 @@
 # UMFPACK Makefile for compiling on Unix systems (for GNU Make)
 #-------------------------------------------------------------------------------
 
-default: ../Lib/libumfpack.a
+default: libumfpack.a
 
 include ../../UFconfig/UFconfig.mk
 
 C = $(CC) $(CFLAGS) $(UMFPACK_CONFIG) \
-    -I../Include -I../Source -I../../AMD/Include -I../../UFconfig
+    -I../Include -I../Source -I../../AMD/Include -I../../UFconfig \
+    -I../../CCOLAMD/Include -I../../CAMD/Include -I../../CHOLMOD/Include \
+    -I../../metis-4.0/Lib -I../../COLAMD/Include
 
 #-------------------------------------------------------------------------------
 # source files
@@ -23,13 +25,13 @@ UMFCH = umf_assemble umf_blas3_update umf_build_tuples umf_create_element \
 	umf_report_vector umf_row_search umf_scale_column \
 	umf_set_stats umf_solve umf_symbolic_usage umf_transpose \
 	umf_tuple_lengths umf_usolve umf_utsolve umf_valid_numeric \
-	umf_valid_symbolic umf_grow_front umf_start_front umf_2by2 \
+	umf_valid_symbolic umf_grow_front umf_start_front \
 	umf_store_lu umf_scale
 
 # non-user-callable umf_*.[ch] files, int/UF_long versions only (no real/complex):
 UMFINT = umf_analyze umf_apply_order umf_colamd umf_free umf_fsize \
 	umf_is_permutation umf_malloc umf_realloc umf_report_perm \
-	umf_singletons
+	umf_singletons umf_cholmod
 
 # non-user-callable, created from umf_ltsolve.c, umf_utsolve.c,
 # umf_triplet.c, and umf_assemble.c , with int/UF_long and real/complex versions:
@@ -240,12 +242,12 @@ umfpack_gn_%.o: ../Source/umfpack_%.c $(INC)
 	$(C) -c $< -o $@
 
 #-------------------------------------------------------------------------------
-# Create the ../Lib/libumfpack.a library
+# Create the libumfpack.a library
 #-------------------------------------------------------------------------------
 
-../Lib/libumfpack.a: $(II) $(LL) $(GN) $(DI) $(DL) $(ZI) $(ZL)
-	$(AR) ../Lib/libumfpack.a $^
-	- $(RANLIB) ../Lib/libumfpack.a
+libumfpack.a: $(II) $(LL) $(GN) $(DI) $(DL) $(ZI) $(ZL)
+	$(AR) libumfpack.a $^
+	- $(RANLIB) libumfpack.a
 
 so: $(II) $(LL) $(GN) $(DI) $(DL) $(ZI) $(ZL)
 	gcc -shared -Wl,-soname,libumfpack.so -o libumfpack.so $^
@@ -255,7 +257,7 @@ so: $(II) $(LL) $(GN) $(DI) $(DL) $(ZI) $(ZL)
 #-------------------------------------------------------------------------------
 
 purge: clean
-	- $(RM) ../Lib/libumfpack.a
+	- $(RM) libumfpack.a
 
 clean:
 	- $(RM) $(CLEAN)

@@ -20,7 +20,7 @@ function f = luflop (L, U)						    %#ok
 %
 % See also LU
 
-% Copyright 1995-2007 by Timothy A. Davis.
+% Copyright 1995-2009 by Timothy A. Davis.
 
 help luflop
 error ('luflop mexFunction not found!  Use umfpack_make to compile luflop.') ;

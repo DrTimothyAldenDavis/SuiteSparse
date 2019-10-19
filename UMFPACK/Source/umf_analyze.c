@@ -19,7 +19,7 @@
 
     Uses workspace of size O(nonzeros in A).  On input, the matrix A is
     stored in row-form at the tail end of Ai.  It is destroyed on output.
-    The rows of A must be sorted by increasing first column index.
+    The rows of A must be sorted by increasing first nonzero column.
     The matrix is assumed to be valid.
 
     Empty rows and columns have already been removed.
@@ -48,7 +48,7 @@ GLOBAL Int UMF_analyze
 			/* Ap [0..n_row]: row pointers */
 			/* Row i is in Ai [Ap [i] ... Ap [i+1]-1] */
 
-			/* rows must have smallest col index first, or be */
+			/* rows must have smallest col first, or be */
 			/* in sorted form.  Used as workspace of size n_col */
 			/* and destroyed. */
 
@@ -303,10 +303,10 @@ GLOBAL Int UMF_analyze
 	    }
 	}
 
-	/* rows krow ... knext-1 all have first column index of j */
+	/* rows krow ... knext-1 all have first column of j */
 	/* (or are empty) */
 
-	/* row knext has first column index of jnext */
+	/* row knext has first column of jnext */
 	/* if knext = n_row, then jnext is n_col */
 	if (knext == n_row)
 	{

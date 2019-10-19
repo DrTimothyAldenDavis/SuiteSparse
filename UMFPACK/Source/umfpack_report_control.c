@@ -21,8 +21,9 @@ GLOBAL void UMFPACK_report_control
 )
 {
     double drow, dcol, relpt, relpt2, alloc_init, front_alloc_init, amd_alpha,
-	tol, force_fixQ, droptol, aggr ;
+	force_fixQ, droptol, aggr ;
     Int prl, nb, irstep, strategy, scale, s ;
+    Int do_singletons, ordering_option ;
 
     prl = GET_CONTROL (UMFPACK_PRL, UMFPACK_DEFAULT_PRL) ;
 
@@ -127,20 +128,65 @@ GLOBAL void UMFPACK_report_control
 	"        Q = COLAMD (A), Q refined during numerical\n"
 	"        factorization, and no attempt at diagonal pivoting.\n")) ;
     }
-#if 0
-    else if (strategy == UMFPACK_STRATEGY_2BY2)
-    {
-	PRINTF ((" (symmetric, with 2-by-2 block pivoting)\n"
-	"        P2 = row permutation that tries to place large entries on\n"
-	"        the diagonal.  Q = AMD (P2*A+(P2*A)'), Q not refined during\n"
-	"        numerical factorization, attempt to select pivots from the\n"
-	"        diagonal of P2*A.\n")) ;
-    }
-#endif
     else /* auto strategy */
     {
 	strategy = UMFPACK_STRATEGY_AUTO ;
 	PRINTF ((" (auto)\n")) ;
+    }
+
+    /* ---------------------------------------------------------------------- */
+    /* ordering */
+    /* ---------------------------------------------------------------------- */
+
+    ordering_option = GET_CONTROL (UMFPACK_ORDERING, UMFPACK_DEFAULT_ORDERING) ;
+    if (ordering_option < 0 || ordering_option > UMFPACK_ORDERING_USER)
+    {
+        ordering_option = UMFPACK_DEFAULT_ORDERING ;
+    }
+    PRINTF (("    "ID": ordering: "ID,
+	(Int) INDEX (UMFPACK_ORDERING), ordering_option)) ;
+    if (ordering_option == UMFPACK_ORDERING_CHOLMOD)
+    {
+        PRINTF ((" CHOLMOD: AMD/COLAMD, then try METIS, and select best\n")) ;
+    }
+    else if (ordering_option == UMFPACK_ORDERING_AMD)
+    {
+        PRINTF ((" AMD/COLAMD\n")) ;
+    }
+    else if (ordering_option == UMFPACK_ORDERING_GIVEN)
+    {
+        PRINTF ((" user-provided permutation vector\n")) ;
+    }
+    else if (ordering_option == UMFPACK_ORDERING_NONE)
+    {
+        PRINTF ((" none\n")) ;
+    }
+    else if (ordering_option == UMFPACK_ORDERING_METIS)
+    {
+        PRINTF ((" METIS\n")) ;
+    }
+    else if (ordering_option == UMFPACK_ORDERING_BEST)
+    {
+        PRINTF ((" best effort. Try AMD/COLAMD and METIS, select best\n")) ;
+    }
+    else if (ordering_option == UMFPACK_ORDERING_USER)
+    {
+        PRINTF ((" user-provided ordering function\n")) ;
+    }
+
+    /* ---------------------------------------------------------------------- */
+    /* disable singletons (default is FALSE) */
+    /* ---------------------------------------------------------------------- */
+
+    do_singletons = GET_CONTROL (UMFPACK_SINGLETONS,UMFPACK_DEFAULT_SINGLETONS);
+    PRINTF (("    "ID": singleton filter:", (Int) INDEX (UMFPACK_SINGLETONS))) ;
+    if (do_singletons)
+    {
+	PRINTF ((" enabled\n")) ;
+    }
+    else
+    {
+	PRINTF ((" disabled\n")) ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -169,15 +215,6 @@ GLOBAL void UMFPACK_report_control
     irstep = MAX (0, irstep) ;
     PRINTF (("    "ID": max iterative refinement steps: "ID"\n",
 	(Int) INDEX (UMFPACK_IRSTEP), irstep)) ;
-
-    /* ---------------------------------------------------------------------- */
-    /* 2-by-2 pivot tolerance */
-    /* ---------------------------------------------------------------------- */
-
-    tol = GET_CONTROL (UMFPACK_2BY2_TOLERANCE, UMFPACK_DEFAULT_2BY2_TOLERANCE) ;
-    tol = MAX (0.0, MIN (tol, 1.0)) ;
-    PRINTF (("    "ID": 2-by-2 pivot tolerance: %g\n",
-	(Int) INDEX (UMFPACK_2BY2_TOLERANCE), tol)) ;
 
     /* ---------------------------------------------------------------------- */
     /* force fixQ */
@@ -314,44 +351,23 @@ GLOBAL void UMFPACK_report_control
 #endif
 
 #ifdef MATLAB_MEX_FILE
-    PRINTF (("    "ID": compiled for MATLAB\n",
-	(Int) INDEX (UMFPACK_COMPILED_FOR_MATLAB))) ;
+    PRINTF (("    compiled for MATLAB\n")) ;
 #else
-#ifdef MATHWORKS
-    PRINTF (("    "ID": compiled for MATLAB\n",
-	(Int) INDEX (UMFPACK_COMPILED_FOR_MATLAB))) ;
-#else
-    PRINTF (("    "ID": compiled for ANSI C\n",
-	(Int) INDEX (UMFPACK_COMPILED_FOR_MATLAB))) ;
-#endif
+    PRINTF (("    compiled for ANSI C\n")) ;
 #endif
 
 #ifdef NO_TIMER
-    PRINTF (("    "ID": no CPU timer \n",
-	(Int) INDEX (UMFPACK_COMPILED_WITH_GETRUSAGE))) ;
+    PRINTF (("    no CPU timer \n")) ;
 #else
 #ifndef NPOSIX
-    PRINTF (("    "ID": CPU timer is POSIX times ( ) routine.\n",
-	(Int) INDEX (UMFPACK_COMPILED_WITH_GETRUSAGE))) ;
+    PRINTF (("    CPU timer is POSIX times ( ) routine.\n")) ;
 #else
 #ifdef GETRUSAGE
-    PRINTF (("    "ID": CPU timer is getrusage.\n",
-	(Int) INDEX (UMFPACK_COMPILED_WITH_GETRUSAGE))) ;
+    PRINTF (("    CPU timer is getrusage.\n")) ;
 #else
-    PRINTF (("    "ID": CPU timer is ANSI C clock (may wrap around).\n",
-	(Int) INDEX (UMFPACK_COMPILED_WITH_GETRUSAGE))) ;
+    PRINTF (("    CPU timer is ANSI C clock (may wrap around).\n")) ;
 #endif
 #endif
-#endif
-
-#ifndef NDEBUG
-    PRINTF ((
-"**** Debugging enabled (UMFPACK will be exceedingly slow!) *****************\n"
-"    "ID": compiled with debugging enabled. ",
-	(Int) INDEX (UMFPACK_COMPILED_IN_DEBUG_MODE))) ;
-#else
-    PRINTF (("    "ID": compiled for normal operation (debugging disabled)\n",
-	(Int) INDEX (UMFPACK_COMPILED_IN_DEBUG_MODE))) ;
 #endif
 
     PRINTF (("    computer/operating system: %s\n", UMFPACK_ARCHITECTURE)) ;

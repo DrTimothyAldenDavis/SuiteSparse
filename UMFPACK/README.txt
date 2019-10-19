@@ -5,8 +5,12 @@ UMFPACK :  a set of routines solving sparse linear systems via LU
     interface to a subset of the C-callable routines.  Requires AMD Version
     2.0 or later.
 
+    Unless you compile with -DNCHOLMOD, addtional packages are required:
+    CHOLMOD, CAMD, CCOLAMD, COLAMD, and metis-4.0.
+
 The AMD, UFconfig, and UMFPACK directories must all reside in the same parent
-directory.
+directory.  If the -DNCHOLMOD is not used, the CHOLMOD, CAMD, CCOLAMD, COLAMD,
+and metis-4.0 also also exist in the same parent.
 
 Quick start (Unix, or Windows with Cygwin):
 
@@ -28,12 +32,9 @@ Quick start (for MATLAB users):
     To compile, test, and install the UMFPACK mexFunction, cd to the
     UMFPACK/MATLAB directory and type umfpack_make at the MATLAB prompt.
 
-    NOTE: DO NOT ATTEMPT TO USE THIS CODE IN 64-BIT MATLAB (v7.3).
-    It is not yet ported to that version of MATLAB.
-
 --------------------------------------------------------------------------------
 
-UMFPACK, Copyright (c) 1995-2006 by Timothy A.  Davis.  All Rights Reserved.
+UMFPACK, Copyright (c) 1995-2009 by Timothy A.  Davis.  All Rights Reserved.
 UMFPACK is available under alternate licences; contact T. Davis for details.
 
 UMFPACK License:
@@ -226,13 +227,13 @@ Files and directories in the UMFPACK distribution:
     umf_internal.h		definitions internal to UMFPACK
     umf_version.h		version definitions (int/UF_long, real/complex)
 
-    umf_2by2.[ch]
     umf_analyze.[ch]		symbolic factorization of A'*A
     umf_apply_order.[ch]	apply column etree postorder
     umf_assemble.[ch]		assemble elements into current front
     umf_blas3_update.[ch]	rank-k update.  Uses level-3 BLAS
     umf_build_tuples.[ch]	construct tuples for elements
     umf_colamd.[ch]		COLAMD pre-ordering, modified for UMFPACK
+    umf_cholmod.[ch]		interface to CHOLMOD
     umf_create_element.[ch]	create a new element
     umf_dump.[ch]		debugging routines, not normally active
     umf_extend_front.[ch]	extend the current frontal matrix

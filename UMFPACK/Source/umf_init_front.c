@@ -137,7 +137,7 @@ GLOBAL Int UMF_init_front
 	for (i = fnrows ; i < fnrows_extended ; i++)
 	{
 	    Fl [i] = Wy [i] ;
-	    /* flip the row index, since Wrp must be < 0 */
+	    /* flip the row, since Wrp must be < 0 */
 	    row = Frows [i] ;
 	    Work->NewRows [i] = FLIP (row) ;
 	}

@@ -14,11 +14,12 @@ run: prog
 prog:
 	( cd UMFPACK ; make library )
 	( cd AMD ; make library )
-	$(CC) -DDLONG $(CFLAGS) $(UMFPACK_CONFIG) -IUMFPACK/Source -IUMFPACK/Include -IAMD/Source -IAMD/Include -IUFconfig -o ut ut.c UMFPACK/Lib/libumfpack.a AMD/Lib/libamd.a $(LIB)
+	$(CC) -DDLONG $(CFLAGS) $(UMFPACK_CONFIG) -IUMFPACK/Source -IUMFPACK/Include -IAMD/Source -IAMD/Include -IUFconfig -o ut ut.c UMFPACK/Lib/libumfpack.a AMD/Lib/libamd.a CHOLMOD/Lib/libcholmod.a CAMD/Lib/libcamd.a COLAMD/Lib/libcolamd.a metis-4.0/libmetis.a CCOLAMD/Lib/libccolamd.a $(LIB)
 
 utcov:
 	- ( cd UMFPACK/Source ; ./ucov.dl )
 	- ( cd AMD/Source     ; ./acov.dl )
+
 
 purge:
 	( cd UMFPACK ; make purge )

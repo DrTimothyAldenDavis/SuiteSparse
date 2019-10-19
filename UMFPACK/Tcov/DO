@@ -17,20 +17,30 @@ mkdir Out/$1_$2
 # put in UMFPACK (excluding Tcov and MATLAB directories) and AMD
 mkdir Out/$1_$2/UMFPACK
 mkdir Out/$1_$2/UMFPACK/Doc
-/bin/cp -prL ../Source Out/$1_$2/UMFPACK
-/bin/cp -prL ../Lib Out/$1_$2/UMFPACK
-/bin/cp -prL ../Include Out/$1_$2/UMFPACK
-/bin/cp -prL ../Demo Out/$1_$2/UMFPACK
-/bin/cp -prL Top_Makefile Out/$1_$2/UMFPACK/Makefile
-/bin/cp -prL Out/$1_$2/UMFPACK/Lib/GNUmakefile Out/$1_$2/UMFPACK/Source/Makefile
-/bin/cp -prL Demo_Makefile Out/$1_$2/UMFPACK/Demo/Makefile
-/bin/cp -prL ../Doc/License Out/$1_$2/UMFPACK/Doc
+/bin/cp -pr ../Source Out/$1_$2/UMFPACK
+## /bin/cp -pr ../Lib Out/$1_$2/UMFPACK
+( cd Out/$1_$2/UMFPACK ; ln -s Source Lib )
+/bin/cp -pr ../Include Out/$1_$2/UMFPACK
+/bin/cp -pr ../Demo Out/$1_$2/UMFPACK
+/bin/cp -pr Top_Makefile Out/$1_$2/UMFPACK/Makefile
+/bin/cp -pr ../Lib/GNUmakefile Out/$1_$2/UMFPACK/Source/Makefile
+/bin/cp -pr Demo_Makefile Out/$1_$2/UMFPACK/Demo/Makefile
+/bin/cp -pr ../Doc/License Out/$1_$2/UMFPACK/Doc
 
 # put in AMD
-/bin/cp -prL ../../AMD Out/$1_$2
-/bin/cp -prL Top_Makefile Out/$1_$2/AMD/Makefile
-/bin/cp -prL Out/$1_$2/AMD/Lib/GNUmakefile Out/$1_$2/AMD/Source/Makefile
-/bin/cp -prL AMD_Demo_Makefile Out/$1_$2/AMD/Demo/Makefile
+/bin/cp -pr ../../AMD Out/$1_$2
+/bin/rm -rf  Out/$1_$2/AMD/Lib
+( cd Out/$1_$2/AMD ; ln -s Source Lib )
+/bin/cp -pr Top_Makefile Out/$1_$2/AMD/Makefile
+/bin/cp -pr ../../AMD/Lib/GNUmakefile Out/$1_$2/AMD/Source/Makefile
+/bin/cp -pr AMD_Demo_Makefile Out/$1_$2/AMD/Demo/Makefile
+
+# links to CHOLMOD, CAMD, CCOLAMD, and metis
+ln -s ../../../../CHOLMOD Out/$1_$2/CHOLMOD
+ln -s ../../../../CAMD Out/$1_$2/CAMD
+ln -s ../../../../CCOLAMD Out/$1_$2/CCOLAMD
+ln -s ../../../../COLAMD Out/$1_$2/COLAMD
+ln -s ../../../../metis-4.0 Out/$1_$2/metis-4.0
 
 /bin/cp debug.* Out/$1_$2
 
@@ -56,26 +66,3 @@ mkdir Out/$1_$2/UFconfig
 
 # compile and run
 ( cd Out/$1_$2 ; time make $3 > $1_$2.out )
-
-# delete the directory
-#### /bin/rm -rf Out/$1_$2
-
-# ( cd $1_$2 ; tail -5 ut.out > ut.tail ; 'rm' -rf ut.out )
-
-# for Solaris
-# ( cd Out/$1_$2 ; tcov -x ut.profile/UMFPACK/Source/umfp*.c )
-# ( cd Out/$1_$2 ; tcov -x ut.profile/UMFPACK/Source/umf_[0-c]*.c )
-# ( cd Out/$1_$2 ; tcov -x ut.profile/UMFPACK/Source/umf_[e-z]*.c )
-# ( cd Out/$1_$2 ; tcov -x ut.profile/AMD/Source/amd_[0-c]*.c )
-# ( cd Out/$1_$2 ; tcov -x ut.profile/AMD/Source/amd_de*.c )
-# ( cd Out/$1_$2 ; tcov -x ut.profile/AMD/Source/amd_[e-z]*.c )
-
-# grep -n "#####" Out/$1_$2/*cov > $1_$2.cov
-
-# cov Out/$1_$2/UMFPACK/Source/umfp*cov
-# cov Out/$1_$2/UMFPACK/Source/umf_[0-c]*cov
-# cov Out/$1_$2/UMFPACK/Source/umf_[e-z]*cov
-# cov Out/$1_$2/AMD/Source/amd_[0-c]*cov
-# cov Out/$1_$2/AMD/Source/amd_de*cov
-# cov Out/$1_$2/AMD/Source/amd_[e-z]*cov
-

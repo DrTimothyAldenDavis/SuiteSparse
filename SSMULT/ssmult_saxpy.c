@@ -69,10 +69,10 @@ static void merge
 
 
 /* -------------------------------------------------------------------------- */
-/* mergesort */
+/* ssmergesort */
 /* -------------------------------------------------------------------------- */
 
-/* mergesort (A, W, n) sorts an Int array A of length n in ascending order. W is
+/* ssmergesort (A,W,n) sorts an Int array A of length n in ascending order. W is
  * a workspace array of size n.  function is used for sorting the row indices
  * in each column of C.  Small lists (of length SMALL or less) are sorted with
  * a bubble sort.  A value of 10 for SMALL works well on an Intel Core Duo, an
@@ -83,7 +83,7 @@ static void merge
 #define SMALL 10
 #endif
 
-static void mergesort
+static void ssmergesort
 (
     Int A [ ],      /* array to sort, of size n */
     Int W [ ],      /* workspace of size n */
@@ -212,7 +212,7 @@ static void mergesort
     {
 
         /* ------------------------------------------------------------------ */
-        /* recursive mergesort if A has length 5 or more */
+        /* recursive ssmergesort if A has length 5 or more */
         /* ------------------------------------------------------------------ */
 
         Int n1, n2, n3, n4, n12, n34, n123 ;
@@ -228,10 +228,10 @@ static void mergesort
 
         n123 = n12 + n3 ;       /* start of 4th subset = n1 + n2 + n3 */
 
-        mergesort (A,        W, n1) ;       /* sort A [0  ... n1-1] */
-        mergesort (A + n1,   W, n2) ;       /* sort A [n1 ... n12-1] */
-        mergesort (A + n12,  W, n3) ;       /* sort A [n12 ... n123-1] */
-        mergesort (A + n123, W, n4) ;       /* sort A [n123 ... n-1]  */
+        ssmergesort (A,        W, n1) ;       /* sort A [0  ... n1-1] */
+        ssmergesort (A + n1,   W, n2) ;       /* sort A [n1 ... n12-1] */
+        ssmergesort (A + n12,  W, n3) ;       /* sort A [n12 ... n123-1] */
+        ssmergesort (A + n123, W, n4) ;       /* sort A [n123 ... n-1]  */
 
         /* merge A [0 ... n1-1] and A [n1 ... n12-1] into W [0 ... n12-1] */
         merge (W, A, n1, A + n1, n2) ;
@@ -272,16 +272,16 @@ mxArray *ssmult_saxpy       /* return C = A*B */
     /* get inputs and workspace */
     /* ---------------------------------------------------------------------- */
 
-    Ap = mxGetJc (A) ;
-    Ai = mxGetIr (A) ;
+    Ap = (Int *) mxGetJc (A) ;
+    Ai = (Int *) mxGetIr (A) ;
     Ax = mxGetPr (A) ;
     Az = mxGetPi (A) ;
     Anrow = mxGetM (A) ;
     Ancol = mxGetN (A) ;
     A_is_complex = mxIsComplex (A) ;
 
-    Bp = mxGetJc (B) ;
-    Bi = mxGetIr (B) ;
+    Bp = (Int *) mxGetJc (B) ;
+    Bi = (Int *) mxGetIr (B) ;
     Bx = mxGetPr (B) ;
     Bz = mxGetPi (B) ;
     Bnrow = mxGetM (B) ;
@@ -532,8 +532,8 @@ mxArray *ssmult_saxpy       /* return C = A*B */
     mxFree (mxGetIr (C)) ;
     mxFree (mxGetPr (C)) ;
     mxFree (mxGetPi (C)) ;
-    mxSetJc (C, Cp) ;
-    mxSetIr (C, Ci) ;
+    mxSetJc (C, (mwIndex *) Cp) ;
+    mxSetIr (C, (mwIndex *) Ci) ;
     mxSetPr (C, Cx) ;
     mxSetPi (C, Cz) ;
     mxSetNzmax (C, MAX (cnz,1)) ;

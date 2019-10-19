@@ -5,7 +5,6 @@
 \documentclass{article}
 \usepackage{graphicx}
 \usepackage{color}
-\usepackage{hyperref}
 
 \sloppy
 \definecolor{lightgray}{gray}{0.5}
@@ -18,11 +17,7 @@
 \section*{THE FACTORIZE OBJECT for solving linear systems}
 
 \begin{par}
-Copyright 2009, Timothy A. Davis, University of Florida.  May 18, 2009.
-
-\href{mailto:davis@cise.ufl.edu}{davis@cise.ufl.edu} \\
-\href{http://www.cise.ufl.edu/~davis}{http://www.cise.ufl.edu/$\sim$davis}
-
+Copyright 2009, Timothy A. Davis, University of Florida.  June 4, 2009. \begin{verbatim}davis@cise.ufl.edu\end{verbatim} \begin{verbatim}http://www.cise.ufl.edu/~davis\end{verbatim}
 \end{par} \vspace{1em}
 \begin{par}
 This is a demonstration of the FACTORIZE object for solving linear systems and least-squares problems, and for computations with the matrix inverse and pseudo-inverse.
@@ -42,7 +37,7 @@ This is a demonstration of the FACTORIZE object for solving linear systems and l
    \item The FACTORIZE object to the rescue
    \item Least-squares problems
    \item Underdetermined systems
-   \item Computing selected entries in the inverse or pseudo-invers
+   \item Computing selected entries in the inverse or pseudo-inverse
    \item Computing the entire inverse or pseudo-inverse
    \item Update/downdate of a dense Cholesky factorization
    \item Caveat Executor
@@ -60,13 +55,13 @@ Use backslash or a matrix factorization instead (LU, CHOL, or QR).
 \subsection*{Rule Number Two:  never break Rule Number One}
 
 \begin{par}
-However, the problem with Rule Number One is that it can be hard to figure out which matrix factorization to use and how to use it. BACKSLASH (MLDIVIDE) is great, but it can't be reused when solving multiple systems (x=A\ensuremath{\backslash}b and y=A\ensuremath{\backslash}c).  Its syntax doesn't match the use of the inverse in mathematical expressions, either.
+However, the problem with Rule Number One is that it can be hard to figure out which matrix factorization to use and how to use it.  Using LU, CHOL, or QR is complicated, particularly if you want the best performance.  BACKSLASH (MLDIVIDE) is great, but it can't be reused when solving multiple systems (x=A\ensuremath{\backslash}b and y=A\ensuremath{\backslash}c).  Its syntax doesn't match the use of the inverse in mathematical expressions, either.
 \end{par} \vspace{1em}
 \begin{par}
 The goal of the FACTORIZE object is to solve this problem ...
 \end{par} \vspace{1em}
 \begin{par}
-"Don't let that INV go past your eyes; to solve that system, FACTORIZE!"
+{\em Don't let that INV go past your eyes; to solve that system, FACTORIZE!}
 \end{par} \vspace{1em}
 
 
@@ -85,19 +80,19 @@ norm (r)
 \end{verbatim}
 
         \color{lightgray} \begin{verbatim}A =
-    0.8034    0.6923    0.4214
-    0.6899    0.2291    0.0007
-    0.4553    0.9242    0.3171
+    0.0080    0.7399    0.7109
+    0.7312    0.8500    0.9624
+    0.1795    0.9276    0.7810
 b =
-    0.8784
-    0.8062
-    0.5601
+    0.9329
+    0.9665
+    0.4506
 x =
-    1.1149
-    0.1623
-   -0.3078
+   -1.1163
+   -3.3458
+    4.8075
 ans =
-   1.9230e-16
+   4.3356e-16
 \end{verbatim} \color{black}
     
 
@@ -116,13 +111,13 @@ x = A\b
 \end{verbatim}
 
         \color{lightgray} \begin{verbatim}x =
-    1.1149
-    0.1623
-   -0.3078
+   -1.1163
+   -3.3458
+    4.8075
 x =
-    1.1149
-    0.1623
-   -0.3078
+   -1.1163
+   -3.3458
+    4.8075
 \end{verbatim} \color{black}
     \begin{par}
 The big deal is that you should care about speed and you should care even more about accuracy.  BACKSLASH relies on matrix factorization (LU, CHOL, QR, or other specialized methods).  It's faster and more reliable than multiplying by the inverse, particularly for large matrices and sparse matrices.  Here's an illustration of how pathetic inv(A)*b can be.
@@ -130,8 +125,8 @@ The big deal is that you should care about speed and you should care even more a
 \begin{verbatim}
 A = gallery ('frank',16) ; xtrue = ones (16,1) ; b = A*xtrue ;
 
-x = inv(A)*b ; norm (A*x-b)
-x = A\b      ; norm (A*x-b)
+x = inv(A)*b ; norm (b-A*x)
+x = A\b      ; norm (b-A*x)
 \end{verbatim}
 
         \color{lightgray} \begin{verbatim}ans =
@@ -155,12 +150,12 @@ norm (b-A*x)
 
         \color{lightgray} \begin{verbatim}n =
    479
-Elapsed time is 0.002841 seconds.
+Elapsed time is 0.002683 seconds.
 ans =
-   1.3837e-10
-Elapsed time is 0.116276 seconds.
+   1.7562e-10
+Elapsed time is 0.115748 seconds.
 ans =
-   1.1687e-09
+   4.1894e-09
 \end{verbatim} \color{black}
     \begin{par}
 What if you want to solve multiple systems?  Use a matrix factorization. But which one?  And how do you use it?  Here are some alternatives using LU for the sparse west0479 matrix, but some are faster than others.
@@ -175,9 +170,9 @@ fprintf ('2: nnz(L+U): %5d time: %8.4f resid: %e\n', nz2,t2, norm(b-A*x2));
 fprintf ('3: nnz(L+U): %5d time: %8.4f resid: %e\n', nz3,t3, norm(b-A*x3));
 \end{verbatim}
 
-        \color{lightgray} \begin{verbatim}1: nnz(L+U): 16151 time:   0.0071 resid: 6.525600e-11
-2: nnz(L+U): 15826 time:   0.0148 resid: 5.666719e-11
-3: nnz(L+U):  3704 time:   0.0088 resid: 9.095973e-11
+        \color{lightgray} \begin{verbatim}1: nnz(L+U): 16151 time:   0.0069 resid: 1.457658e-10
+2: nnz(L+U): 15826 time:   0.0147 resid: 2.028048e-10
+3: nnz(L+U):  3704 time:   0.0052 resid: 1.322009e-10
 \end{verbatim} \color{black}
     
 
@@ -209,9 +204,9 @@ tic ; opL = struct ('LT', true) ;
 \end{verbatim}
 
         \color{lightgray} \begin{verbatim}LUtime =
-    0.3194
-Elapsed time is 0.013770 seconds.
-Elapsed time is 0.006147 seconds.
+    0.2926
+Elapsed time is 0.014006 seconds.
+Elapsed time is 0.006373 seconds.
 \end{verbatim} \color{black}
     
 
@@ -227,9 +222,9 @@ y = S*c ; norm (c-A*y)
 \end{verbatim}
 
         \color{lightgray} \begin{verbatim}ans =
-   5.5664e-12
+   1.7683e-11
 ans =
-   6.7651e-12
+   3.4911e-11
 \end{verbatim} \color{black}
     \begin{par}
 Sometimes using the inverse seems inevitable.  For example, your textbook might show the Schur complement formula as S = A-B*inv(D)*C.  This can be done without inv(D) in one of two ways: SLASH or BACKSLASH (MRDIVIDE or MLDIVIDE to be precise).
@@ -245,16 +240,16 @@ tic ; S2 = A - B*(D\C) ;    toc ;
 tic ; S3 = A - (B/D)*C ;    toc ;
 \end{verbatim}
 
-        \color{lightgray} \begin{verbatim}Elapsed time is 0.019707 seconds.
-Elapsed time is 0.015557 seconds.
-Elapsed time is 0.016689 seconds.
+        \color{lightgray} \begin{verbatim}Elapsed time is 0.019922 seconds.
+Elapsed time is 0.016146 seconds.
+Elapsed time is 0.016911 seconds.
 \end{verbatim} \color{black}
     
 
 \subsection*{So the winner is ... nobody}
 
 \begin{par}
-BACKSLASH: mostly simple to use (except remember that Schur complement       formuala?).  Fast and accurate ... but slow if you want to solve       two linear systems with the same matrix A.
+BACKSLASH: mostly simple to use (except remember that Schur complement       formula?).  Fast and accurate ... but slow if you want to solve       two linear systems with the same matrix A.
 \end{par} \vspace{1em}
 \begin{par}
 LU, QR, CHOL: fast and accurate.  Awful syntax to use.  Drag out your       linear algebra textbook if you want to use these in MATLAB.       Whenever I use them I have to derive them from scratch, even       though I \textbf{wrote} most of the sparse factorizations used in MATLAB!
@@ -293,10 +288,10 @@ tic ; F = factorize(A) ;    x = F\b ; y = F\c ; toc
 tic ; S = inverse(A) ;      x = S*b ; y = S*c ; toc
 \end{verbatim}
 
-        \color{lightgray} \begin{verbatim}Elapsed time is 0.629509 seconds.
-Elapsed time is 0.799193 seconds.
-Elapsed time is 0.314356 seconds.
-Elapsed time is 0.318686 seconds.
+        \color{lightgray} \begin{verbatim}Elapsed time is 0.652599 seconds.
+Elapsed time is 0.814173 seconds.
+Elapsed time is 0.319253 seconds.
+Elapsed time is 0.316651 seconds.
 \end{verbatim} \color{black}
     
 
@@ -315,18 +310,18 @@ tic ; x = inverse(A)*b   ; toc, norm (A'*A*x-A'*b)
 tic ; x = factorize(A)\b ; toc, norm (A'*A*x-A'*b)
 \end{verbatim}
 
-        \color{lightgray} \begin{verbatim}Elapsed time is 0.058291 seconds.
+        \color{lightgray} \begin{verbatim}Elapsed time is 0.057574 seconds.
 ans =
-   1.6290e-12
-Elapsed time is 0.346449 seconds.
+   2.6930e-12
+Elapsed time is 0.337014 seconds.
 ans =
-   4.6651e-12
-Elapsed time is 0.079304 seconds.
+   4.6494e-12
+Elapsed time is 0.079387 seconds.
 ans =
-   2.1955e-12
-Elapsed time is 0.079224 seconds.
+   1.9089e-12
+Elapsed time is 0.078930 seconds.
 ans =
-   2.1955e-12
+   1.9089e-12
 \end{verbatim} \color{black}
     \begin{par}
 FACTORIZE is better than BACKSLASH because you can reuse the factorization for different right-hand-sides.  For full-rank matrices, it's better than PINV because it's faster (and PINV fails for sparse matrices).
@@ -342,10 +337,10 @@ tic ; S = inverse(A)   ; x = S*b ; y = S*c ; toc
 tic ; F = factorize(A) ; x = F\b ; y = F\c ; toc
 \end{verbatim}
 
-        \color{lightgray} \begin{verbatim}Elapsed time is 0.117522 seconds.
-Elapsed time is 0.346316 seconds.
-Elapsed time is 0.080665 seconds.
-Elapsed time is 0.081525 seconds.
+        \color{lightgray} \begin{verbatim}Elapsed time is 0.114372 seconds.
+Elapsed time is 0.340214 seconds.
+Elapsed time is 0.081340 seconds.
+Elapsed time is 0.081560 seconds.
 \end{verbatim} \color{black}
     
 
@@ -364,25 +359,25 @@ tic ; x = inverse(A)*b   ; toc, norm (x)
 tic ; x = factorize(A)\b ; toc, norm (x)
 \end{verbatim}
 
-        \color{lightgray} \begin{verbatim}Elapsed time is 0.074830 seconds.
+        \color{lightgray} \begin{verbatim}Elapsed time is 0.075625 seconds.
 ans =
-    4.2099
-Elapsed time is 0.343421 seconds.
+    2.9541
+Elapsed time is 0.341637 seconds.
 ans =
-    0.4878
-Elapsed time is 0.084037 seconds.
+    0.4915
+Elapsed time is 0.082095 seconds.
 ans =
-    0.4878
-Elapsed time is 0.082308 seconds.
+    0.4915
+Elapsed time is 0.082641 seconds.
 ans =
-    0.4878
+    0.4915
 \end{verbatim} \color{black}
     
 
-\subsection*{Computing selected entries in the inverse or pseudo-invers}
+\subsection*{Computing selected entries in the inverse or pseudo-inverse}
 
 \begin{par}
-If you want just a few entries from the inverse, it's still better to formulate the problem as a system of linear equations and to use a matrix factorization instead of computing inv(A).  The FACTORIZE object does this for you, by overloading the subsref operator.
+If you want just a few entries from the inverse, it's still better to formulate the problem as a system of linear equations and use a matrix factorization instead of computing inv(A).  The FACTORIZE object does this for you, by overloading the subsref operator.
 \end{par} \vspace{1em}
 \begin{verbatim}
 A = rand (1000) ;
@@ -392,13 +387,13 @@ tic ; S = inverse (A) ; S (2:3,4), toc
 \end{verbatim}
 
         \color{lightgray} \begin{verbatim}ans =
-   -0.2656
-    0.1257
-Elapsed time is 0.794633 seconds.
+    0.0323
+    0.1255
+Elapsed time is 0.803655 seconds.
 ans =
-   -0.2656
-    0.1257
-Elapsed time is 0.318277 seconds.
+    0.0323
+    0.1255
+Elapsed time is 0.318938 seconds.
 \end{verbatim} \color{black}
     
 
@@ -406,6 +401,9 @@ Elapsed time is 0.318277 seconds.
 
 \begin{par}
 Rarely, and I mean RARELY, you really do need the inverse.  More frequently what you want is the pseudo-inverse.  You can force a factorization to become a plain matrix by converting it to double.  Note that inverse(A) only handles full-rank matrices (either dense or sparse), whereas pinv(A) works for all dense matrices (not sparse).
+\end{par} \vspace{1em}
+\begin{par}
+The explicit need for inv(A) (or S=A\ensuremath{\backslash}eye(n), which is the same thing) is RARE.  If you ever find yourself multiplying by the inverse, then you know one thing for sure.  You know with certainty that you don't know what you're doing.
 \end{par} \vspace{1em}
 \begin{verbatim}
 A = rand (500) ;
@@ -419,14 +417,14 @@ tic ; S2 = double (inverse (A)) ; toc
 norm (S1-S2)
 \end{verbatim}
 
-        \color{lightgray} \begin{verbatim}Elapsed time is 0.107792 seconds.
-Elapsed time is 0.149240 seconds.
+        \color{lightgray} \begin{verbatim}Elapsed time is 0.108688 seconds.
+Elapsed time is 0.148066 seconds.
 ans =
-   2.8590e-13
-Elapsed time is 1.671289 seconds.
-Elapsed time is 0.192610 seconds.
+   3.3330e-12
+Elapsed time is 1.669166 seconds.
+Elapsed time is 0.198167 seconds.
 ans =
-   2.3395e-14
+   2.3702e-14
 \end{verbatim} \color{black}
     
 
@@ -451,21 +449,21 @@ tic ; y = (A+w*w'-t*t')\b ; toc
 norm (x-y)
 \end{verbatim}
 
-        \color{lightgray} \begin{verbatim}Elapsed time is 0.032878 seconds.
-Elapsed time is 0.190857 seconds.
+        \color{lightgray} \begin{verbatim}Elapsed time is 0.032224 seconds.
+Elapsed time is 0.191507 seconds.
 ans =
-   3.1859e-17
-Elapsed time is 0.037300 seconds.
-Elapsed time is 0.204160 seconds.
+   3.3421e-17
+Elapsed time is 0.034899 seconds.
+Elapsed time is 0.204334 seconds.
 ans =
-   3.2904e-17
+   3.2622e-17
 \end{verbatim} \color{black}
     
 
 \subsection*{Caveat Executor}
 
 \begin{par}
-One caveat:  If you have a large number of very small systems to solve, the object-oriented overhead of creating and using an object can dominate the run time, at least in MATLAB R2009a.  For this case, if you want the best performance, stick with BACKSLASH, or LU and LINSOLVE (just extract the appropriate formulas from factorize.m and mldivide.m in the @factorize directory).
+One caveat:  If you have a large number of very small systems to solve, the object-oriented overhead of creating and using an object can dominate the run time, at least in MATLAB R2009a.  For this case, if you want the best performance, stick with BACKSLASH, or LU and LINSOLVE (just extract the appropriate formulas from the M-files in the FACTORIZE package).
 \end{par} \vspace{1em}
 \begin{par}
 Hopefully the object-oriented overhead will drop in future versions of MATLAB, and you can ignore this caveat.
@@ -487,9 +485,9 @@ end
 toc
 \end{verbatim}
 
-        \color{lightgray} \begin{verbatim}Elapsed time is 1.575265 seconds.
-Elapsed time is 0.393069 seconds.
-Elapsed time is 0.227858 seconds.
+        \color{lightgray} \begin{verbatim}Elapsed time is 2.326027 seconds.
+Elapsed time is 0.338218 seconds.
+Elapsed time is 0.219374 seconds.
 \end{verbatim} \color{black}
     
 
@@ -505,7 +503,7 @@ So ... don't use INV, and don't worry about how to use LU, CHOL, or QR factoriza
 And remember ...
 \end{par} \vspace{1em}
 \begin{par}
-"Don't let that INV go past your eyes; to solve that system, FACTORIZE!"
+{\em Don't let that INV go past your eyes; to solve that system, FACTORIZE!}
 \end{par} \vspace{1em}
 
 

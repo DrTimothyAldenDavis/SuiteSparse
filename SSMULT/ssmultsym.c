@@ -44,14 +44,14 @@ void mexFunction
         mexErrMsgTxt ("Usage: s = ssmultsym (A,B)") ;
     }
 
-    Ap = mxGetJc (pargin [0]) ;
-    Ai = mxGetIr (pargin [0]) ;
+    Ap = (Int *) mxGetJc (pargin [0]) ;
+    Ai = (Int *) mxGetIr (pargin [0]) ;
     Anrow = mxGetM (pargin [0]) ;
     Ancol = mxGetN (pargin [0]) ;
     A_is_complex = mxIsComplex (pargin [0]) ;
 
-    Bp = mxGetJc (pargin [1]) ;
-    Bi = mxGetIr (pargin [1]) ;
+    Bp = (Int *) mxGetJc (pargin [1]) ;
+    Bi = (Int *) mxGetIr (pargin [1]) ;
     Bnrow = mxGetM (pargin [1]) ;
     Bncol = mxGetN (pargin [1]) ;
     B_is_complex = mxIsComplex (pargin [1]) ;

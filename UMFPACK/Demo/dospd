@@ -17,9 +17,9 @@ echo '0.7'	>> tmp/control.umf4 ; # 7: initial alloc
 echo '2'	>> tmp/control.umf4 ; # 8: max iter. refinement
 echo '1'	>> tmp/control.umf4 ; # 9:
 echo '0'	>> tmp/control.umf4 ; # 10:
-echo '0'	>> tmp/control.umf4 ; # 11:
+echo '0'	>> tmp/control.umf4 ; # 11: disable singleons
 echo '0'	>> tmp/control.umf4 ; # 12:
-echo '0.01'	>> tmp/control.umf4 ; # 13: 2-by-2 tolerance
+echo '0'   	>> tmp/control.umf4 ; # 13:
 echo '0'	>> tmp/control.umf4 ; # 14: Q fixed (auto)
 echo '10'	>> tmp/control.umf4 ; # 15: AMD dense row control
 echo '0'	>> tmp/control.umf4 ; # 16: diag pivot tolerance, NON-DEFAULT

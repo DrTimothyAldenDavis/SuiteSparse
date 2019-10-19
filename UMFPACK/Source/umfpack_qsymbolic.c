@@ -28,8 +28,8 @@
 #include "umf_is_permutation.h"
 #include "umf_malloc.h"
 #include "umf_free.h"
-#include "umf_2by2.h"
 #include "umf_singletons.h"
+#include "umf_cholmod.h"
 
 typedef struct	/* SWType */
 {
@@ -46,7 +46,6 @@ typedef struct	/* SWType */
     Int *Si ;		    /* size nz */
     Int *Sp ;		    /* size n_col + 1 */
     double *Rs ;	    /* size n_row */
-    Int *Rperm_2by2 ;	    /* size n_row */
 
 } SWType ;
 
@@ -83,25 +82,383 @@ PRIVATE Int init_count ;
 #endif
 
 /* ========================================================================== */
+/* === inverse_permutation ================================================== */
+/* ========================================================================== */
+
+/* Check a permutation, and return its inverse */
+
+PRIVATE int inverse_permutation
+(
+    Int *P,     /* input, size n, P[k]=i means i is kth object in permutation */
+    Int *Pinv,  /* output, size n, Pinv[i]=k if P[k]=i */
+    Int n       /* input */
+)
+{
+    Int i, k ;
+    for (i = 0 ; i < n ; i++)
+    {
+        Pinv [i] = EMPTY ;
+    }
+    for (k = 0 ; k < n ; k++)
+    {
+        i = P [k] ;
+        if (i < 0 || i >= n || Pinv [i] != EMPTY)
+        {
+            /* invalid permutation */
+            return (FALSE) ;
+        }
+        Pinv [i] = k ;
+    }
+    return (TRUE) ;
+}
+
+
+/* ========================================================================== */
+/* === do_amd_1 ============================================================= */
+/* ========================================================================== */
+
+/* do_amd_1: Construct A+A' for a sparse matrix A and perform the AMD ordering
+ * or user_ordering.  Modified from AMD/Source/amd_1.c
+ *
+ * The n-by-n sparse matrix A can be unsymmetric.  It is stored in MATLAB-style
+ * compressed-column form, with sorted row indices in each column, and no
+ * duplicate entries.  Diagonal entries may be present, but they are ignored.
+ * Row indices of column j of A are stored in Ai [Ap [j] ... Ap [j+1]-1].
+ * Ap [0] must be zero, and nz = Ap [n] is the number of entries in A.  The
+ * size of the matrix, n, must be greater than or equal to zero.
+ *
+ * This routine must be preceded by a call to AMD_aat, which computes the
+ * number of entries in each row/column in A+A', excluding the diagonal.
+ * Len [j], on input, is the number of entries in row/column j of A+A'.  This
+ * routine constructs the matrix A+A' and then calls AMD_2 or the user_ordering.
+ * No error checking is performed (this was done in AMD_valid).
+ */
+
+PRIVATE int do_amd_1
+(
+    Int n,		/* n > 0 */
+    Int Ap [ ],	        /* input of size n+1, not modified */
+    Int Ai [ ],	        /* input of size nz = Ap [n], not modified */
+    Int P [ ],		/* size n output permutation */
+    Int Pinv [ ],	/* size n output inverse permutation */
+    Int Len [ ],	/* size n input, undefined on output */
+    Int slen,		/* slen >= sum (Len [0..n-1]) + 7n+1,
+			 * ideally slen = 1.2 * sum (Len) + 8n */
+    Int S [ ],		/* size slen workspace */
+    Int ordering_option,
+    Int print_level,
+
+    /* user-provided ordering function */
+    int (*user_ordering)    /* TRUE if OK, FALSE otherwise */
+    (
+        /* inputs, not modified on output */
+        Int,            /* nrow */
+        Int,            /* ncol */
+        Int,            /* sym: if TRUE and nrow==ncol do A+A', else do A'A */
+        Int *,          /* Ap, size ncol+1 */
+        Int *,          /* Ai, size nz */
+        /* output */
+        Int *,          /* size ncol, fill-reducing permutation */
+        /* input/output */
+        void *,         /* user_params (ignored by UMFPACK) */
+        double *        /* user_info[0..2], optional output for symmetric case.
+                           user_info[0]: max column count for L=chol(P(A+A')P')
+                           user_info[1]: nnz (L)
+                           user_info[2]: flop count for chol, if A real */
+    ),
+    void *user_params,  /* passed to user_ordering function */
+
+    Int *ordering_used,
+
+    double amd_Control [ ],	/* input array of size AMD_CONTROL */
+    double amd_Info [ ] 	/* output array of size AMD_INFO */
+)
+{
+    Int i, j, k, p, pfree, iwlen, pj, p1, p2, pj2, anz, *Iw, *Pe, *Nv, *Head,
+	*Elen, *Degree, *s, *W, *Sp, *Tp ;
+
+    /* --------------------------------------------------------------------- */
+    /* construct the matrix for AMD_2 or user_ordering */
+    /* --------------------------------------------------------------------- */
+
+    ASSERT (n > 0) ;
+#ifndef NDEBUG
+    for (p = 0 ; p < slen ; p++) S [p] = EMPTY ;
+#endif
+
+    s = S ;
+    Pe = s ;	    s += (n+1) ;    slen -= (n+1) ;
+    Nv = s ;	    s += n ;        slen -= n ;
+
+    if (user_ordering == NULL)
+    {
+        /* iwlen = slen - (3*n+1) ; */
+        Head = s ;      s += n ;    slen -= n ;
+        Elen = s ;      s += n ;    slen -= n ;
+        Degree = s ;    s += n ;    slen -= n ;
+    }
+    else
+    {
+        /* iwlen = slen - (6*n+1) ; */
+        Head = NULL ;
+        Elen = NULL ;
+        Degree = NULL ;
+    }
+
+    W = s ;	    s += n ;        slen -= n ;
+
+    iwlen = slen ;
+    Iw = s ;	    s += iwlen ;
+
+    ASSERT (AMD_valid (n, n, Ap, Ai) == AMD_OK) ;
+    anz = Ap [n] ;
+
+    /* construct the pointers for A+A' */
+    Sp = Nv ;			/* use Nv and W as workspace for Sp and Tp [ */
+    Tp = W ;
+    pfree = 0 ;
+    for (j = 0 ; j < n ; j++)
+    {
+	Pe [j] = pfree ;
+	Sp [j] = pfree ;
+	pfree += Len [j] ;
+    }
+    Pe [n] = pfree ;
+
+#ifndef NDEBUG
+    if (user_ordering == NULL)
+    {
+        /* Note that this restriction on iwlen is slightly more restrictive than
+         * what is strictly required in AMD_2.  AMD_2 can operate with no elbow
+         * room at all, but it will be very slow.  For better performance, at
+         * least size-n elbow room is enforced. */
+        ASSERT (iwlen >= pfree + n) ;
+    }
+    else
+    {
+        ASSERT (iwlen >= pfree) ;
+    }
+    for (p = 0 ; p < iwlen ; p++) Iw [p] = EMPTY ;
+#endif
+
+    for (k = 0 ; k < n ; k++)
+    {
+	AMD_DEBUG1 (("Construct row/column k= "ID" of A+A'\n", k))  ;
+	p1 = Ap [k] ;
+	p2 = Ap [k+1] ;
+
+	/* construct A+A' */
+	for (p = p1 ; p < p2 ; )
+	{
+	    /* scan the upper triangular part of A */
+	    j = Ai [p] ;
+	    ASSERT (j >= 0 && j < n) ;
+	    if (j < k)
+	    {
+		/* entry A (j,k) in the strictly upper triangular part */
+		ASSERT (Sp [j] < (j == n-1 ? pfree : Pe [j+1])) ;
+		ASSERT (Sp [k] < (k == n-1 ? pfree : Pe [k+1])) ;
+		Iw [Sp [j]++] = k ;
+		Iw [Sp [k]++] = j ;
+		p++ ;
+	    }
+	    else if (j == k)
+	    {
+		/* skip the diagonal */
+		p++ ;
+		break ;
+	    }
+	    else /* j > k */
+	    {
+		/* first entry below the diagonal */
+		break ;
+	    }
+	    /* scan lower triangular part of A, in column j until reaching
+	     * row k.  Start where last scan left off. */
+	    ASSERT (Ap [j] <= Tp [j] && Tp [j] <= Ap [j+1]) ;
+	    pj2 = Ap [j+1] ;
+	    for (pj = Tp [j] ; pj < pj2 ; )
+	    {
+		i = Ai [pj] ;
+		ASSERT (i >= 0 && i < n) ;
+		if (i < k)
+		{
+		    /* A (i,j) is only in the lower part, not in upper */
+		    ASSERT (Sp [i] < (i == n-1 ? pfree : Pe [i+1])) ;
+		    ASSERT (Sp [j] < (j == n-1 ? pfree : Pe [j+1])) ;
+		    Iw [Sp [i]++] = j ;
+		    Iw [Sp [j]++] = i ;
+		    pj++ ;
+		}
+		else if (i == k)
+		{
+		    /* entry A (k,j) in lower part and A (j,k) in upper */
+		    pj++ ;
+		    break ;
+		}
+		else /* i > k */
+		{
+		    /* consider this entry later, when k advances to i */
+		    break ;
+		}
+	    }
+	    Tp [j] = pj ;
+	}
+	Tp [k] = p ;
+    }
+
+    /* clean up, for remaining mismatched entries */
+    for (j = 0 ; j < n ; j++)
+    {
+	for (pj = Tp [j] ; pj < Ap [j+1] ; pj++)
+	{
+	    i = Ai [pj] ;
+	    ASSERT (i >= 0 && i < n) ;
+	    /* A (i,j) is only in the lower part, not in upper */
+	    ASSERT (Sp [i] < (i == n-1 ? pfree : Pe [i+1])) ;
+	    ASSERT (Sp [j] < (j == n-1 ? pfree : Pe [j+1])) ;
+	    Iw [Sp [i]++] = j ;
+	    Iw [Sp [j]++] = i ;
+	}
+    }
+
+#ifndef NDEBUG
+    for (j = 0 ; j < n ; j++) ASSERT (Sp [j] == Pe [j+1]) ;
+#endif
+
+    /* Tp and Sp no longer needed ] */
+
+    /* --------------------------------------------------------------------- */
+    /* order the matrix */
+    /* --------------------------------------------------------------------- */
+
+    if (ordering_option == UMFPACK_ORDERING_AMD)
+    {
+
+        /* use AMD as the symmetric ordering */
+        AMD_2 (n, Pe, Iw, Len, iwlen, pfree,
+            Nv, Pinv, P, Head, Elen, Degree, W, amd_Control, amd_Info) ;
+        *ordering_used = UMFPACK_ORDERING_AMD ;
+        return (TRUE) ;
+
+    }
+    else
+    {
+
+        /* use the user-provided symmetric ordering, or umf_cholmod */
+        double user_info [3], dmax, lnz, flops ;
+        int ok ;
+        user_info [0] = EMPTY ;
+        user_info [1] = EMPTY ;
+        user_info [2] = EMPTY ;
+
+        if (ordering_option == UMFPACK_ORDERING_USER)
+        {
+            ok = (*user_ordering) (n, n, TRUE, Pe, Iw, P,
+                user_params, user_info) ;
+            *ordering_used = UMFPACK_ORDERING_USER ;
+        }
+        else
+        /* if (ordering_option == UMFPACK_ORDERING_CHOLMOD
+            || ordering_option == UMFPACK_ORDERING_GIVEN
+            || ordering_option == UMFPACK_ORDERING_NONE
+            || ordering_option == UMFPACK_ORDERING_METIS
+            || ordering_option == UMFPACK_ORDERING_BEST) */
+        {
+            Int params [3] ;
+            params [0] = ordering_option ;
+            params [1] = print_level ;
+            ok = UMF_cholmod (n, n, TRUE, Pe, Iw, P, &params, user_info) ;
+            *ordering_used = params [2] ;
+        }
+
+        if (!ok)
+        {
+            /* user_ordering or UMF_cholmod failed */
+            amd_Info [AMD_STATUS] = AMD_INVALID ;
+            return (FALSE) ;
+        }
+
+        /* get the user ordering statistics, if computed */
+        dmax  = user_info [0] ;
+        lnz   = user_info [1] ;
+        flops = user_info [2] ;
+
+        /* construct amd_Info, as if AMD was called */
+        amd_Info [AMD_STATUS] = AMD_OK ;
+        amd_Info [AMD_N] = n ;
+        amd_Info [AMD_NZ] = anz ;
+        /* amd_Info [AMD_SYMMETRY] not computed ; */
+        /* amd_Info [AMD_NZDIAG] not computed ; */
+        amd_Info [AMD_NZ_A_PLUS_AT] = pfree ;
+        amd_Info [AMD_NDENSE] = 0 ;
+        /* amd_Info [AMD_MEMORY] not computed ; */
+        amd_Info [AMD_NCMPA] = 0 ;
+        amd_Info [AMD_LNZ] = lnz ;
+        amd_Info [AMD_NDIV] = lnz ;
+        if (flops >= 0)
+        {
+            amd_Info [AMD_NMULTSUBS_LDL] = (flops - n) / 2 ;
+            amd_Info [AMD_NMULTSUBS_LU]  = (flops - n) ;
+        }
+        else
+        {
+            amd_Info [AMD_NMULTSUBS_LDL] = EMPTY ;
+            amd_Info [AMD_NMULTSUBS_LU]  = EMPTY ;
+        }
+        amd_Info [AMD_DMAX] = dmax ;
+
+        /* construct the inverse permutation */
+        return (inverse_permutation (P, Pinv, n)) ;
+    }
+}
+
+
+/* ========================================================================== */
 /* === do_amd =============================================================== */
 /* ========================================================================== */
 
-PRIVATE void do_amd
+PRIVATE int do_amd
 (
     Int n,
-    const Int Ap [ ],		/* size n+1 */
-    const Int Ai [ ],		/* size nz = Ap [n] */
+    Int Ap [ ],		        /* size n+1 */
+    Int Ai [ ],		        /* size nz = Ap [n] */
     Int Q [ ],			/* output permutation, j = Q [k] */
     Int Qinv [ ],		/* output inverse permutation, Qinv [j] = k */
     Int Sdeg [ ],		/* degree of A+A', from AMD_aat */
     Int Clen,			/* size of Ci */
-    Int Ci [ ],			/* size Ci workspace */
+    Int Ci [ ],			/* size Clen workspace */
     double amd_Control [ ],	/* AMD control parameters */
     double amd_Info [ ],	/* AMD info */
     SymbolicType *Symbolic,	/* Symbolic object */
-    double Info [ ]		/* UMFPACK info */
+    double Info [ ],		/* UMFPACK info */
+    Int ordering_option,
+    Int print_level,
+
+    /* user-provided ordering function */
+    int (*user_ordering)    /* TRUE if OK, FALSE otherwise */
+    (
+        /* inputs, not modified on output */
+        Int,            /* nrow */
+        Int,            /* ncol */
+        Int,            /* sym: if TRUE and nrow==ncol do A+A', else do A'A */
+        Int *,          /* Ap, size ncol+1 */
+        Int *,          /* Ai, size nz */
+        /* output */
+        Int *,          /* size ncol, fill-reducing permutation */
+        /* input/output */
+        void *,         /* user_params (ignored by UMFPACK) */
+        double *        /* user_info[0..2], optional output for symmetric case.
+                           user_info[0]: max column count for L=chol(P(A+A')P')
+                           user_info[1]: nnz (L)
+                           user_info[2]: flop count for chol, if A real */
+    ),
+    void *user_params,  /* passed to user_ordering function */
+    Int *ordering_used
 )
 {
+    int ok = TRUE ;
+    *ordering_used = UMFPACK_ORDERING_NONE ;
 
     if (n == 0)
     {
@@ -114,18 +471,24 @@ PRIVATE void do_amd
     }
     else
     {
-	AMD_1 (n, Ap, Ai, Q, Qinv, Sdeg, Clen, Ci, amd_Control, amd_Info) ;
+	ok = do_amd_1 (n, Ap, Ai, Q, Qinv, Sdeg, Clen,
+            Ci, ordering_option, print_level, user_ordering, user_params,
+            ordering_used, amd_Control, amd_Info) ;
 
-	/* return estimates computed from AMD on PA+PA' */
-	Symbolic->amd_dmax = amd_Info [AMD_DMAX] ;
-	Symbolic->amd_lunz = 2 * amd_Info [AMD_LNZ] + n ;
-	Info [UMFPACK_SYMMETRIC_LUNZ] = Symbolic->amd_lunz ;
-	Info [UMFPACK_SYMMETRIC_FLOPS] = DIV_FLOPS * amd_Info [AMD_NDIV] +
-	    MULTSUB_FLOPS * amd_Info [AMD_NMULTSUBS_LU] ;
-	Info [UMFPACK_SYMMETRIC_DMAX] = Symbolic->amd_dmax ;
-	Info [UMFPACK_SYMMETRIC_NDENSE] = amd_Info [AMD_NDENSE] ;
-	Info [UMFPACK_SYMBOLIC_DEFRAG] += amd_Info [AMD_NCMPA] ;
+        /* return estimates computed from AMD or user ordering P(A+A')P' */
+        if (ok)
+        {
+            Symbolic->amd_dmax = amd_Info [AMD_DMAX] ;
+            Symbolic->amd_lunz = 2 * amd_Info [AMD_LNZ] + n ;
+            Info [UMFPACK_SYMMETRIC_LUNZ] = Symbolic->amd_lunz ;
+            Info [UMFPACK_SYMMETRIC_FLOPS] = DIV_FLOPS * amd_Info [AMD_NDIV] +
+                MULTSUB_FLOPS * amd_Info [AMD_NMULTSUBS_LU] ;
+            Info [UMFPACK_SYMMETRIC_DMAX] = Symbolic->amd_dmax ;
+            Info [UMFPACK_SYMMETRIC_NDENSE] = amd_Info [AMD_NDENSE] ;
+            Info [UMFPACK_SYMBOLIC_DEFRAG] += amd_Info [AMD_NCMPA] ;
+        }
     }
+    return (ok) ;
 }
 
 /* ========================================================================== */
@@ -292,10 +655,10 @@ PRIVATE void combine_ordering
 }
 
 /* ========================================================================== */
-/* === UMFPACK_qsymbolic ==================================================== */
+/* === symbolic_analysis ==================================================== */
 /* ========================================================================== */
 
-GLOBAL Int UMFPACK_qsymbolic
+PRIVATE Int symbolic_analysis
 (
     Int n_row,
     Int n_col,
@@ -305,7 +668,30 @@ GLOBAL Int UMFPACK_qsymbolic
 #ifdef COMPLEX
     const double Az [ ],
 #endif
+
+    /* user-provided ordering (may be NULL) */
     const Int Quser [ ],
+
+    /* user-provided ordering function */
+    int (*user_ordering)    /* TRUE if OK, FALSE otherwise */
+    (
+        /* inputs, not modified on output */
+        Int,            /* nrow */
+        Int,            /* ncol */
+        Int,            /* sym: if TRUE and nrow==ncol do A+A', else do A'A */
+        Int *,          /* Ap, size ncol+1 */
+        Int *,          /* Ai, size nz */
+        /* output */
+        Int *,          /* size ncol, fill-reducing permutation */
+        /* input/output */
+        void *,         /* user_params (ignored by UMFPACK) */
+        double *        /* user_info[0..2], optional output for symmetric case.
+                           user_info[0]: max column count for L=chol(P(A+A')P')
+                           user_info[1]: nnz (L)
+                           user_info[2]: flop count for chol, if A real */
+    ),
+    void *user_params,  /* passed to user_ordering function */
+
     void **SymbolicHandle,
     const double Control [UMFPACK_CONTROL],
     double User_Info [UMFPACK_INFO]
@@ -320,7 +706,7 @@ GLOBAL Int UMFPACK_qsymbolic
 	Info2 [UMFPACK_INFO], drow, dcol, dtail_usage, dlf, duf, dmax_usage,
 	dhead_usage, dlnz, dunz, dmaxfrsize, dClen, dClen_analyze, sym,
 	amd_Info [AMD_INFO], dClen_amd, dr, dc, cr, cc, cp,
-	amd_Control [AMD_CONTROL], stats [2], tol ;
+	amd_Control [AMD_CONTROL], stats [2] ;
     double *Info ;
     Int i, nz, j, newj, status, f1, f2, maxnrows, maxncols, nfr, col,
 	nchains, maxrows, maxcols, p, nb, nn, *Chain_start, *Chain_maxrows,
@@ -333,8 +719,10 @@ GLOBAL Int UMFPACK_qsymbolic
 	*Wq, *Sdeg, *Fr_npivcol, nempty, *Fr_nrows, *Fr_ncols, *Fr_parent,
 	*Fr_cols, nempty_row, nempty_col, user_auto_strategy, fail, max_rdeg,
 	head_usage, tail_usage, lnz, unz, esize, *Esize, rdeg, *Cdeg, *Rdeg,
-	*Cperm1, *Rperm1, n1, oldcol, newcol, n1c, n1r, *Rperm_2by2, oldrow,
-	dense_row_threshold, tlen, aggressive, scale, *Rp, *Ri ;
+	*Cperm1, *Rperm1, n1, oldcol, newcol, n1c, n1r, oldrow,
+	dense_row_threshold, tlen, aggressive, *Rp, *Ri ;
+    Int do_singletons, ordering_option, print_level ;
+    int ok ;
 
     SymbolicType *Symbolic ;
     SWType SWspace, *SW ;
@@ -361,17 +749,37 @@ GLOBAL Int UMFPACK_qsymbolic
     dcol = GET_CONTROL (UMFPACK_DENSE_COL, UMFPACK_DEFAULT_DENSE_COL) ;
     nb = GET_CONTROL (UMFPACK_BLOCK_SIZE, UMFPACK_DEFAULT_BLOCK_SIZE) ;
     strategy = GET_CONTROL (UMFPACK_STRATEGY, UMFPACK_DEFAULT_STRATEGY) ;
-#if 0
-    tol = GET_CONTROL (UMFPACK_2BY2_TOLERANCE, UMFPACK_DEFAULT_2BY2_TOLERANCE) ;
-#endif
-    scale = GET_CONTROL (UMFPACK_SCALE, UMFPACK_DEFAULT_SCALE) ;
     force_fixQ = GET_CONTROL (UMFPACK_FIXQ, UMFPACK_DEFAULT_FIXQ) ;
+    do_singletons = GET_CONTROL (UMFPACK_SINGLETONS,UMFPACK_DEFAULT_SINGLETONS);
     AMD_defaults (amd_Control) ;
     amd_Control [AMD_DENSE] =
 	GET_CONTROL (UMFPACK_AMD_DENSE, UMFPACK_DEFAULT_AMD_DENSE) ;
     aggressive =
 	(GET_CONTROL (UMFPACK_AGGRESSIVE, UMFPACK_DEFAULT_AGGRESSIVE) != 0) ;
     amd_Control [AMD_AGGRESSIVE] = aggressive ;
+    print_level = GET_CONTROL (UMFPACK_PRL, UMFPACK_DEFAULT_PRL) ;
+
+    /* get the ordering_option */
+    ordering_option = GET_CONTROL (UMFPACK_ORDERING, UMFPACK_DEFAULT_ORDERING) ;
+    if (ordering_option < 0 || ordering_option > UMFPACK_ORDERING_USER)
+    {
+        ordering_option = UMFPACK_DEFAULT_ORDERING ;
+    }
+    if (Quser == (Int *) NULL)
+    {
+        /* Quser is NULL, so ordering cannot be "given" */
+        /* user_ordering function not provided, so ordering cannot be "user" */
+        if (ordering_option == UMFPACK_ORDERING_GIVEN ||
+           (ordering_option == UMFPACK_ORDERING_USER && !user_ordering))
+        {
+            ordering_option = UMFPACK_ORDERING_NONE ;
+        }
+    }
+    else
+    {
+        /* if Quser is not NULL, then always use it */
+        ordering_option = UMFPACK_ORDERING_GIVEN ;
+    }
 
     nb = MAX (2, nb) ;
     nb = MIN (nb, MAXNB) ;
@@ -379,15 +787,6 @@ GLOBAL Int UMFPACK_qsymbolic
     if (nb % 2 == 1) nb++ ;	/* make sure nb is even */
     DEBUG0 (("UMFPACK_qsymbolic: nb = "ID" aggressive = "ID"\n", nb,
 	aggressive)) ;
-
-#if 0
-    tol = MAX (0.0, MIN (tol,  1.0)) ;
-#endif
-
-    if (scale != UMFPACK_SCALE_NONE && scale != UMFPACK_SCALE_MAX)
-    {
-	scale = UMFPACK_DEFAULT_SCALE ;
-    }
 
     if (User_Info != (double *) NULL)
     {
@@ -417,14 +816,18 @@ GLOBAL Int UMFPACK_qsymbolic
     Info [UMFPACK_SIZE_OF_POINTER] = (double) (sizeof (void *)) ;
     Info [UMFPACK_SIZE_OF_ENTRY] = (double) (sizeof (Entry)) ;
     Info [UMFPACK_SYMBOLIC_DEFRAG] = 0 ;
+    Info [UMFPACK_ORDERING_USED] = EMPTY ;
+
+    if (SymbolicHandle != NULL)
+    {
+        *SymbolicHandle = (void *) NULL ;
+    }
 
     if (!Ai || !Ap || !SymbolicHandle)
     {
 	Info [UMFPACK_STATUS] = UMFPACK_ERROR_argument_missing ;
 	return (UMFPACK_ERROR_argument_missing) ;
     }
-
-    *SymbolicHandle = (void *) NULL ;
 
     if (n_row <= 0 || n_col <= 0)	/* n_row, n_col must be > 0 */
     {
@@ -454,7 +857,8 @@ GLOBAL Int UMFPACK_qsymbolic
     }
 
     if (strategy < UMFPACK_STRATEGY_AUTO
-     || strategy > UMFPACK_STRATEGY_SYMMETRIC)
+     || strategy > UMFPACK_STRATEGY_SYMMETRIC
+     || strategy == UMFPACK_STRATEGY_OBSOLETE)
     {
 	/* unrecognized strategy */
 	strategy = UMFPACK_STRATEGY_AUTO ;
@@ -464,10 +868,6 @@ GLOBAL Int UMFPACK_qsymbolic
     {
 	/* when the user provides Q, only symmetric and unsymmetric strategies
 	 * are available */
-	if (strategy == UMFPACK_STRATEGY_2BY2)
-	{
-	    strategy = UMFPACK_STRATEGY_SYMMETRIC ;
-	}
 	if (strategy != UMFPACK_STRATEGY_SYMMETRIC)
 	{
 	    strategy = UMFPACK_STRATEGY_UNSYMMETRIC ;
@@ -498,9 +898,8 @@ GLOBAL Int UMFPACK_qsymbolic
     dClen = MAX (dClen, dClen_analyze) ;
 
     /* The space for AMD can be larger than what's required for colamd: */
-    dClen_amd = 2.4 * (double) nz + 8 * (double) n_inner ;
-    /* additional space for the 2-by-2 strategy */
-    dClen_amd += (double) MAX (nn, nz) ;
+    dClen_amd = 2.4 * (double) nz + 8 * (double) n_inner + 1 ;
+
     dClen = MAX (dClen, dClen_amd) ;
 
     /* worst case total memory usage for UMFPACK_symbolic (revised below) */
@@ -523,8 +922,7 @@ GLOBAL Int UMFPACK_qsymbolic
     Clen = UMF_COLAMD_RECOMMENDED (nz, n_row, n_col) ;
     Clen_analyze = UMF_ANALYZE_CLEN (nz, n_row, n_col, nn) ;
     Clen = MAX (Clen, Clen_analyze) ;
-    Clen_amd = 2.4 * nz + 8 * n_inner ;
-    Clen_amd += MAX (nn, nz) ;			/* for Ri, in UMF_2by2 */
+    Clen_amd = 2.4 * nz + 8 * n_inner + 1 ;
     Clen = MAX (Clen, Clen_amd) ;
 
     /* ---------------------------------------------------------------------- */
@@ -561,6 +959,9 @@ GLOBAL Int UMFPACK_qsymbolic
     Symbolic->Front_leftmostdesc = (Int *) NULL ;
     Symbolic->Esize = (Int *) NULL ;
     Symbolic->esize = 0 ;
+    Symbolic->ordering = EMPTY ;    /* not yet determined */
+    Symbolic->amd_lunz = EMPTY ;
+    Symbolic->max_nchains = EMPTY ;
 
     Symbolic->Cperm_init   = (Int *) UMF_malloc (n_col+1, sizeof (Int)) ;
     Symbolic->Rperm_init   = (Int *) UMF_malloc (n_row+1, sizeof (Int)) ;
@@ -585,6 +986,8 @@ GLOBAL Int UMFPACK_qsymbolic
     Symbolic->n_col = n_col ;
     Symbolic->nz = nz ;
     Symbolic->nb = nb ;
+    Cdeg [n_col] = EMPTY ;      /* unused space */
+    Rdeg [n_row] = EMPTY ;
 
     /* ---------------------------------------------------------------------- */
     /* check user's input permutation */
@@ -645,9 +1048,6 @@ GLOBAL Int UMFPACK_qsymbolic
     SW->Rperm1	      = (Int *) UMF_malloc (n_row, sizeof (Int)) ;
     SW->InFront	      = (Int *) UMF_malloc (n_row, sizeof (Int)) ;
 
-    /* this is allocated later, and free'd after Cperm1 but before Ci */
-    SW->Rperm_2by2    = (Int *) NULL ;   /* will be nn Int's */
-
     /* this is allocated last, and free'd first */
     SW->Rs	      = (double *) NULL ;	/* will be n_row double's */
 
@@ -662,7 +1062,6 @@ GLOBAL Int UMFPACK_qsymbolic
     Si	       = SW->Si ;
     Sp	       = SW->Sp ;
     InvRperm1  = SW->InvRperm1 ;
-    Rperm_2by2 = (Int *) NULL ;
     InFront    = SW->InFront ;
 
     if (!Ci || !Fr_npivcol || !Fr_nrows || !Fr_ncols || !Fr_parent || !Fr_cols
@@ -687,6 +1086,7 @@ GLOBAL Int UMFPACK_qsymbolic
     ASSERT (Clen >= nz + n_row + MAX (n_row, n_col)) ;
 
     status = UMF_singletons (n_row, n_col, Ap, Ai, Quser, strategy,
+        do_singletons, /* if false, then do not look for singletons */
 	Cdeg, Cperm1, Rdeg,
 	Rperm1, InvRperm1, &n1, &n1c, &n1r, &nempty_col, &nempty_row, &is_sym,
 	&max_rdeg, /* workspace: */ Rperm_init, Ci, Ci + nz, Ci + nz + n_row) ;
@@ -756,9 +1156,8 @@ GLOBAL Int UMFPACK_qsymbolic
 
     if (strategy != UMFPACK_STRATEGY_UNSYMMETRIC)
     {
-	/* This also determines the degree of each node in S+S' (Sdeg), which
-	 * is needed by the 2-by-2 strategy, the symmetry of S, and the number
-	 * of nonzeros on the diagonal of S. */
+	/* This also determines the degree of each node in S+S' (Sdeg), the
+         * symmetry of S, and the number of nonzeros on the diagonal of S. */
 	ASSERT (n_row == n_col) ;
 	ASSERT (nempty_row == nempty_col) ;
 
@@ -830,43 +1229,11 @@ GLOBAL Int UMFPACK_qsymbolic
     /* determine the initial strategy based on symmetry and nnz (diag (S)) */
     /* ---------------------------------------------------------------------- */
 
-#if 0
     if (strategy == UMFPACK_STRATEGY_AUTO)
     {
-	if (sym < 0.10)
-	{
-	    /* highly unsymmetric: use the unsymmetric strategy */
-	    strategy = UMFPACK_STRATEGY_UNSYMMETRIC ;
-	    DEBUGm4 (("Strategy: select unsymmetric\n")) ;
-	}
-	else if (sym >= 0.7 && nzdiag == n2)
-	{
-	    /* mostly symmetric, zero-free diagonal: use symmetric strategy */
-	    strategy = UMFPACK_STRATEGY_SYMMETRIC ;
-	    DEBUGm4 (("Strategy: select symmetric\n")) ;
-	}
-	else
-	{
-	    /* Evaluate the symmetric 2-by-2 strategy, and select it, or
-	     * the unsymmetric strategy if the 2-by-2 strategy doesn't look
-	     * promising. */
-	    strategy = UMFPACK_STRATEGY_2BY2 ;
-	    DEBUGm4 (("Strategy: try 2-by-2\n")) ;
-	}
-    }
-#endif
-
-    /* The 2-by-2 strategy can cause an error UMFPACK_ERROR_different_pattern
-     * (-11) when factorizing a structurally singular matrix.  The problem
-     * occurs very rarely.  It's a conflict between the search of the row
-     * merge tree and the 2-by-2 pre-permutation.  Until this bug is fixed,
-     * the 2-by-2 strategy is disabled. */
-
-    if (strategy == UMFPACK_STRATEGY_AUTO)
-    {
-        if (sym >= 0.7 && nzdiag >= 0.9 * n2)
+        if (sym >= 0.5 && nzdiag >= 0.9 * n2)
         {
-            /* pattern is mostly symmetric (70% or more) and the diagonal is
+            /* pattern is mostly symmetric (50% or more) and the diagonal is
              * mostly zero-free (90% or more).  Use symmetric strategy. */
 	    strategy = UMFPACK_STRATEGY_SYMMETRIC ;
 	    DEBUG0 (("Strategy: select symmetric\n")) ;
@@ -879,229 +1246,11 @@ GLOBAL Int UMFPACK_qsymbolic
         }
     }
 
-    if (strategy == UMFPACK_STRATEGY_2BY2)
-    {
-        /* If the user insists on the 2-by-2 strategy, use the symmetric 
-         * strategy instead. */
-        strategy = UMFPACK_STRATEGY_SYMMETRIC ;
-    }
-
-#if 0
-
-    /* ---------------------------------------------------------------------- */
-    /* try the 2-by-2 strategy */
-    /* ---------------------------------------------------------------------- */
-
-    /* (3) If the 2-by-2 strategy is attempted, additional workspace of size
-     * nn integers and nn double's is allocated, where nn = n_row = n_col.
-     * The real workspace is immediately free'd.  The integer workspace of
-     * size nn remains until the end of umfpack_qsymbolic. */
-
-    /* If the resulting matrix S (Rperm_2by2, :) is too unsymmetric, then the
-     * unsymmetric strategy will be used instead. */
-
-    if (strategy == UMFPACK_STRATEGY_2BY2)
-    {
-	double sym2 ;
-	Int *Blen, *W, nz_papat, nzd2, nweak, unmatched, Clen3 ;
-
-	/* ------------------------------------------------------------------ */
-	/* get workspace for UMF_2by2 */
-	/* ------------------------------------------------------------------ */
-
-	ASSERT (n_row == n_col && nn == n_row) ;
-
-#ifndef NDEBUG
-	for (k = 0 ; k < n2 ; k++)
-	{
-	    ASSERT (Sdeg [k] >= 0 && Sdeg [k] < n2) ;
-	}
-#endif
-
-	/* allocate Rperm_2by2 */
-	SW->Rperm_2by2 = (Int *) UMF_malloc (nn, sizeof (Int)) ;
-	Rperm_2by2 = SW->Rperm_2by2 ;
-	if (Rperm_2by2 == (Int *) NULL)
-	{
-	    DEBUGm4 (("out of memory: Rperm_2by2\n")) ;
-	    Info [UMFPACK_STATUS] = UMFPACK_ERROR_out_of_memory ;
-	    error (&Symbolic, SW) ;
-	    return (UMFPACK_ERROR_out_of_memory) ;
-	}
-
-	/* allocate Ri from the tail end of Ci [ */
-	Clen3 = Clen - (MAX (nn, nz) + 1) ;
-	Ri = Ci + Clen3 ;
-	ASSERT (Clen3 >= nz) ;	/* space required for UMF_2by2 */
-
-	/* use Fr_* as workspace for Rp, Blen, and W [ */
-	Rp = Fr_npivcol ;
-	Blen = Fr_ncols ;
-	W = Fr_cols ;
-
-	if (scale != UMFPACK_SCALE_NONE)
-	{
-	    SW->Rs = (double *) UMF_malloc (nn, sizeof (double)) ;
-	    if (SW->Rs == (double *) NULL)
-	    {
-		DEBUGm4 (("out of memory: scale factors for 2-by-2\n")) ;
-		Info [UMFPACK_STATUS] = UMFPACK_ERROR_out_of_memory ;
-		error (&Symbolic, SW) ;
-		return (UMFPACK_ERROR_out_of_memory) ;
-	    }
-	}
-
-	/* ------------------------------------------------------------------ */
-	/* find the 2-by-2 row permutation */
-	/* ------------------------------------------------------------------ */
-
-	/* find a row permutation Rperm_2by2 such that S (Rperm_2by2, :)
-	 * has a healthy diagonal */
-
-	UMF_2by2 (nn, Ap, Ai, Ax,
-#ifdef COMPLEX
-		Az,
-#endif
-		tol, scale, Cperm1,
-#ifndef NDEBUG
-		Rperm1,
-#endif
-		InvRperm1, n1, nempty, Sdeg, Rperm_2by2, &nweak, &unmatched,
-		Ri, Rp, SW->Rs, Blen, W, Ci, Wq) ;
-	DEBUGm3 (("2by2: nweak "ID" unmatched "ID"\n", nweak, unmatched)) ;
-	Info [UMFPACK_2BY2_NWEAK] = nweak ;
-	Info [UMFPACK_2BY2_UNMATCHED] = unmatched ;
-
-	SW->Rs = (double *) UMF_free ((void *) SW->Rs) ;
-
-	/* R = S (Rperm_2by2,:)' */
-	(void) UMF_transpose (n2, n2, Sp, Si, (double *) NULL, Rperm_2by2,
-	    (Int *) NULL, 0, Rp, Ri, (double *) NULL, W, FALSE
-#ifdef COMPLEX
-	    , (double *) NULL, (double *) NULL, FALSE
-#endif
-	    ) ;
-	ASSERT (AMD_valid (n2, n2, Rp, Ri) == AMD_OK) ;
-
-	/* contents of Si and Sp no longer needed, but the space is
-	 * still needed */
-
-	/* ------------------------------------------------------------------ */
-	/* find symmetry of S (Rperm_2by2, :)', and prepare to order with AMD */
-	/* ------------------------------------------------------------------ */
-
-	for (i = 0 ; i < AMD_INFO ; i++)
-	{
-	    amd_Info [i] = EMPTY ;
-	}
-	nz_papat = AMD_aat (n2, Rp, Ri, Sdeg, Wq, amd_Info) ;
-	sym2 = amd_Info [AMD_SYMMETRY] ;
-	nzd2 = amd_Info [AMD_NZDIAG] ;
-
-	Info [UMFPACK_2BY2_PATTERN_SYMMETRY] = sym2 ;
-	Info [UMFPACK_2BY2_NZ_PA_PLUS_PAT] = nz_papat ;
-	Info [UMFPACK_2BY2_NZDIAG] = nzd2 ;
-
-	DEBUG0 (("2by2: sym2 %g nzd2 "ID" n2 "ID"\n", sym2, nzd2, n2)) ;
-
-	/* ------------------------------------------------------------------ */
-	/* evaluate the 2-by-2 results */
-	/* ------------------------------------------------------------------ */
-
-	if (user_auto_strategy)
-	{
-	    if ((sym2 > 1.1 * sym) && (nzd2 > 0.9 * n2))
-	    {
-		/* 2-by-2 made it much more symmetric */
-		DEBUGm4 (("eval Strategy 2by2: much more symmetric:  2by2\n")) ;
-		strategy = UMFPACK_STRATEGY_2BY2 ;
-	    }
-	    else if (sym2 < 0.7 * sym)
-	    {
-		/* 2-by-2 made it much more unsymmetric */
-		DEBUGm4 (("eval Strategy 2by2: much more UNsymmetric:unsym\n"));
-		strategy = UMFPACK_STRATEGY_UNSYMMETRIC ;
-	    }
-	    else if (sym2 < 0.25)
-	    {
-		DEBUGm4 (("eval Strategy 2by2: is UNsymmetric: unsym\n"));
-		strategy = UMFPACK_STRATEGY_UNSYMMETRIC ;
-	    }
-	    else if (sym2 >= 0.51)
-	    {
-		DEBUGm4 (("eval Strategy 2by2: sym2 >= 0.51: 2by2\n")) ;
-		strategy = UMFPACK_STRATEGY_2BY2 ;
-	    }
-	    else if (sym2 >= 0.999 * sym)
-	    {
-		/* 2-by-2 improved symmetry, or made it only slightly worse */
-		DEBUGm4 (("eval Strategy 2by2: sym2 >= 0.999 sym: 2by2\n")) ;
-		strategy = UMFPACK_STRATEGY_2BY2 ;
-	    }
-	    else
-	    {
-		/* can't decide what to do, so pick the unsymmetric strategy */
-		DEBUGm4 (("eval Strategy 2by2: punt: unsym\n"));
-		strategy = UMFPACK_STRATEGY_UNSYMMETRIC ;
-	    }
-	}
-
-	/* ------------------------------------------------------------------ */
-	/* if the 2-by-2 strategy is selected: */
-	/* ------------------------------------------------------------------ */
-
-	if (strategy == UMFPACK_STRATEGY_2BY2)
-	{
-	    if (Quser == (Int *) NULL)
-	    {
-		/* 2-by-2 strategy is successful */
-		/* compute amd (S) */
-		Int *Qinv = Fr_npivcol ;
-		ASSERT (Clen3 >= (nz_papat + nz_papat/5 + nn) + 7*nn) ;
-		do_amd (n2, Rp, Ri, Wq, Qinv, Sdeg, Clen3, Ci,
-		    amd_Control, amd_Info, Symbolic, Info) ;
-		/* combine the singleton ordering and the AMD ordering */
-		combine_ordering (n1, nempty, nn, Cperm_init, Cperm1, Qinv) ;
-	    }
-	    /* fix Rperm_2by2 to reflect A, not S */
-	    for (k = 0 ; k < n1 ; k++)
-	    {
-		oldcol = Cperm1 [k] ;
-		i = k ;
-		oldrow = Rperm1 [k] ;
-		W [oldcol] = oldrow ;
-	    }
-	    for (k = n1 ; k < nn - nempty ; k++)
-	    {
-		oldcol = Cperm1 [k] ;
-		i = Rperm_2by2 [k - n1] + n1 ;
-		oldrow = Rperm1 [i] ;
-		W [oldcol] = oldrow ;
-	    }
-	    for (k = nn - nempty ; k < nn ; k++)
-	    {
-		oldcol = Cperm1 [k] ;
-		i = k ;
-		oldrow = Rperm1 [k] ;
-		W [oldcol] = oldrow ;
-	    }
-	    for (k = 0 ; k < nn ; k++)
-	    {
-		Rperm_2by2 [k] = W [k] ;
-	    }
-
-	    /* Now, the "diagonal" entry in oldcol (where oldcol is the user's
-	     * name for a column, is the entry in row oldrow (where oldrow is
-	     * the user's name for a row, and oldrow = Rperm_2by2 [oldcol] */
-	}
-
-	/* Fr_* no longer needed for Rp, Blen, W ] */
-    }
-#endif
-
     /* ---------------------------------------------------------------------- */
     /* finalize the strategy, including fixQ and prefer_diagonal */
     /* ---------------------------------------------------------------------- */
+
+    DEBUG0 (("strategy is now "ID"\n", strategy)) ;
 
     if (strategy == UMFPACK_STRATEGY_SYMMETRIC)
     {
@@ -1109,36 +1258,17 @@ GLOBAL Int UMFPACK_qsymbolic
 	 * prefer diagonal */
 	DEBUG0 (("\nStrategy: symmetric\n")) ;
 	ASSERT (n_row == n_col) ;
-	Symbolic->ordering = UMFPACK_ORDERING_AMD ;
 	fixQ = TRUE ;
 	prefer_diagonal = TRUE ;
     }
-#if 0
-    else if (strategy == UMFPACK_STRATEGY_2BY2)
-    {
-	/* use Q = given Quser or Q = AMD (PA+PA'), fix Q during factorization,
-	 * prefer diagonal, and factorize PAQ, where P is found by UMF_2by2. */
-	DEBUG0 (("\nStrategy: symmetric 2-by-2\n")) ;
-	ASSERT (n_row == n_col) ;
-	Symbolic->ordering = UMFPACK_ORDERING_AMD ;
-	fixQ = TRUE ;
-	prefer_diagonal = TRUE ;
-    }
-#endif
     else
     {
 	/* use given Quser or COLAMD (A), refine Q during factorization,
 	 * no diagonal preference */
 	ASSERT (strategy == UMFPACK_STRATEGY_UNSYMMETRIC) ;
 	DEBUG0 (("\nStrategy: unsymmetric\n")) ;
-	Symbolic->ordering = UMFPACK_ORDERING_COLAMD ;
 	fixQ = FALSE ;
 	prefer_diagonal = FALSE ;
-    }
-
-    if (Quser != (Int *) NULL)
-    {
-	Symbolic->ordering = UMFPACK_ORDERING_GIVEN ;
     }
 
     if (force_fixQ > 0)
@@ -1152,7 +1282,7 @@ GLOBAL Int UMFPACK_qsymbolic
 	DEBUG0 (("Force fixQ false\n")) ;
     }
 
-    DEBUG0 (("Strategy: ordering:   "ID"\n", Symbolic->ordering)) ;
+    DEBUG0 (("Strategy: ordering:   "ID"\n", ordering_option)) ;
     DEBUG0 (("Strategy: fixQ:       "ID"\n", fixQ)) ;
     DEBUG0 (("Strategy: prefer diag "ID"\n", prefer_diagonal)) ;
 
@@ -1162,7 +1292,6 @@ GLOBAL Int UMFPACK_qsymbolic
     Symbolic->prefer_diagonal = prefer_diagonal ;
 
     Info [UMFPACK_STRATEGY_USED] = strategy ;
-    Info [UMFPACK_ORDERING_USED] = Symbolic->ordering ;
     Info [UMFPACK_QFIXED] = fixQ ;
     Info [UMFPACK_DIAG_PREFERRED] = prefer_diagonal ;
 
@@ -1173,12 +1302,24 @@ GLOBAL Int UMFPACK_qsymbolic
     if (strategy == UMFPACK_STRATEGY_SYMMETRIC && Quser == (Int *) NULL)
     {
 	/* symmetric strategy for a matrix with mostly symmetric pattern */
+        Int ordering_used ;
 	Int *Qinv = Fr_npivcol ;
 	ASSERT (n_row == n_col && nn == n_row) ;
-	ASSERT (Clen >= (nzaat + nzaat/5 + nn) + 7*nn) ;
-	do_amd (n2, Sp, Si, Wq, Qinv, Sdeg, Clen, Ci,
-		amd_Control, amd_Info, Symbolic, Info) ;
+	ASSERT (Clen >= (nzaat + nzaat/5 + nn) + 7*nn + 1) ;
+        ok = do_amd (n2, Sp, Si, Wq, Qinv, Sdeg, Clen, Ci,
+                amd_Control, amd_Info, Symbolic, Info,
+                ordering_option, print_level, user_ordering, user_params,
+                &ordering_used) ;
+        if (!ok)
+        {
+            DEBUGm4 (("symmetric ordering failed\n")) ;
+            status = UMFPACK_ERROR_ordering_failed ;
+            Info [UMFPACK_STATUS] = status ;
+            error (&Symbolic, SW) ;
+            return (status) ;
+        }
 	/* combine the singleton ordering and the AMD ordering */
+        Symbolic->ordering = ordering_used ;
 	combine_ordering (n1, nempty, nn, Cperm_init, Cperm1, Qinv) ;
     }
     /* Sdeg no longer needed ] */
@@ -1196,14 +1337,16 @@ GLOBAL Int UMFPACK_qsymbolic
 	{
 	    Cperm_init [k] = Cperm1 [k] ;
 	}
+        Symbolic->ordering = UMFPACK_ORDERING_GIVEN ;
     }
 
     /* ---------------------------------------------------------------------- */
-    /* use COLAMD to order the matrix */
+    /* use COLAMD or user_ordering to order the matrix */
     /* ---------------------------------------------------------------------- */
 
     if (strategy == UMFPACK_STRATEGY_UNSYMMETRIC && Quser == (Int *) NULL)
     {
+        Int nrow2, ncol2 ;
 
 	/* ------------------------------------------------------------------ */
 	/* copy the matrix into colamd workspace (colamd destroys its input) */
@@ -1224,48 +1367,129 @@ GLOBAL Int UMFPACK_qsymbolic
 #endif
 	    ) ;
 
-	/* ------------------------------------------------------------------ */
-	/* set UMF_colamd defaults */
-	/* ------------------------------------------------------------------ */
+        /* size of pruned matrix */
+        nrow2 = n_row - n1 - nempty_row ;
+        ncol2 = n_col - n1 - nempty_col ;
 
-	UMF_colamd_set_defaults (knobs) ;
-	knobs [COLAMD_DENSE_ROW] = drow ;
-	knobs [COLAMD_DENSE_COL] = dcol ;
-	knobs [COLAMD_AGGRESSIVE] = aggressive ;
+        if ((ordering_option == UMFPACK_ORDERING_USER
+            || ordering_option == UMFPACK_ORDERING_NONE
+            || ordering_option == UMFPACK_ORDERING_METIS
+            || ordering_option == UMFPACK_ORDERING_CHOLMOD
+            || ordering_option == UMFPACK_ORDERING_BEST)
+            && nrow2 > 0 && ncol2 > 0)
+        {
 
-	/* ------------------------------------------------------------------ */
-	/* check input matrix and find the initial column pre-ordering */
-	/* ------------------------------------------------------------------ */
+            /* -------------------------------------------------------------- */
+            /* use the user-provided column ordering */
+            /* -------------------------------------------------------------- */
 
-	/* NOTE: umf_colamd is not given any original empty rows or columns.
-	 * Those have already been removed via prune_singletons, above.  The
-	 * umf_colamd routine has been modified to assume that all rows and
-	 * columns have at least one entry in them.  It will break if it is
-	 * given empty rows or columns (an assertion is triggered when running
-	 * in debug mode. */
+            double user_info [3] ;    /* not needed */
+            Int *Qinv = Fr_npivcol ;  /* use Fr_npivcol as workspace for Qinv */
+            Int *QQ = Fr_nrows ;      /* use Fr_nrows as workspace for QQ */
 
-	(void) UMF_colamd (
-		n_row - n1 - nempty_row,
-		n_col - n1 - nempty_col,
-		Clen, Ci, Cperm_init, knobs, colamd_stats,
-		Fr_npivcol, Fr_nrows, Fr_ncols, Fr_parent, Fr_cols, &nfr,
-		InFront) ;
-	ASSERT (colamd_stats [COLAMD_EMPTY_ROW] == 0) ;
-	ASSERT (colamd_stats [COLAMD_EMPTY_COL] == 0) ;
+            /* analyze the resulting ordering for UMFPACK */
+            do_UMF_analyze = TRUE ;
 
-	/* # of dense rows will be recomputed below */
-	Info [UMFPACK_NDENSE_ROW]  = colamd_stats [COLAMD_DENSE_ROW] ;
-	Info [UMFPACK_NDENSE_COL]  = colamd_stats [COLAMD_DENSE_COL] ;
-	Info [UMFPACK_SYMBOLIC_DEFRAG] = colamd_stats [COLAMD_DEFRAG_COUNT] ;
+            if (ordering_option == UMFPACK_ORDERING_USER)
+            {
+                ok = (*user_ordering) (
+                    /* inputs */
+                    nrow2,
+                    ncol2,
+                    FALSE,
+                    Cperm_init, /* column pointers, Cp [0 ... ncol] */
+                    Ci, /* row indices */
+                    /* outputs, contents not defined on input */
+                    QQ, /* size ncol, QQ [k] = j if col j is kth col of A*Q */
+                    /* parameters and info for user ordering */
+                    user_params,
+                    user_info) ;
+                Symbolic->ordering = UMFPACK_ORDERING_USER ;
+            }
+            else
+            {
+                Int params [3] ;
+                params [0] = ordering_option ;
+                params [1] = print_level ;
+                ok = UMF_cholmod (
+                    /* inputs */
+                    nrow2,
+                    ncol2,
+                    FALSE,
+                    Cperm_init, /* column pointers, Cp [0 ... ncol] */
+                    Ci, /* row indices */
+                    /* outputs, contents not defined on input */
+                    QQ, /* size ncol, QQ [k] = j if col j is kth col of A*Q */
+                    /* parameters and info for user ordering */
+                    &params,
+                    user_info) ;
+                Symbolic->ordering = params [2] ;
+            }
 
-	/* re-analyze if any "dense" rows or cols ignored by UMF_colamd */
-	do_UMF_analyze =
-	    colamd_stats [COLAMD_DENSE_ROW] > 0 ||
-	    colamd_stats [COLAMD_DENSE_COL] > 0 ;
+            /* compute Qinv from QQ */
+            if (!ok || !inverse_permutation (QQ, Qinv, ncol2))
+            {
+                /* user ordering failed */
+                DEBUGm4 (("user ordering failed\n")) ;
+                status = UMFPACK_ERROR_ordering_failed ;
+                Info [UMFPACK_STATUS] = status ;
+                error (&Symbolic, SW) ;
+                return (status) ;
+            }
 
-	/* Combine the singleton and colamd ordering into Cperm_init */
-	/* Note that colamd returns its inverse permutation in Ci */
-	combine_ordering (n1, nempty_col, n_col, Cperm_init, Cperm1, Ci) ;
+            /* Combine the singleton and colamd ordering into Cperm_init */
+            /* Note that the user_unsymmetric_ordering function returns its
+             * inverse permutation in Qinv */
+            combine_ordering (n1, nempty_col, n_col, Cperm_init, Cperm1, Qinv) ;
+
+        }
+        else
+        {
+
+            /* -------------------------------------------------------------- */
+            /* set UMF_colamd defaults */
+            /* -------------------------------------------------------------- */
+
+            UMF_colamd_set_defaults (knobs) ;
+            knobs [COLAMD_DENSE_ROW] = drow ;
+            knobs [COLAMD_DENSE_COL] = dcol ;
+            knobs [COLAMD_AGGRESSIVE] = aggressive ;
+
+            /* -------------------------------------------------------------- */
+            /* check input matrix and find the initial column pre-ordering */
+            /* -------------------------------------------------------------- */
+
+            /* NOTE: umf_colamd is not given any original empty rows or
+             * columns.  Those have already been removed via prune_singletons,
+             * above.  The umf_colamd routine has been modified to assume that
+             * all rows and columns have at least one entry in them.  It will
+             * break if it is given empty rows or columns (an assertion is
+             * triggered when running in debug mode. */
+
+            (void) UMF_colamd (
+                    n_row - n1 - nempty_row,
+                    n_col - n1 - nempty_col,
+                    Clen, Ci, Cperm_init, knobs, colamd_stats,
+                    Fr_npivcol, Fr_nrows, Fr_ncols, Fr_parent, Fr_cols, &nfr,
+                    InFront) ;
+            ASSERT (colamd_stats [COLAMD_EMPTY_ROW] == 0) ;
+            ASSERT (colamd_stats [COLAMD_EMPTY_COL] == 0) ;
+            Symbolic->ordering = UMFPACK_ORDERING_AMD ;
+
+            /* # of dense rows will be recomputed below */
+            Info [UMFPACK_NDENSE_ROW]  = colamd_stats [COLAMD_DENSE_ROW] ;
+            Info [UMFPACK_NDENSE_COL]  = colamd_stats [COLAMD_DENSE_COL] ;
+            Info [UMFPACK_SYMBOLIC_DEFRAG] = colamd_stats [COLAMD_DEFRAG_COUNT];
+
+            /* re-analyze if any "dense" rows or cols ignored by UMF_colamd */
+            do_UMF_analyze =
+                colamd_stats [COLAMD_DENSE_ROW] > 0 ||
+                colamd_stats [COLAMD_DENSE_COL] > 0 ;
+
+            /* Combine the singleton and colamd ordering into Cperm_init */
+            /* Note that colamd returns its inverse permutation in Ci */
+            combine_ordering (n1, nempty_col, n_col, Cperm_init, Cperm1, Ci) ;
+        }
 
 	/* contents of Ci no longer needed */
 
@@ -1291,6 +1515,10 @@ GLOBAL Int UMFPACK_qsymbolic
 	do_UMF_analyze = TRUE ;
 
     }
+
+    /* ordering has been finalized */
+    Info [UMFPACK_ORDERING_USED] = Symbolic->ordering ;
+    DEBUG0 (("Final ordering used: "ID"\n", Symbolic->ordering)) ;
 
     Cperm_init [n_col] = EMPTY ;	/* unused in Cperm_init */
 
@@ -1322,7 +1550,7 @@ GLOBAL Int UMFPACK_qsymbolic
     if (do_UMF_analyze)
     {
 
-	Int *W, *Bp, *Bi, *Cperm2, ok, *P, Clen2, bsize, Clen0 ;
+	Int *W, *Bp, *Bi, *Cperm2, *P, Clen2, bsize, Clen0 ;
 
 	/* ------------------------------------------------------------------ */
 	/* construct column pre-ordered, pruned submatrix */
@@ -1546,10 +1774,6 @@ GLOBAL Int UMFPACK_qsymbolic
     /* determine the size of the Symbolic object */
     /* ---------------------------------------------------------------------- */
 
-    /* ---------------------------------------------------------------------- */
-    /* determine the size of the Symbolic object */
-    /* ---------------------------------------------------------------------- */
-
     nchains = 0 ;
     for (i = 0 ; i < nfr ; i++)
     {
@@ -1619,7 +1843,6 @@ GLOBAL Int UMFPACK_qsymbolic
     DEBUG0 (("Symbolic UMF_malloc_count - init_count = "ID"\n",
 	UMF_malloc_count - init_count)) ;
     ASSERT (UMF_malloc_count == init_count + 21
-	+ (SW->Rperm_2by2 != (Int *) NULL)
 	+ (Symbolic->Esize != (Int *) NULL)) ;
 
     Front_npivcol = Symbolic->Front_npivcol ;
@@ -1832,9 +2055,7 @@ GLOBAL Int UMFPACK_qsymbolic
 
     /* Rperm_init [newrow] = row gives the row permutation that is implied
      * by the column permutation, where "row" is a row index of the original
-     * matrix A.  It is not dependent on the Rperm_2by2 permutation, which
-     * only redefines the "diagonal".   Both are used to construct the
-     * Diagonal_map.
+     * matrix A.  It is used to construct the Diagonal_map.
      */
 
     if (prefer_diagonal)
@@ -1862,35 +2083,15 @@ GLOBAL Int UMFPACK_qsymbolic
 	    ASSERT (oldrow >= 0 && oldrow < nn) ;
 	    Ci [oldrow] = newrow ;
 	}
-#if 0
-	if (strategy == UMFPACK_STRATEGY_2BY2)
-	{
-	    ASSERT (Rperm_2by2 != (Int *) NULL) ;
-	    for (newcol = 0 ; newcol < nn ; newcol++)
-	    {
-		oldcol = Cperm_init [newcol] ;
-		/* 2-by-2 pivoting done in S */
-		oldrow = Rperm_2by2 [oldcol] ;
-		newrow = Ci [oldrow] ;
-                ASSERT (newrow >= 0 && newrow < nn) ;
-		Diagonal_map [newcol] = newrow ;
-	    }
-	}
-	else
-	{
-#endif
-	    for (newcol = 0 ; newcol < nn ; newcol++)
-	    {
-		oldcol = Cperm_init [newcol] ;
-		/* no 2-by-2 pivoting in S */
-		oldrow = oldcol ;
-		newrow = Ci [oldrow] ;
-                ASSERT (newrow >= 0 && newrow < nn) ;
-		Diagonal_map [newcol] = newrow ;
-	    }
-#if 0
-	}
-#endif
+
+        for (newcol = 0 ; newcol < nn ; newcol++)
+        {
+            oldcol = Cperm_init [newcol] ;
+            oldrow = oldcol ;
+            newrow = Ci [oldrow] ;
+            ASSERT (newrow >= 0 && newrow < nn) ;
+            Diagonal_map [newcol] = newrow ;
+        }
 
 #ifndef NDEBUG
 	DEBUG1 (("\nDiagonal map:\n")) ;
@@ -2016,6 +2217,9 @@ GLOBAL Int UMFPACK_qsymbolic
 	    maxcols = 1 ;
 	}
     }
+
+    Chain_maxrows [nchains] = 0 ;
+    Chain_maxcols [nchains] = 0 ;
 
     /* for Info only: */
     dmaxfrsize = ceil (dmaxfrsize) ;
@@ -2287,7 +2491,7 @@ GLOBAL Int UMFPACK_qsymbolic
 	    /* The flop count computed here is "canonical". */
 
 	    /* factorize the frontal matrix */
-	    flops += DIV_FLOPS * (f*r + (f-1)*f/2)  /* scale pivot columns */
+	    flops += DIV_FLOPS * (f*r + (f-1)*f/2)  /* divide by pivot */
 		/* f outer products: */
 		+ MULTSUB_FLOPS * (f*r*c + (r+c)*(f-1)*f/2 + (f-1)*f*(2*f-1)/6);
 
@@ -2421,7 +2625,6 @@ PRIVATE void free_work
 {
     if (SW)
     {
-	SW->Rperm_2by2 = (Int *) UMF_free ((void *) SW->Rperm_2by2) ;
 	SW->InvRperm1 = (Int *) UMF_free ((void *) SW->InvRperm1) ;
 	SW->Rs = (double *) UMF_free ((void *) SW->Rs) ;
 	SW->Si = (Int *) UMF_free ((void *) SW->Si) ;
@@ -2455,4 +2658,95 @@ PRIVATE void error
     free_work (SW) ;
     UMFPACK_free_symbolic ((void **) Symbolic) ;
     ASSERT (UMF_malloc_count == init_count) ;
+}
+
+
+/* ========================================================================== */
+/* === UMFPACK_qsymbolic ==================================================== */
+/* ========================================================================== */
+
+GLOBAL Int UMFPACK_qsymbolic
+(
+    Int n_row,
+    Int n_col,
+    const Int Ap [ ],
+    const Int Ai [ ],
+    const double Ax [ ],
+#ifdef COMPLEX
+    const double Az [ ],
+#endif
+    const Int Quser [ ],
+    void **SymbolicHandle,
+    const double Control [UMFPACK_CONTROL],
+    double User_Info [UMFPACK_INFO]
+)
+{
+    return (symbolic_analysis (n_row, n_col, Ap, Ai, Ax,
+#ifdef COMPLEX
+        Az,
+#endif
+
+        /* user-provided ordering (ignored if NULL) */
+        Quser,
+
+        /* no user provided ordering function */
+        (void *) NULL,
+        (void *) NULL,
+
+        SymbolicHandle, Control, User_Info)) ;
+}
+
+
+/* ========================================================================== */
+/* === UMFPACK_fsymbolic ==================================================== */
+/* ========================================================================== */
+
+GLOBAL Int UMFPACK_fsymbolic
+(
+    Int n_row,
+    Int n_col,
+    const Int Ap [ ],
+    const Int Ai [ ],
+    const double Ax [ ],
+#ifdef COMPLEX
+    const double Az [ ],
+#endif
+
+    /* user-provided ordering function */
+    int (*user_ordering)    /* TRUE if OK, FALSE otherwise */
+    (
+        /* inputs, not modified on output */
+        Int,            /* nrow */
+        Int,            /* ncol */
+        Int,            /* sym: if TRUE and nrow==ncol do A+A', else do A'A */
+        Int *,          /* Ap, size ncol+1 */
+        Int *,          /* Ai, size nz */
+        /* output */
+        Int *,          /* size ncol, fill-reducing permutation */
+        /* input/output */
+        void *,         /* user_params (ignored by UMFPACK) */
+        double *        /* user_info[0..2], optional output for symmetric case.
+                           user_info[0]: max column count for L=chol(P(A+A')P')
+                           user_info[1]: nnz (L)
+                           user_info[2]: flop count for chol, if A real */
+    ),
+    void *user_params,  /* passed to user_ordering function */
+
+    void **SymbolicHandle,
+    const double Control [UMFPACK_CONTROL],
+    double User_Info [UMFPACK_INFO]
+)
+{
+    return (symbolic_analysis (n_row, n_col, Ap, Ai, Ax,
+#ifdef COMPLEX
+        Az,
+#endif
+
+        /* user ordering not provided */
+        (Int *) NULL,
+        /* user ordering functions used instead */
+        user_ordering,
+        user_params,
+
+        SymbolicHandle, Control, User_Info)) ;
 }

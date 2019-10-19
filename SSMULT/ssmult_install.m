@@ -32,24 +32,34 @@ if (v < 6.5)
 end
 
 cmd = sprintf ('mex -O%s ssmult.c ssmult_mex.c ssmult_saxpy.c ssmult_dot.c ssmult_transpose.c', d) ;
-disp (cmd) ;
+if (dotests)
+    disp (cmd) ;
+end
 eval (cmd) ;
 
 cmd = sprintf ('mex -O%s ssmultsym.c', d) ;
-disp (cmd) ;
+if (dotests)
+    disp (cmd) ;
+end
 eval (cmd) ;
 
 cmd = sprintf ('mex -O%s sptranspose.c ssmult_transpose.c', d) ;
-disp (cmd) ;
+if (dotests)
+    disp (cmd) ;
+end
 eval (cmd) ;
 
 addpath (pwd) ;
+if (dotests)
 fprintf ('\nssmult has been compiled, and the following directory has been\n') ;
 fprintf ('added to your MATLAB path.  Use pathtool to add it permanently:\n') ;
 fprintf ('\n%s\n\n', pwd) ;
 fprintf ('If you cannot save your path with pathtool, add the following\n') ;
 fprintf ('to your MATLAB startup.m file (type "doc startup" for help):\n') ;
 fprintf ('\naddpath (''%s'') ;\n\n', pwd) ;
+else
+fprintf ('SSMULT successfully installed\n') ;
+end
 
 %-------------------------------------------------------------------------------
 % test ssmult and ssmultsym

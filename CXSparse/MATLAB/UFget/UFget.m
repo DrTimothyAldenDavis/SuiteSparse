@@ -5,14 +5,14 @@ function Problem = UFget (matrix, UF_Index)
 %   specified as either a number (1 to the # of matrices in the collection) or
 %   as a string (the name of the matrix).  With no input parameters, index=UFget
 %   returns an index of matrices in the collection.  A local copy of the matrix
-%   is saved (be aware that as of March 2008 the entire collection is 9.5GB
-%   in size).  If no input or output arguments are provided, the index is
+%   is saved.  If no input or output arguments are provided, the index is
 %   printed.  With a 2nd parameter (Problem = UFget (matrix, index)), the index
 %   file is not loaded.  This is faster if you are loading lots of matrices.
 %
 %   Examples:
 %       index = UFget ;                     % loads index
 %       index = UFget ('refresh') ;         % forces download of new index
+%       index = UFget ('update') ;          % same as 'refresh'
 %
 %       Problem = UFget (6)                 % 4 ways of loading the same Problem
 %       Problem = UFget ('HB/arc130')
@@ -21,15 +21,23 @@ function Problem = UFget (matrix, UF_Index)
 %
 %   See also UFgrep, UFweb, UFget_example, UFget_defaults, urlwrite.
 
-%   Copyright 2008, Tim Davis, University of Florida.
+%   Copyright 2009, Tim Davis, University of Florida.
 
 %-------------------------------------------------------------------------------
 % get the parameter settings
 %-------------------------------------------------------------------------------
 
 params = UFget_defaults ;
+
+% The UF_Index.mat file is used by UFget only, not by UFgui.java.
 indexfile = sprintf ('%sUF_Index.mat', params.dir) ;
-indexurl = sprintf ('%s/UF_Index.mat', params.url) ;
+indexurl  = sprintf ('%s/UF_Index.mat', params.url) ;
+
+% The UFstats.csv file is used by the UFgui.java program.  It is also used by
+% the UFkinds.m function, which reads the file to find the problem kind for
+% each matrix in the collection.
+statfile = sprintf ('%smatrices/UFstats.csv', params.topdir) ;
+staturl  = sprintf ('%s/matrices/UFstats.csv', params.topurl) ;
 
 %-------------------------------------------------------------------------------
 % get the index file (download a new one if necessary)
@@ -42,7 +50,7 @@ if nargin == 0
 else
     % UFget ('refresh') downloads the latest index file from the web
     if (ischar (matrix))
-        if (strcmp (matrix, 'refresh'))
+        if (strcmp (matrix, 'refresh') || strcmp (matrix, 'update'))
             matrix = 0 ;
             refresh = 1 ;
         end
@@ -56,7 +64,8 @@ if (~refresh)
             load (indexfile) ;
         end
         % see if the index file is old; if so, download a fresh copy
-        refresh = (UF_Index.DownloadTimeStamp + params.refresh < now) ;
+        fileinfo = dir (indexfile) ;
+        refresh = (fileinfo.datenum + params.refresh < now) ;
     catch
         % oops, no index file, or a refresh is due.  download it.
         refresh = 1 ;
@@ -68,6 +77,11 @@ err = '' ;      % to catch a download error, if any
 if (refresh)
     % a new UF_Index.mat file to get access to new matrices (if any)
     try
+        if (~exist (params.dir, 'dir'))
+            mkdir (params.dir) ;
+        end
+
+        % get a new UF_index.mat file
         tmp = tempname ;                        % download to a temp file first
         old = sprintf ('%sUF_Index_old.mat', params.dir) ;
         urlwrite (indexurl, tmp) ;              % download the latest index file
@@ -77,6 +91,18 @@ if (refresh)
             % backup failed, continue anyway
         end
         movefile (tmp, indexfile, 'f') ;        % move the new index into place
+
+        % get a new UFstats.csv file
+        tmp = tempname ;                        % download to a temp file first
+        old = sprintf ('%smatrices/UFstats_old.csv', params.topdir) ;
+        urlwrite (staturl, tmp) ;               % download the latest stats file
+        try
+            movefile (statfile, old, 'f') ;     % keep a backup of the old stats
+        catch
+            % backup failed, continue anyway
+        end
+        movefile (tmp, statfile, 'f') ;         % move the new index into place
+
     catch
         err = lasterr ;
     end

@@ -53,6 +53,7 @@ distclean: clean
 
 clean:
 	- $(RM) $(CLEAN)
+	- $(RM) -r *.dSYM
 
 INC =  \
 	../Include/klu.h \

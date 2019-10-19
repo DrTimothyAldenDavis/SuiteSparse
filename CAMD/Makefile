@@ -2,13 +2,15 @@
 # CAMD Makefile (for GNU Make or original make)
 #------------------------------------------------------------------------------
 
-default: demo
+VERSION = 2.2.1
+
+default: demos
 
 include ../UFconfig/UFconfig.mk
 
 # Compile all C code, including the C-callable routine and the mexFunctions.
 # Do not compile the FORTRAN versions, or MATLAB interface.
-demo:
+demos:
 	( cd Lib    ; $(MAKE) )
 	( cd Demo   ; $(MAKE) )
 
@@ -40,7 +42,7 @@ purge:
 distclean: purge
 
 # create PDF documents for the original distribution
-doc:
+dodoc:
 	( cd Doc    ; $(MAKE) )
 
 # get ready for distribution
@@ -55,3 +57,15 @@ lib: library
 # compile the MATLAB mexFunction
 mex:
 	( cd MATLAB ; $(MAKE) )
+
+# install CAMD
+install:
+	$(CP) Lib/libcamd.a $(INSTALL_LIB)/libcamd.$(VERSION).a
+	( cd $(INSTALL_LIB) ; ln -s libcamd.$(VERSION).a libcamd.a )
+	$(CP) Include/camd.h $(INSTALL_INCLUDE)
+
+# uninstall CAMD
+uninstall:
+	$(RM) $(INSTALL_LIB)/libcamd*.a
+	$(RM) $(INSTALL_INCLUDE)/camd.h
+

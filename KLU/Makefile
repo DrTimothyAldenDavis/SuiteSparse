@@ -1,10 +1,15 @@
-default: library
+VERSION = 1.1.1
+
+default: demos
 
 include ../UFconfig/UFconfig.mk
 
-library:
+demos:
 	( cd Lib ; $(MAKE) )
 	( cd Demo ; $(MAKE) )
+
+library:
+	( cd Lib ; $(MAKE) )
 
 clean:
 	( cd Demo ; $(MAKE) clean )
@@ -25,3 +30,15 @@ purge: distclean
 
 cov: library
 	( cd Tcov ; $(MAKE) )
+
+# install KLU
+install:
+	$(CP) Lib/libklu.a $(INSTALL_LIB)/libklu.$(VERSION).a
+	( cd $(INSTALL_LIB) ; ln -s libklu.$(VERSION).a libklu.a )
+	$(CP) Include/klu.h $(INSTALL_INCLUDE)
+
+# uninstall KLU
+uninstall:
+	$(RM) $(INSTALL_LIB)/libklu*.a
+	$(RM) $(INSTALL_INCLUDE)/klu.h
+

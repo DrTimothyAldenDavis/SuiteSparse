@@ -2,13 +2,15 @@
 # COLAMD Makefile
 #------------------------------------------------------------------------------
 
-default: demo
+VERSION = 2.7.2
+
+default: demos
 
 include ../UFconfig/UFconfig.mk
 
 # Compile all C code, including the C-callable routine and the mexFunctions.
 # Do not the MATLAB interface.
-demo:
+demos:
 	( cd Lib    ; $(MAKE) )
 	( cd Demo   ; $(MAKE) )
 
@@ -47,3 +49,15 @@ lib: library
 # compile the MATLAB mexFunction
 mex:
 	( cd MATLAB ; $(MAKE) )
+
+# install COLAMD
+install:
+	$(CP) Lib/libcolamd.a $(INSTALL_LIB)/libcolamd.$(VERSION).a
+	( cd $(INSTALL_LIB) ; ln -s libcolamd.$(VERSION).a libcolamd.a )
+	$(CP) Include/colamd.h $(INSTALL_INCLUDE)
+
+# uninstall COLAMD
+uninstall:
+	$(RM) $(INSTALL_LIB)/libcolamd*.a
+	$(RM) $(INSTALL_INCLUDE)/colamd.h
+

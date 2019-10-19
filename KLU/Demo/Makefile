@@ -50,6 +50,7 @@ purge: distclean
 
 distclean: clean
 	- $(RM) kludemo kluldemo klu_simple
+	- $(RM) -r *.dSYM
 
 clean:
 	- $(RM) $(CLEAN)

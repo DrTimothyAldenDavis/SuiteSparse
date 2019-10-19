@@ -527,6 +527,11 @@ template <typename Entry> int spqr_1colamd  // TRUE if OK, FALSE otherwise
 
         if (ordering == SPQR_ORDERING_DEFAULT)
         {
+            // Version 1.2.0:  just use COLAMD
+            ordering = SPQR_ORDERING_COLAMD ;
+
+#if 0
+            // Version 1.1.2 and earlier:
             if (n2rows <= 2*n2cols)
             {
                 // just use COLAMD; do not try AMD or METIS
@@ -544,6 +549,8 @@ template <typename Entry> int spqr_1colamd  // TRUE if OK, FALSE otherwise
                 ordering = SPQR_ORDERING_AMD ;
 #endif
             }
+#endif
+
         }
 
         if (ordering == SPQR_ORDERING_AMD)
@@ -587,7 +594,7 @@ template <typename Entry> int spqr_1colamd  // TRUE if OK, FALSE otherwise
             PR (("CHOLMOD used method %d : ordering: %d\n", cc->selected,
                 cc->method [cc->selected].ordering)) ;
         }
-        else // SPQR_ORDERING_DEFAULT and m <= 2*n, or SPQR_ORDERING_COLAMD
+        else // SPQR_ORDERING_DEFAULT or SPQR_ORDERING_COLAMD
         {
             // use CHOLMOD's interface to COLAMD to order AT
             ordering = SPQR_ORDERING_COLAMD ;

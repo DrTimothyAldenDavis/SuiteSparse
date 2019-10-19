@@ -771,9 +771,6 @@ GLOBAL Int UMF_kernel_init
 
 	cdeg = Cdeg [k] ;
 	ASSERT (cdeg >= 0) ;
-	ASSERT (IMPLIES (
-	    (Symbolic->ordering != UMFPACK_ORDERING_GIVEN) && n1 > 0,
-	    cdeg > 1 || cdeg == 0)) ;
 
 	/* if fixQ: set Col_degree to 0 for the NON_PIVOTAL_COL macro */
 	Col_degree [k] = fixQ ? 0 : cdeg ;

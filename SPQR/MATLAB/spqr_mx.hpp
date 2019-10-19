@@ -135,6 +135,7 @@ void spqr_mx_get_usage
 extern "C" {
 extern int spqr_spumoni ;
 void spqr_mx_error (int status, const char *file, int line, const char *msg) ;
+#include <string.h>
 }
 
 void spqr_mx_spumoni
@@ -142,6 +143,13 @@ void spqr_mx_spumoni
     spqr_mx_options *opts,
     int is_complex,             // TRUE if complex, FALSE if real
     cholmod_common *cc
+) ;
+
+mxArray *spqr_mx_info       // return a struct with info statistics
+(
+    cholmod_common *cc,
+    double t,
+    double flops
 ) ;
 
 #endif

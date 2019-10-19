@@ -71,7 +71,7 @@ cs = { 'cs_add', 'cs_amd', 'cs_chol', 'cs_cholsol', 'cs_counts', ...
     'cs_leaf', 'cs_randperm' } ;
     % add cs_mynewfunc to the above list
 
-details = 1 ;
+details = 0 ;
 kk = 0 ;
 csm = { } ;
 if (nargin == 0)

@@ -214,11 +214,9 @@ Arguments:
 	become a pivot row.  If P [k] = i, row i typically will not be the kth
 	pivot row.
 
-	For the symmetric strategy, P = Q.  For the 2-by-2 strategy, P is the
-	row permutation that places large entries on the diagonal of P*A*Q.
-	If no pivoting occurs during numerical factorization, P [k] = i also
-	defines the final permutation of umfpack_*_numeric, for either the
-	symmetric or 2-by-2 strategies.
+        For the symmetric strategy, P = Q.  If no pivoting occurs during
+        numerical factorization, P [k] = i also defines the final permutation
+        of umfpack_*_numeric, for the symmetric strategy.
 
     Int Q [n_col] ;	Output argument.
 
@@ -227,7 +225,7 @@ Arguments:
 	not necessarily the same as the final column permutation Q, computed by
 	umfpack_*_numeric.  The numeric factorization may reorder the pivot
 	columns within each frontal matrix to reduce fill-in.  If the matrix is
-	structurally singular, and if the symmetric or 2-by-2 strategies or
+	structurally singular, and if the symmetric strategy is
 	used (or if Control [UMFPACK_FIXQ] > 0), then this Q will be the same
 	as the final column permutation computed in umfpack_*_numeric.
 

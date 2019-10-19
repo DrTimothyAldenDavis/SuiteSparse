@@ -375,7 +375,7 @@
                  * there is no need to sort C(:,j), assuming A is sorted. */
                 if (needs_sorting)
                 {
-                    mergesort (Ci + pcstart, (Int *) (Cx + pcstart),
+                    ssmergesort (Ci + pcstart, (Int *) (Cx + pcstart),
                         cnz - pcstart) ;
                 }
                 for (pc = pcstart ; pc < cnz ; pc++)

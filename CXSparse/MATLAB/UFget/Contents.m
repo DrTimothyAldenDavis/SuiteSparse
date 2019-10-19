@@ -3,6 +3,7 @@
 %   UFget             - loads a matrix from the UF Sparse Matrix Collection.
 %   UFweb             - opens the URL for a matrix.
 %   UFgrep            - search for matrices in the UF Sparse Matrix Collection.
+%   UFkinds           - get 'kind' of each problem in the UF collection.
 %
 % Helper functions:
 %
@@ -13,4 +14,4 @@
 % Example:
 %   help UFget
 
-% Copyright 2008, Timothy A. Davis
+% Copyright 2009, Timothy A. Davis

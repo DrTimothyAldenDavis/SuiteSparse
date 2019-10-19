@@ -26,7 +26,7 @@
 % source code for the built-in umfpack, but the MATLAB function has been renamed
 % here to umfpack2, to avoid a filename clash with itself.
 %
-% Copyright 1995-2007 by Timothy A. Davis.
+% Copyright 1995-2009 by Timothy A. Davis.
 % All Rights Reserved.  Type umfpack_details for License.
 
 help Contents

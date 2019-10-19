@@ -82,7 +82,7 @@ GLOBAL void UMFPACK_report_info
 
     double lnz_est, unz_est, lunz_est, lnz, unz, lunz, tsym, tnum, fnum, tsolve,
 	fsolve, ttot, ftot, twsym, twnum, twsolve, twtot, n2 ;
-    Int n_row, n_col, n_inner, prl, is_sym ;
+    Int n_row, n_col, n_inner, prl, is_sym, strategy ;
 
     /* ---------------------------------------------------------------------- */
     /* get control settings and status to determine what to print */
@@ -198,32 +198,62 @@ GLOBAL void UMFPACK_report_info
     /* symbolic parameters */
     /* ---------------------------------------------------------------------- */
 
-    if (Info [UMFPACK_STRATEGY_USED] == UMFPACK_STRATEGY_SYMMETRIC)
+    strategy = Info [UMFPACK_STRATEGY_USED] ;
+    if (strategy == UMFPACK_STRATEGY_SYMMETRIC)
     {
 	PRINTF (("\n    strategy used:                    symmetric\n")) ;
+        if (Info [UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_AMD)
+        {
+            PRINTF (("    ordering used:                    amd on A+A'\n")) ;
+        }
+        else if (Info [UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_GIVEN)
+        {
+            PRINTF (("    ordering used:                    user perm.\n")) ;
+        }
+        else if (Info [UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_USER)
+        {
+            PRINTF (("    ordering used:                    user function\n")) ;
+        }
+        else if (Info [UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_NONE)
+        {
+            PRINTF (("    ordering used:                    none\n")) ;
+        }
+        else if (Info [UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_METIS)
+        {
+            PRINTF (("    ordering used:                    metis on A+A'\n")) ;
+        }
+        else
+        {
+            PRINTF (("    ordering used:                    not computed\n")) ;
+        }
     }
-    else /* if (Info [UMFPACK_STRATEGY_USED] == UMFPACK_STRATEGY_UNSYMMETRIC)*/
+    else
     {
 	PRINTF (("\n    strategy used:                    unsymmetric\n")) ;
-    }
-#if 0
-    else if (Info [UMFPACK_STRATEGY_USED] == UMFPACK_STRATEGY_2BY2)
-    {
-	PRINTF (("\n    strategy used:                    symmetric 2-by-2\n"));
-    }
-#endif
-
-    if (Info [UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_AMD)
-    {
-	PRINTF (("    ordering used:                    amd on A+A'\n")) ;
-    }
-    else if (Info [UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_COLAMD)
-    {
-	PRINTF (("    ordering used:                    colamd on A\n")) ;
-    }
-    else if (Info [UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_GIVEN)
-    {
-	PRINTF (("    ordering used:                    provided by user\n")) ;
+        if (Info [UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_AMD)
+        {
+            PRINTF (("    ordering used:                    colamd on A\n")) ;
+        }
+        else if (Info [UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_GIVEN)
+        {
+            PRINTF (("    ordering used:                    user perm.\n")) ;
+        }
+        else if (Info [UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_USER)
+        {
+            PRINTF (("    ordering used:                    user function\n")) ;
+        }
+        else if (Info [UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_NONE)
+        {
+            PRINTF (("    ordering used:                    none\n")) ;
+        }
+        else if (Info [UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_METIS)
+        {
+            PRINTF (("    ordering used:                    metis on A'A\n")) ;
+        }
+        else
+        {
+            PRINTF (("    ordering used:                    not computed\n")) ;
+        }
     }
 
     if (Info [UMFPACK_QFIXED] == 1)
@@ -293,35 +323,11 @@ GLOBAL void UMFPACK_report_info
     }
 
     /* ---------------------------------------------------------------------- */
-    /* statistics from 2-by-2 permutation */
-    /* ---------------------------------------------------------------------- */
-
-#if 0
-
-    PRINT_INFO ("    2-by-2 pivoting to place large entries on diagonal:\n"
-		"        # of small diagonal entries of S:          %.0f\n",
-	Info [UMFPACK_2BY2_NWEAK]) ;
-    PRINT_INFO ("        # unmatched:                               %.0f\n",
-	Info [UMFPACK_2BY2_UNMATCHED]) ;
-    PRINT_INFO ("        symmetry of P2*S:                          %.6f\n",
-	Info [UMFPACK_2BY2_PATTERN_SYMMETRY]) ;
-    PRINT_INFO ("        nz in P2*S+(P2*S)' (excl. diag.):          %.0f\n",
-	Info [UMFPACK_2BY2_NZ_PA_PLUS_PAT]) ;
-    PRINT_INFO ("        nz on diagonal of P2*S:                    %.0f\n",
-	Info [UMFPACK_2BY2_NZDIAG]) ;
-    if (Info [UMFPACK_2BY2_NZDIAG] >= 0 && n2 > 0)
-    {
-	PRINTF (("        fraction of nz on diag of P2*S:            %.6f\n",
-	Info [UMFPACK_2BY2_NZDIAG] / n2)) ;
-    }
-
-#endif
-
-    /* ---------------------------------------------------------------------- */
     /* statistics from AMD */
     /* ---------------------------------------------------------------------- */
 
-    if (Info [UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_AMD)
+    if (strategy == UMFPACK_STRATEGY_SYMMETRIC && 
+        Info [UMFPACK_ORDERING_USED] != UMFPACK_ORDERING_GIVEN)
     {
 	double dmax = Info [UMFPACK_SYMMETRIC_DMAX] ;
 	PRINTF (("    AMD statistics, for strict diagonal pivoting:\n")) ;
@@ -329,8 +335,12 @@ GLOBAL void UMFPACK_report_info
 	    Info [UMFPACK_SYMMETRIC_FLOPS]) ;
 	PRINT_INFO ("        est. nz in L+U (incl. diagonal):           %.0f\n",
 	    Info [UMFPACK_SYMMETRIC_LUNZ]) ;
-	PRINT_INFO ("        est. largest front (# entries):            %.0f\n",
+        if (dmax > 0)
+        {
+            PRINT_INFO
+            ("        est. largest front (# entries):            %.0f\n",
 	    dmax*dmax) ;
+        }
 	PRINT_INFO ("        est. max nz in any column of L:            %.0f\n",
 	    dmax) ;
 	PRINT_INFO (

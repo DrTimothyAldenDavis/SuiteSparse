@@ -343,7 +343,15 @@ if (length (dir (src)) == 0)    %#ok
     fprintf ('File does not exist: %s\n', src) ;
     error ('File does not exist') ;
 end
-copyfile (src, dst) ;
+try
+    copyfile (src, dst) ;
+catch ME
+    % ignore errors of the form "cp: preserving permissions: ...
+    % Operation not supported".  rethrow all other errors.
+    if (isempty (strfind (ME.message, 'Operation not supported')))
+        rethrow (ME) ;
+    end
+end
 
 %-------------------------------------------------------------------------------
 

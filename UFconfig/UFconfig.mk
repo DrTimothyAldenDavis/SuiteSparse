@@ -34,7 +34,7 @@
 # performance.  You should select the optimization parameters that are best
 # for your system.  On Linux, use "CFLAGS = -O3 -fexceptions" for example.
 CC = cc
-# CFLAGS = -O   (for example; see below for details)
+CFLAGS = -O3 -fexceptions
 
 # C++ compiler (also uses CFLAGS)
 CPLUSPLUS = g++
@@ -43,7 +43,8 @@ CPLUSPLUS = g++
 RANLIB = ranlib
 AR = ar cr
 
-# delete and rename a file
+# copy, delete, and rename a file
+CP = cp -f
 RM = rm -f
 MV = mv -f
 
@@ -69,6 +70,10 @@ MEX = mex -O -largeArrayDims -lmwlapack -lmwblas
 # MAKE = make
 # MAKE = gmake
 
+# For "make install"
+INSTALL_LIB = /usr/local/lib
+INSTALL_INCLUDE = /usr/local/include
+
 #------------------------------------------------------------------------------
 # BLAS and LAPACK configuration:
 #------------------------------------------------------------------------------
@@ -89,7 +94,7 @@ MEX = mex -O -largeArrayDims -lmwlapack -lmwblas
 # BLAS = -lgoto -lgfortran -lgfortranbegin -lg2c
 
 # This is probably slow ... it might connect to the Standard Reference BLAS:
-BLAS = -lblas -lgfortran -lgfortranbegin -lg2c
+BLAS = -lblas
 LAPACK = -llapack
 
 # Using non-optimized versions:
@@ -204,6 +209,9 @@ SPQR_CONFIG =
 # with timing
 # SPQR_CONFIG = -DTIMING
 
+# This is needed for IBM AIX: (but not for and C codes, just C++)
+# SPQR_CONFIG = -DBLAS_NO_UNDERSCORE
+
 # with TBB, you must select this:
 # TBB = -ltbb
 # without TBB:
@@ -220,12 +228,13 @@ RTLIB =
 
 # Using default compilers:
 # CC = gcc
-CFLAGS = -O3 -fexceptions
+# CFLAGS = -O3 -fexceptions
 
 # alternatives:
 # CFLAGS = -g -fexceptions \
    	-Wall -W -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
-    	-Wredundant-decls -Wnested-externs -Wdisabled-optimization -ansi
+    	-Wredundant-decls -Wnested-externs -Wdisabled-optimization -ansi \
+        -funit-at-a-time
 # CFLAGS = -O3 -fexceptions \
    	-Wall -W -Werror -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
     	-Wredundant-decls -Wnested-externs -Wdisabled-optimization -ansi
@@ -265,6 +274,24 @@ CFLAGS = -O3 -fexceptions
 # SUSE Linux 10.1, Intel Pentium, with GOTO Blas
 # F77 = gfortran
 # BLAS = -lgoto -lgfortran
+
+#------------------------------------------------------------------------------
+# Mac
+#------------------------------------------------------------------------------
+
+# As recommended by macports, http://suitesparse.darwinports.com/
+# I've tested them myself on Mac OSX 10.6.1 (Snow Leopard), on my MacBook Air.
+# F77 = gfortran
+# CFLAGS = -O3 -fno-common -no-cpp-precomp -fexceptions
+# BLAS = -framework Accelerate
+# LAPACK = -framework Accelerate
+
+# Using netlib.org LAPACK and BLAS compiled by gfortran, with and without
+# optimzation:
+# BLAS = -lblas_plain -lgfortran
+# LAPACK = -llapack_plain
+# BLAS = -lblas_optimized -lgfortran
+# LAPACK = -llapack_optimized
 
 #------------------------------------------------------------------------------
 # Solaris

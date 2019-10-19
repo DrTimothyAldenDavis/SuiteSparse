@@ -1,5 +1,7 @@
 # CSparse Makefile
 
+VERSION = 2.2.4
+
 C:
 	( cd Lib ; $(MAKE) )
 	( cd Demo ; $(MAKE) )
@@ -28,3 +30,10 @@ purge:
 	( cd MATLAB ; $(MAKE) purge )
 
 distclean: purge
+
+# do not install CSparse; use CXSparse instead
+install:
+
+# uninstall CSparse: do nothing
+uninstall:
+

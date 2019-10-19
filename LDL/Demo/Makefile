@@ -77,6 +77,7 @@ purge: clean
 	- $(RM) ldlmain ldllmain ldlsimple ldllsimple ldlamd ldllamd
 	- $(RM) my_ldlmain.out my_ldlamd.out my_ldlsimple.out my_ldllamd.out
 	- $(RM) my_ldllsimple.out my_ldllmain.out
+	- $(RM) -r *.dSYM
 
 clean:
 	- $(RM) $(CLEAN)

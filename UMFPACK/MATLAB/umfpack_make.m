@@ -1,34 +1,46 @@
-function umfpack_make (lapack)
+function umfpack_make (with_cholmod)
 %UMFPACK_MAKE to compile umfpack2 for use in MATLAB
 %
 % Compiles the umfpack2 mexFunction and then runs a simple demo.
 %
 % Example:
-%   umfpack_make                                % use default LAPACK and BLAS
-%   umfpack_make ('lcc_lib/libmwlapack.lib')    % for Windows
-%   umfpack_make ('-lmwlapack -lmwblas')        % for Linux, Unix, Mac
+%   umfpack_make        % compiles UMFPACK with CHOLMOD, CAMD, CCOLAMD, & METIS
+%   umfpack_make (0)    % without CHOLMOD, CAMD, CCOLAMD, and METIS
 %
-% the string gives the locations of the LAPACK and BLAS libraries.
+% UMFPACK relies on AMD and its own built-in version of COLAMD for its ordering
+% options.  The default is for UMFPACK to also use CHOLMOD, CCOLAMD, CAMD, and
+% METIS for more ordering options as well.  This results in lower fill-in and
+% higher performance.  A copy of METIS 4.0.1 must be placed in ../../metis-4.0.
 %
 % See also: umfpack, umfpack2, umfpack_details, umfpack_report, umfpack_demo,
 % and umfpack_simple.
 
-% Copyright 1995-2007 by Timothy A. Davis.
+% Copyright 1995-2009 by Timothy A. Davis.
+
+% modify this if your copy of METIS is not in SuiteSparse/metis-4.0:
+metis_path = '../../metis-4.0' ;
 
 details = 0 ;   % set to 1 to print out each mex command as it's executed
 
-d = '' ;
-if (~isempty (strfind (computer, '64')))
-    d = ' -largeArrayDims' ;
+if (nargin < 1)
+    with_cholmod = 1 ;
+end
+
+flags = '' ;
+is64 = ~isempty (strfind (computer, '64')) ;
+if (is64)
+    flags = ' -largeArrayDims' ;
 end
 
 v = getversion ;
 try
     % ispc does not appear in MATLAB 5.3
     pc = ispc ;
+    mac = ismac ;
 catch
     % if ispc fails, assume we are on a Windows PC if it's not unix
     pc = ~isunix ;
+    mac = 0 ;
 end
 fprintf ('Compiling UMFPACK for MATLAB Version %g\n', v) ;
 
@@ -47,30 +59,34 @@ kk = 0 ;
 % This is exceedingly ugly.  The MATLAB mex command needs to be told where to
 % fine the LAPACK and BLAS libraries, which is a real portability nightmare.
 
-if (nargin < 1)
-    if (pc)
-	if (v < 6.5)
-	    % MATLAB 6.1 and earlier: use the version supplied here
-	    lapack = 'lcc_lib/libmwlapack.lib' ;
-	    fprintf ('Using %s.  If this fails with dgemm and others\n',lapack);
-	    fprintf ('undefined, then edit umfpack_make.m and modify the') ;
-	    fprintf (' statement:\nlapack = ''%s'' ;\n', lapack) ;
-	elseif (v < 7.5)
-	    lapack = 'libmwlapack.lib' ;
-        else
-            % MATLAB R2007b (7.5) made the problem worse
-	    lapack = 'libmwlapack.lib libmwblas.lib' ;
-	end
+if (pc)
+    if (v < 6.5)
+        % MATLAB 6.1 and earlier: use the version supplied here
+        lapack = 'lcc_lib/libmwlapack.lib' ;
+        fprintf ('Using %s.  If this fails with dgemm and others\n',lapack);
+        fprintf ('undefined, then edit umfpack_make.m and modify the') ;
+        fprintf (' statement:\nlapack = ''%s'' ;\n', lapack) ;
+    elseif (v < 7.5)
+        lapack = 'libmwlapack.lib' ;
     else
-	% For other systems, mex should find lapack on its own, but this has
-	% been broken in MATLAB R2007a; the following is now required.
-        if (v < 7.5)
-            lapack = '-lmwlapack' ;
-        else
-            % MATLAB R2007b (7.5) made the problem worse
-            lapack = '-lmwlapack -lmwblas' ;
-        end
+        % MATLAB R2007b (7.5) made the problem worse
+        lapack = 'libmwlapack.lib libmwblas.lib' ;
     end
+else
+    % For other systems, mex should find lapack on its own, but this has
+    % been broken in MATLAB R2007a; the following is now required.
+    if (v < 7.5)
+        lapack = '-lmwlapack' ;
+    else
+        % MATLAB R2007b (7.5) made the problem worse
+        lapack = '-lmwlapack -lmwblas' ;
+    end
+end
+
+if (is64 && v > 7.7)
+    % versions 7.8 and later on 64-bit platforms use a 64-bit BLAS
+    fprintf ('with 64-bit BLAS\n') ;
+    flags = [flags ' -DBLAS64'] ;
 end
 
 %-------------------------------------------------------------------------------
@@ -78,50 +94,51 @@ end
 %-------------------------------------------------------------------------------
 
 posix = ' ' ;
-if (~pc)
+if (~ (pc || mac))
     % added for timing routine:
     lapack = [lapack ' -lrt'] ;
     posix = ' -DLIBRT' ;
 end
 
-% if (~pc)
-%     msg = [ ...
-%    '--------------------------------------------------------------\n', ...
-%    '\nUMFPACK can use the POSIX routines sysconf () and times ()\n', ...
-%    'to provide CPU time and wallclock time statistics.  If you do not\n', ...
-%    'have a POSIX-compliant operating system, then UMFPACK won''t\n', ...
-%    'compile.  If you don''t know which option to pick, try the\n', ...
-%    'default.  If you get an error saying that sysconf and/or times\n', ...
-%    'are not defined, then recompile with the non-POSIX option.\n', ...
-%    '\nPlease select one of the following options:\n', ...
-%    '    1:  use POSIX sysconf and times routines (default)\n', ...
-%    '    2:  do not use POSIX routines\n'] ;
-%    fprintf (msg) ;
-%    posix = str2num (input (': ', 's')) ;
-%    if (isempty (posix))
-%	posix = 1 ;
-%    end
-%    if (posix == 2)
-%        fprintf ('\nNot using POSIX sysconf and times routines.\n') ;
-%        posix = ' -DNPOSIX' ;
-%    else
-%        fprintf ('\nUsing POSIX sysconf and times routines.\n') ;
-%        posix = '' ;
-%    end
-% end
-
 %-------------------------------------------------------------------------------
-% mex command
+% Source and include directories
 %-------------------------------------------------------------------------------
 
 umfdir = '../Source/' ;
 amddir = '../../AMD/Source/' ;
-incdir = ' -I../Include -I../Source -I../../AMD/Include -I../../UFconfig' ;
-% with optimization:
-mx = sprintf ('mex -O%s%s%s ', posix, incdir, d) ;
-% no optimization:
-%% mx = sprintf ('mex -g %s%s%s ', posix, incdir, d) ;
-% fprintf ('compile options:\n%s\n', mx) ;
+incdir = ' -I. -I../Include -I../Source -I../../AMD/Include -I../../UFconfig' ;
+
+if (with_cholmod)
+    incdir = [incdir ' -I../../CCOLAMD/Include -I../../CAMD/Include -I../../CHOLMOD/Include -I' metis_path '/Lib -I../../COLAMD/Include'] ;
+end
+
+%-------------------------------------------------------------------------------
+% METIS patch
+%-------------------------------------------------------------------------------
+
+% fix the METIS 4.0.1 rename.h file
+if (with_cholmod)
+    fprintf ('with CHOLMOD, CAMD, CCOLAMD, and METIS\n') ;
+    f = fopen ('rename.h', 'w') ;
+    if (f == -1)
+        error ('unable to create rename.h in current directory') ;
+    end
+    fprintf (f, '/* do not edit this file; generated by umfpack_make.m */\n') ;
+    fprintf (f, '#undef log2\n') ;
+    fprintf (f, '#include "%s/Lib/rename.h"\n', metis_path) ;
+    fprintf (f, '#undef log2\n') ;
+    fprintf (f, '#define log2 METIS__log2\n') ;
+    fprintf (f, '#include "mex.h"\n') ;
+    fprintf (f, '#define malloc mxMalloc\n') ;
+    fprintf (f, '#define free mxFree\n') ;
+    fprintf (f, '#define calloc mxCalloc\n') ;
+    fprintf (f, '#define realloc mxRealloc\n') ;
+    fclose (f) ;
+    flags = [' -DNSUPERNODAL -DNMODIFY -DNMATRIXOPS ' flags] ;
+else
+    fprintf ('without CHOLMOD, CAMD, CCOLAMD, and METIS\n') ;
+    flags = [' -DNCHOLMOD ' flags] ;
+end
 
 %-------------------------------------------------------------------------------
 % source files
@@ -140,13 +157,13 @@ umfch = { 'assemble', 'blas3_update', ...
         'report_vector', 'row_search', 'scale_column', ...
         'set_stats', 'solve', 'symbolic_usage', 'transpose', ...
         'tuple_lengths', 'usolve', 'utsolve', 'valid_numeric', ...
-        'valid_symbolic', 'grow_front', 'start_front', '2by2', ...
+        'valid_symbolic', 'grow_front', 'start_front', ...
 	'store_lu', 'scale' } ;
 
 % non-user-callable umf_*.[ch] files, int versions only (no real/complex):
 umfint = { 'analyze', 'apply_order', 'colamd', 'free', 'fsize', ...
         'is_permutation', 'malloc', 'realloc', 'report_perm', ...
-	'singletons' } ;
+	'singletons', 'cholmod' } ;
 
 % non-user-callable and user-callable amd_*.[ch] files (int versions only):
 amdsrc = { 'aat', '1', '2', 'dump', 'postorder', 'post_tree', 'defaults', ...
@@ -167,6 +184,152 @@ user = { 'col_to_triplet', 'defaults', 'free_numeric', ...
 generic = { 'timer', 'tictoc', 'global' } ;
 
 M = cell (0) ;
+
+% other source:
+
+camd_src = { ...
+    '../../CAMD/Source/camd_1', ...
+    '../../CAMD/Source/camd_2', ...
+    '../../CAMD/Source/camd_aat', ...
+    '../../CAMD/Source/camd_control', ...
+    '../../CAMD/Source/camd_defaults', ...
+    '../../CAMD/Source/camd_dump', ...
+    '../../CAMD/Source/camd_global', ...
+    '../../CAMD/Source/camd_info', ...
+    '../../CAMD/Source/camd_order', ...
+    '../../CAMD/Source/camd_postorder', ...
+    '../../CAMD/Source/camd_preprocess', ...
+    '../../CAMD/Source/camd_valid' } ;
+
+colamd_src = {
+    '../../COLAMD/Source/colamd', ...
+    '../../COLAMD/Source/colamd_global' } ;
+
+ccolamd_src = {
+    '../../CCOLAMD/Source/ccolamd', ...
+    '../../CCOLAMD/Source/ccolamd_global' } ;
+
+metis_src = {
+    'Lib/balance', ...
+    'Lib/bucketsort', ...
+    'Lib/ccgraph', ...
+    'Lib/coarsen', ...
+    'Lib/compress', ...
+    'Lib/debug', ...
+    'Lib/estmem', ...
+    'Lib/fm', ...
+    'Lib/fortran', ...
+    'Lib/frename', ...
+    'Lib/graph', ...
+    'Lib/initpart', ...
+    'Lib/kmetis', ...
+    'Lib/kvmetis', ...
+    'Lib/kwayfm', ...
+    'Lib/kwayrefine', ...
+    'Lib/kwayvolfm', ...
+    'Lib/kwayvolrefine', ...
+    'Lib/match', ...
+    'Lib/mbalance2', ...
+    'Lib/mbalance', ...
+    'Lib/mcoarsen', ...
+    'Lib/memory', ...
+    'Lib/mesh', ...
+    'Lib/meshpart', ...
+    'Lib/mfm2', ...
+    'Lib/mfm', ...
+    'Lib/mincover', ...
+    'Lib/minitpart2', ...
+    'Lib/minitpart', ...
+    'Lib/mkmetis', ...
+    'Lib/mkwayfmh', ...
+    'Lib/mkwayrefine', ...
+    'Lib/mmatch', ...
+    'Lib/mmd', ...
+    'Lib/mpmetis', ...
+    'Lib/mrefine2', ...
+    'Lib/mrefine', ...
+    'Lib/mutil', ...
+    'Lib/myqsort', ...
+    'Lib/ometis', ...
+    'Lib/parmetis', ...
+    'Lib/pmetis', ...
+    'Lib/pqueue', ...
+    'Lib/refine', ...
+    'Lib/separator', ...
+    'Lib/sfm', ...
+    'Lib/srefine', ...
+    'Lib/stat', ...
+    'Lib/subdomains', ...
+    'Lib/timing', ...
+    'Lib/util' } ;
+
+for i = 1:length (metis_src)
+    metis_src {i} = [metis_path '/' metis_src{i}] ;
+end
+
+cholmod_src = {
+    '../../CHOLMOD/Core/cholmod_aat', ...
+    '../../CHOLMOD/Core/cholmod_add', ...
+    '../../CHOLMOD/Core/cholmod_band', ...
+    '../../CHOLMOD/Core/cholmod_change_factor', ...
+    '../../CHOLMOD/Core/cholmod_common', ...
+    '../../CHOLMOD/Core/cholmod_complex', ...
+    '../../CHOLMOD/Core/cholmod_copy', ...
+    '../../CHOLMOD/Core/cholmod_dense', ...
+    '../../CHOLMOD/Core/cholmod_error', ...
+    '../../CHOLMOD/Core/cholmod_factor', ...
+    '../../CHOLMOD/Core/cholmod_memory', ...
+    '../../CHOLMOD/Core/cholmod_sparse', ...
+    '../../CHOLMOD/Core/cholmod_transpose', ...
+    '../../CHOLMOD/Core/cholmod_triplet', ...
+    '../../CHOLMOD/Check/cholmod_check', ...
+    '../../CHOLMOD/Cholesky/cholmod_amd', ...
+    '../../CHOLMOD/Cholesky/cholmod_analyze', ...
+    '../../CHOLMOD/Cholesky/cholmod_colamd', ...
+    '../../CHOLMOD/Cholesky/cholmod_etree', ...
+    '../../CHOLMOD/Cholesky/cholmod_postorder', ...
+    '../../CHOLMOD/Cholesky/cholmod_rowcolcounts', ...
+    '../../CHOLMOD/Partition/cholmod_ccolamd', ...
+    '../../CHOLMOD/Partition/cholmod_csymamd', ...
+    '../../CHOLMOD/Partition/cholmod_camd', ...
+    '../../CHOLMOD/Partition/cholmod_metis', ...
+    '../../CHOLMOD/Partition/cholmod_nesdis' } ;
+
+other_source = [cholmod_src metis_src ccolamd_src camd_src colamd_src] ;
+% other_source = [other_source { '../User/umfpack_l_cholmod' }] ;         %#ok
+if (pc)
+    % Windows does not have drand48 and srand48, required by METIS.  Use
+    % drand48 and srand48 in CHOLMOD/MATLAB/Windows/rand48.c instead.
+    other_source = [other_source {'../../CHOLMOD/MATLAB/Windows/rand48'}] ;
+    incdir = [incdir ' -I../../CHOLMOD/MATLAB/Windows'] ;
+end
+
+incdir = strrep (incdir, '/', filesep) ;
+
+%-------------------------------------------------------------------------------
+% mex command
+%-------------------------------------------------------------------------------
+
+% with optimization:
+mx = sprintf ('mex -O%s%s%s ', posix, incdir, flags) ;
+% no optimization:
+%% mx = sprintf ('mex -g %s%s%s ', posix, incdir, flags) ;
+fprintf ('compile options:\n%s\n', mx) ;
+
+%----------------------------------------
+% CHOLMOD, CAMD, CCOLAMD, and METIS
+%----------------------------------------
+
+if (with_cholmod)
+    for k = 1:length(other_source)
+        fs = strrep (other_source {k}, '/', filesep) ;
+        slash = strfind (fs, filesep) ;
+        slash = slash (end) + 1 ;
+        o = fs (slash:end) ;
+        kk = cmd (sprintf ('%s -DDLONG -c %s.c', mx, fs), kk, details) ;
+        M {end+1} = [o '.' obj] ;
+    end
+end
 
 %-------------------------------------------------------------------------------
 % Create the umfpack2 and amd2 mexFunctions for MATLAB (int versions only)
@@ -241,7 +404,7 @@ for k = 1:length(generic)
 end
 
 %----------------------------------------
-% AMD routines (int only)
+% AMD routines (long only)
 %----------------------------------------
 
 for k = 1:length(amdsrc)
@@ -286,6 +449,7 @@ fprintf ('\nUMFPACK successfully compiled\n') ;
 
 function rmfile (file)
 % rmfile:  delete a file, but only if it exists
+%% fprintf ('rm %s\n', file) ; return ;
 if (length (dir (file)) > 0)						    %#ok
     delete (file) ;
 end
@@ -294,17 +458,27 @@ end
 
 function cpfile (src, dst)
 % cpfile:  copy the src file to the filename dst, overwriting dst if it exists
+%% fprintf ('cp %s %s\n', src, dst) ; return ;
 rmfile (dst)
 if (length (dir (src)) == 0)	%#ok
     fprintf ('File does not exist: %s\n', src) ;
     error ('File does not exist') ;
 end
-copyfile (src, dst) ;
+try
+    copyfile (src, dst) ;
+catch ME
+    % ignore errors of the form "cp: preserving permissions: ...
+    % Operation not supported".  rethrow all other errors.
+    if (isempty (strfind (ME.message, 'Operation not supported')))
+        rethrow (ME) ;
+    end
+end
 
 %-------------------------------------------------------------------------------
 
 function mvfile (src, dst)
 % mvfile:  move the src file to the filename dst, overwriting dst if it exists
+%% fprintf ('mv %s %s\n', src, dst) ; return ;
 cpfile (src, dst) ;
 rmfile (src) ;
 

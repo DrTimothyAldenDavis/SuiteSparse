@@ -1,43 +1,71 @@
 function params = UFget_defaults
 %UFGET_DEFAULTS returns default parameter settings for UFget.
 %   Usage:  params = UFget_defaults ; Returns the default parameter settings for
-%   UFget.  This file may be editted to change these settings:
+%   UFget.  Edit the UFget/UFsettings.txt file to change these settings.
 %
-%   params.url: UF sparse matrix web site
-%   params.dir: your local directory for downloaded sparse matrices.
+%   params.url: URL for *.mat files
+%   params.dir: your local directory for downloaded *.mat files
 %   params.refresh:  how many days should elapse before re-downloading the
 %       index file (for obtaining access to new matrices in the collection).
+%   params.topurl: URL for UF Sparse Matrix Collection
+%   params.topdir: your directory for mat/, matrices/, MM/ and RB/ directories
 %
 %   Example:
 %       params = UFget_defaults ;
 %
 %   See also UFget.
 
-%   Copyright 2008, Tim Davis, University of Florida.
+%   Copyright 2009, Tim Davis, University of Florida.
 
-%-------------------------------------------------------------------------------
-% location of the UF sparse matrix collection
-params.url = 'http://www.cise.ufl.edu/research/sparse/mat' ;
-
-%-------------------------------------------------------------------------------
 % decode the current directory for this M-file
 s = which (mfilename) ;
 i = find (s == filesep) ;
-s = s (1:i(end)) ;
+this = s (1:i(end)) ;
 
-%-------------------------------------------------------------------------------
-% define the directory to download into.  Should end in file separator.
-% Some examples include:
-% params.dir = '/cise/research/sparse/public_html/mat/' ;
-% params.dir = 'your directory here/' ;
-% params.dir = 'c:\matlab\work\UFget\mat\' ;
+% defaults, if UFsettings.txt is not present
+params.topdir = '' ;
+params.topurl = 'http://www.cise.ufl.edu/research/sparse' ;
+params.refresh = 30 ;
 
-% Default: the directory containing this UFget_defaults function
-params.dir = sprintf ('%smat%s', s, filesep) ;
+% open the UFsettings.txt file, if present, and read the default settings
 
-%-------------------------------------------------------------------------------
-% define how often to check for a new index file (in # of days)
-% inf will force the program to ignore the need to refresh
+f = -1 ;
+try
+    f = fopen (sprintf ('%sUFsettings.txt', s), 'r') ;
+    if (f >= 0)
+        % get the location of the mat directory
+        s = fgetl (f) ;
+        if (ischar (s))
+            params.topdir = s ;
+        end
+        % get the default URL
+        s = fgetl (f) ;
+        if (ischar (s))
+            params.topurl = s ;
+        end
+        % get the refresh rate
+        s = fgetl (f) ;
+        if (ischar (s) && ~isempty (s))
+            params.refresh = str2double (s) ;
+        end
+    end
+catch
+end
 
-% params.refresh = Inf ;
-params.refresh = 90 ;
+try
+    if (f >= 0)
+        fclose (f) ;
+    end
+catch
+end
+
+if (isempty (params.topdir))
+    params.topdir = this ;
+end
+
+if (params.topdir (end) ~= filesep)
+    params.topdir = [params.topdir filesep] ;
+end
+
+params.url = [params.topurl '/mat'] ;
+params.dir = sprintf ('%smat%s', params.topdir, filesep) ;

@@ -1,5 +1,5 @@
 #===============================================================================
-# ILP32 mode, C interface /ATLAS BLAS, do not test for integer overflow.
+# C interface /ATLAS BLAS, do not test for integer overflow.
 #===============================================================================
 
 # Using Intel's icc compiler:

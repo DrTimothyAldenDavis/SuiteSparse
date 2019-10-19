@@ -88,3 +88,4 @@ distclean: clean
 	- $(RM) amd_f77demo my_amd_f77demo.out
 	- $(RM) amd_f77simple my_amd_f77simple.out
 	- $(RM) amd_f77cross my_amd_f77cross.out
+	- $(RM) -r *.dSYM

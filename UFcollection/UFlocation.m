@@ -9,9 +9,12 @@ function [url, topdir] = UFlocation
 % Copyright 2006-2007, Timothy A. Davis
 
 params = UFget_defaults ;
-t = find (params.dir == filesep) ;
-topdir = regexprep (params.dir (1:t(end-1)), '[\/\\]', filesep) ;
+url = [ params.topurl '/'] ;
+topdir = params.topdir ;
 
-t = find (params.url == '/') ;
-url = params.url (1:t(end)) ;
+% old:
+%   t = find (params.dir == filesep) ;
+%   topdir = regexprep (params.dir (1:t(end-1)), '[\/\\]', filesep) ;
+%   t = find (params.url == '/') ;
+%   url = params.url (1:t(end)) ;
 
