@@ -5,7 +5,7 @@
 # This file contains all configuration settings for all packages in SuiteSparse,
 # except for CSparse (which is stand-alone) and the packages in MATLAB_Tools.
 
-SUITESPARSE_VERSION = 4.5.5
+SUITESPARSE_VERSION = 4.5.6
 
 #===============================================================================
 # Options you can change without editing this file:

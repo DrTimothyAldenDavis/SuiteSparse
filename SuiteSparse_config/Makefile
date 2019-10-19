@@ -7,7 +7,7 @@ export SUITESPARSE
 
 # version of SuiteSparse_config is also version of SuiteSparse meta-package
 LIBRARY = libsuitesparseconfig
-VERSION = 4.5.5
+VERSION = 4.5.6
 SO_VERSION = 4
 
 default: library

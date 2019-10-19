@@ -1,3 +1,9 @@
+Oct 3, 2017: SuiteSparse 4.5.6
+
+    * changed COLAMD, CAMD, and CCOLAMD to BSD 3-clause,
+        to match AMD.  No other changes; version numbers of
+        packages unchanged.
+
 Apr 17, 2017: SuiteSparse 4.5.5
 
     * minor fix to SuiteSparse/Makefile for 'make install'
