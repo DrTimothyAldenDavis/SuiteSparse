@@ -1,3 +1,8 @@
+May 10, 2011: version 1.2.2
+
+    * minor fix to SPQR/Include/SuiteSparseQR_C.h to accomodate the mixing
+        of C/C++ with a particular compiler  
+
 Jan 25, 2011: version 1.2.1
 
     * minor fix to "make install"

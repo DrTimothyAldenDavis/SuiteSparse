@@ -77,16 +77,14 @@ function [Q,R,P,info] = spqr (A,arg2,arg3)                                  %#ok
 %
 %   opts.ordering: a string describing what ordering method to use.  Let [m n]
 %   = size (S) where S is obtained by removing singletons from A.  'default':
-%   the default ordering: COLAMD if m<=2*n; otherwise try AMD.  If the flops
-%   for chol(SP'SP) / nnz(R) >= 500 and nnz(R)/nnz(S)>=5 with the ordering P
-%   found by AMD, then try METIS, and take the best ordering found.  'amd':
-%   AMD(S'*S). 'colamd': COLAMD(S) 'metis': METIS(S'*S), only if METIS is
-%   installed. 'best': try all three (AMD, COLAMD, METIS) and take the best
-%   'bestamd': try AMD and COLAMD and take the best. 'fixed': P=I; this is the
-%   only option if P is not present in the output. 'natural': singleton removal
-%   only The singleton pre-ordering permutes A prior to factorization into the
-%   form [A11 A12 ; 0 A22] where A11 is upper triangular with
-%   all(abs(diag(A11)) > opts.tol) (see spqr_singletons).
+%   the default ordering: COLAMD(S).  'amd': AMD(S'*S). 'colamd': COLAMD(S)
+%   'metis': METIS(S'*S), only if METIS is installed. 'best': try all three
+%   (AMD, COLAMD, METIS) and take the best 'bestamd': try AMD and COLAMD and
+%   take the best. 'fixed': P=I; this is the only option if P is not present in
+%   the output. 'natural': singleton removal only The singleton pre-ordering
+%   permutes A prior to factorization into the form [A11 A12 ; 0 A22] where A11
+%   is upper triangular with all(abs(diag(A11)) > opts.tol) (see
+%   spqr_singletons).
 %
 %   opts.Q: a string describing how Q is returned.  The default is 'discard' if
 %   Q is not present in the output, or 'matrix' otherwise.  If Q is present and

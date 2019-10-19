@@ -25,6 +25,10 @@ if (~isempty (strfind (computer, '64')))
     d = ' -largeArrayDims -DIS64' ;
 end
 
+if (nargin < 1)
+    dotests = 1 ;
+end
+
 v = getversion ;
 if (v < 6.5)
     % mxIsDouble is false for a double sparse matrix in MATLAB 6.1 or earlier

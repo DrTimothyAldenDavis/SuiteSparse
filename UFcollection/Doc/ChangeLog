@@ -1,3 +1,7 @@
+May 10, 2011:  version 1.5.0
+
+    * simplified the UFindex
+
 Jan 25, 2011:  version 1.4.0
 
     * added new graphs to UFpage.m (bipartite, A+A')

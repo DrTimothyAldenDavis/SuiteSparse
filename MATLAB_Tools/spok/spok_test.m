@@ -13,7 +13,15 @@ help spok ;
 spok_install ;
 c = pwd ;
 cd private ;
-mex spok_invalid.c ;
+
+% mex spok_invalid.c ;
+is64 = ~isempty (strfind (computer, '64')) ;
+if (is64)
+    mex -largeArrayDims spok_invalid.c
+else
+    mex spok.c spok_invalid.c
+end
+
 cd (c) ;
 
 % test with valid matrices

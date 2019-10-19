@@ -11,6 +11,8 @@
 %   GEE             Gaussian Elimination Example
 %   spok            "SParse OK": check if a sparse matrix is valid
 %   find_components find connected components in an image
+%   dimacs10        tools for accessing the DIMACS10 subset of matrices
+%   Factorize       object-oriented x=A\b solver
 %
 % Examples:
 %   gipper              % add all files in current directory X to X.zip
@@ -20,4 +22,4 @@
 %   waitmex             % example mexFunction that creates a waitbar
 %   find_commponents_example
 %
-% Copyright 2008, Tim Davis, University of Florida
+% Copyright 2008-2011, Tim Davis, University of Florida

@@ -8,6 +8,9 @@
 #define SUITESPARSEQR_C_H
 
 #ifdef __cplusplus
+/* If included by a C++ program, the Complex type is std::complex<double> */
+#include <complex>
+#define Complex std::complex<double>
 extern "C" {
 #endif
 
@@ -15,11 +18,7 @@ extern "C" {
 #include "UFconfig.h"
 #include "SuiteSparseQR_definitions.h"
 
-#ifdef __cplusplus
-/* If included by a C++ program, the Complex type is std::complex<double> */
-#include <complex>
-#define Complex std::complex<double>
-#else
+#ifndef __cplusplus
 /* The C++ functions will return a pointer to a std::complex<double> array of
    size n, which the C code must then interpret as double array of size 2*n,
    with real and imaginary parts interleaved. */

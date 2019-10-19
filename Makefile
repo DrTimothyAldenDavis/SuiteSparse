@@ -18,7 +18,7 @@ default:
 	( cd CCOLAMD ; $(MAKE) )
 	( cd UMFPACK ; $(MAKE) )
 	( cd CHOLMOD ; $(MAKE) )
-	( cd CSparse ; $(MAKE) )
+	( cd CSparse3 ; $(MAKE) )
 	( cd CXSparse ; $(MAKE) )
 	( cd SPQR ; $(MAKE) )
 	( cd RBio ; $(MAKE) )
@@ -68,7 +68,7 @@ library:
 	( cd KLU ; $(MAKE) library )
 	( cd LDL ; $(MAKE) library )
 	( cd UMFPACK ; $(MAKE) library )
-	( cd CSparse ; $(MAKE) library )
+	( cd CSparse3 ; $(MAKE) library )
 	( cd CXSparse ; $(MAKE) library )
 	( cd SPQR ; $(MAKE) library )
 	( cd RBio ; $(MAKE) library )
@@ -85,7 +85,7 @@ mex:
 	( cd LDL ; $(MAKE) mex )
 	( cd CCOLAMD ; $(MAKE) mex )
 	( cd CXSparse ; $(MAKE) mex )
-	( cd CSparse ; $(MAKE) mex )
+	( cd CSparse3 ; $(MAKE) mex )
 	# ( cd UMFPACK ; $(MAKE) mex )
 	( cd SPQR ; $(MAKE) mex )
 	( cd CHOLMOD ; $(MAKE) mex )
@@ -105,7 +105,7 @@ purge:
 	( cd CCOLAMD ; $(MAKE) purge )
 	( cd UMFPACK ; $(MAKE) purge )
 	( cd CHOLMOD ; $(MAKE) purge )
-	( cd CSparse ; $(MAKE) purge )
+	( cd CSparse3 ; $(MAKE) purge )
 	( cd CXSparse ; $(MAKE) purge )
 	( cd RBio ; $(RM) *.mex* )
 	( cd UFcollection ; $(RM) *.mex* )
@@ -130,7 +130,7 @@ clean:
 	( cd CCOLAMD ; $(MAKE) clean )
 	( cd UMFPACK ; $(MAKE) clean )
 	( cd CHOLMOD ; $(MAKE) clean )
-	( cd CSparse ; $(MAKE) clean )
+	( cd CSparse3 ; $(MAKE) clean )
 	( cd CXSparse ; $(MAKE) clean )
 	( cd SPQR ; $(MAKE) clean )
 #	( cd LPDASA ; $(MAKE) clean )
@@ -139,7 +139,8 @@ clean:
 
 distclean: purge
 
-# Create CXSparse from CSparse.  Note that the CXSparse directory should
+# Create CXSparse from CSparse (version 2).
+# Note that the CXSparse directory should
 # initially not exist.
 cx:
 	( cd CSparse ; $(MAKE) purge )

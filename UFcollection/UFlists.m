@@ -42,6 +42,8 @@ end
 fprintf (f, ...
 	'<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">\n') ;
 fprintf (f, '<html lang="EN"><head>\n') ;
+fprintf (f, '<link rel="stylesheet" type="text/css"\n') ;
+fprintf (f, 'href="%s/matrices/matrixstyle.css" />\n', url) ;
 fprintf (f, '<meta http-equiv="content-type" content="text/html; charset=') ;
 fprintf (f, 'iso-8859-1"><title>UF Sparse Matrix Collection: group list') ;
 fprintf (f, '</title></head>\n') ;

@@ -19,7 +19,7 @@ function UFpage (matrix, index, figures)
 % the same parent directory, given by the download directory specified by
 % UFget_defaults.
 
-% Copyright 2006-2007, Timothy A. Davis
+% Copyright 2006-2011, Timothy A. Davis
 
 %-------------------------------------------------------------------------------
 % get inputs
@@ -194,7 +194,7 @@ if (figures)
     % create the dmperm figure, but not for graphs
     %---------------------------------------------------------------------------
 
-    do_dmspy = (nblocks > 1) & (isempty (strfind (kind, 'graph'))) ;
+    do_dmspy = (nblocks > 1) ;
     if (do_dmspy)
 	try
 	    cs_dmspy (A, 128) ;
@@ -258,6 +258,8 @@ end
 % add the header
 fprintf (f,'<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">\n');
 fprintf (f, '<html lang="EN"><head>\n') ;
+fprintf (f, '<link rel="stylesheet" type="text/css"\n') ;
+fprintf (f, 'href="%s/matrices/matrixstyle.css" />\n', url) ;
 fprintf (f, '<meta http-equiv="content-type" content="text/html; charset=') ;
 fprintf (f, 'iso-8859-1"><title>%s sparse matrix</title></head>\n', fullname) ;
 fprintf (f, '<body bgcolor="#ffffff" link="#0021a5">\n') ;
@@ -392,19 +394,19 @@ stat (f, 'number of columns', '%s', UFint (n)) ;
 stat (f, 'nonzeros', '%s', UFint (nz)) ;
 
 srank = index.sprank (id) ;
-if (srank == min (m,n))
-    stat (f, 'structural full rank?', '%s', 'yes') ;
-else
-    stat (f, 'structural full rank?', '%s', 'no') ;
+if (srank > -2)
+    if (srank == min (m,n))
+        stat (f, 'structural full rank?', '%s', 'yes') ;
+    else
+        stat (f, 'structural full rank?', '%s', 'no') ;
+    end
+    stat (f, 'structural rank', '%s', UFint (srank)) ;
 end
-stat (f, 'structural rank', '%s', UFint (srank)) ;
-
-stat (f, '# of blocks from dmperm', '%s', UFint (nblocks)) ;
-stat (f, '# strongly connected comp.', '%s', UFint (ncc)) ;
-
-if (srank == min (m,n))
-    stat (f, 'entries not in dmperm blocks', '%s', ...
-	UFint (index.nzoff (id))) ;
+if (nblocks > -2)
+    stat (f, '# of blocks from dmperm', '%s', UFint (nblocks)) ;
+end
+if (ncc > -2)
+    stat (f, '# strongly connected comp.', '%s', UFint (ncc)) ;
 end
 
 stat (f, 'explicit zero entries', '%s', UFint (z)) ;
@@ -529,64 +531,26 @@ end
 % ordering statistics
 %-------------------------------------------------------------------------------
 
-fprintf (f, '<p><table border=1>\n') ;
-if (nblocks == 1 || index.nzoff (id) == -2)
-
-    stat (f, ...
-    '<i><a href="../legend.html">Ordering statistics:</a></i>', ...
-    '%s', '<i>AMD</i>', '<i>METIS</i>') ;
-
+if (index.amd_lnz (id) > -2 || index.amd_vnz (id) > -2)
+    fprintf (f, '<p><table border=1>\n') ;
+    stat (f, '<i><a href="../legend.html">Ordering statistics:</a></i>', ...
+        '%s', '<i>result</i>') ;
     if (index.amd_lnz (id) > -2)
-	stat (f, 'nnz(chol(P*(A+A''+s*I)*P''))', '%s', ...
-	    UFint (index.amd_lnz (id)), ...
-	    UFint (index.metis_lnz (id))) ;
+	stat (f, 'nnz(chol(P*(A+A''+s*I)*P'')) with AMD', '%s', ...
+            UFint (index.amd_lnz (id))) ;
 	stat (f, 'Cholesky flop count', '%7.1e', ...
-	    index.amd_flops (id), ...
-	    index.metis_flops (id)) ;
-	stat (f, 'nnz(L+U), no partial pivoting', '%s', ...
-	    UFint (2*index.amd_lnz (id) - min(m,n)), ...
-	    UFint (2*index.metis_lnz (id) - min(m,n))) ;
+            index.amd_flops (id)) ;
+	stat (f, 'nnz(L+U), no partial pivoting, with AMD', '%s', ...
+            UFint (2*index.amd_lnz (id) - min(m,n))) ;
     end
-
-    stat (f, 'nnz(V) for QR, upper bound nnz(L) for LU', '%s', ...
-	UFint (index.amd_vnz (id)), ...
-	UFint (index.metis_vnz (id))) ;
-    stat (f, 'nnz(R) for QR, upper bound nnz(U) for LU', '%s', ...
-	UFint (index.amd_rnz (id)), ...
-	UFint (index.metis_rnz (id))) ;
-
-else
-
-    stat (f, ...
-    '<i><a href="../legend.html">Ordering statistics:</a></i>', ...
-    '%s', '<i>AMD</i>', '<i>METIS</i>', '<i>DMPERM+</i>') ;
-
-    if (index.amd_lnz (id) > -2)
-	stat (f, 'nnz(chol(P*(A+A''+s*I)*P''))', '%s', ...
-	    UFint (index.amd_lnz (id)), ...
-	    UFint (index.metis_lnz (id)), ...
-	    UFint (index.dmperm_lnz (id))) ;
-	stat (f, 'Cholesky flop count', '%7.1e', ...
-	    index.amd_flops (id), ...
-	    index.metis_flops (id), ...
-	    index.dmperm_flops (id)) ;
-	stat (f, 'nnz(L+U), no partial pivoting', '%s', ...
-	    UFint (2*index.amd_lnz (id) - min(m,n)), ...
-	    UFint (2*index.metis_lnz (id) - min(m,n)), ...
-	    UFint (index.dmperm_lnz (id) + index.dmperm_unz (id)-min(m,n))) ;
+    if (index.amd_vnz (id) > -2)
+        stat (f, 'nnz(V) for QR, upper bound nnz(L) for LU, with COLAMD', ...
+            '%s', UFint (index.amd_vnz (id))) ;
+        stat (f, 'nnz(R) for QR, upper bound nnz(U) for LU, with COLAMD', ...
+            '%s', UFint (index.amd_rnz (id))) ;
     end
-
-    stat (f, 'nnz(V) for QR, upper bound nnz(L) for LU', '%s', ...
-	UFint (index.amd_vnz (id)), ...
-	UFint (index.metis_vnz (id)), ...
-	UFint (index.dmperm_vnz (id))) ;
-    stat (f, 'nnz(R) for QR, upper bound nnz(U) for LU', '%s', ...
-	UFint (index.amd_rnz (id)), ...
-	UFint (index.metis_rnz (id)), ...
-	UFint (index.dmperm_rnz (id))) ;
-
+    fprintf (f, '</table><p>\n') ;
 end
-fprintf (f, '</table><p>\n') ;
 
 %-------------------------------------------------------------------------------
 % note regarding orderings

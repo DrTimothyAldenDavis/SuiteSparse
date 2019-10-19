@@ -36,29 +36,18 @@ function UF_Index = UFindex (matrixlist)
 %   amd_flops       flop count for chol(C(p,p)) where, C=A+A', p=amd(C)
 %   amd_vnz         nnz in Householder vectors for qr(A(:,colamd(A)))
 %   amd_rnz         nnz in R for qr(A(:,colamd(A)))
-%
-%   These results are for matrices 1:2336 only:
-%   metis_lnz       nnz(L) for chol(C(p,p)) where, C=A+A', p=metis(C)
-%   metis_flops     flop count for chol(C(p,p)) where, C=A+A', p=metis(C)
-%   metis_vnz       nnz in Householder vectors for qr(A(:,metis(A,'col')))
-%   metis_rnz       nnz in R for qr(A(:,metis(A,'col')))
-%
 %   nblocks         # of blocks from dmperm
 %   sprank          sprank(A)
-%   nzoff           # of entries not in diagonal blocks from dmperm
 %   ncc             # of strongly connected components
-%   dmperm_lnz      nnz(L), using dmperm plus amd (or metis for matrices 1:2336)
-%   dmperm_unz      nnz(U), using dmperm plus amd (or metis for matrices 1:2336)
-%   dmperm_flops    flop count with dperm plus
-%   dmperm_vnz      nnz in Householder vectors for dmperm plus
-%   dmperm_rnz      nnz in R for dmperm plus
 %   posdef          1 if positive definite, 0 otherwise
-%   isND	    1 if a 2D/3D problem, 0 otherwise
+%   isND            1 if a 2D/3D problem, 0 otherwise
+%   isGraph         1 if a graph, 0 otherwise
 %
 % If the statistic is intentionally not computed, it is set to -2.  Some
 % statistics are not computed for rectangular or structurally singular
 % matrices, for example.  If an attempt to compute the statistic was made, but
-% failed, it is set to -1.
+% failed, it is set to -1.  If no attempt yet has been made to compute the
+% entry, it is set to -3.
 %
 % Example:
 %   UFindex
@@ -71,15 +60,13 @@ function UF_Index = UFindex (matrixlist)
 % the UFstats.csv file used by UFgui.java and UFkinds.m and places it in the
 % current working directory.
 %
-% See also UFstats, amd, metis, RBtype, cs_scc, cs_sqr, cs_dmperm.
+% See also UFstats.
 
-% Copyright 2006-2009, Timothy A. Davis
+% Copyright 2006-2011, Timothy A. Davis
 
-% Requires the SuiteSparse set of packages: CHOLMOD, AMD, COLAMD, RBio, CSparse;
-% and METIS.
+% Requires the SuiteSparse set of packages: CHOLMOD, RBio, CSparse
 
 %   10/13/2001: Created by Erich Mirabal
-%   12/6/2001, 1/17/2003, 11/16/2006:  modified by Tim Davis
 
 %-------------------------------------------------------------------------------
 % initialize an empty index
@@ -104,14 +91,12 @@ end
 if (~create_new)
     % load the index from file
     fprintf ('Loading existing UF_Index.mat file\n') ;
-    %% UF_Index = load ('UF_Index.mat') ;
-    %% UF_Index = UF_Index.UF_Index ;
     try
         load UF_Index
         fprintf ('loaded UF_Index in current directory:\n%s\n', pwd) ;
         dir
     catch
-        fprintf ('loading UF_Index=UFget\n') ;
+        fprintf ('loading UF_Index = UFget\n') ;
         UF_Index = UFget ;
     end
 end
@@ -125,6 +110,9 @@ else
     catch
         kinds = cell (2,1) ;
     end
+    for i = matrixlist
+        kinds {i} = '' ;
+    end
 end
 
 % revision tracking device
@@ -137,11 +125,10 @@ UF_Index.DownloadTimeStamp = now ;
 if (create_new)
 
     fprintf ('Creating new UF_Index.mat file\n') ;
-    nothing = -ones (1, length (files)) ;
+    nothing = -3 * ones (1, length (files)) ;
 
     UF_Index.Group = cell (size (files)) ;
     UF_Index.Name = cell (size (files)) ;       
-
     UF_Index.nrows = nothing ;
     UF_Index.ncols = nothing ;
     UF_Index.nnz = nothing ;
@@ -150,40 +137,19 @@ if (create_new)
     UF_Index.numerical_symmetry = nothing ;
     UF_Index.isBinary = nothing ;
     UF_Index.isReal = nothing ;
-
-    % removed has_b, has_guess, has_x, has_Zeros, is_lp, has_coord, zdiag
-
     UF_Index.nnzdiag = nothing ;
-
     UF_Index.posdef = nothing ;
-
-    UF_Index.amd_lnz	= nothing ;
-    UF_Index.amd_flops	= nothing ;
-    UF_Index.amd_vnz	= nothing ;
-    UF_Index.amd_rnz	= nothing ;
-
-    UF_Index.metis_lnz	= nothing ;
-    UF_Index.metis_flops = nothing ;
-    UF_Index.metis_vnz	= nothing ;
-    UF_Index.metis_rnz	= nothing ;
-
-    UF_Index.nblocks	= nothing ;
-    UF_Index.sprank	= nothing ;
-    UF_Index.nzoff	= nothing ;
-
-    UF_Index.dmperm_lnz	= nothing ;
-    UF_Index.dmperm_unz	= nothing ;
-    UF_Index.dmperm_flops = nothing ;
-    UF_Index.dmperm_vnz	= nothing ;
-    UF_Index.dmperm_rnz	= nothing ;
-
-    % added RBtype, cholcand, ncc
+    UF_Index.amd_lnz   = nothing ;
+    UF_Index.amd_flops = nothing ;
+    UF_Index.amd_vnz   = nothing ;
+    UF_Index.amd_rnz   = nothing ;
+    UF_Index.nblocks   = nothing ;
+    UF_Index.sprank    = nothing ;
     UF_Index.RBtype = char (' '*ones (length (files),3)) ;
     UF_Index.cholcand = nothing ;
     UF_Index.ncc = nothing ;
-
-    % added isND
     UF_Index.isND = nothing ;
+    UF_Index.isGraph = nothing ;
 
 else
 
@@ -193,49 +159,33 @@ else
         len = max (matrixlist) - length (UF_Index.nrows) ;
         nothing = -ones (1, len) ;
 
-	if (len > 0)
-
-	    % don't worry about the cell arrays, only append to numeric arrays
-	    UF_Index.nrows = [UF_Index.nrows nothing] ;
-	    UF_Index.ncols = [UF_Index.ncols nothing] ;
-	    UF_Index.nnz = [UF_Index.nnz nothing] ;
-	    UF_Index.nzero = [UF_Index.nzero nothing] ;
-	    UF_Index.pattern_symmetry = [UF_Index.pattern_symmetry nothing] ;
-	    UF_Index.numerical_symmetry = [UF_Index.numerical_symmetry nothing];
-	    UF_Index.isBinary = [UF_Index.isBinary nothing] ;
-	    UF_Index.isReal = [UF_Index.isReal nothing] ;
-
-	    UF_Index.nnzdiag = [UF_Index.nnzdiag nothing] ;
-
-	    UF_Index.posdef = [UF_Index.posdef nothing] ;
-
-	    UF_Index.amd_lnz	= [UF_Index.amd_lnz nothing] ;
-	    UF_Index.amd_flops	= [UF_Index.amd_flops nothing] ;
-	    UF_Index.amd_vnz	= [UF_Index.amd_vnz nothing] ;
-	    UF_Index.amd_rnz	= [UF_Index.amd_rnz nothing] ;
-
-	    UF_Index.metis_lnz	= [UF_Index.metis_lnz nothing] ;
-	    UF_Index.metis_flops= [UF_Index.metis_flops nothing] ;
-	    UF_Index.metis_vnz	= [UF_Index.metis_vnz nothing] ;
-	    UF_Index.metis_rnz	= [UF_Index.metis_rnz nothing] ;
-
-	    UF_Index.nblocks	= [UF_Index.nblocks nothing] ;
-	    UF_Index.sprank	= [UF_Index.sprank nothing] ;
-	    UF_Index.nzoff	= [UF_Index.nzoff nothing] ;
-
-	    UF_Index.dmperm_lnz	= [UF_Index.dmperm_lnz nothing] ;
-	    UF_Index.dmperm_unz	= [UF_Index.dmperm_unz nothing] ;
-	    UF_Index.dmperm_flops= [UF_Index.dmperm_flops nothing] ;
-	    UF_Index.dmperm_vnz	= [UF_Index.dmperm_vnz nothing] ;
-	    UF_Index.dmperm_rnz	= [UF_Index.dmperm_rnz nothing] ;
-
-	    UF_Index.RBtype = [UF_Index.RBtype ; char (' '*ones (len,3))] ;
-	    UF_Index.cholcand = [UF_Index.cholcand nothing] ;
-	    UF_Index.ncc = [UF_Index.ncc nothing] ;
-
-	    UF_Index.isND = [UF_Index.isND nothing] ;
-	end
-
+        if (len > 0)
+            for i = matrixlist
+                UF_Index.Group {i} = '' ;
+                UF_Index.Name {i} = '' ;
+            end
+            UF_Index.nrows      = [UF_Index.nrows nothing] ;
+            UF_Index.ncols      = [UF_Index.ncols nothing] ;
+            UF_Index.nnz        = [UF_Index.nnz nothing] ;
+            UF_Index.nzero      = [UF_Index.nzero nothing] ;
+            UF_Index.pattern_symmetry = [UF_Index.pattern_symmetry nothing] ;
+            UF_Index.numerical_symmetry = [UF_Index.numerical_symmetry nothing];
+            UF_Index.isBinary   = [UF_Index.isBinary nothing] ;
+            UF_Index.isReal     = [UF_Index.isReal nothing] ;
+            UF_Index.nnzdiag    = [UF_Index.nnzdiag nothing] ;
+            UF_Index.posdef     = [UF_Index.posdef nothing] ;
+            UF_Index.amd_lnz    = [UF_Index.amd_lnz nothing] ;
+            UF_Index.amd_flops  = [UF_Index.amd_flops nothing] ;
+            UF_Index.amd_vnz    = [UF_Index.amd_vnz nothing] ;
+            UF_Index.amd_rnz    = [UF_Index.amd_rnz nothing] ;
+            UF_Index.nblocks    = [UF_Index.nblocks nothing] ;
+            UF_Index.sprank     = [UF_Index.sprank nothing] ;
+            UF_Index.RBtype     = [UF_Index.RBtype ; char (' '*ones (len,3))] ;
+            UF_Index.cholcand   = [UF_Index.cholcand nothing] ;
+            UF_Index.ncc        = [UF_Index.ncc nothing] ;
+            UF_Index.isND       = [UF_Index.isND nothing] ;
+            UF_Index.isGraph    = [UF_Index.isGraph nothing] ;
+        end
     end
 end
 
@@ -247,7 +197,7 @@ nmat = length (UF_Index.nrows) ;
 filesize = zeros (nmat,1) ;
 
 %-------------------------------------------------------------------------------
-% look through the directory listing, and sort matrixlist by size
+% look through the directory listing
 %-------------------------------------------------------------------------------
 
 for i = matrixlist
@@ -271,12 +221,11 @@ for i = matrixlist
     UF_Index.Name {i} = matrixN ;
     UF_Index.Group {i} = groupN ;
 
-    if (length (fileInfo) > 0)						    %#ok
-	filesize (i) = fileInfo.bytes ;
+    if (length (fileInfo) > 0)                                              %#ok
+        filesize (i) = fileInfo.bytes ;
     else
-	filesize (i) = 9999999999 ;
+        filesize (i) = -1 ;
     end
-    % fprintf ('%s / %s filesize %d\n', groupN, matrixN, fileInfo.bytes) ;
 
 end
 
@@ -286,7 +235,7 @@ if (length (matrixlist) > 0)
     for i = matrixlist
         ffile = deblank (files {i}) ;
         fprintf ('Matrix %d: %s filesize %d\n', i, ffile, filesize (i)) ;
-        if (filesize (i) == 9999999999)
+        if (filesize (i) == -1)
             fprintf ('skip this file (not found)\n') ;
             continue ;
         end
@@ -297,26 +246,15 @@ end
 % load the matrices
 %-------------------------------------------------------------------------------
 
-% updated Jan 2011.  metis has too many bugs to be used reliably.
-%
-%   % metis (A,'col') fails with a seg fault for these matrices:
-%   skip_metis = [850 858 1257 1258 2302] ;
-%
-%   % fails in dmperm analysis
-%   skip_metis = [skip_metis 2337] ;
-%
-%   % metis is exceedingly slow; try again later
-%   skip_all_metis = [2276 2277] ;
-%   skip_metis = [skip_metis skip_all_metis] ;
-
-% these matrices are known to be positive definite, and indefinite,
-% respectively, but sparse Cholesky fails (on a 4GB Penitum 4) on some of them:
+% known to be positive definite / indefinite:
 known_posdef = [ 939 1252 1267 1268 1423 1453 1455 ] ;
 known_indef = [ 1348:1368 1586 1411 1901:1905] ;
 
-% these matrices are known to be irreducible, but dmperm fails or takes too
-% long
-known_irreducible = [ 916 1901:1905 ] ;
+% known to be irreducible, but dmperm takes too long:
+known_irreducible = [ 1902:1905 ] ;
+% known_irreducible = [ ] ;
+
+t = tic ;
 
 for k = 1:length (matrixlist)
 
@@ -327,7 +265,7 @@ for k = 1:length (matrixlist)
     id = matrixlist (k) ;
     ffile = deblank (files {id}) ;
     fprintf ('\n============================== Matrix %d: %s\n', id, ffile) ;
-    if (filesize (id) == 9999999999)
+    if (filesize (id) == -1)
 	fprintf ('skip this file\n') ;
 	continue ;
     end
@@ -342,23 +280,23 @@ for k = 1:length (matrixlist)
 
     kinds {id} = Problem.kind ;
 
-%   updated Jan 2010.  metis no longer used for matrices 2337 and following
-%   nometis = any (id == skip_metis) + any (id == skip_all_metis) ;
-%   if (nometis)
-%       fprintf ('skip metis on A''A- will fail\n') ;
-%   end
-    nometis = 2 ;
-
     fprintf ('%s/%s\n', UF_Index.Group {id}, UF_Index.Name {id}) ;
+
+    if (~isequal (Problem.name, [UF_Index.Group{id} '/' UF_Index.Name{id}]))
+        error ('name mismatch!') ;
+    end
+    if (Problem.id ~= id)
+        error ('id mismatch!') ;
+    end
 
     skip_chol = (any (id == known_posdef) || any (id == known_indef)) ;
     skip_dmperm = any (id == known_irreducible) ;
 
     if (isfield (Problem, 'Zeros'))
-	stats = UFstats (Problem.A, Problem.kind, nometis, skip_chol, ...
+	stats = UFstats (Problem.A, Problem.kind, skip_chol, ...
             skip_dmperm, Problem.Zeros) ;
     else
-	stats = UFstats (Problem.A, Problem.kind, nometis, skip_chol, ...
+	stats = UFstats (Problem.A, Problem.kind, skip_chol, ...
             skip_dmperm) ;
     end
 
@@ -366,8 +304,7 @@ for k = 1:length (matrixlist)
     % fix special cases
     %---------------------------------------------------------------------------
 
-    if (stats.posdef == -1)
-
+    if (stats.posdef < 0)
 	if (any (id == known_posdef))
 	    fprintf ('known posdef\n') ;
 	    stats.posdef = 1 ;
@@ -375,16 +312,14 @@ for k = 1:length (matrixlist)
 	    fprintf ('known indef\n') ;
 	    stats.posdef = 0 ;
 	end
-
     end
+
     if (any (id == known_irreducible) && stats.sprank < 0)
 	% full sprank, and not reducible to block triangular form,
-	% but the matrix is to big for dmperm
+	% but dmperm takes too long
 	fprintf ('known irreducible\n') ;
 	stats.sprank = stats.nrows  ;
-	stats.nzoff = 0 ;
 	stats.nblocks = 1 ;
-	stats.ncc = 1 ;
     end
 
     % display the stats
@@ -398,81 +333,61 @@ for k = 1:length (matrixlist)
     UF_Index.ncols (id) = stats.ncols ;
     UF_Index.nnz (id) = stats.nnz ;
     UF_Index.nzero (id) = stats.nzero ;
-
-    UF_Index.pattern_symmetry (id) = stats.psym ;
-    UF_Index.numerical_symmetry (id) = stats.nsym ;
+    UF_Index.pattern_symmetry (id) = stats.pattern_symmetry ;
+    UF_Index.numerical_symmetry (id) = stats.numerical_symmetry ;
     UF_Index.isBinary (id) = stats.isBinary ;
     UF_Index.isReal (id) = stats.isReal ;
-
     UF_Index.nnzdiag (id) = stats.nnzdiag ;
-
     UF_Index.posdef (id) = stats.posdef ;
-
     UF_Index.amd_lnz (id) = stats.amd_lnz ;
     UF_Index.amd_flops (id) = stats.amd_flops ;
     UF_Index.amd_vnz (id) = stats.amd_vnz ;
     UF_Index.amd_rnz (id) = stats.amd_rnz ;
-
-    % Jan 2010: these results are no longer computed
-    UF_Index.metis_lnz (id) = stats.metis_lnz ;
-    UF_Index.metis_flops (id) = stats.metis_flops ;
-    UF_Index.metis_vnz (id) = stats.metis_vnz ;
-    UF_Index.metis_rnz (id) = stats.metis_rnz ;
-
     UF_Index.nblocks (id) = stats.nblocks ;
     UF_Index.sprank (id) = stats.sprank ;
-    UF_Index.nzoff (id) = stats.nzoff ;
-
-    UF_Index.dmperm_lnz (id) = stats.dmperm_lnz ;
-    UF_Index.dmperm_unz (id) = stats.dmperm_unz ;
-    UF_Index.dmperm_flops (id) = stats.dmperm_flops ;
-    UF_Index.dmperm_vnz (id) = stats.dmperm_vnz ;
-    UF_Index.dmperm_rnz (id) = stats.dmperm_rnz ;
-
     UF_Index.RBtype (id,:) = stats.RBtype ;
     UF_Index.cholcand (id) = stats.cholcand ;
     UF_Index.ncc (id) = stats.ncc ;
-
     UF_Index.isND (id) = stats.isND ;
+    UF_Index.isGraph (id) = stats.isGraph ;
 
     %---------------------------------------------------------------------------
-    % clear the problem and save the index
+    % clear the problem and save the index and UFstats.csv
     %---------------------------------------------------------------------------
 
     clear Problem
-    save UF_Index UF_Index
+    fprintf ('time since last save: %g\n', toc (t)) ;
+    if (toc (t) > 20 || k == length (matrixlist))
+        t = tic ;
+        fprintf ('\n ... saving UF_Index ...\n') ;
+        save UF_Index UF_Index
 
-    % flush the diary
-    if (strcmp (get (0, 'Diary'), 'on'))
-	diary off
-	diary on
+        fprintf ('\nCreating UFstats.csv in current directory:\n')
+        fprintf ('%s/UFstats.csv\n', pwd) ;
+        f = fopen ('UFstats.csv', 'w') ;
+        fprintf (f, '%d\n', nmat) ;
+        fprintf (f, '%s\n', UF_Index.LastRevisionDate) ;
+        for id = 1:nmat
+            fprintf (f,'%s,%s,%d,%d,%d,%d,%d,%d,%d,%.16g,%.16g,%s\n', ...
+                UF_Index.Group {id}, ...
+                UF_Index.Name {id}, ...
+                UF_Index.nrows (id), ...
+                UF_Index.ncols (id), ...
+                UF_Index.nnz (id), ...
+                UF_Index.isReal (id), ...
+                UF_Index.isBinary (id), ...
+                UF_Index.isND (id), ...
+                UF_Index.posdef (id), ...
+                UF_Index.pattern_symmetry (id), ...   % formatted with %.16g
+                UF_Index.numerical_symmetry (id), ... % formatted with %.16g
+                kinds {id}) ;
+        end
+        fclose (f) ;
+
+        % flush the diary
+        if (strcmp (get (0, 'Diary'), 'on'))
+            diary off
+            diary on
+        end
     end
 end
-
-%-------------------------------------------------------------------------------
-% create the UFstats.csv file
-%-------------------------------------------------------------------------------
-
-fprintf ('\nCreating UFstats.csv in current directory:\n')
-fprintf ('%s/UFstats.csv\n', pwd) ;
-f = fopen ('UFstats.csv', 'w') ;
-fprintf (f, '%d\n', nmat) ;
-fprintf (f, '%s\n', UF_Index.LastRevisionDate) ;
-for id = 1:nmat
-    fprintf (f,'%s,%s,%d,%d,%d,%d,%d,%d,%d,%.16g,%.16g,%s\n', ...
-        UF_Index.Group {id}, ...
-        UF_Index.Name {id}, ...
-        UF_Index.nrows (id), ...
-        UF_Index.ncols (id), ...
-        UF_Index.nnz (id), ...
-        UF_Index.isReal (id), ...
-        UF_Index.isBinary (id), ...
-        UF_Index.isND (id), ...
-        UF_Index.posdef (id), ...
-        UF_Index.pattern_symmetry (id), ...         % formatted with %.16g
-        UF_Index.numerical_symmetry (id), ...       % formatted with %.16g
-        kinds {id}) ;
-end
-fclose (f) ;
-
-fprintf ('\n\nUF_Index.mat and UFstats.csv created in current directory.\n') ;

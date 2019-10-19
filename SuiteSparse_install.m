@@ -247,7 +247,11 @@ try
     cd ([SuiteSparse '/MATLAB_Tools/spok']) ;
     paths = add_to_path (paths, pwd) ;
     mex spok.c spok_mex.c
-    fprintf ('LINFACTOR, MESHND, MATLAB_Tools installed\n') ;
+    cd ([SuiteSparse '/MATLAB_Tools/dimacs10']) ;
+    paths = add_to_path (paths, pwd) ;
+    cd ([SuiteSparse '/MATLAB_Tools/dimacs10/private']) ;
+    dimacs10_install
+    fprintf ('LINFACTOR, MESHND, and MATLAB_Tools installed\n') ;
 catch                                                                       %#ok
     disp (lasterr) ;
     fprintf ('LINFACTOR, MESHND, and/or MATLAB_Tools not installed\n') ;

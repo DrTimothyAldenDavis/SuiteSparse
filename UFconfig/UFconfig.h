@@ -109,7 +109,7 @@ void *UFfree                /* always returns NULL */
  * version of SuiteSparse, with another package from another version of
  * SuiteSparse, may or may not work.
  *
- * SuiteSparse Version 3.6.0 contains the following packages:
+ * SuiteSparse Version 3.6.1 contains the following packages:
  *
  *  AMD		    version 2.2.2
  *  BTF		    version 1.1.2
@@ -118,12 +118,13 @@ void *UFfree                /* always returns NULL */
  *  CHOLMOD	    version 1.7.3
  *  COLAMD	    version 2.7.3
  *  CSparse	    version 2.2.5
+ *  CSparse3	    version 3.0.1
  *  CXSparse	    version 2.2.5
  *  KLU		    version 1.1.2
  *  LDL		    version 2.0.3
  *  RBio	    version 2.0.1
- *  SPQR            version 1.2.1 (also called SuiteSparseQR)
- *  UFcollection    version 1.4.0
+ *  SPQR            version 1.2.2 (also called SuiteSparseQR)
+ *  UFcollection    version 1.5.0
  *  UFconfig	    version number is the same as SuiteSparse
  *  UMFPACK	    version 5.5.1
  *  LINFACTOR       version 1.1.0
@@ -137,11 +138,11 @@ void *UFfree                /* always returns NULL */
  *  METIS 4.0.1	    required by CHOLMOD (optional) and KLU (optional)
  */
 
-#define SUITESPARSE_DATE "Jan 25, 2011"
+#define SUITESPARSE_DATE "May 10, 2011"
 #define SUITESPARSE_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define SUITESPARSE_MAIN_VERSION 3
 #define SUITESPARSE_SUB_VERSION 6
-#define SUITESPARSE_SUBSUB_VERSION 0
+#define SUITESPARSE_SUBSUB_VERSION 1
 #define SUITESPARSE_VERSION \
     SUITESPARSE_VER_CODE(SUITESPARSE_MAIN_VERSION,SUITESPARSE_SUB_VERSION)
 

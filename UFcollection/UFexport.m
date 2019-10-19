@@ -36,45 +36,63 @@ end
 %-------------------------------------------------------------------------------
 
 [url topdir] = UFlocation ;
+fprintf ('\nExport to topdir: %s\ncheck: %d\ntmp: %s\n', topdir, check, tmp) ;
+for id = list
+    fprintf ('%4d : %s/%s\n', id, index.Group {id}, index.Name {id}) ;
+end
 
 %-------------------------------------------------------------------------------
 % export the matrices
 %-------------------------------------------------------------------------------
 
+format = { 'MM' , 'RB' } ;
+
 for id = list
 
     % get the MATLAB version
+    clear Problem
     Problem = UFget (id, index) ;
     disp (Problem) ;
 
     % create the MM and RB versions
-    UFwrite (Problem, [topdir 'MM'], 'MM', 'tar') ;
-    UFwrite (Problem, [topdir 'RB'], 'RB', 'tar') ;
+    for k = 1:2
+        fprintf ('Exporting to %s format ...\n', format {k}) ;
+        if (nnz (Problem.A) < 1e8)
+            UFwrite (Problem, [topdir format{k}], format{k}, 'tar') ;
+        else
+            % the MATLAB tar has problems with huge files
+            fprintf ('File to big for MATLAB tar\n') ;
+            UFwrite (Problem, [topdir format{k}], format{k}) ;
+        end
+    end
 
     % check the new MM and RB versions
     if (check)
-	for format = { 'MM' , 'RB' }
+        for k = 1:2
+            fprintf ('Reading %s format ...\n', format {k}) ;
 	    try
 		if (isempty (tmp))
-		    P2 = UFread ([topdir format{1} filesep Problem.name]) ;
+		    P2 = UFread ([topdir format{k} filesep Problem.name]) ;
 		else
-		    P2 = UFread ([topdir format{1} filesep Problem.name], tmp) ;
+		    P2 = UFread ([topdir format{k} filesep Problem.name], tmp) ;
 		end
 	    catch
 		% The Problem may be too large for two copies to be in the
 		% MATLAB workspace at the same time.  This is not an error,
 		% but it means that the Problem cannot be checked.
 		P2 = [ ] ;
-		fprintf ('Unable to read %s/%s\n', format {1}, Problem.name) ;
+		fprintf ('Unable to read %s/%s\n', format {k}, Problem.name) ;
 		fprintf ('%s\n', lasterr) ;
 	    end
+            fprintf ('Comparing MATLAB and %s format ...\n', format {k}) ;
 	    if (~isempty (P2) && ~isequal (Problem, P2))
                 Problem
                 P2
-		error ('%s version mismatch: %s\n', format {1}, Problem.name) ;
+		error ('%s version mismatch: %s\n', format {k}, Problem.name) ;
 	    end
 	    clear P2
 	end
+        fprintf ('OK.\n') ;
     end
 end
 
