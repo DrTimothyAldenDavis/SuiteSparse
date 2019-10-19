@@ -2,7 +2,7 @@
 # AMD Makefile (for GNU Make or original make)
 #------------------------------------------------------------------------------
 
-VERSION = 2.2.3
+VERSION = 2.2.4
 
 default: demos
 

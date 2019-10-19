@@ -183,6 +183,18 @@ if (~stats.cholcand)
     fprintf ('not a Cholesky candidate\n') ;
     stats.posdef = 0 ;
 
+elseif (stats.isBinary)
+
+    % For all symmetric binary matrices:  only identity matrices are positive
+    % definite.  All others are indefinite.  Since at this point, A is a
+    % Cholesky candidate, and thus we know that A is symmetric with a zero-free
+    % diagonal.  So just a quick check of nnz(A) is needed.
+    % See: McKay et al, "Acyclic Digraphs and Eigenvalues of (0,1)-Matrices",
+    % Journal of Integer Sequences, Vol. 7 (2004), Article 04.3.3.
+    % http://www.cs.uwaterloo.ca/journals/JIS/VOL7/Sloane/sloane15.html
+
+    stats.posdef = (stats.nnz == stats.nrows) ;
+
 elseif (skip_chol)
 
     % Cholesky was skipped

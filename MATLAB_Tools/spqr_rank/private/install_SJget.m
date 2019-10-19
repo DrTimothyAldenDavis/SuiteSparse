@@ -8,7 +8,7 @@ function install_SJget
 %
 % See also gallery.
 
-% Copyright 2011, Leslie Foster and Timothy A Davis
+% Copyright 2012, Leslie Foster and Timothy A Davis
 
 % This is the file spqr_rank/private/install_SJget.m.  The SJget toolbox
 % is in spqr_rank/SJget.

@@ -1,3 +1,7 @@
+May 15, 2012: version 1.6.1
+
+    * added test to exploit property of symmetric binary matrices (McKay et al) 
+
 Dec 7, 2011: version 1.6.0
 
     * added SVD results to UFpage.m.  Removed dependency on UFconfig.h

@@ -1,3 +1,7 @@
+May 15, 2011: version 2.2.4
+
+    * minor fix to SIZE_T_MAX definition (finicky compiler workaround)
+
 Dec 7, 2011: version 2.2.3
 
     * fixed the Makefile to better align with CFLAGS and other standards

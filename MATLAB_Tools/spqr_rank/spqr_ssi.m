@@ -55,7 +55,7 @@ function [U, S, V, stats] = spqr_ssi (R, varargin)
 %
 % See also spqr_basic, spqr_null, spqr_pinv, spqr_cod.
 
-% Copyright 2011, Leslie Foster and Timothy A Davis.
+% Copyright 2012, Leslie Foster and Timothy A Davis.
 
 % Outline of algorithm:
 %    let b = initial block size
@@ -96,7 +96,8 @@ warning_state = warning ('off', 'MATLAB:nearlySingularMatrix') ;
 % get input options
 %-------------------------------------------------------------------------------
 
-[~,opts,stats,start_tic,ok] = spqr_rank_get_inputs (R, 0, varargin {:}) ;
+[ignore,opts,stats,start_tic,ok] = spqr_rank_get_inputs (R,0,varargin{:}) ; %#ok
+clear ignore
 
 if (~ok || nargout > 4)
     error ('usage: [U,S,V,stats] = spqr_ssi (R,opts)') ;
@@ -191,12 +192,13 @@ if (get_details == 1)
     start_iters_tic = tic ;
 end
 
-if (repeatable)
+if (~isempty (private_stream))
     U = randn (private_stream, n, nblock) ;
 else
     U = randn (n, nblock) ;
 end
-[U,~] = qr (U,0) ;
+[U,ignore] = qr (U,0) ;                                                     %#ok
+clear ignore
 % est_error_bound_calculated = 0 ;      % set to 1 later if bound calculated
 flag_overflow = 0 ;                     % set to 1 later if overflow occurs
 
@@ -351,13 +353,14 @@ for iters = 1:max_iters
             nblock = min( k(1) + nsvals_large - 1, max_block );
         end
         if (nblock > nblock_prev)
-            if (repeatable)
+            if (~isempty (private_stream))
                 Y = randn (private_stream, n, nblock-nblock_prev) ;
             else
                 Y = randn (n, nblock-nblock_prev) ;
             end
             Y = Y - U*(U'*Y);
-            [Y,~]=qr(Y,0);
+            [Y,ignore]=qr(Y,0) ;                                            %#ok
+            clear ignore
             U = [U, Y];      %#ok
         end
     end

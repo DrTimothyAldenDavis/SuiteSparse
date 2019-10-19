@@ -30,7 +30,7 @@ function test_spqr_coverage
 %
 % See also demo_spqr_rank, test_spqr_rank
 
-% Copyright 2011, Leslie Foster and Timothy A Davis.
+% Copyright 2012, Leslie Foster and Timothy A Davis.
 
 profile clear
 profile on

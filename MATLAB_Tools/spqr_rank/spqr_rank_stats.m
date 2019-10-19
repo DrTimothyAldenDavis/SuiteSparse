@@ -23,7 +23,7 @@ function spqr_rank_stats (stats, print_opts)
 %
 % See also spqr_basic, spqr_cod, spqr_pinv, spqr_ssi, spqr_ssp
 
-% Copyright 2011, Leslie Foster and Timothy A Davis
+% Copyright 2012, Leslie Foster and Timothy A Davis
 
 if (nargin == 0)
     stats = 0 ;

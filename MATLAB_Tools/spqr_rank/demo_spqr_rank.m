@@ -30,7 +30,7 @@ function [nfailures SJid_failures] = demo_spqr_rank (ids,args)
 %
 % See also spqr_basic, spqr_null, spqr_pinv, spqr_cod, SJget.
 
-% Copyright 2011, Leslie Foster and Timothy A Davis.
+% Copyright 2012, Leslie Foster and Timothy A Davis.
 
 % Potential run times:
 %        demo_spqr_rank can require 20 seconds
@@ -191,7 +191,10 @@ index = SJget;
 if (isscalar (ids) && ids < 0)
     % test with matrices 1 to (-ids)
     dim = max (index.nrows, index.ncols) ;
-    [~,indexs] = sort (dim) ;
+    % R2009b introduced '~' to denote unused output arguments, but we avoid that
+    % feature so that this code can run on R2008a (and perhaps earlier).
+    [ignore,indexs] = sort (dim) ;                                          %#ok
+    clear ignore
     indexs = indexs (1:(-ids)) ;
 
 elseif (isscalar (ids) && (ids == 0))
@@ -294,8 +297,8 @@ for i = indexs
     Problem = SJget(i,index) ;
     A=Problem.A ;
     [m,n]=size(A);
-    if (opts.repeatable)
-        private_stream = spqr_repeatable (opts.repeatable) ;
+    private_stream = spqr_repeatable (opts.repeatable) ;
+    if (~isempty (private_stream))
         b1 = randn (private_stream, m, 1) ;
         x2 = randn (private_stream, n, 1) ;
     else
@@ -1058,8 +1061,6 @@ function plot_ranks(rank_svd_v,rank_spqr_cod_v,rank_spqr_v, ...
 %     versus gap in singular values
 % the input is computed by demo_reliable_spqr
 
-% Copyright 2011, Leslie Foster and Timothy A Davis.
-
 % ncor = sum (rank_svd_v == rank_spqr_cod_v);
 
 gap_tol = 10 .^ ((0:32)/2);
@@ -1090,7 +1091,7 @@ axisv2=[axisv(1) gap_tol(end) axisv3 axisv(4)+.01];
 axis(axisv2);
 fs = 12;
 ylabel('Percent','fontsize',fs)
-xlabel('Gap in the singular value spectrum','fontsize',fs)
+xlabel('Gap in the singular value spectrum bigger than','fontsize',fs)
 title(['Percent numerical rank correct and warning flag = 0 or 1',char(10),...
     'versus gap in singular values'],'fontsize',fs)
 legend('% SPQR rank correct',['% flag = 0 or 1 in ',method],...
@@ -1108,8 +1109,6 @@ function plot_basic(norm_x_pinv_v,norm_x_QR_dense_v, norm_r_QR_dense_v, ...
     norm_x_spqr_solve_v, norm_r_spqr_solve_v,flag_v)
 % plot the quality of the basic solutions
 % the input is computed by demo_spqr_rank
-
-% Copyright 2011, Leslie Foster and Timothy A Davis.
 
 iflagis0 = find( flag_v == 0 );
 nflagis0 = length(iflagis0);
@@ -1135,8 +1134,8 @@ fs = 12;
 ylabel(' || x || / ||x_{  PINV} ||','fontsize',fs)
 xlabel('matrix: ordered by ||x_{SPQR\_BASIC} || / ||x_{PINV} ||','fontsize',fs)
 title([' Comparison of the norms of basic ',...
-    char(10) , 'solutions divided by ||x_{PINV}|| for ', ...
-    char(10),int2str(nflagis0) , ' matrices with flag = 0', ...
+    'solutions divided by ||x_{PINV}||',char(10),'for ', ...
+    int2str(nflagis0) , ' matrices with flag = 0', ...
     ' in SPQR\_BASIC'],'fontsize',fs)
 legend('dense QR','SPQR\_SOLVE',...
     ' SPQR\_BASIC ','location','best')
@@ -1159,8 +1158,8 @@ fs = 12;
 ylabel(' || r || / || b ||','fontsize',fs)
 xlabel('matrix: ordered by ||r_{SPQR\_BASIC} || / ||b||','fontsize',fs)
 title([' Comparison of the norms of residuals, ',...
-    char(10) , ' r = b-A*x, divided by ||b|| for ', ...
-    char(10),int2str(length(iflagis0)) , ' matrices with flag = 0', ...
+    'r = b-A*x, divided by ||b||',char(10),' for ', ...
+    int2str(length(iflagis0)) , ' matrices with flag = 0', ...
     ' in SPQR\_BASIC'],'fontsize',fs)
 legend('dense QR','SPQR\_SOLVE',...
     ' SPQR\_BASIC ','location','best')
@@ -1176,15 +1175,14 @@ function plot_null_spaces(norm_A_N_svd_v,tol_v, ...
 % plot the quality of the null spaces
 % the input is computed by demo_spqr_rank
 
-% Copyright 2011, Leslie Foster and Timothy A Davis.
-
 iflagis0 = find( flag_v == 0 );
 nflagis0 = length(iflagis0);
 n_method_better = sum( norm_A_N_v(iflagis0) <= norm_A_N_svd_v(iflagis0) );
 percent_method_better = 100*n_method_better / length(iflagis0);
 quality_method = norm_A_N_v(iflagis0) ./ tol_v(iflagis0);
 quality_svd = norm_A_N_svd_v(iflagis0) ./ tol_v(iflagis0);
-[~, isort]=sort(quality_method);
+[ignore, isort]=sort(quality_method);                                       %#ok
+clear ignore
 fs = 12;
 semilogy(1:nflagis0,quality_svd(isort),'bo',1:nflagis0, ...
     quality_method(isort),'rx');
@@ -1222,8 +1220,6 @@ function  plot_pinv(norm_x_spqr_pinv_minus_x_pinv_v, ...
 % plot the quality of the pseudoinverse solutions
 % the input is computed by demo_spqr_rank
 
-% Copyright 2011, Leslie Foster and Timothy A Davis.
-
 % draw plot for results from spqr_pinv
 subplot(1,2,1)
 iflagis0 = find(flag_spqr_pinv_v == 0);
@@ -1243,9 +1239,9 @@ loglog(perturbation_theory, norm_x_spqr_pinv_minus_x_pinv,'o',...
 ylabel(' || x_{SPQR\_PINV } - x_{PINV} || / ||x_{PINV} ||','fontsize',fs)
 xlabel(' ( \sigma_1(A) / \sigma_r(A) ) max(10 \epsilon, ||w|| / ||A|| ) ',...
     'fontsize',fs)
-title([' Comparison of the approximate psuedoinverse solution ',...
-    char(10) , ' returned by SPQR\_PINV and MATLAB''s PINV for ', ...
-    char(10),int2str(nflagis0) , ' matrices with flag = 0', ...
+title([' Comparison of the pseudoinverse solutions ',...
+    'returned by SPQR\_PINV ',char(10),' and MATLAB''s PINV for ', ...
+    int2str(nflagis0) , ' matrices with flag = 0', ...
     ' in SPQR\_PINV'],'fontsize',fs)
 legend('|| x_{SPQR\_PINV } - x_{PINV} || / ||x_{PINV} ||',...
     '( \sigma_1(A)/\sigma_r(A) )  max(10\epsilon, ||w|| / ||A|| ) ',...
@@ -1272,9 +1268,9 @@ loglog(perturbation_theory, norm_x_spqr_cod_minus_x_pinv,'o',...
 ylabel('|| x_{SPQR\_COD } - x_{PINV} || / ||x_{PINV} ||','fontsize',fs)
 xlabel('( \sigma_1(A)/\sigma_r(A) ) max(10\epsilon, ||w|| / ||A||) ',...
     'fontsize',fs)
-title([' Comparison of the approximate psuedoinverse solution ',...
-    char(10) , ' returned by SPQR\_COD and MATLAB''s PINV for ', ...
-    char(10),int2str(nflagis0) , ' matrices with flag = 0', ...
+title([' Comparison of the pseudoinverse solutions ',...
+    'returned by SPQR\_COD ',char(10),' and MATLAB''s PINV for ', ...
+    int2str(nflagis0) , ' matrices with flag = 0', ...
     ' in SPQR\_COD'],'fontsize',fs)
 legend('|| x_{SPQR\_COD } - x_{PINV} || / ||x_{PINV} ||',...
     '( \sigma_1(A) / \sigma_r(A) )  max(10 \epsilon, ||w|| / ||A||) ',...

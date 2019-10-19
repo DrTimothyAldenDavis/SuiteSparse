@@ -26,7 +26,7 @@ function [ x ] = ...
 %              the triangular system.  Orthogonal transformations
 %              are applied to wh to obtain the solutions x to (1).
 
-% Copyright 2011, Leslie Foster and Timothy A Davis.
+% Copyright 2012, Leslie Foster and Timothy A Davis.
 
 % disable nearly-singular matrix warnings, and save the current state
 warning_state = warning ('off', 'MATLAB:nearlySingularMatrix') ;

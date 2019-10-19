@@ -132,7 +132,7 @@ function [opts] = spqr_rank_opts (opts, opts_for_ssp)
 %
 % See also spqr_basic, spqr_null, spqr_cod, spqr_pinv, spqr_ssp, spqr_ssi.
 
-% Copyright 2011, Leslie Foster and Timothy A. Davis
+% Copyright 2012, Leslie Foster and Timothy A. Davis
 
 % The second input parameter to spqr_rank_opts is no longer necessary
 % but maintained for compatibility reasons.
@@ -151,10 +151,11 @@ end
 % the ssp_* options  differ if spqr_ssp is called directly
 %   -- in older versions but not so in the current version.
 if (opts_for_ssp)
-    [~, opts] = spqr_rank_get_inputs (1, 2, opts) ;
+    [ignore, opts] = spqr_rank_get_inputs (1, 2, opts) ;                    %#ok
 else
-    [~, opts] = spqr_rank_get_inputs (1, 3, opts) ;
+    [ignore, opts] = spqr_rank_get_inputs (1, 3, opts) ;                    %#ok
 end
+clear ignore
 
 if (tol_is_default (opts.tol))
     opts.tol = 'default' ;

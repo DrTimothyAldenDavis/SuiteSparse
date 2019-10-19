@@ -18,7 +18,7 @@ function [N, stats, stats_ssp, est_sval_upper_bounds] = ...
 %      bounds
 % Not user-callable.
 
-% Copyright 2011, Leslie Foster and Timothy A Davis.
+% Copyright 2012, Leslie Foster and Timothy A Davis.
 
 get_details = opts.get_details ;
 implicit_null_space_basis = opts.implicit_null_space_basis ;
@@ -219,7 +219,8 @@ elseif call_from == 3  % call from spqr_cod (for null space basis for A')
 
     % call ssp to estimate nsvals_small sing. values of A' * N
     %    (useful to estimate the norm of A' * N)
-    [~,stats_ssp] = spqr_ssp (A', N, nsvals_small, opts) ;
+    [ignore,stats_ssp] = spqr_ssp (A', N, nsvals_small, opts) ;             %#ok
+    clear ignore
 
 end
 

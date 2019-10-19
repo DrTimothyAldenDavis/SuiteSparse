@@ -2,7 +2,7 @@ function [stats x N NT] = spqr_failure (f, stats, get_details, start_tic)
 %SPQR_FAILURE clean-up from failure
 % Not user-callable.
 
-% Copyright 2011, Leslie Foster and Timothy A Davis
+% Copyright 2012, Leslie Foster and Timothy A Davis
 
 stats.flag = f ;
 x = [ ] ;

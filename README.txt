@@ -12,7 +12,7 @@ SuiteSparse_install.  All packages will be compiled, and several demos will be
 run.
 ================================================================================
 
-Dec 15, 2011.  SuiteSparse VERSION 3.7.0
+May 15, 2012.  SuiteSparse VERSION 3.7.1
 
     spqr_rank   MATLAB toolbox for rank deficient sparse matrices: null spaces,
                 reliable factorizations, etc.  With Leslie Foster, San Jose

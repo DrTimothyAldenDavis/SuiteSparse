@@ -34,7 +34,7 @@ function [N,stats] = spqr_null (A, varargin)
 %
 % See also spqr_basic, spqr_null, spqr_pinv, spqr_cod.
 
-% Copyright 2011, Leslie Foster and Timothy A Davis.
+% Copyright 2012, Leslie Foster and Timothy A Davis.
 
 % Algorithm:  First spqr is used to construct a QR factorization of the
 %    n by m matrix A': A'*P1 = Q1*R where R' = [ R1' 0 ] + E1, R1 is a
@@ -63,7 +63,8 @@ function [N,stats] = spqr_null (A, varargin)
 % get opts: tolerance and number of singular values to estimate
 %-------------------------------------------------------------------------------
 
-[~,opts,stats,start_tic,ok] = spqr_rank_get_inputs (A, 0, varargin {:}) ;
+[ignore,opts,stats,start_tic,ok] = spqr_rank_get_inputs (A,0,varargin {:}); %#ok
+clear ignore
 
 if (~ok || nargout > 2)
     error ('usage: [N,stats] = spqr_null (A,opts)') ;
@@ -83,7 +84,8 @@ end
 %-------------------------------------------------------------------------------
 
 % In spqr_basic, input B, internal variable C, and output x will all be empty.
-[~,stats,N] = spqr_basic (A', [ ], opts) ;
+[ignore,stats,N] = spqr_basic (A', [ ], opts) ;                             %#ok
+clear ignore
 
 if (opts.get_details == 1)
     stats.time_initialize = t ;

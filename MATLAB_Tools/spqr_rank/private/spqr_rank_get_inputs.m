@@ -43,7 +43,7 @@ function [B,opts,stats,start_tic,ok] = spqr_rank_get_inputs (A,method,varargin)
 % Note that the defaults are different for spqr_ssp than for the other
 % functions.
 
-% Copyright 2011, Leslie Foster and Timothy A. Davis
+% Copyright 2012, Leslie Foster and Timothy A. Davis
 
 B = [ ] ;
 opts = struct ;

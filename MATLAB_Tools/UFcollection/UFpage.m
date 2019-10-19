@@ -573,8 +573,9 @@ try
     s = S.s ;
 catch me
     s = [ ] ;
-    me
-    pause
+    % fprintf ('no svd computed for this matrix\n') ;
+    % me
+    % pause
 end
 k = min (m,n) ;
 if (length (s) == k)

@@ -6,7 +6,7 @@ function quickdemo_spqr_rank
 %
 % See also spqr_basic, spqr_cod, spqr_null, spqr_pinv, spqr.
 
-% Copyright 2011, Leslie Foster and Timothy A Davis.
+% Copyright 2012, Leslie Foster and Timothy A Davis.
 
 A = sparse(gallery('kahan',100));
 B = randn(100,1); B = B / norm(B);

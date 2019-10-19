@@ -4,7 +4,7 @@ function [Q,R,C,p,info] = spqr_wrapper (A, B, tol, Q_option, get_details)
 %
 %   [Q,R,C,p,info] = spqr_wrapper (A, B, tol, Q_option, get_details) ;
 
-% Copyright 2011, Leslie Foster and Timothy A Davis.
+% Copyright 2012, Leslie Foster and Timothy A Davis.
 
 if (get_details)
     % get detailed statistics for time and memory usage

@@ -3,7 +3,7 @@ function stats = spqr_rank_order_fields ( stats )
 % Not user-callable.
 % Usage:  stats = sqpr_rank_remove_fields (stats)
 
-% Copyright 2011, Leslie Foster and Timothy A Davis.
+% Copyright 2012, Leslie Foster and Timothy A Davis.
 
 % create stats0 which has the desired order for all potential fields
 stats0 = struct( ...

@@ -1,4 +1,4 @@
-KLU, Copyright (C) 2004-2011, University of Florida
+KLU, Copyright (C) 2004-2012, University of Florida
 by Timothy A. Davis and Ekanathan Palamadai.
 KLU is also available under other licenses; contact authors for details.
 http://www.cise.ufl.edu/research/sparse

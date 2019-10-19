@@ -48,7 +48,7 @@ function [x,stats,N,NT]= spqr_cod(A,varargin)
 %
 % See also spqr_basic, spqr_null, spqr_pinv, spqr_ssi, spqr_ssp
 
-% Copyright 2011, Leslie Foster and Timothy A Davis.
+% Copyright 2012, Leslie Foster and Timothy A Davis.
 
 % Algorithm:  First spqr is used to construct a QR factorization
 %   of A:
@@ -172,7 +172,9 @@ if (start_with_A_transpose)
     end
 else
     % Compute Q2*R2 = R(p2,:)', do not compute C, keep Q2, overwrite R with R2.
-    [Q2,R,~,p2,info_spqr2] = spqr_wrapper (R', [ ], 0, 'keep Q', get_details) ;
+    [Q2,R,ignore,p2,info_spqr2] = spqr_wrapper (R', [ ], 0, 'keep Q', ...
+        get_details) ;                                                      %#ok
+    clear ignore
 end
 
 if (get_details == 1)

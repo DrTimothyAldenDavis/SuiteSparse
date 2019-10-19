@@ -64,8 +64,10 @@ elseif (ischar (matrix))
 	name = matrix (gi(end)+1:end) ;
 
 	% validate the given name and group by checking the index for a match
-	refName = strmatch (name, SJ_Index.Name) ;
-	refGroup = strmatch (group, SJ_Index.Group) ;
+	%refName = strmatch (name, SJ_Index.Name) ;
+	refName = find(strncmp(name, SJ_Index.Name, length(name))) ;
+	%refGroup = strmatch (group, SJ_Index.Group) ;
+	refGroup = find(strncmp(group, SJ_Index.Group, length(group))) ;
 	id = intersect (refName, refGroup) ;
 	if (length (id) >= 1)
 	    id = id (1) ;

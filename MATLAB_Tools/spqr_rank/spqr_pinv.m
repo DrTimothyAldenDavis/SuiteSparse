@@ -39,7 +39,7 @@ function [x,stats,N,NT] = spqr_pinv (A, varargin)
 %
 % See also spqr_basic, spqr_null, spqr_pinv, spqr_cod.
 
-% Copyright 2011, Leslie Foster and Timothy A Davis.
+% Copyright 2012, Leslie Foster and Timothy A Davis.
 
 % Algorithm:  a basic solution is calculated using spqr_basic. Following
 %    this an orthogonal basis, stored in N, for the numerical null space

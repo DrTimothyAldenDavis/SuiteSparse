@@ -35,8 +35,6 @@ some additional utilities:
     SJget/SJget_lookup.m	get the group, name, and id of a matrix
     SJget/SJgrep.m          search for matrices in the SJSU Singular 
                             Matrix Collection.
-    spnrank.m               calculates the numerical rank of a sparse
-                            matrix 
 
 
 To install the package, after unzipping the files type

@@ -154,7 +154,12 @@
 
 /* largest value of size_t */
 #ifndef SIZE_T_MAX
+#ifdef SIZE_MAX
+/* C99 only */
+#define SIZE_T_MAX SIZE_MAX
+#else
 #define SIZE_T_MAX ((size_t) (-1))
+#endif
 #endif
 
 /* ------------------------------------------------------------------------- */

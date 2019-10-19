@@ -58,7 +58,7 @@ function [U, S, V, stats] = spqr_ssp (A, varargin)
 %
 % See also spqr_basic, spqr_null, spqr_pinv, spqr_cod.
 
-% Copyright 2011, Leslie Foster and Timothy A Davis.
+% Copyright 2012, Leslie Foster and Timothy A Davis.
 
 % Outline of algorithm:
 %    Let B = A or B = A*N, if the optional input N is included
@@ -106,6 +106,7 @@ min_iters = opts.ssp_min_iters ;
 max_iters = opts.ssp_max_iters ;
 convergence_factor = opts.ssp_convergence_factor ;
 get_details = opts.get_details ;
+repeatable = opts.repeatable ;
 
 %-------------------------------------------------------------------------------
 % initializations
@@ -155,13 +156,16 @@ if (k <= 0)
     return
 end
 
-if (opts.repeatable)
-    U = randn (spqr_repeatable (opts.repeatable), m, k) ;
+private_stream = spqr_repeatable (repeatable) ;
+
+if (~isempty (private_stream))
+    U = randn (private_stream, m, k) ;
 else
     U = randn (m, k) ;
 end
 
-[U, ~] = qr (U, 0) ;
+[U, ignore] = qr (U, 0) ;                                                   %#ok
+clear ignore
 
 %-------------------------------------------------------------------------------
 % block power iterations
@@ -174,11 +178,11 @@ end
 for iters = 1:max_iters
 
     if use_N == 0
-       V1 = A' * U ;
+        V1 = A' * U ;
     elseif use_N == 1
-       V1 = N' * (A' * U) ;
+        V1 = N' * (A' * U) ;
     else
-       V1 = spqr_null_mult (N, (A' * U), 0) ;
+        V1 = spqr_null_mult (N, (A' * U), 0) ;
     end
 
     if issparse (V1)
@@ -187,7 +191,8 @@ for iters = 1:max_iters
 
     if (get_details == 1), time_svd = tic ; end
     % [V,D1,X1] = svd (V1, 0) ;
-    [V,~,~] = svd (V1, 0) ;
+    [V,ignore1,ignore2] = svd (V1, 0) ;                                     %#ok
+    clear ignore1 ignore2
     if (get_details == 1)
         stats.time_svd = stats.time_svd + toc(time_svd) ;
     end

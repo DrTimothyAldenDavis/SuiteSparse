@@ -129,7 +129,7 @@ size_t KLU_kernel_factor            /* 0 if failure, size of LU if OK */
     usize  = MAX (n+1, usize) ;
 
     maxlnz = (((double) n) * ((double) n) + ((double) n)) / 2. ;
-    maxlnz = MIN (maxlnz, ((double) INT_MAX)) ;
+    maxlnz = MIN (maxlnz, ((double) Int_MAX)) ;
     lsize  = MIN (maxlnz, lsize) ;
     usize  = MIN (maxlnz, usize) ;
 
