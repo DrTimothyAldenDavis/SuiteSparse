@@ -3,24 +3,27 @@
 #===============================================================================
 
 LIBRARY = librbio
-VERSION = 2.2.3
+VERSION = 2.2.4
 SO_VERSION = 2
 
 default: library
-	$(MAKE) install INSTALL=$(CURDIR)/../.. \
-		INSTALL_DOC=$(CURDIR)/../../doc
 
 ccode: all
 
 include ../../SuiteSparse_config/SuiteSparse_config.mk
+
+# RBio depends on SuiteSparse_config
+LDLIBS += -lsuitesparseconfig
+
+# compile and install in SuiteSparse/lib
+library:
+	$(MAKE) install INSTALL=$(SUITESPARSE)
 
 C = $(CC) $(CF)
 
 I = -I../Include -I../../SuiteSparse_config
 
 all: library
-
-library: $(AR_TARGET) $(SO_TARGET)
 
 purge: distclean
 
@@ -42,9 +45,6 @@ $(AR_TARGET): $(OBJ)
 	$(ARCHIVE) $@ $^
 	- $(RANLIB) $@
 
-$(SO_TARGET): $(OBJ)
-	$(CC) $(SO_OPTS) $^ -o $@
-
 #-------------------------------------------------------------------------------
 
 # 64-bit long version (default)
@@ -58,14 +58,13 @@ RBio_i.o: ../Source/RBio.c
 #-------------------------------------------------------------------------------
 
 # install RBio
-install: $(INSTALL_LIB)/$(SO_TARGET)
+install: $(AR_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
 
-$(INSTALL_LIB)/$(SO_TARGET): $(SO_TARGET)
+$(INSTALL_LIB)/$(SO_TARGET): $(OBJ)
 	@mkdir -p $(INSTALL_LIB)
 	@mkdir -p $(INSTALL_INCLUDE)
 	@mkdir -p $(INSTALL_DOC)
-	$(CP) $(SO_TARGET) $(INSTALL_LIB)
-	$(SO_INSTALL_NAME) $(INSTALL_LIB)/$(SO_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
+	$(CC) $(SO_OPTS) $^ -o $@ $(LDLIBS)
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_MAIN) )
 	$(CP) ../Include/RBio.h $(INSTALL_INCLUDE)

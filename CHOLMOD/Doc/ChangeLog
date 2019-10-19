@@ -1,3 +1,12 @@
+Feb 1, 2016: version 3.0.9
+
+    * update to Makefiles
+    * minor change to CHOLMOD/Check/cholmod_write.c, when compiling with
+	-DNGPL
+    * more verbose error reporting
+    * Demos now compile with -DNGPL, but they don't compute all residuals
+	(requires the GPL CHOLMOD/MatrixOps package)
+
 Jan 30, 2016: version 3.0.8
 
     * better Makefiles for creating and installing shared libraries

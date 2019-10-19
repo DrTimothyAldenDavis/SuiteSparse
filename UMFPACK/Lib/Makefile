@@ -3,14 +3,20 @@
 #-------------------------------------------------------------------------------
 
 LIBRARY = libumfpack
-VERSION = 5.7.3
+VERSION = 5.7.4
 SO_VERSION = 5
 
 default: library
-	$(MAKE) install INSTALL=$(CURDIR)/../.. \
-		INSTALL_DOC=$(CURDIR)/../../doc
 
 include ../../SuiteSparse_config/SuiteSparse_config.mk
+
+# UMFPACK depends on AMD, SuiteSparse_config, LAPACK, and the BLAS.
+# It optionally relies on CHOLMOD
+LDLIBS += -lamd -lsuitesparseconfig $(LAPACK) $(BLAS)
+
+# compile and install in SuiteSparse/lib
+library:
+	$(MAKE) install INSTALL=$(SUITESPARSE)
 
 # UMFPACK can use CHOLMOD by default as an ordering option
 ifneq (,$(findstring -DNCHOLMOD, $(UMFPACK_CONFIG)))
@@ -18,6 +24,7 @@ ifneq (,$(findstring -DNCHOLMOD, $(UMFPACK_CONFIG)))
 else
     I = -I../Include -I../Source -I../../AMD/Include \
         -I../../SuiteSparse_config -I../../CHOLMOD/Include
+    LDLIBS += -lcholmod
 endif
 
 C = $(CC) $(CF) $(UMFPACK_CONFIG) $(I)
@@ -261,16 +268,9 @@ umfpack_gn_%.o: ../Source/umfpack_%.c $(INC)
 
 OBJ = $(II) $(LL) $(GN) $(DI) $(DL) $(ZI) $(ZL)
 
-library: $(AR_TARGET) $(SO_TARGET)
-
-so: $(SO_TARGET)
-
 $(AR_TARGET): $(OBJ)
 	$(ARCHIVE) $@ $^
 	- $(RANLIB) $@
-
-$(SO_TARGET): $(OBJ)
-	$(CC) $(SO_OPTS) $^ -o $@
 
 #-------------------------------------------------------------------------------
 # Remove all but the files in the original distribution
@@ -286,14 +286,13 @@ clean:
 
 #-------------------------------------------------------------------------------
 # install UMFPACK
-install: $(INSTALL_LIB)/$(SO_TARGET)
+install: $(AR_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
 
-$(INSTALL_LIB)/$(SO_TARGET): $(SO_TARGET)
+$(INSTALL_LIB)/$(SO_TARGET): $(OBJ)
 	@mkdir -p $(INSTALL_LIB)
 	@mkdir -p $(INSTALL_INCLUDE)
 	@mkdir -p $(INSTALL_DOC)
-	$(CP) $(SO_TARGET) $(INSTALL_LIB)
-	$(SO_INSTALL_NAME) $(INSTALL_LIB)/$(SO_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
+	$(CC) $(SO_OPTS) $^ -o $@ $(LDLIBS)
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_MAIN) )
 	$(CP) ../Include/umfpack*.h $(INSTALL_INCLUDE)

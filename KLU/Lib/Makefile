@@ -3,16 +3,21 @@
 #-------------------------------------------------------------------------------
 
 LIBRARY = libklu
-VERSION = 1.3.5
+VERSION = 1.3.6
 SO_VERSION = 1
 
 default: library
-	$(MAKE) install INSTALL=$(CURDIR)/../.. \
-		INSTALL_DOC=$(CURDIR)/../../doc
 
 ccode: all
 
 include ../../SuiteSparse_config/SuiteSparse_config.mk
+
+# KLU depends on BTF, AMD, COLAMD,  and SuiteSparse_config
+LDLIBS += -lamd -lcolamd -lbtf -lsuitesparseconfig
+
+# compile and install in SuiteSparse/lib
+library:
+	$(MAKE) install INSTALL=$(SUITESPARSE)
 
 # for testing only:
 # TEST = -DTESTING
@@ -20,14 +25,12 @@ include ../../SuiteSparse_config/SuiteSparse_config.mk
 C = $(CC) $(CF)
 
 INC = ../Include/klu.h ../Include/klu_internal.h ../Include/klu_version.h \
-    ../../SuiteSparse_config/SuiteSparse_config.h Makefile
+    ../../SuiteSparse_config/SuiteSparse_config.h
 
 I = -I../../AMD/Include -I../../COLAMD/Include -I../../BTF/Include \
     -I../Include -I../../SuiteSparse_config
 
 all: library
-
-library: $(AR_TARGET) $(SO_TARGET)
 
 KLU_D = klu_d.o klu_d_kernel.o klu_d_dump.o \
     klu_d_factor.o klu_d_free_numeric.o klu_d_solve.o \
@@ -60,9 +63,6 @@ OBJ = $(COMMON) $(KLU_D) $(KLU_Z) $(KLU_L) $(KLU_ZL)
 $(AR_TARGET): $(OBJ)
 	$(ARCHIVE) $@ $^
 	- $(RANLIB) $@
-
-$(SO_TARGET): $(OBJ)
-	$(CC) $(SO_OPTS) $^ -o $@
 
 $(OBJ): $(INC)
 
@@ -261,14 +261,13 @@ klu_l_memory.o: ../Source/klu_memory.c
 #-------------------------------------------------------------------------------
 
 # install KLU
-install: $(INSTALL_LIB)/$(SO_TARGET)
+install: $(AR_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
 
-$(INSTALL_LIB)/$(SO_TARGET): $(SO_TARGET)
+$(INSTALL_LIB)/$(SO_TARGET): $(OBJ)
 	@mkdir -p $(INSTALL_LIB)
 	@mkdir -p $(INSTALL_INCLUDE)
 	@mkdir -p $(INSTALL_DOC)
-	$(CP) $(SO_TARGET) $(INSTALL_LIB)
-	$(SO_INSTALL_NAME) $(INSTALL_LIB)/$(SO_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
+	$(CC) $(SO_OPTS) $^ -o $@ $(LDLIBS)
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_MAIN) )
 	$(CP) ../Include/klu.h $(INSTALL_INCLUDE)

@@ -3,16 +3,21 @@
 #-------------------------------------------------------------------------------
 
 LIBRARY = libbtf
-VERSION = 1.2.3
+VERSION = 1.2.4
 SO_VERSION = 1
 
 default: library
-	$(MAKE) install INSTALL=$(CURDIR)/../.. \
-		INSTALL_DOC=$(CURDIR)/../../doc
+
+include ../../SuiteSparse_config/SuiteSparse_config.mk
+
+# BTF depends on SuiteSparse_config
+LDLIBS += -lsuitesparseconfig
 
 ccode: all
 
-include ../../SuiteSparse_config/SuiteSparse_config.mk
+# compile and install in SuiteSparse/lib
+library:
+	$(MAKE) install INSTALL=$(SUITESPARSE)
 
 # for testing only:
 # TEST = -DTESTING
@@ -25,17 +30,12 @@ I = -I../Include -I../../SuiteSparse_config
 
 all: library
 
-library: $(AR_TARGET) $(SO_TARGET)
-
 OBJ = btf_order.o btf_maxtrans.o btf_strongcomp.o \
     btf_l_order.o btf_l_maxtrans.o btf_l_strongcomp.o
 
 $(AR_TARGET): $(OBJ)
 	$(ARCHIVE) $@ $^
 	- $(RANLIB) $@
-
-$(SO_TARGET): $(OBJ)
-	$(CC) $(SO_OPTS) $^ -o $@
 
 $(OBJ): $(INC)
 
@@ -64,14 +64,13 @@ btf_l_strongcomp.o: ../Source/btf_strongcomp.c
 #-------------------------------------------------------------------------------
 
 # install BTF
-install: $(INSTALL_LIB)/$(SO_TARGET)
+install: $(AR_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
 
-$(INSTALL_LIB)/$(SO_TARGET): $(SO_TARGET)
+$(INSTALL_LIB)/$(SO_TARGET): $(OBJ)
 	@mkdir -p $(INSTALL_LIB)
 	@mkdir -p $(INSTALL_INCLUDE)
 	@mkdir -p $(INSTALL_DOC)
-	$(CP) $(SO_TARGET) $(INSTALL_LIB)
-	$(SO_INSTALL_NAME) $(INSTALL_LIB)/$(SO_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
+	$(CC) $(SO_OPTS) $^ -o $@ $(LDLIBS)
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_MAIN) )
 	$(CP) ../Include/btf.h $(INSTALL_INCLUDE)

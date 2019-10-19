@@ -21,7 +21,7 @@ DrTimothyAldenDavis@gmail.com, http://www.suitesparse.com }
 \title{User Guide for CHOLMOD: a sparse Cholesky factorization and
 modification package}
 
-\date{VERSION 3.0.8, Jan 30, 2016}
+\date{VERSION 3.0.9, Feb 1, 2016}
 \maketitle
 
 %-------------------------------------------------------------------------------
@@ -2164,9 +2164,9 @@ of course, but {\tt cholmod\_version} can be called without it, if necessary.
 
 No CHOLMOD routines print anything, except for the {\tt cholmod\_print\_*}
 routines in the {\tt Check} Module, and the {\tt cholmod\_error} routine.  The
-{\tt Common->print\_function} is a pointer to {\tt printf} by default;
+{\tt SuiteSparse\_config.printf\_function} is a pointer to {\tt printf} by default;
 you can redirect the output of CHOLMOD by redefining this pointer.
-If {\tt Common->print\_function} is {\tt NULL}, CHOLMOD does not print anything.
+If the function pointer is {\tt NULL}, CHOLMOD does not print anything.
 
 The {\tt Common->print} parameter determines how much detail is printed.
 Each value of {\tt Common->print} listed below also prints the items listed

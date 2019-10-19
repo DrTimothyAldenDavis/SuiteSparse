@@ -184,24 +184,24 @@ int SuiteSparse_divcomplex
  *
  * SuiteSparse contains the following packages:
  *
- *  SuiteSparse_config version 4.5.0 (version always the same as SuiteSparse)
- *  AMD             version 2.4.3
- *  BTF             version 1.2.3
- *  CAMD            version 2.4.3
- *  CCOLAMD         version 2.9.3
- *  CHOLMOD         version 3.0.8
- *  COLAMD          version 2.9.3
- *  CSparse         version 3.1.6
- *  CXSparse        version 3.1.6
- *  GPUQREngine     version 1.0.2
- *  KLU             version 1.3.5
- *  LDL             version 2.2.3
- *  RBio            version 2.2.3
- *  SPQR            version 2.0.4
- *  SuiteSparse_GPURuntime  version 1.0.2
+ *  SuiteSparse_config version 4.5.1 (version always the same as SuiteSparse)
+ *  AMD             version 2.4.4
+ *  BTF             version 1.2.4
+ *  CAMD            version 2.4.4
+ *  CCOLAMD         version 2.9.4
+ *  CHOLMOD         version 3.0.9
+ *  COLAMD          version 2.9.4
+ *  CSparse         version 3.1.7
+ *  CXSparse        version 3.1.7
+ *  GPUQREngine     version 1.0.3
+ *  KLU             version 1.3.6
+ *  LDL             version 2.2.4
+ *  RBio            version 2.2.4
+ *  SPQR            version 2.0.5
+ *  SuiteSparse_GPURuntime  version 1.0.3
  *  UMFPACK         version 5.7.3
  *  MATLAB_Tools    various packages & M-files
- *  xerbla          version 1.0.1
+ *  xerbla          version 1.0.2
  *
  * Other package dependencies:
  *  BLAS            required by CHOLMOD and UMFPACK

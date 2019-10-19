@@ -17,12 +17,12 @@ run: prog
 
 prog:
 	( cd SuiteSparse_config ; $(MAKE) )
-	( cd UMFPACK ; $(MAKE) library )
 	( cd AMD ; $(MAKE) library )
+	( cd UMFPACK ; $(MAKE) library )
 	$(CC) $(KIND) $(CF) $(UMFPACK_CONFIG) -IUMFPACK/Source -IAMD/Include \
 		-Iinclude -o ut ut.c UMFPACK/Lib/*.o \
 		SuiteSparse_config/*.o AMD/Lib/*.o \
-		-Llib -lcholmod -lcolamd -lmetis -lccolamd -lcamd \
+		-Llib -lcholmod -lcolamd -lmetis -lccolamd -lcamd -lsuitesparseconfig \
 		$(LDLIBS)
 
 utcov:

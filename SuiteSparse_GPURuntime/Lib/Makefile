@@ -3,14 +3,19 @@
 #-------------------------------------------------------------------------------
 
 LIBRARY = libSuiteSparse_GPURuntime
-VERSION = 1.0.2
+VERSION = 1.0.3
 SO_VERSION = 1
 
 default: library
-	$(MAKE) install INSTALL=$(CURDIR)/../.. \
-		INSTALL_DOC=$(CURDIR)/../../doc
 
 include ../../SuiteSparse_config/SuiteSparse_config.mk
+
+# SuiteSparse_GPURuntime depends on SuiteSparse_config and CUDA
+LDLIBS += -lsuitesparseconfig $(CUDART_LIB)
+
+# compile and install in SuiteSparse/lib
+library:
+	$(MAKE) install INSTALL=$(SUITESPARSE)
 
 OBJS = SuiteSparseGPU_Workspace.o                     \
        SuiteSparseGPU_Workspace_cpuAllocators.o       \
@@ -18,15 +23,13 @@ OBJS = SuiteSparseGPU_Workspace.o                     \
        SuiteSparseGPU_Workspace_transfer.o
 
 INC = -I../Include -I../../SuiteSparse_config
-LIBS = $(CUDART_LIB)
 
 H = \
         ../Include/SuiteSparseGPU_Workspace.hpp \
         ../Include/SuiteSparseGPU_debug.hpp \
         ../Include/SuiteSparseGPU_macros.hpp \
         ../Include/SuiteSparseGPU_workspace_macros.hpp \
-        ../Include/SuiteSparseGPU_Runtime.hpp \
-        Makefile
+        ../Include/SuiteSparseGPU_Runtime.hpp
 
 #-------------------------------------------------------------------------------
 
@@ -35,8 +38,6 @@ all: library
 runtime: library
 
 lib: library
-
-library: $(AR_TARGET) $(SO_TARGET)
 
 clean:
 	$(RM) -r $(CLEAN)
@@ -49,9 +50,6 @@ distclean: purge
 $(AR_TARGET): $(OBJS)
 	$(ARCHIVE) $@ $^
 	- $(RANLIB) $@
-
-$(SO_TARGET): $(OBJS)
-	$(CC) $(SO_OPTS) $^ -o $@
 
 #-------------------------------------------------------------------------------
 
@@ -70,14 +68,13 @@ SuiteSparseGPU_Workspace_transfer.o: ../Source/SuiteSparseGPU_Workspace_transfer
 #-------------------------------------------------------------------------------
 
 # install SuiteSparse_GPURuntime (just the library, not the include files)
-install: $(INSTALL_LIB)/$(SO_TARGET)
+install: $(AR_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
 
-$(INSTALL_LIB)/$(SO_TARGET): $(SO_TARGET)
+$(INSTALL_LIB)/$(SO_TARGET): $(OBJS)
 	@mkdir -p $(INSTALL_LIB)
 	@mkdir -p $(INSTALL_INCLUDE)
 	@mkdir -p $(INSTALL_DOC)
-	$(CP) $(SO_TARGET) $(INSTALL_LIB)
-	$(SO_INSTALL_NAME) $(INSTALL_LIB)/$(SO_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
+	$(CC) $(SO_OPTS) $^ -o $@ $(LDLIBS)
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_MAIN) )
 	$(CP) ../README.txt $(INSTALL_DOC)/GPURUNTIME_README.txt

@@ -10,7 +10,7 @@ int main (int argc, char **argv)
 {
     cholmod_common Common, *cc ;
     cholmod_sparse *A ;
-    cholmod_dense *X, *B, *Residual ;
+    cholmod_dense *X, *B, *Residual = NULL ;
     double rnorm, one [2] = {1,0}, minusone [2] = {-1,0} ;
     int mtype ;
 
@@ -28,11 +28,15 @@ int main (int argc, char **argv)
     /* X = A\B */
     X = SuiteSparseQR_C_backslash_default (A, B, cc) ;
 
+#ifndef NMATRIXOPS
     /* rnorm = norm (B-A*X) */
     Residual = cholmod_l_copy_dense (B, cc) ;
     cholmod_l_sdmult (A, 0, minusone, one, X, Residual, cc) ;
     rnorm = cholmod_l_norm_dense (Residual, 2, cc) ;
     printf ("2-norm of residual: %8.1e\n", rnorm) ;
+#else
+    printf ("2-norm of residual: not computed (requires CHOLMOD/MatrixOps)\n") ;
+#endif
     printf ("rank %ld\n", cc->SPQR_istat [4]) ;
 
     /* free everything and finish CHOLMOD */

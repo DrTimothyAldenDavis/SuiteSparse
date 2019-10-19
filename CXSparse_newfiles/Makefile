@@ -2,6 +2,9 @@
 # CXSparse Makefile
 #------------------------------------------------------------------------------
 
+SUITESPARSE ?= $(realpath $(CURDIR)/..)
+export SUITESPARSE
+
 default: C
 
 include ../SuiteSparse_config/SuiteSparse_config.mk

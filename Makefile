@@ -13,16 +13,16 @@ include SuiteSparse_config/SuiteSparse_config.mk
 go: metis
 	( cd SuiteSparse_config && $(MAKE) )
 	( cd AMD && $(MAKE) )
-	( cd CAMD && $(MAKE) )
-	( cd COLAMD && $(MAKE) )
 	( cd BTF && $(MAKE) )
-	( cd KLU && $(MAKE) )
-	( cd LDL && $(MAKE) )
+	( cd CAMD && $(MAKE) )
 	( cd CCOLAMD && $(MAKE) )
-	( cd UMFPACK && $(MAKE) )
+	( cd COLAMD && $(MAKE) )
 	( cd CHOLMOD && $(MAKE) )
 	( cd CSparse && $(MAKE) )
 	( cd CXSparse && $(MAKE) )
+	( cd LDL && $(MAKE) )
+	( cd KLU && $(MAKE) )
+	( cd UMFPACK && $(MAKE) )
 	( cd RBio && $(MAKE) )
 ifneq ($(GPU_CONFIG),)
 	( cd SuiteSparse_GPURuntime && $(MAKE) )
@@ -37,17 +37,17 @@ endif
 install: metis
 	( cd SuiteSparse_config && $(MAKE) install )
 	( cd AMD && $(MAKE) install )
-	( cd CAMD && $(MAKE) install )
-	( cd COLAMD && $(MAKE) install )
 	( cd BTF && $(MAKE) install )
-	( cd KLU && $(MAKE) install )
-	( cd LDL && $(MAKE) install )
+	( cd CAMD && $(MAKE) install )
 	( cd CCOLAMD && $(MAKE) install )
-	( cd UMFPACK && $(MAKE) install )
+	( cd COLAMD && $(MAKE) install )
 	( cd CHOLMOD && $(MAKE) install )
 	( cd CXSparse && $(MAKE) install )
+	( cd LDL && $(MAKE) install )
+	( cd KLU && $(MAKE) install )
+	( cd UMFPACK && $(MAKE) install )
 	( cd RBio && $(MAKE) install )
-ifneq ($(GPU_CONFIG),)
+ifneq (,$(GPU_CONFIG))
 	( cd SuiteSparse_GPURuntime && $(MAKE) install )
 	( cd GPUQREngine && $(MAKE) install )
 endif
@@ -56,14 +56,14 @@ endif
 #	( cd SKYLINE_SVD && $(MAKE) install )
 	$(CP) README.txt $(INSTALL_DOC)/SuiteSparse_README.txt
 	chmod 644 $(INSTALL_DOC)/SuiteSparse_README.txt
-ifneq ($(wildcard metis-5.1.0),)
-        # install METIS
-	$(CP) lib/libmetis.* $(INSTALL_LIB)
-	$(CP) metis-5.1.0/manual/manual.pdf $(INSTALL_DOC)/METIS_manual.pdf
-	$(CP) metis-5.1.0/README.txt $(INSTALL_DOC)/METIS_README.txt
+ifeq (,$(MY_METIS_LIB))
+        # install METIS from SuiteSparse/metis-5.1.0
+	- $(CP) lib/libmetis.* $(INSTALL_LIB)
+	- $(CP) metis-5.1.0/manual/manual.pdf $(INSTALL_DOC)/METIS_manual.pdf
+	- $(CP) metis-5.1.0/README.txt $(INSTALL_DOC)/METIS_README.txt
         # the following is needed only on the Mac, so *.dylib is hardcoded:
-	- $(SO_INSTALL_NAME) $(INSTALL_LIB)/libmetis.dylib $(INSTALL_LIB)/libmetis.dylib
-	$(CP) include/metis.h $(INSTALL_INCLUDE)
+	$(SO_INSTALL_NAME) $(INSTALL_LIB)/libmetis.dylib $(INSTALL_LIB)/libmetis.dylib
+	- $(CP) include/metis.h $(INSTALL_INCLUDE)
 	chmod 755 $(INSTALL_LIB)/libmetis.*
 	chmod 644 $(INSTALL_INCLUDE)/metis.h
 	chmod 644 $(INSTALL_DOC)/METIS_manual.pdf
@@ -84,15 +84,16 @@ uninstall:
 	( cd CCOLAMD && $(MAKE) uninstall )
 	( cd UMFPACK && $(MAKE) uninstall )
 	( cd CHOLMOD && $(MAKE) uninstall )
-	( cd CXSparse && $(MAKE) uninstall )
 	( cd CSparse && $(MAKE) uninstall )
+	( cd CXSparse && $(MAKE) uninstall )
 	( cd RBio && $(MAKE) uninstall )
 	( cd SuiteSparse_GPURuntime && $(MAKE) uninstall )
 	( cd GPUQREngine && $(MAKE) uninstall )
 	( cd SPQR && $(MAKE) uninstall )
 #	( cd PIRO_BAND && $(MAKE) uninstall )
 #	( cd SKYLINE_SVD && $(MAKE) uninstall )
-ifneq ($(wildcard metis-5.1.0),)
+ifeq (,$(MY_METIS_LIB))
+        # uninstall METIS, which came from SuiteSparse/metis-5.1.0
 	$(RM) $(INSTALL_LIB)/libmetis.*
 	$(RM) $(INSTALL_INCLUDE)/metis.h
 	$(RM) $(INSTALL_DOC)/METIS_manual.pdf
@@ -114,7 +115,7 @@ library: metis
 	( cd CSparse && $(MAKE) library )
 	( cd CXSparse && $(MAKE) library )
 	( cd RBio && $(MAKE) library )
-ifneq ($(GPU_CONFIG),)
+ifneq (,$(GPU_CONFIG))
 	( cd SuiteSparse_GPURuntime && $(MAKE) library )
 	( cd GPUQREngine && $(MAKE) library )
 endif
@@ -146,7 +147,7 @@ purge:
 #	- ( cd PIRO_BAND && $(MAKE) purge )
 #	- ( cd SKYLINE_SVD && $(MAKE) purge )
 	- $(RM) MATLAB_Tools/*/*.mex* MATLAB_Tools/spok/private/*.mex*
-	- $(RM) include/* bin/* lib/* doc/*
+	- $(RM) -r include/* bin/* lib/* share/*
 
 # Remove all files not in the original distribution, but keep the libraries
 clean:
@@ -188,6 +189,7 @@ distclean: purge
 # Note that the CXSparse directory should initially not exist.
 cx:
 	( cd CSparse ; $(MAKE) purge )
+	( cd SuiteSparse_config && $(MAKE) )
 	( cd CXSparse_newfiles ; tar cfv - * | gzip -9 > ../CXSparse_newfiles.tar.gz )
 	./CSparse_to_CXSparse CSparse CXSparse CXSparse_newfiles.tar.gz
 	( cd CXSparse/Demo ; $(MAKE) )
@@ -200,8 +202,8 @@ cx:
 cov: purge
 	( cd CXSparse && $(MAKE) cov )
 	( cd CSparse && $(MAKE) cov )
-	( cd KLU && $(MAKE) cov )
 	( cd CHOLMOD && $(MAKE) cov )
+	( cd KLU && $(MAKE) cov )
 	( cd SPQR && $(MAKE) cov )
 	( cd UMFPACK && $(MAKE) cov )
 #	( cd PIRO_BAND && $(MAKE) cov )
@@ -212,18 +214,16 @@ cov: purge
 metis: include/metis.h
 
 # Install the shared version of METIS in SuiteSparse/lib.
-# The SO_INSTALL_NAME is only needed on the Mac, so *.dylib is hardcoded
+# The SO_INSTALL_NAME commmand is only needed on the Mac, so *.dylib is
+# hardcoded below.
 include/metis.h:
-ifneq ($(wildcard metis-5.1.0),)
+ifeq (,$(MY_METIS_LIB))
 	- ( cd metis-5.1.0 && $(MAKE) config shared=1 prefix=$(SUITESPARSE) )
 	- ( cd metis-5.1.0 && $(MAKE) )
 	- ( cd metis-5.1.0 && $(MAKE) install )
 	- $(SO_INSTALL_NAME) $(SUITESPARSE)/lib/libmetis.dylib \
                              $(SUITESPARSE)/lib/libmetis.dylib
 else
-        # METIS 5.1.0 not present, put in a place-holder that disables its use
-        # in SuiteSparse
-	echo "/* METIS 5.1.0 not installed for use in SuiteSparse */" > include/metis.h
-	echo "#define NPARTITION" >> include/metis.h
+	@echo 'Using pre-installed METIS 5.1.0 library at ' '[$(MY_METIS_LIB)]'
 endif
 

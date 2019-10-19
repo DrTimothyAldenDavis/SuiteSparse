@@ -4,13 +4,16 @@
   USE_FORTRAN = 0
 # USE_FORTRAN = 1
 
-VERSION = 1.0.1
+VERSION = 1.0.2
 SO_VERSION = 1
 
-default:
-	$(MAKE) install INSTALL=$(CURDIR)/../..
+default: library
 
-all: ccode fortran
+# compile and install in SuiteSparse/lib
+library:
+	$(MAKE) install INSTALL=$(SUITESPARSE)
+
+all: library
 
 ifeq ($(USE_FORTRAN),0)
     LIBRARY = libcerbla
@@ -28,9 +31,9 @@ else
     DEPENDS = xerbla.f
 endif
 
-ccode: $(AR_TARGET) $(SO_TARGET)
+ccode: all
 
-fortran: ccode
+fortran: all
 
 $(AR_TARGET): $(DEPENDS)
 	$(COMPILE)
@@ -38,20 +41,16 @@ $(AR_TARGET): $(DEPENDS)
 	- $(RANLIB) $(AR_TARGET)
 	- $(RM) xerbla.o
 
-$(SO_TARGET): $(DEPENDS)
-	$(COMPILE)
-	$(CC) $(SO_OPTS) xerbla.o -o $@
-	- $(RM) xerbla.o
-
 # install libcerbla / libxerbla
-install: $(INSTALL_LIB)/$(SO_TARGET)
+install: $(AR_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
 
-$(INSTALL_LIB)/$(SO_TARGET): $(SO_TARGET)
+$(INSTALL_LIB)/$(SO_TARGET): $(DEPENDS)
 	@mkdir -p $(INSTALL_LIB)
 	@mkdir -p $(INSTALL_INCLUDE)
 	@mkdir -p $(INSTALL_DOC)
-	$(CP) $(SO_TARGET) $(INSTALL_LIB)
-	$(SO_INSTALL_NAME) $(INSTALL_LIB)/$(SO_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
+	$(COMPILE)
+	$(CC) $(SO_OPTS) xerbla.o -o $@
+	- $(RM) xerbla.o
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_MAIN) )
 	$(CP) xerbla.h $(INSTALL_INCLUDE)

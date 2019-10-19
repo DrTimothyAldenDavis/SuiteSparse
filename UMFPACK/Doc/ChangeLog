@@ -1,3 +1,7 @@
+Feb 1, 2016: version 5.7.4
+
+    * update to Makefiles
+
 Jan 30, 2016: version 5.7.3
 
     * better Makefiles for creating and installing shared libraries

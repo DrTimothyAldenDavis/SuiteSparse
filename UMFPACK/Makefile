@@ -2,7 +2,8 @@
 # UMFPACK Makefile
 #-------------------------------------------------------------------------------
 
-# UMFPACK requires the AMD package to be in ../AMD
+SUITESPARSE ?= $(realpath $(CURDIR)/..)
+export SUITESPARSE
 
 default: all
 
@@ -62,7 +63,7 @@ lib: library
 
 # statement coverage (requires Linux; takes a lot of time and disk space)
 cov: purge
-	( cd Tcov ; ./DO.all $(TCOV_TMP) )
+	( cd Tcov ; $(MAKE) )
 
 # install UMFPACK
 install:

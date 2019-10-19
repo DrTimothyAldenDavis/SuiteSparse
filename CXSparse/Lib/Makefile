@@ -2,26 +2,24 @@
 # CXSparse Lib/Makefile
 #-------------------------------------------------------------------------------
 
-# NOTE: you should do "make install" on either CSparse or CXSparse, but
-# not both.  This is because both use the same name for the include file, cs.h.
-# CXSparse is a superset of CSparse, so any package that relies on CSparse can
-# rely on CXSparse instead, with no change to its code.
-
 LIBRARY = libcxsparse
-VERSION = 3.1.6
+VERSION = 3.1.7
 SO_VERSION = 3
 
 default: library
-	$(MAKE) install INSTALL=$(CURDIR)/../.. \
-		INSTALL_DOC=$(CURDIR)/../../doc
 
 include ../../SuiteSparse_config/SuiteSparse_config.mk
+
+# CXSparse depends on SuiteSparse_config
+LDLIBS += -lsuitesparseconfig
+
+# compile and install in SuiteSparse/lib
+library:
+	$(MAKE) install INSTALL=$(SUITESPARSE)
 
 I = -I../../SuiteSparse_config -I../Include
 
 all: library
-
-library: $(AR_TARGET) $(SO_TARGET)
 
 CS_SOURCE = cs_add.c cs_amd.c cs_chol.c cs_cholsol.c cs_counts.c cs_cumsum.c \
 	cs_droptol.c cs_dropzeros.c cs_dupl.c cs_entry.c \
@@ -104,9 +102,6 @@ $(AR_TARGET): $(CS)
 	$(ARCHIVE) $@ $^
 	- $(RANLIB) $@
 
-$(SO_TARGET): $(CS)
-	$(CC) $(SO_OPTS) $^ -o $@
-
 clean:
 	- $(RM) -r $(CLEAN)
 
@@ -116,14 +111,13 @@ distclean: clean
 	- $(RM) -r $(PURGE)
 
 # install CXSparse
-install: $(INSTALL_LIB)/$(SO_TARGET)
+install: $(AR_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
 
-$(INSTALL_LIB)/$(SO_TARGET): $(SO_TARGET)
+$(INSTALL_LIB)/$(SO_TARGET): $(CS)
 	@mkdir -p $(INSTALL_LIB)
 	@mkdir -p $(INSTALL_INCLUDE)
 	@mkdir -p $(INSTALL_DOC)
-	$(CP) $(SO_TARGET) $(INSTALL_LIB)
-	$(SO_INSTALL_NAME) $(INSTALL_LIB)/$(SO_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
+	$(CC) $(SO_OPTS) $^ -o $@ $(LDLIBS)
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_MAIN) )
 	$(CP) ../Include/cs.h $(INSTALL_INCLUDE)

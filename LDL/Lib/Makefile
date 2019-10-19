@@ -3,22 +3,25 @@
 #-------------------------------------------------------------------------------
 
 LIBRARY = libldl
-VERSION = 2.2.3
+VERSION = 2.2.4
 SO_VERSION = 2
 
 default: library
-	$(MAKE) install INSTALL=$(CURDIR)/../.. \
-		INSTALL_DOC=$(CURDIR)/../../doc
 
 include ../../SuiteSparse_config/SuiteSparse_config.mk
+
+# LDL depends on SuiteSparse_config
+LDLIBS += -lsuitesparseconfig
+
+# compile and install in SuiteSparse/lib
+library:
+	$(MAKE) install INSTALL=$(SUITESPARSE)
 
 I = -I../../SuiteSparse_config -I../Include
 
 C = $(CC) $(CF) $(I)
 
 all: library
-
-library: $(AR_TARGET) $(SO_TARGET)
 
 OBJ = ldl.o ldll.o
 
@@ -32,9 +35,6 @@ $(AR_TARGET): $(OBJ)
 	$(ARCHIVE) $@ $^
 	- $(RANLIB) $@
 
-$(SO_TARGET): $(OBJ)
-	$(CC) $(SO_OPTS) $^ -o $@
-
 distclean: purge
 
 purge: clean
@@ -44,14 +44,13 @@ clean:
 	- $(RM) -r $(CLEAN)
 
 # install LDL
-install: $(INSTALL_LIB)/$(SO_TARGET)
+install: $(AR_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
 
-$(INSTALL_LIB)/$(SO_TARGET): $(SO_TARGET)
+$(INSTALL_LIB)/$(SO_TARGET): $(OBJ)
 	@mkdir -p $(INSTALL_LIB)
 	@mkdir -p $(INSTALL_INCLUDE)
 	@mkdir -p $(INSTALL_DOC)
-	$(CP) $(SO_TARGET) $(INSTALL_LIB)
-	$(SO_INSTALL_NAME) $(INSTALL_LIB)/$(SO_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
+	$(CC) $(SO_OPTS) $^ -o $@ $(LDLIBS)
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_MAIN) )
 	$(CP) ../Include/ldl.h $(INSTALL_INCLUDE)

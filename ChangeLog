@@ -1,3 +1,14 @@
+Feb 1, 2016: SuiteSparse 4.5.1
+
+    * update to Makefiles.  Version 4.5.0 is broken on the Mac.
+	That version also compiles *.so libraries on Linux with
+	underlinked dependencies to other libraries in SuiteSparse.
+	For example, AMD requires SuiteSparse_config.  The links to
+	required libraries are now explicitly included in each library,
+	in SuiteSparse 4.5.1.
+    * minor change to CHOLMOD/Check/cholmod_write.c, when compiling with
+	-DNGPL
+
 Jan 30, 2016: SuiteSparse 4.5.0
 
     * better Makefiles for creating and installing shared libraries

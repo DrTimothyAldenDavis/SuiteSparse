@@ -17,33 +17,23 @@ include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 #-------------------------------------------------------------------------------
 # UMFPACK optionally uses the CHOLMOD Partition module
-CONFIG1 = -DNCHOLMOD
 LIB_WITH_CHOLMOD =
 ifeq (,$(findstring -DNCHOLMOD, $(UMFPACK_CONFIG)))
-    # CHOLMOD is requested.  See if it is available
-    ifeq (../../CHOLMOD, $(wildcard ../../CHOLMOD))
-        ifeq (../../COLAMD, $(wildcard ../../COLAMD))
-            # CHOLMOD and COLAMD are available
-            CONFIG1 =
-            LIB_WITH_CHOLMOD = -lcholmod -lcolamd
-        endif
-    endif
+    LIB_WITH_CHOLMOD = $(LIB_WITH_PARTITION) $(CUBLAS_LIB) $(CUDART_LIB)
 endif
 
 #-------------------------------------------------------------------------------
 
-C = $(CC) $(CF) $(UMFPACK_CONFIG) $(CONFIG1) $(CONFIG_PARTITION) \
+C = $(CC) $(CF) $(UMFPACK_CONFIG) $(CONFIG_PARTITION) \
     -I../../include
 
-LIBS = -L../../lib -lumfpack -lamd -lsuitesparseconfig \
-	$(LIB_WITH_CHOLMOD) \
-        $(LAPACK) $(BLAS) $(LDLIBS) \
-        $(LIB_WITH_PARTITION) $(CUBLAS_LIB) $(CUDART_LIB)
+LIBS = $(LDLIBS) -L../../lib -lumfpack -lamd -lsuitesparseconfig \
+	$(LIB_WITH_CHOLMOD) $(LAPACK) $(BLAS)
 
 libs: metis
 	( cd ../../SuiteSparse_config ; $(MAKE) )
-	( cd ../Lib ; $(MAKE) )
 	( cd ../../AMD ; $(MAKE) library )
+	( cd ../Lib ; $(MAKE) )
 	- ( cd ../../CHOLMOD && $(MAKE) library )
 	- ( cd ../../COLAMD && $(MAKE) library )
 	- ( cd ../../CCOLAMD ; $(MAKE) library )

@@ -1,6 +1,6 @@
 SuiteSparse:  A Suite of Sparse matrix packages at http://www.suitesparse.com
 
-Jan 30, 2016.  SuiteSparse VERSION 4.5.0
+Feb 1, 2016.  SuiteSparse VERSION 4.5.1
 
 ------------------
 SuiteSparse/README
@@ -154,9 +154,14 @@ in the metis-5.1.0 directory.  Its use is optional, so you can remove it before
 compiling SuiteSparse, if you desire.  The use of METIS will improve the
 ordering quality.  METIS has been slightly modified for use in SuiteSparse; see
 the metis-5.1.0/README.txt file for details.  SuiteSparse can use the
-unmodified METIS 5.1.0, however.  Use 'make METIS_PATH=/my/stuff/metis-5.1.0'.
-If you want to use METIS in MATLAB, however, you must use the version provided
-here, with SuiteSparse.
+unmodified METIS 5.1.0, however.  To use your own copy of METIS, or a
+pre-installed copy of METIS use 'make MY_METIS_LIB=-lmymetis' or
+'make MY_METIS_LIB=/my/stuff/metis-5.1.0/whereeveritis/libmetis.so 
+      MY_METIS_INC=/my/stuff/metis-5.1.0/include'.
+If you want to use METIS in MATLAB, however, you MUST use the version provided
+here, in SuiteSparse/metis-5.1.0.  The MATLAB interface to METIS required some
+small changes in METIS itself to get it to work.  The original METIS 5.1.0
+will segfault MATLAB.
 
 Refer to each package for license, copyright, and author information.  All
 codes are authored or co-authored by Timothy A. Davis.
@@ -185,8 +190,8 @@ your library search patch, you can do the following (for example):
     cc myprogram.c -I$(S)/include -lumfpack -lamd -lcholmod -lsuitesparseconfig -lm
 
 Do 'make install' if you want to install the libraries and include files in
-/usr/local/lib and /usr/local/include, and the documentation in
-/usr/share/doc/suitesparse-VERSION.
+SuiteSparse/lib and SuiteSparse/include, and the documentation in
+SuiteSparse/doc/suitesparse-VERSION.
 This will work on Linux/Unix and the Mac.  It should automatically detect if
 you have the Intel compilers or not, and whether or not you have CUDA.  If this
 fails, see the SuiteSparse_config/SuiteSparse_config.mk file.  There are many
@@ -195,13 +200,16 @@ edit that file.  For example, to compile with your own BLAS:
 
     make BLAS=-lmyblaslibraryhere
 
-To list the primary configuration options (but not compile anything), do:
+To list all configuration options (but not compile anything), do:
 
     make config
 
+Any parameter you see in the output of 'make config' with an equal sign
+can be modified at the 'make' command line.
+
 If you do "make install" by itself, then the packages are all installed in
-/usr/local/lib (libraries), /usr/local/include (include *.h files), and
-/usr/share/doc/suitesparse-VERSION (documentation).  If you want to install
+SuiteSparse/lib (libraries), SuiteSparse/include (include *.h files), and
+SuiteSparse/doc/suitesparse-VERSION (documentation).  If you want to install
 elsewhere, do:
 
     make install INSTALL=/my/path
@@ -220,6 +228,13 @@ includes in /usr/local/lib and /usr/local/include, do:
 
 which copies the documentation to /tmp/doc where you can then remove it later.
 
+Both the static (*.a) and shared (*.so) libraries are compiled.  The *.a
+libraries are left in the package Lib folder (AMD/Lib/libamd.a for example).
+The main exception to this rule is the SuiteSparse_config library, which is in
+SuiteSparse/libsuiteSparseconfig.a.  SuiteSparse_config is required by all
+packages.  The (extremely) optional xerbla library is also an exception, but it
+is highly unlikely that you need that library.
+
 The 'make uninstall' takes the same command-line arguments.
 
 ----------------------------------
@@ -237,13 +252,11 @@ Step-by-step details:
     This is optionally used by SuiteSparseQR.  Refer to the User Guide in 
     SuiteSparse/SPQR/Doc/spqr_user_guide.pdf for details.
 
-(3) Make other changes to SuiteSparse_config/SuiteSparse_config.mk as needed,
-    or determine what other command line options you need for 'make'.  All
-    options can be set at the 'make' command line without the need to edit this
-    file.  Browse that file to see what options you can control.  If you
-    choose different options and wish to recompile, be sure to do 'make
-    distclean' in this directory first, to remove all files not in the 
-    original distribution.
+(3) Determine what other command line options you need for 'make'.  All options
+    can be set at the 'make' command line without the need to edit this file.
+    Browse that file to see what options you can control.  If you choose
+    different options and wish to recompile, be sure to do 'make distclean' in
+    this directory first, to remove all files not in the original distribution.
 
 (4) Type "make" in this directory.  All packages will be be compiled.  METIS
     5.1.0 will be compiled if you have it (note that METIS require CMake to
@@ -259,16 +272,20 @@ Step-by-step details:
     and the compiled libraries are copied into SuiteSparse/lib.  Documentation
     is copied into SuiteSparse/doc.
 
+    NOTE: on Linux, you may see some errors when you compile METIS
+    ('make: *** No rule to make target 'w'.).  You can safely ignore those
+    errors.
+
 (6) To install, type "make install".  This will place copies of all
-    libraries in /usr/local/lib, and all include files in /usr/local/include,
-    and all documentation in /usr/share/doc/suitesparse-VERSION.  You can
-    change the install location by editting SuiteSparse_config.mk.  You can
-    also do "make install INSTALL=/my/path" which puts the libraries in
-    /my/path/lib and the include files in /my/path/include.  These directories
-    need not already exist.
+    libraries in SuiteSparse/lib, and all include files in SuiteSparse/include,
+    and all documentation in SuiteSparse/doc/suitesparse-VERSION.  You can
+    change the install location by "make install INSTALL=/my/path" which puts
+    the libraries in /my/path/lib, the include files in /my/path/include, and
+    documentation in /my/path/doc.  These directories are created if they do
+    not already exist.
 
 (7) To uninstall, type "make uninstall", which reverses "make install"
-    by removing the SuiteSparse libraries from /usr/local/lib, the
-    include files from /usr/local/include, and the documentaion from
-    /usr/share/doc.
+    by removing the SuiteSparse libraries, include files, and documentation
+    from the place they were installed.  If you pass INSTALL_***= options
+    to 'make install', you must pass the same to 'make uninstall'.
 

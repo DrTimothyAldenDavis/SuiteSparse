@@ -3,28 +3,25 @@
 #===============================================================================
 
 LIBRARY = libspqr
-VERSION = 2.0.4
+VERSION = 2.0.5
 SO_VERSION = 2
 
 default: library
-	$(MAKE) install INSTALL=$(CURDIR)/../.. \
-		INSTALL_DOC=$(CURDIR)/../../doc
 
 ccode: all
 
 include ../../SuiteSparse_config/SuiteSparse_config.mk
 
+# SPQR depends on CHOLMOD, AMD, COLAMD, LAPACK, the BLAS and SuiteSparse_config
+LDLIBS += -lamd -lcolamd -lcholmod -lsuitesparseconfig $(LAPACK) $(BLAS)
+
+# compile and install in SuiteSparse/lib
+library:
+	$(MAKE) install INSTALL=$(SUITESPARSE)
+
 #-------------------------------------------------------------------------------
 
-# no statement coverage, high optimization
-# CF = -O3 \
-# 	-Wall -W -Wshadow -Winline -Wno-unused-parameter \
-# 	-Wredundant-decls -Wdisabled-optimization \
-# 	-ansi -fexceptions
-
 all: library
-
-library: $(AR_TARGET) $(SO_TARGET)
 
 purge: distclean
 
@@ -36,7 +33,7 @@ clean:
 
 INC = ../Include/spqr.hpp ../Include/SuiteSparseQR_C.h \
 	../Include/SuiteSparseQR_definitions.h \
-	../Include/SuiteSparseQR.hpp Makefile
+	../Include/SuiteSparseQR.hpp
 
 OBJ = \
     spqr_rmap.o \
@@ -96,16 +93,18 @@ ifneq ($(GPU_CONFIG),)
          -I../../GPUQREngine/Include $(CUDA_INC)
 endif
 
-C = $(CXX) $(CF) $(SPQR_CONFIG) $(CONFIG_PARTITION) $(I)
+C = $(CXX) $(CF) $(SPQR_CONFIG) $(CHOLMOD_CONFIG) $(CONFIG_PARTITION) $(I)
+
+ifneq ($(GPU_CONFIG),)
+    LDLIBS += $(CUDART_LIB) $(CUBLAS_LIB) \
+        -lSuiteSparse_GPURuntime -lGPUQREngine
+endif
 
 #-------------------------------------------------------------------------------
 
 $(AR_TARGET): $(OBJ)
 	$(ARCHIVE) $@ $^
 	- $(RANLIB) $@
-
-$(SO_TARGET): $(OBJ)
-	$(CC) $(SO_OPTS) $^ -o $@
 
 #-------------------------------------------------------------------------------
 
@@ -241,14 +240,13 @@ spqrgpu_computeFrontStaging.o: ../SPQRGPU/spqrgpu_computeFrontStaging.cpp
 #-------------------------------------------------------------------------------
 
 # install SPQR
-install: $(INSTALL_LIB)/$(SO_TARGET)
+install: $(AR_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
 
-$(INSTALL_LIB)/$(SO_TARGET): $(SO_TARGET)
+$(INSTALL_LIB)/$(SO_TARGET): $(OBJ)
 	@mkdir -p $(INSTALL_LIB)
 	@mkdir -p $(INSTALL_INCLUDE)
 	@mkdir -p $(INSTALL_DOC)
-	$(CP) $(SO_TARGET) $(INSTALL_LIB)
-	$(SO_INSTALL_NAME) $(INSTALL_LIB)/$(SO_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
+	$(CC) $(SO_OPTS) $^ -o $@ $(LDLIBS)
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_MAIN) )
 	$(CP) ../Include/SuiteSparseQR.hpp $(INSTALL_INCLUDE)

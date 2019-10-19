@@ -8,6 +8,10 @@
 
 #include "spqr.hpp"
 
+#ifdef NSUPERNODAL
+#error "SuiteSparseQR requires the CHOLMOD/Supernodal module"
+#endif
+
 // =============================================================================
 
 #define FREE_WORK \
@@ -311,6 +315,15 @@ spqr_symbolic *spqr_analyze
     {
         // out of memory
         FREE_WORK ;
+        return (NULL) ;
+    }
+
+    if (Sc == NULL || !(Sc->is_super) || !(Sc->is_ll))
+    {
+        cholmod_l_free_factor (&Sc, cc) ;
+        FREE_WORK ;
+        ERROR (CHOLMOD_INVALID,
+            "SuiteSparseQR requires the CHOLMOD/Supernodal module") ;
         return (NULL) ;
     }
 

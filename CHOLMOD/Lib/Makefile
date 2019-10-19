@@ -1,18 +1,34 @@
 #===============================================================================
-# CHOLOMD/Lib/Makefile: for compiling the CHOLMOD library
+# CHOLMOD/Lib/Makefile: for compiling the CHOLMOD library
 #===============================================================================
 
 LIBRARY = libcholmod
-VERSION = 3.0.8
+VERSION = 3.0.9
 SO_VERSION = 3
 
 default: library
-	$(MAKE) install INSTALL=$(CURDIR)/../.. \
-		INSTALL_DOC=$(CURDIR)/../../doc
 
 ccode: all
 
 include ../../SuiteSparse_config/SuiteSparse_config.mk
+
+# CHOLMOD depends on AMD, SuiteSparse_config, LAPACK, BLAS,
+# and optionally METIS, CAMD, and CCOLAMD if the Partition Module is in use
+LDLIBS += -lamd -lcolamd -lsuitesparseconfig \
+	$(LIB_WITH_PARTITION) $(LAPACK) $(BLAS)
+
+SO_OPTS += $(CFOPENMP)
+
+#-------------------------------------------------------------------------------
+# With the CUDA BLAS:
+ifneq ($(GPU_CONFIG),)
+LDLIBS += $(CUDART_LIB) $(CUBLAS_LIB)
+endif
+#-------------------------------------------------------------------------------
+
+# compile and install in SuiteSparse/lib
+library:
+	$(MAKE) install INSTALL=$(SUITESPARSE)
 
 #-------------------------------------------------------------------------------
 
@@ -25,8 +41,6 @@ I = -I../../AMD/Include -I../../AMD/Source -I../../COLAMD/Include \
 C = $(CC) $(CF) $(CHOLMOD_CONFIG) $(CONFIG_PARTITION)
 
 all: library
-
-library: $(AR_TARGET) $(SO_TARGET)
 
 purge: distclean
 
@@ -141,9 +155,6 @@ OBJ = $(DI) $(DL)
 $(AR_TARGET): $(OBJ)
 	$(ARCHIVE) $@ $^
 	- $(RANLIB) $@
-
-$(SO_TARGET): $(OBJ)
-	$(CC) $(SO_OPTS) $^ -o $@
 
 $(OBJ): $(INC)
 
@@ -522,14 +533,13 @@ cholmod_l_gpu.o: ../GPU/cholmod_gpu.c
 #-------------------------------------------------------------------------------
 
 # install CHOLMOD
-install: $(INSTALL_LIB)/$(SO_TARGET)
+install: $(AR_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
 
-$(INSTALL_LIB)/$(SO_TARGET): $(SO_TARGET)
+$(INSTALL_LIB)/$(SO_TARGET): $(OBJ)
 	@mkdir -p $(INSTALL_LIB)
 	@mkdir -p $(INSTALL_INCLUDE)
 	@mkdir -p $(INSTALL_DOC)
-	$(CP) $(SO_TARGET) $(INSTALL_LIB)
-	$(SO_INSTALL_NAME) $(INSTALL_LIB)/$(SO_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
+	$(CC) $(SO_OPTS) $^ -o $@ $(LDLIBS)
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_MAIN) )
 	$(CP) ../Include/cholmod*.h $(INSTALL_INCLUDE)

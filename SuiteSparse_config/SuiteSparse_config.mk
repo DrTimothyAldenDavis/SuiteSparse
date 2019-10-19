@@ -5,7 +5,7 @@
 # This file contains all configuration settings for all packages in SuiteSparse,
 # except for CSparse (which is stand-alone) and the packages in MATLAB_Tools.
 
-SUITESPARSE_VERSION = 4.5.0
+SUITESPARSE_VERSION = 4.5.1
 
 #===============================================================================
 # Options you can change without editing this file:
@@ -31,7 +31,31 @@ SUITESPARSE_VERSION = 4.5.0
 
     # Most Makefiles are in SuiteSparse/Pkg/Lib or SuiteSparse/Pkg/Demo, so
     # the top-level of SuiteSparse is in ../.. unless otherwise specified.
-    SUITESPARSE ?= $(CURDIR)/../..
+    # This is true for all but the SuiteSparse_config package.
+    SUITESPARSE ?= $(realpath $(CURDIR)/../..)
+
+    #---------------------------------------------------------------------------
+    # installation location
+    #---------------------------------------------------------------------------
+
+    # For "make install" and "make uninstall", the default location is
+    # SuiteSparse/lib, SuiteSparse/include, and
+    # SuiteSparse/share/doc/suitesparse-x.y.z
+    # If you do this:
+    #    make install INSTALL=/usr/local
+    # then the libraries are installed in /usr/local/lib, include files in
+    # /usr/local/include, and documentation in
+    # /usr/local/share/doc/suitesparse-x.y.z.
+    # You can instead specify the install location of each of these 3 components
+    # separately, via (for example):
+    #    make install INSTALL_LIB=/yada/mylibs INSTALL_INCLUDE=/yoda/myinc  \
+    #                 INSTALL_DOC=/solo/mydox
+    # which puts the libraries in /yada/mylibs, include files in /yoda/myinc,
+    # and documentation in /solo/mydox.
+    INSTALL ?= $(SUITESPARSE)
+    INSTALL_LIB ?= $(INSTALL)/lib
+    INSTALL_INCLUDE ?= $(INSTALL)/include
+    INSTALL_DOC ?= $(INSTALL)/share/doc/suitesparse-$(SUITESPARSE_VERSION)
 
     #---------------------------------------------------------------------------
     # optimization level
@@ -52,8 +76,11 @@ SUITESPARSE_VERSION = 4.5.0
         AUTOCC = no
         CC = gcc
         CXX = g++
-        BLAS = -lrefblas -lgfortran
+        BLAS = -lrefblas -lgfortran -lstdc++
         LAPACK = -llapack
+	CFLAGS += --coverage
+	OPTIMIZATION = -g
+	LDFLAGS += --coverage
     endif
 
     #---------------------------------------------------------------------------
@@ -109,6 +136,7 @@ SUITESPARSE_VERSION = 4.5.0
     # It places its shared *.so libraries in SuiteSparse/lib.
     # Linux also requires the -lrt library (see below)
     LDLIBS ?= -lm
+    LDFLAGS += -L$(INSTALL_LIB)
 
     # See http://www.openblas.net for a recent and freely available optimzed
     # BLAS.  LAPACK is at http://www.netlib.org/lapack/ .  You can use the
@@ -137,8 +165,7 @@ SUITESPARSE_VERSION = 4.5.0
     endif
 
     # For ACML, use this instead:
-    ## BLAS = -lacml -lgfortran
-    ## LAPACK =
+    #   make BLAS='-lacml -lgfortran'
 
     #---------------------------------------------------------------------------
     # shell commands
@@ -159,17 +186,6 @@ SUITESPARSE_VERSION = 4.5.0
     # interfaces to AMD and UMFPACK.  Not needed by 'make' or 'make install'
     F77 ?= gfortran
     F77FLAGS ?= $(FFLAGS) $(OPTIMIZATION)
-
-    #---------------------------------------------------------------------------
-    # installation location
-    #---------------------------------------------------------------------------
-
-    # For "make install" and "make uninstall", default location is
-    # /usr/local/lib, /usr/local/include, and /usr/share/doc/suitesparse-x.y.z
-    INSTALL ?= /usr/local
-    INSTALL_LIB ?= $(INSTALL)/lib
-    INSTALL_INCLUDE ?= $(INSTALL)/include
-    INSTALL_DOC ?= /usr/share/doc/suitesparse-$(SUITESPARSE_VERSION)
 
     #---------------------------------------------------------------------------
     # NVIDIA CUDA configuration for CHOLMOD and SPQR
@@ -216,16 +232,6 @@ SUITESPARSE_VERSION = 4.5.0
     endif
 
     #---------------------------------------------------------------------------
-    # METIS configuration
-    #---------------------------------------------------------------------------
-
-    # Most packages are built in SuiteSparse/PackageName/Lib, so this is a
-    # relative path to SuiteSparse/metis-5.1.0.  If you use a pre-installed
-    # copy of METIS, you can use it instead via 'make METIS=/my/metis-5.1.0'.
-
-    METIS_PATH ?= $(SUITESPARSE)/metis-5.1.0
-
-    #---------------------------------------------------------------------------
     # UMFPACK configuration:
     #---------------------------------------------------------------------------
 
@@ -238,14 +244,14 @@ SUITESPARSE_VERSION = 4.5.0
     # -DNRECIPROCAL do not multiply by the reciprocal
     # -DNO_DIVIDE_BY_ZERO   do not divide by zero
     # -DNCHOLMOD    do not use CHOLMOD as a ordering method.  If -DNCHOLMOD is
-    #               included in UMFPACK_CONFIG, then UMFPACK  does not rely on
+    #               included in UMFPACK_CONFIG, then UMFPACK does not rely on
     #               CHOLMOD, CAMD, CCOLAMD, COLAMD, and METIS.
 
     UMFPACK_CONFIG ?=
 
     # For example, uncomment this line to compile UMFPACK without CHOLMOD:
     # UMFPACK_CONFIG = -DNCHOLMOD
-    # or use 'make UMFPACK_CONFIG=-DCHOLMOD'
+    # or use 'make UMFPACK_CONFIG=-DNCHOLMOD'
 
     #---------------------------------------------------------------------------
     # CHOLMOD configuration
@@ -296,7 +302,7 @@ SUITESPARSE_VERSION = 4.5.0
     # -DNPARTITION      do not include the CHOLMOD partition module
     # -DNEXPERT         do not include the functions in SuiteSparseQR_expert.cpp
     # -DHAVE_TBB        enable the use of Intel's Threading Building Blocks
-    # -DGPU_BLAS	enable the use of the CUDA BLAS
+    # -DGPU_BLAS        enable the use of the CUDA BLAS
 
     SPQR_CONFIG ?= $(GPU_CONFIG)
 
@@ -333,7 +339,7 @@ SUITESPARSE_VERSION = 4.5.0
 
     ifeq ($(UNAME),Linux)
         # add the realtime library, librt, and SuiteSparse/lib
-        LDLIBS += -lrt -Wl,-rpath=$(SUITESPARSE)/lib
+        LDLIBS += -lrt -Wl,-rpath=$(INSTALL_LIB)
     endif
 
     #---------------------------------------------------------------------------
@@ -447,42 +453,73 @@ else
         SO_PLAIN  = $(LIBRARY).so
         SO_MAIN   = $(LIBRARY).so.$(SO_VERSION)
         SO_TARGET = $(LIBRARY).so.$(VERSION)
-        SO_OPTS  += -shared -Wl,-soname -Wl,$(SO_MAIN)
+        SO_OPTS  += -shared -Wl,-soname -Wl,$(SO_MAIN) -Wl,--no-undefined
         # Linux/Unix *.so files can be moved without modification:
         SO_INSTALL_NAME = echo
     endif
 endif
 
 #===============================================================================
-# Configure METIS for the CHOLMOD/Partition module
+# Configure CHOLMOD/Partition module with METIS, CAMD, and CCOLAMD
 #===============================================================================
 
-# the optional CHOLMOD Partition module requires METIS, CAMD, and CCOLAMD.
-# CAMD and CCOLAMD can be installed without METIS, but are optional.
+# By default, SuiteSparse uses METIS 5.1.0 in the SuiteSparse/metis-5.1.0
+# directory.  SuiteSparse's interface to METIS is only through the
+# SuiteSparse/CHOLMOD/Partition module, which also requires SuiteSparse/CAMD
+# and SuiteSparse/CCOLAMD.
+#
+# If you wish to use your own pre-installed copy of METIS, use the MY_METIS_LIB
+# and MY_METIS_INC options passed to 'make'.  For example:
+#       make MY_METIS_LIB=-lmetis
+#       make MY_METIS_LIB=/home/myself/mylibraries/libmetis.so
+#       make MY_METIS_LIB='-L/home/myself/mylibraries -lmetis'
+# If you need to tell the compiler where to find the metis.h include file,
+# then add MY_METIS_INC=/home/myself/metis-5.1.0/include as well, which points
+# to the directory containing metis.h.  If metis.h is already installed in
+# a location known to the compiler (/usr/local/include/metis.h for example)
+# then you do not need to add MY_METIS_INC.
+
 I_WITH_PARTITION =
 LIB_WITH_PARTITION =
 CONFIG_PARTITION = -DNPARTITION -DNCAMD
 # check if CAMD/CCOLAMD and METIS are requested and available
 ifeq (,$(findstring -DNCAMD, $(CHOLMOD_CONFIG)))
-    # CAMD and CCOLAMD are requested.  See if they are available
-    ifeq (../../CAMD, $(wildcard ../../CAMD))
-        ifeq (../../CCOLAMD, $(wildcard ../../CCOLAMD))
+    # CAMD and CCOLAMD are requested.  See if they are available in
+    # SuiteSparse/CAMD and SuiteSparse/CCOLAMD
+    ifneq (, $(wildcard $(SUITESPARSE)/CAMD))
+        ifneq (, $(wildcard $(SUITESPARSE)/CCOLAMD))
             # CAMD and CCOLAMD are requested and available
             LIB_WITH_PARTITION = -lccolamd -lcamd
-            I_WITH_PARTITION = -I../../CCOLAMD/Include -I../../CAMD/Include
+            I_WITH_PARTITION = -I$(SUITESPARSE)/CCOLAMD/Include -I$(SUITESPARSE)/CAMD/Include
             CONFIG_PARTITION = -DNPARTITION
             # check if METIS is requested and available
             ifeq (,$(findstring -DNPARTITION, $(CHOLMOD_CONFIG)))
-                # METIS is requested.  See if it is available
-                ifeq ($(METIS_PATH), $(wildcard $(METIS_PATH)))
-                    # METIS is available
-                    ifeq ($(UNAME), Darwin)
-                        LIB_WITH_PARTITION += ../../lib/libmetis.dylib
-                    else
-                        LIB_WITH_PARTITION += -lmetis
+                # METIS is requested.  See if it is available.
+                ifneq (,$(MY_METIS_LIB))
+                    # METIS 5.1.0 is provided elsewhere, and we are not using
+                    # SuiteSparse/metis-5.1.0. To do so, we link with
+                    # $(MY_METIS_LIB) and add the -I$(MY_METIS_INC) option for
+                    # the compiler.  The latter can be empty if you have METIS
+                    # installed in a place where the compiler can find the
+                    # metis.h include file by itself without any -I option
+                    # (/usr/local/include/metis.h for example). 
+                    LIB_WITH_PARTITION += $(MY_METIS_LIB)
+                    ifneq (,$(MY_METIS_INC))
+                        I_WITH_PARTITION += -I$(MY_METIS_INC)
                     endif
-                    I_WITH_PARTITION += -I$(METIS_PATH)/include
                     CONFIG_PARTITION =
+                else
+                    # see if METIS is in SuiteSparse/metis-5.1.0
+                    ifneq (, $(wildcard $(SUITESPARSE)/metis-5.1.0))
+                        # SuiteSparse/metis5.1.0 is available
+                        ifeq ($(UNAME), Darwin)
+                            LIB_WITH_PARTITION += $(SUITESPARSE)/lib/libmetis.dylib
+                        else
+                            LIB_WITH_PARTITION += -lmetis
+                        endif
+                        I_WITH_PARTITION += -I$(SUITESPARSE)/metis-5.1.0/include
+                        CONFIG_PARTITION =
+                    endif
                 endif
             endif
         endif
@@ -520,7 +557,6 @@ config:
 	@echo 'Optimization level:       OPTIMIZATION=   ' '$(OPTIMIZATION)'
 	@echo 'BLAS library:             BLAS=           ' '$(BLAS)'
 	@echo 'LAPACK library:           LAPACK=         ' '$(LAPACK)'
-	@echo 'METIS path:               METIS_PATH=     ' '$(METIS_PATH)'
 	@echo 'Intel TBB library:        TBB=            ' '$(TBB)'
 	@echo 'Other libraries:          LDLIBS=         ' '$(LDLIBS)'
 	@echo 'static library:           AR_TARGET=      ' '$(AR_TARGET)'
@@ -551,6 +587,14 @@ config:
 	@echo 'SuiteSparseQR config:     SPQR_CONFIG=    ' '$(SPQR_CONFIG)'
 	@echo 'CUDA library:             CUDART_LIB=     ' '$(CUDART_LIB)'
 	@echo 'CUBLAS library:           CUBLAS_LIB=     ' '$(CUBLAS_LIB)'
+	@echo 'METIS and CHOLMOD/Partition configuration:'
+	@echo 'Your METIS library:       MY_METIS_LIB=   ' '$(MY_METIS_LIB)'
+	@echo 'Your metis.h is in:       MY_METIS_INC=   ' '$(MY_METIS_INC)'
+	@echo 'METIS is used via the CHOLMOD/Partition module, configured as follows.'
+	@echo 'If the next line has -DNPARTITION then METIS will not be used:'
+	@echo 'CHOLMOD Partition config: ' '$(CONFIG_PARTITION)'
+	@echo 'CHOLMOD Partition libs:   ' '$(LIB_WITH_PARTITION)'
+	@echo 'CHOLMOD Partition include:' '$(I_WITH_PARTITION)'
 ifeq ($(TCOV),yes)
 	@echo 'TCOV=yes, for extensive testing only (gcc, g++, vanilla BLAS)'
 endif

@@ -2,6 +2,9 @@
 # SuiteSparse_GPURuntime Makefile
 #-------------------------------------------------------------------------------
 
+SUITESPARSE ?= $(realpath $(CURDIR)/..)
+export SUITESPARSE
+
 default: all
 
 include ../SuiteSparse_config/SuiteSparse_config.mk

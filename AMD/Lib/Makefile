@@ -3,16 +3,19 @@
 #-------------------------------------------------------------------------------
 
 LIBRARY = libamd
-VERSION = 2.4.3
+VERSION = 2.4.4
 SO_VERSION = 2
 
 default: library
-	$(MAKE) install INSTALL=$(CURDIR)/../.. \
-		INSTALL_DOC=$(CURDIR)/../../doc
 
 include ../../SuiteSparse_config/SuiteSparse_config.mk
 
-library: $(AR_TARGET) $(SO_TARGET)
+# AMD depends on SuiteSparse_config
+LDLIBS += -lsuitesparseconfig
+
+# compile and install in SuiteSparse/lib
+library:
+	$(MAKE) install INSTALL=$(SUITESPARSE)
 
 C = $(CC) $(CF) -I../Include -I../../SuiteSparse_config
 
@@ -33,6 +36,7 @@ INC = ../Include/amd.h ../Include/amd_internal.h \
 
 AMDI = $(addsuffix .o, $(subst amd_,amd_i_,$(AMD)))
 AMDL = $(addsuffix .o, $(subst amd_,amd_l_,$(AMD)))
+OBJ = $(AMDI) $(AMDL)
 
 #-------------------------------------------------------------------------------
 # compile each int and long routine (with no real/complex version)
@@ -45,15 +49,12 @@ amd_l_%.o: ../Source/amd_%.c $(INC)
 	$(C) -DDLONG -c $< -o $@
 
 #-------------------------------------------------------------------------------
-# Create the static and shared libraries (C versions only)
+# Create the static library (C versions only)
 #-------------------------------------------------------------------------------
 
-$(AR_TARGET): $(AMDI) $(AMDL)
+$(AR_TARGET): $(OBJ)
 	$(ARCHIVE) $@ $^
 	- $(RANLIB) $@
-
-$(SO_TARGET): $(AMDI) $(AMDL)
-	$(CC) $(SO_OPTS) $^ -o $@
 
 #-------------------------------------------------------------------------------
 # compile the Fortran versions and the libamdf77.a library (static only)
@@ -78,14 +79,13 @@ libamdf77.a: $(AMDF77)
 #-------------------------------------------------------------------------------
 
 # install AMD
-install: $(INSTALL_LIB)/$(SO_TARGET)
+install: $(AR_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
 
-$(INSTALL_LIB)/$(SO_TARGET): $(SO_TARGET)
+$(INSTALL_LIB)/$(SO_TARGET): $(OBJ)
 	@mkdir -p $(INSTALL_LIB)
 	@mkdir -p $(INSTALL_INCLUDE)
 	@mkdir -p $(INSTALL_DOC)
-	$(CP) $(SO_TARGET) $(INSTALL_LIB)
-	$(SO_INSTALL_NAME) $(INSTALL_LIB)/$(SO_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
+	$(CC) $(SO_OPTS) $^ -o $@ $(LDLIBS)
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_MAIN) )
 	$(CP) ../Include/amd.h $(INSTALL_INCLUDE)

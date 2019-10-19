@@ -36,9 +36,13 @@ int main (void)
     cholmod_factorize (A, L, &c) ;		    /* factorize */
     x = cholmod_solve (CHOLMOD_A, L, b, &c) ;	    /* solve Ax=b */
     r = cholmod_copy_dense (b, &c) ;		    /* r = b */
+#ifndef NMATRIXOPS
     cholmod_sdmult (A, 0, m1, one, x, r, &c) ;	    /* r = r-Ax */
     printf ("norm(b-Ax) %8.1e\n",
 	    cholmod_norm_dense (r, 0, &c)) ;	    /* print norm(r) */
+#else
+    printf ("residual norm not computed (requires CHOLMOD/MatrixOps)\n") ;
+#endif
     cholmod_free_factor (&L, &c) ;		    /* free matrices */
     cholmod_free_sparse (&A, &c) ;
     cholmod_free_dense (&r, &c) ;

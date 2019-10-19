@@ -6,6 +6,8 @@ include ../../SuiteSparse_config/SuiteSparse_config.mk
 linux: distclean
 	# ( cd ../..   	   && $(MAKE) purge )
 	( cd ../..   	   && $(MAKE) metis )
+	( cd ../../SuiteSparse_config && $(MAKE) TCOV=yes )
+	( cd ../../AMD     && $(MAKE) TCOV=yes )
 	( cd ../../CAMD    && $(MAKE) TCOV=yes )
 	( cd ../../COLAMD  && $(MAKE) TCOV=yes )
 	( cd ../../CCOLAMD && $(MAKE) TCOV=yes )

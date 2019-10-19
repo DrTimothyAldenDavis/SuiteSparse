@@ -37,6 +37,7 @@ void check_residual
     // get the rank(A) estimate
     rnk = cc->SPQR_istat [4] ;
 
+#ifndef NMATRIXOPS
     // anorm = norm (A,1) ;
     anorm = cholmod_l_norm_sparse (A, 1, cc) ;
 
@@ -63,6 +64,10 @@ void check_residual
         "rel. norm(A'(Ax-b)) %8.1e\n", rnorm, rnk, atrnorm) ;
     cholmod_l_free_dense (&r, cc) ;
     cholmod_l_free_dense (&atr, cc) ;
+#else
+    printf ("relative norm(Ax-b): not computed (requires CHOLMOD/MatrixOps)\n");
+    printf ("rank: %6ld\n", rnk) ;
+#endif
 }
 
 // =============================================================================

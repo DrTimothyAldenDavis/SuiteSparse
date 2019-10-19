@@ -2,6 +2,9 @@
 # BTF Makefile
 #------------------------------------------------------------------------------
 
+SUITESPARSE ?= $(realpath $(CURDIR)/..)
+export SUITESPARSE
+
 default: library
 
 include ../SuiteSparse_config/SuiteSparse_config.mk

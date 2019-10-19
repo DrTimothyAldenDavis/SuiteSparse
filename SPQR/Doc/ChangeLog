@@ -1,3 +1,10 @@
+Feb 1, 2016: version 2.0.5
+
+    * update to Makefiles
+    * better error handling when -DNGPL is used in CHOLMOD.
+	SuiteSparseQR requires the CHOLMOD/Supernodal module.  This is now
+	checked both at compile time and at run time.
+
 Jan 30, 2016: versions 2.0.4
 
     * modifications to Makefiles

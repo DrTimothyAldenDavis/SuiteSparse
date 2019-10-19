@@ -2,7 +2,7 @@ CF = $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -O
 I = -I../Include
 
 LDLIBS += -lm
-CS = $(LDFLAGS) -L../Lib -lcsparse $(LDLIBS)
+CS = $(LDFLAGS) ../Lib/libcsparse.a $(LDLIBS)
 
 all: lib cs_demo1 cs_demo2 cs_demo3
 	- ./cs_demo1 < ../Matrix/t1

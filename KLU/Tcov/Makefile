@@ -27,7 +27,7 @@ C = $(CC) $(CF)
 LDLIBS = -L../../lib -lamd -lcolamd -lcholmod -lcamd -lccolamd \
     -lmetis -lsuitesparseconfig \
     $(LAPACK) $(BLAS) $(CUDART_LIB) $(CUBLAS_LIB) -lm -lrt \
-    -Wl,-rpath=$(SUITESPARSE)/lib
+    -Wl,-rpath=$(SUITESPARSE)/lib -lstdc++
 
 I = -I../../include -I../Include -I../User -I../../BTF/Include
 
@@ -42,13 +42,13 @@ valgrind: purge klutest klultest
 	- ./coverage
 
 libs:
+	( cd ../../SuiteSparse_config && $(MAKE) TCOV=yes)
 	( cd ../../AMD && $(MAKE) library TCOV=yes)
 	( cd ../../COLAMD && $(MAKE) library TCOV=yes)
 	( cd ../../CAMD && $(MAKE) library TCOV=yes)
 	( cd ../../CCOLAMD && $(MAKE) library TCOV=yes)
 	( cd ../.. && $(MAKE) metis )
 	( cd ../../CHOLMOD && $(MAKE) library TCOV=yes)
-	( cd ../../SuiteSparse_config && $(MAKE) TCOV=yes)
 
 purge: distclean
 

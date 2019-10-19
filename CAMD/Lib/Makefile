@@ -3,16 +3,19 @@
 #-------------------------------------------------------------------------------
 
 LIBRARY = libcamd
-VERSION = 2.4.3
+VERSION = 2.4.4
 SO_VERSION = 2
 
 default: library
-	$(MAKE) install INSTALL=$(CURDIR)/../.. \
-		INSTALL_DOC=$(CURDIR)/../../doc
 
 include ../../SuiteSparse_config/SuiteSparse_config.mk
 
-library: $(AR_TARGET) $(SO_TARGET)
+# CAMD depends on SuiteSparse_config
+LDLIBS += -lsuitesparseconfig
+
+# compile and install in SuiteSparse/lib
+library:
+	$(MAKE) install INSTALL=$(SUITESPARSE)
 
 C = $(CC) $(CF) -I../Include -I../../SuiteSparse_config
 
@@ -32,6 +35,7 @@ INC = ../Include/camd.h ../Include/camd_internal.h \
 
 CAMDI = $(addsuffix .o, $(subst camd_,camd_i_,$(CAMD)))
 CAMDL = $(addsuffix .o, $(subst camd_,camd_l_,$(CAMD)))
+OBJ = $(CAMDI) $(CAMDL)
 
 #-------------------------------------------------------------------------------
 # compile each int and long routine (with no real/complex version)
@@ -47,26 +51,22 @@ camd_l_%.o: ../Source/camd_%.c $(INC)
 # Create the static and shared libraries (C versions only)
 #-------------------------------------------------------------------------------
 
-$(AR_TARGET): $(CAMDI) $(CAMDL)
+$(AR_TARGET): $(OBJ)
 	$(ARCHIVE) $@ $^
 	- $(RANLIB) $@
-
-$(SO_TARGET): $(CAMDI) $(CAMDL)
-	$(CC) $(SO_OPTS) $^ -o $@
 
 #-------------------------------------------------------------------------------
 # install (shared C version only)
 #-------------------------------------------------------------------------------
 
 # install CAMD
-install: $(INSTALL_LIB)/$(SO_TARGET)
+install: $(AR_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
 
-$(INSTALL_LIB)/$(SO_TARGET): $(SO_TARGET)
+$(INSTALL_LIB)/$(SO_TARGET): $(OBJ)
 	@mkdir -p $(INSTALL_LIB)
 	@mkdir -p $(INSTALL_INCLUDE)
 	@mkdir -p $(INSTALL_DOC)
-	$(CP) $(SO_TARGET) $(INSTALL_LIB)
-	$(SO_INSTALL_NAME) $(INSTALL_LIB)/$(SO_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
+	$(CC) $(SO_OPTS) $^ -o $@ $(LDLIBS)
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_MAIN) )
 	$(CP) ../Include/camd.h $(INSTALL_INCLUDE)

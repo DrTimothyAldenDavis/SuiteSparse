@@ -58,7 +58,7 @@ int main (int argc, char **argv)
         anz, axbnorm, rnorm2, resid2, rcond ;
     FILE *f ;
     cholmod_sparse *A ;
-    cholmod_dense *X = NULL, *B, *W, *R ;
+    cholmod_dense *X = NULL, *B, *W, *R = NULL ;
     double one [2], zero [2], minusone [2], beta [2], xlnz ;
     cholmod_common Common, *cm ;
     cholmod_factor *L ;
@@ -142,9 +142,12 @@ int main (int argc, char **argv)
         fclose (ff) ;
         ff = NULL ;
     }
+    anorm = 1 ;
+#ifndef NMATRIXOPS
     anorm = cholmod_l_norm_sparse (A, 0, cm) ;
     printf ("norm (A,inf) = %g\n", anorm) ;
     printf ("norm (A,1)   = %g\n", cholmod_l_norm_sparse (A, 1, cm)) ;
+#endif
 
     if (prefer_zomplex && A->xtype == CHOLMOD_COMPLEX)
     {
@@ -261,8 +264,11 @@ int main (int argc, char **argv)
 #endif
 
     cholmod_l_print_dense (B, "B", cm) ;
+    bnorm = 1 ;
+#ifndef NMATRIXOPS
     bnorm = cholmod_l_norm_dense (B, 0, cm) ;	/* max norm */
     printf ("bnorm %g\n", bnorm) ;
+#endif
 
     /* ---------------------------------------------------------------------- */
     /* analyze and factorize */
@@ -515,7 +521,9 @@ int main (int argc, char **argv)
                 fclose (timelog) ;
             }
 
+#ifndef NMATRIXOPS
             resid [3] = resid [3] / cholmod_l_norm_dense (X, 1, cm) ;
+#endif
 
             cholmod_l_free_dense (&Ywork, cm) ;
             cholmod_l_free_dense (&Ework, cm) ;
@@ -531,6 +539,7 @@ int main (int argc, char **argv)
 
         if (method < 3)
         {
+#ifndef NMATRIXOPS
             if (A->stype == 0)
             {
                 /* (AA'+beta*I)x=b is the linear system that was solved */
@@ -538,6 +547,7 @@ int main (int argc, char **argv)
                 W = cholmod_l_allocate_dense (A->ncol, 1, A->ncol, xtype, cm) ;
                 cholmod_l_sdmult (A, 2, one, zero, X, W, cm) ;
                 /* R = B - beta*X */
+                cholmod_l_free_dense (&R, cm) ;
                 R = cholmod_l_zeros (n, 1, xtype, cm) ;
                 Rx = R->x ;
                 Rz = R->z ;
@@ -576,6 +586,7 @@ int main (int argc, char **argv)
             else
             {
                 /* Ax=b was factorized and solved, R = B-A*X */
+                cholmod_l_free_dense (&R, cm) ;
                 R = cholmod_l_copy_dense (B, cm) ;
                 cholmod_l_sdmult (A, 0, minusone, one, X, R, cm) ;
             }
@@ -584,6 +595,9 @@ int main (int argc, char **argv)
 
             axbnorm = (anorm * xnorm + bnorm + ((n == 0) ? 1 : 0)) ;
             resid [method] = rnorm / axbnorm ;
+#else
+            printf ("residual not computed (requires CHOLMOD/MatrixOps)\n") ;
+#endif
         }
     }
 
@@ -594,6 +608,7 @@ int main (int argc, char **argv)
     /* ---------------------------------------------------------------------- */
 
     resid2 = -1 ;
+#ifndef NMATRIXOPS
     if (A->stype != 0 && A->xtype == CHOLMOD_REAL)
     {
 	cholmod_dense *R2 ;
@@ -611,11 +626,13 @@ int main (int argc, char **argv)
 	cholmod_l_free_dense (&R, cm) ;
 
 	/* compute the new residual, R = B-A*X */
+        cholmod_l_free_dense (&R, cm) ;
 	R = cholmod_l_copy_dense (B, cm) ;
 	cholmod_l_sdmult (A, 0, minusone, one, X, R, cm) ;
 	rnorm2 = cholmod_l_norm_dense (R, 0, cm) ;
 	resid2 = rnorm2 / axbnorm ;
     }
+#endif
 
     cholmod_l_free_dense (&R, cm) ;
 

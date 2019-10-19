@@ -2,6 +2,9 @@
 # GPUQREngine Makefile
 #-------------------------------------------------------------------------------
 
+SUITESPARSE ?= $(realpath $(CURDIR)/..)
+export SUITESPARSE
+
 # default is 'library' since there is no demo program
 default: library
 

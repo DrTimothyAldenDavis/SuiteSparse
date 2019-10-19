@@ -27,7 +27,7 @@ CLIB = $(LDFLAGS) -L../../lib -lspqr -lsuitesparseconfig -lcholmod -lamd \
 
 # use the BLAS and LAPACK defined by SuiteSparse_config.mk; do not use valgrind 
 FLIB = $(LAPACK) $(BLAS)
-V = 
+V =
 
 # To use Valgrind and the plain BLAS and plain LAPACK (non-optimized):
 # FLIB = -lgfortran -llapack_plain -lblas_plain -lg2c
@@ -159,7 +159,8 @@ INC = ../Include/spqr.hpp ../Include/SuiteSparseQR_C.h \
 
 I = -I../../include $(I_WITH_SPQRGPU)
 
-C = $(CXX) $(CF) $(SPQR_CONFIG) $(CONFIG_PARTITION) $(CONFIG_GPU) $(I)
+C = $(CXX) $(CF) $(SPQR_CONFIG) $(CONFIG_PARTITION) $(CONFIG_GPU) $(I) \
+	$(CHOLMOD_CONFIG)
 
 LIBS = $(CLIB) $(FLIB) $(TBB) $(GPULIB)
 
@@ -204,7 +205,7 @@ qrdemoc: qrdemoc.o $(INC)
 	$(C) -o qrdemoc qrdemoc.o $(LIBS)
 
 qrsimplec.o: qrsimplec.c $(INC)
-	$(CC) $(CF) $(SPQR_CONFIG) -ansi $(I) -c $<
+	$(CC) $(CF) $(SPQR_CONFIG) $(CHOLMOD_CONFIG) -ansi $(I) -c $<
 
 qrsimplec: qrsimplec.o $(INC)
 	$(C) -o qrsimplec qrsimplec.o $(LIBS)
