@@ -14,7 +14,7 @@
 
 #include "cm.h"
 #include "amd.h"
-#ifndef NPARTITION
+#ifndef NCAMD
 #include "camd.h"
 #endif
 
@@ -580,7 +580,7 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
     /* camd */
     /* ---------------------------------------------------------------------- */
 
-#ifndef NPARTITION
+#ifndef NCAMD
     ok = CHOLMOD(camd)(NULL, NULL, 0, NULL, NULL, cm) ;		    NOT (ok) ;
     ok = CHOLMOD(camd)(A, NULL, 0, NULL, NULL, cm) ;		    NOT (ok) ;
     ok = CHOLMOD(camd)(NULL, NULL, 0, NULL, Pok, cm) ;		    NOT (ok) ;
@@ -641,7 +641,7 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
     /* ccolamd */
     /* ---------------------------------------------------------------------- */
 
-#ifndef NPARTITION
+#ifndef NCAMD
     ok = CHOLMOD(ccolamd)(NULL, fsetok, fsizeok, NULL, Pok, cm) ;   NOT (ok) ;
     ok = CHOLMOD(ccolamd)(A, fsetok, fsizeok, NULL, NULL, cm) ;   NOT (ok) ;
 
@@ -2225,7 +2225,8 @@ if (do_nantests)
 	ATp = AT->p ;
 	ATi = AT->i ;
 	fnz = ATp [i+1] - ATp [i] ;
-	ok = CHOLMOD(row_lsubtree)(A, ATi, fnz, i, L, C2, cm) ;	    OK (ok) ;
+	ok = CHOLMOD(row_lsubtree)(A, ATi, fnz, i, L, C2, cm) ;
+        if (i < ncol) { OK (ok) ; } else { NOT (ok) ; }
 
 	ok = CHOLMOD(row_lsubtree)(Abad2, ATi, fnz, i, L, C2, cm) ; NOT (ok) ;
 	ok = CHOLMOD(row_lsubtree)(A, NULL, fnz, i, L, C2, cm) ;    NOT (ok) ;
@@ -2239,16 +2240,32 @@ if (do_nantests)
 	ok = CHOLMOD(row_subtree)(A, NULL, i, Parent, C, cm) ;	    NOT (ok) ;
 	ok = CHOLMOD(row_subtree)(A, AT, nrow+1, Parent, C, cm) ;   NOT (ok) ;
     }
-    else if (A->stype == 1 && nrow > 0)
-    {
-	ok = CHOLMOD(row_subtree)(A, NULL, i, Parent, C, cm) ;	    OK (ok) ;
-	ok = CHOLMOD(row_lsubtree)(A, NULL, 0, i, L, C2, cm) ;	    OK (ok) ;
-    }
     else
     {
-	ok = CHOLMOD(row_subtree)(A, NULL, i, Parent, C, cm) ;	    NOT (ok) ;
-	ok = CHOLMOD(row_lsubtree)(A, NULL, 0, i, L, C2, cm) ;	    NOT (ok) ;
+	ok = CHOLMOD(row_subtree)(A, NULL, i, Parent, C, cm) ;
+        if (A->stype == 1 && nrow > 0)
+        {
+            OK (ok) ;
+        }
+        else
+        {
+            NOT (ok) ;
+        }
+        #if 0
+	ok = CHOLMOD(row_lsubtree)(A, NULL, 0, i, L, C2, cm) ;
+        printf ("%g %g %g\n", (double) A->stype, (double) nrow, (double) ok) ;
+        if (A->stype == 1 && nrow > 0 || (A->stype == 0 && nrow == 0 &&
+            A->ncol == 1))
+        {
+            OK (ok) ;
+        }
+        else
+        {
+            NOT (ok) ;
+        }
+        #endif
     }
+
     ok = CHOLMOD(row_subtree)(A, NULL, i, Parent, NULL, cm) ;	    NOT (ok) ;
     ok = CHOLMOD(row_subtree)(A, NULL, i, NULL, C, cm) ;	    NOT (ok) ;
     ok = CHOLMOD(row_lsubtree)(A, NULL, 0, i, L, NULL, cm) ;	    NOT (ok) ;
@@ -2632,7 +2649,7 @@ if (do_nantests)
     /* ccolamd/csymamd */
     /* ---------------------------------------------------------------------- */
 
-#ifndef NPARTITION
+#ifndef NCAMD
     ok = CHOLMOD(ccolamd)(A, fsetok, fsizeok, NULL, NULL, cm) ;	    NOT (ok) ;
     ok = CHOLMOD(ccolamd)(A, fsetok, fsizeok, NULL, Pok, cm) ;
     if (A->stype == 0)
@@ -3141,7 +3158,7 @@ if (do_nantests)
 	NOT (ok) ;
     }
 
-#ifndef NPARTITION
+#ifndef NCAMD
     ok = CHOLMOD(camd)(A, NULL, 0, NULL, Pok, cm) ;
     if (A->nrow == 0)
     {
@@ -3171,7 +3188,7 @@ if (do_nantests)
     }
 
 
-#ifndef NPARTITION
+#ifndef NCAMD
     test_memory_handler ( ) ;
     ok = CHOLMOD(ccolamd)(A, fsetok, fsizeok, NULL, Pok, cm) ;	    NOT (ok) ;
     ok = CHOLMOD(csymamd)(A, NULL, Pok, cm) ;			    NOT (ok) ;

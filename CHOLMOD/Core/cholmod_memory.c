@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * CHOLMOD/Core Module.  Copyright (C) 2005-2006,
+ * CHOLMOD/Core Module.  Copyright (C) 2005-2013,
  * Univ. of Florida.  Author: Timothy A. Davis
  * The CHOLMOD/Core Module is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
@@ -153,8 +153,9 @@ void *CHOLMOD(malloc)	/* returns pointer to the newly malloc'd block */
 	    Common->memory_inuse += (n * size) ;
 	    Common->memory_usage =
 		MAX (Common->memory_usage, Common->memory_inuse) ;
-	    PRINTM (("cholmod_malloc %p %d cnt: %d inuse %d\n",
-		    p, n*size, Common->malloc_count, Common->memory_inuse)) ;
+	    PRINTM (("cholmod_malloc %p %g cnt: %g inuse %g\n",
+		    p, (double) n*size, (double) Common->malloc_count,
+                    (double) Common->memory_inuse)) ;
 	}
     }
     return (p) ;
@@ -198,8 +199,9 @@ void *CHOLMOD(free)	/* always returns NULL */
 	(Common->free_memory) (p) ;
 	Common->malloc_count-- ;
 	Common->memory_inuse -= (n * size) ;
-	PRINTM (("cholmod_free   %p %d cnt: %d inuse %d\n",
-		p, n*size, Common->malloc_count, Common->memory_inuse)) ;
+	PRINTM (("cholmod_free   %p %g cnt: %g inuse %g\n",
+		p, (double) n*size, (double) Common->malloc_count,
+                (double) Common->memory_inuse)) ;
 	/* This assertion will fail if the user calls cholmod_malloc and
 	 * cholmod_free with mismatched memory sizes.  It shouldn't fail
 	 * otherwise. */
@@ -261,8 +263,9 @@ void *CHOLMOD(calloc)	/* returns pointer to the newly calloc'd block */
 	    Common->memory_inuse += (n * size) ;
 	    Common->memory_usage =
 		MAX (Common->memory_usage, Common->memory_inuse) ;
-	    PRINTM (("cholmod_malloc %p %d cnt: %d inuse %d\n",
-		    p, n*size, Common->malloc_count, Common->memory_inuse)) ;
+	    PRINTM (("cholmod_malloc %p %g cnt: %g inuse %g\n",
+		    p, (double) n*size, (double) Common->malloc_count,
+                    (double) Common->memory_inuse)) ;
 	}
     }
     return (p) ;
@@ -351,12 +354,12 @@ void *CHOLMOD(realloc)	/* returns pointer to reallocated block */
 		 * CHOLMOD's notion of the size of the block, however. */
 		*n = nnew ;
 		PRINTM (("nnew <= nold failed, pretend to succeed\n")) ;
-		PRINTM (("cholmod_free %p %d cnt: %d inuse %d\n"
-			 "cholmod_malloc %p %d cnt: %d inuse %d\n",
-		    p, nold*size, Common->malloc_count-1,
-				  Common->memory_inuse - nold*size,
-		    p, nnew*size, Common->malloc_count,
-				  Common->memory_inuse + (nnew-nold)*size)) ;
+		PRINTM (("cholmod_free %p %g cnt: %g inuse %g\n"
+			 "cholmod_malloc %p %g cnt: %g inuse %g\n",
+		    p, (double) nold*size, (double) Common->malloc_count-1,
+		       (double) (Common->memory_inuse - nold*size),
+		    p, (double) nnew*size, (double) Common->malloc_count,
+		       (double) (Common->memory_inuse + (nnew-nold)*size))) ;
 		Common->memory_inuse += ((nnew-nold) * size) ;
 	    }
 	    else
@@ -369,12 +372,12 @@ void *CHOLMOD(realloc)	/* returns pointer to reallocated block */
 	else
 	{
 	    /* success: return revised p and change the size of the block */
-	    PRINTM (("cholmod_free %p %d cnt: %d inuse %d\n"
-		     "cholmod_malloc %p %d cnt: %d inuse %d\n",
-		p, nold*size,    Common->malloc_count-1,
-				 Common->memory_inuse - nold*size,
-		pnew, nnew*size, Common->malloc_count,
-				 Common->memory_inuse + (nnew-nold)*size)) ;
+	    PRINTM (("cholmod_free %p %g cnt: %g inuse %g\n"
+		     "cholmod_malloc %p %g cnt: %g inuse %g\n",
+		p, (double) nold*size, (double) Common->malloc_count-1,
+                   (double) (Common->memory_inuse - nold*size),
+		pnew, (double) nnew*size, (double) Common->malloc_count,
+                   (double) (Common->memory_inuse + (nnew-nold)*size))) ;
 	    p = pnew ;
 	    *n = nnew ;
 	    Common->memory_inuse += ((nnew-nold) * size) ;

@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * CHOLMOD/Core Module.  Copyright (C) 2005-2006,
+ * CHOLMOD/Core Module.  Copyright (C) 2005-2013,
  * Univ. of Florida.  Author: Timothy A. Davis
  * The CHOLMOD/Core Module is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
@@ -109,6 +109,7 @@ cholmod_factor *CHOLMOD(allocate_factor)
     /* allocate the purely symbolic part of L */
     L->ordering = CHOLMOD_NATURAL ;
     L->Perm = CHOLMOD(malloc) (n, sizeof (Int), Common) ;
+    L->IPerm = NULL ;       /* only created by cholmod_solve2 when needed */
     L->ColCount = CHOLMOD(malloc) (n, sizeof (Int), Common) ;
 
     /* simplicial part of L is empty */
@@ -199,6 +200,7 @@ int CHOLMOD(free_factor)
 
     /* symbolic part of L */
     CHOLMOD(free) (n,   sizeof (Int), L->Perm,     Common) ;
+    CHOLMOD(free) (n,   sizeof (Int), L->IPerm,    Common) ;
     CHOLMOD(free) (n,   sizeof (Int), L->ColCount, Common) ;
 
     /* simplicial form of L */

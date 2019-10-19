@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * CHOLMOD/Cholesky Module.  Copyright (C) 2005-2006, Timothy A. Davis
+ * CHOLMOD/Cholesky Module.  Copyright (C) 2005-2013, Timothy A. Davis
  * The CHOLMOD/Cholesky Module is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
@@ -453,7 +453,15 @@ cholmod_factor *CHOLMOD(analyze_p2)
     skip_best = FALSE ;
     nmethods = MIN (Common->nmethods, CHOLMOD_MAXMETHODS) ;
     nmethods = MAX (0, nmethods) ;
-    PRINT1 (("nmethods "ID"\n", nmethods)) ;
+
+#ifndef NDEBUG
+    PRINT1 (("cholmod_analyze_p2 :: nmethods "ID"\n", nmethods)) ;
+    for (method = 0 ; method < nmethods ; method++)
+    {
+        PRINT1 (("  "ID": ordering "ID"\n",     
+            method, Common->method [method].ordering)) ;
+    }
+#endif
 
     default_strategy = (nmethods == 0) ;
     if (default_strategy)
@@ -815,7 +823,12 @@ cholmod_factor *CHOLMOD(analyze_p2)
 	 * than CHOLMOD_OUT_OF_MEMORY, since the former implies something may
 	 * be wrong with the user's input.  CHOLMOD_OUT_OF_MEMORY is simply an
 	 * indication of lack of resources. */
-	ASSERT (status < CHOLMOD_OK) ;
+        if (status >= CHOLMOD_OK)
+        {
+            /* this can occur if nmethods = 1, ordering = CHOLMOD_GIVEN,
+               but UserPerm is NULL */
+            status = CHOLMOD_INVALID ;
+        }
 	ERROR (status, "all methods failed") ;
 	FREE_WORKSPACE_AND_RETURN ;
     }

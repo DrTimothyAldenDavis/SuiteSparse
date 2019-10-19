@@ -4,7 +4,7 @@
 
 /* -----------------------------------------------------------------------------
  * CHOLMOD/Include/cholmod_partition.h.
- * Copyright (C) 2005-2006, Univ. of Florida.  Author: Timothy A. Davis
+ * Copyright (C) 2005-2013, Univ. of Florida.  Author: Timothy A. Davis
  * CHOLMOD/Include/cholmod_partition.h is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
@@ -17,11 +17,9 @@
  * methods which order a matrix following constraints determined via nested
  * dissection.
  *
+ * These functions require METIS:
  * cholmod_nested_dissection	CHOLMOD nested dissection ordering
  * cholmod_metis		METIS nested dissection ordering (METIS_NodeND)
- * cholmod_ccolamd		interface to CCOLAMD ordering
- * cholmod_csymamd		interface to CSYMAMD ordering
- * cholmod_camd			interface to CAMD ordering
  * cholmod_bisect		graph partitioner (currently based on METIS)
  * cholmod_metis_bisector	direct interface to METIS_NodeComputeSeparator
  *
@@ -40,6 +38,7 @@
 #define CHOLMOD_PARTITION_H
 
 #include "cholmod_core.h"
+#include "cholmod_camd.h"
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_nested_dissection */
@@ -93,74 +92,6 @@ int cholmod_metis
 
 int cholmod_l_metis (cholmod_sparse *, SuiteSparse_long *, size_t, int,
     SuiteSparse_long *, cholmod_common *) ;
-
-/* -------------------------------------------------------------------------- */
-/* cholmod_ccolamd */
-/* -------------------------------------------------------------------------- */
-
-/* Order AA' or A(:,f)*A(:,f)' using CCOLAMD. */
-
-int cholmod_ccolamd
-(
-    /* ---- input ---- */
-    cholmod_sparse *A,	/* matrix to order */
-    int *fset,		/* subset of 0:(A->ncol)-1 */
-    size_t fsize,	/* size of fset */
-    int *Cmember,	/* size A->nrow.  Cmember [i] = c if row i is in the
-			 * constraint set c.  c must be >= 0.  The # of
-			 * constraint sets is max (Cmember) + 1.  If Cmember is
-			 * NULL, then it is interpretted as Cmember [i] = 0 for
-			 * all i */
-    /* ---- output --- */
-    int *Perm,		/* size A->nrow, output permutation */
-    /* --------------- */
-    cholmod_common *Common
-) ;
-
-int cholmod_l_ccolamd (cholmod_sparse *, SuiteSparse_long *, size_t,
-    SuiteSparse_long *, SuiteSparse_long *, cholmod_common *) ;
-
-/* -------------------------------------------------------------------------- */
-/* cholmod_csymamd */
-/* -------------------------------------------------------------------------- */
-
-/* Order A using CSYMAMD. */
-
-int cholmod_csymamd
-(
-    /* ---- input ---- */
-    cholmod_sparse *A,	/* matrix to order */
-    /* ---- output --- */
-    int *Cmember,	/* size nrow.  see cholmod_ccolamd above */
-    int *Perm,		/* size A->nrow, output permutation */
-    /* --------------- */
-    cholmod_common *Common
-) ;
-
-int cholmod_l_csymamd (cholmod_sparse *, SuiteSparse_long *,
-    SuiteSparse_long *, cholmod_common *) ;
-
-/* -------------------------------------------------------------------------- */
-/* cholmod_camd */
-/* -------------------------------------------------------------------------- */
-
-/* Order A using CAMD. */
-
-int cholmod_camd
-(
-    /* ---- input ---- */
-    cholmod_sparse *A,	/* matrix to order */
-    int *fset,		/* subset of 0:(A->ncol)-1 */
-    size_t fsize,	/* size of fset */
-    /* ---- output --- */
-    int *Cmember,	/* size nrow.  see cholmod_ccolamd above */
-    int *Perm,		/* size A->nrow, output permutation */
-    /* --------------- */
-    cholmod_common *Common
-) ;
-
-int cholmod_l_camd (cholmod_sparse *, SuiteSparse_long *, size_t,
-    SuiteSparse_long *, SuiteSparse_long *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_bisect */

@@ -4,7 +4,7 @@
 
 /* -----------------------------------------------------------------------------
  * CHOLMOD/Include/cholmod_config.h.
- * Copyright (C) 2005-2006, Univ. of Florida.  Author: Timothy A. Davis
+ * Copyright (C) 2005-2013, Univ. of Florida.  Author: Timothy A. Davis
  * CHOLMOD/Include/cholmod_config.h is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
@@ -25,6 +25,8 @@
  * -DNCHECK	    do not include the Check module.        License: GNU LGPL
  * -DNCHOLESKY	    do not include the Cholesky module.     License: GNU LGPL
  * -DNPARTITION	    do not include the Partition module.    License: GNU LGPL
+ * -DNCAMD          do not include the interfaces to CAMD,
+ *                  CCOLAMD, CSYMAND in Partition module.   License: GNU LGPL
  *
  * -DNGPL	    do not include any GNU GPL Modules in the CHOLMOD library.
  * -DNMATRIXOPS	    do not include the MatrixOps module.    License: GNU GPL
@@ -55,6 +57,7 @@
 /*
 #define NCHECK
 #define NCHOLESKY
+#define NCAMD
 #define NPARTITION
 
 #define NGPL  

@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * CHOLMOD/Cholesky Module.  Copyright (C) 2005-2006, Timothy A. Davis
+ * CHOLMOD/Cholesky Module.  Copyright (C) 2005-2013, Timothy A. Davis
  * The CHOLMOD/Cholesky Module is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
@@ -47,18 +47,23 @@
 /* ========================================================================== */
 
 /* Solve Dx=b for an LDL' factorization, where Y holds b' on input and x' on
- * output. */
+ * output.
+ *
+ * The number of right-hand-sides (nrhs) is not restricted, even if Yseti
+ * is present.
+ */
 
 static void TEMPLATE (ldl_dsolve)
 (
     cholmod_factor *L,
-    cholmod_dense *Y		/* nr-by-n with leading dimension nr */
+    cholmod_dense *Y,		/* nr-by-n with leading dimension nr */
+    Int *Yseti, Int ysetlen
 )
 {
     double d [1] ;
     double *Lx, *Yx, *Yz ;
     Int *Lp ;
-    Int n, nrhs, k, p, k1, k2 ;
+    Int n, nrhs, k, p, k1, k2, kk, kkiters ;
 
     ASSERT (L->xtype == Y->xtype) ; /* L and Y must have the same xtype */
     ASSERT (L->n == Y->ncol) ;	    /* dimensions must match */
@@ -72,8 +77,10 @@ static void TEMPLATE (ldl_dsolve)
     Lx = L->x ;
     Yx = Y->x ;
     Yz = Y->z ;
-    for (k = 0 ; k < n ; k++)
+    kkiters = Yseti ? ysetlen : n ;
+    for (kk = 0 ; kk < kkiters ; kk++)
     {
+        k = Yseti ? Yseti [kk] : kk ;
 	k1 = k*nrhs ;
 	k2 = (k+1)*nrhs ;
 	ASSIGN_REAL (d,0, Lx,Lp[k]) ;
@@ -91,13 +98,20 @@ static void TEMPLATE (ldl_dsolve)
 
 /* Solve a linear system, where Y' contains the (array-transposed) right-hand
  * side on input, and the solution on output.  No permutations are applied;
- * these must have already been applied to Y on input. */
+ * these must have already been applied to Y on input.
+ *
+ * Yseti [0..ysetlen-1] is an optional list of indices from
+ * cholmod_lsolve_pattern.  The solve is performed only on the columns of L
+ * corresponding to entries in Yseti.  Ignored if NULL.  If present, most
+ * functions require that Y' consist of a single dense column.
+ */
 
 static void TEMPLATE (simplicial_solver)
 (
     int sys,		    /* system to solve */
     cholmod_factor *L,	    /* factor to use, a simplicial LL' or LDL' */
-    cholmod_dense *Y	    /* right-hand-side on input, solution on output */
+    cholmod_dense *Y,	    /* right-hand-side on input, solution on output */
+    Int *Yseti, Int ysetlen
 )
 {
     if (L->is_ll)
@@ -106,18 +120,18 @@ static void TEMPLATE (simplicial_solver)
 	if (sys == CHOLMOD_A || sys == CHOLMOD_LDLt)
 	{
 	    /* Solve Ax=b or LL'x=b */
-	    TEMPLATE (ll_lsolve_k) (L, Y) ;
-	    TEMPLATE (ll_ltsolve_k) (L, Y) ;
+	    TEMPLATE (ll_lsolve_k) (L, Y, Yseti, ysetlen) ;
+	    TEMPLATE (ll_ltsolve_k) (L, Y, Yseti, ysetlen) ;
 	}
 	else if (sys == CHOLMOD_L || sys == CHOLMOD_LD)
 	{
 	    /* Solve Lx=b */
-	    TEMPLATE (ll_lsolve_k) (L, Y) ;
+	    TEMPLATE (ll_lsolve_k) (L, Y, Yseti, ysetlen) ;
 	}
 	else if (sys == CHOLMOD_Lt || sys == CHOLMOD_DLt)
 	{
 	    /* Solve L'x=b */
-	    TEMPLATE (ll_ltsolve_k) (L, Y) ;
+	    TEMPLATE (ll_ltsolve_k) (L, Y, Yseti, ysetlen) ;
 	}
     }
     else
@@ -126,33 +140,33 @@ static void TEMPLATE (simplicial_solver)
 	if (sys == CHOLMOD_A || sys == CHOLMOD_LDLt)
 	{
 	    /* Solve Ax=b or LDL'x=b */
-	    TEMPLATE (ldl_lsolve_k) (L, Y) ;
-	    TEMPLATE (ldl_dltsolve_k) (L, Y) ;
+	    TEMPLATE (ldl_lsolve_k) (L, Y, Yseti, ysetlen) ;
+	    TEMPLATE (ldl_dltsolve_k) (L, Y, Yseti, ysetlen) ;
 	}
 	else if (sys == CHOLMOD_LD)
 	{
 	    /* Solve LDx=b */
-	    TEMPLATE (ldl_ldsolve_k) (L, Y) ;
+	    TEMPLATE (ldl_ldsolve_k) (L, Y, Yseti, ysetlen) ;
 	}
 	else if (sys == CHOLMOD_L)
 	{
 	    /* Solve Lx=b */
-	    TEMPLATE (ldl_lsolve_k) (L, Y) ;
+	    TEMPLATE (ldl_lsolve_k) (L, Y, Yseti, ysetlen) ;
 	}
 	else if (sys == CHOLMOD_Lt)
 	{
 	    /* Solve L'x=b */
-	    TEMPLATE (ldl_ltsolve_k) (L, Y) ;
+	    TEMPLATE (ldl_ltsolve_k) (L, Y, Yseti, ysetlen) ;
 	}
 	else if (sys == CHOLMOD_DLt)
 	{
 	    /* Solve DL'x=b */
-	    TEMPLATE (ldl_dltsolve_k) (L, Y) ;
+	    TEMPLATE (ldl_dltsolve_k) (L, Y, Yseti, ysetlen) ;
 	}
 	else if (sys == CHOLMOD_D)
 	{
 	    /* Solve Dx=b */
-	    TEMPLATE (ldl_dsolve) (L, Y) ;
+	    TEMPLATE (ldl_dsolve) (L, Y, Yseti, ysetlen) ;
 	}
     }
 }

@@ -213,6 +213,7 @@ UMFPACK_CONFIG =
 # -DNCHOLESKY	    do not include the Cholesky module.	   License GNU LGPL
 # -DNPARTITION	    do not include the Partition module.   License GNU LGPL
 #		    also do not include METIS.
+# -DNCAMD           do not use CAMD, etc from Partition module.    GNU LGPL
 # -DNGPL	    do not include any GNU GPL Modules in the CHOLMOD library:
 # -DNMATRIXOPS	    do not include the MatrixOps module.   License GNU GPL
 # -DNMODIFY	    do not include the Modify module.      License GNU GPL

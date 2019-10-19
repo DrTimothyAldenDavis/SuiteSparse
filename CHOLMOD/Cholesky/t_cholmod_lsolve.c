@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * CHOLMOD/Cholesky Module.  Copyright (C) 2005-2006, Timothy A. Davis
+ * CHOLMOD/Cholesky Module.  Copyright (C) 2005-2013, Timothy A. Davis
  * The CHOLMOD/Cholesky Module is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
@@ -61,7 +61,7 @@
 static void LSOLVE (PREFIX,1)
 (
     cholmod_factor *L,
-    double X [ ]			/* n-by-1 in row form */
+    double X [ ]                        /* n-by-1 in row form */
 )
 {
     double *Lx = L->x ;
@@ -757,11 +757,11 @@ static void LSOLVE (PREFIX,4)
 static void LSOLVE (PREFIX,k)
 (
     cholmod_factor *L,
-    cholmod_dense *Y		    /* nr-by-n where nr is 1 to 4 */
+    cholmod_dense *Y,		    /* nr-by-n where nr is 1 to 4 */
+    Int *Yseti, Int ysetlen
 )
 {
 
-#ifndef REAL
     double yx [2] ;
 #ifdef ZOMPLEX
     double yz [1] ;
@@ -773,8 +773,7 @@ static void LSOLVE (PREFIX,k)
     Int *Li = L->i ;
     Int *Lp = L->p ;
     Int *Lnz = L->nz ;
-    Int i, j, n = L->n ;
-#endif
+    Int i, j, n = L->n, jj, jjiters ;
 
     ASSERT (L->xtype == Y->xtype) ; /* L and Y must have the same xtype */
     ASSERT (L->n == Y->ncol) ;	    /* dimensions must match */
@@ -784,57 +783,66 @@ static void LSOLVE (PREFIX,k)
 
 #ifdef REAL
 
-    /* ---------------------------------------------------------------------- */
-    /* solve a real linear system, with 1 to 4 RHS's and dynamic supernodes */
-    /* ---------------------------------------------------------------------- */
-
-    ASSERT (Y->nrow <= 4) ;
-
-    switch (Y->nrow)
+    if (Yseti == NULL)
     {
-	case 1: LSOLVE (PREFIX,1) (L, Y->x) ; break ;
-	case 2: LSOLVE (PREFIX,2) (L, Y->x) ; break ;
-	case 3: LSOLVE (PREFIX,3) (L, Y->x) ; break ;
-	case 4: LSOLVE (PREFIX,4) (L, Y->x) ; break ;
+
+        /* ------------------------------------------------------------------ */
+        /* real case, no Yseti, with 1 to 4 RHS's and dynamic supernodes */
+        /* ------------------------------------------------------------------ */
+
+        ASSERT (Y->nrow <= 4) ;
+
+        switch (Y->nrow)
+        {
+            case 1: LSOLVE (PREFIX,1) (L, Y->x) ; break ;
+            case 2: LSOLVE (PREFIX,2) (L, Y->x) ; break ;
+            case 3: LSOLVE (PREFIX,3) (L, Y->x) ; break ;
+            case 4: LSOLVE (PREFIX,4) (L, Y->x) ; break ;
+        }
+
     }
-
-#else
-
-    /* ---------------------------------------------------------------------- */
-    /* solve a complex linear system, with just one right-hand-side */
-    /* ---------------------------------------------------------------------- */
-
-    ASSERT (Y->nrow == 1) ;
-
-    for (j = 0 ; j < n ; j++)
+    else
+#endif
     {
-	/* get the start, end, and length of column j */
-	Int p = Lp [j] ;
-	Int lnz = Lnz [j] ;
-	Int pend = p + lnz ;
 
-	/* y = X [j] ; */
-	ASSIGN (yx,yz,0, Xx,Xz,j) ;
+        /* ------------------------------------------------------------------ */
+        /* solve a complex linear system or solve with Yseti */
+        /* ------------------------------------------------------------------ */
+
+        ASSERT (Y->nrow == 1) ;
+
+        jjiters = Yseti ? ysetlen : n ;
+
+        for (jj = 0 ; jj < jjiters ; jj++)
+        {
+            j = Yseti ? Yseti [jj] : jj ;
+
+            /* get the start, end, and length of column j */
+            Int p = Lp [j] ;
+            Int lnz = Lnz [j] ;
+            Int pend = p + lnz ;
+
+            /* y = X [j] ; */
+            ASSIGN (yx,yz,0, Xx,Xz,j) ;
 
 #ifdef LL
-	/* y /= Lx [p] ; */
-	/* X [j] = y ; */
-	DIV_REAL (yx,yz,0, yx,yz,0, Lx,p) ;
-	ASSIGN (Xx,Xz,j, yx,yz,0) ;
+            /* y /= Lx [p] ; */
+            /* X [j] = y ; */
+            DIV_REAL (yx,yz,0, yx,yz,0, Lx,p) ;
+            ASSIGN (Xx,Xz,j, yx,yz,0) ;
 #elif defined (LD)
-	/* X [j] = y / Lx [p] ; */
-	DIV_REAL (Xx,Xz,j, yx,yz,0, Lx,p) ;
+            /* X [j] = y / Lx [p] ; */
+            DIV_REAL (Xx,Xz,j, yx,yz,0, Lx,p) ;
 #endif
 
-	for (p++ ; p < pend ; p++)
-	{
-	    /* X [Li [p]] -= Lx [p] * y ; */
-	    i = Li [p] ;
-	    MULTSUB (Xx,Xz,i, Lx,Lz,p, yx,yz,0) ;
-	}
+            for (p++ ; p < pend ; p++)
+            {
+                /* X [Li [p]] -= Lx [p] * y ; */
+                i = Li [p] ;
+                MULTSUB (Xx,Xz,i, Lx,Lz,p, yx,yz,0) ;
+            }
+        }
     }
-
-#endif
 }
 
 /* prepare for the next inclusion of this file in cholmod_solve.c */

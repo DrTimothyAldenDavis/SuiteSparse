@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * CHOLMOD/Include/cholmod_cholesky.h. Copyright (C) 2005-2006, Timothy A. Davis
+ * CHOLMOD/Include/cholmod_cholesky.h. Copyright (C) 2005-2013, Timothy A. Davis
  * CHOLMOD/Include/cholmod_cholesky.h is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
@@ -27,6 +27,7 @@
  * cholmod_analyze		order and analyze (simplicial or supernodal)
  * cholmod_factorize		simplicial or supernodal Cholesky factorization
  * cholmod_solve		solve a linear system (simplicial or supernodal)
+ * cholmod_solve2		like cholmod_solve, but reuse workspace
  * cholmod_spsolve		solve a linear system (sparse x and b)
  *
  * Secondary routines:
@@ -196,6 +197,31 @@ cholmod_dense *cholmod_solve	/* returns the solution X */
 ) ;
 
 cholmod_dense *cholmod_l_solve (int, cholmod_factor *, cholmod_dense *,
+    cholmod_common *) ;
+
+/* -------------------------------------------------------------------------- */
+/* cholmod_solve2:  like cholmod_solve, but with reusable workspace */
+/* -------------------------------------------------------------------------- */
+
+int cholmod_solve2     /* returns TRUE on success, FALSE on failure */
+(
+    /* ---- input ---- */
+    int sys,		            /* system to solve */
+    cholmod_factor *L,	            /* factorization to use */
+    cholmod_dense *B,               /* right-hand-side */
+    cholmod_sparse *Bset,
+    /* ---- output --- */
+    cholmod_dense **X_Handle,       /* solution, allocated if need be */
+    cholmod_sparse **Xset_Handle,
+    /* ---- workspace  */
+    cholmod_dense **Y_Handle,       /* workspace, or NULL */
+    cholmod_dense **E_Handle,       /* workspace, or NULL */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+int cholmod_l_solve2 (int, cholmod_factor *, cholmod_dense *, cholmod_sparse *,
+    cholmod_dense **, cholmod_sparse **, cholmod_dense **, cholmod_dense **,
     cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
@@ -403,13 +429,31 @@ int cholmod_row_subtree
     size_t k,		/* row k of L */
     int *Parent,	/* elimination tree */
     /* ---- output --- */
-    cholmod_sparse *R,	/* pattern of L(k,:), 1-by-n with R->nzmax >= n */
+    cholmod_sparse *R,	/* pattern of L(k,:), n-by-1 with R->nzmax >= n */
     /* --------------- */
     cholmod_common *Common
 ) ;
 
 int cholmod_l_row_subtree (cholmod_sparse *, cholmod_sparse *, size_t,
     SuiteSparse_long *, cholmod_sparse *, cholmod_common *) ;
+
+/* -------------------------------------------------------------------------- */
+/* cholmod_lsolve_pattern: find the nonzero pattern of x=L\b */
+/* -------------------------------------------------------------------------- */
+
+int cholmod_lsolve_pattern
+(
+    /* ---- input ---- */
+    cholmod_sparse *B,	/* sparse right-hand-side (a single sparse column) */
+    cholmod_factor *L,	/* the factor L from which parent(i) is derived */
+    /* ---- output --- */
+    cholmod_sparse *X,	/* pattern of X=L\B, n-by-1 with X->nzmax >= n */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+int cholmod_l_lsolve_pattern (cholmod_sparse *, cholmod_factor *,
+    cholmod_sparse *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_row_lsubtree:  find the nonzero pattern of a row of L */
@@ -427,7 +471,7 @@ int cholmod_row_lsubtree
     size_t k,		/* row k of L */
     cholmod_factor *L,	/* the factor L from which parent(i) is derived */
     /* ---- output --- */
-    cholmod_sparse *R,	/* pattern of L(k,:), 1-by-n with R->nzmax >= n */
+    cholmod_sparse *R,	/* pattern of L(k,:), n-by-1 with R->nzmax >= n */
     /* --------------- */
     cholmod_common *Common
 ) ;

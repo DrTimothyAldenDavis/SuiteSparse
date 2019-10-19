@@ -4,7 +4,7 @@
 
 /* -----------------------------------------------------------------------------
  * CHOLMOD/Include/cholmod_core.h.
- * Copyright (C) 2005-2006, Univ. of Florida.  Author: Timothy A. Davis
+ * Copyright (C) 2005-2013, Univ. of Florida.  Author: Timothy A. Davis
  * CHOLMOD/Include/cholmod_core.h is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
@@ -159,6 +159,7 @@
  * cholmod_copy_dense		create a copy of a dense matrix
  * cholmod_copy_dense2		copy a dense matrix (pre-allocated)
  * cholmod_dense_xtype		change the xtype of a dense matrix
+ * cholmod_ensure_dense  	ensure a dense matrix has a given size and type
  *
  * ============================================================================
  * === cholmod_triplet ========================================================
@@ -243,11 +244,11 @@
  *	#endif
  */
 
-#define CHOLMOD_DATE "Jun 20, 2012"
+#define CHOLMOD_DATE "Mar 27, 2013"
 #define CHOLMOD_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define CHOLMOD_MAIN_VERSION 2
-#define CHOLMOD_SUB_VERSION 0
-#define CHOLMOD_SUBSUB_VERSION 1
+#define CHOLMOD_SUB_VERSION 1
+#define CHOLMOD_SUBSUB_VERSION 0
 #define CHOLMOD_VERSION \
     CHOLMOD_VER_CODE(CHOLMOD_MAIN_VERSION,CHOLMOD_SUB_VERSION)
 
@@ -1569,6 +1570,9 @@ typedef struct cholmod_factor_struct
     void *Perm ;	/* size n, permutation used */
     void *ColCount ;	/* size n, column counts for simplicial L */
 
+    void *IPerm ;       /* size n, inverse permutation.  Only created by
+                         * cholmod_solve2 if Bset is used. */
+
     /* ---------------------------------------------------------------------- */
     /* simplicial factorization */
     /* ---------------------------------------------------------------------- */
@@ -1920,6 +1924,26 @@ int cholmod_free_dense
 ) ;
 
 int cholmod_l_free_dense (cholmod_dense **, cholmod_common *) ;
+
+/* -------------------------------------------------------------------------- */
+/* cholmod_ensure_dense:  ensure a dense matrix has a given size and type */
+/* -------------------------------------------------------------------------- */
+
+cholmod_dense *cholmod_ensure_dense
+(
+    /* ---- input/output ---- */
+    cholmod_dense **XHandle,    /* matrix handle to check */
+    /* ---- input ---- */
+    size_t nrow,	/* # of rows of matrix */
+    size_t ncol,	/* # of columns of matrix */
+    size_t d,		/* leading dimension */
+    int xtype,		/* CHOLMOD_REAL, _COMPLEX, or _ZOMPLEX */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+cholmod_dense *cholmod_l_ensure_dense (cholmod_dense **, size_t, size_t, size_t,
+    int, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_sparse_to_dense:  create a dense matrix copy of a sparse matrix */

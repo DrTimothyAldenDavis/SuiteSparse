@@ -7,7 +7,7 @@ classdef factorization
 % matrix factorizations:
 %
 %   factorization_chol_dense    dense Cholesky      A = R'*R
-%   factorization_lu_dense      dense LU            A(:,p) = L*U
+%   factorization_lu_dense      dense LU            A(p,:) = L*U
 %   factorization_qr_dense      dense QR of A       A = Q*R
 %   factorization_qrt_dense     dense QR of A'      A' = Q*R
 %   factorization_ldl_dense     dense LDL           A(p,p) = L*D*L'
@@ -39,10 +39,6 @@ classdef factorization
 %   F = uminus (F)          -F
 %   F = inverse (F)         representation of inv(A), without computing it
 %   F = ctranspose (F)      F'
-%
-%   These methods return matrices / scalars
-%   [i,j,x] = find (F,...)
-%   s = nnz (F)
 %
 %   These built-in methods return a scalar:
 %   s = isreal (F)

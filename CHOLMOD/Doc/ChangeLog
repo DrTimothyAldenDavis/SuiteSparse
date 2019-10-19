@@ -1,3 +1,21 @@
+Mar 27, 2013: version 2.1.0
+
+    * added the -DNCAMD option.  Formerly, the -DNPARTITION option disabled
+        both METIS and the interface to CAMD, CCOLAMD, and CSYMAMD.
+        Now, -DNPARTITION controls just whether or not the interface to
+        METIS is compiled.  The new -DNCAMD option controls whether or not
+        the interfaces to CAMD, CCOLAMD, and CSYMAMD are compiled.
+        Both features remain in the Partition Module, as in prior versions.
+    * added cholmod_lsolve_pattern and modified cholmod_row_lsubtree,
+        to compute nonzero pattern of L\b where b is sparse
+    * added cholmod_solve2 and cholmod_ensure_dense, so that repeated
+        forward/backsolves can be done without the need to malloc/free,
+        memory on each solve.  Also provides the option for solving for
+        a subset of the solution vector x (via the Bset and Xset
+        parameters to cholmod_solve2).  The last option required an IPerm
+        member to be added to the Cholesky factorization object.  It is only
+        allocated and used if cholmod_solve2 solves with Bset.
+
 Jun 20, 2012: verison 2.0.1
 
     * minor update for Windows (removed filesep, compiler port fix)

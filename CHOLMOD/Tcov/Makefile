@@ -15,6 +15,10 @@ include Make.inc
 # Tcov requires gcc
 CC = gcc
 
+# to test Tcov without METIS, but with CAMD, CCOLAMD, and CSYMAMD:
+# C = $(CC) $(CF) $(CHOLMOD_CONFIG) $(NANTESTS) -DNPARTITION
+
+# to test with everthing
 C = $(CC) $(CF) $(CHOLMOD_CONFIG) $(NANTESTS)
 
 # optimized LAPACK and BLAS
@@ -535,7 +539,7 @@ distclean: clean
 	- $(RM) -r cm.profile cmread.profile z_demo.profile 
 	- $(RM) -r cl.profile clread.profile l_demo.profile  *.dSYM
 	- $(RM) *.gcda *.gcno
-	- $(RM) temp*.mtx
+	- $(RM) temp*.mtx timelog.m
 
 clean:
 	- $(RM) -r $(CLEAN)

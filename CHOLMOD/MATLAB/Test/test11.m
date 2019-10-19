@@ -124,7 +124,7 @@ for kkk = 1:length(f)
 	E2 (kk) = e2 ;
 	FL (kk) = fl ;
 	LNZ (kk) = lnz ;
-	save Results T1 T2 E1 E2 FL LNZ f kkk
+	%%% save Results T1 T2 E1 E2 FL LNZ f kkk
 
     % catch
     %	fprintf (' failed\n') ;

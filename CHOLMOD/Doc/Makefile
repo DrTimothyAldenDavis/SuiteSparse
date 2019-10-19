@@ -114,6 +114,7 @@ UserGuide.pdf: UserGuide.tex UserGuide.bib $(I) $(C) $(M) Makefile getproto rule
 	./getproto '/int cholmod_factor_xtype/, /\*\) ;/' ../Include/cholmod_core.h > _factor_xtype.tex 
 	./getproto '/typedef struct cholmod_dense/, /^}/' ../Include/cholmod_core.h > _dense.tex 
 	./getproto '/cholmod_dense \*cholmod_allocate_dense/, /\*\) ;/' ../Include/cholmod_core.h > _allocate_dense.tex 
+	./getproto '/cholmod_dense \*cholmod_ensure_dense/, /\*\) ;/' ../Include/cholmod_core.h > _ensure_dense.tex 
 	./getproto '/cholmod_dense \*cholmod_zeros/, /\*\) ;/' ../Include/cholmod_core.h > _zeros.tex 
 	./getproto '/cholmod_dense \*cholmod_ones/, /\*\) ;/' ../Include/cholmod_core.h > _ones.tex 
 	./getproto '/cholmod_dense \*cholmod_eye/, /\*\) ;/' ../Include/cholmod_core.h > _eye.tex 
@@ -164,6 +165,7 @@ UserGuide.pdf: UserGuide.tex UserGuide.bib $(I) $(C) $(M) Makefile getproto rule
 	./getproto '/int cholmod_factorize /, /\*\) ;/' ../Include/cholmod_cholesky.h > _factorize.tex
 	./getproto '/int cholmod_factorize_p/, /\*\) ;/' ../Include/cholmod_cholesky.h > _factorize_p.tex
 	./getproto '/cholmod_dense \*cholmod_solve/, /\*\) ;/' ../Include/cholmod_cholesky.h > _solve.tex 
+	./getproto '/int cholmod_solve2/, /\*\) ;/' ../Include/cholmod_cholesky.h > _solve2.tex 
 	./getproto '/cholmod_sparse \*cholmod_spsolve/, /\*\) ;/' ../Include/cholmod_cholesky.h > _spsolve.tex 
 	./getproto '/int cholmod_etree/, /\*\) ;/' ../Include/cholmod_cholesky.h > _etree.tex 
 	./getproto '/int cholmod_rowcolcounts/, /\*\) ;/' ../Include/cholmod_cholesky.h > _rowcolcounts.tex 
@@ -174,6 +176,7 @@ UserGuide.pdf: UserGuide.tex UserGuide.bib $(I) $(C) $(M) Makefile getproto rule
 	./getproto '/int cholmod_rowfac_mask/, /\*\) ;/' ../Include/cholmod_cholesky.h > _rowfac_mask.tex 
 	./getproto '/int cholmod_row_subtree/, /\*\) ;/' ../Include/cholmod_cholesky.h > _row_subtree.tex 
 	./getproto '/int cholmod_row_lsubtree/, /\*\) ;/' ../Include/cholmod_cholesky.h > _row_lsubtree.tex 
+	./getproto '/int cholmod_lsolve_pattern/, /\*\) ;/' ../Include/cholmod_cholesky.h > _lsolve_pattern.tex 
 	./getproto '/int cholmod_resymbol /, /\*\) ;/' ../Include/cholmod_cholesky.h > _resymbol.tex
 	./getproto '/int cholmod_resymbol_noperm/, /\*\) ;/' ../Include/cholmod_cholesky.h > _resymbol_noperm.tex 
 	./getproto '/double cholmod_rcond/, /\*\) ;/' ../Include/cholmod_cholesky.h > _rcond.tex

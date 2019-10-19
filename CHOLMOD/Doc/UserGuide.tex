@@ -21,7 +21,7 @@ DrTimothyAldenDavis@gmail.com, http://www.suitesparse.com }
 \title{User Guide for CHOLMOD: a sparse Cholesky factorization and
 modification package}
 
-\date{VERSION 2.0.1, Jun 20, 2012}
+\date{VERSION 2.1.0, March 27, 2013}
 \maketitle
 
 %-------------------------------------------------------------------------------
@@ -47,7 +47,7 @@ modification package}
 \end{abstract}
 %-------------------------------------------------------------------------------
 
-CHOLMOD Copyright\copyright 2005-2012 by Timothy A. Davis.  Portions are also
+CHOLMOD Copyright\copyright 2005-2013 by Timothy A. Davis.  Portions are also
 copyrighted by William W. Hager (the {\tt Modify} Module),
 and the University of Florida (the {\tt Partition} and {\tt Core} Modules).
 All Rights Reserved.  Some of CHOLMOD's Modules are distributed under the GNU
@@ -247,12 +247,12 @@ along with CHOLMOD, but three of which are not.  Those included with CHOLMOD are
     algorithm,
     by Tim Davis and Siva Rajamanickam, based directly on COLAMD.
     This package is not required if CHOLMOD is compiled with the
-    {\tt -DNPARTITION} flag.
+    {\tt -DNCAMD} flag.
 \item CAMD: a constrained approximate minimum degree ordering
     algorithm,
     by Tim Davis and Yanqing Chen, based directly on AMD.
     This package is not required if CHOLMOD is compiled with the
-    {\tt -DNPARTITION} flag.
+    {\tt -DNCAMD} flag.
 \item {\tt SuiteSparse\_config}:
     a single place where all sparse matrix packages authored
     or co-authored by Davis are configured.  Also includes a version of the
@@ -324,7 +324,10 @@ CHOLMOD's specific settings are given by the {\tt CHOLMOD\_CONFIG} string:
 \begin{itemize}
 \item {\tt -DNCHECK}:	    do not include the Check module.	   License: GNU LGPL.
 \item {\tt -DNCHOLESKY}:    do not include the Cholesky module.	   License: GNU LGPL.
-\item {\tt -DNPARTITION}:   do not include the Partition module.   License: GNU LGPL.
+\item {\tt -DNPARTITION}:   do not include the interface to METIS in
+the Partition module.   License: GNU LGPL.
+\item {\tt -DCAMD}:   do not include the interfaces to CAMD, CCOLAMD,
+and CSYMAMD in the Partition module.   License: GNU LGPL.
 \item {\tt -DNGPL}:	    do not include any GNU GPL Modules in the CHOLMOD library.
 \item {\tt -DNMATRIXOPS}:   do not include the MatrixOps module.   License: GNU GPL.
 \item {\tt -DNMODIFY}:	    do not include the Modify module.      License: GNU GPL.
@@ -362,9 +365,9 @@ as well as the {\tt xerbla} library if you need it
 \newline
  {\tt SuiteSparse\_config/xerlib/libxerbla.a} for the Fortran version).
 Unless you use {\tt -DNPARTITION}, you must also link with
-{\tt metis-4.0/libmetis.a},
-{\tt CAMD/libcamd.a}, and
-{\tt CCOLAMD/libccolamd.a}.
+{\tt metis-4.0/libmetis.a}.
+Unless {\tt -DNCAMD} is present at compile time,
+you must link with {\tt CAMD/libcamd.a}, and {\tt CCOLAMD/libccolamd.a}.
 Your compiler needs to know the location of the CHOLMOD {\tt Include} directory,
 so that it can find the {\tt cholmod.h} include file, by
 adding the {\tt -ICHOLMOD/Include} to your C compiler options
@@ -935,6 +938,7 @@ required by the {\tt Partition} Module.
     \item {\tt cholmod\_analyze\_p}: analyze, with user-provided permutation or $\m{f}$ set.
     \item {\tt cholmod\_factorize\_p}: factorize, with user-provided permutation or $\m{f}$.
     \item {\tt cholmod\_analyze\_ordering}:  analyze a permutation
+    \item {\tt cholmod\_solve2}: solve a linear system, reusing workspace.
     \item {\tt cholmod\_etree}: find the elimination tree.
     \item {\tt cholmod\_rowcolcounts}: compute the row/column counts of $\m{L}$.
     \item {\tt cholmod\_amd}: order using AMD.
@@ -942,6 +946,7 @@ required by the {\tt Partition} Module.
     \item {\tt cholmod\_rowfac}: incremental simplicial factorization.
     \item {\tt cholmod\_row\_subtree}: find the nonzero pattern of a row of $\m{L}$.
     \item {\tt cholmod\_row\_lsubtree}: find the nonzero pattern of a row of $\m{L}$.
+    \item {\tt cholmod\_row\_lsubtree}: find the nonzero pattern of $\m{L}^{-1}b$.
     \item {\tt cholmod\_resymbol}: recompute the symbolic pattern of $\m{L}$.
     \item {\tt cholmod\_resymbol\_noperm}: recompute the symbolic pattern of $\m{L}$, no permutation.
     \item {\tt cholmod\_postorder}: postorder a tree.
@@ -1785,6 +1790,16 @@ Allocates a dense matrix.
 Frees a dense matrix.
 
 %---------------------------------------
+\subsection{{\tt cholmod\_ensure\_dense}: ensure dense matrix has a given size
+and type}
+%---------------------------------------
+
+\input{_ensure_dense.tex}
+Ensures a dense matrix has a given size and type.
+
+%---------------------------------------
+
+%---------------------------------------
 \newpage \subsection{{\tt cholmod\_zeros}: dense zero matrix}
 %---------------------------------------
 
@@ -2517,7 +2532,107 @@ the {\tt MatrixOps} Module.  See {\tt Demo/cholmod\_demo.c} for an example.
 %---------------------------------------
 
 \input{_spsolve.tex}
-Identical to {\tt cholmod\_spsolve}, except that {\tt B} and {\tt X} are sparse.
+Identical to {\tt cholmod\_solve}, except that {\tt B} and {\tt X} are sparse.
+This function converts {\tt B} to full format, solves the system, and then
+converts {\tt X} back to sparse.  If you want to solve with a sparse {\tt B}
+and get just a partial solution back in {\tt X} (corresponding to the pattern
+of {\tt B}), use {\tt cholmod\_solve2} below.
+
+%---------------------------------------
+\subsection{{\tt cholmod\_solve2}: solve a linear system, reusing workspace}
+%---------------------------------------
+
+\input{_solve2.tex}
+Solve a linear system, optionally reusing workspace from a prior call
+to {\tt cholmod\_solve2}.
+
+The inputs to this function are the same as {\tt cholmod\_solve},
+with the addition of three parameters:
+{\tt X},
+{\tt Y},
+and
+{\tt E}.  The dense matrix {\tt X} is the solution on output.
+On input, {\tt \&X} can point to a NULL matrix, or be the wrong size.
+If that is the case, it is freed and allocated to be the proper size. 
+If {\tt X} has the right size and type on input, then the allocation
+is skipped.  In contrast, the {\tt cholmod\_solve} function always
+allocates its output {\tt X}.  This {\tt cholmod\_solve2} function
+allows you to reuse the memory space of a prior {\tt X}, thereby
+saving time.
+
+The two workspace matrices {\tt Y} and {\tt E} can also be reused
+between calls.
+You must free
+{\tt X}
+{\tt Y},
+and 
+{\tt E} yourself, when your computations are done.  Below is an
+example of usage.
+Note that 
+{\tt X}
+{\tt Y},
+and 
+{\tt E} must be defined on input (either NULL, or valid dense matrices).
+
+\begin{verbatim}
+        cholmod_dense *X = NULL, *Y = NULL, *E = NULL ;
+        ...
+        cholmod_l_solve2 (sys, L, B1, NULL, &X, NULL, &Y, &E, Common) ;
+        cholmod_l_solve2 (sys, L, B2, NULL, &X, NULL, &Y, &E, Common) ;
+        cholmod_l_solve2 (sys, L, B3, NULL, &X, NULL, &Y, &E, Common) ;
+        cholmod_l_free_dense (&X, Common) ;
+        cholmod_l_free_dense (&Y, Common) ;
+        cholmod_l_free_dense (&E, Common) ;
+\end{verbatim}
+
+The equivalent when using {\tt cholmod\_solve} is:
+
+\begin{verbatim}
+        cholmod_dense *X = NULL, *Y = NULL, *E = NULL ;
+        ...
+        X = cholmod_l_solve (sys, L, B1, Common) ;
+        cholmod_l_free_dense (&X, Common) ;
+        X = cholmod_l_solve (sys, L, B2, Common) ;
+        cholmod_l_free_dense (&X, Common) ;
+        X = cholmod_l_solve (sys, L, B3, Common) ;
+        cholmod_l_free_dense (&X, Common) ;
+\end{verbatim}
+
+Both methods work fine, but in the second method with {\tt cholmod\_solve},
+the internal workspaces ({\tt Y} and {\tt E}) and the solution ({\tt X})
+are allocated and freed on each call.
+
+The {\tt cholmod\_solve2 function} can also solve for a subset of the solution
+vector {\tt X}, if the optional {\tt Bset} parameter is non-NULL.  The
+right-hand-side {\tt B} must be a single column vector, and its complexity
+(real, complex, zomplex) must match that of {\tt L}.  The vector {\tt B} is
+dense, but it is assumed to be zero except for row indices specified in {\tt
+Bset}.  The vector {\tt Bset} must be a sparse column vector, of dimension the
+same as {\tt B}.  Only the pattern of {\tt Bset} is used.  The solution {\tt X}
+(a dense column vector) is modified on output, but is defined only in the rows
+defined by the sparse vector {\tt Xset}.  The entries in {\tt Bset} are a
+subset of {\tt Xset} (except if {\tt sys} is {\tt CHOLMOD\_P} or {\tt
+CHOLMOD\_Pt}).
+
+No memory allocations are done if the outputs and internal
+workspaces ({\tt X}, {\tt Xset}, {\tt Y}, and {\tt E}) have been allocated
+by a prior call (or if allocated by the user).  To let {\tt cholmod\_solve2}
+allocate these outputs and workspaces for you, simply initialize them to
+NULL (as in the example above).  Since it is possible for this function
+to reallocate these 4 arrays, you should always reaquire the pointers to
+their internal data ({\tt X->x} for example) after calling
+{\tt cholmod\_solve2}), since they may change.  They normally will not
+change except in the first call to this function.
+
+On the first call to {\tt cholmod\_solve2} when {\tt Bset} is NULL,
+the factorization is converted from supernodal to simplicial, if needed.
+The inverse permutation is also computed and stored in the factoriation
+object, {\tt L}.  This can take a modest amount of time.  Subsequent
+calls to {\tt cholmod\_solve2} with a small {\tt Bset}
+are very fast (both asympotically and in practice).
+
+You can find an example of how to use {\tt cholmod\_solve2} in the
+two demo programs, {\tt cholmod\_demo} and {\tt cholmod\_l\_demo}.
 
 %---------------------------------------
 \subsection{{\tt cholmod\_etree}: find elimination tree}

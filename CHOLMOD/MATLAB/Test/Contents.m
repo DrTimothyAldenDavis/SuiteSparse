@@ -36,6 +36,9 @@
 %   test28        - test nesdis
 %   testmm        - compare mread and mmread for entire Matrix Market collection
 %   testsolve     - test CHOLMOD and compare with x=A\b 
+%   ltest         - test lxbpattern
+%   lxtest        - test lsubsolve
+%   ltest2        - test lsubsolve
 %
 % Example:
 %   cholmod_test

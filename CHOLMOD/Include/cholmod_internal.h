@@ -4,7 +4,7 @@
 
 /* -----------------------------------------------------------------------------
  * CHOLMOD/Include/cholmod_internal.h.
- * Copyright (C) 2005-2006, Univ. of Florida.  Author: Timothy A. Davis
+ * Copyright (C) 2005-2013, Univ. of Florida.  Author: Timothy A. Davis
  * CHOLMOD/Include/cholmod_internal.h is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.

@@ -14,7 +14,7 @@
 
 #include "cm.h"
 #include "amd.h"
-#ifndef NPARTITION
+#ifndef NCAMD
 #include "camd.h"
 #endif
 
@@ -143,7 +143,7 @@ void huge ( )
     OK (cm->status == CHOLMOD_TOO_LARGE) ;
     NOP (L) ;
 
-#ifndef NPARTITION
+#ifndef NCAMD
     CHOLMOD (camd) (A, NULL, 0, &junk, NULL, cm) ;
     OK (cm->status == CHOLMOD_TOO_LARGE) ;
 #endif
@@ -152,7 +152,7 @@ void huge ( )
     CHOLMOD (colamd) (A, NULL, 0, 0, &junk, cm) ;
     OK (cm->status == CHOLMOD_TOO_LARGE) ;
 
-#ifndef NPARTITION
+#ifndef NCAMD
     printf ("calling ccolamd\n") ;
     CHOLMOD (ccolamd) (A, NULL, 0, NULL, &junk, cm) ;
     OK (cm->status == CHOLMOD_TOO_LARGE) ;

@@ -14,7 +14,7 @@
 
 #include "cm.h"
 
-#ifndef NPARTITION
+#ifndef NCAMD
 #include "camd.h"
 
 /* ========================================================================== */

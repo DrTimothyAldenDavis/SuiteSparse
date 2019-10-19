@@ -1285,10 +1285,10 @@ double do_matrix (cholmod_sparse *A)
 
 	    printf ("test_solver (2)\n") ;
 	    cm->final_asis = TRUE ;
-	    cm->method [0].ordering = CHOLMOD_NATURAL ;
 	    for (nmethods = 0 ; nmethods < 7 ; nmethods++)
 	    {
 		cm->nmethods = nmethods ;
+	        cm->method [0].ordering = CHOLMOD_NATURAL ;
 		err = test_solver (A) ;				/* RAND reset */
 		MAXERR (maxerr, err, 1) ;
 	    }

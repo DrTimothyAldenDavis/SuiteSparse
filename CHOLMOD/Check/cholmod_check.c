@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * CHOLMOD/Check Module.  Copyright (C) 2005-2006, Timothy A. Davis
+ * CHOLMOD/Check Module.  Copyright (C) 2005-2013, Timothy A. Davis
  * The CHOLMOD/Check Module is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
@@ -2256,15 +2256,13 @@ int CHOLMOD(dump_malloc) = -1 ;
 
 void CHOLMOD(dump_init) (const char *s, cholmod_common *Common)
 {
+    int i = 0 ;
     FILE *f ;
     f = fopen ("debug", "r") ;
-    if (f == NULL)
+    CHOLMOD(dump) = 0 ;
+    if (f != NULL)
     {
-	CHOLMOD(dump) = 0 ;
-    }
-    else
-    {
-	fscanf (f, "%d", &CHOLMOD(dump)) ;
+	i = fscanf (f, "%d", &CHOLMOD(dump)) ;
 	fclose (f) ;
     }
     PRINT1 (("%s: cholmod_dump_init, D = %d\n", s, CHOLMOD(dump))) ;

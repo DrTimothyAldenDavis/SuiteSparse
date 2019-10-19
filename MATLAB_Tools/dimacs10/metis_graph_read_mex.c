@@ -239,12 +239,15 @@ void mexFunction
         /* read each node weight */
         /* ------------------------------------------------------------------ */
 
+        status = 1 ;
         for (k = 0 ; k < ncon ; k++)
         {
-            if (get_token (f, s, LEN) <= 0 || sscanf (s, "%lg", &x) != 1)
+            x = 0 ;
+            status = get_token (f, s, LEN) ;
+            if (sscanf (s, "%lg", &x) != 1)
             {
                 sprintf (msg, "node %lg: missing node weights", (double) i) ;
-                mexErrMsgIdAndTxt ("metis_graph:missing_node_weights", msg) ;
+                mexWarnMsgIdAndTxt ("metis_graph:missing_node_weights", msg) ;
             }
             W [i-1 + k*n] = x ;
         }
@@ -253,7 +256,6 @@ void mexFunction
         /* read each edge */
         /* ------------------------------------------------------------------ */
 
-        status = 1 ;
         while (status >= 1)
         {
 

@@ -1,5 +1,5 @@
-2567
-03-Jul-2012 15:03:14
+2650
+03-Dec-2012 16:02:06
 HB,1138_bus,1138,1138,4054,1,0,0,1,1,1,power network problem
 HB,494_bus,494,494,1666,1,0,0,1,1,1,power network problem
 HB,662_bus,662,662,2474,1,0,0,1,1,1,power network problem
@@ -2567,3 +2567,86 @@ CPM,cz5108,5108,5108,51412,1,0,1,0,0.433914996544575,0.2362214927436075,2D/3D pr
 CPM,cz10228,10228,10228,102876,1,0,1,0,0.4358431914342458,0.2371988602020551,2D/3D problem
 CPM,cz20468,20468,20468,206076,1,0,1,0,0.4354769190983147,0.2377052713245119,2D/3D problem
 CPM,cz40948,40948,40948,412148,1,0,1,0,0.4349030172413793,0.2372683189655172,2D/3D problem
+Davis,FX_March2010,1319,9498,301899,1,0,0,0,0,0,term/document graph
+Bodendiek,CurlCurl_0,11083,11083,113343,1,0,1,0,1,1,model reduction problem
+Bodendiek,CurlCurl_1,226451,226451,2472071,1,0,1,0,1,1,model reduction problem
+Bodendiek,CurlCurl_2,806529,806529,8921789,1,0,1,0,1,1,model reduction problem
+Bodendiek,CurlCurl_3,1219574,1219574,13544618,1,0,1,0,1,1,model reduction problem
+Bodendiek,CurlCurl_4,2380515,2380515,26515867,1,0,1,0,1,1,model reduction problem
+DIMACS10,G_n_pin_pout,100000,100000,1002396,1,1,0,0,1,1,random undirected graph
+DIMACS10,preferentialAttachment,100000,100000,999970,1,1,0,0,1,1,random undirected graph
+DIMACS10,smallworld,100000,100000,999996,1,1,0,0,1,1,random undirected graph
+DIMACS10,333SP,3712815,3712815,22217266,1,1,0,0,1,1,undirected graph
+DIMACS10,AS365,3799275,3799275,22736152,1,1,0,0,1,1,undirected graph
+DIMACS10,M6,3501776,3501776,21003872,1,1,0,0,1,1,undirected graph
+DIMACS10,NACA0015,1039183,1039183,6229636,1,1,0,0,1,1,undirected graph
+DIMACS10,NLR,4163763,4163763,24975952,1,1,0,0,1,1,undirected graph
+DIMACS10,ak2010,45292,45292,217098,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,al2010,252266,252266,1230482,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,ar2010,186211,186211,904310,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,az2010,241666,241666,1196094,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,ca2010,710145,710145,3489366,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,co2010,201062,201062,974574,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,ct2010,67578,67578,336352,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,de2010,24115,24115,116056,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,fl2010,484481,484481,2346294,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,ga2010,291086,291086,1418056,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,hi2010,25016,25016,124126,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,ia2010,216007,216007,1021170,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,id2010,149842,149842,728264,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,il2010,451554,451554,2164464,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,in2010,267071,267071,1281716,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,ks2010,238600,238600,1121798,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,ky2010,161672,161672,787778,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,la2010,204447,204447,980634,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,ma2010,157508,157508,776610,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,md2010,145247,145247,700378,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,me2010,69518,69518,335476,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,mi2010,329885,329885,1578090,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,mn2010,259777,259777,1227102,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,mo2010,343565,343565,1656568,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,ms2010,171778,171778,839980,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,mt2010,132288,132288,638668,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,nc2010,288987,288987,1416620,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,nd2010,133769,133769,625946,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,ne2010,193352,193352,913854,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,nh2010,48837,48837,234550,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,nj2010,169588,169588,829912,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,nm2010,168609,168609,830970,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,nv2010,84538,84538,416998,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,ny2010,350169,350169,1709544,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,oh2010,365344,365344,1768240,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,ok2010,269118,269118,1274148,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,or2010,196621,196621,979512,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,pa2010,421545,421545,2058462,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,ri2010,25181,25181,125750,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,sc2010,181908,181908,893160,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,sd2010,88360,88360,410722,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,tn2010,240116,240116,1193966,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,tx2010,914231,914231,4456272,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,ut2010,115406,115406,572066,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,va2010,285762,285762,1402128,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,vt2010,32580,32580,155598,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,wa2010,195574,195574,947432,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,wi2010,253096,253096,1209404,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,wv2010,135218,135218,662922,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,wy2010,86204,86204,427586,1,0,0,0,1,1,undirected weighted graph
+DIMACS10,vsp_barth5_1Ksep_50in_5Kout,32212,32212,203610,1,1,0,0,1,1,random unweighted graph
+DIMACS10,vsp_bcsstk30_500sep_10in_1Kout,58348,58348,4033156,1,1,0,0,1,1,random unweighted graph
+DIMACS10,vsp_befref_fxm_2_4_air02,14109,14109,196448,1,1,0,0,1,1,random unweighted graph
+DIMACS10,vsp_bump2_e18_aa01_model1_crew1,56438,56438,601602,1,1,0,0,1,1,random unweighted graph
+DIMACS10,vsp_c-30_data_data,11023,11023,124368,1,1,0,0,1,1,random unweighted graph
+DIMACS10,vsp_c-60_data_cti_cs4,85830,85830,482160,1,1,0,0,1,1,random unweighted graph
+DIMACS10,vsp_data_and_seymourl,9167,9167,111732,1,1,0,0,1,1,random unweighted graph
+DIMACS10,vsp_finan512_scagr7-2c_rlfddd,139752,139752,1104040,1,1,0,0,1,1,random unweighted graph
+DIMACS10,vsp_mod2_pgp2_slptsk,101364,101364,778736,1,1,0,0,1,1,random unweighted graph
+DIMACS10,vsp_model1_crew1_cr42_south31,45101,45101,379952,1,1,0,0,1,1,random unweighted graph
+DIMACS10,vsp_msc10848_300sep_100in_1Kout,21996,21996,2442056,1,1,0,0,1,1,random unweighted graph
+DIMACS10,vsp_p0291_seymourl_iiasa,10498,10498,107736,1,1,0,0,1,1,random unweighted graph
+DIMACS10,vsp_sctap1-2b_and_seymourl,40174,40174,281662,1,1,0,0,1,1,random unweighted graph
+DIMACS10,vsp_south31_slptsk,39668,39668,379828,1,1,0,0,1,1,random unweighted graph
+DIMACS10,vsp_vibrobox_scagr7-2c_rlfddd,77328,77328,871172,1,1,0,0,1,1,random unweighted graph
+Janna,CoupCons3D,416800,416800,17277420,1,0,1,0,1,0.008881642549324996,structural problem
+Janna,ML_Laplace,377002,377002,27582698,1,0,1,0,1,7.351401706466176e-08,structural problem
+Janna,Transport,1602111,1602111,23487281,1,0,1,0,1,0,structural problem
+Janna,ML_Geer,1504002,1504002,110686677,1,0,1,0,1,2.381330188145693e-07,structural problem

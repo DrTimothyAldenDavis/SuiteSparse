@@ -38,7 +38,7 @@ function SuiteSparse_install (do_demo)
 %
 % This script installs the full-featured CXSparse rather than CSparse.
 %
-% Copyright 1990-2012, Timothy A. Davis, http://www.suitesparse.com.
+% Copyright 1990-2013, Timothy A. Davis, http://www.suitesparse.com.
 % In collaboration with Patrick Amestoy, Yanqing Chen, Iain Duff, John Gilbert,
 % Steve Hadfield, William Hager, Stefan Larimore, Leslie Foster,
 % Eka Palamadai Natarajan, Esmond Ng, and Siva Rajamanickam.

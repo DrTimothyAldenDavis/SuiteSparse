@@ -285,7 +285,8 @@ cholmod_mex_src = { ...
     'sparse2', ...
     'symbfact2', ...
     'mread', ...
-    'mwrite' } ;
+    'mwrite', ...
+    'lxbpattern', 'lsubsolve' } ;   % <=== these 2 are just for testing
 
 if (pc)
     % Windows does not have drand48 and srand48, required by METIS.  Use
@@ -334,7 +335,7 @@ s = ['delete ' obj] ;
 do_cmd (s, kk, details) ;
 fprintf ('\nCHOLMOD successfully compiled\n') ;
 
- %-------------------------------------------------------------------------------
+ %------------------------------------------------------------------------------
 function kk = do_cmd (s, kk, details)
  %DO_CMD: evaluate a command, and either print it or print a "."
 if (details)

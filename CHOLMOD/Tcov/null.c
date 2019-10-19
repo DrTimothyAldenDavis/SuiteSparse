@@ -58,9 +58,13 @@ void null_test (cholmod_common *cn)
 	krow = 0, k = 0 ;
 
 #ifndef NPARTITION
-    Int *Anw = NULL, *Aew = NULL, *Partition = NULL,
-	*CParent = NULL, *Cmember = NULL ;
+    Int *Anw = NULL, *Aew = NULL, *Partition = NULL, *CParent = NULL,
+        *Cmember = NULL ;
     Int compress = 0 ;
+#endif
+
+#ifndef NCAMD
+    Int *Cmem2 = NULL ;
 #endif
 
     /* ---------------------------------------------------------------------- */
@@ -257,11 +261,14 @@ void null_test (cholmod_common *cn)
     lr = CHOLMOD(collapse_septree) (n, n, 1., 4,
 	    CParent, Cmember, cn) ;				NOT (lr >= 0) ;
     ok = CHOLMOD(metis)(A, fset, fsize, postorder, Perm, cn) ;	NOT (ok) ;
-    ok = CHOLMOD(ccolamd)(A, fset, fsize, Cmember, Perm, cn) ;	NOT (ok) ;
-    ok = CHOLMOD(csymamd)(A, Cmember, Perm, cn) ;		NOT (ok) ;
     lr = CHOLMOD(bisect)(A, fset, fsize, compress,
 	    Partition, cn) ;					NOT (lr >= 0) ;
     lr = CHOLMOD(metis_bisector)(A, Anw, Aew, Partition, cn) ;	NOT (lr >= 0) ;
+#endif
+
+#ifndef NCAMD
+    ok = CHOLMOD(ccolamd)(A, fset, fsize, Cmem2, Perm, cn) ;	NOT (ok) ;
+    ok = CHOLMOD(csymamd)(A, Cmem2, Perm, cn) ;		        NOT (ok) ;
 #endif
 
 }

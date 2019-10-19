@@ -10,11 +10,11 @@
  * http://www.suitesparse.com
  * -------------------------------------------------------------------------- */
 
-/* Test for ccolamd v1.0.  Not used if NPARTITION defined at compile time. */
+/* Test for ccolamd v1.0.  Not used if NCAMD defined at compile time. */
 
 #include "cm.h"
 
-#ifndef NPARTITION
+#ifndef NCAMD
 #include "ccolamd.h"
 
 /* ========================================================================== */

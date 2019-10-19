@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * CHOLMOD/Cholesky Module.  Copyright (C) 2005-2006, Timothy A. Davis
+ * CHOLMOD/Cholesky Module.  Copyright (C) 2005-2013, Timothy A. Davis
  * The CHOLMOD/Cholesky Module is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
@@ -356,12 +356,47 @@ int CHOLMOD(row_subtree)
 
 
 /* ========================================================================== */
+/* === cholmod_lsolve_pattern =============================================== */
+/* ========================================================================== */
+
+/* Compute the nonzero pattern of Y=L\B.  L must be simplicial, and B
+ * must be a single sparse column vector with B->stype = 0.  The values of
+ * B are not used; it just specifies a nonzero pattern.  The pattern of
+ * Y is not sorted, but is in topological order instead (suitable for a
+ * sparse forward/backsolve).
+ */
+
+int CHOLMOD(lsolve_pattern)
+(
+    /* ---- input ---- */
+    cholmod_sparse *B,	/* sparse right-hand-side (a single sparse column) */
+    cholmod_factor *L,	/* the factor L from which parent(i) is derived */
+    /* ---- output --- */
+    cholmod_sparse *Yset,   /* pattern of Y=L\B, n-by-1 with Y->nzmax >= n */
+    /* --------------- */
+    cholmod_common *Common
+)
+{
+    size_t krow ;
+    RETURN_IF_NULL (B, FALSE) ;
+    krow = B->nrow ;
+    return (CHOLMOD(row_lsubtree) (B, NULL, 0, krow, L, Yset, Common)) ;
+}
+
+
+/* ========================================================================== */
 /* === cholmod_row_lsubtree ================================================= */
 /* ========================================================================== */
 
 /* Identical to cholmod_row_subtree, except that the elimination tree is
  * obtained from L itself, as the first off-diagonal entry in each column.
- * L must be simplicial, not supernodal */
+ * L must be simplicial, not supernodal.
+ *
+ * If krow = A->nrow, then A must be a single sparse column vector, (A->stype
+ * must be zero), and the nonzero pattern of x=L\b is computed, where b=A(:,0)
+ * is the single sparse right-hand-side.  The inputs Fi and fnz are ignored.
+ * See CHOLMOD(lsolve_pattern) above for a simpler interface for this case.
+ */
 
 int CHOLMOD(row_lsubtree)
 (
@@ -372,14 +407,14 @@ int CHOLMOD(row_lsubtree)
     size_t krow,	/* row k of L */
     cholmod_factor *L,	/* the factor L from which parent(i) is derived */
     /* ---- output --- */
-    cholmod_sparse *R,	/* pattern of L(k,:), 1-by-n with R->nzmax >= n */
+    cholmod_sparse *R,	/* pattern of L(k,:), n-by-1 with R->nzmax >= n */
     /* --------------- */
     cholmod_common *Common
 )
 {
     Int *Rp, *Stack, *Flag, *Ap, *Ai, *Anz, *Lp, *Li, *Lnz ;
     Int p, pend, parent, t, stype, nrow, k, pf, packed, sorted, top, len, i,
-	mark ;
+	mark, ka ;
 
     /* ---------------------------------------------------------------------- */
     /* check inputs */
@@ -392,17 +427,45 @@ int CHOLMOD(row_lsubtree)
     RETURN_IF_XTYPE_INVALID (A, CHOLMOD_PATTERN, CHOLMOD_ZOMPLEX, FALSE) ;
     RETURN_IF_XTYPE_INVALID (R, CHOLMOD_PATTERN, CHOLMOD_ZOMPLEX, FALSE) ;
     RETURN_IF_XTYPE_INVALID (L, CHOLMOD_REAL, CHOLMOD_ZOMPLEX, FALSE) ;
+
+    nrow = A->nrow ;
     stype = A->stype ;
-    if (stype == 0)
+    if (stype < 0)
     {
-	RETURN_IF_NULL (Fi, FALSE) ;
-    }
-    if (krow >= A->nrow)
-    {
-	ERROR (CHOLMOD_INVALID, "lsubtree: k invalid") ;
+	/* symmetric lower triangular form not supported */
+	ERROR (CHOLMOD_INVALID, "symmetric lower not supported") ;
 	return (FALSE) ;
     }
-    if (R->ncol != 1 || A->nrow != R->nrow || A->nrow > R->nzmax)
+
+    if (krow > nrow)
+    {
+        ERROR (CHOLMOD_INVALID, "lsubtree: krow invalid") ;
+        return (FALSE) ;
+    }
+    else if (krow == nrow)
+    {
+        /* find pattern of x=L\b where b=A(:,0) */
+        k = nrow ;      /* compute all of the result; don't stop in SUBTREE */
+        ka = 0 ;        /* use column A(:,0) */
+        if (stype != 0 || A->ncol != 1)
+        {
+            /* A must be unsymmetric (it's a single sparse column vector) */
+            ERROR (CHOLMOD_INVALID, "lsubtree: A invalid") ;
+            return (FALSE) ;
+        }
+    }
+    else
+    {
+        /* find pattern of L(k,:) using A(:,k) and Fi if A unsymmetric */
+        k = krow ;      /* which row of L to compute */
+        ka = k ;        /* which column of A to use */
+        if (stype == 0)
+        {
+            RETURN_IF_NULL (Fi, FALSE) ;
+        }
+    }
+
+    if (R->ncol != 1 || nrow != R->nrow || nrow > R->nzmax || ka >= A->ncol)
     {
 	ERROR (CHOLMOD_INVALID, "lsubtree: R invalid") ;
 	return (FALSE) ;
@@ -418,7 +481,6 @@ int CHOLMOD(row_lsubtree)
     /* allocate workspace */
     /* ---------------------------------------------------------------------- */
 
-    nrow = A->nrow ;
     CHOLMOD(allocate_work) (nrow, 0, 0, Common) ;
     if (Common->status < CHOLMOD_OK)
     {
@@ -430,20 +492,12 @@ int CHOLMOD(row_lsubtree)
     /* get inputs */
     /* ---------------------------------------------------------------------- */
 
-    if (stype < 0)
-    {
-	/* symmetric lower triangular form not supported */
-	ERROR (CHOLMOD_INVALID, "symmetric lower not supported") ;
-	return (FALSE) ;
-    }
-
     Ap = A->p ;
     Ai = A->i ;
     Anz = A->nz ;
     packed = A->packed ;
     sorted = A->sorted ;
 
-    k = krow ;
     Stack = R->i ;
 
     Lp = L->p ;
@@ -462,16 +516,19 @@ int CHOLMOD(row_lsubtree)
     /* ---------------------------------------------------------------------- */
 
     top = nrow ;		/* Stack is empty */
-    Flag [k] = mark ;		/* do not include diagonal entry in Stack */
+    if (k < nrow)
+    {
+        Flag [k] = mark ;       /* do not include diagonal entry in Stack */
+    }
 
 #define SCATTER			/* do not scatter numerical values */
 #define PARENT(i) (Lnz [i] > 1) ? (Li [Lp [i] + 1]) : EMPTY
 
-    if (stype != 0)
+    if (krow == nrow || stype != 0)
     {
 	/* scatter kth col of triu (A), get pattern L(k,:) */
-	p = Ap [k] ;
-	pend = (packed) ? (Ap [k+1]) : (p + Anz [k]) ;
+	p = Ap [ka] ;
+	pend = (packed) ? (Ap [ka+1]) : (p + Anz [ka]) ;
 	SUBTREE ;
     }
     else
