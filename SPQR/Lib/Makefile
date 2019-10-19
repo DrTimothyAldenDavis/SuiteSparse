@@ -12,7 +12,7 @@ include ../../SuiteSparse_config/SuiteSparse_config.mk
 # the optional Partition module requires METIS, CAMD, and CCOLAMD
 I_WITH_PARTITION = 
 LIB_WITH_PARTITION =
-CONFIG = -DNPARTITION
+CONFIG_PARTITION = -DNPARTITION
 # check if METIS is requested and available
 ifeq (,$(findstring -DNPARTITION, $(CHOLMOD_CONFIG)))
     # METIS is requested.  See if it is available
@@ -24,11 +24,13 @@ ifeq (,$(findstring -DNPARTITION, $(CHOLMOD_CONFIG)))
                     ../../CAMD/Lib/libcamd.a
                 I_WITH_PARTITION = -I$(METIS_PATH)/Lib \
                     -I../../CCOLAMD/Include -I../../CAMD/Include
-                CONFIG =
+                CONFIG_PARTITION =
             endif
         endif
     endif
 endif
+#-------------------------------------------------------------------------------
+
 #-------------------------------------------------------------------------------
 
 # no statement coverage, high optimization
@@ -95,11 +97,24 @@ OBJ = \
     spqr_type.o \
     spqr_tol.o
 
+ifneq ($(GPU_CONFIG),)
+OBJ += \
+    spqrgpu_kernel.o \
+    spqrgpu_buildAssemblyMaps.o \
+    spqrgpu_computeFrontStaging.o
+endif
+
 $(OBJ): $(INC)
 
 I = -I../../CHOLMOD/Include -I../../SuiteSparse_config -I../Include
 
-C = $(CXX) $(CF) $(SPQR_CONFIG) $(CONFIG) $(I)
+ifneq ($(GPU_CONFIG),)
+    I += -I../../SuiteSparse_GPURuntime/Include \
+        -I../../GPUQREngine/Include \
+        -I$(CUDA_INC_PATH)
+endif
+
+C = $(CXX) $(CF) $(SPQR_CONFIG) $(CONFIG_PARTITION) $(I)
 
 libspqr.a: $(OBJ)
 	$(ARCHIVE)  libspqr.a $(OBJ)
@@ -223,4 +238,13 @@ SuiteSparseQR_C.o: ../Source/SuiteSparseQR_C.cpp
 	$(C) -c $<
 
 spqr_rmap.o: ../Source/spqr_rmap.cpp
+	$(C) -c $<
+
+spqrgpu_kernel.o: ../SPQRGPU/spqrgpu_kernel.cpp
+	$(C) -c $<
+
+spqrgpu_buildAssemblyMaps.o: ../SPQRGPU/spqrgpu_buildAssemblyMaps.cpp
+	$(C) -c $<
+
+spqrgpu_computeFrontStaging.o: ../SPQRGPU/spqrgpu_computeFrontStaging.cpp
 	$(C) -c $<

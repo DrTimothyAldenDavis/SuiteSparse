@@ -1,7 +1,12 @@
 SuiteSparseQR Copyright (c) 2008-2013, Timothy A. Davis,
+GPU modules Copyright (c) 2013, Timothy A. Davis, Sencer Nuri Yeralan,
+and Sanjay Ranka.
 http://www.suitesparse.com
 
-SuiteSparseQR is a a multithread, multifrontal, rank-revealing sparse QR
+NOTE: Version 2.0.0 of SuiteSparseQR is an alpha release.  This package
+adds a major new feature:  support for GPU computing.
+
+SuiteSparseQR is a multithreaded, multifrontal, rank-revealing sparse QR
 factorization method.
 
 QUICK START FOR MATLAB USERS (on Windows, Linux, Solaris, or the Mac OS): To

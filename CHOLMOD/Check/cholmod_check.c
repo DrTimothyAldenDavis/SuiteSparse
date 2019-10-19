@@ -1504,7 +1504,7 @@ static int check_factor
 	count, precise, init_print, ilast, lnz, head, tail, jprev, plast,
 	jnext, examine_super, nsuper, s, k1, k2, psi, psend, psx, nsrow, nscol,
 	ps2, psxend, ssize, xsize, maxcsize, maxesize, nsrow2, jj, ii, xtype ;
-    Int for_cholesky ;
+    Int check_Lpx ;
     const char *type = "factor" ;
 
     /* ---------------------------------------------------------------------- */
@@ -1891,8 +1891,11 @@ static int check_factor
 		ERR ("invalid: L->pi invalid") ;
 	    }
 
-            for_cholesky = (Lpx [0] != 123456) ;
-	    if (for_cholesky && (Lpx [0] != 0 || MAX (1, Lpx[nsuper]) != xsize))
+            /* If Lpx [0] is 123456, then supernodes are present but
+               Lpx [0...nsuper] is not defined, so don't check it.  This is
+               used in the non-GPU accelerated SPQR */
+            check_Lpx = (Lpx [0] != 123456) ;
+	    if (check_Lpx && (Lpx [0] != 0 || MAX (1, Lpx[nsuper]) != xsize))
 	    {
 		ERR ("invalid: L->px invalid") ;
 	    }
@@ -1909,7 +1912,7 @@ static int check_factor
 		nsrow2 = nsrow - nscol ;
 		ps2 = psi + nscol ;
 
-                if (for_cholesky)
+                if (check_Lpx)
                 {
                     psx = Lpx [s] ;
                     psxend = Lpx [s+1] ;
@@ -1922,14 +1925,14 @@ static int check_factor
 		P4 ("to "ID". ", k2-1) ;
 		P4 ("nz in first col: "ID".\n", nsrow) ;
 
-                if (for_cholesky)
+                if (check_Lpx)
                 {
                     P4 ("  values start "ID", ", psx) ;
                     P4 ("end "ID"\n", psxend) ;
                 }
 
 		if (k1 > k2 || k1 < 0 || k2 > n || nsrow < nscol || nsrow2 < 0
-                    || (for_cholesky && psxend - psx != nsrow * nscol))
+                    || (check_Lpx && psxend - psx != nsrow * nscol))
 		{
 		    ERR ("invalid supernode") ;
 		}

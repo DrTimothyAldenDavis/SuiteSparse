@@ -7,7 +7,23 @@ foreach file (../Source/*)
 	gcov $file >& /dev/null
 	end
 
-foreach file (spqr_*.?cov S*.?cov)
+foreach file (../SPQRGPU/*)
+	gcov $file >& /dev/null
+	end
+
+foreach file (../../SuiteSparse_GPURuntime/Source/*)
+	gcov $file >& /dev/null
+	end
+
+foreach file (../../GPUQREngine/Source/*p)
+	gcov $file >& /dev/null
+	end
+
+foreach file (../../GPUQREngine/Source/*/*p)
+	gcov $file >& /dev/null
+	end
+
+foreach file (*.?cov)
 	echo $file >> cov.out
 	grep "#####" $file | grep -v "__dev" | grep -v "__major" | \
 	    grep -v "#####:[ ]*[0-9]*:[{}]" | grep -v DEAD >> cov.out
@@ -15,7 +31,7 @@ foreach file (spqr_*.?cov S*.?cov)
 	end
 
 echo -n "statements not tested: "
-grep "\#\#\#\#\#:" spqr_*v S*v | grep -v DEAD | wc -l
+grep "\#\#\#\#\#:" *v | grep -v DEAD | wc -l
 
 set status=0
 

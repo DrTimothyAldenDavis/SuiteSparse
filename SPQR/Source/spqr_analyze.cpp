@@ -26,13 +26,14 @@ spqr_symbolic *spqr_analyze
     // inputs, not modified
     cholmod_sparse *A,
     int ordering,           // all options available
-    Long *Quser,             // user provided ordering, if given (may be NULL)
+    Long *Quser,            // user provided ordering, if given (may be NULL)
 
     int do_rank_detection,  // if TRUE, then rank deficient matrices may be
                             // considered during numerical factorization,
     // with tol >= 0 (tol < 0 is also allowed).  If FALSE, then the tol
     // parameter is ignored by the numerical factorization, and no rank
-    // detection is performed.
+    // detection is performed.  Ignored when using GPU acceleration
+    // (no rank detection is performed in that case).
 
     int keepH,              // if TRUE, keep the Householder vectors
 
@@ -48,7 +49,7 @@ spqr_symbolic *spqr_analyze
         *TaskStack, *InvPost ;
     Long nf, f, j, col1, col2, p, p1, p2, t, parent, anz, fp, csize_max,
         fmc, fnc, fpc, cm, cn, ci, fm, fn, cm_min, cm_max, csize_min, kf,
-        rm, rn, col, c, pc, rsize, maxfn, csize, m, n, k, klast,
+        rm, rn, col, c, pc, rsize, maxfn, csize, m, n, klast,
         stack, maxstack, rxsize, hisize,
         rhxsize, ctot, fsize, ns, ntasks, task ;
     cholmod_sparse *AT ;
@@ -56,6 +57,16 @@ spqr_symbolic *spqr_analyze
     int ok = TRUE, do_parallel_analysis ;
     double total_flops = 0 ;
     double *Flops, *Flops_subtree ;
+    Long *Sp, *Sj;
+
+#ifdef GPU_BLAS
+    spqr_gpu *QRgpu ;
+    Long *RjmapOffsets, *RimapOffsets ;
+    Long RjmapSize, RimapSize;
+    Long numStages;             // staging
+    Long *Stagingp, *StageMap, *FOffsets, *ROffsets, *SOffsets;
+    size_t *FSize, *RSize, *SSize;
+#endif
 
     // -------------------------------------------------------------------------
     // get inputs
@@ -70,12 +81,10 @@ spqr_symbolic *spqr_analyze
     m = A->nrow ;
     n = A->ncol ;
     Ap = (Long *) A->p ;
-    /* Ai = (Long *) A->i ; */
+    // Ai = (Long *) A->i ;
     anz = Ap [n] ;
 
     do_parallel_analysis = (cc->SPQR_grain > 1) ;
-
-    PR (("grainsize knobs %g %g\n", cc->SPQR_grain, cc->SPQR_small)) ;
 
     // The analysis for TBB parallelism attempts to construct a task graph with
     // leaf nodes with flop counts >= max ((total flops) / cc->SPQR_grain,
@@ -83,6 +92,51 @@ spqr_symbolic *spqr_analyze
     // count is less than cc->SPQR_small, then no parallelism will be
     // exploited.  A decent value of cc->SPQR_grain is about 2 times the
     // number of cores.
+
+    PR (("grainsize knobs %g %g\n", cc->SPQR_grain, cc->SPQR_small)) ;
+
+    // -------------------------------------------------------------------------
+    // GPU selection
+    // -------------------------------------------------------------------------
+
+#ifdef GPU_BLAS
+    // See if the user wants to use GPU acceleration.
+    bool useGPU ;
+
+    if (cc->useGPU == -1)
+    {
+        // only CHOLMOD uses this option.  Not in use yet for SPQR
+        useGPU = FALSE ;
+    }
+    else
+    {
+        useGPU = cc->useGPU ;
+    }
+
+    // Disable the GPU if the Householder vectors are requested, if we're
+    // using TBB, if rank detection is requested, or if A is not real
+    if (keepH || do_parallel_analysis || do_rank_detection ||
+        A->xtype != CHOLMOD_REAL)
+    {
+        useGPU = FALSE ;
+    }
+
+    PR (("GPU: %d : %d %d %d %d", cc->useGPU,
+        keepH, do_parallel_analysis,
+        do_rank_detection, A->xtype != CHOLMOD_REAL)) ;
+
+    if (useGPU)
+    {
+        PR ((" ============================= USE GPU")) ;
+    }
+    PR (("\n")) ;
+
+#else
+    // the GPU is not in use (not installed at compile-time)
+    bool useGPU = FALSE ;
+#endif
+
+    // cc->for_GPU = (int) useGPU ;    // keep track of if we are using the GPU
 
     // -------------------------------------------------------------------------
     // allocate workspace for this function and cholmod_l_postorder
@@ -222,36 +276,11 @@ spqr_symbolic *spqr_analyze
         Quser = NULL ;
     }
 
-#if 0
-    // Version 1.1.2 and earlier:
-    else // if (ordering == SPQR_ORDERING_DEFAULT)
-         // order SPQR_ORDERING_METIS but METIS not installed
-    {
-        // The default ordering strategy is to use COLAMD when m <= 2*n
-        // and to use the CHOLMOD default ordering otherwise (use AMD(A'A)
-        // and then try METIS if AMD finds a high degree of fill-in, and
-        // take the best of both AMD and METIS).
-        if (m <= 2*n)
-        {
-            // COLAMD (A)
-            cc->nmethods = 1 ;
-            cc->method [0].ordering = CHOLMOD_COLAMD ;
-            ordering = SPQR_ORDERING_COLAMD ;
-        }
-        else
-        {
-            // default CHOLMOD ordering:  use AMD(A'A) and then try METIS(A'A)
-            // if AMD finds a high degree of fill-in, and take the best of
-            // both.  METIS is skipped if not installed.
-            cc->nmethods = 0 ;
-        }
-        cc->postorder = TRUE ;
-        Quser = NULL ;
-    }
-#endif
-
-    // multifrontal QR ordering and analysis
-    Sc = cholmod_l_analyze_p2 (FALSE, AT, (SuiteSparse_long *) Quser, NULL, 0, cc) ;
+    // multifrontal QR ordering and analysis.
+    // The GPU-accelerated SPQR requires additional supernodal analysis.
+    Sc = cholmod_l_analyze_p2 (
+        useGPU ? CHOLMOD_ANALYZE_FOR_SPQRGPU : CHOLMOD_ANALYZE_FOR_SPQR,
+        AT, (SuiteSparse_long *) Quser, NULL, 0, cc) ;
 
     // record the actual ordering used
     if (Sc != NULL)
@@ -307,6 +336,8 @@ spqr_symbolic *spqr_analyze
     QRsym->nf = nf = Sc->nsuper ;       // number of supernodes / fronts
     QRsym->rjsize = Sc->ssize ;         // size of int part of supernodal R
     QRsym->keepH = keepH ;
+    QRsym->maxcsize = Sc->maxcsize;
+    QRsym->maxesize = Sc->maxesize;
 
     QRsym->Qfill = (Long *) Sc->Perm ;           // size n column perm
     Sc->Perm = NULL ;
@@ -320,7 +351,9 @@ spqr_symbolic *spqr_analyze
     QRsym->Rj = Rj = (Long *) Sc->s ;            // Rj is size rjsize
     Sc->s = NULL ;
 
-    // Sc->ColCount and Sc->px not needed
+    // ColCount is required for the GPU factorization
+    QRsym->ColCount = (Long *) Sc->ColCount ;
+    Sc->ColCount = NULL ;
 
     cholmod_l_free_factor (&Sc, cc) ;
 
@@ -335,8 +368,10 @@ spqr_symbolic *spqr_analyze
     QRsym->Post   = Post   = (Long *) cholmod_l_malloc (nf+1, sizeof(Long), cc);
     QRsym->PLinv           = (Long *) cholmod_l_malloc (m,    sizeof(Long), cc);
     QRsym->Sleft  = Sleft  = (Long *) cholmod_l_malloc (n+2,  sizeof(Long), cc);
-    QRsym->Sp              = (Long *) cholmod_l_malloc (m+1,  sizeof(Long), cc);
-    QRsym->Sj              = (Long *) cholmod_l_malloc (anz,  sizeof(Long), cc);
+    QRsym->Sp     = Sp     = (Long *) cholmod_l_malloc (m+1,  sizeof(Long), cc);
+    QRsym->Sj     = Sj     = (Long *) cholmod_l_malloc (anz,  sizeof(Long), cc);
+    QRsym->Fm              = (Long *) cholmod_l_malloc (nf+1, sizeof(Long), cc);
+    QRsym->Cm              = (Long *) cholmod_l_malloc (nf+1, sizeof(Long), cc);
 
     if (keepH)
     {
@@ -357,6 +392,64 @@ spqr_symbolic *spqr_analyze
     QRsym->Stack_maxstack = NULL ;
     QRsym->ntasks = EMPTY ;         // computed later
     QRsym->ns = EMPTY ;
+
+    // allocated later (or skipped if not using GPU)
+    QRsym->QRgpu = NULL ;
+
+#ifdef GPU_BLAS
+
+    QRgpu = NULL ;
+    RjmapOffsets = NULL ;
+    RimapOffsets = NULL ;
+    Stagingp = NULL ;
+    StageMap = NULL ;
+    FSize = NULL ;
+    RSize = NULL ;
+    SSize = NULL ;
+    FOffsets = NULL ;
+    ROffsets = NULL ;
+    SOffsets = NULL ;
+
+    // FUTURE: Add a parameter that disables the GPU if the arithmetic
+    // intensity drops below a user-definable threshold.
+
+    if (useGPU)
+    {
+        // use calloc so that the pointers inside are all NULL
+        QRgpu = (spqr_gpu *) cholmod_l_calloc (1, sizeof(spqr_gpu), cc) ;
+        QRsym->QRgpu = QRgpu ;
+        if(QRgpu)
+        {
+            RimapOffsets = (Long*) cholmod_l_malloc(nf, sizeof(Long), cc) ;
+            QRgpu->RimapOffsets = RimapOffsets  ;
+
+            RjmapOffsets = (Long*) cholmod_l_malloc(nf, sizeof(Long), cc) ;
+            QRgpu->RjmapOffsets = RjmapOffsets ;
+
+            // allocated later
+            QRgpu->numStages = 0 ;
+            QRgpu->Stagingp = (Long*)   NULL ;
+            QRgpu->StageMap = (Long*)   NULL ;
+            QRgpu->FSize    = (size_t*) NULL ;
+            QRgpu->RSize    = (size_t*) NULL ;
+            QRgpu->SSize    = (size_t*) NULL ;
+            QRgpu->FOffsets = (Long*)   NULL ;
+            QRgpu->ROffsets = (Long*)   NULL ;
+            QRgpu->SOffsets = (Long*)   NULL ;
+        }
+
+        if (cc->status < CHOLMOD_OK)
+        {
+            // out of memory
+            spqr_freesym (&QRsym, cc) ;
+            FREE_WORK ;
+            return (NULL) ;
+        }
+    }
+
+    // initialize assembly map sizes (used later)
+    RimapSize = RjmapSize = 0;
+#endif
 
     // -------------------------------------------------------------------------
     // allocate workspace needed for parallel analysis
@@ -459,6 +552,7 @@ spqr_symbolic *spqr_analyze
     // to succeed since enough workspace has already been allocated above.
     cholmod_l_postorder ((SuiteSparse_long *) Parent, nf+1,
         (SuiteSparse_long *) Weight, (SuiteSparse_long *) Post, cc) ;
+
     ASSERT (cc->status == CHOLMOD_OK) ;
     ASSERT (Post [nf] == nf) ;          // placeholder is last
 
@@ -519,13 +613,13 @@ spqr_symbolic *spqr_analyze
 
     ASSERT (nf <= n) ;
 
-    // Iwork workspace usage:
-    Fm = W ;                // size nf+1 [
-    Cm = Fm + (nf+1) ;      // size nf+1 [
+    // was Iwork workspace usage, now saved in QRsym:
+    Fm = QRsym->Fm ;
+    Cm = QRsym->Cm ;
 
     // The space for Stair and Fmap (total size 2*n+2) is later used for
     // Task and InvPost (total size 2*nf+2)
-    Stair = Cm + (nf+1) ;   // size n+1 [
+    Stair = W ;             // size n+1 [
     Fmap = Stair + (n+1) ;  // size n+1 [
 
     stack = 0 ;             // current stack usage
@@ -688,7 +782,7 @@ spqr_symbolic *spqr_analyze
         // The front F is at most fm-by-fn, with fp pivotal columns.
 
         fsize = spqr_mult (fm, fn, &ok) ;
-        PR (("fm %ld fn %ld rank %ld\n", fm, fn, do_rank_detection)) ;
+        PR (("fm %ld fn %ld rank %d\n", fm, fn, do_rank_detection)) ;
         if (!ok)
         {
             // problem too large
@@ -748,6 +842,32 @@ spqr_symbolic *spqr_analyze
         ASSERT (cm_max <= cn) ;
         ASSERT (cm_min <= cm_max) ;
         ASSERT (csize_min <= csize_max) ;
+
+#ifdef GPU_BLAS
+        if(useGPU)
+        {
+            // Compute Rjmap Offsets.
+            RjmapOffsets[f] = RjmapSize;
+            RjmapSize += fn - fp;               // # cols - # piv cols
+
+            // Compute Rimap Offsets.
+            RimapOffsets[f] = RimapSize;
+            RimapSize += Cm[f];                 // # rows of C
+
+            // Munge Sj to cut down on assembly time.
+            for(Long k=0 ; k<fp ; k++)
+            {
+                /* assemble all rows whose leftmost global column index is
+                 * k+col1 */
+                Long leftcol = k + col1 ;
+                for (Long row = Sleft[leftcol] ; row < Sleft[leftcol+1] ; row++)
+                {
+                    /* scatter the row into F */
+                    for (p=Sp[row] ; p<Sp[row+1] ; p++) Sj[p] = Fmap[Sj[p]];
+                }
+            }
+        }
+#endif
 
         // ---------------------------------------------------------------------
         // determine flop counts and upper bounds on the size R+H if H kept
@@ -825,16 +945,25 @@ spqr_symbolic *spqr_analyze
 
         if (keepH)
         {
-            // allocate RH in place of F (no additional memory required) 
+            // allocate RH in place of F (no additional memory required)
             stack += rhsize ;
 
         }
         else
         {
-            // allocate R in place of F (no additional memory required) 
+            // allocate R in place of F (no additional memory required)
             stack += rsize ;
         }
     }
+
+#ifdef GPU_BLAS
+    if(useGPU)
+    {
+        /* Save GPU size members. */
+        QRgpu->RjmapSize = RjmapSize;
+        QRgpu->RimapSize = RimapSize;
+    }
+#endif
 
     // -------------------------------------------------------------------------
     // compute Hip
@@ -873,7 +1002,7 @@ spqr_symbolic *spqr_analyze
     }
 
     // -------------------------------------------------------------------------
-    // finalize flop counts and turn off parallelism if problem too small 
+    // finalize flop counts and turn off parallelism if problem too small
     // -------------------------------------------------------------------------
 
     if (do_parallel_analysis)
@@ -922,6 +1051,69 @@ spqr_symbolic *spqr_analyze
 
     PR (("flops %g\n", total_flops)) ;
 
+#ifdef GPU_BLAS
+
+    // -------------------------------------------------------------------------
+    // if we're using GPU acceleration, construct static gpu stages
+    // -------------------------------------------------------------------------
+
+    if(useGPU)
+    {
+        /* Compute a schedule based on memory requirements. */
+        QRgpu->Stagingp = (Long*)   cholmod_l_malloc(nf+2, sizeof(Long), cc);
+        QRgpu->StageMap = (Long*)   cholmod_l_malloc(nf, sizeof(Long), cc);
+        QRgpu->FSize    = (size_t*) cholmod_l_malloc(nf+1, sizeof(size_t), cc);
+        QRgpu->RSize    = (size_t*) cholmod_l_malloc(nf+1, sizeof(size_t), cc);
+        QRgpu->SSize    = (size_t*) cholmod_l_malloc(nf+1, sizeof(size_t), cc);
+        QRgpu->FOffsets = (Long*)   cholmod_l_malloc(nf, sizeof(Long), cc);
+        QRgpu->ROffsets = (Long*)   cholmod_l_malloc(nf, sizeof(Long), cc);
+        QRgpu->SOffsets = (Long*)   cholmod_l_malloc(nf, sizeof(Long), cc);
+
+        Stagingp = QRgpu->Stagingp ;
+        StageMap = QRgpu->StageMap ;
+        FSize    = QRgpu->FSize    ;
+        RSize    = QRgpu->RSize    ;
+        SSize    = QRgpu->SSize    ;
+        FOffsets = QRgpu->FOffsets ;
+        ROffsets = QRgpu->ROffsets ;
+        SOffsets = QRgpu->SOffsets ;
+
+        /* Check for out of memory when allocating staging fields. */
+        if (cc->status < CHOLMOD_OK)
+        {
+            // out of memory
+            spqr_freesym (&QRsym, cc) ;
+            FREE_WORK ;
+            return (NULL) ;
+        }
+
+        /* Compute the front staging. */
+        bool feasible;
+        spqrgpu_computeFrontStaging (nf, Parent, Childp, Child, Fm, Cm, Rp,
+            Sp, Sleft, Super, Post, RimapSize, RjmapSize,
+            &feasible, &numStages, Stagingp, StageMap,
+            FSize, RSize, SSize, FOffsets, ROffsets, SOffsets, cc);
+
+        #ifndef NPRINT
+        PR (("Is schedule feasible? %s with %ld stages.\n",
+            feasible ? "yes" : "no", numStages)) ;
+        #endif
+
+        /* If we're not feasible then return that the problem is
+           too large to run on the GPU. */
+        if(!feasible)
+        {
+            spqr_freesym (&QRsym, cc) ;
+            FREE_WORK ;
+            return (NULL) ;
+        }
+
+        // save the total # of stages
+        QRgpu->numStages = numStages;
+    }
+
+#endif
+
     // -------------------------------------------------------------------------
     // quick return if no parallel analysis
     // -------------------------------------------------------------------------
@@ -957,10 +1149,10 @@ spqr_symbolic *spqr_analyze
     // Since Stair and Fmap are no longer needed, we can use that workspace for
     // Task and InvPost.  Fm and Cm in W [0:...] are still needed.
 
-    Task = Stair ;                      // size nf+1 [
+    Task = W ;                          // size nf+1 [
     InvPost = Task + (nf+1) ;           // size nf+1 [
 
-    for (k = 0 ; k <= nf ; k++)
+    for (Long k = 0 ; k <= nf ; k++)
     {
         f = Post [k] ;
         InvPost [f] = k ;
@@ -1067,7 +1259,7 @@ spqr_symbolic *spqr_analyze
             if (flops <= small_flops)
             {
                 // this task is small; register it and its flop count w/ parent
-                PR (("    a new small task child of %ld\n", parent)) ;  
+                PR (("    a new small task child of %ld\n", parent)) ;
                 ASSIGN_SMALL_TASK (parent, task) ;
                 Flops_subtree [parent] = flops ;
             }
@@ -1099,7 +1291,7 @@ spqr_symbolic *spqr_analyze
         // ---------------------------------------------------------------------
 
         klast = InvPost [flast] ;
-        for (k = kf ; k <= klast ; k++)
+        for (Long k = kf ; k <= klast ; k++)
         {
             f = Post [k] ;
             PR (("    assign %ld to %ld\n", f, task)) ;
@@ -1486,7 +1678,7 @@ spqr_symbolic *spqr_analyze
         ASSERT (fm >= 0) ;
         ASSERT (fn >= 0) ;
         ASSERT (fp >= 0 && fp <= fn) ;
-        PR (("fm %ld fn %ld rank %ld\n", fm, fn, do_rank_detection)) ;
+        PR (("fm %ld fn %ld rank %d\n", fm, fn, do_rank_detection)) ;
         ASSERT (IMPLIES (keepH, fm == (Hip [f+1] - Hip [f]))) ;
 
         // ---------------------------------------------------------------------
@@ -1585,7 +1777,7 @@ spqr_symbolic *spqr_analyze
         Stack_maxstack [s] = sm ;   // new max of stack s
     }
 
-    // Fm and Cm no longer needed in Iwork ] ]
+    // Cm no longer needed in Iwork ]
 
     // -------------------------------------------------------------------------
     // free workspace and return result

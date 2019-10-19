@@ -52,3 +52,5 @@ Matrix     38-by-38     nnz:     50 residual:  2.4e-01 rank:     14
 Matrix     24-by-24     nnz:     81 residual:  2.1e-02 rank:     18
 ./qrdemoc < ../Matrix/young1c.mtx
 Matrix    841-by-841    nnz:   4089 residual:  2.1e-16 rank:    841
+./qrdemoc < ../Matrix/lp_e226_transposed.mtx
+Matrix    472-by-223    nnz:   2768 residual:  9.2e+00 rank:    223

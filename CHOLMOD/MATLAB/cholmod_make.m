@@ -1,4 +1,4 @@
-function cholmod_make
+function cholmod_make (metis_path)
 %CHOLMOD_MAKE compiles the CHOLMOD mexFunctions
 %
 % Example:
@@ -39,6 +39,11 @@ if (is64)
     flags = '-largeArrayDims' ;
 end
 
+% MATLAB 8.3.0 now has a -silent option to keep 'mex' from burbling too much
+if (~verLessThan ('matlab', '8.3.0'))
+    flags = ['-silent ' flags] ;
+end
+
 include = '-I. -I../../AMD/Include -I../../COLAMD/Include -I../../CCOLAMD/Include -I../../CAMD/Include -I../Include -I../../SuiteSparse_config' ;
 
 if (verLessThan ('matlab', '7.0'))
@@ -55,7 +60,9 @@ if (verLessThan ('matlab', '6.5'))
 end
 
  % Determine if METIS is available
-metis_path = '../../metis-4.0' ;
+if (nargin < 1)
+    metis_path = '../../metis-4.0' ;
+end
 have_metis = exist ([metis_path '/Lib'], 'dir') ;
 
  % fix the METIS 4.0.1 rename.h file

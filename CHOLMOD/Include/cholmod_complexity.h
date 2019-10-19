@@ -128,7 +128,7 @@ x [2*(p)+1] -= (-ax [2*(q)+1]) * bx [2*(r)] + ax [2*(q)  ] * bx [2*(r)+1]
 
 /* s = s / a */
 #define C_DIV(x,z,p,ax,az,q) \
-    Common->complex_divide ( \
+    SuiteSparse_config.divcomplex_func ( \
 	      x [2*(p)],  x [2*(p)+1], \
 	     ax [2*(q)], ax [2*(q)+1], \
 	     &x [2*(p)], &x [2*(p)+1])
@@ -219,9 +219,10 @@ x [2*(p)+1] -= (-ax [2*(q)+1]) * bx [2*(r)] + ax [2*(q)  ] * bx [2*(r)+1]
 #define Z_CLEAR_IMAG(x,z,p) \
     z [p] = 0
 
-/* s = s/a */
+/* s = s / a */
 #define Z_DIV(x,z,p,ax,az,q) \
-    Common->complex_divide (x [p], z [p], ax [q], az [q], &x [p], &z [p])
+    SuiteSparse_config.divcomplex_func \
+        (x [p], z [p], ax [q], az [q], &x [p], &z [p])
 
 /* s -= conj(a)*a ; note that the result of conj(a)*a is real */
 #define Z_LLDOT(x,p, ax,az,q) \

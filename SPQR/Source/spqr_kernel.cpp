@@ -6,7 +6,7 @@
 
 #include "spqr.hpp"
 
-template <typename Entry> void spqr_kernel
+template <typename Entry> void spqr_kernel // _worker
 (
     Long task,
     spqr_blob <Entry> *Blob
@@ -27,6 +27,19 @@ template <typename Entry> void spqr_kernel
     Entry **                 Cblock = Blob->Cblock ;
     Entry *                  Sx = Blob->Sx ;
     cholmod_common *         cc = Blob->cc ;
+
+    // -------------------------------------------------------------------------
+    // if we're using the GPU, reroute into the gpu-accelerated kernel code
+    // -------------------------------------------------------------------------
+
+#ifdef GPU_BLAS
+    if (QRsym->QRgpu != NULL)
+    {
+        ASSERT (task == 0) ;
+        spqrgpu_kernel (Blob) ;
+        return ;
+    }
+#endif
 
     // -------------------------------------------------------------------------
     // get the contents of the QR symbolic object
@@ -320,7 +333,6 @@ template <typename Entry> void spqr_kernel
     Work [stack].wscale = wscale ;
     Work [stack].wssq   = wssq   ;
 }
-
 
 // =============================================================================
 

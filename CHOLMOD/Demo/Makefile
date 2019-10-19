@@ -76,7 +76,7 @@ all: code
 
 # run on a big matrix.  This exercises the GPU, if compiled to exploit it
 big: code
-	./cholmod_l_demo < ~/audikw_1.mtx
+	tcsh gpu.sh
 
 distclean: purge
 

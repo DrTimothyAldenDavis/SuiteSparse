@@ -1,3 +1,7 @@
+Oct 10, 2014: version 1.2.1
+
+    modified MATLAB/btf_make.m.  No change to C code except version number.
+
 Jun 1, 2012: version 1.2.0
 
     * changed from UFconfig to SuiteSparse_config

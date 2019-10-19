@@ -3,6 +3,7 @@
 // =============================================================================
 
 // Factorize all the tasks in parallel with TBB.
+// The GPU is not used.
 
 #ifdef HAVE_TBB
 #include "spqr.hpp"

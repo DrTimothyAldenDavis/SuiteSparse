@@ -666,6 +666,8 @@ template <typename Entry> SuiteSparseQR_factorization <Entry> *spqr_1factor
     // rank estimate of A, including singletons but excluding the columns of
     // of B, in case [A B] was factorized.
     QR->rank = n1rows + QRnum->rank1 ;
+    PR (("rank estimate of A: QR->rank = %ld = %ld + %ld\n",
+    QR->rank, n1rows, QRnum->rank1)) ;
 
     // -------------------------------------------------------------------------
     // construct global row permutation if H is kept and singletons exist

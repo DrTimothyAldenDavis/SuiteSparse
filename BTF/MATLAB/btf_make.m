@@ -16,6 +16,11 @@ if (~isempty (strfind (computer, '64')))
     mexcmd = [mexcmd '-largeArrayDims '] ;
 end
 
+% MATLAB 8.3.0 now has a -silent option to keep 'mex' from burbling too much
+if (~verLessThan ('matlab', '8.3.0'))
+    mexcmd = [mexcmd ' -silent '] ;
+end
+
 s = [mexcmd 'maxtrans.c ../Source/btf_maxtrans.c'] ;
 if (details)
     fprintf ('%s\n', s) ;

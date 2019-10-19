@@ -1,3 +1,7 @@
+Oct 17, 2014: version 2.0.0
+
+    * MAJOR UPDATE:  added GPU support.  Up to 11x faster than CPU version.
+
 July 18, 2014: version 1.3.3
 
     * minor change to SPQR/Demo/Makefile, for the case when CHOLMOD is compiled

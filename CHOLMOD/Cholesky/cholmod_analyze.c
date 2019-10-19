@@ -399,14 +399,14 @@ int CHOLMOD(analyze_ordering)
 /* === cholmod_analyze_p2 =================================================== */
 /* ========================================================================== */
 
-/* Ordering and analysis for sparse Cholesky or sparse QR.  CHOLMOD itself
- * always uses for_cholesky = TRUE.  The for_cholesky = FALSE option is
- * for SuiteSparseQR only. */
+/* Ordering and analysis for sparse Cholesky or sparse QR.  */
 
 cholmod_factor *CHOLMOD(analyze_p2)
 (
     /* ---- input ---- */
-    int for_cholesky,   /* if TRUE, then analyze for Cholesky; else for QR */
+    int for_whom,       /* FOR_SPQR     (0): for SPQR but not GPU-accelerated
+                           FOR_CHOLESKY (1): for Cholesky (GPU or not)
+                           FOR_SPQRGPU  (2): for SPQR with GPU acceleration */
     cholmod_sparse *A,	/* matrix to order and analyze */
     Int *UserPerm,	/* user-provided permutation, size A->nrow */
     Int *fset,		/* subset of 0:(A->ncol)-1 */
@@ -925,7 +925,7 @@ cholmod_factor *CHOLMOD(analyze_p2)
 		&A1, &A2, &S, &F, Common) ;
 
 	/* workspace: Flag (nrow), Head (nrow), Iwork (5*nrow) */
-	CHOLMOD(super_symbolic2) (for_cholesky, S, F, Lparent, L, Common) ;
+	CHOLMOD(super_symbolic2) (for_whom, S, F, Lparent, L, Common) ;
 	PRINT1 (("status %d\n", Common->status)) ;
 
 	CHOLMOD(free_sparse) (&A1, Common) ;

@@ -1,10 +1,9 @@
-make[1]: Entering directory `/cise/research/sparse/SuiteSparse/CXSparse/Demo'
 ./cs_idemo < ../Matrix/t2
 
 --- cs_idemo, size of CS_INT: 4
 
 T:
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 triplet: 4-by-4, nzmax: 16 nnz: 10
     2 2 : (3, 3.14159)
     1 0 : (3.1, 42)
@@ -18,7 +17,7 @@ triplet: 4-by-4, nzmax: 16 nnz: 10
     2 1 : (1.7, 1)
 
 Treal:
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 triplet: 4-by-4, nzmax: 16 nnz: 10
     2 2 : 3
     1 0 : 3.1
@@ -32,7 +31,7 @@ triplet: 4-by-4, nzmax: 16 nnz: 10
     2 1 : 1.7
 
 Timag:
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 triplet: 4-by-4, nzmax: 16 nnz: 10
     2 2 : 3.14159
     1 0 : 42
@@ -46,7 +45,7 @@ triplet: 4-by-4, nzmax: 16 nnz: 10
     2 1 : 1
 
 A:
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 106.075
     col 0 : locations 0 to 2
       1 : (3.1, 42)
@@ -64,7 +63,7 @@ CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
       1 : (0.9, 99)
 
 C1 = real(A):
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 11.1
     col 0 : locations 0 to 2
       1 : 3.1
@@ -82,7 +81,7 @@ CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
       1 : 0.9
 
 C2 = imag(A):
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 106
     col 0 : locations 0 to 2
       1 : 42
@@ -100,7 +99,7 @@ CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
       1 : 99
 
 A1:
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 11.1
     col 0 : locations 0 to 2
       1 : (3.1, 0)
@@ -118,7 +117,7 @@ CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
       1 : (0.9, 0)
 
 A2:
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 106
     col 0 : locations 0 to 2
       1 : (0, 42)
@@ -136,7 +135,7 @@ CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
       1 : (0, 99)
 
 B = conj(A):
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 106.075
     col 0 : locations 0 to 2
       1 : (3.1, -42)
@@ -157,7 +156,7 @@ CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 --- cs_ldemo, size of CS_INT: 8
 
 T:
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 triplet: 4-by-4, nzmax: 16 nnz: 10
     2 2 : (3, 3.14159)
     1 0 : (3.1, 42)
@@ -171,7 +170,7 @@ triplet: 4-by-4, nzmax: 16 nnz: 10
     2 1 : (1.7, 1)
 
 Treal:
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 triplet: 4-by-4, nzmax: 16 nnz: 10
     2 2 : 3
     1 0 : 3.1
@@ -185,7 +184,7 @@ triplet: 4-by-4, nzmax: 16 nnz: 10
     2 1 : 1.7
 
 Timag:
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 triplet: 4-by-4, nzmax: 16 nnz: 10
     2 2 : 3.14159
     1 0 : 42
@@ -199,7 +198,7 @@ triplet: 4-by-4, nzmax: 16 nnz: 10
     2 1 : 1
 
 A:
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 106.075
     col 0 : locations 0 to 2
       1 : (3.1, 42)
@@ -217,7 +216,7 @@ CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
       1 : (0.9, 99)
 
 C1 = real(A):
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 11.1
     col 0 : locations 0 to 2
       1 : 3.1
@@ -235,7 +234,7 @@ CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
       1 : 0.9
 
 C2 = imag(A):
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 106
     col 0 : locations 0 to 2
       1 : 42
@@ -253,7 +252,7 @@ CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
       1 : 99
 
 A1:
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 11.1
     col 0 : locations 0 to 2
       1 : (3.1, 0)
@@ -271,7 +270,7 @@ CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
       1 : (0.9, 0)
 
 A2:
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 106
     col 0 : locations 0 to 2
       1 : (0, 42)
@@ -289,7 +288,7 @@ CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
       1 : (0, 99)
 
 B = conj(A):
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 106.075
     col 0 : locations 0 to 2
       1 : (3.1, -42)
@@ -307,7 +306,7 @@ CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
       1 : (0.9, -99)
 ./cs_demo1 < ../Matrix/t1
 T:
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 triplet: 4-by-4, nzmax: 16 nnz: 10
     2 2 : 3
     1 0 : 3.1
@@ -320,7 +319,7 @@ triplet: 4-by-4, nzmax: 16 nnz: 10
     0 0 : 4.5
     2 1 : 1.7
 A:
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 11.1
     col 0 : locations 0 to 2
       1 : 3.1
@@ -337,7 +336,7 @@ CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
       3 : 1
       1 : 0.9
 AT:
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 7.7
     col 0 : locations 0 to 1
       0 : 4.5
@@ -354,7 +353,7 @@ CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
       1 : 0.4
       3 : 1
 D:
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 4-by-4, nzmax: 16 nnz: 16, 1-norm: 139.58
     col 0 : locations 0 to 3
       1 : 13.95
@@ -394,7 +393,7 @@ tiny entries dropped: 10
 blocks: 38 singletons: 37 structural rank: 183
 QR   natural    time:     0.00 resid: 1.42e-27
 QR   amd(A'*A)  time:     0.00 resid: 3.35e-28
-LU   natural    time:     0.01 resid: 6.20e-28
+LU   natural    time:     0.00 resid: 6.20e-28
 LU   amd(A+A')  time:     0.00 resid: 1.55e-27
 LU   amd(S'*S)  time:     0.00 resid: 6.98e-28
 LU   amd(A'*A)  time:     0.00 resid: 6.98e-28
@@ -424,8 +423,8 @@ QR   amd(A'*A)  time:     0.00 resid: 1.61e-02
 
 --- Matrix: 492-by-490, nnz: 49920 (sym: 0: nnz 0), norm: 9.29e-01
 blocks: 10 singletons: 8 structural rank: 448
-QR   natural    time:     0.05 resid:      nan
-QR   amd(A'*A)  time:     0.06 resid:      nan
+QR   natural    time:     0.04 resid:      nan
+QR   amd(A'*A)  time:     0.05 resid:      nan
 ./cs_demo2 < ../Matrix/bcsstk01
 
 --- Matrix: 48-by-48, nnz: 224 (sym: -1: nnz 400), norm: 3.57e+09
@@ -448,19 +447,19 @@ numeric  chol time     0.00
 solve    chol time     0.00
 original: resid: 2.55e-19
 update:   time:     0.00
-update:   time:     0.00 (incl solve) resid: 9.66e-19
-rechol:   time:     0.00 (incl solve) resid: 1.55e-18
+update:   time:     0.00 (incl solve) resid: 3.52e-18
+rechol:   time:     0.00 (incl solve) resid: 2.93e-18
 downdate: time:     0.00
-downdate: time:     0.00 (incl solve) resid: 3.74e-17
+downdate: time:     0.00 (incl solve) resid: 4.32e-17
 ./cs_demo2 < ../Matrix/bcsstk16
 
 --- Matrix: 4884-by-4884, nnz: 147631 (sym: -1: nnz 290378), norm: 7.01e+09
 blocks: 75 singletons: 74 structural rank: 4884
-QR   amd(A'*A)  time:     0.57 resid: 2.01e-22
-LU   amd(A+A')  time:     0.30 resid: 1.10e-22
-LU   amd(S'*S)  time:     0.30 resid: 1.28e-22
-LU   amd(A'*A)  time:     0.31 resid: 1.78e-22
-Chol amd(A+A')  time:     0.10 resid: 1.19e-22
+QR   amd(A'*A)  time:     0.51 resid: 2.01e-22
+LU   amd(A+A')  time:     0.26 resid: 1.10e-22
+LU   amd(S'*S)  time:     0.26 resid: 1.28e-22
+LU   amd(A'*A)  time:     0.27 resid: 1.78e-22
+Chol amd(A+A')  time:     0.08 resid: 1.19e-22
 ./cs_demo3 < ../Matrix/bcsstk16
 
 --- Matrix: 4884-by-4884, nnz: 147631 (sym: -1: nnz 290378), norm: 7.01e+09
@@ -471,13 +470,13 @@ numeric  chol time     0.08
 solve    chol time     0.00
 original: resid: 1.19e-22
 update:   time:     0.00
-update:   time:     0.01 (incl solve) resid: 1.12e-23
-rechol:   time:     0.09 (incl solve) resid: 1.17e-23
+update:   time:     0.00 (incl solve) resid: 1.71e-23
+rechol:   time:     0.07 (incl solve) resid: 1.61e-23
 downdate: time:     0.00
-downdate: time:     0.00 (incl solve) resid: 4.09e-22
+downdate: time:     0.00 (incl solve) resid: 1.24e-21
 ./cs_di_demo1 < ../Matrix/t1
 T:
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 triplet: 4-by-4, nzmax: 16 nnz: 10
     2 2 : 3
     1 0 : 3.1
@@ -490,7 +489,7 @@ triplet: 4-by-4, nzmax: 16 nnz: 10
     0 0 : 4.5
     2 1 : 1.7
 A:
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 11.1
     col 0 : locations 0 to 2
       1 : 3.1
@@ -507,7 +506,7 @@ CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
       3 : 1
       1 : 0.9
 AT:
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 7.7
     col 0 : locations 0 to 1
       0 : 4.5
@@ -524,7 +523,7 @@ CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
       1 : 0.4
       3 : 1
 D:
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 4-by-4, nzmax: 16 nnz: 16, 1-norm: 139.58
     col 0 : locations 0 to 3
       1 : 13.95
@@ -595,7 +594,7 @@ QR   amd(A'*A)  time:     0.00 resid: 1.61e-02
 --- Matrix: 492-by-490, nnz: 49920 (sym: 0: nnz 0), norm: 9.29e-01
 blocks: 10 singletons: 8 structural rank: 448
 QR   natural    time:     0.04 resid:      nan
-QR   amd(A'*A)  time:     0.06 resid:      nan
+QR   amd(A'*A)  time:     0.05 resid:      nan
 ./cs_di_demo2 < ../Matrix/bcsstk01
 
 --- Matrix: 48-by-48, nnz: 224 (sym: -1: nnz 400), norm: 3.57e+09
@@ -618,19 +617,19 @@ numeric  chol time     0.00
 solve    chol time     0.00
 original: resid: 2.55e-19
 update:   time:     0.00
-update:   time:     0.00 (incl solve) resid: 9.66e-19
-rechol:   time:     0.00 (incl solve) resid: 1.55e-18
+update:   time:     0.00 (incl solve) resid: 3.52e-18
+rechol:   time:     0.00 (incl solve) resid: 2.93e-18
 downdate: time:     0.00
-downdate: time:     0.00 (incl solve) resid: 3.74e-17
+downdate: time:     0.00 (incl solve) resid: 4.32e-17
 ./cs_di_demo2 < ../Matrix/bcsstk16
 
 --- Matrix: 4884-by-4884, nnz: 147631 (sym: -1: nnz 290378), norm: 7.01e+09
 blocks: 75 singletons: 74 structural rank: 4884
-QR   amd(A'*A)  time:     0.57 resid: 2.01e-22
-LU   amd(A+A')  time:     0.29 resid: 1.10e-22
-LU   amd(S'*S)  time:     0.30 resid: 1.28e-22
-LU   amd(A'*A)  time:     0.32 resid: 1.78e-22
-Chol amd(A+A')  time:     0.09 resid: 1.19e-22
+QR   amd(A'*A)  time:     0.51 resid: 2.01e-22
+LU   amd(A+A')  time:     0.26 resid: 1.10e-22
+LU   amd(S'*S)  time:     0.26 resid: 1.28e-22
+LU   amd(A'*A)  time:     0.28 resid: 1.78e-22
+Chol amd(A+A')  time:     0.08 resid: 1.19e-22
 ./cs_di_demo3 < ../Matrix/bcsstk16
 
 --- Matrix: 4884-by-4884, nnz: 147631 (sym: -1: nnz 290378), norm: 7.01e+09
@@ -638,16 +637,16 @@ Chol amd(A+A')  time:     0.09 resid: 1.19e-22
 chol then update/downdate amd(A+A')  
 symbolic chol time     0.01
 numeric  chol time     0.08
-solve    chol time     0.01
+solve    chol time     0.00
 original: resid: 1.19e-22
 update:   time:     0.00
-update:   time:     0.00 (incl solve) resid: 1.12e-23
-rechol:   time:     0.08 (incl solve) resid: 1.17e-23
+update:   time:     0.00 (incl solve) resid: 1.71e-23
+rechol:   time:     0.08 (incl solve) resid: 1.61e-23
 downdate: time:     0.00
-downdate: time:     0.01 (incl solve) resid: 4.09e-22
+downdate: time:     0.00 (incl solve) resid: 1.24e-21
 ./cs_dl_demo1 < ../Matrix/t1
 T:
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 triplet: 4-by-4, nzmax: 16 nnz: 10
     2 2 : 3
     1 0 : 3.1
@@ -660,7 +659,7 @@ triplet: 4-by-4, nzmax: 16 nnz: 10
     0 0 : 4.5
     2 1 : 1.7
 A:
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 11.1
     col 0 : locations 0 to 2
       1 : 3.1
@@ -677,7 +676,7 @@ CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
       3 : 1
       1 : 0.9
 AT:
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 7.7
     col 0 : locations 0 to 1
       0 : 4.5
@@ -694,7 +693,7 @@ CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
       1 : 0.4
       3 : 1
 D:
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 4-by-4, nzmax: 16 nnz: 16, 1-norm: 139.58
     col 0 : locations 0 to 3
       1 : 13.95
@@ -764,7 +763,7 @@ QR   amd(A'*A)  time:     0.00 resid: 1.61e-02
 
 --- Matrix: 492-by-490, nnz: 49920 (sym: 0: nnz 0), norm: 9.29e-01
 blocks: 10 singletons: 8 structural rank: 448
-QR   natural    time:     0.05 resid:      nan
+QR   natural    time:     0.04 resid:      nan
 QR   amd(A'*A)  time:     0.05 resid:      nan
 ./cs_dl_demo2 < ../Matrix/bcsstk01
 
@@ -788,36 +787,36 @@ numeric  chol time     0.00
 solve    chol time     0.00
 original: resid: 2.55e-19
 update:   time:     0.00
-update:   time:     0.00 (incl solve) resid: 9.66e-19
-rechol:   time:     0.00 (incl solve) resid: 1.55e-18
+update:   time:     0.00 (incl solve) resid: 3.52e-18
+rechol:   time:     0.00 (incl solve) resid: 2.93e-18
 downdate: time:     0.00
-downdate: time:     0.00 (incl solve) resid: 3.74e-17
+downdate: time:     0.00 (incl solve) resid: 4.32e-17
 ./cs_dl_demo2 < ../Matrix/bcsstk16
 
 --- Matrix: 4884-by-4884, nnz: 147631 (sym: -1: nnz 290378), norm: 7.01e+09
 blocks: 75 singletons: 74 structural rank: 4884
-QR   amd(A'*A)  time:     0.57 resid: 2.01e-22
-LU   amd(A+A')  time:     0.29 resid: 1.10e-22
-LU   amd(S'*S)  time:     0.30 resid: 1.28e-22
-LU   amd(A'*A)  time:     0.31 resid: 1.78e-22
-Chol amd(A+A')  time:     0.10 resid: 1.19e-22
+QR   amd(A'*A)  time:     0.52 resid: 2.01e-22
+LU   amd(A+A')  time:     0.27 resid: 1.10e-22
+LU   amd(S'*S)  time:     0.27 resid: 1.28e-22
+LU   amd(A'*A)  time:     0.28 resid: 1.78e-22
+Chol amd(A+A')  time:     0.09 resid: 1.19e-22
 ./cs_dl_demo3 < ../Matrix/bcsstk16
 
 --- Matrix: 4884-by-4884, nnz: 147631 (sym: -1: nnz 290378), norm: 7.01e+09
 
 chol then update/downdate amd(A+A')  
 symbolic chol time     0.01
-numeric  chol time     0.09
+numeric  chol time     0.08
 solve    chol time     0.00
 original: resid: 1.19e-22
 update:   time:     0.00
-update:   time:     0.01 (incl solve) resid: 1.12e-23
-rechol:   time:     0.09 (incl solve) resid: 1.17e-23
+update:   time:     0.00 (incl solve) resid: 1.71e-23
+rechol:   time:     0.08 (incl solve) resid: 1.61e-23
 downdate: time:     0.00
-downdate: time:     0.00 (incl solve) resid: 4.09e-22
+downdate: time:     0.00 (incl solve) resid: 1.24e-21
 ./cs_ci_demo1 < ../Matrix/t2
 T:
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 triplet: 4-by-4, nzmax: 16 nnz: 10
     2 2 : (3, 3.14159)
     1 0 : (3.1, 42)
@@ -830,7 +829,7 @@ triplet: 4-by-4, nzmax: 16 nnz: 10
     0 0 : (4.5, 6)
     2 1 : (1.7, 1)
 A:
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 106.075
     col 0 : locations 0 to 2
       1 : (3.1, 42)
@@ -847,7 +846,7 @@ CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
       3 : (1, 7)
       1 : (0.9, 99)
 AT:
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 144.296
     col 0 : locations 0 to 1
       0 : (4.5, -6)
@@ -864,7 +863,7 @@ CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
       1 : (0.4, -2.71828)
       3 : (1, -7)
 D:
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 4-by-4, nzmax: 16 nnz: 16, 1-norm: 25308.3
     col 0 : locations 0 to 3
       1 : (265.95, 170.4)
@@ -890,24 +889,24 @@ CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 
 --- Matrix: 4-by-4, nnz: 10 (sym: 0: nnz 0), norm: 1.06e+02
 blocks: 1 singletons: 0 structural rank: 4
-QR   natural    time:     0.00 resid: 2.06e-17
-QR   amd(A'*A)  time:     0.00 resid: 6.36e-18
-LU   natural    time:     0.00 resid: 4.88e-18
-LU   amd(A+A')  time:     0.00 resid: 2.11e-18
-LU   amd(S'*S)  time:     0.00 resid: 6.36e-18
-LU   amd(A'*A)  time:     0.00 resid: 2.11e-18
+QR   natural    time:     0.00 resid: 3.42e-17
+QR   amd(A'*A)  time:     0.00 resid: 2.49e-17
+LU   natural    time:     0.00 resid: 7.38e-18
+LU   amd(A+A')  time:     0.00 resid: 5.40e-18
+LU   amd(S'*S)  time:     0.00 resid: 3.84e-18
+LU   amd(A'*A)  time:     0.00 resid: 5.40e-18
 ./cs_ci_demo2 < ../Matrix/t3
 
 --- Matrix: 3-by-4, nnz: 12 (sym: 0: nnz 0), norm: 3.06e+00
 blocks: 1 singletons: 0 structural rank: 3
-QR   natural    time:     0.00 resid: 1.05e-16
-QR   amd(A'*A)  time:     0.00 resid: 1.05e-16
+QR   natural    time:     0.00 resid: 1.27e-16
+QR   amd(A'*A)  time:     0.00 resid: 1.27e-16
 ./cs_ci_demo2 < ../Matrix/t4
 
 --- Matrix: 2-by-2, nnz: 3 (sym: 1: nnz 4), norm: 2.83e+00
 blocks: 1 singletons: 0 structural rank: 2
-QR   natural    time:     0.00 resid: 5.65e-17
-QR   amd(A'*A)  time:     0.00 resid: 5.65e-17
+QR   natural    time:     0.00 resid: 1.11e-16
+QR   amd(A'*A)  time:     0.00 resid: 1.11e-16
 LU   natural    time:     0.00 resid: 0.00e+00
 LU   amd(A+A')  time:     0.00 resid: 0.00e+00
 LU   amd(S'*S)  time:     0.00 resid: 0.00e+00
@@ -918,58 +917,58 @@ Chol amd(A+A')  time:     0.00     (failed)
 
 --- Matrix: 67-by-67, nnz: 294 (sym: 0: nnz 0), norm: 6.17e+00
 blocks: 2 singletons: 1 structural rank: 67
-QR   natural    time:     0.00 resid: 8.16e-17
-QR   amd(A'*A)  time:     0.00 resid: 5.34e-17
-LU   natural    time:     0.00 resid: 4.54e-17
-LU   amd(A+A')  time:     0.00 resid: 5.90e-17
+QR   natural    time:     0.00 resid: 7.47e-17
+QR   amd(A'*A)  time:     0.00 resid: 7.73e-17
+LU   natural    time:     0.00 resid: 6.30e-17
+LU   amd(A+A')  time:     0.00 resid: 5.29e-17
 LU   amd(S'*S)  time:     0.00 resid: 5.28e-17
-LU   amd(A'*A)  time:     0.00 resid: 4.76e-17
+LU   amd(A'*A)  time:     0.00 resid: 4.33e-17
 ./cs_ci_demo2 < ../Matrix/c_mbeacxc
 
 --- Matrix: 492-by-490, nnz: 49920 (sym: 0: nnz 0), norm: 9.29e-01
 blocks: 10 singletons: 8 structural rank: 448
-QR   natural    time:     0.17 resid:      nan
-QR   amd(A'*A)  time:     0.18 resid:      nan
+QR   natural    time:     0.11 resid:      nan
+QR   amd(A'*A)  time:     0.12 resid:      nan
 ./cs_ci_demo2 < ../Matrix/young1c
 
 --- Matrix: 841-by-841, nnz: 4089 (sym: 0: nnz 0), norm: 7.30e+02
 blocks: 1 singletons: 0 structural rank: 841
-QR   natural    time:     0.01 resid: 1.81e-16
-QR   amd(A'*A)  time:     0.01 resid: 1.57e-16
-LU   natural    time:     0.00 resid: 1.39e-16
-LU   amd(A+A')  time:     0.01 resid: 2.95e-16
-LU   amd(S'*S)  time:     0.00 resid: 3.37e-16
-LU   amd(A'*A)  time:     0.01 resid: 3.37e-16
+QR   natural    time:     0.01 resid: 1.56e-16
+QR   amd(A'*A)  time:     0.00 resid: 1.08e-16
+LU   natural    time:     0.00 resid: 1.56e-16
+LU   amd(A+A')  time:     0.00 resid: 3.55e-16
+LU   amd(S'*S)  time:     0.00 resid: 2.93e-16
+LU   amd(A'*A)  time:     0.00 resid: 2.93e-16
 ./cs_ci_demo2 < ../Matrix/qc324
 
 --- Matrix: 324-by-324, nnz: 26730 (sym: 0: nnz 0), norm: 1.71e+00
 blocks: 1 singletons: 0 structural rank: 324
-QR   natural    time:     0.02 resid: 9.42e-17
-QR   amd(A'*A)  time:     0.03 resid: 8.94e-17
-LU   natural    time:     0.00 resid: 6.01e-17
-LU   amd(A+A')  time:     0.02 resid: 4.05e-17
-LU   amd(S'*S)  time:     0.01 resid: 4.71e-17
-LU   amd(A'*A)  time:     0.01 resid: 4.71e-17
+QR   natural    time:     0.02 resid: 9.86e-17
+QR   amd(A'*A)  time:     0.02 resid: 1.14e-16
+LU   natural    time:     0.01 resid: 4.32e-17
+LU   amd(A+A')  time:     0.01 resid: 3.99e-17
+LU   amd(S'*S)  time:     0.01 resid: 4.00e-17
+LU   amd(A'*A)  time:     0.01 resid: 4.00e-17
 ./cs_ci_demo2 < ../Matrix/neumann
 
 --- Matrix: 1600-by-1600, nnz: 7840 (sym: 0: nnz 0), norm: 1.41e+01
 blocks: 1 singletons: 0 structural rank: 1600
-QR   amd(A'*A)  time:     0.02 resid: 1.04e-15
-LU   amd(A+A')  time:     0.00 resid: 3.55e-16
-LU   amd(S'*S)  time:     0.01 resid: 4.03e-16
-LU   amd(A'*A)  time:     0.01 resid: 4.03e-16
+QR   amd(A'*A)  time:     0.01 resid: 7.66e-16
+LU   amd(A+A')  time:     0.00 resid: 4.59e-16
+LU   amd(S'*S)  time:     0.01 resid: 4.56e-16
+LU   amd(A'*A)  time:     0.01 resid: 4.56e-16
 ./cs_ci_demo2 < ../Matrix/c4
 
 --- Matrix: 4-by-4, nnz: 10 (sym: -1: nnz 16), norm: 7.37e+01
 blocks: 1 singletons: 0 structural rank: 4
-QR   natural    time:     0.00 resid: 5.85e-17
-QR   amd(A'*A)  time:     0.00 resid: 5.85e-17
-LU   natural    time:     0.00 resid: 2.29e-17
-LU   amd(A+A')  time:     0.00 resid: 2.29e-17
-LU   amd(S'*S)  time:     0.00 resid: 2.29e-17
-LU   amd(A'*A)  time:     0.00 resid: 2.29e-17
-Chol natural    time:     0.00 resid: 6.88e-17
-Chol amd(A+A')  time:     0.00 resid: 6.88e-17
+QR   natural    time:     0.00 resid: 5.98e-17
+QR   amd(A'*A)  time:     0.00 resid: 5.98e-17
+LU   natural    time:     0.00 resid: 4.59e-17
+LU   amd(A+A')  time:     0.00 resid: 4.59e-17
+LU   amd(S'*S)  time:     0.00 resid: 4.59e-17
+LU   amd(A'*A)  time:     0.00 resid: 4.59e-17
+Chol natural    time:     0.00 resid: 9.17e-17
+Chol amd(A+A')  time:     0.00 resid: 9.17e-17
 ./cs_ci_demo3 < ../Matrix/c4
 
 --- Matrix: 4-by-4, nnz: 10 (sym: -1: nnz 16), norm: 7.37e+01
@@ -978,21 +977,21 @@ chol then update/downdate amd(A+A')
 symbolic chol time     0.00
 numeric  chol time     0.00
 solve    chol time     0.00
-original: resid: 6.88e-17
+original: resid: 9.17e-17
 update:   time:     0.00
-update:   time:     0.00 (incl solve) resid: 6.49e-17
-rechol:   time:     0.00 (incl solve) resid: 6.49e-17
+update:   time:     0.00 (incl solve) resid: 7.03e-17
+rechol:   time:     0.00 (incl solve) resid: 4.83e-17
 downdate: time:     0.00
-downdate: time:     0.00 (incl solve) resid: 5.85e-17
+downdate: time:     0.00 (incl solve) resid: 9.17e-17
 ./cs_ci_demo2 < ../Matrix/mhd1280b
 
 --- Matrix: 1280-by-1280, nnz: 11963 (sym: -1: nnz 22646), norm: 8.00e+01
 tiny entries dropped: 66
 blocks: 20 singletons: 14 structural rank: 1280
-QR   amd(A'*A)  time:     0.00 resid: 6.15e-25
-LU   amd(A+A')  time:     0.01 resid: 2.33e-25
-LU   amd(S'*S)  time:     0.00 resid: 3.96e-25
-LU   amd(A'*A)  time:     0.00 resid: 3.96e-25
+QR   amd(A'*A)  time:     0.00 resid: 5.96e-25
+LU   amd(A+A')  time:     0.00 resid: 2.33e-25
+LU   amd(S'*S)  time:     0.00 resid: 2.45e-25
+LU   amd(A'*A)  time:     0.00 resid: 2.45e-25
 Chol amd(A+A')  time:     0.00 resid: 1.58e-25
 ./cs_ci_demo3 < ../Matrix/mhd1280b
 
@@ -1002,15 +1001,15 @@ chol then update/downdate amd(A+A')
 symbolic chol time     0.00
 numeric  chol time     0.00
 solve    chol time     0.00
-original: resid: 1.51e-25
+original: resid: 2.14e-25
 update:   time:     0.00
-update:   time:     0.00 (incl solve) resid: 1.75e-25
-rechol:   time:     0.01 (incl solve) resid: 1.71e-25
+update:   time:     0.00 (incl solve) resid: 2.14e-25
+rechol:   time:     0.00 (incl solve) resid: 2.14e-25
 downdate: time:     0.00
-downdate: time:     0.00 (incl solve) resid: 5.85e-25
+downdate: time:     0.00 (incl solve) resid: 1.05e-24
 ./cs_cl_demo1 < ../Matrix/t2
 T:
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 triplet: 4-by-4, nzmax: 16 nnz: 10
     2 2 : (3, 3.14159)
     1 0 : (3.1, 42)
@@ -1023,7 +1022,7 @@ triplet: 4-by-4, nzmax: 16 nnz: 10
     0 0 : (4.5, 6)
     2 1 : (1.7, 1)
 A:
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 106.075
     col 0 : locations 0 to 2
       1 : (3.1, 42)
@@ -1040,7 +1039,7 @@ CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
       3 : (1, 7)
       1 : (0.9, 99)
 AT:
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 144.296
     col 0 : locations 0 to 1
       0 : (4.5, -6)
@@ -1057,7 +1056,7 @@ CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
       1 : (0.4, -2.71828)
       3 : (1, -7)
 D:
-CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
+CXSparse Version 3.1.4, Oct 10, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 4-by-4, nzmax: 16 nnz: 16, 1-norm: 25308.3
     col 0 : locations 0 to 3
       1 : (265.95, 170.4)
@@ -1083,24 +1082,24 @@ CXSparse Version 3.1.3, Mar 26, 2014.  Copyright (c) Timothy A. Davis, 2006-2014
 
 --- Matrix: 4-by-4, nnz: 10 (sym: 0: nnz 0), norm: 1.06e+02
 blocks: 1 singletons: 0 structural rank: 4
-QR   natural    time:     0.00 resid: 2.06e-17
-QR   amd(A'*A)  time:     0.00 resid: 6.36e-18
-LU   natural    time:     0.00 resid: 4.88e-18
-LU   amd(A+A')  time:     0.00 resid: 2.11e-18
-LU   amd(S'*S)  time:     0.00 resid: 6.36e-18
-LU   amd(A'*A)  time:     0.00 resid: 2.11e-18
+QR   natural    time:     0.00 resid: 3.42e-17
+QR   amd(A'*A)  time:     0.00 resid: 2.49e-17
+LU   natural    time:     0.00 resid: 7.38e-18
+LU   amd(A+A')  time:     0.00 resid: 5.40e-18
+LU   amd(S'*S)  time:     0.00 resid: 3.84e-18
+LU   amd(A'*A)  time:     0.00 resid: 5.40e-18
 ./cs_cl_demo2 < ../Matrix/t3
 
 --- Matrix: 3-by-4, nnz: 12 (sym: 0: nnz 0), norm: 3.06e+00
 blocks: 1 singletons: 0 structural rank: 3
-QR   natural    time:     0.00 resid: 1.05e-16
-QR   amd(A'*A)  time:     0.00 resid: 1.05e-16
+QR   natural    time:     0.00 resid: 1.27e-16
+QR   amd(A'*A)  time:     0.00 resid: 1.27e-16
 ./cs_cl_demo2 < ../Matrix/t4
 
 --- Matrix: 2-by-2, nnz: 3 (sym: 1: nnz 4), norm: 2.83e+00
 blocks: 1 singletons: 0 structural rank: 2
-QR   natural    time:     0.00 resid: 5.65e-17
-QR   amd(A'*A)  time:     0.00 resid: 5.65e-17
+QR   natural    time:     0.00 resid: 1.11e-16
+QR   amd(A'*A)  time:     0.00 resid: 1.11e-16
 LU   natural    time:     0.00 resid: 0.00e+00
 LU   amd(A+A')  time:     0.00 resid: 0.00e+00
 LU   amd(S'*S)  time:     0.00 resid: 0.00e+00
@@ -1111,58 +1110,58 @@ Chol amd(A+A')  time:     0.00     (failed)
 
 --- Matrix: 67-by-67, nnz: 294 (sym: 0: nnz 0), norm: 6.17e+00
 blocks: 2 singletons: 1 structural rank: 67
-QR   natural    time:     0.00 resid: 8.16e-17
-QR   amd(A'*A)  time:     0.00 resid: 5.34e-17
-LU   natural    time:     0.00 resid: 4.54e-17
-LU   amd(A+A')  time:     0.00 resid: 5.90e-17
+QR   natural    time:     0.00 resid: 7.47e-17
+QR   amd(A'*A)  time:     0.00 resid: 7.73e-17
+LU   natural    time:     0.00 resid: 6.30e-17
+LU   amd(A+A')  time:     0.00 resid: 5.29e-17
 LU   amd(S'*S)  time:     0.00 resid: 5.28e-17
-LU   amd(A'*A)  time:     0.00 resid: 4.76e-17
+LU   amd(A'*A)  time:     0.00 resid: 4.33e-17
 ./cs_cl_demo2 < ../Matrix/c_mbeacxc
 
 --- Matrix: 492-by-490, nnz: 49920 (sym: 0: nnz 0), norm: 9.29e-01
 blocks: 10 singletons: 8 structural rank: 448
-QR   natural    time:     0.18 resid:      nan
-QR   amd(A'*A)  time:     0.18 resid:      nan
+QR   natural    time:     0.11 resid:      nan
+QR   amd(A'*A)  time:     0.12 resid:      nan
 ./cs_cl_demo2 < ../Matrix/young1c
 
 --- Matrix: 841-by-841, nnz: 4089 (sym: 0: nnz 0), norm: 7.30e+02
 blocks: 1 singletons: 0 structural rank: 841
-QR   natural    time:     0.01 resid: 1.81e-16
-QR   amd(A'*A)  time:     0.00 resid: 1.57e-16
-LU   natural    time:     0.01 resid: 1.39e-16
-LU   amd(A+A')  time:     0.00 resid: 2.95e-16
-LU   amd(S'*S)  time:     0.01 resid: 3.37e-16
-LU   amd(A'*A)  time:     0.00 resid: 3.37e-16
+QR   natural    time:     0.01 resid: 1.56e-16
+QR   amd(A'*A)  time:     0.00 resid: 1.08e-16
+LU   natural    time:     0.00 resid: 1.56e-16
+LU   amd(A+A')  time:     0.00 resid: 3.55e-16
+LU   amd(S'*S)  time:     0.00 resid: 2.93e-16
+LU   amd(A'*A)  time:     0.00 resid: 2.93e-16
 ./cs_cl_demo2 < ../Matrix/qc324
 
 --- Matrix: 324-by-324, nnz: 26730 (sym: 0: nnz 0), norm: 1.71e+00
 blocks: 1 singletons: 0 structural rank: 324
-QR   natural    time:     0.02 resid: 9.42e-17
-QR   amd(A'*A)  time:     0.04 resid: 8.94e-17
-LU   natural    time:     0.01 resid: 6.01e-17
-LU   amd(A+A')  time:     0.01 resid: 4.05e-17
-LU   amd(S'*S)  time:     0.01 resid: 4.71e-17
-LU   amd(A'*A)  time:     0.01 resid: 4.71e-17
+QR   natural    time:     0.02 resid: 9.86e-17
+QR   amd(A'*A)  time:     0.02 resid: 1.14e-16
+LU   natural    time:     0.01 resid: 4.32e-17
+LU   amd(A+A')  time:     0.01 resid: 3.99e-17
+LU   amd(S'*S)  time:     0.01 resid: 4.00e-17
+LU   amd(A'*A)  time:     0.01 resid: 4.00e-17
 ./cs_cl_demo2 < ../Matrix/neumann
 
 --- Matrix: 1600-by-1600, nnz: 7840 (sym: 0: nnz 0), norm: 1.41e+01
 blocks: 1 singletons: 0 structural rank: 1600
-QR   amd(A'*A)  time:     0.02 resid: 1.04e-15
-LU   amd(A+A')  time:     0.00 resid: 3.55e-16
-LU   amd(S'*S)  time:     0.01 resid: 4.03e-16
-LU   amd(A'*A)  time:     0.01 resid: 4.03e-16
+QR   amd(A'*A)  time:     0.01 resid: 7.66e-16
+LU   amd(A+A')  time:     0.00 resid: 4.59e-16
+LU   amd(S'*S)  time:     0.01 resid: 4.56e-16
+LU   amd(A'*A)  time:     0.01 resid: 4.56e-16
 ./cs_cl_demo2 < ../Matrix/c4
 
 --- Matrix: 4-by-4, nnz: 10 (sym: -1: nnz 16), norm: 7.37e+01
 blocks: 1 singletons: 0 structural rank: 4
-QR   natural    time:     0.00 resid: 5.85e-17
-QR   amd(A'*A)  time:     0.00 resid: 5.85e-17
-LU   natural    time:     0.00 resid: 2.29e-17
-LU   amd(A+A')  time:     0.00 resid: 2.29e-17
-LU   amd(S'*S)  time:     0.00 resid: 2.29e-17
-LU   amd(A'*A)  time:     0.00 resid: 2.29e-17
-Chol natural    time:     0.00 resid: 6.88e-17
-Chol amd(A+A')  time:     0.00 resid: 6.88e-17
+QR   natural    time:     0.00 resid: 5.98e-17
+QR   amd(A'*A)  time:     0.00 resid: 5.98e-17
+LU   natural    time:     0.00 resid: 4.59e-17
+LU   amd(A+A')  time:     0.00 resid: 4.59e-17
+LU   amd(S'*S)  time:     0.00 resid: 4.59e-17
+LU   amd(A'*A)  time:     0.00 resid: 4.59e-17
+Chol natural    time:     0.00 resid: 9.17e-17
+Chol amd(A+A')  time:     0.00 resid: 9.17e-17
 ./cs_cl_demo3 < ../Matrix/c4
 
 --- Matrix: 4-by-4, nnz: 10 (sym: -1: nnz 16), norm: 7.37e+01
@@ -1171,21 +1170,21 @@ chol then update/downdate amd(A+A')
 symbolic chol time     0.00
 numeric  chol time     0.00
 solve    chol time     0.00
-original: resid: 6.88e-17
+original: resid: 9.17e-17
 update:   time:     0.00
-update:   time:     0.00 (incl solve) resid: 6.49e-17
-rechol:   time:     0.00 (incl solve) resid: 6.49e-17
+update:   time:     0.00 (incl solve) resid: 7.03e-17
+rechol:   time:     0.00 (incl solve) resid: 4.83e-17
 downdate: time:     0.00
-downdate: time:     0.00 (incl solve) resid: 5.85e-17
+downdate: time:     0.00 (incl solve) resid: 9.17e-17
 ./cs_cl_demo2 < ../Matrix/mhd1280b
 
 --- Matrix: 1280-by-1280, nnz: 11963 (sym: -1: nnz 22646), norm: 8.00e+01
 tiny entries dropped: 66
 blocks: 20 singletons: 14 structural rank: 1280
-QR   amd(A'*A)  time:     0.01 resid: 6.15e-25
+QR   amd(A'*A)  time:     0.00 resid: 5.96e-25
 LU   amd(A+A')  time:     0.00 resid: 2.33e-25
-LU   amd(S'*S)  time:     0.00 resid: 3.96e-25
-LU   amd(A'*A)  time:     0.01 resid: 3.96e-25
+LU   amd(S'*S)  time:     0.00 resid: 2.45e-25
+LU   amd(A'*A)  time:     0.00 resid: 2.45e-25
 Chol amd(A+A')  time:     0.00 resid: 1.58e-25
 ./cs_cl_demo3 < ../Matrix/mhd1280b
 
@@ -1195,10 +1194,9 @@ chol then update/downdate amd(A+A')
 symbolic chol time     0.00
 numeric  chol time     0.00
 solve    chol time     0.00
-original: resid: 1.51e-25
+original: resid: 2.14e-25
 update:   time:     0.00
-update:   time:     0.00 (incl solve) resid: 1.75e-25
-rechol:   time:     0.00 (incl solve) resid: 1.71e-25
+update:   time:     0.00 (incl solve) resid: 2.14e-25
+rechol:   time:     0.00 (incl solve) resid: 2.14e-25
 downdate: time:     0.00
-downdate: time:     0.00 (incl solve) resid: 5.85e-25
-make[1]: Leaving directory `/cise/research/sparse/SuiteSparse/CXSparse/Demo'
+downdate: time:     0.00 (incl solve) resid: 1.05e-24

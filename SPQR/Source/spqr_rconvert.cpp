@@ -213,9 +213,21 @@ template <typename Entry> void spqr_rconvert
             // -----------------------------------------------------------------
 
             PR (("extract column j (%ld) of R (rm %ld entries)\n", j, rm)) ;
+
+            #ifndef NDEBUG
+            for (i = 0 ; i < rm ; i++)
+            {
+                rij = R [i] ;
+                PR (("  got row %ld col %ld value", row1+i, j)) ;
+                PRVAL ((rij)) ;
+                PR (("\n")) ;
+            }
+            #endif
+
             for (i = 0 ; i < rm ; i++)
             {
                 rij = *(R++) ;
+
                 if (rij != (Entry) 0)
                 {
                     // R (row1+i,j) is nonzero, copy into Ra or Rb
@@ -242,9 +254,6 @@ template <typename Entry> void spqr_rconvert
                             }
                             else
                             {
-                                PR (("  row %ld value", row1+i)) ;
-                                PRVAL ((rij)) ;
-                                PR ((" at p %ld\n", Rbp [j-n2])) ;
                                 p = Rbp [j-n2]++ ;
                                 Rbi [p] = row1 + i ;
                                 Rbx [p] = rij ;

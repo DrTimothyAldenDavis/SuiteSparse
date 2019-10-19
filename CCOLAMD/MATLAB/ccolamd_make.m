@@ -14,6 +14,12 @@ d = '' ;
 if (~isempty (strfind (computer, '64')))
     d = '-largeArrayDims' ;
 end
+
+% MATLAB 8.3.0 now has a -silent option to keep 'mex' from burbling too much
+if (~verLessThan ('matlab', '8.3.0'))
+    d = ['-silent ' d] ;
+end
+
 src = '../Source/ccolamd.c ../../SuiteSparse_config/SuiteSparse_config.c' ;
 cmd = sprintf ( ...
     'mex -DDLONG -O %s -I../../SuiteSparse_config -I../Include -output ', d) ;

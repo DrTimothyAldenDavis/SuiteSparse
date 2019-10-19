@@ -75,10 +75,6 @@
 #ifndef CHOLMOD_H
 #define CHOLMOD_H
 
-#ifdef GPU_BLAS
-#include <cuda_runtime.h>
-#endif
-
 /* make it easy for C++ programs to include CHOLMOD */
 #ifdef __cplusplus
 extern "C" {
@@ -90,6 +86,7 @@ extern "C" {
 #include "SuiteSparse_config.h"
 
 #include "cholmod_config.h"
+
 
 /* CHOLMOD always includes the Core module. */
 #include "cholmod_core.h"

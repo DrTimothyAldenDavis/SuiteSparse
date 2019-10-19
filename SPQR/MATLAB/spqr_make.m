@@ -51,6 +51,11 @@ if (is64)
     flags = '-largeArrayDims' ;
 end
 
+% MATLAB 8.3.0 now has a -silent option to keep 'mex' from burbling too much
+if (~verLessThan ('matlab', '8.3.0'))
+    flags = ['-silent ' flags] ;
+end
+
 include = '-DNMATRIXOPS -DNMODIFY -I. -I../../AMD/Include -I../../COLAMD/Include -I../../CHOLMOD/Include -I../Include -I../../SuiteSparse_config' ;
 
 % Determine if METIS is available
@@ -123,6 +128,13 @@ if (is64 && ~verLessThan ('matlab', '7.8'))
     fprintf ('with 64-bit BLAS\n') ;
     flags = [flags ' -DBLAS64'] ;
 end
+
+%-------------------------------------------------------------------------------
+% GPU option
+%-------------------------------------------------------------------------------
+
+% GPU not yet supported for the spqr MATLAB mexFunction
+% flags = [flags ' -DGPU_BLAS'] ;
 
 %-------------------------------------------------------------------------------
 % TBB option

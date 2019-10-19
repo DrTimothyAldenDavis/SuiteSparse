@@ -33,22 +33,6 @@ void spqrDebug_print
     PR ((" (%10.4g + 1i*(%10.4g))", x.real ( ), x.imag ( ))) ;
 }
 
-void spqrDebug_printf
-(
-    double x
-)
-{
-    printf (" %10.4g", x) ;
-}
-
-void spqrDebug_printf
-(
-    Complex x
-)
-{
-    printf (" (%10.4g + 1i*(%10.4g))", x.real ( ), x.imag ( )) ;
-}
-
 // =============================================================================
 // === spqrDebug_dumpdense =====================================================
 // =============================================================================
@@ -64,31 +48,47 @@ template <typename Entry> void spqrDebug_dumpdense
 {
     Long i, j ;
     if (cc == NULL) return ;
-    // PR (("Dense: m %ld n %ld lda %ld p %p\n", m, n, lda, A)) ;
-    printf ("Dense: m %ld n %ld lda %ld p %p\n", m, n, lda, A) ;
+    PR (("Dense: m %ld n %ld lda %ld p %p\n", m, n, lda, A)) ;
     if (m < 0 || n < 0 || lda < m || A == NULL)
     {
-        printf ("bad!\n") ;
+        PR (("bad dense matrix!\n")) ;
+        ASSERT (0) ;
         return ;
     }
+
+    for (j = 0 ; j < n ; j++)
+    {
+        PR (("   --- column %ld of %ld\n", j, n)) ;
+        for (i = 0 ; i < m ; i++)
+        {
+            if (i == j) PR (("      [ diag:     ")) ;
+            else        PR (("      row %4ld    ", i)) ;
+            spqrDebug_print (A [i + j*lda]) ;
+            if (i == j) PR ((" ]\n")) ;
+            else        PR (("\n")) ;
+        }
+        PR (("\n")) ;
+    }
+
+#if 0
     for (i = 0 ; i < m ; i++)
     {
         for (j = 0 ; j < n ; j++)
         {
-#if 0
-            if (A [i+j*lda] != (Entry) 0)
-            {
-                printf ("X")  ;
-            }
-            else
-            {
-                printf (".")  ;
-            }
-#endif
-            spqrDebug_printf (A [i + j*lda]) ;
+//          if (A [i+j*lda] != (Entry) 0)
+//          {
+//              PR (("X"))  ;
+//          }
+//          else
+//          {
+//              PR (("."))  ;
+//          }
+            spqrDebug_print (A [i + j*lda]) ;
         }
-        printf ("\n") ;
+        PR (("\n")) ;
     }
+#endif
+
 }
 
 template void spqrDebug_dumpdense <double>

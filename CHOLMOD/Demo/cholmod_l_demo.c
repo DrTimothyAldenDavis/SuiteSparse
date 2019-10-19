@@ -99,6 +99,8 @@ int main (int argc, char **argv)
 
     cm = &Common ;
     cholmod_l_start (cm) ;
+    CHOLMOD_FUNCTION_DEFAULTS (cm) ;    /* just for testing (not required) */
+
     /* cm->useGPU = 1; */
     cm->prefer_zomplex = prefer_zomplex ;
 

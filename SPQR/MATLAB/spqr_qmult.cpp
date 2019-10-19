@@ -282,9 +282,6 @@ void mexFunction
     spqr_mx_get_usage (pargout [0], 1, &inuse, &count, cc) ;
     if (inuse != cc->memory_inuse || count != cc->malloc_count)
     {
-        printf ("should have %d %d peak: %d\n",
-            inuse, count, cc->memory_usage) ;
-        printf ("actual %d %d\n", cc->memory_inuse, cc->malloc_count) ;
         mexErrMsgIdAndTxt ("QR:internalError", "memory leak!") ;
     }
 #endif

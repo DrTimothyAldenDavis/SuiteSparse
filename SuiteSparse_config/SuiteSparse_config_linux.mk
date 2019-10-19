@@ -72,6 +72,8 @@
   CF = $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -O3 -fexceptions -fPIC
 # for the MKL BLAS:
 # CF = $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -O3 -fexceptions -fPIC -I$(MKLROOT)/include -D_GNU_SOURCE
+# with no optimization:
+# CF = $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH)     -fexceptions -fPIC
 
 # ranlib, and ar, for generating libraries.  If you don't need ranlib,
 # just change it to RANLAB = echo
@@ -164,7 +166,7 @@ XERBLA =
 # XERBLA = ../../SuiteSparse_config/xerbla/libxerbla.a 
 
 #------------------------------------------------------------------------------
-# GPU configuration for CHOLMOD
+# GPU configuration for CHOLMOD and SPQR
 #------------------------------------------------------------------------------
 
 # no cuda
@@ -284,11 +286,10 @@ CHOLMOD_CONFIG = $(GPU_CONFIG)
 #
 # -DNPARTITION      do not include the CHOLMOD partition module
 # -DNEXPERT         do not include the functions in SuiteSparseQR_expert.cpp
-# -DNSPQRGPU        do not include the GPU accelerated code
 # -DHAVE_TBB        enable the use of Intel's Threading Building Blocks (TBB)
 
 # default, without timing, without TBB:
-SPQR_CONFIG =
+SPQR_CONFIG = $(GPU_CONFIG)
 # with TBB:
 # SPQR_CONFIG = -DHAVE_TBB
 

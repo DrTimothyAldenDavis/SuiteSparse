@@ -1,3 +1,10 @@
+Oct 10, 2014: version 3.0.2
+
+    * changes to accomodate GPU-accelerated SPQR
+    * added CHOLMOD/Include/cholmod_function.h for backward compatibility
+        for function pointers (moved from Common to SuiteSparse_config,
+        as of v2.2.0)
+
 July 18, 2014: version 3.0.1
 
     * minor correction to 3.0.0 Beta build process, to compile SPQR when

@@ -25,7 +25,8 @@
 //
 // All of these functions keep the Householder vectors.  The
 // SuiteSparseQR_solve function does not require the Householder vectors, but
-// in the current version, it is only used in that case.
+// in the current version, it is only used in that case.  Since these functions
+// require the Householder vectors, the GPU is never used in these functions.
 //
 // If all you need is to solve a least-squares problem, or to compute a QR
 // factorization and return the results in vanilla sparse matrix format, see
@@ -83,7 +84,7 @@ SuiteSparseQR_factorization <Entry> *SuiteSparseQR_symbolic
     // -------------------------------------------------------------------------
 
     // Using SuiteSparseQR_symbolic followed by SuiteSparseQR_numeric requires
-    // that the Householder vectors be kept.
+    // that the Householder vectors be kept, and thus the GPU will not be used.
     int keepH = TRUE ;
     QR->QRsym = QRsym = spqr_analyze (A, ordering, NULL, allow_tol, keepH, cc) ;
 
@@ -182,7 +183,7 @@ SuiteSparseQR_factorization <Complex> *SuiteSparseQR_symbolic <Complex>
 //
 // Returns TRUE if successful, FALSE otherwise.
 //
-// This function requires the Householder
+// The GPU is not used by this function, since it requires the Householder
 // vectors to be kept.
 
 template <typename Entry> int SuiteSparseQR_numeric
@@ -318,7 +319,7 @@ template int SuiteSparseQR_numeric <Complex>
 // factorization of A, then use the SuiteSparseQR function instead (which
 // corresponds to the MATLAB statement x=A\B, using a sparse QR factorization).
 //
-// In this function, the Householder vectors are always kept.
+// The GPU is not used because the Householder vectors are always kept.
 
 template <typename Entry>
 SuiteSparseQR_factorization <Entry> *SuiteSparseQR_factorize

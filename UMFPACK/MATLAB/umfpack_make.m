@@ -28,6 +28,11 @@ if (is64)
     flags = ' -largeArrayDims' ;
 end
 
+% MATLAB 8.3.0 now has a -silent option to keep 'mex' from burbling too much
+if (~verLessThan ('matlab', '8.3.0'))
+    flags = ['-silent ' flags] ;
+end
+
 v = version ;
 try
     % ispc does not appear in MATLAB 5.3

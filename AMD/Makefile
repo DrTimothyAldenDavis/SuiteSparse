@@ -2,7 +2,7 @@
 # AMD Makefile (for GNU Make or original make)
 #------------------------------------------------------------------------------
 
-VERSION = 2.4.0
+VERSION = 2.4.1
 
 default: all
 

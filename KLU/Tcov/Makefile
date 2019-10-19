@@ -23,7 +23,7 @@ LIB = ../../AMD/Lib/libamd.a ../../COLAMD/Lib/libcolamd.a \
     ../../CAMD/Lib/libcamd.a ../../CCOLAMD/Lib/libccolamd.a \
     ../../metis-4.0/libmetis.a \
     ../../SuiteSparse_config/libsuitesparseconfig.a \
-    $(LAPACK) $(BLAS) -lm -lrt
+    $(LAPACK) $(BLAS) $(CUDART_LIB) $(CUBLAS_LIB) -lm -lrt
 
 I = -I../../SuiteSparse_config -I../../AMD/Include -I../../COLAMD/Include \
     -I../../BTF/Include -I../../CHOLMOD/Include -I../../CAMD/Include \

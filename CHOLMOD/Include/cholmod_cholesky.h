@@ -114,7 +114,9 @@ cholmod_factor *cholmod_l_analyze_p (cholmod_sparse *, SuiteSparse_long *,
 cholmod_factor *cholmod_analyze_p2
 (
     /* ---- input ---- */
-    int for_cholesky,   /* if TRUE, then analyze for Cholesky; else for QR */
+    int for_whom,       /* FOR_SPQR     (0): for SPQR but not GPU-accelerated
+                           FOR_CHOLESKY (1): for Cholesky (GPU or not)
+                           FOR_SPQRGPU  (2): for SPQR with GPU acceleration */
     cholmod_sparse *A,	/* matrix to order and analyze */
     int *UserPerm,	/* user-provided permutation, size A->nrow */
     int *fset,		/* subset of 0:(A->ncol)-1 */

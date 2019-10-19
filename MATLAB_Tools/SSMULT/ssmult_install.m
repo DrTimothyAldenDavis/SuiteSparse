@@ -34,6 +34,11 @@ if (verLessThan ('matlab', '6.5'))
     d = [d ' -DMATLAB_6p1_OR_EARLIER'] ;
 end
 
+% MATLAB 8.3.0 now has a -silent option to keep 'mex' from burbling too much
+if (~verLessThan ('matlab', '8.3.0'))
+    d = [' -silent ' d] ;
+end
+
 cmd = sprintf ('mex -O%s ssmult.c ssmult_mex.c ssmult_saxpy.c ssmult_dot.c ssmult_transpose.c', d) ;
 if (dotests)
     disp (cmd) ;

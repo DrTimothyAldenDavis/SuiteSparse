@@ -1,6 +1,6 @@
 SuiteSparse:  A Suite of Sparse matrix packages at http://www.suitesparse.com
 
-July 18, 2014.  SuiteSparse VERSION 4.3.1
+Oct 10, 2014.  SuiteSparse VERSION 4.4.0
 
 ------------------
 SuiteSparse/README
@@ -82,7 +82,9 @@ Then continue as the 'QUICK START FOR LINUX' above.
 
     MATLAB_Tools    various simple m-files for use in MATLAB
 
-    SuiteSparseQR   sparse QR factorization
+    SPQR        sparse QR factorization
+    GPUQREngine                 GPU support package for SPQR
+    SuiteSparse_GPURuntime      GPU support package for SPQR
 
 Some codes optionally use METIS 4.0.1
 (http://www-users.cs.umn.edu/~karypis/metis).  To use METIS, place a copy of

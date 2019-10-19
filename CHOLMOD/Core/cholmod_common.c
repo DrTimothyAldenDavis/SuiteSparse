@@ -207,6 +207,7 @@ int CHOLMOD(start)
     Common->cholmod_cpu_syrk_calls = 0 ;
     Common->cholmod_cpu_trsm_calls = 0 ;
     Common->cholmod_cpu_potrf_calls = 0 ;
+
     Common->cholmod_gpu_gemm_calls = 0 ;
     Common->cholmod_gpu_syrk_calls = 0 ;
     Common->cholmod_gpu_trsm_calls = 0 ;
@@ -214,6 +215,12 @@ int CHOLMOD(start)
 
     Common->maxGpuMemBytes = 0;
     Common->maxGpuMemFraction = 0.0;
+
+    /* SPQR statistics and settings */
+    Common->gpuMemorySize = 1 ;         /* default: no GPU memory available */
+    Common->gpuKernelTime = 0.0 ;
+    Common->gpuFlops = 0 ;
+    Common->gpuNumKernelLaunches = 0 ;
 
     DEBUG_INIT ("cholmod start", Common) ;
 

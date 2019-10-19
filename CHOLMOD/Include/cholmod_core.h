@@ -246,11 +246,11 @@
 
 #define CHOLMOD_HAS_VERSION_FUNCTION
 
-#define CHOLMOD_DATE "July 18, 2014"
+#define CHOLMOD_DATE "Oct 10, 2014"
 #define CHOLMOD_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define CHOLMOD_MAIN_VERSION 3
 #define CHOLMOD_SUB_VERSION 0
-#define CHOLMOD_SUBSUB_VERSION 1
+#define CHOLMOD_SUBSUB_VERSION 2
 #define CHOLMOD_VERSION \
     CHOLMOD_VER_CODE(CHOLMOD_MAIN_VERSION,CHOLMOD_SUB_VERSION)
 
@@ -283,16 +283,11 @@
 /* Define buffering parameters for GPU processing */
 #ifdef GPU_BLAS
 #include <cublas_v2.h>
+#endif
+
 #define CHOLMOD_DEVICE_SUPERNODE_BUFFERS 6
 #define CHOLMOD_HOST_SUPERNODE_BUFFERS 8
 #define CHOLMOD_DEVICE_STREAMS 2
-#else
-#define CHOLMOD_DEVICE_SUPERNODE_BUFFERS 1
-#define CHOLMOD_HOST_SUPERNODE_BUFFERS 1
-#define CHOLMOD_DEVICE_STREAMS 1
-#endif
-
-
 
 /* ========================================================================== */
 /* === CHOLMOD objects ====================================================== */
@@ -766,8 +761,15 @@ typedef struct cholmod_common_struct
 	* reports high fill-in.  If Common->default_nesdis is TRUE then NESDIS
 	* is used instead in the default strategy. */
 
+    /* ---------------------------------------------------------------------- */
+    /* memory management, complex divide, and hypot function pointers moved */
+    /* ---------------------------------------------------------------------- */
 
-
+    /* Function pointers moved from here (in CHOLMOD 2.2.0) to
+       SuiteSparse_config.[ch].  See CHOLMOD/Include/cholmod_back.h
+       for a set of macros that can be #include'd or copied into your
+       application to define these function pointers on any version of CHOLMOD.
+       */
 
     /* ---------------------------------------------------------------------- */
     /* METIS workarounds */
@@ -944,9 +946,18 @@ typedef struct cholmod_common_struct
     /*           0 if gpu-acceleration is prohibited */
     /*          -1 if gpu-acceleration is undefined in which case the */
     /*             environment CHOLMOD_USE_GPU will be queried and used. */
+    /*             useGPU=-1 is only used by CHOLMOD and treated as 0 by SPQR */
     int useGPU;
+
+    /* for CHOLMOD: */
     size_t maxGpuMemBytes;
     double maxGpuMemFraction;
+
+    /* for SPQR: */
+    size_t gpuMemorySize;       /* Amount of memory in bytes on the GPU */
+    double gpuKernelTime;       /* Time taken by GPU kernels */
+    SuiteSparse_long gpuFlops;  /* Number of flops performed by the GPU */
+    int gpuNumKernelLaunches;   /* Number of GPU kernel launches */
 
     /* If not using the GPU, these items are not used, but they should be
        present so that the CHOLMOD Common has the same size whether the GPU
@@ -1032,6 +1043,10 @@ typedef struct cholmod_common_struct
 #define CHOLMOD_ASSEMBLE_TIME       cholmod_assemble_time
 #define CHOLMOD_ASSEMBLE_TIME2      cholmod_assemble_time2
 
+/* for supernodal analysis */
+#define CHOLMOD_ANALYZE_FOR_SPQR     0
+#define CHOLMOD_ANALYZE_FOR_CHOLESKY 1
+#define CHOLMOD_ANALYZE_FOR_SPQRGPU  2
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_start:  first call to CHOLMOD */

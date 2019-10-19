@@ -44,7 +44,6 @@ extern "C" {
 
 #include <limits.h>
 #include <stdlib.h>
-#include <math.h>
 
 /* ========================================================================== */
 /* === SuiteSparse_long ===================================================== */
@@ -77,6 +76,10 @@ extern "C" {
    frequently by multiple threads.  Rather, if an application needs to modify
    SuiteSparse_config, it should do it once at the beginning of the application,
    before multiple threads are launched.
+
+   The intent of these function pointers is that they not be used in your
+   application directly, except to assign them to the desired user-provided
+   functions.  Rather, you should use the
  */
 
 struct SuiteSparse_config_struct
@@ -181,26 +184,30 @@ int SuiteSparse_divcomplex
  *
  * SuiteSparse contains the following packages:
  *
- *  SuiteSparse_config version 4.3.1 (version always the same as SuiteSparse)
- *  AMD             version 2.4.0
- *  BTF             version 1.2.0
- *  CAMD            version 2.4.0
- *  CCOLAMD         version 2.9.0
- *  CHOLMOD         version 3.0.1
- *  COLAMD          version 2.9.0
- *  CSparse         version 3.1.3
- *  CXSparse        version 3.1.3
- *  KLU             version 1.3.0
- *  LDL             version 2.2.0
- *  RBio            version 2.2.0
- *  SPQR            version 1.3.3
- *  UMFPACK         version 5.7.0
+ *  SuiteSparse_config version 4.4.0 (version always the same as SuiteSparse)
+ *  AMD             version 2.4.1
+ *  BTF             version 1.2.1
+ *  CAMD            version 2.4.1
+ *  CCOLAMD         version 2.9.1
+ *  CHOLMOD         version 3.0.2
+ *  COLAMD          version 2.9.1
+ *  CSparse         version 3.1.4
+ *  CXSparse        version 3.1.4
+ *  KLU             version 1.3.1
+ *  LDL             version 2.2.1
+ *  RBio            version 2.2.1
+ *  SPQR            version 2.0.0
+ *  GPUQREngine     version 1.0.0
+ *  SuiteSparse_GPURuntime  version 1.0.0
+ *  UMFPACK         version 5.7.1
  *  MATLAB_Tools    various packages & M-files
  *
  * Other package dependencies:
  *  BLAS            required by CHOLMOD and UMFPACK
  *  LAPACK          required by CHOLMOD
  *  METIS 4.0.1     required by CHOLMOD (optional) and KLU (optional)
+ *  CUBLAS, CUDART  NVIDIA libraries required by CHOLMOD and SPQR when
+ *                  they are compiled with GPU acceleration.
  */
 
 
@@ -226,11 +233,11 @@ int SuiteSparse_version     /* returns SUITESPARSE_VERSION */
 */
 #define SUITESPARSE_HAS_VERSION_FUNCTION
 
-#define SUITESPARSE_DATE "July 18, 2014"
+#define SUITESPARSE_DATE "Oct 10, 2014"
 #define SUITESPARSE_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define SUITESPARSE_MAIN_VERSION 4
-#define SUITESPARSE_SUB_VERSION 3
-#define SUITESPARSE_SUBSUB_VERSION 1
+#define SUITESPARSE_SUB_VERSION 4
+#define SUITESPARSE_SUBSUB_VERSION 0
 #define SUITESPARSE_VERSION \
     SUITESPARSE_VER_CODE(SUITESPARSE_MAIN_VERSION,SUITESPARSE_SUB_VERSION)
 

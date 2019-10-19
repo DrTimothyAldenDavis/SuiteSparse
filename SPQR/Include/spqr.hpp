@@ -392,7 +392,6 @@ template <typename Entry> void spqr_stranspose2
 
 #ifndef NDEBUG
 
-// #ifndef NPRINT
 template <typename Entry> void spqrDebug_dumpdense
 (
     Entry *A,
@@ -414,9 +413,6 @@ template <typename Entry> void spqrDebug_dumpsparse
 
 void spqrDebug_print (double x) ;
 void spqrDebug_print (Complex x) ;
-void spqrDebug_printf (double x) ;
-void spqrDebug_printf (Complex x) ;
-// #endif
 
 void spqrDebug_dump_Parent (Long n, Long *Parent, const char *filename) ;
 
@@ -921,6 +917,13 @@ template <typename Entry> int spqr_rmap
     cholmod_common *cc
 ) ;
 
+// =============================================================================
+// === spqrgpu features ========================================================
+// =============================================================================
+
+#ifdef GPU_BLAS
+#include "spqrgpu.hpp"
+#endif
 
 // =============================================================================
 // === spqr_conj ===============================================================

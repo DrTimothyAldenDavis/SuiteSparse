@@ -9,6 +9,7 @@
  * Author: Timothy A. Davis.
  */
 
+#include <math.h>
 #include <stdlib.h>
 
 #ifndef NPRINT
@@ -508,7 +509,6 @@ int SuiteSparse_divcomplex
     double br, double bi,	/* real and imaginary parts of b */
     double *cr, double *ci	/* real and imaginary parts of c */
 )
-
 {
     double tr, ti, r, den ;
     if (fabs (br) >= fabs (bi))

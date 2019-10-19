@@ -15,6 +15,7 @@ void spqr_freesym
 )
 {
     spqr_symbolic *QRsym ;
+    spqr_gpu *QRgpu ;
     Long m, n, anz, nf, rjsize, ns, ntasks ;
 
     if (QRsym_handle == NULL || *QRsym_handle == NULL)
@@ -44,6 +45,29 @@ void spqr_freesym
     cholmod_l_free (anz,    sizeof (Long), QRsym->Sj, cc) ;
 
     cholmod_l_free (nf+1,   sizeof (Long), QRsym->Hip, cc) ;
+
+    cholmod_l_free (nf+1,   sizeof (Long), QRsym->Fm, cc) ;
+    cholmod_l_free (nf+1,   sizeof (Long), QRsym->Cm, cc) ;
+
+    cholmod_l_free (n,      sizeof (Long), QRsym->ColCount, cc) ;
+
+    // gpu metadata
+    QRgpu = QRsym->QRgpu;
+    if(QRgpu)
+    {
+        cholmod_l_free (nf,   sizeof (Long),   QRgpu->RimapOffsets, cc) ;
+        cholmod_l_free (nf,   sizeof (Long),   QRgpu->RjmapOffsets, cc) ;
+        cholmod_l_free (nf+2, sizeof (Long),   QRgpu->Stagingp, cc) ;
+        cholmod_l_free (nf,   sizeof (Long),   QRgpu->StageMap, cc) ;
+        cholmod_l_free (nf+1, sizeof (size_t), QRgpu->FSize, cc) ;
+        cholmod_l_free (nf+1, sizeof (size_t), QRgpu->RSize, cc) ;
+        cholmod_l_free (nf+1, sizeof (size_t), QRgpu->SSize, cc) ;
+        cholmod_l_free (nf,   sizeof (Long),   QRgpu->FOffsets, cc) ;
+        cholmod_l_free (nf,   sizeof (Long),   QRgpu->ROffsets, cc) ;
+        cholmod_l_free (nf,   sizeof (Long),   QRgpu->SOffsets, cc) ;
+
+        cholmod_l_free (1, sizeof (spqr_gpu), QRgpu, cc) ;
+    }
 
     // parallel analysis
     ntasks = QRsym->ntasks ;

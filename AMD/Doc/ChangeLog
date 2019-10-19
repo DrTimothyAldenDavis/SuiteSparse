@@ -1,3 +1,7 @@
+Oct 10, 2014: version 2.4.1
+
+    modified MATLAB/amd_make.m.  No change to C code except version number.
+
 July 31, 2013: version 2.4.0
 
     * changed malloc and printf pointers to use SuiteSparse_config

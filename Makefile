@@ -21,6 +21,10 @@ default:
 	( cd CSparse && $(MAKE) )
 	( cd CXSparse && $(MAKE) )
 	( cd RBio && $(MAKE) )
+ifneq ($(GPU_CONFIG),)
+	( cd SuiteSparse_GPURuntime && $(MAKE) )
+	( cd GPUQREngine && $(MAKE) )
+endif
 	( cd SPQR && $(MAKE) )
 #	( cd PIRO_BAND && $(MAKE) )
 #	( cd SKYLINE_SVD && $(MAKE) )
@@ -40,6 +44,10 @@ install:
 	( cd CHOLMOD && $(MAKE) install )
 	( cd CXSparse && $(MAKE) install )
 	( cd RBio && $(MAKE) install )
+ifneq ($(GPU_CONFIG),)
+	( cd SuiteSparse_GPURuntime && $(MAKE) install )
+	( cd GPUQREngine && $(MAKE) install )
+endif
 	( cd SPQR && $(MAKE) install )
 #	( cd PIRO_BAND && $(MAKE) install )
 #	( cd SKYLINE_SVD && $(MAKE) install )
@@ -58,6 +66,8 @@ uninstall:
 	( cd CHOLMOD && $(MAKE) uninstall )
 	( cd CXSparse && $(MAKE) uninstall )
 	( cd RBio && $(MAKE) uninstall )
+	( cd SuiteSparse_GPURuntime && $(MAKE) uninstall )
+	( cd GPUQREngine && $(MAKE) uninstall )
 	( cd SPQR && $(MAKE) uninstall )
 #	( cd PIRO_BAND && $(MAKE) uninstall )
 #	( cd SKYLINE_SVD && $(MAKE) uninstall )
@@ -78,6 +88,10 @@ library:
 	( cd CSparse && $(MAKE) library )
 	( cd CXSparse && $(MAKE) library )
 	( cd RBio && $(MAKE) library )
+ifneq ($(GPU_CONFIG),)
+	( cd SuiteSparse_GPURuntime && $(MAKE) library )
+	( cd GPUQREngine && $(MAKE) library )
+endif
 	( cd SPQR && $(MAKE) library )
 #	( cd PIRO_BAND && $(MAKE) library )
 #	( cd SKYLINE_SVD && $(MAKE) library )
@@ -101,6 +115,8 @@ purge:
 	- ( cd RBio && $(MAKE) purge )
 	- ( cd MATLAB_Tools/UFcollection && $(RM) *.mex* )
 	- ( cd MATLAB_Tools/SSMULT && $(RM) *.mex* )
+	- ( cd SuiteSparse_GPURuntime && $(MAKE) purge )
+	- ( cd GPUQREngine && $(MAKE) purge )
 	- ( cd SPQR && $(MAKE) purge )
 #	- ( cd PIRO_BAND && $(MAKE) purge )
 #	- ( cd SKYLINE_SVD && $(MAKE) purge )
@@ -123,6 +139,8 @@ clean:
 	- ( cd CSparse && $(MAKE) clean )
 	- ( cd CXSparse && $(MAKE) clean )
 	- ( cd RBio && $(MAKE) clean )
+	- ( cd SuiteSparse_GPURuntime && $(MAKE) clean )
+	- ( cd GPUQREngine && $(MAKE) clean )
 	- ( cd SPQR && $(MAKE) clean )
 #	- ( cd PIRO_BAND && $(MAKE) clean )
 #	- ( cd SKYLINE_SVD && $(MAKE) clean )
@@ -150,6 +168,7 @@ cx:
 	( cd CXSparse/Demo ; $(MAKE) )
 	( cd CXSparse/Demo ; $(MAKE) > cs_demo.out )
 	( cd CXSparse ; $(MAKE) purge )
+	$(RM) -f CXSparse_newfiles.tar.gz
 
 # statement coverage (Linux only); this requires a lot of time.
 # The umfpack tcov requires a lot of disk space

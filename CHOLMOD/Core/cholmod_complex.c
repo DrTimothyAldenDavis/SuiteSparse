@@ -46,7 +46,8 @@ double CHOLMOD(hypot) (double x, double y)
  *
  * c can be the same variable as a or b.
  *
- * Default value of the Common->complex_divide pointer is cholmod_divcomplex.
+ * Default value of the SuiteSparse_config.divcomplex_func pointer is
+ * SuiteSparse_divcomplex, located in SuiteSparse_config.c.
  */
 
 int CHOLMOD(divcomplex)

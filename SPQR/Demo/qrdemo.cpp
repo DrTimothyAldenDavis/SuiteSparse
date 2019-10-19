@@ -30,9 +30,9 @@ void check_residual
     Long m = A->nrow ;
     Long n = A->ncol ;
     Long rnk ;
-    double rnorm, anorm, xnorm ;
-    double one [2] = {1,0}, minusone [2] = {-1,0} ;
-    cholmod_dense *Residual ;
+    double rnorm, anorm, xnorm, atrnorm ;
+    double one [2] = {1,0}, minusone [2] = {-1,0}, zero [2] = {0,0} ;
+    cholmod_dense *r, *atr ;
 
     // get the rank(A) estimate
     rnk = cc->SPQR_istat [4] ;
@@ -41,20 +41,28 @@ void check_residual
     anorm = cholmod_l_norm_sparse (A, 1, cc) ;
 
     // rnorm = norm (A*X-B)
-    Residual = cholmod_l_copy_dense (B, cc) ;
-    cholmod_l_sdmult (A, 0, one, minusone, X, Residual, cc) ;
-    rnorm = cholmod_l_norm_dense (Residual, 2, cc) ;
+    r = cholmod_l_copy_dense (B, cc) ;
+    cholmod_l_sdmult (A, 0, one, minusone, X, r, cc) ;
+    rnorm = cholmod_l_norm_dense (r, 2, cc) ;
 
     // xnorm = norm (X)
     xnorm = cholmod_l_norm_dense (X, 2, cc) ;
+
+    // atrnorm = norm (A'*r)
+    atr = cholmod_l_zeros (n, 1, r->xtype, cc) ;        // atr = zeros (n,1)
+    cholmod_l_sdmult (A, 1, one, zero, r, atr, cc) ;    // atr = A'*r
+    atrnorm = cholmod_l_norm_dense (atr, 2, cc) ;       // atrnorm = norm (atr)
+    if (anorm > 0) atrnorm /= anorm ;
 
     if (m <= n && anorm > 0 && xnorm > 0)
     {
         // find the relative residual, except for least-squares systems
         rnorm /= (anorm * xnorm) ;
     }
-    printf ("residual: %8.1e rank: %6ld\n", rnorm, rnk) ;
-    cholmod_l_free_dense (&Residual, cc) ;
+    printf ("relative norm(Ax-b): %8.1e rank: %6ld  "
+        "rel. norm(A'(Ax-b)) %8.1e\n", rnorm, rnk, atrnorm) ;
+    cholmod_l_free_dense (&r, cc) ;
+    cholmod_l_free_dense (&atr, cc) ;
 }
 
 // =============================================================================

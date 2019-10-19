@@ -14,15 +14,8 @@ ccode: all
 
 include ../../SuiteSparse_config/SuiteSparse_config.mk
 
-# without SuiteSparseQR_expert.cpp functions:
-CF = -DNEXPERT \
-	-O0 -g -fprofile-arcs -ftest-coverage \
-	-Wall -W -Wshadow -Winline -Wno-unused-parameter \
-	-Wredundant-decls -Wdisabled-optimization \
-	-ansi -fexceptions
-
 # for statement coverage (with gcov; see go) and picky compiler warnings
-CF = \
+CF = -pg \
 	-O0 -g -fprofile-arcs -ftest-coverage \
 	-Wall -W -Wshadow -Winline -Wno-unused-parameter \
 	-Wredundant-decls -Wdisabled-optimization \
@@ -31,28 +24,39 @@ CF = \
 # Use the standard reference BLAS, and LAPACK, both compiled with -g,
 # for best diagnostics.  Also, some BLAS (such as the Goto BLAS) cause
 # problems for Valgrind (using instructions that Valgrind doesn't understand).
-# FLIB = -lgfortran -llapack_plain -lblas_plain -lg2c
+  FLIB = -llapack_plain -lblas_plain -lgfortran
+# FLIB = -llapack_plain -lblas_plain -lgfortran -lg2c
 
 # This can be used, but severe valgrind failures may occur in the BLAS,
 # because of how the BLAS is optimized:
-  FLIB = $(LAPACK) $(BLAS)
+# FLIB = $(LAPACK) $(BLAS)
 
-CLIB =  ../../CHOLMOD/Lib/libcholmod.a \
-        ../../AMD/Lib/libamd.a \
-	../../COLAMD/Lib/libcolamd.a \
-	../../CCOLAMD/Lib/libccolamd.a \
-        ../../CAMD/Lib/libcamd.a \
-        ../../SuiteSparse_config/libsuitesparseconfig.a \
-        $(METIS)
+#-------------------------------------------------------------------------------
 
-all: qrtest
+CUDA_LIB = $(CUDART_LIB) $(CUBLAS_LIB)
 
-library: qrtest
+NVCC = /usr/local/cuda/bin/nvcc -g --profile --generate-line-info $(NV20) \
+	-Xcompiler -fprofile-arcs -Xcompiler -ftest-coverage
+
+#-------------------------------------------------------------------------------
+
+CLIB = ../../CHOLMOD/Lib/libcholmod.a \
+       ../../AMD/Lib/libamd.a \
+       ../../COLAMD/Lib/libcolamd.a \
+       ../../CCOLAMD/Lib/libccolamd.a \
+       ../../CAMD/Lib/libcamd.a \
+       ../../SuiteSparse_config/libsuitesparseconfig.a \
+       $(METIS)
+
+all: qrtest gpudemo qrdemo_gpu
+
+library: qrtest gpudemo
 
 purge: distclean
 
 distclean: clean
-	- $(RM) qrtest qrtest_out.txt pfile tfile cov.out
+	- $(RM) qrtest qrtest_out.txt pfile tfile cov.out qrtest_out1.txt
+	- $(RM) gpuqrengine_demo troll.m qrdemo_gpu gpu_results.txt
 
 clean:
 	- $(RM) $(CLEAN)
@@ -60,58 +64,103 @@ clean:
 
 INC = ../Include/spqr.hpp ../Include/SuiteSparseQR_C.h \
 	../Include/SuiteSparseQR_definitions.h \
-	../Include/SuiteSparseQR.hpp Makefile
+	../Include/SuiteSparseQR.hpp
+# Makefile
 
 OBJ = \
-    spqr_rmap.o \
-    SuiteSparseQR_C.o \
-    SuiteSparseQR_expert.o \
-    spqr_parallel.o \
-    spqr_kernel.o \
-    spqr_analyze.o \
-    spqr_assemble.o \
-    spqr_cpack.o \
-    spqr_csize.o \
-    spqr_fcsize.o \
-    spqr_debug.o \
-    spqr_front.o \
-    spqr_factorize.o \
-    spqr_freenum.o \
-    spqr_freesym.o \
-    spqr_freefac.o \
-    spqr_fsize.o \
-    spqr_maxcolnorm.o \
-    spqr_rconvert.o \
-    spqr_rcount.o \
-    spqr_rhpack.o \
-    spqr_rsolve.o \
-    spqr_stranspose1.o \
-    spqr_stranspose2.o \
-    spqr_hpinv.o \
-    spqr_1fixed.o \
-    spqr_1colamd.o \
-    SuiteSparseQR.o \
-    spqr_1factor.o \
-    spqr_cumsum.o \
-    spqr_shift.o \
-    spqr_happly.o \
-    spqr_panel.o \
-    spqr_happly_work.o \
-    SuiteSparseQR_qmult.o \
-    spqr_trapezoidal.o \
-    spqr_larftb.o \
-    spqr_append.o \
-    spqr_type.o \
-    spqr_tol.o \
+    spqr_rmap.o                              \
+    SuiteSparseQR_C.o                        \
+    SuiteSparseQR_expert.o                   \
+    spqr_parallel.o                          \
+    spqr_kernel.o                            \
+    spqr_analyze.o                           \
+    spqr_assemble.o                          \
+    spqr_cpack.o                             \
+    spqr_csize.o                             \
+    spqr_fcsize.o                            \
+    spqr_debug.o                             \
+    spqr_front.o                             \
+    spqr_factorize.o                         \
+    spqr_freenum.o                           \
+    spqr_freesym.o                           \
+    spqr_freefac.o                           \
+    spqr_fsize.o                             \
+    spqr_maxcolnorm.o                        \
+    spqr_rconvert.o                          \
+    spqr_rcount.o                            \
+    spqr_rhpack.o                            \
+    spqr_rsolve.o                            \
+    spqr_stranspose1.o                       \
+    spqr_stranspose2.o                       \
+    spqr_hpinv.o                             \
+    spqr_1fixed.o                            \
+    spqr_1colamd.o                           \
+    SuiteSparseQR.o                          \
+    spqr_1factor.o                           \
+    spqr_cumsum.o                            \
+    spqr_shift.o                             \
+    spqr_happly.o                            \
+    spqr_panel.o                             \
+    spqr_happly_work.o                       \
+    SuiteSparseQR_qmult.o                    \
+    spqr_trapezoidal.o                       \
+    spqr_larftb.o                            \
+    spqr_append.o                            \
+    spqr_type.o                              \
+    spqr_tol.o                               \
     qrtestc.o
+
+ifneq ($(GPU_CONFIG),)
+OBJ += \
+    spqrgpu_kernel.o                         \
+    spqrgpu_buildAssemblyMaps.o              \
+    spqrgpu_computeFrontStaging.o            \
+    SuiteSparseGPU_Workspace.o               \
+    SuiteSparseGPU_Workspace_cpuAllocators.o \
+    SuiteSparseGPU_Workspace_gpuAllocators.o \
+    SuiteSparseGPU_Workspace_transfer.o      \
+    GPUQREngine_GraphVizHelper.o             \
+    GPUQREngine_UberKernel.o                 \
+    GPUQREngine_ExpertSparse.o               \
+    GPUQREngine_Internal.o                   \
+    GPUQREngine_ExpertDense.o                \
+    BucketList.o                 \
+    BucketList_AdvanceBundles.o  \
+    BucketList_CreateBundles.o   \
+    BucketList_FillWorkQueue.o   \
+    BucketList_GrowBundles.o     \
+    BucketList_Manage.o          \
+    BucketList_PostProcessing.o  \
+    LLBundle.o                               \
+    LLBundle_AddTiles.o                      \
+    LLBundle_Advance.o                       \
+    LLBundle_GPUPack.o                       \
+    LLBundle_PipelinedRearrange.o            \
+    LLBundle_UpdateSecondMinIndex.o          \
+    Scheduler.o                              \
+    Scheduler_FillWorkQueue.o                \
+    Scheduler_Front.o                        \
+    Scheduler_LaunchKernel.o                 \
+    Scheduler_PostProcess.o                  \
+    Scheduler_Render.o                       \
+    Scheduler_TransferData.o                 \
+    ssgpu_maxQueueSize.o                     \
+    TaskDescriptor_flops.o
+endif
 
 $(OBJ): $(INC)
 
-I = -I../../CHOLMOD/Include -I../../SuiteSparse_config -I../Include
+I = -I../../CHOLMOD/Include -I../../SuiteSparse_config -I../Include \
 
-C = $(CXX) $(CF) $(I) $(SPQR_CONFIG)
+ifneq ($(GPU_CONFIG),)
+    I += -I../../SuiteSparse_GPURuntime/Include \
+        -I../../GPUQREngine/Include \
+        -I$(CUDA_INC_PATH)
+endif
 
-LIBS = $(CLIB) $(FLIB) $(LIB)
+C = $(CXX) $(CF) $(I) $(SPQR_CONFIG) $(GPU_CONFIG)
+
+LIBS = $(CLIB) $(FLIB) $(LIB) $(CUDA_LIB)
 
 qrtestc.o: qrtestc.c $(INC)
 	$(CC) $(CF) $(I) -c $<
@@ -119,20 +168,43 @@ qrtestc.o: qrtestc.c $(INC)
 qrtest: $(CLIB) qrtest.cpp $(INC) $(OBJ)
 	$(C) qrtest.cpp -o qrtest $(OBJ) $(LIBS) -lm
 
-go: qrtest
+ifneq ($(GPU_CONFIG),)
+gpu: gpuqrengine_demo qrdemo_gpu
+	- ./gpuqrengine_demo
+	- ./qrdemo_gpu ../Matrix/west0067.mtx 2
+	- ./qrdemo_gpu ../Matrix/lp_e226_transposed.mtx 2
+	- ./qrdemo_gpu ../Matrix/lp_e226_transposed.mtx 6
+	- ./qrdemo_gpu ../Matrix/Groebner_id2003_aug.mtx 6
+	- ./qrdemo_gpu ../Matrix/Franz6_id1959_aug.mtx 6
+else
+gpu:
+endif
+
+gpuqrengine_demo: $(CLIB) \
+        ../../GPUQREngine/Demo/gpuqrengine_demo.cpp $(INC) $(OBJ)
+	$(C) $(GPUQRDEMO)/gpuqrengine_demo.cpp -o gpuqrengine_demo \
+                $(OBJ) $(LIBS) -lm
+
+qrdemo_gpu: ../Demo/qrdemo_gpu.cpp $(INC) $(OBJ)
+ifneq ($(GPU_CONFIG),)
+	$(C) ../Demo/qrdemo_gpu.cpp -o qrdemo_gpu $(OBJ) $(LIBS)
+endif
+
+go: qrtest gpu qrdemo_gpu
 	- ./qrtest matrixlist.txt > qrtest_out.txt
 	- ./cov
 
 go1: qrtest
-	- ./qrtest matrix1.txt > qrtest_out.txt
+	- ./qrtest matrix1.txt > qrtest_out1.txt
 	- ./cov
 
 vgo1: qrtest
-	- valgrind --leak-check=full ./qrtest matrix1.txt > qrtest_out.txt
+	- valgrind ./qrtest matrix1.txt > qrtest_out1.txt
+	# - valgrind --leak-check=full --show-reachable=yes ./qrtest matrix1.txt > qrtest_out1.txt
 	- ./cov
 
 vgo: qrtest
-	- valgrind --leak-check=full ./qrtest matrixlist.txt > qrtest_out.txt
+	- valgrind --leak-check=full --show-reachable=yes ./qrtest matrixlist.txt > qrtest_out.txt
 	- ./cov
 
 spqr_1colamd.o: ../Source/spqr_1colamd.cpp
@@ -255,6 +327,19 @@ SuiteSparseQR_C.o: ../Source/SuiteSparseQR_C.cpp
 spqr_rmap.o: ../Source/spqr_rmap.cpp
 	$(C) -c $<
 
+spqrgpu_kernel.o: ../SPQRGPU/spqrgpu_kernel.cpp
+	$(C) -c $<
+
+spqrgpu_buildAssemblyMaps.o: ../SPQRGPU/spqrgpu_buildAssemblyMaps.cpp
+	$(C) -c $<
+
+spqrgpu_computeFrontStaging.o: ../SPQRGPU/spqrgpu_computeFrontStaging.cpp
+	$(C) -c $<
+
+#-------------------------------------------------------------------------------
+# libraries compiled without test coverage
+#-------------------------------------------------------------------------------
+
 $(METIS):
 	( cd ../../metis-4.0/Lib && $(MAKE) )
 
@@ -275,3 +360,170 @@ $(METIS):
 
 ../../SuiteSparse_config/libsuitesparseconfig.a:
 	( cd ../../SuiteSparse_config ; $(MAKE) library )
+
+#-------------------------------------------------------------------------------
+# SuiteSparse_GPURuntime
+#-------------------------------------------------------------------------------
+
+GPURUNTIME = ../../SuiteSparse_GPURuntime
+GPURUNSRC = $(GPURUNTIME)/Source
+GPURUNINC = -I$(GPURUNTIME)/Include -I../../SuiteSparse_config
+
+RUNH = \
+        $(GPURUNTIME)/Include/SuiteSparseGPU_Workspace.hpp \
+        $(GPURUNTIME)/Include/SuiteSparseGPU_debug.hpp \
+        $(GPURUNTIME)/Include/SuiteSparseGPU_macros.hpp \
+        $(GPURUNTIME)/Include/SuiteSparseGPU_workspace_macros.hpp \
+        $(GPURUNTIME)/Include/SuiteSparseGPU_Runtime.hpp
+#        Makefile
+
+SuiteSparseGPU_Workspace.o: $(GPURUNSRC)/SuiteSparseGPU_Workspace.cpp $(RUNH)
+	$(NVCC) -c $(GPURUNINC) $<
+
+SuiteSparseGPU_Workspace_cpuAllocators.o: \
+        $(GPURUNSRC)/SuiteSparseGPU_Workspace_cpuAllocators.cpp $(RUNH)
+	$(NVCC) -c $(GPURUNINC) $<
+
+SuiteSparseGPU_Workspace_gpuAllocators.o: \
+        $(GPURUNSRC)/SuiteSparseGPU_Workspace_gpuAllocators.cpp $(RUNH)
+	$(NVCC) -c $(GPURUNINC) $<
+
+SuiteSparseGPU_Workspace_memset.o: \
+        $(GPURUNSRC)/SuiteSparseGPU_Workspace_memset.cpp $(RUNH)
+	$(NVCC) -c $(GPURUNINC) $<
+
+SuiteSparseGPU_Workspace_transfer.o: \
+        $(GPURUNSRC)/SuiteSparseGPU_Workspace_transfer.cpp $(RUNH)
+	$(NVCC) -c $(GPURUNINC) $<
+
+#-------------------------------------------------------------------------------
+# GPUQREngine
+#-------------------------------------------------------------------------------
+
+GPUQR = ../../GPUQREngine
+GPUQRSRC = $(GPUQR)/Source
+GPUQRDEMO = $(GPUQR)/Demo
+GPUQRINC = $(GPURUNINC) -I$(GPUQR)/Include
+
+KERNELH = \
+    $(GPUQR)/Include/GPUQREngine_Common.hpp \
+    $(GPUQR)/Include/GPUQREngine_BucketList.hpp \
+    $(GPUQR)/Include/GPUQREngine_Front.hpp \
+    $(GPUQR)/Include/GPUQREngine_FrontState.hpp \
+    $(GPUQR)/Include/GPUQREngine.hpp \
+    $(GPUQR)/Include/GPUQREngine_Internal.hpp \
+    $(GPUQR)/Include/GPUQREngine_GraphVizHelper.hpp \
+    $(GPUQR)/Include/Kernel/Apply/block_apply_1_by_1.cu \
+    $(GPUQR)/Include/Kernel/Apply/block_apply_1.cu \
+    $(GPUQR)/Include/Kernel/Apply/block_apply_2_by_1.cu \
+    $(GPUQR)/Include/Kernel/Apply/block_apply_2.cu \
+    $(GPUQR)/Include/Kernel/Apply/block_apply_3_by_1.cu \
+    $(GPUQR)/Include/Kernel/Apply/block_apply_3.cu \
+    $(GPUQR)/Include/Kernel/Apply/block_apply_chunk.cu \
+    $(GPUQR)/Include/Kernel/Apply/block_apply.cu \
+    $(GPUQR)/Include/Kernel/Apply/cevta_tile.cu \
+    $(GPUQR)/Include/Kernel/Apply/pipelined_rearrange.cu \
+    $(GPUQR)/Include/Kernel/Assemble/packAssemble.cu \
+    $(GPUQR)/Include/Kernel/Assemble/sAssemble.cu \
+    $(GPUQR)/Include/Kernel/Factorize/factorize_3_by_1.cu \
+    $(GPUQR)/Include/Kernel/Factorize/factorize_vt_1_by_1.cu \
+    $(GPUQR)/Include/Kernel/Factorize/factorize_vt_1_by_1_edge.cu \
+    $(GPUQR)/Include/Kernel/Factorize/factorize_vt_2_by_1.cu \
+    $(GPUQR)/Include/Kernel/Factorize/factorize_vt_2_by_1_edge.cu \
+    $(GPUQR)/Include/Kernel/Factorize/factorize_vt_3_by_1.cu \
+    $(GPUQR)/Include/Kernel/Factorize/factorize_vt_3_by_1_edge.cu \
+    $(GPUQR)/Include/Kernel/Factorize/factorize_vt.cu \
+    $(GPUQR)/Include/Kernel/qrKernel.cu \
+    $(GPUQR)/Include/Kernel/sharedMemory.hpp \
+    $(GPUQR)/Include/Kernel/uberKernel.cu \
+    $(GPUQR)/Include/GPUQREngine_LLBundle.hpp \
+    $(GPUQR)/Include/GPUQREngine_Stats.hpp \
+    $(GPUQR)/Include/GPUQREngine_Scheduler.hpp \
+    $(GPUQR)/Include/GPUQREngine_SEntry.hpp \
+    $(GPUQR)/Include/GPUQREngine_SparseMeta.hpp \
+    $(GPUQR)/Include/GPUQREngine_TaskDescriptor.hpp \
+    $(GPUQR)/Include/GPUQREngine_Timing.hpp
+#   Makefile
+
+GPUQREngine_GraphVizHelper.o: \
+        $(GPUQRSRC)/GPUQREngine_GraphVizHelper.cpp $(KERNELH)
+	$(NVCC) -c  $(GPUQRINC) $<
+
+GPUQREngine_UberKernel.o: $(GPUQRSRC)/GPUQREngine_UberKernel.cu $(KERNELH)
+	$(NVCC) -c  $(GPUQRINC) $<
+
+GPUQREngine_ExpertDense.o: $(GPUQRSRC)/GPUQREngine_ExpertDense.cpp $(KERNELH)
+	$(NVCC) -c  $(GPUQRINC) $<
+
+GPUQREngine_Internal.o: $(GPUQRSRC)/GPUQREngine_Internal.cpp $(KERNELH)
+	$(NVCC) -c  $(GPUQRINC) $<
+
+GPUQREngine_ExpertSparse.o: $(GPUQRSRC)/GPUQREngine_ExpertSparse.cpp $(KERNELH)
+	$(NVCC) -c  $(GPUQRINC) $<
+
+BucketList.o: $(GPUQRSRC)/BucketList/BucketList.cpp $(KERNELH)
+	$(NVCC) -c  $(GPUQRINC) $<
+
+BucketList_AdvanceBundles.o: $(GPUQRSRC)/BucketList/BucketList_AdvanceBundles.cpp $(KERNELH)
+	$(NVCC) -c  $(GPUQRINC) $<
+
+BucketList_CreateBundles.o: $(GPUQRSRC)/BucketList/BucketList_CreateBundles.cpp $(KERNELH)
+	$(NVCC) -c  $(GPUQRINC) $<
+
+BucketList_FillWorkQueue.o: $(GPUQRSRC)/BucketList/BucketList_FillWorkQueue.cpp $(KERNELH)
+	$(NVCC) -c  $(GPUQRINC) $<
+
+BucketList_GrowBundles.o: $(GPUQRSRC)/BucketList/BucketList_GrowBundles.cpp $(KERNELH)
+	$(NVCC) -c  $(GPUQRINC) $<
+
+BucketList_Manage.o: $(GPUQRSRC)/BucketList/BucketList_Manage.cpp $(KERNELH)
+	$(NVCC) -c  $(GPUQRINC) $<
+
+BucketList_PostProcessing.o: $(GPUQRSRC)/BucketList/BucketList_PostProcessing.cpp $(KERNELH)
+	$(NVCC) -c  $(GPUQRINC) $<
+
+LLBundle.o: $(GPUQRSRC)/LLBundle/LLBundle.cpp $(KERNELH)
+	$(NVCC) -c  $(GPUQRINC) $<
+
+LLBundle_AddTiles.o: $(GPUQRSRC)/LLBundle/LLBundle_AddTiles.cpp $(KERNELH)
+	$(NVCC) -c  $(GPUQRINC) $<
+
+LLBundle_Advance.o: $(GPUQRSRC)/LLBundle/LLBundle_Advance.cpp $(KERNELH)
+	$(NVCC) -c  $(GPUQRINC) $<
+
+LLBundle_GPUPack.o: $(GPUQRSRC)/LLBundle/LLBundle_GPUPack.cpp $(KERNELH)
+	$(NVCC) -c  $(GPUQRINC) $<
+
+LLBundle_PipelinedRearrange.o: $(GPUQRSRC)/LLBundle/LLBundle_PipelinedRearrange.cpp $(KERNELH)
+	$(NVCC) -c  $(GPUQRINC) $<
+
+LLBundle_UpdateSecondMinIndex.o: $(GPUQRSRC)/LLBundle/LLBundle_UpdateSecondMinIndex.cpp $(KERNELH)
+	$(NVCC) -c  $(GPUQRINC) $<
+
+Scheduler.o: $(GPUQRSRC)/Scheduler/Scheduler.cpp $(KERNELH)
+	$(NVCC) -c  $(GPUQRINC) $<
+
+Scheduler_FillWorkQueue.o: $(GPUQRSRC)/Scheduler/Scheduler_FillWorkQueue.cpp $(KERNELH)
+	$(NVCC) -c  $(GPUQRINC) $<
+
+Scheduler_Front.o: $(GPUQRSRC)/Scheduler/Scheduler_Front.cpp $(KERNELH)
+	$(NVCC) -c  $(GPUQRINC) $<
+
+Scheduler_LaunchKernel.o: $(GPUQRSRC)/Scheduler/Scheduler_LaunchKernel.cpp $(KERNELH)
+	$(NVCC) -c  $(GPUQRINC) $<
+
+Scheduler_PostProcess.o: $(GPUQRSRC)/Scheduler/Scheduler_PostProcess.cpp $(KERNELH)
+	$(NVCC) -c  $(GPUQRINC) $<
+
+Scheduler_Render.o: $(GPUQRSRC)/Scheduler/Scheduler_Render.cpp $(KERNELH)
+	$(NVCC) -c  $(GPUQRINC) $<
+
+Scheduler_TransferData.o: $(GPUQRSRC)/Scheduler/Scheduler_TransferData.cpp $(KERNELH)
+	$(NVCC) -c  $(GPUQRINC) $<
+
+ssgpu_maxQueueSize.o: $(GPUQRSRC)/Scheduler/ssgpu_maxQueueSize.cpp $(KERNELH)
+	$(NVCC) -c  $(GPUQRINC) $<
+
+TaskDescriptor_flops.o: $(GPUQRSRC)/TaskDescriptor/TaskDescriptor_flops.cpp $(KERNELH)
+	$(NVCC) -c  $(GPUQRINC) $<
+

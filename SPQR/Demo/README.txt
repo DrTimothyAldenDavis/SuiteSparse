@@ -18,11 +18,20 @@ qrdemo.m            MATLAB equivalent of qrdemo.cpp.  To compare with the C++
                     qrdemo program, type "qrdemo" in the MATLAB command window.
                     You must first compile and install the SuiteSparseQR MATLAB
                     mexFunctions in SPQR/MATLAB (see SPQR/MATLAB/spqr_make.m).
-qrdemo_diary.txt    diary of "qrdemo" in MATLAB
 
 --------------------------------------------------------------------------------
 
 qrdemoc.c           C demo program, compile and test it with "make cdemo"
 qrdemoc_out.txt     output of "make cdemo"
+
+--------------------------------------------------------------------------------
+
+GPU-related demos and tests
+demo_colamd*.sh     scripts for running the GPU demo with COLAMD
+demo_metis*.sh      scripts for running the GPU demo with METIS
+go*.m               MATLAB scripts for testing the GPU version
+qrdemo_gpu*.cpp     GPU demos
+
+--------------------------------------------------------------------------------
 
 Timothy A. Davis, http://www.suitesparse.com

@@ -57,6 +57,11 @@ else
     mexcmd = 'mex' ;
 end
 
+% MATLAB 8.3.0 now has a -silent option to keep 'mex' from burbling too much
+if (~verLessThan ('matlab', '8.3.0'))
+    mexcmd = [mexcmd ' -silent'] ;
+end
+
 % CSparse source files, in ../../Source, such as ../../Source/cs_add.c.
 % Note that not all CSparse source files have their own mexFunction.
 cs = { 'cs_add', 'cs_amd', 'cs_chol', 'cs_cholsol', 'cs_counts', ...

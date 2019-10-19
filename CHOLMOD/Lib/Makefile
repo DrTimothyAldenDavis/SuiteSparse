@@ -111,7 +111,11 @@ MODIFY = cholmod_rowadd.o cholmod_rowdel.o cholmod_updown.o
 SUPERNODAL = cholmod_super_numeric.o cholmod_super_solve.o \
 	cholmod_super_symbolic.o
 
+ifneq ($(GPU_CONFIG),)
 GPU = cholmod_gpu.o cholmod_gpu_kernels.o
+else
+GPU =
+endif
 
 DI = $(CORE) $(CHECK) $(CHOLESKY) $(MATRIXOPS) $(MODIFY) $(SUPERNODAL) \
 	$(GPU) $(PARTITION) 
@@ -146,7 +150,11 @@ LMODIFY = cholmod_l_rowadd.o cholmod_l_rowdel.o cholmod_l_updown.o
 LSUPERNODAL = cholmod_l_super_numeric.o cholmod_l_super_solve.o \
 	cholmod_l_super_symbolic.o
 
+ifneq ($(GPU_CONFIG),)
 LGPU = cholmod_l_gpu.o cholmod_gpu_kernels.o
+else
+LGPU =
+endif
 
 DL = $(LCORE) $(LCHECK) $(LCHOLESKY) $(LMATRIXOPS) $(LMODIFY) $(LSUPERNODAL) \
 	$(LPARTITION) $(LGPU)
@@ -525,14 +533,7 @@ cholmod_l_super_solve.o: ../Supernodal/cholmod_super_solve.c \
 # GPU module
 #-------------------------------------------------------------------------------
 
-# This is an unusual rule.  If the GPU is not available, 'make' still needs
-# to find a cholmod_gpu_kernels.o file.  A dummy file is compiled first,
-# and then if the GPU is available, it is overwritten with a compiled 
-# version of cholmod_gpu_kernels.cu.
-
-cholmod_gpu_kernels.o: ../GPU/cholmod_gpu_kernels.c \
-        ../GPU/cholmod_gpu_kernels.cu
-	$(C) -c $(I) $<
+cholmod_gpu_kernels.o: ../GPU/cholmod_gpu_kernels.cu
 	$(NVCC) -I../../SuiteSparse_config -Xcompiler -fPIC -O3  -gencode=arch=compute_20,code=sm_20 -gencode=arch=compute_30,code=sm_30 -gencode=arch=compute_35,code=sm_35 -c ../GPU/cholmod_gpu_kernels.cu
 
 cholmod_gpu.o: ../GPU/cholmod_gpu.c 

@@ -21,14 +21,15 @@
 %-------------------------------------------------------------------------------
 
 \title{User's Guide for SuiteSparseQR, a multifrontal multithreaded sparse
-QR factorization package}
+QR factorization package (with optional GPU acceleration)}
 \author{Timothy A. Davis\thanks{
 email: DrTimothyAldenDavis@gmail.com.
 http://www.suitesparse.com.
 Portions of this work were supported by the National
-Science Foundation, under grants 0203270, 0620286, and 0619080.}}
+Science Foundation, under grants 0203270, 0620286, and 0619080.},
+Sencer Nuri Yeralan, and Sanjay Ranka}
 
-\date{VERSION 1.3.3, July 18, 2014}
+\date{VERSION 2.0.0, Oct 17, 2014}
 
 %-------------------------------------------------------------------------------
 \begin{document}
@@ -860,6 +861,53 @@ The upper bound on the flop count is found in the analysis phase, which ignores
 the numerical values of \verb'A' (the same analysis phase operates on both real
 and complex matrices).  Thus, if you are factorizing a complex matrix, multiply
 this statistic by 4.
+
+%-------------------------------------------------------------------------------
+\section{GPU acceleration}
+\label{GPU}
+%-------------------------------------------------------------------------------
+
+As of version 2.0.0, SuiteSparseQR now includes GPU acceleration.
+It can exploit a single NVIDIA GPU, via CUDA.  To enable GPU acceleration,
+you must compile SuiteSparseQR with non-default options.  See the
+\verb'SuiteSparse_config_GPU_gcc.mk' file in the \verb'SuiteSparse_config'
+directory for details.  The packages SuiteSparse\_GPURuntime and
+GPUQREngine are also required (they should appear in the SuiteSparse 
+directory, along with SPQR).
+
+At run time, you must also enable the GPU by setting \verb'Common->useGPU'
+to \verb'true'.  Before calling any SuiteSparseQR function, you must
+poll the GPU to set the available memory.  Below is a sample code
+that initializes CHOLMOD and then polls the GPU for use in SuiteSparseQR.
+
+\begin{verbatim}
+    size_t total_mem, available_mem ;
+    cholmod_common *cc, Common ;
+    cc = &Common ;
+    cholmod_l_start (cc) ;
+    cc->useGPU = true ;
+    cholmod_l_gpu_memorysize (&total_mem, &available_mem, cc) ;
+    cc->gpuMemorySize = available_mem ;
+    if (cc->gpuMemorySize <= 1)
+    {
+        printf ("no GPU available\n") ;
+    }
+
+    // Subsequent calls to SuiteSparseQR will use the GPU, if available
+\end{verbatim}
+
+See \verb'Demo/qrdemo_gpu.cpp' for an extended example, which can be
+compiled via \verb'make gpu' in the \verb'Demo' directory.
+
+GPU acceleration is not yet available via the MATLAB mexFunction interface. 
+We expect to include this in a future release.
+
+This GPU acceleration in SuiteSparseQR has been heavily tested and we feel that
+it is now polished enough to appear in SuiteSparse.  However, we are also
+actively developing this code, so future enhancements are expected.
+
+For a detailed technical report on the GPU-accelerated algorithm,
+see \verb'qrgpu_paper.pdf' in the \verb'Doc' directory.
 
 %-------------------------------------------------------------------------------
 \section{Requirements and Availability}

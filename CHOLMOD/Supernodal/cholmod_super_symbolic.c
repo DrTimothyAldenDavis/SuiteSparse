@@ -152,14 +152,14 @@ static void subtree
 /* === cholmod_super_symbolic2 ============================================== */
 /* ========================================================================== */
 
-/* Analyze for supernodal Cholesky or multifrontal QR.  CHOLMOD itself always
- * analyzes for supernodal Cholesky, of course.  The "for_cholesky = FALSE"
- * option is used by SuiteSparseQR only. */
+/* Analyze for supernodal Cholesky or multifrontal QR. */
 
 int CHOLMOD(super_symbolic2)
 (
     /* ---- input ---- */
-    int for_cholesky,   /* Cholesky if TRUE, QR if FALSE */
+    int for_whom,       /* FOR_SPQR     (0): for SPQR but not GPU-accelerated
+                           FOR_CHOLESKY (1): for Cholesky (GPU or not)
+                           FOR_SPQRGPU  (2): for SPQR with GPU acceleration */
     cholmod_sparse *A,	/* matrix to analyze */
     cholmod_sparse *F,	/* F = A' or A(:,f)' */
     Int *Parent,	/* elimination tree */
@@ -179,7 +179,7 @@ int CHOLMOD(super_symbolic2)
 	csize, maxcsize, ss, nscol0, nscol1, ns, nfsuper, newzeros, totzeros,
 	merge, snext, esize, maxesize, nrelax0, nrelax1, nrelax2, Asorted ;
     size_t w ;
-    int ok = TRUE ;
+    int ok = TRUE, find_xsize ;
     const char* env_use_gpu;
     const char* env_max_bytes;
     size_t max_bytes;
@@ -242,10 +242,15 @@ int CHOLMOD(super_symbolic2)
     /* allocate GPU workspace */
     /* ---------------------------------------------------------------------- */
 
+    L->useGPU = 0 ;     /* only used for Cholesky factorization, not QR */
+
 #ifdef GPU_BLAS
 
     /* GPU module is installed */
-    if ( for_cholesky ) {         /* only allocate GPU workspace for Cholesky */
+    if ( for_whom == CHOLMOD_ANALYZE_FOR_CHOLESKY )
+    {
+        /* only allocate GPU workspace for supernodal Cholesky, and only when
+           the GPU is requested and available. */
 
         max_bytes = 0;
         max_fraction = 0;
@@ -311,16 +316,16 @@ int CHOLMOD(super_symbolic2)
         /* GPU acceleration is only supported for long int version */
         Common->useGPU = 0;
 #endif
-    }
 
-    /* Cache the fact that the symbolic factorization supports 
-     * GPU acceleration */
-    L->useGPU = Common->useGPU;
+        /* Cache the fact that the symbolic factorization supports 
+         * GPU acceleration */
+        L->useGPU = Common->useGPU;
+
+    }
 
 #else
     /* GPU module is not installed */
     Common->useGPU = 0 ;
-    L->useGPU = 0 ;
 #endif
 
     /* ---------------------------------------------------------------------- */
@@ -419,7 +424,7 @@ int CHOLMOD(super_symbolic2)
 #ifdef GPU_BLAS
 	    /* Ensure that the supernode will fit in the GPU buffers */
 	    /* Data size of 16 bytes must be assumed for case of PATTERN */
-	    || (for_cholesky && L->useGPU && 
+	    || (for_whom == CHOLMOD_ANALYZE_FOR_CHOLESKY && L->useGPU && 
 		 (j-Super[nfsuper-1]+1) * 
 		 ColCount[Super[nfsuper-1]] * sizeof(double) * 2 >= 
 		 Common->devBuffSize)
@@ -575,7 +580,7 @@ int CHOLMOD(super_symbolic2)
 	}
 
 #ifdef GPU_BLAS
-	if ( for_cholesky && L->useGPU ) {
+	if ( for_whom == CHOLMOD_ANALYZE_FOR_CHOLESKY && L->useGPU ) {
 	  /* Ensure that the aggregated supernode fits in the device 
 	     supernode buffers */
 	  double xns = (double) ns;
@@ -654,19 +659,21 @@ int CHOLMOD(super_symbolic2)
     ssize = 0 ;
     xsize = 0 ;
     xxsize = 0 ;
+    find_xsize = for_whom == CHOLMOD_ANALYZE_FOR_CHOLESKY ||
+                 for_whom == CHOLMOD_ANALYZE_FOR_SPQRGPU ;
     for (s = 0 ; s < nsuper ; s++)
     {
 	nscol = Super [s+1] - Super [s] ;
 	nsrow = Snz [s] ;
 	ASSERT (nscol > 0) ;
 	ssize += nsrow ;
-        if (for_cholesky)
+        if (find_xsize)
         {
             xsize += nscol * nsrow ;
             /* also compute xsize in double to guard against Int overflow */
             xxsize += ((double) nscol) * ((double) nsrow) ;
         }
-	if (ssize < 0 || (for_cholesky && xxsize > Int_max))
+	if (ssize < 0 ||(find_xsize && xxsize > Int_max))
 	{
 	    /* Int overflow, clear workspace and return.
                QR factorization will not use xxsize, so that error is ignored.
@@ -678,7 +685,7 @@ int CHOLMOD(super_symbolic2)
 	    return (FALSE) ;
 	}
 	ASSERT (ssize > 0) ;
-        ASSERT (IMPLIES (for_cholesky, xsize > 0)) ;
+        ASSERT (IMPLIES (find_xsize, xsize > 0)) ;
     }
     xsize = MAX (1, xsize) ;
     ssize = MAX (1, ssize) ;
@@ -708,7 +715,6 @@ int CHOLMOD(super_symbolic2)
     Lpx = L->px ;
     Ls = L->s ;
     Ls [0] = 0 ;    /* flag for cholmod_check_factor; supernodes are defined */
-    Lpx [0] = for_cholesky ? 0 : 123456 ;   /* magic number for sparse QR */
     Lsuper = L->super ;
 
     /* copy the list of relaxed supernodes into the final list in L */
@@ -740,10 +746,10 @@ int CHOLMOD(super_symbolic2)
     /* construct pointers for supernodal values (L->px) */
     /* ---------------------------------------------------------------------- */
 
-    if (for_cholesky)
+    if (for_whom == CHOLMOD_ANALYZE_FOR_CHOLESKY ||
+        for_whom == CHOLMOD_ANALYZE_FOR_SPQRGPU)
     {
-        /* L->px is not needed for QR factorization (it may lead to Int
-           overflow, anyway, if xsize caused Int overflow above) */
+        Lpx [0] = 0 ;
         p = 0 ;
         for (s = 0 ; s < nsuper ; s++)
         {
@@ -754,6 +760,13 @@ int CHOLMOD(super_symbolic2)
         }
         Lpx [s] = p ;
         ASSERT ((Int) (L->xsize) == MAX (1,p)) ;
+    }
+    else
+    {
+        /* L->px is not needed for non-GPU accelerated QR factorization (it may
+         * lead to Int overflow, anyway, if xsize caused Int overflow above).
+         * Use a magic number to tell cholmod_check_factor to ignore Lpx. */
+        Lpx [0] = 123456 ;
     }
 
     /* Snz no longer needed ] */
@@ -896,9 +909,10 @@ int CHOLMOD(super_symbolic2)
 
     /* Do not need to guard csize against Int overflow since xsize is OK. */
 
-    if (for_cholesky)
+    if (for_whom == CHOLMOD_ANALYZE_FOR_CHOLESKY ||
+        for_whom == CHOLMOD_ANALYZE_FOR_SPQRGPU)
     {
-        /* this is not needed for QR factorization */
+        /* this is not needed for non-GPU accelerated QR factorization */
         for (d = 0 ; d < nsuper ; d++)
         {
             nscol = Super [d+1] - Super [d] ;

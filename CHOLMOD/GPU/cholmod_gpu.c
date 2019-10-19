@@ -22,6 +22,9 @@
 #include "cholmod_core.h"
 #include "cholmod_gpu.h"
 #include "stdio.h"
+#ifdef GPU_BLAS
+#include <cuda_runtime.h>
+#endif
 
 #define MINSIZE (64 * 1024 * 1024)
 
@@ -35,7 +38,8 @@
  * less than 64 MB, then a size of 1 is returned.  Normal usage:
  *
  *  Common->useGPU = 1 ;
- *  Common->gpuMemorySize = cholmod_gpu_memorysize (Common) ;
+ *  err = cholmod_gpu_memorysize (&totmem, &availmem, Common);
+ *  Returns 1 if GPU requested but not available, 0 otherwise
  */
 
 #ifdef GPU_BLAS
@@ -64,7 +68,7 @@ static int poll_gpu (size_t s)          /* TRUE if OK, FALSE otherwise */
 
 #endif
 
-int CHOLMOD(gpu_memorysize)      /* returns GPU memory size available */
+int CHOLMOD(gpu_memorysize)      /* returns 1 on error, 0 otherwise */
 (
     size_t         *total_mem,
     size_t         *available_mem,
@@ -374,8 +378,14 @@ int CHOLMOD(gpu_allocate) ( cholmod_common *Common )
     if ( maxGpuMemFraction < 0 ) maxGpuMemFraction = 0;
     if ( maxGpuMemFraction > 1 ) maxGpuMemFraction = 1;
 
-    CHOLMOD_HANDLE_CUDA_ERROR (CHOLMOD(gpu_memorysize) (&tdm,&fdm,Common),
-                      "gpu_memorysize");
+    int err = CHOLMOD(gpu_memorysize) (&tdm,&fdm,Common) ;
+    if (err)
+    {
+        printf ("GPU failure in cholmod_gpu: gpu_memorysize %g %g MB\n",
+            ((double) tdm) / (1024*1024),
+            ((double) fdm) / (1024*1024)) ;
+        ERROR (CHOLMOD_GPU_PROBLEM, "gpu memorysize failure\n") ;
+    }
 
     /* compute the amount of device memory requested */
     if ( maxGpuMemBytes == 0 && maxGpuMemFraction == 0 ) {
@@ -451,7 +461,15 @@ int CHOLMOD(gpu_allocate) ( cholmod_common *Common )
     Common->devBuffSize -= Common->devBuffSize%0x20000;
 
     cudaErr = cudaMalloc ( &(Common->dev_mempool), requestedDeviceMemory );
+    /*
     CHOLMOD_HANDLE_CUDA_ERROR (cudaErr,"device memory allocation failure\n");
+    */
+    if (cudaErr)
+    {
+        printf ("GPU failure in cholmod_gpu: requested %g MB\n",
+            ((double) requestedDeviceMemory) / (1024*1024)) ;
+        ERROR (CHOLMOD_GPU_PROBLEM, "device memory allocation failure\n") ;
+    }
 
     Common->dev_mempool_size = requestedDeviceMemory;
 

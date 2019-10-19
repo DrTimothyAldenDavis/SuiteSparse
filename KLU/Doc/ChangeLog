@@ -1,3 +1,10 @@
+Oct 10, 2014: version 1.3.1
+
+    * modified MATLAB/klu_make.m.
+    * trivial change to Tcov/Makefile to allow the Tcov test to work when
+        CHOLMOD is compiled with GPU acceleration.  No change to source
+        code of KLU proper (except for the version number).
+
 July 31, 2013: version 1.3.0
 
     * changed malloc and printf pointers to use SuiteSparse_config

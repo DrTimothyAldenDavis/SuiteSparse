@@ -29,6 +29,11 @@ if (~(pc || mac))
     mexcmd = [mexcmd ' -lrt'] ;
 end
 
+% MATLAB 8.3.0 now has a -silent option to keep 'mex' from burbling too much
+if (~verLessThan ('matlab', '8.3.0'))
+    mexcmd = [mexcmd ' -silent '] ;
+end
+
 files = { 'RBread.c', 'RBwrite.c', 'RBraw.c', 'RBtype.c' } ;
 n = length (files) ;
 

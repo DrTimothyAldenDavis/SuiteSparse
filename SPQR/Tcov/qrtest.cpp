@@ -67,6 +67,7 @@ void *my_malloc (size_t size)
     if (my_tries >= 0 || (my_punt && my_tries >= -1)) my_tries-- ;
     if (my_tries == -1)
     {
+        // printf ("malloc pretends to fail\n") ;
         return (NULL) ;          // pretend to fail
     }
     return (malloc (size)) ;
@@ -77,6 +78,7 @@ void *my_calloc (size_t n, size_t size)
     if (my_tries >= 0 || (my_punt && my_tries >= -1)) my_tries-- ;
     if (my_tries == -1)
     {
+        // printf ("calloc pretends to fail\n") ;
         return (NULL) ;          // pretend to fail
     }
     return (calloc (n, size)) ;
@@ -87,6 +89,7 @@ void *my_realloc (void *p, size_t size)
     if (my_tries >= 0 || (my_punt && my_tries >= -1)) my_tries-- ;
     if (my_tries == -1)
     {
+        // printf ("realloc pretends to fail\n") ;
         return (NULL) ;          // pretend to fail
     }
     return (realloc (p, size)) ;
@@ -1758,7 +1761,7 @@ template <typename Entry> void qrtest
     cholmod_sparse *H, *I, *R, *Q, *Csparse, *Xsparse, *AT, *Bsparse ;
     cholmod_dense *Cdense, *Xdense, *Bdense, *HTau ; ;
     double tol = DBL_EPSILON, err, resid, maxerr, maxresid [2][2] ;
-    double tols [ ] = { -1, SPQR_DEFAULT_TOL, 0, DBL_EPSILON } ;
+    double tols [ ] = { SPQR_DEFAULT_TOL, -1, 0, DBL_EPSILON } ;
     Long n, m, nz, *HPinv, ntol, *Ai, *Ap, k, *Qfill, rank, nb, *Cp, *Ci, econ,
         which ;
     Entry *B, *Ax, *Cx ;
@@ -1891,6 +1894,20 @@ template <typename Entry> void qrtest
             printf ("Resid0b %d %ld %d : %g\n", m>n, ntol, ordering, resid) ;
 
             cholmod_l_free_dense  (&Xdense, cc) ;
+
+            if (cc->useGPU)
+            {
+                // error testing for infeasible GPU memory
+                Long save = cc->gpuMemorySize ;
+                cc->gpuMemorySize = 1 ;
+                printf ("[ Pretend GPU memory is too small:\n") ;
+                Xdense = SuiteSparseQR <Entry> (ordering, tol, A, Bdense, cc) ;
+                cc->gpuMemorySize = save ;
+                printf ("] test done infeasible GPU, status %2d, useGPU: %d\n",
+                    cc->status, cc->useGPU) ;
+                cholmod_l_free_dense (&Xdense, cc) ;
+            }
+
             cholmod_l_free_dense  (&Bdense, cc) ;
 
             // -----------------------------------------------------------------
@@ -2592,6 +2609,11 @@ int do_matrix (int kind, FILE *file, cholmod_common *cc)
 {
     cholmod_sparse *A ;
 
+    int nfail0 = 0 ;
+    int nfail1 = 0 ;
+    int nfail2 = 0 ;
+    int nfail3 = 0 ;
+
     // -------------------------------------------------------------------------
     // read in the matrix
     // -------------------------------------------------------------------------
@@ -2614,19 +2636,48 @@ int do_matrix (int kind, FILE *file, cholmod_common *cc)
 
     // defaults
     cc->SPQR_grain = 1 ;         // no parallel analysis
-    int nfail0 = do_matrix2 (kind, A, cc) ;
+    printf ("\nBeginning CPU tests [\n") ;
+    fprintf (stderr, " CPU ") ;
+    nfail0 = do_matrix2 (kind, A, cc) ;
 
-    int nfail1 = 0 ;
-
-    // non-defaults to test TBB, if installed
+    // non-defaults to test TBB, if installed (will not use the GPU)
     cc->SPQR_grain = 4 ;         // grain size relative to total work
-    int nfail2 = do_matrix2 (kind, A, cc) ;
+    nfail2 = do_matrix2 (kind, A, cc) ;
+    cc->SPQR_grain = 1 ;         // no parallel analysis
+    printf ("\nCPU tests done ]\n") ;
+
+    // test the GPU, if installed
+    #ifdef GPU_BLAS
+    cc->useGPU = TRUE ;
+    // was 3.5 * ((size_t) 1024 * 1024 * 1024) ;
+    size_t totmem, availmem ;
+    double t = SuiteSparse_time ( ) ;
+    cholmod_l_gpu_memorysize (&totmem, &availmem, cc) ;
+    t = SuiteSparse_time ( ) - t ;
+    cc->gpuMemorySize = availmem ;
+    printf ("\nBeginning GPU tests, GPU memory %g MB warmup time %g[\n",
+        (double) (cc->gpuMemorySize) / (1024*1024), t) ;
+    fprintf (stderr, " GPU ") ;
+    nfail1 = do_matrix2 (kind, A, cc) ;
+    printf ("\nGPU tests done ]\n") ;
+    if (m > 200)
+    {
+        // try with a tiny GPU memory size, but only for a few matrices
+        // in the test set.  Each front will go in its own stage.
+        printf ("\nBeginning GPU tests with tiny GPU memory [\n") ;
+        cc->gpuMemorySize = 0 ;
+        nfail3 = do_matrix2 (kind, A, cc) ;
+        // restore defaults
+        cc->useGPU = FALSE ;
+        printf ("\nGPU tests done (tiny memory) ]\n") ;
+    }
+    #endif
 
     cholmod_l_free_sparse (&A, cc) ;
 
     printf ("\n") ;
     fprintf (stderr, "\n") ;
-    return (nfail0 + nfail1 + nfail2) ;
+    return (nfail0 + nfail1 + nfail2 + nfail3) ;
 }
 
 

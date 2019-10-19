@@ -1,7 +1,7 @@
+0 ../Matrix/west0067.mtx
 0 ../Matrix/r2.mtx
 0 ../Matrix/a04.mtx
 0 ../Matrix/a2.mtx
-0 ../Matrix/west0067.mtx
 0 ../Matrix/c2.mtx
 0 ../Matrix/a0.mtx
 0 ../Matrix/lfat5b.mtx
@@ -23,5 +23,4 @@
 1 ../Matrix/Tina_AskCal.mtx
 1 ../Matrix/GD98_a.mtx
 1 ../Matrix/Ragusa16.mtx
-0 ../Matrix/young1c.mtx
 0 ../Matrix/arrow.mtx
