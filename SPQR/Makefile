@@ -2,7 +2,7 @@
 # SuiteSparseQR Makefile
 #-------------------------------------------------------------------------------
 
-VERSION = 1.3.2
+VERSION = 1.3.3
 
 include ../SuiteSparse_config/SuiteSparse_config.mk
 

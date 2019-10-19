@@ -74,6 +74,10 @@ all: code
 	./cholmod_simple < Matrix/can___24.mtx
 	./cholmod_simple < Matrix/bcsstk01.tri
 
+# run on a big matrix.  This exercises the GPU, if compiled to exploit it
+big: code
+	./cholmod_l_demo < ~/audikw_1.mtx
+
 distclean: purge
 
 purge: clean

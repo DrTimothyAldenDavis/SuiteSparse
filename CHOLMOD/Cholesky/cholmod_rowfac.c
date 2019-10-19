@@ -465,7 +465,8 @@ int CHOLMOD(row_lsubtree)
         }
     }
 
-    if (R->ncol != 1 || nrow != R->nrow || nrow > R->nzmax || ka >= A->ncol)
+    if (R->ncol != 1 || nrow != R->nrow || nrow > R->nzmax ||
+        ((krow == nrow || stype != 0) && ka >= A->ncol))
     {
 	ERROR (CHOLMOD_INVALID, "lsubtree: R invalid") ;
 	return (FALSE) ;
@@ -585,7 +586,7 @@ int CHOLMOD(rowfac)
     cholmod_common *Common
 )
 {
-    return (CHOLMOD(rowfac_mask) (A, F, beta, kstart, kend, NULL, NULL, L,
+    return (CHOLMOD(rowfac_mask2) (A, F, beta, kstart, kend, NULL, 0, NULL, L,
 	Common)) ;
 }
 
@@ -605,6 +606,35 @@ int CHOLMOD(rowfac_mask)
     size_t kstart,	/* first row to factorize */
     size_t kend,	/* last row to factorize is kend-1 */
     Int *mask,		/* size A->nrow. if mask[i] >= 0 row i is set to zero */
+    Int *RLinkUp,	/* size A->nrow. link list of rows to compute */
+    /* ---- in/out --- */
+    cholmod_factor *L,
+    /* --------------- */
+    cholmod_common *Common
+)
+{
+    Int maskmark = 0 ;
+    return (CHOLMOD(rowfac_mask2) (A, F, beta, kstart, kend, mask, maskmark,
+        RLinkUp, L, Common)) ;
+}
+
+/* ========================================================================== */
+/* === cholmod_rowfac_mask2 ================================================= */
+/* ========================================================================== */
+
+/* This is meant for use in LPDASA only. */
+
+int CHOLMOD(rowfac_mask2)
+(
+    /* ---- input ---- */
+    cholmod_sparse *A,	/* matrix to factorize */
+    cholmod_sparse *F,	/* used for A*A' case only. F=A' or A(:,f)' */
+    double beta [2],	/* factorize beta*I+A or beta*I+AA' */
+    size_t kstart,	/* first row to factorize */
+    size_t kend,	/* last row to factorize is kend-1 */
+    Int *mask,		/* size A->nrow. if mask[i] >= maskmark row i is set
+                           to zero */
+    Int maskmark,       /* for mask [i] test */
     Int *RLinkUp,	/* size A->nrow. link list of rows to compute */
     /* ---- in/out --- */
     cholmod_factor *L,
@@ -715,17 +745,17 @@ int CHOLMOD(rowfac_mask)
 	{
 	    case CHOLMOD_REAL:
 		ok = r_cholmod_rowfac_mask (A, F, beta, kstart, kend,
-		    mask, RLinkUp, L, Common) ;
+		    mask, maskmark, RLinkUp, L, Common) ;
 		break ;
 
 	    case CHOLMOD_COMPLEX:
 		ok = c_cholmod_rowfac_mask (A, F, beta, kstart, kend,
-		    mask, RLinkUp, L, Common) ;
+		    mask, maskmark, RLinkUp, L, Common) ;
 		break ;
 
 	    case CHOLMOD_ZOMPLEX:
 		ok = z_cholmod_rowfac_mask (A, F, beta, kstart, kend,
-		    mask, RLinkUp, L, Common) ;
+		    mask, maskmark, RLinkUp, L, Common) ;
 		break ;
 	}
     }

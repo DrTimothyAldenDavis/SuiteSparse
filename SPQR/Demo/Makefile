@@ -158,6 +158,11 @@ C = $(CXX) $(CF) $(SPQR_CONFIG) $(CONFIG) $(I)
 
 LIBS = $(CLIB) $(LIB) $(FLIB) $(TBB)
 
+# With the CUDA BLAS
+ifneq ($(GPU_CONFIG),)
+LIBS += $(CUDART_LIB) $(CUBLAS_LIB)
+endif
+
 qrsimple: qrsimple.cpp library $(INC)
 	$(C) qrsimple.cpp -o qrsimple $(LIBS)
 

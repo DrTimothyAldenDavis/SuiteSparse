@@ -2226,7 +2226,10 @@ if (do_nantests)
 	ATi = AT->i ;
 	fnz = ATp [i+1] - ATp [i] ;
 	ok = CHOLMOD(row_lsubtree)(A, ATi, fnz, i, L, C2, cm) ;
+        /*
         if (i < ncol) { OK (ok) ; } else { NOT (ok) ; }
+        */
+        OK (ok) ;
 
 	ok = CHOLMOD(row_lsubtree)(Abad2, ATi, fnz, i, L, C2, cm) ; NOT (ok) ;
 	ok = CHOLMOD(row_lsubtree)(A, NULL, fnz, i, L, C2, cm) ;    NOT (ok) ;

@@ -1,4 +1,13 @@
-March 26, 2014: version 3.0.0
+July 18, 2014: version 3.0.1
+
+    * minor correction to 3.0.0 Beta build process, to compile SPQR when
+        CHOLMOD is compiled on the GPU
+    * added cholmod_rowfac_mask2 function for LPDASA
+    * to test the GPU, use 'make big' in CHOLMOD/Demo.  You will need to first
+        download the GHS_psdef/audikw_1.mtx from the UF collection:
+        http://www.cise.ufl.edu/research/sparse/matrices/GHS_psdef/audikw_1.html
+
+March 26, 2014: version 3.0.0 (beta)
 
     * major update to GPU acceleration.  Released at NVIDIA GTC 2014.
 

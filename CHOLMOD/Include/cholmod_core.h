@@ -246,11 +246,11 @@
 
 #define CHOLMOD_HAS_VERSION_FUNCTION
 
-#define CHOLMOD_DATE "March 26, 2014"
+#define CHOLMOD_DATE "July 18, 2014"
 #define CHOLMOD_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define CHOLMOD_MAIN_VERSION 3
 #define CHOLMOD_SUB_VERSION 0
-#define CHOLMOD_SUBSUB_VERSION 0
+#define CHOLMOD_SUBSUB_VERSION 1
 #define CHOLMOD_VERSION \
     CHOLMOD_VER_CODE(CHOLMOD_MAIN_VERSION,CHOLMOD_SUB_VERSION)
 
@@ -282,7 +282,6 @@
 
 /* Define buffering parameters for GPU processing */
 #ifdef GPU_BLAS
-#include <cuda_runtime.h>
 #include <cublas_v2.h>
 #define CHOLMOD_DEVICE_SUPERNODE_BUFFERS 6
 #define CHOLMOD_HOST_SUPERNODE_BUFFERS 8

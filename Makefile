@@ -22,6 +22,8 @@ default:
 	( cd CXSparse && $(MAKE) )
 	( cd RBio && $(MAKE) )
 	( cd SPQR && $(MAKE) )
+#	( cd PIRO_BAND && $(MAKE) )
+#	( cd SKYLINE_SVD && $(MAKE) )
 
 # install all packages in /usr/local/lib and /usr/local/include
 # (note that CSparse is not installed; CXSparse is installed instead)
@@ -39,6 +41,8 @@ install:
 	( cd CXSparse && $(MAKE) install )
 	( cd RBio && $(MAKE) install )
 	( cd SPQR && $(MAKE) install )
+#	( cd PIRO_BAND && $(MAKE) install )
+#	( cd SKYLINE_SVD && $(MAKE) install )
 
 # uninstall all packages
 uninstall:
@@ -55,11 +59,13 @@ uninstall:
 	( cd CXSparse && $(MAKE) uninstall )
 	( cd RBio && $(MAKE) uninstall )
 	( cd SPQR && $(MAKE) uninstall )
+#	( cd PIRO_BAND && $(MAKE) uninstall )
+#	( cd SKYLINE_SVD && $(MAKE) uninstall )
 
 library:
 	( cd SuiteSparse_config/xerbla && $(MAKE) )
 	( cd SuiteSparse_config && $(MAKE) )
-	( cd metis-4.0 && $(MAKE) )
+	- ( cd metis-4.0 && $(MAKE) )
 	( cd AMD && $(MAKE) library )
 	( cd BTF && $(MAKE) library )
 	( cd CAMD && $(MAKE) library )
@@ -73,6 +79,8 @@ library:
 	( cd CXSparse && $(MAKE) library )
 	( cd RBio && $(MAKE) library )
 	( cd SPQR && $(MAKE) library )
+#	( cd PIRO_BAND && $(MAKE) library )
+#	( cd SKYLINE_SVD && $(MAKE) library )
 
 # Remove all files not in the original distribution
 purge:
@@ -94,6 +102,8 @@ purge:
 	- ( cd MATLAB_Tools/UFcollection && $(RM) *.mex* )
 	- ( cd MATLAB_Tools/SSMULT && $(RM) *.mex* )
 	- ( cd SPQR && $(MAKE) purge )
+#	- ( cd PIRO_BAND && $(MAKE) purge )
+#	- ( cd SKYLINE_SVD && $(MAKE) purge )
 	- $(RM) MATLAB_Tools/*/*.mex* MATLAB_Tools/spok/private/*.mex*
 
 # Remove all files not in the original distribution, but keep the libraries
@@ -114,6 +124,8 @@ clean:
 	- ( cd CXSparse && $(MAKE) clean )
 	- ( cd RBio && $(MAKE) clean )
 	- ( cd SPQR && $(MAKE) clean )
+#	- ( cd PIRO_BAND && $(MAKE) clean )
+#	- ( cd SKYLINE_SVD && $(MAKE) clean )
 
 # Create the PDF documentation
 docs:
@@ -124,6 +136,8 @@ docs:
 	( cd UMFPACK && $(MAKE) docs )
 	( cd CHOLMOD && $(MAKE) docs )
 	( cd SPQR && $(MAKE) docs )
+#	( cd PIRO_BAND && $(MAKE) docs )
+#	( cd SKYLINE_SVD && $(MAKE) docs )
 
 distclean: purge
 
@@ -146,4 +160,6 @@ cov:
 	( cd CHOLMOD && $(MAKE) cov )
 	( cd SPQR && $(MAKE) cov )
 	( cd UMFPACK && $(MAKE) cov )
+#	( cd PIRO_BAND && $(MAKE) cov )
+#	( cd SKYLINE_SVD && $(MAKE) cov )
 

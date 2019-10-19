@@ -64,6 +64,7 @@
   CFLAGS = 
 # CFLAGS = -g
 # for the icc compiler and OpenMP:
+  CXX = icpc
   CFLAGS = -openmp
 
 # C and C++ compiler flags.  The first three are standard for *.c and *.cpp
@@ -182,21 +183,21 @@ XERBLA =
 # NVCCFLAGS     =
 
 # with cuda for CHOLMOD
-  CUDA_ROOT     = /usr/local/cuda
+#  CUDA_ROOT     = /usr/local/cuda
   GPU_BLAS_PATH = $(CUDA_ROOT)
 # with 4 cores (default):
 # GPU_CONFIG    = -I$(CUDA_ROOT)/include -DGPU_BLAS
 # with 10 cores:
-  GPU_CONFIG    = -I$(CUDA_ROOT)/include -DGPU_BLAS -DCHOLMOD_OMP_NUM_THREADS=10
-  CUDA_PATH     = $(CUDA_ROOT)
-  CUDART_LIB    = $(CUDA_ROOT)/lib64/libcudart.so
-  CUBLAS_LIB    = $(CUDA_ROOT)/lib64/libcublas.so
-  CUDA_INC_PATH = $(CUDA_ROOT)/include/
-  NV20          = -arch=sm_20 -Xcompiler -fPIC
-  NV30          = -arch=sm_30 -Xcompiler -fPIC
-  NV35          = -arch=sm_35 -Xcompiler -fPIC
-  NVCC          = $(CUDA_ROOT)/bin/nvcc
-  NVCCFLAGS     = -O3 -gencode=arch=compute_20,code=sm_20 -gencode=arch=compute_30,code=sm_30 -gencode=arch=compute_35,code=sm_35 -Xcompiler -fPIC
+ GPU_CONFIG    = -I$(CUDA_ROOT)/include -DGPU_BLAS -DCHOLMOD_OMP_NUM_THREADS=10
+ CUDA_PATH     = $(CUDA_ROOT)
+ CUDART_LIB    = $(CUDA_ROOT)/lib64/libcudart.so
+ CUBLAS_LIB    = $(CUDA_ROOT)/lib64/libcublas.so
+ CUDA_INC_PATH = $(CUDA_ROOT)/include/
+ NV20          = -arch=sm_20 -Xcompiler -fPIC
+ NV30          = -arch=sm_30 -Xcompiler -fPIC
+ NV35          = -arch=sm_35 -Xcompiler -fPIC
+ NVCC          = $(CUDA_ROOT)/bin/nvcc
+ NVCCFLAGS     = -O3 -gencode=arch=compute_20,code=sm_20 -gencode=arch=compute_30,code=sm_30 -gencode=arch=compute_35,code=sm_35 -Xcompiler -fPIC
 
 # was NVCC      = $(CUDA_ROOT)/bin/nvcc $(NV35) $(NV30) $(NV20)
 
@@ -288,7 +289,7 @@ CHOLMOD_CONFIG = $(GPU_CONFIG)
 # -DHAVE_TBB        enable the use of Intel's Threading Building Blocks (TBB)
 
 # default, without timing, without TBB:
-SPQR_CONFIG =
+SPQR_CONFIG = $(GPU_CONFIG)
 # with TBB:
 # SPQR_CONFIG = -DHAVE_TBB
 

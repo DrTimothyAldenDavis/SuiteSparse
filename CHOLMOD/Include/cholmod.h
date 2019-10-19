@@ -75,6 +75,10 @@
 #ifndef CHOLMOD_H
 #define CHOLMOD_H
 
+#ifdef GPU_BLAS
+#include <cuda_runtime.h>
+#endif
+
 /* make it easy for C++ programs to include CHOLMOD */
 #ifdef __cplusplus
 extern "C" {

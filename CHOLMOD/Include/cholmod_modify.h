@@ -33,6 +33,7 @@
  * cholmod_updown_solve	    update/downdate, and modify solution to Lx=b
  * cholmod_updown_mark	    update/downdate, and modify solution to partial Lx=b
  * cholmod_updown_mask	    update/downdate for LPDASA
+ * cholmod_updown_mask2     update/downdate for LPDASA
  * cholmod_rowadd_solve	    add a row, and update solution to Lx=b
  * cholmod_rowadd_mark	    add a row, and update solution to partial Lx=b
  * cholmod_rowdel_solve	    delete a row, and downdate Lx=b
@@ -146,6 +147,26 @@ int cholmod_updown_mask
 int cholmod_l_updown_mask (int, cholmod_sparse *, SuiteSparse_long *,
     SuiteSparse_long *, cholmod_factor *, cholmod_dense *, cholmod_dense *,
     cholmod_common *) ;
+
+int cholmod_updown_mask2
+(
+    /* ---- input ---- */
+    int update,		/* TRUE for update, FALSE for downdate */
+    cholmod_sparse *C,	/* the incoming sparse update */
+    int *colmark,	/* int array of size n.  See cholmod_updown.c */
+    int *mask,		/* size n */
+    int maskmark,
+    /* ---- in/out --- */
+    cholmod_factor *L,	/* factor to modify */
+    cholmod_dense *X,	/* solution to Lx=b (size n-by-1) */
+    cholmod_dense *DeltaB,  /* change in b, zero on output */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+int cholmod_l_updown_mask2 (int, cholmod_sparse *, SuiteSparse_long *,
+    SuiteSparse_long *, SuiteSparse_long, cholmod_factor *, cholmod_dense *,
+    cholmod_dense *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_rowadd:  add a row to an LDL' factorization (a rank-2 update) */
