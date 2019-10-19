@@ -1,4 +1,4 @@
-VERSION = 1.1.1
+VERSION = 1.1.2
 
 default: library
 
@@ -22,7 +22,7 @@ purge: distclean
 # install BTF
 install:
 	$(CP) Lib/libbtf.a $(INSTALL_LIB)/libbtf.$(VERSION).a
-	( cd $(INSTALL_LIB) ; ln -s libbtf.$(VERSION).a libbtf.a )
+	( cd $(INSTALL_LIB) ; ln -sf libbtf.$(VERSION).a libbtf.a )
 	$(CP) Include/btf.h $(INSTALL_INCLUDE)
 
 # uninstall BTF

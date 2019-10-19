@@ -2,7 +2,7 @@
 # CCOLAMD Makefile
 #------------------------------------------------------------------------------
 
-VERSION = 2.7.2
+VERSION = 2.7.3
 
 default: demos
 
@@ -53,7 +53,7 @@ mex:
 # install CCOLAMD
 install:
 	$(CP) Lib/libccolamd.a $(INSTALL_LIB)/libccolamd.$(VERSION).a
-	( cd $(INSTALL_LIB) ; ln -s libccolamd.$(VERSION).a libccolamd.a )
+	( cd $(INSTALL_LIB) ; ln -sf libccolamd.$(VERSION).a libccolamd.a )
 	$(CP) Include/ccolamd.h $(INSTALL_INCLUDE)
 
 # uninstall CCOLAMD

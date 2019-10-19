@@ -1,6 +1,6 @@
 # Makefile for UFconfig.c
 
-VERSION = 3.5.0
+VERSION = 3.6.0
 
 default: ccode
 
@@ -25,8 +25,8 @@ clean:
 
 # install UFconfig
 install:
-	$(CP) Lib/libufconfig.a $(INSTALL_LIB)/libufconfig.$(VERSION).a
-	( cd $(INSTALL_LIB) ; ln -s libufconfig.$(VERSION).a libufconfig.a )
+	$(CP) libufconfig.a $(INSTALL_LIB)/libufconfig.$(VERSION).a
+	( cd $(INSTALL_LIB) ; ln -sf libufconfig.$(VERSION).a libufconfig.a )
 	$(CP) UFconfig.h $(INSTALL_INCLUDE)
 
 # uninstall UFconfig

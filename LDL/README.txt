@@ -1,4 +1,6 @@
-LDL Version 2.0: a sparse LDL' factorization and solve package.
+LDL Copyright (c) 2005-2011 by Timothy A. Davis.  All Rights Reserved.
+
+LDL: a sparse LDL' factorization and solve package.
     Written in C, with both a C and MATLAB mexFunction interface. 
 
 These routines are not terrifically fast (they do not use dense matrix kernels),
@@ -28,7 +30,6 @@ Quick start (for MATLAB users);
 
 --------------------------------------------------------------------------------
 
-LDL Copyright (c) 2005 by Timothy A. Davis.  All Rights Reserved.
 
 LDL License:
 

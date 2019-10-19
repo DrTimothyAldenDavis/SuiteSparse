@@ -1,3 +1,7 @@
+Jan 25, 2011: version 2.2.2
+
+    * minor fix to "make install"
+
 Nov 30, 2009: version 2.2.1
 
     * added "make install" and "make uninstall"

@@ -8,10 +8,15 @@ function spok_install
 %
 % See also sparse, spok, spok_test
 
-% Copyright 2008, Tim Davis, University of Florida
+% Copyright 2008-2011, Tim Davis, University of Florida
 
 help spok_install
-mex spok.c spok_mex.c
+is64 = ~isempty (strfind (computer, '64')) ;
+if (is64)
+    mex -largeArrayDims  spok.c spok_mex.c
+else
+    mex spok.c spok_mex.c
+end
 addpath (pwd)
 
 fprintf ('Added the following directory to your path:\n') ;

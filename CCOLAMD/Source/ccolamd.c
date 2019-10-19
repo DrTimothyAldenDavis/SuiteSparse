@@ -1980,7 +1980,7 @@ PUBLIC Int CCOLAMD_2	    /* returns TRUE if successful, FALSE otherwise */
     /* === Return statistics in stats ======================================= */
 
     stats [CCOLAMD_DENSE_ROW] = ndense_row ;
-    stats [CCOLAMD_DENSE_COL] = nempty_row ;
+    stats [CCOLAMD_EMPTY_ROW] = nempty_row ;        /* fixed in 2.7.3 */
     stats [CCOLAMD_NEWLY_EMPTY_ROW] = nnewlyempty_row ;
     stats [CCOLAMD_DENSE_COL] = ndense_col ;
     stats [CCOLAMD_EMPTY_COL] = nempty_col ;

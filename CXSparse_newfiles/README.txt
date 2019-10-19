@@ -1,5 +1,5 @@
-CXSparse: a Concise Sparse Matrix package - Extended.
-Version 2.2.3, Copyright (c) 2006-2007, Timothy A. Davis.
+CXSparse: Copyright (c) 2006-2011, Timothy A. Davis.
+
 Derived from CSparse.  Conversion originally by David Bateman, Motorola,
 and then modified by Tim Davis.  ANSI C99 is required, with support for
 the _Complex data type.

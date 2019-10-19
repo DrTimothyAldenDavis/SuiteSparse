@@ -51,8 +51,8 @@ void mexFunction
         return ;
     }
 
-    Ap = mxGetJc (pargin [0]) ;
-    Ai = mxGetIr (pargin [0]) ;
+    Ap = (SPOK_INT *) mxGetJc (pargin [0]) ;
+    Ai = (SPOK_INT *) mxGetIr (pargin [0]) ;
     m = mxGetM (pargin [0]) ;
     n = mxGetN (pargin [0]) ;
     nzmax = mxGetNzmax (pargin [0]) ;

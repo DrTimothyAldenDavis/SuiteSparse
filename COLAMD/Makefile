@@ -2,7 +2,7 @@
 # COLAMD Makefile
 #------------------------------------------------------------------------------
 
-VERSION = 2.7.2
+VERSION = 2.7.3
 
 default: demos
 
@@ -53,7 +53,7 @@ mex:
 # install COLAMD
 install:
 	$(CP) Lib/libcolamd.a $(INSTALL_LIB)/libcolamd.$(VERSION).a
-	( cd $(INSTALL_LIB) ; ln -s libcolamd.$(VERSION).a libcolamd.a )
+	( cd $(INSTALL_LIB) ; ln -sf libcolamd.$(VERSION).a libcolamd.a )
 	$(CP) Include/colamd.h $(INSTALL_INCLUDE)
 
 # uninstall COLAMD

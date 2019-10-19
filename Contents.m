@@ -129,14 +129,15 @@
 %   MATLAB_Tools    various simple m-files
 %   SSMULT          sparse matrix times sparse matrix
 %   LINFACTOR       solve Ax=b using LU or CHOL
+%   UFcollection    for managing the UF Sparse Matrix Collection
+%   RBio            for reading/writing Rutherford/Boeing sparse matrices
 %
 %-------------------------------------------------------------------------------
 %
 % For help on compiling SuiteSparse or the demos, testing functions, etc.,
-% please see the help for each individual package.   UFcollection and RBio
-% are two additional toolboxes, for managing the UF Sparse Matrix Collection.
+% please see the help for each individual package.
 %
-% Copyright 2008, Timothy A. Davis
+% Copyright 2011, Timothy A. Davis
 % http://www.cise.ufl.edu/research/sparse
 
 help SuiteSparse

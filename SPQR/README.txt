@@ -1,4 +1,4 @@
-SuiteSparseQR version 1.1.0, Sept 20, 2008, Copyright (c) 2008, Timothy A. Davis
+SuiteSparseQR Copyright (c) 2008-2011, Timothy A. Davis
 
 SuiteSparseQR is a a multithread, multifrontal, rank-revealing sparse QR
 factorization method.

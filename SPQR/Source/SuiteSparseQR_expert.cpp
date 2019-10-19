@@ -174,6 +174,8 @@ SuiteSparseQR_factorization <Complex> *SuiteSparseQR_symbolic <Complex>
 // SuiteSparseQR_symbolic.  Alternatively, if SuiteSparseQR_factorize
 // did not find any singletons (QR->n1cols == 0), a call to
 // SuiteSparseQR_factorize can be followed by a factorization by this function.
+//
+// Returns TRUE if successful, FALSE otherwise.
 
 template <typename Entry> int SuiteSparseQR_numeric
 (

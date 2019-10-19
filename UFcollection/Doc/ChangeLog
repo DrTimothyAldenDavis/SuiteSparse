@@ -1,3 +1,8 @@
+Jan 25, 2011:  version 1.4.0
+
+    * added new graphs to UFpage.m (bipartite, A+A')
+    * METIS no longer used.  It causes too many segfaults...
+
 Nov 30, 2009: version 1.3.0
 
     * added code to compute UFstats.csv for UFgui

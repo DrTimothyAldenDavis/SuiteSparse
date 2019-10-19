@@ -1,3 +1,9 @@
+Jan 25, 2011: version 1.7.3
+
+    * minor fix to "make install"
+    * minor change to Core/cholmod_memory.c, rename "I" which conflicts with
+        a predefined token in some compilers
+
 Nov 30, 2009: version 1.7.2
 
     * added "make install" and "make uninstall"

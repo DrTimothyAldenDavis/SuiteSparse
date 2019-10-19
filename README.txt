@@ -12,7 +12,7 @@ SuiteSparse_install.  All packages will be compiled, and several demos will be
 run.
 ================================================================================
 
-Nov 30, 2009.  SuiteSparse version 3.5.0
+Jan 25, 2011.  SuiteSparse VERSION 3.6.0
 
     AMD         approximate minimum degree ordering
 
@@ -37,8 +37,8 @@ Nov 30, 2009.  SuiteSparse version 3.5.0
                 UFconfig/UFconfig.mk is included in the Makefile's of all
                 packages.  CSparse and RBio do not use UFconfig.
 
-    CSparse     a concise sparse matrix package, developed for my upcoming
-                book, "Direct Methods for Sparse Linear Systems", to be
+    CSparse     a concise sparse matrix package, developed for my
+                book, "Direct Methods for Sparse Linear Systems",
                 published by SIAM.
 
     CXSparse    CSparse Extended.  Includes support for complex matrices
@@ -61,12 +61,12 @@ Nov 30, 2009.  SuiteSparse version 3.5.0
 
     SuiteSparseQR   sparse QR factorization
 
-CHOLMOD optionally uses METIS 4.0.1
+Some codes optionally use METIS 4.0.1
 (http://www-users.cs.umn.edu/~karypis/metis).  To use METIS, place a copy of
 the metis-4.0 directory in the same directory containing this README file.
 Be sure that you do not have a nested metis-4.0/metis-4.0 directory; SuiteSparse
 won't find METIS if you do this, which can happen with a zip file of metis-4.0
-on Windows.  The use of METIS will improve the ordering quality in CHOLMOD.
+on Windows.  The use of METIS will improve the ordering quality.
 
 Refer to each package for license, copyright, and author information.  All
 codes are authored or co-authored by Timothy A. Davis, CISE Dept., Univ. of
@@ -84,13 +84,12 @@ To use "make" in Unix/Linux:
 
 (1) Use the right BLAS and LAPACK libraries
 
-    See http://www.netlib.org/blas for the Fortran reference BLAS (slow, but
-    they work).  See http://www.tacc.utexas.edu/~kgoto/ or
-    http://www.cs.utexas.edu/users/flame/goto/ for an optimized BLAS.  See
-    http://www.netlib.org/lapack for LAPACK.  The UFconfig/UFconfig.mk file
-    assumes the vanilla BLAS (-lblas).  You should use an optimized BLAS;
-    otherwise UMFPACK and CHOLMOD will be slow.  Change -lblas to -l(your BLAS
-    library here) in the UFconfig/UFconfig.mk file.
+    Edit your UFconfig/UFconfig.mk file to point to the right compilers,
+    and to the correct BLAS and LAPACK libraries.  There are many examples
+    of different computer architectures there.  Scroll through to find yours,
+    and uncomment those lines.
+
+    By default, the UFconfig.mk file assumes -lblas and -llapack.
 
 (2) Install Intel's Threading Building Blocks (TBB)
 

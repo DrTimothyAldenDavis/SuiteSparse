@@ -1,3 +1,10 @@
+Jan 25, 2011: version 1.2.1
+
+    * minor fix to "make install"
+    * added more examples to SPRQ/Demo/qrdemo.cpp
+    * fixed error-condition return value for Source/SuiteSparseQR.cpp
+    * minor fix to SPQR/Tcov/qrtest.cpp
+
 Nov 30, 2009: version 1.2.0
 
     * fixed interface to 64-bit BLAS for MATLAB 7.8

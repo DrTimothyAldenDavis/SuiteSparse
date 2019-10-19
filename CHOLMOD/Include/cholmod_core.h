@@ -244,11 +244,11 @@
  *	#endif
  */
 
-#define CHOLMOD_DATE "Nov 30, 2009"
+#define CHOLMOD_DATE "Jan 25, 2011"
 #define CHOLMOD_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define CHOLMOD_MAIN_VERSION 1
 #define CHOLMOD_SUB_VERSION 7
-#define CHOLMOD_SUBSUB_VERSION 2
+#define CHOLMOD_SUBSUB_VERSION 3
 #define CHOLMOD_VERSION \
     CHOLMOD_VER_CODE(CHOLMOD_MAIN_VERSION,CHOLMOD_SUB_VERSION)
 
@@ -2201,10 +2201,10 @@ int cholmod_realloc_multiple
     int nint,		/* number of int/UF_long blocks */
     int xtype,		/* CHOLMOD_PATTERN, _REAL, _COMPLEX, or _ZOMPLEX */
     /* ---- in/out --- */
-    void **I,		/* int or UF_long block */
-    void **J,		/* int or UF_long block */
-    void **X,		/* complex, double, or float block */
-    void **Z,		/* zomplex case only: double or float block */
+    void **Iblock,	/* int or UF_long block */
+    void **Jblock,	/* int or UF_long block */
+    void **Xblock,	/* complex, double, or float block */
+    void **Zblock,	/* zomplex case only: double or float block */
     size_t *n,		/* current size of the I,J,X,Z blocks on input,
 			 * nnew on output if successful */
     /* --------------- */

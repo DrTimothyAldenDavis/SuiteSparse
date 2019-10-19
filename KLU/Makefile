@@ -1,4 +1,4 @@
-VERSION = 1.1.1
+VERSION = 1.1.2
 
 default: demos
 
@@ -34,7 +34,7 @@ cov: library
 # install KLU
 install:
 	$(CP) Lib/libklu.a $(INSTALL_LIB)/libklu.$(VERSION).a
-	( cd $(INSTALL_LIB) ; ln -s libklu.$(VERSION).a libklu.a )
+	( cd $(INSTALL_LIB) ; ln -sf libklu.$(VERSION).a libklu.a )
 	$(CP) Include/klu.h $(INSTALL_INCLUDE)
 
 # uninstall KLU

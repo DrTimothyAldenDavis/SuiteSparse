@@ -1,4 +1,4 @@
-function [out1,out2,P] = spqr (A,arg2,arg3)                                 %#ok
+function [Q,R,P,info] = spqr (A,arg2,arg3)                                  %#ok
 %SPQR multithreaded multifrontal rank-revealing sparse QR.
 %For a sparse m-by-n matrix A, and sparse or full B of size m-by-k:
 %
@@ -80,10 +80,10 @@ function [out1,out2,P] = spqr (A,arg2,arg3)                                 %#ok
 %   the default ordering: COLAMD if m<=2*n; otherwise try AMD.  If the flops
 %   for chol(SP'SP) / nnz(R) >= 500 and nnz(R)/nnz(S)>=5 with the ordering P
 %   found by AMD, then try METIS, and take the best ordering found.  'amd':
-%   AMD(S'*S) 'colamd': COLAMD(S) 'metis': METIS(S'*S), only if METIS is
-%   installed 'best': try all three (AMD, COLAMD, METIS) and take the best
-%   'bestamd': try AMD and COLAMD and take the best 'fixed': P=I; this is the
-%   only option if P is not present in the output 'natural': singleton removal
+%   AMD(S'*S). 'colamd': COLAMD(S) 'metis': METIS(S'*S), only if METIS is
+%   installed. 'best': try all three (AMD, COLAMD, METIS) and take the best
+%   'bestamd': try AMD and COLAMD and take the best. 'fixed': P=I; this is the
+%   only option if P is not present in the output. 'natural': singleton removal
 %   only The singleton pre-ordering permutes A prior to factorization into the
 %   form [A11 A12 ; 0 A22] where A11 is upper triangular with
 %   all(abs(diag(A11)) > opts.tol) (see spqr_singletons).
@@ -127,5 +127,4 @@ function [out1,out2,P] = spqr (A,arg2,arg3)                                 %#ok
 %   Copyright 2008-2009, Timothy A. Davis
 %   http://www.cise.ufl.edu/research/sparse
 
-type spqr
 error ('spqr mexFunction not found') ;

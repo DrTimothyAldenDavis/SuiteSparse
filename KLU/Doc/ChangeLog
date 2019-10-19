@@ -1,3 +1,8 @@
+Jan 25, 2011: version 1.1.2
+
+    * minor fix to "make install"
+    * port of Tcov to Mac OSX 10.6.6
+
 Nov 30, 2009: version 1.1.1
 
     * added "make install" and "make uninstall"

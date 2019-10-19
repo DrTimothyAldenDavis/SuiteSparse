@@ -2,7 +2,7 @@
 # CAMD Makefile (for GNU Make or original make)
 #------------------------------------------------------------------------------
 
-VERSION = 2.2.1
+VERSION = 2.2.2
 
 default: demos
 
@@ -61,7 +61,7 @@ mex:
 # install CAMD
 install:
 	$(CP) Lib/libcamd.a $(INSTALL_LIB)/libcamd.$(VERSION).a
-	( cd $(INSTALL_LIB) ; ln -s libcamd.$(VERSION).a libcamd.a )
+	( cd $(INSTALL_LIB) ; ln -sf libcamd.$(VERSION).a libcamd.a )
 	$(CP) Include/camd.h $(INSTALL_INCLUDE)
 
 # uninstall CAMD

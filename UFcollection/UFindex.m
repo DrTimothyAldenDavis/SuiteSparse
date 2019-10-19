@@ -36,16 +36,19 @@ function UF_Index = UFindex (matrixlist)
 %   amd_flops       flop count for chol(C(p,p)) where, C=A+A', p=amd(C)
 %   amd_vnz         nnz in Householder vectors for qr(A(:,colamd(A)))
 %   amd_rnz         nnz in R for qr(A(:,colamd(A)))
+%
+%   These results are for matrices 1:2336 only:
 %   metis_lnz       nnz(L) for chol(C(p,p)) where, C=A+A', p=metis(C)
 %   metis_flops     flop count for chol(C(p,p)) where, C=A+A', p=metis(C)
 %   metis_vnz       nnz in Householder vectors for qr(A(:,metis(A,'col')))
 %   metis_rnz       nnz in R for qr(A(:,metis(A,'col')))
+%
 %   nblocks         # of blocks from dmperm
 %   sprank          sprank(A)
 %   nzoff           # of entries not in diagonal blocks from dmperm
 %   ncc             # of strongly connected components
-%   dmperm_lnz      nnz(L), using dmperm plus amd or metis
-%   dmperm_unz      nnz(U), using dmperm plus amd or metis
+%   dmperm_lnz      nnz(L), using dmperm plus amd (or metis for matrices 1:2336)
+%   dmperm_unz      nnz(U), using dmperm plus amd (or metis for matrices 1:2336)
 %   dmperm_flops    flop count with dperm plus
 %   dmperm_vnz      nnz in Householder vectors for dmperm plus
 %   dmperm_rnz      nnz in R for dmperm plus
@@ -103,7 +106,14 @@ if (~create_new)
     fprintf ('Loading existing UF_Index.mat file\n') ;
     %% UF_Index = load ('UF_Index.mat') ;
     %% UF_Index = UF_Index.UF_Index ;
-    UF_Index = UFget ;
+    try
+        load UF_Index
+        fprintf ('loaded UF_Index in current directory:\n%s\n', pwd) ;
+        dir
+    catch
+        fprintf ('loading UF_Index=UFget\n') ;
+        UF_Index = UFget ;
+    end
 end
 
 % get the current UFkinds
@@ -277,7 +287,7 @@ if (length (matrixlist) > 0)
         ffile = deblank (files {i}) ;
         fprintf ('Matrix %d: %s filesize %d\n', i, ffile, filesize (i)) ;
         if (filesize (i) == 9999999999)
-            fprintf ('skip this file\n') ;
+            fprintf ('skip this file (not found)\n') ;
             continue ;
         end
     end
@@ -287,8 +297,17 @@ end
 % load the matrices
 %-------------------------------------------------------------------------------
 
-% metis (A,'col') fails with a seg fault for these matrices:
-skip_metis = [850 858 1257 1258] ;
+% updated Jan 2011.  metis has too many bugs to be used reliably.
+%
+%   % metis (A,'col') fails with a seg fault for these matrices:
+%   skip_metis = [850 858 1257 1258 2302] ;
+%
+%   % fails in dmperm analysis
+%   skip_metis = [skip_metis 2337] ;
+%
+%   % metis is exceedingly slow; try again later
+%   skip_all_metis = [2276 2277] ;
+%   skip_metis = [skip_metis skip_all_metis] ;
 
 % these matrices are known to be positive definite, and indefinite,
 % respectively, but sparse Cholesky fails (on a 4GB Penitum 4) on some of them:
@@ -323,10 +342,12 @@ for k = 1:length (matrixlist)
 
     kinds {id} = Problem.kind ;
 
-    nometis = any (id == skip_metis) ;
-    if (nometis)
-	fprintf ('skip metis - will fail\n') ;
-    end
+%   updated Jan 2010.  metis no longer used for matrices 2337 and following
+%   nometis = any (id == skip_metis) + any (id == skip_all_metis) ;
+%   if (nometis)
+%       fprintf ('skip metis on A''A- will fail\n') ;
+%   end
+    nometis = 2 ;
 
     fprintf ('%s/%s\n', UF_Index.Group {id}, UF_Index.Name {id}) ;
 
@@ -392,6 +413,7 @@ for k = 1:length (matrixlist)
     UF_Index.amd_vnz (id) = stats.amd_vnz ;
     UF_Index.amd_rnz (id) = stats.amd_rnz ;
 
+    % Jan 2010: these results are no longer computed
     UF_Index.metis_lnz (id) = stats.metis_lnz ;
     UF_Index.metis_flops (id) = stats.metis_flops ;
     UF_Index.metis_vnz (id) = stats.metis_vnz ;

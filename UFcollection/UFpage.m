@@ -262,30 +262,88 @@ fprintf (f, '<meta http-equiv="content-type" content="text/html; charset=') ;
 fprintf (f, 'iso-8859-1"><title>%s sparse matrix</title></head>\n', fullname) ;
 fprintf (f, '<body bgcolor="#ffffff" link="#0021a5">\n') ;
 
+% matrix name and description
+fprintf (f, '<p><b>Matrix: %s</b>\n', fullname) ;
+fprintf (f, '<p>Description: %s<p>\n', ptitle) ;
+
 % Yifan Hu's medium-sized graph plot, for all matrices
 yifan_graphs = 'http://www.research.att.com/~yifanhu/GALLERY/GRAPHS/' ;
 yifan_thumb = [yifan_graphs 'GIF_THUMBNAIL/'] ;
 yifan_medium = [yifan_graphs 'GIF_SMALL/'] ;
 yname = strrep (fullname, '/', '@') ;
+
+% add the primary graph
 fprintf (f, '\n<p>') ;
+fprintf (f, '<table>\n<tr>\n') ;
 fprintf (f, ...
-    '<a href="%s%s.html"><img alt="%s graph" src="%s%s.gif"></a>\n\n', ...
+    '<td><a href="%s%s.html"><img alt="%s graph" src="%s%s.gif"></a></td>\n', ...
     yifan_medium, yname, fullname, yifan_medium, yname) ;
 
-% small gifs go first:
-% fprintf (f, '\n\n<p><img alt="%s" src="%s_thumb.png"></a>\n', fullname, name) ;
-% 
-% 
-% fprintf (f, ...
-    % '<a href="%s%s.html"><img alt="%s graph" src="%s%s.gif"></a>\n', ...
-    % yifan_medium, yname, fullname, yifan_thumb, yname) ;
+psym = index.pattern_symmetry (id) == 1 ;
 
-% matrix name and description
-fprintf (f, '<p>Matrix: %s\n', fullname) ;
-fprintf (f, '<p>Description: %s<p><hr>\n', ptitle) ;
+% add the graph of A+A', for a square matrix with unsymmetric pattern
+if (m == n && ~psym)
+    fprintf (f, ...
+    '<td><a href="%s%s.html"><img alt="%s graph" src="%s%s.APlusAT.gif"></a></td>\n', ...
+    yifan_medium, yname, fullname, yifan_medium, yname) ;
+end
+
+fprintf (f, '\n</tr>\n<tr>\n') ;
+
+% add the caption for the primary graph
+if (m == n && psym)
+    fprintf (f, '<td>(undirected graph drawing)</td>\n') ;
+else
+    fprintf (f, '<td>(bipartite graph drawing)</td>\n') ;
+end
+
+% add the caption for the graph of A+A'
+if (m == n && ~psym)
+    fprintf (f, '<td>(graph drawing of A+A'')</td>\n') ;
+end
+
+% finalize the graph drawing table
+fprintf (f, '\n</tr>\n</table>\n') ;
+
+%-------------------------------------------------------------------------------
+% link to matrix images
+%-------------------------------------------------------------------------------
+
+fprintf (f, '\n\n<p><hr><p>\n<table>\n<tr>\n') ;
+
+% primary matrix image
+fprintf (f, '<td><img alt="%s" src="%s.png"></td>\n', fullname, name) ;
+
+% dmspy, if it exists
+if (do_dmspy)
+    fprintf (f, '<td><img alt="dmperm of %s" src="%s_dmperm.png"></td>\n', ...
+    fullname, name) ;
+end
+
+fprintf (f, '</tr>\n<tr>\n\n') ;
+
+% ccspy, if it exists
+if (do_scc)
+    fprintf (f, '<td><img alt="scc of %s" src="%s_scc.png"></td>\n', ...
+    fullname, name) ;
+end
+
+% gplot, if it exists
+if (do_gplot)
+    fprintf (f, '<p>') ;
+    fprintf (f, ...
+'<td><a href="%s_gplot_big.png"><img alt="%s graph" src="%s_gplot.png"></a></td>\n', ...
+    name, fullname, name) ;
+end
+
+fprintf (f, '</tr>\n</table>\n\n') ;
+
+%-------------------------------------------------------------------------------
+% download and informational links
+%-------------------------------------------------------------------------------
 
 % link to UF collection
-fprintf (f, '<li><a href="..">UF Sparse Matrix Collection</a>\n') ;
+fprintf (f, '<li><a href="..">Home page of the UF Sparse Matrix Collection</a>\n') ;
 
 % link to group
 fprintf (f, '<li><a href="./index.html">Matrix group: %s</a>\n', grp) ;
@@ -322,32 +380,6 @@ fprintf (f, ...
 '<li><a href="../../RB/%s.tar.gz">download in Rutherford/Boeing format</a>',...
 fullname) ;
 fsize (f, [topdir 'RB/' fullname '.tar.gz']) ;
-
-%-------------------------------------------------------------------------------
-% link to images
-%-------------------------------------------------------------------------------
-
-fprintf (f, '\n\n<p><img alt="%s" src="%s.png"></a>\n', fullname, name) ;
-
-% dmspy, if it exists
-if (do_dmspy)
-    fprintf (f, '\n<p><img alt="dmperm of %s" src="%s_dmperm.png">\n', ...
-    fullname, name) ;
-end
-
-% ccspy, if it exists
-if (do_scc)
-    fprintf (f, '<p><img alt="scc of %s" src="%s_scc.png">\n', ...
-    fullname, name) ;
-end
-
-% gplot, if it exists
-if (do_gplot)
-    fprintf (f, '<p>') ;
-    fprintf (f, ...
-'<a href="%s_gplot_big.png"><img alt="%s graph" src="%s_gplot.png"></a>\n', ...
-    name, fullname, name) ;
-end
 
 %-------------------------------------------------------------------------------
 % table of matrix properties

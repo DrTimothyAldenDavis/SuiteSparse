@@ -2,7 +2,7 @@
 # RBio Makefile
 #-------------------------------------------------------------------------------
 
-VERSION = 2.0.0
+VERSION = 2.0.1
 
 default: all
 
@@ -56,7 +56,7 @@ demos:
 # install RBio
 install:
 	$(CP) Lib/librbio.a $(INSTALL_LIB)/librbio.$(VERSION).a
-	( cd $(INSTALL_LIB) ; ln -s librbio.$(VERSION).a librbio.a )
+	( cd $(INSTALL_LIB) ; ln -sf librbio.$(VERSION).a librbio.a )
 	$(CP) Include/RBio.h $(INSTALL_INCLUDE)
 
 # uninstall RBio

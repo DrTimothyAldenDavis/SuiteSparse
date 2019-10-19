@@ -6,7 +6,7 @@ function spok_test
 %
 % See also sparse, spok, spok_install
 
-% Copyright 2008, Tim Davis, University of Florida
+% Copyright 2008-2011, Tim Davis, University of Florida
 
 % compile and install spok
 help spok ;

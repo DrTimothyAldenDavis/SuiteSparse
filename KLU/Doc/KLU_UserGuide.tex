@@ -26,9 +26,9 @@ Portions of the work were done while on sabbatical at Stanford University
 and Lawrence Berkeley National Laboratory (with funding from Stanford
 University and the SciDAC program).
 }
-\and Eka Palamadai}
+\and Eka Palamadai Natarajan}
 
-\date{March 24, 2009}
+\date{VERSION 1.1.2, Jan 25, 2011}
 \maketitle
 
 %------------------------------------------------------------------------------
@@ -40,6 +40,7 @@ It relies on a permutation to block triangular form (BTF), several methods
 for finding a fill-reducing ordering (variants of approximate minimum degree,
 and nested dissection), and a sparse left-looking LU factorization method
 to factorize each block.  A MATLAB interface is included.
+KLU appears as Collected Algorithm 907 of the ACM \cite{DavisNatarajan10}.
 \end{abstract}
 %------------------------------------------------------------------------------
 
@@ -51,7 +52,7 @@ to factorize each block.  A MATLAB interface is included.
 \section{License and Copyright}
 %------------------------------------------------------------------------------
 
-KLU Version 1.1.0, Copyright\copyright 2004-2009 University of Florida.
+KLU, Copyright\copyright 2004-2011 University of Florida.
 All Rights Reserved.
 KLU is available under alternate licenses; contact T. Davis for details.
 
@@ -233,11 +234,16 @@ SuperLU was before it became Super).
 For details of the permutation to block triangular form, left-looking sparse
 LU factorization, and approximate minimum degree, refer to \cite{Davis06book}.
 Concise versions of these methods can be found in the CSparse package.  KLU is
-also the topic of a Master's thesis by Palamadai \cite{Palamadai05}; a copy of
+also the topic of a Master's thesis by Palamadai Natarajan \cite{Palamadai05};
+a copy of
 the thesis can be found in the {\tt KLU/Doc} directory.  It includes a
 description of an earlier version of KLU; some of the function names and
 parameter lists have changed in this version.  The descriptions of the methods
 used still applies to the current version of KLU, however.
+
+KLU appears as {\em Algorithm 907: KLU, a direct sparse solver for circuit
+simulation problems}, ACM Transactions on Mathematical Software, vol 37, no 3,
+2010.
 
 %------------------------------------------------------------------------------
 \section{Availability}

@@ -2,7 +2,7 @@
 # LDL Makefile
 #------------------------------------------------------------------------------
 
-VERSION = 2.0.2
+VERSION = 2.0.3
 
 default: demos
 
@@ -59,7 +59,7 @@ mex:
 # install LDL
 install:
 	$(CP) Lib/libldl.a $(INSTALL_LIB)/libldl.$(VERSION).a
-	( cd $(INSTALL_LIB) ; ln -s libldl.$(VERSION).a libldl.a )
+	( cd $(INSTALL_LIB) ; ln -sf libldl.$(VERSION).a libldl.a )
 	$(CP) Include/ldl.h $(INSTALL_INCLUDE)
 
 # uninstall LDL

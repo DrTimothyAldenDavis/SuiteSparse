@@ -1,3 +1,8 @@
+Jan 25, 2011, version 5.5.1
+
+    * minor fix to "make install"
+    * Demo/Makefile updated, to allow for METIS to be in a non-default path
+
 Nov 30, 2009, version 5.5.0
 
     * changed and simplified how UMFPACK connects to 64-bit BLAS

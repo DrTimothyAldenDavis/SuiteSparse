@@ -1,4 +1,4 @@
-The COLAMD ordering method - Version 2.7
+The COLAMD ordering method, Copyright 1998-2011, Timothy A. Davis.
 -------------------------------------------------------------------------------
 
 The COLAMD column approximate minimum degree ordering algorithm computes
@@ -43,8 +43,6 @@ colamd/symamd codes.  See colamd.c for more information on how to call
 colamd from a C program.
 
 Requires UFconfig, in the ../UFconfig directory relative to this directory.
-
-	Copyright (c) 1998-2007, Timothy A. Davis, All Rights Reserved.
 
 	See http://www.cise.ufl.edu/research/sparse/colamd (the colamd.c
 	file) for the License.

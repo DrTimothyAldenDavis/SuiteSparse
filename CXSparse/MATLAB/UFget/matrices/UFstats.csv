@@ -1,5 +1,5 @@
-2272
-02-Nov-2009 14:30:41
+2379
+14-Jan-2011 15:51:12
 HB,1138_bus,1138,1138,4054,1,0,0,1,1,1,power network problem
 HB,494_bus,494,494,1666,1,0,0,1,1,1,power network problem
 HB,662_bus,662,662,2474,1,0,0,1,1,1,power network problem
@@ -2272,3 +2272,110 @@ Puri,ABACUS_shell_ud,23412,23412,218484,1,0,1,0,1,0.9753731955380578,model reduc
 Puri,ABACUS_shell_ld,23412,23412,218484,0,0,1,0,1,0.8850885826771654,model reduction problem
 Puri,ABACUS_shell_md,23412,23412,218484,0,0,1,0,1,0.8850885826771654,model reduction problem
 Puri,ABACUS_shell_hd,23412,23412,218484,0,0,1,0,1,0.8850885826771654,model reduction problem
+Stevenson,LargeRegFile,2111154,801374,4944201,1,0,0,0,0,0,circuit simulation problem
+Freescale,memchip,2707524,2707524,13343948,1,0,0,0,0.9058013004223939,0.4015860962358702,circuit simulation problem
+Freescale,transient,178866,178866,961368,1,0,0,0,0.9996742983044353,0.243597788123496,circuit simulation problem
+Freescale,circuit5M,5558326,5558326,59524291,1,0,0,0,0.9999998517635799,0.4198865531852634,circuit simulation problem
+Freescale,circuit5M_dc,3523317,3523317,14865409,1,0,0,0,0.9072118240231114,0.7150571517141635,circuit simulation problem
+Grund,poli3,16955,16955,37849,1,0,0,0,0.00507322676366421,0.0005743275581506652,economic problem
+Grund,poli4,33833,33833,73249,1,0,0,0,0.003551857113862391,0.0002029632636492795,economic problem
+Belcastro,human_gene1,22283,22283,24669643,1,0,0,0,1,1,undirected weighted graph
+Belcastro,human_gene2,14340,14340,18068388,1,0,0,0,1,1,undirected weighted graph
+Belcastro,mouse_gene,45101,45101,28967291,1,0,0,0,1,1,undirected weighted graph
+Um,offshore,259789,259789,4242673,1,0,1,1,1,1,electromagnetics problem
+SNAP,soc-Epinions1,75888,75888,508837,1,1,0,0,0.405226035056413,0.405226035056413,directed graph
+SNAP,soc-LiveJournal1,4847571,4847571,68993773,1,1,0,0,0.7484193555024753,0.7484193555024753,directed graph
+SNAP,soc-Slashdot0811,77360,77360,905468,1,1,0,0,0.8669352939826918,0.8669352939826918,directed graph
+SNAP,soc-Slashdot0902,82168,82168,948464,1,1,0,0,0.8410650442849082,0.8410650442849082,directed graph
+SNAP,wiki-Vote,8297,8297,103689,1,1,0,0,0.0564572905515532,0.0564572905515532,directed graph
+SNAP,email-EuAll,265214,265214,420045,1,1,0,0,0.2600511748250413,0.2600511748250413,directed graph
+SNAP,email-Enron,36692,36692,367662,1,1,0,0,1,1,directed graph
+SNAP,wiki-Talk,2394385,2394385,5021410,1,1,0,0,0.1441208744157517,0.1441208744157517,directed graph
+SNAP,cit-HepPh,34546,34546,421578,1,1,0,0,0.003117186276789061,0.003117186276789061,directed graph
+SNAP,cit-HepTh,27770,27770,352807,1,1,0,0,0.002738343613933237,0.002738343613933237,directed graph
+SNAP,cit-Patents,3774768,3774768,16518948,1,1,0,0,0,0,directed graph
+SNAP,ca-AstroPh,18772,18772,396160,1,1,0,0,1,1,undirected graph
+SNAP,ca-CondMat,23133,23133,186936,1,1,0,0,1,1,undirected graph
+SNAP,ca-GrQc,5242,5242,28980,1,1,0,0,1,1,undirected graph
+SNAP,ca-HepPh,12008,12008,237010,1,1,0,0,1,1,undirected graph
+SNAP,ca-HepTh,9877,9877,51971,1,1,0,0,1,1,undirected graph
+SNAP,web-BerkStan,685230,685230,7600595,1,1,0,0,0.2502764586193581,0.2502764586193581,directed graph
+SNAP,web-Google,916428,916428,5105039,1,1,0,0,0.3067510355944391,0.3067510355944391,directed graph
+SNAP,web-NotreDame,325729,325729,1497134,1,1,0,0,0.5165359238309862,0.5165359238309862,directed graph
+SNAP,web-Stanford,281903,281903,2312497,1,1,0,0,0.2766368994208425,0.2766368994208425,directed graph
+SNAP,amazon0302,262111,262111,1234877,1,1,0,0,0.5427018237443891,0.5427018237443891,directed graph
+SNAP,amazon0312,400727,400727,3200440,1,1,0,0,0.5315337891039982,0.5315337891039982,directed graph
+SNAP,amazon0505,410236,410236,3356824,1,1,0,0,0.5465803390347542,0.5465803390347542,directed graph
+SNAP,amazon0601,403394,403394,3387388,1,1,0,0,0.5573497928197183,0.5573497928197183,directed graph
+SNAP,p2p-Gnutella04,10879,10879,39994,1,1,0,0,0,0,directed graph
+SNAP,p2p-Gnutella05,8846,8846,31839,1,1,0,0,0,0,directed graph
+SNAP,p2p-Gnutella06,8717,8717,31525,1,1,0,0,0,0,directed graph
+SNAP,p2p-Gnutella08,6301,6301,20777,1,1,0,0,0,0,directed graph
+SNAP,p2p-Gnutella09,8114,8114,26013,1,1,0,0,0,0,directed graph
+SNAP,p2p-Gnutella24,26518,26518,65369,1,1,0,0,0,0,directed graph
+SNAP,p2p-Gnutella25,22687,22687,54705,1,1,0,0,0,0,directed graph
+SNAP,p2p-Gnutella30,36682,36682,88328,1,1,0,0,0,0,directed graph
+SNAP,p2p-Gnutella31,62586,62586,147892,1,1,0,0,0,0,directed graph
+SNAP,roadNet-CA,1971281,1971281,5533214,1,1,0,0,1,1,undirected graph
+SNAP,roadNet-PA,1090920,1090920,3083796,1,1,0,0,1,1,undirected graph
+SNAP,roadNet-TX,1393383,1393383,3843320,1,1,0,0,1,1,undirected graph
+SNAP,as-735,7716,7716,26467,1,1,0,0,1,1,undirected graph sequence
+SNAP,as-Skitter,1696415,1696415,22190596,1,1,0,0,1,1,undirected graph
+SNAP,as-caida,31379,31379,106762,1,0,0,0,1,0.07869841329311927,directed weighted graph sequence
+SNAP,Oregon-1,11492,11492,46818,1,1,0,0,1,1,undirected graph sequence
+SNAP,Oregon-2,11806,11806,65460,1,1,0,0,1,1,undirected graph sequence
+SNAP,soc-sign-epinions,131828,131828,841372,1,0,0,0,0.3082520316984202,0.3018224331855771,directed weighted graph
+SNAP,soc-sign-Slashdot081106,77357,77357,516575,1,0,0,0,0.1859207278710739,0.1786110438948846,directed weighted graph
+SNAP,soc-sign-Slashdot090216,81871,81871,545671,1,0,0,0,0.175926519826049,0.168574104176326,directed weighted graph
+SNAP,soc-sign-Slashdot090221,82144,82144,549202,1,0,0,0,0.1774246998372184,0.1703271291801559,directed weighted graph
+Dziekonski,gsm_106857,589446,589446,21758924,1,0,1,0,1,1,electromagnetics problem
+Gleich,flickr,820878,820878,9837214,1,1,0,0,0.653017002578169,0.653017002578169,directed graph
+Gleich,minnesota,2642,2642,6606,1,1,0,0,1,1,undirected graph
+Gleich,usroads-48,126146,126146,323900,1,1,0,0,1,1,undirected graph
+Gleich,usroads,129164,129164,330870,1,1,0,0,1,1,undirected graph
+Fluorem,DK01R,903,903,11766,1,0,1,0,0.9614287029365737,0,computational fluid dynamics problem
+Fluorem,GT01R,7980,7980,430909,1,0,1,0,0.8811455350661695,9.457852263618717e-06,computational fluid dynamics problem
+Fluorem,PR02R,161070,161070,8185136,1,0,1,0,0.9476492341912441,0.0001697393815055858,computational fluid dynamics problem
+Fluorem,RM07R,381689,381689,37464962,1,0,1,0,0.9261667922354103,4.260681089287885e-06,computational fluid dynamics problem
+Rommes,ww_36_pmec_36,66,66,1194,1,0,1,0,0.3339191564147627,0,eigenvalue/model reduction problem
+Rommes,ww_vref_6405,13251,13251,48737,1,0,1,0,0.707540090603374,0.5856980072816208,eigenvalue/model reduction problem
+Rommes,xingo_afonso_itaipu,13250,13250,48735,1,0,1,0,0.7075597554196776,0.5857142857142857,eigenvalue/model reduction problem
+Rommes,mimo8x8_system,13309,13309,48872,1,0,1,0,0.7060291752177048,0.5844472793832159,eigenvalue/model reduction problem
+Rommes,mimo28x28_system,13251,13251,48737,1,0,1,0,0.707540090603374,0.5856980072816208,eigenvalue/model reduction problem
+Rommes,mimo46x46_system,13250,13250,48735,1,0,1,0,0.7075597554196776,0.5857142857142857,eigenvalue/model reduction problem
+Rommes,juba40k,40337,40337,144945,1,0,1,0,0.6934462083788981,0.5830536596402579,eigenvalue/model reduction problem
+Rommes,bauru5727,40366,40366,145019,1,0,1,0,0.6931521565005984,0.5828064190876452,eigenvalue/model reduction problem
+Rommes,zeros_nopss_13k,13296,13296,48827,1,0,1,0,0.7083056110002218,0.5842204479929031,eigenvalue/model reduction problem
+Rommes,descriptor_xingo6u,20738,20738,73916,1,0,1,0,0.6848202865775669,0.5745268504272713,eigenvalue/model reduction problem
+Rommes,nopss_11k,11685,11685,44941,1,0,1,0,0.7502077151335311,0.6233827893175075,eigenvalue/model reduction problem
+Rommes,xingo3012,20944,20944,74386,1,0,1,0,0.681002526603102,0.5712336093539642,eigenvalue/model reduction problem
+Rommes,bips98_606,7135,7135,34738,1,0,1,0,0.9086859688195991,0.7583878152166104,eigenvalue/model reduction problem
+Rommes,bips98_1142,9735,9735,40983,1,0,1,0,0.8020552507215579,0.6694154587839767,eigenvalue/model reduction problem
+Rommes,bips98_1450,11305,11305,44678,1,0,1,0,0.7593684272891549,0.6277809047012471,eigenvalue/model reduction problem
+Rommes,bips07_1693,13275,13275,49044,1,0,1,0,0.706761938919083,0.5845449278560985,eigenvalue/model reduction problem
+Rommes,bips07_1998,15066,15066,62198,1,0,1,0,0.7978660841804587,0.6687809795849786,eigenvalue/model reduction problem
+Rommes,bips07_2476,16861,16861,66498,1,0,1,0,0.7574573297176583,0.6349098739830914,eigenvalue/model reduction problem
+Rommes,bips07_3078,21128,21128,75729,1,0,1,0,0.6861363964744979,0.5750975292587777,eigenvalue/model reduction problem
+Rommes,M10PI_n1,528,528,1317,1,0,1,0,1,0,eigenvalue/model reduction problem
+Rommes,M20PI_n1,1028,1028,2547,1,0,1,0,1,0,eigenvalue/model reduction problem
+Rommes,M40PI_n1,2028,2028,5007,1,0,1,0,1,0,eigenvalue/model reduction problem
+Rommes,M80PI_n1,4028,4028,9927,1,0,1,0,1,0,eigenvalue/model reduction problem
+Rommes,M10PI_n,682,682,1633,1,0,1,0,1,0.1132075471698113,eigenvalue/model reduction problem
+Rommes,M20PI_n,1182,1182,2881,1,0,1,0,1,0.04173622704507512,eigenvalue/model reduction problem
+Rommes,M40PI_n,2182,2182,5341,1,0,1,0,1,0.02274795268425842,eigenvalue/model reduction problem
+Rommes,M80PI_n,4182,4182,10261,1,0,1,0,1,0.01191043353978085,eigenvalue/model reduction problem
+Rommes,S10PI_n1,528,528,1317,1,0,1,0,1,0,eigenvalue/model reduction problem
+Rommes,S20PI_n1,1028,1028,2547,1,0,1,0,1,0,eigenvalue/model reduction problem
+Rommes,S40PI_n1,2028,2028,5007,1,0,1,0,1,0,eigenvalue/model reduction problem
+Rommes,S80PI_n1,4028,4028,9927,1,0,1,0,1,0,eigenvalue/model reduction problem
+Rommes,S10PI_n,682,682,1633,1,0,1,0,1,0.1132075471698113,eigenvalue/model reduction problem
+Rommes,S20PI_n,1182,1182,2881,1,0,1,0,1,0.04173622704507512,eigenvalue/model reduction problem
+Rommes,S40PI_n,2182,2182,5341,1,0,1,0,1,0.02274795268425842,eigenvalue/model reduction problem
+Rommes,S80PI_n,4182,4182,10261,1,0,1,0,1,0.01191043353978085,eigenvalue/model reduction problem
+Williams,pdb1HYS,36417,36417,4344765,1,0,0,1,1,1,weighted undirected graph
+Williams,consph,83334,83334,6010480,1,0,1,1,1,1,2D/3D problem
+Williams,cant,62451,62451,4007383,1,0,1,1,1,1,2D/3D problem
+Williams,mac_econ_fwd500,206500,206500,1273389,1,0,0,0,0.05995735832675801,0.005599217836274841,economic problem
+Williams,mc2depi,525825,525825,2100225,1,0,1,0,0,0,2D/3D problem
+Williams,cop20k_A,121192,121192,2624331,1,0,1,0,1,1,2D/3D problem
+Williams,webbase-1M,1000005,1000005,3105536,1,0,0,0,0.09552554676231316,0.01588957844838191,weighted directed graph

@@ -645,7 +645,7 @@ public class UFgui extends JFrame
         real_group.add (real_either_Button) ;
 
         real_yes_Button.setToolTipText
-            ("Select 'real' for real matrices only.") ;
+            ("Select 'real' for real matrices only (includes integer and binary).") ;
         real_no_Button.setToolTipText
             ("Select 'complex' for complex matrices only.") ;
         real_either_Button.setToolTipText
@@ -1172,7 +1172,7 @@ public class UFgui extends JFrame
         "# of rows in the matrix",                          // 7:nrows
         "# of columns in the matrix",                       // 8:ncols
         "# of nonzeros in the matrix",                      // 9:nnz
-        "if the matrix is real",                            // 10:isReal
+        "if the matrix is real (not complex)",              // 10:isReal
         "if the matrix is binary",                          // 11:isBinary
         "if the matrix arises from a 2D/3D discretization", // 12:isND
         "if the matrix is symmetric positive definite",     // 13:posdef

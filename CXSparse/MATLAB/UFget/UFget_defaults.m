@@ -31,7 +31,7 @@ params.refresh = 30 ;
 
 f = -1 ;
 try
-    f = fopen (sprintf ('%sUFsettings.txt', s), 'r') ;
+    f = fopen (sprintf ('%sUFsettings.txt', this), 'r') ;
     if (f >= 0)
         % get the location of the mat directory
         s = fgetl (f) ;

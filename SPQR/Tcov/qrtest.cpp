@@ -2576,7 +2576,15 @@ int do_matrix (int kind, FILE *file, cholmod_common *cc)
         fprintf (stderr, "Unable to read matrix\n") ;
         return (1) ;
     }
-    fprintf (stderr, "%5ld by %5ld : ", (Int) A->nrow, (Int) A->ncol) ;
+    Int m = A->nrow ;
+    Int n = A->ncol ;
+    fprintf (stderr, "%5ld by %5ld : ", m, n) ;
+    if (sizeof (Int) > sizeof (int) && (m > 10000 || n > 10000))
+    {
+        fprintf (stderr, "(test skipped on 64-bit systems)\n") ;
+        cholmod_l_free_sparse (&A, cc) ;
+        return (0) ;
+    }
 
     // -------------------------------------------------------------------------
     // use it to test SuiteSparseQR
@@ -2607,9 +2615,6 @@ int do_matrix (int kind, FILE *file, cholmod_common *cc)
     // -------------------------------------------------------------------------
     // free the matrix and report the results
     // -------------------------------------------------------------------------
-
-    Int m = A->nrow ;
-    Int n = A->ncol ;
 
     if (kind == 0)
     {
@@ -2704,7 +2709,7 @@ int main (int argc, char **argv)
             }
             fprintf (stderr, "%-30s ", matrix_name) ;
             FILE *matrix = fopen (matrix_name, "r") ;
-            if (file == NULL)
+            if (matrix == NULL)
             {
                 fprintf (stderr, "Unable to open %s\n", matrix_name) ;
                 nfail++ ;
@@ -2712,6 +2717,7 @@ int main (int argc, char **argv)
             nfail += do_matrix (kind, matrix, cc) ;
             fclose (matrix) ;
         }
+        fclose (file) ;
     }
 
     // -------------------------------------------------------------------------

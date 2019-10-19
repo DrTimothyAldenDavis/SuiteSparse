@@ -316,3 +316,4 @@ distclean: clean
 	rm -f cs_idemo cs_ldemo
 	rm -f cs_*.c
 	rm -f cs*_di.c cs*_dl.c cs*_ci.c cs*_cl.c
+	rm -rf *.dSYM

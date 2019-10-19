@@ -2,7 +2,7 @@
 # SuiteSparseQR Makefile
 #-------------------------------------------------------------------------------
 
-VERSION = 1.2.0
+VERSION = 1.2.1
 
 include ../UFconfig/UFconfig.mk
 
@@ -42,7 +42,7 @@ ccode: demos
 # install SPQR
 install:
 	$(CP) Lib/libspqr.a $(INSTALL_LIB)/libspqr.$(VERSION).a
-	( cd $(INSTALL_LIB) ; ln -s libspqr.$(VERSION).a libspqr.a )
+	( cd $(INSTALL_LIB) ; ln -sf libspqr.$(VERSION).a libspqr.a )
 	$(CP) Include/SuiteSparseQR.hpp $(INSTALL_INCLUDE)
 	$(CP) Include/SuiteSparseQR_C.h $(INSTALL_INCLUDE)
 	$(CP) Include/SuiteSparseQR_definitions.h $(INSTALL_INCLUDE)

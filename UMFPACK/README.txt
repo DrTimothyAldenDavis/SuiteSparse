@@ -1,3 +1,5 @@
+UMFPACK, Copyright (c) 1995-2011 by Timothy A.  Davis.  All Rights Reserved.
+
 UMFPACK :  a set of routines solving sparse linear systems via LU
     factorization.  Requires three other packages:  the BLAS (dense matrix
     operations), AMD (sparse matrix minimum degree ordering), and UFconfig.
@@ -34,7 +36,6 @@ Quick start (for MATLAB users):
 
 --------------------------------------------------------------------------------
 
-UMFPACK, Copyright (c) 1995-2009 by Timothy A.  Davis.  All Rights Reserved.
 UMFPACK is available under alternate licences; contact T. Davis for details.
 
 UMFPACK License:

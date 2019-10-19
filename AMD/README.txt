@@ -1,4 +1,4 @@
-AMD Version 2.2.1, Copyright (c) 2009 by Timothy A.
+AMD, Copyright (c) 2009-2011 by Timothy A.
 Davis, Patrick R. Amestoy, and Iain S. Duff.  All Rights Reserved.
 AMD is available under alternate licences; contact T. Davis for details.
 

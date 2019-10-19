@@ -26,7 +26,7 @@ I = -I../../UFconfig -I../../AMD/Include -I../../COLAMD/Include \
     -I../../BTF/Include -I../../CHOLMOD/Include -I../../CAMD/Include \
     -I../../CCOLAMD/Include -I../../metis-4.0/Lib -I../Include -I../User
 
-PRETTY = grep -v "^\#" | indent -bl -nce -ss -bli0 -i4 -sob 
+PRETTY = grep -v "^\#" | indent -bl -nce -bli0 -i4 -sob 
 
 all: purge libs klutest klultest
 	- ./klultests > klultests.out

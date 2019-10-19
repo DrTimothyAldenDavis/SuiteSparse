@@ -24,4 +24,4 @@ clean:
 	rm -f *.o
 
 purge: clean
-	rm *.mexglx
+	rm *.mex*

@@ -381,7 +381,7 @@ static Int *randperm (Int n, Int seed)
 
 static double do_1_solve (cholmod_sparse *A, cholmod_dense *B,
     cholmod_dense *Xknown, Int *Puser, Int *Quser,
-    KLU_common *Common, cholmod_common *ch, Int *nan)
+    KLU_common *Common, cholmod_common *ch, Int *isnan)
 {
     Int *Ai, *Ap ;
     double *Ax, *Bx, *Xknownx, *Xx, *Ax2, *Axx ;
@@ -676,7 +676,7 @@ static double do_1_solve (cholmod_sparse *A, cholmod_dense *B,
 
                 if (SCALAR_IS_NAN (relresid))
                 {
-                    *nan = TRUE ;
+                    *isnan = TRUE ;
                 }
                 else
                 {
@@ -716,7 +716,7 @@ static double do_1_solve (cholmod_sparse *A, cholmod_dense *B,
 
                     if (SCALAR_IS_NAN (relerr))
                     {
-                        *nan = TRUE ;
+                        *isnan = TRUE ;
                     }
                     else
                     {
@@ -764,17 +764,17 @@ static double do_1_solve (cholmod_sparse *A, cholmod_dense *B,
 /* test KLU with many options */
 
 static double do_solves (cholmod_sparse *A, cholmod_dense *B, cholmod_dense *X,
-    Int *Puser, Int *Quser, KLU_common *Common, cholmod_common *ch, Int *nan)
+    Int *Puser, Int *Quser, KLU_common *Common, cholmod_common *ch, Int *isnan)
 {
     double err, maxerr = 0 ;
     Int n = A->nrow, sflag ;
-    *nan = FALSE ;
+    *isnan = FALSE ;
 
     /* ---------------------------------------------------------------------- */
     /* test KLU with the system A*X=B and default options */
     /* ---------------------------------------------------------------------- */
 
-    maxerr = do_1_solve (A, B, X, NULL, NULL, Common, ch, nan) ;
+    maxerr = do_1_solve (A, B, X, NULL, NULL, Common, ch, isnan) ;
 
     /* ---------------------------------------------------------------------- */
     /* test with non-default options */
@@ -798,7 +798,7 @@ static double do_solves (cholmod_sparse *A, cholmod_dense *B, cholmod_dense *X,
                 for (Common->ordering = 0 ; Common->ordering <= 3 ;
                      Common->ordering++)
                 {
-                    err = do_1_solve (A, B, X, NULL, NULL, Common, ch, nan) ;
+                    err = do_1_solve (A, B, X, NULL, NULL, Common, ch, isnan) ;
                     maxerr = MAX (maxerr, err) ;
                 }
 
@@ -806,7 +806,7 @@ static double do_solves (cholmod_sparse *A, cholmod_dense *B, cholmod_dense *X,
                 Common->ordering = 3 ;
                 Common->user_data = &sflag ;
                 sflag = 0 ;
-                err = do_1_solve (A, B, X, NULL, NULL, Common, ch, nan) ;
+                err = do_1_solve (A, B, X, NULL, NULL, Common, ch, isnan) ;
                 maxerr = MAX (maxerr, err) ;
                 Common->user_data = NULL ;
 
@@ -814,7 +814,7 @@ static double do_solves (cholmod_sparse *A, cholmod_dense *B, cholmod_dense *X,
                 Common->ordering = 2 ;
                 if (n < 200)
                 {
-                    err = do_1_solve (A, B, X, Puser, Quser, Common, ch, nan) ;
+                    err = do_1_solve (A, B, X, Puser, Quser, Common, ch, isnan);
                     maxerr = MAX (maxerr, err) ;
                 }
             }
@@ -847,7 +847,7 @@ int main (void)
     Int *Ap, *Ai, *Puser, *Quser, *Gunk ;
     double *Ax, *Bx, *Xx, *A2x ;
     double one [2], zero [2], xsave, maxerr ;
-    Int n, i, j, nz, save, isreal, k, nan ;
+    Int n, i, j, nz, save, isreal, k, isnan ;
     KLU_symbolic *Symbolic, *Symbolic2 ;
     KLU_numeric *Numeric ;
 
@@ -936,7 +936,7 @@ int main (void)
     /* ---------------------------------------------------------------------- */
 
     test_memory_handler (&Common) ;
-    maxerr = do_solves (A, B, X, Puser, Quser, &Common, &ch, &nan) ;
+    maxerr = do_solves (A, B, X, Puser, Quser, &Common, &ch, &isnan) ;
 
     /* ---------------------------------------------------------------------- */
     /* basic error checking */
@@ -1366,7 +1366,7 @@ int main (void)
         fprintf (stderr, "  test FAILED") ;
         printf ("  test FAILED") ;
     }
-    if (nan)
+    if (isnan)
     {
         fprintf (stderr, " *") ;
         printf (" *") ;

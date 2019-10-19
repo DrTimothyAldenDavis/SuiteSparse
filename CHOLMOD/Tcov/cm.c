@@ -1438,8 +1438,11 @@ int main (int argc, char **argv)
 
 	if (T->nrow > 1000000)
 	{
-	    /* do huge-problem tests only */
-	    huge ( ) ;
+	    /* do huge-problem tests only, but only for 32-bit systems */
+            if (sizeof (Int) == sizeof (int))
+            {
+                huge ( ) ;
+            }
 	    CHOLMOD(free_triplet) (&T, cm) ;
 	    continue ;
 	}

@@ -5,8 +5,10 @@ function stats = UFstats (A, kind, nometis, skip_chol, skip_dmperm, Z)
 %
 % A: a sparse matrix
 % kind: a string with the Problem.kind
-% nometis: if nonzero then metis(A,'col') is not used, nor is metis used in the
-%       dmperm+ ordering.
+% nometis:
+%       0:  always try METIS
+%       1:  use METIS only for A (not for A'A, and not for dmperm)
+%       2:  do not use METIS at all
 % Z: empty, or a sparse matrix the same size as A.  Only used for psym and
 %       nzero statistics, described below.
 %
@@ -60,6 +62,7 @@ function stats = UFstats (A, kind, nometis, skip_chol, skip_dmperm, Z)
 if (nargin < 3)
     nometis = 0 ;
 end
+fprintf ('UFstats.  nometis: %d\n', nometis) ;
 
 %-------------------------------------------------------------------------------
 % ensure the matrix is sparse
@@ -282,20 +285,22 @@ if (m == n)
     fprintf ('AMD   lnz %d flops %g time: %g\n', ...
 	stats.amd_lnz, stats.amd_flops, toc) ;
 
-    % order the whole matrix with METIS
-    tic ;
-    try
-	p = metis (C) ;
-	c = symbfact (C (p,p)) ;
-	stats.metis_lnz = sum (c) ;
-	stats.metis_flops = sum (c.^2) ;
-    catch
-	disp (lasterr) ;
-	fprintf ('metis failed\n') ;
+    % order the whole matrix with METIS (A+A')
+    if (nometis <= 1)
+        tic ;
+        try
+            p = metis (C) ;
+            c = symbfact (C (p,p)) ;
+            stats.metis_lnz = sum (c) ;
+            stats.metis_flops = sum (c.^2) ;
+        catch
+            disp (lasterr) ;
+            fprintf ('metis failed\n') ;
+        end
+        clear p c C
+        fprintf ('METIS lnz %d flops %g time: %g\n', ...
+            stats.metis_lnz, stats.metis_flops, toc) ;
     end
-    clear p c C
-    fprintf ('METIS lnz %d flops %g time: %g\n', ...
-	stats.metis_lnz, stats.metis_flops, toc) ;
 
 else
 
@@ -330,7 +335,7 @@ tic ;
 % order entire matrix with METIS, for LU bounds
 %-------------------------------------------------------------------------------
 
-if (~nometis)
+if (nometis == 0)
     try
 	q = metis (A, 'col') ;
 	[vnz,rnz] = cs_sqr (A (:,q)) ;
@@ -530,9 +535,11 @@ try
 
 			% all blocks are square, analyze a square block
 			% best of amd and metis
-			if (nometis)
+			if (nometis > 0)
+                            % use just AMD
 			    [pblock c] = analyze (S|S', 'sym', 1) ;
 			else
+                            % use AMD and METIS
 			    [pblock c] = analyze (S|S', 'sym', 3) ;
 			end
 			lnzblock = sum (c) ;
@@ -557,9 +564,11 @@ try
 		    end
 		    % best of amd and metis
 		    try
-			if (nometis)
+			if (nometis > 0)
+                            % use just AMD
 			    pblock = analyze (S, 'col', 1) ;
 			else
+                            % use AMD and METIS
 			    pblock = analyze (S, 'col', 3) ;
 			end
 		    catch

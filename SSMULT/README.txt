@@ -1,5 +1,5 @@
-SSMULT version 2.0, Mar 25, 2009.  Distributed under the GNU GPL license (see
-below).  Copyright (c) 2007-2009, Timothy A. Davis, University of Florida.
+SSMULT, Copyright (c) 2007-2009, Timothy A. Davis, University of Florida.
+Distributed under the GNU GPL license (see below). 
 SSMULT is also available under other licenses; contact the author for details.
 http://www.cise.ufl.edu/research/sparse
 

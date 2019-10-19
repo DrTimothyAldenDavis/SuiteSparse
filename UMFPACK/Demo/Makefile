@@ -40,12 +40,12 @@ LIBS = $(BLAS) $(XERBLA) $(LIB)
 ../../CAMD/Lib/libcamd.a:
 	( cd ../../CAMD ; $(MAKE) library )
 
-../../metis-4.0/libmetis.a:
-	( cd ../../metis-4.0/Lib ; $(MAKE) )
+$(METIS):
+	( cd $(METIS_PATH) ; $(MAKE) )
 
 UMFPACK = ../Lib/libumfpack.a ../../AMD/Lib/libamd.a \
     ../../CHOLMOD/Lib/libcholmod.a ../../COLAMD/Lib/libcolamd.a \
-    ../../CAMD/Lib/libcamd.a ../../metis-4.0/libmetis.a \
+    ../../CAMD/Lib/libcamd.a $(METIS) \
     ../../CCOLAMD/Lib/libccolamd.a
 
 libs: $(UMFPACK)

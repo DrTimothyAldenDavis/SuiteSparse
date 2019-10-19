@@ -90,16 +90,21 @@ INSTALL_INCLUDE = /usr/local/include
 # These settings will probably not work, since there is no fixed convention for
 # naming the BLAS and LAPACK library (*.a or *.so) files.
 
-# Using the Goto BLAS:
-# BLAS = -lgoto -lgfortran -lgfortranbegin -lg2c
-
 # This is probably slow ... it might connect to the Standard Reference BLAS:
-BLAS = -lblas
+BLAS = -lblas -lgfortran
 LAPACK = -llapack
 
+# NOTE: this next option for the "Goto BLAS" has nothing to do with a "goto"
+# statement.  Rather, the Goto BLAS is written by Dr. Kazushige Goto.
+# Using the Goto BLAS:
+# BLAS = -lgoto -lgfortran -lgfortranbegin
+
 # Using non-optimized versions:
-# BLAS = -lblas_plain -lgfortran -lgfortranbegin -lg2c
+# BLAS = -lblas_plain -lgfortran -lgfortranbegin
 # LAPACK = -llapack_plain
+
+# BLAS = -lblas_plain -lgfortran -lgfortranbegin
+# LAPACK = -llapack
 
 # The BLAS might not contain xerbla, an error-handling routine for LAPACK and
 # the BLAS.  Also, the standard xerbla requires the Fortran I/O library, and

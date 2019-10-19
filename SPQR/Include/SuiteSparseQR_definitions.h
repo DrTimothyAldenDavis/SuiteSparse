@@ -59,11 +59,11 @@
         #endif
  */
 
-#define SPQR_DATE "Nov 30, 2009"
+#define SPQR_DATE "Jan 25, 2011"
 #define SPQR_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define SPQR_MAIN_VERSION 1
 #define SPQR_SUB_VERSION 2
-#define SPQR_SUBSUB_VERSION 0
+#define SPQR_SUBSUB_VERSION 1
 #define SPQR_VERSION SPQR_VER_CODE(SPQR_MAIN_VERSION,SPQR_SUB_VERSION)
 
 #endif

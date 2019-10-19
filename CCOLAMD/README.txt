@@ -1,5 +1,5 @@
-CCOLAMD version 2.7: constrained column approximate minimum degree ordering
-Copyright (C) 2005-2007, Univ. of Florida.  Authors: Timothy A. Davis,
+CCOLAMD: constrained column approximate minimum degree ordering
+Copyright (C) 2005-2011, Univ. of Florida.  Authors: Timothy A. Davis,
 Sivasankaran Rajamanickam, and Stefan Larimore.  Closely based on COLAMD by
 Davis, Stefan Larimore, in collaboration with Esmond Ng, and John Gilbert.
 http://www.cise.ufl.edu/research/sparse

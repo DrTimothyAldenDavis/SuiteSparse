@@ -404,10 +404,10 @@ int CHOLMOD(realloc_multiple)
     int nint,		/* number of int/UF_long blocks */
     int xtype,		/* CHOLMOD_PATTERN, _REAL, _COMPLEX, or _ZOMPLEX */
     /* ---- in/out --- */
-    void **I,		/* int or UF_long block */
-    void **J,		/* int or UF_long block */
-    void **X,		/* complex or double block */
-    void **Z,		/* zomplex case only: double block */
+    void **Iblock,	/* int or UF_long block */
+    void **Jblock,	/* int or UF_long block */
+    void **Xblock,	/* complex or double block */
+    void **Zblock,	/* zomplex case only: double block */
     size_t *nold_p,	/* current size of the I,J,X,Z blocks on input,
 			 * nnew on output if successful */
     /* --------------- */
@@ -440,26 +440,30 @@ int CHOLMOD(realloc_multiple)
 
     if (nint > 0)
     {
-	*I = CHOLMOD(realloc) (nnew, sizeof (Int), *I, &i, Common) ;
+	*Iblock = CHOLMOD(realloc) (nnew, sizeof (Int), *Iblock, &i, Common) ;
     }
     if (nint > 1)
     {
-	*J = CHOLMOD(realloc) (nnew, sizeof (Int), *J, &j, Common) ;
+	*Jblock = CHOLMOD(realloc) (nnew, sizeof (Int), *Jblock, &j, Common) ;
     }
 
     switch (xtype)
     {
 	case CHOLMOD_REAL:
-	    *X = CHOLMOD(realloc) (nnew, sizeof (double), *X, &x, Common) ;
+	    *Xblock = CHOLMOD(realloc) (nnew, sizeof (double), *Xblock, &x,
+                    Common) ;
 	    break ;
 
 	case CHOLMOD_COMPLEX:
-	    *X = CHOLMOD(realloc) (nnew, 2*sizeof (double), *X, &x, Common) ;
+	    *Xblock = CHOLMOD(realloc) (nnew, 2*sizeof (double), *Xblock, &x,
+                    Common) ;
 	    break ;
 
 	case CHOLMOD_ZOMPLEX:
-	    *X = CHOLMOD(realloc) (nnew, sizeof (double), *X, &x, Common) ;
-	    *Z = CHOLMOD(realloc) (nnew, sizeof (double), *Z, &z, Common) ;
+	    *Xblock = CHOLMOD(realloc) (nnew, sizeof (double), *Xblock, &x,
+                    Common) ;
+	    *Zblock = CHOLMOD(realloc) (nnew, sizeof (double), *Zblock, &z,
+                    Common) ;
 	    break ;
     }
 
@@ -472,26 +476,30 @@ int CHOLMOD(realloc_multiple)
 
 	    if (nint > 0)
 	    {
-		*I = CHOLMOD(free) (i, sizeof (Int), *I, Common) ;
+		*Iblock = CHOLMOD(free) (i, sizeof (Int), *Iblock, Common) ;
 	    }
 	    if (nint > 1)
 	    {
-		*J = CHOLMOD(free) (j, sizeof (Int), *J, Common) ;
+		*Jblock = CHOLMOD(free) (j, sizeof (Int), *Jblock, Common) ;
 	    }
 
 	    switch (xtype)
 	    {
 		case CHOLMOD_REAL:
-		    *X = CHOLMOD(free) (x, sizeof (double), *X, Common) ;
+		    *Xblock = CHOLMOD(free) (x, sizeof (double), *Xblock,
+                            Common) ;
 		    break ;
 
 		case CHOLMOD_COMPLEX:
-		    *X = CHOLMOD(free) (x, 2*sizeof (double), *X, Common) ;
+		    *Xblock = CHOLMOD(free) (x, 2*sizeof (double), *Xblock,
+                            Common) ;
 		    break ;
 
 		case CHOLMOD_ZOMPLEX:
-		    *X = CHOLMOD(free) (x, sizeof (double), *X, Common) ;
-		    *Z = CHOLMOD(free) (x, sizeof (double), *Z, Common) ;
+		    *Xblock = CHOLMOD(free) (x, sizeof (double), *Xblock,
+                            Common) ;
+		    *Zblock = CHOLMOD(free) (x, sizeof (double), *Zblock,
+                            Common) ;
 		    break ;
 	    }
 
@@ -500,30 +508,32 @@ int CHOLMOD(realloc_multiple)
 	{
 	    if (nint > 0)
 	    {
-		*I = CHOLMOD(realloc) (nold, sizeof (Int), *I, &i, Common) ;
+		*Iblock = CHOLMOD(realloc) (nold, sizeof (Int), *Iblock, &i,
+                            Common) ;
 	    }
 	    if (nint > 1)
 	    {
-		*J = CHOLMOD(realloc) (nold, sizeof (Int), *J, &j, Common) ;
+		*Jblock = CHOLMOD(realloc) (nold, sizeof (Int), *Jblock, &j,
+                            Common) ;
 	    }
 
 	    switch (xtype)
 	    {
 		case CHOLMOD_REAL:
-		    *X = CHOLMOD(realloc) (nold, sizeof (double), *X, &x,
-			    Common) ;
+		    *Xblock = CHOLMOD(realloc) (nold, sizeof (double),
+                            *Xblock, &x, Common) ;
 		    break ;
 
 		case CHOLMOD_COMPLEX:
-		    *X = CHOLMOD(realloc) (nold, 2*sizeof (double), *X, &x,
-			    Common) ;
+		    *Xblock = CHOLMOD(realloc) (nold, 2*sizeof (double),
+                            *Xblock, &x, Common) ;
 		    break ;
 
 		case CHOLMOD_ZOMPLEX:
-		    *X = CHOLMOD(realloc) (nold, sizeof (double), *X, &x,
-			    Common) ;
-		    *Z = CHOLMOD(realloc) (nold, sizeof (double), *Z, &z,
-			    Common) ;
+		    *Xblock = CHOLMOD(realloc) (nold, sizeof (double),
+                            *Xblock, &x, Common) ;
+		    *Zblock = CHOLMOD(realloc) (nold, sizeof (double),
+                            *Zblock, &z, Common) ;
 		    break ;
 	    }
 
@@ -537,8 +547,8 @@ int CHOLMOD(realloc_multiple)
 	/* New space was allocated.  Clear the first entry so that valgrind
 	 * doesn't complain about its access in change_complexity
 	 * (Core/cholmod_complex.c). */
-	xx = *X ;
-	zz = *Z ;
+	xx = *Xblock ;
+	zz = *Zblock ;
 	switch (xtype)
 	{
 	    case CHOLMOD_REAL:

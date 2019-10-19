@@ -130,12 +130,12 @@ template <typename Entry> Int SuiteSparseQR
     if (p_HPinv != NULL) *p_HPinv = NULL ;
     if (p_HTau  != NULL) *p_HTau  = NULL ;
 
-    RETURN_IF_NULL_COMMON (FALSE) ;
-    RETURN_IF_NULL (A, FALSE) ;
+    RETURN_IF_NULL_COMMON (EMPTY) ;
+    RETURN_IF_NULL (A, EMPTY) ;
     Int xtype = spqr_type <Entry> ( ) ;
-    RETURN_IF_XTYPE_INVALID (A, FALSE) ;
-    if (Bsparse != NULL) RETURN_IF_XTYPE_INVALID (Bsparse, FALSE) ;
-    if (Bdense  != NULL) RETURN_IF_XTYPE_INVALID (Bdense,  FALSE) ;
+    RETURN_IF_XTYPE_INVALID (A, EMPTY) ;
+    if (Bsparse != NULL) RETURN_IF_XTYPE_INVALID (Bsparse, EMPTY) ;
+    if (Bdense  != NULL) RETURN_IF_XTYPE_INVALID (Bdense,  EMPTY) ;
     cc->status = CHOLMOD_OK ;
 
     n = 0 ;

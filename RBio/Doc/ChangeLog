@@ -1,3 +1,7 @@
+Jan 25, 2011: version 2.0.1
+
+    * minor fix to "make install"
+
 Nov 30, 2009: version 2.0.0
 
     * rewrote the entire package in C.  The advantage is that the code is

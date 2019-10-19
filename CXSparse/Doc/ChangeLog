@@ -1,3 +1,9 @@
+Jan 25, 2011: version 2.2.5
+
+    * minor fix to "make install"
+    * minor change to cs_util.c, typecast return (cs_free (...))
+    * minor fixes to UFget: help file, UFsettings.txt
+
 Nov 30, 2009: version 2.2.4
 
     * added "make install" and "make uninstall" to CXSparse

@@ -62,7 +62,7 @@ pc = ispc ;
 % check if METIS 4.0.1 is present where it's supposed to be
 have_metis = exist ('metis-4.0', 'dir') ;
 if (~have_metis)
-    fprintf ('SPQR, CHOLMOD, and KLU optionally use METIS 4.0.1.  Download\n') ;
+    fprintf ('Some codes optionally use METIS 4.0.1.  Download\n') ;
     fprintf ('it from http://glaros.dtc.umn.edu/gkhome/views/metis\n');
     fprintf ('and place the metis-4.0 directory in this directory.\n') ;
     input ('or hit enter to continue without METIS: ', 's') ;

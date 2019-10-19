@@ -21,13 +21,17 @@ http://www.cise.ufl.edu/~davis
 UFgui is a Java GUI interface to the University of Florida Sparse Matrix
 Collection at http://www.cise.ufl.edu/research/sparse/matrices.  It provides an
 easy way to select matrices from the collection based on their matrix
-properties.  As of September 2009, there were 2255 matrices ranging in size
+properties.  As of October 2010, there were 2328 matrices ranging in size
 from 1-by-2 (with a single nonzero entry) to a square matrix with nearly 28
 million rows and 760 million entries.  The total size of the collection in all
-three formats exceeds 40 GB, and is constantly growing in size.
+three formats exceeds 47 GB, and is constantly growing in size.
 
 <h2>2. Quick Start</h2>
 
+First, download the UFget archive (tar.gz or zip file), and uncompress it.
+Open the UFget folder.
+
+<p>
 If your web browswer requires an HTTP proxy, or if you wish to change
 the download location, first see the <b>Customization</b> section below,
 to configure UFgui before you run it.
@@ -40,16 +44,23 @@ command window / terminal:
         java -jar UFgui.jar
 </pre>
 
+If the above command fails, then you need to install Java.
+See <a href=http://www.java.com/en/download/manual.jsp>
+http://www.java.com/en/download/manual.jsp</a> for details.
+
+<p>
 You can skip reading this document by simply navigating the GUI itself.  Most
 of the buttons, check boxes, lists, and table columns have a short "tool tip"
 which is visible if you hover your mouse over the item.
 
 <p> When the UFgui starts, it checks for any missing matrix icons and
-downloads a new table if needed.
+downloads a new table if needed.  This might take a few minutes, so
+just sit back and enjoy the slideshow.  It will only happen occassionaly.
 
 <h2>3. A Sparse Matrix Problem</h2>
 
-The UF Sparse Matrix Collection a simplified name.  It is actually a collection
+The UF Sparse Matrix Collection is a simplified name.  It is actually a
+collection
 of sparse matrix <i>problems</i>, not just sparse matrices.  Each problem
 includes one primary sparse matrix and meta-data about that matrix.  Some
 problems include additional matrices and vectors (sparse or dense) such as
@@ -184,6 +195,11 @@ Shift-click the list to select a range of groups or kinds, and control-click
 the list to add a single item to your highlighted choices.  To clear your
 choices, click the <i>Reset criteria</i> button, described below.
 
+<p> When you select/deselect matrices, the boxes to the left of each matrix in
+the Table of Matrices get checked/unchecked.  You still see all the matrices
+in the list, because you can then modify your selection by checking/unchecking
+matrices one at a time in the Table itself.
+
 <p>
 At the bottom of the Selection Criteria panel is a row of buttons:
 
@@ -279,9 +295,13 @@ over each column header for a short description):
 
         <li><b>real</b>: this box is checked if the matrix is real.
             It is complex otherwise.
+            Note that <i>real</i> matrices include any matrix that is not
+            complex.  In particular, integer and binary matrices are
+            considered <i>real</i> in this search criterion.
 
         <li><b>binary</b>: this box is checked if the matrix is binary.
-            It is non-binary otherwise (there are no binary complex matrices).
+            It is non-binary otherwise (there are no binary complex matrices,
+            so any matrix that is binary is also marked as real).
 
         <li><b>2D/3D</b>: this box is checked if the matrix comes
             from a discretization of a 2D or 3D geometry.
@@ -449,7 +469,7 @@ long, then defaults are used.
 
 <h2>8. Copyright and License</h2>
 
-Copyright (c) 2009, Timothy A. Davis.  All rights reserved.
+Copyright (c) 2009-2010, Timothy A. Davis.  All rights reserved.
 
 <p> Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -479,6 +499,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <h2>9. Version and Change-Log</h2>
 
 <ul>
+<li> Version 1.0.4, October 27, 2010.  Update to this help file only.
+
 <li> Version 1.0.3, October 9, 2009.  Removed the Update button which when
     clicked would download a fresh copy of <i>matrices/UFstats.csv</i>.  UFgui
     updates itself automatically every 30 days.  If you want to force a
@@ -506,8 +528,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <h2>10. For Further Help</h2>
 
 Contact the author of this UFgui program, and the maintainer of the UF Sparse
-Matrix Collection: Tim Davis (http://www.cise.ufl.edu/~davis, email
-davis@cise.ufl.edu or DrTimothyAldenDavis@gmail.com).  To print this document,
+Matrix Collection: Tim Davis (<a href=http://www.cise.ufl.edu/~davis>
+http://www.cise.ufl.edu/~davis</a>, email
+<a href=mailto:davis@cise.ufl.edu>davis@cise.ufl.edu</a>
+or
+<a href=mailto:DrTimothyAldenDavis@gmail.com>DrTimothyAldenDavis@gmail.com</a>).
+To print this document,
 open the file <i>UFhelp.html</i> in your favorite web browser.
 
 <h2>11. Acknowledgements</h2>

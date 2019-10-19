@@ -13,14 +13,57 @@
 // platform.  For most platforms (except Windows), UF_long is just "long".
 #define Int UF_long
 
+// =============================================================================
+// check_residual:  print the relative residual, norm (A*x-b)/norm(x)
+// =============================================================================
+
+void check_residual
+(
+    cholmod_sparse *A,
+    cholmod_dense *X,
+    cholmod_dense *B,
+    cholmod_common *cc
+)
+{
+    Int m = A->nrow ;
+    Int n = A->ncol ;
+    Int rnk ;
+    double rnorm, anorm, xnorm ;
+    double one [2] = {1,0}, minusone [2] = {-1,0} ;
+    cholmod_dense *Residual ;
+
+    // get the rank(A) estimate
+    rnk = cc->SPQR_istat [4] ;
+
+    // anorm = norm (A,1) ;
+    anorm = cholmod_l_norm_sparse (A, 1, cc) ;
+
+    // rnorm = norm (A*X-B)
+    Residual = cholmod_l_copy_dense (B, cc) ;
+    cholmod_l_sdmult (A, 0, one, minusone, X, Residual, cc) ;
+    rnorm = cholmod_l_norm_dense (Residual, 2, cc) ;
+
+    // xnorm = norm (X)
+    xnorm = cholmod_l_norm_dense (X, 2, cc) ;
+
+    if (m <= n && anorm > 0 && xnorm > 0)
+    {
+        // find the relative residual, except for least-squares systems
+        rnorm /= (anorm * xnorm) ;
+    }
+    printf ("residual: %8.1e rank: %6ld\n", rnorm, rnk) ;
+    cholmod_l_free_dense (&Residual, cc) ;
+}
+
+// =============================================================================
+
 int main (int argc, char **argv)
 {
     cholmod_common Common, *cc ;
     cholmod_sparse *A ;
-    cholmod_dense *X, *B, *Residual ;
-    double anorm, xnorm, rnorm, one [2] = {1,0}, minusone [2] = {-1,0} ;
+    cholmod_dense *X, *B ;
     int mtype ;
-    Int m, n, rnk ;
+    Int m, n ;
 
     // start CHOLMOD
     cc = &Common ;
@@ -38,10 +81,7 @@ int main (int argc, char **argv)
     m = A->nrow ;
     n = A->ncol ;
 
-    // anorm = norm (A,1) ;
-    anorm = cholmod_l_norm_sparse (A, 1, cc) ;
-
-    printf ("Matrix %6ld-by-%-6ld nnz: %6ld ", m, n, cholmod_l_nnz (A, cc)) ;
+    printf ("Matrix %6ld-by-%-6ld nnz: %6ld\n", m, n, cholmod_l_nnz (A, cc)) ;
 
     // B = ones (m,1), a dense right-hand-side of the same type as A
     B = cholmod_l_ones (m, 1, A->xtype, cc) ;
@@ -60,28 +100,63 @@ int main (int argc, char **argv)
             (SPQR_ORDERING_DEFAULT, SPQR_DEFAULT_TOL, A, B, cc) ;
     }
 
-    // get the rank(A) estimate
-    rnk = cc->SPQR_istat [4] ;
-
-    // rnorm = norm (A*X-B)
-    Residual = cholmod_l_copy_dense (B, cc) ;
-    cholmod_l_sdmult (A, 0, one, minusone, X, Residual, cc) ;
-    rnorm = cholmod_l_norm_dense (Residual, 2, cc) ;
-
-    // xnorm = norm (X)
-    xnorm = cholmod_l_norm_dense (X, 2, cc) ;
-
-    if (m <= n && anorm > 0 && xnorm > 0)
-    {
-        // find the relative residual, except for least-squares systems
-        rnorm /= (anorm * xnorm) ;
-    }
-    printf ("residual: %8.1e rank: %6ld\n", rnorm, rnk) ;
-
-    // free everything
-    cholmod_l_free_dense (&Residual, cc) ;
-    cholmod_l_free_sparse (&A, cc) ;
+    check_residual (A, X, B, cc) ;
     cholmod_l_free_dense (&X, cc) ;
+
+    // -------------------------------------------------------------------------
+    // factorizing once then solving twice with different right-hand-sides
+    // -------------------------------------------------------------------------
+
+    // Just the real case.  Complex case is essentially identical
+    if (A->xtype == CHOLMOD_REAL)
+    {
+        SuiteSparseQR_factorization <double> *QR ;
+        cholmod_dense *Y ;
+        Int i ;
+        double *Bx ;
+
+        // factorize once
+        QR = SuiteSparseQR_factorize <double>
+            (SPQR_ORDERING_DEFAULT, SPQR_DEFAULT_TOL, A, cc) ;
+
+        // solve Ax=b, using the same B as before
+
+        // Y = Q'*B
+        Y = SuiteSparseQR_qmult (SPQR_QTX, QR, B, cc) ;
+        // X = R\(E*Y)
+        X = SuiteSparseQR_solve (SPQR_RETX_EQUALS_B, QR, Y, cc) ;
+        // check the results
+        check_residual (A, X, B, cc) ;
+        // free X and Y
+        cholmod_l_free_dense (&Y, cc) ;
+        cholmod_l_free_dense (&X, cc) ;
+
+        // repeat with a different B
+        Bx = (double *) (B->x) ;
+        for (i = 0 ; i < m ; i++)
+        {
+            Bx [i] = i ;
+        }
+
+        // Y = Q'*B
+        Y = SuiteSparseQR_qmult (SPQR_QTX, QR, B, cc) ;
+        // X = R\(E*Y)
+        X = SuiteSparseQR_solve (SPQR_RETX_EQUALS_B, QR, Y, cc) ;
+        // check the results
+        check_residual (A, X, B, cc) ;
+        // free X and Y
+        cholmod_l_free_dense (&Y, cc) ;
+        cholmod_l_free_dense (&X, cc) ;
+
+        // free QR
+        SuiteSparseQR_free (&QR, cc) ;
+    }
+
+    // -------------------------------------------------------------------------
+    // free everything that remains
+    // -------------------------------------------------------------------------
+
+    cholmod_l_free_sparse (&A, cc) ;
     cholmod_l_free_dense (&B, cc) ;
     cholmod_l_finish (cc) ;
     return (0) ;

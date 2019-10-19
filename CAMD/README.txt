@@ -1,4 +1,4 @@
-CAMD Version 2.2, Copyright (c) 2007 by Timothy A.  Davis, Yanqing Chen,
+CAMD, Copyright (c) 2007-2011 by Timothy A.  Davis, Yanqing Chen,
 Patrick R. Amestoy, and Iain S. Duff.  All Rights Reserved.
 CAMD is available under alternate licences; contact T. Davis for details.
 

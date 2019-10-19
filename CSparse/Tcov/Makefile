@@ -100,3 +100,4 @@ purge: distclean
 distclean: clean
 	rm -f cs_demo1 cs_demo2 readhb *.out *.a cs_demo3 cstcov_test cov.sort
 	rm -f cs_*.c
+	rm -rf *.dSYM
