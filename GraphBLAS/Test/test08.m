@@ -1,5 +1,5 @@
 function test08
-%TEST08 test GrB_subassign
+%TEST08 test GxB_subassign
 
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.

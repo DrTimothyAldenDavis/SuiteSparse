@@ -271,9 +271,6 @@ GrB_Info GB_object_check    // check a GraphBLAS matrix
     if (pr > 0) printf ("->ipending %p\n", A->ipending) ;
     if (pr > 0) printf ("->jpending %p\n", A->jpending) ;
     if (pr > 0) printf ("->xpending %p\n", A->xpending) ;
-    if (pr > 0) printf ("->queue_prev %p\n", A->queue_prev) ;
-    if (pr > 0) printf ("->queue_next %p\n", A->queue_next) ;
-    if (pr > 0) printf ("queue_head %p\n", GB_thread_local.queue_head) ;
     #endif
 
     if (A->npending == 0)
@@ -359,9 +356,34 @@ GrB_Info GB_object_check    // check a GraphBLAS matrix
     // check the queue
     //--------------------------------------------------------------------------
 
+    GrB_Matrix head, prev, next ;
+    bool enqd ;
+
+    GB_queue_check (A, &head, &prev, &next, &enqd) ;
+
+    #ifdef DEVELOPER
+    if (pr > 0) printf ("queue head  %p\n", head) ;
+    if (pr > 0) printf ("queue prev  %p\n", prev) ;
+    if (pr > 0) printf ("queue next  %p\n", next) ;
+    if (pr > 0) printf ("is in queue %d\n", enqd) ;
+    #endif
+
+    #define IS_NOT_IN_QUEUE(A) (prev == NULL && head != A)
+    #define IS_IN_QUEUE(A) (! IS_NOT_IN_QUEUE(A))
+    if (enqd != IS_IN_QUEUE (A))
+    {
+        if (pr > 0) printf ("queued state inconsistent: [%d] != [%d]\n",
+            enqd, IS_IN_QUEUE (A)) ;
+        return (ERROR (GrB_INVALID_OBJECT, (LOG,
+            "%s queued state inconsistent: [%s], [%d] != [%d]", kind, NAME,
+            enqd, IS_IN_QUEUE (A)))) ;
+    }
+    #undef IS_NOT_IN_QUEUE
+    #undef IS_IN_QUEUE
+
     if (PENDING (A) || ZOMBIES (A))
     {
-        if (IS_NOT_IN_QUEUE (A))
+        if (!enqd)
         {
             if (pr > 0) printf ("must be in queue but is not there\n") ;
             return (ERROR (GrB_INVALID_OBJECT, (LOG,
@@ -369,7 +391,7 @@ GrB_Info GB_object_check    // check a GraphBLAS matrix
         }
 
         // prev is NULL if and only if A is at the head of the queue
-        if ((A->queue_prev == NULL) != (GB_thread_local.queue_head == A))
+        if ((prev == NULL) != (head == A))
         {
             if (pr > 0) printf ("invalid queue\n") ;
             return (ERROR (GrB_INVALID_OBJECT, (LOG,
@@ -378,11 +400,12 @@ GrB_Info GB_object_check    // check a GraphBLAS matrix
     }
     else
     {
-        if (IS_IN_QUEUE (A))
+        if (enqd)
         {
-            if (pr > 0) printf ("must not be in queue but is present there\n") ;
+            if (pr > 0) printf ("must not be in queue but present there\n") ;
             return (ERROR (GrB_INVALID_OBJECT, (LOG,
-                "%s must not be in queue but is present there: [%s]", kind, NAME))) ;
+                "%s must not be in queue but present there: [%s]",
+                kind, NAME))) ;
         }
     }
 

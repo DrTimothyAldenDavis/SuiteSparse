@@ -1,5 +1,5 @@
 function test51
-%TEST51 test GrB_subassign, multiply operations
+%TEST51 test GxB_subassign, multiply operations
 
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.

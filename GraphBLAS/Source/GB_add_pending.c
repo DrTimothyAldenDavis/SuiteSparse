@@ -117,7 +117,7 @@ GrB_Info GB_add_pending         // add a pending tuple A(i,j) to a matrix
         {
             // out of memory; clear all of A and remove from the queue
             GB_Matrix_clear (A) ;
-            ASSERT (IS_NOT_IN_QUEUE (A)) ;
+            ASSERT (!(A->enqueued)) ;
             ASSERT (!PENDING (A)) ;
             ASSERT (!ZOMBIES (A)) ;
             ASSERT_OK (GB_check (A, "A failed to add", 0)) ;
@@ -179,7 +179,7 @@ GrB_Info GB_add_pending         // add a pending tuple A(i,j) to a matrix
     //--------------------------------------------------------------------------
 
     ASSERT (PENDING (A)) ;
-    if (IS_NOT_IN_QUEUE (A))
+    if (!(A->enqueued))
     {
         GB_queue_insert (A) ;
     }

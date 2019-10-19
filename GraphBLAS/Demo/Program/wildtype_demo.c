@@ -44,7 +44,7 @@ void wildtype_print (const wildtype *x, const char *name)
 void wildtype_print_matrix (GrB_Matrix A, char *name)
 {
     GrB_Type type ;
-    GrB_Matrix_type (&type, A) ;
+    GxB_Matrix_type (&type, A) ;
     if (type != WildType)
     {
         printf ("\nThe matrix %s is not wild enough to print.\n", name) ;
@@ -126,7 +126,7 @@ int main (void)
 
     // get its properties
     size_t s ;
-    GrB_Type_size (&s, WildType) ;
+    GxB_Type_size (&s, WildType) ;
     printf ("WildType size: %d\n", (int) s) ;
 
     // create a 10-by-10 WildType matrix, each entry is a 'scalar' WildType

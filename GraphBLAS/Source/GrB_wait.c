@@ -35,29 +35,18 @@ GrB_Info GrB_wait ( )       // finish all pending computations
 
     WHERE ("GrB_wait ( )") ;
 
-    #ifndef NDEBUG
-    // walk the whole list to make sure it's OK
-    GrB_Matrix A = (GrB_Matrix) GB_thread_local.queue_head ;
-    while (A != NULL)
-    {
-        ASSERT_OK (GB_check (A, "to assemble in GrB_wait", 0)) ;
-        ASSERT (PENDING (A) || ZOMBIES (A)) ;
-        A = A->queue_next ;
-    }
-    #endif
-
     //--------------------------------------------------------------------------
     // assemble all matrices with lingering zombies and/or pending tuples
     //--------------------------------------------------------------------------
 
-    while (GB_thread_local.queue_head != NULL)
+    GrB_Matrix A ;
+    while ((A = GB_queue_remove_head ( )) != NULL)
     {
-        // get the head of the queue
-        GrB_Matrix A = (GrB_Matrix) GB_thread_local.queue_head ;
-        ASSERT_OK (GB_check (A, "to assemble in GrB_wait", 0)) ;
+        // A has been removed from the head of the queue but it still has
+        // pending operations.  GB_check expects it to be in the queue.
+        // ASSERT_OK (GB_check (A, "to assemble in GrB_wait", 0)) ;
         ASSERT (PENDING (A) || ZOMBIES (A)) ;
-        // delete any lingering zombies and assemble any pending tuples
-        // this also removes A from the queue
+        // delete any lingering zombies and assemble any pending tuples.
         APPLY_PENDING_UPDATES (A) ;
     }
 

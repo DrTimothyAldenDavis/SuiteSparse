@@ -268,7 +268,7 @@ GrB_Info GB_new                 // create a new matrix
     A->i_shallow = false ;
     A->x_shallow = false ;
 
-    // no pending tuples
+    // no pending tuples, no zombies
     A->npending = 0 ;
     A->max_npending = 0 ;
     A->sorted_pending = true ;
@@ -276,7 +276,11 @@ GrB_Info GB_new                 // create a new matrix
     A->ipending = NULL ;
     A->jpending = NULL ;
     A->xpending = NULL ;
-    A->scode = -1 ;     // unused, reserved for future use
+
+    // no pending operations to apply so on in the queue
+    A->queue_next = NULL ;
+    A->queue_prev = NULL ;
+    A->enqueued = false ;
 
     // no zombies
     A->nzombies = 0 ;

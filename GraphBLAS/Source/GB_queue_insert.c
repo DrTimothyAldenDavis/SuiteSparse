@@ -25,33 +25,41 @@ void GB_queue_insert            // insert matrix at the head of queue
 
     ASSERT (A != NULL) ;
 
-    #ifndef NDEBUG
-    {
-        // walk the whole list to make sure it's OK
-        GrB_Matrix A = (GrB_Matrix) GB_thread_local.queue_head ;
-        while (A != NULL)
-        {
-            ASSERT_OK (GB_check (A, "A in the queue", 0)) ;
-            ASSERT (PENDING (A) || ZOMBIES (A)) ;
-            A = A->queue_next ;
-        }
-    }
-    #endif
-
     //--------------------------------------------------------------------------
     // insert the matrix at the head of the queue
     //--------------------------------------------------------------------------
 
-    if ((A->npending > 0 || A->nzombies > 0) && IS_NOT_IN_QUEUE (A))
+    if ((A->npending > 0 || A->nzombies > 0) && !(A->enqueued))
     {
-        GrB_Matrix Head = GB_thread_local.queue_head ;
-        A->queue_next = Head ;
-        A->queue_prev = NULL ;
-        if (Head != NULL)
+        // A is not in the queue yet, but needs to be there
+
+        #pragma omp critical GB_queue
         {
-            Head->queue_prev = A ;
+
+            // GraphBLAS is not (yet) parallel, but the user application might
+            // be.  This update to the global queue must be done in a critical
+            // section.  If both GraphBLAS and the user application are
+            // compiled with OpenMP, then the #pragma will protect the queue
+            // from a race condition of simulateneous updates.
+
+            if ((A->npending > 0 || A->nzombies > 0) && !(A->enqueued))
+            {
+
+                // check the condition again, inside the critical section,
+                // just to be safe
+
+                // add the matrix to the head of the queue
+                GrB_Matrix head = (GrB_Matrix) (GB_Global.queue_head) ;
+                A->queue_next = head ;
+                A->queue_prev = NULL ;
+                A->enqueued = true ;
+                if (head != NULL)
+                {
+                    head->queue_prev = A ;
+                }
+                GB_Global.queue_head = A ;
+            }
         }
-        GB_thread_local.queue_head = A ;
     }
 }
 

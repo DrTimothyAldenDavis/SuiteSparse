@@ -1,7 +1,7 @@
 SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
 http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
-VERSION 1.0.0, Nov 25, 2017
+VERSION 1.1.0, Dec 1, 2017
 
 SuiteSparse:GraphBLAS is an full implementation of the GraphBLAS standard,
 which defines a set of sparse matrix operations on an extended algebra of
@@ -18,17 +18,22 @@ the SuiteSparse implementation of GraphBLAS.
 QUICK START: To compile, run several demos, and install, do these commands in
 this directory:
 
-    cd build ; cmake .. ; make
-    cd ../Demo ; ./demo
-    cd ../build ; sudo make install
+    make
+    sudo make install
 
 Please be patient; some files can take several minutes to compile.  Requires an
 ANSI C11 compiler, so cmake will fail if your compiler is not C11 compliant.
 See the User Guide in Doc/*pdf for directions on how to use another compiler.
 
+The output of the demo programs will be compared with their expected output.
+
 To remove all compiled files:
 
-    cd build ; rm -rf *
+    make clean
+
+To compile the library without running the demos or installing it:
+
+    make library
 
 NOTE: this package has not yet been ported to Windows.  It uses cmake to build
 the package so porting to Windows should be straight-forward (in progress).
@@ -37,6 +42,8 @@ the package so porting to Windows should be straight-forward (in progress).
 Files and folders in this GraphBLAS directory:
 
 CMakeLists.txt  cmake instructions to compile GraphBLAS
+
+Makefile        a very simple Makefile that relies on cmake
 
 Demo            a set of demos on how to use GraphBLAS
 

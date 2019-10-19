@@ -112,7 +112,7 @@ must be identical to monoid operator z=or(x,y) of type [bool]
 =================================================================
 SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
 http://suitesparse.com  Dept of Computer Sci. & Eng, Texas A&M University
-SuiteSparse:GraphBLAS version: 1.0.0  Date: Nov 25, 2017
+SuiteSparse:GraphBLAS version: 1.1.0  Date: Dec 1, 2017
 SuiteSparse:GraphBLAS, Copyright 2017, Timothy A. Davis
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -178,7 +178,7 @@ must be identical to monoid operator z=or(x,y) of type [bool]
 =================================================================
 SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
 http://suitesparse.com  Dept of Computer Sci. & Eng, Texas A&M University
-SuiteSparse:GraphBLAS version: 1.0.0  Date: Nov 25, 2017
+SuiteSparse:GraphBLAS version: 1.1.0  Date: Dec 1, 2017
 SuiteSparse:GraphBLAS, Copyright 2017, Timothy A. Davis
 
 Licensed under the Apache License, Version 2.0 (the "License");

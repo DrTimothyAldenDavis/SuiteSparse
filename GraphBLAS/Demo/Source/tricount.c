@@ -94,14 +94,14 @@ GrB_Info tricount           // count # of triangles
             OK (GrB_Matrix_ncols (&ne, E)) ;
             OK (GrB_Matrix_new (&C, GrB_UINT32, n, ne)) ;
             // mxm:  outer product method, no mask
-            OK (GrB_mxm (C, NULL, NULL, GrB_PLUS_TIMES_UINT32, A, E, NULL));
+            OK (GrB_mxm (C, NULL, NULL, GxB_PLUS_TIMES_UINT32, A, E, NULL));
             t [0] = simple_toc (tic) ;
 
             simple_tic (tic) ;
             OK (GrB_UnaryOp_new (&Two, two, GrB_UINT32, GrB_UINT32)) ;
             OK (GrB_Matrix_new (&S, GrB_UINT32, n, ne)) ;
             OK (GrB_apply (S, NULL, NULL, Two, C, NULL)) ;
-            OK (GrB_reduce (&ntri, NULL, GrB_PLUS_INT64_MONOID, S, NULL)) ;
+            OK (GrB_reduce (&ntri, NULL, GxB_PLUS_INT64_MONOID, S, NULL)) ;
             ntri /= 3 ;
             break ;
 
@@ -110,11 +110,11 @@ GrB_Info tricount           // count # of triangles
             OK (GrB_Matrix_nrows (&n, A)) ;
             OK (GrB_Matrix_new (&C, GrB_UINT32, n, n)) ;
             // mxm:  outer product method, with mask
-            OK (GrB_mxm (C, A, NULL, GrB_PLUS_TIMES_UINT32, A, A, NULL)) ;
+            OK (GrB_mxm (C, A, NULL, GxB_PLUS_TIMES_UINT32, A, A, NULL)) ;
             t [0] = simple_toc (tic) ;
 
             simple_tic (tic) ;
-            OK (GrB_reduce (&ntri, NULL, GrB_PLUS_INT64_MONOID, C, NULL)) ;
+            OK (GrB_reduce (&ntri, NULL, GxB_PLUS_INT64_MONOID, C, NULL)) ;
             ntri /= 6 ;
             break ;
 
@@ -123,11 +123,11 @@ GrB_Info tricount           // count # of triangles
             OK (GrB_Matrix_nrows (&n, A)) ;
             OK (GrB_Matrix_new (&C, GrB_UINT32, n, n)) ;
             // mxm:  outer product method, with mask
-            OK (GrB_mxm (C, A, NULL, GrB_PLUS_TIMES_UINT32, L, U, NULL)) ;
+            OK (GrB_mxm (C, A, NULL, GxB_PLUS_TIMES_UINT32, L, U, NULL)) ;
             t [0] = simple_toc (tic) ;
 
             simple_tic (tic) ;
-            OK (GrB_reduce (&ntri, NULL, GrB_PLUS_INT64_MONOID, C, NULL)) ;
+            OK (GrB_reduce (&ntri, NULL, GxB_PLUS_INT64_MONOID, C, NULL)) ;
             ntri /= 2 ;
             break ;
 
@@ -137,11 +137,11 @@ GrB_Info tricount           // count # of triangles
             OK (GrB_Matrix_nrows (&n, U)) ;
             OK (GrB_Matrix_new (&C, GrB_UINT32, n, n)) ;
             // mxm:  outer product method, with mask
-            OK (GrB_mxm (C, U, NULL, GrB_PLUS_TIMES_UINT32, U, U, NULL)) ;
+            OK (GrB_mxm (C, U, NULL, GxB_PLUS_TIMES_UINT32, U, U, NULL)) ;
             t [0] = simple_toc (tic) ;
 
             simple_tic (tic) ;
-            OK (GrB_reduce (&ntri, NULL, GrB_PLUS_INT64_MONOID, C, NULL)) ;
+            OK (GrB_reduce (&ntri, NULL, GxB_PLUS_INT64_MONOID, C, NULL)) ;
             break ;
 
         case 4:  // SandiaL:    ntri = sum (sum ((L * L) .* L))
@@ -149,11 +149,11 @@ GrB_Info tricount           // count # of triangles
             // same as case 3, just a different matrix
             OK (GrB_Matrix_nrows (&n, L)) ;
             OK (GrB_Matrix_new (&C, GrB_UINT32, n, n)) ;
-            OK (GrB_mxm (C, L, NULL, GrB_PLUS_TIMES_UINT32, L, L, d)) ;
+            OK (GrB_mxm (C, L, NULL, GxB_PLUS_TIMES_UINT32, L, L, d)) ;
             t [0] = simple_toc (tic) ;
 
             simple_tic (tic) ;
-            OK (GrB_reduce (&ntri, NULL, GrB_PLUS_INT64_MONOID, C, NULL)) ;
+            OK (GrB_reduce (&ntri, NULL, GxB_PLUS_INT64_MONOID, C, NULL)) ;
             break ;
 
         case 5:  // SandiaDot:  ntri = sum (sum ((L' * U) .* U))
@@ -163,11 +163,11 @@ GrB_Info tricount           // count # of triangles
             OK (GrB_Descriptor_new (&d)) ;
             OK (GrB_Descriptor_set (d, GrB_INP0, GrB_TRAN)) ;
             // mxm:  dot product method, with mask
-            OK (GrB_mxm (C, U, NULL, GrB_PLUS_TIMES_UINT32, L, U, d)) ;
+            OK (GrB_mxm (C, U, NULL, GxB_PLUS_TIMES_UINT32, L, U, d)) ;
             t [0] = simple_toc (tic) ;
 
             simple_tic (tic) ;
-            OK (GrB_reduce (&ntri, NULL, GrB_PLUS_INT64_MONOID, C, NULL)) ;
+            OK (GrB_reduce (&ntri, NULL, GxB_PLUS_INT64_MONOID, C, NULL)) ;
             break ;
 
         default:    // invalid method

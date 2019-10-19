@@ -132,7 +132,7 @@ bool GB_mx_Monoid               // true if successful, false otherwise
         case GB_LOR_opcode      :
 
             // 2 OR boolean monoids
-            // both GrB_LOR and GrB_LOR_BOOL (same opcode)
+            // both GrB_LOR and GxB_LOR_BOOL (same opcode)
             switch (add->xtype->code)
             {
                 case GB_BOOL_code   : METHOD (GrB_Monoid_new (&M, add, (bool    ) false)) ;        break ;
@@ -145,7 +145,7 @@ bool GB_mx_Monoid               // true if successful, false otherwise
         case GB_LAND_opcode     :
 
             // 2 AND boolean monoids
-            // both GrB_LAND and GrB_LAND_BOOL (same opcode)
+            // both GrB_LAND and GxB_LAND_BOOL (same opcode)
             switch (add->xtype->code)
             {
                 case GB_BOOL_code   : METHOD (GrB_Monoid_new (&M, add, (bool    ) true)) ;        break ;
@@ -155,7 +155,7 @@ bool GB_mx_Monoid               // true if successful, false otherwise
             }
             break ;
 
-        // both GrB_LXOR and GrB_LXOR_BOOL (same opcode)
+        // both GrB_LXOR and GxB_LXOR_BOOL (same opcode)
         case GB_LXOR_opcode     :
 
             // 2 XOR boolean monoids
@@ -168,7 +168,7 @@ bool GB_mx_Monoid               // true if successful, false otherwise
             }
             break ;
 
-        // both GrB_EQ_BOOL and GrB_ISEQ_BOOL (different same opcode)
+        // both GrB_EQ_BOOL and GxB_ISEQ_BOOL (same opcode)
         case GB_ISEQ_opcode     :
         case GB_EQ_opcode     :
 

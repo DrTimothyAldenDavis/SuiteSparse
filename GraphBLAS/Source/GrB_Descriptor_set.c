@@ -34,48 +34,48 @@ GrB_Info GrB_Descriptor_set     // set a parameter in a descriptor
 
         case GrB_OUTP:
 
-            if (! (val == GrB_DEFAULT || val == GrB_REPLACE))
+            if (! (val == GxB_DEFAULT || val == GrB_REPLACE))
             {
                 return (ERROR (GrB_INVALID_VALUE, (LOG,
                     "invalid descriptor value [%d] for GrB_OUTP field;\n"
-                    "must be GrB_DEFAULT [%d] or GrB_REPLACE [%d]",
-                    val, GrB_DEFAULT, GrB_REPLACE))) ;
+                    "must be GxB_DEFAULT [%d] or GrB_REPLACE [%d]",
+                    val, GxB_DEFAULT, GrB_REPLACE))) ;
             }
             desc->out  = val ;
             break ;
 
         case GrB_MASK:
 
-            if (! (val == GrB_DEFAULT || val == GrB_SCMP))
+            if (! (val == GxB_DEFAULT || val == GrB_SCMP))
             {
                 return (ERROR (GrB_INVALID_VALUE, (LOG,
                     "invalid descriptor value [%d] for GrB_MASK field;\n"
-                    "must be GrB_DEFAULT [%d] or GrB_SCMP [%d]",
-                    val, GrB_DEFAULT, GrB_SCMP))) ;
+                    "must be GxB_DEFAULT [%d] or GrB_SCMP [%d]",
+                    val, GxB_DEFAULT, GrB_SCMP))) ;
             }
             desc->mask = val ;
             break ;
 
         case GrB_INP0:
 
-            if (! (val == GrB_DEFAULT || val == GrB_TRAN))
+            if (! (val == GxB_DEFAULT || val == GrB_TRAN))
             {
                 return (ERROR (GrB_INVALID_VALUE, (LOG,
                     "invalid descriptor value [%d] for GrB_INP0 field;\n"
-                    "must be GrB_DEFAULT [%d] or GrB_TRAN [%d]",
-                    val, GrB_DEFAULT, GrB_TRAN))) ;
+                    "must be GxB_DEFAULT [%d] or GrB_TRAN [%d]",
+                    val, GxB_DEFAULT, GrB_TRAN))) ;
             }
             desc->in0  = val ;
             break ;
 
         case GrB_INP1:
 
-            if (! (val == GrB_DEFAULT || val == GrB_TRAN))
+            if (! (val == GxB_DEFAULT || val == GrB_TRAN))
             {
                 return (ERROR (GrB_INVALID_VALUE, (LOG,
                     "invalid descriptor value [%d] for GrB_INP1 field;\n"
-                    "must be GrB_DEFAULT [%d] or GrB_TRAN [%d]",
-                    val, GrB_DEFAULT, GrB_TRAN))) ;
+                    "must be GxB_DEFAULT [%d] or GrB_TRAN [%d]",
+                    val, GxB_DEFAULT, GrB_TRAN))) ;
             }
             desc->in1  = val ;
             break ;

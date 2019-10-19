@@ -5,28 +5,28 @@
 // SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
 // http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
-// This function is a wrapper for all GrB_*_subassign functions.
+// This function is a wrapper for all GxB_*_subassign functions.
 // For these uses, the Mask must always be the same size as C(I,J) and A.
 
-// GrB_Matrix_subassign: Mask has the same size as C(I,J) and A
-// GrB_Matrix_subassign_TYPE: Mask has the same size as C(I,J).  A is scalar.
+// GxB_Matrix_subassign: Mask has the same size as C(I,J) and A
+// GxB_Matrix_subassign_TYPE: Mask has the same size as C(I,J).  A is scalar.
 
-// GrB_Vector_subassign: Mask has the same size as C(I,J) and A
-// GrB_Vector_subassign_TYPE: Mask has the same size as C(I,J).  A is scalar.
+// GxB_Vector_subassign: Mask has the same size as C(I,J) and A
+// GxB_Vector_subassign_TYPE: Mask has the same size as C(I,J).  A is scalar.
 
-// GrB_Col_subassign: on input to GB_mex_subassign, Mask and A are a single
+// GxB_Col_subassign: on input to GB_mex_subassign, Mask and A are a single
 // columns, the same size as the single subcolumn C(I,j).  They are not column
 // vectors.
 
-// GrB_Row_subassign: on input to GB_mex_subassign, Mask and A are single ROWS,
+// GxB_Row_subassign: on input to GB_mex_subassign, Mask and A are single ROWS,
 // the same size as the single subrow C(i,J).  They are not column vectors.
-// Before GrB_Row_subassign is called, the A and the Mask (if present) are
+// Before GxB_Row_subassign is called, the A and the Mask (if present) are
 // transposed.
 
 // Thus, in all cases, A and the Mask (if present) have the same size as C(I,J),
 // except in the case where A is a scalar.  In that case, A is implicitly
 // expanded into a matrix the same size as C(I,J), but this occurs inside
-// GrB_*subassign, not here.
+// GxB_*subassign, not here.
 
 // This function does the same thing as the MATLAB mimic GB_spec_subassign.m.
 
@@ -120,12 +120,12 @@ GrB_Info assign ( )
         if (C->ncols == 1)
         {
 
-            // test GrB_Vector_subassign_scalar functions
+            // test GxB_Vector_subassign_scalar functions
             // printf ("scalar assign to vector\n") ;
             #define ASSIGN(type)                                        \
             {                                                           \
                 type x = ((type *) Ax) [0] ;                            \
-                OK (GrB_subassign ((GrB_Vector) C, (GrB_Vector) Mask,   \
+                OK (GxB_subassign ((GrB_Vector) C, (GrB_Vector) Mask,   \
                     accum, x, I, ni, desc)) ;      \
             } break ;
 
@@ -144,7 +144,7 @@ GrB_Info assign ( )
                 case GB_FP64_code   : ASSIGN (double) ;
                 case GB_UDT_code    :
                 {
-                    OK (GrB_subassign ((GrB_Vector) C, (GrB_Vector) Mask,
+                    OK (GxB_subassign ((GrB_Vector) C, (GrB_Vector) Mask,
                         accum, Ax, I, ni, desc)) ;
                 }
                 break ;
@@ -163,7 +163,7 @@ GrB_Info assign ( )
             #define ASSIGN(type)                                            \
             {                                                               \
                 type x = ((type *) Ax) [0] ;                                \
-                OK (GrB_subassign (C, Mask, accum, x, I, ni, J, nj,desc)) ; \
+                OK (GxB_subassign (C, Mask, accum, x, I, ni, J, nj,desc)) ; \
             } break ;
 
             switch (A->type->code)
@@ -181,7 +181,7 @@ GrB_Info assign ( )
                 case GB_FP64_code   : ASSIGN (double) ;
                 case GB_UDT_code    :
                 {
-                    OK (GrB_subassign (C, Mask, accum, Ax, I, ni, J, nj, desc));
+                    OK (GxB_subassign (C, Mask, accum, Ax, I, ni, J, nj, desc));
                 }
                 break ;
 
@@ -196,23 +196,23 @@ GrB_Info assign ( )
     else if (C->ncols == 1 && A->ncols == 1 &&
         (Mask == NULL || Mask->ncols == 1) && !at)
     {
-        // test GrB_Vector_subassign
+        // test GxB_Vector_subassign
         // printf ("vector assign\n") ;
-        OK (GrB_subassign ((GrB_Vector) C, (GrB_Vector) Mask, accum,
+        OK (GxB_subassign ((GrB_Vector) C, (GrB_Vector) Mask, accum,
             (GrB_Vector) A, I, ni, desc)) ;
     }
     else if (A->ncols == 1 && nj == 1 &&
         (Mask == NULL || Mask->ncols == 1) && !at)
     {
-        // test GrB_Col_subassign
+        // test GxB_Col_subassign
         // printf ("col assign\n") ;
-        OK (GrB_subassign (C, (GrB_Vector) Mask, accum, (GrB_Vector) A,
+        OK (GxB_subassign (C, (GrB_Vector) Mask, accum, (GrB_Vector) A,
             I, ni, J [0], desc)) ;
     }
     else if (A->nrows == 1 && ni == 1 &&
         (Mask == NULL || Mask->nrows == 1) && !at)
     {
-        // test GrB_Row_subassign; this is not meant to be efficient,
+        // test GxB_Row_subassign; this is not meant to be efficient,
         // just for testing
         // printf ("row assign\n") ;
         if (Mask != NULL)
@@ -224,7 +224,7 @@ GrB_Info assign ( )
         GB_NEW (&u, A->type, A->ncols, A->nrows, false, true) ;
         OK (info) ;
         OK (GB_Matrix_transpose (u, A, NULL, true)) ;
-        OK (GrB_subassign (C, (GrB_Vector) mask, accum, (GrB_Vector) u,
+        OK (GxB_subassign (C, (GrB_Vector) mask, accum, (GrB_Vector) u,
             I [0], J, nj, desc)) ;
         GB_MATRIX_FREE (&mask) ;
         GB_MATRIX_FREE (&u) ;
@@ -233,7 +233,7 @@ GrB_Info assign ( )
     {
         // standard submatrix assignment
         // printf ("submatrix assign\n") ;
-        OK (GrB_subassign (C, Mask, accum, A, I, ni, J, nj, desc)) ;
+        OK (GxB_subassign (C, Mask, accum, A, I, ni, J, nj, desc)) ;
     }
     return (info) ;
 }

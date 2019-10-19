@@ -32,17 +32,17 @@ GrB_Monoid GB_mx_builtin_monoid     // built-in monoid, or NULL if error
             switch (add->xtype->code)
             {
                 // bool case redudant with AND
-                case GB_BOOL_code   : return (GrB_LAND_BOOL_MONOID    ) ;   // identity: true
-                case GB_INT8_code   : return (GrB_MIN_INT8_MONOID     ) ;   // identity: INT8_MAX
-                case GB_UINT8_code  : return (GrB_MIN_UINT8_MONOID    ) ;   // identity: UINT8_MAX
-                case GB_INT16_code  : return (GrB_MIN_INT16_MONOID    ) ;   // identity: INT16_MAX
-                case GB_UINT16_code : return (GrB_MIN_UINT16_MONOID   ) ;   // identity: UINT16_MAX
-                case GB_INT32_code  : return (GrB_MIN_INT32_MONOID    ) ;   // identity: INT32_MAX
-                case GB_UINT32_code : return (GrB_MIN_UINT32_MONOID   ) ;   // identity: UINT32_MAX 
-                case GB_INT64_code  : return (GrB_MIN_INT64_MONOID    ) ;   // identity: INT64_MAX
-                case GB_UINT64_code : return (GrB_MIN_UINT64_MONOID   ) ;   // identity: UINT64_MAX
-                case GB_FP32_code   : return (GrB_MIN_FP32_MONOID     ) ;   // identity: INFINITY
-                case GB_FP64_code   : return (GrB_MIN_FP64_MONOID     ) ;   // identity: INFINITY
+                case GB_BOOL_code   : return (GxB_LAND_BOOL_MONOID    ) ;   // identity: true
+                case GB_INT8_code   : return (GxB_MIN_INT8_MONOID     ) ;   // identity: INT8_MAX
+                case GB_UINT8_code  : return (GxB_MIN_UINT8_MONOID    ) ;   // identity: UINT8_MAX
+                case GB_INT16_code  : return (GxB_MIN_INT16_MONOID    ) ;   // identity: INT16_MAX
+                case GB_UINT16_code : return (GxB_MIN_UINT16_MONOID   ) ;   // identity: UINT16_MAX
+                case GB_INT32_code  : return (GxB_MIN_INT32_MONOID    ) ;   // identity: INT32_MAX
+                case GB_UINT32_code : return (GxB_MIN_UINT32_MONOID   ) ;   // identity: UINT32_MAX 
+                case GB_INT64_code  : return (GxB_MIN_INT64_MONOID    ) ;   // identity: INT64_MAX
+                case GB_UINT64_code : return (GxB_MIN_UINT64_MONOID   ) ;   // identity: UINT64_MAX
+                case GB_FP32_code   : return (GxB_MIN_FP32_MONOID     ) ;   // identity: INFINITY
+                case GB_FP64_code   : return (GxB_MIN_FP64_MONOID     ) ;   // identity: INFINITY
                 default: 
                     mexWarnMsgIdAndTxt ("GB:warn", "unknown type") ;
                     return (NULL) ;
@@ -55,17 +55,17 @@ GrB_Monoid GB_mx_builtin_monoid     // built-in monoid, or NULL if error
             switch (add->xtype->code)
             {
                 // bool case redudandt with OR
-                case GB_BOOL_code   : return (GrB_LOR_BOOL_MONOID     ) ;   // identity: false
-                case GB_INT8_code   : return (GrB_MAX_INT8_MONOID     ) ;   // identity: INT8_MIN
-                case GB_UINT8_code  : return (GrB_MAX_UINT8_MONOID    ) ;   // identity: 0
-                case GB_INT16_code  : return (GrB_MAX_INT16_MONOID    ) ;   // identity: INT16_MIN
-                case GB_UINT16_code : return (GrB_MAX_UINT16_MONOID   ) ;   // identity: 0
-                case GB_INT32_code  : return (GrB_MAX_INT32_MONOID    ) ;   // identity: INT32_MIN
-                case GB_UINT32_code : return (GrB_MAX_UINT32_MONOID   ) ;   // identity: 0
-                case GB_INT64_code  : return (GrB_MAX_INT64_MONOID    ) ;   // identity: INT64_MIN
-                case GB_UINT64_code : return (GrB_MAX_UINT64_MONOID   ) ;   // identity: 0
-                case GB_FP32_code   : return (GrB_MAX_FP32_MONOID     ) ;   // identity: -INFINITY
-                case GB_FP64_code   : return (GrB_MAX_FP64_MONOID     ) ;   // identity: -INFINITY
+                case GB_BOOL_code   : return (GxB_LOR_BOOL_MONOID     ) ;   // identity: false
+                case GB_INT8_code   : return (GxB_MAX_INT8_MONOID     ) ;   // identity: INT8_MIN
+                case GB_UINT8_code  : return (GxB_MAX_UINT8_MONOID    ) ;   // identity: 0
+                case GB_INT16_code  : return (GxB_MAX_INT16_MONOID    ) ;   // identity: INT16_MIN
+                case GB_UINT16_code : return (GxB_MAX_UINT16_MONOID   ) ;   // identity: 0
+                case GB_INT32_code  : return (GxB_MAX_INT32_MONOID    ) ;   // identity: INT32_MIN
+                case GB_UINT32_code : return (GxB_MAX_UINT32_MONOID   ) ;   // identity: 0
+                case GB_INT64_code  : return (GxB_MAX_INT64_MONOID    ) ;   // identity: INT64_MIN
+                case GB_UINT64_code : return (GxB_MAX_UINT64_MONOID   ) ;   // identity: 0
+                case GB_FP32_code   : return (GxB_MAX_FP32_MONOID     ) ;   // identity: -INFINITY
+                case GB_FP64_code   : return (GxB_MAX_FP64_MONOID     ) ;   // identity: -INFINITY
                 default: 
                     mexWarnMsgIdAndTxt ("GB:warn", "unknown type") ;
                     return (NULL) ;
@@ -78,17 +78,17 @@ GrB_Monoid GB_mx_builtin_monoid     // built-in monoid, or NULL if error
             switch (add->xtype->code)
             {
                 // bool case redudandt with OR
-                case GB_BOOL_code   : return (GrB_LOR_BOOL_MONOID     ) ;   // identity: false
-                case GB_INT8_code   : return (GrB_PLUS_INT8_MONOID    ) ;   // identity: 0
-                case GB_UINT8_code  : return (GrB_PLUS_UINT8_MONOID   ) ;   // identity: 0
-                case GB_INT16_code  : return (GrB_PLUS_INT16_MONOID   ) ;   // identity: 0
-                case GB_UINT16_code : return (GrB_PLUS_UINT16_MONOID  ) ;   // identity: 0
-                case GB_INT32_code  : return (GrB_PLUS_INT32_MONOID   ) ;   // identity: 0
-                case GB_UINT32_code : return (GrB_PLUS_UINT32_MONOID  ) ;   // identity: 0
-                case GB_INT64_code  : return (GrB_PLUS_INT64_MONOID   ) ;   // identity: 0
-                case GB_UINT64_code : return (GrB_PLUS_UINT64_MONOID  ) ;   // identity: 0
-                case GB_FP32_code   : return (GrB_PLUS_FP32_MONOID    ) ;   // identity: 0
-                case GB_FP64_code   : return (GrB_PLUS_FP64_MONOID    ) ;   // identity: 0
+                case GB_BOOL_code   : return (GxB_LOR_BOOL_MONOID     ) ;   // identity: false
+                case GB_INT8_code   : return (GxB_PLUS_INT8_MONOID    ) ;   // identity: 0
+                case GB_UINT8_code  : return (GxB_PLUS_UINT8_MONOID   ) ;   // identity: 0
+                case GB_INT16_code  : return (GxB_PLUS_INT16_MONOID   ) ;   // identity: 0
+                case GB_UINT16_code : return (GxB_PLUS_UINT16_MONOID  ) ;   // identity: 0
+                case GB_INT32_code  : return (GxB_PLUS_INT32_MONOID   ) ;   // identity: 0
+                case GB_UINT32_code : return (GxB_PLUS_UINT32_MONOID  ) ;   // identity: 0
+                case GB_INT64_code  : return (GxB_PLUS_INT64_MONOID   ) ;   // identity: 0
+                case GB_UINT64_code : return (GxB_PLUS_UINT64_MONOID  ) ;   // identity: 0
+                case GB_FP32_code   : return (GxB_PLUS_FP32_MONOID    ) ;   // identity: 0
+                case GB_FP64_code   : return (GxB_PLUS_FP64_MONOID    ) ;   // identity: 0
                 default: 
                     mexWarnMsgIdAndTxt ("GB:warn", "unknown type") ;
                     return (NULL) ;
@@ -101,17 +101,17 @@ GrB_Monoid GB_mx_builtin_monoid     // built-in monoid, or NULL if error
             switch (add->xtype->code)
             {
                 // bool case redudandt with AND
-                case GB_BOOL_code   : return (GrB_LAND_BOOL_MONOID    ) ;   // identity: true
-                case GB_INT8_code   : return (GrB_TIMES_INT8_MONOID   ) ;   // identity: 1
-                case GB_UINT8_code  : return (GrB_TIMES_UINT8_MONOID  ) ;   // identity: 1
-                case GB_INT16_code  : return (GrB_TIMES_INT16_MONOID  ) ;   // identity: 1
-                case GB_UINT16_code : return (GrB_TIMES_UINT16_MONOID ) ;   // identity: 1
-                case GB_INT32_code  : return (GrB_TIMES_INT32_MONOID  ) ;   // identity: 1
-                case GB_UINT32_code : return (GrB_TIMES_UINT32_MONOID ) ;   // identity: 1
-                case GB_INT64_code  : return (GrB_TIMES_INT64_MONOID  ) ;   // identity: 1
-                case GB_UINT64_code : return (GrB_TIMES_UINT64_MONOID ) ;   // identity: 1
-                case GB_FP32_code   : return (GrB_TIMES_FP32_MONOID   ) ;   // identity: 1
-                case GB_FP64_code   : return (GrB_TIMES_FP64_MONOID   ) ;   // identity: 1
+                case GB_BOOL_code   : return (GxB_LAND_BOOL_MONOID    ) ;   // identity: true
+                case GB_INT8_code   : return (GxB_TIMES_INT8_MONOID   ) ;   // identity: 1
+                case GB_UINT8_code  : return (GxB_TIMES_UINT8_MONOID  ) ;   // identity: 1
+                case GB_INT16_code  : return (GxB_TIMES_INT16_MONOID  ) ;   // identity: 1
+                case GB_UINT16_code : return (GxB_TIMES_UINT16_MONOID ) ;   // identity: 1
+                case GB_INT32_code  : return (GxB_TIMES_INT32_MONOID  ) ;   // identity: 1
+                case GB_UINT32_code : return (GxB_TIMES_UINT32_MONOID ) ;   // identity: 1
+                case GB_INT64_code  : return (GxB_TIMES_INT64_MONOID  ) ;   // identity: 1
+                case GB_UINT64_code : return (GxB_TIMES_UINT64_MONOID ) ;   // identity: 1
+                case GB_FP32_code   : return (GxB_TIMES_FP32_MONOID   ) ;   // identity: 1
+                case GB_FP64_code   : return (GxB_TIMES_FP64_MONOID   ) ;   // identity: 1
                 default: 
                     mexWarnMsgIdAndTxt ("GB:warn", "unknown type") ;
                     return (NULL) ;
@@ -121,10 +121,10 @@ GrB_Monoid GB_mx_builtin_monoid     // built-in monoid, or NULL if error
         case GB_LOR_opcode      :
 
             // 2 OR boolean monoids
-            // both GrB_LOR and GrB_LOR_BOOL (same opcode)
+            // both GrB_LOR and GxB_LOR_BOOL (same opcode)
             switch (add->xtype->code)
             {
-                case GB_BOOL_code   : return (GrB_LOR_BOOL_MONOID     ) ;   // identity: false
+                case GB_BOOL_code   : return (GxB_LOR_BOOL_MONOID     ) ;   // identity: false
                 default: 
                     mexWarnMsgIdAndTxt ("GB:warn", "invalid monoid") ;
                     return (NULL) ;
@@ -134,23 +134,23 @@ GrB_Monoid GB_mx_builtin_monoid     // built-in monoid, or NULL if error
         case GB_LAND_opcode     :
 
             // 2 AND boolean monoids
-            // both GrB_LAND and GrB_LAND_BOOL (same opcode)
+            // both GrB_LAND and GxB_LAND_BOOL (same opcode)
             switch (add->xtype->code)
             {
-                case GB_BOOL_code   : return (GrB_LAND_BOOL_MONOID    ) ;   // identity: true
+                case GB_BOOL_code   : return (GxB_LAND_BOOL_MONOID    ) ;   // identity: true
                 default: 
                     mexWarnMsgIdAndTxt ("GB:warn", "invalid monoid") ;
                     return (NULL) ;
             }
             break ;
 
-        // both GrB_LXOR and GrB_LXOR_BOOL (same opcode)
+        // both GrB_LXOR and GxB_LXOR_BOOL (same opcode)
         case GB_LXOR_opcode     :
 
             // 2 XOR boolean monoids
             switch (add->xtype->code)
             {
-                case GB_BOOL_code   : return (GrB_LXOR_BOOL_MONOID    ) ;   // identity: false
+                case GB_BOOL_code   : return (GxB_LXOR_BOOL_MONOID    ) ;   // identity: false
                 default: 
                     mexWarnMsgIdAndTxt ("GB:warn", "invalid monoid") ;
                     return (NULL) ;
@@ -158,14 +158,14 @@ GrB_Monoid GB_mx_builtin_monoid     // built-in monoid, or NULL if error
             break ;
 
 
-        // both GrB_EQ_BOOL and GrB_ISEQ_BOOL (different same opcode)
+        // both GrB_EQ_BOOL and GxB_ISEQ_BOOL (same opcode)
         case GB_ISEQ_opcode     :
         case GB_EQ_opcode     :
 
             // EQ and ISEQ boolean monoids
             switch (add->xtype->code)
             {
-                case GB_BOOL_code   : return (GrB_EQ_BOOL_MONOID      ) ;   // identity: true
+                case GB_BOOL_code   : return (GxB_EQ_BOOL_MONOID      ) ;   // identity: true
                 default: 
                     mexWarnMsgIdAndTxt ("GB:warn", "invalid monoid") ;
                     return (NULL) ;

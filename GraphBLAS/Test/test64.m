@@ -1,10 +1,10 @@
 function test64
-%TEST64 test GrB_*_subassign, scalar expansion, with and without duplicates
+%TEST64 test GxB_*_subassign, scalar expansion, with and without duplicates
 
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
-fprintf ('\n ------------------- quick test of GrB_*_subassign_scalar\n') ;
+fprintf ('\n ------------------- quick test of GxB_*_subassign_scalar\n') ;
 
 Corig = sparse (rand (5,4)) ;
 

@@ -1,5 +1,5 @@
 function test19(fulltest)
-%TEST19 test GrB_subassign and GrB_*_setElement with many pending operations
+%TEST19 test GxB_subassign and GrB_*_setElement with many pending operations
 
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
@@ -13,7 +13,7 @@ else
     nt = 500 ;
 end
 
-fprintf ('\nGrB_subassign and setElement test, many pending computations\n') ;
+fprintf ('\nGxB_subassign and setElement test, many pending computations\n') ;
 
 for problem = 0:2
 

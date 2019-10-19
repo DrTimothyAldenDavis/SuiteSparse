@@ -25,7 +25,7 @@ GrB_Info GB_block   // apply all pending computations if blocking mode enabled
     // check for blocking mode
     //--------------------------------------------------------------------------
 
-    if (GB_thread_local.mode == GrB_BLOCKING)
+    if (GB_Global.mode == GrB_BLOCKING)
     {
         // delete any lingering zombies and assemble any pending tuples
         APPLY_PENDING_UPDATES (A) ;

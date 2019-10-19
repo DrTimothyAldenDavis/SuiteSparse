@@ -18,6 +18,11 @@
 // the function fails due to lack of memory (in that case, the matrix is
 // cleared as well).
 
+// GrB_wait removes the head of the queue from the queue via
+// GB_queue_remove_head, and then passes the matrix to this function.  Thus is
+// is possible (and safe) for this matrix to operate on a matrix not in
+// the queue.
+
 #include "GB.h"
 
 GrB_Info GB_wait                // finish all pending computations
@@ -30,7 +35,9 @@ GrB_Info GB_wait                // finish all pending computations
     // check inputs
     //--------------------------------------------------------------------------
 
-    ASSERT_OK (GB_check (A, "A to wait", 0)) ;
+    // The matrix A might have pending operations but not be in the queue.
+    // GB_check expects the matrix to be in the queue.
+    // ASSERT_OK (GB_check (A, "A to wait", 0)) ;
 
     int64_t ncols = A->ncols ;
     int64_t *Ap = A->p ;
@@ -54,7 +61,6 @@ GrB_Info GB_wait                // finish all pending computations
         // There are zombies that will now be deleted.
         ASSERT (ZOMBIES_OK (A)) ;
         ASSERT (ZOMBIES (A)) ;
-        ASSERT (IS_IN_QUEUE (A)) ;
 
         // This step tolerates pending tuples
         // since pending tuples and zombies do not intersect
@@ -113,6 +119,7 @@ GrB_Info GB_wait                // finish all pending computations
     // check for pending tuples
     //--------------------------------------------------------------------------
 
+    // all the zombies are gone
     ASSERT (!ZOMBIES (A)) ;
 
     if (A->npending == 0)
@@ -120,15 +127,16 @@ GrB_Info GB_wait                // finish all pending computations
         // nothing more to do; remove the matrix from the queue
         ASSERT (!PENDING (A)) ;
         GB_queue_remove (A) ;
+        ASSERT (!(A->enqueued)) ;
         // trim the extra space from the matrix
         bool ok = GB_Matrix_realloc (A, NNZ (A), true, NULL) ;
         ASSERT (ok) ;
+        ASSERT_OK (GB_check (A, "A after just killing zombies", 0)) ;
         return (REPORT_SUCCESS) ;
     }
 
     // There are pending tuples that will now be assembled.
     ASSERT (PENDING (A)) ;
-    ASSERT (IS_IN_QUEUE (A)) ;
 
     //--------------------------------------------------------------------------
     // construct a new matrix with just the pending tuples
@@ -142,9 +150,10 @@ GrB_Info GB_wait                // finish all pending computations
     {
         // out of memory; clear all of A and remove from queue
         GB_Matrix_clear (A) ;
-        ASSERT (IS_NOT_IN_QUEUE (A)) ;
+        ASSERT (!(A->enqueued)) ;
         ASSERT (!PENDING (A)) ;
         ASSERT (info == GrB_OUT_OF_MEMORY) ;
+        ASSERT_OK (GB_check (A, "A had to cleared (out of memory)", 0)) ;
         return (info) ;
     }
 
@@ -178,11 +187,14 @@ GrB_Info GB_wait                // finish all pending computations
     // remove the matrix from the queue
     //--------------------------------------------------------------------------
 
-    ASSERT (IS_IN_QUEUE (A)) ;
     ASSERT (!PENDING (A)) ;
     ASSERT (!ZOMBIES (A)) ;
     GB_queue_remove (A) ;
-    ASSERT (IS_NOT_IN_QUEUE (A)) ;
+
+    // No pending operations on A, and A is not in the queue, so GB_check can
+    // now see the conditions it expects.
+    ASSERT (!(A->enqueued)) ;
+    ASSERT_OK (GB_check (A, "A after moving pending tuples to T", 0)) ;
 
     //--------------------------------------------------------------------------
     // check the status of the builder
@@ -192,17 +204,17 @@ GrB_Info GB_wait                // finish all pending computations
     // above, must be freed whether or not the builder is succesful.
     if (info != GrB_SUCCESS)
     {
-        // out of memory; clear all of A and remove from queue
+        // out of memory; clear all of A
         GB_MATRIX_FREE (&T) ;
         GB_Matrix_clear (A) ;
         ASSERT (info == GrB_OUT_OF_MEMORY) ;
+        ASSERT_OK (GB_check (A, "A had to cleared (out of memory)", 0)) ;
         return (info) ;
     }
 
     // T is now initialized.  T itself has no list of pending tuples. ]
     ASSERT (T->magic == MAGIC) ;
     ASSERT_OK (GB_check (T, "T = matrix of pending tuples", 0)) ;
-    ASSERT_OK (GB_check (A, "A after moving pending tuples to T", 0)) ;
     ASSERT (!PENDING (T)) ;
     ASSERT (!ZOMBIES (T)) ;
 
@@ -233,9 +245,10 @@ GrB_Info GB_wait                // finish all pending computations
     double memory = 0 ;
     if (!GB_Matrix_realloc (A, NNZ (A) + NNZ (T), true, &memory))
     {
-        // out of memory; clear all of A and remove from queue
+        // out of memory; clear all of A
         GB_MATRIX_FREE (&T) ;
         GB_Matrix_clear (A) ;
+        ASSERT_OK (GB_check (A, "A had to cleared (out of memory)", 0)) ;
         return (ERROR (GrB_OUT_OF_MEMORY, (LOG,
             "Out of memory to assemble matrix; %g GB required", memory)));
     }

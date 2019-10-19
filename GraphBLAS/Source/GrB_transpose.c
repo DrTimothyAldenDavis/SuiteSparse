@@ -104,7 +104,7 @@ GrB_Info GrB_transpose              // C<Mask> = accum(C,A') or accum(C,A)
             return (info) ;
         }
 
-        // no operator; typecasting done iff accum is NULL
+        // no operator; typecasting done if accum is NULL
         info = GB_Matrix_transpose (T, A, NULL, true) ;
         // T->p now initialzed ]
     }

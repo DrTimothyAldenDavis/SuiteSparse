@@ -67,7 +67,7 @@ int main (int argc, char **argv)
     A2 = A ;
 
     GrB_Type atype ;
-    OK (GrB_Matrix_type (&atype, A)) ;
+    OK (GxB_Matrix_type (&atype, A)) ;
     if (atype != GrB_BOOL)
     {
         GrB_Matrix_new (&Abool, GrB_BOOL, n, n) ;
@@ -129,7 +129,7 @@ int main (int argc, char **argv)
 
         OK (GrB_Vector_new (&is_reachable, GrB_BOOL, n)) ;
         OK (GrB_apply (is_reachable, NULL, NULL, GrB_IDENTITY_BOOL, v, NULL)) ;
-        OK (GrB_reduce (&nreachable, NULL, GrB_PLUS_INT32_MONOID, is_reachable, NULL)) ;
+        OK (GrB_reduce (&nreachable, NULL, GxB_PLUS_INT32_MONOID, is_reachable, NULL)) ;
         OK (GrB_free (&is_reachable)) ;
         // OK (GrB_Vector_nvals (&nreachable, v)) ;
         printf ("nodes reachable from node %.16g: %.16g out of %.16g\n",
@@ -141,7 +141,7 @@ int main (int argc, char **argv)
 
         // find the max BFS level
         int64_t nlevels = -1 ;
-        OK (GrB_reduce (&nlevels, NULL, GrB_MAX_INT32_MONOID, v, NULL)) ;
+        OK (GrB_reduce (&nlevels, NULL, GxB_MAX_INT32_MONOID, v, NULL)) ;
         printf ("max BFS level: %.16g\n", (double) nlevels) ;
 
         fprintf (stderr, "nodes reached: %.16g of %.16g levels: %.16g "

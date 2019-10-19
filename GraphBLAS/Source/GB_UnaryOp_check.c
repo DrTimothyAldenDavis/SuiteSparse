@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// GB_UnaryOp_check: check and print a binary operator
+// GB_UnaryOp_check: check and print a unary operator
 //------------------------------------------------------------------------------
 
 // SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.

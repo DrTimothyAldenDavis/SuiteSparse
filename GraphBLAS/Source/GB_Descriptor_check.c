@@ -26,7 +26,7 @@ static void dcheck
     if (pr > 0) printf ("D.%s = ", field) ;
     switch (v)
     {
-        case GrB_DEFAULT: if (pr > 0) printf ("default") ; break ;
+        case GxB_DEFAULT: if (pr > 0) printf ("default") ; break ;
         case GrB_SCMP:    if (pr > 0) printf ("scmp   ") ; break ;
         case GrB_TRAN:    if (pr > 0) printf ("tran   ") ; break ;
         case GrB_REPLACE: if (pr > 0) printf ("replace") ; break ;
@@ -36,7 +36,7 @@ static void dcheck
     }
 
     // descriptor field can be set to the default, or one non-default value
-    if (! (v == GrB_DEFAULT || v == nondefault))
+    if (! (v == GxB_DEFAULT || v == nondefault))
     {
         if (pr > 0) printf (" (invalid value for this field)") ;
         *info = GrB_INVALID_OBJECT ;

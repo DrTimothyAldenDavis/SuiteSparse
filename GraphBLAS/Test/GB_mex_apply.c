@@ -95,7 +95,7 @@ void mexFunction
     }
 
     // C<Mask> = accum(C,op(A))
-    if (C->ncols == 1 && (desc == NULL || desc->in0 == GrB_DEFAULT))
+    if (C->ncols == 1 && (desc == NULL || desc->in0 == GxB_DEFAULT))
     {
         // this is just to test the Vector version
         METHOD (GrB_apply ((GrB_Vector) C, (GrB_Vector) Mask, accum, op,

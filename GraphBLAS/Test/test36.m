@@ -4,7 +4,7 @@ function test36
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
-fprintf ('\n---------------------------- performance of GrB_Matrix_subref\n') ;
+fprintf ('\n---------------------------- performance of GB_Matrix_subref\n') ;
 
 rng ('default') ;
 fprintf ('-------------------------- column vector:\n') ;

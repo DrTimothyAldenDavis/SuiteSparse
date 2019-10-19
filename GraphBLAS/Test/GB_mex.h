@@ -47,6 +47,13 @@ bool GB_mx_mxArray_to_UnaryOp           // true if successful
     const bool XisComplex               // true if X is complex
 ) ;
 
+bool GB_mx_mxArray_to_SelectOp          // true if successful
+(
+    GxB_SelectOp *handle,               // returns GraphBLAS version of op
+    const mxArray *op_matlab,           // MATLAB version of op
+    const char *name                    // name of the argument
+) ;
+
 bool GB_mx_string_to_BinaryOp           // true if successful, false otherwise
 (
     GrB_BinaryOp *handle,               // the binary op
@@ -319,7 +326,7 @@ void GB_mx_complex_split    // split complex array to real/imag part for MATLAB
             else                                                            \
             {                                                               \
                 /* another error has occurred */                            \
-                printf ("an error: %s\n", GrB_error ()) ; \
+                printf ("an error: %s\n", GrB_error ()) ;                   \
                 FREE_ALL ;                                                  \
                 mexErrMsgTxt (GrB_error ( )) ;                              \
             }                                                               \

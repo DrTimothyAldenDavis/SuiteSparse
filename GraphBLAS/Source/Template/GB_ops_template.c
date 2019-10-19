@@ -120,43 +120,43 @@ void GB (LE_f) (Zbool_X_Y_ARGS) { Z = (X <= Y) ; }
 //------------------------------------------------------------------------------
 
 // 6 unary operators z=f(x), z and x the same type
-UNARY (ONE,      "one") ;
-UNARY (IDENTITY, "identity") ;
-UNARY (AINV,     "ainv") ;
-UNARY (ABS,      "abs") ;
-UNARY (MINV,     "minv") ;
-UNARY (LNOT,     "not") ;
+UNARY (GxB_, ONE,      "one") ;
+UNARY (GrB_, IDENTITY, "identity") ;
+UNARY (GrB_, AINV,     "ainv") ;
+UNARY (GxB_, ABS,      "abs") ;
+UNARY (GrB_, MINV,     "minv") ;
+UNARY (GxB_, LNOT,     "not") ;
 
 // 8 binary operators z=f(x,y) where x,y,z are all the same type
-BINARY (FIRST,  "first") ;
-BINARY (SECOND, "second") ;
-BINARY (MIN,    "min") ;
-BINARY (MAX,    "max") ;
-BINARY (PLUS,   "plus") ;
-BINARY (MINUS,  "minus") ;
-BINARY (TIMES,  "times") ;
-BINARY (DIV,    "div") ;
+BINARY (GrB_, FIRST,  "first") ;
+BINARY (GrB_, SECOND, "second") ;
+BINARY (GrB_, MIN,    "min") ;
+BINARY (GrB_, MAX,    "max") ;
+BINARY (GrB_, PLUS,   "plus") ;
+BINARY (GrB_, MINUS,  "minus") ;
+BINARY (GrB_, TIMES,  "times") ;
+BINARY (GrB_, DIV,    "div") ;
 
 // 6 binary comparison operators z=f(x,y) where x,y,z are all the same type
-BINARY (ISEQ,  "iseq") ;
-BINARY (ISNE,  "isne") ;
-BINARY (ISGT,  "isgt") ;
-BINARY (ISLT,  "islt") ;
-BINARY (ISGE,  "isge") ;
-BINARY (ISLE,  "isle") ;
+BINARY (GxB_, ISEQ,  "iseq") ;
+BINARY (GxB_, ISNE,  "isne") ;
+BINARY (GxB_, ISGT,  "isgt") ;
+BINARY (GxB_, ISLT,  "islt") ;
+BINARY (GxB_, ISGE,  "isge") ;
+BINARY (GxB_, ISLE,  "isle") ;
 
 // 3 boolean operators z=f(x,y), where x,y,z are all the same type
-BINARY (LOR,  "or") ;
-BINARY (LAND, "and") ;
-BINARY (LXOR, "xor") ;
+BINARY (GxB_, LOR,  "or") ;
+BINARY (GxB_, LAND, "and") ;
+BINARY (GxB_, LXOR, "xor") ;
 
 // 6 binary operators z=f(x,y) that return bool z for any types x and y:
-BINARY_BOOL (EQ, "eq") ;
-BINARY_BOOL (NE, "ne") ;
-BINARY_BOOL (GT, "gt") ;
-BINARY_BOOL (LT, "lt") ;
-BINARY_BOOL (GE, "ge") ;
-BINARY_BOOL (LE, "le") ;
+BINARY_BOOL (GrB_, EQ, "eq") ;
+BINARY_BOOL (GrB_, NE, "ne") ;
+BINARY_BOOL (GrB_, GT, "gt") ;
+BINARY_BOOL (GrB_, LT, "lt") ;
+BINARY_BOOL (GrB_, GE, "ge") ;
+BINARY_BOOL (GrB_, LE, "le") ;
 
 //------------------------------------------------------------------------------
 // define unary typecast operators, used in GB_cast_factory.c

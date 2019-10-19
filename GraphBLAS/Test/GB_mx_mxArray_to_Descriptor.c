@@ -60,7 +60,7 @@ static bool get_descriptor
         GrB_Info info ;
         if (MATCH (s, "default"))
         {
-            info = GrB_Descriptor_set (D, field, GrB_DEFAULT) ;
+            info = GrB_Descriptor_set (D, field, GxB_DEFAULT) ;
         }
         else if (MATCH (s, "tran"))
         {

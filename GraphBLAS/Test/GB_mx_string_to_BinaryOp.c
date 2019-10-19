@@ -22,7 +22,7 @@
 //  'uint64', 'single', 'double'
 
 // Total # of ops: 23*11 = 253, not including GrB_LOR, GrB_LAND, GrB_XOR,
-// which are equivalent to the *_BOOL versions.
+// which are equivalent to the GxB_*_BOOL versions.
 
 // default_opclass: default class if opclass_mx is NULL
 
@@ -365,17 +365,17 @@ bool GB_mx_string_to_BinaryOp          // true if successful, false otherwise
 
                 switch (opclass)
                 {
-                    case mxLOGICAL_CLASS : op = GrB_ISEQ_BOOL   ; break ;
-                    case mxINT8_CLASS    : op = GrB_ISEQ_INT8   ; break ;
-                    case mxUINT8_CLASS   : op = GrB_ISEQ_UINT8  ; break ;
-                    case mxINT16_CLASS   : op = GrB_ISEQ_INT16  ; break ;
-                    case mxUINT16_CLASS  : op = GrB_ISEQ_UINT16 ; break ;
-                    case mxINT32_CLASS   : op = GrB_ISEQ_INT32  ; break ;
-                    case mxUINT32_CLASS  : op = GrB_ISEQ_UINT32 ; break ;
-                    case mxINT64_CLASS   : op = GrB_ISEQ_INT64  ; break ;
-                    case mxUINT64_CLASS  : op = GrB_ISEQ_UINT64 ; break ;
-                    case mxSINGLE_CLASS  : op = GrB_ISEQ_FP32   ; break ;
-                    case mxDOUBLE_CLASS  : op = GrB_ISEQ_FP64   ; break ;
+                    case mxLOGICAL_CLASS : op = GxB_ISEQ_BOOL   ; break ;
+                    case mxINT8_CLASS    : op = GxB_ISEQ_INT8   ; break ;
+                    case mxUINT8_CLASS   : op = GxB_ISEQ_UINT8  ; break ;
+                    case mxINT16_CLASS   : op = GxB_ISEQ_INT16  ; break ;
+                    case mxUINT16_CLASS  : op = GxB_ISEQ_UINT16 ; break ;
+                    case mxINT32_CLASS   : op = GxB_ISEQ_INT32  ; break ;
+                    case mxUINT32_CLASS  : op = GxB_ISEQ_UINT32 ; break ;
+                    case mxINT64_CLASS   : op = GxB_ISEQ_INT64  ; break ;
+                    case mxUINT64_CLASS  : op = GxB_ISEQ_UINT64 ; break ;
+                    case mxSINGLE_CLASS  : op = GxB_ISEQ_FP32   ; break ;
+                    case mxDOUBLE_CLASS  : op = GxB_ISEQ_FP64   ; break ;
                     default              : 
                         mexWarnMsgIdAndTxt ("GB:warn","unknown type") ;
                         return (false) ;
@@ -386,17 +386,17 @@ bool GB_mx_string_to_BinaryOp          // true if successful, false otherwise
 
                 switch (opclass)
                 {
-                    case mxLOGICAL_CLASS : op = GrB_ISNE_BOOL   ; break ;
-                    case mxINT8_CLASS    : op = GrB_ISNE_INT8   ; break ;
-                    case mxUINT8_CLASS   : op = GrB_ISNE_UINT8  ; break ;
-                    case mxINT16_CLASS   : op = GrB_ISNE_INT16  ; break ;
-                    case mxUINT16_CLASS  : op = GrB_ISNE_UINT16 ; break ;
-                    case mxINT32_CLASS   : op = GrB_ISNE_INT32  ; break ;
-                    case mxUINT32_CLASS  : op = GrB_ISNE_UINT32 ; break ;
-                    case mxINT64_CLASS   : op = GrB_ISNE_INT64  ; break ;
-                    case mxUINT64_CLASS  : op = GrB_ISNE_UINT64 ; break ;
-                    case mxSINGLE_CLASS  : op = GrB_ISNE_FP32   ; break ;
-                    case mxDOUBLE_CLASS  : op = GrB_ISNE_FP64   ; break ;
+                    case mxLOGICAL_CLASS : op = GxB_ISNE_BOOL   ; break ;
+                    case mxINT8_CLASS    : op = GxB_ISNE_INT8   ; break ;
+                    case mxUINT8_CLASS   : op = GxB_ISNE_UINT8  ; break ;
+                    case mxINT16_CLASS   : op = GxB_ISNE_INT16  ; break ;
+                    case mxUINT16_CLASS  : op = GxB_ISNE_UINT16 ; break ;
+                    case mxINT32_CLASS   : op = GxB_ISNE_INT32  ; break ;
+                    case mxUINT32_CLASS  : op = GxB_ISNE_UINT32 ; break ;
+                    case mxINT64_CLASS   : op = GxB_ISNE_INT64  ; break ;
+                    case mxUINT64_CLASS  : op = GxB_ISNE_UINT64 ; break ;
+                    case mxSINGLE_CLASS  : op = GxB_ISNE_FP32   ; break ;
+                    case mxDOUBLE_CLASS  : op = GxB_ISNE_FP64   ; break ;
                     default              : 
                         mexWarnMsgIdAndTxt ("GB:warn","unknown type") ;
                         return (false) ;
@@ -407,17 +407,17 @@ bool GB_mx_string_to_BinaryOp          // true if successful, false otherwise
 
                 switch (opclass)
                 {
-                    case mxLOGICAL_CLASS : op = GrB_ISGT_BOOL   ; break ;
-                    case mxINT8_CLASS    : op = GrB_ISGT_INT8   ; break ;
-                    case mxUINT8_CLASS   : op = GrB_ISGT_UINT8  ; break ;
-                    case mxINT16_CLASS   : op = GrB_ISGT_INT16  ; break ;
-                    case mxUINT16_CLASS  : op = GrB_ISGT_UINT16 ; break ;
-                    case mxINT32_CLASS   : op = GrB_ISGT_INT32  ; break ;
-                    case mxUINT32_CLASS  : op = GrB_ISGT_UINT32 ; break ;
-                    case mxINT64_CLASS   : op = GrB_ISGT_INT64  ; break ;
-                    case mxUINT64_CLASS  : op = GrB_ISGT_UINT64 ; break ;
-                    case mxSINGLE_CLASS  : op = GrB_ISGT_FP32   ; break ;
-                    case mxDOUBLE_CLASS  : op = GrB_ISGT_FP64   ; break ;
+                    case mxLOGICAL_CLASS : op = GxB_ISGT_BOOL   ; break ;
+                    case mxINT8_CLASS    : op = GxB_ISGT_INT8   ; break ;
+                    case mxUINT8_CLASS   : op = GxB_ISGT_UINT8  ; break ;
+                    case mxINT16_CLASS   : op = GxB_ISGT_INT16  ; break ;
+                    case mxUINT16_CLASS  : op = GxB_ISGT_UINT16 ; break ;
+                    case mxINT32_CLASS   : op = GxB_ISGT_INT32  ; break ;
+                    case mxUINT32_CLASS  : op = GxB_ISGT_UINT32 ; break ;
+                    case mxINT64_CLASS   : op = GxB_ISGT_INT64  ; break ;
+                    case mxUINT64_CLASS  : op = GxB_ISGT_UINT64 ; break ;
+                    case mxSINGLE_CLASS  : op = GxB_ISGT_FP32   ; break ;
+                    case mxDOUBLE_CLASS  : op = GxB_ISGT_FP64   ; break ;
                     default              : 
                         mexWarnMsgIdAndTxt ("GB:warn","unknown type") ;
                         return (false) ;
@@ -428,17 +428,17 @@ bool GB_mx_string_to_BinaryOp          // true if successful, false otherwise
 
                 switch (opclass)
                 {
-                    case mxLOGICAL_CLASS : op = GrB_ISLT_BOOL   ; break ;
-                    case mxINT8_CLASS    : op = GrB_ISLT_INT8   ; break ;
-                    case mxUINT8_CLASS   : op = GrB_ISLT_UINT8  ; break ;
-                    case mxINT16_CLASS   : op = GrB_ISLT_INT16  ; break ;
-                    case mxUINT16_CLASS  : op = GrB_ISLT_UINT16 ; break ;
-                    case mxINT32_CLASS   : op = GrB_ISLT_INT32  ; break ;
-                    case mxUINT32_CLASS  : op = GrB_ISLT_UINT32 ; break ;
-                    case mxINT64_CLASS   : op = GrB_ISLT_INT64  ; break ;
-                    case mxUINT64_CLASS  : op = GrB_ISLT_UINT64 ; break ;
-                    case mxSINGLE_CLASS  : op = GrB_ISLT_FP32   ; break ;
-                    case mxDOUBLE_CLASS  : op = GrB_ISLT_FP64   ; break ;
+                    case mxLOGICAL_CLASS : op = GxB_ISLT_BOOL   ; break ;
+                    case mxINT8_CLASS    : op = GxB_ISLT_INT8   ; break ;
+                    case mxUINT8_CLASS   : op = GxB_ISLT_UINT8  ; break ;
+                    case mxINT16_CLASS   : op = GxB_ISLT_INT16  ; break ;
+                    case mxUINT16_CLASS  : op = GxB_ISLT_UINT16 ; break ;
+                    case mxINT32_CLASS   : op = GxB_ISLT_INT32  ; break ;
+                    case mxUINT32_CLASS  : op = GxB_ISLT_UINT32 ; break ;
+                    case mxINT64_CLASS   : op = GxB_ISLT_INT64  ; break ;
+                    case mxUINT64_CLASS  : op = GxB_ISLT_UINT64 ; break ;
+                    case mxSINGLE_CLASS  : op = GxB_ISLT_FP32   ; break ;
+                    case mxDOUBLE_CLASS  : op = GxB_ISLT_FP64   ; break ;
                     default              : 
                         mexWarnMsgIdAndTxt ("GB:warn","unknown type") ;
                         return (false) ;
@@ -449,17 +449,17 @@ bool GB_mx_string_to_BinaryOp          // true if successful, false otherwise
 
                 switch (opclass)
                 {
-                    case mxLOGICAL_CLASS : op = GrB_ISGE_BOOL   ; break ;
-                    case mxINT8_CLASS    : op = GrB_ISGE_INT8   ; break ;
-                    case mxUINT8_CLASS   : op = GrB_ISGE_UINT8  ; break ;
-                    case mxINT16_CLASS   : op = GrB_ISGE_INT16  ; break ;
-                    case mxUINT16_CLASS  : op = GrB_ISGE_UINT16 ; break ;
-                    case mxINT32_CLASS   : op = GrB_ISGE_INT32  ; break ;
-                    case mxUINT32_CLASS  : op = GrB_ISGE_UINT32 ; break ;
-                    case mxINT64_CLASS   : op = GrB_ISGE_INT64  ; break ;
-                    case mxUINT64_CLASS  : op = GrB_ISGE_UINT64 ; break ;
-                    case mxSINGLE_CLASS  : op = GrB_ISGE_FP32   ; break ;
-                    case mxDOUBLE_CLASS  : op = GrB_ISGE_FP64   ; break ;
+                    case mxLOGICAL_CLASS : op = GxB_ISGE_BOOL   ; break ;
+                    case mxINT8_CLASS    : op = GxB_ISGE_INT8   ; break ;
+                    case mxUINT8_CLASS   : op = GxB_ISGE_UINT8  ; break ;
+                    case mxINT16_CLASS   : op = GxB_ISGE_INT16  ; break ;
+                    case mxUINT16_CLASS  : op = GxB_ISGE_UINT16 ; break ;
+                    case mxINT32_CLASS   : op = GxB_ISGE_INT32  ; break ;
+                    case mxUINT32_CLASS  : op = GxB_ISGE_UINT32 ; break ;
+                    case mxINT64_CLASS   : op = GxB_ISGE_INT64  ; break ;
+                    case mxUINT64_CLASS  : op = GxB_ISGE_UINT64 ; break ;
+                    case mxSINGLE_CLASS  : op = GxB_ISGE_FP32   ; break ;
+                    case mxDOUBLE_CLASS  : op = GxB_ISGE_FP64   ; break ;
                     default              : 
                         mexWarnMsgIdAndTxt ("GB:warn","unknown type") ;
                         return (false) ;
@@ -470,17 +470,17 @@ bool GB_mx_string_to_BinaryOp          // true if successful, false otherwise
 
                 switch (opclass)
                 {
-                    case mxLOGICAL_CLASS : op = GrB_ISLE_BOOL   ; break ;
-                    case mxINT8_CLASS    : op = GrB_ISLE_INT8   ; break ;
-                    case mxUINT8_CLASS   : op = GrB_ISLE_UINT8  ; break ;
-                    case mxINT16_CLASS   : op = GrB_ISLE_INT16  ; break ;
-                    case mxUINT16_CLASS  : op = GrB_ISLE_UINT16 ; break ;
-                    case mxINT32_CLASS   : op = GrB_ISLE_INT32  ; break ;
-                    case mxUINT32_CLASS  : op = GrB_ISLE_UINT32 ; break ;
-                    case mxINT64_CLASS   : op = GrB_ISLE_INT64  ; break ;
-                    case mxUINT64_CLASS  : op = GrB_ISLE_UINT64 ; break ;
-                    case mxSINGLE_CLASS  : op = GrB_ISLE_FP32   ; break ;
-                    case mxDOUBLE_CLASS  : op = GrB_ISLE_FP64   ; break ;
+                    case mxLOGICAL_CLASS : op = GxB_ISLE_BOOL   ; break ;
+                    case mxINT8_CLASS    : op = GxB_ISLE_INT8   ; break ;
+                    case mxUINT8_CLASS   : op = GxB_ISLE_UINT8  ; break ;
+                    case mxINT16_CLASS   : op = GxB_ISLE_INT16  ; break ;
+                    case mxUINT16_CLASS  : op = GxB_ISLE_UINT16 ; break ;
+                    case mxINT32_CLASS   : op = GxB_ISLE_INT32  ; break ;
+                    case mxUINT32_CLASS  : op = GxB_ISLE_UINT32 ; break ;
+                    case mxINT64_CLASS   : op = GxB_ISLE_INT64  ; break ;
+                    case mxUINT64_CLASS  : op = GxB_ISLE_UINT64 ; break ;
+                    case mxSINGLE_CLASS  : op = GxB_ISLE_FP32   ; break ;
+                    case mxDOUBLE_CLASS  : op = GxB_ISLE_FP64   ; break ;
                     default              : 
                         mexWarnMsgIdAndTxt ("GB:warn","unknown type") ;
                         return (false) ;
@@ -619,17 +619,17 @@ bool GB_mx_string_to_BinaryOp          // true if successful, false otherwise
 
                 switch (opclass)
                 {
-                    case mxLOGICAL_CLASS : op = GrB_LOR_BOOL   ; break ;
-                    case mxINT8_CLASS    : op = GrB_LOR_INT8   ; break ;
-                    case mxUINT8_CLASS   : op = GrB_LOR_UINT8  ; break ;
-                    case mxINT16_CLASS   : op = GrB_LOR_INT16  ; break ;
-                    case mxUINT16_CLASS  : op = GrB_LOR_UINT16 ; break ;
-                    case mxINT32_CLASS   : op = GrB_LOR_INT32  ; break ;
-                    case mxUINT32_CLASS  : op = GrB_LOR_UINT32 ; break ;
-                    case mxINT64_CLASS   : op = GrB_LOR_INT64  ; break ;
-                    case mxUINT64_CLASS  : op = GrB_LOR_UINT64 ; break ;
-                    case mxSINGLE_CLASS  : op = GrB_LOR_FP32   ; break ;
-                    case mxDOUBLE_CLASS  : op = GrB_LOR_FP64   ; break ;
+                    case mxLOGICAL_CLASS : op = GrB_LOR        ; break ;
+                    case mxINT8_CLASS    : op = GxB_LOR_INT8   ; break ;
+                    case mxUINT8_CLASS   : op = GxB_LOR_UINT8  ; break ;
+                    case mxINT16_CLASS   : op = GxB_LOR_INT16  ; break ;
+                    case mxUINT16_CLASS  : op = GxB_LOR_UINT16 ; break ;
+                    case mxINT32_CLASS   : op = GxB_LOR_INT32  ; break ;
+                    case mxUINT32_CLASS  : op = GxB_LOR_UINT32 ; break ;
+                    case mxINT64_CLASS   : op = GxB_LOR_INT64  ; break ;
+                    case mxUINT64_CLASS  : op = GxB_LOR_UINT64 ; break ;
+                    case mxSINGLE_CLASS  : op = GxB_LOR_FP32   ; break ;
+                    case mxDOUBLE_CLASS  : op = GxB_LOR_FP64   ; break ;
                     default              : 
                         mexWarnMsgIdAndTxt ("GB:warn","unknown type") ;
                         return (false) ;
@@ -640,17 +640,17 @@ bool GB_mx_string_to_BinaryOp          // true if successful, false otherwise
 
                 switch (opclass)
                 {
-                    case mxLOGICAL_CLASS : op = GrB_LAND_BOOL   ; break ;
-                    case mxINT8_CLASS    : op = GrB_LAND_INT8   ; break ;
-                    case mxUINT8_CLASS   : op = GrB_LAND_UINT8  ; break ;
-                    case mxINT16_CLASS   : op = GrB_LAND_INT16  ; break ;
-                    case mxUINT16_CLASS  : op = GrB_LAND_UINT16 ; break ;
-                    case mxINT32_CLASS   : op = GrB_LAND_INT32  ; break ;
-                    case mxUINT32_CLASS  : op = GrB_LAND_UINT32 ; break ;
-                    case mxINT64_CLASS   : op = GrB_LAND_INT64  ; break ;
-                    case mxUINT64_CLASS  : op = GrB_LAND_UINT64 ; break ;
-                    case mxSINGLE_CLASS  : op = GrB_LAND_FP32   ; break ;
-                    case mxDOUBLE_CLASS  : op = GrB_LAND_FP64   ; break ;
+                    case mxLOGICAL_CLASS : op = GrB_LAND        ; break ;
+                    case mxINT8_CLASS    : op = GxB_LAND_INT8   ; break ;
+                    case mxUINT8_CLASS   : op = GxB_LAND_UINT8  ; break ;
+                    case mxINT16_CLASS   : op = GxB_LAND_INT16  ; break ;
+                    case mxUINT16_CLASS  : op = GxB_LAND_UINT16 ; break ;
+                    case mxINT32_CLASS   : op = GxB_LAND_INT32  ; break ;
+                    case mxUINT32_CLASS  : op = GxB_LAND_UINT32 ; break ;
+                    case mxINT64_CLASS   : op = GxB_LAND_INT64  ; break ;
+                    case mxUINT64_CLASS  : op = GxB_LAND_UINT64 ; break ;
+                    case mxSINGLE_CLASS  : op = GxB_LAND_FP32   ; break ;
+                    case mxDOUBLE_CLASS  : op = GxB_LAND_FP64   ; break ;
                     default              : 
                         mexWarnMsgIdAndTxt ("GB:warn","unknown type") ;
                         return (false) ;
@@ -661,17 +661,17 @@ bool GB_mx_string_to_BinaryOp          // true if successful, false otherwise
 
                 switch (opclass)
                 {
-                    case mxLOGICAL_CLASS : op = GrB_LXOR_BOOL   ; break ;
-                    case mxINT8_CLASS    : op = GrB_LXOR_INT8   ; break ;
-                    case mxUINT8_CLASS   : op = GrB_LXOR_UINT8  ; break ;
-                    case mxINT16_CLASS   : op = GrB_LXOR_INT16  ; break ;
-                    case mxUINT16_CLASS  : op = GrB_LXOR_UINT16 ; break ;
-                    case mxINT32_CLASS   : op = GrB_LXOR_INT32  ; break ;
-                    case mxUINT32_CLASS  : op = GrB_LXOR_UINT32 ; break ;
-                    case mxINT64_CLASS   : op = GrB_LXOR_INT64  ; break ;
-                    case mxUINT64_CLASS  : op = GrB_LXOR_UINT64 ; break ;
-                    case mxSINGLE_CLASS  : op = GrB_LXOR_FP32   ; break ;
-                    case mxDOUBLE_CLASS  : op = GrB_LXOR_FP64   ; break ;
+                    case mxLOGICAL_CLASS : op = GrB_LXOR        ; break ;
+                    case mxINT8_CLASS    : op = GxB_LXOR_INT8   ; break ;
+                    case mxUINT8_CLASS   : op = GxB_LXOR_UINT8  ; break ;
+                    case mxINT16_CLASS   : op = GxB_LXOR_INT16  ; break ;
+                    case mxUINT16_CLASS  : op = GxB_LXOR_UINT16 ; break ;
+                    case mxINT32_CLASS   : op = GxB_LXOR_INT32  ; break ;
+                    case mxUINT32_CLASS  : op = GxB_LXOR_UINT32 ; break ;
+                    case mxINT64_CLASS   : op = GxB_LXOR_INT64  ; break ;
+                    case mxUINT64_CLASS  : op = GxB_LXOR_UINT64 ; break ;
+                    case mxSINGLE_CLASS  : op = GxB_LXOR_FP32   ; break ;
+                    case mxDOUBLE_CLASS  : op = GxB_LXOR_FP64   ; break ;
                     default              : 
                         mexWarnMsgIdAndTxt ("GB:warn","unknown type") ;
                         return (false) ;

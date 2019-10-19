@@ -358,13 +358,13 @@ GrB_Info GB_assign                  // C<Mask>(I,J) = accum (C(I,J),A)
     if (scalar_expansion)
     {
         // The spec states that scalar expansion is well-defined if I and J
-        // have duplicate entries.  However, GrB_subassign is not defined in
+        // have duplicate entries.  However, GxB_subassign is not defined in
         // this case.  To ensure that GrB_assign is well-defined, duplicates in
         // I and J must first be removed.  This reduces the size of I and J,
         // but has no effect on any other parameters.  This can be done in
         // GrB_assign since the Mask has the same size as C (or the entire
         // row/column for GrB_Row_assign and GrB_Col_assign).  It cannot be
-        // done in GrB_subassign since its Mask has the same size as IxJ.
+        // done in GxB_subassign since its Mask has the same size as IxJ.
 
         if (I != GrB_ALL && ni > 1)
         {
@@ -430,7 +430,7 @@ GrB_Info GB_assign                  // C<Mask>(I,J) = accum (C(I,J),A)
 
     if (Mask_is_same)
     {
-        // the Mask is the same for GrB_assign and GrB_subassign.  Either
+        // the Mask is the same for GrB_assign and GxB_subassign.  Either
         // both masks are NULL, or SubMask = Mask (:,:), and the two masks
         // are equalivalent.
         SubMask = Mask ;

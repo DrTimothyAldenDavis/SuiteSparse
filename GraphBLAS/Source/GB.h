@@ -48,7 +48,7 @@
 // O(nrows) memory space is not required to store them or to create them.  The
 // time complexity of many operations does not depend nrows at all.  Even some
 // forms of matrix multiply can be performed: C=A'*B and w=u'*A, for example,
-// without and O(time) or O(memory) depending on nrows.
+// without an the time or memory complexity depending on nrows.
 
 // Creating matrices with 2^60 columns in this implementation is not possible
 // because of memory limitations, since the internal representation requires at
@@ -97,6 +97,14 @@ GrB_Info GB_BinaryOp_check  // check a GraphBLAS binary operator
 GrB_Info GB_UnaryOp_check   // check a GraphBLAS unary operator
 (
     const GrB_UnaryOp op,   // GraphBLAS operator to print and check
+    const char *name,       // name of the operator
+    const GB_diagnostic pr  // 0: print nothing, 1: print header and errors,
+                            // 2: print brief, 3: print all
+) ;
+
+GrB_Info GB_SelectOp_check  // check a GraphBLAS select operator
+(
+    const GxB_SelectOp op,  // GraphBLAS operator to print and check
     const char *name,       // name of the operator
     const GB_diagnostic pr  // 0: print nothing, 1: print header and errors,
                             // 2: print brief, 3: print all
@@ -159,6 +167,8 @@ GrB_Info GB_Vector_check    // check a GraphBLAS vector
               GrB_Type       : GB_Type_check       ,    \
         const GrB_BinaryOp   : GB_BinaryOp_check   ,    \
               GrB_BinaryOp   : GB_BinaryOp_check   ,    \
+        const GxB_SelectOp   : GB_SelectOp_check   ,    \
+              GxB_SelectOp   : GB_SelectOp_check   ,    \
         const GrB_UnaryOp    : GB_UnaryOp_check    ,    \
               GrB_UnaryOp    : GB_UnaryOp_check    ,    \
         const GrB_Monoid     : GB_Monoid_check     ,    \
@@ -236,10 +246,10 @@ GrB_Info GB_Vector_check    // check a GraphBLAS vector
 // for finding tests that trigger statement coverage
 #ifdef MATLAB_MEX_FILE
 #define GOTCHA \
-    mexErrMsgTxt ("gotcha" __FILE__ " line: " GB_XSTR(__LINE__)) ;
+mexErrMsgTxt ("gotcha: " __FILE__ " line: " GB_XSTR(__LINE__)) ;
 #else
 #define GOTCHA \
-    { printf ("gotcha" __FILE__ " line: " GB_XSTR(__LINE__)"\n") ; abort () ; }
+{ printf ("gotcha: " __FILE__ " line: " GB_XSTR(__LINE__)"\n") ; abort () ; }
 #endif
 
 //------------------------------------------------------------------------------
@@ -381,7 +391,7 @@ typedef enum
     // user-defined, both unary and binary
     //--------------------------------------------------------------------------
 
-    // all user-defined functions are given this code (both unary and binary)
+    // all user-defined operators are given this code (both unary and binary)
     GB_USER_opcode      // 30: user defined operator
 }
 GB_Opcode ;
@@ -442,6 +452,25 @@ GB_Opcode ;
 #define GB(x)           GB_ ## x ## _FP64
 #define CAST_NAME(x)    GB_cast_double_ ## x
 #include "GB_ops_template.h"
+
+//------------------------------------------------------------------------------
+// select opcodes
+//------------------------------------------------------------------------------
+
+// operator codes used in GrB_SelectOp structures
+typedef enum
+{
+    // built-in select operators:
+    GB_TRIL_opcode,
+    GB_TRIU_opcode,
+    GB_DIAG_opcode,
+    GB_OFFDIAG_opcode,
+    GB_NONZERO_opcode,
+
+    // for all user-defined select operators:
+    GB_USER_SELECT_opcode
+}
+GB_Select_Opcode ;
 
 //------------------------------------------------------------------------------
 // internal GraphBLAS functions
@@ -583,6 +612,19 @@ GrB_Info GB_apply                   // C<Mask> = accum (C, op(A)) or op(A')
     const bool A_transpose          // A matrix descriptor
 ) ;
 
+GrB_Info GB_select          // C<Mask> = accum (C, select(A,k)) or select(A',k)
+(
+    GrB_Matrix C,                   // input/output matrix for results
+    const bool C_replace,           // C descriptor
+    const GrB_Matrix Mask,          // optional mask for C, unused if NULL
+    const bool Mask_comp,           // Mask descriptor
+    const GrB_BinaryOp accum,       // optional accum for Z=accum(C,T)
+    const GxB_SelectOp op,          // operator to select the entries
+    const GrB_Matrix A,             // input matrix
+    const void *k,                  // optional input for select operator
+    const bool A_transpose          // A matrix descriptor
+) ;
+
 GrB_Info GB_shallow_cast                // create a shallow typecasted matrix
 (
     GrB_Matrix *shallow_cast_handle,    // output matrix to typecast into
@@ -609,6 +651,16 @@ void GB_cast_array              // typecast an array
 typedef void (*GB_binary_function) (void *, const void *, const void *) ;
 
 typedef void (*GB_unary_function)  (void *, const void *) ;
+
+typedef bool (*GB_select_function)      // return true if A(i,j) is kept
+(
+    const GrB_Index i,          // row index of A(i,j)
+    const GrB_Index j,          // column index of A(i,j)
+    const GrB_Index nrows,      // number of rows of A
+    const GrB_Index ncols,      // number of columns of A
+    const void *x,              // value of A(i,j)
+    const void *k               // optional input for select function
+) ;
 
 typedef void (*GB_cast_function)   (void *, const void *, size_t) ;
 
@@ -1116,7 +1168,7 @@ GrB_Info GB_builder
     const void *X,                  // array of values of tuples
     const int64_t len,              // number of tuples
     const GrB_BinaryOp dup,         // binary function to assemble duplicates,
-                                    // if NULL use the "SECOND" function to 
+                                    // if NULL use the "SECOND" function to
                                     // keep the most recent duplicate.
     const GB_Type_code X_code       // GB_Type_code of X array
 ) ;
@@ -1129,7 +1181,7 @@ GrB_Info GB_build_factory           // build a matrix
     const void *X,                  // array of values of tuples
     const int64_t len,              // number of tuples
     const GrB_BinaryOp dup,         // binary function to assemble duplicates,
-                                    // if NULL use the "SECOND" function to 
+                                    // if NULL use the "SECOND" function to
                                     // keep the most recent duplicate.
     const GB_Type_code X_code       // GB_Type_code of X array
 ) ;
@@ -1153,6 +1205,11 @@ void GB_free_pending            // free all pending tuples
     GrB_Matrix A                // matrix with pending tuples to free
 ) ;
 
+void GB_queue_init
+(
+    const GrB_Mode mode         // blocking or non-blocking mode
+) ;
+
 void GB_queue_remove            // remove matrix from queue
 (
     GrB_Matrix A                // matrix to remove
@@ -1163,10 +1220,16 @@ void GB_queue_insert            // insert matrix at the head of queue
     GrB_Matrix A                // matrix to insert
 ) ;
 
-#define IS_NOT_IN_QUEUE(A) \
-    (A->queue_prev == NULL && GB_thread_local.queue_head != A)
+GrB_Matrix GB_queue_remove_head ( ) ; // return matrix or NULL if queue empty
 
-#define IS_IN_QUEUE(A) (! IS_NOT_IN_QUEUE(A))
+void GB_queue_check
+(
+    GrB_Matrix A,           // matrix to check
+    GrB_Matrix *head,       // head of the queue
+    GrB_Matrix *prev,       // prev from A
+    GrB_Matrix *next,       // next after A
+    bool *enqd              // true if A is in the queue
+) ;
 
 GrB_Info GB_setElement          // set a single entry, C(i,j) = x
 (
@@ -1299,30 +1362,15 @@ char *GB_code_string            // return a static string for a type name
 ) ;
 
 //------------------------------------------------------------------------------
-// Thread local storage
+// Global storage: for all threads in a user application that uses GraphBLAS
 //------------------------------------------------------------------------------
 
-// Thread local storage is used to to record the details of the last error
-// encountered (for GrB_error), and to record a list of matrices with pending 
-// operations (fo GrB_wait).
-
-#define GB_RLEN 2048
+// Global storage is used to record a list of matrices with pending operations
+// (fo GrB_wait), and to keep track of the GraphBLAS mode (blocking or
+// non-blocking).
 
 typedef struct
 {
-
-    //--------------------------------------------------------------------------
-    // Error status
-    //--------------------------------------------------------------------------
-
-    GrB_Info info ;             // last error code
-    GrB_Index row, col ;        // last A(row,col) searched for but not found
-    bool is_matrix ;            // last search matrix (true) or vector (false)
-    const char *where ;         // GraphBLAS function where error occurred
-    const char *file ;          // GraphBLAS filename where error occured
-    int line ;                  // line in the GraphBLAS file of error
-    char details [GB_RLEN+1] ;  // string with details of the error
-    char report [GB_RLEN+1] ;   // string returned by GrB_error
 
     //--------------------------------------------------------------------------
     // queue of matrices with work to do
@@ -1331,7 +1379,7 @@ typedef struct
     // In non-blocking mode, GraphBLAS needs to keep track of all matrices that
     // have pending operations that have not yet been finished.  In the current
     // implementation, these are matrices with pending tuples from
-    // GrB_setElement, GrB_subassign, and GrB_assign that haven't been added to
+    // GrB_setElement, GxB_subassign, and GrB_assign that haven't been added to
     // the matrix yet.
 
     // A matrix with no pending tuples is not in the list.  When a matrix gets
@@ -1352,29 +1400,40 @@ typedef struct
 
     GrB_Mode mode ;             // GrB_NONBLOCKING or GrB_BLOCKING
 
-    //--------------------------------------------------------------------------
-    // malloc tracking
-    //--------------------------------------------------------------------------
+}
+GB_Global_struct ;
 
-    // nmalloc:  To aid in searching for memory leaks, GraphBLAS keeps track of
-    // the number of blocks of allocated by malloc, calloc, or realloc that
-    // have not yet been freed.  The count starts at zero.  malloc and calloc
-    // increment this count, and free (of a non-NULL pointer) decrements it.
-    // realloc increments the count it if is allocating a new block, but it
-    // does this by calling GB_malloc_memory.
+extern GB_Global_struct GB_Global ;
 
-    // malloc_debug: if true, then use malloc_debug_count for testing memory
-    // allocation and out-of-memory conditions.  If malloc_debug_count > 0, the
-    // value is decremented after each allocation of memory.  If
-    // malloc_debug_count <= 0, the GrB_*_memory routines pretend to fail;
-    // returning NULL and not allocating anything.
+//------------------------------------------------------------------------------
+// Thread local storage
+//------------------------------------------------------------------------------
 
-    int64_t nmalloc ;               // number of blocks allocated but not freed
-    bool malloc_debug ;             // if true, test memory hanlding
-    int64_t malloc_debug_count ;    // for testing memory handling 
+// Thread local storage is used to to record the details of the last error
+// encountered (for GrB_error).  If the user application is multi-threaded,
+// each thread that calls GraphBLAS needs its own private copy of these
+// variables.
+
+#define GB_RLEN 2048
+
+typedef struct
+{
 
     //--------------------------------------------------------------------------
-    // integer workspace
+    // Error status
+    //--------------------------------------------------------------------------
+
+    GrB_Info info ;             // last error code
+    GrB_Index row, col ;        // last A(row,col) searched for but not found
+    bool is_matrix ;            // last search matrix (true) or vector (false)
+    const char *where ;         // GraphBLAS function where error occurred
+    const char *file ;          // GraphBLAS filename where error occured
+    int line ;                  // line in the GraphBLAS file of error
+    char details [GB_RLEN+1] ;  // string with details of the error
+    char report [GB_RLEN+1] ;   // string returned by GrB_error
+
+    //--------------------------------------------------------------------------
+    // workspace
     //--------------------------------------------------------------------------
 
     // Initialized space: Mark is an array of size Mark_size.  When cleared,
@@ -1393,6 +1452,31 @@ typedef struct
 
     int8_t *Flag ;                  // initialized space
     int64_t Flag_size ;             // current size of Flag array
+
+    //--------------------------------------------------------------------------
+    // malloc tracking
+    //--------------------------------------------------------------------------
+
+    // This is useful only for testing and development of GraphBLAS, not for
+    // end user applications.  Using nmalloc assumes the application that uses
+    // GraphBLAS is single-threaded.  It is not meant to be thread-safe.
+
+    // nmalloc:  To aid in searching for memory leaks, GraphBLAS keeps track of
+    // the number of blocks of allocated by malloc, calloc, or realloc that
+    // have not yet been freed.  The count starts at zero.  malloc and calloc
+    // increment this count, and free (of a non-NULL pointer) decrements it.
+    // realloc increments the count it if is allocating a new block, but it
+    // does this by calling GB_malloc_memory.
+
+    // malloc_debug: if true, then use malloc_debug_count for testing memory
+    // allocation and out-of-memory conditions.  If malloc_debug_count > 0, the
+    // value is decremented after each allocation of memory.  If
+    // malloc_debug_count <= 0, the GB_*_memory routines pretend to fail;
+    // returning NULL and not allocating anything.
+
+    int64_t nmalloc ;               // number of blocks allocated but not freed
+    bool malloc_debug ;             // if true, test memory hanlding
+    int64_t malloc_debug_count ;    // for testing memory handling
 
     //--------------------------------------------------------------------------
     // random seed for GB_rand

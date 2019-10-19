@@ -14,11 +14,11 @@
 GrB_Info GrB_Matrix_apply           // C<Mask> = accum (C, op(A)) or op(A')
 (
     GrB_Matrix C,                   // input/output matrix for results
-    const GrB_Matrix Mask,          // optional mask for C, unused if NULL
+    const GrB_Matrix Mask,          // optional Mask for C, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C,T)
     const GrB_UnaryOp op,           // operator to apply to the entries
     const GrB_Matrix A,             // first input:  matrix A
-    const GrB_Descriptor desc       // descriptor for C, mask, and A
+    const GrB_Descriptor desc       // descriptor for C, Mask, and A
 )
 {
 
@@ -41,7 +41,7 @@ GrB_Info GrB_Matrix_apply           // C<Mask> = accum (C, op(A)) or op(A')
     return (GB_apply (
         C,      C_replace,          // C and its descriptor
         Mask,   Mask_comp,          // Mask and its descriptor
-        accum,                      // optional accun for Z=accum(C,T)
+        accum,                      // optional accum for Z=accum(C,T)
         op,                         // operator to apply to the entries
         A,      A_transpose)) ;     // A and its descriptor
 }

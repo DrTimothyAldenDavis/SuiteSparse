@@ -39,6 +39,46 @@
 
 #include "GB.h"
 
+//------------------------------------------------------------------------------
+// All thread local storage is held in a single struct, initialized here
+//------------------------------------------------------------------------------
+
+_Thread_local GB_thread_local_struct GB_thread_local =
+{
+    // error status
+    .info = GrB_SUCCESS,        // last info status of user-callable routines
+    .row = 0,                   // last row index searched for
+    .col = 0,                   // last column index searched for
+    .is_matrix = 0,             // last search matrix (true) or vector (false)
+    .where = "",                // last user-callable function called
+    .file = "",                 // file where error occurred
+    .line = 0,                  // line number where error occurred
+    .details = "",              // details of the error
+    .report = "",               // report created by GrB_error
+
+    // thread private workspace
+    .Mark = NULL,               // initialized space
+    .Mark_flag = 1,             // current watermark in Mark [...]
+    .Mark_size = 0,             // current size of Mark array
+    .Work = NULL,               // uninitialized space
+    .Work_size = 0,             // current size of Work array
+    .Flag = NULL,               // initialized space
+    .Flag_size = 0,             // size of Flag array
+
+    // malloc tracking, for testing and debugging only
+    .nmalloc = 0,               // memory block counter
+    .malloc_debug = false,      // do not test memory handling
+    .malloc_debug_count = 0,    // counter for testing memory handling
+
+    // random seed for each thread
+    .seed = 1
+
+} ;
+
+//------------------------------------------------------------------------------
+// GrB_init
+//------------------------------------------------------------------------------
+
 GrB_Info GrB_init           // start up GraphBLAS
 (
     const GrB_Mode mode     // blocking or non-blocking mode
@@ -72,11 +112,8 @@ GrB_Info GrB_init           // start up GraphBLAS
     GB_thread_local.details [0] = '\0' ;
     GB_thread_local.report  [0] = '\0' ;
 
-    // queue of matrices for nonblocking mode
-    GB_thread_local.queue_head = NULL ;
-
-    // mode: blocking or nonblocking
-    GB_thread_local.mode = mode ;       // default is non-blocking
+    // queue of matrices for nonblocking mode and set the mode
+    GB_queue_init (mode) ;
 
     // malloc tracking
     GB_thread_local.nmalloc = 0 ;
@@ -91,6 +128,9 @@ GrB_Info GrB_init           // start up GraphBLAS
     GB_thread_local.Work_size = 0 ;     // current size of Work array
     GB_thread_local.Flag = NULL ;       // initialized space
     GB_thread_local.Flag_size = 0 ;     // current size of Flag array
+
+    // random seed
+    GB_thread_local.seed = 1 ;
 
     return (REPORT_SUCCESS) ;
 }

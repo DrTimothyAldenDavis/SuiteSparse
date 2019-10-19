@@ -9,8 +9,8 @@
 
 // Assigns a single scalar to a submatrix, C(I,J)<Mask> = accum (C(I,J),x)
 
-// This function does the work for GrB_Matrix_subassign_TYPE and
-// GrB_Vector_subassign_TYPE, where TYPE is one of the 11 types, or the
+// This function does the work for GxB_Matrix_subassign_TYPE and
+// GxB_Vector_subassign_TYPE, where TYPE is one of the 11 types, or the
 // type-generic macro suffix, "_scalar".
 
 #include "GB.h"

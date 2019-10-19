@@ -68,48 +68,48 @@ void mexFunction
     printf ("%s", GrB_error ( )) ;
 
     size_t s ;
-    GrB_Type_size (&s, GrB_BOOL  ) ; printf ("%d %d\n", s, sizeof (bool      ));
-    GrB_Type_size (&s, GrB_INT8  ) ; printf ("%d %d\n", s, sizeof (int8_t    ));
-    GrB_Type_size (&s, GrB_UINT8 ) ; printf ("%d %d\n", s, sizeof (uint8_t   ));
-    GrB_Type_size (&s, GrB_INT16 ) ; printf ("%d %d\n", s, sizeof (int16_t   ));
-    GrB_Type_size (&s, GrB_UINT16) ; printf ("%d %d\n", s, sizeof (uint16_t  ));
-    GrB_Type_size (&s, GrB_INT32 ) ; printf ("%d %d\n", s, sizeof (int32_t   ));
-    GrB_Type_size (&s, GrB_UINT32) ; printf ("%d %d\n", s, sizeof (uint32_t  ));
-    GrB_Type_size (&s, GrB_INT64 ) ; printf ("%d %d\n", s, sizeof (int64_t   ));
-    GrB_Type_size (&s, GrB_UINT64) ; printf ("%d %d\n", s, sizeof (uint64_t  ));
-    GrB_Type_size (&s, GrB_FP32  ) ; printf ("%d %d\n", s, sizeof (float     ));
-    GrB_Type_size (&s, GrB_FP64  ) ; printf ("%d %d\n", s, sizeof (double    ));
+    GxB_Type_size (&s, GrB_BOOL  ) ; printf ("%d %d\n", s, sizeof (bool      ));
+    GxB_Type_size (&s, GrB_INT8  ) ; printf ("%d %d\n", s, sizeof (int8_t    ));
+    GxB_Type_size (&s, GrB_UINT8 ) ; printf ("%d %d\n", s, sizeof (uint8_t   ));
+    GxB_Type_size (&s, GrB_INT16 ) ; printf ("%d %d\n", s, sizeof (int16_t   ));
+    GxB_Type_size (&s, GrB_UINT16) ; printf ("%d %d\n", s, sizeof (uint16_t  ));
+    GxB_Type_size (&s, GrB_INT32 ) ; printf ("%d %d\n", s, sizeof (int32_t   ));
+    GxB_Type_size (&s, GrB_UINT32) ; printf ("%d %d\n", s, sizeof (uint32_t  ));
+    GxB_Type_size (&s, GrB_INT64 ) ; printf ("%d %d\n", s, sizeof (int64_t   ));
+    GxB_Type_size (&s, GrB_UINT64) ; printf ("%d %d\n", s, sizeof (uint64_t  ));
+    GxB_Type_size (&s, GrB_FP32  ) ; printf ("%d %d\n", s, sizeof (float     ));
+    GxB_Type_size (&s, GrB_FP64  ) ; printf ("%d %d\n", s, sizeof (double    ));
 
     printf ("info is %d\n", info) ;
 
     GrB_Type t ;
 
     GB_check (GrB_LNOT, "LNOT", 3) ;
-    GrB_UnaryOp_ztype (&t, GrB_LNOT) ;
+    GxB_UnaryOp_ztype (&t, GrB_LNOT) ;
     GB_check (t, "ztype", 3) ;
-    GrB_UnaryOp_xtype (&t, GrB_LNOT) ;
+    GxB_UnaryOp_xtype (&t, GrB_LNOT) ;
     GB_check (t, "xtype", 3) ;
 
-    GB_check (GrB_LNOT_FP32, "LNOT_FP32", 3) ;
-    GrB_UnaryOp_ztype (&t, GrB_LNOT_FP32) ;
+    GB_check (GxB_LNOT_FP32, "LNOT_FP32", 3) ;
+    GxB_UnaryOp_ztype (&t, GxB_LNOT_FP32) ;
     GB_check (t, "ztype", 3) ;
-    GrB_UnaryOp_xtype (&t, GrB_LNOT_FP32) ;
+    GxB_UnaryOp_xtype (&t, GxB_LNOT_FP32) ;
     GB_check (t, "xtype", 3) ;
 
-    GB_check (GrB_ISEQ_INT32, "ISEQ_INT32", 3) ;
-    GrB_BinaryOp_ztype (&t, GrB_ISEQ_INT32) ;
+    GB_check (GxB_ISEQ_INT32, "ISEQ_INT32", 3) ;
+    GxB_BinaryOp_ztype (&t, GxB_ISEQ_INT32) ;
     GB_check (t, "ztype", 3) ;
-    GrB_BinaryOp_xtype (&t, GrB_ISEQ_INT32) ;
+    GxB_BinaryOp_xtype (&t, GxB_ISEQ_INT32) ;
     GB_check (t, "xtype", 3) ;
-    GrB_BinaryOp_ytype (&t, GrB_ISEQ_INT32) ;
+    GxB_BinaryOp_ytype (&t, GxB_ISEQ_INT32) ;
     GB_check (t, "ytype", 3) ;
 
     GB_check (GrB_EQ_INT32, "EQ_INT32", 3) ;
-    GrB_BinaryOp_ztype (&t, GrB_EQ_INT32) ;
+    GxB_BinaryOp_ztype (&t, GrB_EQ_INT32) ;
     GB_check (t, "ztype", 3) ;
-    GrB_BinaryOp_xtype (&t, GrB_EQ_INT32) ;
+    GxB_BinaryOp_xtype (&t, GrB_EQ_INT32) ;
     GB_check (t, "xtype", 3) ;
-    GrB_BinaryOp_ytype (&t, GrB_EQ_INT32) ;
+    GxB_BinaryOp_ytype (&t, GrB_EQ_INT32) ;
     GB_check (t, "ytype", 3) ;
 
     GrB_Monoid m ;
@@ -118,9 +118,9 @@ void mexFunction
     GrB_Monoid_new (&m, GrB_PLUS_UINT16, (uint16_t) 0) ;
     GB_check (m, "plus uint16 monoid", 3) ;
     uint16_t id ;
-    GrB_Monoid_identity (&id, m) ;
+    GxB_Monoid_identity (&id, m) ;
     printf ("id is %d\n", id) ;
-    GrB_Monoid_operator (&op, m) ;
+    GxB_Monoid_operator (&op, m) ;
     GB_check (op, "plus op from monoid", 3) ;
 
     GrB_free (&m) ;
@@ -130,9 +130,9 @@ void mexFunction
     GrB_Monoid_new (&m, GrB_MAX_INT16, id0) ;
     GB_check (m, "max int16 monoid", 3) ;
     int16_t id1 ;
-    GrB_Monoid_identity (&id1, m) ;
+    GxB_Monoid_identity (&id1, m) ;
     printf ("id1 is %d\n", id1) ;
-    GrB_Monoid_operator (&op, m) ;
+    GxB_Monoid_operator (&op, m) ;
     GB_check (op, "plus op from monoid", 3) ;
 
     GrB_Semiring sem ;
@@ -140,9 +140,9 @@ void mexFunction
     GB_check (sem, "\nnew sem", 3) ;
 
     GrB_Monoid mm ;
-    GrB_Semiring_add (&mm, sem) ;
+    GxB_Semiring_add (&mm, sem) ;
     GB_check (mm, "sem mm", 3) ;
-    GrB_Semiring_multiply (&op, sem) ;
+    GxB_Semiring_multiply (&op, sem) ;
     GB_check (op, "sem mult", 3) ;
 
     GrB_free (&m) ;
@@ -154,14 +154,14 @@ void mexFunction
     GrB_Matrix_new (&Gunk, GrB_FP64, 5, 5) ;
     info = ack (&ok, Gunk) ;
 
-    GrB_Matrix_type (&t, Gunk) ;
+    GxB_Matrix_type (&t, Gunk) ;
     GB_check (t, "matrix Gunk type is:", 3) ;
 
     GrB_Vector victor ;
     GrB_Vector_new (&victor, GrB_UINT32, 43) ;
-    GrB_Vector_type (&t, victor) ;
+    GxB_Vector_type (&t, victor) ;
     GB_check (t, "victor type is:", 3) ;
-    GrB_Type_size (&s, t) ;
+    GxB_Type_size (&s, t) ;
     printf ("and its size of type is %d\n", s) ;
     GrB_free (&victor) ;
 
@@ -170,46 +170,46 @@ void mexFunction
 
     GrB_Descriptor_new (&Duh) ;
     GB_check (Duh, "\n------------------------------------- Duh:", 3) ;
-    GrB_Descriptor_get (&val, Duh, GrB_OUTP) ; printf ("got outp %d\n", val) ;
-    GrB_Descriptor_get (&val, Duh, GrB_MASK) ; printf ("got mask %d\n", val) ;
-    GrB_Descriptor_get (&val, Duh, GrB_INP0) ; printf ("got inp0 %d\n", val) ;
-    GrB_Descriptor_get (&val, Duh, GrB_INP1) ; printf ("got inp1 %d\n", val) ;
+    GxB_Descriptor_get (&val, Duh, GrB_OUTP) ; printf ("got outp %d\n", val) ;
+    GxB_Descriptor_get (&val, Duh, GrB_MASK) ; printf ("got mask %d\n", val) ;
+    GxB_Descriptor_get (&val, Duh, GrB_INP0) ; printf ("got inp0 %d\n", val) ;
+    GxB_Descriptor_get (&val, Duh, GrB_INP1) ; printf ("got inp1 %d\n", val) ;
 
     GrB_Descriptor_set (Duh, GrB_INP0, GrB_TRAN) ;
     GB_check (Duh, "\n------------------------------------- Duh set:", 3) ;
-    GrB_Descriptor_get (&val, Duh, GrB_OUTP) ; printf ("got outp %d\n", val) ;
-    GrB_Descriptor_get (&val, Duh, GrB_MASK) ; printf ("got mask %d\n", val) ;
-    GrB_Descriptor_get (&val, Duh, GrB_INP0) ; printf ("got inp0 %d\n", val) ;
-    GrB_Descriptor_get (&val, Duh, GrB_INP1) ; printf ("got inp1 %d\n", val) ;
+    GxB_Descriptor_get (&val, Duh, GrB_OUTP) ; printf ("got outp %d\n", val) ;
+    GxB_Descriptor_get (&val, Duh, GrB_MASK) ; printf ("got mask %d\n", val) ;
+    GxB_Descriptor_get (&val, Duh, GrB_INP0) ; printf ("got inp0 %d\n", val) ;
+    GxB_Descriptor_get (&val, Duh, GrB_INP1) ; printf ("got inp1 %d\n", val) ;
 
     GrB_Descriptor_set (Duh, GrB_MASK, GrB_SCMP) ;
     GB_check (Duh, "\n-----Duh set mask", 3) ;
-    GrB_Descriptor_get (&val, Duh, GrB_OUTP) ; printf ("got outp %d\n", val) ;
-    GrB_Descriptor_get (&val, Duh, GrB_MASK) ; printf ("got mask %d\n", val) ;
-    GrB_Descriptor_get (&val, Duh, GrB_INP0) ; printf ("got inp0 %d\n", val) ;
-    GrB_Descriptor_get (&val, Duh, GrB_INP1) ; printf ("got inp1 %d\n", val) ;
+    GxB_Descriptor_get (&val, Duh, GrB_OUTP) ; printf ("got outp %d\n", val) ;
+    GxB_Descriptor_get (&val, Duh, GrB_MASK) ; printf ("got mask %d\n", val) ;
+    GxB_Descriptor_get (&val, Duh, GrB_INP0) ; printf ("got inp0 %d\n", val) ;
+    GxB_Descriptor_get (&val, Duh, GrB_INP1) ; printf ("got inp1 %d\n", val) ;
 
     GrB_Descriptor_set (Duh, GrB_OUTP, GrB_REPLACE) ;
     GB_check (Duh, "\n-----Duh set out", 3) ;
-    GrB_Descriptor_get (&val, Duh, GrB_OUTP) ; printf ("got outp %d\n", val) ;
-    GrB_Descriptor_get (&val, Duh, GrB_MASK) ; printf ("got mask %d\n", val) ;
-    GrB_Descriptor_get (&val, Duh, GrB_INP0) ; printf ("got inp0 %d\n", val) ;
-    GrB_Descriptor_get (&val, Duh, GrB_INP1) ; printf ("got inp1 %d\n", val) ;
+    GxB_Descriptor_get (&val, Duh, GrB_OUTP) ; printf ("got outp %d\n", val) ;
+    GxB_Descriptor_get (&val, Duh, GrB_MASK) ; printf ("got mask %d\n", val) ;
+    GxB_Descriptor_get (&val, Duh, GrB_INP0) ; printf ("got inp0 %d\n", val) ;
+    GxB_Descriptor_get (&val, Duh, GrB_INP1) ; printf ("got inp1 %d\n", val) ;
 
-    GrB_Descriptor_set (Duh, GrB_MASK, GrB_DEFAULT) ;
+    GrB_Descriptor_set (Duh, GrB_MASK, GxB_DEFAULT) ;
     GB_check (Duh, "\n-----Duh set mask back", 3) ;
-    GrB_Descriptor_get (&val, Duh, GrB_OUTP) ; printf ("got outp %d\n", val) ;
-    GrB_Descriptor_get (&val, Duh, GrB_MASK) ; printf ("got mask %d\n", val) ;
-    GrB_Descriptor_get (&val, Duh, GrB_INP0) ; printf ("got inp0 %d\n", val) ;
-    GrB_Descriptor_get (&val, Duh, GrB_INP1) ; printf ("got inp1 %d\n", val) ;
+    GxB_Descriptor_get (&val, Duh, GrB_OUTP) ; printf ("got outp %d\n", val) ;
+    GxB_Descriptor_get (&val, Duh, GrB_MASK) ; printf ("got mask %d\n", val) ;
+    GxB_Descriptor_get (&val, Duh, GrB_INP0) ; printf ("got inp0 %d\n", val) ;
+    GxB_Descriptor_get (&val, Duh, GrB_INP1) ; printf ("got inp1 %d\n", val) ;
 
     info = GrB_Descriptor_set (Duh, GrB_INP1, GrB_REPLACE) ;
     printf ("%s\n", GrB_error () ) ;
     GB_check (Duh, "\n-----Duh set in1", 3) ;
-    GrB_Descriptor_get (&val, Duh, GrB_OUTP) ; printf ("got outp %d\n", val) ;
-    GrB_Descriptor_get (&val, Duh, GrB_MASK) ; printf ("got mask %d\n", val) ;
-    GrB_Descriptor_get (&val, Duh, GrB_INP0) ; printf ("got inp0 %d\n", val) ;
-    GrB_Descriptor_get (&val, Duh, GrB_INP1) ; printf ("got inp1 %d\n", val) ;
+    GxB_Descriptor_get (&val, Duh, GrB_OUTP) ; printf ("got outp %d\n", val) ;
+    GxB_Descriptor_get (&val, Duh, GrB_MASK) ; printf ("got mask %d\n", val) ;
+    GxB_Descriptor_get (&val, Duh, GrB_INP0) ; printf ("got inp0 %d\n", val) ;
+    GxB_Descriptor_get (&val, Duh, GrB_INP1) ; printf ("got inp1 %d\n", val) ;
 
     GrB_free (&Duh) ;
 
@@ -232,38 +232,38 @@ void mexFunction
     GrB_free (&Gunk) ;
 
     GB_check (Complex, "user Complex type", 3) ;
-    GrB_Type_size (&s, Complex) ;
+    GxB_Type_size (&s, Complex) ;
     printf ("size is %d\n", (int) s) ;
 
     // test the #ifdefs
-    #ifdef SUITESPARSE_GRAPHBLAS
+    #ifdef GXB_SUITESPARSE_GRAPHBLAS
 
-    printf ("\nAbout:\n%s\n", GRAPHBLAS_ABOUT) ;
-    printf ("Date: %s\n", GRAPHBLAS_DATE) ;
+    printf ("\nAbout:\n%s\n", GXB_ABOUT) ;
+    printf ("Date: %s\n", GXB_DATE) ;
     printf ("Implementation: %d.%d.%d ("GBu")\n",
-        GRAPHBLAS_IMPLEMENTATION_MAJOR,
-        GRAPHBLAS_IMPLEMENTATION_MINOR,
-        GRAPHBLAS_IMPLEMENTATION_SUB,
-        GRAPHBLAS_IMPLEMENTATION) ;
-    printf ("License:%s\n", GRAPHBLAS_LICENSE) ;
+        GXB_IMPLEMENTATION_MAJOR,
+        GXB_IMPLEMENTATION_MINOR,
+        GXB_IMPLEMENTATION_SUB,
+        GXB_IMPLEMENTATION) ;
+    printf ("License:%s\n", GXB_LICENSE) ;
     printf ("Spec: %d.%d.%d ("GBu")\n",
-        GRAPHBLAS_MAJOR, GRAPHBLAS_MINOR, GRAPHBLAS_SUB, GRAPHBLAS) ;
-    printf ("Spec Date: %s\n", GRAPHBLAS_SPEC_DATE) ;
-    printf ("About the spec:\n%s\n", GRAPHBLAS_SPEC) ;
+        GXB_MAJOR, GXB_MINOR, GXB_SUB, GXB) ;
+    printf ("Spec Date: %s\n", GXB_SPEC_DATE) ;
+    printf ("About the spec:\n%s\n", GXB_SPEC) ;
 
-    #if GRAPHBLAS >= GrB_VERSION(1,0,0)
+    #if GXB >= GXB_VERSION(1,0,0)
     printf ("The spec is >= version 1.0.0\n") ;
     #else
     printf ("The spec is < version 1.0.0\n") ;
     #endif
 
-    #if GRAPHBLAS < GrB_VERSION(2,3,0)
+    #if GXB < GXB_VERSION(2,3,0)
     printf ("The spec is < version 2.3.0\n") ;
     #else
     printf ("The spec is >= version 2.3.0\n") ;
     #endif
 
-    #if GRAPHBLAS_IMPLEMENTATION < GrB_VERSION(1,0,0)
+    #if GXB_IMPLEMENTATION < GXB_VERSION(1,0,0)
     printf ("This implementation is <  version 1.0.0\n") ;
     #else
     printf ("This implementation is >= version 1.0.0\n") ;

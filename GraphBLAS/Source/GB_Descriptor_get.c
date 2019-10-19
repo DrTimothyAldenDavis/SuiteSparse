@@ -12,21 +12,21 @@
 
 //  Descriptor field:           Descriptor value:
 
-//  desc->out                   GrB_DEFAULT or GrB_REPLACE
+//  desc->out                   GxB_DEFAULT or GrB_REPLACE
 
 //      GrB_REPLACE means that the output matrix C is cleared just
 //      prior to writing results back into it, via C<Mask> = results.  This
 //      descriptor does not affect how C is used to compute the results.  If
-//      GrB_DEFAULT, then C is not cleared before doing C<Mask>=results.
+//      GxB_DEFAULT, then C is not cleared before doing C<Mask>=results.
 
-//  desc->mask                  GrB_DEFAULT or GrB_SCMP
+//  desc->mask                  GxB_DEFAULT or GrB_SCMP
 
 //      An optional 'write mask' defines how the results are to be written back
 //      into C.  The boolean Mask matrix has the same size as C (Mask is
 //      typecasted to boolean if it has another type).  If the Mask input to
 //      the GraphBLAS method is NULL, then implicitly Mask(i,j)=1 for all i and
 //      j.  Let Z be the results to be written into C (the same dimension as
-//      C).  If desc->mask is GrB_DEFAULT, and Mask(i,j)=1, then C(i,j) is
+//      C).  If desc->mask is GxB_DEFAULT, and Mask(i,j)=1, then C(i,j) is
 //      over-written with Z(i,j).  Otherwise, if Mask(i,j)=0 C(i,j) is left
 //      unmodified (it remains an implicit zero if it is so, or its value is
 //      unchanged if it has one).  If desc->mask is GrB_SCMP, then the use of
@@ -42,14 +42,14 @@
 //      (i,j) is not present and thus implicitly zero.  Both mean 'Mask(i,j)=0'
 //      in the description above of how the Mask works.
 
-//  desc->in0 and desc->in1     GrB_DEFAULT or GrB_TRAN
+//  desc->in0 and desc->in1     GxB_DEFAULT or GrB_TRAN
 
 //      A GrB_Matrix passed as an input parameter to GraphBLAS methods can
 //      optionally transpose them prior to using them.  desc->in0 always refers
 //      to the first input to the method, and desc->in1 always refers to the
 //      second one.
 
-//      If the value of this descriptor is GrB_DEFAULT, then the matrix is used
+//      If the value of this descriptor is GxB_DEFAULT, then the matrix is used
 //      as-is.  Otherwise, it is transposed first.  That is, the results are
 //      the same as if the transpose of the matrix was passed to the method.
 
@@ -77,10 +77,10 @@ GrB_Info GB_Descriptor_get      // get the contents of a descriptor
     //--------------------------------------------------------------------------
 
     // default values if descriptor is NULL
-    GrB_Desc_Value C_desc    = GrB_DEFAULT ;
-    GrB_Desc_Value Mask_desc = GrB_DEFAULT ;
-    GrB_Desc_Value In0_desc  = GrB_DEFAULT ;
-    GrB_Desc_Value In1_desc  = GrB_DEFAULT ;
+    GrB_Desc_Value C_desc    = GxB_DEFAULT ;
+    GrB_Desc_Value Mask_desc = GxB_DEFAULT ;
+    GrB_Desc_Value In0_desc  = GxB_DEFAULT ;
+    GrB_Desc_Value In1_desc  = GxB_DEFAULT ;
 
     // non-defaults descriptors
     if (desc != NULL)
@@ -93,10 +93,10 @@ GrB_Info GB_Descriptor_get      // get the contents of a descriptor
     }
 
     // check for valid values of each descriptor field
-    if (!(C_desc    == GrB_DEFAULT || C_desc    == GrB_REPLACE) ||
-        !(Mask_desc == GrB_DEFAULT || Mask_desc == GrB_SCMP) ||
-        !(In0_desc  == GrB_DEFAULT || In0_desc  == GrB_TRAN) ||
-        !(In1_desc  == GrB_DEFAULT || In1_desc  == GrB_TRAN))
+    if (!(C_desc    == GxB_DEFAULT || C_desc    == GrB_REPLACE) ||
+        !(Mask_desc == GxB_DEFAULT || Mask_desc == GrB_SCMP) ||
+        !(In0_desc  == GxB_DEFAULT || In0_desc  == GrB_TRAN) ||
+        !(In1_desc  == GxB_DEFAULT || In1_desc  == GrB_TRAN))
     {
         return (ERROR (GrB_INVALID_OBJECT, (LOG, "Descriptor invalid"))) ;
     }

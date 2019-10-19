@@ -13,8 +13,8 @@
 
 // Using built-in types and operators, 960 unique semirings can be built.  This
 // count excludes redundant Boolean operators (for example GrB_TIMES_BOOL and
-// GrB_LAND_BOOL are different operators but they are redundant since they
-// always return the same result):
+// GrB_LAND are different operators but they are redundant since they always
+// return the same result):
 
 // 680 semirings with a multiply operator TxT -> T where T is non-Boolean, from
 // the complete cross product of:

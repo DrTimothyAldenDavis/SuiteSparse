@@ -13,9 +13,9 @@
 // All GrB_*_subassign operations rely on this function.
 
 // With scalar_expansion = false, this method does the work for the standard
-// GrB_*subassign operations (GrB_Matrix_subassign, GrB_Vector_subassign,
-// GrB_Row_subassign, and GrB_Col_subassign).  If scalar_expansion is true, it
-// performs scalar assignment (the GrB_*_subassign_TYPE functions) in which
+// GxB_*subassign operations (GxB_Matrix_subassign, GxB_Vector_subassign,
+// GxB_Row_subassign, and GxB_Col_subassign).  If scalar_expansion is true, it
+// performs scalar assignment (the GxB_*_subassign_TYPE functions) in which
 // case the input matrix A is ignored (it is NULL), and the scalar is used
 // instead.
 

@@ -1,14 +1,14 @@
 function C = GB_spec_subassign (C, Mask, accum, A, I, J, descriptor, scalar)
-%GB_SPEC_SUBASSIGN a MATLAB mimic of GrB_subassign
+%GB_SPEC_SUBASSIGN a MATLAB mimic of GxB_subassign
 %
 % Usage:
 % C = GB_spec_subassign (C, Mask, accum, A, I, J, descriptor, scalar)
 %
 % Computes C(I,J)<Mask> = accum(C(I,J),A), in GraphBLAS notation.
 %
-% This function does the same thing as GrB_Matrix_subassign,
-% GrB_Vector_subassign, GrB_Matrix_subassign_TYPE, GrB_Vector_subassign_TYPE,
-% GrB_Row_subassign, and GrB_Col_subassign functions.  In all cases, the Mask
+% This function does the same thing as GxB_Matrix_subassign,
+% GxB_Vector_subassign, GxB_Matrix_subassign_TYPE, GxB_Vector_subassign_TYPE,
+% GxB_Row_subassign, and GxB_Col_subassign functions.  In all cases, the Mask
 % is the same size as A (after optionally being transpose) and the submatrix
 % C(I,J).  Entries outside the C(I,J) submatrix are never modified.
 

@@ -1,7 +1,7 @@
-function [mult_ops unary_ops add_ops classes semirings] = GB_spec_opsall
+function [mult_ops unary_ops add_ops classes semirings selops] = GB_spec_opsall
 %GB_SPEC_OPSALL return a list of all operators, classes, and semirings
 %
-% [mult_ops unary_ops add_ops classes semirings ] = GB_spec_opsall
+% [mult_ops unary_ops add_ops classes semirings select_ops] = GB_spec_opsall
 
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
@@ -128,6 +128,8 @@ for mult = { 'first', 'second', 'or', 'and', 'xor',
         % fprintf ('%3d %s-%s-logical\n', n, add{1}, mult{1}) ;
     end
 end
+
+selops = { 'tril', 'triu', 'diag', 'offdiag', 'nonzero' } ;
 
 % fprintf ('semirings: %d\n', n) ;
 

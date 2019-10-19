@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-// C = triu (A,1), where A can have any type
+// C = triu (A,k), where A and C are double
 
 #include "GB_mex.h"
 
@@ -32,9 +32,9 @@ void mexFunction
     GrB_Matrix A = NULL, C = NULL ;
 
     // check inputs
-    if (nargout > 1 || nargin != 1)
+    if (nargout > 1 || nargin < 1 || nargin > 2)
     {
-        mexErrMsgTxt ("Usage: C = GB_mex_triu (A)") ;
+        mexErrMsgTxt ("Usage: C = GB_mex_triu (A,k)") ;
     }
 
     #define GET_DEEP_COPY ;
@@ -48,13 +48,22 @@ void mexFunction
         mexErrMsgTxt ("failed") ;
     }
 
+    int64_t k = 0 ;
+    // get k
+    if (nargin > 1)
+    {
+        k = (int64_t) mxGetScalar (pargin [1]) ;
+    }
+
     // construct C
-    METHOD (triu (&C, A)) ;
+    METHOD (GrB_Matrix_new (&C, GrB_FP64, A->nrows, A->ncols)) ;
+
+    // C = triu (A,k)
+    METHOD (GxB_Matrix_select (C, NULL, NULL, GxB_TRIU, A, &k, NULL)) ;
 
     // return C to MATLAB as a regular MATLAB sparse matrix
-    pargout [0] = GB_mx_Matrix_to_mxArray (&C, "C triu result", false) ;
+    pargout [0] = GB_mx_Matrix_to_mxArray (&C, "C triu", false) ;
 
     FREE_ALL ;
-    GrB_finalize ( ) ;
 }
 

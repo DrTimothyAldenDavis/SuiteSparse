@@ -1,5 +1,5 @@
 function test07
-%TEST07 test GrB_subassign with a single pending tuple
+%TEST07 test GxB_subassign with a single pending tuple
 
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.

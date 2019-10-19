@@ -76,8 +76,8 @@
 // There are 3 more where x,y,z are all boolean, but they are the same as their
 // GrB_L*BOOL counterparts.  When used here, these three are indistinguishable
 // from their *_BOOL counterparts (they have the same type and opcode, and even
-// the same struct: GrB_LOR == GrB_LOR_BOOL, GrB_LAND == GrB_LAND_BOOL, and
-// GrB_LXOR == GrB_LXOR_BOOL are all true):
+// the same struct: GrB_LOR == GxB_LOR_BOOL, GrB_LAND == GxB_LAND_BOOL, and
+// GrB_LXOR == GxB_LXOR_BOOL are all true):
 
 //      'or'           z = x || y       GRB_LOR, with no suffix
 //      'and'          z = x && y       GRB_LAND, with no suffix
@@ -91,7 +91,7 @@
 // "_BOOL" suffix.  This removes 16 operators.
 
 // Redundant operators are handled by renaming them internally in this
-// function.  The GrB_LOR and GrB_LOR_BOOL operators have the same type
+// function.  The GrB_LOR and GxB_LOR_BOOL operators have the same type
 // and opcode, so this function doesn't need to do anything to rename
 // the operator.  Likewise GrB_LAND and GrB_XOR.
 

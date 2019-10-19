@@ -10,7 +10,7 @@
 // Submatrix assignment: C(I,J)<Mask> = A, or accum (C (I,J), A)
 
 // All assignment operations rely on this function, including the GrB_*_assign
-// operations in the spec, and the GrB_*_subassign operations that are a
+// operations in the spec, and the GxB_*_subassign operations that are a
 // SuiteSparse:GraphBLAS extension to the spec:
 
 // GrB_Matrix_assign
@@ -20,17 +20,17 @@
 // GrB_Row_assign
 // GrB_Col_assign
 
-// GrB_Matrix_subassign
-// GrB_Matrix_subassign_TYPE
-// GrB_Vector_subassign
-// GrB_Vector_subassign_TYPE
-// GrB_Row_subassign
-// GrB_Col_subassign
+// GxB_Matrix_subassign
+// GxB_Matrix_subassign_TYPE
+// GxB_Vector_subassign
+// GxB_Vector_subassign_TYPE
+// GxB_Row_subassign
+// GxB_Col_subassign
 
 // This function handles the accumulator, and the Mask, and the C_replace
 // option itself, without relying on GB_accum_mask or GB_mask.  The Mask has
 // the same size as C(I,J) and A.  Mask(0,0) governs how A(0,0) is assigned
-// into C(I[0],J[0]).  This is how GrB_subassign operates.  For GrB_assign, the
+// into C(I[0],J[0]).  This is how GxB_subassign operates.  For GrB_assign, the
 // Mask in this function is the SubMask, constructed via SubMask=Mask (I,J).
 
 #include "GB.h"
@@ -147,10 +147,10 @@ GrB_Info GB_subassign_kernel        // C(I,J)<Mask> = A or accum (C (I,J), A)
 
     // The action: ( delete ), described below, can only delete a live
     // entry in the pattern.  It cannot delete a pending tuple; pending tuples
-    // cannot become zombies.  Thus, if this call to GrB_subassign has the
+    // cannot become zombies.  Thus, if this call to GxB_subassign has the
     // potential for creating zombies, all prior pending tuples must be
     // assembled now.  They thus become live entries in the pattern of C, so
-    // that this GrB_subassign can (potentially) turn them into zombies via
+    // that this GxB_subassign can (potentially) turn them into zombies via
     // action: ( delete ).
 
     // If accum is NULL, the operation is C(I,J) = A, or C(I,J)<Mask> = A.
@@ -166,11 +166,11 @@ GrB_Info GB_subassign_kernel        // C(I,J)<Mask> = A or accum (C (I,J), A)
     // All pending tuples will be assembled sometime later on, using a single
     // pending operator, and thus the current accum operator must match the
     // prior pending operator.  If the operators do not match, then all prior
-    // pending tuples must be assembled now, so that this GrB_subassign can
+    // pending tuples must be assembled now, so that this GxB_subassign can
     // (potentially) insert new pending tuples whose pending operator is accum.
 
     // These tests are conservative because it is possible that this
-    // GrB_subassign will not need to use action: (insert ).
+    // GxB_subassign will not need to use action: (insert ).
 
     // In the discussion below, let SECOND_Ctype denote the SECOND operator
     // z=f(x,y) whose ztype and ytype matches the type of C.
@@ -210,7 +210,7 @@ GrB_Info GB_subassign_kernel        // C(I,J)<Mask> = A or accum (C (I,J), A)
         }
         else if (accum == NULL)
         {
-            // This GrB_subassign can potentially use action: ( delete ), and
+            // This GxB_subassign can potentially use action: ( delete ), and
             // thus prior pending tuples must be assembled first.  However, if
             // A is completely dense and if there is no Mask, then C(I,J)=A
             // cannot delete any entries from C.
@@ -236,7 +236,7 @@ GrB_Info GB_subassign_kernel        // C(I,J)<Mask> = A or accum (C (I,J), A)
         {
 
             // Either accum is NULL and A is completely dense, or accum is
-            // non-NULL.  In either case, this call to GrB_subassign will not
+            // non-NULL.  In either case, this call to GxB_subassign will not
             // use the action: ( delete ), but it may add new pending tuples
             // via the action: ( insert ).  Check if the accum operator is the
             // same as the prior pending operator.
@@ -277,9 +277,9 @@ GrB_Info GB_subassign_kernel        // C(I,J)<Mask> = A or accum (C (I,J), A)
 
     // If accum is NULL and pending tuples are added, they will be assembled
     // sometime later (not here) using the implied SECOND_Ctype operator.  This
-    // GrB_subassign operation corresponds to C(I,J)=A or C(I,J)<Mask>=A.
+    // GxB_subassign operation corresponds to C(I,J)=A or C(I,J)<Mask>=A.
     // Subsequent calls to GrB_setElement, and subsequent calls to
-    // GrB_subassign with an explict SECOND_Ctype operator, may create
+    // GxB_subassign with an explict SECOND_Ctype operator, may create
     // additional pending tuples and add them to the list without requiring
     // that they be assembled first.
 
@@ -319,23 +319,23 @@ GrB_Info GB_subassign_kernel        // C(I,J)<Mask> = A or accum (C (I,J), A)
 
         // (1) pending tuples:  this is a list of pending updates held as a set
         // of (i,j,x) tuples.  They had been added to the list via a prior
-        // GrB_setElement or GrB_subassign.  No operator needs to be applied to
+        // GrB_setElement or GxB_subassign.  No operator needs to be applied to
         // them; the implied operator is SECOND, for both GrB_setElement and
-        // GrB_subassign, regardless of whether or not an accum operator is
+        // GxB_subassign, regardless of whether or not an accum operator is
         // present.  Pending tuples are inserted if and only if the
         // corresponding entry C(i,j) does not exist, and in that case no accum
         // operator is applied.
 
-        //      The GrB_setElement method (C(i,j) = x) is same as GrB_subassign
+        //      The GrB_setElement method (C(i,j) = x) is same as GxB_subassign
         //      with: accum is SECOND, C not replaced, no Mask, Mask not
         //      complemented.  If GrB_setElement needs to insert its update as
         //      a pending tuple, then it will always be compatible with all
-        //      pending tuples inserted here, by GrB_subassign.
+        //      pending tuples inserted here, by GxB_subassign.
 
         // (2) zombie entries.  These are entries that are still present in the
         // pattern but marked for deletion (via FLIP(i) for the row index).
 
-        // For the current GrB_subassign, there are 16 cases to handle,
+        // For the current GxB_subassign, there are 16 cases to handle,
         // all combinations of the following options:
 
         //      accum is NULL, accum is not NULL
@@ -402,12 +402,12 @@ GrB_Info GB_subassign_kernel        // C(I,J)<Mask> = A or accum (C (I,J), A)
         //      .        entry C(I(i),J(j)) not present, no change
 
         //      blank    the table is left blank where the the event cannot
-        //               occur:  GrB_subassign with no Mask it cannot have
+        //               occur:  GxB_subassign with no Mask it cannot have
         //               Mask(i,j)=0, and GrB_setElement does not have the Mask
         //               column
 
         //----------------------------------------------------------------------
-        // GrB_setElement and the Four Tables for GrB_subassign:
+        // GrB_setElement and the Four Tables for GxB_subassign:
         //----------------------------------------------------------------------
 
             //------------------------------------------------------------
@@ -418,17 +418,17 @@ GrB_Info GB_subassign_kernel        // C(I,J)<Mask> = A or accum (C (I,J), A)
             // X A 1        undelete                         |
             // . A 1        insert                           |
 
-            //          GrB_setElement acts exactly like GrB_subassign with the
+            //          GrB_setElement acts exactly like GxB_subassign with the
             //          implicit GrB_SECOND_Ctype operator, I=i, J=j, and a
             //          1-by-1 matrix A containing a single entry (not an
             //          implicit entry; there is no "." for A).  That is,
             //          NNZ(A)==1.  No mask, and the descriptor is the default:
             //          C_replace effectively false, Mask not complemented, A
             //          not transposed.  As a result, GrB_setElement can be
-            //          freely mixed with calls to GrB_subassign with C_replace
+            //          freely mixed with calls to GxB_subassign with C_replace
             //          effectively false and with the identical
             //          GrB_SECOND_Ctype operator.  These calls to
-            //          GrB_subassign can use the Mask, either complemented or
+            //          GxB_subassign can use the Mask, either complemented or
             //          not, and they can transpose A if desired, and there is
             //          no restriction on I and J.  The matrix A can be any
             //          type and the type of A can change from call to call.
@@ -1828,7 +1828,8 @@ GrB_Info GB_subassign_kernel        // C(I,J)<Mask> = A or accum (C (I,J), A)
     {
         // C may be in the queue from a prior assignment, but this assignemt
         // can bring zombies back to life, and the zombie count can go to zero.
-        // In that case, C must be removed from the queue.
+        // In that case, C must be removed from the queue.  The removal does
+        // nothing if C is already not in the queue.
         GB_queue_remove (C) ;
     }
     else

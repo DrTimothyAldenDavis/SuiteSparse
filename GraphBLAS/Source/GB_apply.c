@@ -37,7 +37,7 @@ GrB_Info GB_apply                   // C<Mask> = accum (C, op(A)) or op(A')
     ASSERT_OK (GB_check (C, "C input for GB_apply", 0)) ;
     ASSERT_OK_OR_NULL (GB_check (Mask, "Mask for GB_apply", 0)) ;
     ASSERT_OK_OR_NULL (GB_check (accum, "accum for GB_apply", 0)) ;
-    ASSERT_OK (GB_check (op, "accum for GB_apply", 0)) ;
+    ASSERT_OK (GB_check (op, "op for GB_apply", 0)) ;
     ASSERT_OK (GB_check (A, "A input for GB_apply", 0)) ;
 
     // check domains and dimensions for C<Mask> = accum (C,T)

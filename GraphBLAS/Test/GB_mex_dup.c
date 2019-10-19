@@ -88,7 +88,7 @@ void mexFunction
             // printf ("tran dup\n") ;
             GrB_Type type ;
             GrB_Index nrows, ncols ;
-            METHOD (GrB_Matrix_type (&type, A)) ;
+            METHOD (GxB_Matrix_type (&type, A)) ;
             METHOD (GrB_Matrix_nrows (&nrows, A)) ;
             METHOD (GrB_Matrix_ncols (&ncols, A)) ;
             METHOD (GrB_Matrix_new (&C, type, nrows, ncols)) ;

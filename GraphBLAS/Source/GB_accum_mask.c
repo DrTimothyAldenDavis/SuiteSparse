@@ -104,10 +104,10 @@
 // The descriptor affects how C and Mask are handled.  If the descriptor is
 // NULL, defaults are used.
 
-// desc [GB_MASK] = GrB_DEFAULT means to use Mask as-is
+// desc [GB_MASK] = GxB_DEFAULT means to use Mask as-is
 // desc [GB_MASK] = GrB_SCMP means to use the logical negation of Mask
 
-// desc [GB_OUTP] = GrB_DEFAULT means to use C as-is.
+// desc [GB_OUTP] = GxB_DEFAULT means to use C as-is.
 // desc [GB_OUTP] = GrB_REPLACE means to clear C before writing Z into C.
 
 #include "GB.h"

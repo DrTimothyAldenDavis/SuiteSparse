@@ -34,7 +34,7 @@
 %   GB_spec_reduce_to_scalar      - a MATLAB mimic of GrB_reduce (to scalar)
 %   GB_spec_reduce_to_vector      - a MATLAB mimic of GrB_reduce (to vector)
 %   GB_spec_semiring              - create a semiring
-%   GB_spec_subassign             - a MATLAB mimic of GrB_subassign
+%   GB_spec_subassign             - a MATLAB mimic of GxB_subassign
 %   GB_spec_transpose             - a MATLAB mimic of GrB_transpose
 %   GB_spec_vxm                   - a MATLAB mimic of GrB_vxm
 %   GB_user_compare               - compare GraphBLAS results for complex types
@@ -53,11 +53,11 @@
 %   test04   - test and demo for accumulator/mask and transpose
 %   test05   - test GrB_*_setElement
 %   test06   - test GrB_mxm on all semirings
-%   test07   - test GrB_subassign with a single pending tuple
+%   test07   - test GxB_subassign with a single pending tuple
 %   test07b  - test GrB_assign with a single pending tuple
-%   test08   - test GrB_subassign
+%   test08   - test GxB_subassign
 %   test08b  - test GrB_assign
-%   test09   - test GrB_subassign
+%   test09   - test GxB_subassign
 %   test09b  - test GrB_assign
 %   test10   - test GrB_apply
 %   test11   - test GrB_*_extractTuples
@@ -68,15 +68,15 @@
 %   test16   - test user-defined complex type (runs all testc*.m)
 %   test17   - test GrB_*_extractElement
 %   test18   - test GrB_eWiseAdd and GrB_eWiseMult
-%   test19   - test GrB_subassign and GrB_*_setElement with many pending operations
+%   test19   - test GxB_subassign and GrB_*_setElement with many pending operations
 %   test19b  - test GrB_assign and GrB_*_setElement with many pending operations
 %   test20   - test GrB_mxm, mxv, and vxm
-%   test21   - test GrB_subassign
+%   test21   - test GxB_subassign
 %   test21b  - test GrB_assign
 %   test22   - test GrB_transpose
 %   test23   - test GrB_*_build
 %   test24   - test GrB_reduce
-%   test30   - test GrB_subassign
+%   test30   - test GxB_subassign
 %   test30b  - test GrB_assign
 %   test31   - test GrB_transpose
 %   test32   - test GrB_mxm
@@ -93,18 +93,18 @@
 %   test43   - test subref
 %   test44   - test qsort
 %   test45   - test GrB_*_setElement and GrB_*_*build
-%   test46   - performance test of GrB_subassign
+%   test46   - performance test of GxB_subassign
 %   test46b  - performance test of GrB_assign
 %   test47   - prformance test of GrB_vxm
 %   test48   - test GrB_mxm
 %   test49   - performance test of GrB_mxm (dot product method, A'*B)
 %   test50   - test AxB numeric and symbolic
-%   test51   - test GrB_subassign, multiply operations
+%   test51   - test GxB_subassign, multiply operations
 %   test51b  - test GrB_assign, multiply operations
 %   test52   - test AdotB vs AxB
 %   test53   - test GrB_Matrix_extract
 %   test54   - test AxB, qsort vs bucket sort
-%   test55   - test GrB_subassign, illustrate duplicate indices, MATLAB vs GraphBLAS
+%   test55   - test GxB_subassign, illustrate duplicate indices, MATLAB vs GraphBLAS
 %   test55b  - test GrB_assign, illustrate duplicate indices, MATLAB vs GraphBLAS
 %   test56   - test GrB_*_build
 %   test57   - test operator on large uint32 values
@@ -114,7 +114,7 @@
 %   test61   - test GrB_eMult performance
 %   test62   - test GrB_apply
 %   test63   - test GraphBLAS operators
-%   test64   - test GrB_*_subassign, scalar expansion, with and without duplicates
+%   test64   - test GxB_*_subassign, scalar expansion, with and without duplicates
 %   test64b  - test GrB_*_assign, scalar expansion, with and without duplicates
 %   test65   - test type casting
 %   test66   - test GrB_reduce

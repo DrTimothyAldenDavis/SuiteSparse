@@ -32,11 +32,10 @@ gbcover_edit ('cover_gb.c', cfiles) ;
 % get a list of the GraphBLAS mexFunctions
 mexfunctions = dir ('../Test/GB_mex_*.c') ;
 
-% remove GB_mex_tril and GB_mex_tricount from the list of mexFunctions
+% remove GB_mex_tricount from the list of mexFunctions
 nmex = length (mexfunctions) ;
 for k = nmex:-1:1
-    if (isequal (mexfunctions (k).name, 'GB_mex_triu.c')  ...
-     || isequal (mexfunctions (k).name, 'GB_mex_tricount.c'))
+    if (isequal (mexfunctions (k).name, 'GB_mex_tricount.c'))
         mexfunctions (k) = [ ] ;
     end
 end
@@ -73,7 +72,8 @@ gbmake ('', '-g -DGBCOVER', mexfunctions, cfiles, hfiles, inc) ;
 % statements marked.  See gbcov[k]++ statements; this increments the global
 % array GraphBLAS_gbcov in the MATLAB workspace when a test is run.  If
 % GraphBLAS_gbcov(k) is zero after the tests finish, then the statement marked
-% with gbcov[k-1] has not been tested.
+% with gbcov[k-1] has not been tested.  The untested statements are marked
+% as "NOT COVERED"
 try
     system (sprintf ('cc -E %s cover_gb.c | indent > cover_gb_exp.c', inc)) ;
 catch

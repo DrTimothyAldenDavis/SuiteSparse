@@ -59,11 +59,20 @@ if ("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
     # cmake 2.8 workaround: gcc needs to be told to do ANSI C11.
     # cmake 3.0 doesn't have this problem.
     set (CMAKE_C_FLAGS  "-std=c11 -lm")
+    if (CMAKE_C_COMPILER_VERSION VERSION_LESS 4.9)
+        message (FATAL_ERROR "gcc version must be at least 4.9")
+    endif ( )
 elseif ("${CMAKE_C_COMPILER_ID}" STREQUAL "Intel")
     # options for icc: also needs -std=c11
     set (CMAKE_C_FLAGS  "-std=c11")
+    if (CMAKE_C_COMPILER_VERSION VERSION_LESS 18.0)
+        message (FATAL_ERROR "icc version must be at least 18.0")
+    endif ( )
 elseif ("${CMAKE_C_COMPILER_ID}" STREQUAL "Clang")
     # options for clang
+    if (CMAKE_C_COMPILER_VERSION VERSION_LESS 3.3)
+        message (FATAL_ERROR "clang version must be at least 3.3")
+    endif ( )
 elseif ("${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")
     # options for MicroSoft Visual Studio
 endif ( )
@@ -71,7 +80,7 @@ endif ( )
 # create the graphblas library.  Requires ANSI C11
 file ( GLOB GRAPHBLAS_SOURCES "Source/*.c" )
 add_library ( graphblas SHARED ${GRAPHBLAS_SOURCES} )
-SET_TARGET_PROPERTIES ( graphblas PROPERTIES VERSION 1.0.0
+SET_TARGET_PROPERTIES ( graphblas PROPERTIES VERSION 1.1.0
     SOVERSION 1
     C_STANDARD_REQUIRED 11
     PUBLIC_HEADER "Include/GraphBLAS.h" )

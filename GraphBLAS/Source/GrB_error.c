@@ -10,48 +10,6 @@
 #include "GB.h"
 
 //------------------------------------------------------------------------------
-// All thread local storage is held in a single struct, initialized here
-//------------------------------------------------------------------------------
-
-_Thread_local GB_thread_local_struct GB_thread_local =
-{
-    // error status
-    .info = GrB_SUCCESS,        // last info status of user-callable routines
-    .row = 0,                   // last row index searched for
-    .col = 0,                   // last column index searched for
-    .is_matrix = 0,             // last search matrix (true) or vector (false)
-    .where = "",                // last user-callable function called
-    .file = "",                 // file where error occurred
-    .line = 0,                  // line number where error occurred
-    .details = "",              // details of the error
-    .report = "",               // report created by GrB_error
-
-    // queued matrices with work to do 
-    .queue_head = NULL,         // pointer to first queued matrix
-
-    // GraphBLAS mode
-    .mode = GrB_NONBLOCKING,    // default is nonblocking
-
-    // malloc tracking
-    .nmalloc = 0,               // memory block counter
-    .malloc_debug = false,      // do not test memory handling
-    .malloc_debug_count = 0,    // counter for testing memory handling
-
-    // workspace
-    .Mark = NULL,               // initialized space
-    .Mark_flag = 1,             // current watermark in Mark [...]
-    .Mark_size = 0,             // current size of Mark array
-    .Work = NULL,               // uninitialized space
-    .Work_size = 0,             // current size of Work array
-    .Flag = NULL,               // initialized space
-    .Flag_size = 0,             // size of Flag array
-
-    // random seed
-    .seed = 1
-
-} ;
-
-//------------------------------------------------------------------------------
 // status_code: convert GrB_Info enum into a string
 //------------------------------------------------------------------------------
 
@@ -107,17 +65,17 @@ const char *GrB_error ( )       // return a string describing the last error
         #endif
         "GraphBLAS status: %s\n"
         "=================================================================\n",
-        GRAPHBLAS_ABOUT,
-        GRAPHBLAS_IMPLEMENTATION_MAJOR,
-        GRAPHBLAS_IMPLEMENTATION_MINOR,
-        GRAPHBLAS_IMPLEMENTATION_SUB,
-        GRAPHBLAS_DATE,
-        GRAPHBLAS_LICENSE,
-        GRAPHBLAS_MAJOR,
-        GRAPHBLAS_MINOR,
-        GRAPHBLAS_SUB,
-        GRAPHBLAS_SPEC_DATE,
-        GRAPHBLAS_SPEC,
+        GXB_ABOUT,
+        GXB_IMPLEMENTATION_MAJOR,
+        GXB_IMPLEMENTATION_MINOR,
+        GXB_IMPLEMENTATION_SUB,
+        GXB_DATE,
+        GXB_LICENSE,
+        GXB_MAJOR,
+        GXB_MINOR,
+        GXB_SUB,
+        GXB_SPEC_DATE,
+        GXB_SPEC,
         status_code ( )) ;
 
     }

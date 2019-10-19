@@ -11,13 +11,13 @@
 
 #include "GraphBLAS.h"
 
-#ifdef SUITESPARSE_GRAPHBLAS
+#ifdef GXB_SUITESPARSE_GRAPHBLAS
     // use predefined semirings.  They are safe to free,
     // so the FREE_ALL macro can be used as-is in either case.
-    #define Max             GrB_MAX_FP32_MONOID
-    #define maxSelect2nd    GrB_MAX_SECOND_FP32
-    #define Lor             GrB_LOR_BOOL_MONOID
-    #define Boolean         GrB_LOR_LAND_BOOL
+    #define Max             GxB_MAX_FP32_MONOID
+    #define maxSelect2nd    GxB_MAX_SECOND_FP32
+    #define Lor             GxB_LOR_BOOL_MONOID
+    #define Boolean         GxB_LOR_LAND_BOOL
 #endif
 
 // "OK(x)" macro defined in demos.h calls a GraphBLAS method, and if it fails,
@@ -76,7 +76,7 @@ GrB_Info mis_check              // compute a maximal independent set
     GrB_Vector new_members = NULL ;     // set of new members to iset
     GrB_Vector new_neighbors = NULL ;   // new neighbors to new iset members
     GrB_Vector candidates = NULL ;      // candidate members to iset
-#ifndef SUITESPARSE_GRAPHBLAS
+#ifndef GXB_SUITESPARSE_GRAPHBLAS
     GrB_Monoid Max = NULL ;
     GrB_Semiring maxSelect2nd = NULL ;  // Max/Select2nd "semiring"
     GrB_Monoid Lor = NULL ;
@@ -101,7 +101,7 @@ GrB_Info mis_check              // compute a maximal independent set
     // Initialize independent set vector, bool
     OK (GrB_Vector_new (&iset, GrB_BOOL, n)) ;
 
-#ifndef SUITESPARSE_GRAPHBLAS
+#ifndef GXB_SUITESPARSE_GRAPHBLAS
     // create the maxSelect2nd semiring
     OK (GrB_Monoid_new (&Max, GrB_MAX_FP32, (float) 0.0)) ;
     OK (GrB_Semiring_new (&maxSelect2nd, Max, GrB_SECOND_FP32)) ;

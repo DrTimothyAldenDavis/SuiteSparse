@@ -45,11 +45,11 @@ GrB_Type
     GrB_FP64   = &GB_opaque_FP64 ;
 
 //------------------------------------------------------------------------------
-// built-in operators
+// built-in unary and binary operators
 //------------------------------------------------------------------------------
 
 // helper macro to define unary operators; z and x have the same type
-#define UNARY(OPERATOR,OPNAME)                                              \
+#define UNARY(PREFIX,OPERATOR,OPNAME)                                       \
 GB_UnaryOp_opaque GB (OPERATOR ## _opaque) =                                \
 {                                                                           \
     MAGIC,                                                                  \
@@ -59,11 +59,11 @@ GB_UnaryOp_opaque GB (OPERATOR ## _opaque) =                                \
     OPNAME,                                                                 \
     GB_ ## OPERATOR ## _opcode                                              \
 } ;                                                                         \
-GrB_UnaryOp GRB_NAME (OPERATOR) = & GB (OPERATOR ## _opaque) ;
+GrB_UnaryOp GRB_NAME (PREFIX,OPERATOR) = & GB (OPERATOR ## _opaque) ;
 
 
 // helper macro to define binary operators: all x,y,z types the same
-#define BINARY(OPERATOR,OPNAME)                                             \
+#define BINARY(PREFIX,OPERATOR,OPNAME)                                      \
 GB_BinaryOp_opaque GB (OPERATOR ## _opaque) =                               \
 {                                                                           \
     MAGIC,                                                                  \
@@ -74,10 +74,10 @@ GB_BinaryOp_opaque GB (OPERATOR ## _opaque) =                               \
     OPNAME,                                                                 \
     GB_ ## OPERATOR ## _opcode                                              \
 } ;                                                                         \
-GrB_BinaryOp GRB_NAME (OPERATOR) = & GB (OPERATOR ## _opaque) ;
+GrB_BinaryOp GRB_NAME (PREFIX,OPERATOR) = & GB (OPERATOR ## _opaque) ;
 
 // helper macro to define binary operators that return BOOL
-#define BINARY_BOOL(OPERATOR,OPNAME)                                        \
+#define BINARY_BOOL(PREFIX,OPERATOR,OPNAME)                                 \
 GB_BinaryOp_opaque GB (OPERATOR ## _opaque) =                               \
 {                                                                           \
     MAGIC,                                                                  \
@@ -88,77 +88,77 @@ GB_BinaryOp_opaque GB (OPERATOR ## _opaque) =                               \
     OPNAME,                                                                 \
     GB_ ## OPERATOR ## _opcode                                              \
 } ;                                                                         \
-GrB_BinaryOp GRB_NAME (OPERATOR) = & GB (OPERATOR ## _opaque) ;
+GrB_BinaryOp GRB_NAME (PREFIX,OPERATOR) = & GB (OPERATOR ## _opaque) ;
 
 #define TYPE            bool
 #define BOOLEAN
-#define GRB_NAME(x)     GrB_ ## x ## _BOOL
+#define GRB_NAME(g,x)   g  ## x ## _BOOL
 #define GB(x)           GB_ ## x ## _BOOL
 #define CAST_NAME(x)    GB_cast_bool_ ## x
 #include "GB_ops_template.c"
 
 #define TYPE            int8_t
-#define GRB_NAME(x)     GrB_ ## x ## _INT8
+#define GRB_NAME(g,x)   g ## x ## _INT8
 #define GB(x)           GB_ ## x ## _INT8
 #define CAST_NAME(x)    GB_cast_int8_t_ ## x
 #include "GB_ops_template.c"
 
 #define TYPE            uint8_t
 #define UNSIGNED
-#define GRB_NAME(x)     GrB_ ## x ## _UINT8
+#define GRB_NAME(g,x)   g ## x ## _UINT8
 #define GB(x)           GB_ ## x ## _UINT8
 #define CAST_NAME(x)    GB_cast_uint8_t_ ## x
 #include "GB_ops_template.c"
 
 #define TYPE            int16_t
-#define GRB_NAME(x)     GrB_ ## x ## _INT16
+#define GRB_NAME(g,x)   g ## x ## _INT16
 #define GB(x)           GB_ ## x ## _INT16
 #define CAST_NAME(x)    GB_cast_int16_t_ ## x
 #include "GB_ops_template.c"
 
 #define TYPE            uint16_t
 #define UNSIGNED
-#define GRB_NAME(x)     GrB_ ## x ## _UINT16
+#define GRB_NAME(g,x)   g ## x ## _UINT16
 #define GB(x)           GB_ ## x ## _UINT16
 #define CAST_NAME(x)    GB_cast_uint16_t_ ## x
 #include "GB_ops_template.c"
 
 #define TYPE            int32_t
-#define GRB_NAME(x)     GrB_ ## x ## _INT32
+#define GRB_NAME(g,x)   g ## x ## _INT32
 #define GB(x)           GB_ ## x ## _INT32
 #define CAST_NAME(x)    GB_cast_int32_t_ ## x
 #include "GB_ops_template.c"
 
 #define TYPE            uint32_t
 #define UNSIGNED
-#define GRB_NAME(x)     GrB_ ## x ## _UINT32
+#define GRB_NAME(g,x)   g ## x ## _UINT32
 #define GB(x)           GB_ ## x ## _UINT32
 #define CAST_NAME(x)    GB_cast_uint32_t_ ## x
 #include "GB_ops_template.c"
 
 #define TYPE            int64_t
-#define GRB_NAME(x)     GrB_ ## x ## _INT64
+#define GRB_NAME(g,x)   g ## x ## _INT64
 #define GB(x)           GB_ ## x ## _INT64
 #define CAST_NAME(x)    GB_cast_int64_t_ ## x
 #include "GB_ops_template.c"
 
 #define TYPE            uint64_t
 #define UNSIGNED
-#define GRB_NAME(x)     GrB_ ## x ## _UINT64
+#define GRB_NAME(g,x)   g ## x ## _UINT64
 #define GB(x)           GB_ ## x ## _UINT64
 #define CAST_NAME(x)    GB_cast_uint64_t_ ## x
 #include "GB_ops_template.c"
 
 #define TYPE            float
 #define FLOATING_POINT
-#define GRB_NAME(x)     GrB_ ## x ## _FP32
+#define GRB_NAME(g,x)   g ## x ## _FP32
 #define GB(x)           GB_ ## x ## _FP32
 #define CAST_NAME(x)    GB_cast_float_ ## x
 #include "GB_ops_template.c"
 
 #define TYPE            double
 #define FLOATING_POINT
-#define GRB_NAME(x)     GrB_ ## x ## _FP64
+#define GRB_NAME(g,x)   g ## x ## _FP64
 #define GB(x)           GB_ ## x ## _FP64
 #define CAST_NAME(x)    GB_cast_double_ ## x
 #include "GB_ops_template.c"
@@ -179,6 +179,41 @@ GrB_UnaryOp  GrB_LNOT = & GB_LNOT_opaque_BOOL ;
 GrB_BinaryOp GrB_LOR  = & GB_LOR_opaque_BOOL ;
 GrB_BinaryOp GrB_LAND = & GB_LAND_opaque_BOOL ;
 GrB_BinaryOp GrB_LXOR = & GB_LXOR_opaque_BOOL ;
+
+//------------------------------------------------------------------------------
+// built-in select operators
+//------------------------------------------------------------------------------
+
+GB_SelectOp_opaque GB_TRIL_opaque =
+{
+    MAGIC, NULL, NULL, "tril", GB_TRIL_opcode
+} ;
+
+GB_SelectOp_opaque GB_TRIU_opaque =
+{
+    MAGIC, NULL, NULL, "triu", GB_TRIU_opcode
+} ;
+
+GB_SelectOp_opaque GB_DIAG_opaque =
+{
+    MAGIC, NULL, NULL, "diag", GB_DIAG_opcode
+} ;
+
+GB_SelectOp_opaque GB_OFFDIAG_opaque =
+{
+    MAGIC, NULL, NULL, "offdiag", GB_OFFDIAG_opcode
+} ;
+
+GB_SelectOp_opaque GB_NONZERO_opaque =
+{
+    MAGIC, NULL, NULL, "nonzero", GB_NONZERO_opcode
+} ;
+
+GxB_SelectOp GxB_TRIL    = & GB_TRIL_opaque ;
+GxB_SelectOp GxB_TRIU    = & GB_TRIU_opaque ;
+GxB_SelectOp GxB_DIAG    = & GB_DIAG_opaque ;
+GxB_SelectOp GxB_OFFDIAG = & GB_OFFDIAG_opaque ;
+GxB_SelectOp GxB_NONZERO = & GB_NONZERO_opaque ;
 
 //------------------------------------------------------------------------------
 // GrB_ALL for methods that take lists of indices
@@ -205,7 +240,7 @@ GB_Monoid_opaque GB_ ## OP ## T ## _MONOID_opaque =                         \
     IDZERO,                                                                 \
     false,                                                                  \
 } ;                                                                         \
-GrB_Monoid GrB_ ## OP ## T ## _MONOID  = & GB_ ## OP ## T ## _MONOID_opaque ;
+GrB_Monoid GxB_ ## OP ## T ## _MONOID  = & GB_ ## OP ## T ## _MONOID_opaque ;
 
 // MIN monoids:
 MONOID ( MIN_   , INT8   , int8_t   , INT8_MAX   , false ) ;
@@ -290,57 +325,57 @@ GrB_Semiring GRB (ADD ## _ ## MULT) = & GB (ADD ## _ ## MULT ## _opaque) ;
 #define GMBOOL(x)     GB_ ## x ## _BOOL_MONOID_opaque
 
 #define BOOLEAN
-#define GRB(x)        GrB_ ## x ## _BOOL
+#define GRB(x)        GxB_ ## x ## _BOOL
 #define GB(x)         GB_ ## x ## _BOOL
 #define GM(x)         GB_ ## x ## _BOOL ## _MONOID_opaque
 #include "GB_semiring_template.c"
 
-#define GRB(x)        GrB_ ## x ## _INT8
+#define GRB(x)        GxB_ ## x ## _INT8
 #define GB(x)         GB_ ## x ## _INT8
 #define GM(x)         GB_ ## x ## _INT8 ## _MONOID_opaque
 #include "GB_semiring_template.c"
 
-#define GRB(x)        GrB_ ## x ## _UINT8
+#define GRB(x)        GxB_ ## x ## _UINT8
 #define GB(x)         GB_ ## x ## _UINT8
 #define GM(x)         GB_ ## x ## _UINT8 ## _MONOID_opaque
 #include "GB_semiring_template.c"
 
-#define GRB(x)        GrB_ ## x ## _INT16
+#define GRB(x)        GxB_ ## x ## _INT16
 #define GB(x)         GB_ ## x ## _INT16
 #define GM(x)         GB_ ## x ## _INT16 ## _MONOID_opaque
 #include "GB_semiring_template.c"
 
-#define GRB(x)        GrB_ ## x ## _UINT16
+#define GRB(x)        GxB_ ## x ## _UINT16
 #define GB(x)         GB_ ## x ## _UINT16
 #define GM(x)         GB_ ## x ## _UINT16 ## _MONOID_opaque
 #include "GB_semiring_template.c"
 
-#define GRB(x)        GrB_ ## x ## _INT32
+#define GRB(x)        GxB_ ## x ## _INT32
 #define GB(x)         GB_ ## x ## _INT32
 #define GM(x)         GB_ ## x ## _INT32 ## _MONOID_opaque
 #include "GB_semiring_template.c"
 
-#define GRB(x)        GrB_ ## x ## _UINT32
+#define GRB(x)        GxB_ ## x ## _UINT32
 #define GB(x)         GB_ ## x ## _UINT32
 #define GM(x)         GB_ ## x ## _UINT32 ## _MONOID_opaque
 #include "GB_semiring_template.c"
 
-#define GRB(x)        GrB_ ## x ## _INT64
+#define GRB(x)        GxB_ ## x ## _INT64
 #define GB(x)         GB_ ## x ## _INT64
 #define GM(x)         GB_ ## x ## _INT64 ## _MONOID_opaque
 #include "GB_semiring_template.c"
 
-#define GRB(x)        GrB_ ## x ## _UINT64
+#define GRB(x)        GxB_ ## x ## _UINT64
 #define GB(x)         GB_ ## x ## _UINT64
 #define GM(x)         GB_ ## x ## _UINT64 ## _MONOID_opaque
 #include "GB_semiring_template.c"
 
-#define GRB(x)        GrB_ ## x ## _FP32
+#define GRB(x)        GxB_ ## x ## _FP32
 #define GB(x)         GB_ ## x ## _FP32
 #define GM(x)         GB_ ## x ## _FP32 ## _MONOID_opaque
 #include "GB_semiring_template.c"
 
-#define GRB(x)        GrB_ ## x ## _FP64
+#define GRB(x)        GxB_ ## x ## _FP64
 #define GB(x)         GB_ ## x ## _FP64
 #define GM(x)         GB_ ## x ## _FP64 ## _MONOID_opaque
 #include "GB_semiring_template.c"

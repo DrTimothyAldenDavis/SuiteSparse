@@ -39,7 +39,7 @@ GrB_Info GrB_Vector_apply           // w<mask> = accum (w, op(u))
     return (GB_apply (
         (GrB_Matrix) w,     C_replace,      // w and its descriptor
         (GrB_Matrix) mask,  Mask_comp,      // mask and its descriptor
-        accum,                              // optional accun for Z=accum(C,T)
+        accum,                              // optional accum for Z=accum(C,T)
         op,                                 // operator to apply to the entries
         (GrB_Matrix) u,     false)) ;       // u, not transposed
 }

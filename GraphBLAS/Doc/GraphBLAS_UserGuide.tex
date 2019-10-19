@@ -8,6 +8,7 @@
 % \usepackage{geometry}
 % \usepackage{pdflscape}
 \newmdenv[backgroundcolor=white]{spec}
+\newmdenv[backgroundcolor=yellow]{specbeta}
 \hyphenation{Suite-Sparse}
 \hyphenation{Graph-BLAS}
 \hyphenation{Suite-Sparse-Graph-BLAS}
@@ -20,7 +21,7 @@ Texas A\&M University. \newline
 http://www.suitesparse.com and http://aldenmath.com
 }}
 
-\date{VERSION 1.0.0, Nov 25, 2017}
+\date{VERSION 1.1.0, Dec 1, 2017}
 
 %-------------------------------------------------------------------------------
 \begin{document}
@@ -79,6 +80,9 @@ SuiteSparse:GraphBLAS.
 
 \begin{spec}
 {\bf SPEC:} See the tag {\bf SPEC:} for extensions to the spec.  They are also placed in text boxes like this one.
+All functions and objects with a name of the form \verb'GxB_*'
+and all macros with a name of the form \verb'GXB_'
+are extensions to the spec.
 \end{spec}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -168,10 +172,10 @@ background on sparse matrix algorithms, see also \cite{Davis06book} and
 \label{overview}
 
 GraphBLAS provides a collection of {\em methods} to create, query, and free
-each of its eight different types of objects: sparse matrices, 
-sparse vectors, types, binary and unary operators, monoids, semirings, and
-a descriptor object used for parameter settings.  Details are given
-in Section~\ref{objects}.
+each of its nine different types of objects: sparse matrices, 
+sparse vectors, types, operators (binary, unary and select), monoids,
+semirings, and a descriptor object used for parameter settings.  Details are
+given in Section~\ref{objects}.
 
 Once these objects are created they can be used in mathematical {\em
 operations} (not to be confused with the how the term {\em operator} is used in
@@ -237,7 +241,7 @@ plus-times-double and plus-times-complex, not counting the typecasting that
 MATLAB does when multiplying a real matrix times a complex matrix.  All of the
 1.3 million forms of matrix multiplication methods in SuiteSparse:GraphBLAS are
 typically just as fast as computing \verb'C=A*B' in MATLAB using its own native
-sparse matrix multiplication methods.
+sparse matrix multiplication methods, and sometimes faster.
 
 A monoid can also be used in a reduction operation, like \verb's=sum(A)' in
 MATLAB.  MATLAB provides the plus, times, min, and max reductions of a real or
@@ -584,6 +588,46 @@ vectors.  Let ${\bf AB}$  denote the multiplication of two matrices over a
 semiring.  The semiring can use any binary operator as its ``multiply''
 operator, and any commutative and associative monoid as its ``add'' operator.
 
+\vspace{0.05in}
+{\footnotesize
+\begin{tabular}{lll}
+\hline
+\verb'GrB_mxm'       & matrix-matrix multiply  & ${\bf C \langle M \rangle = C \odot AB}$ \\
+\verb'GrB_vxm'       & vector-matrix multiply  & ${\bf w'\langle m'\rangle = w'\odot u'A}$ \\
+\verb'GrB_mxv'       & matrix-vector multiply  & ${\bf w \langle m \rangle = w \odot Au}$ \\
+\hline
+\verb'GrB_eWiseMult' & element-wise,           & ${\bf C \langle M \rangle = C \odot (A \otimes B)}$ \\
+                     & set union               & ${\bf w \langle m \rangle = w \odot (u \otimes v)}$ \\
+\hline
+\verb'GrB_eWiseAdd'  & element-wise,           & ${\bf C \langle M \rangle = C \odot (A \oplus  B)}$ \\
+                     & set intersection        & ${\bf w \langle m \rangle = w \odot (u \oplus  v)}$ \\
+\hline
+\verb'GrB_extract'   & extract submatrix       & ${\bf C \langle M \rangle = C \odot A(I,J)}$ \\
+                     &                         & ${\bf w \langle m \rangle = w \odot u(i)}$ \\
+\hline
+\verb'GxB_subassign' & assign submatrix        & ${\bf C (I,J) \langle M \rangle = C(I,J) \odot A}$ \\
+                     & (with submask for ${\bf C(I,J)}$)
+                                               & ${\bf w (i)   \langle m \rangle = w(i)   \odot u}$ \\
+\hline
+\verb'GrB_assign'    & assign submatrix        & ${\bf C \langle M \rangle (I,J) = C(I,J) \odot A}$ \\
+                     & (with mask for ${\bf C}$)
+                                               & ${\bf w \langle m \rangle (i)   = w(i)   \odot u}$ \\
+\hline
+\verb'GrB_apply'     & apply unary operator    & ${\bf C \langle M \rangle = C \odot} f{\bf (A)}$ \\
+                     &                         & ${\bf w \langle m \rangle = w \odot} f{\bf (u)}$ \\
+\hline
+\verb'GxB_select'    & apply select operator   & ${\bf C \langle M \rangle = C \odot} f{\bf (A,k)}$ \\
+                     &                         & ${\bf w \langle m \rangle = w \odot} f{\bf (u,k)}$ \\
+\hline
+\verb'GrB_reduce'    & reduce to vector        & ${\bf w \langle m \rangle = w \odot} [{\oplus}_j {\bf A}(:,j)]$ \\
+                     & reduce to scalar        & $s = s \odot [{\oplus}_{ij}  {\bf A}(I,J)]$ \\
+\hline
+\verb'GrB_transpose' & transpose               & ${\bf C \langle M \rangle = C \odot A'}$ \\
+\hline
+\end{tabular}
+}
+\vspace{0.05in}
+
 Each operation takes an optional \verb'GrB_Descriptor' argument that modifies
 the operation.  The input matrices ${\bf A}$ and ${\bf B}$ can be optionally
 transposed, the mask ${\bf M}$ can be complemented, and ${\bf C}$ can be
@@ -604,44 +648,7 @@ reduces down the columns, not across the rows.  Since the input matrix can be
 optionally transposed, selecting this option obtains the behavior of \verb'sum'
 in MATLAB.
 
-Further details of each operation are given in Section~\ref{operations}.
-
-\vspace{0.1in}
-{\footnotesize
-\begin{tabular}{lll}
-\hline
-\verb'GrB_mxm'       & matrix-matrix multiply  & ${\bf C \langle M \rangle = C \odot AB}$ \\
-\verb'GrB_vxm'       & vector-matrix multiply  & ${\bf w'\langle m'\rangle = w'\odot u'A}$ \\
-\verb'GrB_mxv'       & matrix-vector multiply  & ${\bf w \langle m \rangle = w \odot Au}$ \\
-\hline
-\verb'GrB_eWiseMult' & element-wise,           & ${\bf C \langle M \rangle = C \odot (A \otimes B)}$ \\
-                     & set union               & ${\bf w \langle m \rangle = w \odot (u \otimes v)}$ \\
-\hline
-\verb'GrB_eWiseAdd'  & element-wise,           & ${\bf C \langle M \rangle = C \odot (A \oplus  B)}$ \\
-                     & set intersection        & ${\bf w \langle m \rangle = w \odot (u \oplus  v)}$ \\
-\hline
-\verb'GrB_extract'   & extract submatrix       & ${\bf C \langle M \rangle = C \odot A(I,J)}$ \\
-                     &                         & ${\bf w \langle m \rangle = w \odot u(i)}$ \\
-\hline
-\verb'GrB_subassign' & assign submatrix        & ${\bf C (I,J) \langle M \rangle = C(I,J) \odot A}$ \\
-                     & (with submask for ${\bf C(I,J)}$)
-                                               & ${\bf w (i)   \langle m \rangle = w(i)   \odot u}$ \\
-\hline
-\verb'GrB_assign'    & assign submatrix        & ${\bf C \langle M \rangle (I,J) = C(I,J) \odot A}$ \\
-                     & (with mask for ${\bf C}$)
-                                               & ${\bf w \langle m \rangle (i)   = w(i)   \odot u}$ \\
-\hline
-\verb'GrB_apply'     & apply unary operator    & ${\bf C \langle M \rangle = C \odot} f{\bf (A)}$ \\
-                     &                         & ${\bf w \langle m \rangle = w \odot} f{\bf (u)}$ \\
-\hline
-\verb'GrB_reduce'    & reduce to vector        & ${\bf w \langle m \rangle = w \odot} [{\oplus}_j {\bf A}(:,j)]$ \\
-                     & reduce to scalar        & $s = s \odot [{\oplus}_{ij}  {\bf A}(I,J)]$ \\
-\hline
-\verb'GrB_transpose' & transpose               & ${\bf C \langle M \rangle = C \odot A'}$ \\
-\hline
-\end{tabular}
-}
-% \vspace{0.2in}
+% Further details of each operation are given in Section~\ref{operations}.
 
 
 
@@ -676,13 +683,13 @@ be used in the following manner in a user application:
 
 {\footnotesize
 \begin{verbatim}
-    #if GRAPHBLAS >= GrB_VERSION (2,0,3)
+    #if GXB >= GXB_VERSION (2,0,3)
     ... use features in GraphBLAS specification 2.0.3 ...
     #else
     ... only use features in early specifications
     #endif
 
-    #if GRAPHBLAS_IMPLEMENTATION > GrB_VERSION (1,4,0)
+    #if GXB_IMPLEMENTATION > GXB_VERSION (1,4,0)
     ... use features from version 1.4.0 of a specific GraphBLAS implementation
     #endif \end{verbatim}}
 
@@ -691,16 +698,16 @@ SuiteSparse:GraphBLAS also defines the following strings with \verb'#define'.
 Refer to the \verb'GraphBLAS.h' file for details.
 
 \begin{itemize}
-\item \verb'GRAPHBLAS_ABOUT': describes this particular implementation,
+\item \verb'GXB_ABOUT': describes this particular implementation,
 copyright, and URL.
-\item \verb'GRAPHBLAS_DATE': the date of this implementation.
-\item \verb'GRAPHBLAS_SPEC': describes the GraphBLAS specification
-\item \verb'GRAPHBLAS_SPEC_DATE': the date of the GraphBLAS specification
-\item \verb'GRAPHBLAS_LICENSE': the license for this particular implementation
+\item \verb'GXB_DATE': the date of this implementation.
+\item \verb'GXB_SPEC': describes the GraphBLAS specification
+\item \verb'GXB_SPEC_DATE': the date of the GraphBLAS specification
+\item \verb'GXB_LICENSE': the license for this particular implementation
 \end{itemize}
 
 Finally, SuiteSparse:GraphBLAS gives itself a unique name of the form
-\verb'SUITESPARSE_GRAPHBLAS' that the user application can use in \verb'#ifdef'
+\verb'GXB_SUITESPARSE_GRAPHBLAS' that the user application can use in \verb'#ifdef'
 tests. This is helpful in case a particular implementation provides
 non-standard features that extend the GraphBLAS specification, such as
 additional predefined built-in operators, or if a GraphBLAS implementation does
@@ -709,7 +716,7 @@ SuiteSparse:GraphBLAS name is provided in its \verb'GraphBLAS.h' file as:
 
     {\footnotesize
     \begin{verbatim}
-    #define SUITESPARSE_GRAPHBLAS \end{verbatim}}
+    #define GXB_SUITESPARSE_GRAPHBLAS \end{verbatim}}
 
 For example, SuiteSparse:GraphBLAS predefines additional built-in operators not
 in the specification.  If the user application wishes to use these in any
@@ -727,7 +734,7 @@ exploit the ordering returned by SuiteSparse:GraphBLAS.
 
     {\footnotesize
     \begin{verbatim}
-    #ifdef SUITESPARSE_GRAPHBLAS
+    #ifdef GXB_SUITESPARSE_GRAPHBLAS
     // duplicates in I, J, X assembled in a specific order;
     // results are well-defined even if op is not associative.
     GrB_Matrix_build (C, I, J, X, nvals, op) ;
@@ -899,7 +906,7 @@ No other GraphBLAS method or operation guarantees the completion of pending
 computations, even though they may happen to do so in any particular
 implementation.  In the current version, SuiteSparse:GraphBLAS exploits the
 non-blocking mode in the \verb'GrB_*_setElement' methods and the
-\verb'GrB_assign' and \verb'GrB_subassign' operations.  Future versions of
+\verb'GrB_assign' and \verb'GxB_subassign' operations.  Future versions of
 SuiteSparse:GraphBLAS may extend this to other methods and operations.  Refer
 to the example at the end of Section~\ref{overview}.
 
@@ -1026,8 +1033,9 @@ no need to call \verb'GrB_wait' in this case.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \label{objects}
 
-GraphBLAS defines eight different objects to represent matrices and vectors,
+GraphBLAS defines nine different objects to represent matrices and vectors,
 their scalar data type (or domain), binary and unary operators on scalar types,
+operators for selecting entries from a matrix or vector,
 monoids, semirings, and a {\em descriptor} object used to specify optional
 parameters that modify the behavior of a GraphBLAS operation.
 
@@ -1046,6 +1054,7 @@ with an operator) acts on matrices and/or vectors in a semiring.
                         where $z$ and $x$ are scalars\\
 \verb'GrB_BinaryOp' & a binary operator $z=f(x,y)$,
                         where $z$, $x$, and $y$ are scalars\\
+\verb'GxB_SelectOp' & a select operator \\
 \verb'GrB_Monoid'   & an associative and commutative binary operator  \\
                     & and its identity value \\
 \verb'GrB_Semiring' & a monoid that defines the ``plus'' and a binary operator\\
@@ -1069,6 +1078,7 @@ GraphBLAS provides 11 built-in types and 253 built-in operators.  With these,
 
 \begin{spec}
 {\bf SPEC:} SuiteSparse:GraphBLAS predefines all unique monoids and semirings that can be constructed from built-in types and operators, as an extension to the spec.  They appear in \verb'GraphBLAS.h'.
+The \verb'GxB_SelectOp' object is an extension to GraphBLAS.
 \end{spec}
 
 \newpage
@@ -1134,7 +1144,7 @@ methods for the \verb'GrB_Type' object:
 \begin{tabular}{ll}
 \hline
 \verb'GrB_Type_new'      & create a user-defined type \\
-\verb'GrB_Type_size'     & return the size of a type \\
+\verb'GxB_Type_size'     & return the size of a type \\
 \verb'GrB_Type_free'     & free a user-defined type \\
 \hline
 \end{tabular}
@@ -1231,14 +1241,14 @@ types.
 
 % \newpage
 %-------------------------------------------------------------------------------
-\subsubsection{{\sf GrB\_Type\_size:} return the size of a type}
+\subsubsection{{\sf GxB\_Type\_size:} return the size of a type}
 %-------------------------------------------------------------------------------
 \label{type_size}
 
 \begin{mdframed}[userdefinedwidth=6in]
 {\footnotesize
 \begin{verbatim}
-GrB_Info GrB_Type_size          // determine the size of the type
+GrB_Info GxB_Type_size          // determine the size of the type
 (
     size_t *size,               // the sizeof the type
     GrB_Type type               // type to determine the sizeof
@@ -1247,11 +1257,11 @@ GrB_Info GrB_Type_size          // determine the size of the type
 }\end{mdframed}
 
 This function acts just like \verb'sizeof(type)' in the C language.  For
-example \verb'GrB_Type_size (&s, GrB_INT32)' sets \verb's' to 4, the same as
+example \verb'GxB_Type_size (&s, GrB_INT32)' sets \verb's' to 4, the same as
 \verb'sizeof(int32_t)'. 
 
 \begin{spec}
-{\bf SPEC:} The \verb'GrB_Type_size' function is an extension to the spec.
+{\bf SPEC:} The \verb'GxB_Type_size' function is an extension to the spec.
 \end{spec}
 
 \newpage
@@ -1297,7 +1307,7 @@ type is freed the matrix can no longer be used.  The only safe thing that can
 be done with such a matrix is to free it.
 
 Note the function signature of \verb'GrB_Type_free', above.  It is illustrated
-with the generic name, \verb'GrB_free'.  Any of the eight GraphBLAS objects can
+with the generic name, \verb'GrB_free'.  Any of the nine GraphBLAS objects can
 be freed with the single function, \verb'GrB_free'.  Refer to
 Section~\ref{free} for more details.
 
@@ -1324,9 +1334,9 @@ example, \verb'GrB_AINV_INT32' is a unary operator that computes \verb'z=-x'
 for two values \verb'x' and \verb'z' of type \verb'GrB_INT32'.
 
 The logical negation operator \verb'GrB_LNOT' only works on Boolean types.  The
-\verb'GrB_LNOT_'$T$ functions operate on inputs of type $T$, implicitly
+\verb'GxB_LNOT_'$T$ functions operate on inputs of type $T$, implicitly
 typecasting their input to Boolean and returning result of type $T$, with a
-value 1 for true and 0 for false.  The operators \verb'GrB_LNOT_BOOL' and
+value 1 for true and 0 for false.  The operators \verb'GxB_LNOT_BOOL' and
 \verb'GrB_LNOT' are identical.
 Considering all combinations, there are thus 67 built-in unary operators
 ((6 kinds of operators) $\times$ (11 types), and \verb'GrB_LNOT').
@@ -1338,12 +1348,12 @@ Considering all combinations, there are thus 67 built-in unary operators
 GraphBLAS name          & types (domains)   & expression    & description \\
                         &                   & $z=f(x)$      & \\
 \hline
-\verb'GrB_ONE_'$T$      & $T \rightarrow T$ & $z = 1$       & one \\
+\verb'GxB_ONE_'$T$      & $T \rightarrow T$ & $z = 1$       & one \\
 \verb'GrB_IDENTITY_'$T$ & $T \rightarrow T$ & $z = x$       & identity \\
 \verb'GrB_AINV_'$T$     & $T \rightarrow T$ & $z = -x$      & additive inverse \\
-\verb'GrB_ABS_'$T$      & $T \rightarrow T$ & $z = |x|$     & absolute value \\
+\verb'GxB_ABS_'$T$      & $T \rightarrow T$ & $z = |x|$     & absolute value \\
 \verb'GrB_MINV_'$T$     & $T \rightarrow T$ & $z = 1/x$     & multiplicative inverse \\
-\verb'GrB_LNOT_'$T$     & $T \rightarrow T$ & $z = \lnot (x \ne 0)$ & logical negation \\
+\verb'GxB_LNOT_'$T$     & $T \rightarrow T$ & $z = \lnot (x \ne 0)$ & logical negation \\
 \hline
 \verb'GrB_LNOT'         & \verb'bool'
                           $\rightarrow$
@@ -1354,7 +1364,7 @@ GraphBLAS name          & types (domains)   & expression    & description \\
 \vspace{0.2in}
 
 \begin{spec}
-{\bf SPEC:} \verb'GrB_ONE_'$T$ and \verb'GrB_ABS_'$T$ are extensions to the spec.
+{\bf SPEC:} \verb'GxB_ONE_'$T$, \verb'GxB_ABS_'$T$ and \verb'GxB_LNOT_'$T$ are extensions to the spec.
 \end{spec}
 
 Integer division by zero normally terminates an application, but this is
@@ -1373,8 +1383,8 @@ object:
 \begin{tabular}{ll}
 \hline
 \verb'GrB_UnaryOp_new'   & create a user-defined unary operator  \\
-\verb'GrB_UnaryOp_ztype' & return the type of the output $z$ for $z=f(x)$\\
-\verb'GrB_UnaryOp_xtype' & return the type of the input $x$ for $z=f(x)$\\
+\verb'GxB_UnaryOp_ztype' & return the type of the output $z$ for $z=f(x)$\\
+\verb'GxB_UnaryOp_xtype' & return the type of the input $x$ for $z=f(x)$\\
 \verb'GrB_UnaryOp_free'  & free a user-defined unary operator  \\
 \hline
 \end{tabular}
@@ -1408,8 +1418,8 @@ may be built-in types or user-defined types, in any combination.  The two types
 need not be the same, but they must be previously defined before passing them
 to \verb'GrB_UnaryOp_new'.
 
-The final argument to \verb'GrB_UnaryOp_new' is a pointer to a user-defined
-function with the following signature:
+The \verb'function' argument to \verb'GrB_UnaryOp_new' is a pointer to a
+user-defined function with the following signature:
 
     {\footnotesize
     \begin{verbatim}
@@ -1423,14 +1433,14 @@ is never called with pointers that point to the same space.
 
 \newpage
 %-------------------------------------------------------------------------------
-\subsubsection{{\sf GrB\_UnaryOp\_ztype:} return the type of $z$} 
+\subsubsection{{\sf GxB\_UnaryOp\_ztype:} return the type of $z$} 
 %-------------------------------------------------------------------------------
 \label{unaryop_ztype}
 
 \begin{mdframed}[userdefinedwidth=6in]
 {\footnotesize
 \begin{verbatim}
-GrB_Info GrB_UnaryOp_ztype          // return the type of z
+GrB_Info GxB_UnaryOp_ztype          // return the type of z
 (
     GrB_Type *ztype,                // return type of output z
     const GrB_UnaryOp unaryop       // unary operator
@@ -1438,22 +1448,22 @@ GrB_Info GrB_UnaryOp_ztype          // return the type of z
 \end{verbatim}
 }\end{mdframed}
 
-\verb'GrB_UnaryOp_ztype' returns the \verb'ztype' of the unary operator, which
+\verb'GxB_UnaryOp_ztype' returns the \verb'ztype' of the unary operator, which
 is the type of $z$ in the function $z=f(x)$.
 
 \begin{spec}
-{\bf SPEC:} The \verb'GrB_UnaryOp_ztype' function is an extension to the spec.
+{\bf SPEC:} The \verb'GxB_UnaryOp_ztype' function is an extension to the spec.
 \end{spec}
 
 %-------------------------------------------------------------------------------
-\subsubsection{{\sf GrB\_UnaryOp\_xtype:} return the type of $x$} 
+\subsubsection{{\sf GxB\_UnaryOp\_xtype:} return the type of $x$} 
 %-------------------------------------------------------------------------------
 \label{unaryop_xtype}
 
 \begin{mdframed}[userdefinedwidth=6in]
 {\footnotesize
 \begin{verbatim}
-GrB_Info GrB_UnaryOp_xtype          // return the type of x
+GrB_Info GxB_UnaryOp_xtype          // return the type of x
 (
     GrB_Type *xtype,                // return type of input x
     const GrB_UnaryOp unaryop       // unary operator
@@ -1461,11 +1471,11 @@ GrB_Info GrB_UnaryOp_xtype          // return the type of x
 \end{verbatim}
 }\end{mdframed}
 
-\verb'GrB_UnaryOp_xtype' returns the \verb'xtype' of the unary operator, which
+\verb'GxB_UnaryOp_xtype' returns the \verb'xtype' of the unary operator, which
 is the type of $x$ in the function $z=f(x)$.
 
 \begin{spec}
-{\bf SPEC:} The \verb'GrB_UnaryOp_xtype' function is an extension to the spec.
+{\bf SPEC:} The \verb'GxB_UnaryOp_xtype' function is an extension to the spec.
 \end{spec}
 
 % \newpage
@@ -1534,30 +1544,30 @@ name                  &                            & $z=f(x,y)$      & \\
 \verb'GrB_DIV_'$T$    & $T \times T \rightarrow T$ & $z = x/y$       & division \\
 \hline
 % 6 new TxT->T comparison
-\verb'GrB_ISEQ_'$T$   & $T \times T \rightarrow T$ & $z = (x == y)$  & equal \\
-\verb'GrB_ISNE_'$T$   & $T \times T \rightarrow T$ & $z = (x \ne y)$ & not equal \\
-\verb'GrB_ISGT_'$T$   & $T \times T \rightarrow T$ & $z = (x >   y)$ & greater than \\
-\verb'GrB_ISLT_'$T$   & $T \times T \rightarrow T$ & $z = (x <   y)$ & less than  \\
-\verb'GrB_ISGE_'$T$   & $T \times T \rightarrow T$ & $z = (x \ge y)$ & greater than or equal \\
-\verb'GrB_ISLE_'$T$   & $T \times T \rightarrow T$ & $z = (x \le y)$ & less than or equal  \\
+\verb'GxB_ISEQ_'$T$   & $T \times T \rightarrow T$ & $z = (x == y)$  & equal \\
+\verb'GxB_ISNE_'$T$   & $T \times T \rightarrow T$ & $z = (x \ne y)$ & not equal \\
+\verb'GxB_ISGT_'$T$   & $T \times T \rightarrow T$ & $z = (x >   y)$ & greater than \\
+\verb'GxB_ISLT_'$T$   & $T \times T \rightarrow T$ & $z = (x <   y)$ & less than  \\
+\verb'GxB_ISGE_'$T$   & $T \times T \rightarrow T$ & $z = (x \ge y)$ & greater than or equal \\
+\verb'GxB_ISLE_'$T$   & $T \times T \rightarrow T$ & $z = (x \le y)$ & less than or equal  \\
 \hline
 % 3 TxT->T logical
-\verb'GrB_LOR_'$T$    & $T \times T \rightarrow T$ & $z = (x \ne 0) \vee    (y \ne 0) $ & logical OR \\
-\verb'GrB_LAND_'$T$   & $T \times T \rightarrow T$ & $z = (x \ne 0) \wedge  (y \ne 0) $ & logical AND \\
-\verb'GrB_LXOR_'$T$   & $T \times T \rightarrow T$ & $z = (x \ne 0) \veebar (y \ne 0) $ & logical XOR \\
+\verb'GxB_LOR_'$T$    & $T \times T \rightarrow T$ & $z = (x \ne 0) \vee    (y \ne 0) $ & logical OR \\
+\verb'GxB_LAND_'$T$   & $T \times T \rightarrow T$ & $z = (x \ne 0) \wedge  (y \ne 0) $ & logical AND \\
+\verb'GxB_LXOR_'$T$   & $T \times T \rightarrow T$ & $z = (x \ne 0) \veebar (y \ne 0) $ & logical XOR \\
 \hline
 \end{tabular}
 }
 \vspace{0.2in}
 
 \begin{spec}
-{\bf SPEC:} The \verb'GrB_IS*_'$T$ operators and the Boolean \verb'GrB_L*_'$T$ are extensions to the spec.
+{\bf SPEC:} The \verb'GxB_IS*_'$T$ operators and the Boolean \verb'GxB_L*_'$T$ are extensions to the spec.
 \end{spec}
 
 Another set of six kinds of built-in comparison operators have the form $T
 \times T \rightarrow $\verb'bool'.  They are defined for all eleven built-in
 types, for a total of 66 binary operators.  Note that when $T$ is \verb'bool',
-the six operators give the same results as the six \verb'GrB_IS*_BOOL'
+the six operators give the same results as the six \verb'GxB_IS*_BOOL'
 operators in the table above.  These six comparison operators are useful as
 ``multiply'' operators for creating semirings with Boolean monoids.
 
@@ -1581,7 +1591,7 @@ name                  &                            & $z=f(x,y)$      & \\
 \vspace{0.2in}
 
 Finally, GraphBLAS has three built-in binary operators that operate purely in
-the Boolean domain.  These three are identical to the \verb'GrB_L*_BOOL'
+the Boolean domain.  These three are identical to the \verb'GxB_L*_BOOL'
 operators described above, just with a shorter name.
 
 \vspace{0.2in}
@@ -1615,7 +1625,7 @@ There are two sets of built-in comparison operators in SuiteSparse:Graph\-BLAS,
 but they are not redundant.  They are identical except for the type (domain) of
 their output, $z$.  The \verb'GrB_EQ_'$T$ and related operators compare their
 inputs of type $T$ and produce a Boolean result of true or false.  The
-\verb'GrB_ISEQ_'$T$ and related operators do the same comparison and produce a
+\verb'GxB_ISEQ_'$T$ and related operators do the same comparison and produce a
 result with same type $T$ as their input operands, returning one for true or
 zero for false.  The \verb'IS*' comparison operators are useful when combining
 comparisons with other non-Boolean operators.  For example, a \verb'PLUS-ISEQ'
@@ -1631,10 +1641,10 @@ Likewise, SuiteSparse:GraphBLAS has two sets of logical OR, AND, and XOR
 operators.  Without the \verb'_'$T$ suffix, the three operators \verb'GrB_LOR',
 \verb'GrB_LAND', and \verb'GrB_LXOR' operate purely in the Boolean domain,
 where all input and output types are \verb'GrB_BOOL'.  The second set
-(\verb'GrB_LOR_'$T$ \verb'GrB_LAND_'$T$ and \verb'GrB_LXOR_'$T$) provides
+(\verb'GxB_LOR_'$T$ \verb'GxB_LAND_'$T$ and \verb'GxB_LXOR_'$T$) provides
 Boolean operators to all 11 domains, implicitly typecasting their inputs from
 type $T$ to Boolean and returning a value of type $T$ that is 1 for true or
-zero for false.  The set of \verb'GrB_L*_'$T$ operators are useful since they
+zero for false.  The set of \verb'GxB_L*_'$T$ operators are useful since they
 can be combined with non-Boolean monoids in a semiring.
 
 \begin{spec}
@@ -1661,9 +1671,9 @@ object:
 \begin{tabular}{ll}
 \hline
 \verb'GrB_BinaryOp_new'   & create a user-defined binary operator \\
-\verb'GrB_BinaryOp_ztype' & return the type of the output $z$ for $z=f(x,y)$\\
-\verb'GrB_BinaryOp_xtype' & return the type of the input $x$ for $z=f(x,y)$\\
-\verb'GrB_BinaryOp_ytype' & return the type of the input $y$ for $z=f(x,y)$\\
+\verb'GxB_BinaryOp_ztype' & return the type of the output $z$ for $z=f(x,y)$\\
+\verb'GxB_BinaryOp_xtype' & return the type of the input $x$ for $z=f(x,y)$\\
+\verb'GxB_BinaryOp_ytype' & return the type of the input $y$ for $z=f(x,y)$\\
 \verb'GrB_BinaryOp_free'  & free a user-defined binary operator \\
 \hline
 \end{tabular}
@@ -1716,14 +1726,14 @@ to the same space.
 
 % \newpage
 %-------------------------------------------------------------------------------
-\subsubsection{{\sf GrB\_BinaryOp\_ztype:} return the type of $z$} 
+\subsubsection{{\sf GxB\_BinaryOp\_ztype:} return the type of $z$} 
 %-------------------------------------------------------------------------------
 \label{binaryop_ztype}
 
 \begin{mdframed}[userdefinedwidth=6in]
 {\footnotesize
 \begin{verbatim}
-GrB_Info GrB_BinaryOp_ztype         // return the type of z
+GrB_Info GxB_BinaryOp_ztype         // return the type of z
 (
     GrB_Type *ztype,                // return type of output z
     const GrB_BinaryOp binaryop     // binary operator to query
@@ -1731,23 +1741,23 @@ GrB_Info GrB_BinaryOp_ztype         // return the type of z
 \end{verbatim}
 } \end{mdframed}
 
-\verb'GrB_BinaryOp_ztype'
+\verb'GxB_BinaryOp_ztype'
 returns the \verb'ztype' of the binary operator, which is the
 type of $z$ in the function $z=f(x,y)$.
 
 \begin{spec}
-{\bf SPEC:} The \verb'GrB_BinaryOp_ztype' function is an extension to the spec.
+{\bf SPEC:} The \verb'GxB_BinaryOp_ztype' function is an extension to the spec.
 \end{spec}
 
 %-------------------------------------------------------------------------------
-\subsubsection{{\sf GrB\_BinaryOp\_xtype:} return the type of $x$} 
+\subsubsection{{\sf GxB\_BinaryOp\_xtype:} return the type of $x$} 
 %-------------------------------------------------------------------------------
 \label{binaryop_xtype}
 
 \begin{mdframed}[userdefinedwidth=6in]
 {\footnotesize
 \begin{verbatim}
-GrB_Info GrB_BinaryOp_xtype         // return the type of x
+GrB_Info GxB_BinaryOp_xtype         // return the type of x
 (
     GrB_Type *xtype,                // return type of input x
     const GrB_BinaryOp binaryop     // binary operator to query
@@ -1755,23 +1765,23 @@ GrB_Info GrB_BinaryOp_xtype         // return the type of x
 \end{verbatim}
 }\end{mdframed}
 
-\verb'GrB_BinaryOp_xtype'
+\verb'GxB_BinaryOp_xtype'
 returns the \verb'xtype' of the binary operator, which is the
 type of $x$ in the function $z=f(x,y)$.
 
 \begin{spec}
-{\bf SPEC:} The \verb'GrB_BinaryOp_xtype' function is an extension to the spec.
+{\bf SPEC:} The \verb'GxB_BinaryOp_xtype' function is an extension to the spec.
 \end{spec}
 
 %-------------------------------------------------------------------------------
-\subsubsection{{\sf GrB\_BinaryOp\_ytype:} return the type of $y$} 
+\subsubsection{{\sf GxB\_BinaryOp\_ytype:} return the type of $y$} 
 %-------------------------------------------------------------------------------
 \label{binaryop_ytype}
 
 \begin{mdframed}[userdefinedwidth=6in]
 {\footnotesize
 \begin{verbatim}
-GrB_Info GrB_BinaryOp_ytype         // return the type of y
+GrB_Info GxB_BinaryOp_ytype         // return the type of y
 (
     GrB_Type *ytype,                // return type of input y
     const GrB_BinaryOp binaryop     // binary operator to query
@@ -1779,12 +1789,12 @@ GrB_Info GrB_BinaryOp_ytype         // return the type of y
 \end{verbatim}
 } \end{mdframed}
 
-\verb'GrB_BinaryOp_ytype'
+\verb'GxB_BinaryOp_ytype'
 returns the \verb'ytype' of the binary operator, which is the
 type of $y$ in the function $z=f(x,y)$.
 
 \begin{spec}
-{\bf SPEC:} The \verb'GrB_BinaryOp_ytype' function is an extension to the spec.
+{\bf SPEC:} The \verb'GxB_BinaryOp_ytype' function is an extension to the spec.
 \end{spec}
 
 % \newpage
@@ -1816,6 +1826,173 @@ frees the \verb'op' and sets \verb'op' to \verb'NULL'.
 It safely does nothing if passed a \verb'NULL'
 handle, or if \verb'op == NULL' on input.
 It does nothing at all if passed a built-in binary operator.
+
+\newpage
+%===============================================================================
+\subsection{GraphBLAS select operators: {\sf GxB\_SelectOp}} %==================
+%===============================================================================
+\label{selectop}
+
+A select operator is a scalar function of the form $z=f(i,j,m,n,a_{ij},k)$ that
+is applied to the entries $a_{ij}$ of an $m$-by-$n$ matrix.  The domain (type)
+of $z$ is always boolean.  The domain (type) of $a_{ij}$ can be any built-in or
+user-defined type, or it can be \verb'GrB_NULL' if the operator is
+type-generic.
+
+The \verb'GxB_SelectOp' operator is used by \verb'GxB_select' (see Section
+\ref{select}) to select entries from a matrix.  Each entry \verb'A(i,j)' is
+evaluated with the operator, which returns true if the entry is to be kept in
+the output, or false if it is not to appear in the output.  The signature of
+the select function \verb'f' are as follows:
+
+{\footnotesize
+\begin{verbatim}
+bool f                      // returns true if A(i,j) is kept
+(
+    const GrB_Index i,      // row index of A(i,j)
+    const GrB_Index j,      // column index of A(i,j)
+    const GrB_Index nrows,  // number of rows of A
+    const GrB_Index ncols,  // number of columns of A
+    const void *x,          // value of A(i,j), or NULL if f is type-generic
+    const void *k           // user-defined auxiliary data
+) ; \end{verbatim}}
+
+There are five built-in select operators listed in the table below.  Each can
+be used on any type including user-defined types.  User-defined select
+operators can also be created.
+
+\vspace{0.2in}
+{\footnotesize
+\begin{tabular}{lll}
+\hline
+GraphBLAS name          & MATLAB            & description \\
+                        & analog            & \\
+\hline
+\verb'GxB_TRIL'         & \verb'C=tril(A,k)'   & true for \verb'A(i,j)' if \verb'(j-i) <= k' \\
+\verb'GxB_TRIU'         & \verb'C=triu(A,k)'   & true for \verb'A(i,j)' if \verb'(j-i) >= k' \\
+\verb'GxB_DIAG'         & \verb'C=diag(A,k)'   & true for \verb'A(i,j)' if \verb'(j-i) == k' \\
+\verb'GxB_OFFDIAG'      & \verb'C=A-diag(A,k)' & true for \verb'A(i,j)' if \verb'(j-i) != k' \\
+\verb'GxB_NONZERO'      & \verb'C=A(A~=0)'     & true if \verb'A(i,j)' is nonzero\\
+\hline
+\end{tabular}
+}
+\vspace{0.2in}
+
+\begin{specbeta}
+{\bf SPEC:} \verb'GxB_SelectOp' and all built-in functions in the table above
+are extensions to the spec.  They were introduced in SuiteSparse:GraphBLAS
+Version 1.1.0, Dec 1, 2017, and should be considered in Beta status.
+\end{specbeta}
+
+The built-in \verb'GxB_NONZERO' select operator is unique in that it is a
+function of the value of the entry $a_{ij}$, but it is still type-generic.  It
+does this by simply returning false all bits in the value are zero, or true
+otherwise.  This gives the proper result for any built-in type, since integer
+and floating-point zeros are represented this way.  For user-defined types, the
+function returns the same thing.  This action is well-defined but its
+suitability for any particular user-defined type must be determined according
+to how the user application defines the type, and what a value with all bits
+zero means for this type.  Whatever it means, if the bits of a value with a
+user-defined type are all zero, the function returns false, and if any bit is
+one, the \verb'GxB_NONZERO' function returns true.
+
+The next sections define the following methods for the \verb'GxB_SelectOp'
+object:
+
+\vspace{0.1in}
+{\footnotesize
+\begin{tabular}{ll}
+\hline
+\verb'GxB_SelectOp_new'   & create a user-defined select operator  \\
+\verb'GxB_SelectOp_xtype' & return the type of the input $x$ \\
+\verb'GxB_SelectOp_free'  & free a user-defined select operator  \\
+\hline
+\end{tabular}
+}
+\vspace{0.1in}
+
+%-------------------------------------------------------------------------------
+\subsubsection{{\sf GrB\_SelectOp\_new:} create a user-defined select operator}
+%-------------------------------------------------------------------------------
+\label{selectop_new}
+
+\begin{mdframed}[userdefinedwidth=6in]
+{\footnotesize
+\begin{verbatim}
+GrB_Info GxB_SelectOp_new       // create a new user-defined select operator
+(
+    GxB_SelectOp *selectop,     // handle for the new select operator
+    void *function,             // pointer to the select function
+    const GrB_Type xtype        // type of input x, or NULL if type-generic
+) ;
+\end{verbatim} }\end{mdframed}
+
+\verb'GxB_SelectOp_new' creates a new select operator.  The new operator is
+returned in the \verb'selectop' handle, which must not be \verb'NULL' on input.
+On output, its contents contains a pointer to the new select operator.
+
+The \verb'function' argument to \verb'GxB_SelectOp_new' is a pointer to a
+user-defined function with the signature described on the prior page.  Given
+the properties of an entry $a_{ij}$ in an $m$-by-$n$ matrix, the
+\verb'function' should return \verb'true' if the entry should be kept in the
+output of \verb'GxB_select', or \verb'false' if it should not appear in the
+output.
+
+The type \verb'xtype' is the GraphBLAS type of the input $x$ of the
+user-defined function $z=f(i,j,m,n,x,k)$.  The type may be built-in or
+user-defined, or it may even be \verb'GrB_NULL'.  If the \verb'xtype' is
+\verb'GrB_NULL', then \verb'GxB_select' does not pass the value of $x=a_{ij}$
+to the select function, but passes \verb'GrB_NULL' for the input \verb'x' to
+the user-defined select \verb'function'.
+
+\newpage
+%-------------------------------------------------------------------------------
+\subsubsection{{\sf GxB\_SelectOp\_xtype:} return the type of $x$} 
+%-------------------------------------------------------------------------------
+\label{selectop_xtype}
+
+\begin{mdframed}[userdefinedwidth=6in]
+{\footnotesize
+\begin{verbatim}
+GrB_Info GxB_SelectOp_xtype     // return the type of x
+(
+    GrB_Type *xtype,            // return type of input x
+    const GxB_SelectOp selectop // select operator
+) ;
+
+\end{verbatim}
+}\end{mdframed}
+
+\verb'GxB_SelectOp_xtype' returns the \verb'xtype' of the select operator,
+which is the type of $x$ in the function $z=f(i,j,m,n,x,k)$.  If the select
+operator is type-generic, \verb'xtype' is returned as \verb'GrB_NULL'.
+
+%-------------------------------------------------------------------------------
+\subsubsection{{\sf GxB\_SelectOp\_free:} free a user-defined select operator}
+%-------------------------------------------------------------------------------
+\label{selectop_free}
+
+\begin{mdframed}[userdefinedwidth=6in]
+{\footnotesize
+\begin{verbatim}
+GrB_Info GxB_free               // free a user-created select operator
+(
+    GxB_SelectOp *selectop      // handle of select operator to free
+) ;
+\end{verbatim}
+}\end{mdframed}
+
+\verb'GxB_SelectOp_free' frees a user-defined select operator.  Either usage:
+
+    {\small
+    \begin{verbatim}
+    GxB_SelectOp_free (&selectop) ;
+    GrB_free (&selectop) ; \end{verbatim}}
+
+\noindent
+frees the \verb'selectop' and sets \verb'selectop' to \verb'NULL'.  It safely
+does nothing if passed a \verb'NULL' handle, or if \verb'selectop == NULL' on
+input.  It does nothing at all if passed a built-in select operator.
 
 \newpage
 %===============================================================================
@@ -1862,10 +2039,10 @@ name                  &                            & $z=f(x,y)$      & \\
 \verb'GrB_TIMES_'$T$  & $T \times T \rightarrow T$ & $z = xy$        & 1 \\
 \hline
 % 4 bool x bool -> bool
-\verb'GrB_LOR', \verb'GrB_LOR_BOOL'      & \verb'bool' $\times$ \verb'bool' $\rightarrow$ \verb'bool' & $z = x \vee    y $ & false \\
-\verb'GrB_LAND', \verb'GrB_LAND_BOOL'    & \verb'bool' $\times$ \verb'bool' $\rightarrow$ \verb'bool' & $z = x \wedge  y $ & true \\
-\verb'GrB_LXOR', \verb'GrB_LXOR_BOOL'    & \verb'bool' $\times$ \verb'bool' $\rightarrow$ \verb'bool' & $z = x \veebar y $ & false \\
-\verb'GrB_EQ_BOOL', \verb'GrB_ISEQ_BOOL' & \verb'bool' $\times$ \verb'bool' $\rightarrow$ \verb'bool' & $z =(x ==      y)$ & true  \\
+\verb'GrB_LOR', \verb'GxB_LOR_BOOL'      & \verb'bool' $\times$ \verb'bool' $\rightarrow$ \verb'bool' & $z = x \vee    y $ & false \\
+\verb'GrB_LAND', \verb'GxB_LAND_BOOL'    & \verb'bool' $\times$ \verb'bool' $\rightarrow$ \verb'bool' & $z = x \wedge  y $ & true \\
+\verb'GrB_LXOR', \verb'GxB_LXOR_BOOL'    & \verb'bool' $\times$ \verb'bool' $\rightarrow$ \verb'bool' & $z = x \veebar y $ & false \\
+\verb'GrB_EQ_BOOL', \verb'GxB_ISEQ_BOOL' & \verb'bool' $\times$ \verb'bool' $\rightarrow$ \verb'bool' & $z =(x ==      y)$ & true  \\
 \hline
 \end{tabular}
 }
@@ -1880,8 +2057,8 @@ object:
 \begin{tabular}{ll}
 \hline
 \verb'GrB_Monoid_new'       & create a monoid \\
-\verb'GrB_Monoid_operator'  & return the monoid operator \\
-\verb'GrB_Monoid_identity'  & return the monoid identity value \\
+\verb'GxB_Monoid_operator'  & return the monoid operator \\
+\verb'GxB_Monoid_identity'  & return the monoid identity value \\
 \verb'GrB_Monoid_free'      & free a monoid \\
 \hline
 \end{tabular}
@@ -1924,14 +2101,14 @@ user-defined operator, \verb'op'.
 
 % \newpage
 %-------------------------------------------------------------------------------
-\subsubsection{{\sf GrB\_Monoid\_operator:} return the monoid operator}
+\subsubsection{{\sf GxB\_Monoid\_operator:} return the monoid operator}
 %-------------------------------------------------------------------------------
 \label{monoid_operator}
 
 \begin{mdframed}[userdefinedwidth=6in]
 {\footnotesize
 \begin{verbatim}
-GrB_Info GrB_Monoid_operator        // return the monoid operator
+GrB_Info GxB_Monoid_operator        // return the monoid operator
 (
     GrB_BinaryOp *op,               // returns the binary op of the monoid
     const GrB_Monoid monoid         // monoid to query
@@ -1939,21 +2116,21 @@ GrB_Info GrB_Monoid_operator        // return the monoid operator
 \end{verbatim}
 } \end{mdframed}
 
-\verb'GrB_Monoid_operator' returns the binary operator of the monoid.
+\verb'GxB_Monoid_operator' returns the binary operator of the monoid.
 
 \begin{spec}
-{\bf SPEC:} The \verb'GrB_Monoid_operator' function is an extension to the spec.
+{\bf SPEC:} The \verb'GxB_Monoid_operator' function is an extension to the spec.
 \end{spec}
 
 \newpage
 %-------------------------------------------------------------------------------
-\subsubsection{{\sf GrB\_Monoid\_identity:} return the monoid identity}
+\subsubsection{{\sf GxB\_Monoid\_identity:} return the monoid identity}
 %-------------------------------------------------------------------------------
 
 \begin{mdframed}[userdefinedwidth=6in]
 {\footnotesize
 \begin{verbatim}
-GrB_Info GrB_Monoid_identity        // return the monoid identity
+GrB_Info GxB_Monoid_identity        // return the monoid identity
 (
     void *identity,                 // returns the identity of the monoid
     const GrB_Monoid monoid         // monoid to query
@@ -1961,15 +2138,15 @@ GrB_Info GrB_Monoid_identity        // return the monoid identity
 \end{verbatim}
 } \end{mdframed}
 
-\verb'GrB_Monoid_identity' returns the identity value of the monoid.  The
+\verb'GxB_Monoid_identity' returns the identity value of the monoid.  The
 \verb'void *' pointer, \verb'identity', must be non-\verb'NULL' and must point
 to a memory space of size at least equal to the size of the type of the
-\verb'monoid'.  The type size can be obtained via \verb'GrB_Monoid_operator' to
-return the monoid additive operator, then \verb'GrB_BinaryOp_ztype' to obtain
-the \verb'ztype', followed by \verb'GrB_Type_size' to get its size.
+\verb'monoid'.  The type size can be obtained via \verb'GxB_Monoid_operator' to
+return the monoid additive operator, then \verb'GxB_BinaryOp_ztype' to obtain
+the \verb'ztype', followed by \verb'GxB_Type_size' to get its size.
 
 \begin{spec}
-{\bf SPEC:} The \verb'GrB_Monoid_identity' function is an extension to the spec.
+{\bf SPEC:} The \verb'GxB_Monoid_identity' function is an extension to the spec.
 \end{spec}
 
 % \newpage
@@ -2020,8 +2197,8 @@ methods for the \verb'GrB_Semiring' object:
 \begin{tabular}{ll}
 \hline
 \verb'GrB_Semiring_new'       & create a semiring \\
-\verb'GrB_Semiring_add'       & return the additive monoid of a semiring \\
-\verb'GrB_Semiring_multipliy' & return the binary operator of a semiring \\
+\verb'GxB_Semiring_add'       & return the additive monoid of a semiring \\
+\verb'GxB_Semiring_multipliy' & return the binary operator of a semiring \\
 \verb'GrB_Semiring_free'      & free a semiring \\
 \hline
 \end{tabular}
@@ -2054,7 +2231,7 @@ addition to the standard error cases, the function returns
 
 Using built-in types and operators, 960 unique semirings can be built.  This
 count excludes redundant Boolean operators (for example \verb'GrB_TIMES_BOOL'
-and \verb'GrB_LAND_BOOL' are different operators but they are redundant since
+and \verb'GxB_LAND_BOOL' are different operators but they are redundant since
 they always return the same result).
 
 \begin{itemize}
@@ -2102,14 +2279,14 @@ they always return the same result).
 
 % \newpage
 %-------------------------------------------------------------------------------
-\subsubsection{{\sf GrB\_Semiring\_add:} return the additive monoid of a semiring}
+\subsubsection{{\sf GxB\_Semiring\_add:} return the additive monoid of a semiring}
 %-------------------------------------------------------------------------------
 \label{semiring_add}
 
 \begin{mdframed}[userdefinedwidth=6in]
 {\footnotesize
 \begin{verbatim}
-GrB_Info GrB_Semiring_add           // return the add monoid of a semiring
+GrB_Info GxB_Semiring_add           // return the add monoid of a semiring
 (
     GrB_Monoid *add,                // returns add monoid of the semiring
     const GrB_Semiring semiring     // semiring to query
@@ -2117,22 +2294,22 @@ GrB_Info GrB_Semiring_add           // return the add monoid of a semiring
 \end{verbatim}
 } \end{mdframed}
 
-\verb'GrB_Semiring_add' returns the additive monoid of a semiring.
+\verb'GxB_Semiring_add' returns the additive monoid of a semiring.
 
 \begin{spec}
-{\bf SPEC:} The \verb'GrB_Semiring_add' function is an extension to the spec.
+{\bf SPEC:} The \verb'GxB_Semiring_add' function is an extension to the spec.
 \end{spec}
 
 \newpage
 %-------------------------------------------------------------------------------
-\subsubsection{{\sf GrB\_Semiring\_multiply:} return multiply operator of a semiring}
+\subsubsection{{\sf GxB\_Semiring\_multiply:} return multiply operator of a semiring}
 %-------------------------------------------------------------------------------
 \label{semiring_multiply}
 
 \begin{mdframed}[userdefinedwidth=6in]
 {\footnotesize
 \begin{verbatim}
-GrB_Info GrB_Semiring_multiply      // return multiply operator of a semiring
+GrB_Info GxB_Semiring_multiply      // return multiply operator of a semiring
 (
     GrB_BinaryOp *multiply,         // returns multiply operator of the semiring
     const GrB_Semiring semiring     // semiring to query
@@ -2140,11 +2317,11 @@ GrB_Info GrB_Semiring_multiply      // return multiply operator of a semiring
 \end{verbatim}
 } \end{mdframed}
 
-\verb'GrB_Semiring_multiply' returns the binary multiplicative operator of a
+\verb'GxB_Semiring_multiply' returns the binary multiplicative operator of a
 semiring.
 
 \begin{spec}
-{\bf SPEC:} The \verb'GrB_Semiring_multiply' function is an extension to the spec.
+{\bf SPEC:} The \verb'GxB_Semiring_multiply' function is an extension to the spec.
 \end{spec}
 
 
@@ -2209,7 +2386,7 @@ and destroy a GraphBLAS sparse vector, \verb'GrB_Vector':
 \verb'GrB_Vector_clear'          & clear a vector of all entries \\
 \verb'GrB_Vector_size'           & return the size of a vector \\
 \verb'GrB_Vector_nvals'          & return the number of entries in a vector \\
-\verb'GrB_Vector_type'           & return the type of a vector \\
+\verb'GxB_Vector_type'           & return the type of a vector \\
 \verb'GrB_Vector_build'          & build a vector from a set of tuples \\
 \verb'GrB_Vector_setElement'     & add a single entry to a vector \\
 \verb'GrB_Vector_extractElement' & get a single entry from a vector \\
@@ -2368,14 +2545,14 @@ pending computations are complete for all GraphBLAS objects, use
 
 \newpage
 %-------------------------------------------------------------------------------
-\subsubsection{{\sf GrB\_Vector\_type:}          return the type of a vector}
+\subsubsection{{\sf GxB\_Vector\_type:}          return the type of a vector}
 %-------------------------------------------------------------------------------
 \label{vector_type}
 
 \begin{mdframed}[userdefinedwidth=6in]
 {\footnotesize
 \begin{verbatim}
-GrB_Info GrB_Vector_type    // get the type of a vector
+GrB_Info GxB_Vector_type    // get the type of a vector
 (
     GrB_Type *type,         // returns the type of the vector
     const GrB_Vector v      // vector to query
@@ -2383,11 +2560,11 @@ GrB_Info GrB_Vector_type    // get the type of a vector
 \end{verbatim}
 } \end{mdframed}
 
-\verb'GrB_Vector_type' returns the type of a vector.  Analogous to
+\verb'GxB_Vector_type' returns the type of a vector.  Analogous to
 \verb'type = class (v)' in MATLAB.
 
 \begin{spec}
-{\bf SPEC:} The \verb'GrB_Vector_type' function is an extension to the spec.
+{\bf SPEC:} The \verb'GxB_Vector_type' function is an extension to the spec.
 \end{spec}
 
 % \newpage
@@ -2553,7 +2730,7 @@ and destroy a GraphBLAS sparse matrix, \verb'GrB_Matrix':
 \verb'GrB_Matrix_nrows'         & return the number of rows of a matrix \\
 \verb'GrB_Matrix_ncols'         & return the number of columns of a matrix \\
 \verb'GrB_Matrix_nvals'         & return the number of entries in a matrix \\
-\verb'GrB_Matrix_type'          & return the type of a matrix \\
+\verb'GxB_Matrix_type'          & return the type of a matrix \\
 \verb'GrB_Matrix_build'         & build a matrix from a set of tuples \\
 \verb'GrB_Matrix_setElement'    & add a single entry to a matrix \\
 \verb'GrB_Matrix_extractElement'& get a single entry from a matrix \\
@@ -2717,25 +2894,25 @@ all GraphBLAS objects, used \verb'GrB_wait' instead.
 
 % \newpage
 %-------------------------------------------------------------------------------
-\subsubsection{{\sf GrB\_Matrix\_type:}         return the type of a matrix}
+\subsubsection{{\sf GxB\_Matrix\_type:}         return the type of a matrix}
 %-------------------------------------------------------------------------------
 \label{matrix_type}
 
 \begin{mdframed}[userdefinedwidth=6in]
 {\footnotesize
 \begin{verbatim}
-GrB_Info GrB_Matrix_type    // get the type of a matrix
+GrB_Info GxB_Matrix_type    // get the type of a matrix
 (
     GrB_Type *type,         // returns the type of the matrix
     const GrB_Matrix A      // matrix to query
 ) ;
 \end{verbatim} } \end{mdframed}
 
-\verb'GrB_Matrix_type' returns the type of a matrix, like \verb'type=class(A)'
+\verb'GxB_Matrix_type' returns the type of a matrix, like \verb'type=class(A)'
 in MATLAB.
 
 \begin{spec}
-{\bf SPEC:} The \verb'GrB_Matrix_type' function is an extension to the spec.
+{\bf SPEC:} The \verb'GxB_Matrix_type' function is an extension to the spec.
 \end{spec}
 
 \newpage
@@ -2898,15 +3075,15 @@ are assembled right away, which will be slow.  Performance will be good if many
 updates are assembled frequently.
 
 A few methods and operations can be intermixed with \verb'setElement', in
-particular, some forms of the \verb'GrB_assign' and \verb'GrB_subassign'
+particular, some forms of the \verb'GrB_assign' and \verb'GxB_subassign'
 operations are compatible with the pending updates from \verb'setElement'.
-Sections~\ref{compare_assign} gives more details on which \verb'GrB_subassign'
+Sections~\ref{compare_assign} gives more details on which \verb'GxB_subassign'
 and \verb'GrB_assign' operations can be interleaved with calls to
 \verb'setElement' without forcing updates to be assembled.  Other methods that
 do not access the existing entries may also be done without forcing the updates
 to be assembled, namely \verb'GrB_Matrix_clear' (which erases all pending
 updates), \verb'GrB_Matrix_free', \verb'GrB_Matrix_ncols',
-\verb'GrB_Matrix_nrows', \verb'GrB_Matrix_type', and of course
+\verb'GrB_Matrix_nrows', \verb'GxB_Matrix_type', and of course
 \verb'GrB_Matrix_setElement' itself.  All other methods and operations cause
 the updates to be assembled.  Future versions of SuiteSparse:GraphBLAS may
 extend this list.
@@ -2963,7 +3140,7 @@ All computations for the matrix \verb'A' are
 guaranteed to be finished when the method returns.
 %
 In in particular, this method causes all pending updates from
-\verb'GrB_setElement', \verb'GrB_assign', or \verb'GrB_subassign' to be
+\verb'GrB_setElement', \verb'GrB_assign', or \verb'GxB_subassign' to be
 assembled, so its use can have performance implications.  Calls to this
 function should not be arbitrarily intermixed with calls to these other two
 functions.  Everything will work correctly and results will be predictable, it
@@ -3057,7 +3234,7 @@ method (Section~\ref{objects}) is modified by a descriptor, and neither are any
 unary or binary operators.
 
 \begin{spec}
-{\bf SPEC:} The \verb'GrB_DEFAULT' option is an extension to the spec.
+{\bf SPEC:} The \verb'GxB_DEFAULT' option is an extension to the spec.
 \end{spec}
 
 In the current GraphBLAS API Specification, there are four different components
@@ -3082,7 +3259,7 @@ GrB_Desc_Field ;
 \begin{verbatim}
 typedef enum
 {
-    GrB_DEFAULT,    // default behavior of the method
+    GxB_DEFAULT,    // default behavior of the method
     GrB_REPLACE,    // clear the output before assigning new values to it
     GrB_SCMP,       // use the structural complement of the input
     GrB_TRAN        // use the transpose of the input
@@ -3201,7 +3378,7 @@ GrB_Info GrB_Descriptor_set     // set a parameter in a descriptor
 
 \verb'GrB_Descriptor_set' sets a descriptor field (\verb'GrB_OUTP',
 \verb'GrB_MASK', \verb'GrB_INP0', or \verb'GrB_INP1') to a particular value
-(\verb'GrB_DEFAULT', \verb'GrB_SCMP', \verb'GrB_TRAN', or \verb'GrB_REPLACE').
+(\verb'GxB_DEFAULT', \verb'GrB_SCMP', \verb'GrB_TRAN', or \verb'GrB_REPLACE').
 In the current specification, the following settings can be made:
 
 \vspace{0.2in}
@@ -3213,7 +3390,7 @@ field      & &  \\
 \hline
 
 \verb'GrB_OUTP'
-    & \verb'GrB_DEFAULT':
+    & \verb'GxB_DEFAULT':
     The output matrix is not cleared.  The operation computes
     ${\bf C \langle M \rangle = C \odot T}$.
     & \verb'GrB_REPLACE':
@@ -3222,7 +3399,7 @@ field      & &  \\
     Then ${\bf C \langle M \rangle = Z}$ is performed. \\
 \hline
 \verb'GrB_MASK'
-    & \verb'GrB_DEFAULT':
+    & \verb'GxB_DEFAULT':
     The Mask is not complemented.  \verb'Mask(i,j)=1' means the value $C_{ij}$
     can be modified by the operation, while \verb'Mask(i,j)=0' means the value
     $C_{ij}$ shall not be modified by the operation.
@@ -3233,7 +3410,7 @@ field      & &  \\
 \hline
 
 \verb'GrB_INP0'
-    & \verb'GrB_DEFAULT':
+    & \verb'GxB_DEFAULT':
     The first input is not transposed prior to using it in the operation.
     & \verb'GrB_TRAN':
     The first input is transposed prior to using it in the operation.  Only
@@ -3241,7 +3418,7 @@ field      & &  \\
 
 \hline
 \verb'GrB_INP1'
-    & \verb'GrB_DEFAULT':
+    & \verb'GxB_DEFAULT':
     The second input is not transposed prior to using it in the operation.
     & \verb'GrB_TRAN':
     The second input is transposed prior to using it in the operation.  Only
@@ -3251,14 +3428,14 @@ field      & &  \\
 
 % \newpage
 %-------------------------------------------------------------------------------
-\subsubsection{{\sf GrB\_Descriptor\_get:}  get a parameter from a descriptor}
+\subsubsection{{\sf GxB\_Descriptor\_get:}  get a parameter from a descriptor}
 %-------------------------------------------------------------------------------
 \label{descriptor_get}
 
 \begin{mdframed}[userdefinedwidth=6in]
 {\footnotesize
 \begin{verbatim}
-GrB_Info GrB_Descriptor_get     // get a parameter from a descriptor
+GrB_Info GxB_Descriptor_get     // get a parameter from a descriptor
 (
     GrB_Desc_Value *val,        // value of the parameter
     const GrB_Descriptor desc,  // descriptor to query; NULL means defaults
@@ -3266,10 +3443,10 @@ GrB_Info GrB_Descriptor_get     // get a parameter from a descriptor
 ) ;
 \end{verbatim} } \end{mdframed}
 
-\verb'GrB_Descriptor_get' returns the value of a single field in a descriptor.
+\verb'GxB_Descriptor_get' returns the value of a single field in a descriptor.
 
 \begin{spec}
-{\bf SPEC:} The \verb'GrB_Descriptor_get' function is an extension to the spec.
+{\bf SPEC:} The \verb'GxB_Descriptor_get' function is an extension to the spec.
 \end{spec}
 
 % \newpage
@@ -3309,10 +3486,10 @@ future, this function will do nothing if passed a built-in descriptor.
 %===============================================================================
 \label{free}
 
-Each of the eight GraphBLAS objects has \verb'GrB_*_new' and \verb'GrB_*_free'
+Each of the nine GraphBLAS objects has \verb'GrB_*_new' and \verb'GrB_*_free'
 methods that are specific to each object.  They can also be accessed by a
-generic function, \verb'GrB_free', that works for all eight objects.  If
-\verb'G' is any of the eight GraphBLAS objects, the statement
+generic function, \verb'GrB_free', that works for all nine objects.  If
+\verb'G' is any of the nine GraphBLAS objects, the statement
 
     {\footnotesize
     \begin{verbatim}
@@ -3369,7 +3546,7 @@ the table below.
 \verb'GrB_extract'   & extract submatrix       & ${\bf C \langle M \rangle = C \odot A(I,J)}$ \\
                      &                         & ${\bf w \langle m \rangle = w \odot u(i)}$ \\
 \hline
-\verb'GrB_subassign' & assign submatrix        & ${\bf C (I,J) \langle M \rangle = C(I,J) \odot A}$ \\
+\verb'GxB_subassign' & assign submatrix        & ${\bf C (I,J) \langle M \rangle = C(I,J) \odot A}$ \\
                      & (with submask for ${\bf C(I,J)}$)
                                                & ${\bf w (i)   \langle m \rangle = w(i)   \odot u}$ \\
 \hline
@@ -3379,6 +3556,9 @@ the table below.
 \hline
 \verb'GrB_apply'     & apply unary operator    & ${\bf C \langle M \rangle = C \odot} f{\bf (A)}$ \\
                      &                         & ${\bf w \langle m \rangle = w \odot} f{\bf (u)}$ \\
+\hline
+\verb'GrB_select'    & apply select operator   & ${\bf C \langle M \rangle = C \odot} f{\bf (A,k)}$ \\
+                     &                         & ${\bf w \langle m \rangle = w \odot} f{\bf (u,k)}$ \\
 \hline
 \verb'GrB_reduce'    & reduce to vector        & ${\bf w \langle m \rangle = w \odot} [{\oplus}_j {\bf A}(:,j)]$ \\
                      & reduce to scalar        & $s = s \odot [{\oplus}_{ij}  {\bf A}(I,J)]$ \\
@@ -3471,10 +3651,12 @@ MATLAB \verb'GB_spec' function          & corresponding GraphBLAS           & Se
 \verb'GB_spec_Matrix_extract.m'         & \verb'GrB_Matrix_extract'         & \ref{extract_matrix} \\
 \verb'GB_spec_Col_extract.m'            & \verb'GrB_Col_extract'         & \ref{extract_column} \\
 \hline
-\verb'GB_spec_subassign.m'              & \verb'GrB_subassign'              & \ref{subassign} \\
+\verb'GB_spec_subassign.m'              & \verb'GxB_subassign'              & \ref{subassign} \\
 \verb'GB_spec_assign.m'                 & \verb'GrB_assign'                 & \ref{assign} \\
 \hline
 \verb'GB_spec_apply.m'                  & \verb'GrB_apply'                  & \ref{apply} \\
+\hline
+\verb'GB_spec_select.m'                 & \verb'GxB_select'                 & \ref{select} \\
 \hline
 \verb'GB_spec_reduce_to_vector.m'       & \verb'GrB_reduce' (to vector)     & \ref{reduce_to_vector} \\
 \verb'GB_spec_reduce_to_scalar.m'       & \verb'GrB_reduce' (to scalar)     & \ref{reduce_matrix_to_scalar} \\
@@ -4210,35 +4392,35 @@ transpose the matrix \verb'A' once, and then to extract columns instead.
 
 \newpage
 %===============================================================================
-\subsection{{\sf GrB\_subassign:} submatrix assignment} %=======================
+\subsection{{\sf GxB\_subassign:} submatrix assignment} %=======================
 %===============================================================================
 \label{subassign}
 
 The methods described in this section are all variations of the form
 \verb'C(I,J)=A', which modifies a submatrix of the matrix \verb'C'.  All
 methods can be used in their generic form with the single name
-\verb'GrB_subassign'.  This is reflected in the prototypes.  However, to avoid
+\verb'GxB_subassign'.  This is reflected in the prototypes.  However, to avoid
 confusion between the different kinds of assignment, the name of the specific
 function is used when describing each variation.  If the discussion applies to
-all variations, the simple name \verb'GrB_subassign' is used.
+all variations, the simple name \verb'GxB_subassign' is used.
 
-\verb'GrB_subassign' is very similar to \verb'GrB_assign', described in
+\verb'GxB_subassign' is very similar to \verb'GrB_assign', described in
 Section~\ref{assign}.  The two operations are compared and contrasted in
 Section~\ref{compare_assign}.
 
 \begin{spec}
-{\bf SPEC:} All variants of \verb'GrB_subassign' are extensions to the spec.
+{\bf SPEC:} All variants of \verb'GxB_subassign' are extensions to the spec.
 \end{spec}
 
 %-------------------------------------------------------------------------------
-\subsubsection{{\sf GrB\_Vector\_subassign:} assign to a subvector }
+\subsubsection{{\sf GxB\_Vector\_subassign:} assign to a subvector }
 %-------------------------------------------------------------------------------
 \label{subassign_vector}
 
 \begin{mdframed}[userdefinedwidth=6in]
 {\footnotesize
 \begin{verbatim}
-GrB_Info GrB_subassign              // w(I)<mask> = accum (w(I),u)
+GrB_Info GxB_subassign              // w(I)<mask> = accum (w(I),u)
 (
     GrB_Vector w,                   // input/output matrix for results
     const GrB_Vector mask,          // optional mask for w(I), unused if NULL
@@ -4250,23 +4432,23 @@ GrB_Info GrB_subassign              // w(I)<mask> = accum (w(I),u)
 ) ;
 \end{verbatim} } \end{mdframed}
 
-\verb'GrB_Vector_subassign' operates on a subvector \verb'w(I)' of \verb'w',
+\verb'GxB_Vector_subassign' operates on a subvector \verb'w(I)' of \verb'w',
 modifying it with the vector \verb'u'.  The method is identical to
-\verb'GrB_Matrix_subassign' described in Section~\ref{subassign_matrix}, where
+\verb'GxB_Matrix_subassign' described in Section~\ref{subassign_matrix}, where
 all matrices have a single column each.  The \verb'mask' has the same size as
 \verb'w(I)' and \verb'u'.  The only other difference is that the input \verb'u'
 in this method is not transposed via the \verb'GrB_INP0' descriptor.
 
 \newpage
 %-------------------------------------------------------------------------------
-\subsubsection{{\sf GrB\_Matrix\_subassign:} assign to a submatrix }
+\subsubsection{{\sf GxB\_Matrix\_subassign:} assign to a submatrix }
 %-------------------------------------------------------------------------------
 \label{subassign_matrix}
 
 \begin{mdframed}[userdefinedwidth=6in]
 {\footnotesize
 \begin{verbatim}
-GrB_Info GrB_subassign              // C(I,J)<Mask> = accum (C(I,J),A)
+GrB_Info GxB_subassign              // C(I,J)<Mask> = accum (C(I,J),A)
 (
     GrB_Matrix C,                   // input/output matrix for results
     const GrB_Matrix Mask,          // optional mask for C(I,J), unused if NULL
@@ -4280,7 +4462,7 @@ GrB_Info GrB_subassign              // C(I,J)<Mask> = accum (C(I,J),A)
 ) ;
 \end{verbatim} } \end{mdframed}
 
-\verb'GrB_Matrix_subassign' operates only on a submatrix \verb'S' of \verb'C',
+\verb'GxB_Matrix_subassign' operates only on a submatrix \verb'S' of \verb'C',
 modifying it with the matrix \verb'A'.   For this operation, the result is not
 the entire matrix \verb'C', but a submatrix \verb'S=C(I,J)' of \verb'C'.  The
 steps taken are as follows, except that ${\bf A}$ may be optionally transposed
@@ -4301,11 +4483,11 @@ Step & GraphBLAS & description \\
 
 The accumulator/mask step in Step 2 is the same as for all other GraphBLAS
 operations, described in Section~\ref{accummask}, except that for
-\verb'GrB_subassign', it is applied to just the submatrix ${\bf S} = {\bf
+\verb'GxB_subassign', it is applied to just the submatrix ${\bf S} = {\bf
 C(I,J)}$, and thus the \verb'Mask' has the same size as ${\bf A}$,
 ${\bf S}$, and ${\bf C(I,J)}$.
 
-The \verb'GrB_subassign' operation is the reverse of matrix extraction:
+The \verb'GxB_subassign' operation is the reverse of matrix extraction:
 
 \begin{itemize}
 \item
@@ -4315,7 +4497,7 @@ the submatrix \verb'A(I,J)' appears on the right-hand side of the assignment,
 not take part in the computation.
 
 \item
-For submatrix assignment, \verb'GrB_Matrix_subassign',
+For submatrix assignment, \verb'GxB_Matrix_subassign',
 the submatrix \verb'C(I,J)' appears on the left-hand-side of the assignment,
 \verb'C(I,J)=A', and entries outside of the submatrix are not accessed and do
 not take part in the computation.
@@ -4371,19 +4553,19 @@ described for matrix extraction:
         end
     end \end{verbatim}}
 
-Results are not defined for any \verb'GrB_subassign' operation if duplicate
+Results are not defined for any \verb'GxB_subassign' operation if duplicate
 indices appear in \verb'I' or \verb'J'.
 
 \newpage
 %-------------------------------------------------------------------------------
-\subsubsection{{\sf GrB\_Col\_subassign:} assign to a sub-column of a matrix}
+\subsubsection{{\sf GxB\_Col\_subassign:} assign to a sub-column of a matrix}
 %-------------------------------------------------------------------------------
 \label{subassign_column}
 
 \begin{mdframed}[userdefinedwidth=6in]
 {\footnotesize
 \begin{verbatim}
-GrB_Info GrB_subassign              // C(I,j)<mask> = accum (C(I,j),u)
+GrB_Info GxB_subassign              // C(I,j)<mask> = accum (C(I,j),u)
 (
     GrB_Matrix C,                   // input/output matrix for results
     const GrB_Vector mask,          // optional mask for C(I,j), unused if NULL
@@ -4396,25 +4578,25 @@ GrB_Info GrB_subassign              // C(I,j)<mask> = accum (C(I,j),u)
 ) ;
 \end{verbatim} } \end{mdframed}
 
-\verb'GrB_Col_subassign' modifies a single sub-column of a matrix \verb'C'.  It
-is the same as \verb'GrB_Matrix_subassign' where the index vector \verb'J[0]=j'
+\verb'GxB_Col_subassign' modifies a single sub-column of a matrix \verb'C'.  It
+is the same as \verb'GxB_Matrix_subassign' where the index vector \verb'J[0]=j'
 is a single column index (and thus \verb'nj=1'), and where all matrices in
-\verb'GrB_Matrix_subassign' (except \verb'C') consist of a single column.  The
+\verb'GxB_Matrix_subassign' (except \verb'C') consist of a single column.  The
 \verb'mask' vector has the same size as \verb'u' and the sub-column
 \verb'C(I,j)'.  The input descriptor \verb'GrB_INP0' is ignored; the input
-vector \verb'u' is not transposed.  Refer to \verb'GrB_Matrix_subassign' for
+vector \verb'u' is not transposed.  Refer to \verb'GxB_Matrix_subassign' for
 further details.
 
 % \newpage
 %-------------------------------------------------------------------------------
-\subsubsection{{\sf GrB\_Row\_subassign:} assign to a sub-row of a matrix}
+\subsubsection{{\sf GxB\_Row\_subassign:} assign to a sub-row of a matrix}
 %-------------------------------------------------------------------------------
 \label{subassign_row}
 
 \begin{mdframed}[userdefinedwidth=6in]
 {\footnotesize
 \begin{verbatim}
-GrB_Info GrB_subassign                 // C(i,J)<mask'> = accum (C(i,J),u')
+GrB_Info GxB_subassign                 // C(i,J)<mask'> = accum (C(i,J),u')
 (
     GrB_Matrix C,                   // input/output matrix for results
     const GrB_Vector mask,          // optional mask for C(i,J), unused if NULL
@@ -4427,30 +4609,30 @@ GrB_Info GrB_subassign                 // C(i,J)<mask'> = accum (C(i,J),u')
 ) ;
 \end{verbatim} } \end{mdframed}
 
-\verb'GrB_Row_subassign' modifies a single sub-row of a matrix \verb'C'.  It is
-the same as \verb'GrB_Matrix_subassign' where the index vector \verb'I[0]=i' is
+\verb'GxB_Row_subassign' modifies a single sub-row of a matrix \verb'C'.  It is
+the same as \verb'GxB_Matrix_subassign' where the index vector \verb'I[0]=i' is
 a single row index (and thus \verb'ni=1'), and where all matrices in
-\verb'GrB_Matrix_subassign' (except \verb'C') consist of a single row.  The
+\verb'GxB_Matrix_subassign' (except \verb'C') consist of a single row.  The
 \verb'mask' vector has the same size as \verb'u' and the sub-column
 \verb'C(I,j)'.  The input descriptor \verb'GrB_INP0' is ignored; the input
-vector \verb'u' is not transposed.  Refer to \verb'GrB_Matrix_subassign' for
+vector \verb'u' is not transposed.  Refer to \verb'GxB_Matrix_subassign' for
 further details.
 
 Sub-row assignment in SuiteSparse:GraphBLAS is not as fast as sub-column
 assignment.  If many of the rows of \verb'C' are to be modified by repeated use
-of \verb'GrB_Row_subassign', it can be faster to transpose \verb'C' first and
-to use \verb'GrB_Matrix_subassign' or \verb'GrB_Col_subassign' instead.
+of \verb'GxB_Row_subassign', it can be faster to transpose \verb'C' first and
+to use \verb'GxB_Matrix_subassign' or \verb'GxB_Col_subassign' instead.
 
 % \newpage
 %-------------------------------------------------------------------------------
-\subsubsection{{\sf GrB\_Vector\_subassign\_$<$type$>$:} assign a scalar to a subvector}
+\subsubsection{{\sf GxB\_Vector\_subassign\_$<$type$>$:} assign a scalar to a subvector}
 %-------------------------------------------------------------------------------
 \label{subassign_vector_scalar}
 
 \begin{mdframed}[userdefinedwidth=6in]
 {\footnotesize
 \begin{verbatim}
-GrB_Info GrB_subassign                 // w(I)<mask> = accum (w(I),x)
+GrB_Info GxB_subassign                 // w(I)<mask> = accum (w(I),x)
 (
     GrB_Vector w,                   // input/output vector for results
     const GrB_Vector mask,          // optional mask for w(I), unused if NULL
@@ -4462,11 +4644,11 @@ GrB_Info GrB_subassign                 // w(I)<mask> = accum (w(I),x)
 ) ;
 \end{verbatim} } \end{mdframed}
 
-\verb'GrB_Vector_subassign_<type>' assigns a single scalar to an entire
+\verb'GxB_Vector_subassign_<type>' assigns a single scalar to an entire
 subvector of the vector \verb'w'.  The operation is exactly like setting a
 single entry in an \verb'n'-by-1 matrix, \verb'A(I,0) = x', where the column
 index for a vector is implicitly \verb'j=0'.  For further details of this
-function, see \verb'GrB_Matrix_subassign_<type>' in
+function, see \verb'GxB_Matrix_subassign_<type>' in
 Section~\ref{subassign_matrix_scalar}.
 
 Unlike \verb'GrB_Vector_assign_<type>' (see Section~\ref{assign_vector_scalar}),
@@ -4474,14 +4656,14 @@ results are not defined if \verb'I' contains duplicate indices.
 
 \newpage
 %-------------------------------------------------------------------------------
-\subsubsection{{\sf GrB\_Matrix\_subassign\_$<$type$>$:} assign a scalar to a submatrix}
+\subsubsection{{\sf GxB\_Matrix\_subassign\_$<$type$>$:} assign a scalar to a submatrix}
 %-------------------------------------------------------------------------------
 \label{subassign_matrix_scalar}
 
 \begin{mdframed}[userdefinedwidth=6in]
 {\footnotesize
 \begin{verbatim}
-GrB_Info GrB_subassign                 // C(I,J)<Mask> = accum (C(I,J),x)
+GrB_Info GxB_subassign                 // C(I,J)<Mask> = accum (C(I,J),x)
 (
     GrB_Matrix C,                   // input/output matrix for results
     const GrB_Matrix Mask,          // optional mask for C(I,J), unused if NULL
@@ -4495,11 +4677,11 @@ GrB_Info GrB_subassign                 // C(I,J)<Mask> = accum (C(I,J),x)
 ) ;
 \end{verbatim} } \end{mdframed}
 
-\verb'GrB_Matrix_subassign_<type>' assigns a single scalar to an entire
+\verb'GxB_Matrix_subassign_<type>' assigns a single scalar to an entire
 submatrix of \verb'C', like the {\em scalar expansion} \verb'C(I,J)=x' in
 MATLAB.  The scalar \verb'x' is implicitly expanded into a matrix \verb'A' of
 size \verb'ni' by \verb'nj', and then the matrix \verb'A' is assigned to
-\verb'C(I,J)' using the same method as in \verb'GrB_Matrix_subassign'.  Refer
+\verb'C(I,J)' using the same method as in \verb'GxB_Matrix_subassign'.  Refer
 to that function in Section~\ref{subassign_matrix} for further details.
 
 For the accumulation step, the scalar \verb'x' is typecasted directly into the
@@ -4535,10 +4717,10 @@ The methods described in this section are all variations of the form
 \verb'C(I,J)=A', which modifies a submatrix of the matrix \verb'C'.  All
 methods can be used in their generic form with the single name
 \verb'GrB_assign'.  These methods are very similar to their
-\verb'GrB_subassign' counterparts in Section~\ref{subassign}.  They differ
+\verb'GxB_subassign' counterparts in Section~\ref{subassign}.  They differ
 primarily in the size of the \verb'Mask', and how the \verb'GrB_REPLACE' option
 works.  Refer to Section~\ref{compare_assign} for a complete comparison of
-\verb'GrB_subassign' and \verb'GrB_assign'.
+\verb'GxB_subassign' and \verb'GrB_assign'.
 
 %-------------------------------------------------------------------------------
 \subsubsection{{\sf GrB\_Vector\_assign:} assign to a subvector }
@@ -4609,7 +4791,7 @@ Step & GraphBLAS & description \\
 \end{tabular}
 \vspace{0.1in}
 
-In contrast to \verb'GrB_subassign', the \verb'Mask' has the same as \verb'C'.
+In contrast to \verb'GxB_subassign', the \verb'Mask' has the same as \verb'C'.
 
 Step 1 extracts the submatrix and then Step 2 applies the accumulator
 (or ${\bf S}={\bf A}$ if \verb'accum' is \verb'NULL').  The \verb'Mask' is
@@ -4617,7 +4799,7 @@ not yet applied.
 
 Step 3 makes a copy of the ${\bf C}$ matrix, and then Step 4 writes the
 submatrix ${\bf S}$ into ${\bf Z}$.  This is the same as Step 3 of
-\verb'GrB_subassign', except that it operates on a temporary matrix ${\bf Z}$.
+\verb'GxB_subassign', except that it operates on a temporary matrix ${\bf Z}$.
 
 Finally, Step 5 writes ${\bf Z}$ back into ${\bf C}$ via the \verb'Mask', using
 the Mask/Replace Phase described in Section~\ref{accummask}.  If
@@ -4680,22 +4862,22 @@ GrB_Info GrB_assign                 // C<mask'>(i,J) = accum (C(i,J),u')
 ) ;
 \end{verbatim} } \end{mdframed}
 
-\verb'GrB_Row_subassign' modifies a single sub-row of a matrix \verb'C'.  It is
-the same as \verb'GrB_Matrix_subassign' where the index vector \verb'I[0]=i' is a
-single row index, and where all matrices in \verb'GrB_Matrix_subassign' (except
+\verb'GxB_Row_subassign' modifies a single sub-row of a matrix \verb'C'.  It is
+the same as \verb'GxB_Matrix_subassign' where the index vector \verb'I[0]=i' is a
+single row index, and where all matrices in \verb'GxB_Matrix_subassign' (except
 \verb'C') consist of a single row. 
 
 Unlike \verb'GrB_Matrix_assign', the \verb'mask' is a vector with the same size
 as a single row of \verb'C'.
 
 The input descriptor \verb'GrB_INP0' is ignored; the input vector \verb'u' is
-not transposed.  Refer to \verb'GrB_Matrix_subassign' for further details.
+not transposed.  Refer to \verb'GxB_Matrix_subassign' for further details.
 
 Sub-row assignment in SuiteSparse:GraphBLAS is not as fast as sub-column
 assignment.  If many of the rows of \verb'C' are to be modified by repeated use
-of \verb'GrB_Row_subassign', it can be faster to transpose \verb'C' first and
-to use \verb'GrB_Matrix_subassign' or \verb'GrB_Col_subassign' instead.  See
-\verb'GrB_Matrix_subassign' for further details.
+of \verb'GxB_Row_subassign', it can be faster to transpose \verb'C' first and
+to use \verb'GxB_Matrix_subassign' or \verb'GxB_Col_subassign' instead.  See
+\verb'GxB_Matrix_subassign' for further details.
 
 \newpage
 %-------------------------------------------------------------------------------
@@ -4725,7 +4907,7 @@ vector is implicitly \verb'j=0'.  The \verb'mask' vector has the same size as
 \verb'w'.  For further details of this function, see
 \verb'GrB_Matrix_assign_<type>' in the next section.
 
-In contrast to \verb'GrB_Vector_subassign_<type>', results are well-defined if
+In contrast to \verb'GxB_Vector_subassign_<type>', results are well-defined if
 \verb'I' contains duplicate indices.  Duplicate indices are simply ignored.
 
 % \newpage
@@ -4779,42 +4961,42 @@ does not exactly match the user-defined type of \verb'C', then results are
 undefined.  No error status will be returned since GraphBLAS has no way of
 catching this error.
 
-In contrast to \verb'GrB_Matrix_subassign_<type>', results are well-defined if
+In contrast to \verb'GxB_Matrix_subassign_<type>', results are well-defined if
 \verb'I' or \verb'J' contain duplicate indices.  Duplicate indices
 are simply ignored.
 
 \newpage
 %===============================================================================
-\subsection{Comparing {\sf GrB\_assign} and {\sf GrB\_subassign}} %=============
+\subsection{Comparing {\sf GrB\_assign} and {\sf GxB\_subassign}} %=============
 %===============================================================================
 \label{compare_assign}
 
 \begin{spec}
-{\bf SPEC:} \verb'GrB_subassign' is an extension to the spec.
+{\bf SPEC:} \verb'GxB_subassign' is an extension to the spec.
 \end{spec}
 
-The \verb'GrB_subassign' and \verb'GrB_assign' operations are very similar, but
+The \verb'GxB_subassign' and \verb'GrB_assign' operations are very similar, but
 they differ in three ways:
 
 \begin{enumerate}
 \item
-    The mask in \verb'GrB_subassign' has the same dimensions as \verb'w(I)' for
+    The mask in \verb'GxB_subassign' has the same dimensions as \verb'w(I)' for
     vectors and \verb'C(I,J)' for matrices.  In \verb'GrB_assign', the mask is
     the same size as \verb'w' or \verb'C', respectively (except for the row/col
     variants).  The two masks are related.  If \verb'M' is the mask for
-    \verb'GrB_assign', then \verb'M(I,J)' is the mask for \verb'GrB_subassign'.
+    \verb'GrB_assign', then \verb'M(I,J)' is the mask for \verb'GxB_subassign'.
     If there is no mask, or if \verb'I' and \verb'J' are both \verb'GrB_ALL',
     then the two masks are the same.
 
     For \verb'GrB_Row_assign' and \verb'GrB_Col_assign', the \verb'mask' vector
     is the same size as a row or column of C, respectively.  For the
-    corresponding \verb'GrB_Row_subassign' and \verb'GrB_Col_subassign'
+    corresponding \verb'GxB_Row_subassign' and \verb'GxB_Col_subassign'
     operations, the \verb'mask' is the same size as the sub-row \verb'C(i,J)' or
     subcolumn \verb'C(I,j)', respectively.
 
 \item
     They differ in how \verb'C' is affected in areas outside the \verb'C(I,J)'
-    submatrix.  In \verb'GrB_subassign', the \verb'C(I,J)' submatrix is the
+    submatrix.  In \verb'GxB_subassign', the \verb'C(I,J)' submatrix is the
     only part of \verb'C' that can be modified, and no part of \verb'C' outside
     the submatrix is ever modified.  In \verb'GrB_assign', it is possible to
     delete entries in \verb'C' outside the submatrix, but only in one specific
@@ -4833,20 +5015,20 @@ they differ in three ways:
     \verb'GrB_*_assign_<type>', are well-defined if duplicate indices appear
     (the results are the same as if duplicates are removed first from \verb'I'
     and \verb'J').  However, the scalar expansion operations
-    \verb'GrB_*_subassign_<type>' are not well-defined if duplicate indices
+    \verb'GxB_*_subassign_<type>' are not well-defined if duplicate indices
     appear in \verb'I' or \verb'J'.
 
 \end{enumerate}
 
 \newpage
-\verb'GrB_subassign' and \verb'GrB_assign' are identical if \verb'GrB_REPLACE'
+\verb'GxB_subassign' and \verb'GrB_assign' are identical if \verb'GrB_REPLACE'
 is set to its default value of false, and if the masks happen to be the same.
 The two masks can be the same in two cases:  either the \verb'Mask' input is
 \verb'NULL' (and it is not complemented via \verb'GrB_SCMP'), or \verb'I' and
 \verb'J' are both \verb'GrB_ALL'.  In this case, the two algorithms are
 identical and have the same performance.
 
-\verb'GrB_subassign' is much faster than \verb'GrB_assign', when the latter
+\verb'GxB_subassign' is much faster than \verb'GrB_assign', when the latter
 must examine the entire matrix \verb'C' to delete entries (when
 \verb'GrB__REPLACE' is true), and if it must deal with a much larger
 \verb'Mask' matrix.  However, both methods have specific uses.
@@ -4858,7 +5040,7 @@ then use \verb'GrB_assign'.
 
 If instead the \verb'Mask' is meant to control which entries of the submatrix
 \verb'C(I,J)' are modified by the finite-element \verb'F', then use
-\verb'GrB_subassign'.  This is particularly useful is the \verb'Mask' is a
+\verb'GxB_subassign'.  This is particularly useful is the \verb'Mask' is a
 template that follows along with the finite-element \verb'F', independent of
 where it is applied to \verb'C'.  Using \verb'GrB_assign' would be very
 difficult in this case since a new \verb'Mask', the same size as \verb'C',
@@ -4883,7 +5065,7 @@ controls how \verb'C(i,j)' is modified by the subassign, from the value
 \verb'A(0,0)'.  In the assign, \verb'Mask' is the same size as \verb'C', and
 \verb'Mask(i,j)' controls how \verb'C(i,j)' is modified.
 
-The \verb'GrB_subassign' and \verb'GrB_assign' functions have the same
+The \verb'GxB_subassign' and \verb'GrB_assign' functions have the same
 signatures; they differ only in how they consider the \verb'Mask' and the
 \verb'GrB_REPLACE' descriptor, and in how duplicate indices are treated for
 scalar expansion.
@@ -4893,7 +5075,7 @@ Details of each step of the two operations are listed below:
 \vspace{0.1in}
 \begin{tabular}{lll}
 \hline
-Step & \verb'GrB_Matrix_assign'                & \verb'GrB_Matrix_subassign'                        \\
+Step & \verb'GrB_Matrix_assign'                & \verb'GxB_Matrix_subassign'                        \\
 \hline
 1 & ${\bf S} = {\bf C(I,J)}$                & ${\bf S} = {\bf C(I,J)}$                              \\
 2 & ${\bf S} = {\bf S} \odot {\bf A}$       & ${\bf S \langle M \rangle} = {\bf S} \odot {\bf A}$   \\
@@ -4919,7 +5101,7 @@ The Mask/Replace Phase, described in Section~\ref{accummask} is different:
     are outside the ${\bf C(I,J)}$ submatrix can be modified by this operation.
 
 \item
-    For \verb'GrB_Matrix_subassign' (Step 2), the mask is applied to just ${\bf
+    For \verb'GxB_Matrix_subassign' (Step 2), the mask is applied to just ${\bf
     S}$.  The mask has the same size as ${\bf C(I,J)}$, ${\bf S}$ and ${\bf A}$.
     Just prior to making the assignment via the mask, the \verb'GrB_REPLACE'
     option can be used to clear ${\bf S}$ first.  No entries in ${\bf C}$ that
@@ -4930,10 +5112,10 @@ The Mask/Replace Phase, described in Section~\ref{accummask} is different:
 \end{itemize}
 
 The differences between \verb'GrB_Matrix_assign' and
-\verb'GrB_Matrix_subassign' can be seen in Tables~\ref{insubmatrix} and
+\verb'GxB_Matrix_subassign' can be seen in Tables~\ref{insubmatrix} and
 \ref{outsubmatrix}.  The first table considers the case when the entry $c_{ij}$
 is in the ${\bf C(I,J)}$ submatrix, and it describes what is computed for both
-\verb'GrB_Matrix_assign' and \verb'GrB_Matrix_subassign'.  They perform the
+\verb'GrB_Matrix_assign' and \verb'GxB_Matrix_subassign'.  They perform the
 exact same computation; the only difference is how the value of the mask is
 specified.
 
@@ -4946,7 +5128,7 @@ $i={\bf I}(i')$ and $j={\bf J}(i')$.
 
 The {\em mask} column is 1 if the mask allows ${\bf C}$ to be modified, and 0
 otherwise.  This is $m_{ij}$ for \verb'GrB_assign', and $m_{i'j'}$ for
-\verb'GrB_subassign', to reflect the difference in the mask, but this
+\verb'GxB_subassign', to reflect the difference in the mask, but this
 difference is not reflected in the table.  The value 1 or 0 is the value of the
 entry in the mask after it is optionally complemented via the \verb'GrB_SCMP'
 option.
@@ -4959,7 +5141,7 @@ inserted into ${\bf C}$ if not present.
 {\small
 \begin{tabular}{lllll|l}
 \hline
-repl & accum & ${\bf C}$ & ${\bf A}$ & mask & action taken by \verb'GrB_assign' and \verb'GrB_subassign'\\
+repl & accum & ${\bf C}$ & ${\bf A}$ & mask & action taken by \verb'GrB_assign' and \verb'GxB_subassign'\\
 \hline
     -  &-   & $c_{ij}$ & $a_{i'j'}$  & 1    &  $c_{ij} = a_{i'j'}$, update \\
     -  &-   &  -       & $a_{i'j'}$  & 1    &  $c_{ij} = a_{i'j'}$, insert \\
@@ -5008,8 +5190,8 @@ repl & accum & ${\bf C}$ & ${\bf A}$ & mask & action taken by \verb'GrB_assign' 
 
 \newpage
 Table~\ref{outsubmatrix} illustrates how \verb'GrB_assign' and
-\verb'GrB_subassign' differ for entries outside the submatrix.
-\verb'GrB_subassign' never modifies any entry outside the ${\bf C(I,J)}$
+\verb'GxB_subassign' differ for entries outside the submatrix.
+\verb'GxB_subassign' never modifies any entry outside the ${\bf C(I,J)}$
 submatrix, but \verb'GrB_assign' can modify them in two cases listed in
 Table~\ref{outsubmatrix}.  When the \verb'GrB_REPLACE' option is selected, and
 when the \verb'Mask(i,j)' for an entry $c_{ij}$ is false (or if the
@@ -5071,7 +5253,7 @@ ${\bf C(I,J)}$ submatrix.  Subassign has no effect on these entries. \label{outs
 \subsubsection{Example}
 %-------------------------------------------------------------------------------
 
-The difference between \verb'GrB_subassign' and \verb'GrB_assign' is
+The difference between \verb'GxB_subassign' and \verb'GrB_assign' is
 illustrated in the following example.  Consider the 2-by-2 matrix ${\bf C}$
 where all entries are present.
 
@@ -5115,7 +5297,7 @@ ${\bf C}$ because their \verb'Mask' values are 1.  The $(1,0)$ entry is deleted
 because the entry ${\bf Z}(1,0)=21$ is prevented from being written back into
 ${\bf C}$ since \verb'Mask(1,0)=0'.
 
-Now consider the analogous \verb'GrB_subassign' operation.  The \verb'Mask' has
+Now consider the analogous \verb'GxB_subassign' operation.  The \verb'Mask' has
 the same size as ${\bf A}$, namely:
 \[
 {\bf M} = \left[
@@ -5139,17 +5321,17 @@ the result is
 \]
 
 Only the ${\bf C(I,J)}$ submatrix, the single entry ${\bf C}(0,1)$, is modified
-by \verb'GrB_subassign'.  The entry ${\bf C}(1,0)=21$ is unaffected by
-\verb'GrB_subassign', but it is deleted by \verb'GrB_assign'.
+by \verb'GxB_subassign'.  The entry ${\bf C}(1,0)=21$ is unaffected by
+\verb'GxB_subassign', but it is deleted by \verb'GrB_assign'.
 
 \newpage
 %-------------------------------------------------------------------------------
-\subsubsection{Performance of {\sf GrB\_subassign}, {\sf GrB\_assign}
+\subsubsection{Performance of {\sf GxB\_subassign}, {\sf GrB\_assign}
 and {\sf GrB\_*\_setElement}}
 %-------------------------------------------------------------------------------
 
 When SuiteSparse:GraphBLAS uses non-blocking mode, the modifications to a
-matrix by \verb'GrB_subassign', \verb'GrB_assign', and \verb'GrB_*_setElement'
+matrix by \verb'GxB_subassign', \verb'GrB_assign', and \verb'GrB_*_setElement'
 can postponed, and computed all at once later on.  This has a huge impact on
 performance.
 
@@ -5195,7 +5377,7 @@ for sparse graphs that can be handled on a commodity laptop.
 
 \newpage
 The following guidelines should be considered when using
-\verb'GrB_subassign', \verb'GrB_assign' and \verb'GrB_*_setElement'.
+\verb'GxB_subassign', \verb'GrB_assign' and \verb'GrB_*_setElement'.
 
 \begin{enumerate}
 
@@ -5235,13 +5417,13 @@ much bigger than \verb'A'.  As a comparison, MATLAB takes just 0.42 seconds to
 compute \verb"C+C'" for this matrix, which also takes time linear in the size
 of the matrix, $O(n+k)$.
 
-\item In general, \verb'GrB_subassign' is faster than \verb'GrB_assign'.
+\item In general, \verb'GxB_subassign' is faster than \verb'GrB_assign'.
 If \verb'GrB_REPLACE' is used with \verb'GrB_assign', the entire matrix
-\verb'C' must be traversed.  This is much slower than \verb'GrB_subassign',
+\verb'C' must be traversed.  This is much slower than \verb'GxB_subassign',
 which only needs to examine the \verb'C(I,J)' submatrix.  Furthermore,
 \verb'GrB_assign' must deal with a much larger \verb'Mask' matrix, whereas
-\verb'GrB_subassign' has a smaller mask.  Since its mask is smaller,
-\verb'GrB_subassign' takes less time than \verb'GrB_assign' to access the mask.
+\verb'GxB_subassign' has a smaller mask.  Since its mask is smaller,
+\verb'GxB_subassign' takes less time than \verb'GrB_assign' to access the mask.
 
 \end{enumerate}
 
@@ -5273,7 +5455,7 @@ versions, the simple name \verb'GrB_apply' is used.
 
 % \newpage
 %-------------------------------------------------------------------------------
-\subsubsection{{\sf GrB\_Vector\_apply:} apply an operator to a vector}
+\subsubsection{{\sf GrB\_Vector\_apply:} apply a unary operator to a vector}
 %-------------------------------------------------------------------------------
 \label{apply_vector}
 
@@ -5300,9 +5482,9 @@ type as the \verb'ztype' of the unary operator.  The final step is ${\bf w
 \langle m \rangle  = w \odot t}$, as described in Section~\ref{accummask},
 except that all the terms are column vectors instead of matrices.
 
-% \newpage
+\newpage
 %-------------------------------------------------------------------------------
-\subsubsection{{\sf GrB\_Matrix\_apply:} apply an operator to a matrix}
+\subsubsection{{\sf GrB\_Matrix\_apply:} apply a unary operator to a matrix}
 %-------------------------------------------------------------------------------
 \label{apply_matrix}
 
@@ -5353,6 +5535,140 @@ operator to perform this task.  As a result, \verb'GrB_transpose' can be used
 as an efficient and direct interface to the accumulator/mask function for
 both built-in and user-defined types.  However, it is only available for
 matrices, not vectors.
+
+\newpage
+%===============================================================================
+\subsection{{\sf GxB\_select:} apply a select operator} %=======================
+%===============================================================================
+\label{select}
+
+The \verb'GxB_select' function is the generic name for two specific functions:
+\\ \verb'GxB_Vector_select' and  \verb'GxB_Matrix_select'.  The generic name
+appears in the function prototypes, but the specific function name is used when
+describing each variation.  When discussing features that apply to both
+versions, the simple name \verb'GxB_select' is used.
+
+\begin{specbeta}
+{\bf SPEC:} The \verb'GxB_select' operation and \verb'GxB_SelectOp' operator
+are extensions to the spec.  They were added to SuiteSparse:GraphBLAS 1.1.0
+on Dec 1, 2017, and should be considred as Beta.  Their design may change as
+feedback is received on this feature.
+\end{specbeta}
+
+% \newpage
+%-------------------------------------------------------------------------------
+\subsubsection{{\sf GxB\_Vector\_select:} apply a select operator to a vector}
+%-------------------------------------------------------------------------------
+\label{select_vector}
+
+\begin{mdframed}[userdefinedwidth=6in]
+{\footnotesize
+\begin{verbatim}
+GrB_Info GxB_select                 // w<mask> = accum (w, op(u,k))
+(
+    GrB_Vector w,                   // input/output vector for results
+    const GrB_Vector mask,          // optional mask for w, unused if NULL
+    const GrB_BinaryOp accum,       // optional accum for z=accum(w,t)
+    const GxB_SelectOp op,          // operator to apply to the entries
+    const GrB_Vector u,             // first input:  vector u
+    const void *k,                  // optional input for the select operator
+    const GrB_Descriptor desc       // descriptor for w and mask
+) ;
+\end{verbatim} } \end{mdframed}
+
+\verb'GxB_Vector_select' applies a select operator to the entries of a vector,
+analogous to \verb't = u.*op(u)'  in MATLAB except the operator \verb'op' is
+only applied to entries in the pattern of \verb'u'.  Implicit values outside
+the pattern of \verb'u' are not affected.  If the operator is not type-generic,
+the entries in \verb'u' are typecasted into the \verb'xtype' of the select
+operator.  The vector \verb't' has the same type and size as \verb'u'.  The
+final step is ${\bf w \langle m \rangle  = w \odot t}$, as described in
+Section~\ref{accummask}, except that all the terms are column vectors instead
+of matrices.
+
+This operation operates on vectors just as if they were \verb'm'-by-1 matrices,
+except that GraphBLAS never transposes a vector via the descriptor.  The
+\verb'op' is passed \verb'n=1' as the number of columns.  Refer to the next
+section on \verb'GxB_Matrix_select' for more details.
+
+\newpage
+%-------------------------------------------------------------------------------
+\subsubsection{{\sf GxB\_Matrix\_select:} apply a select operator to a matrix}
+%-------------------------------------------------------------------------------
+\label{select_matrix}
+
+\begin{mdframed}[userdefinedwidth=6in]
+{\footnotesize
+\begin{verbatim}
+GrB_Info GxB_select                 // C<Mask> = accum (C, op(A,k)) or op(A',k)
+(
+    GrB_Matrix C,                   // input/output matrix for results
+    const GrB_Matrix Mask,          // optional mask for C, unused if NULL
+    const GrB_BinaryOp accum,       // optional accum for Z=accum(C,T)
+    const GxB_SelectOp op,          // operator to apply to the entries
+    const GrB_Matrix A,             // first input:  matrix A
+    const void *k,                  // optional input for the select operator
+    const GrB_Descriptor desc       // descriptor for C, mask, and A
+) ;
+\end{verbatim} } \end{mdframed}
+
+\verb'GxB_Matrix_select' applies a select operator to the entries of a matrix,
+analogous to \verb'T = A .* op(A)'  in MATLAB except the operator \verb'op' is
+only applied to entries in the pattern of \verb'A'.  Implicit values outside
+the pattern of \verb'A' are not affected.  The input matrix \verb'A' may be
+transposed first.  If the operator is not type-generic, the entries in \verb'A'
+are typecasted into the \verb'xtype' of the select operator.  The final step is
+${\bf C \langle M \rangle  = C \odot T}$, as described in
+Section~\ref{accummask}.
+
+The matrix \verb'T' has the same size and type as \verb'A' (or the transpose of
+\verb'A' if the input is transposed via the descriptor).  The entries of
+\verb'T' are a subset of those of \verb'A'.  Each entry \verb'A(i,j)' of
+\verb'A' is passed to the \verb'op', as $z=f(i,j,m,n,a_{ij},k)$, where \verb'A'
+is $m$-by-$n$.  If \verb'A' is transposed first then the operator is applied to
+entries in the transposed matrix, \verb"A'".  If $z$ is returned as true, then
+the entry is copied into \verb'T', unchanged.  If it returns false, the entry
+does not appear in \verb'T'.
+
+For user-defined select operators, the argument \verb'k' is passed to the
+operator unchanged.  For built-in operators, \verb'k' is a pointer to an
+\verb'int64_t' scalar that refers to the \verb'k'th diagonal of the matrix.
+The value \verb'k=0' specifies the main diagonal of the matrix, \verb'k=1' is
+the +1 diagonal (the entries just above the main diagonal), \verb'k=-1' is the
+-1 diagonal, and so on.  Note that \verb'k' must be passed as a pointer to
+\verb'int64_t', not merely as an integer.  The parameter \verb'k' is not used
+by \verb'GxB_NONZERO' and may be passed as \verb'GrB_NULL'.
+
+The action of \verb'GxB_select' with the built-in select operators is described
+in the table below.  The MATLAB analogs are precise for \verb'tril' and
+\verb'triu', but shorthand for the other operations.  The MATLAB \verb'diag'
+function returns a column with the diagonal, if \verb'A' is a matrix, whereas
+the matrix \verb'T' in \verb'GxB_select' always has same size as \verb'A' (or
+its transpose if the \verb'GrB_INP0' is set to \verb'GrB_TRAN').  In the MATLAB
+analog column, \verb'diag' is as if it operates like \verb'GxB_select', where
+\verb'T' is a matrix.
+
+\vspace{0.2in}
+{\small
+\begin{tabular}{llp{3in}}
+\hline
+GraphBLAS               & MATLAB            & \\
+name                   & analog            & \\
+\hline
+\verb'GxB_TRIL'         & \verb'T=tril(A,k)'   &
+    Entries in \verb'T' are the entries on and below the \verb'k'th diagonal of \verb'A'. \\
+\verb'GxB_TRIU'         & \verb'T=triu(A,k)'   & 
+    Entries in \verb'T' are the entries on and above the \verb'k'th diagonal of \verb'A'. \\
+\verb'GxB_DIAG'         & \verb'T=diag(A,k)'   & 
+    Entries in \verb'T' are the entries on the \verb'k'th diagonal of \verb'A'. \\
+\verb'GxB_OFFDIAG'      & \verb'T=A-diag(A,k)' & 
+    Entries in \verb'T' are all entries not on the \verb'k'th diagonal of \verb'A'. \\
+\verb'GxB_NONZERO'      & \verb'T=A(A~=0)'     & 
+    Entries in \verb'T' are all entries in \verb'A' that have nonzero value. \\
+\hline
+\end{tabular}
+}
+\vspace{0.2in}
 
 \newpage
 %===============================================================================
@@ -5561,7 +5877,7 @@ exist, the work of \verb'GrB_Matrix_dup' can be replicated with this:
     GrB_Type type ;
     GrB_Index nrows, ncols ;
     GrB_Descriptor desc ;
-    GrB_Matrix_type (&type, A) ;
+    GxB_Matrix_type (&type, A) ;
     GrB_Matrix_nrows (&nrows, A) ;
     GrB_Matrix_ncols (&ncols, A) ;
     GrB_Matrix_new (&C, type, nrows, ncols) ;
@@ -5654,7 +5970,7 @@ Each iteration of the BFS consists of three calls to GraphBLAS.  The first one
 uses \verb'q' as a mask.  It modifies all positions in \verb'v' where \verb'q'
 is true, setting them all to the current \verb'level'.  No accumulator or
 descriptor are used.  Since \verb'GrB_REPLACE' is not used and
-\verb'I=GrB_ALL', \verb'GrB_subassign' and \verb'GrB_assign' are identical;
+\verb'I=GrB_ALL', \verb'GxB_subassign' and \verb'GrB_assign' are identical;
 either can be used in this step:
 
         {\footnotesize
@@ -6175,7 +6491,7 @@ method above.
     } \end{verbatim}}
 
 Since there is no \verb'Mask', and since \verb'GrB_REPLACE' not used, the call
-to \verb'GrB_assign' in the example above is identical to \verb'GrB_subassign'.
+to \verb'GrB_assign' in the example above is identical to \verb'GxB_subassign'.
 Either one can be used, and their performance would be identical.
 
 Refer to the \verb'wathen.c' function in the \verb'Demo' folder, which
@@ -6307,7 +6623,7 @@ the \verb'GraphBLAS/Demo' folder.  Refer to the comments in those two files for
 details and derivations on how these methods work.
 
 When a mask is present and not complemented, \verb'GrB_INP0' is
-\verb'GrB_TRAN', and \verb'GrB_INP1' is \verb'GrB_DEFAULT', the
+\verb'GrB_TRAN', and \verb'GrB_INP1' is \verb'GxB_DEFAULT', the
 SuiteSparse:GraphBLAS implementation of \verb'GrB_mxm' always uses a dot-product
 formulation.  Thus, the ${\bf C \langle L \rangle} = {\bf U}^T{\bf L}$ method
 uses dot products.  This provides a mechanism for the end-user to select a
@@ -6591,8 +6907,8 @@ in GraphBLAS is very simple:
         GrB_Matrix C ;
         GrB_Matrix_nrows (&n, U) ;
         GrB_Matrix_new (&C, GrB_UINT32, n, n) ;
-        GrB_mxm (C, U, NULL, GrB_PLUS_TIMES_UINT32, U, U, NULL) ;
-        GrB_reduce (&ntriangles, NULL, GrB_PLUS_INT64_MONOID, C, NULL) ;
+        GrB_mxm (C, U, NULL, GxB_PLUS_TIMES_UINT32, U, U, NULL) ;
+        GrB_reduce (&ntriangles, NULL, GxB_PLUS_INT64_MONOID, C, NULL) ;
         GrB_free (&C) ;
 \end{verbatim}
 }
@@ -6610,8 +6926,8 @@ in GraphBLAS is:
         GrB_Matrix_new (&C, GrB_UINT32, n, n) ;
         GrB_Descriptor_new (&d) ;
         GrB_Descriptor_set (d, GrB_INP0, GrB_TRAN) ;
-        GrB_mxm (C, U, NULL, GrB_PLUS_TIMES_UINT32, L, U, d) ;
-        GrB_reduce (&ntriangles, NULL, GrB_PLUS_INT64_MONOID, C, NULL) ;
+        GrB_mxm (C, U, NULL, GxB_PLUS_TIMES_UINT32, L, U, d) ;
+        GrB_reduce (&ntriangles, NULL, GxB_PLUS_INT64_MONOID, C, NULL) ;
         GrB_free (&C) ;
         GrB_free (&d) ;
 \end{verbatim}
@@ -6691,8 +7007,8 @@ C compiler supporting this version of the C standard is required.  On the Mac
 (OS X), \verb'clang' 8.0.0 in \verb'Xcode' version 8.2.1 is sufficient,
 although earlier versions of \verb'Xcode' may work as well.  For the GNU
 \verb'gcc' compiler, version 4.9 or later is required.  For the Intel
-\verb'icc' compiler, version 18.0 is required.  Version 2.8.12 or later of
-\verb'cmake' is required; version 3.0.0 is preferred.
+\verb'icc' compiler, version 18.0 or later is required.  Version 2.8.12 or
+later of \verb'cmake' is required; version 3.0.0 is preferred.
 
 To compile SuiteSparse:GraphBLAS and the demo programs:
 
@@ -6717,7 +7033,8 @@ these options:
 
 If this still fails, see the \verb'GraphBLAS/CMakeLists.txt' file.  You may
 need to pass compiler-specific options to your compiler.  Locate this section
-in the \verb'CMakeLists.txt' file:
+in the \verb'CMakeLists.txt' file.  Use the \verb'set' command in \verb'cmake',
+as in the example below, to set the compiler flags you need.
 
     {\small
     \begin{verbatim}
@@ -6727,13 +7044,13 @@ in the \verb'CMakeLists.txt' file:
         # cmake 2.8 workaround: gcc needs to be told to do ANSI C11.
         # cmake 3.0 doesn't have this problem.
         set (CMAKE_C_FLAGS  "-std=c11 -lm")
+        ...
     elseif ("${CMAKE_C_COMPILER_ID}" STREQUAL "Intel")
-        # options for icc
-        set (CMAKE_C_FLAGS  "-std=c11")
+        ...
     elseif ("${CMAKE_C_COMPILER_ID}" STREQUAL "Clang")
-        # options for clang
+        ...
     elseif ("${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")
-        # options for MicroSoft Visual Studio
+        ...
     endif ( )
     \end{verbatim} }
 

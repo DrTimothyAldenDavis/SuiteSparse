@@ -1,3 +1,12 @@
+Version 1.1.0: Dec 1, 2017
+
+    * add new feature: GxB_SelectOp operator and GxB_select operation
+    * to clarify which features of SuiteSparse:GraphBLAS are extensions to
+        the spec, the names of functions and objects not in the spec have
+        changed.  They are now GxB_* (GXB_ for macros).
+    * modified how the global matrix queue is accessed, for thread safety
+        in case the user application is multi-threaded
+
 Version 1.0.0: Nov 25, 2017
 
     * transition to CMake

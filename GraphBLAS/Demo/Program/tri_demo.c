@@ -68,25 +68,28 @@ int main (int argc, char **argv)
 
     // A = spones (C), and typecast to uint32
     OK (GrB_Matrix_new (&A, GrB_UINT32, n, n)) ;
-    OK (GrB_apply (A, NULL, NULL, GrB_ONE_UINT32, C, NULL)) ;
+    OK (GrB_apply (A, NULL, NULL, GxB_ONE_UINT32, C, NULL)) ;
     double t_read = simple_toc (tic) ;
     printf ("\ntotal time to read A matrix: %14.6f sec\n", t_read) ;
     GrB_free (&C) ;
 
-    // U = triu (A)
+    // U = triu (A,1)
     simple_tic (tic) ;
-    OK (triu (&U, A)) ;
+    GrB_Index k = 1 ;
+    OK (GrB_Matrix_new (&U, GrB_UINT32, n, n)) ;
+    OK (GxB_select (U, NULL, NULL, GxB_TRIU, A, &k, NULL)) ;
     OK (GrB_Matrix_nvals (&nedges, U)) ;
     printf ("\nn %.16g # edges %.16g\n", (double) n, (double) nedges) ;
     double t_prune = simple_toc (tic) ;
     printf ("U=triu(A) time:  %14.6f sec\n", t_prune) ;
 
-    // L = U', for method 4
+    // L = tril (A,-1), for method 4
     simple_tic (tic) ;
     OK (GrB_Matrix_new (&L, GrB_UINT32, n, n)) ;
-    OK (GrB_transpose (L, NULL, NULL, U, NULL)) ;
+    k = -1 ;
+    OK (GxB_select (L, NULL, NULL, GxB_TRIL, A, &k, NULL)) ;
     double t_trans = simple_toc (tic) ;
-    printf ("L=U' time :      %14.6f sec\n", t_trans) ;
+    printf ("L=tril(A) time:  %14.6f sec\n", t_trans) ;
 
     //--------------------------------------------------------------------------
     // count the triangles via C<U> = U*U (outer-product)

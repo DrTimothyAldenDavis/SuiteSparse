@@ -104,16 +104,16 @@ int main (int argc, char **argv)
     OK (GrB_eWiseAdd (e, NULL, NULL, GrB_EQ_BOOL, iset, iset2, NULL)) ;
 
     bool a ;
-    OK (GrB_reduce (&a, NULL, GrB_LAND_BOOL_MONOID, e, NULL)) ;
+    OK (GrB_reduce (&a, NULL, GxB_LAND_BOOL_MONOID, e, NULL)) ;
     if (!a) { printf ("error!\n") ; exit (1) ; }
 
     int64_t isize1 ;
-    OK (GrB_reduce (&isize1, NULL, GrB_PLUS_INT64_MONOID, iset,
+    OK (GrB_reduce (&isize1, NULL, GxB_PLUS_INT64_MONOID, iset,
         NULL)) ;
     printf ("isize: %.16g\n", (double) isize1) ;
 
     int64_t isize2 ;
-    OK (GrB_reduce (&isize2, NULL, GrB_PLUS_INT64_MONOID, iset2,
+    OK (GrB_reduce (&isize2, NULL, GxB_PLUS_INT64_MONOID, iset2,
         NULL )) ;
 
     if (isize1 != isize2) { printf ("error!\n") ; exit (1) ; }
@@ -189,7 +189,7 @@ int main (int argc, char **argv)
     // iset2 = iset
     OK (GrB_Vector_dup (&iset2, iset)) ;
     // iset2 = iset2 or A*iset, using the Boolean semiring
-    OK (GrB_mxv (iset2, NULL, GrB_LOR, GrB_LOR_LAND_BOOL, A, iset, NULL)) ;
+    OK (GrB_mxv (iset2, NULL, GrB_LOR, GxB_LOR_LAND_BOOL, A, iset, NULL)) ;
     OK (GrB_Vector_nvals (&nvals, iset2)) ;
     if (nvals != n)
     {

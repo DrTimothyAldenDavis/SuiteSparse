@@ -26,6 +26,10 @@
 // functions and features that are extensions to the spec.  These are cataloged
 // here and tagged with "SPEC".
 
+// All functions and definitions that are extensions to the spec are given
+// names of the form GxB_* for functions and built-in objects, or GXB_ for
+// macros, so it is clear which are in the spec and which are extensions.
+
 #ifndef GRAPHBLAS_H
 #define GRAPHBLAS_H
 
@@ -40,57 +44,57 @@
 // and the version of the GraphBLAS specification it conforms to.  User code
 // can use tests like this:
 //
-//      #if GRAPHBLAS >= GrB_VERSION (2,0,3)
+//      #if GXB >= GXB_VERSION (2,0,3)
 //      ... use features in GraphBLAS specification 2.0.3 ...
 //      #else
 //      ... only use features in early specifications
 //      #endif
 //
-//      #if GRAPHBLAS_IMPLEMENTATION > GrB_VERSION (1,4,0)
+//      #if GXB_IMPLEMENTATION > GXB_VERSION (1,4,0)
 //      ... use features from version 1.4.0 of a GraphBLAS package
 //      #endif
 
 // X_GRAPHBLAS: names this particular implementation:
-#define SUITESPARSE_GRAPHBLAS
+#define GXB_SUITESPARSE_GRAPHBLAS
 
-// GrB_VERSION: a single integer for comparing spec and version levels
-#define GrB_VERSION(major,minor,sub) \
+// GXB_VERSION: a single integer for comparing spec and version levels
+#define GXB_VERSION(major,minor,sub) \
     (((major)*1000ULL + (minor))*1000ULL + (sub))
 
 // This implementation conforms to the GraphBLAS provisional release 1.1.0
-#define GRAPHBLAS_MAJOR 1
-#define GRAPHBLAS_MINOR 1
-#define GRAPHBLAS_SUB   0
-#define GRAPHBLAS GrB_VERSION(GRAPHBLAS_MAJOR, GRAPHBLAS_MINOR, GRAPHBLAS_SUB)
+#define GXB_MAJOR 1
+#define GXB_MINOR 1
+#define GXB_SUB   0
+#define GXB GXB_VERSION(GXB_MAJOR, GXB_MINOR, GXB_SUB)
 
 // The version of this implementation:
-#define GRAPHBLAS_IMPLEMENTATION_MAJOR 1
-#define GRAPHBLAS_IMPLEMENTATION_MINOR 0
-#define GRAPHBLAS_IMPLEMENTATION_SUB   0
-#define GRAPHBLAS_IMPLEMENTATION \
-        GrB_VERSION (GRAPHBLAS_IMPLEMENTATION_MAJOR, \
-                     GRAPHBLAS_IMPLEMENTATION_MINOR, \
-                     GRAPHBLAS_IMPLEMENTATION_SUB)
+#define GXB_IMPLEMENTATION_MAJOR 1
+#define GXB_IMPLEMENTATION_MINOR 1
+#define GXB_IMPLEMENTATION_SUB   0
+#define GXB_IMPLEMENTATION \
+        GXB_VERSION (GXB_IMPLEMENTATION_MAJOR, \
+                     GXB_IMPLEMENTATION_MINOR, \
+                     GXB_IMPLEMENTATION_SUB)
 
 // The 'about' string the describes this particular implementation of GraphBLAS:
-#define GRAPHBLAS_ABOUT \
+#define GXB_ABOUT \
 "SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.\n" \
 "http://suitesparse.com  Dept of Computer Sci. & Eng, Texas A&M University\n"
 
 // and its date:
-#define GRAPHBLAS_DATE "Nov 25, 2017"
+#define GXB_DATE "Dec 1, 2017"
 
 // The 'spec' string describes the GraphBLAS spec:
-#define GRAPHBLAS_SPEC \
+#define GXB_SPEC \
 "GraphBLAS C API, provisional release, by Aydin Buluc, Timothy\n"   \
 "Mattson, Scott McMillan, Jose' Moreira, Carl Yang.  Based on\n"    \
 "\"GraphBLAS Mathematics\" by Jeremy Kepner.\n"
 
 // and its date:
-#define GRAPHBLAS_SPEC_DATE "Oct 10, 2017"
+#define GXB_SPEC_DATE "Oct 10, 2017"
 
 // The GraphBLAS license for this particular implementation of GraphBLAS:
-#define GRAPHBLAS_LICENSE \
+#define GXB_LICENSE \
 "SuiteSparse:GraphBLAS, Copyright 2017, Timothy A. Davis\n"                  \
 "\n"                                                                         \
 "Licensed under the Apache License, Version 2.0 (the \"License\");\n"        \
@@ -337,9 +341,9 @@ GrB_Info GB_Type_new            // create a new GraphBLAS type
     const char *name            // name of the type
 ) ;
 
-// SPEC: GrB_Type_size is an extension to the spec
+// SPEC: GxB_Type_size is an extension to the spec
 
-GrB_Info GrB_Type_size          // determine the size of the type
+GrB_Info GxB_Type_size          // determine the size of the type
 (
     size_t *size,               // the sizeof the type
     GrB_Type type               // type to determine the sizeof
@@ -365,8 +369,14 @@ GrB_Info GrB_Type_free          // free a user-defined type
 // types are statically allocated and need not be freed when the application
 // finishes.
 
+//------------------------------------------------------------------------------
+// unary operators
+//------------------------------------------------------------------------------
+
 // GrB_UnaryOp: a function z=f(x).  The function f must have the signature:
+
 //      void f (void *z, const void *x) ;
+
 // The pointers are void * but they are always of pointers to objects of type
 // ztype and xtype, respectively.  The function must typecast its arguments as
 // needed from void* to ztype* and xtype*.
@@ -385,8 +395,115 @@ GB_UnaryOp_opaque ;         // CONTENT NOT USER-ACCESSIBLE
 // The GrB_UnaryOp handle (user-accesible)
 typedef GB_UnaryOp_opaque *GrB_UnaryOp ;
 
+//------------------------------------------------------------------------------
+// built-in unary operators, z = f(x)
+//------------------------------------------------------------------------------
+
+// There are 67 unary operators: 6 kinds * 11 types and GrB_LNOT.
+
+// SPEC: ONE and ABS unary operators are extensions to the spec
+// as are the LNOT_TYPE operators.
+
+extern GrB_UnaryOp
+    // For these three functions z=f(x), z and x have the same type.
+    // The suffix in the name is the type of x and z.
+    // z = x             z = -x             z = 1/x             z = ! (x != 0)
+    // identity          additive           multiplicative      logical
+    //                   inverse            inverse             negation
+    GrB_IDENTITY_BOOL,   GrB_AINV_BOOL,     GrB_MINV_BOOL,      GxB_LNOT_BOOL,
+    GrB_IDENTITY_INT8,   GrB_AINV_INT8,     GrB_MINV_INT8,      GxB_LNOT_INT8,
+    GrB_IDENTITY_UINT8,  GrB_AINV_UINT8,    GrB_MINV_UINT8,     GxB_LNOT_UINT8,
+    GrB_IDENTITY_INT16,  GrB_AINV_INT16,    GrB_MINV_INT16,     GxB_LNOT_INT16,
+    GrB_IDENTITY_UINT16, GrB_AINV_UINT16,   GrB_MINV_UINT16,    GxB_LNOT_UINT16,
+    GrB_IDENTITY_INT32,  GrB_AINV_INT32,    GrB_MINV_INT32,     GxB_LNOT_INT32,
+    GrB_IDENTITY_UINT32, GrB_AINV_UINT32,   GrB_MINV_UINT32,    GxB_LNOT_UINT32,
+    GrB_IDENTITY_INT64,  GrB_AINV_INT64,    GrB_MINV_INT64,     GxB_LNOT_INT64,
+    GrB_IDENTITY_UINT64, GrB_AINV_UINT64,   GrB_MINV_UINT64,    GxB_LNOT_UINT64,
+    GrB_IDENTITY_FP32,   GrB_AINV_FP32,     GrB_MINV_FP32,      GxB_LNOT_FP32,
+    GrB_IDENTITY_FP64,   GrB_AINV_FP64,     GrB_MINV_FP64,      GxB_LNOT_FP64,
+
+    // z = 1             z = abs(x)
+    // one               absolute value
+    //
+    GxB_ONE_BOOL,        GxB_ABS_BOOL,
+    GxB_ONE_INT8,        GxB_ABS_INT8,
+    GxB_ONE_UINT8,       GxB_ABS_UINT8,
+    GxB_ONE_INT16,       GxB_ABS_INT16,
+    GxB_ONE_UINT16,      GxB_ABS_UINT16,
+    GxB_ONE_INT32,       GxB_ABS_INT32,
+    GxB_ONE_UINT32,      GxB_ABS_UINT32,
+    GxB_ONE_INT64,       GxB_ABS_INT64,
+    GxB_ONE_UINT64,      GxB_ABS_UINT64,
+    GxB_ONE_FP32,        GxB_ABS_FP32,
+    GxB_ONE_FP64,        GxB_ABS_FP64,
+
+    // Boolean negation, z = !x, where both x and x are boolean.  There is no
+    // suffix since z and x are only boolean.  This operator is identical to
+    // GxB_LNOT_BOOL; it just has a different name.
+    GrB_LNOT ;
+
+//------------------------------------------------------------------------------
+// methods for unary operators
+//------------------------------------------------------------------------------
+
+// The user-callable function GrB_UnaryOp_new has the following signature.  It
+// is actually implemented as a macro so that the name of the unary function
+// can be kept by GraphBLAS.
+
+/*
+
+GrB_Info GrB_UnaryOp_new            // create a new user-defined unary operator
+(
+    GrB_UnaryOp *unaryop,           // handle for the new unary operator
+    void *function,                 // pointer to the unary function
+    const GrB_Type ztype,           // type of output z
+    const GrB_Type xtype            // type of input x
+) ;
+
+*/
+
+#define GrB_UnaryOp_new(op,f,z,x) GB_UnaryOp_new (op,f,z,x, GB_STR(f))
+
+// This function is NOT user-callable:
+
+GrB_Info GB_UnaryOp_new             // create a new user-defined unary operator
+(
+    GrB_UnaryOp *unaryop,           // handle for the new unary operator
+    void *function,                 // pointer to the unary function
+    const GrB_Type ztype,           // type of output z
+    const GrB_Type xtype,           // type of input x
+    const char *name                // name of the underlying function
+) ;
+
+// SPEC: GxB_UnaryOp_ztype is an extension to the spec
+
+GrB_Info GxB_UnaryOp_ztype          // return the type of z
+(
+    GrB_Type *ztype,                // return type of output z
+    const GrB_UnaryOp unaryop       // unary operator
+) ;
+
+// SPEC: GxB_UnaryOp_xtype is an extension to the spec
+
+GrB_Info GxB_UnaryOp_xtype          // return the type of x
+(
+    GrB_Type *xtype,                // return type of input x
+    const GrB_UnaryOp unaryop       // unary operator
+) ;
+
+GrB_Info GrB_UnaryOp_free           // free a user-created unary operator
+(
+    GrB_UnaryOp *unaryop            // handle of unary operator to free
+) ;
+
+//------------------------------------------------------------------------------
+// binary operators
+//------------------------------------------------------------------------------
+
 // GrB_BinaryOp: a function z=f(x,y).  The function f must have the signature:
+
 //      void f (void *z, const void *x, const void *y) ;
+
 // The pointers are void * but they are always of pointers to objects of type
 // ztype, xtype, and ytype, respectively.  See Demo/usercomplex.c for examples.
 
@@ -406,53 +523,7 @@ GB_BinaryOp_opaque ;        // CONTENT NOT USER-ACCESSIBLE
 typedef GB_BinaryOp_opaque *GrB_BinaryOp ;
 
 //------------------------------------------------------------------------------
-// unary operators, z = f(x)
-//------------------------------------------------------------------------------
-
-// There are 67 unary operators: 6 kinds * 11 types and GrB_LNOT.
-
-// SPEC: ONE and ABS unary operators are extensions to the spec
-
-extern GrB_UnaryOp
-    // For these three functions z=f(x), z and x have the same type.
-    // The suffix in the name is the type of x and z.
-    // z = x             z = -x             z = 1/x             z = ! (x != 0)
-    // identity          additive           multiplicative      logical
-    //                   inverse            inverse             negation
-    GrB_IDENTITY_BOOL,   GrB_AINV_BOOL,     GrB_MINV_BOOL,      GrB_LNOT_BOOL,
-    GrB_IDENTITY_INT8,   GrB_AINV_INT8,     GrB_MINV_INT8,      GrB_LNOT_INT8,
-    GrB_IDENTITY_UINT8,  GrB_AINV_UINT8,    GrB_MINV_UINT8,     GrB_LNOT_UINT8,
-    GrB_IDENTITY_INT16,  GrB_AINV_INT16,    GrB_MINV_INT16,     GrB_LNOT_INT16,
-    GrB_IDENTITY_UINT16, GrB_AINV_UINT16,   GrB_MINV_UINT16,    GrB_LNOT_UINT16,
-    GrB_IDENTITY_INT32,  GrB_AINV_INT32,    GrB_MINV_INT32,     GrB_LNOT_INT32,
-    GrB_IDENTITY_UINT32, GrB_AINV_UINT32,   GrB_MINV_UINT32,    GrB_LNOT_UINT32,
-    GrB_IDENTITY_INT64,  GrB_AINV_INT64,    GrB_MINV_INT64,     GrB_LNOT_INT64,
-    GrB_IDENTITY_UINT64, GrB_AINV_UINT64,   GrB_MINV_UINT64,    GrB_LNOT_UINT64,
-    GrB_IDENTITY_FP32,   GrB_AINV_FP32,     GrB_MINV_FP32,      GrB_LNOT_FP32,
-    GrB_IDENTITY_FP64,   GrB_AINV_FP64,     GrB_MINV_FP64,      GrB_LNOT_FP64,
-
-    // z = 1             z = abs(x)
-    // one               absolute value
-    //
-    GrB_ONE_BOOL,        GrB_ABS_BOOL,
-    GrB_ONE_INT8,        GrB_ABS_INT8,
-    GrB_ONE_UINT8,       GrB_ABS_UINT8,
-    GrB_ONE_INT16,       GrB_ABS_INT16,
-    GrB_ONE_UINT16,      GrB_ABS_UINT16,
-    GrB_ONE_INT32,       GrB_ABS_INT32,
-    GrB_ONE_UINT32,      GrB_ABS_UINT32,
-    GrB_ONE_INT64,       GrB_ABS_INT64,
-    GrB_ONE_UINT64,      GrB_ABS_UINT64,
-    GrB_ONE_FP32,        GrB_ABS_FP32,
-    GrB_ONE_FP64,        GrB_ABS_FP64,
-
-    // Boolean negation, z = !x, where both x and x are boolean.  There is no
-    // suffix since z and x are only boolean.  This operator is identical to
-    // GrB_LNOT_BOOL; it just has a different name.
-    GrB_LNOT ;
-
-//------------------------------------------------------------------------------
-// binary operators, z = f(x,y)
+// built-in binary operators, z = f(x,y)
 //------------------------------------------------------------------------------
 
 // There are three sets of built-in binary operators.  For the first set of
@@ -477,8 +548,6 @@ extern GrB_UnaryOp
 
 // Thus there are 187+66+3 = 256 built-in binary operators.  Some are redundant
 // but are included to keep the name space of operators uniform.
-
-//------------------------------------------------------------------------------
 
 // For eight binary operators z=f(x,y), x, y, and z are all the same type:
 // FIRST, SECOND, MIN, MAX, PLUS, MINUS, TIMES, and DIV, for all 11 types.
@@ -522,30 +591,30 @@ extern GrB_BinaryOp
 
 extern GrB_BinaryOp
     // z = (x == y)     z = (x != y)        z = (x > y)         z = (x < y)
-    GrB_ISEQ_BOOL,      GrB_ISNE_BOOL,      GrB_ISGT_BOOL,      GrB_ISLT_BOOL,
-    GrB_ISEQ_INT8,      GrB_ISNE_INT8,      GrB_ISGT_INT8,      GrB_ISLT_INT8,
-    GrB_ISEQ_UINT8,     GrB_ISNE_UINT8,     GrB_ISGT_UINT8,     GrB_ISLT_UINT8,
-    GrB_ISEQ_INT16,     GrB_ISNE_INT16,     GrB_ISGT_INT16,     GrB_ISLT_INT16,
-    GrB_ISEQ_UINT16,    GrB_ISNE_UINT16,    GrB_ISGT_UINT16,    GrB_ISLT_UINT16,
-    GrB_ISEQ_INT32,     GrB_ISNE_INT32,     GrB_ISGT_INT32,     GrB_ISLT_INT32,
-    GrB_ISEQ_UINT32,    GrB_ISNE_UINT32,    GrB_ISGT_UINT32,    GrB_ISLT_UINT32,
-    GrB_ISEQ_INT64,     GrB_ISNE_INT64,     GrB_ISGT_INT64,     GrB_ISLT_INT64,
-    GrB_ISEQ_UINT64,    GrB_ISNE_UINT64,    GrB_ISGT_UINT64,    GrB_ISLT_UINT64,
-    GrB_ISEQ_FP32,      GrB_ISNE_FP32,      GrB_ISGT_FP32,      GrB_ISLT_FP32,
-    GrB_ISEQ_FP64,      GrB_ISNE_FP64,      GrB_ISGT_FP64,      GrB_ISLT_FP64,
+    GxB_ISEQ_BOOL,      GxB_ISNE_BOOL,      GxB_ISGT_BOOL,      GxB_ISLT_BOOL,
+    GxB_ISEQ_INT8,      GxB_ISNE_INT8,      GxB_ISGT_INT8,      GxB_ISLT_INT8,
+    GxB_ISEQ_UINT8,     GxB_ISNE_UINT8,     GxB_ISGT_UINT8,     GxB_ISLT_UINT8,
+    GxB_ISEQ_INT16,     GxB_ISNE_INT16,     GxB_ISGT_INT16,     GxB_ISLT_INT16,
+    GxB_ISEQ_UINT16,    GxB_ISNE_UINT16,    GxB_ISGT_UINT16,    GxB_ISLT_UINT16,
+    GxB_ISEQ_INT32,     GxB_ISNE_INT32,     GxB_ISGT_INT32,     GxB_ISLT_INT32,
+    GxB_ISEQ_UINT32,    GxB_ISNE_UINT32,    GxB_ISGT_UINT32,    GxB_ISLT_UINT32,
+    GxB_ISEQ_INT64,     GxB_ISNE_INT64,     GxB_ISGT_INT64,     GxB_ISLT_INT64,
+    GxB_ISEQ_UINT64,    GxB_ISNE_UINT64,    GxB_ISGT_UINT64,    GxB_ISLT_UINT64,
+    GxB_ISEQ_FP32,      GxB_ISNE_FP32,      GxB_ISGT_FP32,      GxB_ISLT_FP32,
+    GxB_ISEQ_FP64,      GxB_ISNE_FP64,      GxB_ISGT_FP64,      GxB_ISLT_FP64,
 
     // z = (x >= y)     z = (x <= y)
-    GrB_ISGE_BOOL,      GrB_ISLE_BOOL,
-    GrB_ISGE_INT8,      GrB_ISLE_INT8,
-    GrB_ISGE_UINT8,     GrB_ISLE_UINT8,
-    GrB_ISGE_INT16,     GrB_ISLE_INT16,
-    GrB_ISGE_UINT16,    GrB_ISLE_UINT16,
-    GrB_ISGE_INT32,     GrB_ISLE_INT32,
-    GrB_ISGE_UINT32,    GrB_ISLE_UINT32,
-    GrB_ISGE_INT64,     GrB_ISLE_INT64,
-    GrB_ISGE_UINT64,    GrB_ISLE_UINT64,
-    GrB_ISGE_FP32,      GrB_ISLE_FP32,
-    GrB_ISGE_FP64,      GrB_ISLE_FP64 ;
+    GxB_ISGE_BOOL,      GxB_ISLE_BOOL,
+    GxB_ISGE_INT8,      GxB_ISLE_INT8,
+    GxB_ISGE_UINT8,     GxB_ISLE_UINT8,
+    GxB_ISGE_INT16,     GxB_ISLE_INT16,
+    GxB_ISGE_UINT16,    GxB_ISLE_UINT16,
+    GxB_ISGE_INT32,     GxB_ISLE_INT32,
+    GxB_ISGE_UINT32,    GxB_ISLE_UINT32,
+    GxB_ISGE_INT64,     GxB_ISLE_INT64,
+    GxB_ISGE_UINT64,    GxB_ISLE_UINT64,
+    GxB_ISGE_FP32,      GxB_ISLE_FP32,
+    GxB_ISGE_FP64,      GxB_ISLE_FP64 ;
 
 // Six comparison operators z=f(x,y) return their result as boolean, but where
 // x and y have the same type (any one of the 11 built-in types).  The suffix
@@ -589,21 +658,21 @@ extern GrB_BinaryOp
 
 extern GrB_BinaryOp
     // z = (x || y)     z = (x && y)        z = (x != y)
-    GrB_LOR_BOOL,       GrB_LAND_BOOL,      GrB_LXOR_BOOL,
-    GrB_LOR_INT8,       GrB_LAND_INT8,      GrB_LXOR_INT8,
-    GrB_LOR_UINT8,      GrB_LAND_UINT8,     GrB_LXOR_UINT8,
-    GrB_LOR_INT16,      GrB_LAND_INT16,     GrB_LXOR_INT16,
-    GrB_LOR_UINT16,     GrB_LAND_UINT16,    GrB_LXOR_UINT16,
-    GrB_LOR_INT32,      GrB_LAND_INT32,     GrB_LXOR_INT32,
-    GrB_LOR_UINT32,     GrB_LAND_UINT32,    GrB_LXOR_UINT32,
-    GrB_LOR_INT64,      GrB_LAND_INT64,     GrB_LXOR_INT64,
-    GrB_LOR_UINT64,     GrB_LAND_UINT64,    GrB_LXOR_UINT64,
-    GrB_LOR_FP32,       GrB_LAND_FP32,      GrB_LXOR_FP32,
-    GrB_LOR_FP64,       GrB_LAND_FP64,      GrB_LXOR_FP64 ;
+    GxB_LOR_BOOL,       GxB_LAND_BOOL,      GxB_LXOR_BOOL,
+    GxB_LOR_INT8,       GxB_LAND_INT8,      GxB_LXOR_INT8,
+    GxB_LOR_UINT8,      GxB_LAND_UINT8,     GxB_LXOR_UINT8,
+    GxB_LOR_INT16,      GxB_LAND_INT16,     GxB_LXOR_INT16,
+    GxB_LOR_UINT16,     GxB_LAND_UINT16,    GxB_LXOR_UINT16,
+    GxB_LOR_INT32,      GxB_LAND_INT32,     GxB_LXOR_INT32,
+    GxB_LOR_UINT32,     GxB_LAND_UINT32,    GxB_LXOR_UINT32,
+    GxB_LOR_INT64,      GxB_LAND_INT64,     GxB_LXOR_INT64,
+    GxB_LOR_UINT64,     GxB_LAND_UINT64,    GxB_LXOR_UINT64,
+    GxB_LOR_FP32,       GxB_LAND_FP32,      GxB_LXOR_FP32,
+    GxB_LOR_FP64,       GxB_LAND_FP64,      GxB_LXOR_FP64 ;
 
 // Finally, three binary operate only on boolean types: LOR, LAND, LXOR.  The
 // naming convention differs (_BOOL is not appended to the name).  They are
-// the same as GrB_LOR_BOOL, GrB_LAND_BOOL, and GrB_LXOR_BOOL; they just
+// the same as GxB_LOR_BOOL, GxB_LAND_BOOL, and GxB_LXOR_BOOL; they just
 // have a simpler name.
 
 extern GrB_BinaryOp
@@ -661,63 +730,23 @@ extern GrB_BinaryOp
 //      z = (x >= y)    GE, ISGE
 //      z = (x >= y)    LE, ISLE
 
-// Three more that have no _BOOL suffix are also redundant:
+// Three more that have no_BOOL suffix are also redundant with the operators
+// of the form GxB_*_BOOL.
 // (GrB_LOR, GrB_LAND, and GrB_LXOR).
 
 // There are thus 256 built-in binary operators with unique names, 16 of which
 // are redundant, giving 240 built-in binary operators that compute unique
 // results.
 
-// The user-callable function has the following signature.  It is actually
-// implemented as a macro so that the name of the unary function can be kept.
+//------------------------------------------------------------------------------
+// methods for binary operators
+//------------------------------------------------------------------------------
 
-/* This function is user-callable:
+// The user-callable function GxB_BinaryOp_new has the following signature.  It
+// is implemented as a macro so that the name of the select function can be
+// kept by GraphBLAS.
 
-GrB_Info GB_UnaryOp_new             // create a new user-defined unary operator
-(
-    GrB_UnaryOp *unaryop,           // handle for the new unary operator
-    void *function,                 // pointer to the unary function
-    const GrB_Type ztype,           // type of output z
-    const GrB_Type xtype            // type of input x
-) ;
-
-*/
-
-#define GrB_UnaryOp_new(op,f,z,x) GB_UnaryOp_new (op,f,z,x, GB_STR(f))
-
-// This function is NOT user-callable:
-
-GrB_Info GB_UnaryOp_new             // create a new user-defined unary operator
-(
-    GrB_UnaryOp *unaryop,           // handle for the new unary operator
-    void *function,                 // pointer to the unary function
-    const GrB_Type ztype,           // type of output z
-    const GrB_Type xtype,           // type of input x
-    const char *name                // name of the underlying function
-) ;
-
-// SPEC: GrB_UnaryOp_ztype is an extension to the spec
-
-GrB_Info GrB_UnaryOp_ztype          // return the type of z
-(
-    GrB_Type *ztype,                // return type of output z
-    const GrB_UnaryOp unaryop       // unary operator
-) ;
-
-// SPEC: GrB_UnaryOp_xtype is an extension to the spec
-
-GrB_Info GrB_UnaryOp_xtype          // return the type of x
-(
-    GrB_Type *xtype,                // return type of input x
-    const GrB_UnaryOp unaryop       // unary operator
-) ;
-
-GrB_Info GrB_UnaryOp_free           // free a user-created unary operator
-(
-    GrB_UnaryOp *unaryop            // handle of unary operator to free
-) ;
-
-/* This function is user-callable:
+/*
 
 GrB_Info GrB_BinaryOp_new
 (
@@ -745,25 +774,25 @@ GrB_Info GB_BinaryOp_new
 ) ;
 
 
-// SPEC: GrB_BinaryOp_ztype is an extension to the spec
+// SPEC: GxB_BinaryOp_ztype is an extension to the spec
 
-GrB_Info GrB_BinaryOp_ztype         // return the type of z
+GrB_Info GxB_BinaryOp_ztype         // return the type of z
 (
     GrB_Type *ztype,                // return type of output z
     const GrB_BinaryOp binaryop     // binary operator to query
 ) ;
 
-// SPEC: GrB_BinaryOp_xtype is an extension to the spec
+// SPEC: GxB_BinaryOp_xtype is an extension to the spec
 
-GrB_Info GrB_BinaryOp_xtype         // return the type of x
+GrB_Info GxB_BinaryOp_xtype         // return the type of x
 (
     GrB_Type *xtype,                // return type of input x
     const GrB_BinaryOp binaryop     // binary operator to query
 ) ;
 
-// SPEC: GrB_BinaryOp_ytype is an extension to the spec
+// SPEC: GxB_BinaryOp_ytype is an extension to the spec
 
-GrB_Info GrB_BinaryOp_ytype         // return the type of y
+GrB_Info GxB_BinaryOp_ytype         // return the type of y
 (
     GrB_Type *ytype,                // return type of input y
     const GrB_BinaryOp binaryop     // binary operator to query
@@ -772,6 +801,112 @@ GrB_Info GrB_BinaryOp_ytype         // return the type of y
 GrB_Info GrB_BinaryOp_free          // free a user-created binary operator
 (
     GrB_BinaryOp *binaryop          // handle of binary operator to free
+) ;
+
+//------------------------------------------------------------------------------
+// Select operators
+//------------------------------------------------------------------------------
+
+// SPEC: GxB_SelectOp and all related functions are an extenstion to the spec.
+
+// GxB_SelectOp is an operator used by GxB_select to select entries from an
+// input matrix A that are kept in the output C.  If an entry A(i,j) in the
+// matrix A, of size nrows-by-ncols, has the value aij, then it calls the
+// select function as result = f (i, j, nrows, ncols, aij, k).  If the function
+// returns true, the entry is kept in the output C.  If f returns false, the
+// entry is not kept in C.  The type of x for the GxB_SelectOp operator may be
+// any of the 11 built-in types, or any user-defined type.  It may also be
+// GrB_NULL, to indicate that the function is type-generic and does not depend
+// at all on the value aij.  In this case, x is passed to f as a NULL pointer.
+// The k parameter is a const void * pointer to a user-defined object that is
+// passed to GxB_select.  It is not used by GxB_select except to pass it to the
+// function f.
+
+// GxB_SelectOp:  a function z=f(i,j,m,n,x,k) for the GxB_Select operation.
+// The function f must have the signature:
+
+//      bool f (const GrB_Index i, const GrB_Index j,
+//              const GrB_Index nrows, const GrB_Index ncols,
+//              const void *x, const void *k) ;
+
+typedef struct
+{
+    int64_t magic ;         // for detecting uninitialized objects
+    GrB_Type xtype ;        // type of x, or NULL if generic
+    void *function ;        // a pointer to the select function
+    char name [GB_LEN] ;    // name of the select operator
+    int opcode ;            // operator opcode
+}
+GB_SelectOp_opaque ;        // CONTENT NOT USER-ACCESSIBLE
+
+// The GxB_SelectOp handle (user-accesible)
+typedef GB_SelectOp_opaque *GxB_SelectOp ;
+
+//------------------------------------------------------------------------------
+// built-in select operators
+//------------------------------------------------------------------------------
+
+// GxB_select (C, Mask, accum, op, A, k, desc) always returns a matrix C of the
+// same size as A (or A' if GrB_TRAN is in the descriptor).
+
+extern GxB_SelectOp
+    GxB_TRIL,       // C=tril(A,k):   returns true if ((j-i) <= k)
+    GxB_TRIU,       // C=triu(A,k):   returns true if ((j-i) >= k)
+    GxB_DIAG,       // C=diag(A,k):   returns true if ((j-i) == k)
+    GxB_OFFDIAG,    // C=A-diag(A,k): returns true if ((j-i) != k)
+    GxB_NONZERO ;   // C=A(A~=0):     returns true if aij is nonzero,
+                    //                for any built-in or user-defined type
+
+// For GxB_TRIL, GxB_TRIU, GxB_DIAG, and GxB_OFFDIAG, the parameter k is a
+// const void * pointer to a single scalar value of type GrB_Index.  These
+// select operators do not depend on the values of A, but just their position.
+
+// For GxB_NONZERO, the result depends only on the value of A(i,j), and the k
+// parameter may be GrB_NULL.  It works on all built-in types and all
+// user-defined types.  When applied to user-defined types the operator it
+// returns true if all bits in the user-defined value are zero, which can be
+// tested regardless of how the user-defined type is defined.
+
+//------------------------------------------------------------------------------
+// select operators
+//------------------------------------------------------------------------------
+
+// The user-callable function GxB_SelectOp_new has the following signature.  It
+// is implemented as a macro so that the name of the select function can be
+// kept by GraphBLAS.
+
+/*
+
+GrB_Info GxB_SelectOp_new       // create a new user-defined select operator
+(
+    GxB_SelectOp *selectop,     // handle for the new select operator
+    void *function,             // pointer to the select function
+    const GrB_Type xtype        // type of input x, or NULL if type-generic
+) ;
+
+*/
+
+#define GxB_SelectOp_new(op,f,x) GB_SelectOp_new (op,f,x, GB_STR(f))
+
+// This function is NOT user-callable:
+
+GrB_Info GB_SelectOp_new        // create a new user-defined select operator
+(
+    GxB_SelectOp *selectop,     // handle for the new select operator
+    void *function,             // pointer to the select function
+    const GrB_Type xtype,       // type of input x
+    const char *name            // name of the underlying function
+) ;
+
+GrB_Info GxB_SelectOp_xtype     // return the type of x
+(
+    GrB_Type *xtype,            // return type of input x
+    const GxB_SelectOp selectop // select operator
+) ;
+
+GrB_Info GxB_SelectOp_free      // free a user-created select operator
+(
+    GxB_SelectOp *selectop      // handle of select operator to free
 ) ;
 
 //------------------------------------------------------------------------------
@@ -926,17 +1061,17 @@ GrB_Info GrB_Monoid_new             // create a monoid
     )                                               \
     (monoid, op, identity) ;
 
-// SPEC: GrB_Monoid_operator is an extension to the spec
+// SPEC: GxB_Monoid_operator is an extension to the spec
 
-GrB_Info GrB_Monoid_operator        // return the monoid operator
+GrB_Info GxB_Monoid_operator        // return the monoid operator
 (
     GrB_BinaryOp *op,               // returns the binary op of the monoid
     const GrB_Monoid monoid         // monoid to query
 ) ;
 
-// SPEC: GrB_Monoid_identity is an extension to the spec
+// SPEC: GxB_Monoid_identity is an extension to the spec
 
-GrB_Info GrB_Monoid_identity        // return the monoid identity
+GrB_Info GxB_Monoid_identity        // return the monoid identity
 (
     void *identity,                 // returns the identity of the monoid
     const GrB_Monoid monoid         // monoid to query
@@ -976,17 +1111,17 @@ GrB_Info GrB_Semiring_new           // create a semiring
     const GrB_BinaryOp multiply     // multiply operator of the semiring
 ) ;
 
-// SPEC: GrB_Semiring_add is an extension to the spec
+// SPEC: GxB_Semiring_add is an extension to the spec
 
-GrB_Info GrB_Semiring_add           // return the add monoid of a semiring
+GrB_Info GxB_Semiring_add           // return the add monoid of a semiring
 (
     GrB_Monoid *add,                // returns add monoid of the semiring
     const GrB_Semiring semiring     // semiring to query
 ) ;
 
-// SPEC: GrB_Semiring_multiply is an extension to the spec
+// SPEC: GxB_Semiring_multiply is an extension to the spec
 
-GrB_Info GrB_Semiring_multiply      // return multiply operator of a semiring
+GrB_Info GxB_Semiring_multiply      // return multiply operator of a semiring
 (
     GrB_BinaryOp *multiply,         // returns multiply operator of the semiring
     const GrB_Semiring semiring     // semiring to query
@@ -1045,7 +1180,7 @@ typedef struct
     int64_t nzombies ;      // number of zombines marked for deletion
     void *queue_next ;      // next matrix in the matrix queue
     void *queue_prev ;      // prev matrix in the matrix queue
-    int scode ;             // used by MATLAB interface, not GraphBLAS itself
+    bool enqueued ;         // true if the matrix is in the queue
 }
 GB_Matrix_opaque ;          // CONTENT NOT USER-ACCESSIBLE
 
@@ -1079,7 +1214,7 @@ typedef struct
     int64_t nzombies ;      // number of zombines marked for deletion
     void *queue_next ;      // next matrix in the matrix queue
     void *queue_prev ;      // prev matrix in the matrix queue
-    int scode ;             // used by MATLAB interface, not GraphBLAS itself
+    bool enqueued ;         // true if the matrix is in the queue
 }
 GB_Vector_opaque ;          // CONTENT NOT USER-ACCESSIBLE
 
@@ -1123,9 +1258,9 @@ GrB_Info GrB_Vector_nvals   // get the number of entries in a vector
     const GrB_Vector v      // vector to query
 ) ;
 
-// SPEC: GrB_Vector_type is an extension to the spec
+// SPEC: GxB_Vector_type is an extension to the spec
 
-GrB_Info GrB_Vector_type    // get the type of a vector
+GrB_Info GxB_Vector_type    // get the type of a vector
 (
     GrB_Type *type,         // returns the type of the vector
     const GrB_Vector v      // vector to query
@@ -1778,9 +1913,9 @@ GrB_Info GrB_Matrix_nvals   // get the number of entries in a matrix
     const GrB_Matrix A      // matrix to query
 ) ;
 
-// SPEC: GrB_Matrix_type is an extension to the spec
+// SPEC: GxB_Matrix_type is an extension to the spec
 
-GrB_Info GrB_Matrix_type    // get the type of a matrix
+GrB_Info GxB_Matrix_type    // get the type of a matrix
 (
     GrB_Type *type,         // returns the type of the matrix
     const GrB_Matrix A      // matrix to query
@@ -2464,11 +2599,11 @@ typedef enum
 }
 GrB_Desc_Field ;
 
-// SPEC: GrB_DEFAULT is an extension to the spec
+// SPEC: GxB_DEFAULT is an extension to the spec
 
 typedef enum
 {
-    GrB_DEFAULT,    // default behavior of the method
+    GxB_DEFAULT,    // default behavior of the method
     GrB_REPLACE,    // clear the output before assigning new values to it
     GrB_SCMP,       // use the structural complement of the input
     GrB_TRAN        // use the transpose of the input
@@ -2500,9 +2635,9 @@ GrB_Info GrB_Descriptor_set     // set a parameter in a descriptor
     const GrB_Desc_Value val    // value to change it to
 ) ;
 
-// SPEC: GrB_Descriptor_get is an extension to the spec
+// SPEC: GxB_Descriptor_get is an extension to the spec
 
-GrB_Info GrB_Descriptor_get     // get a parameter from a descriptor
+GrB_Info GxB_Descriptor_get     // get a parameter from a descriptor
 (
     GrB_Desc_Value *val,        // value of the parameter
     const GrB_Descriptor desc,  // descriptor to query; NULL means defaults
@@ -2533,6 +2668,7 @@ GrB_Info GrB_Descriptor_free    // free a descriptor
         GrB_Type       *: GrB_Type_free       ,  \
         GrB_UnaryOp    *: GrB_UnaryOp_free    ,  \
         GrB_BinaryOp   *: GrB_BinaryOp_free   ,  \
+        GxB_SelectOp   *: GxB_SelectOp_free   ,  \
         GrB_Monoid     *: GrB_Monoid_free     ,  \
         GrB_Semiring   *: GrB_Semiring_free   ,  \
         GrB_Vector     *: GrB_Vector_free     ,  \
@@ -2936,29 +3072,29 @@ GrB_Info GrB_Col_extract            // w<mask> = accum (w, A(I,j))
 //------------------------------------------------------------------------------
 
 // Assign entries in a matrix or vector; C(I,J) = A in MATLAB notation.
-// Each of these can be used with their generic name, GrB_subassign.
+// Each of these can be used with their generic name, GxB_subassign.
 
-// SPEC: The GrB_*_subassign functions are extensions to the spec.
+// SPEC: The GxB_*_subassign functions are extensions to the spec.
 
-// Each GrB_subassign function is very similar to its corresponding GrB_assign
+// Each GxB_subassign function is very similar to its corresponding GrB_assign
 // function in the spec, but they differ in three ways:
 
-// (1) the mask in the GrB_subassign functions has the same dimensions as
+// (1) the mask in the GxB_subassign functions has the same dimensions as
 //      w(I) for vectors and C(I,J) for matrices.  In GrB_assign, the mask is
 //      the same size as w or C, respectively (except for GrB_Row_asssign and
 //      GrB_Col_assign, in which case the mask is the same size as a row or
 //      column of C, respectively).  The two masks are related.  If M is the
-//      mask for GrB_assign, then M(I,J) is the mask for GrB_subassign.  If
+//      mask for GrB_assign, then M(I,J) is the mask for GxB_subassign.  If
 //      there is no mask, or if I and J are both GrB_ALL, then the two masks
 //      are the same.
 
-//      For GrB_Row_asssign and GrB_Col_assign, the mask vector is the same
+//      For GrB_Row_assign and GrB_Col_assign, the mask vector is the same
 //      size as a row or column of C, respectively.  For the corresponding
-//      GrB_Row_subassign and GrB_Col_subassign operations, the mask is the
+//      GxB_Row_subassign and GxB_Col_subassign operations, the mask is the
 //      same size as the subrow C(i,J) or subcolumn C(I,j), respectively.
 
 // (2) They differ in how C is affected in areas outside the C(I,J) submatrix.
-//      In GrB_subassign, C(I,J) is the only part of C that can be modified,
+//      In GxB_subassign, C(I,J) is the only part of C that can be modified,
 //      and no part of C outside the submatrix is ever modified.  In
 //      GrB_assign, it is possible to modify C outside the submatrix, but only
 //      in one specific manner.  Suppose the mask M is present (or, suppose it
@@ -2977,16 +3113,16 @@ GrB_Info GrB_Col_extract            // w<mask> = accum (w, A(I,j))
 //      expansion operations, GrB_*_assign_TYPE, are well-defined if duplicate
 //      indices appear (the results are the same as if duplicates are removed
 //      first from I and J).  However, the subassign scalar expansion
-//      operations, GrB_*_subassign_TYPE are not well-defined if duplicate
+//      operations, GxB_*_subassign_TYPE are not well-defined if duplicate
 //      indices appear in I and J.
 
-// GrB_subassign and GrB_assign are identical if GrB_REPLACE is set to its
+// GxB_subassign and GrB_assign are identical if GrB_REPLACE is set to its
 // default value of false, or if the masks happen to be the same.  The two
 // masks can be the same in two cases:  either there is no mask (and GrB_SCMP
 // is false), or I and J are both GrB_ALL.  In this case, the two algorithms
 // are identical and have the same performance.
 
-// GrB_subassign is much faster than GrB_assign, when the latter must examine
+// GxB_subassign is much faster than GrB_assign, when the latter must examine
 // the entire matrix C to delete entries (when GrB__REPLACE is true), and it
 // must deal with a much larger Mask matrix.  However, both methods have
 // specific uses.  Consider using C(I,J)+=F for many submatrices F (for
@@ -2994,7 +3130,7 @@ GrB_Info GrB_Col_extract            // w<mask> = accum (w, A(I,j))
 // a specification for which entries of C should appear in the final result,
 // then use GrB_assign.  If the Mask is meant to control which entries of the
 // submatrix C(I,J) are modified by the finite-element F, then use
-// GrB_subassign.  This is particularly useful is the Mask is a "template" that
+// GxB_subassign.  This is particularly useful is the Mask is a "template" that
 // follows along with the finite-element F, independent of where it is applied
 // C.  Using GrB_assign would be very difficult in this case since a new Mask,
 // the same size as C, would need to be constructed for each finite-element F.
@@ -3011,11 +3147,11 @@ GrB_Info GrB_Col_extract            // w<mask> = accum (w, A(I,j))
 // value A(0,0).  In the assign, Mask is the same size as C, and Mask(i,j)
 // controls how C(i,j) is modified.
 
-// The GrB_subassign and GrB_assign functions have the same signatures; they
+// The GxB_subassign and GrB_assign functions have the same signatures; they
 // differ only in how they consider the Mask and the GrB_REPLACE descriptor,
 // and in how duplicate indices are treated for scalar expansion.
 
-GrB_Info GrB_Vector_subassign       // w(I)<mask> = accum (w(I),u)
+GrB_Info GxB_Vector_subassign       // w(I)<mask> = accum (w(I),u)
 (
     GrB_Vector w,                   // input/output matrix for results
     const GrB_Vector mask,          // optional mask for w(I), unused if NULL
@@ -3026,7 +3162,7 @@ GrB_Info GrB_Vector_subassign       // w(I)<mask> = accum (w(I),u)
     const GrB_Descriptor desc       // descriptor for w(I) and mask
 ) ;
 
-GrB_Info GrB_Matrix_subassign       // C(I,J)<Mask> = accum (C(I,J),A)
+GrB_Info GxB_Matrix_subassign       // C(I,J)<Mask> = accum (C(I,J),A)
 (
     GrB_Matrix C,                   // input/output matrix for results
     const GrB_Matrix Mask,          // optional mask for C(I,J), unused if NULL
@@ -3039,7 +3175,7 @@ GrB_Info GrB_Matrix_subassign       // C(I,J)<Mask> = accum (C(I,J),A)
     const GrB_Descriptor desc       // descriptor for C(I,J), Mask, and A
 ) ;
 
-GrB_Info GrB_Col_subassign          // C(I,j)<mask> = accum (C(I,j),u)
+GrB_Info GxB_Col_subassign          // C(I,j)<mask> = accum (C(I,j),u)
 (
     GrB_Matrix C,                   // input/output matrix for results
     const GrB_Vector mask,          // optional mask for C(I,j), unused if NULL
@@ -3051,7 +3187,7 @@ GrB_Info GrB_Col_subassign          // C(I,j)<mask> = accum (C(I,j),u)
     const GrB_Descriptor desc       // descriptor for C(I,j) and mask
 ) ;
 
-GrB_Info GrB_Row_subassign          // C(i,J)<mask'> = accum (C(i,J),u')
+GrB_Info GxB_Row_subassign          // C(i,J)<mask'> = accum (C(i,J),u')
 (
     GrB_Matrix C,                   // input/output matrix for results
     const GrB_Vector mask,          // optional mask for C(i,J), unused if NULL
@@ -3064,16 +3200,16 @@ GrB_Info GrB_Row_subassign          // C(i,J)<mask'> = accum (C(i,J),u')
 ) ;
 
 //------------------------------------------------------------------------------
-// GrB_Vector_subassign_[SCALAR]:  scalar expansion assignment to subvector
+// GxB_Vector_subassign_[SCALAR]:  scalar expansion assignment to subvector
 //------------------------------------------------------------------------------
 
 // Assigns a single scalar to a subvector, w(I)<mask> = accum(w(I),x).  The
 // scalar x is implicitly expanded into a vector u of size ni-by-1, with each
 // entry in u equal to x, and then w(I)<mask> = accum(w(I),u) is done.
 
-// Each of these can be used with their generic name, GrB_subassign.
+// Each of these can be used with their generic name, GxB_subassign.
 
-GrB_Info GrB_Vector_subassign_BOOL  // w(I)<mask> = accum (w(I),x)
+GrB_Info GxB_Vector_subassign_BOOL  // w(I)<mask> = accum (w(I),x)
 (
     GrB_Vector w,                   // input/output vector for results
     const GrB_Vector mask,          // optional mask for w(I), unused if NULL
@@ -3084,7 +3220,7 @@ GrB_Info GrB_Vector_subassign_BOOL  // w(I)<mask> = accum (w(I),x)
     const GrB_Descriptor desc       // descriptor for w(I) and mask
 ) ;
 
-GrB_Info GrB_Vector_subassign_INT8  // w(I)<mask> = accum (w(I),x)
+GrB_Info GxB_Vector_subassign_INT8  // w(I)<mask> = accum (w(I),x)
 (
     GrB_Vector w,                   // input/output vector for results
     const GrB_Vector mask,          // optional mask for w(I), unused if NULL
@@ -3095,7 +3231,7 @@ GrB_Info GrB_Vector_subassign_INT8  // w(I)<mask> = accum (w(I),x)
     const GrB_Descriptor desc       // descriptor for w(I) and mask
 ) ;
 
-GrB_Info GrB_Vector_subassign_UINT8 // w(I)<mask> = accum (w(I),x)
+GrB_Info GxB_Vector_subassign_UINT8 // w(I)<mask> = accum (w(I),x)
 (
     GrB_Vector w,                   // input/output vector for results
     const GrB_Vector mask,          // optional mask for w(I), unused if NULL
@@ -3106,7 +3242,7 @@ GrB_Info GrB_Vector_subassign_UINT8 // w(I)<mask> = accum (w(I),x)
     const GrB_Descriptor desc       // descriptor for w(I) and mask
 ) ;
 
-GrB_Info GrB_Vector_subassign_INT16 // w(I)<mask> = accum (w(I),x)
+GrB_Info GxB_Vector_subassign_INT16 // w(I)<mask> = accum (w(I),x)
 (
     GrB_Vector w,                   // input/output vector for results
     const GrB_Vector mask,          // optional mask for w(I), unused if NULL
@@ -3117,7 +3253,7 @@ GrB_Info GrB_Vector_subassign_INT16 // w(I)<mask> = accum (w(I),x)
     const GrB_Descriptor desc       // descriptor for w(I) and mask
 ) ;
 
-GrB_Info GrB_Vector_subassign_UINT16   // w(I)<mask> = accum (w(I),x)
+GrB_Info GxB_Vector_subassign_UINT16   // w(I)<mask> = accum (w(I),x)
 (
     GrB_Vector w,                   // input/output vector for results
     const GrB_Vector mask,          // optional mask for w(I), unused if NULL
@@ -3128,7 +3264,7 @@ GrB_Info GrB_Vector_subassign_UINT16   // w(I)<mask> = accum (w(I),x)
     const GrB_Descriptor desc       // descriptor for w(I) and mask
 ) ;
 
-GrB_Info GrB_Vector_subassign_INT32    // w(I)<mask> = accum (w(I),x)
+GrB_Info GxB_Vector_subassign_INT32    // w(I)<mask> = accum (w(I),x)
 (
     GrB_Vector w,                   // input/output vector for results
     const GrB_Vector mask,          // optional mask for w(I), unused if NULL
@@ -3139,7 +3275,7 @@ GrB_Info GrB_Vector_subassign_INT32    // w(I)<mask> = accum (w(I),x)
     const GrB_Descriptor desc       // descriptor for w(I) and mask
 ) ;
 
-GrB_Info GrB_Vector_subassign_UINT32   // w(I)<mask> = accum (w(I),x)
+GrB_Info GxB_Vector_subassign_UINT32   // w(I)<mask> = accum (w(I),x)
 (
     GrB_Vector w,                   // input/output vector for results
     const GrB_Vector mask,          // optional mask for w(I), unused if NULL
@@ -3150,7 +3286,7 @@ GrB_Info GrB_Vector_subassign_UINT32   // w(I)<mask> = accum (w(I),x)
     const GrB_Descriptor desc       // descriptor for w(I) and mask
 ) ;
 
-GrB_Info GrB_Vector_subassign_INT64    // w(I)<mask> = accum (w(I),x)
+GrB_Info GxB_Vector_subassign_INT64    // w(I)<mask> = accum (w(I),x)
 (
     GrB_Vector w,                   // input/output vector for results
     const GrB_Vector mask,          // optional mask for w(I), unused if NULL
@@ -3161,7 +3297,7 @@ GrB_Info GrB_Vector_subassign_INT64    // w(I)<mask> = accum (w(I),x)
     const GrB_Descriptor desc       // descriptor for w(I) and mask
 ) ;
 
-GrB_Info GrB_Vector_subassign_UINT64   // w(I)<mask> = accum (w(I),x)
+GrB_Info GxB_Vector_subassign_UINT64   // w(I)<mask> = accum (w(I),x)
 (
     GrB_Vector w,                   // input/output vector for results
     const GrB_Vector mask,          // optional mask for w(I), unused if NULL
@@ -3172,7 +3308,7 @@ GrB_Info GrB_Vector_subassign_UINT64   // w(I)<mask> = accum (w(I),x)
     const GrB_Descriptor desc       // descriptor for w(I) and mask
 ) ;
 
-GrB_Info GrB_Vector_subassign_FP32     // w(I)<mask> = accum (w(I),x)
+GrB_Info GxB_Vector_subassign_FP32     // w(I)<mask> = accum (w(I),x)
 (
     GrB_Vector w,                   // input/output vector for results
     const GrB_Vector mask,          // optional mask for w(I), unused if NULL
@@ -3183,7 +3319,7 @@ GrB_Info GrB_Vector_subassign_FP32     // w(I)<mask> = accum (w(I),x)
     const GrB_Descriptor desc       // descriptor for w(I) and mask
 ) ;
 
-GrB_Info GrB_Vector_subassign_FP64     // w(I)<mask> = accum (w(I),x)
+GrB_Info GxB_Vector_subassign_FP64     // w(I)<mask> = accum (w(I),x)
 (
     GrB_Vector w,                   // input/output vector for results
     const GrB_Vector mask,          // optional mask for w(I), unused if NULL
@@ -3194,7 +3330,7 @@ GrB_Info GrB_Vector_subassign_FP64     // w(I)<mask> = accum (w(I),x)
     const GrB_Descriptor desc       // descriptor for w(I) and mask
 ) ;
 
-GrB_Info GrB_Vector_subassign_UDT      // w(I)<mask> = accum (w(I),x)
+GrB_Info GxB_Vector_subassign_UDT      // w(I)<mask> = accum (w(I),x)
 (
     GrB_Vector w,                   // input/output vector for results
     const GrB_Vector mask,          // optional mask for w(I), unused if NULL
@@ -3206,16 +3342,16 @@ GrB_Info GrB_Vector_subassign_UDT      // w(I)<mask> = accum (w(I),x)
 ) ;
 
 //------------------------------------------------------------------------------
-// GrB_Matrix_subassign_[SCALAR]:  scalar expansion assignment to submatrix
+// GxB_Matrix_subassign_[SCALAR]:  scalar expansion assignment to submatrix
 //------------------------------------------------------------------------------
 
 // Assigns a single scalar to a submatrix, C(I,J)<Mask> = accum(C(I,J),x).  The
 // scalar x is implicitly expanded into a matrix A of size ni-by-nj, with each
 // entry in A equal to x, and then C(I,J)<Mask> = accum(C(I,J),A) is done.
 
-// Each of these can be used with their generic name, GrB_subassign.
+// Each of these can be used with their generic name, GxB_subassign.
 
-GrB_Info GrB_Matrix_subassign_BOOL  // C(I,J)<Mask> = accum (C(I,J),x)
+GrB_Info GxB_Matrix_subassign_BOOL  // C(I,J)<Mask> = accum (C(I,J),x)
 (
     GrB_Matrix C,                   // input/output matrix for results
     const GrB_Matrix Mask,          // optional mask for C(I,J), unused if NULL
@@ -3228,7 +3364,7 @@ GrB_Info GrB_Matrix_subassign_BOOL  // C(I,J)<Mask> = accum (C(I,J),x)
     const GrB_Descriptor desc       // descriptor for C(I,J) and Mask
 ) ;
 
-GrB_Info GrB_Matrix_subassign_INT8  // C(I,J)<Mask> = accum (C(I,J),x)
+GrB_Info GxB_Matrix_subassign_INT8  // C(I,J)<Mask> = accum (C(I,J),x)
 (
     GrB_Matrix C,                   // input/output matrix for results
     const GrB_Matrix Mask,          // optional mask for C(I,J), unused if NULL
@@ -3241,7 +3377,7 @@ GrB_Info GrB_Matrix_subassign_INT8  // C(I,J)<Mask> = accum (C(I,J),x)
     const GrB_Descriptor desc       // descriptor for C(I,J) and Mask
 ) ;
 
-GrB_Info GrB_Matrix_subassign_UINT8 // C(I,J)<Mask> = accum (C(I,J),x)
+GrB_Info GxB_Matrix_subassign_UINT8 // C(I,J)<Mask> = accum (C(I,J),x)
 (
     GrB_Matrix C,                   // input/output matrix for results
     const GrB_Matrix Mask,          // optional mask for C(I,J), unused if NULL
@@ -3254,7 +3390,7 @@ GrB_Info GrB_Matrix_subassign_UINT8 // C(I,J)<Mask> = accum (C(I,J),x)
     const GrB_Descriptor desc       // descriptor for C(I,J) and Mask
 ) ;
 
-GrB_Info GrB_Matrix_subassign_INT16 // C(I,J)<Mask> = accum (C(I,J),x)
+GrB_Info GxB_Matrix_subassign_INT16 // C(I,J)<Mask> = accum (C(I,J),x)
 (
     GrB_Matrix C,                   // input/output matrix for results
     const GrB_Matrix Mask,          // optional mask for C(I,J), unused if NULL
@@ -3267,7 +3403,7 @@ GrB_Info GrB_Matrix_subassign_INT16 // C(I,J)<Mask> = accum (C(I,J),x)
     const GrB_Descriptor desc       // descriptor for C(I,J) and Mask
 ) ;
 
-GrB_Info GrB_Matrix_subassign_UINT16   // C(I,J)<Mask> = accum (C(I,J),x)
+GrB_Info GxB_Matrix_subassign_UINT16   // C(I,J)<Mask> = accum (C(I,J),x)
 (
     GrB_Matrix C,                   // input/output matrix for results
     const GrB_Matrix Mask,          // optional mask for C(I,J), unused if NULL
@@ -3280,7 +3416,7 @@ GrB_Info GrB_Matrix_subassign_UINT16   // C(I,J)<Mask> = accum (C(I,J),x)
     const GrB_Descriptor desc       // descriptor for C(I,J) and Mask
 ) ;
 
-GrB_Info GrB_Matrix_subassign_INT32    // C(I,J)<Mask> = accum (C(I,J),x)
+GrB_Info GxB_Matrix_subassign_INT32    // C(I,J)<Mask> = accum (C(I,J),x)
 (
     GrB_Matrix C,                   // input/output matrix for results
     const GrB_Matrix Mask,          // optional mask for C(I,J), unused if NULL
@@ -3293,7 +3429,7 @@ GrB_Info GrB_Matrix_subassign_INT32    // C(I,J)<Mask> = accum (C(I,J),x)
     const GrB_Descriptor desc       // descriptor for C(I,J) and Mask
 ) ;
 
-GrB_Info GrB_Matrix_subassign_UINT32   // C(I,J)<Mask> = accum (C(I,J),x)
+GrB_Info GxB_Matrix_subassign_UINT32   // C(I,J)<Mask> = accum (C(I,J),x)
 (
     GrB_Matrix C,                   // input/output matrix for results
     const GrB_Matrix Mask,          // optional mask for C(I,J), unused if NULL
@@ -3306,7 +3442,7 @@ GrB_Info GrB_Matrix_subassign_UINT32   // C(I,J)<Mask> = accum (C(I,J),x)
     const GrB_Descriptor desc       // descriptor for C(I,J) and Mask
 ) ;
 
-GrB_Info GrB_Matrix_subassign_INT64    // C(I,J)<Mask> = accum (C(I,J),x)
+GrB_Info GxB_Matrix_subassign_INT64    // C(I,J)<Mask> = accum (C(I,J),x)
 (
     GrB_Matrix C,                   // input/output matrix for results
     const GrB_Matrix Mask,          // optional mask for C(I,J), unused if NULL
@@ -3319,7 +3455,7 @@ GrB_Info GrB_Matrix_subassign_INT64    // C(I,J)<Mask> = accum (C(I,J),x)
     const GrB_Descriptor desc       // descriptor for C(I,J) and Mask
 ) ;
 
-GrB_Info GrB_Matrix_subassign_UINT64   // C(I,J)<Mask> = accum (C(I,J),x)
+GrB_Info GxB_Matrix_subassign_UINT64   // C(I,J)<Mask> = accum (C(I,J),x)
 (
     GrB_Matrix C,                   // input/output matrix for results
     const GrB_Matrix Mask,          // optional mask for C(I,J), unused if NULL
@@ -3332,7 +3468,7 @@ GrB_Info GrB_Matrix_subassign_UINT64   // C(I,J)<Mask> = accum (C(I,J),x)
     const GrB_Descriptor desc       // descriptor for C(I,J) and Mask
 ) ;
 
-GrB_Info GrB_Matrix_subassign_FP32     // C(I,J)<Mask> = accum (C(I,J),x)
+GrB_Info GxB_Matrix_subassign_FP32     // C(I,J)<Mask> = accum (C(I,J),x)
 (
     GrB_Matrix C,                   // input/output matrix for results
     const GrB_Matrix Mask,          // optional mask for C(I,J), unused if NULL
@@ -3345,7 +3481,7 @@ GrB_Info GrB_Matrix_subassign_FP32     // C(I,J)<Mask> = accum (C(I,J),x)
     const GrB_Descriptor desc       // descriptor for C(I,J) and Mask
 ) ;
 
-GrB_Info GrB_Matrix_subassign_FP64     // C(I,J)<Mask> = accum (C(I,J),x)
+GrB_Info GxB_Matrix_subassign_FP64     // C(I,J)<Mask> = accum (C(I,J),x)
 (
     GrB_Matrix C,                   // input/output matrix for results
     const GrB_Matrix Mask,          // optional mask for C(I,J), unused if NULL
@@ -3358,7 +3494,7 @@ GrB_Info GrB_Matrix_subassign_FP64     // C(I,J)<Mask> = accum (C(I,J),x)
     const GrB_Descriptor desc       // descriptor for C(I,J) and Mask
 ) ;
 
-GrB_Info GrB_Matrix_subassign_UDT      // C(I,J)<Mask> = accum (C(I,J),x)
+GrB_Info GxB_Matrix_subassign_UDT      // C(I,J)<Mask> = accum (C(I,J),x)
 (
     GrB_Matrix C,                   // input/output matrix for results
     const GrB_Matrix Mask,          // optional mask for C(I,J), unused if NULL
@@ -3372,20 +3508,20 @@ GrB_Info GrB_Matrix_subassign_UDT      // C(I,J)<Mask> = accum (C(I,J),x)
 ) ;
 
 //------------------------------------------------------------------------------
-// GrB_subassign: generic submatrix/subvector assignment
+// GxB_subassign: generic submatrix/subvector assignment
 //------------------------------------------------------------------------------
 
-// GrB_subassign is a generic function that provides access to all specific
-// GrB_*_subassign* functions:
+// GxB_subassign is a generic function that provides access to all specific
+// GxB_*_subassign* functions:
 
-// GrB_Vector_subassign   (w,mask,acc,u,I,ni,d)     // w(I)<mask>   =acc(w(I),u)
-// GrB_Matrix_subassign   (C,Mask,acc,A,I,ni,J,nj,d)// C(I,J)<Mask> =acc(C(I,J),A)
-// GrB_Col_subassign      (C,mask,acc,u,I,ni,j,d)   // C(I,j)<mask> =acc(C(I,j),u)
-// GrB_Row_subassign      (C,mask,acc,u,i,J,nj,d)   // C(i,J)<mask'>=acc(C(i,J),u')
-// GrB_Vector_subassign_T (w,mask,acc,x,I,ni,d)     // w(I)<mask>   =acc(w(I),x)
-// GrB_Matrix_subassign_T (C,Mask,acc,x,I,ni,J,nj,d)// C(I,J)<Mask> =acc(C(I,J),x)
+// GxB_Vector_subassign   (w,mask,acc,u,I,ni,d)     // w(I)<mask>   =acc(w(I),u)
+// GxB_Matrix_subassign   (C,Mask,acc,A,I,ni,J,nj,d)// C(I,J)<Mask> =acc(C(I,J),A)
+// GxB_Col_subassign      (C,mask,acc,u,I,ni,j,d)   // C(I,j)<mask> =acc(C(I,j),u)
+// GxB_Row_subassign      (C,mask,acc,u,i,J,nj,d)   // C(i,J)<mask'>=acc(C(i,J),u')
+// GxB_Vector_subassign_T (w,mask,acc,x,I,ni,d)     // w(I)<mask>   =acc(w(I),x)
+// GxB_Matrix_subassign_T (C,Mask,acc,x,I,ni,J,nj,d)// C(I,J)<Mask> =acc(C(I,J),x)
 
-#define GrB_subassign(arg1,Mask,accum,arg4,arg5,...)               \
+#define GxB_subassign(arg1,Mask,accum,arg4,arg5,...)               \
     _Generic                                                    \
     (                                                           \
         (arg1),                                                 \
@@ -3393,77 +3529,77 @@ GrB_Info GrB_Matrix_subassign_UDT      // C(I,J)<Mask> = accum (C(I,J),x)
             _Generic                                            \
             (                                                   \
                 (arg4),                                         \
-                const bool       : GrB_Vector_subassign_BOOL   ,   \
-                      bool       : GrB_Vector_subassign_BOOL   ,   \
-                const int8_t     : GrB_Vector_subassign_INT8   ,   \
-                      int8_t     : GrB_Vector_subassign_INT8   ,   \
-                const uint8_t    : GrB_Vector_subassign_UINT8  ,   \
-                      uint8_t    : GrB_Vector_subassign_UINT8  ,   \
-                const int16_t    : GrB_Vector_subassign_INT16  ,   \
-                      int16_t    : GrB_Vector_subassign_INT16  ,   \
-                const uint16_t   : GrB_Vector_subassign_UINT16 ,   \
-                      uint16_t   : GrB_Vector_subassign_UINT16 ,   \
-                const int32_t    : GrB_Vector_subassign_INT32  ,   \
-                      int32_t    : GrB_Vector_subassign_INT32  ,   \
-                const uint32_t   : GrB_Vector_subassign_UINT32 ,   \
-                      uint32_t   : GrB_Vector_subassign_UINT32 ,   \
-                const int64_t    : GrB_Vector_subassign_INT64  ,   \
-                      int64_t    : GrB_Vector_subassign_INT64  ,   \
-                const uint64_t   : GrB_Vector_subassign_UINT64 ,   \
-                      uint64_t   : GrB_Vector_subassign_UINT64 ,   \
-                const float      : GrB_Vector_subassign_FP32   ,   \
-                      float      : GrB_Vector_subassign_FP32   ,   \
-                const double     : GrB_Vector_subassign_FP64   ,   \
-                      double     : GrB_Vector_subassign_FP64   ,   \
-                const void *     : GrB_Vector_subassign_UDT    ,   \
-                      void *     : GrB_Vector_subassign_UDT    ,   \
-                default          : GrB_Vector_subassign            \
+                const bool       : GxB_Vector_subassign_BOOL   ,   \
+                      bool       : GxB_Vector_subassign_BOOL   ,   \
+                const int8_t     : GxB_Vector_subassign_INT8   ,   \
+                      int8_t     : GxB_Vector_subassign_INT8   ,   \
+                const uint8_t    : GxB_Vector_subassign_UINT8  ,   \
+                      uint8_t    : GxB_Vector_subassign_UINT8  ,   \
+                const int16_t    : GxB_Vector_subassign_INT16  ,   \
+                      int16_t    : GxB_Vector_subassign_INT16  ,   \
+                const uint16_t   : GxB_Vector_subassign_UINT16 ,   \
+                      uint16_t   : GxB_Vector_subassign_UINT16 ,   \
+                const int32_t    : GxB_Vector_subassign_INT32  ,   \
+                      int32_t    : GxB_Vector_subassign_INT32  ,   \
+                const uint32_t   : GxB_Vector_subassign_UINT32 ,   \
+                      uint32_t   : GxB_Vector_subassign_UINT32 ,   \
+                const int64_t    : GxB_Vector_subassign_INT64  ,   \
+                      int64_t    : GxB_Vector_subassign_INT64  ,   \
+                const uint64_t   : GxB_Vector_subassign_UINT64 ,   \
+                      uint64_t   : GxB_Vector_subassign_UINT64 ,   \
+                const float      : GxB_Vector_subassign_FP32   ,   \
+                      float      : GxB_Vector_subassign_FP32   ,   \
+                const double     : GxB_Vector_subassign_FP64   ,   \
+                      double     : GxB_Vector_subassign_FP64   ,   \
+                const void *     : GxB_Vector_subassign_UDT    ,   \
+                      void *     : GxB_Vector_subassign_UDT    ,   \
+                default          : GxB_Vector_subassign            \
             ),                                                  \
         default :                                               \
             _Generic                                            \
             (                                                   \
                 (arg4),                                         \
-                const bool       : GrB_Matrix_subassign_BOOL   ,   \
-                      bool       : GrB_Matrix_subassign_BOOL   ,   \
-                const int8_t     : GrB_Matrix_subassign_INT8   ,   \
-                      int8_t     : GrB_Matrix_subassign_INT8   ,   \
-                const uint8_t    : GrB_Matrix_subassign_UINT8  ,   \
-                      uint8_t    : GrB_Matrix_subassign_UINT8  ,   \
-                const int16_t    : GrB_Matrix_subassign_INT16  ,   \
-                      int16_t    : GrB_Matrix_subassign_INT16  ,   \
-                const uint16_t   : GrB_Matrix_subassign_UINT16 ,   \
-                      uint16_t   : GrB_Matrix_subassign_UINT16 ,   \
-                const int32_t    : GrB_Matrix_subassign_INT32  ,   \
-                      int32_t    : GrB_Matrix_subassign_INT32  ,   \
-                const uint32_t   : GrB_Matrix_subassign_UINT32 ,   \
-                      uint32_t   : GrB_Matrix_subassign_UINT32 ,   \
-                const int64_t    : GrB_Matrix_subassign_INT64  ,   \
-                      int64_t    : GrB_Matrix_subassign_INT64  ,   \
-                const uint64_t   : GrB_Matrix_subassign_UINT64 ,   \
-                      uint64_t   : GrB_Matrix_subassign_UINT64 ,   \
-                const float      : GrB_Matrix_subassign_FP32   ,   \
-                      float      : GrB_Matrix_subassign_FP32   ,   \
-                const double     : GrB_Matrix_subassign_FP64   ,   \
-                      double     : GrB_Matrix_subassign_FP64   ,   \
-                const void *     : GrB_Matrix_subassign_UDT    ,   \
-                      void *     : GrB_Matrix_subassign_UDT    ,   \
+                const bool       : GxB_Matrix_subassign_BOOL   ,   \
+                      bool       : GxB_Matrix_subassign_BOOL   ,   \
+                const int8_t     : GxB_Matrix_subassign_INT8   ,   \
+                      int8_t     : GxB_Matrix_subassign_INT8   ,   \
+                const uint8_t    : GxB_Matrix_subassign_UINT8  ,   \
+                      uint8_t    : GxB_Matrix_subassign_UINT8  ,   \
+                const int16_t    : GxB_Matrix_subassign_INT16  ,   \
+                      int16_t    : GxB_Matrix_subassign_INT16  ,   \
+                const uint16_t   : GxB_Matrix_subassign_UINT16 ,   \
+                      uint16_t   : GxB_Matrix_subassign_UINT16 ,   \
+                const int32_t    : GxB_Matrix_subassign_INT32  ,   \
+                      int32_t    : GxB_Matrix_subassign_INT32  ,   \
+                const uint32_t   : GxB_Matrix_subassign_UINT32 ,   \
+                      uint32_t   : GxB_Matrix_subassign_UINT32 ,   \
+                const int64_t    : GxB_Matrix_subassign_INT64  ,   \
+                      int64_t    : GxB_Matrix_subassign_INT64  ,   \
+                const uint64_t   : GxB_Matrix_subassign_UINT64 ,   \
+                      uint64_t   : GxB_Matrix_subassign_UINT64 ,   \
+                const float      : GxB_Matrix_subassign_FP32   ,   \
+                      float      : GxB_Matrix_subassign_FP32   ,   \
+                const double     : GxB_Matrix_subassign_FP64   ,   \
+                      double     : GxB_Matrix_subassign_FP64   ,   \
+                const void *     : GxB_Matrix_subassign_UDT    ,   \
+                      void *     : GxB_Matrix_subassign_UDT    ,   \
                 const GrB_Vector :                              \
                     _Generic                                    \
                     (                                           \
                         (arg5),                                 \
-                        const GrB_Index *: GrB_Col_subassign ,     \
-                              GrB_Index *: GrB_Col_subassign ,     \
-                        default          : GrB_Row_subassign       \
+                        const GrB_Index *: GxB_Col_subassign ,     \
+                              GrB_Index *: GxB_Col_subassign ,     \
+                        default          : GxB_Row_subassign       \
                     ),                                          \
                 GrB_Vector :                                    \
                     _Generic                                    \
                     (                                           \
                         (arg5),                                 \
-                        const GrB_Index *: GrB_Col_subassign ,     \
-                              GrB_Index *: GrB_Col_subassign ,     \
-                        default          : GrB_Row_subassign       \
+                        const GrB_Index *: GxB_Col_subassign ,     \
+                              GrB_Index *: GxB_Col_subassign ,     \
+                        default          : GxB_Row_subassign       \
                     ),                                          \
-                default    : GrB_Matrix_subassign                  \
+                default    : GxB_Matrix_subassign                  \
             )                                                   \
     )                                                           \
     (arg1, Mask, accum, arg4, arg5, __VA_ARGS__)
@@ -3978,6 +4114,58 @@ GrB_Info GrB_Matrix_apply           // C<Mask> = accum (C, op(A)) or op(A')
     (C, Mask, accum, op, A, desc)
 
 //------------------------------------------------------------------------------
+// matrix and vector selection
+//------------------------------------------------------------------------------
+
+// Select a subset of entries from a matrix or vector.
+// C<Mask> = accum (C, op (A,k)), where the entries of op(A,k) are a subset of
+// the entries of A.
+
+// The input matrix A may be optionally transposed first, via the descriptor.
+
+GrB_Info GxB_Vector_select          // w<mask> = accum (w, op(u,k))
+(
+    GrB_Vector w,                   // input/output vector for results
+    const GrB_Vector mask,          // optional mask for w, unused if NULL
+    const GrB_BinaryOp accum,       // optional accum for z=accum(w,t)
+    const GxB_SelectOp op,          // operator to apply to the entries
+    const GrB_Vector u,             // first input:  vector u
+    const void *k,                  // optional input for the select operator
+    const GrB_Descriptor desc       // descriptor for w and mask
+) ;
+
+GrB_Info GxB_Matrix_select          // C<Mask> = accum (C, op(A,k)) or op(A',k)
+(
+    GrB_Matrix C,                   // input/output matrix for results
+    const GrB_Matrix Mask,          // optional mask for C, unused if NULL
+    const GrB_BinaryOp accum,       // optional accum for Z=accum(C,T)
+    const GxB_SelectOp op,          // operator to apply to the entries
+    const GrB_Matrix A,             // first input:  matrix A
+    const void *k,                  // optional input for the select operator
+    const GrB_Descriptor desc       // descriptor for C, mask, and A
+) ;
+
+//------------------------------------------------------------------------------
+// GxB_select: generic matrix/vector select
+//------------------------------------------------------------------------------
+
+// GrB_select is a generic function for applying a select operator to a matrix
+// or vector and provides access to these functions:
+
+// GrB_Vector_select (w,mask,acc,op,u,k,d)  // w<mask> = accum (w, op(u,k))
+// GrB_Matrix_select (C,Mask,acc,op,A,k,d)  // C<Mask> = accum (C, op(A,k))
+
+#define GxB_select(C,Mask,accum,op,A,k,desc)    \
+    _Generic                                    \
+    (                                           \
+        (C),                                    \
+        GrB_Vector   : GxB_Vector_select ,      \
+        GrB_Matrix   : GxB_Matrix_select        \
+    )                                           \
+    (C, Mask, accum, op, A, k, desc)
+
+
+//------------------------------------------------------------------------------
 // matrix and vector reduction
 //------------------------------------------------------------------------------
 
@@ -4387,66 +4575,66 @@ GrB_Info GrB_transpose              // C<Mask> = accum (C, A')
 extern GrB_Monoid
 
     // MIN monoids:
-    GrB_MIN_INT8_MONOID,          // identity: INT8_MAX
-    GrB_MIN_UINT8_MONOID,         // identity: UINT8_MAX
-    GrB_MIN_INT16_MONOID,         // identity: INT16_MAX
-    GrB_MIN_UINT16_MONOID,        // identity: UINT16_MAX
-    GrB_MIN_INT32_MONOID,         // identity: INT32_MAX
-    GrB_MIN_UINT32_MONOID,        // identity: UINT32_MAX
-    GrB_MIN_INT64_MONOID,         // identity: INT64_MAX
-    GrB_MIN_UINT64_MONOID,        // identity: UINT64_MAX
-    GrB_MIN_FP32_MONOID,          // identity: INFINITY
-    GrB_MIN_FP64_MONOID,          // identity: INFINITY
+    GxB_MIN_INT8_MONOID,          // identity: INT8_MAX
+    GxB_MIN_UINT8_MONOID,         // identity: UINT8_MAX
+    GxB_MIN_INT16_MONOID,         // identity: INT16_MAX
+    GxB_MIN_UINT16_MONOID,        // identity: UINT16_MAX
+    GxB_MIN_INT32_MONOID,         // identity: INT32_MAX
+    GxB_MIN_UINT32_MONOID,        // identity: UINT32_MAX
+    GxB_MIN_INT64_MONOID,         // identity: INT64_MAX
+    GxB_MIN_UINT64_MONOID,        // identity: UINT64_MAX
+    GxB_MIN_FP32_MONOID,          // identity: INFINITY
+    GxB_MIN_FP64_MONOID,          // identity: INFINITY
 
     // MAX monoids:
-    GrB_MAX_INT8_MONOID,          // identity: INT8_MIN
-    GrB_MAX_UINT8_MONOID,         // identity: 0
-    GrB_MAX_INT16_MONOID,         // identity: INT16_MIN
-    GrB_MAX_UINT16_MONOID,        // identity: 0
-    GrB_MAX_INT32_MONOID,         // identity: INT32_MIN
-    GrB_MAX_UINT32_MONOID,        // identity: 0
-    GrB_MAX_INT64_MONOID,         // identity: INT64_MIN
-    GrB_MAX_UINT64_MONOID,        // identity: 0
-    GrB_MAX_FP32_MONOID,          // identity: -INFINITY
-    GrB_MAX_FP64_MONOID,          // identity: -INFINITY
+    GxB_MAX_INT8_MONOID,          // identity: INT8_MIN
+    GxB_MAX_UINT8_MONOID,         // identity: 0
+    GxB_MAX_INT16_MONOID,         // identity: INT16_MIN
+    GxB_MAX_UINT16_MONOID,        // identity: 0
+    GxB_MAX_INT32_MONOID,         // identity: INT32_MIN
+    GxB_MAX_UINT32_MONOID,        // identity: 0
+    GxB_MAX_INT64_MONOID,         // identity: INT64_MIN
+    GxB_MAX_UINT64_MONOID,        // identity: 0
+    GxB_MAX_FP32_MONOID,          // identity: -INFINITY
+    GxB_MAX_FP64_MONOID,          // identity: -INFINITY
 
     // PLUS monoids:
-    GrB_PLUS_INT8_MONOID,         // identity: 0
-    GrB_PLUS_UINT8_MONOID,        // identity: 0
-    GrB_PLUS_INT16_MONOID,        // identity: 0
-    GrB_PLUS_UINT16_MONOID,       // identity: 0
-    GrB_PLUS_INT32_MONOID,        // identity: 0
-    GrB_PLUS_UINT32_MONOID,       // identity: 0
-    GrB_PLUS_INT64_MONOID,        // identity: 0
-    GrB_PLUS_UINT64_MONOID,       // identity: 0
-    GrB_PLUS_FP32_MONOID,         // identity: 0
-    GrB_PLUS_FP64_MONOID,         // identity: 0
+    GxB_PLUS_INT8_MONOID,         // identity: 0
+    GxB_PLUS_UINT8_MONOID,        // identity: 0
+    GxB_PLUS_INT16_MONOID,        // identity: 0
+    GxB_PLUS_UINT16_MONOID,       // identity: 0
+    GxB_PLUS_INT32_MONOID,        // identity: 0
+    GxB_PLUS_UINT32_MONOID,       // identity: 0
+    GxB_PLUS_INT64_MONOID,        // identity: 0
+    GxB_PLUS_UINT64_MONOID,       // identity: 0
+    GxB_PLUS_FP32_MONOID,         // identity: 0
+    GxB_PLUS_FP64_MONOID,         // identity: 0
 
     // TIMES monoids:
-    GrB_TIMES_INT8_MONOID,        // identity: 1
-    GrB_TIMES_UINT8_MONOID,       // identity: 1
-    GrB_TIMES_INT16_MONOID,       // identity: 1
-    GrB_TIMES_UINT16_MONOID,      // identity: 1
-    GrB_TIMES_INT32_MONOID,       // identity: 1
-    GrB_TIMES_UINT32_MONOID,      // identity: 1
-    GrB_TIMES_INT64_MONOID,       // identity: 1
-    GrB_TIMES_UINT64_MONOID,      // identity: 1
-    GrB_TIMES_FP32_MONOID,        // identity: 1
-    GrB_TIMES_FP64_MONOID,        // identity: 1
+    GxB_TIMES_INT8_MONOID,        // identity: 1
+    GxB_TIMES_UINT8_MONOID,       // identity: 1
+    GxB_TIMES_INT16_MONOID,       // identity: 1
+    GxB_TIMES_UINT16_MONOID,      // identity: 1
+    GxB_TIMES_INT32_MONOID,       // identity: 1
+    GxB_TIMES_UINT32_MONOID,      // identity: 1
+    GxB_TIMES_INT64_MONOID,       // identity: 1
+    GxB_TIMES_UINT64_MONOID,      // identity: 1
+    GxB_TIMES_FP32_MONOID,        // identity: 1
+    GxB_TIMES_FP64_MONOID,        // identity: 1
 
     // Boolean monoids:
-    GrB_LOR_BOOL_MONOID,          // identity: false
-    GrB_LAND_BOOL_MONOID,         // identity: true
-    GrB_LXOR_BOOL_MONOID,         // identity: false
-    GrB_EQ_BOOL_MONOID ;          // identity: true
+    GxB_LOR_BOOL_MONOID,          // identity: false
+    GxB_LAND_BOOL_MONOID,         // identity: true
+    GxB_LXOR_BOOL_MONOID,         // identity: false
+    GxB_EQ_BOOL_MONOID ;          // identity: true
 
 //------------------------------------------------------------------------------
 // built-in semirings
 //------------------------------------------------------------------------------
 
 // Using built-in types and operators, 960 unique semirings can be built.  This
-// count excludes redundant Boolean operators (for example GrB_TIMES_BOOL and
-// GrB_LAND_BOOL are different operators but they are redundant since they
+// count excludes redundant Boolean operators (for example GxB_TIMES_BOOL and
+// GxB_LAND_BOOL are different operators but they are redundant since they
 // always return the same result):
 
 // 680 semirings with a multiply operator TxT -> T where T is non-Boolean, from
@@ -4473,7 +4661,7 @@ extern GrB_Monoid
 //      10 multiply operators:
 //          (FIRST, SECOND, LOR, LAND, LXOR, EQ, GT, LT, GE, LE)
 
-// In the names below, each semiring has a name of the form GrB_add_mult_T
+// In the names below, each semiring has a name of the form GxB_add_mult_T
 // where add is the additive monoid, mult is the multiply operator, and T is
 // the type.  The type T is always the type of x and y for the z=mult(x,y)
 // operator.  The monoid's three types and the ztype of the mult operator are
@@ -4487,300 +4675,300 @@ extern GrB_Semiring
 //------------------------------------------------------------------------------
 
 // semirings with multiply op: z = FIRST (x,y), all types x,y,z the same:
-GrB_MIN_FIRST_INT8     , GrB_MAX_FIRST_INT8     , GrB_PLUS_FIRST_INT8    , GrB_TIMES_FIRST_INT8   ,
-GrB_MIN_FIRST_UINT8    , GrB_MAX_FIRST_UINT8    , GrB_PLUS_FIRST_UINT8   , GrB_TIMES_FIRST_UINT8  ,
-GrB_MIN_FIRST_INT16    , GrB_MAX_FIRST_INT16    , GrB_PLUS_FIRST_INT16   , GrB_TIMES_FIRST_INT16  ,
-GrB_MIN_FIRST_UINT16   , GrB_MAX_FIRST_UINT16   , GrB_PLUS_FIRST_UINT16  , GrB_TIMES_FIRST_UINT16 ,
-GrB_MIN_FIRST_INT32    , GrB_MAX_FIRST_INT32    , GrB_PLUS_FIRST_INT32   , GrB_TIMES_FIRST_INT32  ,
-GrB_MIN_FIRST_UINT32   , GrB_MAX_FIRST_UINT32   , GrB_PLUS_FIRST_UINT32  , GrB_TIMES_FIRST_UINT32 ,
-GrB_MIN_FIRST_INT64    , GrB_MAX_FIRST_INT64    , GrB_PLUS_FIRST_INT64   , GrB_TIMES_FIRST_INT64  ,
-GrB_MIN_FIRST_UINT64   , GrB_MAX_FIRST_UINT64   , GrB_PLUS_FIRST_UINT64  , GrB_TIMES_FIRST_UINT64 ,
-GrB_MIN_FIRST_FP32     , GrB_MAX_FIRST_FP32     , GrB_PLUS_FIRST_FP32    , GrB_TIMES_FIRST_FP32   ,
-GrB_MIN_FIRST_FP64     , GrB_MAX_FIRST_FP64     , GrB_PLUS_FIRST_FP64    , GrB_TIMES_FIRST_FP64   ,
+GxB_MIN_FIRST_INT8     , GxB_MAX_FIRST_INT8     , GxB_PLUS_FIRST_INT8    , GxB_TIMES_FIRST_INT8   ,
+GxB_MIN_FIRST_UINT8    , GxB_MAX_FIRST_UINT8    , GxB_PLUS_FIRST_UINT8   , GxB_TIMES_FIRST_UINT8  ,
+GxB_MIN_FIRST_INT16    , GxB_MAX_FIRST_INT16    , GxB_PLUS_FIRST_INT16   , GxB_TIMES_FIRST_INT16  ,
+GxB_MIN_FIRST_UINT16   , GxB_MAX_FIRST_UINT16   , GxB_PLUS_FIRST_UINT16  , GxB_TIMES_FIRST_UINT16 ,
+GxB_MIN_FIRST_INT32    , GxB_MAX_FIRST_INT32    , GxB_PLUS_FIRST_INT32   , GxB_TIMES_FIRST_INT32  ,
+GxB_MIN_FIRST_UINT32   , GxB_MAX_FIRST_UINT32   , GxB_PLUS_FIRST_UINT32  , GxB_TIMES_FIRST_UINT32 ,
+GxB_MIN_FIRST_INT64    , GxB_MAX_FIRST_INT64    , GxB_PLUS_FIRST_INT64   , GxB_TIMES_FIRST_INT64  ,
+GxB_MIN_FIRST_UINT64   , GxB_MAX_FIRST_UINT64   , GxB_PLUS_FIRST_UINT64  , GxB_TIMES_FIRST_UINT64 ,
+GxB_MIN_FIRST_FP32     , GxB_MAX_FIRST_FP32     , GxB_PLUS_FIRST_FP32    , GxB_TIMES_FIRST_FP32   ,
+GxB_MIN_FIRST_FP64     , GxB_MAX_FIRST_FP64     , GxB_PLUS_FIRST_FP64    , GxB_TIMES_FIRST_FP64   ,
 
 // semirings with multiply op: z = SECOND (x,y), all types x,y,z the same:
-GrB_MIN_SECOND_INT8    , GrB_MAX_SECOND_INT8    , GrB_PLUS_SECOND_INT8   , GrB_TIMES_SECOND_INT8  ,
-GrB_MIN_SECOND_UINT8   , GrB_MAX_SECOND_UINT8   , GrB_PLUS_SECOND_UINT8  , GrB_TIMES_SECOND_UINT8 ,
-GrB_MIN_SECOND_INT16   , GrB_MAX_SECOND_INT16   , GrB_PLUS_SECOND_INT16  , GrB_TIMES_SECOND_INT16 ,
-GrB_MIN_SECOND_UINT16  , GrB_MAX_SECOND_UINT16  , GrB_PLUS_SECOND_UINT16 , GrB_TIMES_SECOND_UINT16,
-GrB_MIN_SECOND_INT32   , GrB_MAX_SECOND_INT32   , GrB_PLUS_SECOND_INT32  , GrB_TIMES_SECOND_INT32 ,
-GrB_MIN_SECOND_UINT32  , GrB_MAX_SECOND_UINT32  , GrB_PLUS_SECOND_UINT32 , GrB_TIMES_SECOND_UINT32,
-GrB_MIN_SECOND_INT64   , GrB_MAX_SECOND_INT64   , GrB_PLUS_SECOND_INT64  , GrB_TIMES_SECOND_INT64 ,
-GrB_MIN_SECOND_UINT64  , GrB_MAX_SECOND_UINT64  , GrB_PLUS_SECOND_UINT64 , GrB_TIMES_SECOND_UINT64,
-GrB_MIN_SECOND_FP32    , GrB_MAX_SECOND_FP32    , GrB_PLUS_SECOND_FP32   , GrB_TIMES_SECOND_FP32  ,
-GrB_MIN_SECOND_FP64    , GrB_MAX_SECOND_FP64    , GrB_PLUS_SECOND_FP64   , GrB_TIMES_SECOND_FP64  ,
+GxB_MIN_SECOND_INT8    , GxB_MAX_SECOND_INT8    , GxB_PLUS_SECOND_INT8   , GxB_TIMES_SECOND_INT8  ,
+GxB_MIN_SECOND_UINT8   , GxB_MAX_SECOND_UINT8   , GxB_PLUS_SECOND_UINT8  , GxB_TIMES_SECOND_UINT8 ,
+GxB_MIN_SECOND_INT16   , GxB_MAX_SECOND_INT16   , GxB_PLUS_SECOND_INT16  , GxB_TIMES_SECOND_INT16 ,
+GxB_MIN_SECOND_UINT16  , GxB_MAX_SECOND_UINT16  , GxB_PLUS_SECOND_UINT16 , GxB_TIMES_SECOND_UINT16,
+GxB_MIN_SECOND_INT32   , GxB_MAX_SECOND_INT32   , GxB_PLUS_SECOND_INT32  , GxB_TIMES_SECOND_INT32 ,
+GxB_MIN_SECOND_UINT32  , GxB_MAX_SECOND_UINT32  , GxB_PLUS_SECOND_UINT32 , GxB_TIMES_SECOND_UINT32,
+GxB_MIN_SECOND_INT64   , GxB_MAX_SECOND_INT64   , GxB_PLUS_SECOND_INT64  , GxB_TIMES_SECOND_INT64 ,
+GxB_MIN_SECOND_UINT64  , GxB_MAX_SECOND_UINT64  , GxB_PLUS_SECOND_UINT64 , GxB_TIMES_SECOND_UINT64,
+GxB_MIN_SECOND_FP32    , GxB_MAX_SECOND_FP32    , GxB_PLUS_SECOND_FP32   , GxB_TIMES_SECOND_FP32  ,
+GxB_MIN_SECOND_FP64    , GxB_MAX_SECOND_FP64    , GxB_PLUS_SECOND_FP64   , GxB_TIMES_SECOND_FP64  ,
 
 // semirings with multiply op: z = MIN (x,y), all types x,y,z the same:
-GrB_MIN_MIN_INT8       , GrB_MAX_MIN_INT8       , GrB_PLUS_MIN_INT8      , GrB_TIMES_MIN_INT8     ,
-GrB_MIN_MIN_UINT8      , GrB_MAX_MIN_UINT8      , GrB_PLUS_MIN_UINT8     , GrB_TIMES_MIN_UINT8    ,
-GrB_MIN_MIN_INT16      , GrB_MAX_MIN_INT16      , GrB_PLUS_MIN_INT16     , GrB_TIMES_MIN_INT16    ,
-GrB_MIN_MIN_UINT16     , GrB_MAX_MIN_UINT16     , GrB_PLUS_MIN_UINT16    , GrB_TIMES_MIN_UINT16   ,
-GrB_MIN_MIN_INT32      , GrB_MAX_MIN_INT32      , GrB_PLUS_MIN_INT32     , GrB_TIMES_MIN_INT32    ,
-GrB_MIN_MIN_UINT32     , GrB_MAX_MIN_UINT32     , GrB_PLUS_MIN_UINT32    , GrB_TIMES_MIN_UINT32   ,
-GrB_MIN_MIN_INT64      , GrB_MAX_MIN_INT64      , GrB_PLUS_MIN_INT64     , GrB_TIMES_MIN_INT64    ,
-GrB_MIN_MIN_UINT64     , GrB_MAX_MIN_UINT64     , GrB_PLUS_MIN_UINT64    , GrB_TIMES_MIN_UINT64   ,
-GrB_MIN_MIN_FP32       , GrB_MAX_MIN_FP32       , GrB_PLUS_MIN_FP32      , GrB_TIMES_MIN_FP32     ,
-GrB_MIN_MIN_FP64       , GrB_MAX_MIN_FP64       , GrB_PLUS_MIN_FP64      , GrB_TIMES_MIN_FP64     ,
+GxB_MIN_MIN_INT8       , GxB_MAX_MIN_INT8       , GxB_PLUS_MIN_INT8      , GxB_TIMES_MIN_INT8     ,
+GxB_MIN_MIN_UINT8      , GxB_MAX_MIN_UINT8      , GxB_PLUS_MIN_UINT8     , GxB_TIMES_MIN_UINT8    ,
+GxB_MIN_MIN_INT16      , GxB_MAX_MIN_INT16      , GxB_PLUS_MIN_INT16     , GxB_TIMES_MIN_INT16    ,
+GxB_MIN_MIN_UINT16     , GxB_MAX_MIN_UINT16     , GxB_PLUS_MIN_UINT16    , GxB_TIMES_MIN_UINT16   ,
+GxB_MIN_MIN_INT32      , GxB_MAX_MIN_INT32      , GxB_PLUS_MIN_INT32     , GxB_TIMES_MIN_INT32    ,
+GxB_MIN_MIN_UINT32     , GxB_MAX_MIN_UINT32     , GxB_PLUS_MIN_UINT32    , GxB_TIMES_MIN_UINT32   ,
+GxB_MIN_MIN_INT64      , GxB_MAX_MIN_INT64      , GxB_PLUS_MIN_INT64     , GxB_TIMES_MIN_INT64    ,
+GxB_MIN_MIN_UINT64     , GxB_MAX_MIN_UINT64     , GxB_PLUS_MIN_UINT64    , GxB_TIMES_MIN_UINT64   ,
+GxB_MIN_MIN_FP32       , GxB_MAX_MIN_FP32       , GxB_PLUS_MIN_FP32      , GxB_TIMES_MIN_FP32     ,
+GxB_MIN_MIN_FP64       , GxB_MAX_MIN_FP64       , GxB_PLUS_MIN_FP64      , GxB_TIMES_MIN_FP64     ,
 
 // semirings with multiply op: z = MAX (x,y), all types x,y,z the same:
-GrB_MIN_MAX_INT8       , GrB_MAX_MAX_INT8       , GrB_PLUS_MAX_INT8      , GrB_TIMES_MAX_INT8     ,
-GrB_MIN_MAX_UINT8      , GrB_MAX_MAX_UINT8      , GrB_PLUS_MAX_UINT8     , GrB_TIMES_MAX_UINT8    ,
-GrB_MIN_MAX_INT16      , GrB_MAX_MAX_INT16      , GrB_PLUS_MAX_INT16     , GrB_TIMES_MAX_INT16    ,
-GrB_MIN_MAX_UINT16     , GrB_MAX_MAX_UINT16     , GrB_PLUS_MAX_UINT16    , GrB_TIMES_MAX_UINT16   ,
-GrB_MIN_MAX_INT32      , GrB_MAX_MAX_INT32      , GrB_PLUS_MAX_INT32     , GrB_TIMES_MAX_INT32    ,
-GrB_MIN_MAX_UINT32     , GrB_MAX_MAX_UINT32     , GrB_PLUS_MAX_UINT32    , GrB_TIMES_MAX_UINT32   ,
-GrB_MIN_MAX_INT64      , GrB_MAX_MAX_INT64      , GrB_PLUS_MAX_INT64     , GrB_TIMES_MAX_INT64    ,
-GrB_MIN_MAX_UINT64     , GrB_MAX_MAX_UINT64     , GrB_PLUS_MAX_UINT64    , GrB_TIMES_MAX_UINT64   ,
-GrB_MIN_MAX_FP32       , GrB_MAX_MAX_FP32       , GrB_PLUS_MAX_FP32      , GrB_TIMES_MAX_FP32     ,
-GrB_MIN_MAX_FP64       , GrB_MAX_MAX_FP64       , GrB_PLUS_MAX_FP64      , GrB_TIMES_MAX_FP64     ,
+GxB_MIN_MAX_INT8       , GxB_MAX_MAX_INT8       , GxB_PLUS_MAX_INT8      , GxB_TIMES_MAX_INT8     ,
+GxB_MIN_MAX_UINT8      , GxB_MAX_MAX_UINT8      , GxB_PLUS_MAX_UINT8     , GxB_TIMES_MAX_UINT8    ,
+GxB_MIN_MAX_INT16      , GxB_MAX_MAX_INT16      , GxB_PLUS_MAX_INT16     , GxB_TIMES_MAX_INT16    ,
+GxB_MIN_MAX_UINT16     , GxB_MAX_MAX_UINT16     , GxB_PLUS_MAX_UINT16    , GxB_TIMES_MAX_UINT16   ,
+GxB_MIN_MAX_INT32      , GxB_MAX_MAX_INT32      , GxB_PLUS_MAX_INT32     , GxB_TIMES_MAX_INT32    ,
+GxB_MIN_MAX_UINT32     , GxB_MAX_MAX_UINT32     , GxB_PLUS_MAX_UINT32    , GxB_TIMES_MAX_UINT32   ,
+GxB_MIN_MAX_INT64      , GxB_MAX_MAX_INT64      , GxB_PLUS_MAX_INT64     , GxB_TIMES_MAX_INT64    ,
+GxB_MIN_MAX_UINT64     , GxB_MAX_MAX_UINT64     , GxB_PLUS_MAX_UINT64    , GxB_TIMES_MAX_UINT64   ,
+GxB_MIN_MAX_FP32       , GxB_MAX_MAX_FP32       , GxB_PLUS_MAX_FP32      , GxB_TIMES_MAX_FP32     ,
+GxB_MIN_MAX_FP64       , GxB_MAX_MAX_FP64       , GxB_PLUS_MAX_FP64      , GxB_TIMES_MAX_FP64     ,
 
 // semirings with multiply op: z = PLUS (x,y), all types x,y,z the same:
-GrB_MIN_PLUS_INT8      , GrB_MAX_PLUS_INT8      , GrB_PLUS_PLUS_INT8     , GrB_TIMES_PLUS_INT8    ,
-GrB_MIN_PLUS_UINT8     , GrB_MAX_PLUS_UINT8     , GrB_PLUS_PLUS_UINT8    , GrB_TIMES_PLUS_UINT8   ,
-GrB_MIN_PLUS_INT16     , GrB_MAX_PLUS_INT16     , GrB_PLUS_PLUS_INT16    , GrB_TIMES_PLUS_INT16   ,
-GrB_MIN_PLUS_UINT16    , GrB_MAX_PLUS_UINT16    , GrB_PLUS_PLUS_UINT16   , GrB_TIMES_PLUS_UINT16  ,
-GrB_MIN_PLUS_INT32     , GrB_MAX_PLUS_INT32     , GrB_PLUS_PLUS_INT32    , GrB_TIMES_PLUS_INT32   ,
-GrB_MIN_PLUS_UINT32    , GrB_MAX_PLUS_UINT32    , GrB_PLUS_PLUS_UINT32   , GrB_TIMES_PLUS_UINT32  ,
-GrB_MIN_PLUS_INT64     , GrB_MAX_PLUS_INT64     , GrB_PLUS_PLUS_INT64    , GrB_TIMES_PLUS_INT64   ,
-GrB_MIN_PLUS_UINT64    , GrB_MAX_PLUS_UINT64    , GrB_PLUS_PLUS_UINT64   , GrB_TIMES_PLUS_UINT64  ,
-GrB_MIN_PLUS_FP32      , GrB_MAX_PLUS_FP32      , GrB_PLUS_PLUS_FP32     , GrB_TIMES_PLUS_FP32    ,
-GrB_MIN_PLUS_FP64      , GrB_MAX_PLUS_FP64      , GrB_PLUS_PLUS_FP64     , GrB_TIMES_PLUS_FP64    ,
+GxB_MIN_PLUS_INT8      , GxB_MAX_PLUS_INT8      , GxB_PLUS_PLUS_INT8     , GxB_TIMES_PLUS_INT8    ,
+GxB_MIN_PLUS_UINT8     , GxB_MAX_PLUS_UINT8     , GxB_PLUS_PLUS_UINT8    , GxB_TIMES_PLUS_UINT8   ,
+GxB_MIN_PLUS_INT16     , GxB_MAX_PLUS_INT16     , GxB_PLUS_PLUS_INT16    , GxB_TIMES_PLUS_INT16   ,
+GxB_MIN_PLUS_UINT16    , GxB_MAX_PLUS_UINT16    , GxB_PLUS_PLUS_UINT16   , GxB_TIMES_PLUS_UINT16  ,
+GxB_MIN_PLUS_INT32     , GxB_MAX_PLUS_INT32     , GxB_PLUS_PLUS_INT32    , GxB_TIMES_PLUS_INT32   ,
+GxB_MIN_PLUS_UINT32    , GxB_MAX_PLUS_UINT32    , GxB_PLUS_PLUS_UINT32   , GxB_TIMES_PLUS_UINT32  ,
+GxB_MIN_PLUS_INT64     , GxB_MAX_PLUS_INT64     , GxB_PLUS_PLUS_INT64    , GxB_TIMES_PLUS_INT64   ,
+GxB_MIN_PLUS_UINT64    , GxB_MAX_PLUS_UINT64    , GxB_PLUS_PLUS_UINT64   , GxB_TIMES_PLUS_UINT64  ,
+GxB_MIN_PLUS_FP32      , GxB_MAX_PLUS_FP32      , GxB_PLUS_PLUS_FP32     , GxB_TIMES_PLUS_FP32    ,
+GxB_MIN_PLUS_FP64      , GxB_MAX_PLUS_FP64      , GxB_PLUS_PLUS_FP64     , GxB_TIMES_PLUS_FP64    ,
 
 // semirings with multiply op: z = MINUS (x,y), all types x,y,z the same:
-GrB_MIN_MINUS_INT8     , GrB_MAX_MINUS_INT8     , GrB_PLUS_MINUS_INT8    , GrB_TIMES_MINUS_INT8   ,
-GrB_MIN_MINUS_UINT8    , GrB_MAX_MINUS_UINT8    , GrB_PLUS_MINUS_UINT8   , GrB_TIMES_MINUS_UINT8  ,
-GrB_MIN_MINUS_INT16    , GrB_MAX_MINUS_INT16    , GrB_PLUS_MINUS_INT16   , GrB_TIMES_MINUS_INT16  ,
-GrB_MIN_MINUS_UINT16   , GrB_MAX_MINUS_UINT16   , GrB_PLUS_MINUS_UINT16  , GrB_TIMES_MINUS_UINT16 ,
-GrB_MIN_MINUS_INT32    , GrB_MAX_MINUS_INT32    , GrB_PLUS_MINUS_INT32   , GrB_TIMES_MINUS_INT32  ,
-GrB_MIN_MINUS_UINT32   , GrB_MAX_MINUS_UINT32   , GrB_PLUS_MINUS_UINT32  , GrB_TIMES_MINUS_UINT32 ,
-GrB_MIN_MINUS_INT64    , GrB_MAX_MINUS_INT64    , GrB_PLUS_MINUS_INT64   , GrB_TIMES_MINUS_INT64  ,
-GrB_MIN_MINUS_UINT64   , GrB_MAX_MINUS_UINT64   , GrB_PLUS_MINUS_UINT64  , GrB_TIMES_MINUS_UINT64 ,
-GrB_MIN_MINUS_FP32     , GrB_MAX_MINUS_FP32     , GrB_PLUS_MINUS_FP32    , GrB_TIMES_MINUS_FP32   ,
-GrB_MIN_MINUS_FP64     , GrB_MAX_MINUS_FP64     , GrB_PLUS_MINUS_FP64    , GrB_TIMES_MINUS_FP64   ,
+GxB_MIN_MINUS_INT8     , GxB_MAX_MINUS_INT8     , GxB_PLUS_MINUS_INT8    , GxB_TIMES_MINUS_INT8   ,
+GxB_MIN_MINUS_UINT8    , GxB_MAX_MINUS_UINT8    , GxB_PLUS_MINUS_UINT8   , GxB_TIMES_MINUS_UINT8  ,
+GxB_MIN_MINUS_INT16    , GxB_MAX_MINUS_INT16    , GxB_PLUS_MINUS_INT16   , GxB_TIMES_MINUS_INT16  ,
+GxB_MIN_MINUS_UINT16   , GxB_MAX_MINUS_UINT16   , GxB_PLUS_MINUS_UINT16  , GxB_TIMES_MINUS_UINT16 ,
+GxB_MIN_MINUS_INT32    , GxB_MAX_MINUS_INT32    , GxB_PLUS_MINUS_INT32   , GxB_TIMES_MINUS_INT32  ,
+GxB_MIN_MINUS_UINT32   , GxB_MAX_MINUS_UINT32   , GxB_PLUS_MINUS_UINT32  , GxB_TIMES_MINUS_UINT32 ,
+GxB_MIN_MINUS_INT64    , GxB_MAX_MINUS_INT64    , GxB_PLUS_MINUS_INT64   , GxB_TIMES_MINUS_INT64  ,
+GxB_MIN_MINUS_UINT64   , GxB_MAX_MINUS_UINT64   , GxB_PLUS_MINUS_UINT64  , GxB_TIMES_MINUS_UINT64 ,
+GxB_MIN_MINUS_FP32     , GxB_MAX_MINUS_FP32     , GxB_PLUS_MINUS_FP32    , GxB_TIMES_MINUS_FP32   ,
+GxB_MIN_MINUS_FP64     , GxB_MAX_MINUS_FP64     , GxB_PLUS_MINUS_FP64    , GxB_TIMES_MINUS_FP64   ,
 
 // semirings with multiply op: z = TIMES (x,y), all types x,y,z the same:
-GrB_MIN_TIMES_INT8     , GrB_MAX_TIMES_INT8     , GrB_PLUS_TIMES_INT8    , GrB_TIMES_TIMES_INT8   ,
-GrB_MIN_TIMES_UINT8    , GrB_MAX_TIMES_UINT8    , GrB_PLUS_TIMES_UINT8   , GrB_TIMES_TIMES_UINT8  ,
-GrB_MIN_TIMES_INT16    , GrB_MAX_TIMES_INT16    , GrB_PLUS_TIMES_INT16   , GrB_TIMES_TIMES_INT16  ,
-GrB_MIN_TIMES_UINT16   , GrB_MAX_TIMES_UINT16   , GrB_PLUS_TIMES_UINT16  , GrB_TIMES_TIMES_UINT16 ,
-GrB_MIN_TIMES_INT32    , GrB_MAX_TIMES_INT32    , GrB_PLUS_TIMES_INT32   , GrB_TIMES_TIMES_INT32  ,
-GrB_MIN_TIMES_UINT32   , GrB_MAX_TIMES_UINT32   , GrB_PLUS_TIMES_UINT32  , GrB_TIMES_TIMES_UINT32 ,
-GrB_MIN_TIMES_INT64    , GrB_MAX_TIMES_INT64    , GrB_PLUS_TIMES_INT64   , GrB_TIMES_TIMES_INT64  ,
-GrB_MIN_TIMES_UINT64   , GrB_MAX_TIMES_UINT64   , GrB_PLUS_TIMES_UINT64  , GrB_TIMES_TIMES_UINT64 ,
-GrB_MIN_TIMES_FP32     , GrB_MAX_TIMES_FP32     , GrB_PLUS_TIMES_FP32    , GrB_TIMES_TIMES_FP32   ,
-GrB_MIN_TIMES_FP64     , GrB_MAX_TIMES_FP64     , GrB_PLUS_TIMES_FP64    , GrB_TIMES_TIMES_FP64   ,
+GxB_MIN_TIMES_INT8     , GxB_MAX_TIMES_INT8     , GxB_PLUS_TIMES_INT8    , GxB_TIMES_TIMES_INT8   ,
+GxB_MIN_TIMES_UINT8    , GxB_MAX_TIMES_UINT8    , GxB_PLUS_TIMES_UINT8   , GxB_TIMES_TIMES_UINT8  ,
+GxB_MIN_TIMES_INT16    , GxB_MAX_TIMES_INT16    , GxB_PLUS_TIMES_INT16   , GxB_TIMES_TIMES_INT16  ,
+GxB_MIN_TIMES_UINT16   , GxB_MAX_TIMES_UINT16   , GxB_PLUS_TIMES_UINT16  , GxB_TIMES_TIMES_UINT16 ,
+GxB_MIN_TIMES_INT32    , GxB_MAX_TIMES_INT32    , GxB_PLUS_TIMES_INT32   , GxB_TIMES_TIMES_INT32  ,
+GxB_MIN_TIMES_UINT32   , GxB_MAX_TIMES_UINT32   , GxB_PLUS_TIMES_UINT32  , GxB_TIMES_TIMES_UINT32 ,
+GxB_MIN_TIMES_INT64    , GxB_MAX_TIMES_INT64    , GxB_PLUS_TIMES_INT64   , GxB_TIMES_TIMES_INT64  ,
+GxB_MIN_TIMES_UINT64   , GxB_MAX_TIMES_UINT64   , GxB_PLUS_TIMES_UINT64  , GxB_TIMES_TIMES_UINT64 ,
+GxB_MIN_TIMES_FP32     , GxB_MAX_TIMES_FP32     , GxB_PLUS_TIMES_FP32    , GxB_TIMES_TIMES_FP32   ,
+GxB_MIN_TIMES_FP64     , GxB_MAX_TIMES_FP64     , GxB_PLUS_TIMES_FP64    , GxB_TIMES_TIMES_FP64   ,
 
 // semirings with multiply op: z = DIV (x,y), all types x,y,z the same:
-GrB_MIN_DIV_INT8       , GrB_MAX_DIV_INT8       , GrB_PLUS_DIV_INT8      , GrB_TIMES_DIV_INT8     ,
-GrB_MIN_DIV_UINT8      , GrB_MAX_DIV_UINT8      , GrB_PLUS_DIV_UINT8     , GrB_TIMES_DIV_UINT8    ,
-GrB_MIN_DIV_INT16      , GrB_MAX_DIV_INT16      , GrB_PLUS_DIV_INT16     , GrB_TIMES_DIV_INT16    ,
-GrB_MIN_DIV_UINT16     , GrB_MAX_DIV_UINT16     , GrB_PLUS_DIV_UINT16    , GrB_TIMES_DIV_UINT16   ,
-GrB_MIN_DIV_INT32      , GrB_MAX_DIV_INT32      , GrB_PLUS_DIV_INT32     , GrB_TIMES_DIV_INT32    ,
-GrB_MIN_DIV_UINT32     , GrB_MAX_DIV_UINT32     , GrB_PLUS_DIV_UINT32    , GrB_TIMES_DIV_UINT32   ,
-GrB_MIN_DIV_INT64      , GrB_MAX_DIV_INT64      , GrB_PLUS_DIV_INT64     , GrB_TIMES_DIV_INT64    ,
-GrB_MIN_DIV_UINT64     , GrB_MAX_DIV_UINT64     , GrB_PLUS_DIV_UINT64    , GrB_TIMES_DIV_UINT64   ,
-GrB_MIN_DIV_FP32       , GrB_MAX_DIV_FP32       , GrB_PLUS_DIV_FP32      , GrB_TIMES_DIV_FP32     ,
-GrB_MIN_DIV_FP64       , GrB_MAX_DIV_FP64       , GrB_PLUS_DIV_FP64      , GrB_TIMES_DIV_FP64     ,
+GxB_MIN_DIV_INT8       , GxB_MAX_DIV_INT8       , GxB_PLUS_DIV_INT8      , GxB_TIMES_DIV_INT8     ,
+GxB_MIN_DIV_UINT8      , GxB_MAX_DIV_UINT8      , GxB_PLUS_DIV_UINT8     , GxB_TIMES_DIV_UINT8    ,
+GxB_MIN_DIV_INT16      , GxB_MAX_DIV_INT16      , GxB_PLUS_DIV_INT16     , GxB_TIMES_DIV_INT16    ,
+GxB_MIN_DIV_UINT16     , GxB_MAX_DIV_UINT16     , GxB_PLUS_DIV_UINT16    , GxB_TIMES_DIV_UINT16   ,
+GxB_MIN_DIV_INT32      , GxB_MAX_DIV_INT32      , GxB_PLUS_DIV_INT32     , GxB_TIMES_DIV_INT32    ,
+GxB_MIN_DIV_UINT32     , GxB_MAX_DIV_UINT32     , GxB_PLUS_DIV_UINT32    , GxB_TIMES_DIV_UINT32   ,
+GxB_MIN_DIV_INT64      , GxB_MAX_DIV_INT64      , GxB_PLUS_DIV_INT64     , GxB_TIMES_DIV_INT64    ,
+GxB_MIN_DIV_UINT64     , GxB_MAX_DIV_UINT64     , GxB_PLUS_DIV_UINT64    , GxB_TIMES_DIV_UINT64   ,
+GxB_MIN_DIV_FP32       , GxB_MAX_DIV_FP32       , GxB_PLUS_DIV_FP32      , GxB_TIMES_DIV_FP32     ,
+GxB_MIN_DIV_FP64       , GxB_MAX_DIV_FP64       , GxB_PLUS_DIV_FP64      , GxB_TIMES_DIV_FP64     ,
 
 // semirings with multiply op: z = ISEQ (x,y), all types x,y,z the same:
-GrB_MIN_ISEQ_INT8      , GrB_MAX_ISEQ_INT8      , GrB_PLUS_ISEQ_INT8     , GrB_TIMES_ISEQ_INT8    ,
-GrB_MIN_ISEQ_UINT8     , GrB_MAX_ISEQ_UINT8     , GrB_PLUS_ISEQ_UINT8    , GrB_TIMES_ISEQ_UINT8   ,
-GrB_MIN_ISEQ_INT16     , GrB_MAX_ISEQ_INT16     , GrB_PLUS_ISEQ_INT16    , GrB_TIMES_ISEQ_INT16   ,
-GrB_MIN_ISEQ_UINT16    , GrB_MAX_ISEQ_UINT16    , GrB_PLUS_ISEQ_UINT16   , GrB_TIMES_ISEQ_UINT16  ,
-GrB_MIN_ISEQ_INT32     , GrB_MAX_ISEQ_INT32     , GrB_PLUS_ISEQ_INT32    , GrB_TIMES_ISEQ_INT32   ,
-GrB_MIN_ISEQ_UINT32    , GrB_MAX_ISEQ_UINT32    , GrB_PLUS_ISEQ_UINT32   , GrB_TIMES_ISEQ_UINT32  ,
-GrB_MIN_ISEQ_INT64     , GrB_MAX_ISEQ_INT64     , GrB_PLUS_ISEQ_INT64    , GrB_TIMES_ISEQ_INT64   ,
-GrB_MIN_ISEQ_UINT64    , GrB_MAX_ISEQ_UINT64    , GrB_PLUS_ISEQ_UINT64   , GrB_TIMES_ISEQ_UINT64  ,
-GrB_MIN_ISEQ_FP32      , GrB_MAX_ISEQ_FP32      , GrB_PLUS_ISEQ_FP32     , GrB_TIMES_ISEQ_FP32    ,
-GrB_MIN_ISEQ_FP64      , GrB_MAX_ISEQ_FP64      , GrB_PLUS_ISEQ_FP64     , GrB_TIMES_ISEQ_FP64    ,
+GxB_MIN_ISEQ_INT8      , GxB_MAX_ISEQ_INT8      , GxB_PLUS_ISEQ_INT8     , GxB_TIMES_ISEQ_INT8    ,
+GxB_MIN_ISEQ_UINT8     , GxB_MAX_ISEQ_UINT8     , GxB_PLUS_ISEQ_UINT8    , GxB_TIMES_ISEQ_UINT8   ,
+GxB_MIN_ISEQ_INT16     , GxB_MAX_ISEQ_INT16     , GxB_PLUS_ISEQ_INT16    , GxB_TIMES_ISEQ_INT16   ,
+GxB_MIN_ISEQ_UINT16    , GxB_MAX_ISEQ_UINT16    , GxB_PLUS_ISEQ_UINT16   , GxB_TIMES_ISEQ_UINT16  ,
+GxB_MIN_ISEQ_INT32     , GxB_MAX_ISEQ_INT32     , GxB_PLUS_ISEQ_INT32    , GxB_TIMES_ISEQ_INT32   ,
+GxB_MIN_ISEQ_UINT32    , GxB_MAX_ISEQ_UINT32    , GxB_PLUS_ISEQ_UINT32   , GxB_TIMES_ISEQ_UINT32  ,
+GxB_MIN_ISEQ_INT64     , GxB_MAX_ISEQ_INT64     , GxB_PLUS_ISEQ_INT64    , GxB_TIMES_ISEQ_INT64   ,
+GxB_MIN_ISEQ_UINT64    , GxB_MAX_ISEQ_UINT64    , GxB_PLUS_ISEQ_UINT64   , GxB_TIMES_ISEQ_UINT64  ,
+GxB_MIN_ISEQ_FP32      , GxB_MAX_ISEQ_FP32      , GxB_PLUS_ISEQ_FP32     , GxB_TIMES_ISEQ_FP32    ,
+GxB_MIN_ISEQ_FP64      , GxB_MAX_ISEQ_FP64      , GxB_PLUS_ISEQ_FP64     , GxB_TIMES_ISEQ_FP64    ,
 
 // semirings with multiply op: z = ISNE (x,y), all types x,y,z the same:
-GrB_MIN_ISNE_INT8      , GrB_MAX_ISNE_INT8      , GrB_PLUS_ISNE_INT8     , GrB_TIMES_ISNE_INT8    ,
-GrB_MIN_ISNE_UINT8     , GrB_MAX_ISNE_UINT8     , GrB_PLUS_ISNE_UINT8    , GrB_TIMES_ISNE_UINT8   ,
-GrB_MIN_ISNE_INT16     , GrB_MAX_ISNE_INT16     , GrB_PLUS_ISNE_INT16    , GrB_TIMES_ISNE_INT16   ,
-GrB_MIN_ISNE_UINT16    , GrB_MAX_ISNE_UINT16    , GrB_PLUS_ISNE_UINT16   , GrB_TIMES_ISNE_UINT16  ,
-GrB_MIN_ISNE_INT32     , GrB_MAX_ISNE_INT32     , GrB_PLUS_ISNE_INT32    , GrB_TIMES_ISNE_INT32   ,
-GrB_MIN_ISNE_UINT32    , GrB_MAX_ISNE_UINT32    , GrB_PLUS_ISNE_UINT32   , GrB_TIMES_ISNE_UINT32  ,
-GrB_MIN_ISNE_INT64     , GrB_MAX_ISNE_INT64     , GrB_PLUS_ISNE_INT64    , GrB_TIMES_ISNE_INT64   ,
-GrB_MIN_ISNE_UINT64    , GrB_MAX_ISNE_UINT64    , GrB_PLUS_ISNE_UINT64   , GrB_TIMES_ISNE_UINT64  ,
-GrB_MIN_ISNE_FP32      , GrB_MAX_ISNE_FP32      , GrB_PLUS_ISNE_FP32     , GrB_TIMES_ISNE_FP32    ,
-GrB_MIN_ISNE_FP64      , GrB_MAX_ISNE_FP64      , GrB_PLUS_ISNE_FP64     , GrB_TIMES_ISNE_FP64    ,
+GxB_MIN_ISNE_INT8      , GxB_MAX_ISNE_INT8      , GxB_PLUS_ISNE_INT8     , GxB_TIMES_ISNE_INT8    ,
+GxB_MIN_ISNE_UINT8     , GxB_MAX_ISNE_UINT8     , GxB_PLUS_ISNE_UINT8    , GxB_TIMES_ISNE_UINT8   ,
+GxB_MIN_ISNE_INT16     , GxB_MAX_ISNE_INT16     , GxB_PLUS_ISNE_INT16    , GxB_TIMES_ISNE_INT16   ,
+GxB_MIN_ISNE_UINT16    , GxB_MAX_ISNE_UINT16    , GxB_PLUS_ISNE_UINT16   , GxB_TIMES_ISNE_UINT16  ,
+GxB_MIN_ISNE_INT32     , GxB_MAX_ISNE_INT32     , GxB_PLUS_ISNE_INT32    , GxB_TIMES_ISNE_INT32   ,
+GxB_MIN_ISNE_UINT32    , GxB_MAX_ISNE_UINT32    , GxB_PLUS_ISNE_UINT32   , GxB_TIMES_ISNE_UINT32  ,
+GxB_MIN_ISNE_INT64     , GxB_MAX_ISNE_INT64     , GxB_PLUS_ISNE_INT64    , GxB_TIMES_ISNE_INT64   ,
+GxB_MIN_ISNE_UINT64    , GxB_MAX_ISNE_UINT64    , GxB_PLUS_ISNE_UINT64   , GxB_TIMES_ISNE_UINT64  ,
+GxB_MIN_ISNE_FP32      , GxB_MAX_ISNE_FP32      , GxB_PLUS_ISNE_FP32     , GxB_TIMES_ISNE_FP32    ,
+GxB_MIN_ISNE_FP64      , GxB_MAX_ISNE_FP64      , GxB_PLUS_ISNE_FP64     , GxB_TIMES_ISNE_FP64    ,
 
 // semirings with multiply op: z = ISGT (x,y), all types x,y,z the same:
-GrB_MIN_ISGT_INT8      , GrB_MAX_ISGT_INT8      , GrB_PLUS_ISGT_INT8     , GrB_TIMES_ISGT_INT8    ,
-GrB_MIN_ISGT_UINT8     , GrB_MAX_ISGT_UINT8     , GrB_PLUS_ISGT_UINT8    , GrB_TIMES_ISGT_UINT8   ,
-GrB_MIN_ISGT_INT16     , GrB_MAX_ISGT_INT16     , GrB_PLUS_ISGT_INT16    , GrB_TIMES_ISGT_INT16   ,
-GrB_MIN_ISGT_UINT16    , GrB_MAX_ISGT_UINT16    , GrB_PLUS_ISGT_UINT16   , GrB_TIMES_ISGT_UINT16  ,
-GrB_MIN_ISGT_INT32     , GrB_MAX_ISGT_INT32     , GrB_PLUS_ISGT_INT32    , GrB_TIMES_ISGT_INT32   ,
-GrB_MIN_ISGT_UINT32    , GrB_MAX_ISGT_UINT32    , GrB_PLUS_ISGT_UINT32   , GrB_TIMES_ISGT_UINT32  ,
-GrB_MIN_ISGT_INT64     , GrB_MAX_ISGT_INT64     , GrB_PLUS_ISGT_INT64    , GrB_TIMES_ISGT_INT64   ,
-GrB_MIN_ISGT_UINT64    , GrB_MAX_ISGT_UINT64    , GrB_PLUS_ISGT_UINT64   , GrB_TIMES_ISGT_UINT64  ,
-GrB_MIN_ISGT_FP32      , GrB_MAX_ISGT_FP32      , GrB_PLUS_ISGT_FP32     , GrB_TIMES_ISGT_FP32    ,
-GrB_MIN_ISGT_FP64      , GrB_MAX_ISGT_FP64      , GrB_PLUS_ISGT_FP64     , GrB_TIMES_ISGT_FP64    ,
+GxB_MIN_ISGT_INT8      , GxB_MAX_ISGT_INT8      , GxB_PLUS_ISGT_INT8     , GxB_TIMES_ISGT_INT8    ,
+GxB_MIN_ISGT_UINT8     , GxB_MAX_ISGT_UINT8     , GxB_PLUS_ISGT_UINT8    , GxB_TIMES_ISGT_UINT8   ,
+GxB_MIN_ISGT_INT16     , GxB_MAX_ISGT_INT16     , GxB_PLUS_ISGT_INT16    , GxB_TIMES_ISGT_INT16   ,
+GxB_MIN_ISGT_UINT16    , GxB_MAX_ISGT_UINT16    , GxB_PLUS_ISGT_UINT16   , GxB_TIMES_ISGT_UINT16  ,
+GxB_MIN_ISGT_INT32     , GxB_MAX_ISGT_INT32     , GxB_PLUS_ISGT_INT32    , GxB_TIMES_ISGT_INT32   ,
+GxB_MIN_ISGT_UINT32    , GxB_MAX_ISGT_UINT32    , GxB_PLUS_ISGT_UINT32   , GxB_TIMES_ISGT_UINT32  ,
+GxB_MIN_ISGT_INT64     , GxB_MAX_ISGT_INT64     , GxB_PLUS_ISGT_INT64    , GxB_TIMES_ISGT_INT64   ,
+GxB_MIN_ISGT_UINT64    , GxB_MAX_ISGT_UINT64    , GxB_PLUS_ISGT_UINT64   , GxB_TIMES_ISGT_UINT64  ,
+GxB_MIN_ISGT_FP32      , GxB_MAX_ISGT_FP32      , GxB_PLUS_ISGT_FP32     , GxB_TIMES_ISGT_FP32    ,
+GxB_MIN_ISGT_FP64      , GxB_MAX_ISGT_FP64      , GxB_PLUS_ISGT_FP64     , GxB_TIMES_ISGT_FP64    ,
 
 // semirings with multiply op: z = ISLT (x,y), all types x,y,z the same:
-GrB_MIN_ISLT_INT8      , GrB_MAX_ISLT_INT8      , GrB_PLUS_ISLT_INT8     , GrB_TIMES_ISLT_INT8    ,
-GrB_MIN_ISLT_UINT8     , GrB_MAX_ISLT_UINT8     , GrB_PLUS_ISLT_UINT8    , GrB_TIMES_ISLT_UINT8   ,
-GrB_MIN_ISLT_INT16     , GrB_MAX_ISLT_INT16     , GrB_PLUS_ISLT_INT16    , GrB_TIMES_ISLT_INT16   ,
-GrB_MIN_ISLT_UINT16    , GrB_MAX_ISLT_UINT16    , GrB_PLUS_ISLT_UINT16   , GrB_TIMES_ISLT_UINT16  ,
-GrB_MIN_ISLT_INT32     , GrB_MAX_ISLT_INT32     , GrB_PLUS_ISLT_INT32    , GrB_TIMES_ISLT_INT32   ,
-GrB_MIN_ISLT_UINT32    , GrB_MAX_ISLT_UINT32    , GrB_PLUS_ISLT_UINT32   , GrB_TIMES_ISLT_UINT32  ,
-GrB_MIN_ISLT_INT64     , GrB_MAX_ISLT_INT64     , GrB_PLUS_ISLT_INT64    , GrB_TIMES_ISLT_INT64   ,
-GrB_MIN_ISLT_UINT64    , GrB_MAX_ISLT_UINT64    , GrB_PLUS_ISLT_UINT64   , GrB_TIMES_ISLT_UINT64  ,
-GrB_MIN_ISLT_FP32      , GrB_MAX_ISLT_FP32      , GrB_PLUS_ISLT_FP32     , GrB_TIMES_ISLT_FP32    ,
-GrB_MIN_ISLT_FP64      , GrB_MAX_ISLT_FP64      , GrB_PLUS_ISLT_FP64     , GrB_TIMES_ISLT_FP64    ,
+GxB_MIN_ISLT_INT8      , GxB_MAX_ISLT_INT8      , GxB_PLUS_ISLT_INT8     , GxB_TIMES_ISLT_INT8    ,
+GxB_MIN_ISLT_UINT8     , GxB_MAX_ISLT_UINT8     , GxB_PLUS_ISLT_UINT8    , GxB_TIMES_ISLT_UINT8   ,
+GxB_MIN_ISLT_INT16     , GxB_MAX_ISLT_INT16     , GxB_PLUS_ISLT_INT16    , GxB_TIMES_ISLT_INT16   ,
+GxB_MIN_ISLT_UINT16    , GxB_MAX_ISLT_UINT16    , GxB_PLUS_ISLT_UINT16   , GxB_TIMES_ISLT_UINT16  ,
+GxB_MIN_ISLT_INT32     , GxB_MAX_ISLT_INT32     , GxB_PLUS_ISLT_INT32    , GxB_TIMES_ISLT_INT32   ,
+GxB_MIN_ISLT_UINT32    , GxB_MAX_ISLT_UINT32    , GxB_PLUS_ISLT_UINT32   , GxB_TIMES_ISLT_UINT32  ,
+GxB_MIN_ISLT_INT64     , GxB_MAX_ISLT_INT64     , GxB_PLUS_ISLT_INT64    , GxB_TIMES_ISLT_INT64   ,
+GxB_MIN_ISLT_UINT64    , GxB_MAX_ISLT_UINT64    , GxB_PLUS_ISLT_UINT64   , GxB_TIMES_ISLT_UINT64  ,
+GxB_MIN_ISLT_FP32      , GxB_MAX_ISLT_FP32      , GxB_PLUS_ISLT_FP32     , GxB_TIMES_ISLT_FP32    ,
+GxB_MIN_ISLT_FP64      , GxB_MAX_ISLT_FP64      , GxB_PLUS_ISLT_FP64     , GxB_TIMES_ISLT_FP64    ,
 
 // semirings with multiply op: z = ISGE (x,y), all types x,y,z the same:
-GrB_MIN_ISGE_INT8      , GrB_MAX_ISGE_INT8      , GrB_PLUS_ISGE_INT8     , GrB_TIMES_ISGE_INT8    ,
-GrB_MIN_ISGE_UINT8     , GrB_MAX_ISGE_UINT8     , GrB_PLUS_ISGE_UINT8    , GrB_TIMES_ISGE_UINT8   ,
-GrB_MIN_ISGE_INT16     , GrB_MAX_ISGE_INT16     , GrB_PLUS_ISGE_INT16    , GrB_TIMES_ISGE_INT16   ,
-GrB_MIN_ISGE_UINT16    , GrB_MAX_ISGE_UINT16    , GrB_PLUS_ISGE_UINT16   , GrB_TIMES_ISGE_UINT16  ,
-GrB_MIN_ISGE_INT32     , GrB_MAX_ISGE_INT32     , GrB_PLUS_ISGE_INT32    , GrB_TIMES_ISGE_INT32   ,
-GrB_MIN_ISGE_UINT32    , GrB_MAX_ISGE_UINT32    , GrB_PLUS_ISGE_UINT32   , GrB_TIMES_ISGE_UINT32  ,
-GrB_MIN_ISGE_INT64     , GrB_MAX_ISGE_INT64     , GrB_PLUS_ISGE_INT64    , GrB_TIMES_ISGE_INT64   ,
-GrB_MIN_ISGE_UINT64    , GrB_MAX_ISGE_UINT64    , GrB_PLUS_ISGE_UINT64   , GrB_TIMES_ISGE_UINT64  ,
-GrB_MIN_ISGE_FP32      , GrB_MAX_ISGE_FP32      , GrB_PLUS_ISGE_FP32     , GrB_TIMES_ISGE_FP32    ,
-GrB_MIN_ISGE_FP64      , GrB_MAX_ISGE_FP64      , GrB_PLUS_ISGE_FP64     , GrB_TIMES_ISGE_FP64    ,
+GxB_MIN_ISGE_INT8      , GxB_MAX_ISGE_INT8      , GxB_PLUS_ISGE_INT8     , GxB_TIMES_ISGE_INT8    ,
+GxB_MIN_ISGE_UINT8     , GxB_MAX_ISGE_UINT8     , GxB_PLUS_ISGE_UINT8    , GxB_TIMES_ISGE_UINT8   ,
+GxB_MIN_ISGE_INT16     , GxB_MAX_ISGE_INT16     , GxB_PLUS_ISGE_INT16    , GxB_TIMES_ISGE_INT16   ,
+GxB_MIN_ISGE_UINT16    , GxB_MAX_ISGE_UINT16    , GxB_PLUS_ISGE_UINT16   , GxB_TIMES_ISGE_UINT16  ,
+GxB_MIN_ISGE_INT32     , GxB_MAX_ISGE_INT32     , GxB_PLUS_ISGE_INT32    , GxB_TIMES_ISGE_INT32   ,
+GxB_MIN_ISGE_UINT32    , GxB_MAX_ISGE_UINT32    , GxB_PLUS_ISGE_UINT32   , GxB_TIMES_ISGE_UINT32  ,
+GxB_MIN_ISGE_INT64     , GxB_MAX_ISGE_INT64     , GxB_PLUS_ISGE_INT64    , GxB_TIMES_ISGE_INT64   ,
+GxB_MIN_ISGE_UINT64    , GxB_MAX_ISGE_UINT64    , GxB_PLUS_ISGE_UINT64   , GxB_TIMES_ISGE_UINT64  ,
+GxB_MIN_ISGE_FP32      , GxB_MAX_ISGE_FP32      , GxB_PLUS_ISGE_FP32     , GxB_TIMES_ISGE_FP32    ,
+GxB_MIN_ISGE_FP64      , GxB_MAX_ISGE_FP64      , GxB_PLUS_ISGE_FP64     , GxB_TIMES_ISGE_FP64    ,
 
 // semirings with multiply op: z = ISLE (x,y), all types x,y,z the same:
-GrB_MIN_ISLE_INT8      , GrB_MAX_ISLE_INT8      , GrB_PLUS_ISLE_INT8     , GrB_TIMES_ISLE_INT8    ,
-GrB_MIN_ISLE_UINT8     , GrB_MAX_ISLE_UINT8     , GrB_PLUS_ISLE_UINT8    , GrB_TIMES_ISLE_UINT8   ,
-GrB_MIN_ISLE_INT16     , GrB_MAX_ISLE_INT16     , GrB_PLUS_ISLE_INT16    , GrB_TIMES_ISLE_INT16   ,
-GrB_MIN_ISLE_UINT16    , GrB_MAX_ISLE_UINT16    , GrB_PLUS_ISLE_UINT16   , GrB_TIMES_ISLE_UINT16  ,
-GrB_MIN_ISLE_INT32     , GrB_MAX_ISLE_INT32     , GrB_PLUS_ISLE_INT32    , GrB_TIMES_ISLE_INT32   ,
-GrB_MIN_ISLE_UINT32    , GrB_MAX_ISLE_UINT32    , GrB_PLUS_ISLE_UINT32   , GrB_TIMES_ISLE_UINT32  ,
-GrB_MIN_ISLE_INT64     , GrB_MAX_ISLE_INT64     , GrB_PLUS_ISLE_INT64    , GrB_TIMES_ISLE_INT64   ,
-GrB_MIN_ISLE_UINT64    , GrB_MAX_ISLE_UINT64    , GrB_PLUS_ISLE_UINT64   , GrB_TIMES_ISLE_UINT64  ,
-GrB_MIN_ISLE_FP32      , GrB_MAX_ISLE_FP32      , GrB_PLUS_ISLE_FP32     , GrB_TIMES_ISLE_FP32    ,
-GrB_MIN_ISLE_FP64      , GrB_MAX_ISLE_FP64      , GrB_PLUS_ISLE_FP64     , GrB_TIMES_ISLE_FP64    ,
+GxB_MIN_ISLE_INT8      , GxB_MAX_ISLE_INT8      , GxB_PLUS_ISLE_INT8     , GxB_TIMES_ISLE_INT8    ,
+GxB_MIN_ISLE_UINT8     , GxB_MAX_ISLE_UINT8     , GxB_PLUS_ISLE_UINT8    , GxB_TIMES_ISLE_UINT8   ,
+GxB_MIN_ISLE_INT16     , GxB_MAX_ISLE_INT16     , GxB_PLUS_ISLE_INT16    , GxB_TIMES_ISLE_INT16   ,
+GxB_MIN_ISLE_UINT16    , GxB_MAX_ISLE_UINT16    , GxB_PLUS_ISLE_UINT16   , GxB_TIMES_ISLE_UINT16  ,
+GxB_MIN_ISLE_INT32     , GxB_MAX_ISLE_INT32     , GxB_PLUS_ISLE_INT32    , GxB_TIMES_ISLE_INT32   ,
+GxB_MIN_ISLE_UINT32    , GxB_MAX_ISLE_UINT32    , GxB_PLUS_ISLE_UINT32   , GxB_TIMES_ISLE_UINT32  ,
+GxB_MIN_ISLE_INT64     , GxB_MAX_ISLE_INT64     , GxB_PLUS_ISLE_INT64    , GxB_TIMES_ISLE_INT64   ,
+GxB_MIN_ISLE_UINT64    , GxB_MAX_ISLE_UINT64    , GxB_PLUS_ISLE_UINT64   , GxB_TIMES_ISLE_UINT64  ,
+GxB_MIN_ISLE_FP32      , GxB_MAX_ISLE_FP32      , GxB_PLUS_ISLE_FP32     , GxB_TIMES_ISLE_FP32    ,
+GxB_MIN_ISLE_FP64      , GxB_MAX_ISLE_FP64      , GxB_PLUS_ISLE_FP64     , GxB_TIMES_ISLE_FP64    ,
 
 // semirings with multiply op: z = LOR (x,y), all types x,y,z the same:
-GrB_MIN_LOR_INT8       , GrB_MAX_LOR_INT8       , GrB_PLUS_LOR_INT8      , GrB_TIMES_LOR_INT8     ,
-GrB_MIN_LOR_UINT8      , GrB_MAX_LOR_UINT8      , GrB_PLUS_LOR_UINT8     , GrB_TIMES_LOR_UINT8    ,
-GrB_MIN_LOR_INT16      , GrB_MAX_LOR_INT16      , GrB_PLUS_LOR_INT16     , GrB_TIMES_LOR_INT16    ,
-GrB_MIN_LOR_UINT16     , GrB_MAX_LOR_UINT16     , GrB_PLUS_LOR_UINT16    , GrB_TIMES_LOR_UINT16   ,
-GrB_MIN_LOR_INT32      , GrB_MAX_LOR_INT32      , GrB_PLUS_LOR_INT32     , GrB_TIMES_LOR_INT32    ,
-GrB_MIN_LOR_UINT32     , GrB_MAX_LOR_UINT32     , GrB_PLUS_LOR_UINT32    , GrB_TIMES_LOR_UINT32   ,
-GrB_MIN_LOR_INT64      , GrB_MAX_LOR_INT64      , GrB_PLUS_LOR_INT64     , GrB_TIMES_LOR_INT64    ,
-GrB_MIN_LOR_UINT64     , GrB_MAX_LOR_UINT64     , GrB_PLUS_LOR_UINT64    , GrB_TIMES_LOR_UINT64   ,
-GrB_MIN_LOR_FP32       , GrB_MAX_LOR_FP32       , GrB_PLUS_LOR_FP32      , GrB_TIMES_LOR_FP32     ,
-GrB_MIN_LOR_FP64       , GrB_MAX_LOR_FP64       , GrB_PLUS_LOR_FP64      , GrB_TIMES_LOR_FP64     ,
+GxB_MIN_LOR_INT8       , GxB_MAX_LOR_INT8       , GxB_PLUS_LOR_INT8      , GxB_TIMES_LOR_INT8     ,
+GxB_MIN_LOR_UINT8      , GxB_MAX_LOR_UINT8      , GxB_PLUS_LOR_UINT8     , GxB_TIMES_LOR_UINT8    ,
+GxB_MIN_LOR_INT16      , GxB_MAX_LOR_INT16      , GxB_PLUS_LOR_INT16     , GxB_TIMES_LOR_INT16    ,
+GxB_MIN_LOR_UINT16     , GxB_MAX_LOR_UINT16     , GxB_PLUS_LOR_UINT16    , GxB_TIMES_LOR_UINT16   ,
+GxB_MIN_LOR_INT32      , GxB_MAX_LOR_INT32      , GxB_PLUS_LOR_INT32     , GxB_TIMES_LOR_INT32    ,
+GxB_MIN_LOR_UINT32     , GxB_MAX_LOR_UINT32     , GxB_PLUS_LOR_UINT32    , GxB_TIMES_LOR_UINT32   ,
+GxB_MIN_LOR_INT64      , GxB_MAX_LOR_INT64      , GxB_PLUS_LOR_INT64     , GxB_TIMES_LOR_INT64    ,
+GxB_MIN_LOR_UINT64     , GxB_MAX_LOR_UINT64     , GxB_PLUS_LOR_UINT64    , GxB_TIMES_LOR_UINT64   ,
+GxB_MIN_LOR_FP32       , GxB_MAX_LOR_FP32       , GxB_PLUS_LOR_FP32      , GxB_TIMES_LOR_FP32     ,
+GxB_MIN_LOR_FP64       , GxB_MAX_LOR_FP64       , GxB_PLUS_LOR_FP64      , GxB_TIMES_LOR_FP64     ,
 
 // semirings with multiply op: z = LAND (x,y), all types x,y,z the same:
-GrB_MIN_LAND_INT8      , GrB_MAX_LAND_INT8      , GrB_PLUS_LAND_INT8     , GrB_TIMES_LAND_INT8    ,
-GrB_MIN_LAND_UINT8     , GrB_MAX_LAND_UINT8     , GrB_PLUS_LAND_UINT8    , GrB_TIMES_LAND_UINT8   ,
-GrB_MIN_LAND_INT16     , GrB_MAX_LAND_INT16     , GrB_PLUS_LAND_INT16    , GrB_TIMES_LAND_INT16   ,
-GrB_MIN_LAND_UINT16    , GrB_MAX_LAND_UINT16    , GrB_PLUS_LAND_UINT16   , GrB_TIMES_LAND_UINT16  ,
-GrB_MIN_LAND_INT32     , GrB_MAX_LAND_INT32     , GrB_PLUS_LAND_INT32    , GrB_TIMES_LAND_INT32   ,
-GrB_MIN_LAND_UINT32    , GrB_MAX_LAND_UINT32    , GrB_PLUS_LAND_UINT32   , GrB_TIMES_LAND_UINT32  ,
-GrB_MIN_LAND_INT64     , GrB_MAX_LAND_INT64     , GrB_PLUS_LAND_INT64    , GrB_TIMES_LAND_INT64   ,
-GrB_MIN_LAND_UINT64    , GrB_MAX_LAND_UINT64    , GrB_PLUS_LAND_UINT64   , GrB_TIMES_LAND_UINT64  ,
-GrB_MIN_LAND_FP32      , GrB_MAX_LAND_FP32      , GrB_PLUS_LAND_FP32     , GrB_TIMES_LAND_FP32    ,
-GrB_MIN_LAND_FP64      , GrB_MAX_LAND_FP64      , GrB_PLUS_LAND_FP64     , GrB_TIMES_LAND_FP64    ,
+GxB_MIN_LAND_INT8      , GxB_MAX_LAND_INT8      , GxB_PLUS_LAND_INT8     , GxB_TIMES_LAND_INT8    ,
+GxB_MIN_LAND_UINT8     , GxB_MAX_LAND_UINT8     , GxB_PLUS_LAND_UINT8    , GxB_TIMES_LAND_UINT8   ,
+GxB_MIN_LAND_INT16     , GxB_MAX_LAND_INT16     , GxB_PLUS_LAND_INT16    , GxB_TIMES_LAND_INT16   ,
+GxB_MIN_LAND_UINT16    , GxB_MAX_LAND_UINT16    , GxB_PLUS_LAND_UINT16   , GxB_TIMES_LAND_UINT16  ,
+GxB_MIN_LAND_INT32     , GxB_MAX_LAND_INT32     , GxB_PLUS_LAND_INT32    , GxB_TIMES_LAND_INT32   ,
+GxB_MIN_LAND_UINT32    , GxB_MAX_LAND_UINT32    , GxB_PLUS_LAND_UINT32   , GxB_TIMES_LAND_UINT32  ,
+GxB_MIN_LAND_INT64     , GxB_MAX_LAND_INT64     , GxB_PLUS_LAND_INT64    , GxB_TIMES_LAND_INT64   ,
+GxB_MIN_LAND_UINT64    , GxB_MAX_LAND_UINT64    , GxB_PLUS_LAND_UINT64   , GxB_TIMES_LAND_UINT64  ,
+GxB_MIN_LAND_FP32      , GxB_MAX_LAND_FP32      , GxB_PLUS_LAND_FP32     , GxB_TIMES_LAND_FP32    ,
+GxB_MIN_LAND_FP64      , GxB_MAX_LAND_FP64      , GxB_PLUS_LAND_FP64     , GxB_TIMES_LAND_FP64    ,
 
 // semirings with multiply op: z = LXOR (x,y), all types x,y,z the same:
-GrB_MIN_LXOR_INT8      , GrB_MAX_LXOR_INT8      , GrB_PLUS_LXOR_INT8     , GrB_TIMES_LXOR_INT8    ,
-GrB_MIN_LXOR_UINT8     , GrB_MAX_LXOR_UINT8     , GrB_PLUS_LXOR_UINT8    , GrB_TIMES_LXOR_UINT8   ,
-GrB_MIN_LXOR_INT16     , GrB_MAX_LXOR_INT16     , GrB_PLUS_LXOR_INT16    , GrB_TIMES_LXOR_INT16   ,
-GrB_MIN_LXOR_UINT16    , GrB_MAX_LXOR_UINT16    , GrB_PLUS_LXOR_UINT16   , GrB_TIMES_LXOR_UINT16  ,
-GrB_MIN_LXOR_INT32     , GrB_MAX_LXOR_INT32     , GrB_PLUS_LXOR_INT32    , GrB_TIMES_LXOR_INT32   ,
-GrB_MIN_LXOR_UINT32    , GrB_MAX_LXOR_UINT32    , GrB_PLUS_LXOR_UINT32   , GrB_TIMES_LXOR_UINT32  ,
-GrB_MIN_LXOR_INT64     , GrB_MAX_LXOR_INT64     , GrB_PLUS_LXOR_INT64    , GrB_TIMES_LXOR_INT64   ,
-GrB_MIN_LXOR_UINT64    , GrB_MAX_LXOR_UINT64    , GrB_PLUS_LXOR_UINT64   , GrB_TIMES_LXOR_UINT64  ,
-GrB_MIN_LXOR_FP32      , GrB_MAX_LXOR_FP32      , GrB_PLUS_LXOR_FP32     , GrB_TIMES_LXOR_FP32    ,
-GrB_MIN_LXOR_FP64      , GrB_MAX_LXOR_FP64      , GrB_PLUS_LXOR_FP64     , GrB_TIMES_LXOR_FP64    ,
+GxB_MIN_LXOR_INT8      , GxB_MAX_LXOR_INT8      , GxB_PLUS_LXOR_INT8     , GxB_TIMES_LXOR_INT8    ,
+GxB_MIN_LXOR_UINT8     , GxB_MAX_LXOR_UINT8     , GxB_PLUS_LXOR_UINT8    , GxB_TIMES_LXOR_UINT8   ,
+GxB_MIN_LXOR_INT16     , GxB_MAX_LXOR_INT16     , GxB_PLUS_LXOR_INT16    , GxB_TIMES_LXOR_INT16   ,
+GxB_MIN_LXOR_UINT16    , GxB_MAX_LXOR_UINT16    , GxB_PLUS_LXOR_UINT16   , GxB_TIMES_LXOR_UINT16  ,
+GxB_MIN_LXOR_INT32     , GxB_MAX_LXOR_INT32     , GxB_PLUS_LXOR_INT32    , GxB_TIMES_LXOR_INT32   ,
+GxB_MIN_LXOR_UINT32    , GxB_MAX_LXOR_UINT32    , GxB_PLUS_LXOR_UINT32   , GxB_TIMES_LXOR_UINT32  ,
+GxB_MIN_LXOR_INT64     , GxB_MAX_LXOR_INT64     , GxB_PLUS_LXOR_INT64    , GxB_TIMES_LXOR_INT64   ,
+GxB_MIN_LXOR_UINT64    , GxB_MAX_LXOR_UINT64    , GxB_PLUS_LXOR_UINT64   , GxB_TIMES_LXOR_UINT64  ,
+GxB_MIN_LXOR_FP32      , GxB_MAX_LXOR_FP32      , GxB_PLUS_LXOR_FP32     , GxB_TIMES_LXOR_FP32    ,
+GxB_MIN_LXOR_FP64      , GxB_MAX_LXOR_FP64      , GxB_PLUS_LXOR_FP64     , GxB_TIMES_LXOR_FP64    ,
 
 //------------------------------------------------------------------------------
 // 240 semirings with comparison ops of the form TxT->bool, and Boolean monoids
 //------------------------------------------------------------------------------
 
 // semirings with multiply op: z = EQ (x,y), where z is Boolean and x,y are given by the suffix:
-GrB_LOR_EQ_INT8        , GrB_LAND_EQ_INT8       , GrB_LXOR_EQ_INT8       , GrB_EQ_EQ_INT8         ,
-GrB_LOR_EQ_UINT8       , GrB_LAND_EQ_UINT8      , GrB_LXOR_EQ_UINT8      , GrB_EQ_EQ_UINT8        ,
-GrB_LOR_EQ_INT16       , GrB_LAND_EQ_INT16      , GrB_LXOR_EQ_INT16      , GrB_EQ_EQ_INT16        ,
-GrB_LOR_EQ_UINT16      , GrB_LAND_EQ_UINT16     , GrB_LXOR_EQ_UINT16     , GrB_EQ_EQ_UINT16       ,
-GrB_LOR_EQ_INT32       , GrB_LAND_EQ_INT32      , GrB_LXOR_EQ_INT32      , GrB_EQ_EQ_INT32        ,
-GrB_LOR_EQ_UINT32      , GrB_LAND_EQ_UINT32     , GrB_LXOR_EQ_UINT32     , GrB_EQ_EQ_UINT32       ,
-GrB_LOR_EQ_INT64       , GrB_LAND_EQ_INT64      , GrB_LXOR_EQ_INT64      , GrB_EQ_EQ_INT64        ,
-GrB_LOR_EQ_UINT64      , GrB_LAND_EQ_UINT64     , GrB_LXOR_EQ_UINT64     , GrB_EQ_EQ_UINT64       ,
-GrB_LOR_EQ_FP32        , GrB_LAND_EQ_FP32       , GrB_LXOR_EQ_FP32       , GrB_EQ_EQ_FP32         ,
-GrB_LOR_EQ_FP64        , GrB_LAND_EQ_FP64       , GrB_LXOR_EQ_FP64       , GrB_EQ_EQ_FP64         ,
+GxB_LOR_EQ_INT8        , GxB_LAND_EQ_INT8       , GxB_LXOR_EQ_INT8       , GxB_EQ_EQ_INT8         ,
+GxB_LOR_EQ_UINT8       , GxB_LAND_EQ_UINT8      , GxB_LXOR_EQ_UINT8      , GxB_EQ_EQ_UINT8        ,
+GxB_LOR_EQ_INT16       , GxB_LAND_EQ_INT16      , GxB_LXOR_EQ_INT16      , GxB_EQ_EQ_INT16        ,
+GxB_LOR_EQ_UINT16      , GxB_LAND_EQ_UINT16     , GxB_LXOR_EQ_UINT16     , GxB_EQ_EQ_UINT16       ,
+GxB_LOR_EQ_INT32       , GxB_LAND_EQ_INT32      , GxB_LXOR_EQ_INT32      , GxB_EQ_EQ_INT32        ,
+GxB_LOR_EQ_UINT32      , GxB_LAND_EQ_UINT32     , GxB_LXOR_EQ_UINT32     , GxB_EQ_EQ_UINT32       ,
+GxB_LOR_EQ_INT64       , GxB_LAND_EQ_INT64      , GxB_LXOR_EQ_INT64      , GxB_EQ_EQ_INT64        ,
+GxB_LOR_EQ_UINT64      , GxB_LAND_EQ_UINT64     , GxB_LXOR_EQ_UINT64     , GxB_EQ_EQ_UINT64       ,
+GxB_LOR_EQ_FP32        , GxB_LAND_EQ_FP32       , GxB_LXOR_EQ_FP32       , GxB_EQ_EQ_FP32         ,
+GxB_LOR_EQ_FP64        , GxB_LAND_EQ_FP64       , GxB_LXOR_EQ_FP64       , GxB_EQ_EQ_FP64         ,
 
 // semirings with multiply op: z = NE (x,y), where z is Boolean and x,y are given by the suffix:
-GrB_LOR_NE_INT8        , GrB_LAND_NE_INT8       , GrB_LXOR_NE_INT8       , GrB_EQ_NE_INT8         ,
-GrB_LOR_NE_UINT8       , GrB_LAND_NE_UINT8      , GrB_LXOR_NE_UINT8      , GrB_EQ_NE_UINT8        ,
-GrB_LOR_NE_INT16       , GrB_LAND_NE_INT16      , GrB_LXOR_NE_INT16      , GrB_EQ_NE_INT16        ,
-GrB_LOR_NE_UINT16      , GrB_LAND_NE_UINT16     , GrB_LXOR_NE_UINT16     , GrB_EQ_NE_UINT16       ,
-GrB_LOR_NE_INT32       , GrB_LAND_NE_INT32      , GrB_LXOR_NE_INT32      , GrB_EQ_NE_INT32        ,
-GrB_LOR_NE_UINT32      , GrB_LAND_NE_UINT32     , GrB_LXOR_NE_UINT32     , GrB_EQ_NE_UINT32       ,
-GrB_LOR_NE_INT64       , GrB_LAND_NE_INT64      , GrB_LXOR_NE_INT64      , GrB_EQ_NE_INT64        ,
-GrB_LOR_NE_UINT64      , GrB_LAND_NE_UINT64     , GrB_LXOR_NE_UINT64     , GrB_EQ_NE_UINT64       ,
-GrB_LOR_NE_FP32        , GrB_LAND_NE_FP32       , GrB_LXOR_NE_FP32       , GrB_EQ_NE_FP32         ,
-GrB_LOR_NE_FP64        , GrB_LAND_NE_FP64       , GrB_LXOR_NE_FP64       , GrB_EQ_NE_FP64         ,
+GxB_LOR_NE_INT8        , GxB_LAND_NE_INT8       , GxB_LXOR_NE_INT8       , GxB_EQ_NE_INT8         ,
+GxB_LOR_NE_UINT8       , GxB_LAND_NE_UINT8      , GxB_LXOR_NE_UINT8      , GxB_EQ_NE_UINT8        ,
+GxB_LOR_NE_INT16       , GxB_LAND_NE_INT16      , GxB_LXOR_NE_INT16      , GxB_EQ_NE_INT16        ,
+GxB_LOR_NE_UINT16      , GxB_LAND_NE_UINT16     , GxB_LXOR_NE_UINT16     , GxB_EQ_NE_UINT16       ,
+GxB_LOR_NE_INT32       , GxB_LAND_NE_INT32      , GxB_LXOR_NE_INT32      , GxB_EQ_NE_INT32        ,
+GxB_LOR_NE_UINT32      , GxB_LAND_NE_UINT32     , GxB_LXOR_NE_UINT32     , GxB_EQ_NE_UINT32       ,
+GxB_LOR_NE_INT64       , GxB_LAND_NE_INT64      , GxB_LXOR_NE_INT64      , GxB_EQ_NE_INT64        ,
+GxB_LOR_NE_UINT64      , GxB_LAND_NE_UINT64     , GxB_LXOR_NE_UINT64     , GxB_EQ_NE_UINT64       ,
+GxB_LOR_NE_FP32        , GxB_LAND_NE_FP32       , GxB_LXOR_NE_FP32       , GxB_EQ_NE_FP32         ,
+GxB_LOR_NE_FP64        , GxB_LAND_NE_FP64       , GxB_LXOR_NE_FP64       , GxB_EQ_NE_FP64         ,
 
 // semirings with multiply op: z = GT (x,y), where z is Boolean and x,y are given by the suffix:
-GrB_LOR_GT_INT8        , GrB_LAND_GT_INT8       , GrB_LXOR_GT_INT8       , GrB_EQ_GT_INT8         ,
-GrB_LOR_GT_UINT8       , GrB_LAND_GT_UINT8      , GrB_LXOR_GT_UINT8      , GrB_EQ_GT_UINT8        ,
-GrB_LOR_GT_INT16       , GrB_LAND_GT_INT16      , GrB_LXOR_GT_INT16      , GrB_EQ_GT_INT16        ,
-GrB_LOR_GT_UINT16      , GrB_LAND_GT_UINT16     , GrB_LXOR_GT_UINT16     , GrB_EQ_GT_UINT16       ,
-GrB_LOR_GT_INT32       , GrB_LAND_GT_INT32      , GrB_LXOR_GT_INT32      , GrB_EQ_GT_INT32        ,
-GrB_LOR_GT_UINT32      , GrB_LAND_GT_UINT32     , GrB_LXOR_GT_UINT32     , GrB_EQ_GT_UINT32       ,
-GrB_LOR_GT_INT64       , GrB_LAND_GT_INT64      , GrB_LXOR_GT_INT64      , GrB_EQ_GT_INT64        ,
-GrB_LOR_GT_UINT64      , GrB_LAND_GT_UINT64     , GrB_LXOR_GT_UINT64     , GrB_EQ_GT_UINT64       ,
-GrB_LOR_GT_FP32        , GrB_LAND_GT_FP32       , GrB_LXOR_GT_FP32       , GrB_EQ_GT_FP32         ,
-GrB_LOR_GT_FP64        , GrB_LAND_GT_FP64       , GrB_LXOR_GT_FP64       , GrB_EQ_GT_FP64         ,
+GxB_LOR_GT_INT8        , GxB_LAND_GT_INT8       , GxB_LXOR_GT_INT8       , GxB_EQ_GT_INT8         ,
+GxB_LOR_GT_UINT8       , GxB_LAND_GT_UINT8      , GxB_LXOR_GT_UINT8      , GxB_EQ_GT_UINT8        ,
+GxB_LOR_GT_INT16       , GxB_LAND_GT_INT16      , GxB_LXOR_GT_INT16      , GxB_EQ_GT_INT16        ,
+GxB_LOR_GT_UINT16      , GxB_LAND_GT_UINT16     , GxB_LXOR_GT_UINT16     , GxB_EQ_GT_UINT16       ,
+GxB_LOR_GT_INT32       , GxB_LAND_GT_INT32      , GxB_LXOR_GT_INT32      , GxB_EQ_GT_INT32        ,
+GxB_LOR_GT_UINT32      , GxB_LAND_GT_UINT32     , GxB_LXOR_GT_UINT32     , GxB_EQ_GT_UINT32       ,
+GxB_LOR_GT_INT64       , GxB_LAND_GT_INT64      , GxB_LXOR_GT_INT64      , GxB_EQ_GT_INT64        ,
+GxB_LOR_GT_UINT64      , GxB_LAND_GT_UINT64     , GxB_LXOR_GT_UINT64     , GxB_EQ_GT_UINT64       ,
+GxB_LOR_GT_FP32        , GxB_LAND_GT_FP32       , GxB_LXOR_GT_FP32       , GxB_EQ_GT_FP32         ,
+GxB_LOR_GT_FP64        , GxB_LAND_GT_FP64       , GxB_LXOR_GT_FP64       , GxB_EQ_GT_FP64         ,
 
 // semirings with multiply op: z = LT (x,y), where z is Boolean and x,y are given by the suffix:
-GrB_LOR_LT_INT8        , GrB_LAND_LT_INT8       , GrB_LXOR_LT_INT8       , GrB_EQ_LT_INT8         ,
-GrB_LOR_LT_UINT8       , GrB_LAND_LT_UINT8      , GrB_LXOR_LT_UINT8      , GrB_EQ_LT_UINT8        ,
-GrB_LOR_LT_INT16       , GrB_LAND_LT_INT16      , GrB_LXOR_LT_INT16      , GrB_EQ_LT_INT16        ,
-GrB_LOR_LT_UINT16      , GrB_LAND_LT_UINT16     , GrB_LXOR_LT_UINT16     , GrB_EQ_LT_UINT16       ,
-GrB_LOR_LT_INT32       , GrB_LAND_LT_INT32      , GrB_LXOR_LT_INT32      , GrB_EQ_LT_INT32        ,
-GrB_LOR_LT_UINT32      , GrB_LAND_LT_UINT32     , GrB_LXOR_LT_UINT32     , GrB_EQ_LT_UINT32       ,
-GrB_LOR_LT_INT64       , GrB_LAND_LT_INT64      , GrB_LXOR_LT_INT64      , GrB_EQ_LT_INT64        ,
-GrB_LOR_LT_UINT64      , GrB_LAND_LT_UINT64     , GrB_LXOR_LT_UINT64     , GrB_EQ_LT_UINT64       ,
-GrB_LOR_LT_FP32        , GrB_LAND_LT_FP32       , GrB_LXOR_LT_FP32       , GrB_EQ_LT_FP32         ,
-GrB_LOR_LT_FP64        , GrB_LAND_LT_FP64       , GrB_LXOR_LT_FP64       , GrB_EQ_LT_FP64         ,
+GxB_LOR_LT_INT8        , GxB_LAND_LT_INT8       , GxB_LXOR_LT_INT8       , GxB_EQ_LT_INT8         ,
+GxB_LOR_LT_UINT8       , GxB_LAND_LT_UINT8      , GxB_LXOR_LT_UINT8      , GxB_EQ_LT_UINT8        ,
+GxB_LOR_LT_INT16       , GxB_LAND_LT_INT16      , GxB_LXOR_LT_INT16      , GxB_EQ_LT_INT16        ,
+GxB_LOR_LT_UINT16      , GxB_LAND_LT_UINT16     , GxB_LXOR_LT_UINT16     , GxB_EQ_LT_UINT16       ,
+GxB_LOR_LT_INT32       , GxB_LAND_LT_INT32      , GxB_LXOR_LT_INT32      , GxB_EQ_LT_INT32        ,
+GxB_LOR_LT_UINT32      , GxB_LAND_LT_UINT32     , GxB_LXOR_LT_UINT32     , GxB_EQ_LT_UINT32       ,
+GxB_LOR_LT_INT64       , GxB_LAND_LT_INT64      , GxB_LXOR_LT_INT64      , GxB_EQ_LT_INT64        ,
+GxB_LOR_LT_UINT64      , GxB_LAND_LT_UINT64     , GxB_LXOR_LT_UINT64     , GxB_EQ_LT_UINT64       ,
+GxB_LOR_LT_FP32        , GxB_LAND_LT_FP32       , GxB_LXOR_LT_FP32       , GxB_EQ_LT_FP32         ,
+GxB_LOR_LT_FP64        , GxB_LAND_LT_FP64       , GxB_LXOR_LT_FP64       , GxB_EQ_LT_FP64         ,
 
 // semirings with multiply op: z = GE (x,y), where z is Boolean and x,y are given by the suffix:
-GrB_LOR_GE_INT8        , GrB_LAND_GE_INT8       , GrB_LXOR_GE_INT8       , GrB_EQ_GE_INT8         ,
-GrB_LOR_GE_UINT8       , GrB_LAND_GE_UINT8      , GrB_LXOR_GE_UINT8      , GrB_EQ_GE_UINT8        ,
-GrB_LOR_GE_INT16       , GrB_LAND_GE_INT16      , GrB_LXOR_GE_INT16      , GrB_EQ_GE_INT16        ,
-GrB_LOR_GE_UINT16      , GrB_LAND_GE_UINT16     , GrB_LXOR_GE_UINT16     , GrB_EQ_GE_UINT16       ,
-GrB_LOR_GE_INT32       , GrB_LAND_GE_INT32      , GrB_LXOR_GE_INT32      , GrB_EQ_GE_INT32        ,
-GrB_LOR_GE_UINT32      , GrB_LAND_GE_UINT32     , GrB_LXOR_GE_UINT32     , GrB_EQ_GE_UINT32       ,
-GrB_LOR_GE_INT64       , GrB_LAND_GE_INT64      , GrB_LXOR_GE_INT64      , GrB_EQ_GE_INT64        ,
-GrB_LOR_GE_UINT64      , GrB_LAND_GE_UINT64     , GrB_LXOR_GE_UINT64     , GrB_EQ_GE_UINT64       ,
-GrB_LOR_GE_FP32        , GrB_LAND_GE_FP32       , GrB_LXOR_GE_FP32       , GrB_EQ_GE_FP32         ,
-GrB_LOR_GE_FP64        , GrB_LAND_GE_FP64       , GrB_LXOR_GE_FP64       , GrB_EQ_GE_FP64         ,
+GxB_LOR_GE_INT8        , GxB_LAND_GE_INT8       , GxB_LXOR_GE_INT8       , GxB_EQ_GE_INT8         ,
+GxB_LOR_GE_UINT8       , GxB_LAND_GE_UINT8      , GxB_LXOR_GE_UINT8      , GxB_EQ_GE_UINT8        ,
+GxB_LOR_GE_INT16       , GxB_LAND_GE_INT16      , GxB_LXOR_GE_INT16      , GxB_EQ_GE_INT16        ,
+GxB_LOR_GE_UINT16      , GxB_LAND_GE_UINT16     , GxB_LXOR_GE_UINT16     , GxB_EQ_GE_UINT16       ,
+GxB_LOR_GE_INT32       , GxB_LAND_GE_INT32      , GxB_LXOR_GE_INT32      , GxB_EQ_GE_INT32        ,
+GxB_LOR_GE_UINT32      , GxB_LAND_GE_UINT32     , GxB_LXOR_GE_UINT32     , GxB_EQ_GE_UINT32       ,
+GxB_LOR_GE_INT64       , GxB_LAND_GE_INT64      , GxB_LXOR_GE_INT64      , GxB_EQ_GE_INT64        ,
+GxB_LOR_GE_UINT64      , GxB_LAND_GE_UINT64     , GxB_LXOR_GE_UINT64     , GxB_EQ_GE_UINT64       ,
+GxB_LOR_GE_FP32        , GxB_LAND_GE_FP32       , GxB_LXOR_GE_FP32       , GxB_EQ_GE_FP32         ,
+GxB_LOR_GE_FP64        , GxB_LAND_GE_FP64       , GxB_LXOR_GE_FP64       , GxB_EQ_GE_FP64         ,
 
 // semirings with multiply op: z = LE (x,y), where z is Boolean and x,y are given by the suffix:
-GrB_LOR_LE_INT8        , GrB_LAND_LE_INT8       , GrB_LXOR_LE_INT8       , GrB_EQ_LE_INT8         ,
-GrB_LOR_LE_UINT8       , GrB_LAND_LE_UINT8      , GrB_LXOR_LE_UINT8      , GrB_EQ_LE_UINT8        ,
-GrB_LOR_LE_INT16       , GrB_LAND_LE_INT16      , GrB_LXOR_LE_INT16      , GrB_EQ_LE_INT16        ,
-GrB_LOR_LE_UINT16      , GrB_LAND_LE_UINT16     , GrB_LXOR_LE_UINT16     , GrB_EQ_LE_UINT16       ,
-GrB_LOR_LE_INT32       , GrB_LAND_LE_INT32      , GrB_LXOR_LE_INT32      , GrB_EQ_LE_INT32        ,
-GrB_LOR_LE_UINT32      , GrB_LAND_LE_UINT32     , GrB_LXOR_LE_UINT32     , GrB_EQ_LE_UINT32       ,
-GrB_LOR_LE_INT64       , GrB_LAND_LE_INT64      , GrB_LXOR_LE_INT64      , GrB_EQ_LE_INT64        ,
-GrB_LOR_LE_UINT64      , GrB_LAND_LE_UINT64     , GrB_LXOR_LE_UINT64     , GrB_EQ_LE_UINT64       ,
-GrB_LOR_LE_FP32        , GrB_LAND_LE_FP32       , GrB_LXOR_LE_FP32       , GrB_EQ_LE_FP32         ,
-GrB_LOR_LE_FP64        , GrB_LAND_LE_FP64       , GrB_LXOR_LE_FP64       , GrB_EQ_LE_FP64         ,
+GxB_LOR_LE_INT8        , GxB_LAND_LE_INT8       , GxB_LXOR_LE_INT8       , GxB_EQ_LE_INT8         ,
+GxB_LOR_LE_UINT8       , GxB_LAND_LE_UINT8      , GxB_LXOR_LE_UINT8      , GxB_EQ_LE_UINT8        ,
+GxB_LOR_LE_INT16       , GxB_LAND_LE_INT16      , GxB_LXOR_LE_INT16      , GxB_EQ_LE_INT16        ,
+GxB_LOR_LE_UINT16      , GxB_LAND_LE_UINT16     , GxB_LXOR_LE_UINT16     , GxB_EQ_LE_UINT16       ,
+GxB_LOR_LE_INT32       , GxB_LAND_LE_INT32      , GxB_LXOR_LE_INT32      , GxB_EQ_LE_INT32        ,
+GxB_LOR_LE_UINT32      , GxB_LAND_LE_UINT32     , GxB_LXOR_LE_UINT32     , GxB_EQ_LE_UINT32       ,
+GxB_LOR_LE_INT64       , GxB_LAND_LE_INT64      , GxB_LXOR_LE_INT64      , GxB_EQ_LE_INT64        ,
+GxB_LOR_LE_UINT64      , GxB_LAND_LE_UINT64     , GxB_LXOR_LE_UINT64     , GxB_EQ_LE_UINT64       ,
+GxB_LOR_LE_FP32        , GxB_LAND_LE_FP32       , GxB_LXOR_LE_FP32       , GxB_EQ_LE_FP32         ,
+GxB_LOR_LE_FP64        , GxB_LAND_LE_FP64       , GxB_LXOR_LE_FP64       , GxB_EQ_LE_FP64         ,
 
 //------------------------------------------------------------------------------
 // 40 purely Boolean semirings
 //------------------------------------------------------------------------------
 
-// purely boolean semirings (in the form GrB_(add monoid)_(multipy operator)_BOOL:
-GrB_LOR_FIRST_BOOL     , GrB_LAND_FIRST_BOOL    , GrB_LXOR_FIRST_BOOL    , GrB_EQ_FIRST_BOOL      , 
-GrB_LOR_SECOND_BOOL    , GrB_LAND_SECOND_BOOL   , GrB_LXOR_SECOND_BOOL   , GrB_EQ_SECOND_BOOL     , 
-GrB_LOR_LOR_BOOL       , GrB_LAND_LOR_BOOL      , GrB_LXOR_LOR_BOOL      , GrB_EQ_LOR_BOOL        , 
-GrB_LOR_LAND_BOOL      , GrB_LAND_LAND_BOOL     , GrB_LXOR_LAND_BOOL     , GrB_EQ_LAND_BOOL       , 
-GrB_LOR_LXOR_BOOL      , GrB_LAND_LXOR_BOOL     , GrB_LXOR_LXOR_BOOL     , GrB_EQ_LXOR_BOOL       , 
-GrB_LOR_EQ_BOOL        , GrB_LAND_EQ_BOOL       , GrB_LXOR_EQ_BOOL       , GrB_EQ_EQ_BOOL         , 
-GrB_LOR_GT_BOOL        , GrB_LAND_GT_BOOL       , GrB_LXOR_GT_BOOL       , GrB_EQ_GT_BOOL         , 
-GrB_LOR_LT_BOOL        , GrB_LAND_LT_BOOL       , GrB_LXOR_LT_BOOL       , GrB_EQ_LT_BOOL         , 
-GrB_LOR_GE_BOOL        , GrB_LAND_GE_BOOL       , GrB_LXOR_GE_BOOL       , GrB_EQ_GE_BOOL         , 
-GrB_LOR_LE_BOOL        , GrB_LAND_LE_BOOL       , GrB_LXOR_LE_BOOL       , GrB_EQ_LE_BOOL         ; 
+// purely boolean semirings (in the form GxB_(add monoid)_(multipy operator)_BOOL:
+GxB_LOR_FIRST_BOOL     , GxB_LAND_FIRST_BOOL    , GxB_LXOR_FIRST_BOOL    , GxB_EQ_FIRST_BOOL      , 
+GxB_LOR_SECOND_BOOL    , GxB_LAND_SECOND_BOOL   , GxB_LXOR_SECOND_BOOL   , GxB_EQ_SECOND_BOOL     , 
+GxB_LOR_LOR_BOOL       , GxB_LAND_LOR_BOOL      , GxB_LXOR_LOR_BOOL      , GxB_EQ_LOR_BOOL        , 
+GxB_LOR_LAND_BOOL      , GxB_LAND_LAND_BOOL     , GxB_LXOR_LAND_BOOL     , GxB_EQ_LAND_BOOL       , 
+GxB_LOR_LXOR_BOOL      , GxB_LAND_LXOR_BOOL     , GxB_LXOR_LXOR_BOOL     , GxB_EQ_LXOR_BOOL       , 
+GxB_LOR_EQ_BOOL        , GxB_LAND_EQ_BOOL       , GxB_LXOR_EQ_BOOL       , GxB_EQ_EQ_BOOL         , 
+GxB_LOR_GT_BOOL        , GxB_LAND_GT_BOOL       , GxB_LXOR_GT_BOOL       , GxB_EQ_GT_BOOL         , 
+GxB_LOR_LT_BOOL        , GxB_LAND_LT_BOOL       , GxB_LXOR_LT_BOOL       , GxB_EQ_LT_BOOL         , 
+GxB_LOR_GE_BOOL        , GxB_LAND_GE_BOOL       , GxB_LXOR_GE_BOOL       , GxB_EQ_GE_BOOL         , 
+GxB_LOR_LE_BOOL        , GxB_LAND_LE_BOOL       , GxB_LXOR_LE_BOOL       , GxB_EQ_LE_BOOL         ; 
 
 #endif
 

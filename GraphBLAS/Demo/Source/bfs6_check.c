@@ -6,8 +6,8 @@
 // by Aydin Buluc, Timothy Mattson, Scott McMillan, Jose' Moreira, Carl Yang.
 // Based on "GraphBLAS Mathematics" by Jeremy Kepner.
 
-// This version uses a predefined semiring (GrB_LOR_LAND_BOOL) and a predefined
-// monoid (GrB_LOR_BOOL_MONOID), in GraphBLAS.h.  It also checks the status of
+// This version uses a predefined semiring (GxB_LOR_LAND_BOOL) and a predefined
+// monoid (GxB_LOR_BOOL_MONOID), in GraphBLAS.h.  It also checks the status of
 // each call to GraphBLAS functions.  These two changes are unrelated.  Both
 // change are made here to illustrate two different things.
 
@@ -80,7 +80,7 @@ GrB_Info bfs6_check         // BFS of a graph (using unary operator)
 
         // q<!v> = A ||.&& q ; finds all the unvisited successors from current
         // q, using !v as the mask
-        OK (GrB_mxv (q, v, NULL, GrB_LOR_LAND_BOOL, A, q, desc)) ;
+        OK (GrB_mxv (q, v, NULL, GxB_LOR_LAND_BOOL, A, q, desc)) ;
 
         GrB_Vector_nvals (&nvals, q) ;
     }

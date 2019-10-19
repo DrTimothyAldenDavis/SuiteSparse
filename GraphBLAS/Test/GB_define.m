@@ -29,7 +29,7 @@ for k = 1:length (numeric)
 
     for i = 1:length (ints)
         cc = upper (ints {i}) ;
-        name = sprintf ('GrB_%s_%s_MONOID,', xx, cc) ;
+        name = sprintf ('GxB_%s_%s_MONOID,', xx, cc) ;
         fprintf ('    %-25s     // identity: ', name) ;
         id = numeric_ids {k} ;
         switch id
@@ -49,7 +49,7 @@ for k = 1:length (numeric)
 
     for i = 1:length (floats)
         cc = upper (floats {i}) ;
-        name = sprintf ('GrB_%s_%s_MONOID,', xx, cc) ;
+        name = sprintf ('GxB_%s_%s_MONOID,', xx, cc) ;
         fprintf ('    %-25s     // identity: ', name) ;
         id = numeric_ids {k} ;
         switch id
@@ -77,9 +77,9 @@ for k = 1:length (boolean)
     end
 
     if (k == length (boolean))
-        name = sprintf ('GrB_%s_MONOID ;', upper (bb)) ;
+        name = sprintf ('GxB_%s_MONOID ;', upper (bb)) ;
     else
-        name = sprintf ('GrB_%s_MONOID,', upper (bb)) ;
+        name = sprintf ('GxB_%s_MONOID,', upper (bb)) ;
     end
     fprintf ('    %-25s     // identity: ', name) ;
 
