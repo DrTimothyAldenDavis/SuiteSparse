@@ -489,6 +489,8 @@ int CHOLMOD(super_symbolic2)
 
     for (s = nfsuper-2 ; s >= 0 ; s--)
     {
+        double lnz1 ;
+
 	/* should supernodes s and s+1 merge into a new node s? */
 	PRINT1 (("\n========= Check relax of s "ID" and s+1 "ID"\n", s, s+1)) ;
 
@@ -524,7 +526,7 @@ int CHOLMOD(super_symbolic2)
 	PRINT2 (("ns "ID" nscol0 "ID" nscol1 "ID"\n", ns, nscol0, nscol1)) ;
 
 	totzeros = Zeros [s+1] ;	/* current # of zeros in s+1 */
-	double lnz1 = Snz [s+1] ;	/* # entries in leading column of s+1 */
+	lnz1 = (double) (Snz [s+1]) ;	/* # entries in leading column of s+1 */
 
 	/* determine if supernodes s and s+1 should merge */
 	if (ns <= nrelax0)

@@ -14,7 +14,7 @@ Jun 1, 2012: version 2.3.0
 
     * changed from UFconfig to SuiteSparse_config
 
-May 15, 2011: version 2.2.4
+May 15, 2012: version 2.2.4
 
     * minor fix to SIZE_T_MAX definition (finicky compiler workaround)
 

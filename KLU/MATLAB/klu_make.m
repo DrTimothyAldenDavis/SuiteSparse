@@ -1,4 +1,4 @@
-function klu_make
+function klu_make (metis_path)
 %KLU_MAKE compiles the KLU mexFunctions
 %
 % Example:
@@ -15,7 +15,9 @@ function klu_make
 
 % Copyright 2004-2009, Univ. of Florida
 
-metis_path = '../../metis-4.0' ;
+if (nargin < 1)
+    metis_path = '../../metis-4.0' ;
+end
 with_cholmod = exist ([metis_path '/Lib'], 'dir') ;
 
 details = 0 ;       % if 1, print details of each command
@@ -192,6 +194,12 @@ if (with_cholmod)
         '../../CHOLMOD/Partition/cholmod_camd', ...
         '../../CHOLMOD/Partition/cholmod_metis', ...
         '../../CHOLMOD/Partition/cholmod_nesdis' } ;
+
+else
+    camd_src = { } ;
+    ccolamd_src = { } ;
+    metis_src = { } ;
+    cholmod_src = { } ;
 end
 
 btf_src = {
