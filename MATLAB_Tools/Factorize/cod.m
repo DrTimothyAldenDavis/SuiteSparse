@@ -1,8 +1,8 @@
 function [U, R, V, r] = cod (A, tol)
 %COD complete orthogonal decomposition of a full matrix A = U*R*V'
 %
-%   [U R V r] = cod (A)
-%   [U R V r] = cod (A, tol)
+%   [U, R, V, r] = cod (A)
+%   [U, R, V, r] = cod (A, tol)
 %
 % The full m-by-n matrix A is factorized into U*R*V' where R is r-by-r and
 % upper triangular and where r is the estimated rank of A.  The diagonal
@@ -24,9 +24,9 @@ function [U, R, V, r] = cod (A, tol)
 %
 % Example:
 %
-%   A = magic (4),   [U R V] = cod (A),  norm (A - U*R*V')
-%   A = rand (4,3),  [U R V] = cod (A),  norm (A - U*R*V')
-%   A = rand (3,4),  [U R V] = cod (A),  norm (A - U*R*V')
+%   A = magic (4),   [U, R, V] = cod (A),  norm (A - U*R*V')
+%   A = rand (4,3),  [U, R, V] = cod (A),  norm (A - U*R*V')
+%   A = rand (3,4),  [U, R, V] = cod (A),  norm (A - U*R*V')
 %
 % See also qr, svd, rq, spqr, cod_sparse.
 
@@ -36,29 +36,23 @@ if (issparse (A))
     error ('FACTORIZE:cod:sparse', ...
         'COD is not designed for sparse matrices.  Use COD_SPARSE instead.') ;
 end
-
+[m, n] = size (A) ;
 if (nargin < 2)
-    tol = -1 ;                  % default tol will be used (see below)
+    tol = -1 ;                  % default tol will be used
 end
-
-[m n] = size (A) ;
 
 if (m >= n)
 
     % factorize A into U*R*V' with column 2-norm pivoting
-    [U R V] = qr (A, 0) ;       % economy U*R = A(V,:) with column pivoting V
+    [U, R, V] = qr (A, 0) ;     % economy U*R = A(V,:) with column pivoting V
     V = sparse (V, 1:n, 1) ;    % R n-by-n and triu, U m-by-n, V n-by-n
 
-    % find the estimated rank of A
-    d = abs (get_diag (R)) ;
-    if (tol < 0)
-        tol = 20 * (m+n) * eps (max (d)) ;
-    end
-    r = sum (d > tol) ;
+    % find a rough estimate of the rank of A
+    r = rank_est (R, m, n, tol) ;
 
     if (r < n)
         % A is rank deficient.  R upper trapezoidal with R(r+1:end,:) tiny
-        [R Q] = rq (R, r, n) ;  % RQ factorization, R now upper triangular
+        [R, Q] = rq (R, r, n) ; % RQ factorization, R now upper triangular
         U = U (:, 1:r) ;        % discard all but the first r columns of U
         V = V * Q' ;            % merge Q and V
         % R is now r-by-r, U is m-by-r, and V is n-by-r.
@@ -67,7 +61,7 @@ if (m >= n)
 else
 
     % compute the cod of A' and permute the result
-    [V R U r] = cod (A', tol) ;
+    [V, R, U, r] = cod (A', tol) ;
     U = U (:, end:-1:1) ;
     R = R (end:-1:1, end:-1:1)' ;
     V = V (:, end:-1:1) ;

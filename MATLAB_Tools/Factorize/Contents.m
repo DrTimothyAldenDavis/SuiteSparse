@@ -52,9 +52,9 @@
 %   factorization_chol_sparse - P'*A*P = L*L' where A is sparse and sym. pos. def.
 %   factorization_cod_dense   - complete orthogonal factorization: A = U*R*V' where A is full.
 %   factorization_cod_sparse  - complete orthogonal factorization: A = U*R*V' where A is sparse.
-%   factorization_ldl_dense   - P'*A*P = L*D*L' where A is sparse and full
+%   factorization_ldl_dense   - A(p,p) = L*D*L' where A is sparse and full
 %   factorization_ldl_sparse  - P'*A*P = L*D*L' where A is sparse and symmetric
-%   factorization_lu_dense    - P*A = L*U where A is square and full.
+%   factorization_lu_dense    - A(p,:) = L*U where A is square and full.
 %   factorization_lu_sparse   - P*A*Q = L*U where A is square and sparse.
 %   factorization_qr_dense    - A = Q*R where A is full.
 %   factorization_qr_sparse   - (A*P)'*(A*P) = R'*R where A is sparse.

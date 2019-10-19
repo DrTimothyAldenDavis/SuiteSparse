@@ -15,7 +15,7 @@ if (nargin < 1)
     A = magic (4) ;
 end
 
-[m n] = size (A) ;
+[m, n] = size (A) ;
 err = 0 ;
 
 for st = 0:1
@@ -127,33 +127,33 @@ for st = 0:1
         % fprintf ('null space err %g (%g)\n', e, err) ;
         err = check_err (err, e) ;
 
-        [U1,S1,V1] = svd (F) ;
-        [U2,S2,V2] = svd (full (A)) ;
+        [U1, S1, V1] = svd (F) ;
+        [U2, S2, V2] = svd (full (A)) ;
         err = check_err (err, norm (U1-U2)) ;
         err = check_err (err, norm (S1-S2) / Anorm)  ;
         err = check_err (err, norm (V1-V2)) ;
         err = check_err (err, norm (U1*S1*V1'-U2*S2*V2') / Anorm) ;
 
-        [U1,S1,V1] = svd (inverse (F)) ;
-        [U2,S2,V2] = svd (pinv (full (A))) ;
+        [U1, S1, V1] = svd (inverse (F)) ;
+        [U2, S2, V2] = svd (pinv (full (A))) ;
         err = check_err (err, norm (S1-S2) / Ainvnorm)  ;
         err = check_err (err, norm (U1*S1*V1'-U2*S2*V2') / Ainvnorm) ;
 
-        [U1,S1,V1] = svd (F, 0) ;
-        [U2,S2,V2] = svd (full (A), 0) ;
+        [U1, S1, V1] = svd (F, 0) ;
+        [U2, S2, V2] = svd (full (A), 0) ;
         err = check_err (err, norm (U1-U2)) ;
         err = check_err (err, norm (S1-S2) / Anorm) ;
         err = check_err (err, norm (V1-V2)) ;
         err = check_err (err, norm (U1*S1*V1'-U2*S2*V2') / Anorm) ;
 
-        [U1,S1,V1] = svd (F, 'econ') ;
-        [U2,S2,V2] = svd (full (A), 'econ') ;
+        [U1, S1, V1] = svd (F, 'econ') ;
+        [U2, S2, V2] = svd (full (A), 'econ') ;
         err = check_err (err, norm (U1-U2)) ;
         err = check_err (err, norm (S1-S2) / Anorm) ;
         err = check_err (err, norm (V1-V2)) ;
         err = check_err (err, norm (U1*S1*V1'-U2*S2*V2') / Anorm) ;
 
-        [U1,S1,V1] = svd (F, 'rank') ;
+        [U1, S1, V1] = svd (F, 'rank') ;
         err = check_err (err, norm (U1*S1*V1'-U2*S2*V2') / Anorm) ;
 
         % fprintf ('svd err %g (%g)\n', e, err) ;

@@ -20,8 +20,8 @@ classdef factorization_svd < factorization
 
         function F = factorization_svd (A)
             %FACTORIZATION_SVD singular value decomponsition, A = U*S*V'
-            [f.U f.S f.V] = svd (full (A)) ;
-            [m n] = size (A) ;
+            [f.U, f.S, f.V] = svd (full (A)) ;
+            [m, n] = size (A) ;
             % convert S into a vector of singular values
             if (isempty (A))
                 f.S = 0 ;
@@ -46,6 +46,13 @@ classdef factorization_svd < factorization
             F.kind = 'singular value decomposition: A = U*S*V''' ;
         end
 
+        function e = error_check (F)
+            %ERROR_CHECK : return relative 1-norm of error in factorization
+            % meant for testing only
+            [U, S, V] = svd (F) ; % extracts the pre-computed SVD of A from F
+            e = norm (F.A - U*S*V', 1) / norm (F.A, 1) ;
+        end
+
         function x = mldivide_subclass (F,b)
             %MLDIVIDE_SUBCLASS x=A\b using a singular value decomposition
             % Only svd(A,'econ') is needed.
@@ -63,16 +70,16 @@ classdef factorization_svd < factorization
         end
 
         function c = cond (F, p)
-            %COND the 2-norm condition number cond(F,2) takes O(1) time to
-            % compute once the SVD is known.  Otherwise, pinv(A) (or pinv(A')
-            % if F has been transposed) is explicitly computed using the
-            % pre-computed [U,S,V]=svd(A).
+            %COND the 2-norm condition number
+            % cond(F,2) takes O(1) time to compute once the SVD is known.
+            % Otherwise, pinv(A) (or pinv(A') if F has been transposed) is
+            % explicitly computed using the pre-computed [U,S,V]=svd(A).
             if (nargin == 1 || isequal (p,2) || isempty (F))
                 % The 2-norm condition number has been pre-computed.
                 c = F.A_cond ;
             else
                 % Compute the p-norm of a non-empty matrix, where p is not 2.
-                [m n] = size (F) ;
+                [m, n] = size (F) ;
                 if (m ~= n)
                     error ('MATLAB:cond:normMismatchSizeA', ...
                         'A is rectangular.  Use the 2 norm.') ;
@@ -153,7 +160,7 @@ classdef factorization_svd < factorization
             U = f.U ;
             S = f.S ;
             V = f.V ;
-            [m n] = size (F.A) ;
+            [m, n] = size (F.A) ;
             if (nargin > 1)
                 switch kind
                     case 'econ'

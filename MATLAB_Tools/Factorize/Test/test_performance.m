@@ -5,7 +5,7 @@ function err = test_performance
 % Example
 %   err = test_performance
 %
-% See also test_all, test_factorize, factorize, inverse, mldivide
+% See also test_all, factorize, inverse, mldivide
 
 % Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
 
@@ -162,7 +162,7 @@ for posdef = 0:1
         if (posdef)
             L = chol (A, 'lower') ;
         else
-            [L,U,p] = lu (A,'vector') ;
+            [L, U, p] = lu (A,'vector') ;
         end
 
         S = inv (A) ;

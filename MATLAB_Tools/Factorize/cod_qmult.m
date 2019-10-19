@@ -12,7 +12,7 @@ function Y = cod_qmult (Q, X, method)
 %
 % Example:
 %
-%   [U R V r] = cod_sparse (A) ;
+%   [U, R, V, r] = cod_sparse (A) ;
 %   Y = cod_qmult (U, X, 0) ;                   % Y = U' * X
 %   U = cod_qmult (U, speye (size (U.H,1)), 1)  % convert U to matrix form
 %

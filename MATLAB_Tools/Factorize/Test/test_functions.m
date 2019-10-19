@@ -32,6 +32,11 @@ err = max (err, test_function (A'*A, [ ], 1)) ;
 err = max (err, test_function (A, 'svd', 1)) ;
 err = max (err, test_function) ;
 
+A = rand (10) ;
+A = A' + A + 20*eye(10) ;
+err = max (err, test_function (A, 'svd', 1)) ;
+err = max (err, test_function (A, 'chol', 1)) ;
+
 for imaginary = 0:1
     for m = 1:6
         for n = 1:6

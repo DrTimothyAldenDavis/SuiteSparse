@@ -34,7 +34,7 @@ end
 
 % cannot use COD on sparse matrices
 try
-    [U R V r] = cod (sparse (A)) ;                                          %#ok
+    [U, R, V, r] = cod (sparse (A)) ;                                       %#ok
     ok = false ;
     fprintf ('error not caught: cannot use cod for sparse A\n') ;
 catch me
@@ -43,7 +43,7 @@ end
 
 % cannot use RQ on sparse matrices
 try
-    [R Q] = rq (sparse (A)) ;                                               %#ok
+    [R, Q] = rq (sparse (A)) ;                                              %#ok
     ok = false ;
     fprintf ('error not caught: cannot use rq for sparse A\n') ;
 catch me
@@ -70,7 +70,7 @@ end
 
 % cannot use COD_SPARSE on full matrices
 try
-    [U R V r] = cod_sparse (A) ;                                            %#ok
+    [U, R, V, r] = cod_sparse (A) ;                                         %#ok
     ok = false ;
     fprintf ('error not caught: cannot use cod_sparse for full A\n') ;
 catch me
@@ -298,7 +298,7 @@ end
 % test for invalid kind of svd
 try
     F = factorize (rand (4,3), 'svd') ;
-    [U,S,V] = svd (F,'gunk') ;                                              %#ok
+    [U, S, V] = svd (F,'gunk') ;                                            %#ok
     ok = false ;
     fprintf ('\nerror not caught: invalid kind of svd\n') ;
 catch me

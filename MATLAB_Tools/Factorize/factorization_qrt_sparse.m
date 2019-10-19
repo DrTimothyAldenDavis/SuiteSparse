@@ -10,18 +10,24 @@ classdef factorization_qrt_sparse < factorization
             if (~isa (A, 'double'))
                 error ('FACTORIZE:wrongtype', 'A must be double') ;
             end
-            [m n] = size (A) ;
+            [m, n] = size (A) ;
             if (m >= n)
                 error ('FACTORIZE:wrongdim', 'QR of A'' requires m < n.') ;
             end
-            C = A' ;
-            f.P = sparse (1:m, colamd (C), 1) ;
-            f.R = qr (C*f.P', 0) ;
+            [~, f.R, p] = qr (A', sparse (n,0), 0) ;
+            f.P = sparse (1:m, p, 1) ;
             F.A_condest = cheap_condest (get_diag (f.R), fail_if_singular) ;
             F.A = A ;
             F.Factors = f ;
-            F.A_rank = m ;
+            F.A_rank = rank_est (f.R, m, n) ;
             F.kind = 'sparse QR factorization of A'': (P*A)*(P*A)'' = R''*R' ;
+        end
+
+        function e = error_check (F)
+            %ERROR_CHECK : return relative 1-norm of error in factorization
+            % meant for testing only
+            f = F.Factors ;
+            e = norm ((f.P*F.A)*(f.P*F.A)' - f.R'*f.R, 1) / norm (F.A*F.A', 1) ;
         end
 
         function x = mldivide_subclass (F,b)

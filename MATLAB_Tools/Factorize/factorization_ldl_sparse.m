@@ -7,7 +7,7 @@ classdef factorization_ldl_sparse < factorization
 
         function F = factorization_ldl_sparse (A)
             %FACTORIZATION_LDL_SPARSE : P'*A*P = L*D*L'
-            [f.L f.D f.P] = ldl (A) ;
+            [f.L, f.D, f.P] = ldl (A) ;
             c = full (condest (f.D)) ;
             if (c > 1/(2*eps))
                 error ('MATLAB:singularMatrix', ...
@@ -18,6 +18,13 @@ classdef factorization_ldl_sparse < factorization
             F.A_rank = size (A,1) ;
             F.A_condest = c ;
             F.kind = 'sparse LDL factorization: P''*A*P = L*D*L''' ;
+        end
+
+        function e = error_check (F)
+            %ERROR_CHECK : return relative 1-norm of error in factorization
+            % meant for testing only
+            f = F.Factors ;
+            e = norm (f.P'*F.A*f.P - f.L*f.D*f.L', 1) / norm (F.A, 1) ;
         end
 
         function x = mldivide_subclass (F,b)

@@ -1,14 +1,10 @@
 function err = test_all_cod
 %TEST_ALL_COD test the COD factorization
 %
-% If you have editted the Factorize package, type "clear classes" before
-% running any tests.
-%
 % Example
 %   test_all_cod
 %
-% See also factorize, inverse, test_factorize,
-% test_performance, test_accuracy, test_disp, test_errors
+% See also test_cod
 
 % Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
 

@@ -8,8 +8,8 @@ function test_all (performance)
 %   test_all                % run all tests
 %   test_all (0) ;          % do not run performance tests
 %
-% See also factorize, inverse, test_factorize,
-% test_performance, test_accuracy, test_disp, test_errors
+% See also factorize, inverse, test_performance, test_accuracy, test_disp,
+% test_errors
 
 % Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
 
@@ -27,7 +27,6 @@ err3 = test_all_svd ;       % test SVD factorization
 err4 = test_all_cod ;       % test COD, COD_SPARSE, and RQ factorizations
 err = max ([err1 err2 err3 err4]) ;
 if (performance)
-    err5 = test_performance ;   % performance tests
-    err = max (err, err5) ;
+    err = max (err, test_performance) ;         % performance tests
 end
 fprintf ('\nAll tests passed, maximum error OK: %g\n', err) ;

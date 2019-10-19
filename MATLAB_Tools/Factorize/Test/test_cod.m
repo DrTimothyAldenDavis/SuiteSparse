@@ -14,11 +14,11 @@ if (nargin < 1)
     A = magic (4) ;
 end
 err = 0 ;
-[m n] = size (A) ;
+[m, n] = size (A) ;
 
 if (issparse (A))
 
-    [U R V r] = cod_sparse (A) ;                                            %#ok
+    [U, R, V, r] = cod_sparse (A) ;                                         %#ok
 
     % 1-norm of A - U*R*V'
     err = max (err, norm (A - cod_qmult (U, cod_qmult (V, R, 2),1),1)) ;
@@ -64,11 +64,11 @@ if (issparse (A))
     if (nargin == 2)
         opts.tol = tol ;
     end
-    [U R V] = cod_sparse (A,opts) ;
+    [U, R, V] = cod_sparse (A,opts) ;
     err = max (err, norm (A - U*R*V',1)) ;
 
     if (nargin == 2)
-        [U R V] = cod_sparse (A,tol) ;
+        [U, R, V] = cod_sparse (A,tol) ;
         U = cod_qmult (U, speye (size (A,1)), 1) ; 
         V = cod_qmult (V, speye (size (A,2)), 1) ;
         err = max (err, norm (A - U*R*V',1)) ;
@@ -76,14 +76,14 @@ if (issparse (A))
 
     try
         % this should cause an error
-        [R Q] = rq (A) ;                                                    %#ok
+        [R, Q] = rq (A) ;                                                   %#ok
         err = inf ;
     catch                                                                   %#ok
     end
 
     try
         % this should cause an error
-        [U R V r] = cod (A) ;                                               %#ok
+        [U, R, V, r] = cod (A) ;                                            %#ok
         err = inf ;
     catch                                                                   %#ok
     end
@@ -91,23 +91,23 @@ if (issparse (A))
 else
 
     if (nargin < 2)
-        [U R V r] = cod (A) ;                                               %#ok
+        [U, R, V, r] = cod (A) ;                                            %#ok
     else
-        [U R V r] = cod (A, tol) ;                                          %#ok
+        [U, R, V, r] = cod (A, tol) ;                                       %#ok
     end
     err = max (err, norm (A - U*R*V',1)) ;
 
     if (m <= n)
-        [R Q] = rq (A) ;
+        [R, Q] = rq (A) ;
         err = max (err, norm (A - R*Q,1)) ;
     else
-        [L Q] = rq (A) ;
+        [L, Q] = rq (A) ;
         err = max (err, norm (A - Q*L,1)) ;
     end
 
     try
         % this should cause an error
-        [U R V r] = cod_sparse (A) ;                                        %#ok
+        [U, R, V, r] = cod_sparse (A) ;                                     %#ok
         err = inf ;
     catch                                                                   %#ok
     end

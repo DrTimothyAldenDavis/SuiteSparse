@@ -143,14 +143,7 @@ UFcollection), and METIS 4.0.1.
     Copy the new UF_Index.mat file to /cise/research/sparse/public_html/mat.
     Copy the new UFstats.csv file to /cise/research/sparse/public_html/matrices.
 
-6) Update the web pages:
-
-    In the /cise/research/sparse/public_html directory, do:
-
-    UFlists
-    UFpages (1, ids)
-
-7) Export the matrix in Matrix Market and Rutherford/Boeing formats.
+6) Export the matrix in Matrix Market and Rutherford/Boeing formats.
 
     UFexport (ids)
 
@@ -160,17 +153,15 @@ UFcollection), and METIS 4.0.1.
 
     then tar and compress the resulting MM/Group/Name and RB/Group/Name
     directories, one per Problem (if UFexport has not already done so).
-    Copy the MM and RB matrices from the 2sparse/MM and /RB directories into
-    the sparse/public_html directory.
+
+7) Update the web pages:
+
+    UFlists
+    UFpages (1, ids)
 
 8) Make the collection world-readable.  In /cise/research/sparse/public_html do:
 
     chmod -R og+rX mat matrices MM RB
-
-9) Optional: if a new group was added, manually edit the
-    /cise/research/sparse/public_html/matrices/index.html file, adding a
-    new thumbnail image to the Sample Gallery.  If a new Problem.kind was
-    introduced, describe it in the matrices/kind.html file.
 
 
 --------------------------------------------------------------------------------

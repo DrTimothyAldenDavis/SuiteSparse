@@ -26,7 +26,8 @@ function F = factorize (A,strategy,burble)
 % used to factorize the matrix.  The first two are meta-strategies:
 %
 %   'default'   if rectangular
-%                   use QR for A or A' (whichever is tall and thin).
+%                   use QR for sparse A or A' (whichever is tall and thin);
+%                   use COD for full A
 %               else
 %                   if symmetric
 %                       if positive real diagonal: try CHOL
@@ -66,8 +67,9 @@ function F = factorize (A,strategy,burble)
 %
 %   'lu'        use LU.  Fails if A is rectangular; warning if A singular.
 %
-%   'ldl'       use LDL.  Fails if A is rank-deficient or not symmetric.  Uses
-%                   tril(A) and assumes triu(A) is the transpose of tril(A).
+%   'ldl'       use LDL.  Fails if A is rank-deficient or not symmetric, or if
+%                   A is sparse and complex.  Uses tril(A) and assumes triu(A)
+%                   is the transpose of tril(A).
 %
 %   'chol'      use CHOL.  Fails if A is rank-deficient or not symmetric
 %                   positive definite.  If A is sparse, it uses tril(A) and
@@ -105,32 +107,32 @@ end
 switch strategy
 
     case 'default'
-        [F me] = backslash_mimic (A, burble, 0) ;
+        [F, me] = backslash_mimic (A, burble, 0) ;
 
     case 'symmetric'
-        [F me] = backslash_mimic (A, burble, 1) ;
+        [F, me] = backslash_mimic (A, burble, 1) ;
 
     case 'unsymmetric'
-        [F me] = backslash_mimic (A, burble, 2) ;
+        [F, me] = backslash_mimic (A, burble, 2) ;
 
     case 'svd'
-        [F me] = factorize_svd (A, burble) ;
+        [F, me] = factorize_svd (A, burble) ;
 
     case 'cod'
-        [F me] = factorize_cod (A, burble) ;
+        [F, me] = factorize_cod (A, burble) ;
 
     case 'qr'
-        [F me] = factorize_qr (A, burble, 0) ;
+        [F, me] = factorize_qr (A, burble, 0) ;
 
     case 'lu'
         % do not report a failure if the matrix is singular
-        [F me] = factorize_lu (A, burble, 0) ;
+        [F, me] = factorize_lu (A, burble, 0) ;
 
     case 'ldl'
-        [F me] = factorize_ldl (A, burble) ;
+        [F, me] = factorize_ldl (A, burble) ;
 
     case 'chol'
-        [F me] = factorize_chol (A, burble) ;
+        [F, me] = factorize_chol (A, burble) ;
 
     otherwise
         error ('FACTORIZE:invalidStrategy', 'unrecognized strategy.') ;
@@ -143,11 +145,11 @@ end
 
 %-------------------------------------------------------------------------------
 
-function [F me] = backslash_mimic (A, burble, strategy)
+function [F, me] = backslash_mimic (A, burble, strategy)
 %BACKSLASH_MIMIC automatically select a method to factorize A.
 F = [ ] ;
 me = [ ] ;
-[m n] = size (A) ;
+[m, n] = size (A) ;
 
 % If the following condition is true, then the QR, QRT, or LU factorizations
 % will report a failure if A is singular (or nearly so).  This allows COD
@@ -156,10 +158,23 @@ me = [ ] ;
 % QR, QRT, and LU do not report failures for sparse matrices that are singular
 % (or nearly so), since there is no COD_SPARSE to fall back on.
 fail_if_singular = ~issparse (A) || (exist ('spqr') == 3) ;                 %#ok
+try_cod = true ;
 
 if (m ~= n)
-    % use QR for the rectangular case (ignore 'strategy' argument)
-    [F me] = factorize_qr (A, burble, fail_if_singular) ;
+    if (issparse (A))
+        % Use QR for the sparse rectangular case (ignore 'strategy' argument).
+        [F, me] = factorize_qr (A, burble, fail_if_singular) ;
+    else
+        % Use COD for the full rectangular case (ignore 'strategy' argument).
+        % If this fails, there's no reason to retry the COD below.  If A has
+        % full rank, then COD is the same as QR with column pivoting (with the
+        % same cost in terms of run time and memory).  Backslash in MATLAB uses
+        % QR with column pivoting alone, so this is just as fast as x=A\b in
+        % the full-rank case, but gives a more reliable result in the rank-
+        % deficient case.
+        try_cod = false ;
+        [F, me] = factorize_cod (A, burble) ;
+    end
 else
     % square case: Cholesky, LDL, or LU factorization of A
     switch strategy
@@ -175,33 +190,33 @@ else
         d = diag (A) ;
         if (all (d > 0) && nnz (imag (d)) == 0)
             % try a Cholesky factorization
-            [F me] = factorize_chol (A, burble) ;
+            [F, me] = factorize_chol (A, burble) ;
         end
         if (~isobject (F) && (~issparse (A) || isreal (A)))
             % try an LDL factorization.
             % complex sparse LDL does not yet exist in MATLAB
-            [F me] = factorize_ldl (A, burble) ;
+            [F, me] = factorize_ldl (A, burble) ;
         end
     end
     if (~isobject (F))
         % use LU if Cholesky and/or LDL failed, or were skipped.
-        [F me] = factorize_lu (A, burble, fail_if_singular) ;
+        [F, me] = factorize_lu (A, burble, fail_if_singular) ;
     end
 end
-if (~isobject (F))
+if (~isobject (F) && try_cod)
     % everything else failed, matrix is rank-deficient.  Use COD
-    [F me] = factorize_cod (A, burble) ;
+    [F, me] = factorize_cod (A, burble) ;
 end
 
 
 %-------------------------------------------------------------------------------
 
-function [F me] = factorize_qr (A, burble, fail_if_singular)
+function [F, me] = factorize_qr (A, burble, fail_if_singular)
 % QR fails if the matrix is rank-deficient.
 F = [ ] ;
 me = [ ] ;
 try
-    [m n] = size (A) ;
+    [m, n] = size (A) ;
     if (m >= n)
         if (burble)
             fprintf ('factorize: try QR of A ... ') ;
@@ -233,7 +248,7 @@ end
 
 %-------------------------------------------------------------------------------
 
-function [F me] = factorize_chol (A, burble)
+function [F, me] = factorize_chol (A, burble)
 % LDL fails if the matrix is rectangular, rank-deficient, or not positive
 % definite.  Only the lower triangular part of A is used.
 F = [ ] ;
@@ -259,8 +274,9 @@ end
 
 %-------------------------------------------------------------------------------
 
-function [F me] = factorize_ldl (A, burble)
+function [F, me] = factorize_ldl (A, burble)
 % LDL fails if the matrix is rectangular or rank-deficient.
+% As of MATLAB R2012a, ldl does not work for complex sparse matrices.
 % Only the lower triangular part of A is used.
 F = [ ] ;
 me = [ ] ;
@@ -285,7 +301,7 @@ end
 
 %-------------------------------------------------------------------------------
 
-function [F me] = factorize_lu (A, burble, fail_if_singular)
+function [F, me] = factorize_lu (A, burble, fail_if_singular)
 % LU fails if the matrix is rectangular or rank-deficient.
 F = [ ] ;
 me = [ ] ;
@@ -310,7 +326,7 @@ end
 
 %-------------------------------------------------------------------------------
 
-function [F me] = factorize_cod (A, burble)
+function [F, me] = factorize_cod (A, burble)
 % COD only fails when it runs out of memory.
 F = [ ] ;
 me = [ ] ;
@@ -334,7 +350,7 @@ end
 
 %-------------------------------------------------------------------------------
 
-function [F me] = factorize_svd (A, burble)
+function [F, me] = factorize_svd (A, burble)
 % SVD only fails when it runs out of memory.
 F = [ ] ;
 me = [ ] ;

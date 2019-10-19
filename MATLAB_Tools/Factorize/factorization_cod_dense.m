@@ -9,17 +9,29 @@ classdef factorization_cod_dense < factorization
 
         function F = factorization_cod_dense (A)
             %FACTORIZATION_COD_DENSE A = U*R*V'
-            [f.U f.R f.V F.A_rank] = cod (A) ;
+            [f.U, f.R, f.V, F.A_rank] = cod (A) ;
             F.A = A ;
             F.Factors = f ;
             F.kind = 'dense COD factorization: A = U*R*V''' ;
+        end
+
+        function e = error_check (F)
+            %ERROR_CHECK : return relative 1-norm of error in factorization
+            % meant for testing only
+            f = F.Factors ;
+            e = norm (F.A - f.U*f.R*f.V', 1) / norm (F.A, 1) ;
         end
 
         function x = mldivide_subclass (F,b)
             %MLDIVIDE_SUBLCASS x = A\b using a dense COD factorization
             % x = V * (R \ (U' * b))
             f = F.Factors ;
-            x = f.V * linsolve (f.R, full (f.U' * b), struct ('UT', true)) ;
+            op.UT = true ;
+            y = f.U' * b ;
+            if (issparse (y))
+                y = full (y) ;
+            end
+            x = f.V * linsolve (f.R, y, op) ;
         end
 
         function x = mrdivide_subclass (b,F)
@@ -28,7 +40,11 @@ classdef factorization_cod_dense < factorization
             f = F.Factors ;
             op.UT = true ;
             op.TRANSA = true ;
-            x = (f.U * linsolve (f.R, full ((b * f.V)'), op))' ;
+            y = (b * f.V)' ;
+            if (issparse (y))
+                y = full (y) ;
+            end
+            x = (f.U * linsolve (f.R, y, op))' ;
         end
     end
 end

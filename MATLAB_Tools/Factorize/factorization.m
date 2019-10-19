@@ -7,17 +7,17 @@ classdef factorization
 % matrix factorizations:
 %
 %   factorization_chol_dense    dense Cholesky      A = R'*R
-%   factorization_lu_dense      dense LU            p*A = L*U
+%   factorization_lu_dense      dense LU            A(:,p) = L*U
 %   factorization_qr_dense      dense QR of A       A = Q*R
 %   factorization_qrt_dense     dense QR of A'      A' = Q*R
-%   factorization_ldl_dense     dense LDL           q'*A*q = L*D*L'
+%   factorization_ldl_dense     dense LDL           A(p,p) = L*D*L'
 %   factorization_cod_dense     dense COD           A = U*R*V'
 %
-%   factorization_chol_sparse   sparse Cholesky     q'*A*q = L*L'
-%   factorization_lu_sparse     sparse LU           p*A*q = L*U
-%   factorization_qr_sparse     sparse QR of A      (A*q)'*(A*q) = R'*R
-%   factorization_qrt_sparse    sparse QR of A'     (p*A)*(p*A)' = R'*R
-%   factorization_ldl_sparse    sparse LDL          q'*A*q = L*D*L'
+%   factorization_chol_sparse   sparse Cholesky     P'*A*P = L*L'
+%   factorization_lu_sparse     sparse LU           P*(R\A)*Q = L*U
+%   factorization_qr_sparse     sparse QR of A      (A*P)'*(A*P) = R'*R
+%   factorization_qrt_sparse    sparse QR of A'     (P*A)*(P*A)' = R'*R
+%   factorization_ldl_sparse    sparse LDL          P'*A*P = L*D*L'
 %   factorization_cod_sparse    sparse COD          A = U*R*V'
 %
 %   factorization_svd           SVD                 A = U*S*V'
@@ -26,7 +26,7 @@ classdef factorization
 % F is a factorization.  The arguments b, y, and z may be factorizations or
 % matrices.  The output x is normally matrix unless it can be represented as a
 % scaled factorization.  For example, G=F\2 and G=inverse(F)*2 both return a
-% factorization G.  s is always a scalar.  C is always a matrix.
+% factorization G.  Below, s is always a scalar, and C is always a matrix.
 %
 %   These methods return a matrix x, unless one argument is a scalar (in which
 %   case they return a scaled factorization object):
@@ -62,7 +62,7 @@ classdef factorization
 %
 %   These methods support access to the contents of a factorization object
 %   e = end (F, k, n)
-%   [m n] = size (F, k)
+%   [m,n] = size (F, k)
 %   S = double (F)
 %   C = subsref (F, ij)
 %   S = struct (F)
@@ -111,6 +111,7 @@ classdef factorization
     methods (Abstract)
         x = mldivide_subclass (F, b) ;
         x = mrdivide_subclass (b, F) ;
+        e = error_check (F) ;
     end
 
     methods
@@ -336,7 +337,7 @@ classdef factorization
             % represents an inverse, F*x inside normest1 does the right thing,
             % and does A\b using the factorization F.
             A = F.A ;                                                       %#ok
-            [m n] = size (A) ;                                              %#ok
+            [m, n] = size (A) ;                                             %#ok
             if (m ~= n)
                 error ('MATLAB:condest:NonSquareMatrix', ...
                        'Matrix must be square.') ;
@@ -373,19 +374,19 @@ classdef factorization
             end
         end
 
-        function [m n] = size (F, k)
+        function [m, n] = size (F, k)
             %SIZE returns the size of the matrix F.A in the factorization F
             if (F.is_inverse ~= F.is_ctrans)
                 % swap the dimensions to match pinv(A)
                 if (nargout > 1)
-                    [n m] = size (F.A) ;
+                    [n, m] = size (F.A) ;
                 else
                     m = size (F.A) ;
                     m = m ([2 1]) ;
                 end
             else
                 if (nargout > 1)
-                    [m n] = size (F.A) ;
+                    [m, n] = size (F.A) ;
                 else
                     m = size (F.A) ;
                 end
@@ -546,8 +547,7 @@ function C = subsref_paren (F, ij)
 %SUBSREF_PAREN C = subsref_paren(F,ij) implements C=F(i,j) and C=F(i)
 
     % F(2,3) usage, return A(2,3) or the (2,3) of inv(A).
-    assert (length (ij) == 1, ...
-        'Improper index matrix reference.') ;
+    assert (length (ij) == 1, 'Improper index matrix reference.') ;
     A = F.A ;
     is_ctrans = F.is_ctrans ;
     if (is_ctrans && length (ij.subs) > 1)   % swap i and j
@@ -565,9 +565,9 @@ function C = subsref_paren (F, ij)
         else
             % standard indexing, C = F(i,j)
             if (is_ctrans)
-                [n m] = size (A) ;
+                [n, m] = size (A) ;
             else
-                [m n] = size (A) ;
+                [m, n] = size (A) ;
             end
             if (length (ij.subs) == 2)
                 ilen = length (ij.subs {1}) ;

@@ -8,7 +8,7 @@ classdef factorization_chol_dense < factorization
 
         function F = factorization_chol_dense (A)
             %FACTORIZATION_CHOL_DENSE : A = R'*R
-            [f.R g] = chol (A) ;
+            [f.R, g] = chol (A) ;
             if (g ~= 0)
                 error ('MATLAB:posdef', 'Matrix must be positive definite.') ;
             end
@@ -18,6 +18,13 @@ classdef factorization_chol_dense < factorization
             F.kind = 'dense Cholesky factorization: A = R''*R' ;
         end
 
+        function e = error_check (F)
+            %ERROR_CHECK : return relative 1-norm of error in factorization
+            % meant for testing only
+            f = F.Factors ;
+            e = norm (F.A - f.R'*f.R, 1) / norm (F.A, 1) ;
+        end
+
         function x = mldivide_subclass (F,b)
             %MLDIVIDE_SUBCLASS x=A\b using a dense Cholesky factorization
             % x = R \ (R' \ b)
@@ -25,7 +32,11 @@ classdef factorization_chol_dense < factorization
             opU.UT = true ;
             opUT.UT = true ;
             opUT.TRANSA = true ;
-            x = linsolve (f.R, linsolve (f.R, full (b), opUT), opU) ;
+            y = b ;
+            if (issparse (y))
+                y = full (y) ;
+            end
+            x = linsolve (f.R, linsolve (f.R, y, opUT), opU) ;
         end
 
         function x = mrdivide_subclass (b,F)

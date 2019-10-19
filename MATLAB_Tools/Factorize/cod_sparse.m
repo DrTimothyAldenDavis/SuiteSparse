@@ -1,8 +1,8 @@
 function [U, R, V, r] = cod_sparse (A, arg)
 %COD_SPARSE complete orthogonal decomposition of a sparse matrix A = U*R*V'
 %
-%   [U R V r] = cod_sparse (A)
-%   [U R V r] = cod_sparse (A, opts)
+%   [U, R, V, r] = cod_sparse (A)
+%   [U, R, V, r] = cod_sparse (A, opts)
 %
 % The sparse m-by-n matrix A is factorized into U*R*V' where R is m-by-n and
 % all zero except for R(1:r,1:r), which is upper triangular.  The first r
@@ -38,18 +38,18 @@ function [U, R, V, r] = cod_sparse (A, arg)
 % Example:
 %
 %   A = sparse (magic (4))
-%   [U R V] = cod_sparse (A)
+%   [U, R, V] = cod_sparse (A)
 %   norm (A - cod_qmult (U, cod_qmult (V, R, 2),1),1)   % 1-norm of A - U*R*V'
 %   U = cod_qmult (U, speye (size (A,1)), 1) ;      % convert U into a matrix
 %   V = cod_qmult (V, speye (size (A,2)), 1) ;      % convert V into a matrix
 %   norm (A - U*R*V',1)
 %   opts.Q = 'matrix'
-%   [U R V] = cod_sparse (A,opts)
+%   [U, R, V] = cod_sparse (A,opts)
 %   norm (A - U*R*V',1)
 %
-%   A = sparse (rand (4,3)),  [U R V] = cod_sparse (A)
+%   A = sparse (rand (4,3)),  [U, R, V] = cod_sparse (A)
 %   norm (A - cod_qmult (U, cod_qmult (V, R, 2), 1), 1)
-%   A = sparse (rand (4,3)),  [U R V] = cod_sparse (A)
+%   A = sparse (rand (4,3)),  [U, R, V] = cod_sparse (A)
 %   norm (A - cod_qmult (U, cod_qmult (V, R, 2), 1), 1)
 %
 % Requires the SPQR and SPQR_QMULT functions from SuiteSparse,
@@ -68,7 +68,7 @@ if (~issparse (A))
         'COD_SPARSE is not designed for full matrices.  Use COD instead.') ;
 end
 
-[m n] = size (A) ;
+[m, n] = size (A) ;
 opts = struct ;
 if (nargin > 1)
     if (isreal (arg) && arg >= 0)
@@ -99,12 +99,12 @@ if (m >= n)
 
     % U*R*P1' = A where R is m-by-n, P1 is n-by-n, and U is a struct
     % of Householder transformations representing an m-by-m matrix.
-    [U R P1 info] = spqr (A, opts) ;
+    [U, R, P1, info] = spqr (A, opts) ;
     r = info.rank_A_estimate ;
     if (r < n)
         % A is rank deficient.  R is m-by-n and upper trapezoidal.
         opts.tol = 0 ;
-        [V R P2] = spqr (R', opts) ;        % R' is m-by-n and lower triangular
+        [V, R, P2] = spqr (R', opts) ;      % R' is m-by-n and lower triangular
         rn = reversal (r, n) ;
         rm = reversal (r, m) ;
         R = R (rn, rm)' ;                   % reverse and transpose R
@@ -134,12 +134,12 @@ else
 
     % V*R*P1' = A' where R is n-by-m, P1 is m-by-m, and V is a struct
     % of Householder transformations representing an n-by-n matrix.
-    [V R P1 info] = spqr (A', opts) ;
+    [V, R, P1, info] = spqr (A', opts) ;
     r = info.rank_A_estimate ;
     if (r < m)
         % A is rank deficient.  R is n-by-m and upper trapezoidal.
         opts.tol = 0 ;
-        [U R P2] = spqr (R', opts) ;        % R is m-by-n and upper triangular
+        [U, R, P2] = spqr (R', opts) ;      % R is m-by-n and upper triangular
         if (ismatrix)
             U = P1 * U ;
             V = V * P2 ;

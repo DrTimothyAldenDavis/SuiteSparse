@@ -164,7 +164,7 @@ try
     sparseinv_test
 catch me
     disp (me.message) ;
-    fprintf ('MESHND demo failed\n' )
+    fprintf ('SPARSEINV demo failed\n' )
 end
 
 if (dopause)

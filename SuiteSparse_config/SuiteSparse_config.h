@@ -143,7 +143,7 @@ double SuiteSparse_time  /* returns current wall clock time in seconds */
  *
  * SuiteSparse contains the following packages:
  *
- *  SuiteSparse_config version 4.0.1 (version always the same as SuiteSparse)
+ *  SuiteSparse_config version 4.0.2 (version always the same as SuiteSparse)
  *  AMD             version 2.3.1
  *  BTF             version 1.2.0
  *  CAMD            version 2.3.1
@@ -165,11 +165,11 @@ double SuiteSparse_time  /* returns current wall clock time in seconds */
  *  METIS 4.0.1     required by CHOLMOD (optional) and KLU (optional)
  */
 
-#define SUITESPARSE_DATE "Jun 20, 2012"
+#define SUITESPARSE_DATE "July 17, 2012"
 #define SUITESPARSE_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define SUITESPARSE_MAIN_VERSION 4
 #define SUITESPARSE_SUB_VERSION 0
-#define SUITESPARSE_SUBSUB_VERSION 1
+#define SUITESPARSE_SUBSUB_VERSION 2
 #define SUITESPARSE_VERSION \
     SUITESPARSE_VER_CODE(SUITESPARSE_MAIN_VERSION,SUITESPARSE_SUB_VERSION)
 

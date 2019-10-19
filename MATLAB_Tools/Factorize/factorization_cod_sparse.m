@@ -9,11 +9,20 @@ classdef factorization_cod_sparse < factorization
 
         function F = factorization_cod_sparse (A)
             %FACTORIZATION_SPARSE_COD A = U*R*V'
-            [f.U f.R f.V f.r] = cod_sparse (A) ;
+            [f.U, f.R, f.V, f.r] = cod_sparse (A) ;
             F.A = A ;
             F.Factors = f ;
             F.A_rank = f.r ;
             F.kind = 'sparse COD factorization: A = U*R*V''' ;
+        end
+
+        function e = error_check (F)
+            %ERROR_CHECK : return relative 1-norm of error in factorization
+            % meant for testing only
+            f = F.Factors ;
+            U = cod_qmult (f.U, speye (size (f.U.H,1)), 1) ;
+            V = cod_qmult (f.V, speye (size (f.V.H,1)), 1) ;
+            e = norm (F.A - U*f.R*V', 1) / norm (F.A, 1) ;
         end
 
         function x = mldivide_subclass (F,b)

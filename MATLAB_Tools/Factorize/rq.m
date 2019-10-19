@@ -30,8 +30,8 @@ function [R, Q] = rq (A, m, n)
 %
 % Example
 %
-%   A = rand (3,4),   [R Q] = rq (A),   norm (R*Q-A), norm (Q*Q'-eye(3))
-%   C = rand (4,3),   [L Q] = rq (C),   norm (Q*L-C), norm (Q'*Q-eye(3))
+%   A = rand (3,4),   [R, Q] = rq (A),   norm (R*Q-A), norm (Q*Q'-eye(3))
+%   C = rand (4,3),   [L, Q] = rq (C),   norm (Q*L-C), norm (Q'*Q-eye(3))
 %
 % See also qr.
 
@@ -44,7 +44,7 @@ if (issparse (A))
 end
 
 if (nargin == 1)
-    [m n] = size (A) ;
+    [m, n] = size (A) ;
 end
 
 if (m <= n)
@@ -63,7 +63,7 @@ if (m <= n)
 
     % (1) The A matrix is transposed and its rows and columns are reversed.
     %   The row/column reversal can be viewed as multiplication of A by row and
-    %   column permutations, so this operation make sense in terms of linear
+    %   column permutations, so this operation makes sense in terms of linear
     %   algebra: H = (Pm*A*Pn)' where Pm and Pn are permutation matrices of
     %   size m and n, respectively.
 
@@ -168,7 +168,7 @@ else
     % QL factorization of a tall-and-thin matrix A
     %---------------------------------------------------------------------------
 
-    [R Q] = rq (A', n, m) ;
+    [R, Q] = rq (A', n, m) ;
     R = R' ;
     Q = Q' ;
 

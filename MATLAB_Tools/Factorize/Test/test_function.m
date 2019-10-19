@@ -23,17 +23,17 @@ if (nargin < 3)
 end
 
 err = 0 ;
-[m n] = size (A) ;
+[m, n] = size (A) ;
 F = factorize (A, strategy) ;
 
-C = rand (m,n) ;
-if (~isempty (A)) 
-    C (1,1) = A (1,1) ;
-end
-if (issparse (A))
-    C = sparse (A) ;
-end
-H = factorize (C, strategy) ;                                               %#ok
+%   C = rand (m,n) ;
+%   if (~isempty (A)) 
+%       C (1,1) = A (1,1) ;
+%   end
+%   if (issparse (A))
+%       C = sparse (A) ;
+%   end
+%   H = factorize (C, strategy) ; %#ok
 
 %-------------------------------------------------------------------------------
 % implicitly-defined methods that return the correct result:
@@ -185,11 +185,10 @@ if (m == n)
     else
         nest1 = full (normest1 (A)) ;
     end
-    try
+    if (isa (F, 'factorization_svd'))
         nexact = norm (F, 1) ;
-        err = max (err, abs (nexact-nest1) / max (1, abs (nexact))) ;
-    catch %#ok
-        nexact = -1 ;
+    else
+        nexact = norm (A, 1) ;
     end
     if (burble)
         fprintf ('\nnorm(A,1), exact:             %g\n', nexact) ;
@@ -202,19 +201,14 @@ if (m == n)
     else
         imine = full (normest1 (inverse (A))) ;
     end
-    try
-        reset_rand ;
+    if (isa (F, 'factorization_svd'))
         iexact = norm (inverse (F), 1) ;
-        err = max (err, abs (imine-iexact) / max (1, abs (iexact))) ;
-    catch %#ok
-        iexact = -1 ;
+    else
+        iexact = norm (inv (A), 1) ;
     end
     try
         reset_rand ;
         iest = full (normest1 (inv (A))) ;
-        if (iexact == -1)
-            err = max (err, abs (imine-iest) / max (1, abs (iest))) ;
-        end
     catch %#ok
         iest = -1 ;
     end
@@ -229,8 +223,6 @@ if (m == n)
     reset_rand ;
     kF = full (condest (F)) ;
     kS = full (condest (inverse (F))) ;
-    err = max (err, abs (kF-kest) / max (1, abs (kF))) ;
-    err = max (err, abs (kS-kest) / max (1, abs (kF))) ;
     err = max (err, abs (rankest (F) - F.A_rank)) ;
 
     kexact = -1 ;
@@ -266,7 +258,7 @@ if (m == n)
         display (full (A)) ;
         display (strategy) ;
         display (err) ;
-        error ('!') ;
+        error ('error too high!') ;
     end
 end
 

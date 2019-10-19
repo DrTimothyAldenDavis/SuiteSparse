@@ -24,7 +24,7 @@
 %
 % "Don't let that INV go past your eyes; to solve that system, FACTORIZE!"
 
-%% How to use BACKSLASH solve A*x=b
+%% How to use BACKSLASH to solve A*x=b
 %
 % First, let's create a square matrix A and a right-hand-side b for a
 % linear system A*x=b.  There are many ways to solve this system.  The

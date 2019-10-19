@@ -20,7 +20,7 @@ file, and then remove "_Mac" from the *Mac.mk file in that directory.  Then
 continue as the 'QUICK START FOR LINUX' above.
 ================================================================================
 
-Jun 20, 2012.  SuiteSparse VERSION 4.0.1
+July 17, 2012.  SuiteSparse VERSION 4.0.2
 
     spqr_rank   MATLAB toolbox for rank deficient sparse matrices: null spaces,
                 reliable factorizations, etc.  With Leslie Foster, San Jose

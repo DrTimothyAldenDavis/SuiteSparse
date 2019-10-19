@@ -89,7 +89,7 @@ if (extensive && exist ('UFget', 'file') == 2)
 
     index = UFget ;
     f = find ((index.nrows == index.ncols) & (index.isReal == 1)) ;
-    [~,i] = sort (index.nrows (f)) ;
+    [ignore,i] = sort (index.nrows (f)) ;   %#ok
     f = f (i) ;
     nmat = length (f) ;
 

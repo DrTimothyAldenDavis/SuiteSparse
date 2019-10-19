@@ -76,7 +76,8 @@ end
 
 % find the symbolic Cholesky of C+C'
 S = spones (P*A*Q) ;
-[c,~,~,~,R] = symbfact (S+S') ;
+[c,h,pa,po,R] = symbfact (S+S') ;
+clear h pa po
 Zpattern = spones (R+R') ;
 clear R S
 
