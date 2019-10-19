@@ -1443,6 +1443,7 @@ int main (int argc, char **argv)
     OK (ok) ;
     OKP (p) ;
     p [0] = 'a' ;
+    SuiteSparse_free (p) ;
     p = SuiteSparse_realloc (SuiteSparse_long_max, 0, 1024, NULL, &ok) ;
     NOP (p) ;
     NOT (ok) ;

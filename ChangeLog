@@ -1,3 +1,9 @@
+Jan 7, 2015: SuiteSparse version 4.4.2
+
+    * CHOLMOD 3.0.4: serious bug fix in supernodal factorization,
+	introduced in CHOLMOD 3.0.0 (SuiteSparse 4.3.0).  Can cause segfault,
+	and has no user workaround.
+
 Oct 23, 2014: SuiteSparse version 4.4.1
     Minor update:  two bug fixes (affecting Windows only)
 
@@ -91,7 +97,7 @@ March 26, 2014: SuiteSparse version 4.3.0
         minor update to spok
 
 
-April 25, 2013: SuiteSpasre version 4.2.1
+April 25, 2013: SuiteSparse version 4.2.1
     minor update
 
     * CHOLMOD 2.1.2:
@@ -102,7 +108,7 @@ April 25, 2013: SuiteSpasre version 4.2.1
         minor update to sparseinv
 
 
-April 16, 2013: SuiteSpasre version 4.2.0
+April 16, 2013: SuiteSparse version 4.2.0
     minor update and bug fix
 
     * CHOLMOD 2.1.1:

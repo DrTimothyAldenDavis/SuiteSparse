@@ -506,6 +506,9 @@ go: zdemo ldemo cmread clread cm cl
 	$(V) ./cm    < Matrix/c30lo                 > tmp/c30lo.out
 	$(V) ./cl    < Matrix/c30lo                 > tmp/l_c30lo.out
 	- $(COVER)
+	$(V) ./cm    < Matrix/C9840                 > tmp/C9840.out
+	$(V) ./cl    < Matrix/C9840                 > tmp/l_C9840.out
+	- $(COVER)
 	$(V) ./cm -m < Matrix/c30up                 > tmp/c30up.out
 	$(V) ./cl -m < Matrix/c30up                 > tmp/l_c30up.out
 	$(V) ./cm    < Matrix/pi                    > tmp/pi.out

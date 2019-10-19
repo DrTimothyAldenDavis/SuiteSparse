@@ -45,7 +45,7 @@
  * diagonal entry is set to zero (this includes columns to the left of L->minor
  * in the same supernode), as are all subsequent supernodes.
  *
- * workspace: Flag (nrow), Head (nrow+1), Iwork (2*nrow + 4*nsuper).
+ * workspace: Flag (nrow), Head (nrow+1), Iwork (2*nrow + 5*nsuper).
  *	Allocates temporary space of size L->maxcsize * sizeof(double)
  *	(twice that for the complex/zomplex case).
  *
@@ -188,9 +188,9 @@ int CHOLMOD(super_numeric)
     PRINT1 (("nsuper "ID" maxcsize %g\n", nsuper, (double) maxcsize)) ;
     ASSERT (nsuper >= 0 && maxcsize > 0) ;
 
-    /* w = 2*n + 4*nsuper */
+    /* w = 2*n + 5*nsuper */
     w = CHOLMOD(mult_size_t) (n, 2, &ok) ;
-    t = CHOLMOD(mult_size_t) (nsuper, 4, &ok) ;
+    t = CHOLMOD(mult_size_t) (nsuper, 5, &ok) ;
     w = CHOLMOD(add_size_t) (w, t, &ok) ;
     if (!ok)
     {

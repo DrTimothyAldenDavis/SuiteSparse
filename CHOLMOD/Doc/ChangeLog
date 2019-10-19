@@ -1,3 +1,9 @@
+Jan 7, 2017: version 3.0.4
+
+    * serious bug fix to supernodal factorization.  The bug was introduced in
+	CHOLMOD v3.0.0 when the GPU acceleration was given a major update.
+	The bug can cause a segfault, whether or not the GPU is used.
+
 Oct 23, 2014: version 3.0.3
 
     * minor fix for CHOLMOD/Supernodal/cholmod_super_symbolic.c (was using a

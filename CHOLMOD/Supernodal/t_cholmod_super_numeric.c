@@ -154,8 +154,11 @@ static int TEMPLATE (cholmod_super_numeric)
     zero [0] = 0. ;     /* BETA for *syrk, *herk, and *gemm */
     zero [1] = 0. ;
 
-    /* ensure there is sufficient integer workspace */
-    CHOLMOD(allocate_work)(0, 2*n+5*nsuper, 0, Common);
+    /* Iwork must be of size 2n + 5*nsuper, allocated in the caller,
+     * cholmod_super_numeric.  The memory cannot be allocated here because the
+     * cholmod_super_numeric initializes SuperMap, and cholmod_allocate_work
+     * does not preserve existing workspace if the space needs to be increase
+     * in size. */
 
     /* allocate integer workspace */
     Iwork = Common->Iwork ;
