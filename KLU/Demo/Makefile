@@ -59,10 +59,10 @@ purge: distclean
 
 distclean: clean
 	- $(RM) kludemo kluldemo klu_simple
-	- $(RM) -r *.dSYM
+	- $(RM) -r $(PURGE)
 
 clean:
-	- $(RM) $(CLEAN)
+	- $(RM) -r $(CLEAN)
 
 kludemo: kludemo.c Makefile $(CLIB)
 	$(CC) $(CF) $(I) kludemo.c -o kludemo $(CLIB) $(CHOLMOD) $(LIB)

@@ -20,10 +20,10 @@ all: lib demo
 library: lib
 
 clean:
-	$(RM) *.o
+	$(RM) -r $(CLEAN)
 
 purge: clean
-	$(RM) gpuqrengine_demo troll.m
+	$(RM) -r gpuqrengine_demo troll.m $(PURGE)
  
 lib:
 	( cd ../Lib ; $(MAKE) library )

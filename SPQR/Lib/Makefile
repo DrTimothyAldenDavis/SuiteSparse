@@ -2,6 +2,9 @@
 # SuiteSparseQR/Lib/Makefile
 #===============================================================================
 
+LIBRARY = libspqr
+VERSION = 2.0.3
+
 default: all
 
 ccode: all
@@ -39,17 +42,17 @@ endif
 # 	-Wredundant-decls -Wdisabled-optimization \
 # 	-ansi -fexceptions
 
-all: libspqr.a
+all: library
 
-library: libspqr.a
+library: $(AR_TARGET) $(SO_TARGET)
 
 purge: distclean
 
 distclean: clean
-	- $(RM) libspqr.a
+	- $(RM) -r $(PURGE)
 
 clean:
-	- $(RM) $(CLEAN)
+	- $(RM) -r $(CLEAN)
 
 INC = ../Include/spqr.hpp ../Include/SuiteSparseQR_C.h \
 	../Include/SuiteSparseQR_definitions.h \
@@ -110,15 +113,21 @@ I = -I../../CHOLMOD/Include -I../../SuiteSparse_config -I../Include
 
 ifneq ($(GPU_CONFIG),)
     I += -I../../SuiteSparse_GPURuntime/Include \
-        -I../../GPUQREngine/Include \
-        -I$(CUDA_INC_PATH)
+         -I../../GPUQREngine/Include $(CUDA_INC)
 endif
 
 C = $(CXX) $(CF) $(SPQR_CONFIG) $(CONFIG_PARTITION) $(I)
 
-libspqr.a: $(OBJ)
-	$(ARCHIVE)  libspqr.a $(OBJ)
-	- $(RANLIB) libspqr.a
+#-------------------------------------------------------------------------------
+
+$(AR_TARGET): $(OBJ)
+	$(ARCHIVE) $@ $^
+	- $(RANLIB) $@
+
+$(SO_TARGET): $(OBJ)
+	$(CC) $(SO_OPTS) $^ -o $@
+
+#-------------------------------------------------------------------------------
 
 spqr_1colamd.o: ../Source/spqr_1colamd.cpp
 	$(C) -c $<
@@ -248,3 +257,30 @@ spqrgpu_buildAssemblyMaps.o: ../SPQRGPU/spqrgpu_buildAssemblyMaps.cpp
 
 spqrgpu_computeFrontStaging.o: ../SPQRGPU/spqrgpu_computeFrontStaging.cpp
 	$(C) -c $<
+
+#-------------------------------------------------------------------------------
+
+# install SPQR
+install: uninstall $(SO_TARGET)
+	$(CP) $(SO_TARGET) $(INSTALL_LIB)
+	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
+	$(CP) ../Include/SuiteSparseQR.hpp $(INSTALL_INCLUDE)
+	$(CP) ../Include/SuiteSparseQR_C.h $(INSTALL_INCLUDE)
+	$(CP) ../Include/SuiteSparseQR_definitions.h $(INSTALL_INCLUDE)
+	$(CP) ../Include/spqr.hpp $(INSTALL_INCLUDE)
+	chmod 644 $(INSTALL_LIB)/$(SO_TARGET)
+	chmod 644 $(INSTALL_LIB)/$(SO_PLAIN)
+	chmod 644 $(INSTALL_INCLUDE)/SuiteSparseQR.hpp
+	chmod 644 $(INSTALL_INCLUDE)/SuiteSparseQR_C.h
+	chmod 644 $(INSTALL_INCLUDE)/SuiteSparseQR_definitions.h
+	chmod 644 $(INSTALL_INCLUDE)/spqr.hpp
+
+# uninstall SPQR
+uninstall:
+	$(RM) $(INSTALL_LIB)/$(SO_TARGET)
+	$(RM) $(INSTALL_LIB)/$(SO_PLAIN)
+	$(RM) $(INSTALL_INCLUDE)/SuiteSparseQR.hpp
+	$(RM) $(INSTALL_INCLUDE)/SuiteSparseQR_C.h
+	$(RM) $(INSTALL_INCLUDE)/SuiteSparseQR_definitions.h
+	$(RM) $(INSTALL_INCLUDE)/spqr.hpp
+

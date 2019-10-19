@@ -2,6 +2,9 @@
 # CHOLOMD/Lib/Makefile: for compiling the CHOLMOD library
 #===============================================================================
 
+LIBRARY = libcholmod
+VERSION = 3.0.7
+
 default: all
 
 ccode: all
@@ -44,23 +47,24 @@ endif
 #-------------------------------------------------------------------------------
 
 I = -I../../AMD/Include -I../../AMD/Source -I../../COLAMD/Include \
-	$(I_WITH_PARTITION) -I../Include -I../../SuiteSparse_config
+	$(I_WITH_PARTITION) -I../Include -I../../SuiteSparse_config \
+	$(CUDA_INC)
 
 #-------------------------------------------------------------------------------
 
 C = $(CC) $(CF) $(CHOLMOD_CONFIG) $(CONFIG)
 
-all: libcholmod.a
+all: library
 
-library: libcholmod.a
+library: $(AR_TARGET) $(SO_TARGET)
 
 purge: distclean
 
 distclean: clean
-	- $(RM) libcholmod.a
+	- $(RM) -r $(PURGE)
 
 clean:
-	- $(RM) $(CLEAN)
+	- $(RM) -r $(CLEAN)
 
 #-------------------------------------------------------------------------------
 # ../Include/ directory contains all include files:
@@ -164,9 +168,12 @@ DL = $(LCORE) $(LCHECK) $(LCHOLESKY) $(LMATRIXOPS) $(LMODIFY) $(LSUPERNODAL) \
 # to compile just the double/int version, use OBJ = $(DI)
 OBJ = $(DI) $(DL)
 
-libcholmod.a: $(OBJ)
-	$(ARCHIVE)  libcholmod.a $(OBJ)
-	- $(RANLIB) libcholmod.a
+$(AR_TARGET): $(OBJ)
+	$(ARCHIVE) $@ $^
+	- $(RANLIB) $@
+
+$(SO_TARGET): $(OBJ)
+	$(CC) $(SO_OPTS) $^ -o $@
 
 $(OBJ): $(INC)
 
@@ -534,11 +541,29 @@ cholmod_l_super_solve.o: ../Supernodal/cholmod_super_solve.c \
 #-------------------------------------------------------------------------------
 
 cholmod_gpu_kernels.o: ../GPU/cholmod_gpu_kernels.cu
-	$(NVCC) -I../../SuiteSparse_config -Xcompiler -fPIC -O3  -gencode=arch=compute_20,code=sm_20 -gencode=arch=compute_30,code=sm_30 -gencode=arch=compute_35,code=sm_35 -c ../GPU/cholmod_gpu_kernels.cu
+	$(NVCC) $(I) $(NVCCFLAGS) -c ../GPU/cholmod_gpu_kernels.cu
 
 cholmod_gpu.o: ../GPU/cholmod_gpu.c 
 	$(C) -c $(I) $<
 
 cholmod_l_gpu.o: ../GPU/cholmod_gpu.c 
 	$(C) -DDLONG -c $(I) $< -o $@
+
+#-------------------------------------------------------------------------------
+
+# install CHOLMOD
+install: uninstall $(SO_TARGET)
+	$(CP) $(SO_TARGET) $(INSTALL_LIB)
+	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
+	$(CP) ../Include/cholmod*.h $(INSTALL_INCLUDE)
+	$(RM) $(INSTALL_INCLUDE)/cholmod_internal.h
+	chmod 644 $(INSTALL_LIB)/$(SO_TARGET)
+	chmod 644 $(INSTALL_LIB)/$(SO_PLAIN)
+	chmod 644 $(INSTALL_INCLUDE)/cholmod*.h
+
+# uninstall CHOLMOD
+uninstall:
+	$(RM) $(INSTALL_LIB)/$(SO_TARGET)
+	$(RM) $(INSTALL_LIB)/$(SO_PLAIN)
+	$(RM) $(INSTALL_INCLUDE)/cholmod*.h
 

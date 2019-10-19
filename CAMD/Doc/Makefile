@@ -11,21 +11,19 @@ include ../../SuiteSparse_config/SuiteSparse_config.mk
 #------------------------------------------------------------------------------
 
 clean:
-	- $(RM) -r $(CLEAN)
-	- $(RM) camd_temp
+	- $(RM) -r camd_temp $(CLEAN)
 
 purge: distclean
 
 distclean: clean
-	- $(RM) *.aux *.bbl *.blg *.log *.toc
-	- $(RM) -r *.dSYM
+	- $(RM) -r $(PURGE)
 
 #------------------------------------------------------------------------------
 # Create the User Guide and Quick Start Guide
 #------------------------------------------------------------------------------
 
 CAMD_UserGuide.pdf: CAMD_UserGuide.tex CAMD_UserGuide.bib ../Include/camd.h
-	echo '\\begin{verbatim}' > camd_h.tex
+	echo '\begin{verbatim}' > camd_h.tex
 	expand -8 ../Include/camd.h >> camd_h.tex
 	echo '\end{verbatim}' >> camd_h.tex
 	pdflatex CAMD_UserGuide

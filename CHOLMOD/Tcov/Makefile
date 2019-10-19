@@ -16,6 +16,8 @@ include Make.inc
 
 # Tcov requires gcc
 CC = gcc
+BLAS = -lrefblas -lgfortran
+LAPACK = -llapack
 
 # to test Tcov without METIS, but with CAMD, CCOLAMD, and CSYMAMD:
 # C = $(CC) $(CF) $(CHOLMOD_CONFIG) $(NANTESTS) -DNPARTITION
@@ -50,7 +52,7 @@ endif
 
 I = -I../../AMD/Include -I../../COLAMD/Include \
 	-I$(METIS_PATH)/Lib -I../../CCOLAMD/Include -I../../CAMD/Include \
-	-I../Include -I../../SuiteSparse_config
+	-I../Include -I../../SuiteSparse_config $(CUDA_INC)
 
 I += $(GPU_CONFIG)
 
@@ -561,9 +563,9 @@ distclean: clean
 	- $(RM) cm cl cmread clread *.c.gcov *.out tmp/*.out zdemo ldemo
 	- $(RM) leak zz_*.c z_*.c *.a l_*.c zl_*.c cov.sort ldemo.c zdemo.c
 	- $(RM) -r cm.profile cmread.profile zdemo.profile 
-	- $(RM) -r cl.profile clread.profile ldemo.profile  *.dSYM
-	- $(RM) *.gcda *.gcno
+	- $(RM) -r cl.profile clread.profile ldemo.profile
 	- $(RM) temp*.mtx timelog.m
+	- $(RM) -r $(PURGE)
 
 clean:
 	- $(RM) -r $(CLEAN)

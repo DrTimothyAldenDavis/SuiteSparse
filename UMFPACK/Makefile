@@ -2,8 +2,6 @@
 # UMFPACK Makefile
 #-------------------------------------------------------------------------------
 
-VERSION = 5.7.1
-
 # UMFPACK requires the AMD package to be in ../AMD
 
 default: all
@@ -67,14 +65,9 @@ cov: purge
 
 # install UMFPACK
 install:
-	$(CP) Lib/libumfpack.a $(INSTALL_LIB)/libumfpack.$(VERSION).a
-	( cd $(INSTALL_LIB) ; ln -sf libumfpack.$(VERSION).a libumfpack.a )
-	$(CP) Include/*.h $(INSTALL_INCLUDE)
-	chmod 644 $(INSTALL_LIB)/libumfpack*.a
-	chmod 644 $(INSTALL_INCLUDE)/umfpack*.h
+	( cd Lib ; $(MAKE) install )
 
 # uninstall UMFPACK
 uninstall:
-	$(RM) $(INSTALL_LIB)/libumfpack*.a
-	$(RM) $(INSTALL_INCLUDE)/umfpack*.h
+	( cd Lib ; $(MAKE) uninstall )
 

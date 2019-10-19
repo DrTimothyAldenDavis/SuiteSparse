@@ -34,7 +34,7 @@ http://www.numerical.rl.ac.uk/people/isd/isd.html.
 This work was supported by the EPSRC under grant GR/R46441.
 }}
 
-\date{VERSION 2.4.1, Oct 10, 2014}
+\date{VERSION 2.4.2, Jan 1, 2016}
 \maketitle
 
 %------------------------------------------------------------------------------
@@ -542,11 +542,14 @@ System-dependent configurations are in the
 file.  You can edit that file to customize the compilation.  The default
 settings will work on most systems.
 Sample configuration files are provided
-for Linux, Sun Solaris, SGI IRIX, IBM AIX, and the DEC/Compaq Alpha.
+for Mac, Linux, Sun Solaris, and IBM AIX.
+The system you are on is detected automatically.
 
 To compile and install the C-callable CAMD library,
 go to the {\tt CAMD} directory and type {\tt make}.
-The library will be placed in {\tt CAMD/Lib/libcamd.a}.
+The library will be placed in {\tt CAMD/Lib/libcamd.a},
+and a dynamic library is placed in
+in {\tt CAMD/Lib/libcamd.so.*}, ({\tt *.dylib} for the Mac).
 Three demo programs of the CAMD ordering routine will be compiled and tested in
 the {\tt CAMD/Demo} directory.
 The outputs of these demo programs will then be compared with output
@@ -565,6 +568,11 @@ and you need to tell your compiler to look in the
 {\tt CAMD/Include} directory for include
 files.
 See {\tt CAMD/Demo/Makefile} for an example.
+
+Alternatively, you can install the shared library (libcamd.so)
+and include files in /usr/local/lib and /usr/local/include.
+Just do {\tt make} then {\tt make install}.
+Now you can simply use {\tt -lcamd} when you compile your own program.
 
 If all you want to use is the CAMD mexFunction in MATLAB, you can skip
 the use of the {\tt make} command entirely.  Simply type

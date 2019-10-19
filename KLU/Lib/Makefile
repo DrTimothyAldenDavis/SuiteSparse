@@ -1,3 +1,10 @@
+#-------------------------------------------------------------------------------
+# KLU Lib/Makefile
+#-------------------------------------------------------------------------------
+
+LIBRARY = libklu
+VERSION = 1.3.4
+
 default: all
 
 ccode: all
@@ -17,7 +24,7 @@ I = -I../../AMD/Include -I../../COLAMD/Include -I../../BTF/Include \
 
 all: library
 
-library: libklu.a
+library: $(AR_TARGET) $(SO_TARGET)
 
 KLU_D = klu_d.o klu_d_kernel.o klu_d_dump.o \
     klu_d_factor.o klu_d_free_numeric.o klu_d_solve.o \
@@ -47,9 +54,12 @@ COMMON = \
 
 OBJ = $(COMMON) $(KLU_D) $(KLU_Z) $(KLU_L) $(KLU_ZL)
 
-libklu.a: $(OBJ)
-	$(ARCHIVE)  libklu.a $(OBJ)
-	- $(RANLIB) libklu.a
+$(AR_TARGET): $(OBJ)
+	$(ARCHIVE) $@ $^
+	- $(RANLIB) $@
+
+$(SO_TARGET): $(OBJ)
+	$(CC) $(SO_OPTS) $^ -o $@
 
 $(OBJ): $(INC)
 
@@ -149,10 +159,10 @@ klu_memory.o: ../Source/klu_memory.c
 purge: distclean
 
 distclean: clean
-	- $(RM) libklu.a 
+	- $(RM) -r $(PURGE)
 
 clean:
-	- $(RM) $(CLEAN)
+	- $(RM) -r $(CLEAN)
 
 #-------------------------------------------------------------------------------
 
@@ -246,3 +256,19 @@ klu_l_memory.o: ../Source/klu_memory.c
 	$(C) -c -DDLONG $(I) $< -o $@
 
 #-------------------------------------------------------------------------------
+
+# install KLU
+install: uninstall $(SO_TARGET)
+	$(CP) $(SO_TARGET) $(INSTALL_LIB)
+	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
+	$(CP) ../Include/klu.h $(INSTALL_INCLUDE)
+	chmod 644 $(INSTALL_LIB)/$(SO_TARGET)
+	chmod 644 $(INSTALL_LIB)/$(SO_PLAIN)
+	chmod 644 $(INSTALL_INCLUDE)/klu.h
+
+# uninstall KLU
+uninstall:
+	$(RM) $(INSTALL_LIB)/$(SO_TARGET)
+	$(RM) $(INSTALL_LIB)/$(SO_PLAIN)
+	$(RM) $(INSTALL_INCLUDE)/klu.h
+

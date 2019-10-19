@@ -16,11 +16,11 @@ include ../../SuiteSparse_config/SuiteSparse_config.mk
 # Note that UserGuide.tex is created from UserGuide.stex, the files in 
 # the ../Include directory, and the ../Demo/umfpack_simple.c file.
 purge: clean
-	- $(RM) *.aux *.bbl *.blg *.log *.toc
 	- $(RM) UserGuide.tex
+	- $(RM) -r $(PURGE)
 
 clean:
-	- $(RM) $(CLEAN)
+	- $(RM) -r $(CLEAN)
 
 #-------------------------------------------------------------------------------
 # Create the User Guide and Quick Start Guide

@@ -225,9 +225,9 @@ UserGuide.pdf: UserGuide.tex UserGuide.bib $(I) $(C) $(M) Makefile getproto rule
 distclean: purge
 
 purge: clean
-	- $(RM) _temp.awk _*.tex *.dvi *.aux *.log *.lof *.lot *.toc *.bak 
-	- $(RM) *.bbl *.blg
-	- $(RM) -r *.dSYM
+	- $(RM) _temp.awk _*.tex
+	- $(RM) -r $(PURGE)
 
 clean:
 	- $(RM) -r $(CLEAN)
+

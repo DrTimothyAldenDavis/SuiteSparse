@@ -1,4 +1,4 @@
-BTF, by Timothy A. Davis, Copyright (C) 2004-2012, University of Florida
+BTF, by Timothy A. Davis, Copyright (C) 2004-2016, University of Florida
 BTF is also available under other licenses; contact the author for details.
 http://www.suitesparse.com
 
@@ -14,8 +14,10 @@ Requires SuiteSparse_config, in the ../SuiteSparse_config directory relative to
 this directory.  KLU relies on the BTF package to permute the matrix prior to
 factorization.
 
-To compile the libbtf.a library, type "make".  The compiled library is located
-in BTF/Lib/libbtf.a.  Compile code that uses BTF with -IBTF/Include.
+To compile the libbtf.a and libbtf.so library (*.dylib on the Mac), type
+"make".  The compiled library is located in BTF/Lib.  Compile code that uses
+BTF with -IBTF/Include.  Type "make install" to install the library in
+/usr/local/lib and /usr/local/include, and "make uninstall" to remove it.
 
 Type "make clean" to remove all but the compiled library, and "make distclean"
 to remove all files not in the original distribution.

@@ -47,7 +47,7 @@ camd_simple: camd_simple.c library $(INC)
 #------------------------------------------------------------------------------
 
 clean:
-	- $(RM) $(CLEAN)
+	- $(RM) -r $(CLEAN)
 
 purge: distclean
 
@@ -56,4 +56,5 @@ distclean: clean
 	- $(RM) camd_l_demo my_camd_l_demo.out
 	- $(RM) camd_demo2 my_camd_demo2.out
 	- $(RM) camd_simple my_camd_simple.out
-	- $(RM) -r *.dSYM
+	- $(RM) -r $(PURGE)
+

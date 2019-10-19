@@ -2,6 +2,9 @@
 # GPUQREngine/Lib/Makefile: for compiling the GPUQREngine library
 #-------------------------------------------------------------------------------
 
+LIBRARY = libGPUQREngine
+VERSION = 1.0.1
+
 default: all
 
 ccode: all
@@ -103,21 +106,38 @@ H2 += $(H3)
 
 C = $(NVCC) $(NVCCFLAGS) $(INC)
 
-all: libGPUQREngine.a
+all: library
 
-library: libGPUQREngine.a
+library: $(AR_TARGET) $(SO_TARGET)
 
 clean:
-	$(RM) *.o
+	$(RM) -r $(CLEAN)
 
 purge: distclean
 
 distclean: clean
-	$(RM) libGPUQREngine.a
+	$(RM) -r $(PURGE)
 
-libGPUQREngine.a: $(OBJS)
-	$(ARCHIVE) libGPUQREngine.a $(OBJS)
-	- $(RANLIB) libGPUQREngine.a
+$(AR_TARGET): $(OBJS)
+	$(ARCHIVE) $@ $^
+	- $(RANLIB) $@
+
+$(SO_TARGET): $(OBJS)
+	$(CC) $(SO_OPTS) $^ -o $@
+
+#-------------------------------------------------------------------------------
+
+# install GPUQREngine.  Note that the include files are not installed.
+install: uninstall $(SO_TARGET)
+	$(CP) $(SO_TARGET) $(INSTALL_LIB)
+	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
+	chmod 644 $(INSTALL_LIB)/$(SO_TARGET)
+	chmod 644 $(INSTALL_LIB)/$(SO_PLAIN)
+
+# uninstall GPUQREngine
+uninstall:
+	$(RM) $(INSTALL_LIB)/$(SO_TARGET)
+	$(RM) $(INSTALL_LIB)/$(SO_PLAIN)
 
 #-------------------------------------------------------------------------------
 

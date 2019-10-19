@@ -18,7 +18,7 @@
 \author{Timothy A. Davis \\
 DrTimothyAldenDavis@gmail.com, http://www.suitesparse.com}
 \title{UMFPACK Quick Start Guide}
-\date{VERSION 5.7.1, Oct 10, 2014}
+\date{VERSION 5.7.2, Jan 1, 2016}
 \maketitle
 
 %-------------------------------------------------------------------------------
@@ -246,13 +246,17 @@ in {\tt SuiteSparse\_config/SuiteSparse\_config.mk}.
 
 System-dependent configurations are in the {\tt SuiteSparse\_config/SuiteSparse\_config.mk}
 file.  The default
-settings will work on most systems, except for the BLAS definition.
+settings will work on most systems, except perhaps for the BLAS definition.
 Sample configurations are provided
 for Linux, Mac, Sun Solaris, SGI IRIX, IBM AIX, and the DEC/Compaq Alpha.
+The Makefile file will automatically detect what system you have
+and will set the compile parameters accordingly. 
 
-To compile and install both packages,
+To compile both packages,
 go to the {\tt UMFPACK} directory and type {\tt make}.  This will compile the
-libraries ({\tt AMD/Lib/libamd.a} and {\tt UMFPACK/Lib/libumfpack.a}).
+static
+libraries ({\tt AMD/Lib/libamd.a} and {\tt UMFPACK/Lib/libumfpack.a}),
+and the shared libraries ({\tt *.so} on Linux/Unix or {\tt *.dylib} on the Mac).
 A demo of the AMD ordering routine will be compiled and tested in
 the {\tt AMD/Demo} directory, and five demo programs will then be
 compiled and tested in the {\tt UMFPACK/Demo} directory.
@@ -261,9 +265,10 @@ files in the distribution.  Expect to see a few differences, such as
 residual norms, compile-time control settings, and perhaps memory usage
 differences.
 
-If you have trouble with {\tt make} for UMFPACK,
-try using the plain {\tt Makefile} instead of {\tt GNUmakefile}.
-Go to the UMFPACK/Lib directory and type {\tt make -f Makefile}.
+To install into /usr/local/lib and /usr/local/include,
+do {\tt make install}.
+To uninstall from there,
+do {\tt make uninstall}.
 
 Use the MATLAB command {\tt umfpack\_make} in the MATLAB directory
 to compile UMFPACK and AMD for use in MATLAB.
@@ -310,15 +315,19 @@ most deal with how the BLAS are called:
 \end{itemize}
 
 When you compile your program that uses the C-callable UMFPACK library,
-you need to link your program with all libraries
-({\tt UMFPACK/Lib/libumfpack.a} and {\tt AMD/Lib/libamd.a},
+you need to link your program with all libraries, either the static
+ones:
+{\tt UMFPACK/Lib/libumfpack.a} and {\tt AMD/Lib/libamd.a},
 and unless you compile with \verb'-DNCHOLMOD' you also must link with
 {\tt CHOLMOD/Lib/libcholmod.a}, \newline
 {\tt COLAMD/Lib/libcolamd.a},
 {\tt CCOLAMD/Lib/libccolamd.a},
 {\tt CAMD/Lib/libcamd.a},
 and \newline
-{\tt metis-4.0/libmetis.a}).
+{\tt metis-4.0/libmetis.a},
+or the shared versions of the same libraries (with {\tt *.so} filetypes
+on Linux/Unix; {\tt *.dylib} on the Mac).
+
 You need to tell your compiler to look in the
 directories {\tt UMFPACK/Include} and {\tt AMD/Include} for include
 files.  See {\tt UMFPACK/Demo/Makefile} for an example.
@@ -328,6 +337,12 @@ program, unless you directly call AMD routines.  You only need the
 #include "umfpack.h"
 \end{verbatim}
 statement, as described in Section~\ref{Synopsis}.
+
+If you use
+the shared versions of the same libraries (with {\tt *.so} filetypes
+on Linux/Unix; {\tt *.dylib} on the Mac), and install them in
+/usr/local/lib and /usr/local/include, then the compiler will know
+where to find the include files.
 
 %-------------------------------------------------------------------------------
 \newpage

@@ -1,3 +1,16 @@
+Jan 2016: SuiteSparse 4.4.7
+
+    * Improved the Makefiles of all packages.  They now create *.so
+        shared libraries (*.dylib on the Mac).  Also, there is now
+        only a single SuiteSparse_config.mk file.  It now determines
+        your system automatically, and whether or not you have METIS
+        and CUDA.  It also automatically detects if you have the Intel
+        compiler or not, and uses it if it finds it.  There should be
+        no need to edit this file for most cases, but you may need to
+        for your particular system.  With this release, there are almost
+        no changes to the source code, except for the VERSION numbers
+        defined in the various include *.h files for each package.
+
 Aug 2015: SuiteSparse version 4.4.6
 
     * SPQR: changed default tol when A has infs, from inf to realmax (~1e308)

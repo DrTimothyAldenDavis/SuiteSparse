@@ -13,11 +13,8 @@ includes a MATLAB interface, enabling the use of CXSparse functions on both
 32-bit and 64-bit platforms.
 
 To install for use in MATLAB, simply type "cs_install" in the MATLAB Command
-Window, while in the CXSparse/MATLAB directory.  (NOTE: Windows users cannot
-use the "lcc" command; run "mex -setup" first, and select a different
-compiler).  If you use the Unix "make" command in that directory instead and
-are using a 64-bit platform, then you must edit the CXSparse/MATLAB/Makefile
-first.  Refer to the instructions in that file.
+Window, while in the CXSparse/MATLAB directory.  (NOTE:  you may need to
+run "mex -setup" first).
 
 Refer to "Direct Methods for Sparse Linear Systems," Timothy A. Davis,
 SIAM, Philadelphia, 2006.  No detailed user guide is included in this
@@ -30,6 +27,9 @@ remove all files not in the original distribution, type "make distclean".
 I recommend that you use a different level of
 optimization than "cc -O", which was chosen so that the Makefile is portable.
 See Source/Makefile.
+
+To install into /usr/local/lib and /usr/local/include, do "make install"
+and "make uninstall" to uninstall CXSparse.
 
 If your C compiler does not support the ANSI C99 complex type, the
 #include <complex.h> statement will fail.  If this happens, compile the

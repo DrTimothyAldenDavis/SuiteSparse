@@ -2,11 +2,9 @@
 # CHOLMOD Makefile
 #-------------------------------------------------------------------------------
 
-VERSION = 3.0.6
-
-# Note: If you do not have METIS, or do not wish to use it in CHOLMOD, you must
-# compile CHOLMOD with the -DNPARTITION flag.
-# See ../SuiteSparse_config/SuiteSparse_config.mk .
+# Note: If you want to use METIS, then first place it in SuiteSparse/ as the
+# SuiteSparse/metis-4.0 folder.  It will then be automatically detected by
+# ../SuiteSparse_config/SuiteSparse_config.mk .
 
 default: all
 
@@ -61,15 +59,8 @@ docs:
 
 # install CHOLMOD
 install:
-	$(CP) Lib/libcholmod.a $(INSTALL_LIB)/libcholmod.$(VERSION).a
-	( cd $(INSTALL_LIB) ; ln -sf libcholmod.$(VERSION).a libcholmod.a )
-	$(CP) Include/cholmod*.h $(INSTALL_INCLUDE)
-	$(RM) $(INSTALL_INCLUDE)/cholmod_internal.h
-	chmod 644 $(INSTALL_LIB)/libcholmod*.a
-	chmod 644 $(INSTALL_INCLUDE)/cholmod*.h
+	( cd Lib ; $(MAKE) install )
 
 # uninstall CHOLMOD
 uninstall:
-	$(RM) $(INSTALL_LIB)/libcholmod*.a
-	$(RM) $(INSTALL_INCLUDE)/cholmod*.h
-
+	( cd Lib ; $(MAKE) uninstall )

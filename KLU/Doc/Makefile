@@ -16,7 +16,7 @@ clean:
 purge: distclean
 
 distclean: clean
-	- $(RM) *.aux *.bbl *.blg *.log *.toc
+	- $(RM) -r $(PURGE)
 
 #------------------------------------------------------------------------------
 # Create the User Guide and Quick Start Guide

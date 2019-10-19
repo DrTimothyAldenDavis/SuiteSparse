@@ -184,22 +184,22 @@ int SuiteSparse_divcomplex
  *
  * SuiteSparse contains the following packages:
  *
- *  SuiteSparse_config version 4.4.1 (version always the same as SuiteSparse)
- *  AMD             version 2.4.1
- *  BTF             version 1.2.1
- *  CAMD            version 2.4.1
- *  CCOLAMD         version 2.9.1
- *  CHOLMOD         version 3.0.6
- *  COLAMD          version 2.9.1
- *  CSparse         version 3.1.4
- *  CXSparse        version 3.1.4
- *  KLU             version 1.3.3
- *  LDL             version 2.2.1
- *  RBio            version 2.2.1
- *  SPQR            version 2.0.1
- *  GPUQREngine     version 1.0.0
- *  SuiteSparse_GPURuntime  version 1.0.0
- *  UMFPACK         version 5.7.1
+ *  SuiteSparse_config version 4.4.7 (version always the same as SuiteSparse)
+ *  AMD             version 2.4.2
+ *  BTF             version 1.2.2
+ *  CAMD            version 2.4.2
+ *  CCOLAMD         version 2.9.2
+ *  CHOLMOD         version 3.0.7
+ *  COLAMD          version 2.9.2
+ *  CSparse         version 3.1.5
+ *  CXSparse        version 3.1.5
+ *  KLU             version 1.3.4
+ *  LDL             version 2.2.2
+ *  RBio            version 2.2.2
+ *  SPQR            version 2.0.3
+ *  GPUQREngine     version 1.0.1
+ *  SuiteSparse_GPURuntime  version 1.0.1
+ *  UMFPACK         version 5.7.2
  *  MATLAB_Tools    various packages & M-files
  *
  * Other package dependencies:
@@ -233,11 +233,11 @@ int SuiteSparse_version     /* returns SUITESPARSE_VERSION */
 */
 #define SUITESPARSE_HAS_VERSION_FUNCTION
 
-#define SUITESPARSE_DATE "Aug 28, 2015"
+#define SUITESPARSE_DATE "Jan 1, 2016"
 #define SUITESPARSE_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define SUITESPARSE_MAIN_VERSION 4
 #define SUITESPARSE_SUB_VERSION 4
-#define SUITESPARSE_SUBSUB_VERSION 6
+#define SUITESPARSE_SUBSUB_VERSION 7
 #define SUITESPARSE_VERSION \
     SUITESPARSE_VER_CODE(SUITESPARSE_MAIN_VERSION,SUITESPARSE_SUB_VERSION)
 

@@ -1,11 +1,13 @@
-RBio: Copyright 2013, Timothy A. Davis, http://www.suitesparse.com
+RBio: Copyright 2016, Timothy A. Davis, http://www.suitesparse.com
 A MATLAB Toolbox for reading/writing sparse matrices in Rutherford/Boeing
 format.
 
 To install the MATLAB functions, cd to the RBio directory (the one containing
 RBinstall.m, not the top-level directory) and type "RBinstall" in the MATLAB
-command window.  To install the C codes, type "make" (requires Unix).  For
+command window.  To compile the C codes, type "make" (requires Unix).  For
 examples on how to use the C interface, see Include/RBio.h and Demo/RBdemo.c.
+To install the shared library into /usr/local/lib and /usr/local/include, do
+"make install"; do "make uninstall" to remove the library.
 
 --------------------------------------------------------------------------------
 MATLAB help for RBio:

@@ -11,8 +11,11 @@ include ../../SuiteSparse_config/SuiteSparse_config.mk
 # Remove all but the files in the original distribution
 #-------------------------------------------------------------------------------
 
+distclean: purge
+
 purge: clean
 	- $(RM) *.mex* rename.h
+	- $(RM) -r $(PURGE)
 
 clean:
-	- $(RM) $(CLEAN)
+	- $(RM) -r $(CLEAN)

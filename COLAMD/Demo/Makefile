@@ -37,11 +37,11 @@ colamd_l_example: colamd_l_example.c library
 #------------------------------------------------------------------------------
 
 clean:
-	- $(RM) $(CLEAN)
+	- $(RM) -r $(CLEAN)
 
 purge: distclean
 
 distclean: clean
 	- $(RM) colamd_example colamd_l_example
 	- $(RM) my_colamd_example.out my_colamd_l_example.out
-	- $(RM) -r *.dSYM
+	- $(RM) -r $(PURGE)

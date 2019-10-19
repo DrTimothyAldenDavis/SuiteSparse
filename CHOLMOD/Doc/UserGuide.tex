@@ -21,7 +21,7 @@ DrTimothyAldenDavis@gmail.com, http://www.suitesparse.com }
 \title{User Guide for CHOLMOD: a sparse Cholesky factorization and
 modification package}
 
-\date{VERSION 3.0.6, July 14, 2015}
+\date{VERSION 3.0.7, Jan 1, 2016}
 \maketitle
 
 %-------------------------------------------------------------------------------
@@ -282,13 +282,16 @@ Three other packages are required for optimal performance:
     for large supernodes.  This feature is new to CHOLMOD v2.0.0.
 \end{itemize}
 
-You must first obtain and install METIS, LAPACK, and the BLAS.
-Next edit the system-dependent configurations in the
+You must first obtain and install METIS (if desired), LAPACK, and the BLAS.
+METIS is optional.
+System-dependent configurations in the
 {\tt SuiteSparse\_config/SuiteSparse\_config.mk} file.
-Sample configurations are provided
-for Linux, Macintosh, Sun Solaris, SGI IRIX, IBM AIX, and the DEC/Compaq Alpha.
-The most important configuration is the location of the BLAS, LAPACK, and METIS
-packages, since in its default configuration CHOLMOD cannot be compiled without them.
+This file has been changed in CHOLMOD version 3.0.7;
+it now automatically detects your system, your BLAS, and whether or not
+you have CUDA installed, and whether or not you have METIS 4.0
+placed in the SuiteSparse/ folder.  You still may need to edit it to refine the
+compilation parameters for your particular system, but it is likely it
+will work unmodified.
 
 \noindent
 Here are the various parameters that you can control in your
@@ -310,12 +313,6 @@ Here are the various parameters that you can control in your
 \item {\tt METIS\_PATH =} the path to your copy of the METIS 4.0.1 source code.
 \item {\tt METIS =} your METIS library.
 \item {\tt GPU\_CONFIG = } configuration settings specific to the CUDA BLAS.
-    To enable the CUDA BLAS, use {\tt GPU\_CONFIG = -DGPU\_BLAS
-    -I\$(GPU\_BLAS\_PACK)/include}, and set
-    {\tt GPU\_BLAS\_PATH =} to your CUDA library installation path.
-    Then include {\tt \$(GPU\_CONFIG)} as one of the settings for
-    {\tt CHOLMOD\_CONFIG}.  See the {\tt SuiteSparse\_config.mk}
-    file for details.
 \item {\tt CHOLMOD\_CONFIG = } configuration settings specific to CHOLMOD.
 \end{itemize}
 
@@ -374,6 +371,9 @@ Your compiler needs to know the location of the CHOLMOD {\tt Include} directory,
 so that it can find the {\tt cholmod.h} include file, by
 adding the {\tt -ICHOLMOD/Include} to your C compiler options
 (modified appropriately to reflect the location of your copy of CHOLMOD).
+
+To install CHOLMOD in /usr/local/lib and /usr/local/include, do
+{\tt make install}.  To remove it, do {\tt make uninstall}.
 
 %-------------------------------------------------------------------------------
 \newpage \section{Using CHOLMOD in MATLAB}
@@ -526,8 +526,11 @@ In order to support GPU processing, CHOLMOD must be compiled with the
 preprocessor macro {\tt GPU\_BLAS} defined.  All GPU code is conditional upon
 this macro.  As well, the environment variable {\tt CUDA\_ROOT} must be defined
 and point to the installation of the CUDA toolkit to be used for compilation of
-CHOLMOD.  Typically this would be {\tt /usr/local/cuda}.  See {\tt
-SuiteSparse\_config\_GPU.mk} for an example of how this is done.
+CHOLMOD.  Typically this would be {\tt /usr/local/cuda}.
+
+The {\tt SuiteSparse\_config.mk} should automatically detect if you have
+CUDA installed on your system.  If so, then it will do everything for you
+without the need to edit the {\tt SuiteSparse\_config.mk} file.
 
 %-------------------------------------------------------------------------------
 \subsection{Enabling GPU acceleration in CHOLMOD}

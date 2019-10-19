@@ -79,7 +79,7 @@ amd_f77cross:  amd_f77cross.f amd_f77wrapper.o ../Lib/libamd.a
 #------------------------------------------------------------------------------
 
 clean:
-	- $(RM) $(CLEAN)
+	- $(RM) -r $(CLEAN)
 
 purge: distclean
 
@@ -91,4 +91,5 @@ distclean: clean
 	- $(RM) amd_f77demo my_amd_f77demo.out
 	- $(RM) amd_f77simple my_amd_f77simple.out
 	- $(RM) amd_f77cross my_amd_f77cross.out
-	- $(RM) -r *.dSYM
+	- $(RM) -r $(PURGE)
+

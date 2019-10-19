@@ -19,6 +19,8 @@ int main (int argc, char **argv)
     long m, n, rnk ;
     size_t total_mem, available_mem ;
 
+    printf ("\nqrdemo_gpu: Testing SPQR on the GPU:\n") ;
+
     // start CHOLMOD
     cholmod_common *cc, Common ;
     cc = &Common ;

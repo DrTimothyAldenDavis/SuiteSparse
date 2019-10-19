@@ -1,5 +1,5 @@
 
-UMFPACK V5.7 (Oct 10, 2014) demo: _zi_ version
+UMFPACK V5.7 (Jan 1, 2016) demo: _zi_ version
 
 UMFPACK:  Copyright (c) 2005-2013 by Timothy A. Davis.  All Rights Reserved.
 
@@ -38,9 +38,9 @@ UMFPACK License:
    and a notice that the code was modified is included.
 
 Availability: http://www.suitesparse.com
-UMFPACK V5.7.1 (Oct 10, 2014): OK
+UMFPACK V5.7.2 (Jan 1, 2016): OK
 
-UMFPACK V5.7.1 (Oct 10, 2014), Control:
+UMFPACK V5.7.2 (Jan 1, 2016), Control:
     Matrix entry defined as: double complex
     Int (generic integer) defined as: int
 
@@ -279,7 +279,7 @@ diagonal of U: dense vector, n = 5.
 
     Numeric object:  OK
 
-UMFPACK V5.7.1 (Oct 10, 2014), Info:
+UMFPACK V5.7.2 (Jan 1, 2016), Info:
     matrix entry defined as:          double complex
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -367,7 +367,7 @@ UMFPACK V5.7.1 (Oct 10, 2014), Info:
 
 UMFPACK:  Copyright (c) 2005-2013 by Timothy A. Davis.  All Rights Reserved.
 
-UMFPACK V5.7.1 (Oct 10, 2014): OK
+UMFPACK V5.7.2 (Jan 1, 2016): OK
 
 
 x (solution of Ax=b): dense vector, n = 5. 
@@ -383,7 +383,7 @@ maxnorm of residual: 1.77636e-15
 
 UMFPACK:  Copyright (c) 2005-2013 by Timothy A. Davis.  All Rights Reserved.
 
-UMFPACK V5.7.1 (Oct 10, 2014): OK
+UMFPACK V5.7.2 (Jan 1, 2016): OK
 
 determinant: (-1.7814+ (2.3784)i) * 10^(2)
 
@@ -397,7 +397,7 @@ x (solution of Ax=b, solve is split into 3 steps): dense vector, n = 5.
 
 maxnorm of residual: 1.77636e-14
 
-UMFPACK V5.7.1 (Oct 10, 2014), Info:
+UMFPACK V5.7.2 (Jan 1, 2016), Info:
     matrix entry defined as:          double complex
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -625,7 +625,7 @@ diagonal of U: dense vector, n = 5.
 
     Numeric object:  OK
 
-UMFPACK V5.7.1 (Oct 10, 2014), Info:
+UMFPACK V5.7.2 (Jan 1, 2016), Info:
     matrix entry defined as:          double complex
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -872,7 +872,7 @@ diagonal of U: dense vector, n = 5.
 
     Numeric object:  OK
 
-UMFPACK V5.7.1 (Oct 10, 2014), Info:
+UMFPACK V5.7.2 (Jan 1, 2016), Info:
     matrix entry defined as:          double complex
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -951,7 +951,7 @@ UMFPACK V5.7.1 (Oct 10, 2014), Info:
     solve flops:                                   5.23000e+02
     iterative refinement steps taken:              0
     iterative refinement steps attempted:          0
-    sparse backward error omega1:                  8.05e-17
+    sparse backward error omega1:                  5.55e-17
     sparse backward error omega2:                  0.00e+00
     solve wall clock time (sec):                   0.00
 
@@ -966,7 +966,7 @@ x (with completely modified A): dense vector, n = 5.
     4 : (0.658245 + 0.0407649i)
     dense vector OK
 
-maxnorm of residual: 9.10383e-15
+maxnorm of residual: 3.9968e-15
 
 
 C (transpose of A): column-form matrix, n_row 5 n_col 5, nz = 12. 
@@ -1263,7 +1263,7 @@ Freeing numeric object:
 Loading numeric object:
 
 Done loading numeric object
-UMFPACK V5.7.1 (Oct 10, 2014), Info:
+UMFPACK V5.7.2 (Jan 1, 2016), Info:
     matrix entry defined as:          double complex
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -1361,7 +1361,7 @@ maxnorm of residual: 4.88498e-15
 
 
 Solving C'x=b again, using umfpack_zi_wsolve instead:
-UMFPACK V5.7.1 (Oct 10, 2014), Info:
+UMFPACK V5.7.2 (Jan 1, 2016), Info:
     matrix entry defined as:          double complex
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -1459,4 +1459,4 @@ maxnorm of residual: 4.88498e-15
 
 
 umfpack_zi_demo complete.
-Total time:  0.00 seconds (CPU time),  0.00 seconds (wallclock time)
+Total time:  0.01 seconds (CPU time),  0.01 seconds (wallclock time)

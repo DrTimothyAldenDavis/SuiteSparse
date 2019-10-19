@@ -1,11 +1,17 @@
+
+include ../../SuiteSparse_config/SuiteSparse_config.mk
+
 spqr_user_guide.pdf: spqr_user_guide.tex spqr_user_guide.bib Makefile
 	pdflatex spqr_user_guide.tex
 	bibtex spqr_user_guide
 	pdflatex spqr_user_guide.tex
 	pdflatex spqr_user_guide.tex
-	- $(RM) *.aux *.bbl *.blg *.log *.out
+	- $(RM) -r $(CLEAN) *.out
 
-clean: purge
+distclean: purge
 
-purge:
-	- $(RM) *.aux *.bbl *.blg *.log *.out
+clean:
+	- $(RM) -r $(CLEAN) *.out
+
+purge: clean
+	- $(RM) -r $(PURGE)

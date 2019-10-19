@@ -87,8 +87,7 @@ amd_src = { ...
     '../../AMD/Source/amd_valid' } ;
 
 colamd_src = {
-    '../../COLAMD/Source/colamd', ...
-    '../../COLAMD/Source/colamd_global' } ;
+    '../../COLAMD/Source/colamd' } ;
 
 if (with_cholmod)
 
@@ -107,8 +106,7 @@ if (with_cholmod)
         '../../CAMD/Source/camd_valid' } ;
 
     ccolamd_src = {
-        '../../CCOLAMD/Source/ccolamd', ...
-        '../../CCOLAMD/Source/ccolamd_global' } ;
+        '../../CCOLAMD/Source/ccolamd' } ;
 
     metis_src = {
         'Lib/balance', ...

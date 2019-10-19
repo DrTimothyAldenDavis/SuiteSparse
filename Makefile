@@ -172,7 +172,7 @@ cx:
 
 # statement coverage (Linux only); this requires a lot of time.
 # The umfpack tcov requires a lot of disk space
-cov:
+cov: purge
 	( cd CXSparse && $(MAKE) cov )
 	( cd CSparse && $(MAKE) cov )
 	( cd KLU && $(MAKE) cov )

@@ -2,47 +2,49 @@
 # SuiteSparse_config Makefile
 #-------------------------------------------------------------------------------
 
-VERSION = 4.4.6
+# version of SuiteSparse_config is also version of SuiteSparse meta-package
+LIBRARY = libsuitesparseconfig
+VERSION = 4.4.7
 
 default: ccode
 
 include SuiteSparse_config.mk
 
-ccode: libsuitesparseconfig.a
+ccode: all
 
-all: libsuitesparseconfig.a
+all: $(AR_TARGET) $(SO_TARGET)
 
-library: libsuitesparseconfig.a
+library: all
 
-libsuitesparseconfig.a: SuiteSparse_config.c SuiteSparse_config.h
+SuiteSparse_config.o: SuiteSparse_config.c SuiteSparse_config.h
 	$(CC) $(CF) -c SuiteSparse_config.c
-	$(ARCHIVE) libsuitesparseconfig.a SuiteSparse_config.o
-	$(RANLIB) libsuitesparseconfig.a
-	- $(RM) SuiteSparse_config.o
+
+$(AR_TARGET): SuiteSparse_config.o
+	$(ARCHIVE) $(AR_TARGET) SuiteSparse_config.o
+	$(RANLIB) $(AR_TARGET)
+
+$(SO_TARGET): SuiteSparse_config.o
+	$(CC) $(SO_OPTS) $^ -o $@
 
 distclean: purge
 
 purge: clean
-	- $(RM) *.o *.a
+	- $(RM) -r $(PURGE)
 
 clean:
 	- $(RM) -r $(CLEAN)
 
 # install SuiteSparse_config
-install:
-	$(CP) libsuitesparseconfig.a $(INSTALL_LIB)/libsuitesparseconfig.$(VERSION).a
-	( cd $(INSTALL_LIB) ; ln -sf libsuitesparseconfig.$(VERSION).a libsuitesparseconfig.a )
+install: uninstall all
+	$(CP) $(SO_TARGET) $(INSTALL_LIB)
+	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
 	$(CP) SuiteSparse_config.h $(INSTALL_INCLUDE)
-	chmod 644 $(INSTALL_LIB)/libsuitesparseconfig*.a
+	chmod 644 $(INSTALL_LIB)/$(SO_TARGET)
+	chmod 644 $(INSTALL_LIB)/$(SO_PLAIN)
 	chmod 644 $(INSTALL_INCLUDE)/SuiteSparse_config.h
 
 # uninstall SuiteSparse_config
 uninstall:
-	$(RM) $(INSTALL_LIB)/libsuitesparseconfig*.a
+	$(RM) $(INSTALL_LIB)/$(SO_TARGET)
+	$(RM) $(INSTALL_LIB)/$(SO_PLAIN)
 	$(RM) $(INSTALL_INCLUDE)/SuiteSparse_config.h
-
-dif:
-	- diff SuiteSparse_config.mk SuiteSparse_config_linux.mk
-	- diff SuiteSparse_config_linux.mk SuiteSparse_config_GPU_gcc.mk
-	- diff SuiteSparse_config_GPU_gcc.mk SuiteSparse_config_GPU_icc.mk
-	- diff SuiteSparse_config_GPU_icc.mk SuiteSparse_config_GPU_icc10.mk

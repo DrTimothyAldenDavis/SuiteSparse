@@ -15,14 +15,13 @@ all: library RBdemo
 
 code: library
 
-distclean:nnz,  purge
+distclean: purge
 
 purge: clean
-	- $(RM) RBdemo
-	- $(RM) -r *.dSYM
+	- $(RM) -r $(PURGE) RBdemo
 
 clean:
-	- $(RM) $(CLEAN) temp.rb
+	- $(RM) -r $(CLEAN) temp.rb
 
 #-------------------------------------------------------------------------------
 library:

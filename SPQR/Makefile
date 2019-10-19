@@ -2,8 +2,6 @@
 # SuiteSparseQR Makefile
 #-------------------------------------------------------------------------------
 
-VERSION = 2.0.2
-
 include ../SuiteSparse_config/SuiteSparse_config.mk
 
 default: all
@@ -17,6 +15,9 @@ library:
 
 demos:
 	( cd Demo ; $(MAKE) )
+
+gpu:
+	( cd Demo ; $(MAKE) gpu )
 
 cov:
 	( cd Tcov ; $(MAKE) )
@@ -43,23 +44,9 @@ docs:
 
 # install SPQR
 install:
-	$(CP) Lib/libspqr.a $(INSTALL_LIB)/libspqr.$(VERSION).a
-	( cd $(INSTALL_LIB) ; ln -sf libspqr.$(VERSION).a libspqr.a )
-	$(CP) Include/SuiteSparseQR.hpp $(INSTALL_INCLUDE)
-	$(CP) Include/SuiteSparseQR_C.h $(INSTALL_INCLUDE)
-	$(CP) Include/SuiteSparseQR_definitions.h $(INSTALL_INCLUDE)
-	$(CP) Include/spqr.hpp $(INSTALL_INCLUDE)
-	chmod 644 $(INSTALL_LIB)/libspqr*.a
-	chmod 644 $(INSTALL_INCLUDE)/SuiteSparseQR.hpp
-	chmod 644 $(INSTALL_INCLUDE)/SuiteSparseQR_C.h
-	chmod 644 $(INSTALL_INCLUDE)/SuiteSparseQR_definitions.h
-	chmod 644 $(INSTALL_INCLUDE)/spqr.hpp
+	( cd Lib ; $(MAKE) install )
 
 # uninstall SPQR
 uninstall:
-	$(RM) $(INSTALL_LIB)/libspqr*.a
-	$(RM) $(INSTALL_INCLUDE)/SuiteSparseQR.hpp
-	$(RM) $(INSTALL_INCLUDE)/SuiteSparseQR_C.h
-	$(RM) $(INSTALL_INCLUDE)/SuiteSparseQR_definitions.h
-	$(RM) $(INSTALL_INCLUDE)/spqr.hpp
+	( cd Lib ; $(MAKE) uninstall )
 

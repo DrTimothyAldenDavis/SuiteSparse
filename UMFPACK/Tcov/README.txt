@@ -69,10 +69,10 @@ Demo_Makefile   replacement for UMFPACK/Demo/Makefile, for testing
 DO              runs one test
 DO.all          run all tests
 
-GNUmakefile.di  UMFPACK/Lib/Makefile replacements, for testing
-GNUmakefile.dl
-GNUmakefile.zi
-GNUmakefile.zl
+Makefile.di     UMFPACK/Lib/Makefile replacements, for testing
+Makefile.dl
+Makefile.zi
+Makefile.zl
 
 Make.1		no optimize, no BLAS, test int overflow
 Make.2		no optimize, BLAS

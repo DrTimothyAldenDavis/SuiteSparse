@@ -1,5 +1,14 @@
-# CC = cc
-# CF = -O
+#-------------------------------------------------------------------------------
+# CXSparse Lib/Makefile
+#-------------------------------------------------------------------------------
+
+# NOTE: you should do "make install" on either CSparse or CXSparse, but
+# not both.  This is because both use the same name for the include file, cs.h.
+# CXSparse is a superset of CSparse, so any package that relies on CSparse can
+# rely on CXSparse instead, with no change to its code.
+
+LIBRARY = libcxsparse
+VERSION = 3.1.5
 
 default: all
 
@@ -7,7 +16,9 @@ include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 I = -I../../SuiteSparse_config -I../Include
 
-all: libcxsparse.a
+all: library
+
+library: $(AR_TARGET) $(SO_TARGET)
 
 CS_SOURCE = cs_add.c cs_amd.c cs_chol.c cs_cholsol.c cs_counts.c cs_cumsum.c \
 	cs_droptol.c cs_dropzeros.c cs_dupl.c cs_entry.c \
@@ -86,14 +97,33 @@ cs_convert.o: ../Source/cs_convert.c
 %_cl.o : ../Source/%.c
 	$(CC) $(CF) $(I) -DCS_LONG -DCS_COMPLEX -c $< -o $@
 
-libcxsparse.a: $(CS)
-	$(ARCHIVE)  libcxsparse.a $(CS)
-	- $(RANLIB) libcxsparse.a
+$(AR_TARGET): $(CS)
+	$(ARCHIVE) $@ $^
+	- $(RANLIB) $@
+
+$(SO_TARGET): $(CS)
+	$(CC) $(SO_OPTS) $^ -o $@
 
 clean:
-	- $(RM) *.o
+	- $(RM) -r $(CLEAN)
 
 purge: distclean
 
 distclean: clean
-	- $(RM) *.a
+	- $(RM) -r $(PURGE)
+
+# install CXSparse
+install: uninstall $(SO_TARGET)
+	$(CP) $(SO_TARGET) $(INSTALL_LIB)
+	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
+	$(CP) ../Include/cs.h $(INSTALL_INCLUDE)
+	chmod 644 $(INSTALL_LIB)/$(SO_TARGET)
+	chmod 644 $(INSTALL_LIB)/$(SO_PLAIN)
+	chmod 644 $(INSTALL_INCLUDE)/cs.h
+
+# uninstall CXSparse
+uninstall:
+	$(RM) $(INSTALL_LIB)/$(SO_TARGET)
+	$(RM) $(INSTALL_LIB)/$(SO_PLAIN)
+	$(RM) $(INSTALL_INCLUDE)/cs.h
+

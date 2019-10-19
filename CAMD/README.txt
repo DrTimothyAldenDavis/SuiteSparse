@@ -18,7 +18,7 @@ Quick start (Unix, or Windows with Cygwin):
     you do not have MATLAB).  When done, type "make clean" to remove unused *.o
     files (keeps the compiled libraries and demo programs).  See the User Guide
     (Doc/CAMD_UserGuide.pdf), or ../SuiteSparse_config/SuiteSparse_config.mk
-    for more details.
+    for more details.  To install do "make install".
 
 Quick start (for MATLAB users);
 
@@ -195,9 +195,9 @@ Files and directories in the CAMD distribution:
     can_24.mat			input file for CAMD demo
 
     ---------------------------------------------------------------------------
-    Lib directory:  libcamd.a library placed here
+    Lib directory:  libcamd.a and libcamd.so library placed here
     ---------------------------------------------------------------------------
 
-    GNUmakefile			a nice Makefile, for GNU make
-    Makefile			an ugly Unix Makefile (for older make's)
-    libcamd.def			CAMD definitions for Windows
+    Makefile			Makefile for both shared and static libraries
+    old/                        old version of Makefiles
+

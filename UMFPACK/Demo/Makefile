@@ -233,7 +233,7 @@ purge: clean
 	- $(RM) umf4hb umf4zhb *.umf my_umf4hb.out
 	- $(RM) umf4hb64 my_umf4hb64.out my_umf4zhb.out
 	- $(RM) umf4 readhb readhb_nozeros readhb_size tmp/*
-	- $(RM) -r *.dSYM
+	- $(RM) -r $(PURGE)
 
 clean:
-	- $(RM) $(CLEAN)
+	- $(RM) -r $(CLEAN)

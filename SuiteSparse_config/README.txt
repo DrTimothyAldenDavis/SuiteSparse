@@ -1,35 +1,12 @@
-SuiteSparse_config, 2015, Timothy A. Davis, http://www.suitesparse.com
+SuiteSparse_config, 2016, Timothy A. Davis, http://www.suitesparse.com
 (formerly the UFconfig package)
 
-This directory contains a default SuiteSparse_config.mk file, which
-in the original distribution is the same as SuiteSparse_config_linux.mk.
-The various config file versions are:
+This directory contains a default SuiteSparse_config.mk file.  It tries to
+detect your system (Linux, SunOS, or Mac), which compiler to use (icc or cc),
+which BLAS and LAPACK library to use (OpenBLAS or MKL), and whether or not to
+compile with CUDA.
 
-    SuiteSparse_config_GPU_icc.mk   for GPU with the Intel compiler
-    SuiteSparse_config_GPU_icc10.mk ditto, but for 10 cores
-    SuiteSparse_config_GPU_gcc.mk   for GPU with the gcc compiler
-    SuiteSparse_config_linux.mk     for linux, no GPU
-    SuiteSparse_config_Mac.mk       for Mac
-    SuiteSparse_config.mk           the actual one in use
-
-To use a GPU for CHOLMOD and SPQR, using gcc, do this:
-
-    cp SuiteSparse_config_GPU_gcc.mk SuiteSparse_config.mk
-
-To use a GPU for CHOLMOD and SPQR, using icc and the Intel MKL, do this:
-
-    cp SuiteSparse_config_GPU_icc.mk SuiteSparse_config.mk
-
-To compile SuiteSparse for the Mac, do this:
-
-    cp SuiteSparse_config_Mac.mk SuiteSparse_config.mk
-
-To use a GPU for CHOLMOD and SPQR, using icc and the Intel MKL,
-and for a system with 10 cores, do this
-
-    cp SuiteSparse_config_GPU_icc10.mk SuiteSparse_config.mk
-
-For other alternatives, see the comments in the SuiteSparse_config.mk file.
+For alternatives, see the comments in the SuiteSparse_config.mk file.
 
 --------------------------------------------------------------------------------
 

@@ -1,12 +1,12 @@
 // =============================================================================
-// === qrdemo_gpu2.cpp =========================================================
+// === qrdemo_gpu3.cpp =========================================================
 // =============================================================================
 
 // A simple C++ demo of SuiteSparseQR.  The comments give the MATLAB equivalent
 // statements.  See also qrdemo.m
 //
 // usage:
-// qrdemo_gpu2 matrixfile orderingoption
+// qrdemo_gpu3 matrixfile orderingoption
 
 #include "SuiteSparseQR.hpp"
 #include "SuiteSparseGPU_Runtime.hpp"
@@ -21,6 +21,10 @@ int main (int argc, char **argv)
     long m, n, rnk ;
     size_t total_mem, available_mem ;
     double t ;
+
+    printf ("\nqrdemo_gpu3: Testing SPQR on the CPU:\n") ;
+    printf ("This is the same test as qrdemo_gpu2, "
+            "but with cc->useGPU=false\n") ;
 
     // start CHOLMOD
     cholmod_common *cc, Common ;

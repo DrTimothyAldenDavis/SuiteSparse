@@ -1,3 +1,8 @@
+Jan 1, 2016: version 3.1.5
+
+    * Makefile now creates both static (*.a) and shared (*.so / *.dylib)
+        libraries. No change to C code except version number in cs.h.
+
 Oct 10, 2014: version 3.1.4
 
     modified cs_make.m.  No change to C code except version number.

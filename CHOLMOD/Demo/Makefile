@@ -84,10 +84,10 @@ purge: clean
 	- $(RM) cholmod_demo cholmod_l_demo readhb readhb2 reade
 	- $(RM) cholmod_simple
 	- $(RM) timelog.m
-	- $(RM) -r *.dSYM
+	- $(RM) -r $(PURGE)
 
 clean:
-	- $(RM) $(CLEAN)
+	- $(RM) -r $(CLEAN)
 
 #-------------------------------------------------------------------------------
 # See below if you compile with -DNPARTITION
@@ -109,7 +109,7 @@ endif
 
 #-------------------------------------------------------------------------------
 
-I = -I../Include -I../../SuiteSparse_config
+I = -I../Include -I../../SuiteSparse_config $(CUDA_INC)
 
 cholmod_demo: library cholmod_demo.c cholmod_demo.h
 	$(C) -o cholmod_demo $(I) cholmod_demo.c $(LIB2)

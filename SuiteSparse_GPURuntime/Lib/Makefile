@@ -2,6 +2,11 @@
 # SuiteSparse_GPURuntime/Lib/Makfile
 #-------------------------------------------------------------------------------
 
+LIBRARY = libSuiteSparse_GPURuntime
+VERSION = 1.0.1
+
+default: all
+
 include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 OBJS = SuiteSparseGPU_Workspace.o                     \
@@ -22,30 +27,54 @@ H = \
 
 #-------------------------------------------------------------------------------
 
-all: runtime
+all: library
 
-library: runtime
+runtime: library
 
-lib: runtime
+lib: library
+
+library: $(AR_TARGET) $(SO_TARGET)
 
 clean:
-	$(RM) -f *.o
+	$(RM) -r $(CLEAN)
 
 purge: clean
-	$(RM) -f libSuiteSparse_GPURuntime.a
+	$(RM) -r $(PURGE)
 
-runtime: $(OBJS)
-	$(AR) -r "libSuiteSparse_GPURuntime.a" $(OBJS)
+distclean: purge
+
+$(AR_TARGET): $(OBJS)
+	$(ARCHIVE) $@ $^
+	- $(RANLIB) $@
+
+$(SO_TARGET): $(OBJS)
+	$(CC) $(SO_OPTS) $^ -o $@
+
+#-------------------------------------------------------------------------------
 
 SuiteSparseGPU_Workspace.o: ../Source/SuiteSparseGPU_Workspace.cpp $(H)
-	$(NVCC) -c $(INC) $<
+	$(NVCC) -c $(INC) $(NVCCFLAGS) $<
 
 SuiteSparseGPU_Workspace_cpuAllocators.o: ../Source/SuiteSparseGPU_Workspace_cpuAllocators.cpp $(H)
-	$(NVCC) -c $(INC) $<
+	$(NVCC) -c $(INC) $(NVCCFLAGS) $<
 
 SuiteSparseGPU_Workspace_gpuAllocators.o: ../Source/SuiteSparseGPU_Workspace_gpuAllocators.cpp $(H)
-	$(NVCC) -c $(INC) $<
+	$(NVCC) -c $(INC) $(NVCCFLAGS) $<
 
 SuiteSparseGPU_Workspace_transfer.o: ../Source/SuiteSparseGPU_Workspace_transfer.cpp $(H)
-	$(NVCC) -c $(INC) $<
+	$(NVCC) -c $(INC) $(NVCCFLAGS) $<
+
+#-------------------------------------------------------------------------------
+
+# install SuiteSparse_GPURuntime (just the library, not the include files)
+install: uninstall $(SO_TARGET)
+	$(CP) $(SO_TARGET) $(INSTALL_LIB)
+	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
+	chmod 644 $(INSTALL_LIB)/$(SO_TARGET)
+	chmod 644 $(INSTALL_LIB)/$(SO_PLAIN)
+
+# uninstall SuiteSparse_GPURuntime
+uninstall:
+	$(RM) $(INSTALL_LIB)/$(SO_TARGET)
+	$(RM) $(INSTALL_LIB)/$(SO_PLAIN)
 

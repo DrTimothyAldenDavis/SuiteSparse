@@ -29,7 +29,7 @@ Portions of this work were supported by the National
 Science Foundation, under grants 0203270, 0620286, and 0619080.},
 Sencer Nuri Yeralan, and Sanjay Ranka}
 
-\date{VERSION 2.0.2, Aug 28, 2015}
+\date{VERSION 2.0.3, Jan 1, 2016}
 
 %-------------------------------------------------------------------------------
 \begin{document}
@@ -609,7 +609,11 @@ functions.
 
 Before you compile the SuiteSparseQR library and demo programs, you may wish to
 edit the \verb'SuiteSparse/SuiteSparse_config/SuiteSparse_config.mk' configuration file.  The
-defaults should be fine on most Linux/Unix systems.  Next, type \verb'make' at
+defaults should be fine on most Linux/Unix systems and on the Mac.
+It automatically detects what system you have and sets compile parameters
+accordingly.
+
+Next, type \verb'make' at
 the Linux/Unix command line, in either the \verb'SuiteSparse' directory (which
 compiles all of SuiteSparse) or in the \verb'SuiteSparse/SPQR' directory (which
 just compiles SuiteSparseQR and the libraries it requires).  SuiteSparseQR will
@@ -621,7 +625,9 @@ found.  Selecting the right BLAS is critical.  There is no standard naming
 scheme for the name and location of these libraries.  The defaults in the
 \verb'SuiteSparse_config.mk' file use \verb'-llapack' and \verb'-lblas'; the latter may
 link against the standard Fortran reference BLAS, which will not provide
-optimal performance.  For best results, you should use the Goto BLAS
+optimal performance.  For best results, you should use the OpenBLAS
+at openblas.net
+(based on the Goto BLAS)
 \cite{GotoVanDeGeijn08}, or high-performance vendor-supplied BLAS such as the
 Intel MKL, AMD ACML, or the Sun Performance Library.  Selection of LAPACK and
 the BLAS is done with the \verb'LAPACK=' and \verb'BLAS=' lines in the
@@ -648,6 +654,10 @@ Select these via the \verb'SPQR_CONFIG=' line in the \verb'SuiteSparse_config.mk
 
 To fully test 100\% of the lines of SuiteSparseQR, go to the \verb'Tcov'
 directory and type \verb'make'.  This will work for Linux only.
+
+To install the shared library
+into /usr/local/lib and /usr/local/include, do {\tt make install}.
+To uninstall, do {\tt make uninstall}.
 
 %-------------------------------------------------------------------------------
 \subsection{C/C++ Example}

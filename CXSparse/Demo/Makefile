@@ -159,7 +159,7 @@ cs_ldemo: $(CS) cs_ldemo.c Makefile $(CS)
 
 
 clean:
-	- $(RM) *.o
+	- $(RM) -r $(CLEAN)
 
 purge: distclean
 
@@ -169,4 +169,6 @@ distclean: clean
 	- $(RM) cs_dl_demo1 cs_dl_demo2 cs_dl_demo3
 	- $(RM) cs_ci_demo1 cs_ci_demo2 cs_ci_demo3
 	- $(RM) cs_cl_demo1 cs_cl_demo2 cs_cl_demo3
-	- $(RM) -r cs_idemo cs_ldemo *.dSYM
+	- $(RM) cs_idemo cs_ldemo
+	- $(RM) -r $(PURGE)
+

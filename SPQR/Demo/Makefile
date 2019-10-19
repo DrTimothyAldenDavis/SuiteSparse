@@ -38,8 +38,7 @@ ifneq ($(GPU_CONFIG),)
         ../../SuiteSparse_GPURuntime/Lib/libSuiteSparse_GPURuntime.a \
         ../../GPUQREngine/Lib/libGPUQREngine.a
     I_WITH_SPQRGPU = -I../../SuiteSparse_GPURuntime/Include \
-        -I../../GPUQREngine/Include \
-        -I$(CUDA_INC_PATH)
+        -I../../GPUQREngine/Include $(CUDA_INC)
 else
     LIB_WITH_SPQRGPU = 
     I_WITH_SPQRGPU = 
@@ -62,7 +61,7 @@ V =
 # FLIB = -lgfortran -llapack_plain -lblas_plain -lg2c
 # V = valgrind --quiet
 
-all: library qrdemo qrsimple qrsimplec
+all: library qrdemo qrsimple qrsimplec gpu
 	- $(V) ./qrsimple < ../Matrix/ash219.mtx
 	- $(V) ./qrsimplec < ../Matrix/ash219.mtx
 	- $(V) ./qrsimple < ../Matrix/west0067.mtx
@@ -126,12 +125,20 @@ cdemo: qrdemoc
 	- $(V) ./qrdemoc < ../Matrix/young1c.mtx
 	- $(V) ./qrdemoc < ../Matrix/lp_e226_transposed.mtx
 
-gpu: qrdemo_gpu qrdemo_gpu2 qrdemo_gpu3
+ifneq ($(GPU_CONFIG),)
+GPU_DEMOS = gpu2 gpu3 gpu4 gpu1
+else
+GPU_DEMOS =
+endif
+
+gpu: $(GPU_DEMOS)
+
+gpu1: qrdemo_gpu
 	- $(V) ./qrdemo_gpu  ../Matrix/west0067.mtx 2
 	- $(V) ./qrdemo_gpu  ../Matrix/lp_e226_transposed.mtx 2
 	- $(V) ./qrdemo_gpu  ../Matrix/lp_e226_transposed.mtx 6
 
-gpu2:
+gpu2: qrdemo_gpu2
 	- $(V) ./qrdemo_gpu2 ../Matrix/west0067.mtx 2
 	- $(V) ./qrdemo_gpu2 ../Matrix/lp_e226_transposed.mtx 2
 	- $(V) ./qrdemo_gpu2 ../Matrix/lp_e226_transposed.mtx 6
@@ -187,19 +194,21 @@ ifneq ($(GPU_CONFIG),)
 	- ( cd ../../SuiteSparse_GPURuntime && $(MAKE) )
 	- ( cd ../../GPUQREngine && $(MAKE) )
 endif
-ifneq ($(GPU_CONFIG),)
-	- ( cd $(METIS_PATH) && $(MAKE) )
+ifneq (,$(findstring -DNPARTITION, $(CONFIG)))
+else
+	( cd $(METIS_PATH) && $(MAKE) )
 endif
 
 purge: distclean
-	- $(RM) -r *.dot pfile tfile
 
 distclean: clean
 	- $(RM) qrdemo qrdemo_gpu qrdemoc qrsimple qrsimplec X.mtx
-	- $(RM) -r *.dSYM gpu_results.txt qrdemo_gpu2 qrdemo_gpu3
+	- $(RM) R.mtx C.mtx E.txt gpu_results.txt qrdemo_gpu2 qrdemo_gpu3
+	- $(RM) *.dot pfile tfile
+	- $(RM) -r $(PURGE)
 
 clean:
-	- $(RM) $(CLEAN)
+	- $(RM) -r $(CLEAN)
 
 INC = ../Include/spqr.hpp ../Include/SuiteSparseQR_C.h \
 	../Include/SuiteSparseQR_definitions.h \

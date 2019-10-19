@@ -1,4 +1,4 @@
-UMFPACK, Copyright (c) 1995-2013 by Timothy A. Davis,
+UMFPACK, Copyright (c) 1995-2016 by Timothy A. Davis,
 http://www.suitesparse.com
 
 UMFPACK :  a set of routines solving sparse linear systems via LU
@@ -20,7 +20,8 @@ CCOLAMD, COLAMD, and metis-4.0 also also exist in the same parent.
 Quick start (Unix, or Windows with Cygwin):
 
     To compile, test, and install both UMFPACK and AMD, the UMFPACK and AMD
-    directories must be in the same parent directory.  To configure, edit the
+    directories must be in the same parent directory.  To configure, you may
+    need to edit the
     SuiteSparse_config/SuiteSparse_config.mk file (otherwise, you may get
     warnings that the BLAS (dgemm, etc) are not found).  You may use
     UMFPACK_CONFIG = -DNBLAS in the SuiteSparse_config/SuiteSparse_config.mk
@@ -32,6 +33,9 @@ Quick start (Unix, or Windows with Cygwin):
     the compiled libraries and demo programs).  See the User Guide
     (Doc/UserGuide.pdf), or ../SuiteSparse_config/SuiteSparse_config.mk for
     more details (including options for compiling in 64-bit mode).
+
+    To install into /usr/local/lib and /usr/local/include, use
+    "make install".  To remove, do "make uninstall"
 
 Quick start (for MATLAB users):
 

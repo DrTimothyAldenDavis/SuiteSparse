@@ -3,13 +3,17 @@
 #===============================================================================
 
 CC = gcc
-CF = -O0 -g -ftest-coverage -fprofile-arcs -O0
+CF = -O0 -g -ftest-coverage -fprofile-arcs -O0 -fPIC
 UMFPACK_CONFIG = -DNBLAS -DTEST_FOR_INTEGER_OVERFLOW -DTESTING -DNO_DIVIDE_BY_ZERO
-LIB = -llapack -lblas -lgfortran -lgfortranbegin -lm -lrt
+LIB = -llapack -lrefblas -lgfortran -lgfortranbegin -lm -lrt
 
 RANLIB = ranlib
 MV = mv -f
 ARCHIVE = ar rv
+
+AR_TARGET = $(LIBRARY).a
+SO_TARGET = $(LIBRARY).so
+SO_OPTS = -shared -Wl,-soname -Wl,$(SO_TARGET)
 
 #===============================================================================
 

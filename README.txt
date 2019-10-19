@@ -1,6 +1,6 @@
 SuiteSparse:  A Suite of Sparse matrix packages at http://www.suitesparse.com
 
-July 13, 2015.  SuiteSparse VERSION 4.4.5
+Jan 1, 2016.  SuiteSparse VERSION 4.4.7
 
 ------------------
 SuiteSparse/README
@@ -13,18 +13,12 @@ thing), then in the MATLAB Command Window, cd to the SuiteSparse directory and
 type SuiteSparse_install.  All packages will be compiled, and several demos
 will be run.
 
-QUICK START FOR LINUX:  Just type 'make' in this directory.  Then do
-'sudo make install' if you want to install the libraries and include files
-in /usr/local.
-
-QUICK START FOR MAC:  Delete the SuiteSparse_config/SuiteSparse_config.mk
-file, and then remove "_Mac" from the *Mac.mk file in that directory.  Then
-continue as the 'QUICK START FOR LINUX' above.
-
-QUICK START FOR GPU:  Delete the SuiteSparse_config/SuiteSparse_config.mk
-file, and then remove "_GPU" from the *GPU.mk file in that directory.
-Locate and modify CUDA library and include paths in the *.mk file.
-Then continue as the 'QUICK START FOR LINUX' above.
+QUICK START FOR THE C/C++ LIBRARIES:  Just type 'make' in this directory.  Then
+do 'make install' if you want to install the libraries and include files in
+/usr/local/lib and /usr/local/include.  This will work on Linux/Unix and the
+Mac.  It should automatically detect if you have the Intel compilers or not,
+and whether or not you have CUDA.  If this fails, see the
+SuiteSparse_config/SuiteSparse_config.mk file.
 ================================================================================
 
 
@@ -142,18 +136,18 @@ To use "make" in Unix/Linux:
     To compile just the libraries, without running any demos, use
     "make library".
 
-    The libraries will appear in */Lib/*.a.  Include files, as needed by user
-    programs that use CHOLMOD, AMD, CAMD, COLAMD, CCOLAMD, BTF, KLU, UMFPACK,
-    LDL, etc. are in */Include/*.h.
+    The libraries will appear in */Lib/*.a and in */Lib/*.so.* (*.dylib for the
+    Mac).  Include files, as needed by user programs that use CHOLMOD, AMD,
+    CAMD, COLAMD, CCOLAMD, BTF, KLU, UMFPACK, LDL, etc. are in */Include/*.h.
 
     The METIS library is in metis-4.0/libmetis.a.  METIS Include files (not
     needed by the end user of SuiteSparse) are in located in metis-4.0/Lib/*.h.
 
-(6) To install, type "sudo make install".  This will place copies of all
+(6) To install, type "make install".  This will place copies of all
     libraries in /usr/local/lib, and all include files in /usr/local/include.
     You can change the install location by editting SuiteSparse_config.mk.
     These directories must already exist.
 
-(7) To uninstall, type "sudo make uninstall", which reverses "make install"
+(7) To uninstall, type "make uninstall", which reverses "make install"
     by removing the SuiteSparse libraries from /usr/local/lib, and the
     include files from /usr/local/include.

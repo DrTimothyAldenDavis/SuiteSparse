@@ -215,8 +215,7 @@ amd_c_src = { ...
     '../../AMD/Source/amd_valid' } ;
 
 colamd_c_src = {
-    '../../COLAMD/Source/colamd', ...
-    '../../COLAMD/Source/colamd_global' } ;
+    '../../COLAMD/Source/colamd' } ;
 
 % CAMD and CCOLAMD are not needed if we don't have METIS
 camd_c_src = { ...
@@ -234,8 +233,7 @@ camd_c_src = { ...
     '../../CAMD/Source/camd_valid' } ;
 
 ccolamd_c_src = {
-    '../../CCOLAMD/Source/ccolamd', ...
-    '../../CCOLAMD/Source/ccolamd_global' } ;
+    '../../CCOLAMD/Source/ccolamd' } ;
 
 if (have_metis)
 

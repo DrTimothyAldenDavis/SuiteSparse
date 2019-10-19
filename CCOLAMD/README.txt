@@ -1,5 +1,5 @@
 CCOLAMD: constrained column approximate minimum degree ordering
-Copyright (C) 2005-2013, Univ. of Florida.  Authors: Timothy A. Davis,
+Copyright (C) 2005-2016, Univ. of Florida.  Authors: Timothy A. Davis,
 Sivasankaran Rajamanickam, and Stefan Larimore.  Closely based on COLAMD by
 Davis, Stefan Larimore, in collaboration with Esmond Ng, and John Gilbert.
 http://www.suitesparse.com
@@ -25,11 +25,14 @@ library and to run a short demo.
 
 Other "make" targets:
 
-    make mex		compiles MATLAB mexFunctions only
-    make libccolamd.a	compiles a C-callable library containing ccolamd
-    make clean		removes all files not in the distribution, except for
-			libccolamd.a
+    make library	compiles a C-callable library containing ccolamd
+    make clean		removes all files not in the distribution
+                            but keeps the compiled libraries.
     make distclean	removes all files not in the distribution
+    make install        installs the library in /usr/local/lib and
+                            /usr/local/include
+    make uninstall      uninstalls the library from /usr/local/lib and
+                            /usr/local/include
 
 To use ccolamd and csymamd within an application written in C, all you need are
 ccolamd.c and ccolamd.h, which are the C-callable ccolamd/csymamd codes.
@@ -138,4 +141,3 @@ CCOLAMD files:
 
     ./Source:
     ccolamd.c		primary source code
-    ccolamd_global.c	globally defined function pointers (malloc, free, ...)

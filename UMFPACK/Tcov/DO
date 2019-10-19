@@ -22,18 +22,15 @@ mkdir Out/$1_$2/UMFPACK/Doc
 ( cd Out/$1_$2/UMFPACK ; ln -s Source Lib )
 /bin/cp -pr ../Include Out/$1_$2/UMFPACK
 /bin/cp -pr ../Demo Out/$1_$2/UMFPACK
-/bin/cp -pr Top_Makefile Out/$1_$2/UMFPACK/Makefile
-/bin/cp -pr ../Lib/GNUmakefile Out/$1_$2/UMFPACK/Source/Makefile
-/bin/cp -pr Demo_Makefile Out/$1_$2/UMFPACK/Demo/Makefile
+/bin/cp -pr ../Makefile Out/$1_$2/UMFPACK/Makefile
+/bin/cp -pr ../Lib/Makefile Out/$1_$2/UMFPACK/Source/Makefile
 /bin/cp -pr ../Doc/License Out/$1_$2/UMFPACK/Doc
 
 # put in AMD
 /bin/cp -pr ../../AMD Out/$1_$2
 /bin/rm -rf  Out/$1_$2/AMD/Lib
 ( cd Out/$1_$2/AMD ; ln -s Source Lib )
-/bin/cp -pr Top_Makefile Out/$1_$2/AMD/Makefile
-/bin/cp -pr ../../AMD/Lib/GNUmakefile Out/$1_$2/AMD/Source/Makefile
-/bin/cp -pr AMD_Demo_Makefile Out/$1_$2/AMD/Demo/Makefile
+/bin/cp -pr ../../AMD/Lib/Makefile Out/$1_$2/AMD/Source/Makefile
 
 # links to CHOLMOD, CAMD, CCOLAMD, and metis
 ln -s ../../../../CHOLMOD Out/$1_$2/CHOLMOD
@@ -45,7 +42,7 @@ ln -s ../../../../metis-4.0 Out/$1_$2/metis-4.0
 /bin/cp debug.* Out/$1_$2
 
 # put in the makefile
-/bin/cp GNUmakefile.$2 Out/$1_$2/GNUmakefile
+/bin/cp Makefile.$2 Out/$1_$2/Makefile
 
 # put in SuiteSparse_config
 /bin/cp -pr ../../SuiteSparse_config Out/$1_$2

@@ -1,482 +1,298 @@
 #-------------------------------------------------------------------------------
-# UMFPACK Makefile for compiling on Unix systems (for original make only)
+# UMFPACK Makefile for compiling on Unix systems (for GNU Make)
 #-------------------------------------------------------------------------------
 
-# This is a very ugly Makefile, and is only provided for those who do not
-# have GNU make.  Note that it is not used if you have GNU make.  It ignores
-# dependency checking and just compiles everything.
+LIBRARY = libumfpack
+VERSION = 5.7.2
 
-default: everything
+default: library
 
 include ../../SuiteSparse_config/SuiteSparse_config.mk
 
-C = $(CC) $(CF) $(UMFPACK_CONFIG) \
-    -I../Include -I../Source -I../../AMD/Include -I../../SuiteSparse_config \
-    -I../../CHOLMOD/Include
+# UMFPACK can use CHOLMOD by default as an ordering option
+ifneq (,$(findstring -DNCHOLMOD, $(UMFPACK_CONFIG)))
+    I = -I../Include -I../Source -I../../AMD/Include -I../../SuiteSparse_config
+else
+    I = -I../Include -I../Source -I../../AMD/Include \
+        -I../../SuiteSparse_config -I../../CHOLMOD/Include
+endif
 
-everything:
-	$(C) -DDINT -c ../Source/umf_analyze.c -o umf_i_analyze.o
-	$(C) -DDINT -c ../Source/umf_apply_order.c -o umf_i_apply_order.o
-	$(C) -DDINT -c ../Source/umf_colamd.c -o umf_i_colamd.o
-	$(C) -DDINT -c ../Source/umf_cholmod.c -o umf_i_cholmod.o
-	$(C) -DDINT -c ../Source/umf_free.c -o umf_i_free.o
-	$(C) -DDINT -c ../Source/umf_fsize.c -o umf_i_fsize.o
-	$(C) -DDINT -c ../Source/umf_is_permutation.c -o umf_i_is_permutation.o
-	$(C) -DDINT -c ../Source/umf_malloc.c -o umf_i_malloc.o
-	$(C) -DDINT -c ../Source/umf_realloc.c -o umf_i_realloc.o
-	$(C) -DDINT -c ../Source/umf_report_perm.c -o umf_i_report_perm.o
-	$(C) -DDINT -c ../Source/umf_singletons.c -o umf_i_singletons.o
-	$(C) -DDLONG -c ../Source/umf_analyze.c -o umf_l_analyze.o
-	$(C) -DDLONG -c ../Source/umf_apply_order.c -o umf_l_apply_order.o
-	$(C) -DDLONG -c ../Source/umf_colamd.c -o umf_l_colamd.o
-	$(C) -DDLONG -c ../Source/umf_cholmod.c -o umf_l_cholmod.o
-	$(C) -DDLONG -c ../Source/umf_free.c -o umf_l_free.o
-	$(C) -DDLONG -c ../Source/umf_fsize.c -o umf_l_fsize.o
-	$(C) -DDLONG -c ../Source/umf_is_permutation.c -o umf_l_is_permutation.o
-	$(C) -DDLONG -c ../Source/umf_malloc.c -o umf_l_malloc.o
-	$(C) -DDLONG -c ../Source/umf_realloc.c -o umf_l_realloc.o
-	$(C) -DDLONG -c ../Source/umf_report_perm.c -o umf_l_report_perm.o
-	$(C) -DDLONG -c ../Source/umf_singletons.c -o umf_l_singletons.o
-	$(C) -c ../Source/umfpack_timer.c -o umfpack_gn_timer.o
-	$(C) -c ../Source/umfpack_tictoc.c -o umfpack_gn_tictoc.o
-	$(C) -DDINT -DCONJUGATE_SOLVE -c ../Source/umf_ltsolve.c -o umf_di_lhsolve.o
-	$(C) -DDINT -DCONJUGATE_SOLVE -c ../Source/umf_utsolve.c -o umf_di_uhsolve.o
-	$(C) -DDINT -DDO_MAP -c ../Source/umf_triplet.c -o umf_di_triplet_map_nox.o
-	$(C) -DDINT -DDO_VALUES -c ../Source/umf_triplet.c -o umf_di_triplet_nomap_x.o
-	$(C) -DDINT -c ../Source/umf_triplet.c -o umf_di_triplet_nomap_nox.o
-	$(C) -DDINT -DDO_MAP -DDO_VALUES -c ../Source/umf_triplet.c -o umf_di_triplet_map_x.o
-	$(C) -DDINT -DFIXQ -c ../Source/umf_assemble.c -o umf_di_assemble_fixq.o
-	$(C) -DDINT -DDROP -c ../Source/umf_store_lu.c -o umf_di_store_lu_drop.o
-	$(C) -DDINT -c ../Source/umf_assemble.c -o umf_di_assemble.o
-	$(C) -DDINT -c ../Source/umf_blas3_update.c -o umf_di_blas3_update.o
-	$(C) -DDINT -c ../Source/umf_build_tuples.c -o umf_di_build_tuples.o
-	$(C) -DDINT -c ../Source/umf_create_element.c -o umf_di_create_element.o
-	$(C) -DDINT -c ../Source/umf_dump.c -o umf_di_dump.o
-	$(C) -DDINT -c ../Source/umf_extend_front.c -o umf_di_extend_front.o
-	$(C) -DDINT -c ../Source/umf_garbage_collection.c -o umf_di_garbage_collection.o
-	$(C) -DDINT -c ../Source/umf_get_memory.c -o umf_di_get_memory.o
-	$(C) -DDINT -c ../Source/umf_init_front.c -o umf_di_init_front.o
-	$(C) -DDINT -c ../Source/umf_kernel.c -o umf_di_kernel.o
-	$(C) -DDINT -c ../Source/umf_kernel_init.c -o umf_di_kernel_init.o
-	$(C) -DDINT -c ../Source/umf_kernel_wrapup.c -o umf_di_kernel_wrapup.o
-	$(C) -DDINT -c ../Source/umf_local_search.c -o umf_di_local_search.o
-	$(C) -DDINT -c ../Source/umf_lsolve.c -o umf_di_lsolve.o
-	$(C) -DDINT -c ../Source/umf_ltsolve.c -o umf_di_ltsolve.o
-	$(C) -DDINT -c ../Source/umf_mem_alloc_element.c -o umf_di_mem_alloc_element.o
-	$(C) -DDINT -c ../Source/umf_mem_alloc_head_block.c -o umf_di_mem_alloc_head_block.o
-	$(C) -DDINT -c ../Source/umf_mem_alloc_tail_block.c -o umf_di_mem_alloc_tail_block.o
-	$(C) -DDINT -c ../Source/umf_mem_free_tail_block.c -o umf_di_mem_free_tail_block.o
-	$(C) -DDINT -c ../Source/umf_mem_init_memoryspace.c -o umf_di_mem_init_memoryspace.o
-	$(C) -DDINT -c ../Source/umf_report_vector.c -o umf_di_report_vector.o
-	$(C) -DDINT -c ../Source/umf_row_search.c -o umf_di_row_search.o
-	$(C) -DDINT -c ../Source/umf_scale_column.c -o umf_di_scale_column.o
-	$(C) -DDINT -c ../Source/umf_set_stats.c -o umf_di_set_stats.o
-	$(C) -DDINT -c ../Source/umf_solve.c -o umf_di_solve.o
-	$(C) -DDINT -c ../Source/umf_symbolic_usage.c -o umf_di_symbolic_usage.o
-	$(C) -DDINT -c ../Source/umf_transpose.c -o umf_di_transpose.o
-	$(C) -DDINT -c ../Source/umf_tuple_lengths.c -o umf_di_tuple_lengths.o
-	$(C) -DDINT -c ../Source/umf_usolve.c -o umf_di_usolve.o
-	$(C) -DDINT -c ../Source/umf_utsolve.c -o umf_di_utsolve.o
-	$(C) -DDINT -c ../Source/umf_valid_numeric.c -o umf_di_valid_numeric.o
-	$(C) -DDINT -c ../Source/umf_valid_symbolic.c -o umf_di_valid_symbolic.o
-	$(C) -DDINT -c ../Source/umf_grow_front.c -o umf_di_grow_front.o
-	$(C) -DDINT -c ../Source/umf_start_front.c -o umf_di_start_front.o
-	$(C) -DDINT -c ../Source/umf_store_lu.c -o umf_di_store_lu.o
-	$(C) -DDINT -c ../Source/umf_scale.c -o umf_di_scale.o
-	$(C) -DDINT -DWSOLVE -c ../Source/umfpack_solve.c -o umfpack_di_wsolve.o
-	$(C) -DDINT -c ../Source/umfpack_col_to_triplet.c -o umfpack_di_col_to_triplet.o
-	$(C) -DDINT -c ../Source/umfpack_defaults.c -o umfpack_di_defaults.o
-	$(C) -DDINT -c ../Source/umfpack_free_numeric.c -o umfpack_di_free_numeric.o
-	$(C) -DDINT -c ../Source/umfpack_free_symbolic.c -o umfpack_di_free_symbolic.o
-	$(C) -DDINT -c ../Source/umfpack_get_numeric.c -o umfpack_di_get_numeric.o
-	$(C) -DDINT -c ../Source/umfpack_get_lunz.c -o umfpack_di_get_lunz.o
-	$(C) -DDINT -c ../Source/umfpack_get_symbolic.c -o umfpack_di_get_symbolic.o
-	$(C) -DDINT -c ../Source/umfpack_get_determinant.c -o umfpack_di_get_determinant.o
-	$(C) -DDINT -c ../Source/umfpack_numeric.c -o umfpack_di_numeric.o
-	$(C) -DDINT -c ../Source/umfpack_qsymbolic.c -o umfpack_di_qsymbolic.o
-	$(C) -DDINT -c ../Source/umfpack_report_control.c -o umfpack_di_report_control.o
-	$(C) -DDINT -c ../Source/umfpack_report_info.c -o umfpack_di_report_info.o
-	$(C) -DDINT -c ../Source/umfpack_report_matrix.c -o umfpack_di_report_matrix.o
-	$(C) -DDINT -c ../Source/umfpack_report_numeric.c -o umfpack_di_report_numeric.o
-	$(C) -DDINT -c ../Source/umfpack_report_perm.c -o umfpack_di_report_perm.o
-	$(C) -DDINT -c ../Source/umfpack_report_status.c -o umfpack_di_report_status.o
-	$(C) -DDINT -c ../Source/umfpack_report_symbolic.c -o umfpack_di_report_symbolic.o
-	$(C) -DDINT -c ../Source/umfpack_report_triplet.c -o umfpack_di_report_triplet.o
-	$(C) -DDINT -c ../Source/umfpack_report_vector.c -o umfpack_di_report_vector.o
-	$(C) -DDINT -c ../Source/umfpack_solve.c -o umfpack_di_solve.o
-	$(C) -DDINT -c ../Source/umfpack_symbolic.c -o umfpack_di_symbolic.o
-	$(C) -DDINT -c ../Source/umfpack_transpose.c -o umfpack_di_transpose.o
-	$(C) -DDINT -c ../Source/umfpack_triplet_to_col.c -o umfpack_di_triplet_to_col.o
-	$(C) -DDINT -c ../Source/umfpack_scale.c -o umfpack_di_scale.o
-	$(C) -DDINT -c ../Source/umfpack_load_numeric.c -o umfpack_di_load_numeric.o
-	$(C) -DDINT -c ../Source/umfpack_save_numeric.c -o umfpack_di_save_numeric.o
-	$(C) -DDINT -c ../Source/umfpack_load_symbolic.c -o umfpack_di_load_symbolic.o
-	$(C) -DDINT -c ../Source/umfpack_save_symbolic.c -o umfpack_di_save_symbolic.o
-	$(C) -DDLONG -DCONJUGATE_SOLVE -c ../Source/umf_ltsolve.c -o umf_dl_lhsolve.o
-	$(C) -DDLONG -DCONJUGATE_SOLVE -c ../Source/umf_utsolve.c -o umf_dl_uhsolve.o
-	$(C) -DDLONG -DDO_MAP -c ../Source/umf_triplet.c -o umf_dl_triplet_map_nox.o
-	$(C) -DDLONG -DDO_VALUES -c ../Source/umf_triplet.c -o umf_dl_triplet_nomap_x.o
-	$(C) -DDLONG -c ../Source/umf_triplet.c -o umf_dl_triplet_nomap_nox.o
-	$(C) -DDLONG -DDO_MAP -DDO_VALUES -c ../Source/umf_triplet.c -o umf_dl_triplet_map_x.o
-	$(C) -DDLONG -DFIXQ -c ../Source/umf_assemble.c -o umf_dl_assemble_fixq.o
-	$(C) -DDLONG -DDROP -c ../Source/umf_store_lu.c -o umf_dl_store_lu_drop.o
-	$(C) -DDLONG -c ../Source/umf_assemble.c -o umf_dl_assemble.o
-	$(C) -DDLONG -c ../Source/umf_blas3_update.c -o umf_dl_blas3_update.o
-	$(C) -DDLONG -c ../Source/umf_build_tuples.c -o umf_dl_build_tuples.o
-	$(C) -DDLONG -c ../Source/umf_create_element.c -o umf_dl_create_element.o
-	$(C) -DDLONG -c ../Source/umf_dump.c -o umf_dl_dump.o
-	$(C) -DDLONG -c ../Source/umf_extend_front.c -o umf_dl_extend_front.o
-	$(C) -DDLONG -c ../Source/umf_garbage_collection.c -o umf_dl_garbage_collection.o
-	$(C) -DDLONG -c ../Source/umf_get_memory.c -o umf_dl_get_memory.o
-	$(C) -DDLONG -c ../Source/umf_init_front.c -o umf_dl_init_front.o
-	$(C) -DDLONG -c ../Source/umf_kernel.c -o umf_dl_kernel.o
-	$(C) -DDLONG -c ../Source/umf_kernel_init.c -o umf_dl_kernel_init.o
-	$(C) -DDLONG -c ../Source/umf_kernel_wrapup.c -o umf_dl_kernel_wrapup.o
-	$(C) -DDLONG -c ../Source/umf_local_search.c -o umf_dl_local_search.o
-	$(C) -DDLONG -c ../Source/umf_lsolve.c -o umf_dl_lsolve.o
-	$(C) -DDLONG -c ../Source/umf_ltsolve.c -o umf_dl_ltsolve.o
-	$(C) -DDLONG -c ../Source/umf_mem_alloc_element.c -o umf_dl_mem_alloc_element.o
-	$(C) -DDLONG -c ../Source/umf_mem_alloc_head_block.c -o umf_dl_mem_alloc_head_block.o
-	$(C) -DDLONG -c ../Source/umf_mem_alloc_tail_block.c -o umf_dl_mem_alloc_tail_block.o
-	$(C) -DDLONG -c ../Source/umf_mem_free_tail_block.c -o umf_dl_mem_free_tail_block.o
-	$(C) -DDLONG -c ../Source/umf_mem_init_memoryspace.c -o umf_dl_mem_init_memoryspace.o
-	$(C) -DDLONG -c ../Source/umf_report_vector.c -o umf_dl_report_vector.o
-	$(C) -DDLONG -c ../Source/umf_row_search.c -o umf_dl_row_search.o
-	$(C) -DDLONG -c ../Source/umf_scale_column.c -o umf_dl_scale_column.o
-	$(C) -DDLONG -c ../Source/umf_set_stats.c -o umf_dl_set_stats.o
-	$(C) -DDLONG -c ../Source/umf_solve.c -o umf_dl_solve.o
-	$(C) -DDLONG -c ../Source/umf_symbolic_usage.c -o umf_dl_symbolic_usage.o
-	$(C) -DDLONG -c ../Source/umf_transpose.c -o umf_dl_transpose.o
-	$(C) -DDLONG -c ../Source/umf_tuple_lengths.c -o umf_dl_tuple_lengths.o
-	$(C) -DDLONG -c ../Source/umf_usolve.c -o umf_dl_usolve.o
-	$(C) -DDLONG -c ../Source/umf_utsolve.c -o umf_dl_utsolve.o
-	$(C) -DDLONG -c ../Source/umf_valid_numeric.c -o umf_dl_valid_numeric.o
-	$(C) -DDLONG -c ../Source/umf_valid_symbolic.c -o umf_dl_valid_symbolic.o
-	$(C) -DDLONG -c ../Source/umf_grow_front.c -o umf_dl_grow_front.o
-	$(C) -DDLONG -c ../Source/umf_start_front.c -o umf_dl_start_front.o
-	$(C) -DDLONG -c ../Source/umf_store_lu.c -o umf_dl_store_lu.o
-	$(C) -DDLONG -c ../Source/umf_scale.c -o umf_dl_scale.o
-	$(C) -DDLONG -DWSOLVE -c ../Source/umfpack_solve.c -o umfpack_dl_wsolve.o
-	$(C) -DDLONG -c ../Source/umfpack_col_to_triplet.c -o umfpack_dl_col_to_triplet.o
-	$(C) -DDLONG -c ../Source/umfpack_defaults.c -o umfpack_dl_defaults.o
-	$(C) -DDLONG -c ../Source/umfpack_free_numeric.c -o umfpack_dl_free_numeric.o
-	$(C) -DDLONG -c ../Source/umfpack_free_symbolic.c -o umfpack_dl_free_symbolic.o
-	$(C) -DDLONG -c ../Source/umfpack_get_numeric.c -o umfpack_dl_get_numeric.o
-	$(C) -DDLONG -c ../Source/umfpack_get_lunz.c -o umfpack_dl_get_lunz.o
-	$(C) -DDLONG -c ../Source/umfpack_get_symbolic.c -o umfpack_dl_get_symbolic.o
-	$(C) -DDLONG -c ../Source/umfpack_get_determinant.c -o umfpack_dl_get_determinant.o
-	$(C) -DDLONG -c ../Source/umfpack_numeric.c -o umfpack_dl_numeric.o
-	$(C) -DDLONG -c ../Source/umfpack_qsymbolic.c -o umfpack_dl_qsymbolic.o
-	$(C) -DDLONG -c ../Source/umfpack_report_control.c -o umfpack_dl_report_control.o
-	$(C) -DDLONG -c ../Source/umfpack_report_info.c -o umfpack_dl_report_info.o
-	$(C) -DDLONG -c ../Source/umfpack_report_matrix.c -o umfpack_dl_report_matrix.o
-	$(C) -DDLONG -c ../Source/umfpack_report_numeric.c -o umfpack_dl_report_numeric.o
-	$(C) -DDLONG -c ../Source/umfpack_report_perm.c -o umfpack_dl_report_perm.o
-	$(C) -DDLONG -c ../Source/umfpack_report_status.c -o umfpack_dl_report_status.o
-	$(C) -DDLONG -c ../Source/umfpack_report_symbolic.c -o umfpack_dl_report_symbolic.o
-	$(C) -DDLONG -c ../Source/umfpack_report_triplet.c -o umfpack_dl_report_triplet.o
-	$(C) -DDLONG -c ../Source/umfpack_report_vector.c -o umfpack_dl_report_vector.o
-	$(C) -DDLONG -c ../Source/umfpack_solve.c -o umfpack_dl_solve.o
-	$(C) -DDLONG -c ../Source/umfpack_symbolic.c -o umfpack_dl_symbolic.o
-	$(C) -DDLONG -c ../Source/umfpack_transpose.c -o umfpack_dl_transpose.o
-	$(C) -DDLONG -c ../Source/umfpack_triplet_to_col.c -o umfpack_dl_triplet_to_col.o
-	$(C) -DDLONG -c ../Source/umfpack_scale.c -o umfpack_dl_scale.o
-	$(C) -DDLONG -c ../Source/umfpack_load_numeric.c -o umfpack_dl_load_numeric.o
-	$(C) -DDLONG -c ../Source/umfpack_save_numeric.c -o umfpack_dl_save_numeric.o
-	$(C) -DDLONG -c ../Source/umfpack_load_symbolic.c -o umfpack_dl_load_symbolic.o
-	$(C) -DDLONG -c ../Source/umfpack_save_symbolic.c -o umfpack_dl_save_symbolic.o
-	$(C) -DZINT -DCONJUGATE_SOLVE -c ../Source/umf_ltsolve.c -o umf_zi_lhsolve.o
-	$(C) -DZINT -DCONJUGATE_SOLVE -c ../Source/umf_utsolve.c -o umf_zi_uhsolve.o
-	$(C) -DZINT -DDO_MAP -c ../Source/umf_triplet.c -o umf_zi_triplet_map_nox.o
-	$(C) -DZINT -DDO_VALUES -c ../Source/umf_triplet.c -o umf_zi_triplet_nomap_x.o
-	$(C) -DZINT -c ../Source/umf_triplet.c -o umf_zi_triplet_nomap_nox.o
-	$(C) -DZINT -DDO_MAP -DDO_VALUES -c ../Source/umf_triplet.c -o umf_zi_triplet_map_x.o
-	$(C) -DZINT -DFIXQ -c ../Source/umf_assemble.c -o umf_zi_assemble_fixq.o
-	$(C) -DZINT -DDROP -c ../Source/umf_store_lu.c -o umf_zi_store_lu_drop.o
-	$(C) -DZINT -c ../Source/umf_assemble.c -o umf_zi_assemble.o
-	$(C) -DZINT -c ../Source/umf_blas3_update.c -o umf_zi_blas3_update.o
-	$(C) -DZINT -c ../Source/umf_build_tuples.c -o umf_zi_build_tuples.o
-	$(C) -DZINT -c ../Source/umf_create_element.c -o umf_zi_create_element.o
-	$(C) -DZINT -c ../Source/umf_dump.c -o umf_zi_dump.o
-	$(C) -DZINT -c ../Source/umf_extend_front.c -o umf_zi_extend_front.o
-	$(C) -DZINT -c ../Source/umf_garbage_collection.c -o umf_zi_garbage_collection.o
-	$(C) -DZINT -c ../Source/umf_get_memory.c -o umf_zi_get_memory.o
-	$(C) -DZINT -c ../Source/umf_init_front.c -o umf_zi_init_front.o
-	$(C) -DZINT -c ../Source/umf_kernel.c -o umf_zi_kernel.o
-	$(C) -DZINT -c ../Source/umf_kernel_init.c -o umf_zi_kernel_init.o
-	$(C) -DZINT -c ../Source/umf_kernel_wrapup.c -o umf_zi_kernel_wrapup.o
-	$(C) -DZINT -c ../Source/umf_local_search.c -o umf_zi_local_search.o
-	$(C) -DZINT -c ../Source/umf_lsolve.c -o umf_zi_lsolve.o
-	$(C) -DZINT -c ../Source/umf_ltsolve.c -o umf_zi_ltsolve.o
-	$(C) -DZINT -c ../Source/umf_mem_alloc_element.c -o umf_zi_mem_alloc_element.o
-	$(C) -DZINT -c ../Source/umf_mem_alloc_head_block.c -o umf_zi_mem_alloc_head_block.o
-	$(C) -DZINT -c ../Source/umf_mem_alloc_tail_block.c -o umf_zi_mem_alloc_tail_block.o
-	$(C) -DZINT -c ../Source/umf_mem_free_tail_block.c -o umf_zi_mem_free_tail_block.o
-	$(C) -DZINT -c ../Source/umf_mem_init_memoryspace.c -o umf_zi_mem_init_memoryspace.o
-	$(C) -DZINT -c ../Source/umf_report_vector.c -o umf_zi_report_vector.o
-	$(C) -DZINT -c ../Source/umf_row_search.c -o umf_zi_row_search.o
-	$(C) -DZINT -c ../Source/umf_scale_column.c -o umf_zi_scale_column.o
-	$(C) -DZINT -c ../Source/umf_set_stats.c -o umf_zi_set_stats.o
-	$(C) -DZINT -c ../Source/umf_solve.c -o umf_zi_solve.o
-	$(C) -DZINT -c ../Source/umf_symbolic_usage.c -o umf_zi_symbolic_usage.o
-	$(C) -DZINT -c ../Source/umf_transpose.c -o umf_zi_transpose.o
-	$(C) -DZINT -c ../Source/umf_tuple_lengths.c -o umf_zi_tuple_lengths.o
-	$(C) -DZINT -c ../Source/umf_usolve.c -o umf_zi_usolve.o
-	$(C) -DZINT -c ../Source/umf_utsolve.c -o umf_zi_utsolve.o
-	$(C) -DZINT -c ../Source/umf_valid_numeric.c -o umf_zi_valid_numeric.o
-	$(C) -DZINT -c ../Source/umf_valid_symbolic.c -o umf_zi_valid_symbolic.o
-	$(C) -DZINT -c ../Source/umf_grow_front.c -o umf_zi_grow_front.o
-	$(C) -DZINT -c ../Source/umf_start_front.c -o umf_zi_start_front.o
-	$(C) -DZINT -c ../Source/umf_store_lu.c -o umf_zi_store_lu.o
-	$(C) -DZINT -c ../Source/umf_scale.c -o umf_zi_scale.o
-	$(C) -DZINT -DWSOLVE -c ../Source/umfpack_solve.c -o umfpack_zi_wsolve.o
-	$(C) -DZINT -c ../Source/umfpack_col_to_triplet.c -o umfpack_zi_col_to_triplet.o
-	$(C) -DZINT -c ../Source/umfpack_defaults.c -o umfpack_zi_defaults.o
-	$(C) -DZINT -c ../Source/umfpack_free_numeric.c -o umfpack_zi_free_numeric.o
-	$(C) -DZINT -c ../Source/umfpack_free_symbolic.c -o umfpack_zi_free_symbolic.o
-	$(C) -DZINT -c ../Source/umfpack_get_numeric.c -o umfpack_zi_get_numeric.o
-	$(C) -DZINT -c ../Source/umfpack_get_lunz.c -o umfpack_zi_get_lunz.o
-	$(C) -DZINT -c ../Source/umfpack_get_symbolic.c -o umfpack_zi_get_symbolic.o
-	$(C) -DZINT -c ../Source/umfpack_get_determinant.c -o umfpack_zi_get_determinant.o
-	$(C) -DZINT -c ../Source/umfpack_numeric.c -o umfpack_zi_numeric.o
-	$(C) -DZINT -c ../Source/umfpack_qsymbolic.c -o umfpack_zi_qsymbolic.o
-	$(C) -DZINT -c ../Source/umfpack_report_control.c -o umfpack_zi_report_control.o
-	$(C) -DZINT -c ../Source/umfpack_report_info.c -o umfpack_zi_report_info.o
-	$(C) -DZINT -c ../Source/umfpack_report_matrix.c -o umfpack_zi_report_matrix.o
-	$(C) -DZINT -c ../Source/umfpack_report_numeric.c -o umfpack_zi_report_numeric.o
-	$(C) -DZINT -c ../Source/umfpack_report_perm.c -o umfpack_zi_report_perm.o
-	$(C) -DZINT -c ../Source/umfpack_report_status.c -o umfpack_zi_report_status.o
-	$(C) -DZINT -c ../Source/umfpack_report_symbolic.c -o umfpack_zi_report_symbolic.o
-	$(C) -DZINT -c ../Source/umfpack_report_triplet.c -o umfpack_zi_report_triplet.o
-	$(C) -DZINT -c ../Source/umfpack_report_vector.c -o umfpack_zi_report_vector.o
-	$(C) -DZINT -c ../Source/umfpack_solve.c -o umfpack_zi_solve.o
-	$(C) -DZINT -c ../Source/umfpack_symbolic.c -o umfpack_zi_symbolic.o
-	$(C) -DZINT -c ../Source/umfpack_transpose.c -o umfpack_zi_transpose.o
-	$(C) -DZINT -c ../Source/umfpack_triplet_to_col.c -o umfpack_zi_triplet_to_col.o
-	$(C) -DZINT -c ../Source/umfpack_scale.c -o umfpack_zi_scale.o
-	$(C) -DZINT -c ../Source/umfpack_load_numeric.c -o umfpack_zi_load_numeric.o
-	$(C) -DZINT -c ../Source/umfpack_save_numeric.c -o umfpack_zi_save_numeric.o
-	$(C) -DZINT -c ../Source/umfpack_load_symbolic.c -o umfpack_zi_load_symbolic.o
-	$(C) -DZINT -c ../Source/umfpack_save_symbolic.c -o umfpack_zi_save_symbolic.o
-	$(C) -DZLONG -DCONJUGATE_SOLVE -c ../Source/umf_ltsolve.c -o umf_zl_lhsolve.o
-	$(C) -DZLONG -DCONJUGATE_SOLVE -c ../Source/umf_utsolve.c -o umf_zl_uhsolve.o
-	$(C) -DZLONG -DDO_MAP -c ../Source/umf_triplet.c -o umf_zl_triplet_map_nox.o
-	$(C) -DZLONG -DDO_VALUES -c ../Source/umf_triplet.c -o umf_zl_triplet_nomap_x.o
-	$(C) -DZLONG -c ../Source/umf_triplet.c -o umf_zl_triplet_nomap_nox.o
-	$(C) -DZLONG -DDO_MAP -DDO_VALUES -c ../Source/umf_triplet.c -o umf_zl_triplet_map_x.o
-	$(C) -DZLONG -DFIXQ -c ../Source/umf_assemble.c -o umf_zl_assemble_fixq.o
-	$(C) -DZLONG -DDROP -c ../Source/umf_store_lu.c -o umf_zl_store_lu_drop.o
-	$(C) -DZLONG -c ../Source/umf_assemble.c -o umf_zl_assemble.o
-	$(C) -DZLONG -c ../Source/umf_blas3_update.c -o umf_zl_blas3_update.o
-	$(C) -DZLONG -c ../Source/umf_build_tuples.c -o umf_zl_build_tuples.o
-	$(C) -DZLONG -c ../Source/umf_create_element.c -o umf_zl_create_element.o
-	$(C) -DZLONG -c ../Source/umf_dump.c -o umf_zl_dump.o
-	$(C) -DZLONG -c ../Source/umf_extend_front.c -o umf_zl_extend_front.o
-	$(C) -DZLONG -c ../Source/umf_garbage_collection.c -o umf_zl_garbage_collection.o
-	$(C) -DZLONG -c ../Source/umf_get_memory.c -o umf_zl_get_memory.o
-	$(C) -DZLONG -c ../Source/umf_init_front.c -o umf_zl_init_front.o
-	$(C) -DZLONG -c ../Source/umf_kernel.c -o umf_zl_kernel.o
-	$(C) -DZLONG -c ../Source/umf_kernel_init.c -o umf_zl_kernel_init.o
-	$(C) -DZLONG -c ../Source/umf_kernel_wrapup.c -o umf_zl_kernel_wrapup.o
-	$(C) -DZLONG -c ../Source/umf_local_search.c -o umf_zl_local_search.o
-	$(C) -DZLONG -c ../Source/umf_lsolve.c -o umf_zl_lsolve.o
-	$(C) -DZLONG -c ../Source/umf_ltsolve.c -o umf_zl_ltsolve.o
-	$(C) -DZLONG -c ../Source/umf_mem_alloc_element.c -o umf_zl_mem_alloc_element.o
-	$(C) -DZLONG -c ../Source/umf_mem_alloc_head_block.c -o umf_zl_mem_alloc_head_block.o
-	$(C) -DZLONG -c ../Source/umf_mem_alloc_tail_block.c -o umf_zl_mem_alloc_tail_block.o
-	$(C) -DZLONG -c ../Source/umf_mem_free_tail_block.c -o umf_zl_mem_free_tail_block.o
-	$(C) -DZLONG -c ../Source/umf_mem_init_memoryspace.c -o umf_zl_mem_init_memoryspace.o
-	$(C) -DZLONG -c ../Source/umf_report_vector.c -o umf_zl_report_vector.o
-	$(C) -DZLONG -c ../Source/umf_row_search.c -o umf_zl_row_search.o
-	$(C) -DZLONG -c ../Source/umf_scale_column.c -o umf_zl_scale_column.o
-	$(C) -DZLONG -c ../Source/umf_set_stats.c -o umf_zl_set_stats.o
-	$(C) -DZLONG -c ../Source/umf_solve.c -o umf_zl_solve.o
-	$(C) -DZLONG -c ../Source/umf_symbolic_usage.c -o umf_zl_symbolic_usage.o
-	$(C) -DZLONG -c ../Source/umf_transpose.c -o umf_zl_transpose.o
-	$(C) -DZLONG -c ../Source/umf_tuple_lengths.c -o umf_zl_tuple_lengths.o
-	$(C) -DZLONG -c ../Source/umf_usolve.c -o umf_zl_usolve.o
-	$(C) -DZLONG -c ../Source/umf_utsolve.c -o umf_zl_utsolve.o
-	$(C) -DZLONG -c ../Source/umf_valid_numeric.c -o umf_zl_valid_numeric.o
-	$(C) -DZLONG -c ../Source/umf_valid_symbolic.c -o umf_zl_valid_symbolic.o
-	$(C) -DZLONG -c ../Source/umf_grow_front.c -o umf_zl_grow_front.o
-	$(C) -DZLONG -c ../Source/umf_start_front.c -o umf_zl_start_front.o
-	$(C) -DZLONG -c ../Source/umf_store_lu.c -o umf_zl_store_lu.o
-	$(C) -DZLONG -c ../Source/umf_scale.c -o umf_zl_scale.o
-	$(C) -DZLONG -DWSOLVE -c ../Source/umfpack_solve.c -o umfpack_zl_wsolve.o
-	$(C) -DZLONG -c ../Source/umfpack_col_to_triplet.c -o umfpack_zl_col_to_triplet.o
-	$(C) -DZLONG -c ../Source/umfpack_defaults.c -o umfpack_zl_defaults.o
-	$(C) -DZLONG -c ../Source/umfpack_free_numeric.c -o umfpack_zl_free_numeric.o
-	$(C) -DZLONG -c ../Source/umfpack_free_symbolic.c -o umfpack_zl_free_symbolic.o
-	$(C) -DZLONG -c ../Source/umfpack_get_numeric.c -o umfpack_zl_get_numeric.o
-	$(C) -DZLONG -c ../Source/umfpack_get_lunz.c -o umfpack_zl_get_lunz.o
-	$(C) -DZLONG -c ../Source/umfpack_get_symbolic.c -o umfpack_zl_get_symbolic.o
-	$(C) -DZLONG -c ../Source/umfpack_get_determinant.c -o umfpack_zl_get_determinant.o
-	$(C) -DZLONG -c ../Source/umfpack_numeric.c -o umfpack_zl_numeric.o
-	$(C) -DZLONG -c ../Source/umfpack_qsymbolic.c -o umfpack_zl_qsymbolic.o
-	$(C) -DZLONG -c ../Source/umfpack_report_control.c -o umfpack_zl_report_control.o
-	$(C) -DZLONG -c ../Source/umfpack_report_info.c -o umfpack_zl_report_info.o
-	$(C) -DZLONG -c ../Source/umfpack_report_matrix.c -o umfpack_zl_report_matrix.o
-	$(C) -DZLONG -c ../Source/umfpack_report_numeric.c -o umfpack_zl_report_numeric.o
-	$(C) -DZLONG -c ../Source/umfpack_report_perm.c -o umfpack_zl_report_perm.o
-	$(C) -DZLONG -c ../Source/umfpack_report_status.c -o umfpack_zl_report_status.o
-	$(C) -DZLONG -c ../Source/umfpack_report_symbolic.c -o umfpack_zl_report_symbolic.o
-	$(C) -DZLONG -c ../Source/umfpack_report_triplet.c -o umfpack_zl_report_triplet.o
-	$(C) -DZLONG -c ../Source/umfpack_report_vector.c -o umfpack_zl_report_vector.o
-	$(C) -DZLONG -c ../Source/umfpack_solve.c -o umfpack_zl_solve.o
-	$(C) -DZLONG -c ../Source/umfpack_symbolic.c -o umfpack_zl_symbolic.o
-	$(C) -DZLONG -c ../Source/umfpack_transpose.c -o umfpack_zl_transpose.o
-	$(C) -DZLONG -c ../Source/umfpack_triplet_to_col.c -o umfpack_zl_triplet_to_col.o
-	$(C) -DZLONG -c ../Source/umfpack_scale.c -o umfpack_zl_scale.o
-	$(C) -DZLONG -c ../Source/umfpack_load_numeric.c -o umfpack_zl_load_numeric.o
-	$(C) -DZLONG -c ../Source/umfpack_save_numeric.c -o umfpack_zl_save_numeric.o
-	$(C) -DZLONG -c ../Source/umfpack_load_symbolic.c -o umfpack_zl_load_symbolic.o
-	$(C) -DZLONG -c ../Source/umfpack_save_symbolic.c -o umfpack_zl_save_symbolic.o
-	$(ARCHIVE)  ../Lib/libumfpack.a \
-	    umf_i_analyze.o umf_i_apply_order.o umf_i_colamd.o umf_i_free.o \
-            umf_i_cholmod.o umf_i_fsize.o umf_i_is_permutation.o \
-            umf_i_malloc.o umf_i_realloc.o \
-	    umf_i_report_perm.o umf_i_singletons.o \
-	    umf_l_analyze.o umf_l_apply_order.o umf_l_colamd.o umf_l_free.o \
-            umf_l_cholmod.o umf_l_fsize.o umf_l_is_permutation.o \
-            umf_l_malloc.o umf_l_realloc.o \
-	    umf_l_report_perm.o umf_l_singletons.o \
-	    umfpack_gn_timer.o umfpack_gn_tictoc.o \
-	    umf_di_lhsolve.o \
-	    umf_di_uhsolve.o umf_di_triplet_map_nox.o umf_di_triplet_nomap_x.o \
-	    umf_di_triplet_nomap_nox.o umf_di_triplet_map_x.o \
-	    umf_di_assemble_fixq.o umf_di_store_lu_drop.o umf_di_assemble.o \
-	    umf_di_blas3_update.o umf_di_build_tuples.o \
-	    umf_di_create_element.o umf_di_dump.o umf_di_extend_front.o \
-	    umf_di_garbage_collection.o umf_di_get_memory.o \
-	    umf_di_init_front.o umf_di_kernel.o umf_di_kernel_init.o \
-	    umf_di_kernel_wrapup.o umf_di_local_search.o umf_di_lsolve.o \
-	    umf_di_ltsolve.o umf_di_mem_alloc_element.o \
-	    umf_di_mem_alloc_head_block.o umf_di_mem_alloc_tail_block.o \
-	    umf_di_mem_free_tail_block.o umf_di_mem_init_memoryspace.o \
-	    umf_di_report_vector.o umf_di_row_search.o umf_di_scale_column.o \
-	    umf_di_set_stats.o umf_di_solve.o umf_di_symbolic_usage.o \
-	    umf_di_transpose.o umf_di_tuple_lengths.o umf_di_usolve.o \
-	    umf_di_utsolve.o umf_di_valid_numeric.o umf_di_valid_symbolic.o \
-	    umf_di_grow_front.o umf_di_start_front.o \
-	    umf_di_store_lu.o umf_di_scale.o umfpack_di_wsolve.o \
-	    umfpack_di_col_to_triplet.o umfpack_di_defaults.o \
-	    umfpack_di_free_numeric.o umfpack_di_free_symbolic.o \
-	    umfpack_di_get_numeric.o umfpack_di_get_lunz.o \
-	    umfpack_di_get_symbolic.o umfpack_di_get_determinant.o \
-	    umfpack_di_numeric.o \
-	    umfpack_di_qsymbolic.o umfpack_di_report_control.o \
-	    umfpack_di_report_info.o umfpack_di_report_matrix.o \
-	    umfpack_di_report_numeric.o umfpack_di_report_perm.o \
-	    umfpack_di_report_status.o umfpack_di_report_symbolic.o \
-	    umfpack_di_report_triplet.o umfpack_di_report_vector.o \
-	    umfpack_di_solve.o umfpack_di_symbolic.o umfpack_di_transpose.o \
-	    umfpack_di_triplet_to_col.o umfpack_di_scale.o \
-	    umfpack_di_load_numeric.o umfpack_di_save_numeric.o \
-	    umfpack_di_load_symbolic.o umfpack_di_save_symbolic.o \
-	    umf_dl_lhsolve.o \
-	    umf_dl_uhsolve.o umf_dl_triplet_map_nox.o umf_dl_triplet_nomap_x.o \
-	    umf_dl_triplet_nomap_nox.o umf_dl_triplet_map_x.o \
-	    umf_dl_assemble_fixq.o umf_dl_store_lu_drop.o umf_dl_assemble.o \
-	    umf_dl_blas3_update.o umf_dl_build_tuples.o \
-	    umf_dl_create_element.o umf_dl_dump.o umf_dl_extend_front.o \
-	    umf_dl_garbage_collection.o umf_dl_get_memory.o \
-	    umf_dl_init_front.o umf_dl_kernel.o umf_dl_kernel_init.o \
-	    umf_dl_kernel_wrapup.o umf_dl_local_search.o umf_dl_lsolve.o \
-	    umf_dl_ltsolve.o umf_dl_mem_alloc_element.o \
-	    umf_dl_mem_alloc_head_block.o umf_dl_mem_alloc_tail_block.o \
-	    umf_dl_mem_free_tail_block.o umf_dl_mem_init_memoryspace.o \
-	    umf_dl_report_vector.o umf_dl_row_search.o umf_dl_scale_column.o \
-	    umf_dl_set_stats.o umf_dl_solve.o umf_dl_symbolic_usage.o \
-	    umf_dl_transpose.o umf_dl_tuple_lengths.o umf_dl_usolve.o \
-	    umf_dl_utsolve.o umf_dl_valid_numeric.o umf_dl_valid_symbolic.o \
-	    umf_dl_grow_front.o umf_dl_start_front.o \
-	    umf_dl_store_lu.o umf_dl_scale.o umfpack_dl_wsolve.o \
-	    umfpack_dl_col_to_triplet.o umfpack_dl_defaults.o \
-	    umfpack_dl_free_numeric.o umfpack_dl_free_symbolic.o \
-	    umfpack_dl_get_numeric.o umfpack_dl_get_lunz.o \
-	    umfpack_dl_get_symbolic.o umfpack_dl_get_determinant.o \
-	    umfpack_dl_numeric.o \
-	    umfpack_dl_qsymbolic.o umfpack_dl_report_control.o \
-	    umfpack_dl_report_info.o umfpack_dl_report_matrix.o \
-	    umfpack_dl_report_numeric.o umfpack_dl_report_perm.o \
-	    umfpack_dl_report_status.o umfpack_dl_report_symbolic.o \
-	    umfpack_dl_report_triplet.o umfpack_dl_report_vector.o \
-	    umfpack_dl_solve.o umfpack_dl_symbolic.o umfpack_dl_transpose.o \
-	    umfpack_dl_triplet_to_col.o umfpack_dl_scale.o \
-	    umfpack_dl_load_numeric.o umfpack_dl_save_numeric.o \
-	    umfpack_dl_load_symbolic.o umfpack_dl_save_symbolic.o \
-	    umf_zi_lhsolve.o \
-	    umf_zi_uhsolve.o umf_zi_triplet_map_nox.o umf_zi_triplet_nomap_x.o \
-	    umf_zi_triplet_nomap_nox.o umf_zi_triplet_map_x.o \
-	    umf_zi_assemble_fixq.o umf_zi_store_lu_drop.o umf_zi_assemble.o \
-	    umf_zi_blas3_update.o umf_zi_build_tuples.o \
-	    umf_zi_create_element.o umf_zi_dump.o umf_zi_extend_front.o \
-	    umf_zi_garbage_collection.o umf_zi_get_memory.o \
-	    umf_zi_init_front.o umf_zi_kernel.o umf_zi_kernel_init.o \
-	    umf_zi_kernel_wrapup.o umf_zi_local_search.o umf_zi_lsolve.o \
-	    umf_zi_ltsolve.o umf_zi_mem_alloc_element.o \
-	    umf_zi_mem_alloc_head_block.o umf_zi_mem_alloc_tail_block.o \
-	    umf_zi_mem_free_tail_block.o umf_zi_mem_init_memoryspace.o \
-	    umf_zi_report_vector.o umf_zi_row_search.o umf_zi_scale_column.o \
-	    umf_zi_set_stats.o umf_zi_solve.o umf_zi_symbolic_usage.o \
-	    umf_zi_transpose.o umf_zi_tuple_lengths.o umf_zi_usolve.o \
-	    umf_zi_utsolve.o umf_zi_valid_numeric.o umf_zi_valid_symbolic.o \
-	    umf_zi_grow_front.o umf_zi_start_front.o \
-	    umf_zi_store_lu.o umf_zi_scale.o umfpack_zi_wsolve.o \
-	    umfpack_zi_col_to_triplet.o umfpack_zi_defaults.o \
-	    umfpack_zi_free_numeric.o umfpack_zi_free_symbolic.o \
-	    umfpack_zi_get_numeric.o umfpack_zi_get_lunz.o \
-	    umfpack_zi_get_symbolic.o umfpack_zi_get_determinant.o \
-	    umfpack_zi_numeric.o \
-	    umfpack_zi_qsymbolic.o umfpack_zi_report_control.o \
-	    umfpack_zi_report_info.o umfpack_zi_report_matrix.o \
-	    umfpack_zi_report_numeric.o umfpack_zi_report_perm.o \
-	    umfpack_zi_report_status.o umfpack_zi_report_symbolic.o \
-	    umfpack_zi_report_triplet.o umfpack_zi_report_vector.o \
-	    umfpack_zi_solve.o umfpack_zi_symbolic.o umfpack_zi_transpose.o \
-	    umfpack_zi_triplet_to_col.o umfpack_zi_scale.o \
-	    umfpack_zi_load_numeric.o umfpack_zi_save_numeric.o \
-	    umfpack_zi_load_symbolic.o umfpack_zi_save_symbolic.o \
-	    umf_zl_lhsolve.o \
-	    umf_zl_uhsolve.o umf_zl_triplet_map_nox.o umf_zl_triplet_nomap_x.o \
-	    umf_zl_triplet_nomap_nox.o umf_zl_triplet_map_x.o \
-	    umf_zl_assemble_fixq.o umf_zl_store_lu_drop.o umf_zl_assemble.o \
-	    umf_zl_blas3_update.o umf_zl_build_tuples.o \
-	    umf_zl_create_element.o umf_zl_dump.o umf_zl_extend_front.o \
-	    umf_zl_garbage_collection.o umf_zl_get_memory.o \
-	    umf_zl_init_front.o umf_zl_kernel.o umf_zl_kernel_init.o \
-	    umf_zl_kernel_wrapup.o umf_zl_local_search.o umf_zl_lsolve.o \
-	    umf_zl_ltsolve.o umf_zl_mem_alloc_element.o \
-	    umf_zl_mem_alloc_head_block.o umf_zl_mem_alloc_tail_block.o \
-	    umf_zl_mem_free_tail_block.o umf_zl_mem_init_memoryspace.o \
-	    umf_zl_report_vector.o umf_zl_row_search.o umf_zl_scale_column.o \
-	    umf_zl_set_stats.o umf_zl_solve.o umf_zl_symbolic_usage.o \
-	    umf_zl_transpose.o umf_zl_tuple_lengths.o umf_zl_usolve.o \
-	    umf_zl_utsolve.o umf_zl_valid_numeric.o umf_zl_valid_symbolic.o \
-	    umf_zl_grow_front.o umf_zl_start_front.o \
-	    umf_zl_store_lu.o umf_zl_scale.o umfpack_zl_wsolve.o \
-	    umfpack_zl_col_to_triplet.o umfpack_zl_defaults.o \
-	    umfpack_zl_free_numeric.o umfpack_zl_free_symbolic.o \
-	    umfpack_zl_get_numeric.o umfpack_zl_get_lunz.o \
-	    umfpack_zl_get_symbolic.o umfpack_zl_get_determinant.o \
-	    umfpack_zl_numeric.o \
-	    umfpack_zl_qsymbolic.o umfpack_zl_report_control.o \
-	    umfpack_zl_report_info.o umfpack_zl_report_matrix.o \
-	    umfpack_zl_report_numeric.o umfpack_zl_report_perm.o \
-	    umfpack_zl_report_status.o umfpack_zl_report_symbolic.o \
-	    umfpack_zl_report_triplet.o umfpack_zl_report_vector.o \
-	    umfpack_zl_solve.o umfpack_zl_symbolic.o umfpack_zl_transpose.o \
-	    umfpack_zl_triplet_to_col.o umfpack_zl_scale.o \
-	    umfpack_zl_load_numeric.o umfpack_zl_save_numeric.o \
-	    umfpack_zl_load_symbolic.o umfpack_zl_save_symbolic.o
-	- $(RANLIB) ../Lib/libumfpack.a
+C = $(CC) $(CF) $(UMFPACK_CONFIG) $(I)
+
+#-------------------------------------------------------------------------------
+# source files
+#-------------------------------------------------------------------------------
+
+# non-user-callable umf_*.[ch] files:
+UMFCH = umf_assemble umf_blas3_update umf_build_tuples umf_create_element \
+	umf_dump umf_extend_front umf_garbage_collection umf_get_memory \
+	umf_init_front umf_kernel umf_kernel_init umf_kernel_wrapup \
+	umf_local_search umf_lsolve umf_ltsolve umf_mem_alloc_element \
+	umf_mem_alloc_head_block umf_mem_alloc_tail_block \
+	umf_mem_free_tail_block umf_mem_init_memoryspace \
+	umf_report_vector umf_row_search umf_scale_column \
+	umf_set_stats umf_solve umf_symbolic_usage umf_transpose \
+	umf_tuple_lengths umf_usolve umf_utsolve umf_valid_numeric \
+	umf_valid_symbolic umf_grow_front umf_start_front \
+	umf_store_lu umf_scale
+
+# non-user-callable umf_*.[ch] files, int/SuiteSparse_long versions only
+# (no real/complex):
+UMFINT = umf_analyze umf_apply_order umf_colamd umf_free umf_fsize \
+	umf_is_permutation umf_malloc umf_realloc umf_report_perm \
+	umf_singletons umf_cholmod
+
+# non-user-callable, created from umf_ltsolve.c, umf_utsolve.c,
+# umf_triplet.c, and umf_assemble.c , with int/SuiteSparse_long
+# and real/complex versions:
+UMF_CREATED = umf_lhsolve umf_uhsolve umf_triplet_map_nox \
+	umf_triplet_nomap_x umf_triplet_nomap_nox umf_triplet_map_x \
+	umf_assemble_fixq umf_store_lu_drop
+
+# non-user-callable, int/SuiteSparse_long and real/complex versions:
+UMF = $(UMF_CREATED) $(UMFCH)
+
+# user-callable umfpack_*.[ch] files (int/SuiteSparse_long and real/complex):
+UMFPACK = umfpack_col_to_triplet umfpack_defaults umfpack_free_numeric \
+	umfpack_free_symbolic umfpack_get_numeric umfpack_get_lunz \
+	umfpack_get_symbolic umfpack_get_determinant umfpack_numeric \
+	umfpack_qsymbolic umfpack_report_control umfpack_report_info \
+	umfpack_report_matrix umfpack_report_numeric umfpack_report_perm \
+	umfpack_report_status umfpack_report_symbolic umfpack_report_triplet \
+	umfpack_report_vector umfpack_solve umfpack_symbolic \
+	umfpack_transpose umfpack_triplet_to_col umfpack_scale \
+	umfpack_load_numeric umfpack_save_numeric \
+	umfpack_load_symbolic umfpack_save_symbolic
+
+# user-callable, created from umfpack_solve.c (umfpack_wsolve.h exists, though):
+# with int/SuiteSparse_long and real/complex versions:
+UMFPACKW = umfpack_wsolve
+
+USER = $(UMFPACKW) $(UMFPACK)
+
+# user-callable, only one version for int/SuiteSparse_long,
+# real/complex, *.[ch] files:
+GENERIC = umfpack_timer umfpack_tictoc
+
+#-------------------------------------------------------------------------------
+# include files:
+#-------------------------------------------------------------------------------
+
+INC = ../Include/umfpack.h ../../SuiteSparse_config/SuiteSparse_config.h \
+	../Source/umf_config.h ../Source/umf_version.h \
+	../Source/umf_internal.h ../Source/umf_triplet.h \
+	$(addprefix ../Source/,  $(addsuffix .h,$(UMFCH))) \
+	$(addprefix ../Source/,  $(addsuffix .h,$(UMFINT))) \
+	$(addprefix ../Include/, $(addsuffix .h,$(USER))) \
+	$(addprefix ../Include/, $(addsuffix .h,$(GENERIC))) \
+	../../AMD/Include/amd_internal.h ../../AMD/Include/amd.h
+
+#-------------------------------------------------------------------------------
+# object files for each version
+#-------------------------------------------------------------------------------
+
+DI = $(addsuffix .o, $(subst umf_,umf_di_,$(UMF)) $(subst umfpack_,umfpack_di_,$(USER)))
+DL = $(addsuffix .o, $(subst umf_,umf_dl_,$(UMF)) $(subst umfpack_,umfpack_dl_,$(USER)))
+ZI = $(addsuffix .o, $(subst umf_,umf_zi_,$(UMF)) $(subst umfpack_,umfpack_zi_,$(USER)))
+ZL = $(addsuffix .o, $(subst umf_,umf_zl_,$(UMF)) $(subst umfpack_,umfpack_zl_,$(USER)))
+II = $(addsuffix .o, $(subst umf_,umf_i_,$(UMFINT)))
+LL = $(addsuffix .o, $(subst umf_,umf_l_,$(UMFINT)))
+GN = $(addsuffix .o, $(subst umfpack_,umfpack_gn_,$(GENERIC)))
+
+#-------------------------------------------------------------------------------
+# compile each int and SuiteSparse_long routine (with no real/complex version)
+#-------------------------------------------------------------------------------
+
+umf_i_%.o: ../Source/umf_%.c $(INC)
+	$(C) -DDINT -c $< -o $@
+
+umf_l_%.o: ../Source/umf_%.c $(INC)
+	$(C) -DDLONG -c $< -o $@
+
+#-------------------------------------------------------------------------------
+# compile each routine in the DI version
+#-------------------------------------------------------------------------------
+
+umf_di_%.o: ../Source/umf_%.c $(INC)
+	$(C) -DDINT -c $< -o $@
+
+umf_di_%hsolve.o: ../Source/umf_%tsolve.c $(INC)
+	$(C) -DDINT -DCONJUGATE_SOLVE -c $< -o $@
+
+umf_di_triplet_map_x.o: ../Source/umf_triplet.c $(INC)
+	$(C) -DDINT -DDO_MAP -DDO_VALUES -c $< -o $@
+
+umf_di_triplet_map_nox.o: ../Source/umf_triplet.c $(INC)
+	$(C) -DDINT -DDO_MAP -c $< -o $@
+
+umf_di_triplet_nomap_x.o: ../Source/umf_triplet.c $(INC)
+	$(C) -DDINT -DDO_VALUES -c $< -o $@
+
+umf_di_triplet_nomap_nox.o: ../Source/umf_triplet.c $(INC)
+	$(C) -DDINT -c $< -o $@
+
+umf_di_assemble_fixq.o: ../Source/umf_assemble.c $(INC)
+	$(C) -DDINT -DFIXQ -c $< -o $@
+
+umf_di_store_lu_drop.o: ../Source/umf_store_lu.c $(INC)
+	$(C) -DDINT -DDROP -c $< -o $@
+
+umfpack_di_wsolve.o: ../Source/umfpack_solve.c $(INC)
+	$(C) -DDINT -DWSOLVE -c $< -o $@
+
+umfpack_di_%.o: ../Source/umfpack_%.c $(INC)
+	$(C) -DDINT -c $< -o $@
+
+#-------------------------------------------------------------------------------
+# compile each routine in the DL version
+#-------------------------------------------------------------------------------
+
+umf_dl_%.o: ../Source/umf_%.c $(INC)
+	$(C) -DDLONG -c $< -o $@
+
+umf_dl_%hsolve.o: ../Source/umf_%tsolve.c $(INC)
+	$(C) -DDLONG -DCONJUGATE_SOLVE -c $< -o $@
+
+umf_dl_triplet_map_x.o: ../Source/umf_triplet.c $(INC)
+	$(C) -DDLONG -DDO_MAP -DDO_VALUES -c $< -o $@
+
+umf_dl_triplet_map_nox.o: ../Source/umf_triplet.c $(INC)
+	$(C) -DDLONG -DDO_MAP -c $< -o $@
+
+umf_dl_triplet_nomap_x.o: ../Source/umf_triplet.c $(INC)
+	$(C) -DDLONG -DDO_VALUES -c $< -o $@
+
+umf_dl_triplet_nomap_nox.o: ../Source/umf_triplet.c $(INC)
+	$(C) -DDLONG -c $< -o $@
+
+umf_dl_assemble_fixq.o: ../Source/umf_assemble.c $(INC)
+	$(C) -DDLONG -DFIXQ -c $< -o $@
+
+umf_dl_store_lu_drop.o: ../Source/umf_store_lu.c $(INC)
+	$(C) -DDLONG -DDROP -c $< -o $@
+
+umfpack_dl_wsolve.o: ../Source/umfpack_solve.c $(INC)
+	$(C) -DDLONG -DWSOLVE -c $< -o $@
+
+umfpack_dl_%.o: ../Source/umfpack_%.c $(INC)
+	$(C) -DDLONG -c $< -o $@
+
+#-------------------------------------------------------------------------------
+# compile each routine in the ZI version
+#-------------------------------------------------------------------------------
+
+umf_zi_%.o: ../Source/umf_%.c $(INC)
+	$(C) -DZINT -c $< -o $@
+
+umf_zi_%hsolve.o: ../Source/umf_%tsolve.c $(INC)
+	$(C) -DZINT -DCONJUGATE_SOLVE -c $< -o $@
+
+umf_zi_triplet_map_x.o: ../Source/umf_triplet.c $(INC)
+	$(C) -DZINT -DDO_MAP -DDO_VALUES -c $< -o $@
+
+umf_zi_triplet_map_nox.o: ../Source/umf_triplet.c $(INC)
+	$(C) -DZINT -DDO_MAP -c $< -o $@
+
+umf_zi_triplet_nomap_x.o: ../Source/umf_triplet.c $(INC)
+	$(C) -DZINT -DDO_VALUES -c $< -o $@
+
+umf_zi_triplet_nomap_nox.o: ../Source/umf_triplet.c $(INC)
+	$(C) -DZINT -c $< -o $@
+
+umf_zi_assemble_fixq.o: ../Source/umf_assemble.c $(INC)
+	$(C) -DZINT -DFIXQ -c $< -o $@
+
+umf_zi_store_lu_drop.o: ../Source/umf_store_lu.c $(INC)
+	$(C) -DZINT -DDROP -c $< -o $@
+
+umfpack_zi_wsolve.o: ../Source/umfpack_solve.c $(INC)
+	$(C) -DZINT -DWSOLVE -c $< -o $@
+
+umfpack_zi_%.o: ../Source/umfpack_%.c $(INC)
+	$(C) -DZINT -c $< -o $@
+
+#-------------------------------------------------------------------------------
+# compile each routine in the ZL version
+#-------------------------------------------------------------------------------
+
+umf_zl_%.o: ../Source/umf_%.c $(INC)
+	$(C) -DZLONG -c $< -o $@
+
+umf_zl_%hsolve.o: ../Source/umf_%tsolve.c $(INC)
+	$(C) -DZLONG -DCONJUGATE_SOLVE -c $< -o $@
+
+umf_zl_triplet_map_x.o: ../Source/umf_triplet.c $(INC)
+	$(C) -DZLONG -DDO_MAP -DDO_VALUES -c $< -o $@
+
+umf_zl_triplet_map_nox.o: ../Source/umf_triplet.c $(INC)
+	$(C) -DZLONG -DDO_MAP -c $< -o $@
+
+umf_zl_triplet_nomap_x.o: ../Source/umf_triplet.c $(INC)
+	$(C) -DZLONG -DDO_VALUES -c $< -o $@
+
+umf_zl_triplet_nomap_nox.o: ../Source/umf_triplet.c $(INC)
+	$(C) -DZLONG -c $< -o $@
+
+umf_zl_assemble_fixq.o: ../Source/umf_assemble.c $(INC)
+	$(C) -DZLONG -DFIXQ -c $< -o $@
+
+umf_zl_store_lu_drop.o: ../Source/umf_store_lu.c $(INC)
+	$(C) -DZLONG -DDROP -c $< -o $@
+
+umfpack_zl_wsolve.o: ../Source/umfpack_solve.c $(INC)
+	$(C) -DZLONG -DWSOLVE -c $< -o $@
+
+umfpack_zl_%.o: ../Source/umfpack_%.c $(INC)
+	$(C) -DZLONG -c $< -o $@
+
+#-------------------------------------------------------------------------------
+# Create the generic routines (GN) using a generic rule
+#-------------------------------------------------------------------------------
+
+umfpack_gn_%.o: ../Source/umfpack_%.c $(INC)
+	$(C) -c $< -o $@
+
+#-------------------------------------------------------------------------------
+# Create the libumfpack.a library
+#-------------------------------------------------------------------------------
+
+OBJ = $(II) $(LL) $(GN) $(DI) $(DL) $(ZI) $(ZL)
+
+library: $(AR_TARGET) $(SO_TARGET)
+
+so: $(SO_TARGET)
+
+$(AR_TARGET): $(OBJ)
+	$(ARCHIVE) $@ $^
+	- $(RANLIB) $@
+
+$(SO_TARGET): $(OBJ)
+	$(CC) $(SO_OPTS) $^ -o $@
 
 #-------------------------------------------------------------------------------
 # Remove all but the files in the original distribution
 #-------------------------------------------------------------------------------
 
+distclean: purge
+
 purge: clean
-	- $(RM) ../Lib/libumfpack.a
+	- $(RM) -r $(PURGE)
 
 clean:
-	- $(RM) $(CLEAN)
+	- $(RM) -r $(CLEAN)
+
+# install UMFPACK
+install: uninstall $(SO_TARGET)
+	$(CP) $(SO_TARGET) $(INSTALL_LIB)
+	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
+	$(CP) ../Include/*.h $(INSTALL_INCLUDE)
+	chmod 644 $(INSTALL_LIB)/$(SO_TARGET)
+	chmod 644 $(INSTALL_LIB)/$(SO_PLAIN)
+	chmod 644 $(INSTALL_INCLUDE)/umfpack*.h
+
+# uninstall UMFPACK
+uninstall:
+	$(RM) $(INSTALL_LIB)/$(SO_TARGET)
+	$(RM) $(INSTALL_LIB)/$(SO_PLAIN)
+	$(RM) $(INSTALL_INCLUDE)/umfpack*.h
+

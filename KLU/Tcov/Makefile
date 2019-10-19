@@ -3,9 +3,14 @@
 #
 # This test requires BTF, METIS, CHOLMOD, AMD, COLAMD, CAMD, and CCOLAMD.
 
+TCOV=yes
+
 default: all
 
 include ../../SuiteSparse_config/SuiteSparse_config.mk
+
+BLAS = -lrefblas
+LAPACK = -llapack
 
 # CF = -Wall -W -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
 # 	-Wredundant-decls -Wnested-externs -Wdisabled-optimization \
@@ -40,22 +45,22 @@ valgrind: purge klutest klultest
 	- ./coverage
 
 libs:
-	( cd ../../AMD && $(MAKE) library )
-	( cd ../../COLAMD && $(MAKE) library )
-	( cd ../../CAMD && $(MAKE) library )
-	( cd ../../CCOLAMD && $(MAKE) library )
-	( cd ../../metis-4.0 && $(MAKE) )
-	( cd ../../CHOLMOD && $(MAKE) library )
-	( cd ../../SuiteSparse_config && $(MAKE) library )
+	( cd ../../AMD && $(MAKE) library TCOV=yes)
+	( cd ../../COLAMD && $(MAKE) library TCOV=yes)
+	( cd ../../CAMD && $(MAKE) library TCOV=yes)
+	( cd ../../CCOLAMD && $(MAKE) library TCOV=yes)
+	( cd ../../metis-4.0 && $(MAKE) TCOV=yes)
+	( cd ../../CHOLMOD && $(MAKE) library TCOV=yes)
+	( cd ../../SuiteSparse_config && $(MAKE) library TCOV=yes)
 
 purge: distclean
 
 distclean: clean
-	- $(RM) klutest klultest *.c.gcov *.out *.a cov_*.c *.gcda *.gcno
+	- $(RM) klutest klultest *.out cov_*.c
+	- $(RM) -r $(PURGE)
 
 clean:
-	- $(RM) $(CLEAN)
-	- $(RM) -r *.dSYM
+	- $(RM) -r $(CLEAN)
 
 INC =  \
 	../Include/klu.h \
