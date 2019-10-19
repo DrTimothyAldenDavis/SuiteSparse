@@ -30,7 +30,7 @@ http://www.cise.ufl.edu/$\sim$davis.
 Portions of this work were supported by the National
 Science Foundation, under grants 0203270, 0620286, and 0619080.}}
 
-\date{September 20, 2008}
+\date{May 1, 2009}
 
 %-------------------------------------------------------------------------------
 \begin{document}
@@ -66,7 +66,7 @@ and use of SuiteSparseQR.
 %-------------------------------------------------------------------------------
 
 The simplest way to use SuiteSparseQR is via MATLAB.  Its syntax includes every
-feature of the MATLAB \verb'qr' in version R2008a and earlier
+feature of the MATLAB \verb'qr' in version R2009a and earlier
 \cite{GilbertMolerSchreiber}, plus additional features not available in MATLAB.
 It is also a replacement for \verb'x=A\b' for least-squares problems and
 underdetermined systems.  In addition to substantial gains in performance (10x
@@ -412,11 +412,12 @@ SuiteSparseQR.  Entries not present in \verb'opts' are set to their defaults.
     estimated rank \verb'r' is set to \verb'r', so \verb'opts.econ=0' gives
     the ``rank-sized'' factorization, where \verb'size(R,1)==nnz(diag(R))==r'.
 
-    \item \verb'opts.ordering': a string describing what ordering method to
-    use.  Let \verb'[m2 n2]=size(S)' where \verb'S' is obtained by removing
-    singletons from \verb'A'.  The singleton permutation places \verb'A*P' in
-    the form \verb'[A11 A12 ; 0 S]' where \verb'A11' is upper triangular with
-    diagonal entries all greater than \verb'opts.tol'.
+    \item \verb'opts.ordering': a string describing which column ordering
+    method to use.  Let \newline 
+    \verb'[m2 n2]=size(S)' where \verb'S' is obtained by
+    removing singletons from \verb'A'.  The singleton permutation places
+    \verb'A*P' in the form \verb'[A11 A12 ; 0 S]' where \verb'A11' is upper
+    triangular with diagonal entries all greater than \verb'opts.tol'.
 
     The default is to use COLAMD if \verb'm2<=2*n2'; otherwise try AMD.  Let
     \verb'f' be the flops for \verb"chol((S*P)'*(S*P))" with the ordering
@@ -494,7 +495,7 @@ SuiteSparseQR.  Entries not present in \verb'opts' are set to their defaults.
 \end{itemize}
 
 %-------------------------------------------------------------------------------
-\subsection{Examples how to use the MATLAB interface}
+\subsection{Examples on how to use the MATLAB interface}
 %-------------------------------------------------------------------------------
 
 To solve a least-squares problem, or to find the basic solution to an
@@ -506,6 +507,50 @@ requesting \verb'Q' in Householder form with \verb'[Q,R]=spqr(A,opts)' where
 \verb"opts.Q='Householder'".  The latter option is not available in MATLAB.  To
 use a fill-reducing ordering, simply use any of the syntaxes above with
 \verb'P' as an output parameter.
+
+The least-squares solution of an overdetermined system \verb'A*x=b' with
+\verb'm>n' (where \verb'A' has rank \verb'n') can be found in one of at least
+seven ways (in increasing order of efficiency, in time and memory):
+
+{\footnotesize
+\begin{tabular}{|l|l|}
+    \hline
+    \verb"x = pinv(full(A)) * b ;"
+        & impossible for large \verb'A' \\
+    \hline
+    \verb"[Q,R] = spqr (A) ;"
+        & high fill-in in \verb'R', \\
+    \verb"x = R\(Q'*b) ;"
+        & \verb'Q' costly in matrix form \\
+    \hline
+    \verb"[Q,R,P] = spqr (A) ;"
+        & low fill-in in \verb'R', \\
+    \verb"x = P*(R\(Q'*b)) ;"
+        & \verb'Q' costly in matrix form \\
+    \hline
+    \verb"[Q,R,P] = spqr (A,struct('Q','Householder')) ;"
+        & low fill-in in \verb'R', \\
+    \verb"x = P*(R\spqr_qmult (Q,b,0)) ;"
+        & \verb'Q' in efficient Householder form \\
+    \hline
+    \verb"[c,R,P] = spqr (A,b) ;"
+        & \verb'Q' not kept, \\
+    \verb"x = P*(R\c) ;"
+        & \verb'P' a permutation matrix \\
+    \hline
+    \verb"[c,R,p] = spqr (A,b,0) ;"
+        & \verb'Q' not kept, \\
+    \verb"y = (R\c) ; x(p) = y"
+        & \verb'p' a permutation vector \\
+    \hline
+    \verb"x = spqr_solve (A,b) ;"
+        & less memory and better handling \\
+        & of rank-deficient matrices \\
+    \hline
+\end{tabular}
+}
+
+\vspace{0.1in}
 
 The minimum-norm solution of an underdetermined system \verb'A*x=b' with
 \verb'm<n' can be found in one of five ways (in increasing order of
@@ -530,18 +575,22 @@ efficiency, in time and memory):
         & \verb'Q' costly in matrix form \\
     \hline
     \verb"[Q,R,P] = spqr (A',struct('Q','Householder')) ;"
-        & low fill-in in \verb'R', \verb'Q' in\\
+        & low fill-in in \verb'R', \\
     \verb"x = spqr_qmult (Q,R'\(P'*b),1) ;"
-        & efficient Householder form \\
+        & \verb'Q' in efficient Householder form \\
     \hline
     \verb"opts.solution = 'min2norm' ;"
-        & as 4th option above, but faster \\
+        & as 4th option above, but faster, \\
     \verb"x = spqr_solve (A,b,opts) ;"
-        & less memory and better handling \\
+        & less memory, and better handling \\
         & of rank-deficient matrices \\
     \hline
 \end{tabular}
 }
+
+Note that \verb'spqr_solve' uses a fill-reducing ordering, by default.
+It can be disabled or modified using a non-default \verb'opts' parameter
+(\verb'opts.ordering', specifically).
 
 %-------------------------------------------------------------------------------
 \section{Using SuiteSparseQR in C and C++}

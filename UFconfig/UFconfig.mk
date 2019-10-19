@@ -232,6 +232,9 @@ CFLAGS = -O3 -fexceptions
 # CFLAGS = -O3 -fexceptions -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
 # CFLAGS = -O3
 # CFLAGS = -O3 -g -fexceptions
+# CFLAGS = -g -fexceptions \
+   	-Wall -W -Wshadow \
+    	-Wredundant-decls -Wdisabled-optimization -ansi
 
 # consider:
 # -fforce-addr -fmove-all-movables -freduce-all-givs -ftsp-ordering

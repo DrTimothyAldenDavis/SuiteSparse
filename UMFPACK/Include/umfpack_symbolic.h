@@ -226,10 +226,8 @@ Arguments:
 		[UMFPACK_PIVOT_TOLERANCE] (default 0.1) times the largest entry
 		in its column.
 
-	    UMFPACK_STRATEGY_2BY2:  a row permutation P2 is found that places
-		large entries on the diagonal.  The matrix P2*A is then
-		factorized using the symmetric strategy, described above.
-		Refer to the User Guide for more information.
+	    UMFPACK_STRATEGY_2BY2:  disabled (exists in earlier versions)
+                If requested, the symmetric strategy is used instead.
 
 	Control [UMFPACK_DENSE_COL]:
 	    If COLAMD is used, columns with more than
@@ -255,10 +253,7 @@ Arguments:
 	    Assuming the block size is large enough (8 or so), this parameter
 	    has a modest effect on performance.
 
-	Control [UMFPACK_2BY2_TOLERANCE]:  a diagonal entry S (k,k) is
-	    considered "small" if it is < tol * max (abs (S (:,k))), where S a
-	    submatrix of the scaled input matrix, with pivots of zero Markowitz
-	    cost removed.
+	Control [UMFPACK_2BY2_TOLERANCE]:  no longer used
 
 	Control [UMFPACK_SCALE]:  See umfpack_numeric.h for a description.
 	    Only affects the 2-by-2 strategy.  Default: UMFPACK_SCALE_SUM.
@@ -442,8 +437,7 @@ Arguments:
 	Info [UMFPACK_SYMBOLIC_WALLTIME]:  The wallclock time taken, in seconds.
 
 	Info [UMFPACK_STRATEGY_USED]: The ordering strategy used:
-	    UMFPACK_STRATEGY_SYMMETRIC, UMFPACK_STRATEGY_UNSYMMETRIC, or
-	    UMFPACK_STRATEGY_2BY2.
+	    UMFPACK_STRATEGY_SYMMETRIC or UMFPACK_STRATEGY_UNSYMMETRIC
 
 	Info [UMFPACK_ORDERING_USED]:  The ordering method used:
 	    UMFPACK_ORDERING_COLAMD or UMFPACK_ORDERING_AMD.  It can be
@@ -510,25 +504,6 @@ Arguments:
 	    column of L, if no pivoting is performed during numerical
 	    factorization.  Excludes the part of the LU factorization for
 	    pivots with zero Markowitz cost.
-
-	------------------------------------------------------------------------
-	The following statistics are computed only if the 2-by-2 strategy is
-	used or attempted:
-	------------------------------------------------------------------------
-
-	Info [UMFPACK_2BY2_NWEAK]: the number of small diagonal entries in S.
-
-	Info [UMFPACK_2BY2_UNMATCHED]: the number of small diagonal entries
-	    in P2*S.
-
-	Info [UMFPACK_2BY2_PATTERN_SYMMETRY]: the symmetry of P2*S.
-
-	Info [UMFPACK_2BY2_NZ_PA_PLUS_AT]:  the number of off-diagonal entries
-	    in (P2*S)+(P2*S)'.
-
-	Info [UMFPACK_2BY2_NZDIAG]:  the number of nonzero entries on the
-	    diagonal of P2*S.
-
 
 	At the start of umfpack_*_symbolic, all of Info is set of -1, and then
 	after that only the above listed Info [...] entries are accessed.

@@ -76,7 +76,7 @@ extern "C" {
  * version of SuiteSparse, with another package from another version of
  * SuiteSparse, may or may not work.
  *
- * SuiteSparse Version 3.3.0 contains the following packages:
+ * SuiteSparse Version 3.4.0 contains the following packages:
  *
  *  AMD		    version 2.2.0
  *  CAMD	    version 2.2.0
@@ -86,17 +86,17 @@ extern "C" {
  *  CSparse	    version 2.2.3
  *  CXSparse	    version 2.2.3
  *  KLU		    version 1.1.0
- *  BTF		    version 1.0.1
+ *  BTF		    version 1.1.0
  *  LDL		    version 2.0.1
  *  UFconfig	    version number is the same as SuiteSparse
- *  UMFPACK	    version 5.3.0
- *  RBio	    version 1.1.1
+ *  UMFPACK	    version 5.4.0
+ *  RBio	    version 1.1.2
  *  UFcollection    version 1.2.0
  *  LINFACTOR       version 1.1.0
  *  MESHND          version 1.1.1
  *  SSMULT          version 2.0.0
  *  MATLAB_Tools    no specific version number
- *  SuiteSparseQR   version 1.1.1
+ *  SuiteSparseQR   version 1.1.2
  *
  * Other package dependencies:
  *  BLAS	    required by CHOLMOD and UMFPACK
@@ -104,10 +104,10 @@ extern "C" {
  *  METIS 4.0.1	    required by CHOLMOD (optional) and KLU (optional)
  */
 
-#define SUITESPARSE_DATE "Mar 24, 2009"
+#define SUITESPARSE_DATE "May 20, 2009"
 #define SUITESPARSE_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define SUITESPARSE_MAIN_VERSION 3
-#define SUITESPARSE_SUB_VERSION 3
+#define SUITESPARSE_SUB_VERSION 4
 #define SUITESPARSE_SUBSUB_VERSION 0
 #define SUITESPARSE_VERSION \
     SUITESPARSE_VER_CODE(SUITESPARSE_MAIN_VERSION,SUITESPARSE_SUB_VERSION)

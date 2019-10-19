@@ -202,14 +202,16 @@ GLOBAL void UMFPACK_report_info
     {
 	PRINTF (("\n    strategy used:                    symmetric\n")) ;
     }
-    else if (Info [UMFPACK_STRATEGY_USED] == UMFPACK_STRATEGY_UNSYMMETRIC)
+    else /* if (Info [UMFPACK_STRATEGY_USED] == UMFPACK_STRATEGY_UNSYMMETRIC)*/
     {
 	PRINTF (("\n    strategy used:                    unsymmetric\n")) ;
     }
+#if 0
     else if (Info [UMFPACK_STRATEGY_USED] == UMFPACK_STRATEGY_2BY2)
     {
 	PRINTF (("\n    strategy used:                    symmetric 2-by-2\n"));
     }
+#endif
 
     if (Info [UMFPACK_ORDERING_USED] == UMFPACK_ORDERING_AMD)
     {
@@ -294,6 +296,8 @@ GLOBAL void UMFPACK_report_info
     /* statistics from 2-by-2 permutation */
     /* ---------------------------------------------------------------------- */
 
+#if 0
+
     PRINT_INFO ("    2-by-2 pivoting to place large entries on diagonal:\n"
 		"        # of small diagonal entries of S:          %.0f\n",
 	Info [UMFPACK_2BY2_NWEAK]) ;
@@ -310,6 +314,8 @@ GLOBAL void UMFPACK_report_info
 	PRINTF (("        fraction of nz on diag of P2*S:            %.6f\n",
 	Info [UMFPACK_2BY2_NZDIAG] / n2)) ;
     }
+
+#endif
 
     /* ---------------------------------------------------------------------- */
     /* statistics from AMD */

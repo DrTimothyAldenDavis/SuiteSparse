@@ -1,4 +1,10 @@
-Mar 24, 2008, version 1.1.1
+May 1, 2009, version 1.1.2
+
+    * added more examples to user guide and to spqr.m
+    * removed "static" declaration of functions in Source/* files.  This
+	corrects a problem with the Mac OS compiler.
+
+Mar 24, 2009, version 1.1.1
 
     * #include <cstring> added to SPQR/Include/spqr.hpp, required
         by gcc 4.3.2 (but not needed by gcc 4.1.0 or other compilers...).

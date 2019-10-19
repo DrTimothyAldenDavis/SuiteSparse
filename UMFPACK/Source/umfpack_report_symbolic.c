@@ -85,14 +85,16 @@ GLOBAL Int UMFPACK_report_symbolic
 	{
 	    PRINTF (("symmetric")) ;
 	}
-	else if (Symbolic->strategy == UMFPACK_STRATEGY_UNSYMMETRIC)
+	else /* if (Symbolic->strategy == UMFPACK_STRATEGY_UNSYMMETRIC) */
 	{
 	    PRINTF (("unsymmetric")) ;
 	}
+#if 0
 	else if (Symbolic->strategy == UMFPACK_STRATEGY_2BY2)
 	{
 	    PRINTF (("symmetric 2-by-2")) ;
 	}
+#endif
 	PRINTF (("\n")) ;
 
 	PRINTF (("    ordering used:                              ")) ;

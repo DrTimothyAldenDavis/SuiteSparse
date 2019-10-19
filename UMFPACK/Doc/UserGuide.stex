@@ -20,8 +20,8 @@
 \author{Timothy A. Davis \\
 Dept. of Computer and Information Science and Engineering \\
 Univ. of Florida, Gainesville, FL}
-\title{UMFPACK Version 5.3.0 User Guide}
-\date{March 24, 2009}
+\title{UMFPACK Version 5.4.0 User Guide}
+\date{May 20, 2009}
 \maketitle
 
 %-------------------------------------------------------------------------------
@@ -38,7 +38,7 @@ Univ. of Florida, Gainesville, FL}
 
 Technical Report TR-04-003 (revised)
 
-UMFPACK Version 5.3.0, Copyright\copyright 1995-2009 by Timothy A. Davis.
+Copyright\copyright 1995-2009 by Timothy A. Davis.
 All Rights Reserved.
 UMFPACK is available under alternate licences; contact T. Davis for details.
 
@@ -116,10 +116,9 @@ Rectangular matrices can only be factorized.
 
 UMFPACK first finds a column pre-ordering that reduces fill-in, without regard
 to numerical values.  It scales and analyzes the matrix, and then automatically
-selects one of three strategies for pre-ordering the rows and columns:
-{\em unsymmetric},
-{\em 2-by-2}, and
-{\em symmetric}.  These strategies are described below.
+selects one of two strategies for pre-ordering the rows and columns:
+{\em unsymmetric}
+and {\em symmetric}.  These strategies are described below.
 
 First, all pivots with zero Markowitz cost are eliminated and placed in the
 LU factors.  The remaining submatrix $\m{S}$ is then analyzed.
@@ -139,42 +138,13 @@ the strategy.
     An {\em entry} is a value in $\m{A}$ which is present
     in the input data structure.  All nonzeros are entries, but some entries
     may be numerically zero.
-    Rule 3: $\sigma_1 < 0.1 \implies$ unsymmetric.
-    The matrix is very unsymmetric.
-\item Let $d$ be the number of nonzero entries on the diagonal of $\m{S}$.
+    Let $d$ be the number of nonzero entries on the diagonal of $\m{S}$.
     Let $\m{S}$ be $\nu$-by-$\nu$.
-    Rule 4: $(\sigma_1 \ge 0.7) \:\wedge\: (d = \nu) \implies$ symmetric.
-    The matrix has a nearly symmetric nonzero pattern, and a zero-free
-    diagonal.
-\end{itemize}
-
-If the strategy has not yet been determined,
-the 2-by-2 strategy is attempted.  A row permutation $\m{P}_2$
-is found which attempts to reduce the number of small
-diagonal entries of $\m{P}_2 \m{S}$.
-An entry $s_{ij}$ is determined to be small if
-$|s_{ij}| < 0.01 \max |s_{*j}|$, or large otherwise.
-If $s_{ii}$ is numerically small, the method attempts to swap
-two rows $i$ and $j$, such that both $s_{ij}$ and $s_{ji}$ are large.
-Once these rows are swapped,
-they remain in place.  Let $\sigma_2$ be the symmetry of $\m{P}_2 \m{S}$,
-and let $d_2$ be the number of nonzero entries (either small or large)
-on the diagonal of $\m{P}_2 \m{S}$.
-
-\begin{itemize}
-\item Rule 5:
-    ($\sigma_2 > 1.1 \sigma_1) \:\wedge\: (d_2 > 0.9 \nu) \implies$ 2-by-2.
-    The 2-by-2 permutation has made the matrix significantly more symmetric.
-\item Rule 6: $\sigma_2 < 0.7 \sigma_1 \implies$ unsymmetric.
-    The 2-by-2 strategy has significantly deteriorated the symmetry,
-\item Rule 7: $\sigma_2 < 0.25 \implies$ unsymmetric.
-    The matrix is still very unsymmetric.
-\item Rule 8: $\sigma_2 \ge 0.51 \implies$ 2-by-2.
-    The matrix is roughly symmetric.
-\item Rule 9: $\sigma_2 \ge 0.999 \sigma_1 \implies$ 2-by-2.
-    The 2-by-2 permutation has preserved symmetry, or made it only
-    slightly worse.
-\item Rule 10: if no rule has yet triggered, use the unsymmetric strategy.
+    Rule 3: $(\sigma_1 \ge 0.7) \:\wedge\: (d \ge 0.9 \nu) \implies$ symmetric.
+    The matrix has a nearly symmetric nonzero pattern (70\% or more),
+    and a mostly-zero-free diagonal (90\% or more nonzero).
+\item Rule 4:
+    Otherwise, the unsymmetric strategy is used.
 \end{itemize}
 
 Each strategy is described below:
@@ -198,10 +168,6 @@ entry.  Within a given pivot column $j$, an entry $a_{ij}$ can be chosen if
 $|a_{ij}| \ge 0.1 \max |a_{*j}|$.  Among those numerically acceptable
 entries, the sparsest row $i$ is chosen as the pivot row.
 
-\item {\em 2-by-2}:
-The symmetric strategy (see below) is applied to the matrix $\m{P}_2 \m{S}$,
-rather than $\m{S}$.
-
 \item {\em symmetric}:
 The column ordering is computed from AMD
 \cite{AmestoyDavisDuff96,AmestoyDavisDuff03},
@@ -216,8 +182,10 @@ using the same method used by the unsymmetric strategy.
 
 \end{itemize}
 
-The symmetric and 2-by-2 strategies, and their automatic selection,
+The symmetric strategy, and their automatic selection,
 are new to Version 4.1.  Version 4.0 only used the unsymmetric strategy.
+Versions 4.1 through 5.3 included a {\em 2-by-2} ordering strategy,
+but this option has been disabled in Version 5.4.
 
 Once the strategy is selected,
 the factorization of the matrix $\m{A}$ is broken down into the factorization
@@ -255,7 +223,7 @@ COLMMD-style approximate degrees \cite{GilbertMolerSchreiber}), a pivot row can
 be selected based on sparsity-preserving criteria (low degree) as well as
 numerical considerations (relaxed threshold partial pivoting).
 
-When the symmetric or 2-by-2 strategies are used,
+When the symmetric strategy are used,
 the column preordering is not refined during numeric factorization.
 Row pivoting for sparsity and numerical accuracy is performed if the
 diagonal entry is too small.
@@ -269,10 +237,10 @@ http://www.cise.ufl.edu/tech-reports.
 %-------------------------------------------------------------------------------
 
 In addition to appearing as a Collected Algorithm of the ACM,
-UMFPACK is available at http://www.cise.ufl.edu/research/sparse.
+UMFPACK is available at \newline http://www.cise.ufl.edu/research/sparse.
 It is included as a built-in routine in MATLAB.
 Version 4.0 (in MATLAB 6.5)
-does not have the symmetric or 2-by-2 strategies and it takes
+does not have the symmetric strategy and it takes
 less advantage of the level-3
 BLAS \cite{DaydeDuff99,ACM679a,ATLAS,GotoVandeGeijn02}.
 Versions 5.x through v4.1 tend to be much faster than Version 4.0,
@@ -298,6 +266,13 @@ an old version of AMD with a newer version of UMFPACK can fail.}
 %-------------------------------------------------------------------------------
 
 A detailed list of changes is in the {\tt ChangeLog} file.
+
+%-------------------------------------------------------------------------------
+\subsection{Version 5.4.0}
+%-------------------------------------------------------------------------------
+
+Disabled the 2-by-2 ordering strategy.
+Bug fix for \verb'umfpack_make.m' for Windows.
 
 %-------------------------------------------------------------------------------
 \subsection{Version 5.3.0}
@@ -1005,7 +980,7 @@ behavior.  They are fully described in Section~\ref{Alternative}:
     or AMD pre-orderings.  For example, a graph partitioning-based order
     of $\m{A}\tr\m{A}$ would be suitable for UMFPACK's unsymmetric strategy.
     A partitioning of $\m{A}+\m{A}\tr$ would be suitable for UMFPACK's
-    symmetric or 2-by-2 strategies.
+    symmetric strategy.
 
 \item {\tt umfpack\_*\_wsolve}:
 
@@ -1362,7 +1337,7 @@ MATLAB & ANSI C & default & description \\
 {\tt Control(6)}  & {\tt Control[UMFPACK\_STRATEGY]} & 0 (auto) & select strategy \\
 {\tt Control(7)}  & {\tt Control[UMFPACK\_ALLOC\_INIT]} & 0.7 & initial memory allocation  \\
 {\tt Control(8)}  & {\tt Control[UMFPACK\_IRSTEP]} & 2 & max iter. refinement steps \\
-{\tt Control(13)} & {\tt Control[UMFPACK\_2BY2\_TOLERANCE]} & 0.01 & defines ``large'' entries \\
+{\tt Control(13)} & ignored & & \\
 {\tt Control(14)} & {\tt Control[UMFPACK\_FIXQ]} & 0 (auto) & fix or modify Q \\
 {\tt Control(15)} & {\tt Control[UMFPACK\_AMD\_DENSE]} & 10 & AMD dense row/column parameter \\
 {\tt Control(16)} & {\tt Control[UMFPACK\_SYM\_PIVOT\_TOLERANCE]} & 0.001 & for diagonal entries \\
@@ -2373,7 +2348,7 @@ let me know and I could consider including them:
 
 \item A method that takes time proportional to the number of nonzeros in
     $\m{A}$ to compute the symbolic factorization \cite{GilbertNgPeyton94}.
-    This would improve the performance of the symmetric and 2-by-2 strategies,
+    This would improve the performance of the symmetric strategy,
     and the unsymmetric strategy when dense rows are present.
     The current method takes
     time proportional to the number of nonzeros in the upper bound of $\m{U}$.

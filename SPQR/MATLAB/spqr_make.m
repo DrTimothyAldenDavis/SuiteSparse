@@ -42,7 +42,7 @@ function spqr_make (metis_path,opt1,opt2)
 %   Copyright 2008, Timothy A. Davis
 %   http://www.cise.ufl.edu/research/sparse
 
-details = 1 ;       % 1 if details of each command are to be printed, 0 if not
+details = 0 ;       % 1 if details of each command are to be printed, 0 if not
 
 v = getversion ;
 try

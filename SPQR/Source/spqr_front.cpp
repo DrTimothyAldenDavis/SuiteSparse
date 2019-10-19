@@ -111,7 +111,7 @@
 #define MINCHUNK_RATIO 4
 
 // =============================================================================
-// === house ===================================================================
+// === spqr_private_house ======================================================
 // =============================================================================
 
 // Construct a Householder reflection H = I - tau * v * v' such that H*x is
@@ -134,11 +134,11 @@
 */
 
 //  Note that for the complex case, the reflection must be applied as H'*x,
-//  which requires that tau be conjugated in apply1.
+//  which requires that tau be conjugated in spqr_private_apply1.
 //
 //  This function performs about 3*n+2 flops
 
-static double larfg (Int n, double *X, cholmod_common *cc)
+inline double spqr_private_larfg (Int n, double *X, cholmod_common *cc)
 {
     double tau = 0 ;
     BLAS_INT N = n, one = 1 ;
@@ -154,7 +154,7 @@ static double larfg (Int n, double *X, cholmod_common *cc)
 }
 
 
-static Complex larfg (Int n, Complex *X, cholmod_common *cc)
+inline Complex spqr_private_larfg (Int n, Complex *X, cholmod_common *cc)
 {
     Complex tau = 0 ;
     BLAS_INT N = n, one = 1 ;
@@ -170,7 +170,7 @@ static Complex larfg (Int n, Complex *X, cholmod_common *cc)
 }
 
 
-template <typename Entry> static Entry house        // returns coefficient tau
+template <typename Entry> Entry spqr_private_house  // returns tau
 (
     // inputs, not modified
     Int n,
@@ -181,12 +181,12 @@ template <typename Entry> static Entry house        // returns coefficient tau
     cholmod_common *cc
 )
 {
-    return (larfg (n, X, cc)) ;
+    return (spqr_private_larfg (n, X, cc)) ;
 }
 
 
 // =============================================================================
-// === apply1 ==================================================================
+// === spqr_private_apply1 =====================================================
 // =============================================================================
 
 // Apply a single Householder reflection; C = C - tau * v * v' * C.  The
@@ -204,8 +204,8 @@ template <typename Entry> static Entry house        // returns coefficient tau
 //  If applied to a single column, this function performs 2*n-1 flops to
 //  compute w, and 2*n+1 to apply it to C, for a total of 4*n flops.
 
-static void larf (Int m, Int n, double *V, double tau, double *C, Int ldc,
-    double *W, cholmod_common *cc)
+inline void spqr_private_larf (Int m, Int n, double *V, double tau,
+    double *C, Int ldc, double *W, cholmod_common *cc)
 {
     BLAS_INT M = m, N = n, LDC = ldc, one = 1 ;
     char left = 'L' ;
@@ -220,8 +220,8 @@ static void larf (Int m, Int n, double *V, double tau, double *C, Int ldc,
     }
 }
 
-static void larf (Int m, Int n, Complex *V, Complex tau, Complex *C, Int ldc,
-    Complex *W, cholmod_common *cc)
+inline void spqr_private_larf (Int m, Int n, Complex *V, Complex tau,
+    Complex *C, Int ldc, Complex *W, cholmod_common *cc)
 {
     BLAS_INT M = m, N = n, LDC = ldc, one = 1 ;
     char left = 'L' ;
@@ -237,7 +237,7 @@ static void larf (Int m, Int n, Complex *V, Complex tau, Complex *C, Int ldc,
 }
 
 
-template <typename Entry> static void apply1
+template <typename Entry> void spqr_private_apply1
 (
     // inputs, not modified
     Int m,              // C is m-by-n
@@ -262,7 +262,7 @@ template <typename Entry> static void apply1
     }
     vsave = V [0] ;     // temporarily restore unit diagonal of V
     V [0] = 1 ;
-    larf (m, n, V, tau, C, ldc, W, cc) ;
+    spqr_private_larf (m, n, V, tau, C, ldc, W, cc) ;
     V [0] = vsave ;     // restore V [0]
 }
 
@@ -410,7 +410,7 @@ template <typename Entry> Int spqr_front
         // find a Householder reflection that reduces column k
         // ---------------------------------------------------------------------
 
-        tau = house (t-g, &F [INDEX (g,k,m)], cc) ;
+        tau = spqr_private_house (t-g, &F [INDEX (g,k,m)], cc) ;
 
         // ---------------------------------------------------------------------
         // check to see if the kth column is OK
@@ -507,7 +507,7 @@ template <typename Entry> Int spqr_front
             // v is stored in F (g:t-1,k).  This applies just one reflection
             // to the current panel.
             PR (("apply 1: k %ld\n", k)) ;
-            apply1 (t-g, k2-k-1, m, &F [INDEX (g,k,m)], tau,
+            spqr_private_apply1 (t-g, k2-k-1, m, &F [INDEX (g,k,m)], tau,
                 &F [INDEX (g,k+1,m)], W, cc) ;
 
             g++ ;   // one more pivot found

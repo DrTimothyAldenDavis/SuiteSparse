@@ -361,7 +361,9 @@ GLOBAL Int UMFPACK_qsymbolic
     dcol = GET_CONTROL (UMFPACK_DENSE_COL, UMFPACK_DEFAULT_DENSE_COL) ;
     nb = GET_CONTROL (UMFPACK_BLOCK_SIZE, UMFPACK_DEFAULT_BLOCK_SIZE) ;
     strategy = GET_CONTROL (UMFPACK_STRATEGY, UMFPACK_DEFAULT_STRATEGY) ;
+#if 0
     tol = GET_CONTROL (UMFPACK_2BY2_TOLERANCE, UMFPACK_DEFAULT_2BY2_TOLERANCE) ;
+#endif
     scale = GET_CONTROL (UMFPACK_SCALE, UMFPACK_DEFAULT_SCALE) ;
     force_fixQ = GET_CONTROL (UMFPACK_FIXQ, UMFPACK_DEFAULT_FIXQ) ;
     AMD_defaults (amd_Control) ;
@@ -378,7 +380,10 @@ GLOBAL Int UMFPACK_qsymbolic
     DEBUG0 (("UMFPACK_qsymbolic: nb = "ID" aggressive = "ID"\n", nb,
 	aggressive)) ;
 
+#if 0
     tol = MAX (0.0, MIN (tol,  1.0)) ;
+#endif
+
     if (scale != UMFPACK_SCALE_NONE && scale != UMFPACK_SCALE_MAX)
     {
 	scale = UMFPACK_DEFAULT_SCALE ;
@@ -825,6 +830,7 @@ GLOBAL Int UMFPACK_qsymbolic
     /* determine the initial strategy based on symmetry and nnz (diag (S)) */
     /* ---------------------------------------------------------------------- */
 
+#if 0
     if (strategy == UMFPACK_STRATEGY_AUTO)
     {
 	if (sym < 0.10)
@@ -848,6 +854,39 @@ GLOBAL Int UMFPACK_qsymbolic
 	    DEBUGm4 (("Strategy: try 2-by-2\n")) ;
 	}
     }
+#endif
+
+    /* The 2-by-2 strategy can cause an error UMFPACK_ERROR_different_pattern
+     * (-11) when factorizing a structurally singular matrix.  The problem
+     * occurs very rarely.  It's a conflict between the search of the row
+     * merge tree and the 2-by-2 pre-permutation.  Until this bug is fixed,
+     * the 2-by-2 strategy is disabled. */
+
+    if (strategy == UMFPACK_STRATEGY_AUTO)
+    {
+        if (sym >= 0.7 && nzdiag >= 0.9 * n2)
+        {
+            /* pattern is mostly symmetric (70% or more) and the diagonal is
+             * mostly zero-free (90% or more).  Use symmetric strategy. */
+	    strategy = UMFPACK_STRATEGY_SYMMETRIC ;
+	    DEBUG0 (("Strategy: select symmetric\n")) ;
+        }
+        else
+        {
+            /* otherwise use unsymmetric strategy */
+	    strategy = UMFPACK_STRATEGY_UNSYMMETRIC ;
+	    DEBUG0 (("Strategy: select unsymmetric\n")) ;
+        }
+    }
+
+    if (strategy == UMFPACK_STRATEGY_2BY2)
+    {
+        /* If the user insists on the 2-by-2 strategy, use the symmetric 
+         * strategy instead. */
+        strategy = UMFPACK_STRATEGY_SYMMETRIC ;
+    }
+
+#if 0
 
     /* ---------------------------------------------------------------------- */
     /* try the 2-by-2 strategy */
@@ -1058,6 +1097,7 @@ GLOBAL Int UMFPACK_qsymbolic
 
 	/* Fr_* no longer needed for Rp, Blen, W ] */
     }
+#endif
 
     /* ---------------------------------------------------------------------- */
     /* finalize the strategy, including fixQ and prefer_diagonal */
@@ -1073,6 +1113,7 @@ GLOBAL Int UMFPACK_qsymbolic
 	fixQ = TRUE ;
 	prefer_diagonal = TRUE ;
     }
+#if 0
     else if (strategy == UMFPACK_STRATEGY_2BY2)
     {
 	/* use Q = given Quser or Q = AMD (PA+PA'), fix Q during factorization,
@@ -1083,6 +1124,7 @@ GLOBAL Int UMFPACK_qsymbolic
 	fixQ = TRUE ;
 	prefer_diagonal = TRUE ;
     }
+#endif
     else
     {
 	/* use given Quser or COLAMD (A), refine Q during factorization,
@@ -1820,6 +1862,7 @@ GLOBAL Int UMFPACK_qsymbolic
 	    ASSERT (oldrow >= 0 && oldrow < nn) ;
 	    Ci [oldrow] = newrow ;
 	}
+#if 0
 	if (strategy == UMFPACK_STRATEGY_2BY2)
 	{
 	    ASSERT (Rperm_2by2 != (Int *) NULL) ;
@@ -1835,6 +1878,7 @@ GLOBAL Int UMFPACK_qsymbolic
 	}
 	else
 	{
+#endif
 	    for (newcol = 0 ; newcol < nn ; newcol++)
 	    {
 		oldcol = Cperm_init [newcol] ;
@@ -1844,7 +1888,9 @@ GLOBAL Int UMFPACK_qsymbolic
                 ASSERT (newrow >= 0 && newrow < nn) ;
 		Diagonal_map [newcol] = newrow ;
 	    }
+#if 0
 	}
+#endif
 
 #ifndef NDEBUG
 	DEBUG1 (("\nDiagonal map:\n")) ;

@@ -84,10 +84,12 @@ try
     paths = add_to_path (paths, pwd) ;
     umfpack_make
 catch                                                                       %#ok
+    disp (lasterr) ;
     try
 	fprintf ('Trying to install with lcc_lib/libmwlapack.lib instead\n') ;
 	umfpack_make ('lcc_lib/libmwlapack.lib') ;
     catch                                                                   %#ok
+        disp (lasterr) ;
 	fprintf ('UMFPACK not installed\n') ;
     end
 end
@@ -103,6 +105,7 @@ try
        cholmod_make ('no metis') ;
     end
 catch                                                                       %#ok
+    disp (lasterr) ;
     fprintf ('CHOLMOD not installed\n') ;
 end
 
@@ -112,6 +115,7 @@ try
     paths = add_to_path (paths, pwd) ;
     amd_make
 catch                                                                       %#ok
+    disp (lasterr) ;
     fprintf ('AMD not installed\n') ;
 end
 
@@ -121,6 +125,7 @@ try
     paths = add_to_path (paths, pwd) ;
     colamd_make
 catch                                                                       %#ok
+    disp (lasterr) ;
     fprintf ('COLAMD not installed\n') ;
 end
 
@@ -130,6 +135,7 @@ try
     paths = add_to_path (paths, pwd) ;
     ccolamd_make
 catch                                                                       %#ok
+    disp (lasterr) ;
     fprintf ('CCOLAMD not installed\n') ;
 end
 
@@ -139,6 +145,7 @@ try
     paths = add_to_path (paths, pwd) ;
     camd_make
 catch                                                                       %#ok
+    disp (lasterr) ;
     fprintf ('CAMD not installed\n') ;
 end
 
@@ -161,6 +168,7 @@ try
 	cs_make (1) ;
     end
 catch                                                                       %#ok
+    disp (lasterr) ;
     fprintf ('CXSparse not installed\n') ;
 end
 
@@ -170,6 +178,7 @@ try
     paths = add_to_path (paths, pwd) ;
     ldl_make
 catch                                                                       %#ok
+    disp (lasterr) ;
     fprintf ('LDL not installed\n') ;
 end
 
@@ -179,6 +188,7 @@ try
     paths = add_to_path (paths, pwd) ;
     btf_make
 catch                                                                       %#ok
+    disp (lasterr) ;
     fprintf ('BTF not installed\n') ;
 end
 
@@ -188,6 +198,7 @@ try
     paths = add_to_path (paths, pwd) ;
     klu_make (have_metis) ;
 catch                                                                       %#ok
+    disp (lasterr) ;
     fprintf ('KLU not installed\n') ;
 end
 
@@ -197,6 +208,7 @@ try
     paths = add_to_path (paths, pwd) ;
     ssmult_install (0) ;
 catch                                                                       %#ok
+    disp (lasterr) ;
     fprintf ('SSMULT not installed\n') ;
 end
 
@@ -207,11 +219,14 @@ try
     paths = add_to_path (paths, pwd) ;
     UFcollection_install (v < 7.0) ;
 catch                                                                       %#ok
+    disp (lasterr) ;
     fprintf ('UFcollection not installed\n') ;
 end
 
 % install LINFACTOR, MESHND, MATLAB_Tools/*
 try
+    cd ([SuiteSparse '/MATLAB_Tools/Factorize']) ;
+    paths = add_to_path (paths, pwd) ;
     cd ([SuiteSparse '/MESHND']) ;
     paths = add_to_path (paths, pwd) ;
     if (v > 7.2)
@@ -233,6 +248,7 @@ try
     mex spok.c spok_mex.c
     fprintf ('LINFACTOR, MESHND, MATLAB_Tools installed\n') ;
 catch                                                                       %#ok
+    disp (lasterr) ;
     fprintf ('LINFACTOR, MESHND, and/or MATLAB_Tools not installed\n') ;
 end
 
@@ -283,6 +299,7 @@ if (do_demo)
     try
 	SuiteSparse_demo ;
     catch                                                                   %#ok
+        disp (lasterr) ;
 	fprintf ('SuiteSparse demo failed\n') ;
     end
 end

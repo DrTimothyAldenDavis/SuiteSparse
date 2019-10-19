@@ -34,8 +34,8 @@
 
 #include "spqr.hpp"
 
-static void larft (char direct, char storev, Int n, Int k, double *V, Int ldv,
-    double *Tau, double *T, Int ldt, cholmod_common *cc)
+inline void spqr_private_larft (char direct, char storev, Int n, Int k,
+    double *V, Int ldv, double *Tau, double *T, Int ldt, cholmod_common *cc)
 {
     BLAS_INT N = n, K = k, LDV = ldv, LDT = ldt ;
     if (CHECK_BLAS_INT &&
@@ -49,8 +49,8 @@ static void larft (char direct, char storev, Int n, Int k, double *V, Int ldv,
     }
 }
 
-static void larft (char direct, char storev, Int n, Int k, Complex *V, Int ldv,
-    Complex *Tau, Complex *T, Int ldt, cholmod_common *cc)
+inline void spqr_private_larft (char direct, char storev, Int n, Int k,
+    Complex *V, Int ldv, Complex *Tau, Complex *T, Int ldt, cholmod_common *cc)
 {
     BLAS_INT N = n, K = k, LDV = ldv, LDT = ldt ;
     if (CHECK_BLAS_INT &&
@@ -65,8 +65,8 @@ static void larft (char direct, char storev, Int n, Int k, Complex *V, Int ldv,
 }
 
 
-static void larfb (char side, char trans, char direct, char storev, Int m,
-    Int n, Int k, double *V, Int ldv, double *T, Int ldt, double *C,
+inline void spqr_private_larfb (char side, char trans, char direct, char storev,
+    Int m, Int n, Int k, double *V, Int ldv, double *T, Int ldt, double *C,
     Int ldc, double *Work, Int ldwork, cholmod_common *cc)
 {
     BLAS_INT M = m, N = n, K = k, LDV = ldv, LDT = ldt, LDC = ldc,
@@ -85,8 +85,8 @@ static void larfb (char side, char trans, char direct, char storev, Int m,
 }
 
 
-static void larfb (char side, char trans, char direct, char storev, Int m,
-    Int n, Int k, Complex *V, Int ldv, Complex *T, Int ldt, Complex *C,
+inline void spqr_private_larfb (char side, char trans, char direct, char storev,
+    Int m, Int n, Int k, Complex *V, Int ldv, Complex *T, Int ldt, Complex *C,
     Int ldc, Complex *Work, Int ldwork, cholmod_common *cc)
 {
     char tr = (trans == 'T') ? 'C' : 'N' ;      // change T to C
@@ -154,30 +154,34 @@ template <typename Entry> void spqr_larftb
     if (method == SPQR_QTX)
     {
         ASSERT (m >= k) ;
-        larft ('F', 'C', m, k, V, ldv, Tau, T, k, cc) ;
+        spqr_private_larft ('F', 'C', m, k, V, ldv, Tau, T, k, cc) ;
         // Left, Transpose, Forward, Columwise:
-        larfb ('L', 'T', 'F', 'C', m, n, k, V, ldv, T, k, C, ldc, Work, n, cc) ;
+        spqr_private_larfb ('L', 'T', 'F', 'C', m, n, k, V, ldv, T, k, C, ldc,
+            Work, n, cc) ;
     }
     else if (method == SPQR_QX)
     {
         ASSERT (m >= k) ;
-        larft ('F', 'C', m, k, V, ldv, Tau, T, k, cc) ;
+        spqr_private_larft ('F', 'C', m, k, V, ldv, Tau, T, k, cc) ;
         // Left, No Transpose, Forward, Columwise:
-        larfb ('L', 'N', 'F', 'C', m, n, k, V, ldv, T, k, C, ldc, Work, n, cc) ;
+        spqr_private_larfb ('L', 'N', 'F', 'C', m, n, k, V, ldv, T, k, C, ldc,
+            Work, n, cc) ;
     }
     else if (method == SPQR_XQT)
     {
         ASSERT (n >= k) ;
-        larft ('F', 'C', n, k, V, ldv, Tau, T, k, cc) ;
+        spqr_private_larft ('F', 'C', n, k, V, ldv, Tau, T, k, cc) ;
         // Right, Transpose, Forward, Columwise:
-        larfb ('R', 'T', 'F', 'C', m, n, k, V, ldv, T, k, C, ldc, Work, m, cc) ;
+        spqr_private_larfb ('R', 'T', 'F', 'C', m, n, k, V, ldv, T, k, C, ldc,
+            Work, m, cc) ;
     }
     else if (method == SPQR_XQ)
     {
         ASSERT (n >= k) ;
-        larft ('F', 'C', n, k, V, ldv, Tau, T, k, cc) ;
+        spqr_private_larft ('F', 'C', n, k, V, ldv, Tau, T, k, cc) ;
         // Right, No Transpose, Forward, Columwise:
-        larfb ('R', 'N', 'F', 'C', m, n, k, V, ldv, T, k, C, ldc, Work, m, cc) ;
+        spqr_private_larfb ('R', 'N', 'F', 'C', m, n, k, V, ldv, T, k, C, ldc,
+            Work, m, cc) ;
     }
 }
 

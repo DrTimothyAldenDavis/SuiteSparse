@@ -1,4 +1,4 @@
-RBio: Version 1.1.1, Nov 1, 2007.  A MATLAB Toolbox for reading/writing sparse
+RBio: Version 1.1.2, May 1, 2009.  A MATLAB Toolbox for reading/writing sparse
 matrices in Rutherford/Boeing format.
 
 To install, cd to the RBio directory and type "RBinstall" in the MATLAB

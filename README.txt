@@ -12,7 +12,7 @@ SuiteSparse_install.  All packages will be compiled, and several demos will be
 run.
 ================================================================================
 
-Mar 24, 2009.  SuiteSparse version 3.3.0
+May 20, 2009.  SuiteSparse version 3.4.0
 
     AMD         approximate minimum degree ordering
 

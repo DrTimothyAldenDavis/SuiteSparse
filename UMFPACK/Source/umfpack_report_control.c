@@ -127,6 +127,7 @@ GLOBAL void UMFPACK_report_control
 	"        Q = COLAMD (A), Q refined during numerical\n"
 	"        factorization, and no attempt at diagonal pivoting.\n")) ;
     }
+#if 0
     else if (strategy == UMFPACK_STRATEGY_2BY2)
     {
 	PRINTF ((" (symmetric, with 2-by-2 block pivoting)\n"
@@ -135,6 +136,7 @@ GLOBAL void UMFPACK_report_control
 	"        numerical factorization, attempt to select pivots from the\n"
 	"        diagonal of P2*A.\n")) ;
     }
+#endif
     else /* auto strategy */
     {
 	strategy = UMFPACK_STRATEGY_AUTO ;

@@ -8,6 +8,8 @@
 /* web: http://www.cise.ufl.edu/research/sparse/umfpack                       */
 /* -------------------------------------------------------------------------- */
 
+/* NOTE: this code is currently disabled */
+
 /*  Not user-callable.  Computes a row permutation P so that A (P,:) has a
  *  mostly zero-free diagonal, with large entries on the diagonal.  It does this
  *  by swapping pairs of rows.  Once a row is swapped it is not swapped again.
@@ -56,6 +58,8 @@
  *  has the same diagonal entries as A (:,P), except in different order.  So
  *  the output permutation P can also be used to swap the columns of A.
  */
+
+#if 0
 
 #include "umf_internal.h"
 #include "umf_2by2.h"
@@ -858,3 +862,5 @@ GLOBAL void UMF_2by2
     DEBUGm2 (("\n =============================UMF_2by2: done\n\n")) ;
 #endif
 }
+
+#endif

@@ -77,6 +77,7 @@ end
 % -DNPOSIX option (for sysconf and times timer routines)
 %-------------------------------------------------------------------------------
 
+posix = ' ' ;
 if (~pc)
     % added for timing routine:
     lapack = [lapack ' -lrt'] ;

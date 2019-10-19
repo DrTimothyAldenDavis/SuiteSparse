@@ -353,14 +353,14 @@ template SuiteSparseQR_factorization <Complex> *SuiteSparseQR_factorize<Complex>
 
 
 // =============================================================================
-// === rtsolve =================================================================
+// === spqr_private_rtsolve ====================================================
 // =============================================================================
 
 // Solve X = R'\(E'*B) or X = R'\B using the QR factorization from spqr_1factor
 // or SuiteSparseQR_factorize (including the singleton-row R and the
 // multifrontal R).  A is m-by-n.  B is n-by-nrhs, and X is m-by-nrhs.
 
-template <typename Entry> static void rtsolve
+template <typename Entry> void spqr_private_rtsolve
 (
     // inputs
     SuiteSparseQR_factorization <Entry> *QR,
@@ -752,8 +752,8 @@ template <typename Entry> cholmod_dense *SuiteSparseQR_solve    // returns X
         ok = (X != NULL) ;
         if (ok)
         {
-            rtsolve (QR, system == SPQR_RTX_EQUALS_ETB, nrhs, ldb, Bx,
-                (Entry *) X->x, cc) ;
+            spqr_private_rtsolve (QR, system == SPQR_RTX_EQUALS_ETB, nrhs, ldb,
+                Bx, (Entry *) X->x, cc) ;
         }
     }
 
@@ -848,13 +848,13 @@ template cholmod_sparse *SuiteSparseQR_solve <Complex>
 
 
 // =============================================================================
-// === get_H_vectors ===========================================================
+// === spqr_private_get_H_vectors ==============================================
 // =============================================================================
 
 // Get pointers to the Householder vectors in a single front.
 // Returns # Householder vectors in F.
 
-template <typename Entry> static Int get_H_vectors
+template <typename Entry> Int spqr_private_get_H_vectors
 (
     // inputs
     Int f,                  // front to operate on
@@ -948,12 +948,12 @@ template <typename Entry> static Int get_H_vectors
 
 
 // =============================================================================
-// === load_H_vectors ==========================================================
+// === spqr_private_load_H_vectors =============================================
 // =============================================================================
 
 // Load Householder vectors h1:h2-1 into the panel V.  Return # of rows in V.
 
-template <typename Entry> static Int load_H_vectors
+template <typename Entry> Int spqr_private_load_H_vectors
 (
     // input
     Int h1,             // load vectors h1 to h2-1
@@ -991,13 +991,13 @@ template <typename Entry> static Int load_H_vectors
 
 
 // =============================================================================
-// === Happly ==================================================================
+// === spqr_private_Happly =====================================================
 // =============================================================================
 
 // Given a QR factorization from spqr_1factor, apply the Householder vectors
 // to a dense matrix X.
 
-template <typename Entry> static void Happly
+template <typename Entry> void spqr_private_Happly
 (
     // inputs
     int method,             // 0,1,2,3
@@ -1078,7 +1078,7 @@ template <typename Entry> static void Happly
         for (f = 0 ; f < nf ; f++)
         {
             // get the Householder vectors for front F
-            nh = get_H_vectors (f, QR, H_Tau, H_start, H_end, cc) ;
+            nh = spqr_private_get_H_vectors (f, QR, H_Tau, H_start, H_end, cc) ;
             R = Rblock [f] ;
             Hi = &Hii [Hip [f]] ;               // list of row indices of H
 
@@ -1087,7 +1087,8 @@ template <typename Entry> static void Happly
             {
                 // load vectors h1:h2-1 from R into the panel V and apply them
                 h2 = MIN (h1 + hchunk, nh) ;
-                v = load_H_vectors (h1, h2, H_start, H_end, R, V, cc) ;
+                v = spqr_private_load_H_vectors (h1, h2, H_start, H_end, R, V,
+                    cc) ;
                 ASSERT (v+h1 <= QR->QRnum->Hm [f]) ;
                 spqr_panel (method, m2, n2, v, h2-h1, Hi+h1, V, H_Tau+h1,
                     m, X2, C, W, cc) ;
@@ -1105,7 +1106,7 @@ template <typename Entry> static void Happly
         {
 
             // get the Householder vectors for front F
-            nh = get_H_vectors (f, QR, H_Tau, H_start, H_end, cc) ;
+            nh = spqr_private_get_H_vectors (f, QR, H_Tau, H_start, H_end, cc) ;
             R = Rblock [f] ;
             Hi = &Hii [Hip [f]] ;               // list of row indices of H
 
@@ -1114,7 +1115,8 @@ template <typename Entry> static void Happly
             {
                 // load vectors h1:h2-1 from R into the panel V and apply them
                 h1 = MAX (h2 - hchunk, 0) ;
-                v = load_H_vectors (h1, h2, H_start, H_end, R, V, cc) ;
+                v = spqr_private_load_H_vectors (h1, h2, H_start, H_end, R, V,
+                    cc) ;
                 ASSERT (v+h1 <= QR->QRnum->Hm [f]) ;
                 spqr_panel (method, m2, n2, v, h2-h1, Hi+h1, V, H_Tau+h1,
                     m, X2, C, W, cc) ;
@@ -1362,7 +1364,8 @@ template <typename Entry> cholmod_dense *SuiteSparseQR_qmult
         }
 
         // apply H to Y
-        Happly (method, QR, hchunk, m, n, Y, H_Tau, H_start, H_end, V, C, W,cc);
+        spqr_private_Happly (method, QR, hchunk, m, n, Y, H_Tau, H_start, H_end,
+            V, C, W, cc) ;
 
     }
     else if (method == SPQR_QX)
@@ -1373,7 +1376,8 @@ template <typename Entry> cholmod_dense *SuiteSparseQR_qmult
         // ---------------------------------------------------------------------
 
         // apply H to Z
-        Happly (method, QR, hchunk, m, n, Z, H_Tau, H_start, H_end, V, C, W,cc);
+        spqr_private_Happly (method, QR, hchunk, m, n, Z, H_Tau, H_start, H_end,
+            V, C, W, cc) ;
 
         // Y = Z (P,:)
         Z1 = Z ;
@@ -1397,7 +1401,8 @@ template <typename Entry> cholmod_dense *SuiteSparseQR_qmult
         // ---------------------------------------------------------------------
 
         // apply H to Z
-        Happly (method, QR, hchunk, m, n, Z, H_Tau, H_start, H_end, V, C, W,cc);
+        spqr_private_Happly (method, QR, hchunk, m, n, Z, H_Tau, H_start, H_end,
+            V, C, W, cc) ;
 
         // Y = Z (:,P)
         Y1 = Y ;
@@ -1432,7 +1437,8 @@ template <typename Entry> cholmod_dense *SuiteSparseQR_qmult
         }
 
         // apply H to Y
-        Happly (method, QR, hchunk, m, n, Y, H_Tau, H_start, H_end, V, C, W,cc);
+        spqr_private_Happly (method, QR, hchunk, m, n, Y, H_Tau, H_start, H_end,
+            V, C, W, cc) ;
 
     }
 

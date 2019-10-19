@@ -136,12 +136,10 @@ mxArray *ssmult         /* returns C = A*B or variants */
                 /* C = A'*B         A is m-by-n, B is m-by-k, C is n-by-k */
                 if (ssmult_use_dot (A, B))
                 {
-                    // printf ("use dot for A'*B\n") ;
                     C = ssmult_dot (A, B, ac, bc, cc) ;         /* C = A'*B */
                 }
                 else
                 {
-                    // printf ("use saxpy for A'*B\n") ;
                     T = ssmult_transpose (A, ac) ;              /* T = A' */
                     C = ssmult_saxpy (T, B, 0, bc, cc, 1) ;     /* C = T*B */
                 }
@@ -170,10 +168,7 @@ mxArray *ssmult         /* returns C = A*B or variants */
             if (ct)
             {
                 /* C = (A*B)'       A is m-by-n, B is n-by-k, C is k-by-m */
-                // printf ("(A*B)' %d %d %d\n", ac, bc, cc) ;
                 T = ssmult_saxpy (A, B, ac, bc, 0, 0) ;         /* T = A*B */
-                // printf ("\nT = ") ;
-                // ssdump (T) ;
                 C = ssmult_transpose (T, cc) ;                  /* C = T' */
             }
             else

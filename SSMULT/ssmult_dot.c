@@ -76,8 +76,6 @@ mxArray *ssmult_dot     /* returns C = A'*B */
     n = mxGetN (A) ;
     k = mxGetN (B) ;
 
-    // printf ("dot %d %d %d\n", m, n, k) ;
-
     if (m != mxGetM (B)) ssmult_invalid (ERROR_DIMENSIONS) ;
 
     Ap = mxGetJc (A) ;
@@ -91,9 +89,6 @@ mxArray *ssmult_dot     /* returns C = A'*B */
     Bx = mxGetPr (B) ;
     Bz = mxGetPi (B) ;
     B_is_complex = mxIsComplex (B) ;
-
-    // printf ("A = \n") ; ssdump (A) ;
-    // printf ("B = \n") ; ssdump (B) ;
 
     /* ---------------------------------------------------------------------- */
     /* allocate C as an n-by-k full matrix but do not initialize it */
@@ -187,13 +182,10 @@ mxArray *ssmult_dot     /* returns C = A'*B */
                 }
             }
             Cx [i+j*n] = cx ;
-            // printf ("C(%d,%d) = %g", i, j, cx) ;
             if (C_is_complex)
             {
                 Cz [i+j*n] = cz ;
-                // printf (" %g i", cz) ;
             }
-            // printf ("\n") ;
         }
 
         /* count the number of nonzeros in C(:,j) */
@@ -212,8 +204,6 @@ mxArray *ssmult_dot     /* returns C = A'*B */
             }
         }
     }
-
-    // printf ("here1\n") ;
 
     /* ---------------------------------------------------------------------- */
     /* convert C to real if the imaginary part is all zero */
@@ -237,7 +227,6 @@ mxArray *ssmult_dot     /* returns C = A'*B */
             Cz = NULL ;
         }
     }
-    // printf ("here2\n") ;
 
     /* ---------------------------------------------------------------------- */
     /* allocate integer part of C but do not initialize it */
@@ -259,7 +248,6 @@ mxArray *ssmult_dot     /* returns C = A'*B */
     /* ---------------------------------------------------------------------- */
     /* C = sparse (C).  Note that this is done in-place. */
     /* ---------------------------------------------------------------------- */
-    // printf ("here3\n") ;
 
     p = 0 ;
     for (j = 0 ; j < k ; j++)
@@ -284,7 +272,6 @@ mxArray *ssmult_dot     /* returns C = A'*B */
     /* reduce the size of Cx and Cz and return result */
     /* ---------------------------------------------------------------------- */
 
-    // printf ("here4\n") ;
     if (cnz < cnzmax)
     {
         Cx = mxRealloc (Cx, cnz * sizeof (double)) ;
@@ -300,6 +287,5 @@ mxArray *ssmult_dot     /* returns C = A'*B */
     {
         mxSetPi (C, Cz) ;
     }
-    // printf ("bye dot\n") ;
     return (C) ;
 }

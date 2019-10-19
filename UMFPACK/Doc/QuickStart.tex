@@ -18,8 +18,8 @@
 \author{Timothy A. Davis \\
 Dept. of Computer and Information Science and Engineering \\
 Univ. of Florida, Gainesville, FL}
-\title{UMFPACK Version 5.3 Quick Start Guide}
-\date{March 24, 2009}
+\title{UMFPACK Version 5.4.0 Quick Start Guide}
+\date{May 20, 2009}
 \maketitle
 
 %-------------------------------------------------------------------------------
@@ -35,7 +35,7 @@ Univ. of Florida, Gainesville, FL}
 \end{abstract}
 %-------------------------------------------------------------------------------
 
-UMFPACK Version 5.3, Copyright\copyright 1995-2009 by Timothy A. Davis.
+Copyright\copyright 1995-2009 by Timothy A. Davis.
 All Rights Reserved.  Refer to the UMFPACK User Guide
 for the License. See \newline
 http://www.cise.ufl.edu/research/sparse/umfpack
@@ -234,8 +234,8 @@ for more details.
 \label{Install}
 %-------------------------------------------------------------------------------
 
-You will need to install both UMFPACK v5.3 and AMD v2.2 to use UMFPACK.
-Note that UMFPACK v5.3 cannot use AMD v1.2 or earlier.
+You will need to install AMD v2.2 to use UMFPACK.
+Note that this version of UMFPACK cannot use AMD v1.2 or earlier.
 The {\tt UMFPACK} and {\tt AMD} subdirectories must be placed side-by-side
 within the same parent directory.  AMD is a stand-alone package that
 is required by UMFPACK.  UMFPACK can be compiled without the
@@ -451,15 +451,9 @@ Arguments:
                 [UMFPACK_PIVOT_TOLERANCE] (default 0.1) times the largest entry
                 in its column.
 
-            UMFPACK_STRATEGY_2BY2:  a row permutation P2 is found that places
-                large entries on the diagonal.  The matrix P2*A is then
-                factorized using the symmetric strategy, described above.
-                Refer to the User Guide for more information.
+            UMFPACK_STRATEGY_2BY2:  option disabled.
 
-        Control [UMFPACK_2BY2_TOLERANCE]:  a diagonal entry S (k,k) is
-            considered "small" if it is < tol * max (abs (S (:,k))), where S a
-            submatrix of the scaled input matrix, with pivots of zero Markowitz
-            cost removed.
+        Control [UMFPACK_2BY2_TOLERANCE]:  ignored.
 
         Control [UMFPACK_SCALE]:  This parameter is new to V4.1.  See
             umfpack_numeric.h for a description.  Only affects the 2-by-2
@@ -564,8 +558,7 @@ Arguments:
         Info [UMFPACK_SYMBOLIC_TIME]:  The CPU time taken, in seconds.
 
         Info [UMFPACK_STRATEGY_USED]: The ordering strategy used:
-            UMFPACK_STRATEGY_SYMMETRIC, UMFPACK_STRATEGY_UNSYMMETRIC, or
-            UMFPACK_STRATEGY_2BY2.
+            UMFPACK_STRATEGY_SYMMETRIC or UMFPACK_STRATEGY_UNSYMMETRIC
 \end{verbatim}
 }
 

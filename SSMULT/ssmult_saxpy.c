@@ -383,7 +383,6 @@ mxArray *ssmult_saxpy       /* return C = A*B */
     else
     {
 #define UNSORTED
-        // printf ("do saxpy unsorted\n") ;
         if (A_is_complex)
         {
             if (B_is_complex)
@@ -396,7 +395,6 @@ mxArray *ssmult_saxpy       /* return C = A*B */
             else
             {
                 /* C and A are complex, B is real */
-                // printf ("A complex, B real\n") ;
 #define ACOMPLEX
 #include "ssmult_template.c"
             }
@@ -440,7 +438,6 @@ mxArray *ssmult_saxpy       /* return C = A*B */
 
     if (C_is_complex && zallzero)
     {
-        // printf ("imag all zero\n") ;
         C_is_complex = 0 ;
         mxFree (Cz) ;
         Cz = NULL ;
@@ -449,8 +446,6 @@ mxArray *ssmult_saxpy       /* return C = A*B */
     /* ---------------------------------------------------------------------- */
     /* drop zeros from C and reduce its size, if any zeros appear */
     /* ---------------------------------------------------------------------- */
-
-    // printf ("drop: %d cc: %d\n", drop, cc) ;
 
 /*
     for (j = 0 ; j < Bncol ; j++)
@@ -510,7 +505,6 @@ mxArray *ssmult_saxpy       /* return C = A*B */
     {
         /* compute conj(C), but with no dropping of entries */
         cnz = Cp [Bncol] ;
-        // printf ("conj(C), cnz %d\n", cnz) ;
         for (p = 0 ; p < cnz ; p++)
         {
             Cz [p] = -Cz [p] ;

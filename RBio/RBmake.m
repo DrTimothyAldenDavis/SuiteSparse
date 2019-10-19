@@ -11,11 +11,21 @@
 
 if (~isempty (strfind (computer, '64')))
     fprintf ('Compiling 64-bit version of RBio.\n') ;
-    mex -O -output RBread RBread_mex_64.f RBread_64.f RBrread_64.f ...
-	RBcread_64.f RBcsplit_64.f
-    mex -O -output RBtype RBtype_mex_64.f RBwrite_64.f
-    mex -O -output RBwrite RBwrite_mex_64.f RBwrite_64.f
-    mex -O -output RBraw RBraw_mex_64.f RBread_64.f
+    try
+        % try with -largeArrayDims (will fail on old MATLAB versions)
+        mex -O -largeArrayDims -output RBread RBread_mex_64.f RBread_64.f ...
+            RBrread_64.f RBcread_64.f RBcsplit_64.f
+        mex -O -largeArrayDims -output RBtype RBtype_mex_64.f RBwrite_64.f
+        mex -O -largeArrayDims -output RBwrite RBwrite_mex_64.f RBwrite_64.f
+        mex -O -largeArrayDims -output RBraw RBraw_mex_64.f RBread_64.f
+    catch
+        % try without -largeArrayDims (will fail on recent MATLAB versions)
+        mex -O -output RBread RBread_mex_64.f RBread_64.f ...
+            RBrread_64.f RBcread_64.f RBcsplit_64.f
+        mex -O -output RBtype RBtype_mex_64.f RBwrite_64.f
+        mex -O -output RBwrite RBwrite_mex_64.f RBwrite_64.f
+        mex -O -output RBraw RBraw_mex_64.f RBread_64.f
+    end
 else
     fprintf ('Compiling 32-bit version of RBio.\n') ;
     mex -O -output RBread RBread_mex_32.f RBread_32.f RBrread_32.f ...

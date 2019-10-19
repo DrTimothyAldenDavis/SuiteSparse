@@ -28,14 +28,26 @@ function [out1,out2,P] = spqr (A,arg2,arg3)                                 %#ok
 % returning Q as a sparse matrix.
 %
 % Example:
+%   The least-squares solution of an overdetermined system A*x=b with
+%   m > n can be found in at least one of seven ways (in increasing order of
+%   efficiency):
+%
+%      x = pinv(full(A)) * b ;
+%      [Q,R] = spqr (A) ; x = R\(Q'*b) ;
+%      [Q,R,P] = spqr (A) ; x = P*(R\(Q'*b)) ;
+%      [Q,R,P] = spqr (A,struct('Q','Householder')) ; x=P*(R\spqr_qmult(Q,b,0));
+%      [c,R,P] = spqr (A,b) ; x = P*(R\c) ;
+%      [c,R,p] = spqr (A,b,0) ; x = (R\c) ; x (p) = x ;
+%      x = spqr_solve (A,b) ;
+%  
 %   The minimum-norm solution of an underdetermined system A*x=b with
 %   m < n can be found in one of five ways (in increasing order of efficiency):
 %
-%   x = pinv(full(A)) * b ;
-%   [Q,R] = spqr (A') ; x = Q*(R'\b) ;
-%   [Q,R,P] = spqr (A') ; x = Q*(R'\(P'*b)) ;
-%   [Q,R,P] = spqr (A',struct('Q','Householder')) ; x=spqr_qmult(Q,R'\(P'*b),1);
-%   x = spqr_solve (A,b,struct('solution','min2norm')) ;
+%      x = pinv(full(A)) * b ;
+%      [Q,R] = spqr (A') ; x = Q*(R'\b) ;
+%      [Q,R,P] = spqr (A') ; x = Q*(R'\(P'*b)) ;
+%      [Q,R,P] = spqr(A',struct('Q','Householder'));x=spqr_qmult(Q,R'\(P'*b),1);
+%      x = spqr_solve (A,b,struct('solution','min2norm')) ;
 %
 % Entries not present in opts are set to their defaults:
 %
@@ -102,7 +114,7 @@ function [out1,out2,P] = spqr (A,arg2,arg3)                                 %#ok
 % See also SPQR_QMULT, SPQR_SOLVE, LU, NULL, ORTH, QRDELETE, QRINSERT, QRUPDATE,
 %       SPQR_SINGLETONS.
 
-%   Copyright 2008, Timothy A. Davis
+%   Copyright 2008-2009, Timothy A. Davis
 %   http://www.cise.ufl.edu/research/sparse
 
 type spqr

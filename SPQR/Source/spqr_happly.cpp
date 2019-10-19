@@ -25,12 +25,12 @@
 #include "spqr.hpp"
 
 // =============================================================================
-// === do_panel ================================================================
+// === spqr_private_do_panel ===================================================
 // =============================================================================
 
 // Loads V with a panel of Householder vectors and applies them to X
 
-template <typename Entry> static void do_panel
+template <typename Entry> void spqr_private_do_panel
 (
     // inputs, not modified
     int method,         // which method to use (0,1,2,3)
@@ -249,7 +249,7 @@ template <typename Entry> void spqr_happly
             // load and apply the panel
             // -----------------------------------------------------------------
 
-            do_panel (method, m, n, v, Wi, h1, h2, Hp, Hi, Hx, Tau,
+            spqr_private_do_panel (method, m, n, v, Wi, h1, h2, Hp, Hi, Hx, Tau,
                 Wmap, X, V, C, W, cc) ;
         }
 
@@ -373,7 +373,7 @@ template <typename Entry> void spqr_happly
             // load and apply the panel
             // -----------------------------------------------------------------
 
-            do_panel (method, m, n, v, Wi, h1, h2, Hp, Hi, Hx, Tau,
+            spqr_private_do_panel (method, m, n, v, Wi, h1, h2, Hp, Hi, Hx, Tau,
                 Wmap, X, V, C, W, cc) ;
         }
     }
