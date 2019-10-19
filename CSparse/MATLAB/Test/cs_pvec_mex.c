@@ -13,7 +13,7 @@ void mexFunction
 
     if (nargout > 1 || nargin != 2)
     {
-	mexErrMsgTxt ("Usage: x = cs_pvec(b,p)") ;
+        mexErrMsgTxt ("Usage: x = cs_pvec(b,p)") ;
     }
 
     b = mxGetPr (pargin [0]) ;
@@ -21,7 +21,7 @@ void mexFunction
 
     if (n != mxGetNumberOfElements (pargin [1]))
     {
-	mexErrMsgTxt ("b or p wrong size") ;
+        mexErrMsgTxt ("b or p wrong size") ;
     }
 
     pargout [0] = mxCreateDoubleMatrix (n, 1, mxREAL) ;

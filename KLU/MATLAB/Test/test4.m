@@ -190,12 +190,12 @@ try
         end
 
         fprintf ('err %g %g %g\n', err1, err2, err4) ;
-        if (err1 > 1e4*err2 | err4 > 1e4*err2)				    %#ok
+        if (err1 > 1e4*err2 | err4 > 1e4*err2)                              %#ok
             fprintf ('warning: KLU inaccurate!\n')
         end
 
         fprintf ('terr %g %g %g\n', terr1, terr2, terr4) ;
-        if (terr1 > 1e4*terr2 | terr4 > 1e4*terr2)			    %#ok
+        if (terr1 > 1e4*terr2 | terr4 > 1e4*terr2)                          %#ok
             fprintf ('warning: KLU T inaccurate!\n')
         end
 

@@ -1,4 +1,4 @@
-function [p,q,r] = btf (A)						    %#ok
+function [p,q,r] = btf (A)                                                  %#ok
 %BTF permute a square sparse matrix into upper block triangular form
 % with a zero-free diagonal, or with a maximum number of nonzeros along the
 % diagonal if a zero-free permutation does not exist.

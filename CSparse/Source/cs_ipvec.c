@@ -3,7 +3,7 @@
 int cs_ipvec (const int *p, const double *b, double *x, int n)
 {
     int k ;
-    if (!x || !b) return (0) ;				    /* check inputs */
+    if (!x || !b) return (0) ;                              /* check inputs */
     for (k = 0 ; k < n ; k++) x [p ? p [k] : k] = b [k] ;
     return (1) ;
 }

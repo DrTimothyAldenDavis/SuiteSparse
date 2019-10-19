@@ -15,7 +15,7 @@ function umfpack_make (lapack)
 
 % Copyright 1995-2007 by Timothy A. Davis.
 
-details = 0 ;
+details = 0 ;   % set to 1 to print out each mex command as it's executed
 
 d = '' ;
 if (~isempty (strfind (computer, '64')))
@@ -77,7 +77,11 @@ end
 % -DNPOSIX option (for sysconf and times timer routines)
 %-------------------------------------------------------------------------------
 
-posix = '' ;
+if (~pc)
+    % added for timing routine:
+    lapack = [lapack ' -lrt'] ;
+    posix = ' -DLIBRT' ;
+end
 
 % if (~pc)
 %     msg = [ ...
@@ -112,7 +116,10 @@ posix = '' ;
 umfdir = '../Source/' ;
 amddir = '../../AMD/Source/' ;
 incdir = ' -I../Include -I../Source -I../../AMD/Include -I../../UFconfig' ;
+% with optimization:
 mx = sprintf ('mex -O%s%s%s ', posix, incdir, d) ;
+% no optimization:
+%% mx = sprintf ('mex -g %s%s%s ', posix, incdir, d) ;
 % fprintf ('compile options:\n%s\n', mx) ;
 
 %-------------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-function [p,q,r] = strongcomp (A, qin)					    %#ok
+function [p,q,r] = strongcomp (A, qin)                                      %#ok
 %STRONGCOMP symmetric permutation to upper block triangular form
 % The matrix must be sparse and square.
 %

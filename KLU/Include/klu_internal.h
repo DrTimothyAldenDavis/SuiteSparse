@@ -48,7 +48,7 @@
 
 /* true if an integer (stored in double x) would overflow (or if x is NaN) */
 #define INT_OVERFLOW(x) ((!((x) * (1.0+1e-8) <= (double) INT_MAX)) \
-			|| SCALAR_IS_NAN (x))
+                        || SCALAR_IS_NAN (x))
 
 #undef TRUE
 #undef FALSE
@@ -80,24 +80,24 @@
 size_t KLU_kernel   /* final size of LU on output */
 (
     /* input, not modified */
-    Int n,		/* A is n-by-n */
-    Int Ap [ ],		/* size n+1, column pointers for A */
-    Int Ai [ ],		/* size nz = Ap [n], row indices for A */
-    Entry Ax [ ],	/* size nz, values of A */
-    Int Q [ ],		/* size n, optional input permutation */
-    size_t lusize,	/* initial size of LU */
+    Int n,              /* A is n-by-n */
+    Int Ap [ ],         /* size n+1, column pointers for A */
+    Int Ai [ ],         /* size nz = Ap [n], row indices for A */
+    Entry Ax [ ],       /* size nz, values of A */
+    Int Q [ ],          /* size n, optional input permutation */
+    size_t lusize,      /* initial size of LU */
 
     /* output, not defined on input */
-    Int Pinv [ ],	/* size n */
-    Int P [ ],		/* size n */
-    Unit **p_LU,	/* size lusize on input, size Uxp[n] on output*/
-    Entry Udiag [ ],	/* size n, diagonal of U */
-    Int Llen [ ],	/* size n, column length of L */
-    Int Ulen [ ],	/* size n, column length of U */
-    Int Lip [ ],	/* size n+1 */
-    Int Uip [ ],	/* size n+1 */
-    Int *lnz,		/* size of L */
-    Int *unz,		/* size of U */
+    Int Pinv [ ],       /* size n */
+    Int P [ ],          /* size n */
+    Unit **p_LU,        /* size lusize on input, size Uxp[n] on output*/
+    Entry Udiag [ ],    /* size n, diagonal of U */
+    Int Llen [ ],       /* size n, column length of L */
+    Int Ulen [ ],       /* size n, column length of U */
+    Int Lip [ ],        /* size n+1 */
+    Int Uip [ ],        /* size n+1 */
+    Int *lnz,           /* size of L */
+    Int *unz,           /* size of U */
 
     /* workspace, not defined on input */
     Entry X [ ],   /* size n, zero on output */
@@ -105,59 +105,59 @@ size_t KLU_kernel   /* final size of LU on output */
     /* workspace, not defined on input or output */
     Int Stack [ ],  /* size n */
     Int Flag [ ],   /* size n */
-    Int adj_pos [ ],	/* size n */
+    Int adj_pos [ ],    /* size n */
     
     /* workspace for pruning only */
-    Int Lpend [ ],	/* size n workspace */
+    Int Lpend [ ],      /* size n workspace */
 
     /* inputs, not modified on output */
-    Int k1,	    	/* the block of A is from k1 to k2-1 */
-    Int PSinv [ ],  	/* inverse of P from symbolic factorization */
-    double Rs [ ],  	/* scale factors for A */
+    Int k1,             /* the block of A is from k1 to k2-1 */
+    Int PSinv [ ],      /* inverse of P from symbolic factorization */
+    double Rs [ ],      /* scale factors for A */
 
     /* inputs, modified on output */
     Int Offp [ ],   /* off-diagonal matrix (modified by this routine) */
     Int Offi [ ],
     Entry Offx [ ],
-    KLU_common *Common	/* the control input/output structure */
+    KLU_common *Common  /* the control input/output structure */
 ) ;
 
 
-size_t KLU_kernel_factor	    /* 0 if failure, size of LU if OK */
+size_t KLU_kernel_factor            /* 0 if failure, size of LU if OK */
 (
     /* inputs, not modified */
-    Int n,	    /* A is n-by-n. n must be > 0. */
-    Int Ap [ ],	    /* size n+1, column pointers for A */
-    Int Ai [ ],	    /* size nz = Ap [n], row indices for A */
+    Int n,          /* A is n-by-n. n must be > 0. */
+    Int Ap [ ],     /* size n+1, column pointers for A */
+    Int Ai [ ],     /* size nz = Ap [n], row indices for A */
     Entry Ax [ ],   /* size nz, values of A */
-    Int Q [ ],	    /* size n, optional column permutation */
+    Int Q [ ],      /* size n, optional column permutation */
     double Lsize,   /* initial size of L and U */
 
     /* outputs, not defined on input */
-    Unit **p_LU,	/* row indices and values of L and U */
-    Entry Udiag [ ],	/* size n, diagonal of U */
-    Int Llen [ ],	/* size n, column length of L */
-    Int Ulen [ ],	/* size n, column length of U */
-    Int Lip [ ],	/* size n+1, column pointers of L */
-    Int Uip [ ],	/* size n+1, column pointers of U */
-    Int P [ ],	        /* row permutation, size n */
-    Int *lnz,	   	/* size of L */
-    Int *unz,	    	/* size of U */
+    Unit **p_LU,        /* row indices and values of L and U */
+    Entry Udiag [ ],    /* size n, diagonal of U */
+    Int Llen [ ],       /* size n, column length of L */
+    Int Ulen [ ],       /* size n, column length of U */
+    Int Lip [ ],        /* size n+1, column pointers of L */
+    Int Uip [ ],        /* size n+1, column pointers of U */
+    Int P [ ],          /* row permutation, size n */
+    Int *lnz,           /* size of L */
+    Int *unz,           /* size of U */
 
     /* workspace, undefined on input */
-    Entry *X,	    /* size n entries.  Zero on output */
-    Int *Work,	    /* size 5n Int's */
+    Entry *X,       /* size n entries.  Zero on output */
+    Int *Work,      /* size 5n Int's */
 
     /* inputs, not modified on output */
-    Int k1,	    	/* the block of A is from k1 to k2-1 */
-    Int PSinv [ ],  	/* inverse of P from symbolic factorization */
-    double Rs [ ],  	/* scale factors for A */
+    Int k1,             /* the block of A is from k1 to k2-1 */
+    Int PSinv [ ],      /* inverse of P from symbolic factorization */
+    double Rs [ ],      /* scale factors for A */
 
     /* inputs, modified on output */
     Int Offp [ ],   /* off-diagonal matrix (modified by this routine) */
     Int Offi [ ],
     Entry Offx [ ],
-    KLU_common *Common	/* the control input/output structure */
+    KLU_common *Common  /* the control input/output structure */
 ) ;
 
 void KLU_lsolve

@@ -486,17 +486,29 @@ GLOBAL Int UMF_kernel_init
 	ASSERT (n_row == n_col) ;
 	ASSERT (nempty_col == Symbolic->nempty_row) ;
 	ASSERT (nempty_col == nempty) ;
+
+#ifndef NDEBUG
 	for (i = 0 ; i < nn ; i++)
 	{
 	    Diagonal_map [i] = EMPTY ;
 	    Diagonal_imap [i] = EMPTY ;
 	}
-	for (k = n1 ; k < nn - nempty ; k++)
+#endif
+
+	for (k = 0 ; k < nn ; k++)
 	{
 	    newrow = Symbolic->Diagonal_map [k] ;
 	    Diagonal_map [k] = newrow ;
 	    Diagonal_imap [newrow] = k ;
 	}
+
+#ifndef NDEBUG
+	for (i = 0 ; i < nn ; i++)
+	{
+	    ASSERT (Diagonal_map [i] != EMPTY) ;
+	    ASSERT (Diagonal_imap [i] != EMPTY) ;
+	}
+#endif
     }
 
     /* ---------------------------------------------------------------------- */
@@ -923,7 +935,7 @@ GLOBAL Int UMF_kernel_init
     {
 	Entry aij ;
 	Int *InvCperm, newcol ;
-	UMF_dump_diagonal_map (Diagonal_map, Diagonal_imap, n1, nn, nempty) ;
+	UMF_dump_diagonal_map (Diagonal_map, Diagonal_imap, nn) ;
 	InvCperm = (Int *) malloc (n_col * sizeof (Int)) ;
 	ASSERT (InvCperm != (Int *) NULL) ;
 	for (newcol = 0 ; newcol < n_col ; newcol++)

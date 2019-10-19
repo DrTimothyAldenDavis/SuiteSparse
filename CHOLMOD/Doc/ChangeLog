@@ -1,3 +1,14 @@
+Sept 30, 2008, version 1.7.1
+
+    * bug fix to cholmod_symmetry; it reported incorrectly if the matrix
+        had a zero-free diagonal or not.  No effect on the use of CHOLMOD in
+        MATLAB.  No effect on the mwrite function, either, which uses
+        cholmod_symmetry.  Note that the number of nonzeros on the diagonal was
+        (and still is) correctly computed.  Only effect is on the
+        UF_Index.cholcand statistic reported in the UFget index, and on the web
+        pages, for the UF Sparse Matrix Collection (the UF_Index.cholcand
+        field).  This affects the output of spsym.
+
 Sept 20, 2008, version 1.7.0
 
     * update for SuiteSparseQR:

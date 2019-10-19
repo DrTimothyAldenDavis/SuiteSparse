@@ -44,17 +44,17 @@ for trials = 1:ntrials
     lerr2 = log10 (max (err2, eps)) ;
 
     fprintf ('rank: %3d %3d err %6.2e  %6.2e  :   %6.1f\n', ...
-	sprank(A), rank(full(A)), err1, err2, lerr1 - lerr2) ;
+        sprank(A), rank(full(A)), err1, err2, lerr1 - lerr2) ;
 
     if (isnan (err1))
-	lerr1 = 10 ;
+        lerr1 = 10 ;
     end
     if (isnan (err2))
-	lerr2 = 10 ;
+        lerr2 = 10 ;
     end
 
     if (lerr2 > lerr1 + 5)
-	% pause
+        % pause
     end
 
     e1 (trials) = lerr1 ;

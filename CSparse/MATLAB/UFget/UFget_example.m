@@ -19,7 +19,7 @@ f = f (j) ;
 
 for i = f
     fprintf ('Loading %s%s%s, please wait ...\n', ...
-	index.Group {i}, filesep, index.Name {i}) ;
+        index.Group {i}, filesep, index.Name {i}) ;
     Problem = UFget (i,index) ;
     disp (Problem) ;
     spy (Problem.A) ;

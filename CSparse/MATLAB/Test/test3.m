@@ -20,20 +20,20 @@ for i = f
     disp (Prob) ;
     A = Prob.A ;
     [m n] = size (A) ;
-    if (~isreal (A) | m ~= n)						    %#ok
-	continue
+    if (~isreal (A) | m ~= n)                                               %#ok
+        continue
     end
 
     A = A*A' + 2*n*speye (n) ;
     try
-	p = amd (A) ;
+        p = amd (A) ;
     catch
-	p = symamd (A) ;
+        p = symamd (A) ;
     end
     try
-	L0 = chol (A)' ;
+        L0 = chol (A)' ;
     catch
-	continue
+        continue
     end
     b = rand (n,1) ;
 
@@ -45,14 +45,14 @@ for i = f
     x2 = cs_lsolve (L0,b) ;
     err = norm (x1-x2,1) ;
     if (err > 1e-12 * c)
-	error ('!') ;
+        error ('!') ;
     end
 
     x1 = L0'\b ;
     x2 = cs_ltsolve (L0,b) ;
     err = norm (x1-x2,1) ;
     if (err > 1e-10 * c)
-	error ('!') ;
+        error ('!') ;
     end
 
     U = L0' ;
@@ -61,7 +61,7 @@ for i = f
     x2 = cs_usolve (U,b) ;
     err = norm (x1-x2,1) ;
     if (err > 1e-10 * c)
-	error ('!') ;
+        error ('!') ;
     end
 
     L2 = cs_chol (A) ;
@@ -69,7 +69,7 @@ for i = f
     subplot (2,3,4) ; spy (L2) ;
     err = norm (L0-L2,1) ;
     if (err > 1e-8 * c)
-	error ('!') ;
+        error ('!') ;
     end
 
     L1 = chol (C)' ;
@@ -78,7 +78,7 @@ for i = f
     subplot (2,3,5) ; spy (L2) ;
     err = norm (L1-L2,1) ;
     if (err > 1e-8 * c)
-	error ('!') ;
+        error ('!') ;
     end
 
     [L3,p] = cs_chol (A) ;
@@ -88,7 +88,7 @@ for i = f
     subplot (2,3,6) ; spy (L3) ;
     err = norm (L4-L3,1) ;
     if (err > 1e-8 * c)
-	error ('!') ;
+        error ('!') ;
     end
 
     drawnow

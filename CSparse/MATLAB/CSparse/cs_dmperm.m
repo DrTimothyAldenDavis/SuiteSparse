@@ -1,4 +1,4 @@
-function [p,q,r,s,cc,rr] = cs_dmperm (A,seed)				    %#ok
+function [p,q,r,s,cc,rr] = cs_dmperm (A,seed)                               %#ok
 %CS_DMPERM maximum matching or Dulmage-Mendelsohn permutation.
 %   p = cs_dmperm(A) finds a maximum matching p such that p(j) = i if column j
 %   is matched to row i, or 0 if column j is unmatched.  If A is square and

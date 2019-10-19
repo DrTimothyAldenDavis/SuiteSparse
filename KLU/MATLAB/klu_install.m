@@ -15,7 +15,7 @@ function klu_install (with_cholmod)
 %
 % See also klu, btf
 
-% Copyright 2004-2007 Timothy A. Davis, Univ. of Florida
+% Copyright 2004-2009 Timothy A. Davis, Univ. of Florida
 
 if (nargin < 1)
     with_cholmod = 0 ;

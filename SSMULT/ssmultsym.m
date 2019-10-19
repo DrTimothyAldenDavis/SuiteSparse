@@ -1,4 +1,4 @@
-function s = ssmultsym (A,B)						    %#ok
+function s = ssmultsym (A,B)                                                %#ok
 %SSMULTSYM computes nnz(C), memory, and flops to compute C=A*B; A and B sparse.
 % s = ssmultsym (A,B) returns a struct s with the following fields:
 %
@@ -26,8 +26,16 @@ function s = ssmultsym (A,B)						    %#ok
 %   [m n] = size (C)
 %   mem = 12*nnz(C) + 4*(n+1) + (12*m)          % assuming real, 32-bit MATLAB
 %
+% This function can also compute the statistics for any of the 64 combinations
+% of C = op (op(A) * op(B)) where op(A) is A, A', A.', or conj(A).  The general
+% form is
+%
+%   C = ssmultsym (A,B, at,ac, bt,bc, ct,cc)
+%
+% See ssmult for a description of the at,ac, bt,bc, and ct,cc arguments.
+%
 % See also ssmult, mtimes.
 
-% Copyright 2007, Timothy A. Davis, University of Florida
+% Copyright 2009, Timothy A. Davis, University of Florida
 
 error ('ssmultsym mexFunction not found') ;

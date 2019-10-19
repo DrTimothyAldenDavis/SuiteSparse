@@ -447,11 +447,13 @@ int main (int argc, char **argv)
     b = (double *) malloc (n * sizeof (double)) ;
     r = (double *) malloc (n * sizeof (double)) ;
     x = (double *) malloc (n * sizeof (double)) ;
+
     if (!Ap || !Ai || !Ax || !b || !r)
     {
 	printf ("out of memory") ;
 	exit (1) ;
     }
+
     umfpack_tic (stats) ;
     status = umfpack_di_triplet_to_col (nrow, ncol, nz, Ti, Tj, Tx, Ap, Ai, Ax,
 	(int *) NULL) ;
@@ -645,6 +647,13 @@ int main (int argc, char **argv)
     amd_info (amd_Info) ;
     free (Pamd) ;
     printf ("AMD test done\n") ;
+
+    free (Ap) ;
+    free (Ai) ;
+    free (Ax) ;
+    free (b) ;
+    free (r) ;
+    free (x) ;
 
     return (0) ;
 }

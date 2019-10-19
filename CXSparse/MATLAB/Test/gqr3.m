@@ -17,14 +17,14 @@ for i = 2:m
     % i
     for k = 1:min(i-1,n)
     % k
-	% Givens rotation to zero out A(i,k) using A(k,k)
-	G = givens2 (A(k,k), A(i,k)) ;
-	A ([k i],k:n) = G * A ([k i],k:n) ;
-	A (i,k) = 0 ;
-	% fprintf ('A(21,25)=%g\n', A(21,25)) ;
-	% if (A(21,25) ~= 0)
-	    % pause
-	% end
+        % Givens rotation to zero out A(i,k) using A(k,k)
+        G = givens2 (A(k,k), A(i,k)) ;
+        A ([k i],k:n) = G * A ([k i],k:n) ;
+        A (i,k) = 0 ;
+        % fprintf ('A(21,25)=%g\n', A(21,25)) ;
+        % if (A(21,25) ~= 0)
+            % pause
+        % end
     end
 end
 R = A ;

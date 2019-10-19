@@ -37,8 +37,8 @@ matched = 0 ;
 for id = 1:nmat
     name = [index.Group{id} '/' index.Name{id}] ;
     if (~isempty (regexp (name, expression, 'once')))
-	matched = matched + 1 ;
-	list1 (matched) = id ;
+        matched = matched + 1 ;
+        list1 (matched) = id ;
     end
 end
 
@@ -46,7 +46,7 @@ list1 = list1 (1,1:matched) ;
 
 if (nargout == 0)
     for id = list1
-	fprintf ('%4d: %s/%s\n', id, index.Group {id}, index.Name {id}) ;
+        fprintf ('%4d: %s/%s\n', id, index.Group {id}, index.Name {id}) ;
     end
 else
     list = list1 ;

@@ -8,7 +8,7 @@ function drawbox (r1,r2,c1,c2,color,w,e)
 %   Copyright 2006-2007, Timothy A. Davis.
 %   http://www.cise.ufl.edu/research/sparse
 
-if (r1 == r2 | c1 == c2)						    %#ok
+if (r1 == r2 | c1 == c2)                                                    %#ok
     return
 end
 
@@ -24,6 +24,6 @@ else
     c2 = ceil ((c2 - 1) / e) + .5 ;
 end
 
-if (c2 > c1 | r2 > r1)							    %#ok
+if (c2 > c1 | r2 > r1)                                                      %#ok
     plot ([c1 c2 c2 c1 c1], [r1 r1 r2 r2 r1], color, 'LineWidth', w) ;
 end

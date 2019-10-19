@@ -885,17 +885,26 @@ GLOBAL Int UMF_singletons
     /* see if pruned submatrix is square and has been symmetrically permuted */
     /* ---------------------------------------------------------------------- */
 
+    /* The prior version of this code (with a "break" statement; UMFPACK 5.2)
+     * causes UMFPACK to fail when optimization is enabled with gcc version
+     * 4.2.4 in a 64-bit Linux environment.  The bug is a compiler bug, not a
+     * an UMFPACK bug.  It is fixed in gcc version 4.3.2.  However, as a
+     * workaround for the compiler, the code below has been "fixed". */
+
     if (n_row == n_col && nempty_row == nempty_col)
     {
 	/* is_sym is true if the submatrix is square, and
 	 * Rperm [n1..n_row-nempty_row-1] = Cperm [n1..n_col-nempty_col-1] */
 	is_sym = TRUE ;
-	for (s = n1 ; s < n_col - nempty_col ; s++)
+	for (s = n1 ; /* replaced the break with this test: */ is_sym &&
+            /* the remainder of this test is unchanged from v5.2.0: */
+            s < n_col - nempty_col ; s++)
 	{
 	    if (Cperm [s] != Rperm [s])
 	    {
 		is_sym = FALSE ;
-		break ;
+		/* removed a break statement here, which is OK but it tickles
+                 * the gcc 4.2.{3,4} compiler bug */
 	    }
 	}
     }
@@ -903,6 +912,7 @@ GLOBAL Int UMF_singletons
     {
 	is_sym = FALSE ;
     }
+
     DEBUGm4 (("Submatrix square and symmetrically permuted? "ID"\n", is_sym)) ;
     DEBUGm4 (("singletons "ID" row "ID" col "ID"\n", n1, n1r, n1c)) ;
     DEBUGm4 (("Empty cols "ID" rows "ID"\n", nempty_col, nempty_row)) ;

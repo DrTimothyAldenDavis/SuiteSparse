@@ -23,7 +23,7 @@ for i = 1:n
     a = w (i) / L(i,i) ;
     alpha = alpha - a^2 ;
     if (alpha <= 0)
-	error ('not pos def') ;
+        error ('not pos def') ;
     end
     beta_new = sqrt (alpha) ;
     b = beta_new / beta ;
@@ -35,8 +35,8 @@ for i = 1:n
     wnew (i) = a ;
 
     for k = i:n
-	w (k)   = w (k) - a * L (k,i) ;
-	L (k,i) = b * L (k,i) - c * w(k) ;
+        w (k)   = w (k) - a * L (k,i) ;
+        L (k,i) = b * L (k,i) - c * w(k) ;
     end
 
 end

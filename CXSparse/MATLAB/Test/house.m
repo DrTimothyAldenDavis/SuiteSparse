@@ -15,7 +15,7 @@ if (s == 0)
     v (1) = 1 ;
 else
     if (x (1) ~= 0)
-	s = sign (x (1)) * s ;
+        s = sign (x (1)) * s ;
     end
     v (1) = v (1) + s ;
     beta = 1 / real (conj (s) * v (1)) ;

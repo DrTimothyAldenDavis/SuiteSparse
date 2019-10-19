@@ -10,7 +10,7 @@
 
 /*
     User-callable.  Prints the Symbolic object. See umfpack_report_symbolic.h
-    for details.  Does not print new Cdeg, Rdeg, Esize, and the Diagonal_map.
+    for details.  Not all of the object is printed.
 
     Dynamic memory usage:  Allocates a size MAX (n_row,n_col)*sizeof(Int)
     workspace via a single call to UMF_malloc and then frees all of it via

@@ -1,4 +1,4 @@
-function L = cs_updown (L, c, parent, sigma)				    %#ok
+function L = cs_updown (L, c, parent, sigma)                                %#ok
 %CS_UPDOWN rank-1 update/downdate of a sparse Cholesky factorization.
 %   L = cs_updown(L,c,parent) computes the rank-1 update L = chol(L*L'+c*c')',
 %   where parent is the elimination tree of L.  c must be a sparse column

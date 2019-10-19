@@ -12,9 +12,9 @@ void mexFunction
     int brief ;
     if (nargout > 0 || nargin < 1 || nargin > 2)
     {
-	mexErrMsgTxt ("Usage: cs_print(A,brief)") ;
+        mexErrMsgTxt ("Usage: cs_print(A,brief)") ;
     }
     A = cs_mex_get_sparse (&Amatrix, 0, 1, pargin [0]) ;    /* get A */
     brief = (nargin < 2) ? 0 : mxGetScalar (pargin [1]) ;   /* get brief */
-    cs_print (A, brief) ;				    /* print A */
+    cs_print (A, brief) ;                                   /* print A */
 }

@@ -12,19 +12,19 @@ int main (int argc, char **argv)
     printf ("cs_test, file: %s\n", argv [1]) ;
     for (demo = 2 ; demo <= 3 ; demo++)
     {
-	printf ("demo: %d\n", demo) ;
-	for (trials = 0 ; trials < 4000 ; trials++)
-	{
-	    malloc_count = trials ;
-	    f = fopen (argv [1], "r") ;
-	    if (!f) return (-1) ;
-	    Prob = get_problem (f, (demo == 2) ? 1e-14 : 0) ;
-	    fclose (f) ;
-	    if (Prob) ok = (demo == 2) ? demo2 (Prob) : demo3 (Prob) ;
-	    free_problem (Prob) ;
-	    if (malloc_count > 0) break ;
-	}
-	printf ("demo %d # trials: %d\n", demo, trials) ;
+        printf ("demo: %d\n", demo) ;
+        for (trials = 0 ; trials < 4000 ; trials++)
+        {
+            malloc_count = trials ;
+            f = fopen (argv [1], "r") ;
+            if (!f) return (-1) ;
+            Prob = get_problem (f, (demo == 2) ? 1e-14 : 0) ;
+            fclose (f) ;
+            if (Prob) ok = (demo == 2) ? demo2 (Prob) : demo3 (Prob) ;
+            free_problem (Prob) ;
+            if (malloc_count > 0) break ;
+        }
+        printf ("demo %d # trials: %d\n", demo, trials) ;
     }
     return (0) ;
 }

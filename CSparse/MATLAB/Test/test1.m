@@ -18,26 +18,26 @@ for ii = f
     disp (Prob) ;
     A = Prob.A ;
     if (~isreal (A))
-	continue
+        continue
     end
     B = A' ;
 
     C = cs_transpose (A) ;
     if (nnz (B-C) ~= 0)
-	error ('!')
+        error ('!')
     end
 
     [m n] = size (A) ;
     % if (m == n)
-	x = rand (n,1) ;
-	y = rand (m,1) ;
-	z = y+A*x ;
-	q = cs_gaxpy (A,x,y) ;
-	err = norm (z-q,1) / norm (z,1) ;
-	disp (err) ;
-	if (err > 1e-14)
-	    error ('!')
-	end
+        x = rand (n,1) ;
+        y = rand (m,1) ;
+        z = y+A*x ;
+        q = cs_gaxpy (A,x,y) ;
+        err = norm (z-q,1) / norm (z,1) ;
+        disp (err) ;
+        if (err > 1e-14)
+            error ('!')
+        end
     % end
 
 
@@ -51,10 +51,10 @@ for ii = f
     % [i j x]
     F = cs_sparse2 (i,j,x) ;
     if (nnz (D-E) ~= 0)
-	error ('!')
+        error ('!')
     end
     if (nnz (F-E) ~= 0)
-	error ('!')
+        error ('!')
     end
 
     clear A B C D E F

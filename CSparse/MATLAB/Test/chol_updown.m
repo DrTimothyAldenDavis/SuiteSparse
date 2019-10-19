@@ -18,18 +18,18 @@ for k = 1:n
     beta2 = sqrt (beta^2 + sigma*alpha^2) ;
     gamma = sigma * alpha / (beta2 * beta) ;
     if (sigma > 0)
-	% update
-	delta = beta / beta2 ;
-	L (k,k) = delta * L (k,k) + gamma * w (k) ;
-	w1 = w (k+1:n) ;
-	w (k+1:n) = w (k+1:n) - alpha * L (k+1:n,k) ;
-	L (k+1:n,k) = delta * L (k+1:n,k) + gamma * w1 ;
+        % update
+        delta = beta / beta2 ;
+        L (k,k) = delta * L (k,k) + gamma * w (k) ;
+        w1 = w (k+1:n) ;
+        w (k+1:n) = w (k+1:n) - alpha * L (k+1:n,k) ;
+        L (k+1:n,k) = delta * L (k+1:n,k) + gamma * w1 ;
     else
-	% downdate
-	delta = beta2 / beta ;
-	L (k,k) = delta * L (k,k) ;
-	w (k+1:n) = w (k+1:n) - alpha * L (k+1:n,k) ;
-	L (k+1:n,k) = delta * L (k+1:n,k) + gamma * w (k+1:n) ;
+        % downdate
+        delta = beta2 / beta ;
+        L (k,k) = delta * L (k,k) ;
+        w (k+1:n) = w (k+1:n) - alpha * L (k+1:n,k) ;
+        L (k+1:n,k) = delta * L (k+1:n,k) + gamma * w (k+1:n) ;
     end
     w (k) = alpha ;
     beta = beta2 ;

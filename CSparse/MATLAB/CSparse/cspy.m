@@ -29,9 +29,9 @@ h = h (64:-1:1,:) ;
 h = h (30:end,:) ;
 hmax = size (h,1) ;
 
-h (1,:)  = [1 1 1] ;	% white for zero
-h (2,:)  = [1 .9 .5] ;	% light orange for tiny entries
-h (hmax,:) = [0 0 0] ;	% black for very large entries
+h (1,:)  = [1 1 1] ;    % white for zero
+h (2,:)  = [1 .9 .5] ;  % light orange for tiny entries
+h (hmax,:) = [0 0 0] ;  % black for very large entries
 colormap (h) ;
 
 if (nargin == 0)
@@ -41,17 +41,17 @@ if (nargin == 0)
 end
 
 % convert complex, integers, and strings to real double
-if (~isreal (A) | ~isa (A, 'double') | ~issparse (A))			    %#ok
+if (~isreal (A) | ~isa (A, 'double') | ~issparse (A))                       %#ok
     A = sparse (abs (double (A))) ;
 end
 
 [m1 n1] = size (A) ;
-if (m1 == 0 | n1 == 0)							    %#ok
+if (m1 == 0 | n1 == 0)                                                      %#ok
     A (1,1) = 0 ;
 end
 [m1 n1] = size (A) ;
 
-S = cs_thumb (A,res) ;	    % get the thumbnail of the matrix
+S = cs_thumb (A,res) ;      % get the thumbnail of the matrix
 [m n] = size (S) ;
 [i j x] = find (S) ;
 x = log10 (x) ;
@@ -67,12 +67,12 @@ else
     itiny = find (x <= tiny) ;
     ibig = find (x >= big) ;
     x (imid) = 1 + ceil ((hmax-2) * (x (imid) - tiny) / (big - tiny)) ;
-    x (itiny) = 1 ;							    %#ok
-    x (ibig) = hmax-1 ;							    %#ok
+    x (itiny) = 1 ;                                                         %#ok
+    x (ibig) = hmax-1 ;                                                     %#ok
     S = full (1 + sparse (i,j,x,m,n)) ;
 
 %   title (sprintf ('tiny: %-8.2g   median: %-8.2g   big: %-8.2g\n', ...
-%	10^tiny, 10^med, 10^big)) ;
+%       10^tiny, 10^med, 10^big)) ;
 end
 
 % draw the matrix
@@ -82,7 +82,7 @@ axis ([-1 n+1 -1 m+1]) ;
 axis off
 
 % draw a box around the whole matrix
-e = ceil (max (m1,n1) / max (m,n)) ;	% scale factor
+e = ceil (max (m1,n1) / max (m,n)) ;    % scale factor
 hold on
 drawbox (1,m1+1,1,n1+1,'k',1,e) ;
 hold off
@@ -92,9 +92,9 @@ if (nargout > 0)
     s = e ;
 end
 if (nargout > 1)
-    M = S ;		% image
+    M = S ;             % image
 end
 if (nargout > 2)
-    H = h ;		% colormap
+    H = h ;             % colormap
 end
 

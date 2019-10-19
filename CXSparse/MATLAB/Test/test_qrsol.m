@@ -19,10 +19,10 @@ for i = f
     Prob = UFget (i,index) ;
     A = Prob.A ;
     if (~isreal (A))
-	continue ;
+        continue ;
     end
 
-    [m n] = size (A) ;							%#ok
+    [m n] = size (A) ;                                                  %#ok
     b = rand (m,1) ;
 
     x1 = A\b ;

@@ -1,4 +1,4 @@
-function C = cs_multiply (A,B)						    %#ok
+function C = cs_multiply (A,B)                                              %#ok
 %CS_MULTIPLY sparse matrix multiply.
 %   C = cs_multiply(A,B) computes C = A*B.
 %

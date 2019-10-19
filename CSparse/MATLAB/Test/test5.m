@@ -22,39 +22,39 @@ for trial = 1:100
     D = cs_add (A,B) ;
     err = nnz (spones (C) - spones (D)) ;
     if (err > 0)
-	error ('nz!') ;
+        error ('nz!') ;
     end
     err = norm (C-D,1) ;
     fprintf ('m %3d n %3d nnz(A) %6d nnz(B) %6d nnz(C) %6d err %g\n', ...
-	m, n, nnz(A), nnz(B), nnz(C), err) ;
+        m, n, nnz(A), nnz(B), nnz(C), err) ;
     if (err > 1e-12)
-	error ('!') ;
+        error ('!') ;
     end
 
     C = pi*A+B ;
     D = cs_add (A,B,pi) ;
     err = nnz (spones (C) - spones (D)) ;
     if (err > 0)
-	error ('nz!') ;
+        error ('nz!') ;
     end
     err = norm (C-D,1) ;
     fprintf ('m %3d n %3d nnz(A) %6d nnz(B) %6d nnz(C) %6d err %g\n', ...
-	m, n, nnz(A), nnz(B), nnz(C), err) ;
+        m, n, nnz(A), nnz(B), nnz(C), err) ;
     if (err > 1e-12)
-	error ('!') ;
+        error ('!') ;
     end
 
     C = pi*A+3*B ;
     D = cs_add (A,B,pi,3) ;
     err = nnz (spones (C) - spones (D)) ;
     if (err > 0)
-	error ('nz!') ;
+        error ('nz!') ;
     end
     err = norm (C-D,1) ;
     fprintf ('m %3d n %3d nnz(A) %6d nnz(B) %6d nnz(C) %6d err %g\n', ...
-	m, n, nnz(A), nnz(B), nnz(C), err) ;
+        m, n, nnz(A), nnz(B), nnz(C), err) ;
     if (err > 1e-12)
-	error ('!') ;
+        error ('!') ;
     end
 
 end

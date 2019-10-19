@@ -22,6 +22,6 @@ for k = 1:nblocks
     k2 = r (k+1) ;
     nk = k2 - k1 ;
     if (nk > 1)
-	plot ([k1 k2 k2 k1 k1]-.5, [k1 k1 k2 k2 k1]-.5, 'r') ;
+        plot ([k1 k2 k2 k1 k1]-.5, [k1 k1 k2 k2 k1]-.5, 'r') ;
     end
 end

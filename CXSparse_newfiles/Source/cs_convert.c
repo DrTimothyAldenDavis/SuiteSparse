@@ -8,9 +8,9 @@ cs_di *cs_i_real (cs_ci *A, int real)
     int n, triplet, nn, p, nz, *Ap, *Ai, *Cp, *Ci ;
     cs_complex_t *Ax ;
     double *Cx ;
-    if (!A || !A->x) return (NULL) ;	/* return if A NULL or pattern-only */
+    if (!A || !A->x) return (NULL) ;    /* return if A NULL or pattern-only */
     n = A->n ; Ap = A->p ; Ai = A->i ; Ax = A->x ;
-    triplet = (A->nz >= 0) ;		/* true if A is a triplet matrix */
+    triplet = (A->nz >= 0) ;            /* true if A is a triplet matrix */
     nz = triplet ? A->nz : Ap [n] ;
     C = cs_di_spalloc (A->m, n, A->nzmax, 1, triplet) ;
     if (!C) return (NULL) ;
@@ -31,9 +31,9 @@ cs_ci *cs_i_complex (cs_di *A, int real)
     int n, triplet, nn, p, nz, *Ap, *Ai, *Cp, *Ci ;
     double *Ax ;
     cs_complex_t *Cx ;
-    if (!A || !A->x) return (NULL) ;	/* return if A NULL or pattern-only */
+    if (!A || !A->x) return (NULL) ;    /* return if A NULL or pattern-only */
     n = A->n ; Ap = A->p ; Ai = A->i ; Ax = A->x ;
-    triplet = (A->nz >= 0) ;		/* true if A is a triplet matrix */
+    triplet = (A->nz >= 0) ;            /* true if A is a triplet matrix */
     nz = triplet ? A->nz : Ap [n] ;
     C = cs_ci_spalloc (A->m, n, A->nzmax, 1, triplet) ;
     if (!C) return (NULL) ;
@@ -54,9 +54,9 @@ cs_dl *cs_l_real (cs_cl *A, UF_long real)
     UF_long n, triplet, nn, p, nz, *Ap, *Ai, *Cp, *Ci ;
     cs_complex_t *Ax ;
     double *Cx ;
-    if (!A || !A->x) return (NULL) ;	/* return if A NULL or pattern-only */
+    if (!A || !A->x) return (NULL) ;    /* return if A NULL or pattern-only */
     n = A->n ; Ap = A->p ; Ai = A->i ; Ax = A->x ;
-    triplet = (A->nz >= 0) ;		/* true if A is a triplet matrix */
+    triplet = (A->nz >= 0) ;            /* true if A is a triplet matrix */
     nz = triplet ? A->nz : Ap [n] ;
     C = cs_dl_spalloc (A->m, n, A->nzmax, 1, triplet) ;
     if (!C) return (NULL) ;
@@ -77,9 +77,9 @@ cs_cl *cs_l_complex (cs_dl *A, UF_long real)
     UF_long n, triplet, nn, p, nz, *Ap, *Ai, *Cp, *Ci ;
     double *Ax ;
     cs_complex_t *Cx ;
-    if (!A || !A->x) return (NULL) ;	/* return if A NULL or pattern-only */
+    if (!A || !A->x) return (NULL) ;    /* return if A NULL or pattern-only */
     n = A->n ; Ap = A->p ; Ai = A->i ; Ax = A->x ;
-    triplet = (A->nz >= 0) ;		/* true if A is a triplet matrix */
+    triplet = (A->nz >= 0) ;            /* true if A is a triplet matrix */
     nz = triplet ? A->nz : Ap [n] ;
     C = cs_cl_spalloc (A->m, n, A->nzmax, 1, triplet) ;
     if (!C) return (NULL) ;

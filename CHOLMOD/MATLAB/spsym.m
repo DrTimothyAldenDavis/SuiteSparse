@@ -19,9 +19,9 @@ function result = spsym (A, quick)					    %#ok
 %       7: if A is Hermitian with real positive diagonal
 %
 %   If quick is nonzero, then the function can return more quickly, as soon as
-%   it finds a diagonal entry that is <= 0 or with a nonzero imaginary part.  In
-%   this case, it returns 1, even if the matrix might otherwise be symmetric or
-%   Hermitian.
+%   it finds a diagonal entry that is <= 0 or with a nonzero imaginary part.
+%   In this case, it returns 2 for a square matrix, even if the matrix might
+%   otherwise be symmetric or Hermitian.
 %
 %   Regardless of the value of "quick", this function returns 6 or 7 if A is
 %   a candidate for sparse Cholesky.
@@ -77,6 +77,20 @@ function result = spsym (A, quick)					    %#ok
 %       else
 %           result = 2 ;            % unsymmetric
 %       end
+
+% With additional outputs, spsym computes the following for square matrices:
+% (in this case "quick" is ignored, and set to zero):
+%
+% [result xmatched pmatched nzoffdiag nnzdiag] = spsym(A)
+%
+%   xmatched is the number of nonzero entries for which A(i,j) = conj(A(j,i)).
+%   pmatched is the number of entries (i,j) for which A(i,j) and A(j,i) are
+%   both in the pattern of A (the value doesn't matter).  nzoffdiag is the
+%   total number of off-diagonal entries in the pattern.  nzdiag is the number
+%   of diagonal entries in the pattern.  If the matrix is rectangular,
+%   xmatched, pmatched, nzoffdiag, and nzdiag are not computed (all of them are
+%   returned as zero).  Note that a matched pair, A(i,j) and A(j,i) for i != j,
+%   is counted twice (once per entry).
 
 %   Copyright 2006-2007, Timothy A. Davis
 %   http://www.cise.ufl.edu/research/sparse

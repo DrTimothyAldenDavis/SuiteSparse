@@ -10,18 +10,18 @@ Availability: http://www.cise.ufl.edu/research/sparse/mat/UFget
 See http://www.cise.ufl.edu/research/sparse/mat/UFget.tar.gz
 for a single archive file with all the files listed below.
 
-    UFget/Contents.m		help for UFget
-    UFget/README.txt		this file
+    UFget/Contents.m            help for UFget
+    UFget/README.txt            this file
 
-    UFget/UFget_defaults.m	default parameter settings for UFget
-    UFget/UFget_example.m	demo for UFget
-    UFget/UFget_lookup.m	get the group, name, and id of a matrix
-    UFget/UFget.m		primary user interface
+    UFget/UFget_defaults.m      default parameter settings for UFget
+    UFget/UFget_example.m       demo for UFget
+    UFget/UFget_lookup.m        get the group, name, and id of a matrix
+    UFget/UFget.m               primary user interface
 
-    UFget/UFweb.m		opens the URL for a matrix or collection
+    UFget/UFweb.m               opens the URL for a matrix or collection
 
-    UFget/mat			default download directory (can be changed)
-    UFget/mat/UF_Index.mat	index to the UF sparse matrix collection
+    UFget/mat                   default download directory (can be changed)
+    UFget/mat/UF_Index.mat      index to the UF sparse matrix collection
 
 To install the package, just add the path containing the UFget directory
 to your MATLAB path.  Type "pathtool" in MATLAB for more details.

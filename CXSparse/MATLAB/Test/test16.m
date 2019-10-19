@@ -21,18 +21,18 @@ skip = 811 ;
 
 for i = f
     if (any (i == skip))
-	continue
+        continue
     end
     Prob = UFget (i) ;
     A = spones (Prob.A) ;
     Aorig = A ;
     [m n] = size (A) ;
     if (m < n)
-	A = A' ;
+        A = A' ;
     end
     [m n] = size (A) ;
     if (m ~= n)
-	A = A'*A ;
+        A = A'*A ;
     end
 
     if (~ispc)
@@ -44,15 +44,15 @@ for i = f
     fprintf ('n %4d nz %d\n', n, nnz (A)) ;
 
     try
-	p0 = amd (A) ;
+        p0 = amd (A) ;
     catch
-	p0 = symamd (A) ;
+        p0 = symamd (A) ;
     end
     fprintf ('symmetric case:\n') ;
     p1 = cs_amd (A) ;
 
     if (any (sort (p1) ~= 1:n))
-	error ('not perm!') ;
+        error ('not perm!') ;
     end
 
     C = A+A' + speye (n) ;
@@ -64,32 +64,32 @@ for i = f
     drawnow
 
     if (lnz0 ~= lnz1)
-	fprintf ('----------------- lnz %d %d   %9.4f\n', ...
-	    lnz0, lnz1, 100*(lnz0-lnz1)/max([1 lnz0])) ;
+        fprintf ('----------------- lnz %d %d   %9.4f\n', ...
+            lnz0, lnz1, 100*(lnz0-lnz1)/max([1 lnz0])) ;
     end
 
     if (1)
 
-	p0 = colamd (Aorig) ;
-	[m n] = size (Aorig) ;
-	fprintf ('m %d n %d\n', m, n) ;
+        p0 = colamd (Aorig) ;
+        [m n] = size (Aorig) ;
+        fprintf ('m %d n %d\n', m, n) ;
 
-	fprintf ('A''A case, no dense rows (for QR):\n') ;
-	p1 = cs_amd (Aorig, 3) ;
-	if (any (sort (p1) ~= 1:n))
-	    error ('not perm!') ;
-	end
+        fprintf ('A''A case, no dense rows (for QR):\n') ;
+        p1 = cs_amd (Aorig, 3) ;
+        if (any (sort (p1) ~= 1:n))
+            error ('not perm!') ;
+        end
 
-	subplot (2,3,4) ; spy (Aorig)
-	subplot (2,3,5) ; spy (Aorig (:,p0)) ; title ('colamd') ;
-	subplot (2,3,6) ; spy (Aorig (:,p1)) ; title ('cs amd(A''A)') ;
-	lnz0 = sum (symbfact (Aorig (:,p0), 'col')) ;
-	lnz1 = sum (symbfact (Aorig (:,p1), 'col')) ;
-	fprintf ('                    A''A: %7d %7d %9.4f\n', ...
-	    lnz0, lnz1, 100*(lnz0-lnz1)/max([1 lnz0])) ;
-	drawnow
+        subplot (2,3,4) ; spy (Aorig)
+        subplot (2,3,5) ; spy (Aorig (:,p0)) ; title ('colamd') ;
+        subplot (2,3,6) ; spy (Aorig (:,p1)) ; title ('cs amd(A''A)') ;
+        lnz0 = sum (symbfact (Aorig (:,p0), 'col')) ;
+        lnz1 = sum (symbfact (Aorig (:,p1), 'col')) ;
+        fprintf ('                    A''A: %7d %7d %9.4f\n', ...
+            lnz0, lnz1, 100*(lnz0-lnz1)/max([1 lnz0])) ;
+        drawnow
 
-	% pause
+        % pause
 
     end
 end

@@ -17,17 +17,17 @@ function x = cs_dmsol (A,b)
 C = A (p,q) ;
 b = b (p) ;
 x = zeros (n,1) ;
-if (rr(3) <= m & cc(4) <= n)						    %#ok
+if (rr(3) <= m & cc(4) <= n)                                                %#ok
     x (cc(4):n) = cs_qrsol (C (rr(3):m, cc(4):n), b (rr(3):m)) ;
     b (1:rr(3)-1) = b (1:rr(3)-1) - C (1:rr(3)-1, cc(4):n) * x (cc(4):n) ;
 end
-if (rr(2) < rr (3) & cc(3) < cc(4))					    %#ok
+if (rr(2) < rr (3) & cc(3) < cc(4))                                         %#ok
     x (cc(3):cc(4)-1) = ...
-	cs_lusol (C (rr(2):rr(3)-1, cc(3):cc(4)-1), b (rr(2):rr(3)-1)) ;
+        cs_lusol (C (rr(2):rr(3)-1, cc(3):cc(4)-1), b (rr(2):rr(3)-1)) ;
     b (1:rr(2)-1) = ...
-	b (1:rr(2)-1) - C (1:rr(2)-1, cc(3):cc(4)-1) * x (cc(3):cc(4)-1) ;
+        b (1:rr(2)-1) - C (1:rr(2)-1, cc(3):cc(4)-1) * x (cc(3):cc(4)-1) ;
 end
-if (rr(2) > 1 & cc(3) > 1)						    %#ok
+if (rr(2) > 1 & cc(3) > 1)                                                  %#ok
     x (1:cc(3)-1) = cs_qrsol (C (1:rr(2)-1, 1:cc(3)-1), b (1:rr(2)-1)) ;
 end
 x (q) = x ;

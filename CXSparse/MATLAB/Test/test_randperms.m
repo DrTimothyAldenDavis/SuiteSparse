@@ -16,14 +16,14 @@ for trial = 1:100
     A = sprandn (m,n,d) ;
 
     if (m == 0)
-	p = [] ;
+        p = [] ;
     else
-	p = randperm (m) ;
+        p = randperm (m) ;
     end
     if (n == 0)
-	q = [] ;
+        q = [] ;
     else
-	q = randperm (n) ;
+        q = randperm (n) ;
     end
 
     C = A(p,q) ;
@@ -35,17 +35,17 @@ for trial = 1:100
 
     q2 = find (Q) ;
     if (any (q ~= q2'))
-	error ('!') 
+        error ('!') 
     end
 
     p2 = find (P') ;
     if (any (p ~= p2'))
-	error ('!') 
+        error ('!') 
     end
 
     E = P*A*Q ;
     if (norm (C-E,1) ~= 0)
-	error ('!') 
+        error ('!') 
     end
 
     P = sparse (1:m, p, 1) ;
@@ -53,7 +53,7 @@ for trial = 1:100
 
     E = P*A*Q ;
     if (norm (C-E,1) ~= 0)
-	error ('2!') 
+        error ('2!') 
     end
 
 end

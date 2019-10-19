@@ -1,4 +1,4 @@
-function cs_print (A,brief)						    %#ok
+function cs_print (A,brief)                                                 %#ok
 %CS_PRINT print the contents of a sparse matrix.
 %   cs_print(A) prints a sparse matrix. cs_print(A,1) prints just a few entries.
 %

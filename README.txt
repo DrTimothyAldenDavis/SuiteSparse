@@ -12,43 +12,43 @@ SuiteSparse_install.  All packages will be compiled, and several demos will be
 run.
 ================================================================================
 
-Sept 20, 2008.  SuiteSparse version 3.2.0
+Mar 24, 2009.  SuiteSparse version 3.3.0
 
-    AMD		approximate minimum degree ordering
+    AMD         approximate minimum degree ordering
 
-    CAMD	constrained approximate minimum degree ordering
+    CAMD        constrained approximate minimum degree ordering
 
-    COLAMD	column approximate minimum degree ordering
+    COLAMD      column approximate minimum degree ordering
 
-    CCOLAMD	constrained column approximate minimum degree ordering
+    CCOLAMD     constrained column approximate minimum degree ordering
 
-    BTF		permutation to block triangular form
+    BTF         permutation to block triangular form
 
-    KLU		sparse LU factorization, primarily for circuit simulation.
-		Requires AMD, COLAMD, and BTF.  Optionally uses CHOLMOD,
-		CAMD, CCOLAMD, and METIS.
+    KLU         sparse LU factorization, primarily for circuit simulation.
+                Requires AMD, COLAMD, and BTF.  Optionally uses CHOLMOD,
+                CAMD, CCOLAMD, and METIS.
 
-    UMFPACK	sparse LU factorization.  Requires AMD and the BLAS.
+    UMFPACK     sparse LU factorization.  Requires AMD and the BLAS.
 
-    CHOLMOD	sparse Cholesky factorization.  Requires AMD, COLAMD, CCOLAMD,
-		the BLAS, and LAPACK.  Optionally uses METIS.
+    CHOLMOD     sparse Cholesky factorization.  Requires AMD, COLAMD, CCOLAMD,
+                the BLAS, and LAPACK.  Optionally uses METIS.
 
-    UFconfig	configuration file for all the above packages.  The
-		UFconfig/UFconfig.mk is included in the Makefile's of all
-		packages.  CSparse and RBio do not use UFconfig.
+    UFconfig    configuration file for all the above packages.  The
+                UFconfig/UFconfig.mk is included in the Makefile's of all
+                packages.  CSparse and RBio do not use UFconfig.
 
-    CSparse	a concise sparse matrix package, developed for my upcoming
-		book, "Direct Methods for Sparse Linear Systems", to be
-		published by SIAM.
+    CSparse     a concise sparse matrix package, developed for my upcoming
+                book, "Direct Methods for Sparse Linear Systems", to be
+                published by SIAM.
 
-    CXSparse	CSparse Extended.  Includes support for complex matrices
-		and both int or long integers.
+    CXSparse    CSparse Extended.  Includes support for complex matrices
+                and both int or long integers.
 
-    RBio	read/write sparse matrices in Rutherford/Boeing format
+    RBio        read/write sparse matrices in Rutherford/Boeing format
 
     UFcollection    toolbox for managing the UF Sparse Matrix Collection
 
-    LPDASA	LP dual active set algorithm (to appear)
+    LPDASA      LP dual active set algorithm (to appear)
 
     MESHND      2D and 3D mesh generation and nested dissection ordering
 

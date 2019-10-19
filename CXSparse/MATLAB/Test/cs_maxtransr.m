@@ -1,4 +1,4 @@
-function p = cs_maxtransr(A)						    %#ok
+function p = cs_maxtransr(A)                                                %#ok
 %CS_MAXTRANSR recursive maximum matching algorithm
 % Example:
 %   p = cs_maxtransr(A)

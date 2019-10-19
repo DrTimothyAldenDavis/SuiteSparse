@@ -269,10 +269,11 @@ skip_metis = [850 858 1257 1258] ;
 % these matrices are known to be positive definite, and indefinite,
 % respectively, but sparse Cholesky fails (on a 4GB Penitum 4) on some of them:
 known_posdef = [ 939 1252 1267 1268 1423 1453 1455 ] ;
-known_indef = [ 1348:1368 1586 1411 ] ;
+known_indef = [ 1348:1368 1586 1411 1901:1905] ;
 
-% these matrices are known to be irreducible, but dmperm fails
-known_irreducible = 916 ;
+% these matrices are known to be irreducible, but dmperm fails or takes too
+% long
+known_irreducible = [ 916 1901:1905 ] ;
 
 for k = 1:length (matrixlist)
 
@@ -303,10 +304,15 @@ for k = 1:length (matrixlist)
 
     fprintf ('%s/%s\n', UF_Index.Group {id}, UF_Index.Name {id}) ;
 
+    skip_chol = (any (id == known_posdef) || any (id == known_indef)) ;
+    skip_dmperm = any (id == known_irreducible) ;
+
     if (isfield (Problem, 'Zeros'))
-	stats = UFstats (Problem.A, Problem.kind, nometis, Problem.Zeros) ;
+	stats = UFstats (Problem.A, Problem.kind, nometis, skip_chol, ...
+            skip_dmperm, Problem.Zeros) ;
     else
-	stats = UFstats (Problem.A, Problem.kind, nometis) ;
+	stats = UFstats (Problem.A, Problem.kind, nometis, skip_chol, ...
+            skip_dmperm) ;
     end
 
     %---------------------------------------------------------------------------
@@ -314,6 +320,7 @@ for k = 1:length (matrixlist)
     %---------------------------------------------------------------------------
 
     if (stats.posdef == -1)
+
 	if (any (id == known_posdef))
 	    fprintf ('known posdef\n') ;
 	    stats.posdef = 1 ;
@@ -321,6 +328,7 @@ for k = 1:length (matrixlist)
 	    fprintf ('known indef\n') ;
 	    stats.posdef = 0 ;
 	end
+
     end
     if (any (id == known_irreducible) && stats.sprank < 0)
 	% full sprank, and not reducible to block triangular form,

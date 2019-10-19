@@ -8,7 +8,7 @@ function c = cond1est (A)
 %   http://www.cise.ufl.edu/research/sparse
 
 [m n] = size (A) ;
-if (m ~= n | ~isreal (A))						    %#ok
+if (m ~= n | ~isreal (A))                                                   %#ok
     error ('A must be square and real') ;
 end
 if isempty(A)
@@ -16,7 +16,7 @@ if isempty(A)
     return ;
 end
 [L,U,P,Q] = lu (A) ;
-if (~isempty (find (abs (diag (U)) == 0)))				    %#ok
+if (~isempty (find (abs (diag (U)) == 0)))                                  %#ok
     c = Inf ;
 else
     c = norm (A,1) * norm1est (L,U,P,Q) ;

@@ -1,4 +1,4 @@
-function [V,beta,p,R,q] = cs_qr (A)					    %#ok
+function [V,beta,p,R,q] = cs_qr (A)                                         %#ok
 %CS_QR sparse QR factorization (Householder-based).
 %   [V,beta,p,R] = cs_qr(A) computes the QR factorization of A(p,:).
 %   [V,beta,p,R,q] = cs_qr(A) computes the QR factorization of A(p,q).

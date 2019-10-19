@@ -453,6 +453,12 @@ int CHOLMOD(symmetry)
     /* return the results */
     /* ---------------------------------------------------------------------- */
 
+    if (nzdiag < ncol)
+    {
+        /* not all diagonal entries are present */
+        posdiag = FALSE ;
+    }
+
     if (option >= 2)
     {
 	*p_xmatched = xmatched ;

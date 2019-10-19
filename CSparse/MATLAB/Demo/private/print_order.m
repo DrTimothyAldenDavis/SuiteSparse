@@ -9,13 +9,13 @@ function print_order (order)
 
 switch (fix (order))
     case 0
-	fprintf ('natural    ') ;
+        fprintf ('natural    ') ;
     case 1
-	fprintf ('amd(A+A'')  ') ;
+        fprintf ('amd(A+A'')  ') ;
     case 2
-	fprintf ('amd(S''*S)  ') ;
+        fprintf ('amd(S''*S)  ') ;
     case 3
-	fprintf ('amd(A''*A)  ') ;
+        fprintf ('amd(A''*A)  ') ;
     otherwise
-	fprintf ('undefined  ') ;
+        fprintf ('undefined  ') ;
 end

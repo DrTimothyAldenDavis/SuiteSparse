@@ -195,7 +195,7 @@ end
 try
     cd ([SuiteSparse '/SSMULT']) ;
     paths = add_to_path (paths, pwd) ;
-    ssmult_make ;
+    ssmult_install (0) ;
 catch                                                                       %#ok
     fprintf ('SSMULT not installed\n') ;
 end

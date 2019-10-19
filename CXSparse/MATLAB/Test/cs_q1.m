@@ -14,6 +14,6 @@ if (nargin > 2)
 end
 for i = 1:m
     for k = 1:n
-	Q (i,:) = Q (i,:) - ((Q(i,:) * V(:,k)) * Beta(k)) * V(:,k)' ;
+        Q (i,:) = Q (i,:) - ((Q(i,:) * V(:,k)) * Beta(k)) * V(:,k)' ;
     end
 end

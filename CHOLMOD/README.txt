@@ -1,5 +1,5 @@
 CHOLMOD: a sparse CHOLesky MODification package 
-Version 1.6, Nov 1, 2007.  Copyright (c) 2005-2007.
+Version 1.7.1, March 24, 2009.  Copyright (c) 2005-2009.
 -----------------------------------------------
 
     CHOLMOD is a set of routines for factorizing sparse symmetric positive

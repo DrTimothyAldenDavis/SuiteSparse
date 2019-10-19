@@ -15,9 +15,9 @@ if (m == n)
     is_upper = nnz (tril (A,-1)) == 0 ;
     is_lower = nnz (triu (A,1)) == 0 ;
     if (is_upper)
-	sym = 1 ;
+        sym = 1 ;
     elseif (is_lower)
-	sym = -1 ;
+        sym = -1 ;
     end
 end
 

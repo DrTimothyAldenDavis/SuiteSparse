@@ -23,16 +23,16 @@ for i = f
     A = Prob.A ;
     [m n] = size (A) ;
     if (m < n)
-	A = A' ;
+        A = A' ;
     end
     [m n] = size (A) ;
-    if (sprank (A) < n | ~isreal (A))					    %#ok
-	continue ;
+    if (sprank (A) < n | ~isreal (A))                                       %#ok
+        continue ;
     end
 
     [V,beta,p,R1,q] = cs_qr(A) ;
     A = A (p,q) ;
-    parent = etree (A, 'col') ;						    %#ok
+    parent = etree (A, 'col') ;                                             %#ok
 
     R0 = qr (A) ;
     R2 = qr_givens (full (A)) ;
@@ -49,7 +49,7 @@ for i = f
     e3 = norm (A'*A-R3'*R3,1) / norm (A,1) ;
     fprintf ('error %6.2e %6.2e %6.2e %6.2e\n', e0, e1, e2, e3) ;
     drawnow
-    if (e1 > e0*1e3 | e2 > e0*1e3)					    %#ok
-	pause
+    if (e1 > e0*1e3 | e2 > e0*1e3)                                          %#ok
+        pause
     end
 end

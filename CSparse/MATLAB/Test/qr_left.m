@@ -14,9 +14,9 @@ R = zeros (m,n) ;
 for k = 1:n
     x = A (:,k) ;
     for i = 1:k-1
-	v = V (i:m,i) ;
-	beta = Beta (i) ;
-	x (i:m) = x (i:m) - v * (beta * (v' * x (i:m))) ;
+        v = V (i:m,i) ;
+        beta = Beta (i) ;
+        x (i:m) = x (i:m) - v * (beta * (v' * x (i:m))) ;
     end
     [v,beta,s] = gallery ('house', x (k:m), 2) ;
     V (k:m,k) = v ;

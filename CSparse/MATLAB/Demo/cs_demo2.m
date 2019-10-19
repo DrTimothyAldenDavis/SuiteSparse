@@ -15,13 +15,13 @@ end
 
 if (isempty (matrixpath))
     try
-	% older versions of MATLAB do not have an input argument to mfilename
-	p = mfilename ('fullpath') ;
-	t = strfind (p, filesep) ;
-	matrixpath = [ p(1:t(end)) '../../Matrix' ] ;
+        % older versions of MATLAB do not have an input argument to mfilename
+        p = mfilename ('fullpath') ;
+        t = strfind (p, filesep) ;
+        matrixpath = [ p(1:t(end)) '../../Matrix' ] ;
     catch
-	% assume we are in the C*Sparse/MATLAB/CSparse/Demo directory
-	matrixpath = '../../Matrix' ;
+        % assume we are in the C*Sparse/MATLAB/CSparse/Demo directory
+        matrixpath = '../../Matrix' ;
     end
 end
 
@@ -37,6 +37,6 @@ for i = 1:length(matrices)
     [C sym] = get_problem (matrixpath, name, 1e-14) ;
     demo2 (C, sym, name) ;
     if (do_pause)
-	input ('Hit enter to continue: ') ;
+        input ('Hit enter to continue: ') ;
     end
 end

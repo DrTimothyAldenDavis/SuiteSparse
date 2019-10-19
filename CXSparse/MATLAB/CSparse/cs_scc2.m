@@ -27,25 +27,25 @@ if (nargin < 2)
     bipartite = 0 ;
 end
 
-if (m ~= n | bipartite)							    %#ok
+if (m ~= n | bipartite)                                                     %#ok
 
     % find the connected components of [I A ; A' 0]
     S = spaugment (A) ;
     [psym,rsym] = cs_scc (S) ;
-    p = psym (find (psym <= m)) ;					    %#ok
-    q = psym (find (psym > m)) - m ;					    %#ok
+    p = psym (find (psym <= m)) ;                                           %#ok
+    q = psym (find (psym > m)) - m ;                                        %#ok
     nb = length (rsym) - 1 ;
     r = zeros (1,nb+1) ;
     s = zeros (1,nb+1) ;
     krow = 1 ;
     kcol = 1 ;
     for k = 1:nb
-	% find the rows and columns in the kth component
-	r (k) = krow ;
-	s (k) = kcol ;
-	ksym = psym (rsym (k):rsym (k+1)-1) ;
-	krow = krow + length (find (ksym <= m)) ;
-	kcol = kcol + length (find (ksym >  m)) ;
+        % find the rows and columns in the kth component
+        r (k) = krow ;
+        s (k) = kcol ;
+        ksym = psym (rsym (k):rsym (k+1)-1) ;
+        krow = krow + length (find (ksym <= m)) ;
+        kcol = kcol + length (find (ksym >  m)) ;
     end
     r (nb+1) = m+1 ;
     s (nb+1) = n+1 ;

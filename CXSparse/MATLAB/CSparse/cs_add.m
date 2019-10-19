@@ -1,4 +1,4 @@
-function C = cs_add (A,B,alpha,beta)					    %#ok
+function C = cs_add (A,B,alpha,beta)                                        %#ok
 %CS_ADD sparse matrix addition.
 %   C = cs_add(A,B,alpha,beta) computes C = alpha*A+beta*B,
 %   where alpha and beta default to 1 if not present.

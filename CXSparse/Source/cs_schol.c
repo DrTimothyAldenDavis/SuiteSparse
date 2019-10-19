@@ -5,17 +5,17 @@ css *cs_schol (CS_INT order, const cs *A)
     CS_INT n, *c, *post, *P ;
     cs *C ;
     css *S ;
-    if (!CS_CSC (A)) return (NULL) ;	    /* check inputs */
+    if (!CS_CSC (A)) return (NULL) ;        /* check inputs */
     n = A->n ;
-    S = cs_calloc (1, sizeof (css)) ;	    /* allocate result S */
-    if (!S) return (NULL) ;		    /* out of memory */
-    P = cs_amd (order, A) ;		    /* P = amd(A+A'), or natural */
-    S->pinv = cs_pinv (P, n) ;		    /* find inverse permutation */
+    S = cs_calloc (1, sizeof (css)) ;       /* allocate result S */
+    if (!S) return (NULL) ;                 /* out of memory */
+    P = cs_amd (order, A) ;                 /* P = amd(A+A'), or natural */
+    S->pinv = cs_pinv (P, n) ;              /* find inverse permutation */
     cs_free (P) ;
     if (order && !S->pinv) return (cs_sfree (S)) ;
-    C = cs_symperm (A, S->pinv, 0) ;	    /* C = spones(triu(A(P,P))) */
-    S->parent = cs_etree (C, 0) ;	    /* find etree of C */
-    post = cs_post (S->parent, n) ;	    /* postorder the etree */
+    C = cs_symperm (A, S->pinv, 0) ;        /* C = spones(triu(A(P,P))) */
+    S->parent = cs_etree (C, 0) ;           /* find etree of C */
+    post = cs_post (S->parent, n) ;         /* postorder the etree */
     c = cs_counts (C, S->parent, post, 0) ; /* find column counts of chol(C) */
     cs_free (post) ;
     cs_spfree (C) ;

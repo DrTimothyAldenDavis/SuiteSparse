@@ -22,7 +22,7 @@ void mexFunction
     double aij, ax, az, *S, *Ax, *Az ;
     if (nargout > 1 || nargin < 1 || nargin > 2)
     {
-	mexErrMsgTxt ("Usage: S = cs_thumb(A,k)") ;
+        mexErrMsgTxt ("Usage: S = cs_thumb(A,k)") ;
     }
     cs_mex_check (0, -1, -1, 0, 1, 1, pargin [0]) ;
     m = mxGetM (pargin [0]) ;
@@ -42,24 +42,24 @@ void mexFunction
     Az = (mxIsComplex (pargin [0])) ? mxGetPi (pargin [0]) : NULL ;
     for (j = 0 ; j < n ; j++)
     {
-	sj = j/s ;
-	for (p = Ap [j] ; p < Ap [j+1] ; p++)
-	{
-	    si = Ai [p] / s ;
-	    ij = INDEX (si,sj,m2) ;
-	    ax = Ax [p] ;
-	    az = Az ? Az [p] : 0 ;
-	    if (az == 0)
-	    {
-		aij = fabs (ax) ;
-	    }
-	    else
-	    {
-		aij = sqrt (ax*ax + az*az) ;
-	    }
-	    if (ISNAN (aij)) aij = BIG_VALUE ;
-	    aij = CS_MIN (BIG_VALUE, aij) ;
-	    S [ij] = CS_MAX (S [ij], aij) ;
-	}
+        sj = j/s ;
+        for (p = Ap [j] ; p < Ap [j+1] ; p++)
+        {
+            si = Ai [p] / s ;
+            ij = INDEX (si,sj,m2) ;
+            ax = Ax [p] ;
+            az = Az ? Az [p] : 0 ;
+            if (az == 0)
+            {
+                aij = fabs (ax) ;
+            }
+            else
+            {
+                aij = sqrt (ax*ax + az*az) ;
+            }
+            if (ISNAN (aij)) aij = BIG_VALUE ;
+            aij = CS_MIN (BIG_VALUE, aij) ;
+            S [ij] = CS_MAX (S [ij], aij) ;
+        }
     }
 }

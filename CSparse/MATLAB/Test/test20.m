@@ -20,9 +20,9 @@ for trials = 1:10
     A1 = A*A' + n*eye (n) ;
 
     try
-	L1 = chol (A1)' ;
+        L1 = chol (A1)' ;
     catch
-	continue ;
+        continue ;
     end
     err1 = norm (L1*L1'-A1) ;
 
@@ -38,7 +38,7 @@ for trials = 1:10
     err2b = norm (L2b*L2b'-A2) ;
 
     % try a downdate
-    L1b = cholupdown (L2, -1, w) ;					    %#ok
+    L1b = cholupdown (L2, -1, w) ;                                          %#ok
     err1b = norm (L2b*L2b'-A2) ;
 
 

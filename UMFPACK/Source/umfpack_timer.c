@@ -30,6 +30,20 @@ double umfpack_timer ( void )
 
 #else
 
+#ifdef LIBRT
+
+#include <time.h>
+double umfpack_timer ( void ) /* returns time in seconds */
+{
+    /* get the current real time and return as a double */
+    struct timespec now ;
+    clock_gettime (CLOCK_REALTIME, &now) ;
+    return ((double) (now.tv_sec ) + (double) (now.tv_nsec) * 1e-9) ;
+}
+
+
+#else
+
 #ifdef GETRUSAGE
 
 /* -------------------------------------------------------------------------- */
@@ -81,5 +95,6 @@ double umfpack_timer ( void )
     return (((double) (clock ( ))) / ((double) (CLOCKS_PER_SEC))) ;
 }
 
+#endif
 #endif
 #endif

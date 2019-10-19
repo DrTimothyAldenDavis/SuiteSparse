@@ -82,21 +82,21 @@ elseif (ischar (f))
     csm = {f} ;
 else
     force = f ;
-    details = details | (force > 1) ;					    %#ok
-    if (force & details)						    %#ok
-	fprintf ('cs_make: re-compiling everything\n') ;
+    details = details | (force > 1) ;                                       %#ok
+    if (force & details)                                                    %#ok
+        fprintf ('cs_make: re-compiling everything\n') ;
     end
 end
 
 if (isempty (csm))
     % mexFunctions, of the form cs_add_mex.c, etc, in this directory
     csm = { 'cs_add', 'cs_amd', 'cs_chol', 'cs_cholsol', 'cs_counts', ...
-	'cs_dmperm', 'cs_droptol', 'cs_etree', 'cs_gaxpy', 'cs_lsolve', ...
-	'cs_ltsolve', 'cs_lu', 'cs_lusol', 'cs_multiply', 'cs_permute', ...
-	'cs_print', 'cs_qr', 'cs_qrsol', 'cs_scc', 'cs_symperm', 'cs_thumb', ...
-	'cs_transpose', 'cs_sparse', 'cs_updown', 'cs_usolve', ...
-	'cs_utsolve', 'cs_randperm', 'cs_sqr' } ;
-	% add cs_mynewfunc to the above list
+        'cs_dmperm', 'cs_droptol', 'cs_etree', 'cs_gaxpy', 'cs_lsolve', ...
+        'cs_ltsolve', 'cs_lu', 'cs_lusol', 'cs_multiply', 'cs_permute', ...
+        'cs_print', 'cs_qr', 'cs_qrsol', 'cs_scc', 'cs_symperm', 'cs_thumb', ...
+        'cs_transpose', 'cs_sparse', 'cs_updown', 'cs_usolve', ...
+        'cs_utsolve', 'cs_randperm', 'cs_sqr' } ;
+        % add cs_mynewfunc to the above list
 end
 
 
@@ -127,31 +127,31 @@ end
 for i = 1:length (cs)
 
     [s t kk] = compile_source (srcdir, cs{i}, obj, hfile, force, mexcmd, ...
-	kk, details) ;
+        kk, details) ;
     timestamp = max (timestamp, t) ;
-    anysrc = anysrc | s ;						    %#ok
-    CS = [CS ' ' cs{i} obj] ;						    %#ok
+    anysrc = anysrc | s ;                                                   %#ok
+    CS = [CS ' ' cs{i} obj] ;                                               %#ok
     if (nargout > 0)
-	objfiles = [objfiles ' ..' filesep 'CSparse' filesep cs{i} obj] ;   %#ok
+        objfiles = [objfiles ' ..' filesep 'CSparse' filesep cs{i} obj] ;   %#ok
     end
 
     % complex version:
     if (docomplex)
-	csrc = cs {i} ;
-	csrc = [ 'cs_cl_' csrc(4:end) ] ;
-	CS = [CS ' ' csrc obj] ;	    %#ok
-	if (nargout > 0)
-	    objfiles = [objfiles ' ..' filesep 'CSparse' filesep csrc obj] ;%#ok
-	end
-	if (s)
-	    copyfile (['../../Source/' cs{i} '.c'], [csrc '.c'], 'f') ;
-	    if (details)
-		fprintf ('%s\n', ['cp -f ../../Source/' cs{i} '.c ' csrc '.c']);
-	    end
-	    cmd = sprintf ('%s -DCS_COMPLEX -O -c -I../../Include %s.c\n', ...
-		mexcmd, csrc) ;
-	    kk = do_cmd (cmd, kk, details) ;
-	end
+        csrc = cs {i} ;
+        csrc = [ 'cs_cl_' csrc(4:end) ] ;
+        CS = [CS ' ' csrc obj] ;            %#ok
+        if (nargout > 0)
+            objfiles = [objfiles ' ..' filesep 'CSparse' filesep csrc obj] ;%#ok
+        end
+        if (s)
+            copyfile (['../../Source/' cs{i} '.c'], [csrc '.c'], 'f') ;
+            if (details)
+                fprintf ('%s\n', ['cp -f ../../Source/' cs{i} '.c ' csrc '.c']);
+            end
+            cmd = sprintf ('%s -DCS_COMPLEX -O -c -I../../Include %s.c\n', ...
+                mexcmd, csrc) ;
+            kk = do_cmd (cmd, kk, details) ;
+        end
     end
 
 end
@@ -161,10 +161,10 @@ obj = ['.' mexext] ;
 for i = 1:length (csm)
     [s t] = cs_must_compile ('', csm{i}, '_mex', obj, hfile, force) ;
     timestamp = max (timestamp, t) ;
-    if (anysrc | s)							    %#ok
-	cmd = sprintf ('%s -O -I../../Include %s_mex.c %s -output %s\n', ...
-	    mexcmd, csm{i}, CS, csm{i}) ;
-	kk = do_cmd (cmd, kk, details) ;
+    if (anysrc | s)                                                         %#ok
+        cmd = sprintf ('%s -O -I../../Include %s_mex.c %s -output %s\n', ...
+            mexcmd, csm{i}, CS, csm{i}) ;
+        kk = do_cmd (cmd, kk, details) ;
     end
 end
 
@@ -193,7 +193,7 @@ if (details)
     fprintf ('%s', s) ;
 else
     if (mod (kk, 60) == 0)
-	fprintf ('\n') ;
+        fprintf ('\n') ;
     end
     kk = kk + 1 ;
     fprintf ('.') ;

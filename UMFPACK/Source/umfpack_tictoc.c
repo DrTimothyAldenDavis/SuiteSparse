@@ -44,6 +44,20 @@ void umfpack_toc (double stats [2])
 /* timer routines, using either times() or clock() */
 /* -------------------------------------------------------------------------- */
 
+#ifdef LIBRT
+
+/* Linux/Unix, must compile with -lrt */
+#include <time.h>
+
+void umfpack_tic (double stats [2])
+{
+    /* get the current real time and return as a double */
+    stats [0] = umfpack_timer ( ) ;
+    stats [1] = stats [0] ;
+}
+
+#else
+
 #define TINY_TIME 1e-4
 
 #ifndef NPOSIX
@@ -82,6 +96,7 @@ void umfpack_tic (double stats [2])
     if (stats [1] < TINY_TIME) stats [1] = 0 ;
 }
 
+#endif
 #endif
 
 /* -------------------------------------------------------------------------- */

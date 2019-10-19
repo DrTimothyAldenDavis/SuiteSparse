@@ -13,7 +13,7 @@ for j = 1:n
     alpha = w (j) / L (j,j) ;
     beta2 = sqrt (beta^2 - alpha^2) ;
     if (~isreal (beta2))
-	error ('not positive definite') ;
+        error ('not positive definite') ;
     end
     gamma = alpha / (beta2 * beta) ;
     delta = beta2 / beta ;
@@ -21,7 +21,7 @@ for j = 1:n
     w (j) = alpha ;
     beta = beta2 ;
     if (j == n)
-	return
+        return
     end
     w (j+1:n) = w (j+1:n) - alpha * L (j+1:n,j) ;
     L (j+1:n,j) = delta * L (j+1:n,j) - gamma * w (j+1:n) ;

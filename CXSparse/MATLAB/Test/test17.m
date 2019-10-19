@@ -24,7 +24,7 @@ for trials = 1:100
 
     A = sprandn (m, n, d) ;
     if (m < n)
-	A = A' ;
+        A = A' ;
     end
     [m n] = size (A) ;
 
@@ -44,7 +44,7 @@ for trials = 1:100
     disp ('err = ') ;
     disp (err) ;
     if (err > 1e-12)
-	error ('!') ;
+        error ('!') ;
     end
 
     m2 = size (Q1,1) ;
@@ -68,18 +68,18 @@ for trials = 1:100
     err3 = norm (Q3*R3 - A, 1) ;
 
     fprintf ('m %3d m2 %3d n %3d    ::: %3d     %6.2e %6.2e\n', ...
-	m, m2, n, m2-m, err1, err3) ;
+        m, m2, n, m2-m, err1, err3) ;
 
     if (err1 > 1e-12)
-	error ('2!') ;
+        error ('2!') ;
     end
 
 %    if (err2 > 1e-12)
-%	error ('!') ;
+%       error ('!') ;
 %    end
 
     if (err3 > 1e-12)
-	error ('3!') ;
+        error ('3!') ;
     end
 
 try
@@ -103,7 +103,7 @@ try
     r3 = norm (A(:,q1)*x3(1:n)-b) ;
 
     fprintf ('least sq:  %6.2e %6.2e %6.2e diff %6.2e %6.2e\n', ...
-	r1, r2, r3, r1-r2, r1-r3) ;
+        r1, r2, r3, r1-r2, r1-r3) ;
 
 catch
 end

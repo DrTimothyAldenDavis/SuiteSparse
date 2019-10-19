@@ -26,7 +26,7 @@ for k = 1:length (f)
     A = real (Prob.A) ;
     [m n] = size (A) ;
     if (m ~= n)
-	continue
+        continue
     end
 
     A = A|A' ;
@@ -46,7 +46,7 @@ for k = 1:length (f)
     p2 = cs_nd (sparse (1)) ;
     toc ;
     if (p2 ~= 1)
-	error ('!') ;
+        error ('!') ;
     end
 
     tic ;
@@ -54,7 +54,7 @@ for k = 1:length (f)
     t2 = toc ;
 
     if (any (sort (p2) ~= 1:n))
-	error ('!') ;
+        error ('!') ;
     end
 
     rel = t2 / max (t1,1e-6) ;

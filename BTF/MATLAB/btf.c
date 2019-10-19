@@ -8,12 +8,12 @@
  *
  * Usage:
  *
- *	[p,q,r] = btf (A) ;
- *	[p,q,r] = btf (A, maxwork) ;
+ *      [p,q,r] = btf (A) ;
+ *      [p,q,r] = btf (A, maxwork) ;
  *
  * If the matrix has structural full rank, this is essentially identical to
  *
- *	[p,q,r] = dmperm (A)
+ *      [p,q,r] = dmperm (A)
  *
  * except that p, q, and r will differ in trivial ways.  Both return an upper
  * block triangular form with a zero-free diagonal, if the matrix is
@@ -46,9 +46,9 @@
 
 void mexFunction
 (
-    int	nargout,
+    int nargout,
     mxArray *pargout [ ],
-    int	nargin,
+    int nargin,
     const mxArray *pargin [ ]
 )
 {
@@ -62,12 +62,12 @@ void mexFunction
 
     if (nargin < 1 || nargin > 2 || nargout > 4)
     {
-	mexErrMsgTxt ("Usage: [p,q,r] = btf (A)") ;
+        mexErrMsgTxt ("Usage: [p,q,r] = btf (A)") ;
     }
     n = mxGetM (pargin [0]) ;
     if (!mxIsSparse (pargin [0]) || n != mxGetN (pargin [0]))
     {
-    	mexErrMsgTxt ("btf: A must be sparse, square, and non-empty") ;
+        mexErrMsgTxt ("btf: A must be sparse, square, and non-empty") ;
     }
 
     /* get sparse matrix A */
@@ -85,7 +85,7 @@ void mexFunction
     maxwork = 0 ;
     if (nargin > 1)
     {
-	maxwork = mxGetScalar (pargin [1]) ;
+        maxwork = mxGetScalar (pargin [1]) ;
     }
     work = 0 ;
 
@@ -104,37 +104,37 @@ void mexFunction
     Px = mxGetPr (pargout [0]) ;
     for (k = 0 ; k < n ; k++)
     {
-	Px [k] = P [k] + 1 ;	/* convert to 1-based */
+        Px [k] = P [k] + 1 ;    /* convert to 1-based */
     }
 
     /* create Q */
     if (nargout > 1)
     {
-	pargout [1] = mxCreateDoubleMatrix (1, n, mxREAL) ;
-	Qx = mxGetPr (pargout [1]) ;
-	for (k = 0 ; k < n ; k++)
-	{
-	    Qx [k] = Q [k] + 1 ;	/* convert to 1-based */
-	}
+        pargout [1] = mxCreateDoubleMatrix (1, n, mxREAL) ;
+        Qx = mxGetPr (pargout [1]) ;
+        for (k = 0 ; k < n ; k++)
+        {
+            Qx [k] = Q [k] + 1 ;        /* convert to 1-based */
+        }
     }
 
     /* create R */
     if (nargout > 2)
     {
-	pargout [2] = mxCreateDoubleMatrix (1, nblocks+1, mxREAL) ;
-	Rx = mxGetPr (pargout [2]) ;
-	for (b = 0 ; b <= nblocks ; b++)
-	{
-	    Rx [b] = R [b] + 1 ;	/* convert to 1-based */
-	}
+        pargout [2] = mxCreateDoubleMatrix (1, nblocks+1, mxREAL) ;
+        Rx = mxGetPr (pargout [2]) ;
+        for (b = 0 ; b <= nblocks ; b++)
+        {
+            Rx [b] = R [b] + 1 ;        /* convert to 1-based */
+        }
     }
 
     /* create work output */
     if (nargout > 3)
     {
-	pargout [3] = mxCreateDoubleMatrix (1, 1, mxREAL) ;
-	w = mxGetPr (pargout [3]) ;
-	w [0] = work ;
+        pargout [3] = mxCreateDoubleMatrix (1, 1, mxREAL) ;
+        w = mxGetPr (pargout [3]) ;
+        w [0] = work ;
     }
 
     mxFree (P) ;

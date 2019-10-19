@@ -1,4 +1,4 @@
-function x = cs_cholsol (A,b,order)					    %#ok
+function x = cs_cholsol (A,b,order)                                         %#ok
 %CS_CHOLSOL solve A*x=b using a sparse Cholesky factorization.
 %   x = cs_cholsol(A,b) computes x = A\b, where A sparse symmetric positive
 %   definite, and b is a full vector.  A 3rd input parameter allows the

@@ -1,4 +1,4 @@
-function C = cs_transpose (A)						    %#ok
+function C = cs_transpose (A)                                               %#ok
 %CS_TRANSPOSE transpose a real sparse matrix.
 %   C = cs_transpose(A), computes C = A' where A must be sparse and real.
 %

@@ -8,8 +8,8 @@ cs *cs_load (FILE *f)
     double xi ;
 #endif
     cs *T ;
-    if (!f) return (NULL) ;				/* check inputs */
-    T = cs_spalloc (0, 0, 1, 1, 1) ;			/* allocate result */
+    if (!f) return (NULL) ;                             /* check inputs */
+    T = cs_spalloc (0, 0, 1, 1, 1) ;                    /* allocate result */
 #ifdef CS_COMPLEX
     while (fscanf (f, ""CS_ID" "CS_ID" %lg %lg\n", &i, &j, &x, &xi) == 4)
 #else
@@ -17,9 +17,9 @@ cs *cs_load (FILE *f)
 #endif
     {
 #ifdef CS_COMPLEX
-	if (!cs_entry (T, i, j, x + xi*I)) return (cs_spfree (T)) ;
+        if (!cs_entry (T, i, j, x + xi*I)) return (cs_spfree (T)) ;
 #else
-	if (!cs_entry (T, i, j, x)) return (cs_spfree (T)) ;
+        if (!cs_entry (T, i, j, x)) return (cs_spfree (T)) ;
 #endif
     }
     return (T) ;

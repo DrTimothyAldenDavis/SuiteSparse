@@ -1,4 +1,4 @@
-function x = cs_qrsol (A,b,order)					    %#ok
+function x = cs_qrsol (A,b,order)                                           %#ok
 %CS_QRSOL solve a sparse least-squares problem.
 %   x = cs_qrsol(A,b) solves the over-determined least squares problem to
 %   find x that minimizes norm(A*x-b), where b is a full vector and

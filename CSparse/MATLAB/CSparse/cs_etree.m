@@ -1,4 +1,4 @@
-function [parent, post] = cs_etree (A, mode)				    %#ok
+function [parent, post] = cs_etree (A, mode)                                %#ok
 %CS_ETREE elimination tree of A or A'*A.
 %   parent = cs_etree (A) returns the elimination tree of A.
 %   parent = cs_etree (A,'col') returns the elimination tree of A'*A.

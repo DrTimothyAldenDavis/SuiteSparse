@@ -55,7 +55,7 @@ title ('L, not postordered') ;
 n = size (A,1) ;
 for k = 1:n
     fprintf ('parent (%d) = %d  goal: %d   ok: %d\n', ...
-	k, parent (k), goal (k), goal (k) == parent(k)) ;
+        k, parent (k), goal (k), goal (k) == parent(k)) ;
 end
 
 

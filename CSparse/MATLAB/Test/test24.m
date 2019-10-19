@@ -26,7 +26,7 @@ for k = 1:length (f)
     A = real (Prob.A) ;
     [m n] = size (A) ;
     if (m ~= n)
-	continue
+        continue
     end
 
     tic

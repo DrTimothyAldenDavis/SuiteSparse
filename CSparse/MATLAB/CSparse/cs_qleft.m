@@ -23,9 +23,9 @@ function X = cs_qleft (V, Beta, p, Y)
 X = Y ;
 if (m2 > m)
     if (issparse (Y))
-	X = [X ; sparse(m2-m,ny)] ;
+        X = [X ; sparse(m2-m,ny)] ;
     else
-	X = [X ; zeros(m2-m,ny)] ;
+        X = [X ; zeros(m2-m,ny)] ;
     end
 end
 if (~isempty (p))

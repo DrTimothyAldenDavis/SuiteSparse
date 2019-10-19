@@ -16,15 +16,15 @@ S = zeros (n,1) ;
 for k = 1:5
 
     if k == 1
-	x = ones (n,1) / n ;
+        x = ones (n,1) / n ;
     else
 
-	j = find (abs (x) == max (abs (x))) ;
-	j = j (1) ;
-	x = zeros (n,1) ;
-	x (j) = 1 ;
+        j = find (abs (x) == max (abs (x))) ;
+        j = j (1) ;
+        x = zeros (n,1) ;
+        x (j) = 1 ;
 
-	% fprintf ('eka: k %d j %d est %g\n', k, j, est) ;
+        % fprintf ('eka: k %d j %d est %g\n', k, j, est) ;
     end
 
 
@@ -37,25 +37,25 @@ for k = 1:5
 
     unchanged = 1 ;
     for i = 1:n
-	if (x (i) >= 0)
-	    s = 1 ;
-	else
-	    s = -1 ;
-	end
-	if (s ~= S (i))
-	    S (i) = s ;
-	    unchanged = 0 ;
-	end
+        if (x (i) >= 0)
+            s = 1 ;
+        else
+            s = -1 ;
+        end
+        if (s ~= S (i))
+            S (i) = s ;
+            unchanged = 0 ;
+        end
     end
 
     if (any (S ~= signum (x)))
-	S'								    %#ok
-	signum(x)'							    %#ok
-	error ('Hey!') ;
+        S'                                                                  %#ok
+        signum(x)'                                                          %#ok
+        error ('Hey!') ;
     end
 
-    if k > 1 & (est <= est_old | unchanged)				    %#ok
-	break ;
+    if k > 1 & (est <= est_old | unchanged)                                 %#ok
+        break ;
     end
     x = S ;
 
@@ -63,10 +63,10 @@ for k = 1:5
     x = P' * (L' \ (U' \ (Q'*x))) ;
 
     if k > 1
-	jnew = find (abs (x) == max (abs (x))) ;
-	if (jnew == j)
-	    break ;
-	end
+        jnew = find (abs (x) == max (abs (x))) ;
+        if (jnew == j)
+            break ;
+        end
     end 
 
 end
@@ -89,4 +89,4 @@ end
 function s = signum (x)
 %SIGNUM compute sign of x
 s = ones (length (x),1) ;
-s (find (x < 0)) = -1 ;	    %#ok
+s (find (x < 0)) = -1 ;     %#ok

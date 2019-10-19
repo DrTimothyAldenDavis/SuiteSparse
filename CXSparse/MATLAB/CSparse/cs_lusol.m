@@ -1,4 +1,4 @@
-function x = cs_lusol (A,b,order,tol)					    %#ok
+function x = cs_lusol (A,b,order,tol)                                       %#ok
 %CS_LUSOL solve Ax=b using LU factorization.
 %   x = cs_lusol(A,b) computes x = A\b, where A is sparse and square, and b is a
 %   full vector.  The ordering cs_amd(A,2) is used.

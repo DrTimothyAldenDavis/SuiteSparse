@@ -15,7 +15,7 @@ title (name, 'FontSize', 16, 'Interpreter', 'none') ;
 drawnow
 
 [m n] = size (C) ;
-if (m ~= n | ~sym)							    %#ok
+if (m ~= n | ~sym)                                                          %#ok
     return ;
 end
 
@@ -64,10 +64,10 @@ x (p) = x ;
 t = toc ;
 
 w2 = sparse (n,1) ;
-w2 (p) = w ;			% w2 = P'*w
+w2 (p) = w ;                    % w2 = P'*w
 wt = cs_transpose (w2) ;
 ww = cs_multiply (w2,wt) ;
-E = cs_add (C, ww, 1, 1) ;	% E = C + w2*w2' ;
+E = cs_add (C, ww, 1, 1) ;      % E = C + w2*w2' ;
 
 fprintf ('update:   time: %8.2f (incl solve) ', t1+t) ;
 print_resid (E, x, b) ;

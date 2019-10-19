@@ -23,24 +23,24 @@
 static UF_long klu_l_backslash    /* return 1 if successful, 0 otherwise */
 (
     /* --- input ---- */
-    UF_long n,		/* A is n-by-n */
-    UF_long *Ap,		/* size n+1, column pointers */
-    UF_long *Ai,		/* size nz = Ap [n], row indices */
-    double *Ax,		/* size nz, numerical values */
-    UF_long isreal,		/* nonzero if A is real, 0 otherwise */
-    double *B,		/* size n, right-hand-side */
+    UF_long n,          /* A is n-by-n */
+    UF_long *Ap,                /* size n+1, column pointers */
+    UF_long *Ai,                /* size nz = Ap [n], row indices */
+    double *Ax,         /* size nz, numerical values */
+    UF_long isreal,             /* nonzero if A is real, 0 otherwise */
+    double *B,          /* size n, right-hand-side */
 
     /* --- output ---- */
-    double *X,		/* size n, solution to Ax=b */
-    double *R,		/* size n, residual r = b-A*x */
+    double *X,          /* size n, solution to Ax=b */
+    double *R,          /* size n, residual r = b-A*x */
 
     /* --- scalar output --- */
-    UF_long *lunz,		/* nnz (L+U+F) */
-    double *rnorm,	/* norm (b-A*x,1) / norm (A,1) */
+    UF_long *lunz,              /* nnz (L+U+F) */
+    double *rnorm,      /* norm (b-A*x,1) / norm (A,1) */
 
     /* --- workspace - */
 
-    klu_l_common *Common	/* default parameters and statistics */
+    klu_l_common *Common        /* default parameters and statistics */
 )
 {
     double anorm = 0, asum ;
@@ -60,137 +60,137 @@ static UF_long klu_l_backslash    /* return 1 if successful, 0 otherwise */
     if (isreal)
     {
 
-	/* ------------------------------------------------------------------ */
-	/* factorization */
-	/* ------------------------------------------------------------------ */
+        /* ------------------------------------------------------------------ */
+        /* factorization */
+        /* ------------------------------------------------------------------ */
 
-	Numeric = klu_l_factor (Ap, Ai, Ax, Symbolic, Common) ;
-	if (!Numeric)
-	{
-	    klu_l_free_symbolic (&Symbolic, Common) ;
-	    return (0) ;
-	}
+        Numeric = klu_l_factor (Ap, Ai, Ax, Symbolic, Common) ;
+        if (!Numeric)
+        {
+            klu_l_free_symbolic (&Symbolic, Common) ;
+            return (0) ;
+        }
 
-	/* ------------------------------------------------------------------ */
-	/* statistics (not required to solve Ax=b) */
-	/* ------------------------------------------------------------------ */
+        /* ------------------------------------------------------------------ */
+        /* statistics (not required to solve Ax=b) */
+        /* ------------------------------------------------------------------ */
 
-	klu_l_rgrowth (Ap, Ai, Ax, Symbolic, Numeric, Common) ;
-	klu_l_condest (Ap, Ax, Symbolic, Numeric, Common) ;
-	klu_l_rcond (Symbolic, Numeric, Common) ;
-	klu_l_flops (Symbolic, Numeric, Common) ;
-	*lunz = Numeric->lnz + Numeric->unz - n + 
-	    ((Numeric->Offp) ? (Numeric->Offp [n]) : 0) ;
+        klu_l_rgrowth (Ap, Ai, Ax, Symbolic, Numeric, Common) ;
+        klu_l_condest (Ap, Ax, Symbolic, Numeric, Common) ;
+        klu_l_rcond (Symbolic, Numeric, Common) ;
+        klu_l_flops (Symbolic, Numeric, Common) ;
+        *lunz = Numeric->lnz + Numeric->unz - n + 
+            ((Numeric->Offp) ? (Numeric->Offp [n]) : 0) ;
 
-	/* ------------------------------------------------------------------ */
-	/* solve Ax=b */
-	/* ------------------------------------------------------------------ */
+        /* ------------------------------------------------------------------ */
+        /* solve Ax=b */
+        /* ------------------------------------------------------------------ */
 
-	for (i = 0 ; i < n ; i++)
-	{
-	    X [i] = B [i] ;
-	}
-	klu_l_solve (Symbolic, Numeric, n, 1, X, Common) ;
+        for (i = 0 ; i < n ; i++)
+        {
+            X [i] = B [i] ;
+        }
+        klu_l_solve (Symbolic, Numeric, n, 1, X, Common) ;
 
-	/* ------------------------------------------------------------------ */
-	/* compute residual, rnorm = norm(b-Ax,1) / norm(A,1) */
-	/* ------------------------------------------------------------------ */
+        /* ------------------------------------------------------------------ */
+        /* compute residual, rnorm = norm(b-Ax,1) / norm(A,1) */
+        /* ------------------------------------------------------------------ */
 
-	for (i = 0 ; i < n ; i++)
-	{
-	    R [i] = B [i] ;
-	}
-	for (j = 0 ; j < n ; j++)
-	{
-	    asum = 0 ;
-	    for (p = Ap [j] ; p < Ap [j+1] ; p++)
-	    {
-		/* R (i) -= A (i,j) * X (j) */
-		R [Ai [p]] -= Ax [p] * X [j] ;
-		asum += fabs (Ax [p]) ;
-	    }
-	    anorm = MAX (anorm, asum) ;
-	}
-	*rnorm = 0 ;
-	for (i = 0 ; i < n ; i++)
-	{
-	    *rnorm = MAX (*rnorm, fabs (R [i])) ;
-	}
+        for (i = 0 ; i < n ; i++)
+        {
+            R [i] = B [i] ;
+        }
+        for (j = 0 ; j < n ; j++)
+        {
+            asum = 0 ;
+            for (p = Ap [j] ; p < Ap [j+1] ; p++)
+            {
+                /* R (i) -= A (i,j) * X (j) */
+                R [Ai [p]] -= Ax [p] * X [j] ;
+                asum += fabs (Ax [p]) ;
+            }
+            anorm = MAX (anorm, asum) ;
+        }
+        *rnorm = 0 ;
+        for (i = 0 ; i < n ; i++)
+        {
+            *rnorm = MAX (*rnorm, fabs (R [i])) ;
+        }
 
-	/* ------------------------------------------------------------------ */
-	/* free numeric factorization */
-	/* ------------------------------------------------------------------ */
+        /* ------------------------------------------------------------------ */
+        /* free numeric factorization */
+        /* ------------------------------------------------------------------ */
 
-	klu_l_free_numeric (&Numeric, Common) ;
+        klu_l_free_numeric (&Numeric, Common) ;
 
     }
     else
     {
 
-	/* ------------------------------------------------------------------ */
-	/* statistics (not required to solve Ax=b) */
-	/* ------------------------------------------------------------------ */
+        /* ------------------------------------------------------------------ */
+        /* statistics (not required to solve Ax=b) */
+        /* ------------------------------------------------------------------ */
 
-	Numeric = klu_zl_factor (Ap, Ai, Ax, Symbolic, Common) ;
-	if (!Numeric)
-	{
-	    klu_l_free_symbolic (&Symbolic, Common) ;
-	    return (0) ;
-	}
+        Numeric = klu_zl_factor (Ap, Ai, Ax, Symbolic, Common) ;
+        if (!Numeric)
+        {
+            klu_l_free_symbolic (&Symbolic, Common) ;
+            return (0) ;
+        }
 
-	/* ------------------------------------------------------------------ */
-	/* statistics */
-	/* ------------------------------------------------------------------ */
+        /* ------------------------------------------------------------------ */
+        /* statistics */
+        /* ------------------------------------------------------------------ */
 
-	klu_zl_rgrowth (Ap, Ai, Ax, Symbolic, Numeric, Common) ;
-	klu_zl_condest (Ap, Ax, Symbolic, Numeric, Common) ;
-	klu_zl_rcond (Symbolic, Numeric, Common) ;
-	klu_zl_flops (Symbolic, Numeric, Common) ;
-	*lunz = Numeric->lnz + Numeric->unz - n + 
-	    ((Numeric->Offp) ? (Numeric->Offp [n]) : 0) ;
+        klu_zl_rgrowth (Ap, Ai, Ax, Symbolic, Numeric, Common) ;
+        klu_zl_condest (Ap, Ax, Symbolic, Numeric, Common) ;
+        klu_zl_rcond (Symbolic, Numeric, Common) ;
+        klu_zl_flops (Symbolic, Numeric, Common) ;
+        *lunz = Numeric->lnz + Numeric->unz - n + 
+            ((Numeric->Offp) ? (Numeric->Offp [n]) : 0) ;
 
-	/* ------------------------------------------------------------------ */
-	/* solve Ax=b */
-	/* ------------------------------------------------------------------ */
+        /* ------------------------------------------------------------------ */
+        /* solve Ax=b */
+        /* ------------------------------------------------------------------ */
 
-	for (i = 0 ; i < 2*n ; i++)
-	{
-	    X [i] = B [i] ;
-	}
-	klu_zl_solve (Symbolic, Numeric, n, 1, X, Common) ;
+        for (i = 0 ; i < 2*n ; i++)
+        {
+            X [i] = B [i] ;
+        }
+        klu_zl_solve (Symbolic, Numeric, n, 1, X, Common) ;
 
-	/* ------------------------------------------------------------------ */
-	/* compute residual, rnorm = norm(b-Ax,1) / norm(A,1) */
-	/* ------------------------------------------------------------------ */
+        /* ------------------------------------------------------------------ */
+        /* compute residual, rnorm = norm(b-Ax,1) / norm(A,1) */
+        /* ------------------------------------------------------------------ */
 
-	for (i = 0 ; i < 2*n ; i++)
-	{
-	    R [i] = B [i] ;
-	}
-	for (j = 0 ; j < n ; j++)
-	{
-	    asum = 0 ;
-	    for (p = Ap [j] ; p < Ap [j+1] ; p++)
-	    {
-		/* R (i) -= A (i,j) * X (j) */
-		i = Ai [p] ;
-		REAL (R,i) -= REAL(Ax,p) * REAL(X,j) - IMAG(Ax,p) * IMAG(X,j) ;
-		IMAG (R,i) -= IMAG(Ax,p) * REAL(X,j) + REAL(Ax,p) * IMAG(X,j) ;
-		asum += CABS (Ax, p) ;
-	    }
-	    anorm = MAX (anorm, asum) ;
-	}
-	*rnorm = 0 ;
-	for (i = 0 ; i < n ; i++)
-	{
-	    *rnorm = MAX (*rnorm, CABS (R, i)) ;
-	}
+        for (i = 0 ; i < 2*n ; i++)
+        {
+            R [i] = B [i] ;
+        }
+        for (j = 0 ; j < n ; j++)
+        {
+            asum = 0 ;
+            for (p = Ap [j] ; p < Ap [j+1] ; p++)
+            {
+                /* R (i) -= A (i,j) * X (j) */
+                i = Ai [p] ;
+                REAL (R,i) -= REAL(Ax,p) * REAL(X,j) - IMAG(Ax,p) * IMAG(X,j) ;
+                IMAG (R,i) -= IMAG(Ax,p) * REAL(X,j) + REAL(Ax,p) * IMAG(X,j) ;
+                asum += CABS (Ax, p) ;
+            }
+            anorm = MAX (anorm, asum) ;
+        }
+        *rnorm = 0 ;
+        for (i = 0 ; i < n ; i++)
+        {
+            *rnorm = MAX (*rnorm, CABS (R, i)) ;
+        }
 
-	/* ------------------------------------------------------------------ */
-	/* free numeric factorization */
-	/* ------------------------------------------------------------------ */
+        /* ------------------------------------------------------------------ */
+        /* free numeric factorization */
+        /* ------------------------------------------------------------------ */
 
-	klu_zl_free_numeric (&Numeric, Common) ;
+        klu_zl_free_numeric (&Numeric, Common) ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -217,7 +217,7 @@ static void klu_l_demo (UF_long n, UF_long *Ap, UF_long *Ai, double *Ax,
     UF_long i, lunz ;
 
     printf ("KLU: %s, version: %d.%d.%d\n", KLU_DATE, KLU_MAIN_VERSION,
-	KLU_SUB_VERSION, KLU_SUBSUB_VERSION) ;
+        KLU_SUB_VERSION, KLU_SUBSUB_VERSION) ;
 
     /* ---------------------------------------------------------------------- */
     /* set defaults */
@@ -231,32 +231,32 @@ static void klu_l_demo (UF_long n, UF_long *Ap, UF_long *Ai, double *Ax,
 
     if (isreal)
     {
-	/* B = 1 + (1:n)/n */
-	B = klu_l_malloc (n, sizeof (double), &Common) ;
-	X = klu_l_malloc (n, sizeof (double), &Common) ;
-	R = klu_l_malloc (n, sizeof (double), &Common) ;
-	if (B)
-	{
-	    for (i = 0 ; i < n ; i++)
-	    {
-		B [i] = 1 + ((double) i+1) / ((double) n) ;
-	    }
-	}
+        /* B = 1 + (1:n)/n */
+        B = klu_l_malloc (n, sizeof (double), &Common) ;
+        X = klu_l_malloc (n, sizeof (double), &Common) ;
+        R = klu_l_malloc (n, sizeof (double), &Common) ;
+        if (B)
+        {
+            for (i = 0 ; i < n ; i++)
+            {
+                B [i] = 1 + ((double) i+1) / ((double) n) ;
+            }
+        }
     }
     else
     {
-	/* real (B) = 1 + (1:n)/n, imag(B) = (n:-1:1)/n */
-	B = klu_l_malloc (n, 2 * sizeof (double), &Common) ;
-	X = klu_l_malloc (n, 2 * sizeof (double), &Common) ;
-	R = klu_l_malloc (n, 2 * sizeof (double), &Common) ;
-	if (B)
-	{
-	    for (i = 0 ; i < n ; i++)
-	    {
-		REAL (B, i) = 1 + ((double) i+1) / ((double) n) ;
-		IMAG (B, i) = ((double) n-i) / ((double) n) ;
-	    }
-	}
+        /* real (B) = 1 + (1:n)/n, imag(B) = (n:-1:1)/n */
+        B = klu_l_malloc (n, 2 * sizeof (double), &Common) ;
+        X = klu_l_malloc (n, 2 * sizeof (double), &Common) ;
+        R = klu_l_malloc (n, 2 * sizeof (double), &Common) ;
+        if (B)
+        {
+            for (i = 0 ; i < n ; i++)
+            {
+                REAL (B, i) = 1 + ((double) i+1) / ((double) n) ;
+                IMAG (B, i) = ((double) n-i) / ((double) n) ;
+            }
+        }
     }
 
     /* ---------------------------------------------------------------------- */
@@ -264,16 +264,16 @@ static void klu_l_demo (UF_long n, UF_long *Ap, UF_long *Ai, double *Ax,
     /* ---------------------------------------------------------------------- */
 
     if (!klu_l_backslash (n, Ap, Ai, Ax, isreal, B, X, R, &lunz, &rnorm,
-	&Common))
+        &Common))
     {
-	printf ("KLU failed\n") ;
+        printf ("KLU failed\n") ;
     }
     else
     {
-	printf ("n %d nnz(A) %d nnz(L+U+F) %d resid %g\n"
-	    "recip growth %g condest %g rcond %g flops %g\n",
-	    n, Ap [n], lunz, rnorm, Common.rgrowth, Common.condest,
-	    Common.rcond, Common.flops) ;
+        printf ("n %ld nnz(A) %ld nnz(L+U+F) %ld resid %g\n"
+            "recip growth %g condest %g rcond %g flops %g\n",
+            n, Ap [n], lunz, rnorm, Common.rgrowth, Common.condest,
+            Common.rcond, Common.flops) ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -282,15 +282,15 @@ static void klu_l_demo (UF_long n, UF_long *Ap, UF_long *Ai, double *Ax,
 
     if (isreal)
     {
-	klu_l_free (B, n, sizeof (double), &Common) ;
-	klu_l_free (X, n, sizeof (double), &Common) ;
-	klu_l_free (R, n, sizeof (double), &Common) ;
+        klu_l_free (B, n, sizeof (double), &Common) ;
+        klu_l_free (X, n, sizeof (double), &Common) ;
+        klu_l_free (R, n, sizeof (double), &Common) ;
     }
     else
     {
-	klu_l_free (B, 2*n, sizeof (double), &Common) ;
-	klu_l_free (X, 2*n, sizeof (double), &Common) ;
-	klu_l_free (R, 2*n, sizeof (double), &Common) ;
+        klu_l_free (B, 2*n, sizeof (double), &Common) ;
+        klu_l_free (X, 2*n, sizeof (double), &Common) ;
+        klu_l_free (R, 2*n, sizeof (double), &Common) ;
     }
     printf ("peak memory usage: %g bytes\n\n", (double) (Common.mempeak)) ;
 }
@@ -313,16 +313,16 @@ int main (void)
     A = cholmod_l_read_sparse (stdin, &ch) ;
     if (A)
     {
-	if (A->nrow != A->ncol || A->stype != 0
-	    || (!(A->xtype == CHOLMOD_REAL || A->xtype == CHOLMOD_COMPLEX)))
-	{
-	    printf ("invalid matrix\n") ;
-	}
-	else
-	{
-	    klu_l_demo (A->nrow, A->p, A->i, A->x, A->xtype == CHOLMOD_REAL) ;
-	}
-	cholmod_l_free_sparse (&A, &ch) ;
+        if (A->nrow != A->ncol || A->stype != 0
+            || (!(A->xtype == CHOLMOD_REAL || A->xtype == CHOLMOD_COMPLEX)))
+        {
+            printf ("invalid matrix\n") ;
+        }
+        else
+        {
+            klu_l_demo (A->nrow, A->p, A->i, A->x, A->xtype == CHOLMOD_REAL) ;
+        }
+        cholmod_l_free_sparse (&A, &ch) ;
     }
     cholmod_l_finish (&ch) ;
     return (0) ;

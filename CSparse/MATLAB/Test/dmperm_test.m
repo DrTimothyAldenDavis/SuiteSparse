@@ -32,13 +32,13 @@ for k = 1:length(f)
     
     i = f(k) ;
 
-    Prob = UFget (i)							    %#ok
+    Prob = UFget (i)                                                        %#ok
 
     A = Prob.A ;
     [m n] = size (A) ;
     if (m > n)
-	% make sure A is short and fat
-	A = A' ;
+        % make sure A is short and fat
+        A = A' ;
     end
     % C is tall and thin
     C = A' ;
@@ -47,11 +47,11 @@ for k = 1:length(f)
     k1 = 0 ;
     t1 = 0 ;
     while (t1 < 1)
-	tic
-	p = cs_dmperm (A) ;
-	t = toc ;
-	t1 = t1 + t ;
-	k1 = k1 + 1 ;
+        tic
+        p = cs_dmperm (A) ;
+        t = toc ;
+        t1 = t1 + t ;
+        k1 = k1 + 1 ;
     end
     t1 = t1 / k1 ;
     s1 = sum (p > 0) ;
@@ -59,11 +59,11 @@ for k = 1:length(f)
     k2 = 0 ;
     t2 = 0 ;
     while (t2 < 1)
-	tic
-	p = cs_dmperm (C) ;
-	t = toc ;
-	t2 = t2 + t ;
-	k2 = k2 + 1 ;
+        tic
+        p = cs_dmperm (C) ;
+        t = toc ;
+        t2 = t2 + t ;
+        k2 = k2 + 1 ;
     end
     t2 = t2 / k2 ;
     s2 = sum (p > 0) ;
@@ -71,22 +71,22 @@ for k = 1:length(f)
     k3 = 0 ;
     t3 = 0 ;
     while (t3 < 1)
-	tic
-	p = cs_dmperm_orig (A) ;
-	t = toc ;
-	t3 = t3 + t ;
-	k3 = k3 + 1 ;
+        tic
+        p = cs_dmperm_orig (A) ;
+        t = toc ;
+        t3 = t3 + t ;
+        k3 = k3 + 1 ;
     end
     t3 = t3 / k3 ;
 
     k4 = 0 ;
     t4 = 0 ;
     while (t4 < 1)
-	tic
-	p = cs_dmperm_orig (A') ;
-	t = toc ;
-	t4 = t4 + t ;
-	k4 = k4 + 1 ;
+        tic
+        p = cs_dmperm_orig (A') ;
+        t = toc ;
+        t4 = t4 + t ;
+        k4 = k4 + 1 ;
     end
     t4 = t4 / k4 ;
 
@@ -96,15 +96,15 @@ for k = 1:length(f)
 
     fprintf ('[m %d:%d n %d:%d (%d)]:\n', m, mempty, n, nempty, sprnk) ;
     fprintf ('    A: t1 %10.6f (%6d)   C: t2 %10.6f (%6d) new\n', ...
-	t1, k1, t2, k2) ;
+        t1, k1, t2, k2) ;
     fprintf ('    A: t3 %10.6f (%6d)   C: t4 %10.6f (%6d) orig\n', ...
-	t3, k3, t4, k4) ;
+        t3, k3, t4, k4) ;
 
-    if (s1 ~= sprnk | s2 ~= sprnk)					    %#ok
-	s1								    %#ok
-	s2								    %#ok
-	sprnk								    %#ok
-	error ('!') ;
+    if (s1 ~= sprnk | s2 ~= sprnk)                                          %#ok
+        s1                                                                  %#ok
+        s2                                                                  %#ok
+        sprnk                                                               %#ok
+        error ('!') ;
     end
 
     tt1 (k) = t1 ;
@@ -120,7 +120,7 @@ for k = 1:length(f)
     clear A C
 
     semilogy (ss(1:k) ./ nn(1:k), tt1(1:k) ./ tt3(1:k), 'o', ...
-	[0 1], [1 1], 'r-') ;
+        [0 1], [1 1], 'r-') ;
     drawnow
 
 end

@@ -6,9 +6,9 @@
  *
  * This routine is an example of a user-provided ordering function for KLU.
  * Its return value is klu_l_cholmod's estimate of max (nnz(L),nnz(U)):
- *	0 if error,
- *	-1 if OK, but estimate of max (nnz(L),nnz(U)) not computed
- *	> 0 if OK and estimate computed.
+ *      0 if error,
+ *      -1 if OK, but estimate of max (nnz(L),nnz(U)) not computed
+ *      > 0 if OK and estimate computed.
  *
  * This function can be assigned to KLU's Common->user_order function pointer.
  */
@@ -21,11 +21,11 @@
 UF_long klu_l_cholmod
 (
     /* inputs */
-    UF_long n,		    /* A is n-by-n */
-    UF_long Ap [ ],		    /* column pointers */
-    UF_long Ai [ ],		    /* row indices */
+    UF_long n,              /* A is n-by-n */
+    UF_long Ap [ ],                 /* column pointers */
+    UF_long Ai [ ],                 /* row indices */
     /* outputs */
-    UF_long Perm [ ],	    /* fill-reducing permutation */
+    UF_long Perm [ ],       /* fill-reducing permutation */
     /* user-defined */
     klu_l_common *Common    /* user-defined data is in Common->user_data */
 )
@@ -39,8 +39,8 @@ UF_long klu_l_cholmod
 
     if (Ap == NULL || Ai == NULL || Perm == NULL || n < 0)
     {
-	/* invalid inputs */
-	return (0) ;
+        /* invalid inputs */
+        return (0) ;
     }
 
     /* start CHOLMOD */
@@ -56,41 +56,41 @@ UF_long klu_l_cholmod
 
     /* construct a CHOLMOD version of the input matrix A */
     A = &Amatrix ;
-    A->nrow = n ;		    /* A is n-by-n */
+    A->nrow = n ;                   /* A is n-by-n */
     A->ncol = n ;
-    A->nzmax = Ap [n] ;		    /* with nzmax entries */
-    A->packed = TRUE ;		    /* there is no A->nz array */
-    A->stype = 0 ;		    /* A is unsymmetric */
+    A->nzmax = Ap [n] ;             /* with nzmax entries */
+    A->packed = TRUE ;              /* there is no A->nz array */
+    A->stype = 0 ;                  /* A is unsymmetric */
     A->itype = CHOLMOD_INT ;
     A->xtype = CHOLMOD_PATTERN ;
     A->dtype = CHOLMOD_DOUBLE ;
     A->nz = NULL ;
-    A->p = Ap ;			    /* column pointers */
-    A->i = Ai ;			    /* row indices */
-    A->x = NULL ;		    /* no numerical values */
+    A->p = Ap ;                     /* column pointers */
+    A->i = Ai ;                     /* row indices */
+    A->x = NULL ;                   /* no numerical values */
     A->z = NULL ;
-    A->sorted = FALSE ;		    /* columns of A are not sorted */
+    A->sorted = FALSE ;             /* columns of A are not sorted */
 
     /* get the user_data; default is symmetric if user_data is NULL */
     symmetric = (Common->user_data == NULL) ? TRUE :
-	(((UF_long *) (Common->user_data)) [0] != 0) ;
+        (((UF_long *) (Common->user_data)) [0] != 0) ;
 
     /* AT = pattern of A' */
     AT = cholmod_l_transpose (A, 0, &cm) ;
     if (symmetric)
     {
-	/* S = the symmetric pattern of A+A' */
-	S = cholmod_l_add (A, AT, one, zero, FALSE, FALSE, &cm) ;
-	cholmod_l_free_sparse (&AT, &cm) ;
-	if (S != NULL)
-	{
-	    S->stype = 1 ;
-	}
+        /* S = the symmetric pattern of A+A' */
+        S = cholmod_l_add (A, AT, one, zero, FALSE, FALSE, &cm) ;
+        cholmod_l_free_sparse (&AT, &cm) ;
+        if (S != NULL)
+        {
+            S->stype = 1 ;
+        }
     }
     else
     {
-	/* S = A'.  CHOLMOD will order S*S', which is A'*A */
-	S = AT ;
+        /* S = A'.  CHOLMOD will order S*S', which is A'*A */
+        S = AT ;
     }
 
     /* order and analyze S or S*S' */
@@ -99,12 +99,12 @@ UF_long klu_l_cholmod
     /* copy the permutation from L to the output */
     if (L != NULL)
     {
-	P = L->Perm ;
-	for (k = 0 ; k < n ; k++)
-	{
-	    Perm [k] = P [k] ;
-	}
-	lnz = cm.lnz ;
+        P = L->Perm ;
+        for (k = 0 ; k < n ; k++)
+        {
+            Perm [k] = P [k] ;
+        }
+        lnz = cm.lnz ;
     }
 
     cholmod_l_free_sparse (&S, &cm) ;

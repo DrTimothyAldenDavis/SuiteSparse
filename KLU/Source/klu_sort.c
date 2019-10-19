@@ -26,58 +26,58 @@ static void sort (Int n, Int *Xip, Int *Xlen, Unit *LU, Int *Tp, Int *Tj,
     /* count the number of entries in each row of L or U */ 
     for (i = 0 ; i < n ; i++)
     {
-	W [i] = 0 ;
+        W [i] = 0 ;
     }
     for (j = 0 ; j < n ; j++)
     {
-	GET_POINTER (LU, Xip, Xlen, Xi, Xx, j, len) ;
-	for (p = 0 ; p < len ; p++)
-	{
-	    W [Xi [p]]++ ;
-	}
+        GET_POINTER (LU, Xip, Xlen, Xi, Xx, j, len) ;
+        for (p = 0 ; p < len ; p++)
+        {
+            W [Xi [p]]++ ;
+        }
     }
 
     /* construct the row pointers for T */
     nz = 0 ;
     for (i = 0 ; i < n ; i++)
     {
-	Tp [i] = nz ;
-	nz += W [i] ;
+        Tp [i] = nz ;
+        nz += W [i] ;
     }
     Tp [n] = nz ;
     for (i = 0 ; i < n ; i++)
     {
-	W [i] = Tp [i] ;
+        W [i] = Tp [i] ;
     }
 
     /* transpose the matrix into Tp, Ti, Tx */
     for (j = 0 ; j < n ; j++)
     {
-	GET_POINTER (LU, Xip, Xlen, Xi, Xx, j, len) ;
-	for (p = 0 ; p < len ; p++)
-	{
-	    tp = W [Xi [p]]++ ;
-	    Tj [tp] = j ;
-	    Tx [tp] = Xx [p] ;
-	}
+        GET_POINTER (LU, Xip, Xlen, Xi, Xx, j, len) ;
+        for (p = 0 ; p < len ; p++)
+        {
+            tp = W [Xi [p]]++ ;
+            Tj [tp] = j ;
+            Tx [tp] = Xx [p] ;
+        }
     }
 
     /* transpose the matrix back into Xip, Xlen, Xi, Xx */
     for (j = 0 ; j < n ; j++)
     {
-	W [j] = 0 ;
+        W [j] = 0 ;
     }
     for (i = 0 ; i < n ; i++)
     {
-	pend = Tp [i+1] ;
-	for (p = Tp [i] ; p < pend ; p++)
-	{
-	    j = Tj [p] ;
-	    GET_POINTER (LU, Xip, Xlen, Xi, Xx, j, len) ;
-	    xlen = W [j]++ ;
-	    Xi [xlen] = i ;
-	    Xx [xlen] = Tx [p] ;
-	}
+        pend = Tp [i+1] ;
+        for (p = Tp [i] ; p < pend ; p++)
+        {
+            j = Tj [p] ;
+            GET_POINTER (LU, Xip, Xlen, Xi, Xx, j, len) ;
+            xlen = W [j]++ ;
+            Xi [xlen] = i ;
+            Xx [xlen] = Tx [p] ;
+        }
     }
 
     ASSERT (KLU_valid_LU (n, FALSE, Xip, Xlen, LU)) ;
@@ -103,7 +103,7 @@ Int KLU_sort
 
     if (Common == NULL)
     {
-	return (FALSE) ;
+        return (FALSE) ;
     }
     Common->status = KLU_OK ;
 
@@ -131,18 +131,18 @@ Int KLU_sort
 
     if (Common->status == KLU_OK)
     {
-	/* sort each block of L and U */
-	for (block = 0 ; block < nblocks ; block++)
-	{
-	    k1 = R [block] ;
-	    nk = R [block+1] - k1 ;
-	    if (nk > 1)
-	    {
-		PRINTF (("\n-------------------block: %d nk %d\n", block, nk)) ;
-		sort (nk, Lip + k1, Llen + k1, LUbx [block], Tp, Ti, Tx, W) ;
-		sort (nk, Uip + k1, Ulen + k1, LUbx [block], Tp, Ti, Tx, W) ;
-	    }
-	}
+        /* sort each block of L and U */
+        for (block = 0 ; block < nblocks ; block++)
+        {
+            k1 = R [block] ;
+            nk = R [block+1] - k1 ;
+            if (nk > 1)
+            {
+                PRINTF (("\n-------------------block: %d nk %d\n", block, nk)) ;
+                sort (nk, Lip + k1, Llen + k1, LUbx [block], Tp, Ti, Tx, W) ;
+                sort (nk, Uip + k1, Ulen + k1, LUbx [block], Tp, Ti, Tx, W) ;
+            }
+        }
     }
 
     PRINTF (("\n======================= sort done.\n")) ;

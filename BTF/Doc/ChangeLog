@@ -1,3 +1,7 @@
+Mar 24, 2009: version 1.1.0
+
+    * tabs expanded to 8 spaces; version number updated to stay in sync with KLU
+
 Nov 1, 2007: version 1.0.1
 
     * trivial change to BTF/MATLAB/btf.c mexFunction: unused variable removed.
@@ -15,13 +19,13 @@ May 31, 2007:  version 1.0 released
     * maxwork parameter added to btf_maxtrans and btf_order
 
     * btf_maxtrans modified; now returns Q[i] = -1 if row i is unmatched;
-	code to complete the permutation moved to btf_order.  This also
-	changes the maxtrans mexFunction.
+        code to complete the permutation moved to btf_order.  This also
+        changes the maxtrans mexFunction.
 
     * btf_install added for easy MATLAB installation
 
     * illustrative recursive version of maxtrans removed (see the recursive
-	version of cs_maxtrans in CSparse instead)
+        version of cs_maxtrans in CSparse instead)
 
     * MAXTRANS_* macros renamed BTF_*
 
@@ -34,5 +38,5 @@ Dec 12, 2006: version 0.11
 Apr 30, 2006:
 
     * minor editing of comments.  dmperm.c moved to MATLAB directory, since
-	it requires MATLAB.  Version number not changed.
+        it requires MATLAB.  Version number not changed.
 

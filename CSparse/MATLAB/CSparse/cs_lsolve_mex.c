@@ -27,33 +27,33 @@ void mexFunction
     int top, nz, p, *xi ;
     if (nargout > 1 || nargin != 2)
     {
-	mexErrMsgTxt ("Usage: x = cs_lsolve(L,b)") ;
+        mexErrMsgTxt ("Usage: x = cs_lsolve(L,b)") ;
     }
     L = cs_mex_get_sparse (&Lmatrix, 1, 1, pargin [0]) ;    /* get L */
     if (mxIsSparse (pargin [1]))
     {
-	B = cs_mex_get_sparse (&Bmatrix, 0, 1, pargin [1]) ;/* get sparse b */
-	cs_mex_check (0, L->n, 1, 0, 1, 1, pargin [1]) ;
-	xi = cs_malloc (2*L->n, sizeof (int)) ;		    /* get workspace */
-	x  = cs_malloc (L->n, sizeof (double)) ;
-	top = cs_spsolve (L, B, 0, xi, x, NULL, 1) ;	    /* x = L\b */
-	X = cs_spalloc (L->n, 1, L->n-top, 1, 0) ;	    /* create sparse x*/
-	X->p [0] = 0 ;
-	nz = 0 ;
-	for (p = top ; p < L->n ; p++)
-	{
-	    X->i [nz] = xi [p] ;
-	    X->x [nz++] = x [xi [p]] ;
-	}
-	X->p [1] = nz ;
-	pargout [0] = cs_mex_put_sparse (&X) ;
-	cs_free (x) ;
-	cs_free (xi) ;
+        B = cs_mex_get_sparse (&Bmatrix, 0, 1, pargin [1]) ;/* get sparse b */
+        cs_mex_check (0, L->n, 1, 0, 1, 1, pargin [1]) ;
+        xi = cs_malloc (2*L->n, sizeof (int)) ;             /* get workspace */
+        x  = cs_malloc (L->n, sizeof (double)) ;
+        top = cs_spsolve (L, B, 0, xi, x, NULL, 1) ;        /* x = L\b */
+        X = cs_spalloc (L->n, 1, L->n-top, 1, 0) ;          /* create sparse x*/
+        X->p [0] = 0 ;
+        nz = 0 ;
+        for (p = top ; p < L->n ; p++)
+        {
+            X->i [nz] = xi [p] ;
+            X->x [nz++] = x [xi [p]] ;
+        }
+        X->p [1] = nz ;
+        pargout [0] = cs_mex_put_sparse (&X) ;
+        cs_free (x) ;
+        cs_free (xi) ;
     }
     else
     {
-	b = cs_mex_get_double (L->n, pargin [1]) ;	    /* get full b */
-	x = cs_mex_put_double (L->n, b, &(pargout [0])) ;   /* x = b */
-	cs_lsolve (L, x) ;				    /* x = L\x */
+        b = cs_mex_get_double (L->n, pargin [1]) ;          /* get full b */
+        x = cs_mex_put_double (L->n, b, &(pargout [0])) ;   /* x = b */
+        cs_lsolve (L, x) ;                                  /* x = L\x */
     }
 }

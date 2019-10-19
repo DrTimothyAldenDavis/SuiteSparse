@@ -30,9 +30,9 @@
 
 void mexFunction
 (
-    int	nargout,
+    int nargout,
     mxArray *pargout [ ],
-    int	nargin,
+    int nargin,
     const mxArray *pargin [ ]
 )
 {
@@ -46,13 +46,13 @@ void mexFunction
 
     if (nargin < 1 || nargin > 2 || nargout > 2)
     {
-	mexErrMsgTxt ("Usage: q = maxtrans (A)") ;
+        mexErrMsgTxt ("Usage: q = maxtrans (A)") ;
     }
     nrow = mxGetM (pargin [0]) ;
     ncol = mxGetN (pargin [0]) ;
     if (!mxIsSparse (pargin [0]))
     {
-    	mexErrMsgTxt ("maxtrans: A must be sparse, and non-empty") ;
+        mexErrMsgTxt ("maxtrans: A must be sparse, and non-empty") ;
     }
 
     /* get sparse matrix A */
@@ -68,7 +68,7 @@ void mexFunction
     maxwork = 0 ;
     if (nargin > 1)
     {
-	maxwork = mxGetScalar (pargin [1]) ;
+        maxwork = mxGetScalar (pargin [1]) ;
     }
     work = 0 ;
 
@@ -86,14 +86,14 @@ void mexFunction
     Matchx = mxGetPr (pargout [0]) ;
     for (i = 0 ; i < nrow ; i++)
     {
-	Matchx [i] = Match [i] + 1 ;	/* convert to 1-based */
+        Matchx [i] = Match [i] + 1 ;    /* convert to 1-based */
     }
 
     if (nargout > 1)
     {
-	pargout [1] = mxCreateDoubleMatrix (1, 1, mxREAL) ;
-	w = mxGetPr (pargout [1]) ;
-	w [0] = work ;
+        pargout [1] = mxCreateDoubleMatrix (1, 1, mxREAL) ;
+        w = mxGetPr (pargout [1]) ;
+        w [0] = work ;
     }
 
     mxFree (Work) ;

@@ -26,7 +26,7 @@ nasty = [
     -(1:8)'  % generated matrices
     904 % vanHeukelum/cage3 (5-by-5)
     819 % Simon/raefsky6 (permuted triangular matrix)
-	%
+        %
         % --- older seg faults:
     264 % HB/west0156, causes older strongcomp_recursive to fail
     824 % TOKAMAK/utm300 (300-by-300), causes older code to fail
@@ -76,7 +76,7 @@ nasty = [
     851 % Chen/pkustk05
     979 % Kamvar/Stanford
     374 % Bova/rma10
-	%
+        %
         % --- lots of time:
     395 % DRIVCAV/cavity16
     396 % DRIVCAV/cavity17
@@ -136,9 +136,9 @@ nasty = [
         %
         % --- lots of time, and seg faults:
     285 % ATandT/pre2
-	% --- huge matrix, turn off plotting
+        % --- huge matrix, turn off plotting
     940 % Shenk/af_shell1, memory leak in plot, after call to btf, once.
-	% ----
+        % ----
 ]' ;
 
 % maxtrans_recursive causes a seg fault on these matrices, because of
@@ -217,13 +217,13 @@ try
             % construct the jth test matrix
             j = -j ;
             if (j == 1 | j == 2)                                            %#ok
-                B11 = UFget ('Grund/b1_ss') ;	    % 7-by-7 diagonal block
+                B11 = UFget ('Grund/b1_ss') ;       % 7-by-7 diagonal block
                 B11 = B11.A ;
                 B12 = sparse (zeros (7,2)) ;
                 B12 (3,2) = 1 ;
                 B13 = sparse (ones  (7,5)) ;
                 B21 = sparse (zeros (2,7)) ;
-                B22 = sparse (ones  (2,2)) ;	    % 2-by-2 diagonal block
+                B22 = sparse (ones  (2,2)) ;        % 2-by-2 diagonal block
                 B23 = sparse (ones  (2,5)) ;
                 B31 = sparse (zeros (5,7)) ;
                 B32 = sparse (zeros (5,2)) ;
@@ -427,7 +427,7 @@ try
             if (any (c (kbad) ~= 0))
                 error ('kbad') ;
             end
-            if (any (c (kgood) == 0))	    %#ok
+            if (any (c (kgood) == 0))       %#ok
                 error ('kgood') ;
             end
 
@@ -511,7 +511,7 @@ try
             drawnow
         end
 
-        if (matnum ~= nmat & dopause)					    %#ok
+        if (matnum ~= nmat & dopause)                                       %#ok
             input ('Hit enter: ') ;
         end
 

@@ -3,7 +3,7 @@ function klu_make (with_cholmod)
 %
 % Example:
 %   klu_make            % compiles KLU without CHOLMOD
-%   klu_make (1)        % with CHOLMOD, CCAMD, CCOLAMD, and METIS
+%   klu_make (1)        % with CHOLMOD, CAMD, CCOLAMD, and METIS
 %
 % KLU relies on AMD, COLAMD, and BTF for its ordering options, and can
 % optionally use CHOLMOD, CCOLAMD, CAMD, and METIS as well.  By default,
@@ -15,14 +15,14 @@ function klu_make (with_cholmod)
 %
 % See also klu
 
-% Copyright 2004-2007 Timothy A. Davis, Univ. of Florida
+% Copyright 2004-2009 Timothy A. Davis, Univ. of Florida
 % http://www.cise.ufl.edu/research/sparse
 
 if (nargin < 1)
     with_cholmod = 0 ;
 end
 
-details = 0 ;	    % if 1, print details of each command
+details = 0 ;       % if 1, print details of each command
 
 % modify this if your copy of METIS is not in SuiteSparse/metis-4.0:
 metis_path = '../../metis-4.0' ;
@@ -47,7 +47,7 @@ include = [include ' -DNLARGEFILE'] ;
 
 % fix the METIS 4.0.1 rename.h file
 if (with_cholmod)
-    fprintf ('with CHOLMOD, CCAMD, CCOLAMD, and METIS\n') ;
+    fprintf ('with CHOLMOD, CAMD, CCOLAMD, and METIS\n') ;
     f = fopen ('rename.h', 'w') ;
     if (f == -1)
         error ('unable to create rename.h in current directory') ;
@@ -65,7 +65,7 @@ if (with_cholmod)
     fclose (f) ;
     include = ['-DNSUPERNODAL -DNMODIFY -DNMATRIXOPS -DNCHECK ' include] ;
 else
-    fprintf ('without CHOLMOD, CCAMD, CCOLAMD, and METIS\n') ;
+    fprintf ('without CHOLMOD, CAMD, CCOLAMD, and METIS\n') ;
     include = ['-DNCHOLMOD ' include] ;
 end
 
@@ -206,7 +206,7 @@ klu_src = {
     '../Source/klu_memory' } ;
 
 if (with_cholmod)
-    klu_src = [klu_src { '../User/klu_l_cholmod' }] ;			    %#ok
+    klu_src = [klu_src { '../User/klu_l_cholmod' }] ;                       %#ok
 end
 
 klu_zlsrc = {
@@ -289,7 +289,7 @@ for f = source
         slash = slash (end) + 1 ;
     end
     o = fs (slash:end) ;
-    obj = [obj  ' ' o obj_extension] ;					    %#ok
+    obj = [obj  ' ' o obj_extension] ;                                      %#ok
     s = sprintf ('mex %s -DDLONG -O %s -c %s.c', d, include, fs) ;
     kk = do_cmd (s, kk, details) ;
 end
@@ -306,18 +306,18 @@ for k = 1:length(klu_zlsrc)
     s = sprintf ('mex %s -DDLONG -O %s -c %s.c', d, include, ff) ;
     kk = do_cmd (s, kk, details) ;
     lobj = klu_lobj {k} ;
-    obj = [obj  ' ' lobj obj_extension] ;				    %#ok
+    obj = [obj  ' ' lobj obj_extension] ;                                   %#ok
     mvfile ([o obj_extension], [lobj obj_extension]) ;
     s = sprintf ('mex %s -DDLONG -DCOMPLEX -O %s -c %s.c', d, include, ff) ;
     kk = do_cmd (s, kk, details) ;
     zlobj = klu_zlobj {k} ;
-    obj = [obj  ' ' zlobj obj_extension] ;				    %#ok
+    obj = [obj  ' ' zlobj obj_extension] ;                                  %#ok
     mvfile ([o obj_extension], [zlobj obj_extension]) ;
 end
 
 % compile the KLU mexFunction
 s = sprintf ('mex %s -DDLONG -O %s -output klu klu_mex.c', d, include) ;
-s = [s obj] ;								    %#ok
+s = [s obj] ;                                                               %#ok
 kk = do_cmd (s, kk, details) ;
 
 % clean up
@@ -330,7 +330,7 @@ fprintf ('\nKLU successfully compiled\n') ;
 
 function rmfile (file)
 % rmfile:  delete a file, but only if it exists
-if (length (dir (file)) > 0)						    %#ok
+if (length (dir (file)) > 0)                                                %#ok
     delete (file) ;
 end
 
@@ -339,7 +339,7 @@ end
 function cpfile (src, dst)
 % cpfile:  copy the src file to the filename dst, overwriting dst if it exists
 rmfile (dst)
-if (length (dir (src)) == 0)	%#ok
+if (length (dir (src)) == 0)    %#ok
     fprintf ('File does not exist: %s\n', src) ;
     error ('File does not exist') ;
 end
@@ -359,7 +359,7 @@ if (details)
     fprintf ('%s\n', s) ;
 else
     if (mod (kk, 60) == 0)
-	fprintf ('\n') ;
+        fprintf ('\n') ;
     end
     kk = kk + 1 ;
     fprintf ('.') ;

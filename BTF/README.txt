@@ -55,55 +55,55 @@ A full text of the license is in Doc/lesser.txt.
 
 Files and directories in the BTF package:
 
-    Doc		    documentation and license
-    Include	    include files
-    Lib		    compiled BTF library
-    Makefile	    Makefile for C and MATLAB versions
-    MATLAB	    MATLAB interface
-    README.txt	    this file
-    Source	    BTF source code
+    Doc             documentation and license
+    Include         include files
+    Lib             compiled BTF library
+    Makefile        Makefile for C and MATLAB versions
+    MATLAB          MATLAB interface
+    README.txt      this file
+    Source          BTF source code
 
 ./Doc:
 
-    ChangeLog	    changes in BTF
-    lesser.txt	    license
+    ChangeLog       changes in BTF
+    lesser.txt      license
 
 ./Include:
 
-    btf.h	    primary user include file
+    btf.h           primary user include file
     btf_internal.h  internal include file, not for user programs
 
 ./Lib:
 
-    Makefile	    Makefile for C library
+    Makefile        Makefile for C library
 
 ./MATLAB:
 
-    btf.c	    btf mexFunction
+    btf.c           btf mexFunction
     btf_install.m   compile and install BTF for use in MATLAB
-    btf.m	    btf help
-    Contents.m	    contents of MATLAB interface
-    Makefile	    Makefile for MATLAB functions
-    maxtrans.c	    maxtrans mexFunction
-    maxtrans.m	    maxtrans help
+    btf.m           btf help
+    Contents.m      contents of MATLAB interface
+    Makefile        Makefile for MATLAB functions
+    maxtrans.c      maxtrans mexFunction
+    maxtrans.m      maxtrans help
     strongcomp.c    strongcomp mexFunction
     strongcomp.m    strongcomp help
-    Test	    MATLAB test directory
+    Test            MATLAB test directory
 
 ./MATLAB/Test:
 
-    checkbtf.m	    check a BTF ordering
-    drawbtf.m	    plot a BTF ordering
-    test1.m	    compare maxtrans and cs_dmperm
-    test2.m	    compare btf and cs_dmperm
-    test3.m	    extensive test (maxtrans, strongcomp, and btf)
-    test4b.m	    test btf maxwork option
-    test4.m	    test btf maxwork option
-    test5.m	    test maxtrans maxwork option
+    checkbtf.m      check a BTF ordering
+    drawbtf.m       plot a BTF ordering
+    test1.m         compare maxtrans and cs_dmperm
+    test2.m         compare btf and cs_dmperm
+    test3.m         extensive test (maxtrans, strongcomp, and btf)
+    test4b.m        test btf maxwork option
+    test4.m         test btf maxwork option
+    test5.m         test maxtrans maxwork option
 
 ./Source:
 
-    btf_maxtrans.c	btf_maxtrans C function
-    btf_order.c		btf_order C function
-    btf_strongcomp.c	btf_strongcomp C function
+    btf_maxtrans.c      btf_maxtrans C function
+    btf_order.c         btf_order C function
+    btf_strongcomp.c    btf_strongcomp C function
 

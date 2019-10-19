@@ -1,4 +1,4 @@
-function C = cs_droptol (A, tol)					    %#ok
+function C = cs_droptol (A, tol)                                            %#ok
 %CS_DROPTOL remove small entries from a sparse matrix.
 %   C = cs_droptol(A,tol) removes entries from A of magnitude less than or
 %   equal to tol.  Same as A = A .* (abs (A) >= tol).

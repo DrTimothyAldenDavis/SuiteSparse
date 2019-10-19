@@ -22,24 +22,24 @@ for trial = 1:100
 
     for cmplex = 0:double(~ispc)
 
-	if (cmplex)
-	    A = A + 1i * sparse (i,j,2*rand(size(x))-1) ;
-	end
+        if (cmplex)
+            A = A + 1i * sparse (i,j,2*rand(size(x))-1) ;
+        end
 
-	% using CSparse
-	tol = 0.5 ;
-	B = cs_droptol (A, tol) ;
+        % using CSparse
+        tol = 0.5 ;
+        B = cs_droptol (A, tol) ;
 
-	% using MATLAB
-	C = A .* (abs (A) > tol) ;
+        % using MATLAB
+        C = A .* (abs (A) > tol) ;
     %    [m n] = size (A) ;
     %    s = abs (A) > tol ;
     %    [i j] = find (s) ;
     %    x = A (find (s)) ;
     %    A = sparse (i, j, x, m, n) ;
 
-	if (norm (C-B,1) > 0)
-	    error ('!') ;
-	end
+        if (norm (C-B,1) > 0)
+            error ('!') ;
+        end
     end
 end

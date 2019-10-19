@@ -1,4 +1,4 @@
-function [p,r] = cs_scc (A)						    %#ok
+function [p,r] = cs_scc (A)                                                 %#ok
 %CS_SCC strongly-connected components of a square sparse matrix.
 %   [p,r] = cs_scc(A) finds a permutation p so that A(p,p) is permuted into
 %   block upper triangular form.  The diagonal of A is ignored.  The kth block

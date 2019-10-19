@@ -22,11 +22,11 @@ extern "C" {
 #endif
 #endif
 
-#define CS_VER 2		    /* CXSparse Version 2.2.2 */
+#define CS_VER 2                    /* CXSparse Version 2.2.3 */
 #define CS_SUBVER 2
-#define CS_SUBSUB 2
-#define CS_DATE "Sept 23, 2008"	    /* CXSparse release date */
-#define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006-2008"
+#define CS_SUBSUB 3
+#define CS_DATE "Mar 24, 2009"      /* CXSparse release date */
+#define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006-2009"
 #define CXSPARSE
 
 /* define UF_long */
@@ -40,13 +40,13 @@ extern "C" {
 
 typedef struct cs_di_sparse  /* matrix in compressed-column or triplet form */
 {
-    int nzmax ;	    /* maximum number of entries */
-    int m ;	    /* number of rows */
-    int n ;	    /* number of columns */
-    int *p ;	    /* column pointers (size n+1) or col indices (size nzmax) */
-    int *i ;	    /* row indices, size nzmax */
-    double *x ;	    /* numerical values, size nzmax */
-    int nz ;	    /* # of entries in triplet matrix, -1 for compressed-col */
+    int nzmax ;     /* maximum number of entries */
+    int m ;         /* number of rows */
+    int n ;         /* number of columns */
+    int *p ;        /* column pointers (size n+1) or col indices (size nzmax) */
+    int *i ;        /* row indices, size nzmax */
+    double *x ;     /* numerical values, size nzmax */
+    int nz ;        /* # of entries in triplet matrix, -1 for compressed-col */
 } cs_di ;
 
 cs_di *cs_di_add (const cs_di *A, const cs_di *B, double alpha, double beta) ;
@@ -76,31 +76,31 @@ void *cs_di_malloc (int n, size_t size) ;
 
 typedef struct cs_di_symbolic  /* symbolic Cholesky, LU, or QR analysis */
 {
-    int *pinv ;	    /* inverse row perm. for QR, fill red. perm for Chol */
-    int *q ;	    /* fill-reducing column permutation for LU and QR */
+    int *pinv ;     /* inverse row perm. for QR, fill red. perm for Chol */
+    int *q ;        /* fill-reducing column permutation for LU and QR */
     int *parent ;   /* elimination tree for Cholesky and QR */
-    int *cp ;	    /* column pointers for Cholesky, row counts for QR */
+    int *cp ;       /* column pointers for Cholesky, row counts for QR */
     int *leftmost ; /* leftmost[i] = min(find(A(i,:))), for QR */
-    int m2 ;	    /* # of rows for QR, after adding fictitious rows */
+    int m2 ;        /* # of rows for QR, after adding fictitious rows */
     double lnz ;    /* # entries in L for LU or Cholesky; in V for QR */
     double unz ;    /* # entries in U for LU; in R for QR */
 } cs_dis ;
 
 typedef struct cs_di_numeric   /* numeric Cholesky, LU, or QR factorization */
 {
-    cs_di *L ;	    /* L for LU and Cholesky, V for QR */
-    cs_di *U ;	    /* U for LU, r for QR, not used for Cholesky */
-    int *pinv ;	    /* partial pivoting for LU */
-    double *B ;	    /* beta [0..n-1] for QR */
+    cs_di *L ;      /* L for LU and Cholesky, V for QR */
+    cs_di *U ;      /* U for LU, r for QR, not used for Cholesky */
+    int *pinv ;     /* partial pivoting for LU */
+    double *B ;     /* beta [0..n-1] for QR */
 } cs_din ;
 
 typedef struct cs_di_dmperm_results    /* cs_di_dmperm or cs_di_scc output */
 {
-    int *p ;	    /* size m, row permutation */
-    int *q ;	    /* size n, column permutation */
-    int *r ;	    /* size nb+1, block k is rows r[k] to r[k+1]-1 in A(p,q) */
-    int *s ;	    /* size nb+1, block k is cols s[k] to s[k+1]-1 in A(p,q) */
-    int nb ;	    /* # of blocks in fine dmperm decomposition */
+    int *p ;        /* size m, row permutation */
+    int *q ;        /* size n, column permutation */
+    int *r ;        /* size nb+1, block k is rows r[k] to r[k+1]-1 in A(p,q) */
+    int *s ;        /* size nb+1, block k is cols s[k] to s[k+1]-1 in A(p,q) */
+    int nb ;        /* # of blocks in fine dmperm decomposition */
     int rr [5] ;    /* coarse row decomposition */
     int cc [5] ;    /* coarse column decomposition */
 } cs_did ;
@@ -175,11 +175,11 @@ cs_did *cs_di_ddone (cs_did *D, cs_di *C, void *w, int ok) ;
 typedef struct cs_dl_sparse  /* matrix in compressed-column or triplet form */
 {
     UF_long nzmax ; /* maximum number of entries */
-    UF_long m ;	    /* number of rows */
-    UF_long n ;	    /* number of columns */
+    UF_long m ;     /* number of rows */
+    UF_long n ;     /* number of columns */
     UF_long *p ;    /* column pointers (size n+1) or col indlces (size nzmax) */
     UF_long *i ;    /* row indices, size nzmax */
-    double *x ;	    /* numerical values, size nzmax */
+    double *x ;     /* numerical values, size nzmax */
     UF_long nz ;    /* # of entries in triplet matrix, -1 for compressed-col */
 } cs_dl ;
 
@@ -211,22 +211,22 @@ void *cs_dl_malloc (UF_long n, size_t size) ;
 
 typedef struct cs_dl_symbolic  /* symbolic Cholesky, LU, or QR analysis */
 {
-    UF_long *pinv ;	/* inverse row perm. for QR, fill red. perm for Chol */
-    UF_long *q ;	/* fill-reducing column permutation for LU and QR */
-    UF_long *parent ;	/* elimination tree for Cholesky and QR */
-    UF_long *cp ;	/* column pointers for Cholesky, row counts for QR */
-    UF_long *leftmost ;	/* leftmost[i] = min(find(A(i,:))), for QR */
-    UF_long m2 ;	/* # of rows for QR, after adding fictitious rows */
-    double lnz ;	/* # entries in L for LU or Cholesky; in V for QR */
-    double unz ;	/* # entries in U for LU; in R for QR */
+    UF_long *pinv ;     /* inverse row perm. for QR, fill red. perm for Chol */
+    UF_long *q ;        /* fill-reducing column permutation for LU and QR */
+    UF_long *parent ;   /* elimination tree for Cholesky and QR */
+    UF_long *cp ;       /* column pointers for Cholesky, row counts for QR */
+    UF_long *leftmost ; /* leftmost[i] = min(find(A(i,:))), for QR */
+    UF_long m2 ;        /* # of rows for QR, after adding fictitious rows */
+    double lnz ;        /* # entries in L for LU or Cholesky; in V for QR */
+    double unz ;        /* # entries in U for LU; in R for QR */
 } cs_dls ;
 
 typedef struct cs_dl_numeric   /* numeric Cholesky, LU, or QR factorization */
 {
-    cs_dl *L ;	    /* L for LU and Cholesky, V for QR */
-    cs_dl *U ;	    /* U for LU, r for QR, not used for Cholesky */
+    cs_dl *L ;      /* L for LU and Cholesky, V for QR */
+    cs_dl *U ;      /* U for LU, r for QR, not used for Cholesky */
     UF_long *pinv ; /* partial pivoting for LU */
-    double *B ;	    /* beta [0..n-1] for QR */
+    double *B ;     /* beta [0..n-1] for QR */
 } cs_dln ;
 
 typedef struct cs_dl_dmperm_results    /* cs_dl_dmperm or cs_dl_scc output */
@@ -236,8 +236,8 @@ typedef struct cs_dl_dmperm_results    /* cs_dl_dmperm or cs_dl_scc output */
     UF_long *r ;    /* size nb+1, block k is rows r[k] to r[k+1]-1 in A(p,q) */
     UF_long *s ;    /* size nb+1, block k is cols s[k] to s[k+1]-1 in A(p,q) */
     UF_long nb ;    /* # of blocks in fine dmperm decomposition */
-    UF_long rr [5] ;	/* coarse row decomposition */
-    UF_long cc [5] ;	/* coarse column decomposition */
+    UF_long rr [5] ;    /* coarse row decomposition */
+    UF_long cc [5] ;    /* coarse column decomposition */
 } cs_dld ;
 
 UF_long *cs_dl_amd (UF_long order, const cs_dl *A) ;
@@ -314,13 +314,13 @@ cs_dld *cs_dl_ddone (cs_dld *D, cs_dl *C, void *w, UF_long ok) ;
 
 typedef struct cs_ci_sparse  /* matrix in compressed-column or triplet form */
 {
-    int nzmax ;	    /* maximum number of entries */
-    int m ;	    /* number of rows */
-    int n ;	    /* number of columns */
-    int *p ;	    /* column pointers (size n+1) or col indices (size nzmax) */
-    int *i ;	    /* row indices, size nzmax */
+    int nzmax ;     /* maximum number of entries */
+    int m ;         /* number of rows */
+    int n ;         /* number of columns */
+    int *p ;        /* column pointers (size n+1) or col indices (size nzmax) */
+    int *i ;        /* row indices, size nzmax */
     cs_complex_t *x ;    /* numerical values, size nzmax */
-    int nz ;	    /* # of entries in triplet matrix, -1 for compressed-col */
+    int nz ;        /* # of entries in triplet matrix, -1 for compressed-col */
 } cs_ci ;
 
 cs_ci *cs_ci_add (const cs_ci *A, const cs_ci *B, cs_complex_t alpha,
@@ -351,31 +351,31 @@ void *cs_ci_malloc (int n, size_t size) ;
 
 typedef struct cs_ci_symbolic  /* symbolic Cholesky, LU, or QR analysis */
 {
-    int *pinv ;	    /* inverse row perm. for QR, fill red. perm for Chol */
-    int *q ;	    /* fill-reducing column permutation for LU and QR */
+    int *pinv ;     /* inverse row perm. for QR, fill red. perm for Chol */
+    int *q ;        /* fill-reducing column permutation for LU and QR */
     int *parent ;   /* elimination tree for Cholesky and QR */
-    int *cp ;	    /* column pointers for Cholesky, row counts for QR */
+    int *cp ;       /* column pointers for Cholesky, row counts for QR */
     int *leftmost ; /* leftmost[i] = min(find(A(i,:))), for QR */
-    int m2 ;	    /* # of rows for QR, after adding fictitious rows */
+    int m2 ;        /* # of rows for QR, after adding fictitious rows */
     double lnz ;    /* # entries in L for LU or Cholesky; in V for QR */
     double unz ;    /* # entries in U for LU; in R for QR */
 } cs_cis ;
 
 typedef struct cs_ci_numeric   /* numeric Cholesky, LU, or QR factorization */
 {
-    cs_ci *L ;	    /* L for LU and Cholesky, V for QR */
-    cs_ci *U ;	    /* U for LU, r for QR, not used for Cholesky */
-    int *pinv ;	    /* partial pivoting for LU */
-    double *B ;	    /* beta [0..n-1] for QR */
+    cs_ci *L ;      /* L for LU and Cholesky, V for QR */
+    cs_ci *U ;      /* U for LU, r for QR, not used for Cholesky */
+    int *pinv ;     /* partial pivoting for LU */
+    double *B ;     /* beta [0..n-1] for QR */
 } cs_cin ;
 
 typedef struct cs_ci_dmperm_results    /* cs_ci_dmperm or cs_ci_scc output */
 {
-    int *p ;	    /* size m, row permutation */
-    int *q ;	    /* size n, column permutation */
-    int *r ;	    /* size nb+1, block k is rows r[k] to r[k+1]-1 in A(p,q) */
-    int *s ;	    /* size nb+1, block k is cols s[k] to s[k+1]-1 in A(p,q) */
-    int nb ;	    /* # of blocks in fine dmperm decomposition */
+    int *p ;        /* size m, row permutation */
+    int *q ;        /* size n, column permutation */
+    int *r ;        /* size nb+1, block k is rows r[k] to r[k+1]-1 in A(p,q) */
+    int *s ;        /* size nb+1, block k is cols s[k] to s[k+1]-1 in A(p,q) */
+    int nb ;        /* # of blocks in fine dmperm decomposition */
     int rr [5] ;    /* coarse row decomposition */
     int cc [5] ;    /* coarse column decomposition */
 } cs_cid ;
@@ -450,8 +450,8 @@ cs_cid *cs_ci_ddone (cs_cid *D, cs_ci *C, void *w, int ok) ;
 typedef struct cs_cl_sparse  /* matrix in compressed-column or triplet form */
 {
     UF_long nzmax ; /* maximum number of entries */
-    UF_long m ;	    /* number of rows */
-    UF_long n ;	    /* number of columns */
+    UF_long m ;     /* number of rows */
+    UF_long n ;     /* number of columns */
     UF_long *p ;    /* column pointers (size n+1) or col indlces (size nzmax) */
     UF_long *i ;    /* row indices, size nzmax */
     cs_complex_t *x ;    /* numerical values, size nzmax */
@@ -488,22 +488,22 @@ void *cs_cl_malloc (UF_long n, size_t size) ;
 
 typedef struct cs_cl_symbolic  /* symbolic Cholesky, LU, or QR analysis */
 {
-    UF_long *pinv ;	/* inverse row perm. for QR, fill red. perm for Chol */
-    UF_long *q ;	/* fill-reducing column permutation for LU and QR */
-    UF_long *parent ;	/* elimination tree for Cholesky and QR */
-    UF_long *cp ;	/* column pointers for Cholesky, row counts for QR */
-    UF_long *leftmost ;	/* leftmost[i] = min(find(A(i,:))), for QR */
-    UF_long m2 ;	/* # of rows for QR, after adding fictitious rows */
-    double lnz ;	/* # entries in L for LU or Cholesky; in V for QR */
-    double unz ;	/* # entries in U for LU; in R for QR */
+    UF_long *pinv ;     /* inverse row perm. for QR, fill red. perm for Chol */
+    UF_long *q ;        /* fill-reducing column permutation for LU and QR */
+    UF_long *parent ;   /* elimination tree for Cholesky and QR */
+    UF_long *cp ;       /* column pointers for Cholesky, row counts for QR */
+    UF_long *leftmost ; /* leftmost[i] = min(find(A(i,:))), for QR */
+    UF_long m2 ;        /* # of rows for QR, after adding fictitious rows */
+    double lnz ;        /* # entries in L for LU or Cholesky; in V for QR */
+    double unz ;        /* # entries in U for LU; in R for QR */
 } cs_cls ;
 
 typedef struct cs_cl_numeric   /* numeric Cholesky, LU, or QR factorization */
 {
-    cs_cl *L ;		/* L for LU and Cholesky, V for QR */
-    cs_cl *U ;		/* U for LU, r for QR, not used for Cholesky */
-    UF_long *pinv ;	/* partial pivoting for LU */
-    double *B ;		/* beta [0..n-1] for QR */
+    cs_cl *L ;          /* L for LU and Cholesky, V for QR */
+    cs_cl *U ;          /* U for LU, r for QR, not used for Cholesky */
+    UF_long *pinv ;     /* partial pivoting for LU */
+    double *B ;         /* beta [0..n-1] for QR */
 } cs_cln ;
 
 typedef struct cs_cl_dmperm_results    /* cs_cl_dmperm or cs_cl_scc output */

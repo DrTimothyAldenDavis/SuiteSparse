@@ -1,4 +1,4 @@
-function p = cs_randperm (n, seed)					    %#ok
+function p = cs_randperm (n, seed)                                          %#ok
 %CS_RANDPERM random permutation.
 %   p = cs_randperm (n) returns a repeatable random permutation of 1:n.
 %   p = cs_randperm (n,seed) returns the random permutation using the given

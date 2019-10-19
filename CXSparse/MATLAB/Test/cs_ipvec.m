@@ -1,4 +1,4 @@
-function x = cs_ipvec (b,p)						    %#ok
+function x = cs_ipvec (b,p)                                                 %#ok
 %CS_IPVEC x(p)=b
 %
 % Example:

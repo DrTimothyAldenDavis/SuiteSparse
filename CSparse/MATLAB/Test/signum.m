@@ -8,6 +8,6 @@ function s = signum (x)
 %   http://www.cise.ufl.edu/research/sparse
 
 s = ones (length (x),1) ;
-s (find (x < 0)) = -1 ;	    %#ok
+s (find (x < 0)) = -1 ;     %#ok
 disp ('s =') ;
 disp (s) ;

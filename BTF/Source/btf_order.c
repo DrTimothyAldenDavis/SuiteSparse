@@ -32,20 +32,20 @@
 /* This function only operates on square matrices (either structurally full-
  * rank, or structurally rank deficient). */
 
-Int BTF(order)	    /* returns number of blocks found */
+Int BTF(order)      /* returns number of blocks found */
 (
     /* input, not modified: */
-    Int n,	    /* A is n-by-n in compressed column form */
-    Int Ap [ ],	    /* size n+1 */
-    Int Ai [ ],	    /* size nz = Ap [n] */
+    Int n,          /* A is n-by-n in compressed column form */
+    Int Ap [ ],     /* size n+1 */
+    Int Ai [ ],     /* size nz = Ap [n] */
     double maxwork, /* do at most maxwork*nnz(A) work in the maximum
-		     * transversal; no limit if <= 0 */
+                     * transversal; no limit if <= 0 */
 
     /* output, not defined on input */
     double *work,   /* work performed in maxtrans, or -1 if limit reached */
-    Int P [ ],	    /* size n, row permutation */
-    Int Q [ ],	    /* size n, column permutation */
-    Int R [ ],	    /* size n+1.  block b is in rows/cols R[b] ... R[b+1]-1 */
+    Int P [ ],      /* size n, row permutation */
+    Int Q [ ],      /* size n, column permutation */
+    Int R [ ],      /* size n+1.  block b is in rows/cols R[b] ... R[b+1]-1 */
     Int *nmatch,    /* # nonzeros on diagonal of P*A*Q */
 
     /* workspace, not defined on input or output */
@@ -74,47 +74,47 @@ Int BTF(order)	    /* returns number of blocks found */
 
     if (*nmatch < n)
     {
-	/* get a size-n work array */
-	Flag = Work + n ;
-	for (j = 0 ; j < n ; j++)
-	{
-	    Flag [j] = 0 ;
-	}
+        /* get a size-n work array */
+        Flag = Work + n ;
+        for (j = 0 ; j < n ; j++)
+        {
+            Flag [j] = 0 ;
+        }
 
-	/* flag all matched columns */
-	for (i = 0 ; i < n ; i++)
-	{
-	    j = Q [i] ;
-	    if (j != EMPTY)
-	    {
-		/* row i and column j are matched to each other */
-		Flag [j] = 1 ;
-	    }
-	}
+        /* flag all matched columns */
+        for (i = 0 ; i < n ; i++)
+        {
+            j = Q [i] ;
+            if (j != EMPTY)
+            {
+                /* row i and column j are matched to each other */
+                Flag [j] = 1 ;
+            }
+        }
 
-	/* make a list of all unmatched columns, in Work [0..nbadcol-1]  */
-	nbadcol = 0 ;
-	for (j = n-1 ; j >= 0 ; j--)
-	{
-	    if (!Flag [j])
-	    {
-		/* j is matched to nobody */
-		Work [nbadcol++] = j ;
-	    }
-	}
-	ASSERT (*nmatch + nbadcol == n) ;
+        /* make a list of all unmatched columns, in Work [0..nbadcol-1]  */
+        nbadcol = 0 ;
+        for (j = n-1 ; j >= 0 ; j--)
+        {
+            if (!Flag [j])
+            {
+                /* j is matched to nobody */
+                Work [nbadcol++] = j ;
+            }
+        }
+        ASSERT (*nmatch + nbadcol == n) ;
 
-	/* make an assignment for each unmatched row */
-	for (i = 0 ; i < n ; i++)
-	{
-	    if (Q [i] == EMPTY && nbadcol > 0)
-	    {
-		/* get an unmatched column j */
-		j = Work [--nbadcol] ;
-		/* assign j to row i and flag the entry by "flipping" it */
-		Q [i] = BTF_FLIP (j) ;
-	    }
-	}
+        /* make an assignment for each unmatched row */
+        for (i = 0 ; i < n ; i++)
+        {
+            if (Q [i] == EMPTY && nbadcol > 0)
+            {
+                /* get an unmatched column j */
+                j = Work [--nbadcol] ;
+                /* assign j to row i and flag the entry by "flipping" it */
+                Q [i] = BTF_FLIP (j) ;
+            }
+        }
     }
 
     /* The permutation of a square matrix can be recovered as follows: Row i is

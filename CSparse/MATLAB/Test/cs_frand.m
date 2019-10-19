@@ -1,4 +1,4 @@
-function A = cs_frand (n,nel,s)						    %#ok
+function A = cs_frand (n,nel,s)                                             %#ok
 %CS_FRAND generate a random finite-element matrix
 % A = cs_frand (n,nel,s) creates an n-by-n sparse matrix consisting of nel
 % finite elements, each of which are of size s-by-s with random symmetric

@@ -1907,13 +1907,16 @@ GLOBAL Int UMF_local_search
     /* keep track of the diagonal */
     /* ---------------------------------------------------------------------- */
 
-    if (Symbolic->prefer_diagonal
-	&& Work->pivcol < Work->n_col - Symbolic->nempty_col)
+    if (Symbolic->prefer_diagonal)
     {
 	Diagonal_map = Work->Diagonal_map ;
 	Diagonal_imap = Work->Diagonal_imap ;
 	ASSERT (Diagonal_map != (Int *) NULL) ;
 	ASSERT (Diagonal_imap != (Int *) NULL) ;
+
+#ifndef NDEBUG
+	UMF_dump_diagonal_map (Diagonal_map, Diagonal_imap, Symbolic->n_col) ;
+#endif
 
 	row2 = Diagonal_map  [Work->pivcol] ;
 	col2 = Diagonal_imap [Work->pivrow] ;
@@ -1944,8 +1947,7 @@ GLOBAL Int UMF_local_search
 	}
 	ASSERT (n_row == n_col) ;
 #ifndef NDEBUG
-	UMF_dump_diagonal_map (Diagonal_map, Diagonal_imap, Symbolic->n1,
-	    Symbolic->n_col, Symbolic->nempty_col) ;
+	UMF_dump_diagonal_map (Diagonal_map, Diagonal_imap, Symbolic->n_col) ;
 #endif
     }
 

@@ -19,10 +19,10 @@ for trial = 1:100
     A = sprandn (m,n,d) ;
     fprintf ('m %d n %d nnz %d\n', m, n, nnz(A)) ;
     if (m < n)
-	continue ;
+        continue ;
     end
-    if (m == 0 | n == 0)						    %#ok
-	continue ;
+    if (m == 0 | n == 0)                                                    %#ok
+        continue ;
     end
     % save A A
     fprintf ('[ ') ;
@@ -35,10 +35,10 @@ for trial = 1:100
     s2 = s2 (1:length(s1)) ;
     err = norm (s1-s2) ; 
     if (length (s1) > 1)
-	err = err / s1 (1) ;
+        err = err / s1 (1) ;
     end
     fprintf ('err %g\n', err) ;
     if (err > 1e-12)
-	error ('!') ;
+        error ('!') ;
     end
 end

@@ -29,16 +29,16 @@ for k = 1:length (f)
     disp (Prob) ;
     A = Prob.A ;
     [m n] = size (A) ;
-    if (~isreal (A) | m ~= n)						    %#ok
-	continue
+    if (~isreal (A) | m ~= n)                                               %#ok
+        continue
     end
 
     c1 = condest (A) ;
     c2 = cond1est (A) ;
     if (c1 == c2)
-	err = 0 ;
+        err = 0 ;
     else
-	err = (c1-c2)/max(1,c1) ;
+        err = (c1-c2)/max(1,c1) ;
     end
 
     c3 = cond (full (A), 1) ;

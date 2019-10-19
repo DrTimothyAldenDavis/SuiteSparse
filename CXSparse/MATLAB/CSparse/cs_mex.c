@@ -7,26 +7,26 @@ void cs_mex_check (CS_INT nel, CS_INT m, CS_INT n, int square, int sparse,
 #ifdef NCOMPLEX
     if (values)
     {
-	if (mxIsComplex (A)) mexErrMsgTxt ("complex matrices not supported") ;
+        if (mxIsComplex (A)) mexErrMsgTxt ("complex matrices not supported") ;
     }
 #endif
     if (sparse && !mxIsSparse (A)) mexErrMsgTxt ("matrix must be sparse") ;
     if (!sparse)
     {
-	if (mxIsSparse (A)) mexErrMsgTxt ("matrix must be full") ;
-	if (values && !mxIsDouble (A)) mexErrMsgTxt ("matrix must be double") ;
+        if (mxIsSparse (A)) mexErrMsgTxt ("matrix must be full") ;
+        if (values && !mxIsDouble (A)) mexErrMsgTxt ("matrix must be double") ;
     }
     if (nel)
     {
-	/* check number of elements */
-	nnel = mxGetNumberOfElements (A) ;
-	if (m >= 0 && n >= 0 && m*n != nnel) mexErrMsgTxt ("wrong length") ;
+        /* check number of elements */
+        nnel = mxGetNumberOfElements (A) ;
+        if (m >= 0 && n >= 0 && m*n != nnel) mexErrMsgTxt ("wrong length") ;
     }
     else
     {
-	/* check row and/or column dimensions */
-	if (m >= 0 && m != mm) mexErrMsgTxt ("wrong dimension") ;
-	if (n >= 0 && n != nn) mexErrMsgTxt ("wrong dimension") ;
+        /* check row and/or column dimensions */
+        if (m >= 0 && m != mm) mexErrMsgTxt ("wrong dimension") ;
+        if (n >= 0 && n != nn) mexErrMsgTxt ("wrong dimension") ;
     }
     if (square && mm != nn) mexErrMsgTxt ("matrix must be square") ;
 }
@@ -64,7 +64,7 @@ mxArray *cs_dl_mex_put_sparse (cs_dl **Ahandle)
     mxSetJc (Amatlab, (void *) (A->p)) ; /* assign A->p pointer to MATLAB A */
     mxSetIr (Amatlab, (void *) (A->i)) ;
     mxSetPr (Amatlab, A->x) ;
-    cs_free (A) ;			/* frees A struct only, not A->p, etc */
+    cs_free (A) ;                       /* frees A struct only, not A->p, etc */
     *Ahandle = NULL ;
     return (Amatlab) ;
 }
@@ -81,9 +81,9 @@ double *cs_dl_mex_put_double (CS_INT n, const double *b, mxArray **X)
 {
     double *x ;
     CS_INT k ;
-    *X = mxCreateDoubleMatrix (n, 1, mxREAL) ;	    /* create x */
+    *X = mxCreateDoubleMatrix (n, 1, mxREAL) ;      /* create x */
     x = mxGetPr (*X) ;
-    for (k = 0 ; k < n ; k++) x [k] = b [k] ;	    /* copy x = b */
+    for (k = 0 ; k < n ; k++) x [k] = b [k] ;       /* copy x = b */
     return (x) ;
 }
 
@@ -96,16 +96,16 @@ CS_INT *cs_dl_mex_get_int (CS_INT n, const mxArray *Imatlab, CS_INT *imax,
     cs_mex_check (1, n, 1, 0, 0, 1, Imatlab) ;
     if (mxIsComplex (Imatlab))
     {
-	mexErrMsgTxt ("integer input cannot be complex") ;
+        mexErrMsgTxt ("integer input cannot be complex") ;
     }
     p = mxGetPr (Imatlab) ;
     *imax = 0 ;
     for (k = 0 ; k < n ; k++)
     {
-	i = p [k] ;
-	C [k] = i - 1 ;
-	if (i < lo) mexErrMsgTxt ("index out of bounds") ;
-	*imax = CS_MAX (*imax, i) ;
+        i = p [k] ;
+        C [k] = i - 1 ;
+        if (i < lo) mexErrMsgTxt ("index out of bounds") ;
+        *imax = CS_MAX (*imax, i) ;
     }
     return (C) ;
 }
@@ -135,7 +135,7 @@ static cs_complex_t *cs_cl_get_vector (CS_INT n, CS_INT size,
     Y = cs_dl_malloc (size, sizeof (cs_complex_t)) ;
     for (p = 0 ; p < n ; p++)
     {
-	Y [p] = X [p] + I * (Z ? Z [p] : 0) ;
+        Y [p] = X [p] + I * (Z ? Z [p] : 0) ;
     }
     return (Y) ;
 }
@@ -178,13 +178,13 @@ mxArray *cs_cl_mex_put_sparse (cs_cl **Ahandle)
     z = cs_dl_malloc (A->nzmax, sizeof (double)) ;
     for (k = 0 ; k < A->nzmax ; k++)
     {
-	x [k] = creal (A->x [k]) ;	/* copy and split numerical values */
-	z [k] = cimag (A->x [k]) ;
+        x [k] = creal (A->x [k]) ;      /* copy and split numerical values */
+        z [k] = cimag (A->x [k]) ;
     }
-    cs_cl_free (A->x) ;			/* free copy of complex values */
+    cs_cl_free (A->x) ;                 /* free copy of complex values */
     mxSetPr (Amatlab, x) ;
     mxSetPi (Amatlab, z) ;
-    cs_cl_free (A) ;			/* frees A struct only, not A->p, etc */
+    cs_cl_free (A) ;                    /* frees A struct only, not A->p, etc */
     *Ahandle = NULL ;
     return (Amatlab) ;
 }
@@ -207,8 +207,8 @@ mxArray *cs_cl_mex_put_double (CS_INT n, cs_complex_t *b)
     z = mxGetPi (X) ;
     for (k = 0 ; k < n ; k++)
     {
-	x [k] = creal (b [k]) ;	    /* copy x = b */
-	z [k] = cimag (b [k]) ;
+        x [k] = creal (b [k]) ;     /* copy x = b */
+        z [k] = cimag (b [k]) ;
     }
     cs_cl_free (b) ;
     return (X) ;

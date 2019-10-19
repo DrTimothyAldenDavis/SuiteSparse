@@ -16,7 +16,7 @@ void mexFunction
 
     if (nargout > 1 || nargin != 2)
     {
-	mexErrMsgTxt ("Usage: x = cs_reach(L,b)") ;
+        mexErrMsgTxt ("Usage: x = cs_reach(L,b)") ;
     }
 
     /* get inputs */

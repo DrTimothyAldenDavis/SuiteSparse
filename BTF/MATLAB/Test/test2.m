@@ -33,10 +33,10 @@ MN = zeros (nmat, 2) ;
 Nzdiag = zeros (nmat,1) ;
 
 % warmup
-p = maxtrans (sparse (1)) ;		%#ok
-p = btf (sparse (1)) ;			%#ok
-p = cs_dmperm (sparse (1)) ;		%#ok
-a = cs_transpose (sparse (1)) ;		%#ok
+p = maxtrans (sparse (1)) ;             %#ok
+p = btf (sparse (1)) ;                  %#ok
+p = cs_dmperm (sparse (1)) ;            %#ok
+a = cs_transpose (sparse (1)) ;         %#ok
 
 h = waitbar (0, 'BTF test 2 of 6') ;
 

@@ -24,30 +24,30 @@ for k = 1:n
 
     if (sigma < 0)
 
-	% downdate
-	bratio = beta_new / beta ;
-	w (k+1:n) = w (k+1:n) - alpha * L (k+1:n,k) ;
-	L (k,k) = bratio * L (k,k) ;
-	L (k+1:n,k) = bratio * L (k+1:n,k) - gamma*w(k+1:n) ;
+        % downdate
+        bratio = beta_new / beta ;
+        w (k+1:n) = w (k+1:n) - alpha * L (k+1:n,k) ;
+        L (k,k) = bratio * L (k,k) ;
+        L (k+1:n,k) = bratio * L (k+1:n,k) - gamma*w(k+1:n) ;
 
     else
 
-	% update
-	bratio = beta / beta_new ;
+        % update
+        bratio = beta / beta_new ;
 
-%	wold = w (k+1:n) ;
-%	w (k+1:n) = w (k+1:n) - alpha * L (k+1:n,k) ;
-%	L (k    ,k) = bratio * L (k    ,k) + gamma*w(k) ;
-%	L (k+1:n,k) = bratio * L (k+1:n,k) + gamma*wold ;
+%       wold = w (k+1:n) ;
+%       w (k+1:n) = w (k+1:n) - alpha * L (k+1:n,k) ;
+%       L (k    ,k) = bratio * L (k    ,k) + gamma*w(k) ;
+%       L (k+1:n,k) = bratio * L (k+1:n,k) + gamma*wold ;
 
-	L (k,k) = bratio * L (k,k) + gamma*w(k) ;
-	for i = k+1:n 
+        L (k,k) = bratio * L (k,k) + gamma*w(k) ;
+        for i = k+1:n 
 
-	    wold = w (i) ;
-	    w (i) = w (i) - alpha * L (i,k) ;
-	    L (i,k) = bratio * L (i,k) + gamma*wold ;
+            wold = w (i) ;
+            w (i) = w (i) - alpha * L (i,k) ;
+            L (i,k) = bratio * L (i,k) + gamma*wold ;
 
-	end
+        end
 
     end
 

@@ -34,13 +34,13 @@ if (r (end) ~= n+1)
     error ('r(end) not n+1') ;
 end
 
-if (nblocks < 1 | nblocks > n)						    %#ok
+if (nblocks < 1 | nblocks > n)                                              %#ok
     error ('nblocks wrong') ;
 end
 
 nblocks = length (r) - 1 ;
 rdiff = r (2:(nblocks+1)) - r (1:nblocks) ;
-if (any (rdiff < 1) | any (rdiff > n))					    %#ok
+if (any (rdiff < 1) | any (rdiff > n))                                      %#ok
     error ('r bad')
 end
 

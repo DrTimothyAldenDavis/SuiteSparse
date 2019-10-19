@@ -218,10 +218,10 @@ SCALAR_IS_LTZERO(x):
 
 /* These all work properly, according to the IEEE 754 standard ... except on */
 /* a PC with windows.  Works fine in Linux on the same PC... */
-#define SCALAR_IS_NAN(x)	((x) != (x))
-#define SCALAR_IS_ZERO(x)	((x) == 0.)
-#define SCALAR_IS_NONZERO(x)	((x) != 0.)
-#define SCALAR_IS_LTZERO(x)	((x) < 0.)
+#define SCALAR_IS_NAN(x)        ((x) != (x))
+#define SCALAR_IS_ZERO(x)       ((x) == 0.)
+#define SCALAR_IS_NONZERO(x)    ((x) != 0.)
+#define SCALAR_IS_LTZERO(x)     ((x) < 0.)
 
 
 /* scalar absolute value macro. If x is NaN, the result is NaN: */
@@ -235,11 +235,11 @@ SCALAR_IS_LTZERO(x):
 { \
     if (SCALAR_IS_NONZERO (a)) \
     { \
-	PRINTF ((" (%g)", (a))) ; \
+        PRINTF ((" (%g)", (a))) ; \
     } \
     else \
     { \
-	PRINTF ((" (0)")) ; \
+        PRINTF ((" (0)")) ; \
     } \
 }
 #endif
@@ -253,41 +253,41 @@ SCALAR_IS_LTZERO(x):
 typedef double Unit ;
 #define Entry double
 
-#define SPLIT(s)    		    (1)
-#define REAL(c)			    (c)
-#define IMAG(c)			    (0.)
-#define ASSIGN(c,s1,s2,p,split)	    { (c) = (s1)[p] ; }
-#define CLEAR(c)		    { (c) = 0. ; }
-#define CLEAR_AND_INCREMENT(p)	    { *p++ = 0. ; }
-#define IS_NAN(a)		    SCALAR_IS_NAN (a)
-#define IS_ZERO(a)		    SCALAR_IS_ZERO (a)
-#define IS_NONZERO(a)		    SCALAR_IS_NONZERO (a)
-#define SCALE_DIV(c,s)		    { (c) /= (s) ; }
-#define SCALE_DIV_ASSIGN(a,c,s)	    { a = c / s ; }
-#define SCALE(c,s)		    { (c) *= (s) ; }
-#define ASSEMBLE(c,a)		    { (c) += (a) ; }
+#define SPLIT(s)                    (1)
+#define REAL(c)                     (c)
+#define IMAG(c)                     (0.)
+#define ASSIGN(c,s1,s2,p,split)     { (c) = (s1)[p] ; }
+#define CLEAR(c)                    { (c) = 0. ; }
+#define CLEAR_AND_INCREMENT(p)      { *p++ = 0. ; }
+#define IS_NAN(a)                   SCALAR_IS_NAN (a)
+#define IS_ZERO(a)                  SCALAR_IS_ZERO (a)
+#define IS_NONZERO(a)               SCALAR_IS_NONZERO (a)
+#define SCALE_DIV(c,s)              { (c) /= (s) ; }
+#define SCALE_DIV_ASSIGN(a,c,s)     { a = c / s ; }
+#define SCALE(c,s)                  { (c) *= (s) ; }
+#define ASSEMBLE(c,a)               { (c) += (a) ; }
 #define ASSEMBLE_AND_INCREMENT(c,p) { (c) += *p++ ; }
-#define DECREMENT(c,a)		    { (c) -= (a) ; }
-#define MULT(c,a,b)		    { (c) = (a) * (b) ; }
-#define MULT_CONJ(c,a,b)	    { (c) = (a) * (b) ; }
-#define MULT_SUB(c,a,b)		    { (c) -= (a) * (b) ; }
-#define MULT_SUB_CONJ(c,a,b)	    { (c) -= (a) * (b) ; }
-#define DIV(c,a,b)		    { (c) = (a) / (b) ; }
-#define RECIPROCAL(c)		    { (c) = 1.0 / (c) ; }
-#define DIV_CONJ(c,a,b)		    { (c) = (a) / (b) ; }
-#define APPROX_ABS(s,a)		    { (s) = SCALAR_ABS (a) ; }
-#define ABS(s,a)		    { (s) = SCALAR_ABS (a) ; }
-#define PRINT_ENTRY(a)		    PRINT_SCALAR (a)
-#define CONJ(a,x)		    a = x
+#define DECREMENT(c,a)              { (c) -= (a) ; }
+#define MULT(c,a,b)                 { (c) = (a) * (b) ; }
+#define MULT_CONJ(c,a,b)            { (c) = (a) * (b) ; }
+#define MULT_SUB(c,a,b)             { (c) -= (a) * (b) ; }
+#define MULT_SUB_CONJ(c,a,b)        { (c) -= (a) * (b) ; }
+#define DIV(c,a,b)                  { (c) = (a) / (b) ; }
+#define RECIPROCAL(c)               { (c) = 1.0 / (c) ; }
+#define DIV_CONJ(c,a,b)             { (c) = (a) / (b) ; }
+#define APPROX_ABS(s,a)             { (s) = SCALAR_ABS (a) ; }
+#define ABS(s,a)                    { (s) = SCALAR_ABS (a) ; }
+#define PRINT_ENTRY(a)              PRINT_SCALAR (a)
+#define CONJ(a,x)                   a = x
 
 /* for flop counts */
-#define MULTSUB_FLOPS	2.	/* c -= a*b */
-#define DIV_FLOPS	1.	/* c = a/b */
-#define ABS_FLOPS	0.	/* c = abs (a) */
-#define ASSEMBLE_FLOPS	1.	/* c += a */
-#define DECREMENT_FLOPS	1.	/* c -= a */
-#define MULT_FLOPS	1.	/* c = a*b */
-#define SCALE_FLOPS	1.	/* c = a/s */
+#define MULTSUB_FLOPS   2.      /* c -= a*b */
+#define DIV_FLOPS       1.      /* c = a/b */
+#define ABS_FLOPS       0.      /* c = abs (a) */
+#define ASSEMBLE_FLOPS  1.      /* c += a */
+#define DECREMENT_FLOPS 1.      /* c -= a */
+#define MULT_FLOPS      1.      /* c = a*b */
+#define SCALE_FLOPS     1.      /* c = a/s */
 
 #else
 
@@ -321,7 +321,7 @@ typedef double Unit ;
 
 typedef struct
 {
-    double component [2] ;	/* real and imaginary parts */
+    double component [2] ;      /* real and imaginary parts */
 
 } Double_Complex ;
 
@@ -331,13 +331,13 @@ typedef Double_Complex Unit ;
 #define Imag component [1]
 
 /* for flop counts */
-#define MULTSUB_FLOPS	8.	/* c -= a*b */
-#define DIV_FLOPS	9.	/* c = a/b */
-#define ABS_FLOPS	6.	/* c = abs (a), count sqrt as one flop */
-#define ASSEMBLE_FLOPS	2.	/* c += a */
-#define DECREMENT_FLOPS	2.	/* c -= a */
-#define MULT_FLOPS	6.	/* c = a*b */
-#define SCALE_FLOPS	2.	/* c = a/s or c = a*s */
+#define MULTSUB_FLOPS   8.      /* c -= a*b */
+#define DIV_FLOPS       9.      /* c = a/b */
+#define ABS_FLOPS       6.      /* c = abs (a), count sqrt as one flop */
+#define ASSEMBLE_FLOPS  2.      /* c += a */
+#define DECREMENT_FLOPS 2.      /* c -= a */
+#define MULT_FLOPS      6.      /* c = a*b */
+#define SCALE_FLOPS     2.      /* c = a/s or c = a*s */
 
 /* -------------------------------------------------------------------------- */
 
@@ -356,7 +356,7 @@ typedef Double_Complex Unit ;
 
 /* c = (s1) + (s2)*i, if s2 is null, then X is in "packed" format (compatible
  * with Entry and ANSI C99 double _Complex type).  */
-/*#define ASSIGN(c,s1,s2,p,split)	\
+/*#define ASSIGN(c,s1,s2,p,split)       \
 { \
     if (split) \
     { \
@@ -365,7 +365,7 @@ typedef Double_Complex Unit ;
     }  \
     else \
     { \
- 	(c) = ((Entry *)(s1))[p] ; \
+        (c) = ((Entry *)(s1))[p] ; \
     }  \
 }*/
 
@@ -511,7 +511,7 @@ typedef Double_Complex Unit ;
 #define DIV(c,a,b) \
 { \
     (void) utDivideComplex ((a).Real, (a).Imag, (b).Real, (b).Imag, \
-	&((c).Real), &((c).Imag)) ; \
+        &((c).Real), &((c).Imag)) ; \
 }
 #else
 /* This uses ACM Algo 116, by R. L. Smith, 1962. */
@@ -526,17 +526,17 @@ typedef Double_Complex Unit ;
     ai = (a).Imag ; \
     if (SCALAR_ABS (br) >= SCALAR_ABS (bi)) \
     { \
-	r = bi / br ; \
-	den = br + r * bi ; \
-	(c).Real = (ar + ai * r) / den ; \
-	(c).Imag = (ai - ar * r) / den ; \
+        r = bi / br ; \
+        den = br + r * bi ; \
+        (c).Real = (ar + ai * r) / den ; \
+        (c).Imag = (ai - ar * r) / den ; \
     } \
     else \
     { \
-	r = br / bi ; \
-	den = r * br + bi ; \
-	(c).Real = (ar * r + ai) / den ; \
-	(c).Imag = (ai * r - ar) / den ; \
+        r = br / bi ; \
+        den = r * br + bi ; \
+        (c).Real = (ar * r + ai) / den ; \
+        (c).Imag = (ai * r - ar) / den ; \
     } \
 }
 #endif
@@ -554,17 +554,17 @@ typedef Double_Complex Unit ;
     ci = (c).Imag ; \
     if (SCALAR_ABS (cr) >= SCALAR_ABS (ci)) \
     { \
-	r = ci / cr ; \
-	den = cr + r * ci ; \
-	(c).Real = 1.0 / den ; \
-	(c).Imag = - r / den ; \
+        r = ci / cr ; \
+        den = cr + r * ci ; \
+        (c).Real = 1.0 / den ; \
+        (c).Imag = - r / den ; \
     } \
     else \
     { \
-	r = cr / ci ; \
-	den = r * cr + ci ; \
-	(c).Real = r / den ; \
-	(c).Imag = - 1.0 / den ; \
+        r = cr / ci ; \
+        den = r * cr + ci ; \
+        (c).Real = r / den ; \
+        (c).Imag = - 1.0 / den ; \
     } \
 }
 
@@ -576,7 +576,7 @@ typedef Double_Complex Unit ;
 #define DIV_CONJ(c,a,b) \
 { \
     (void) utDivideComplex ((a).Real, (a).Imag, (b).Real, (-(b).Imag), \
-	&((c).Real), &((c).Imag)) ; \
+        &((c).Real), &((c).Imag)) ; \
 }
 #else
 /* This uses ACM Algo 116, by R. L. Smith, 1962. */
@@ -591,17 +591,17 @@ typedef Double_Complex Unit ;
     ai = (a).Imag ; \
     if (SCALAR_ABS (br) >= SCALAR_ABS (bi)) \
     { \
-	r = (-bi) / br ; \
-	den = br - r * bi ; \
-	(c).Real = (ar + ai * r) / den ; \
-	(c).Imag = (ai - ar * r) / den ; \
+        r = (-bi) / br ; \
+        den = br - r * bi ; \
+        (c).Real = (ar + ai * r) / den ; \
+        (c).Imag = (ai - ar * r) / den ; \
     } \
     else \
     { \
-	r = br / (-bi) ; \
-	den =  r * br - bi; \
-	(c).Real = (ar * r + ai) / den ; \
-	(c).Imag = (ai * r - ar) / den ; \
+        r = br / (-bi) ; \
+        den =  r * br - bi; \
+        (c).Real = (ar * r + ai) / den ; \
+        (c).Imag = (ai * r - ar) / den ; \
     } \
 }
 #endif
@@ -631,27 +631,27 @@ typedef Double_Complex Unit ;
     ai = SCALAR_ABS ((a).Imag) ; \
     if (ar >= ai) \
     { \
-	if (ar + ai == ar) \
-	{ \
-	    (s) = ar ; \
-	} \
-	else \
-	{ \
-	    r = ai / ar ; \
-	    (s) = ar * sqrt (1.0 + r*r) ; \
-	} \
+        if (ar + ai == ar) \
+        { \
+            (s) = ar ; \
+        } \
+        else \
+        { \
+            r = ai / ar ; \
+            (s) = ar * sqrt (1.0 + r*r) ; \
+        } \
     } \
     else \
     { \
-	if (ai + ar == ai) \
-	{ \
-	    (s) = ai ; \
-	} \
-	else \
-	{ \
-	    r = ar / ai ; \
-	    (s) = ai * sqrt (1.0 + r*r) ; \
-	} \
+        if (ai + ar == ai) \
+        { \
+            (s) = ai ; \
+        } \
+        else \
+        { \
+            r = ar / ai ; \
+            (s) = ai * sqrt (1.0 + r*r) ; \
+        } \
     } \
 }
 #endif
@@ -666,29 +666,29 @@ typedef Double_Complex Unit ;
 { \
     if (SCALAR_IS_NONZERO ((a).Real)) \
     { \
-	PRINTF ((" (%g", (a).Real)) ; \
+        PRINTF ((" (%g", (a).Real)) ; \
     } \
     else \
     { \
-	PRINTF ((" (0")) ; \
+        PRINTF ((" (0")) ; \
     } \
     if (SCALAR_IS_LTZERO ((a).Imag)) \
     { \
-	PRINTF ((" - %gi)", -(a).Imag)) ; \
+        PRINTF ((" - %gi)", -(a).Imag)) ; \
     } \
     else if (SCALAR_IS_ZERO ((a).Imag)) \
     { \
-	PRINTF ((" + 0i)")) ; \
+        PRINTF ((" + 0i)")) ; \
     } \
     else \
     { \
-	PRINTF ((" + %gi)", (a).Imag)) ; \
+        PRINTF ((" + %gi)", (a).Imag)) ; \
     } \
 }
 #endif
 
 /* -------------------------------------------------------------------------- */
 
-#endif	/* #ifndef COMPLEX */
+#endif  /* #ifndef COMPLEX */
 
 #endif

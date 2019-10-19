@@ -29,7 +29,7 @@ nmat = min (nmat, 100) ;
 f = f (1:nmat) ;
 
 % f = 274
-% f = 101	; % MATLAB condest is poor
+% f = 101       ; % MATLAB condest is poor
 
 nmat = length (f) ;
 

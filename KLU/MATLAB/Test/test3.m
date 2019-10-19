@@ -36,7 +36,7 @@ for nrhs = 1:10
     b = rand (n,nrhs) ;
     x = klu (LU,'\',b) ;
     fprintf ('nrhs: %d resid: %g\n', ...
-	nrhs, norm (A*x-b,1) / norm (A,1)) ;
+        nrhs, norm (A*x-b,1) / norm (A,1)) ;
 end
 
 [x,info,cond_estimate] = klu (A, '\', b) ;

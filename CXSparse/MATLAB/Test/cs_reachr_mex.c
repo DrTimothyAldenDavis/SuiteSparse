@@ -6,15 +6,15 @@ static
 void dfsr (CS_INT j, const cs *L, CS_INT *top, CS_INT *xi, CS_INT *w)
 {
     CS_INT p ;
-    w [j] = 1 ;					/* mark node j */
-    for (p = L->p [j] ; p < L->p [j+1] ; p++)	/* for each i in L(:,j) */
+    w [j] = 1 ;                                 /* mark node j */
+    for (p = L->p [j] ; p < L->p [j+1] ; p++)   /* for each i in L(:,j) */
     {
-	if (w [L->i [p]] != 1)			/* if i is unmarked */
-	{
-	    dfsr (L->i [p], L, top, xi, w) ;	/* start a dfs at i */
-	}
+        if (w [L->i [p]] != 1)                  /* if i is unmarked */
+        {
+            dfsr (L->i [p], L, top, xi, w) ;    /* start a dfs at i */
+        }
     }
-    xi [--(*top)] = j ;				/* push j onto the stack */
+    xi [--(*top)] = j ;                         /* push j onto the stack */
 }
 
 /* w [0..n-1] == 0 on input, <= 1 on output.  size n */
@@ -22,15 +22,15 @@ static
 CS_INT reachr (const cs *L, const cs *B, CS_INT *xi, CS_INT *w)
 {
     CS_INT p, n = L->n ;
-    CS_INT top = n ;				/* stack is empty */
-    for (p = B->p [0] ; p < B->p [1] ; p++)	/* for each i in pattern of b */
+    CS_INT top = n ;                            /* stack is empty */
+    for (p = B->p [0] ; p < B->p [1] ; p++)     /* for each i in pattern of b */
     {
-	if (w [B->i [p]] != 1)			/* if i is unmarked */
-	{
-	    dfsr (B->i [p], L, &top, xi, w) ;	/* start a dfs at i */
-	}
+        if (w [B->i [p]] != 1)                  /* if i is unmarked */
+        {
+            dfsr (B->i [p], L, &top, xi, w) ;   /* start a dfs at i */
+        }
     }
-    return (top) ;				/* return top of stack */
+    return (top) ;                              /* return top of stack */
 }
 
 void mexFunction
@@ -47,7 +47,7 @@ void mexFunction
 
     if (nargout > 1 || nargin != 2)
     {
-	mexErrMsgTxt ("Usage: x = cs_reachr(L,b)") ;
+        mexErrMsgTxt ("Usage: x = cs_reachr(L,b)") ;
     }
 
     /* get inputs */

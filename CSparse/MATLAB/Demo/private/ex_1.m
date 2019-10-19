@@ -30,7 +30,7 @@ A1 = A ;
 tic
 % method 2: triplet form, one entry at a time
 rand ('state', 0) ;
-ii = zeros (nz, 1) ;	% preallocate ii, jj, and xx
+ii = zeros (nz, 1) ;    % preallocate ii, jj, and xx
 jj = zeros (nz, 1) ;
 xx = zeros (nz, 1) ;
 for k = 1:nz
@@ -55,11 +55,11 @@ xx = zeros (len, 1) ;
 for k = 1:nz
     % compute some arbitrary entry and add it into the matrix
     if (k > len)
-	% double the size of ii,jj,xx
-	len = 2*len ;
-	ii (len) = 0 ;
-	jj (len) = 0 ;
-	xx (len) = 0 ;
+        % double the size of ii,jj,xx
+        len = 2*len ;
+        ii (len) = 0 ;
+        jj (len) = 0 ;
+        xx (len) = 0 ;
     end
     ii (k) = 1 + fix (n * rand (1)) ;
     jj (k) = 1 + fix (n * rand (1)) ;

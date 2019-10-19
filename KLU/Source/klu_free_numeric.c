@@ -9,7 +9,7 @@
 Int KLU_free_numeric
 (
     KLU_numeric **NumericHandle,
-    KLU_common	*Common
+    KLU_common  *Common
 )
 {
     KLU_numeric *Numeric ;
@@ -19,11 +19,11 @@ Int KLU_free_numeric
 
     if (Common == NULL)
     {
-	return (FALSE) ;
+        return (FALSE) ;
     }
     if (NumericHandle == NULL || *NumericHandle == NULL)
     {
-	return (TRUE) ;
+        return (TRUE) ;
     }
 
     Numeric = *NumericHandle ;
@@ -36,11 +36,11 @@ Int KLU_free_numeric
     LUbx = (Unit **) Numeric->LUbx ;
     if (LUbx != NULL)
     {
-	for (block = 0 ; block < nblocks ; block++)
-	{
-	    KLU_free (LUbx [block], LUsize ? LUsize [block] : 0,
-		sizeof (Unit), Common) ;
-	}
+        for (block = 0 ; block < nblocks ; block++)
+        {
+            KLU_free (LUbx [block], LUsize ? LUsize [block] : 0,
+                sizeof (Unit), Common) ;
+        }
     }
 
     KLU_free (Numeric->Pnum, n, sizeof (Int), Common) ;

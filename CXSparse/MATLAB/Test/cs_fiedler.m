@@ -17,14 +17,14 @@ n = size (A,1) ;
 if (n < 2)
     p = 1 ; v = 1 ; d = 0 ; return ;
 end
-opt.disp = 0 ;			    % turn off printing in eigs
+opt.disp = 0 ;                      % turn off printing in eigs
 opt.tol = sqrt (eps) ;
 if (~isreal (A))
     A = spones (A) ;
 end
-S = A | A' | speye (n) ;	    % compute the Laplacian of A
+S = A | A' | speye (n) ;            % compute the Laplacian of A
 S = diag (sum (S)) - S ;
 [v,d] = eigs (S, 2, 'SA', opt) ;    % find the Fiedler vector v
 v = v (:,2) ;
 d = d (2,2) ;
-[ignore p] = sort (v) ;		    % sort it to get p
+[ignore p] = sort (v) ;             % sort it to get p

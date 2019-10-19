@@ -17,12 +17,12 @@ void mexFunction
     int iseed, n, *p ;
     if (nargout > 1 || nargin < 1 || nargin > 2)
     {
-	mexErrMsgTxt ("Usage: p = cs_randperm(n,seed)") ;
+        mexErrMsgTxt ("Usage: p = cs_randperm(n,seed)") ;
     }
     seed = (nargin > 1) ? mxGetScalar (pargin [1]) : 1 ;
     iseed = (seed > 0 && seed < 1) ? (seed * RAND_MAX) : seed ;
     n = mxGetScalar (pargin [0]) ;
     n = CS_MAX (n, 0) ;
     p = cs_randperm (n, iseed) ;
-    pargout [0] = cs_mex_put_int (p, n, 1, 1) ;	    /* return p */
+    pargout [0] = cs_mex_put_int (p, n, 1, 1) ;     /* return p */
 }

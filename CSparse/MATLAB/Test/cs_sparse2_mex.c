@@ -14,9 +14,9 @@ void mexFunction
     int k, m, n, nz, *Ti, *Tj ;
     if (nargout > 1 || nargin != 3)
     {
-	mexErrMsgTxt ("Usage: A = cs_sparse2(i,j,x)") ;
+        mexErrMsgTxt ("Usage: A = cs_sparse2(i,j,x)") ;
     }
-    nz = mxGetM (pargin [0]) ;
+    nz = mxGetNumberOfElements (pargin [0]) ;
     Ti = cs_mex_get_int (nz, pargin [0], &m, 1) ;
     Tj = cs_mex_get_int (nz, pargin [1], &n, 1) ;
     cs_mex_check (1, nz, 1, 0, 0, 1, pargin [2]) ;
@@ -25,7 +25,7 @@ void mexFunction
     T = cs_spalloc (n, m, 1, 1, 1) ;
     for (k = 0 ; k < nz ; k++)
     {
-	cs_entry (T, Tj [k], Ti [k], Tx [k]) ;
+        cs_entry (T, Tj [k], Ti [k], Tx [k]) ;
     }
 
     C = cs_compress (T) ;

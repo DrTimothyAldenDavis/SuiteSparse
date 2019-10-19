@@ -52,27 +52,27 @@ for trial = 1:100
     % pause
 
     p0 = etree (A, 'col') ;
-    % p1 = etree2 (A, 'col') ;	% CHOLMOD
+    % p1 = etree2 (A, 'col') ;  % CHOLMOD
     p2 = cs_etree (A, 'col') ;
 
     if (~isempty (A))
-	check_if_same (p0,p2) ;
+        check_if_same (p0,p2) ;
     end
 
     p0 = etree (C, 'col') ;
-    % p1 = etree2 (C, 'col') ;	% CHOLMOD
+    % p1 = etree2 (C, 'col') ;  % CHOLMOD
     p2 = cs_etree (C, 'col') ;
 
     if (~isempty (C))
-	check_if_same (p0,p2) ;
+        check_if_same (p0,p2) ;
     end
 
     % find etree of A'A, and postorder it
-    [m n] = size (A) ;							    %#ok
+    [m n] = size (A) ;                                                      %#ok
     % full (A)
 
     [cp0 cpo0] = etree (A, 'col') ;
-    % [cp1 cpo1] = etree2 (A, 'col') ;	% CHOLMOD
+    % [cp1 cpo1] = etree2 (A, 'col') ;  % CHOLMOD
     [cp2 cpo2] = cs_etree (A, 'col') ;
     % cpo2 = cs_post (cp2) ;
 

@@ -10,7 +10,7 @@ function testall
 
 h = waitbar (0, 'CSparse') ;
 
-cs_test_make	    % compile all CSparse, Demo, Text, and Test mexFunctions
+cs_test_make        % compile all CSparse, Demo, Text, and Test mexFunctions
 
 ntests = 28 ;
 

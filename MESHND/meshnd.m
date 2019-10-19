@@ -1,10 +1,10 @@
 function [G, p, pinv, Gnew] = meshnd (arg1,n,k)
 %MESHND creation and nested dissection of a regular 2D or 3D mesh.
-% [p G pinv Gnew] = meshnd (m,n) constructs a m-by-n 2D mesh G, and then finds
+% [G p pinv Gnew] = meshnd (m,n) constructs an m-by-n 2D mesh G, and then finds
 % a permuted mesh Gnew where Gnew = pinv(G) and G = p(Gnew).  meshnd(m,n,k)
 % creates an m-by-n-by-k 3D mesh.
 %
-% [p G pinv Gnew] = meshnd (G) does not construct G, but uses the mesh G as
+% [G p pinv Gnew] = meshnd (G) does not construct G, but uses the mesh G as
 % given on input instead.
 %
 % Example:
@@ -26,7 +26,7 @@ function [G, p, pinv, Gnew] = meshnd (arg1,n,k)
 %
 % See also nested, numgrid.
 
-% Copyright 2007, Timothy A. Davis, Univ. of Florida
+% Copyright 2007-2009, Timothy A. Davis, Univ. of Florida
 
 % get the inputs and create the mesh if not provided on input
 if (nargin == 0)

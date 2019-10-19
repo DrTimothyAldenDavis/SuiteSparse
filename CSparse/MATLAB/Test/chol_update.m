@@ -18,7 +18,7 @@ for j = 1:n
     w (j) = alpha ;
     beta = beta2 ;
     if (j == n)
-	return
+        return
     end
     w1 = w (j+1:n) ;
     w (j+1:n) = w (j+1:n) - alpha * L (j+1:n,j) ;

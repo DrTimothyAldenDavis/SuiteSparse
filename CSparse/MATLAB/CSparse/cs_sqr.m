@@ -1,4 +1,4 @@
-function [vnz,rnz,parent,c,leftmost,p,q] = cs_sqr (A)			    %#ok
+function [vnz,rnz,parent,c,leftmost,p,q] = cs_sqr (A)                       %#ok
 %CS_SQR symbolic sparse QR factorization.
 %   [vnz,rnz,parent,c,leftmost,p] = cs_sqr(A): symbolic QR of A(p,:).
 %   [vnz,rnz,parent,c,leftmost,p,q] = cs_sqr(A) computes the symbolic QR

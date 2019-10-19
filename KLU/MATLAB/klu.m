@@ -24,13 +24,14 @@ function [LU_or_x,info,c] = klu (A,operation,b,opts)                        %#ok
 %   opts is an optional input struct which appears as the last input argument.
 %   Entries not present are set to their defaults:
 %
+%                       default
 %       opts.tol        0.001   partial pivoting tolerance; valid range 0 to 1.
 %       opts.btf        1       use block triangular form (BTF) if nonzero
 %       opts.ordering   0       how each block is ordered:
 %                               0: AMD, 1: COLAMD, 2: natural,
 %                               3: CHOLMOD's ordering of (A'*A),
 %                               4: CHOLMOD's ordering of (A+A')
-%       opts.scale      -1      1: R = diag(sum(abs(A)')), row-sum
+%       opts.scale      2       1: R = diag(sum(abs(A)')), row-sum
 %                               2: R = diag(max(abs(A)')), max in each row
 %                               otherwise: none (R=I)
 %       opts.maxwork    0       if > 0, limit work in BTF ordering to
@@ -65,7 +66,7 @@ function [LU_or_x,info,c] = klu (A,operation,b,opts)                        %#ok
 %
 %   See also BTF, LU, DMPERM, CONDEST, CHOLMOD, AMD, COLAMD, CAMD, CCOLAMD.
 
-% Copyright 2004-2007 Timothy A. Davis, Univ. of Florida
+% Copyright 2004-2009 Timothy A. Davis, Univ. of Florida
 % http://www.cise.ufl.edu/research/sparse
 
 error ('klu mexFunction not found') ;

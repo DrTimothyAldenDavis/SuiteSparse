@@ -1,7 +1,7 @@
-function stats = UFstats (A, kind, nometis, Z)
+function stats = UFstats (A, kind, nometis, skip_chol, skip_dmperm, Z)
 %UFSTATS compute matrix statistics for the UF Sparse Matrix Collection
 % Example:
-%   stats = UFstats (A,kind,nometis,Z)
+%   stats = UFstats (A, kind, nometis, skip_chol, skip_dmperm, Z)
 %
 % A: a sparse matrix
 % kind: a string with the Problem.kind
@@ -111,7 +111,7 @@ tic ;
 
 stats.nnzdiag = nnzdiag ;
 
-if (nargin > 3)
+if (nargin > 5)
     stats.nzero = nnz (Z) ;
 
     % recompute the pattern symmetry with Z included
@@ -193,6 +193,12 @@ if (~stats.cholcand)
 
     % not a candidate for Cholesky, so it cannot be positive definite
     stats.posdef = 0 ;
+
+elseif (skip_chol)
+
+    % Cholesky was skipped
+    fprintf ('skip Cholesky\n') ;
+    stats.posdef = -1 ;
 
 else
 
@@ -399,15 +405,19 @@ fprintf ('isND %d\n', stats.isND) ;
 % Dulmage-Mendelsohn permutation, and order each block
 %-------------------------------------------------------------------------------
 
-try
-    % find the Dulmage-Mendelsohn decomposition
-    [p,q,r,s,cc,rr] = cs_dmperm (A) ;
-    nblocks = length (r) - 1 ;
-    stats.nblocks = nblocks ;
-    stats.sprank = rr(4)-1 ;
-catch
-    disp (lasterr) ;
-    fprintf ('cs_dmperm failed\n') ;
+if (skip_dmperm)
+    fprintf ('skip cs_dmperm, known irreducible\n') ;
+else
+    try
+        % find the Dulmage-Mendelsohn decomposition
+        [p,q,r,s,cc,rr] = cs_dmperm (A) ;
+        nblocks = length (r) - 1 ;
+        stats.nblocks = nblocks ;
+        stats.sprank = rr(4)-1 ;
+    catch
+        disp (lasterr) ;
+        fprintf ('cs_dmperm failed\n') ;
+    end
 end
 
 fprintf ('sprank %d, time: %g\n', stats.sprank, toc) ;
@@ -603,7 +613,7 @@ try
 
 catch
     disp (lasterr) ;
-    fprintf ('cs_dmperm ordering and nzoff failed\n') ;
+    fprintf ('cs_dmperm ordering and nzoff failed (or skipped)\n') ;
 end
 
 fprintf ('dmperm stats done, time %g\n', toc) ;

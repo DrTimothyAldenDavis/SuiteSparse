@@ -19,7 +19,7 @@ j = j (48:112, :) ;
 
 
 % white = [1 1 1] ;
-% gray = [.5 .5 .5] ;							    %#ok
+% gray = [.5 .5 .5] ;                                                       %#ok
 
 % j = [white ; purple ; j ] ;
 disp ('j = ') ;

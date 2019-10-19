@@ -1,4 +1,4 @@
-function [L,p] = cs_chol (A,drop)					    %#ok
+function [L,p] = cs_chol (A,drop)                                           %#ok
 %CS_CHOL sparse Cholesky factorization.
 %   L = cs_chol(A) is the same as L = chol(A)', using triu(A).
 %   [L,p] = cs_chol(A) first orders A with p=cs_amd(A), so that L*L' = A(p,p).

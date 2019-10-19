@@ -22,19 +22,19 @@ for k = 1:n
     % fprintf ('\n-----------------init %d\n', k) ;
     x = A (:,k) ;
     for i = 1:k-1
-	v = H(((i+1):m),i) ;
-	v = [1 ; v] ;							    %#ok
-	beta = H (i,i) ;
-	% n1 = norm (x (i:m)) ;
-	x (i:m) = happly (v, beta, x (i:m)) ;
-	% n2 = norm (x (i:m)) ;
-	% fprintf ('=============== i %d %g %g\n', i, n1, n2) ;
-	% beta
-	% v'
-	% X = x'
-	% pause
-	% i
-	% x
+        v = H(((i+1):m),i) ;
+        v = [1 ; v] ;                                                       %#ok
+        beta = H (i,i) ;
+        % n1 = norm (x (i:m)) ;
+        x (i:m) = happly (v, beta, x (i:m)) ;
+        % n2 = norm (x (i:m)) ;
+        % fprintf ('=============== i %d %g %g\n', i, n1, n2) ;
+        % beta
+        % v'
+        % X = x'
+        % pause
+        % i
+        % x
     end
     % k
     % x

@@ -1,4 +1,4 @@
-function [L,U,p,q] = cs_lu (A,tol)					    %#ok
+function [L,U,p,q] = cs_lu (A,tol)                                          %#ok
 %CS_LU sparse LU factorization, with fill-reducing ordering.
 %   [L,U,p] = cs_lu(A) factorizes A(p,:) into L*U using no fill-reducing
 %   ordering.

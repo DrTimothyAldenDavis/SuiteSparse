@@ -71,12 +71,12 @@ if (docomplex == 0)
     [objfiles, timestamp] = cs_make_helper (f, 0) ;
 else
     try
-	% try with complex support
-	[objfiles, timestamp] = cs_make_helper (f, 1) ;
+        % try with complex support
+        [objfiles, timestamp] = cs_make_helper (f, 1) ;
     catch
-	% oops - that failed, try without complex support
-	fprintf ('retrying without complex matrix support\n') ;
-	[objfiles, timestamp] = cs_make_helper (f, 0) ;
+        % oops - that failed, try without complex support
+        fprintf ('retrying without complex matrix support\n') ;
+        [objfiles, timestamp] = cs_make_helper (f, 0) ;
     end
 end
 

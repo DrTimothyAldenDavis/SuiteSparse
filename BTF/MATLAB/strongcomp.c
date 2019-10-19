@@ -7,17 +7,17 @@
  *
  * Usage:
  *
- *	[p,r] = strongcomp (A) ;
+ *      [p,r] = strongcomp (A) ;
  *
- *	[p,q,r] = strongcomp (A,qin) ;
+ *      [p,q,r] = strongcomp (A,qin) ;
  *
  * In the first usage, the permuted matrix is C = A (p,p).  In the second usage,
  * the matrix A (:,qin) is symmetrically permuted to upper block triangular
  * form, where qin is an input column permutation, and the final permuted
  * matrix is C = A (p,q).  This second usage is equivalent to
  *
- *	[p,r] = strongcomp (A (:,qin)) ;
- *	q = qin (p) ;
+ *      [p,r] = strongcomp (A (:,qin)) ;
+ *      q = qin (p) ;
  *
  * That is, if qin is not present it is assumed to be qin = 1:n.
  *
@@ -28,16 +28,16 @@
  *
  * strongcomp is normally proceeded by a maximum transversal:
  *
- *	[p,q,r] = strongcomp (A, maxtrans (A))
+ *      [p,q,r] = strongcomp (A, maxtrans (A))
  *
  * if the matrix has full structural rank.  This is identical to
  *
- *	[p,q,r] = btf (A)
+ *      [p,q,r] = btf (A)
  *
  * (except that btf handles the case when A is structurally rank-deficient).
  * It essentially the same as
  *
- *	[p,q,r] = dmperm (A)
+ *      [p,q,r] = dmperm (A)
  *
  * except that p, q, and r will differ between btf and dmperm.  Both return an
  * upper block triangular form with a zero-free diagonal.  The number and sizes
@@ -60,9 +60,9 @@
 
 void mexFunction
 (
-    int	nargout,
+    int nargout,
     mxArray *pargout[],
-    int	nargin,
+    int nargin,
     const mxArray *pargin[]
 )
 {
@@ -75,13 +75,13 @@ void mexFunction
 
     if (!((nargin == 1 && nargout <= 2) || (nargin == 2 && nargout <= 3)))
     {
-	mexErrMsgTxt ("Usage: [p,r] = strongcomp (A)"
-		      " or [p,q,r] = strongcomp (A,qin)") ;
+        mexErrMsgTxt ("Usage: [p,r] = strongcomp (A)"
+                      " or [p,q,r] = strongcomp (A,qin)") ;
     }
     n = mxGetM (pargin [0]) ;
     if (!mxIsSparse (pargin [0]) || n != mxGetN (pargin [0]))
     {
-    	mexErrMsgTxt ("strongcomp: A must be sparse, square, and non-empty") ;
+        mexErrMsgTxt ("strongcomp: A must be sparse, square, and non-empty") ;
     }
 
     /* get sparse matrix A */
@@ -98,35 +98,35 @@ void mexFunction
     /* get the input column permutation Q */
     if (nargin == 2)
     {
-	if (mxGetNumberOfElements (pargin [1]) != n)
-	{
-	    mexErrMsgTxt
-		("strongcomp: qin must be a permutation vector of size n") ;
-	}
-	Qx = mxGetPr (pargin [1]) ;
-	Q = mxMalloc (n * sizeof (UF_long)) ;
-	/* connvert Qin to 0-based and check validity */
-	for (i = 0 ; i < n ; i++)
-	{
-	    Work [i] = 0 ;
-	}
-	for (k = 0 ; k < n ; k++)
-	{
-	    j = Qx [k] - 1 ;	/* convert to 0-based */
-	    jj = BTF_UNFLIP (j) ;
-	    if (jj < 0 || jj >= n || Work [jj] == 1)
-	    {
-		mexErrMsgTxt
-		    ("strongcomp: qin must be a permutation vector of size n") ;
-	    }
-	    Work [jj] = 1 ;
-	    Q [k] = j ;
-	}
+        if (mxGetNumberOfElements (pargin [1]) != n)
+        {
+            mexErrMsgTxt
+                ("strongcomp: qin must be a permutation vector of size n") ;
+        }
+        Qx = mxGetPr (pargin [1]) ;
+        Q = mxMalloc (n * sizeof (UF_long)) ;
+        /* connvert Qin to 0-based and check validity */
+        for (i = 0 ; i < n ; i++)
+        {
+            Work [i] = 0 ;
+        }
+        for (k = 0 ; k < n ; k++)
+        {
+            j = Qx [k] - 1 ;    /* convert to 0-based */
+            jj = BTF_UNFLIP (j) ;
+            if (jj < 0 || jj >= n || Work [jj] == 1)
+            {
+                mexErrMsgTxt
+                    ("strongcomp: qin must be a permutation vector of size n") ;
+            }
+            Work [jj] = 1 ;
+            Q [k] = j ;
+        }
     }
     else
     {
-	/* no input column permutation */
-	Q = (UF_long *) NULL ;
+        /* no input column permutation */
+        Q = (UF_long *) NULL ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -144,29 +144,29 @@ void mexFunction
     Px = mxGetPr (pargout [0]) ;
     for (k = 0 ; k < n ; k++)
     {
-	Px [k] = P [k] + 1 ;		/* convert to 1-based */
+        Px [k] = P [k] + 1 ;            /* convert to 1-based */
     }
 
     /* create Q */
     if (nargin == 2 && nargout > 1)
     {
-	pargout [1] = mxCreateDoubleMatrix (1, n, mxREAL) ;
-	Qx = mxGetPr (pargout [1]) ;
-	for (k = 0 ; k < n ; k++)
-	{
-	    Qx [k] = Q [k] + 1 ;	/* convert to 1-based */
-	}
+        pargout [1] = mxCreateDoubleMatrix (1, n, mxREAL) ;
+        Qx = mxGetPr (pargout [1]) ;
+        for (k = 0 ; k < n ; k++)
+        {
+            Qx [k] = Q [k] + 1 ;        /* convert to 1-based */
+        }
     }
 
     /* create R */
     if (nargout == nargin + 1)
     {
-	pargout [nargin] = mxCreateDoubleMatrix (1, nblocks+1, mxREAL) ;
-	Rx = mxGetPr (pargout [nargin]) ;
-	for (b = 0 ; b <= nblocks ; b++)
-	{
-	    Rx [b] = R [b] + 1 ;		/* convert to 1-based */
-	}
+        pargout [nargin] = mxCreateDoubleMatrix (1, nblocks+1, mxREAL) ;
+        Rx = mxGetPr (pargout [nargin]) ;
+        for (b = 0 ; b <= nblocks ; b++)
+        {
+            Rx [b] = R [b] + 1 ;                /* convert to 1-based */
+        }
     }
 
     mxFree (P) ;
@@ -174,6 +174,6 @@ void mexFunction
     mxFree (Work) ;
     if (nargin == 2)
     {
-	mxFree (Q) ;
+        mxFree (Q) ;
     }
 }

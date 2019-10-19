@@ -262,6 +262,28 @@ fprintf (f, '<meta http-equiv="content-type" content="text/html; charset=') ;
 fprintf (f, 'iso-8859-1"><title>%s sparse matrix</title></head>\n', fullname) ;
 fprintf (f, '<body bgcolor="#ffffff" link="#0021a5">\n') ;
 
+% Yifan Hu's medium-sized graph plot, for all matrices
+yifan_graphs = 'http://www.research.att.com/~yifanhu/GALLERY/GRAPHS/' ;
+yifan_thumb = [yifan_graphs 'GIF_THUMBNAIL/'] ;
+yifan_medium = [yifan_graphs 'GIF_SMALL/'] ;
+yname = strrep (fullname, '/', '@') ;
+fprintf (f, '\n<p>') ;
+fprintf (f, ...
+    '<a href="%s%s.html"><img alt="%s graph" src="%s%s.gif"></a>\n\n', ...
+    yifan_medium, yname, fullname, yifan_medium, yname) ;
+
+% small gifs go first:
+% fprintf (f, '\n\n<p><img alt="%s" src="%s_thumb.png"></a>\n', fullname, name) ;
+% 
+% 
+% fprintf (f, ...
+    % '<a href="%s%s.html"><img alt="%s graph" src="%s%s.gif"></a>\n', ...
+    % yifan_medium, yname, fullname, yifan_thumb, yname) ;
+
+% matrix name and description
+fprintf (f, '<p>Matrix: %s\n', fullname) ;
+fprintf (f, '<p>Description: %s<p><hr>\n', ptitle) ;
+
 % link to UF collection
 fprintf (f, '<li><a href="..">UF Sparse Matrix Collection</a>\n') ;
 
@@ -279,10 +301,6 @@ fprintf (f, 'Click here for a list of all matrices</a>\n') ;
 % link to all groups
 fprintf (f, '<li><a href="../groups.html">') ;
 fprintf (f, 'Click here for a list of all matrix groups</a>\n') ;
-
-% matrix name and description
-fprintf (f, '<p><hr><li>Matrix: %s\n', fullname) ;
-fprintf (f, '<li>Description: %s\n', ptitle) ;
 
 % download link for MATLAB format
 fprintf (f, ...
@@ -330,16 +348,6 @@ if (do_gplot)
 '<a href="%s_gplot_big.png"><img alt="%s graph" src="%s_gplot.png"></a>\n', ...
     name, fullname, name) ;
 end
-
-% Yifan Hu's graph plot, for all matrices
-yifan = 'http://www.research.att.com/~yifanhu/GALLERY/GRAPHS/GIF_SMALL/' ;
-yname = strrep (fullname, '/', '@') ;
-%% if (m == n)
-    fprintf (f, '<p>') ;
-    fprintf (f, ...
-        '<a href="%s%s.html"><img alt="%s graph" src="%s%s.gif"></a>\n', ...
-        yifan, yname, fullname, yifan, yname) ;
-%% end
 
 %-------------------------------------------------------------------------------
 % table of matrix properties
@@ -567,9 +575,7 @@ fprintf (f, '<br>Matrix pictures by <a href=') ;
 fprintf (f, '"%sCSparse/CSparse/MATLAB/CSparse/cspy.m">cspy</a>, a ', url) ;
 fprintf (f, 'MATLAB function in the <a href="%sCSparse">CSparse</a>', url) ;
 fprintf (f, ' package.<br>\n') ;
-if (m == n)
-    fprintf (f, 'Matrix graphs by Yifan Hu, AT&T Labs Visualization Group.\n') ;
-end
+fprintf (f, 'Matrix graphs by Yifan Hu, AT&T Labs Visualization Group.\n') ;
 fprintf (f, '</body>\n</html>\n') ;
 
 fclose (f) ;

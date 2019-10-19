@@ -1,4 +1,4 @@
-function x = cs_utsolve (U,b)						    %#ok
+function x = cs_utsolve (U,b)                                               %#ok
 %CS_UTSOLVE solve a sparse lower triangular system U'*x=b.
 %   x = cs_utsolve(U,b) computes x = U'\b, U must be upper triangular with a
 %   zero-free diagonal.  b must be a full vector.

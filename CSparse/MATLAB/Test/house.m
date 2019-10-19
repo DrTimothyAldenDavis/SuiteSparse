@@ -21,9 +21,9 @@ if (sigma == 0)
 else
     s = sqrt (x(1)^2 + sigma) ;
     if (x (1) <= 0)
-	v (1) = x (1) - s ;
+        v (1) = x (1) - s ;
     else
-	v (1) = -sigma / (x (1) + s) ;
+        v (1) = -sigma / (x (1) + s) ;
     end
     beta = -1 / (s * v(1)) ;
 end

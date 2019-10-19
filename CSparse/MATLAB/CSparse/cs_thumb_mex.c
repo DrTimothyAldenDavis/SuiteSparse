@@ -23,7 +23,7 @@ void mexFunction
     double aij, *S, *Ax ;
     if (nargout > 1 || nargin < 1 || nargin > 2)
     {
-	mexErrMsgTxt ("Usage: S = cs_thumb(A,k)") ;
+        mexErrMsgTxt ("Usage: S = cs_thumb(A,k)") ;
     }
     A = cs_mex_get_sparse (&Amatrix, 0, 1, pargin [0]) ;    /* get A */
     m = A->m ;
@@ -42,15 +42,15 @@ void mexFunction
     Ax = A->x ;
     for (j = 0 ; j < n ; j++)
     {
-	sj = j/s ;
-	for (p = Ap [j] ; p < Ap [j+1] ; p++)
-	{
-	    si = Ai [p] / s ;
-	    ij = INDEX (si,sj,m2) ;
-	    aij = fabs (Ax [p]) ;
-	    if (ISNAN (aij)) aij = BIG_VALUE ;
-	    aij = CS_MIN (BIG_VALUE, aij) ;
-	    S [ij] = CS_MAX (S [ij], aij) ;
-	}
+        sj = j/s ;
+        for (p = Ap [j] ; p < Ap [j+1] ; p++)
+        {
+            si = Ai [p] / s ;
+            ij = INDEX (si,sj,m2) ;
+            aij = fabs (Ax [p]) ;
+            if (ISNAN (aij)) aij = BIG_VALUE ;
+            aij = CS_MIN (BIG_VALUE, aij) ;
+            S [ij] = CS_MAX (S [ij], aij) ;
+        }
     }
 }

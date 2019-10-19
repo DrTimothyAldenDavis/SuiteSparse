@@ -17,5 +17,5 @@ function [s,as,bs] = cs_sep (A,a,b)
 s = [(a (p (1:rr(2)-1))) (b (q (cc(3):(cc(5)-1))))] ;
 w = ones (1, size (A,1)) ;
 w (s) = 0 ;
-as = a (find (w (a))) ;							    %#ok
-bs = b (find (w (b))) ;							    %#ok
+as = a (find (w (a))) ;                                                     %#ok
+bs = b (find (w (b))) ;                                                     %#ok

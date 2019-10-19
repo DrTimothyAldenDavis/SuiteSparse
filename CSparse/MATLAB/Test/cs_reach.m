@@ -1,4 +1,4 @@
-function x = cs_reach(L,b)						    %#ok
+function x = cs_reach(L,b)                                                  %#ok
 %CS_REACH non-recursive reach (interface to CSparse cs_reach)
 % find nonzero pattern of x=L\sparse(b).  L must be sparse, real, and lower
 % triangular.  b must be a real sparse vector.

@@ -32,12 +32,12 @@ end
 
 for i = 1:length(mexfunc)
     [s t tobj] = cs_must_compile ('', mexfunc{i}, '_mex', ...
- 	['.' mexext], 'cs_test_make.m', force) ;
-    if (s | tobj < timestamp)						    %#ok
-	cmd = [mexcmd ' -O -output ' mexfunc{i} ' ' mexfunc{i} '_mex.c -I..' ...
-	    filesep '..' filesep 'Include -I..' ...
-	    filesep 'CSparse ' object_files] ;
- 	fprintf ('%s\n', cmd) ;
- 	eval (cmd) ;
+        ['.' mexext], 'cs_test_make.m', force) ;
+    if (s | tobj < timestamp)                                               %#ok
+        cmd = [mexcmd ' -O -output ' mexfunc{i} ' ' mexfunc{i} '_mex.c -I..' ...
+            filesep '..' filesep 'Include -I..' ...
+            filesep 'CSparse ' object_files] ;
+        fprintf ('%s\n', cmd) ;
+        eval (cmd) ;
      end
 end

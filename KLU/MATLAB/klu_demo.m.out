@@ -2,7 +2,7 @@ klu_demo
 MATLAB condest: 1.42443e+12 KLU condest: 1.42443e+12 cond: 3.25816e+11
 
 KLU with scaling, AMD ordering and condition number estimate:
-resid: 3.88932e-13 KLU condest: 1.42443e+12 rgrowth: 1.85769e-05
+resid: 7.8484e-13 KLU condest: 1.42443e+12 rgrowth: 1.85769e-05
     noffdiag: 12
     nrealloc: 0
        rcond: 7.1253e-09
@@ -19,7 +19,7 @@ resid: 3.88932e-13 KLU condest: 1.42443e+12 rgrowth: 1.85769e-05
 
 
 KLU with COLAMD ordering
-resid: 1.00707e-11
+resid: 3.91883e-11
     noffdiag: 14
     nrealloc: 0
        rcond: 9.1888e-10
@@ -36,7 +36,7 @@ resid: 1.00707e-11
 
 
 KLU with natural ordering (lots of fillin)
-resid: 3.13025e-13
+resid: 2.42321e-11
     noffdiag: 437
     nrealloc: 0
        rcond: 6.4525e-08
@@ -53,7 +53,7 @@ resid: 3.13025e-13
 
 
 KLU with CHOLMOD(A'*A) ordering
-resid: 1.7568e-13
+resid: 2.22827e-13
     noffdiag: 24
     nrealloc: 0
        rcond: 4.1814e-09
@@ -70,7 +70,7 @@ resid: 1.7568e-13
 
 
 KLU with CHOLMOD(A+A') ordering
-resid: 5.1045e-13
+resid: 1.45166e-12
     noffdiag: 13
     nrealloc: 0
        rcond: 3.9046e-11

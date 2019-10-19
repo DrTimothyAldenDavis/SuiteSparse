@@ -13,12 +13,12 @@ clear functions
 rand ('state', 0) ;
 for n = 1:100
     for trials = 1:1000
-	p = cs_randperm (n, rand) ;
-	if (any (sort (p) ~= 1:n))
-	    n		%#ok
-	    p		%#ok
-	    error ('!')
-	end
+        p = cs_randperm (n, rand) ;
+        if (any (sort (p) ~= 1:n))
+            n           %#ok
+            p           %#ok
+            error ('!')
+        end
     end
 end
 
@@ -65,48 +65,48 @@ for k = 1:nmat
     fprintf (' %8.2f', t3) ;
     T3 (k) = t3 ;
 
-    if (sprank1 ~= sprank2 | sprank1 ~= sprank3)			    %#ok
-	error ('!') ;
+    if (sprank1 ~= sprank2 | sprank1 ~= sprank3)                            %#ok
+        error ('!') ;
     end
 
     tic
-    [p1,q1,r1,s1,cc1,rr1] = cs_dmperm (A) ;				    %#ok
+    [p1,q1,r1,s1,cc1,rr1] = cs_dmperm (A) ;                                 %#ok
     d1 = toc ;
     fprintf (' %8.2f', d1) ;
     D1 (k) = d1 ;
 
     tic
-    [p2,q2,r2,s2,cc2,rr2] = cs_dmperm (A,1) ;				    %#ok
+    [p2,q2,r2,s2,cc2,rr2] = cs_dmperm (A,1) ;                               %#ok
     d2 = toc ;
     fprintf (' %8.2f', d2) ;
     D2 (k) = d2 ;
 
     tic
-    [p3,q3,r3,s3,cc3,rr3] = cs_dmperm (A,-1) ;				    %#ok
+    [p3,q3,r3,s3,cc3,rr3] = cs_dmperm (A,-1) ;                              %#ok
     d3 = toc ;
     fprintf (' %8.2f\n', d3) ;
     D3 (k) = d3 ;
 
     if (sprank1 == max (m,n))
-	nz1 = nnz (diag (A (p1,q1))) ;
-	nz2 = nnz (diag (A (p2,q2))) ;
-	nz3 = nnz (diag (A (p3,q3))) ;
+        nz1 = nnz (diag (A (p1,q1))) ;
+        nz2 = nnz (diag (A (p2,q2))) ;
+        nz3 = nnz (diag (A (p3,q3))) ;
 
-	if (nz1 ~= sprank1 | nz2 ~= sprank2 | nz3 ~= sprank3)		    %#ok
-	    error ('!')
-	end
+        if (nz1 ~= sprank1 | nz2 ~= sprank2 | nz3 ~= sprank3)               %#ok
+            error ('!')
+        end
     end
 
     subplot (1,2,1)
     loglog (T1 (1:k), T2 (1:k), 'x', ...
-	T1 (1:k), T3 (1:k), 'go', ...
-	[1e-5 1e3], [1e-5 1e3], 'r-') ; 
+        T1 (1:k), T3 (1:k), 'go', ...
+        [1e-5 1e3], [1e-5 1e3], 'r-') ; 
     axis equal
 
     subplot (1,2,2)
     loglog (D1 (1:k), D2 (1:k), 'x', ...
-	D1 (1:k), D3 (1:k), 'go', ...
-	[1e-5 1e3], [1e-5 1e3], 'r-') ; 
+        D1 (1:k), D3 (1:k), 'go', ...
+        [1e-5 1e3], [1e-5 1e3], 'r-') ; 
     axis equal
 
     drawnow

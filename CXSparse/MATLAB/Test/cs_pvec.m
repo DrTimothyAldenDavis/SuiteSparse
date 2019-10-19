@@ -1,4 +1,4 @@
-function x = cs_pvec (b,p)						    %#ok
+function x = cs_pvec (b,p)                                                  %#ok
 %CS_PVEC x=b(p)
 %
 % Example:

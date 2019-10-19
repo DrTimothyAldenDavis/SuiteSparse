@@ -1184,21 +1184,17 @@ GLOBAL void UMF_dump_diagonal_map
 (
     Int Diagonal_map [ ],
     Int Diagonal_imap [ ],
-    Int n1,
-    Int nn,
-    Int nempty
+    Int nn
 )
 {
     Int row, col ;
     if (Diagonal_map != (Int *) NULL)
     {
-	DEBUG2 (("\nDump the Diagonal_map: n1 "ID" nn "ID" nempty "ID"\n",
-	    n1, nn, nempty)) ;
-	for (col = n1 ; col < nn - nempty ; col++)
+	DEBUG2 (("\nDump the Diagonal_map: nn "ID"\n", nn)) ;
+	for (col = 0 ; col < nn ; col++)
 	{
 	    row = Diagonal_map [col] ;
-	    DEBUG2 (("     Diagonal_map [col = "ID"] gives "ID": ",
-		col, row)) ;
+	    DEBUG2 (("     Diagonal_map [col = "ID"] gives "ID": ", col, row)) ;
 	    row = UNFLIP (row) ;
 	    DEBUG2 ((" row "ID"\n", row)) ;
 	    ASSERT (Diagonal_imap [row] == col) ;

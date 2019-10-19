@@ -13,14 +13,14 @@ cs_dl *cs_dl_frand (CS_INT n, CS_INT nel, CS_INT s)
     if (!P) return (cs_dl_spfree (T)) ;
     for (e = 0 ; e < nel ; e++)
     {
-	for (i = 0 ; i < s ; i++) P [i] = rand () % n ;
-	for (j = 0 ; j < s ; j++)
-	{
-	    for (i = 0 ; i < s ; i++)
-	    {
-		cs_dl_entry (T, P [i], P [j], rand () / (double) RAND_MAX) ;
-	    }
-	}
+        for (i = 0 ; i < s ; i++) P [i] = rand () % n ;
+        for (j = 0 ; j < s ; j++)
+        {
+            for (i = 0 ; i < s ; i++)
+            {
+                cs_dl_entry (T, P [i], P [j], rand () / (double) RAND_MAX) ;
+            }
+        }
     }
     for (i = 0 ; i < n ; i++) cs_dl_entry (T, i, i, 1) ;
     A = cs_dl_compress (T) ;
@@ -40,7 +40,7 @@ void mexFunction
     cs *A, *AT ;
     if (nargout > 1 || nargin != 3)
     {
-	mexErrMsgTxt ("Usage: C = cs_frand(n,nel,s)") ;
+        mexErrMsgTxt ("Usage: C = cs_frand(n,nel,s)") ;
     }
     n = mxGetScalar (pargin [0]) ;
     nel = mxGetScalar (pargin [1]) ;

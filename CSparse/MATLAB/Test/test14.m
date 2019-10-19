@@ -33,6 +33,6 @@ for trial = 1:100
 %    A = sparse (i, j, x, m, n) ;
 
     if (norm (A-B,1) > 0)
-	error ('!') ;
+        error ('!') ;
     end
 end

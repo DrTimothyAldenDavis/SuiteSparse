@@ -1,4 +1,4 @@
-function q = maxtrans (A)						    %#ok
+function q = maxtrans (A)                                                   %#ok
 %MAXTRANS permute the columns of a sparse matrix so it has a zero-free diagonal
 % (if it exists).   If no zero-free diagonal exists, then a maximum matching is
 % found.  Note that this differs from p=dmperm(A), which returns a row

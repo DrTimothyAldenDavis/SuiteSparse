@@ -10,7 +10,7 @@ function [s, t, tobj] = cs_must_compile (srcdir, f, suffix, obj, hfile, force)
 %   http://www.cise.ufl.edu/research/sparse
 
 dobj = dir ([f obj]) ;
-if (force | isempty (dobj))						    %#ok
+if (force | isempty (dobj))                                                 %#ok
     s = 1 ;
     t = Inf ;
     tobj = -1 ;

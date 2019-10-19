@@ -34,9 +34,9 @@ MN = zeros (nmat, 2) ;
 Nzdiag = zeros (nmat,1) ;
 
 % warmup
-p = maxtrans (sparse (1)) ;	    %#ok
-p = cs_dmperm (sparse (1)) ;	    %#ok
-a = cs_transpose (sparse (1)) ;	    %#ok
+p = maxtrans (sparse (1)) ;         %#ok
+p = cs_dmperm (sparse (1)) ;        %#ok
+a = cs_transpose (sparse (1)) ;     %#ok
 
 h = waitbar (0, 'BTF test 1 of 6') ;
 
@@ -91,7 +91,7 @@ try
             error ('!') ;
         end
 
-        if (s0 == n & m == n)						    %#ok
+        if (s0 == n & m == n)                                               %#ok
             B = A (:, q) ;
             subplot (2,2,1) ;
             cspy (B) ;

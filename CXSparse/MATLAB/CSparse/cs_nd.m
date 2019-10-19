@@ -18,10 +18,10 @@ n = size (A,1) ;
 if (n == 1)
     p = 1 ;
 elseif (n < 500)
-    p = cs_amd (A) ;		    % use cs_amd on small graphs
+    p = cs_amd (A) ;                % use cs_amd on small graphs
 else
-    [s a b] = cs_nsep (A) ;	    % find a node separator
-    a = a (cs_nd (A (a,a))) ;	    % order A(a,a) recursively
-    b = b (cs_nd (A (b,b))) ;	    % order A(b,b) recursively
-    p = [a b s] ;		    % concatenate to obtain the final ordering
+    [s a b] = cs_nsep (A) ;         % find a node separator
+    a = a (cs_nd (A (a,a))) ;       % order A(a,a) recursively
+    b = b (cs_nd (A (b,b))) ;       % order A(b,b) recursively
+    p = [a b s] ;                   % concatenate to obtain the final ordering
 end

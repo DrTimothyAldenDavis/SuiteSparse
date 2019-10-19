@@ -17,6 +17,7 @@
 #include <math.h>
 #include <float.h>
 #include <stdio.h>
+#include <cstring>
 
 #include <complex>
 typedef std::complex<double> Complex ;

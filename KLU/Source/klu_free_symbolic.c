@@ -9,18 +9,18 @@
 Int KLU_free_symbolic
 (
     KLU_symbolic **SymbolicHandle,
-    KLU_common	 *Common
+    KLU_common   *Common
 )
 {
     KLU_symbolic *Symbolic ;
     Int n ;
     if (Common == NULL)
     {
-	return (FALSE) ;
+        return (FALSE) ;
     }
     if (SymbolicHandle == NULL || *SymbolicHandle == NULL)
     {
-	return (TRUE) ;
+        return (TRUE) ;
     }
     Symbolic = *SymbolicHandle ;
     n = Symbolic->n ;

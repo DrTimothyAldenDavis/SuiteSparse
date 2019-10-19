@@ -1,7 +1,6 @@
-SSMULT version 1.1.0, Nov 1, 2007.
-Distributed under the GNU GPL license (see below).  Copyright (c) 2007, Timothy
-A. Davis, University of Florida.  SSMULT is also available under other
-licenses; contact the author for details.
+SSMULT version 2.0, Mar 25, 2009.  Distributed under the GNU GPL license (see
+below).  Copyright (c) 2007-2009, Timothy A. Davis, University of Florida.
+SSMULT is also available under other licenses; contact the author for details.
 http://www.cise.ufl.edu/research/sparse
 
 SSMULT is a MATLAB toolbox for multiplying two sparse matrices, C = A*B.  It
@@ -14,13 +13,20 @@ tested on MATLAB 6.1, 6.5, 7.0.1, 7.0.4, 7.1, 7.2, 7.3, and 7.4).  Works on
 work in 64-bit Windows, but it has only been tested on Linux for the 64-bit
 case.  Only "double" sparse matrices are supported.
 
+SSMULT appears in MATLAB 7.6 and later, but that version of MATLAB does not
+pass the transpose/conjugate flags to ssmult.  Instead, (A*B)' (for example) is
+computed by multiplying A*B with ssmult, followed by a seperate
+conjugate-transpose operation in MATLAB.  This can cause performance
+degradation, particularly when computing x'*y when x and y are large sparse
+column vectors.
+
 To compile, install, and test, type
 
     ssmult_install
 
-in the MATLAB command window.  Then edit your path (with pathtool, or startup.m)
-to add the SSMULT directory to your MATLAB path.  For more extensive tests
-(which require the UFget package) type sstest2 after installing SSMULT.
+in the MATLAB command window.  Then edit your path (with pathtool, or
+startup.m) to add the SSMULT directory to your MATLAB path.  For more extensive
+tests (which require the UFget package) type sstest2 after installing SSMULT.
 
 For best performance, do not use the "lcc" compiler that ships with MATLAB 7.4
 (or earlier) for Windows.  Use another compiler instead.  Type "mex -setup" or

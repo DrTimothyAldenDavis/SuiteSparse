@@ -1,4 +1,4 @@
-function C = cs_permute (A,p,q)						    %#ok
+function C = cs_permute (A,p,q)                                             %#ok
 %CS_PERMUTE permute a sparse matrix.
 %   C = cs_permute(A,p,q) computes C = A(p,q)
 %

@@ -20,8 +20,8 @@
 \author{Timothy A. Davis \\
 Dept. of Computer and Information Science and Engineering \\
 Univ. of Florida, Gainesville, FL}
-\title{UMFPACK Version 5.2.0 User Guide}
-\date{Nov 1, 2007}
+\title{UMFPACK Version 5.3.0 User Guide}
+\date{March 24, 2009}
 \maketitle
 
 %-------------------------------------------------------------------------------
@@ -38,7 +38,7 @@ Univ. of Florida, Gainesville, FL}
 
 Technical Report TR-04-003 (revised)
 
-UMFPACK Version 5.2.0, Copyright\copyright 1995-2006 by Timothy A. Davis.
+UMFPACK Version 5.3.0, Copyright\copyright 1995-2009 by Timothy A. Davis.
 All Rights Reserved.
 UMFPACK is available under alternate licences; contact T. Davis for details.
 
@@ -298,6 +298,13 @@ an old version of AMD with a newer version of UMFPACK can fail.}
 %-------------------------------------------------------------------------------
 
 A detailed list of changes is in the {\tt ChangeLog} file.
+
+%-------------------------------------------------------------------------------
+\subsection{Version 5.3.0}
+%-------------------------------------------------------------------------------
+
+A bug fix for structurally singular matrices, and a compiler workaround for
+gcc versions 4.2.(3 and 4).
 
 %-------------------------------------------------------------------------------
 \subsection{Version 5.2.0}

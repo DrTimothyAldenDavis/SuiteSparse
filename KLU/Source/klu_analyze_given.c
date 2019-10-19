@@ -29,7 +29,7 @@ KLU_symbolic *KLU_alloc_symbolic
 
     if (Common == NULL)
     {
-	return (NULL) ;
+        return (NULL) ;
     }
     Common->status = KLU_OK ;
 
@@ -41,55 +41,55 @@ KLU_symbolic *KLU_alloc_symbolic
 
     if (n <= 0 || Ap == NULL || Ai == NULL)
     {
-	/* Ap and Ai must be present, and n must be > 0 */
-	Common->status = KLU_INVALID ;
-	return (NULL) ;
+        /* Ap and Ai must be present, and n must be > 0 */
+        Common->status = KLU_INVALID ;
+        return (NULL) ;
     }
 
     nz = Ap [n] ;
     if (Ap [0] != 0 || nz < 0)
     {
-	/* nz must be >= 0 and Ap [0] must equal zero */
-	Common->status = KLU_INVALID ;
-	return (NULL) ;
+        /* nz must be >= 0 and Ap [0] must equal zero */
+        Common->status = KLU_INVALID ;
+        return (NULL) ;
     }
 
     for (j = 0 ; j < n ; j++)
     {
-	if (Ap [j] > Ap [j+1])
-	{
-	    /* column pointers must be non-decreasing */
-	    Common->status = KLU_INVALID ;
-	    return (NULL) ;
-	}
+        if (Ap [j] > Ap [j+1])
+        {
+            /* column pointers must be non-decreasing */
+            Common->status = KLU_INVALID ;
+            return (NULL) ;
+        }
     }
     P = KLU_malloc (n, sizeof (Int), Common) ;
     if (Common->status < KLU_OK)
     {
-	/* out of memory */
-	Common->status = KLU_OUT_OF_MEMORY ;
-	return (NULL) ;
+        /* out of memory */
+        Common->status = KLU_OUT_OF_MEMORY ;
+        return (NULL) ;
     }
     for (i = 0 ; i < n ; i++)
     {
-	P [i] = EMPTY ;
+        P [i] = EMPTY ;
     }
     for (j = 0 ; j < n ; j++)
     {
-	pend = Ap [j+1] ;
-	for (p = Ap [j] ; p < pend ; p++)
-	{
-	    i = Ai [p] ;
-	    if (i < 0 || i >= n || P [i] == j)
-	    {
-		/* row index out of range, or duplicate entry */
-		KLU_free (P, n, sizeof (Int), Common) ;
-		Common->status = KLU_INVALID ;
-		return (NULL) ;
-	    }
-	    /* flag row i as appearing in column j */
-	    P [i] = j ;
-	}
+        pend = Ap [j+1] ;
+        for (p = Ap [j] ; p < pend ; p++)
+        {
+            i = Ai [p] ;
+            if (i < 0 || i >= n || P [i] == j)
+            {
+                /* row index out of range, or duplicate entry */
+                KLU_free (P, n, sizeof (Int), Common) ;
+                Common->status = KLU_INVALID ;
+                return (NULL) ;
+            }
+            /* flag row i as appearing in column j */
+            P [i] = j ;
+        }
     }
 
     /* ---------------------------------------------------------------------- */
@@ -99,10 +99,10 @@ KLU_symbolic *KLU_alloc_symbolic
     Symbolic = KLU_malloc (sizeof (KLU_symbolic), 1, Common) ;
     if (Common->status < KLU_OK)
     {
-	/* out of memory */
-	KLU_free (P, n, sizeof (Int), Common) ;
-	Common->status = KLU_OUT_OF_MEMORY ;
-	return (NULL) ;
+        /* out of memory */
+        KLU_free (P, n, sizeof (Int), Common) ;
+        Common->status = KLU_OUT_OF_MEMORY ;
+        return (NULL) ;
     }
 
     Q = KLU_malloc (n, sizeof (Int), Common) ;
@@ -118,10 +118,10 @@ KLU_symbolic *KLU_alloc_symbolic
 
     if (Common->status < KLU_OK)
     {
-	/* out of memory */
-	KLU_free_symbolic (&Symbolic, Common) ;
-	Common->status = KLU_OUT_OF_MEMORY ;
-	return (NULL) ;
+        /* out of memory */
+        KLU_free_symbolic (&Symbolic, Common) ;
+        Common->status = KLU_OUT_OF_MEMORY ;
+        return (NULL) ;
     }
 
     return (Symbolic) ;
@@ -132,15 +132,15 @@ KLU_symbolic *KLU_alloc_symbolic
 /* === KLU_analyze_given ==================================================== */
 /* ========================================================================== */
 
-KLU_symbolic *KLU_analyze_given	    /* returns NULL if error, or a valid
-				       KLU_symbolic object if successful */
+KLU_symbolic *KLU_analyze_given     /* returns NULL if error, or a valid
+                                       KLU_symbolic object if successful */
 (
     /* inputs, not modified */
-    Int n,		/* A is n-by-n */
-    Int Ap [ ],		/* size n+1, column pointers */
-    Int Ai [ ],		/* size nz, row indices */
-    Int Puser [ ],	/* size n, user's row permutation (may be NULL) */
-    Int Quser [ ],	/* size n, user's column permutation (may be NULL) */
+    Int n,              /* A is n-by-n */
+    Int Ap [ ],         /* size n+1, column pointers */
+    Int Ai [ ],         /* size nz, row indices */
+    Int Puser [ ],      /* size n, user's row permutation (may be NULL) */
+    Int Quser [ ],      /* size n, user's column permutation (may be NULL) */
     /* -------------------- */
     KLU_common *Common
 )
@@ -156,7 +156,7 @@ KLU_symbolic *KLU_analyze_given	    /* returns NULL if error, or a valid
     Symbolic = KLU_alloc_symbolic (n, Ap, Ai, Common) ;
     if (Symbolic == NULL)
     {
-	return (NULL) ;
+        return (NULL) ;
     }
     P = Symbolic->P ;
     Q = Symbolic->Q ;
@@ -170,17 +170,17 @@ KLU_symbolic *KLU_analyze_given	    /* returns NULL if error, or a valid
 
     if (Quser == (Int *) NULL)
     {
-	for (k = 0 ; k < n ; k++)
-	{
-	    Q [k] = k ;
-	}
+        for (k = 0 ; k < n ; k++)
+        {
+            Q [k] = k ;
+        }
     }
     else
     {
-	for (k = 0 ; k < n ; k++)
-	{
-	    Q [k] = Quser [k] ;
-	}
+        for (k = 0 ; k < n ; k++)
+        {
+            Q [k] = Quser [k] ;
+        }
     }
 
     /* ---------------------------------------------------------------------- */
@@ -199,160 +199,160 @@ KLU_symbolic *KLU_analyze_given	    /* returns NULL if error, or a valid
     if (do_btf)
     {
 
-	/* ------------------------------------------------------------------ */
-	/* get workspace for BTF_strongcomp */
-	/* ------------------------------------------------------------------ */
+        /* ------------------------------------------------------------------ */
+        /* get workspace for BTF_strongcomp */
+        /* ------------------------------------------------------------------ */
 
-	Int *Pinv, *Work, *Bi, k1, k2, nk, oldcol ;
+        Int *Pinv, *Work, *Bi, k1, k2, nk, oldcol ;
 
-	Work = KLU_malloc (4*n, sizeof (Int), Common) ;
-	Pinv = KLU_malloc (n, sizeof (Int), Common) ;
-	if (Puser != (Int *) NULL)
-	{
-	    Bi = KLU_malloc (nz+1, sizeof (Int), Common) ;
-	}
-	else
-	{
-	    Bi = Ai ;
-	}
+        Work = KLU_malloc (4*n, sizeof (Int), Common) ;
+        Pinv = KLU_malloc (n, sizeof (Int), Common) ;
+        if (Puser != (Int *) NULL)
+        {
+            Bi = KLU_malloc (nz+1, sizeof (Int), Common) ;
+        }
+        else
+        {
+            Bi = Ai ;
+        }
 
-	if (Common->status < KLU_OK)
-	{
-	    /* out of memory */
-	    KLU_free (Work, 4*n, sizeof (Int), Common) ;
-	    KLU_free (Pinv, n, sizeof (Int), Common) ;
-	    if (Puser != (Int *) NULL)
-	    {
-		KLU_free (Bi, nz+1, sizeof (Int), Common) ;
-	    }
-	    KLU_free_symbolic (&Symbolic, Common) ;
-	    Common->status = KLU_OUT_OF_MEMORY ;
-	    return (NULL) ;
-	}
+        if (Common->status < KLU_OK)
+        {
+            /* out of memory */
+            KLU_free (Work, 4*n, sizeof (Int), Common) ;
+            KLU_free (Pinv, n, sizeof (Int), Common) ;
+            if (Puser != (Int *) NULL)
+            {
+                KLU_free (Bi, nz+1, sizeof (Int), Common) ;
+            }
+            KLU_free_symbolic (&Symbolic, Common) ;
+            Common->status = KLU_OUT_OF_MEMORY ;
+            return (NULL) ;
+        }
 
-	/* ------------------------------------------------------------------ */
-	/* B = Puser * A */
-	/* ------------------------------------------------------------------ */
+        /* ------------------------------------------------------------------ */
+        /* B = Puser * A */
+        /* ------------------------------------------------------------------ */
 
-	if (Puser != (Int *) NULL)
-	{
-	    for (k = 0 ; k < n ; k++)
-	    {
-		Pinv [Puser [k]] = k ;
-	    }
-	    for (p = 0 ; p < nz ; p++)
-	    {
-		Bi [p] = Pinv [Ai [p]] ;
-	    }
-	}
+        if (Puser != (Int *) NULL)
+        {
+            for (k = 0 ; k < n ; k++)
+            {
+                Pinv [Puser [k]] = k ;
+            }
+            for (p = 0 ; p < nz ; p++)
+            {
+                Bi [p] = Pinv [Ai [p]] ;
+            }
+        }
 
-	/* ------------------------------------------------------------------ */
-	/* find the strongly-connected components */
-	/* ------------------------------------------------------------------ */
+        /* ------------------------------------------------------------------ */
+        /* find the strongly-connected components */
+        /* ------------------------------------------------------------------ */
 
-	/* modifies Q, and determines P and R */
-	nblocks = BTF_strongcomp (n, Ap, Bi, Q, P, R, Work) ;
+        /* modifies Q, and determines P and R */
+        nblocks = BTF_strongcomp (n, Ap, Bi, Q, P, R, Work) ;
 
-	/* ------------------------------------------------------------------ */
-	/* P = P * Puser */
-	/* ------------------------------------------------------------------ */
+        /* ------------------------------------------------------------------ */
+        /* P = P * Puser */
+        /* ------------------------------------------------------------------ */
 
-	if (Puser != (Int *) NULL)
-	{
-	    for (k = 0 ; k < n ; k++)
-	    {
-		Work [k] = Puser [P [k]] ;
-	    }
-	    for (k = 0 ; k < n ; k++)
-	    {
-		P [k] = Work [k] ;
-	    }
-	}
+        if (Puser != (Int *) NULL)
+        {
+            for (k = 0 ; k < n ; k++)
+            {
+                Work [k] = Puser [P [k]] ;
+            }
+            for (k = 0 ; k < n ; k++)
+            {
+                P [k] = Work [k] ;
+            }
+        }
 
-	/* ------------------------------------------------------------------ */
-	/* Pinv = inverse of P */
-	/* ------------------------------------------------------------------ */
+        /* ------------------------------------------------------------------ */
+        /* Pinv = inverse of P */
+        /* ------------------------------------------------------------------ */
 
-	for (k = 0 ; k < n ; k++)
-	{
-	    Pinv [P [k]] = k ;
-	}
+        for (k = 0 ; k < n ; k++)
+        {
+            Pinv [P [k]] = k ;
+        }
 
-	/* ------------------------------------------------------------------ */
-	/* analyze each block */
-	/* ------------------------------------------------------------------ */
+        /* ------------------------------------------------------------------ */
+        /* analyze each block */
+        /* ------------------------------------------------------------------ */
 
-	nzoff = 0 ;	    /* nz in off-diagonal part */
-	maxblock = 1 ;	    /* size of the largest block */
+        nzoff = 0 ;         /* nz in off-diagonal part */
+        maxblock = 1 ;      /* size of the largest block */
 
-	for (block = 0 ; block < nblocks ; block++)
-	{
+        for (block = 0 ; block < nblocks ; block++)
+        {
 
-	    /* -------------------------------------------------------------- */
-	    /* the block is from rows/columns k1 to k2-1 */
-	    /* -------------------------------------------------------------- */
+            /* -------------------------------------------------------------- */
+            /* the block is from rows/columns k1 to k2-1 */
+            /* -------------------------------------------------------------- */
 
-	    k1 = R [block] ;
-	    k2 = R [block+1] ;
-	    nk = k2 - k1 ;
-	    PRINTF (("BLOCK %d, k1 %d k2-1 %d nk %d\n", block, k1, k2-1, nk)) ;
-	    maxblock = MAX (maxblock, nk) ;
+            k1 = R [block] ;
+            k2 = R [block+1] ;
+            nk = k2 - k1 ;
+            PRINTF (("BLOCK %d, k1 %d k2-1 %d nk %d\n", block, k1, k2-1, nk)) ;
+            maxblock = MAX (maxblock, nk) ;
 
-	    /* -------------------------------------------------------------- */
-	    /* scan the kth block, C */
-	    /* -------------------------------------------------------------- */
+            /* -------------------------------------------------------------- */
+            /* scan the kth block, C */
+            /* -------------------------------------------------------------- */
 
-	    for (k = k1 ; k < k2 ; k++)
-	    {
-		oldcol = Q [k] ;
-		pend = Ap [oldcol+1] ;
-		for (p = Ap [oldcol] ; p < pend ; p++)
-		{
-		    if (Pinv [Ai [p]] < k1)
-		    {
-			nzoff++ ;
-		    }
-		}
-	    }
+            for (k = k1 ; k < k2 ; k++)
+            {
+                oldcol = Q [k] ;
+                pend = Ap [oldcol+1] ;
+                for (p = Ap [oldcol] ; p < pend ; p++)
+                {
+                    if (Pinv [Ai [p]] < k1)
+                    {
+                        nzoff++ ;
+                    }
+                }
+            }
 
-	    /* fill-in not estimated */
-	    Lnz [block] = EMPTY ;
-	}
+            /* fill-in not estimated */
+            Lnz [block] = EMPTY ;
+        }
 
-	/* ------------------------------------------------------------------ */
-	/* free all workspace */
-	/* ------------------------------------------------------------------ */
+        /* ------------------------------------------------------------------ */
+        /* free all workspace */
+        /* ------------------------------------------------------------------ */
 
-	KLU_free (Work, 4*n, sizeof (Int), Common) ;
-	KLU_free (Pinv, n, sizeof (Int), Common) ;
-	if (Puser != (Int *) NULL)
-	{
-	    KLU_free (Bi, nz+1, sizeof (Int), Common) ;
-	}
+        KLU_free (Work, 4*n, sizeof (Int), Common) ;
+        KLU_free (Pinv, n, sizeof (Int), Common) ;
+        if (Puser != (Int *) NULL)
+        {
+            KLU_free (Bi, nz+1, sizeof (Int), Common) ;
+        }
 
     }
     else
     {
 
-	/* ------------------------------------------------------------------ */
-	/* BTF not requested */
-	/* ------------------------------------------------------------------ */
+        /* ------------------------------------------------------------------ */
+        /* BTF not requested */
+        /* ------------------------------------------------------------------ */
 
-	nzoff = 0 ;
-	nblocks = 1 ;
-	maxblock = n ;
-	R [0] = 0 ;
-	R [1] = n ;
-	Lnz [0] = EMPTY ;
+        nzoff = 0 ;
+        nblocks = 1 ;
+        maxblock = n ;
+        R [0] = 0 ;
+        R [1] = n ;
+        Lnz [0] = EMPTY ;
 
-	/* ------------------------------------------------------------------ */
-	/* P = Puser, or identity if Puser is NULL */
-	/* ------------------------------------------------------------------ */
+        /* ------------------------------------------------------------------ */
+        /* P = Puser, or identity if Puser is NULL */
+        /* ------------------------------------------------------------------ */
 
-	for (k = 0 ; k < n ; k++)
-	{
-	    P [k] = (Puser == NULL) ? k : Puser [k] ;
-	}
+        for (k = 0 ; k < n ; k++)
+        {
+            P [k] = (Puser == NULL) ? k : Puser [k] ;
+        }
     }
 
     /* ---------------------------------------------------------------------- */

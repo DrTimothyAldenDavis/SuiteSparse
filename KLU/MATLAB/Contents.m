@@ -11,6 +11,6 @@
 %   x = klu (A, '\', b) ;
 %   x = klu (LU, '\', b) ;
 %
-% Copyright 2004-2007 Timothy A. Davis, Univ. of Florida
+% Copyright 2004-2009 Timothy A. Davis, Univ. of Florida
 % KLU Version 1.0.
 

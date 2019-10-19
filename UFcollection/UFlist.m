@@ -100,7 +100,7 @@ fprintf (f, 'Click here for a list of all matrix groups.</a>\n') ;
 fprintf (f, '<li><a href="%slist_by_id.html">', loc) ;
 fprintf (f, 'Click here for a list of all matrices.</a>\n') ;
 
-fprintf (f, '<p><table border=1>\n') ;
+fprintf (f, '<p><table>\n') ;
 
 % sort by filename
 [ignore, iname] = sort (lower (index.Name)) ;
@@ -183,9 +183,9 @@ list = list (:)' ;
 fprintf (f, '<tr>\n') ;
 
 if (by_group)
-    fprintf (f, '<th>thumbnail</th>\n') ;
-    fprintf (f, '<th>Group\n') ;
-    fprintf (f, 'and Name</th>\n') ;
+    fprintf (f, '<th>matrix</th>\n') ;
+    fprintf (f, '<th>graph</th>\n') ;
+    fprintf (f, '<th>Group/Name</th>\n') ;
     fprintf (f, '<th>id</th>\n') ;
     fprintf (f, '<th>download</th>\n') ;
     fprintf (f, '<th># rows</th>\n') ;
@@ -195,7 +195,8 @@ if (by_group)
     fprintf (f, '<th>sym</th>\n') ;
     fprintf (f, '<th>spd?</th>\n') ;
 else
-    fprintf (f, '<th>thumbnail</th>\n') ;
+    fprintf (f, '<th>matrix</th>\n') ;
+    fprintf (f, '<th>graph</th>\n') ;
     fprintf (f, '<th><a href=%slist_by_group.html>Group</a>\n', loc) ;
     fprintf (f, 'and <a href=%slist_by_name.html>Name</a></th>\n', loc) ;
     fprintf (f, '<th><a href=%slist_by_id.html>id</a></th>\n', loc) ;
@@ -207,6 +208,9 @@ else
     fprintf (f, '<th><a href=%slist_by_symmetry.html>sym</a></th>\n', loc) ;
     fprintf (f, '<th><a href=%slist_by_symmetry.html>spd?</a></th>\n', loc) ;
 end
+
+yifan_graphs = 'http://www.research.att.com/~yifanhu/GALLERY/GRAPHS/' ;
+yifan_thumb = [yifan_graphs 'GIF_THUMBNAIL/'] ;
 
 for id = list
 
@@ -220,7 +224,7 @@ for id = list
 
     s = index.posdef (id) ;
     if (s == 0)
-	ss = '-' ;
+	ss = 'no' ;
     elseif (s == 1)
 	ss = 'yes' ;
     else
@@ -232,15 +236,31 @@ for id = list
     % thumbnail link to the matrix page
     fprintf (f, '<td>\n') ;
     w = 'width="96" height="72"' ;
+    yname = [group '@' name] ;
     if (by_group)
+
 	fprintf (f, '<a href="%s.html"><img %s alt="%s/%s"', ...
             name, w, group, name) ;
 	fprintf (f, ' src="%s_thumb.png"></a>\n', name) ;
+
+        fprintf (f, '</td><td>\n') ;
+	fprintf (f, '<a href="%s.html"><img alt="%s/%s"', ...
+            name, group, name) ;
+	fprintf (f, ' src="%s%s.gif"></a>\n', yifan_thumb, yname) ;
+
     else
+
 	fprintf (f, '<a href="%s/%s.html"><img %s alt="%s/%s"', ...
 	    group, name, w, group, name) ;
 	fprintf (f, ' src="%s/%s_thumb.png"></a>\n', group, name) ;
+
+        fprintf (f, '</td><td>\n') ;
+	fprintf (f, '<a href="%s/%s.html"><img alt="%s/%s"', ...
+	    group, name, group, name) ;
+	fprintf (f, ' src="%s%s.gif"></a>\n', yifan_thumb, yname) ;
+
     end
+
     fprintf (f, '</td>\n') ;
 
     % group

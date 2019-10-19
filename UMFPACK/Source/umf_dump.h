@@ -103,9 +103,7 @@ GLOBAL void UMF_dump_diagonal_map
 (
     Int Diagonal_map [ ],
     Int Diagonal_imap [ ],
-    Int n1,
-    Int nn,
-    Int nempty
+    Int nn
 ) ;
 
 #define UMF_DBMAX 50000

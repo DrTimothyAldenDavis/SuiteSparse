@@ -9,11 +9,11 @@ static int is_sym (cs_ci *A)
     is_lower = 1 ;
     for (j = 0 ; j < n ; j++)
     {
-	for (p = Ap [j] ; p < Ap [j+1] ; p++)
-	{
-	    if (Ai [p] > j) is_upper = 0 ;
-	    if (Ai [p] < j) is_lower = 0 ;
-	}
+        for (p = Ap [j] ; p < Ap [j+1] ; p++)
+        {
+            if (Ai [p] > j) is_upper = 0 ;
+            if (Ai [p] < j) is_lower = 0 ;
+        }
     }
     return (is_upper ? 1 : (is_lower ? -1 : 0)) ;
 }
@@ -25,9 +25,9 @@ static int dropdiag (int i, int j, cs_complex_t aij, void *other) { return (i !=
 static cs_ci *make_sym (cs_ci *A)
 {
     cs_ci *AT, *C ;
-    AT = cs_ci_transpose (A, 1) ;		/* AT = A' */
-    cs_ci_fkeep (AT, &dropdiag, NULL) ;	/* drop diagonal entries from AT */
-    C = cs_ci_add (A, AT, 1, 1) ;		/* C = A+AT */
+    AT = cs_ci_transpose (A, 1) ;          /* AT = A' */
+    cs_ci_fkeep (AT, &dropdiag, NULL) ;    /* drop diagonal entries from AT */
+    C = cs_ci_add (A, AT, 1, 1) ;          /* C = A+AT */
     cs_ci_spfree (AT) ;
     return (C) ;
 }
@@ -56,9 +56,9 @@ static void print_resid (int ok, cs_ci *A, cs_complex_t *x, cs_complex_t *b, cs_
     if (!ok) { printf ("    (failed)\n") ; return ; }
     m = A->m ; n = A->n ;
     for (i = 0 ; i < m ; i++) resid [i] = -b [i] ;  /* resid = -b */
-    cs_ci_gaxpy (A, x, resid) ;			    /* resid = resid + A*x  */
+    cs_ci_gaxpy (A, x, resid) ;                        /* resid = resid + A*x  */
     printf ("resid: %8.2e\n", norm (resid,m) / ((n == 0) ? 1 :
-	(cs_ci_norm (A) * norm (x,n) + norm (b,m)))) ;
+        (cs_ci_norm (A) * norm (x,n) + norm (b,m)))) ;
 }
 
 static double tic (void) { return (clock () / (double) CLOCKS_PER_SEC) ; }
@@ -68,10 +68,10 @@ static void print_order (int order)
 {
     switch (order)
     {
-	case 0: printf ("natural    ") ; break ;
-	case 1: printf ("amd(A+A')  ") ; break ;
-	case 2: printf ("amd(S'*S)  ") ; break ;
-	case 3: printf ("amd(A'*A)  ") ; break ;
+        case 0: printf ("natural    ") ; break ;
+        case 1: printf ("amd(A+A')  ") ; break ;
+        case 2: printf ("amd(S'*S)  ") ; break ;
+        case 3: printf ("amd(A'*A)  ") ; break ;
     }
 }
 
@@ -83,21 +83,21 @@ problem *get_problem (FILE *f, double tol)
     problem *Prob ;
     Prob = cs_ci_calloc (1, sizeof (problem)) ;
     if (!Prob) return (NULL) ;
-    T = cs_ci_load (f) ;			/* load triplet matrix T from a file */
-    Prob->A = A = cs_ci_compress (T) ;	/* A = compressed-column form of T */
-    cs_ci_spfree (T) ;			/* clear T */
+    T = cs_ci_load (f) ;                   /* load triplet matrix T from a file */
+    Prob->A = A = cs_ci_compress (T) ;     /* A = compressed-column form of T */
+    cs_ci_spfree (T) ;                     /* clear T */
     if (!cs_ci_dupl (A)) return (free_problem (Prob)) ; /* sum up duplicates */
-    Prob->sym = sym = is_sym (A) ;	/* determine if A is symmetric */
+    Prob->sym = sym = is_sym (A) ;      /* determine if A is symmetric */
     m = A->m ; n = A->n ;
     mn = CS_MAX (m,n) ;
     nz1 = A->p [n] ;
-    cs_ci_dropzeros (A) ;			/* drop zero entries */
+    cs_ci_dropzeros (A) ;                  /* drop zero entries */
     nz2 = A->p [n] ;
-    if (tol > 0) cs_ci_droptol (A, tol) ;	/* drop tiny entries (just to test) */
+    if (tol > 0) cs_ci_droptol (A, tol) ;  /* drop tiny entries (just to test) */
     Prob->C = C = sym ? make_sym (A) : A ;  /* C = A + triu(A,1)', or C=A */
     if (!C) return (free_problem (Prob)) ;
     printf ("\n--- Matrix: %d-by-%d, nnz: %d (sym: %d: nnz %d), norm: %8.2e\n",
-	    m, n, A->p [n], sym, sym ? C->p [n] : 0, cs_ci_norm (C)) ;
+            m, n, A->p [n], sym, sym ? C->p [n] : 0, cs_ci_norm (C)) ;
     if (nz1 != nz2) printf ("zero entries dropped: %d\n", nz1 - nz2) ;
     if (nz2 != A->p [n]) printf ("tiny entries dropped: %d\n", nz2 - A->p [n]) ;
     Prob->b = cs_ci_malloc (mn, sizeof (cs_complex_t)) ;
@@ -129,51 +129,51 @@ int demo2 (problem *Prob)
     if (!Prob) return (0) ;
     A = Prob->A ; C = Prob->C ; b = Prob->b ; x = Prob->x ; resid = Prob->resid;
     m = A->m ; n = A->n ;
-    tol = Prob->sym ? 0.001 : 1 ;		/* partial pivoting tolerance */
-    D = cs_ci_dmperm (C, 1) ;			/* randomized dmperm analysis */
+    tol = Prob->sym ? 0.001 : 1 ;               /* partial pivoting tolerance */
+    D = cs_ci_dmperm (C, 1) ;                      /* randomized dmperm analysis */
     if (!D) return (0) ;
     nb = D->nb ; r = D->r ; s = D->s ; rr = D->rr ;
     sprank = rr [3] ;
     for (ns = 0, k = 0 ; k < nb ; k++)
     {
-	ns += ((r [k+1] == r [k]+1) && (s [k+1] == s [k]+1)) ;
+        ns += ((r [k+1] == r [k]+1) && (s [k+1] == s [k]+1)) ;
     }
     printf ("blocks: %d singletons: %d structural rank: %d\n", nb, ns, sprank) ;
     cs_ci_dfree (D) ;
-    for (order = 0 ; order <= 3 ; order += 3)	/* natural and amd(A'*A) */
+    for (order = 0 ; order <= 3 ; order += 3)   /* natural and amd(A'*A) */
     {
-	if (!order && m > 1000) continue ;
-	printf ("QR   ") ;
-	print_order (order) ;
-	rhs (x, b, m) ;				/* compute right-hand side */
-	t = tic () ;
-	ok = cs_ci_qrsol (order, C, x) ;		/* min norm(Ax-b) with QR */
-	printf ("time: %8.2f ", toc (t)) ;
-	print_resid (ok, C, x, b, resid) ;	/* print residual */
+        if (!order && m > 1000) continue ;
+        printf ("QR   ") ;
+        print_order (order) ;
+        rhs (x, b, m) ;                         /* compute right-hand side */
+        t = tic () ;
+        ok = cs_ci_qrsol (order, C, x) ;           /* min norm(Ax-b) with QR */
+        printf ("time: %8.2f ", toc (t)) ;
+        print_resid (ok, C, x, b, resid) ;      /* print residual */
     }
-    if (m != n || sprank < n) return (1) ;	/* return if rect. or singular*/
-    for (order = 0 ; order <= 3 ; order++)	/* try all orderings */
+    if (m != n || sprank < n) return (1) ;      /* return if rect. or singular*/
+    for (order = 0 ; order <= 3 ; order++)      /* try all orderings */
     {
-	if (!order && m > 1000) continue ;
-	printf ("LU   ") ;
-	print_order (order) ;
-	rhs (x, b, m) ;				/* compute right-hand side */
-	t = tic () ;
-	ok = cs_ci_lusol (order, C, x, tol) ;	/* solve Ax=b with LU */
-	printf ("time: %8.2f ", toc (t)) ;
-	print_resid (ok, C, x, b, resid) ;	/* print residual */
+        if (!order && m > 1000) continue ;
+        printf ("LU   ") ;
+        print_order (order) ;
+        rhs (x, b, m) ;                         /* compute right-hand side */
+        t = tic () ;
+        ok = cs_ci_lusol (order, C, x, tol) ;      /* solve Ax=b with LU */
+        printf ("time: %8.2f ", toc (t)) ;
+        print_resid (ok, C, x, b, resid) ;      /* print residual */
     }
     if (!Prob->sym) return (1) ;
-    for (order = 0 ; order <= 1 ; order++)	/* natural and amd(A+A') */
+    for (order = 0 ; order <= 1 ; order++)      /* natural and amd(A+A') */
     {
-	if (!order && m > 1000) continue ;
-	printf ("Chol ") ;
-	print_order (order) ;
-	rhs (x, b, m) ;				/* compute right-hand side */
-	t = tic () ;
-	ok = cs_ci_cholsol (order, C, x) ;		/* solve Ax=b with Cholesky */
-	printf ("time: %8.2f ", toc (t)) ;
-	print_resid (ok, C, x, b, resid) ;	/* print residual */
+        if (!order && m > 1000) continue ;
+        printf ("Chol ") ;
+        print_order (order) ;
+        rhs (x, b, m) ;                         /* compute right-hand side */
+        t = tic () ;
+        ok = cs_ci_cholsol (order, C, x) ;         /* solve Ax=b with Cholesky */
+        printf ("time: %8.2f ", toc (t)) ;
+        print_resid (ok, C, x, b, resid) ;      /* print residual */
     }
     return (1) ;
 } 
@@ -203,26 +203,26 @@ int demo3 (problem *Prob)
     A = Prob->A ; C = Prob->C ; b = Prob->b ; x = Prob->x ; resid = Prob->resid;
     n = A->n ;
     if (!Prob->sym || n == 0) return (1) ;
-    rhs (x, b, n) ;				/* compute right-hand side */
+    rhs (x, b, n) ;                             /* compute right-hand side */
     printf ("\nchol then update/downdate ") ;
     print_order (1) ;
     y = cs_ci_malloc (n, sizeof (cs_complex_t)) ;
     t = tic () ;
-    S = cs_ci_schol (1, C) ;			/* symbolic Chol, amd(A+A') */
+    S = cs_ci_schol (1, C) ;                       /* symbolic Chol, amd(A+A') */
     printf ("\nsymbolic chol time %8.2f\n", toc (t)) ;
     t = tic () ;
-    N = cs_ci_chol (C, S) ;			/* numeric Cholesky */
+    N = cs_ci_chol (C, S) ;                        /* numeric Cholesky */
     printf ("numeric  chol time %8.2f\n", toc (t)) ;
     if (!S || !N || !y) return (done3 (0, S, N, y, W, E, p)) ;
     t = tic () ;
-    cs_ci_ipvec (S->pinv, b, y, n) ;		/* y = P*b */
-    cs_ci_lsolve (N->L, y) ;			/* y = L\y */
-    cs_ci_ltsolve (N->L, y) ;			/* y = L'\y */
-    cs_ci_pvec (S->pinv, y, x, n) ;		/* x = P'*y */
+    cs_ci_ipvec (S->pinv, b, y, n) ;               /* y = P*b */
+    cs_ci_lsolve (N->L, y) ;                       /* y = L\y */
+    cs_ci_ltsolve (N->L, y) ;                      /* y = L'\y */
+    cs_ci_pvec (S->pinv, y, x, n) ;                /* x = P'*y */
     printf ("solve    chol time %8.2f\n", toc (t)) ;
     printf ("original: ") ;
-    print_resid (1, C, x, b, resid) ;		/* print residual */
-    k = n/2 ;					/* construct W  */
+    print_resid (1, C, x, b, resid) ;           /* print residual */
+    k = n/2 ;                                   /* construct W  */
     W = cs_ci_spalloc (n, 1, n, 1, 0) ;
     if (!W) return (done3 (0, S, N, y, W, E, p)) ;
     Lp = N->L->p ; Li = N->L->i ; Lx = N->L->x ;
@@ -234,23 +234,23 @@ int demo3 (problem *Prob)
     srand (1) ;
     for ( ; p1 < Lp [k+1] ; p1++)
     {
-	p2 = p1 - Lp [k] ;
-	Wi [p2] = Li [p1] ;
-	Wx [p2] = s * rand () / ((double) RAND_MAX) ;
+        p2 = p1 - Lp [k] ;
+        Wi [p2] = Li [p1] ;
+        Wx [p2] = s * rand () / ((double) RAND_MAX) ;
     }
     t = tic () ;
-    ok = cs_ci_updown (N->L, +1, W, S->parent) ;	/* update: L*L'+W*W' */
+    ok = cs_ci_updown (N->L, +1, W, S->parent) ;   /* update: L*L'+W*W' */
     t1 = toc (t) ;
     printf ("update:   time: %8.2f\n", t1) ;
     if (!ok) return (done3 (0, S, N, y, W, E, p)) ;
     t = tic () ;
-    cs_ci_ipvec (S->pinv, b, y, n) ;		/* y = P*b */
-    cs_ci_lsolve (N->L, y) ;			/* y = L\y */
-    cs_ci_ltsolve (N->L, y) ;			/* y = L'\y */
-    cs_ci_pvec (S->pinv, y, x, n) ;		/* x = P'*y */
+    cs_ci_ipvec (S->pinv, b, y, n) ;               /* y = P*b */
+    cs_ci_lsolve (N->L, y) ;                       /* y = L\y */
+    cs_ci_ltsolve (N->L, y) ;                      /* y = L'\y */
+    cs_ci_pvec (S->pinv, y, x, n) ;                /* x = P'*y */
     t = toc (t) ;
     p = cs_ci_pinv (S->pinv, n) ;
-    W2 = cs_ci_permute (W, p, NULL, 1) ;		/* E = C + (P'W)*(P'W)' */
+    W2 = cs_ci_permute (W, p, NULL, 1) ;           /* E = C + (P'W)*(P'W)' */
     WT = cs_ci_transpose (W2,1) ;
     WW = cs_ci_multiply (W2, WT) ;
     cs_ci_spfree (WT) ;
@@ -259,30 +259,30 @@ int demo3 (problem *Prob)
     cs_ci_spfree (WW) ;
     if (!E || !p) return (done3 (0, S, N, y, W, E, p)) ;
     printf ("update:   time: %8.2f (incl solve) ", t1+t) ;
-    print_resid (1, E, x, b, resid) ;		/* print residual */
-    cs_ci_nfree (N) ;				/* clear N */
+    print_resid (1, E, x, b, resid) ;           /* print residual */
+    cs_ci_nfree (N) ;                              /* clear N */
     t = tic () ;
-    N = cs_ci_chol (E, S) ;			/* numeric Cholesky */
+    N = cs_ci_chol (E, S) ;                        /* numeric Cholesky */
     if (!N) return (done3 (0, S, N, y, W, E, p)) ;
-    cs_ci_ipvec (S->pinv, b, y, n) ;		/* y = P*b */
-    cs_ci_lsolve (N->L, y) ;			/* y = L\y */
-    cs_ci_ltsolve (N->L, y) ;			/* y = L'\y */
-    cs_ci_pvec (S->pinv, y, x, n) ;		/* x = P'*y */
+    cs_ci_ipvec (S->pinv, b, y, n) ;               /* y = P*b */
+    cs_ci_lsolve (N->L, y) ;                       /* y = L\y */
+    cs_ci_ltsolve (N->L, y) ;                      /* y = L'\y */
+    cs_ci_pvec (S->pinv, y, x, n) ;                /* x = P'*y */
     t = toc (t) ;
     printf ("rechol:   time: %8.2f (incl solve) ", t) ;
-    print_resid (1, E, x, b, resid) ;		/* print residual */
+    print_resid (1, E, x, b, resid) ;           /* print residual */
     t = tic () ;
-    ok = cs_ci_updown (N->L, -1, W, S->parent) ;	/* downdate: L*L'-W*W' */
+    ok = cs_ci_updown (N->L, -1, W, S->parent) ;   /* downdate: L*L'-W*W' */
     t1 = toc (t) ;
     if (!ok) return (done3 (0, S, N, y, W, E, p)) ;
     printf ("downdate: time: %8.2f\n", t1) ;
     t = tic () ;
-    cs_ci_ipvec (S->pinv, b, y, n) ;		/* y = P*b */
-    cs_ci_lsolve (N->L, y) ;			/* y = L\y */
-    cs_ci_ltsolve (N->L, y) ;			/* y = L'\y */
-    cs_ci_pvec (S->pinv, y, x, n) ;		/* x = P'*y */
+    cs_ci_ipvec (S->pinv, b, y, n) ;               /* y = P*b */
+    cs_ci_lsolve (N->L, y) ;                       /* y = L\y */
+    cs_ci_ltsolve (N->L, y) ;                      /* y = L'\y */
+    cs_ci_pvec (S->pinv, y, x, n) ;                /* x = P'*y */
     t = toc (t) ;
     printf ("downdate: time: %8.2f (incl solve) ", t1+t) ;
-    print_resid (1, C, x, b, resid) ;		/* print residual */
+    print_resid (1, C, x, b, resid) ;           /* print residual */
     return (done3 (1, S, N, y, W, E, p)) ;
 } 

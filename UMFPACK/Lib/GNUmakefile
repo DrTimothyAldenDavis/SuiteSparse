@@ -247,6 +247,9 @@ umfpack_gn_%.o: ../Source/umfpack_%.c $(INC)
 	$(AR) ../Lib/libumfpack.a $^
 	- $(RANLIB) ../Lib/libumfpack.a
 
+so: $(II) $(LL) $(GN) $(DI) $(DL) $(ZI) $(ZL)
+	gcc -shared -Wl,-soname,libumfpack.so -o libumfpack.so $^
+
 #-------------------------------------------------------------------------------
 # Remove all but the files in the original distribution
 #-------------------------------------------------------------------------------

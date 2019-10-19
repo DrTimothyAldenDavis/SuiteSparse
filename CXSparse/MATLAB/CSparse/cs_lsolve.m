@@ -1,4 +1,4 @@
-function x = cs_lsolve (L,b)						    %#ok
+function x = cs_lsolve (L,b)                                                %#ok
 %CS_LSOLVE solve a sparse lower triangular system L*x=b.
 %   x = cs_lsolve(L,b) computes x = L\b, L must be lower triangular with a
 %   zero-free diagonal.  b must be a column vector.  x is full if b is full.

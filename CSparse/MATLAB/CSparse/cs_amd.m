@@ -1,4 +1,4 @@
-function p = cs_amd (A,order)						    %#ok
+function p = cs_amd (A,order)                                               %#ok
 %CS_AMD approximate minimum degree ordering.
 %   p = cs_amd(A) finds a minimum degree ordering of A+A'
 %   p = cs_amd(A,order):

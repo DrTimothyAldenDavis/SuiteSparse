@@ -18,37 +18,37 @@ for i = f
     disp (Prob) ;
     A = Prob.A ;
     [m n] = size (A) ;
-    if (~isreal (A) | m ~= n)						    %#ok
-	continue
+    if (~isreal (A) | m ~= n)                                               %#ok
+        continue
     end
 
     spd = 0 ;
     if (m == n)
-	if (nnz (A-A') == 0)
-	    try
-		p = amd (A) ;
-	    catch
-		p = symamd (A) ;
-	    end
-	    [R,p] = chol (A (p,p)) ;
-	    spd = (p == 0) ;
-	end
+        if (nnz (A-A') == 0)
+            try
+                p = amd (A) ;
+            catch
+                p = symamd (A) ;
+            end
+            [R,p] = chol (A (p,p)) ;
+            spd = (p == 0) ;
+        end
     end
 
     if (spd)
-	C = A ;
+        C = A ;
     else
-	C = A*A' + n*speye (n) ;
-	try
-	    p = amd (C) ;
-	catch
-	    p = symamd (C) ;
-	end
-	try
-	    R = chol (C (p,p)) ;
-	catch
-	    continue
-	end
+        C = A*A' + n*speye (n) ;
+        try
+            p = amd (C) ;
+        catch
+            p = symamd (C) ;
+        end
+        try
+            R = chol (C (p,p)) ;
+        catch
+            continue
+        end
     end
 
     b = rand (n,1) ;
@@ -60,7 +60,7 @@ for i = f
     err = abs (r1-r2) ;
     fprintf ('err %g\n', err) ;
     if (err > 1e-10)
-	error ('!') ;
+        error ('!') ;
     end
 
     x2 = cs_lusol (C,b, 1, 0.001) ;
@@ -68,18 +68,18 @@ for i = f
     err = abs (r1-r2) ;
     fprintf ('err %g (lu with amd(A+A'')\n', err) ;
     if (err > 1e-10)
-	error ('!') ;
+        error ('!') ;
     end
 
     if (m ~= n)
-	continue ;
+        continue ;
     end
 
     x1 = A\b ;
     r1 = norm (A*x1-b,1) / norm (A,1) ;
     if (r1 < 1e-6)
-	x2 = cs_lusol (A,b) ;
-	r2 = norm (A*x2-b,1) / norm (A,1) ;
-	fprintf ('lu resid %g %g\n', r1, r2) ;
+        x2 = cs_lusol (A,b) ;
+        r2 = norm (A*x2-b,1) / norm (A,1) ;
+        fprintf ('lu resid %g %g\n', r1, r2) ;
     end
 end

@@ -5,5 +5,5 @@ static int cs_nonzero (int i, int j, double aij, void *other)
 }
 int cs_dropzeros (cs *A)
 {
-    return (cs_fkeep (A, &cs_nonzero, NULL)) ;	/* keep all nonzero entries */
+    return (cs_fkeep (A, &cs_nonzero, NULL)) ;  /* keep all nonzero entries */
 } 

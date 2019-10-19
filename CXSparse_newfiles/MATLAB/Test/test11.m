@@ -18,7 +18,7 @@ for i = f
     A = Prob.A ;
     [m n] = size (A) ;
     if (m ~= n)
-	continue
+        continue
     end
 
     A = spones (A) ;
@@ -34,13 +34,13 @@ for i = f
     rc1 = full (sum (R)) ;
     rc2 = cs_rowcnt (A, pa, po) ;
     if (any (rc1 ~= rc2))
-	error ('!') ;
+        error ('!') ;
     end
 
     try
-	p = amd (A) ;
+        p = amd (A) ;
     catch
-	p = symamd (A) ;
+        p = symamd (A) ;
     end
     A = A (p,p) ;
 
@@ -48,7 +48,7 @@ for i = f
     rc1 = full (sum (R)) ;
     rc2 = cs_rowcnt (A, pa, po) ;
     if (any (rc1 ~= rc2))
-	error ('!') ;
+        error ('!') ;
     end
 
 end

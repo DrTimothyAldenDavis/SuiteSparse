@@ -1,3 +1,12 @@
+March 24, 2009, version 5.3.0
+
+    * bug fix for 2-by-2 strategy (diagonal map) for structurally singular
+	matrices
+
+    * compiler workaround for gcc 4.2.{3,4} in umf_singletons.c
+
+    * added additional timer options in umfpack_timer.c (for POSIX)
+
 Sept 22, 2008
 
     * minor update to documentation; no change to code

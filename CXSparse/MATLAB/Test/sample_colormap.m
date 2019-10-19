@@ -20,8 +20,8 @@ h = h (20:end,:) ;
 % h (:,2) = h (:,2) ./ s ;
 % h (:,3) = h (:,3) ./ s ;
 
-h (1,:) = [1 1 1] ;	% white
-h (2,:) = [1 1 .8] ;	% light yellow
+h (1,:) = [1 1 1] ;     % white
+h (2,:) = [1 1 .8] ;    % light yellow
 
 % h
 colormap (h) ;

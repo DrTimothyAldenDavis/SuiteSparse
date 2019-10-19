@@ -26,7 +26,7 @@ for k = 1:length(f)
     A = spones (Prob.A) ;
     [m n] = size (A) ;
     if (m ~= n)
-	A = A'*A ;
+        A = A'*A ;
     end
 
     A = A|A' ;
@@ -50,7 +50,7 @@ for k = 1:length(f)
     subplot (2,3,3) ; spy (A (a,b)) ; title ('edge sep') ;
     subplot (2,3,6) ; cs_dmspy (A (a,b)) ; title ('node sep') ;
 
-    [s as bs] = vtxsep (A,a,b) ;					%#ok
+    [s as bs] = vtxsep (A,a,b) ;                                        %#ok
     [s2 a2 b2] = cs_sep (A,a,b) ;
 
     p2 = [a2 b2 s2] ;
@@ -60,14 +60,14 @@ for k = 1:length(f)
 
     px = [s2 a2 b2] ;
     if (any (sort (px) ~= 1:n))
-	px	%#ok
-	n	%#ok
-	error ('!') ;
+        px      %#ok
+        n       %#ok
+        error ('!') ;
     end
 
     na = length (a2) ;
     nb = length (b2) ;
-    ns = length (s2) ;							%#ok
+    ns = length (s2) ;                                                  %#ok
 
     nab = na + nb ;
 
@@ -81,18 +81,18 @@ for k = 1:length(f)
 
     nz1 = nnz (A (a2,b2)) ;
     if (nz1 ~= 0)
-	nz1	%#ok
-	error ('!') ;
+        nz1     %#ok
+        error ('!') ;
     end
 
     nz2 = nnz (A (a2,b2)) ;
     if (nz2 ~= 0)
-	nz2	%#ok
-	error ('!') ;
+        nz2     %#ok
+        error ('!') ;
     end
 
     if (length (s) ~= length (s2))
-	fprintf ('lengths differ: %d %d\n', length (s), length (s2)) ;
+        fprintf ('lengths differ: %d %d\n', length (s), length (s2)) ;
     end
 
     drawnow

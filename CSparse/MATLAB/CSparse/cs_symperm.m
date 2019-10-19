@@ -1,4 +1,4 @@
-function C = cs_symperm (A,p)						    %#ok
+function C = cs_symperm (A,p)                                               %#ok
 %CS_SYMPERM symmetric permutation of a symmetric matrix.
 %   C = cs_symperm(A,p) computes C = A(p,p), but accesses only the
 %   upper triangular part of A, and returns C upper triangular (A and C are

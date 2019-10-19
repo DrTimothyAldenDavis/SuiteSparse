@@ -21,8 +21,8 @@ for i = f
     disp (Prob) ;
     A = Prob.A ;
     [m n] = size (A) ;
-    if (~isreal (A) | m ~= n)						    %#ok
-	continue
+    if (~isreal (A) | m ~= n)                                               %#ok
+        continue
     end
 
     b = rand (n,1) ;

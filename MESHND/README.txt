@@ -22,5 +22,5 @@
 %   subplot (1,2,2) ; spy (A (p,p)) ;
 %
 
-% Copyright 2007, Timothy A. Davis, Univ. of Florida
-% VERSION 1.1.0, Nov 1, 2007
+% Copyright 2007-2009, Timothy A. Davis, Univ. of Florida
+% VERSION 1.1.1, March 30, 2009

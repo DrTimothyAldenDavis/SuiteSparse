@@ -14,21 +14,21 @@ void mexFunction
     char mode [20] ;
     if (nargout > 2 || nargin < 1 || nargin > 2)
     {
-	mexErrMsgTxt ("Usage: [parent,post] = cs_etree(A,mode)") ;
+        mexErrMsgTxt ("Usage: [parent,post] = cs_etree(A,mode)") ;
     }
-    ata = 0 ;						/* get mode */
+    ata = 0 ;                                           /* get mode */
     if (nargin > 1 && mxIsChar (pargin [1]))
     {
-	mxGetString (pargin [1], mode, 8) ;
-	ata = (mode [0] == 'c') ;
+        mxGetString (pargin [1], mode, 8) ;
+        ata = (mode [0] == 'c') ;
     }
-    A = cs_dl_mex_get_sparse (&Amatrix, !ata, 0, pargin [0]) ;	/* get A */
+    A = cs_dl_mex_get_sparse (&Amatrix, !ata, 0, pargin [0]) ;  /* get A */
     n = A->n ;
-    parent = cs_dl_etree (A, ata) ;			/* compute etree */
+    parent = cs_dl_etree (A, ata) ;                     /* compute etree */
     if (nargout > 1)
     {
-	post = cs_dl_post (parent, n) ;			/* postorder the etree*/
-	pargout [1] = cs_dl_mex_put_int (post, n, 1, 1) ;	/* return post */
+        post = cs_dl_post (parent, n) ;                 /* postorder the etree*/
+        pargout [1] = cs_dl_mex_put_int (post, n, 1, 1) ;       /* return post */
     }
-    pargout [0] = cs_dl_mex_put_int (parent, n, 1, 1) ;	/* return parent */
+    pargout [0] = cs_dl_mex_put_int (parent, n, 1, 1) ; /* return parent */
 }

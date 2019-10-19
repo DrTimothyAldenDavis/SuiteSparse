@@ -25,14 +25,14 @@ for trials = 1:100
     A (:,k) = 1 ;
 
     try
-	p0 = amd (A) ;
+        p0 = amd (A) ;
     catch
-	p0 = symamd (A) ;
+        p0 = symamd (A) ;
     end
     p1 = cs_amd (A) ;
 
     if (any (sort (p1) ~= 1:n))
-	error ('not perm!') ;
+        error ('not perm!') ;
     end
 
     C = A+A' + speye (n) ;

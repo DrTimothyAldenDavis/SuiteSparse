@@ -1,4 +1,4 @@
-/* klu_simple: a simple KLU demo */
+/* klu_simple: a simple KLU demo; solution is x = (1,2,3,4,5) */
 
 #include <stdio.h>
 #include "klu.h"

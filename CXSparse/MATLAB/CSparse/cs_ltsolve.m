@@ -1,4 +1,4 @@
-function x = cs_ltsolve (L,b)						    %#ok
+function x = cs_ltsolve (L,b)                                               %#ok
 %CS_LTSOLVE solve a sparse upper triangular system L'*x=b.
 %   x = cs_ltsolve(L,b) computes x = L'\b, L must be lower triangular with a
 %   zero-free diagonal.  b must be a full vector.

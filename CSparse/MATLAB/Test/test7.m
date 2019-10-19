@@ -19,11 +19,11 @@ for i = f
     disp (Prob) ;
     A = Prob.A ;
     if (~isreal (A))
-	continue
+        continue
     end
     [m n] = size (A) ;
     if (m ~= n)
-	continue
+        continue
     end
 
     [L,U,P] = lu (A) ;
@@ -34,16 +34,16 @@ for i = f
 
     if (umin > 1e-14)
 
-	[L2,U2,p] = cs_lu (A) ;
+        [L2,U2,p] = cs_lu (A) ;
 
-	subplot (3,4,1) ; spy (A) ;
-	subplot (3,4,2) ; spy (A(p,:)) ;
-	subplot (3,4,3) ; spy (L2) ;
-	subplot (3,4,4) ; spy (U2) ;
+        subplot (3,4,1) ; spy (A) ;
+        subplot (3,4,2) ; spy (A(p,:)) ;
+        subplot (3,4,3) ; spy (L2) ;
+        subplot (3,4,4) ; spy (U2) ;
 
-	err1 = norm (L*U-P*A,1) ;
-	err2 = norm (L2*U2-A(p,:),1) ;
-	fprintf ('err %g %g\n', err1, err2) ;
+        err1 = norm (L*U-P*A,1) ;
+        err2 = norm (L2*U2-A(p,:),1) ;
+        fprintf ('err %g %g\n', err1, err2) ;
     end
 
     q = colamd (A) ;
@@ -56,23 +56,23 @@ for i = f
 
     if (umin > 1e-14)
 
-	[L2,U2,p,q2] = cs_lu (A) ;
+        [L2,U2,p,q2] = cs_lu (A) ;
 
-	subplot (3,4,5) ; spy (A) ;
-	subplot (3,4,6) ; spy (A(p,q2)) ;
-	subplot (3,4,7) ; spy (L2) ;
-	subplot (3,4,8) ; spy (U2) ;
+        subplot (3,4,5) ; spy (A) ;
+        subplot (3,4,6) ; spy (A(p,q2)) ;
+        subplot (3,4,7) ; spy (L2) ;
+        subplot (3,4,8) ; spy (U2) ;
 
-	err1 = norm (L*U-P*A(:,q),1) ;
-	err2 = norm (L2*U2-A(p,q2),1) ;
-	fprintf ('err %g %g\n', err1, err2) ;
+        err1 = norm (L*U-P*A(:,q),1) ;
+        err2 = norm (L2*U2-A(p,q2),1) ;
+        fprintf ('err %g %g\n', err1, err2) ;
     end
 
 
     try
-	q = amd (A) ;
+        q = amd (A) ;
     catch
-	q = symamd (A) ;
+        q = symamd (A) ;
     end
 
     tol = 0.01 ;
@@ -85,20 +85,20 @@ for i = f
 
     if (umin > 1e-14)
 
-	[L2,U2,p,q2] = cs_lu (A,tol) ;
+        [L2,U2,p,q2] = cs_lu (A,tol) ;
 
-	subplot (3,4,9) ; spy (A) ;
-	subplot (3,4,10) ; spy (A(p,q2)) ;
-	subplot (3,4,11) ; spy (L2) ;
-	subplot (3,4,12) ; spy (U2) ;
+        subplot (3,4,9) ; spy (A) ;
+        subplot (3,4,10) ; spy (A(p,q2)) ;
+        subplot (3,4,11) ; spy (L2) ;
+        subplot (3,4,12) ; spy (U2) ;
 
-	err1 = norm (L*U-P*A(q,q),1) ;
-	err2 = norm (L2*U2-A(p,q2),1) ;
-	lbig = full (max (max (abs (L2)))) ;
-	fprintf ('err %g %g lbig %g\n', err1, err2, lbig) ;
-	if (lbig > 1/tol)
-	    error ('L!') ;
-	end
+        err1 = norm (L*U-P*A(q,q),1) ;
+        err2 = norm (L2*U2-A(p,q2),1) ;
+        lbig = full (max (max (abs (L2)))) ;
+        fprintf ('err %g %g lbig %g\n', err1, err2, lbig) ;
+        if (lbig > 1/tol)
+            error ('L!') ;
+        end
     end
 
     drawnow

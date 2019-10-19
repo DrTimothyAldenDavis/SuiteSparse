@@ -1792,9 +1792,8 @@ GLOBAL Int UMFPACK_qsymbolic
      * by the column permutation, where "row" is a row index of the original
      * matrix A.  It is not dependent on the Rperm_2by2 permutation, which
      * only redefines the "diagonal".   Both are used to construct the
-     * Diagonal_map.  Diagonal_map only needs to be defined for
-     * k = n1 to nn - nempty, but go ahead and define it for all of
-     * k = 0 to nn */
+     * Diagonal_map.
+     */
 
     if (prefer_diagonal)
     {
@@ -1830,6 +1829,7 @@ GLOBAL Int UMFPACK_qsymbolic
 		/* 2-by-2 pivoting done in S */
 		oldrow = Rperm_2by2 [oldcol] ;
 		newrow = Ci [oldrow] ;
+                ASSERT (newrow >= 0 && newrow < nn) ;
 		Diagonal_map [newcol] = newrow ;
 	    }
 	}
@@ -1841,6 +1841,7 @@ GLOBAL Int UMFPACK_qsymbolic
 		/* no 2-by-2 pivoting in S */
 		oldrow = oldcol ;
 		newrow = Ci [oldrow] ;
+                ASSERT (newrow >= 0 && newrow < nn) ;
 		Diagonal_map [newcol] = newrow ;
 	    }
 	}

@@ -6,7 +6,7 @@ function ssmult_demo
 %
 % See also ssmult, ssmult_unsorted, ssmultsym, sstest, sstest2.
 
-% Copyright 2007, Timothy A. Davis, University of Florida
+% Copyright 2007-2009, Timothy A. Davis, University of Florida
 
 type ssmult_demo
 load west0479

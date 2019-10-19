@@ -9,7 +9,7 @@ function btf_make
 
 % Copyright 2004-2007, Tim Davis, University of Florida
 
-details = 0 ;	    % if 1, print details of each command
+details = 0 ;       % if 1, print details of each command
 
 mexcmd = 'mex -O -DDLONG -I../Include -I../../UFconfig ' ;
 if (~isempty (strfind (computer, '64')))

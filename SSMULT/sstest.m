@@ -4,9 +4,9 @@ function sstest
 % Example
 %   sstest
 %
-% See also ssmult, ssmultsym, ssmult_unsorted, ssmult_install, sstest2, mtimes.
+% See also ssmult, ssmultsym, ssmult_install, sstest2, mtimes.
 
-% Copyright 2007, Timothy A. Davis, University of Florida.
+% Copyright 2009, Timothy A. Davis, University of Florida.
 
 N = [500:50:1000 1100:100:3000 3200:200:5000 ] ;
 
@@ -39,6 +39,10 @@ fprintf ('C=A*B is in blue, C=B*A is in red.  A and B are both real in the\n') ;
 fprintf ('first column of plots, B is complex in the 2nd, A in the 3rd, and\n');
 fprintf ('both are complex in the 4th column of plots.  You will want to\n') ;
 fprintf ('maximize the figure; otherwise the text is too hard to read.\n') ; 
+fprintf ('\nBe aware that in MATLAB 7.6 and later, C=A*B in MATLAB uses\n') ;
+fprintf('SSMULT (but with some additional MathWorks-specific optimizations)\n');
+fprintf ('so you are comparing nearly identical codes.\n');
+input ('Hit enter to continue: ', 's') ;
 
 tlim = 0.1 ;
 figure (1) ;
@@ -52,112 +56,122 @@ for fig = 1:3
 
     for k = 1:length(N)
 
-	n = N (k) ;
-	try
+        n = N (k) ;
+        try
 
-	    A = sprand (n,n,0.01) ;
-	    if (fig == 1)
-		% B diagonal
-		B = spdiags (rand (n,1), 0, n, n) ;
-	    elseif (fig == 2)
-		% B permutation
-		B = spdiags (rand (n,1), 0, n, n) ;
-		B = B (:,randperm(n)) ;
-	    else
-		% B tridiagonal
-		B = spdiags (rand (n,3), -1:1, n, n) ;
-	    end
+            A = sprand (n,n,0.01) ;
+            if (fig == 1)
+                % B diagonal
+                B = spdiags (rand (n,1), 0, n, n) ;
+            elseif (fig == 2)
+                % B permutation
+                B = spdiags (rand (n,1), 0, n, n) ;
+                B = B (:,randperm(n)) ;
+            else
+                % B tridiagonal
+                B = spdiags (rand (n,3), -1:1, n, n) ;
+            end
 
-	    for kind = 1:4
+            for kind = 1:4
 
-		if (kind == 2)
-		    % A complex, B real
-		    A = A + 1i*sprand (A) ;
-		elseif (kind == 3)
-		    % A real, B complex
-		    A = real (A) ;
-		    B = B + 1i*sprand (B) ;
-		elseif (kind == 4)
-		    % both complex
-		    A = A + 1i*sprand (A) ;
-		    B = B + 1i*sprand (B) ;
-		end
+                if (kind == 2)
+                    % A complex, B real
+                    A = A + 1i*sprand (A) ;
+                elseif (kind == 3)
+                    % A real, B complex
+                    A = real (A) ;
+                    B = B + 1i*sprand (B) ;
+                elseif (kind == 4)
+                    % both complex
+                    A = A + 1i*sprand (A) ;
+                    B = B + 1i*sprand (B) ;
+                end
 
-		t1 = 0 ;
-		trials = 0 ;
-		tic
-		while (t1 < tlim)
-		    C = A*B ;
-		    trials = trials + 1 ;
-		    t1 = toc ;
-		end
-		t1 = t1 / trials ;
+                %---------------------------------------------------------------
+                % C = A*B
+                %---------------------------------------------------------------
 
-		t2 = 0 ;
-		trials = 0 ;
-		tic
-		while (t2 < tlim)
-		    D = ssmult (A,B) ;
-		    trials = trials + 1 ;
-		    t2 = toc ;
-		end
-		t2 = t2 / trials ;
+                t1 = 0 ;
+                trials = 0 ;
+                tic
+                while (t1 < tlim)
+                    C = A*B ;
+                    trials = trials + 1 ;
+                    t1 = toc ;
+                end
+                t1 = t1 / trials ;
 
-		err = norm (C-D,1) ;
-		if (err > 0)
-		    error ('test failure') ;
-		end
-		clear C
-		clear D
+                t2 = 0 ;
+                trials = 0 ;
+                tic
+                while (t2 < tlim)
+                    D = ssmult (A,B) ;
+                    trials = trials + 1 ;
+                    t2 = toc ;
+                end
+                t2 = t2 / trials ;
 
-		t3 = 0 ;
-		trials = 0 ;
-		tic
-		while (t3 < tlim)
-		    C = B*A ;
-		    trials = trials + 1 ;
-		    t3 = toc ;
-		end
-		t3 = t3 / trials ;
+                err = norm (C-D,1) ;
+                if (err > 0)
+                    error ('test failure') ;
+                end
+                clear C
+                clear D
 
-		t4 = 0 ;
-		trials = 0 ;
-		tic
-		while (t4 < tlim)
-		    D = ssmult (B,A) ;
-		    trials = trials + 1 ;
-		    t4 = toc ;
-		end
-		t4 = t4 / trials ;
+                %---------------------------------------------------------------
+                % C = B*A
+                %---------------------------------------------------------------
 
-		err = norm (C-D,1) ;
-		if (err > 0)
-		    error ('test failure') ;
-		end
-		clear C
-		clear D
+                t3 = 0 ;
+                trials = 0 ;
+                tic
+                while (t3 < tlim)
+                    C = B*A ;
+                    trials = trials + 1 ;
+                    t3 = toc ;
+                end
+                t3 = t3 / trials ;
 
-		T (k,kind,1) = t1 ;
-		T (k,kind,2) = t2 ;
-		T (k,kind,3) = t3 ;
-		T (k,kind,4) = t4 ;
-		subplot (3,4,kind + 4*(fig-1)) ;
-		plot (N(1:k), T (1:k,kind,1) ./ T (1:k,kind,2), 'o', ...
-		      N(1:k), T (1:k,kind,3) ./ T (1:k,kind,4), 'rx', ...
-		      [N(1) n], [1 1], 'k') ;
-		xlabel (['n ' xlabels{fig}]) ;
-		ylabel ('speedup') ;
-		axis tight
-		title (titles {kind}) ;
-		drawnow
+                t4 = 0 ;
+                trials = 0 ;
+                tic
+                while (t4 < tlim)
+                    D = ssmult (B,A) ;
+                    trials = trials + 1 ;
+                    t4 = toc ;
+                end
+                t4 = t4 / trials ;
 
-	    end
+                err = norm (C-D,1) ;
+                if (err > 0)
+                    error ('test failure') ;
+                end
+                clear C
+                clear D
 
-	catch
-	    % probably because we ran out of memory ...
-	    disp (lasterr) ;
-	    break ;
-	end
+                %---------------------------------------------------------------
+
+                T (k,kind,1) = t1 ;
+                T (k,kind,2) = t2 ;
+                T (k,kind,3) = t3 ;
+                T (k,kind,4) = t4 ;
+                subplot (3,4,kind + 4*(fig-1)) ;
+                plot (N(1:k), T (1:k,kind,1) ./ T (1:k,kind,2), 'o', ...
+                      N(1:k), T (1:k,kind,3) ./ T (1:k,kind,4), 'rx', ...
+                      [N(1) n], [1 1], 'k') ;
+                xlabel (['n ' xlabels{fig}]) ;
+                ylabel ('speedup') ;
+                axis tight
+                title (titles {kind}) ;
+                drawnow
+
+            end
+
+        catch
+            % probably because we ran out of memory ...
+            disp (lasterr) ;
+            break ;
+        end
     end
 end
 

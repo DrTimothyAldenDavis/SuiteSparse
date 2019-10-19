@@ -16,39 +16,39 @@ end
 
 if (isempty (matrixpath))
     try
-	% older versions of MATLAB do not have an input argument to mfilename
-	p = mfilename ('fullpath') ;
-	t = strfind (p, filesep) ;
-	matrixpath = [ p(1:t(end)) '../../Matrix' ] ;
+        % older versions of MATLAB do not have an input argument to mfilename
+        p = mfilename ('fullpath') ;
+        t = strfind (p, filesep) ;
+        matrixpath = [ p(1:t(end)) '../../Matrix' ] ;
     catch
-	% assume we are in the C*Sparse/MATLAB/CSparse/Demo directory
-	matrixpath = '../../Matrix' ;
+        % assume we are in the C*Sparse/MATLAB/CSparse/Demo directory
+        matrixpath = '../../Matrix' ;
     end
 end
 
 t1 = load ([matrixpath '/t1']) ;
 
-T = t1									    %#ok
-A  = sparse    (T(:,1)+1, T(:,2)+1, T(:,3))				    %#ok
-A2 = cs_sparse (T(:,1)+1, T(:,2)+1, T(:,3))				    %#ok
+T = t1                                                                      %#ok
+A  = sparse    (T(:,1)+1, T(:,2)+1, T(:,3))                                 %#ok
+A2 = cs_sparse (T(:,1)+1, T(:,2)+1, T(:,3))                                 %#ok
 fprintf ('A difference: %g\n', norm (A-A2,1)) ;
 % CSparse/Demo/cs_demo1.c also clears the triplet matrix T at this point:
 % clear T 
 clf
 subplot (2,2,1) ; cspy (A) ; title ('A', 'FontSize', 16) ;
-AT = A'									    %#ok
-AT2 = cs_transpose (A)							    %#ok
+AT = A'                                                                     %#ok
+AT2 = cs_transpose (A)                                                      %#ok
 fprintf ('AT difference: %g\n', norm (AT-AT2,1)) ;
 subplot (2,2,2) ; cspy (AT) ; title ('A''', 'FontSize', 16) ;
 n = size (A,2) ;
 I = speye (n) ;
 C = A*AT ;
-C2 = cs_multiply (A, AT)						    %#ok
+C2 = cs_multiply (A, AT)                                                    %#ok
 fprintf ('C difference: %g\n', norm (C-C2,1)) ;
 subplot (2,2,3) ; cspy (C) ; title ('C=A*A''', 'FontSize', 16) ;
 cnorm = norm (C,1) ;
-D = C + I*cnorm								    %#ok
-D2 = cs_add (C, I, 1, cnorm)						    %#ok
+D = C + I*cnorm                                                             %#ok
+D2 = cs_add (C, I, 1, cnorm)                                                %#ok
 fprintf ('D difference: %g\n', norm (D-D2,1)) ;
 subplot (2,2,4) ; cspy (D) ; title ('D=C+I*norm(C,1)', 'FontSize', 16) ;
 % CSparse/Demo/cs_demo1.c clears all matrices at this point:

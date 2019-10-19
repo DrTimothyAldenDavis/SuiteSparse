@@ -174,10 +174,12 @@ void mexFunction
     /* with these settings, the UMFPACK mexFunction can use ../Lib/libumfpack.a
      * and ../Lib/libamd.a, instead compiling UMFPACK and AMD specifically for
      * the MATLAB mexFunction. */
+
     amd_malloc = mxMalloc ;
     amd_free = mxFree ;
     amd_calloc = mxCalloc ;
     amd_realloc = mxRealloc ;
+
     amd_printf = mexPrintf ;
 
     /* The default values for these function pointers are fine.

@@ -1,4 +1,4 @@
-function r = cs_rowcnt(A,parent,post)					    %#ok
+function r = cs_rowcnt(A,parent,post)                                       %#ok
 %CS_ROWCNT row counts for sparse Cholesky
 % Compute the row counts of the Cholesky factor L of the matrix A.  Uses
 % the lower triangular part of A.

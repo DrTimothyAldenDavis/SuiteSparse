@@ -21,25 +21,25 @@ for k = 1:n
     beta2 = sqrt (beta*beta + sigma*alpha*conj(alpha)) ;
     gamma = sigma * conj(alpha) / (beta2 * beta) ;
     if (sigma > 0)
-	% update
-	delta = beta / beta2 ;
-	L (k,k) = delta * L (k,k) + gamma * w (k) ;
-	phase = abs (L (k, k))/L (k, k) ;
-	L (k, k) = phase*L (k, k) ;
+        % update
+        delta = beta / beta2 ;
+        L (k,k) = delta * L (k,k) + gamma * w (k) ;
+        phase = abs (L (k, k))/L (k, k) ;
+        L (k, k) = phase*L (k, k) ;
 
-	w1 = w (k+1:n) ;
-	w (k+1:n) = w (k+1:n) - alpha * L (k+1:n,k) ;
-	L (k+1:n,k) = phase * (delta * L (k+1:n,k) + gamma * w1) ;
+        w1 = w (k+1:n) ;
+        w (k+1:n) = w (k+1:n) - alpha * L (k+1:n,k) ;
+        L (k+1:n,k) = phase * (delta * L (k+1:n,k) + gamma * w1) ;
 
     else
-	% downdate
-	delta = beta2 / beta ;
-	L (k,k) = delta * L (k,k) ;
-	phase = abs (L (k, k))/L (k, k) ;
-	L (k, k) = phase*L (k, k) ;
+        % downdate
+        delta = beta2 / beta ;
+        L (k,k) = delta * L (k,k) ;
+        phase = abs (L (k, k))/L (k, k) ;
+        L (k, k) = phase*L (k, k) ;
 
-	w (k+1:n) = w (k+1:n) - alpha * L (k+1:n,k) ;
-	L (k+1:n,k) = phase * (delta * L (k+1:n,k) + gamma * w (k+1:n)) ;
+        w (k+1:n) = w (k+1:n) - alpha * L (k+1:n,k) ;
+        L (k+1:n,k) = phase * (delta * L (k+1:n,k) + gamma * w (k+1:n)) ;
 
     end
     w (k) = alpha ;

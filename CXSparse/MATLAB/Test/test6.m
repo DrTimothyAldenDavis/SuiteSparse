@@ -28,81 +28,81 @@ for trial = 1:201
 
     for uplo = 0:1
 
-	if (uplo == 1)
-	    % solve Ux=b instead ;
-	    L = L' ;
-	end
+        if (uplo == 1)
+            % solve Ux=b instead ;
+            L = L' ;
+        end
 
-	x = L\b ;
-	sr = 1 + cs_reachr (L,b) ;
-	sz = 1 + cs_reachr (L,b) ;
+        x = L\b ;
+        sr = 1 + cs_reachr (L,b) ;
+        sz = 1 + cs_reachr (L,b) ;
 
-	check_if_same (sr,sz) ;
+        check_if_same (sr,sz) ;
 
-	s2 = 1 + cs_reach (L,b) ;
+        s2 = 1 + cs_reach (L,b) ;
 
-	try
-	    if (uplo == 0)
-		x3 = cs_lsolve (L,b) ;
-	    else
-		x3 = cs_usolve (L,b) ;
-	    end
-	catch
-	    if (isreal (L) & isreal (b))				    %#ok
-		lasterr
-		error ('!') ;
-	    end
-	    % punt: sparse(L)\sparse(b) not handled by cs_lsolve or cs_usolve
-	    x3 = L\b ;
-	end
+        try
+            if (uplo == 0)
+                x3 = cs_lsolve (L,b) ;
+            else
+                x3 = cs_usolve (L,b) ;
+            end
+        catch
+            if (isreal (L) & isreal (b))                                    %#ok
+                lasterr
+                error ('!') ;
+            end
+            % punt: sparse(L)\sparse(b) not handled by cs_lsolve or cs_usolve
+            x3 = L\b ;
+        end
 
-	spy ([L b x x3])
-	drawnow
+        spy ([L b x x3])
+        drawnow
 
-	s = sort (sr) ;
-	[i j xx] = find (x) ;						    %#ok
-	[i3 j3 xx3] = find (x3) ;					    %#ok
+        s = sort (sr) ;
+        [i j xx] = find (x) ;                                               %#ok
+        [i3 j3 xx3] = find (x3) ;                                           %#ok
 
-	if (isempty (i))
-	    if (~isempty (s))
-		i	%#ok
-		s	%#ok
-		error ('!') ;
-	    end
-	elseif (any (s ~= i))
-	    i	    %#ok
-	    s	    %#ok
-	    error ('!') ;
-	end
+        if (isempty (i))
+            if (~isempty (s))
+                i       %#ok
+                s       %#ok
+                error ('!') ;
+            end
+        elseif (any (s ~= i))
+            i       %#ok
+            s       %#ok
+            error ('!') ;
+        end
 
-	if (isempty (i3))
-	    if (~isempty (s))
-		i3	%#ok
-		s	%#ok
-		error ('!') ;
-	    end
-	elseif (any (s ~= sort (i3)))
-	    s	    %#ok
-	    i3	    %#ok
-	    error ('!') ;
-	end
+        if (isempty (i3))
+            if (~isempty (s))
+                i3      %#ok
+                s       %#ok
+                error ('!') ;
+            end
+        elseif (any (s ~= sort (i3)))
+            s       %#ok
+            i3      %#ok
+            error ('!') ;
+        end
 
-	if (any (s2 ~= sr))
-	    s2	    %#ok
-	    sr	    %#ok
-	    error ('!') ;
-	end
+        if (any (s2 ~= sr))
+            s2      %#ok
+            sr      %#ok
+            error ('!') ;
+        end
 
-	err = norm (x-x3,1) ;
-	if (err > 1e-12)
-	    x	    %#ok
-	    x3	    %#ok
-	    uplo    %#ok
-	    err	    %#ok
-	    error ('!') 
-	end
+        err = norm (x-x3,1) ;
+        if (err > 1e-12)
+            x       %#ok
+            x3      %#ok
+            uplo    %#ok
+            err     %#ok
+            error ('!') 
+        end
 
-	maxerr = max (maxerr, err) ;
+        maxerr = max (maxerr, err) ;
 
     end
 

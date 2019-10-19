@@ -4,7 +4,7 @@
 
 /* BTF_MAXTRANS:  find a column permutation Q to give A*Q a zero-free diagonal
  * BTF_STRONGCOMP:  find a symmetric permutation P to put P*A*P' into block
- *	upper triangular form.
+ *      upper triangular form.
  * BTF_ORDER: do both of the above (btf_maxtrans then btf_strongcomp).
  *
  * Copyright (c) 2004-2007.  Tim Davis, University of Florida,
@@ -36,8 +36,8 @@
  * k of the original matrix becomes column Match[k] of the permuted matrix.  In
  * MATLAB, this can be expressed as (for non-structurally singular matrices):
  *
- *	Match = maxtrans (A) ;
- *	B = A (:, Match) ;
+ *      Match = maxtrans (A) ;
+ *      B = A (:, Match) ;
  *
  * except of course here the A matrix and Match vector are all 0-based (rows
  * and columns in the range 0 to n-1), not 1-based (rows/cols in range 1 to n).
@@ -51,19 +51,19 @@
  * In the MATLAB mexFunction interface to btf_maxtrans, 1 is added to the Match
  * array to obtain a 1-based permutation.  Thus, in MATLAB where A is m-by-n:
  *
- *	q = maxtrans (A) ;	% has entries in the range 0:n
- *	q			% a column permutation (only if sprank(A)==n)
- *	B = A (:, q) ;		% permuted matrix (only if sprank(A)==n)
- *	sum (q > 0) ;		% same as "sprank (A)"
+ *      q = maxtrans (A) ;      % has entries in the range 0:n
+ *      q                       % a column permutation (only if sprank(A)==n)
+ *      B = A (:, q) ;          % permuted matrix (only if sprank(A)==n)
+ *      sum (q > 0) ;           % same as "sprank (A)"
  *
  * This behaviour differs from p = dmperm (A) in MATLAB, which returns the
  * matching as p(j)=i if row i and column j are matched, and p(j)=0 if column j
  * is unmatched.
  *
- *	p = dmperm (A) ;	% has entries in the range 0:m
- *	p                       % a row permutation (only if sprank(A)==m)
- *	B = A (p, :) ;		% permuted matrix (only if sprank(A)==m)
- *	sum (p > 0) ;		% definition of sprank (A)
+ *      p = dmperm (A) ;        % has entries in the range 0:m
+ *      p                       % a row permutation (only if sprank(A)==m)
+ *      B = A (p, :) ;          % permuted matrix (only if sprank(A)==m)
+ *      sum (p > 0) ;           % definition of sprank (A)
  *
  * This algorithm is based on the paper "On Algorithms for obtaining a maximum
  * transversal" by Iain Duff, ACM Trans. Mathematical Software, vol 7, no. 1,
@@ -98,20 +98,20 @@ extern "C" {
 int btf_maxtrans    /* returns # of columns matched */
 (
     /* --- input, not modified: --- */
-    int nrow,	    /* A is nrow-by-ncol in compressed column form */
+    int nrow,       /* A is nrow-by-ncol in compressed column form */
     int ncol,
-    int Ap [ ],	    /* size ncol+1 */
-    int Ai [ ],	    /* size nz = Ap [ncol] */
+    int Ap [ ],     /* size ncol+1 */
+    int Ai [ ],     /* size nz = Ap [ncol] */
     double maxwork, /* maximum amount of work to do is maxwork*nnz(A); no limit
-		     * if <= 0 */
+                     * if <= 0 */
 
     /* --- output, not defined on input --- */
     double *work,   /* work = -1 if maxwork > 0 and the total work performed
-		     * reached the maximum of maxwork*nnz(A).
-		     * Otherwise, work = the total work performed. */
+                     * reached the maximum of maxwork*nnz(A).
+                     * Otherwise, work = the total work performed. */
 
     int Match [ ],  /* size nrow.  Match [i] = j if column j matched to row i
-		     * (see above for the singular-matrix case) */
+                     * (see above for the singular-matrix case) */
 
     /* --- workspace, not defined on input or output --- */
     int Work [ ]    /* size 5*ncol */
@@ -147,18 +147,18 @@ UF_long btf_l_maxtrans (UF_long, UF_long, UF_long *, UF_long *, double,
 int btf_strongcomp  /* return # of strongly connected components */
 (
     /* input, not modified: */
-    int n,	    /* A is n-by-n in compressed column form */
-    int Ap [ ],	    /* size n+1 */
-    int Ai [ ],	    /* size nz = Ap [n] */
+    int n,          /* A is n-by-n in compressed column form */
+    int Ap [ ],     /* size n+1 */
+    int Ai [ ],     /* size nz = Ap [n] */
 
     /* optional input, modified (if present) on output: */
-    int Q [ ],	    /* size n, input column permutation */
+    int Q [ ],      /* size n, input column permutation */
 
     /* output, not defined on input */
-    int P [ ],	    /* size n.  P [k] = j if row and column j are kth row/col
-		     * in permuted matrix. */
+    int P [ ],      /* size n.  P [k] = j if row and column j are kth row/col
+                     * in permuted matrix. */
 
-    int R [ ],	    /* size n+1.  block b is in rows/cols R[b] ... R[b+1]-1 */
+    int R [ ],      /* size n+1.  block b is in rows/cols R[b] ... R[b+1]-1 */
 
     /* workspace, not defined on input or output */
     int Work [ ]    /* size 4n */
@@ -191,20 +191,20 @@ UF_long btf_l_strongcomp (UF_long, UF_long *, UF_long *, UF_long *, UF_long *,
  * number of strongly connected components found.
  */
 
-int btf_order	    /* returns number of blocks found */
+int btf_order       /* returns number of blocks found */
 (
     /* --- input, not modified: --- */
-    int n,	    /* A is n-by-n in compressed column form */
-    int Ap [ ],	    /* size n+1 */
-    int Ai [ ],	    /* size nz = Ap [n] */
+    int n,          /* A is n-by-n in compressed column form */
+    int Ap [ ],     /* size n+1 */
+    int Ai [ ],     /* size nz = Ap [n] */
     double maxwork, /* do at most maxwork*nnz(A) work in the maximum
-		     * transversal; no limit if <= 0 */
+                     * transversal; no limit if <= 0 */
 
     /* --- output, not defined on input --- */
     double *work,   /* return value from btf_maxtrans */
-    int P [ ],	    /* size n, row permutation */
-    int Q [ ],	    /* size n, column permutation */
-    int R [ ],	    /* size n+1.  block b is in rows/cols R[b] ... R[b+1]-1 */
+    int P [ ],      /* size n, row permutation */
+    int Q [ ],      /* size n, column permutation */
+    int R [ ],      /* size n+1.  block b is in rows/cols R[b] ... R[b+1]-1 */
     int *nmatch,    /* # nonzeros on diagonal of P*A*Q */
 
     /* --- workspace, not defined on input or output --- */
@@ -239,22 +239,22 @@ UF_long btf_l_order (UF_long, UF_long *, UF_long *, double , double *,
 /* All versions of BTF include these definitions.
  * As an example, to test if the version you are using is 1.2 or later:
  *
- *	if (BTF_VERSION >= BTF_VERSION_CODE (1,2)) ...
+ *      if (BTF_VERSION >= BTF_VERSION_CODE (1,2)) ...
  *
  * This also works during compile-time:
  *
- *	#if (BTF >= BTF_VERSION_CODE (1,2))
- *	    printf ("This is version 1.2 or later\n") ;
- *	#else
- *	    printf ("This is an early version\n") ;
- *	#endif
+ *      #if (BTF >= BTF_VERSION_CODE (1,2))
+ *          printf ("This is version 1.2 or later\n") ;
+ *      #else
+ *          printf ("This is an early version\n") ;
+ *      #endif
  */
 
-#define BTF_DATE "Nov 1, 2007"
+#define BTF_DATE "Mar 24, 2009"
 #define BTF_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
 #define BTF_MAIN_VERSION 1
-#define BTF_SUB_VERSION 0
-#define BTF_SUBSUB_VERSION 1
+#define BTF_SUB_VERSION 1
+#define BTF_SUBSUB_VERSION 0
 #define BTF_VERSION BTF_VERSION_CODE(BTF_MAIN_VERSION,BTF_SUB_VERSION)
 
 #ifdef __cplusplus

@@ -1,4 +1,4 @@
-function c = cs_counts (A,mode)						    %#ok
+function c = cs_counts (A,mode)                                             %#ok
 %CS_COUNTS column counts for sparse Cholesky factor L.
 %   c = cs_counts(A) returns a vector of the column counts of L, for the
 %   Cholesky factorization L*L' = A.  That is, c = sum(spones(chol(A)')),

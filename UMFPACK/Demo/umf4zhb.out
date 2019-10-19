@@ -1,5 +1,5 @@
  Matrix key: QC324                         
-UMFPACK V5.2.0 (Nov 1, 2007), Control:
+UMFPACK V5.3.0 (Mar 24, 2009), Control:
     Matrix entry defined as: double complex
     Int (generic integer) defined as: int
 
@@ -51,7 +51,7 @@ numeric factorization:
    flop count:      0.14E+08
    nnz (L):           23247.
    nnz (U):           23247.
-UMFPACK V5.2.0 (Nov 1, 2007), Info:
+UMFPACK V5.3.0 (Mar 24, 2009), Info:
     matrix entry defined as:          double complex
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -95,7 +95,7 @@ UMFPACK V5.2.0 (Nov 1, 2007), Info:
     Symbolic size (Units):                         1425
     Symbolic size (MBytes):                        0
     symbolic factorization CPU time (sec):         0.00
-    symbolic factorization wallclock time(sec):    0.01
+    symbolic factorization wallclock time(sec):    0.00
 
     matrix scaled: yes (divided each row by sum of abs values in each row)
     minimum sum (abs (rows of A)):              2.55982e-01
@@ -134,17 +134,16 @@ UMFPACK V5.2.0 (Nov 1, 2007), Info:
     numeric factorization reallocations:           0
     costly numeric factorization reallocations:    0
     numeric factorization CPU time (sec):          0.01
-    numeric factorization wallclock time (sec):    0.01
+    numeric factorization wallclock time (sec):    0.02
     numeric factorization mflops (CPU time):       1435.19
-    numeric factorization mflops (wallclock):      1435.19
-    symbolic + numeric wall clock time (sec):      0.02
-    symbolic + numeric mflops (wall clock):        717.60
+    numeric factorization mflops (wallclock):      717.60
 
     solve flops:                                   3.70332e+05
     iterative refinement steps taken:              0
     iterative refinement steps attempted:          0
     solve CPU time (sec):                          0.00
-    solve wall clock time (sec):                   0.00
+    solve wall clock time (sec):                   0.01
+    solve mflops (wall clock time):                37.03
 
     total symbolic + numeric + solve flops:        1.47223e+07
 
