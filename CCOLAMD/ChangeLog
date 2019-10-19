@@ -1,3 +1,7 @@
+Dec 12, 2006, version 2.5.2
+
+    * minor MATLAB clean up
+
 Apr 30, 2006: version 2.5
 
     * ccolamd_recommended modified.  Now returns size_t; 0 on error, > 0

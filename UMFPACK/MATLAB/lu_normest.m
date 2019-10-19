@@ -1,7 +1,7 @@
 function rho = lu_normest (A, L, U)
 % LU_NORMEST:  estimate the 1-norm of A-L*U without computing L*U
 %
-% Usage:
+% Example:
 %
 %       rho = lu_normest (A, L, U)
 %

@@ -42,8 +42,8 @@ for trial = 1:201
 	drawnow
 
 	s = sort (sr) ;
-	[i j xx] = find (x) ;
-	[i3 j3 xx3] = find (x3) ;
+	[i j xx] = find (x) ;						    %#ok
+	[i3 j3 xx3] = find (x3) ;					    %#ok
 
 	if (isempty (i))
 	    if (~isempty (s))

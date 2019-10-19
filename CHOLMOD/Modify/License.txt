@@ -1,4 +1,4 @@
-CHOLMOD/Modify Module.  Version 1.2.
+CHOLMOD/Modify Module.
 Copyright (C) 2005-2006, Timothy A. Davis and William W. Hager
 CHOLMOD is also available under other licenses; contact authors for details.
 http://www.cise.ufl.edu/research/sparse

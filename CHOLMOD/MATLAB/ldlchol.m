@@ -1,8 +1,10 @@
 function [LD,p,q] = ldlchol (A,beta)					    %#ok
-%LDL: Sparse A=LDL' factorization.  Note that L*L' (LCHOL) and L*D*L' (LDLCHOL)
-%   factorizations are faster than R'*R (CHOL2 and CHOL) and use less memory.
-%   The LL' and LDL' factorization methods use tril(A).  A must be sparse.
+%LDLCHOL sparse A=LDL' factorization
+%   Note that L*L' (LCHOL) and L*D*L' (LDLCHOL) factorizations are faster than
+%   R'*R (CHOL2 and CHOL) and use less memory.  The LL' and LDL' factorization
+%   methods use tril(A).  A must be sparse.
 %
+%   Example:
 %   LD = ldlchol (A)            return the LDL' factorization of A
 %   [LD,p] = ldlchol (A)        similar [R,p] = chol(A), but for L*D*L'
 %   [LD,p,q] = ldlchol (A)      factorizes A(q,q) into L*D*L', where q is a

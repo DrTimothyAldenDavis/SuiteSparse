@@ -22,7 +22,7 @@ for i = f
 	continue ;
     end
 
-    [m n] = size (A) ;
+    [m n] = size (A) ;							%#ok
     b = rand (m,1) ;
 
     x1 = A\b ;

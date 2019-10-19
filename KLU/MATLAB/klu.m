@@ -1,7 +1,10 @@
-function [L,U,p,q,R,F,r,info] = klu (A,opts)
+function [L,U,p,q,R,F,r,info] = klu (A,opts)				    %#ok
 %KLU sparse left-looking LU factorization, using a block triangular form.
 %
-%   [L,U,p,q,R,F,r,info] = klu (A,opts) factorizes a square sparse matrix,
+%   Example:
+%   [L,U,p,q,R,F,r,info] = klu (A,opts)
+%
+%   factorizes a square sparse matrix,
 %   L*U+F = R\A(p,q), where L and U are the factors of the diagonal blocks of
 %   the block, F are the entries above the diagonal blocks.  r corresponds to
 %   the 3rd output of dmperm; it specifies where the block boundaries are.  The

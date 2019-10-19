@@ -1,7 +1,13 @@
 function test21
-% test21: test cholmod on diagonal or ill-conditioned matrices
+%TEST21 test cholmod2 on diagonal or ill-conditioned matrices
+% Example:
+%   test21
+% See also cholmod_test
+
+% Copyright 2006, Timothy A. Davis, University of Florida
+
 fprintf ('=================================================================\n');
-fprintf ('test21: test cholmod on diagonal or ill-conditioned matrices\n') ;
+fprintf ('test21: test cholmod2 on diagonal or ill-conditioned matrices\n') ;
 
 f = [
  72	% HB/bcsstm22
@@ -15,7 +21,7 @@ f = [
 
 for i = f
 
-    Prob = UFget (i)
+    Prob = UFget (i)							    %#ok
     A = Prob.A ;
     n = size (A,1) ;
     x = ones (n,2) ;
@@ -23,7 +29,7 @@ for i = f
     fprintf ('nnz: %d\n', nnz (A)) ;
 
     x1 = A\b ;
-    x2 = cholmod (A,b) ;
+    x2 = cholmod2 (A,b) ;
 
     s = norm (A,1) * norm (x,1) + norm (b,1) ;
     resid1 = norm (A*x1-b,1) / s ; 

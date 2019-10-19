@@ -1,5 +1,11 @@
 function test12 (nmat)
-% test12(nmat): test etree2 and compare with etree
+%TEST12 test etree2 and compare with etree
+% Example:
+%   test12(nmat)
+% See also cholmod_test
+
+% Copyright 2006, Timothy A. Davis, University of Florida
+
 fprintf ('=================================================================\n');
 fprintf ('test12: test etree2 and compare with etree\n') ;
 
@@ -26,10 +32,10 @@ s_skip =   [ 803 374 1287 1311 1308 957 958 1257 955 761 1282 1230 1256 ...
 	    844 845 1238 804 939 1270 1305 1208 1209 290 879 928 1307 1244 ...
 	    1275 1276 1296 885 1269 959 542 1290 ] ;
 
-sym_skip = [ s_skip ] ;
+sym_skip =  s_skip  ;
 
-p_sym_skip =  [ 1296 ] ;
-p_symt_skip = [ 1296 ] ;
+p_sym_skip =   1296  ;
+p_symt_skip =  1296  ;
 
 symt_skip= [ s_skip 592 593 809 ] ;
 

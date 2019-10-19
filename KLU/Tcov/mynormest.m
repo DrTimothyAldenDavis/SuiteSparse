@@ -1,49 +1,17 @@
 function est = mynormest(A, L, U)
-%NORMEST1 Estimate of 1-norm of matrix by block 1-norm power method.
-%   C = NORMEST1(A) returns an estimate C of norm(A,1), where A is N-by-N.
-%   A can be an explicit matrix or a function AFUN such that
-%   FEVAL(@AFUN,FLAG,X) for the following values of
-%     FLAG       returns
-%     'dim'      N
-%     'real'     1 if A is real, 0 otherwise
-%     'notransp' A*X
-%     'transp'   A'*X
+%MYNORMEST Estimate of 1-norm of matrix by block 1-norm power method.
+% Example:
+%   est = mynormest(A, L, U)
 %
-%   C = NORMEST1(A,T) changes the number of columns in the iteration matrix
-%   from the default 2.  Choosing T <= N/4 is recommended, otherwise it should
-%   be cheaper to form the norm exactly from the elements of A, as is done
-%   when N <= 4 or T == N.  If T < 0 then ABS(T) columns are used and trace
-%   information is printed.  If T is given as the empty matrix ([]) then the
-%   default T is used.
-%
-%   C = NORMEST1(A,T,X0) specifies a starting matrix X0 with columns of unit
-%   1-norm and by default is random for T > 1.  If X0 is given as the empty
-%   matrix ([]) then the default X0 is used.
-%
-%   C = NORMEST1(AFUN,T,X0,P1,P2,...) passes extra inputs P1,P2,... to
-%   FEVAL(@AFUN,FLAG,X,P1,P2,...).
-%
-%   [C,V] = NORMEST1(A,...) and [C,V,W] = NORMEST1(A,...) also return vectors
-%   V and W such that W = A*V and NORM(W,1) = C*NORM(V,1).
-%
-%   [C,V,W,IT] = NORMEST1(A,...) also returns a vector IT such that
-%   IT(1) is the number of iterations,
-%   IT(2) is the number of products of N-by-N by N-by-T matrices.
-%   On average, IT(2) = 4.
-%
-%   Note: NORMEST1 calls RAND.  If repeatable results are required then
-%   invoke RAND('STATE',J), for some J, before calling this function.
-%
+%   based on normest.
 %   See also CONDEST.
-
-%   Subfunctions: MYSIGN, UNDUPLI, NORMAPP.
 
 %   Reference: N. J. Higham and F. Tisseur,
 %   A block algorithm for matrix 1-norm estimation, with an application
 %   to 1-norm pseudospectra.
 %   SIAM J. Matrix Anal. Appl., 21(4):1185-1201, 2000.
 
-%   Nicholas J. Higham, 9-8-99
+%   NORMEST, Nicholas J. Higham, 9-8-99
 %   Copyright 1984-2004 The MathWorks, Inc.
 %   $Revision: 1.8.4.2 $  $Date: 2004/01/24 09:22:14 $
 
@@ -97,7 +65,7 @@ for it = 1:5
         SS = S_old'*S; 
 	np = sum(max(abs(SS)) == n);
         % every column of S is parallel to a column of S_old
-	if np == t
+	if np == t							    %#ok
 	   break ;
         end
         % Now check/fix cols of S parallel to cols of S or S_old.
@@ -110,7 +78,7 @@ for it = 1:5
     Zvals = max(abs(Z),[],2); %inf norm of each row of Z
 
     if it >= 2
-        if max(Zvals) == Zvals(est_j)
+        if max(Zvals) == Zvals(est_j)					    %#ok
 	    break ;
 	end
     end
@@ -124,7 +92,7 @@ for it = 1:5
         ind_hist = ind;
     else
         rep = sum(ismember(m(1:2), ind_hist));
-        if rep == 2
+        if rep == 2							    %#ok
 	    break ;
 	end
         j = 1;
@@ -132,7 +100,7 @@ for it = 1:5
             while j <= n && any(ind_hist == m(j)) 
                 j = j+1;
             end
-            if j > n
+            if j > n							    %#ok
 	        imax = i-1;
 	       	break ;
 	    end
@@ -188,6 +156,6 @@ end
 function S = mysign(A)
 %MYSIGN      True sign function with MYSIGN(0) = 1.
 S = sign(A);
-S(find(S==0)) = 1;
+S(find(S==0)) = 1;							    %#ok
 
 

@@ -1,3 +1,10 @@
+Dec 12, 2006, version 2.5.2
+
+	* minor MATLAB cleanup.  MATLAB functions renamed colamd2 and symamd2,
+	    so that they do not conflict with the built-in versions.  Note that
+	    the MATLAB built-in functions colamd and symamd are identical to
+	    the colamd and symamd functions here.
+
 Aug 31, 2006: Version 2.5.1
 
 	* minor change to colamd.m and symamd.m, to use etree instead
@@ -42,7 +49,7 @@ Changes from Version 2.3 to 2.4 (Aug 30, 2005)
 	    This bug has no effect on the MATLAB symamd mexFunction, since
 	    mxCalloc terminates the mexFunction if it fails to allocate
 	    memory.  Similarly, UMFPACK is not affected because it does not
-	    use symamd.  The bug has no affect on the colamd ordering
+	    use symamd.  The bug has no effect on the colamd ordering
 	    routine in v2.3.
 
 Changes from Version 2.2 to 2.3 (Sept. 8, 2003)

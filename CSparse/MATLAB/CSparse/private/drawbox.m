@@ -1,6 +1,8 @@
 function drawbox (r1,r2,c1,c2,color,w,e)
 %DRAWBOX draw a box around a submatrix in the figure.
 %   Used by cspy, cs_dmspy, and ccspy.
+%   Example:
+%       drawbox (r1,r2,c1,c2,color,w,e)
 
 if (r1 == r2 || c1 == c2)
     return

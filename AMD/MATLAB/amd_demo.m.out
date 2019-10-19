@@ -1,16 +1,18 @@
-
 amd_demo
- AMD Approximate minimum degree permutation.
-     P = AMD (S) returns the approximate minimum degree permutation vector for
+ AMD2 p = amd2 (A), the approximate minimum degree ordering of A
+     P = AMD2 (S) returns the approximate minimum degree permutation vector for
      the sparse matrix C = S+S'.  The Cholesky factorization of C (P,P), or
      S (P,P), tends to be sparser than that of C or S.  AMD tends to be faster
      than SYMMMD and SYMAMD, and tends to return better orderings than SYMMMD.
      S must be square. If S is full, amd(S) is equivalent to amd(sparse(S)).
  
-     Usage:  P = amd (S) ;                   % finds the ordering
-             [P, Info] = amd (S, Control) ;  % optional parameters & statistics
-             Control = amd ;                 % returns default parameters
-             amd ;                           % prints default parameters.
+     Note that the built-in AMD routine in MATLAB is identical to AMD2,
+     except that AMD in MATLAB allows for a struct input to set the parameters.
+ 
+     Usage:  P = amd2 (S) ;                  % finds the ordering
+             [P, Info] = amd2 (S, Control) ; % optional parameters & statistics
+             Control = amd2 ;                % returns default parameters
+             amd2 ;                          % prints default parameters.
  
         Control (1); If S is n-by-n, then rows/columns with more than
             max (16, (Control (1))* sqrt(n)) entries in S+S' are considered
@@ -50,32 +52,22 @@ amd_demo
      of the approximate degree update used, and because "dense" rows/columns
      do not take part in the post-order.  It well-suited for a subsequent
      "chol", however.  If you require a precise elimination tree post-ordering,
-     then do:
+     then see the example below:
  
-        P = amd (S) ;
+  Example:
+ 
+        P = amd2 (S) ;
         C = spones (S) + spones (S') ;  % skip this if S already symmetric
-        [ignore, Q] = sparsfun ('symetree', C (P,P)) ;
+        [ignore, Q] = etree (C (P,P)) ;
         P = P (Q) ;
  
-  --------------------------------------------------------------------------
-  AMD Version 2.0, Copyright (c) 2006 by Timothy A. Davis,
-  Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.
-  email: davis at cise.ufl.edu    CISE Department, Univ. of Florida.
-  web: http://www.cise.ufl.edu/research/sparse/amd
-  --------------------------------------------------------------------------
- 
-     Acknowledgements: This work was supported by the National Science
-        Foundation, under grants ASC-9111263, DMS-9223088, and CCR-0203270.
- 
-     See also COLMMD, COLAMD, COLPERM, SYMAMD, SYMMMD, SYMRCM.
-
-
+  See also AMD, COLMMD, COLAMD, COLPERM, SYMAMD, SYMMMD, SYMRCM.
 
 
 If the next step fails, then you have
 not yet compiled the AMD mexFunction.
 
-amd version 2.0, May 5, 2006:  approximate minimum degree ordering:
+amd version 2.0, Dec 12, 2006:  approximate minimum degree ordering:
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -117,10 +109,51 @@ Permutation vector:
  23 21 11 24 13  6 17  9 15  5 16  8  2 10 14 18  1  3  4  7 12 19 22 20
 
 Analyze A(p,p) with MATLAB's symbfact routine:
-predicted nonzeros:    120
-predicted flops:       656
-predicted height:      16
-predicted front size:  7
+
+CHOLMOD version 1.1.0, May 5, 2006:  : status: OK
+  Architecture: Linux
+    sizeof(int):      4
+    sizeof(UF_long):  4
+    sizeof(void *):   4
+    sizeof(double):   8
+    sizeof(Int):      4 (CHOLMOD's basic integer)
+    sizeof(BLAS_INT): 4 (integer used in the BLAS)
+  Results from most recent analysis:
+    Cholesky flop count: 656
+    Nonzeros in L:       120
+  memory blocks in use:           3
+  memory in use (MB):           0.0
+  peak memory usage (MB):       0.0
+  maxrank:    update/downdate rank:   8
+  supernodal control: 1 40 (supernodal if flops/lnz >= 40)
+  nmethods=0: default strategy:  Try user permutation if given.  Try AMD.
+    Select best ordering tried.
+    method 0: user permutation (if given)
+    method 1: AMD (or COLAMD if factorizing AA')
+        prune_dense: for pruning dense nodes:   10
+        a dense node has degree >= max(16,(10)*sqrt(n))
+  OK
+
+CHOLMOD version 1.1.0, May 5, 2006:  : status: OK
+  Architecture: Linux
+    sizeof(int):      4
+    sizeof(UF_long):  4
+    sizeof(void *):   4
+    sizeof(double):   8
+    sizeof(Int):      4 (CHOLMOD's basic integer)
+    sizeof(BLAS_INT): 4 (integer used in the BLAS)
+  memory blocks in use:           0
+  memory in use (MB):           0.0
+  peak memory usage (MB):       0.0
+  maxrank:    update/downdate rank:   8
+  supernodal control: 1 40 (supernodal if flops/lnz >= 40)
+  nmethods=0: default strategy:  Try user permutation if given.  Try AMD.
+    Select best ordering tried.
+    method 0: user permutation (if given)
+    method 1: AMD (or COLAMD if factorizing AA')
+        prune_dense: for pruning dense nodes:   10
+        a dense node has degree >= max(16,(10)*sqrt(n))
+  OK
 number of nonzeros in L (including diagonal):      120
 floating point operation count for chol (A (p,p)): 656
 

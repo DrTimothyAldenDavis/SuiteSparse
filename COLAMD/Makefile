@@ -22,14 +22,14 @@ distclean: clean2
 
 clean2: clean
 	- $(RM) *.o *.dll colamd_example colamd_l_example
-	- $(RM) colamdmex.mex* symamdmex.mex*
+	- $(RM) colamd2mex.mex* symamd2mex.mex*
 	- $(RM) colamdtestmex.mex* symamdtestmex.mex*
 	- $(RM) my_colamd_example.out my_colamd_l_example.out
 
 # Compiles the MATLAB-callable routines
 mex: colamdmex.c symamdmex.c libcolamd.a
-	$(MEX) $(I) colamdmex.c libcolamd.a
-	$(MEX) $(I) symamdmex.c libcolamd.a
+	$(MEX) -output colamd2mex $(I) colamdmex.c libcolamd.a
+	$(MEX) -output symamd2mex $(I) symamdmex.c libcolamd.a
 
 # Compiles the extensive test code
 test: mex colamdtestmex.c symamdtestmex.c libcolamd.a

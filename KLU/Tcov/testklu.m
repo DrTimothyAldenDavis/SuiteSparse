@@ -1,4 +1,7 @@
 function testklu ()
+% TESTKU: test KLU
+% Example:
+%   testklu
 
 rand ('state', 0) ;
 
@@ -9,7 +12,7 @@ mat = mat (i) ;
 clear i
 
 %bomhof = [370:373] ;
-bomhof = [370:372] ;
+bomhof = 370:372 ;
 %grund = [449:468] ;
 grund = [449 468] ;
 hamm = [539 540] ;

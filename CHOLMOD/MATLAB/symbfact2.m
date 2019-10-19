@@ -3,6 +3,7 @@ function [count, h, parent, post, L] = symbfact2 (A, mode, Lmode)	    %#ok
 %
 %   Analyzes the Cholesky factorization of A, A'*A, or A*A'.
 %
+%   Example:
 %   count = symbfact2 (A)               returns row counts of R=chol(A)
 %   count = symbfact2 (A,'col')         returns row counts of R=chol(A'*A)
 %   count = symbfact2 (A,'sym')         same as symbfact2(A)

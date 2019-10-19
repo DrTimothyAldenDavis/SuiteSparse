@@ -1,7 +1,13 @@
 function test10 (nmat)
-% test10(nmat): test cholmod's backslash on real and complex matrices
+%TEST10 test cholmod2's backslash on real and complex matrices
+% Example:
+%   test10(nmat)
+% See also cholmod_test
+
+% Copyright 2006, Timothy A. Davis, University of Florida
+
 fprintf ('=================================================================\n');
-fprintf ('test10: test cholmod''s backslash\n') ;
+fprintf ('test10: test cholmod2''s backslash\n') ;
 
 rand ('state',0) ;
 randn ('state',0) ;
@@ -57,15 +63,15 @@ for nn = f
 		      1-i  0  33   0
 		      2-2*i 0 0   44 ] ;
 		A = sparse (A) ;
-		p = [4 3 2 1] ;
+		p = [4 3 2 1] ;			%#ok
 		full (A)
 		A = sparse (A) ;
 
 	    else
 
 		if (~complexity)
-		    nn
-		    Prob = UFget (nn)
+		    nn					%#ok
+		    Prob = UFget (nn)			%#ok
 		end
 		A = Prob.A ;
 		if (complexity)
@@ -88,8 +94,8 @@ for nn = f
 
 		b1 = b (:,1) ;
 
-		[x1,x2,e1,e2] = testsolve (A,b1) ;
-		[x1,x2,e1,e2] = testsolve (A,b) ;
+		[x1,x2,e1,e2] = testsolve (A,b1) ;	%#ok
+		[x1,x2,e1,e2] = testsolve (A,b) ;	%#ok
 
 		if (sparsity)
 		    b = sprandn (n,9,0.1) ;
@@ -97,7 +103,7 @@ for nn = f
 		    b = rand (n,9) ;
 		end
 
-		[x1,x2,e1,e2] = testsolve (A,b) ;
+		[x1,x2,e1,e2] = testsolve (A,b) ;	%#ok
 
 		if (sparsity)
 		    b = sprandn (n,9,0.1) + sprandn (n,9,0.1)*1i ;
@@ -107,8 +113,8 @@ for nn = f
 
 		b1 = b (:,1) ;
 
-		[x1,x2,e1,e2] = testsolve (A,b1) ;
-		[x1,x2,e1,e2] = testsolve (A,b) ;
+		[x1,x2,e1,e2] = testsolve (A,b1) ;	%#ok
+		[x1,x2,e1,e2] = testsolve (A,b) ;	%#ok
 
 	    end
 	end

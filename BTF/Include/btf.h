@@ -206,10 +206,10 @@ int btf_order	    /* returns number of blocks found */
  *	#endif
  */
 
-#define BTF_DATE "May 5, 2006"
+#define BTF_DATE "Dec 12, 2006"
 #define BTF_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
 #define BTF_MAIN_VERSION 0
-#define BTF_SUB_VERSION 9
+#define BTF_SUB_VERSION 11
 #define BTF_VERSION BTF_VERSION_CODE(BTF_MAIN_VERSION,BTF_SUB_VERSION)
 
 #ifdef __cplusplus

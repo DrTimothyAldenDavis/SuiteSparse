@@ -1,10 +1,11 @@
 function [parent post] = etree2 (A, mode)				    %#ok
-%ETREE2  Elimination tree.
+%ETREE2  sparse elimination tree.
 %   Finds the elimination tree of A, A'*A, or A*A', and optionaly postorders
 %   the tree.  parent(j) is the parent of node j in the tree, or 0 if j is a
 %   root.  The symmetric case uses only the upper or lower triangular part of
 %   A (etree2(A) uses the upper part, and etree2(A,'lo') uses the lower part).
 %
+%   Example:
 %   parent = etree2 (A)         finds the elimination tree of A, using triu(A)
 %   parent = etree2 (A,'sym')   same as etree2(A)
 %   parent = etree2 (A,'col')   finds the elimination tree of A'*A

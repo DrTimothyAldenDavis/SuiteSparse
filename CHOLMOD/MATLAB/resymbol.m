@@ -1,5 +1,7 @@
 function L = resymbol (L, A)						    %#ok
 %RESYMBOL recomputes the symbolic Cholesky factorization of the matrix A.
+%
+%   Example:
 %   L = resymbol (L, A)
 %
 %   Recompute the symbolic Cholesky factorization of the matrix A.  A must be

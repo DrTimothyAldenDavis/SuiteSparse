@@ -1,5 +1,5 @@
 function [group name id] = UFget_lookup (matrix, UF_Index)
-%UFget_lookup determine the group, name, and id of a UF sparse matrix.
+%UFGET_LOOKUP gets the group, name, and id of a matrix.
 %
 %   Example:
 %       [group name id] = UFget_lookup (matrix, UF_Index)

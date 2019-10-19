@@ -1,7 +1,7 @@
-function [Lnz, Parent, fl] = ldlsymbol (A, P)
-%
+function [Lnz, Parent, fl] = ldlsymbol (A, P)				    %#ok
 % LDLSYMBOL:  symbolic factorization using the LDL sparse matrix package.
 %
+% Example:
 %       [Lnz, Parent, fl] = ldlsymbol (A)
 %       [Lnz, Parent, fl] = ldlsymbol (A, P)
 %
@@ -28,7 +28,7 @@ function [Lnz, Parent, fl] = ldlsymbol (A, P)
 % Note that this routine is not required by LDL, since LDL does its own
 % symbolic factorization.
 %
-% See also LDL, SYMBFACT, ETREE
+% See also LDLSPARSE, SYMBFACT, ETREE
 %
 % LDL Version 1.3, Copyright (c) 2006 by Timothy A Davis,
 % University of Florida.  All Rights Reserved.  See README for the License.

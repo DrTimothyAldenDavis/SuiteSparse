@@ -1,3 +1,6 @@
+%GETDET:  test determinant
+% Example:
+%   getdet
 
 clear
 rand ('state', 0) ;
@@ -60,7 +63,7 @@ for ii = 1:(nmat + 1)
 	Problem = UFget ('LPnetlib/lpi_galenet') ;
     end
 
-    if (ii >= 2 & ii <= 6)
+    if (ii >= 2 && ii <= 6)
 	B = Problem.A ;
 	check = norm (A-B,1) ;
 	fprintf ('check: %g\n', check) ;

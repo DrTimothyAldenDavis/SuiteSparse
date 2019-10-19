@@ -1,4 +1,7 @@
 function est = mynormest1(L, U)
+% MYNORMEST1: compute 1-norm of L*U
+% Example:
+%   est = mynormest1(L, U)
 
 n = size (L,1) ;
 est = 0 ;

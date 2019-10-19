@@ -1,5 +1,11 @@
 function test14 (nmat)
-% test14(nmat): test metis, symbfact2, and etree2
+%TEST14 test metis, symbfact2, and etree2
+% Example:
+%   test14(nmat)
+% See also cholmod_test
+
+% Copyright 2006, Timothy A. Davis, University of Florida
+
 fprintf ('=================================================================\n');
 fprintf ('test14: test metis, symbfact2, and etree2\n') ;
 
@@ -13,9 +19,9 @@ index = UFget ;
 
 % These bugs show up when Common->metis_memory is set to zero:
 % skip = [ 1298 ] ; % runs out of memory in metis(A,'row')
-skip = [ 1257 ] ;   % GHS_psdef/crankseg_1: segfault in metis(A,'row') ;
-skip = [ 850 ] ;    % Chen/pkustk04: segfault in metis(A,'row') ;
-skip = [ ] ;
+skip =  1257  ;   %#ok	% GHS_psdef/crankseg_1: segfault in metis(A,'row') ;
+skip =  850  ;    %#ok	% Chen/pkustk04: segfault in metis(A,'row') ;
+skip = [ ] ;	  %#ok
 
 if (nargin > 0)
     nmat = max (0,nmat) ;
@@ -33,7 +39,7 @@ for i = f
 
     % try
 
-	Prob = UFget (i)
+	Prob = UFget (i)						    %#ok
 	A = Prob.A ;
 	[m n] = size (A) ;
 

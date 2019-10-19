@@ -1,4 +1,4 @@
-The COLAMD ordering method - Version 2.5.1
+The COLAMD ordering method - Version 2.6
 -------------------------------------------------------------------------------
 
 The COLAMD column approximate minimum degree ordering algorithm computes
@@ -19,12 +19,13 @@ Alternatively, type "make" (in Unix) to compile and run a simple example C
 code, without using MATLAB.
 
 Colamd is a built-in routine in MATLAB, available from The 
-Mathworks, Inc.  Under most cases, the compiled codes from Versions 2.0
-through 2.5 do not differ.  Colamd Versions 2.2 and 2.3 differ only in their
+Mathworks, Inc.  Under most cases, the compiled COLAMD from Versions 2.0
+through 2.6 do not differ.  Colamd Versions 2.2 and 2.3 differ only in their
 mexFunction interaces to MATLAB.  v2.4 fixes a bug in the symamd routine in
 v2.3.  The bug (in v2.3 and earlier) has no effect on the MATLAB symamd
 mexFunction.  v2.5 adds additional checks for integer overflow, so that
-the "int" version can be safely used with 64-bit pointers.
+the "int" version can be safely used with 64-bit pointers.  Refer to the
+ChangeLog for more details.
 
     NOTE: DO NOT ATTEMPT TO USE THIS CODE IN 64-BIT MATLAB (v7.3).
     It is not yet ported to that version of MATLAB.

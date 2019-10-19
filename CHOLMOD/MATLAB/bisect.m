@@ -1,5 +1,7 @@
 function p = bisect (A, mode)						    %#ok
-%BISECT:  computes a node separator based on METIS_NodeComputeSeparator.
+%BISECT computes a node separator based on METIS_NodeComputeSeparator.
+%
+%   Example:
 %   s = bisect(A)       bisects A. Uses tril(A) and assumes A is symmetric.
 %   s = bisect(A,'sym') the same as p=bisect(A).
 %   s = bisect(A,'col') bisects A'*A.
@@ -15,7 +17,7 @@ function p = bisect (A, mode)						    %#ok
 %   Requires METIS, authored by George Karypis, Univ. of Minnesota.  This
 %   MATLAB interface, via CHOLMOD, is by Tim Davis.
 %
-%   See also METIS, NESDIS, CCOLAMD, CSYMAMD
+%   See also METIS, NESDIS
 
 %   Copyright 2006, Timothy A. Davis
 %   http://www.cise.ufl.edu/research/sparse

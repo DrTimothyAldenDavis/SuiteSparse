@@ -1,3 +1,6 @@
+%TS: test KLU
+% Example
+%   ts
 
 clear
 
@@ -9,11 +12,11 @@ index = UFget ;
 
 sym = [1e-6 1] ;	% symmetric mode (AMD, tolerance of 1e-6)
 
-hb = [1:4] ;
+hb = 1:4 ;
 att = [283 284 286] ;
-bomhof = [370:373] ;
+bomhof = 370:373 ;
 grund = [465 466] ;
-hamm = [539:544] ;
+hamm = 539:544 ;
 circuits = [hb bomhof grund hamm att ] ;
 
 % for j = mat

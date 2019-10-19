@@ -1,4 +1,4 @@
-%% function test8
+%TEST8 test cs_cholsol, cs_lusol
 %TEST8 test cs_cholsol, cs_lusol
 %
 % Example:

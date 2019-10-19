@@ -1,3 +1,6 @@
+% ktest: test KLU
+% Example:
+%   ktest
 
 matrices = {'Asmall', 'Amiddle', 'Alarge'} ;
 symtol = 1e-6 ;

@@ -1,5 +1,11 @@
 function test24
-% test24: test sdmult
+%TEST24 test sdmult
+% Example:
+%   test24
+% See also cholmod_test
+
+% Copyright 2006, Timothy A. Davis, University of Florida
+
 fprintf ('=================================================================\n');
 fprintf ('test24: test sdmult\n') ;
 

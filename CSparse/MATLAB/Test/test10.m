@@ -44,8 +44,8 @@ for trials = 1:100
     % [Q,R] = qr (A) ;
     % t1 = toc ;
 
-    [c,h,parent] = symbfact (A, 'col') ;
-    rnz = sum (c) ;
+    [c,h,parent] = symbfact (A, 'col') ;				    %#ok
+    rnz = sum (c) ;							    %#ok
     tic ;
     [V2,Beta2,p,R2] = cs_qr (sparse(A)) ;
     t2 = toc ;

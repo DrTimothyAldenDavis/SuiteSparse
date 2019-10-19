@@ -1,9 +1,9 @@
 function result = spsym (A, quick)					    %#ok
-%SPSYM: determine if a sparse matrix is symmetric, Hermitian, or skew-symmetric.
+%SPSYM determine if a sparse matrix is symmetric, Hermitian, or skew-symmetric.
 %   If so, also determine if its diagonal has all positive real entries.
 %   A must be sparse.
 %
-%   Usage:
+%   Example:
 %   result = spsym (A) ;
 %   result = spsym (A,quick) ;
 %

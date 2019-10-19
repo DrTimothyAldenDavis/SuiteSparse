@@ -1,4 +1,10 @@
-% Compare nesdis with metis, in both quality and run time
+%NN Compare nesdis with metis, in both quality and run time
+%
+% Example:
+%   nn
+% See also cholmod_test
+
+% Copyright 2006, Timothy A. Davis, University of Florida
 
 index = UFget ;
 f = find (index.amd_lnz > 0) ;

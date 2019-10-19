@@ -1,5 +1,11 @@
 function test15 (nmat)
-% test15(nmat): test symbfact2 vs MATLAB
+%TEST15 test symbfact2 vs MATLAB
+% Example:
+%   test15(nmat)
+% See also cholmod_test
+
+% Copyright 2006, Timothy A. Davis, University of Florida
+
 fprintf ('=================================================================\n');
 
 index = UFget ;
@@ -67,36 +73,10 @@ for i = f
 	    [co2 h2 parent2 post2 R2] = symbfact2 (A) ;
 	    t2 = toc ;
 
-	    fprintf ('R=symbfact(A):         %10.4f %10.4f  speedup %8.2f\n', ...
+	    fprintf ('R=symbfact(A):         %10.4f %10.4f  speedup %8.2f\n',...
 		t1, t2, t1/t2) ;
 
-	    if (any (co ~= co2))
-		error ('count!') ;
-	    end
-	    if (any (parent ~= parent2))
-		error ('parent!') ;
-	    end
-	    if (any (post ~= post2))
-		error ('post!') ;
-	    end
-
-	    if (nnz (R2) ~= nnz (R))
-		error ('lnz!') ;
-	    end
-	    if (h ~= h2)
-		error ('h!') ;
-	    end
-
-	    % this may run out of memory
-	    try % compute nnz(R-R2)
-		err = nnz (R-R2) ;
-	    catch
-		err = -1 ;
-		fprintf ('nnz(R-R2) not computed\n')  ;
-	    end
-	    if (err > 0)
-		error ('R!') ;
-	    end
+	    checkem(co,co2,parent,parent2,post,post2,R,R2,h,h2) ;
 
 	    % test with tril(A)
 	    tic
@@ -106,7 +86,8 @@ for i = f
 	    co2 = symbfact2 (A,'lo') ;
 	    t2 = toc ;
 
-	    fprintf ('c=symbfact(A''):        %10.4f %10.4f  speedup %8.2f lnz %d\n',...
+	    fprintf (...
+	    'c=symbfact(A''):        %10.4f %10.4f  speedup %8.2f lnz %d\n',...
 		t1, t2, t1/t2, sum (co)) ;
 
 	    if (any (co ~= co2))
@@ -120,41 +101,16 @@ for i = f
 	    [co2 h2 parent2 post2 R2] = symbfact2 (A,'lo') ;
 	    t2 = toc ;
 
-	    fprintf ('R=symbfact(A''):        %10.4f %10.4f  speedup %8.2f\n',...
+	    fprintf (...
+		'R=symbfact(A''):        %10.4f %10.4f  speedup %8.2f\n',...
 		t1, t2, t1/t2) ;
 
-	    if (any (co ~= co2))
-		error ('count!') ;
-	    end
-	    if (any (parent ~= parent2))
-		error ('parent!') ;
-	    end
-	    if (any (post ~= post2))
-		error ('post!') ;
-	    end
-
-	    if (nnz (R2) ~= nnz (R))
-		error ('lnz!') ;
-	    end
-	    if (h ~= h2)
-		error ('h!') ;
-	    end
-
-	    % this may run out of memory
-	    try % compute nnz(R-R2)
-		err = nnz (R-R2) ;
-	    catch
-		err = -1 ;
-		fprintf ('nnz(R-R2) not computed\n')  ;
-	    end
-	    if (err > 0)
-		error ('R!') ;
-	    end
+	    checkem(co,co2,parent,parent2,post,post2,R,R2,h,h2) ;
 
 	end
 
-	% permute the matrix first.  Avoid using MATLAB's etree
-	p = colamdmex (A) ;
+	% permute the matrix first
+	p = colamd (A) ;
 	[parent post] = etree2 (A (:,p), 'col') ;
 	p = p (post) ;
 	A = A (:,p) ;
@@ -184,34 +140,7 @@ for i = f
 	fprintf ('R=symbfact(A,''col''):   %10.4f %10.4f  speedup %8.2f\n', ...
 	    t1, t2, t1/t2) ;
 
-	if (any (co ~= co2))
-	    error ('count!') ;
-	end
-	if (any (parent ~= parent2))
-	    error ('parent!') ;
-	end
-	if (any (post ~= post2))
-	    error ('post!') ;
-	end
-
-	if (nnz (R2) ~= nnz (R))
-	    error ('lnz!') ;
-	end
-
-	if (h ~= h2)
-	    error ('h!') ;
-	end
-
-	% this may run out of memory
-	try % compute nnz(R-R2)
-	    err = nnz (R-R2) ;
-	catch
-	    err = -1 ;
-	    fprintf ('nnz(R-R2) not computed\n')  ;
-	end
-	if (err > 0)
-	    error ('R!') ;
-	end
+	checkem(co,co2,parent,parent2,post,post2,R,R2,h,h2) ;
 
 %    catch
 %    	fprintf ('%d failed\n', i) ;
@@ -219,3 +148,33 @@ for i = f
 end
 
 fprintf ('test15 passed\n') ;
+
+%-------------------------------------------------------------------------------
+
+function checkem(co,co2,parent,parent2,post,post2,R,R2,h,h2)
+% checkem compare results from symbfact and symbfact2
+if (any (co ~= co2))
+    error ('count!') ;
+end
+if (any (parent ~= parent2))
+    error ('parent!') ;
+end
+if (any (post ~= post2))
+    error ('post!') ;
+end
+if (nnz (R2) ~= nnz (R))
+    error ('lnz!') ;
+end
+if (h ~= h2)
+    error ('h!') ;
+end
+% this may run out of memory
+try % compute nnz(R-R2)
+    err = nnz (R-R2) ;
+catch
+    err = -1 ;
+    fprintf ('nnz(R-R2) not computed\n')  ;
+end
+if (err > 0)
+    error ('R!') ;
+end

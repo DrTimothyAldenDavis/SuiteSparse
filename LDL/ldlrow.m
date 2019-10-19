@@ -1,5 +1,7 @@
 function [L, D] = ldlrow (A)
+%LDLROW: compute an L*D*L'=A factorization, one row at a time
 %
+% Example:
 %  [L, D] = ldlrow (A)
 %
 %  Compute the L*D*L' factorization of A, by rows.  Returns

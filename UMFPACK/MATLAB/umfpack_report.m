@@ -1,10 +1,11 @@
 function umfpack_report (Control, Info)
 % UMFPACK_REPORT
 %
+%   Example:
 %       umfpack_report (Control, Info) ;
 %
-% Prints the current Control settings for umfpack, and the statistical
-% information returned by umfpack in the Info array.  If Control is
+% Prints the current Control settings for umfpack2, and the statistical
+% information returned by umfpack2 in the Info array.  If Control is
 % an empty matrix, then the default control settings are printed.
 %
 % Control is 20-by-1, and Info is 90-by-1.  Not all entries are used.
@@ -17,10 +18,10 @@ function umfpack_report (Control, Info)
 %       umfpack_report ;                print the default control parameters
 %                                       and an empty Info array.
 %
-% See also umfpack, umfpack_make, umfpack_details,
+% See also umfpack, umfpack2, umfpack_make, umfpack_details,
 % umfpack_demo, and umfpack_simple.
 
-% UMFPACK Version 5.0, Copyright (c) 1995-2006 by Timothy A. Davis.
+% Copyright (c) 1995-2006 by Timothy A. Davis.
 % All Rights Reserved.  Type umfpack_details for License.
 
 %-------------------------------------------------------------------------------
@@ -35,7 +36,7 @@ if (nargin < 2)
     Info = [] ;
 end
 if (isempty (Control))
-    Control = umfpack ;
+    Control = umfpack2 ;
 end
 if (isempty (Info))
     Info = [ 0 (-ones (1, 89)) ] ;
@@ -45,7 +46,7 @@ end
 % control settings
 %-------------------------------------------------------------------------------
 
-fprintf ('\nUMFPACK Version 5.0:  Control settings:\n\n') ;
+fprintf ('\nUMFPACK:  Control settings:\n\n') ;
 fprintf ('    Control (1): print level: %d\n', Control (1)) ;
 fprintf ('    Control (2): dense row parameter:    %g\n', Control (2)) ;
 fprintf ('       "dense" rows have    > max (16, (%g)*16*sqrt(n_col)) entries\n', Control (2)) ;
@@ -152,7 +153,7 @@ elseif (status == -5)
     fprintf ('ERROR    required argument is missing\n') ;
 elseif (status == -6)
     fprintf ('ERROR    n <= 0\n') ;
-elseif (status <= -7 & status >= -12 | status == -14)
+elseif (status <= -7 && status >= -12 || status == -14)
     fprintf ('ERROR    matrix A is corrupted\n') ;
 elseif (status == -13)
     fprintf ('ERROR    invalid system\n') ;
@@ -181,7 +182,7 @@ fprintf ('\n  Pivots with zero Markowitz cost removed to obtain submatrix S:\n')
 fprintf ('    Info (57): %d, # of pivots with one entry in pivot column\n', Info (57)) ;
 fprintf ('    Info (58): %d, # of pivots with one entry in pivot row\n', Info (58)) ;
 fprintf ('    Info (59): %d, # of rows/columns in submatrix S (if square)\n', Info (59)) ;
-fprintf ('    Info (60): %d ') ;
+fprintf ('    Info (60): ') ;
 if (Info (60) > 0)
     fprintf ('submatrix S square and diagonal preserved\n') ;
 elseif (Info  (60) == 0)
@@ -268,7 +269,7 @@ fprintf ('    Info (64): %d, integer indices in compressed pattern of L and U\n'
 fprintf ('    Info (65): %d, numerical values stored in L and U\n', Info (65)) ;
 fprintf ('    Info (66): %.2f, numeric factorization CPU time (seconds)\n', Info (66)) ;
 fprintf ('    Info (76): %.2f, numeric factorization wall clock time (seconds)\n', Info (76)) ;
-if (Info (66) > 0.05 & Info (43) > 0)
+if (Info (66) > 0.05 && Info (43) > 0)
 fprintf ('    mflops in numeric factorization phase: %.2f\n', 1e-6 * Info (43) / Info (66)) ;
 end
 fprintf ('    Info (67): %d, nnz (diag (U))\n', Info (67)) ;

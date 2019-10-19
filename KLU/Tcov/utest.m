@@ -1,61 +1,11 @@
-
 function utest (A,b)
-
+% UTEST: test KLU
+% Example:
+%   utest (A,b)
 
 [m n] = size (A) ;
 
-if (nargin < 2)
-    b = rand (m,1) ;
-end
-
-opts = [0.001 1.2 1.2 10 1 0 0 0 ] ;
-
-[mb nrhs] = size (b) ;
-
-if (m ~= n)
-    error ('A must be square') ;
-end
-if (mb ~= m)
-    error ('A and b must have same # rows') ;
-end
-
-% column pointers
-p = [0 (cumsum (full (sum (spones (A)))))]  ;
-
-% row indices and numerical values
-[row_indices j values] = find (A) ;
-
-nz = nnz (A) ;
-
-options = fopen ('options', 'w') ;
-fprintf (options, '%s\n', 'options') ;
-%fprintf (options, '%s\n', 'default') ;
-fprintf (options, '%g\n', opts) ;
-fclose (options) ;
-
-f = fopen ('Afile', 'w') ;
-fprintf (f, '%s\n', 'n, nnz, real, nrhs, isRHSreal') ;
-fprintf (f, '%d\n%d\n%d\n', n, nz, isreal(A), nrhs, isreal(b)) ;
-fprintf (f, '%s\n', 'column pointers') ;
-fprintf (f, '%d\n', p) ;
-fprintf (f, '%s\n', 'row indices') ;
-fprintf (f, ' %d\n', row_indices) ;
-fprintf (f, '%s\n', 'reals') ;
-if isreal(A)
-    fprintf (f, '%30.16e\n', real(values)) ;
-else
-    for k = 1 : nz
-	fprintf (f, '%30.16e\n', real(values(k))) ;
-	fprintf (f, '%30.16e\n', imag(values(k))) ;
-    end	
-end
-
-fprintf (f, '%s\n', 'rhs') ;
-for j = 1:nrhs
-    fprintf (f, '%30.16e\n', b (:,j)) ;
-end
-
-fclose (f);
+b = kwrite (A,b) ;
 
 execute_test (A,b) ;
 
@@ -132,30 +82,7 @@ execute_test (A,b) ;
 opts (6) = 0 ; %amd
 b = rand (m, 2) ;
 [mb nrhs] = size (b) ;
-
-f = fopen ('Afile', 'w') ;
-fprintf (f, '%s\n', 'n, nnz, real, nrhs, isRHSreal') ;
-fprintf (f, '%d\n%d\n%d\n', n, nz, isreal(A), nrhs, isreal(b)) ;
-fprintf (f, '%s\n', 'column pointers') ;
-fprintf (f, '%d\n', p) ;
-fprintf (f, '%s\n', 'row indices') ;
-fprintf (f, ' %d\n', row_indices) ;
-fprintf (f, '%s\n', 'reals') ;
-if isreal(A)
-    fprintf (f, '%30.16e\n', real(values)) ;
-else
-    for k = 1 : nz
-	fprintf (f, '%30.16e\n', real(values(k))) ;
-	fprintf (f, '%30.16e\n', imag(values(k))) ;
-    end	
-end
-
-fprintf (f, '%s\n', 'rhs') ;
-for j = 1:nrhs
-    fprintf (f, '%30.16e\n', b (:,j)) ;
-end
-
-fclose (f);
+kwrite (A,b) ;
 execute_test (A,b, nrhs) ;
 
 opts = [0.001 1.2 1.2 10 1 0 0 0 ] ;
@@ -170,30 +97,7 @@ execute_test (A,b, nrhs) ;
 %multiple rhs : 3
 b = rand (m, 3) ;
 [mb nrhs] = size (b) ;
-
-f = fopen ('Afile', 'w') ;
-fprintf (f, '%s\n', 'n, nnz, real, nrhs, isRHSreal') ;
-fprintf (f, '%d\n%d\n%d\n', n, nz, isreal(A), nrhs, isreal(b)) ;
-fprintf (f, '%s\n', 'column pointers') ;
-fprintf (f, '%d\n', p) ;
-fprintf (f, '%s\n', 'row indices') ;
-fprintf (f, ' %d\n', row_indices) ;
-fprintf (f, '%s\n', 'reals') ;
-if isreal(A)
-    fprintf (f, '%30.16e\n', real(values)) ;
-else
-    for k = 1 : nz
-	fprintf (f, '%30.16e\n', real(values(k))) ;
-	fprintf (f, '%30.16e\n', imag(values(k))) ;
-    end	
-end
-
-fprintf (f, '%s\n', 'rhs') ;
-for j = 1:nrhs
-    fprintf (f, '%30.16e\n', b (:,j)) ;
-end
-
-fclose (f);
+kwrite (A,b) ;
 execute_test (A,b, nrhs) ;
 
 opts = [0.001 1.2 1.2 10 1 0 0 0 ] ;
@@ -208,30 +112,7 @@ execute_test (A,b, nrhs) ;
 %multiple rhs : 4
 b = rand (m, 4) ;
 [mb nrhs] = size (b) ;
-
-f = fopen ('Afile', 'w') ;
-fprintf (f, '%s\n', 'n, nnz, real, nrhs, isRHSreal') ;
-fprintf (f, '%d\n%d\n%d\n', n, nz, isreal(A), nrhs, isreal(b)) ;
-fprintf (f, '%s\n', 'column pointers') ;
-fprintf (f, '%d\n', p) ;
-fprintf (f, '%s\n', 'row indices') ;
-fprintf (f, ' %d\n', row_indices) ;
-fprintf (f, '%s\n', 'reals') ;
-if isreal(A)
-    fprintf (f, '%30.16e\n', real(values)) ;
-else
-    for k = 1 : nz
-	fprintf (f, '%30.16e\n', real(values(k))) ;
-	fprintf (f, '%30.16e\n', imag(values(k))) ;
-    end	
-end
-
-fprintf (f, '%s\n', 'rhs') ;
-for j = 1:nrhs
-    fprintf (f, '%30.16e\n', b (:,j)) ;
-end
-
-fclose (f);
+kwrite (A,b) ;
 execute_test (A,b, nrhs) ;
 
 opts = [0.001 1.2 1.2 10 1 0 0 0 ] ;
@@ -256,9 +137,11 @@ function execute_test (A, b, nrhs)
     load x ;
 
     if (~isreal(A))
+	x = 0 ;
+	xz = 0 ;
 	load xz ;
 	x = complex(x,xz) ;
-	clear xz ;
+	clear xz
     end
 %    size(x)
     [m,n] = size(A) ;
@@ -275,11 +158,13 @@ function execute_test (A, b, nrhs)
 	    norm(A*x(begin:endl) - b(:,j)),norm(A*x2-b(:,j))) ; 
 	end
     end
-    clear x, x2 ;
-    load xt ;
+    clear x x2
+    xt = 0 ;
+    xtz = 0 ;
+    load xt
 
     if (~isreal(A))
-	load xtz ;
+	load xtz
 	xt = complex(xt,xtz) ;
     end
 
@@ -287,7 +172,7 @@ function execute_test (A, b, nrhs)
         x2t = A' \ b(:,j) ;
 	begin = (j - 1) * m + 1 ;
         endl =  j * m ;
-	if (norm( xt(begin:endl) - x2t) > 1e-16)
+	if (norm( xt(begin:endl) - x2t) > 1e-16)			    %#ok
 	    fprintf('transpose resid : %10.6e  matlab resid : %10.6e\n',...
 	    norm(A'*xt(begin:endl) - b(:,j)),norm(A'*x2t-b(:,j))) ; 
         end

@@ -1,5 +1,5 @@
-function [p, Info] = camd (A, Control, C)
-%CAMD Approximate minimum degree permutation.
+function [p, Info] = camd (A, Control, C)				    %#ok
+%CAMD p = camd (A), the approximate minimum degree ordering of A
 %    P = CAMD (S) returns the approximate minimum degree permutation vector for
 %    the sparse matrix C = S+S'.  The Cholesky factorization of C (P,P), or
 %    S (P,P), tends to be sparser than that of C or S.  CAMD tends to be faster
@@ -49,8 +49,9 @@ function [p, Info] = camd (A, Control, C)
 %    of the approximate degree update used, and because "dense" rows/columns
 %    do not take part in the post-order.  It well-suited for a subsequent
 %    "chol", however.  If you require a precise elimination tree post-ordering,
-%    then do:
+%    then do the following:
 %
+%    Example:
 %       P = camd (S) ;
 %       C = spones (S) + spones (S') ;  % skip this if S already symmetric
 %       [ignore, Q] = etree (C (P,P)) ;
@@ -63,9 +64,11 @@ function [p, Info] = camd (A, Control, C)
 %    That is, C(P) is monotonically non-decreasing.  If C is not provided,
 %    no constraints are used (the ordering will be similar to AMD's ordering,
 %    except that the postordering is different).
+%
+%    See also AMD, COLMMD, COLAMD, COLPERM, SYMAMD, SYMMMD, SYMRCM.
 
 % --------------------------------------------------------------------------
-% CAMD Version 2.1, Copyright (c) 2006 by Timothy A. Davis, Yanqing Chen,
+% Copyright 2006 by Timothy A. Davis, Yanqing Chen,
 % Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.
 % email: davis at cise.ufl.edu    CISE Department, Univ. of Florida.
 % web: http://www.cise.ufl.edu/research/sparse/camd
@@ -75,7 +78,6 @@ function [p, Info] = camd (A, Control, C)
 %       Foundation, under grants ASC-9111263, DMS-9223088, and CCR-0203270,
 %	and by Sandia National Laboratories.
 %
-%    See also AMD, COLMMD, COLAMD, COLPERM, SYMAMD, SYMMMD, SYMRCM.
 
 help camd
 error ('camd mexFunction not found!  Type "camd_make" in MATLAB to compile camd');

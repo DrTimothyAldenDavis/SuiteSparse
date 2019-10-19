@@ -1,4 +1,4 @@
-%CS_DEMO1: MATLAB version of the CSparse/Demo/cs_demo1.c program.
+%CS_DEMO1 MATLAB version of the CSparse/Demo/cs_demo1.c program.
 % Uses both MATLAB functions and CSparse mexFunctions, and compares the two
 % results.  This demo also plots the results, which the C version does not do.
 %

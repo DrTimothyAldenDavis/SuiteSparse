@@ -4,6 +4,11 @@
 
 /* Shared prototypes and definitions for CHOLMOD mexFunctions */
 
+/* Ensure cholmod_read_* and cholmod_write_* work for large files.  This
+ * requires MATLAB 7.0 or later.  If you are using MATLAB 6.5 or earlier,
+ * you must delete the following line, or compile CHOLMOD with -DNLARGEFILE */
+#include "cholmod_io64.h"
+
 #ifndef NPARTITION
 #include "metis.h"
 #endif

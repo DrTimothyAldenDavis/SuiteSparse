@@ -2,7 +2,7 @@
 /* === symamdtest mexFunction =============================================== */
 /* ========================================================================== */
 
-/* COLAMD Version 2.5.
+/* SYMAMD test function
 
     This MATLAB mexFunction is for testing only.  It is not meant for
     production use.  See symamdmex.c instead.

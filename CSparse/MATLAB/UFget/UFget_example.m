@@ -1,4 +1,4 @@
-%UFget_example is a demo for UFget.
+%UFGET_EXAMPLE a demo for UFget.
 %   This example script gets the index file of the UF sparse matrix collection,
 %   and then loads in all symmetric non-binary matrices, in increasing order of
 %   number of rows in the matrix.
@@ -20,7 +20,8 @@ f = f (j) ;
 for i = f
     fprintf ('Loading %s%s%s, please wait ...\n', ...
 	index.Group {i}, filesep, index.Name {i}) ;
-    Problem = UFget (i,index)
+    Problem = UFget (i,index) ;
+    disp (Problem) ;
     spy (Problem.A) ;
     title (sprintf ('%s:%s', Problem.name, Problem.title')) ;
     UFweb (i) ;

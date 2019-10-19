@@ -1,9 +1,15 @@
 function drawbtf (A, p, q, r)
-% drawbtf (A, p, q, r)
+%DRAWBTF plot the BTF form of a matrix
 %
 % A(p,q) is in BTF form, r the block boundaries
 %
-% [p,q,r] = dmperm (A) for example
+% Example:
+%   [p,q,r] = dmperm (A)
+%   drawbtf (A, p, q, r)
+%
+% See also checkbtf, maxtrans, strongcomp.
+
+% Copyright 2006, Timothy A. Davis, University of Florida
 
 nblocks = length (r) - 1 ;
 

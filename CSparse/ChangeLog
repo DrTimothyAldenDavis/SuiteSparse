@@ -1,3 +1,7 @@
+Dec 12, 2006, v2.0.7
+
+    * minor MATLAB cleanup
+
 Dec 6, 2006, v2.0.6
 
     * Update to UFget.  Now relies on the MATLAB urlwrite function instead of

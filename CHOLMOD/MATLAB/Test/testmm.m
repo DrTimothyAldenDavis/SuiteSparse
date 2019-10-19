@@ -1,4 +1,10 @@
-% testmm:  compare mread and mmread for entire Matrix Market collection
+%TESTMM compare mread and mmread for entire Matrix Market collection
+% Example:
+%   testmm
+% See also mread.
+% Requires the mmread MATLAB m-file from http://www.nist.gov
+
+% Copyright 2006, Timothy A. Davis, University of Florida
 
 matrices = {
     'M/Harwell-Boeing/acoust/young1c.mtx', ...

@@ -2,7 +2,7 @@
 /* === colamd/symamd - a sparse matrix column ordering algorithm ============ */
 /* ========================================================================== */
 
-/* COLAMD Version 2.5.
+/* COLAMD / SYMAMD
 
     colamd:  an approximate minimum degree column ordering algorithm,
     	for LU factorization of symmetric or unsymmetric matrices,

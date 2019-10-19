@@ -1,4 +1,4 @@
-CHOLMOD Version 1.2: a sparse Cholesky factorization package.
+CHOLMOD: a sparse Cholesky factorization package.
 
 The Include/*.h files in this directory provide a basic documentation of all
 user-callable routines and user-visible data structures in the CHOLMOD

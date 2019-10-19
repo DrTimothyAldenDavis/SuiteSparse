@@ -1,9 +1,15 @@
 function test19
-% test19: look for NaN's from lchol (caused by Intel MKL 7.x bug)
+%TEST19 look for NaN's from lchol (caused by Intel MKL 7.x bug)
+% Example:
+%   test19
+% See also cholmod_test
+
+% Copyright 2006, Timothy A. Davis, University of Florida
+
 fprintf ('=================================================================\n');
 fprintf ('test19: look for NaN''s from lchol (caused by Intel MKL 7.x bug)\n') ;
 
-Prob = UFget (936)
+Prob = UFget (936)							    %#ok
 A = Prob.A ;
 [p count] = analyze (A) ;
 A = A (p,p) ;
@@ -15,7 +21,7 @@ fprintf ('mflop rate: %8.2f\n', 1e-6*fl/t) ;
 n = size (L,1) ;
 for k = 1:n
     if (any (isnan (L (:,k))))
-	k
+	k								    %#ok
 	error ('!') ;
     end
 end

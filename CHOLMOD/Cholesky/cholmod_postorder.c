@@ -3,8 +3,7 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * CHOLMOD/Cholesky Module.  Version 1.3.  Copyright (C) 2005-2006,
- * Timothy A. Davis
+ * CHOLMOD/Cholesky Module.  Copyright (C) 2005-2006, Timothy A. Davis
  * The CHOLMOD/Cholesky Module is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
@@ -12,6 +11,8 @@
  * -------------------------------------------------------------------------- */
 
 /* Compute the postorder of a tree. */
+
+#ifndef NCHOLESKY
 
 #include "cholmod_internal.h"
 #include "cholmod_cholesky.h"
@@ -288,3 +289,4 @@ UF_long CHOLMOD(postorder)	/* return # of nodes postordered */
     ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
     return (k) ;
 }
+#endif

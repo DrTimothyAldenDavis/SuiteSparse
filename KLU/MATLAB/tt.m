@@ -1,7 +1,9 @@
+%TT: test klu
+% Example:
+%   tt
 
 clear all
 clear functions
-pack
 
 index = UFget ;
 f = find (index.nrows == index.ncols & index.isReal) ;

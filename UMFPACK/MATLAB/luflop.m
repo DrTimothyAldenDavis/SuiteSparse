@@ -1,6 +1,7 @@
-function f = luflop (L, U)
-%LUFLOP
+function f = luflop (L, U)						    %#ok
+%LUFLOP: compute LU flop count
 %
+% Example:
 % f = luflop (L, U)
 %
 % Given an LU factorization, compute how many flops took to compute it.  This
@@ -17,7 +18,7 @@ function f = luflop (L, U)
 % cancelation occurs.  Try [L,U,P] = lu (sparse (ones (10))) and then
 % luflop (L,U).
 
-% UMFPACK Version 5.0, Copyright (c) 1995-2006 by Timothy A. Davis.
+% Copyright (c) 1995-2006 by Timothy A. Davis.
 % All Rights Reserved.  Type umfpack_details for License.
 
 help luflop

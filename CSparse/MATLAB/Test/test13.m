@@ -62,7 +62,7 @@ for trial = 1:100
     end
 
     % find etree of A'A, and postorder it
-    [m n] = size (A) ;
+    [m n] = size (A) ;							    %#ok
     % full (A)
 
     [cp0 cpo0] = etree (A, 'col') ;

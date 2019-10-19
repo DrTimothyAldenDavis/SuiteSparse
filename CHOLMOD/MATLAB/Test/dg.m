@@ -1,6 +1,11 @@
 function dg(A)
 %DG order and plot A*A', using CHOLMOD's nested dissection
 % used by test27.m
+% Example:
+%   dg(A)
+% See also cholmod_test
+
+% Copyright 2006, Timothy A. Davis, University of Florida
 A = spones (A) ;
 [p cp cm] = nesdis (A, 'row') ;
 
@@ -11,7 +16,7 @@ A = spones (A) ;
 C = A (p,:) ;
 qmin = zeros (1,n) ;
 for j = 1:n
-    qmin (j) = min (find (C (:,j))) ;
+    qmin (j) = min (find (C (:,j))) ;		%#ok
 end
 [ignore q] = sort (qmin) ;
 
@@ -30,17 +35,17 @@ drawnow
 ncomp = max(cm) ;
 fprintf ('# of components: %d\n', ncomp)
 
-cs = [cm(p) n+1] ;
-cboundaries = find (diff (cs)) ;
+% cs = [cm(p) n+1] ;
+% cboundaries = find (diff (cs)) ;
 
 fprintf ('size of root %d out of %d rows\n', length (find (cm == ncomp)), m);
 
 [cnt h pa po R] = symbfact2 (A (p,:), 'row') ;
-rc = full (sum (R)) ;
+% rc = full (sum (R)) ;
 
 for k = 1:ncomp
     fprintf ('node %4d : parent %4d size %6d work %g\n', ...
-	k, cp (k), length (find (cm == k)), sum (cnt (find (cm == k)).^2) ) ;
+    k, cp (k), length (find (cm == k)), sum (cnt (find (cm == k)).^2) ) ;   %#ok
 end
 
 subplot (2,3,4) ; spy (A*A') ;

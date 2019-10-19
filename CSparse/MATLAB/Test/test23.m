@@ -23,7 +23,7 @@ for trials = 1:1000
     % d = 0.1 * rand (1) ;
     d = rand (1) * 4 * max (m,n) / max (m*n,1) ;
     A = sprandn (m,n,d) ;
-    S = sprandn (m,m,d) + speye (m) ;
+    % S = sprandn (m,m,d) + speye (m) ;
 
     cs_dmspy (A) ;
     drawnow

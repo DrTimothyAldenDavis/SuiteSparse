@@ -127,11 +127,7 @@ else
     has_coord = 0 ;
 end
 
-if (isfield (Problem, 'kind'))
-    kind = Problem.kind ;
-else
-    kind = '' ;
-end
+kind = Problem.kind ;
 if (isfield (Problem, 'notes'))
     notes = Problem.notes ;
 else
@@ -149,7 +145,7 @@ nnzdiag = index.nnzdiag (id) ;
 
 if (strfind (kind, 'graph'))
     bipartite = ~isempty (strfind (kind, 'bipartite')) ;
-    directed = ~isempty (regexp (kind, '\<directed')) ;
+    directed = ~isempty (regexp (kind, '\<directed', 'once')) ;
 else
     bipartite = (m ~= n) ;
     directed = (index.pattern_symmetry (id) < 1) ;
@@ -436,10 +432,14 @@ fprintf (f, '<p><table border=1>\n') ;
 fprintf (f, '<tr><td>author</td><td align=left>%s</td>\n', au) ;
 fprintf (f, '<tr><td>editor</td><td align=left>%s</td>\n', ed) ;
 fprintf (f, '<tr><td>date</td><td align=left>%s</td>\n', da) ;
-if (~isempty (kind))
-    fprintf (f, ...
-    '<tr><td><a href=../kind.html>kind</a></td><td align=left>%s</td>\n', kind);
+fprintf (f, '<tr><td><a href=../kind.html>kind</a></td><td align=left>%s</td>\n', kind);
+s = index.isND (id) ;
+if (s == 0)
+    ss = 'no' ;
+else
+    ss = 'yes' ;
 end
+fprintf (f, '<tr><td>2D/3D problem?</td><td align=left>%s</td>\n', ss) ;
 fprintf (f, '</table><p>\n') ;
 
 %-------------------------------------------------------------------------------

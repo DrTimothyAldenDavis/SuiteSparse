@@ -1,3 +1,11 @@
+%TRAV exhaustive test script for BTF
+% Requires UFget in the SuiteSparse
+% Example:
+%   trav
+% See also td.
+
+% Copyright 2006, Timothy A. Davis, Univ. of Florida
+
 doplot = 1 ;
 dopause = 0 ;
 dostrong = 1 ;
@@ -126,13 +134,13 @@ nasty = [
     285 % ATandT/pre2
 	% --- huge matrix, turn off plotting
     940 % Shenk/af_shell1, memory leak in plot, after call to btf, once.
-]'
+]' ;
 
 % maxtrans_recursive causes a seg fault on these matrices:
-skip_list_maxtrans_recursive = [285] ;
+skip_list_maxtrans_recursive = 285 ;
 
 % p = dmperm (A) causes a seg fault on these matrices:
-skip_list_dmperm = [285] ;
+skip_list_dmperm = 285 ;
 
 % [p,q,r] = dmperm (A) causes a seg fault on these matrices:
 skip_list_dmperm_btf = ...
@@ -171,13 +179,12 @@ for matnum = 1:nmat % {
 
     rand ('state', 0) ;
 
-    % clear all unused variables and pack to bare minimum memory
+    % clear all unused variables.
     % nothing here is left that is proportional to the matrix size
     clear A p1 p2 p3 q3 r3 match1 match2 match4 pa ra sa qa B C pb rb pc rc
     clear jumble B11 B12 B13 B21 B22 B23 B31 B32 B33 pjumble qjumble ans
     clear c kbad kgood
     % whos
-    pack
     % pause
 
     if (j > 0)
@@ -185,11 +192,10 @@ for matnum = 1:nmat % {
 	name = Problem.name ;
 	A = Problem.A ;
 	clear Problem
-	pack
     else
 	% construct the jth test matrix
 	j = -j ;
-	if (j == 1 | j == 2)
+	if (j == 1 || j == 2)
 	    B11 = UFget ('Grund/b1_ss') ;	    % 7-by-7 diagonal block
 	    B11 = B11.A ;
 	    B12 = sparse (zeros (7,2)) ;
@@ -261,7 +267,6 @@ for matnum = 1:nmat % {
 
     p1 = abs (match1) ;
     if (any (sort (p1) ~= 1:n))
-	p1
 	error ('bad perm') ;
     end
     B = A (:,p1) ;
@@ -337,9 +342,12 @@ for matnum = 1:nmat % {
 	fprintf ('[p,q,r,s]=dmperm(A): skip\n') ;
     end
 
+    jumble = randperm (n) ;
+
     %---------------------------------------------------------------------------
     % try harwell (returns an error for singular matrices, thus the try/catch)
 
+%{
     if (0)
 	try
 	    tic
@@ -398,10 +406,8 @@ for matnum = 1:nmat % {
 	[pb,rb] = strongcomp_recursive (B) ;
 	t = toc ;
 	fprintf ('strongcomp_recursive     %8.2f seconds\n', t) ;
-	if (~singular & ~skip_dmperm_btf & (length (rb) ~= nblocks+1))
-	    rb
-	    nnz (diag (B))
-	    warning ('rb') ;
+	if (~singular && ~skip_dmperm_btf && (length (rb) ~= nblocks+1))
+	    warning ('BTF:invalid','rb') ;
 	end
 	checkbtf (B, pb, pb, rb) ;
 	if (doplot)
@@ -418,10 +424,8 @@ for matnum = 1:nmat % {
 	[pc,rc] = strongcomp_recursive (C) ;
 	t = toc ;
 	fprintf ('strongcomp_recur (rand)  %8.2f seconds\n', t) ;
-	if (~singular & ~skip_dmperm_btf & (length (rc) ~= nblocks+1))
-	    rc
-	    nnz (diag (B))
-	    warning ('rc') ;
+	if (~singular && ~skip_dmperm_btf && (length (rc) ~= nblocks+1))
+	    warning ('BTF:invalid', 'rc') ;
 	end
 	checkbtf (C, pc, pc, rc) ;
 	if (doplot)
@@ -435,6 +439,7 @@ for matnum = 1:nmat % {
 	end
 
     end
+%}
 
     %---------------------------------------------------------------------------
     % try strongcomp, non-recursive version
@@ -446,10 +451,8 @@ for matnum = 1:nmat % {
 	[pb,rb] = strongcomp (B) ;
 	t = toc ;
 	fprintf ('strongcomp               %8.2f seconds\n', t) ;
-	if (~singular & ~skip_dmperm_btf & (length (rb) ~= nblocks+1))
-	    rb
-	    nnz (diag (B))
-	    warning ('rb') ;
+	if (~singular && ~skip_dmperm_btf && (length (rb) ~= nblocks+1))
+	    warning ('BTF:invalid', 'rb') ;
 	end
 	checkbtf (B, pb, pb, rb) ;
 	if (doplot)
@@ -458,6 +461,7 @@ for matnum = 1:nmat % {
 	    title ('strongcomp') ;
 	end
 
+%{
 	%-----------------------------------------------------------------------
 	% try btf on original matrix
 	tic ;
@@ -476,10 +480,8 @@ for matnum = 1:nmat % {
 	    error ('qw') ;
 	end
 	c = diag (A (pw,abs (qw))) ;
-	if (~singular & ~skip_dmperm_btf & (length (rw) ~= nblocks+1))
-	    rw
-	    nnz (diag (A (pw,abs (qw))))
-	    warning ('rw') ;
+	if (~singular && ~skip_dmperm_btf && (length (rw) ~= nblocks+1))
+	    warning ('BTF:invalid', 'rw') ;
 	end
 	checkbtf (A, pw, abs (qw), rw) ;
 
@@ -488,7 +490,7 @@ for matnum = 1:nmat % {
 	if (any (c (kbad) ~= 0))
 	    error ('kbad') ;
 	end
-	if (any (c (kgood) == 0))
+	if (any (c (kgood) == 0))	    %#ok
 	    error ('kgood') ;
 	end
 
@@ -502,6 +504,7 @@ for matnum = 1:nmat % {
 	    end
 	    title ('btf') ;
 	end
+%}
 
 	%-----------------------------------------------------------------------
 	% try [p,q,r] = strongcomp (A, qin) form
@@ -519,10 +522,8 @@ for matnum = 1:nmat % {
 	    error ('qz') ;
 	end
 	c = diag (A (pz,abs (qz))) ;
-	if (~singular & ~skip_dmperm_btf & (length (rz) ~= nblocks+1))
-	    rz
-	    nnz (diag (A (pz,abs (qz))))
-	    warning ('rz') ;
+	if (~singular && ~skip_dmperm_btf && (length (rz) ~= nblocks+1))
+	    warning ('BTF:invalid', 'rz') ;
 	end
 	checkbtf (A, pz, abs (qz), rz) ;
 
@@ -553,10 +554,8 @@ for matnum = 1:nmat % {
 	[pc,rc] = strongcomp (C) ;
 	t = toc ;
 	fprintf ('strongcomp       (rand)  %8.2f seconds\n', t) ;
-	if (~singular & ~skip_dmperm_btf & (length (rc) ~= nblocks+1))
-	    rc
-	    nnz (diag (B))
-	    warning ('rc') ;
+	if (~singular && ~skip_dmperm_btf && (length (rc) ~= nblocks+1))
+	    warning ('BTF:invalid', 'rc') ;
 	end
 	checkbtf (C, pc, pc, rc) ;
 	if (doplot)
@@ -574,7 +573,7 @@ for matnum = 1:nmat % {
 	drawnow
     end
 
-    if (matnum ~= nmat & dopause)
+    if (matnum ~= nmat && dopause)
 	input ('Hit enter: ') ;
     end
 

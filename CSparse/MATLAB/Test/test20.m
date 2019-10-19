@@ -38,7 +38,7 @@ for trials = 1:10
     err2b = norm (L2b*L2b'-A2) ;
 
     % try a downdate
-    L1b = cholupdown (L2, -1, w) ;
+    L1b = cholupdown (L2, -1, w) ;					    %#ok
     err1b = norm (L2b*L2b'-A2) ;
 
 

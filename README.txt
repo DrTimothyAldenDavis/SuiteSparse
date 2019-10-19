@@ -68,8 +68,15 @@ if you have another BLAS (-lblas, for example).
 
 CHOLMOD requires METIS 4.0.1 (http://www-users.cs.umn.edu/~karypis/metis)
 by default.  Place a copy of the metis-4.0 directory in the same directory
-(SuiteSparse) containing this README file.  cd to metis-4.0 and type "make".
-Edit the UFconfig/UFconfig.mk file (see that file for instructions), if
+(SuiteSparse) containing this README file.  cd to metis-4.0 and edit the
+Makefile.in file.  I recommend making these changes to metis-4.0/Makefile.in:
+
+CC = gcc
+OPTFLAGS = -O3
+COPTIONS = -fexceptions -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
+
+then type "make".  You can now compile CHOLMOD.  First,
+edit the UFconfig/UFconfig.mk file (see that file for instructions), if
 necessary.  Next, type "make" in this directory to compile all packages in
 this distribution.  CHOLMOD can be compiled without METIS (use -DNPARTITION).
 

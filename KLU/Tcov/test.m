@@ -1,4 +1,6 @@
 function test (what)
+%TEST: test KLU
+% Example:
 % what = 2
 % test (what)
 % what 0: UF circuits
@@ -47,11 +49,11 @@ unsym_kundert = [0.1 0] ;
 
 do_kundert = 1 ;
 
-hb = [1:4] ;
+hb = 1:4 ;
 att = [283 284 286] ;
-bomhof = [370:373] ;
+bomhof = 370:373 ;
 grund = [465 466] ;
-hamm = [539:544] ;
+hamm = 539:544 ;
 sandia = [ 984 1053:1055 1105:1112 1168:1169 ] ;
 % circuits = [hb bomhof grund hamm att ] ;
 circuits = [sandia hb bomhof grund hamm ] ;	% exclude ATandT matrices
@@ -385,7 +387,7 @@ for j = matrix_list % {
 	ft = 0 ;
 	f2 = 0 ;
 	iters = 0 ;
-	while ((st+ft) < tmin & iters < maxiters)
+	while ((st+ft) < tmin && iters < maxiters)
 	    if (do_harwell)
 		[x, Info] = klus_harwell (A, b, klu_btf_control, [ ]) ;
 	    else
@@ -418,7 +420,7 @@ for j = matrix_list % {
 	if (f2 >= 0)
 	    fprintf ('%9.4f', f2) ;
 	else
-	    fprintf ('     -   ', f2) ;    % refactorization not tested
+	    fprintf ('     -   ') ;    % refactorization not tested
 	end
 
 	fprintf (' lunz: %8d resid: %8.2e offd %6d nzoff %7d nb %6d',...
@@ -447,7 +449,7 @@ for j = matrix_list % {
 		t_dmperm = 0 ;
 		if (do_btf == 1)
 		    iters = 0 ;
-		    while (t_dmperm < tmin & iters < maxiters)
+		    while (t_dmperm < tmin && iters < maxiters)
 			t = cputime ;
 			% [p,q,r] = dmperm (A) ;
 			[p,q,r] = btf (A) ;
@@ -492,7 +494,7 @@ for j = matrix_list % {
 %		    solver (@lu_fact, do_btf, A, t_dmperm) ;
 
 		    % Kundert's Sparse1.3, unsymmetric mode
-		    if (what < 2 & do_kundert)
+		    if (what < 2 && do_kundert)
 			solver (@lu_kundert, do_btf, A, t_dmperm, unsym_kundert) ;
 		    end
 		end % }
@@ -520,7 +522,7 @@ for j = matrix_list % {
 		    % solver (@lu_fact, do_btf, A, t_dmperm, sym) ;
 
 		    % Kundert's Sparse1.3, symmetric mode
-		    if (what < 2 & do_kundert)
+		    if (what < 2 && do_kundert)
 			solver (@lu_kundert, do_btf, A, t_dmperm, sym) ;
 		    end
 

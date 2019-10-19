@@ -1,6 +1,11 @@
 function test28
+%TEST28 test nesdis
+% Example:
+%   test28
+% See also cholmod_test
 
-% test nesdis
+% Copyright 2006, Timothy A. Davis, University of Florida
+
 index = UFget ;
 
 [ignore f] = sort (index.nnz) ;
@@ -28,10 +33,10 @@ for i = f
 	end
 
 	% default: do not split connected components
-	[p1 cp1 cmem1] = nesdis (A) ;
+	[p1 cp1 cmem1] = nesdis (A) ;					    %#ok
 
 	% order connected components separately
-	[p2 cp2 cmem2] = nesdis (A, 'sym', [200 1]) ;
+	[p2 cp2 cmem2] = nesdis (A, 'sym', [200 1]) ;			    %#ok
 	c1 = symbfact (A (p1,p1)) ;
 	c2 = symbfact (A (p2,p2)) ;
 	lnz1 = sum (c1) ;

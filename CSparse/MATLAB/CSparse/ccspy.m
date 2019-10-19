@@ -1,5 +1,9 @@
 function [p, q, r, s] = ccspy (A, bipartite, res)
-%CCSPY plot the strongly connected components of a graph.
+%CCSPY plot the connected components of a matrix.
+%
+%   Example:
+%	[p, q, r, s] = ccspy (A, bipartite, res)
+%
 %   If A is square, [p,q,r,s] = ccspy(A) finds a permutation p so that A(p,q)
 %   is permuted into block upper triangular form.  In this case, r=s, p=q and
 %   the kth diagonal block is given by A (t,t) where t = r(k):r(k)+1. 
@@ -26,7 +30,7 @@ end
 if (nargin < 3)
     res = 256 ;
 end
-if (nargin < 2 | isempty (bipartite))
+if (nargin < 2 || isempty (bipartite))
     bipartite = (m ~= n) ;
 end
 
@@ -54,29 +58,7 @@ if (~bipartite)
     plot ([.5 .5 n+.5 n+.5], [.5 .5 n+.5 n+.5], 'r') ;
 end
 
-% for k = 1:nb
-%     drawbox (r(k), r(k+1), s(k), s(k+1),'g',1,e) ;
-% end
-
-if (nb > 1)
-    if (e == 1)
-	r1 = r (1:nb) - .5 ;
-	r2 = r (2:nb+1) - .5 ;
-	c1 = s (1:nb) - .5 ;
-	c2 = s (2:nb+1) - .5 ;
-    else
-	r1 = ceil (r (1:nb) / e) - .5 ;
-	r2 = ceil ((r (2:nb+1) - 1) / e) + .5 ;
-	c1 = ceil (s (1:nb) / e) - .5 ;
-	c2 = ceil ((s (2:nb+1) - 1) / e) + .5 ;
-    end
-    kk = find (diff (c1) > 0 | diff (c2) > 0 | diff (r1) > 0 | diff (r2) > 0) ;
-    kk = [1 kk+1] ;
-    for k = kk
-	plot ([c1(k) c2(k) c2(k) c1(k) c1(k)], ...
-	      [r1(k) r1(k) r2(k) r2(k) r1(k)], 'r', 'LineWidth', 1) ;
-    end
-end
+drawboxes (nb, e, r, s) ;
 
 drawbox (1,m+1,1,n+1,'k',1,e) ;
 hold off

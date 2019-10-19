@@ -1,4 +1,4 @@
-CHOLMOD/MATLAB Module.  Version 1.2.
+CHOLMOD/MATLAB Module.
 Copyright (C) 2005-2006, Timothy A. Davis
 CHOLMOD is also available under other licenses; contact authors for details.
 MATLAB(tm) is a Registered Trademark of The MathWorks, Inc.

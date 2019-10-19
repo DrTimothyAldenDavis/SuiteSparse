@@ -75,8 +75,8 @@ for trial = 1:100
     end
 
     x1 = zeros (m,1) ;
-    x1 (p) = x ;
-    x2 = cs_ipvec (x, p) ;
+    x1 (p) = x ;							    %#ok
+    x2 = cs_ipvec (x, p) ;						    %#ok
 
     n = min (m,n) ;
     B = A (1:n, 1:n) ;
@@ -87,9 +87,9 @@ for trial = 1:100
     C2 = cs_symperm (B,p) ;
 
     try
-	pp = amd (C2) ;
+	pp = amd (C2) ;							    %#ok
     catch
-	pp = symamd (C2) ;
+	pp = symamd (C2) ;						    %#ok
     end
 
     err = norm (C1-C2,1) ;

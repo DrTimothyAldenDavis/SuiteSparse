@@ -1,5 +1,7 @@
 function S = sparse2 (i,j,s,m,n,nzmax)					    %#ok
-%SPARSE2: replacement for SPARSE
+%SPARSE2 replacement for SPARSE
+%
+%   Example:
 %   S = sparse2 (i,j,s,m,n,nzmax)
 %   
 %   Identical to the MATLAB sparse function (just faster).

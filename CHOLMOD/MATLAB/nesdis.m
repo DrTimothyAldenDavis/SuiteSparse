@@ -1,5 +1,7 @@
 function [p cparent cmember] = nesdis (A, mode, opts)			    %#ok
-%NESDIS:  nested dissection ordering via CHOLMOD's nested dissection.
+%NESDIS nested dissection ordering via CHOLMOD's nested dissection.
+%
+%   Example:
 %   p = nesdis(A)         returns p such chol(A(p,p)) is typically sparser than
 %                         chol(A).  Uses tril(A) and assumes A is symmetric.
 %   p = nesdis(A,'sym')   the same as p=nesdis(A).
@@ -44,7 +46,7 @@ function [p cparent cmember] = nesdis (A, mode, opts)			    %#ok
 %   Requires METIS, authored by George Karypis, Univ. of Minnesota.  This
 %   MATLAB interface, via CHOLMOD, is by Tim Davis.
 %
-%   See also METIS, BISECT, CCOLAMD, CSYMAMD, CAMD
+%   See also METIS, BISECT, AMD
 
 %   Copyright 2006, Timothy A. Davis
 %   http://www.cise.ufl.edu/research/sparse

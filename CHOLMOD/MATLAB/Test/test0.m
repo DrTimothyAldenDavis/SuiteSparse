@@ -1,5 +1,11 @@
 function test0 (nmat)
-% test0(nmat): test most CHOLMOD functions
+%TEST0 test most CHOLMOD functions
+% Example:
+%   test0(nmat)
+% See also cholmod_test
+
+% Copyright 2006, Timothy A. Davis, University of Florida
+
 fprintf ('=================================================================\n');
 fprintf ('test0: test most CHOLMOD functions\n') ;
 
@@ -7,7 +13,7 @@ fprintf ('test0: test most CHOLMOD functions\n') ;
 % collection.  You can obtain UFget from
 % http://www.cise.ufl.edu/research/sparse/matrices.
 
-s = exist ('amd') ;
+s = exist ('amd') ;	%#ok
 use_amd = (s == 3 || s == 5) ;
 if (use_amd)
 fprintf ('Testing CHOLMOD with AMD and the UF sparse matrix collection\n') ;
@@ -35,7 +41,7 @@ if (doplots)
 end
 
 % skip = [937:939 1202:1211] ;
-skip = [937:939] ;
+skip = 937:939 ;
 if (nargin > 0)
     nmat = max (0,nmat) ;
     nmat = min (nmat, length (f)) ;
@@ -95,12 +101,12 @@ for i = f
 	end
 
 	% ensure chol, chol2, and lchol are loaded, for more accurate timing
-	R = chol2 (sparse (1)) ;
-	R = chol (sparse (1)) ;
-	R = lchol (sparse (1)) ;
-	R = ldlchol (sparse (1)) ;
-	R = ldlupdate (sparse (1), sparse (1)) ;
-	c = symbfact (sparse (1)) ;
+	R = chol2 (sparse (1)) ;	    %#ok
+	R = chol (sparse (1)) ;		    %#ok
+	R = lchol (sparse (1)) ;	    %#ok
+	R = ldlchol (sparse (1)) ;	    %#ok
+	R = ldlupdate (sparse (1), sparse (1)) ;	    %#ok
+	c = symbfact (sparse (1)) ;	    %#ok
 
 	tic ;
 	L = lchol (S) ;
@@ -112,7 +118,7 @@ for i = f
 	fprintf ('CHOLMOD time: L=lchol  %10.4f  nnz(L): %d\n', t3, nnz (L)) ;
 	lnorm = norm (L, 1) ;
 
-	err = lu_normest (S, L, L') / lnorm ;
+	err = ldl_normest (S, L) / lnorm ;
 	if (err > 1e-6)
 	    error ('!') ;
 	end
@@ -127,7 +133,7 @@ for i = f
 	end
 	fprintf ('CHOLMOD time: R=chol2  %10.4f  nnz(R): %d\n', t2, nnz (R)) ;
 
-	err = lu_normest (S, R', R) / lnorm ;
+	err = ldl_normest (S, R') / lnorm ;
 	if (err > 1e-6)
 	    error ('!') ;
 	end
@@ -142,7 +148,7 @@ for i = f
 	    drawnow ;
 	end
 
-	err = lu_normest (S, R', R) / lnorm ;
+	err = ldl_normest (S, R') / lnorm ;
 	if (err > 1e-6)
 	    error ('!') ;
 	end
@@ -171,7 +177,7 @@ for i = f
 	    drawnow ;
 	end
 
-	err = lu_normest (A (q,q), L, L') / lnorm ;
+	err = ldl_normest (A (q,q), L) / lnorm ;
 	if (err > 1e-6)
 	    error ('!') ;
 	end
@@ -202,6 +208,11 @@ for i = f
 	row = 1 + floor (rand (1) * n) ;
 	C (row,1) = 1 ;
 
+	if (~isreal (C) || ~isreal (LD))
+	    fprintf ('skip update/downdate of complex matrix ...\n') ;
+	    continue ;
+	end
+
 	tic
 	LD2 = ldlupdate (LD, C) ;
 	t = toc ;
@@ -227,7 +238,7 @@ for i = f
 	% no change to the pattern occurs.
 	k = max (1, floor (k/2)) ;
 	C1 = C (:, 1:k) ;
-	C2 = C (:, k+1:end) ;
+	C2 = C (:, k+1:end) ;		%#ok
 	tic
 	LD3 = ldlupdate (LD2, C1, '-') ;
 	t = toc ;

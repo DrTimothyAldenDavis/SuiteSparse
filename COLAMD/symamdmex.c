@@ -2,12 +2,12 @@
 /* === symamd mexFunction =================================================== */
 /* ========================================================================== */
 
-/* COLAMD Version 2.5.
+/* SYMAMD mexFunction
 
     Usage:
 
-	P = symamd (A) ;
-	[ P, stats ] = symamd (A, knobs) ;
+	P = symamd2 (A) ;
+	[ P, stats ] = symamd2 (A, knobs) ;
 
     See symamd.m for a description.
 

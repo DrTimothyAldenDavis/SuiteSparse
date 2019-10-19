@@ -1,6 +1,5 @@
-function [p,q,r] = strongcomp (A, qin)
-%
-% STRONGCOMP: Find a symmetric permutation to upper block triangular form.
+function [p,q,r] = strongcomp (A, qin)					    %#ok
+%STRONGCOMP Find a symmetric permutation to upper block triangular form.
 %
 % Usage:
 %
@@ -23,7 +22,9 @@ function [p,q,r] = strongcomp (A, qin)
 % r(1) is one and the last entry in r is equal to n+1.
 % The diagonal of A (or A (:,qin)) is ignored.
 %
-% strongcomp is normally proceeded by a maximum transversal:
+% strongcomp is normally proceeded by a maximum transversal.
+%
+% Example:
 %
 %	[p,q,r] = strongcomp (A, maxtrans (A))
 %
@@ -39,10 +40,9 @@ function [p,q,r] = strongcomp (A, qin)
 % permutation of 1:n, and find(q<0) gives a list of the indices of the
 % diagonal of A(p,q) that are zero.
 %
-% Copyright (c) 2004.  Tim Davis, May, 2004, University of Florida,
-% with support from Sandia National Laboratories.  All Rights Reserved.
-%
 % See also maxtrans, dmperm
+
+% Copyright 2006, Timothy A. Davis, University of Florida
 
 error ('strongcomp mexFunction not found') ;
 

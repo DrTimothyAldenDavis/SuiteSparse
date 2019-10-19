@@ -3,8 +3,7 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * CHOLMOD/Include/cholmod_check.h.  Version 1.3.
- * Copyright (C) 2005-2006, Timothy A. Davis
+ * CHOLMOD/Include/cholmod_check.h.  Copyright (C) 2005-2006, Timothy A. Davis
  * CHOLMOD/Include/cholmod_check.h is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
@@ -53,7 +52,7 @@
  * cholmod_write_sparse	    write a sparse matrix to a Matrix Market file.
  *
  * cholmod_write_dense	    write a dense matrix to a Matrix Market file.
-
+ *
  * cholmod_print_common and cholmod_check_common are the only two routines that
  * you may call after calling cholmod_finish.
  *

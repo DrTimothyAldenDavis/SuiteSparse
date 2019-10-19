@@ -70,19 +70,19 @@ for k = 1:nmat
     end
 
     tic
-    [p1,q1,r1,s1,cc1,rr1] = cs_dmperm (A) ;
+    [p1,q1,r1,s1,cc1,rr1] = cs_dmperm (A) ;				    %#ok
     d1 = toc ;
     fprintf (' %8.2f', d1) ;
     D1 (k) = d1 ;
 
     tic
-    [p2,q2,r2,s2,cc2,rr2] = cs_dmperm (A,1) ;
+    [p2,q2,r2,s2,cc2,rr2] = cs_dmperm (A,1) ;				    %#ok
     d2 = toc ;
     fprintf (' %8.2f', d2) ;
     D2 (k) = d2 ;
 
     tic
-    [p3,q3,r3,s3,cc3,rr3] = cs_dmperm (A,-1) ;
+    [p3,q3,r3,s3,cc3,rr3] = cs_dmperm (A,-1) ;				    %#ok
     d3 = toc ;
     fprintf (' %8.2f\n', d3) ;
     D3 (k) = d3 ;

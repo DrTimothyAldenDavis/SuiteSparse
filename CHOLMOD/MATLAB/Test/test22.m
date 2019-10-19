@@ -1,6 +1,13 @@
 function test22(nmat)
-% test22(nmat): test pos.def and indef. matrices
+%TEST22 test pos.def and indef. matrices
+% Example:
+% test22(nmat)
+%
 % if nmat <= 0, just test problematic matrices
+% See also cholmod_test
+
+% Copyright 2006, Timothy A. Davis, University of Florida
+
 fprintf ('=================================================================\n');
 fprintf ('test22: test pos.def and indef. matrices\n') ;
 
@@ -59,8 +66,8 @@ fprintf ('test22: chol and chol2 are repeated so each take >= %g sec\n',tlimit);
 klimit = 1 ;
 
 % warmup, for more accurate timing
-[R,p] = chol (sparse (1)) ;
-[R,p] = chol2 (sparse (1)) ;
+[R,p] = chol (sparse (1)) ;						    %#ok
+[R,p] = chol2 (sparse (1)) ;						    %#ok
 clear R p
 
 for i = f
@@ -100,7 +107,7 @@ for i = f
     % MATLAB
     k = 0 ;
     t1 = 0 ;
-    while (t1 < tlimit & k < klimit) ;
+    while (t1 < tlimit && k < klimit) ;
 	tic ;
 	[R1,p1] = chol (A) ;
 	t = toc ;
@@ -112,7 +119,7 @@ for i = f
     % CHOLMOD
     k = 0 ;
     t2 = 0 ;
-    while (t2 < tlimit & k < klimit) ;
+    while (t2 < tlimit && k < klimit) ;
 	tic ;
 	[R2,p2] = chol2 (A) ;
 	t = toc ;
@@ -124,7 +131,7 @@ for i = f
     if (klimit == 1)
 	rmin = full (min (abs (diag (R2)))) ;
 	rmax = full (max (abs (diag (R2)))) ;
-	if (p2 ~= 0 | isnan (rmin) | isnan (rmax) | rmax == 0)
+	if (p2 ~= 0 || isnan (rmin) || isnan (rmax) || rmax == 0)
 	    rcond = 0 ;
 	else
 	    rcond = rmin / rmax ;
@@ -179,13 +186,13 @@ for i = f
 	p1, p2, t1, t2, t1/t2) ;
 
     if (err == 0)
-	fprintf ('      0', err) ;
+	fprintf ('      0') ;
     else
 	fprintf (' %6.0e', err) ;
     end
 
     if (kerr == 0)
-	fprintf ('      0\n', kerr) ;
+	fprintf ('      0\n') ;
     else
 	fprintf (' %6.0e\n', kerr) ;
     end

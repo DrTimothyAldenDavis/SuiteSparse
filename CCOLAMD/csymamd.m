@@ -1,5 +1,5 @@
-function [p, stats] = csymamd (S, knobs, cmember)
-%CSYMAMD Constrained symmetric approximate minimum degree permutation.
+function [p, stats] = csymamd (S, knobs, cmember)			    %#ok
+%CSYMAMD constrained symmetric approximate minimum degree permutation
 %    P = CSYMAMD(S) for a symmetric positive definite matrix S, returns the
 %    permutation vector p such that S(p,p) tends to have a sparser Cholesky
 %    factor than S.  Sometimes CSYMAMD works well for symmetric indefinite
@@ -10,7 +10,8 @@ function [p, stats] = csymamd (S, knobs, cmember)
 %
 %    See also AMD, CCOLAMD, COLAMD, SYMAMD.
 %
-%    Usage:  p = csymamd(S)
+%    Example:
+%            p = csymamd(S)
 %            [p stats] = csymamd(S,knobs,cmember)
 %
 %    knobs is an optional one- to three-element input vector, with a default
@@ -46,7 +47,7 @@ function [p, stats] = csymamd (S, knobs, cmember)
 
 % ----------------------------------------------------------------------------
 % CCOLAMD version 2.5.
-% Copyright (C) 2005, Univ. of Florida.  Authors: Timothy A. Davis,
+% Copyright 2005, Univ. of Florida.  Authors: Timothy A. Davis,
 % Sivasankaran Rajamanickam, and Stefan Larimore
 % See License.txt for the Version 2.1 of the GNU Lesser General Public License
 % http://www.cise.ufl.edu/research/sparse

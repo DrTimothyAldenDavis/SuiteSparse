@@ -1,6 +1,7 @@
 function [cp_new, cmember_new] = septree (cp, cmember, nd_oksep, nd_small)  %#ok
-%SEPTREE: prune a separator tree.
+%SEPTREE prune a separator tree.
 %
+%   Example:
 %   [cp_new, cmember_new] = septree (cp, cmember, nd_oksep, nd_small) ;
 %
 %   cp and cmember are outputs of nesdis.  cmember(i)=c means that node i is in

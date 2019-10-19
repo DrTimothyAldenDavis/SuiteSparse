@@ -1,3 +1,7 @@
+Dec 12, 2006, version 2.0.4
+
+    * minor MATLAB code cleanup
+
 Nov 29, 2006, version 2.0.3
 
     * changed MATLAB function name to amd2, so as not to conflict with

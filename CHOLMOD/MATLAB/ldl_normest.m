@@ -1,7 +1,7 @@
 function rho = ldl_normest (A, L, D)
-% LDL_NORMEST:  estimate the 1-norm of A-L*D*L' without computing L*D*L'
+%LDL_NORMEST estimate the 1-norm of A-L*D*L' without computing L*D*L'
 %
-% Usage:
+% Example:
 %
 %       rho = ldl_normest (A, L, D)
 %
@@ -13,21 +13,24 @@ function rho = ldl_normest (A, L, D)
 %       Timothy A. Davis, CISE Dept., Univ. of Florida
 %       Gainesville, FL, 32611, USA.
 %       based on normest1, contributed on November, 1997
+%
+% See also condest, normest
 
 %   Copyright 2006, William W. Hager and Timothy A. Davis
 %   http://www.cise.ufl.edu/research/sparse
 
 [m n] = size (A) ;
 
-if (m ~= n | nnz (A-A') ~= 0)
+if (m ~= n || nnz (A-A') ~= 0)
     error ('A must be square and symmetric') ;
+end
+
+if (nargin < 3)
+    D = speye (n) ;
 end
 
 notvisited = ones (m, 1) ;  % nonvisited(j) is zero if j is visited, 1 otherwise
 rho = 0 ;    % the global rho
-
-At = A' ;
-Lt = L' ;
 
 for trial = 1:3 % {
 

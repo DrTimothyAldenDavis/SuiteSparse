@@ -1,39 +1,39 @@
 function colamd_test
+%COLAMD_TEST test colamd2 and symamd2
+% Example:
+%   colamd_test
 %
-% colamd_test
-%
-% COLAMD and SYMAMD testing function.  Here we try to give colamd and symamd
+% COLAMD and SYMAMD testing function.  Here we try to give colamd2 and symamd2
 % every possible type of matrix and erroneous input that they may encounter. 
 % We want either a valid permutation returned or we want them to fail
 % gracefully.
 %
-% You are prompted as to whether or not the colamd and symand routines and
+% You are prompted as to whether or not the colamd2 and symand routines and
 % the test mexFunctions are to be compiled.
 %
+% See also colamd2, symamd2
+%
 % Tim Davis
-% COLAMD Version 2.5.
 % http://www.cise.ufl.edu/research/sparse/colamd/
+
+% Copyright 2006, Timothy A. Davis, University of Florida
+
 
 help colamd_test
 
 s = input (...
-'Compile colamd, symand, and the test codes? (y/n, default is yes): ', 's') ;
+'Compile colamd2, symand, and the test codes? (y/n, default is yes): ', 's') ;
 
 do_compile = 1 ;
 if (~isempty (s))
-    if (s (1) == 'n' | s (1) == 'N')
+    if (s (1) == 'n' || s (1) == 'N')
 	do_compile = 0 ;
     end
 end
 
 if (do_compile)
-    fprintf ('Compiling colamd, symamd, and test mexFunctions.\n') ;
-    cmd = 'mex -O -I../UFconfig colamdmex.c colamd.c colamd_global.c' ;
-    fprintf ('%s\n', cmd) ;
-    eval (cmd) ;
-    cmd = 'mex -O -I../UFconfig symamdmex.c colamd.c colamd_global.c' ;
-    fprintf ('%s\n', cmd) ;
-    eval (cmd) ;
+    fprintf ('Compiling colamd2, symamd2, and test mexFunctions.\n') ;
+    colamd_make ;
     cmd = 'mex -O -I../UFconfig colamdtestmex.c colamd.c colamd_global.c' ;
     fprintf ('%s\n', cmd) ;
     eval (cmd) ;
@@ -44,8 +44,8 @@ if (do_compile)
 end
 
 fprintf ('\nThe following codes will be tested:\n') ;
-which colamd 
-which symamd
+which colamd2 
+which symamd2
 which colamdmex
 which symamdmex
 
@@ -56,31 +56,31 @@ randn ('state', 0) ;
 
 A = sprandn (500,500,0.4) ;
 
-p = colamd (A, [10 10 1]) ; check_perm (p, A) ;
-p = colamd (A, [2  7  1]) ; check_perm (p, A) ;
-p = symamd (A, [10 1]) ; check_perm (p, A) ;
-p = symamd (A, [7  1]) ; check_perm (p, A) ;
-p = symamd (A, [4  1]) ; check_perm (p, A) ;
+p = colamd2 (A, [10 10 1]) ; check_perm (p, A) ;
+p = colamd2 (A, [2  7  1]) ; check_perm (p, A) ;
+p = symamd2 (A, [10 1]) ; check_perm (p, A) ;
+p = symamd2 (A, [7  1]) ; check_perm (p, A) ;
+p = symamd2 (A, [4  1]) ; check_perm (p, A) ;
 
 
 fprintf ('Null matrices') ;
 A = zeros (0,0) ;
 A = sparse (A) ;
 
-[p, stats] = colamd (A, [10 10 0]) ;
+[p, stats] = colamd2 (A, [10 10 0]) ;					    %#ok
 check_perm (p, A) ;
 
-[p, stats] = symamd (A, [10 0]) ;
+[p, stats] = symamd2 (A, [10 0]) ;					    %#ok
 check_perm (p, A) ;
 
 A = zeros (0, 100) ;
 A = sparse (A) ;
-[p, stats] = colamd (A, [10 10 0]) ;
+[p, stats] = colamd2 (A, [10 10 0]) ;					    %#ok
 check_perm (p, A) ;
 
 A = zeros (100, 0) ;
 A = sparse (A) ;
-[p, stats] = colamd (A, [10 10 0]) ;
+[p, stats] = colamd2 (A, [10 10 0]) ;
 check_perm (p, A) ;
 fprintf (' OK\n') ;
 
@@ -91,21 +91,20 @@ for trial = 1:20
 
     % random square unsymmetric matrix
     A = rand_matrix (1000, 1000, 1, 10, 20) ;
-    [m n] = size (A) ;
 
     for tol = [0:.1:2 3:20 1e6]
 
-	[p, stats] = colamd (A, [tol tol 0]) ;
+	[p, stats] = colamd2 (A, [tol tol 0]) ;				    %#ok
 	check_perm (p, A) ;
 
 	B = A + A' ;
-	[p, stats] = symamd (B, [tol 0]) ;
+	[p, stats] = symamd2 (B, [tol 0]) ;				    %#ok
 	check_perm (p, A) ;
 
-	[p, stats] = colamd (A, [tol 1 0]) ;
+	[p, stats] = colamd2 (A, [tol 1 0]) ;				    %#ok
 	check_perm (p, A) ;
 
-	[p, stats] = colamd (A, [1 tol 0]) ;
+	[p, stats] = colamd2 (A, [1 tol 0]) ;				    %#ok
 	check_perm (p, A) ;
 
 	fprintf ('.') ;
@@ -120,11 +119,10 @@ for trial = 1:400
     % matrix of random mtype
     mtype = irand (3) ;
     A = rand_matrix (2000, 2000, mtype, 0, 0) ;
-    [m n] = size (A) ;
-    p = colamd (A) ;
+    p = colamd2 (A) ;
     check_perm (p, A) ;
     if (mtype == 3)
-	p = symamd (A) ;
+	p = symamd2 (A) ;
 	check_perm (p, A) ;
     end
 
@@ -143,50 +141,50 @@ for trial = 1:30
     for err = 1:13
 
         p = Tcolamd (A, [n n 0 0 err]) ;
-        if p ~= -1 
+        if (p ~= -1)							    %#ok
 	    check_perm (p, A) ;
 	end
 
 	if (err == 1)
-	    % check different (valid) input args to colamd
+	    % check different (valid) input args to colamd2
 	    p = Acolamd (A) ;
 
 	    p2 = Acolamd (A, [10 10 0 0 0]) ;
 	    if (any (p ~= p2))
-		error ('colamd: mismatch 1!') ;
+		error ('colamd2: mismatch 1!') ;
 	    end
-	    [p2 stats] = Acolamd (A) ;
+	    [p2 stats] = Acolamd (A) ;					    %#ok
 	    if (any (p ~= p2))
-		error ('colamd: mismatch 2!') ;
+		error ('colamd2: mismatch 2!') ;
 	    end
 	    [p2 stats] = Acolamd (A, [10 10 0 0 0]) ;
 	    if (any (p ~= p2))
-		error ('colamd: mismatch 3!') ;
+		error ('colamd2: mismatch 3!') ;
 	    end
 	end
 
 	B = A'*A ;
         p = Tsymamd (B, [n 0 err]) ;
-        if p ~= -1 
+        if (p ~= -1)							    %#ok
 	    check_perm (p, A) ;
 	end
 
 	if (err == 1)
 
-	    % check different (valid) input args to symamd
+	    % check different (valid) input args to symamd2
 	    p = Asymamd (B) ;
 	    check_perm (p, A) ;
 	    p2 = Asymamd (B, [10 0 0]) ;
 	    if (any (p ~= p2))
-		error ('symamd: mismatch 1!') ;
+		error ('symamd2: mismatch 1!') ;
 	    end
-	    [p2 stats] = Asymamd (B) ;
+	    [p2 stats] = Asymamd (B) ;					    %#ok
 	    if (any (p ~= p2))
-		error ('symamd: mismatch 2!') ;
+		error ('symamd2: mismatch 2!') ;
 	    end
-	    [p2 stats] = Asymamd (B, [10 0 0]) ;
+	    [p2 stats] = Asymamd (B, [10 0 0]) ;			    %#ok
 	    if (any (p ~= p2))
-		error ('symamd: mismatch 3!') ;
+		error ('symamd2: mismatch 3!') ;
 	    end
 	end
 
@@ -213,19 +211,19 @@ for trial = 1:400
     A (:, null_col) = 0 ;
 
     % Order the matrix and make sure that the null columns are ordered last.
-    [p, stats] = colamd (A, [1e6 1e6 0]) ;
+    [p, stats] = colamd2 (A, [1e6 1e6 0]) ;
     check_perm (p, A) ;
 
 %    if (stats (2) ~= 5)
 %	stats (2)
-%	error ('colamd: wrong number of null columns') ;
+%	error ('colamd2: wrong number of null columns') ;
 %    end
 
     % find all null columns in A
     null_col = find (sum (spones (A), 1) == 0) ;
-    nnull = length (null_col) ;
+    nnull = length (null_col) ;						    %#ok
     if (any (null_col ~= p ((n-4):n)))
-	error ('colamd: Null cols are not ordered last in natural order') ;
+	error ('colamd2: Null cols are not ordered last in natural order') ;
     end
 
     fprintf ('.') ;
@@ -251,18 +249,18 @@ for trial = 1:400
     A (null_col, :) = 0 ;
 
     % Order the matrix and make sure that the null rows/cols are ordered last.
-    [p,stats] = symamd (A, [10 0]) ;
+    [p,stats] = symamd2 (A, [10 0]) ;
     check_perm (p, A) ;
 
     % find actual number of null rows and columns
     Alo = tril (A, -1) ;
-    nnull = length (find (sum (Alo') == 0 & sum (Alo) == 0)) ;
+    nnull = length (find (sum (Alo') == 0 & sum (Alo) == 0)) ;		    %#ok
 
-    if (stats (2) ~= nnull | nnull < 5)
-	error ('symamd: wrong number of null columns') ;
+    if (stats (2) ~= nnull || nnull < 5)
+	error ('symamd2: wrong number of null columns') ;
     end
     if (any (null_col ~= p ((n-4):n)))
-	error ('symamd: Null cols are not ordered last in natural order') ;
+	error ('symamd2: Null cols are not ordered last in natural order') ;
     end
 
     fprintf ('.') ;
@@ -279,7 +277,7 @@ for trial = 1:400
     m = 0 ;
     while (m < 5)
 	A = rand_matrix (1000, 1000, 2, 0, 0) ;
-	[m n] = size (A) ;
+	[m n] = size (A) ;						    %#ok
     end
 
     % Add 5 null rows at random locations.
@@ -287,39 +285,38 @@ for trial = 1:400
     null_row = sort (null_row (1:5)) ;
     A (null_row, :) = 0 ;
 
-    p = colamd (A, [10 10 0]) ;
+    p = colamd2 (A, [10 10 0]) ;
     check_perm (p, A) ;
     if (stats (1) ~= 5)
-	error ('colamd: wrong number of null rows') ;
+	error ('colamd2: wrong number of null rows') ;
     end
     fprintf ('.') ;
 end
 fprintf (' OK\n') ;
 
 
-fprintf ('\ncolamd and symamd:  all tests passed\n\n') ;
+fprintf ('\ncolamd and symamd2:  all tests passed\n\n') ;
 
-%-------------------------------------------------------------------------------
-% Acolamd:  compare colamd and Tcolamd results
 %-------------------------------------------------------------------------------
 
 function [p,stats] = Acolamd (S, knobs)
+% Acolamd:  compare colamd2 and Tcolamd results
 
 if (nargin < 3)
     if (nargout == 1)
-	[p] = colamd (S) ;
+	[p] = colamd2 (S) ;
 	[p1] = Tcolamd (S, [10 10 0 0 0]) ;
     else
-	[p, stats] = colamd (S) ;
-	[p1, stats1] = Tcolamd (S, [10 10 0 0 0]) ;
+	[p, stats] = colamd2 (S) ;
+	[p1, stats1] = Tcolamd (S, [10 10 0 0 0]) ;			    %#ok
     end
 else
     if (nargout == 1)
-	[p] = colamd (S, knobs (1:3)) ;
+	[p] = colamd2 (S, knobs (1:3)) ;
 	[p1] = Tcolamd (S, knobs) ;
     else
-	[p, stats] = colamd (S, knobs (1:3)) ;
-	[p1, stats1] = Tcolamd (S, knobs) ;
+	[p, stats] = colamd2 (S, knobs (1:3)) ;
+	[p1, stats1] = Tcolamd (S, knobs) ;			    %#ok
     end
 end
 
@@ -332,26 +329,25 @@ end
 
 
 %-------------------------------------------------------------------------------
-% Asymamd:  compare symamd and Tsymamd results
-%-------------------------------------------------------------------------------
 
 function [p,stats] = Asymamd (S, knobs)
+% Asymamd:  compare symamd2 and Tsymamd results
 
 if (nargin < 3)
     if (nargout == 1)
-	[p] = symamd (S) ;
+	[p] = symamd2 (S) ;
 	[p1] = Tsymamd (S, [10 0 0]) ;
     else
-	[p, stats] = symamd (S) ;
-	[p1, stats1] = Tsymamd (S, [10 0 0]) ;
+	[p, stats] = symamd2 (S) ;
+	[p1, stats1] = Tsymamd (S, [10 0 0]) ;				%#ok
     end
 else
     if (nargout == 1)
-	[p] = symamd (S, knobs (1:2)) ;
+	[p] = symamd2 (S, knobs (1:2)) ;
 	[p1] = Tsymamd (S, knobs) ;
     else
-	[p, stats] = symamd (S, knobs (1:2)) ;
-	[p1, stats1] = Tsymamd (S, knobs) ;
+	[p, stats] = symamd2 (S, knobs (1:2)) ;
+	[p1, stats1] = Tsymamd (S, knobs) ;			    %#ok
     end
 end
 
@@ -361,12 +357,11 @@ end
 
 
 %-------------------------------------------------------------------------------
-% check_perm:  check for a valid permutation vector
-%-------------------------------------------------------------------------------
 
 function check_perm (p, A)
+% check_perm:  check for a valid permutation vector
 
-if (isempty (A) & isempty (p))
+if (isempty (A) && isempty (p))						    %#ok
     % empty permutation vectors of empty matrices are OK
     return
 end
@@ -397,17 +392,15 @@ else
 end
 
 %-------------------------------------------------------------------------------
-% irand: return a random integer between 1 and n
-%-------------------------------------------------------------------------------
 
 function i = irand (n)
+% irand: return a random integer between 1 and n
 i = min (n, 1 + floor (rand * n)) ;
 
 %-------------------------------------------------------------------------------
-% rand_matrix:  return a random sparse matrix
-%-------------------------------------------------------------------------------
 
 function A = rand_matrix (nmax, mmax, mtype, drows, dcols)
+% rand_matrix:  return a random sparse matrix
 %
 % A = rand_matrix (nmax, mmax, mtype, drows, dcols)
 %
@@ -453,12 +446,12 @@ end
 A = spones (A) ;
 
 % ensure that there are no empty columns
-d = find (full (sum (A)) == 0) ;
-A (m,d) = 1 ;
+d = find (full (sum (A)) == 0) ;					    %#ok
+A (m,d) = 1 ;								    %#ok
 
 % ensure that there are no empty rows
-d = find (full (sum (A,2)) == 0) ;
-A (d,n) = 1 ;
+d = find (full (sum (A,2)) == 0) ;					    %#ok
+A (d,n) = 1 ;								    %#ok
 
 if (mtype == 3)
     % symmetric
@@ -468,21 +461,20 @@ end
 A = spones (A) ;
 
 %-------------------------------------------------------------------------------
-% Tcolamd:  run colamd in a testing mode
-%-------------------------------------------------------------------------------
 
 function [p,stats] = Tcolamd (S, knobs)
+% Tcolamd:  run colamd2 in a testing mode
 
-if (nargout <= 1 & nargin == 1)
+if (nargout <= 1 && nargin == 1)
     p = colamdtestmex (S) ;
-elseif (nargout <= 1 & nargin == 2)
+elseif (nargout <= 1 && nargin == 2)
     p = colamdtestmex (S, knobs) ;
-elseif (nargout == 2 & nargin == 1)
+elseif (nargout == 2 && nargin == 1)
     [p, stats] = colamdtestmex (S) ;
-elseif (nargout == 2 & nargin == 2)
+elseif (nargout == 2 && nargin == 2)
     [p, stats] = colamdtestmex (S, knobs) ;
 else
-    error ('colamd:  incorrect number of input and/or output arguments') ;
+    error ('colamd2:  incorrect number of input and/or output arguments') ;
 end
 
 if (p (1) ~= -1)
@@ -492,21 +484,20 @@ if (p (1) ~= -1)
 end
 
 %-------------------------------------------------------------------------------
-% Tsymamd: run symamd in a testing mode
-%-------------------------------------------------------------------------------
 
 function [p, stats] = Tsymamd (S, knobs)
+% Tsymamd: run symamd2 in a testing mode
 
-if (nargout <= 1 & nargin == 1)
+if (nargout <= 1 && nargin == 1)
     p = symamdtestmex (S) ;
-elseif (nargout <= 1 & nargin == 2)
+elseif (nargout <= 1 && nargin == 2)
     p = symamdtestmex (S, knobs) ;
-elseif (nargout == 2 & nargin == 1)
+elseif (nargout == 2 && nargin == 1)
     [p, stats] = symamdtestmex (S) ;
-elseif (nargout == 2 & nargin == 2)
+elseif (nargout == 2 && nargin == 2)
     [p, stats] = symamdtestmex (S, knobs) ;
 else
-    error ('symamd:  incorrect number of input and/or output arguments') ;
+    error ('symamd2:  incorrect number of input and/or output arguments') ;
 end
 
 if (p (1) ~= -1)

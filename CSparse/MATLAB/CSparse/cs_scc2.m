@@ -1,5 +1,5 @@
 function [p, q, r, s] = cs_scc2 (A, bipartite)
-%CS_SCC2 strongly-connected components of a square or rectangular sparse matrix.
+%CS_SCC2 cs_scc, or connected components of a bipartite graph.
 %   [p,q,r,s] = cs_scc2(A) finds a permutation p so that A(p,q) is permuted into
 %   block upper triangular form (if A is square).  In this case, r=s, p=q and
 %   the kth diagonal block is given by A (t,t) where t = r(k):r(k)+1. 
@@ -23,15 +23,14 @@ function [p, q, r, s] = cs_scc2 (A, bipartite)
 %   http://www.cise.ufl.edu/research/sparse
 
 [m n] = size (A) ;
-if (m ~= n | (nargin > 1 & bipartite))
+if (m ~= n || (nargin > 1 && bipartite))
 
     % find the connected components of [I A ; A' 0]
     S = spaugment (A) ;
     [psym,rsym] = cs_scc (S) ;
-    p = psym (find (psym <= m)) ;
-    q = psym (find (psym > m)) - m ;
+    p = psym (find (psym <= m)) ;					    %#ok
+    q = psym (find (psym > m)) - m ;					%#ok
     nb = length (rsym) - 1 ;
-    comp = zeros (1,m+n) ;
     r = zeros (1,nb+1) ;
     s = zeros (1,nb+1) ;
     krow = 1 ;

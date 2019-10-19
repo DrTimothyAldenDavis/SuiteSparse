@@ -1,10 +1,13 @@
 function amd_demo
-% AMD DEMO
+%AMD_DEMO a demo of amd2, using the can_24 matrix
 %
 % A demo of AMD for MATLAB.
 %
+% Example:
+%   amd_demo
+%
 % --------------------------------------------------------------------------
-% AMD Version 2.0, Copyright (c) 2006 by Timothy A. Davis,
+% Copyright 2006 by Timothy A. Davis,
 % Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.
 % email: davis at cise.ufl.edu    CISE Department, Univ. of Florida.
 % web: http://www.cise.ufl.edu/research/sparse/amd
@@ -38,7 +41,7 @@ spparms ('spumoni', 1) ;
 % order the matrix.  Note that the Info argument is optional.
 fprintf ('\nIf the next step fails, then you have\n') ;
 fprintf ('not yet compiled the AMD mexFunction.\n') ;
-[p, Info] = amd2 (A) ;
+[p, Info] = amd2 (A) ;		%#ok
 
 % order again, but this time print some statistics
 [p, Info] = amd2 (A, [10 1 1]) ;
@@ -78,7 +81,7 @@ fprintf ('\nResults from AMD''s approximate analysis:\n') ;
 fprintf ('number of nonzeros in L (including diagonal):      %d\n', lnz2) ;
 fprintf ('floating point operation count for chol (A (p,p)): %d\n\n', fl2) ;
 
-if (lnz2 ~= lnz | fl ~= fl2)
+if (lnz2 ~= lnz || fl ~= fl2)
     fprintf ('Note that the nonzero and flop counts from AMD are slight\n') ;
     fprintf ('upper bounds.  This is due to the approximate minimum degree\n');
     fprintf ('method used, in conjunction with "mass elimination".\n') ;

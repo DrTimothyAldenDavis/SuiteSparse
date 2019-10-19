@@ -1,5 +1,11 @@
 function test5
-% test5: test sparse2
+%TEST5 test sparse2
+% Example:
+%   test5
+% See also cholmod_test
+
+% Copyright 2006, Timothy A. Davis, University of Florida
+
 fprintf ('=================================================================\n');
 fprintf ('test5: test sparse2\n') ;
 
@@ -39,7 +45,7 @@ p = randperm (nz) ;
 
 i2 = i(p) ;
 j2 = j(p) ;
-x2 = x(p) ;
+x2 = x(p) ;								    %#ok
 
 B = sparse2 (i,j,x,m,n) ;
 err = norm(A-B,1) ;
@@ -74,7 +80,7 @@ if (err > 0)
     error ('dtri 5') ;
 end
 
-[i1 j1 x1] = find (F) ;
+[i1 j1 x1] = find (F) ;							    %#ok
 % [i2 j2 x2] = cholmod_find (F) ;
 % if (any (i1 ~= i2))
 %     error ('i!') ;

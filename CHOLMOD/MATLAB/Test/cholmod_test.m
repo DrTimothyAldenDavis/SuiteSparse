@@ -1,5 +1,8 @@
-function cholmod_test (nmat, no_metis)
-% cholmod_test(nmat, no_metis):  test the CHOLMOD mexFunctions
+function cholmod_test (nmat)
+%CHOLMOD_TEST test the CHOLMOD mexFunctions
+%
+% Example:
+% cholmod_test(nmat)
 %
 % The UFget interface to the UF sparse matrix collection is required.
 %
@@ -7,42 +10,43 @@ function cholmod_test (nmat, no_metis)
 %   tests 0, 8, 10, 11, 12, and 12.  tests 14 and 15 use 2*nmat matrices.
 %   default nmat is 50.
 %
-% no_metis is optional.  If present, tests that require METIS are not used
-%   (tests 8, 9, and 14)
-%
 % cholmod_demo: run tests on a few random matrices
 % graph_demo: graph partitioning demo
 % test0:  test most CHOLMOD functions
 % test1:  test sparse2
 % test2:  test sparse2
 % test3:  test sparse on int8, int16, and logical
-% test4:  test cholmod with multiple and sparse right-hand-sides
+% test4:  test cholmod2 with multiple and sparse right-hand-sides
 % test5:  test sparse2
 % test6:  test sparse with large matrix, both real and complex, compare w/MATLAB
 % test7:  test sparse2
 % test8:  order many sparse matrices, test symbfact2, compare amd and metis
 % test9:  test metis, etree, bisect, nesdis
-% test10: test cholmod's backslash on real and complex matrices
+% test10: test cholmod2's backslash on real and complex matrices
 % test11: test analyze, compare CHOLMOD and MATLAB, save results in Results.mat
 % test12: test etree2 and compare with etree
-% test13: test cholmod and MATLAB on large tridiagonal matrices
+% test13: test cholmod2 and MATLAB on large tridiagonal matrices
 % test14: test metis, symbfact2, and etree2
 % test15: test symbfact2 vs MATLAB
-% test16: test cholmod on a large matrix
+% test16: test cholmod2 on a large matrix
 % test17: test lchol on a few large matrices
-% test18: test cholmod on a few large matrices
+% test18: test cholmod2 on a few large matrices
 % test19: look for NaN's from lchol (caused by Intel MKL 7.x bug)
-% test20: test symbfact2, cholmod, and lu on a few large matrices
-% test21: test cholmod on diagonal or ill-conditioned matrices
+% test20: test symbfact2, cholmod2, and lu on a few large matrices
+% test21: test cholmod2 on diagonal or ill-conditioned matrices
 % test22: test chol and chol2 and singular and indefinite matrices
-% test23: test chol and cholmod on the sparse matrix used in "bench"
+% test23: test chol and cholmod2 on the sparse matrix used in "bench"
 % test24: test sdmult
 % test25: test sdmult on a large matrix
 % test26: test logical full and sparse matrices
 % test27: test nesdis
+%
+% See also test0, test1, ... test28.
 
 % This extensive test is not included:
 % test28: test nesdis
+
+% Copyright 2006, Timothy A. Davis, University of Florida
 
 diary off
 s = date ;

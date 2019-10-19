@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* ----------------------------------------------------------------------------
- * COLAMD Version 2.5, Copyright (C) 2006, Timothy A. Davis.
+ * COLAMD, Copyright (C) 2006, Timothy A. Davis.
  * See License.txt for the Version 2.1 of the GNU Lesser General Public License
  * http://www.cise.ufl.edu/research/sparse
  * -------------------------------------------------------------------------- */

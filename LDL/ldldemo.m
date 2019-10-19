@@ -1,6 +1,8 @@
 function ldldemo
+%LDLDEMO:  demo program for the LDL and LDLSYMBOL mexFunctions
 %
-% ldldemo.m:  demo program for the LDL and LDLSYMBOL mexFunctions
+% Example:
+%   ldldemo
 %
 % LDL Version 1.3, Copyright (c) 2006 by Timothy A Davis,
 % University of Florida.  All Rights Reserved.  See README for the License.
@@ -98,9 +100,15 @@ fprintf ('Original matrix: nz in L: %5d  flop count: %g\n', sum (Lnz), fl) ;
 Lnz2 = symbfact (A) - 1 ;
 Parent2 = etree (A) ;
 fl2 = sum (Lnz2 .* (Lnz2 + 2)) ;
-if (any (Lnz ~= Lnz2)) error ('Lnz mismatch') ; end
-if (any (Parent ~= Parent2)) error ('Parent mismatch') ; end
-if (fl ~= fl2) error ('fl mismatch') ; end
+if (any (Lnz ~= Lnz2))
+    error ('Lnz mismatch') ;
+end
+if (any (Parent ~= Parent2))
+    error ('Parent mismatch') ;
+end
+if (fl ~= fl2)
+    error ('fl mismatch') ;
+end
 
 [Lnz, Parent, fl] = ldlsymbol (A, p) ;
 fprintf ('Permuted matrix: nz in L: %5d  flop count: %g\n', sum (Lnz), fl) ;
@@ -108,9 +116,15 @@ fprintf ('Permuted matrix: nz in L: %5d  flop count: %g\n', sum (Lnz), fl) ;
 Lnz2 = symbfact (A (p,p)) - 1 ;
 Parent2 = etree (A (p,p)) ;
 fl2 = sum (Lnz2 .* (Lnz2 + 2)) ;
-if (any (Lnz ~= Lnz2)) error ('Lnz mismatch') ; end
-if (any (Parent ~= Parent2)) error ('Parent mismatch') ; end
-if (fl ~= fl2) error ('fl mismatch') ; end
+if (any (Lnz ~= Lnz2))
+    error ('Lnz mismatch') ;
+end
+if (any (Parent ~= Parent2))
+    error ('Parent mismatch') ;
+end
+if (fl ~= fl2)
+    error ('fl mismatch') ;
+end
 
 
 fprintf ('\nldldemo: all tests passed\n') ;

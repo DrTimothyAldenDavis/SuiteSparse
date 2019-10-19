@@ -50,6 +50,11 @@ function UFwrite (Problem, Master, arg3, arg4)
 %               who acquired the matrix from the author, for inclusion in this
 %               (or other) sparse matrix / graph collections.
 %
+%       kind    a string (i.e. 'directed graph') describing the type of problem;
+%               a list of words from a well-defined set (see the UF Sparse
+%               Matrix Collection home page for a description, or
+%               http://www.cise.ufl.edu/research/sparse/matrices/kind.html).
+%
 % A Problem struct may also have the following optional fields.
 %
 %       Zeros   pattern of explicit zero entries in A as a binary m-by-n matrix.
@@ -64,11 +69,6 @@ function UFwrite (Problem, Master, arg3, arg4)
 %
 %       x       supposed solution to A*x=b, any size, real or complex, full or
 %               sparse
-%
-%       kind    a string (i.e. 'directed graph') describing the type of problem;
-%               a list of words from a well-defined set (see the UF Sparse
-%               Matrix Collection home page for a description, or
-%               http://www.cise.ufl.edu/research/sparse/matrices/kind.html).
 %
 %       notes   a character array with notes about the problem.
 %
@@ -225,9 +225,7 @@ if (isfield (Problem, 'aux'))
 else
     auxfields = { } ;
 end
-if (isfield (Problem, 'kind'))
-    fprintf (cf, '%s kind: %s\n', prefix, Problem.kind) ;
-end
+fprintf (cf, '%s kind: %s\n', prefix, Problem.kind) ;
 print_separator (cf, prefix) ;
 if (isfield (Problem, 'notes'))
     fprintf (cf, '%s notes:\n', prefix) ;
@@ -331,8 +329,12 @@ end
 %-------------------------------------------------------------------------------
 
 if (do_tar)
-    tar ([probdir '.tar.gz'], probdir) ;
-    rmdir (probdir, 's') ;
+    try
+	tar ([probdir '.tar.gz'], probdir) ;
+	rmdir (probdir, 's') ;
+    catch
+	warning ('unable to create tar file; directly left uncompressed') ;
+    end
 end
 
 

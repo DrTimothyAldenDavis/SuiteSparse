@@ -1,9 +1,12 @@
+%TKLU: test KLU 
+% Example:
+%   tklu
 
-hb = [1:4] ;
+hb = 1:4 ;
 att = [283 284 286] ;
-bomhof = [370:373] ;
+bomhof = 370:373 ;
 grund = [465 466] ;
-hamm = [539:544] ;
+hamm = 539:544 ;
 
 % some but not all Sandia circuits
 sandia = [ 1112 1168 1169 1055 1105 1106 1107 1108 984 1052 1053 1054 1109 1111 ] ;

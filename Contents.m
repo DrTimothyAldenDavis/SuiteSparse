@@ -2,6 +2,7 @@
 % collection of sparse matrix packages authored or co-authored by Tim Davis.
 % Only the primary MATLAB functions are listed below.
 %
+% Example:
 %   SuiteSparse_install - compiles and installs all of SuiteSparse, and runs
 %               several demos and tests.
 %

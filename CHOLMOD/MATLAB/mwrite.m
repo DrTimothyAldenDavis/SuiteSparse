@@ -1,6 +1,7 @@
 function mtype = mwrite (filename, A, Z, comments_filename)		    %#ok
-%MWRITE: write a matrix to a file in Matrix Market form.
+%MWRITE write a matrix to a file in Matrix Market form.
 %
+%   Example:
 %        mtype = mwrite (filename, A, Z, comments_filename)
 %
 % A can be sparse or full.

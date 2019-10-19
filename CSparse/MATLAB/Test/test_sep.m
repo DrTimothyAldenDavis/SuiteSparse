@@ -50,8 +50,7 @@ for k = 1:length(f)
     subplot (2,3,3) ; spy (A (a,b)) ; title ('edge sep') ;
     subplot (2,3,6) ; cs_dmspy (A (a,b)) ; title ('node sep') ;
 
-    [s as bs] = vtxsep (A,a,b) ;
-
+    [s as bs] = vtxsep (A,a,b) ;					%#ok
     [s2 a2 b2] = cs_sep (A,a,b) ;
 
     p2 = [a2 b2 s2] ;
@@ -68,7 +67,7 @@ for k = 1:length(f)
 
     na = length (a2) ;
     nb = length (b2) ;
-    ns = length (s2) ;
+    ns = length (s2) ;							%#ok
 
     nab = na + nb ;
 

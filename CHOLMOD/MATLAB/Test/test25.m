@@ -1,5 +1,11 @@
 function test25
-% test25: test sdmult on a large matrix
+%TEST25 test sdmult on a large matrix
+% Example:
+%   test25
+% See also cholmod_test
+
+% Copyright 2006, Timothy A. Davis, University of Florida
+
 fprintf ('=================================================================\n');
 fprintf ('test25: test sdmult on a large matrix\n') ;
 
@@ -10,9 +16,6 @@ n = size (A,1) ;
 nz = nnz (A) ;
 fprintf ('\nTest matrix: %d-by-%d, nnz %d\n', n, n, nz) ;
 
-b = rand (n,1) ;
-
-clear x b
 Z = rand (n, 500) ;
 
 fprintf ('\nA*X where X is %d-by-k\n', n) ;
@@ -43,7 +46,7 @@ fprintf ('\nFor comparison, here is CHOLMOD''s x=A\\b time:\n') ;
 for k = [1 100:100:500]
     B = Z (:, 1:k) ;
     tic
-    x = cholmod (A,B) ;
+    x = cholmod2 (A,B) ;
     t2 = toc ;
     err2 = norm (sdmult(A,x)-B,1) ;
     fprintf (...

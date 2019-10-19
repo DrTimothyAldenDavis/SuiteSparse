@@ -1,6 +1,9 @@
 % umfpack_simple:  a simple demo of UMFPACK
 %
-% UMFPACK Version 5.0, Copyright (c) 1995-2006 by Timothy A. Davis.
+% Example:
+%   umfpack_simple
+%
+% Copyright (c) 1995-2006 by Timothy A. Davis.
 % All Rights Reserved.  Type umfpack_details for License.
 %
 % UMFPACK License:
@@ -14,7 +17,7 @@
 
 % Availability: http://www.cise.ufl.edu/research/sparse/umfpack
 %
-% See also: umfpack, umfpack_details
+% See also: umfpack, umfpack2, umfpack_details
 
 help umfpack_simple
 
@@ -38,9 +41,9 @@ A = sparse (A) ;
 b = [8 45 -3 3 19]'
 
 fprintf ('Solution to Ax=b via UMFPACK:\n') ;
-fprintf ('x1 = umfpack (A, ''\\'', b)\n') ;
+fprintf ('x1 = umfpack2 (A, ''\\'', b)\n') ;
 
-x1 = umfpack (A, '\', b)
+x1 = umfpack2 (A, '\', b)
 
 fprintf ('Solution to Ax=b via MATLAB:\n') ;
 fprintf ('x2 = A\\b\n') ;

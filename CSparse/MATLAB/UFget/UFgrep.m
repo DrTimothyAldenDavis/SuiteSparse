@@ -1,5 +1,5 @@
 function list = UFgrep (expression, index)
-%UFgrep: search the UF Sparse Matrix Collection
+%UFGREP search for matrices in the UF Sparse Matrix Collection.
 % UFgrep returns a list of Problem id's whose Problem.name string matches an
 % expression.  With no output arguments, the list is displayed.  Otherwise, it
 % is returned as a list of integer id's.
@@ -36,7 +36,7 @@ matched = 0 ;
 
 for id = 1:nmat
     name = [index.Group{id} '/' index.Name{id}] ;
-    if (~isempty (regexp (name, expression)))
+    if (~isempty (regexp (name, expression, 'once')))
 	matched = matched + 1 ;
 	list1 (matched) = id ;
     end

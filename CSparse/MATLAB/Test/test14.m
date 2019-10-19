@@ -19,7 +19,6 @@ for trial = 1:100
     [i j x] = find (A) ;
     A = sparse (i,j,2*x-1) ;
     fprintf ('test14 m %3d n %3d nz %d\n', m, n, nnz (A)) ;
-    Aorig = A ;
 
     % using CSparse
     tol = 0.5 ;

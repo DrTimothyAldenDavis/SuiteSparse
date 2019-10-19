@@ -1,7 +1,10 @@
 function graph_demo (n)
-%GRAPH_DEMO: graph partitioning demo
+%GRAPH_DEMO graph partitioning demo
 %   graph_demo(n) constructs an set of n-by-n 2D grids, partitions them, and
 %   plots them in one-second intervals.  n is optional; it defaults to 60.
+%
+%   Example:
+%	graph_demo
 %
 %   See also DELSQ, NUMGRID, GPLOT, TREEPLOT
 
@@ -13,16 +16,16 @@ if (nargin < 1)
     n = 60 ;
 end
 
-for region = {'Square', 'C' 'Disc', 'Annulus', 'Heart', 'Butterfly', 'L'}
+for regions = {'Square', 'C' 'Disc', 'Annulus', 'Heart', 'Butterfly', 'L'}
 
     % construct the grid
-    region = region {1} ;
+    region = regions {1} ;
     g = numgrid (region (1), n) ;
     x = repmat (0:n-1, n, 1) ;
     y = repmat (((n-1):-1:0)', 1, n)  ;
     A = delsq (g) ;
-    x = x (find (g)) ;
-    y = y (find (g)) ;
+    x = x (find (g)) ;							    %#ok
+    y = y (find (g)) ;							    %#ok
 
     % plot the original grid
     clf

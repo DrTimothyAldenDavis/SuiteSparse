@@ -12,7 +12,7 @@ CHOLMOD: a sparse CHOLesky MODification package
     C and MATLAB interfaces.  This code works on Microsoft Windows and many
     versions of Unix and Linux.
 
-Version 1.3, Dec 2, 2006.  Copyright (c) 2005-2006.
+Version 1.4, Dec 12, 2006.  Copyright (c) 2005-2006.
 
 Some Modules of CHOLMOD are copyrighted by the University of Florida (the
 Core and Partition Modules).  The rest are copyrighted by the authors:

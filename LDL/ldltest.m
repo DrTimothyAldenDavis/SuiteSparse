@@ -1,5 +1,7 @@
+% LDLTEST:  compile and test the LDL mexFunction
 %
-% ldltest.m:  compile and test the LDL mexFunction
+% Example:
+%   ldltest
 %
 % LDL Version 1.3, Copyright (c) 2006 by Timothy A Davis,
 % University of Florida.  All Rights Reserved.  See README for the License.
@@ -24,7 +26,9 @@ try
 catch
     ok = 1 ;
 end
-if (~ok) error ('?'), end
+if (~ok)
+    error ('?') ;
+end
 
 try
     ldlsparse
@@ -32,7 +36,9 @@ try
 catch
     ok = 1 ;
 end
-if (~ok) error ('?'), end
+if (~ok)
+    error ('?')
+end
 
 try
     [L, D, Parent, fl] = ldlsparse (1)
@@ -40,7 +46,9 @@ try
 catch
     ok = 1 ;
 end
-if (~ok) error ('?'), end
+if (~ok)
+    error ('?')
+end
 
 try
     x = ldlsparse (1,2) ;
@@ -48,7 +56,9 @@ try
 catch
     ok = 1 ;
 end
-if (~ok) error ('?'), end
+if (~ok)
+    error ('?')
+end
 
 A =[ ...
 1.7     0     0     0     0     0     0     0   .13     0
@@ -79,43 +89,61 @@ I = speye (10) ;
 [L, D, Parent, fl] = ldlsparse (A) ;
 err = norm ((L+I)*D*(L+I)'-A, 1) ;
 fprintf ('err: %g fl: %g\n', err, fl) ;
-if (err > 1e-14) error ('?'), end ;
+if (err > 1e-14)
+    error ('?') ;
+end ;
 
 Parent2 = etree (A) ;
-if (any (Parent2 ~= Parent)) error ('?'), end
+if (any (Parent2 ~= Parent))
+    error ('?') ;
+end
 
 [L, D, Parent] = ldlsparse (A) ;
 err = norm ((L+I)*D*(L+I)'-A, 1) ;
 fprintf ('err: %g\n', err) ;
-if (err > 1e-14) error ('?'), end ;
+if (err > 1e-14)
+    error ('?') ;
+end ;
 
 [L, D] = ldlsparse (A) ;
 err = norm ((L+I)*D*(L+I)'-A, 1) ;
 fprintf ('err: %g\n', err) ;
-if (err > 1e-14) error ('?'), end ;
+if (err > 1e-14)
+    error ('?') ;
+end ;
 
 L2 = ldlsparse (A) ;
 err = norm (L - L2, 1) ;
 fprintf ('err: %g\n', err) ;
-if (err > 1e-14) error ('?'), end ;
+if (err > 1e-14)
+    error ('?') ;
+end ;
 
 x = ldlsparse (A, [ ], b) ;
 err = norm (A*x-b, 1) ;
 fprintf ('err: %g\n', err) ;
-if (err > 1e-14) error ('?'), end ;
+if (err > 1e-14)
+    error ('?') ;
+end ;
 
 [x, fl] = ldlsparse (A, [ ], b) ;
 err = norm (A*x-b, 1) ;
 fprintf ('err: %g fl: %g\n', err, fl) ;
-if (err > 1e-14) error ('?'), end ;
+if (err > 1e-14)
+    error ('?') ;
+end ;
 
 [L, D, Parent, fl] = ldlsparse (A, P) ;
 err = norm ((L+I)*D*(L+I)'-A(P,P), 1) ;
 fprintf ('err: %g fl: %g\n', err, fl) ;
-if (err > 1e-14) error ('?'), end ;
+if (err > 1e-14)
+    error ('?') ;
+end ;
 
 Parent2 = etree (A (P,P)) ;
-if (any (Parent2 ~= Parent)) error ('?'), end
+if (any (Parent2 ~= Parent))
+    error ('?') ;
+end
 
 figure (1)
 clf
@@ -127,26 +155,36 @@ subplot (2,2,4), treeplot (Parent), title ('elimination tree') ;
 [L, D, Parent] = ldlsparse (A, P) ;
 err = norm ((L+I)*D*(L+I)'-A(P,P), 1) ;
 fprintf ('err: %g\n', err) ;
-if (err > 1e-14) error ('?'), end ;
+if (err > 1e-14)
+    error ('?') ;
+end ;
 
 [L, D] = ldlsparse (A, P) ;
 err = norm ((L+I)*D*(L+I)'-A(P,P), 1) ;
 fprintf ('err: %g\n', err) ;
-if (err > 1e-14) error ('?'), end ;
+if (err > 1e-14)
+    error ('?') ;
+end ;
 
 L2 = ldlsparse (A, P) ;
 err = norm (L - L2, 1) ;
 fprintf ('err: %g\n', err) ;
-if (err > 1e-14) error ('?'), end ;
+if (err > 1e-14)
+    error ('?') ;
+end ;
 
 x = ldlsparse (A, P, b) ;
 err = norm (A*x-b, 1) ;
 fprintf ('err: %g\n', err) ;
-if (err > 1e-14) error ('?'), end ;
+if (err > 1e-14)
+    error ('?') ;
+end ;
 
 [x, fl] = ldlsparse (A, P, b) ;
 err = norm (A*x-b, 1) ;
 fprintf ('err: %g fl: %g\n', err, fl) ;
-if (err > 1e-14) error ('?'), end ;
+if (err > 1e-14)
+    error ('?') ;
+end ;
 
 fprintf ('\nldl: all tests passed\n') ;

@@ -2,31 +2,18 @@
 # CHOLMOD/MATLAB/Makefile
 #===============================================================================
 
-# If you compile CHOLMOD with -DNPARTITION, then you do not need METIS,
-# CCOLAMD, or the Partition Module.
-
 default: all
 
 include ../../UFconfig/UFconfig.mk
 
-#-------------------------------------------------------------------------------
-# With METIS, CCOLAMD, and the Partition Module:
-LIB = ../Lib/libcholmod.a $(METIS) ../../AMD/Lib/libamd.a \
-	../../COLAMD/libcolamd.a ../../CCOLAMD/libccolamd.a \
-	../../CAMD/Lib/libcamd.a
-# with -DNPARTITION
-# LIB = ../Lib/libcholmod.a $(METIS) ../../AMD/Lib/libamd.a \
-	../../COLAMD/libcolamd.a
-#-------------------------------------------------------------------------------
+INC = -I. -I../../AMD/Include -I../../AMD/Source -I../../COLAMD -I../../CCOLAMD -I../../CAMD/Include -I../Include -I../../UFconfig -I$(METIS_PATH)/Lib
 
-INC = -I. -I../Include -I../../UFconfig -I$(METIS_PATH)/Lib
-
-all: rename library mread sdmult ldlsolve resymbol symbfact2 chol2 lchol \
-	ldlchol cholmod ldlupdate metis bisect nesdis etree2 sparse2 analyze \
+all: mread sdmult ldlsolve resymbol symbfact2 chol2 lchol \
+	ldlchol cholmod2 ldlupdate metis bisect nesdis etree2 sparse2 analyze \
 	septree spsym mwrite other
 
-# MX = $(MEX) $(CHOLMOD_CONFIG) -D'SPUMONI=1'
-MX = $(MEX) $(CHOLMOD_CONFIG)
+# METIS must be compiled with these options:
+MX = $(MEX) $(CHOLMOD_CONFIG) -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
 
 distclean: purge
 
@@ -36,87 +23,674 @@ purge: clean
 clean:
 	- $(RM) $(CLEAN)
 
+#===============================================================================
+
+AMD_INC = ../../AMD/Include/amd.h ../../AMD/Include/amd_internal.h
+
+AMD = \
+	amd_1.o \
+	amd_2.o \
+	amd_aat.o \
+	amd_control.o \
+	amd_defaults.o \
+	amd_dump.o \
+	amd_global.o \
+	amd_info.o \
+	amd_order.o \
+	amd_postorder.o \
+	amd_post_tree.o \
+	amd_preprocess.o \
+	amd_valid.o
+
+amd_1.o: ../../AMD/Source/amd_1.c $(AMD_INC)
+	$(MX) -c $(INC) $<
+
+amd_2.o: ../../AMD/Source/amd_2.c $(AMD_INC)
+	$(MX) -c $(INC) $<
+
+amd_aat.o: ../../AMD/Source/amd_aat.c $(AMD_INC)
+	$(MX) -c $(INC) $<
+
+amd_control.o: ../../AMD/Source/amd_control.c $(AMD_INC)
+	$(MX) -c $(INC) $<
+
+amd_defaults.o: ../../AMD/Source/amd_defaults.c $(AMD_INC)
+	$(MX) -c $(INC) $<
+
+amd_dump.o: ../../AMD/Source/amd_dump.c $(AMD_INC)
+	$(MX) -c $(INC) $<
+
+amd_global.o: ../../AMD/Source/amd_global.c $(AMD_INC)
+	$(MX) -c $(INC) $<
+
+amd_info.o: ../../AMD/Source/amd_info.c $(AMD_INC)
+	$(MX) -c $(INC) $<
+
+amd_order.o: ../../AMD/Source/amd_order.c $(AMD_INC)
+	$(MX) -c $(INC) $<
+
+amd_postorder.o: ../../AMD/Source/amd_postorder.c $(AMD_INC)
+	$(MX) -c $(INC) $<
+
+amd_post_tree.o: ../../AMD/Source/amd_post_tree.c $(AMD_INC)
+	$(MX) -c $(INC) $<
+
+amd_preprocess.o: ../../AMD/Source/amd_preprocess.c $(AMD_INC)
+	$(MX) -c $(INC) $<
+
+amd_valid.o: ../../AMD/Source/amd_valid.c $(AMD_INC)
+	$(MX) -c $(INC) $<
+
+#===============================================================================
+
+CAMD_INC = ../../CAMD/Include/camd.h ../../CAMD/Include/camd_internal.h
+
+CAMD = \
+	camd_1.o \
+	camd_2.o \
+	camd_aat.o \
+	camd_control.o \
+	camd_defaults.o \
+	camd_dump.o \
+	camd_global.o \
+	camd_info.o \
+	camd_order.o \
+	camd_postorder.o \
+	camd_preprocess.o \
+	camd_valid.o
+
+camd_1.o: ../../CAMD/Source/camd_1.c $(CAMD_INC)
+	$(MX) -c $(INC) $<
+
+camd_2.o: ../../CAMD/Source/camd_2.c $(CAMD_INC)
+	$(MX) -c $(INC) $<
+
+camd_aat.o: ../../CAMD/Source/camd_aat.c $(CAMD_INC)
+	$(MX) -c $(INC) $<
+
+camd_control.o: ../../CAMD/Source/camd_control.c $(CAMD_INC)
+	$(MX) -c $(INC) $<
+
+camd_defaults.o: ../../CAMD/Source/camd_defaults.c $(CAMD_INC)
+	$(MX) -c $(INC) $<
+
+camd_dump.o: ../../CAMD/Source/camd_dump.c $(CAMD_INC)
+	$(MX) -c $(INC) $<
+
+camd_global.o: ../../CAMD/Source/camd_global.c $(CAMD_INC)
+	$(MX) -c $(INC) $<
+
+camd_info.o: ../../CAMD/Source/camd_info.c $(CAMD_INC)
+	$(MX) -c $(INC) $<
+
+camd_order.o: ../../CAMD/Source/camd_order.c $(CAMD_INC)
+	$(MX) -c $(INC) $<
+
+camd_postorder.o: ../../CAMD/Source/camd_postorder.c $(CAMD_INC)
+	$(MX) -c $(INC) $<
+
+camd_post_tree.o: ../../CAMD/Source/camd_post_tree.c $(CAMD_INC)
+	$(MX) -c $(INC) $<
+
+camd_preprocess.o: ../../CAMD/Source/camd_preprocess.c $(CAMD_INC)
+	$(MX) -c $(INC) $<
+
+camd_valid.o: ../../CAMD/Source/camd_valid.c $(CAMD_INC)
+	$(MX) -c $(INC) $<
+
+#===============================================================================
+
+COLAMD_INC = ../../COLAMD/colamd.h
+
+COLAMD = colamd.o colamd_global.o
+
+colamd.o: ../../COLAMD/colamd.c $(COLAMD_INC)
+	$(MX) -c $(INC) $<
+
+colamd_global.o: ../../COLAMD/colamd_global.c $(COLAMD_INC)
+	$(MX) -c $(INC) $<
+
+#===============================================================================
+
+CCOLAMD_INC = ../../CCOLAMD/ccolamd.h
+
+CCOLAMD = ccolamd.o ccolamd_global.o
+
+ccolamd.o: ../../CCOLAMD/ccolamd.c $(CCOLAMD_INC)
+	$(MX) -c $(INC) $<
+
+ccolamd_global.o: ../../CCOLAMD/ccolamd_global.c $(CCOLAMD_INC)
+	$(MX) -c $(INC) $<
+
+#===============================================================================
+
 # patch METIS 4.0.1
-rename:
+rename.h:
 	echo '/* do not edit this file; generated by CHOLMOD/MATLAB/Makefile */' > rename.h
 	echo '#undef log2' >> rename.h
 	echo '#include "$(METIS_PATH)/Lib/rename.h"' >> rename.h
 	echo '#undef log2' >> rename.h
 	echo '#define log2 METIS__log2' >> rename.h
+	echo '#include "mex.h"' >> rename.h
+	echo '#define malloc mxMalloc' >> rename.h
+	echo '#define free mxFree' >> rename.h
+	echo '#define calloc mxCalloc' >> rename.h
+	echo '#define realloc mxRealloc' >> rename.h
 
-cholmod_matlab.o: cholmod_matlab.c cholmod_matlab.h
-	$(MX) -c $(INC) cholmod_matlab.c
+METIS_INC = rename.h \
+	$(METIS_PATH)/Lib/defs.h \
+	$(METIS_PATH)/Lib/macros.h \
+	$(METIS_PATH)/Lib/metis.h \
+	$(METIS_PATH)/Lib/proto.h \
+	$(METIS_PATH)/Lib/rename.h \
+	$(METIS_PATH)/Lib/struct.h 
 
-analyze: analyze.c library cholmod_matlab.o
-	$(MX) analyze.c cholmod_matlab.o $(INC) $(LIB)
+METIS = \
+	balance.o \
+	bucketsort.o \
+	ccgraph.o \
+	coarsen.o \
+	compress.o \
+	debug.o \
+	estmem.o \
+	fm.o \
+	fortran.o \
+	frename.o \
+	graph.o \
+	initpart.o \
+	kmetis.o \
+	kvmetis.o \
+	kwayfm.o \
+	kwayrefine.o \
+	kwayvolfm.o \
+	kwayvolrefine.o \
+	match.o \
+	mbalance2.o \
+	mbalance.o \
+	mcoarsen.o \
+	memory.o \
+	mesh.o \
+	meshpart.o \
+	mfm2.o \
+	mfm.o \
+	mincover.o \
+	minitpart2.o \
+	minitpart.o \
+	mkmetis.o \
+	mkwayfmh.o \
+	mkwayrefine.o \
+	mmatch.o \
+	mmd.o \
+	mpmetis.o \
+	mrefine2.o \
+	mrefine.o \
+	mutil.o \
+	myqsort.o \
+	ometis.o \
+	parmetis.o \
+	pmetis.o \
+	pqueue.o \
+	refine.o \
+	separator.o \
+	sfm.o \
+	srefine.o \
+	stat.o \
+	subdomains.o \
+	timing.o \
+	util.o
 
-mread: mread.c library cholmod_matlab.o
-	$(MX) mread.c cholmod_matlab.o $(INC) $(LIB)
+balance.o: $(METIS_PATH)/Lib/balance.c $(METIS_INC)
+	$(MX) -c $(INC) $<
 
-mwrite: mwrite.c library cholmod_matlab.o
-	$(MX) mwrite.c cholmod_matlab.o $(INC) $(LIB)
+bucketsort.o: $(METIS_PATH)/Lib/bucketsort.c $(METIS_INC)
+	$(MX) -c $(INC) $<
 
-spsym: spsym.c library cholmod_matlab.o
-	$(MX) spsym.c cholmod_matlab.o $(INC) $(LIB)
+ccgraph.o: $(METIS_PATH)/Lib/ccgraph.c $(METIS_INC)
+	$(MX) -c $(INC) $<
 
-chol2: chol2.c library cholmod_matlab.o
-	$(MX) chol2.c cholmod_matlab.o $(INC) $(LIB)
+coarsen.o: $(METIS_PATH)/Lib/coarsen.c $(METIS_INC)
+	$(MX) -c $(INC) $<
 
-lchol: lchol.c library cholmod_matlab.o
-	$(MX) lchol.c cholmod_matlab.o $(INC) $(LIB)
+compress.o: $(METIS_PATH)/Lib/compress.c $(METIS_INC)
+	$(MX) -c $(INC) $<
 
-ldlchol: ldlchol.c library cholmod_matlab.o
-	$(MX) ldlchol.c cholmod_matlab.o $(INC) $(LIB)
+debug.o: $(METIS_PATH)/Lib/debug.c $(METIS_INC)
+	$(MX) -c $(INC) $<
 
-ldlupdate: ldlupdate.c library cholmod_matlab.o
-	$(MX) ldlupdate.c cholmod_matlab.o $(INC) $(LIB)
+estmem.o: $(METIS_PATH)/Lib/estmem.c $(METIS_INC)
+	$(MX) -c $(INC) $<
 
-ldlsolve: ldlsolve.c library cholmod_matlab.o
-	$(MX) ldlsolve.c cholmod_matlab.o $(INC) $(LIB)
+fm.o: $(METIS_PATH)/Lib/fm.c $(METIS_INC)
+	$(MX) -c $(INC) $<
 
-sdmult: sdmult.c library cholmod_matlab.o
-	$(MX) sdmult.c cholmod_matlab.o $(INC) $(LIB)
+fortran.o: $(METIS_PATH)/Lib/fortran.c $(METIS_INC)
+	$(MX) -c $(INC) $<
 
-resymbol: resymbol.c library cholmod_matlab.o
-	$(MX) resymbol.c cholmod_matlab.o $(INC) $(LIB)
+frename.o: $(METIS_PATH)/Lib/frename.c $(METIS_INC)
+	$(MX) -c $(INC) $<
 
-cholmod: cholmod.c library cholmod_matlab.o
-	$(MX) cholmod.c cholmod_matlab.o $(INC) $(LIB)
+graph.o: $(METIS_PATH)/Lib/graph.c $(METIS_INC)
+	$(MX) -c $(INC) $<
 
-nesdis: nesdis.c library cholmod_matlab.o
-	$(MX) nesdis.c cholmod_matlab.o $(INC) $(LIB)
+initpart.o: $(METIS_PATH)/Lib/initpart.c $(METIS_INC)
+	$(MX) -c $(INC) $<
 
-septree: septree.c library cholmod_matlab.o
-	$(MX) septree.c cholmod_matlab.o $(INC) $(LIB)
+kmetis.o: $(METIS_PATH)/Lib/kmetis.c $(METIS_INC)
+	$(MX) -c $(INC) $<
 
-metis: metis.c library cholmod_matlab.o
-	$(MX) metis.c cholmod_matlab.o $(INC) $(LIB)
+kvmetis.o: $(METIS_PATH)/Lib/kvmetis.c $(METIS_INC)
+	$(MX) -c $(INC) $<
 
-etree2: etree2.c library cholmod_matlab.o
-	$(MX) etree2.c cholmod_matlab.o $(INC) $(LIB)
+kwayfm.o: $(METIS_PATH)/Lib/kwayfm.c $(METIS_INC)
+	$(MX) -c $(INC) $<
 
-bisect: bisect.c library cholmod_matlab.o
-	$(MX) bisect.c cholmod_matlab.o $(INC) $(LIB)
+kwayrefine.o: $(METIS_PATH)/Lib/kwayrefine.c $(METIS_INC)
+	$(MX) -c $(INC) $<
 
-symbfact2: symbfact2.c library cholmod_matlab.o
-	$(MX) symbfact2.c cholmod_matlab.o $(INC) $(LIB)
+kwayvolfm.o: $(METIS_PATH)/Lib/kwayvolfm.c $(METIS_INC)
+	$(MX) -c $(INC) $<
 
-sparse2: sparse2.c library cholmod_matlab.o
-	$(MX) -g sparse2.c cholmod_matlab.o $(INC) $(LIB)
+kwayvolrefine.o: $(METIS_PATH)/Lib/kwayvolrefine.c $(METIS_INC)
+	$(MX) -c $(INC) $<
 
-#-------------------------------------------------------------------------------
-# See below if you compile with -DNPARTITION
-library:
-	( cd ../Lib ; $(MAKE) )
-	( cd ../../AMD ; $(MAKE) library )
-	( cd ../../CAMD ; $(MAKE) library )
-	( cd ../../COLAMD ; $(MAKE) )
-	( cd ../../CCOLAMD ; $(MAKE) )
-# use this rule instead, if you compile with -DNPARTITION:
-# library:
-# 	( cd ../Lib ; $(MAKE) )
-# 	( cd ../../AMD ; $(MAKE) library )
-# 	( cd ../../COLAMD ; $(MAKE) )
+match.o: $(METIS_PATH)/Lib/match.c $(METIS_INC)
+	$(MX) -c $(INC) $<
+
+mbalance2.o: $(METIS_PATH)/Lib/mbalance2.c $(METIS_INC)
+	$(MX) -c $(INC) $<
+
+mbalance.o: $(METIS_PATH)/Lib/mbalance.c $(METIS_INC)
+	$(MX) -c $(INC) $<
+
+mcoarsen.o: $(METIS_PATH)/Lib/mcoarsen.c $(METIS_INC)
+	$(MX) -c $(INC) $<
+
+memory.o: $(METIS_PATH)/Lib/memory.c $(METIS_INC)
+	$(MX) -c $(INC) $<
+
+mesh.o: $(METIS_PATH)/Lib/mesh.c $(METIS_INC)
+	$(MX) -c $(INC) $<
+
+meshpart.o: $(METIS_PATH)/Lib/meshpart.c $(METIS_INC)
+	$(MX) -c $(INC) $<
+
+mfm2.o: $(METIS_PATH)/Lib/mfm2.c $(METIS_INC)
+	$(MX) -c $(INC) $<
+
+mfm.o: $(METIS_PATH)/Lib/mfm.c $(METIS_INC)
+	$(MX) -c $(INC) $<
+
+mincover.o: $(METIS_PATH)/Lib/mincover.c $(METIS_INC)
+	$(MX) -c $(INC) $<
+
+minitpart2.o: $(METIS_PATH)/Lib/minitpart2.c $(METIS_INC)
+	$(MX) -c $(INC) $<
+
+minitpart.o: $(METIS_PATH)/Lib/minitpart.c $(METIS_INC)
+	$(MX) -c $(INC) $<
+
+mkmetis.o: $(METIS_PATH)/Lib/mkmetis.c $(METIS_INC)
+	$(MX) -c $(INC) $<
+
+mkwayfmh.o: $(METIS_PATH)/Lib/mkwayfmh.c $(METIS_INC)
+	$(MX) -c $(INC) $<
+
+mkwayrefine.o: $(METIS_PATH)/Lib/mkwayrefine.c $(METIS_INC)
+	$(MX) -c $(INC) $<
+
+mmatch.o: $(METIS_PATH)/Lib/mmatch.c $(METIS_INC)
+	$(MX) -c $(INC) $<
+
+mmd.o: $(METIS_PATH)/Lib/mmd.c $(METIS_INC)
+	$(MX) -c $(INC) $<
+
+mpmetis.o: $(METIS_PATH)/Lib/mpmetis.c $(METIS_INC)
+	$(MX) -c $(INC) $<
+
+mrefine2.o: $(METIS_PATH)/Lib/mrefine2.c $(METIS_INC)
+	$(MX) -c $(INC) $<
+
+mrefine.o: $(METIS_PATH)/Lib/mrefine.c $(METIS_INC)
+	$(MX) -c $(INC) $<
+
+mutil.o: $(METIS_PATH)/Lib/mutil.c $(METIS_INC)
+	$(MX) -c $(INC) $<
+
+myqsort.o: $(METIS_PATH)/Lib/myqsort.c $(METIS_INC)
+	$(MX) -c $(INC) $<
+
+ometis.o: $(METIS_PATH)/Lib/ometis.c $(METIS_INC)
+	$(MX) -c $(INC) $<
+
+parmetis.o: $(METIS_PATH)/Lib/parmetis.c $(METIS_INC)
+	$(MX) -c $(INC) $<
+
+pmetis.o: $(METIS_PATH)/Lib/pmetis.c $(METIS_INC)
+	$(MX) -c $(INC) $<
+
+pqueue.o: $(METIS_PATH)/Lib/pqueue.c $(METIS_INC)
+	$(MX) -c $(INC) $<
+
+refine.o: $(METIS_PATH)/Lib/refine.c $(METIS_INC)
+	$(MX) -c $(INC) $<
+
+separator.o: $(METIS_PATH)/Lib/separator.c $(METIS_INC)
+	$(MX) -c $(INC) $<
+
+sfm.o: $(METIS_PATH)/Lib/sfm.c $(METIS_INC)
+	$(MX) -c $(INC) $<
+
+srefine.o: $(METIS_PATH)/Lib/srefine.c $(METIS_INC)
+	$(MX) -c $(INC) $<
+
+stat.o: $(METIS_PATH)/Lib/stat.c $(METIS_INC)
+	$(MX) -c $(INC) $<
+
+subdomains.o: $(METIS_PATH)/Lib/subdomains.c $(METIS_INC)
+	$(MX) -c $(INC) $<
+
+timing.o: $(METIS_PATH)/Lib/timing.c $(METIS_INC)
+	$(MX) -c $(INC) $<
+
+util.o: $(METIS_PATH)/Lib/util.c $(METIS_INC)
+	$(MX) -c $(INC) $<
+
+#===============================================================================
+
+CHOLMOD_INC = \
+	cholmod_matlab.h \
+	../Include/cholmod_blas.h \
+	../Include/cholmod_check.h \
+	../Include/cholmod_cholesky.h \
+	../Include/cholmod_complexity.h \
+	../Include/cholmod_config.h \
+	../Include/cholmod_core.h \
+	../Include/cholmod.h \
+	../Include/cholmod_internal.h \
+	../Include/cholmod_io64.h \
+	../Include/cholmod_matrixops.h \
+	../Include/cholmod_modify.h \
+	../Include/cholmod_partition.h \
+	../Include/cholmod_supernodal.h \
+	../Include/cholmod_template.h
+
+CHOLMOD = \
+	cholmod_matlab.o \
+	cholmod_check.o \
+	cholmod_read.o \
+	cholmod_write.o \
+	cholmod_amd.o \
+	cholmod_analyze.o \
+	cholmod_colamd.o \
+	cholmod_etree.o \
+	cholmod_factorize.o \
+	cholmod_postorder.o \
+	cholmod_rcond.o \
+	cholmod_resymbol.o \
+	cholmod_rowcolcounts.o \
+	cholmod_rowfac.o \
+	cholmod_solve.o \
+	cholmod_spsolve.o \
+	cholmod_aat.o \
+	cholmod_add.o \
+	cholmod_band.o \
+	cholmod_change_factor.o \
+	cholmod_common.o \
+	cholmod_complex.o \
+	cholmod_copy.o \
+	cholmod_dense.o \
+	cholmod_error.o \
+	cholmod_factor.o \
+	cholmod_memory.o \
+	cholmod_sparse.o \
+	cholmod_transpose.o \
+	cholmod_triplet.o \
+	cholmod_drop.o \
+	cholmod_horzcat.o \
+	cholmod_norm.o \
+	cholmod_scale.o \
+	cholmod_sdmult.o \
+	cholmod_ssmult.o \
+	cholmod_submatrix.o \
+	cholmod_symmetry.o \
+	cholmod_vertcat.o \
+	cholmod_rowadd.o \
+	cholmod_rowdel.o \
+	cholmod_updown.o \
+	cholmod_camd.o \
+	cholmod_ccolamd.o \
+	cholmod_csymamd.o \
+	cholmod_metis.o \
+	cholmod_nesdis.o \
+	cholmod_super_numeric.o \
+	cholmod_super_solve.o \
+	cholmod_super_symbolic.o
+
+cholmod_matlab.o: cholmod_matlab.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_check.o: ../Check/cholmod_check.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_read.o: ../Check/cholmod_read.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_write.o: ../Check/cholmod_write.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_amd.o: ../Cholesky/cholmod_amd.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_analyze.o: ../Cholesky/cholmod_analyze.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_colamd.o: ../Cholesky/cholmod_colamd.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_etree.o: ../Cholesky/cholmod_etree.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_factorize.o: ../Cholesky/cholmod_factorize.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_postorder.o: ../Cholesky/cholmod_postorder.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_rcond.o: ../Cholesky/cholmod_rcond.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_resymbol.o: ../Cholesky/cholmod_resymbol.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_rowcolcounts.o: ../Cholesky/cholmod_rowcolcounts.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_rowfac.o: ../Cholesky/cholmod_rowfac.c \
+	../Cholesky/t_cholmod_rowfac.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_solve.o: ../Cholesky/cholmod_solve.c \
+	../Cholesky/t_cholmod_lsolve.c \
+	../Cholesky/t_cholmod_ltsolve.c \
+	../Cholesky/t_cholmod_solve.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_spsolve.o: ../Cholesky/cholmod_spsolve.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_aat.o: ../Core/cholmod_aat.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_add.o: ../Core/cholmod_add.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_band.o: ../Core/cholmod_band.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_change_factor.o: ../Core/cholmod_change_factor.c \
+	../Core/t_cholmod_change_factor.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_common.o: ../Core/cholmod_common.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_complex.o: ../Core/cholmod_complex.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_copy.o: ../Core/cholmod_copy.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_dense.o: ../Core/cholmod_dense.c \
+	../Core/t_cholmod_dense.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_error.o: ../Core/cholmod_error.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_factor.o: ../Core/cholmod_factor.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_memory.o: ../Core/cholmod_memory.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_sparse.o: ../Core/cholmod_sparse.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_transpose.o: ../Core/cholmod_transpose.c \
+	../Core/t_cholmod_transpose.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_triplet.o: ../Core/cholmod_triplet.c \
+	../Core/t_cholmod_triplet.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_drop.o: ../MatrixOps/cholmod_drop.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_horzcat.o: ../MatrixOps/cholmod_horzcat.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_norm.o: ../MatrixOps/cholmod_norm.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_scale.o: ../MatrixOps/cholmod_scale.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_sdmult.o: ../MatrixOps/cholmod_sdmult.c \
+	../MatrixOps/t_cholmod_sdmult.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_ssmult.o: ../MatrixOps/cholmod_ssmult.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_submatrix.o: ../MatrixOps/cholmod_submatrix.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_symmetry.o: ../MatrixOps/cholmod_symmetry.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_vertcat.o: ../MatrixOps/cholmod_vertcat.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_rowadd.o: ../Modify/cholmod_rowadd.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_rowdel.o: ../Modify/cholmod_rowdel.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_updown.o: ../Modify/cholmod_updown.c \
+	../Modify/t_cholmod_updown.c \
+	../Modify/t_cholmod_updown_numkr.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_camd.o: ../Partition/cholmod_camd.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_ccolamd.o: ../Partition/cholmod_ccolamd.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_csymamd.o: ../Partition/cholmod_csymamd.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_metis.o: ../Partition/cholmod_metis.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_nesdis.o: ../Partition/cholmod_nesdis.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_super_numeric.o: ../Supernodal/cholmod_super_numeric.c \
+	../Supernodal/t_cholmod_super_numeric.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_super_solve.o: ../Supernodal/cholmod_super_solve.c \
+	../Supernodal/t_cholmod_super_solve.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+cholmod_super_symbolic.o: ../Supernodal/cholmod_super_symbolic.c $(CHOLMOD_INC)
+	$(MX) -c $(INC) $<
+
+
+#===============================================================================
+
+OBJ = $(AMD) $(CAMD) $(COLAMD) $(CCOLAMD) $(METIS) $(CHOLMOD)
+
+analyze: analyze.c $(OBJ)
+	$(MX) analyze.c $(INC) $(OBJ)
+
+mread: mread.c $(OBJ)
+	$(MX) mread.c $(INC) $(OBJ)
+
+mwrite: mwrite.c $(OBJ)
+	$(MX) mwrite.c $(INC) $(OBJ)
+
+spsym: spsym.c $(OBJ)
+	$(MX) spsym.c $(INC) $(OBJ)
+
+chol2: chol2.c $(OBJ)
+	$(MX) chol2.c $(INC) $(OBJ)
+
+lchol: lchol.c $(OBJ)
+	$(MX) lchol.c $(INC) $(OBJ)
+
+ldlchol: ldlchol.c $(OBJ)
+	$(MX) ldlchol.c $(INC) $(OBJ)
+
+ldlupdate: ldlupdate.c $(OBJ)
+	$(MX) ldlupdate.c $(INC) $(OBJ)
+
+ldlsolve: ldlsolve.c $(OBJ)
+	$(MX) ldlsolve.c $(INC) $(OBJ)
+
+sdmult: sdmult.c $(OBJ)
+	$(MX) sdmult.c $(INC) $(OBJ)
+
+resymbol: resymbol.c $(OBJ)
+	$(MX) resymbol.c $(INC) $(OBJ)
+
+cholmod2: cholmod2.c $(OBJ)
+	$(MX) cholmod2.c $(INC) $(OBJ)
+
+nesdis: nesdis.c $(OBJ)
+	$(MX) nesdis.c $(INC) $(OBJ)
+
+septree: septree.c $(OBJ)
+	$(MX) septree.c $(INC) $(OBJ)
+
+metis: metis.c $(OBJ)
+	$(MX) metis.c $(INC) $(OBJ)
+
+etree2: etree2.c $(OBJ)
+	$(MX) etree2.c $(INC) $(OBJ)
+
+bisect: bisect.c $(OBJ)
+	$(MX) bisect.c $(INC) $(OBJ)
+
+symbfact2: symbfact2.c $(OBJ) 
+	$(MX) symbfact2.c $(INC) $(OBJ)
+
+sparse2: sparse2.c $(OBJ) 
+	$(MX) sparse2.c $(INC) $(OBJ)
+
 #-------------------------------------------------------------------------------
 
 other:

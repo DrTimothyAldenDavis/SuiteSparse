@@ -1,5 +1,5 @@
 function cholmod_demo
-%CHOLMOD_DEMO: a demo for CHOLMOD
+%CHOLMOD_DEMO a demo for CHOLMOD
 %
 % Tests CHOLMOD with various randomly-generated matrices, and the west0479
 % matrix distributed with MATLAB.  Random matrices are not good test cases,
@@ -8,6 +8,9 @@ function cholmod_demo
 %
 % See CHOLMOD/MATLAB/Test/test_all.m for a lengthy test using matrices from
 % the UF sparse matrix collection.
+%
+% Example:
+%   cholmod_demo
 %
 % See also BENCH
 
@@ -57,7 +60,7 @@ t1 = toc ;
 e1 = norm (A*x-b) ;
 
 tic ;
-x = cholmod (A,b,0) ; 
+x = cholmod2 (A,b,0) ; 
 t2 = toc ;
 e2 = norm (A*x-b) ;
 
@@ -76,6 +79,7 @@ fprintf ('\nFor more accurate timings, run this test again.\n') ;
 
 
 function try_matrix (A)
+% try_matrix: try a matrix with CHOLMOD
 
 n = size (A,1) ;
 S = sparse (A) ;
@@ -100,13 +104,13 @@ lnz = symbfact2 (S) ;
 fl = sum (lnz.^2) ;
 
 tic
-L = lchol (S) ;
+L = lchol (S) ;		    %#ok
 t1 = toc ;
 fprintf ('CHOLMOD lchol(sparse(A))       time: %6.2f    mflop %8.1f\n', ...
     t1, 1e-6 * fl / t1) ;
 
 tic
-LD = ldlchol (S) ;
+LD = ldlchol (S) ;		%#ok
 t2 = toc ;
 fprintf ('CHOLMOD ldlchol(sparse(A))     time: %6.2f    mflop %8.1f\n', ...
     t2, 1e-6 * fl / t2) ;
@@ -118,10 +122,11 @@ fprintf ('CHOLMOD ldlupdate(sparse(A),C) time: %6.2f (rank-1, C dense)\n', t3) ;
 
 [L,D] = ldlsplit (LD) ;
 L = full (L) ;
-err = norm ((S+C*C') - L*D*L', 1) / norm (S,1)
+err = norm ((S+C*C') - L*D*L', 1) / norm (S,1) ;
+fprintf ('err: %g\n', err) ;
 
 tic
-R = chol (S) ;
+R = chol (S) ;		    %#ok
 s1 = toc ;
 fprintf ('MATLAB  chol(sparse(A))        time: %6.2f    mflop %8.1f\n', ...
     s1, 1e-6 * fl / s1) ;
@@ -139,7 +144,8 @@ Z = cholupdate (Z,X) ;
 s3 = toc ;
 fprintf ('MATLAB  cholupdate(full(A),C)  time: %6.2f (rank-1)\n', s3) ;
 
-err = norm ((E+X*X') - Z'*Z, 1) / norm (E,1)
+err = norm ((E+X*X') - Z'*Z, 1) / norm (E,1) ;
+fprintf ('err: %g\n', err) ;
 
 fprintf ('CHOLMOD lchol(sparse(A)) speedup over chol(sparse(A)): %6.1f\n', ...
     s1 / t1) ;

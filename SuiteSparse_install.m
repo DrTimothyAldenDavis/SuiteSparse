@@ -6,6 +6,9 @@ function SuiteSparse_install
 %   function.  Directories are added temporarily your path.
 %   You should add them permanently, using the PATHTOOL.
 %
+%   Example:
+%	SuiteSparse_install
+%
 %   See also AMD, COLAMD, CAMD, CCOLAMD, CHOLMOD, UMFPACK, CSPARSE, UFget,
 %       RBio, UFcollection, SuiteSparse, PATHTOOL, PATH, STARTUP.
 %

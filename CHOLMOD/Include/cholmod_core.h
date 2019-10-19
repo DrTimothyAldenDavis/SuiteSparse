@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * CHOLMOD/Include/cholmod_core.h.  Version 1.3.
+ * CHOLMOD/Include/cholmod_core.h.
  * Copyright (C) 2005-2006, Univ. of Florida.  Author: Timothy A. Davis
  * CHOLMOD/Include/cholmod_core.h is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
@@ -244,10 +244,10 @@
  *	#endif
  */
 
-#define CHOLMOD_DATE "Dec 2, 2006"
+#define CHOLMOD_DATE "Dec 12, 2006"
 #define CHOLMOD_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define CHOLMOD_MAIN_VERSION 1
-#define CHOLMOD_SUB_VERSION 3
+#define CHOLMOD_SUB_VERSION 4
 #define CHOLMOD_SUBSUB_VERSION 0
 #define CHOLMOD_VERSION \
     CHOLMOD_VER_CODE(CHOLMOD_MAIN_VERSION,CHOLMOD_SUB_VERSION)
@@ -898,7 +898,7 @@ typedef struct cholmod_common_struct
      * and workspace.  Note:  additional entries were added in v1.1 to the
      * method array, above, and thus v1.0 and v1.1 are not binary compatible.
      *
-     * v1.1 through v1.3 are binary compatible.
+     * v1.1 to the current version are binary compatible.
      */
 
     double  other1 [16] ;

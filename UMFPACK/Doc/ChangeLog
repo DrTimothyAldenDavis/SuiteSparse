@@ -1,3 +1,8 @@
+Dec 12, 2006: version 5.0.3
+
+    * minor MATLAB cleanup.  Renamed umfpack mexFunction to umfpack2, to avoid
+	filename clash with the built-in version of umfpack.
+
 Dec 2, 2006, version 5.0.2
 
     * minor change to umfpack_report_info: does not print timings less

@@ -1,5 +1,5 @@
-function [out1, out2, out3, out4, out5] = umfpack (in1, in2, in3, in4, in5)
-% UMFPACK v5.0:  details on each usage.
+function umfpack_details
+% UMFPACK:  details on each usage.
 %
 % Factor or solve a sparse linear system, returning either the solution x to
 % Ax=b or A'x'=b', the factorization LU=PAQ, or LU=P(R\A)Q.  A must be sparse.
@@ -23,30 +23,30 @@ function [out1, out2, out3, out4, out5] = umfpack (in1, in2, in3, in4, in5)
 %	    elimination tree post-ordering, do not refine the column ordering
 %	    during factorization, and attempt to select pivots on the diagonal.
 %
-% Each of the following uses of umfpack (except for "Control = umfpack") is
-% stand-alone.  That is, no call to umfpack is required for any subsequent
+% Each of the following uses of umfpack2 (except for "Control = umfpack2") is
+% stand-alone.  That is, no call to umfpack2 is required for any subsequent
 % call.  In each usage, the Info output argument is optional.
 %
-% Usage:
+% Example:
 %
-% [x, Info] = umfpack (A, '\', b) ;
-% [x, Info] = umfpack (A, '\', b, Control) ;
-% [x, Info] = umfpack (A, Qinit, '\', b, Control) ;
-% [x, Info] = umfpack (A, Qinit, '\', b) ;
+% [x, Info] = umfpack2 (A, '\', b) ;
+% [x, Info] = umfpack2 (A, '\', b, Control) ;
+% [x, Info] = umfpack2 (A, Qinit, '\', b, Control) ;
+% [x, Info] = umfpack2 (A, Qinit, '\', b) ;
 %
 %       Solves Ax=b (similar to x = A\b in MATLAB).
 %
-% [x, Info] = umfpack (b, '/', A) ;
-% [x, Info] = umfpack (b, '/', A, Control) ;
-% [x, Info] = umfpack (b, '/', A, Qinit) ;
-% [x, Info] = umfpack (b, '/', A, Qinit, Control) ;
+% [x, Info] = umfpack2 (b, '/', A) ;
+% [x, Info] = umfpack2 (b, '/', A, Control) ;
+% [x, Info] = umfpack2 (b, '/', A, Qinit) ;
+% [x, Info] = umfpack2 (b, '/', A, Qinit, Control) ;
 %
 %       Solves A'x'=b' (similar to x = b/A in MATLAB).
 %
-% [L, U, P, Q, R, Info] = umfpack (A) ;
-% [L, U, P, Q, R, Info] = umfpack (A, Control) ;
-% [L, U, P, Q, R, Info] = umfpack (A, Qinit) ;
-% [L, U, P, Q, R, Info] = umfpack (A, Qinit, Control) ;
+% [L, U, P, Q, R, Info] = umfpack2 (A) ;
+% [L, U, P, Q, R, Info] = umfpack2 (A, Control) ;
+% [L, U, P, Q, R, Info] = umfpack2 (A, Qinit) ;
+% [L, U, P, Q, R, Info] = umfpack2 (A, Qinit, Control) ;
 %
 %       Returns the LU factorization of A.  P and Q are returned as permutation
 %       matrices.  R is a diagonal sparse matrix of scale factors for the rows
@@ -55,18 +55,18 @@ function [out1, out2, out3, out4, out5] = umfpack (in1, in2, in3, in4, in5)
 %	Control (17) to zero (in which case R = speye (m)), or by using the
 %	following syntaxes (in which case Control (17) is ignored):
 %
-% [L, U, P, Q] = umfpack (A) ;
-% [L, U, P, Q] = umfpack (A, Control) ;
-% [L, U, P, Q] = umfpack (A, Qinit) ;
-% [L, U, P, Q] = umfpack (A, Qinit, Control) ;
+% [L, U, P, Q] = umfpack2 (A) ;
+% [L, U, P, Q] = umfpack2 (A, Control) ;
+% [L, U, P, Q] = umfpack2 (A, Qinit) ;
+% [L, U, P, Q] = umfpack2 (A, Qinit, Control) ;
 %
 %       Same as above, except that no row scaling is performed.  The Info array
 %	is not returned, either.
 %
-% [P1, Q1, Fr, Ch, Info] = umfpack (A, 'symbolic') ;
-% [P1, Q1, Fr, Ch, Info] = umfpack (A, 'symbolic', Control) ;
-% [P1, Q1, Fr, Ch, Info] = umfpack (A, Qinit, 'symbolic') ;
-% [P1, Q1, Fr, Ch, Info] = umfpack (A, Qinit, 'symbolic', Control);
+% [P1, Q1, Fr, Ch, Info] = umfpack2 (A, 'symbolic') ;
+% [P1, Q1, Fr, Ch, Info] = umfpack2 (A, 'symbolic', Control) ;
+% [P1, Q1, Fr, Ch, Info] = umfpack2 (A, Qinit, 'symbolic') ;
+% [P1, Q1, Fr, Ch, Info] = umfpack2 (A, Qinit, 'symbolic', Control);
 %
 %       Performs only the fill-reducing column pre-ordering (including the
 %       elimination tree post-ordering) and symbolic factorization.  Q1 is the
@@ -103,21 +103,21 @@ function [out1, out2, out3, out4, out5] = umfpack (in1, in2, in3, in4, in5)
 %       Chain (i,1) to Chain (i+1,1)-1, and the largest front in chain i is
 %       Chain (i,2)-by-Chain (i,3).
 %
-%       This use of umfpack is not required to factor or solve a linear system
+%       This use of umfpack2 is not required to factor or solve a linear system
 %       in MATLAB.  It analyzes the matrix A and provides information only.
 %       The MATLAB statement "treeplot (Fr (:,2)')" plots the column elimination
 %       tree.
 %
-% Control = umfpack ;
+% Control = umfpack2 ;
 %
-%       Returns a 20-by-1 vector of default parameter settings for umfpack.
+%       Returns a 20-by-1 vector of default parameter settings for umfpack2.
 %
 % umfpack_report (Control, Info) ;
 %
 %       Prints the current Control settings, and Info
 %
-% det = umfpack (A, 'det') ;
-% [det dexp] = umfpack (A, 'det') ;
+% det = umfpack2 (A, 'det') ;
+% [det dexp] = umfpack2 (A, 'det') ;
 %
 %	Computes the determinant of A.  The 2nd form returns the determinant
 %	in the form det*10^dexp, where det is in the range +/- 1 to 10,
@@ -131,7 +131,7 @@ function [out1, out2, out3, out4, out5] = umfpack (in1, in2, in3, in4, in5)
 % are used.  If a Control entry is NaN, then the default is used for that entry.
 %
 %
-% UMFPACK Version 5.0, Copyright (c) 1995-2006 by Timothy A. Davis.
+% UMFPACK, Copyright (c) 1995-2006 by Timothy A. Davis.
 % All Rights Reserved.
 % UMFPACK is available under alternate licenses, contact T. Davis for details.
 %
@@ -167,7 +167,7 @@ function [out1, out2, out3, out4, out5] = umfpack (in1, in2, in3, in4, in5)
 %
 % Availability: http://www.cise.ufl.edu/research/sparse/umfpack
 %
-% See also umfpack, umfpack_make, umfpack_report,
+% See also umfpack, umfpack2, umfpack_make, umfpack_report,
 %    umfpack_demo, and umfpack_simple.
 
 more on

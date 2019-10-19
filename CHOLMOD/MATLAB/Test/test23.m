@@ -1,7 +1,13 @@
 function test23
-% test23: test chol and cholmod on the sparse matrix used in "bench"
+%TEST23 test chol and cholmod2 on the sparse matrix used in "bench"
+% Example:
+%   test23
+% See also cholmod_test
+
+% Copyright 2006, Timothy A. Davis, University of Florida
+
 fprintf ('=================================================================\n');
-fprintf ('test23: test chol & cholmod on the sparse matrix used in "bench"\n');
+fprintf ('test23: test chol & cholmod2 on the sparse matrix used in "bench"\n');
 
 n = 120 ;
 A = delsq (numgrid ('L', n)) ;
@@ -15,7 +21,7 @@ t1 = toc ;
 e1 = norm (A*x-b) ;
 
 tic ;
-x = cholmod (A,b) ; 
+x = cholmod2 (A,b) ; 
 t2 = toc ;
 e2 = norm (A*x-b) ;
 
@@ -104,7 +110,7 @@ t1 = toc ;
 e1 = norm (A*x-b) ;
 
 tic ;
-x = cholmod (A,b,0) ; 
+x = cholmod2 (A,b,0) ; 
 t2 = toc ;
 e2 = norm (A*x-b) ;
 

@@ -1,5 +1,5 @@
 function Problem = UFget (matrix, UF_Index)
-%UFget loads a matrix from the UF sparse matrix collection.
+%UFGET loads a matrix from the UF Sparse Matrix Collection.
 %
 %   Problem = UFget(matrix) loads a matrix from the UF sparse matrix collection,
 %   specified as either a number (1 to the # of matrices in the collection) or

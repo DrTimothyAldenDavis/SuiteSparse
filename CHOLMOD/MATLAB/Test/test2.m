@@ -1,13 +1,19 @@
-% function test2
-% test2: test sparse2
+function test2
+%TEST2 test sparse2
+% Example:
+%   test2
+% See also cholmod_test
+
+% Copyright 2006, Timothy A. Davis, University of Florida
+
 fprintf ('=================================================================\n');
 fprintf ('test2: test sparse2\n') ;
 
-i = [ 2 3 ]
-j = [ 3 4 ]
-s = [11.4 9.2] + 1i * [3.4 1.2]
-sparse (i,j,s)
-sparse2 (i,j,s)
+i = [ 2 3 ]								    %#ok
+j = [ 3 4 ]								    %#ok
+s = [11.4 9.2] + 1i * [3.4 1.2]						    %#ok
+sparse (i,j,s)								    %#ok
+sparse2 (i,j,s)								    %#ok
 
 n = 100 ;
 nz = 4000 ;
@@ -20,7 +26,7 @@ B = sparse2 (i,j,s,n,n) ;
 nnz(A)
 
 if (norm (A-B,1) > 1e-14)
-    A_minus_B = A-B
+    A_minus_B = A-B							    %#ok
     error ('!') ;
 end
 
@@ -28,7 +34,7 @@ C = sparse (A) ;
 D = sparse2 (B) ;
 
 if (norm (C-D,1) > 1e-14)
-    C_minus_D = C-D
+    C_minus_D = C-D							    %#ok
     error ('!') ;
 end
 % spy(C)

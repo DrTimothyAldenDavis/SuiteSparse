@@ -1,4 +1,4 @@
-BTF Version 0.9, May 5, 2006, by Timothy A. Davis
+BTF Version 0.11, Dec 12, 2006, by Timothy A. Davis
 Copyright (C) 2005, University of Florida
 BTF is also available under other licenses; contact authors for details.
 http://www.cise.ufl.edu/research/sparse

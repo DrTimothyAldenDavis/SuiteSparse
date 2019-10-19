@@ -1,1 +1,0 @@
-../Tcov/amdtest.c

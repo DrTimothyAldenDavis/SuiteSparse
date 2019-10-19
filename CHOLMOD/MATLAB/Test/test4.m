@@ -1,16 +1,22 @@
 function test4
-% test4: test cholmod with multiple and sparse right-hand-sides
+%TEST4 test cholmod2 with multiple and sparse right-hand-sides
+% Example:
+%   test4
+% See also cholmod_test
+
+% Copyright 2006, Timothy A. Davis, University of Florida
+
 fprintf ('=================================================================\n');
-fprintf ('test4: test cholmod with multiple and sparse right-hand-sides\n') ;
+fprintf ('test4: test cholmod2 with multiple and sparse right-hand-sides\n') ;
 
 Prob = UFget ('HB/bcsstk01') ;
 A = Prob.A ;
 n = size (A,1) ;
 b = rand (n,1) ;
-x = cholmod (A,b) ;
+x = cholmod2 (A,b) ;
 m2 = norm (A*x-b,1) ;
 b = sparse (b) ; 
-x = cholmod (A,b) ;
+x = cholmod2 (A,b) ;
 m2 = max (m2, norm (A*x-b,1)) ;
 m1 = 0 ;
 
@@ -18,11 +24,9 @@ for nrhs = 1:80
     b = sparse (rand (n,nrhs)) ;
     x = A\b ;
     e1 = norm (A*x-b,1) ;
-    x = cholmod (A,b) ;
+    x = cholmod2 (A,b) ;
     e2 = norm (A*x-b,1) ;
     if (e2 > 1e-11)
-	e1
-	e2
 	error ('!') ;
     end
     m1 = max (m1, e1) ;
@@ -34,11 +38,9 @@ for nrhs = 1:80
     x = A\b ;
     % nnz (x) / (n*nrhs)
     e1 = norm (A*x-b,1) ;
-    x = cholmod (A,b) ;
+    x = cholmod2 (A,b) ;
     e2 = norm (A*x-b,1) ;
     if (e2 > 1e-11)
-	e1
-	e2
 	error ('!') ;
     end
     m1 = max (m1, e1) ;

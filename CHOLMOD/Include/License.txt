@@ -1,4 +1,4 @@
-CHOLMOD/Include/* files.  Version 1.2.
+CHOLMOD/Include/* files.
 Copyright (C) 2005-2006, either Univ. of Florida or T. Davis,
 depending on the file.
 http://www.cise.ufl.edu/research/sparse

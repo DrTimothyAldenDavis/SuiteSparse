@@ -1,5 +1,5 @@
 function stats = UFweb (matrix, opts)
-%UFweb opens the URL for a matrix in the UF sparse matrix collection.
+%UFWEB opens the URL for a matrix.
 %
 %   UFweb(matrix) opens the URL for a matrix.  This parameter can be a string,
 %   or an integer.  If it is a string with no "/" character, the web page for a

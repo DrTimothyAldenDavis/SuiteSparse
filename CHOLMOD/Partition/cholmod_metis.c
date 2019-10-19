@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * CHOLMOD/Partition Module.  Version 1.3.
+ * CHOLMOD/Partition Module.
  * Copyright (C) 2005-2006, Univ. of Florida.  Author: Timothy A. Davis
  * The CHOLMOD/Partition Module is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
@@ -46,11 +46,20 @@
 
 #ifndef NPARTITION
 
+#include "cholmod_internal.h"
+#undef ASSERT
+
 #include "metis.h"
 /* METIS has its own ASSERT that it reveals to the user, so remove it here: */
 #undef ASSERT
 
-#include "cholmod_internal.h"
+/* and redefine it back again */
+#ifndef NDEBUG
+#define ASSERT(expression) (assert (expression))
+#else
+#define ASSERT(expression)
+#endif
+
 #include "cholmod_partition.h"
 #include "cholmod_cholesky.h"
 

@@ -1,4 +1,6 @@
 function B = stuff (A, newsize)
+% STUFF: compress a sparse matrix
+% Example:
 % B = stuff (A, newsize)
 %
 % compresses pattern of A into B, of size newsize

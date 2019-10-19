@@ -1,5 +1,5 @@
 function cs_demo (do_pause)
-%CS_DEMO: run all CSparse demos.
+%CS_DEMO run all CSparse demos.
 %   Your current working directory must be CSparse/MATLAB/Demo to run this demo.
 %   cs_demo(0) will run all demos without pausing.
 %

@@ -8,13 +8,13 @@ function demo2 (C, sym, name)
 %   Copyright 2006, Timothy A. Davis.
 %   http://www.cise.ufl.edu/research/sparse
 
+clf
 subplot (2,2,1) ; cspy (C) ;
 title (name, 'FontSize', 16, 'Interpreter', 'none') ;
 [m n] = size (C) ;
 [p,q,r,s,cc,rr] = cs_dmperm (C) ;
 subplot (2,2,3) ; cs_dmspy (C) ;
-subplot (2,2,4) ; cspy (0) ;
-subplot (2,2,2) ; cspy (0) ;
+subplot (2,2,2) ; ccspy (C) ;
 drawnow
 
 sprnk = rr (4) - 1 ;
@@ -30,19 +30,23 @@ if (sprnk < min (m,n))
     return ;		    % return if structurally singular
 end
 
+
 % the following code is not in the C version of this demo:
 if (m == n)
     if (sym)
 	try
 	    [L,p] = cs_chol (C) ;		%#ok
+	    subplot (2,2,4) ;
 	    cspy (L+triu(L',1)) ; title ('L+L''') ;
 	catch
 	    % tol = 0.001 ;
 	    [L,U,p,q] = cs_lu (C,0.001) ;	%#ok
+	    subplot (2,2,4) ;
 	    cspy (L+U-speye(n)) ; title ('L+U') ;
 	end
     else
 	[L,U,p,q] = cs_lu (C) ;		%#ok
+	subplot (2,2,4) ;
 	cspy (L+U-speye(n)) ; title ('L+U') ;
     end
 else
@@ -51,6 +55,7 @@ else
     else
 	[V,beta,p,R,q] = cs_qr (C) ;		%#ok
     end
+    subplot (2,2,4) ;
     cspy (V+R) ; title ('V+R') ;
 end
 drawnow

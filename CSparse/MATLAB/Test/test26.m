@@ -27,7 +27,7 @@ for trials = 1:ntrials
     % d = 0.1 * rand (1) ;
     d = rand (1) * 4 * max (m,n) / max (m*n,1) ;
     A = sprandn (m,n,d) ;
-    S = sprandn (m,m,d) + speye (m) ;
+    % S = sprandn (m,m,d) + speye (m) ;
 
     subplot (1,3,2) ; spy (A) ;
     subplot (1,3,3) ; cs_dmspy (A) ;

@@ -1,5 +1,7 @@
 function sandia = get_sandia_matrix_list
-% return a list of matrices from Sandia
+%get_sandia_matrix_list: return a list of matrices from Sandia
+% Example:
+%   sandia = get_sandia_matrix_list
 
 % selected Sandia matrices in UFcollection:
 sandia = { ...

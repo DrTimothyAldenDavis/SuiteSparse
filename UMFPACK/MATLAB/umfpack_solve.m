@@ -1,16 +1,17 @@
 function x = umfpack_solve (arg1, op, arg2, Control)
 % UMFPACK_SOLVE
 %
-% x = umfpack_solve (A, '\', b, Control)
-% x = umfpack_solve (b, '/', A, Control)
+% Example:
+%   x = umfpack_solve (A, '\', b, Control)
+%   x = umfpack_solve (b, '/', A, Control)
 %
 % Computes x = A\b, or b/A, where A is square.  Uses UMFPACK if A is sparse.
 % The Control argument is optional.
 %
-% See also umfpack, umfpack_make, umfpack_details, umfpack_report,
+% See also umfpack, umfpack2, umfpack_make, umfpack_details, umfpack_report,
 % and umfpack_simple.
 
-% UMFPACK Version 5.0, Copyright (c) 1995-2006 by Timothy A. Davis.
+% Copyright (c) 1995-2006 by Timothy A. Davis.
 % All Rights Reserved.  Type umfpack_details for License.
 
 %-------------------------------------------------------------------------------
@@ -35,13 +36,13 @@ if (m ~= n)
 end
 
 [m1 n1] = size (b) ;
-if ((op == '\' & n ~= m1) | (op == '/' & n1 ~= m))
+if ((op == '\' && n ~= m1) || (op == '/' && n1 ~= m))
     help umfpack_solve
     error ('umfpack_solve:  b has the wrong dimensions') ;
 end
 
 if (nargin < 4)
-    Control = umfpack ;
+    Control = umfpack2 ;
 end
 
 %-------------------------------------------------------------------------------
@@ -55,15 +56,15 @@ if (op == '\')
 	% A is not sparse, so just use MATLAB
 	x = A\b ;
 
-    elseif (n1 == 1 & ~issparse (b))
+    elseif (n1 == 1 && ~issparse (b))
 
 	% the UMFPACK '\' requires b to be a dense column vector
-	x = umfpack (A, '\', b, Control) ;
+	x = umfpack2 (A, '\', b, Control) ;
 
     else
 
 	% factorize with UMFPACK and do the forward/back solves in MATLAB
-	[L, U, P, Q, R] = umfpack (A, Control) ;
+	[L, U, P, Q, R] = umfpack2 (A, Control) ;
 	x = Q * (U \ (L \ (P * (R \ b)))) ;
 
     end
@@ -75,20 +76,20 @@ else
 	% A is not sparse, so just use MATLAB
 	x = b/A ;
 
-    elseif (m1 == 1 & ~issparse (b))
+    elseif (m1 == 1 && ~issparse (b))
 
 	% the UMFPACK '\' requires b to be a dense column vector
-	x = umfpack (b, '/', A, Control) ;
+	x = umfpack2 (b, '/', A, Control) ;
 
     else
 
 	% factorize with UMFPACK and do the forward/back solves in MATLAB
 	% this mimics the behavior of x = b/A, except for the row scaling
-	[L, U, P, Q, R] = umfpack (A.', Control) ;
+	[L, U, P, Q, R] = umfpack2 (A.', Control) ;
 	x = (Q * (U \ (L \ (P * (R \ (b.')))))).' ;
 
 	% an alternative method:
-	% [L, U, P, Q, r] = umfpack (A, Control) ;
+	% [L, U, P, Q, r] = umfpack2 (A, Control) ;
 	% x = (R \ (P' * (L.' \ (U.' \ (Q' * b.'))))).' ;
 
     end

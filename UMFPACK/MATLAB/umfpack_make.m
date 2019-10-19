@@ -1,12 +1,15 @@
 function umfpack_make
 % UMFPACK_MAKE
 %
-% Compiles the UMFPACK mexFunction and then runs a simple demo.
+% Compiles the umfpack2 mexFunction and then runs a simple demo.
 %
-% See also: umfpack, umfpack_details, umfpack_report, umfpack_demo, and
-% umfpack_simple.
+% Example:
+%   umfpack_make
 %
-% UMFPACK Version 5.0, Copyright (c) 1995-2006 by Timothy A. Davis.
+% See also: umfpack, umfpack2, umfpack_details, umfpack_report, umfpack_demo,
+% and umfpack_simple.
+%
+% Copyright (c) 1995-2006 by Timothy A. Davis.
 % All Rights Reserved.  Type umfpack_details for License.
 
 help umfpack_make
@@ -141,7 +144,7 @@ umfint = { 'analyze', 'apply_order', 'colamd', 'free', 'fsize', ...
 	'singletons' } ;
 
 % non-user-callable and user-callable amd_*.[ch] files (int versions only):
-amd = { 'aat', '1', '2', 'dump', 'postorder', 'post_tree', 'defaults', ...
+amdsrc = { 'aat', '1', '2', 'dump', 'postorder', 'post_tree', 'defaults', ...
         'order', 'control', 'info', 'valid', 'preprocess', 'global' } ;
 
 % user-callable umfpack_*.[ch] files (real/complex):
@@ -161,7 +164,7 @@ generic = { 'timer', 'tictoc', 'global' } ;
 M = cell (0) ;
 
 %-------------------------------------------------------------------------------
-% Create the umfpack and amd mexFunctions for MATLAB (int versions only)
+% Create the umfpack2 and amd2 mexFunctions for MATLAB (int versions only)
 %-------------------------------------------------------------------------------
 
 for k = 1:length(umfint)
@@ -225,18 +228,18 @@ end
 % AMD routines (int only)
 %----------------------------------------
 
-for k = 1:length(amd)
+for k = 1:length(amdsrc)
     M = make (M, '%s -DDINT -c %samd_%s.c', 'amd_%s.%s', 'amd_%s_%s.%s', ...
-        mx, amd {k}, amd {k}, 'm', obj, amddir) ;
+        mx, amdsrc {k}, amdsrc {k}, 'm', obj, amddir) ;
 end
 
 %----------------------------------------
-% compile the umfpack mexFunction
+% compile the umfpack2 mexFunction
 %----------------------------------------
 
-C = sprintf ('%s -output umfpack umfpackmex.c', mx) ;
+C = sprintf ('%s -output umfpack2 umfpackmex.c', mx) ;
 for i = 1:length (M)
-    C = [C ' ' (M {i})] ;
+    C = [C ' ' (M {i})] ;   %#ok
 end
 C = [C ' ' blas_lib] ;
 cmd (C) ;
@@ -297,9 +300,9 @@ end
 
 function cpfile (src, dst)
 rmfile (dst)
-if (length (dir (src)) == 0)
+if (length (dir (src)) == 0)	%#ok
     help umfpack_make
-    error (sprintf ('File does not exist: %s\n', src)) ;
+    error (sprintf ('File does not exist: %s\n', src)) ;    %#ok
 end
 copyfile (src, dst) ;
 

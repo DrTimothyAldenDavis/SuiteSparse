@@ -1,7 +1,8 @@
 function x = umfpack_btf (A, b, Control)
 % UMFPACK_BTF
 %
-% x = umfpack_btf (A, b, Control)
+% Example:
+%   x = umfpack_btf (A, b, Control)
 %
 % solve Ax=b by first permuting the matrix A to block triangular form via dmperm
 % and then using UMFPACK to factorize each diagonal block.  Adjacent 1-by-1
@@ -9,9 +10,9 @@ function x = umfpack_btf (A, b, Control)
 % MATLAB's \ operator.  The Control parameter is optional (Type umfpack_details
 % and umfpack_report for details on its use).  A must be square.
 %
-% See also:  umfpack, umfpack_factorize, umfpack_details, dmperm
+% See also umfpack, umfpack2, umfpack_factorize, umfpack_details, dmperm
 
-% UMFPACK Version 5.0, Copyright (c) 1995-2006 by Timothy A. Davis.
+% Copyright (c) 1995-2006 by Timothy A. Davis.
 % All Rights Reserved.  Type umfpack_details for License.
 
 if (nargin < 2)
@@ -31,7 +32,7 @@ if (m1 ~= n)
 end
 
 if (nargin < 3)
-    Control = umfpack ;
+    Control = umfpack2 ;
 end
 
 %-------------------------------------------------------------------------------
@@ -45,7 +46,7 @@ nblocks = length (r) - 1 ;
 % solve the system
 %-------------------------------------------------------------------------------
 
-if (nblocks == 1 | sprank (A) < n)
+if (nblocks == 1 || sprank (A) < n)
 
     %---------------------------------------------------------------------------
     % matrix is irreducible or structurally singular

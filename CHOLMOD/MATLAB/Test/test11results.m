@@ -1,13 +1,18 @@
 function test11results
-% analyze results from test11.m
+%TEST11RESULTS analyze results from test11.m
+% Example:
+%   test11results
+% See also test11, cholmod_test
+
+% Copyright 2006, Timothy A. Davis, University of Florida
 
 load Results
 index = UFget ;
 
 c = E1(1:kkk) < 1 & T1(1:kkk) > 0 ;
 m = E2(1:kkk) < 1 & T2(1:kkk) > 0 ;
-cgood = find (c) ;
-mgood = find (m) ;
+cgood = find (c) ;	%#ok
+mgood = find (m) ;	%#ok
 good  = find (c | m) ;
 bad = find (~(c|m)) ;
 

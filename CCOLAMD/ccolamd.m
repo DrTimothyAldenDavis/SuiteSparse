@@ -1,5 +1,5 @@
-function [p, stats] = ccolamd (S, knobs, cmember) 
-%CCOLAMD Constrained column approximate minimum degree permutation.
+function [p, stats] = ccolamd (S, knobs, cmember)			    %#ok
+%CCOLAMD constrained column approximate minimum degree permutation.
 %    p = CCOLAMD(S) returns the column approximate minimum degree permutation
 %    vector for the sparse matrix S.  For a non-symmetric matrix S, S(:,p)
 %    tends to have sparser LU factors than S.  chol(S(:,p)'*S(:,p)) also tends
@@ -7,7 +7,8 @@ function [p, stats] = ccolamd (S, knobs, cmember)
 %    lu(S(:,p)).  The ordering is followed by a column elimination tree post-
 %    ordering.
 %
-%    Usage:  p = ccolamd(S)
+%    Example:
+%            p = ccolamd(S)
 %            [p stats] = ccolamd(S,knobs,cmember)
 %
 %    knobs is an optional one- to five-element input vector, with a default
@@ -16,7 +17,7 @@ function [p, stats] = ccolamd (S, knobs, cmember)
 %
 %    knobs(1): if nonzero, the ordering is optimized for lu(S(:,p)).  It will
 %       be a poor ordering for chol(S(:,p)'*S(:,p)).  This is the most
-%	important knob for ccolamd.
+%       important knob for ccolamd.
 %    knobs(2): if S is m-by-n, rows with more than max(16,knobs(2)*sqrt(n))
 %       entries are ignored.
 %    knobs(3): columns with more than max(16,knobs(3)*sqrt(min(m,n))) entries
@@ -46,11 +47,11 @@ function [p, stats] = ccolamd (S, knobs, cmember)
 %    from Sandia National Lab.  See http://www.cise.ufl.edu/research/sparse
 %    for ccolamd, csymamd, amd, colamd, symamd, and other related orderings.
 %
-%    See also AMD, CSYMAMD, CAMD, COLAMD, SYMAMD, SYMRCM.
+%    See also AMD, CSYMAMD, COLAMD, SYMAMD, SYMRCM.
 
 % ----------------------------------------------------------------------------
 % CCOLAMD version 2.5.
-% Copyright (C) 2005, Univ. of Florida.  Authors: Timothy A. Davis,
+% Copyright 2006, Univ. of Florida.  Authors: Timothy A. Davis,
 % Sivasankaran Rajamanickam, and Stefan Larimore
 % See lesser.txt for the Version 2.1 of the GNU Lesser General Public License
 % http://www.cise.ufl.edu/research/sparse

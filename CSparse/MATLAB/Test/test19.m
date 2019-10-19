@@ -147,10 +147,10 @@ for trials = 1:1000
 	error ('C3 diag!') ;
     end
 
-    r1 = rp(4) ;
-    r2 = rp(5) ;
-    c1 = cp(4) ;
-    c2 = cp(5) ;
+    r1 = rp(4) ;							    %#ok
+    r2 = rp(5) ;							    %#ok
+    c1 = cp(4) ;							    %#ok
+    c2 = cp(5) ;							    %#ok
     % plot ([c1 c2 c2 c1 c1]-.5, [r1 r1 r2 r2 r1]-.5, 'g') ;
 
     if (~isempty (S))

@@ -25,7 +25,7 @@ M = \
 	../MATLAB/analyze.m \
 	../MATLAB/bisect.m \
 	../MATLAB/chol2.m \
-	../MATLAB/cholmod.m \
+	../MATLAB/cholmod2.m \
 	../MATLAB/cholmod_demo.m \
 	../MATLAB/cholmod_make.m \
 	../MATLAB/etree2.m \
@@ -51,7 +51,7 @@ UserGuide.pdf: UserGuide.tex UserGuide.bib $(I) $(C) $(M) Makefile getproto rule
 	./getmproto ../MATLAB/analyze.m > _analyze_m.tex
 	./getmproto ../MATLAB/bisect.m > _bisect_m.tex
 	./getmproto ../MATLAB/chol2.m > _chol2_m.tex
-	./getmproto ../MATLAB/cholmod.m > _cholmod_m.tex
+	./getmproto ../MATLAB/cholmod2.m > _cholmod2_m.tex
 	./getmproto ../MATLAB/cholmod_demo.m > _cholmod_demo_m.tex
 	./getmproto ../MATLAB/cholmod_make.m > _cholmod_make_m.tex
 	./getmproto ../MATLAB/etree2.m > _etree2_m.tex

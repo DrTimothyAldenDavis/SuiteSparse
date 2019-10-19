@@ -15,6 +15,9 @@ AMD, COLAMD, and CCOLAMD.
 Type "make" in this directory to compile CHOLMOMD with statement coverage
 testing.  Then type "make go" to run the tests.
 
+Note that about 500MB of disk space is required, mostly in the tmp/
+directory.
+
 Every line of AMD, CAMD, COLAMD, CCOLAMD, and CHOLMOD will be exercised,
 and their results checked.  The line "All tests passed" should be
 printed for each test on stderr.  Some matrices will report NaN as their

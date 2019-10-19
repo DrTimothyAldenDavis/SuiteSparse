@@ -1,5 +1,7 @@
 function [p count] = analyze (A, mode, k)				    %#ok
-%ANALYZE: order and analyze a matrix using CHOLMOD's best-effort ordering.
+%ANALYZE order and analyze a matrix using CHOLMOD's best-effort ordering.
+%
+%   Example:
 %   [p count] = analyze (A)         orders A, using just tril(A)
 %   [p count] = analyze (A,'sym')   orders A, using just tril(A)
 %   [p count] = analyze (A,'row')   orders A*A'
@@ -55,7 +57,7 @@ function [p count] = analyze (A, mode, k)				    %#ok
 %       k = 9: also try COLAMD if ordering A'*A or A*A', (AMD if ordering A).
 %       k > 9 is treated as k = 9
 %
-%   See also METIS, NESDIS, BISECT, CCOLAMD, CSYMAMD
+%   See also METIS, NESDIS, BISECT, SYMBFACT, AMD
 
 %   Copyright 2006, Timothy A. Davis
 %   http://www.cise.ufl.edu/research/sparse

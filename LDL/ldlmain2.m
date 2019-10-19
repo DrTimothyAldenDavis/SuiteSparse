@@ -1,4 +1,7 @@
 % LDLMAIN2: compile and run the LDLMAIN program (both with and without AMD)
+%
+% Example:
+%   ldlmain2
 
 help ldlmain2
 

@@ -76,7 +76,6 @@ else
 end
 
 % draw the matrix
-clf
 image (S) ;
 axis equal ;
 axis ([-1 n+1 -1 m+1]) ;

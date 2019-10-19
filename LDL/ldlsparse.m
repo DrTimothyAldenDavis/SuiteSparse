@@ -1,7 +1,7 @@
-function [arg1, arg2, arg3, arg4] = ldlsparse (A, P, b)
-%
+function [arg1, arg2, arg3, arg4] = ldlsparse (A, P, b)			    %#ok
 % LDL:  factorization of a real sparse symmetric matrix.
 %
+% Example:
 %	[L, D, Parent, fl] = ldlsparse (A)
 %	[L, D, Parent, fl] = ldlsparse (A, P)
 %	[x, fl] = ldlsparse (A, [ ], b)
@@ -26,9 +26,9 @@ function [arg1, arg2, arg3, arg4] = ldlsparse (A, P, b)
 % if P is present.  Let F = (L+I)*D*(L+I)'.  Then F (1:d,1:d) = B (1:d,1:d).
 % Rows d+1 to n of L and D are all zero.
 %
-% See also CHOL, LDLSYMBOL, SYMBFACT, ETREE
-%
-% LDL Version 1.3, Copyright (c) 2006 by Timothy A Davis,
+% See also CHOL, LDLSYMBOL, SYMBFACT, ETREE, LDL
+
+% Copyright (c) 2006 by Timothy A Davis,
 % University of Florida.  All Rights Reserved.  See README for the License.
 
 error ('ldlsparse mexFunction not found') ;

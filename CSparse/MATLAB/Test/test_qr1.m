@@ -30,7 +30,7 @@ for i = f
 	tic
 	q = colamd (A, [-1 10]) ;
 	% [Q,R] = qr (A (:,q)) ;
-	R = qr (A (:,q)) ;
+	R = qr (A (:,q)) ;					    %#ok
 	t = toc ;
 	t0 = t0 + t ;
 	k0 = k0 + 1 ;
@@ -41,7 +41,7 @@ for i = f
     k1 = 0 ;
     while (t1 < 0.1)
 	tic
-	[V,beta, p, R,q]  = cs_qr (A) ;
+	[V,beta, p, R,q]  = cs_qr (A) ;					%#ok
 	t = toc ;
 	t1 = t1 + t ;
 	k1 = k1 + 1 ;

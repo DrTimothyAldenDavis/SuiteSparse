@@ -1,20 +1,25 @@
 function test6
-% test6: test sparse with large matrix, both real and complex
+%TEST6 test sparse with large matrix, both real and complex
 % compare times with MATLAB
+% Example:
+%   test6
+% See also cholmod_test
+
+% Copyright 2006, Timothy A. Davis, University of Florida
+
 fprintf ('=================================================================\n');
 fprintf ('test6: test sparse with large matrix, both real and complex\n') ;
 
 for do_complex = 0:1
 
-    do_complex
-
+    fprintf ('do_complex = %d\n', do_complex) ;
     randn ('state', 0) ;
     rand  ('state', 0) ;
 
     % Prob = UFget (437)
-    Prob = UFget (750)
+    Prob = UFget (750)							    %#ok
     A = Prob.A ;
-    [m n] = size (A) ;
+    [m n] = size (A) ;							    %#ok
 
     if (do_complex)
 %	A = A + 1i*sprand(A) ;
@@ -51,7 +56,7 @@ for do_complex = 0:1
     C = sparse (i,j,x,m,n) ;
     t2 = toc ;
 
-    fprintf ('dtri time: cholmod %8.6f  matlab %8.6f\n', t1, t2) ;
+    fprintf ('dtri time: cholmod2 %8.6f  matlab %8.6f\n', t1, t2) ;
 
     err = norm(A-B,1) ;
     if (err > 0)
@@ -68,7 +73,7 @@ for do_complex = 0:1
 
     i2 = i(p) ;
     j2 = j(p) ;
-    x2 = x(p) ;
+    x2 = x(p) ;							    %#ok
 
     tic ;
     B = sparse2 (i,j,x,m,n) ;
@@ -77,7 +82,7 @@ for do_complex = 0:1
     C = sparse (i,j,x,m,n) ;
     t2 = toc ;
 
-    fprintf ('dtri time: cholmod %8.6f  matlab %8.6f (jumbled)\n', t1, t2) ;
+    fprintf ('dtri time: cholmod2 %8.6f  matlab %8.6f (jumbled)\n', t1, t2) ;
 
     err = norm(A-B,1) ;
     if (err > 0)
@@ -106,7 +111,7 @@ for do_complex = 0:1
     if (err > 0)
 	error ('dtri2 3') ;
     end
-    fprintf ('dtri time: cholmod %8.6f  matlab %8.6f (duplicates)\n', t1, t2) ;
+    fprintf ('dtri time: cholmod2 %8.6f  matlab %8.6f (duplicates)\n', t1, t2) ;
 
     fprintf ('length %d nz %d\n', length (xx), nnz(D)) ;
 
@@ -119,11 +124,11 @@ for do_complex = 0:1
     tic ;
     F = sparse (i2, j2, xx, n, n) ;
     t2 = toc ;
-    err = norm (E-F,1)
+    err = norm (E-F,1)							    %#ok
     if (err > 1e-13)
 	error ('dtri2 4') ;
     end
-    fprintf ('dtri time: cholmod %8.6f  matlab %8.6f (upper)\n', t1, t2) ;
+    fprintf ('dtri time: cholmod2 %8.6f  matlab %8.6f (upper)\n', t1, t2) ;
 
     i2 = max (ii,jj) ;
     j2 = min (ii,jj) ;
@@ -134,11 +139,11 @@ for do_complex = 0:1
     tic ;
     F = sparse (i2, j2, xx, n, n) ;
     t2 = toc ;
-    err = norm (E-F,1)
+    err = norm (E-F,1)							    %#ok
     if (err > 1e-13)
 	error ('dtri2 5') ;
     end
-    fprintf ('dtri time: cholmod %8.6f  matlab %8.6f (lower)\n', t1, t2) ;
+    fprintf ('dtri time: cholmod2 %8.6f  matlab %8.6f (lower)\n', t1, t2) ;
 
     [ignore, i] = sort (ii) ;
     ii = ii (i) ;
@@ -155,7 +160,7 @@ for do_complex = 0:1
     if (err > 0)
 	error ('dtri2 6') ;
     end
-    fprintf ('dtri time: cholmod %8.6f  matlab %8.6f (sorted, dupl)\n', t1, t2) ;
+    fprintf ('dtri time: cholmod2 %8.6f  matlab %8.6f (sorted, dupl)\n', t1, t2) ;
 
 end
 

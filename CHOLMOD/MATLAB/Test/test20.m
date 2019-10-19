@@ -1,16 +1,22 @@
 function test20
-% test20:  test symbfact2, cholmod, and lu on a few large matrices
-fprintf ('=================================================================\n');
-fprintf ('test20:  test symbfact2, cholmod, and lu on a few large matrices\n') ;
+%TEST20 test symbfact2, cholmod2, and lu on a few large matrices
+% Example:
+%   test20
+% See also cholmod_test
 
-unsym = [409 899 901 291 827] ;
+% Copyright 2006, Timothy A. Davis, University of Florida
+
+fprintf ('=================================================================\n');
+fprintf ('test20: test symbfact2, cholmod2, and lu on a few large matrices\n') ;
+
+unsym = [409 899 901 291 827] ;						    %#ok
 spd = [813 817] ;
 % f = [ unsym spd ] ;
 f = spd ;
 spparms ('spumoni',0) ;
 
 for i = f
-    Prob = UFget (i)
+    Prob = UFget (i)							    %#ok
     A = Prob.A ;
     clear Prob ;
     n = size (A,1) ;
@@ -26,11 +32,11 @@ for i = f
 	lnz = sum (count) ;
 	unz = lnz ;
 	tic
-	x = cholmod (A,b) ;
+	x = cholmod2 (A,b) ;
 	t = toc ;
     else
 	% spparms ('spumoni',2) ;
-	[L, U, P, Q] = lu (A) ;
+	[L, U, P, Q] = lu (A) ;						    %#ok
 	% fl = luflop (L,U) ;
 	Lnz = full (sum (spones (L))) - 1 ;
 	Unz = full (sum (spones (U')))' - 1 ;

@@ -1,3 +1,9 @@
+%TD test script for BTF
+% Example:
+%   td
+% See also trav.
+
+% Copyright 2006, Timothy A. Davis, University of Florida
 
 randn ('state', 0) ;
 rand ('state', 0) ;
@@ -46,8 +52,6 @@ for trials = 1:1000
     end
 
     [p2,q2,cp,rp] = dp (A,A') ;
-    cp
-    rp
 
     if (any (sort (p2) ~= 1:m))
 	error ('p2!') ;

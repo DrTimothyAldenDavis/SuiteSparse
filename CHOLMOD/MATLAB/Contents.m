@@ -1,37 +1,36 @@
 % CHOLMOD: a sparse supernodal Cholesky update/downdate package
 %
-% cholmod        x = cholmod (A,b), computes x=A\b when A is symmetric and
-%                positive definite, just faster
+%   cholmod2     - supernodal sparse Cholesky backslash, x = A\b
+%   chol2        - sparse Cholesky factorization, A=R'R.
+%   lchol        - sparse A=L*L' factorization.
+%   ldlchol      - sparse A=LDL' factorization
+%   ldlupdate    - multiple-rank update or downdate of a sparse LDL' factorization.
+%   resymbol     - recomputes the symbolic Cholesky factorization of the matrix A.
+%   ldlsolve     - solve LDL'x=b using a sparse LDL' factorization
+%   ldlsplit     - split an LDL' factorization into L and D.
+%   metis        - nested dissection ordering via METIS_NodeND.
+%   nesdis       - nested dissection ordering via CHOLMOD's nested dissection.
+%   septree      - prune a separator tree.
+%   bisect       - computes a node separator based on METIS_NodeComputeSeparator.
+%   analyze      - order and analyze a matrix using CHOLMOD's best-effort ordering.
+%   etree2       - sparse elimination tree.
+%   sparse2      - replacement for SPARSE
+%   symbfact2    - symbolic factorization
+%   sdmult       - sparse matrix times dense matrix
+%   mread        - read a sparse matrix from a file in Matrix Market format.
+%   mwrite       - write a matrix to a file in Matrix Market form.
+%   spsym        - determine if a sparse matrix is symmetric, Hermitian, or skew-symmetric.
+%   ldl_normest  - estimate the 1-norm of A-L*D*L' without computing L*D*L'
+%   cholmod_demo - a demo for CHOLMOD
+%   cholmod_make - compiles the CHOLMOD mexFunctions
+%   graph_demo   - graph partitioning demo
 %
-% chol2          same as MATLAB chol(sparse(A)), just faster
-% lchol          L = lchol (A) computes an LL' factorization
-% ldlchol        LD = ldlchol (A) computes an LDL' factorization
 %
-% ldlupdate      LD = ldlupdate (LD,C,...) updates an LDL' factorization
-% resymbol       L = resymbol (L,A) recomputes symbolic LL or LDL' factorization
-% ldlsolve       x = ldlsolve (LD,b) solves Ax=b using an LDL' factorization
-% ldlsplit       [L,D] = ldlsplit (LD) splits LD into L and D.
-%
-% metis          interface to METIS node-nested-dissection
-% nesdis         interface to CHOLMOD's nested-dissection (based on METIS)
-% septree        prune a separator tree
-% bisect         interface to METIS' node bisector
-% analyze        order and analyze using CHOLMOD
-%
-% etree2         same as MATLAB "etree", just faster and more reliable
-% sparse2        same as MATLAB "sparse", just faster
-% symbfact2      same as MATLAB "symbfact", just faster and more reliable
-%
-% sdmult         same as MATLAB S*F or S'*F (S sparse, F full), just faster
-%
-% mread          read a sparse matrix in Matrix Market format
-% mwrite         write a sparse matrix in Matrix Market format
-% spsym          determine the symmetry of a sparse matrix
-%
-% ldl_normest    err = ldl_normest (A,L,D), error in LDL' factorization
-% lu_normest     err = lu_normest (A,L,U), error in LU factorization
-% cholmod_demo   test CHOLMOD with random sparse matrices
-% Test           directory for testing CHOLMOD with UF sparse matrix collection
+% Example:
+%   x = cholmod2(A,b)
+
+% Note: cholmod has been renamed cholmod2, so as not to conflict with itself
+% (the MATLAB built-in cholmod function).
 
 %   Copyright 2006, Timothy A. Davis
 %   http://www.cise.ufl.edu/research/sparse

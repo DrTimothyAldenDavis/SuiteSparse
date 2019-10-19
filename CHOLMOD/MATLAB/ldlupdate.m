@@ -1,5 +1,5 @@
 function LD = ldlupdate (LD,C,updown)					    %#ok
-%LDLUPDATE: Multiple-rank update or downdate of a sparse LDL' factorization.
+%LDLUPDATE multiple-rank update or downdate of a sparse LDL' factorization.
 %
 %   On input, LD contains the LDL' factorization of A (L*D*L'=A or A(q,q)).
 %   The unit-diagonal of L is not stored.  In its place is the diagonal matrix
@@ -9,8 +9,9 @@ function LD = ldlupdate (LD,C,updown)					    %#ok
 %   or
 %       [LD,p,q] = ldlchol (A) ;
 %
-%   With this LD, either of the following MATLAB statements:
+%   With this LD, either of the following MATLAB statements,
 %
+%   Example:
 %       LD = ldlupdate (LD,C)
 %       LD = ldlupdate (LD,C,'+')
 %

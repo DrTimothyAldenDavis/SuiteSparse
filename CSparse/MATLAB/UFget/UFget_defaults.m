@@ -1,5 +1,5 @@
 function params = UFget_defaults
-%UFget_defaults returns default parameter settings for UFget.
+%UFGET_DEFAULTS returns default parameter settings for UFget.
 %   Usage:  params = UFget_defaults ; Returns the default parameter settings for
 %   UFget.  This file may be editted to change these settings:
 %

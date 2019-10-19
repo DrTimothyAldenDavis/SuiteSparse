@@ -39,17 +39,17 @@ for i = f
 
     tic ;
     R = qr (A) ;
-    t1 = toc ;
+    t1 = toc ;								    %#ok
 
     % tic ;
     % [Q,R] = qr (A) ;
     % t1 = toc ;
 
     [c,h,parent] = symbfact (A, 'col') ;
-    rnz = sum (c) ;
+    rnz = sum (c) ;							    %#ok
     tic ;
     [V2,Beta2,p,R2] = cs_qr (sparse(A)) ;
-    t2 = toc ;
+    t2 = toc ;								    %#ok
 
     v2 = full (V2) ;
     if (any (spones (v2) ~= spones (V2)))
@@ -73,7 +73,7 @@ for i = f
 %    err2
 
     % left-looking:
-    [V,Beta3,R3] = qr_left (C) ;
+    [V,Beta3,R3] = qr_left (C) ;					    %#ok
     s3 = svd (full (R2)) ;
     err3 = norm (s1 - s3) / s1 (1) ;
     disp ('err3 = ') ; disp (err3) ;
@@ -82,7 +82,7 @@ for i = f
     end
 
     % right-looking:
-    [V,Beta4,R4] = qr_right (C) ;
+    [V,Beta4,R4] = qr_right (C) ;					    %#ok
     s4 = svd (full (R2)) ;
     err4 = norm (s1 - s4) / s1 (1) ;
     disp ('err4 = ') ; disp (err4) ;

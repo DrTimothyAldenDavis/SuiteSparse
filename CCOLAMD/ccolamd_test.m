@@ -1,7 +1,12 @@
 function ccolamd_test
-% ccolamd_test:  extensive test of ccolamd and csymamd.
+%CCOLAMD_TEST extensive test of ccolamd and csymamd
 %
-% Tim Davis
+% Example:
+%   ccolamd_test
+%
+% See also csymamd, ccolamd, ccolamd_make.
+%
+% Copyright 2006, Tim Davis
 % CCOLAMD Version 2.5
 % http://www.cise.ufl.edu/research/sparse/ccolamd/
 
@@ -16,7 +21,7 @@ s = input (...
 
 do_compile = 1 ;
 if (~isempty (s))
-    if (s (1) == 'n' | s (1) == 'N')
+    if (s (1) == 'n' || s (1) == 'N')
 	do_compile = 0 ;
     end
 end
@@ -144,7 +149,6 @@ for trial = 1:400
     % matrix of random mtype
     mtype = irand (3) ;
     A = rand_matrix (2000, 2000, mtype, 0, 0) ;
-    [m n] = size (A) ;
     p = ccolamd (A) ;
     check_perm (p, A) ;
 
@@ -165,12 +169,11 @@ fprintf ('Test error handling with invalid inputs\n') ;
 for trial = 1:30
 
     A = rand_matrix (1000, 1000, 2, 0, 0) ;
-    [m n] = size (A) ;
 
     for err = 1:13
 
         p = Tcolamd (A, [ccolamd_default_knobs 1 err], [ ]) ;
-        if (p (1) ~= -1)
+        if (p(1) ~= -1)							    %#ok
 	    check_perm (p, A) ;
 	end
 
@@ -185,7 +188,7 @@ for trial = 1:30
 
 	B = A'*A ;
         p = Tsymamd (B, [-1 1 0 err], [ ]) ;
-        if (p (1) ~= -1)
+        if (p(1) ~= -1)							    %#ok
 	    check_perm (p, A) ;
 	end
 
@@ -280,7 +283,7 @@ for trial = 1:400
     m = 0 ;
     while (m < 5)
 	A = rand_matrix (1000, 1000, 2, 0, 0) ;
-	[m n] = size (A) ;
+	m = size (A,1) ;
     end
 
     % Add 5 null rows at random locations.
@@ -297,10 +300,9 @@ fprintf (' OK\n') ;
 fprintf ('\nccolamd and csymamd:  all tests passed\n\n') ;
 
 %-------------------------------------------------------------------------------
-% Acolamd:  compare ccolamd and Tcolamd results
-%-------------------------------------------------------------------------------
 
 function p = Acolamd (S, knobs)
+% Acolamd:  compare ccolamd and Tcolamd results
 
 global ccolamd_default_knobs
 
@@ -316,7 +318,7 @@ check_perm (p, S) ;
 check_perm (p1, S) ;
 
 if (any (p1 ~= p))
-    narg = nargin
+    narg = nargin ;
     if (nargin == 2)
 	save bad S narg knobs
     else
@@ -326,10 +328,9 @@ if (any (p1 ~= p))
 end
 
 %-------------------------------------------------------------------------------
-% Asymamd:  compare csymamd and Tsymamd results
-%-------------------------------------------------------------------------------
 
-function [p,stats] = Asymamd (S, knobs)
+function p = Asymamd (S, knobs)
+% Asymamd:  compare csymamd and Tsymamd results
 
 global csymamd_default_knobs
 
@@ -347,38 +348,37 @@ end
 
 
 %-------------------------------------------------------------------------------
-% check_perm:  check for a valid permutation vector
-%-------------------------------------------------------------------------------
 
 function check_perm (p, A, cmember)
+% check_perm:  check for a valid permutation vector
 
-if (isempty (A) & isempty (p))
+if (isempty (A) && isempty (p))
     % empty permutation vectors of empty matrices are OK
     return
 end
 
 if (isempty (p))
-    error ('bad permutation: cannot be empty') ;
+    error ('Bad permutation: cannot be empty') ;
 end
 
 [m n] = size (A) ;
-[pm pn] = size (p) ;
-if (pn == 1)
+[p_m p_n] = size (p) ;
+if (p_n == 1)
     % force p to be a row vector
     p = p' ;
-    [pm pn] = size (p) ;
+    [p_m p_n] = size (p) ;
 end
 
-if (n ~= pn)
-    error ('bad permutation: wrong size') ;
+if (n ~= p_n)
+    error ('Bad permutation: wrong size') ;
 end
 
-if (pm ~= 1) ;
+if (p_m ~= 1) ;
     % p must be a vector
-    error ('bad permutation: not a vector') ;
+    error ('Bad permutation: not a vector') ;
 else
-    if (any (sort (p) - (1:pn)))
-	error ('bad permutation') ;
+    if (any (sort (p) - (1:p_n)))
+	error ('Bad permutation') ;
     end
 end
 
@@ -393,43 +393,41 @@ if (nargin > 2)
 end
 
 %-------------------------------------------------------------------------------
-% irand: return a random vector of size s, with values between 1 and n
-%-------------------------------------------------------------------------------
 
 function i = irand (n,s)
+% irand: return a random vector of size s, with values between 1 and n
 if (nargin == 1)
     s = 1 ;
 end
 i = min (n, 1 + floor (rand (1,s) * n)) ;
 
 %-------------------------------------------------------------------------------
+
+function A = rand_matrix (n_max, m_max, mtype, d_rows, d_cols)
 % rand_matrix:  return a random sparse matrix
-%-------------------------------------------------------------------------------
-
-function A = rand_matrix (nmax, mmax, mtype, drows, dcols)
 %
-% A = rand_matrix (nmax, mmax, mtype, drows, dcols)
+% A = rand_matrix (n_max, m_max, mtype, d_rows, d_cols)
 %
-% A binary matrix of random size, at most nmax-by-mmax, with drows dense rows
-% and dcols dense columns.
+% A binary matrix of random size, at most n_max-by-m_max, with d_rows dense rows
+% and d_cols dense columns.
 %
-% mtype 1: square unsymmetric (mmax is ignored)
+% mtype 1: square unsymmetric (m_max is ignored)
 % mtype 2: rectangular
-% mtype 3: symmetric (mmax is ignored)
+% mtype 3: symmetric (m_max is ignored)
 
-n = irand (nmax) ;
+n = irand (n_max) ;
 if (mtype ~= 2)
     % square
     m = n ;
 else
-    m = irand (mmax) ;
+    m = irand (m_max) ;
 end
 
 A = sprand (m, n, 10 / max (m,n)) ;
 
-if (drows > 0)
+if (d_rows > 0)
     % add dense rows
-    for k = 1:drows
+    for k = 1:d_rows
 	i = irand (m) ;
 	nz = irand (n) ;
 	p = randperm (n) ;
@@ -438,9 +436,9 @@ if (drows > 0)
     end
 end
 
-if (dcols > 0)
+if (d_cols > 0)
     % add dense cols
-    for k = 1:dcols
+    for k = 1:d_cols
 	j = irand (n) ;
 	nz = irand (m) ;
 	p = randperm (m) ;
@@ -452,12 +450,12 @@ end
 A = spones (A) ;
 
 % ensure that there are no empty columns
-d = find (full (sum (A,1)) == 0) ;
-A (m,d) = 1 ;
+d = find (full (sum (A,1)) == 0) ;			    %#ok
+A (m,d) = 1 ;						    %#ok
 
 % ensure that there are no empty rows
-d = find (full (sum (A,2)) == 0) ;
-A (d,n) = 1 ;
+d = find (full (sum (A,2)) == 0) ;			    %#ok
+A (d,n) = 1 ;						    %#ok
 
 if (mtype == 3)
     % symmetric
@@ -473,7 +471,7 @@ A = spones (A) ;
 function p = Tcolamd (S, knobs, cmember)
 
 % knobs (5) = 1 ;
-[p stats] = ccolamdtestmex (S, knobs, cmember) ;
+p = ccolamdtestmex (S, knobs, cmember) ;
 
 if (p (1) ~= -1)
     check_perm (p, S) ;

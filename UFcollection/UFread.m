@@ -16,6 +16,7 @@ function Problem = UFread (directory, tmp)
 %   Problem.date = '1983' ;
 %   Problem.author = 'A. Westerberg' ;
 %   Problem.ed = 'I. Duff, R. Grimes, J. Lewis'
+%   Problem.kind = 'chemical process simulation problem' ;
 %   UFwrite (Problem, 'RB/', '') ;
 %   Prob3 = UFread ('RB/HB/west0479')
 %   isequal (Problem, Prob3)
@@ -360,10 +361,7 @@ while (1)
     elseif (strcmp (t, 'kind:'))
 
 	% get the Problem.kind
-	kind = strtrim (r) ;
-	if (~isempty (kind))
-	    Problem.kind = kind ;
-	end
+	Problem.kind = strtrim (r) ;
 
     elseif (strcmp (t, 'date:'))
 
@@ -412,7 +410,8 @@ function [Problem notes] = valid_problem (Problem, notes)
 % were printed in the Matrix Market file.
 if (~isfield (Problem, 'name') || ~isfield (Problem, 'title') || ...
     ~isfield (Problem, 'id') || ~isfield (Problem, 'date') || ...
-    ~isfield (Problem, 'author') || ~isfield (Problem, 'ed'))
+    ~isfield (Problem, 'author') || ~isfield (Problem, 'ed') || ...
+    ~isfield (Problem, 'kind'))
     error ('invalid Problem mfile') ;
 end
 if (~isempty (notes))

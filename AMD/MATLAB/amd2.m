@@ -1,5 +1,5 @@
 function [p, Info] = amd2 (A, Control)					    %#ok
-%AMD2 Approximate minimum degree permutation.
+%AMD2 p = amd2 (A), the approximate minimum degree ordering of A
 %    P = AMD2 (S) returns the approximate minimum degree permutation vector for
 %    the sparse matrix C = S+S'.  The Cholesky factorization of C (P,P), or
 %    S (P,P), tends to be sparser than that of C or S.  AMD tends to be faster
@@ -64,7 +64,7 @@ function [p, Info] = amd2 (A, Control)					    %#ok
 % See also AMD, COLMMD, COLAMD, COLPERM, SYMAMD, SYMMMD, SYMRCM.
 
 % --------------------------------------------------------------------------
-% AMD Version 2.0, Copyright (c) 2006 by Timothy A. Davis,
+% Copyright 2006 by Timothy A. Davis,
 % Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.
 % email: davis at cise.ufl.edu    CISE Department, Univ. of Florida.
 % web: http://www.cise.ufl.edu/research/sparse/amd

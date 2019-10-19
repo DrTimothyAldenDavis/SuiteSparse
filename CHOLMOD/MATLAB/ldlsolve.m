@@ -1,8 +1,10 @@
 function x = ldlsolve (LD,b)						    %#ok
-%LDLSOLVE: solve LDL'x=b using a sparse LDL' factorization
+%LDLSOLVE solve LDL'x=b using a sparse LDL' factorization
 %
-%   x = ldlsolve (LD,b) solves the system L*D*L'*x=b for x.
-%   This is equivalent to
+%   Example:
+%   x = ldlsolve (LD,b)
+%
+%   solves the system L*D*L'*x=b for x.  This is equivalent to
 %
 %   [L,D] = ldlsplit (LD) ;
 %   x = L' \ (D \ (L \ b)) ;

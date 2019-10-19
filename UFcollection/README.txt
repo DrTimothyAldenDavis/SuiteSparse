@@ -1,4 +1,4 @@
-UFcollection, version 1.0, Dec 2, 2006.
+UFcollection, Version 1.0.1, Dec 12, 2006.
 
 UFcollection is a MATLAB toolbox for managing the UF Sparse Matrix Collection.
 If you are a MATLAB user of the collection, you would not normally need to use
@@ -117,13 +117,15 @@ UFcollection), and METIS 4.0.1.
     Problem.date    date the matrix was created, or added to the collection
     Problem.author  matrix author
     Problem.ed	    matrix editor/collector
+    Problem.kind    a string.  For a description, see:
+
+	http://www.cise.ufl.edu/research/sparse/matrices/kind.html
 
     optional fields:
 
     Problem.Zeros   binary pattern of explicit zero entries
     Problem.b	    right-hand-side
     Problem.x	    solution
-    Problem.kind    a string
     Problem.notes   a char array
     Problem.aux	    auxiliary matrices (contents are problem dependent)
 
@@ -148,7 +150,7 @@ UFcollection), and METIS 4.0.1.
     UFexport (ids)
 
     then tar and compress the resulting MM/Group/Name and RB/Group/Name
-    directories, one per Problem.
+    directories, one per Problem (if UFexport has not already done so).
 
 8) Make the collection world-readable.  In /cise/research/sparse/public_html do:
 

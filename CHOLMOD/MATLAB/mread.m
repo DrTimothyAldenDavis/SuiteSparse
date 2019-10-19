@@ -1,6 +1,7 @@
 function [A Z] = mread (filename,prefer_binary)				    %#ok
-%MREAD: read a sparse matrix from a file in Matrix Market format.
+%MREAD read a sparse matrix from a file in Matrix Market format.
 %
+%   Example:
 %   A = mread (filename)
 %   [A Z] = mread (filename, prefer_binary)
 %
@@ -13,7 +14,9 @@ function [A Z] = mread (filename,prefer_binary)				    %#ok
 %   pattern, and A(i,j) = -1 for off-diagonal entries.  If you want the original
 %   Matrix Market matrix in this case, simply use A = mread (filename,1).
 %
-%   See also MMREAD (http://math.nist.gov/MatrixMarket)
+%   Compare with mmread.m at http://math.nist.gov/MatrixMarket
+%
+%   See also load
 
 %   Copyright 2006, Timothy A. Davis
 %   http://www.cise.ufl.edu/research/sparse

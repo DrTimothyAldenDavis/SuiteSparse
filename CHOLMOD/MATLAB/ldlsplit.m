@@ -1,5 +1,7 @@
 function [L,D] = ldlsplit (LD)						    %#ok
-%LDLSPLIT:  split a LDL' factorization into L and D.
+%LDLSPLIT split an LDL' factorization into L and D.
+%
+%   Example:
 %   [L,D] = ldlsplit (LD)
 %
 %   LD contains an LDL' factorization, computed with LD = ldlchol(A),

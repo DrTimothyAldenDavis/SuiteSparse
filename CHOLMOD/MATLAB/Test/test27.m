@@ -1,5 +1,11 @@
 function test27
-% test27: test nesdis with one matrix (HB/west0479)
+%TEST27 test nesdis with one matrix (HB/west0479)
+% Example:
+%   test27
+% See also cholmod_test
+
+% Copyright 2006, Timothy A. Davis, University of Florida
+
 fprintf ('=================================================================\n');
 fprintf ('test27: test nesdis\n') ;
 

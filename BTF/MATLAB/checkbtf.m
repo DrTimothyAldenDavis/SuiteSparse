@@ -1,9 +1,15 @@
 function checkbtf (A, p, q, r)
-% checkbtf (A, p, q, r)
+%CHECKBTF ensure A(p,q) is in BTF form
 %
 % A(p,q) is in BTF form, r the block boundaries
 %
-% [p,q,r] = dmperm (A) for example
+% Example:
+%   [p,q,r] = dmperm (A)
+%   checkbtf (A, p, q, r)
+%
+% See also drawbtf, maxtrans, strongcomp.
+
+% Copyright 2006, Timothy A. Davis, University of Florida
 
 [m n] = size (A) ;
 if (m ~= n)
@@ -21,24 +27,20 @@ end
 nblocks = length (r) - 1 ;
 
 if (r (1) ~= 1)
-    r
     error ('r(1) not one') ;
 end
 
 if (r (end) ~= n+1)
-    r
     error ('r(end) not n+1') ;
 end
 
-if (nblocks < 1 | nblocks > n)
-    nblocks
-    n
+if (nblocks < 1 || nblocks > n)
     error ('nblocks wrong') ;
 end
 
 nblocks = length (r) - 1 ;
 rdiff = r (2:(nblocks+1)) - r (1:nblocks) ;
-if (any (rdiff < 1) | any (rdiff > n))
+if (any (rdiff < 1) || any (rdiff > n))
     error ('r bad')
 end
 

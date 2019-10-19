@@ -1,4 +1,4 @@
-CHOLMOD/Check Module.  Version 1.2.  Copyright (C) 2005-2006, Timothy A. Davis
+CHOLMOD/Check Module.  Copyright (C) 2005-2006, Timothy A. Davis
 CHOLMOD is also available under other licenses; contact authors for details.
 http://www.cise.ufl.edu/research/sparse
 

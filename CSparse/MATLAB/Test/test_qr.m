@@ -31,7 +31,7 @@ for i = f
 
     [V,beta,p,R1,q] = cs_qr(A) ;
     A = A (p,q) ;
-    parent = etree (A, 'col') ;
+    parent = etree (A, 'col') ;						%#ok
 
     R0 = qr (A) ;
     R2 = qr_givens (full (A)) ;

@@ -2,7 +2,7 @@
 /* === colamd and symamd example ============================================ */
 /* ========================================================================== */
 
-/* COLAMD Version 2.5.
+/* COLAMD / SYMAMD example
 
     colamd example of use, to order the columns of a 5-by-4 matrix with
     11 nonzero entries in the following nonzero pattern, with default knobs.

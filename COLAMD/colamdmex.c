@@ -2,12 +2,10 @@
 /* === colamd mexFunction =================================================== */
 /* ========================================================================== */
 
-/* COLAMD Version 2.5
+/* Usage:
 
-    Usage:
-
-	P = colamd (A) ;
-	[ P, stats ] = colamd (A, knobs) ;
+	P = colamd2 (A) ;
+	[ P, stats ] = colamd2 (A, knobs) ;
 
     see colamd.m for a description.
 

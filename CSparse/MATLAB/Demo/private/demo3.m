@@ -9,11 +9,9 @@ function demo3 (C, sym, name)
 %   http://www.cise.ufl.edu/research/sparse
 
 
+clf
 subplot (2,2,1) ; cspy (C) ;
 title (name, 'FontSize', 16, 'Interpreter', 'none') ;
-subplot (2,2,2) ; cspy (0) ;
-subplot (2,2,3) ; cspy (0) ;
-subplot (2,2,4) ; cspy (0) ;
 drawnow
 
 [m n] = size (C) ;

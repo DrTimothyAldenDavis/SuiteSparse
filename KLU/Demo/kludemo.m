@@ -1,4 +1,6 @@
 function x = kludemo (A, b)
+%KLUDEMO demo for KLU
+% Example:
 % x = kludemo (A, b)
 %
 % Writes out the matrix A as a file, calls the

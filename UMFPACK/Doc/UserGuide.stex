@@ -297,6 +297,13 @@ Subroutine Library.
 A detailed list of changes is in the {\tt ChangeLog} file.
 
 %-------------------------------------------------------------------------------
+\subsection{Version 5.0.3}
+%-------------------------------------------------------------------------------
+
+Renamed the MATLAB function to {\tt umfpack2}, so as not to confict with
+itself (the MATLAB built-in version of UMFPACK).
+
+%-------------------------------------------------------------------------------
 \subsection{Version 5.0}
 %-------------------------------------------------------------------------------
 

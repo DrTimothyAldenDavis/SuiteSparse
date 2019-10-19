@@ -1,7 +1,13 @@
 function test13
-% test cholmod and MATLAB on large tridiagonal matrices
+%TEST13 test cholmod2 and MATLAB on large tridiagonal matrices
+% Example:
+%   test13
+% See also cholmod_test
+
+% Copyright 2006, Timothy A. Davis, University of Florida
+
 fprintf ('=================================================================\n');
-fprintf ('test13: test cholmod and MATLAB on large tridiagonal matrices\n') ;
+fprintf ('test13: test cholmod2 and MATLAB on large tridiagonal matrices\n') ;
 
 for n = [10000 1e4 1e5 1e6]
 
@@ -12,10 +18,10 @@ for n = [10000 1e4 1e5 1e6]
     pack
 
     tic ;
-    x = cholmod (A,b) ;
+    x = cholmod2 (A,b) ;
     t2 = toc ;
     e = norm (A*x-b,1) ;
-    fprintf ('n %9d   cholmod %8.2f  err %6.1e\n', n, t2, e) ;
+    fprintf ('n %9d   cholmod2 %8.2f  err %6.1e\n', n, t2, e) ;
 
     tic ;
     x = A\b ;

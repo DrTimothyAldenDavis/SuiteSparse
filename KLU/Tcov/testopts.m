@@ -1,17 +1,14 @@
-
 function testopts (A,b)
+% testopts: test KLU
+% Example:
+%   testops(A,b)
 
 f = fopen ('Afile', 'w') ;
 
 [m n] = size (A) ;
-
-if (nargin < 2)
-    b = rand (m,1) ;
-end
+[mb nrhs] = size (b) ;
 
 opts = [0.001 1.2 1.2 10 1 0 0 0 ] ;
-
-[mb nrhs] = size (b) ;
 
 if (m ~= n)
     error ('A must be square') ;
@@ -20,40 +17,11 @@ if (mb ~= m)
     error ('A and b must have same # rows') ;
 end
 
-% column pointers
-p = [0 (cumsum (full (sum (spones (A)))))]  ;
-
-% row indices and numerical values
-[row_indices j values] = find (A) ;
-
-nz = nnz (A) ;
-
-options = fopen ('options', 'w') ;
-fprintf (options, '%s\n', 'options') ;
-fprintf (options, '%s\n', 'default') ;
-fclose (options) ;
-fprintf (f, '%s\n', 'n, nnz, real, nrhs, isRHSreal') ;
-fprintf (f, '%d\n%d\n%d\n', n, nz, isreal(A), nrhs, isreal(b)) ;
-fprintf (f, '%s\n', 'column pointers') ;
-fprintf (f, '%d\n', p) ;
-fprintf (f, '%s\n', 'row indices') ;
-fprintf (f, ' %d\n', row_indices) ;
-fprintf (f, '%s\n', 'reals') ;
-if isreal(A)
-    fprintf (f, '%30.16e\n', real(values)) ;
+if (nargin < 2)
+    b = kwrite (A) ;
 else
-    for k = 1 : nz
-	fprintf (f, '%30.16e\n', real(values(k))) ;
-	fprintf (f, '%30.16e\n', imag(values(k))) ;
-    end	
+    kwrite (A,b) ;
 end
-
-fprintf (f, '%s\n', 'rhs') ;
-for j = 1:nrhs
-    fprintf (f, '%30.16e\n', b (:,j)) ;
-end
-
-fclose (f);
 execute (A,b) ;
 
 options = fopen ('options', 'w') ;
@@ -122,6 +90,8 @@ end
 function execute (A, b, opts)
     !klu 
 
+    x = 0 ;
+    xz = 0 ;
     load x ;
 
     if (~isreal(A))
@@ -138,7 +108,9 @@ function execute (A, b, opts)
 	fprintf('residue : %10.6e  matlab residue : %10.6e\n',...
 	         norm(A*x - b),norm(A*x2-b)) ; 
     end
-    clear x, x2, xz ;
+    clear x x2 xz
+    xt = 0 ;
+    xtz = 0 ;
     load xt ;
 
     if (~isreal(A))

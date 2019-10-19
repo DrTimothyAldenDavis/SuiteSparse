@@ -1,20 +1,10 @@
 function c = mycondest(A)
-%function c = mycondest(A, t)
 %CONDEST 1-norm condition number estimate.
 %   C = CONDEST(A) computes a lower bound C for the 1-norm condition
 %   number of a square matrix A.
 %
-%   C = CONDEST(A,T) changes T, a positive integer parameter equal to
-%   the number of columns in an underlying iteration matrix.  Increasing the
-%   number of columns usually gives a better condition estimate but increases
-%   the cost.  The default is T = 2, which almost always gives an estimate
-%   correct to within a factor 2.
-%
-%   [C,V] = CONDEST(A) also computes a vector V which is an approximate null
-%   vector if C is large.  V satisfies NORM(A*V,1) = NORM(A,1)*NORM(V,1)/C.
-%
-%   Note: CONDEST invokes RAND.  If repeatable results are required then
-%   invoke RAND('STATE',J), for some J, before calling this function.
+%   Example:
+%	c = mycondest(A)
 %
 %   Uses block 1-norm power method of Higham and Tisseur.
 %
@@ -34,7 +24,7 @@ end
 [L,U] = lu(A);
 %if U has zero on diagonal, condition number
 %is inf
-k = find(abs(diag(U))==0);
+k = find(abs(diag(U))==0);						    %#ok
 if ~isempty(k)
    c = Inf;
 else

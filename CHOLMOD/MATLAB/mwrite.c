@@ -17,8 +17,6 @@
  * filename is the name of the output file.  comments_file is file whose
  * contents are include after the Matrix Market header and before the first
  * data line.  Ignored if an empty string or not present.
- *
- * TODO close the file if error occurs (mexErrMsgTxt doesn't close it). 
  */
 
 #include "cholmod_matlab.h"

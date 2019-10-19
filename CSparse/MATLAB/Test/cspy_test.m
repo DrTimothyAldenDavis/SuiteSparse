@@ -40,7 +40,7 @@ for i = f
 	if (any (p ~= 1:n))
 	    error ('!') ;
 	end
-	[p q r s cc rr] = cs_dmperm (A) ;
+	[p q r s cc rr] = cs_dmperm (A) ;				    %#ok
 	if (any (p ~= q))
 	    error ('not sym!') ;
 	end

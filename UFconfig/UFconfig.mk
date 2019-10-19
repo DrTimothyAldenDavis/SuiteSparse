@@ -181,7 +181,7 @@ CHOLMOD_CONFIG =
 # CFLAGS = -O3 -fexceptions \
    	-Wall -W -Werror -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
     	-Wredundant-decls -Wnested-externs -Wdisabled-optimization -ansi
-CFLAGS = -O3 -fexceptions
+CFLAGS = -O3 -fexceptions -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
 # CFLAGS = -O3
 
 # consider:

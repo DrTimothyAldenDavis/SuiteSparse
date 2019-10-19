@@ -1,6 +1,12 @@
 function test8 (nmat)
-% test8(nmat): order a large range of sparse matrices, test symbfact2
+%TEST8 order a large range of sparse matrices, test symbfact2
 % compare AMD and METIS
+% Example:
+%   test8(nmat)
+% See also cholmod_test
+
+% Copyright 2006, Timothy A. Davis, University of Florida
+
 fprintf ('=================================================================\n');
 fprintf ('test8: factorize a large range of sparse matrices\n') ;
 
@@ -13,7 +19,7 @@ f = find (...
     ((index.numerical_symmetry == 1 & index.isBinary) | (index.posdef)) ...
     & (index.nnzdiag == index.nrows) ...
     & (index.nrows > 10000 | index.nrows == 9000) ...
-    & (index.nrows < 600000) & (index.nnz > index.nrows)) ;
+    & (index.nrows < 600000) & (index.nnz > index.nrows)) ;		    %#ok
 
 % include small matrices
 f = find (...
@@ -22,7 +28,7 @@ f = find (...
     & (index.nrows < 600000) & (index.nnz > index.nrows)) ;
 
 for k = 1:length (f) 
-    names {k} = index.Name {f(k)} ;
+    names {k} = index.Name {f(k)} ;			%#ok
 end
 
 [ignore i] = sort (names) ;
@@ -62,13 +68,13 @@ for k = 1:length (f)
 	Problem.name, size (A,1), nnz (A)) ;
     fprintf ('title: %s\n\n', Problem.title) ;
     clear Problem
-    n = size (A,1) ;
+    n = size (A,1) ;							    %#ok
 
     amd (junk) ;
     metis (junk) ;
 
     tic ;
-    [p1,info] = amd (A) ;
+    [p1,info] = amd (A) ;						    %#ok
     t1 = toc ;
     S1 = A (p1,p1) ;
     tic ;
@@ -99,16 +105,16 @@ for k = 1:length (f)
     fprintf ('time: metis   %10.4f mnnz(L) %8.1f mfl %8.0f  fl/nnz(L) %8.1f\n', ...
 	t2, lnz2/1e6, fl2/1e6, fl2/lnz2) ;
 
-    r = lnz2 / lnz1 ;
+    r = lnz2 / lnz1 ;							    %#ok
     fprintf ('\nmetis/amd time: %8.4f nnz(L): %8.4f\n', t2/t1, lnz2/lnz1) ;
 
     % save results
-    lnz (k,1) = lnz1 ;
-    lnz (k,2) = lnz2 ;
-    fl1 (k,1) = fl1 ;
-    fl2 (k,2) = fl2 ;
-    t (k,1) = t1 ;
-    t (k,2) = t2 ;
+    lnz (k,1) = lnz1 ;			    %#ok
+    lnz (k,2) = lnz2 ;			    %#ok
+    fl1 (k,1) = fl1 ;			    %#ok
+    fl2 (k,2) = fl2 ;			    %#ok
+    t (k,1) = t1 ;			    %#ok
+    t (k,2) = t2 ;			    %#ok
 
 end
 

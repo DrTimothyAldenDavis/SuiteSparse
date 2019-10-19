@@ -1,4 +1,7 @@
-function test (what)
+function do_att
+% DO_ATT: test KLU on AT&T matrices
+% Example:
+%   do_att
 
 warning off MATLAB:nearlySingularMatrix
 warning off MATLAB:divideByZero
@@ -10,11 +13,11 @@ sym = [1e-3 1] ;	% symmetric mode (AMD, tolerance of 1e-3)
 unsym = [1 0] ;		% unsymmetric mode (COLAMD, tolerance of 1)
 unsym_kundert = [0.1 0] ;
 
-hb = [1:4] ;
+hb = 1:4 ;
 att = [283 284 286] ;
-bomhof = [370:373] ;
+bomhof = 370:373 ;
 grund = [465 466] ;
-hamm = [539:544] ;
+hamm = 539:544 ;
 circuits = [hb bomhof grund hamm att ] ;
 
 what = 0 ;

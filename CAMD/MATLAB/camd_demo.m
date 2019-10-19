@@ -1,16 +1,19 @@
 function camd_demo
-% CAMD DEMO
+%CAMD_DEMO a demo of camd, using the can_24 matrix
 %
 % A demo of CAMD for MATLAB.
 %
+% Example:
+%   camd_demo
+%
+% See also: camd, camd_make
+%
 % --------------------------------------------------------------------------
-% CAMD Version 2.1, Copyright (c) 2006 by Timothy A. Davis, Yanqing Chen,
+% Copyright 2006 by Timothy A. Davis, Yanqing Chen,
 % Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.
 % email: davis at cise.ufl.edu    CISE Department, Univ. of Florida.
 % web: http://www.cise.ufl.edu/research/sparse/camd
 % --------------------------------------------------------------------------
-%
-% See also: camd, camd_make
 
 % This orders the same matrix as the ANSI C demo, camd_demo.c.  It includes an
 % additional analysis of the matrix via MATLAB's symbfact routine.
@@ -41,10 +44,10 @@ spparms ('spumoni', 1) ;
 % order the matrix.  Note that the Info argument is optional.
 fprintf ('\nIf the next step fails, then you have\n') ;
 fprintf ('not yet compiled the CAMD mexFunction.\n') ;
-[p, Info] = camd (A) ;
+[p, Info] = camd (A) ;          %#ok
 
 % order again, but this time print some statistics
-[p, Info] = camd (A, [10 1 1], C) ;
+[p, camd_Info] = camd (A, [10 1 1], C) ;
 
 fprintf ('Permutation vector:\n') ;
 fprintf (' %2d', p) ;
@@ -62,23 +65,23 @@ end
 fprintf ('\n\n') ;
 
 subplot (2,2,2) ;
-spy (A (p,p))
-title ('Permuted matrix') ;
+spy (A (p,p)) ;
+title ('permuted matrix') ;
 
 % The camd_demo.c program stops here.
 
-fprintf ('Analyze A(p,p) with MATLAB''s symbfact routine:\n') ;
+fprintf ('analyze A(p,p) with MATLAB''s symbfact routine:\n') ;
 [cn, height, parent, post, R] = symbfact (A (p,p)) ;
 
 subplot (2,2,3) ;
 spy (R') ; 
-title ('Cholesky factor, L') ;
+title ('Cholesky factor L') ;
 
 subplot (2,2,4) ;
 treeplot (parent) ;
-title ('elimination tree') ;
+title ('Elimination tree') ;
 
-% results from symbfact
+% symbfact results
 lnz = sum (cn) ;                % number of nonzeros in L, incl. diagonal
 cn = cn - 1 ;                   % get the count of off-diagonal entries
 fl = n + sum (cn.^2 + 2*cn) ;   % flop count for chol (A (p,p)
@@ -86,8 +89,8 @@ fprintf ('number of nonzeros in L (including diagonal):      %d\n', lnz) ;
 fprintf ('floating point operation count for chol (A (p,p)): %d\n', fl) ;
 
 % approximations from camd:
-lnz2 = n + Info (10) ;
-fl2 = n + Info (11) + 2 * Info (12) ;
+lnz2 = n + camd_Info (10) ;
+fl2 = n + camd_Info (11) + 2 * camd_Info (12) ;
 fprintf ('\nResults from CAMD''s approximate analysis:\n') ;
 fprintf ('number of nonzeros in L (including diagonal):      %d\n', lnz2) ;
 fprintf ('floating point operation count for chol (A (p,p)): %d\n\n', fl2) ;
@@ -96,7 +99,7 @@ fprintf ('\nNote that the ordering quality is not as good as p=amd(A).\n') ;
 fprintf ('This is only because the ordering constraints, C, have been\n') ;
 fprintf ('randomly selected.\n') ;
 
-if (lnz2 ~= lnz | fl ~= fl2)
+if (lnz2 ~= lnz || fl ~= fl2)
     fprintf ('Note that the nonzero and flop counts from CAMD are slight\n') ;
     fprintf ('upper bounds.  This is due to the approximate minimum degree\n');
     fprintf ('method used, in conjunction with "mass elimination".\n') ;
@@ -108,12 +111,10 @@ end
 spparms ('spumoni', 0) ;
 
 %-------------------------------------------------------------------------------
-% irand: return a random vector of size s, with values between 1 and n
-%-------------------------------------------------------------------------------
 
 function i = irand (n,s)
+% irand: return a random vector of size s, with values between 1 and n
 if (nargin == 1)
     s = 1 ;
 end
 i = min (n, 1 + floor (rand (1,s) * n)) ;
-

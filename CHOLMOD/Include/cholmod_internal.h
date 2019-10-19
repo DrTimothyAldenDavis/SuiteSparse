@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * CHOLMOD/Include/cholmod_internal.h.  Version 1.3.
+ * CHOLMOD/Include/cholmod_internal.h.
  * Copyright (C) 2005-2006, Univ. of Florida.  Author: Timothy A. Davis
  * CHOLMOD/Include/cholmod_internal.h is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
@@ -32,6 +32,21 @@
 
 #ifndef CHOLMOD_INTERNAL_H
 #define CHOLMOD_INTERNAL_H
+
+/* ========================================================================== */
+/* === large file I/O ======================================================= */
+/* ========================================================================== */
+
+/* Definitions for large file I/O must come before any other #includes.  If
+ * this causes problems (may not be portable to all platforms), then compile
+ * CHOLMOD with -DNLARGEFILE.  You must do this for MATLAB 6.5 and earlier,
+ * for example. */
+
+#include "cholmod_io64.h"
+
+/* ========================================================================== */
+/* === debugging and basic includes ========================================= */
+/* ========================================================================== */
 
 /* turn off debugging */
 #ifndef NDEBUG

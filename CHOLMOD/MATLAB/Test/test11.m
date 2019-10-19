@@ -1,6 +1,12 @@
 function test11 (nmat)
-% test11(nmat) : compare CHOLMOD and MATLAB, save results in Results.mat
-% also test analyze
+%TEST11 compare CHOLMOD and MATLAB, save results in Results.mat
+% also tests analyze
+% Example:
+%   test11(nmat)
+% See also cholmod_test
+
+% Copyright 2006, Timothy A. Davis, University of Florida
+
 fprintf ('=================================================================\n');
 fprintf ('test11 : compare CHOLMOD and MATLAB, save results in Results.mat\n');
 
@@ -36,11 +42,11 @@ end
 kk = 0 ;
 nmat = length (f) ;
 T1 = zeros (1,nmat) ;	% matlab time
-T2 = zeros (1,nmat) ;	% cholmod time
+T2 = zeros (1,nmat) ;	% cholmod2 time
 E1 = zeros (1,nmat) ;	% matlab residual
-E2 = zeros (1,nmat) ;	% cholmod residual
-FL = zeros (1,nmat) ;	% cholmod flop count
-LNZ = zeros (1,nmat) ;	% cholmod lnz
+E2 = zeros (1,nmat) ;	% cholmod2 residual
+FL = zeros (1,nmat) ;	% cholmod2 flop count
+LNZ = zeros (1,nmat) ;	% cholmod2 lnz
 
 for kkk = 1:length(f)
 
@@ -75,7 +81,7 @@ for kkk = 1:length(f)
 	    t2 = 0 ;
 	    while (t2 < 1)
 		tic
-		x = cholmod (A,b) ;
+		x = cholmod2 (A,b) ;
 		t = toc ;
 		t2 = t2 + t ;
 		k2 = k2 + 1 ;
@@ -87,7 +93,7 @@ for kkk = 1:length(f)
 	%   k2 = Inf ;
 	%   t2 = Inf ;
 	% end
-	fprintf ('cholmod: t: %10.5f e: %6.1e  mflop %6.0f\n', ...
+	fprintf ('cholmod2: t: %10.5f e: %6.1e  mflop %6.0f\n', ...
 	    t2, e2, 1e-6 * fl / t2) ;
 
 	% try
@@ -110,7 +116,7 @@ for kkk = 1:length(f)
 	fprintf ('matlab:  t: %10.5f e: %6.1e  mflop %6.0f', ...
 	    t1, e1, 1e-6 * fl / t1) ;
 
-	fprintf ('   cholmod speedup: %5.1f\n', t1/t2) ;
+	fprintf ('   cholmod2 speedup: %5.1f\n', t1/t2) ;
 
 	kk = kk + 1 ;
 	T1 (kk) = t1 ;

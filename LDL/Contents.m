@@ -6,8 +6,12 @@
 %    ldltest   - test program for LDL
 %    ldlmain2  - compiles and runs a longer test program
 %
-% LDL Version 1.3,  Copyright (c) 2005 by Timothy A. Davis.
-% All Rights Reserved.
+% Example:
+%
+%	[L, D, Parent, fl] = ldlsparse (A)
+
+% Copyright (c) 2005 by Timothy A. Davis.
+% LDL Version 1.3
 
 % LDL License:  GNU Lesser General Public License as published by the
 %   Free Software Foundation; either version 2.1 of the License, or

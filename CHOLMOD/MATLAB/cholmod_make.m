@@ -1,5 +1,8 @@
 function cholmod_make (metis_path)
-%CHOLMOD_MAKE:  compiling the CHOLMOD mexFunctions
+%CHOLMOD_MAKE compiles the CHOLMOD mexFunctions
+%
+% Example:
+%   cholmod_make
 %
 % CHOLMOD relies on AMD, COLAMD, CCOLAMD, CAMD, and METIS for its
 % ordering options.
@@ -16,13 +19,15 @@ function cholmod_make (metis_path)
 %   cholmod_make ('path to your copy of metis-4.0 here') ;
 %
 % See http://www-users.cs.umn.edu/~karypis/metis for a copy of
-% METIS 4.0.1.  If you do not have METIS, use either of:
+% METIS 4.0.1.  If you do not have METIS, use either of the following:
 %
 %   cholmod_make ('')
 %   cholmod_make ('no metis')
 %
 % You must type the cholmod_make command while in the
 % CHOLMOD/MATLAB directory.
+%
+% See also cholmod2
 
 %   Copyright 2006, Timothy A. Davis
 %   http://www.cise.ufl.edu/research/sparse
@@ -31,6 +36,15 @@ help cholmod_make
 
 if (~isempty (strfind (computer, '64')))
     error ('64-bit version not yet supported') ;
+end
+
+try
+    % determine if this is MATLAB 7.0 or greater
+    v = str2double (strtok (version, '.')) ;
+    old = (isempty (v) | v < 7) ;
+catch
+    % if the above failed, this must be an old version of MATLAB
+    old = 1 ;
 end
 
 if (ispc)
@@ -42,7 +56,7 @@ if (ispc)
 
     fprintf ('Using LAPACK library:\n%s\n', lapack) ;
     fprintf ('If this does not work, edit cholmod_make.m and\n') ;
-    fprintf ('modify the definition of lapack.\n') ;
+    fprintf ('modify the definition of lapack=''...''.\n') ;
 else
     % For other systems, mex can find lapack on its own.
     lapack = '' ;
@@ -52,7 +66,15 @@ fprintf ('Now compiling CHOLMOD:\n') ;
 
 include = '-I. -I../../AMD/Include -I../../AMD/Source -I../../COLAMD -I../../CCOLAMD -I../../CAMD/Include -I../Include -I../../UFconfig' ;
 
- % Determine the METIS path, and whether or not METIS is available
+if (old)
+    % do not attempt to compile CHOLMOD with large file support
+    include = [include ' -DNLARGEFILE'] ;
+elseif (~ispc)
+    % Linux/Unix require these flags for large file support
+    include = [include ' -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE'] ;
+end
+
+% Determine the METIS path, and whether or not METIS is available
 if (nargin == 0)
     metis_path = '../../metis-4.0' ;
 end
@@ -61,7 +83,7 @@ if (strcmp (metis_path, 'no metis'))
 end
 have_metis = (~isempty (metis_path)) ;
 
- % fix the METIS 4.0.1 rename.h file
+% fix the METIS 4.0.1 rename.h file
 if (have_metis)
     f = fopen ('rename.h', 'w') ;
     if (f == -1)
@@ -238,22 +260,22 @@ cholmod_mex_src = { ...
     'analyze', ...
     'bisect', ...
     'chol2', ...
-    'cholmod', ...
+    'cholmod2', ...
     'etree2', ...
     'lchol', ...
     'ldlchol', ...
     'ldlsolve', ...
     'ldlupdate', ...
     'metis', ...
-    'mread', ...
-    'mwrite', ...
     'spsym', ...
     'nesdis', ...
     'septree', ...
     'resymbol', ...
     'sdmult', ...
     'sparse2', ...
-    'symbfact2' } ;
+    'symbfact2', ...
+    'mread', ...
+    'mwrite' } ;
 
 if (ispc)
     % Windows does not have drand48 and srand48, required by METIS.  Use
@@ -265,7 +287,7 @@ else
     obj_extension = '.o' ;
 end
 
- % compile each library source file
+% compile each library source file
 obj = '' ;
 k = 0 ;
 
@@ -275,18 +297,18 @@ if (have_metis)
 end
 
 for f = source
-    f = strrep (f {1}, '/', filesep) ;
-    slash = strfind (f, filesep) ;
+    ff = strrep (f {1}, '/', filesep) ;
+    slash = strfind (ff, filesep) ;
     if (isempty (slash))
         slash = 1 ;
     else
         slash = slash (end) + 1 ;
     end
-    o = f (slash:end) ;
-    obj = [obj  ' ' o obj_extension] ;
-    s = sprintf ('mex -O %s -c %s.c', include, f);
-    fprintf ('.') ;
-    % fprintf (' %s\n', s) ;
+    o = ff (slash:end) ;
+    obj = [obj  ' ' o obj_extension] ;					    %#ok
+    s = sprintf ('mex -O %s -c %s.c', include, ff);
+    % fprintf ('.') ;
+    fprintf ('%s\n', s) ;
     k = k + 1 ;
     if (mod (k,50) == 0)
         fprintf ('\n') ;
@@ -294,12 +316,12 @@ for f = source
     eval (s) ;
 end
 
- % compile each mexFunction
+% compile each mexFunction
 for f = cholmod_mex_src
     s = sprintf ('mex -O %s %s.c', include, f{1}) ;
-    s = [s obj ' ' lapack] ;
-    fprintf ('.') ;
-    % fprintf (' %s\n', s) ;
+    s = [s obj ' ' lapack] ;						    %#ok
+    % fprintf ('.') ;
+    fprintf ('%s\n', s) ;
     k = k + 1 ;
     if (mod (k,50) == 0)
         fprintf ('\n') ;
@@ -307,7 +329,7 @@ for f = cholmod_mex_src
     eval (s) ;
 end
 
- % clean up
+% clean up
 eval (['delete ' obj]) ;
 
 fprintf ('\nNow compiling the AMD, COLAMD, CCOLAMD, and CAMD mexFunctions:\n') ;

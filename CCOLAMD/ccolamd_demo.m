@@ -1,5 +1,12 @@
-% Demo for ccolamd and csymamd:  constrained column approximate minimum degree
-% ordering algorithm.
+%CCOLAMD_DEMO demo for ccolamd and csymamd
+% minimum degree ordering algorithm.
+%
+% Example:
+%   ccolamd_demo
+%
+% See also ccolamd
+
+% Copyright 2006, Timothy A. Davis
 
 %-------------------------------------------------------------------------------
 % Print the introduction, the help info, and compile the mexFunctions
@@ -28,7 +35,7 @@ n = 100 ;
 fprintf (1, '\n-----------------------------------------------------------\n') ;
 fprintf (1, 'Solving Ax=b for a small %d-by-%d random matrix:', n, n) ;
 fprintf (1, '\n-----------------------------------------------------------\n') ;
-fprintf (1, '\nNOTE: Random sparse matrices are AWFUL test cases.\n') ;
+fprintf (1, '\nNote: Random sparse matrices are AWFUL test cases.\n') ;
 fprintf (1, 'They''re just easy to generate in a demo.\n') ;
 
 % set up the system

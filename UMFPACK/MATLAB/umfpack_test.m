@@ -2,7 +2,10 @@
 % Requires the UFsparse package for downloading matrices from the UF
 % sparse matrix library.
 %
-% UMFPACK Version 5.0, Copyright (c) 1995-2006 by Timothy A. Davis.
+% Example:
+%   umfpack_test
+%
+% Copyright (c) 1995-2006 by Timothy A. Davis.
 % All Rights Reserved.  Type umfpack_details for License.
 
 index = UFget ;
@@ -11,7 +14,7 @@ f = find (index.nrows == index.ncols) ;
 [ignore, i] = sort (index.nrows (f)) ;
 f = f (i) ;
 
-Control = umfpack ;
+Control = umfpack2 ;
 Control (1) = 0 ;
 
 warning ('off', 'all') ;
@@ -36,7 +39,7 @@ for i = f
 	% symbolic factorization
 	%-----------------------------------------------------------------------
 
-	[P1, Q1, Fr, Ch, Info] = umfpack (A, 'symbolic') ;
+	[P1, Q1, Fr, Ch, Info] = umfpack2 (A, 'symbolic') ;
 	subplot (2,2,1)
 	spy (A)
 	title ('A')
@@ -49,7 +52,7 @@ for i = f
 	% P(R\A)Q = LU
 	%-----------------------------------------------------------------------
 
-	[L,U,P,Q,R,Info] = umfpack (A) ;
+	[L,U,P,Q,R,Info] = umfpack2 (A) ;
 	err = lu_normest (P*(R\A)*Q, L, U) ;
 	fprintf ('norm est PR\\AQ-LU: %g relative: %g\n', ...
 	    err, err / norm (A,1)) ;
@@ -79,7 +82,7 @@ for i = f
 	% PAQ = LU
 	%-----------------------------------------------------------------------
 
-	[L,U,P,Q] = umfpack (A) ;
+	[L,U,P,Q] = umfpack2 (A) ;
 	err = lu_normest (P*A*Q, L, U) ;
 	fprintf ('norm est PAQ-LU:   %g relative: %g\n', ...
 	    err, err / norm (A,1)) ;
@@ -95,7 +98,7 @@ for i = f
 
 	% factor the transpose
 	Control (8) = 2 ;
-	[x, info] = umfpack (A', '\', c, Control) ;
+	[x, info] = umfpack2 (A', '\', c, Control) ;
 	lunz0 = info (44) + info (45) - info (67) ;
 	r = norm (A'*x-c) ;
 
@@ -104,7 +107,7 @@ for i = f
 	% factor the original matrix and solve xA=b
 	for ir = 0:4
 	    Control (8) = ir ;
-	    [x, info] = umfpack (b, '/', A, Control) ;
+	    [x, info] = umfpack2 (b, '/', A, Control) ;
 	    r = norm (b-x*A) ;
 	    if (ir == 0)
 		lunz1 = info (44) + info (45) - info (67) ;
@@ -115,12 +118,13 @@ for i = f
 	% factor the original matrix and solve Ax=b
 	for ir = 0:4
 	    Control (8) = ir ;
-	    [x, info] = umfpack (A, '\', c, Control) ;
+	    [x, info] = umfpack2 (A, '\', c, Control) ;
 	    r = norm (A*x-c) ;
 	    fprintf ('%d: %8.2e %d %d\n', ir, r, info (81), info (82)) ;
 	end
 
-	fprintf ('lunz trans %12d    no trans: %12d  trans/notrans: %10.4f\n', ...
+	fprintf (...
+	    'lunz trans %12d    no trans: %12d  trans/notrans: %10.4f\n', ...
 	    lunz0, lunz1, lunz0 / lunz1) ;
 
 	%-----------------------------------------------------------------------
@@ -128,8 +132,8 @@ for i = f
 	%-----------------------------------------------------------------------
 
 	det1 = det (A) ;
-	det2 = umfpack (A, 'det') ;
-	[det3 dexp3] = umfpack (A, 'det') ;
+	det2 = umfpack2 (A, 'det') ;
+	[det3 dexp3] = umfpack2 (A, 'det') ;
 	err = abs (det1-det2) ;
 	err3 = abs (det1 - (det3 * 10^dexp3)) ;
 	denom = det1 ;
@@ -138,9 +142,12 @@ for i = f
 	end
 	err = err / denom ;
 	err3 = err3 / denom ;
-	fprintf ('det:  %24.16e + (%24.16e)i MATLAB\n', real(det1), imag(det1)) ;
-	fprintf ('det:  %24.16e + (%24.16e)i umfpack\n',real(det2), imag(det2)) ;
-	fprintf ('det: (%24.16e + (%24.16e)i) * 10^(%g) umfpack\n', real(det3), imag(det3), dexp3) ;
+	fprintf ('det:  %24.16e + (%24.16e)i MATLAB\n', ...
+	    real(det1), imag(det1)) ;
+	fprintf ('det:  %24.16e + (%24.16e)i umfpack2\n', ...
+	    real(det2), imag(det2)) ;
+	fprintf ('det: (%24.16e + (%24.16e)i) * 10^(%g) umfpack2\n', ...
+	    real(det3), imag(det3), dexp3) ;
 	fprintf ('diff %g %g\n', err, err3) ;
 
     catch

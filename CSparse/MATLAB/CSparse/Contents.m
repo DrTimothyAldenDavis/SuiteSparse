@@ -49,4 +49,5 @@
 %   Copyright 2006, Timothy A. Davis.
 %   http://www.cise.ufl.edu/research/sparse
 
-
+% helper function:
+%   cs_must_compile - return 1 if source code f must be compiled, 0 otherwise

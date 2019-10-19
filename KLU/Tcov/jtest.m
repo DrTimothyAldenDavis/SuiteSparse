@@ -1,3 +1,6 @@
+% jtest: test AMD, LU, DMPERM
+% Example:
+%   jtest
 
 for i = 1:3
     

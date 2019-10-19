@@ -1,6 +1,8 @@
 function fl = luflops (L, U)
+%LUFLOPS compute the flop count for sparse LU factorization
 %
-%  fl = luflops (L,U)
+%  Example:
+%      fl = luflops (L,U)
 %
 %  Given a sparse LU factorization (L and U), return the flop count required
 %  by a conventional LU factorization algorithm to compute it.   L and U can
@@ -21,7 +23,9 @@ function fl = luflops (L, U)
 %
 %  See NA Digest, Vol 00, #50, Tuesday, Dec. 5, 2000
 %
-%  Tim Davis, Sept. 23, 2002.  Written for MATLAB 6.5.
+%  See also symbfact
+
+% Copyright 2006, Univ. of Florida.  Authors: Timothy A. Davis
 
 Lnz = full (sum (spones (L))) - 1 ;	% off diagonal nz in cols of L
 Unz = full (sum (spones (U')))' - 1 ;	% off diagonal nz in rows of U
