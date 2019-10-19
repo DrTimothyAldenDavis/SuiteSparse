@@ -33,7 +33,7 @@ if (~exist (matrices, 'dir'))
 end
 
 % create the groups.html file
-f = fopen ([matrices filesep 'groups.html'], 'w') ;
+f = fopen ([matrices '/groups.html'], 'w') ;
 if (f < 0)
     error ('unable to create groups.html file\n') ;
 end
@@ -79,13 +79,13 @@ for i = 1:ngroup
     fprintf (f, '<td><a href="%s/index.html">%s</a></td>\n', group, group) ;
 
     % number of matrices
-    d = dir ([topdir 'mat' filesep group filesep '*.mat']) ;
+    d = dir ([topdir 'mat/' group '/*.mat']) ;
     nmat_group = size (d,1) ;
     fprintf (f, '<td>%d</td>\n', nmat_group) ;
     nmat = nmat + nmat_group ;
 
     % link to README.txt file ("details")
-    f2 = fopen ([topdir filesep 'mat' filesep group filesep 'README.txt'], 'r');
+    f2 = fopen ([topdir '/mat/' group '/README.txt'], 'r');
     if (f2 < 0)
 	error (['no README file for group: ' group]) ;
     else

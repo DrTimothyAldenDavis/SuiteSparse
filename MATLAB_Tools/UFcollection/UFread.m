@@ -63,8 +63,8 @@ function Problem = UFread (directory, tmp)
 % determine the Problem name from the directory name
 %-------------------------------------------------------------------------------
 
-directory = regexprep (directory, '[\/\\]', filesep) ;
-t = find (directory == filesep) ;
+directory = regexprep (directory, '[\/\\]', '/') ;
+t = find (directory == '/') ;
 if (isempty (t))
     name = directory ;
 else
@@ -83,7 +83,7 @@ if (isempty (d))
     if (nargin < 2)
 	tmpdir = [tempname '_UFread_' name] ;
     else
-	tmpdir = [tmp filesep name] ;
+	tmpdir = [tmp '/' name] ;
     end
     try
 	% try untaring the problem
@@ -96,7 +96,7 @@ if (isempty (d))
 	end
 	error (['unable to read problem: ' directory]) ;
     end
-    directory = [tmpdir filesep name] ;
+    directory = [tmpdir '/' name] ;
     d = dir (directory) ;
     is_tar = 1 ;
 end 
@@ -111,7 +111,7 @@ try
     % get name, title, id, kind, date, author, editor, notes from master file
     %---------------------------------------------------------------------------
 
-    masterfile = [directory filesep name] ;
+    masterfile = [directory '/' name] ;
     [Problem notes RB] = get_header (masterfile) ;
 
     %---------------------------------------------------------------------------
@@ -144,7 +144,7 @@ try
 
 	% get the next filename in the directory
 	file = d(k).name ;
-	fullfilename = [directory filesep file] ;
+	fullfilename = [directory '/' file] ;
 
 	if (length (file) < length (name) + 1)
 

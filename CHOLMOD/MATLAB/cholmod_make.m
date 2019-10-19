@@ -8,7 +8,7 @@ function cholmod_make
 % All but METIS are distributed with CHOLMOD.  To compile CHOLMOD to use METIS
 % you must first place a copy of the metis-4.0 directory (METIS version 4.0.1)
 % in same directory that contains the AMD, COLAMD, CCOLAMD, and CHOLMOD
-% directories.  % See http://www-users.cs.umn.edu/~karypis/metis for a copy of
+% directories.  See http://www-users.cs.umn.edu/~karypis/metis for a copy of
 % METIS 4.0.1.
 %
 % You must type the cholmod_make command while in the CHOLMOD/MATLAB directory.
@@ -54,11 +54,11 @@ if (verLessThan ('matlab', '6.5'))
     include = [include ' -DMATLAB6p1_OR_EARLIER'] ;
 end
 
-% Determine if METIS is available
+ % Determine if METIS is available
 metis_path = '../../metis-4.0' ;
 have_metis = exist ([metis_path '/Lib'], 'dir') ;
 
-% fix the METIS 4.0.1 rename.h file
+ % fix the METIS 4.0.1 rename.h file
 if (have_metis)
     fprintf ('Compiling CHOLMOD with METIS for MATLAB Version %s\n', v) ;
     f = fopen ('rename.h', 'w') ;
@@ -83,12 +83,12 @@ else
 end
 
 
-%-------------------------------------------------------------------------------
-% BLAS option
-%-------------------------------------------------------------------------------
+ %---------------------------------------------------------------------------
+ % BLAS option
+ %---------------------------------------------------------------------------
 
-% This is exceedingly ugly.  The MATLAB mex command needs to be told where to
-% fine the LAPACK and BLAS libraries, which is a real portability nightmare.
+ % This is exceedingly ugly.  The MATLAB mex command needs to be told where to
+ % fine the LAPACK and BLAS libraries, which is a real portability nightmare.
 
 if (pc)
     if (verLessThan ('matlab', '6.5'))
@@ -118,9 +118,7 @@ if (~(pc || mac))
     lapack = [lapack ' -lrt'] ;
 end
 
-%-------------------------------------------------------------------------------
-
-include = strrep (include, '/', filesep) ;
+ %-------------------------------------------------------------------------------
 
 config_src = { '../../SuiteSparse_config/SuiteSparse_config' } ;
 
@@ -300,7 +298,7 @@ else
     obj_extension = '.o' ;
 end
 
-% compile each library source file
+ % compile each library source file
 obj = '' ;
 
 source = [ordering_src config_src cholmod_src cholmod_matlab] ;
@@ -311,8 +309,8 @@ end
 kk = 0 ;
 
 for f = source
-    ff = strrep (f {1}, '/', filesep) ;
-    slash = strfind (ff, filesep) ;
+    ff = f {1} ;
+    slash = strfind (ff, '/') ;
     if (isempty (slash))
         slash = 1 ;
     else
@@ -324,21 +322,21 @@ for f = source
     kk = do_cmd (s, kk, details) ;
 end
 
-% compile each mexFunction
+ % compile each mexFunction
 for f = cholmod_mex_src
     s = sprintf ('mex %s -DDLONG -O %s %s.c', flags, include, f{1}) ;
     s = [s obj ' ' lapack] ;						    %#ok
     kk = do_cmd (s, kk, details) ;
 end
 
-% clean up
+ % clean up
 s = ['delete ' obj] ;
 do_cmd (s, kk, details) ;
 fprintf ('\nCHOLMOD successfully compiled\n') ;
 
-%-------------------------------------------------------------------------------
+ %-------------------------------------------------------------------------------
 function kk = do_cmd (s, kk, details)
-%DO_CMD: evaluate a command, and either print it or print a "."
+ %DO_CMD: evaluate a command, and either print it or print a "."
 if (details)
     fprintf ('%s\n', s) ;
 else

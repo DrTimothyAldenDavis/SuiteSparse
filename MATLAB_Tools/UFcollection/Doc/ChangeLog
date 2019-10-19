@@ -1,3 +1,7 @@
+Jun 20, 2012: verison 1.6.2
+
+    * minor update for Windows (removed filesep)
+
 May 15, 2012: version 1.6.1
 
     * added test to exploit property of symmetric binary matrices (McKay et al) 

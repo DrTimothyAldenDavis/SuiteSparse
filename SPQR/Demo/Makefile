@@ -10,19 +10,21 @@ include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 #-------------------------------------------------------------------------------
 # the optional Partition module requires METIS, CAMD, and CCOLAMD
+I_WITH_PARTITION = 
 LIB_WITH_PARTITION =
 CONFIG = -DNPARTITION
 # check if METIS is requested and available
 ifeq (,$(findstring -DNPARTITION, $(CHOLMOD_CONFIG)))
     # METIS is requested.  See if it is available
-    ifeq ($(METIS), $(wildcard $(METIS)))
+    ifeq ($(METIS_PATH), $(wildcard $(METIS_PATH)))
         ifeq (../../CAMD, $(wildcard ../../CAMD))
             ifeq (../../CCOLAMD, $(wildcard ../../CCOLAMD))
-                # METIS, CAMD, and CCOLAMD is available
-                CONFIG =
-                LIB_WITH_PARTITION = $(METIS) \
-                    ../../CCOLAMD/Lib/libccolamd.a \
+                # METIS, CAMD, and CCOLAMD are available
+                LIB_WITH_PARTITION = $(METIS) ../../CCOLAMD/Lib/libccolamd.a \
                     ../../CAMD/Lib/libcamd.a
+                I_WITH_PARTITION = -I$(METIS_PATH)/Lib \
+                    -I../../CCOLAMD/Include -I../../CAMD/Include
+                CONFIG =
             endif
         endif
     endif
@@ -124,6 +126,9 @@ cdemo: qrdemoc
 
 ../../CAMD/Lib/libcamd.a:
 	- ( cd ../../CAMD && $(MAKE) library )
+
+$(METIS):
+	( cd $(METIS_PATH) && $(MAKE) )
 
 library: $(CLIB)
 

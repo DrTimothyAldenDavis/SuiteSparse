@@ -17,10 +17,10 @@ include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 #-------------------------------------------------------------------------------
 # the optional Partition module requires METIS, CAMD, and CCOLAMD
+I_WITH_PARTITION = 
 LIB_WITH_PARTITION =
 CONFIG1 = -DNCHOLMOD
 CONFIG2 = -DNPARTITION
-LIB_WITH_CHOLMOD =
 ifeq (,$(findstring -DNCHOLMOD, $(UMFPACK_CONFIG)))
     # CHOLMOD is requested.  See if it is available
     ifeq (../../CHOLMOD, $(wildcard ../../CHOLMOD))
@@ -32,13 +32,16 @@ ifeq (,$(findstring -DNCHOLMOD, $(UMFPACK_CONFIG)))
             # check if METIS is requested and available
             ifeq (,$(findstring -DNPARTITION, $(CHOLMOD_CONFIG)))
                 # METIS is requested.  See if it is available
-                ifeq ($(METIS), $(wildcard $(METIS)))
+                ifeq ($(METIS_PATH), $(wildcard $(METIS_PATH)))
                     ifeq (../../CAMD, $(wildcard ../../CAMD))
                         ifeq (../../CCOLAMD, $(wildcard ../../CCOLAMD))
-                            CONFIG2 =
+                            # METIS, CAMD, and CCOLAMD are available
                             LIB_WITH_PARTITION = $(METIS) \
                                 ../../CCOLAMD/Lib/libccolamd.a \
                                 ../../CAMD/Lib/libcamd.a
+                            I_WITH_PARTITION = -I$(METIS_PATH)/Lib \
+                                -I../../CCOLAMD/Include -I../../CAMD/Include
+                            CONFIG2 =
                         endif
                     endif
                 endif

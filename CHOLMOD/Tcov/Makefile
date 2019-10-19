@@ -32,6 +32,13 @@ C = $(CC) $(CF) $(CHOLMOD_CONFIG) $(NANTESTS)
 # Solaris
 # LIB = $(METIS) -xlic_lib=sunperf
 
+#-------------------------------------------------------------------------------
+# With the CUDA BLAS:
+ifneq ($(GPU_CONFIG),)
+LIB += $(GPU_BLAS_PATH)/lib64/libcudart.so $(GPU_BLAS_PATH)/lib64/libcublas.so
+endif
+#-------------------------------------------------------------------------------
+
 # Use "grep" only, if you do not have "indent"
 # PRETTY = grep -v "^\#" | indent -bl -nce -ss -bli0 -i4 -sob -l120
 PRETTY = grep -v "^\#" | indent -bl -nce -bli0 -i4 -sob -l120
@@ -1003,7 +1010,8 @@ z_updown.o: ../Modify/cholmod_updown.c \
 #-------------------------------------------------------------------------------
 
 z_super_numeric.o: ../Supernodal/cholmod_super_numeric.c \
-		../Supernodal/t_cholmod_super_numeric.c
+		../Supernodal/t_cholmod_super_numeric.c \
+		../Supernodal/t_cholmod_gpu.c
 	$(C) -E $(I) $< | $(PRETTY) > z_super_numeric.c
 	$(C) -c $(I) z_super_numeric.c
 

@@ -71,7 +71,7 @@ fprintf ('\nFor more accurate timings, run this test again.\n') ;
 
 
 function try_matrix (A)
-% try_matrix: try a matrix with CHOLMOD
+    % try_matrix: try a matrix with CHOLMOD
 
 n = size (A,1) ;
 S = sparse (A) ;

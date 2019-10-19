@@ -212,6 +212,7 @@ try
     paths = add_to_path (paths, [SuiteSparse '/MATLAB_Tools/shellgui']) ;
     paths = add_to_path (paths, [SuiteSparse '/MATLAB_Tools/waitmex']) ;
     paths = add_to_path (paths, [SuiteSparse '/MATLAB_Tools/spqr_rank']) ;
+    paths = add_to_path (paths, [SuiteSparse '/MATLAB_Tools/spqr_rank/SJget']) ;
     fprintf ('MATLAB_Tools installed\n') ;
 catch me
     disp (me.message) ;

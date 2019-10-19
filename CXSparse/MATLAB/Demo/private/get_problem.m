@@ -19,8 +19,6 @@ s = find (name == '/') ;
 if (isempty (s))
     s = 0 ;
 end
-% f = sprintf ('%s..%s..%sMatrix%s%s', ...
-%    prefix, filesep, filesep, filesep, name (s+1:end)) ;
 
 % load the triplet version of the matrix
 T = load ([ prefix '/' name(s+1:end) ]) ;

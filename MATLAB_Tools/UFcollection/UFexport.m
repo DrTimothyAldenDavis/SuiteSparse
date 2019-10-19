@@ -72,9 +72,9 @@ for id = list
             fprintf ('Reading %s format ...\n', format {k}) ;
 	    try
 		if (isempty (tmp))
-		    P2 = UFread ([topdir format{k} filesep Problem.name]) ;
+		    P2 = UFread ([topdir format{k} '/' Problem.name]) ;
 		else
-		    P2 = UFread ([topdir format{k} filesep Problem.name], tmp) ;
+		    P2 = UFread ([topdir format{k} '/' Problem.name], tmp) ;
 		end
 	    catch
 		% The Problem may be too large for two copies to be in the

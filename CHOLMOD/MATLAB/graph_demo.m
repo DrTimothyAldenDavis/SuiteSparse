@@ -89,10 +89,8 @@ for regions = {'Square', 'C' 'Disc', 'Annulus', 'Heart', 'Butterfly', 'L'}
     end
 end
 
-%-------------------------------------------------------------------------------
-
 function my_gplot (A, x, y)
-% my_gplot : like gplot, just a lot faster
+    % my_gplot : like gplot, just a lot faster
 [i, j] = find (A) ;
 [ignore, p] = sort (max(i, j)) ;
 i = i (p) ;

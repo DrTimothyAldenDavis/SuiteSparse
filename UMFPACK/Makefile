@@ -2,7 +2,7 @@
 # UMFPACK Makefile
 #-------------------------------------------------------------------------------
 
-VERSION = 5.6.0
+VERSION = 5.6.1
 
 # UMFPACK requires the AMD package to be in ../AMD
 

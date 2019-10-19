@@ -164,9 +164,9 @@ arg4 = lower (arg4) ;
 do_tar = (strcmp (arg3, 'tar') | strcmp (arg4, 'tar')) ;
 RB = (strcmp (arg3, 'rb') | strcmp (arg4, 'rb')) ;
 
-Master = regexprep (Master, '[\/\\]', filesep) ;
-if (~isempty (Master) && Master (end) ~= filesep)
-    Master = [Master filesep] ;
+Master = regexprep (Master, '[\/\\]', '/') ;
+if (~isempty (Master) && Master (end) ~= '/')
+    Master = [Master '/'] ;
 end
 
 %-------------------------------------------------------------------------------
@@ -177,8 +177,8 @@ t = find (Problem.name == '/') ;
 group = Problem.name (1:t-1) ;
 name = Problem.name (t+1:end) ;
 groupdir = [Master group] ;
-probdir = [groupdir filesep name] ;
-probname = [probdir filesep name] ;
+probdir = [groupdir '/' name] ;
+probname = [probdir '/' name] ;
 
 s = warning ('query', 'MATLAB:MKDIR:DirectoryExists') ;	    % get current state
 warning ('off', 'MATLAB:MKDIR:DirectoryExists') ;

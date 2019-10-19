@@ -33,13 +33,13 @@ end
 if (do_pause)
     input ('Hit enter to continue: ') ;
 end
-addpath ([pwd filesep 'CSparse']) ;
-addpath ([pwd filesep 'Demo']) ;
+addpath ([pwd '/CSparse']) ;
+addpath ([pwd '/Demo']) ;
 
 if (verLessThan ('matlab', '7.0'))
     fprintf ('UFget not installed (MATLAB 7.0 or later required)\n') ;
 else
-    addpath ([pwd filesep 'UFget']) ;
+    addpath ([pwd '/UFget']) ;
 end
 
 cd ('CSparse') ;

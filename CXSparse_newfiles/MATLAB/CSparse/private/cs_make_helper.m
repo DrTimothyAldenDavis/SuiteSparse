@@ -121,7 +121,7 @@ hfile = '../../Include/cs.h' ;
     mexcmd, kk, details) ;
 CS = ['cs_mex' obj] ;
 if (nargout > 0)
-    objfiles = ['..' filesep 'CSparse' filesep 'cs_mex' obj] ;
+    objfiles = ['../CSparse/cs_mex' obj] ;
 end
 for i = 1:length (cs)
 
@@ -131,7 +131,7 @@ for i = 1:length (cs)
     anysrc = anysrc | s ;                                                   %#ok
     CS = [CS ' ' cs{i} obj] ;                                               %#ok
     if (nargout > 0)
-        objfiles = [objfiles ' ..' filesep 'CSparse' filesep cs{i} obj] ;   %#ok
+        objfiles = [objfiles ' ../CSparse/' cs{i} obj] ;   %#ok
     end
 
     % complex version:
@@ -140,7 +140,7 @@ for i = 1:length (cs)
         csrc = [ 'cs_cl_' csrc(4:end) ] ;
         CS = [CS ' ' csrc obj] ;            %#ok
         if (nargout > 0)
-            objfiles = [objfiles ' ..' filesep 'CSparse' filesep csrc obj] ;%#ok
+            objfiles = [objfiles ' ../CSparse/' csrc obj] ;%#ok
         end
         if (s)
             cpfile (['../../Source/' cs{i} '.c'], [csrc '.c']) ;
@@ -187,7 +187,6 @@ end
 %-------------------------------------------------------------------------------
 function kk = do_cmd (s, kk, details)
 %DO_CMD: evaluate a command, and either print it or print a "."
-s = strrep (s, '/', filesep) ;
 if (details)
     fprintf ('%s', s) ;
 else

@@ -7,7 +7,7 @@ function [R,p,q] = chol2 (A)						    %#ok
 %
 %   Example:
 %   R = chol2 (A)                 same as R = chol (A), just faster
-%   [R,p] = chol2 (A)             save as [R,p] = chol(A), just faster
+%   [R,p] = chol2 (A)             same as [R,p] = chol(A), just faster
 %   [R,p,q] = chol2 (A)           factorizes A(q,q) into R'*R, where q is
 %                                 a fill-reducing ordering
 %

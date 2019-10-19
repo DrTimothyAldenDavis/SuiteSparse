@@ -201,7 +201,7 @@ int CHOLMOD(start)
     Common->cudaStreamPotrf [1] = NULL ;
     Common->cudaStreamPotrf [2] = NULL ;
     Common->cublasEventPotrf [0] = NULL ;
-    Common->cublasEventPotrf [2] = NULL ;
+    Common->cublasEventPotrf [1] = NULL ;
     Common->HostPinnedMemory = NULL ;
     Common->devPotrfWork = NULL ;
     Common->devSyrkGemmPtrLx = NULL ;

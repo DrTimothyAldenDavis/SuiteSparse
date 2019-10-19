@@ -7,7 +7,7 @@ CC = gcc
 CFLAGS = -O -g -fprofile-arcs -ftest-coverage \
     	-Wall -W -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
     	-Wredundant-decls -Wnested-externs -Wdisabled-optimization -ansi \
-	-Wno-unused-parameter -Werror -I../Include -I../Demo
+	-Wno-unused-parameter -I../Include -I../Demo
 
 run: all run1 runbook run3 runtest
 	./covall

@@ -25,7 +25,9 @@
 #define L_ENTRY 2
 #endif
 
-//#define GPU_Printf  printf
+/*
+#define GPU_Printf  printf
+*/
 #define GPU_Printf
 
 #define PAGE_SIZE (4*1024)
@@ -43,16 +45,16 @@ void TEMPLATE (CHOLMOD (gpu_init))
 )
 {
     Int i ;
+    cublasStatus_t cublasError ;
+    cudaError_t cudaErr ;
+    size_t maxBytesSize, HostPinnedSize ;
 
     Common->GemmUsed = 0 ;
 
+    GPU_Printf ("gpu_init : %p\n", (void *) ((size_t) Cwork & ~(PAGE_SIZE-1))) ;
+
     if (!(Common->cublasHandle))
     {
-#ifndef NTIMER
-        double start = SuiteSparse_time ( ) ;
-#endif
-        cublasStatus_t cublasError ;
-        cudaError_t cudaErr ;
 
         /* ------------------------------------------------------------------ */
         /* create the CUDA BLAS handle */
@@ -104,7 +106,7 @@ void TEMPLATE (CHOLMOD (gpu_init))
         /* create each CUDA event */
         /* ------------------------------------------------------------------ */
 
-        for (i=0 ; i< 2 ; i++)
+        for (i = 0 ; i < 2 ; i++)
         {
             cudaErr = cudaEventCreateWithFlags
                 (&(Common->cublasEventPotrf [i]), cudaEventDisableTiming) ;
@@ -114,27 +116,29 @@ void TEMPLATE (CHOLMOD (gpu_init))
                 return ;
             }
         }
+    }
 
-        /* ------------------------------------------------------------------ */
-        /* pin the Host memory */
-        /* ------------------------------------------------------------------ */
+    /* ---------------------------------------------------------------------- */
+    /* pin the Host memory */
+    /* ---------------------------------------------------------------------- */
 
-        Common->HostPinnedMemory = (void *) ((size_t) Cwork & ~(PAGE_SIZE-1)) ;
-        size_t maxBytesSize = sizeof (double)*L_ENTRY*maxSize ;
+    Common->HostPinnedMemory = (void *) ((size_t) Cwork & ~(PAGE_SIZE-1)) ;
+    maxBytesSize = sizeof (double)*L_ENTRY*maxSize ;
 
-        /* Align on a 4K page boundary (it is no more necessary in 4.1 */
-        size_t HostPinnedSize  = 
-            (((size_t) Cwork + maxBytesSize + PAGE_SIZE-1) & ~(PAGE_SIZE-1))
-            - (size_t) (Common->HostPinnedMemory) ;
+    /* Align on a 4K page boundary (it is no more necessary in 4.1 */
+    HostPinnedSize  = 
+        (((size_t) Cwork + maxBytesSize + PAGE_SIZE-1) & ~(PAGE_SIZE-1))
+        - (size_t) (Common->HostPinnedMemory) ;
 
-        cudaErr = cudaHostRegister (Common->HostPinnedMemory,
-            HostPinnedSize, 0) ;
+    GPU_Printf ("gpu HostPinnedSize: %g %p\n", (double) HostPinnedSize,
+        Common->HostPinnedMemory) ;
+    cudaErr = cudaHostRegister (Common->HostPinnedMemory,
+        HostPinnedSize, 0) ;
 
-        if (cudaErr != cudaSuccess)
-        {
-            ERROR (CHOLMOD_GPU_PROBLEM, "CUDA Pinning Memory") ;
-            Common->HostPinnedMemory = NULL ;
-        }
+    if (cudaErr != cudaSuccess)
+    {
+        ERROR (CHOLMOD_GPU_PROBLEM, "CUDA Pinning Memory") ;
+        Common->HostPinnedMemory = NULL ;
     }
 }
 
@@ -149,6 +153,7 @@ void TEMPLATE (CHOLMOD (gpu_end))
 )
 {
     /* unpin the Host memory */
+    GPU_Printf ("gpu_end %p\n", Common->HostPinnedMemory) ;
     cudaError_t cudaErr = cudaHostUnregister (Common->HostPinnedMemory) ;
     if (cudaErr != cudaSuccess)
     {
@@ -187,8 +192,10 @@ int TEMPLATE (CHOLMOD (gpu_updateC))
 )
 {
     double *devPtrLx, *devPtrC ;
+    double alpha, beta ;
     cublasStatus_t cublasStatus ;
     cudaError_t cudaStat [2] ;
+    Int ndrow3 ;
 
     Common->SyrkUsed = 0 ;
     Common->GemmUsed = 0 ;
@@ -199,7 +206,7 @@ int TEMPLATE (CHOLMOD (gpu_updateC))
         return (0) ;
     }
 
-    Int ndrow3 = ndrow2 - ndrow1 ;
+    ndrow3 = ndrow2 - ndrow1 ;
 
 #ifndef NTIMER
     Common->syrkStart = SuiteSparse_time ( ) ;
@@ -221,7 +228,7 @@ int TEMPLATE (CHOLMOD (gpu_updateC))
         /* one or both cudaMalloc's failed */
         if (devPtrLx) cudaFree (devPtrLx) ;
         if (devPtrC)  cudaFree (devPtrC) ;
-        GPU_Printf ("cudaMalloc failed =%d,%d ndrow1=%d ndrow2=%d ndcol=%d\n",
+        GPU_Printf ("gpu malloc failed =%d,%d ndrow1=%d ndrow2=%d ndcol=%d\n",
             cudaStat [0], cudaStat [1], (int) ndrow1,
             (int) ndrow2, (int) ndcol) ;
         /* cudaMalloc failure is not an error, just bypass the GPU */
@@ -273,8 +280,8 @@ int TEMPLATE (CHOLMOD (gpu_updateC))
         ERROR (CHOLMOD_GPU_PROBLEM, "GPU CUBLAS stream") ;
     }
 
-    double alpha  = 1.0 ;
-    double beta   = 0.0 ;
+    alpha  = 1.0 ;
+    beta   = 0.0 ;
 #ifdef REAL
     cublasStatus = cublasDsyrk (Common->cublasHandle,
         CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N,
@@ -317,6 +324,11 @@ int TEMPLATE (CHOLMOD (gpu_updateC))
 
     if (ndrow3 > 0)
     {
+#ifndef REAL
+        cuDoubleComplex calpha  = {1.0,0.0} ;
+        cuDoubleComplex cbeta   = {0.0,0.0} ;
+#endif
+
 #ifndef NTIMER
         Common->CHOLMOD_GPU_GEMM_CALLS++ ;
 #endif
@@ -332,8 +344,8 @@ int TEMPLATE (CHOLMOD (gpu_updateC))
         /* ------------------------------------------------------------------ */
 
 #ifdef REAL
-        double alpha  = 1.0 ;
-        double beta   = 0.0 ;
+        alpha  = 1.0 ;
+        beta   = 0.0 ;
         cublasStatus = cublasDgemm (Common->cublasHandle,
             CUBLAS_OP_N, CUBLAS_OP_T,
             ndrow3, ndrow1, ndcol,                  /* M, N, K */
@@ -346,17 +358,15 @@ int TEMPLATE (CHOLMOD (gpu_updateC))
             devPtrC + L_ENTRY*ndrow1,               /* C, LDC: C2 */
             ndrow2) ;
 #else
-        cuDoubleComplex alpha  = {1.0,0.0} ;
-        cuDoubleComplex beta   = {0.0,0.0} ;
         cublasStatus = cublasZgemm (Common->cublasHandle,
             CUBLAS_OP_N, CUBLAS_OP_C,
             ndrow3, ndrow1, ndcol,                  /* M, N, K */
-            &alpha,                                 /* ALPHA:  1 */
+            &calpha,                                /* ALPHA:  1 */
             (const cuDoubleComplex *) devPtrLx + ndrow1, /* A, LDA: L2, ndrow */
             ndrow2,
             (const cuDoubleComplex *) devPtrLx,     /* B, LDB: L1, ndrow */
             ndrow2,
-            &beta,                                  /* BETA:   0 */
+            &cbeta,                                 /* BETA:   0 */
             (cuDoubleComplex *)devPtrC + ndrow1,    /* C, LDC: C2 */
             ndrow2) ;
 #endif
@@ -465,8 +475,14 @@ int TEMPLATE (CHOLMOD (gpu_lower_potrf))
 )
 {
     double *devPtrA, *devPtrB, *A ;
+    double alpha, beta ;
     cudaError_t cudaStat ;
     cublasStatus_t cublasStatus ;
+    Int j, nsrow2, nb, n, gpu_lda, lda, gpu_ldb ;
+    int ilda, ijb, iinfo ;
+#ifndef NTIMER
+    double tstart = SuiteSparse_time ( ) ;
+#endif
 
     if (nscol2 < 256)
     {
@@ -474,24 +490,19 @@ int TEMPLATE (CHOLMOD (gpu_lower_potrf))
         return (0) ;
     }
 
-    Int nsrow2 = nsrow - nscol2 ;
-    Int j ;
+    nsrow2 = nsrow - nscol2 ;
 
     /* ---------------------------------------------------------------------- */
     /* heuristic to get the block size depending of the problem size */
     /* ---------------------------------------------------------------------- */
 
-    Int nb = 128 ;
+    nb = 128 ;
     if (nscol2 > 4096) nb = 256 ;
     if (nscol2 > 8192) nb = 384 ;
-    Int n  = nscol2 ;
-    Int gpu_lda = ((nscol2+31)/32)*32 ;
-    Int lda = nsrow ;
+    n  = nscol2 ;
+    gpu_lda = ((nscol2+31)/32)*32 ;
+    lda = nsrow ;
     A = Lx + L_ENTRY*psx ;
-
-#ifndef NTIMER
-    double start = SuiteSparse_time ( ) ;
-#endif
 
     /* ---------------------------------------------------------------------- */
     /* free the dpotrf workspace, if allocated */
@@ -507,7 +518,7 @@ int TEMPLATE (CHOLMOD (gpu_lower_potrf))
     /* determine the GPU leading dimension of B */
     /* ---------------------------------------------------------------------- */
 
-    Int gpu_ldb = 0 ;
+    gpu_ldb = 0 ;
     if (nsrow2 > 0)
     {
         gpu_ldb = ((nsrow2+31)/32)*32 ;
@@ -604,8 +615,8 @@ int TEMPLATE (CHOLMOD (gpu_lower_potrf))
         /* do the CUDA BLAS dsyrk */
         /* ------------------------------------------------------------------ */
 
-        double alpha = -1.0 ;
-        double beta  = 1.0 ;
+        alpha = -1.0 ;
+        beta  = 1.0 ;
 #ifdef REAL
         cublasStatus = cublasDsyrk (Common->cublasHandle,
             CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N, jb, j,
@@ -671,8 +682,8 @@ int TEMPLATE (CHOLMOD (gpu_lower_potrf))
         if ((j+jb) < n)
         {
 #ifdef REAL
-            double alpha = -1.0 ;
-            double beta  = 1.0 ;
+            alpha = -1.0 ;
+            beta  = 1.0 ;
             cublasStatus = cublasDgemm (Common->cublasHandle,
                 CUBLAS_OP_N, CUBLAS_OP_T,
                 (n-j-jb), jb, j,
@@ -682,15 +693,15 @@ int TEMPLATE (CHOLMOD (gpu_lower_potrf))
                 &beta,
                 devPtrA + (j+jb + j*gpu_lda), gpu_lda) ;
 #else
-           cuDoubleComplex alpha = {-1.0,0.0} ;
-           cuDoubleComplex beta  = { 1.0,0.0} ;
-           cublasStatus = cublasZgemm (Common->cublasHandle,
+            cuDoubleComplex calpha = {-1.0,0.0} ;
+            cuDoubleComplex cbeta  = { 1.0,0.0} ;
+            cublasStatus = cublasZgemm (Common->cublasHandle,
                 CUBLAS_OP_N, CUBLAS_OP_C,
                 (n-j-jb), jb, j,
-                &alpha,
+                &calpha,
                 (cuDoubleComplex*)devPtrA + (j+jb), gpu_lda,
                 (cuDoubleComplex*)devPtrA + (j)  , gpu_lda,
-                &beta,
+                &cbeta,
                 (cuDoubleComplex*)devPtrA + (j+jb + j*gpu_lda), gpu_lda) ;
 #endif
             if (cublasStatus != CUBLAS_STATUS_SUCCESS)
@@ -709,9 +720,8 @@ int TEMPLATE (CHOLMOD (gpu_lower_potrf))
         /* compute the Cholesky factorization of the jbxjb block on the CPU */
         /* ------------------------------------------------------------------ */
 
-        int ilda = (int) lda ;
-        int ijb  = jb ;
-        int iinfo ;
+        ilda = (int) lda ;
+        ijb  = jb ;
 #ifdef REAL
         LAPACK_DPOTRF ("L", &ijb, A + L_ENTRY * (j + j*lda), &ilda, &iinfo) ;
 #else
@@ -747,7 +757,7 @@ int TEMPLATE (CHOLMOD (gpu_lower_potrf))
         if ((j+jb) < n)
         {
 #ifdef REAL
-             double alpha  = 1.0 ;
+             alpha  = 1.0 ;
              cublasStatus = cublasDtrsm (Common->cublasHandle,
                  CUBLAS_SIDE_RIGHT, CUBLAS_FILL_MODE_LOWER,
                  CUBLAS_OP_T, CUBLAS_DIAG_NON_UNIT,
@@ -756,12 +766,12 @@ int TEMPLATE (CHOLMOD (gpu_lower_potrf))
                  devPtrA + (j + j*gpu_lda), gpu_lda,
                  devPtrA + (j+jb + j*gpu_lda), gpu_lda) ;
 #else
-             cuDoubleComplex alpha  = {1.0,0.0};
+             cuDoubleComplex calpha  = {1.0,0.0};
              cublasStatus = cublasZtrsm (Common->cublasHandle,
                  CUBLAS_SIDE_RIGHT, CUBLAS_FILL_MODE_LOWER,
                  CUBLAS_OP_C, CUBLAS_DIAG_NON_UNIT,
                  (n-j-jb), jb,
-                 &alpha,
+                 &calpha,
                  (cuDoubleComplex *)devPtrA + (j + j*gpu_lda), gpu_lda,
                  (cuDoubleComplex *)devPtrA + (j+jb + j*gpu_lda), gpu_lda) ;
 #endif
@@ -780,7 +790,7 @@ int TEMPLATE (CHOLMOD (gpu_lower_potrf))
     }
 
 #ifndef NTIMER
-    Common->CHOLMOD_GPU_POTRF_TIME += SuiteSparse_time ( ) - start ;
+    Common->CHOLMOD_GPU_POTRF_TIME += SuiteSparse_time ( ) - tstart ;
 #endif
     return (1) ;
 }
@@ -812,6 +822,16 @@ int TEMPLATE (CHOLMOD (gpu_triangular_solve))
     double *devPtrA, *devPtrB ;
     cudaError_t cudaStat ;
     cublasStatus_t cublasStatus ;
+    Int gpu_lda, gpu_ldb ;
+#ifdef REAL
+    double alpha  = 1.0 ;
+#else
+    cuDoubleComplex calpha  = {1.0,0.0} ;
+#endif
+#ifndef NTIMER
+    double tstart = SuiteSparse_time ( ) ;
+    Common->CHOLMOD_GPU_TRSM_CALLS++ ;
+#endif
 
     if (!Common->devPotrfWork)
     {
@@ -819,13 +839,8 @@ int TEMPLATE (CHOLMOD (gpu_triangular_solve))
         return (0) ;
     }
 
-    Int gpu_lda = ((nscol2+31)/32)*32 ;
-    Int gpu_ldb = ((nsrow2+31)/32)*32 ;
-
-#ifndef NTIMER
-    Common->CHOLMOD_GPU_TRSM_CALLS++ ;
-    double start = SuiteSparse_time ( ) ;
-#endif
+    gpu_lda = ((nscol2+31)/32)*32 ;
+    gpu_ldb = ((nsrow2+31)/32)*32 ;
 
     devPtrA = Common->devPotrfWork ;
     devPtrB = devPtrA + gpu_lda * gpu_lda * L_ENTRY ;
@@ -846,7 +861,6 @@ int TEMPLATE (CHOLMOD (gpu_triangular_solve))
     /* ---------------------------------------------------------------------- */
 
 #ifdef REAL
-    double alpha  = 1.0 ;
     cublasStatus = cublasDtrsm (Common->cublasHandle,
         CUBLAS_SIDE_RIGHT, CUBLAS_FILL_MODE_LOWER,
         CUBLAS_OP_T, CUBLAS_DIAG_NON_UNIT,
@@ -855,12 +869,11 @@ int TEMPLATE (CHOLMOD (gpu_triangular_solve))
         devPtrA, gpu_lda,                           /* A, LDA */
         devPtrB, gpu_ldb) ;                         /* B, LDB */
 #else
-    cuDoubleComplex alpha  = {1.0,0.0} ;
     cublasStatus = cublasZtrsm (Common->cublasHandle,
         CUBLAS_SIDE_RIGHT, CUBLAS_FILL_MODE_LOWER,
         CUBLAS_OP_C, CUBLAS_DIAG_NON_UNIT,
         nsrow2, nscol2,                             /* M, N */
-        &alpha,                                     /* ALPHA:  1 */
+        &calpha,                                    /* ALPHA:  1 */
         (const cuDoubleComplex *) devPtrA, gpu_lda, /* A, LDA */
         (cuDoubleComplex *) devPtrB, gpu_ldb) ;     /* B, LDB: nsrow2 */
 #endif
@@ -900,7 +913,7 @@ int TEMPLATE (CHOLMOD (gpu_triangular_solve))
     cudaFree (Common->devPotrfWork) ;
     Common->devPotrfWork = NULL ;
 #ifndef NTIMER
-    Common->CHOLMOD_GPU_TRSM_TIME += SuiteSparse_time ( ) - start ;
+    Common->CHOLMOD_GPU_TRSM_TIME += SuiteSparse_time ( ) - tstart ;
 #endif
     return (1) ;
 }

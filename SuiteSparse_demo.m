@@ -13,7 +13,7 @@ if (nargin < 1 || isempty (matrixpath) || ~ischar (matrixpath))
     try
 	% older versions of MATLAB do not have an input argument to mfilename
 	p = mfilename ('fullpath') ;
-	t = strfind (p, filesep) ;
+	t = strfind (p, '/') ;
 	matrixpath = [ p(1:t(end)) 'CXSparse/Matrix' ] ;
     catch me    %#ok
 	% mfilename failed, assume we're in the SuiteSparse directory

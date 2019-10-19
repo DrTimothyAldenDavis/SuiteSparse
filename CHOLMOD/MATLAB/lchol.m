@@ -6,7 +6,7 @@ function [L,p,q] = lchol (A)						    %#ok
 %
 %   Example:
 %   L = lchol (A)                 same as L = chol (A')', just faster
-%   [L,p] = lchol (A)             save as [R,p] = chol(A') ; L=R', just faster
+%   [L,p] = lchol (A)             same as [R,p] = chol(A') ; L=R', just faster
 %   [L,p,q] = lchol (A)           factorizes A(q,q) into L*L', where q is a
 %                                 fill-reducing ordering
 %

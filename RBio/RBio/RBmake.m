@@ -13,7 +13,6 @@ function RBmake
 mexcmd = ['mex -O %s %s RBerror.c ../Source/RBio.c ' ...
     '../../SuiteSparse_config/SuiteSparse_config.c ' ...
     '-I../../SuiteSparse_config -I../Include'] ;
-mexcmd = strrep (mexcmd, '/', filesep) ;
 
 try
     % ispc does not appear in MATLAB 5.3

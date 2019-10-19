@@ -74,7 +74,7 @@ function UF_Index = UFindex (matrixlist)
 
 % load the filenames
 [url topdir] = UFlocation ;
-files = textread ([topdir 'mat' filesep 'UF_Listing.txt'], '%s') ;
+files = textread ([topdir 'mat/UF_Listing.txt'], '%s') ;
 
 % if no input, assume we have to do the whole file list
 create_new = 0 ;
@@ -207,7 +207,7 @@ for i = matrixlist
 
     % group is the first part of the string up to the character before
     % the last file separator
-    gi = find (ffile == filesep) ;
+    gi = find (ffile == '/') ;
     gi = gi (end) ;
     groupN = char (ffile (1:gi-1)) ;
 
@@ -215,7 +215,7 @@ for i = matrixlist
     matrixN = char (ffile (gi+1:end)) ;
 
     % get the directory info of the .mat file
-    fileInfo = dir ([topdir 'mat' filesep ffile '.mat']) ;
+    fileInfo = dir ([topdir 'mat/' ffile '.mat']) ;
 
     % set the file's data into the data arrays
     UF_Index.Name {i} = matrixN ;
@@ -269,7 +269,7 @@ for k = 1:length (matrixlist)
 	fprintf ('skip this file\n') ;
 	continue ;
     end
-    load ([topdir 'mat' filesep ffile]) ;
+    load ([topdir 'mat/' ffile]) ;
 
     % display the Problem struct
     disp (Problem) ;

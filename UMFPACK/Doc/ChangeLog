@@ -1,3 +1,7 @@
+Jun 20, 2012: verison 5.6.1
+
+    * minor update for Windows (removed filesep)
+
 Jun 1, 2012: version 5.6.0
 
     * UFconfig replaced with SuiteSparse_config

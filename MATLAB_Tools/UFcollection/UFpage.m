@@ -52,12 +52,12 @@ if (~exist (matrices, 'dir'))
 end
 
 % create the group directory
-if (~exist ([matrices filesep grp], 'dir'))
-    mkdir ([matrices filesep grp]) ;
+if (~exist ([matrices '/' grp], 'dir'))
+    mkdir ([matrices '/' grp]) ;
 end
 
 % determine the full path of the problem
-fullpath = regexprep ([matrices filesep fullname], '[\/\\]', filesep) ;
+fullpath = regexprep ([matrices '/' fullname], '[\/\\]', '/') ;
 
 ptitle = Problem.title ;
 
@@ -567,7 +567,7 @@ end
 %-------------------------------------------------------------------------------
 
 try
-    svdfile = [topdir 'svd' filesep grp filesep name '_SVD.mat'] ;
+    svdfile = [topdir 'svd/' grp '/' name '_SVD.mat'] ;
     S = load (svdfile) ;
     S = S.S ;
     s = S.s ;
@@ -665,9 +665,9 @@ fclose (f) ;
 
 function fsize (f, filename)
 % fsize: print the filesize
-d = dir (regexprep (filename, '[\/\\]', filesep)) ;
+d = dir (regexprep (filename, '[\/\\]', '/')) ;
 if (isempty (d))
-    fprintf ('\n') ;
+    fprintf (f, '\n') ;
 elseif (d.bytes < 1024)
     fprintf (f, ', file size: %4d bytes.\n', d.bytes) ;
 elseif (d.bytes > 2^20)

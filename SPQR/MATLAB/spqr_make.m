@@ -182,13 +182,6 @@ if (~(pc || mac))
 end
 
 %-------------------------------------------------------------------------------
-% make sure the paths have valid file-separators
-%-------------------------------------------------------------------------------
-
-include = strrep (include, '/', filesep) ;
-lib = strrep (lib, '/', filesep) ;
-
-%-------------------------------------------------------------------------------
 % ready to compile ...
 %-------------------------------------------------------------------------------
 
@@ -403,14 +396,11 @@ if (pc)
     % drand48 and srand48 in CHOLMOD/MATLAB/Windows/rand48.c instead.
     % Also provide Windows with an empty <strings.h> include file.
     obj_extension = '.obj' ;
-    cholmod_c_src = [cholmod_c_src {'..\..\CHOLMOD\MATLAB\Windows\rand48'}] ;
-    include = [include ' -I..\..\CHOLMOD\MATLAB\Windows'] ;
+    cholmod_c_src = [cholmod_c_src {'../../CHOLMOD/MATLAB/Windows/rand48'}] ;
+    include = [include ' -I../../CHOLMOD/MATLAB/Windows'] ;
 else
     obj_extension = '.o' ;
 end
-
-lib = strrep (lib, '/', filesep) ;
-include = strrep (include, '/', filesep) ;
 
 % compile each library source file
 obj = '' ;
@@ -426,8 +416,8 @@ cpp_source = spqr_cpp_src ;
 kk = 0 ;
 
 for f = cpp_source
-    ff = strrep (f {1}, '/', filesep) ;
-    slash = strfind (ff, filesep) ;
+    ff = f {1} ;
+    slash = strfind (ff, '/') ;
     if (isempty (slash))
         slash = 1 ;
     else
@@ -440,8 +430,8 @@ for f = cpp_source
 end
 
 for f = c_source
-    ff = strrep (f {1}, '/', filesep) ;
-    slash = strfind (ff, filesep) ;
+    ff = f {1} ;
+    slash = strfind (ff, '/') ;
     if (isempty (slash))
         slash = 1 ;
     else

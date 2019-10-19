@@ -496,7 +496,7 @@ mxArray *umfpack_mx_info_details    /* return a struct with info statistics */
         "number_of_entries_in_LU_data_structure",
         "numeric_time",
         "nnz_diagonal_of_U",
-        "rcond",
+        "rcond_estimate",
         "scaling_used",
         "min_abs_row_sum_of_A",
         "max_abs_row_sum_of_A",

@@ -16,7 +16,7 @@ if (isempty (matrixpath))
     try
         % older versions of MATLAB do not have an input argument to mfilename
         p = mfilename ('fullpath') ;
-        t = strfind (p, filesep) ;
+        t = strfind (p, '/') ;
         matrixpath = [ p(1:t(end)) '../../Matrix' ] ;
     catch
         % assume we are in the C*Sparse/MATLAB/CSparse/Demo directory

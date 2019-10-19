@@ -46,13 +46,13 @@ end
 if (by_group)
     fprintf ('group: %s\n', group) ;
     loc = '../' ;
-    if (~exist ([matrices filesep group], 'dir'))
-	mkdir ([matrices filesep group]) ;
+    if (~exist ([matrices '/' group], 'dir'))
+	mkdir ([matrices '/' group]) ;
     end
-    f = fopen ([matrices filesep group filesep 'index.html'], 'w') ;
+    f = fopen ([matrices '/' group '/index.html'], 'w') ;
 else
     fprintf ('list: %s\n', what) ;
-    f = fopen ([matrices filesep 'list_by_' what '.html'], 'w') ;
+    f = fopen ([matrices '/list_by_' what '.html'], 'w') ;
     loc = '' ;
 end
 if (f < 0)

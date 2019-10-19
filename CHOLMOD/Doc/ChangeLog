@@ -1,3 +1,9 @@
+Jun 20, 2012: verison 2.0.1
+
+    * minor update for Windows (removed filesep, compiler port fix)
+    * minor changes to format of User Guide
+    * bug fix for GPU code (singular case)
+
 Jun 1, 2012: version 2.0.0
 
     * changed from UFconfig to SuiteSparse_config

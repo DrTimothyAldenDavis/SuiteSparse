@@ -107,7 +107,7 @@ static int TEMPLATE (cholmod_super_numeric)
     cholmod_common *Common
 )
 {
-    double one [2], zero [2], fjk [2] ;
+    double one [2], zero [2], fjk [2], tstart ;
     double *Lx, *Ax, *Fx, *Az, *Fz, *C ;
     Int *Super, *Head, *Ls, *Lpi, *Lpx, *Map, *SuperMap, *RelativeMap, *Next,
 	*Lpos, *Fp, *Fi, *Fnz, *Ap, *Ai, *Anz, *Iwork, *Next_save, *Lpos_save ;
@@ -473,7 +473,7 @@ static int TEMPLATE (cholmod_super_numeric)
             {
 #ifndef NTIMER
                 Common->CHOLMOD_CPU_SYRK_CALLS++ ;
-                double start = SuiteSparse_time () ;
+                tstart = SuiteSparse_time () ;
 #endif
 #ifdef REAL
                 BLAS_dsyrk ("L", "N",
@@ -491,7 +491,7 @@ static int TEMPLATE (cholmod_super_numeric)
                     C, ndrow2) ;                /* C, LDC: C1 */
 #endif
 #ifndef NTIMER
-                Common->CHOLMOD_CPU_SYRK_TIME += SuiteSparse_time () - start ;
+                Common->CHOLMOD_CPU_SYRK_TIME += SuiteSparse_time () - tstart ;
 #endif
                 /* compute remaining (ndrow2-ndrow1)-by-ndrow1 block of C,
                  * C2 = L2*L1' */
@@ -499,7 +499,7 @@ static int TEMPLATE (cholmod_super_numeric)
                 {
 #ifndef NTIMER
                     Common->CHOLMOD_CPU_GEMM_CALLS++ ;
-                    double start = SuiteSparse_time () ;
+                    tstart = SuiteSparse_time () ;
 #endif
 #ifdef REAL
                     BLAS_dgemm ("N", "C",
@@ -526,7 +526,7 @@ static int TEMPLATE (cholmod_super_numeric)
 #endif
 #ifndef NTIMER
                     Common->CHOLMOD_CPU_GEMM_TIME +=
-                        SuiteSparse_time () - start ;
+                        SuiteSparse_time () - tstart ;
 #endif
                 }
             }
@@ -577,7 +577,7 @@ static int TEMPLATE (cholmod_super_numeric)
             {
                 /* GPU version when ndrow3 > zero, splits into two parts */
 #ifndef NTIMER
-                double start = SuiteSparse_time () ;
+                tstart = SuiteSparse_time () ;
 #endif
                 pj = 0 ;
                 for (j = 0 ; j < ndrow1 ; j++)              /* cols k1:k2-1 */
@@ -596,7 +596,7 @@ static int TEMPLATE (cholmod_super_numeric)
                     pj += ndrow2 ;
                 }
 #ifndef NTIMER
-                Common->CHOLMOD_ASSEMBLE_TIME2 += SuiteSparse_time () - start ;
+                Common->CHOLMOD_ASSEMBLE_TIME2 += SuiteSparse_time () - tstart ;
 #endif
                 /* wait for dgemm to finish */
                 TEMPLATE (CHOLMOD (gpu_syncGemm)) (Common) ;
@@ -617,7 +617,7 @@ static int TEMPLATE (cholmod_super_numeric)
                     pj += ndrow2 ;
                 }
 #ifndef NTIMER
-                Common->CHOLMOD_ASSEMBLE_TIME += SuiteSparse_time () - start ;
+                Common->CHOLMOD_ASSEMBLE_TIME += SuiteSparse_time () - tstart ;
 #endif
             }
 #endif
@@ -676,7 +676,7 @@ static int TEMPLATE (cholmod_super_numeric)
         {
 #ifndef NTIMER
             Common->CHOLMOD_CPU_POTRF_CALLS++ ;
-            double start = SuiteSparse_time () ;
+            tstart = SuiteSparse_time () ;
 #endif
 #ifdef REAL
             LAPACK_dpotrf ("L",
@@ -690,7 +690,7 @@ static int TEMPLATE (cholmod_super_numeric)
                 info) ;                     /* INFO */
 #endif
 #ifndef NTIMER
-            Common->CHOLMOD_CPU_POTRF_TIME += SuiteSparse_time ()- start ;
+            Common->CHOLMOD_CPU_POTRF_TIME += SuiteSparse_time ()- tstart ;
 #endif
         }
 
@@ -766,6 +766,9 @@ static int TEMPLATE (cholmod_super_numeric)
 		 * zero.  Also, info will be 1 if integer overflow occured in
 		 * the BLAS. */
 		Head [s] = EMPTY ;
+#ifdef GPU_BLAS
+                TEMPLATE (CHOLMOD (gpu_end)) (Common) ;
+#endif
 		return (Common->status >= CHOLMOD_OK) ;
 	    }
 	    else
@@ -802,7 +805,7 @@ static int TEMPLATE (cholmod_super_numeric)
             {
 #ifndef NTIMER
                 Common->CHOLMOD_CPU_TRSM_CALLS++ ;
-                double start = SuiteSparse_time () ;
+                tstart = SuiteSparse_time () ;
 #endif
 #ifdef REAL
                 BLAS_dtrsm ("R", "L", "C", "N",
@@ -820,7 +823,7 @@ static int TEMPLATE (cholmod_super_numeric)
                     nsrow) ;
 #endif
 #ifndef NTIMER
-                Common->CHOLMOD_CPU_TRSM_TIME += SuiteSparse_time ()- start ;
+                Common->CHOLMOD_CPU_TRSM_TIME += SuiteSparse_time () - tstart ;
 #endif
             }
 
@@ -856,16 +859,19 @@ static int TEMPLATE (cholmod_super_numeric)
 	{
 	    /* matrix is not positive definite; finished clean-up for supernode
 	     * containing negative diagonal */
+
+#ifdef GPU_BLAS
+            TEMPLATE (CHOLMOD (gpu_end)) (Common) ;
+#endif
 	    return (Common->status >= CHOLMOD_OK) ;
 	}
     }
 
+    /* success; matrix is positive definite */
+    L->minor = n ;
 #ifdef GPU_BLAS
     TEMPLATE (CHOLMOD (gpu_end)) (Common) ;
 #endif
-
-    /* success; matrix is positive definite */
-    L->minor = n ;
     return (Common->status >= CHOLMOD_OK) ;
 }
 

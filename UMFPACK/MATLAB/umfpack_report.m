@@ -32,7 +32,7 @@ if (nargin < 1 || isempty (Control))
 end
 fprintf ('\nUMFPACK Control:\n') ;
 disp (Control) ;
-if (nargin > 1 && !isempty (Info))
+if (nargin > 1 && ~isempty (Info))
     fprintf ('\nUMFPACK Info:\n') ;
     disp (Info) ;
 end

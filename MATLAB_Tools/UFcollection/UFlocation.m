@@ -12,9 +12,3 @@ params = UFget_defaults ;
 url = [ params.topurl '/'] ;
 topdir = params.topdir ;
 
-% old:
-%   t = find (params.dir == filesep) ;
-%   topdir = regexprep (params.dir (1:t(end-1)), '[\/\\]', filesep) ;
-%   t = find (params.url == '/') ;
-%   url = params.url (1:t(end)) ;
-

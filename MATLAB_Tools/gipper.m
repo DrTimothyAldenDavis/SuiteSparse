@@ -75,7 +75,7 @@ exclude = cleanup (exclude) ;
 
 % append the hidden file and directory rule, if requested
 if (exclude_hidden)
-    exclude = union (exclude, { '^\.', [ '\' filesep '\.' ] }) ;
+    exclude = union (exclude, { '^\.', [ '\' '/' '\.' ] }) ;
 end
 
 % always exclude '.' and '..' files
@@ -90,7 +90,7 @@ include = cleanup (include) ;
 % operate on the current directory, if not specified
 if (nargin < 1 || isempty (directory))
     here = pwd ;
-    directory = here ((find (here == filesep, 1, 'last') + 1) : end) ;
+    directory = here ((find (here == '/', 1, 'last') + 1) : end) ;
     % use try-catch so that if a failure occurs, we go back to current
     % directory.  Unfortunately, this mechanism does not catch a control-C.
     gipper_found = 0 ;
@@ -124,7 +124,7 @@ if (nargin < 1 || isempty (directory))
     return
 else
     if (nargout == 0)
-	fprintf ('\ngipper: creating %s%s%s.zip\n', pwd, filesep, directory) ;
+	fprintf ('\ngipper: creating %s%s%s.zip\n', pwd, '/', directory) ;
     end
 end
 
@@ -175,7 +175,7 @@ zip (directory, files) ;
 function [files, n] = finder (files, n, prefix, name, include, exclude)
 % finder: return a list of files to zip
 % fullname includes the entire path to the file or directory
-fullname = [prefix filesep name] ;
+fullname = [prefix '/' name] ;
 if (isdir (fullname))
     % always traverse a subdirectory to look for files to include, unless the
     % directory name or fullname itself is explicitly excluded.

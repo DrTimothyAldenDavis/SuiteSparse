@@ -62,8 +62,6 @@ else
     include = ['-DNCHOLMOD ' include] ;
 end
 
-include = strrep (include, '/', filesep) ;
-
 amd_src = { ...
     '../../AMD/Source/amd_1', ...
     '../../AMD/Source/amd_2', ...
@@ -277,8 +275,8 @@ if (with_cholmod)
 end
 
 for f = source
-    fs = strrep (f {1}, '/', filesep) ;
-    slash = strfind (fs, filesep) ;
+    fs = f {1} ;
+    slash = strfind (fs, '/') ;
     if (isempty (slash))
         slash = 1 ;
     else
@@ -291,8 +289,8 @@ for f = source
 end
 
 for k = 1:length(klu_zlsrc)
-    ff = strrep (klu_zlsrc {k}, '/', filesep) ;
-    slash = strfind (ff, filesep) ;
+    ff = klu_zlsrc {k} ;
+    slash = strfind (ff, '/') ;
     if (isempty (slash))
         slash = 1 ;
     else

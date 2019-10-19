@@ -298,8 +298,6 @@ if (pc && with_cholmod)
     incdir = [incdir ' -I../../CHOLMOD/MATLAB/Windows'] ;
 end
 
-incdir = strrep (incdir, '/', filesep) ;
-
 %-------------------------------------------------------------------------------
 % mex command
 %-------------------------------------------------------------------------------
@@ -315,8 +313,8 @@ fprintf ('compile options:\n%s\n', mx) ;
 %-------------------------------------------------------------------------------
 
 for k = 1:length(other_source)
-    fs = strrep (other_source {k}, '/', filesep) ;
-    slash = strfind (fs, filesep) ;
+    fs = other_source {k} ;
+    slash = strfind (fs, '/') ;
     slash = slash (end) + 1 ;
     o = fs (slash:end) ;
     kk = cmd (sprintf ('%s -DDLONG -c %s.c', mx, fs), kk, details) ;

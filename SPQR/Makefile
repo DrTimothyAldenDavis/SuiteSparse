@@ -2,7 +2,7 @@
 # SuiteSparseQR Makefile
 #-------------------------------------------------------------------------------
 
-VERSION = 1.3.0
+VERSION = 1.3.1
 
 include ../SuiteSparse_config/SuiteSparse_config.mk
 
@@ -25,6 +25,7 @@ purge:
 	( cd Lib ; $(MAKE) purge )
 	( cd Demo ; $(MAKE) purge )
 	( cd Tcov ; $(MAKE) purge )
+	( cd Doc ; $(MAKE) purge )
 	( cd MATLAB ; $(RM) $(CLEAN) rename.h *.mex* )
 
 clean:
