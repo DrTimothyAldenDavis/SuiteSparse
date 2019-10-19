@@ -1,4 +1,4 @@
-SuiteSparse_config, 2014, Timothy A. Davis, http://www.suitesparse.com
+SuiteSparse_config, 2015, Timothy A. Davis, http://www.suitesparse.com
 (formerly the UFconfig package)
 
 This directory contains a default SuiteSparse_config.mk file, which
@@ -12,11 +12,11 @@ The various config file versions are:
     SuiteSparse_config_Mac.mk       for Mac
     SuiteSparse_config.mk           the actual one in use
 
-To use a GPU for CHOLMOD, using gcc, do this:
+To use a GPU for CHOLMOD and SPQR, using gcc, do this:
 
     cp SuiteSparse_config_GPU_gcc.mk SuiteSparse_config.mk
 
-To use a GPU for CHOLMOD, using icc and the Intel MKL, do this:
+To use a GPU for CHOLMOD and SPQR, using icc and the Intel MKL, do this:
 
     cp SuiteSparse_config_GPU_icc.mk SuiteSparse_config.mk
 
@@ -24,7 +24,7 @@ To compile SuiteSparse for the Mac, do this:
 
     cp SuiteSparse_config_Mac.mk SuiteSparse_config.mk
 
-To use a GPU for CHOLMOD, using icc and the Intel MKL,
+To use a GPU for CHOLMOD and SPQR, using icc and the Intel MKL,
 and for a system with 10 cores, do this
 
     cp SuiteSparse_config_GPU_icc10.mk SuiteSparse_config.mk

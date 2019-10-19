@@ -23,6 +23,9 @@ CC = gcc
 # to test with everthing
 C = $(CC) $(CF) $(CHOLMOD_CONFIG) $(NANTESTS)
 
+# default LAPACK and BLAS from SuiteSparse_config.mk:
+  LIB = $(METIS) -lm $(LAPACK) $(BLAS)
+
 # optimized LAPACK and BLAS
 # LIB = $(METIS) -lm $(LAPACK) $(BLAS) $(XERBLA) -L/shared/apps/rhel-6.2/intel/ics-2013/lib/intel64 -liomp5
 
@@ -31,7 +34,7 @@ C = $(CC) $(CF) $(CHOLMOD_CONFIG) $(NANTESTS)
 # LIB = $(METIS) -lm -llapack_plain -lblas_plain -lgfortran -lgfortranbegin
 # LIB = $(METIS) -lm -llapack -lblas -lgfortran -lgfortranbegin
 # Linux:
-  LIB = $(METIS) -lm -llapack_plain -lblas_plain -lgfortran -lgfortranbegin -lpthread -lrt
+# LIB = $(METIS) -lm -llapack_plain -lblas_plain -lgfortran -lgfortranbegin -lpthread -lrt
 # Mac:
 # LIB = $(METIS) -lm -llapack -lblas -lgfortran -lgfortranbegin -lpthread
 

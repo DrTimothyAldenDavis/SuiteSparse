@@ -441,7 +441,7 @@ int CHOLMOD(symmetry)
 	/* quick return if not Cholesky candidate */
 	/* ------------------------------------------------------------------ */
 
-	if (option < 1 && (!posdiag || nzdiag < ncol))
+	if (option < 1 && (!posdiag || nzdiag <= j))
 	{
 	    /* Diagonal entry not present, or present but negative or with
 	     * nonzero imaginary part.  Quick return for option 0. */

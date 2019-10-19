@@ -10,7 +10,7 @@ function SuiteSparse_test
 %
 % See also SuiteSparse_install, SuiteSparse_demo.
 
-% Copyright 1990-2013, Timothy A. Davis, http://www.suitesparse.com.
+% Copyright 1990-2015, Timothy A. Davis, http://www.suitesparse.com.
 
 help SuiteSparse_test
 

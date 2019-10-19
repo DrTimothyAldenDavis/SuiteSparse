@@ -31,6 +31,7 @@ demo_colamd*.sh     scripts for running the GPU demo with COLAMD
 demo_metis*.sh      scripts for running the GPU demo with METIS
 go*.m               MATLAB scripts for testing the GPU version
 qrdemo_gpu*.cpp     GPU demos
+qrdemo_gpu.out      output of qrdemo_gpu.cpp
 
 --------------------------------------------------------------------------------
 

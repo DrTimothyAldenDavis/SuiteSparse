@@ -1,6 +1,6 @@
 SuiteSparse:  A Suite of Sparse matrix packages at http://www.suitesparse.com
 
-Jan 7, 2015.  SuiteSparse VERSION 4.4.2
+March 24, 2015.  SuiteSparse VERSION 4.4.4
 
 ------------------
 SuiteSparse/README

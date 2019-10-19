@@ -4,10 +4,10 @@ function SuiteSparse_demo (matrixpath, dopause)
 % Example:
 %   SuiteSparse_demo
 %
-% See also umfpack, cholmod, amd, camd, colamd, ccolamd, btf, klu,
+% See also umfpack, cholmod, amd, camd, colamd, ccolamd, btf, klu, spqr,
 %   CSparse, CXSparse, ldlsparse
 
-% Copyright 2013, Timothy A. Davis, http://www.suitesparse.com.
+% Copyright 2015, Timothy A. Davis, http://www.suitesparse.com.
 
 if (nargin < 1 || isempty (matrixpath) || ~ischar (matrixpath))
     try

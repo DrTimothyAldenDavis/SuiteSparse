@@ -1,3 +1,7 @@
+Mar 24, 2015: version 2.0.1
+
+    * minor changes to documentation
+
 Oct 17, 2014: version 2.0.0
 
     * MAJOR UPDATE:  added GPU support.  Up to 11x faster than CPU version.

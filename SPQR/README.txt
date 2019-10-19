@@ -1,13 +1,15 @@
-SuiteSparseQR Copyright (c) 2008-2013, Timothy A. Davis,
-GPU modules Copyright (c) 2013, Timothy A. Davis, Sencer Nuri Yeralan,
+SuiteSparseQR Copyright (c) 2008-2015, Timothy A. Davis,
+GPU modules Copyright (c) 2015, Timothy A. Davis, Sencer Nuri Yeralan,
 and Sanjay Ranka.
 http://www.suitesparse.com
 
-NOTE: Version 2.0.0 of SuiteSparseQR is an alpha release.  This package
-adds a major new feature:  support for GPU computing.
-
 SuiteSparseQR is a multithreaded, multifrontal, rank-revealing sparse QR
-factorization method.
+factorization method, with optional GPU acceleration using NVIDIA GPUs.
+
+Version 2.0.1 of SuiteSparseQR is an major release, with support for GPU
+computing.  See SPQR/Demo/qrdemo_gpu.cpp, and do 'make gpu' in SPQR/Demo to
+test it (compare your output with SPQR/Demo/qrdemo_gpu.out.  For more
+extensive tests, see SPQR/Demo/go*.m.
 
 QUICK START FOR MATLAB USERS (on Windows, Linux, Solaris, or the Mac OS): To
 compile and test the MATLAB mexFunctions, do this in the MATLAB command window:

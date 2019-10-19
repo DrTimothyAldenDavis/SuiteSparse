@@ -1,4 +1,9 @@
-Jan 7, 2017: version 3.0.4
+Jan 19, 2015: version 3.0.5
+
+    * minor bug fix to cholmod_symmetry.c for the 'quick return'
+        (option == 0).
+
+Jan 7, 2015: version 3.0.4
 
     * serious bug fix to supernodal factorization.  The bug was introduced in
 	CHOLMOD v3.0.0 when the GPU acceleration was given a major update.

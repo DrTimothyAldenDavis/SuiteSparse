@@ -2,7 +2,7 @@
 # SuiteSparseQR/Tcov/Makefile
 #===============================================================================
 
-# This test requires METIS
+# This test requires METIS, and it only works on Linux.
 
 # run statement-coverage test without Valgrind
 default: $(METIS) go
@@ -24,12 +24,12 @@ CF = -pg \
 # Use the standard reference BLAS, and LAPACK, both compiled with -g,
 # for best diagnostics.  Also, some BLAS (such as the Goto BLAS) cause
 # problems for Valgrind (using instructions that Valgrind doesn't understand).
-  FLIB = -llapack_plain -lblas_plain -lgfortran
+# FLIB = -llapack_plain -lblas_plain -lgfortran
 # FLIB = -llapack_plain -lblas_plain -lgfortran -lg2c
 
 # This can be used, but severe valgrind failures may occur in the BLAS,
 # because of how the BLAS is optimized:
-# FLIB = $(LAPACK) $(BLAS)
+  FLIB = $(LAPACK) $(BLAS)
 
 #-------------------------------------------------------------------------------
 

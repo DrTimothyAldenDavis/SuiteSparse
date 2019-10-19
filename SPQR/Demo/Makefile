@@ -195,7 +195,7 @@ purge: distclean
 	- $(RM) -r *.dot pfile tfile
 
 distclean: clean
-	- $(RM) qrdemo qrdemo_gpu qrdemoc qrsimple qrsimplec
+	- $(RM) qrdemo qrdemo_gpu qrdemoc qrsimple qrsimplec X.mtx
 	- $(RM) -r *.dSYM gpu_results.txt qrdemo_gpu2 qrdemo_gpu3
 
 clean:

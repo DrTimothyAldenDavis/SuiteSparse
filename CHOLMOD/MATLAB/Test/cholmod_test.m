@@ -106,7 +106,7 @@ catch
     do_metis = 0 ;
 end
 
-tt = 34 ;
+tt = 35 ;
 
 h = waitbar (0.5/tt, 'CHOLMOD demo:') ;
 
@@ -167,6 +167,7 @@ try
 
     ltest                           ; waitbar (32/tt, h, 'CHOLMOD ltest') ;
     lxtest                          ; waitbar (33/tt, h, 'CHOLMOD lxtest') ;
+    test29                          ; waitbar (34/tt, h, 'CHOLMOD test29') ;
 
     waitbar (tt/tt, h, 'CHOLMOD test done') ;
     fprintf ('=============================================================\n');

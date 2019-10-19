@@ -1,3 +1,15 @@
+Mar 24, 2015: SuiteSparse version 4.4.4
+
+    * CHOLMOD version number corrected.  In 4.4.3, the CHOLMOD_SUBSUB_VERSION
+        string was left at '4' (it should have been '5', for CHOLMOD 3.0.5).
+        This version of SuiteSparse corrects this glitch.
+    * Minor changes to comments in SuiteSparse_config.
+    * SPQR version 2.0.1 released (minor update to documentation)
+
+Jan 19, 2015: SuiteSparse version 4.4.3
+
+    * CHOLMOD 3.0.5: minor bug fix to MatrixOps/cholmod_symmetry
+
 Jan 7, 2015: SuiteSparse version 4.4.2
 
     * CHOLMOD 3.0.4: serious bug fix in supernodal factorization,
