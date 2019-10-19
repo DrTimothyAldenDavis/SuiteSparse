@@ -11,6 +11,7 @@
 /* The UMF_mem_* routines manage the Numeric->Memory memory space. */
 
 #include "umf_internal.h"
+#include "umf_mem_init_memoryspace.h"
 
 /* initialize the LU and element workspace (Numeric->Memory) */
 

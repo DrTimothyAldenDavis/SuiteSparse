@@ -1,4 +1,4 @@
-function [mtype mkind skind] = RBtype (A)                                   %#ok
+function [mtype, mkind, skind] = RBtype (A)                                 %#ok
 %RBTYPE determine the Rutherford/Boeing type of a sparse matrix
 % Usage:
 %   [mtype mkind skind] = RBtype (A)

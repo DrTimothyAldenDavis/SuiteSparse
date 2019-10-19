@@ -25,12 +25,13 @@ for trials = 1:100
     A = sprandn (m,n,d) ;
     S = sprandn (m,m,d) + speye (m) ;
 
-    if (rand ( ) > .5)
-	A = A + 1i * sprand (A) ;
-    end
-
-    if (rand ( ) > .5)
-	S = S + 1i * sprand (S) ;
+    if (~ispc)
+        if (rand ( ) > .5)
+            A = A + 1i * sprand (A) ;
+        end
+        if (rand ( ) > .5)
+            S = S + 1i * sprand (S) ;
+        end
     end
 
     subplot (2,3,1) ;

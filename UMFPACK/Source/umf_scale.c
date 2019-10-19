@@ -11,6 +11,7 @@
 /* Divide a vector of stride 1 by the pivot value. */
 
 #include "umf_internal.h"
+#include "umf_scale.h"
 
 GLOBAL void UMF_scale
 (

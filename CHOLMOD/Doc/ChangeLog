@@ -1,3 +1,28 @@
+Nov 1, 2007, version 1.6.0
+
+    * minor lint cleanup (no bugs)
+
+    * new CHOLMOD_CLEAR_FLAG macro, which speeds up the calls to
+	cholmod_clear_flag, avoiding the function call if not needed.  Note
+	that this leads to untested lines in the Tcov test, but the lines of
+	the macro are tested in several places, just not everywhere it appers.
+
+    * port to MATLAB 7.5 (mex -lmwblas option now required for Linux)
+
+    * minor bug fix to cholmod_add.c to avoid potential Int overflow
+
+    * extra option added to cholmod2 mexFunction
+
+    * sparse2 mexFunction modified to ensure nnz(A) == nzmax(A) always holds
+	(It didn't in v1.5.0 if numerically zero entries were dropped in A).
+
+    * correction to Help comments for spsym function
+
+    * bug fix to cholmod_symmetry.c: determination of Hermitian vs non-Hermitian
+	matrices was incorrect if the diagonal was imaginary.
+
+    * performance fix for cholmod_nesdis.c and nesdis mexFunction
+
 May 31, 2007, version 1.5.0
 
     * 64-bit MATLAB interface

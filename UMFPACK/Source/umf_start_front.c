@@ -13,6 +13,7 @@
  * reallocated.  The size computed here is just an estimate. */
 
 #include "umf_internal.h"
+#include "umf_start_front.h"
 #include "umf_grow_front.h"
 
 GLOBAL Int UMF_start_front    /* returns TRUE if successful, FALSE otherwise */

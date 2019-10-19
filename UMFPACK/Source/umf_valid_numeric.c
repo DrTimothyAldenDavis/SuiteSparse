@@ -12,6 +12,7 @@
 /* Does not check everything.  UMFPACK_report_numeric checks more. */
 
 #include "umf_internal.h"
+#include "umf_valid_numeric.h"
 
 GLOBAL Int UMF_valid_numeric
 (

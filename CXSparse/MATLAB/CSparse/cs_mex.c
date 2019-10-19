@@ -192,7 +192,6 @@ mxArray *cs_cl_mex_put_sparse (cs_cl **Ahandle)
 /* get a real or complex MATLAB dense column vector, and copy to cs_complex_t */
 cs_complex_t *cs_cl_mex_get_double (CS_INT n, const mxArray *X)
 {
-    CS_INT k ;
     cs_mex_check (0, n, 1, 0, 0, 1, X) ;
     return (cs_cl_get_vector (n, n, X)) ;
 }

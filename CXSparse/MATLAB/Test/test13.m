@@ -22,8 +22,10 @@ for trial = 1:100
     A = A+A' ;
     fprintf ('m %4d n %4d nnz(A) %6d nnz(C) %6d\n', m, n, nnz(A), nnz(C)) ;
 
-    if (rand ( ) > .5)
-	A = A + 1i * sprand (A) ;
+    if (~ispc)
+        if (rand ( ) > .5)
+            A = A + 1i * sprand (A) ;
+        end
     end
 
     [p1,po1] = etree (A) ;

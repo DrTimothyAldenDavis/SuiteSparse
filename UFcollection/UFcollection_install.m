@@ -10,7 +10,7 @@ function UFcollection_install (nlargefile)
 
 if (nargin < 1)
     % try with large-file I/O
-    nlargefile = 1 ;
+    nlargefile = 0 ;
 end
 
 if (nlargefile)

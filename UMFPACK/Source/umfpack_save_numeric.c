@@ -19,7 +19,7 @@
 #define WRITE(object,type,n) \
 { \
     ASSERT (object != (type *) NULL) ; \
-    if (fwrite (object, sizeof (type), n, f) != n) \
+    if (fwrite (object, sizeof (type), n, f) != (size_t) n) \
     { \
 	fclose (f) ; \
 	return (UMFPACK_ERROR_file_IO) ; \

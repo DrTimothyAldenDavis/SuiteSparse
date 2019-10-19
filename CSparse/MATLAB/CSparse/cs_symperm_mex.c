@@ -10,7 +10,6 @@ void mexFunction
 {
     cs Amatrix, *A, *C, *D ;
     int ignore, n, *P, *Pinv ;
-    double *x ;
     if (nargout > 1 || nargin != 2)
     {
 	mexErrMsgTxt ("Usage: C = cs_symperm(A,p)") ;

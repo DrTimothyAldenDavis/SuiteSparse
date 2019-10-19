@@ -11,6 +11,7 @@
 /* Returns the final size of the Symbolic object, in Units */
 
 #include "umf_internal.h"
+#include "umf_symbolic_usage.h"
 
 GLOBAL double UMF_symbolic_usage
 (

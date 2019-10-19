@@ -45,8 +45,10 @@ for k = 1:nmat
     [m n] = size (A) ;
     fprintf ('%35s: ', Prob.name) ;
 
-    if (rand () > .5)
-	A = A + 1i * sprand (A) ;
+    if (~ispc)
+        if (rand () > .5)
+            A = A + 1i * sprand (A) ;
+        end
     end
 
     tic

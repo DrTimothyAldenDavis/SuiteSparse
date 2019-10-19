@@ -21,7 +21,7 @@ for i = f
     Prob = UFget (i) ;
     disp (Prob) ;
 
-    for cmplex = 0:1
+    for cmplex = 0:double(~ispc)
 
 	A = Prob.A ;
 	[m n] = size (A) ;
@@ -45,9 +45,12 @@ for i = f
 	    continue
 	end
 	b = rand (n,1) ;
-	if (mod (i,2) == 1)
-	    b = b + 1i*rand(n,1) ;
-	end
+
+        if (~ispc)
+            if (mod (i,2) == 1)
+                b = b + 1i*rand(n,1) ;
+            end
+        end
 
 	C = A(p,p) ;
 	c = condest (C) ;

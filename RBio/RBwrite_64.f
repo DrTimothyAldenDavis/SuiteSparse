@@ -324,7 +324,7 @@ c	    ------------------------------------------------------------
 	    do 10 i = 1, nnz
 		a = abs (x (i))
 		if (a .ne. 0) then
-		    if (a .ne. a .or. a < 1e-90 .or. a > 1e90) then
+		    if (a .ne. a .or. a < 1d-90 .or. a > 1d90) then
 			ww = 18
 			valfmt = '(2E30.18E3)         '
 			valn = 2
@@ -382,7 +382,8 @@ c-----------------------------------------------------------------------
 	integer*8
      $	    task, nrow, ncol, Ap (*), Ai (*), Zp (*), Zi (*),
      $	    cp (*), w (*), nnz, znz, ibuf (80), j, i, nbuf, pa, pz,
-     $	    cmplex, paend, pzend, ia, iz, skind, indn, valn, p, mkind
+     $	    paend, pzend, ia, iz, skind, indn, valn, p, mkind
+	integer*4 cmplex
 	logical doZ
 	double precision xbuf (80), xr, xi, Ax (*), Az (*)
 	character valfmt*20, indfmt*20

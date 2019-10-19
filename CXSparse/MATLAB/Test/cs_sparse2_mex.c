@@ -20,6 +20,9 @@ void mexFunction
     cs_mex_check (1, nz, 1, 0, 0, 1, pargin [2]) ;
     if (mxIsComplex (pargin [2]))
     {
+#ifdef NCOMPLEX
+        mexErrMsgTxt ("complex case not supported") ;
+#else
 	cs_complex_t *Tx ;
 	cs_cl *A, *C, *T ;
 	Tx = cs_cl_mex_get_double (nz, pargin [2]) ;
@@ -36,6 +39,7 @@ void mexFunction
 	cs_cl_spfree (C) ;
 	pargout [0] = cs_cl_mex_put_sparse (&A) ;
 	cs_free (Tx) ;
+#endif
     }
     else
     {

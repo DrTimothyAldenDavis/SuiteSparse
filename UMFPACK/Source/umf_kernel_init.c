@@ -20,6 +20,7 @@
 */
 
 #include "umf_internal.h"
+#include "umf_kernel_init.h"
 #include "umf_tuple_lengths.h"
 #include "umf_build_tuples.h"
 #include "umf_mem_init_memoryspace.h"

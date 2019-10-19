@@ -34,7 +34,8 @@
  * not be partitioned (default is 200), opts(2) is 1 if connected components are
  * to be split independently (default is 0).  opts(3) controls when a separator
  * is kept; it is kept if nsep < opts(3)*n, where nsep is the number of nodes in
- * the separator and n is the number of nodes in the graph being cut.
+ * the separator and n is the number of nodes in the graph being cut (default is
+ * 1).
  *
  * opts(4) is 0 if the smallest subgraphs are not to be ordered.  For the 'sym'
  * case, or if mode is not present: 1 if to be ordered by CAMD, or 2 if to be

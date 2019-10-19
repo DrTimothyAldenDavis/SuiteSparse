@@ -47,6 +47,7 @@
 /* ========================================================================== */
 
 #include "klu.h"
+#include <string.h>
 
 #ifndef NCHOLMOD
 #include "klu_cholmod.h"
@@ -107,21 +108,20 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    double ukk, lkk, rs, s, lik, uik, x [4], offik,
-	z, ukkz, lkkz, sz, likz, uikz, wx, wz, offikz ;
+    double ukk, lkk, rs, s, lik, uik, x [4], offik, z, ukkz, lkkz, sz, wx, wz ;
     double *X, *B, *Xz, *Xx, *Bx, *Bz, *A, *Ax, *Az, *Lx, *Ux, *Rs, *Offx, *Wx,
 	*Uz, *Lz, *Offz, *Wz, *W, *Xi, *Bi ;
     UF_long *Ap, *Ai, *Lp, *Li, *Up, *Ui, *P, *Q, *R, *Rp, *Ri, *Offp, *Offi ;
     char *operator ;
     mxArray *L_matlab, *U_matlab, *p_matlab, *q_matlab, *R_matlab, *F_matlab,
 	*r_matlab, *field ;
-    const mxArray *A_matlab, *LU_matlab, *B_matlab, *opts_matlab ;
+    const mxArray *A_matlab = NULL, *LU_matlab, *B_matlab = NULL, *opts_matlab ;
     klu_l_symbolic *Symbolic ;
     klu_l_numeric *Numeric ;
     klu_l_common Common ;
-    UF_long n, k, nrhs, do_solve, do_factorize, symmetric, A_complex, B_complex,
-	nz, do_transpose, p, pend, nblocks, R1 [2], chunk, nr, i, j, block, k1,
-	k2, nk, bn, ordering ;
+    UF_long n = 0, k, nrhs = 0, do_solve, do_factorize, symmetric,
+	A_complex = 0, B_complex, nz, do_transpose = 0, p, pend, nblocks,
+	R1 [2], chunk, nr, i, j, block, k1, k2, nk, bn = 0, ordering ;
     int mx_int ;
     static const char *fnames [ ] = {
 	"noffdiag",	/* # of off-diagonal pivots */
@@ -202,6 +202,11 @@ void mexFunction
 	else
 	{
 	    mexErrMsgTxt ("invalid operator") ;
+	}
+
+	if (mxIsSparse (B_matlab))
+	{
+	    mexErrMsgTxt ("B cannot be sparse") ;
 	}
 
 	opts_matlab = (nargin > 3) ? pargin [3] : NULL ;
@@ -1219,12 +1224,12 @@ void mexFunction
 		if (do_transpose)
 		{
 
-		    /* get workspace */
-		    Wx = mxMalloc (n * sizeof (double)) ;
-
 		    /* ------------------------------------------------------ */
 		    /* solve in chunks of one row at a time */
 		    /* ------------------------------------------------------ */
+
+		    /* get workspace */
+		    Wx = mxMalloc (n * sizeof (double)) ;
 
 		    for (chunk = 0 ; chunk < nrhs ; chunk++)
 		    {
@@ -1345,12 +1350,12 @@ void mexFunction
 		else
 		{
 
-		    /* get workspace */
-		    Wx = mxMalloc (n * MAX (4, nrhs) * sizeof (double)) ;
-
 		    /* ------------------------------------------------------ */
 		    /* solve in chunks of 4 columns at a time */
 		    /* ------------------------------------------------------ */
+
+		    /* get workspace */
+		    Wx = mxMalloc (n * MAX (4, nrhs) * sizeof (double)) ;
 
 		    for (chunk = 0 ; chunk < nrhs ; chunk += 4)
 		    {

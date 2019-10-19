@@ -17,6 +17,7 @@
 */
 
 #include "umf_internal.h"
+#include "umf_get_memory.h"
 #include "umf_garbage_collection.h"
 #include "umf_tuple_lengths.h"
 #include "umf_build_tuples.h"

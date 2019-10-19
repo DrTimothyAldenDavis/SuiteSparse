@@ -28,7 +28,7 @@ I = -I../../UFconfig -I../../AMD/Include -I../../COLAMD/Include \
 
 PRETTY = grep -v "^\#" | indent -bl -nce -ss -bli0 -i4 -sob 
 
-all: purge klutest klultest
+all: purge libs klutest klultest
 	- ./klultests > klultests.out
 	- ./klutests > klutests.out
 	- ./coverage

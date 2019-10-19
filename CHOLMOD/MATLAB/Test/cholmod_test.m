@@ -1,14 +1,16 @@
-function cholmod_test (nmat)
+function cholmod_test (nmat, do_diary)
 %CHOLMOD_TEST test the CHOLMOD mexFunctions
 %
 % Example:
-% cholmod_test(nmat)
+% cholmod_test(nmat,do_diary)
 %
 % The UFget interface to the UF sparse matrix collection is required.
 %
 % nmat is optional.  If present, it is the # of matrices used in
 %   tests 0, 8, 10, 11, 12, and 12.  tests 14 and 15 use 2*nmat matrices.
 %   default nmat is 50.
+%
+% do_diary: 1 to save results in a diary, 0 otherwise.  Default 0.
 %
 % cholmod_demo: run tests on a few random matrices
 % graph_demo: graph partitioning demo
@@ -48,13 +50,19 @@ function cholmod_test (nmat)
 
 % Copyright 2006-2007, Timothy A. Davis, University of Florida
 
-diary off
-s = date ;
-t = clock ;
-s = sprintf ('diary cholmod_test_%s_%d-%d-%d.txt\n', s, t (4), t(5), fix(t(6)));
-eval (s) ;
-fprintf ('Running CHOLMOD tests.\n%s\n', s) ;
+if (nargin < 2)
+    do_diary = 0 ;
+end
 
+if (do_diary)
+    diary off
+    s = date ;
+    t = clock ;
+    s = sprintf ('diary cholmod_test_%s_%d-%d-%d.txt\n', s, t (4), t(5), fix(t(6)));
+    eval (s) ;
+end
+
+fprintf ('Running CHOLMOD tests.\n') ;
 help cholmod_test
 
 test_path = pwd ;
@@ -84,58 +92,90 @@ fprintf ('%s\n', colamd_path) ;
 fprintf ('%s\n', ccolamd_path) ;
 fprintf ('%s\n', camd_path) ;
 
-input ('\n\n--------- Hit enter to contine: ') ;
-
 if (nargin < 1)
     nmat = 50 ;
 end
 
-do_metis = (nargin < 2) ;
-
-cholmod_demo
-graph_demo
-test0 (nmat)
-test1
-test2
-test3
-test4
-test5
-test6
-test7
-
-if (do_metis)
-    % these tests require METIS
-    test8 (nmat)
-    test9
+try
+    s = metis (sparse (1)) ;
+    do_metis = 1 ;
+catch
+    fprintf ('METIS not installed\n') ;
+    do_metis = 0 ;
 end
 
-test10 (nmat)
-test11 (nmat)
-test12 (nmat)
-test13
+h = waitbar (0.5/32, 'CHOLMOD demo:') ;
 
-if (do_metis)
+try
+
+    cholmod_demo                    ; waitbar ( 1/32, h, 'CHOLMOD graph demo');
+    if (do_metis)
+        graph_demo ;
+    end
+    waitbar ( 2/32, h, 'CHOLMOD test0') ;
+    test0 (nmat)                    ; waitbar ( 3/32, h, 'CHOLMOD test1') ;
+    test1                           ; waitbar ( 4/32, h, 'CHOLMOD test2') ;
+    test2                           ; waitbar ( 5/32, h, 'CHOLMOD test3') ;
+    test3                           ; waitbar ( 6/32, h, 'CHOLMOD test4') ;
+    test4                           ; waitbar ( 7/32, h, 'CHOLMOD test5') ;
+    test5                           ; waitbar ( 8/32, h, 'CHOLMOD test6') ;
+    test6                           ; waitbar ( 9/32, h, 'CHOLMOD test7') ;
+    test7                           ; waitbar (10/32, h, 'CHOLMOD test8') ;
+
+    if (do_metis)
+        % these tests require METIS
+        test8 (nmat)                ; waitbar (11/32, h, 'CHOLMOD test9') ;
+        test9 ;
+    end
+
+    waitbar (12/32, h, 'CHOLMOD test10') ;
+    test10 (nmat)                   ; waitbar (13/32, h, 'CHOLMOD test11') ;
+    test11 (nmat)                   ; waitbar (14/32, h, 'CHOLMOD test12') ;
+    test12 (nmat)                   ; waitbar (15/32, h, 'CHOLMOD test13') ;
+    test13                          ; waitbar (16/32, h, 'CHOLMOD test14') ;
+
+    if (do_metis)
+        % this test requires METIS
+        test14 (2*nmat) ;
+    end
+
+    waitbar (17/32, h, 'CHOLMOD test15') ;
+    test15 (2*nmat)                 ; waitbar (18/32, h, 'CHOLMOD test16') ;
+    test16                          ; waitbar (19/32, h, 'CHOLMOD test17') ;
+    test17                          ; waitbar (20/32, h, 'CHOLMOD test18') ;
+    test18                          ; waitbar (21/32, h, 'CHOLMOD test19') ;
+    test19                          ; waitbar (22/32, h, 'CHOLMOD test20') ;
+    test20                          ; waitbar (23/32, h, 'CHOLMOD test21') ;
+    test21                          ; waitbar (24/32, h, 'CHOLMOD test22a') ;
+    test22 (nmat)                   ; waitbar (25/32, h, 'CHOLMOD test22b') ;
+    test22 (0)                      ; waitbar (26/32, h, 'CHOLMOD test23') ;
+    test23                          ; waitbar (27/32, h, 'CHOLMOD test24') ;
+    test24                          ; waitbar (28/32, h, 'CHOLMOD test25') ;
+    test25                          ; waitbar (29/32, h, 'CHOLMOD test26') ;
+    test26 (do_metis)               ; waitbar (31/32, h, 'CHOLMOD test27') ;
+
+    if (do_metis)
+        test27 ;
+    end
+
     % this test requires METIS
-    test14 (2*nmat)
+    % test28 ;                      % (disabled)
+
+    waitbar (32/32, h, 'CHOLMOD test done') ;
+    fprintf ('=============================================================\n');
+    fprintf ('all tests passed\n') ;
+
+catch
+    % out-of-memory is OK, other errors are not
+    disp (lasterr) ;
+    if (isempty (strfind (lasterr, 'Out of memory')))
+        error (lasterr) ;                                                   %#ok
+    else
+        fprintf ('test terminated early, but otherwise OK\n') ;
+    end
 end
 
-test15 (2*nmat)
-test16
-test17
-test18
-test19
-test20
-test21
-test22 (nmat)
-test22 (0)
-test23
-test24
-test25
-test26 (do_metis)
-test27
-% test28
-
-fprintf ('=================================================================\n');
-fprintf ('all tests passed\n') ;
-
-diary off
+close (h) ;
+if (do_diary)
+    diary off
+end

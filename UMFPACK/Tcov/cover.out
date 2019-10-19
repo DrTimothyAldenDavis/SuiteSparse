@@ -4,7 +4,7 @@ umf_2by2.c
 ================================================================================
 umf_analyze.c
 ================================================================================
-     24    221	    #####:  216:	    return (FALSE) ;	/* internal error! */
+     24    222	    #####:  217:	    return (FALSE) ;	/* internal error! */
 ================================================================================
 umf_apply_order.c
 ================================================================================
@@ -20,8 +20,8 @@ umf_blas3_update.c
 ================================================================================
 umf_build_tuples.c
 ================================================================================
-     24     82	    #####:   77:		return (FALSE) ;	/* out of memory for row tuples */
-     24    100	    #####:   95:		return (FALSE) ;	/* out of memory for col tuples */
+     24     83	    #####:   78:		return (FALSE) ;	/* out of memory for row tuples */
+     24    101	    #####:   96:		return (FALSE) ;	/* out of memory for col tuples */
 ================================================================================
 umf_colamd.c
 ================================================================================
@@ -29,10 +29,10 @@ umf_colamd.c
 ================================================================================
 umf_create_element.c
 ================================================================================
-     24    252	    #####:  247:	    return (FALSE) ;	/* out of memory */
-     24    263	    #####:  258:	    return (FALSE) ;	/* out of memory */
-     24    439	    #####:  434:		    return (UMF_get_memory (Numeric, Work, 0, r2, c2,do_Fcpos));
-     24    542	    #####:  537:		    return (UMF_get_memory (Numeric, Work, 0, r2, c2,do_Fcpos));
+     24    253	    #####:  248:	    return (FALSE) ;	/* out of memory */
+     24    264	    #####:  259:	    return (FALSE) ;	/* out of memory */
+     24    440	    #####:  435:		    return (UMF_get_memory (Numeric, Work, 0, r2, c2,do_Fcpos));
+     24    543	    #####:  538:		    return (UMF_get_memory (Numeric, Work, 0, r2, c2,do_Fcpos));
 ================================================================================
 umf_extend_front.c
 ================================================================================
@@ -42,29 +42,29 @@ umf_free.c
 ================================================================================
 umf_fsize.c
 ================================================================================
-     24     57	    #####:   52:		frsize = Int_MAX ;
+     24     58	    #####:   53:		frsize = Int_MAX ;
 ================================================================================
 umf_garbage_collection.c
 ================================================================================
 ================================================================================
 umf_get_memory.c
 ================================================================================
-     24    113	    #####:  108:	newsize = (Int) bsize ;	/* we cannot increase the size beyond bsize */
+     24    114	    #####:  109:	newsize = (Int) bsize ;	/* we cannot increase the size beyond bsize */
 ================================================================================
 umf_grow_front.c
 ================================================================================
-     24     92	    #####:   87:	return (FALSE) ;
-     24    120	    #####:  115:	double a = 0.9 * sqrt ((Int_MAX / sizeof (Entry)) / s) ;
-     24    121	    #####:  116:	fnr2 = MAX (fnr_min, a * fnr2) ;
-     24    122	    #####:  117:	fnc2 = MAX (fnc_min, a * fnc2) ;
-     24    124	    #####:  119:	newsize = fnr2 * fnc2 ;
-     24    126	    #####:  121:	if (fnr2 % 2 == 0) fnr2++ ;
-     24    127	    #####:  122:	fnc2 = newsize / fnr2 ;
-     24    185	    #####:  180:	    return (FALSE) ;	/* out of memory */
+     24     93	    #####:   88:	return (FALSE) ;
+     24    121	    #####:  116:	double a = 0.9 * sqrt ((Int_MAX / sizeof (Entry)) / s) ;
+     24    122	    #####:  117:	fnr2 = MAX (fnr_min, a * fnr2) ;
+     24    123	    #####:  118:	fnc2 = MAX (fnc_min, a * fnc2) ;
+     24    125	    #####:  120:	newsize = fnr2 * fnc2 ;
+     24    127	    #####:  122:	if (fnr2 % 2 == 0) fnr2++ ;
+     24    128	    #####:  123:	fnc2 = newsize / fnr2 ;
+     24    186	    #####:  181:	    return (FALSE) ;	/* out of memory */
 ================================================================================
 umf_init_front.c
 ================================================================================
-     24     79	    #####:   74:	    return (FALSE) ;
+     24     80	    #####:   75:	    return (FALSE) ;
 ================================================================================
 umf_is_permutation.c
 ================================================================================
@@ -74,18 +74,18 @@ umf_kernel.c
 ================================================================================
 umf_kernel_init.c
 ================================================================================
-     24    516	    #####:  511:	return (FALSE) ;	/* pattern changed */
-     24    544	    #####:  539:	    return (FALSE) ;	/* pattern changed */
-     24    608	    #####:  603:		return (FALSE) ;	/* pattern has changed */
-     24    644	    #####:  639:		    return (FALSE) ;	/* pattern has changed */
-     24    712	    #####:  707:		    return (FALSE) ;	/* pattern changed */
-     24    725	    #####:  720:		    return (FALSE) ;	/* pattern changed */
-     24    737	    #####:  732:	    return (FALSE) ;	/* pattern changed */
-     24    829	    #####:  824:		    return (FALSE) ;	/* pattern changed */
-     24    865	    #####:  860:	    return (FALSE) ;	/* pattern changed */
-     24    907	    #####:  902:	    return (FALSE) ;	/* pattern changed */
-     24    921	    #####:  916:	    return (FALSE) ;	/* pattern changed */
-     24   1033	    #####: 1028:	return (FALSE) ;	/* pattern changed */
+     24    517	    #####:  512:	return (FALSE) ;	/* pattern changed */
+     24    545	    #####:  540:	    return (FALSE) ;	/* pattern changed */
+     24    609	    #####:  604:		return (FALSE) ;	/* pattern has changed */
+     24    645	    #####:  640:		    return (FALSE) ;	/* pattern has changed */
+     24    713	    #####:  708:		    return (FALSE) ;	/* pattern changed */
+     24    726	    #####:  721:		    return (FALSE) ;	/* pattern changed */
+     24    738	    #####:  733:	    return (FALSE) ;	/* pattern changed */
+     24    830	    #####:  825:		    return (FALSE) ;	/* pattern changed */
+     24    866	    #####:  861:	    return (FALSE) ;	/* pattern changed */
+     24    908	    #####:  903:	    return (FALSE) ;	/* pattern changed */
+     24    922	    #####:  917:	    return (FALSE) ;	/* pattern changed */
+     24   1034	    #####: 1029:	return (FALSE) ;	/* pattern changed */
 ================================================================================
 umf_kernel_wrapup.c
 ================================================================================
@@ -95,8 +95,8 @@ umf_lhsolve.c
 ================================================================================
 umf_local_search.c
 ================================================================================
-     24    656	    #####:  651:				return (UMFPACK_ERROR_different_pattern) ;
-     24    745	    #####:  740:	    return (UMFPACK_ERROR_different_pattern) ;
+     24    657	    #####:  652:				return (UMFPACK_ERROR_different_pattern) ;
+     24    746	    #####:  741:	    return (UMFPACK_ERROR_different_pattern) ;
 ================================================================================
 umf_lsolve.c
 ================================================================================
@@ -109,7 +109,7 @@ umf_malloc.c
 ================================================================================
 umf_mem_alloc_element.c
 ================================================================================
-     24     48	    #####:   43:	return (0) ;	/* problem is too large */
+     24     49	    #####:   44:	return (0) ;	/* problem is too large */
 ================================================================================
 umf_mem_alloc_head_block.c
 ================================================================================
@@ -125,7 +125,7 @@ umf_mem_init_memoryspace.c
 ================================================================================
 umf_realloc.c
 ================================================================================
-     24     57	    #####:   52:	return ((void *) NULL) ;
+     24     58	    #####:   53:	return ((void *) NULL) ;
 ================================================================================
 umf_report_perm.c
 ================================================================================
@@ -153,63 +153,63 @@ umf_singletons.c
 ================================================================================
 umf_solve.c
 ================================================================================
-     24   1315	    #####: 1310:	    omega [1] = tau ;
-     24   1316	    #####: 1311:	    omega [2] = tau ;
-     24   1317	    #####: 1312:	    break ;
+     24   1316	    #####: 1311:	    omega [1] = tau ;
+     24   1317	    #####: 1312:	    omega [2] = tau ;
+     24   1318	    #####: 1313:	    break ;
 ================================================================================
 umf_start_front.c
 ================================================================================
-     24    155	    #####:  150:	maxfrsize = Int_MAX / sizeof (Entry) ;
-     24    174	    #####:  169:	    fsize = Int_MAX / sizeof (Entry) ;
-     24    192	    #####:  187:		fsize2 = Int_MAX / sizeof (Entry) ;
+     24    156	    #####:  151:	maxfrsize = Int_MAX / sizeof (Entry) ;
+     24    175	    #####:  170:	    fsize = Int_MAX / sizeof (Entry) ;
+     24    193	    #####:  188:		fsize2 = Int_MAX / sizeof (Entry) ;
 ================================================================================
 umf_store_lu.c
 ================================================================================
-     24    348	    #####:  343:		return (FALSE) ;	/* out of memory */
-     24    354	    #####:  349:		return (FALSE) ;	/* out of memory */
-     24    773	    #####:  768:		return (FALSE) ;	/* out of memory */
-     24    780	    #####:  775:		return (FALSE) ;	/* out of memory */
+     24    349	    #####:  344:		return (FALSE) ;	/* out of memory */
+     24    355	    #####:  350:		return (FALSE) ;	/* out of memory */
+     24    774	    #####:  769:		return (FALSE) ;	/* out of memory */
+     24    781	    #####:  776:		return (FALSE) ;	/* out of memory */
 ================================================================================
 umf_store_lu_drop.c
 ================================================================================
-     24    331	    #####:  326:	    if (Work->do_grow)
-     24    335	    #####:  330:		r2 = fnrows ;
-     24    336	    #####:  331:		c2 = fncols ;
-     24    341	    #####:  336:		r2 = MAX (fnrows, Work->fnrows_new + 1) ;
-     24    342	    #####:  337:		c2 = MAX (fncols, Work->fncols_new + 1) ;
-     24    345	    #####:  340:	    if (!UMF_get_memory (Numeric, Work, size, r2, c2, TRUE))
-     24    348	    #####:  343:		return (FALSE) ;	/* out of memory */
-     24    350	    #####:  345:	    p = UMF_mem_alloc_head_block (Numeric, size) ;
-     24    351	    #####:  346:	    if (!p)
-     24    354	    #####:  349:		return (FALSE) ;	/* out of memory */
-     24    357	    #####:  352:	    fnc_curr = Work->fnc_curr ;
-     24    358	    #####:  353:	    fnr_curr = Work->fnr_curr ;
-     24    359	    #####:  354:	    Flublock = Work->Flublock ;
-     24    360	    #####:  355:	    Flblock  = Work->Flblock ;
-     24    361	    #####:  356:	    Fublock  = Work->Fublock ;
-     24    362	    #####:  357:	    Fl1 = Flublock + kk * nb ;
-     24    363	    #####:  358:	    Fl2 = Flblock  + kk * fnr_curr ;
-     24    496	    #####:  491:			pos = llen++ ;
-     24    497	    #####:  492:			Lpattern [pos] = row2 ;
-     24    498	    #####:  493:			Lpos [row2] = pos ;
-     24    499	    #####:  494:			*Li++ = row2 ;
-     24    755	    #####:  750:	    if (Work->do_grow)
-     24    759	    #####:  754:		r2 = fnrows ;
-     24    760	    #####:  755:		c2 = fncols ;
-     24    765	    #####:  760:		r2 = MAX (fnrows, Work->fnrows_new + 1) ;
-     24    766	    #####:  761:		c2 = MAX (fncols, Work->fncols_new + 1) ;
-     24    769	    #####:  764:	    if (!UMF_get_memory (Numeric, Work, size, r2, c2, TRUE))
-     24    773	    #####:  768:		return (FALSE) ;	/* out of memory */
-     24    775	    #####:  770:	    p = UMF_mem_alloc_head_block (Numeric, size) ;
-     24    776	    #####:  771:	    if (!p)
-     24    780	    #####:  775:		return (FALSE) ;	/* out of memory */
-     24    783	    #####:  778:	    fnc_curr = Work->fnc_curr ;
-     24    784	    #####:  779:	    fnr_curr = Work->fnr_curr ;
-     24    785	    #####:  780:	    Flublock = Work->Flublock ;
-     24    786	    #####:  781:	    Flblock  = Work->Flblock ;
-     24    787	    #####:  782:	    Fublock  = Work->Fublock ;
-     24    788	    #####:  783:	    Fu1 = Flublock + kk ;
-     24    789	    #####:  784:	    Fu2 = Fublock  + kk * fnc_curr ;
+     24    332	    #####:  327:	    if (Work->do_grow)
+     24    336	    #####:  331:		r2 = fnrows ;
+     24    337	    #####:  332:		c2 = fncols ;
+     24    342	    #####:  337:		r2 = MAX (fnrows, Work->fnrows_new + 1) ;
+     24    343	    #####:  338:		c2 = MAX (fncols, Work->fncols_new + 1) ;
+     24    346	    #####:  341:	    if (!UMF_get_memory (Numeric, Work, size, r2, c2, TRUE))
+     24    349	    #####:  344:		return (FALSE) ;	/* out of memory */
+     24    351	    #####:  346:	    p = UMF_mem_alloc_head_block (Numeric, size) ;
+     24    352	    #####:  347:	    if (!p)
+     24    355	    #####:  350:		return (FALSE) ;	/* out of memory */
+     24    358	    #####:  353:	    fnc_curr = Work->fnc_curr ;
+     24    359	    #####:  354:	    fnr_curr = Work->fnr_curr ;
+     24    360	    #####:  355:	    Flublock = Work->Flublock ;
+     24    361	    #####:  356:	    Flblock  = Work->Flblock ;
+     24    362	    #####:  357:	    Fublock  = Work->Fublock ;
+     24    363	    #####:  358:	    Fl1 = Flublock + kk * nb ;
+     24    364	    #####:  359:	    Fl2 = Flblock  + kk * fnr_curr ;
+     24    497	    #####:  492:			pos = llen++ ;
+     24    498	    #####:  493:			Lpattern [pos] = row2 ;
+     24    499	    #####:  494:			Lpos [row2] = pos ;
+     24    500	    #####:  495:			*Li++ = row2 ;
+     24    756	    #####:  751:	    if (Work->do_grow)
+     24    760	    #####:  755:		r2 = fnrows ;
+     24    761	    #####:  756:		c2 = fncols ;
+     24    766	    #####:  761:		r2 = MAX (fnrows, Work->fnrows_new + 1) ;
+     24    767	    #####:  762:		c2 = MAX (fncols, Work->fncols_new + 1) ;
+     24    770	    #####:  765:	    if (!UMF_get_memory (Numeric, Work, size, r2, c2, TRUE))
+     24    774	    #####:  769:		return (FALSE) ;	/* out of memory */
+     24    776	    #####:  771:	    p = UMF_mem_alloc_head_block (Numeric, size) ;
+     24    777	    #####:  772:	    if (!p)
+     24    781	    #####:  776:		return (FALSE) ;	/* out of memory */
+     24    784	    #####:  779:	    fnc_curr = Work->fnc_curr ;
+     24    785	    #####:  780:	    fnr_curr = Work->fnr_curr ;
+     24    786	    #####:  781:	    Flublock = Work->Flublock ;
+     24    787	    #####:  782:	    Flblock  = Work->Flblock ;
+     24    788	    #####:  783:	    Fublock  = Work->Fublock ;
+     24    789	    #####:  784:	    Fu1 = Flublock + kk ;
+     24    790	    #####:  785:	    Fu2 = Fublock  + kk * fnc_curr ;
 ================================================================================
 umf_symbolic_usage.c
 ================================================================================
@@ -448,64 +448,64 @@ amd_valid.c
 Last line of each output file: 
 ================================================================================
 Out/1_di/ut.out
-ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 7.08e-05 arc130 2.54e-08 omega2) cputime 53.84
+ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 7.08e-05 arc130 2.54e-08 omega2) cputime 68.89
 =================================================================
 Out/1_dl/ut.out
-ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 7.08e-05 arc130 2.54e-08 omega2) cputime 43.16
+ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 7.08e-05 arc130 2.54e-08 omega2) cputime 60.89
 =================================================================
 Out/1g_di/ut.out
-ALL TESTS PASSED: rnorm 1.03e-10 (1.19e-07 shl0, 5.65e-05 arc130 4.58e-09 omega2) cputime 36.95
+ALL TESTS PASSED: rnorm 1.03e-10 (1.19e-07 shl0, 5.65e-05 arc130 4.58e-09 omega2) cputime 53.72
 =================================================================
 Out/1g_dl/ut.out
-ALL TESTS PASSED: rnorm 1.03e-10 (1.19e-07 shl0, 5.65e-05 arc130 4.58e-09 omega2) cputime 31.37
+ALL TESTS PASSED: rnorm 1.03e-10 (1.19e-07 shl0, 5.65e-05 arc130 4.58e-09 omega2) cputime 46.99
 =================================================================
 Out/1g_zi/ut.out
-ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 5.84e-05 arc130 3.66e-10 omega2) cputime 66.21
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 5.84e-05 arc130 3.66e-10 omega2) cputime 89.22
 =================================================================
 Out/1g_zl/ut.out
-ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 5.84e-05 arc130 3.66e-10 omega2) cputime 67.79
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 5.84e-05 arc130 3.66e-10 omega2) cputime 87.79
 =================================================================
 Out/1_zi/ut.out
-ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.31e-05 arc130 6.19e-10 omega2) cputime 88.41
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.31e-05 arc130 6.19e-10 omega2) cputime 110.06
 =================================================================
 Out/1_zl/ut.out
-ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.31e-05 arc130 6.19e-10 omega2) cputime 89.86
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.31e-05 arc130 6.19e-10 omega2) cputime 109.89
 =================================================================
 Out/2_di/ut.out
-ALL TESTS PASSED: rnorm 1.49e-10 (1.37e-07 shl0, 6.76e-05 arc130 1.73e-08 omega2) cputime 45.22
+ALL TESTS PASSED: rnorm 1.49e-10 (1.37e-07 shl0, 6.76e-05 arc130 1.73e-08 omega2) cputime 60.81
 =================================================================
 Out/2_dl/ut.out
-ALL TESTS PASSED: rnorm 1.49e-10 (1.37e-07 shl0, 6.76e-05 arc130 1.73e-08 omega2) cputime 39.61
+ALL TESTS PASSED: rnorm 1.49e-10 (1.37e-07 shl0, 6.76e-05 arc130 1.73e-08 omega2) cputime 55.15
 =================================================================
 Out/2g_di/ut.out
-ALL TESTS PASSED: rnorm 1.06e-10 (1.37e-07 shl0, 5.65e-05 arc130 8.07e-09 omega2) cputime 30.76
+ALL TESTS PASSED: rnorm 1.06e-10 (1.37e-07 shl0, 5.65e-05 arc130 8.07e-09 omega2) cputime 46.87
 =================================================================
 Out/2g_dl/ut.out
-ALL TESTS PASSED: rnorm 1.06e-10 (1.37e-07 shl0, 5.65e-05 arc130 8.07e-09 omega2) cputime 27.68
+ALL TESTS PASSED: rnorm 1.06e-10 (1.37e-07 shl0, 5.65e-05 arc130 8.07e-09 omega2) cputime 42.94
 =================================================================
 Out/2g_zi/ut.out
-ALL TESTS PASSED: rnorm 9.88e-05 (1.40e-07 shl0, 5.69e-05 arc130 1.14e-09 omega2) cputime 49.19
+ALL TESTS PASSED: rnorm 9.88e-05 (1.40e-07 shl0, 5.69e-05 arc130 1.14e-09 omega2) cputime 67.54
 =================================================================
 Out/2g_zl/ut.out
-ALL TESTS PASSED: rnorm 9.88e-05 (1.40e-07 shl0, 5.69e-05 arc130 1.14e-09 omega2) cputime 48.84
+ALL TESTS PASSED: rnorm 9.88e-05 (1.40e-07 shl0, 5.69e-05 arc130 1.14e-09 omega2) cputime 68.33
 =================================================================
 Out/2_zi/ut.out
-ALL TESTS PASSED: rnorm 9.88e-05 (1.40e-07 shl0, 6.77e-05 arc130 1.77e-09 omega2) cputime 70.42
+ALL TESTS PASSED: rnorm 9.88e-05 (1.40e-07 shl0, 6.77e-05 arc130 1.77e-09 omega2) cputime 90.34
 =================================================================
 Out/2_zl/ut.out
-ALL TESTS PASSED: rnorm 9.88e-05 (1.40e-07 shl0, 6.77e-05 arc130 1.77e-09 omega2) cputime 70.86
+ALL TESTS PASSED: rnorm 9.88e-05 (1.40e-07 shl0, 6.77e-05 arc130 1.77e-09 omega2) cputime 90.37
 =================================================================
 Out/5_di/ut.out
-ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 8.09e-05 arc130 1.44e-08 omega2) cputime 52.95
+ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 8.09e-05 arc130 1.44e-08 omega2) cputime 68.49
 =================================================================
 Out/5_dl/ut.out
-ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 8.09e-05 arc130 1.44e-08 omega2) cputime 43.98
+ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 8.09e-05 arc130 1.44e-08 omega2) cputime 60.57
 =================================================================
 Out/5_zi/ut.out
-ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 8.10e-05 arc130 1.13e-09 omega2) cputime 88.7
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 8.10e-05 arc130 1.13e-09 omega2) cputime 109.19
 =================================================================
 Out/5_zl/ut.out
-ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 8.10e-05 arc130 1.13e-09 omega2) cputime 88.58
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 8.10e-05 arc130 1.13e-09 omega2) cputime 110.08
 =================================================================
 Out/6_di/ut.out
 ALL TESTS PASSED: rnorm 1.49e-10 (1.37e-07 shl0, 6.76e-05 arc130 1.73e-08 omega2) cputime 0
@@ -520,26 +520,26 @@ Out/6_zl/ut.out
 ALL TESTS PASSED: rnorm 9.88e-05 (1.40e-07 shl0, 6.77e-05 arc130 1.77e-09 omega2) cputime 0
 =================================================================
 Out/7_di/ut.out
-ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 7.08e-05 arc130 2.54e-08 omega2) cputime 51.72
+ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 7.08e-05 arc130 2.54e-08 omega2) cputime 69.52
 =================================================================
 Out/7_dl/ut.out
-ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 7.08e-05 arc130 2.54e-08 omega2) cputime 43.11
+ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 7.08e-05 arc130 2.54e-08 omega2) cputime 59.27
 =================================================================
 Out/7_zi/ut.out
-ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.31e-05 arc130 6.19e-10 omega2) cputime 89.49
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.31e-05 arc130 6.19e-10 omega2) cputime 109.28
 =================================================================
 Out/7_zl/ut.out
-ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.31e-05 arc130 6.19e-10 omega2) cputime 90.18
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.31e-05 arc130 6.19e-10 omega2) cputime 110.39
 =================================================================
 Out/8_di/ut.out
-ALL TESTS PASSED: rnorm 1.49e-10 (1.37e-07 shl0, 6.76e-05 arc130 1.73e-08 omega2) cputime 43.99
+ALL TESTS PASSED: rnorm 1.49e-10 (1.37e-07 shl0, 6.76e-05 arc130 1.73e-08 omega2) cputime 61.45
 =================================================================
 Out/8_dl/ut.out
-ALL TESTS PASSED: rnorm 1.49e-10 (1.37e-07 shl0, 6.76e-05 arc130 1.73e-08 omega2) cputime 38.64
+ALL TESTS PASSED: rnorm 1.49e-10 (1.37e-07 shl0, 6.76e-05 arc130 1.73e-08 omega2) cputime 55.82
 =================================================================
 Out/8_zi/ut.out
-ALL TESTS PASSED: rnorm 9.88e-05 (1.40e-07 shl0, 6.77e-05 arc130 1.77e-09 omega2) cputime 69.2
+ALL TESTS PASSED: rnorm 9.88e-05 (1.40e-07 shl0, 6.77e-05 arc130 1.77e-09 omega2) cputime 90.46
 =================================================================
 Out/8_zl/ut.out
-ALL TESTS PASSED: rnorm 9.88e-05 (1.40e-07 shl0, 6.77e-05 arc130 1.77e-09 omega2) cputime 70.16
+ALL TESTS PASSED: rnorm 9.88e-05 (1.40e-07 shl0, 6.77e-05 arc130 1.77e-09 omega2) cputime 89.24
 =================================================================

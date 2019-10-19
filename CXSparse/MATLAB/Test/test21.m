@@ -24,9 +24,13 @@ for trials = 1:100
     fprintf ('n: %d\n', n) ;
     d = 0.1 * rand (1) ;
     A = sprandn (n,n,d) ;
-    if (rand ( ) > .5)
-	A = A + 1i * sprand (A) ;
+
+    if (~ispc)
+        if (rand ( ) > .5)
+            A = A + 1i * sprand (A) ;
+        end
     end
+
     A = A+A' + 100 * speye (n) ;
     try
 	p = amd (A) ;

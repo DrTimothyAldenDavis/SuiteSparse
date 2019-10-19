@@ -110,4 +110,20 @@ catch
     fprintf ('LDL demo failed\n' )
 end
 
+input ('Hit enter to run the SSMULT demo: ') ;
+try
+    ssmult_demo
+catch
+    disp (lasterr) ;
+    fprintf ('SSMULT demo failed\n' )
+end
+
+input ('Hit enter to run the MESHND demo: ') ;
+try
+    meshnd_example
+catch
+    disp (lasterr) ;
+    fprintf ('MESHND demo failed\n' )
+end
+
 fprintf ('\n\n---- SuiteSparse demos complete\n') ;

@@ -1,4 +1,4 @@
-function [mtype Ap Ai Ax title key nrow] = RBraw (filename)		    %#ok
+function [mtype, Ap, Ai, Ax, title, key, nrow] = RBraw (filename)	    %#ok
 %RBRAW read the raw contents of a Rutherford/Boeing file
 %
 %   [mtype Ap Ai Ax title key nrow] = RBraw (filename)

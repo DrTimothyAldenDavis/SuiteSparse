@@ -1,15 +1,16 @@
-function stats = UFstats (A, nometis, Z)
+function stats = UFstats (A, kind, nometis, Z)
 %UFSTATS compute matrix statistics for the UF Sparse Matrix Collection
 % Example:
-%   stats = UFstats (A,nometis,Z)
+%   stats = UFstats (A,kind,nometis,Z)
 %
 % A: a sparse matrix
+% kind: a string with the Problem.kind
 % nometis: if nonzero then metis(A,'col') is not used, nor is metis used in the
 %       dmperm+ ordering.
 % Z: empty, or a sparse matrix the same size as A.  Only used for psym and
 %       nzero statistics, described below.
 %
-% Requires amd, cholmod, metis, RBio, and Csparse.  Computes the following
+% Requires amd, cholmod, metis, RBio, and CSparse.  Computes the following
 % statistics, returning them as fields in the stats struct:
 %
 %   nrows           number of rows
@@ -41,6 +42,7 @@ function stats = UFstats (A, nometis, Z)
 %   dmperm_vnz      nnz in Householder vectors for dmperm plus
 %   dmperm_rnz      nnz in R for dmperm plus
 %   posdef          1 if positive definite, 0 otherwise
+%   isND	    1 if a 2D/3D problem, 0 otherwise
 %
 % The *_lnz, *_unz, and *_flops statistics are not computed for rectangular
 % or structurally singular matrices.  nzoff and the dmperm_* stats are not
@@ -55,7 +57,7 @@ function stats = UFstats (A, nometis, Z)
 % Requires the SuiteSparse set of packages: CHOLMOD, AMD, COLAMD, RBio, CSparse;
 % and METIS.
 
-if (nargin < 2)
+if (nargin < 3)
     nometis = 0 ;
 end
 
@@ -71,6 +73,7 @@ end
 % basic stats
 %-------------------------------------------------------------------------------
 
+tic ;
 [m n] = size (A) ;
 stats.nrows = m ;
 stats.ncols = n ;
@@ -79,11 +82,14 @@ stats.RBtype = RBtype (A) ;			% Rutherford/Boeing type
 stats.isBinary = (stats.RBtype (1) == 'p') ;
 stats.isReal = (stats.RBtype (1) ~= 'c') ;
 
+fprintf ('RBtype: %s time: %g\n', stats.RBtype, toc) ;
+
 %-------------------------------------------------------------------------------
 % symmetry and Cholesky candidacy
 %-------------------------------------------------------------------------------
 
 % get the symmetry
+tic ;
 [s xmatched pmatched nzoffdiag nnzdiag] = spsym (A) ;
 
 stats.cholcand = (s >= 6) ; % check if Cholesky candidate
@@ -99,9 +105,13 @@ else
     stats.psym = 1 ;
 end
 
+fprintf ('cholcand: %d\n', stats.cholcand) ;
+fprintf ('nsym: %g psym: %g time: %g\n', stats.nsym, stats.psym, toc) ;
+tic ;
+
 stats.nnzdiag = nnzdiag ;
 
-if (nargin > 2)
+if (nargin > 3)
     stats.nzero = nnz (Z) ;
 
     % recompute the pattern symmetry with Z included
@@ -126,6 +136,9 @@ if (nargin > 2)
 else
     stats.nzero = 0 ;
 end
+
+fprintf ('nsym: %g psym: %g time: %g\n', stats.nsym, stats.psym, toc) ;
+tic ;
 
 %-------------------------------------------------------------------------------
 % intialize ordering statistics
@@ -163,6 +176,8 @@ stats.dmperm_flops = -1 ;   % Cholesky flop count of each square block
 stats.dmperm_vnz = -1 ;	    % nnz (V), upper bound on L
 stats.dmperm_rnz = -1 ;	    % nnz (R), upper bound on U
 
+stats.isND = -1 ;	    % 1 if 2D/3D problem, 0 otherwise
+
 d = max (m,n) ;
 
 % if the matrix has a symmetric nonzero pattern, nzoff will always be zero
@@ -183,17 +198,21 @@ else
 
     % try chol
     try
-	[x, cstats] = cholmod (A, ones (stats.ncols,1)) ;
+	[x, cstats] = cholmod2 (A, ones (stats.ncols,1)) ;
 	rcond = cstats (1) ;
 	fprintf ('rcond: %g\n', rcond) ;
 	stats.posdef = (rcond > 0) ;
     catch
 	% chol failed
+	disp (lasterr) ;
 	fprintf ('sparse Cholesky failed\n') ;
 	stats.posdef = -1 ;
     end
     clear x cstats
 end
+
+fprintf ('posdef: %d time: %g\n', stats.posdef, toc) ;
+tic ;
 
 %-------------------------------------------------------------------------------
 % transpose A if m < n, for ordering methods
@@ -203,6 +222,7 @@ if (m < n)
     try
 	A = A' ;		    % A is now tall and thin, or square
     catch
+	disp (lasterr) ;
 	fprintf ('transpose failed...\n') ;
 	return ;
     end
@@ -213,10 +233,14 @@ if (~isreal (A))
     try
 	A = spones (A) ;
     catch
+	disp (lasterr) ;
 	fprintf ('conversion from complex failed...\n') ;
 	return ;
     end
 end
+
+fprintf ('computed A transpose if needed, time: %g\n', toc) ;
+tic ;
 
 %-------------------------------------------------------------------------------
 % order entire matrix with AMD and METIS, if square
@@ -224,6 +248,7 @@ end
 
 if (m == n)
 
+    tic ;
     try
 	if (stats.RBtype (2) == 'u')
 	    C = A|A' ;
@@ -231,30 +256,40 @@ if (m == n)
 	    C = A ;
 	end
     catch
+	disp (lasterr) ;
 	fprintf ('A+A'' failed\n') ;
     end
+    fprintf ('computed A+A'', time: %g\n', toc) ;
 
     % order the whole matrix with AMD
+    tic ;
     try
 	p = amd (C) ;
 	c = symbfact (C (p,p)) ;
 	stats.amd_lnz = sum (c) ;
 	stats.amd_flops = sum (c.^2) ;
     catch
+	disp (lasterr) ;
 	fprintf ('amd failed\n') ;
     end
     clear p c
+    fprintf ('AMD   lnz %d flops %g time: %g\n', ...
+	stats.amd_lnz, stats.amd_flops, toc) ;
 
     % order the whole matrix with METIS
+    tic ;
     try
 	p = metis (C) ;
 	c = symbfact (C (p,p)) ;
 	stats.metis_lnz = sum (c) ;
 	stats.metis_flops = sum (c.^2) ;
     catch
+	disp (lasterr) ;
 	fprintf ('metis failed\n') ;
     end
     clear p c C
+    fprintf ('METIS lnz %d flops %g time: %g\n', ...
+	stats.metis_lnz, stats.metis_flops, toc) ;
 
 else
 
@@ -270,17 +305,20 @@ end
 % order entire matrix with COLAMD, for LU bounds
 %-------------------------------------------------------------------------------
 
+tic ;
 try
     % do not ignore any rows, and do not do etree postordering
-    q = colamdmex (A, [d 10]) ;
+    q = colamd2mex (A, [d 10]) ;
     [vnz,rnz] = cs_sqr (A (:,q)) ;
     stats.amd_rnz = rnz ;
     stats.amd_vnz = vnz ;
 catch
-    fprintf ('colamd failed\n') ;
+    disp (lasterr) ;
+    fprintf ('colamd2 and cs_sqr failed\n') ;
 end
-
 clear q
+fprintf ('COLAMD rnz %d vnz %d time: %g\n', stats.amd_rnz, stats.amd_vnz, toc) ;
+tic ;
 
 %-------------------------------------------------------------------------------
 % order entire matrix with METIS, for LU bounds
@@ -293,11 +331,14 @@ if (~nometis)
 	stats.metis_rnz = rnz ;
 	stats.metis_vnz = vnz ;
     catch
-	fprintf ('metis(A''*A) failed\n') ;
+	disp (lasterr) ;
+	fprintf ('metis(A''*A) and cs_sqr failed\n') ;
     end
 end
-
 clear q
+fprintf ('METIS  rnz %d vnz %d time: %g\n', ...
+    stats.metis_rnz, stats.metis_vnz, toc) ;
+tic ;
 
 %-------------------------------------------------------------------------------
 % strongly connected components
@@ -315,8 +356,44 @@ try
     stats.ncc = length (r) - 1 ;
     clear p r
 catch
+    disp (lasterr) ;
     fprintf ('cs_scc failed\n') ;
 end
+
+fprintf ('scc %d, time: %g\n', stats.ncc, toc) ;
+tic ;
+
+%-------------------------------------------------------------------------------
+% isND
+%-------------------------------------------------------------------------------
+
+s = 0 ;
+if (strfind (kind, 'structural'))
+    s = 1 ;
+elseif (strfind (kind, 'fluid'))
+    s = 1 ;
+elseif (strfind (kind, '2D'))
+    s = 1 ;
+elseif (strfind (kind, 'reduction'))
+    s = 1 ;
+elseif (strfind (kind, 'electromagnetics'))
+    s = 1 ;
+elseif (strfind (kind, 'semiconductor'))
+    s = 1 ;
+elseif (strfind (kind, 'thermal'))
+    s = 1 ;
+elseif (strfind (kind, 'materials'))
+    s = 1 ;
+elseif (strfind (kind, 'acoustics'))
+    s = 1 ;
+elseif (strfind (kind, 'vision'))
+    s = 1 ;
+elseif (strfind (kind, 'robotics'))
+    s = 1 ;
+end
+stats.isND = s ;
+
+fprintf ('isND %d\n', stats.isND) ;
 
 %-------------------------------------------------------------------------------
 % Dulmage-Mendelsohn permutation, and order each block
@@ -329,8 +406,13 @@ try
     stats.nblocks = nblocks ;
     stats.sprank = rr(4)-1 ;
 catch
-    fprintf ('dmperm failed\n') ;
+    disp (lasterr) ;
+    fprintf ('cs_dmperm failed\n') ;
 end
+
+fprintf ('sprank %d, time: %g\n', stats.sprank, toc) ;
+fprintf ('nblocks %d\n', stats.nblocks) ;
+tic
 
 ok_square = 1 ;
 ok_vnz = 1 ;
@@ -471,7 +553,7 @@ try
 			    pblock = analyze (S, 'col', 3) ;
 			end
 		    catch
-			pblock = colamdmex (S, [d 10]) ;
+			pblock = colamd2mex (S, [d 10]) ;
 		    end
 		    [vnz2,rnz2] = cs_sqr (S (:, pblock)) ;
 		    rnz = rnz + rnz2 ;
@@ -511,12 +593,18 @@ try
     end
 
     if (~ok_square)
-	fprintf ('dmperm (square: lnz, unz, flops) ordering failed\n') ;
+	disp (lasterr) ;
+	fprintf ('cs_dmperm (square: lnz, unz, flops) ordering failed\n') ;
     end
     if (~ok_vnz)
-	fprintf ('dmperm (LU bounds: vnz, rnz) ordering failed\n') ;
+	disp (lasterr) ;
+	fprintf ('cs_dmperm (LU bounds: vnz, rnz) ordering failed\n') ;
     end
 
 catch
-    fprintf ('dmperm ordering and nzoff failed\n') ;
+    disp (lasterr) ;
+    fprintf ('cs_dmperm ordering and nzoff failed\n') ;
 end
+
+fprintf ('dmperm stats done, time %g\n', toc) ;
+fprintf ('UFstats done\n') ;

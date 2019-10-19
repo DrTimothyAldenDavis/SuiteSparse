@@ -56,9 +56,9 @@ c	local variables
 c	----------------------------------------------------------------
 
 	integer*8
-     $	    nrow, ncol, nnz, mkind, cp, skind, cmplex, cpmat,
+     $	    nrow, ncol, nnz, mkind, cp, skind, cpmat,
      $	    Ap, Ai, Ax, Az, kmin, kmax, one
-	integer*4 iclass, wcmplex
+	integer*4 iclass, cmplex, wcmplex
 	character mtype*3
 	double precision t
 

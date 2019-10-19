@@ -17,11 +17,13 @@ for trial = 1:201
     L = tril (sprandn (n,n,d),-1) + sprand (speye (n)) ;
     b = sprandn (n,1,d) ;
 
-    if (rand ( ) > .5)
-	L = L + 1i*sprand(L) ;
-    end
-    if (rand ( ) > .5)
-	b = b + 1i*sprand(b) ;
+    if (~ispc)
+        if (rand ( ) > .5)
+            L = L + 1i*sprand(L) ;
+        end
+        if (rand ( ) > .5)
+            b = b + 1i*sprand(b) ;
+        end
     end
 
     for uplo = 0:1

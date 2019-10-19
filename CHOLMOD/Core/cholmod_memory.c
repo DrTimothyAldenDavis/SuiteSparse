@@ -204,8 +204,6 @@ void *CHOLMOD(free)	/* always returns NULL */
 	/* This assertion will fail if the user calls cholmod_malloc and
 	 * cholmod_free with mismatched memory sizes.  It shouldn't fail
 	 * otherwise. */
-	DEBUG (if (Common->malloc_count == 0 && Common->memory_inuse != 0)
-	    PRINT0 (("inuse: %d\n", Common->memory_inuse))) ;
 	ASSERT (IMPLIES (Common->malloc_count == 0, Common->memory_inuse == 0));
     }
     /* return NULL, and the caller should assign this to p.  This avoids

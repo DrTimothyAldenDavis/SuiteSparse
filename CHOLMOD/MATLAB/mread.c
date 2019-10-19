@@ -42,12 +42,11 @@ void mexFunction
     void *G ;
     cholmod_dense *X = NULL ;
     cholmod_sparse *A = NULL, *Z = NULL ;
-    cholmod_triplet *T ;
     cholmod_common Common, *cm ;
-    Int *Ti, *Tj, *Ap, *Ai, *Zp, *Zi ;
-    double *Tx, *Tz, *Ax, *Az, *Zx ;
+    Int *Ap = NULL, *Ai ;
+    double *Ax, *Az = NULL ;
     char filename [MAXLEN] ;
-    Int nz, i, j, k, is_complex, p, nrow, ncol, pz, nzeros, allzero ;
+    Int nz, k, is_complex = FALSE, nrow = 0, ncol = 0, allzero ;
     int mtype ;
 
     /* ---------------------------------------------------------------------- */

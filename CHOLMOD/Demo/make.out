@@ -20,7 +20,7 @@ factor  cputime:         0.0000 mflop:      0.0
 solve   cputime:         0.0000 mflop:      0.0
 overall cputime:         0.0000 mflop:      0.0
 peak memory usage:            0 (MB)
-residual  1.2e-19 (|Ax-b|/(|A||x|+|b|))
+residual  2.5e-19 (|Ax-b|/(|A||x|+|b|))
 residual  1.3e-19 (|Ax-b|/(|A||x|+|b|)) after iterative refinement
 rcond     9.5e-06
 
@@ -46,7 +46,7 @@ factor  cputime:         0.0000 mflop:      0.0
 solve   cputime:         0.0000 mflop:      0.0
 overall cputime:         0.0000 mflop:      0.0
 peak memory usage:            0 (MB)
-residual  1.2e-19 (|Ax-b|/(|A||x|+|b|))
+residual  2.5e-19 (|Ax-b|/(|A||x|+|b|))
 residual  1.3e-19 (|Ax-b|/(|A||x|+|b|)) after iterative refinement
 rcond     9.5e-06
 
@@ -72,7 +72,7 @@ factor  cputime:         0.0000 mflop:      0.0
 solve   cputime:         0.0000 mflop:      0.0
 overall cputime:         0.0000 mflop:      0.0
 peak memory usage:            0 (MB)
-residual  2.0e-17 (|Ax-b|/(|A||x|+|b|))
+residual  7.4e-17 (|Ax-b|/(|A||x|+|b|))
 rcond     3.0e-02
 
 ./cholmod_l_demo < Matrix/lp_afiro.tri
@@ -97,7 +97,7 @@ factor  cputime:         0.0000 mflop:      0.0
 solve   cputime:         0.0000 mflop:      0.0
 overall cputime:         0.0000 mflop:      0.0
 peak memory usage:            0 (MB)
-residual  2.0e-17 (|Ax-b|/(|A||x|+|b|))
+residual  7.4e-17 (|Ax-b|/(|A||x|+|b|))
 rcond     3.0e-02
 
 ./cholmod_demo < Matrix/can___24.mtx
@@ -122,8 +122,8 @@ factor  cputime:         0.0000 mflop:      0.0
 solve   cputime:         0.0000 mflop:      0.0
 overall cputime:         0.0000 mflop:      0.0
 peak memory usage:            0 (MB)
-residual  5.2e-17 (|Ax-b|/(|A||x|+|b|))
-residual  9.7e-17 (|Ax-b|/(|A||x|+|b|)) after iterative refinement
+residual  1.3e-16 (|Ax-b|/(|A||x|+|b|))
+residual  7.5e-17 (|Ax-b|/(|A||x|+|b|)) after iterative refinement
 rcond     5.0e-01
 
 ./cholmod_l_demo < Matrix/can___24.mtx
@@ -148,8 +148,8 @@ factor  cputime:         0.0000 mflop:      0.0
 solve   cputime:         0.0000 mflop:      0.0
 overall cputime:         0.0000 mflop:      0.0
 peak memory usage:            0 (MB)
-residual  5.2e-17 (|Ax-b|/(|A||x|+|b|))
-residual  9.7e-17 (|Ax-b|/(|A||x|+|b|)) after iterative refinement
+residual  1.3e-16 (|Ax-b|/(|A||x|+|b|))
+residual  7.5e-17 (|Ax-b|/(|A||x|+|b|)) after iterative refinement
 rcond     5.0e-01
 
 ./cholmod_demo < Matrix/c.tri
@@ -207,7 +207,7 @@ CHOLMOD sparse:  A:  3-by-3, nz 5, upper.  OK
 norm(b-Ax)  5.6e-17
 ./cholmod_simple < Matrix/can___24.mtx
 CHOLMOD sparse:  A:  24-by-24, nz 92, upper.  OK
-norm(b-Ax)  1.8e-15
+norm(b-Ax)  2.0e-15
 ./cholmod_simple < Matrix/bcsstk01.tri
 CHOLMOD sparse:  A:  48-by-48, nz 224, upper.  OK
-norm(b-Ax)  1.4e-13
+norm(b-Ax)  2.7e-13

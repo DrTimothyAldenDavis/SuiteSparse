@@ -17,7 +17,6 @@ void mexFunction
 #ifndef NCOMPLEX
 	cs_cl Lmatrix, *L ;
 	cs_complex_t *x ;
-	CS_INT n ;
 	L = cs_cl_mex_get_sparse (&Lmatrix, 1, pargin [0]) ;	/* get L */
 	x = cs_cl_mex_get_double (L->n, pargin [1]) ;		/* x = b */
 	cs_cl_ltsolve (L, x) ;					/* x = L'\x */

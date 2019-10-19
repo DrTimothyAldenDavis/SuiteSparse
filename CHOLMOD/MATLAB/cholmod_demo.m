@@ -6,7 +6,7 @@ function cholmod_demo
 % but they are easily generated.  It also compares CHOLMOD and MATLAB on the
 % sparse matrix problem used in the MATLAB BENCH command.
 %
-% See CHOLMOD/MATLAB/Test/test_all.m for a lengthy test using matrices from
+% See CHOLMOD/MATLAB/Test/cholmod_test.m for a lengthy test using matrices from
 % the UF sparse matrix collection.
 %
 % Example:
@@ -94,9 +94,16 @@ end
 X = rand (n,1) ;
 C = sparse (X) ;
 try
+    % use built-in AMD
     p = amd (S) ;
 catch
-    p = symamd (S) ;
+    try
+        % use AMD from SuiteSparse (../../AMD)
+        p = amd2 (S) ;
+    catch
+        % use SYMAMD
+        p = symamd (S) ;
+    end
 end
 S = S (p,p) ;
 

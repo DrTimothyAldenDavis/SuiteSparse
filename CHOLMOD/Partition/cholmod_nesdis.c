@@ -579,15 +579,18 @@ static UF_long partition    /* size of separator or -1 if failure */
  * Flag [j] == mark means that node j is alive and marked.  Incrementing mark
  * means that all nodes are either (still) dead, or live but unmarked.
  *
- * On output, Common->mark < Common->Flag [i] for all i from 0 to Common->nrow.
- * This is the same output condition as cholmod_clear_flag, except that this
- * routine maintains the Flag [i] < EMPTY condition as well, if that condition
- * was true on input.
+ * If Map is NULL, then on output, Common->mark < Common->Flag [i] for all i
+ * from 0 to Common->nrow.  This is the same output condition as
+ * cholmod_clear_flag, except that this routine maintains the Flag [i] < EMPTY
+ * condition as well, if that condition was true on input.
+ *
+ * If Map is non-NULL, then on output, Common->mark < Common->Flag [i] for all
+ * i in the set Map [0..cn-1].
  *
  * workspace: Flag (nrow)
  */
 
-static UF_long clear_flag (cholmod_common *Common)
+static UF_long clear_flag (Int *Map, Int cn, cholmod_common *Common)
 {
     Int nrow, i ;
     Int *Flag ;
@@ -598,15 +601,30 @@ static UF_long clear_flag (cholmod_common *Common)
     {
 	nrow = Common->nrow ;
 	Flag = Common->Flag ;
-	for (i = 0 ; i < nrow ; i++)
-	{
-	    /* if Flag [i] < EMPTY, leave it alone */
-	    if (Flag [i] >= EMPTY)
-	    {
-		Flag [i] = EMPTY ;
-	    }
-	}
-	/* now Flag [i] <= EMPTY for all i */
+        if (Map != NULL)
+        {
+            for (i = 0 ; i < cn ; i++)
+            {
+                /* if Flag [Map [i]] < EMPTY, leave it alone */
+                if (Flag [Map [i]] >= EMPTY)
+                {
+                    Flag [Map [i]] = EMPTY ;
+                }
+            }
+            /* now Flag [Map [i]] <= EMPTY for all i */
+        }
+        else
+        {
+            for (i = 0 ; i < nrow ; i++)
+            {
+                /* if Flag [i] < EMPTY, leave it alone */
+                if (Flag [i] >= EMPTY)
+                {
+                    Flag [i] = EMPTY ;
+                }
+            }
+            /* now Flag [i] <= EMPTY for all i */
+        }
 	Common->mark = 0 ;
     }
     return (Common->mark) ;
@@ -674,7 +692,7 @@ static void find_components
 )
 {
     Int n, mark, cj, j, sj, sn, p, i, snode, pstart, pdest, pend, nd_components,
-	part, first ;
+	part, first, save_mark ;
     Int *Bp, *Bi, *Flag ;
 
     /* ---------------------------------------------------------------------- */
@@ -683,8 +701,15 @@ static void find_components
 
     PRINT2 (("find components: cn %d\n", cn)) ;
     Flag = Common->Flag ;	    /* size n */
-    Common->mark = EMPTY ;	    /* force initialization of Flag array */
-    mark = clear_flag (Common) ;    /* clear Flag but preserve Flag [i]<EMPTY */
+
+    /* force initialization of Flag [Map [0..cn-1]] */
+    save_mark = Common->mark ;      /* save the current mark */
+    Common->mark = EMPTY ;
+
+    /* clear Flag; preserve Flag [Map [i]] if Flag [Map [i]] already < EMPTY */
+    /* this takes O(cn) time */
+    mark = clear_flag (Map, cn, Common) ;
+
     Bp = B->p ;
     Bi = B->i ;
     n = B->nrow ;
@@ -743,7 +768,6 @@ static void find_components
 		}
 
 		/* place j in the queue and mark it */
-		sj = 0 ;
 		Queue [0] = snode ;
 		Flag [snode] = mark ;
 		sn = 1 ;
@@ -769,7 +793,7 @@ static void find_components
 			    if (Flag [i] < mark)
 			    {
 				/* node i is in this component S, and unflagged
-				 * (first time node i has been seen in this BFS).
+				 * (first time node i has been seen in this BFS)
 				 * place node i in the queue and mark it */
 				Queue [sn++] = i ;
 				Flag [i] = mark ;
@@ -797,8 +821,10 @@ static void find_components
 	}
     }
 
-    /* clear Flag array, but preserve Flag [i] < EMPTY */
-    clear_flag (Common) ;
+    /* restore the flag (normally taking O(1) time except for Int overflow) */
+    Common->mark = save_mark++ ;
+    clear_flag (NULL, 0, Common) ;
+    DEBUG (for (i = 0 ; i < n ; i++) ASSERT (Flag [i] < Common->mark)) ;
 }
 
 
@@ -982,7 +1008,7 @@ UF_long CHOLMOD(bisect)	/* returns # of nodes in separator */
     B->ncol = n ;   /* restore size for memory usage statistics */
     CHOLMOD(free_sparse) (&B, Common) ;
     Common->mark = EMPTY ;
-    CHOLMOD(clear_flag) (Common) ;
+    CHOLMOD_CLEAR_FLAG (Common) ;
     CHOLMOD(free) (csize, sizeof (Int), Bew, Common) ;
     return (sepsize) ;
 }
@@ -1067,8 +1093,6 @@ UF_long CHOLMOD(nested_dissection) /* returns # of components, or -1 if error */
     /* ---------------------------------------------------------------------- */
     /* get inputs */
     /* ---------------------------------------------------------------------- */
-
-    ASSERT (CHOLMOD(dump_sparse) (A, "A for NESDIS:", Common) >= 0) ;
 
     /* get ordering parameters */
     prune_dense = Common->method [Common->current].prune_dense ;
@@ -1169,7 +1193,7 @@ UF_long CHOLMOD(nested_dissection) /* returns # of components, or -1 if error */
 
     /* all nodes start out unmarked and unordered (Type 4, see below) */
     Common->mark = EMPTY ;
-    CHOLMOD(clear_flag) (Common) ;
+    CHOLMOD_CLEAR_FLAG (Common) ;
     ASSERT (Flag == Common->Flag) ;
     ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
 
@@ -1230,7 +1254,7 @@ UF_long CHOLMOD(nested_dissection) /* returns # of components, or -1 if error */
 	CHOLMOD(free_sparse) (&B, Common) ;
 	CHOLMOD(free) (3*n, sizeof (Int), Work3n, Common) ;
 	Common->mark = EMPTY ;
-	CHOLMOD(clear_flag) (Common) ;
+	CHOLMOD_CLEAR_FLAG (Common) ;
 	return (1) ;
     }
 
@@ -1247,7 +1271,7 @@ UF_long CHOLMOD(nested_dissection) /* returns # of components, or -1 if error */
 	CHOLMOD(free) (csize, sizeof (Int), Cew, Common) ;
 	CHOLMOD(free) (3*n, sizeof (Int), Work3n, Common) ;
 	Common->mark = EMPTY ;
-	CHOLMOD(clear_flag) (Common) ;
+	CHOLMOD_CLEAR_FLAG (Common) ;
 	PRINT2 (("out of memory for C, etc\n")) ;
 	return (EMPTY) ;
     }
@@ -1282,7 +1306,7 @@ UF_long CHOLMOD(nested_dissection) /* returns # of components, or -1 if error */
     {
 
 	/* clear the Flag array, but do not modify negative entries in Flag  */
-	mark = clear_flag (Common) ;
+	mark = clear_flag (NULL, 0, Common) ;
 
 	DEBUG (for (i = 0 ; i < n ; i++) Imap [i] = EMPTY) ;
 
@@ -1473,7 +1497,7 @@ UF_long CHOLMOD(nested_dissection) /* returns # of components, or -1 if error */
 		CHOLMOD(free) (csize, sizeof (Int), Cew, Common) ;
 		CHOLMOD(free) (3*n, sizeof (Int), Work3n, Common) ;
 		Common->mark = EMPTY ;
-		CHOLMOD(clear_flag) (Common) ;
+		CHOLMOD_CLEAR_FLAG (Common) ;
 		return (EMPTY) ;
 	    }
 
@@ -1801,7 +1825,7 @@ UF_long CHOLMOD(nested_dissection) /* returns # of components, or -1 if error */
     /* ---------------------------------------------------------------------- */
 
     Common->mark = EMPTY ;
-    CHOLMOD(clear_flag) (Common) ;
+    CHOLMOD_CLEAR_FLAG (Common) ;
     ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
 
     /* ---------------------------------------------------------------------- */

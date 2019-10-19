@@ -18,8 +18,11 @@ for trials = 1:100
 
     n = fix (100 * rand (1)) ;
     A = rand (n) ;
-    if (mod (trials, 2) == 0)
-	A = A + 1i*rand(n) ;
+
+    if (~ispc)
+        if (mod (trials, 2) == 0)
+            A = A + 1i*rand(n) ;
+        end
     end
 
     A1 = A*A' + n*eye (n) ;

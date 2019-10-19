@@ -24,6 +24,7 @@
 
 #include "cholmod_internal.h"
 #include "cholmod_check.h"
+#include "cholmod_matrixops.h"
 #include <string.h>
 #include <ctype.h>
 
@@ -120,10 +121,10 @@ static int print_value
     Int is_integer  /* TRUE if printing as an integer */
 )
 {
-    double y, z ;
+    double y ;
     char s [MAXLINE], *p ;
-    Int width, i, c, dest, src ;
-    int ok ;
+    Int i, dest = 0, src = 0 ;
+    int width, ok ;
 
     if (is_integer)
     {
@@ -358,11 +359,11 @@ int CHOLMOD(write_sparse)
     cholmod_common *Common
 )
 {
-    double x, z ;
+    double x = 0, z = 0 ;
     double *Ax, *Az ;
     Int *Ap, *Ai, *Anz, *Zp, *Zi, *Znz ;
     Int nrow, ncol, is_complex, symmetry, i, j, q, iz, p, nz, is_binary, stype,
-	is_integer, asym, is_sym, xtype, apacked, zpacked, pend, qend, k, zsym ;
+	is_integer, asym, is_sym, xtype, apacked, zpacked, pend, qend, zsym ;
     int ok ;
 
     /* ---------------------------------------------------------------------- */
@@ -524,6 +525,8 @@ int CHOLMOD(write_sparse)
 	ok = ok && (fprintf (f, " real") > 0) ;
     }
 
+    is_sym = FALSE ;
+
     switch (asym)
     {
 	case CHOLMOD_MM_RECTANGULAR:
@@ -659,10 +662,9 @@ int CHOLMOD(write_dense)
     cholmod_common *Common
 )
 {
-    double x, z ;
-    FILE *cf ;
+    double x = 0, z = 0 ;
     double *Xx, *Xz ;
-    Int nrow, ncol, is_complex, i, j, nz, xtype, p ;
+    Int nrow, ncol, is_complex, i, j, xtype, p ;
     int ok ;
 
     /* ---------------------------------------------------------------------- */

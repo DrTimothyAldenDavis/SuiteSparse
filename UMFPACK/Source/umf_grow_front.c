@@ -11,6 +11,7 @@
 /* Current frontal matrix is too small.  Make it bigger. */
 
 #include "umf_internal.h"
+#include "umf_grow_front.h"
 #include "umf_mem_free_tail_block.h"
 #include "umf_mem_alloc_tail_block.h"
 #include "umf_get_memory.h"

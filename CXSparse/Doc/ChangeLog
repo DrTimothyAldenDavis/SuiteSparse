@@ -1,3 +1,11 @@
+Nov 1, 2007, v2.2.1
+
+    * very minor change to Include/cs.h:  Changed name of 2nd argument of
+	cs_permute, to match the code.  This has no affect on the code itself,
+	since the type ("int *") is unchanged.  It's just a documentation issue.
+
+    * minor lint cleanup in mexFunctions
+
 Mar 31, 2007, v2.2.0
 
     * few changes to primary Source/ files.  Changes mostly affect MATLAB
@@ -50,7 +58,7 @@ Nov 2006, v2.0.5
 
     * No changes to C Source code, except for version number and date.
 
-    * Added two test matrices: ibm32a and ibm32b.  ibm32ais the Harwell/
+    * Added two test matrices: ibm32a and ibm32b.  ibm32a is the Harwell/
 	Boeing matrix ibm32, but with the last column removed.  ibm32b
 	is the transpose of ibm32a.  With optimization enabled (-O),
 	2 lines in cs_maxtrans.c are not tested; these matrices correct
@@ -112,7 +120,7 @@ June 24, 2006:
     * minor typos in comments corrected.  No change in code itself,
 	and no change in version number or date.
 
-May 27, 2006, v2.0.1:
+May 27, 2006, v2.0.1: (this version is printed in the book)
 
     * minor bug fix.  cs_util.c modified, so that cs_sprealloc (T,0) works
 	properly for a triplet matrix T (setting T->nzmax equal to T->nz).

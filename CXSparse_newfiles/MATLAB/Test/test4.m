@@ -18,12 +18,16 @@ for trial = 1:100
     d = rand (1) ;
     A = sprandn (m,n,d) ;
     B = sprandn (n,k,d) ;
-    if (mod (trial, 4) == 0)
-	A = A + 1i * sprandn (A) ;
+
+    if (~ispc)
+        if (mod (trial, 4) == 0)
+            A = A + 1i * sprandn (A) ;
+        end
+        if (mod (trial, 2) == 0)
+            B = B + 1i * sprandn (B) ;
+        end
     end
-    if (mod (trial, 2) == 0)
-	B = B + 1i * sprandn (B) ;
-    end
+
     C = A*B ;
     D = cs_multiply (A,B) ;
     err = nnz (spones (C) - spones (D)) ;

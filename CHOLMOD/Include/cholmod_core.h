@@ -244,10 +244,10 @@
  *	#endif
  */
 
-#define CHOLMOD_DATE "May 31, 2007"
+#define CHOLMOD_DATE "Nov 1, 2007"
 #define CHOLMOD_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define CHOLMOD_MAIN_VERSION 1
-#define CHOLMOD_SUB_VERSION 5
+#define CHOLMOD_SUB_VERSION 6
 #define CHOLMOD_SUBSUB_VERSION 0
 #define CHOLMOD_VERSION \
     CHOLMOD_VER_CODE(CHOLMOD_MAIN_VERSION,CHOLMOD_SUB_VERSION)
@@ -1007,6 +1007,17 @@ int cholmod_l_free_work (cholmod_common *) ;
 /* -------------------------------------------------------------------------- */
 /* cholmod_clear_flag:  clear Flag workspace in Common */
 /* -------------------------------------------------------------------------- */
+
+/* use a macro for speed */
+#define CHOLMOD_CLEAR_FLAG(Common) \
+{ \
+    Common->mark++ ; \
+    if (Common->mark <= 0) \
+    { \
+	Common->mark = EMPTY ; \
+	CHOLMOD (clear_flag) (Common) ; \
+    } \
+}
 
 UF_long cholmod_clear_flag
 (

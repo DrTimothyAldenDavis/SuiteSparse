@@ -1,5 +1,5 @@
 CHOLMOD: a sparse CHOLesky MODification package 
-Version 1.5, May 31, 2007.  Copyright (c) 2005-2007.
+Version 1.6, Nov 1, 2007.  Copyright (c) 2005-2007.
 -----------------------------------------------
 
     CHOLMOD is a set of routines for factorizing sparse symmetric positive
@@ -34,9 +34,16 @@ LAPACK is available at http://www.netlib.org/lapack
 METIS is authored by George Karypis, Univ. of Minnesota.  Its use in CHOLMOD
 is optional.  See http://www-users.cs.umn.edu/~karypis/metis.
 Place a copy of the metis-4.0 directory in the same directory that
-contains the CHOLMOD, AMD, COLAMD, and CCOLAMD directories.  Then do:
-    cd metis-4.0 ; make
-You may then compile CHOLMOD.
+contains the CHOLMOD, AMD, COLAMD, and CCOLAMD directories prior to compiling
+with "make".
+
+If you do not wish to use METIS, you must edit UFconfig and change the line:
+
+    CHOLMOD_CONFIG =
+
+to
+
+    CHOLMOD_CONFIG = -DNPARTITION
 
 The CHOLMOD, AMD, COLAMD, CCOLAMD, and UFconfig directories must all reside
 in a common parent directory.  To compile all these libraries,

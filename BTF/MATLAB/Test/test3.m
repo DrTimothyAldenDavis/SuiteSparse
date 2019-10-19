@@ -1,4 +1,5 @@
-%TEST3 test script for BTF
+function test3 (nmat)
+%TEST3 test for BTF
 % Requires UFget
 % Example:
 %   test3
@@ -152,7 +153,10 @@ skip_list_dmperm_btf = ...
 [    285 879 885 290 955 957 958     924 960         897        959 844 845 ...
  821 822 820     804    913 846 972 974:978 961:968  979 940 ...
  1422 1513 1412 1510 1301 1231 1251 1434 1213 1232 1241 1357 1579 1431 1281] ;
-length(skip_list_dmperm_btf)
+% length(skip_list_dmperm_btf)
+
+% time intensive
+skip_costly = [1514 1297 1876 1301] ;
 
 % strongcomp (recursive) causes a seg fault on these matrices because of
 % stack overflow (this is expected).
@@ -172,335 +176,355 @@ toobig = [
 f = [ -(1:8) f ] ;
 % f = nasty ;
 
-nmat = length (f) ;
+h = waitbar (0, 'BTF test 3 of 6') ;
 
-for matnum = 1:nmat % 1385:nmat % % {
+if (nargin < 1)
+    nmat = 1000 ;
+end
+nmat = min (nmat, length (f)) ;
+f = f (1:nmat) ;
 
-    j = f (matnum) ;
+try
 
-    if (any (j == toobig))
-	fprintf ('\n%4d: %3d %s/%s too big\n', ...
-	    matnum, j, index.Group{j}, index.Name{j}) ;
-	continue ;
+    for matnum = 1:nmat
+
+        waitbar (matnum/nmat, h) ;
+
+        j = f (matnum) ;
+
+        if (any (j == toobig) | any (j == skip_costly))                     %#ok
+            fprintf ('\n%4d: %3d %s/%s too big\n', ...
+                matnum, j, index.Group{j}, index.Name{j}) ;
+            continue ;
+        end
+
+        rand ('state', 0) ;
+
+        % clear all unused variables.
+        % nothing here is left that is proportional to the matrix size
+        clear A p1 p2 p3 q3 r3 match1 match2 match4 pa ra sa qa B C pb rb pc rc
+        clear jumble B11 B12 B13 B21 B22 B23 B31 B32 B33 pjumble qjumble ans
+        clear c kbad kgood
+        % whos
+        % pause
+
+        if (j > 0)
+            Problem = UFget (j, index) ;
+            name = Problem.name ;
+            A = Problem.A ;
+            clear Problem
+        else
+            % construct the jth test matrix
+            j = -j ;
+            if (j == 1 | j == 2)                                            %#ok
+                B11 = UFget ('Grund/b1_ss') ;	    % 7-by-7 diagonal block
+                B11 = B11.A ;
+                B12 = sparse (zeros (7,2)) ;
+                B12 (3,2) = 1 ;
+                B13 = sparse (ones  (7,5)) ;
+                B21 = sparse (zeros (2,7)) ;
+                B22 = sparse (ones  (2,2)) ;	    % 2-by-2 diagonal block
+                B23 = sparse (ones  (2,5)) ;
+                B31 = sparse (zeros (5,7)) ;
+                B32 = sparse (zeros (5,2)) ;
+                B33 = UFget ('vanHeukelum/cage3') ;    % 5-by-5 diagonal block
+                B33 = B33.A ;
+                A = [ B11 B12 B13 ; B21 B22 B23 ; B31 B32 B33 ] ;
+                name = '(j=1 test matrix)' ;
+            end
+            if (j == 2)
+                pjumble = [ 10 7 11 1 13 12 8 2 5 14 9 6 4 3 ] ;
+                qjumble = [ 3 14 2 11 1 8 5 7 10 12 4 13 9 6 ] ;
+                A = A (pjumble, qjumble) ;
+                name = '(j=2 test matrix)' ;
+            elseif (j == 3)
+                A = sparse (1) ;
+            elseif (j == 4)
+                A = sparse (0) ;
+            elseif (j == 5)
+                A = sparse (ones (2)) ;
+            elseif (j == 6)
+                A = sparse (2,2) ;
+            elseif (j == 7)
+                A = speye (2) ;
+            elseif (j == 8)
+                A = sparse (2,2) ;
+                A (2,1) = 1 ;
+            end
+            if (j > 2)
+                full (A)
+            end
+        end
+
+        [m n] = size (A) ;
+        if (m ~= n)
+            continue ;
+        end
+        fprintf ('\n%4d: ', matnum) ;
+        fprintf (' =========================== Matrix: %3d %s\n', j, name) ;
+        fprintf ('n: %d nz: %d\n', n, nnz (A)) ;
+
+        if (nnz (A) > 6e6)
+            doplot = 0 ;
+        end
+
+        %-----------------------------------------------------------------------
+        % now try maxtrans
+        tic
+        match1 = maxtrans (A) ;
+        t = toc ;
+        s1 = sum (match1 > 0) ;
+        fprintf ('n-sprank: %d\n', n-s1) ;
+        fprintf ('maxtrans:                %8.2f seconds\n', t) ;
+        singular = s1 < n ;
+
+        if (doplot)
+            % figure (1)
+            clf
+            subplot (2,4,1)
+            spy (A)
+            title (name) ;
+        end
+
+        p1 = match1 ;
+        if (any (p1 <= 0))
+            % complete the permutation
+            badrow = find (p1 <= 0) ;
+
+            badcol = ones (1,n) ;
+            badcol (p1 (p1 > 0)) = 0 ;
+            badcol = find (badcol) ;
+
+            p1 (badrow) = badcol ;
+
+            % construct the older form of match1
+            match1 (badrow) = -p1 (badrow) ;
+        end
+        if (any (sort (p1) ~= 1:n))
+            error ('!!') ;
+        end
+
+        B = A (:,p1) ;
+
+        if (doplot)
+            subplot (2,4,2)
+            hold off
+            spy (B)
+            hold on
+            badcol = find (match1 < 0) ;
+            Junk = sparse (badcol, badcol, ones (length (badcol), 1), n, n) ;
+            % if (~isempty (A))
+                % spy (Junk, 'ro') ;
+            % end
+            title ('maxtrans') ;
+        end
+
+        d = nnz (diag (B)) ;
+        if (d ~= s1)
+            error ('bad sprank') ;
+        end
+        clear B
+
+        %-----------------------------------------------------------------------
+        % try p = dmperm(A)
+        skip_dmperm = any (j == skip_list_dmperm) ;
+
+        if (~skip_dmperm)
+            tic
+            match4 = dmperm (A) ;
+            t = toc ;
+            fprintf ('p=dmperm(A):             %8.2f seconds\n', t) ;
+            s4 = sum (match4 > 0) ;
+            singular4 = (s4 < n) ;
+
+            if (doplot)
+                if (~singular4)
+                    subplot (2,4,3)
+                    spy (A (match4,:))
+                    title ('dmperm') ;
+                end
+            end
+            if (singular ~= singular4)
+                error ('s4?') ; 
+            end
+            if (s1 ~= s4)
+                error ('bad sprank') ;
+            end
+        else
+            fprintf ('p=dmperm(A): skip\n') ;
+        end
+
+        %-----------------------------------------------------------------------
+        nblocks = -1 ;
+        skip_dmperm_btf = any (j == skip_list_dmperm_btf) ;
+        if (~skip_dmperm_btf)
+            % get btf form
+            tic
+            [pa,qa,ra,sa] = dmperm (A) ;
+            t = toc ;
+            fprintf ('[p,q,r,s]=dmperm(A):     %8.2f seconds\n', t) ;
+            nblocks = length (ra) - 1 ;
+            fprintf ('nblocks: %d\n', nblocks) ;
+            if (~singular4)
+                checkbtf (A, pa, qa, ra) ;
+                if (doplot)
+                    subplot (2,4,4)
+                    drawbtf (A, pa, qa, ra)
+                    title ('dmperm blocks') 
+                end
+            end
+        else
+            fprintf ('[p,q,r,s]=dmperm(A): skip\n') ;
+        end
+
+        jumble = randperm (n) ;
+
+        %-----------------------------------------------------------------------
+        % try strongcomp, non-recursive version
+
+            %-------------------------------------------------------------------
+            % try strongcomp on original matrix
+            B = A (:,p1) ;
+            tic ;
+            [pb,rb] = strongcomp (B) ;
+            t = toc ;
+            fprintf ('strongcomp               %8.2f seconds\n', t) ;
+            if (~singular & ~skip_dmperm_btf & (length (rb) ~= nblocks+1))  %#ok
+                error ('BTF:invalid (rb)') ;
+            end
+            checkbtf (B, pb, pb, rb) ;
+            if (doplot)
+                subplot (2,4,5)
+                drawbtf (B, pb, pb, rb) ;
+                title ('strongcomp') ;
+            end
+
+            %-------------------------------------------------------------------
+            % try btf on original matrix
+            tic ;
+            [pw,qw,rw] = btf (A) ;
+            t = toc ;
+            fprintf ('btf                      %8.2f seconds nblocks %d\n', ...
+                t, length (rw)-1) ;
+
+            if (any (pw ~= pb))
+                error ('pw') ;
+            end
+            if (any (rw ~= rb))
+                error ('rw') ;
+            end
+            if (any (abs (qw) ~= p1 (pw)))
+                error ('qw') ;
+            end
+            c = diag (A (pw,abs (qw))) ;
+            if (~singular & ~skip_dmperm_btf & (length (rw) ~= nblocks+1))  %#ok
+                error ('BTF:invalid (rw)') ;
+            end
+            checkbtf (A, pw, abs (qw), rw) ;
+
+            kbad  = find (qw < 0) ;
+            kgood = find (qw > 0) ;
+            if (any (c (kbad) ~= 0))
+                error ('kbad') ;
+            end
+            if (any (c (kgood) == 0))	    %#ok
+                error ('kgood') ;
+            end
+
+            if (doplot)
+                subplot (2,4,6)
+                drawbtf (A, pw, abs (qw), rw) ;
+                if (n < 500)
+                    for k = kbad
+                        plot ([k (k+1) (k+1) k k]-.5, ...
+                            [k k (k+1) (k+1) k]-.5, 'r') ;
+                    end
+                end
+                title ('btf') ;
+            end
+
+            %-------------------------------------------------------------------
+            % try [p,q,r] = strongcomp (A, qin) form
+            tic
+            [pz,qz,rz] = strongcomp (A, match1) ;
+            t = toc ;
+            fprintf ('[p,q,r]=strongcomp(A,qin)%8.2f seconds\n', t) ;
+            if (any (pz ~= pb))
+                error ('pz') ;
+            end
+            if (any (rz ~= rb))
+                error ('rz') ;
+            end
+            if (any (abs (qz) ~= p1 (pz)))
+                error ('qz') ;
+            end
+            c = diag (A (pz,abs (qz))) ;
+            if (~singular & ~skip_dmperm_btf & (length (rz) ~= nblocks+1))  %#ok
+                error ('BTF:invalid (rz)') ;
+            end
+            checkbtf (A, pz, abs (qz), rz) ;
+
+            kbad  = find (qz < 0) ;
+            kgood = find (qz > 0) ;
+            if (any (c (kbad) ~= 0))
+                error ('kbad') ;
+            end
+            if (any (c (kgood) == 0))                                       %#ok
+                error ('kgood') ;
+            end
+
+            if (doplot)
+                subplot (2,4,7)
+                drawbtf (A, pz, abs (qz), rz) ;
+                if (n < 500)
+                    for k = kbad
+                        plot ([k (k+1) (k+1) k k]-.5, ...
+                            [k k (k+1) (k+1) k]-.5, 'r') ;
+                    end
+                end
+                title ('strongcomp(A,qin)') ;
+            end
+
+            %-------------------------------------------------------------------
+            % try strongcomp again, on a randomly jumbled matrix
+            C = sparse (B (jumble, jumble)) ;
+            tic ;
+            [pc,rc] = strongcomp (C) ;
+            t = toc ;
+            fprintf ('strongcomp       (rand)  %8.2f seconds\n', t) ;
+            if (~singular & ~skip_dmperm_btf & (length (rc) ~= nblocks+1))  %#ok
+                error ('BTF:invalid (rc)') ;
+            end
+            checkbtf (C, pc, pc, rc) ;
+            if (doplot)
+                subplot (2,4,8)
+                drawbtf (C, pc, pc, rc) ;
+                title ('strongcomp(rand)') ;
+            end
+
+            if (length (rc) ~= length (rb))
+                error ('strongcomp random mismatch') ;
+            end
+
+        %-----------------------------------------------------------------------
+        if (doplot)
+            drawnow
+        end
+
+        if (matnum ~= nmat & dopause)					    %#ok
+            input ('Hit enter: ') ;
+        end
+
     end
 
-    rand ('state', 0) ;
-
-    % clear all unused variables.
-    % nothing here is left that is proportional to the matrix size
-    clear A p1 p2 p3 q3 r3 match1 match2 match4 pa ra sa qa B C pb rb pc rc
-    clear jumble B11 B12 B13 B21 B22 B23 B31 B32 B33 pjumble qjumble ans
-    clear c kbad kgood
-    % whos
-    % pause
-
-    if (j > 0)
-	Problem = UFget (j) ;
-	name = Problem.name ;
-	A = Problem.A ;
-	clear Problem
+catch
+    % out-of-memory is OK, other errors are not
+    disp (lasterr) ;
+    if (isempty (strfind (lasterr, 'Out of memory')))
+        error (lasterr) ;                                                   %#ok
     else
-	% construct the jth test matrix
-	j = -j ;
-	if (j == 1 | j == 2)						    %#ok
-	    B11 = UFget ('Grund/b1_ss') ;	    % 7-by-7 diagonal block
-	    B11 = B11.A ;
-	    B12 = sparse (zeros (7,2)) ;
-	    B12 (3,2) = 1 ;
-	    B13 = sparse (ones  (7,5)) ;
-	    B21 = sparse (zeros (2,7)) ;
-	    B22 = sparse (ones  (2,2)) ;	    % 2-by-2 diagonal block
-	    B23 = sparse (ones  (2,5)) ;
-	    B31 = sparse (zeros (5,7)) ;
-	    B32 = sparse (zeros (5,2)) ;
-	    B33 = UFget ('vanHeukelum/cage3') ;	    % 5-by-5 diagonal block
-	    B33 = B33.A ;
-	    A = [ B11 B12 B13 ; B21 B22 B23 ; B31 B32 B33 ] ;
-	    name = '(j=1 test matrix)' ;
-	end
-	if (j == 2)
-	    pjumble = [ 10 7 11 1 13 12 8 2 5 14 9 6 4 3 ] ;
-	    qjumble = [ 3 14 2 11 1 8 5 7 10 12 4 13 9 6 ] ;
-	    A = A (pjumble, qjumble) ;
-	    name = '(j=2 test matrix)' ;
-	elseif (j == 3)
-	    A = sparse (1) ;
-	elseif (j == 4)
-	    A = sparse (0) ;
-	elseif (j == 5)
-	    A = sparse (ones (2)) ;
-	elseif (j == 6)
-	    A = sparse (2,2) ;
-	elseif (j == 7)
-	    A = speye (2) ;
-	elseif (j == 8)
-	    A = sparse (2,2) ;
-	    A (2,1) = 1 ;
-	end
-	if (j > 2)
-	    full (A)
-	end
+        fprintf ('test terminated early, but otherwise OK\n') ;
     end
+end
 
-    [m n] = size (A) ;
-    if (m ~= n)
-	continue ;
-    end
-    fprintf ('\n%4d: ', matnum) ;
-    fprintf (' =========================== Matrix: %3d %s\n', j, name) ;
-    fprintf ('n: %d nz: %d\n', n, nnz (A)) ;
-
-    if (nnz (A) > 6e6)
-	doplot = 0 ;
-    end
-
-    %---------------------------------------------------------------------------
-    % now try maxtrans
-    tic
-    match1 = maxtrans (A) ;
-    t = toc ;
-    s1 = sum (match1 > 0) ;
-    fprintf ('n-sprank: %d\n', n-s1) ;
-    fprintf ('maxtrans:                %8.2f seconds\n', t) ;
-    singular = s1 < n ;
-
-    if (doplot)
-	% figure (1)
-	clf
-	subplot (2,4,1)
-	spy (A)
-	title (name) ;
-    end
-
-    p1 = match1 ;
-    if (any (p1 <= 0))
-	% complete the permutation
-	badrow = find (p1 <= 0) ;
-
-	badcol = ones (1,n) ;
-	badcol (p1 (p1 > 0)) = 0 ;
-	badcol = find (badcol) ;
-
-	p1 (badrow) = badcol ;
-
-	% construct the older form of match1
-	match1 (badrow) = -p1 (badrow) ;
-    end
-    if (any (sort (p1) ~= 1:n))
-	error ('!!') ;
-    end
-
-    B = A (:,p1) ;
-
-    if (doplot)
-	subplot (2,4,2)
-	hold off
-	spy (B)
-	hold on
-	badcol = find (match1 < 0) ;
-	Junk = sparse (badcol, badcol, ones (length (badcol), 1), n, n) ;
-	% if (~isempty (A))
-	    % spy (Junk, 'ro') ;
-	% end
-	title ('maxtrans') ;
-    end
-
-    d = nnz (diag (B)) ;
-    if (d ~= s1)
-	error ('bad sprank') ;
-    end
-    clear B
-
-    %---------------------------------------------------------------------------
-    % try p = dmperm(A)
-    skip_dmperm = any (j == skip_list_dmperm) ;
-
-    if (~skip_dmperm)
-	tic
-	match4 = dmperm (A) ;
-	t = toc ;
-	fprintf ('p=dmperm(A):             %8.2f seconds\n', t) ;
-	s4 = sum (match4 > 0) ;
-	singular4 = (s4 < n) ;
-
-	if (doplot)
-	    if (~singular4)
-		subplot (2,4,3)
-		spy (A (match4,:))
-		title ('dmperm') ;
-	    end
-	end
-	if (singular ~= singular4)
-	    error ('s4?') ; 
-	end
-	if (s1 ~= s4)
-	    error ('bad sprank') ;
-	end
-    else
-	fprintf ('p=dmperm(A): skip\n') ;
-    end
-
-    %---------------------------------------------------------------------------
-    nblocks = -1 ;
-    skip_dmperm_btf = any (j == skip_list_dmperm_btf) ;
-    if (~skip_dmperm_btf)
-	% get btf form
-	tic
-	[pa,qa,ra,sa] = dmperm (A) ;
-	t = toc ;
-	fprintf ('[p,q,r,s]=dmperm(A):     %8.2f seconds\n', t) ;
-	nblocks = length (ra) - 1 ;
-	fprintf ('nblocks: %d\n', nblocks) ;
-	if (~singular4)
-	    checkbtf (A, pa, qa, ra) ;
-	    if (doplot)
-		subplot (2,4,4)
-		drawbtf (A, pa, qa, ra)
-		title ('dmperm blocks') 
-	    end
-	end
-    else
-	fprintf ('[p,q,r,s]=dmperm(A): skip\n') ;
-    end
-
-    jumble = randperm (n) ;
-
-    %---------------------------------------------------------------------------
-    % try strongcomp, non-recursive version
-
-	%-----------------------------------------------------------------------
-	% try strongcomp on original matrix
-	B = A (:,p1) ;
-	tic ;
-	[pb,rb] = strongcomp (B) ;
-	t = toc ;
-	fprintf ('strongcomp               %8.2f seconds\n', t) ;
-	if (~singular & ~skip_dmperm_btf & (length (rb) ~= nblocks+1))	    %#ok
-	    error ('BTF:invalid (rb)') ;
-	end
-	checkbtf (B, pb, pb, rb) ;
-	if (doplot)
-	    subplot (2,4,5)
-	    drawbtf (B, pb, pb, rb) ;
-	    title ('strongcomp') ;
-	end
-
-%{
-	%-----------------------------------------------------------------------
-	% try btf on original matrix
-	tic ;
-	[pw,qw,rw] = btf (A) ;
-	t = toc ;
-	fprintf ('btf                      %8.2f seconds nblocks %d\n', ...
-	    t, length (rw)-1) ;
-
-	if (any (pw ~= pb))
-	    error ('pw') ;
-	end
-	if (any (rw ~= rb))
-	    error ('rw') ;
-	end
-	if (any (abs (qw) ~= p1 (pw)))
-	    error ('qw') ;
-	end
-	c = diag (A (pw,abs (qw))) ;
-	if (~singular & ~skip_dmperm_btf & (length (rw) ~= nblocks+1))	    %#ok
-	    error ('BTF:invalid (rw)') ;
-	end
-	checkbtf (A, pw, abs (qw), rw) ;
-
-	kbad  = find (qw < 0) ;
-	kgood = find (qw > 0) ;
-	if (any (c (kbad) ~= 0))
-	    error ('kbad') ;
-	end
-	if (any (c (kgood) == 0))	    %#ok
-	    error ('kgood') ;
-	end
-
-	if (doplot)
-	    subplot (2,4,6)
-	    drawbtf (A, pw, abs (qw), rw) ;
-	    if (n < 500)
-		for k = kbad
-		    plot ([k (k+1) (k+1) k k]-.5, [k k (k+1) (k+1) k]-.5, 'r') ;
-		end
-	    end
-	    title ('btf') ;
-	end
-%}
-
-	%-----------------------------------------------------------------------
-	% try [p,q,r] = strongcomp (A, qin) form
-	tic
-	[pz,qz,rz] = strongcomp (A, match1) ;
-	t = toc ;
-	fprintf ('[p,q,r]=strongcomp(A,qin)%8.2f seconds\n', t) ;
-	if (any (pz ~= pb))
-	    error ('pz') ;
-	end
-	if (any (rz ~= rb))
-	    error ('rz') ;
-	end
-	if (any (abs (qz) ~= p1 (pz)))
-	    error ('qz') ;
-	end
-	c = diag (A (pz,abs (qz))) ;
-	if (~singular & ~skip_dmperm_btf & (length (rz) ~= nblocks+1))	    %#ok
-	    error ('BTF:invalid (rz)') ;
-	end
-	checkbtf (A, pz, abs (qz), rz) ;
-
-	kbad  = find (qz < 0) ;
-	kgood = find (qz > 0) ;
-	if (any (c (kbad) ~= 0))
-	    error ('kbad') ;
-	end
-	if (any (c (kgood) == 0))
-	    error ('kgood') ;
-	end
-
-	if (doplot)
-	    subplot (2,4,7)
-	    drawbtf (A, pz, abs (qz), rz) ;
-	    if (n < 500)
-		for k = kbad
-		    plot ([k (k+1) (k+1) k k]-.5, [k k (k+1) (k+1) k]-.5, 'r') ;
-		end
-	    end
-	    title ('strongcomp(A,qin)') ;
-	end
-
-	%-----------------------------------------------------------------------
-	% try strongcomp again, on a randomly jumbled matrix
-	C = sparse (B (jumble, jumble)) ;
-	tic ;
-	[pc,rc] = strongcomp (C) ;
-	t = toc ;
-	fprintf ('strongcomp       (rand)  %8.2f seconds\n', t) ;
-	if (~singular & ~skip_dmperm_btf & (length (rc) ~= nblocks+1))	    %#ok
-	    error ('BTF:invalid (rc)') ;
-	end
-	checkbtf (C, pc, pc, rc) ;
-	if (doplot)
-	    subplot (2,4,8)
-	    drawbtf (C, pc, pc, rc) ;
-	    title ('strongcomp(rand)') ;
-	end
-
-	if (length (rc) ~= length (rb))
-	    error ('strongcomp random mismatch') ;
-	end
-
-    %---------------------------------------------------------------------------
-    if (doplot)
-	drawnow
-    end
-
-    if (matnum ~= nmat & dopause)					    %#ok
-	input ('Hit enter: ') ;
-    end
-
-%    pause
-
-end % }
+close (h) ;

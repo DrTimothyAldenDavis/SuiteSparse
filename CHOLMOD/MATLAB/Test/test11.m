@@ -131,8 +131,6 @@ for kkk = 1:length(f)
     % end
 
     clear A x b
-    diary off
-    diary on
 
 end
 

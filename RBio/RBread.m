@@ -1,4 +1,4 @@
-function [A Z title key mtype] = RBread (filename)			    %#ok
+function [A, Z, title, key, mtype] = RBread (filename)			    %#ok
 %RBREAD read a sparse matrix from a Rutherford/Boeing file
 % Usage:
 %   [A Z title key mtype] = RBread (filename)

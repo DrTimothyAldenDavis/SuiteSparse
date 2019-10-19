@@ -1,4 +1,4 @@
-function [A Z title key mtype] = RBreade (filename)
+function [A, Z, title, key, mtype] = RBreade (filename)
 %RBREADE read a symmetric finite-element matrix from a R/B file
 % Usage:
 %   [A Z title key mtype] = RBreade (filename)

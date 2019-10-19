@@ -25,7 +25,7 @@ Out/*		subdirectories for each test,
 		contents can be destroyed when done.
 
 Make.1		gcc, no optimize Linux no BLAS, test int overflow
-Make.2		gcc, no optimize Linux Goto BLAS
+Make.2		gcc, no optimize Linux BLAS
 Make.3		gcc, no optimize Linux ATLAS C-Blas
 Make.4		gcc, no optimize Linux ATLAS Fortran BLAS
 
@@ -33,17 +33,17 @@ Make.5		gcc, no optimize Linux no BLAS, test int overflow
 		no reciprocal
 
 Make.1i		icc, optimize, Linux no BLAS, test int overflow
-Make.2i		icc, optimize, Linux Goto BLAS
+Make.2i		icc, optimize, Linux BLAS
 Make.3i		icc, optimize, Linux ATLAS C-Blas
 Make.4i		icc, optimize, Linux ATLAS Fortran BLAS
 
 Make.1n		icc, no optimize, Linux no BLAS, test int overflow
-Make.2n		icc, no optimize, Linux Goto BLAS
+Make.2n		icc, no optimize, Linux BLAS
 Make.3n		icc, no optimize, Linux ATLAS C-Blas
 Make.4n		icc, no optimize, Linux ATLAS Fortran BLAS
 
 Make.1g		gcc, optimize, Linux no BLAS, test int overflow
-Make.2g		gcc, optimize, Linux Goto BLAS
+Make.2g		gcc, optimize, Linux BLAS
 Make.3g		gcc, optimize, Linux ATLAS C-Blas
 Make.4g		gcc, optimize, Linux ATLAS Fortran BLAS
 
@@ -67,7 +67,7 @@ Makefile.zl	Makefile for *zl (complex, UF_long)
 TestMat		test matrices for ut.c
 
 ../../UMFPACK	UMFPACK original distribution
-../../AMD	UMFPACK original distribution
+../../AMD	AMD original distribution
 ../../UFconfig	configuration directory for all of UFsparse
 
 covall		for summarizing tcov output

@@ -17,7 +17,7 @@ for do_complex = 0:1
     rand  ('state', 0) ;
 
     % Prob = UFget (437)
-    Prob = UFget (750)							    %#ok
+    Prob = UFget (749)							    %#ok
     A = Prob.A ;
     [m n] = size (A) ;							    %#ok
 

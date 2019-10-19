@@ -20,8 +20,10 @@ for trial = 1:100
     j = 1 + fix (n * rand (nz,1)) ;
     x = rand (nz,1) ;
 
-    if (mod (trial, 2) == 1)
-	x = x + 1i * (2*rand(nz,1)-1) ;
+    if (~ispc)
+        if (mod (trial, 2) == 1)
+            x = x + 1i * (2*rand(nz,1)-1) ;
+        end
     end
 
     A = sparse (i,j,x) ;
@@ -71,8 +73,10 @@ for trial = 1:100
 
     x = rand (m,1) ;
 
-    if (mod (trial, 2) == 1)
-	x = x + 1i * (2*rand(m,1)-1) ;
+    if (~ispc)
+        if (mod (trial, 2) == 1)
+            x = x + 1i * (2*rand(m,1)-1) ;
+        end
     end
 
     x1 = x (p) ;

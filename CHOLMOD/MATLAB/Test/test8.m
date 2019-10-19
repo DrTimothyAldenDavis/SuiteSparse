@@ -70,11 +70,11 @@ for k = 1:length (f)
     clear Problem
     n = size (A,1) ;							    %#ok
 
-    amd (junk) ;
+    amd2 (junk) ;
     metis (junk) ;
 
     tic ;
-    [p1,info] = amd (A) ;						    %#ok
+    [p1,info] = amd2 (A) ;						    %#ok
     t1 = toc ;
     S1 = A (p1,p1) ;
     tic ;

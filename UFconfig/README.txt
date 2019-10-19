@@ -18,9 +18,13 @@ do not require UFconfig.
 
 UFconfig is not required by:
 
-  CSparse		    a Concise Sparse matrix package
-  RBio			    read/write files in Rutherford/Boeing format
-  UFcollection		    tools for managing the UF Sparse Matrix Collection
+  CSparse	a Concise Sparse matrix package
+  RBio		read/write files in Rutherford/Boeing format
+  UFcollection	tools for managing the UF Sparse Matrix Collection
+  LINFACTOR     simple m-file to show how to use LU and CHOL to solve Ax=b
+  MESHND        2D and 3D mesh generation and nested dissection ordering
+  MATLAB_Tools  misc collection of m-files
+  SSMULT        sparse matrix times sparse matrix, for use in MATLAB
 
 In addition, the xerbla/ directory contains Fortan and C versions of the
 BLAS/LAPACK xerbla routine, which is called when an invalid input is passed to

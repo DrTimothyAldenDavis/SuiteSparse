@@ -1,3 +1,4 @@
+function ldlmain2
 %LDLMAIN2 compiles and runs a longer test program for LDL
 %
 % Example:

@@ -1,11 +1,11 @@
 #===============================================================================
-# ILP32 mode, Goto BLAS, do not test for integer overflow. No divide by zero.
+# ILP32 mode, BLAS, do not test for integer overflow. No divide by zero.
 #===============================================================================
 
 CC = gcc
 CFLAGS = -O0 -ftest-coverage -fprofile-arcs -O0
 UMFPACK_CONFIG = -DTESTING -DNO_DIVIDE_BY_ZERO
-LIB = -lgoto -lgfortran -lgfortranbegin -lm
+LIB = -lblas -lgfortran -lgfortranbegin -lm
 
 RANLIB = ranlib
 MV = mv -f

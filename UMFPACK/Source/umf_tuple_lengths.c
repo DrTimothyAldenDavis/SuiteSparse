@@ -15,6 +15,7 @@
 /* overwritten) */
 
 #include "umf_internal.h"
+#include "umf_tuple_lengths.h"
 
 GLOBAL Int UMF_tuple_lengths	    /* return memory usage */
 (

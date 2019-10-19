@@ -11,6 +11,7 @@
 /* The matrix is factorized.  Finish the LU data structure. */
 
 #include "umf_internal.h"
+#include "umf_kernel_wrapup.h"
 
 GLOBAL void UMF_kernel_wrapup
 (

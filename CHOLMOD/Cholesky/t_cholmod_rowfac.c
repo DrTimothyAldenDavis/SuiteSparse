@@ -261,7 +261,9 @@ static int TEMPLATE (cholmod_rowfac)
 	/* nonzero pattern of kth row of L is now in Stack [top..n-1].
 	 * Flag [Stack [top..n-1]] is equal to mark, but no longer needed */
 
-	mark = CHOLMOD(clear_flag) (Common) ;
+	/* mark = CHOLMOD(clear_flag) (Common) ; */
+	CHOLMOD_CLEAR_FLAG (Common) ;
+	mark = Common->mark ;
 
 	/* ------------------------------------------------------------------ */
 	/* compute kth row of L and store in column form */

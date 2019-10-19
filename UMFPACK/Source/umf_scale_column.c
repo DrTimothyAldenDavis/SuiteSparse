@@ -14,6 +14,7 @@
 */
 
 #include "umf_internal.h"
+#include "umf_scale_column.h"
 #include "umf_mem_free_tail_block.h"
 #include "umf_scale.h"
 

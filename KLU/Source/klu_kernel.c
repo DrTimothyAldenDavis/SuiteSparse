@@ -675,7 +675,7 @@ size_t KLU_kernel   /* final size of LU on output */
     Entry *Ux ;
     Int *Li, *Ui ;
     Unit *LU ;		/* LU factors (pattern and values) */
-    Int k, p, i, j, pivrow, kbar, diagrow, firstrow, lup, top, scale, len ;
+    Int k, p, i, j, pivrow = 0, kbar, diagrow, firstrow, lup, top, scale, len ;
     size_t newlusize ;
 
 #ifndef NDEBUG
@@ -688,6 +688,7 @@ size_t KLU_kernel   /* final size of LU on output */
     memgrow = Common->memgrow ;
     *lnz = 0 ;
     *unz = 0 ;
+    CLEAR (pivot) ;
 
     /* ---------------------------------------------------------------------- */
     /* get initial Li, Lx, Ui, and Ux */

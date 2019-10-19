@@ -75,9 +75,9 @@ void mexFunction
 )
 {
     UF_long i, n, *Pattern, *Flag, *Li, *Lp, *Ap, *Ai, *Lnz, *Parent, do_chol,
-	nrhs, lnz, do_solve, *P, *Pinv, nn, k, j, permute, *Dp, *Di, d,
-	do_flops, psrc, pdst, p2 ;
-    double *Y, *D, *Lx, *Ax, flops, *X, *B, *p ;
+	nrhs = 0, lnz, do_solve, *P, *Pinv, nn, k, j, permute, *Dp = NULL, *Di,
+	d, do_flops, psrc, pdst ;
+    double *Y, *D, *Lx, *Ax, flops, *X = NULL, *B = NULL, *p ;
 
     /* ---------------------------------------------------------------------- */
     /* get inputs and allocate workspace */

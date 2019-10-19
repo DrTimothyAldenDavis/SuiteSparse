@@ -1,4 +1,5 @@
-%test3: KLU test script
+function test3
+%test3: KLU test
 % Example:
 %   test3
 % See also klu
@@ -6,7 +7,8 @@
 % Copyright 2004-2007 Timothy A. Davis, Univ. of Florida
 % http://www.cise.ufl.edu/research/sparse
 
-clear
+h = waitbar (1/12, 'KLU test 3 of 5') ;
+
 rand ('state', 0) ;
 
 load west0479
@@ -30,6 +32,7 @@ matlab_cond = cond (full (A)) ;
 fprintf ('MATLAB condest %g cond %g\n', matlab_condest, matlab_cond) ;
 
 for nrhs = 1:10
+    waitbar (nrhs/12, h) ;
     b = rand (n,nrhs) ;
     x = klu (LU,'\',b) ;
     fprintf ('nrhs: %d resid: %g\n', ...
@@ -39,6 +42,8 @@ end
 [x,info,cond_estimate] = klu (A, '\', b) ;
 fprintf ('\ninfo = \n') ; disp (info) ;
 fprintf ('KLU cond_estimate %g\n', cond_estimate) ;
+
+waitbar (11/12, h) ;
 
 [x,info] = klu (A, '\', b, struct ('ordering',1)) ;
 fprintf ('\ninfo = \n') ; disp (info) ;
@@ -52,3 +57,5 @@ try
 catch
     fprintf ('KLU test with CHOLMOD skipped (CHOLMOD not installed)\n') ;
 end
+
+close (h) ;

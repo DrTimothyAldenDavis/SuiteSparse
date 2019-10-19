@@ -7,7 +7,7 @@ include UFconfig/UFconfig.mk
 # Compile the default rules for each package
 default:
 	( cd UFconfig/xerbla ; $(MAKE) )
-	( cd metis-4.0 ; $(MAKE) )
+#	( cd metis-4.0 ; $(MAKE) )
 	( cd AMD ; $(MAKE) )
 	( cd CAMD ; $(MAKE) )
 	( cd COLAMD ; $(MAKE) )
@@ -41,7 +41,7 @@ mex:
 # Remove all files not in the original distribution
 purge:
 	( cd UFconfig/xerbla ; $(MAKE) purge )
-	( cd metis-4.0 ; $(MAKE) realclean )
+#	( cd metis-4.0 ; $(MAKE) realclean )
 	( cd AMD ; $(MAKE) purge )
 	( cd CAMD ; $(MAKE) purge )
 	( cd COLAMD ; $(MAKE) purge )
@@ -55,13 +55,14 @@ purge:
 	( cd CXSparse ; $(MAKE) purge )
 	( cd RBio ; $(RM) *.mex* )
 	( cd UFcollection ; $(RM) *.mex* )
+	( cd SSMULT ; $(RM) *.mex* )
 #	( cd LPDASA ; $(MAKE) purge )
 #	( cd PARAKLETE ; $(MAKE) purge )
 
 # Remove all files not in the original distribution, but keep the libraries
 clean:
 	( cd UFconfig/xerbla ; $(MAKE) clean )
-	( cd metis-4.0 ; $(MAKE) clean )
+#	( cd metis-4.0 ; $(MAKE) clean )
 	( cd AMD ; $(MAKE) clean )
 	( cd CAMD ; $(MAKE) clean )
 	( cd COLAMD ; $(MAKE) clean )
@@ -88,3 +89,11 @@ cx:
 	( cd CXSparse/Demo ; $(MAKE) > cs_demo.out )
 	( cd CXSparse ; $(MAKE) purge )
 
+# statement coverage (Linux only); this requires a lot of time.
+# The umfpack tcov requires a lot of disk space
+cov:
+	( cd CXSparse ; $(MAKE) cov )
+	( cd CSparse ; $(MAKE) cov )
+	( cd KLU ; $(MAKE) cov )
+	( cd CHOLMOD ; $(MAKE) cov )
+	( cd UMFPACK ; $(MAKE) cov )

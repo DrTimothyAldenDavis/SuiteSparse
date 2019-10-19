@@ -1,3 +1,4 @@
+function ldltest
 %LDLTEST test program for LDL
 %
 % Example:
@@ -6,7 +7,6 @@
 
 % Copyright 2006-2007 by Timothy A. Davis, Univ. of Florida
 
-clear
 help ldlsparse
 
 A = sparse ([ ]) ;

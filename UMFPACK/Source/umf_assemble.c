@@ -13,6 +13,7 @@
  *  versions.*/
 
 #include "umf_internal.h"
+#include "umf_assemble.h"
 #include "umf_mem_free_tail_block.h"
 
 /* ========================================================================== */

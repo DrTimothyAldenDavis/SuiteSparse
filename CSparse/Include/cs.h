@@ -7,10 +7,10 @@
 #ifdef MATLAB_MEX_FILE
 #include "mex.h"
 #endif
-#define CS_VER 2		    /* CSparse Version 2.2.0 */
+#define CS_VER 2		    /* CSparse Version 2.2.1 */
 #define CS_SUBVER 2
-#define CS_SUBSUB 0
-#define CS_DATE "May 31, 2007"	    /* CSparse release date */
+#define CS_SUBSUB 1
+#define CS_DATE "Nov 1, 2007"	    /* CSparse release date */
 #define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006-2007"
 
 /* --- primary CSparse routines and data structures ------------------------- */
@@ -89,7 +89,7 @@ int cs_ipvec (const int *p, const double *b, double *x, int n) ;
 int cs_lsolve (const cs *L, double *x) ;
 int cs_ltsolve (const cs *L, double *x) ;
 csn *cs_lu (const cs *A, const css *S, double tol) ;
-cs *cs_permute (const cs *A, const int *p, const int *q, int values) ;
+cs *cs_permute (const cs *A, const int *pinv, const int *q, int values) ;
 int *cs_pinv (const int *p, int n) ;
 int cs_pvec (const int *p, const double *b, double *x, int n) ;
 csn *cs_qr (const cs *A, const css *S) ;

@@ -113,7 +113,8 @@ static void subtree
 /* clear workspace used by cholmod_super_symbolic */
 #define FREE_WORKSPACE \
 { \
-    CHOLMOD(clear_flag) (Common) ; \
+    /* CHOLMOD(clear_flag) (Common) ; */ \
+    CHOLMOD_CLEAR_FLAG (Common) ; \
     for (k = 0 ; k <= nfsuper ; k++) \
     { \
 	Head [k] = EMPTY ; \
@@ -180,7 +181,6 @@ int CHOLMOD(super_symbolic)
     {
 	/* F must be present in the unsymmetric case */
 	RETURN_IF_NULL (F, FALSE) ;
-	ASSERT (CHOLMOD(dump_sparse) (F, "Fsup", Common) >= 0) ;
     }
     if (L->is_super)
     {
@@ -189,8 +189,6 @@ int CHOLMOD(super_symbolic)
 	return (FALSE) ;
     }
     Common->status = CHOLMOD_OK ;
-
-    ASSERT (CHOLMOD(dump_sparse) (A, "Asup", Common) >= 0) ;
 
     /* ---------------------------------------------------------------------- */
     /* allocate workspace */
@@ -649,7 +647,9 @@ int CHOLMOD(super_symbolic)
 	     * of all columns A(0:k,j) for each nonzero F(j,k). */
 
 	    /* clear the Flag array and mark the current supernode */
-	    mark = CHOLMOD(clear_flag) (Common) ;
+	    /* mark = CHOLMOD(clear_flag) (Common) ; */
+	    CHOLMOD_CLEAR_FLAG (Common) ;
+	    mark = Common->mark ;
 	    Flag [s] = mark ;
 	    ASSERT (s == SuperMap [k]) ;
 

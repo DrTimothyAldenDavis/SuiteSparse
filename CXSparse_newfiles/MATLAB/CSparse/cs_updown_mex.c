@@ -58,6 +58,7 @@ void mexFunction
 	    Cvec->x = C->x + C->p [k] ;
 	    /* update/downdate */
 	    ok = cs_cl_updown (L, sigma, Cvec, parent) ;
+	    if (!ok) mexErrMsgTxt ("matrix is not positive definite") ;
 	}
 	/* return new L */ 
 	pargout [0] = cs_cl_mex_put_sparse (&L) ;
@@ -99,10 +100,9 @@ void mexFunction
 	    Cvec->x = C->x + C->p [k] ;
 	    /* update/downdate */
 	    ok = cs_dl_updown (L, sigma, Cvec, parent) ;
+	    if (!ok) mexErrMsgTxt ("matrix is not positive definite") ;
 	}
 	/* return new L */ 
 	pargout [0] = cs_dl_mex_put_sparse (&L) ;
     }
-
-    if (!ok) mexErrMsgTxt ("matrix is not positive definite") ;
 }

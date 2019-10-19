@@ -287,7 +287,8 @@ int CHOLMOD(super_numeric)
 
     /* Flag array was used as workspace, clear it */
     Common->mark = EMPTY ;
-    CHOLMOD(clear_flag) (Common) ;
+    /* CHOLMOD(clear_flag) (Common) ; */
+    CHOLMOD_CLEAR_FLAG (Common) ;
     ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
     CHOLMOD(free_dense) (&C, Common) ;
     return (ok) ;

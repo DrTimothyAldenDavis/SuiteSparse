@@ -4,8 +4,11 @@ function umfpack_make (lapack)
 % Compiles the umfpack2 mexFunction and then runs a simple demo.
 %
 % Example:
-%   umfpack_make				% use default LAPACK and BLAS
-%   umfpack_make ('lcc_lib/libmwlapack.lib')	% try this if umfpack_make fails
+%   umfpack_make                                % use default LAPACK and BLAS
+%   umfpack_make ('lcc_lib/libmwlapack.lib')    % for Windows
+%   umfpack_make ('-lmwlapack -lmwblas')        % for Linux, Unix, Mac
+%
+% the string gives the locations of the LAPACK and BLAS libraries.
 %
 % See also: umfpack, umfpack2, umfpack_details, umfpack_report, umfpack_demo,
 % and umfpack_simple.
@@ -19,7 +22,14 @@ if (~isempty (strfind (computer, '64')))
     d = ' -largeArrayDims' ;
 end
 
-[v,pc] = getversion ;
+v = getversion ;
+try
+    % ispc does not appear in MATLAB 5.3
+    pc = ispc ;
+catch
+    % if ispc fails, assume we are on a Windows PC if it's not unix
+    pc = ~isunix ;
+end
 fprintf ('Compiling UMFPACK for MATLAB Version %g\n', v) ;
 
 if (pc)
@@ -34,6 +44,9 @@ kk = 0 ;
 % BLAS option
 %-------------------------------------------------------------------------------
 
+% This is exceedingly ugly.  The MATLAB mex command needs to be told where to
+% fine the LAPACK and BLAS libraries, which is a real portability nightmare.
+
 if (nargin < 1)
     if (pc)
 	if (v < 6.5)
@@ -42,13 +55,21 @@ if (nargin < 1)
 	    fprintf ('Using %s.  If this fails with dgemm and others\n',lapack);
 	    fprintf ('undefined, then edit umfpack_make.m and modify the') ;
 	    fprintf (' statement:\nlapack = ''%s'' ;\n', lapack) ;
-	else
+	elseif (v < 7.5)
 	    lapack = 'libmwlapack.lib' ;
+        else
+            % MATLAB R2007b (7.5) made the problem worse
+	    lapack = 'libmwlapack.lib libmwblas.lib' ;
 	end
     else
 	% For other systems, mex should find lapack on its own, but this has
 	% been broken in MATLAB R2007a; the following is now required.
-	lapack = '-lmwlapack' ;
+        if (v < 7.5)
+            lapack = '-lmwlapack' ;
+        else
+            % MATLAB R2007b (7.5) made the problem worse
+            lapack = '-lmwlapack -lmwblas' ;
+        end
     end
 end
 
@@ -307,20 +328,7 @@ M {end + 1} = dst ;
 
 
 %-------------------------------------------------------------------------------
-function [v,pc] = getversion
+function v = getversion
 % determine the MATLAB version, and return it as a double.
-% only the primary and secondary version numbers are kept.
-% MATLAB 7.0.4 becomes 7.0, version 6.5.2 becomes 6.5, etc.
-v = version ;
-t = find (v == '.') ;
-if (length (t) > 1)
-    v = v (1:(t(2)-1)) ;
-end
-v = str2double (v) ;
-try
-    % ispc does not appear in MATLAB 5.3
-    pc = ispc ;
-catch
-    % if ispc fails, assume we are on a Windows PC if it's not unix
-    pc = ~isunix ;
-end
+v = sscanf (version, '%d.%d.%d') ;
+v = 10.^(0:-1:-(length(v)-1)) * v ;

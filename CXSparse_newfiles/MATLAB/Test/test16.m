@@ -35,8 +35,10 @@ for i = f
 	A = A'*A ;
     end
 
-    if (rand ( ) > .5)
-	A = A + 1i * sprand (A) ;
+    if (~ispc)
+        if (rand ( ) > .5)
+            A = A + 1i * sprand (A) ;
+        end
     end
 
     fprintf ('n %4d nz %d\n', n, nnz (A)) ;

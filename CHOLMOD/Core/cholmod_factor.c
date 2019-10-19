@@ -765,7 +765,7 @@ cholmod_factor *CHOLMOD(copy_factor)
 	    CHOLMOD(free_factor) (&L2, Common) ;
 	    return (NULL) ;	/* out of memory */
 	}
-	ASSERT (L->nzmax == L2->nzmax) ;
+	ASSERT (MAX (1, L->nzmax) == L2->nzmax) ;
 
 	/* ------------------------------------------------------------------ */
 	/* copy the contents of a simplicial numeric factor */

@@ -17,7 +17,7 @@ void mexFunction
     {
 #ifndef NCOMPLEX
 	cs_cl Amatrix, *A ;
-	cs_complex_t *x, *y, *z ;
+	cs_complex_t *x, *z ;
 	A = cs_cl_mex_get_sparse (&Amatrix, 0, pargin [0]) ;/* get A */
 	x = cs_cl_mex_get_double (A->n, pargin [1]) ;	    /* get x */
 	z = cs_cl_mex_get_double (A->m, pargin [2]) ;	    /* z = y */

@@ -7,7 +7,7 @@
 ./DO 1 zi
 ./DO 1 zl
 
-# ILP32, Goto BLAS, do not test for int overflow
+# ILP32, BLAS, do not test for int overflow
 ./DO 2 di
 ./DO 2 dl
 ./DO 2 zi
@@ -19,7 +19,7 @@
 ./DO 5 zi
 ./DO 5 zl
 
-# ILP32, Goto BLAS, do not test for int overflow.  No timers
+# ILP32, BLAS, do not test for int overflow.  No timers
 ./DO 6 di
 ./DO 6 dl
 ./DO 6 zi
@@ -31,7 +31,7 @@
 ./DO 7 zi
 ./DO 7 zl
 
-# ILP32, Goto BLAS, do not test for int overflow.  No divide-by-zero
+# ILP32, BLAS, do not test for int overflow.  No divide-by-zero
 ./DO 8 di
 ./DO 8 dl
 ./DO 8 zi
@@ -44,7 +44,7 @@
 ./DO 1g zi run
 ./DO 1g zl run
 
-# ILP32, Goto BLAS, do not test for int overflow.  Optimizations turned on
+# ILP32, BLAS, do not test for int overflow.  Optimizations turned on
 ./DO 2g di run
 ./DO 2g dl run
 ./DO 2g zi run

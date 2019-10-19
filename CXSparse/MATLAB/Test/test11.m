@@ -8,8 +8,6 @@ function test11
 %   Copyright 2006-2007, Timothy A. Davis.
 %   http://www.cise.ufl.edu/research/sparse
 
-clear
-clear functions
 index = UFget ;
 [ignore f] = sort (max (index.nrows, index.ncols)) ;
 f = f (1:200) ;
@@ -26,8 +24,10 @@ for i = f
     A = spones (A) ;
     A = A+A' + speye(n) ;
 
-    if (rand ( ) > .5)
-	A = A + 1i * sprand (A) ;
+    if (~ispc)
+        if (rand ( ) > .5)
+            A = A + 1i * sprand (A) ;
+        end
     end
 
     [cc h pa po R] = symbfact (A) ;

@@ -27,8 +27,11 @@ for trials = 1:100
 	A = A' ;
     end
     [m n] = size (A) ;
-    if (rand ( ) > .5)
-	A = A + 1i * sprand (A) ;
+
+    if (~ispc)
+        if (rand ( ) > .5)
+            A = A + 1i * sprand (A) ;
+        end
     end
 
     subplot (3,4,1) ; spy (A) ;

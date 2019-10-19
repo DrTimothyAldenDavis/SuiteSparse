@@ -20,8 +20,8 @@
 \author{Timothy A. Davis \\
 Dept. of Computer and Information Science and Engineering \\
 Univ. of Florida, Gainesville, FL}
-\title{UMFPACK Version 5.1 User Guide}
-\date{May 31, 2007}
+\title{UMFPACK Version 5.2.0 User Guide}
+\date{Nov 1, 2007}
 \maketitle
 
 %-------------------------------------------------------------------------------
@@ -38,7 +38,7 @@ Univ. of Florida, Gainesville, FL}
 
 Technical Report TR-04-003 (revised)
 
-UMFPACK Version 5.1, Copyright\copyright 1995-2006 by Timothy A. Davis.
+UMFPACK Version 5.2.0, Copyright\copyright 1995-2006 by Timothy A. Davis.
 All Rights Reserved.
 UMFPACK is available under alternate licences; contact T. Davis for details.
 
@@ -47,22 +47,22 @@ UMFPACK is available under alternate licences; contact T. Davis for details.
     UMFPACK implies that you agree to this License.
 
     This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
+    modify it under the terms of the GNU General Public
     License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+    version 2 of the License, or (at your option) any later version.
 
     This library is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+    General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public
+    You should have received a copy of the GNU General Public
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301
     USA
 
     Permission is hereby granted to use or copy this program under the
-    terms of the GNU LGPL, provided that the Copyright, this License,
+    terms of the GNU GPL, provided that the Copyright, this License,
     and the Availability of the original version is retained on all copies.
     User documentation of any code that uses this code or any modified
     version of this code must cite the Copyright, this License, the
@@ -95,7 +95,7 @@ UMFPACK is available under alternate licences; contact T. Davis for details.
 %-------------------------------------------------------------------------------
 
 UMFPACK\footnote{Pronounced with two syllables: umph-pack}
-Version 5.0 is a set of routines for solving systems of linear
+is a set of routines for solving systems of linear
 equations, $\m{Ax}=\m{b}$, when $\m{A}$ is sparse and unsymmetric.  It is based
 on the Unsymmetric-pattern MultiFrontal method \cite{DavisDuff97,DavisDuff99}.
 UMFPACK factorizes
@@ -275,7 +275,7 @@ Version 4.0 (in MATLAB 6.5)
 does not have the symmetric or 2-by-2 strategies and it takes
 less advantage of the level-3
 BLAS \cite{DaydeDuff99,ACM679a,ATLAS,GotoVandeGeijn02}.
-Versions 5.0 through v4.1 tend to be much faster than Version 4.0,
+Versions 5.x through v4.1 tend to be much faster than Version 4.0,
 particularly on unsymmetric matrices with mostly symmetric
 nonzero pattern (such as finite element and circuit simulation matrices).
 Version 3.0 and following make
@@ -290,11 +290,20 @@ are available at http://www.cise.ufl.edu/research/sparse and as
 MA38 (functionally equivalent to Version 2.2.1) in the Harwell
 Subroutine Library.
 
+{\bf NOTE: you must use the correct version of AMD with UMFPACK; using
+an old version of AMD with a newer version of UMFPACK can fail.}
+
 %-------------------------------------------------------------------------------
 \section{Primary changes from prior versions}
 %-------------------------------------------------------------------------------
 
 A detailed list of changes is in the {\tt ChangeLog} file.
+
+%-------------------------------------------------------------------------------
+\subsection{Version 5.2.0}
+%-------------------------------------------------------------------------------
+
+Change of license from GNU Lesser GPL to the GNU GPL.
 
 %-------------------------------------------------------------------------------
 \subsection{Version 5.1.0}
@@ -628,11 +637,15 @@ Factorizing {\tt A'} (or {\tt A.'}) and using the transposed factors can
 sometimes be faster than factorizing {\tt A}.  It can also be preferable to
 factorize {\tt A'} if {\tt A} is rectangular.  UMFPACK pre-orders the columns
 to maintain sparsity; the row ordering is not determined until the matrix
-is factorized.  Thus, if {\tt A} is {\tt m} by {\tt n} with rank {\tt m}
+is factorized.  Thus, if {\tt A} is {\tt m} by {\tt n} with structural
+rank {\tt m}
 and {\tt m} $<$ {\tt n}, then {\tt umfpack} might not find a factor
-{\tt U} with a zero-free diagonal.  Unless the matrix ill-conditioned or
+{\tt U} with a structurally zero-free diagonal.
+Unless the matrix ill-conditioned or
 poorly scaled, factorizing {\tt A'} in this case will guarantee that both
-factors will have zero-free diagonals.  Here's how you can factorize {\tt A'}
+factors will have zero-free diagonals.  Note that there is no guarantee
+as to the size of the diagonal entries of {\tt U}; UMFPACK does not do a
+rank-revealing factorization.  Here's how you can factorize {\tt A'}
 and get the factors of {\tt A} instead:
 
 \begin{verbatim}
@@ -2036,7 +2049,7 @@ Unix, or in Windows with Cygwin\footnote{www.cygwin.com}.
 You can skip this section and go to next one if all you want to use is
 the UMFPACK and AMD mexFunctions in MATLAB.
 
-You will need to install both UMFPACK v5.0 and AMD v2.0 to use UMFPACK.
+You will need to install both UMFPACK and AMD to use UMFPACK.
 The {\tt UMFPACK} and {\tt AMD} subdirectories must be placed side-by-side
 within the same directory.  AMD is a stand-alone package that
 is required by UMFPACK.  UMFPACK can be compiled without the
@@ -2211,14 +2224,6 @@ You can also type {\tt amd\_make} in the {\tt AMD/MATLAB} directory
 to compile the stand-alone AMD mexFunction (this is not required to
 compile the UMFPACK mexFunction).  This works on any computer with MATLAB,
 including Windows.
-
-% You will be prompted to select several configuration options, including
-% whether or not to use the BLAS.
-% MATLAB 5.3 (or earlier) does not include the BLAS, so you either have to
-% compile UMFPACK without the BLAS (UMFPACK will be slow), or modify your
-% {\tt <matlab>/bin/mexopts.sh} by adding your BLAS library
-% to the {\tt CLIBS} string,
-% where {\tt <matlab>} is the directory in which MATLAB is installed.
 
 If you are using Windows and the {\tt lcc} compiler bundled with
 MATLAB 6.1, then you may need to copy the

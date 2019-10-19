@@ -18,6 +18,7 @@
 */
 
 #include "umf_internal.h"
+#include "umf_local_search.h"
 #include "umf_row_search.h"
 #include "umf_mem_free_tail_block.h"
 

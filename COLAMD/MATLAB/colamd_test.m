@@ -19,17 +19,7 @@ function colamd_test
 
 help colamd_test
 
-s = input (...
-'Compile colamd2, symand2, and the test codes? (y/n, default is yes): ', 's') ;
 
-do_compile = 1 ;
-if (~isempty (s))
-    if (s (1) == 'n' | s (1) == 'N')					    %#ok
-	do_compile = 0 ;
-    end
-end
-
-if (do_compile)
     fprintf ('Compiling colamd2, symamd2, and test mexFunctions.\n') ;
     colamd_make ;
 
@@ -43,7 +33,6 @@ if (do_compile)
     eval ([cmd 'symamdtestmex.c ' src]) ;
     fprintf ('Done compiling.\n') ; 
 
-end
 
 fprintf ('\nThe following codes will be tested:\n') ;
 which colamd2 
@@ -54,6 +43,8 @@ which colamdtestmex
 which symamdtestmex
 
 fprintf ('\nStarting the tests.  Please be patient.\n') ;
+
+h = waitbar (0, 'COLAMD test') ;
 
 rand ('state', 0) ;
 randn ('state', 0) ;
@@ -93,6 +84,8 @@ fprintf ('Matrices with a few dense row/cols\n') ;
 
 for trial = 1:20
 
+    waitbar (trial/20, h, 'COLAMD: with dense rows/cols') ;
+
     % random square unsymmetric matrix
     A = rand_matrix (1000, 1000, 1, 10, 20) ;
 
@@ -110,15 +103,14 @@ for trial = 1:20
 
 	[p, stats] = colamd2 (A, [1 tol 0]) ;				    %#ok
 	check_perm (p, A) ;
-
-	fprintf ('.') ;
-
     end
 end
 fprintf (' OK\n') ;
 
 fprintf ('General matrices\n') ;
 for trial = 1:400
+
+    waitbar (trial/400, h, 'COLAMD: general') ;
 
     % matrix of random mtype
     mtype = irand (3) ;
@@ -130,7 +122,6 @@ for trial = 1:400
 	check_perm (p, A) ;
     end
 
-    fprintf ('.') ;
 end
 fprintf (' OK\n') ;
 
@@ -138,6 +129,8 @@ fprintf ('Test error handling with invalid inputs\n') ;
 
 % Check different erroneous input.
 for trial = 1:30
+
+    waitbar (trial/30, h, 'COLAMD: error handling') ;
 
     A = rand_matrix (1000, 1000, 2, 0, 0) ;
     [m n] = size (A) ;
@@ -192,7 +185,6 @@ for trial = 1:30
 	    end
 	end
 
-	fprintf ('.') ;
     end
 
 end
@@ -230,7 +222,6 @@ for trial = 1:400
 	error ('colamd2: Null cols are not ordered last in natural order') ;
     end
 
-    fprintf ('.') ;
 
 end
 fprintf (' OK\n') ;
@@ -238,6 +229,8 @@ fprintf (' OK\n') ;
 fprintf ('Matrices with a few empty rows and columns\n') ;
 
 for trial = 1:400
+
+    waitbar (trial/400, h, 'COLAMD: with empty rows/cols') ;
 
     % symmetric matrices
     n = 0 ;
@@ -267,8 +260,6 @@ for trial = 1:400
 	error ('symamd2: Null cols are not ordered last in natural order') ;
     end
 
-    fprintf ('.') ;
-
 end
 fprintf (' OK\n') ;
 
@@ -277,6 +268,8 @@ fprintf ('Matrices with a few empty rows\n') ;
 % Test matrices with null rows inserted.
 
 for trial = 1:400
+
+    waitbar (trial/400, h, 'COLAMD: with null rows') ;
 
     m = 0 ;
     while (m < 5)
@@ -294,12 +287,13 @@ for trial = 1:400
     if (stats (1) ~= 5)
 	error ('colamd2: wrong number of null rows') ;
     end
-    fprintf ('.') ;
+
 end
 fprintf (' OK\n') ;
 
 
 fprintf ('\ncolamd2 and symamd2:  all tests passed\n\n') ;
+close (h) ;
 
 %-------------------------------------------------------------------------------
 

@@ -167,7 +167,7 @@ int CHOLMOD(start)
     /* Common->called_nd is TRUE if cholmod_analyze called or NESDIS */
     Common->called_nd = FALSE ;
 
-    DEBUG_INIT ("cholmod start") ;
+    DEBUG_INIT ("cholmod start", Common) ;
     return (TRUE) ;
 }
 

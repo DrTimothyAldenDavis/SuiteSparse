@@ -188,7 +188,7 @@ int CHOLMOD(symmetry)
     cholmod_common *Common
 )
 {
-    double aij_real, aij_imag, aji_real, aji_imag ;
+    double aij_real = 0, aij_imag = 0, aji_real = 0, aji_imag = 0 ;
     double *Ax, *Az ;
     Int *Ap, *Ai, *Anz, *munch ;
     Int packed, nrow, ncol, xtype, is_symmetric, is_skew, is_hermitian, posdiag,
@@ -330,6 +330,11 @@ int CHOLMOD(symmetry)
 		{
 		    /* diagonal negative or imaginary; not chol candidate */
 		    posdiag = FALSE ;
+		}
+		if (aij_imag != 0.)
+		{
+		    /* imaginary part is present; not Hermitian */
+		    is_hermitian = FALSE ;
 		}
 
 	    }

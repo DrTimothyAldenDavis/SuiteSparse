@@ -8,36 +8,45 @@ function testall
 %   Copyright 2006-2007, Timothy A. Davis.
 %   http://www.cise.ufl.edu/research/sparse
 
-clear all
-clear functions
+h = waitbar (0, 'CXSparse') ;
+
 cs_test_make	    % compile all CSparse, Demo, Text, and Test mexFunctions
 
-fprintf ('\n------------------------ test1  \n') ; test1  ;
-fprintf ('\n------------------------ test2  \n') ; test2  ;
-fprintf ('\n------------------------ test3  \n') ; test3  ;
-fprintf ('\n------------------------ test4  \n') ; test4  ;
-fprintf ('\n------------------------ test5  \n') ; test5  ;
-fprintf ('\n------------------------ test6  \n') ; test6  ;
-fprintf ('\n------------------------ test7  \n') ; test7  ;
-fprintf ('\n------------------------ test8  \n') ; test8  ;
-fprintf ('\n------------------------ test9  \n') ; test9  ;
-fprintf ('\n------------------------ test10 \n') ; test10 ;
-fprintf ('\n------------------------ test11 \n') ; test11 ;
-fprintf ('\n------------------------ test12 \n') ; test12 ;
-fprintf ('\n------------------------ test13 \n') ; test13 ;
-fprintf ('\n------------------------ test14 \n') ; test14 ;
-fprintf ('\n------------------------ test15 \n') ; test15 ;
-fprintf ('\n------------------------ test16 \n') ; test16 ;
-fprintf ('\n------------------------ test17 \n') ; test17 ;
-fprintf ('\n------------------------ test18 \n') ; test18 ;
-fprintf ('\n------------------------ test19 \n') ; test19 ;
-fprintf ('\n------------------------ test20 \n') ; test20 ;
-fprintf ('\n------------------------ test21 \n') ; test21 ;
-fprintf ('\n------------------------ test22 \n') ; test22 ;
-fprintf ('\n------------------------ test23 \n') ; test23 ;
-fprintf ('\n------------------------ test24 \n') ; test24 ;
-fprintf ('\n------------------------ test25 \n') ; test25 ;
-fprintf ('\n------------------------ test26 \n') ; test26 ;
-fprintf ('\n------------------------ test27 \n') ; test27 ;
-fprintf ('\n------------------------ test28 \n') ; test28 ;
-fprintf ('\n------------------------ test_qr\n') ; test_qr ;
+ntests = 29 ;
+
+testwait (1,  ntests, h) ; test1  ;
+testwait (2,  ntests, h) ; test2  ;
+testwait (3,  ntests, h) ; test3  ;
+testwait (4,  ntests, h) ; test4  ;
+testwait (5,  ntests, h) ; test5  ;
+testwait (6,  ntests, h) ; test6  ;
+testwait (7,  ntests, h) ; test7  ;
+testwait (8,  ntests, h) ; test8  ;
+testwait (9,  ntests, h) ; test9  ;
+testwait (10, ntests, h) ; test10 ;
+testwait (11, ntests, h) ; test11 ;
+testwait (12, ntests, h) ; test12 ;
+testwait (13, ntests, h) ; test13 ;
+testwait (14, ntests, h) ; test14 ;
+testwait (15, ntests, h) ; test15 ;
+testwait (16, ntests, h) ; test16 ;
+testwait (17, ntests, h) ; test17 ;
+testwait (18, ntests, h) ; test18 ;
+testwait (19, ntests, h) ; test19 ;
+testwait (20, ntests, h) ; test20 ;
+testwait (21, ntests, h) ; test21 ;
+testwait (22, ntests, h) ; test22 ;
+testwait (23, ntests, h) ; test23 ;
+testwait (24, ntests, h) ; test24 ;
+testwait (25, ntests, h) ; test25 ;
+testwait (26, ntests, h) ; test26 ;
+testwait (27, ntests, h) ; test27 ;
+testwait (28, ntests, h) ; test28 ;
+testwait (29, ntests, h) ; test_qr ;
+
+close (h)
+
+function testwait (n,ntests,h)
+fprintf ('\n------------------------ test%d\n', n) ;
+waitbar (n/(ntests+1), h, sprintf ('CXSparse test %d of %d\n', n, ntests)) ;
+

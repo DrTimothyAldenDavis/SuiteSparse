@@ -1,7 +1,6 @@
 # KLU Demo Makefile.  The klu_simple demo is stand-alone.  The other demos
 # require CHOLMOD.
 
-
 default: all
 
 include ../../UFconfig/UFconfig.mk

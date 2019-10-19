@@ -4,7 +4,7 @@
 
 /* -----------------------------------------------------------------------------
  * CHOLMOD/Include/cholmod_blas.h.
- * Copyright (C) Univ. of Florida.  Author: Timothy A. Davis
+ * Copyright (C) 2005-2006, Univ. of Florida.  Author: Timothy A. Davis
  * CHOLMOD/Include/cholmod_blas.h is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
@@ -430,7 +430,7 @@ void BLAS_DGER (BLAS_INT *m, BLAS_INT *n, double *alpha,
     } \
 }
 
-void BLAS_ZGERU (BLAS_INT *m, BLAS_INT *n, double *alpha,
+void BLAS_ZGER (BLAS_INT *m, BLAS_INT *n, double *alpha,
 	double *X, BLAS_INT *incx, double *Y, BLAS_INT *incy,
 	double *A, BLAS_INT *lda) ;
 

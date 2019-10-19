@@ -1,11 +1,15 @@
+cc -O3  -I../Include -I../../AMD/Include -I../../UFconfig -o umf4 umf4.c ../Lib/libumfpack.a ../../AMD/Lib/libamd.a -lblas -lgfortran -lgfortranbegin  -lm
+f77 -O -o readhb readhb.f 
+f77 -O -o readhb_nozeros readhb_nozeros.f 
+f77 -O -o readhb_size readhb_size.f 
 ./readhb_nozeros < HB/can_24.psa > tmp/A
 ./readhb_size    < HB/can_24.psa > tmp/Asize
 ./umf4
 
 ===========================================================
-=== UMFPACK v5.1.0 ========================================
+=== UMFPACK v5.2.0 ========================================
 ===========================================================
-UMFPACK V5.1.0 (May 31, 2007), Control:
+UMFPACK V5.2.0 (Nov 1, 2007), Control:
     Matrix entry defined as: double
     Int (generic integer) defined as: int
 
@@ -47,7 +51,7 @@ triplet-form matrix, n_row = 24, n_col = 24 nz = 160. OK
 triplet-to-col time: wall 0 cpu 0
 column-form matrix, n_row 24 n_col 24, nz = 160. OK
 
-UMFPACK V5.1.0 (May 31, 2007), Info:
+UMFPACK V5.2.0 (Nov 1, 2007), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -114,7 +118,7 @@ Symbolic object: OK
 
 Numeric object:  OK
 
-UMFPACK V5.1.0 (May 31, 2007), Info:
+UMFPACK V5.2.0 (Nov 1, 2007), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -210,7 +214,7 @@ UMFPACK V5.1.0 (May 31, 2007), Info:
     total symbolic + numeric + solve flops:        1.21700e+03
 
 
-UMFPACK V5.1.0 (May 31, 2007): OK
+UMFPACK V5.2.0 (Nov 1, 2007): OK
 
 dense vector, n = 24. OK
 
@@ -275,9 +279,9 @@ AMD test done
 ./umf4
 
 ===========================================================
-=== UMFPACK v5.1.0 ========================================
+=== UMFPACK v5.2.0 ========================================
 ===========================================================
-UMFPACK V5.1.0 (May 31, 2007), Control:
+UMFPACK V5.2.0 (Nov 1, 2007), Control:
     Matrix entry defined as: double
     Int (generic integer) defined as: int
 
@@ -319,7 +323,7 @@ triplet-form matrix, n_row = 67, n_col = 67 nz = 294. OK
 triplet-to-col time: wall 0 cpu 0
 column-form matrix, n_row 67 n_col 67, nz = 294. OK
 
-UMFPACK V5.1.0 (May 31, 2007), Info:
+UMFPACK V5.2.0 (Nov 1, 2007), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -351,7 +355,7 @@ UMFPACK V5.1.0 (May 31, 2007), Info:
     Symbolic size (Units):                         252
     Symbolic size (MBytes):                        0
     symbolic factorization CPU time (sec):         0.00
-    symbolic factorization wallclock time(sec):    0.00
+    symbolic factorization wallclock time(sec):    0.01
 
     symbolic/numeric factorization:      upper bound               actual      %
     variable-sized part of Numeric object:
@@ -374,7 +378,7 @@ Symbolic object: OK
 
 Numeric object:  OK
 
-UMFPACK V5.1.0 (May 31, 2007), Info:
+UMFPACK V5.2.0 (Nov 1, 2007), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -406,7 +410,7 @@ UMFPACK V5.1.0 (May 31, 2007), Info:
     Symbolic size (Units):                         252
     Symbolic size (MBytes):                        0
     symbolic factorization CPU time (sec):         0.00
-    symbolic factorization wallclock time(sec):    0.00
+    symbolic factorization wallclock time(sec):    0.01
 
     matrix scaled: yes (divided each row by sum of abs values in each row)
     minimum sum (abs (rows of A)):              1.00000e+00
@@ -457,7 +461,7 @@ UMFPACK V5.1.0 (May 31, 2007), Info:
     total symbolic + numeric + solve flops:        8.66600e+03
 
 
-UMFPACK V5.1.0 (May 31, 2007): OK
+UMFPACK V5.2.0 (Nov 1, 2007): OK
 
 dense vector, n = 67. OK
 
@@ -522,9 +526,9 @@ AMD test done
 ./umf4
 
 ===========================================================
-=== UMFPACK v5.1.0 ========================================
+=== UMFPACK v5.2.0 ========================================
 ===========================================================
-UMFPACK V5.1.0 (May 31, 2007), Control:
+UMFPACK V5.2.0 (Nov 1, 2007), Control:
     Matrix entry defined as: double
     Int (generic integer) defined as: int
 
@@ -566,7 +570,7 @@ triplet-form matrix, n_row = 183, n_col = 183 nz = 1000. OK
 triplet-to-col time: wall 0 cpu 0
 column-form matrix, n_row 183 n_col 183, nz = 1000. OK
 
-UMFPACK V5.1.0 (May 31, 2007), Info:
+UMFPACK V5.2.0 (Nov 1, 2007), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -640,7 +644,7 @@ Symbolic object: OK
 
 Numeric object:  OK
 
-UMFPACK V5.1.0 (May 31, 2007), Info:
+UMFPACK V5.2.0 (Nov 1, 2007), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -743,7 +747,7 @@ UMFPACK V5.1.0 (May 31, 2007), Info:
     total symbolic + numeric + solve flops:        3.51560e+04
 
 
-UMFPACK V5.1.0 (May 31, 2007): OK
+UMFPACK V5.2.0 (Nov 1, 2007): OK
 
 dense vector, n = 183. OK
 
@@ -808,9 +812,9 @@ AMD test done
 ./umf4
 
 ===========================================================
-=== UMFPACK v5.1.0 ========================================
+=== UMFPACK v5.2.0 ========================================
 ===========================================================
-UMFPACK V5.1.0 (May 31, 2007), Control:
+UMFPACK V5.2.0 (Nov 1, 2007), Control:
     Matrix entry defined as: double
     Int (generic integer) defined as: int
 
@@ -852,7 +856,7 @@ triplet-form matrix, n_row = 183, n_col = 183 nz = 1069. OK
 triplet-to-col time: wall 0 cpu 0
 column-form matrix, n_row 183 n_col 183, nz = 1069. OK
 
-UMFPACK V5.1.0 (May 31, 2007), Info:
+UMFPACK V5.2.0 (Nov 1, 2007), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -926,7 +930,7 @@ Symbolic object: OK
 
 Numeric object:  OK
 
-UMFPACK V5.1.0 (May 31, 2007), Info:
+UMFPACK V5.2.0 (Nov 1, 2007), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -1029,7 +1033,7 @@ UMFPACK V5.1.0 (May 31, 2007), Info:
     total symbolic + numeric + solve flops:        4.24460e+04
 
 
-UMFPACK V5.1.0 (May 31, 2007): OK
+UMFPACK V5.2.0 (Nov 1, 2007): OK
 
 dense vector, n = 183. OK
 
@@ -1094,9 +1098,9 @@ AMD test done
 ./umf4
 
 ===========================================================
-=== UMFPACK v5.1.0 ========================================
+=== UMFPACK v5.2.0 ========================================
 ===========================================================
-UMFPACK V5.1.0 (May 31, 2007), Control:
+UMFPACK V5.2.0 (Nov 1, 2007), Control:
     Matrix entry defined as: double
     Int (generic integer) defined as: int
 
@@ -1138,7 +1142,7 @@ triplet-form matrix, n_row = 130, n_col = 130 nz = 1282. OK
 triplet-to-col time: wall 0 cpu 0
 column-form matrix, n_row 130 n_col 130, nz = 1282. OK
 
-UMFPACK V5.1.0 (May 31, 2007), Info:
+UMFPACK V5.2.0 (Nov 1, 2007), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -1205,7 +1209,7 @@ Symbolic object: OK
 
 Numeric object:  OK
 
-UMFPACK V5.1.0 (May 31, 2007), Info:
+UMFPACK V5.2.0 (Nov 1, 2007), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -1301,7 +1305,7 @@ UMFPACK V5.1.0 (May 31, 2007), Info:
     total symbolic + numeric + solve flops:        2.22530e+04
 
 
-UMFPACK V5.1.0 (May 31, 2007): OK
+UMFPACK V5.2.0 (Nov 1, 2007): OK
 
 dense vector, n = 130. OK
 
@@ -1366,9 +1370,9 @@ AMD test done
 ./umf4
 
 ===========================================================
-=== UMFPACK v5.1.0 ========================================
+=== UMFPACK v5.2.0 ========================================
 ===========================================================
-UMFPACK V5.1.0 (May 31, 2007), Control:
+UMFPACK V5.2.0 (Nov 1, 2007), Control:
     Matrix entry defined as: double
     Int (generic integer) defined as: int
 
@@ -1410,7 +1414,7 @@ triplet-form matrix, n_row = 130, n_col = 130 nz = 1037. OK
 triplet-to-col time: wall 0 cpu 0
 column-form matrix, n_row 130 n_col 130, nz = 1037. OK
 
-UMFPACK V5.1.0 (May 31, 2007), Info:
+UMFPACK V5.2.0 (Nov 1, 2007), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -1454,7 +1458,7 @@ UMFPACK V5.1.0 (May 31, 2007), Info:
     Symbolic size (Units):                         534
     Symbolic size (MBytes):                        0
     symbolic factorization CPU time (sec):         0.00
-    symbolic factorization wallclock time(sec):    0.00
+    symbolic factorization wallclock time(sec):    0.01
 
     symbolic/numeric factorization:      upper bound               actual      %
     variable-sized part of Numeric object:
@@ -1477,7 +1481,7 @@ Symbolic object: OK
 
 Numeric object:  OK
 
-UMFPACK V5.1.0 (May 31, 2007), Info:
+UMFPACK V5.2.0 (Nov 1, 2007), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -1521,7 +1525,7 @@ UMFPACK V5.1.0 (May 31, 2007), Info:
     Symbolic size (Units):                         534
     Symbolic size (MBytes):                        0
     symbolic factorization CPU time (sec):         0.00
-    symbolic factorization wallclock time(sec):    0.00
+    symbolic factorization wallclock time(sec):    0.01
 
     matrix scaled: yes (divided each row by sum of abs values in each row)
     minimum sum (abs (rows of A)):              7.94859e-01
@@ -1573,7 +1577,7 @@ UMFPACK V5.1.0 (May 31, 2007), Info:
     total symbolic + numeric + solve flops:        1.99340e+04
 
 
-UMFPACK V5.1.0 (May 31, 2007): OK
+UMFPACK V5.2.0 (Nov 1, 2007): OK
 
 dense vector, n = 130. OK
 
@@ -1638,10 +1642,10 @@ AMD test done
 ./umf4 a 1e-6
 
 ===========================================================
-=== UMFPACK v5.1.0 ========================================
+=== UMFPACK v5.2.0 ========================================
 ===========================================================
 droptol 1e-06
-UMFPACK V5.1.0 (May 31, 2007), Control:
+UMFPACK V5.2.0 (Nov 1, 2007), Control:
     Matrix entry defined as: double
     Int (generic integer) defined as: int
 
@@ -1683,7 +1687,7 @@ triplet-form matrix, n_row = 130, n_col = 130 nz = 1037. OK
 triplet-to-col time: wall 0 cpu 0
 column-form matrix, n_row 130 n_col 130, nz = 1037. OK
 
-UMFPACK V5.1.0 (May 31, 2007), Info:
+UMFPACK V5.2.0 (Nov 1, 2007), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -1750,7 +1754,7 @@ Symbolic object: OK
 
 Numeric object:  OK
 
-UMFPACK V5.1.0 (May 31, 2007), Info:
+UMFPACK V5.2.0 (Nov 1, 2007), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -1846,7 +1850,7 @@ UMFPACK V5.1.0 (May 31, 2007), Info:
     total symbolic + numeric + solve flops:        2.47130e+04
 
 
-UMFPACK V5.1.0 (May 31, 2007): OK
+UMFPACK V5.2.0 (Nov 1, 2007): OK
 
 dense vector, n = 130. OK
 

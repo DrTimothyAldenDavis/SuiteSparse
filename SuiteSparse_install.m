@@ -1,4 +1,4 @@
-function SuiteSparse_install
+function SuiteSparse_install (do_demo)
 %SuiteSparse_install: compiles and installs all of SuiteSparse
 % A Suite of Sparse matrix packages, authored or co-authored by Tim Davis, Univ.
 % Florida. You must be in the same directory as SuiteSparse_install to use this.
@@ -19,6 +19,10 @@ function SuiteSparse_install
 % LDL            sparse LDL' factorization
 % UFcollection   tools for managing the UF Sparse Matrix Collection
 % RBio           read/write Rutherford/Boeing files (requires Fortran compiler)
+% SSMULT         sparse matrix times sparse matrix
+% MESHND         2D and 3D regular mesh generation and nested dissection
+% LINFACTOR      illustrates the use of LU and CHOL (MATLAB 7.3 or later)
+% MATLAB_Tools   various simple m-files and demos
 %
 % CXSparse is installed in place of CSparse; cd to CSparse/MATLAB and type
 % cs_install if you wish to use the latter.  Since Microsoft Windows does not
@@ -33,7 +37,8 @@ function SuiteSparse_install
 %    help SuiteSparse      % for more details
 %
 % See also AMD, COLAMD, CAMD, CCOLAMD, CHOLMOD, UMFPACK, CSPARSE, CXSPARSE,
-%      UFget, RBio, UFcollection, KLU, BTF, SuiteSparse, PATHTOOL, PATH.
+%      UFget, RBio, UFcollection, KLU, BTF, MESHND, SSMULT, LINFACTOR,
+%      SuiteSparse, PATHTOOL, PATH.
 
 % Copyright 1990-2007, Timothy A. Davis.
 % http://www.cise.ufl.edu/research/sparse
@@ -42,9 +47,16 @@ function SuiteSparse_install
 % Siva Rajamanickam.
 
 paths = { } ;
+SuiteSparse = pwd ;
+
+% add MATLAB_Tools to the path (for getversion)
+cd ([SuiteSparse '/MATLAB_Tools']) ;
+paths = add_to_path (paths, pwd) ;
+cd (SuiteSparse) ;
 
 % determine the MATLAB version (6.1, 6.5, 7.0, ...)
-[v,pc] = getversion ;
+v = getversion ;
+pc = ispc ;
 
 % check if METIS 4.0.1 is present where it's supposed to be
 have_metis = exist ('metis-4.0', 'dir') ;
@@ -58,10 +70,9 @@ end
 % print the introduction
 help SuiteSparse_install
 
-fprintf ('MATLAB version %.1f (%s)\n', v, version) ;
+fprintf ('MATLAB version %g (%s)\n', v, version) ;
 
 % add SuiteSparse to the path
-SuiteSparse = pwd ;
 fprintf ('\nPlease wait while SuiteSparse is compiled and installed...\n') ;
 paths = add_to_path (paths, SuiteSparse) ;
 
@@ -178,6 +189,15 @@ catch
     fprintf ('KLU not installed\n') ;
 end
 
+% compile and install SSMULT
+try
+    cd ([SuiteSparse '/SSMULT']) ;
+    paths = add_to_path (paths, pwd) ;
+    ssmult_install (0) ;
+catch
+    fprintf ('SSMULT not installed\n') ;
+end
+
 % compile and install UFcollection
 try
     % do not try to compile with large-file I/O for MATLAB 6.5 or earlier
@@ -186,6 +206,25 @@ try
     UFcollection_install (v < 7.0) ;
 catch
     fprintf ('UFcollection not installed\n') ;
+end
+
+% install LINFACTOR, MESHND, MATLAB_Tools/*
+try
+    cd ([SuiteSparse '/MESHND']) ;
+    paths = add_to_path (paths, pwd) ;
+    if (v > 7.2)
+        % LINFACTOR requires MATLAB 7.3 or later
+        cd ([SuiteSparse '/LINFACTOR']) ;
+        paths = add_to_path (paths, pwd) ;
+        fprintf ('LINFACTOR installed\n') ;
+    end
+    cd ([SuiteSparse '/MATLAB_Tools/shellgui']) ;
+    paths = add_to_path (paths, pwd) ;
+    cd ([SuiteSparse '/MATLAB_Tools/waitmex']) ;
+    paths = add_to_path (paths, pwd) ;
+    fprintf ('MESHND, MATLAB_Tools installed\n') ;
+catch
+    fprintf ('LINFACTOR, MESHND, or MATLAB_Tools not installed\n') ;
 end
 
 % compile and install RBio (not on Windows ... no default Fortran compiler)
@@ -201,19 +240,26 @@ if (~pc)
 end
 
 % post-install wrapup
+
 cd (SuiteSparse)
-fprintf ('SuiteSparse is now installed.  Hit enter to try the\n') ;
-y = input ('SuiteSparse demo (or "n" to quit): ', 's') ;
-if (isempty (y))
-    y = 'y' ;
+fprintf ('SuiteSparse is now installed.\n') ;
+
+if (nargin < 1)
+    % ask if demo should be run
+    y = input ('Hit enter to run the SuiteSparse demo (or "n" to quit): ', 's') ;
+    if (isempty (y))
+        y = 'y' ;
+    end
+    do_demo = (y (1) ~= 'n') ;
 end
-if (y (1) ~= 'n')
+if (do_demo)
     try
 	SuiteSparse_demo ;
     catch
 	fprintf ('SuiteSparse demo failed\n') ;
     end
 end
+
 fprintf ('\nSuiteSparse installation is complete.  The following paths\n') ;
 fprintf ('have been added for this session.  Use pathtool to add them\n') ;
 fprintf ('permanently.  If you cannot save the new path because of file\n');
@@ -224,28 +270,10 @@ for k = 1:length (paths)
 end
 cd (SuiteSparse)
 
+fprintf ('\nSuiteSparse for MATLAB %g installation complete\n', getversion) ;
 
 %-------------------------------------------------------------------------------
 function paths = add_to_path (paths, newpath)
 % add a path
 addpath (newpath) ;
 paths = [paths { newpath } ] ;						    %#ok
-
-%-------------------------------------------------------------------------------
-function [v,pc] = getversion
-% determine the MATLAB version, and return it as a double.
-% only the primary and secondary version numbers are kept.
-% MATLAB 7.0.4 becomes 7.0, version 6.5.2 becomes 6.5, etc.
-v = version ;
-t = find (v == '.') ;
-if (length (t) > 1)
-    v = v (1:(t(2)-1)) ;
-end
-v = str2double (v) ;
-try
-    % ispc does not appear in MATLAB 5.3
-    pc = ispc ;
-catch
-    % if ispc fails, assume we are on a Windows PC if it's not unix
-    pc = ~isunix ;
-end

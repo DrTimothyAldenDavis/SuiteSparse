@@ -12,6 +12,7 @@
 /* P [0..r-1] must be an r-permutation of 0..n-1 */
 
 #include "umf_internal.h"
+#include "umf_is_permutation.h"
 
 GLOBAL Int UMF_is_permutation
 (

@@ -1,4 +1,4 @@
-function [p count] = analyze (A, mode, k)				    %#ok
+function [p, count] = analyze (A, mode, k)				    %#ok
 %ANALYZE order and analyze a matrix using CHOLMOD's best-effort ordering.
 %
 %   Example:

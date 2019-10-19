@@ -509,7 +509,9 @@ int CHOLMOD(rowcolcounts)
     /* ---------------------------------------------------------------------- */
 
     Common->mark = EMPTY ;
-    CHOLMOD(clear_flag) (Common) ;
+    /* CHOLMOD(clear_flag) (Common) ; */
+    CHOLMOD_CLEAR_FLAG (Common) ;
+
     ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
 
     /* ---------------------------------------------------------------------- */

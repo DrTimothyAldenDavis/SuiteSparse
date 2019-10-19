@@ -1,4 +1,4 @@
-UMFPACK Version 5.0.2:  a set of routines solving sparse linear systems via LU
+UMFPACK :  a set of routines solving sparse linear systems via LU
     factorization.  Requires three other packages:  the BLAS (dense matrix
     operations), AMD (sparse matrix minimum degree ordering), and UFconfig.
     Includes a C-callable and MATLAB interface, and a basic FORTRAN 77
@@ -42,22 +42,22 @@ UMFPACK License:
     UMFPACK implies that you agree to this License.
 
     This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
+    modify it under the terms of the GNU General Public
     License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+    version 2 of the License, or (at your option) any later version.
 
     This library is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+    General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public
+    You should have received a copy of the GNU General Public
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301
     USA
 
     Permission is hereby granted to use or copy this program under the
-    terms of the GNU LGPL, provided that the Copyright, this License,
+    terms of the GNU GPL, provided that the Copyright, this License,
     and the Availability of the original version is retained on all copies.
     User documentation of any code that uses this code or any modified
     version of this code must cite the Copyright, this License, the
@@ -85,7 +85,7 @@ Availability:
 
 Refer to ../AMD/README for the License for AMD, which is a separate
 package for ordering sparse matrices that is required by UMFPACK.
-UMFPACK v4.5 cannot use AMD v1.1 or earlier.  UMFPACK 5.0
+UMFPACK v4.5 cannot use AMD v1.1 or earlier.  UMFPACK 5.x
 requires AMD v2.0 or later.
 
 --------------------------------------------------------------------------------

@@ -11,6 +11,7 @@
 /* The UMF_mem_* routines manage the Numeric->Memory memory space. */
 
 #include "umf_internal.h"
+#include "umf_mem_alloc_tail_block.h"
 
 /* allocate nunits from tail of Numeric->Memory */
 /* (requires nunits+1, for header). */

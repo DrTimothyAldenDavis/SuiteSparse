@@ -33,7 +33,14 @@ function cholmod_make (metis_path)
 
 details = 0 ;	    % 1 if details of each command are to be printed
 
-[v,pc] = getversion ;
+v = getversion ;
+try
+    % ispc does not appear in MATLAB 5.3
+    pc = ispc ;
+catch
+    % if ispc fails, assume we are on a Windows PC if it's not unix
+    pc = ~isunix ;
+end
 
 d = '' ;
 if (~isempty (strfind (computer, '64')))
@@ -89,21 +96,32 @@ else
     include = ['-DNPARTITION ' include] ;
 end
 
+
+%-------------------------------------------------------------------------------
+% BLAS option
+%-------------------------------------------------------------------------------
+
+% This is exceedingly ugly.  The MATLAB mex command needs to be told where to
+% fine the LAPACK and BLAS libraries, which is a real portability nightmare.
+
 if (pc)
     if (v < 6.5)
-	% MATLAB 6.1 and earlier: use the version supplied here
-	lapack = 'lcc_lib/libmwlapack.lib' ;
-	fprintf ('Using %s.  If this fails with dgemm and others\n', lapack) ;
-	fprintf ('undefined, then edit cholmod_make.m and modify the') ;
-	fprintf (' statement:\nlapack = ''%s'' ;\n', lapack) ;
+        % MATLAB 6.1 and earlier: use the version supplied here
+        lapack = 'lcc_lib/libmwlapack.lib' ;
+    elseif (v < 7.5)
+        lapack = 'libmwlapack.lib' ;
     else
-	lapack = 'libmwlapack.lib' ;
+        lapack = 'libmwlapack.lib libmwblas.lib' ;
     end
 else
-    % For other systems, mex should find lapack on its own, but this has been
-    % broken in MATLAB R2007a; the following is now required.
-    lapack = '-lmwlapack' ;
+    if (v < 7.5)
+        lapack = '-lmwlapack' ;
+    else
+        lapack = '-lmwlapack -lmwblas' ;
+    end
 end
+
+%-------------------------------------------------------------------------------
 
 include = strrep (include, '/', filesep) ;
 
@@ -337,21 +355,7 @@ end
 eval (s) ;
 
 %-------------------------------------------------------------------------------
-function [v,pc] = getversion
+function v = getversion
 % determine the MATLAB version, and return it as a double.
-% only the primary and secondary version numbers are kept.
-% MATLAB 7.0.4 becomes 7.0, version 6.5.2 becomes 6.5, etc.
-v = version ;
-t = find (v == '.') ;
-if (length (t) > 1)
-    v = v (1:(t(2)-1)) ;
-end
-v = str2double (v) ;
-try
-    % ispc does not appear in MATLAB 5.3
-    pc = ispc ;
-catch
-    % if ispc fails, assume we are on a Windows PC if it's not unix
-    pc = ~isunix ;
-end
-
+v = sscanf (version, '%d.%d.%d') ;
+v = 10.^(0:-1:-(length(v)-1)) * v ;

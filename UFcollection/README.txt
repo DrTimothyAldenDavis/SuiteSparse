@@ -1,4 +1,4 @@
-UFcollection, Version 1.1.0, May 31, 2007.
+UFcollection, Version 1.1.1, Nov 1, 2007.
 
 UFcollection is a MATLAB toolbox for managing the UF Sparse Matrix Collection.
 If you are a MATLAB user of the collection, you would not normally need to use
@@ -131,26 +131,39 @@ UFcollection), and METIS 4.0.1.
 
     Save to a MATLAB mat-file.  In the mat directory, do:
 
-    save (Problem.name, 'Problem') ;
+    save (Problem.name, 'Problem', '-v7') ;
 
 5) Compute matrix statistics and extend the UF_Index:
 
     UFindex (ids)
 
     where ids is a list of the new matrix id's.
+
+    If updating UF_Index.mat, a copy must exist in the current directory for
+    UFindex to find it.  (At UF, do so in the 2sparse/Matrix directory,
+    and copy the current UF_Index.mat there first).
+
     Copy the new UF_Index.mat file into /cise/research/sparse/public_html/mat.
 
 6) Update the web pages:
 
+    In the /cise/research/sparse/public_html directory, do:
+
     UFlists
     UFpages (1, ids)
 
-7) Export the matrix in Matrix Market and Rutherford/Boeing formats:
+7) Export the matrix in Matrix Market and Rutherford/Boeing formats.
 
     UFexport (ids)
 
+    or
+
+    UFexport (ids, 'check')
+
     then tar and compress the resulting MM/Group/Name and RB/Group/Name
     directories, one per Problem (if UFexport has not already done so).
+    Copy the MM and RB matrices from the 2sparse/MM and /RB directories into
+    the sparse/public_html directory.
 
 8) Make the collection world-readable.  In /cise/research/sparse/public_html do:
 

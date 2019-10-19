@@ -1,3 +1,14 @@
+Nov 1, 2007, version 5.2.0
+
+    * change of license to GNU GPL from GNU LGPL.  This is the primary change to
+	this version.
+
+    * minor lint cleanup
+
+    * port to MATLAB 7.5 (added -lmwblas to mex command)
+
+    * added info output to the umfpack_btf command.
+
 May 31, 2007, version 5.1.0
 
     * port to 64-bit MATLAB

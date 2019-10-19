@@ -32,8 +32,10 @@ for k = 1:length (f)
     A = A|A' ;
 
     S = A ;
-    if (mod (k,2) == 0)
-	S = S + 1i * sprand (A) ;
+    if (~ispc)
+        if (mod (k,2) == 0)
+            S = S + 1i * sprand (A) ;
+        end
     end
 
     tic ;

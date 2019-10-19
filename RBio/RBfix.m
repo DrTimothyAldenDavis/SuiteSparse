@@ -1,4 +1,4 @@
-function [A Z title key mtype] = RBfix (filename)
+function [A, Z, title, key, mtype] = RBfix (filename)
 %RBFIX read a possibly corrupted matrix from a R/B file
 % (assembled format only).  Usage:
 %

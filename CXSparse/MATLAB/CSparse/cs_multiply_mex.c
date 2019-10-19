@@ -15,7 +15,7 @@ void mexFunction
     if (mxIsComplex (pargin [0]) || mxIsComplex (pargin [1]))
     {
 #ifndef NCOMPLEX
-	cs_cl Amatrix, Bmatrix, A1matrix, B1matrix, *A, *B, *C, *D, *A1, *B1 ;
+	cs_cl A1matrix, B1matrix, *A, *B, *C, *D, *A1, *B1 ;
 	A1 = cs_cl_mex_get_sparse (&A1matrix, 0, pargin [0]) ;
 	A = cs_cl_transpose (A1, 1) ;
 	cs_cl_free (A1->x) ;		/* complex copy no longer needed */

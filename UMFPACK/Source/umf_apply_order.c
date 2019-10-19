@@ -13,6 +13,7 @@
 */
 
 #include "umf_internal.h"
+#include "umf_apply_order.h"
 
 GLOBAL void UMF_apply_order
 (

@@ -11,9 +11,7 @@ SuiteSparse_install.  All packages will be compiled, and several demos will be
 run.
 ================================================================================
 
-May 31, 2007.  SuiteSparse version 3.0.
-
-UF suite of sparse matrix algorithms:
+Nov 1, 2007.  SuiteSparse version 3.1
 
     AMD		approximate minimum degree ordering
 
@@ -51,10 +49,20 @@ UF suite of sparse matrix algorithms:
 
     LPDASA	LP dual active set algorithm (to appear)
 
+    MESHND      2D and 3D mesh generation and nested dissection ordering
 
-CHOLMOD and KLU optionally use METIS 4.0.1
-(http://www-users.cs.umn.edu/~karypis/metis).  Place a copy of the metis-4.0
-directory in the same directory (SuiteSparse) containing this README file.
+    SSMULT      sparse matrix multiply for MATLAB
+
+    LINFACTOR   simple m-file demonstrating how to use LU and CHOL in
+                MATLAB to solve Ax=b
+
+    MATLAB_Tools    various simple m-files for use in MATLAB
+
+CHOLMOD optionally uses METIS 4.0.1
+(http://www-users.cs.umn.edu/~karypis/metis).  To use METIS, place a copy of
+the metis-4.0 directory in the same directory (CHOLMOD_ACM_TOMS) containing
+this README file.  The use of METIS will improve the ordering quality in
+CHOLMOD.
 
 Refer to each package for license, copyright, and author information.  All
 codes are authored or co-authored by Timothy A. Davis, CISE Dept., Univ. of
@@ -70,34 +78,58 @@ If you use SuiteSparse_install in MATLAB, stop reading here.
 To use "make" in Unix/Linux:
 ----------------------------
 
+(1) Use the right BLAS and LAPACK libraries
+
     See http://www.netlib.org/blas for the Fortran reference BLAS (slow, but
     they work).  See http://www.tacc.utexas.edu/~kgoto/ or
     http://www.cs.utexas.edu/users/flame/goto/ for an optimized BLAS.  See
     http://www.netlib.org/lapack for LAPACK.  The UFconfig/UFconfig.mk file
     assumes the vanilla BLAS (-lblas).  You should use an optimized BLAS;
     otherwise UMFPACK and CHOLMOD will be slow.  Change -lblas to -l(your BLAS
-    library here).
+    library here) in the UFconfig/UFconfig.mk file.
+
+(2) Configure METIS (or don't use METIS)
 
     cd to metis-4.0 and edit the Makefile.in file.  I recommend making these
     changes to metis-4.0/Makefile.in:
 
-    CC = gcc
-    OPTFLAGS = -O3
-    COPTIONS = -fexceptions -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
+        CC = gcc
+        OPTFLAGS = -O3
+        COPTIONS = -fexceptions -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
 
-    then type "make".  Now compile CHOLMOD.
+    Next, cd to metis-4.0 and type "make".
 
-    To compile all the C-callable libraries in SuiteSparse:  First, edit the
-    UFconfig/UFconfig.mk file (see that file for instructions), if necessary.
-    Next, type "make" in this directory to compile all packages in this
-    distribution.  CHOLMOD can be compiled without METIS (use -DNPARTITION);
-    this option is handled by SuiteSparse_install.m in MATLAB automatically, if
-    the metis-4.0 directory does not appear (in the same directory as CHOLMOD,
-    AMD, UMFPACK, etc).
+    If you do not wish to use METIS, then edit the UFconfig/UFconfig.mk file,
+    and change the line
 
-    To compile each package, cd to the top-level directory (AMD, COLAMD, etc)
-    and type "make".  Type "make clean" in the same directory to remove all but
-    the compiled libraries.  Type "make distclean" to remove all files not in
-    the original distribution.  Alternatively, just type "make" in this
-    directory.
+        CHOLMOD_CONFIG =
+
+    to
+
+        CHOLMOD_CONFIG = -DNPARTITION
+
+    Also change the line
+
+        METIS = ../../metis-4.0/libmetis.a
+
+    to
+
+        METIS =
+
+(3) Make other changes to UFconfig/UFconfig.mk as needed
+
+    Edit the UFconfig/UFconfig.mk file as needed.  Directions are in that file.
+    If you have compiled SuiteSparse already (partially or completely), then
+    whenever you edit the UFconfig/UFconfig.mk file, you should then type
+    "make purge" (or "make realclean") in this directory.
+
+(4) Type "make" in this directory.  All packages will be be compiled.  METIS
+    will be compiled if you have it.  Several demos will be run.
+
+    The libraries will appear in */Lib/*.a.  Include files, as needed by user
+    programs that use CHOLMOD, AMD, CAMD, COLAMD, CCOLAMD, BTF, KLU, UMFPACK,
+    LDL, etc. are in */Include/*.h.
+
+    The METIS library is in metis-4.0/libmetis.a.  METIS Include files (not
+    needed by the end user of SuiteSparse) are in located in metis-4.0/Lib/*.h.
 

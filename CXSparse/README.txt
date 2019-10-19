@@ -525,6 +525,11 @@ Change Log:
 Refer to CSparse for changes in CSparse, which are immediately propagated
 into CXSparse (those Change Log entries are not repeated here).
 
+Nov 1, 2007.  version 2.2.1
+
+    CXSparse/MATLAB/Test ported to Windows
+
+
 May 31, 2007.  version 2.2.0
 
     * back-port to MATLAB 7.2 and earlier (which does not have mwIndex).
@@ -565,4 +570,3 @@ Mar 6, 2006
 
     "double complex" changed to "double _Complex", to avoid conflicts when
     CXSparse is compiled with a C++ compiler.  Other minor changes to cs.h.
-

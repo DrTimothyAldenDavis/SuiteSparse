@@ -67,7 +67,7 @@ void mexFunction
     else if (mxIsComplex (pargin [0]) || mxIsComplex (pargin [1]))
     {
 #ifndef NCOMPLEX
-	cs_cl Lmatrix, Bmatrix, *L, *B, *X ;
+	cs_cl Lmatrix, *L ;
 	cs_complex_t *x ;
 	L = cs_cl_mex_get_sparse (&Lmatrix, 1, pargin [0]) ;	/* get L */
 	n = L->n ;

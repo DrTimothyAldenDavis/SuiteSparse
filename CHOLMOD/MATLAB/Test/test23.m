@@ -59,9 +59,10 @@ try % symmmd, use amd if it fails
     method = 'symmmd' ;
     p = symmmd (A) ;
 catch
+    % use AMD from SuiteSparse
     method = 'amd' ;
     fprintf ('\nsymmmd not available, using amd instead.\n') ;
-    p = amd (A) ;
+    p = amd2 (A) ;
 end
 S = A (p,p) ;
 

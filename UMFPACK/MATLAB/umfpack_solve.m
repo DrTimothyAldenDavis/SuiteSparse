@@ -1,4 +1,4 @@
-function x = umfpack_solve (arg1, op, arg2, Control)
+function [x, info] = umfpack_solve (arg1, op, arg2, Control)
 %UMFPACK_SOLVE x = A\b or x = b/A
 %
 % Example:
@@ -44,6 +44,8 @@ if (nargin < 4)
     Control = umfpack2 ;
 end
 
+info = [0 0 0] ; % [nnz(L), nnz(U), 0], optional 2nd output
+
 %-------------------------------------------------------------------------------
 % solve the system
 %-------------------------------------------------------------------------------
@@ -58,13 +60,15 @@ if (op == '\')
     elseif (n1 == 1 & ~issparse (b))					    %#ok
 
 	% the UMFPACK '\' requires b to be a dense column vector
-	x = umfpack2 (A, '\', b, Control) ;
+	[x info] = umfpack2 (A, '\', b, Control) ;
+        info = [info(78) info(79) 0] ;
 
     else
 
 	% factorize with UMFPACK and do the forward/back solves in MATLAB
-	[L, U, P, Q, R] = umfpack2 (A, Control) ;
+	[L, U, P, Q, R, info] = umfpack2 (A, Control) ;
 	x = Q * (U \ (L \ (P * (R \ b)))) ;
+        info = [info(78) info(79) 0] ;
 
     end
 
@@ -78,14 +82,16 @@ else
     elseif (m1 == 1 & ~issparse (b))					    %#ok
 
 	% the UMFPACK '\' requires b to be a dense column vector
-	x = umfpack2 (b, '/', A, Control) ;
+	[x info] = umfpack2 (b, '/', A, Control) ;
+        info = [info(78) info(79) 0] ;
 
     else
 
 	% factorize with UMFPACK and do the forward/back solves in MATLAB
 	% this mimics the behavior of x = b/A, except for the row scaling
-	[L, U, P, Q, R] = umfpack2 (A.', Control) ;
+	[L, U, P, Q, R, info] = umfpack2 (A.', Control) ;
 	x = (Q * (U \ (L \ (P * (R \ (b.')))))).' ;
+        info = [info(78) info(79) 0] ;
 
 	% an alternative method:
 	% [L, U, P, Q, r] = umfpack2 (A, Control) ;

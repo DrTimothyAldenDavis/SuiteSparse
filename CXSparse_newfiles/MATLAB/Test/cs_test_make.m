@@ -25,6 +25,11 @@ cd ('../Test') ;
 mexfunc = { 'cs_ipvec', 'cs_pvec', 'cs_sparse2', ...
     'cs_reach', 'cs_maxtransr', 'cs_reachr', 'cs_rowcnt', 'cs_frand' } ;
 
+if (ispc)
+    % Windows does not support ANSI C99
+    mexcmd = [mexcmd ' -DNCOMPLEX'] ;
+end
+
 for i = 1:length(mexfunc)
     [s t tobj] = cs_must_compile ('', mexfunc{i}, '_mex', ...
  	['.' mexext], 'cs_test_make.m', force) ;

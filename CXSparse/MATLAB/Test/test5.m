@@ -17,11 +17,14 @@ for trial = 1:200
     d = rand (1) ;
     A = sprandn (m,n,d) ;
     B = sprandn (m,n,d) ;
-    if (mod (trial, 4) == 0)
-	A = A + 1i*sprand(A) ;
-    end
-    if (mod (trial, 2) == 0)
-	B = B + 1i*sprand(B) ;
+
+    if (~ispc)
+        if (mod (trial, 4) == 0)
+            A = A + 1i*sprand(A) ;
+        end
+        if (mod (trial, 2) == 0)
+            B = B + 1i*sprand(B) ;
+        end
     end
 
     C = A+B ;
@@ -40,11 +43,13 @@ for trial = 1:200
     alpha = pi ;
     beta = 3 ;
 
-    if (rand () > .5)
-	alpha = alpha + rand ( ) * 1i ;
-    end
-    if (rand () > .5)
-	beta = beta + rand ( ) * 1i ;
+    if (~ispc)
+        if (rand () > .5)
+            alpha = alpha + rand ( ) * 1i ;
+        end
+        if (rand () > .5)
+            beta = beta + rand ( ) * 1i ;
+        end
     end
 
     C = alpha*A+B ;

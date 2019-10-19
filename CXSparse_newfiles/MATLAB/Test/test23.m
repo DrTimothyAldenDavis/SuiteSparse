@@ -24,8 +24,11 @@ for trials = 1:1000
     d = rand (1) * 4 * max (m,n) / max (m*n,1) ;
     A = sprandn (m,n,d) ;
     % S = sprandn (m,m,d) + speye (m) ;
-    if (rand ( ) > .5)
-	A = A + 1i * sprand (A) ;
+
+    if (~ispc)
+        if (rand ( ) > .5)
+            A = A + 1i * sprand (A) ;
+        end
     end
 
     cs_dmspy (A) ;

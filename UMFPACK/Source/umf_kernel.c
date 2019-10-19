@@ -18,6 +18,7 @@
 */
 
 #include "umf_internal.h"
+#include "umf_kernel.h"
 #include "umf_kernel_init.h"
 #include "umf_init_front.h"
 #include "umf_start_front.h"

@@ -262,7 +262,7 @@ cholmod_sparse *sputil_get_sparse_pattern
     cholmod_common *cm
 )
 {
-    cholmod_sparse *A ;
+    cholmod_sparse *A = NULL ;
 
     if (!mxIsSparse (Amatlab))
     {
@@ -774,14 +774,15 @@ cholmod_sparse *sputil_extract_zeros
 /* === sputil_drop_zeros ==================================================== */
 /* ========================================================================== */
 
-/* Drop zeros from a CHOLMOD sparse matrix (zomplex or real).  This is very
- * similar to CHOLMOD/MatrixOps/cholmod_drop, except that this routine has
+/* Drop zeros from a packed CHOLMOD sparse matrix (zomplex or real).  This is
+ * very similar to CHOLMOD/MatrixOps/cholmod_drop, except that this routine has
  * no tolerance parameter and it can handle zomplex matrices.  NaN's are left
  * in the matrix.  If this is used on the sparse matrix version of the factor
  * L, then the update/downdate methods cannot be applied to L (ldlupdate).
+ * Returns the number of entries dropped.
  */
 
-void sputil_drop_zeros
+Int sputil_drop_zeros
 (
     cholmod_sparse *S
 )
@@ -789,11 +790,11 @@ void sputil_drop_zeros
     double sik, zik ;
     Int *Sp, *Si ;
     double *Sx, *Sz ;
-    Int pdest, k, ncol, p, pend ;
+    Int pdest, k, ncol, p, pend, nz ;
 
     if (S == NULL)
     {
-	return ;
+	return (0) ;
     }
 
     Sp = S->p ;
@@ -802,6 +803,7 @@ void sputil_drop_zeros
     Sz = S->z ;
     pdest = 0 ;
     ncol = S->ncol ;
+    nz = Sp [ncol] ;
 
     if (S->xtype == CHOLMOD_ZOMPLEX)
     {
@@ -850,6 +852,7 @@ void sputil_drop_zeros
 	}
     }
     Sp [ncol] = pdest ;
+    return (nz - pdest) ;
 }
 
 
@@ -860,6 +863,12 @@ void sputil_drop_zeros
 /* copy i or j arguments into an Int vector.  For small integer types, i and
  * and j can be returned with negative entries; this error condition is caught
  * later, in cholmod_triplet_to_sparse.
+ *
+ * TODO: if the mxClassID matches the default Int integer (INT32 for 32-bit
+ * MATLAB and INT64 for 64-bit), then it would save memory to patch in the
+ * vector with a pointer copy, rather than making a copy of the whole vector.
+ * This would require that the 1-based i and j vectors be converted on the fly
+ * to 0-based vectors in cholmod_triplet_to_sparse.
  */
 
 Int sputil_copy_ij		/* returns the dimension, n */
@@ -978,7 +987,8 @@ Int sputil_copy_ij		/* returns the dimension, n */
 
 		for (k = 0 ; ok3 && k < nz ; k++)
 		{
-		    double y = (Int) (((UINT32_T *) vector) [k]) ;
+		    double y = (((UINT32_T *) vector) [k]) ;
+		    i = (Int) y ;
 		    ok3 = (y < Int_max) ;
 		    I [k] = i - 1 ;
 		    n2 = MAX (n2, i) ;
@@ -1284,7 +1294,7 @@ mxArray *sputil_dense_to_sparse (const mxArray *arg)
 /* ========================================================================== */
 
 /* Convert a triplet form into a sparse matrix.  If complex, s must be double.
- * If real, s can be of any class.  Optionally creates a
+ * If real, s can be of any class.
  */
 
 cholmod_sparse *sputil_triplet_to_sparse
@@ -1840,7 +1850,7 @@ void sputil_sparse
     cholmod_sparse *S, *Z ;
     cholmod_common Common, *cm ;
     Int nrow, ncol, k, nz, i_is_scalar, j_is_scalar, s_is_sparse,
-	s_is_scalar, ilen, jlen, slen, nzmax, i, j, s_complex ;
+	s_is_scalar, ilen, jlen, slen, nzmax, i, j, s_complex, ndropped ;
     mxClassID i_class, j_class, s_class ;
 
     /* ---------------------------------------------------------------------- */
@@ -1873,6 +1883,9 @@ void sputil_sparse
 	/* ------------------------------------------------------------------ */
 	/* S = sparse (A) where A is sparse or full */
 	/* ------------------------------------------------------------------ */
+
+	nrow = mxGetM (pargin [0]) ;
+	ncol = mxGetN (pargin [0]) ;
 
 	if (mxIsSparse (pargin [0]))
 	{
@@ -2028,7 +2041,7 @@ void sputil_sparse
 		s_class, s_complex,
 		cm) ;
 
-	/* set nzmax(A) to nnz(S), unless nzmax is specified on input */
+	/* set nzmax(S) to nnz(S), unless nzmax is specified on input */
 	if (nargin <= 5 && S != NULL)
 	{
 	    cholmod_l_reallocate_sparse (cholmod_l_nnz (S, cm), S, cm) ;
@@ -2037,12 +2050,18 @@ void sputil_sparse
 	if (nargout > 1)
 	{
 	    /* return a binary pattern of the explicit zero entries, for the
-	     * S = sparse(i,j,x, ...) form. */
+	     * [S Z] = sparse(i,j,x, ...) form. */
 	    Z = sputil_extract_zeros (S, cm) ;
 	}
 
 	/* drop explicit zeros from S */
-	sputil_drop_zeros (S) ;
+	ndropped = sputil_drop_zeros (S) ;
+
+	/* if entries dropped, set nzmax(S) to nnz(S), unless nzmax specified */
+	if (ndropped > 0 && nargin <= 5 && S != NULL)
+	{
+	    cholmod_l_reallocate_sparse (cholmod_l_nnz (S, cm), S, cm) ;
+	}
 
 	if (s_is_sparse)
 	{

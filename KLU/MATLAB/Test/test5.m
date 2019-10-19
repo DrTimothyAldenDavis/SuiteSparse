@@ -1,4 +1,5 @@
-%test5: KLU test script
+function test5
+%test5: KLU test
 % Example:
 %   test5
 %
@@ -9,12 +10,15 @@
 % Copyright 2004-2007 Timothy A. Davis, Univ. of Florida
 % http://www.cise.ufl.edu/research/sparse
 
-diary off
-s = date ;
-t = clock ;
-s = sprintf ('diary test5_%s_%d-%d-%d.txt\n', s, t (4), t(5), fix(t(6)));
-eval (s) ;
-!hostname
+do_diary = 0 ;
+
+if (do_diary)
+    diary off
+    s = date ;
+    t = clock ;
+    s = sprintf ('diary test5_%s_%d-%d-%d.txt\n', s, t (4), t(5), fix(t(6)));
+    eval (s) ;
+end
 
 % ATandT frequency-domain circuits, exclude these:
 freq = [ 283     284     285     286      ] ;
@@ -98,58 +102,79 @@ opts_noscale.scale = -1 ;
 opts_sum.scale = 1 ;
 opts_max.scale = 2 ;		% default scaling
 
-for k = circ
-    Prob = UFget (k, index) ;
+h = waitbar (0, 'KLU test 5 of 5') ;
+nmat = length (circ) ;
 
-    A = Prob.A ;
-    n = size (A,1) ;
-    b = rand (n,1) ;
-    % c = condest (A) ;
-    fprintf ('\n%d : %s n: %d nz %d\n', k, Prob.name, n, nnz (A)) ;
+try
 
-    try
-	tic ;
-	x2 = klu (A, '\', b, opts_noscale) ;
-	t2 = toc ;
-	e2 = norm (A*x2-b) ;
-    catch
-	t2 = 0 ;
-	e2 = 0 ;
+    for kk = 1:nmat
+
+        k = circ (kk) ;
+        Prob = UFget (k, index) ;
+
+        waitbar (kk/nmat, h) ;
+
+        A = Prob.A ;
+        n = size (A,1) ;
+        b = rand (n,1) ;
+        fprintf ('\n%d : %s n: %d nz %d\n', k, Prob.name, n, nnz (A)) ;
+
+        try
+            tic ;
+            x2 = klu (A, '\', b, opts_noscale) ;
+            t2 = toc ;
+            e2 = norm (A*x2-b) ;
+        catch
+            t2 = 0 ;
+            e2 = 0 ;
+        end
+        fprintf ('KLU no scale:  err %8.2e t: %8.4f\n', e2, t2) ;
+
+        try
+            tic ;
+            x4 = klu (A, '\', b, opts_max) ;
+            t4 = toc ;
+            e4 = norm (A*x4-b) ;
+        catch
+            t4 = 0 ;
+            e4 = 0 ;
+        end
+        fprintf ('KLU max scale: err %8.2e t: %8.4f\n', e4, t4) ;
+
+        try
+            tic ;
+            x3 = klu (A, '\', b, opts_sum) ;
+            t3 = toc ;
+            e3 = norm (A*x3-b) ;
+        catch
+            t3 = 0 ;
+            e3 = 0 ;
+        end
+        fprintf ('KLU sum scale: err %8.2e t: %8.4f\n', e3, t3) ;
+
+        tic
+        x1 = A\b ;
+        t1 = toc ;
+        e1 = norm (A*x1-b) ;
+        fprintf ('matlab:        err %8.2e t: %8.4f\n', e1, t1) ;
+
+        fprintf ('                                 speedup %8.2f\n', t1 / t4) ;
+        clear Prob
+
+        if (do_diary)
+            diary off
+            diary on
+        end
     end
-    fprintf ('KLU no scale:  err %8.2e t: %8.4f\n', e2, t2) ;
 
-    try
-	tic ;
-	x4 = klu (A, '\', b, opts_max) ;
-	t4 = toc ;
-	e4 = norm (A*x4-b) ;
-    catch
-	t4 = 0 ;
-	e4 = 0 ;
+catch
+    % out-of-memory is OK, other errors are not
+    disp (lasterr) ;
+    if (isempty (strfind (lasterr, 'Out of memory')))
+        error (lasterr) ;                                                   %#ok
+    else
+        fprintf ('test terminated early, but otherwise OK\n') ;
     end
-    fprintf ('KLU max scale: err %8.2e t: %8.4f\n', e4, t4) ;
-
-    try
-	tic ;
-	x3 = klu (A, '\', b, opts_sum) ;
-	t3 = toc ;
-	e3 = norm (A*x3-b) ;
-    catch
-	t3 = 0 ;
-	e3 = 0 ;
-    end
-    fprintf ('KLU sum scale: err %8.2e t: %8.4f\n', e3, t3) ;
-
-    tic
-    x1 = A\b ;
-    t1 = toc ;
-    e1 = norm (A*x1-b) ;
-    fprintf ('matlab:        err %8.2e t: %8.4f\n', e1, t1) ;
-
-    fprintf ('                                    speedup %8.2f\n', t1 / t4) ;
-    clear Prob
-
-    diary off
-    diary on
 end
 
+close (h) ;

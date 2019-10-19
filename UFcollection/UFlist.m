@@ -231,12 +231,14 @@ for id = list
 
     % thumbnail link to the matrix page
     fprintf (f, '<td>\n') ;
+    w = 'width="96" height="72"' ;
     if (by_group)
-	fprintf (f, '<a href="%s.html"><img alt="%s/%s"', name, group, name) ;
+	fprintf (f, '<a href="%s.html"><img %s alt="%s/%s"', ...
+            name, w, group, name) ;
 	fprintf (f, ' src="%s_thumb.png"></a>\n', name) ;
     else
-	fprintf (f, '<a href="%s/%s.html"><img alt="%s/%s"', ...
-	    group, name, group, name) ;
+	fprintf (f, '<a href="%s/%s.html"><img %s alt="%s/%s"', ...
+	    group, name, w, group, name) ;
 	fprintf (f, ' src="%s/%s_thumb.png"></a>\n', group, name) ;
     end
     fprintf (f, '</td>\n') ;

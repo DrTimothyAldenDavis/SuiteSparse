@@ -17,7 +17,6 @@ void mexFunction
     {
 #ifndef NCOMPLEX
 	cs_cl Amatrix, *A, *C, *D ;
-	double *x ;
 	A = cs_cl_mex_get_sparse (&Amatrix, 1, pargin [0]) ;
 	n = A->n ;
 	P = cs_dl_mex_get_int (n, pargin [1], &ignore, 1) ;	/* get P */
@@ -37,7 +36,6 @@ void mexFunction
     else
     {
 	cs_dl Amatrix, *A, *C, *D ;
-	double *x ;
 	A = cs_dl_mex_get_sparse (&Amatrix, 1, 1, pargin [0]) ;
 	n = A->n ;
 	P = cs_dl_mex_get_int (n, pargin [1], &ignore, 1) ;	/* get P */

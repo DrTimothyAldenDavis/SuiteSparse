@@ -32,7 +32,7 @@ for trials = 1:100
     %	continue ;
     % end
 
-    for cmplex = 0:1
+    for cmplex = 0:double(~ispc)
 
 	if (cmplex)
 	    A = A + 1i * sprand (A) * norm (A,1) / 10 ;

@@ -1,5 +1,5 @@
  Matrix key: WEST0067                      
-UMFPACK V5.1.0 (May 31, 2007), Control:
+UMFPACK V5.2.0 (Nov 1, 2007), Control:
     Matrix entry defined as: double
     Int (generic integer) defined as: int
 
@@ -51,7 +51,7 @@ numeric factorization:
    flop count:      0.25E+04
    nnz (L):             323.
    nnz (U):             339.
-UMFPACK V5.1.0 (May 31, 2007), Info:
+UMFPACK V5.2.0 (Nov 1, 2007), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4

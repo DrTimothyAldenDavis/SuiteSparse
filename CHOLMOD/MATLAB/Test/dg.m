@@ -55,7 +55,7 @@ drawnow
 subplot (2,3,5) ; spy (R+R') ;
 drawnow
 
-pamd = amd (A*A') ;
+pamd = amd2 (A*A') ;        % use AMD from SuiteSparse, not built-in
 [cnt h pa po R] = symbfact2 (A (pamd,:), 'row') ;
 subplot (2,3,6) ; spy (R+R') ;
 drawnow

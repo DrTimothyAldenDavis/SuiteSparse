@@ -26,12 +26,16 @@ void mexFunction
 
     if (mxIsComplex (pargin [0]))
     {
+#ifdef NCOMPLEX
+        mexErrMsgTxt ("complex case not supported") ;
+#else
 	cs_complex_t *x, *b ;
 	b = cs_cl_mex_get_double (n, pargin [0]) ;
 	x = cs_dl_malloc (n, sizeof (cs_complex_t)) ;
 	cs_cl_ipvec (p, b, x, n) ;
 	pargout [0] = cs_cl_mex_put_double (n, x) ;
 	cs_free (b) ;	    /* free copy of complex values */
+#endif
     }
     else
     {

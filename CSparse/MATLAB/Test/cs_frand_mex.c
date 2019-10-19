@@ -4,6 +4,7 @@
  * nonzero pattern, plus the identity matrix.
  * See also MATLAB/Demo/private/frand.m */
 
+static
 cs *cs_frand (int n, int nel, int s)
 {
     int ss = s*s, nz = nel*ss, e, i, j, *P ;

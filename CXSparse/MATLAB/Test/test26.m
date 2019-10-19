@@ -29,8 +29,10 @@ for trials = 1:ntrials
     A = sprandn (m,n,d) ;
     % S = sprandn (m,m,d) + speye (m) ;
 
-    if (rand ( ) > .5)
-	A = A + 1i * sprand (A) ;
+    if (~ispc)
+        if (rand ( ) > .5)
+            A = A + 1i * sprand (A) ;
+        end
     end
 
     subplot (1,3,2) ; spy (A) ;
@@ -38,10 +40,11 @@ for trials = 1:ntrials
 
     b = rand (m,1) ;
 
-    if (rand ( ) > .5)
-	b = b + 1i * rand (size (b)) ;
+    if (~ispc)
+        if (rand ( ) > .5)
+            b = b + 1i * rand (size (b)) ;
+        end
     end
-
     % MATLAB cannot do A\b when A is sparse and rectangular and either
     % A or b are complex
     if (m ~= n & isreal (A) & ~isreal (b))				    %#ok

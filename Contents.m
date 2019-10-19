@@ -16,6 +16,7 @@
 %   camd         - constrained amd.
 %   ccolamd      - constrained colamd.
 %   csymamd      - constrained symamd.
+%   meshnd       - nested dissection of regular 2D and 3D meshes
 %
 %-------------------------------------------------------------------------------
 % CHOLMOD: a sparse supernodal Cholesky update/downdate package:
@@ -113,7 +114,14 @@
 %   luflop            - given L and U, computes # of flops required
 %
 %-------------------------------------------------------------------------------
-% UFGET: MATLAB interface to the UF Sparse Matrix Collection
+% Other packages:
+%-------------------------------------------------------------------------------
+%
+%   UFGET           MATLAB interface to the UF Sparse Matrix Collection
+%   MATLAB_Tools    various simple m-files
+%   SSMULT          sparse matrix times sparse matrix
+%   LINFACTOR       solve Ax=b using LU or CHOL
+%
 %-------------------------------------------------------------------------------
 %
 % For help on compiling SuiteSparse or the demos, testing functions, etc.,

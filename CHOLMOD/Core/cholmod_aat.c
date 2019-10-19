@@ -125,7 +125,9 @@ cholmod_sparse *CHOLMOD(aat)
     for (j = 0 ; j < n ; j++)
     {
 	/* clear the Flag array */
-	mark = CHOLMOD(clear_flag) (Common) ;
+	/* mark = CHOLMOD(clear_flag) (Common) ; */
+	CHOLMOD_CLEAR_FLAG (Common) ;
+	mark = Common->mark ;
 
 	/* exclude the diagonal, if requested */
 	if (!diag)

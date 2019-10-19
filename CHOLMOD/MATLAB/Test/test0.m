@@ -13,14 +13,6 @@ fprintf ('test0: test most CHOLMOD functions\n') ;
 % collection.  You can obtain UFget from
 % http://www.cise.ufl.edu/research/sparse/matrices.
 
-s = exist ('amd') ;	%#ok
-use_amd = (s == 3 | s == 5) ;						    %#ok
-if (use_amd)
-fprintf ('Testing CHOLMOD with AMD and the UF sparse matrix collection\n') ;
-else
-fprintf ('Testing CHOLMOD with SYMAMD and the UF sparse matrix collection\n') ;
-end
-
 try % load UF index
     index = UFget ;
 catch
@@ -76,21 +68,12 @@ for i = f
 	fprintf ('title: %s\n', Problem.title) ;
 	clear Problem
 	n = size (A,1) ;
-	diary off
-	diary on
 
-	if (use_amd)
-	    tic
-	    p = amd (A) ;
-	    t0 = toc ;
-	    fprintf ('time: amd     %10.4f\n', t0) ;
-	else 
-	    % AMD not available, use symamd instead
-	    tic
-	    p = symamd (A) ;
-	    t0 = toc ;
-	    fprintf ('time: symamd  %10.4f\n', t0) ;
-	end
+        % use AMD from SuiteSparse
+        tic
+        p = amd2 (A) ;
+        t0 = toc ;
+        fprintf ('time: amd     %10.4f\n', t0) ;
 
 	S = A (p,p) ;
 
@@ -298,8 +281,6 @@ for i = f
     % end
 
     clear A S C L R LD LD2 LD3 D p q C1 C2 LD3 S2 LD4 b x LD5
-    diary off
-    diary on
 
 end
 

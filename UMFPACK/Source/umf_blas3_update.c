@@ -9,6 +9,7 @@
 /* -------------------------------------------------------------------------- */
 
 #include "umf_internal.h"
+#include "umf_blas3_update.h"
 
 GLOBAL void UMF_blas3_update
 (

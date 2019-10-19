@@ -20,7 +20,7 @@ void mexFunction
     {
 #ifndef NCOMPLEX
 	cs_cl *A, Amatrix ;
-	cs_complex_t *x, *b ;
+	cs_complex_t *x ;
 	A = cs_cl_mex_get_sparse (&Amatrix, 1, pargin [0]) ;    /* get A */
 	x = cs_cl_mex_get_double (A->n, pargin [1]) ;		/* x = b */
 	if (!cs_cl_cholsol (order, A, x))			/* x = A\x */

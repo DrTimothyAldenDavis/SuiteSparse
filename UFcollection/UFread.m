@@ -290,7 +290,7 @@ end
 % get_header: get the header of the master file (Group/name/name.txt or .mtx)
 %-------------------------------------------------------------------------------
 
-function [Problem notes RB] = get_header (masterfile)
+function [Problem, notes, RB] = get_header (masterfile)
 % Get the name, title, id, kind, date, author, editor and notes from the master
 % file.  The name, title, and id are required.  They appear as structured
 % comments in the Matrix Market file (masterfile.mtx) or in the text file for
@@ -404,7 +404,7 @@ end
 % valid_problem: determine if a problem is valid, and finalizes the notes
 %-------------------------------------------------------------------------------
 
-function [Problem notes] = valid_problem (Problem, notes)
+function [Problem, notes] = valid_problem (Problem, notes)
 % make sure the required fields (name, title, id, date, author, ed) are present.
 % Convert notes to char, and strip off the leading '% ', inserted when the notes
 % were printed in the Matrix Market file.

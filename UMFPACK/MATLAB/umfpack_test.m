@@ -1,7 +1,9 @@
+function umfpack_test (nmat)
 %UMFPACK_TEST for testing umfpack2 (requires UFget)
 %
 % Example:
 %   umfpack_test
+%   umfpack_test (100)  % runs the first 100 matrices
 % See also umfpack2
 
 % Copyright 1995-2007 by Timothy A. Davis.
@@ -12,25 +14,38 @@ f = find (index.nrows == index.ncols) ;
 [ignore, i] = sort (index.nrows (f)) ;
 f = f (i) ;
 
+if (nargin < 1)
+    nmat = length (f) ;
+else
+    nmat = min (nmat, length (f)) ;
+end
+nmat = max (nmat, 1) ;
+f = f (1:nmat) ;
+
 Control = umfpack2 ;
 Control (1) = 0 ;
 
 figure (1)
 clf
 
+h = waitbar (0, 'UMFPACK test') ;
 
-for i = f
+for k = 1:nmat
 
-    fprintf ('\nmatrix: %s %s %d\n', index.Group{i}, index.Name{i}, index.nrows(i)) ;
-
-    Prob = UFget (i) ;
-    A = Prob.A ;
-    n = size (A,1) ;
-
-    b = rand (1,n) ;
-    c = b' ;
+    i = f (k) ;
+    waitbar (k/nmat, h, 'UMFPACK test') ;
 
     try
+
+        fprintf ('\nmatrix: %s %s %d\n', ...
+            index.Group{i}, index.Name{i}, index.nrows(i)) ;
+
+        Prob = UFget (i) ;
+        A = Prob.A ;
+        n = size (A,1) ;
+
+        b = rand (1,n) ;
+        c = b' ;
 
 	%-----------------------------------------------------------------------
 	% symbolic factorization
@@ -63,7 +78,10 @@ for i = f
 
 	subplot (2,2,4)
 	hold off
-	spy (L|U)
+        try
+            spy (L+U)
+        catch
+        end
 	hold on
 	if (cs > 0)
 	    plot ([0 cs n n 0] + .5, [0 cs cs 0 0]+.5, 'c') ;
@@ -148,6 +166,15 @@ for i = f
 	fprintf ('diff %g %g\n', err, err3) ;
 
     catch
-	fprintf ('failed\n') ;
+        % out-of-memory is OK, other errors are not
+        disp (lasterr) ;
+        if (isempty (strfind (lasterr, 'Out of memory')))
+            error (lasterr) ;                                               %#ok
+        else
+            fprintf ('test terminated early, but otherwise OK\n') ;
+        end
     end
+
 end
+
+close (h) ;     % close the waitbar

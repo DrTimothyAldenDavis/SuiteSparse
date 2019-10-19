@@ -347,7 +347,8 @@ int CHOLMOD(rowadd_mark)
 	    if (!CHOLMOD(reallocate_column) (j, Lnz [j] + 1, L, Common))
 	    {
 		/* out of memory, L is now simplicial symbolic */
-		CHOLMOD(clear_flag) (Common) ;
+		/* CHOLMOD(clear_flag) (Common) ; */
+		CHOLMOD_CLEAR_FLAG (Common) ;
 		for (i = 0 ; i < n ; i++)
 		{
 		    W [i] = 0 ;

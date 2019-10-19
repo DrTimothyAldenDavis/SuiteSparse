@@ -19,6 +19,7 @@
 */
 
 #include "umf_internal.h"
+#include "umf_transpose.h"
 #include "umf_is_permutation.h"
 
 GLOBAL Int UMF_transpose

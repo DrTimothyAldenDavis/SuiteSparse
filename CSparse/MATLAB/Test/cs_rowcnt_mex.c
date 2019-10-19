@@ -22,7 +22,7 @@ void firstdesc (int n, int *parent, int *post, int *first, int *level)
 static
 int *rowcnt (cs *A, int *parent, int *post) /* return rowcount [0..n-1] */
 {
-    int i, j, k, len, s, p, jprev, q, n, sparent, jleaf, *Ap, *Ai, *maxfirst,
+    int i, j, k, p, q, n, jleaf, *Ap, *Ai, *maxfirst,
 	*ancestor, *prevleaf, *w, *first, *level, *rowcount ;
     n = A->n ; Ap = A->p ; Ai = A->i ;			/* get A */
     w = cs_malloc (5*n, sizeof (int)) ;			/* get workspace */
@@ -62,7 +62,7 @@ void mexFunction
 {
     cs *A, Amatrix ;
     double *x ;
-    int i, m, n, *parent, *post, *rowcount ;
+    int i, n, *parent, *post, *rowcount ;
 
     if (nargout > 1 || nargin != 3)
     {

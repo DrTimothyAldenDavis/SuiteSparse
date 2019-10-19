@@ -10,8 +10,8 @@ void mexFunction
 {
     css *S ;
     csn *N ;
-    cs Amatrix, *L, *U, *A, *D ;
-    int n, order, *p, *Q ;
+    cs Amatrix, *A, *D ;
+    int n, order, *p ;
     double tol ;
     if (nargout > 4 || nargin > 3 || nargin < 1)
     {

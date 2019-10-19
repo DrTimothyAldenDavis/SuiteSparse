@@ -1,5 +1,5 @@
 #===============================================================================
-# ILP32 mode, Goto BLAS, do not test for integer overflow.
+# ILP32 mode, BLAS, do not test for integer overflow.
 #===============================================================================
 
 # Using Intel's icc compiler:
@@ -7,8 +7,7 @@ CC = icc
 CFLAGS = -ansi -O3 -ip -tpp7 -xW -vec_report0
 
 UMFPACK_CONFIG = -DTESTING
-# LIB = -lgoto -lfrtbegin -lg2c -lm -lunwind -lcprts
-LIB = -lgoto -lgfortran -lgfortranbegin -lm
+LIB = -lblas -lgfortran -lgfortranbegin -lm
 
 RANLIB = ranlib
 MV = mv -f

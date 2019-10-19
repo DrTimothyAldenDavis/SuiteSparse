@@ -8,7 +8,6 @@ function test11
 %   Copyright 2006-2007, Timothy A. Davis.
 %   http://www.cise.ufl.edu/research/sparse
 
-clear
 clear functions
 index = UFget ;
 [ignore f] = sort (max (index.nrows, index.ncols)) ;

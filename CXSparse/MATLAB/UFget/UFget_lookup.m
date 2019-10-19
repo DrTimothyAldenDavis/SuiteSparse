@@ -1,4 +1,4 @@
-function [group name id] = UFget_lookup (matrix, UF_Index)
+function [group, name, id] = UFget_lookup (matrix, UF_Index)
 %UFGET_LOOKUP gets the group, name, and id of a matrix.
 %
 %   Example:

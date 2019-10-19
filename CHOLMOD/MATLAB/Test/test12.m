@@ -73,7 +73,7 @@ for i = f
 	% warmup, for accurate timing
 	etree (sparse (1)) ;
 	etree2 (sparse (1)) ;
-	amd (sparse (1)) ;
+	amd2 (sparse (1)) ;
 
 	% test column etree
 	skip = any (i == col_skip) | m > 109000 ;			    %#ok
@@ -144,7 +144,7 @@ for i = f
 		    skip1 = any (i == p_sym_skip) | m > 109000 ;	    %#ok
 		    skip2 = any (i == p_symt_skip) | m > 109000 ;	    %#ok
 		    fprintf ('after amd:\n') ;
-		    p = amd (A) ;
+		    p = amd2 (A) ;  % use AMD from SuiteSparse
 		    A = A (p,p) ;
 		end
 

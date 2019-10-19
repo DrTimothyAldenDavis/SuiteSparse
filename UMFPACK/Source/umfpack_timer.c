@@ -15,6 +15,8 @@
     See umfpack_tictoc.h, which is the timer used internally by UMFPACK.
 */
 
+#include "umfpack_timer.h"
+
 #ifdef NO_TIMER
 
 /* -------------------------------------------------------------------------- */

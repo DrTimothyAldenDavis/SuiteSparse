@@ -9,6 +9,7 @@
 /* -------------------------------------------------------------------------- */
 
 #include "umf_internal.h"
+#include "umf_report_perm.h"
 
 #define PRINTF4U(params) { if (user || prl >= 4) PRINTF (params) ; }
 

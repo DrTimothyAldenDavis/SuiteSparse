@@ -97,7 +97,7 @@ extern "C" {
 /* Version, copyright, and license */
 /* -------------------------------------------------------------------------- */
 
-#define UMFPACK_VERSION "UMFPACK V5.1.0 (May 31, 2007)"
+#define UMFPACK_VERSION "UMFPACK V5.2.0 (Nov 1, 2007)"
 
 #define UMFPACK_COPYRIGHT \
 "UMFPACK:  Copyright (c) 2005-2006 by Timothy A. Davis.  All Rights Reserved.\n"
@@ -112,16 +112,16 @@ extern "C" {
 "   UMFPACK implies that you agree to this License.\n" \
 "\n" \
 "   This library is free software; you can redistribute it and/or\n" \
-"   modify it under the terms of the GNU Lesser General Public\n" \
+"   modify it under the terms of the GNU General Public\n" \
 "   License as published by the Free Software Foundation; either\n" \
-"   version 2.1 of the License, or (at your option) any later version.\n" \
+"   version 2 of the License, or (at your option) any later version.\n" \
 "\n" \
 "   This library is distributed in the hope that it will be useful,\n" \
 "   but WITHOUT ANY WARRANTY; without even the implied warranty of\n" \
 "   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU\n" \
-"   Lesser General Public License for more details.\n" \
+"   General Public License for more details.\n" \
 "\n" \
-"   You should have received a copy of the GNU Lesser General Public\n" \
+"   You should have received a copy of the GNU General Public\n" \
 "   License along with this library; if not, write to the Free Software\n" \
 "   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301\n" \
 "   USA\n" \
@@ -129,7 +129,7 @@ extern "C" {
 #define UMFPACK_LICENSE_PART2 \
 "\n" \
 "   Permission is hereby granted to use or copy this program under the\n" \
-"   terms of the GNU LGPL, provided that the Copyright, this License,\n" \
+"   terms of the GNU GPL, provided that the Copyright, this License,\n" \
 "   and the Availability of the original version is retained on all copies.\n" \
 "   User documentation of any code that uses this code or any modified\n" \
 "   version of this code must cite the Copyright, this License, the\n" \
@@ -163,10 +163,10 @@ extern "C" {
  * above.
  */
 
-#define UMFPACK_DATE "May 31, 2007"
+#define UMFPACK_DATE "Nov 1, 2007"
 #define UMFPACK_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define UMFPACK_MAIN_VERSION 5
-#define UMFPACK_SUB_VERSION 1
+#define UMFPACK_SUB_VERSION 2
 #define UMFPACK_SUBSUB_VERSION 0
 #define UMFPACK_VER UMFPACK_VER_CODE(UMFPACK_MAIN_VERSION,UMFPACK_SUB_VERSION)
 

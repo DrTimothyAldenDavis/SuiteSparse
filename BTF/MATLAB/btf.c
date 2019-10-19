@@ -53,7 +53,7 @@ void mexFunction
 )
 {
     double work, maxwork ;
-    UF_long b, n, i, k, j, *Ap, *Ai, *P, *R, nblocks, *Work, *Q, nmatch ;
+    UF_long b, n, k, *Ap, *Ai, *P, *R, nblocks, *Work, *Q, nmatch ;
     double *Px, *Rx, *Qx, *w ;
 
     /* ---------------------------------------------------------------------- */

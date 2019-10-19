@@ -72,3 +72,8 @@ ccode: library
 mex:
 	( cd ../AMD/MATLAB ; $(MAKE) )
 	( cd MATLAB ; $(MAKE) )
+
+# statement coverage (requires Linux; takes a lot of time and disk space)
+cov: purge
+	( cd Tcov ; ./DO.linux ; ./covall )
+

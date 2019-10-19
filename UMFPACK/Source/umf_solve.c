@@ -27,6 +27,7 @@
 */
 
 #include "umf_internal.h"
+#include "umf_solve.h"
 #include "umf_lsolve.h"
 #include "umf_usolve.h"
 #include "umf_ltsolve.h"

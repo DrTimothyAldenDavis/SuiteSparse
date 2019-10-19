@@ -19,6 +19,7 @@
 */
 
 #include "umf_internal.h"
+#include "umf_triplet.h"
 
 #ifdef DO_MAP
 #ifdef DO_VALUES

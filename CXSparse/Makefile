@@ -4,12 +4,12 @@ C:
 	( cd Lib ; $(MAKE) )
 	( cd Demo ; $(MAKE) )
 
-all: C tcov
+all: C cov
 
 library:
 	( cd Lib ; $(MAKE) )
 
-tcov:
+cov:
 	( cd Tcov ; $(MAKE) )
 
 mex:

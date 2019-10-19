@@ -11,6 +11,7 @@
 /* Called by kernel. */
 
 #include "umf_internal.h"
+#include "umf_extend_front.h"
 #include "umf_grow_front.h"
 
 /* ========================================================================== */

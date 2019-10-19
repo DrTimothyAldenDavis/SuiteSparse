@@ -27,6 +27,7 @@
 */
 
 #include "umf_internal.h"
+#include "umf_analyze.h"
 #include "umf_apply_order.h"
 #include "umf_fsize.h"
 

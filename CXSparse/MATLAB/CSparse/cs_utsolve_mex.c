@@ -17,7 +17,6 @@ void mexFunction
 #ifndef NCOMPLEX
 	cs_cl Umatrix, *U ;
 	cs_complex_t *x ;
-	CS_INT n ;
 	U = cs_cl_mex_get_sparse (&Umatrix, 1, pargin [0]) ;	/* get U */
 	x = cs_cl_mex_get_double (U->n, pargin [1]) ;		/* x = b */
 	cs_cl_utsolve (U, x) ;					/* x = U'\x */

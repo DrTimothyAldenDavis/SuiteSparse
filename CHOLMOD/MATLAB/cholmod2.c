@@ -176,6 +176,14 @@ void mexFunction
 	cm->method [0].ordering = CHOLMOD_NATURAL ;
 	cm->postorder = TRUE ;
     }
+    else if (ordering == -7)
+    {
+	/* always try both AMD and METIS, and pick the best */
+	cm->nmethods = 2 ;
+	cm->method [0].ordering = CHOLMOD_AMD ;
+	cm->method [1].ordering = CHOLMOD_METIS ;
+	cm->postorder = TRUE ;
+    }
     else if (ordering >= 1)
     {
 	/* assume the 3rd argument is a user-provided permutation of 1:n */

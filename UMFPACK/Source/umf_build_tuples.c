@@ -18,6 +18,7 @@
 */
 
 #include "umf_internal.h"
+#include "umf_build_tuples.h"
 #include "umf_mem_alloc_tail_block.h"
 
 GLOBAL Int UMF_build_tuples

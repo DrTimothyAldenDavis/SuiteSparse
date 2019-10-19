@@ -38,6 +38,7 @@
  */
 
 #include "umf_internal.h"
+#include "umf_singletons.h"
 
 #ifndef NDEBUG
 

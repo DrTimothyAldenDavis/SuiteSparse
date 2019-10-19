@@ -23,7 +23,7 @@ function result = spsym (A, quick)					    %#ok
 %   this case, it returns 1, even if the matrix might otherwise be symmetric or
 %   Hermitian.
 %
-%   Regardless of the value of "quick", this function returns 5 or 6 if A is
+%   Regardless of the value of "quick", this function returns 6 or 7 if A is
 %   a candidate for sparse Cholesky.
 %
 %   For an MATLAB M-file function that computes the same thing as this
@@ -50,7 +50,7 @@ function result = spsym (A, quick)					    %#ok
 %       % is meant for testing and documentation only.
 %       [m n] = size (A) ;
 %       if (m ~= n)
-%           result = 0 ;            % rectangular
+%           result = 1 ;            % rectangular
 %           return
 %       end
 %       if (nargin < 2)
@@ -59,23 +59,23 @@ function result = spsym (A, quick)					    %#ok
 %       d = diag (A) ;
 %       posdiag = all (real (d) > 0) & all (imag (d) == 0) ;
 %       if (quick & ~posdiag)
-%           result = 1 ;            % Not a candidate for sparse Cholesky.
+%           result = 2 ;            % Not a candidate for sparse Cholesky.
 %       elseif (~isreal (A) & nnz (A-A') == 0)
 %           if (posdiag)
-%               result = 6 ;        % complex Hermitian, with positive diagonal
+%               result = 7 ;        % complex Hermitian, with positive diagonal
 %           else
-%               result = 3 ;        % complex Hermitian, nonpositive diagonal
+%               result = 4 ;        % complex Hermitian, nonpositive diagonal
 %           end
 %       elseif (nnz (A-A.') == 0)
 %           if (posdiag)
-%               result = 5 ;        % symmetric with positive diagonal
+%               result = 6 ;        % symmetric with positive diagonal
 %           else
-%               result = 2 ;        % symmetric, nonpositive diagonal
+%               result = 3 ;        % symmetric, nonpositive diagonal
 %           end
 %       elseif (nnz (A+A.') == 0)
-%           result = 4 ;            % skew symmetric
+%           result = 5 ;            % skew symmetric
 %       else
-%           result = 1 ;            % unsymmetric
+%           result = 2 ;            % unsymmetric
 %       end
 
 %   Copyright 2006-2007, Timothy A. Davis

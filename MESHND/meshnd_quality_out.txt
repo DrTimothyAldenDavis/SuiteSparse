@@ -1,0 +1,890 @@
+profile on
+meshnd_quality
+2D mesh: 7-by-7, 5-point stencil
+    MESHND:            nnz(L) 2.880e+02  flops 1.926e+03
+    AMD:               nnz(L) 2.550e+02  flops 1.483e+03
+    METIS:             nnz(L) 2.680e+02  flops 1.656e+03
+2D mesh: 7-by-7, 5-point stencil
+    MESHND:            nnz(L) 2.880e+02  flops 1.926e+03
+    AMD:               nnz(L) 2.550e+02  flops 1.483e+03
+    METIS:             nnz(L) 2.680e+02  flops 1.656e+03
+2D mesh: 8-by-8, 5-point stencil
+    MESHND:            nnz(L) 4.210e+02  flops 3.141e+03
+    AMD:               nnz(L) 3.540e+02  flops 2.192e+03
+    METIS:             nnz(L) 3.800e+02  flops 2.568e+03
+2D mesh: 8-by-8, 5-point stencil
+    MESHND:            nnz(L) 4.210e+02  flops 3.141e+03
+    AMD:               nnz(L) 3.540e+02  flops 2.192e+03
+    METIS:             nnz(L) 3.800e+02  flops 2.568e+03
+2D mesh: 9-by-9, 5-point stencil
+    MESHND:            nnz(L) 6.000e+02  flops 5.078e+03
+    AMD:               nnz(L) 5.060e+02  flops 3.722e+03
+    METIS:             nnz(L) 5.230e+02  flops 3.947e+03
+2D mesh: 10-by-10, 5-point stencil
+    MESHND:            nnz(L) 7.970e+02  flops 7.331e+03
+    AMD:               nnz(L) 6.480e+02  flops 4.936e+03
+    METIS:             nnz(L) 6.840e+02  flops 5.656e+03
+2D mesh: 11-by-11, 5-point stencil
+    MESHND:            nnz(L) 1.008e+03  flops 9.920e+03
+    AMD:               nnz(L) 8.160e+02  flops 6.636e+03
+    METIS:             nnz(L) 8.610e+02  flops 7.713e+03
+2D mesh: 11-by-11, 5-point stencil
+    MESHND:            nnz(L) 1.008e+03  flops 9.920e+03
+    AMD:               nnz(L) 8.160e+02  flops 6.636e+03
+    METIS:             nnz(L) 8.610e+02  flops 7.713e+03
+2D mesh: 12-by-12, 5-point stencil
+    MESHND:            nnz(L) 1.234e+03  flops 1.287e+04
+    AMD:               nnz(L) 1.035e+03  flops 9.143e+03
+    METIS:             nnz(L) 1.076e+03  flops 1.014e+04
+2D mesh: 13-by-13, 5-point stencil
+    MESHND:            nnz(L) 1.558e+03  flops 1.792e+04
+    AMD:               nnz(L) 1.253e+03  flops 1.166e+04
+    METIS:             nnz(L) 1.301e+03  flops 1.292e+04
+2D mesh: 15-by-15, 5-point stencil
+    MESHND:            nnz(L) 2.272e+03  flops 2.936e+04
+    AMD:               nnz(L) 1.798e+03  flops 1.886e+04
+    METIS:             nnz(L) 1.916e+03  flops 2.178e+04
+2D mesh: 16-by-16, 5-point stencil
+    MESHND:            nnz(L) 2.663e+03  flops 3.553e+04
+    AMD:               nnz(L) 2.118e+03  flops 2.307e+04
+    METIS:             nnz(L) 2.351e+03  flops 3.014e+04
+2D mesh: 17-by-17, 5-point stencil
+    MESHND:            nnz(L) 3.180e+03  flops 4.567e+04
+    AMD:               nnz(L) 2.433e+03  flops 2.755e+04
+    METIS:             nnz(L) 2.678e+03  flops 3.446e+04
+2D mesh: 18-by-18, 5-point stencil
+    MESHND:            nnz(L) 3.719e+03  flops 5.614e+04
+    AMD:               nnz(L) 2.900e+03  flops 3.612e+04
+    METIS:             nnz(L) 3.068e+03  flops 4.065e+04
+2D mesh: 20-by-20, 5-point stencil
+    MESHND:            nnz(L) 4.861e+03  flops 7.836e+04
+    AMD:               nnz(L) 3.702e+03  flops 4.831e+04
+    METIS:             nnz(L) 3.931e+03  flops 5.721e+04
+2D mesh: 21-by-21, 5-point stencil
+    MESHND:            nnz(L) 5.556e+03  flops 9.475e+04
+    AMD:               nnz(L) 4.162e+03  flops 5.684e+04
+    METIS:             nnz(L) 4.525e+03  flops 7.004e+04
+2D mesh: 23-by-23, 5-point stencil
+    MESHND:            nnz(L) 6.980e+03  flops 1.283e+05
+    AMD:               nnz(L) 5.349e+03  flops 8.331e+04
+    METIS:             nnz(L) 5.677e+03  flops 9.672e+04
+2D mesh: 24-by-24, 5-point stencil
+    MESHND:            nnz(L) 7.632e+03  flops 1.432e+05
+    AMD:               nnz(L) 5.787e+03  flops 8.703e+04
+    METIS:             nnz(L) 6.285e+03  flops 1.069e+05
+2D mesh: 26-by-26, 5-point stencil
+    MESHND:            nnz(L) 9.466e+03  flops 1.938e+05
+    AMD:               nnz(L) 7.144e+03  flops 1.174e+05
+    METIS:             nnz(L) 7.424e+03  flops 1.322e+05
+2D mesh: 28-by-28, 5-point stencil
+    MESHND:            nnz(L) 1.138e+04  flops 2.446e+05
+    AMD:               nnz(L) 8.516e+03  flops 1.479e+05
+    METIS:             nnz(L) 9.940e+03  flops 2.166e+05
+2D mesh: 31-by-31, 5-point stencil
+    MESHND:            nnz(L) 1.479e+04  flops 3.498e+05
+    AMD:               nnz(L) 1.092e+04  flops 2.059e+05
+    METIS:             nnz(L) 1.283e+04  flops 2.945e+05
+2D mesh: 33-by-33, 5-point stencil
+    MESHND:            nnz(L) 1.724e+04  flops 4.275e+05
+    AMD:               nnz(L) 1.281e+04  flops 2.623e+05
+    METIS:             nnz(L) 1.402e+04  flops 3.099e+05
+2D mesh: 35-by-35, 5-point stencil
+    MESHND:            nnz(L) 2.016e+04  flops 5.258e+05
+    AMD:               nnz(L) 1.485e+04  flops 3.194e+05
+    METIS:             nnz(L) 1.684e+04  flops 4.089e+05
+2D mesh: 38-by-38, 5-point stencil
+    MESHND:            nnz(L) 2.491e+04  flops 6.928e+05
+    AMD:               nnz(L) 1.830e+04  flops 4.217e+05
+    METIS:             nnz(L) 1.888e+04  flops 4.522e+05
+2D mesh: 41-by-41, 5-point stencil
+    MESHND:            nnz(L) 2.992e+04  flops 8.803e+05
+    AMD:               nnz(L) 2.173e+04  flops 5.265e+05
+    METIS:             nnz(L) 2.416e+04  flops 6.691e+05
+2D mesh: 44-by-44, 5-point stencil
+    MESHND:            nnz(L) 3.559e+04  flops 1.103e+06
+    AMD:               nnz(L) 2.701e+04  flops 7.580e+05
+    METIS:             nnz(L) 2.805e+04  flops 7.813e+05
+2D mesh: 47-by-47, 5-point stencil
+    MESHND:            nnz(L) 4.198e+04  flops 1.384e+06
+    AMD:               nnz(L) 3.031e+04  flops 8.216e+05
+    METIS:             nnz(L) 3.359e+04  flops 1.007e+06
+2D mesh: 50-by-50, 5-point stencil
+    MESHND:            nnz(L) 4.848e+04  flops 1.683e+06
+    AMD:               nnz(L) 3.591e+04  flops 1.042e+06
+    METIS:             nnz(L) 3.832e+04  flops 1.173e+06
+2D mesh: 54-by-54, 5-point stencil
+    MESHND:            nnz(L) 5.879e+04  flops 2.177e+06
+    AMD:               nnz(L) 4.362e+04  flops 1.368e+06
+    METIS:             nnz(L) 4.469e+04  flops 1.391e+06
+2D mesh: 58-by-58, 5-point stencil
+    MESHND:            nnz(L) 6.973e+04  flops 2.730e+06
+    AMD:               nnz(L) 5.255e+04  flops 1.801e+06
+    METIS:             nnz(L) 5.679e+04  flops 2.062e+06
+2D mesh: 63-by-63, 5-point stencil
+    MESHND:            nnz(L) 8.542e+04  flops 3.578e+06
+    AMD:               nnz(L) 6.195e+04  flops 2.170e+06
+    METIS:             nnz(L) 6.725e+04  flops 2.471e+06
+2D mesh: 67-by-67, 5-point stencil
+    MESHND:            nnz(L) 9.898e+04  flops 4.353e+06
+    AMD:               nnz(L) 7.249e+04  flops 2.712e+06
+    METIS:             nnz(L) 7.963e+04  flops 3.303e+06
+2D mesh: 72-by-72, 5-point stencil
+    MESHND:            nnz(L) 1.179e+05  flops 5.442e+06
+    AMD:               nnz(L) 9.047e+04  flops 3.802e+06
+    METIS:             nnz(L) 9.518e+04  flops 4.119e+06
+2D mesh: 77-by-77, 5-point stencil
+    MESHND:            nnz(L) 1.395e+05  flops 6.816e+06
+    AMD:               nnz(L) 1.030e+05  flops 4.537e+06
+    METIS:             nnz(L) 1.038e+05  flops 4.305e+06
+2D mesh: 83-by-83, 5-point stencil
+    MESHND:            nnz(L) 1.666e+05  flops 8.648e+06
+    AMD:               nnz(L) 1.249e+05  flops 6.030e+06
+    METIS:             nnz(L) 1.275e+05  flops 5.935e+06
+2D mesh: 89-by-89, 5-point stencil
+    MESHND:            nnz(L) 1.965e+05  flops 1.077e+07
+    AMD:               nnz(L) 1.506e+05  flops 8.109e+06
+    METIS:             nnz(L) 1.479e+05  flops 6.985e+06
+2D mesh: 96-by-96, 5-point stencil
+    MESHND:            nnz(L) 2.346e+05  flops 1.361e+07
+    AMD:               nnz(L) 1.890e+05  flops 1.119e+07
+    METIS:             nnz(L) 1.780e+05  flops 8.883e+06
+2D mesh: 102-by-102, 5-point stencil
+    MESHND:            nnz(L) 2.714e+05  flops 1.664e+07
+    AMD:               nnz(L) 2.122e+05  flops 1.239e+07
+    METIS:             nnz(L) 2.082e+05  flops 1.146e+07
+2D mesh: 110-by-110, 5-point stencil
+    MESHND:            nnz(L) 3.253e+05  flops 2.117e+07
+    AMD:               nnz(L) 2.568e+05  flops 1.617e+07
+    METIS:             nnz(L) 2.463e+05  flops 1.439e+07
+2D mesh: 118-by-118, 5-point stencil
+    MESHND:            nnz(L) 3.827e+05  flops 2.637e+07
+    AMD:               nnz(L) 3.013e+05  flops 1.973e+07
+    METIS:             nnz(L) 2.714e+05  flops 1.511e+07
+2D mesh: 127-by-127, 5-point stencil
+    MESHND:            nnz(L) 4.556e+05  flops 3.326e+07
+    AMD:               nnz(L) 3.501e+05  flops 2.484e+07
+    METIS:             nnz(L) 3.516e+05  flops 2.392e+07
+2D mesh: 136-by-136, 5-point stencil
+    MESHND:            nnz(L) 5.336e+05  flops 4.098e+07
+    AMD:               nnz(L) 4.319e+05  flops 3.296e+07
+    METIS:             nnz(L) 3.998e+05  flops 2.760e+07
+2D mesh: 146-by-146, 5-point stencil
+    MESHND:            nnz(L) 6.322e+05  flops 5.135e+07
+    AMD:               nnz(L) 5.053e+05  flops 3.980e+07
+    METIS:             nnz(L) 4.773e+05  flops 3.598e+07
+2D mesh: 156-by-156, 5-point stencil
+    MESHND:            nnz(L) 7.403e+05  flops 6.317e+07
+    AMD:               nnz(L) 6.154e+05  flops 5.580e+07
+    METIS:             nnz(L) 5.572e+05  flops 4.390e+07
+2D mesh: 167-by-167, 5-point stencil
+    MESHND:            nnz(L) 8.668e+05  flops 7.834e+07
+    AMD:               nnz(L) 6.652e+05  flops 5.757e+07
+    METIS:             nnz(L) 6.114e+05  flops 4.667e+07
+2D mesh: 180-by-180, 5-point stencil
+    MESHND:            nnz(L) 1.030e+06  flops 9.857e+07
+    AMD:               nnz(L) 8.558e+05  flops 8.577e+07
+    METIS:             nnz(L) 7.593e+05  flops 6.550e+07
+2D mesh: 193-by-193, 5-point stencil
+    MESHND:            nnz(L) 1.210e+06  flops 1.225e+08
+    AMD:               nnz(L) 9.532e+05  flops 9.653e+07
+    METIS:             nnz(L) 8.647e+05  flops 7.595e+07
+2D mesh: 206-by-206, 5-point stencil
+    MESHND:            nnz(L) 1.408e+06  flops 1.505e+08
+    AMD:               nnz(L) 1.150e+06  flops 1.205e+08
+    METIS:             nnz(L) 1.040e+06  flops 1.007e+08
+2D mesh: 221-by-221, 5-point stencil
+    MESHND:            nnz(L) 1.656e+06  flops 1.871e+08
+    AMD:               nnz(L) 1.305e+06  flops 1.469e+08
+    METIS:             nnz(L) 1.194e+06  flops 1.202e+08
+2D mesh: 237-by-237, 5-point stencil
+    MESHND:            nnz(L) 1.941e+06  flops 2.321e+08
+    AMD:               nnz(L) 1.541e+06  flops 1.839e+08
+    METIS:             nnz(L) 1.429e+06  flops 1.594e+08
+2D mesh: 255-by-255, 5-point stencil
+    MESHND:            nnz(L) 2.300e+06  flops 2.914e+08
+    AMD:               nnz(L) 1.834e+06  flops 2.329e+08
+    METIS:             nnz(L) 1.652e+06  flops 1.903e+08
+2D mesh: 273-by-273, 5-point stencil
+    MESHND:            nnz(L) 2.685e+06  flops 3.588e+08
+    AMD:               nnz(L) 2.166e+06  flops 2.976e+08
+    METIS:             nnz(L) 1.954e+06  flops 2.460e+08
+2D mesh: 293-by-293, 5-point stencil
+    MESHND:            nnz(L) 3.163e+06  flops 4.466e+08
+    AMD:               nnz(L) 2.522e+06  flops 3.557e+08
+    METIS:             nnz(L) 2.301e+06  flops 3.051e+08
+2D mesh: 314-by-314, 5-point stencil
+    MESHND:            nnz(L) 3.714e+06  flops 5.527e+08
+    AMD:               nnz(L) 3.181e+06  flops 5.084e+08
+    METIS:             nnz(L) 2.639e+06  flops 3.652e+08
+2D mesh: 336-by-336, 5-point stencil
+    MESHND:            nnz(L) 4.325e+06  flops 6.799e+08
+    AMD:               nnz(L) 3.763e+06  flops 6.432e+08
+    METIS:             nnz(L) 3.172e+06  flops 4.801e+08
+2D mesh: 361-by-361, 5-point stencil
+    MESHND:            nnz(L) 5.088e+06  flops 8.480e+08
+    AMD:               nnz(L) 4.281e+06  flops 8.179e+08
+    METIS:             nnz(L) 3.709e+06  flops 6.032e+08
+2D mesh: 387-by-387, 5-point stencil
+    MESHND:            nnz(L) 5.959e+06  flops 1.050e+09
+    AMD:               nnz(L) 5.229e+06  flops 1.056e+09
+    METIS:             nnz(L) 4.294e+06  flops 7.027e+08
+2D mesh: 414-by-414, 5-point stencil
+    MESHND:            nnz(L) 6.944e+06  flops 1.293e+09
+    AMD:               nnz(L) 6.008e+06  flops 1.184e+09
+    METIS:             nnz(L) 4.992e+06  flops 9.106e+08
+2D mesh: 444-by-444, 5-point stencil
+    MESHND:            nnz(L) 8.135e+06  flops 1.600e+09
+    AMD:               nnz(L) 7.243e+06  flops 1.637e+09
+    METIS:             nnz(L) 6.077e+06  flops 1.208e+09
+2D mesh: 476-by-476, 5-point stencil
+    MESHND:            nnz(L) 9.501e+06  flops 1.979e+09
+    AMD:               nnz(L) 8.346e+06  flops 1.859e+09
+    METIS:             nnz(L) 7.009e+06  flops 1.473e+09
+2D mesh: 511-by-511, 5-point stencil
+    MESHND:            nnz(L) 1.116e+07  flops 2.462e+09
+    AMD:               nnz(L) 9.426e+06  flops 2.345e+09
+    METIS:             nnz(L) 8.167e+06  flops 1.822e+09
+2D mesh: 547-by-547, 5-point stencil
+    MESHND:            nnz(L) 1.299e+07  flops 3.027e+09
+    AMD:               nnz(L) 1.190e+07  flops 3.313e+09
+    METIS:             nnz(L) 9.654e+06  flops 2.351e+09
+2D mesh: 587-by-587, 5-point stencil
+    MESHND:            nnz(L) 1.525e+07  flops 3.755e+09
+    AMD:               nnz(L) 1.410e+07  flops 4.259e+09
+    METIS:             nnz(L) 1.120e+07  flops 2.798e+09
+2D mesh: 629-by-629, 5-point stencil
+    MESHND:            nnz(L) 1.784e+07  flops 4.634e+09
+    AMD:               nnz(L) 1.539e+07  flops 4.645e+09
+    METIS:             nnz(L) 1.337e+07  flops 3.633e+09
+2D mesh: 674-by-674, 5-point stencil
+    MESHND:            nnz(L) 2.080e+07  flops 5.717e+09
+    AMD:               nnz(L) 1.826e+07  flops 5.280e+09
+    METIS:             nnz(L) 1.517e+07  flops 4.278e+09
+2D mesh: 723-by-723, 5-point stencil
+    MESHND:            nnz(L) 2.431e+07  flops 7.081e+09
+    AMD:               nnz(L) 2.306e+07  flops 8.546e+09
+    METIS:             nnz(L) 1.825e+07  flops 5.617e+09
+2D mesh: 775-by-775, 5-point stencil
+    MESHND:            nnz(L) 2.840e+07  flops 8.749e+09
+    AMD:               nnz(L) 2.592e+07  flops 1.053e+10
+    METIS:             nnz(L) 2.100e+07  flops 6.839e+09
+2D mesh: 830-by-830, 5-point stencil
+    MESHND:            nnz(L) 3.309e+07  flops 1.078e+10
+    AMD:               nnz(L) 2.981e+07  flops 1.064e+10
+    METIS:             nnz(L) 2.402e+07  flops 8.110e+09
+2D mesh: 890-by-890, 5-point stencil
+    MESHND:            nnz(L) 3.865e+07  flops 1.331e+10
+    AMD:               nnz(L) 3.668e+07  flops 1.607e+10
+    METIS:             nnz(L) 2.793e+07  flops 9.861e+09
+2D mesh: 954-by-954, 5-point stencil
+    MESHND:            nnz(L) 4.502e+07  flops 1.644e+10
+    AMD:               nnz(L) 4.217e+07  flops 1.812e+10
+    METIS:             nnz(L) 3.252e+07  flops 1.205e+10
+2D mesh: 1023-by-1023, 5-point stencil
+    MESHND:            nnz(L) 5.262e+07  flops 2.033e+10
+    AMD:               nnz(L) 4.567e+07  flops 1.966e+10
+    METIS:             nnz(L) 3.884e+07  flops 1.660e+10
+2D mesh: 7-by-7, 9-point stencil
+    MESHND:            nnz(L) 3.540e+02  flops 2.830e+03
+    AMD:               nnz(L) 3.290e+02  flops 2.413e+03
+    METIS:             nnz(L) 3.500e+02  flops 2.758e+03
+2D mesh: 7-by-7, 9-point stencil
+    MESHND:            nnz(L) 3.540e+02  flops 2.830e+03
+    AMD:               nnz(L) 3.290e+02  flops 2.413e+03
+    METIS:             nnz(L) 3.500e+02  flops 2.758e+03
+2D mesh: 8-by-8, 9-point stencil
+    MESHND:            nnz(L) 5.200e+02  flops 4.602e+03
+    AMD:               nnz(L) 4.890e+02  flops 4.129e+03
+    METIS:             nnz(L) 5.110e+02  flops 4.595e+03
+2D mesh: 8-by-8, 9-point stencil
+    MESHND:            nnz(L) 5.200e+02  flops 4.602e+03
+    AMD:               nnz(L) 4.890e+02  flops 4.129e+03
+    METIS:             nnz(L) 5.110e+02  flops 4.595e+03
+2D mesh: 9-by-9, 9-point stencil
+    MESHND:            nnz(L) 7.450e+02  flops 7.529e+03
+    AMD:               nnz(L) 6.960e+02  flops 6.762e+03
+    METIS:             nnz(L) 7.000e+02  flops 6.798e+03
+2D mesh: 10-by-10, 9-point stencil
+    MESHND:            nnz(L) 1.000e+03  flops 1.104e+04
+    AMD:               nnz(L) 9.150e+02  flops 9.687e+03
+    METIS:             nnz(L) 9.340e+02  flops 9.900e+03
+2D mesh: 11-by-11, 9-point stencil
+    MESHND:            nnz(L) 1.248e+03  flops 1.436e+04
+    AMD:               nnz(L) 1.206e+03  flops 1.413e+04
+    METIS:             nnz(L) 1.221e+03  flops 1.396e+04
+2D mesh: 11-by-11, 9-point stencil
+    MESHND:            nnz(L) 1.248e+03  flops 1.436e+04
+    AMD:               nnz(L) 1.206e+03  flops 1.413e+04
+    METIS:             nnz(L) 1.221e+03  flops 1.396e+04
+2D mesh: 12-by-12, 9-point stencil
+    MESHND:            nnz(L) 1.513e+03  flops 1.811e+04
+    AMD:               nnz(L) 1.500e+03  flops 1.795e+04
+    METIS:             nnz(L) 1.548e+03  flops 1.931e+04
+2D mesh: 13-by-13, 9-point stencil
+    MESHND:            nnz(L) 1.904e+03  flops 2.492e+04
+    AMD:               nnz(L) 1.888e+03  flops 2.479e+04
+    METIS:             nnz(L) 1.926e+03  flops 2.557e+04
+2D mesh: 15-by-15, 9-point stencil
+    MESHND:            nnz(L) 2.778e+03  flops 4.033e+04
+    AMD:               nnz(L) 2.654e+03  flops 3.651e+04
+    METIS:             nnz(L) 2.945e+03  flops 4.859e+04
+2D mesh: 16-by-16, 9-point stencil
+    MESHND:            nnz(L) 3.258e+03  flops 4.852e+04
+    AMD:               nnz(L) 3.284e+03  flops 5.128e+04
+    METIS:             nnz(L) 3.393e+03  flops 5.508e+04
+2D mesh: 17-by-17, 9-point stencil
+    MESHND:            nnz(L) 3.877e+03  flops 6.177e+04
+    AMD:               nnz(L) 3.854e+03  flops 6.276e+04
+    METIS:             nnz(L) 3.933e+03  flops 6.594e+04
+2D mesh: 18-by-18, 9-point stencil
+    MESHND:            nnz(L) 4.534e+03  flops 7.600e+04
+    AMD:               nnz(L) 4.382e+03  flops 7.316e+04
+    METIS:             nnz(L) 4.618e+03  flops 8.215e+04
+2D mesh: 20-by-20, 9-point stencil
+    MESHND:            nnz(L) 5.944e+03  flops 1.057e+05
+    AMD:               nnz(L) 5.910e+03  flops 1.112e+05
+    METIS:             nnz(L) 6.104e+03  flops 1.189e+05
+2D mesh: 21-by-21, 9-point stencil
+    MESHND:            nnz(L) 6.775e+03  flops 1.263e+05
+    AMD:               nnz(L) 6.567e+03  flops 1.221e+05
+    METIS:             nnz(L) 6.983e+03  flops 1.413e+05
+2D mesh: 23-by-23, 9-point stencil
+    MESHND:            nnz(L) 8.452e+03  flops 1.680e+05
+    AMD:               nnz(L) 8.259e+03  flops 1.678e+05
+    METIS:             nnz(L) 9.053e+03  flops 2.052e+05
+2D mesh: 24-by-24, 9-point stencil
+    MESHND:            nnz(L) 9.215e+03  flops 1.864e+05
+    AMD:               nnz(L) 9.473e+03  flops 2.074e+05
+    METIS:             nnz(L) 1.009e+04  flops 2.353e+05
+2D mesh: 26-by-26, 9-point stencil
+    MESHND:            nnz(L) 1.137e+04  flops 2.488e+05
+    AMD:               nnz(L) 1.150e+04  flops 2.641e+05
+    METIS:             nnz(L) 1.250e+04  flops 3.157e+05
+2D mesh: 28-by-28, 9-point stencil
+    MESHND:            nnz(L) 1.367e+04  flops 3.128e+05
+    AMD:               nnz(L) 1.384e+04  flops 3.312e+05
+    METIS:             nnz(L) 1.550e+04  flops 4.276e+05
+2D mesh: 31-by-31, 9-point stencil
+    MESHND:            nnz(L) 1.767e+04  flops 4.390e+05
+    AMD:               nnz(L) 1.753e+04  flops 4.428e+05
+    METIS:             nnz(L) 1.966e+04  flops 5.658e+05
+2D mesh: 33-by-33, 9-point stencil
+    MESHND:            nnz(L) 2.056e+04  flops 5.323e+05
+    AMD:               nnz(L) 2.175e+04  flops 6.360e+05
+    METIS:             nnz(L) 2.251e+04  flops 6.479e+05
+2D mesh: 35-by-35, 9-point stencil
+    MESHND:            nnz(L) 2.398e+04  flops 6.508e+05
+    AMD:               nnz(L) 2.379e+04  flops 6.609e+05
+    METIS:             nnz(L) 2.563e+04  flops 7.559e+05
+2D mesh: 38-by-38, 9-point stencil
+    MESHND:            nnz(L) 2.954e+04  flops 8.528e+05
+    AMD:               nnz(L) 2.998e+04  flops 9.280e+05
+    METIS:             nnz(L) 3.172e+04  flops 1.009e+06
+2D mesh: 41-by-41, 9-point stencil
+    MESHND:            nnz(L) 3.548e+04  flops 1.075e+06
+    AMD:               nnz(L) 3.685e+04  flops 1.246e+06
+    METIS:             nnz(L) 3.857e+04  flops 1.298e+06
+2D mesh: 44-by-44, 9-point stencil
+    MESHND:            nnz(L) 4.218e+04  flops 1.341e+06
+    AMD:               nnz(L) 4.299e+04  flops 1.483e+06
+    METIS:             nnz(L) 4.482e+04  flops 1.514e+06
+2D mesh: 47-by-47, 9-point stencil
+    MESHND:            nnz(L) 4.948e+04  flops 1.662e+06
+    AMD:               nnz(L) 4.981e+04  flops 1.798e+06
+    METIS:             nnz(L) 5.427e+04  flops 2.006e+06
+2D mesh: 50-by-50, 9-point stencil
+    MESHND:            nnz(L) 5.695e+04  flops 2.005e+06
+    AMD:               nnz(L) 5.813e+04  flops 2.163e+06
+    METIS:             nnz(L) 6.190e+04  flops 2.326e+06
+2D mesh: 54-by-54, 9-point stencil
+    MESHND:            nnz(L) 6.879e+04  flops 2.574e+06
+    AMD:               nnz(L) 7.023e+04  flops 2.757e+06
+    METIS:             nnz(L) 7.597e+04  flops 3.063e+06
+2D mesh: 58-by-58, 9-point stencil
+    MESHND:            nnz(L) 8.146e+04  flops 3.206e+06
+    AMD:               nnz(L) 8.291e+04  flops 3.364e+06
+    METIS:             nnz(L) 8.973e+04  flops 3.797e+06
+2D mesh: 63-by-63, 9-point stencil
+    MESHND:            nnz(L) 9.945e+04  flops 4.164e+06
+    AMD:               nnz(L) 1.021e+05  flops 4.652e+06
+    METIS:             nnz(L) 1.097e+05  flops 4.874e+06
+2D mesh: 67-by-67, 9-point stencil
+    MESHND:            nnz(L) 1.150e+05  flops 5.037e+06
+    AMD:               nnz(L) 1.180e+05  flops 5.569e+06
+    METIS:             nnz(L) 1.249e+05  flops 5.648e+06
+2D mesh: 72-by-72, 9-point stencil
+    MESHND:            nnz(L) 1.369e+05  flops 6.282e+06
+    AMD:               nnz(L) 1.452e+05  flops 7.910e+06
+    METIS:             nnz(L) 1.478e+05  flops 7.046e+06
+2D mesh: 77-by-77, 9-point stencil
+    MESHND:            nnz(L) 1.614e+05  flops 7.810e+06
+    AMD:               nnz(L) 1.703e+05  flops 9.510e+06
+    METIS:             nnz(L) 1.762e+05  flops 8.938e+06
+2D mesh: 83-by-83, 9-point stencil
+    MESHND:            nnz(L) 1.925e+05  flops 9.843e+06
+    AMD:               nnz(L) 2.008e+05  flops 1.180e+07
+    METIS:             nnz(L) 2.094e+05  flops 1.112e+07
+2D mesh: 89-by-89, 9-point stencil
+    MESHND:            nnz(L) 2.268e+05  flops 1.220e+07
+    AMD:               nnz(L) 2.384e+05  flops 1.456e+07
+    METIS:             nnz(L) 2.464e+05  flops 1.444e+07
+2D mesh: 96-by-96, 9-point stencil
+    MESHND:            nnz(L) 2.699e+05  flops 1.534e+07
+    AMD:               nnz(L) 2.804e+05  flops 1.759e+07
+    METIS:             nnz(L) 2.910e+05  flops 1.693e+07
+2D mesh: 102-by-102, 9-point stencil
+    MESHND:            nnz(L) 3.111e+05  flops 1.863e+07
+    AMD:               nnz(L) 3.226e+05  flops 2.113e+07
+    METIS:             nnz(L) 3.363e+05  flops 2.036e+07
+2D mesh: 110-by-110, 9-point stencil
+    MESHND:            nnz(L) 3.717e+05  flops 2.357e+07
+    AMD:               nnz(L) 3.828e+05  flops 2.610e+07
+    METIS:             nnz(L) 4.100e+05  flops 2.657e+07
+2D mesh: 118-by-118, 9-point stencil
+    MESHND:            nnz(L) 4.367e+05  flops 2.921e+07
+    AMD:               nnz(L) 4.550e+05  flops 3.361e+07
+    METIS:             nnz(L) 4.737e+05  flops 3.190e+07
+2D mesh: 127-by-127, 9-point stencil
+    MESHND:            nnz(L) 5.186e+05  flops 3.667e+07
+    AMD:               nnz(L) 5.732e+05  flops 5.110e+07
+    METIS:             nnz(L) 5.634e+05  flops 4.015e+07
+2D mesh: 136-by-136, 9-point stencil
+    MESHND:            nnz(L) 6.067e+05  flops 4.504e+07
+    AMD:               nnz(L) 6.357e+05  flops 5.249e+07
+    METIS:             nnz(L) 6.533e+05  flops 4.822e+07
+2D mesh: 146-by-146, 9-point stencil
+    MESHND:            nnz(L) 7.171e+05  flops 5.616e+07
+    AMD:               nnz(L) 8.085e+05  flops 8.384e+07
+    METIS:             nnz(L) 7.723e+05  flops 6.055e+07
+2D mesh: 156-by-156, 9-point stencil
+    MESHND:            nnz(L) 8.381e+05  flops 6.888e+07
+    AMD:               nnz(L) 8.718e+05  flops 8.218e+07
+    METIS:             nnz(L) 9.152e+05  flops 7.528e+07
+2D mesh: 167-by-167, 9-point stencil
+    MESHND:            nnz(L) 9.800e+05  flops 8.500e+07
+    AMD:               nnz(L) 1.142e+06  flops 1.458e+08
+    METIS:             nnz(L) 1.059e+06  flops 9.115e+07
+2D mesh: 180-by-180, 9-point stencil
+    MESHND:            nnz(L) 1.163e+06  flops 1.066e+08
+    AMD:               nnz(L) 1.214e+06  flops 1.268e+08
+    METIS:             nnz(L) 1.225e+06  flops 1.111e+08
+2D mesh: 193-by-193, 9-point stencil
+    MESHND:            nnz(L) 1.363e+06  flops 1.320e+08
+    AMD:               nnz(L) 1.433e+06  flops 1.561e+08
+    METIS:             nnz(L) 1.448e+06  flops 1.383e+08
+2D mesh: 206-by-206, 9-point stencil
+    MESHND:            nnz(L) 1.582e+06  flops 1.614e+08
+    AMD:               nnz(L) 1.637e+06  flops 1.824e+08
+    METIS:             nnz(L) 1.692e+06  flops 1.693e+08
+2D mesh: 221-by-221, 9-point stencil
+    MESHND:            nnz(L) 1.857e+06  flops 2.001e+08
+    AMD:               nnz(L) 1.952e+06  flops 2.337e+08
+    METIS:             nnz(L) 2.052e+06  flops 2.293e+08
+2D mesh: 237-by-237, 9-point stencil
+    MESHND:            nnz(L) 2.173e+06  flops 2.474e+08
+    AMD:               nnz(L) 2.297e+06  flops 2.959e+08
+    METIS:             nnz(L) 2.382e+06  flops 2.825e+08
+2D mesh: 255-by-255, 9-point stencil
+    MESHND:            nnz(L) 2.569e+06  flops 3.096e+08
+    AMD:               nnz(L) 3.239e+06  flops 6.408e+08
+    METIS:             nnz(L) 2.777e+06  flops 3.271e+08
+2D mesh: 273-by-273, 9-point stencil
+    MESHND:            nnz(L) 2.996e+06  flops 3.802e+08
+    AMD:               nnz(L) 3.158e+06  flops 4.548e+08
+    METIS:             nnz(L) 3.203e+06  flops 3.979e+08
+2D mesh: 293-by-293, 9-point stencil
+    MESHND:            nnz(L) 3.523e+06  flops 4.719e+08
+    AMD:               nnz(L) 3.693e+06  flops 5.605e+08
+    METIS:             nnz(L) 3.749e+06  flops 4.883e+08
+2D mesh: 314-by-314, 9-point stencil
+    MESHND:            nnz(L) 4.130e+06  flops 5.826e+08
+    AMD:               nnz(L) 5.119e+06  flops 1.109e+09
+    METIS:             nnz(L) 4.406e+06  flops 6.167e+08
+2D mesh: 336-by-336, 9-point stencil
+    MESHND:            nnz(L) 4.806e+06  flops 7.152e+08
+    AMD:               nnz(L) 4.992e+06  flops 8.400e+08
+    METIS:             nnz(L) 5.098e+06  flops 7.461e+08
+2D mesh: 361-by-361, 9-point stencil
+    MESHND:            nnz(L) 5.647e+06  flops 8.894e+08
+    AMD:               nnz(L) 6.052e+06  flops 1.167e+09
+    METIS:             nnz(L) 5.997e+06  flops 9.406e+08
+2D mesh: 387-by-387, 9-point stencil
+    MESHND:            nnz(L) 6.603e+06  flops 1.099e+09
+    AMD:               nnz(L) 8.957e+06  flops 2.760e+09
+    METIS:             nnz(L) 7.034e+06  flops 1.201e+09
+2D mesh: 414-by-414, 9-point stencil
+    MESHND:            nnz(L) 7.677e+06  flops 1.349e+09
+    AMD:               nnz(L) 7.998e+06  flops 1.580e+09
+    METIS:             nnz(L) 8.259e+06  flops 1.479e+09
+2D mesh: 444-by-444, 9-point stencil
+    MESHND:            nnz(L) 8.979e+06  flops 1.667e+09
+    AMD:               nnz(L) 9.248e+06  flops 1.844e+09
+    METIS:             nnz(L) 9.933e+06  flops 2.032e+09
+2D mesh: 476-by-476, 9-point stencil
+    MESHND:            nnz(L) 1.047e+07  flops 2.058e+09
+    AMD:               nnz(L) 1.106e+07  flops 2.676e+09
+    METIS:             nnz(L) 1.122e+07  flops 2.153e+09
+2D mesh: 511-by-511, 9-point stencil
+    MESHND:            nnz(L) 1.228e+07  flops 2.554e+09
+    AMD:               nnz(L) 1.701e+07  flops 6.335e+09
+    METIS:             nnz(L) 1.336e+07  flops 3.011e+09
+2D mesh: 547-by-547, 9-point stencil
+    MESHND:            nnz(L) 1.428e+07  flops 3.134e+09
+    AMD:               nnz(L) 1.972e+07  flops 7.576e+09
+    METIS:             nnz(L) 1.564e+07  flops 3.740e+09
+2D mesh: 587-by-587, 9-point stencil
+    MESHND:            nnz(L) 1.674e+07  flops 3.881e+09
+    AMD:               nnz(L) 2.297e+07  flops 9.089e+09
+    METIS:             nnz(L) 1.790e+07  flops 4.116e+09
+2D mesh: 629-by-629, 9-point stencil
+    MESHND:            nnz(L) 1.956e+07  flops 4.783e+09
+    AMD:               nnz(L) 2.072e+07  flops 6.333e+09
+    METIS:             nnz(L) 2.116e+07  flops 5.333e+09
+2D mesh: 674-by-674, 9-point stencil
+    MESHND:            nnz(L) 2.278e+07  flops 5.891e+09
+    AMD:               nnz(L) 3.397e+07  flops 1.679e+10
+    METIS:             nnz(L) 2.510e+07  flops 7.157e+09
+2D mesh: 723-by-723, 9-point stencil
+    MESHND:            nnz(L) 2.661e+07  flops 7.285e+09
+    AMD:               nnz(L) 4.122e+07  flops 2.462e+10
+    METIS:             nnz(L) 3.006e+07  flops 1.027e+10
+2D mesh: 775-by-775, 9-point stencil
+    MESHND:            nnz(L) 3.104e+07  flops 8.987e+09
+    AMD:               nnz(L) 4.552e+07  flops 2.629e+10
+    METIS:             nnz(L) 3.455e+07  flops 1.175e+10
+2D mesh: 830-by-830, 9-point stencil
+    MESHND:            nnz(L) 3.610e+07  flops 1.105e+10
+    AMD:               nnz(L) 3.763e+07  flops 1.320e+10
+    METIS:             nnz(L) 4.003e+07  flops 1.444e+10
+2D mesh: 890-by-890, 9-point stencil
+    MESHND:            nnz(L) 4.211e+07  flops 1.364e+10
+    AMD:               nnz(L) 6.025e+07  flops 3.514e+10
+    METIS:             nnz(L) 4.675e+07  flops 1.695e+10
+2D mesh: 954-by-954, 9-point stencil
+    MESHND:            nnz(L) 4.900e+07  flops 1.682e+10
+    AMD:               nnz(L) 6.918e+07  flops 4.011e+10
+    METIS:             nnz(L) 5.542e+07  flops 2.311e+10
+2D mesh: 1023-by-1023, 9-point stencil
+    MESHND:            nnz(L) 5.720e+07  flops 2.078e+10
+    AMD:               nnz(L) 8.545e+07  flops 5.878e+10
+    METIS:             nnz(L) 6.355e+07  flops 2.692e+10
+3D mesh: 8-by-8-by-8, 7-point stencil
+    MESHND:            nnz(L) 1.680e+04  flops 8.311e+05
+    AMD:               nnz(L) 1.133e+04  flops 4.851e+05
+    METIS:             nnz(L) 1.042e+04  flops 3.922e+05
+3D mesh: 8-by-8-by-8, 7-point stencil
+    MESHND:            nnz(L) 1.680e+04  flops 8.311e+05
+    AMD:               nnz(L) 1.133e+04  flops 4.851e+05
+    METIS:             nnz(L) 1.042e+04  flops 3.922e+05
+3D mesh: 9-by-9-by-9, 7-point stencil
+    MESHND:            nnz(L) 2.949e+04  flops 1.792e+06
+    AMD:               nnz(L) 1.894e+04  flops 1.088e+06
+    METIS:             nnz(L) 1.824e+04  flops 9.172e+05
+3D mesh: 9-by-9-by-9, 7-point stencil
+    MESHND:            nnz(L) 2.949e+04  flops 1.792e+06
+    AMD:               nnz(L) 1.894e+04  flops 1.088e+06
+    METIS:             nnz(L) 1.824e+04  flops 9.172e+05
+3D mesh: 10-by-10-by-10, 7-point stencil
+    MESHND:            nnz(L) 4.725e+04  flops 3.564e+06
+    AMD:               nnz(L) 3.219e+04  flops 2.333e+06
+    METIS:             nnz(L) 3.309e+04  flops 2.321e+06
+3D mesh: 11-by-11-by-11, 7-point stencil
+    MESHND:            nnz(L) 7.246e+04  flops 6.518e+06
+    AMD:               nnz(L) 4.807e+04  flops 4.349e+06
+    METIS:             nnz(L) 4.327e+04  flops 3.073e+06
+3D mesh: 12-by-12-by-12, 7-point stencil
+    MESHND:            nnz(L) 1.058e+05  flops 1.139e+07
+    AMD:               nnz(L) 7.604e+04  flops 8.543e+06
+    METIS:             nnz(L) 6.937e+04  flops 6.329e+06
+3D mesh: 12-by-12-by-12, 7-point stencil
+    MESHND:            nnz(L) 1.058e+05  flops 1.139e+07
+    AMD:               nnz(L) 7.604e+04  flops 8.543e+06
+    METIS:             nnz(L) 6.937e+04  flops 6.329e+06
+3D mesh: 13-by-13-by-13, 7-point stencil
+    MESHND:            nnz(L) 1.549e+05  flops 1.942e+07
+    AMD:               nnz(L) 1.045e+05  flops 1.382e+07
+    METIS:             nnz(L) 1.072e+05  flops 1.244e+07
+3D mesh: 14-by-14-by-14, 7-point stencil
+    MESHND:            nnz(L) 2.147e+05  flops 3.111e+07
+    AMD:               nnz(L) 1.517e+05  flops 2.320e+07
+    METIS:             nnz(L) 1.332e+05  flops 1.707e+07
+3D mesh: 16-by-16-by-16, 7-point stencil
+    MESHND:            nnz(L) 3.859e+05  flops 7.201e+07
+    AMD:               nnz(L) 2.810e+05  flops 6.000e+07
+    METIS:             nnz(L) 2.347e+05  flops 3.751e+07
+3D mesh: 17-by-17-by-17, 7-point stencil
+    MESHND:            nnz(L) 5.150e+05  flops 1.082e+08
+    AMD:               nnz(L) 3.773e+05  flops 9.681e+07
+    METIS:             nnz(L) 3.416e+05  flops 6.752e+07
+3D mesh: 18-by-18-by-18, 7-point stencil
+    MESHND:            nnz(L) 6.624e+05  flops 1.547e+08
+    AMD:               nnz(L) 4.883e+05  flops 1.344e+08
+    METIS:             nnz(L) 4.306e+05  flops 9.356e+07
+3D mesh: 19-by-19-by-19, 7-point stencil
+    MESHND:            nnz(L) 8.464e+05  flops 2.186e+08
+    AMD:               nnz(L) 6.447e+05  flops 2.091e+08
+    METIS:             nnz(L) 5.905e+05  flops 1.515e+08
+3D mesh: 21-by-21-by-21, 7-point stencil
+    MESHND:            nnz(L) 1.311e+06  flops 4.129e+08
+    AMD:               nnz(L) 1.040e+06  flops 4.105e+08
+    METIS:             nnz(L) 9.257e+05  flops 2.940e+08
+3D mesh: 22-by-22-by-22, 7-point stencil
+    MESHND:            nnz(L) 1.603e+06  flops 5.504e+08
+    AMD:               nnz(L) 1.274e+06  flops 5.573e+08
+    METIS:             nnz(L) 1.060e+06  flops 3.527e+08
+3D mesh: 24-by-24-by-24, 7-point stencil
+    MESHND:            nnz(L) 2.319e+06  flops 9.398e+08
+    AMD:               nnz(L) 1.875e+06  flops 9.692e+08
+    METIS:             nnz(L) 1.563e+06  flops 6.256e+08
+3D mesh: 25-by-25-by-25, 7-point stencil
+    MESHND:            nnz(L) 2.805e+06  flops 1.237e+09
+    AMD:               nnz(L) 2.407e+06  flops 1.448e+09
+    METIS:             nnz(L) 1.830e+06  flops 7.686e+08
+3D mesh: 27-by-27-by-27, 7-point stencil
+    MESHND:            nnz(L) 3.940e+06  flops 2.003e+09
+    AMD:               nnz(L) 3.388e+06  flops 2.407e+09
+    METIS:             nnz(L) 2.580e+06  flops 1.289e+09
+3D mesh: 29-by-29-by-29, 7-point stencil
+    MESHND:            nnz(L) 5.356e+06  flops 3.133e+09
+    AMD:               nnz(L) 4.974e+06  flops 4.313e+09
+    METIS:             nnz(L) 3.524e+06  flops 1.995e+09
+3D mesh: 32-by-32-by-32, 7-point stencil
+    MESHND:            nnz(L) 8.114e+06  flops 5.700e+09
+    AMD:               nnz(L) 7.747e+06  flops 8.358e+09
+    METIS:             nnz(L) 5.462e+06  flops 3.875e+09
+3D mesh: 34-by-34-by-34, 7-point stencil
+    MESHND:            nnz(L) 1.064e+07  flops 8.405e+09
+    AMD:               nnz(L) 1.046e+07  flops 1.327e+10
+    METIS:             nnz(L) 7.356e+06  flops 6.089e+09
+3D mesh: 36-by-36-by-36, 7-point stencil
+    MESHND:            nnz(L) 1.355e+07  flops 1.188e+10
+    AMD:               nnz(L) 1.300e+07  flops 1.701e+10
+    METIS:             nnz(L) 9.141e+06  flops 8.339e+09
+3D mesh: 39-by-39-by-39, 7-point stencil
+    MESHND:            nnz(L) 1.929e+07  flops 1.978e+10
+    AMD:               nnz(L) 1.989e+07  flops 3.346e+10
+    METIS:             nnz(L) 1.304e+07  flops 1.376e+10
+3D mesh: 42-by-42-by-42, 7-point stencil
+    MESHND:            nnz(L) 2.635e+07  flops 3.117e+10
+    AMD:               nnz(L) 2.643e+07  flops 4.924e+10
+    METIS:             nnz(L) 1.793e+07  flops 2.216e+10
+3D mesh: 45-by-45-by-45, 7-point stencil
+    MESHND:            nnz(L) 3.543e+07  flops 4.791e+10
+    AMD:               nnz(L) 3.935e+07  flops 9.450e+10
+    METIS:             nnz(L) 2.439e+07  flops 3.474e+10
+3D mesh: 48-by-48-by-48, 7-point stencil
+    MESHND:            nnz(L) 4.627e+07  flops 7.053e+10
+    AMD:               nnz(L) 5.230e+07  flops 1.364e+11
+    METIS:             nnz(L) 3.194e+07  flops 5.087e+10
+3D mesh: 51-by-51-by-51, 7-point stencil
+    MESHND:            nnz(L) 6.040e+07  flops 1.037e+11
+    AMD:               nnz(L) 6.736e+07  flops 1.961e+11
+    METIS:             nnz(L) 4.172e+07  flops 7.570e+10
+3D mesh: 55-by-55-by-55, 7-point stencil
+    MESHND:            nnz(L) 8.329e+07  flops 1.650e+11
+    AMD:               nnz(L) 1.034e+08  flops 3.906e+11
+    METIS:             nnz(L) 5.757e+07  flops 1.215e+11
+3D mesh: 59-by-59-by-59, 7-point stencil
+    MESHND:            nnz(L) 1.119e+08  flops 2.539e+11
+    AMD:               nnz(L) 1.341e+08  flops 5.484e+11
+    METIS:             nnz(L) 7.938e+07  flops 1.918e+11
+3D mesh: 64-by-64-by-64, 7-point stencil
+    MESHND:            nnz(L) 1.566e+08  flops 4.141e+11
+    AMD:               nnz(L) 1.842e+08  flops 8.278e+11
+    METIS:             nnz(L) 1.162e+08  flops 3.359e+11
+3D mesh: 68-by-68-by-68, 7-point stencil
+    MESHND:            nnz(L) 2.025e+08  flops 6.011e+11
+    AMD:               nnz(L) 2.698e+08  flops 1.634e+12
+    METIS:             nnz(L) 1.470e+08  flops 4.750e+11
+3D mesh: 73-by-73-by-73, 7-point stencil
+    MESHND:            nnz(L) 2.736e+08  flops 9.344e+11
+    AMD:               nnz(L) 3.668e+08  flops 2.354e+12
+    METIS:             nnz(L) 2.022e+08  flops 7.528e+11
+3D mesh: 78-by-78-by-78, 7-point stencil
+    MESHND:            nnz(L) 3.618e+08  flops 1.399e+12
+    AMD:               nnz(L) 5.023e+08  flops 3.914e+12
+    METIS:             nnz(L) 2.656e+08  flops 1.121e+12
+3D mesh: 84-by-84-by-84, 7-point stencil
+    MESHND:            nnz(L) 4.913e+08  flops 2.189e+12
+    AMD:               nnz(L) 6.984e+08  flops 6.325e+12
+    METIS:             nnz(L) 3.599e+08  flops 1.738e+12
+3D mesh: 90-by-90-by-90, 7-point stencil
+    MESHND:            nnz(L) 6.565e+08  flops 3.348e+12
+    AMD:               nnz(L) 9.696e+08  flops 1.028e+13
+    METIS:             nnz(L) 4.872e+08  flops 2.720e+12
+3D mesh: 97-by-97-by-97, 7-point stencil
+    MESHND:            nnz(L) 8.967e+08  flops 5.291e+12
+    AMD:               nnz(L) 1.441e+09  flops 1.913e+13
+    METIS:             nnz(L) 7.002e+08  flops 4.607e+12
+3D mesh: 103-by-103-by-103, 7-point stencil
+    MESHND:            nnz(L) 1.155e+09  flops 7.634e+12
+    AMD:               nnz(L) 1.911e+09  flops 2.882e+13
+    METIS:             nnz(L) 8.864e+08  flops 6.511e+12
+3D mesh: 111-by-111-by-111, 7-point stencil
+    MESHND:            nnz(L) 1.576e+09  flops 1.203e+13
+    AMD:               nnz(L) 2.729e+09  flops 4.858e+13
+    METIS:             nnz(L) 1.233e+09  flops 1.044e+13
+3D mesh: 119-by-119-by-119, 7-point stencil
+    MESHND:            nnz(L) 2.101e+09  flops 1.836e+13
+    AMD:               nnz(L) 3.913e+09  flops 8.547e+13
+    METIS:             nnz(L) 1.624e+09  flops 1.564e+13
+3D mesh: 128-by-128-by-128, 7-point stencil
+    MESHND:            nnz(L) 2.830e+09  flops 2.843e+13
+    AMD:               nnz(L) 5.174e+09  flops 1.317e+14
+    METIS:             nnz(L) 2.214e+09  flops 2.465e+13
+3D mesh: 8-by-8-by-8, 27-point stencil
+    MESHND:            nnz(L) 2.222e+04  flops 1.217e+06
+    AMD:               nnz(L) 2.493e+04  flops 1.673e+06
+    METIS:             nnz(L) 2.437e+04  flops 1.511e+06
+3D mesh: 8-by-8-by-8, 27-point stencil
+    MESHND:            nnz(L) 2.222e+04  flops 1.217e+06
+    AMD:               nnz(L) 2.493e+04  flops 1.673e+06
+    METIS:             nnz(L) 2.437e+04  flops 1.511e+06
+3D mesh: 9-by-9-by-9, 27-point stencil
+    MESHND:            nnz(L) 3.920e+04  flops 2.663e+06
+    AMD:               nnz(L) 4.592e+04  flops 4.291e+06
+    METIS:             nnz(L) 4.200e+04  flops 3.188e+06
+3D mesh: 9-by-9-by-9, 27-point stencil
+    MESHND:            nnz(L) 3.920e+04  flops 2.663e+06
+    AMD:               nnz(L) 4.592e+04  flops 4.291e+06
+    METIS:             nnz(L) 4.200e+04  flops 3.188e+06
+3D mesh: 10-by-10-by-10, 27-point stencil
+    MESHND:            nnz(L) 6.278e+04  flops 5.167e+06
+    AMD:               nnz(L) 7.465e+04  flops 8.732e+06
+    METIS:             nnz(L) 6.872e+04  flops 6.315e+06
+3D mesh: 11-by-11-by-11, 27-point stencil
+    MESHND:            nnz(L) 9.422e+04  flops 9.146e+06
+    AMD:               nnz(L) 1.214e+05  flops 1.789e+07
+    METIS:             nnz(L) 1.056e+05  flops 1.112e+07
+3D mesh: 12-by-12-by-12, 27-point stencil
+    MESHND:            nnz(L) 1.349e+05  flops 1.537e+07
+    AMD:               nnz(L) 1.755e+05  flops 2.951e+07
+    METIS:             nnz(L) 1.569e+05  flops 1.964e+07
+3D mesh: 12-by-12-by-12, 27-point stencil
+    MESHND:            nnz(L) 1.349e+05  flops 1.537e+07
+    AMD:               nnz(L) 1.755e+05  flops 2.951e+07
+    METIS:             nnz(L) 1.569e+05  flops 1.964e+07
+3D mesh: 13-by-13-by-13, 27-point stencil
+    MESHND:            nnz(L) 1.965e+05  flops 2.620e+07
+    AMD:               nnz(L) 2.612e+05  flops 5.341e+07
+    METIS:             nnz(L) 2.149e+05  flops 2.970e+07
+3D mesh: 14-by-14-by-14, 27-point stencil
+    MESHND:            nnz(L) 2.720e+05  flops 4.148e+07
+    AMD:               nnz(L) 3.461e+05  flops 7.622e+07
+    METIS:             nnz(L) 2.886e+05  flops 4.459e+07
+3D mesh: 16-by-16-by-16, 27-point stencil
+    MESHND:            nnz(L) 4.793e+05  flops 9.220e+07
+    AMD:               nnz(L) 6.963e+05  flops 2.274e+08
+    METIS:             nnz(L) 5.179e+05  flops 1.017e+08
+3D mesh: 17-by-17-by-17, 27-point stencil
+    MESHND:            nnz(L) 6.368e+05  flops 1.382e+08
+    AMD:               nnz(L) 9.422e+05  flops 3.422e+08
+    METIS:             nnz(L) 6.736e+05  flops 1.468e+08
+3D mesh: 18-by-18-by-18, 27-point stencil
+    MESHND:            nnz(L) 8.181e+05  flops 1.965e+08
+    AMD:               nnz(L) 1.214e+06  flops 5.202e+08
+    METIS:             nnz(L) 8.633e+05  flops 2.066e+08
+3D mesh: 19-by-19-by-19, 27-point stencil
+    MESHND:            nnz(L) 1.040e+06  flops 2.744e+08
+    AMD:               nnz(L) 1.721e+06  flops 8.973e+08
+    METIS:             nnz(L) 1.097e+06  flops 2.900e+08
+3D mesh: 21-by-21-by-21, 27-point stencil
+    MESHND:            nnz(L) 1.596e+06  flops 5.086e+08
+    AMD:               nnz(L) 2.601e+06  flops 1.580e+09
+    METIS:             nnz(L) 1.710e+06  flops 5.433e+08
+3D mesh: 22-by-22-by-22, 27-point stencil
+    MESHND:            nnz(L) 1.948e+06  flops 6.750e+08
+    AMD:               nnz(L) 2.931e+06  flops 1.800e+09
+    METIS:             nnz(L) 2.057e+06  flops 7.039e+08
+3D mesh: 24-by-24-by-24, 27-point stencil
+    MESHND:            nnz(L) 2.775e+06  flops 1.128e+09
+    AMD:               nnz(L) 4.552e+06  flops 3.473e+09
+    METIS:             nnz(L) 3.009e+06  flops 1.205e+09
+3D mesh: 25-by-25-by-25, 27-point stencil
+    MESHND:            nnz(L) 3.341e+06  flops 1.479e+09
+    AMD:               nnz(L) 5.806e+06  flops 5.075e+09
+    METIS:             nnz(L) 3.561e+06  flops 1.534e+09
+3D mesh: 27-by-27-by-27, 27-point stencil
+    MESHND:            nnz(L) 4.666e+06  flops 2.373e+09
+    AMD:               nnz(L) 8.688e+06  flops 9.583e+09
+    METIS:             nnz(L) 4.884e+06  flops 2.434e+09
+3D mesh: 29-by-29-by-29, 27-point stencil
+    MESHND:            nnz(L) 6.307e+06  flops 3.674e+09
+    AMD:               nnz(L) 1.030e+07  flops 1.066e+10
+    METIS:             nnz(L) 6.503e+06  flops 3.713e+09
+3D mesh: 32-by-32-by-32, 27-point stencil
+    MESHND:            nnz(L) 9.468e+06  flops 6.588e+09
+    AMD:               nnz(L) 1.689e+07  flops 2.414e+10
+    METIS:             nnz(L) 9.909e+06  flops 6.799e+09
+3D mesh: 34-by-34-by-34, 27-point stencil
+    MESHND:            nnz(L) 1.235e+07  flops 9.670e+09
+    AMD:               nnz(L) 2.352e+07  flops 4.169e+10
+    METIS:             nnz(L) 1.277e+07  flops 9.824e+09
+3D mesh: 36-by-36-by-36, 27-point stencil
+    MESHND:            nnz(L) 1.568e+07  flops 1.357e+10
+    AMD:               nnz(L) 2.655e+07  flops 4.624e+10
+    METIS:             nnz(L) 1.622e+07  flops 1.391e+10
+3D mesh: 39-by-39-by-39, 27-point stencil
+    MESHND:            nnz(L) 2.218e+07  flops 2.239e+10
+    AMD:               nnz(L) 4.294e+07  flops 9.642e+10
+    METIS:             nnz(L) 2.277e+07  flops 2.263e+10
+3D mesh: 42-by-42-by-42, 27-point stencil
+    MESHND:            nnz(L) 3.012e+07  flops 3.502e+10
+    AMD:               nnz(L) 5.621e+07  flops 1.440e+11
+    METIS:             nnz(L) 3.128e+07  flops 3.594e+10
+3D mesh: 45-by-45-by-45, 27-point stencil
+    MESHND:            nnz(L) 4.029e+07  flops 5.341e+10
+    AMD:               nnz(L) 7.698e+07  flops 2.221e+11
+    METIS:             nnz(L) 4.137e+07  flops 5.373e+10
+3D mesh: 48-by-48-by-48, 27-point stencil
+    MESHND:            nnz(L) 5.234e+07  flops 7.814e+10
+    AMD:               nnz(L) 9.967e+07  flops 3.390e+11
+    METIS:             nnz(L) 5.464e+07  flops 8.076e+10
+3D mesh: 51-by-51-by-51, 27-point stencil
+    MESHND:            nnz(L) 6.795e+07  flops 1.143e+11
+    AMD:               nnz(L) 1.553e+08  flops 7.073e+11
+    METIS:             nnz(L) 7.030e+07  flops 1.164e+11
+3D mesh: 55-by-55-by-55, 27-point stencil
+    MESHND:            nnz(L) 9.324e+07  flops 1.807e+11
+    AMD:               nnz(L) 1.987e+08  flops 9.362e+11
+    METIS:             nnz(L) 9.495e+07  flops 1.813e+11
+3D mesh: 59-by-59-by-59, 27-point stencil
+    MESHND:            nnz(L) 1.247e+08  flops 2.765e+11
+    AMD:               nnz(L) 3.106e+08  flops 2.025e+12
+    METIS:             nnz(L) 1.263e+08  flops 2.766e+11
+3D mesh: 64-by-64-by-64, 27-point stencil
+    MESHND:            nnz(L) 1.736e+08  flops 4.483e+11
+    AMD:               nnz(L) 3.518e+08  flops 2.143e+12
+    METIS:             nnz(L) 1.778e+08  flops 4.557e+11
+3D mesh: 68-by-68-by-68, 27-point stencil
+    MESHND:            nnz(L) 2.237e+08  flops 6.482e+11
+    AMD:               nnz(L) 4.708e+08  flops 3.377e+12
+    METIS:             nnz(L) 2.286e+08  flops 6.596e+11
+3D mesh: 73-by-73-by-73, 27-point stencil
+    MESHND:            nnz(L) 3.009e+08  flops 1.002e+12
+    AMD:               nnz(L) 6.676e+08  flops 5.964e+12
+    METIS:             nnz(L) 3.050e+08  flops 1.004e+12
+3D mesh: 78-by-78-by-78, 27-point stencil
+    MESHND:            nnz(L) 3.965e+08  flops 1.495e+12
+    AMD:               nnz(L) 8.348e+08  flops 8.647e+12
+    METIS:             nnz(L) 4.022e+08  flops 1.502e+12
+3D mesh: 84-by-84-by-84, 27-point stencil
+    MESHND:            nnz(L) 5.363e+08  flops 2.329e+12
+    AMD:               nnz(L) 1.115e+09  flops 1.179e+13
+    METIS:             nnz(L) 5.543e+08  flops 2.445e+12
+3D mesh: 90-by-90-by-90, 27-point stencil
+    MESHND:            nnz(L) 7.137e+08  flops 3.548e+12
+    AMD:               nnz(L) 1.585e+09  flops 2.062e+13
+    METIS:             nnz(L) 7.255e+08  flops 3.572e+12
+3D mesh: 97-by-97-by-97, 27-point stencil
+    MESHND:            nnz(L) 9.707e+08  flops 5.583e+12
+    AMD:               nnz(L) 2.101e+09  flops 3.018e+13
+    METIS:             nnz(L) 9.926e+08  flops 5.662e+12
+3D mesh: 103-by-103-by-103, 27-point stencil
+    MESHND:            nnz(L) 1.246e+09  flops 8.032e+12
+    AMD:               nnz(L) 3.387e+09  flops 7.019e+13
+    METIS:             nnz(L) 1.323e+09  flops 9.197e+12
+3D mesh: 111-by-111-by-111, 27-point stencil
+    MESHND:            nnz(L) 1.694e+09  flops 1.261e+13
+    AMD:               nnz(L) 4.288e+09  flops 9.780e+13
+    METIS:             nnz(L) 1.789e+09  flops 1.437e+13

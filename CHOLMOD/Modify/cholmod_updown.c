@@ -519,7 +519,9 @@ int CHOLMOD(updown_mask)
     /* get inputs */
     /* ---------------------------------------------------------------------- */
 
-    mark = CHOLMOD(clear_flag) (Common) ;
+    /* mark = CHOLMOD(clear_flag) (Common) ; */
+    CHOLMOD_CLEAR_FLAG (Common) ;
+    mark = Common->mark ;
 
     PRINT1 (("updown, rank %g update %d\n", (double) C->ncol, update)) ;
     DEBUG (CHOLMOD(dump_factor) (L, "input L for updown", Common)) ;

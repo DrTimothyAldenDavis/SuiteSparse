@@ -26,8 +26,10 @@ for trials = 1:100
 	A (:,k) = 1 ;
     end
 
-    if (rand ( ) > .5)
-	A = A + 1i * sprand (A) ;
+    if (~ispc)
+        if (rand ( ) > .5)
+            A = A + 1i * sprand (A) ;
+        end
     end
 
     try

@@ -13,6 +13,7 @@
 /*  Returns the floating point operation count */
 
 #include "umf_internal.h"
+#include "umf_utsolve.h"
 
 GLOBAL double
 #ifdef CONJUGATE_SOLVE

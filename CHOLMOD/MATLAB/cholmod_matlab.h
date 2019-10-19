@@ -140,7 +140,7 @@ mxArray *sputil_put_sparse
     cholmod_common *cm
 ) ;
 
-void sputil_drop_zeros	    /* drop numerical zeros from a CHOLMOD matrix */
+Int sputil_drop_zeros	    /* drop numerical zeros from a CHOLMOD matrix */
 (
     cholmod_sparse *S
 ) ;

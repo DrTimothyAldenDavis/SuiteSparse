@@ -50,6 +50,7 @@ function UF_Index = UFindex (matrixlist)
 %   dmperm_vnz      nnz in Householder vectors for dmperm plus
 %   dmperm_rnz      nnz in R for dmperm plus
 %   posdef          1 if positive definite, 0 otherwise
+%   isND	    1 if a 2D/3D problem, 0 otherwise
 %
 % If the statistic is not computed, it is set to -2.  Some statistics are not
 % computed for rectangular or structurally singular matrices, for example.
@@ -151,6 +152,9 @@ if (create_new)
     UF_Index.cholcand = nothing ;
     UF_Index.ncc = nothing ;
 
+    % added isND
+    UF_Index.isND = nothing ;
+
 else
 
     % make sure we have the right length for the arrays
@@ -198,6 +202,8 @@ else
 	    UF_Index.RBtype = [UF_Index.RBtype ; char (' '*ones (len,3))] ;
 	    UF_Index.cholcand = [UF_Index.cholcand nothing] ;
 	    UF_Index.ncc = [UF_Index.ncc nothing] ;
+
+	    UF_Index.isND = [UF_Index.isND nothing] ;
 	end
 
     end
@@ -298,9 +304,9 @@ for k = 1:length (matrixlist)
     fprintf ('%s/%s\n', UF_Index.Group {id}, UF_Index.Name {id}) ;
 
     if (isfield (Problem, 'Zeros'))
-	stats = UFstats (Problem.A, nometis, Problem.Zeros) ;
+	stats = UFstats (Problem.A, Problem.kind, nometis, Problem.Zeros) ;
     else
-	stats = UFstats (Problem.A, nometis) ;
+	stats = UFstats (Problem.A, Problem.kind, nometis) ;
     end
 
     %---------------------------------------------------------------------------
@@ -371,11 +377,20 @@ for k = 1:length (matrixlist)
     UF_Index.cholcand (id) = stats.cholcand ;
     UF_Index.ncc (id) = stats.ncc ;
 
+    UF_Index.isND (id) = stats.isND ;
+
     %---------------------------------------------------------------------------
     % clear the problem and save the index
     %---------------------------------------------------------------------------
 
     clear Problem
     save UF_Index UF_Index
+
+    % flush the diary
+    if (strcmp (get (0, 'Diary'), 'on'))
+	diary off
+	diary on
+    end
 end
+
 

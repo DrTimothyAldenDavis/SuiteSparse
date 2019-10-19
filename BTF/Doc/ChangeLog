@@ -1,6 +1,10 @@
+Nov 1, 2007: version 1.0.1
+
+    * trivial change to BTF/MATLAB/btf.c mexFunction: unused variable removed.
+
 May 31, 2007:  version 1.0 released
 
-    * the C application program interface has modified (see below)
+    * the C application program interface has been modified (see below)
 
     * maxtrans function renamed to btf_maxtrans
 

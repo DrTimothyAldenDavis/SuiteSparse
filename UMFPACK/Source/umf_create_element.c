@@ -15,6 +15,7 @@
 */
 
 #include "umf_internal.h"
+#include "umf_create_element.h"
 #include "umf_mem_alloc_element.h"
 #include "umf_mem_alloc_tail_block.h"
 #include "umf_mem_free_tail_block.h"

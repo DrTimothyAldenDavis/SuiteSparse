@@ -110,7 +110,6 @@ cholmod_sparse *CHOLMOD(submatrix)
 	return (NULL) ;
     }
     Common->status = CHOLMOD_OK ;
-    ASSERT (CHOLMOD(dump_sparse) (A, "A", Common) >= 0) ;
 
     /* ---------------------------------------------------------------------- */
     /* allocate workspace */
@@ -160,7 +159,7 @@ cholmod_sparse *CHOLMOD(submatrix)
 	ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
 	return (NULL) ;
     }
-    s = MAX3 (s, cncol, cnrow) ;
+    s = MAX3 (s, ((size_t) cncol), ((size_t) cnrow)) ;
 
     CHOLMOD(allocate_work) (anrow, s, 0, Common) ;
     if (Common->status < CHOLMOD_OK)

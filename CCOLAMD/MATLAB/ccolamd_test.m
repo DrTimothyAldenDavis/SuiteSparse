@@ -15,17 +15,6 @@ global ccolamd_default_knobs csymamd_default_knobs
 ccolamd_default_knobs = [0 10 10 1 0] ;
 csymamd_default_knobs = [10 1 0] ;
 
-s = input (...
-'Compile ccolamd, csymand, and the test codes? (y/n, default is yes): ', 's') ;
-
-do_compile = 1 ;
-if (~isempty (s))
-    if (s (1) == 'n' | s (1) == 'N')					    %#ok
-	do_compile = 0 ;
-    end
-end
-
-if (do_compile)
     fprintf ('Compiling ccolamd, csymamd, and test mexFunctions.\n') ;
     ccolamd_make ;
 
@@ -39,7 +28,6 @@ if (do_compile)
     eval ([cmd 'csymamdtestmex.c ' src]) ;
     fprintf ('Done compiling.\n') ; 
 
-end
 
 fprintf ('\nThe following codes will be tested:\n') ;
 which ccolamd 
@@ -48,6 +36,8 @@ which ccolamdtestmex
 which csymamdtestmex
 
 fprintf ('\nStarting the tests.  Please be patient.\n') ;
+
+h = waitbar (0, 'COLAMD test') ;
 
 rand ('state', 0) ;
 randn ('state', 0) ;
@@ -87,6 +77,8 @@ fprintf (' OK\n') ;
 
 fprintf ('Matrices with a few dense row/cols\n') ;
 for trial = 1:20
+
+    waitbar (trial/20, h, 'CCOLAMD: dense rows/cols') ;
 
     % random square unsymmetric matrix
     A = rand_matrix (1000, 1000, 1, 10, 20) ;
@@ -135,14 +127,14 @@ for trial = 1:20
 	p = ccolamd (A, [0 tol -1 1], [ ]) ;   check_perm (p, A) ;
 	p = ccolamd (A, [0 -1 tol 1], [ ]) ;   check_perm (p, A) ;
 
-	fprintf ('.') ;
-
     end
 end
 fprintf (' OK\n') ;
 
 fprintf ('General matrices\n') ;
 for trial = 1:400
+
+    waitbar (trial/400, h, 'CCOLAMD: with dense rows/cols') ;
 
     % matrix of random mtype
     mtype = irand (3) ;
@@ -155,7 +147,6 @@ for trial = 1:400
 	check_perm (p, A) ;
     end
 
-    fprintf ('.') ;
 end
 fprintf (' OK\n') ;
 
@@ -165,6 +156,8 @@ fprintf ('Test error handling with invalid inputs\n') ;
 
 % Check different erroneous input.
 for trial = 1:30
+
+    waitbar (trial/30, h, 'CCOLAMD: error handling') ;
 
     A = rand_matrix (1000, 1000, 2, 0, 0) ;
 
@@ -201,7 +194,6 @@ for trial = 1:30
 	    end
 	end
 
-	fprintf ('.') ;
     end
 
 end
@@ -210,6 +202,8 @@ fprintf (' OK\n') ;
 fprintf ('Matrices with a few empty columns\n') ;
 
 for trial = 1:400
+
+    waitbar (trial/400, h, 'CCOLAMD: with empty rows/cols') ;
 
     % some are square, some are rectangular
     n = 0 ;
@@ -233,14 +227,14 @@ for trial = 1:400
 	error ('ccolamd: Null cols are not ordered last in natural order') ;
     end
 
-    fprintf ('.') ;
-
 end
 fprintf (' OK\n') ;
 
 fprintf ('Matrices with a few empty rows and columns\n') ;
 
 for trial = 1:400
+
+    waitbar (trial/400, h, 'CCOLAMD: with empty rows/cols') ;
 
     % symmetric matrices
     n = 0 ;
@@ -267,8 +261,6 @@ for trial = 1:400
 	error ('csymamd: Null cols are not ordered last in natural order') ;
     end
 
-    fprintf ('.') ;
-
 end
 fprintf (' OK\n') ;
 
@@ -278,6 +270,7 @@ fprintf ('Matrices with a few empty rows\n') ;
 
 for trial = 1:400
 
+    waitbar (trial/400, h, 'CCOLAMD: with null rows') ;
     m = 0 ;
     while (m < 5)
 	A = rand_matrix (1000, 1000, 2, 0, 0) ;
@@ -291,11 +284,12 @@ for trial = 1:400
 
     p = ccolamd (A) ;
     check_perm (p, A) ;
-    fprintf ('.') ;
+
 end
 fprintf (' OK\n') ;
 
 fprintf ('\nccolamd and csymamd:  all tests passed\n\n') ;
+close (h) ;
 
 %-------------------------------------------------------------------------------
 

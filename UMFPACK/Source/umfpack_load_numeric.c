@@ -27,7 +27,7 @@
 	fclose (f) ; \
 	return (UMFPACK_ERROR_out_of_memory) ; \
     } \
-    if (fread (object, sizeof (type), n, f) != n) \
+    if (fread (object, sizeof (type), n, f) != (size_t) n) \
     { \
 	UMFPACK_free_numeric ((void **) &Numeric) ; \
 	fclose (f) ; \

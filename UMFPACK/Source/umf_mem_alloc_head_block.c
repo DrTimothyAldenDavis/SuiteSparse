@@ -14,6 +14,7 @@
 /* Returns the index into Numeric->Memory if successful, or 0 on failure. */
 
 #include "umf_internal.h"
+#include "umf_mem_alloc_head_block.h"
 
 GLOBAL Int UMF_mem_alloc_head_block
 (

@@ -58,6 +58,7 @@
  */
 
 #include "umf_internal.h"
+#include "umf_2by2.h"
 
 #ifndef NDEBUG
 #include "umf_is_permutation.h"

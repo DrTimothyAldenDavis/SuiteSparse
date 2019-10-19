@@ -49,7 +49,7 @@ end
 fprintf ('\namd:\n') ;
 if (m == n)
     if (nnz (A-A') == 0)
-	tic ; z0 = amd (A) ; toc					    %#ok
+	tic ; z0 = amd2 (A) ; toc					    %#ok
 	lnz = sum (symbfact (A (z0,z0)))				    %#ok
     end
 end

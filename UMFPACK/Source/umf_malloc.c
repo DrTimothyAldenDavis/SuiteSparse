@@ -16,6 +16,7 @@
 */
 
 #include "umf_internal.h"
+#include "umf_malloc.h"
 
 #if defined (UMF_MALLOC_COUNT) || !defined (NDEBUG)
 

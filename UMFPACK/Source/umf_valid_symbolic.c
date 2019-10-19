@@ -9,6 +9,7 @@
 /* -------------------------------------------------------------------------- */
 
 #include "umf_internal.h"
+#include "umf_valid_symbolic.h"
 
 /* Returns TRUE if the Symbolic object is valid, FALSE otherwise. */
 /* The UMFPACK_report_symbolic routine does a more thorough check. */

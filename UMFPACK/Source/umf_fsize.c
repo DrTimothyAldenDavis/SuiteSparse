@@ -13,6 +13,7 @@
  * node prior to AMD_postorder. */
 
 #include "umf_internal.h"
+#include "umf_fsize.h"
 
 GLOBAL void UMF_fsize
 (

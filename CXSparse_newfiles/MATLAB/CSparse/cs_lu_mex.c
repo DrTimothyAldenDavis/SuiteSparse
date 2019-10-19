@@ -8,7 +8,7 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    CS_INT n, order, *p, *Q ;
+    CS_INT n, order, *p ;
     double tol ;
     if (nargout > 4 || nargin > 3 || nargin < 1)
     {
@@ -29,7 +29,7 @@ void mexFunction
 #ifndef NCOMPLEX
 	cs_cls *S ;
 	cs_cln *N ;
-	cs_cl Amatrix, *L, *U, *A, *D ;
+	cs_cl Amatrix, *A, *D ;
 	A = cs_cl_mex_get_sparse (&Amatrix, 1, pargin [0]) ;	/* get A */
 	n = A->n ;
 	S = cs_cl_sqr (order, A, 0) ;	    /* symbolic ordering, no QR bound */
@@ -62,7 +62,7 @@ void mexFunction
     {
 	cs_dls *S ;
 	cs_dln *N ;
-	cs_dl Amatrix, *L, *U, *A, *D ;
+	cs_dl Amatrix, *A, *D ;
 	A = cs_dl_mex_get_sparse (&Amatrix, 1, 1, pargin [0]) ;	/* get A */
 	n = A->n ;
 	S = cs_dl_sqr (order, A, 0) ;	    /* symbolic ordering, no QR bound */

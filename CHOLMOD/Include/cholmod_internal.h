@@ -57,6 +57,10 @@
 #undef NDEBUG
  */
 
+#ifdef MATLAB_MEX_FILE
+#include "mex.h"
+#endif
+
 #if !defined(NPRINT) || !defined(NDEBUG)
 #include <stdio.h>
 #endif
@@ -349,7 +353,7 @@ int  cholmod_l_dump_partition (UF_long, UF_long *, UF_long *, UF_long *,
 	UF_long *, UF_long, cholmod_common *) ;
 int  cholmod_l_dump_work(int, int, UF_long, cholmod_common *) ;
 
-#define DEBUG_INIT(s)  { CHOLMOD(dump_init)(s, Common) ; }
+#define DEBUG_INIT(s,Common)  { CHOLMOD(dump_init)(s, Common) ; }
 #define ASSERT(expression) (assert (expression))
 
 #define PRK(k,params) \
@@ -364,7 +368,14 @@ int  cholmod_l_dump_work(int, int, UF_long, cholmod_common *) ;
 #define PRINT1(params) PRK (1, params)
 #define PRINT2(params) PRK (2, params)
 #define PRINT3(params) PRK (3, params)
-#define PRINTM(params) PRK (CHOLMOD(dump_malloc), params)
+
+#define PRINTM(params) \
+{ \
+    if (CHOLMOD(dump_malloc) > 0) \
+    { \
+	printf params ; \
+    } \
+}
 
 #define DEBUG(statement) statement
 
@@ -372,7 +383,7 @@ int  cholmod_l_dump_work(int, int, UF_long, cholmod_common *) ;
 
 /* Debugging disabled (the normal case) */
 #define PRK(k,params)
-#define DEBUG_INIT(s)
+#define DEBUG_INIT(s,Common)
 #define PRINT0(params)
 #define PRINT1(params)
 #define PRINT2(params)

@@ -299,7 +299,9 @@ int CHOLMOD(row_subtree)
     /* ---------------------------------------------------------------------- */
 
     Flag = Common->Flag ;	/* size nrow, Flag [i] < mark must hold */
-    mark = CHOLMOD(clear_flag) (Common) ;
+    /* mark = CHOLMOD(clear_flag) (Common) ; */
+    CHOLMOD_CLEAR_FLAG (Common) ;
+    mark = Common->mark ;
 
     /* ---------------------------------------------------------------------- */
     /* compute the pattern of L(k,:) */

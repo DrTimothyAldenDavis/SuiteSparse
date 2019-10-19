@@ -22,10 +22,10 @@ extern "C" {
 #endif
 #endif
 
-#define CS_VER 2		    /* CXSparse Version 2.2.0 */
+#define CS_VER 2		    /* CXSparse Version 2.2.1 */
 #define CS_SUBVER 2
-#define CS_SUBSUB 0
-#define CS_DATE "May 31, 2007"	    /* CXSparse release date */
+#define CS_SUBSUB 1
+#define CS_DATE "Nov 1, 2007"	    /* CXSparse release date */
 #define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006-2007"
 #define CXSPARSE
 
@@ -115,7 +115,8 @@ int cs_di_ipvec (const int *p, const double *b, double *x, int n) ;
 int cs_di_lsolve (const cs_di *L, double *x) ;
 int cs_di_ltsolve (const cs_di *L, double *x) ;
 cs_din *cs_di_lu (const cs_di *A, const cs_dis *S, double tol) ;
-cs_di *cs_di_permute (const cs_di *A, const int *p, const int *q, int values) ;
+cs_di *cs_di_permute (const cs_di *A, const int *pinv, const int *q,
+    int values) ;
 int *cs_di_pinv (const int *p, int n) ;
 int cs_di_pvec (const int *p, const double *b, double *x, int n) ;
 cs_din *cs_di_qr (const cs_di *A, const cs_dis *S) ;
@@ -249,7 +250,7 @@ UF_long cs_dl_ipvec (const UF_long *p, const double *b, double *x, UF_long n) ;
 UF_long cs_dl_lsolve (const cs_dl *L, double *x) ;
 UF_long cs_dl_ltsolve (const cs_dl *L, double *x) ;
 cs_dln *cs_dl_lu (const cs_dl *A, const cs_dls *S, double tol) ;
-cs_dl *cs_dl_permute (const cs_dl *A, const UF_long *p, const UF_long *q,
+cs_dl *cs_dl_permute (const cs_dl *A, const UF_long *pinv, const UF_long *q,
     UF_long values) ;
 UF_long *cs_dl_pinv (const UF_long *p, UF_long n) ;
 UF_long cs_dl_pvec (const UF_long *p, const double *b, double *x, UF_long n) ;
@@ -389,7 +390,8 @@ int cs_ci_ipvec (const int *p, const cs_complex_t *b, cs_complex_t *x, int n) ;
 int cs_ci_lsolve (const cs_ci *L, cs_complex_t *x) ;
 int cs_ci_ltsolve (const cs_ci *L, cs_complex_t *x) ;
 cs_cin *cs_ci_lu (const cs_ci *A, const cs_cis *S, double tol) ;
-cs_ci *cs_ci_permute (const cs_ci *A, const int *p, const int *q, int values) ;
+cs_ci *cs_ci_permute (const cs_ci *A, const int *pinv, const int *q,
+    int values) ;
 int *cs_ci_pinv (const int *p, int n) ;
 int cs_ci_pvec (const int *p, const cs_complex_t *b, cs_complex_t *x, int n) ;
 cs_cin *cs_ci_qr (const cs_ci *A, const cs_cis *S) ;
@@ -526,7 +528,7 @@ UF_long cs_cl_ipvec (const UF_long *p, const cs_complex_t *b,
 UF_long cs_cl_lsolve (const cs_cl *L, cs_complex_t *x) ;
 UF_long cs_cl_ltsolve (const cs_cl *L, cs_complex_t *x) ;
 cs_cln *cs_cl_lu (const cs_cl *A, const cs_cls *S, double tol) ;
-cs_cl *cs_cl_permute (const cs_cl *A, const UF_long *p, const UF_long *q,
+cs_cl *cs_cl_permute (const cs_cl *A, const UF_long *pinv, const UF_long *q,
     UF_long values) ;
 UF_long *cs_cl_pinv (const UF_long *p, UF_long n) ;
 UF_long cs_cl_pvec (const UF_long *p, const cs_complex_t *b,

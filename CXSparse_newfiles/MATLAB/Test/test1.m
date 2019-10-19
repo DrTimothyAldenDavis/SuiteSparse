@@ -17,7 +17,7 @@ for ii = f
 
     Prob = UFget (ii) ;
     disp (Prob) ;
-    for cmplex = 0:1
+    for cmplex = 0:double(~ispc)
 
 	A = Prob.A ;
 	if (cmplex)
@@ -53,15 +53,17 @@ for ii = f
 	    end
 	% end
 
-	x = x + 1i*rand (n,1) ;
-	y = y + 1i*rand (m,1) ;
-	z = y+A*x ;
-	q = cs_gaxpy (A,x,y) ;
-	err = norm (z-q,1) / norm (z,1) ;
-	disp (err) ;
-	if (err > 1e-14)
-	    error ('!')
-	end
+        if (~ispc)
+            x = x + 1i*rand (n,1) ;
+            y = y + 1i*rand (m,1) ;
+            z = y+A*x ;
+            q = cs_gaxpy (A,x,y) ;
+            err = norm (z-q,1) / norm (z,1) ;
+            disp (err) ;
+            if (err > 1e-14)
+                error ('!')
+            end
+        end
 
 	[i j x] = find (A) ;
 	p = randperm (length (i)) ;

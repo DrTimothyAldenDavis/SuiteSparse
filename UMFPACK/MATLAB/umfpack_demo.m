@@ -37,8 +37,8 @@ if (control (1) > 1)
     fprintf ('(except for verbose printing enabled)\n') ;
 end
 
-load west0067
-A = spconvert (west0067) ;
+load west0067_triplet
+A = spconvert (west0067_triplet) ;
 
 n = size (A, 1) ;
 b = rand (n, 1) ;

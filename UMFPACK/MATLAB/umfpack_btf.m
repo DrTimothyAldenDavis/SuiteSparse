@@ -1,4 +1,4 @@
-function x = umfpack_btf (A, b, Control)
+function [x, info] = umfpack_btf (A, b, Control)
 %UMFPACK_BTF factorize A using a block triangular form
 %
 % Example:
@@ -38,8 +38,12 @@ end
 % find the block triangular form
 %-------------------------------------------------------------------------------
 
+% dmperm built-in may segfault in MATLAB 7.4 or earlier; fixed in MATLAB 7.5
+% since dmperm now uses CSparse
 [p,q,r] = dmperm (A) ;
 nblocks = length (r) - 1 ;
+
+info = [0 0 0] ;    % [nnz(L), nnz(U), nnz(F)], optional 2nd output
 
 %-------------------------------------------------------------------------------
 % solve the system
@@ -51,7 +55,8 @@ if (nblocks == 1 | sprank (A) < n)					    %#ok
     % matrix is irreducible or structurally singular
     %---------------------------------------------------------------------------
 
-    x = umfpack_solve (A, '\', b, Control) ;
+    [x info2] = umfpack2 (A, '\', b, Control) ;
+    info = [info2(78) info2(79) 0] ;
 
 else
 
@@ -80,11 +85,16 @@ else
         k2 = r (k+1) - 1 ;
 
 	% solve the system
-	x (k1:k2,:) = solver (A (k1:k2, k1:k2), b (k1:k2,:), ...
+        [x2 info2] = solver (A (k1:k2, k1:k2), b (k1:k2,:), ...
 	    is_triangular (k), Control) ;
+	x (k1:k2,:) = x2 ;
 
         % off-diagonal block back substitution
-        b (1:k1-1,:) = b (1:k1-1,:) - A (1:k1-1, k1:k2) * x (k1:k2,:) ;
+        F2 = A (1:k1-1, k1:k2) ;
+        b (1:k1-1,:) = b (1:k1-1,:) - F2 * x (k1:k2,:) ;
+
+        info (1:2) = info (1:2) + info2 (1:2) ;
+        info (3) = info (3) + nnz (F2) ;
 
     end
 
@@ -116,14 +126,17 @@ is_triangular = y (2:nblocks+1) - y (1:nblocks) > 1 ;
 % solve Ax=b, but check for small and/or triangular systems
 %-------------------------------------------------------------------------------
 
-function x = solver (A, b, is_triangular, Control)
+function [x, info] = solver (A, b, is_triangular, Control)
 if (is_triangular)
     % back substitution only
     x = A \ b ;
+    info = [nnz(A) 0 0] ;
 elseif (size (A,1) < 4)
     % a very small matrix, solve it as a dense linear system
     x = full (A) \ b ;
+    n = size (A,1) ;
+    info = [(n^2+n)/2 (n^2+n)/2 0] ;
 else
     % solve it as a sparse linear system
-    x = umfpack_solve (A, '\', b, Control) ;
+    [x info] = umfpack_solve (A, '\', b, Control) ;
 end

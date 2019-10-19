@@ -22,7 +22,7 @@ for i = f
     n = size (A,1) ;
     b = A*ones (n,1) ;
     if (any (i == spd))
-	p = amd (A) ;
+	p = amd2 (A) ;
 	count = symbfact2 (A (p,p)) ;
 	count2 = symbfact (A (p,p)) ;
 	if (any (count ~= count2))

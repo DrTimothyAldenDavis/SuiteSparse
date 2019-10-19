@@ -40,7 +40,7 @@ for i = f
 	% warmup, for accurate timing
 	etree (sparse (1)) ;
 	etree2 (sparse (1)) ;
-	amd (sparse (1)) ;
+	amd2 (sparse (1)) ;
 	symbfact (sparse (1)) ;
 	symbfact2 (sparse (1)) ;
 
@@ -48,7 +48,7 @@ for i = f
 	if (m == n)
 
 	    % permute the matrix first
-	    p = amd (A) ;
+	    p = amd2 (A) ;
 	    A = A (p,p) ;
 
 	    % test with triu(A)

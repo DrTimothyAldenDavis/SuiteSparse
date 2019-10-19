@@ -22,3 +22,6 @@ mex:
 	( cd MATLAB ; $(MAKE) )
 
 purge: distclean
+
+cov: library
+	( cd Tcov ; $(MAKE) )

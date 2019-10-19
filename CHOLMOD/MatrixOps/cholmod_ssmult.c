@@ -180,7 +180,9 @@ cholmod_sparse *CHOLMOD(ssmult)
     for (j = 0 ; j < ncol ; j++)
     {
 	/* clear the Flag array */
-	mark = CHOLMOD(clear_flag) (Common) ;
+	/* mark = CHOLMOD(clear_flag) (Common) ; */
+	CHOLMOD_CLEAR_FLAG (Common) ;
+	mark = Common->mark ;
 
 	/* for each nonzero B(t,j) in column j, do: */
 	pb = Bp [j] ;
@@ -209,7 +211,9 @@ cholmod_sparse *CHOLMOD(ssmult)
 	}
     }
 
-    mark = CHOLMOD(clear_flag) (Common) ;
+    /* mark = CHOLMOD(clear_flag) (Common) ; */
+    CHOLMOD_CLEAR_FLAG (Common) ;
+    mark = Common->mark ;
 
     /* ---------------------------------------------------------------------- */
     /* check for integer overflow */
@@ -328,7 +332,9 @@ cholmod_sparse *CHOLMOD(ssmult)
 	for (j = 0 ; j < ncol ; j++)
 	{
 	    /* clear the Flag array */
-	    mark = CHOLMOD(clear_flag (Common)) ;
+	    /* mark = CHOLMOD(clear_flag (Common)) ; */
+	    CHOLMOD_CLEAR_FLAG (Common) ;
+	    mark = Common->mark ;
 
 	    /* start column j of C */
 	    Cp [j] = cnz ;
@@ -375,7 +381,9 @@ cholmod_sparse *CHOLMOD(ssmult)
 	for (j = 0 ; j < ncol ; j++)
 	{
 	    /* clear the Flag array */
-	    mark = CHOLMOD(clear_flag) (Common) ;
+	    /* mark = CHOLMOD(clear_flag) (Common) ; */
+	    CHOLMOD_CLEAR_FLAG (Common) ;
+	    mark = Common->mark ;
 
 	    /* start column j of C */
 	    Cp [j] = cnz ;
@@ -413,7 +421,8 @@ cholmod_sparse *CHOLMOD(ssmult)
 
     CHOLMOD(free_sparse) (&A2, Common) ;
     CHOLMOD(free_sparse) (&B2, Common) ;
-    CHOLMOD(clear_flag) (Common) ;
+    /* CHOLMOD(clear_flag) (Common) ; */
+    CHOLMOD_CLEAR_FLAG (Common) ;
     ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, values ? n1:0, Common)) ;
 
     /* ---------------------------------------------------------------------- */

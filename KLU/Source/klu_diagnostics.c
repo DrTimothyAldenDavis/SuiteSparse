@@ -503,7 +503,7 @@ Int KLU_rcond		/* return TRUE if successful, FALSE otherwise */
     KLU_common *Common		/* result in Common->rcond */
 )
 {
-    double ukk, umin, umax ;
+    double ukk, umin = 0, umax = 0 ;
     Entry *Udiag ;
     Int j, n ;
 

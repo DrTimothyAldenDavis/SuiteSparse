@@ -98,7 +98,7 @@ for i = f
 
     fprintf (' %d\n', nnz (A)) ;
 
-    p = amd (A) ;
+    p = amd2 (A) ;
     A = A (p,p) ;
     anorm = norm (A,1) ;
 

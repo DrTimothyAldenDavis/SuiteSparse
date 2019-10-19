@@ -51,11 +51,11 @@ F77LIB =
 # C and Fortran libraries
 LIB = -lm
 
-# For compiling MATLAB mexFunctions (MATLAB 7.4 or later)
-MEX = mex -O -largeArrayDims -lmwlapack
+# For compiling MATLAB mexFunctions (MATLAB 7.5)
+MEX = mex -O -largeArrayDims -lmwlapack -lmwblas
 
-# For compiling MATLAB mexFunctions (MATLAB 7.3, but the 7.4 might work OK)
-# MEX = mex -O -largeArrayDims
+# For compiling MATLAB mexFunctions (MATLAB 7.3 and 7.4)
+# MEX = mex -O -largeArrayDims -lmwlapack
 
 # For MATLAB 7.2 or earlier, you must use one of these options:
 # MEX = mex -O -lmwlapack
@@ -184,7 +184,7 @@ CHOLMOD_CONFIG =
 
 # Using default compilers:
 # CC = gcc
-# CFLAGS = -O3
+CFLAGS = -O3
 
 # alternatives:
 # CFLAGS = -g -fexceptions \
@@ -193,7 +193,7 @@ CHOLMOD_CONFIG =
 # CFLAGS = -O3 -fexceptions \
    	-Wall -W -Werror -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
     	-Wredundant-decls -Wnested-externs -Wdisabled-optimization -ansi
-CFLAGS = -O3 -fexceptions -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
+# CFLAGS = -O3 -fexceptions -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
 # CFLAGS = -O3
 
 # consider:
@@ -218,11 +218,11 @@ CFLAGS = -O3 -fexceptions -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
 # LAPACK = -llapack64
 
 
-# SUSE Linux 10.1, AMD Opteron
+# SUSE Linux 10.1, AMD Opteron, with GOTO Blas
 # F77 = gfortran
 # BLAS = -lgoto_opteron64 -lgfortran
 
-# SUSE Linux 10.1, Intel Pentium
+# SUSE Linux 10.1, Intel Pentium, with GOTO Blas
 # F77 = gfortran
 # BLAS = -lgoto -lgfortran
 
