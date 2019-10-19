@@ -1,5 +1,13 @@
 function demo3 (C, sym, name)
 %DEMO3: Cholesky update/downdate
+%
+% Example:
+%   demo3 (C, 1, 'name of system')
+% See also: cs_demo
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
 
 subplot (2,2,1) ; cspy (C) ;
 title (name, 'FontSize', 16, 'Interpreter', 'none') ;
@@ -34,7 +42,7 @@ t = toc ;
 fprintf ('solve time: %8.2f\n', t) ;
 
 fprintf ('original: ') ;
-resid (C, x, b) ;
+print_resid (C, x, b) ;
 
 k = fix (n/2) ;
 w = L(k,k) * sprand (L (:,k)) ;
@@ -64,7 +72,7 @@ ww = cs_multiply (w2,wt) ;
 E = cs_add (C, ww, 1, 1) ;	% E = C + w2*w2' ;
 
 fprintf ('update:   time: %8.2f (incl solve) ', t1+t) ;
-resid (E, x, b) ;
+print_resid (E, x, b) ;
 
 tic
 [L,p] = cs_chol (E) ;
@@ -74,7 +82,7 @@ x = cs_ltsolve (L,x) ;
 x (p) = x ;
 t = toc ;
 fprintf ('rechol:   time: %8.2f (incl solve) ', t) ;
-resid (E, x, b) ;
+print_resid (E, x, b) ;
 
 tic ;
 L = cs_updown (L2, w, parent, '-') ;
@@ -88,4 +96,4 @@ x = cs_ltsolve (L,x) ;
 x (p) = x ;
 t = toc ;
 fprintf ('downdate: time: %8.2f (incl solve) ', t1+t) ;
-resid (C, x, b) ;
+print_resid (C, x, b) ;

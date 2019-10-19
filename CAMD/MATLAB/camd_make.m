@@ -8,6 +8,10 @@ function camd_make
 % web: http://www.cise.ufl.edu/research/sparse/camd
 % --------------------------------------------------------------------------
 
+if (~isempty (strfind (computer, '64')))
+    error ('64-bit version not yet supported') ;
+end
+
 i = sprintf ('-I..%sInclude -I..%s..%sUFconfig', filesep, filesep, filesep) ;
 cmd = sprintf ('mex -inline -O -output camd %s camd_mex.c', i) ;
 files = {'camd_order', 'camd_dump', 'camd_postorder', ...

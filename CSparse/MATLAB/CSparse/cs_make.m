@@ -1,8 +1,8 @@
 function [objfiles, timestamp] = cs_make (f)
 %CS_MAKE compiles CSparse for use in MATLAB.
 %   Usage:
-%	cs_make
-%	[objfiles, timestamp] = cs_make (f)
+%       cs_make
+%       [objfiles, timestamp] = cs_make (f)
 %
 %   With no input arguments, or with f=0, only those files needing to be
 %   compiled are compiled (like the Unix/Linux/GNU "make" command, but not
@@ -16,24 +16,28 @@ function [objfiles, timestamp] = cs_make (f)
 %
 %   To add a new function and its MATLAB mexFunction to CSparse:
 %
-%	(1) Create a source code file CSparse/Source/cs_mynewfunc.c.
-%	(2) Create a help file, CSparse/MATLAB/CSparse/cs_mynewfunc.m.
-%	    This is very useful, but not strictly required.
-%	(3) Add the prototype of cs_mynewfunc to CSparse/Source/cs.h.
-%	(4) Create its MATLAB mexFunction, CSparse/MATLAB/cs_mynewfunc_mex.c.
-%	(5) Edit cs_make.m, and add 'cs_mynewfunc' to the 'cs' and 'csm' lists.
-%	(6) Type 'cs_make' in the CSparse/MATLAB/CSparse directory.
-%	    If all goes well, your new function is ready for use in MATLAB.
+%       (1) Create a source code file CSparse/Source/cs_mynewfunc.c.
+%       (2) Create a help file, CSparse/MATLAB/CSparse/cs_mynewfunc.m.
+%           This is very useful, but not strictly required.
+%       (3) Add the prototype of cs_mynewfunc to CSparse/Source/cs.h.
+%       (4) Create its MATLAB mexFunction, CSparse/MATLAB/cs_mynewfunc_mex.c.
+%       (5) Edit cs_make.m, and add 'cs_mynewfunc' to the 'cs' and 'csm' lists.
+%       (6) Type 'cs_make' in the CSparse/MATLAB/CSparse directory.
+%           If all goes well, your new function is ready for use in MATLAB.
 %
-%	(7) Optionally add 'cs_mynewfunc' to CSparse/Source/Makefile
-%	    and CSparse/MATLAB/CSparse/Makefile, if you want to use the
-%	    Unix/Linux/GNU make command instead of cs_make.m.  See where
-%	    'cs_add' and 'cs_add_mex' appear in those files, and add
-%	    'cs_mynewfunc' accordingly.
-%	(8) Optionally add 'cs_mynewfunc' to Tcov/Makefile, and add additional
-%	    test code to cs_test.c, and add MATLAB test code to MATLAB/Test/*.
+%       (7) Optionally add 'cs_mynewfunc' to CSparse/Source/Makefile
+%           and CSparse/MATLAB/CSparse/Makefile, if you want to use the
+%           Unix/Linux/GNU make command instead of cs_make.m.  See where
+%           'cs_add' and 'cs_add_mex' appear in those files, and add
+%           'cs_mynewfunc' accordingly.
+%       (8) Optionally add 'cs_mynewfunc' to Tcov/Makefile, and add additional
+%           test code to cs_test.c, and add MATLAB test code to MATLAB/Test/*.
 %
-%   See also MEX, and the Unix/Linux/GNU MAKE command.
+%   Example:
+%       cs_make                  % compile everything
+%       cs_make ('cs_chol') ;    % just compile cs_chol mexFunction
+%
+%   See also MEX.
 
 %   Copyright 2006, Timothy A. Davis.
 %   http://www.cise.ufl.edu/research/sparse
@@ -73,7 +77,7 @@ if (isempty (csm))
 	'cs_ltsolve', 'cs_lu', 'cs_lusol', 'cs_multiply', 'cs_permute', ...
 	'cs_print', 'cs_qr', 'cs_qrsol', 'cs_scc', 'cs_symperm', 'cs_thumb', ...
 	'cs_transpose', 'cs_sparse', 'cs_updown', 'cs_usolve', ...
-	'cs_utsolve', 'cs_randperm' } ;
+	'cs_utsolve', 'cs_randperm', 'cs_sqr' } ;
 	% add cs_mynewfunc to the above list
 end
 
@@ -96,9 +100,9 @@ for i = 1:length (cs)
     [s t] = compile_source (srcdir, cs {i}, obj, hfile, force) ;
     timestamp = max (timestamp, t) ;
     anysrc = anysrc || s ;
-    CS = [CS ' ' cs{i} obj] ;
+    CS = [CS ' ' cs{i} obj] ;	    %#ok
     if (nargout > 0)
-	objfiles = [objfiles ' ..' filesep 'CSparse' filesep cs{i} obj] ;
+	objfiles = [objfiles ' ..' filesep 'CSparse' filesep cs{i} obj] ;   %#ok
     end
 end
 
@@ -115,8 +119,6 @@ for i = 1:length (csm)
     end
 end
 
-end
-
 %-------------------------------------------------------------------------------
 function [s,t] = compile_source (srcdir, f, obj, hfile, force)
 % compile a source code file in ../../Source, leaving object file in
@@ -126,5 +128,4 @@ if (s)
     cmd = sprintf ('mex -O -c -I../../Source %s%s.c\n', srcdir, f) ;
     fprintf ('%s', cmd) ;
     eval (cmd) ;
-end
 end

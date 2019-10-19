@@ -3,7 +3,14 @@ function x = cs_dmsol (A,b)
 %   x = cs_dmsol(A,b) computes x=A\b where A may be rectangular and/or
 %   structurally rank deficient, and b is a full vector.
 %
+%   Example:
+%       Prob = UFget ('HB/arc130') ; A = Prob.A ; b = rand (size (A,1),1) ;
+%       x = cs_dmsol (A,b) ; norm (A*x-b)
+%
 %   See also CS_QRSOL, CS_LUSOL, CS_DMPERM, SPRANK, RANK.
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
 
 [m n] = size (A) ;
 [p q r s cc rr] = cs_dmperm (A) ;

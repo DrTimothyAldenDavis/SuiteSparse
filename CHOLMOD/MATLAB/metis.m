@@ -1,4 +1,4 @@
-function p = metis (A, mode)
+function p = metis (A, mode)						    %#ok
 %METIS:  nested dissection ordering via METIS_NodeND.
 %   p = metis(A)        returns p such chol(A(p,p)) is typically sparser than
 %                       chol(A).  Uses tril(A) and assumes A is symmetric.

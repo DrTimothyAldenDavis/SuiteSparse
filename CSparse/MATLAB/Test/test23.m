@@ -1,4 +1,13 @@
-clear all
+function test23
+%TEST23 test cs_dmspy
+%
+% Example:
+%   test23
+% See also: testall
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
 clear functions
 
 randn ('state', 0) ;

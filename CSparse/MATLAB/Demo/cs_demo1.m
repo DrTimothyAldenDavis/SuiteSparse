@@ -1,8 +1,15 @@
 %CS_DEMO1: MATLAB version of the CSparse/Demo/cs_demo1.c program.
 % Uses both MATLAB functions and CSparse mexFunctions, and compares the two
 % results.  This demo also plots the results, which the C version does not do.
+%
+% Example:
+%   cs_demo1
+% See also: cs_demo
 
-load ../../Matrix/t1
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
+load (['..' filesep '..' filesep 'Matrix' filesep 't1']) ;
 T = t1
 A  = sparse    (T(:,1)+1, T(:,2)+1, T(:,3))
 A2 = cs_sparse (T(:,1)+1, T(:,2)+1, T(:,3))

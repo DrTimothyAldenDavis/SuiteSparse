@@ -1,7 +1,14 @@
-function [C sym] = get_problem (name, tol)
-% [C sym] = get_problem(name,tol)
+function [C, sym] = get_problem (name, tol)
+% [C, sym] = get_problem(name,tol)
 % read a problem from a file, drop entries with abs value < tol
 % tol defaults to zero if not present
+%
+% Example:
+%    [C, sym] = get_problem ('HB/west0067') ;
+% See also: cs_demo
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
 
 fprintf ('\n------------------- Matrix: %s\n', name) ;
 

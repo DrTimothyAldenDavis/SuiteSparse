@@ -31,6 +31,9 @@ Other "make" targets:
 			libccolamd.a
     make distclean	removes all files not in the distribution
 
+    NOTE: DO NOT ATTEMPT TO USE THIS CODE IN 64-BIT MATLAB (v7.3).
+    It is not yet ported to that version of MATLAB.
+
 To use ccolamd and csymamd within an application written in C, all you need are
 colamd.c and colamd.h, which are the C-callable ccolamd/csymamd codes.
 See ccolamd.c for more information on how to call ccolamd from a C program.

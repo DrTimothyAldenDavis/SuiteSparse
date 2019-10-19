@@ -1,34 +1,85 @@
+function testh
+%TESTH test Householder reflections
+%
+% Example:
+%   testh
+% See also: testall
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
 
 
 format long e
 fprintf ('-------------------------------------------------\n') ;
-x = [-3 4 5]'
-[v, beta, s] = house (x) 
-x - v*(beta*(v'*x))
+x = [-3 4 5]' ;
+disp (x) ;
+[v, beta, s] = house (x) ;
+disp ('v = ') ;
+disp (v) ;
+disp ('beta = ') ;
+disp (beta) ;
+disp ('s = ') ;
+disp (s) ;
+x = x - v*(beta*(v'*x)) ;
+disp (x) ;
 fprintf ('-------------------------------------------------\n') ;
 
 
-x = [3 4 5]'
-[v, beta, s] = house (x) 
-x - v*(beta*(v'*x))
+x = [3 4 5]' ;
+disp (x) ;
+[v, beta, s] = house (x) ;
+disp ('v = ') ;
+disp (v) ;
+disp ('beta = ') ;
+disp (beta) ;
+disp ('s = ') ;
+disp (s) ;
+x = x - v*(beta*(v'*x)) ;
+disp (x) ;
 fprintf ('-------------------------------------------------\n') ;
 
-x = [1 eps]'
-[v, beta, s] = house (x) 
-x - v*(beta*(v'*x))
+x = [1 eps]' ;
+disp (x) ;
+[v, beta, s] = house (x) ;
+disp ('v = ') ;
+disp (v) ;
+disp ('beta = ') ;
+disp (beta) ;
+disp ('s = ') ;
+disp (s) ;
+x = x - v*(beta*(v'*x)) ;
+disp (x) ;
 fprintf ('-------------------------------------------------\n') ;
 
-x = pi
-[v, beta, s] = house (x) 
-x - v*(beta*(v'*x))
+x = pi ;
+disp (x) ;
+[v, beta, s] = house (x) ;
+disp ('v = ') ;
+disp (v) ;
+disp ('beta = ') ;
+disp (beta) ;
+disp ('s = ') ;
+disp (s) ;
+x = x - v*(beta*(v'*x)) ;
+disp (x) ;
 fprintf ('-------------------------------------------------\n') ;
 
-x = -pi
-[v, beta, s] = house (x) 
-x - v*(beta*(v'*x))
+x = -pi ;
+disp (x) ;
+[v, beta, s] = house (x) ;
+disp ('v = ') ;
+disp (v) ;
+disp ('beta = ') ;
+disp (beta) ;
+disp ('s = ') ;
+disp (s) ;
+x = x - v*(beta*(v'*x)) ;
+disp (x) ;
 fprintf ('-------------------------------------------------\n') ;
 
-x = [1 0 0]'
-[v, beta, s] = house (x) 
-x - v*(beta*(v'*x))
+x = [1 0 0]' ;
+disp (x) ;
+[v, beta, s] = house (x) ;
+x = x - v*(beta*(v'*x)) ;
+disp (x) ;
 fprintf ('-------------------------------------------------\n') ;

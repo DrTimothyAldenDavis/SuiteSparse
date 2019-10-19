@@ -1,4 +1,14 @@
-clear
+function test22
+%TEST22 test cond1est
+%
+% Example:
+%   test22
+% See also: testall
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
+
 index = UFget ;
 [ignore f] = sort (max (index.nrows, index.ncols)) ;
 f = f (1:200) ;
@@ -15,7 +25,8 @@ C3 = zeros (nprob,1) ;
 for k = 1:length (f)
     
     i = f (k) ;
-    Prob = UFget (i)
+    Prob = UFget (i) ;
+    disp (Prob) ;
     A = Prob.A ;
     [m n] = size (A) ;
     if (~isreal (A) || m ~= n)

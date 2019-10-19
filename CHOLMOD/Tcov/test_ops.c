@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * CHOLMOD/Tcov Module.  Version 1.2.  Copyright (C) 2005-2006, Timothy A. Davis
+ * CHOLMOD/Tcov Module.  Version 1.3.  Copyright (C) 2005-2006, Timothy A. Davis
  * The CHOLMOD/Tcov Module is licensed under Version 2.0 of the GNU
  * General Public License.  See gpl.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
@@ -197,10 +197,12 @@ double test_ops (cholmod_sparse *A)
     cholmod_sparse *C, *D, *E, *F, *G, *H, *AT, *Zs ;
     cholmod_dense *X, *Y ;
     Int n, kk, k, nrow, ncol, len, nz, ok, i, j, stype, nmin, mode, isreal,
-	xtype, xtype2 ;
+	xtype, xtype2, mtype, asym, xmatched, pmatched, nzoffdiag, nz_diag ;
     size_t nz1, nz2 ;
     void (*save) (int, char *, int, char *) ;
-    double alpha [2], beta [2] ;
+    double alpha [2], beta [2], *Xx ;
+    FILE *f ;
+    int option, save3 ;
 
     if (A == NULL)
     {
@@ -269,6 +271,97 @@ double test_ops (cholmod_sparse *A)
 	    OK (nz == 0) ;
 	}
 	CHOLMOD(free_sparse) (&E, cm) ;
+    }
+
+    /* ---------------------------------------------------------------------- */
+    /* read/write */
+    /* ---------------------------------------------------------------------- */
+
+/*
+    i = cm->print ;
+    cm->print = 4 ;
+    CHOLMOD(print_sparse) (A, "A for read/write", cm) ;
+    cm->print = i ;
+*/
+
+    /* delete the contents of the temp1.mtx and temp2.mtx file */
+    f = fopen ("temp1.mtx", "w") ;
+    fprintf (f, "temp1\n") ;
+    fclose (f) ;
+
+    f = fopen ("temp3.mtx", "w") ;
+    fprintf (f, "temp3\n") ;
+    fclose (f) ;
+
+    CHOLMOD(free_work) (cm) ;
+
+    f = fopen ("temp1.mtx", "w") ;
+    asym = CHOLMOD(write_sparse) (f, A, NULL, "comments.txt", cm) ;
+    fclose (f) ;
+    printf ("write_sparse, asym: %d\n", asym) ;
+    OK (IMPLIES (A != NULL, asym > EMPTY)) ;
+
+    f = fopen ("temp1.mtx", "r") ;
+    C = CHOLMOD(read_sparse) (f, cm) ;
+    fclose (f) ;
+    printf ("got_sparse\n") ;
+    CHOLMOD(free_sparse) (&C, cm) ;
+
+    save3 = A->xtype ;
+    A->xtype = CHOLMOD_PATTERN ;
+    f = fopen ("temp3.mtx", "w") ;
+    asym = CHOLMOD(write_sparse) (f, A, NULL, "comments.txt", cm) ;
+    A->xtype = save3 ;
+    fclose (f) ;
+    printf ("write_sparse3, asym: %d\n", asym) ;
+
+    f = fopen ("temp3.mtx", "r") ;
+    C = CHOLMOD(read_sparse) (f, cm) ;
+    fclose (f) ;
+    printf ("got_sparse3\n") ;
+    CHOLMOD(free_sparse) (&C, cm) ;
+
+    for (i = 0 ; i <= 1 ; i++)
+    {
+
+	f = fopen ("temp2.mtx", "w") ;
+	fprintf (f, "temp2\n") ;
+	fclose (f) ;
+
+	X = CHOLMOD(ones) (4, 4, CHOLMOD_REAL, cm) ;
+	if (X != NULL)
+	{
+	    Xx = X->x ;
+	    Xx [0] = (i == 0) ? 1.1e308 : -1.1e308 ;
+	}
+	f = fopen ("temp2.mtx", "w") ;
+	ok = CHOLMOD(write_dense) (f, X, "comments.txt", cm) ;
+	fclose (f) ;
+	printf ("wrote dense\n") ;
+
+	f = fopen ("temp2.mtx", "r") ;
+	Y = CHOLMOD(read_dense) (f, cm) ;
+	fclose (f) ;
+	printf ("got dense\n") ;
+	CHOLMOD(free_dense) (&X, cm) ;
+	CHOLMOD(free_dense) (&Y, cm) ;
+    }
+
+    /* ---------------------------------------------------------------------- */
+    /* symmetry */
+    /* ---------------------------------------------------------------------- */
+
+    CHOLMOD(free_work) (cm) ;
+    xmatched = 0 ;
+    pmatched = 0 ;
+    nzoffdiag = 0 ;
+    nz_diag = 0 ;
+    for (option = 0 ; option <= 2 ; option++)
+    {
+	asym = CHOLMOD(symmetry) (A, option, &xmatched, &pmatched, &nzoffdiag,
+	    &nz_diag, cm);
+	printf ("symmetry, asym: %d matched %d %d offdiag %d diag %d\n", asym,
+	    xmatched, pmatched, nzoffdiag, nz_diag) ;
     }
 
     /* ---------------------------------------------------------------------- */

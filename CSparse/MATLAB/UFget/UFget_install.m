@@ -3,6 +3,9 @@ function UFget_install
 %   Run this M-file (UFget_install) for instructions on how to install it
 %   permanently, for future MATLAB sessions.
 %
+%   Example:
+%       UFget_install
+%
 %   See also UFget, PATHTOOL, JAVAADDPATH, ADDPATH.
 %   Also see DOC STARTUP.
 

@@ -1,4 +1,15 @@
-clear all
+function test20
+%TEST20 test cholupdown
+%
+% Example:
+%   test20
+% See also: testall
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
+
+clear functions
 
 rand ('state', 0) ;
 

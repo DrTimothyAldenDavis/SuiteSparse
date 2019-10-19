@@ -8,8 +8,12 @@ function amd_make
 % web: http://www.cise.ufl.edu/research/sparse/amd
 % --------------------------------------------------------------------------
 
+if (~isempty (strfind (computer, '64')))
+    error ('64-bit version not yet supported') ;
+end
+
 i = sprintf ('-I..%sInclude -I..%s..%sUFconfig', filesep, filesep, filesep) ;
-cmd = sprintf ('mex -inline -O -output amd %s amd_mex.c', i) ;
+cmd = sprintf ('mex -inline -O -output amd2 %s amd_mex.c', i) ;
 files = {'amd_order', 'amd_dump', 'amd_postorder', 'amd_post_tree', ...
     'amd_aat', 'amd_2', 'amd_1', 'amd_defaults', 'amd_control', ...
     'amd_info', 'amd_valid', 'amd_global', 'amd_preprocess' } ;

@@ -1,4 +1,14 @@
-clear all
+function test26
+%TEST26 test cs_dmsol and cs_dmspy
+%
+% Example:
+%   test26
+% See also: testall
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
+
 clear functions
 
 randn ('state', 0) ;

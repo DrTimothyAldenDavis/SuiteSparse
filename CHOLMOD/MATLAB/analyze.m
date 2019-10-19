@@ -1,4 +1,4 @@
-function [p count] = analyze (A, mode, k)
+function [p count] = analyze (A, mode, k)				    %#ok
 %ANALYZE: order and analyze a matrix using CHOLMOD's best-effort ordering.
 %   [p count] = analyze (A)         orders A, using just tril(A)
 %   [p count] = analyze (A,'sym')   orders A, using just tril(A)
@@ -37,6 +37,10 @@ function [p count] = analyze (A, mode, k)
 %       k = 8: also try NESDIS with no dense-node removal
 %       k = 9: also try COLAMD if ordering A'*A or A*A', (AMD if ordering A).
 %       k > 9 is treated as k = 9
+%
+%       k = -1: just use AMD
+%       k = -2: just use METIS
+%       k = -3: just use NESDIS
 %
 %       The method returning the smallest nnz(L) is used for p and count.
 %       k = 4 takes much longer than (say) k = 0, but it can reduce nnz(L) by

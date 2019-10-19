@@ -1,4 +1,12 @@
-function Q = cs_qmake1 (V, Beta, p)
+function Q = cs_q1 (V, Beta, p)
+%CS_Q1 construct Q from Householder vectors
+% Example:
+%   Q = cs_q1 (V, beta, p)
+% See also: testall
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
 [m n] = size (V) ;
 Q = speye (m) ;
 if (nargin > 2)

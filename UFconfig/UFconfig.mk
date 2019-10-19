@@ -69,15 +69,11 @@ MEX = mex -O
 # CHOLMOD gets a peak numeric factorization rate of 3.6 Gflops on a 3.2 GHz
 # Pentium 4 (512K cache, 4GB main memory) with the Goto BLAS, and 6 Gflops
 # on a 2.5Ghz dual-core AMD Opteron.
-#
-# Don't use the Intel MKL BLAS, you may get NaNs!  (See
-# http://www.mathworks.com/support/bugreports/details.html?rp=252103
-# for more details.  I get NaN's on a Pentium 4 with the Intel MKL BLAS).
 
 # These settings will probably not work, since there is no fixed convention for
 # naming the BLAS and LAPACK library (*.a or *.so) files.  Assume the Goto
 # BLAS are available.
-BLAS = -lgoto -lgfortran
+BLAS = -lgoto -lgfortran -lgfortranbegin
 LAPACK = -llapack
 
 # The BLAS might not contain xerbla, an error-handling routine for LAPACK and
@@ -185,7 +181,7 @@ CHOLMOD_CONFIG =
 # CFLAGS = -O3 -fexceptions \
    	-Wall -W -Werror -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
     	-Wredundant-decls -Wnested-externs -Wdisabled-optimization -ansi
-# CFLAGS = -g -fexceptions
+CFLAGS = -O3 -fexceptions
 # CFLAGS = -O3
 
 # consider:
@@ -241,12 +237,14 @@ CHOLMOD_CONFIG =
 # LAPACK =
 
 #------------------------------------------------------------------------------
-# Macintosh (untested)
+# Macintosh
 #------------------------------------------------------------------------------
 
-# CC = gcc-3.3
+# CC = gcc
 # CFLAGS = -O3 -fno-common -no-cpp-precomp -fexceptions
 # LIB = -lstdc++
+# BLAS = -framework Accelerate
+# LAPACK = -framework Accelerate
 
 #------------------------------------------------------------------------------
 # IBM RS 6000

@@ -3,6 +3,9 @@
 %   and then loads in all symmetric non-binary matrices, in increasing order of
 %   number of rows in the matrix.
 %
+%   Example:
+%       type UFget_example ; % to see an example of how to use UFget
+%
 %   See also UFget, UFweb.
 
 %   Copyright 2005, Tim Davis, University of Florida.

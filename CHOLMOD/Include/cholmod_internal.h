@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * CHOLMOD/Include/cholmod_internal.h.  Version 1.2.
+ * CHOLMOD/Include/cholmod_internal.h.  Version 1.3.
  * Copyright (C) 2005-2006, Univ. of Florida.  Author: Timothy A. Davis
  * CHOLMOD/Include/cholmod_internal.h is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
@@ -127,6 +127,13 @@
 #define IS_LT_ZERO(x)	CHOLMOD_IS_LT_ZERO(x)
 #define IS_GT_ZERO(x)	CHOLMOD_IS_GT_ZERO(x)
 #define IS_LE_ZERO(x)	CHOLMOD_IS_LE_ZERO(x)
+
+/* 1e308 is a huge number that doesn't take many characters to print in a
+ * file, in CHOLMOD/Check/cholmod_read and _write.  Numbers larger than this
+ * are interpretted as Inf, since sscanf doesn't read in Inf's properly.
+ * This assumes IEEE double precision arithmetic.  DBL_MAX would be a little
+ * better, except that it takes too many digits to print in a file. */
+#define HUGE_DOUBLE 1e308
 
 /* ========================================================================== */
 /* === int/UF_long and double/float definitions ============================= */

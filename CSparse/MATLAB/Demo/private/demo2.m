@@ -1,5 +1,12 @@
 function demo2 (C, sym, name)
 %DEMO2: solve a linear system using Cholesky, LU, and QR, with various orderings
+%
+% Example:
+%   demo2 (C, 1, 'name of system')
+% See also: cs_demo
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
 
 subplot (2,2,1) ; cspy (C) ;
 title (name, 'FontSize', 16, 'Interpreter', 'none') ;
@@ -27,22 +34,22 @@ end
 if (m == n)
     if (sym)
 	try
-	    [L,p] = cs_chol (C) ;
+	    [L,p] = cs_chol (C) ;		%#ok
 	    cspy (L+triu(L',1)) ; title ('L+L''') ;
 	catch
-	    tol = 0.001 ;
-	    [L,U,p,q] = cs_lu (C,0.001) ;
+	    % tol = 0.001 ;
+	    [L,U,p,q] = cs_lu (C,0.001) ;	%#ok
 	    cspy (L+U-speye(n)) ; title ('L+U') ;
 	end
     else
-	[L,U,p,q] = cs_lu (C) ;
+	[L,U,p,q] = cs_lu (C) ;		%#ok
 	cspy (L+U-speye(n)) ; title ('L+U') ;
     end
 else
     if (m < n)
-	[V,beta,p,R,q] = cs_qr (C') ;
+	[V,beta,p,R,q] = cs_qr (C') ;		%#ok
     else
-	[V,beta,p,R,q] = cs_qr (C) ;
+	[V,beta,p,R,q] = cs_qr (C) ;		%#ok
     end
     cspy (V+R) ; title ('V+R') ;
 end
@@ -59,7 +66,7 @@ for order = [0 3]
     tic ;
     x = cs_qrsol (C, b, order) ;
     fprintf ('time %8.2f ', toc) ;
-    resid (C, x, b) ;
+    print_resid (C, x, b) ;
 end
 
 if (m ~= n)
@@ -76,7 +83,7 @@ for order = 0:3
     tic ;
     x = cs_lusol (C, b, order) ;
     fprintf ('time %8.2f ', toc) ;
-    resid (C, x, b) ;
+    print_resid (C, x, b) ;
 end
 
 if (sym == 0)
@@ -93,5 +100,5 @@ for order = 0:1
     tic ;
     x = cs_cholsol (C, b, order) ;
     fprintf ('time %8.2f ', toc) ;
-    resid (C, x, b) ;
+    print_resid (C, x, b) ;
 end

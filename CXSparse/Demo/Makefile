@@ -5,7 +5,7 @@ I = -I../Source -I../../UFconfig
 
 CS = ../Source/libcxsparse.a
 
-all: $(CS) cs_demo1 cs_demo2 readhb cs_demo3 \
+all: $(CS) cs_demo1 cs_demo2 cs_demo3 \
 	cs_di_demo1 cs_di_demo2 cs_di_demo3 \
 	cs_dl_demo1 cs_dl_demo2 cs_dl_demo3 \
 	cs_ci_demo1 cs_ci_demo2 cs_ci_demo3 \
@@ -150,16 +150,13 @@ cs_ldemo: $(CS) cs_ldemo.c Makefile $(CS)
 	$(CC) $(I) -o cs_ldemo cs_ldemo.c $(CS) -lm
 
 
-readhb: readhb.f Makefile
-	f77 -o readhb readhb.f
-
 clean:
 	rm -f *.o
 
 purge: distclean
 
 distclean: clean
-	rm -f cs_demo1 cs_demo2 cs_demo3 readhb *.a
+	rm -f cs_demo1 cs_demo2 cs_demo3 *.a
 	rm -f cs_di_demo1 cs_di_demo2 cs_di_demo3
 	rm -f cs_dl_demo1 cs_dl_demo2 cs_dl_demo3
 	rm -f cs_ci_demo1 cs_ci_demo2 cs_ci_demo3

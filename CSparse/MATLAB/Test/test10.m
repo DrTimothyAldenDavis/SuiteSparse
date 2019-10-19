@@ -1,5 +1,13 @@
+function test10
+%TEST10 test cs_qr
+%
+% Example:
+%   test10
+% See also: testall
 
-clear
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
 
 rand ('state', 0) ;
 
@@ -50,12 +58,16 @@ for trials = 1:100
     C = C (p,:) ;
 
     [H1,R1] = myqr (C) ;
-    err1 = norm (R1-R2,1) / norm (R1)
+    err1 = norm (R1-R2,1) / norm (R1) ;
+    disp ('err1 = ') ;
+    disp (err1) ;
     % [svd(A) svd(R1) svd(full(R2))]
     s1 = svd (full (A)) ;
     s2 = svd (full (R2)) ;
     if (n > 0)
-	err2 = norm (s1 - s2) / s1 (1) 
+	err2 = norm (s1 - s2) / s1 (1)  ;
+	disp ('err2 = ') ;
+	disp (err2) ;
     else
 	err2 = 0 ;
     end

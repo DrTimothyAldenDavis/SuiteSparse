@@ -201,6 +201,8 @@ run_di: cs_demo1_di cs_demo2_di cs_demo3_di cstcov_test_di
 	- $(V) ./cs_demo2_di < ../Matrix/ash219
 	- $(V) ./cs_demo2_di < ../Matrix/mbeacxc
 	- $(V) ./cs_demo2_di < ../Matrix/bcsstk16
+	- $(V) ./cs_demo2_di < ../Matrix/ibm32a
+	- $(V) ./cs_demo2_di < ../Matrix/ibm32b
 	- $(V) ./cs_demo3_di < nil
 	- $(V) ./cs_demo3_di < ../Matrix/bcsstk01
 	- $(V) ./cs_demo3_di < ../Matrix/bcsstk16
@@ -227,6 +229,8 @@ run_dl: cs_demo1_dl cs_demo2_dl cs_demo3_dl cstcov_test_dl
 	- $(V) ./cs_demo2_dl < ../Matrix/ash219
 	- $(V) ./cs_demo2_dl < ../Matrix/mbeacxc
 	- $(V) ./cs_demo2_dl < ../Matrix/bcsstk16
+	- $(V) ./cs_demo2_dl < ../Matrix/ibm32a
+	- $(V) ./cs_demo2_dl < ../Matrix/ibm32b
 	- $(V) ./cs_demo3_dl < nil
 	- $(V) ./cs_demo3_dl < ../Matrix/bcsstk01
 	- $(V) ./cs_demo3_dl < ../Matrix/bcsstk16
@@ -250,6 +254,8 @@ run_ci: cs_demo1_ci cs_demo2_ci cs_demo3_ci cstcov_test_ci
 	- $(V) ./cs_demo2_ci < ../Matrix/t4
 	- $(V) ./cs_demo2_ci < ../Matrix/c_west0067
 	- $(V) ./cs_demo2_ci < ../Matrix/c_mbeacxc
+	- $(V) ./cs_demo2_ci < ../Matrix/c_ibm32a
+	- $(V) ./cs_demo2_ci < ../Matrix/c_ibm32b
 	- $(V) ./cs_demo2_ci < ../Matrix/young1c
 	- $(V) ./cs_demo2_ci < ../Matrix/qc324
 	- $(V) ./cs_demo2_ci < ../Matrix/neumann
@@ -272,6 +278,8 @@ run_cl: cs_demo1_cl cs_demo2_cl cs_demo3_cl cstcov_test_cl
 	- $(V) ./cs_demo2_cl < ../Matrix/t4
 	- $(V) ./cs_demo2_cl < ../Matrix/c_west0067
 	- $(V) ./cs_demo2_cl < ../Matrix/c_mbeacxc
+	- $(V) ./cs_demo2_cl < ../Matrix/c_ibm32a
+	- $(V) ./cs_demo2_cl < ../Matrix/c_ibm32b
 	- $(V) ./cs_demo2_cl < ../Matrix/young1c
 	- $(V) ./cs_demo2_cl < ../Matrix/qc324
 	- $(V) ./cs_demo2_cl < ../Matrix/neumann

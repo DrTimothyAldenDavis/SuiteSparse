@@ -1,5 +1,15 @@
+function test27
+%TEST27 test cs_qr, cs_utsolve, cs_qrsol
+%
+% Example:
+%   test27
+% See also: testall
 
-clear
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
+
+
 clear functions
 rand ('state', 0) ;
 

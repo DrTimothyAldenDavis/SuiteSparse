@@ -1,3 +1,13 @@
+function test12
+%TEST12 test cs_qr and compare with svd
+%
+% Example:
+%   test12
+% See also: testall
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
 fprintf ('test 12\n') ;
 rand ('state',0) ;
 % A = rand (3,4)

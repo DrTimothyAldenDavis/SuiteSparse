@@ -1,9 +1,17 @@
 function R = qr_givens (A)
+%QR_GIVENS Givens-rotation QR factorization.
+% Example:
+%   R = qr_givens (A)
+% See also: cs_demo
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
 [m n] = size (A) ;
 parent = cs_etree (sparse (A), 'col') ;
 A = full (A) ;
 for i = 2:m
-    k = min (find (A (i,:))) ;
+    k = min (find (A (i,:))) ;						    %#ok
     if (isempty (k))
 	continue ;
     end

@@ -71,6 +71,8 @@ run3: all
 	- $(V) ./cs_demo2 < ../Matrix/ash219
 	- $(V) ./cs_demo3 < ../Matrix/bcsstk01
 	- $(V) ./cs_demo2 < ../Matrix/bcsstk16
+	- $(V) ./cs_demo2 < ../Matrix/ibm32a
+	- $(V) ./cs_demo2 < ../Matrix/ibm32b
 
 # exhaustive memory tests
 runtest: all

@@ -1,5 +1,14 @@
+function test15
+%TEST15 test cs_amd
+%
+% Example:
+%   test15
+% See also: testall
 
-clear
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
+
 rand ('state', 0) ;
 randn ('state', 0) ;
 clf

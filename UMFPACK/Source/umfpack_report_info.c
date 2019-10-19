@@ -488,13 +488,15 @@ GLOBAL void UMFPACK_report_info
     PRINT_INFO ("    numeric factorization wallclock time (sec):    %.2f\n",
 	twnum) ;
 
-    if (tnum > 0 && fnum > 0)
+#define TMIN 0.001
+
+    if (tnum > TMIN && fnum > 0)
     {
 	PRINT_INFO (
 	   "    numeric factorization mflops (CPU time):       %.2f\n",
 	   1e-6 * fnum / tnum) ;
     }
-    if (twnum > 0 && fnum > 0)
+    if (twnum > TMIN && fnum > 0)
     {
 	PRINT_INFO (
 	   "    numeric factorization mflops (wallclock):      %.2f\n",
@@ -503,12 +505,12 @@ GLOBAL void UMFPACK_report_info
 
     ttot = EMPTY ;
     ftot = fnum ;
-    if (tsym >= 0 && tnum >= 0)
+    if (tsym >= TMIN && tnum >= 0)
     {
 	ttot = tsym + tnum ;
 	PRINT_INFO ("    symbolic + numeric CPU time (sec):             %.2f\n",
 	    ttot) ;
-	if (ftot > 0 && ttot > 0)
+	if (ftot > 0 && ttot > TMIN)
 	{
 	    PRINT_INFO (
 		"    symbolic + numeric mflops (CPU time):          %.2f\n",
@@ -517,12 +519,12 @@ GLOBAL void UMFPACK_report_info
     }
 
     twtot = EMPTY ;
-    if (twsym >= 0 && twnum >= 0)
+    if (twsym >= TMIN && twnum >= TMIN)
     {
 	twtot = twsym + twnum ;
 	PRINT_INFO ("    symbolic + numeric wall clock time (sec):      %.2f\n",
 	    twtot) ;
-	if (ftot > 0 && twtot > 0)
+	if (ftot > 0 && twtot > TMIN)
 	{
 	    PRINT_INFO (
 		"    symbolic + numeric mflops (wall clock):        %.2f\n",
@@ -552,13 +554,13 @@ GLOBAL void UMFPACK_report_info
 	tsolve) ;
     PRINT_INFO ("    solve wall clock time (sec):                   %.2f\n",
 	twsolve) ;
-    if (fsolve > 0 && tsolve > 0)
+    if (fsolve > 0 && tsolve > TMIN)
     {
 	PRINT_INFO (
 	    "    solve mflops (CPU time):                       %.2f\n",
 	    1e-6 * fsolve / tsolve) ;
     }
-    if (fsolve > 0 && twsolve > 0)
+    if (fsolve > 0 && twsolve > TMIN)
     {
 	PRINT_INFO (
 	    "    solve mflops (wall clock time):                %.2f\n",
@@ -572,15 +574,15 @@ GLOBAL void UMFPACK_report_info
 	"\n    total symbolic + numeric + solve flops:        %.5e\n", ftot) ;
     }
 
-    if (tsolve >= 0)
+    if (tsolve >= TMIN)
     {
-	if (ttot >= 0 && ftot >= 0)
+	if (ttot >= TMIN && ftot >= 0)
 	{
 	    ttot += tsolve ;
 	    PRINT_INFO (
 		"    total symbolic + numeric + solve CPU time:     %.2f\n",
 		ttot) ;
-	    if (ftot > 0 && ttot > 0)
+	    if (ftot > 0 && ttot > TMIN)
 	    {
 		PRINT_INFO (
 		"    total symbolic + numeric + solve mflops (CPU): %.2f\n",
@@ -589,15 +591,15 @@ GLOBAL void UMFPACK_report_info
 	}
     }
 
-    if (twsolve >= 0)
+    if (twsolve >= TMIN)
     {
-	if (twtot >= 0 && ftot >= 0)
+	if (twtot >= TMIN && ftot >= 0)
 	{
 	    twtot += tsolve ;
 	    PRINT_INFO (
 		"    total symbolic+numeric+solve wall clock time:  %.2f\n",
 		twtot) ;
-	    if (ftot > 0 && twtot > 0)
+	    if (ftot > 0 && twtot > TMIN)
 	    {
 		PRINT_INFO (
 		"    total symbolic+numeric+solve mflops(wallclock) %.2f\n",

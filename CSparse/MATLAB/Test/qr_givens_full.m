@@ -1,4 +1,12 @@
 function R = qr_givens_full (A)
+%QR_GIVENS_FULL Givens-rotation QR factorization, for full matrices.
+% Example:
+%   R = qr_givens_full (A)
+% See also: cs_demo
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
 [m n] = size (A) ;
 for i = 2:m
     for k = 1:min(i-1,n)

@@ -1,11 +1,12 @@
+cc -O3 -fexceptions  -I../Include -I../../AMD/Include -I../../UFconfig -o umf4 umf4.c ../Lib/libumfpack.a ../../AMD/Lib/libamd.a -lgoto -lgfortran -lgfortranbegin  -lm
 ./readhb_nozeros < HB/can_24.psa > tmp/A
 ./readhb_size    < HB/can_24.psa > tmp/Asize
 ./umf4
 
 ===========================================================
-=== UMFPACK v5.0.1 ========================================
+=== UMFPACK v5.0.2 ========================================
 ===========================================================
-UMFPACK V5.0.1 (Aug 31, 2006), Control:
+UMFPACK V5.0.2 (Dec 2, 2006), Control:
     Matrix entry defined as: double
     Int (generic integer) defined as: int
 
@@ -44,10 +45,10 @@ File: tmp/Asize
 n 24 nrow 24 ncol 24 nz 160
 triplet-form matrix, n_row = 24, n_col = 24 nz = 160. OK
 
-triplet-to-col time: wall 0 cpu 0
+triplet-to-col time: wall 1.19144e-09 cpu 0
 column-form matrix, n_row 24 n_col 24, nz = 160. OK
 
-UMFPACK V5.0.1 (Aug 31, 2006), Info:
+UMFPACK V5.0.2 (Dec 2, 2006), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -114,7 +115,7 @@ Symbolic object: OK
 
 Numeric object:  OK
 
-UMFPACK V5.0.1 (Aug 31, 2006), Info:
+UMFPACK V5.0.2 (Dec 2, 2006), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -198,8 +199,6 @@ UMFPACK V5.0.1 (Aug 31, 2006), Info:
     costly numeric factorization reallocations:    0
     numeric factorization CPU time (sec):          0.00
     numeric factorization wallclock time (sec):    0.00
-    symbolic + numeric CPU time (sec):             0.00
-    symbolic + numeric wall clock time (sec):      0.00
 
     solve flops:                                   1.06000e+03
     iterative refinement steps taken:              0
@@ -210,11 +209,9 @@ UMFPACK V5.0.1 (Aug 31, 2006), Info:
     solve wall clock time (sec):                   0.00
 
     total symbolic + numeric + solve flops:        1.21700e+03
-    total symbolic + numeric + solve CPU time:     0.00
-    total symbolic+numeric+solve wall clock time:  0.00
 
 
-UMFPACK V5.0.1 (Aug 31, 2006): OK
+UMFPACK V5.0.2 (Dec 2, 2006): OK
 
 dense vector, n = 24. OK
 
@@ -235,7 +232,7 @@ umf4 done, strategy: 0
 the UMFPACK analysis or factorization, above, but a separate
 test of just the AMD ordering routine.
 
-amd version 2.0, May 5, 2006:  approximate minimum degree ordering:
+amd version 2.0, Nov 29, 2006:  approximate minimum degree ordering:
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -278,9 +275,9 @@ AMD test done
 ./umf4
 
 ===========================================================
-=== UMFPACK v5.0.1 ========================================
+=== UMFPACK v5.0.2 ========================================
 ===========================================================
-UMFPACK V5.0.1 (Aug 31, 2006), Control:
+UMFPACK V5.0.2 (Dec 2, 2006), Control:
     Matrix entry defined as: double
     Int (generic integer) defined as: int
 
@@ -322,7 +319,7 @@ triplet-form matrix, n_row = 67, n_col = 67 nz = 294. OK
 triplet-to-col time: wall 0 cpu 0
 column-form matrix, n_row 67 n_col 67, nz = 294. OK
 
-UMFPACK V5.0.1 (Aug 31, 2006), Info:
+UMFPACK V5.0.2 (Dec 2, 2006), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -377,7 +374,7 @@ Symbolic object: OK
 
 Numeric object:  OK
 
-UMFPACK V5.0.1 (Aug 31, 2006), Info:
+UMFPACK V5.0.2 (Dec 2, 2006), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -419,12 +416,12 @@ UMFPACK V5.0.1 (Aug 31, 2006), Info:
     variable-sized part of Numeric object:
         initial size (Units)                    1643                 1574    96%
         peak size (Units)                       6115                 3581    59%
-        final size (Units)                      1628                  682    42%
-    Numeric final size (Units)                  2101                 1122    53%
+        final size (Units)                      1628                  681    42%
+    Numeric final size (Units)                  2101                 1121    53%
     Numeric final size (MBytes)                  0.0                  0.0    53%
     peak memory usage (Units)                   7462                 4928    66%
     peak memory usage (MBytes)                   0.1                  0.0    66%
-    numeric factorization flops          1.41920e+04          2.51200e+03    18%
+    numeric factorization flops          1.41920e+04          2.51800e+03    18%
     nz in L (incl diagonal)                      542                  324    60%
     nz in U (incl diagonal)                      902                  339    38%
     nz in L+U (incl diagonal)                   1377                  596    43%
@@ -441,35 +438,31 @@ UMFPACK V5.0.1 (Aug 31, 2006), Info:
     min abs. value on diagonal of U:               2.74e-02
     max abs. value on diagonal of U:               2.28e+00
     estimate of reciprocal of condition number:    1.20e-02
-    indices in compressed pattern:                 261
+    indices in compressed pattern:                 260
     numerical values stored in Numeric object:     599
     numeric factorization defragmentations:        1
     numeric factorization reallocations:           1
     costly numeric factorization reallocations:    0
     numeric factorization CPU time (sec):          0.00
     numeric factorization wallclock time (sec):    0.00
-    symbolic + numeric CPU time (sec):             0.00
-    symbolic + numeric wall clock time (sec):      0.00
 
     solve flops:                                   6.16900e+03
     iterative refinement steps taken:              1
     iterative refinement steps attempted:          1
-    sparse backward error omega1:                  7.81e-17
+    sparse backward error omega1:                  1.15e-16
     sparse backward error omega2:                  0.00e+00
     solve CPU time (sec):                          0.00
     solve wall clock time (sec):                   0.00
 
-    total symbolic + numeric + solve flops:        8.68100e+03
-    total symbolic + numeric + solve CPU time:     0.00
-    total symbolic+numeric+solve wall clock time:  0.00
+    total symbolic + numeric + solve flops:        8.68700e+03
 
 
-UMFPACK V5.0.1 (Aug 31, 2006): OK
+UMFPACK V5.0.2 (Dec 2, 2006): OK
 
 dense vector, n = 67. OK
 
 relative maxnorm of residual, ||Ax-b||/||b||: 1.83101e-16
-relative maxnorm of error, ||x-xtrue||/||xtrue||: 2.21879e-15
+relative maxnorm of error, ||x-xtrue||/||xtrue||: 1.14031e-15
 
 Writing tmp/x
 Writing tmp/info.umf4
@@ -485,13 +478,13 @@ umf4 done, strategy: 0
 the UMFPACK analysis or factorization, above, but a separate
 test of just the AMD ordering routine.
 
-amd version 2.0, May 5, 2006:  approximate minimum degree ordering:
+amd version 2.0, Nov 29, 2006:  approximate minimum degree ordering:
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
     aggressive absorption:  yes
 
-AMD ordering time: cpu       0.00 wall       0.01
+AMD ordering time: cpu       0.00 wall       0.00
 
 amd:  approximate minimum degree ordering, results:
     status: OK
@@ -528,9 +521,9 @@ AMD test done
 ./umf4
 
 ===========================================================
-=== UMFPACK v5.0.1 ========================================
+=== UMFPACK v5.0.2 ========================================
 ===========================================================
-UMFPACK V5.0.1 (Aug 31, 2006), Control:
+UMFPACK V5.0.2 (Dec 2, 2006), Control:
     Matrix entry defined as: double
     Int (generic integer) defined as: int
 
@@ -572,7 +565,7 @@ triplet-form matrix, n_row = 183, n_col = 183 nz = 1000. OK
 triplet-to-col time: wall 0 cpu 0
 column-form matrix, n_row 183 n_col 183, nz = 1000. OK
 
-UMFPACK V5.0.1 (Aug 31, 2006), Info:
+UMFPACK V5.0.2 (Dec 2, 2006), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -646,7 +639,7 @@ Symbolic object: OK
 
 Numeric object:  OK
 
-UMFPACK V5.0.1 (Aug 31, 2006), Info:
+UMFPACK V5.0.2 (Dec 2, 2006), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -735,33 +728,26 @@ UMFPACK V5.0.1 (Aug 31, 2006), Info:
     numeric factorization defragmentations:        1
     numeric factorization reallocations:           1
     costly numeric factorization reallocations:    0
-    numeric factorization CPU time (sec):          0.01
+    numeric factorization CPU time (sec):          0.00
     numeric factorization wallclock time (sec):    0.00
-    numeric factorization mflops (CPU time):       0.78
-    symbolic + numeric CPU time (sec):             0.01
-    symbolic + numeric mflops (CPU time):          0.78
-    symbolic + numeric wall clock time (sec):      0.00
 
     solve flops:                                   1.79470e+04
     iterative refinement steps taken:              1
     iterative refinement steps attempted:          1
-    sparse backward error omega1:                  2.09e-16
+    sparse backward error omega1:                  1.78e-16
     sparse backward error omega2:                  0.00e+00
     solve CPU time (sec):                          0.00
     solve wall clock time (sec):                   0.00
 
     total symbolic + numeric + solve flops:        2.57740e+04
-    total symbolic + numeric + solve CPU time:     0.01
-    total symbolic + numeric + solve mflops (CPU): 2.58
-    total symbolic+numeric+solve wall clock time:  0.00
 
 
-UMFPACK V5.0.1 (Aug 31, 2006): OK
+UMFPACK V5.0.2 (Dec 2, 2006): OK
 
 dense vector, n = 183. OK
 
 relative maxnorm of residual, ||Ax-b||/||b||: 1.55669e-16
-relative maxnorm of error, ||x-xtrue||/||xtrue||: 1.09758e-06
+relative maxnorm of error, ||x-xtrue||/||xtrue||: 1.09755e-06
 
 Writing tmp/x
 Writing tmp/info.umf4
@@ -777,7 +763,7 @@ umf4 done, strategy: 0
 the UMFPACK analysis or factorization, above, but a separate
 test of just the AMD ordering routine.
 
-amd version 2.0, May 5, 2006:  approximate minimum degree ordering:
+amd version 2.0, Nov 29, 2006:  approximate minimum degree ordering:
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -820,9 +806,9 @@ AMD test done
 ./umf4
 
 ===========================================================
-=== UMFPACK v5.0.1 ========================================
+=== UMFPACK v5.0.2 ========================================
 ===========================================================
-UMFPACK V5.0.1 (Aug 31, 2006), Control:
+UMFPACK V5.0.2 (Dec 2, 2006), Control:
     Matrix entry defined as: double
     Int (generic integer) defined as: int
 
@@ -861,10 +847,10 @@ File: tmp/Asize
 n 183 nrow 183 ncol 183 nz 1069
 triplet-form matrix, n_row = 183, n_col = 183 nz = 1069. OK
 
-triplet-to-col time: wall 0 cpu 0
+triplet-to-col time: wall 1.04228e-09 cpu 0
 column-form matrix, n_row 183 n_col 183, nz = 1069. OK
 
-UMFPACK V5.0.1 (Aug 31, 2006), Info:
+UMFPACK V5.0.2 (Dec 2, 2006), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -938,7 +924,7 @@ Symbolic object: OK
 
 Numeric object:  OK
 
-UMFPACK V5.0.1 (Aug 31, 2006), Info:
+UMFPACK V5.0.2 (Dec 2, 2006), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -1027,33 +1013,26 @@ UMFPACK V5.0.1 (Aug 31, 2006), Info:
     numeric factorization defragmentations:        1
     numeric factorization reallocations:           1
     costly numeric factorization reallocations:    1
-    numeric factorization CPU time (sec):          0.01
+    numeric factorization CPU time (sec):          0.00
     numeric factorization wallclock time (sec):    0.00
-    numeric factorization mflops (CPU time):       1.20
-    symbolic + numeric CPU time (sec):             0.01
-    symbolic + numeric mflops (CPU time):          1.20
-    symbolic + numeric wall clock time (sec):      0.00
 
-    solve flops:                                   3.04790e+04
+    solve flops:                                   2.00240e+04
     iterative refinement steps taken:              1
-    iterative refinement steps attempted:          2
-    sparse backward error omega1:                  2.94e-16
+    iterative refinement steps attempted:          1
+    sparse backward error omega1:                  1.80e-16
     sparse backward error omega2:                  0.00e+00
     solve CPU time (sec):                          0.00
     solve wall clock time (sec):                   0.00
 
-    total symbolic + numeric + solve flops:        4.24460e+04
-    total symbolic + numeric + solve CPU time:     0.01
-    total symbolic + numeric + solve mflops (CPU): 4.24
-    total symbolic+numeric+solve wall clock time:  0.00
+    total symbolic + numeric + solve flops:        3.19910e+04
 
 
-UMFPACK V5.0.1 (Aug 31, 2006): OK
+UMFPACK V5.0.2 (Dec 2, 2006): OK
 
 dense vector, n = 183. OK
 
-relative maxnorm of residual, ||Ax-b||/||b||: 1.55669e-16
-relative maxnorm of error, ||x-xtrue||/||xtrue||: 9.59337e-07
+relative maxnorm of residual, ||Ax-b||/||b||: 1.94586e-16
+relative maxnorm of error, ||x-xtrue||/||xtrue||: 1.22342e-06
 
 Writing tmp/x
 Writing tmp/info.umf4
@@ -1069,7 +1048,7 @@ umf4 done, strategy: 0
 the UMFPACK analysis or factorization, above, but a separate
 test of just the AMD ordering routine.
 
-amd version 2.0, May 5, 2006:  approximate minimum degree ordering:
+amd version 2.0, Nov 29, 2006:  approximate minimum degree ordering:
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -1112,9 +1091,9 @@ AMD test done
 ./umf4
 
 ===========================================================
-=== UMFPACK v5.0.1 ========================================
+=== UMFPACK v5.0.2 ========================================
 ===========================================================
-UMFPACK V5.0.1 (Aug 31, 2006), Control:
+UMFPACK V5.0.2 (Dec 2, 2006), Control:
     Matrix entry defined as: double
     Int (generic integer) defined as: int
 
@@ -1156,7 +1135,7 @@ triplet-form matrix, n_row = 130, n_col = 130 nz = 1282. OK
 triplet-to-col time: wall 0 cpu 0
 column-form matrix, n_row 130 n_col 130, nz = 1282. OK
 
-UMFPACK V5.0.1 (Aug 31, 2006), Info:
+UMFPACK V5.0.2 (Dec 2, 2006), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -1223,7 +1202,7 @@ Symbolic object: OK
 
 Numeric object:  OK
 
-UMFPACK V5.0.1 (Aug 31, 2006), Info:
+UMFPACK V5.0.2 (Dec 2, 2006), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -1305,12 +1284,8 @@ UMFPACK V5.0.1 (Aug 31, 2006), Info:
     numeric factorization defragmentations:        1
     numeric factorization reallocations:           1
     costly numeric factorization reallocations:    0
-    numeric factorization CPU time (sec):          0.01
+    numeric factorization CPU time (sec):          0.00
     numeric factorization wallclock time (sec):    0.00
-    numeric factorization mflops (CPU time):       0.42
-    symbolic + numeric CPU time (sec):             0.01
-    symbolic + numeric mflops (CPU time):          0.42
-    symbolic + numeric wall clock time (sec):      0.00
 
     solve flops:                                   1.80440e+04
     iterative refinement steps taken:              1
@@ -1321,12 +1296,9 @@ UMFPACK V5.0.1 (Aug 31, 2006), Info:
     solve wall clock time (sec):                   0.00
 
     total symbolic + numeric + solve flops:        2.22530e+04
-    total symbolic + numeric + solve CPU time:     0.01
-    total symbolic + numeric + solve mflops (CPU): 2.23
-    total symbolic+numeric+solve wall clock time:  0.00
 
 
-UMFPACK V5.0.1 (Aug 31, 2006): OK
+UMFPACK V5.0.2 (Dec 2, 2006): OK
 
 dense vector, n = 130. OK
 
@@ -1347,7 +1319,7 @@ umf4 done, strategy: 0
 the UMFPACK analysis or factorization, above, but a separate
 test of just the AMD ordering routine.
 
-amd version 2.0, May 5, 2006:  approximate minimum degree ordering:
+amd version 2.0, Nov 29, 2006:  approximate minimum degree ordering:
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -1390,9 +1362,9 @@ AMD test done
 ./umf4
 
 ===========================================================
-=== UMFPACK v5.0.1 ========================================
+=== UMFPACK v5.0.2 ========================================
 ===========================================================
-UMFPACK V5.0.1 (Aug 31, 2006), Control:
+UMFPACK V5.0.2 (Dec 2, 2006), Control:
     Matrix entry defined as: double
     Int (generic integer) defined as: int
 
@@ -1434,7 +1406,7 @@ triplet-form matrix, n_row = 130, n_col = 130 nz = 1037. OK
 triplet-to-col time: wall 0 cpu 0
 column-form matrix, n_row 130 n_col 130, nz = 1037. OK
 
-UMFPACK V5.0.1 (Aug 31, 2006), Info:
+UMFPACK V5.0.2 (Dec 2, 2006), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -1478,7 +1450,7 @@ UMFPACK V5.0.1 (Aug 31, 2006), Info:
     Symbolic size (Units):                         527
     Symbolic size (MBytes):                        0
     symbolic factorization CPU time (sec):         0.00
-    symbolic factorization wallclock time(sec):    0.00
+    symbolic factorization wallclock time(sec):    0.01
 
     symbolic/numeric factorization:      upper bound               actual      %
     variable-sized part of Numeric object:
@@ -1501,7 +1473,7 @@ Symbolic object: OK
 
 Numeric object:  OK
 
-UMFPACK V5.0.1 (Aug 31, 2006), Info:
+UMFPACK V5.0.2 (Dec 2, 2006), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -1545,7 +1517,7 @@ UMFPACK V5.0.1 (Aug 31, 2006), Info:
     Symbolic size (Units):                         527
     Symbolic size (MBytes):                        0
     symbolic factorization CPU time (sec):         0.00
-    symbolic factorization wallclock time(sec):    0.00
+    symbolic factorization wallclock time(sec):    0.01
 
     matrix scaled: yes (divided each row by sum of abs values in each row)
     minimum sum (abs (rows of A)):              7.94859e-01
@@ -1585,23 +1557,19 @@ UMFPACK V5.0.1 (Aug 31, 2006), Info:
     costly numeric factorization reallocations:    0
     numeric factorization CPU time (sec):          0.00
     numeric factorization wallclock time (sec):    0.00
-    symbolic + numeric CPU time (sec):             0.00
-    symbolic + numeric wall clock time (sec):      0.00
 
     solve flops:                                   1.58270e+04
     iterative refinement steps taken:              1
     iterative refinement steps attempted:          1
-    sparse backward error omega1:                  8.47e-17
+    sparse backward error omega1:                  7.16e-17
     sparse backward error omega2:                  0.00e+00
     solve CPU time (sec):                          0.00
     solve wall clock time (sec):                   0.00
 
     total symbolic + numeric + solve flops:        1.99340e+04
-    total symbolic + numeric + solve CPU time:     0.00
-    total symbolic+numeric+solve wall clock time:  0.00
 
 
-UMFPACK V5.0.1 (Aug 31, 2006): OK
+UMFPACK V5.0.2 (Dec 2, 2006): OK
 
 dense vector, n = 130. OK
 
@@ -1622,13 +1590,13 @@ umf4 done, strategy: 0
 the UMFPACK analysis or factorization, above, but a separate
 test of just the AMD ordering routine.
 
-amd version 2.0, May 5, 2006:  approximate minimum degree ordering:
+amd version 2.0, Nov 29, 2006:  approximate minimum degree ordering:
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
     aggressive absorption:  yes
 
-AMD ordering time: cpu       0.00 wall       0.00
+AMD ordering time: cpu       0.01 wall       0.00
 
 amd:  approximate minimum degree ordering, results:
     status: OK
@@ -1665,10 +1633,10 @@ AMD test done
 ./umf4 a 1e-6
 
 ===========================================================
-=== UMFPACK v5.0.1 ========================================
+=== UMFPACK v5.0.2 ========================================
 ===========================================================
 droptol 1e-06
-UMFPACK V5.0.1 (Aug 31, 2006), Control:
+UMFPACK V5.0.2 (Dec 2, 2006), Control:
     Matrix entry defined as: double
     Int (generic integer) defined as: int
 
@@ -1710,7 +1678,7 @@ triplet-form matrix, n_row = 130, n_col = 130 nz = 1037. OK
 triplet-to-col time: wall 0 cpu 0
 column-form matrix, n_row 130 n_col 130, nz = 1037. OK
 
-UMFPACK V5.0.1 (Aug 31, 2006), Info:
+UMFPACK V5.0.2 (Dec 2, 2006), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -1777,7 +1745,7 @@ Symbolic object: OK
 
 Numeric object:  OK
 
-UMFPACK V5.0.1 (Aug 31, 2006), Info:
+UMFPACK V5.0.2 (Dec 2, 2006), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -1859,28 +1827,22 @@ UMFPACK V5.0.1 (Aug 31, 2006), Info:
     numeric factorization defragmentations:        1
     numeric factorization reallocations:           1
     costly numeric factorization reallocations:    0
-    numeric factorization CPU time (sec):          0.01
+    numeric factorization CPU time (sec):          0.00
     numeric factorization wallclock time (sec):    0.00
-    numeric factorization mflops (CPU time):       0.41
-    symbolic + numeric CPU time (sec):             0.01
-    symbolic + numeric mflops (CPU time):          0.41
-    symbolic + numeric wall clock time (sec):      0.00
 
     solve flops:                                   2.06060e+04
     iterative refinement steps taken:              2
     iterative refinement steps attempted:          2
     sparse backward error omega1:                  1.30e-16
     sparse backward error omega2:                  0.00e+00
-    solve CPU time (sec):                          0.00
+    solve CPU time (sec):                          0.01
     solve wall clock time (sec):                   0.00
+    solve mflops (CPU time):                       2.06
 
     total symbolic + numeric + solve flops:        2.47130e+04
-    total symbolic + numeric + solve CPU time:     0.01
-    total symbolic + numeric + solve mflops (CPU): 2.47
-    total symbolic+numeric+solve wall clock time:  0.00
 
 
-UMFPACK V5.0.1 (Aug 31, 2006): OK
+UMFPACK V5.0.2 (Dec 2, 2006): OK
 
 dense vector, n = 130. OK
 
@@ -1901,7 +1863,7 @@ umf4 done, strategy: 0
 the UMFPACK analysis or factorization, above, but a separate
 test of just the AMD ordering routine.
 
-amd version 2.0, May 5, 2006:  approximate minimum degree ordering:
+amd version 2.0, Nov 29, 2006:  approximate minimum degree ordering:
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)

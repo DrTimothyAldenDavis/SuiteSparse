@@ -1,24 +1,16 @@
-all: go
 
-include UFconfig/UFconfig.mk
+include ../../UFconfig/UFconfig.mk
 
-go: prog
-	- ut > ut.out
-	- tail ut.out
-	#- $(RM) ut.out
-	- ( cd UMFPACK/Source ; gcovs umf*.c )
-	- ( cd AMD/Source     ; gcovs amd*.c )
+linux: distclean
+	./DO.linux
 
-prog:
-	( cd UMFPACK ; make library )
-	( cd AMD ; make library )
-	$(CC) -DDINT $(CFLAGS) $(UMFPACK_CONFIG) -IUMFPACK/Source -IUMFPACK/Include -IAMD/Source -IAMD/Include -o ut ut.c UMFPACK/Lib/libumfpack.a AMD/Lib/libamd.a $(LIB)
+sol: distclean
+	./DO.solaris
 
-utcov:
-	- ( cd UMFPACK/Source ; gcovs umf*.c )
-	- ( cd AMD/Source     ; gcovs amd*.c )
+distclean:
+	- ( cd .. ; make purge )
+	- ( cd ../../AMD ; make purge )
+	- $(RM) -rf Out/*
 
+purge: distclean
 
-purge:
-	( cd UMFPACK ; make purge )
-	( cd AMD ; make purge )

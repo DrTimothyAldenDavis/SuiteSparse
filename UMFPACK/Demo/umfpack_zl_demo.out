@@ -1,5 +1,5 @@
 
-UMFPACK V5.0 (Aug 31, 2006) demo: _zl_ version
+UMFPACK V5.0 (Dec 2, 2006) demo: _zl_ version
 
 UMFPACK:  Copyright (c) 2005-2006 by Timothy A. Davis.  All Rights Reserved.
 
@@ -39,9 +39,9 @@ UMFPACK License:
 
 Availability: http://www.cise.ufl.edu/research/sparse/umfpack
 
-UMFPACK V5.0.1 (Aug 31, 2006): OK
+UMFPACK V5.0.2 (Dec 2, 2006): OK
 
-UMFPACK V5.0.1 (Aug 31, 2006), Control:
+UMFPACK V5.0.2 (Dec 2, 2006), Control:
     Matrix entry defined as: double complex
     Int (generic integer) defined as: UF_long
 
@@ -280,7 +280,7 @@ diagonal of U: dense vector, n = 5.
 
     Numeric object:  OK
 
-UMFPACK V5.0.1 (Aug 31, 2006), Info:
+UMFPACK V5.0.2 (Dec 2, 2006), Info:
     matrix entry defined as:          double complex
     Int (generic integer) defined as: UF_long
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -364,8 +364,6 @@ UMFPACK V5.0.1 (Aug 31, 2006), Info:
     costly numeric factorization reallocations:    0
     numeric factorization CPU time (sec):          0.00
     numeric factorization wallclock time (sec):    0.00
-    symbolic + numeric CPU time (sec):             0.00
-    symbolic + numeric wall clock time (sec):      0.00
 
     solve flops:                                   5.23000e+02
     iterative refinement steps taken:              0
@@ -376,13 +374,11 @@ UMFPACK V5.0.1 (Aug 31, 2006), Info:
     solve wall clock time (sec):                   0.00
 
     total symbolic + numeric + solve flops:        5.57000e+02
-    total symbolic + numeric + solve CPU time:     0.00
-    total symbolic+numeric+solve wall clock time:  0.00
 
 
 UMFPACK:  Copyright (c) 2005-2006 by Timothy A. Davis.  All Rights Reserved.
 
-UMFPACK V5.0.1 (Aug 31, 2006): OK
+UMFPACK V5.0.2 (Dec 2, 2006): OK
 
 
 x (solution of Ax=b): dense vector, n = 5. 
@@ -398,7 +394,7 @@ maxnorm of residual: 9.76996e-15
 
 UMFPACK:  Copyright (c) 2005-2006 by Timothy A. Davis.  All Rights Reserved.
 
-UMFPACK V5.0.1 (Aug 31, 2006): OK
+UMFPACK V5.0.2 (Dec 2, 2006): OK
 
 determinant: (-1.7814+ (2.3784)i) * 10^(2)
 
@@ -412,7 +408,7 @@ x (solution of Ax=b, solve is split into 3 steps): dense vector, n = 5.
 
 maxnorm of residual: 9.76996e-15
 
-UMFPACK V5.0.1 (Aug 31, 2006), Info:
+UMFPACK V5.0.2 (Dec 2, 2006), Info:
     matrix entry defined as:          double complex
     Int (generic integer) defined as: UF_long
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -496,8 +492,6 @@ UMFPACK V5.0.1 (Aug 31, 2006), Info:
     costly numeric factorization reallocations:    0
     numeric factorization CPU time (sec):          0.00
     numeric factorization wallclock time (sec):    0.00
-    symbolic + numeric CPU time (sec):             0.00
-    symbolic + numeric wall clock time (sec):      0.00
 
     solve flops:                                   4.80000e+02
     iterative refinement steps taken:              0
@@ -508,8 +502,6 @@ UMFPACK V5.0.1 (Aug 31, 2006), Info:
     solve wall clock time (sec):                   0.00
 
     total symbolic + numeric + solve flops:        5.14000e+02
-    total symbolic + numeric + solve CPU time:     0.00
-    total symbolic+numeric+solve wall clock time:  0.00
 
 
 x (solution of A'x=b): dense vector, n = 5. 
@@ -654,7 +646,7 @@ diagonal of U: dense vector, n = 5.
 
     Numeric object:  OK
 
-UMFPACK V5.0.1 (Aug 31, 2006), Info:
+UMFPACK V5.0.2 (Dec 2, 2006), Info:
     matrix entry defined as:          double complex
     Int (generic integer) defined as: UF_long
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -737,11 +729,7 @@ UMFPACK V5.0.1 (Aug 31, 2006), Info:
     numeric factorization reallocations:           1
     costly numeric factorization reallocations:    0
     numeric factorization CPU time (sec):          0.00
-    numeric factorization wallclock time (sec):    0.01
-    numeric factorization mflops (wallclock):      0.00
-    symbolic + numeric CPU time (sec):             0.00
-    symbolic + numeric wall clock time (sec):      0.01
-    symbolic + numeric mflops (wall clock):        0.00
+    numeric factorization wallclock time (sec):    0.00
 
     solve flops:                                   5.15000e+02
     iterative refinement steps taken:              0
@@ -752,9 +740,6 @@ UMFPACK V5.0.1 (Aug 31, 2006), Info:
     solve wall clock time (sec):                   0.00
 
     total symbolic + numeric + solve flops:        5.32000e+02
-    total symbolic + numeric + solve CPU time:     0.00
-    total symbolic+numeric+solve wall clock time:  0.01
-    total symbolic+numeric+solve mflops(wallclock) 0.05
 
 
 x (with modified A): dense vector, n = 5. 
@@ -918,7 +903,7 @@ diagonal of U: dense vector, n = 5.
 
     Numeric object:  OK
 
-UMFPACK V5.0.1 (Aug 31, 2006), Info:
+UMFPACK V5.0.2 (Dec 2, 2006), Info:
     matrix entry defined as:          double complex
     Int (generic integer) defined as: UF_long
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -1002,8 +987,6 @@ UMFPACK V5.0.1 (Aug 31, 2006), Info:
     costly numeric factorization reallocations:    0
     numeric factorization CPU time (sec):          0.00
     numeric factorization wallclock time (sec):    0.00
-    symbolic + numeric CPU time (sec):             0.00
-    symbolic + numeric wall clock time (sec):      0.00
 
     solve flops:                                   5.23000e+02
     iterative refinement steps taken:              0
@@ -1014,8 +997,6 @@ UMFPACK V5.0.1 (Aug 31, 2006), Info:
     solve wall clock time (sec):                   0.00
 
     total symbolic + numeric + solve flops:        5.57000e+02
-    total symbolic + numeric + solve CPU time:     0.00
-    total symbolic+numeric+solve wall clock time:  0.00
 
 
 x (with completely modified A): dense vector, n = 5. 
@@ -1323,7 +1304,7 @@ Freeing numeric object:
 Loading numeric object:
 
 Done loading numeric object
-UMFPACK V5.0.1 (Aug 31, 2006), Info:
+UMFPACK V5.0.2 (Dec 2, 2006), Info:
     matrix entry defined as:          double complex
     Int (generic integer) defined as: UF_long
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -1407,8 +1388,6 @@ UMFPACK V5.0.1 (Aug 31, 2006), Info:
     costly numeric factorization reallocations:    0
     numeric factorization CPU time (sec):          0.00
     numeric factorization wallclock time (sec):    0.00
-    symbolic + numeric CPU time (sec):             0.00
-    symbolic + numeric wall clock time (sec):      0.00
 
     solve flops:                                   4.80000e+02
     iterative refinement steps taken:              0
@@ -1419,8 +1398,6 @@ UMFPACK V5.0.1 (Aug 31, 2006), Info:
     solve wall clock time (sec):                   0.00
 
     total symbolic + numeric + solve flops:        5.14000e+02
-    total symbolic + numeric + solve CPU time:     0.00
-    total symbolic+numeric+solve wall clock time:  0.00
 
 
 x (solution of C'x=b): dense vector, n = 5. 
@@ -1435,7 +1412,7 @@ maxnorm of residual: 4.69026e-15
 
 
 Solving C'x=b again, using umfpack_zl_wsolve instead:
-UMFPACK V5.0.1 (Aug 31, 2006), Info:
+UMFPACK V5.0.2 (Dec 2, 2006), Info:
     matrix entry defined as:          double complex
     Int (generic integer) defined as: UF_long
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -1519,8 +1496,6 @@ UMFPACK V5.0.1 (Aug 31, 2006), Info:
     costly numeric factorization reallocations:    0
     numeric factorization CPU time (sec):          0.00
     numeric factorization wallclock time (sec):    0.00
-    symbolic + numeric CPU time (sec):             0.00
-    symbolic + numeric wall clock time (sec):      0.00
 
     solve flops:                                   4.80000e+02
     iterative refinement steps taken:              0
@@ -1531,8 +1506,6 @@ UMFPACK V5.0.1 (Aug 31, 2006), Info:
     solve wall clock time (sec):                   0.00
 
     total symbolic + numeric + solve flops:        5.14000e+02
-    total symbolic + numeric + solve CPU time:     0.00
-    total symbolic+numeric+solve wall clock time:  0.00
 
 
 x (solution of C'x=b): dense vector, n = 5. 
@@ -1547,4 +1520,4 @@ maxnorm of residual: 4.69026e-15
 
 
 umfpack_zl_demo complete.
-Total time:  0.00 seconds (CPU time),  0.06 seconds (wallclock time)
+Total time:  0.00 seconds (CPU time),  0.01 seconds (wallclock time)

@@ -32,6 +32,7 @@
 %   cs_randperm  - random permutation.
 %   cs_sep       - convert an edge separator into a node separator.
 %   cs_scc       - strongly-connected components of a square sparse matrix.
+%   cs_scc2      - cs_scc, or connected components of a bipartite graph.
 %   cs_sparse    - convert a triplet form into a sparse matrix.
 %   cs_sqr       - symbolic sparse QR factorization.
 %   cs_symperm   - symmetric permutation of a symmetric matrix.
@@ -39,8 +40,13 @@
 %   cs_updown    - rank-1 update/downdate of a sparse Cholesky factorization.
 %   cs_usolve    - solve a sparse upper triangular system U*x=b.
 %   cs_utsolve   - solve a sparse lower triangular system U'*x=b.
-%   cspy         - plot a sparse matrix in color.
-%
+%   cspy         - plot a matrix in color.
+%   ccspy        - plot the connected components of a matrix.
+
+% Example:
+%   help cs_add
+
 %   Copyright 2006, Timothy A. Davis.
 %   http://www.cise.ufl.edu/research/sparse
+
 

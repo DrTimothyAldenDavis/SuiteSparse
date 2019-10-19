@@ -11,6 +11,10 @@ function umfpack_make
 
 help umfpack_make
 
+if (~isempty (strfind (computer, '64')))
+    error ('64-bit version not yet supported') ;
+end
+
 fprintf ('\n--------------------------------------------------------------\n') ;
 fprintf ('Now compiling the UMFPACK and AMD mexFunctions.\n') ;
 fprintf ('--------------------------------------------------------------\n') ;
@@ -33,32 +37,35 @@ end
 % BLAS option
 %-------------------------------------------------------------------------------
 
-msg = [ ...
-    '\nUsing the BLAS is faster, but might not compile correctly.\n', ...
-    'If you get an error stating that dgemm, dgemv, dger, zgemm,\n', ...
-    'zgemv, and/or zger are not defined, then recompile without the\n', ...
-    'BLAS.  You can ignore warnings that these routines are implicitly\n', ...
-    'declared.\n\nPlease select one of the following options: \n', ...
-    '   1:  attempt to compile with the BLAS (default)\n', ...
-    '   2:  do not use the BLAS (UMFPACK will be slow)\n'] ;
-fprintf (msg) ;
-blas = input (': ') ;
-if (isempty (blas))
-    blas = 1 ;
-end
-if (blas == 1)
+% msg = [ ...
+%     '\nUsing the BLAS is faster, but might not compile correctly.\n', ...
+%     'If you get an error stating that dgemm, dgemv, dger, zgemm,\n', ...
+%     'zgemv, and/or zger are not defined, then recompile without the\n', ...
+%     'BLAS.  You can ignore warnings that these routines are implicitly\n', ...
+%     'declared.\n\nPlease select one of the following options: \n', ...
+%     '   1:  attempt to compile with the BLAS (default)\n', ...
+%     '   2:  do not use the BLAS (UMFPACK will be slow)\n'] ;
+% fprintf (msg) ;
+% blas = input (': ') ;
+% if (isempty (blas))
+%     blas = 1 ;
+% end
+
+% if (blas == 1)
+
     % try to link to MATLAB's built-in BLAS
     blas = '' ;
     if (pc)
         % the default lcc compiler needs this library to access the BLAS
         blas_lib = ' libmwlapack.lib' ;
     end
-    fprintf ('\nUsing the BLAS (recommended).\n') ;
-else
-    % No BLAS
-    fprintf ('\nNot using the BLAS.  UMFPACK will be slow.\n') ;
-    blas = ' -DNBLAS' ;
-end
+
+%    fprintf ('\nUsing the BLAS (recommended).\n') ;
+% else
+%    % No BLAS
+%    fprintf ('\nNot using the BLAS.  UMFPACK will be slow.\n') ;
+%    blas = ' -DNBLAS' ;
+% end
 
 %-------------------------------------------------------------------------------
 % -DNPOSIX option (for sysconf and times timer routines)
@@ -66,31 +73,31 @@ end
 
 posix = '' ;
 
-if (~pc)
-    msg = [ ...
-    '--------------------------------------------------------------\n', ...
-    '\nUMFPACK can use the POSIX routines sysconf () and times ()\n', ...
-    'to provide CPU time and wallclock time statistics.  If you do not\n', ...
-    'have a POSIX-compliant operating system, then UMFPACK won''t\n', ...
-    'compile.  If you don''t know which option to pick, try the\n', ...
-    'default.  If you get an error saying that sysconf and/or times\n', ...
-    'are not defined, then recompile with the non-POSIX option.\n', ...
-    '\nPlease select one of the following options:\n', ...
-    '    1:  use POSIX sysconf and times routines (default)\n', ...
-    '    2:  do not use POSIX routines\n'] ;
-    fprintf (msg) ;
-    posix = input (': ') ;
-    if (isempty (posix))
-	posix = 1 ;
-    end
-    if (posix == 2)
-        fprintf ('\nNot using POSIX sysconf and times routines.\n') ;
-        posix = ' -DNPOSIX' ;
-    else
-        fprintf ('\nUsing POSIX sysconf and times routines.\n') ;
-        posix = '' ;
-    end
-end
+% if (~pc)
+%     msg = [ ...
+%    '--------------------------------------------------------------\n', ...
+%    '\nUMFPACK can use the POSIX routines sysconf () and times ()\n', ...
+%    'to provide CPU time and wallclock time statistics.  If you do not\n', ...
+%    'have a POSIX-compliant operating system, then UMFPACK won''t\n', ...
+%    'compile.  If you don''t know which option to pick, try the\n', ...
+%    'default.  If you get an error saying that sysconf and/or times\n', ...
+%    'are not defined, then recompile with the non-POSIX option.\n', ...
+%    '\nPlease select one of the following options:\n', ...
+%    '    1:  use POSIX sysconf and times routines (default)\n', ...
+%    '    2:  do not use POSIX routines\n'] ;
+%    fprintf (msg) ;
+%    posix = input (': ') ;
+%    if (isempty (posix))
+%	posix = 1 ;
+%    end
+%    if (posix == 2)
+%        fprintf ('\nNot using POSIX sysconf and times routines.\n') ;
+%        posix = ' -DNPOSIX' ;
+%    else
+%        fprintf ('\nUsing POSIX sysconf and times routines.\n') ;
+%        posix = '' ;
+%    end
+% end
 
 %-------------------------------------------------------------------------------
 % mex command

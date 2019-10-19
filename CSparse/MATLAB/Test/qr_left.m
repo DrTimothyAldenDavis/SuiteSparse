@@ -1,4 +1,12 @@
 function [V,Beta,R] = qr_left (A)
+%QR_LEFT left-looking Householder QR factorization.
+% Example:
+%  [V,Beta,R] = qr_left (A)
+% See also: cs_demo
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
 [m n] = size (A) ;
 V = zeros (m,n) ;
 Beta = zeros (1,n) ;

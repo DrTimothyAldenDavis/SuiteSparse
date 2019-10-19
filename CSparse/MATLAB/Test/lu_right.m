@@ -1,5 +1,13 @@
 function [L,U] = lu_right (A)
-n = size (A,1)
+%LU_RIGHT right-looking LU factorization.
+% Example:
+%   [L,U] = lu_right (A)
+% See also: cs_demo
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
+n = size (A,1) ;
 L = eye (n) ;
 U = zeros (n) ;
 for k = 1:n

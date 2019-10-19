@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * CHOLMOD/Core Module.  Version 1.2.  Copyright (C) 2005-2006,
+ * CHOLMOD/Core Module.  Version 1.3.  Copyright (C) 2005-2006,
  * Univ. of Florida.  Author: Timothy A. Davis
  * The CHOLMOD/Core Module is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
@@ -220,6 +220,7 @@ int CHOLMOD(defaults)
 
     Common->prefer_zomplex = FALSE ;
     Common->prefer_upper = TRUE ;
+    Common->prefer_binary = FALSE ;
     Common->quick_return_if_not_posdef = FALSE ;
 
     /* METIS workarounds */

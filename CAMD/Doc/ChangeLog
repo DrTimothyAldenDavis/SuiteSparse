@@ -1,3 +1,7 @@
+Sept 28, 2006, v2.1.2
+
+    * #define SIZE_T_MAX not done if already defined (Mac OSX).
+
 Aug 31, 2006: v2.1.1
 
     * trivial change to comments in camd.m

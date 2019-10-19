@@ -1,5 +1,13 @@
 function ex2 (n)
 %EX2: create an n-by-n 2D mesh, four different ways
+
+% Example:
+%   ex2
+% See also: cs_demo
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
 if (nargin < 1)
     n = 30 ;
 end
@@ -28,7 +36,7 @@ ii = ii (keep) ;
 jj = jj (keep) ;
 xx = xx (keep) ;
 A = sparse (ii,jj,xx) ;
-t1 = toc
+t1 = toc ; disp (t1) ;
 % subplot (2,2,1) ; 
 spy (A)
 title (sprintf ('%d-by-%d 2D mesh\n', n, n)) ;
@@ -44,47 +52,25 @@ i2 = i2 (keep) ;
 j2 = j2 (keep) ;
 x2 = x2 (keep) ;
 C = sparse (i2,j2,x2) ;
-t2 = toc
+t2 = toc ; disp (t2) ;
 
 % subplot (2,2,2) ; plot (j2) ;
 % title ('2D fast j2') ;
-A-C
+disp (A-C) ;
 
 any (ii-i2)
 any (jj-jj)
 
 % method 3: create an n-by-n-by-n 3D mesh for the 2nd difference operator
 tic
-ii = zeros (7*n^3, 1) ;
-jj = zeros (7*n^3, 1) ;
-xx = zeros (7*n^3, 1) ;
-t = 1 ;
-for k = 0:n-1
-    for j = 0:n-1
-	for i = 0:n-1
-	    s = k*n^2 + j*n+i + 1 ;
-	    ii (t:t+6) = [
-		    (k-1)*n^2 + j*n+i 
-		    k*n^2 + (j-1)*n+i 
-		    k*n^2 + j*n+(i-1)
-		    k*n^2 + j*n+i
-		    k*n^2 + j*n+(i+1)
-		    k*n^2 + (j+1)*n+i
-		    (k+1)*n^2 + j*n+i ]' + 1 ;
-	    jj (t:t+6) = [s s s s s s s] ;
-	    xx (t:t+6) = [-1 -1 -1 6 -1 -1 -1] ;
-	    t = t + 7 ;
-	end
-    end
-end
-keep = find (ii >= 1 & ii <= n^3 & jj >= 1 & jj <= n^3) ;
+[A keep ii jj xx] = mesh3d1 (n) ;
 ii = ii (keep) ;
 jj = jj (keep) ;
 xx = xx (keep) ;
-t3 = toc 
+t3 = toc ; disp (t3) ;
 tic
 E = sparse (ii,jj,xx) ;
-t3b = toc
+t3b = toc ; disp (t3b) ;
 subplot (1,2,2) ; spy (E) ;
 title (sprintf ('%d-by-%d-by-%d 3D mesh\n', n, n, n)) ;
 
@@ -98,8 +84,8 @@ keep = find (i2 >= 1 & i2 <= n^3 & j2 >= 1 & j2 <= n^3) ;
 i2 = i2 (keep) ;
 j2 = j2 (keep) ;
 x2 = x2 (keep) ;
-t4 = toc
+t4 = toc ; disp (t4) ;
 tic
 F = sparse (i2,j2,x2) ;
-t4b = toc
-E-F
+t4b = toc ; disp (t4b) ;
+disp (E-F) ;

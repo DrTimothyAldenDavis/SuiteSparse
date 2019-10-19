@@ -1,0 +1,170 @@
+Running CHOLMOD tests.
+diary cholmod_test_29-Nov-2006_18-0-54.txt
+
+  cholmod_test(nmat, no_metis):  test the CHOLMOD mexFunctions
+ 
+  The UFget interface to the UF sparse matrix collection is required.
+ 
+  nmat is optional.  If present, it is the # of matrices used in
+    tests 0, 8, 10, 11, 12, and 12.  tests 14 and 15 use 2*nmat matrices.
+    default nmat is 50.
+ 
+  no_metis is optional.  If present, tests that require METIS are not used
+    (tests 8, 9, and 14)
+ 
+  cholmod_demo: run tests on a few random matrices
+  graph_demo: graph partitioning demo
+  test0:  test most CHOLMOD functions
+  test1:  test sparse2
+  test2:  test sparse2
+  test3:  test sparse on int8, int16, and logical
+  test4:  test cholmod with multiple and sparse right-hand-sides
+  test5:  test sparse2
+  test6:  test sparse with large matrix, both real and complex, compare w/MATLAB
+  test7:  test sparse2
+  test8:  order many sparse matrices, test symbfact2, compare amd and metis
+  test9:  test metis, etree, bisect, nesdis
+  test10: test cholmod's backslash on real and complex matrices
+  test11: test analyze, compare CHOLMOD and MATLAB, save results in Results.mat
+  test12: test etree2 and compare with etree
+  test13: test cholmod and MATLAB on large tridiagonal matrices
+  test14: test metis, symbfact2, and etree2
+  test15: test symbfact2 vs MATLAB
+  test16: test cholmod on a large matrix
+  test17: test lchol on a few large matrices
+  test18: test cholmod on a few large matrices
+  test19: look for NaN's from lchol (caused by Intel MKL 7.x bug)
+  test20: test symbfact2, cholmod, and lu on a few large matrices
+  test21: test cholmod on diagonal or ill-conditioned matrices
+  test22: test chol and chol2 and singular and indefinite matrices
+  test23: test chol and cholmod on the sparse matrix used in "bench"
+  test24: test sdmult
+  test25: test sdmult on a large matrix
+  test26: test logical full and sparse matrices
+  test27: test nesdis
+
+Added the following paths.  You may wish to add them
+permanently using the MATLAB pathtool command.
+/amd/netapp3/vol/research0a/research18/sparse/SuiteSparse/CHOLMOD/MATLAB
+/amd/netapp3/vol/research0a/research18/sparse/SuiteSparse/AMD/MATLAB
+/amd/netapp3/vol/research0a/research18/sparse/SuiteSparse/COLAMD
+/amd/netapp3/vol/research0a/research18/sparse/SuiteSparse/CCOLAMD
+/amd/netapp3/vol/research0a/research18/sparse/SuiteSparse/CAMD/MATLAB
+
+
+--------- Hit enter to contine: 
+ CHOLMOD_DEMO: a demo for CHOLMOD
+ 
+  Tests CHOLMOD with various randomly-generated matrices, and the west0479
+  matrix distributed with MATLAB.  Random matrices are not good test cases,
+  but they are easily generated.  It also compares CHOLMOD and MATLAB on the
+  sparse matrix problem used in the MATLAB BENCH command.
+ 
+  See CHOLMOD/MATLAB/Test/test_all.m for a lengthy test using matrices from
+  the UF sparse matrix collection.
+ 
+  See also BENCH
+
+
+--------------------------------------------------------------
+cholmod_demo: sparse matrix, n 479 nnz 7551
+CHOLMOD lchol(sparse(A))       time:   0.00    mflop    111.7
+CHOLMOD ldlchol(sparse(A))     time:   0.00    mflop     59.3
+CHOLMOD ldlupdate(sparse(A),C) time:   0.02 (rank-1, C dense)
+
+err =
+
+   2.6840e-16
+
+MATLAB  chol(sparse(A))        time:   0.00    mflop    130.9
+MATLAB  chol(full(A))          time:   0.02    mflop     14.2
+MATLAB  cholupdate(full(A),C)  time:   0.01 (rank-1)
+
+err =
+
+   2.8602e-16
+
+CHOLMOD lchol(sparse(A)) speedup over chol(sparse(A)):    0.9
+CHOLMOD sparse update speedup vs MATLAB DENSE update:     0.2
+
+--------------------------------------------------------------
+cholmod_demo: sparse matrix, n 2000 nnz 17946
+CHOLMOD lchol(sparse(A))       time:   0.16    mflop   1401.5
+CHOLMOD ldlchol(sparse(A))     time:   0.17    mflop   1311.9
+CHOLMOD ldlupdate(sparse(A),C) time:   0.33 (rank-1, C dense)
+
+err =
+
+   9.9537e-15
+
+MATLAB  chol(sparse(A))        time:   0.18    mflop   1224.1
+MATLAB  chol(full(A))          time:   0.76    mflop    295.0
+MATLAB  cholupdate(full(A),C)  time:   0.08 (rank-1)
+
+err =
+
+   2.5674e-14
+
+CHOLMOD lchol(sparse(A)) speedup over chol(sparse(A)):    1.1
+CHOLMOD sparse update speedup vs MATLAB DENSE update:     0.2
+
+--------------------------------------------------------------
+cholmod_demo: dense matrix, n 100
+CHOLMOD lchol(sparse(A))       time:   0.00    mflop    273.3
+CHOLMOD ldlchol(sparse(A))     time:   0.00    mflop    242.2
+CHOLMOD ldlupdate(sparse(A),C) time:   0.00 (rank-1, C dense)
+
+err =
+
+   2.9845e-16
+
+MATLAB  chol(sparse(A))        time:   0.00    mflop    228.8
+MATLAB  chol(full(A))          time:   0.00    mflop    680.8
+MATLAB  cholupdate(full(A),C)  time:   0.00 (rank-1)
+
+err =
+
+   2.8967e-16
+
+CHOLMOD lchol(sparse(A)) speedup over chol(sparse(A)):    1.2
+CHOLMOD sparse update speedup vs MATLAB DENSE update:     1.3
+
+--------------------------------------------------------------
+cholmod_demo: dense matrix, n 2000
+CHOLMOD lchol(sparse(A))       time:   1.02    mflop   2618.1
+CHOLMOD ldlchol(sparse(A))     time:   1.07    mflop   2490.8
+CHOLMOD ldlupdate(sparse(A),C) time:   0.06 (rank-1, C dense)
+
+err =
+
+   6.6750e-16
+
+MATLAB  chol(sparse(A))        time:   1.51    mflop   1762.0
+MATLAB  chol(full(A))          time:   0.75    mflop   3576.3
+MATLAB  cholupdate(full(A),C)  time:   0.08 (rank-1)
+
+err =
+
+   6.4132e-16
+
+CHOLMOD lchol(sparse(A)) speedup over chol(sparse(A)):    1.5
+CHOLMOD sparse update speedup vs MATLAB DENSE update:     1.3
+
+--------------------------------------------------------------
+
+With the matrix used in the MATLAB 7.2 "bench" program.
+No fill-reducing orderings are used; type "help bench" for more information.
+MATLAB  x=A\b      time:   0.5842  resid:    1e-13
+CHOLMOD x=A\b      time:   2.8138  resid:    2e-13
+CHOLMOD speedup:     0.21
+
+cholmod_demo finished: all tests passed
+
+For more accurate timings, run this test again.
+Error in ==> graph_demo at 83
+            pause (2)
+
+Error in ==> cholmod_test at 92
+graph_demo
+
+diary off

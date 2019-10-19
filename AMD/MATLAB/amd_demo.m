@@ -10,13 +10,13 @@ function amd_demo
 % web: http://www.cise.ufl.edu/research/sparse/amd
 % --------------------------------------------------------------------------
 %
-% See also: amd, amd_make
+% See also: amd, amd2, amd_make
 
 % This orders the same matrix as the ANSI C demo, amd_demo.c.  It includes an
 % additional analysis of the matrix via MATLAB's symbfact routine.
 
 % First, print the help information for AMD
-help amd
+help amd2
 
 % Get the Harwell/Boeing can_24 matrix.
 
@@ -38,10 +38,10 @@ spparms ('spumoni', 1) ;
 % order the matrix.  Note that the Info argument is optional.
 fprintf ('\nIf the next step fails, then you have\n') ;
 fprintf ('not yet compiled the AMD mexFunction.\n') ;
-[p, Info] = amd (A) ;
+[p, Info] = amd2 (A) ;
 
 % order again, but this time print some statistics
-[p, Info] = amd (A, [10 1 1]) ;
+[p, Info] = amd2 (A, [10 1 1]) ;
 
 fprintf ('Permutation vector:\n') ;
 fprintf (' %2d', p) ;

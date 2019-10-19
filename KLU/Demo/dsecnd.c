@@ -1,5 +1,7 @@
 #include "dsecnd.h"
 
+#ifdef USE_NANOTIME
+
 /* from http://www.ncsa.uiuc.edu/UserInfo/Resources/Hardware/IA32LinuxCluster/Doc/timing.html */
 
 unsigned long long int nanotime_ia32(void)
@@ -44,3 +46,14 @@ double dsecnd_ (void) /* Include an '_' if you will be calling from Fortan */
 }
 #endif
 
+#else
+
+/* generic ANSI C version */
+#include <time.h>
+double dsecnd_ (void)
+{
+    double x = clock ( ) ;
+    return (x / CLOCKS_PER_SEC) ;
+}
+
+#endif

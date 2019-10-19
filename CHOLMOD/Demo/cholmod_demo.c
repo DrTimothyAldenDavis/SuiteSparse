@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * CHOLMOD/Demo Module.  Version 1.2.  Copyright (C) 2005-2006, Timothy A. Davis
+ * CHOLMOD/Demo Module.  Version 1.3.  Copyright (C) 2005-2006, Timothy A. Davis
  * The CHOLMOD/Demo Module is licensed under Version 2.0 of the GNU
  * General Public License.  See gpl.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
@@ -13,7 +13,7 @@
 /* Read in a matrix from a file, and use CHOLMOD to solve Ax=b if A is
  * symmetric, or (AA'+beta*I)x=b otherwise.  The file format is a simple
  * triplet format, compatible with most files in the Matrix Market format.
- * See cholmod_read.c for more details.  The readhb.f format reads a
+ * See cholmod_read.c for more details.  The readhb.f program reads a
  * Harwell/Boeing matrix (excluding element-types) and converts it into the
  * form needed by this program.  reade.f reads a matrix in Harwell/Boeing
  * finite-element form.

@@ -1,3 +1,13 @@
+function test4
+%TEST4 test cs_multiply
+%
+% Example:
+%   test4
+% See also: testall
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
 
 rand ('state', 0) ;
 

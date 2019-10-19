@@ -30,6 +30,7 @@ There are two ways of compiling the CHOLMOD mexFunctions.  The 2nd one is best.
     commnand.  This works on all operating systems, including Windows.
     You can use an alternate location for METIS, if you pass the pathname
     as the first argument to cholmod_make, as in
+
 	cholmod_make ('path to your copy of metis-4.0 goes here') ;
 
     Option (2) is better because it allows for several workarounds for METIS.
@@ -63,3 +64,4 @@ COLAMD is already an integral part of MATLAB, but you can upgrade to the most
 recent version.  Go to the COLAMD directory and either type "colamd_demo" in
 the MATLAB command window, or type "make" in the Unix shell.
 Add COLAMD to your MATLAB path.
+

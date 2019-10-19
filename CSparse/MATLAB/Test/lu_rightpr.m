@@ -1,5 +1,14 @@
 function [L,U,P] = lu_rightpr (A)
-n = size (A,1)
+%LU_RIGHTPR recursive right-looking LU, with partial pivoting.
+%
+% Example:
+%   [L,U,P] = lu_rightpr (A)
+% See also: cs_demo
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
+n = size (A,1) ;
 if (n == 1)
     P = 1 ;
     L = 1 ;

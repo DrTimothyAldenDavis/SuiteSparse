@@ -1,4 +1,4 @@
-function L = resymbol (L, A)
+function L = resymbol (L, A)						    %#ok
 %RESYMBOL recomputes the symbolic Cholesky factorization of the matrix A.
 %   L = resymbol (L, A)
 %

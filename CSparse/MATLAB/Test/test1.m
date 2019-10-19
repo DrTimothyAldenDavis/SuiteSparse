@@ -1,10 +1,21 @@
+function test1
+%TEST1 test cs_transpose
+%
+% Example:
+%   test1
+% See also: testall
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
 
 index = UFget ;
 [ignore f] = sort (max (index.nrows, index.ncols)) ;
 f = f (1:100) ;
 
-for i = f
-    Prob = UFget (i)
+for ii = f
+    Prob = UFget (ii) ;
+    disp (Prob) ;
     A = Prob.A ;
     if (~isreal (A))
 	continue
@@ -22,9 +33,9 @@ for i = f
 	y = rand (m,1) ;
 	z = y+A*x ;
 	q = cs_gaxpy (A,x,y) ;
-	err = norm (z-q,1) / norm (z,1)
+	err = norm (z-q,1) / norm (z,1) ;
+	disp (err) ;
 	if (err > 1e-14)
-	    err
 	    error ('!')
 	end
     % end

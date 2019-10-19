@@ -1,5 +1,12 @@
 function A = mesh2d2 (n)
 % create an n-by-n 2D mesh for the 2nd difference operator
+% Example:
+%   A = mesh2d2 (30) ;	% a 30-by-30 mesh
+% See also: cs_demo
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
 nn = 1:n^2 ;
 ii = [nn-n ; nn-1 ; nn ; nn+1 ; nn+n] ;
 jj = repmat (nn, 5, 1) ;

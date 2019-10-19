@@ -1,4 +1,13 @@
-function [est,xx] = mynormest1 (L, U, P, Q)
+function est = mynormest1 (L, U, P, Q)
+%MYNORMEST1 estimate norm(A,1), using LU factorization (L*U = P*A*Q).
+%
+% Example:
+%   est = mynormest1 (L, U, P, Q)
+% See also: testall
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
 
 n = size (L,1) ;
 est = 0 ;
@@ -44,8 +53,8 @@ for k = 1:5
     end
 
     if (any (S ~= signum (x)))
-	S'
-	signum(x)'
+	S'		    %#ok
+	signum(x)'	    %#ok
 	error ('Hey!') ;
     end
 
@@ -89,5 +98,6 @@ end
 
 
 function s = signum (x)
+%SIGNUM compute sign of x
 s = ones (length (x),1) ;
-s (find (x < 0)) = -1 ;
+s (find (x < 0)) = -1 ;	    %#ok

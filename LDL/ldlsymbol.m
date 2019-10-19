@@ -33,5 +33,4 @@ function [Lnz, Parent, fl] = ldlsymbol (A, P)
 % LDL Version 1.3, Copyright (c) 2006 by Timothy A Davis,
 % University of Florida.  All Rights Reserved.  See README for the License.
 
-help ldlsymbol
 error ('ldlsymbol mexFunction not found') ;

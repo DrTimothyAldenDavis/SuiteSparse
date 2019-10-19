@@ -6,16 +6,14 @@ function params = UFget_defaults
 %   params.url: UF sparse matrix web site
 %   params.dir: your local directory for downloaded sparse matrices.
 %   params.refresh:  how many days should elapse before re-downloading the
-%	index file (for obtaining access to new matrices in the collection).
+%       index file (for obtaining access to new matrices in the collection).
+%
+%   Example:
+%       params = UFget_defaults ;
 %
 %   See also UFget.
 
-%   Copyright 2005, Tim Davis, University of Florida.
-
-%   Modification History:
-%   10/11/2001: Created by Erich Mirabal
-%   3/12/2002: V1.0 released
-%   11/2005: updated for MATLAB 7.1
+%   Copyright 2006, Tim Davis, University of Florida.
 
 %-------------------------------------------------------------------------------
 % location of the UF sparse matrix collection

@@ -17,9 +17,8 @@ are missing a few minor features to make them "1.0".  Thus the "beta".  They
 are bug-free as far as I know, and are in use in commercial circuit simulation
 packages.
 
-Sept 11, 2006.  SuiteSparse version 2.1.1.  Note that SuiteSparse is now given its
-own version number, rather than merely a date of release.  The Feb 6, 2006
-version is "version 1.0.0".
+Nov, 2006.  SuiteSparse version 2.3.  Note that SuiteSparse is now given
+its own version number, rather than merely a date of release.
 
 UF suite of sparse matrix algorithms:
 
@@ -53,7 +52,12 @@ UF suite of sparse matrix algorithms:
     CXSparse	CSparse Extended.  Includes support for complex matrices
 		and both int or long integers.
 
+    RBio	read/write sparse matrices in Rutherford/Boeing format
+
+    UFcollection    toolbox for managing the UF Sparse Matrix Collection
+
     LPDASA	LP dual active set algorithm (to appear)
+
 
 See http://www.netlib.org/blas for the Fortran reference BLAS (slow, but they
 work).  See http://www.tacc.utexas.edu/~kgoto/ or

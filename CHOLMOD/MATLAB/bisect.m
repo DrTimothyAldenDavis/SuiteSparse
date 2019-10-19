@@ -1,4 +1,4 @@
-function p = bisect (A, mode)
+function p = bisect (A, mode)						    %#ok
 %BISECT:  computes a node separator based on METIS_NodeComputeSeparator.
 %   s = bisect(A)       bisects A. Uses tril(A) and assumes A is symmetric.
 %   s = bisect(A,'sym') the same as p=bisect(A).

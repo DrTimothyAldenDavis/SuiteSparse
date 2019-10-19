@@ -21,7 +21,7 @@ mkdir Out/$1_$2/UMFPACK/Doc
 /bin/cp -prL ../Lib Out/$1_$2/UMFPACK
 /bin/cp -prL ../Include Out/$1_$2/UMFPACK
 /bin/cp -prL ../Demo Out/$1_$2/UMFPACK
-/bin/cp -prL ../Makefile Out/$1_$2/UMFPACK
+/bin/cp -prL ../Makefile Out/$1_$2/UMFPACK/Makefile
 /bin/cp -prL ../Doc/License Out/$1_$2/UMFPACK/Doc
 /bin/cp -prL ../../AMD Out/$1_$2
 /bin/cp debug.* Out/$1_$2

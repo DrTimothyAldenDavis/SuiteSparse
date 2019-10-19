@@ -2,8 +2,8 @@
 /* sparse Cholesky update/downdate, L*L' + sigma*w*w' (sigma = +1 or -1) */
 CS_INT cs_updown (cs *L, CS_INT sigma, const cs *C, const CS_INT *parent)
 {
-    CS_INT p, f, j, *Lp, *Li, *Cp, *Ci ;
-    CS_ENTRY *Lx, *Cx, alpha, beta = 1, delta, gamma, w1, w2, *w, n ;
+    CS_INT n, p, f, j, *Lp, *Li, *Cp, *Ci ;
+    CS_ENTRY *Lx, *Cx, alpha, beta = 1, delta, gamma, w1, w2, *w ;
     double beta2 = 1 ;
     if (!CS_CSC (L) || !CS_CSC (C) || !parent) return (0) ;  /* check inputs */
     Lp = L->p ; Li = L->i ; Lx = L->x ; n = L->n ;

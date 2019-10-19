@@ -18,7 +18,9 @@ Quick start (for MATLAB users);
 
     To compile, test, and install the AMD mexFunction, cd to the
     AMD/MATLAB directory and type amd_make at the MATLAB prompt.
-    This works on any system supported by MATLAB.
+
+    NOTE: DO NOT ATTEMPT TO USE THIS CODE IN 64-BIT MATLAB (v7.3).
+    It is not yet ported to that version of MATLAB.
 
 -------------------------------------------------------------------------------
 
@@ -194,9 +196,9 @@ Files and directories in the AMD distribution:
     GNUmakefile			a nice Makefile, for GNU make
     Makefile			an ugly Unix Makefile (for older make's)
 
-    Contents.m			for "help amd" listing of toolbox contents
+    Contents.m			for "help amd2" listing of toolbox contents
 
-    amd.m			MATLAB help file for AMD
+    amd2.m			MATLAB help file for AMD
     amd_make.m			MATLAB m-file for compiling AMD mexFunction
 
     amd_mex.c			AMD mexFunction for MATLAB

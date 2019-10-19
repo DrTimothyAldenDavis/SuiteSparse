@@ -1,4 +1,14 @@
-clear
+function test25
+%TEST25 test cs_nd
+%
+% Example:
+%   test25
+% See also: testall
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
+
 clear functions
 
 index = UFget ;
@@ -11,7 +21,8 @@ clf
 for k = 1:length (f)
     
     i = f (k) ;
-    Prob = UFget (i)
+    Prob = UFget (i) ;
+    disp (Prob) ;
     A = real (Prob.A) ;
     [m n] = size (A) ;
     if (m ~= n)
@@ -27,6 +38,9 @@ for k = 1:length (f)
     tic ;
     p2 = cs_nd (sparse (1)) ;
     toc ;
+    if (p2 ~= 1)
+	error ('!') ;
+    end
 
     tic ;
     p2 = cs_nd (A) ;

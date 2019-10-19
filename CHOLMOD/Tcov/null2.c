@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * CHOLMOD/Tcov Module.  Version 1.2.  Copyright (C) 2005-2006, Timothy A. Davis
+ * CHOLMOD/Tcov Module.  Version 1.3.  Copyright (C) 2005-2006, Timothy A. Davis
  * The CHOLMOD/Tcov Module is licensed under Version 2.0 of the GNU
  * General Public License.  See gpl.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
@@ -31,7 +31,7 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
 	ax, az, bx, bz, cx, cz, dx, dz, ex, ez ;
     cholmod_sparse *A, *C, *AT, *E, *F, *G, *Sok, *R0, *R1, *Aboth, *Axbad, *I1,
 	*Abad, *R, *Acopy, *R3, *Abad2, *I, *I3, *Abad3, *AA, *Rt, *AF, *AFT,
-	*I7, *C2, *R2 ;
+	*I7, *C2, *R2, *Z ;
     cholmod_dense *Xok, *Bok, *Two, *X, *W, *XX, *YY, *Xbad2, *B, *Scale,
 	*Y, *X1, *B1, *B2, *X7, *B7 ; 
     cholmod_factor *L, *L2, *L3, *L4, *L5, *L6, *Lcopy, *Lbad, *L7 ;
@@ -39,8 +39,9 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
     Int *fsetok, *Pok, *Flag, *Head, *Cp, *Ci, *P2, *Parent, *Lperm,
 	*Lp, *Li, *Lnz, *Lprev, *Lnext, *Ls, *Lpi, *Lpx, *Super, *Tj, *Ti,
 	*Enz, *Ep, *Post, *Cmember, *CParent, *Partition, *Pinv, *ATi, *ATp,
-	*LColCount, *ColCount, *First, *Level, *fsetbad, *Pbad, *Lz ;
-    double *Xwork, *Cx, *x, *Lx, *Tx, *Az ;
+	*LColCount, *ColCount, *First, *Level, *fsetbad, *Pbad, *Lz,
+	*R2p, *R2i ;
+    double *Xwork, *Cx, *x, *Lx, *Tx, *Az, *R2x ;
     size_t size, nznew, gsave2 ;
     UF_long lr ;
     void *pp, *ii, *jj, *xx ;
@@ -48,8 +49,8 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
 	nzmax, cset [CSETSIZE], Axbad_type, isreal, xtype, enz, Lxtype, Cxtype,
 	Xxtype, Txtype, Abad2xtype, k, xtype2, Abad3xtype, save1, save2, save3,
 	save4, ok1, fnz ;
-    Int *R2p, *R2i ;
-    double *R2x ;
+    int option, asym ;
+    FILE *f ;
 
     beta [0] = 1e-6 ;
     beta [1] = 0 ;
@@ -606,6 +607,8 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
     cm->nmethods = 1 ;
     cm->method [0].ordering = -1 ;
     ok = CHOLMOD(print_common)("Bad cm", cm) ;			    NOT (ok) ;
+    ok = CHOLMOD(analyze_ordering)(NULL, 0, NULL, NULL, 0,
+	    NULL, NULL, NULL, NULL, NULL, cm) ;			    NOT (ok) ;
     L = CHOLMOD(analyze)(NULL, cm) ;				    NOP (L) ;
     L = CHOLMOD(analyze)(Abad2, cm) ;				    NOP (L) ;
     L = CHOLMOD(analyze)(A, cm) ;				    OKP (L) ;
@@ -718,7 +721,85 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
     /* ---------------------------------------------------------------------- */
 
     C = CHOLMOD(read_sparse)(NULL, cm) ;			    NOP (C) ;
+    X = CHOLMOD(read_dense)(NULL, cm) ;				    NOP (X) ;
+    pp = CHOLMOD(read_matrix)(NULL, 1, NULL, cm) ;		    NOP (pp) ;
+    pp = CHOLMOD(read_matrix)((FILE *) 1, 1, NULL, cm) ;	    NOP (pp) ;
     T3 = CHOLMOD(read_triplet)(NULL, cm) ;			    NOP (T3) ;
+
+    /* ---------------------------------------------------------------------- */
+    /* write */
+    /* ---------------------------------------------------------------------- */
+
+    asym = CHOLMOD(write_sparse) (NULL, NULL, NULL, NULL, cm) ;	NOT (asym>=0);
+    asym = CHOLMOD(write_sparse) ((FILE *) 1, NULL, NULL, NULL, cm) ;
+								NOT (asym>=0);
+
+    asym = CHOLMOD(write_dense) (NULL, NULL, NULL, cm) ;	NOT (asym>=0);
+    asym = CHOLMOD(write_dense) ((FILE *) 1, NULL, NULL, cm) ;	NOT (asym>=0);
+
+    f = fopen ("temp4.mtx", "w") ;
+    asym = CHOLMOD(write_sparse) (f, A, NULL, "garbage.txt", cm) ;
+    fclose (f) ;
+    printf ("write_sparse, asym: %d\n", asym) ;
+    OK (asym == EMPTY) ;
+
+    if (A != NULL)
+    {
+	save1 = A->xtype ;
+	A->xtype = 999 ;
+	f = fopen ("temp4.mtx", "w") ;
+	asym = CHOLMOD(write_sparse) (f, A, NULL, NULL, cm) ;
+	fclose (f) ;
+	printf ("write_sparse, asym: %d\n", asym) ;
+	OK (asym == EMPTY) ;
+	A->xtype = save1 ;
+    }
+
+    Z = CHOLMOD(speye) (nrow+1, ncol+1, CHOLMOD_PATTERN, cm) ;
+    f = fopen ("temp4.mtx", "w") ;
+    asym = CHOLMOD(write_sparse) (f, A, Z, NULL, cm) ;
+    fclose (f) ;
+    printf ("write_sparse, asym: %d with Z\n", asym) ;
+    OK (asym == EMPTY) ;
+
+    Z->xtype = 999 ;
+    f = fopen ("temp4.mtx", "w") ;
+    asym = CHOLMOD(write_sparse) (f, A, Z, NULL, cm) ;
+    fclose (f) ;
+    printf ("write_sparse, asym: %d with Z2\n", asym) ;
+    OK (asym == EMPTY) ;
+    Z->xtype = CHOLMOD_PATTERN ;
+
+    CHOLMOD(free_sparse) (&Z, cm) ;
+
+    Z = CHOLMOD(speye) (0, ncol+1, CHOLMOD_PATTERN, cm) ;
+    f = fopen ("temp4.mtx", "w") ;
+    asym = CHOLMOD(write_sparse) (f, A, Z, NULL, cm) ;
+    fclose (f) ;
+    printf ("write_sparse, asym: %d with Z\n", asym) ;
+    if (A == NULL)
+    {
+	OK (asym == EMPTY) ;
+    }
+    else
+    {
+	OK (asym > EMPTY) ;
+    }
+    CHOLMOD(free_sparse) (&Z, cm) ;
+
+    X = CHOLMOD(ones) (4, 4, CHOLMOD_REAL, cm) ;
+    f = fopen ("temp6.mtx", "w") ;
+    asym = CHOLMOD(write_dense) (f, X, "garbage.txt", cm) ;
+    fclose (f) ;
+    OK (asym == EMPTY) ;
+
+    X->xtype = 999 ;
+    f = fopen ("temp6.mtx", "w") ;
+    asym = CHOLMOD(write_dense) (f, X, NULL, cm) ;
+    fclose (f) ;
+    OK (asym == EMPTY) ;
+    X->xtype = CHOLMOD_REAL ;
+    CHOLMOD(free_dense) (&X, cm) ;
 
     /* ---------------------------------------------------------------------- */
     /* print_common */
@@ -2977,6 +3058,59 @@ if (do_nantests)
 
     CHOLMOD(free_dense)(&YY, cm) ;
     CHOLMOD(free_dense)(&XX, cm) ;
+
+    /* ---------------------------------------------------------------------- */
+    /* symmetry */
+    /* ---------------------------------------------------------------------- */
+
+    for (option = 0 ; option <= 2 ; option++)
+    {
+	Int xmatched = 0, pmatched = 0, nzoffdiag = 0, nz_diag = 0 ;
+	int asym ;
+	printf ("test symmetry: option %d\n", option) ;
+	save1 = cm->print ;
+	cm->print = 5 ;
+	CHOLMOD(print_sparse) (A, "A", cm) ;
+	cm->print = save1 ;
+	asym = CHOLMOD(symmetry) (A, option, &xmatched, &pmatched,
+	    &nzoffdiag, &nz_diag, cm) ;
+	printf ("asym: %d\n", asym) ;
+	OK (A->stype != 0 || asym >= 0) ;
+	save1 = A->xtype ;
+	A->xtype = CHOLMOD_PATTERN ;
+	asym = CHOLMOD(symmetry) (A, option, &xmatched, &pmatched,
+	    &nzoffdiag, &nz_diag, cm) ;
+	printf ("asym: %d pattern\n", asym) ;
+	OK (A->stype != 0 || asym >= 0) ;
+	A->xtype = save1 ;
+	C = CHOLMOD(copy_sparse) (A, cm) ;
+	OKP (C) ;
+	ok = CHOLMOD(sparse_xtype) (CHOLMOD_ZOMPLEX, C, cm) ;
+	OK (ok) ;
+	asym = CHOLMOD(symmetry) (C, option, &xmatched, &pmatched,
+	    &nzoffdiag, &nz_diag, cm) ;
+	OK (A->stype != 0 || asym >= 0) ;
+	printf ("asym: %d zomplex\n", asym) ;
+
+	asym = CHOLMOD(symmetry) (NULL, option, &xmatched, &pmatched,
+	    &nzoffdiag, &nz_diag, cm) ;
+	NOT (asym >= 0) ;
+
+	C->xtype = 999 ;
+	asym = CHOLMOD(symmetry) (C, option, &xmatched, &pmatched,
+	    &nzoffdiag, &nz_diag, cm) ;
+	NOT (asym >= 0) ;
+	C->xtype = CHOLMOD_ZOMPLEX ;
+
+	ok = CHOLMOD(free_sparse)(&C, cm) ;  OK (ok) ;
+
+	C = CHOLMOD(copy) (A, 0, (A->xtype == CHOLMOD_REAL), cm) ;
+	OKP (C) ;
+	asym = CHOLMOD(symmetry) (C, option, &xmatched, &pmatched,
+	    &nzoffdiag, &nz_diag, cm) ;
+	OK (asym >= 0) ;
+	ok = CHOLMOD(free_sparse)(&C, cm) ;  OK (ok) ;
+    }
 
     /* ---------------------------------------------------------------------- */
     /* memory tests */

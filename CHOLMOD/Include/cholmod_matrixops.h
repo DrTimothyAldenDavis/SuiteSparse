@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * CHOLMOD/Include/cholmod_matrixops.h.  Version 1.2.
+ * CHOLMOD/Include/cholmod_matrixops.h.  Version 1.3.
  * Copyright (C) 2005-2006, Timothy A. Davis
  * CHOLMOD/Include/cholmod_matrixops.h is licensed under Version 2.0 of the GNU
  * General Public License.  See gpl.txt for a text of the license.
@@ -210,5 +210,26 @@ cholmod_sparse *cholmod_vertcat
 
 cholmod_sparse *cholmod_l_vertcat (cholmod_sparse *, cholmod_sparse *, int,
     cholmod_common *) ;
+
+/* -------------------------------------------------------------------------- */
+/* cholmod_symmetry: determine if a sparse matrix is symmetric */
+/* -------------------------------------------------------------------------- */
+
+int cholmod_symmetry
+(
+    /* ---- input ---- */
+    cholmod_sparse *A,
+    int option,
+    /* ---- output ---- */
+    int *xmatched,
+    int *pmatched,
+    int *nzoffdiag,
+    int *nzdiag,
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+int cholmod_l_symmetry (cholmod_sparse *, int, UF_long *, UF_long *, UF_long *,
+    UF_long *, cholmod_common *) ;
 
 #endif

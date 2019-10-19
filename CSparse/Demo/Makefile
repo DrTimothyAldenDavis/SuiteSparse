@@ -30,13 +30,10 @@ cs_demo2: lib cs_demo2.c cs_demo.c cs_demo.h Makefile
 cs_demo3: lib cs_demo3.c cs_demo.c cs_demo.h Makefile
 	$(CC) $(CFLAGS) $(I) -o cs_demo3 cs_demo3.c cs_demo.c $(CS) -lm
 
-readhb: readhb.f Makefile
-	f77 -o readhb readhb.f
-
 clean:
 	rm -f *.o
 
 purge: distclean
 
 distclean: clean
-	rm -f cs_demo1 cs_demo2 readhb cs_demo3 *.a
+	rm -f cs_demo1 cs_demo2 cs_demo3 *.a

@@ -1,4 +1,13 @@
-% compare droptol with the equivalent MATLAB
+function test14
+%TEST14 test cs_droptol
+%
+% Example:
+%   test14
+% See also: testall
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
 
 rand ('state', 0) ;
 

@@ -34,6 +34,9 @@
 #define SPUMONI 0
 #endif
 
+/* closed by sputil_error_handler if not NULL */
+extern FILE *sputil_file ;
+
 void sputil_error   /* reports an error */
 (
     int error,	    /* kind of error */
@@ -155,3 +158,8 @@ cholmod_sparse *sputil_get_sparse_pattern
     cholmod_common *cm
 ) ;
 
+cholmod_sparse *sputil_extract_zeros
+(
+    cholmod_sparse *A,
+    cholmod_common *cm
+) ;

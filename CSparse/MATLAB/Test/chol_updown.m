@@ -1,4 +1,12 @@
 function [L, w] = chol_updown (L, sigma, w)
+%CHOL_UPDOWN update or downdate a Cholesky factorization.
+% Example:
+%   [L, w] = chol_updown (L, sigma, w)
+% See also: cs_demo
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
 beta = 1 ;
 n = size (L,1) ;
 if (n == 1)

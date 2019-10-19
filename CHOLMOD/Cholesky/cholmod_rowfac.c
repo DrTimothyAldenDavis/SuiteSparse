@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * CHOLMOD/Cholesky Module.  Version 1.2.  Copyright (C) 2005-2006,
+ * CHOLMOD/Cholesky Module.  Version 1.3.  Copyright (C) 2005-2006,
  * Timothy A. Davis
  * The CHOLMOD/Cholesky Module is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
@@ -133,31 +133,27 @@
     for ( ; p < pend ; p++) \
     { \
 	i = Ai [p] ; \
-	if (i > k) \
+	if (i <= k) \
 	{ \
-	    if (sorted) \
+	    /* scatter the column of A, or A*A' into Wx and Wz */ \
+	    SCATTER ; \
+	    /* start at node i and traverse up the subtree, stop at node k */ \
+	    for (len = 0 ; i < k && i != EMPTY && Flag [i] < mark ; i = parent) \
 	    { \
-		break ; \
+		/* L(k,i) is nonzero, and seen for the first time */ \
+		Stack [len++] = i ;	    /* place i on the stack */ \
+		Flag [i] = mark ;	    /* mark i as visited */ \
+		parent = PARENT (i) ;   /* traverse up the etree to the parent */ \
 	    } \
-	    else \
+	    /* move the path down to the bottom of the stack */ \
+	    while (len > 0) \
 	    { \
-		continue ; \
+		Stack [--top] = Stack [--len] ; \
 	    } \
 	} \
-	/* scatter the column of A, or A*A' into Wx and Wz */ \
-	SCATTER ; \
-	/* start at node i and traverse up the subtree, stop at node k */ \
-	for (len = 0 ; i < k && i != EMPTY && Flag [i] < mark ; i = parent) \
+	else if (sorted) \
 	{ \
-	    /* L(k,i) is nonzero, and seen for the first time */ \
-	    Stack [len++] = i ;	    /* place i on the stack */ \
-	    Flag [i] = mark ;	    /* mark i as visited */ \
-	    parent = PARENT (i) ;   /* traverse up the etree to the parent */ \
-	} \
-	/* move the path down to the bottom of the stack */ \
-	while (len > 0) \
-	{ \
-	    Stack [--top] = Stack [--len] ; \
+	    break ; \
 	} \
     }
 

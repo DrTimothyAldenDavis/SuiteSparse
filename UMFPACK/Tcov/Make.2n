@@ -8,7 +8,7 @@ CFLAGS = -ansi
 
 UMFPACK_CONFIG = -DTESTING
 # LIB = -lgoto -lfrtbegin -lg2c -lm -lunwind -lcprts
-LIB = -lgoto -lxerbla -lfrtbegin -lg2c -lm
+LIB = -lgoto -lgfortran -lgfortranbegin -lm
 
 RANLIB = ranlib
 MV = mv -f

@@ -1,5 +1,13 @@
 function [L,U] = lu_rightr (A)
-n = size (A,1)
+%LU_RIGHTR recursive right-looking LU.
+% Example:
+%   [L,U] = lu_rightr (A)
+% See also: cs_demo
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
+n = size (A,1) ;
 if (n == 1)
     L = 1 ;
     U = A ;

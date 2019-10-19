@@ -1,4 +1,4 @@
-function [p cparent cmember] = nesdis (A, mode, opts)
+function [p cparent cmember] = nesdis (A, mode, opts)			    %#ok
 %NESDIS:  nested dissection ordering via CHOLMOD's nested dissection.
 %   p = nesdis(A)         returns p such chol(A(p,p)) is typically sparser than
 %                         chol(A).  Uses tril(A) and assumes A is symmetric.

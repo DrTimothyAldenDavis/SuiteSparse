@@ -1,4 +1,4 @@
-function [L,p,q] = lchol (A)
+function [L,p,q] = lchol (A)						    %#ok
 %LCHOL: Sparse A=L*L' factorization.  Note that L*L' (LCHOL) and L*D*L'
 %   (LDLCHOL) factorizations are faster than R'*R (CHOL2 and CHOL) and use less
 %   memory.  The LL' and LDL' factorization methods use tril(A).  A must be

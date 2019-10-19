@@ -1,5 +1,14 @@
 function [L,U,P] = lu_rightp (A)
-n = size (A,1)
+%LU_RIGHTP right-looking LU factorization, with partial pivoting.
+%
+% Example:
+%   [L,U,P] = lu_rightp (A)
+% See also: cs_demo
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
+n = size (A,1) ;
 P = eye (n) ;
 for k = 1:n
     [x,i] = max (abs (A (k:n,k))) ;			      % partial pivoting

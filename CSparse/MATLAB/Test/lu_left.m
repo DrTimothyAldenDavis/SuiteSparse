@@ -1,4 +1,12 @@
 function [L,U,P] = lu_left (A)
+%LU_LEFT left-looking LU factorization.
+% Example:
+%   [L,U,P] = lu_left (A)
+% See also: cs_demo
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
 n = size (A,1) ;
 P = eye (n) ;
 L = zeros (n) ;

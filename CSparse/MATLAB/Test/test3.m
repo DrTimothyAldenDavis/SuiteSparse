@@ -1,3 +1,13 @@
+function test3
+%TEST3 test cs_lsolve, cs_ltsolve, cs_usolve, cs_chol
+%
+% Example:
+%   test3
+% See also: testall
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
 
 
 clear
@@ -9,7 +19,8 @@ clf
 % f = f(1)
 
 for i = f
-    Prob = UFget (i)
+    Prob = UFget (i) ;
+    disp (Prob) ;
     A = Prob.A ;
     [m n] = size (A) ;
     if (~isreal (A) || m ~= n)

@@ -11,6 +11,10 @@ function [s,M,H] = cspy (A,res)
 %   The matrix A can be full or sparse, and either numeric (double, single,
 %   integer) or character type, and either complex or real.
 %
+%   Example
+%       A = delsq (numgrid ('L', 10)) ;
+%       cspy (A) ;
+%
 %   See also CS_DMSPY, SPY.
 
 %   Copyright 2006, Timothy A. Davis.
@@ -38,7 +42,7 @@ end
 
 % convert complex, integers, and strings to real double
 if (~isreal (A) || ~isa (A, 'double') || ~issparse (A))
-    A = sparse (abs (A)) ;
+    A = sparse (abs (double (A))) ;
 end
 
 [m1 n1] = size (A) ;
@@ -63,23 +67,30 @@ else
     itiny = find (x <= tiny) ;
     ibig = find (x >= big) ;
     x (imid) = 1 + ceil ((hmax-2) * (x (imid) - tiny) / (big - tiny)) ;
-    x (itiny) = 1 ;
-    x (ibig) = hmax-1 ;
+    x (itiny) = 1 ;							    %#ok
+    x (ibig) = hmax-1 ;							    %#ok
     S = full (1 + sparse (i,j,x,m,n)) ;
 
-    title (sprintf ('tiny: %-8.2g   median: %-8.2g   big: %-8.2g\n', ...
-	10^tiny, 10^med, 10^big)) ;
+%   title (sprintf ('tiny: %-8.2g   median: %-8.2g   big: %-8.2g\n', ...
+%	10^tiny, 10^med, 10^big)) ;
 end
 
 % draw the matrix
+clf
 image (S) ;
 axis equal ;
 axis ([-1 n+1 -1 m+1]) ;
 axis off
 
+% draw a box around the whole matrix
+e = ceil (max (m1,n1) / max (m,n)) ;	% scale factor
+hold on
+drawbox (1,m1+1,1,n1+1,'k',1,e) ;
+hold off
+
 % return results
 if (nargout > 0)
-    s = ceil (m1 / m) ;	% scale factor
+    s = e ;
 end
 if (nargout > 1)
     M = S ;		% image
@@ -87,3 +98,4 @@ end
 if (nargout > 2)
     H = h ;		% colormap
 end
+

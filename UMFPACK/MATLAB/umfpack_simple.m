@@ -17,10 +17,11 @@
 % See also: umfpack, umfpack_details
 
 help umfpack_simple
-i = input ('Hit enter to agree to the above License: ', 's') ;
-if (~isempty (i))
-    error ('terminating') ;
-end
+
+% i = input ('Hit enter to agree to the above License: ', 's') ;
+% if (~isempty (i))
+%     error ('terminating') ;
+% end
 
 format short
 

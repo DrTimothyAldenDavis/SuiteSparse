@@ -1,4 +1,4 @@
-function [cp_new, cmember_new] = septree (cp, cmember, nd_oksep, nd_small)
+function [cp_new, cmember_new] = septree (cp, cmember, nd_oksep, nd_small)  %#ok
 %SEPTREE: prune a separator tree.
 %
 %   [cp_new, cmember_new] = septree (cp, cmember, nd_oksep, nd_small) ;

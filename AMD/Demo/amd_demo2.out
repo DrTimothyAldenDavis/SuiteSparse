@@ -1,7 +1,7 @@
 AMD demo, with a jumbled version of the 24-by-24
 Harwell/Boeing matrix, can_24:
 
-amd version 2.0, May 5, 2006:  approximate minimum degree ordering:
+amd version 2.0, Nov 29, 2006:  approximate minimum degree ordering:
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)

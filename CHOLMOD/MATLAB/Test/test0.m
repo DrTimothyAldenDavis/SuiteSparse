@@ -7,7 +7,8 @@ fprintf ('test0: test most CHOLMOD functions\n') ;
 % collection.  You can obtain UFget from
 % http://www.cise.ufl.edu/research/sparse/matrices.
 
-use_amd = (exist ('amd') == 3) ;
+s = exist ('amd') ;
+use_amd = (s == 3 || s == 5) ;
 if (use_amd)
 fprintf ('Testing CHOLMOD with AMD and the UF sparse matrix collection\n') ;
 else

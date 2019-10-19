@@ -1,5 +1,12 @@
+function test9
+%TEST9 test cs_qr
+%
+% Example:
+%   test9
+% See also: testall
 
-clear
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
 
 rand ('state', 0) ;
 
@@ -13,7 +20,8 @@ clf
 % f = 186
 
 for i = f
-    Prob = UFget (i)
+    Prob = UFget (i) ;
+    disp (Prob) ;
     A = Prob.A ;
     [m n] = size (A) ;
     if (m < n)
@@ -67,7 +75,8 @@ for i = f
     % left-looking:
     [V,Beta3,R3] = qr_left (C) ;
     s3 = svd (full (R2)) ;
-    err3 = norm (s1 - s3) / s1 (1) 
+    err3 = norm (s1 - s3) / s1 (1) ;
+    disp ('err3 = ') ; disp (err3) ;
     if (err3 > 1e-12)
 	error ('!') ;
     end
@@ -75,7 +84,8 @@ for i = f
     % right-looking:
     [V,Beta4,R4] = qr_right (C) ;
     s4 = svd (full (R2)) ;
-    err4 = norm (s1 - s4) / s1 (1) 
+    err4 = norm (s1 - s4) / s1 (1) ;
+    disp ('err4 = ') ; disp (err4) ;
     if (err4 > 1e-12)
 	error ('!') ;
     end

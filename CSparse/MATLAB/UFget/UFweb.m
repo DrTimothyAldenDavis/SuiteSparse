@@ -6,12 +6,16 @@ function stats = UFweb (matrix, opts)
 %   matrix group is displayed.  With no arguments, a list of all the matrix
 %   groups is displayed.
 %
+%   Example:
+%
 %   If Problem = UFget ('HB/arc130'), the first four examples display
 %   the same thing, the web page for the HB/arc130 matrix:
 %
 %       UFweb (6)
 %       UFweb ('HB/arc130')
+%	stats = UFweb (6)
 %
+%   The latter also returns statistics about the matrix or matrix group.
 %   To display the web page for the HB (Harwell-Boeing) group:
 %
 %       UFweb ('HB')
@@ -27,7 +31,7 @@ function stats = UFweb (matrix, opts)
 %   the MATLAB web command.  To use the system web browser instead of the MATLAB
 %   browser, for example, use UFweb ('HB/arc130', '-browser').
 %
-%   See also WEB, UFget, UFget_defaults, SPY, CSPY, CS_DMSPY.
+%   See also web, UFget, UFget_defaults, spy, cspy, cs_dmspy.
 
 %   Copyright 2006, Tim Davis, University of Florida.
 
@@ -52,7 +56,15 @@ if (strcmp (url ((len-3):len), '/mat'))
 end
 
 % open the web page for the matrix, group, or whole collection
-eval (['web ' url '/matrices/' group '/' name ' ' opts])
+if (id == 0)
+    if (isempty (group))
+	eval (['web ' url '/matrices/index.html ' opts])
+    else
+	eval (['web ' url '/matrices/' group '/index.html ' opts])
+    end
+else
+    eval (['web ' url '/matrices/' group '/' name '.html ' opts])
+end
 
 % return stats
 if (nargout > 0)
@@ -94,15 +106,10 @@ if (nargout > 0)
 	stats.numerical_symmetry = UF_Index.numerical_symmetry (id) ;
 	stats.isBinary = UF_Index.isBinary (id) ;
 	stats.isReal = UF_Index.isReal (id) ;
-	stats.has_b = UF_Index.has_b (id) ;
-	stats.has_guess = UF_Index.has_guess (id) ;
-	stats.has_x = UF_Index.has_x (id) ;
-	stats.has_Zeros = UF_Index.has_Zeros (id) ;
-	stats.is_lp = UF_Index.is_lp (id) ;
-	stats.has_coord = UF_Index.has_coord (id) ;
+
 	stats.nnzdiag = UF_Index.nnzdiag (id) ;
-	stats.zdiag = UF_Index.zdiag (id) ;
 	stats.posdef = UF_Index.posdef (id) ;
+
 	stats.amd_lnz = UF_Index.amd_lnz (id) ;
 	stats.amd_flops = UF_Index.amd_flops (id) ;
 	stats.amd_vnz = UF_Index.amd_vnz (id) ;
@@ -119,6 +126,10 @@ if (nargout > 0)
 	stats.dmperm_flops = UF_Index.dmperm_flops (id) ;
 	stats.dmperm_vnz = UF_Index.dmperm_vnz (id) ;
 	stats.dmperm_rnz = UF_Index.dmperm_rnz (id) ;
+
+	stats.RBtype = UF_Index.RBtype (id,:) ;
+	stats.cholcand = UF_Index.cholcand (id) ;
+	stats.ncc = UF_Index.ncc (id) ;
 
     end
 end

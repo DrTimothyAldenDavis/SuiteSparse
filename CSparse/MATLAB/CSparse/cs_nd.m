@@ -4,7 +4,15 @@ function p = cs_nd (A)
 %   submatrices (order 500 or less) are ordered via cs_amd.  A must be sparse
 %   and symmetric (use p = cs_nd(A|A') if it is not symmetric).
 %
+%   Example:
+%       A = delsq (numgrid ('L', 300)) ;    % matrix used in 'bench'
+%       p = cs_nd (A) ;
+%       cspy (A (p,p)) ;
+%
 %   See also CS_AMD, CS_SEP, CS_ESEP, CS_NSEP, AMD.
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
 
 n = size (A,1) ;
 if (n == 1)

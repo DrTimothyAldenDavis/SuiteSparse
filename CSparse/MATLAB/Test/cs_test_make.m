@@ -1,6 +1,13 @@
 function cs_test_make (force)
 %CS_TEST_MAKE compiles the CSparse, Demo, and Test mexFunctions.
 %   The current directory must be CSparse/MATLAB/Test to use this function.
+%
+% Example:
+%   cs_test_make
+% See also: testall
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
 
 if (nargin < 1)
     force = 0 ;

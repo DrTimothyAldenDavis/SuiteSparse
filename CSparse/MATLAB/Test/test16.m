@@ -1,6 +1,13 @@
+function test16
+%TEST16 test cs_amd
+%
+% Example:
+%   test16
+% See also: testall
 
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
 
-clear
 rand ('state', 0) ;
 randn ('state', 0) ;
 clf
@@ -8,7 +15,7 @@ clf
 index = UFget ;
 [ignore f] = sort (max (index.nrows, index.ncols)) ;
 f = f (1:200) ;
-skip = [811] ;
+skip = 811 ;
 
 % f = 719
 

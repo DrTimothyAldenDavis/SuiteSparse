@@ -1,4 +1,12 @@
 function L = chol_super (A,s)
+%CHOL_SUPER left-looking "supernodal" Cholesky factorization.
+% Example:
+%   L = chol_super (A,s)
+% See also: cs_demo
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
 n = size (A) ;
 L = zeros (n) ;
 ss = cumsum ([1 s]) ;

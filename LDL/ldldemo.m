@@ -7,6 +7,11 @@ function ldldemo
 
 % compile the LDL and LDLSYMBOL mexFunctions
 help ldlsparse
+
+if (~isempty (strfind (computer, '64')))
+    error ('64-bit version not yet supported') ;
+end
+
 fprintf ('Compiling ldlsparse and ldlsymbol:\n') ;
 mex -inline -output ldlsparse ldl.c ldlmex.c
 mex -inline -output ldlsymbol ldl.c ldlsymbolmex.c

@@ -1,5 +1,12 @@
 function A = mesh3d2 (n)
 % create an n-by-n-by-n 3D mesh for the 2nd difference operator
+% Example:
+%   A = mesh3d2 (10) ;	% a 10-by-10-by-10 mesh
+% See also: cs_demo
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
 nn = 1:n^3 ;
 ii = [nn-n^2 ; nn-n ; nn-1 ; nn ; nn+1 ; nn+n ; nn+n^2] ;
 jj = repmat (nn, 7, 1) ;

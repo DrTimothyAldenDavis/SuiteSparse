@@ -1,5 +1,13 @@
 function L = choldn (Lold,w)
+%CHOLDN Cholesky downdate
 % given Lold and w, compute L so that L*L' = Lold*Lold' - w*w'
+%
+% Example:
+%   L = cholnd (Lold,w)
+% See also: testall
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
 
 n = size (Lold,1) ;
 L = Lold ;
@@ -33,7 +41,6 @@ for i = 1:n
 
 end
 
-w
-
-wnew
-wnew - Lold\wold
+% w
+% wnew
+disp (wnew - Lold\wold)

@@ -1,10 +1,10 @@
-UMFPACK Version 5.0.1:  a set of routines solving sparse linear systems via LU
-    factorization.  Requires two other packages:  the BLAS (dense matrix
-    operations) and AMD (sparse matrix minimum degree ordering).  Includes
-    a C-callable and MATLAB interface, and a basic FORTRAN 77 interface to
-    a subset of the C-callable routines.  Requires AMD Version 2.0 or later.
+UMFPACK Version 5.0.2:  a set of routines solving sparse linear systems via LU
+    factorization.  Requires three other packages:  the BLAS (dense matrix
+    operations), AMD (sparse matrix minimum degree ordering), and UFconfig.
+    Includes a C-callable and MATLAB interface, and a basic FORTRAN 77
+    interface to a subset of the C-callable routines.  Requires AMD Version
+    2.0 or later.
 
-Requires UFconfig, in the ../UFconfig directory relative to this directory.
 The AMD, UFconfig, and UMFPACK directories must all reside in the same parent
 directory.
 
@@ -27,12 +27,13 @@ Quick start (for MATLAB users):
 
     To compile, test, and install the UMFPACK mexFunction, cd to the
     UMFPACK/MATLAB directory and type umfpack_make at the MATLAB prompt.
-    This works on any system supported by MATLAB.
+
+    NOTE: DO NOT ATTEMPT TO USE THIS CODE IN 64-BIT MATLAB (v7.3).
+    It is not yet ported to that version of MATLAB.
 
 --------------------------------------------------------------------------------
 
-UMFPACK Version 5.0.1, Copyright (c) 1995-2006 by Timothy A.  Davis.
-All Rights Reserved.
+UMFPACK, Copyright (c) 1995-2006 by Timothy A.  Davis.  All Rights Reserved.
 UMFPACK is available under alternate licences; contact T. Davis for details.
 
 UMFPACK License:

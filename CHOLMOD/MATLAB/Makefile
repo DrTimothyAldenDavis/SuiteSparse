@@ -23,7 +23,7 @@ INC = -I. -I../Include -I../../UFconfig -I$(METIS_PATH)/Lib
 
 all: rename library mread sdmult ldlsolve resymbol symbfact2 chol2 lchol \
 	ldlchol cholmod ldlupdate metis bisect nesdis etree2 sparse2 analyze \
-	other septree
+	septree spsym mwrite other
 
 # MX = $(MEX) $(CHOLMOD_CONFIG) -D'SPUMONI=1'
 MX = $(MEX) $(CHOLMOD_CONFIG)
@@ -52,6 +52,12 @@ analyze: analyze.c library cholmod_matlab.o
 
 mread: mread.c library cholmod_matlab.o
 	$(MX) mread.c cholmod_matlab.o $(INC) $(LIB)
+
+mwrite: mwrite.c library cholmod_matlab.o
+	$(MX) mwrite.c cholmod_matlab.o $(INC) $(LIB)
+
+spsym: spsym.c library cholmod_matlab.o
+	$(MX) spsym.c cholmod_matlab.o $(INC) $(LIB)
 
 chol2: chol2.c library cholmod_matlab.o
 	$(MX) chol2.c cholmod_matlab.o $(INC) $(LIB)

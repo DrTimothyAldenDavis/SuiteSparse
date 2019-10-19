@@ -1,5 +1,12 @@
 function L = cholupdown (Lold, sigma, w)
-% Bischof, Pan, and Tang
+%CHOLUPDOWN Cholesky update/downdate (Bischof, Pan, and Tang method)
+% Example:
+%   L = cholupdown (Lold, sigma, w)
+% See also: cs_demo
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
 
 beta = 1 ;
 n = size (Lold,1) ;

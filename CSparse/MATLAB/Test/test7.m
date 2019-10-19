@@ -1,3 +1,13 @@
+function test7
+%TEST7 test cs_lu
+%
+% Example:
+%   test7
+% See also: testall
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
 index = UFget ;
 [ignore f] = sort (max (index.nrows, index.ncols)) ;
 f = f (1:100) ;
@@ -5,7 +15,8 @@ f = f (1:100) ;
 clf
 
 for i = f
-    Prob = UFget (i)
+    Prob = UFget (i) ;
+    disp (Prob) ;
     A = Prob.A ;
     if (~isreal (A))
 	continue

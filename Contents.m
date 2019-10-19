@@ -1,7 +1,8 @@
-% Welcome to The SuiteSparse : a Suite of Sparse matrix packages, containing a
+% Welcome to SuiteSparse : a Suite of Sparse matrix packages, containing a
 % collection of sparse matrix packages authored or co-authored by Tim Davis.
+% Only the primary MATLAB functions are listed below.
 %
-%   SuiteSparse_install - compiles and installs all of the SuiteSparse, and runs
+%   SuiteSparse_install - compiles and installs all of SuiteSparse, and runs
 %               several demos and tests.
 %
 %-------------------
@@ -38,6 +39,9 @@
 %   sdmult       - same as MATLAB S*F or S'*F (S sparse, F full), just faster.
 %   ldl_normest  - compute error in LDL' factorization.
 %   lu_normest   - compute error in LU factorization.
+%   mread        - read a sparse matrix in Matrix Market format
+%   mwrite       - read a sparse matrix in Matrix Market format
+%   spsym        - determine the symmetry of a sparse matrix
 %
 %------------------------------------------
 % CSPARSE: a Concise Sparse matrix package:
@@ -75,6 +79,7 @@
 %   cs_randperm  - random permutation.
 %   cs_sep       - convert an edge separator into a node separator.
 %   cs_scc       - strongly-connected components of a square sparse matrix.
+%   cs_scc2      - cs_scc, or connected components of a bipartite graph.
 %   cs_sparse    - convert a triplet form into a sparse matrix.
 %   cs_sqr       - symbolic sparse QR factorization.
 %   cs_symperm   - symmetric permutation of a symmetric matrix.
@@ -83,6 +88,7 @@
 %   cs_usolve    - solve a sparse upper triangular system U*x=b.
 %   cs_utsolve   - solve a sparse lower triangular system U'*x=b.
 %   cspy         - plot a sparse matrix in color.
+%   ccspy	 - plot the connected components of a matrix.
 %
 %-------------------------------
 % LDL: Sparse LDL factorization:
@@ -104,10 +110,22 @@
 %                       (duplicate of CHOLMOD/lu_normest, for completeness)
 %   luflop            - given L and U, computes # of flops required
 %
+%------------------------------------------------------
+% RBio: read/write matrices in Rutherford/Boeing format
+%------------------------------------------------------
+%
+%   RBread    - read a sparse matrix from a Rutherford/Boeing file
+%   RBreade   - read a symmetric finite-element matrix from a R/B file
+%   RBtype    - determine the Rutherford/Boeing type of a sparse matrix
+%   RBwrite   - write a sparse matrix to a Rutherford/Boeing file
+%
 %-------------------------------------------------------------------------------
 %
-% For help on compiling the SuiteSparse, demos, testing functions, etc., please
-% see the help for each individual package.
+% For help on compiling SuiteSparse or the demos, testing functions, etc.,
+% please see the help for each individual package. 
+%
+% NOTE: None of the packages above have yet been ported to 64-bit MATLAB.
+% Do not attempt to use these in 64-bit MATLAB.
 %
 % Copyright 2006, Timothy A. Davis
 % http://www.cise.ufl.edu/research/sparse

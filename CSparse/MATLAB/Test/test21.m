@@ -1,3 +1,13 @@
+function test21
+%TEST21 test cs_updown
+%
+% Example:
+%   test21
+% See also: testall
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
 
 clear functions
 rand ('state', 0) ;
@@ -89,15 +99,15 @@ for trials = 1:10
 	fprintf ('   k %3d  %6.2e\n', k, err) ;
 
 	if (err > 1e-11)
-	    err2
-	    err3
-	    err5
-	    err6
-	    err7
-	    err8
-	    err9
-	    err10
-	    err11
+	    err2	%#ok
+	    err3	%#ok
+	    err5	%#ok
+	    err6	%#ok
+	    err7	%#ok
+	    err8	%#ok
+	    err9	%#ok
+	    err10	%#ok
+	    err11	%#ok
 	    pause
 	end
 

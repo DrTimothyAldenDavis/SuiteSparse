@@ -7,7 +7,11 @@ function [p,q,r,s,cc,rr] = cs_dmspy (A,res,seed)
 %   If res is zero, spy is used instead of cspy.  If the resolution is low, the
 %   picture of the blocks in the figure can overlap.  They do not actually
 %   overlap in the matrix.  With 3 arguments, cs_dmspy(A,res,seed),
-%   cs_dmperm(A,seed) is used, where seed controls the randomized algorithm.
+%   cs_dmperm(A,seed) is used, where seed controls the randomized algorithm
+%   used by cs_dmperm.
+%
+%   Example:
+%       Prob = UFget ('HB/arc130') ; cs_dmspy (Prob.A) ;
 %
 %   See also CS_DMPERM, CS_DMSOL, DMPERM, SPRANK, SPY.
 
@@ -47,39 +51,34 @@ title (sprintf ( ...
     size (A), rr(4)-1, nb, length (find (diff (rr))), ...
     length (find (diff (cc))))) ;
 
-for k = 1:nb
-    drawbox (k,k,r,s,'k',1,e) ;
+if (nb > 1)
+    if (e == 1)
+	r1 = r (1:nb) - .5 ;
+	r2 = r (2:nb+1) - .5 ;
+	c1 = s (1:nb) - .5 ;
+	c2 = s (2:nb+1) - .5 ;
+    else
+	r1 = ceil (r (1:nb) / e) - .5 ;
+	r2 = ceil ((r (2:nb+1) - 1) / e) + .5 ;
+	c1 = ceil (s (1:nb) / e) - .5 ;
+	c2 = ceil ((s (2:nb+1) - 1) / e) + .5 ;
+    end
+    kk = find (diff (c1) > 0 | diff (c2) > 0 | diff (r1) > 0 | diff (r2) > 0) ;
+    kk = [1 kk+1] ;
+    for k = kk
+	plot ([c1(k) c2(k) c2(k) c1(k) c1(k)], ...
+	      [r1(k) r1(k) r2(k) r2(k) r1(k)], 'k', 'LineWidth', 1) ;
+    end
 end
 
-drawbox (1,1,rr,cc,'r',2,e) ;
-drawbox (1,2,rr,cc,'r',2,e) ;
-drawbox (2,3,rr,cc,'k',2,e) ;
-drawbox (3,4,rr,cc,'r',2,e) ;
-drawbox (4,4,rr,cc,'r',2,e) ;
+[m n] = size (A) ;
+drawbox (1,m+1,1,n+1,'k',1,e) ;
+
+drawbox (rr(1), rr(2), cc(1), cc (2), 'r', 2, e) ;
+drawbox (rr(1), rr(2), cc(2), cc (3), 'r', 2, e) ;
+drawbox (rr(2), rr(3), cc(3), cc (4), 'k', 2, e) ;
+drawbox (rr(3), rr(4), cc(4), cc (5), 'r', 2, e) ;
+drawbox (rr(4), rr(5), cc(4), cc (5), 'r', 2, e) ;
 
 hold off
 
-%-------------------------------------------------------------------------------
-
-function drawbox (i,j,r,s,color,w,e)
-%DRAWBOX draw a box around a submatrix in the figure.
-
-if (r (i) == r (i+1) || s (j) == s (j+1))
-    return
-end
-
-if (e == 1)
-    r1 = r(i)-.5 ;
-    r2 = r(i+1)-.5 ;
-    c1 = s(j)-.5 ;
-    c2 = s(j+1)-.5 ;
-else
-    r1 = ceil (r(i) / e) - .5 ;
-    r2 = ceil ((r(i+1) - 1) / e) + .5 ;
-    c1 = ceil (s(j) / e) - .5 ;
-    c2 = ceil ((s(j+1) - 1) / e) + .5 ;
-end
-
-if (c2 > c1 || r2 > r1)
-    plot ([c1 c2 c2 c1 c1], [r1 r1 r2 r2 r1], color, 'LineWidth', w) ;
-end

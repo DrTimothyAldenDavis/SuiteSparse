@@ -1,6 +1,11 @@
 % LDLMAIN2: compile and run the LDLMAIN program (both with and without AMD)
 
 help ldlmain2
+
+if (~isempty (strfind (computer, '64')))
+    error ('64-bit version not yet supported') ;
+end
+
 input ('Hit enter to compile and run ldlmain (without AMD): ') ;
 try
     mex ldlmain.c ldl.c

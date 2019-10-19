@@ -1,6 +1,6 @@
 function SuiteSparse_install
 %SuiteSparse_install: compiles and installs all of SuiteSparse for use in
-%   MATLAB.  The SuiteSparse is a Suite of Sparse matrix packages.
+%   MATLAB.  SuiteSparse is a Suite of Sparse matrix packages.
 %
 %   Your current working directory must be SuiteSparse in order to use this
 %   function.  Directories are added temporarily your path and javaclasspath.
@@ -9,7 +9,8 @@ function SuiteSparse_install
 %   STARTUP M-file.
 %
 %   See also AMD, COLAMD, CAMD, CCOLAMD, CHOLMOD, UMFPACK, CSPARSE, UFget,
-%       SuiteSparse, PATHTOOL, PATH, JAVACLASSPATH, JAVAADDPATH, STARTUP.
+%       RBio, UFcollection, SuiteSparse, PATHTOOL, PATH, JAVACLASSPATH,
+%	JAVAADDPATH, STARTUP.
 %
 %   Copyright 2006, Timothy A. Davis.
 %   http://www.cise.ufl.edu/research/sparse
@@ -21,52 +22,82 @@ help SuiteSparse_install
 SuiteSparse = pwd ;
 addpath (SuiteSparse) ;
 help SuiteSparse
-input ('Hit enter to install the SuiteSparse: ') ;
+
+if (~isempty (strfind (computer, '64')))
+    error ('64-bit version not yet supported') ;
+end
 
 % compile and install AMD and UMFPACK
-fprintf ('\n=============================================================\n') ;
-fprintf ('=== UMFPACK and AMD =========================================\n') ;
-fprintf ('=============================================================\n') ;
+fprintf ('\n') ;
+fprintf ('==========================================================\n') ;
+fprintf ('=== UMFPACK and AMD ======================================\n') ;
+fprintf ('==========================================================\n') ;
 cd ([SuiteSparse '/UMFPACK/MATLAB']) ;
 umfpack_make
 
 % compile and install AMD, COLAMD, CCOLAMD, CAMD, and CHOLMOD:
-fprintf ('\n=============================================================\n') ;
+fprintf ('\n') ;
+fprintf ('==========================================================\n') ;
 cd ('../../CHOLMOD/MATLAB') ;
 if (have_metis)
-    fprintf ('=== CHOLMOD (with METIS), AMD, COLAMD, CAMD, CCOLAMD ========\n') ;
-    fprintf ('=============================================================\n') ;
-    cholmod_make
+   fprintf ('=== CHOLMOD (with METIS), AMD, COLAMD, CAMD, CCOLAMD =====\n');
+   fprintf ('==========================================================\n');
+   cholmod_make
 else
-    fprintf ('=== CHOLMOD (without METIS), AMD, COLAMD, CAMD, CCOLAMD =====\n') ;
-    fprintf ('=============================================================\n') ;
-    cholmod_make ('no metis') ;
+   fprintf ('=== CHOLMOD (without METIS), AMD, COLAMD, CAMD, CCOLAMD ==\n');
+   fprintf ('==========================================================\n');
+   cholmod_make ('no metis') ;
 end
 
 % compile and install CSparse and UFget
-fprintf ('\n=============================================================\n') ;
-fprintf ('=== CSPARSE and UFGET =======================================\n') ;
-fprintf ('=============================================================\n') ;
+fprintf ('\n') ;
+fprintf ('============================================================\n') ;
+fprintf ('=== CSPARSE and UFGET ======================================\n') ;
+fprintf ('============================================================\n') ;
 cd ([SuiteSparse '/CSparse/MATLAB']) ;
 cs_install
 
 % compile and install LDL
-fprintf ('\n=============================================================\n') ;
-fprintf ('=== LDL =====================================================\n') ;
-fprintf ('=============================================================\n') ;
+fprintf ('\n') ;
+fprintf ('============================================================\n') ;
+fprintf ('=== LDL ====================================================\n') ;
+fprintf ('============================================================\n') ;
 cd ([SuiteSparse '/LDL']) ;
 addpath ([SuiteSparse '/LDL']) ;
 ldldemo
+
+% compile and install RBio
+fprintf ('\n') ;
+fprintf ('============================================================\n') ;
+fprintf ('=== RBio ===================================================\n') ;
+fprintf ('============================================================\n') ;
+cd ([SuiteSparse '/RBio']) ;
+try
+    RBinstall ;
+catch
+    fprintf ('Unable to install RBio (requires a Fortran compiler)\n') ;
+end
+
+% compile and install UFcollection
+fprintf ('\n') ;
+fprintf ('============================================================\n') ;
+fprintf ('=== UFcollection ===========================================\n') ;
+fprintf ('============================================================\n') ;
+cd ([SuiteSparse '/UFcollection']) ;
+UFcollection_install ;
 
 % post-install wrapup
 cd (SuiteSparse)
 fprintf ('\n=============================================================\n') ;
 fprintf ('SuiteSparse is now installed.  Run pathtool and save your path\n') ;
-fprintf ('for future sessions.  Add the directory\n') ;
+fprintf ('for future sessions.\n') ;
+
+fprintf ('Add the directory\n') ;
 fprintf ('%s/CSparse/MATLAB/UFget\n', SuiteSparse) ;
 fprintf ('to your classpath.txt file:\n') ;
 which classpath.txt
 fprintf ('or add the command:\n') ;
 fprintf ('javaaddpath (''%s/CSparse/MATLAB/UFget'') ;\n', SuiteSparse) ;
-fprintf ('to your startup.m file.  Type "doc startup" for more details.\n') ;
+fprintf ('to your startup.m file.  Type "doc startup" for more details.\n');
+
 

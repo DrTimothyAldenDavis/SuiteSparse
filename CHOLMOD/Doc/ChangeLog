@@ -1,3 +1,31 @@
+Dec 2, 2006, version 1.3.0
+
+    * Major modification to cholmod_read.c; now fully supports all forms of the
+	Matrix Market format.  Added cholmod_read_dense and cholmod_read_matrix
+	functions to cholmod_read.c.  Major changes to mread MATLAB function.
+	Added Common->prefer_binary option for cholmod_read.
+
+    * Added cholmod_write.c (cholmod_write_sparse and cholmod_write_dense
+	functions).  Added mwrite MATLAB function.
+
+    * Added 2nd output argument to sparse2 (Z, binary pattern of explicit
+	zero entries).
+
+    * Added the function cholmod_symmetry to the MatrixOps module.
+	Added spsym MATLAB function.
+
+    * 2nd argument to cholmod_triplet_to_sparse changed from int to size_t.
+
+    * minor correction to cholmod_analyze_ordering, cholmod_dense.c
+
+    * minor change to cholmod_rowfac.c, cholmod_solve.c, ...
+	to allow for easier testing.
+
+Sept 28, 2006, version 1.2.1
+
+    * bug fix to cholmod_matlab.c, when working with sparse INT64 matrices
+	in the "sparse2" function
+
 Aug 31, 2006, version 1.2
 
     * Common->default_nesdis parameter and Common->called_nd statistic added.

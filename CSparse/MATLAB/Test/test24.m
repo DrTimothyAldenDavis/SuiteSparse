@@ -1,4 +1,14 @@
-clear
+function test24
+%TEST24 test cs_fielder
+%
+% Example:
+%   test24
+% See also: testall
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
+
 clear functions
 
 index = UFget ;
@@ -11,7 +21,8 @@ clf
 for k = 1:length (f)
     
     i = f (k) ;
-    Prob = UFget (i)
+    Prob = UFget (i) ;
+    disp (Prob) ;
     A = real (Prob.A) ;
     [m n] = size (A) ;
     if (m ~= n)

@@ -1,3 +1,12 @@
+Dec 2, 2006, version 5.0.2
+
+    * minor change to umfpack_report_info: does not print timings less
+	than 0.001 seconds.
+
+    * bug fix for complex case when using a non-gcc compiler (simplified the
+	scaling of the pivot column).  Does not affect the use of UMFPACK in
+	MATLAB.
+
 Aug 31, 2006, version 5.0.1
 
     * Minor correction to comments in umfpack_get_numeric.h.

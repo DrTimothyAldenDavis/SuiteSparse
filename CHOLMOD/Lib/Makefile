@@ -50,7 +50,7 @@ CORE = cholmod_aat.o cholmod_add.o cholmod_band.o \
 	cholmod_memory.o cholmod_sparse.o \
 	cholmod_transpose.o cholmod_triplet.o
 
-CHECK = cholmod_check.o cholmod_read.o
+CHECK = cholmod_check.o cholmod_read.o cholmod_write.o
 
 CHOLESKY = cholmod_amd.o cholmod_analyze.o cholmod_colamd.o \
 	cholmod_etree.o cholmod_factorize.o cholmod_postorder.o \
@@ -59,7 +59,7 @@ CHOLESKY = cholmod_amd.o cholmod_analyze.o cholmod_colamd.o \
 
 MATRIXOPS = cholmod_drop.o cholmod_horzcat.o cholmod_norm.o \
 	cholmod_scale.o cholmod_sdmult.o cholmod_ssmult.o \
-	cholmod_submatrix.o cholmod_vertcat.o
+	cholmod_submatrix.o cholmod_vertcat.o cholmod_symmetry.o
 
 PARTITION = cholmod_ccolamd.o cholmod_csymamd.o \
 	cholmod_metis.o cholmod_nesdis.o cholmod_camd.o
@@ -82,7 +82,7 @@ LCORE = cholmod_l_aat.o cholmod_l_add.o cholmod_l_band.o \
 	cholmod_l_factor.o cholmod_l_memory.o \
 	cholmod_l_sparse.o cholmod_l_transpose.o cholmod_l_triplet.o
 
-LCHECK = cholmod_l_check.o cholmod_l_read.o
+LCHECK = cholmod_l_check.o cholmod_l_read.o cholmod_l_write.o
 
 LCHOLESKY = cholmod_l_amd.o cholmod_l_analyze.o cholmod_l_colamd.o \
 	cholmod_l_etree.o cholmod_l_factorize.o cholmod_l_postorder.o \
@@ -91,7 +91,7 @@ LCHOLESKY = cholmod_l_amd.o cholmod_l_analyze.o cholmod_l_colamd.o \
 
 LMATRIXOPS = cholmod_l_drop.o cholmod_l_horzcat.o cholmod_l_norm.o \
 	cholmod_l_scale.o cholmod_l_sdmult.o cholmod_l_ssmult.o \
-	cholmod_l_submatrix.o cholmod_l_vertcat.o
+	cholmod_l_submatrix.o cholmod_l_vertcat.o cholmod_l_symmetry.o
 
 LPARTITION = cholmod_l_ccolamd.o cholmod_l_csymamd.o \
 	cholmod_l_metis.o cholmod_l_nesdis.o cholmod_l_camd.o
@@ -130,12 +130,18 @@ cholmod_check.o: ../Check/cholmod_check.c
 cholmod_read.o: ../Check/cholmod_read.c
 	$(C) -c $(I) $<
 
+cholmod_write.o: ../Check/cholmod_write.c
+	$(C) -c $(I) $<
+
 #-------------------------------------------------------------------------------
 
 cholmod_l_check.o: ../Check/cholmod_check.c
 	$(C) -DDLONG -c $(I) $< -o $@
 
 cholmod_l_read.o: ../Check/cholmod_read.c
+	$(C) -DDLONG -c $(I) $< -o $@
+
+cholmod_l_write.o: ../Check/cholmod_write.c
 	$(C) -DDLONG -c $(I) $< -o $@
 
 
@@ -378,6 +384,9 @@ cholmod_submatrix.o: ../MatrixOps/cholmod_submatrix.c
 cholmod_vertcat.o: ../MatrixOps/cholmod_vertcat.c
 	$(C) -c $(I) $<
 
+cholmod_symmetry.o: ../MatrixOps/cholmod_symmetry.c
+	$(C) -c $(I) $<
+
 #-------------------------------------------------------------------------------
 
 cholmod_l_horzcat.o: ../MatrixOps/cholmod_horzcat.c
@@ -403,6 +412,9 @@ cholmod_l_submatrix.o: ../MatrixOps/cholmod_submatrix.c
 	$(C) -DDLONG -c $(I) $< -o $@
 
 cholmod_l_vertcat.o: ../MatrixOps/cholmod_vertcat.c
+	$(C) -DDLONG -c $(I) $< -o $@
+
+cholmod_l_symmetry.o: ../MatrixOps/cholmod_symmetry.c
 	$(C) -DDLONG -c $(I) $< -o $@
 
 #-------------------------------------------------------------------------------

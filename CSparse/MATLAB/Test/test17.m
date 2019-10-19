@@ -1,4 +1,14 @@
-clear
+function test17
+%TEST17 test cs_qr, cs_qright, cs_q1, cs_qrleft, cs_qrsol
+%
+% Example:
+%   test17
+% See also: testall
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
+
 clear functions
 clf
 
@@ -24,7 +34,9 @@ for trials = 1:100
     Q1 = cs_qright (V1, Beta1, p1, speye (size (V1,1))) ;
     Q1b = cs_q1 (V1, Beta1, p1) ;
 
-    err = norm (Q1-Q1b,1)
+    err = norm (Q1-Q1b,1) ;
+    disp ('err = ') ;
+    disp (err) ;
     if (err > 1e-12)
 	error ('!') ;
     end

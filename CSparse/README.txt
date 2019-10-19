@@ -1,8 +1,8 @@
 CSparse: a Concise Sparse Matrix package.
-Version 2.0.2, Copyright (c) 2006, Timothy A. Davis, Aug 23, 2006.
+Version 2.0.3, Copyright (c) 2006, Timothy A. Davis, Sept 28, 2006.
 
 Refer to "Direct Methods for Sparse Linear Systems," Timothy A. Davis,
-SIAM, Philaelphia, 2006.  No detailed user guide is included in this
+SIAM, Philadelphia, 2006.  No detailed user guide is included in this
 package; the user guide is the book itself.
 
 The algorithms contained in CSparse have been chosen with five goals in mind:
@@ -245,7 +245,7 @@ README.txt	    README file for CSparse MATLAB demo
 
 demo2.m		    demo 2
 demo3.m		    demo 3
-ex1.m		    example 1
+ex_1.m		    example 1
 ex2.m		    example 2
 ex3.m		    example 3
 frand.m		    generate a random finite-element matrix
@@ -264,105 +264,109 @@ rhs.m		    create right-hand-side
 ./MATLAB/Test:	    Extensive test of CSparse, in MATLAB
 --------------------------------------------------------------------------------
 
-choldn.m	    Cholesky downdate
-chol_downdate.m	    Cholesky downdate
-chol_left2.m	    left-looking Cholesky
-chol_left.m	    left-looking Cholesky
-chol_right.m	    right-looking Cholesky
-chol_super.m	    "supernodal" Cholesky
-chol_update.m	    Cholesky update
-chol_updown.m	    Cholesky update/downdate
-cholupdown.m	    Cholesky update/downdate
-chol_up.m	    up-looking Cholesky
-cholup.m	    Cholesky update
-cond1est.m	    1-norm condition estimate
-
+Makefile	    Makefile for MATLAB Test directory
+README.txt	    README file for MATLAB/Test
 Contents.m	    Contents of MATLAB/Test, "textbook" files only
 
+chol_downdate.m     downdate a Cholesky factorization.
+chol_left.m         left-looking Cholesky factorization.
+chol_left2.m        left-looking Cholesky factorization, more details.
+chol_right.m        right-looking Cholesky factorization.
+chol_super.m        left-looking "supernodal" Cholesky factorization.
+chol_up.m           up-looking Cholesky factorization.
+chol_update.m       update a Cholesky factorization.
+chol_updown.m       update or downdate a Cholesky factorization.
+cond1est.m          1-norm condition estimate.
+cs_fiedler.m        the Fiedler vector of a connected graph.
+givens2.m           find a Givens rotation.
+house.m             find a Householder reflection.
+lu_left.m           left-looking LU factorization.
+lu_right.m          right-looking LU factorization.
+lu_rightp.m         right-looking LU factorization, with partial pivoting.
+lu_rightpr.m        recursive right-looking LU, with partial pivoting.
+lu_rightr.m         recursive right-looking LU.
+norm1est.m          1-norm estimate.
+qr_givens.m         Givens-rotation QR factorization.
+qr_givens_full.m    Givens-rotation QR factorization, for full matrices.
+qr_left.m           left-looking Householder QR factorization.
+qr_right.m          right-looking Householder QR factorization.
 cs_fiedler.m	    Fiedler vector
-cs_frand_mex.c	    generate a random finite-element matrix
-cs_ipvec_mex.c	    interface for cs_ipvec
-cs_maxtransr_mex.c  recursive max transveral
+
+cs_frand.m          generate a random finite-element matrix
+cs_frand_mex.c
+cs_ipvec.m          x(p)=b
+cs_ipvec_mex.c
+cs_maxtransr.m      recursive maximum matching algorithm
+cs_maxtransr_mex.c
+cs_pvec.m           x=b(p)
 cs_pvec_mex.c	    interface for cs_pvec
-cs_q1.m		    construct Q from Householder vectors
-cs_reachr_mex.c     recursive x=spones(L\sparse(b))
+cs_reach.m          non-recursive reach (interface to CSparse cs_reach)
 cs_reach_mex.c	    non-recursive x=spones(L\sparse(b))
+cs_reachr.m         recursive reach (interface to CSparse cs_reachr)
+cs_reachr_mex.c
+cs_rowcnt.m         row counts for sparse Cholesky
 cs_rowcnt_mex.c	    row counts for sparse Cholesky
+cs_sparse2.m        same as cs_sparse, to test cs_entry function
 cs_sparse2_mex.c    like cs_sparse, but for testing cs_entry
+
 cs_test_make.m	    compiles MATLAB tests
 
-dd.m		    dmperm test
-e1.m		    etree test
-ex.m		    an example
-ff.m		    sparse QR example
-givens2.m	    Givens rotation
-gqr3.m		    Givens-based sparse QR
-happly.m	    apply Householder
-hh.m		    color test for cspy
-hmake1.m	    construct a Householder reflection
-hmake.m		    construct a Householder reflection
-house.m		    Householder reflection
-left_lu.m	    left-looking LU
-lu_left.m	    left-looking LU
-lu_right.m	    right-looking LU
-lu_rightp.m	    right-looking LU, with partial pivoting
-lu_rightpr.m	    recursive right-looking LU, with partial pivoting
-lu_rightr.m	    recursive right-looking LU
-
-Makefile	    Makefile for MATLAB Test directory
-
-mynormest1.m	    1-norm estimate
-myqr.m		    Householder QR
-norm1est.m	    1-norm estimate
-oo.m		    color test
-pp.m		    cspy and cs_dmspy test
-qr2.m		    Householder QR
-qr_givens_full.m    Givens-based QR
-qr_givens.m	    "sparse" Givens-based QR, using the etree
-qr_left.m	    left-looking Householder QR
-qr_right.m	    right-looking Householder QR
-
-README.txt	    README file for MATLAB/Test
-
-same.m		    determine if two vectors are the same
-signum.m	    signum function
-
-testall.m	    runs test1 to test28
-test1.m		    gaxpy and triplet test
-test2.m		    sparse triplet test
-test3.m		    chol, x=L\b, x=L'\b, x=U\b, test
-test4.m		    sparse matrix multiply test
-test5.m		    sparse matrix add test
-test6.m		    "textbook" (recursive) x=spones(L\sparse(b)) test
-test7.m		    LU test
-test8.m		    x=A\b test
-test9.m		    QR test
-test10.m	    QR test
-test11.m	    row-count test
-test12.m	    QR test
-test13.m	    etree, counts test
-test14.m	    droptol test
-test15.m	    amd ordering test (requires MATLAB interface to AMD)
-test16.m	    ordering test
-test17.m	    QR test
-test18.m	    iterative refinement test
-test19.m	    dmperm, max transversal test
-test20.m	    update/downdate test
-test21.m	    update/downdate test
-test22.m	    condition estimate test
-test23.m	    dmspy test
-test24.m	    Fiedler vector test
-test25.m	    nested dissection test
-test26.m	    dmsolve test
-test27.m	    QR and utsolve test
-test28.m	    randperm and dmperm test
-
-testh.m		    Householder test
-tg.m		    QR test
-tp.m		    permutation tests
-tqr2.m		    QR test
-tqr.m		    QR test
-tt.m		    cs_dmspy and graph separator tests
+check_if_same.m     check if two inputs are identical or not
+choldn.m            Cholesky downdate
+cholup.m            Cholesky update, using Given's rotations
+cholupdown.m        Cholesky update/downdate (Bischof, Pan, and Tang method)
+cs_q1.m             construct Q from Householder vectors
+cs_test_make.m      compiles the CSparse, Demo, and Test mexFunctions.
+dmperm_test.m       test cs_dmperm
+chol_example.m      simple Cholesky factorization example
+etree_sample.m      construct a sample etree and symbolic factorization
+gqr3.m              QR factorization, based on Givens rotations
+happly.m            apply Householder reflection to a vector
+hmake1.m            construct a Householder reflection
+mynormest1.m        estimate norm(A,1), using LU factorization (L*U = P*A*Q).
+myqr.m              QR factorization using Householder reflections
+another_colormap.m  try another color map
+cspy_test.m         test cspy and cs_dmspy
+qr2.m               QR factorization based on Householder reflections
+sample_colormap.m   try a colormap for use in cspy
+signum.m            compute and display the sign of a column vector x
+sqr_example.m       test cs_sqr
+dmspy_test.m        test cspy, cs_dmspy, and cs_dmperm
+test_qr.m           test various QR factorization methods
+test_randperms.m    test random permutations
+testh.m             test Householder reflections
+test_qr1.m          test QR factorizations
+test_qrsol.m        test cs_qrsol
+test_sep.m          test cs_sep, and compare with Gilbert's meshpart vtxsep
+testall.m           test all CSparse functions (run tests 1 to 28 below)
+test1.m             test cs_transpose
+test2.m             test cs_sparse
+test3.m             test cs_lsolve, cs_ltsolve, cs_usolve, cs_chol
+test4.m             test cs_multiply
+test5.m             test cs_add
+test6.m             test cs_reach, cs_reachr, cs_lsolve, cs_usolve
+test7.m             test cs_lu
+test8.m             test cs_cholsol, cs_lusol
+test9.m             test cs_qr
+test10.m            test cs_qr
+test11.m            test cs_rowcnt
+test12.m            test cs_qr and compare with svd
+test13.m            test cs_counts, cs_etree
+test14.m            test cs_droptol
+test15.m            test cs_amd
+test16.m            test cs_amd
+test17.m            test cs_qr, cs_qright, cs_q1, cs_qrleft, cs_qrsol
+test18.m            test iterative refinement after backslash
+test19.m            test cs_dmperm, cs_maxtransr, cs_dmspy, cs_scc
+test20.m            test cholupdown
+test21.m            test cs_updown
+test22.m            test cond1est
+test23.m            test cs_dmspy
+test24.m            test cs_fielder
+test25.m            test cs_nd
+test26.m            test cs_dmsol and cs_dmspy
+test27.m            test cs_qr, cs_utsolve, cs_qrsol
+test28.m            test cs_randperm, cs_dmperm
 
 
 --------------------------------------------------------------------------------

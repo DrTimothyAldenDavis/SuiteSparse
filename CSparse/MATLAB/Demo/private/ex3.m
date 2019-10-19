@@ -1,10 +1,22 @@
 function ex3
 %EX3: create 2D and 3D meshes using mesh2d1, mesh2d2, mesh3d1, mesh3d2.
 
+% Example:
+%   ex3
+% See also: cs_demo
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
+t1 = zeros (50,1) ;
+t2 = zeros (50,1) ;
+t3 = zeros (50,1) ;
+t4 = zeros (50,1) ;
+
 fprintf ('run times for each method, given n:\n') ;
 for n = 2:50
 
-    tic
+    tic ;
     A = mesh2d1 (n) ;
     t1 (n) = toc ;
 

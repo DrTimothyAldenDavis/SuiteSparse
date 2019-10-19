@@ -7,6 +7,7 @@ include UFconfig/UFconfig.mk
 # Compile the default rules for each package
 default:
 	( cd UFconfig/xerbla ; $(MAKE) )
+	( cd metis-4.0 ; $(MAKE) )
 	( cd AMD ; $(MAKE) )
 	( cd CAMD ; $(MAKE) )
 	( cd COLAMD ; $(MAKE) )
@@ -19,7 +20,6 @@ default:
 	( cd CSparse ; $(MAKE) )
 	( cd CXSparse ; $(MAKE) )
 #	( cd LPDASA ; $(MAKE) )
-	( cd metis-4.0 ; $(MAKE) )
 #	( cd PARAKLETE ; $(MAKE) )
 
 library: default
@@ -36,10 +36,13 @@ mex:
 	( cd CHOLMOD ; $(MAKE) mex )
 	( cd UMFPACK ; $(MAKE) mex )
 	( cd CSparse ; $(MAKE) mex )
+	( cd RBio ; $(MAKE) )
+	( cd UFcollection ; $(MAKE) )
 
 # Remove all files not in the original distribution
 purge:
 	( cd UFconfig/xerbla ; $(MAKE) purge )
+	( cd metis-4.0 ; $(MAKE) realclean )
 	( cd AMD ; $(MAKE) purge )
 	( cd CAMD ; $(MAKE) purge )
 	( cd COLAMD ; $(MAKE) purge )
@@ -51,13 +54,15 @@ purge:
 	( cd CHOLMOD ; $(MAKE) purge )
 	( cd CSparse ; $(MAKE) purge )
 	( cd CXSparse ; $(MAKE) purge )
+	( cd RBio ; $(MAKE) purge )
+	( cd UFcollection ; $(MAKE) purge )
 #	( cd LPDASA ; $(MAKE) purge )
-	( cd metis-4.0 ; $(MAKE) realclean )
 #	( cd PARAKLETE ; $(MAKE) purge )
 
 # Remove all files not in the original distribution, but keep the libraries
 clean:
 	( cd UFconfig/xerbla ; $(MAKE) clean )
+	( cd metis-4.0 ; $(MAKE) clean )
 	( cd AMD ; $(MAKE) clean )
 	( cd CAMD ; $(MAKE) clean )
 	( cd COLAMD ; $(MAKE) clean )
@@ -69,8 +74,9 @@ clean:
 	( cd CHOLMOD ; $(MAKE) clean )
 	( cd CSparse ; $(MAKE) clean )
 	( cd CXSparse ; $(MAKE) clean )
+	( cd RBio ; $(MAKE) clean )
+	( cd UFcollection ; $(MAKE) clean )
 #	( cd LPDASA ; $(MAKE) clean )
-	( cd metis-4.0 ; $(MAKE) clean )
 #	( cd PARAKLETE ; $(MAKE) clean )
 
 distclean: purge
@@ -84,3 +90,4 @@ cx:
 	( cd CXSparse/Demo ; $(MAKE) )
 	( cd CXSparse/Demo ; $(MAKE) > cs_demo.out )
 	( cd CXSparse ; $(MAKE) purge )
+

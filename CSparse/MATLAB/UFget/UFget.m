@@ -22,11 +22,6 @@ function Problem = UFget (matrix, UF_Index)
 
 %   Copyright 2005, Tim Davis, University of Florida.
 
-%   Modification History:
-%   10/11/2001: Created by Erich Mirabal
-%   3/12/2002:  V1.0 released
-%   11/2005: updated for MATLAB version 7.1.
-
 %-------------------------------------------------------------------------------
 % get the parameter settings
 %-------------------------------------------------------------------------------
@@ -39,13 +34,19 @@ indexurl = sprintf ('%s/UF_Index.mat', params.url) ;
 % get the index file (download a new one if necessary)
 %-------------------------------------------------------------------------------
 
-% load the existing index file
-if (nargin < 2)
-    load (indexfile) ;
+try
+    % load the existing index file
+    if (nargin < 2)
+	load (indexfile) ;
+    end
+    % see if the index file is old; if so, download a fresh copy
+    refresh = (UF_Index.DownloadTimeStamp + params.refresh < now) ;
+catch
+    % oops, no index file.  download it.
+    refresh = 1 ;
 end
 
-% see if the index file is old; if so, download a fresh copy
-if (UF_Index.DownloadTimeStamp + params.refresh < now)
+if (refresh)
     % a new UF_Index.mat file to get access to new matrices (if any)
     fprintf ('downdloading %s\n', indexurl) ;
     UFget_java.geturl (indexurl, indexfile) ; 
@@ -69,28 +70,20 @@ if (matrix == 0)
         fprintf ('\nUF sparse matrix collection index:  %s\n', ...
             UF_Index.LastRevisionDate) ;
         fprintf ('\nLegend:\n') ;
-        fprintf ('z:         * if the matrix has explicit zero entries\n') ;
         fprintf ('(p,n)sym:  symmetry of the pattern and values\n') ;
         fprintf ('           (0 = unsymmetric, 1 = symmetric, - = not computed)\n') ;
         fprintf ('type:      real\n') ;
         fprintf ('           complex\n') ;
         fprintf ('           binary:  all entries are 0 or 1\n') ;
-        fprintf ('           LP:  a linear programming problem\n') ;
-        fprintf ('           geo:  has geometric coordinates (2D or 3D)\n') ;
         nmat = length (UF_Index.nrows) ;
         for j = 1:nmat
             if (mod (j, 25) == 1)
                 fprintf ('\n') ;
-                fprintf ('ID  Group/Name                nrows-by-  ncols  nonzeros z (p,n)sym  type\n') ;
+                fprintf ('ID   Group/Name                nrows-by-  ncols  nonzeros  (p,n)sym  type\n') ;
             end
             s = sprintf ('%s/%s', UF_Index.Group {j}, UF_Index.Name {j}) ;
-            fprintf ('%3d %-23s %7d-by-%7d %9d ', ...
+            fprintf ('%4d %-30s %7d-by-%7d %9d ', ...
             j, s, UF_Index.nrows (j), UF_Index.ncols (j), UF_Index.nnz (j)) ;
-            if (UF_Index.has_Zeros (j))
-                fprintf ('*') ;
-            else
-                fprintf (' ') ;
-            end
             psym = UF_Index.pattern_symmetry (j) ;
             nsym = UF_Index.numerical_symmetry (j) ;
             if (psym < 0)
@@ -103,19 +96,12 @@ if (matrix == 0)
             else
                 fprintf (' %4.2f', nsym) ;
             end
-            if (UF_Index.is_lp (j))
-                fprintf (' LP') ;
-            elseif (UF_Index.isBinary (j))
-                fprintf (' binary') ;
+            if (UF_Index.isBinary (j))
+                fprintf (' binary\n') ;
             elseif (~UF_Index.isReal (j))
-                fprintf (' complex') ;
+                fprintf (' complex\n') ;
             else
-                fprintf (' real') ;
-            end
-            if (UF_Index.has_coord (j))
-                fprintf (',geo\n') ;
-            else
-                fprintf ('\n') ;
+                fprintf (' real\n') ;
             end
         end
     else
@@ -153,48 +139,3 @@ else
     load (matfile)
     save (matfile, 'Problem') ;
 end
-
-
-
-%-------------------------------------------------------------------------------
-%   Problem: A struct containing the sparse matrix problem:
-%       Problem.A       the sparse matrix
-%       Problem.name    the name of the matrix ('HB/arc130' for example)
-%       Problem.title   a short description of the problem
-%       Problem.id      the id number of the matrix.
-%       The following fields are not always present:
-%       Problem.b       right-hand-side(s)
-%       Problem.guess   initial guess (same dimension as b)
-%       Problem.x       solution(s)
-%       Problem.Zeros   some problems are stated with explicitly zero entries.
-%                       The pattern these entries is held in this sparse matrix.
-%       Problem.c       For a linear programming problem (minimize c'*x subject
-%                       to A*x=b and lo <= x <= hi).
-%       Problem.lo      Lower bound on x, for a linear programming problem.
-%       Problem.hi      Upper bound on x, for a linear programming problem.
-%       Problem.z0      Starting guess for x is z0*ones(size(A,2),1) for
-%                       a linear programming problem.
-%       Problem.coord   Geometric coordinates of the nodes of the graph of A.
-%
-%   index:  if there are n matrices in the collection:
-%       Group: an n-by-1 cell array.  Group{i} is the group for matrix i.
-%       Name: n-by-1 cell array.  Name{i} is the name of matrix i.
-%       The following fields are n-by-1 vectors:
-%       nrows (i)               number of rows
-%       ncols (i)               number of columns
-%       nnz (i)                 number of nonzeros (excl. zero entries)
-%       nzero (i)               number of explicitly zero entries
-%       pattern_symmetry (i)    symmetry of pattern (incl. zero entries)
-%       numerical_symmetry (i)  symmetry of numerical values
-%       isBinary (i)            1 if values are all 0 or 1.
-%       isReal (i)              1 if the matrix is real, as opposed to complex
-%       has_b (i)               1 if Problem.b exists, 0 otherwise
-%       has_guess (i)           1 if Problem.guess exists, 0 otherwise
-%       has_x (i)               1 if Problem.x exists, 0 otherwise
-%       has_Zeros (i)           1 if Problem.Zeros exists, 0 otherwise
-%       is_lp (i)               1 if b, c, lo, hi, and z0 are in the Problem
-%                               (the Problem is a linear program)
-%       has_coord (i)           1 if Problem.coord exists, 0 otherwise
-%	nnzdiag (i)		number of nonzeros on the diagonal
-%	zdiag (i)		number of zeros on the diagonal
-%	posdef (i)		1 if positive def, 0 if not, -1 unknown

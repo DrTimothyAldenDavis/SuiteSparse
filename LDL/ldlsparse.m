@@ -31,5 +31,4 @@ function [arg1, arg2, arg3, arg4] = ldlsparse (A, P, b)
 % LDL Version 1.3, Copyright (c) 2006 by Timothy A Davis,
 % University of Florida.  All Rights Reserved.  See README for the License.
 
-help ldlsparse
 error ('ldlsparse mexFunction not found') ;

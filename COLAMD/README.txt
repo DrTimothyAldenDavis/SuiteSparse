@@ -26,6 +26,9 @@ v2.3.  The bug (in v2.3 and earlier) has no effect on the MATLAB symamd
 mexFunction.  v2.5 adds additional checks for integer overflow, so that
 the "int" version can be safely used with 64-bit pointers.
 
+    NOTE: DO NOT ATTEMPT TO USE THIS CODE IN 64-BIT MATLAB (v7.3).
+    It is not yet ported to that version of MATLAB.
+
 To use colamd and symamd within an application written in C, all you need are
 colamd.c, colamd_global.c, and colamd.h, which are the C-callable
 colamd/symamd codes.  See colamd.c for more information on how to call

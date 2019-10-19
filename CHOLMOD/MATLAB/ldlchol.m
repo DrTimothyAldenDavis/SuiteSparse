@@ -1,4 +1,4 @@
-function [LD,p,q] = ldlchol (A,beta)
+function [LD,p,q] = ldlchol (A,beta)					    %#ok
 %LDL: Sparse A=LDL' factorization.  Note that L*L' (LCHOL) and L*D*L' (LDLCHOL)
 %   factorizations are faster than R'*R (CHOL2 and CHOL) and use less memory.
 %   The LL' and LDL' factorization methods use tril(A).  A must be sparse.

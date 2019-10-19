@@ -1,12 +1,18 @@
-% UFget: MATLAB interface for the UF sparse matrix collection.
+% UFget: MATLAB interface for the UF Sparse Matrix Collection.
 %
-%   UFget          - loads a matrix from the UF sparse matrix collection.
-%   UFget_defaults - returns default parameter settings for UFget.
-%   UFget_example  - is a demo for UFget.
-%   UFget_install  - installs UFget for the current MATLAB session.
-%   UFget_lookup   - gets the group, name, and id of a matrix.
-%   UFweb	   - opens the URL for a matrix.
+%   UFget             - loads a matrix from the UF Sparse Matrix Collection.
+%   UFweb             - opens the URL for a matrix.
+%   UFgrep            - search for matrices in the UF Sparse Matrix Collection.
 %
-% Tim Davis, University of Florida, <a href="http://www.cise.ufl.edu/research/sparse">www.cise.ufl.edu/research/sparse</a>
-% See <a href="http://www.cise.ufl.edu/research/sparse/mat">www.cise.ufl.edu/research/sparse/mat</a> for a list of matrices.
+% Helper functions:
 %
+%   UFget_defaults    - returns default parameter settings for UFget.
+%   UFget_example     - a demo for UFget.
+%   UFget_install     - installs UFget for the current MATLAB session.
+%   UFget_lookup      - gets the group, name, and id of a matrix.
+%   UFget_java.geturl - downloads a URL as a file (a Java method).
+%
+% Example:
+%   help UFget
+
+% Copyright 2006, Timothy A. Davis

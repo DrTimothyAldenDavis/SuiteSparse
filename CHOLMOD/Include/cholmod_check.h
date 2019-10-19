@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * CHOLMOD/Include/cholmod_check.h.  Version 1.2.
+ * CHOLMOD/Include/cholmod_check.h.  Version 1.3.
  * Copyright (C) 2005-2006, Timothy A. Davis
  * CHOLMOD/Include/cholmod_check.h is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
@@ -41,17 +41,27 @@
  * cholmod_check_parent	    check/print an elimination tree (an integer vector)
  * cholmod_print_parent
  *
- * cholmod_read_triplet	    read a matrix in triplet form (supports most
- *			    MatrixMarket matrices)
+ * cholmod_read_triplet	    read a matrix in triplet form (any Matrix Market
+ *			    "coordinate" format, or a generic triplet format).
  *
- * cholmod_read_sparse	    read a matrix in sparse form (supports most
- *			    MatrixMarket matrices)
+ * cholmod_read_sparse	    read a matrix in sparse form (same file format as
+ *			    cholmod_read_triplet).
  *
+ * cholmod_read_dense	    read a dense matrix (any Matrix Market "array"
+ *			    format, or a generic dense format).
+ *
+ * cholmod_write_sparse	    write a sparse matrix to a Matrix Market file.
+ *
+ * cholmod_write_dense	    write a dense matrix to a Matrix Market file.
+
  * cholmod_print_common and cholmod_check_common are the only two routines that
  * you may call after calling cholmod_finish.
  *
  * Requires the Core module.  Not required by any CHOLMOD module, except when
  * debugging is enabled (in which case all modules require the Check module).
+ *
+ * See cholmod_read.c for a description of the file formats supported by the
+ * cholmod_read_* routines.
  */
 
 #ifndef CHOLMOD_CHECK_H
@@ -326,5 +336,83 @@ cholmod_triplet *cholmod_read_triplet
 ) ;
 
 cholmod_triplet *cholmod_l_read_triplet (FILE *, cholmod_common *) ;
+
+/* -------------------------------------------------------------------------- */
+/* cholmod_read_dense: read a dense matrix from a file */
+/* -------------------------------------------------------------------------- */
+
+cholmod_dense *cholmod_read_dense
+(
+    /* ---- input ---- */
+    FILE *f,		/* file to read from, must already be open */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+cholmod_dense *cholmod_l_read_dense (FILE *, cholmod_common *) ; 
+
+/* -------------------------------------------------------------------------- */
+/* cholmod_read_matrix: read a sparse or dense matrix from a file */
+/* -------------------------------------------------------------------------- */
+
+void *cholmod_read_matrix
+(
+    /* ---- input ---- */
+    FILE *f,		/* file to read from, must already be open */
+    int prefer,		/* If 0, a sparse matrix is always return as a
+			 *	cholmod_triplet form.  It can have any stype
+			 *	(symmetric-lower, unsymmetric, or
+			 *	symmetric-upper).
+			 * If 1, a sparse matrix is returned as an unsymmetric
+			 *	cholmod_sparse form (A->stype == 0), with both
+			 *	upper and lower triangular parts present.
+			 *	This is what the MATLAB mread mexFunction does,
+			 *	since MATLAB does not have an stype.
+			 * If 2, a sparse matrix is returned with an stype of 0
+			 *	or 1 (unsymmetric, or symmetric with upper part
+			 *	stored).
+			 * This argument has no effect for dense matrices.
+			 */
+    /* ---- output---- */
+    int *mtype,		/* CHOLMOD_TRIPLET, CHOLMOD_SPARSE or CHOLMOD_DENSE */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+void *cholmod_l_read_matrix (FILE *, int, int *, cholmod_common *) ;
+
+/* -------------------------------------------------------------------------- */
+/* cholmod_write_sparse: write a sparse matrix to a file */
+/* -------------------------------------------------------------------------- */
+
+int cholmod_write_sparse
+(
+    /* ---- input ---- */
+    FILE *f,		    /* file to write to, must already be open */
+    cholmod_sparse *A,	    /* matrix to print */
+    cholmod_sparse *Z,	    /* optional matrix with pattern of explicit zeros */
+    char *comments,	    /* optional filename of comments to include */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+int cholmod_l_write_sparse (FILE *, cholmod_sparse *, cholmod_sparse *,
+    char *c, cholmod_common *) ;
+
+/* -------------------------------------------------------------------------- */
+/* cholmod_write_dense: write a dense matrix to a file */
+/* -------------------------------------------------------------------------- */
+
+int cholmod_write_dense
+(
+    /* ---- input ---- */
+    FILE *f,		    /* file to write to, must already be open */
+    cholmod_dense *X,	    /* matrix to print */
+    char *comments,	    /* optional filename of comments to include */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+int cholmod_l_write_dense (FILE *, cholmod_dense *, char *, cholmod_common *) ;
 
 #endif

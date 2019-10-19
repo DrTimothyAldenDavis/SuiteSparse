@@ -1,6 +1,16 @@
 function [H,R] = myqr (A)
-% function [v,beta,xnorm] = hmake (x)
-% function hx = happly (v, beta, x)
+%MYQR QR factorization using Householder reflections
+% uses function [v,beta,xnorm] = hmake1 (x)
+% and function hx = happly (v, beta, x)
+%
+% Example
+%   [H,R] = myqr (A)
+% See also: testall
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
+
 [m n] = size (A) ;
 
 H = zeros (m,n) ;

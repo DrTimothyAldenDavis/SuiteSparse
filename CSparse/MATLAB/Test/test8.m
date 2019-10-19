@@ -1,7 +1,13 @@
-% clear
+%% function test8
+%TEST8 test cs_cholsol, cs_lusol
+%
+% Example:
+%   test8
+% See also: testall
 
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
 
-clear
 index = UFget ;
 [ignore f] = sort (max (index.nrows, index.ncols)) ;
 f = f (1:100) ;
@@ -9,7 +15,8 @@ f = f (1:100) ;
 % f = f(1)
 
 for i = f
-    Prob = UFget (i)
+    Prob = UFget (i) ;
+    disp (Prob) ;
     A = Prob.A ;
     [m n] = size (A) ;
     if (~isreal (A) || m ~= n)

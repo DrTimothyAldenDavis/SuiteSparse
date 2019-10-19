@@ -6,6 +6,11 @@
 
 clear
 help ldlsparse
+
+if (~isempty (strfind (computer, '64')))
+    error ('64-bit version not yet supported') ;
+end
+
 mex -inline -output ldlsparse ldl.c ldlmex.c
 
 A = sparse ([ ]) ;

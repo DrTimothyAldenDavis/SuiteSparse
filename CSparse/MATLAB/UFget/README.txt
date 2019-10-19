@@ -1,7 +1,7 @@
 UFget:  a MATLAB interface to the UF sparse matrix collection.
 MATLAB 7.0 or later is required.
 
-Date: March 16, 2006.
+Date: Nov 30, 2006.
 Copyright 2005-2006, Tim Davis, University of Florida.
 Authors: Tim Davis and Erich Mirable.
 Availability: http://www.cise.ufl.edu/research/sparse/mat/UFget
@@ -70,10 +70,10 @@ To open the web page for one matrix, use either of these formats:
     UFweb (6)
 
 For more information on how the index entries were created, see
-http://www.cise.ufl.edu/research/sparse/mat/UFcreate .
+http://www.cise.ufl.edu/research/sparse/SuiteSparse.
 
 The UFget/UFget_java.class was compiled using:
 
-    java version "1.5.0_01"
-    Java(TM) 2 Runtime Environment, Standard Edition (build 1.5.0_01-b08)
-    Java HotSpot(TM) Client VM (build 1.5.0_01-b08, mixed mode, sharing)
+    java version "1.5.0"
+    Java(TM) 2 Runtime Environment, Standard Edition (build 1.5.0-b64)
+    Java HotSpot(TM) Client VM (build 1.5.0-b64, mixed mode)

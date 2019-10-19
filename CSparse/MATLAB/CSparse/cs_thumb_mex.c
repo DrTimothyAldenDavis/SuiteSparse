@@ -3,6 +3,12 @@
  * at most k-by-k.  k defaults to 256.  A helper mexFunction for cspy. */
 
 #define INDEX(i,j,lda) ((i)+(j)*(lda))
+#define ISNAN(x) ((x) != (x))
+#ifdef DBL_MAX
+#define BIG_VALUE DBL_MAX
+#else
+#define BIG_VALUE 1.7e308
+#endif
 
 void mexFunction
 (
@@ -14,7 +20,7 @@ void mexFunction
 {
     cs Amatrix, *A ;
     int m, n, mn, m2, n2, k, s, j, ij, sj, si, p, *Ap, *Ai ;
-    double *S, *Ax ;
+    double aij, *S, *Ax ;
     if (nargout > 1 || nargin < 1 || nargin > 2)
     {
 	mexErrMsgTxt ("Usage: S = cs_thumb(A,k)") ;
@@ -41,7 +47,10 @@ void mexFunction
 	{
 	    si = Ai [p] / s ;
 	    ij = INDEX (si,sj,m2) ;
-	    S [ij] = CS_MAX (S [ij], fabs (Ax [p])) ;
+	    aij = fabs (Ax [p]) ;
+	    if (ISNAN (aij)) aij = BIG_VALUE ;
+	    aij = CS_MIN (BIG_VALUE, aij) ;
+	    S [ij] = CS_MAX (S [ij], aij) ;
 	}
     }
 }

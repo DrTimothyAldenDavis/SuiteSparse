@@ -130,7 +130,6 @@ SCALAR_IS_LTZERO(x):
 #define MULT_SUB(c,a,b)		    { (c) -= (a) * (b) ; }
 #define MULT_SUB_CONJ(c,a,b)	    { (c) -= (a) * (b) ; }
 #define DIV(c,a,b)		    { (c) = (a) / (b) ; }
-#define RECIPROCAL(c)		    { (c) = 1.0 / (c) ; }
 #define DIV_CONJ(c,a,b)		    { (c) = (a) / (b) ; }
 #define APPROX_ABS(s,a)		    { (s) = SCALAR_ABS (a) ; }
 #define ABS(s,a)		    { (s) = SCALAR_ABS (a) ; }
@@ -355,15 +354,6 @@ typedef struct
 #define DIV(c,a,b) \
 { \
     (void) umfpack_divcomplex ((a).Real, (a).Imag, (b).Real, (b).Imag, \
-	&((c).Real), &((c).Imag)) ; \
-}
-
-/* -------------------------------------------------------------------------- */
-
-/* c = 1/c */
-#define RECIPROCAL(c) \
-{ \
-    (void) umfpack_divcomplex ((double) 1.0, (double) 1.0, (c).Real, (c).Imag, \
 	&((c).Real), &((c).Imag)) ; \
 }
 

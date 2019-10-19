@@ -1,4 +1,4 @@
-function c = cs_counts (A,mode)
+function c = cs_counts (A,mode)						    %#ok
 %CS_COUNTS column counts for sparse Cholesky factor L.
 %   c = cs_counts(A) returns a vector of the column counts of L, for the
 %   Cholesky factorization L*L' = A.  That is, c = sum(spones(chol(A)')),
@@ -6,6 +6,10 @@ function c = cs_counts (A,mode)
 %   c = cs_counts(A), returns counts for cs_chol(A).
 %   c = cs_counts(A,'col'), returns counts for cs_chol(A'*A).
 %   c = cs_counts(A,'sym'), same as cs_counts(A).
+%
+%   Example:
+%       Prob = UFget ('HB/bcsstk01') ; A = Prob.A ; c = cs_counts (A)
+%       full (sum (spones (chol (A)')))
 %
 %   See also SYMBFACT.
 

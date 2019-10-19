@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * CHOLMOD/Supernodal Module.  Version 1.2.
+ * CHOLMOD/Supernodal Module.  Version 1.3.
  * Copyright (C) 2005-2006, Timothy A. Davis
  * The CHOLMOD/Supernodal Module is licensed under Version 2.0 of the GNU
  * General Public License.  See gpl.txt for a text of the license.
@@ -140,10 +140,10 @@ static int TEMPLATE (cholmod_super_numeric)
     Iwork = Common->Iwork ;
     SuperMap    = Iwork ;		    /* size n (i/i/l) */
     RelativeMap = Iwork + n ;		    /* size n (i/i/l) */
-    Next        = Iwork + 2*((size_t) n) ;			/* size nsuper */
-    Lpos        = Iwork + 2*((size_t) n) + nsuper ;		/* size nsuper */
-    Next_save   = Iwork + 2*((size_t) n) + 2*((size_t) nsuper) ;/* size nsuper */
-    Lpos_save   = Iwork + 2*((size_t) n) + 3*((size_t) nsuper) ;/* size nsuper */
+    Next        = Iwork + 2*((size_t) n) ;			/* size nsuper*/
+    Lpos        = Iwork + 2*((size_t) n) + nsuper ;		/* size nsuper*/
+    Next_save   = Iwork + 2*((size_t) n) + 2*((size_t) nsuper) ;/* size nsuper*/
+    Lpos_save   = Iwork + 2*((size_t) n) + 3*((size_t) nsuper) ;/* size nsuper*/
 
     Map  = Common->Flag ;   /* size n, use Flag as workspace for Map array */
     Head = Common->Head ;   /* size n+1, only Head [0..nsuper-1] used */

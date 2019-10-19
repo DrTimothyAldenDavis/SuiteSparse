@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * CHOLMOD/Tcov Module.  Version 1.2.  Copyright (C) 2005-2006, Timothy A. Davis
+ * CHOLMOD/Tcov Module.  Version 1.3.  Copyright (C) 2005-2006, Timothy A. Davis
  * The CHOLMOD/Tcov Module is licensed under Version 2.0 of the GNU
  * General Public License.  See gpl.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
@@ -46,14 +46,16 @@ void null_test (cholmod_common *cn)
     char *name = NULL ;
     double alpha [2], beta [2], bk [2], yk [2], rcond ;
     double dj = 1, nm = 0, tol = 0 ;
-    Int ok, xtype = 0, sorted = 0, packed = 0, values = 0, stype = 0, pack = 0,
-	sys = 0, update = 0, k = 0, scale = 0, mode = 0, norm = 0, nint = 0,
-	transpose = 0, postorder = 0 ;
+    int ok, stype = 0, xtype = 0, sorted = 0, packed = 0, nint = 0, update = 0,
+	postorder = 0, pack = 0, values = 0, mode = 0, sys = 0, norm = 0,
+	to_xtype = 0, to_ll = 0, to_super = 0, to_packed = 0, to_monotonic = 0,
+	scale = 0, transpose = 0, option = 0, ordering = 0, prefer = 0,
+	mtype = 0, asym = 0 ;
     UF_long lr = 0, k1 = 0, k2 = 0 ;
     size_t j = 0, need = 0, n = 0, mr = 0, nrow = 0, ncol = 0, iworksize = 0,
-	   newsize = 0, fsize = 0, d = 0, nzmax = 0, nnew = 0, size = 0,
-	   nold = 0, xwork = 0, kstart = 0, kend = 0, nr = 0, nc = 0, len = 0,
-	   krow = 0 ;
+	newsize = 0, fsize = 0, d = 0, nzmax = 0, nnew = 0, size = 0,
+	nold = 0, xwork = 0, kstart = 0, kend = 0, nr = 0, nc = 0, len = 0,
+	krow = 0, k = 0 ;
 
 #ifndef NPARTITION
     Int *Anw = NULL, *Aew = NULL, *Partition = NULL,
@@ -100,11 +102,16 @@ void null_test (cholmod_common *cn)
     ok = CHOLMOD(reallocate_factor)(newsize, L, cn) ;		NOT (ok) ;
     ok = CHOLMOD(change_factor)(0, 0, 0, 0, 0, L, cn) ;		NOT (ok) ;
     ok = CHOLMOD(pack_factor)(L, cn) ;				NOT (ok) ;
+    ok = CHOLMOD(change_factor)(to_xtype, to_ll, to_super,
+	to_packed, to_monotonic, L, cn) ;			NOT (ok) ;
     ok = CHOLMOD(reallocate_column)(j, need, L, cn) ;		NOT (ok) ;
     A  = CHOLMOD(factor_to_sparse)(L, cn) ;			NOP (A) ;
     L  = CHOLMOD(copy_factor)(L, cn) ;				NOP (L) ;
 
-    X  = CHOLMOD(allocate_dense)(nrow, ncol, d, values, cn) ;	NOP (X) ;
+    X  = CHOLMOD(allocate_dense)(nrow, ncol, d, xtype, cn) ;	NOP (X) ;
+    X  = CHOLMOD(zeros)(nrow, ncol, xtype, cn) ;		NOP (X) ;
+    X  = CHOLMOD(ones)(nrow, ncol, xtype, cn) ;			NOP (X) ;
+    X  = CHOLMOD(eye)(nrow, ncol, xtype, cn) ;			NOP (X) ;
     ok = CHOLMOD(free_dense)(&X, cn) ;				NOT (ok) ;
     X  = CHOLMOD(sparse_to_dense)(A, cn) ;			NOP (X) ;
     A  = CHOLMOD(dense_to_sparse)(X, values, cn) ;		NOP (A) ;
@@ -157,6 +164,8 @@ void null_test (cholmod_common *cn)
     ok = CHOLMOD(row_lsubtree)(A, c, 0, krow, L, R, cn) ;	NOT (ok) ;
     ok = CHOLMOD(resymbol)(A, fset, fsize, pack, L, cn) ;	NOT (ok) ;
     ok = CHOLMOD(resymbol_noperm)(A, fset, fsize, pack, L, cn) ;NOT (ok) ;
+    ok = CHOLMOD(analyze_ordering)(A, ordering, Perm, fset,
+	fsize, Parent, Post, ColCount, First, Level, cn) ;	NOT (ok) ;
 
     /* ---------------------------------------------------------------------- */
     /* Modify */
@@ -192,6 +201,8 @@ void null_test (cholmod_common *cn)
     C = CHOLMOD(submatrix)(A, r, nr, c, nc, values, sorted,
 	    cn) ;						NOP (C) ;
     C = CHOLMOD(vertcat)(A, B, values, cn) ;			NOP (C) ;
+    asym = CHOLMOD(symmetry)(A, option, NULL, NULL, NULL, NULL,
+	    cn) ;						NOT(asym>=0) ;
 
     /* ---------------------------------------------------------------------- */
     /* Supernodal */
@@ -225,7 +236,16 @@ void null_test (cholmod_common *cn)
     ok = CHOLMOD(print_parent)(Parent, n, name, cn) ;		NOT (ok) ;
 
     A = CHOLMOD(read_sparse)(NULL, cn) ;			NOP (A) ;
+    p = CHOLMOD(read_matrix)(NULL, prefer, &mtype, cn) ;	NOP (p) ;
+    X = CHOLMOD(read_dense)(NULL, cn) ;				NOP (X) ;
     T = CHOLMOD(read_triplet)(NULL, cn) ;			NOP (T) ;
+
+    asym = CHOLMOD(write_dense) (NULL, NULL, NULL, cn) ;	NOT (asym>=0) ;
+    asym = CHOLMOD(write_dense) ((FILE *) 1, NULL, NULL, cn) ;	NOT (asym>=0) ;
+
+    asym = CHOLMOD(write_sparse)(NULL, NULL, NULL, NULL, cn) ;	NOT (asym>=0) ;
+    asym = CHOLMOD(write_sparse)((FILE *) 1, NULL, NULL, NULL,
+	    cn) ;						NOT (asym>=0) ;
 
     /* ---------------------------------------------------------------------- */
     /* Partition */

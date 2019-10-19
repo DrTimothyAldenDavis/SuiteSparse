@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * CHOLMOD/Tcov Module.  Version 1.2.  Copyright (C) 2005-2006, Timothy A. Davis
+ * CHOLMOD/Tcov Module.  Version 1.3.  Copyright (C) 2005-2006, Timothy A. Davis
  * The CHOLMOD/Tcov Module is licensed under Version 2.0 of the GNU
  * General Public License.  See gpl.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
@@ -32,6 +32,82 @@ static int icomp (Int *i, Int *j)
     {
 	return (1) ;
     }
+}
+
+
+/* ========================================================================== */
+/* === add_gunk ============================================================= */
+/* ========================================================================== */
+
+static cholmod_sparse *add_gunk (cholmod_sparse *A)
+{
+    cholmod_sparse *S ;
+    double *Sx, *Sz ;
+    Int *Sp, *Si, nz, p, save3, j, n ;
+
+    if (A == NULL) return (NULL) ;
+
+    /* save3 = cm->print ; cm->print = 5 ; */
+
+    A->nzmax++ ;
+    S = CHOLMOD(copy_sparse) (A, cm) ;
+    A->nzmax-- ;
+
+    /* add a S(n,1)=1 entry to the matrix */
+    if (S != NULL)
+    {
+	S->sorted = FALSE ;
+	Sx = S->x ;
+	Si = S->i ;
+	Sp = S->p ;
+	Sz = S->z ;
+	n = S->ncol ;
+	nz = Sp [n] ;
+	for (j = 1 ; j <= n ; j++)
+	{
+	    Sp [j]++ ;
+	}
+	if (S->xtype == CHOLMOD_REAL)
+	{
+	    for (p = nz-1 ; p >= 0 ; p--)
+	    {
+		Si [p+1] = Si [p] ;
+		Sx [p+1] = Sx [p] ;
+	    }
+	    Si [0] = n-1 ;
+	    Sx [0] = 99999 ;
+	}
+	else if (S->xtype == CHOLMOD_COMPLEX)
+	{
+	    for (p = nz-1 ; p >= 0 ; p--)
+	    {
+		Si [p+1] = Si [p] ;
+		Sx [2*p+2] = Sx [2*p] ;
+		Sx [2*p+3] = Sx [2*p+1] ;
+	    }
+	    Si [0] = n-1 ;
+	    Sx [0] = 99999 ;
+	    Sx [1] = 0 ;
+	}
+	else if (S->xtype == CHOLMOD_ZOMPLEX)
+	{
+	    for (p = nz-1 ; p >= 0 ; p--)
+	    {
+		Si [p+1] = Si [p] ;
+		Sx [p+1] = Sx [p] ;
+		Sz [p+1] = Sz [p] ;
+	    }
+	    Si [0] = n-1 ;
+	    Sx [0] = 99999 ;
+	    Sz [0] = 0 ;
+	}
+    }
+
+    /* CHOLMOD(print_sparse) (A, "A for gunk", cm) ; */
+    /* CHOLMOD(print_sparse) (S, "S with gunk", cm) ; */
+    /* cm->print = save3 ; */
+
+    return (S) ;
 }
 
 
@@ -292,9 +368,7 @@ double raw_factor (cholmod_sparse *A, Int check_errors)
     if (check_errors && n > 0)
     {
 	ok = CHOLMOD(rowfac) (A, NULL, beta, 0, 0, L, cm) ;	    NOT (ok) ;
-printf ("check lsubtree:\n") ;
 	ok = CHOLMOD(row_lsubtree) (A, &i, 0, n-1, L, R, cm) ;	    NOT (ok) ;
-printf ("done check lsubtree:\n") ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -310,7 +384,20 @@ printf ("done check lsubtree:\n") ;
     posdef = 0 ;   /* unknown */
     if (A != NULL && A->stype >= 0)
     {
-	CHOLMOD(rowfac) (A, NULL, beta, 0, n, L, cm) ;
+	if (A->stype > 0 && A->packed)
+	{
+	    S = add_gunk (A) ;
+	    CHOLMOD(rowfac) (S, NULL, beta, 0, n, L, cm) ;
+	    if (S && S->xtype == CHOLMOD_COMPLEX)
+	    {
+		CHOLMOD(sparse_xtype) (CHOLMOD_ZOMPLEX, S, cm) ;
+	    }
+	    ok = CHOLMOD(free_sparse) (&S, cm) ;			    OK (ok) ;
+	}
+	else
+	{
+	    CHOLMOD(rowfac) (A, NULL, beta, 0, n, L, cm) ;
+	}
 	posdef = (cm->status == CHOLMOD_OK) ;
     }
 
@@ -535,14 +622,19 @@ fprintf (stderr, "solve %8.2e\n", r) ;
     /* factor again with entries in the (ignored) lower part A */
     /* ---------------------------------------------------------------------- */
 
-    if (A->xtype == CHOLMOD_REAL)
+    if (A->packed)
     {
 	L = CHOLMOD(allocate_factor) (n, cm) ;
+	C = add_gunk (A) ;
+
+/*
 	C = CHOLMOD(copy) (A, 0, 1, cm) ;
 	if (C != NULL)
 	{
 	    C->stype = 1 ;
 	}
+*/
+
 	CHOLMOD(rowfac) (C, NULL, beta, 0, n, L, cm) ;
 
 	X = CHOLMOD(solve) (CHOLMOD_A, L, B, cm) ;
@@ -592,9 +684,9 @@ double raw_factor2 (cholmod_sparse *A, double alpha, int domask)
 {
     Int n, i, prefer_zomplex, is_ll, xtype, sorted, axtype, stype ;
     Int *mask = NULL, *RLinkUp = NULL, nz = 0 ;
-    Int *Cp = NULL ;
+    Int *Cp = NULL, added_gunk ;
     double maxerr = 0, r = 0 ;
-    cholmod_sparse *AT = NULL, *C = NULL, *CT = NULL, *CC = NULL ;
+    cholmod_sparse *AT = NULL, *C = NULL, *CT = NULL, *CC = NULL, *C2 = NULL ;
     cholmod_factor *L = NULL ;
     cholmod_dense *B = NULL, *X = NULL ;
     double beta [2] ;
@@ -680,14 +772,20 @@ cm->precise = TRUE ;
 	domask = FALSE ;
     }
 
-    if (domask)
+    /* make a copy of C and add some gunk if stype > 0 */
+    added_gunk = (C && C->stype > 0) ;
+    if (added_gunk)
     {
-	/* make a copy of C */
-	CC = CHOLMOD(copy_sparse) (C, cm) ;
-	if (CC == NULL) domask = 0 ;
+	C2 = add_gunk (C) ;
+    }
+    else
+    {
+	C2 = CHOLMOD(copy_sparse) (C, cm) ;
     }
 
-    if (domask)
+    CC = CHOLMOD(copy_sparse) (C2, cm) ;
+
+    if (CC && domask)
     {
 	Int *Cp, *Ci, p ;
 	double *Cx, *Cz ;
@@ -695,7 +793,7 @@ cm->precise = TRUE ;
 	/* this implicitly sets the first row/col of C to zero, except diag. */
 	mask [0] = 1 ;
 
-	/* CC = C, and then set the first row/col to zero, except diagonal */
+	/* CC = C2, and then set the first row/col to zero, except diagonal */
 	Cp = CC->p ;
 	Ci = CC->i ;
 	Cx = CC->x ;
@@ -732,29 +830,17 @@ cm->precise = TRUE ;
 		}
 		break ;
 	}
-
-	/*
-	CHOLMOD(print_sparse) (CC, "CC", cm) ;
-	*/
-
-    }
-    else
-    {
-	CC = C ;
     }
 
     B = rhs (CC, 1, n) ;
-
-    /*
-    CHOLMOD(print_dense) (B, "B", cm) ;
-    */
 
     for (sorted = 1 ; sorted >= 0 ; sorted--)
     {
 
 	if (!sorted)
 	{
-	    if (C)  C->sorted = FALSE ;
+	    if (C2 && !added_gunk) C2->sorted = FALSE ;
+	    if (C) C->sorted = FALSE ;
 	    if (CT) CT->sorted = FALSE ;
 	}
 
@@ -771,7 +857,8 @@ cm->precise = TRUE ;
 		    CHOLMOD (change_factor) (axtype, is_ll, 0, 0, 1, L, cm) ;
 		}
 
-		CHOLMOD(rowfac_mask) (C, CT, beta, 0, n, mask, RLinkUp, L, cm) ;
+		CHOLMOD(rowfac_mask) (sorted ? C : C2,
+		    CT, beta, 0, n, mask, RLinkUp, L, cm) ;
 
 		cm->prefer_zomplex = prefer_zomplex ;
 		X = CHOLMOD(solve) (CHOLMOD_A, L, B, cm) ;
@@ -779,10 +866,6 @@ cm->precise = TRUE ;
 
 		r = resid (CC, X, B) ;
 		MAXERR (maxerr, r, 1) ;
-
-		/*
-		CHOLMOD(print_dense) (X, "X", cm) ;
-		*/
 
 		printf ("rowfac mask: resid is %g\n", r) ;
 
@@ -795,15 +878,11 @@ cm->precise = TRUE ;
     CHOLMOD(free) (n, sizeof (Int), mask, cm) ;
     CHOLMOD(free) (n, sizeof (Int), RLinkUp, cm) ;
 
-    if (domask) CHOLMOD(free_sparse) (&CC, cm) ;
+    CHOLMOD(free_sparse) (&C2, cm) ;
+    CHOLMOD(free_sparse) (&CC, cm) ;
     CHOLMOD(free_sparse) (&CT, cm) ;
     CHOLMOD(free_sparse) (&C, cm) ;
     CHOLMOD(free_dense) (&B, cm) ;
-
-/*
-cm->print = saveit ;
-cm->precise = saveit2 ;
-*/
 
     return (maxerr) ;
 }

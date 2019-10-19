@@ -23,7 +23,7 @@ purge:
 	( cd MATLAB ; $(MAKE) purge )
 	( cd Tcov ; $(MAKE) purge )
 	( cd Lib ; $(MAKE) purge )
-	( cd Valgrind ; $(MAKE) purge )
+#	( cd Valgrind ; $(MAKE) purge )
 	( cd Demo ; $(MAKE) purge )
 	( cd Doc ; $(MAKE) purge )
 
@@ -44,7 +44,8 @@ ccode: all
 mex:
 	( cd MATLAB ; $(MAKE) )
 
-# Run the test coverage suite.  Takes about 20 minutes on a 3.2GHz Pentium.
+# Run the test coverage suite.  Takes about 40 minutes on a 3.2GHz Pentium.
+# Requires Linux (gcc, gcov).
 cov:
 	( cd Tcov ; $(MAKE) go )
 
@@ -55,3 +56,4 @@ valgrind:
 # Compile the C-callable libraries and the Demo programs.
 demo:
 	( cd Demo ; $(MAKE) )
+

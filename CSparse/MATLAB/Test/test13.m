@@ -1,5 +1,14 @@
+function test13
+%TEST13 test cs_counts, cs_etree
+%
+% Example:
+%   test13
+% See also: testall
 
-clear
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
+
 clear functions
 randn ('state',0) ;
 rand ('state',0) ;
@@ -19,21 +28,21 @@ for trial = 1:100
     [p3,po3] = cs_etree (A, 'sym') ;
     % po2 = cs_post (p2) ;
 
-    same (p1,p2) ;
-    same (po1,po2) ;
+    check_if_same (p1,p2) ;
+    check_if_same (po1,po2) ;
 
-    same (p1,p3) ;
-    same (po1,po3) ;
+    check_if_same (p1,p3) ;
+    check_if_same (po1,po3) ;
 
     c1 = symbfact (A) ;
     c2 = cs_counts (A) ;
 
     % A-A'
 
-    same (c1,c2) ;
+    check_if_same (c1,c2) ;
 
     c2 = cs_counts (triu (A)) ;
-    same (c1,c2) ;
+    check_if_same (c1,c2) ;
     % pause
 
     p0 = etree (A, 'col') ;
@@ -41,7 +50,7 @@ for trial = 1:100
     p2 = cs_etree (A, 'col') ;
 
     if (~isempty (A))
-	same (p0,p2) ;
+	check_if_same (p0,p2) ;
     end
 
     p0 = etree (C, 'col') ;
@@ -49,7 +58,7 @@ for trial = 1:100
     p2 = cs_etree (C, 'col') ;
 
     if (~isempty (C))
-	same (p0,p2) ;
+	check_if_same (p0,p2) ;
     end
 
     % find etree of A'A, and postorder it
@@ -61,13 +70,13 @@ for trial = 1:100
     [cp2 cpo2] = cs_etree (A, 'col') ;
     % cpo2 = cs_post (cp2) ;
 
-    same (cp0, cp2) ;
-    same (cpo0, cpo2) ;
+    check_if_same (cp0, cp2) ;
+    check_if_same (cpo0, cpo2) ;
 
     c0 = symbfact (A, 'col') ;
     % c1 = symbfact2 (A, 'col') ;   % CHOLMOD
     c2 = cs_counts (A, 'col') ;
 
-    same (c0, c2) ;
+    check_if_same (c0, c2) ;
 
 end

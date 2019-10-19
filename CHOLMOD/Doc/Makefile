@@ -42,6 +42,9 @@ M = \
 	../MATLAB/resymbol.m \
 	../MATLAB/sdmult.m \
 	../MATLAB/sparse2.m \
+	../MATLAB/spsym.m \
+	../MATLAB/mread.m \
+	../MATLAB/mwrite.m \
 	../MATLAB/symbfact2.m
 
 UserGuide.pdf: UserGuide.tex UserGuide.bib $(I) $(C) $(M) Makefile getproto rule.awk header.tex footer.tex getmproto mfooter.tex mheader.tex mfile.awk
@@ -62,6 +65,8 @@ UserGuide.pdf: UserGuide.tex UserGuide.bib $(I) $(C) $(M) Makefile getproto rule
 	./getmproto ../MATLAB/lu_normest.m > _lu_normest_m.tex
 	./getmproto ../MATLAB/metis.m > _metis_m.tex
 	./getmproto ../MATLAB/mread.m > _mread_m.tex
+	./getmproto ../MATLAB/spsym.m > _spsym_m.tex
+	./getmproto ../MATLAB/mwrite.m > _mwrite_m.tex
 	./getmproto ../MATLAB/nesdis.m > _nesdis_m.tex
 	./getmproto ../MATLAB/resymbol.m > _resymbol_m.tex
 	./getmproto ../MATLAB/sdmult.m > _sdmult_m.tex
@@ -152,6 +157,10 @@ UserGuide.pdf: UserGuide.tex UserGuide.bib $(I) $(C) $(M) Makefile getproto rule
 	./getproto '/int cholmod_print_parent/, /\*\) ;/' ../Include/cholmod_check.h > _print_parent.tex
 	./getproto '/cholmod_triplet \*cholmod_read_triplet/, /\*\) ;/' ../Include/cholmod_check.h > _read_triplet.tex
 	./getproto '/cholmod_sparse \*cholmod_read_sparse/, /\*\) ;/' ../Include/cholmod_check.h > _read_sparse.tex
+	./getproto '/cholmod_dense \*cholmod_read_dense/, /\*\) ;/' ../Include/cholmod_check.h > _read_dense.tex
+	./getproto '/void \*cholmod_read_matrix/, /\*\) ;/' ../Include/cholmod_check.h > _read_matrix.tex
+	./getproto '/int cholmod_write_sparse/, /\*\) ;/' ../Include/cholmod_check.h > _write_sparse.tex
+	./getproto '/int cholmod_write_dense/, /\*\) ;/' ../Include/cholmod_check.h > _write_dense.tex
 	./getproto '/cholmod_factor \*cholmod_analyze /, /\*\) ;/' ../Include/cholmod_cholesky.h > _analyze.tex
 	./getproto '/cholmod_factor \*cholmod_analyze_p/, /\*\) ;/' ../Include/cholmod_cholesky.h > _analyze_p.tex
 	./getproto '/int cholmod_factorize /, /\*\) ;/' ../Include/cholmod_cholesky.h > _factorize.tex
@@ -164,6 +173,7 @@ UserGuide.pdf: UserGuide.tex UserGuide.bib $(I) $(C) $(M) Makefile getproto rule
 	./getproto '/int cholmod_amd/, /\*\) ;/' ../Include/cholmod_cholesky.h > _amd.tex 
 	./getproto '/int cholmod_colamd/, /\*\) ;/' ../Include/cholmod_cholesky.h > _colamd.tex 
 	./getproto '/int cholmod_rowfac/, /\*\) ;/' ../Include/cholmod_cholesky.h > _rowfac.tex 
+	./getproto '/int cholmod_rowfac_mask/, /\*\) ;/' ../Include/cholmod_cholesky.h > _rowfac_mask.tex 
 	./getproto '/int cholmod_row_subtree/, /\*\) ;/' ../Include/cholmod_cholesky.h > _row_subtree.tex 
 	./getproto '/int cholmod_row_lsubtree/, /\*\) ;/' ../Include/cholmod_cholesky.h > _row_lsubtree.tex 
 	./getproto '/int cholmod_resymbol /, /\*\) ;/' ../Include/cholmod_cholesky.h > _resymbol.tex
@@ -173,6 +183,7 @@ UserGuide.pdf: UserGuide.tex UserGuide.bib $(I) $(C) $(M) Makefile getproto rule
 	./getproto '/int cholmod_updown /, /\*\) ;/' ../Include/cholmod_modify.h > _updown.tex
 	./getproto '/int cholmod_updown_solve/, /\*\) ;/' ../Include/cholmod_modify.h > _updown_solve.tex
 	./getproto '/int cholmod_updown_mark/, /\*\) ;/' ../Include/cholmod_modify.h > _updown_mark.tex
+	./getproto '/int cholmod_updown_mask/, /\*\) ;/' ../Include/cholmod_modify.h > _updown_mask.tex
 	./getproto '/int cholmod_rowadd /, /\*\) ;/' ../Include/cholmod_modify.h > _rowadd.tex
 	./getproto '/int cholmod_rowadd_solve/, /\*\) ;/' ../Include/cholmod_modify.h > _rowadd_solve.tex
 	./getproto '/int cholmod_rowadd_mark/, /\*\) ;/' ../Include/cholmod_modify.h > _rowadd_mark.tex
@@ -188,6 +199,7 @@ UserGuide.pdf: UserGuide.tex UserGuide.bib $(I) $(C) $(M) Makefile getproto rule
 	./getproto '/cholmod_sparse \*cholmod_ssmult/, /\*\) ;/' ../Include/cholmod_matrixops.h > _ssmult.tex
 	./getproto '/cholmod_sparse \*cholmod_submatrix/, /\*\) ;/' ../Include/cholmod_matrixops.h > _submatrix.tex
 	./getproto '/cholmod_sparse \*cholmod_vertcat/, /\*\) ;/' ../Include/cholmod_matrixops.h > _vertcat.tex
+	./getproto '/int cholmod_symmetry/, /\*\) ;/' ../Include/cholmod_matrixops.h > _symmetry.tex
 	./getproto '/int cholmod_super_symbolic/, /\*\) ;/' ../Include/cholmod_supernodal.h > _super_symbolic.tex
 	./getproto '/int cholmod_super_numeric/, /\*\) ;/' ../Include/cholmod_supernodal.h > _super_numeric.tex
 	./getproto '/int cholmod_super_lsolve/, /\*\) ;/' ../Include/cholmod_supernodal.h > _super_lsolve.tex

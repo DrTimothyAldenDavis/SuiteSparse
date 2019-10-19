@@ -1,10 +1,19 @@
-function [V,Beta,R] = qr_right (A)
+function [V,Beta,R] = qr2 (A)
+%QR2 QR factorization based on Householder reflections
+%
+% Example:
+%   [V,beta,R] = qr2 (A)
+% See also: testall
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
 [m n] = size (A) ;
 V = zeros (m,n) ;
 Beta = zeros (1,n) ;
 for k = 1:n
     % [v,beta,s] = gallery ('house', A (k:m,k), 2) ;
-    [v,beta,s] = house (A (k:m,k)) ;
+    [v,beta] = house (A (k:m,k)) ;
     V (k:m,k) = v ;
     Beta (k) = beta ;
     A (k:m,k:n) = A (k:m,k:n) - v * (beta * (v' * A (k:m,k:n))) ;

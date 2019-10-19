@@ -180,7 +180,7 @@ typedef double Unit ;
 /* -------------------------------------------------------------------------- */
 
 /*
-    Note:  An alternative to this DoubleComplex type would be to use a
+    Note:  An alternative to this Double_Complex type would be to use a
     struct { double r ; double i ; }.  The problem with that method
     (used by the Sun Performance Library, for example) is that ANSI C provides
     no guarantee about the layout of a struct.  It is possible that the sizeof
@@ -194,7 +194,7 @@ typedef double Unit ;
 
     #define Entry double _Complex
 
-    and remove the DoubleComplex struct.  The macros, below, could then be
+    and remove the Double_Complex struct.  The macros, below, could then be
     replaced with instrinsic operators.  Note that the #define Real and
     #define Imag should also be removed (they only appear in this file).
 
@@ -207,10 +207,10 @@ typedef struct
 {
     double component [2] ;	/* real and imaginary parts */
 
-} DoubleComplex ;
+} Double_Complex ;
 
-typedef DoubleComplex Unit ;
-#define Entry DoubleComplex
+typedef Double_Complex Unit ;
+#define Entry Double_Complex
 #define Real component [0]
 #define Imag component [1]
 

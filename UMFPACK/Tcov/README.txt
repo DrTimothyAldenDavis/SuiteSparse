@@ -1,9 +1,13 @@
 This is the UMFPACK Tcov directory.  It runs a large number of tests on
-UMFPACK and checks the statement coverage (using gcov).
+UMFPACK and checks the statement coverage (using gcc and gcov on Linux,
+or tcov on Solaris).
 
 You must first do "make purge" in AMD and UMFPACK.  You must also make
 sure the "Out" symbolic link is a valid link.  It should point to a large
 scratch space, for temporary files.  Finally, type DO.linux or DO.solaris.
+
+Alternatively, just type "make" in this directory, for Linux, or "make sol"
+for Solaris.
 
 The last line of each */ut.out file should read
 ALL TESTS PASSED largest maxrnorm 1e-07

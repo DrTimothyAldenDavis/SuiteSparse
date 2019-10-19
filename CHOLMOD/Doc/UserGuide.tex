@@ -21,7 +21,7 @@ Dept. of Computer and Information Science and Engineering \\
 Univ. of Florida, Gainesville, FL}
 \title{User Guide for CHOLMOD: a sparse Cholesky factorization and
 modification package}
-\date{Version 1.2, Aug 31, 2006}
+\date{Version 1.3, Dec 2, 2006}
 \maketitle
 
 %-------------------------------------------------------------------------------
@@ -83,21 +83,19 @@ constrained minimum degree (CSYMAMD, CCOLAMD, CAMD), and
 graph-partitioning-based nested dissection (METIS \cite{KarypisKumar98}).
 Most of its operations are available within MATLAB via mexFunction interfaces.
 
+A pair of articles on CHOLMOD has been submitted to the ACM Transactions
+on Mathematical Softare:
+\cite{ChenDavisHagerRajamanickam06,DavisHager06}.
+
 CHOLMOD 1.0 replaces {\tt chol} (the sparse case), {\tt symbfact}, and {\tt etree}
 in MATLAB 7.2 (R2006a), and is used for {\tt x=A}$\backslash${\tt b}
 when {\tt A} is symmetric positive definite \cite{GilbertMolerSchreiber}.
 It will replace {\tt sparse} in a future version of MATLAB.
 
-The C-callable CHOLMOD library consists of 122 user-callable routines and one
+The C-callable CHOLMOD library consists of 133 user-callable routines and one
 include file.  Each routine comes in two versions, one for {\tt int} integers
 and another for {\tt long}.  Many of the routines can support either real or
 complex matrices, simply by passing a matrix of the appropriate type.
-
-For more details, see:
-{\em Algorithm 8xx: {\tt CHOLMOD}, a sparse Cholesky factorization and modification package},
-T. A. Davis, W. W. Hager, S. Rajamanickam, in preparation, and
-{\em Multiple-rank modification of a supernodal Cholesky factorization},
-T. A. Davis, W. W. Hager, S. Rajamanickam, in preparation. 
 
 Nick Gould, Yifan Hu, and Jennifer Scott have independently tested CHOLMOD's
 performance, comparing it with nearly a dozen or so other solvers
@@ -338,6 +336,7 @@ and
 BLAS libraries,
 as well as the {\tt xerbla} library if you need it
 ({\tt UFconfig/xerlib/libcerbla.a} for the C version or
+\newline
  {\tt UFconfig/xerlib/libxerbla.a} for the Fortran version).
 Your compiler needs to know the location of the CHOLMOD {\tt Include} directory,
 so that it can find the {\tt cholmod.h} include file, by
@@ -370,10 +369,12 @@ directory.  The following functions are provided:
 {\tt ldlupdate}	    & update/downdate an {\tt L*D*L'} factorization \\
 {\tt lu\_normest}   & estimate {\tt norm(A-L*U')} \\
 {\tt metis}	    & interface to {\tt METIS\_NodeND} ordering \\
-{\tt mread}	    & read a sparse Matrix Market file \\
+{\tt mread}	    & read a sparse or dense Matrix Market file \\
+{\tt mwrite}	    & write a sparse or dense Matrix Market file \\
 {\tt nesdis}	    & CHOLMOD's nested dissection ordering \\
 {\tt resymbol}	    & recomputes the symbolic factorization \\
 {\tt sdmult}	    & {\tt S*F} where {\tt S} is sparse and {\tt F} is dense \\
+{\tt spsym}	    & determine symmetry \\
 {\tt sparse2}	    & same as {\tt sparse} \\
 {\tt symbfact2}	    & same as {\tt symbfact} \\
 \hline
@@ -384,9 +385,9 @@ Each function is described in the next sections.
 
 \newpage
 \subsection{{\tt analyze}: order and analyze}					\input{_analyze_m.tex}
-\newpage
 \subsection{{\tt bisect}: find a node separator}				\input{_bisect_m.tex}
 \subsection{{\tt chol2}: same as {\tt chol}}					\input{_chol2_m.tex}
+\newpage
 \subsection{{\tt cholmod}: supernodal backslash}				\input{_cholmod_m.tex}
 \newpage
 \subsection{{\tt cholmod\_demo}: a short demo program}				\input{_cholmod_demo_m.tex}
@@ -405,13 +406,19 @@ Each function is described in the next sections.
 \subsection{{\tt ldlupdate}: update/downdate an $\m{LDL}\tr$ factorization}	\input{_ldlupdate_m.tex}
 \newpage
 \subsection{{\tt lu\_normest}: estimate $||\m{A}-\m{LU}||$}			\input{_lu_normest_m.tex}
-\subsection{{\tt mread}: read a sparse matrix from a Matrix Market file}	\input{_mread_m.tex}
+\newpage
+\subsection{{\tt mread}: read a sparse or dense matrix from a Matrix Market file}\input{_mread_m.tex}
+\subsection{{\tt mwrite}: write a sparse or densematrix to a Matrix Market file}	\input{_mwrite_m.tex}
 \newpage
 \subsection{{\tt metis}: order with METIS}					\input{_metis_m.tex}
+\newpage
 \subsection{{\tt nesdis}: order with CHOLMOD nested dissection}			\input{_nesdis_m.tex}
 \newpage
 \subsection{{\tt resymbol}: re-do symbolic factorization}			\input{_resymbol_m.tex}
 \subsection{{\tt sdmult}: sparse matrix times dense matrix}			\input{_sdmult_m.tex}
+\newpage
+\subsection{{\tt spsym}: determine symmetry}				\input{_spsym_m.tex}
+\newpage
 \subsection{{\tt sparse2}: same as {\tt sparse}}				\input{_sparse2_m.tex}
 \newpage
 \subsection{{\tt symbfact2}: same as {\tt symbfact}}				\input{_symbfact2_m.tex}
@@ -465,7 +472,7 @@ changes to your METIS source code.
 
 You can also compile the CHOLMOD mexFunctions using the Unix/Linux {\tt make}
 command.  When using the {\tt gcc} compiler, I strongly recommend editing the
-{\tt metis-4.0/make.inc} file and changing {\tt COPTIONS} to
+{\tt metis-4.0/Makefile.in} file and changing {\tt COPTIONS} to
 \begin{verbatim}
         COPTIONS = -fexceptions
 \end{verbatim}
@@ -491,6 +498,14 @@ CHOLMOD supports both {\tt int} and {\tt long} integers.  CHOLMOD
 routines with the prefix {\tt cholmod\_} use {\tt int} integers,
 {\tt cholmod\_l\_} routines use {\tt long}.  All floating-point
 values are {\tt double}.
+
+The {\tt long} integer is redefinable, via {\tt UFconfig.h}.
+That file defines a C preprocessor token {\tt UF\_long} which is
+{\tt long} on all systems except for Windows-64, in which case it is
+defined as {\tt \_\_int64}.  The intent is that with suitable compile-time
+switches, {\tt int} is a 32-bit integer and {\tt UF\_long} is a 64-bit
+integer.  The term {\tt long} is used to describe the latter
+integer throughout this document (except in the prototypes).
 
 Two kinds of complex matrices are supported: complex and zomplex.
 A complex matrix is held in a manner that is compatible with the
@@ -595,7 +610,7 @@ minor variations used in CHOLMOD:
 \label{Modules}
 %-------------------------------------------------------------------------------
 
-CHOLMOD contains a total of 122 {\tt int}-based routines (and the same number
+CHOLMOD contains a total of 133 {\tt int}-based routines (and the same number
 of {\tt long} routines), divided into a set of inter-related
 Modules.  Each Module contains a set of related functions.  The functions
 are divided into two types: Primary and Secondary, to reflect how a user will
@@ -853,17 +868,23 @@ and is required by all six other CHOLMOD library Modules:
     Requires the {\tt Core} Module.
 
 \vspace{0.1in}
-\noindent Primary routine:
-% 1
+\noindent Primary routines:
+% 4
     \begin{itemize}
     \item {\tt cholmod\_print\_common}: print the {\tt cholmod\_common} object,
 	including statistics on CHOLMOD's behavior (fill-in, flop count,
 	ordering methods used, and so on).
+    \item {\tt cholmod\_write\_sparse}: write a sparse matrix to a file
+	in Matrix Market format.
+    \item {\tt cholmod\_write\_dense}: write a sparse matrix to a file
+	in Matrix Market format.
+    \item {\tt cholmod\_read\_matrix}: read a sparse or dense matrix from a file
+	in Matrix Market format.
     \end{itemize}
 
 \vspace{0.1in}
 \noindent Secondary routines:
-% 16
+% 18
     \begin{itemize}
     \item {\tt cholmod\_check\_common}: check the {\tt cholmod\_common} object
     \item {\tt cholmod\_check\_sparse}: check a sparse matrix
@@ -880,8 +901,9 @@ and is required by all six other CHOLMOD library Modules:
     \item {\tt cholmod\_print\_perm}: print a permutation (an integer vector)
     \item {\tt cholmod\_check\_parent}: check an elimination tree (an integer vector)
     \item {\tt cholmod\_print\_parent}: print an elimination tree (an integer vector)
-    \item {\tt cholmod\_read\_triplet}: read a matrix in triplet form from a file
-    \item {\tt cholmod\_read\_sparse}: read a matrix in triplet form from a file and convert to compressed-column sparse matrix
+    \item {\tt cholmod\_read\_triplet}: read a triplet matrix from a file
+    \item {\tt cholmod\_read\_sparse}: read a sparse matrix from a file
+    \item {\tt cholmod\_read\_dense}: read a dense matrix from a file
     \end{itemize}
 
 %-------------------------------------------------------------------------------
@@ -908,7 +930,7 @@ required by the {\tt Partition} Module.
     \end{itemize}
 
 \noindent Secondary routines:
-% 13
+% 15
     \begin{itemize}
     \item {\tt cholmod\_analyze\_p}: analyze, with user-provided permutation or $\m{f}$ set.
     \item {\tt cholmod\_factorize\_p}: factorize, with user-provided permutation or $\m{f}$.
@@ -924,6 +946,7 @@ required by the {\tt Partition} Module.
     \item {\tt cholmod\_resymbol\_noperm}: recompute the symbolic pattern of $\m{L}$, no permutation.
     \item {\tt cholmod\_postorder}: postorder a tree.
     \item {\tt cholmod\_rcond}: compute the reciprocal condition number estimate.
+    \item {\tt cholmod\_rowfac\_mask}: for use in LPDASA only.
     \end{itemize}
 
 %-------------------------------------------------------------------------------
@@ -951,6 +974,7 @@ Requires the {\tt Core} module.  Not required by any other CHOLMOD Module.
     \begin{itemize}
     \item {\tt cholmod\_updown\_solve}: update/downdate, and modify solution to $\m{Lx=b}$
     \item {\tt cholmod\_updown\_mark}: update/downdate, and modify solution to partial $\m{Lx=b}$
+    \item {\tt cholmod\_updown\_mask}: for use in LPDASA only.
     \item {\tt cholmod\_rowadd}: add a row to an $\m{LDL}\tr$ factorization
     \item {\tt cholmod\_rowadd\_solve}: add a row, and update solution to $\m{Lx=b}$
     \item {\tt cholmod\_rowadd\_mark}: add a row, and update solution to partial $\m{Lx=b}$
@@ -972,7 +996,7 @@ In the descriptions below,
 {\tt s} is a scalar or vector, and
 {\tt alpha} {\tt beta} are scalars.
 
-% 9
+% 10
     \begin{itemize}
     \item {\tt cholmod\_drop}: drop entries from A with absolute value $\ge$ a given tolerance.
     \item {\tt cholmod\_norm\_dense}: {\tt s = norm (X)}, 1-norm, infinity-norm, or 2-norm
@@ -983,6 +1007,7 @@ In the descriptions below,
     \item {\tt cholmod\_ssmult}: {\tt C = A*B}
     \item {\tt cholmod\_submatrix}: {\tt C = A (i,j)}, where {\tt i} and {\tt j} are arbitrary integer vectors.
     \item {\tt cholmod\_vertcat}: {\tt C = [A ; B]}.
+    \item {\tt cholmod\_symmetry}: determine symmetry of a matrix.
     \end{itemize}
 
 %-------------------------------------------------------------------------------
@@ -2094,13 +2119,14 @@ Print an elimination tree and check if it is valid.
 %---------------------------------------
 
 \input{_read_triplet.tex}
-Read a sparse matrix in triplet form.  Compatible the {\tt coord} 
+Read a sparse matrix in triplet form, using the the {\tt coord} 
 Matrix Market format (http://www.nist.gov/MatrixMarket).
 Skew-symmetric and complex symmetric matrices are returned with
 both upper and lower triangular parts present (an stype of zero).
 Real symmetric and complex Hermitian matrices are returned with just
 their upper or lower triangular part, depending on their stype.
-The Matrix Market {\tt array} data type for dense matrices is not supported.
+The Matrix Market {\tt array} data type for dense matrices is not supported
+(use {\tt cholmod\_read\_dense} for that case).
 
 If the first line of the file starts with {\tt \%\%MatrixMarket}, then it is
 interpreted as a file in Matrix Market format.  The header line is optional.
@@ -2186,6 +2212,8 @@ zero-free diagonal is thus converted into a symmetric positive definite
 matrix.  All entries are set to one for an unsymmetric pattern-only matrix.
 This differs from the MatrixMarket format ({\tt A = mmread ('file')} returns
 a binary pattern for A for symmetric pattern-only matrices).
+To return a binary format for all pattern-only matrices, use
+{\tt A = mread('file',1)}.
 
 Example matrices that follow this format can be found in the
 {\tt CHOLMOD/Demo/Matrix} and \newline
@@ -2197,12 +2225,65 @@ at http://www.nist.gov/MatrixMarket.
 \subsection{{\tt cholmod\_read\_sparse}: read sparse matrix from file}
 %---------------------------------------
 
-\input{_read_triplet.tex}
+\input{_read_sparse.tex}
 Read a sparse matrix in triplet form from a file (using {\tt cholmod\_read\_triplet})
 and convert to a CHOLMOD sparse matrix.
+The Matrix Market format is used.
 If {\tt Common->prefer\_upper} is {\tt TRUE} (the default case), a symmetric matrix is
 returned stored in upper-triangular form ({\tt A->stype} is 1).
 Otherwise, it is left in its original form, either upper or lower.
+
+%---------------------------------------
+\newpage \subsection{{\tt cholmod\_read\_dense}: read dense matrix from file}
+%---------------------------------------
+
+\input{_read_dense.tex}
+Read a dense matrix from a file, using the the {\tt array} 
+Matrix Market format 
+\newline (http://www.nist.gov/MatrixMarket).
+
+%---------------------------------------
+\subsection{{\tt cholmod\_read\_matrix}: read a matrix from file}
+%---------------------------------------
+
+\input{_read_matrix.tex}
+Read a sparse or dense matrix from a file, in Matrix Market format.
+Returns a {\tt void} pointer to either a
+{\tt cholmod\_triplet},
+{\tt cholmod\_sparse}, or
+{\tt cholmod\_dense} object.
+
+%---------------------------------------
+\newpage \subsection{{\tt cholmod\_write\_sparse}: write a sparse matrix to a file}
+%---------------------------------------
+
+\input{_write_sparse.tex}
+Write a sparse matrix to a file in Matrix Market format.   Optionally include
+comments, and print explicit zero entries given by the pattern of the {\tt Z}
+matrix.  If not NULL, the {\tt Z} matrix must have the same dimensions and stype
+as {\tt A}.
+
+Returns the symmetry in which the matrix was printed
+(1 to 7) or -1 on failure.  See the {\tt cholmod\_symmetry} function for
+a description of the return codes.
+
+If {\tt A} and {\tt Z} are sorted on input, and either unsymmetric (stype = 0) or
+symmetric-lower (stype < 0), and if {\tt A} and {\tt Z} do not overlap,
+then the triplets
+are sorted, first by column and then by row index within each column, with
+no duplicate entries.  If all the above holds except stype > 0, then the
+triplets are sorted by row first and then column.
+
+%---------------------------------------
+\subsection{{\tt cholmod\_write\_dense}: write a dense matrix to a file}
+%---------------------------------------
+
+\input{_write_dense.tex}
+Write a dense matrix to a file in Matrix Market format.   Optionally include
+comments.  Returns > 0 if successful, -1 otherwise (1 if rectangular, 2 if
+square).
+A dense matrix is written in "general" format; symmetric formats in the
+Matrix Market standard are not exploited.
 
 %-------------------------------------------------------------------------------
 \newpage \section{{\tt Cholesky} Module routines}
@@ -2575,6 +2656,14 @@ In the unsymmetric case,
 % Math. Software, vol 12, 1986, pp. 127-148.
 
 %---------------------------------------
+\subsection{{\tt cholmod\_rowfac\_mask}: row-oriented Cholesky factorization}
+%---------------------------------------
+
+\input{_rowfac_mask.tex}
+For use in LPDASA only.
+
+
+%---------------------------------------
 \newpage \subsection{{\tt cholmod\_row\_subtree}: pattern of row of a factor}
 %---------------------------------------
 
@@ -2751,6 +2840,7 @@ reducing permutation {\tt L->Perm} is not used.  The vectors $\m{x}$ and $\m{b}$
 ordering, not your original ordering.  This routine does not handle multiple right-hand-sides.
 
 %---------------------------------------
+\newpage
 \subsection{{\tt cholmod\_updown\_mark}: update/downdate}
 %---------------------------------------
 
@@ -2760,6 +2850,13 @@ is used in the update of the solution to $\m{Lx}=\m{b}$.  For more details,
 see the source code file {\tt CHOLMOD/Modify/cholmod\_updown.c}.
 This routine is meant for use in the {\tt LPDASA} linear program solver only,
 by Hager and Davis.
+
+%---------------------------------------
+\subsection{{\tt cholmod\_updown\_mask}: update/downdate}
+%---------------------------------------
+
+\input{_updown_mask.tex}
+For use in LPDASA only.
 
 %---------------------------------------
 \newpage \subsection{{\tt cholmod\_rowadd}: add row to factor}
@@ -2799,7 +2896,6 @@ When row/column $k$ of $\m{A}$ is deleted from the system $\m{Ay}=\m{b}$, this c
 a change to $\m{x}$, in addition to changes arising when $\m{L}$ and $\m{b}$ are modified.
 If this is the case, the kth entry of $\m{y}$ is required as input ({\tt yk}).
 The algorithm is described in \cite{DavisHager05}.
-% TODO : add more details about yk
 
 %---------------------------------------
 \newpage \subsection{{\tt cholmod\_rowadd\_mark}: add row to factor}
@@ -2978,6 +3074,93 @@ Vertical concatenation, returns {\tt C = [A;B]} in MATLAB notation.
 {\tt A} and {\tt B} must have the same numeric xtype, unless {\tt values} is {\tt FALSE}.
 {\tt A} and {\tt B} cannot be complex or zomplex, unless {\tt values} is {\tt FALSE}.
 
+%---------------------------------------
+\newpage \subsection{{\tt cholmod\_symmetry}: compute the symmetry of a matrix}
+%---------------------------------------
+
+\input{_symmetry.tex}
+
+Determines if a sparse matrix is rectangular, unsymmetric, symmetric,
+skew-symmetric, or Hermitian.  It does so by looking at its numerical values
+of both upper and lower triangular parts of a CHOLMOD "unsymmetric"
+matrix, where A->stype == 0.  The transpose of A is NOT constructed.
+
+If not unsymmetric, it also determines if the matrix has a diagonal whose
+entries are all real and positive (and thus a candidate for sparse Cholesky
+if A->stype is changed to a nonzero value).
+
+Note that a Matrix Market "general" matrix is either rectangular or
+unsymmetric.
+
+The row indices in the column of each matrix MUST be sorted for this function
+to work properly (A->sorted must be TRUE).  This routine returns EMPTY if
+A->stype is not zero, or if A->sorted is FALSE.  The exception to this rule
+is if A is rectangular.
+
+If option == 0, then this routine returns immediately when it finds a
+non-positive diagonal entry (or one with nonzero imaginary part).   If the
+matrix is not a candidate for sparse Cholesky, it returns the value
+{\tt CHOLMOD\_MM\_UNSYMMETRIC}, even if the matrix might in fact be symmetric or
+Hermitian.
+
+This routine is useful inside the MATLAB backslash, which must look at an
+arbitrary matrix (A->stype == 0) and determine if it is a candidate for
+sparse Cholesky.  In that case, option should be 0.
+
+This routine is also useful when writing a MATLAB matrix to a file in
+Rutherford/Boeing or Matrix Market format.  Those formats require a
+determination as to the symmetry of the matrix, and thus this routine should
+not return upon encountering the first non-positive diagonal.  In this case,
+option should be 1.
+
+If option is 2, this function can be used to compute the numerical and
+pattern symmetry, where 0 is a completely unsymmetric matrix, and 1 is a
+perfectly symmetric matrix.  This option is used when computing the following
+statistics for the matrices in the UF Sparse Matrix Collection.
+
+	numerical symmetry: number of matched offdiagonal nonzeros over
+	the total number of offdiagonal entries.  A real entry $a_{ij}$,  $i \ne j$,
+	is matched if $a_{ji} = a_{ij}$, but this is only counted if both
+	$a_{ji}$ and $a_{ij}$ are nonzero.  This does not depend on {\tt Z}.
+	(If A is complex, then the above test is modified; $a_{ij}$ is matched
+	if $\mbox{conj}(a_{ji}) = a_{ij}$.
+
+	Then numeric symmetry = xmatched / nzoffdiag, or 1 if nzoffdiag = 0.
+ 
+	pattern symmetry: number of matched offdiagonal entries over the
+	total number of offdiagonal entries.  An entry $a_{ij}$, $i \ne j$, is
+	matched if $a_{ji}$ is also an entry.
+
+	Then pattern symmetry = pmatched / nzoffdiag, or 1 if nzoffdiag = 0.
+ 
+The symmetry of a matrix with no offdiagonal entries is equal to 1.
+
+A workspace of size ncol integers is allocated; EMPTY is returned if this
+allocation fails.
+
+Summary of return values:
+
+\begin{tabular}{ll}
+{\tt EMPTY (-1)}		    & out of memory, stype not zero, A not sorted \\
+{\tt CHOLMOD\_MM\_RECTANGULAR 1}    & A is rectangular \\
+{\tt CHOLMOD\_MM\_UNSYMMETRIC 2}    & A is unsymmetric \\
+{\tt CHOLMOD\_MM\_SYMMETRIC 3}	    & A is symmetric, but with non-pos. diagonal \\
+{\tt CHOLMOD\_MM\_HERMITIAN 4}	    & A is Hermitian, but with non-pos. diagonal \\
+{\tt CHOLMOD\_MM\_SKEW\_SYMMETRIC 5}    & A is skew symmetric \\
+{\tt CHOLMOD\_MM\_SYMMETRIC\_POSDIAG 6} & A is symmetric with positive diagonal \\
+{\tt CHOLMOD\_MM\_HERMITIAN\_POSDIAG 7} & A is Hermitian with positive diagonal \\
+\end{tabular}
+
+See also the {\tt spsym} mexFunction, which is a MATLAB interface for this code.
+
+If the matrix is a candidate for sparse Cholesky, it will return a result
+\newline
+{\tt CHOLMOD\_MM\_SYMMETRIC\_POSDIAG} if real, or {\tt CHOLMOD\_MM\_HERMITIAN\_POSDIAG} if
+complex.  Otherwise, it will return a value less than this.  This is true
+regardless of the value of the option parameter.
+
+
+
 %-------------------------------------------------------------------------------
 \newpage \section{{\tt Supernodal} Module routines}
 %-------------------------------------------------------------------------------
@@ -3141,7 +3324,8 @@ If {\tt Cmember[i]=c} then node {\tt i} is in set {\tt c}.
 All nodes in set 0 are ordered first, followed by all nodes in set 1, and so on.
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_bisect}: graph bisector}
+\newpage
+\subsection{{\tt cholmod\_bisect}: graph bisector}
 %---------------------------------------
 
 \input{_bisect.tex}
@@ -3162,11 +3346,12 @@ parts present) and with no diagonal entries.  These conditions are not
 checked.
 
 %---------------------------------------
+\newpage
 \subsection{{\tt cholmod\_collapse\_septree}: prune a separator tree}
 %---------------------------------------
 
 \input{_collapse_septree.tex}
-Prunes a separator tree obtained from {{\tt cholmod\_nested\_dissection}.
+Prunes a separator tree obtained from {\tt cholmod\_nested\_dissection}.
 
 \newpage
 \bibliographystyle{plain}

@@ -1,4 +1,12 @@
 function [v,beta,s] = house (x)
+%HOUSE find a Householder reflection.
+% Example:
+%   [v,beta,s] = house (x)
+% See also: cs_demo
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
 n = length (x) ;
 if (n == 1)
     sigma = 0 ;

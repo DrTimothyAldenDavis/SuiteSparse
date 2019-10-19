@@ -17,7 +17,7 @@ mkdir SolOut/$1_$2/UMFPACK/Doc
 /bin/cp -prL ../Lib SolOut/$1_$2/UMFPACK
 /bin/cp -prL ../Include SolOut/$1_$2/UMFPACK
 /bin/cp -prL ../Demo SolOut/$1_$2/UMFPACK
-/bin/cp -prL ../Makefile SolOut/$1_$2/UMFPACK
+/bin/cp -prL ../Makefile SolOut/$1_$2/UMFPACK/Makefile
 /bin/cp -prL ../Doc/License SolOut/$1_$2/UMFPACK/Doc
 /bin/cp -prL ../../AMD SolOut/$1_$2
 /bin/cp debug.* SolOut/$1_$2

@@ -2,7 +2,7 @@
 /* === UFconfig.h =========================================================== */
 /* ========================================================================== */
 
-/* Configuration file for the SuiteSparse: a Suite of Sparse matrix packages
+/* Configuration file for SuiteSparse: a Suite of Sparse matrix packages
  * (AMD, COLAMD, CCOLAMD, CAMD, CHOLMOD, UMFPACK, CXSparse, and others).
  *
  * UFconfig.h provides the definition of the long integer.  On most systems,
@@ -11,11 +11,12 @@
  * model, in which int's and long's are 32-bits, and long long's and pointers
  * are 64-bits.
  *
- * The SuiteSparse matrix packages that include long integer versions are
+ * SuiteSparse packages that include long integer versions are
  * intended for the LP64 mode.  However, as a workaround for Windows 64
  * (and perhaps other systems), the long integer can be redefined.
  *
  * If _WIN64 is defined, then the __int64 type is used instead of long.
+ *
  * The long integer can also be defined at compile time.  For example, this
  * could be added to UFconfig.mk:
  *
@@ -52,7 +53,7 @@ extern "C" {
 
 #define UF_long __int64
 #define UF_long_max _I64_MAX
-#define UF_long_id "Id"
+#define UF_long_id "%I64d"
 
 #else
 
@@ -67,40 +68,42 @@ extern "C" {
 /* === SuiteSparse version ================================================== */
 /* ========================================================================== */
 
-/* The SuiteSparse is not a package itself, but a collection of packages, some
- * of which must be used together (UMFPACK requires AMD, CHOLMOD requires AMD,
- * COLAMD, CAMD, and CCOLAMD, etc).  A version number is provided here
- * for the collection itself.  The versions of packages within each version
- * of the SuiteSparse are meant to work together.  Combining one packge from one
- * version of the SuiteSparse, with another package from another version of the
+/* SuiteSparse is not a package itself, but a collection of packages, some of
+ * which must be used together (UMFPACK requires AMD, CHOLMOD requires AMD,
+ * COLAMD, CAMD, and CCOLAMD, etc).  A version number is provided here for the
+ * collection itself.  The versions of packages within each version of
+ * SuiteSparse are meant to work together.  Combining one packge from one
+ * version of SuiteSparse, with another package from another version of
  * SuiteSparse, may or may not work.
  *
- * The SuiteSparse Version 2.1.1 contains the following packages:
+ * SuiteSparse Version 2.3 contains the following packages:
  *
- *  AMD		version 2.0.1
- *  CAMD	version 2.1.1
- *  COLAMD	version 2.5.1
- *  CCOLAMD	version 2.5.1
- *  CHOLMOD	version 1.2
- *  CSparse	version 2.0.2
- *  CXSparse	version 2.0.2
- *  KLU		version 0.9
- *  BTF		version 0.9
- *  LDL		version 1.3.1
- *  UFconfig	version number is the same as the SuiteSparse
- *  UMFPACK	version 5.0.1
+ *  AMD		    version 2.0.3
+ *  CAMD	    version 2.1.2
+ *  COLAMD	    version 2.5.1
+ *  CCOLAMD	    version 2.5.1
+ *  CHOLMOD	    version 1.3.0
+ *  CSparse	    version 2.0.5
+ *  CXSparse	    version 2.0.5
+ *  KLU		    version 0.10
+ *  BTF		    version 0.9
+ *  LDL		    version 1.3.1
+ *  UFconfig	    version number is the same as SuiteSparse
+ *  UMFPACK	    version 5.0.2
+ *  RBio	    version 1.0
+ *  UFcollection    version 1.0
  *
  * Other package dependencies:
- *  BLAS	required by CHOLMOD and UMFPACK
- *  LAPACK	required by CHOLMOD
- *  METIS 4.0.1	required by CHOLMOD (optional)
+ *  BLAS	    required by CHOLMOD and UMFPACK
+ *  LAPACK	    required by CHOLMOD
+ *  METIS 4.0.1	    required by CHOLMOD (optional)
  */
 
-#define SUITESPARSE_DATE "Sept 11, 2006"
+#define SUITESPARSE_DATE "Dec 2, 2006"
 #define SUITESPARSE_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define SUITESPARSE_MAIN_VERSION 2
-#define SUITESPARSE_SUB_VERSION 1
-#define SUITESPARSE_SUBSUB_VERSION 1
+#define SUITESPARSE_SUB_VERSION 3
+#define SUITESPARSE_SUBSUB_VERSION 0
 #define SUITESPARSE_VERSION \
     SUITESPARSE_VER_CODE(SUITESPARSE_MAIN_VERSION,SUITESPARSE_SUB_VERSION)
 

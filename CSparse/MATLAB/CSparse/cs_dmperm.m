@@ -1,4 +1,4 @@
-function [p,q,r,s,cc,rr] = cs_dmperm (A,seed)
+function [p,q,r,s,cc,rr] = cs_dmperm (A,seed)				    %#ok
 %CS_DMPERM maximum matching or Dulmage-Mendelsohn permutation.
 %   p = cs_dmperm(A) finds a maximum matching p such that p(j) = i if column j
 %   is matched to row i, or -1 if column j is unmatched.  If A is square and
@@ -28,7 +28,7 @@ function [p,q,r,s,cc,rr] = cs_dmperm (A,seed)
 %   the numerical rank of A.  sprank(A) = rank(full(sprand(A))) with probability
 %   1 in exact arithmetic.
 %
-%   The A23 submatrix is further subdividied into block upper triangular form
+%   The A23 submatrix is further subdivided into block upper triangular form
 %   via the "fine" decomposition (the strongly-connected components of A23).
 %   If A is square and structurally non-singular, A23 is the entire matrix.
 %
@@ -46,6 +46,15 @@ function [p,q,r,s,cc,rr] = cs_dmperm (A,seed)
 %   in reverse order.  Otherwise, the columns are considered in a random order,
 %   using seed as the random number generator seed.  Try cs_dmpmerm(A,1) or
 %   cs_dmperm(A,rand), for a randomized order, for example.  Seed defaults to 0.
+%
+%
+%   Example:
+%       Prob = UFget ('HB/west0479') ; A = Prob.A ;  cspy (A) ;
+%       p = cs_dmperm (A) ;
+%       cspy (A (p,:)) ;
+%       [p q r s cc rr] = cs_dmperm (A) ;
+%       cspy (A (p,q)) ;
+%       cs_dmspy (A) ;
 %
 %   See also CS_DMSPY, CS_DMSOL, DMPERM, SPRANK, CS_RANDPERM, RAND
 

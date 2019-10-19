@@ -1,3 +1,13 @@
+function test28
+%TEST28 test cs_randperm, cs_dmperm
+%
+% Example:
+%   test28
+% See also: testall
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
 clear functions
 
 rand ('state', 0) ;
@@ -5,8 +15,8 @@ for n = 1:100
     for trials = 1:1000
 	p = cs_randperm (n, rand) ;
 	if (any (sort (p) ~= 1:n))
-	    n
-	    p
+	    n		%#ok
+	    p		%#ok
 	    error ('!')
 	end
     end
@@ -17,9 +27,14 @@ index = UFget ;
 
 fprintf ('p=dmperm (std, rand, rev)  [p,q,r,s]=dmperm (std, rand, rev)\n') ;
 
-nmat = length (f) ;
+nmat = min (100, length (f)) ;
+T1 = zeros (nmat,1) ;
+T2 = zeros (nmat,1) ;
+T3 = zeros (nmat,1) ;
+D1 = zeros (nmat,1) ;
+D2 = zeros (nmat,1) ;
+D3 = zeros (nmat,1) ;
 
-nmat = 100
 
 for k = 1:nmat
 

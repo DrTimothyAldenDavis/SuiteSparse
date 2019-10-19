@@ -12,14 +12,15 @@ CHOLMOD: a sparse CHOLesky MODification package
     C and MATLAB interfaces.  This code works on Microsoft Windows and many
     versions of Unix and Linux.
 
-Version 1.2, Aug 31, 2006.  Copyright (c) 2005-2006.
+Version 1.3, Dec 2, 2006.  Copyright (c) 2005-2006.
 
-Some Modules of CHOLMOD are copyrighted by the University of Florida.  Most are
-copyrighted by the authors: Timothy A. Davis (all of them), and William W. Hager
-(the Modify Module).
+Some Modules of CHOLMOD are copyrighted by the University of Florida (the
+Core and Partition Modules).  The rest are copyrighted by the authors:
+Timothy A. Davis (all of them), and William W. Hager (the Modify Module).
 
-CHOLMOD relies on several other packages:  AMD, CAMD, COLAMD, CCOLAMD, METIS,
-the BLAS, and LAPACK.
+CHOLMOD relies on several other packages:  AMD, CAMD, COLAMD, CCOLAMD, UFconfig,
+METIS, the BLAS, and LAPACK.  All but METIS, the BLAS, and LAPACK are part of
+SuiteSparse.
 
 AMD is authored by T. Davis, Iain Duff, and Patrick Amestoy.
 COLAMD is authored by T. Davis and Stefan Larimore, with algorithmic design
@@ -53,6 +54,9 @@ also ensures your mexFunctions are compiled with -fexceptions, so that
 exceptions are handled properly (when hitting control-C in the MATLAB command
 window, for example).
 
+    NOTE: DO NOT ATTEMPT TO USE THIS CODE IN 64-BIT MATLAB (v7.3).
+    It is not yet ported to that version of MATLAB.
+
 On the Pentium, do NOT use the Intel MKL BLAS prior to MKL Version 8.0 with
 CHOLMOD.  Older versions (prior to 8.0) have a bug in dgemm when computing
 A*B'.  The bug generates a NaN result, when the inputs are well-defined.  Use
@@ -69,3 +73,4 @@ Acknowledgements:  this work was supported in part by the National Science
 Foundation (NFS CCR-0203270 and DMS-9803599), and a grant from Sandia National
 Laboratories (Dept. of Energy) which supported the development of CHOLMOD's
 Partition Module.
+

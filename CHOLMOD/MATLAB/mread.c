@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * CHOLMOD/MATLAB Module.  Version 1.2.  Copyright (C) 2005-2006,
+ * CHOLMOD/MATLAB Module.  Version 1.3.  Copyright (C) 2005-2006,
  * Timothy A. Davis
  * The CHOLMOD/MATLAB Module is licensed under Version 2.0 of the GNU
  * General Public License.  See gpl.txt for a text of the license.
@@ -12,18 +12,25 @@
  * MATLAB(tm) is a Trademark of The MathWorks, Inc.
  * -------------------------------------------------------------------------- */
 
-/* Read a sparse matrix from a file, in "triplet" format.  Most MatrixMarket
- * format matrices are supported (the "array" format is not supported).
+/* [A Z] = mread (filename, prefer_binary)
+ *
+ * Read a sparse or dense matrix from a file in Matrix Market format.
+ *
+ * All MatrixMarket formats are supported.
  * The Matrix Market "integer" format is converted into real, but the values
- * are preserved.  The "pattern" format is converted into real.  If the matrix
- * is unsymmetric, all of its values are equal to one.  If it is symmetric, the
- * kth diagonal entry is set to one plus the number of off-diagonal nonzeros in
- * row/column k, and off-diagonal entries are set to -1.
+ * are preserved.  The "pattern" format is converted into real.  If a pattern
+ * matrix is unsymmetric, all of its values are equal to one.  If a pattern is
+ * symmetric, the kth diagonal entry is set to one plus the number of
+ * off-diagonal nonzeros in row/column k, and off-diagonal entries are set to
+ * -1.
+ *
+ * Explicit zero entries are returned as the binary pattern of the matrix Z.
  */
 
 #include "cholmod_matlab.h"
 
-#define MAXLEN 1025
+/* maximum file length */
+#define MAXLEN 1030
 
 void mexFunction
 (
@@ -33,14 +40,15 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    cholmod_sparse *A ;
+    void *G ;
+    cholmod_dense *X = NULL ;
+    cholmod_sparse *A = NULL, *Z = NULL ;
     cholmod_triplet *T ;
     cholmod_common Common, *cm ;
-    int *Ti, *Tj ;
-    double *Tx, *Tz ;
-    FILE *f ;
+    int *Ti, *Tj, *Ap, *Ai, *Zp, *Zi ;
+    double *Tx, *Tz, *Ax, *Az, *Zx ;
     char filename [MAXLEN] ;
-    int nz, i, j, k, is_complex ;
+    int nz, i, j, k, is_complex, p, nrow, ncol, pz, nzeros, mtype, allzero ;
 
     /* ---------------------------------------------------------------------- */
     /* start CHOLMOD and set parameters */ 
@@ -54,91 +62,159 @@ void mexFunction
     /* get inputs */
     /* ---------------------------------------------------------------------- */
 
-    if (nargin != 1 || nargout > 1)
+    if (nargin > 2 || nargout > 2)
     {
-	mexErrMsgTxt ("usage: A = mread (file)") ;
+	mexErrMsgTxt ("usage: [A Z] = mread (filename, prefer_binary)") ;
     }
     if (!mxIsChar (pargin [0]))
     {
 	mexErrMsgTxt ("mread requires a filename") ;
     }
     mxGetString (pargin [0], filename, MAXLEN) ;
-    f = fopen (filename, "r") ;
-    if (f == NULL)
+    sputil_file = fopen (filename, "r") ;
+    if (sputil_file == NULL)
     {
 	mexErrMsgTxt ("cannot open file") ;
     }
+    if (nargin > 1)
+    {
+	cm->prefer_binary = (mxGetScalar (pargin [1]) != 0) ;
+    }
 
     /* ---------------------------------------------------------------------- */
-    /* read the triplet matrix */
+    /* read the matrix, as either a dense or sparse matrix */
     /* ---------------------------------------------------------------------- */
 
-    T = cholmod_read_triplet (f, cm) ;
-    fclose (f) ;
-    if (T == NULL)
+    G = cholmod_read_matrix (sputil_file, 1, &mtype, cm) ;
+    fclose (sputil_file) ;
+    sputil_file = NULL ;
+    if (G == NULL)
     {
 	mexErrMsgTxt ("could not read file") ;
     }
-    if (T->xtype == CHOLMOD_COMPLEX)
-    {
-	cholmod_triplet_xtype (CHOLMOD_ZOMPLEX, T, cm) ;
-    }
-    is_complex = (T->xtype == CHOLMOD_ZOMPLEX) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* convert to unsymmetric, if necessary */
-    /* ---------------------------------------------------------------------- */
-
-    /* this could be done with cholmod_copy for the real case, but that
-     * does not work for the zomplex case. */
-    if (T->stype != 0)
+    /* get the specific matrix (A or X), and change to ZOMPLEX if needed */
+    if (mtype == CHOLMOD_SPARSE)
     {
-	cholmod_reallocate_triplet (2*(T->nzmax), T, cm) ;
-	Ti = T->i ;
-	Tj = T->j ;
-	Tx = T->x ;
-	Tz = T->z ;
-	nz = T->nnz ;
-	for (k = 0 ; k < T->nnz ; k++)
+	A = (cholmod_sparse *) G ;
+	nrow = A->nrow ;
+	ncol = A->ncol ;
+	is_complex = (A->xtype == CHOLMOD_COMPLEX) ;
+	Ap = A->p ;
+	Ai = A->i ;
+	if (is_complex)
 	{
-	    i = Ti [k] ;
-	    j = Tj [k] ;
-	    if (i != j)
+	    /* if complex, ensure A is ZOMPLEX */
+	    cholmod_sparse_xtype (CHOLMOD_ZOMPLEX, A, cm) ;
+	}
+	Ax = A->x ;
+	Az = A->z ;
+    }
+    else if (mtype == CHOLMOD_DENSE)
+    {
+	X = (cholmod_dense *) G ;
+	nrow = X->nrow ;
+	ncol = X->ncol ;
+	is_complex = (X->xtype == CHOLMOD_COMPLEX) ;
+	if (is_complex)
+	{
+	    /* if complex, ensure X is ZOMPLEX */
+	    cholmod_dense_xtype (CHOLMOD_ZOMPLEX, X, cm) ;
+	}
+	Ax = X->x ;
+	Az = X->z ;
+    }
+    else
+    {
+	mexErrMsgTxt ("invalid file") ;
+    }
+
+    /* ---------------------------------------------------------------------- */
+    /* if requested, extract the zero entries and place them in Z */
+    /* ---------------------------------------------------------------------- */
+
+    if (nargout > 1)
+    {
+	if (mtype == CHOLMOD_SPARSE)
+	{
+	    /* A is a sparse real/zomplex double matrix */
+	    Z = sputil_extract_zeros (A, cm) ;
+	}
+	else
+	{
+	    /* input is full; just return an empty Z matrix */
+	    Z = cholmod_spzeros (nrow, ncol, 0, CHOLMOD_REAL, cm) ;
+	}
+    }
+
+    /* ---------------------------------------------------------------------- */
+    /* prune the zero entries from A and set nzmax(A) to nnz(A) */
+    /* ---------------------------------------------------------------------- */
+
+    if (mtype == CHOLMOD_SPARSE)
+    {
+	sputil_drop_zeros (A) ;
+	cholmod_reallocate_sparse (cholmod_nnz (A, cm), A, cm) ;
+    }
+
+    /* ---------------------------------------------------------------------- */
+    /* change a complex matrix to real if its imaginary part is all zero */
+    /* ---------------------------------------------------------------------- */
+
+    if (is_complex)
+    {
+	if (mtype == CHOLMOD_SPARSE)
+	{
+	    nz = Ap [ncol] ;
+	}
+	else
+	{
+	    nz = nrow * ncol ;
+	}
+	allzero = TRUE ;
+	for (k = 0 ; k < nz ; k++)
+	{
+	    if (Az [k] != 0)
 	    {
-		Ti [nz] = j ;
-		Tj [nz] = i ;
-		Tx [nz] = Tx [k] ;
-		if (is_complex)
-		{
-		    Tz [nz] = -Tz [k] ;
-		}
-		nz++ ;
+		allzero = FALSE ;
+		break ;
 	    }
 	}
-	T->nnz = nz ;
-	T->stype = 0 ;
+	if (allzero)
+	{
+	    /* discard the all-zero imaginary part */
+	    if (mtype == CHOLMOD_SPARSE)
+	    {
+		cholmod_sparse_xtype (CHOLMOD_REAL, A, cm) ;
+	    }
+	    else
+	    {
+		cholmod_dense_xtype (CHOLMOD_REAL, X, cm) ;
+	    }
+	}
     }
 
     /* ---------------------------------------------------------------------- */
-    /* convert to sparse matrix */
+    /* return results to MATLAB */
     /* ---------------------------------------------------------------------- */
 
-    A = cholmod_triplet_to_sparse (T, 0, cm) ;
-    cholmod_free_triplet (&T, cm) ;
+    if (mtype == CHOLMOD_SPARSE)
+    {
+	pargout [0] = sputil_put_sparse (&A, cm) ;
+    }
+    else
+    {
+	pargout [0] = sputil_put_dense (&X, cm) ;
+    }
+    if (nargout > 1)
+    {
+	pargout [1] = sputil_put_sparse (&Z, cm) ;
+    }
 
     /* ---------------------------------------------------------------------- */
-    /* return result to MATLAB */
-    /* ---------------------------------------------------------------------- */
-
-    pargout [0] = sputil_put_sparse (&A, cm) ;
-
-    /* ---------------------------------------------------------------------- */
-    /* free workspace and the CHOLMOD A, except for what is copied to MATLAB */
+    /* free workspace */
     /* ---------------------------------------------------------------------- */
 
     cholmod_finish (cm) ;
     cholmod_print_common (" ", cm) ;
-    /*
-    if (cm->malloc_count != (3 + mxIsComplex (pargout[0]))) mexErrMsgTxt ("!") ;
-    */
 }

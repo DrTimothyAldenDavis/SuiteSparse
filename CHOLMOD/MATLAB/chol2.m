@@ -1,4 +1,4 @@
-function [R,p,q] = chol2 (A)
+function [R,p,q] = chol2 (A)						    %#ok
 %CHOL2: Sparse Cholesky factorization, A=R'R.
 %   Note that A=L*L' (LCHOL) and A=L*D*L' (LDLCHOL) factorizations are faster
 %   than R'*R (CHOL2 and CHOL) and use less memory.  The LL' and LDL'

@@ -1,4 +1,14 @@
-clear all
+function test19
+%TEST19 test cs_dmperm, cs_maxtransr, cs_dmspy, cs_scc
+%
+% Example:
+%   test19
+% See also: testall
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
+
 clear functions
 
 randn ('state', 0) ;
@@ -69,8 +79,8 @@ for trials = 1:1000
 %    end
 
     if (rp (4) - 1 ~= sprnk)
-	rp
-	sprnk
+	rp		%#ok
+	sprnk		%#ok
 	error ('!') ;
     end
 
@@ -98,10 +108,10 @@ for trials = 1:1000
     % spy (C) ;
     % hold on
 
-    r1 = rp(1) ;
-    r2 = rp(2) ;
-    c1 = cp(1)  ;
-    c2 = cp(2) ;
+    % r1 = rp(1) ;
+    % r2 = rp(2) ;
+    % c1 = cp(1)  ;
+    % c2 = cp(2) ;
     % plot ([c1 c2 c2 c1 c1]-.5, [r1 r1 r2 r2 r1]-.5, 'g') ;
 
     r1 = rp(1) ;

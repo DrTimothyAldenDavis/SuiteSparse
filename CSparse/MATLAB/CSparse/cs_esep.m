@@ -4,7 +4,15 @@ function [a,b] = cs_esep (A)
 %   into two parts a and b of roughly equal size.  The edge separator is the
 %   set of entries in A(a,b).
 %
+%   Example:
+%       Prob = UFget ('HB/bcsstk01') ; A = Prob.A ;
+%       [a,b] = cs_esep (A) ;
+%       cspy (A (a,b)) ;
+%
 %   See also CS_NSEP, CS_SEP, CS_ND, SYMRCM.
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
 
 p = symrcm (A) ;
 n2 = fix (size(A,1)/2) ;

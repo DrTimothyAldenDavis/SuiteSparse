@@ -1,5 +1,5 @@
  Matrix key: QC324                         
-UMFPACK V4.6.0 (Oct. 10, 2005), Control:
+UMFPACK V5.0.2 (Dec 2, 2006), Control:
     Matrix entry defined as: double complex
     Int (generic integer) defined as: int
 
@@ -26,16 +26,16 @@ UMFPACK V4.6.0 (Oct. 10, 2005), Control:
     19: AMD and COLAMD aggressive absorption: 1 (yes)
 
     The following options can only be changed at compile-time:
-    8: BLAS library used:  Fortran BLAS.
+    8: BLAS library used:  Fortran BLAS.  size of BLAS integer: 4
     9: compiled for ANSI C
     10: CPU timer is POSIX times ( ) routine.
     11: compiled for normal operation (debugging disabled)
     computer/operating system: Linux
-    size of int: 4 long: 4 Int: 4 pointer: 4 double: 8 Entry: 16 (in bytes)
+    size of int: 4 UF_long: 4 Int: 4 pointer: 4 double: 8 Entry: 16 (in bytes)
 
 symbolic analysis:
    status:     0.
-   time:      0.00E+00 (sec)
+   time:      0.10E-01 (sec)
    estimates (upper bound) for numeric LU:
    size of LU:          1.17 (MB)
    memory needed:       2.40 (MB)
@@ -44,17 +44,17 @@ symbolic analysis:
    nnz (U):           39609.
 numeric factorization:
    status:     0.
-   time:      0.20E-01
+   time:      0.10E-01
    actual numeric LU statistics:
    size of LU:          0.72 (MB)
    memory needed:       1.14 (MB)
    flop count:      0.14E+08
    nnz (L):           23247.
    nnz (U):           23247.
-UMFPACK V4.6.0 (Oct. 10, 2005), Info:
+UMFPACK V5.0.2 (Dec 2, 2006), Info:
     matrix entry defined as:          double complex
     Int (generic integer) defined as: int
-    BLAS library used:                Fortran BLAS.
+    BLAS library used: Fortran BLAS.  size of BLAS integer: 4
     MATLAB:                           no.
     CPU timer:                        POSIX times ( ) routine.
     number of rows in matrix A:       324
@@ -62,7 +62,7 @@ UMFPACK V4.6.0 (Oct. 10, 2005), Info:
     entries in matrix A:              26730
     memory usage reported in:         8-byte Units
     size of int:                      4 bytes
-    size of long:                     4 bytes
+    size of UF_long:                  4 bytes
     size of pointer:                  4 bytes
     size of numerical entry:          16 bytes
 
@@ -94,7 +94,7 @@ UMFPACK V4.6.0 (Oct. 10, 2005), Info:
     symbolic memory usage (MBytes):                0.5
     Symbolic size (Units):                         1418
     Symbolic size (MBytes):                        0
-    symbolic factorization CPU time (sec):         0.00
+    symbolic factorization CPU time (sec):         0.01
     symbolic factorization wallclock time(sec):    0.01
 
     matrix scaled: yes (divided each row by sum of abs values in each row)
@@ -133,9 +133,9 @@ UMFPACK V4.6.0 (Oct. 10, 2005), Info:
     numeric factorization defragmentations:        0
     numeric factorization reallocations:           0
     costly numeric factorization reallocations:    0
-    numeric factorization CPU time (sec):          0.02
+    numeric factorization CPU time (sec):          0.01
     numeric factorization wallclock time (sec):    0.02
-    numeric factorization mflops (CPU time):       717.60
+    numeric factorization mflops (CPU time):       1435.19
     numeric factorization mflops (wallclock):      717.60
     symbolic + numeric CPU time (sec):             0.02
     symbolic + numeric mflops (CPU time):          717.60
@@ -149,9 +149,5 @@ UMFPACK V4.6.0 (Oct. 10, 2005), Info:
     solve wall clock time (sec):                   0.00
 
     total symbolic + numeric + solve flops:        1.47223e+07
-    total symbolic + numeric + solve CPU time:     0.02
-    total symbolic + numeric + solve mflops (CPU): 736.11
-    total symbolic+numeric+solve wall clock time:  0.03
-    total symbolic+numeric+solve mflops(wallclock) 490.74
 
- norm (A*x-b):   2.35219959E-13
+ norm (A*x-b):   4.14427277E-13

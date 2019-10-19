@@ -5,7 +5,7 @@
 CC = gcc
 CFLAGS = -O3 -fPIC
 UMFPACK_CONFIG = -DTESTING
-LIB = -lgoto -lxerbla -lfrtbegin -lg2c -lm
+LIB = -lgoto -lgfortran -lgfortranbegin -lm
 
 RANLIB = ranlib
 MV = mv -f

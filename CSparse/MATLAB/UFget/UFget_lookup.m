@@ -1,7 +1,8 @@
 function [group name id] = UFget_lookup (matrix, UF_Index)
 %UFget_lookup determine the group, name, and id of a UF sparse matrix.
 %
-%   [group name id] = UFget_lookup (matrix, UF_Index)
+%   Example:
+%       [group name id] = UFget_lookup (matrix, UF_Index)
 %
 %   See also UFget.
 
@@ -32,15 +33,15 @@ elseif (ischar (matrix))
     % find the group index for the file separator
     % check both types of slashes, and a colon
     gi = find (matrix == '/') ;
-    if (length (gi) == 0)
+    if (length (gi) == 0)						    %#ok
         gi = find (matrix == '\') ;
     end
-    if (length (gi) == 0)
+    if (length (gi) == 0)						    %#ok
         gi = find (matrix == ':') ;
     end
 
     % if no name divider is in the string, a whole group is specified
-    if length (gi) == 0
+    if (length (gi) == 0)						    %#ok
 
 	id = 0 ;
 	group = matrix ;

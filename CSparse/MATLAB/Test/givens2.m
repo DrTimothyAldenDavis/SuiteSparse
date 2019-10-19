@@ -1,4 +1,12 @@
 function g = givens2(a,b)
+%GIVENS2 find a Givens rotation.
+% Example:
+%   g = givens2(a,b)
+% See also: cs_demo
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
 if (b == 0)
     c = 1 ; s = 0 ;
 elseif (abs (b) > abs (a))

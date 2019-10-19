@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * CHOLMOD/MATLAB Module.  Version 1.2.  Copyright (C) 2005-2006,
+ * CHOLMOD/MATLAB Module.  Version 1.3.  Copyright (C) 2005-2006,
  * Timothy A. Davis
  * The CHOLMOD/MATLAB Module is licensed under Version 2.0 of the GNU
  * General Public License.  See gpl.txt for a text of the license.
@@ -29,7 +29,7 @@
  *	[p count] = analyze (A,'row',k)	orders A*A'
  *	[p count] = analyze (A,'col',k)	orders A'*A
  *
- *	k=0 is the default.  k > 0 selects the ordering strategy.
+ *	k=0 is the default.  k != 0 selects the ordering strategy.
  *
  * See analyze.m for more details.
  */
@@ -73,6 +73,27 @@ void mexFunction
     if (nargin == 3)
     {
 	cm->nmethods = mxGetScalar (pargin [2]) ;
+	if (cm->nmethods == -1)
+	{
+	    /* use AMD only */
+	    cm->nmethods = 1 ;
+	    cm->method [0].ordering = CHOLMOD_AMD ;
+	    cm->postorder = TRUE ;
+	}
+	else if (cm->nmethods == -2)
+	{
+	    /* use METIS only */
+	    cm->nmethods = 1 ;
+	    cm->method [0].ordering = CHOLMOD_METIS ;
+	    cm->postorder = TRUE ;
+	}
+	else if (cm->nmethods == -3)
+	{
+	    /* use NESDIS only */
+	    cm->nmethods = 1 ;
+	    cm->method [0].ordering = CHOLMOD_NESDIS ;
+	    cm->postorder = TRUE ;
+	}
     }
 
     /* ---------------------------------------------------------------------- */

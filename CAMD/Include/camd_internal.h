@@ -154,7 +154,9 @@
 #define NULL 0
 
 /* largest value of size_t */
+#ifndef SIZE_T_MAX
 #define SIZE_T_MAX ((size_t) (-1))
+#endif
 
 /* ------------------------------------------------------------------------- */
 /* integer type for CAMD: int or UF_long */

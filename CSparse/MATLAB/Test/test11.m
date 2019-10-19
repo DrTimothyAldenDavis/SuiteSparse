@@ -1,3 +1,13 @@
+function test11
+%TEST11 test cs_rowcnt
+%
+% Example:
+%   test11
+% See also: testall
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
 clear
 clear functions
 index = UFget ;
@@ -5,7 +15,8 @@ index = UFget ;
 f = f (1:200) ;
 
 for i = f
-    Prob = UFget (i)
+    Prob = UFget (i, index) ;
+    disp (Prob) ;
     A = Prob.A ;
     [m n] = size (A) ;
     if (~isreal (A) || m ~= n)

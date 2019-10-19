@@ -1,5 +1,12 @@
-function A = mesh3d1 (n)
+function [A keep ii jj xx] = mesh3d1 (n)
 % create an n-by-n-by-n 3D mesh for the 2nd difference operator
+% Example:
+%   A = mesh3d1 (10) ;	% a 10-by-10-by-10 mesh
+% See also: cs_demo
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
 ii = zeros (7*n^3, 1) ;
 jj = zeros (7*n^3, 1) ;
 xx = zeros (7*n^3, 1) ;

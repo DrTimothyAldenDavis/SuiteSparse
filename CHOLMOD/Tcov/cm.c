@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * CHOLMOD/Tcov Module.  Version 1.2.  Copyright (C) 2005-2006, Timothy A. Davis
+ * CHOLMOD/Tcov Module.  Version 1.3.  Copyright (C) 2005-2006, Timothy A. Davis
  * The CHOLMOD/Tcov Module is licensed under Version 2.0 of the GNU
  * General Public License.  See gpl.txt for a text of the license.
  * CHOLMOD is also available under other licenses; contact authors for details.
@@ -286,7 +286,7 @@ cholmod_triplet *read_triplet
     xtype++ ;
     is_complex = (xtype != CHOLMOD_REAL) ;
 
-    printf ("nrow "ID" ncol "ID" nz "ID" stype "ID" xtype "ID"\n",
+    printf ("read_triplet: nrow "ID" ncol "ID" nz "ID" stype "ID" xtype "ID"\n",
 	    nrow, ncol, nz, stype, xtype) ;
 
     arrowhead = FALSE ;
@@ -435,7 +435,8 @@ cholmod_triplet *read_triplet
 	{
 	    for (k = 0 ; k < nz ; k++)
 	    {
-		if (fscanf (f,""ID" "ID" %lg %lg\n", Ti+k, Tj+k, Tx+k, Tz+k) == EOF)
+		if (fscanf (f,""ID" "ID" %lg %lg\n", Ti+k, Tj+k, Tx+k, Tz+k)
+		    == EOF)
 		{
 		    ERROR (CHOLMOD_INVALID, "Error reading triplet matrix\n") ;
 		}
@@ -1518,19 +1519,6 @@ int main (int argc, char **argv)
 	    */
 
 	    if (F) F->stype = 1 ;
-
-#if 0
-{
-int save = cm->print ;
-cm->print = 5 ;
-/*
-CHOLMOD(print_sparse) (E, "E", cm) ;
-CHOLMOD(print_sparse) (ET, "ET", cm) ;
-*/
-CHOLMOD(print_sparse) (F, "F", cm) ;
-cm->print = save ;
-}
-#endif
 
 	    err = raw_factor2 (F, 0., 0) ;
 	    MAXERR (maxerr, err, 1) ;

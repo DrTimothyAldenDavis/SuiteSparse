@@ -1,4 +1,4 @@
-function [vnz,rnz,parent,c,leftmost,p,q] = cs_sqr (A)
+function [vnz,rnz,parent,c,leftmost,p,q] = cs_sqr (A)			    %#ok
 %CS_SQR symbolic sparse QR factorization.
 %   [vnz,rnz,parent,c,leftmost,p] = cs_sqr(A): symbolic QR of A(p,:).
 %   [vnz,rnz,parent,c,leftmost,p,q] = cs_sqr(A) computes the symbolic QR
@@ -11,6 +11,11 @@ function [vnz,rnz,parent,c,leftmost,p,q] = cs_sqr (A)
 %   p is the row permutation used to ensure R has a symbolically zero-free
 %   diagonal (it can be larger than m if A is structurally rank deficient).
 %   q is the fill-reducing ordering, if requested.
+%
+%   Example:
+%       Prob = UFget ('HB/ibm32') ; A = Prob.A ;
+%       [vnz, rnz, parent, c, leftmost, p, q] = cs_sqr (A) ;
+%       cspy (A (p,q)) ;
 %
 %   See also CS_AMD, CS_QR.
 %

@@ -17,7 +17,9 @@ Quick start (for MATLAB users);
 
     To compile, test, and install the CAMD mexFunction, cd to the
     CAMD/MATLAB directory and type camd_make at the MATLAB prompt.
-    This works on any system supported by MATLAB.
+
+    NOTE: DO NOT ATTEMPT TO USE THIS CODE IN 64-BIT MATLAB (v7.3).
+    It is not yet ported to that version of MATLAB.
 
 -------------------------------------------------------------------------------
 

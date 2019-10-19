@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * CHOLMOD/Core Module.  Version 1.2.  Copyright (C) 2005-2006,
+ * CHOLMOD/Core Module.  Version 1.3.  Copyright (C) 2005-2006,
  * Univ. of Florida.  Author: Timothy A. Davis
  * The CHOLMOD/Core Module is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
@@ -19,7 +19,7 @@
 /* === t_cholmod_triplet_to_sparse ========================================== */
 /* ========================================================================== */
 
-static int TEMPLATE (cholmod_triplet_to_sparse)
+static size_t TEMPLATE (cholmod_triplet_to_sparse)
 (
     /* ---- input ---- */
     cholmod_triplet *T,	/* matrix to copy */
@@ -31,7 +31,8 @@ static int TEMPLATE (cholmod_triplet_to_sparse)
 {
     double *Rx, *Rz, *Tx, *Tz ;
     Int *Wj, *Rp, *Ri, *Rnz, *Ti, *Tj  ;
-    Int i, j, p, p1, p2, pdest, pj, k, stype, nrow, ncol, nz, anz ;
+    Int i, j, p, p1, p2, pdest, pj, k, stype, nrow, ncol, nz ;
+    size_t anz ;
 
     /* ---------------------------------------------------------------------- */
     /* get inputs */

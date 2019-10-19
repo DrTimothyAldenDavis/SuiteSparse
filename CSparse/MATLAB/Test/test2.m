@@ -1,3 +1,12 @@
+function test2
+%TEST2 test cs_sparse
+%
+% Example:
+%   test2
+% See also: testall
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
 
 rand ('state', 0)
 % clf
@@ -19,7 +28,8 @@ for trial = 1:100
 
     err = norm (A-B,1) / norm (A,1) ;
     if (err > 0)
-	err
+	disp ('err = ') ;
+	disp (err) ;
     end
     if (err > 1e-14)
 	error ('!') ;
@@ -38,7 +48,7 @@ for trial = 1:100
 	nzmax (B)
 	error ('nzmax!') ;
     end
-    pack
+    % pack
 
 
     [m n] = size (A) ;

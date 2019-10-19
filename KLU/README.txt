@@ -1,4 +1,4 @@
-KLU Version 0.9, May 5, 2006, by Timothy A. Davis and Ekanathan Palamadai.
+KLU Version 0.10, Dec 2, 2006, by Timothy A. Davis and Ekanathan Palamadai.
 Copyright (C) 2005, University of Florida
 KLU is also available under other licenses; contact authors for details.
 http://www.cise.ufl.edu/research/sparse

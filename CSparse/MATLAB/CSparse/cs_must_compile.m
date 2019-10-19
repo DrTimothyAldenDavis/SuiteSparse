@@ -1,6 +1,10 @@
 function [s, t, tobj] = cs_must_compile (srcdir, f, suffix, obj, hfile, force)
 %CS_MUST_COMPILE return 1 if source code f must be compiled, 0 otherwise
-%   Used by cs_make, and MATLAB/Test/cs_test_make.m.  Not meant for end users.
+%   Used by cs_make, and MATLAB/Test/cs_test_make.m.
+%
+%   Example:
+%        none, not meant for end users.
+%   See also: CS_MAKE.
 
 %   Copyright 2006, Timothy A. Davis.
 %   http://www.cise.ufl.edu/research/sparse

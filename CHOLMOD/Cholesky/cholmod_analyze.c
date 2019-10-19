@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * CHOLMOD/Cholesky Module.  Version 1.2.  Copyright (C) 2005-2006,
+ * CHOLMOD/Cholesky Module.  Version 1.3.  Copyright (C) 2005-2006,
  * Timothy A. Davis
  * The CHOLMOD/Cholesky Module is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
@@ -311,6 +311,11 @@ int CHOLMOD(analyze_ordering)
 {
     cholmod_sparse *A1, *A2, *S, *F ;
     Int n, ok, do_rowcolcounts ;
+
+    /* check inputs */
+    RETURN_IF_NULL_COMMON (FALSE) ;
+    RETURN_IF_NULL (A, FALSE) ;
+
     n = A->nrow ;
 
     do_rowcolcounts = (ColCount != NULL) ;

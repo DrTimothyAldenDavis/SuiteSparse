@@ -2,6 +2,13 @@ function A = frand (n,nel,s)
 % A = frand (n,nel,s) creates an n-by-n sparse matrix consisting of nel finite
 % elements, each of which are of size s-by-s with random symmetric nonzero
 % pattern, plus the identity matrix.
+%
+% Example:
+%   A = frand (100, 100, 4) ; cspy (A)
+% See also: cs_demo
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
 ss = s^2 ;
 nz = nel*ss ;
 ii = zeros (nz,1) ;

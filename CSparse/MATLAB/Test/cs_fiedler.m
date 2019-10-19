@@ -5,10 +5,18 @@ function [p,v,d] = cs_fiedler (A)
 %   of A+A').  p is the permutation obtained when v is sorted.  A should be a
 %   connected graph.
 %
+%   Example:
+%       [p,v,d] = cs_fiedler (A) ;
+%
 %   See also CS_SCC, EIGS, SYMRCM, UNMESH.
 
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
 n = size (A,1) ;
-if (n < 2) p = 1 ; v = 1 ; d = 0 ; return ; end
+if (n < 2)
+    p = 1 ; v = 1 ; d = 0 ; return ;
+end
 opt.disp = 0 ;			    % turn off printing in eigs
 opt.tol = sqrt (eps) ;
 S = A | A' | speye (n) ;	    % compute the Laplacian of A

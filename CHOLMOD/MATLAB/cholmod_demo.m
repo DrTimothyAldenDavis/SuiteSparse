@@ -48,7 +48,9 @@ n = 300 ;
 A = delsq (numgrid ('L', n)) ;
 b = sum (A)' ;
 
+spparms ('default') ;
 spparms ('autommd',0) ;
+spparms ('autoamd',0) ;
 tic ;
 x = A\b ;
 t1 = toc ;

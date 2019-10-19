@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * CHOLMOD/Core Module.  Version 1.2.  Copyright (C) 2005-2006,
+ * CHOLMOD/Core Module.  Version 1.3.  Copyright (C) 2005-2006,
  * Univ. of Florida.  Author: Timothy A. Davis
  * The CHOLMOD/Core Module is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
@@ -234,8 +234,9 @@ int CHOLMOD(free_sparse)
 /* === cholmod_reallocate_sparse ============================================ */
 /* ========================================================================== */
 
-/* Change the size of A->i and A->x, or allocate them if their current size
- * is zero.  A->x is not modified if A->xtype is CHOLMOD_PATTERN.
+/* Change the size of A->i, A->x, and A->z, or allocate them if their current
+ * size is zero.  A->x and A->z are not modified if A->xtype is CHOLMOD_PATTERN.
+ * A->z is not modified unless A->xtype is CHOLMOD_ZOMPLEX.
  * 
  * workspace: none
  */

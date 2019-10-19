@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * CHOLMOD/Include/cholmod_core.h.  Version 1.2.
+ * CHOLMOD/Include/cholmod_core.h.  Version 1.3.
  * Copyright (C) 2005-2006, Univ. of Florida.  Author: Timothy A. Davis
  * CHOLMOD/Include/cholmod_core.h is licensed under Version 2.1 of the GNU
  * Lesser General Public License.  See lesser.txt for a text of the license.
@@ -244,10 +244,10 @@
  *	#endif
  */
 
-#define CHOLMOD_DATE "Aug 31, 2006"
+#define CHOLMOD_DATE "Dec 2, 2006"
 #define CHOLMOD_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define CHOLMOD_MAIN_VERSION 1
-#define CHOLMOD_SUB_VERSION 2
+#define CHOLMOD_SUB_VERSION 3
 #define CHOLMOD_SUBSUB_VERSION 0
 #define CHOLMOD_VERSION \
     CHOLMOD_VER_CODE(CHOLMOD_MAIN_VERSION,CHOLMOD_SUB_VERSION)
@@ -267,6 +267,18 @@
 
 #include <stddef.h>
 #include <stdlib.h>
+
+/* ========================================================================== */
+/* === CHOLMOD objects ====================================================== */
+/* ========================================================================== */
+
+/* Each CHOLMOD object has its own type code. */
+
+#define CHOLMOD_COMMON 0
+#define CHOLMOD_SPARSE 1
+#define CHOLMOD_FACTOR 2
+#define CHOLMOD_DENSE 3
+#define CHOLMOD_TRIPLET 4
 
 /* ========================================================================== */
 /* === CHOLMOD Common ======================================================= */
@@ -886,12 +898,21 @@ typedef struct cholmod_common_struct
      * and workspace.  Note:  additional entries were added in v1.1 to the
      * method array, above, and thus v1.0 and v1.1 are not binary compatible.
      *
-     * v1.1 and v1.2 are binary compatible.
+     * v1.1 through v1.3 are binary compatible.
      */
 
     double  other1 [16] ;
     UF_long other2 [16] ;
-    int     other3 [14] ;   /* reduced from size 16 in v1.1. */
+    int     other3 [13] ;   /* reduced from size 16 in v1.1. */
+
+    int prefer_binary ;	    /* cholmod_read_triplet converts a symmetric
+			     * pattern-only matrix into a real matrix.  If
+	* prefer_binary is FALSE, the diagonal entries are set to 1 + the degree
+	* of the row/column, and off-diagonal entries are set to -1 (resulting
+	* in a positive definite matrix if the diagonal is zero-free).  Most
+	* symmetric patterns are the pattern a positive definite matrix.  If
+	* this parameter is TRUE, then the matrix is returned with a 1 in each
+	* entry, instead.  Default: FALSE.  Added in v1.3. */
 
     /* control parameter (added for v1.2): */
     int default_nesdis ;    /* Default: FALSE.  If FALSE, then the default
@@ -2032,12 +2053,12 @@ cholmod_sparse *cholmod_triplet_to_sparse
 (
     /* ---- input ---- */
     cholmod_triplet *T,	/* matrix to copy */
-    int nzmax,		/* allocate at least this much space in output matrix */
+    size_t nzmax,	/* allocate at least this much space in output matrix */
     /* --------------- */
     cholmod_common *Common
 ) ;
 
-cholmod_sparse *cholmod_l_triplet_to_sparse (cholmod_triplet *, int,
+cholmod_sparse *cholmod_l_triplet_to_sparse (cholmod_triplet *, size_t,
     cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
@@ -2159,6 +2180,18 @@ int cholmod_realloc_multiple
 
 int cholmod_l_realloc_multiple (size_t, int, int, void **, void **, void **,
     void **, size_t *, cholmod_common *) ;
+
+/* ========================================================================== */
+/* === symmetry types ======================================================= */
+/* ========================================================================== */
+
+#define CHOLMOD_MM_RECTANGULAR 1
+#define CHOLMOD_MM_UNSYMMETRIC 2
+#define CHOLMOD_MM_SYMMETRIC 3
+#define CHOLMOD_MM_HERMITIAN 4
+#define CHOLMOD_MM_SKEW_SYMMETRIC 5
+#define CHOLMOD_MM_SYMMETRIC_POSDIAG 6
+#define CHOLMOD_MM_HERMITIAN_POSDIAG 7
 
 /* ========================================================================== */
 /* === Numerical relop macros =============================================== */

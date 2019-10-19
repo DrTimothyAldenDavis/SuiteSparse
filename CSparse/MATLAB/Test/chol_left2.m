@@ -1,4 +1,12 @@
-function L = chol_left (A)
+function L = chol_left2 (A)
+%CHOL_LEFT2 left-looking Cholesky factorization, more details.
+% Example
+%   L = chol_left2 (A)
+% See also: cs_demo
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
 n = size (A,1) ;
 L = sparse (n,n) ;
 a = sparse (n,1) ;

@@ -1,3 +1,13 @@
+function test6
+%TEST6 test cs_reach, cs_reachr, cs_lsolve, cs_usolve
+%
+% Example:
+%   test6
+% See also: testall
+
+%   Copyright 2006, Timothy A. Davis.
+%   http://www.cise.ufl.edu/research/sparse
+
 rand ('state', 0)
 maxerr = 0 ;
 clf
@@ -18,7 +28,7 @@ for trial = 1:201
 	sr = 1 + cs_reachr (L,b) ;
 	sz = 1 + cs_reachr (L,b) ;
 
-	same (sr,sz) ;
+	check_if_same (sr,sz) ;
 
 	s2 = 1 + cs_reach (L,b) ;
 
@@ -37,40 +47,40 @@ for trial = 1:201
 
 	if (isempty (i))
 	    if (~isempty (s))
-		i
-		s
+		i	%#ok
+		s	%#ok
 		error ('!') ;
 	    end
 	elseif (any (s ~= i))
-	    i
-	    s
+	    i	    %#ok
+	    s	    %#ok
 	    error ('!') ;
 	end
 
 	if (isempty (i3))
 	    if (~isempty (s))
-		i3
-		s
+		i3	%#ok
+		s	%#ok
 		error ('!') ;
 	    end
 	elseif (any (s ~= sort (i3)))
-	    s
-	    i3
+	    s	    %#ok
+	    i3	    %#ok
 	    error ('!') ;
 	end
 
 	if (any (s2 ~= sr))
-	    s2
-	    sr
+	    s2	    %#ok
+	    sr	    %#ok
 	    error ('!') ;
 	end
 
 	err = norm (x-x3,1) ;
 	if (err > 1e-12)
-	    x
-	    x3
-	    uplo
-	    err
+	    x	    %#ok
+	    x3	    %#ok
+	    uplo    %#ok
+	    err	    %#ok
 	    error ('!') 
 	end
 
@@ -80,4 +90,4 @@ for trial = 1:201
 
     drawnow
 end
-maxerr
+fprintf ('maxerr = %g\n', maxerr) ;

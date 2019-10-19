@@ -5,34 +5,20 @@
 # If you compile CHOLMOD with -DNPARTITION, then you do not need METIS,
 # CCOLAMD, or the Partition module.
 
-default: all
-
 include ../../UFconfig/UFconfig.mk
+include Make.inc
 
 # Tcov requires gcc
 CC = gcc
 
-# Linux, with picky tests (only works if METIS is fixed):
-# CFLAGS = -Wall -W -Werror -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
-#   	-Wredundant-decls -Wnested-externs -Wdisabled-optimization \
-# 	-ansi -g -fprofile-arcs -ftest-coverage -fexceptions
-
-# Linux, with no picky tests (works with METIS 4.0.1 as-is)
-CFLAGS = -g -fprofile-arcs -ftest-coverage
-
-# Solaris, 64bit
-# CFLAGS = -g -xprofile=tcov -xarch=v9
-
-# Solaris, 32bit
-# CFLAGS = -g -xprofile=tcov
-
 C = $(CC) $(CFLAGS) $(CHOLMOD_CONFIG) $(NANTESTS)
 
 # optimized LAPACK and BLAS
-LIB = $(METIS) -lm $(LAPACK) $(BLAS) $(XERBLA)
+# LIB = $(METIS) -lm $(LAPACK) $(BLAS) $(XERBLA)
 
-# LAPACK and the Fortran reference BLAS, compiled with -g -O:
-LIB = $(METIS) -lm -llapack_plain -lblas_plain -lg2c
+# LAPACK and the Fortran reference BLAS, compiled with gfortran -g -O:
+# LIB = $(METIS) -lm -llapack_plain -lblas_plain -lg2c
+LIB = $(METIS) -lm -llapack_plain -lblas_plain -lgfortran -lgfortranbegin
 
 # Solaris
 # LIB = $(METIS) -xlic_lib=sunperf
@@ -46,185 +32,10 @@ I = -I../../AMD/Include -I../../COLAMD \
 	-I$(METIS_PATH)/Lib -I../../CCOLAMD -I../../CAMD/Include -I../Include \
 	-I../../UFconfig
 
-all: cm cl z_demo l_demo cmread clread
+default: cm cl z_demo l_demo cmread clread
 
 TEST = cm.c test_ops.c null.c null2.c lpdemo.c memory.c solve.c aug.c unpack.c \
 	raw_factor.c cctest.c ctest.c amdtest.c camdtest.c huge.c
-
-cm: cov_cholmod.a $(TEST) cm.h Makefile
-	$(C) $(I) $(TEST) -o cm cov_cholmod.a $(LIB)
-
-cl: cov_cholmod.a $(TEST) cm.h Makefile
-	$(C) -DDLONG $(I) $(TEST) -o cl cov_cholmod.a $(LIB)
-
-cmread: cov_cholmod.a cmread.c Makefile
-	$(C) $(I) cmread.c -o cmread cov_cholmod.a $(LIB)
-
-clread: cov_cholmod.a cmread.c Makefile
-	$(C) -DDLONG $(I) cmread.c -o clread cov_cholmod.a $(LIB)
-
-z_demo: cov_cholmod.a ../Demo/cholmod_demo.c cm.h Makefile \
-	../Demo/cholmod_demo.h
-	cat ../Demo/cholmod_demo.c > z_demo.c
-	$(C) $(I) -I../Demo z_demo.c -o z_demo cov_cholmod.a $(LIB)
-
-l_demo: cov_cholmod.a ../Demo/cholmod_l_demo.c cm.h Makefile \
-	../Demo/cholmod_demo.h
-	cat ../Demo/cholmod_l_demo.c > l_demo.c
-	$(C) -DDLONG $(I) -I../Demo l_demo.c -o l_demo cov_cholmod.a $(LIB)
-
-go: cm cl z_demo l_demo cmread clread
-	./z_demo   ../Demo/Matrix/bcsstk01.tri > tmp/demo_k1.out
-	./z_demo   ../Demo/Matrix/bcsstk02.tri > tmp/demo_k2.out
-	./z_demo < ../Demo/Matrix/lp_afiro.tri > tmp/demo_afiro.out
-	./z_demo < ../Demo/Matrix/can___24.mtx > tmp/demo_can24.out
-	./z_demo < ../Demo/Matrix/c.tri        > tmp/demo_c.out
-	./z_demo < ../Demo/Matrix/d.tri        > tmp/demo_d.out
-	./z_demo < ../Demo/Matrix/up.tri       > tmp/demo_up.out
-	./z_demo < ../Demo/Matrix/c.mtx        > tmp/demo_c_mtx.out
-	./z_demo < ../Demo/Matrix/0.tri        > tmp/demo_0.out
-	./z_demo < Matrix/3_2                  > tmp/demo_3_2.out
-	./z_demo < Matrix/c5lo                 > tmp/demo_c5lo.out
-	./z_demo < Matrix/c10                  > tmp/demo_c10.out
-	./z_demo no_such_file                  > tmp/demo_no_such_file.out
-	./z_demo ../Demo/Matrix/mangle1.mtx    > tmp/demo_mangle1.out
-	./z_demo ../Demo/Matrix/mangle2.mtx    > tmp/demo_mangle2.out
-	./z_demo ../Demo/Matrix/mangle3.mtx    > tmp/demo_mangle3.out
-	./z_demo ../Demo/Matrix/mangle4.mtx    > tmp/demo_mangle4.out
-	./z_demo ../Demo/Matrix/pts5ldd03.mtx  >  tmp/demo_pts5ldd03.out
-	./l_demo   ../Demo/Matrix/bcsstk01.tri > tmp/ldemo_k1.out
-	./l_demo   ../Demo/Matrix/bcsstk02.tri > tmp/ldemo_k2.out
-	./l_demo < ../Demo/Matrix/lp_afiro.tri > tmp/ldemo_afiro.out
-	./l_demo < ../Demo/Matrix/can___24.mtx > tmp/ldemo_can24.out
-	./l_demo < ../Demo/Matrix/c.tri        > tmp/ldemo_c.out
-	./l_demo < ../Demo/Matrix/d.tri        > tmp/ldemo_d.out
-	./l_demo < ../Demo/Matrix/up.tri       > tmp/ldemo_up.out
-	./l_demo < ../Demo/Matrix/c.mtx        > tmp/ldemo_c_mtx.out
-	./l_demo < ../Demo/Matrix/0.tri        > tmp/ldemo_0.out
-	./l_demo < Matrix/3_2                  > tmp/ldemo_3_2.out
-	./l_demo < Matrix/c5lo                 > tmp/ldemo_c5lo.out
-	./l_demo < Matrix/c10                  > tmp/ldemo_c10.out
-	./l_demo no_such_file                  > tmp/ldemo_no_such_file.out
-	./l_demo ../Demo/Matrix/mangle1.mtx    > tmp/ldemo_mangle1.out
-	./l_demo ../Demo/Matrix/mangle2.mtx    > tmp/ldemo_mangle2.out
-	./l_demo ../Demo/Matrix/mangle3.mtx    > tmp/ldemo_mangle3.out
-	./l_demo ../Demo/Matrix/mangle4.mtx    > tmp/ldemo_mangle4.out
-	./l_demo ../Demo/Matrix/pts5ldd03.mtx  > tmp/ldemo_pts5ldd03.out
-	grep resid tmp/demo*
-	./cmread no_such_file                  > tmp/no_such_file.out
-	./cmread ../Demo/Matrix/mangle5.tri    > tmp/mangle5.out
-	./cmread ../Demo/Matrix/mangle6.tri    > tmp/mangle6.out
-	./cmread ../Demo/Matrix/mangle7.tri    > tmp/mangle6.out
-	./cmread ../Demo/Matrix/mangle8.tri    > tmp/mangle8.out
-	./cmread ../Demo/Matrix/empty.tri      > tmp/empty.out
-	./cmread ../Demo/Matrix/one.tri        > tmp/one.out
-	./cmread Matrix/plskz362.mtx           > tmp/plskz363.out
-	./cmread Matrix/2diag.tri	       > tmp/2diag.out
-	./cmread Matrix/r5lo    	       > tmp/r5lo.out
-	./cmread Matrix/r5lo2    	       > tmp/r5lo2.out
-	- diff tmp/r5lo.out tmp/r5lo2.out
-	./cmread Matrix/cs.mtx	               > tmp/cs.out
-	./cmread Matrix/2lo.tri	               > tmp/2lo.out
-	./cmread Matrix/2.tri	               > tmp/2.out
-	./cmread Matrix/2up.tri	               > tmp/2up.out
-	./cmread Matrix/huge.tri	       > tmp/huge.out
-	./clread no_such_file                  > tmp/l_no_such_file.out
-	./clread ../Demo/Matrix/mangle5.tri    > tmp/l_mangle5.out
-	./clread ../Demo/Matrix/mangle6.tri    > tmp/l_mangle6.out
-	./clread ../Demo/Matrix/mangle7.tri    > tmp/l_mangle6.out
-	./clread ../Demo/Matrix/mangle8.tri    > tmp/l_mangle8.out
-	./clread ../Demo/Matrix/empty.tri      > tmp/l_empty.out
-	./clread ../Demo/Matrix/one.tri        > tmp/l_one.out
-	./clread Matrix/plskz362.mtx           > tmp/l_plskz363.out
-	./clread Matrix/2diag.tri	       > tmp/l_2diag.out
-	./clread Matrix/r5lo    	       > tmp/l_r5lo.out
-	./clread Matrix/r5lo2    	       > tmp/l_r5lo2.out
-	- diff tmp/r5lo.out tmp/r5lo2.out
-	./clread Matrix/cs.mtx	               > tmp/l_cs.out
-	./clread Matrix/2lo.tri	               > tmp/l_l_2lo.out
-	./clread Matrix/2.tri	               > tmp/l_2.out
-	./clread Matrix/2up.tri	               > tmp/l_2up.out
-	./clread Matrix/huge.tri               > tmp/l_huge.out
-	./cm    < Matrix/galenet > tmp/galenet.out
-	./cl    < Matrix/galenet > tmp/l_galenet.out ; ./covall
-	./cm    < Matrix/5by50   > tmp/5by50.out
-	./cl    < Matrix/5by50   > tmp/l_5by50.out ; ./covall
-	./cm    < Matrix/r5lo    > tmp/r5lo.out 
-	./cl    < Matrix/r5lo    > tmp/l_r5lo.out
-	./cm    < Matrix/r5up    > tmp/r5up.out
-	./cl    < Matrix/r5up    > tmp/l_r5up.out
-	./cm    < Matrix/r5up2   > tmp/r5up2.out
-	./cl    < Matrix/r5up2   > tmp/l_r5up2.out
-	./cm    < Matrix/c5up2   > tmp/c5up2.out
-	./cl    < Matrix/c5up2   > tmp/l_c5up2.out
-	./cm    < Matrix/z5up2   > tmp/z5up2.out
-	./cl    < Matrix/z5up2   > tmp/l_z5up2.out
-	./cm -m < Matrix/z5lo    > tmp/z5lo.out
-	./cl -m < Matrix/z5lo    > tmp/l_z5lo.out
-	./cm    < Matrix/ibm32   > tmp/ibm.out
-	./cl    < Matrix/ibm32   > tmp/l_ibm.out    ; ./covall
-	./cm -m < Matrix/c5lo    > tmp/c5lo.out
-	./cl -m < Matrix/c5lo    > tmp/l_c5lo.out
-	./cm -m < Matrix/z10     > tmp/z10.out
-	./cl -m < Matrix/z10     > tmp/l_z10.out
-	./cm -m < Matrix/z5up    > tmp/z5up.out
-	./cl -m < Matrix/z5up    > tmp/l_z5up.out   ; ./covall
-	./cm -s < Matrix/3singular  > tmp/3singular.out
-	./cl -s < Matrix/3singular  > tmp/l_3singular.out
-	./cm -s < Matrix/z3singular > tmp/z3singular.out
-	./cl -s < Matrix/z3singular > tmp/l_z3singular.out
-	./cm -s < Matrix/c3singular > tmp/c3singular.out
-	./cl -s < Matrix/c3singular > tmp/l_c3singular.out
-	./cm -m < Matrix/0       > tmp/0.out
-	./cl -m < Matrix/0       > tmp/l_0.out
-	./cm -m < Matrix/afiro   > tmp/afiro.out
-	./cl -m < Matrix/afiro   > tmp/l_afiro.out ; ./covall
-	./cm -m < Matrix/k01up   > tmp/k01up.out
-	./cl -m < Matrix/k01up   > tmp/l_k01up.out ; ./covall
-	./cm    < Matrix/diag    > tmp/diag.out
-	./cl    < Matrix/diag    > tmp/l_diag.out
-	./cm -m < Matrix/ex5lo   > tmp/ex5lo.out
-	./cl -m < Matrix/ex5lo   > tmp/l_ex5lo.out ; ./covall
-	./cm    < Matrix/20lo    > tmp/20lo.out
-	./cl    < Matrix/20lo    > tmp/l_20lo.out
-	./cm    < Matrix/z30lo   > tmp/z30lo.out
-	./cl    < Matrix/z30lo   > tmp/l_z30lo.out ; ./covall
-	./cm -m < Matrix/z30up   > tmp/z30up.out
-	./cl -m < Matrix/z30up   > tmp/l_z30up.out
-	./cm    < Matrix/c10     > tmp/c10.out
-	./cl    < Matrix/c10     > tmp/l_c10.out
-	./cm    < Matrix/c30lo   > tmp/c30lo.out
-	./cl    < Matrix/c30lo   > tmp/l_c30lo.out ; ./covall
-	./cm -m < Matrix/c30up   > tmp/c30up.out
-	./cl -m < Matrix/c30up   > tmp/l_c30up.out
-	./cm    < Matrix/pi      > tmp/pi.out
-	./cl    < Matrix/pi      > tmp/l_pi.out
-	./cm    < Matrix/cpi     > tmp/cpi.out
-	./cl    < Matrix/cpi     > tmp/l_cpi.out
-	./cm    < Matrix/1_0     > tmp/1_0.out
-	./cl    < Matrix/1_0     > tmp/l_1_0.out
-	./cm    < Matrix/0_1     > tmp/0_1.out
-	./cl    < Matrix/0_1     > tmp/l_0_1.out   ; ./covall
-	./cm -n < Matrix/galenet > tmp/galenet_nan.out		; ./covall
-	./cl -n < Matrix/galenet > tmp/l_galenet_nan.out	; ./covall
-	./cm    < Matrix/a1      > tmp/a1.out	   ; ./covall
-	./cl    < Matrix/a1      > tmp/l_a1.out	   ; ./covall
-	./cm    < Matrix/zero    > tmp/zero.out
-	./cl    < Matrix/zero    > tmp/zero.out	; ./covall
-
-cov:
-	- ./covall
-
-purge: distclean
-
-distclean: clean
-	- $(RM) cm cl cmread clread *.c.gcov *.out tmp/*.out z_demo l_demo
-	- $(RM) leak zz_*.c z_*.c *.a l_*.c zl_*.c cov.sort
-	- $(RM) -r cm.profile cmread.profile z_demo.profile 
-	- $(RM) -r cl.profile clread.profile l_demo.profile 
-
-clean:
-	- $(RM) $(CLEAN)
 
 INC =   ../Include/cholmod.h \
 	../Include/cholmod_blas.h \
@@ -287,26 +98,33 @@ LAMDOBJ = \
 
 COLAMDSRC = ../../COLAMD/colamd.c ../../COLAMD/colamd.h
 
-COLAMDOBJ = zz_colamd.o zz_colamd_global.o
+COLAMDOBJ = zz_colamd.o yz_colamd_global.o
 
-LCOLAMDOBJ = zl_colamd.o zl_colamd_global.o
+LCOLAMDOBJ = zl_colamd.o yl_colamd_global.o
 
 #-------------------------------------------------------------------------------
 # When using the Partition Module:
+
 CCOLAMDSRC = \
 	../../CCOLAMD/ccolamd.c \
 	../../CCOLAMD/ccolamd_global.c \
 	../../CCOLAMD/ccolamd.h
-CCOLAMDOBJ = zz_ccolamd.o zz_ccolamd_global.o
-LCCOLAMDOBJ = zl_ccolamd.o zl_ccolamd_global.o
+
+CCOLAMDOBJ = zz_ccolamd.o yz_ccolamd_global.o
+
+LCCOLAMDOBJ = zl_ccolamd.o yl_ccolamd_global.o
+
 $(CCOLAMDOBJ): $(CCOLAMDSRC)
+
 $(LCCOLAMDOBJ): $(CCOLAMDSRC)
+
 IPARTITION_OBJ = \
 	z_ccolamd.o \
 	z_csymamd.o \
 	z_camd.o \
 	z_metis.o \
 	z_nesdis.o
+
 LPARTITION_OBJ = \
 	l_ccolamd.o \
 	l_csymamd.o \
@@ -391,6 +209,7 @@ IOBJ = \
 	z_add.o \
 	z_check.o \
 	z_read.o \
+	z_write.o \
 	z_amd.o \
 	z_analyze.o \
 	z_colamd.o \
@@ -411,6 +230,7 @@ IOBJ = \
 	z_ssmult.o \
 	z_submatrix.o \
 	z_vertcat.o \
+	z_symmetry.o \
 	z_rowadd.o \
 	z_rowdel.o \
 	z_updown.o \
@@ -436,6 +256,7 @@ LOBJ = \
 	l_add.o \
 	l_check.o \
 	l_read.o \
+	l_write.o \
 	l_amd.o \
 	l_analyze.o \
 	l_colamd.o \
@@ -456,6 +277,7 @@ LOBJ = \
 	l_ssmult.o \
 	l_submatrix.o \
 	l_vertcat.o \
+	l_symmetry.o \
 	l_rowadd.o \
 	l_rowdel.o \
 	l_updown.o \
@@ -464,14 +286,241 @@ LOBJ = \
 	l_super_symbolic.o \
 	$(LPARTITION_OBJ)
 
-LIB2 = cov_cholmod.a $(LIB)
+IALL = $(IOBJ) $(AMDOBJ)  $(COLAMDOBJ)  $(CCOLAMDOBJ)  $(CAMDOBJ)
 
-ALL = $(IOBJ) $(LOBJ) $(AMDOBJ) $(COLAMDOBJ) $(CCOLAMDOBJ) \
-	$(LAMDOBJ) $(LCOLAMDOBJ) $(LCCOLAMDOBJ) $(CAMDOBJ) $(LCAMDOBJ)
+LALL = $(LOBJ) $(LAMDOBJ) $(LCOLAMDOBJ) $(LCCOLAMDOBJ) $(LCAMDOBJ)
 
-cov_cholmod.a: $(ALL)
-	$(AR) cov_cholmod.a $(ALL)
-	$(RANLIB) cov_cholmod.a
+
+cm: $(IALL) $(TEST) cm.h Makefile
+	$(C) $(I) $(TEST) -o cm $(IALL) $(LIB)
+
+cl: $(LALL) $(TEST) cm.h Makefile
+	$(C) -DDLONG $(I) $(TEST) -o cl $(LALL) $(LIB)
+
+cmread: $(IALL) cmread.c Makefile
+	$(C) $(I) cmread.c -o cmread $(IALL) $(LIB)
+
+clread: $(LALL) cmread.c Makefile
+	$(C) -DDLONG $(I) cmread.c -o clread $(LALL) $(LIB)
+
+z_demo: $(IALL) ../Demo/cholmod_demo.c cm.h Makefile \
+	../Demo/cholmod_demo.h
+	cat ../Demo/cholmod_demo.c > z_demo.c
+	$(C) $(I) -I../Demo z_demo.c -o z_demo $(IALL) $(LIB)
+
+l_demo: $(LALL) ../Demo/cholmod_l_demo.c cm.h Makefile \
+	../Demo/cholmod_demo.h
+	cat ../Demo/cholmod_l_demo.c > l_demo.c
+	$(C) -DDLONG $(I) -I../Demo l_demo.c -o l_demo $(LALL) $(LIB)
+
+go: z_demo l_demo cmread clread cm cl
+	$(V) ./z_demo   ../Demo/Matrix/bcsstk01.tri > tmp/demo_k1.out
+	$(V) ./z_demo   ../Demo/Matrix/bcsstk02.tri > tmp/demo_k2.out
+	$(V) ./z_demo < ../Demo/Matrix/lp_afiro.tri > tmp/demo_afiro.out
+	$(V) ./z_demo < ../Demo/Matrix/can___24.mtx > tmp/demo_can24.out
+	$(V) ./z_demo < ../Demo/Matrix/c.tri        > tmp/demo_c.out
+	$(V) ./z_demo < ../Demo/Matrix/d.tri        > tmp/demo_d.out
+	$(V) ./z_demo < ../Demo/Matrix/up.tri       > tmp/demo_up.out
+	$(V) ./z_demo < ../Demo/Matrix/c.mtx        > tmp/demo_c_mtx.out
+	$(V) ./z_demo < ../Demo/Matrix/0.tri        > tmp/demo_0.out
+	$(V) ./z_demo < Matrix/3_2                  > tmp/demo_3_2.out
+	$(V) ./z_demo < Matrix/c5lo                 > tmp/demo_c5lo.out
+	$(V) ./z_demo < Matrix/c10                  > tmp/demo_c10.out
+	$(V) ./z_demo no_such_file                  > tmp/demo_no_such_file.out
+	$(V) ./z_demo ../Demo/Matrix/mangle1.mtx    > tmp/demo_mangle1.out
+	$(V) ./z_demo ../Demo/Matrix/mangle2.mtx    > tmp/demo_mangle2.out
+	$(V) ./z_demo ../Demo/Matrix/mangle3.mtx    > tmp/demo_mangle3.out
+	$(V) ./z_demo ../Demo/Matrix/mangle4.mtx    > tmp/demo_mangle4.out
+	$(V) ./z_demo ../Demo/Matrix/pts5ldd03.mtx  >  tmp/demo_pts5ldd03.out
+	$(V) ./l_demo   ../Demo/Matrix/bcsstk01.tri > tmp/ldemo_k1.out
+	$(V) ./l_demo   ../Demo/Matrix/bcsstk02.tri > tmp/ldemo_k2.out
+	$(V) ./l_demo < ../Demo/Matrix/lp_afiro.tri > tmp/ldemo_afiro.out
+	$(V) ./l_demo < ../Demo/Matrix/can___24.mtx > tmp/ldemo_can24.out
+	$(V) ./l_demo < ../Demo/Matrix/c.tri        > tmp/ldemo_c.out
+	$(V) ./l_demo < ../Demo/Matrix/d.tri        > tmp/ldemo_d.out
+	$(V) ./l_demo < ../Demo/Matrix/up.tri       > tmp/ldemo_up.out
+	$(V) ./l_demo < ../Demo/Matrix/c.mtx        > tmp/ldemo_c_mtx.out
+	$(V) ./l_demo < ../Demo/Matrix/0.tri        > tmp/ldemo_0.out
+	$(V) ./l_demo < Matrix/3_2                  > tmp/ldemo_3_2.out
+	$(V) ./l_demo < Matrix/c5lo                 > tmp/ldemo_c5lo.out
+	$(V) ./l_demo < Matrix/c10                  > tmp/ldemo_c10.out
+	$(V) ./l_demo no_such_file                  > tmp/ldemo_no_such_file.out
+	$(V) ./l_demo ../Demo/Matrix/mangle1.mtx    > tmp/ldemo_mangle1.out
+	$(V) ./l_demo ../Demo/Matrix/mangle2.mtx    > tmp/ldemo_mangle2.out
+	$(V) ./l_demo ../Demo/Matrix/mangle3.mtx    > tmp/ldemo_mangle3.out
+	$(V) ./l_demo ../Demo/Matrix/mangle4.mtx    > tmp/ldemo_mangle4.out
+	$(V) ./l_demo ../Demo/Matrix/pts5ldd03.mtx  > tmp/ldemo_pts5ldd03.out
+	- grep resid tmp/demo*
+	$(V) ./cmread no_such_file                  > tmp/no_such_file.out
+	$(V) ./cmread Matrix/crud1                  > tmp/crud1.out
+	$(V) ./cmread Matrix/crud2                  > tmp/crud2.out
+	$(V) ./cmread Matrix/fullcrud.mtx           > tmp/fullcrud.out
+	$(V) ./cmread Matrix/fullcrud1.mtx          > tmp/fullcrud1.out
+	$(V) ./cmread Matrix/fullcrud2.mtx          > tmp/fullcrud2.out
+	$(V) ./cmread Matrix/3by0.mtx               > tmp/3by0.out
+	$(V) ./cmread Matrix/fullrza.mtx            > tmp/fullrza.out
+	$(V) ./cmread Matrix/fullrsa.mtx            > tmp/fullrsa.out
+	$(V) ./cmread Matrix/fullcsa.mtx            > tmp/fullcsa.out
+	$(V) ./cmread Matrix/fullcza.mtx            > tmp/fullcza.out
+	$(V) ./cmread Matrix/fullcha.mtx            > tmp/fullcha.out
+	$(V) ./cmread Matrix/cha.mtx		       > tmp/cha.out
+	$(V) ./cmread Matrix/cza.mtx		       > tmp/cza.out
+	$(V) ./cmread Matrix/csa.mtx		       > tmp/csa.out
+	$(V) ./cmread Matrix/one                    > tmp/one.out
+	$(V) ./cmread Matrix/rza.mtx                > tmp/rza.out
+	$(V) ./cmread ../Demo/Matrix/mangle5.tri    > tmp/mangle5.out
+	$(V) ./cmread ../Demo/Matrix/mangle6.tri    > tmp/mangle6.out
+	$(V) ./cmread ../Demo/Matrix/mangle7.tri    > tmp/mangle6.out
+	$(V) ./cmread ../Demo/Matrix/mangle8.tri    > tmp/mangle8.out
+	$(V) ./cmread ../Demo/Matrix/empty.tri      > tmp/empty.out
+	$(V) ./cmread ../Demo/Matrix/one.tri        > tmp/one.out
+	$(V) ./cmread Matrix/plskz362.mtx           > tmp/plskz363.out
+	$(V) ./cmread Matrix/2diag.tri	       > tmp/2diag.out
+	$(V) ./cmread Matrix/r5lo    	       > tmp/r5lo.out
+	$(V) ./cmread Matrix/r5lo2    	       > tmp/r5lo2.out
+	- diff tmp/r5lo.out tmp/r5lo2.out
+	$(V) ./cmread Matrix/cs.mtx	               > tmp/cs.out
+	$(V) ./cmread Matrix/2lo.tri	               > tmp/2lo.out
+	$(V) ./cmread Matrix/2.tri	               > tmp/2.out
+	$(V) ./cmread Matrix/2up.tri	               > tmp/2up.out
+	$(V) ./cmread Matrix/huge.tri	       > tmp/huge.out
+	$(V) ./cmread Matrix/1e99                   > tmp/1e99.out
+	$(V) ./clread no_such_file                  > tmp/l_no_such_file.out
+	$(V) ./clread Matrix/crud1                  > tmp/l_crud1.out
+	$(V) ./clread Matrix/crud2                  > tmp/l_crud2.out
+	$(V) ./clread Matrix/fullcrud.mtx           > tmp/l_fullcrud.out
+	$(V) ./clread Matrix/fullcrud1.mtx          > tmp/l_fullcrud1.out
+	$(V) ./clread Matrix/fullcrud2.mtx          > tmp/l_fullcrud2.out
+	$(V) ./clread Matrix/3by0.mtx               > tmp/l_3by0.out
+	$(V) ./clread Matrix/fullrza.mtx            > tmp/l_fullrza.out
+	$(V) ./clread Matrix/fullrsa.mtx            > tmp/l_fullrsa.out
+	$(V) ./clread Matrix/fullcsa.mtx            > tmp/l_fullcsa.out
+	$(V) ./clread Matrix/fullcza.mtx            > tmp/l_fullcza.out
+	$(V) ./clread Matrix/fullcha.mtx            > tmp/l_fullcha.out
+	$(V) ./clread Matrix/cha.mtx		       > tmp/l_cha.out
+	$(V) ./clread Matrix/cza.mtx		       > tmp/l_cza.out
+	$(V) ./clread Matrix/csa.mtx		       > tmp/l_csa.out
+	$(V) ./clread Matrix/one		       > tmp/l_one.out
+	$(V) ./clread Matrix/rza.mtx                > tmp/l_rza.out
+	$(V) ./clread ../Demo/Matrix/mangle5.tri    > tmp/l_mangle5.out
+	$(V) ./clread ../Demo/Matrix/mangle6.tri    > tmp/l_mangle6.out
+	$(V) ./clread ../Demo/Matrix/mangle7.tri    > tmp/l_mangle6.out
+	$(V) ./clread ../Demo/Matrix/mangle8.tri    > tmp/l_mangle8.out
+	$(V) ./clread ../Demo/Matrix/empty.tri      > tmp/l_empty.out
+	$(V) ./clread ../Demo/Matrix/one.tri        > tmp/l_one.out
+	$(V) ./clread Matrix/plskz362.mtx           > tmp/l_plskz363.out
+	$(V) ./clread Matrix/2diag.tri	       > tmp/l_2diag.out
+	$(V) ./clread Matrix/r5lo    	       > tmp/l_r5lo.out
+	$(V) ./clread Matrix/r5lo2    	       > tmp/l_r5lo2.out
+	- diff tmp/r5lo.out tmp/r5lo2.out
+	$(V) ./clread Matrix/cs.mtx	               > tmp/l_cs.out
+	$(V) ./clread Matrix/2lo.tri	               > tmp/l_l_2lo.out
+	$(V) ./clread Matrix/2.tri	               > tmp/l_2.out
+	$(V) ./clread Matrix/2up.tri	               > tmp/l_2up.out
+	$(V) ./clread Matrix/huge.tri               > tmp/l_huge.out
+	$(V) ./clread Matrix/1e99                   > tmp/l_1e99.out
+	$(V) ./cm    < Matrix/galenet > tmp/galenet.out
+	$(V) ./cl    < Matrix/galenet > tmp/l_galenet.out
+	- $(COVER)
+	$(V) ./cm    < Matrix/5by50   > tmp/5by50.out
+	$(V) ./cl    < Matrix/5by50   > tmp/l_5by50.out
+	- $(COVER)
+	$(V) ./cm    < Matrix/r5lo    > tmp/r5lo.out 
+	$(V) ./cl    < Matrix/r5lo    > tmp/l_r5lo.out
+	$(V) ./cm    < Matrix/r5up    > tmp/r5up.out
+	$(V) ./cl    < Matrix/r5up    > tmp/l_r5up.out
+	$(V) ./cm    < Matrix/r5up2   > tmp/r5up2.out
+	$(V) ./cl    < Matrix/r5up2   > tmp/l_r5up2.out
+	$(V) ./cm    < Matrix/c5up2   > tmp/c5up2.out
+	$(V) ./cl    < Matrix/c5up2   > tmp/l_c5up2.out
+	$(V) ./cm    < Matrix/z5up2   > tmp/z5up2.out
+	$(V) ./cl    < Matrix/z5up2   > tmp/l_z5up2.out
+	$(V) ./cm -m < Matrix/z5lo    > tmp/z5lo.out
+	$(V) ./cl -m < Matrix/z5lo    > tmp/l_z5lo.out
+	$(V) ./cm    < Matrix/ibm32   > tmp/ibm.out
+	$(V) ./cl    < Matrix/ibm32   > tmp/l_ibm.out
+	- $(COVER)
+	$(V) ./cm -m < Matrix/c5lo    > tmp/c5lo.out
+	$(V) ./cl -m < Matrix/c5lo    > tmp/l_c5lo.out
+	$(V) ./cm -m < Matrix/z10     > tmp/z10.out
+	$(V) ./cl -m < Matrix/z10     > tmp/l_z10.out
+	$(V) ./cm -m < Matrix/z5up    > tmp/z5up.out
+	$(V) ./cl -m < Matrix/z5up    > tmp/l_z5up.out
+	- $(COVER)
+	$(V) ./cm -s < Matrix/3singular  > tmp/3singular.out
+	$(V) ./cl -s < Matrix/3singular  > tmp/l_3singular.out
+	$(V) ./cm -s < Matrix/z3singular > tmp/z3singular.out
+	$(V) ./cl -s < Matrix/z3singular > tmp/l_z3singular.out
+	$(V) ./cm -s < Matrix/c3singular > tmp/c3singular.out
+	$(V) ./cl -s < Matrix/c3singular > tmp/l_c3singular.out
+	$(V) ./cm -m < Matrix/0       > tmp/0.out
+	$(V) ./cl -m < Matrix/0       > tmp/l_0.out
+	$(V) ./cm -m < Matrix/afiro   > tmp/afiro.out
+	$(V) ./cl -m < Matrix/afiro   > tmp/l_afiro.out
+	- $(COVER)
+	$(V) ./cm -m < Matrix/k01up   > tmp/k01up.out
+	$(V) ./cl -m < Matrix/k01up   > tmp/l_k01up.out
+	- $(COVER)
+	$(V) ./cm    < Matrix/diag    > tmp/diag.out
+	$(V) ./cl    < Matrix/diag    > tmp/l_diag.out
+	$(V) ./cm -m < Matrix/ex5lo   > tmp/ex5lo.out
+	$(V) ./cl -m < Matrix/ex5lo   > tmp/l_ex5lo.out
+	- $(COVER)
+	$(V) ./cm    < Matrix/20lo    > tmp/20lo.out
+	$(V) ./cl    < Matrix/20lo    > tmp/l_20lo.out
+	$(V) ./cm    < Matrix/z30lo   > tmp/z30lo.out
+	$(V) ./cl    < Matrix/z30lo   > tmp/l_z30lo.out
+	- $(COVER)
+	$(V) ./cm -m < Matrix/z30up   > tmp/z30up.out
+	$(V) ./cl -m < Matrix/z30up   > tmp/l_z30up.out
+	$(V) ./cm    < Matrix/c10     > tmp/c10.out
+	$(V) ./cl    < Matrix/c10     > tmp/l_c10.out
+	$(V) ./cm    < Matrix/c30lo   > tmp/c30lo.out
+	$(V) ./cl    < Matrix/c30lo   > tmp/l_c30lo.out
+	- $(COVER)
+	$(V) ./cm -m < Matrix/c30up   > tmp/c30up.out
+	$(V) ./cl -m < Matrix/c30up   > tmp/l_c30up.out
+	$(V) ./cm    < Matrix/pi      > tmp/pi.out
+	$(V) ./cl    < Matrix/pi      > tmp/l_pi.out
+	$(V) ./cm    < Matrix/cpi     > tmp/cpi.out
+	$(V) ./cl    < Matrix/cpi     > tmp/l_cpi.out
+	$(V) ./cm    < Matrix/1_0     > tmp/1_0.out
+	$(V) ./cl    < Matrix/1_0     > tmp/l_1_0.out
+	$(V) ./cm -s < Matrix/3b      > tmp/3b.out
+	$(V) ./cl -s < Matrix/3b      > tmp/l_3b.out
+	$(V) ./cm -s < Matrix/cza     > tmp/cza2.out
+	$(V) ./cl -s < Matrix/cza     > tmp/l_cza2.out
+	$(V) ./cm    < Matrix/0_1     > tmp/0_1.out
+	$(V) ./cl    < Matrix/0_1     > tmp/l_0_1.out
+	- $(COVER)
+	$(V) ./cm -n < Matrix/galenet > tmp/galenet_nan.out
+	- $(COVER)
+	$(V) ./cl -n < Matrix/galenet > tmp/l_galenet_nan.out
+	- $(COVER)
+	$(V) ./cm    < Matrix/a1      > tmp/a1.out
+	- $(COVER)
+	$(V) ./cl    < Matrix/a1      > tmp/l_a1.out
+	- $(COVER)
+	$(V) ./cm    < Matrix/zero    > tmp/zero.out
+	$(V) ./cl    < Matrix/zero    > tmp/zero.out
+	- $(COVER)
+
+cov:
+	- $(COVER)
+
+purge: distclean
+
+distclean: clean
+	- $(RM) cm cl cmread clread *.c.gcov *.out tmp/*.out z_demo l_demo
+	- $(RM) leak zz_*.c z_*.c *.a l_*.c zl_*.c cov.sort yl_*.c yz_*.c
+	- $(RM) -r cm.profile cmread.profile z_demo.profile 
+	- $(RM) -r cl.profile clread.profile l_demo.profile 
+	- $(RM) *.gcda *.gcno
+	- $(RM) temp*.mtx
+
+clean:
+	- $(RM) $(CLEAN)
+
 
 $(AMDOBJ): $(AMDSRC)
 
@@ -702,17 +751,17 @@ zz_colamd.o: ../../COLAMD/colamd.c
 	$(C) -E $(I) $< | $(PRETTY) > zz_colamd.c
 	$(C) -c $(I) zz_colamd.c
 
-zz_colamd_global.o: ../../COLAMD/colamd_global.c
-	$(C) -E $(I) $< | $(PRETTY) > zz_colamd_global.c
-	$(C) -c $(I) zz_colamd_global.c
+yz_colamd_global.o: ../../COLAMD/colamd_global.c
+	$(C) -E $(I) $< | $(PRETTY) > yz_colamd_global.c
+	$(C) -c $(I) yz_colamd_global.c
 
 zl_colamd.o: ../../COLAMD/colamd.c
 	$(C) -DDLONG -E $(I) $< | $(PRETTY) > zl_colamd.c
 	$(C) -c $(I) zl_colamd.c
 
-zl_colamd_global.o: ../../COLAMD/colamd_global.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > zl_colamd_global.c
-	$(C) -c $(I) zl_colamd_global.c
+yl_colamd_global.o: ../../COLAMD/colamd_global.c
+	$(C) -DDLONG -E $(I) $< | $(PRETTY) > yl_colamd_global.c
+	$(C) -c $(I) yl_colamd_global.c
 
 #-------------------------------------------------------------------------------
 
@@ -720,17 +769,17 @@ zz_ccolamd.o: ../../CCOLAMD/ccolamd.c
 	$(C) -E $(I) $< | $(PRETTY) > zz_ccolamd.c
 	$(C) -c $(I) zz_ccolamd.c
 
-zz_ccolamd_global.o: ../../CCOLAMD/ccolamd_global.c
-	$(C) -E $(I) $< | $(PRETTY) > zz_ccolamd_global.c
-	$(C) -c $(I) zz_ccolamd_global.c
+yz_ccolamd_global.o: ../../CCOLAMD/ccolamd_global.c
+	$(C) -E $(I) $< | $(PRETTY) > yz_ccolamd_global.c
+	$(C) -c $(I) yz_ccolamd_global.c
 
 zl_ccolamd.o: ../../CCOLAMD/ccolamd.c
 	$(C) -DDLONG -E $(I) $< | $(PRETTY) > zl_ccolamd.c
 	$(C) -c $(I) zl_ccolamd.c
 
-zl_ccolamd_global.o: ../../CCOLAMD/ccolamd_global.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > zl_ccolamd_global.c
-	$(C) -c $(I) zl_ccolamd_global.c
+yl_ccolamd_global.o: ../../CCOLAMD/ccolamd_global.c
+	$(C) -DDLONG -E $(I) $< | $(PRETTY) > yl_ccolamd_global.c
+	$(C) -c $(I) yl_ccolamd_global.c
 
 #-------------------------------------------------------------------------------
 
@@ -741,6 +790,10 @@ z_check.o: ../Check/cholmod_check.c
 z_read.o: ../Check/cholmod_read.c
 	$(C) -E $(I) $< | $(PRETTY) > z_read.c
 	$(C) -c $(I) z_read.c
+
+z_write.o: ../Check/cholmod_write.c
+	$(C) -E $(I) $< | $(PRETTY) > z_write.c
+	$(C) -c $(I) z_write.c
 
 #-------------------------------------------------------------------------------
 
@@ -907,6 +960,10 @@ z_vertcat.o: ../MatrixOps/cholmod_vertcat.c
 	$(C) -E $(I) $< | $(PRETTY) > z_vertcat.c
 	$(C) -c $(I) z_vertcat.c
 
+z_symmetry.o: ../MatrixOps/cholmod_symmetry.c
+	$(C) -E $(I) $< | $(PRETTY) > z_symmetry.c
+	$(C) -c $(I) z_symmetry.c
+
 #-------------------------------------------------------------------------------
 
 z_rowadd.o: ../Modify/cholmod_rowadd.c
@@ -947,6 +1004,10 @@ l_check.o: ../Check/cholmod_check.c
 l_read.o: ../Check/cholmod_read.c
 	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_read.c
 	$(C) -c $(I) l_read.c
+
+l_write.o: ../Check/cholmod_write.c
+	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_write.c
+	$(C) -c $(I) l_write.c
 
 #-------------------------------------------------------------------------------
 
@@ -1112,6 +1173,10 @@ l_submatrix.o: ../MatrixOps/cholmod_submatrix.c
 l_vertcat.o: ../MatrixOps/cholmod_vertcat.c
 	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_vertcat.c
 	$(C) -c $(I) l_vertcat.c
+
+l_symmetry.o: ../MatrixOps/cholmod_symmetry.c
+	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_symmetry.c
+	$(C) -c $(I) l_symmetry.c
 
 #-------------------------------------------------------------------------------
 
