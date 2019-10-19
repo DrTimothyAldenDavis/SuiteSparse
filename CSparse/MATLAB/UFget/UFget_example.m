@@ -6,11 +6,9 @@
 %   Example:
 %       type UFget_example ; % to see an example of how to use UFget
 %
-%   See also UFget, UFweb.
+%   See also UFget, UFweb, UFgrep.
 
-%   Copyright 2005, Tim Davis, University of Florida.
-
-%  Nov 3, 2005.
+%   Copyright 2006, Tim Davis, University of Florida.
 
 type UFget_example ;
 

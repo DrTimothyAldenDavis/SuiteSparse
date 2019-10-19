@@ -8,9 +8,7 @@
 %
 %   UFget_defaults    - returns default parameter settings for UFget.
 %   UFget_example     - a demo for UFget.
-%   UFget_install     - installs UFget for the current MATLAB session.
 %   UFget_lookup      - gets the group, name, and id of a matrix.
-%   UFget_java.geturl - downloads a URL as a file (a Java method).
 %
 % Example:
 %   help UFget

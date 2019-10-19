@@ -14,10 +14,10 @@ extern "C" {
 #include <complex.h>
 #endif
 
-#define CS_VER 2		    /* CXSparse Version 2.0.5 */
+#define CS_VER 2		    /* CXSparse Version 2.0.6 */
 #define CS_SUBVER 0
-#define CS_SUBSUB 5
-#define CS_DATE "Nov 27, 2006"	    /* CXSparse release date */
+#define CS_SUBSUB 6
+#define CS_DATE "Dec 7, 2006"	    /* CXSparse release date */
 #define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006"
 #define CXSPARSE
 

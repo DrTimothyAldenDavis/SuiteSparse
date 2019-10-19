@@ -1,4 +1,11 @@
+Dec 6, 2006, v2.0.6
+
+    * Update to UFget.  Now relies on the MATLAB urlwrite function instead of
+	my own Java code.
+
 Nov 2006, v2.0.5
+
+    * Added UFgrep to UFget toolbox.
 
     * No changes to C Source code, except for version number and date.
 

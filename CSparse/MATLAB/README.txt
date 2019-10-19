@@ -12,13 +12,7 @@ CSparse, and add the directories:
     CSparse/MATLAB/UFget
 
 to your MATLAB path (see the "pathtool" command to add these to your path
-permanently, for future MATLAB sessions).  It will also add the path
-
-    CSparse/MATLAB/UFget
-
-to your java class path (see the "javaaddpath" command).  Edit your
-classpath.txt file (type the command "which claspath.txt") to add this
-directory to your Java class path permanently.
+permanently, for future MATLAB sessions).
 
 To run the MATLAB demo programs, run cs_demo in the Demo directory.
 To run the MATLAB test programs, run testall in the Test directory.

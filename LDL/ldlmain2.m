@@ -17,7 +17,11 @@ end
 if (~ispc)
     input ('Hit enter to compile and run ldlmain (with AMD): ') ;
     try
-	mex -output ldlamd -I../AMD/Include -L../AMD/Lib -DUSE_AMD ldlmain.c -lamd ldl.c
+	s = pwd ;
+	cd ('../AMD') ;
+	!make
+	cd (s) ;
+	mex -output ldlamd -I../AMD/Include -I../UFconfig -L../AMD/Lib -DUSE_AMD ldlmain.c -lamd ldl.c
 	ldlamd
     catch
 	fprintf ('ldlamd mexFunction failed to compile\n') ;

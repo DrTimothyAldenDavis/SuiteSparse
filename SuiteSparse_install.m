@@ -3,14 +3,11 @@ function SuiteSparse_install
 %   MATLAB.  SuiteSparse is a Suite of Sparse matrix packages.
 %
 %   Your current working directory must be SuiteSparse in order to use this
-%   function.  Directories are added temporarily your path and javaclasspath.
-%   You should add them permanently, using the PATHTOOL.  Add the Java directory
-%   for UFget to your classpath.txt, or add a JAVAADDPATH command to your
-%   STARTUP M-file.
+%   function.  Directories are added temporarily your path.
+%   You should add them permanently, using the PATHTOOL.
 %
 %   See also AMD, COLAMD, CAMD, CCOLAMD, CHOLMOD, UMFPACK, CSPARSE, UFget,
-%       RBio, UFcollection, SuiteSparse, PATHTOOL, PATH, JAVACLASSPATH,
-%	JAVAADDPATH, STARTUP.
+%       RBio, UFcollection, SuiteSparse, PATHTOOL, PATH, STARTUP.
 %
 %   Copyright 2006, Timothy A. Davis.
 %   http://www.cise.ufl.edu/research/sparse
@@ -91,13 +88,5 @@ cd (SuiteSparse)
 fprintf ('\n=============================================================\n') ;
 fprintf ('SuiteSparse is now installed.  Run pathtool and save your path\n') ;
 fprintf ('for future sessions.\n') ;
-
-fprintf ('Add the directory\n') ;
-fprintf ('%s/CSparse/MATLAB/UFget\n', SuiteSparse) ;
-fprintf ('to your classpath.txt file:\n') ;
-which classpath.txt
-fprintf ('or add the command:\n') ;
-fprintf ('javaaddpath (''%s/CSparse/MATLAB/UFget'') ;\n', SuiteSparse) ;
-fprintf ('to your startup.m file.  Type "doc startup" for more details.\n');
 
 

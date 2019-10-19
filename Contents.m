@@ -40,7 +40,7 @@
 %   ldl_normest  - compute error in LDL' factorization.
 %   lu_normest   - compute error in LU factorization.
 %   mread        - read a sparse matrix in Matrix Market format
-%   mwrite       - read a sparse matrix in Matrix Market format
+%   mwrite       - write a sparse matrix in Matrix Market format
 %   spsym        - determine the symmetry of a sparse matrix
 %
 %------------------------------------------

@@ -1,7 +1,7 @@
 UFget:  a MATLAB interface to the UF sparse matrix collection.
 MATLAB 7.0 or later is required.
 
-Date: Nov 30, 2006.
+Date: Dec 6, 2006.
 Copyright 2005-2006, Tim Davis, University of Florida.
 Authors: Tim Davis and Erich Mirable.
 Availability: http://www.cise.ufl.edu/research/sparse/mat/UFget
@@ -14,9 +14,6 @@ for a single archive file with all the files listed below.
 
     UFget/UFget_defaults.m	default parameter settings for UFget
     UFget/UFget_example.m	demo for UFget
-    UFget/UFget_install.m	installs UFget for use in MATLAB
-    UFget/UFget_java.class	compiled version of UFget_java.java
-    UFget/UFget_java.java	downloads a URL
     UFget/UFget_lookup.m	get the group, name, and id of a matrix
     UFget/UFget.m		primary user interface
 
@@ -25,18 +22,14 @@ for a single archive file with all the files listed below.
     UFget/mat			default download directory (can be changed)
     UFget/mat/UF_Index.mat	index to the UF sparse matrix collection
 
-You may also need the Java Development Kit (Java 2 Platform, at
-http://java.sun.com/j2se/index.html ) to compile UFget_java.java.
-
-To install the package, type this command in MATLAB:
-
-    UFget_install
+To install the package, just add the path containing the UFget directory
+to your MATLAB path.  Type "pathtool" in MATLAB for more details.
 
 For a simple example of use, type this command in MATLAB:
 
     UFget_example
 
-Once the files are downloaded and installed, the MATLAB statement
+The MATLAB statement
 
     Problem = UFget ('HB/arc130')
 
@@ -71,9 +64,3 @@ To open the web page for one matrix, use either of these formats:
 
 For more information on how the index entries were created, see
 http://www.cise.ufl.edu/research/sparse/SuiteSparse.
-
-The UFget/UFget_java.class was compiled using:
-
-    java version "1.5.0"
-    Java(TM) 2 Runtime Environment, Standard Edition (build 1.5.0-b64)
-    Java HotSpot(TM) Client VM (build 1.5.0-b64, mixed mode)

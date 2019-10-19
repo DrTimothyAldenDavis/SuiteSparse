@@ -10,15 +10,7 @@ function cs_install (do_pause)
 %       CSparse/MATLAB/UFget
 %
 %   are added to your MATLAB path (see the "pathtool" command to add these to
-%   your path permanently, for future MATLAB sessions).  The path
-%
-%       CSparse/MATLAB/UFget
-%
-%   is also added to your java class path (see the "javaaddpath" command).
-%   Edit your classpath.txt file (type the command "which classpath.txt") to
-%   add this directory to your Java class path permanently.  UFget is not
-%   required by CSparse (except the extended demos and tests); UFget requires
-%   MATLAB 7.0 or later.
+%   your path permanently, for future MATLAB sessions).
 %
 %   Next, the MATLAB CSparse demo program, CSparse/MATLAB/cs_demo is executed.
 %   To run the demo with pauses so you can see the results, use cs_install(1).
@@ -50,18 +42,6 @@ end
 addpath ([pwd filesep 'CSparse']) ;
 addpath ([pwd filesep 'Demo']) ;
 addpath ([pwd filesep 'UFget']) ;
-
-ufget_path = [pwd filesep 'UFget'] ;
-try
-    javaaddpath (ufget_path) ;
-catch
-    fprintf ('It appears that you are using an older version of MATLAB.\n') ;
-    fprintf ('To use UFget, edit your classpath.txt file and add the line:\n');
-    fprintf ('%s\n', ufget_path) ;
-    fprintf ('Note that UFget requires MATLAB 7.0 or later.\n') ;
-    fprintf ('The location of classpath.txt is given below:\n') ;
-    which classpath.txt
-end
 
 cd ('CSparse') ;
 cs_make

@@ -31,7 +31,7 @@ function stats = UFweb (matrix, opts)
 %   the MATLAB web command.  To use the system web browser instead of the MATLAB
 %   browser, for example, use UFweb ('HB/arc130', '-browser').
 %
-%   See also web, UFget, UFget_defaults, spy, cspy, cs_dmspy.
+%   See also web, UFget, UFget_defaults.
 
 %   Copyright 2006, Tim Davis, University of Florida.
 

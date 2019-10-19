@@ -5,11 +5,10 @@ function Problem = UFget (matrix, UF_Index)
 %   specified as either a number (1 to the # of matrices in the collection) or
 %   as a string (the name of the matrix).  With no input parameters, index=UFget
 %   returns an index of matrices in the collection.  A local copy of the matrix
-%   is saved (be aware that as of Nov 2005 the entire collection is almost 5GB
+%   is saved (be aware that as of Nov 2006 the entire collection is over 8GB
 %   in size).  If no input or output arguments are provided, the index is
 %   printed.  With a 2nd parameter (Problem = UFget (matrix, index)), the index
 %   file is not loaded.  This is faster if you are loading lots of matrices.
-%   For details on the Problem struct, type the command "type UFget"
 %
 %   Examples:
 %       index = UFget ;
@@ -18,9 +17,9 @@ function Problem = UFget (matrix, UF_Index)
 %       Problem = UFget (6, index)
 %       Problem = UFget ('HB/arc130', index)
 %
-%   See also UFget_install, UFget_example, UFget_defaults, UFget_java.java.
+%   See also UFgrep, UFweb, UFget_example, UFget_defaults, urlwrite.
 
-%   Copyright 2005, Tim Davis, University of Florida.
+%   Copyright 2006, Tim Davis, University of Florida.
 
 %-------------------------------------------------------------------------------
 % get the parameter settings
@@ -48,8 +47,9 @@ end
 
 if (refresh)
     % a new UF_Index.mat file to get access to new matrices (if any)
-    fprintf ('downdloading %s\n', indexurl) ;
-    UFget_java.geturl (indexurl, indexfile) ; 
+    fprintf ('downloading %s\n', indexurl) ;
+    fprintf ('to %s\n', indexfile) ;
+    urlwrite (indexurl, indexfile) ;
     load (indexfile) ;
     UF_Index.DownloadTimeStamp = now ;
     save (indexfile, 'UF_Index') ;
@@ -135,7 +135,8 @@ if (exist (matfile, 'file'))
     load (matfile)
 else
     fprintf ('downloading %s\n', maturl) ;
-    UFget_java.geturl (maturl, matfile) ;
+    fprintf ('to %s\n', matfile) ;
+    urlwrite (maturl, matfile) ;
     load (matfile)
     save (matfile, 'Problem') ;
 end

@@ -76,14 +76,14 @@ extern "C" {
  * version of SuiteSparse, with another package from another version of
  * SuiteSparse, may or may not work.
  *
- * SuiteSparse Version 2.3 contains the following packages:
+ * SuiteSparse Version 2.3.1 contains the following packages:
  *
  *  AMD		    version 2.0.3
  *  CAMD	    version 2.1.2
  *  COLAMD	    version 2.5.1
  *  CCOLAMD	    version 2.5.1
  *  CHOLMOD	    version 1.3.0
- *  CSparse	    version 2.0.5
+ *  CSparse	    version 2.0.6
  *  CXSparse	    version 2.0.5
  *  KLU		    version 0.10
  *  BTF		    version 0.9
@@ -99,11 +99,11 @@ extern "C" {
  *  METIS 4.0.1	    required by CHOLMOD (optional)
  */
 
-#define SUITESPARSE_DATE "Dec 2, 2006"
+#define SUITESPARSE_DATE "Dec 7, 2006"
 #define SUITESPARSE_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define SUITESPARSE_MAIN_VERSION 2
 #define SUITESPARSE_SUB_VERSION 3
-#define SUITESPARSE_SUBSUB_VERSION 0
+#define SUITESPARSE_SUBSUB_VERSION 1
 #define SUITESPARSE_VERSION \
     SUITESPARSE_VER_CODE(SUITESPARSE_MAIN_VERSION,SUITESPARSE_SUB_VERSION)
 
