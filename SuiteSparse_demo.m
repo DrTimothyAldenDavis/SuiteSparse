@@ -7,7 +7,7 @@ function SuiteSparse_demo (matrixpath, dopause)
 % See also umfpack, cholmod, amd, camd, colamd, ccolamd, btf, klu, spqr,
 %   CSparse, CXSparse, ldlsparse
 
-% Copyright 2015, Timothy A. Davis, http://www.suitesparse.com.
+% Copyright 2016, Timothy A. Davis, http://www.suitesparse.com.
 
 if (nargin < 1 || isempty (matrixpath) || ~ischar (matrixpath))
     try
@@ -186,5 +186,17 @@ catch me
     disp (me.message) ;
     fprintf ('spqr_rank demo failed\n' )
 end
+
+%{
+if (dopause)
+    input ('Hit enter to run the piro_band demo: ', 's') ;
+end
+try
+    piro_band_demo
+catch me
+    disp (me.message) ;
+    fprintf ('piro_band_demo failed\n' )
+end
+%}
 
 fprintf ('\n\n---- SuiteSparse demos complete\n') ;

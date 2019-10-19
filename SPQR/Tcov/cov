@@ -4,23 +4,23 @@ echo "Test coverage summary" > cov.out
 echo '=================================================================' >> cov.out
 
 foreach file (../Source/*)
-	gcov $file >& /dev/null
+	gcov -o . $file >& /dev/null
 	end
 
 foreach file (../SPQRGPU/*)
-	gcov $file >& /dev/null
+	gcov -o . $file >& /dev/null
 	end
 
 foreach file (../../SuiteSparse_GPURuntime/Source/*)
-	gcov $file >& /dev/null
+	gcov -o . $file >& /dev/null
 	end
 
 foreach file (../../GPUQREngine/Source/*p)
-	gcov $file >& /dev/null
+	gcov -o . $file >& /dev/null
 	end
 
 foreach file (../../GPUQREngine/Source/*/*p)
-	gcov $file >& /dev/null
+	gcov -o . $file >& /dev/null
 	end
 
 foreach file (*.?cov)

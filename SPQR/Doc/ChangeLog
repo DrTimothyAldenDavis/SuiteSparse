@@ -1,3 +1,9 @@
+Dec 8, 2016: version 2.0.8
+
+    * minor changes to documentation and compile scripts
+        for submitting SPQR to ACM TOMS.  No changes to code
+        except version numbers in include files.
+
 May 4, 2016: version 2.0.7
 
     * minor changes to Makefile

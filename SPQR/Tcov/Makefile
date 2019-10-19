@@ -25,7 +25,7 @@ CF = -pg \
 	-O0 -g -fprofile-arcs -ftest-coverage \
 	-Wall -W -Wshadow -Winline -Wno-unused-parameter \
 	-Wredundant-decls -Wdisabled-optimization \
-	-ansi -fexceptions -fopenmp
+	-fexceptions -fopenmp
 
 # Using an optimized BLAS can cause problems in Valgrind
 # FLIB = -llapack_plain -lblas_plain -lgfortran
@@ -336,12 +336,12 @@ spqrgpu_computeFrontStaging.o: ../SPQRGPU/spqrgpu_computeFrontStaging.cpp
 
 libraries:
 	( cd ../.. && $(MAKE) metis )
-	( cd ../../CHOLMOD && $(MAKE) library TCOV=yes )
+	( cd ../../SuiteSparse_config ; $(MAKE) library TCOV=yes )
 	( cd ../../AMD && $(MAKE) library TCOV=yes )
 	( cd ../../COLAMD && $(MAKE) library TCOV=yes )
 	( cd ../../CCOLAMD && $(MAKE) library TCOV=yes )
 	( cd ../../CAMD && $(MAKE) library TCOV=yes )
-	( cd ../../SuiteSparse_config ; $(MAKE) library TCOV=yes )
+	( cd ../../CHOLMOD && $(MAKE) library TCOV=yes )
 
 #-------------------------------------------------------------------------------
 # SuiteSparse_GPURuntime

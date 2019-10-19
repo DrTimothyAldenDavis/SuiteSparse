@@ -135,7 +135,7 @@ if (pc)
     tbb_path = 'C:\TBB\tbb21_009oss' ;
 else
     % For Linux, edit this line as needed (not needed if already in /usr/lib):
-    tbb_path = '/cise/homes/davis/Install/tbb21_009oss' ;
+    tbb_path = '' ;
 end
 % ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

@@ -1,3 +1,11 @@
+Apr 17, 2017: SuiteSparse 4.5.5
+
+    * minor fix to SuiteSparse/Makefile for 'make install'
+
+Dec 8, 2016: SuiteSparse 4.5.4
+
+    * minor update to SPQR for ACM TOMS submission
+
 May 4, 2016: SuiteSparse 4.5.3
 
     * minor changes to Makefiles

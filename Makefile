@@ -34,7 +34,7 @@ endif
 
 # install all packages in /usr/local/lib and /usr/local/include
 # (note that CSparse is not installed; CXSparse is installed instead)
-install: metis
+install: metisinstall
 	( cd SuiteSparse_config && $(MAKE) install )
 	( cd AMD && $(MAKE) install )
 	( cd BTF && $(MAKE) install )
@@ -56,8 +56,13 @@ endif
 #	( cd SKYLINE_SVD && $(MAKE) install )
 	$(CP) README.txt $(INSTALL_DOC)/SuiteSparse_README.txt
 	chmod 644 $(INSTALL_DOC)/SuiteSparse_README.txt
+
+metisinstall: metis
 ifeq (,$(MY_METIS_LIB))
         # install METIS from SuiteSparse/metis-5.1.0
+	@mkdir -p $(INSTALL_LIB)
+	@mkdir -p $(INSTALL_INCLUDE)
+	@mkdir -p $(INSTALL_DOC)
 	- $(CP) lib/libmetis.* $(INSTALL_LIB)
 	- $(CP) metis-5.1.0/manual/manual.pdf $(INSTALL_DOC)/METIS_manual.pdf
 	- $(CP) metis-5.1.0/README.txt $(INSTALL_DOC)/METIS_README.txt

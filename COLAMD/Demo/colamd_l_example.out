@@ -15,7 +15,7 @@ Column 3, with 2 entries:
     row 1
     row 3
 
-colamd version 2.9, Apr 1, 2016: OK.  
+colamd version 2.9, May 4, 2016: OK.  
 colamd: number of dense or empty rows ignored:           0
 colamd: number of dense or empty columns ignored:        0
 colamd: number of garbage collections performed:         0
@@ -38,7 +38,7 @@ Column 3, with 1 entries:
     row 4
 Column 4, with 0 entries:
 
-symamd version 2.9, Apr 1, 2016: OK.  
+symamd version 2.9, May 4, 2016: OK.  
 symamd: number of dense or empty rows ignored:           0
 symamd: number of dense or empty columns ignored:        0
 symamd: number of garbage collections performed:         0

@@ -192,12 +192,21 @@ try
     demo_spqr_rank ;
 
     %---------------------------------------------------------------------------
+    % PIRO_BAND
+    %---------------------------------------------------------------------------
+
+%   package = package + 1 ;
+%   waitbar (package/(npackages+1), h, 'SuiteSparse test: PIRO_BAND') ;
+%   cd ([SuiteSparse '/PIRO_BAND/MATLAB/Test']) ;
+%   demo_spqr_rank ;
+
+    %---------------------------------------------------------------------------
     % AMD, CAMD, UFcollection, UFget
     %---------------------------------------------------------------------------
 
     % no exhaustive tests; tested via other packages
 
-catch                                                                       %#ok
+catch
 
     %---------------------------------------------------------------------------
     % test failure

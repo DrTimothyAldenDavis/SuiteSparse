@@ -3,7 +3,7 @@
 #===============================================================================
 
 LIBRARY = libspqr
-VERSION = 2.0.7
+VERSION = 2.0.8
 SO_VERSION = 2
 
 default: library

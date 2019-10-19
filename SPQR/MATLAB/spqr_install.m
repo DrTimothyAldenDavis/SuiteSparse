@@ -20,7 +20,7 @@ function spqr_install (tbb)
 
 % Copyright 2008, Timothy A. Davis, http://www.suitesparse.com
 
-if (nargin < 2)
+if (nargin < 1)
     tbb = 0 ;
 end
 

@@ -32,6 +32,8 @@ my_*.out
 *.mex*
 *.profile
 *.swp
+.DS_Store
+.nfs*
 
 # ignore these specific programs in the Package/Demo directories
 AMD/Demo/amd_demo
@@ -178,6 +180,16 @@ UMFPACK/Tcov/cover.out
 MATLAB_Tools/spqr_rank/save_samples_demo_spqr_rank.mat
 CXSparse/MATLAB/CSparse/cs_cl_*.c
 CXSparse/MATLAB/Test/cs_*.c
+
+RBio/Tcov/RBdemo
+RBio/Tcov/RBdemo.c
+RBio/Tcov/RBio.c
+RBio/Tcov/RBio.h
+RBio/Tcov/RBtest
+RBio/Tcov/SuiteSparse_config.c
+RBio/Tcov/SuiteSparse_config.h
+RBio/Tcov/*.out
+RBio/Tcov/*.rb
 
 # Do not ignore this file
 !.gitignore

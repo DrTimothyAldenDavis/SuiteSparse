@@ -347,7 +347,7 @@ template <typename Entry> struct SuiteSparseQR_factorization
 // =============================================================================
 
 //  SuiteSparseQR           Sparse QR factorization and solve
-//  SuiteSparseQR_qmult     Q*X, Q'*X, X*Q, or X*Q' for X full or sparse
+//  SuiteSparseQR_qmult     Q'*X, Q*X, X*Q', or X*Q for X full or sparse
 
 // returns rank(A) estimate, or EMPTY on failure
 template <typename Entry> SuiteSparse_long SuiteSparseQR

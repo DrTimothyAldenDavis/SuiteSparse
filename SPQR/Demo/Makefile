@@ -199,13 +199,13 @@ endif
 # compile the C code with gcc, but link with g++ to use SuiteSparseQR:
 
 qrdemoc.o: qrdemoc.c $(INC)
-	$(CC) $(CF) $(SPQR_CONFIG) -ansi $(I) -c $<
+	$(CC) $(CF) $(SPQR_CONFIG) $(I) -c $<
 
 qrdemoc: qrdemoc.o $(INC)
 	$(C) -o qrdemoc qrdemoc.o $(LIBS)
 
 qrsimplec.o: qrsimplec.c $(INC)
-	$(CC) $(CF) $(SPQR_CONFIG) $(CHOLMOD_CONFIG) -ansi $(I) -c $<
+	$(CC) $(CF) $(SPQR_CONFIG) $(CHOLMOD_CONFIG) $(I) -c $<
 
 qrsimplec: qrsimplec.o $(INC)
 	$(C) -o qrsimplec qrsimplec.o $(LIBS)

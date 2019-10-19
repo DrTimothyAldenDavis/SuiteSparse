@@ -184,7 +184,7 @@ int SuiteSparse_divcomplex
  *
  * SuiteSparse contains the following packages:
  *
- *  SuiteSparse_config version 4.5.3 (version always the same as SuiteSparse)
+ *  SuiteSparse_config version 4.5.5 (version always the same as SuiteSparse)
  *  AMD             version 2.4.6
  *  BTF             version 1.2.6
  *  CAMD            version 2.4.6
@@ -197,7 +197,7 @@ int SuiteSparse_divcomplex
  *  KLU             version 1.3.8
  *  LDL             version 2.2.6
  *  RBio            version 2.2.6
- *  SPQR            version 2.0.7
+ *  SPQR            version 2.0.8
  *  SuiteSparse_GPURuntime  version 1.0.5
  *  UMFPACK         version 5.7.6
  *  MATLAB_Tools    various packages & M-files
@@ -233,11 +233,11 @@ int SuiteSparse_version     /* returns SUITESPARSE_VERSION */
 */
 #define SUITESPARSE_HAS_VERSION_FUNCTION
 
-#define SUITESPARSE_DATE "May 4, 2016"
+#define SUITESPARSE_DATE "Apr 17, 2017"
 #define SUITESPARSE_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define SUITESPARSE_MAIN_VERSION 4
 #define SUITESPARSE_SUB_VERSION 5
-#define SUITESPARSE_SUBSUB_VERSION 3
+#define SUITESPARSE_SUBSUB_VERSION 5
 #define SUITESPARSE_VERSION \
     SUITESPARSE_VER_CODE(SUITESPARSE_MAIN_VERSION,SUITESPARSE_SUB_VERSION)
 
