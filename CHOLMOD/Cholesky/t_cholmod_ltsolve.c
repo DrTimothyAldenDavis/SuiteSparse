@@ -764,7 +764,7 @@ static void LSOLVE (PREFIX,k)
     Int *Li = L->i ;
     Int *Lp = L->p ;
     Int *Lnz = L->nz ;
-    Int i, j, n = L->n, jj, jjiters ;
+    Int n = L->n, jj, jjiters ;
 
     ASSERT (L->xtype == Y->xtype) ; /* L and Y must have the same xtype */
     ASSERT (L->n == Y->ncol) ;	    /* dimensions must match */
@@ -806,7 +806,7 @@ static void LSOLVE (PREFIX,k)
         for (jj = jjiters-1 ; jj >= 0 ; jj--)
         {
 
-            j = Yseti ? Yseti [jj] : jj ;
+            Int j = Yseti ? Yseti [jj] : jj ;
 
             /* get the start, end, and length of column j */
             Int p = Lp [j] ;
@@ -828,7 +828,7 @@ static void LSOLVE (PREFIX,k)
             for (p++ ; p < pend ; p++)
             {
                 /* y -= conj (Lx [p]) * X [Li [p]] ; */
-                i = Li [p] ;
+                Int i = Li [p] ;
                 MULTSUBCONJ (yx,yz,0, Lx,Lz,p, Xx,Xz,i) ;
             }
 

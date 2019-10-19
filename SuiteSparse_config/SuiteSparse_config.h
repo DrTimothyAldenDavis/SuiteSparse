@@ -143,12 +143,12 @@ double SuiteSparse_time  /* returns current wall clock time in seconds */
  *
  * SuiteSparse contains the following packages:
  *
- *  SuiteSparse_config version 4.2.0 (version always the same as SuiteSparse)
+ *  SuiteSparse_config version 4.2.1 (version always the same as SuiteSparse)
  *  AMD             version 2.3.1
  *  BTF             version 1.2.0
  *  CAMD            version 2.3.1
  *  CCOLAMD         version 2.8.0
- *  CHOLMOD         version 2.1.1
+ *  CHOLMOD         version 2.1.2
  *  COLAMD          version 2.8.0
  *  CSparse         version 3.1.2
  *  CXSparse        version 3.1.2
@@ -156,7 +156,7 @@ double SuiteSparse_time  /* returns current wall clock time in seconds */
  *  LDL             version 2.1.0
  *  RBio            version 2.1.1
  *  SPQR            version 1.3.1 (full name is SuiteSparseQR)
- *  UMFPACK         version 5.6.1
+ *  UMFPACK         version 5.6.2
  *  MATLAB_Tools    various packages & M-files
  *
  * Other package dependencies:
@@ -188,11 +188,11 @@ int SuiteSparse_version     /* returns SUITESPARSE_VERSION */
 */
 #define SUITESPARSE_HAS_VERSION_FUNCTION
 
-#define SUITESPARSE_DATE "April 16, 2013"
+#define SUITESPARSE_DATE "April 25, 2013"
 #define SUITESPARSE_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define SUITESPARSE_MAIN_VERSION 4
 #define SUITESPARSE_SUB_VERSION 2
-#define SUITESPARSE_SUBSUB_VERSION 0
+#define SUITESPARSE_SUBSUB_VERSION 1
 #define SUITESPARSE_VERSION \
     SUITESPARSE_VER_CODE(SUITESPARSE_MAIN_VERSION,SUITESPARSE_SUB_VERSION)
 

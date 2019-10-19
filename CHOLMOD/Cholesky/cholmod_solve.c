@@ -1053,7 +1053,7 @@ int CHOLMOD(solve2)         /* returns TRUE on success, FALSE on failure */
     cholmod_dense *Y = NULL, *X = NULL ;
     cholmod_sparse *C, *Yset, C_header, Yset_header, *Xset ;
     Int *Perm = NULL, *IPerm = NULL ;
-    Int n, nrhs, ncols, ctype, xtype, k1, nr, ytype, k, blen, p, i ;
+    Int n, nrhs, ncols, ctype, xtype, k1, nr, ytype, k, blen, p, i, d, nrow ;
     Int Cp [2], Ysetp [2], *Ci, *Yseti, ysetlen ;
     Int *Bsetp, *Bseti, *Bsetnz, *Xseti, *Xsetp, *Iwork ;
 
@@ -1074,8 +1074,10 @@ int CHOLMOD(solve2)         /* returns TRUE on success, FALSE on failure */
     DEBUG (CHOLMOD(dump_factor) (L, "L", Common)) ;
     DEBUG (CHOLMOD(dump_dense) (B, "B", Common)) ;
     nrhs = B->ncol ;
-    n = L->n ;
-    if (B->d < n || B->nrow != n)
+    n = (Int) L->n ;
+    d = (Int) B->d ;
+    nrow = (Int) B->nrow ;
+    if (d < n || nrow != n)
     {
 	ERROR (CHOLMOD_INVALID, "dimensions of L and B do not match") ;
 	return (FALSE) ;
@@ -1235,8 +1237,8 @@ int CHOLMOD(solve2)         /* returns TRUE on success, FALSE on failure */
 
         /* Xset is n-by-1, nzmax >= n, pattern-only, packed, unsorted */
         Xset = *Xset_Handle ;
-        if (Xset == NULL || Xset->nrow != n || Xset->ncol != 1 ||
-            Xset->nzmax < n || Xset->itype != CHOLMOD_PATTERN)
+        if (Xset == NULL || (Int) Xset->nrow != n || (Int) Xset->ncol != 1 ||
+            (Int) Xset->nzmax < n || Xset->itype != CHOLMOD_PATTERN)
         {
             /* this is done only once, for the 1st call to cholmod_solve */
             CHOLMOD(free_sparse) (Xset_Handle, Common) ;

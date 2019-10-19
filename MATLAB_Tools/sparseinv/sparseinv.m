@@ -59,7 +59,7 @@ if (p == 0)
     d = diag (L) ;
     L = tril (L / diag (d), -1) ;
     U = L' ;
-    d = full (d.^2) ;
+    d = d.^2 ;
     D = diag (d) ;
 else
     % Cholesky failed, or wasn't attempted.  Use LU instead.
@@ -71,8 +71,8 @@ else
     D = diag (d) ;
     U = triu (D \ U, 1) ;
     L = tril (L, -1) ;
-    d = full (d) ;
 end
+d = full (d) ;
 
 % find the symbolic Cholesky of C+C'
 S = spones (P*A*Q) ;

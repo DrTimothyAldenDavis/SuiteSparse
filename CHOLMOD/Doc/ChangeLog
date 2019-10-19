@@ -1,3 +1,8 @@
+Apr 25, 2013: version 2.1.2
+
+    * minor update for CHOLMOD/Cholesky/*solve*.c:
+        version 2.1.0 broke the Microsoft Visual C/C++ compiler
+
 Apr 16, 2013: version 2.1.1
 
     * bug fix to Lib/Makefile and Demo/Makefile, to handle -DNCAMD correctly.

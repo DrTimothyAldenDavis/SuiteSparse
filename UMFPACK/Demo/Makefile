@@ -218,7 +218,7 @@ umf4_f77wrapper64.o: umf4_f77wrapper.c $(INC)
 	$(C) -DDLONG -c umf4_f77wrapper.c -o umf4_f77wrapper64.o
 
 umf4_f77zwrapper64.o: umf4_f77zwrapper.c $(INC)
-	$(C) -DDLONG -c umf4_f77zwrapper.c -o umf4_f77zwrapper64.o
+	$(C) -DZLONG -c umf4_f77zwrapper.c -o umf4_f77zwrapper64.o
 
 #-------------------------------------------------------------------------------
 # Remove all but the files in the original distribution
