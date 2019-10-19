@@ -1,99 +1,99 @@
 Wathen: nx 4 ny 4 n 65 nz 817 method 0, time: 0.000 sec
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000146
+BFS time in seconds:       0.000125
 nodes reachable from node 0: 65 out of 65
 max BFS level: 5
 
 method 5: same but check each result
-BFS time in seconds:       0.000049
+BFS time in seconds:       0.000062
 nodes reachable from node 0: 65 out of 65
 max BFS level: 5
 
 method 6: apply unary operator
-BFS time in seconds:       0.000067
+BFS time in seconds:       0.000064
 nodes reachable from node 0: 65 out of 65
 max BFS level: 5
 
 method 6: same but check each result
-BFS time in seconds:       0.000051
+BFS time in seconds:       0.000049
 nodes reachable from node 0: 65 out of 65
 max BFS level: 5
 random 5 by 5, nz: 23, method 1 time 0.000 sec
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000124
+BFS time in seconds:       0.000097
 nodes reachable from node 0: 5 out of 5
 max BFS level: 2
 
 method 5: same but check each result
-BFS time in seconds:       0.000029
+BFS time in seconds:       0.000021
 nodes reachable from node 0: 5 out of 5
 max BFS level: 2
 
 method 6: apply unary operator
-BFS time in seconds:       0.000038
+BFS time in seconds:       0.000023
 nodes reachable from node 0: 5 out of 5
 max BFS level: 2
 
 method 6: same but check each result
-BFS time in seconds:       0.000022
+BFS time in seconds:       0.000012
 nodes reachable from node 0: 5 out of 5
 max BFS level: 2
 ntuples: 3
 nrows 3 ncols 3
-time to prune self-edges:     0.000000
-time to build the graph with GrB_Matrix_build:     0.000050
+time to prune self-edges:     0.000003
+time to build the graph with GrB_Matrix_build:     0.000114
 make symmetric
 A = (C+C')/2
-A = (C+C')/2 time     0.000044
+A = (C+C')/2 time     0.000083
 matrix 3 by 3, 3 entries, from stdin
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000093
+BFS time in seconds:       0.000260
 nodes reachable from node 0: 1 out of 3
 max BFS level: 1
 
 method 5: same but check each result
-BFS time in seconds:       0.000017
+BFS time in seconds:       0.000056
 nodes reachable from node 0: 1 out of 3
 max BFS level: 1
 
 method 6: apply unary operator
-BFS time in seconds:       0.000029
+BFS time in seconds:       0.000113
 nodes reachable from node 0: 1 out of 3
 max BFS level: 1
 
 method 6: same but check each result
-BFS time in seconds:       0.000014
+BFS time in seconds:       0.000036
 nodes reachable from node 0: 1 out of 3
 max BFS level: 1
 ntuples: 8
 nrows 4 ncols 4
-time to prune self-edges:     0.000002
-time to build the graph with GrB_Matrix_build:     0.000048
+time to prune self-edges:     0.000001
+time to build the graph with GrB_Matrix_build:     0.000054
 make symmetric
 A = (C+C')/2
-A = (C+C')/2 time     0.000039
+A = (C+C')/2 time     0.000043
 matrix 4 by 4, 8 entries, from stdin
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000098
+BFS time in seconds:       0.000126
 nodes reachable from node 0: 2 out of 4
 max BFS level: 2
 
 method 5: same but check each result
-BFS time in seconds:       0.000020
+BFS time in seconds:       0.000023
 nodes reachable from node 0: 2 out of 4
 max BFS level: 2
 
 method 6: apply unary operator
-BFS time in seconds:       0.000065
+BFS time in seconds:       0.000038
 nodes reachable from node 0: 2 out of 4
 max BFS level: 2
 
 method 6: same but check each result
-BFS time in seconds:       0.000020
+BFS time in seconds:       0.000021
 nodes reachable from node 0: 2 out of 4
 max BFS level: 2
 
@@ -112,7 +112,7 @@ must be identical to monoid operator z=or(x,y) of type [bool]
 =================================================================
 SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 http://suitesparse.com  Dept of Computer Sci. & Eng, Texas A&M University
-SuiteSparse:GraphBLAS version: 2.0.1  Date: Mar 15, 2018
+SuiteSparse:GraphBLAS version: 2.0.3  Date: July 4, 2018
 SuiteSparse:GraphBLAS, Copyright 2017-2018, Timothy A. Davis
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -136,30 +136,30 @@ GraphBLAS status: GrB_SUCCESS
 
 ntuples: 10
 nrows 4 ncols 4
-time to prune self-edges:     0.000002
-time to build the graph with GrB_Matrix_build:     0.000053
+time to prune self-edges:     0.000001
+time to build the graph with GrB_Matrix_build:     0.000039
 make symmetric
 A = (C+C')/2
-A = (C+C')/2 time     0.000047
+A = (C+C')/2 time     0.000043
 matrix 4 by 4, 14 entries, from stdin
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000112
+BFS time in seconds:       0.000108
 nodes reachable from node 0: 4 out of 4
 max BFS level: 2
 
 method 5: same but check each result
-BFS time in seconds:       0.000025
+BFS time in seconds:       0.000020
 nodes reachable from node 0: 4 out of 4
 max BFS level: 2
 
 method 6: apply unary operator
-BFS time in seconds:       0.000039
+BFS time in seconds:       0.000032
 nodes reachable from node 0: 4 out of 4
 max BFS level: 2
 
 method 6: same but check each result
-BFS time in seconds:       0.000019
+BFS time in seconds:       0.000021
 nodes reachable from node 0: 4 out of 4
 max BFS level: 2
 
@@ -178,7 +178,7 @@ must be identical to monoid operator z=or(x,y) of type [bool]
 =================================================================
 SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 http://suitesparse.com  Dept of Computer Sci. & Eng, Texas A&M University
-SuiteSparse:GraphBLAS version: 2.0.1  Date: Mar 15, 2018
+SuiteSparse:GraphBLAS version: 2.0.3  Date: July 4, 2018
 SuiteSparse:GraphBLAS, Copyright 2017-2018, Timothy A. Davis
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -202,386 +202,386 @@ GraphBLAS status: GrB_SUCCESS
 
 ntuples: 8
 nrows 4 ncols 3
-time to prune self-edges:     0.000000
-time to build the graph with GrB_Matrix_build:     0.000049
+time to prune self-edges:     0.000002
+time to build the graph with GrB_Matrix_build:     0.000066
 make symmetric
 A = [0 C ; C' 0], a bipartite graph
-time to construct augmented system:     0.000049
+time to construct augmented system:     0.000053
 matrix 7 by 7, 16 entries, from stdin
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000119
+BFS time in seconds:       0.000108
 nodes reachable from node 0: 7 out of 7
 max BFS level: 5
 
 method 5: same but check each result
-BFS time in seconds:       0.000051
+BFS time in seconds:       0.000049
 nodes reachable from node 0: 7 out of 7
 max BFS level: 5
 
 method 6: apply unary operator
-BFS time in seconds:       0.000053
+BFS time in seconds:       0.000052
 nodes reachable from node 0: 7 out of 7
 max BFS level: 5
 
 method 6: same but check each result
-BFS time in seconds:       0.000035
+BFS time in seconds:       0.000024
 nodes reachable from node 0: 7 out of 7
 max BFS level: 5
 ntuples: 438
 nrows 219 ncols 85
 time to prune self-edges:     0.000002
-time to build the graph with GrB_Matrix_build:     0.000065
+time to build the graph with GrB_Matrix_build:     0.000047
 make symmetric
 A = [0 C ; C' 0], a bipartite graph
-time to construct augmented system:     0.000128
+time to construct augmented system:     0.000086
 matrix 304 by 304, 876 entries, from stdin
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000207
+BFS time in seconds:       0.000243
 nodes reachable from node 0: 304 out of 304
 max BFS level: 17
 
 method 5: same but check each result
-BFS time in seconds:       0.000183
+BFS time in seconds:       0.000169
 nodes reachable from node 0: 304 out of 304
 max BFS level: 17
 
 method 6: apply unary operator
-BFS time in seconds:       0.000199
+BFS time in seconds:       0.000149
 nodes reachable from node 0: 304 out of 304
 max BFS level: 17
 
 method 6: same but check each result
-BFS time in seconds:       0.000227
+BFS time in seconds:       0.000136
 nodes reachable from node 0: 304 out of 304
 max BFS level: 17
 ntuples: 224
 nrows 48 ncols 48
-time to prune self-edges:     0.000002
-time to build the graph with GrB_Matrix_build:     0.000069
+time to prune self-edges:     0.000006
+time to build the graph with GrB_Matrix_build:     0.000142
 make symmetric
 A = (C+C')/2
-A = (C+C')/2 time     0.000057
+A = (C+C')/2 time     0.000096
 matrix 48 by 48, 400 entries, from stdin
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000134
+BFS time in seconds:       0.000385
 nodes reachable from node 0: 48 out of 48
 max BFS level: 4
 
 method 5: same but check each result
-BFS time in seconds:       0.000040
+BFS time in seconds:       0.000073
 nodes reachable from node 0: 48 out of 48
 max BFS level: 4
 
 method 6: apply unary operator
-BFS time in seconds:       0.000126
+BFS time in seconds:       0.000110
 nodes reachable from node 0: 48 out of 48
 max BFS level: 4
 
 method 6: same but check each result
-BFS time in seconds:       0.000043
+BFS time in seconds:       0.000046
 nodes reachable from node 0: 48 out of 48
 max BFS level: 4
 ntuples: 147631
 nrows 4884 ncols 4884
 time to prune self-edges:     0.000003
-time to build the graph with GrB_Matrix_build:     0.003171
+time to build the graph with GrB_Matrix_build:     0.002475
 make symmetric
 A = (C+C')/2
-A = (C+C')/2 time     0.004172
+A = (C+C')/2 time     0.003191
 matrix 4884 by 4884, 290378 entries, from stdin
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.002207
+BFS time in seconds:       0.002515
 nodes reachable from node 0: 4810 out of 4884
 max BFS level: 44
 
 method 5: same but check each result
-BFS time in seconds:       0.001365
+BFS time in seconds:       0.002994
 nodes reachable from node 0: 4810 out of 4884
 max BFS level: 44
 
 method 6: apply unary operator
-BFS time in seconds:       0.002099
+BFS time in seconds:       0.002619
 nodes reachable from node 0: 4810 out of 4884
 max BFS level: 44
 
 method 6: same but check each result
-BFS time in seconds:       0.002914
+BFS time in seconds:       0.003219
 nodes reachable from node 0: 4810 out of 4884
 max BFS level: 44
 ntuples: 1069
 nrows 183 ncols 183
 time to prune self-edges:     0.000002
-time to build the graph with GrB_Matrix_build:     0.000077
+time to build the graph with GrB_Matrix_build:     0.000064
 make symmetric
 A = (C+C')/2
-A = (C+C')/2 time     0.000071
+A = (C+C')/2 time     0.000082
 matrix 183 by 183, 1585 entries, from stdin
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000161
+BFS time in seconds:       0.000191
 nodes reachable from node 0: 183 out of 183
 max BFS level: 4
 
 method 5: same but check each result
-BFS time in seconds:       0.000074
+BFS time in seconds:       0.000084
 nodes reachable from node 0: 183 out of 183
 max BFS level: 4
 
 method 6: apply unary operator
-BFS time in seconds:       0.000082
+BFS time in seconds:       0.000081
 nodes reachable from node 0: 183 out of 183
 max BFS level: 4
 
 method 6: same but check each result
-BFS time in seconds:       0.000067
+BFS time in seconds:       0.000066
 nodes reachable from node 0: 183 out of 183
 max BFS level: 4
 ntuples: 123
 nrows 32 ncols 31
 time to prune self-edges:     0.000002
-time to build the graph with GrB_Matrix_build:     0.000054
+time to build the graph with GrB_Matrix_build:     0.000065
 make symmetric
 A = [0 C ; C' 0], a bipartite graph
-time to construct augmented system:     0.000060
+time to construct augmented system:     0.000059
 matrix 63 by 63, 246 entries, from stdin
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000134
+BFS time in seconds:       0.000160
 nodes reachable from node 0: 63 out of 63
 max BFS level: 6
 
 method 5: same but check each result
-BFS time in seconds:       0.000051
+BFS time in seconds:       0.000062
 nodes reachable from node 0: 63 out of 63
 max BFS level: 6
 
 method 6: apply unary operator
-BFS time in seconds:       0.000074
+BFS time in seconds:       0.000064
 nodes reachable from node 0: 63 out of 63
 max BFS level: 6
 
 method 6: same but check each result
-BFS time in seconds:       0.000057
+BFS time in seconds:       0.000048
 nodes reachable from node 0: 63 out of 63
 max BFS level: 6
 ntuples: 123
 nrows 31 ncols 32
-time to prune self-edges:     0.000002
-time to build the graph with GrB_Matrix_build:     0.000050
+time to prune self-edges:     0.000001
+time to build the graph with GrB_Matrix_build:     0.000064
 make symmetric
 A = [0 C ; C' 0], a bipartite graph
-time to construct augmented system:     0.000040
+time to construct augmented system:     0.000054
 matrix 63 by 63, 246 entries, from stdin
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000136
+BFS time in seconds:       0.000171
 nodes reachable from node 0: 63 out of 63
 max BFS level: 6
 
 method 5: same but check each result
-BFS time in seconds:       0.000050
+BFS time in seconds:       0.000064
 nodes reachable from node 0: 63 out of 63
 max BFS level: 6
 
 method 6: apply unary operator
-BFS time in seconds:       0.000067
+BFS time in seconds:       0.000070
 nodes reachable from node 0: 63 out of 63
 max BFS level: 6
 
 method 6: same but check each result
-BFS time in seconds:       0.000050
+BFS time in seconds:       0.000051
 nodes reachable from node 0: 63 out of 63
 max BFS level: 6
 ntuples: 102
 nrows 27 ncols 51
-time to prune self-edges:     0.000002
-time to build the graph with GrB_Matrix_build:     0.000055
+time to prune self-edges:     0.000001
+time to build the graph with GrB_Matrix_build:     0.000067
 make symmetric
 A = [0 C ; C' 0], a bipartite graph
-time to construct augmented system:     0.000057
+time to construct augmented system:     0.000069
 matrix 78 by 78, 204 entries, from stdin
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000152
+BFS time in seconds:       0.000169
 nodes reachable from node 0: 78 out of 78
 max BFS level: 10
 
 method 5: same but check each result
-BFS time in seconds:       0.000071
+BFS time in seconds:       0.000094
 nodes reachable from node 0: 78 out of 78
 max BFS level: 10
 
 method 6: apply unary operator
-BFS time in seconds:       0.000098
+BFS time in seconds:       0.000094
 nodes reachable from node 0: 78 out of 78
 max BFS level: 10
 
 method 6: same but check each result
-BFS time in seconds:       0.000079
+BFS time in seconds:       0.000059
 nodes reachable from node 0: 78 out of 78
 max BFS level: 10
 ntuples: 49920
 nrows 492 ncols 490
-time to prune self-edges:     0.000003
-time to build the graph with GrB_Matrix_build:     0.001015
+time to prune self-edges:     0.000001
+time to build the graph with GrB_Matrix_build:     0.000713
 make symmetric
 A = [0 C ; C' 0], a bipartite graph
-time to construct augmented system:     0.004634
+time to construct augmented system:     0.005610
 matrix 982 by 982, 99840 entries, from stdin
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000665
+BFS time in seconds:       0.001573
 nodes reachable from node 0: 933 out of 982
 max BFS level: 5
 
 method 5: same but check each result
-BFS time in seconds:       0.000543
+BFS time in seconds:       0.000544
 nodes reachable from node 0: 933 out of 982
 max BFS level: 5
 
 method 6: apply unary operator
-BFS time in seconds:       0.000524
+BFS time in seconds:       0.000362
 nodes reachable from node 0: 933 out of 982
 max BFS level: 5
 
 method 6: same but check each result
-BFS time in seconds:       0.000506
+BFS time in seconds:       0.000335
 nodes reachable from node 0: 933 out of 982
 max BFS level: 5
 ntuples: 299
 nrows 67 ncols 67
-time to prune self-edges:     0.000000
-time to build the graph with GrB_Matrix_build:     0.000080
+time to prune self-edges:     0.000001
+time to build the graph with GrB_Matrix_build:     0.000058
 make symmetric
 A = (C+C')/2
-A = (C+C')/2 time     0.000052
+A = (C+C')/2 time     0.000039
 matrix 67 by 67, 576 entries, from stdin
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000139
+BFS time in seconds:       0.000124
 nodes reachable from node 0: 67 out of 67
 max BFS level: 5
 
 method 5: same but check each result
-BFS time in seconds:       0.000050
+BFS time in seconds:       0.000047
 nodes reachable from node 0: 67 out of 67
 max BFS level: 5
 
 method 6: apply unary operator
-BFS time in seconds:       0.000070
+BFS time in seconds:       0.000044
 nodes reachable from node 0: 67 out of 67
 max BFS level: 5
 
 method 6: same but check each result
-BFS time in seconds:       0.000053
+BFS time in seconds:       0.000032
 nodes reachable from node 0: 67 out of 67
 max BFS level: 5
-Wathen: nx 200 ny 200 n 120801 nz 1883201 method 0, time: 0.377 sec
+Wathen: nx 200 ny 200 n 120801 nz 1883201 method 0, time: 0.344 sec
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.036218
+BFS time in seconds:       0.136331
 nodes reachable from node 0: 120801 out of 120801
 max BFS level: 201
 
 method 5: same but check each result
-BFS time in seconds:       0.034446
+BFS time in seconds:       0.133049
 nodes reachable from node 0: 120801 out of 120801
 max BFS level: 201
 
 method 6: apply unary operator
-BFS time in seconds:       0.073186
+BFS time in seconds:       0.079442
 nodes reachable from node 0: 120801 out of 120801
 max BFS level: 201
 
 method 6: same but check each result
-BFS time in seconds:       0.081593
+BFS time in seconds:       0.082897
 nodes reachable from node 0: 120801 out of 120801
 max BFS level: 201
-random 10000 by 10000, nz: 199764, method 0 time 0.049 sec
+random 10000 by 10000, nz: 199764, method 0 time 0.042 sec
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.004385
+BFS time in seconds:       0.004436
 nodes reachable from node 0: 10000 out of 10000
 max BFS level: 5
 
 method 5: same but check each result
-BFS time in seconds:       0.004012
+BFS time in seconds:       0.007141
 nodes reachable from node 0: 10000 out of 10000
 max BFS level: 5
 
 method 6: apply unary operator
-BFS time in seconds:       0.003577
+BFS time in seconds:       0.004461
 nodes reachable from node 0: 10000 out of 10000
 max BFS level: 5
 
 method 6: same but check each result
-BFS time in seconds:       0.003590
+BFS time in seconds:       0.002908
 nodes reachable from node 0: 10000 out of 10000
 max BFS level: 5
-random 10000 by 10000, nz: 199764, method 1 time 0.039 sec
+random 10000 by 10000, nz: 199764, method 1 time 0.043 sec
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.004277
+BFS time in seconds:       0.003721
 nodes reachable from node 0: 10000 out of 10000
 max BFS level: 5
 
 method 5: same but check each result
-BFS time in seconds:       0.003713
+BFS time in seconds:       0.003291
 nodes reachable from node 0: 10000 out of 10000
 max BFS level: 5
 
 method 6: apply unary operator
-BFS time in seconds:       0.003542
+BFS time in seconds:       0.003280
 nodes reachable from node 0: 10000 out of 10000
 max BFS level: 5
 
 method 6: same but check each result
-BFS time in seconds:       0.003755
+BFS time in seconds:       0.003367
 nodes reachable from node 0: 10000 out of 10000
 max BFS level: 5
-random 100000 by 100000, nz: 19980358, method 0 time 6.335 sec
+random 100000 by 100000, nz: 19980358, method 0 time 4.935 sec
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.135572
+BFS time in seconds:       0.136487
 nodes reachable from node 0: 100000 out of 100000
 max BFS level: 4
 
 method 5: same but check each result
-BFS time in seconds:       0.134372
+BFS time in seconds:       0.148218
 nodes reachable from node 0: 100000 out of 100000
 max BFS level: 4
 
 method 6: apply unary operator
-BFS time in seconds:       0.127397
+BFS time in seconds:       0.154044
 nodes reachable from node 0: 100000 out of 100000
 max BFS level: 4
 
 method 6: same but check each result
-BFS time in seconds:       0.128578
+BFS time in seconds:       0.132586
 nodes reachable from node 0: 100000 out of 100000
 max BFS level: 4
-random 100000 by 100000, nz: 19980358, method 1 time 4.119 sec
+random 100000 by 100000, nz: 19980358, method 1 time 4.154 sec
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.134574
+BFS time in seconds:       0.129691
 nodes reachable from node 0: 100000 out of 100000
 max BFS level: 4
 
 method 5: same but check each result
-BFS time in seconds:       0.130955
+BFS time in seconds:       0.139072
 nodes reachable from node 0: 100000 out of 100000
 max BFS level: 4
 
 method 6: apply unary operator
-BFS time in seconds:       0.127984
+BFS time in seconds:       0.135021
 nodes reachable from node 0: 100000 out of 100000
 max BFS level: 4
 
 method 6: same but check each result
-BFS time in seconds:       0.127272
+BFS time in seconds:       0.128023
 nodes reachable from node 0: 100000 out of 100000
 max BFS level: 4

@@ -145,7 +145,7 @@ switch  method
     case 'Burkhardt'
     %===========================================================================
 
-        % Burkhart, 'Graphing trillions of triangles', Information
+        % Burkhardt, 'Graphing trillions of triangles', Information
         % Visualization, 16(3), Sept 2017,
         % https://doi.org/10.1177%2F1473871616666393
         %

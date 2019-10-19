@@ -1,4 +1,4 @@
-UMFPACK, Copyright (c) 1995-2016 by Timothy A. Davis,
+UMFPACK, Copyright (c) 1995-2018 by Timothy A. Davis,
 http://www.suitesparse.com
 
 UMFPACK :  a set of routines solving sparse linear systems via LU
@@ -366,7 +366,7 @@ Files and directories in the UMFPACK distribution:
     umfpack_report.m		report statistics
     umfpack_simple.m		a simple umfpack demo
     umfpack_solve.m		x=A\b or b/A for arbitrary b
-    umfpack_test.m		extensive test, requires UFget
+    umfpack_test.m		extensive test, requires ssget
     umfpackmex.c		the umfpack mexFunction
     west0067.mat		sparse matrix for umfpack_demo.m
 

@@ -7,7 +7,7 @@
 % compiles and installs all of SuiteSparse, and runs several demos and tests.
 %
 %-------------------------------------------------------------------------------
-% Ordering methods:
+% Ordering methods and graph partitioners:
 %-------------------------------------------------------------------------------
 %
 %   amd2         - approximate minimum degree ordering.
@@ -16,6 +16,7 @@
 %   camd         - constrained amd.
 %   ccolamd      - constrained colamd.
 %   csymamd      - constrained symamd.
+%   edgecut      - Mongoose graph partitioner
 %
 %-------------------------------------------------------------------------------
 % CHOLMOD: a sparse supernodal Cholesky update/downdate package:
@@ -134,7 +135,7 @@
 %       sparseinv       sparse inverse subset
 %       spqr_rank       toolbox for sparse rank-deficient matrices
 %
-%   UFcollection    for managing the SuiteSparse Matrix Collection
+%   SuiteSparseCollection    for managing the SuiteSparse Matrix Collection
 %   RBio            for reading/writing Rutherford/Boeing sparse matrices
 %   ssget           MATLAB interface to the SuiteSparse Matrix Collection
 %   GraphBLAS       graph algorithms via sparse linear algebra (graphblas.org),
@@ -145,6 +146,6 @@
 % For help on compiling SuiteSparse or the demos, testing functions, etc.,
 % please see the help for each individual package.
 %
-% Copyright 2017, Timothy A. Davis, http://www.suitesparse.com.
+% Copyright 2018, Timothy A. Davis, http://www.suitesparse.com.
 
 help SuiteSparse

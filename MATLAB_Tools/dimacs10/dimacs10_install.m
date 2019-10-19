@@ -7,7 +7,7 @@ function dimacs10_install (demo)
 %
 %   dimacs10_install
 %
-% See also dimacs10, metis_graph_read, UFget.
+% See also dimacs10, metis_graph_read, ssget.
 
 % Copyright 2011, Timothy A. Davis, http://www.suitesparse.com
 

@@ -74,15 +74,8 @@ void GB_AxB__max_max_int16
             GB_cast_factory (GB_BOOL_code, Mask->type->code) ;
         size_t msize = Mask->type->size ;
 
-        #ifdef WITH_ZOMBIES
-        // copy Maskp into C->p
-        memcpy (C->p, Maskp, (n+1) * sizeof (int64_t)) ;
-        C->magic = MAGIC ;
-        #else
         int64_t cnz = 0 ;
         int64_t *restrict Cp = C->p ;
-        #endif
-
         int64_t *restrict Ci = C->i ;
 
         for (int64_t j = 0 ; j < n ; j++)
@@ -92,10 +85,10 @@ void GB_AxB__max_max_int16
             // compute C(;,j) = A * B(:,j), both values and pattern
             //------------------------------------------------------------------
 
-            // skip this column j if the Mask is empty
-            #ifndef WITH_ZOMBIES
+            // log the start of column C(:,j)
             Cp [j] = cnz ;
-            #endif
+
+            // skip this column j if the Mask is empty
             int64_t mlo, mhi ;
             if (empty (Maskp, Maski, j, &mlo, &mhi)) continue ;
             bool marked = false ;
@@ -135,73 +128,27 @@ void GB_AxB__max_max_int16
                 }
             }
 
-            #ifdef WITH_ZOMBIES
-
-                // gather C(:,j), both values and pattern, from the Mask(:,j)
-                if (marked)
+            // gather C(:,j), both values and pattern, from the Mask(:,j)
+            if (marked)
+            {
+                for (int64_t p = Maskp [j] ; p < Maskp [j+1] ; p++)
                 {
-                    for (int64_t p = Maskp [j] ; p < Maskp [j+1] ; p++)
+                    int64_t i = Maski [p] ;
+                    // C(i,j) is present
+                    if (Flag [i] < 0)
                     {
-                        int64_t i = Maski [p] ;
-                        // C(i,j) is present
-                        if (Flag [i] < 0)
-                        {
-                            // C(i,j) is a live entry, gather its row and value
-                            Cx [p] = w [i] ;
-                            Ci [p] = i ;
-                        }
-                        else
-                        {
-                            // C(i,j) is a zombie; in the Mask but not in A*B
-                            Cx [p] = INT16_MIN ;
-                            Ci [p] = FLIP (i) ;
-                            C->nzombies++ ;
-                        }
-                        Flag [i] = 0 ;
+                        // C(i,j) is a live entry, gather its row and value
+                        Cx [cnz] = w [i] ;
+                        Ci [cnz++] = i ;
                     }
+                    Flag [i] = 0 ;
                 }
-                else
-                {
-                    for (int64_t p = Maskp [j] ; p < Maskp [j+1] ; p++)
-                    {
-                        int64_t i = Maski [p] ;
-                        // C(i,j) is a zombie; in the Mask but not in A*B
-                        Cx [p] = INT16_MIN ;
-                        Ci [p] = FLIP (i) ;
-                        C->nzombies++ ;
-                    }
-                }
-
-            #else
-
-                // gather C(:,j), both values and pattern, from the Mask(:,j)
-                if (marked)
-                {
-                    for (int64_t p = Maskp [j] ; p < Maskp [j+1] ; p++)
-                    {
-                        int64_t i = Maski [p] ;
-                        // C(i,j) is present
-                        if (Flag [i] < 0)
-                        {
-                            // C(i,j) is a live entry, gather its row and value
-                            Cx [cnz] = w [i] ;
-                            Ci [cnz++] = i ;
-                        }
-                        Flag [i] = 0 ;
-                    }
-                }
-
-            #endif
-
+            }
         }
 
-        #ifdef WITH_ZOMBIES
-        // place C in the queue if it has zombies
-        GB_queue_insert (C) ;
-        #else
+        // finalize the last column of C and mark C as initialized
         Cp [n] = cnz ;
         C->magic = MAGIC ;
-        #endif
 
     }
     else

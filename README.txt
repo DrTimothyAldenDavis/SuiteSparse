@@ -1,9 +1,22 @@
 SuiteSparse:  A Suite of Sparse matrix packages at http://www.suitesparse.com
 
-Mar 15, 2018.  SuiteSparse VERSION 5.2.0
+July 5, 2018.  SuiteSparse VERSION 5.3.0
 
 Now includes GraphBLAS and a new interface to the SuiteSparse Matrix
 Collection (ssget), via MATLAB and a Java GUI, to http://sparse.tamu.edu.
+
+Primary author of SuiteSparse (codes and algorithms, excl. METIS): Tim Davis
+
+Code co-authors, in alphabetical order (not including METIS):
+
+    Patrick Amestoy, David Bateman, Yanqing Chen, Iain Duff, Les Foster,
+    William Hager, Scott Kolodziej, Stefan Larimore, Ekanathan Palamadai,
+    Sivasankaran Rajamanickam, Sanjay Ranka, Wissam Sid-Lakhdar, Nuri Yeralan.
+
+Additional algorithm designers: Esmond Ng and John Gilbert.
+
+Refer to each package for license, copyright, and author information.  All
+codes are authored or co-authored by Timothy A. Davis.
 
 ------------------
 SuiteSparse/README
@@ -18,17 +31,24 @@ Packages in SuiteSparse, and files in this directory:
                 A stand-alone package that uses cmake to compile; see
                 GraphBLAS/README.txt.  The rest of SuiteSparse still uses
                 'make'.  A cmake setup for all of SuiteSparse is in progress.
+                author: Tim Davis
 
     AMD         approximate minimum degree ordering.  This is the built-in AMD
                 function in MATLAB.
+                authors: Tim Davis, Patrick Amestoy, Iain Duff
 
     bin         where the metis-5.1.0 programs are placed when METIS is compiled
 
     BTF         permutation to block triangular form
+                authors: Tim Davis, Ekanathan Palamadai
 
     CAMD        constrained approximate minimum degree ordering
+                authors: Tim Davis, Patrick Amestoy, Iain Duff, Yanqing Chen
 
     CCOLAMD     constrained column approximate minimum degree ordering
+                authors: Tim Davis, Sivasankaran Rajamanickam, Stefan Larimore.
+                    Algorithm design collaborators: Esmond Ng, John Gilbert
+                    (for COLAMD)
 
     ChangeLog   a summary of changes to SuiteSparse.  See */Doc/ChangeLog
                 for details for each package.
@@ -36,9 +56,13 @@ Packages in SuiteSparse, and files in this directory:
     CHOLMOD     sparse Cholesky factorization.  Requires AMD, COLAMD, CCOLAMD,
                 the BLAS, and LAPACK.  Optionally uses METIS.  This is chol and
                 x=A\b in MATLAB.
+                author for all modules: Tim Davis 
+                CHOLMOD/Modify module authors: Tim Davis and William W. Hager
 
     COLAMD      column approximate minimum degree ordering.  This is the
                 built-in COLAMD function in MATLAB.
+                authors (of the code): Tim Davis and Stefan Larimore
+                Algorithm design collaborators: Esmond Ng, John Gilbert
 
     Contents.m  a list of contents for 'help SuiteSparse' in MATLAB.
 
@@ -50,10 +74,12 @@ Packages in SuiteSparse, and files in this directory:
                 have the same include filename: cs.h.
 
                 This package is used for the built-in DMPERM in MATLAB.
+                author: Tim Davis
 
     CSparse_to_CXSparse
                 a Perl script to create CXSparse from CSparse and
                 CXSparse_newfiles
+                author: David Bateman, Motorola
 
     CXSparse    CSparse Extended.  Includes support for complex matrices
                 and both int or long integers.  Use this instead of CSparse
@@ -61,21 +87,27 @@ Packages in SuiteSparse, and files in this directory:
                 the Mac) with the same name as CSparse.  It is a superset
                 of CSparse.  Any code that links against CSparse should
                 also be able to link against CXSparse instead.
+                author: Tim Davis, David Bateman
 
     CXSparse_newfiles
                 Files unique to CXSparse
+                author: Tim Davis, David Bateman
 
     share       'make' places documentation for each package here
 
     GPUQREngine GPU support package for SPQR (not built into MATLAB, however)
+                authors: Tim Davis, Nuri Yeralan, Sanjay Ranka,
+                    Wissam Sid-Lakhdar
 
     include     'make' places user-visible include fomes for each package here
 
     KLU         sparse LU factorization, primarily for circuit simulation.
                 Requires AMD, COLAMD, and BTF.  Optionally uses CHOLMOD,
                 CAMD, CCOLAMD, and METIS.
+                authors: Tim Davis, Ekanathan Palamadai
 
     LDL         a very concise LDL' factorization package
+                author: Tim Davis
 
     lib         'make' places shared libraries for each package here
 
@@ -103,6 +135,8 @@ Packages in SuiteSparse, and files in this directory:
                 make metis      compiles METIS (also done by 'make')
 
     MATLAB_Tools    various m-files for use in MATLAB
+                author: Tim Davis (all parts)
+                for spqr_rank: author Les Foster and Tim Davis
 
                 Contents.m      list of contents
                 dimacs10        loads matrices for DIMACS10 collection
@@ -124,26 +158,38 @@ Packages in SuiteSparse, and files in this directory:
                                 reliable factorizations, etc.  With Leslie
                                 Foster, San Jose State Univ.
                 SSMULT          C=A*B where A and B are both sparse
-                UFcollection    maitains the SuiteSparse matrix collection
+                SuiteSparseCollection    maitains the SuiteSparse Matrix Collection
                 waitmex         waitbar for use inside a mexFunction
 
                 The SSMULT and SFMULT functions are the basis for the
                 built-in C=A*B functions in MATLAB.
 
+    Mongoose    graph partitioning.
+                authors: Nuri Yeralan, Scott Kolodziej, William Hager, Tim Davis
+
     metis-5.1.0 a modified version of METIS.  See the README.txt files for
                 details.
+                author: George Karypis; not an integral component of
+                SuiteSparse, however.  This is just a copy included with
+                SuiteSparse via the open-source license provided by
+                George Karypis
 
     RBio        read/write sparse matrices in Rutherford/Boeing format
+                author: Tim Davis
 
     README.txt  this file
 
     SPQR        sparse QR factorization.  This the built-in qr and x=A\b in
                 MATLAB.
+                author of the CPU code: Tim Davis
+                author of GPU modules: Tim Davis, Nuri Yeralan,
+                    Wissam Sid-Lakhdar, Sanjay Ranka
 
     SuiteSparse_config    configuration file for all the above packages.  The
                 SuiteSparse_config/SuiteSparse_config.mk is included in the
                 Makefile's of all packages.  CSparse and MATLAB_Tools do not
                 use SuiteSparse_config.
+                author: Tim Davis
 
     SuiteSparse_GPURuntime      GPU support package for SPQR
                 (not builtin to MATLAB, however).
@@ -155,9 +201,12 @@ Packages in SuiteSparse, and files in this directory:
     ssget       MATLAB interface to the SuiteSparse Matrix Collection
                 (formerly called the UF Sparse Matrix Collection).
                 Includes a UFget function for backward compatibility.
+                author: Tim Davis
 
     UMFPACK     sparse LU factorization.  Requires AMD and the BLAS.
                 This is the built-in lu and x=A\b in MATLAB.
+                author: Tim Davis
+                algorithm design collaboration: Iain Duff
 
 Some codes optionally use METIS 5.1.0.  This package is located in SuiteSparse
 in the metis-5.1.0 directory.  Its use is optional, so you can remove it before
@@ -192,6 +241,7 @@ PACKAGENAME/Doc/License.txt:
     KLU/Doc/License.txt
     LDL/Doc/License.txt
     MATLAB_Tools/Doc/License.txt
+    Mongoose/Doc/License.txt
     RBio/Doc/License.txt
     SPQR/Doc/License.txt
     SuiteSparse_GPURuntime/Doc/License.txt

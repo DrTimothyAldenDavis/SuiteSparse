@@ -95,7 +95,7 @@ extern "C" {
 /* Version, copyright, and license */
 /* -------------------------------------------------------------------------- */
 
-#define UMFPACK_VERSION "UMFPACK V5.7.6 (May 4, 2016)"
+#define UMFPACK_VERSION "UMFPACK V5.7.7 (Mar 23, 2018)"
 
 #define UMFPACK_COPYRIGHT \
 "UMFPACK:  Copyright (c) 2005-2013 by Timothy A. Davis.  All Rights Reserved.\n"
@@ -132,11 +132,11 @@ extern "C" {
  * above.
  */
 
-#define UMFPACK_DATE "May 4, 2016"
+#define UMFPACK_DATE "Mar 23, 2018"
 #define UMFPACK_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define UMFPACK_MAIN_VERSION 5
 #define UMFPACK_SUB_VERSION 7
-#define UMFPACK_SUBSUB_VERSION 6
+#define UMFPACK_SUBSUB_VERSION 7
 #define UMFPACK_VER UMFPACK_VER_CODE(UMFPACK_MAIN_VERSION,UMFPACK_SUB_VERSION)
 
 /* -------------------------------------------------------------------------- */

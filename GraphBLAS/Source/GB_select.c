@@ -170,6 +170,7 @@ GrB_Info GB_select          // C<Mask> = accum (C, select(A,k)) or select(A',k)
 
         case GB_TRIL_opcode:
         {
+            // FUTURE: use binary search first
             for (int64_t j = 0 ; j < ancols ; j++)
             {
                 Sp [j] = snz ;
@@ -195,6 +196,7 @@ GrB_Info GB_select          // C<Mask> = accum (C, select(A,k)) or select(A',k)
 
         case GB_TRIU_opcode:
         {
+            // FUTURE: use binary search first
             for (int64_t j = 0 ; j < ancols ; j++)
             {
                 Sp [j] = snz ;

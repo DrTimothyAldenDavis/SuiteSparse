@@ -23,9 +23,8 @@
 // example GrB_free is a macro that uses _Generic to select the right method,
 // depending on the type of its argument.
 
-// The GraphBLAS API Specification 1.1.0 is provisional, but this
-// implementation fully conforms to that specification.  This implementation
-// does include functions and features that are extensions to the spec.  These
+// This implementation fully conforms to the GraphBLAS API Specification, but
+// also includes functions and features that are extensions to the spec.  These
 // are cataloged here and tagged with "SPEC."
 
 // All functions and definitions that are extensions to the spec are given
@@ -72,9 +71,11 @@
     (((major)*1000ULL + (minor))*1000ULL + (sub))
 
 // The version of this implementation:
+#define GXB_DATE "July 4, 2018"
 #define GXB_IMPLEMENTATION_MAJOR 2
 #define GXB_IMPLEMENTATION_MINOR 0
-#define GXB_IMPLEMENTATION_SUB   1
+#define GXB_IMPLEMENTATION_SUB   3
+
 #define GXB_IMPLEMENTATION \
         GXB_VERSION (GXB_IMPLEMENTATION_MAJOR, \
                      GXB_IMPLEMENTATION_MINOR, \
@@ -85,9 +86,6 @@
 "SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, "                   \
 "All Rights Reserved.\n"                                                     \
 "http://suitesparse.com  Dept of Computer Sci. & Eng, Texas A&M University\n"
-
-// and its date:
-#define GXB_DATE "Mar 15, 2018"
 
 // The GraphBLAS license for this particular implementation of GraphBLAS:
 #define GXB_LICENSE \
@@ -109,10 +107,12 @@
 // GraphBLAS C API version
 //------------------------------------------------------------------------------
 
-// This implementation conforms to the GraphBLAS provisional release 1.1.0
+// This implementation conforms to the following GraphBLAS API version:
+#define GXB_SPEC_DATE "Nov 14, 2017"
 #define GXB_MAJOR 1
 #define GXB_MINOR 1
 #define GXB_SUB   0
+
 #define GXB GXB_VERSION(GXB_MAJOR, GXB_MINOR, GXB_SUB)
 
 // The 'spec' string describes the GraphBLAS spec:
@@ -120,9 +120,6 @@
 "GraphBLAS C API, provisional release, by Aydin Buluc, Timothy\n"   \
 "Mattson, Scott McMillan, Jose' Moreira, Carl Yang.  Based on\n"    \
 "\"GraphBLAS Mathematics\" by Jeremy Kepner.\n"
-
-// and its date:
-#define GXB_SPEC_DATE "Nov 14, 2017"
 
 //------------------------------------------------------------------------------
 // include files required by GraphBLAS

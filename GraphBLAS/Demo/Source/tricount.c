@@ -11,8 +11,8 @@
 //  1:  Burkhardt:  ntri = sum (sum ((A^2) .* A)) / 6
 //  2:  Cohen:      ntri = sum (sum ((L * U) .* A)) / 2
 //  3:  Sandia:     ntri = sum (sum ((U * U) .* U))
-//  4:  SandiaDot:  ntri = sum (sum ((L' * U) .* U)).  Note that L'=U.
-//  5:  SanidaL:    ntri = sum (sum ((L * L) .* L))
+//  4:  SandiaL:    ntri = sum (sum ((L * L) .* L))
+//  5:  SandiaDot:  ntri = sum (sum ((L' * U) .* U)).  Note that L'=U.
 
 // Method 0 can take a huge amount of memory, for all of A*E.  As a result,
 // it often fails for large problems.

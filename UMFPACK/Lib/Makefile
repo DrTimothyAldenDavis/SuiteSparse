@@ -3,7 +3,7 @@
 #-------------------------------------------------------------------------------
 
 LIBRARY = libumfpack
-VERSION = 5.7.6
+VERSION = 5.7.7
 SO_VERSION = 5
 
 default: library

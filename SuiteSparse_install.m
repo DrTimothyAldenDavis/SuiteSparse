@@ -6,6 +6,7 @@ function SuiteSparse_install (do_demo)
 %
 % GraphBLAS      graph algorithms via sparse linear algebra (graphblas.org)
 %                (does not yet have a MATLAB interface)
+% Mongoose       graph partitioner
 % UMFPACK        sparse LU factorization (multifrontal)
 % CHOLMOD        sparse Cholesky factorization, and many other operations
 % AMD            sparse symmetric approximate minimum degree ordering
@@ -18,7 +19,7 @@ function SuiteSparse_install (do_demo)
 % KLU            sparse LU factorization (left-looking)
 % BTF            permutation to block triangular form (like dmperm)
 % LDL            sparse LDL' factorization
-% UFcollection   tools for managing the UF Sparse Matrix Collection
+% SuiteSparseCollection   tools for managing the SuiteSparse Matrix Collection
 % RBio           read/write Rutherford/Boeing files
 % SSMULT         sparse matrix times sparse matrix
 % MESHND         2D and 3D regular mesh generation and nested dissection
@@ -26,7 +27,6 @@ function SuiteSparse_install (do_demo)
 % SPARSEINV      sparse inverse subset; computes entries of inv(sparse(A))
 % MATLAB_Tools   various simple m-files and demos
 % SuiteSparseQR  sparse QR factorization
-% PIRO_BAND      pipelined rotations for SVD of a band matrix
 % spqr_rank      MATLAB toolbox for sparse rank deficient matrices
 %
 % Example:
@@ -36,16 +36,17 @@ function SuiteSparse_install (do_demo)
 %    help SuiteSparse           % for more details
 %
 % See also AMD, COLAMD, CAMD, CCOLAMD, CHOLMOD, UMFPACK, CSPARSE, CXSPARSE,
-%      ssget, RBio, UFcollection, KLU, BTF, MESHND, SSMULT, LINFACTOR, SPOK,
-%      SPQR_RANK, SuiteSparse, SPQR, PATHTOOL, PATH, FACTORIZE, SPARSEINV.
+%      ssget, RBio, SuiteSparseCollection, KLU, BTF, MESHND, SSMULT, LINFACTOR,
+%      SPOK, SPQR_RANK, SuiteSparse, SPQR, PATHTOOL, PATH, FACTORIZE,
+%      SPARSEINV, Mongoose.
 %
 % This script installs the full-featured CXSparse rather than CSparse.
 %
-% Copyright 1990-2017, Timothy A. Davis, http://www.suitesparse.com.
-% In collaboration with Patrick Amestoy, Yanqing Chen, Iain Duff, John Gilbert,
-% Steve Hadfield, William Hager, Stefan Larimore, Leslie Foster, Eka Palamadai
-% Natarajan, Esmond Ng, Siva Rajamanickam, Nuri Yeralan, Sanjay Ranka,
-% and Wissam Sid-Lakhdar.
+% Copyright 1990-2018, Timothy A. Davis, http://www.suitesparse.com.
+% In collaboration with (in alphabetical order): Patrick Amestoy, David
+% Bateman, Yanqing Chen, Iain Duff, Les Foster, William Hager, Scott Kolodziej,
+% Stefan Larimore, Ekanathan Palamadai Natarajan, Sivasankaran Rajamanickam,
+% Sanjay Ranka, Wissam Sid-Lakhdar, and Nuri Yeralan.
 
 %-------------------------------------------------------------------------------
 % initializations
@@ -227,14 +228,14 @@ catch me
     fprintf ('MATLAB_Tools not installed\n') ;
 end
 
-% compile and install UFcollection
+% compile and install SuiteSparseCollection
 try
     % do not try to compile with large-file I/O for MATLAB 6.5 or earlier
-    paths = add_to_path (paths, [SuiteSparse '/MATLAB_Tools/UFcollection']) ;
-    UFcollection_install (verLessThan ('matlab', '7.0')) ;
+    paths = add_to_path (paths, [SuiteSparse '/MATLAB_Tools/SuiteSparseCollection']) ;
+    ss_install (verLessThan ('matlab', '7.0')) ;
 catch me
     disp (me.message) ;
-    fprintf ('UFcollection not installed\n') ;
+    fprintf ('SuiteSparseCollection not installed\n') ;
 end
 
 % compile and install SSMULT
@@ -282,6 +283,15 @@ try
 catch me
     disp (me.message) ;
     fprintf ('MATLAB_Tools/sparseinv not installed\n') ;
+end
+
+% compile and install Mongoose
+try
+    paths = add_to_path (paths, [SuiteSparse '/Mongoose/MATLAB']) ;
+    mongoose_make (0) ;
+catch me
+    disp (me.message) ;
+    fprintf ('Mongoose not installed\n') ;
 end
 
 %-------------------------------------------------------------------------------

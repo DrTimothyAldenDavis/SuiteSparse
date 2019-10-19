@@ -13,7 +13,7 @@
 %   find_components find connected components in an image
 %   dimacs10        tools for accessing the DIMACS10 subset of matrices
 %   Factorize       object-oriented x=A\b solver
-%   UFcollection    tools for managing the UF Sparse Matrix Collection
+%   SuiteSparseCollection    tools for managing the SuiteSparse Matrix Collection
 %   spqr_rank       rank-determination, null space.  Les Foster, primary author
 %
 % Examples:

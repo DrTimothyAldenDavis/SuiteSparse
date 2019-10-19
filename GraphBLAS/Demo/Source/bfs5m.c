@@ -40,7 +40,9 @@ GrB_Info bfs5m              // BFS of a graph (using vector assign & reduce)
 
     GrB_Matrix_nrows (&n, A) ;             // n = # of rows of A
     GrB_Vector_new (&v, GrB_INT32, n) ;    // Vector<int32_t> v(n) = 0
-    for (int32_t i = 0 ; i < n ; i++) GrB_Vector_setElement (v, 0, i) ;
+    // This is a little faster if the whole graph is expected to be searched,
+    // but slower if only a small part of the graph is reached:
+    // for (int32_t i = 0 ; i < n ; i++) GrB_Vector_setElement (v, 0, i) ;
     GrB_Vector_new (&q, GrB_BOOL, n) ;     // Vector<bool> q(n) = false
     GrB_Vector_setElement (q, true, s) ;   // q[s] = true, false elsewhere
 

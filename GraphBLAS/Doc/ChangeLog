@@ -1,3 +1,17 @@
+Version 2.0.3: July 4, 2018
+
+    * bug fix to GxB_resize
+    * improvements to CMake script: version now defined only in CMakeLists.txt,
+        and then cmake configures Include/GraphBLAS.h, README, and User Guide
+    * bfs5 demo: asymptotically faster using sparse vector v but somewhat
+        slower if entire graph is traversed
+
+Version 2.0.2: June 25, 2018
+
+    * added -lm to library dependency
+    * minor changes to demos and user guide
+    * removed unused code from Generated/* semiring functions
+
 Version 2.0.1: Mar 15, 2018
 
     * bug fix in GxB_kron: computed C incorrectly when A and B had pending

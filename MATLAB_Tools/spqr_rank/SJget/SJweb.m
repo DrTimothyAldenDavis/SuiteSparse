@@ -33,7 +33,7 @@ function stats = SJweb (matrix, opts)
 %
 %   See also web, SJget, SJget_defaults.
 
-%   Derived from the UFget toolbox on March 18, 2008.
+%   Derived from the ssget toolbox on March 18, 2008.
 %   Copyright 2007, Tim Davis, University of Florida.
 
 params = SJget_defaults ;

@@ -1,7 +1,7 @@
 function [S name kind Problem] = dimacs10 (matrix)
-%DIMACS10 returns a graph from the DIMACS10 test set, via the UF Collection.
+%DIMACS10 returns a graph from the DIMACS10 test set, via the SuiteSparse Collection.
 % The original graphs are at http://www.cc.gatech.edu/dimacs10 ; this function
-% downloads them from the UF Sparse Matrix Collection, converting them as
+% downloads them from the SuiteSparse Matrix Collection, converting them as
 % needed.
 %
 %   [S name kind Problem] = dimacs10 (matrix) ;
@@ -12,7 +12,7 @@ function [S name kind Problem] = dimacs10 (matrix)
 %
 % S: adjacency matrix of the DIMACS10 graph.
 % name: DIMACS10 name of the graph.  The name of the graph in
-%       the UF Collection is Problem.name.
+%       the SuiteSparse Matrix Collection is Problem.name.
 % kind: a string describing the DIMACS10 graph:
 %       'undirected multigraph'.  S(i,j) is the # of edges (i,j).  Only a
 %           multigraph can have self-edges (diag (S)).
@@ -48,17 +48,18 @@ function [S name kind Problem] = dimacs10 (matrix)
 %   end
 %
 % To write the resulting DIMACS10 graph to a Matrix Market or Rutherford/Boeing
-% file for use outside of MATLAB, see UFwrite in the SuiteSparse/UFcollection
-% toolbox.
+% file for use outside of MATLAB, see sswrite in the
+% SuiteSparse/SuiteSparseCollection toolbox.
 %
-% See also gallery, UFget.
+% See also gallery, ssget.
 
 % Copyright 2012, Timothy A. Davis, http://www.suitesparse.com
 
 % matrices 139 to 212 added in July 2012
 % not yet in the collection (too large): clustering/uk-2007-05
 
-% DIMACS graph                         UF matrix (empty if in DIMACS10/ group)
+% DIMACS graph                          SuiteSparse Matrix
+%                                       (empty if in DIMACS10/ group)
 graphs = {
 'clustering/adjnoun',                   'Newman/adjnoun'
 'clustering/as-22july06',               'Newman/as-22july06'
@@ -500,16 +501,16 @@ if (nargin == 0)
     ] ;
 
     index.DIMACS10name = graphs (:,1) ;
-    index.UFname = graphs (:,2) ;
+    index.ssname = graphs (:,2) ;
     index.n = n_nnz (:,1) ;
     index.nnz = n_nnz (:,2) ;
 
     for id = 1:ngraphs
         name = graphs {id, 1} ;         % DIMACS10 name of the graph
-        UFname = graphs {id, 2} ;       % its name in the UF Collection
-        if (isempty (UFname))
+        ssname = graphs {id, 2} ;       % its name in the ss Collection
+        if (isempty (ssname))
             slash = find (name == '/') ;
-            index.UFname {id} = ['DIMACS10/' (name (slash+1:end))] ;
+            index.ssname {id} = ['DIMACS10/' (name (slash+1:end))] ;
         end
     end
 
@@ -574,26 +575,26 @@ end
 %-------------------------------------------------------------------------------
 
 name = graphs {id, 1} ;         % DIMACS10 name of the graph
-UFname = graphs {id, 2} ;       % its name in the UF Collection
+ssname = graphs {id, 2} ;       % its name in the ss Collection
 
-if (isempty (UFname))
+if (isempty (ssname))
 
     %---------------------------------------------------------------------------
-    % the DIMACS10 graph is identical to the UF matrix
+    % the DIMACS10 graph is identical to the ss matrix
     %---------------------------------------------------------------------------
 
     slash = find (name == '/') ;
-    UFname = ['DIMACS10/' (name (slash+1:end))] ;
-    Problem = UFget (UFname) ;
+    ssname = ['DIMACS10/' (name (slash+1:end))] ;
+    Problem = ssget (ssname) ;
     S = Problem.A ;
 
 else
 
     %---------------------------------------------------------------------------
-    % the DIMACS10 graph is derived from the UF matrix
+    % the DIMACS10 graph is derived from the ss matrix
     %---------------------------------------------------------------------------
 
-    Problem = UFget (UFname) ;
+    Problem = ssget (ssname) ;
     S = Problem.A ;
 
     addzeros   = [ 69:70 76 77 109 110 131 134 ] ;

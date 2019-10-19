@@ -8,7 +8,7 @@
 %
 %   See also SJget, SJweb, SJgrep.
 
-%   Derived from the UFget toolbox on March 18, 2008.
+%   Derived from the ssget toolbox on March 18, 2008.
 %   Copyright 2007, Tim Davis, University of Florida.
 
 %   modified by L. Foster 09/17/2008

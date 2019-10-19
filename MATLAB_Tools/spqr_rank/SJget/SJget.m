@@ -43,7 +43,7 @@ function Problem = SJget (matrix, SJ_Index, refresh_mat)
 
 %   See also SJgrep, SJweb, SJget_example, SJget_defaults, urlwrite.
 
-%   Derived from the UFget toolbox on March 18, 2008, modified 2/1/2009
+%   Derived from the ssget toolbox on March 18, 2008, modified 2/1/2009
 %   Copyright 2007, Tim Davis, University of Florida.
 
 %-------------------------------------------------------------------------------

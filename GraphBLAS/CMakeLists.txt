@@ -1,7 +1,7 @@
 # SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
 # http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 #
-# CMakeLists.tx: instructions for cmake to build GraphBLAS.
+# CMakeLists.txt: instructions for cmake to build GraphBLAS.
 # An ANSI C11 compiler is required.
 #
 # To compile the GraphBLAS library and demo programs:
@@ -32,16 +32,52 @@
 #   cd build
 #   rm -rf *
 
-# cmake 3.0 is prefered.
+# cmake 3.0 is preferred.
 cmake_minimum_required ( VERSION 2.8.12 )
-
-project ( graphblas )
-
-include ( GNUInstallDirs )
 
 if ( CMAKE_VERSION VERSION_GREATER "3.0" )
     cmake_policy ( SET CMP0042 NEW )
+    cmake_policy ( SET CMP0048 NEW )
 endif ( )
+
+# version of SuiteSparse:GraphBLAS
+set ( GraphBLAS_DATE "July 4, 2018" )
+set ( GraphBLAS_VERSION_MAJOR 2 )
+set ( GraphBLAS_VERSION_MINOR 0 )
+set ( GraphBLAS_VERSION_SUB   3 )
+
+# GraphBLAS C API Specification version, at graphblas.org
+set ( GraphBLAS_API_DATE "Nov 14, 2017" )
+set ( GraphBLAS_API_VERSION_MAJOR 1 )
+set ( GraphBLAS_API_VERSION_MINOR 1 )
+set ( GraphBLAS_API_VERSION_SUB   0 )
+
+if ( CMAKE_MAJOR_VERSION GREATER 2 )
+    project ( graphblas
+        VERSION "${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}" )
+else ( )
+    project ( graphblas )
+endif ( )
+
+# Configure a header file to pass CMake information
+configure_file (
+    "Version/GraphBLAS.h.in" 
+    "${PROJECT_SOURCE_DIR}/Include/GraphBLAS.h"
+)
+configure_file (
+    "Version/GraphBLAS_version.tex.in"
+    "${PROJECT_SOURCE_DIR}/Doc/GraphBLAS_version.tex"
+)
+configure_file (
+    "Version/GraphBLAS_API_version.tex.in"
+    "${PROJECT_SOURCE_DIR}/Doc/GraphBLAS_API_version.tex"
+)
+configure_file (
+    "Version/README.txt.in"
+    "${PROJECT_SOURCE_DIR}/README.txt"
+)
+
+include ( GNUInstallDirs )
 
 if (NOT CMAKE_BUILD_TYPE )
     set ( CMAKE_BUILD_TYPE Release )
@@ -82,18 +118,21 @@ endif ( )
 # create the dynamic graphblas library.  Requires ANSI C11
 file ( GLOB GRAPHBLAS_SOURCES "Source/*.c" "Source/Generated/*.c" )
 add_library ( graphblas SHARED ${GRAPHBLAS_SOURCES} )
-SET_TARGET_PROPERTIES ( graphblas PROPERTIES VERSION 2.0.1
-    SOVERSION 2
+SET_TARGET_PROPERTIES ( graphblas PROPERTIES
+    VERSION ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
+    SOVERSION ${GraphBLAS_VERSION_MAJOR}
     C_STANDARD_REQUIRED 11
     PUBLIC_HEADER "Include/GraphBLAS.h" )
 set_property ( TARGET graphblas PROPERTY C_STANDARD 11 )
+target_link_libraries ( graphblas m )
 
 # create the static graphblas library.  Requires ANSI C11
 add_library ( graphblas_static STATIC ${GRAPHBLAS_SOURCES} )
-SET_TARGET_PROPERTIES ( graphblas_static PROPERTIES VERSION 2.0.1
+SET_TARGET_PROPERTIES ( graphblas_static PROPERTIES
+    VERSION ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
     OUTPUT_NAME graphblas
     POSITION_INDEPENDENT_CODE OFF
-    SOVERSION 2
+    SOVERSION ${GraphBLAS_VERSION_MAJOR}
     C_STANDARD_REQUIRED 11
     PUBLIC_HEADER "Include/GraphBLAS.h" )
 set_property ( TARGET graphblas_static PROPERTY C_STANDARD 11 )

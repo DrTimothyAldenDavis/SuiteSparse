@@ -4,7 +4,7 @@ function Problem = UFget (matrix, index)
 
 % Copyright 2017, Timothy A. Davis, http://www.suitesparse.com
 
-% warning ('UFget:deprecated', 'UFget is deprecated; use ssget instead') ;
+warning ('UFget:deprecated', 'UFget is deprecated; use ssget instead') ;
 if (nargin == 0)
     Problem = ssget ;
 elseif (nargin == 1)

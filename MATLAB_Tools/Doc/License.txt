@@ -7,7 +7,7 @@ All packages are available under alternative licenses.
 Contact the authors for details.
 
 --------------------------------------------------------------------------------
-MATLAB_Tools License, with the exception of SSMULT and UFcollection:
+MATLAB_Tools License, with the exception of SSMULT and SuiteSparseCollection:
 --------------------------------------------------------------------------------
 
     Redistribution and use in source and binary forms, with or without
@@ -35,15 +35,15 @@ MATLAB_Tools License, with the exception of SSMULT and UFcollection:
     DAMAGE.
 
 --------------------------------------------------------------------------------
-UFcollection License:
+SuiteSparseCollection License:
 --------------------------------------------------------------------------------
 
-    UFcollection is free software; you can redistribute it and/or
+    SuiteSparseCollection is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
     as published by the Free Software Foundation; either version 2
     of the License, or (at your option) any later version.
 
-    UFcollection is distributed in the hope that it will be useful,
+    SuiteSparseCollection is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.

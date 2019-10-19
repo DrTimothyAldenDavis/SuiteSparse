@@ -26,6 +26,6 @@
 % Example:
 %   help SJget
 
-% Derived from the UFget toolbox on 18 March 2008.
+% Derived from the ssget toolbox on 18 March 2008.
 % Copyright 2007, Timothy A. Davis
 

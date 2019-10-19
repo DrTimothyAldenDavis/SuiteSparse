@@ -1,5 +1,5 @@
 function umfpack_test (nmat)
-%UMFPACK_TEST for testing umfpack (requires UFget)
+%UMFPACK_TEST for testing umfpack (requires ssget)
 %
 % Example:
 %   umfpack_test
@@ -8,7 +8,7 @@ function umfpack_test (nmat)
 
 % Copyright 1995-2007 by Timothy A. Davis.
 
-index = UFget ;
+index = ssget ;
 
 f = find (index.nrows == index.ncols) ;
 [ignore, i] = sort (index.nrows (f)) ;
@@ -39,7 +39,7 @@ for k = 1:nmat
         fprintf ('\nmatrix: %s %s %d\n', ...
             index.Group{i}, index.Name{i}, index.nrows(i)) ;
 
-        Prob = UFget (i) ;
+        Prob = ssget (i) ;
         A = Prob.A ;
         n = size (A,1) ;
 

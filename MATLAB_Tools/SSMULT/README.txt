@@ -26,7 +26,7 @@ To compile, install, and test, type
 
 in the MATLAB command window.  Then edit your path (with pathtool, or
 startup.m) to add the SSMULT directory to your MATLAB path.  For more extensive
-tests (which require the UFget package) type sstest2 after installing SSMULT.
+tests (which require the ssget package) type sstest2 after installing SSMULT.
 
 For best performance, do not use the "lcc" compiler that ships with MATLAB 7.4
 (or earlier) for Windows.  Use another compiler instead.  Type "mex -setup" or

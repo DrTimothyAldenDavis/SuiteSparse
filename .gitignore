@@ -217,6 +217,15 @@ GraphBLAS/Tcov/errlog.txt
 GraphBLAS/Tcov/log.txt
 GraphBLAS/Tcov/gbstat.mat
 
+tri/tri_main
+ktruss/allktruss_graphblas_main
+ktruss/allktruss_main
+ktruss/ktruss_graphblas_main
+ktruss/ktruss_main
+
+ssget/files/ss_index_old.mat
+ssget/files/ssstats_old.csv
+
 # Do not ignore this file
 !.gitignore
 

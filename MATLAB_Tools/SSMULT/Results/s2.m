@@ -1,7 +1,7 @@
 load sstest2_results.mat % TM T1 TU f
 whos
 
-index = UFget ;
+index = ssget ;
 
 tmax = max (max (TM))
 tmin = min (TM (find (TM > 0)))

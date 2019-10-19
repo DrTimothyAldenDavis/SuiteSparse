@@ -1,8 +1,8 @@
 function umfpack_test2
 %UMFPACK_TEST2 try all UMFPACK strategies and orderings.
-% Requires UFget, CHOLMOD, CAMD, CCOLAMD, COLAMD, METIS.
+% Requires ssget, CHOLMOD, CAMD, CCOLAMD, COLAMD, METIS.
 
-Prob = UFget (45) ;
+Prob = ssget (45) ;
 A = Prob.A ;
 n = size (A,1) ;
 b = rand (n,1) ;

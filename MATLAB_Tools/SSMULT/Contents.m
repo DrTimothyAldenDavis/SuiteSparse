@@ -10,7 +10,7 @@
 %   ssmult_install  - compiles, installs, and optionally tests ssmult.
 %   ssmult_test     - lengthy test of SSMULT and SSMULTSYM
 %   sstest          - exhaustive performance test for SSMULT.
-%   sstest2         - exhaustive performance test for SSMULT.  Requires UFget.
+%   sstest2         - exhaustive performance test for SSMULT.  Requires ssget.
 %
 % Example:
 %   C = ssmult(A,B) ;    % computes C = A*B

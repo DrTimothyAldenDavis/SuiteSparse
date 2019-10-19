@@ -8,7 +8,7 @@ function dimacs10_demo (arg)
 %   dimacs10_demo (-10) ;           % just the smallest 10 graphs
 %   dimacs10_demo ([1 3 5 8]) ;     % read just those four graphs
 %
-% See also dimacs10, UFget
+% See also dimacs10, ssget
 
 % Copyright 2011, Timothy A Davis
 
@@ -28,7 +28,7 @@ end
 for id = list (:)'
     [S name kind] = dimacs10 (id) ;
     fprintf ('%3d %s : %s : n: %d nnz %d\n', id, name, kind, size(S,1), nnz(S));
-    UFweb (index.UFname {id}) ;
+    ssweb (index.ssname {id}) ;
     clf
     spy (S) ;
     drawnow

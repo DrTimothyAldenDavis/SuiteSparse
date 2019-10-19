@@ -1,3 +1,7 @@
+Mar 23, 2018: version 5.7.7
+
+    * revised comments in umfpack*symbolic.h
+
 May 4, 2016: version 5.7.6
 
     * minor changes to Makefile

@@ -22,7 +22,8 @@ davis@tamu.edu, Texas A\&M University. \\
 http://www.suitesparse.com and http://aldenmath.com
 }
 
-\date{VERSION 2.0.1, Mar 15, 2018}
+% version and date are set by cmake (see GraphBLAS/CMakeLists.txt)
+\input{GraphBLAS_version.tex}
 
 %-------------------------------------------------------------------------------
 \begin{document}
@@ -69,12 +70,18 @@ provides a wide range of built-in types and operators, and allows the user
 application to create new types and operators without needing to recompile the
 GraphBLAS library.
 
+See \cite{Davis18} for a journal article on SuiteSparse:GraphBLAS.
 A full and precise definition of the GraphBLAS specification is provided in
 {\em The GraphBLAS C API Specification} by {Ayd\i n Bulu\c{c}, Timothy Mattson,
-Scott McMillan, Jos\'e Moreira, and Carl Yang} \cite{spec}, based on {\em
+Scott McMillan, Jos\'e Moreira, and Carl Yang}
+\cite{spec,BulucMattsonMcMillanMoreiraYang17}, based on {\em
 GraphBLAS Mathematics} by Jeremy Kepner \cite{Kepner2017}.  The GraphBLAS C API
 Specification is available at \url{http://graphblas.org}.  This version of
-SuiteSparse:GraphBLAS fully conforms to Version 1.1.0 (Nov 14, 2017) of that
+SuiteSparse:GraphBLAS fully conforms to
+% API version and date are set by cmake (see GraphBLAS/CMakeLists.txt)
+Version
+\input{GraphBLAS_API_version.tex}
+of that
 specification.  In this User Guide, aspects of the GraphBLAS specification that
 would be true for any GraphBLAS implementation are simply called ``GraphBLAS.''
 Details unique to this particular implementation are referred to as
@@ -1104,7 +1111,7 @@ examine the content of the object directly; instead, they can pass the handle
 back to GraphBLAS which will do the work.  Assigning one handle to another
 is valid but it does not make a copy of the underlying object.
 
-GraphBLAS provides 11 built-in types and 253 built-in operators.  With these,
+GraphBLAS provides 11 built-in types and 256 built-in operators.  With these,
 44 unique monoids and 960 unique semirings can be constructed.
 
 \begin{spec}
@@ -6169,13 +6176,12 @@ GrB_Info bfs5m              // BFS of a graph (using vector assign & reduce)
     GrB_Monoid Lor = NULL ;                // Logical-or monoid
     GrB_Semiring Boolean = NULL ;          // Boolean semiring
     GrB_Descriptor desc = NULL ;           // Descriptor for mxv
-
     GrB_Matrix_nrows (&n, A) ;             // n = # of rows of A
     GrB_Vector_new (&v, GrB_INT32, n) ;    // Vector<int32_t> v(n) = 0
     GrB_Vector_new (&q, GrB_BOOL, n) ;     // Vector<bool> q(n) = false
-    for (int32_t i = 0 ; i < n ; i++) GrB_Vector_setElement (v, 0, i) ;
+    // making v dense is faster if most of the graph is expected to be searched
+    // for (int32_t i = 0 ; i < n ; i++) GrB_Vector_setElement (v, 0, i) ;
     GrB_Vector_setElement (q, true, s) ;   // q[s] = true, false elsewhere
-
     GrB_Monoid_new (&Lor, GrB_LOR, (bool) false) ;
     GrB_Semiring_new (&Boolean, Lor, GrB_LAND) ;
     GrB_Descriptor_new (&desc) ;

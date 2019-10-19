@@ -5,7 +5,7 @@ function SuiteSparse_demo (matrixpath, dopause)
 %   SuiteSparse_demo
 %
 % See also umfpack, cholmod, amd, camd, colamd, ccolamd, btf, klu, spqr,
-%   CSparse, CXSparse, ldlsparse
+%   CSparse, CXSparse, ldlsparse, mongoose
 
 % Copyright 2016, Timothy A. Davis, http://www.suitesparse.com.
 
@@ -185,6 +185,16 @@ try
 catch me
     disp (me.message) ;
     fprintf ('spqr_rank demo failed\n' )
+end
+
+if (dopause)
+    input ('Hit enter to run the Mongoose demo: ', 's') ;
+end
+try
+    mongoose_demo
+catch me
+    disp (me.message) ;
+    fprintf ('Mongoose demo failed\n' )
 end
 
 %{

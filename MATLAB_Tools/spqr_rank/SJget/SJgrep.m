@@ -20,7 +20,7 @@ function list = SJgrep (expression, index)
 %
 % See also regexp, SJget.
 
-%   Derived from the UFget toolbox on March 18, 2008.
+%   Derived from the ssget toolbox on March 18, 2008.
 %   Copyright 2007, Timothy A. Davis
 
 if (nargin < 2)

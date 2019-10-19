@@ -3,9 +3,9 @@ function sparseinv_test (extensive)
 %
 % Example
 %   sparseinv_test ;        % basic test
-%   sparseinv_test (1) ;    % extensive test (requires UFget)
+%   sparseinv_test (1) ;    % extensive test (requires ssget)
 %
-% See also sparseinv, sparseinv_install, UFget.
+% See also sparseinv, sparseinv_install, ssget.
 
 % Copyright 2011, Timothy A. Davis, http://www.suitesparse.com
 
@@ -78,16 +78,16 @@ if (~ok)
     error ('error-handling tests failed') ;
 end
 
-% now try with lots of matrices from the UF Sparse Matrix Collection
-if (extensive && exist ('UFget', 'file') == 2)
+% now try with lots of matrices from the SuiteSparse Matrix Collection
+if (extensive && exist ('ssget', 'file') == 2)
 
-    fprintf ('Now doing extensive tests with UF Sparse Matrix Collection:\n') ;
+    fprintf ('Now doing extensive tests with SuiteSparse Matrix Collection:\n') ;
     dofigures = (exist ('cspy', 'file') == 2) ;
     if (dofigures)
         clf ;
     end
 
-    index = UFget ;
+    index = ssget ;
     f = find ((index.nrows == index.ncols) & (index.isReal == 1)) ;
     [ignore,i] = sort (index.nrows (f)) ;   %#ok
     f = f (i) ;
@@ -97,7 +97,7 @@ if (extensive && exist ('UFget', 'file') == 2)
 
     for k = 1:nmat
         id = f (k) ;
-        Prob = UFget (id, index) ;
+        Prob = ssget (id, index) ;
         A = Prob.A ;
         n = size (A,1) ;
         I = speye (n) ;

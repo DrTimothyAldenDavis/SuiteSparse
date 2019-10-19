@@ -14,7 +14,7 @@ function SuiteSparse_test
 
 help SuiteSparse_test
 
-npackages = 18 ;
+npackages = 19 ;
 h = waitbar (0, 'SuiteSparse test:') ;
 SuiteSparse = pwd ;
 package = 0 ;
@@ -192,6 +192,15 @@ try
     demo_spqr_rank ;
 
     %---------------------------------------------------------------------------
+    % Mongoose
+    %---------------------------------------------------------------------------
+
+    package = package + 1 ;
+    waitbar (package/(npackages+1), h, 'SuiteSparse test: mongoose') ;
+    cd ([SuiteSparse '/Mongoose/MATLAB']) ;
+    mongoose_test ;
+
+    %---------------------------------------------------------------------------
     % PIRO_BAND
     %---------------------------------------------------------------------------
 
@@ -201,7 +210,7 @@ try
 %   demo_spqr_rank ;
 
     %---------------------------------------------------------------------------
-    % AMD, CAMD, UFcollection, UFget
+    % AMD, CAMD, SuiteSparseCollection, ssget
     %---------------------------------------------------------------------------
 
     % no exhaustive tests; tested via other packages

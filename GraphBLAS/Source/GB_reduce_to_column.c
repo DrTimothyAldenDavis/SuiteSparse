@@ -229,6 +229,7 @@ GrB_Info GB_reduce_to_column        // w<mask> = accum (w,reduce(A))
                     p++ ;                                                   \
                 }                                                           \
                 /* subsequent entries in column j */                        \
+                /* FUTURE: some operators can terminate this loop early */  \
                 for ( ; p < Ap [j+1] ; p++)                                 \
                 {                                                           \
                     /* w "+=" ax [p] ; */                                   \
@@ -243,6 +244,7 @@ GrB_Info GB_reduce_to_column        // w<mask> = accum (w,reduce(A))
             }                                                               \
             done = true ;                                                   \
         }
+        
 
         //----------------------------------------------------------------------
         // launch the switch factory

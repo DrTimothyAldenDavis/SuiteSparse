@@ -5,7 +5,7 @@ Date: March 20, 2008.
 
 Availability: http://www.math.sjsu.edu/singular/matrices/software/SJget
 
-Derived from the UFget toolbox on March 18, 2008:
+Derived from the ssget toolbox on March 18, 2008:
   Copyright 2005-2007, Tim Davis, University of Florida.
   Authors: Tim Davis and Erich Mirable.
   Availability: http://www.suitesparse.com
