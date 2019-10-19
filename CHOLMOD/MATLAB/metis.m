@@ -1,0 +1,21 @@
+function p = metis (A, mode)
+%METIS:  nested dissection ordering via METIS_NodeND.
+%   p = metis(A)        returns p such chol(A(p,p)) is typically sparser than
+%                       chol(A).  Uses tril(A) and assumes A is symmetric.
+%   p = metis(A,'sym')  the same as p=metis(A).
+%   p = metis(A,'col')  returns p so that chol(A(:,p)'*A(:,p)) is typically
+%                       sparser than chol(A'*A).
+%   p = metis(A,'row')  returns p so that chol(A(p,:)*A(p,:)') is typically
+%                       sparser than chol(A'*A).
+%
+%   A must be square for p=metis(A) or metis(A,'sym')
+%
+%   Requires METIS, authored by George Karypis, Univ. of Minnesota.  This
+%   MATLAB interface, via CHOLMOD, is by Tim Davis.
+%
+%   See also NESDIS, BISECT, CCOLAMD, CSYMAMD
+
+%   Copyright 2006, Timothy A. Davis
+%   http://www.cise.ufl.edu/research/sparse
+
+error ('metis mexFunction not found') ;

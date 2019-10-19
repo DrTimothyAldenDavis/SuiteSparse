@@ -1,0 +1,73 @@
+#!/bin/csh
+
+echo '################################################################################'
+echo 'Tcov test:' $1 $2
+echo '################################################################################'
+
+#-------------------------------------------------------------------------------
+
+# get a clean directory
+# /bin/mv Out/$1_$2 `mktemp -d Trash/XXXXXX`
+
+# delete the directory
+/bin/rm -rf Out/$1_$2
+
+mkdir Out/$1_$2
+
+# put in UMFPACK (excluding Tcov and MATLAB directories) and AMD
+mkdir Out/$1_$2/UMFPACK
+mkdir Out/$1_$2/UMFPACK/Doc
+/bin/cp -prL ../Source Out/$1_$2/UMFPACK
+/bin/cp -prL ../Lib Out/$1_$2/UMFPACK
+/bin/cp -prL ../Include Out/$1_$2/UMFPACK
+/bin/cp -prL ../Demo Out/$1_$2/UMFPACK
+/bin/cp -prL ../Makefile Out/$1_$2/UMFPACK
+/bin/cp -prL ../Doc/License Out/$1_$2/UMFPACK/Doc
+/bin/cp -prL ../../AMD Out/$1_$2
+/bin/cp debug.* Out/$1_$2
+
+# put in the makefile
+/bin/cp GNUmakefile.$2 Out/$1_$2/GNUmakefile
+
+# put in the UFconfig.mk and UFconfig.h files
+mkdir Out/$1_$2/UFconfig
+/bin/cp -f Make.$1 Out/$1_$2/UFconfig/UFconfig.mk
+/bin/cp -f ../../UFconfig/UFconfig.h Out/$1_$2/UFconfig
+
+# put in the main program
+/bin/cp ut.c Out/$1_$2
+
+# put in the test matrices
+/bin/cp -f badnum*.umf Out/$1_$2
+/bin/cp -f badsym*.umf Out/$1_$2
+/bin/cp -pr TestMat Out/$1_$2
+
+# put in the gcov files
+/bin/cp -f ucov.* Out/$1_$2/UMFPACK/Source
+/bin/cp -f acov.* Out/$1_$2/AMD/Source
+
+# compile and run
+( cd Out/$1_$2 ; time make $3 > $1_$2.out )
+
+# delete the directory
+#### /bin/rm -rf Out/$1_$2
+
+# ( cd $1_$2 ; tail -5 ut.out > ut.tail ; 'rm' -rf ut.out )
+
+# for Solaris
+# ( cd Out/$1_$2 ; tcov -x ut.profile/UMFPACK/Source/umfp*.c )
+# ( cd Out/$1_$2 ; tcov -x ut.profile/UMFPACK/Source/umf_[0-c]*.c )
+# ( cd Out/$1_$2 ; tcov -x ut.profile/UMFPACK/Source/umf_[e-z]*.c )
+# ( cd Out/$1_$2 ; tcov -x ut.profile/AMD/Source/amd_[0-c]*.c )
+# ( cd Out/$1_$2 ; tcov -x ut.profile/AMD/Source/amd_de*.c )
+# ( cd Out/$1_$2 ; tcov -x ut.profile/AMD/Source/amd_[e-z]*.c )
+
+# grep -n "#####" Out/$1_$2/*cov > $1_$2.cov
+
+# cov Out/$1_$2/UMFPACK/Source/umfp*cov
+# cov Out/$1_$2/UMFPACK/Source/umf_[0-c]*cov
+# cov Out/$1_$2/UMFPACK/Source/umf_[e-z]*cov
+# cov Out/$1_$2/AMD/Source/amd_[0-c]*cov
+# cov Out/$1_$2/AMD/Source/amd_de*cov
+# cov Out/$1_$2/AMD/Source/amd_[e-z]*cov
+

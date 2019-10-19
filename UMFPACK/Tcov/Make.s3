@@ -1,0 +1,18 @@
+#===============================================================================
+# Solaris LP64 mode, no BLAS, do not test for integer overflow.
+#===============================================================================
+
+CC = cc
+CFLAGS = -Xc -g -xprofile=tcov -dalign
+UMFPACK_CONFIG = -DNBLAS -DLP64 -xarch=v9 -DTESTING
+LIB = -lm
+
+RANLIB = ranlib
+MV = mv -f
+RM = rm -f
+MEX = mex -inline -g
+AR = ar cr
+
+#===============================================================================
+
+CLEAN = *.o *.obj *.ln *.bb *.bbg *.da *.c.tcov *.c.gcov gmon.out

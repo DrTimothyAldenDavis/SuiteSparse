@@ -1,0 +1,465 @@
+################################################################################
+Tcov test: 1 di
+################################################################################
+/bin/mv: cannot stat `Out/1_di': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 7.08e-05 arc130 2.95e-08 omega2) cputime 52.85
+62.928u 18.396s 1:40.67 80.7%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 1 dl
+################################################################################
+/bin/mv: cannot stat `Out/1_dl': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 7.08e-05 arc130 2.95e-08 omega2) cputime 43.44
+55.002u 17.076s 1:47.74 66.8%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 1 zi
+################################################################################
+/bin/mv: cannot stat `Out/1_zi': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.31e-05 arc130 6.19e-10 omega2) cputime 86.08
+94.574u 19.999s 2:12.31 86.5%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 1 zl
+################################################################################
+/bin/mv: cannot stat `Out/1_zl': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.31e-05 arc130 6.19e-10 omega2) cputime 85.85
+94.178u 20.267s 2:20.97 81.1%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 2 di
+################################################################################
+/bin/mv: cannot stat `Out/2_di': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.49e-10 (1.37e-07 shl0, 6.76e-05 arc130 2.67e-08 omega2) cputime 43.74
+54.336u 17.934s 1:27.28 82.7%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 2 dl
+################################################################################
+/bin/mv: cannot stat `Out/2_dl': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 7.08e-05 arc130 2.95e-08 omega2) cputime 42.64
+54.068u 17.068s 1:26.00 82.6%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 2 zi
+################################################################################
+/bin/mv: cannot stat `Out/2_zi': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.40e-07 shl0, 6.77e-05 arc130 1.81e-09 omega2) cputime 66.69
+75.192u 19.914s 1:51.89 84.9%	0+0k 0+0io 1pf+0w
+################################################################################
+Tcov test: 2 zl
+################################################################################
+/bin/mv: cannot stat `Out/2_zl': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.31e-05 arc130 6.19e-10 omega2) cputime 85.1
+93.816u 19.893s 2:09.71 87.6%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 3 di
+################################################################################
+/bin/mv: cannot stat `Out/3_di': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 6.76e-05 arc130 1.70e-08 omega2) cputime 49.18
+61.050u 19.339s 1:41.90 78.8%	0+0k 0+0io 1pf+0w
+################################################################################
+Tcov test: 3 dl
+################################################################################
+/bin/mv: cannot stat `Out/3_dl': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 7.08e-05 arc130 2.95e-08 omega2) cputime 42.82
+55.075u 18.830s 1:34.96 77.8%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 3 zi
+################################################################################
+/bin/mv: cannot stat `Out/3_zi': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.40e-07 shl0, 6.77e-05 arc130 1.97e-09 omega2) cputime 84.1
+93.431u 21.713s 2:25.67 79.0%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 3 zl
+################################################################################
+/bin/mv: cannot stat `Out/3_zl': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.31e-05 arc130 6.19e-10 omega2) cputime 84.87
+94.509u 21.778s 2:24.09 80.6%	0+0k 0+0io 3pf+0w
+################################################################################
+Tcov test: 4 di
+################################################################################
+/bin/mv: cannot stat `Out/4_di': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 6.76e-05 arc130 1.70e-08 omega2) cputime 49.36
+60.263u 19.414s 1:41.11 78.7%	0+0k 0+0io 52pf+0w
+################################################################################
+Tcov test: 4 dl
+################################################################################
+/bin/mv: cannot stat `Out/4_dl': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 7.08e-05 arc130 2.95e-08 omega2) cputime 43.08
+54.299u 18.897s 1:34.41 77.5%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 4 zi
+################################################################################
+/bin/mv: cannot stat `Out/4_zi': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.40e-07 shl0, 6.77e-05 arc130 1.97e-09 omega2) cputime 84.28
+92.899u 21.968s 2:18.25 83.0%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 4 zl
+################################################################################
+/bin/mv: cannot stat `Out/4_zl': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.31e-05 arc130 6.19e-10 omega2) cputime 84.85
+93.851u 21.883s 2:25.45 79.5%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 5 di
+################################################################################
+/bin/mv: cannot stat `Out/5_di': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 8.09e-05 arc130 1.44e-08 omega2) cputime 51.97
+62.156u 17.755s 1:42.14 78.2%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 5 dl
+################################################################################
+/bin/mv: cannot stat `Out/5_dl': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 8.09e-05 arc130 1.44e-08 omega2) cputime 43.55
+54.453u 17.032s 1:32.39 77.3%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 5 zi
+################################################################################
+/bin/mv: cannot stat `Out/5_zi': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 8.10e-05 arc130 1.13e-09 omega2) cputime 85.39
+93.782u 19.825s 2:15.94 83.5%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 5 zl
+################################################################################
+/bin/mv: cannot stat `Out/5_zl': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 8.10e-05 arc130 1.13e-09 omega2) cputime 85.99
+94.275u 19.921s 2:17.38 83.1%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 6 di
+################################################################################
+/bin/mv: cannot stat `Out/6_di': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.49e-10 (1.37e-07 shl0, 6.76e-05 arc130 2.67e-08 omega2) cputime 0
+53.854u 17.179s 1:34.05 75.5%	0+0k 0+0io 14pf+0w
+################################################################################
+Tcov test: 6 dl
+################################################################################
+/bin/mv: cannot stat `Out/6_dl': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 7.08e-05 arc130 2.95e-08 omega2) cputime 0
+53.387u 16.482s 1:31.79 76.1%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 6 zi
+################################################################################
+/bin/mv: cannot stat `Out/6_zi': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.40e-07 shl0, 6.77e-05 arc130 1.81e-09 omega2) cputime 0
+74.485u 19.371s 1:58.33 79.3%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 6 zl
+################################################################################
+/bin/mv: cannot stat `Out/6_zl': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.31e-05 arc130 6.19e-10 omega2) cputime 0
+93.386u 19.579s 2:23.34 78.7%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 7 di
+################################################################################
+/bin/mv: cannot stat `Out/7_di': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 7.08e-05 arc130 2.95e-08 omega2) cputime 52.13
+62.467u 17.903s 1:42.73 78.2%	0+0k 0+0io 2pf+0w
+################################################################################
+Tcov test: 7 dl
+################################################################################
+/bin/mv: cannot stat `Out/7_dl': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 7.08e-05 arc130 2.95e-08 omega2) cputime 43.24
+54.250u 17.355s 1:35.45 75.0%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 7 zi
+################################################################################
+/bin/mv: cannot stat `Out/7_zi': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.31e-05 arc130 6.19e-10 omega2) cputime 85.36
+93.683u 20.174s 2:19.06 81.8%	0+0k 0+0io 3pf+0w
+################################################################################
+Tcov test: 7 zl
+################################################################################
+/bin/mv: cannot stat `Out/7_zl': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.31e-05 arc130 6.19e-10 omega2) cputime 85.8
+93.905u 20.169s 2:18.58 82.3%	0+0k 0+0io 3pf+0w
+################################################################################
+Tcov test: 8 di
+################################################################################
+/bin/mv: cannot stat `Out/8_di': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.49e-10 (1.37e-07 shl0, 6.76e-05 arc130 2.67e-08 omega2) cputime 44.16
+54.565u 17.959s 1:46.61 68.0%	0+0k 0+0io 69pf+0w
+################################################################################
+Tcov test: 8 dl
+################################################################################
+/bin/mv: cannot stat `Out/8_dl': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 7.08e-05 arc130 2.95e-08 omega2) cputime 42.92
+54.176u 17.162s 1:40.86 70.7%	0+0k 0+0io 50pf+0w
+################################################################################
+Tcov test: 8 zi
+################################################################################
+/bin/mv: cannot stat `Out/8_zi': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.40e-07 shl0, 6.77e-05 arc130 1.81e-09 omega2) cputime 66.15
+74.497u 20.146s 1:59.21 79.3%	0+0k 0+0io 3pf+0w
+################################################################################
+Tcov test: 8 zl
+################################################################################
+/bin/mv: cannot stat `Out/8_zl': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.31e-05 arc130 6.19e-10 omega2) cputime 85.29
+93.557u 20.215s 2:22.60 79.7%	0+0k 0+0io 51pf+0w
+################################################################################
+Tcov test: 1g di
+################################################################################
+/bin/mv: cannot stat `Out/1g_di': No such file or directory
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.03e-10 (1.19e-07 shl0, 5.65e-05 arc130 4.58e-09 omega2) cputime 36.37
+73.776u 18.042s 1:56.90 78.5%	0+0k 0+0io 61pf+0w
+################################################################################
+Tcov test: 1g dl
+################################################################################
+/bin/mv: cannot stat `Out/1g_dl': No such file or directory
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.03e-10 (1.19e-07 shl0, 5.65e-05 arc130 4.58e-09 omega2) cputime 30.98
+69.221u 16.983s 1:46.11 81.2%	0+0k 0+0io 3pf+0w
+################################################################################
+Tcov test: 1g zi
+################################################################################
+/bin/mv: cannot stat `Out/1g_zi': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.77e-05 arc130 1.35e-09 omega2) cputime 68.27
+104.147u 19.969s 2:30.77 82.3%	0+0k 0+0io 3pf+0w
+################################################################################
+Tcov test: 1g zl
+################################################################################
+/bin/mv: cannot stat `Out/1g_zl': No such file or directory
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.77e-05 arc130 1.35e-09 omega2) cputime 68.11
+103.657u 19.929s 2:25.30 85.0%	0+0k 0+0io 32pf+0w
+################################################################################
+Tcov test: 2g di
+################################################################################
+/bin/mv: cannot stat `Out/2g_di': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.06e-10 (1.37e-07 shl0, 5.65e-05 arc130 1.98e-08 omega2) cputime 29.92
+68.398u 17.843s 1:45.71 81.5%	0+0k 0+0io 15pf+0w
+################################################################################
+Tcov test: 2g dl
+################################################################################
+/bin/mv: cannot stat `Out/2g_dl': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.03e-10 (1.19e-07 shl0, 5.65e-05 arc130 4.58e-09 omega2) cputime 30.88
+70.119u 16.902s 1:46.55 81.6%	0+0k 0+0io 5pf+0w
+################################################################################
+Tcov test: 2g zi
+################################################################################
+/bin/mv: cannot stat `Out/2g_zi': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.40e-07 shl0, 7.77e-05 arc130 2.29e-09 omega2) cputime 49.79
+86.583u 19.904s 2:07.59 83.4%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 2g zl
+################################################################################
+/bin/mv: cannot stat `Out/2g_zl': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.77e-05 arc130 1.35e-09 omega2) cputime 67.68
+104.484u 19.575s 2:25.99 84.9%	0+0k 0+0io 9pf+0w
+################################################################################
+Tcov test: 3g di
+################################################################################
+/bin/mv: cannot stat `Out/3g_di': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.03e-10 (1.19e-07 shl0, 5.65e-05 arc130 8.27e-09 omega2) cputime 35.6
+74.788u 20.351s 2:20.99 67.4%	0+0k 0+0io 6pf+0w
+################################################################################
+Tcov test: 3g dl
+################################################################################
+/bin/mv: cannot stat `Out/3g_dl': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.03e-10 (1.19e-07 shl0, 5.65e-05 arc130 4.58e-09 omega2) cputime 31.32
+70.806u 19.300s 2:01.74 74.0%	0+0k 0+0io 9pf+0w
+################################################################################
+Tcov test: 3g zi
+################################################################################
+/bin/mv: cannot stat `Out/3g_zi': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.40e-07 shl0, 7.77e-05 arc130 2.57e-09 omega2) cputime 68.26
+105.768u 22.114s 2:31.22 84.5%	0+0k 0+0io 6pf+0w
+################################################################################
+Tcov test: 3g zl
+################################################################################
+/bin/mv: cannot stat `Out/3g_zl': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.77e-05 arc130 1.35e-09 omega2) cputime 68.65
+106.120u 21.851s 2:31.80 84.3%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 4g di
+################################################################################
+/bin/mv: cannot stat `Out/4g_di': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.03e-10 (1.19e-07 shl0, 5.65e-05 arc130 8.27e-09 omega2) cputime 36.36
+74.674u 20.200s 1:58.26 80.2%	0+0k 0+0io 1pf+0w
+################################################################################
+Tcov test: 4g dl
+################################################################################
+/bin/mv: cannot stat `Out/4g_dl': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.03e-10 (1.19e-07 shl0, 5.65e-05 arc130 4.58e-09 omega2) cputime 31.27
+70.664u 19.197s 1:53.65 79.0%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 4g zi
+################################################################################
+/bin/mv: cannot stat `Out/4g_zi': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.40e-07 shl0, 7.77e-05 arc130 2.57e-09 omega2) cputime 68.53
+105.067u 22.053s 2:32.00 83.6%	0+0k 0+0io 3pf+0w
+################################################################################
+Tcov test: 4g zl
+################################################################################
+/bin/mv: cannot stat `Out/4g_zl': No such file or directory
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.77e-05 arc130 1.35e-09 omega2) cputime 69.12
+105.423u 22.370s 2:33.38 83.3%	0+0k 0+0io 0pf+0w

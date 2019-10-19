@@ -1,0 +1,12 @@
+LIBRARY libcamd.dll
+EXPORTS
+camd_order
+camd_defaults
+camd_control
+camd_info
+camd_2
+camd_l_order
+camd_l_defaults
+camd_l_control
+camd_l_info
+camd_l2

@@ -1,0 +1,108 @@
+#
+#
+
+./DO 1 di
+./DO 1 dl
+./DO 1 zi
+./DO 1 zl
+
+./DO 2 di
+./DO 2 dl
+./DO 2 zi
+./DO 2 zl
+
+./DO 3 di
+./DO 3 dl
+./DO 3 zi
+./DO 3 zl
+
+./DO 4 di
+./DO 4 dl
+./DO 4 zi
+./DO 4 zl
+
+./DO 5 di
+./DO 5 dl
+./DO 5 zi
+./DO 5 zl
+
+./DO 6 di
+./DO 6 dl
+./DO 6 zi
+./DO 6 zl
+
+./DO 7 di
+./DO 7 dl
+./DO 7 zi
+./DO 7 zl
+
+./DO 8 di
+./DO 8 dl
+./DO 8 zi
+./DO 8 zl
+
+
+./DO 1g di run
+./DO 1g dl run
+./DO 1g zi run
+./DO 1g zl run
+
+./DO 2g di run
+./DO 2g dl run
+./DO 2g zi run
+./DO 2g zl run
+
+./DO 3g di run
+./DO 3g dl run
+./DO 3g zi run
+./DO 3g zl run
+
+./DO 4g di run
+./DO 4g dl run
+./DO 4g zi run
+./DO 4g zl run
+
+
+
+./DO 1i di run
+./DO 1i dl run
+./DO 1i zi run
+./DO 1i zl run
+
+./DO 2i di run
+./DO 2i dl run
+./DO 2i zi run
+./DO 2i zl run
+
+./DO 3i di run
+./DO 3i dl run
+./DO 3i zi run
+./DO 3i zl run
+
+./DO 4i di run
+./DO 4i dl run
+./DO 4i zi run
+./DO 4i zl run
+
+
+
+./DO 1n di run
+./DO 1n dl run
+./DO 1n zi run
+./DO 1n zl run
+
+./DO 2n di run
+./DO 2n dl run
+./DO 2n zi run
+./DO 2n zl run
+
+./DO 3n di run
+./DO 3n dl run
+./DO 3n zi run
+./DO 3n zl run
+
+./DO 4n di run
+./DO 4n dl run
+./DO 4n zi run
+./DO 4n zl run
+

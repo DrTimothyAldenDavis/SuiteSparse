@@ -1,0 +1,370 @@
+./z_demo   ../Demo/Matrix/bcsstk01.tri > tmp/demo_k1.out
+./z_demo   ../Demo/Matrix/bcsstk02.tri > tmp/demo_k2.out
+./z_demo < ../Demo/Matrix/lp_afiro.tri > tmp/demo_afiro.out
+./z_demo < ../Demo/Matrix/can___24.mtx > tmp/demo_can24.out
+./z_demo < ../Demo/Matrix/c.tri        > tmp/demo_c.out
+./z_demo < ../Demo/Matrix/d.tri        > tmp/demo_d.out
+./z_demo < ../Demo/Matrix/up.tri       > tmp/demo_up.out
+./z_demo < ../Demo/Matrix/c.mtx        > tmp/demo_c_mtx.out
+./z_demo < ../Demo/Matrix/0.tri        > tmp/demo_0.out
+./z_demo < Matrix/3_2                  > tmp/demo_3_2.out
+./z_demo < Matrix/c5lo                 > tmp/demo_c5lo.out
+./z_demo < Matrix/c10                  > tmp/demo_c10.out
+./z_demo no_such_file                  > tmp/demo_no_such_file.out
+./z_demo ../Demo/Matrix/mangle1.mtx    > tmp/demo_mangle1.out
+./z_demo ../Demo/Matrix/mangle2.mtx    > tmp/demo_mangle2.out
+./z_demo ../Demo/Matrix/mangle3.mtx    > tmp/demo_mangle3.out
+./z_demo ../Demo/Matrix/mangle4.mtx    > tmp/demo_mangle4.out
+./z_demo ../Demo/Matrix/pts5ldd03.mtx  >  tmp/demo_pts5ldd03.out
+./l_demo   ../Demo/Matrix/bcsstk01.tri > tmp/ldemo_k1.out
+./l_demo   ../Demo/Matrix/bcsstk02.tri > tmp/ldemo_k2.out
+./l_demo < ../Demo/Matrix/lp_afiro.tri > tmp/ldemo_afiro.out
+./l_demo < ../Demo/Matrix/can___24.mtx > tmp/ldemo_can24.out
+./l_demo < ../Demo/Matrix/c.tri        > tmp/ldemo_c.out
+./l_demo < ../Demo/Matrix/d.tri        > tmp/ldemo_d.out
+./l_demo < ../Demo/Matrix/up.tri       > tmp/ldemo_up.out
+./l_demo < ../Demo/Matrix/c.mtx        > tmp/ldemo_c_mtx.out
+./l_demo < ../Demo/Matrix/0.tri        > tmp/ldemo_0.out
+./l_demo < Matrix/3_2                  > tmp/ldemo_3_2.out
+./l_demo < Matrix/c5lo                 > tmp/ldemo_c5lo.out
+./l_demo < Matrix/c10                  > tmp/ldemo_c10.out
+./l_demo no_such_file                  > tmp/ldemo_no_such_file.out
+./l_demo ../Demo/Matrix/mangle1.mtx    > tmp/ldemo_mangle1.out
+./l_demo ../Demo/Matrix/mangle2.mtx    > tmp/ldemo_mangle2.out
+./l_demo ../Demo/Matrix/mangle3.mtx    > tmp/ldemo_mangle3.out
+./l_demo ../Demo/Matrix/mangle4.mtx    > tmp/ldemo_mangle4.out
+./l_demo ../Demo/Matrix/pts5ldd03.mtx  > tmp/ldemo_pts5ldd03.out
+grep resid tmp/demo*
+tmp/demo_0.out:residual  0.0e+00 (|Ax-b|/(|A||x|+|b|))
+tmp/demo_3_2.out:residual  9.4e-17 (|Ax-b|/(|A||x|+|b|))
+tmp/demo_afiro.out:residual  6.5e-17 (|Ax-b|/(|A||x|+|b|))
+tmp/demo_c10.out:residual  5.6e-17 (|Ax-b|/(|A||x|+|b|))
+tmp/demo_c5lo.out:residual  6.3e-17 (|Ax-b|/(|A||x|+|b|))
+tmp/demo_can24.out:residual  8.2e-17 (|Ax-b|/(|A||x|+|b|))
+tmp/demo_can24.out:residual  1.0e-16 (|Ax-b|/(|A||x|+|b|)) after iterative refinement
+tmp/demo_c_mtx.out:residual  2.0e-17 (|Ax-b|/(|A||x|+|b|))
+tmp/demo_c.out:residual  2.0e-17 (|Ax-b|/(|A||x|+|b|))
+tmp/demo_d.out:residual  8.5e-18 (|Ax-b|/(|A||x|+|b|))
+tmp/demo_k1.out:residual  1.5e-19 (|Ax-b|/(|A||x|+|b|))
+tmp/demo_k1.out:residual  1.2e-19 (|Ax-b|/(|A||x|+|b|)) after iterative refinement
+tmp/demo_k2.out:residual  7.4e-17 (|Ax-b|/(|A||x|+|b|))
+tmp/demo_k2.out:residual  4.0e-17 (|Ax-b|/(|A||x|+|b|)) after iterative refinement
+tmp/demo_pts5ldd03.out:residual  6.1e-14 (|Ax-b|/(|A||x|+|b|))
+tmp/demo_up.out:residual  1.1e-17 (|Ax-b|/(|A||x|+|b|))
+./cmread no_such_file                  > tmp/no_such_file.out
+./cmread ../Demo/Matrix/mangle5.tri    > tmp/mangle5.out
+./cmread ../Demo/Matrix/mangle6.tri    > tmp/mangle6.out
+./cmread ../Demo/Matrix/mangle7.tri    > tmp/mangle6.out
+./cmread ../Demo/Matrix/mangle8.tri    > tmp/mangle8.out
+./cmread ../Demo/Matrix/empty.tri      > tmp/empty.out
+./cmread ../Demo/Matrix/one.tri        > tmp/one.out
+./cmread Matrix/plskz362.mtx           > tmp/plskz363.out
+./cmread Matrix/2diag.tri	       > tmp/2diag.out
+./cmread Matrix/r5lo    	       > tmp/r5lo.out
+./cmread Matrix/r5lo2    	       > tmp/r5lo2.out
+diff tmp/r5lo.out tmp/r5lo2.out
+./cmread Matrix/cs.mtx	               > tmp/cs.out
+./cmread Matrix/2lo.tri	               > tmp/2lo.out
+./cmread Matrix/2.tri	               > tmp/2.out
+./cmread Matrix/2up.tri	               > tmp/2up.out
+./cmread Matrix/huge.tri	       > tmp/huge.out
+./clread no_such_file                  > tmp/l_no_such_file.out
+./clread ../Demo/Matrix/mangle5.tri    > tmp/l_mangle5.out
+./clread ../Demo/Matrix/mangle6.tri    > tmp/l_mangle6.out
+./clread ../Demo/Matrix/mangle7.tri    > tmp/l_mangle6.out
+./clread ../Demo/Matrix/mangle8.tri    > tmp/l_mangle8.out
+./clread ../Demo/Matrix/empty.tri      > tmp/l_empty.out
+./clread ../Demo/Matrix/one.tri        > tmp/l_one.out
+./clread Matrix/plskz362.mtx           > tmp/l_plskz363.out
+./clread Matrix/2diag.tri	       > tmp/l_2diag.out
+./clread Matrix/r5lo    	       > tmp/l_r5lo.out
+./clread Matrix/r5lo2    	       > tmp/l_r5lo2.out
+diff tmp/r5lo.out tmp/r5lo2.out
+./clread Matrix/cs.mtx	               > tmp/l_cs.out
+./clread Matrix/2lo.tri	               > tmp/l_l_2lo.out
+./clread Matrix/2.tri	               > tmp/l_2.out
+./clread Matrix/2up.tri	               > tmp/l_2up.out
+./clread Matrix/huge.tri               > tmp/l_huge.out
+./cm    < Matrix/galenet > tmp/galenet.out
+Test matrix: 8-by-14 with 22 entries, stype: 0
+........................................................|
+                                                       Test OK, maxerr 1e-11
+./cl    < Matrix/galenet > tmp/l_galenet.out ; ./covall
+Test matrix: 8-by-14 with 22 entries, stype: 0
+........................................................|
+                                                       Test OK, maxerr 1e-11
+statments not yet tested: 10734
+./cm    < Matrix/5by50   > tmp/5by50.out
+Test matrix: 5-by-50 with 68 entries, stype: 0
+........................................................|
+                                                       Test OK, maxerr 4e-12
+./cl    < Matrix/5by50   > tmp/l_5by50.out ; ./covall
+Test matrix: 5-by-50 with 68 entries, stype: 0
+........................................................|
+                                                       Test OK, maxerr 4e-12
+statments not yet tested: 10358
+./cm    < Matrix/r5lo    > tmp/r5lo.out 
+Test matrix: 5-by-5 with 10 entries, stype: -1
+........................................................|
+                                                       Test OK, maxerr 2e-13
+./cl    < Matrix/r5lo    > tmp/l_r5lo.out
+Test matrix: 5-by-5 with 10 entries, stype: -1
+........................................................|
+                                                       Test OK, maxerr 2e-13
+./cm    < Matrix/r5up    > tmp/r5up.out
+Test matrix: 5-by-5 with 10 entries, stype: 1
+........................................................|
+                                                       Test OK, maxerr 2e-13
+./cl    < Matrix/r5up    > tmp/l_r5up.out
+Test matrix: 5-by-5 with 10 entries, stype: 1
+........................................................|
+                                                       Test OK, maxerr 2e-13
+./cm    < Matrix/r5up2   > tmp/r5up2.out
+Test matrix: 5-by-5 with 10 entries, stype: 1
+........................................................|
+                                                       Test OK, maxerr 2e-13
+./cl    < Matrix/r5up2   > tmp/l_r5up2.out
+Test matrix: 5-by-5 with 10 entries, stype: 1
+........................................................|
+                                                       Test OK, maxerr 2e-13
+./cm    < Matrix/c5up2   > tmp/c5up2.out
+Test matrix: 5-by-5 with 11 entries, stype: 1
+........................................................|
+                                                       Test OK, maxerr 6e-16
+./cl    < Matrix/c5up2   > tmp/l_c5up2.out
+Test matrix: 5-by-5 with 11 entries, stype: 1
+........................................................|
+                                                       Test OK, maxerr 6e-16
+./cm    < Matrix/z5up2   > tmp/z5up2.out
+Test matrix: 5-by-5 with 11 entries, stype: 1
+........................................................|
+                                                       Test OK, maxerr 6e-16
+./cl    < Matrix/z5up2   > tmp/l_z5up2.out
+Test matrix: 5-by-5 with 11 entries, stype: 1
+........................................................|
+                                                       Test OK, maxerr 6e-16
+./cm -m < Matrix/z5lo    > tmp/z5lo.out
+Test matrix: 5-by-5 with 11 entries, stype: -1
+........................................................|...........|
+                                                       Test OK, maxerr 6e-16
+./cl -m < Matrix/z5lo    > tmp/l_z5lo.out
+Test matrix: 5-by-5 with 11 entries, stype: -1
+........................................................|...........|
+                                                       Test OK, maxerr 6e-16
+./cm    < Matrix/ibm32   > tmp/ibm.out
+Test matrix: 32-by-32 with 126 entries, stype: 0
+............................|
+                                                       Test OK, maxerr 9e-13
+./cl    < Matrix/ibm32   > tmp/l_ibm.out    ; ./covall
+Test matrix: 32-by-32 with 126 entries, stype: 0
+............................|
+                                                       Test OK, maxerr 9e-13
+statments not yet tested: 1238
+./cm -m < Matrix/c5lo    > tmp/c5lo.out
+Test matrix: 5-by-5 with 11 entries, stype: -1
+........................................................|...........|
+                                                       Test OK, maxerr 6e-16
+./cl -m < Matrix/c5lo    > tmp/l_c5lo.out
+Test matrix: 5-by-5 with 11 entries, stype: -1
+........................................................|...........|
+                                                       Test OK, maxerr 6e-16
+./cm -m < Matrix/z10     > tmp/z10.out
+Test matrix: 10-by-15 with 60 entries, stype: 0
+............................|............|
+                                                       Test OK, maxerr 3e-15
+./cl -m < Matrix/z10     > tmp/l_z10.out
+Test matrix: 10-by-15 with 60 entries, stype: 0
+............................|............|
+                                                       Test OK, maxerr 3e-15
+./cm -m < Matrix/z5up    > tmp/z5up.out
+Test matrix: 5-by-5 with 11 entries, stype: 1
+........................................................|.............
+...|
+                                                       Test OK, maxerr 6e-16
+./cl -m < Matrix/z5up    > tmp/l_z5up.out   ; ./covall
+Test matrix: 5-by-5 with 11 entries, stype: 1
+........................................................|.............
+...|
+                                                       Test OK, maxerr 6e-16
+statments not yet tested: 968
+./cm -s < Matrix/3singular  > tmp/3singular.out
+Test matrix: 3-by-3 with 4 entries, stype: 1
+........................................................|
+                                                       Test OK
+./cl -s < Matrix/3singular  > tmp/l_3singular.out
+Test matrix: 3-by-3 with 4 entries, stype: 1
+........................................................|
+                                                       Test OK
+./cm -s < Matrix/z3singular > tmp/z3singular.out
+Test matrix: 3-by-3 with 4 entries, stype: 1
+........................................................|
+                                                       Test OK
+./cl -s < Matrix/z3singular > tmp/l_z3singular.out
+Test matrix: 3-by-3 with 4 entries, stype: 1
+........................................................|
+                                                       Test OK
+./cm -s < Matrix/c3singular > tmp/c3singular.out
+Test matrix: 3-by-3 with 4 entries, stype: 1
+........................................................|
+                                                       Test OK
+./cl -s < Matrix/c3singular > tmp/l_c3singular.out
+Test matrix: 3-by-3 with 4 entries, stype: 1
+........................................................|
+                                                       Test OK
+./cm -m < Matrix/0       > tmp/0.out
+Test matrix: 0-by-0 with 0 entries, stype: 0
+........................................................|.............
+.|
+                                                       Test OK, maxerr 0
+./cl -m < Matrix/0       > tmp/l_0.out
+Test matrix: 0-by-0 with 0 entries, stype: 0
+........................................................|.............
+.|
+                                                       Test OK, maxerr 0
+./cm -m < Matrix/afiro   > tmp/afiro.out
+Test matrix: 27-by-51 with 102 entries, stype: 0
+............................|.........................................
+...|
+                                                       Test OK, maxerr 2e-10
+./cl -m < Matrix/afiro   > tmp/l_afiro.out ; ./covall
+Test matrix: 27-by-51 with 102 entries, stype: 0
+............................|.........................................
+...|
+                                                       Test OK, maxerr 2e-10
+statments not yet tested: 412
+./cm -m < Matrix/k01up   > tmp/k01up.out
+Test matrix: 48-by-48 with 224 entries, stype: 1
+............................|........................|
+                                                       Test OK, maxerr 8e-07
+./cl -m < Matrix/k01up   > tmp/l_k01up.out ; ./covall
+Test matrix: 48-by-48 with 224 entries, stype: 1
+............................|........................|
+                                                       Test OK, maxerr 8e-07
+statments not yet tested: 346
+./cm    < Matrix/diag    > tmp/diag.out
+Test matrix: 20-by-20 with 20 entries, stype: 1
+............................|
+                                                       Test OK, maxerr 7e-13
+./cl    < Matrix/diag    > tmp/l_diag.out
+Test matrix: 20-by-20 with 20 entries, stype: 1
+............................|
+                                                       Test OK, maxerr 7e-13
+./cm -m < Matrix/ex5lo   > tmp/ex5lo.out
+Test matrix: 27-by-27 with 153 entries, stype: -1
+............................|.................|
+                                                       Test OK, maxerr 4e-09
+./cl -m < Matrix/ex5lo   > tmp/l_ex5lo.out ; ./covall
+Test matrix: 27-by-27 with 153 entries, stype: -1
+............................|.................|
+                                                       Test OK, maxerr 4e-09
+statments not yet tested: 332
+./cm    < Matrix/20lo    > tmp/20lo.out
+Test matrix: 20-by-20 with 210 entries, stype: -1
+............................|
+                                                       Test OK, maxerr 6e-14
+./cl    < Matrix/20lo    > tmp/l_20lo.out
+Test matrix: 20-by-20 with 210 entries, stype: -1
+............................|
+                                                       Test OK, maxerr 6e-14
+./cm    < Matrix/z30lo   > tmp/z30lo.out
+Test matrix: 30-by-30 with 114 entries, stype: -1
+............................|
+                                                       Test OK, maxerr 6e-15
+./cl    < Matrix/z30lo   > tmp/l_z30lo.out ; ./covall
+Test matrix: 30-by-30 with 114 entries, stype: -1
+............................|
+                                                       Test OK, maxerr 6e-15
+statments not yet tested: 298
+./cm -m < Matrix/z30up   > tmp/z30up.out
+Test matrix: 30-by-30 with 114 entries, stype: 1
+............................|..................|
+                                                       Test OK, maxerr 6e-15
+./cl -m < Matrix/z30up   > tmp/l_z30up.out
+Test matrix: 30-by-30 with 114 entries, stype: 1
+............................|..................|
+                                                       Test OK, maxerr 6e-15
+./cm    < Matrix/c10     > tmp/c10.out
+Test matrix: 10-by-15 with 60 entries, stype: 0
+............................|
+                                                       Test OK, maxerr 3e-15
+./cl    < Matrix/c10     > tmp/l_c10.out
+Test matrix: 10-by-15 with 60 entries, stype: 0
+............................|
+                                                       Test OK, maxerr 3e-15
+./cm    < Matrix/c30lo   > tmp/c30lo.out
+Test matrix: 30-by-30 with 114 entries, stype: -1
+............................|
+                                                       Test OK, maxerr 6e-15
+./cl    < Matrix/c30lo   > tmp/l_c30lo.out ; ./covall
+Test matrix: 30-by-30 with 114 entries, stype: -1
+............................|
+                                                       Test OK, maxerr 6e-15
+statments not yet tested: 192
+./cm -m < Matrix/c30up   > tmp/c30up.out
+Test matrix: 30-by-30 with 114 entries, stype: 1
+............................|................|
+                                                       Test OK, maxerr 6e-15
+./cl -m < Matrix/c30up   > tmp/l_c30up.out
+Test matrix: 30-by-30 with 114 entries, stype: 1
+............................|................|
+                                                       Test OK, maxerr 6e-15
+./cm    < Matrix/pi      > tmp/pi.out
+Test matrix: 1-by-1 with 1 entries, stype: 0
+........................................................|
+                                                       Test OK, maxerr 3e-13
+./cl    < Matrix/pi      > tmp/l_pi.out
+Test matrix: 1-by-1 with 1 entries, stype: 0
+........................................................|
+                                                       Test OK, maxerr 3e-13
+./cm    < Matrix/cpi     > tmp/cpi.out
+Test matrix: 1-by-1 with 1 entries, stype: 0
+........................................................|
+                                                       Test OK, maxerr 2e-15
+./cl    < Matrix/cpi     > tmp/l_cpi.out
+Test matrix: 1-by-1 with 1 entries, stype: 0
+........................................................|
+                                                       Test OK, maxerr 2e-15
+./cm    < Matrix/1_0     > tmp/1_0.out
+Test matrix: 1-by-0 with 0 entries, stype: 0
+........................................................|
+                                                       Test OK
+./cl    < Matrix/1_0     > tmp/l_1_0.out
+Test matrix: 1-by-0 with 0 entries, stype: 0
+........................................................|
+                                                       Test OK
+./cm    < Matrix/0_1     > tmp/0_1.out
+Test matrix: 0-by-1 with 0 entries, stype: 0
+........................................................|
+                                                       Test OK, maxerr 0
+./cl    < Matrix/0_1     > tmp/l_0_1.out   ; ./covall
+Test matrix: 0-by-1 with 0 entries, stype: 0
+........................................................|
+                                                       Test OK, maxerr 0
+statments not yet tested: 154
+./cm -n < Matrix/galenet > tmp/galenet_nan.out		; ./covall
+Test matrix: 8-by-14 with 22 entries, stype: 0
+
+                                                       Test OK, maxerr 0
+statments not yet tested: 148
+./cl -n < Matrix/galenet > tmp/l_galenet_nan.out	; ./covall
+Test matrix: 8-by-14 with 22 entries, stype: 0
+
+                                                       Test OK, maxerr 0
+statments not yet tested: 142
+./cm    < Matrix/a1      > tmp/a1.out	   ; ./covall
+Test matrix: 70000-by-70000 with 140000 entries, stype: 1
+Please wait, this will take a while ................|
+                                                       Test OK, maxerr 5e-12
+statments not yet tested: 124
+./cl    < Matrix/a1      > tmp/l_a1.out	   ; ./covall
+Test matrix: 70000-by-70000 with 140000 entries, stype: 1
+Please wait, this will take a while ................|
+                                                       Test OK, maxerr 5e-12
+statments not yet tested: 106
+./cm    < Matrix/zero    > tmp/zero.out
+Test matrix: 1100000000-by-1100000000 with 0 entries, stype: 0
+Please wait, this will take a while ...
+./cl    < Matrix/zero    > tmp/zero.out	; ./covall
+Test matrix: 1100000000-by-1100000000 with 0 entries, stype: 0
+Please wait, this will take a while ...
+statments not yet tested: 0

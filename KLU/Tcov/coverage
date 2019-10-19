@@ -1,0 +1,13 @@
+#!/bin/csh
+
+gcovs *.c >& gcovs.out
+
+grep "#####"  *.c.gcov | wc -l
+# grep -v "\-:" *.c.gcov | wc -l
+
+
+foreach file (*.c.gcov)
+    echo $file " "
+    grep "#####" $file | wc -l
+    # grep -v "\-:" $file | wc -l
+end

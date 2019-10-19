@@ -1,0 +1,20 @@
+#===============================================================================
+# ILP32 mode, Fortran interface to ATLAS BLAS, do not test for integer overflow.
+#===============================================================================
+
+# Using Intel's icc compiler:
+CC = icc
+CFLAGS = -ansi
+
+UMFPACK_CONFIG = -DTESTING
+LIB = -lf77blas -latlas -lfrtbegin -lg2c -lm
+
+RANLIB = ranlib
+MV = mv -f
+RM = rm -f
+MEX = mex -inline -g
+AR = ar cr
+
+#===============================================================================
+
+CLEAN = *.o *.obj *.ln *.bb *.bbg *.da *.c.tcov *.c.gcov gmon.out

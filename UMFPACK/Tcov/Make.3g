@@ -1,0 +1,18 @@
+#===============================================================================
+# ILP32 mode, C interface /ATLAS BLAS, do not test for integer overflow.
+#===============================================================================
+
+CC = gcc
+CFLAGS = -O3 -fPIC
+UMFPACK_CONFIG = -DCBLAS -DTESTING -I/cise/research/sparse/Install/ATLAS/Linux_P4SSE2/include
+LIB = -lcblas -latlas -lm
+
+RANLIB = ranlib
+MV = mv -f
+RM = rm -f
+MEX = mex -inline -g
+AR = ar cr
+
+#===============================================================================
+
+CLEAN = *.o *.obj *.ln *.bb *.bbg *.da *.c.tcov *.c.gcov gmon.out

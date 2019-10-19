@@ -1,0 +1,165 @@
+
+KLU stand-alone demo:
+File: tmp/Asize
+File: tmp/Ap
+File: tmp/Ai
+File: tmp/Ax
+n 17758 nrow 17758 ncol 17758 nz 99147
+Reading tmp/b
+
+KLUDEMO: ordering: 0  BTF: 1 scale: -1 halt_if_singular: 1
+---------------- trial 0
+
+KLU Symbolic analysis:
+dimension of matrix:          17758
+nz in off diagonal blocks:    17
+# of off diagonal blocks:     23
+largest block dimension:      17736
+estimated nz in L:            70176
+estimated nz in U:            70176
+symbolic analysis time:         0.037584 (wall)   0.050000 (cpu)
+
+KLU Numeric factorization:
+actual nz in L:               68453
+actual nz in U:               68560
+actual nz in L+U:             119255
+# of offdiagonal pivots:      0
+numeric factorization time:     0.022536 (wall)   0.050000 (cpu)
+flop count 1.44676e+06 time   0.000658   0.000000
+condition number estimate 266615 time   0.014213   0.020000
+reciprocal pivot growth:  0.999411 time   0.003293  -0.000000
+cheap reciprocal cond:    0.000122039 time   0.000625   0.010000
+
+KLU solve:
+solve time:                     0.002259 (wall)  -0.000000 (cpu)
+
+relative maxnorm of residual, ||Ax-b||/||b||:  1.33e-11
+Writing solution to file: tmp/x
+
+KLU tsolve:
+solve time:                     0.002001 (wall)  -0.000000 (cpu)
+
+relative maxnorm of residual, ||A'x-b||/||b||: 3.44e-12
+
+KLU Numeric refactorization: scale -1
+numeric refactorization time:   0.007261 (wall)   0.010000 (cpu)
+condition number estimate 266615
+reciprocal pivot growth:  0.999411
+cheap reciprocal cond:    0.000122039
+
+KLU solve:
+solve time:                     0.002208 (wall)  -0.000000 (cpu)
+
+relative maxnorm of residual, ||Ax-b||/||b||:  1.33e-11
+
+KLU Numeric refactorization: scale 0
+numeric refactorization time:   0.008908 (wall)   0.010000 (cpu)
+condition number estimate 266615
+reciprocal pivot growth:  0.999411
+cheap reciprocal cond:    0.000122039
+
+KLU solve:
+solve time:                     0.002173 (wall)   0.000000 (cpu)
+
+relative maxnorm of residual, ||Ax-b||/||b||:  1.33e-11
+
+KLU Numeric refactorization: scale 1
+numeric refactorization time:   0.010220 (wall)   0.010000 (cpu)
+condition number estimate 266615
+reciprocal pivot growth:  0.00298152
+cheap reciprocal cond:    9.38329e-05
+
+KLU solve:
+solve time:                     0.002266 (wall)   0.010000 (cpu)
+
+relative maxnorm of residual, ||Ax-b||/||b||:  1.44e-11
+
+KLU Numeric refactorization: scale 2
+numeric refactorization time:   0.009547 (wall)   0.020000 (cpu)
+condition number estimate 266615
+reciprocal pivot growth:  0.00591764
+cheap reciprocal cond:    0.000187555
+
+KLU solve:
+solve time:                     0.002251 (wall)   0.000000 (cpu)
+
+relative maxnorm of residual, ||Ax-b||/||b||:  1.43e-11
+
+KLUDEMO: ordering: 3  BTF: 1 scale: -1 halt_if_singular: 1
+---------------- trial 0
+
+KLU Symbolic analysis:
+dimension of matrix:          17758
+nz in off diagonal blocks:    17
+# of off diagonal blocks:     23
+largest block dimension:      17736
+estimated nz in L:            22
+estimated nz in U:            22
+symbolic analysis time:         1.266425 (wall)   1.810000 (cpu)
+
+KLU Numeric factorization:
+actual nz in L:               68453
+actual nz in U:               68560
+actual nz in L+U:             119255
+# of offdiagonal pivots:      0
+numeric factorization time:     0.023415 (wall)   0.040000 (cpu)
+flop count 1.44676e+06 time   0.000798   0.000000
+condition number estimate 266615 time   0.012455   0.020000
+reciprocal pivot growth:  0.999411 time   0.003337   0.000000
+cheap reciprocal cond:    0.000122039 time   0.000607   0.010000
+
+KLU solve:
+solve time:                     0.002014 (wall)  -0.000000 (cpu)
+
+relative maxnorm of residual, ||Ax-b||/||b||:  1.25e-11
+Writing solution to file: tmp/x
+
+KLU tsolve:
+solve time:                     0.002157 (wall)   0.000000 (cpu)
+
+relative maxnorm of residual, ||A'x-b||/||b||: 3.44e-12
+
+KLU Numeric refactorization: scale -1
+numeric refactorization time:   0.007270 (wall)   0.010000 (cpu)
+condition number estimate 266615
+reciprocal pivot growth:  0.999411
+cheap reciprocal cond:    0.000122039
+
+KLU solve:
+solve time:                     0.002261 (wall)   0.000000 (cpu)
+
+relative maxnorm of residual, ||Ax-b||/||b||:  1.25e-11
+
+KLU Numeric refactorization: scale 0
+numeric refactorization time:   0.008333 (wall)   0.010000 (cpu)
+condition number estimate 266615
+reciprocal pivot growth:  0.999411
+cheap reciprocal cond:    0.000122039
+
+KLU solve:
+solve time:                     0.002153 (wall)   0.000000 (cpu)
+
+relative maxnorm of residual, ||Ax-b||/||b||:  1.25e-11
+
+KLU Numeric refactorization: scale 1
+numeric refactorization time:   0.009748 (wall)   0.020000 (cpu)
+condition number estimate 266615
+reciprocal pivot growth:  0.00465948
+cheap reciprocal cond:    9.38329e-05
+
+KLU solve:
+solve time:                     0.002153 (wall)  -0.000000 (cpu)
+
+relative maxnorm of residual, ||Ax-b||/||b||:  1.48e-11
+
+KLU Numeric refactorization: scale 2
+numeric refactorization time:   0.009713 (wall)   0.020000 (cpu)
+condition number estimate 266615
+reciprocal pivot growth:  0.00931567
+cheap reciprocal cond:    0.000187555
+
+KLU solve:
+solve time:                     0.002157 (wall)   0.000000 (cpu)
+
+relative maxnorm of residual, ||Ax-b||/||b||:  1.43e-11
+kludemo done

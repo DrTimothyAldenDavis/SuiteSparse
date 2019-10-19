@@ -1,0 +1,428 @@
+################################################################################
+Tcov test: 1 di
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 7.08e-05 arc130 2.95e-08 omega2) cputime 58.08
+65.957u 21.743s 4:14.39 34.4%	0+0k 0+0io 56pf+0w
+################################################################################
+Tcov test: 1 dl
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 7.08e-05 arc130 2.95e-08 omega2) cputime 47.61
+57.147u 19.907s 2:36.09 49.3%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 1 zi
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.31e-05 arc130 6.19e-10 omega2) cputime 87.9
+96.431u 21.184s 5:53.60 33.2%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 1 zl
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.31e-05 arc130 6.19e-10 omega2) cputime 87.89
+95.638u 21.373s 4:55.24 39.6%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 2 di
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.49e-10 (1.37e-07 shl0, 6.76e-05 arc130 2.67e-08 omega2) cputime 44.76
+55.884u 18.499s 2:30.76 49.3%	0+0k 0+0io 1pf+0w
+################################################################################
+Tcov test: 2 dl
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 7.08e-05 arc130 2.95e-08 omega2) cputime 43.58
+55.066u 17.643s 2:27.94 49.1%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 2 zi
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.40e-07 shl0, 6.77e-05 arc130 1.81e-09 omega2) cputime 68.18
+76.674u 21.814s 3:18.86 49.5%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 2 zl
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.31e-05 arc130 6.19e-10 omega2) cputime 87.68
+95.713u 21.981s 4:56.13 39.7%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 3 di
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 6.76e-05 arc130 1.70e-08 omega2) cputime 52.99
+63.135u 22.242s 4:26.20 32.0%	0+0k 0+0io 1pf+0w
+################################################################################
+Tcov test: 3 dl
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 7.08e-05 arc130 2.95e-08 omega2) cputime 45.62
+57.047u 21.076s 5:13.79 24.8%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 3 zi
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.40e-07 shl0, 6.77e-05 arc130 1.97e-09 omega2) cputime 85.67
+95.359u 23.257s 4:00.29 49.3%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 3 zl
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.31e-05 arc130 6.19e-10 omega2) cputime 87.52
+96.462u 23.746s 5:27.63 36.6%	0+0k 0+0io 3pf+0w
+################################################################################
+Tcov test: 4 di
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 6.76e-05 arc130 1.70e-08 omega2) cputime 50.86
+62.001u 21.885s 3:16.46 42.6%	0+0k 0+0io 55pf+0w
+################################################################################
+Tcov test: 4 dl
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 7.08e-05 arc130 2.95e-08 omega2) cputime 43.79
+55.750u 20.866s 2:41.32 47.4%	0+0k 0+0io 2pf+0w
+################################################################################
+Tcov test: 4 zi
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.40e-07 shl0, 6.77e-05 arc130 1.97e-09 omega2) cputime 85.85
+95.295u 24.087s 4:09.94 47.7%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 4 zl
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.31e-05 arc130 6.19e-10 omega2) cputime 86.78
+95.469u 22.687s 3:56.27 50.0%	0+0k 0+0io 57pf+0w
+################################################################################
+Tcov test: 5 di
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 8.09e-05 arc130 1.44e-08 omega2) cputime 54.79
+64.073u 19.475s 3:18.85 42.0%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 5 dl
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 8.09e-05 arc130 1.44e-08 omega2) cputime 44.3
+54.864u 18.963s 3:20.43 36.8%	0+0k 0+0io 2pf+0w
+################################################################################
+Tcov test: 5 zi
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 8.10e-05 arc130 1.13e-09 omega2) cputime 86.29
+94.274u 21.352s 5:45.72 33.4%	0+0k 0+0io 55pf+0w
+################################################################################
+Tcov test: 5 zl
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 8.10e-05 arc130 1.13e-09 omega2) cputime 86.48
+94.614u 20.459s 4:14.05 45.2%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 6 di
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.49e-10 (1.37e-07 shl0, 6.76e-05 arc130 2.67e-08 omega2) cputime 0
+54.133u 18.431s 2:38.62 45.7%	0+0k 0+0io 1pf+0w
+################################################################################
+Tcov test: 6 dl
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 7.08e-05 arc130 2.95e-08 omega2) cputime 0
+53.685u 17.717s 2:18.76 51.4%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 6 zi
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.40e-07 shl0, 6.77e-05 arc130 1.81e-09 omega2) cputime 0
+74.530u 20.591s 3:07.82 50.6%	0+0k 0+0io 3pf+0w
+################################################################################
+Tcov test: 6 zl
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.31e-05 arc130 6.19e-10 omega2) cputime 0
+93.008u 21.095s 3:47.37 50.1%	0+0k 0+0io 3pf+0w
+################################################################################
+Tcov test: 7 di
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 7.08e-05 arc130 2.95e-08 omega2) cputime 52
+62.595u 18.109s 2:39.53 50.5%	0+0k 0+0io 2pf+0w
+################################################################################
+Tcov test: 7 dl
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 7.08e-05 arc130 2.95e-08 omega2) cputime 43.48
+54.331u 19.149s 2:32.31 48.2%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 7 zi
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.31e-05 arc130 6.19e-10 omega2) cputime 86.22
+94.291u 22.044s 4:07.57 46.9%	0+0k 0+0io 35pf+0w
+################################################################################
+Tcov test: 7 zl
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.31e-05 arc130 6.19e-10 omega2) cputime 85.77
+94.190u 21.226s 4:00.99 47.8%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 8 di
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.49e-10 (1.37e-07 shl0, 6.76e-05 arc130 2.67e-08 omega2) cputime 45.21
+55.138u 19.192s 2:53.18 42.9%	0+0k 0+0io 1pf+0w
+################################################################################
+Tcov test: 8 dl
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.35e-10 (1.19e-07 shl0, 7.08e-05 arc130 2.95e-08 omega2) cputime 43.36
+54.424u 18.817s 2:51.32 42.7%	0+0k 0+0io 57pf+0w
+################################################################################
+Tcov test: 8 zi
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.40e-07 shl0, 6.77e-05 arc130 1.81e-09 omega2) cputime 66.59
+74.890u 21.514s 4:01.29 39.9%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 8 zl
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.31e-05 arc130 6.19e-10 omega2) cputime 85.8
+93.133u 21.256s 4:41.13 40.6%	0+0k 0+0io 57pf+0w
+################################################################################
+Tcov test: 1g di
+################################################################################
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.03e-10 (1.19e-07 shl0, 5.65e-05 arc130 4.58e-09 omega2) cputime 36.45
+74.444u 18.155s 4:12.64 36.6%	0+0k 0+0io 4pf+0w
+################################################################################
+Tcov test: 1g dl
+################################################################################
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.03e-10 (1.19e-07 shl0, 5.65e-05 arc130 4.58e-09 omega2) cputime 31.88
+70.117u 18.138s 4:06.43 35.8%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 1g zi
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.77e-05 arc130 1.35e-09 omega2) cputime 68.88
+104.228u 21.576s 4:20.17 48.3%	0+0k 0+0io 3pf+0w
+################################################################################
+Tcov test: 1g zl
+################################################################################
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.77e-05 arc130 1.35e-09 omega2) cputime 68.77
+103.874u 21.334s 4:04.77 51.1%	0+0k 0+0io 2pf+0w
+################################################################################
+Tcov test: 2g di
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.06e-10 (1.37e-07 shl0, 5.65e-05 arc130 1.98e-08 omega2) cputime 30.14
+68.834u 18.537s 2:59.16 48.7%	0+0k 0+0io 11pf+0w
+################################################################################
+Tcov test: 2g dl
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.03e-10 (1.19e-07 shl0, 5.65e-05 arc130 4.58e-09 omega2) cputime 32.02
+70.467u 18.482s 2:49.67 52.4%	0+0k 0+0io 10pf+0w
+################################################################################
+Tcov test: 2g zi
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.40e-07 shl0, 7.77e-05 arc130 2.29e-09 omega2) cputime 49.84
+86.839u 20.261s 3:27.29 51.6%	0+0k 0+0io 3pf+0w
+################################################################################
+Tcov test: 2g zl
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.77e-05 arc130 1.35e-09 omega2) cputime 67.93
+104.755u 20.972s 4:03.31 51.6%	0+0k 0+0io 64pf+0w
+################################################################################
+Tcov test: 3g di
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.03e-10 (1.19e-07 shl0, 5.65e-05 arc130 8.27e-09 omega2) cputime 36.48
+75.152u 23.653s 3:10.42 51.8%	0+0k 0+0io 1pf+0w
+################################################################################
+Tcov test: 3g dl
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.03e-10 (1.19e-07 shl0, 5.65e-05 arc130 4.58e-09 omega2) cputime 31.52
+71.320u 21.093s 3:01.30 50.9%	0+0k 0+0io 0pf+0w
+################################################################################
+Tcov test: 3g zi
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.40e-07 shl0, 7.77e-05 arc130 2.57e-09 omega2) cputime 67.75
+105.546u 22.796s 4:07.55 51.8%	0+0k 0+0io 40pf+0w
+################################################################################
+Tcov test: 3g zl
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.77e-05 arc130 1.35e-09 omega2) cputime 68.72
+106.281u 23.809s 4:12.22 51.5%	0+0k 0+0io 7pf+0w
+################################################################################
+Tcov test: 4g di
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.03e-10 (1.19e-07 shl0, 5.65e-05 arc130 8.27e-09 omega2) cputime 35.69
+74.646u 22.580s 3:44.05 43.3%	0+0k 0+0io 46pf+0w
+################################################################################
+Tcov test: 4g dl
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 1.03e-10 (1.19e-07 shl0, 5.65e-05 arc130 4.58e-09 omega2) cputime 31.21
+70.200u 19.713s 3:47.80 39.4%	0+0k 0+0io 9pf+0w
+################################################################################
+Tcov test: 4g zi
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.40e-07 shl0, 7.77e-05 arc130 2.57e-09 omega2) cputime 68.15
+105.008u 22.823s 5:40.93 37.4%	0+0k 0+0io 3pf+0w
+################################################################################
+Tcov test: 4g zl
+################################################################################
+make[2]: [umfpack_di_demo] Error 1 (ignored)
+make[2]: [umfpack_zi_demo] Error 1 (ignored)
+make[2]: [umfpack_dl_demo] Error 1 (ignored)
+make[2]: [umfpack_zl_demo] Error 1 (ignored)
+ALL TESTS PASSED: rnorm 9.88e-05 (1.33e-07 shl0, 7.77e-05 arc130 1.35e-09 omega2) cputime 68.44
+105.124u 22.060s 5:40.31 37.3%	0+0k 0+0io 0pf+0w

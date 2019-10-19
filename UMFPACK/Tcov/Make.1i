@@ -1,0 +1,21 @@
+#===============================================================================
+# ILP32 mode, no BLAS, test for integer overflow.
+#===============================================================================
+
+# Using Intel's icc compiler:
+CC = icc
+CFLAGS = -ansi -O3 -ip -tpp7 -xW -vec_report0
+
+UMFPACK_CONFIG = -DNBLAS -DTEST_FOR_INTEGER_OVERFLOW -DTESTING
+# LIB = -lm -lunwind -lcprts
+LIB = -lm
+
+RANLIB = ranlib
+MV = mv -f
+RM = rm -f
+MEX = mex -inline -g
+AR = ar cr
+
+#===============================================================================
+
+CLEAN = *.o *.obj *.ln *.bb *.bbg *.da *.c.tcov *.c.gcov gmon.out

@@ -1,0 +1,47 @@
+#
+#
+#
+#
+
+
+ ./DOsol s1 di run 
+ ./DOsol s1 dl run 
+ ./DOsol s1 zi run 
+ ./DOsol s1 zl run 
+ ./DOsol s2 di run 
+ ./DOsol s2 dl run 
+ ./DOsol s2 zi run 
+ ./DOsol s2 zl run
+
+ ./DOsol s3 di run 
+ ./DOsol s3 dl run 
+ ./DOsol s3 zi run 
+ ./DOsol s3 zl run 
+ ./DOsol s4 di run 
+ ./DOsol s4 dl run 
+ ./DOsol s4 zi run 
+ ./DOsol s4 zl run 
+
+ ./DOsol s5 di run 
+ ./DOsol s5 dl run 
+ ./DOsol s5 zi run 
+ ./DOsol s5 zl run 
+ ./DOsol n1 di run 
+ ./DOsol n1 dl run 
+ ./DOsol n1 zi run 
+ ./DOsol n1 zl run 
+
+ ./DOsol n2 di run 
+ ./DOsol n2 dl run 
+ ./DOsol n2 zi run 
+ ./DOsol n2 zl run 
+ ./DOsol n3 di run 
+ ./DOsol n3 dl run 
+ ./DOsol n3 zi run 
+ ./DOsol n3 zl run 
+
+ ./DOsol n4 di run 
+ ./DOsol n4 dl run 
+ ./DOsol n4 zi run 
+ ./DOsol n4 zl run 
+

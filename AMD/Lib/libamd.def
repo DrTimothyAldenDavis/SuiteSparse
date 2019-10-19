@@ -1,0 +1,12 @@
+LIBRARY libamd.dll
+EXPORTS
+amd_order
+amd_defaults
+amd_control
+amd_info
+amd_2
+amd_l_order
+amd_l_defaults
+amd_l_control
+amd_l_info
+amd_l2

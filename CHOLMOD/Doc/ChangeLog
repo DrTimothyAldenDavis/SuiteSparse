@@ -1,0 +1,109 @@
+Aug 31, 2006, version 1.2
+
+    * Common->default_nesdis parameter and Common->called_nd statistic added.
+	Otherwise, no change to user interface.  v1.2 is fully upward
+	compatible with v1.1 (even binary compatible).
+
+    * non-supernodal Lx=b and L'x=b solves simplified, slight increase in
+	performance.
+
+    * update/downdate performance improved.
+
+    * ordering options and output statistics added to MATLAB/cholmod
+	mexFunction.
+
+July 27, 2006, version 1.1.1
+
+    * bug fix for cholmod_rowfac_mask, for the complex case.  Has no
+	effect on MATLAB.
+
+June 27, 2006:
+
+    * trivial changes to nested dissection code, and cholmod_read.c (for
+	debugging, and to add explicit typecasts so compilers don't complain).
+
+May, 2006:
+
+    * Added new routines for LPDASA: cholmod_rowfac_mask, cholmod_updown_mask.
+	Added cholmod_collapse_septree.  Added nd_oksep, nd_components
+	parameters to Common.
+
+Apr 30, 2006: version 1.1
+
+    * added interface to CAMD.  cholmod_nested_dissection can now call
+	CCOLAMD, CSYMAMD, and CAMD.  Common->nd_camd usage extended.
+	New argument added to nesdis mexFunction.  New cholmod_camd function
+	added.  No other changes to CHOLMOD user interface.
+
+    * more careful integer overflow checks.  Added non-user-callable functions
+	to add and multiply size_t integers, with overflow checks.
+
+    * added Common->no_workspace_reallocate
+
+    * flop count is now correct for A*A' case (Common->rowfacfl).
+
+Jan 18, 2006: version 1.0.2
+
+    * bug fix: MATLAB interface incorrect for full logical matrices.
+
+    * Tcov tests modified to generate fewer intentional nan's, to make it
+	easier to look for errors in BLAS libraries that incorrectly
+	generate nan's.
+
+Dec 16, 2005: version 1.0.1
+
+    * bug fix: cholmod_amd allocated too small of a workspace when ordering A*A'
+
+Dec 8, 2005: version 1.0
+
+    * no real changes.  Version 1.0 is the same as version 0.8.  Version 1.0 is
+	simply the formal stable release.
+
+    * known issue:  the floating point operation count, Common->rowfacfl, is
+	statistic is incorrect when factorizing A*A'.  This will be fixed in
+	version 1.1.
+
+Nov 15, 2005: version 0.8
+
+    * bug fix in t_cholmod_super_numeric, for [R,p]=chol(A) usage.
+
+    * Common->quick_return_if_not_posdef added.
+
+    * Added cholmod_row_lsubtree (required for LPDASA)
+
+    * bug fix: cholmod_rcond returned sqrt(1/cond) for an LL' factorization;
+	1/cond is required.
+
+    * new statistics added: flop counts for cholmod_rowfac, # of factor column
+	reallocations, # of factor reallocations due to column reallocations,
+	and # of times the (non-default) bounds on diag(L) are hit.
+
+    * factor column reallocation skipped if space already big enough.
+
+    * bug fix: cholmod_copy_factor did not copy L->is_monotonic.
+
+    * bug fix: cholmod_change_factor (diagonal entry was wrong in one case)
+
+    * rcond added to cholmod mexFunction ([x,rcond] = cholmod(A,b)).
+
+    * cholmod_rowadd, cholmod_rowdel modified.  rowdel no longer removes
+	entries from the matrix; it sets them to zero instead.
+
+Oct 10, 2005: version 0.7
+
+    * minor changes:  minor change to Check/cholmod_check.c (coerce
+	sizeof(...) to (int) when printing. Less strict check on A->p for
+	unpacked matrices) , removed a few unused variables in
+	Check/cholmod_read.c and Demo/cholmod*demo.c, changed "exit(0)" to
+	"return(0)" in Demo/cholmod_simple.c.  Changed Makefile so that "." is
+	not assumed to be on the $path.  Added Cygwin to architecture detection
+	in Include/cholmod_blas.h.  Added cparent and cmember to nesdis.m.
+	Space for future expansion added to cholmod_common.
+
+    * removed "rowmark" from the Modify module, which affects how partial
+	updates to Lx=b solves are done during update/downdate.  Should only
+	affect LPDASA.
+
+    * added CHOLMOD_SUBSUB_VERSION
+
+Aug 31, 2005:  version 0.6 released.

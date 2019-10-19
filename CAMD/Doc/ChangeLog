@@ -1,0 +1,39 @@
+Aug 31, 2006: v2.1.1
+
+    * trivial change to comments in camd.m
+
+June 27, 2006: CAMD Version 2.1
+
+    * bug fix.  Ordering constraints not always met if dense and/or empty
+	nodes are present in the matrix.
+
+Apr. 30, 2006: CAMD Version 2.0
+
+    * CAMD released, based on AMD v2.0.  To compare the two codes, type the
+	command ./docdiff in this directory (the "CAMD" and "camd" strings
+	are replaced with "AMD" and "amd" when the two packages are compared,
+	to make more evident the substantive differences between the packages.
+	Primary differences with AMD v2.0:
+
+	CAMD adds the ability to order the matrix with constraints.  Each
+	node i in the graph (row/column i in the matrix) has a constraint,
+	C[i], which is in the range 0 to n-1.  All nodes with C[i] = 0 are
+	ordered first, followed by all nodes with constraint 1, and so on.
+	That is, C[P[k]] is monotonically non-decreasing as k varies from 0
+	to n-1.  camd_order has an additional C parameter; if NULL, no
+	constraints are used (the ordering will be similar to AMD's ordering).
+	The optional C parameter is also added to the MATLAB interface,
+	(p = camd (A,Control,C)).
+
+	Since C is optional, CAMD can replace AMD in any application that uses
+	AMD.  Just pass C = NULL (or omit C in the MATLAB interface).
+	There is no Fortran version of CAMD, however.
+
+	The postordering is different, and there is no camd_post_tree.c file.
+
+	A new routine, camd_cvalid, has been added to check the validity of C.
+
+	CAMD requires more workspace than AMD (n+1 integers).
+
+	All user-visible names AMD* and amd* replaced with CAMD* and camd*.
+

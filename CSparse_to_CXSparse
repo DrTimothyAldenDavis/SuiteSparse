@@ -1,0 +1,324 @@
+#! /usr/bin/perl
+# Constructs the CXSparse package from CSparse, adding four different sets of
+# functions (int/UF_long, and double/complex).  Backward compatible with
+# CSparse.  No MATLAB interface is provided for CXSparse, however.
+#
+# To create CXSparse from CSparse, the ./CXSparse directory should not (yet)
+# exist.  Use the following commands, where CSparse is the CSparse directory:
+#
+#   ./CSparse_to_CXSparse CSparse CXSparse CXSparse_newfiles.tar.gz
+#   cd CXSparse/Demo
+#   make > cs_demo.out
+#
+# Alternatively, use "make cx", using the UFsparse/Makefile, while in the
+# UFsparse directory.
+#
+# Created by David Bateman, Feb. 2006, David dot Bateman atsign motorola
+# dot com.  Modified by Tim Davis, Aug 23, 2006.
+
+use strict;
+use Cwd;
+use File::Find;
+use File::Basename;
+use Text::Wrap;
+use FileHandle;
+use IPC::Open3;
+
+my $in_dir = @ARGV[0];
+my $out_dir = @ARGV[1];
+my $tar_file = @ARGV[2];
+
+#-------------------------------------------------------------------------------
+# copy all files from CSparse to CXSparse (except MATLAB directory).
+#-------------------------------------------------------------------------------
+
+system ("cp -pr $in_dir $out_dir") ;
+system ("rm -rf $out_dir/MATLAB") ;
+
+#-------------------------------------------------------------------------------
+# Add the new files from the tar file given by the third argument
+#-------------------------------------------------------------------------------
+
+my $old_pwd = cwd();
+chdir($out_dir);
+system ("tar xpBvzf $old_pwd/$tar_file");
+chdir($old_pwd);
+
+#-------------------------------------------------------------------------------
+# Convert Demo/* files
+#-------------------------------------------------------------------------------
+
+# convert demo *.[ch] files into the four different versions (di, dl, ci, cl)
+my @demo_files = ('demo1.c', 'demo2.c', 'demo3.c', 'demo.c', 'demo.h') ;
+
+foreach my $fff ( @demo_files )
+{
+    my $infile  = sprintf ("%s/Demo/cs_%s", $out_dir, $fff) ;
+
+    # create di version
+    my $outfile = sprintf ("%s/Demo/cs_di_%s", $out_dir, $fff) ;
+    if (open (OUT, ">$outfile"))
+    {
+	if (open (IN, $infile))
+	{
+	    while (<IN>)
+	    {
+		# change all "cs*" names to "cs_di*", except #include "cs.h"
+		s/\bcs/cs_di/g ;
+		s/cs_di\.h/cs.h/ ;
+		print OUT $_;
+	    }
+	    close (IN);
+	}
+	close (OUT);
+    }
+
+    # create dl version
+    my $outfile = sprintf ("%s/Demo/cs_dl_%s", $out_dir, $fff) ;
+    if (open (OUT, ">$outfile"))
+    {
+	if (open (IN, $infile))
+	{
+	    while (<IN>)
+	    {
+		# change all "cs*" names to "cs_dl*", except #include "cs.h"
+		s/\bcs/cs_dl/g ;
+		s/cs_dl\.h/cs.h/ ;
+		# change int to UF_long, except for "int main"
+		s/\bint\b/UF_long/g;
+		s/UF_long main/int main/;
+		# change %d to %ld in printf and scanf
+		s/\%d/\%ld/g;
+		print OUT $_;
+	    }
+	    close (IN);
+	}
+	close (OUT);
+    }
+
+    # create ci version
+    my $outfile = sprintf ("%s/Demo/cs_ci_%s", $out_dir, $fff) ;
+    if (open (OUT, ">$outfile"))
+    {
+	if (open (IN, $infile))
+	{
+	    while (<IN>)
+	    {
+		# change all "cs*" names to "cs_ci*", except #include "cs.h"
+		s/\bcs/cs_ci/g ;
+		s/cs_ci\.h/cs.h/ ;
+		# fabs becomes cabs
+		s/fabs/cabs/g;
+		# change double to double _Complex
+		s/\bdouble\b/double _Complex/g;
+		# (double) typecasts stay double
+		s/\(double _Complex\) /(double) /g;
+		# tic, toc, tol, and norm are double, not double _Complex
+		s/double _Complex norm/double norm/;
+		s/double _Complex tic/double tic/;
+		s/double _Complex toc \(double _Complex/double toc (double/;
+		s/double _Complex s = tic/double s = tic/;
+		s/double _Complex tol/double tol/;
+		# cumsum, S->lnz, S->unz are double
+		s/double _Complex lnz/double lnz/;
+		s/double _Complex unz/double unz/;
+		s/double _Complex cs_cumsum/double cs_cumsum/;
+		# local variable declarations that stay double
+		s/,  / ;\n    double / ;
+		print OUT $_;
+	    }
+	    close (IN);
+	}
+	close (OUT);
+    }
+
+    # create cl version
+    my $outfile = sprintf ("%s/Demo/cs_cl_%s", $out_dir, $fff) ;
+    if (open (OUT, ">$outfile"))
+    {
+	if (open (IN, $infile))
+	{
+	    while (<IN>)
+	    {
+		# change all "cs*" names to "cs_cl*", except #include "cs.h"
+		s/\bcs/cs_cl/g ;
+		s/cs_cl\.h/cs.h/ ;
+		# change int to UF_long, except for "int main"
+		s/\bint\b/UF_long/g;
+		s/UF_long main/int main/;
+		# change %d to %ld in printf and scanf
+		s/\%d/\%ld/g;
+		# fabs becomes cabs
+		s/fabs/cabs/g;
+		# change double to double _Complex
+		s/\bdouble\b/double _Complex/g;
+		# (double) typecasts stay double
+		s/\(double _Complex\) /(double) /g;
+		# tic, toc, tol, and norm are double, not double _Complex
+		s/double _Complex norm/double norm/;
+		s/double _Complex tic/double tic/;
+		s/double _Complex toc \(double _Complex/double toc (double/;
+		s/double _Complex s = tic/double s = tic/;
+		s/double _Complex tol/double tol/;
+		# cumsum, S->lnz, S->unz are double
+		s/double _Complex lnz/double lnz/;
+		s/double _Complex unz/double unz/;
+		s/double _Complex cs_cumsum/double cs_cumsum/;
+		# local variable declarations that stay double
+		s/,  / ;\n    double / ;
+		print OUT $_;
+	    }
+	    close (IN);
+	}
+	close (OUT);
+    }
+}
+
+#-------------------------------------------------------------------------------
+# Convert Source/*.c files (except cs_house.c)
+#-------------------------------------------------------------------------------
+
+# note that cs.h and cs_house.c are not included in this list
+my @src_files = ('cs_add.c', 'cs_amd.c', 'cs_chol.c', 'cs_cholsol.c',
+    'cs_counts.c', 'cs_cumsum.c', 'cs_dfs.c', 'cs_dmperm.c', 'cs_droptol.c',
+    'cs_dropzeros.c', 'cs_dupl.c', 'cs_entry.c', 'cs_etree.c', 'cs_fkeep.c',
+    'cs_gaxpy.c', 'cs_happly.c', 'cs_ipvec.c', 'cs_load.c', 'cs_lsolve.c',
+    'cs_ltsolve.c', 'cs_lu.c', 'cs_lusol.c', 'cs_malloc.c', 'cs_maxtrans.c',
+    'cs_multiply.c', 'cs_norm.c', 'cs_permute.c', 'cs_pinv.c', 'cs_post.c',
+    'cs_print.c', 'cs_pvec.c', 'cs_qr.c', 'cs_qrsol.c', 'cs_scatter.c',
+    'cs_scc.c', 'cs_schol.c', 'cs_sqr.c', 'cs_symperm.c', 'cs_tdfs.c',
+    'cs_transpose.c', 'cs_compress.c', 'cs_updown.c', 'cs_usolve.c',
+    'cs_util.c', 'cs_utsolve.c', 'cs_reach.c', 'cs_spsolve.c',
+    'cs_leaf.c', 'cs_ereach.c', 'cs_randperm.c' ) ;
+
+foreach my $file ( @src_files )
+{
+    my $infile  = sprintf ("%s/Source/%s", $in_dir, $file) ;
+    my $outfile = sprintf ("%s/Source/%s", $out_dir, $file) ;
+    my $fbase = basename($file,('.c'));
+
+    if (open(OUT,">$outfile"))
+    {
+	if (open(IN,$infile))
+	{
+	    my $qrsol_beta_seen = 0;
+	    while (<IN>)
+	    {
+
+		# change the name of the package (for cs_print.c)
+		s/CSparse/CXSparse/g;
+
+		# fabs becomes CS_ABS
+		s/fabs/CS_ABS/g;
+
+		# change int to CS_INT
+		s/\bint\b/CS_INT/g;
+
+		# change %d to "CS_ID" in printf and scanf (except version #'s)
+		s/\%d/"CS_ID"/g;
+		s/"CS_ID"\."CS_ID"\."CS_ID"/%d.%d.%d/;
+
+		# change double to CS_ENTRY
+		s/\bdouble\b/CS_ENTRY/g;
+
+		# (double) and (double *) typecasts stay double,
+		# tol and vnz for cs_vcount stays double
+		s/\(CS_ENTRY\) /(double) /g;
+		s/\(CS_ENTRY \*\) /(double \*) /;
+		s/CS_ENTRY tol/double tol/;
+		s/CS_ENTRY \*vnz/double \*vnz/;
+
+		# local variable declarations that stay double
+		s/,  / ;\n    double / ;
+
+		#---------------------------------------------------------------
+		# Special cases.  Some undo changes made above.
+		#---------------------------------------------------------------
+
+		# cs_chol
+		if ($fbase =~ /cs_chol/)
+		{
+		    s/\(d <= 0\)/(CS_REAL (d) <= 0 || CS_IMAG (d) != 0)\n\t   /;
+		    s/lki \* lki/lki * CS_CONJ (lki)/;
+		}
+
+		# cs_norm
+		if ($fbase =~ /cs_norm/)
+		{
+		    s/^CS_ENTRY cs_norm/double cs_norm/;
+		}
+
+		# cs_cumsum
+		if ($fbase =~ /cs_cumsum/)
+		{
+		    s/^CS_ENTRY cs_cumsum/double cs_cumsum/;
+		}
+
+		# cs_transpose
+		if ($fbase =~ /cs_transpose/)
+		{
+		    s/Ax \[p\]/(values > 0) ? CS_CONJ (Ax [p]) : Ax [p]/;
+		}
+
+		# cs_updown
+		if ($fbase =~ /cs_updown/)
+		{
+		    s/beta\*beta/beta*CS_CONJ(beta)/ ;
+		    s/alpha\*alpha/alpha*CS_CONJ(alpha)/ ;
+		}
+
+		# cs_qrsol
+		if ($fbase =~ /cs_qrsol/)
+		{
+		    if ($qrsol_beta_seen ne 0)
+		    {
+			s/(N->B \[k\])/CS_CONJ ($1)/;
+		    }
+		    else
+		    {
+			if (/N->B \[k\]/)
+			{
+			    $qrsol_beta_seen = 1;
+			}
+		    }
+		}
+
+		# cs_happly
+		if ($fbase =~ /cs_happly/)
+		{
+		    s/^(.*tau.*)(Vx\s*\[p\])/$1CS_CONJ ($2)/;
+		}
+
+		# cs_ltsolve
+		if ($fbase =~ /cs_ltsolve/)
+		{
+		    s/(Lx \[.*?\])(\s+[\*;])/CS_CONJ ($1)$2/;
+		}
+
+		# cs_utsolve
+		if ($fbase =~ /cs_utsolve/)
+		{
+		    s/(Ux \[.*?\])(\s+[\*;])/CS_CONJ ($1)$2/;
+		}
+
+		# cs_load
+		if ($fbase =~ /cs_load/)
+		{
+		    s/CS_ENTRY x ;/double x ;\n#ifdef CS_COMPLEX\n    double xi ;\n#endif/ ;
+		    s/^(\s*while.*)%lg(.*)&x\) == 3(.*)$/#ifdef CS_COMPLEX\n$1%lg %lg$2&x, &xi) == 4$3\n#else\n$1%lg$2&x) == 3$3\n#endif/;
+		    s/(.*cs_entry.*), x(.*)$/#ifdef CS_COMPLEX\n$1, x + xi*I$2\n#else\n$1, x$2\n#endif/
+		}
+
+		# cs_print
+		if ($fbase =~ /cs_print/)
+		{
+		    s/^(.*)%g(.*)Ax\s*\?\s*Ax\s*\[p\]\s*:\s*1(.*)/#ifdef CS_COMPLEX\n$1(%g, %g)$2\n\t\t    Ax ? CS_REAL (Ax [p]) : 1, Ax ? CS_IMAG (Ax [p]) : 0$3\n#else\n$1%g$2Ax ? Ax [p] : 1$3\n#endif/;
+		}
+
+		print OUT $_;
+	    }
+	    close (IN);
+	}
+	close (OUT);
+    }
+}

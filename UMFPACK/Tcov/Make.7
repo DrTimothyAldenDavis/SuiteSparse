@@ -1,0 +1,18 @@
+#===============================================================================
+# ILP32 mode, no BLAS, test for integer overflow.  No divide by zero
+#===============================================================================
+
+CC = gcc
+CFLAGS = -O0 -ftest-coverage -fprofile-arcs -O0
+UMFPACK_CONFIG = -DNBLAS -DTEST_FOR_INTEGER_OVERFLOW -DTESTING -DNO_DIVIDE_BY_ZERO
+LIB = -lm 
+
+RANLIB = ranlib
+MV = mv -f
+RM = rm -f
+MEX = mex -inline -g
+AR = ar cr
+
+#===============================================================================
+
+CLEAN = *.o *.obj *.ln *.bb *.bbg *.da *.c.tcov *.c.gcov gmon.out

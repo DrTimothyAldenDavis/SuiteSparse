@@ -1,0 +1,5 @@
+Apr 30, 2006:
+
+    * minor editing of comments.  dmperm.c moved to MATLAB directory, since
+	it requires MATLAB.  Version number not changed.
+
