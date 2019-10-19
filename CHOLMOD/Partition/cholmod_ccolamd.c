@@ -5,9 +5,6 @@
 /* -----------------------------------------------------------------------------
  * CHOLMOD/Partition Module. 
  * Copyright (C) 2005-2013, Univ. of Florida.  Author: Timothy A. Davis
- * The CHOLMOD/Partition Module is licensed under Version 2.1 of the GNU
- * Lesser General Public License.  See lesser.txt for a text of the license.
- * CHOLMOD is also available under other licenses; contact authors for details.
  * -------------------------------------------------------------------------- */
 
 /* CHOLMOD interface to the CCOLAMD ordering routine.  Finds a permutation

@@ -1,3 +1,11 @@
+May 4, 2016: version 5.7.6
+
+    * minor changes to Makefile
+
+Apr 1, 2016: version 5.7.5
+
+    * licensing simplified (no other change); refer to UMFPACK/Doc/License.txt
+
 Feb 1, 2016: version 5.7.4
 
     * update to Makefiles
@@ -58,7 +66,7 @@ Nov 30, 2009, version 5.5.0
         search for singletons can slow UMFPACK down quite a bit for some
         matrices, but it does ensure that L is well-conditioned and that
         any ill-conditioning of A is captured only in U.
-    * removed UMFPACK/MATLAB/GNUmakefile and UMFPACK/MATLAB/Makefile;
+    * removed UMFPACK/MATLAB/ makefiles
         to compile the UMFPACK mexFunction, use umfpack_make.m in MATLAB.
     * added "make install" and "make uninstall"
 
@@ -83,7 +91,7 @@ Sept 22, 2008
 
 Nov 1, 2007, version 5.2.0
 
-    * change of license to GNU GPL from GNU LGPL.  This is the primary change to
+    * change of default license.  This is the primary change to
 	this version.
 
     * minor lint cleanup
@@ -99,7 +107,7 @@ May 31, 2007, version 5.1.0
     * Makefiles updated to reflect directory changes to AMD (UMFPACK v5.1.0
 	requires AMD v2.2.0)
 
-    * Source/Makefile and GNUMakefile moved to Lib/
+    * Makefiles moved to Lib/
 
 Dec 12, 2006: version 5.0.3
 
@@ -135,7 +143,7 @@ May 5, 2006, version 5.0
 Apr 7, 2006
 
     * Minor correction to UMFPACK/Source/Makefile, for those who
-	do not have GNU make.  No change to version number, because
+	a basic 'make' command.  No change to version number, because
 	no code was modified.
 
 Oct 10, 2005, version 4.6
@@ -151,7 +159,7 @@ Oct 10, 2005, version 4.6
 
 Aug. 30, 2005: v4.5 released
 
-    * License changed to GNU LGPL.
+    * default License changed
 
     * The Make/ directory removed; configurations are now in ../UFconfig.
 
@@ -319,7 +327,7 @@ May 6, 2003:  V4.1 released.
     * pivot tolerance of zero treated differently.  symmetric pivot tolerance
 	added.
 
-    * Makefile and GNUmakefile changed.  umf_* routines with no double or
+    * Makefiles changed.  umf_* routines with no double or
 	complex values are now compiled just twice (int and long versions)
 	rather than 4 times.
 
@@ -353,7 +361,7 @@ Mar 9, 2002:  V4.0beta released
 
 Feb 21, 2002:
 
-    * User Guide explains the Makefile vs. GNUmakefile
+    * User Guide explains the two Makefiles
 
     * umf_config.h modified, so that the complex SCSL C-BLAS uses
 	(void *) arguments instead of (scsl_zomplex *).  gcc generates

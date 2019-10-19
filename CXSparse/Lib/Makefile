@@ -3,7 +3,7 @@
 #-------------------------------------------------------------------------------
 
 LIBRARY = libcxsparse
-VERSION = 3.1.7
+VERSION = 3.1.9
 SO_VERSION = 3
 
 default: library
@@ -97,6 +97,8 @@ cs_convert.o: ../Source/cs_convert.c
 
 %_cl.o : ../Source/%.c
 	$(CC) $(CF) $(I) -DCS_LONG -DCS_COMPLEX -c $< -o $@
+
+static: $(AR_TARGET)
 
 $(AR_TARGET): $(CS)
 	$(ARCHIVE) $@ $^

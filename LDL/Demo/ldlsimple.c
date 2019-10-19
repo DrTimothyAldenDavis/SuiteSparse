@@ -27,7 +27,7 @@
  * than or equal to lnz = Lp [N], which is 13 for this matrix L.
  *
  * Copyright (c) 2006 by Timothy A Davis, http://www.suitesparse.com.
- * All Rights Reserved.  See README for the License.
+ * All Rights Reserved.  See LDL/Doc/License.txt for the License.
  */
 
 #include <stdio.h>

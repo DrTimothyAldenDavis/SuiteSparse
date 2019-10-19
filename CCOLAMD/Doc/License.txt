@@ -1,21 +1,17 @@
-CHOLMOD/Partition Module.
-Copyright (C) 2005-2006, Univ. of Florida.  Author: Timothy A. Davis
-CHOLMOD is also available under other licenses; contact authors for details.
+CCOLAMD: constrained column approximate minimum degree ordering
+Copyright (C) 2005-2016, Univ. of Florida.  Authors: Timothy A. Davis,
+Sivasankaran Rajamanickam, and Stefan Larimore.  Closely based on COLAMD by
+Davis, Stefan Larimore, in collaboration with Esmond Ng, and John Gilbert.
 http://www.suitesparse.com
-
-Note that this license is for the CHOLMOD/Partition module only.
-All CHOLMOD modules are licensed separately.
-
 
 --------------------------------------------------------------------------------
 
-
-This Module is free software; you can redistribute it and/or
+CCOLAMD is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
 version 2.1 of the License, or (at your option) any later version.
 
-This Module is distributed in the hope that it will be useful,
+CCOLAMD is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 Lesser General Public License for more details.

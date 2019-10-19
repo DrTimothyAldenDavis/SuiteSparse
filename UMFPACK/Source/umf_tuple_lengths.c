@@ -4,7 +4,7 @@
 
 /* -------------------------------------------------------------------------- */
 /* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License for License.                      */
+/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
 /* -------------------------------------------------------------------------- */
 
 /* Determine the tuple list lengths, and the amount of memory required for */

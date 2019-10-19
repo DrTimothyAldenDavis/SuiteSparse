@@ -1,7 +1,15 @@
+May 4, 2016: version 2.0.7
+
+    * minor changes to Makefile
+
+Apr 1, 2016: version 2.0.6
+
+    * licensing simplified (no other change); refer to SPQR/Doc/License.txt
+
 Feb 1, 2016: version 2.0.5
 
     * update to Makefiles
-    * better error handling when -DNGPL is used in CHOLMOD.
+    * better error handling when only some modules are used in CHOLMOD.
 	SuiteSparseQR requires the CHOLMOD/Supernodal module.  This is now
 	checked both at compile time and at run time.
 

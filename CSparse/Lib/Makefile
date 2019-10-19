@@ -41,6 +41,8 @@ $(CS): ../Include/cs.h Makefile
 %.o: ../Source/%.c ../Include/cs.h
 	$(CC) $(CF) $(I) -c $<
 
+static: $(AR_TARGET)
+
 $(AR_TARGET): $(CS)
 	$(ARCHIVE)  $@ $^
 	- $(RANLIB) $@

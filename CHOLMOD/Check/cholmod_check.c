@@ -4,9 +4,6 @@
 
 /* -----------------------------------------------------------------------------
  * CHOLMOD/Check Module.  Copyright (C) 2005-2013, Timothy A. Davis
- * The CHOLMOD/Check Module is licensed under Version 2.1 of the GNU
- * Lesser General Public License.  See lesser.txt for a text of the license.
- * CHOLMOD is also available under other licenses; contact authors for details.
  * -------------------------------------------------------------------------- */
 
 /* Routines to check and print the contents of the 5 CHOLMOD objects:

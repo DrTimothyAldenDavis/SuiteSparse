@@ -254,11 +254,11 @@ SuiteSparse_long btf_l_order (SuiteSparse_long, SuiteSparse_long *,
  *      #endif
  */
 
-#define BTF_DATE "Feb 1, 2016"
+#define BTF_DATE "May 4, 2016"
 #define BTF_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
 #define BTF_MAIN_VERSION 1
 #define BTF_SUB_VERSION 2
-#define BTF_SUBSUB_VERSION 4
+#define BTF_SUBSUB_VERSION 6
 #define BTF_VERSION BTF_VERSION_CODE(BTF_MAIN_VERSION,BTF_SUB_VERSION)
 
 #ifdef __cplusplus

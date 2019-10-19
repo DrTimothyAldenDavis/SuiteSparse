@@ -1,5 +1,5 @@
-2650
-03-Dec-2012 16:02:06
+2757
+03-Jun-2015 15:41:38
 HB,1138_bus,1138,1138,4054,1,0,0,1,1,1,power network problem
 HB,494_bus,494,494,1666,1,0,0,1,1,1,power network problem
 HB,662_bus,662,662,2474,1,0,0,1,1,1,power network problem
@@ -1477,7 +1477,7 @@ Pajek,football,35,35,118,1,0,0,0,0,0,directed weighted graph
 Pajek,GD00_a,352,352,458,1,1,0,0,0,0,directed graph
 Pajek,GD00_c,638,638,1041,1,0,0,0,0.02133850630455868,0.01551891367604268,directed multigraph
 Pajek,GD01_a,311,311,645,1,0,0,0,0.01550387596899225,0.01550387596899225,directed weighted graph
-Pajek,GD01_A,953,953,645,1,0,0,0,0.01550387596899225,0.01550387596899225,directed multigraph
+Pajek,GD01_Acap,953,953,645,1,0,0,0,0.01550387596899225,0.01550387596899225,directed multigraph
 Pajek,GD01_b,18,18,37,1,1,0,0,0.5142857142857142,0.5142857142857142,directed graph
 Pajek,GD01_c,33,33,135,1,0,0,0,0,0,directed multigraph
 Pajek,GD02_a,23,23,87,1,1,0,0,0.6436781609195402,0.6436781609195402,directed graph
@@ -2650,3 +2650,110 @@ Janna,CoupCons3D,416800,416800,17277420,1,0,1,0,1,0.008881642549324996,structura
 Janna,ML_Laplace,377002,377002,27582698,1,0,1,0,1,7.351401706466176e-08,structural problem
 Janna,Transport,1602111,1602111,23487281,1,0,1,0,1,0,structural problem
 Janna,ML_Geer,1504002,1504002,110686677,1,0,1,0,1,2.381330188145693e-07,structural problem
+ANSYS,Delor64K,64719,1785345,652140,1,0,0,0,0,0,least squares problem
+ANSYS,Delor295K,295734,1823928,2401323,1,0,0,0,0,0,least squares problem
+ANSYS,Delor338K,343236,887058,4211599,1,0,0,0,0,0,least squares problem
+Sorensen,Linux_call_graph,324085,324085,1208908,1,0,0,0,0.0006324084497715383,0.0006125422157473015,directed weighted graph
+LeGresley,LeGresley_2508,2508,2508,16727,1,0,0,0,0.8376116463886349,0.2557141852450946,power network problem
+LeGresley,LeGresley_4908,4908,4908,30482,1,0,0,0,0.9773607038123168,0.02995112414467253,power network problem
+LeGresley,LeGresley_87936,87936,87936,593276,1,0,0,0,0.9792020608292309,0.03427471928313486,power network problem
+Brogan,specular,477976,1600,7647040,1,0,1,0,0,0,computer vision problem
+Janna,Bump_2911,2911419,2911419,127729899,1,0,1,1,1,1,2D/3D problem
+Janna,Queen_4147,4147110,4147110,316548962,1,0,1,1,1,1,2D/3D problem
+Janna,PFlow_742,742793,742793,37138461,1,0,1,1,1,1,2D/3D problem
+Freescale,Freescale2,2999349,2999349,14313235,1,0,0,0,0.9853083953765489,0.5600838032920651,circuit simulation matrix
+Moqri,MISKnowledgeMap,2427,2427,57022,1,0,0,0,1,1,undirected weighted graph
+Mazaheri,bundle_adj,513351,513351,20207907,1,0,1,1,1,1,computer vision problem
+VDOL,dynamicSoaringProblem_1,647,647,5367,1,0,0,0,1,1,optimal control problem
+VDOL,dynamicSoaringProblem_2,1591,1591,15588,1,0,0,0,1,1,optimal control problem
+VDOL,dynamicSoaringProblem_3,2871,2871,32022,1,0,0,0,1,1,optimal control problem
+VDOL,dynamicSoaringProblem_4,3191,3191,36516,1,0,0,0,1,1,optimal control problem
+VDOL,dynamicSoaringProblem_5,3271,3271,36789,1,0,0,0,1,1,optimal control problem
+VDOL,dynamicSoaringProblem_6,3431,3431,36741,1,0,0,0,1,1,optimal control problem
+VDOL,dynamicSoaringProblem_7,3511,3511,37680,1,0,0,0,1,1,optimal control problem
+VDOL,dynamicSoaringProblem_8,3543,3543,38136,1,0,0,0,1,1,optimal control problem
+VDOL,freeFlyingRobot_1,798,798,5246,1,0,0,0,1,1,optimal control problem
+VDOL,freeFlyingRobot_2,1338,1338,11600,1,0,0,0,1,1,optimal control problem
+VDOL,freeFlyingRobot_3,1718,1718,12922,1,0,0,0,1,1,optimal control problem
+VDOL,freeFlyingRobot_4,2358,2358,18218,1,0,0,0,1,1,optimal control problem
+VDOL,freeFlyingRobot_5,2878,2878,24582,1,0,0,0,1,1,optimal control problem
+VDOL,freeFlyingRobot_6,3358,3358,27030,1,0,0,0,1,1,optimal control problem
+VDOL,freeFlyingRobot_7,3918,3918,31046,1,0,0,0,1,1,optimal control problem
+VDOL,freeFlyingRobot_8,4398,4398,34958,1,0,0,0,1,1,optimal control problem
+VDOL,freeFlyingRobot_9,4778,4778,39964,1,0,0,0,1,1,optimal control problem
+VDOL,freeFlyingRobot_10,5218,5218,40080,1,0,0,0,1,1,optimal control problem
+VDOL,freeFlyingRobot_11,5438,5438,40054,1,0,0,0,1,1,optimal control problem
+VDOL,freeFlyingRobot_12,5578,5578,41940,1,0,0,0,1,1,optimal control problem
+VDOL,freeFlyingRobot_13,5718,5718,43994,1,0,0,0,1,1,optimal control problem
+VDOL,freeFlyingRobot_14,5958,5958,43298,1,0,0,0,1,1,optimal control problem
+VDOL,freeFlyingRobot_15,6038,6038,43378,1,0,0,0,1,1,optimal control problem
+VDOL,freeFlyingRobot_16,6078,6078,44006,1,0,0,0,1,1,optimal control problem
+VDOL,goddardRocketProblem_1,831,831,8498,1,0,0,0,1,1,optimal control problem
+VDOL,goddardRocketProblem_2,867,867,9058,1,0,0,0,1,1,optimal control problem
+VDOL,hangGlider_1,360,360,3477,1,0,0,0,1,1,optimal control problem
+VDOL,hangGlider_2,1647,1647,14754,1,0,0,0,1,1,optimal control problem
+VDOL,hangGlider_3,10260,10260,92703,1,0,0,0,1,1,optimal control problem
+VDOL,hangGlider_4,15561,15561,149532,1,0,0,0,1,1,optimal control problem
+VDOL,hangGlider_5,16011,16011,155246,1,0,0,0,1,1,optimal control problem
+VDOL,kineticBatchReactor_1,2052,2052,20600,1,0,0,0,1,1,optimal control problem
+VDOL,kineticBatchReactor_2,4361,4361,44840,1,0,0,0,1,1,optimal control problem
+VDOL,kineticBatchReactor_3,5082,5082,53219,1,0,0,0,1,1,optimal control problem
+VDOL,kineticBatchReactor_4,7105,7105,74869,1,0,0,0,1,1,optimal control problem
+VDOL,kineticBatchReactor_5,7641,7641,80767,1,0,0,0,1,1,optimal control problem
+VDOL,kineticBatchReactor_6,7773,7773,82500,1,0,0,0,1,1,optimal control problem
+VDOL,kineticBatchReactor_7,7968,7968,84508,1,0,0,0,1,1,optimal control problem
+VDOL,kineticBatchReactor_8,8052,8052,85194,1,0,0,0,1,1,optimal control problem
+VDOL,kineticBatchReactor_9,8115,8115,86183,1,0,0,0,1,1,optimal control problem
+VDOL,lowThrust_1,584,584,6133,1,0,0,0,1,1,optimal control problem
+VDOL,lowThrust_2,2312,2312,26261,1,0,0,0,1,1,optimal control problem
+VDOL,lowThrust_3,7064,7064,80645,1,0,0,0,1,1,optimal control problem
+VDOL,lowThrust_4,13562,13562,160947,1,0,0,0,1,1,optimal control problem
+VDOL,lowThrust_5,16262,16262,198369,1,0,0,0,1,1,optimal control problem
+VDOL,lowThrust_6,16928,16928,207349,1,0,0,0,1,1,optimal control problem
+VDOL,lowThrust_7,17378,17378,211561,1,0,0,0,1,1,optimal control problem
+VDOL,lowThrust_8,17702,17702,216445,1,0,0,0,1,1,optimal control problem
+VDOL,lowThrust_9,18044,18044,219589,1,0,0,0,1,1,optimal control problem
+VDOL,lowThrust_10,18260,18260,222005,1,0,0,0,1,1,optimal control problem
+VDOL,lowThrust_11,18368,18368,223801,1,0,0,0,1,1,optimal control problem
+VDOL,lowThrust_12,18458,18458,224593,1,0,0,0,1,1,optimal control problem
+VDOL,lowThrust_13,18476,18476,224897,1,0,0,0,1,1,optimal control problem
+VDOL,orbitRaising_1,442,442,2906,1,0,0,0,1,1,optimal control problem
+VDOL,orbitRaising_2,739,739,6526,1,0,0,0,1,1,optimal control problem
+VDOL,orbitRaising_3,761,761,6098,1,0,0,0,1,1,optimal control problem
+VDOL,orbitRaising_4,915,915,7790,1,0,0,0,1,1,optimal control problem
+VDOL,reorientation_1,677,677,7326,1,0,0,0,1,1,optimal control problem
+VDOL,reorientation_2,1544,1544,17910,1,0,0,0,1,1,optimal control problem
+VDOL,reorientation_3,2513,2513,32166,1,0,0,0,1,1,optimal control problem
+VDOL,reorientation_4,2717,2717,33630,1,0,0,0,1,1,optimal control problem
+VDOL,reorientation_5,2904,2904,35590,1,0,0,0,1,1,optimal control problem
+VDOL,reorientation_6,3006,3006,37342,1,0,0,0,1,1,optimal control problem
+VDOL,reorientation_7,3057,3057,37150,1,0,0,0,1,1,optimal control problem
+VDOL,reorientation_8,3108,3108,37894,1,0,0,0,1,1,optimal control problem
+VDOL,spaceShuttleEntry_1,560,560,6891,1,0,0,0,1,1,optimal control problem
+VDOL,spaceShuttleEntry_2,1428,1428,24073,1,0,0,0,1,1,optimal control problem
+VDOL,spaceShuttleEntry_3,1834,1834,28757,1,0,0,0,1,1,optimal control problem
+VDOL,spaceShuttleEntry_4,2450,2450,39669,1,0,0,0,1,1,optimal control problem
+VDOL,spaceStation_1,99,99,927,1,0,0,0,1,1,optimal control problem
+VDOL,spaceStation_2,329,329,5817,1,0,0,0,1,1,optimal control problem
+VDOL,spaceStation_3,467,467,5103,1,0,0,0,1,1,optimal control problem
+VDOL,spaceStation_4,950,950,13626,1,0,0,0,1,1,optimal control problem
+VDOL,spaceStation_5,1019,1019,15219,1,0,0,0,1,1,optimal control problem
+VDOL,spaceStation_6,1111,1111,17595,1,0,0,0,1,1,optimal control problem
+VDOL,spaceStation_7,1134,1134,18252,1,0,0,0,1,1,optimal control problem
+VDOL,spaceStation_8,1157,1157,18945,1,0,0,0,1,1,optimal control problem
+VDOL,spaceStation_9,1180,1180,19674,1,0,0,0,1,1,optimal control problem
+VDOL,spaceStation_10,1272,1272,17478,1,0,0,0,1,1,optimal control problem
+VDOL,spaceStation_11,1364,1364,18954,1,0,0,0,1,1,optimal control problem
+VDOL,spaceStation_12,1410,1410,19728,1,0,0,0,1,1,optimal control problem
+VDOL,spaceStation_13,1617,1617,23649,1,0,0,0,1,1,optimal control problem
+VDOL,spaceStation_14,1640,1640,24324,1,0,0,0,1,1,optimal control problem
+VDOL,tumorAntiAngiogenesis_1,205,205,1783,1,0,0,0,1,1,optimal control problem
+VDOL,tumorAntiAngiogenesis_2,305,305,2699,1,0,0,0,1,1,optimal control problem
+VDOL,tumorAntiAngiogenesis_3,410,410,3952,1,0,0,0,1,1,optimal control problem
+VDOL,tumorAntiAngiogenesis_4,455,455,4593,1,0,0,0,1,1,optimal control problem
+VDOL,tumorAntiAngiogenesis_5,460,460,4690,1,0,0,0,1,1,optimal control problem
+VDOL,tumorAntiAngiogenesis_6,465,465,4795,1,0,0,0,1,1,optimal control problem
+VDOL,tumorAntiAngiogenesis_7,475,475,4597,1,0,0,0,1,1,optimal control problem
+VDOL,tumorAntiAngiogenesis_8,490,490,4776,1,0,0,0,1,1,optimal control problem
+Meng,iChem_Jacobian,274087,274087,4137369,0,0,0,0,0.9801722990969854,0.6457048695901567,computational chemistry problem
+Harvard_Seismology,JP,87616,67320,13734559,1,0,0,0,0,0,tomography problem

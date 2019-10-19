@@ -52,7 +52,7 @@
  * columns of L and D.  The rest of L and D are zero.
  *
  * Copyright (c) by Timothy A Davis, http://www.suitesparse.com.
- * All Rights Reserved.  See README for the License.
+ * All Rights Reserved.  See LDL/Doc/License.txt for the License.
  */
 
 #ifndef LDL_LONG

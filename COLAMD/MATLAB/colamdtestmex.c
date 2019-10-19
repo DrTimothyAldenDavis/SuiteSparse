@@ -38,7 +38,7 @@
     Notice:
 
 	Copyright (c) 1998-2007, Timothy A. Davis, All Rights Reserved.
-	See the colamd.c file for the License.
+	See COLAMD/Doc/License.txt for the License.
 
     Availability:
 

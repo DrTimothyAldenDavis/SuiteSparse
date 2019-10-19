@@ -11,6 +11,10 @@ all: C cov
 library:
 	( cd Lib ; $(MAKE) )
 
+# compile the static libraries only
+static:
+	( cd Lib    ; $(MAKE) static )
+
 cov:
 	( cd Tcov ; $(MAKE) )
 

@@ -1,7 +1,7 @@
-CAMD version 2.4, date: Feb 1, 2016
+CAMD version 2.4, date: May 4, 2016
 CAMD demo, with the 24-by-24 Harwell/Boeing matrix, can_24:
 
-camd version 2.4, Feb 1, 2016:  approximate minimum degree ordering:
+camd version 2.4, May 4, 2016:  approximate minimum degree ordering:
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -115,7 +115,7 @@ Plot of input matrix pattern:
 23:  . . . . . . X . . . . X X . . . . . . . . . . X
 return value from camd_l_order: 0 (should be 0)
 
-CAMD version 2.4.4, Feb 1, 2016, results:
+CAMD version 2.4.6, May 4, 2016, results:
     status: OK
     n, dimension of A:                                  24
     nz, number of nonzeros in A:                        160

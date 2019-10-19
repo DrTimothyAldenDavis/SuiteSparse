@@ -18,6 +18,10 @@ all:
 library:
 	( cd Lib ; $(MAKE) )
 
+# compile the static libraries only
+static:
+	( cd Lib    ; $(MAKE) static )
+
 # Remove all files not in the original distribution
 purge:
 	( cd Tcov ; $(MAKE) purge )

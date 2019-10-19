@@ -82,7 +82,6 @@ Files and directories:
 ./Doc: directory with additional documentation and license
 
     ChangeLog	    changes since first release
-    gpl.txt	    GNU license
     License.txt	    license
 
 ./Demo: C demo program

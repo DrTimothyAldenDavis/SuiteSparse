@@ -14,9 +14,3 @@
 %   lintests ;              % test linfactor with various kinds of systems
 
 % Copyright 2008, Timothy A. Davis, http://www.suitesparse.com
-%
-% License: this software is free for any use.  No warranty included or implied.
-% You must agree to only one condition to use this software: you must be aware
-% that you have been told that using inv(A) is a horrible, awful, and absoluty
-% abysmal method for solving a linear system of equations.  If you do not
-% agree to this condition, you must delete this software.

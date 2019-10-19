@@ -1,3 +1,11 @@
+May 4, 2016: version 2.2.6
+
+    * minor changes to Makefile
+
+Apr 1, 2016: version 2.2.5
+
+    * licensing simplified (no other change); refer to LDL/Doc/License.txt
+
 Feb 1, 2016: version 2.2.4
 
     * update to Makefiles
@@ -60,8 +68,7 @@ Apr 30, 2006:  version 1.3
 
 Aug 30, 2005:
 
-    * Makefile changed to use ../UFconfig/UFconfig.mk.  License changed to
-	GNU LGPL.
+    * Makefile changed to use ../UFconfig/UFconfig.mk.  default license changed
 
 July 4, 2005:
 

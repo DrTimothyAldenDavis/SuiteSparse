@@ -27,35 +27,7 @@ Quick start (for MATLAB users);
 
 -------------------------------------------------------------------------------
 
-CAMD License:
-
-    Your use or distribution of CAMD or any modified version of
-    CAMD implies that you agree to this License.
-
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
-
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301
-    USA
-
-    Permission is hereby granted to use or copy this program under the
-    terms of the GNU LGPL, provided that the Copyright, this License,
-    and the Availability of the original version is retained on all copies.
-    User documentation of any code that uses this code or any modified
-    version of this code must cite the Copyright, this License, the
-    Availability note, and "Used by permission." Permission to modify
-    the code and to distribute modified code is granted, provided the
-    Copyright, this License, and the Availability note are retained,
-    and a notice that the code was modified is included.
+CAMD License: refer to CAMD/Doc/License.txt
 
 Availability:
 
@@ -110,7 +82,7 @@ Files and directories in the CAMD distribution:
     Files in the CAMD directory:
     ---------------------------------------------------------------------------
 
-    Makefile	top-level Makefile for GNU make or original make.
+    Makefile	top-level Makefile.
 		Windows users would require Cygwin to use "make"
 
     README.txt	this file
@@ -120,12 +92,11 @@ Files and directories in the CAMD distribution:
     ---------------------------------------------------------------------------
 
     ChangeLog			change log
-    License			the CAMD License
+    License.txt			the CAMD License
     Makefile			for creating the documentation
     CAMD_UserGuide.bib		CAMD User Guide (references)
     CAMD_UserGuide.tex		CAMD User Guide (LaTeX)
     CAMD_UserGuide.pdf		CAMD User Guide (PDF)
-    lesser.txt			the GNU LGPL license
 
     docdiff			tools for comparing CAMD with AMD
     cdiff
@@ -161,7 +132,7 @@ Files and directories in the CAMD distribution:
     Demo directory:
     ---------------------------------------------------------------------------
 
-    Makefile			for GNU make or original make
+    Makefile			to compile the demos
 
     camd_demo.c			C demo program for CAMD
     camd_demo.out		output of camd_demo.c
@@ -178,9 +149,6 @@ Files and directories in the CAMD distribution:
     ---------------------------------------------------------------------------
     MATLAB directory:
     ---------------------------------------------------------------------------
-
-    GNUmakefile			a nice Makefile, for GNU make
-    Makefile			an ugly Unix Makefile (for older make's)
 
     Contents.m			for "help camd" listing of toolbox contents
 

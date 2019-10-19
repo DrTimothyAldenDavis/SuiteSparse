@@ -4,8 +4,8 @@ c=======================================================================
 
 c-----------------------------------------------------------------------
 c UMFPACK Copyright (c) 2005-2012 by Timothy A. Davis,
-c http://www.suitesparse.com.  All Rights Reserved.  See ../Doc/License
-c for License.
+c http://www.suitesparse.com.  All Rights Reserved.
+c See ../Doc/License.txt for License.
 c-----------------------------------------------------------------------
 
 c umf4hb:

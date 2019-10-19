@@ -1,21 +1,14 @@
-CHOLMOD/Core Module.  Copyright (C) 2005-2006, Univ. of Florida.
-Author: Timothy A. Davis
-CHOLMOD is also available under other licenses; contact authors for details.
+COLAMD, Copyright 1998-2016, Timothy A. Davis.  http://www.suitesparse.com
 http://www.suitesparse.com
-
-Note that this license is for the CHOLMOD/Core module only.
-All CHOLMOD modules are licensed separately.
-
 
 --------------------------------------------------------------------------------
 
-
-This Module is free software; you can redistribute it and/or
+COLAMD is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
 version 2.1 of the License, or (at your option) any later version.
 
-This Module is distributed in the hope that it will be useful,
+COLAMD is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 Lesser General Public License for more details.

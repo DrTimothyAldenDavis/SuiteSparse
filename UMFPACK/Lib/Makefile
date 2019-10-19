@@ -1,9 +1,9 @@
 #-------------------------------------------------------------------------------
-# UMFPACK Makefile for compiling on Unix systems (for GNU Make)
+# UMFPACK Makefile for compiling on Unix systems
 #-------------------------------------------------------------------------------
 
 LIBRARY = libumfpack
-VERSION = 5.7.4
+VERSION = 5.7.6
 SO_VERSION = 5
 
 default: library
@@ -267,6 +267,8 @@ umfpack_gn_%.o: ../Source/umfpack_%.c $(INC)
 #-------------------------------------------------------------------------------
 
 OBJ = $(II) $(LL) $(GN) $(DI) $(DL) $(ZI) $(ZL)
+
+static: $(AR_TARGET)
 
 $(AR_TARGET): $(OBJ)
 	$(ARCHIVE) $@ $^

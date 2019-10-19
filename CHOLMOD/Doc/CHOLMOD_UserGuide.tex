@@ -21,7 +21,7 @@ DrTimothyAldenDavis@gmail.com, http://www.suitesparse.com }
 \title{User Guide for CHOLMOD: a sparse Cholesky factorization and
 modification package}
 
-\date{VERSION 3.0.9, Feb 1, 2016}
+\date{VERSION 3.0.11, May 4, 2016}
 \maketitle
 
 %-------------------------------------------------------------------------------
@@ -50,9 +50,9 @@ modification package}
 CHOLMOD Copyright\copyright 2005-2015 by Timothy A. Davis.  Portions are also
 copyrighted by William W. Hager (the {\tt Modify} Module),
 and the University of Florida (the {\tt Partition} and {\tt Core} Modules).
-All Rights Reserved.  Some of CHOLMOD's Modules are distributed under the GNU
-General Public License, and others under the GNU Lesser General Public License.
-Refer to each Module for details.
+All Rights Reserved.
+
+See CHOLMOD/Doc/License.txt for the license.
 CHOLMOD is also available under other licenses that permit its use in
 proprietary applications; contact the authors for details.
 See http://www.suitesparse.com for the code and all documentation,
@@ -322,29 +322,31 @@ their default values, do {\tt make config}.
 \noindent
 CHOLMOD's specific settings are given by the {\tt CHOLMOD\_CONFIG} string:
 \begin{itemize}
-\item {\tt -DNCHECK}:	    do not include the Check module.	   License: GNU LGPL.
-\item {\tt -DNCHOLESKY}:    do not include the Cholesky module.	   License: GNU LGPL.
+\item {\tt -DNCHECK}:	    do not include the Check module.
+\item {\tt -DNCHOLESKY}:    do not include the Cholesky module.
 \item {\tt -DNPARTITION}:   do not include the interface to METIS in
-the Partition module.   License: GNU LGPL.
-\item {\tt -DCAMD}:   do not include the interfaces to CAMD, CCOLAMD,
-and CSYMAMD in the Partition module.   License: GNU LGPL.
-\item {\tt -DNGPL}:	    do not include any GNU GPL Modules in the CHOLMOD library.
-Note that the Demo requires the MatrixOps module.
-\item {\tt -DNMATRIXOPS}:   do not include the MatrixOps module.   License: GNU GPL.
-Note that the Demo requires the MatrixOps module.
-\item {\tt -DNMODIFY}:	    do not include the Modify module.      License: GNU GPL.
-\item {\tt -DNSUPERNODAL}:  do not include the Supernodal module.  License: GNU GPL.
+                            the Partition module.
+\item {\tt -DCAMD}:         do not include the interfaces to CAMD, CCOLAMD,
+                            and CSYMAMD in the Partition module.
+\item {\tt -DNMATRIXOPS}:   do not include the MatrixOps module.
+                            Note that the Demo requires the MatrixOps module.
+\item {\tt -DNMODIFY}:	    do not include the Modify module.
+\item {\tt -DNSUPERNODAL}:  do not include the Supernodal module.
 \item {\tt -DNPRINT}:	    do not print anything.
 \item {\tt -D'LONGBLAS=long'} or {\tt -DLONGBLAS='long long'}
-			    defines the integers used by LAPACK and the BLAS (defaults to {\tt int}).
-\item {\tt -DNSUNPERF}:	    for Solaris only.  If defined, do not use the Sun Performance Library.
+			    defines the integers used by LAPACK
+                            and the BLAS (defaults to {\tt int}).
+\item {\tt -DNSUNPERF}:	    for Solaris only.  If defined, do not use the
+                            Sun Performance Library.
 \item {\tt -DNLARGEFILE}:   CHOLMOD now assumes support for large files (2GB or
-larger).  If this causes problems, you can compile CHOLMOD with -DNLARGEFILE.
-To use large files, you should {\tt \#include "cholmod.h"} (or at least
-{\tt \#include "cholmod\_io64.h"}) before any other {\tt \#include} statements,
-in your application that uses CHOLMOD.  You may need to use {\tt fopen64}
-to create a file pointer to pass to CHOLMOD, if you are using a non-gcc
-compiler.
+                            larger).  If this causes problems, you can compile
+                            CHOLMOD with -DNLARGEFILE.  To use large files, you
+                            should {\tt \#include "cholmod.h"} (or at least
+                            {\tt \#include "cholmod\_io64.h"}) before any other
+                            {\tt \#include} statements, in your application
+                            that uses CHOLMOD.  You may need to use {\tt
+                            fopen64} to create a file pointer to pass to
+                            CHOLMOD, if you are using a non-gcc compiler.
 \end{itemize}
 
 Type {\tt make} in the {\tt CHOLMOD} directory.  The AMD,
@@ -777,15 +779,6 @@ sub-directory (a folder for Windows users) within the CHOLMOD directory
     \item {\tt Tcov}: an exhaustive test coverage (requires Linux or Solaris)
     \item {\tt Valgrind}: runs the {\tt Tcov} test under {\tt valgrind} (requires Linux)
     \end{enumerate}
-
-The following Modules are licensed under the GNU Lesser General Public
-License: {\tt Check}, {\tt Cholesky}, {\tt Core}, and {\tt Partition}.
-The following Modules are licensed under the GNU General Public
-License: {\tt Demo}, {\tt Modify}, {\tt MatrixOps}, {\tt Supernodal},
-the {\tt MATLAB} Module (not MATLAB itself!), {\tt Tcov}, and {\tt Valgrind}.
-The files in the {\tt Include} Module are licensed according to
-their respective Modules.  The {\tt Lib} and {\tt Doc} Modules need
-no license; the compiled binaries are licensed the same as their source code.
 
 %-------------------------------------------------------------------------------
 \newpage \subsection{{\tt Core} Module: basic data structures and definitions}

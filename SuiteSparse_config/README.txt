@@ -8,6 +8,9 @@ compile with CUDA.
 
 For alternatives, see the comments in the SuiteSparse_config.mk file.
 
+License: No licensing restrictions apply to this file or to the
+SuiteSparse_config directory.
+
 --------------------------------------------------------------------------------
 
 SuiteSparse_config contains configuration settings for all many of the software

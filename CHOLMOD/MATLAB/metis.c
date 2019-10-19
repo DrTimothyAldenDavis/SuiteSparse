@@ -4,12 +4,9 @@
 
 /* -----------------------------------------------------------------------------
  * CHOLMOD/MATLAB Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * The CHOLMOD/MATLAB Module is licensed under Version 2.0 of the GNU
- * General Public License.  See gpl.txt for a text of the license.
- * CHOLMOD is also available under other licenses; contact authors for details.
  * http://www.suitesparse.com
  * MATLAB(tm) is a Trademark of The MathWorks, Inc.
- * METIS (Copyright 1998, G. Karypis) is not distributed with CHOLMOD.
+ * METIS is Copyrighted by G. Karypis
  * -------------------------------------------------------------------------- */
 
 /* Nested dissection using METIS_NodeND

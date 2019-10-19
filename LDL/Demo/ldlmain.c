@@ -34,7 +34,7 @@
  * command "ldlmain".
  *
  * Copyright (c) 2006 by Timothy A Davis, http://www.suitesparse.com.
- * All Rights Reserved.  See README for the License.
+ * All Rights Reserved.  See LDL/Doc/License.txt for the License.
  */
 
 #ifdef MATLAB_MEX_FILE

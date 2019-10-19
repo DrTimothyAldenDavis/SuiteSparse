@@ -1,11 +1,19 @@
+May 4, 2016: version 3.0.11
+
+    * minor changes to Makefile
+
+Apr 1, 2016: version 3.0.10
+
+    * licensing simplified (no other change); refer to CHOLMOD/Doc/License.txt
+
 Feb 1, 2016: version 3.0.9
 
     * update to Makefiles
     * minor change to CHOLMOD/Check/cholmod_write.c, when compiling with
-	-DNGPL
+	certain modules disabled.
     * more verbose error reporting
-    * Demos now compile with -DNGPL, but they don't compute all residuals
-	(requires the GPL CHOLMOD/MatrixOps package)
+    * Demos now compile with MatrixOps module disabled, but they don't
+        compute all residuals (requires the CHOLMOD/MatrixOps package)
 
 Jan 30, 2016: version 3.0.8
 
@@ -21,8 +29,8 @@ Jan 1, 2016: version 3.0.7
 
 July 14, 2015: version 3.0.6
 
-    * NGPL did not disable MatrixOps, Modify, and Supernodal modules,
-        contradicting its definition in the User Guide.  Fixed in this release.
+    * disabling of MatrixOps, Modify, and Supernodal modules didn't work
+        properly.
     * added MATLAB interface for row add/delete (lurowmod mexFunction)
 
 Jan 19, 2015: version 3.0.5

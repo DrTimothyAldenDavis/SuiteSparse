@@ -5,10 +5,6 @@
 /* -----------------------------------------------------------------------------
  * CHOLMOD/Include/cholmod_gpu.h.
  * Copyright (C) 2014, Timothy A. Davis
- * CHOLMOD/Include/cholmod_gpu.h and the CHOLMOD GPU Module are licensed under
- * Version 2.0 of the GNU General Public License.  See gpl.txt for a text of
- * the license.  CHOLMOD is also available under other licenses; contact
- * authors for details.
  * http://www.suitesparse.com
  * -------------------------------------------------------------------------- */
 

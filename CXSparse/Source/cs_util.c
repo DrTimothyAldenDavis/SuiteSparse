@@ -20,6 +20,7 @@ CS_INT cs_sprealloc (cs *A, CS_INT nzmax)
     CS_INT ok, oki, okj = 1, okx = 1 ;
     if (!A) return (0) ;
     if (nzmax <= 0) nzmax = (CS_CSC (A)) ? (A->p [A->n]) : A->nz ;
+    nzmax = CS_MAX (nzmax, 1) ;
     A->i = cs_realloc (A->i, nzmax, sizeof (CS_INT), &oki) ;
     if (CS_TRIPLET (A)) A->p = cs_realloc (A->p, nzmax, sizeof (CS_INT), &okj) ;
     if (A->x) A->x = cs_realloc (A->x, nzmax, sizeof (CS_ENTRY), &okx) ;

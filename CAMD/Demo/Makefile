@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# compile the CAMD demo (for both GNU make or original make)
+# compile the CAMD demo
 #-----------------------------------------------------------------------------
 
 default: camd_simple camd_demo camd_demo2 camd_l_demo

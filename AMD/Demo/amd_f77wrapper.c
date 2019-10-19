@@ -21,14 +21,6 @@
  * after each routine name.  C doesn't do this, so the translation is made
  * here.  Some Fortran compilers don't append an underscore (xlf on IBM AIX,
  * for * example).
- *
- * Tested with the following compilers:
- * Solaris with cc and f77 from Sun WorkShop 6 update 1.
- * SGI Irix with MIPSpro cc and f77 compilers version 7.4
- * Linux with GNU gcc or Intel's icc, and GNU g77 Intel's ifc Fortran compiler.
- *	(any combination).  Note that with g77, a call to amd_order in Fortran
- *	gets translated to a call to amd_order__, with two underscores ("_").
- *	Thus, the Fortran names do not include an underscore.
  */
 
 #include "amd.h"

@@ -1,7 +1,7 @@
-AMD version 2.4.4, date: Feb 1, 2016
+AMD version 2.4.6, date: May 4, 2016
 AMD demo, with the 24-by-24 Harwell/Boeing matrix, can_24:
 
-AMD version 2.4.4, Feb 1, 2016: approximate minimum degree ordering
+AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -115,7 +115,7 @@ Plot of input matrix pattern:
 23:  . . . . . . X . . . . X X . . . . . . . . . . X
 return value from amd_order: 0 (should be 0)
 
-AMD version 2.4.4, Feb 1, 2016, results:
+AMD version 2.4.6, May 4, 2016, results:
     status: OK
     n, dimension of A:                                  24
     nz, number of nonzeros in A:                        160

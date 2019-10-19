@@ -3,7 +3,7 @@
 #-------------------------------------------------------------------------------
 
 # UMFPACK Copyright (c) Timothy A. Davis.
-# All Rights Reserved.  See ../Doc/License for License.
+# All Rights Reserved.  See ../Doc/License.txt for License.
 
 default: libs run
 
@@ -53,7 +53,7 @@ dist: umfpack_di_demo.c umfpack_dl_demo.c umfpack_zi_demo.c umfpack_zl_demo.c
 umfpack_simple: umfpack_simple.c
 	$(C) -o umfpack_simple umfpack_simple.c $(LIBS)
 
-# the GNU rules are simpler:
+# these rules are simpler:
 # umfpack_%_demo.c: umfpack_xx_demo.c umfpack_%_demo.sed
 # 	- sed -f umfpack_$*_demo.sed < umfpack_xx_demo.c > umfpack_$*_demo.c
 # 

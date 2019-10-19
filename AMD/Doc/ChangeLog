@@ -1,3 +1,11 @@
+May 4, 2016: version 2.4.6
+
+    * minor changes to Makefile
+
+Apr 1, 2016: version 2.4.5
+
+    * licensing simplified (no other change); refer to AMD/Doc/License.txt
+
 Feb 1, 2016: version 2.4.4
 
     * update to Makefiles
@@ -106,8 +114,6 @@ Aug. 30, 2005: AMD Version 1.2
 	longer includes the compile-time redefinition of malloc and free.
 
     * Makefile modified to use UFconfig.mk.  "Make" directory removed.
-
-    * License changed to GNU LGPL.
 
     * Easier inclusion in C++ programs.
 

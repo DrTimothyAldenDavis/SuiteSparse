@@ -3,7 +3,7 @@
 #===============================================================================
 
 LIBRARY = librbio
-VERSION = 2.2.4
+VERSION = 2.2.6
 SO_VERSION = 2
 
 default: library
@@ -40,6 +40,8 @@ DI = RBio_i.o
 OBJ = $(DI) $(DL)
 
 $(OBJ): $(INC)
+
+static: $(AR_TARGET)
 
 $(AR_TARGET): $(OBJ)
 	$(ARCHIVE) $@ $^

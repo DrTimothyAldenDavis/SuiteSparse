@@ -18,23 +18,9 @@ to remove all files not in the original distribution.
 
 --------------------------------------------------------------------------------
 
-KLU is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This Module is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this Module; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+See KLU/Doc/License.txt for the license.
 
 --------------------------------------------------------------------------------
-
-A full text of the license is in Doc/lesser.txt.
 
 Files in this distribution:
 
@@ -64,7 +50,7 @@ Files in this distribution:
     KLU_UserGuide.bib   Bibiography
     KLU_UserGuide.pdf   PDF version of KLU User Guide
     KLU_UserGuide.tex   TEX source of KLU User Guide
-    lesser.txt          license (LGPL)
+    License.txt         license
     Makefile            Makefile for creating the User Guide
     palamadai_e.pdf     Eka Palamadai's MS thesis
 

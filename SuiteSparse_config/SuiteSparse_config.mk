@@ -5,7 +5,7 @@
 # This file contains all configuration settings for all packages in SuiteSparse,
 # except for CSparse (which is stand-alone) and the packages in MATLAB_Tools.
 
-SUITESPARSE_VERSION = 4.5.1
+SUITESPARSE_VERSION = 4.5.3
 
 #===============================================================================
 # Options you can change without editing this file:
@@ -274,15 +274,14 @@ SUITESPARSE_VERSION = 4.5.1
     #            optional: Partition
     #
     # Configuration flags:
-    # -DNCHECK      do not include the Check module.       License GNU LGPL
-    # -DNCHOLESKY   do not include the Cholesky module.    License GNU LGPL
-    # -DNPARTITION  do not include the Partition module.   License GNU LGPL
+    # -DNCHECK      do not include the Check module.
+    # -DNCHOLESKY   do not include the Cholesky module.
+    # -DNPARTITION  do not include the Partition module.
     #               also do not include METIS.
-    # -DNCAMD       do not use CAMD & CCOLAMD in Parition Modulel  GNU LGPL
-    # -DNGPL        do not include any GNU GPL Modules in the CHOLMOD library:
-    # -DNMATRIXOPS  do not include the MatrixOps module.   License GNU GPL
-    # -DNMODIFY     do not include the Modify module.      License GNU GPL
-    # -DNSUPERNODAL do not include the Supernodal module.  License GNU GPL
+    # -DNCAMD       do not use CAMD & CCOLAMD in Parition Module.
+    # -DNMATRIXOPS  do not include the MatrixOps module.
+    # -DNMODIFY     do not include the Modify module.
+    # -DNSUPERNODAL do not include the Supernodal module.
     #
     # -DNPRINT      do not print anything.
     # -D'LONGBLAS=long' or -DLONGBLAS='long long' defines the integers used by

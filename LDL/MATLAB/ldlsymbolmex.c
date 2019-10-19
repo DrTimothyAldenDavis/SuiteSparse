@@ -34,7 +34,7 @@
  * (excluding the B=A(P,P) time), on a wide range of symmetric sparse matrices.
  *
  * Copyright (c) 2006 by Timothy A Davis, http://www.suitesparse.com.
- * All Rights Reserved.  See README for the License.
+ * All Rights Reserved.  See LDL/Doc/License.txt for the License.
  */
 
 #ifndef LDL_LONG

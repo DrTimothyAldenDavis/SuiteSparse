@@ -5,9 +5,6 @@
 /* -----------------------------------------------------------------------------
  * CHOLMOD/Include/cholmod_io64.h.
  * Copyright (C) 2005-2006, Univ. of Florida.  Author: Timothy A. Davis
- * CHOLMOD/Include/cholmod_io64.h is licensed under Version 2.1 of the GNU
- * Lesser General Public License.  See lesser.txt for a text of the license.
- * CHOLMOD is also available under other licenses; contact authors for details.
  * -------------------------------------------------------------------------- */
 
 /* Definitions required for large file I/O, which must come before any other

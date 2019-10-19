@@ -1,46 +1,18 @@
 
-UMFPACK V5.7 (Feb 1, 2016) demo: _di_ version
+UMFPACK V5.7 (May 4, 2016) demo: _di_ version
 
 UMFPACK:  Copyright (c) 2005-2013 by Timothy A. Davis.  All Rights Reserved.
 
 
-UMFPACK License:
-
+UMFPACK License:  refer to UMFPACK/Doc/License.txt for the license.
    UMFPACK is available under alternate licenses,
    contact T. Davis for details.
 
-   Your use or distribution of UMFPACK or any modified version of
-   UMFPACK implies that you agree to this License.
-
-   This library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public
-   License as published by the Free Software Foundation; either
-   version 2 of the License, or (at your option) any later version.
-
-   This library is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
-
-   You should have received a copy of the GNU General Public
-   License along with this library; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301
-   USA
-
-   Permission is hereby granted to use or copy this program under the
-   terms of the GNU GPL, provided that the Copyright, this License,
-   and the Availability of the original version is retained on all copies.
-   User documentation of any code that uses this code or any modified
-   version of this code must cite the Copyright, this License, the
-   Availability note, and "Used by permission." Permission to modify
-   the code and to distribute modified code is granted, provided the
-   Copyright, this License, and the Availability note are retained,
-   and a notice that the code was modified is included.
 
 Availability: http://www.suitesparse.com
-UMFPACK V5.7.4 (Feb 1, 2016): OK
+UMFPACK V5.7.6 (May 4, 2016): OK
 
-UMFPACK V5.7.4 (Feb 1, 2016), Control:
+UMFPACK V5.7.6 (May 4, 2016), Control:
     Matrix entry defined as: double
     Int (generic integer) defined as: int
 
@@ -279,7 +251,7 @@ diagonal of U: dense vector, n = 5.
 
     Numeric object:  OK
 
-UMFPACK V5.7.4 (Feb 1, 2016), Info:
+UMFPACK V5.7.6 (May 4, 2016), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -368,7 +340,7 @@ UMFPACK V5.7.4 (Feb 1, 2016), Info:
 
 UMFPACK:  Copyright (c) 2005-2013 by Timothy A. Davis.  All Rights Reserved.
 
-UMFPACK V5.7.4 (Feb 1, 2016): OK
+UMFPACK V5.7.6 (May 4, 2016): OK
 
 
 x (solution of Ax=b): dense vector, n = 5. 
@@ -384,7 +356,7 @@ maxnorm of residual: 1.06581e-14
 
 UMFPACK:  Copyright (c) 2005-2013 by Timothy A. Davis.  All Rights Reserved.
 
-UMFPACK V5.7.4 (Feb 1, 2016): OK
+UMFPACK V5.7.6 (May 4, 2016): OK
 
 determinant: (1.14) * 10^(2)
 
@@ -398,7 +370,7 @@ x (solution of Ax=b, solve is split into 3 steps): dense vector, n = 5.
 
 maxnorm of residual: 1.06581e-14
 
-UMFPACK V5.7.4 (Feb 1, 2016), Info:
+UMFPACK V5.7.6 (May 4, 2016), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -627,7 +599,7 @@ diagonal of U: dense vector, n = 5.
 
     Numeric object:  OK
 
-UMFPACK V5.7.4 (Feb 1, 2016), Info:
+UMFPACK V5.7.6 (May 4, 2016), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -874,7 +846,7 @@ diagonal of U: dense vector, n = 5.
 
     Numeric object:  OK
 
-UMFPACK V5.7.4 (Feb 1, 2016), Info:
+UMFPACK V5.7.6 (May 4, 2016), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -1265,7 +1237,7 @@ Freeing numeric object:
 Loading numeric object:
 
 Done loading numeric object
-UMFPACK V5.7.4 (Feb 1, 2016), Info:
+UMFPACK V5.7.6 (May 4, 2016), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4
@@ -1363,7 +1335,7 @@ maxnorm of residual: 3.55271e-15
 
 
 Solving C'x=b again, using umfpack_di_wsolve instead:
-UMFPACK V5.7.4 (Feb 1, 2016), Info:
+UMFPACK V5.7.6 (May 4, 2016), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int
     BLAS library used: Fortran BLAS.  size of BLAS integer: 4

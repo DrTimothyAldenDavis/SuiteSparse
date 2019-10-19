@@ -1,5 +1,6 @@
 SSMULT, Copyright (c) 2007-2011, Timothy A. Davis, http://www.suitesparse.com.
-Distributed under the GNU GPL license (see below). 
+
+See MATLAB_Tools/Doc/License.txt for the license.
 SSMULT is also available under other licenses; contact the author for details.
 
 SSMULT is a MATLAB toolbox for multiplying two sparse matrices, C = A*B.  It
@@ -76,17 +77,3 @@ Next, install the compiler for use in the MATLAB "mex" command:
     In MATLAB, type the command "mex -setup".  Select the Microsoft Visual C++
         2005 Express Edition compiler.
 
---------------------------------------------------------------------------------
-
-SSMULT is free software; you can redistribute it and/or modify it under the
-terms of the GNU General Public License as published by the Free Software
-Foundation; either version 2 of the License, or (at your option) any later
-version.
-
-SSMULT is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with
-this Module; if not, write to the Free Software Foundation, Inc., 51 Franklin
-Street, Fifth Floor, Boston, MA  02110-1301, USA.

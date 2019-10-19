@@ -18,6 +18,10 @@ all:
 library:
 	( cd Lib ; $(MAKE) )
 
+# compile the static libraries only
+static:
+	( cd Lib    ; $(MAKE) static )
+
 clean:
 	( cd Demo ; $(MAKE) clean )
 	( cd Lib ; $(MAKE) clean )

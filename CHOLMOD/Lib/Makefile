@@ -3,7 +3,7 @@
 #===============================================================================
 
 LIBRARY = libcholmod
-VERSION = 3.0.9
+VERSION = 3.0.11
 SO_VERSION = 3
 
 default: library
@@ -151,6 +151,8 @@ DL = $(LCORE) $(LCHECK) $(LCHOLESKY) $(LMATRIXOPS) $(LMODIFY) $(LSUPERNODAL) \
 
 # to compile just the double/int version, use OBJ = $(DI)
 OBJ = $(DI) $(DL)
+
+static: $(AR_TARGET)
 
 $(AR_TARGET): $(OBJ)
 	$(ARCHIVE) $@ $^

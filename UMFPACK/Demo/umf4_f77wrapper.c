@@ -4,8 +4,8 @@
 
 /* -------------------------------------------------------------------------- */
 /* UMFPACK Copyright (c) 2005-2012 by Timothy A. Davis,                       */
-/* http://www.suitesparse.com. All Rights Reserved.  See ../Doc/License       */
-/* for License.                                                               */
+/* http://www.suitesparse.com. All Rights Reserved.                           */
+/* See ../Doc/License.txt for License.                                        */
 /* -------------------------------------------------------------------------- */
 
 /* FORTRAN interface for the C-callable UMFPACK library (double / int version
@@ -59,20 +59,6 @@
  * SuiteSparse_config.mk
  * file to compile UMFPACK in LP64 mode (see the User Guide for details).
  * Your FORTRAN code should use integer*8.  See umf4hb64.f for an example.
- *
- * Tested with the following compilers:
- *	* Solaris with cc and f77 from Sun WorkShop 6 update 1
- *	    (32-bit and 64-bit modes)
- *	* SGI Irix with MIPSpro cc and f77 compilers version 7.4
- *	    (32-bit and 64-bit modes)
- *	* Linux with GNU gcc and Intel's icc, and GNU g77 and Intel's
- *	    ifc FORTRAN compiler.  See the comments above about g77 and
- *	    underscores.  Only supports 32-bit mode.
- *	* IBM AIX xlc and xlf compilers.
- *	    (32-bit and 64-bit modes)
- *
- * This interface files when using the ABSOFT Fortran compiler on both
- * Linux and Windows.  There is no known fix.
  */
 
 #include "umfpack.h"

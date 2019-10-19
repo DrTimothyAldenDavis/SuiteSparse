@@ -1,0 +1,346 @@
+--------------------------------------------------------------------------------
+==> Check/License.txt <==
+--------------------------------------------------------------------------------
+
+    CHOLMOD/Check Module.  Copyright (C) 2005-2006, Timothy A. Davis CHOLMOD is
+    also available under other licenses; contact authors for details.
+    http://www.suitesparse.com
+
+    Note that this license is for the CHOLMOD/Check module only.
+    All CHOLMOD modules are licensed separately.
+
+    ----------------------------------------------------------------------------
+
+    This Module is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2.1 of the License, or (at your option) any later version.
+
+    This Module is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this Module; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+--------------------------------------------------------------------------------
+==> Cholesky/License.txt <==
+--------------------------------------------------------------------------------
+
+    CHOLMOD/Cholesky module, Copyright (C) 2005-2006, Timothy A. Davis.
+    CHOLMOD is also available under other licenses; contact authors for
+    details.  http://www.suitesparse.com
+
+    Note that this license is for the CHOLMOD/Cholesky module only.
+    All CHOLMOD modules are licensed separately.
+
+    ----------------------------------------------------------------------------
+
+
+    This Module is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2.1 of the License, or (at your option) any later version.
+
+    This Module is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this Module; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+--------------------------------------------------------------------------------
+==> Core/License.txt <==
+--------------------------------------------------------------------------------
+
+    CHOLMOD/Core Module.  Copyright (C) 2005-2006, Univ. of Florida.  Author:
+    Timothy A. Davis.  CHOLMOD is also available under other licenses; contact
+    authors for details.  http://www.suitesparse.com
+
+    Note that this license is for the CHOLMOD/Core module only.
+    All CHOLMOD modules are licensed separately.
+
+
+    ----------------------------------------------------------------------------
+
+
+    This Module is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2.1 of the License, or (at your option) any later version.
+
+    This Module is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this Module; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+--------------------------------------------------------------------------------
+==> Demo/License.txt <==
+--------------------------------------------------------------------------------
+
+    CHOLMOD/Demo Module.  Copyright (C) 2005-2006, Timothy A. Davis.  CHOLMOD
+    is also available under other licenses; contact authors for details.
+    http://www.suitesparse.com
+
+    Note that this license is for the CHOLMOD/Demo module only.
+    All CHOLMOD modules are licensed separately.
+
+
+    ----------------------------------------------------------------------------
+
+
+    This Module is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This Module is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this Module; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301, USA.
+
+--------------------------------------------------------------------------------
+==> Include/License.txt <==
+--------------------------------------------------------------------------------
+
+    CHOLMOD/Include/* files.  Copyright (C) 2005-2006, either Univ. of Florida
+    or T. Davis, depending on the file.
+
+    Each file is licensed separately, according to the Module for which it
+    contains definitions and prototypes:
+
+    Include/cholmod.h               LGPL
+    Include/cholmod_blas.h          LGPL
+    Include/cholmod_camd.h          part of Partition module
+    Include/cholmod_check.h         part of Check module
+    Include/cholmod_cholesky.h      part of Cholesky module
+    Include/cholmod_complexity.h    LGPL
+    Include/cholmod_config.h        LGPL
+    Include/cholmod_core.h          part of Core module
+    Include/cholmod_function.h      no license; freely usable, no restrictions
+    Include/cholmod_gpu.h           part of GPU module
+    Include/cholmod_gpu_kernels.h   part of GPU module
+    Include/cholmod_internal.h      LGPL
+    Include/cholmod_io64.h          LGPL
+    Include/cholmod_matrixops.h     part of MatrixOps module
+    Include/cholmod_modify.h        part of Modify module
+    Include/cholmod_partition.h     part of Partition module
+    Include/cholmod_supernodal.h    part of Supernodal module
+    Include/cholmod_template.h      LGPL
+
+--------------------------------------------------------------------------------
+==> MATLAB/License.txt <==
+--------------------------------------------------------------------------------
+
+    CHOLMOD/MATLAB Module.  Copyright (C) 2005-2006, Timothy A. Davis.  CHOLMOD
+    is also available under other licenses; contact authors for details.
+    MATLAB(tm) is a Registered Trademark of The MathWorks, Inc.
+    http://www.suitesparse.com
+
+    Note that this license is for the CHOLMOD/MATLAB module only.
+    All CHOLMOD modules are licensed separately.
+
+    ----------------------------------------------------------------------------
+
+
+    This Module is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This Module is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this Module; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301, USA.
+
+--------------------------------------------------------------------------------
+==> MatrixOps/License.txt <==
+--------------------------------------------------------------------------------
+
+    CHOLMOD/MatrixOps Module.  Copyright (C) 2005-2006, Timothy A. Davis.
+    CHOLMOD is also available under other licenses; contact authors for
+    details.  http://www.suitesparse.com
+
+    Note that this license is for the CHOLMOD/MatrixOps module only.
+    All CHOLMOD modules are licensed separately.
+
+
+    ----------------------------------------------------------------------------
+
+
+    This Module is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This Module is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this Module; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301, USA.
+
+--------------------------------------------------------------------------------
+==> Modify/License.txt <==
+--------------------------------------------------------------------------------
+
+    CHOLMOD/Modify Module.  Copyright (C) 2005-2006, Timothy A. Davis and
+    William W. Hager.  CHOLMOD is also available under other licenses; contact
+    authors for details.  http://www.suitesparse.com
+
+    Note that this license is for the CHOLMOD/Modify module only.
+    All CHOLMOD modules are licensed separately.
+
+
+    ----------------------------------------------------------------------------
+
+
+    This Module is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This Module is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this Module; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301, USA.
+
+--------------------------------------------------------------------------------
+==> Partition/License.txt <==
+--------------------------------------------------------------------------------
+
+    CHOLMOD/Partition Module.
+    Copyright (C) 2005-2006, Univ. of Florida.  Author: Timothy A. Davis
+    CHOLMOD is also available under other licenses; contact authors for details.
+    http://www.suitesparse.com
+
+    Note that this license is for the CHOLMOD/Partition module only.
+    All CHOLMOD modules are licensed separately.
+
+
+    ----------------------------------------------------------------------------
+
+
+    This Module is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2.1 of the License, or (at your option) any later version.
+
+    This Module is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this Module; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+--------------------------------------------------------------------------------
+==> Supernodal/License.txt <==
+--------------------------------------------------------------------------------
+
+    CHOLMOD/Supernodal Module.
+    Copyright (C) 2005-2006, Timothy A. Davis
+    CHOLMOD is also available under other licenses; contact authors for details.
+    http://www.suitesparse.com
+
+    Note that this license is for the CHOLMOD/Supernodal module only.
+    All CHOLMOD modules are licensed separately.
+
+
+    ----------------------------------------------------------------------------
+
+
+    This Module is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This Module is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this Module; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301, USA.
+
+--------------------------------------------------------------------------------
+==> Tcov/License.txt <==
+--------------------------------------------------------------------------------
+
+    CHOLMOD/Tcov Module.  Copyright (C) 2005-2006, Timothy A. Davis
+    CHOLMOD is also available under other licenses; contact authors for details.
+    http://www.suitesparse.com
+
+    Note that this license is for the CHOLMOD/Tcov module only.
+    All CHOLMOD modules are licensed separately.
+
+
+    ----------------------------------------------------------------------------
+
+
+    This Module is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This Module is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this Module; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301, USA.
+
+--------------------------------------------------------------------------------
+==> Valgrind/License.txt <==
+--------------------------------------------------------------------------------
+
+    CHOLMOD/Valgrind Module.  Copyright (C) 2005-2006, Timothy A. Davis.
+    CHOLMOD is also available under other licenses; contact authors for details.
+    http://www.suitesparse.com
+
+    Note that this license is for the CHOLMOD/Valgrind module only.
+    All CHOLMOD modules are licensed separately.
+
+
+    ----------------------------------------------------------------------------
+
+
+    This Module is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This Module is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this Module; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301, USA.

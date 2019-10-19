@@ -7,9 +7,6 @@ Demos for CHOLMOD
     cholmod_simple.c        a very short and simple demo
     gpu.sh                  simple test for the GPU
 
-    License.txt             the license for this directory
-    gpl.txt                 the GNU GPL
-
     lperf.m                 test the performance of CHOLMOD in MATLAB
     Makefile                to compile the demos
 

@@ -1,5 +1,5 @@
 CSparse: a Concise Sparse Matrix package.
-VERSION 3.1.7, Copyright (c) 2006-2016, Timothy A. Davis.
+Copyright (c) 2006-2016, Timothy A. Davis.
 http://www.suitesparse.com
 
 Refer to "Direct Methods for Sparse Linear Systems," Timothy A. Davis,
@@ -31,7 +31,7 @@ easy to understand (see the above goals).  Other methods are competitive.
 
 Some of the MATLAB tests require the AMD package.
 See http://www.suitesparse.com for CSparse and the AMD ordering
-package.  See the Doc/License.txt file for the license (GNU LGPL).
+package.  See the Doc/License.txt file for the license.
 
 To compile the C-library (./Source) and C demo programs (./Demo) just type
 "make" in this directory.  This should work on any system with the "make"
@@ -65,8 +65,7 @@ Tcov/           CSparse tests
 --------------------------------------------------------------------------------
 
 ChangeLog       changes in CSparse since first release
-lesser.txt      the GNU LGPL
-License.txt     license (GNU LGPL)
+License.txt     license
 
 --------------------------------------------------------------------------------
 ./Source:       Primary source code for CSparse

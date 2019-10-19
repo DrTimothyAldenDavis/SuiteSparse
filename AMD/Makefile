@@ -20,6 +20,10 @@ all:
 library:
 	( cd Lib    ; $(MAKE) )
 
+# compile the static libraries only
+static:
+	( cd Lib    ; $(MAKE) static )
+
 # compile the FORTRAN libraries and demo programs (not compiled by "make all")
 fortran:
 	( cd Lib    ; $(MAKE) fortran )

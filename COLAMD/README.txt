@@ -52,7 +52,7 @@ colamd from a C program.
 Requires SuiteSparse_config, in the ../SuiteSparse_config directory relative to
 this directory.
 
-See the colamd.c file or http://www.suitesparse.com for the license to COLAMD.
+See COLAMD/Doc/License.txt for the License.
 
 Related papers:
 
@@ -101,7 +101,7 @@ COLAMD files:
 
     ./Doc:
     ChangeLog	    change log
-    lesser.txt	    license
+    License.txt     license
 
     ./Include:
     colamd.h	    include file

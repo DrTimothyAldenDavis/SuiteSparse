@@ -3,7 +3,7 @@
 #-------------------------------------------------------------------------------
 
 LIBRARY = libSuiteSparse_GPURuntime
-VERSION = 1.0.3
+VERSION = 1.0.5
 SO_VERSION = 1
 
 default: library
@@ -47,6 +47,8 @@ purge: clean
 
 distclean: purge
 
+static: $(AR_TARGET)
+
 $(AR_TARGET): $(OBJS)
 	$(ARCHIVE) $@ $^
 	- $(RANLIB) $@
@@ -74,7 +76,7 @@ $(INSTALL_LIB)/$(SO_TARGET): $(OBJS)
 	@mkdir -p $(INSTALL_LIB)
 	@mkdir -p $(INSTALL_INCLUDE)
 	@mkdir -p $(INSTALL_DOC)
-	$(CC) $(SO_OPTS) $^ -o $@ $(LDLIBS)
+	$(CXX) $(SO_OPTS) $^ -o $@ $(LDLIBS)
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_MAIN) )
 	$(CP) ../README.txt $(INSTALL_DOC)/GPURUNTIME_README.txt

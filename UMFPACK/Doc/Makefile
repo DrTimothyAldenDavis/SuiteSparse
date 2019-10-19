@@ -1,9 +1,9 @@
 #-------------------------------------------------------------------------------
-# UMFPACK Makefile for compiling on Unix systems (for GNU or original make)
+# UMFPACK Makefile for compiling on Unix systems
 #-------------------------------------------------------------------------------
 
 # UMFPACK Version 4.4, Copyright (c) 2005 by Timothy A. Davis.
-# All Rights Reserved.  See ../Doc/License for License.
+# All Rights Reserved.  See ../Doc/License.txt for License.
 
 default: dist
 

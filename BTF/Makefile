@@ -12,6 +12,10 @@ include ../SuiteSparse_config/SuiteSparse_config.mk
 library:
 	( cd Lib ; $(MAKE) )
 
+# compile the static libraries only
+static:
+	( cd Lib    ; $(MAKE) static )
+
 clean:
 	( cd Lib ; $(MAKE) clean )
 	( cd MATLAB ; $(RM) $(CLEAN) )

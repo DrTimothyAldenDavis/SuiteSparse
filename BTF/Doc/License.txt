@@ -1,20 +1,16 @@
-CHOLMOD/Cholesky module, Copyright (C) 2005-2006, Timothy A. Davis
-CHOLMOD is also available under other licenses; contact authors for details.
+BTF, Copyright (C) 2004-2013, University of Florida
+by Timothy A. Davis and Ekanathan Palamadai.
+BTF is also available under other licenses; contact authors for details.
 http://www.suitesparse.com
-
-Note that this license is for the CHOLMOD/Cholesky module only.
-All CHOLMOD modules are licensed separately.
-
 
 --------------------------------------------------------------------------------
 
-
-This Module is free software; you can redistribute it and/or
+BTF is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
 version 2.1 of the License, or (at your option) any later version.
 
-This Module is distributed in the hope that it will be useful,
+BTF is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 Lesser General Public License for more details.

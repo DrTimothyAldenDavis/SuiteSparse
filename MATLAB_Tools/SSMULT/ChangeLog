@@ -1,6 +1,10 @@
+Apr 1, 2016:
+
+    * Licensing simplified.  See MATLAB_Tools/Doc/License.txt
+
 Oct 10, 2014
 
-    modified ssmult_install.m  No change to C code.
+    * modified ssmult_install.m  No change to C code.
 
 Dec 7, 2011
 

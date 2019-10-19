@@ -5,8 +5,7 @@
 ./cdiff  ../Demo/Makefile ../../AMD/Demo/Makefile
 ./cdiff  ../Doc/CAMD_UserGuide.bib ../../AMD/Doc/AMD_UserGuide.bib
 ./cdiff  ../Doc/CAMD_UserGuide.tex ../../AMD/Doc/AMD_UserGuide.tex
-./cdiff  ../Doc/lesser.txt ../../AMD/Doc/lesser.txt
-./cdiff  ../Doc/License ../../AMD/Doc/License
+./cdiff  ../Doc/License.txt ../../AMD/Doc/License.txt
 ./cdiff  ../Doc/Makefile ../../AMD/Doc/Makefile
 ./cdiff  ../Include/camd.h ../../AMD/Include/amd.h
 ./cdiff  ../Include/camd_internal.h ../../AMD/Include/amd_internal.h
@@ -31,7 +30,6 @@
 # ./cdiff  ../Source/camd_post_tree.c ../../AMD/Source/amd_post_tree.c
 ./cdiff  ../Source/camd_preprocess.c ../../AMD/Source/amd_preprocess.c
 ./cdiff  ../Source/camd_valid.c ../../AMD/Source/amd_valid.c
-./cdiff  ../Source/GNUmakefile ../../AMD/Source/GNUmakefile
 ./cdiff  ../Source/Makefile ../../AMD/Source/Makefile
 ./cdiff  ../Makefile ../../AMD/Makefile
 ./cdiff  ../README.txt ../../AMD/README.txt

@@ -3,7 +3,7 @@
 #-------------------------------------------------------------------------------
 
 LIBRARY = libldl
-VERSION = 2.2.4
+VERSION = 2.2.6
 SO_VERSION = 2
 
 default: library
@@ -30,6 +30,8 @@ ldl.o: ../Source/ldl.c ../Include/ldl.h
 
 ldll.o: ../Source/ldl.c ../Include/ldl.h
 	$(C) -DLDL_LONG -c ../Source/ldl.c -o ldll.o
+
+static: $(AR_TARGET)
 
 $(AR_TARGET): $(OBJ)
 	$(ARCHIVE) $@ $^

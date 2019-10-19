@@ -44,8 +44,8 @@ extern "C" {
 
 #define CS_VER 3                    /* CXSparse Version */
 #define CS_SUBVER 1
-#define CS_SUBSUB 7
-#define CS_DATE "Feb 1, 2016"       /* CXSparse release date */
+#define CS_SUBSUB 9
+#define CS_DATE "May 4, 2016"       /* CXSparse release date */
 #define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006-2016"
 #define CXSPARSE
 

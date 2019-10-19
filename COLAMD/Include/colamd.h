@@ -22,15 +22,7 @@
     Notice:
 
 	Copyright (c) 1998-2007, Timothy A. Davis, All Rights Reserved.
-
-	THIS MATERIAL IS PROVIDED AS IS, WITH ABSOLUTELY NO WARRANTY
-	EXPRESSED OR IMPLIED.  ANY USE IS AT YOUR OWN RISK.
-
-	Permission is hereby granted to use, copy, modify, and/or distribute
-	this program, provided that the Copyright, this License, and the
-	Availability of the original version is retained on all copies and made
-	accessible to the end-user of any code or package that includes COLAMD
-	or any modified version of COLAMD. 
+        See COLAMD/Doc/License.txt for the license.
 
     Availability:
 
@@ -77,11 +69,11 @@ extern "C" {
  * Versions 2.3 and earlier of COLAMD do not include a #define'd version number.
  */
 
-#define COLAMD_DATE "Feb 1, 2016"
+#define COLAMD_DATE "May 4, 2016"
 #define COLAMD_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
 #define COLAMD_MAIN_VERSION 2
 #define COLAMD_SUB_VERSION 9
-#define COLAMD_SUBSUB_VERSION 4
+#define COLAMD_SUBSUB_VERSION 6
 #define COLAMD_VERSION \
 	COLAMD_VERSION_CODE(COLAMD_MAIN_VERSION,COLAMD_SUB_VERSION)
 

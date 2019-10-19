@@ -24,9 +24,6 @@
        0 0 0 x x
 
     (where x denotes a nonzero value).
-
-
-    See the colamd.c for the routines this program calls, and for the License.
 */
 
 /* ========================================================================== */

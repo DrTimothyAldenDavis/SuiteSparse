@@ -81,9 +81,7 @@ Files:
     UFstats.m		    compute statistics about a matrix
     UFwrite.m		    write a Problem
 
-./Doc:
-    gpl.txt		    GNU GPL license
-    License.txt
+See MATLAB_Tools/Doc/License.txt for the license
 
 --------------------------------------------------------------------------------
 To add a matrix to the collection:

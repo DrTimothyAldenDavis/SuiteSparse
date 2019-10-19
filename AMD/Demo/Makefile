@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# compile the AMD demo (for both GNU make or original make)
+# compile the AMD demo
 #-----------------------------------------------------------------------------
 
 default: amd_simple amd_demo amd_demo2 amd_l_demo

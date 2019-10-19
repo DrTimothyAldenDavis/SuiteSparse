@@ -5,9 +5,6 @@
 /* -----------------------------------------------------------------------------
  * CHOLMOD/Include/cholmod_core.h.
  * Copyright (C) 2005-2013, Univ. of Florida.  Author: Timothy A. Davis
- * CHOLMOD/Include/cholmod_core.h is licensed under Version 2.1 of the GNU
- * Lesser General Public License.  See lesser.txt for a text of the license.
- * CHOLMOD is also available under other licenses; contact authors for details.
  * -------------------------------------------------------------------------- */
 
 /* CHOLMOD Core module: basic CHOLMOD objects and routines.
@@ -246,11 +243,11 @@
 
 #define CHOLMOD_HAS_VERSION_FUNCTION
 
-#define CHOLMOD_DATE "Feb 1, 2016"
+#define CHOLMOD_DATE "May 4, 2016"
 #define CHOLMOD_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define CHOLMOD_MAIN_VERSION 3
 #define CHOLMOD_SUB_VERSION 0
-#define CHOLMOD_SUBSUB_VERSION 9
+#define CHOLMOD_SUBSUB_VERSION 11
 #define CHOLMOD_VERSION \
     CHOLMOD_VER_CODE(CHOLMOD_MAIN_VERSION,CHOLMOD_SUB_VERSION)
 

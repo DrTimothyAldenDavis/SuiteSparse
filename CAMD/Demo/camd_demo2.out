@@ -1,7 +1,7 @@
 CAMD demo, with a jumbled version of the 24-by-24
 Harwell/Boeing matrix, can_24:
 
-camd version 2.4, Feb 1, 2016:  approximate minimum degree ordering:
+camd version 2.4, May 4, 2016:  approximate minimum degree ordering:
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -144,7 +144,7 @@ Plot of symmetric matrix to be ordered by camd_order:
 23:  . . . . . . X . . . . X X . . . . . . . . . . X
 return value from camd_order: 1 (should be 1)
 
-CAMD version 2.4.4, Feb 1, 2016, results:
+CAMD version 2.4.6, May 4, 2016, results:
     status: OK, but jumbled
     n, dimension of A:                                  24
     nz, number of nonzeros in A:                        102

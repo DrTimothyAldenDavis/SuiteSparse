@@ -23,6 +23,6 @@
 % symamd            symmetric approx minimum degree ordering, based on colamd
 %
 % Copyright 1995-2009 by Timothy A. Davis.
-% All Rights Reserved.  Type umfpack_details for License.
+% All Rights Reserved.  See UMFPACK/Doc/License.txt for License.
 
 help Contents

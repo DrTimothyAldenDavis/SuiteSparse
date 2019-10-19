@@ -3,7 +3,7 @@
 #-------------------------------------------------------------------------------
 
 LIBRARY = libklu
-VERSION = 1.3.6
+VERSION = 1.3.8
 SO_VERSION = 1
 
 default: library
@@ -59,6 +59,8 @@ COMMON = \
     klu_l_analyze.o klu_l_memory.o
 
 OBJ = $(COMMON) $(KLU_D) $(KLU_Z) $(KLU_L) $(KLU_ZL)
+
+static: $(AR_TARGET)
 
 $(AR_TARGET): $(OBJ)
 	$(ARCHIVE) $@ $^
