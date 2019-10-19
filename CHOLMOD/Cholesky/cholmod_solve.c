@@ -1062,11 +1062,10 @@ cholmod_dense *CHOLMOD(solve)
 	/* ------------------------------------------------------------------ */
 
 #ifndef NSUPERNODAL
-	Int blas_ok = TRUE ;
-
 	/* allocate workspace */
 	cholmod_dense *E ;
 	Int dual ;
+        Common->blas_ok = TRUE ;
 	dual = (L->xtype == CHOLMOD_REAL && B->xtype != CHOLMOD_REAL) ? 2 : 1 ;
 	Y = CHOLMOD(allocate_dense) (n, dual*nrhs, n, L->xtype, Common) ;
 	E = CHOLMOD(allocate_dense) (dual*nrhs, L->maxesize, dual*nrhs,
@@ -1085,23 +1084,22 @@ cholmod_dense *CHOLMOD(solve)
 
 	if (sys == CHOLMOD_A || sys == CHOLMOD_LDLt)
 	{
-	    blas_ok = CHOLMOD(super_lsolve) (L, Y, E, Common) ;	   /* Y = L\Y */
-	    blas_ok = blas_ok &&
-		CHOLMOD(super_ltsolve) (L, Y, E, Common) ;	   /* Y = L'\Y*/
+	    CHOLMOD(super_lsolve) (L, Y, E, Common) ;	    /* Y = L\Y */
+            CHOLMOD(super_ltsolve) (L, Y, E, Common) ;	    /* Y = L'\Y*/
 	}
 	else if (sys == CHOLMOD_L || sys == CHOLMOD_LD)
 	{
-	    blas_ok = CHOLMOD(super_lsolve) (L, Y, E, Common) ;	   /* Y = L\Y */
+	    CHOLMOD(super_lsolve) (L, Y, E, Common) ;	    /* Y = L\Y */
 	}
 	else if (sys == CHOLMOD_Lt || sys == CHOLMOD_DLt)
 	{
-	    blas_ok = CHOLMOD(super_ltsolve) (L, Y, E, Common) ;   /* Y = L'\Y*/
+	    CHOLMOD(super_ltsolve) (L, Y, E, Common) ;      /* Y = L'\Y*/
 	}
 	CHOLMOD(free_dense) (&E, Common) ;
 
 	iperm (Y, Perm, 0, nrhs, X) ;			    /* X = P'*Y */
 
-	if (CHECK_BLAS_INT && !blas_ok)
+	if (CHECK_BLAS_INT && !Common->blas_ok)
 	{
 	    /* Integer overflow in the BLAS.  This is probably impossible,
 	     * since the BLAS were used to create the supernodal factorization.

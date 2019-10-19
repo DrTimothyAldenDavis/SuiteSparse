@@ -1,5 +1,9 @@
-CC = cc
-CFLAGS = -O
+# CC = cc
+# CFLAGS = -O
+
+default: all
+
+include ../../UFconfig/UFconfig.mk
 
 I = -I../Include -I../../UFconfig
 

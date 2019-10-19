@@ -14,7 +14,7 @@
 
 #include "cholmod_template.h"
 
-static int TEMPLATE (cholmod_super_lsolve)
+static void TEMPLATE (cholmod_super_lsolve)
 (
     /* ---- input ---- */
     cholmod_factor *L,	/* factor to use for the forward solve */
@@ -31,10 +31,6 @@ static int TEMPLATE (cholmod_super_lsolve)
     Int *Lpi, *Lpx, *Ls, *Super ;
     Int nsuper, k1, k2, psi, psend, psx, nsrow, nscol, ii, s,
 	nsrow2, n, ps2, j, i, d, nrhs ;
-
-    /* If integer overflow occurs in the BLAS, Common->status is set to
-     * CHOLMOD_TOO_LARGE in the caller, and the contents of X are undefined. */
-    int blas_ok = TRUE ;
 
     /* ---------------------------------------------------------------------- */
     /* get inputs */
@@ -223,13 +219,10 @@ static int TEMPLATE (cholmod_super_lsolve)
 	    }
 	}
     }
-
-    Common->status = CHOLMOD_OK ;
-    return (blas_ok) ;
 }
 
 
-static int TEMPLATE (cholmod_super_ltsolve)
+static void TEMPLATE (cholmod_super_ltsolve)
 (
     /* ---- input ---- */
     cholmod_factor *L,	/* factor to use for the forward solve */
@@ -246,7 +239,6 @@ static int TEMPLATE (cholmod_super_ltsolve)
     Int *Lpi, *Lpx, *Ls, *Super ;
     Int nsuper, k1, k2, psi, psend, psx, nsrow, nscol, ii, s,
 	nsrow2, n, ps2, j, i, d, nrhs ;
-    int blas_ok = TRUE ;
 
     /* ---------------------------------------------------------------------- */
     /* get inputs */
@@ -419,9 +411,6 @@ static int TEMPLATE (cholmod_super_ltsolve)
 
 	}
     }
-
-    Common->status = CHOLMOD_OK ;
-    return (blas_ok) ;
 }
 
 #undef PATTERN

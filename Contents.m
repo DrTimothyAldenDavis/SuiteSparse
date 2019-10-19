@@ -114,6 +114,14 @@
 %   luflop            - given L and U, computes # of flops required
 %
 %-------------------------------------------------------------------------------
+% SuiteSparseQR: multifrontal rank-revealing sparse QR
+%-------------------------------------------------------------------------------
+%
+%   spqr            - sparse QR
+%   spqr_solve      - x=A\b using SuiteSparseQR
+%   spqr_qmult      - y=Q*x, Q'*x, x*Q, or x*Q' using Q in Householder form
+%
+%-------------------------------------------------------------------------------
 % Other packages:
 %-------------------------------------------------------------------------------
 %
@@ -128,7 +136,7 @@
 % please see the help for each individual package.   UFcollection and RBio
 % are two additional toolboxes, for managing the UF Sparse Matrix Collection.
 %
-% Copyright 2007, Timothy A. Davis
+% Copyright 2008, Timothy A. Davis
 % http://www.cise.ufl.edu/research/sparse
 
 help SuiteSparse

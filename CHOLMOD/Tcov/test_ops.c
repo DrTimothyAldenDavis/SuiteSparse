@@ -199,7 +199,7 @@ double test_ops (cholmod_sparse *A)
     Int n, kk, k, nrow, ncol, len, nz, ok, i, j, stype, nmin, mode, isreal,
 	xtype, xtype2, mtype, asym, xmatched, pmatched, nzoffdiag, nz_diag ;
     size_t nz1, nz2 ;
-    void (*save) (int, char *, int, char *) ;
+    void (*save) (int, const char *, int, const char *) ;
     double alpha [2], beta [2], *Xx ;
     FILE *f ;
     int option, save3 ;

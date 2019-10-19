@@ -106,6 +106,25 @@ cholmod_factor *cholmod_l_analyze_p (cholmod_sparse *, UF_long *, UF_long *,
     size_t, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
+/* cholmod_analyze_p2:  analyze for sparse Cholesky or sparse QR */
+/* -------------------------------------------------------------------------- */
+
+cholmod_factor *cholmod_analyze_p2
+(
+    /* ---- input ---- */
+    int for_cholesky,   /* if TRUE, then analyze for Cholesky; else for QR */
+    cholmod_sparse *A,	/* matrix to order and analyze */
+    int *UserPerm,	/* user-provided permutation, size A->nrow */
+    int *fset,		/* subset of 0:(A->ncol)-1 */
+    size_t fsize,	/* size of fset */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+cholmod_factor *cholmod_l_analyze_p2 (int, cholmod_sparse *, UF_long *,
+    UF_long *, size_t, cholmod_common *) ;
+
+/* -------------------------------------------------------------------------- */
 /* cholmod_factorize:  simplicial or supernodal Cholesky factorization */
 /* -------------------------------------------------------------------------- */
 

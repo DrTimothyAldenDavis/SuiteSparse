@@ -57,6 +57,8 @@ int CHOLMOD(start)
     cholmod_common *Common
 )
 {
+    int k ;
+
     if (Common == NULL)
     {
 	return (FALSE) ;
@@ -166,6 +168,19 @@ int CHOLMOD(start)
 
     /* Common->called_nd is TRUE if cholmod_analyze called or NESDIS */
     Common->called_nd = FALSE ;
+
+    Common->blas_ok = TRUE ;    /* false if BLAS int overflow occurs */
+
+    /* ---------------------------------------------------------------------- */
+    /* default SuiteSparseQR knobs and statististics */
+    /* ---------------------------------------------------------------------- */
+
+    for (k = 0 ; k < 2  ; k++) Common->SPQR_xstat [k] = 0 ;
+    for (k = 0 ; k < 10 ; k++) Common->SPQR_istat [k] = 0 ;
+    Common->SPQR_grain = 1 ;    /* no Intel TBB multitasking, by default */
+    Common->SPQR_small = 1e6 ;  /* target min task size for TBB */
+    Common->SPQR_shrink = 1 ;   /* controls SPQR shrink realloc */
+    Common->SPQR_nthreads = 0 ; /* 0: let TBB decide how many threads to use */
 
     DEBUG_INIT ("cholmod start", Common) ;
     return (TRUE) ;

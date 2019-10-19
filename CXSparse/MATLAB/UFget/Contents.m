@@ -13,4 +13,4 @@
 % Example:
 %   help UFget
 
-% Copyright 2007, Timothy A. Davis
+% Copyright 2008, Timothy A. Davis

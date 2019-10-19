@@ -40,7 +40,8 @@
 FILE *ff ;
 
 /* halt if an error occurs */
-static void my_handler (int status, char *file, int line, char *message)
+static void my_handler (int status, const char *file, int line,
+    const char *message)
 {
     printf ("cholmod error: file: %s line: %d status: %d: %s\n",
 	    file, line, status, message) ;

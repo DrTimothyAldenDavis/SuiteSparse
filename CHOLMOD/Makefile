@@ -23,7 +23,7 @@ purge:
 	( cd MATLAB ; $(MAKE) purge )
 	( cd Tcov ; $(MAKE) purge )
 	( cd Lib ; $(MAKE) purge )
-#	( cd Valgrind ; $(MAKE) purge )
+	( cd Valgrind ; $(MAKE) dopurge )
 	( cd Demo ; $(MAKE) purge )
 	( cd Doc ; $(MAKE) purge )
 

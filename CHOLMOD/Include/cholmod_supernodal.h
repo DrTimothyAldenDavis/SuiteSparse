@@ -75,6 +75,31 @@ int cholmod_l_super_symbolic (cholmod_sparse *, cholmod_sparse *, UF_long *,
     cholmod_factor *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
+/* cholmod_super_symbolic2 */
+/* -------------------------------------------------------------------------- */
+
+/* Analyze for supernodal Cholesky or multifrontal QR.  CHOLMOD itself always
+ * analyzes for supernodal Cholesky, of course.  This "for_cholesky = TRUE"
+ * option is used by SuiteSparseQR only.   Added for V1.7 */
+
+int cholmod_super_symbolic2
+(
+    /* ---- input ---- */
+    int for_cholesky,   /* Cholesky if TRUE, QR if FALSE */
+    cholmod_sparse *A,	/* matrix to analyze */
+    cholmod_sparse *F,	/* F = A' or A(:,f)' */
+    int *Parent,	/* elimination tree */
+    /* ---- in/out --- */
+    cholmod_factor *L,	/* simplicial symbolic on input,
+			 * supernodal symbolic on output */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+int cholmod_l_super_symbolic2 (int, cholmod_sparse *, cholmod_sparse *,
+    UF_long *, cholmod_factor *, cholmod_common *) ;
+
+/* -------------------------------------------------------------------------- */
 /* cholmod_super_numeric */
 /* -------------------------------------------------------------------------- */
 

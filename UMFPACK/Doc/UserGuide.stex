@@ -643,7 +643,8 @@ and {\tt m} $<$ {\tt n}, then {\tt umfpack} might not find a factor
 {\tt U} with a structurally zero-free diagonal.
 Unless the matrix ill-conditioned or
 poorly scaled, factorizing {\tt A'} in this case will guarantee that both
-factors will have zero-free diagonals.  Note that there is no guarantee
+factors will have zero-free diagonals (in the structural sense; they may
+be numerically zero).  Note that there is no guarantee
 as to the size of the diagonal entries of {\tt U}; UMFPACK does not do a
 rank-revealing factorization.  Here's how you can factorize {\tt A'}
 and get the factors of {\tt A} instead:

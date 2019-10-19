@@ -1,0 +1,56 @@
+>> qrdemo
+qrdemo ../Matrix/a2.mtx
+Matrix      2-by-2      nnz:      3 residual:  0.0e+00 rank:      2 OK
+qrdemo ../Matrix/r2.mtx
+Matrix      2-by-3      nnz:      4 residual:  0.0e+00 rank:      2 OK
+qrdemo ../Matrix/a04.mtx
+Matrix      0-by-4      nnz:      0 residual:  0.0e+00 rank:      0 OK
+qrdemo ../Matrix/a2.mtx
+Matrix      2-by-2      nnz:      3 residual:  0.0e+00 rank:      2 OK
+qrdemo ../Matrix/west0067.mtx
+Matrix     67-by-67     nnz:    294 residual:  5.8e-17 rank:     67 OK
+qrdemo ../Matrix/c2.mtx
+Matrix      2-by-2      nnz:      4 residual:  1.6e-16 rank:      2 OK
+qrdemo ../Matrix/a0.mtx
+Matrix      0-by-0      nnz:      0 residual:  0.0e+00 rank:      0 OK
+qrdemo ../Matrix/lfat5b.mtx
+Matrix     14-by-14     nnz:     46 residual:  1.0e-16 rank:     14 OK
+qrdemo ../Matrix/bfwa62.mtx
+Matrix     62-by-62     nnz:    450 residual:  3.9e-17 rank:     62 OK
+qrdemo ../Matrix/LFAT5.mtx
+Matrix     14-by-14     nnz:     46 residual:  5.0e-22 rank:     14 OK
+qrdemo ../Matrix/b1_ss.mtx
+Matrix      7-by-7      nnz:     15 residual:  1.8e-17 rank:      7 OK
+qrdemo ../Matrix/bcspwr01.mtx
+Matrix     39-by-39     nnz:    131 residual:  5.4e-17 rank:     39 OK
+qrdemo ../Matrix/lpi_galenet.mtx
+Matrix      8-by-14     nnz:     22 residual:  0.0e+00 rank:      8 OK
+qrdemo ../Matrix/lpi_itest6.mtx
+Matrix     11-by-17     nnz:     29 residual:  0.0e+00 rank:     11 OK
+qrdemo ../Matrix/ash219.mtx
+Matrix    219-by-85     nnz:    438 residual:  3.6e-14 rank:     85 OK
+qrdemo ../Matrix/a4.mtx
+Matrix      4-by-2      nnz:      4 residual:  2.0e+00 rank:      2 OK
+qrdemo ../Matrix/s32.mtx
+Matrix      3-by-2      nnz:      6 residual:  1.9e-02 rank:      2 OK
+qrdemo ../Matrix/c32.mtx
+Matrix      3-by-2      nnz:      6 residual:  3.1e-01 rank:      2 OK
+qrdemo ../Matrix/lp_share1b.mtx
+Matrix    117-by-253    nnz:   1179 residual:  2.0e-19 rank:    117 OK
+qrdemo ../Matrix/a1.mtx
+Matrix      4-by-4      nnz:      7 residual:  6.1e-01 rank:      2  6.6e-01 OK
+qrdemo ../Matrix/GD06_theory.mtx
+Matrix    101-by-101    nnz:    380 residual:  1.1e-01 rank:     20  1.1e-01 OK
+qrdemo ../Matrix/GD01_b.mtx
+Matrix     18-by-18     nnz:     37 residual:  3.7e-17 rank:     17  8.2e-18 OK
+qrdemo ../Matrix/Tina_AskCal_perm.mtx
+Matrix     11-by-11     nnz:     29 residual:  3.6e-17 rank:      9  0.0e+00 OK
+qrdemo ../Matrix/Tina_AskCal.mtx
+Matrix     11-by-11     nnz:     29 residual:  3.6e-17 rank:      9  0.0e+00 OK
+qrdemo ../Matrix/GD98_a.mtx
+Matrix     38-by-38     nnz:     50 residual:  3.8e-01 rank:     14  3.8e-01 OK
+qrdemo ../Matrix/Ragusa16.mtx
+Matrix     24-by-24     nnz:     81 residual:  1.9e-02 rank:     18  1.2e-02 OK
+qrdemo ../Matrix/young1c.mtx
+Matrix    841-by-841    nnz:   4089 residual:  1.8e-16 rank:    841 OK
+All tests passed

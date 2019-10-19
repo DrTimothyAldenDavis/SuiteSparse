@@ -102,8 +102,7 @@ fprintf (f, '</table>\n') ;
 
 fprintf (f, '<p>Total number of matrices in UF Sparse Matrix Collection:') ;
 fprintf (f, ' %d\n', nmat) ;
-fprintf (f, '<p><p><i>Maintained by <a href="http://www.cise.ufl.edu/~davis">');
-fprintf (f, 'Tim Davis</a>, last updated %s.', date) ;
+fprintf (f, '<p><p><i>Maintained by Tim Davis, last updated %s.', date) ;
 fprintf (f, '<br>Matrix pictures by <a href=') ;
 fprintf (f, '"%sCSparse/CSparse/MATLAB/CSparse/cspy.m">cspy</a>, a MATLAB', ...
     url) ;

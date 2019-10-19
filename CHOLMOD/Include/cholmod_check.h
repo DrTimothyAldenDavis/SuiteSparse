@@ -87,12 +87,12 @@ int cholmod_l_check_common (cholmod_common *) ;
 int cholmod_print_common
 (
     /* ---- input ---- */
-    char *name,		/* printed name of Common object */
+    const char *name,	/* printed name of Common object */
     /* --------------- */
     cholmod_common *Common
 ) ;
 
-int cholmod_l_print_common (char *, cholmod_common *) ;
+int cholmod_l_print_common (const char *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_check_sparse:  check a sparse matrix */
@@ -116,12 +116,12 @@ int cholmod_print_sparse
 (
     /* ---- input ---- */
     cholmod_sparse *A,	/* sparse matrix to print */
-    char *name,		/* printed name of sparse matrix */
+    const char *name,	/* printed name of sparse matrix */
     /* --------------- */
     cholmod_common *Common
 ) ;
 
-int cholmod_l_print_sparse (cholmod_sparse *, char *, cholmod_common *) ;
+int cholmod_l_print_sparse (cholmod_sparse *, const char *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_check_dense:  check a dense matrix */
@@ -145,12 +145,12 @@ int cholmod_print_dense
 (
     /* ---- input ---- */
     cholmod_dense *X,	/* dense matrix to print */
-    char *name,		/* printed name of dense matrix */
+    const char *name,	/* printed name of dense matrix */
     /* --------------- */
     cholmod_common *Common
 ) ;
 
-int cholmod_l_print_dense (cholmod_dense *, char *, cholmod_common *) ;
+int cholmod_l_print_dense (cholmod_dense *, const char *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_check_factor:  check a factor */
@@ -174,12 +174,12 @@ int cholmod_print_factor
 (
     /* ---- input ---- */
     cholmod_factor *L,	/* factor to print */
-    char *name,		/* printed name of factor */
+    const char *name,	/* printed name of factor */
     /* --------------- */
     cholmod_common *Common
 ) ;
 
-int cholmod_l_print_factor (cholmod_factor *, char *, cholmod_common *) ;
+int cholmod_l_print_factor (cholmod_factor *, const char *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_check_triplet:  check a sparse matrix in triplet form */
@@ -203,12 +203,12 @@ int cholmod_print_triplet
 (
     /* ---- input ---- */
     cholmod_triplet *T,	/* triplet matrix to print */
-    char *name,		/* printed name of triplet matrix */
+    const char *name,	/* printed name of triplet matrix */
     /* --------------- */
     cholmod_common *Common
 ) ;
 
-int cholmod_l_print_triplet (cholmod_triplet *, char *, cholmod_common *) ;
+int cholmod_l_print_triplet (cholmod_triplet *, const char *, cholmod_common *);
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_check_subset:  check a subset */
@@ -236,12 +236,12 @@ int cholmod_print_subset
     int *Set,		/* Set [0:len-1] is a subset of 0:n-1.  Duplicates OK */
     UF_long len,	/* size of Set (an integer array) */
     size_t n,		/* 0:n-1 is valid range */
-    char *name,		/* printed name of Set */
+    const char *name,	/* printed name of Set */
     /* --------------- */
     cholmod_common *Common
 ) ;
 
-int cholmod_l_print_subset (UF_long *, UF_long, size_t, char *,
+int cholmod_l_print_subset (UF_long *, UF_long, size_t, const char *,
     cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
@@ -270,12 +270,13 @@ int cholmod_print_perm
     int *Perm,		/* Perm [0:len-1] is a permutation of subset of 0:n-1 */
     size_t len,		/* size of Perm (an integer array) */
     size_t n,		/* 0:n-1 is valid range */
-    char *name,		/* printed name of Perm */
+    const char *name,	/* printed name of Perm */
     /* --------------- */
     cholmod_common *Common
 ) ;
 
-int cholmod_l_print_perm (UF_long *, size_t, size_t, char *, cholmod_common *) ;
+int cholmod_l_print_perm (UF_long *, size_t, size_t, const char *,
+    cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_check_parent:  check an elimination tree */
@@ -301,12 +302,12 @@ int cholmod_print_parent
     /* ---- input ---- */
     int *Parent,	/* Parent [0:n-1] is an elimination tree */
     size_t n,		/* size of Parent */
-    char *name,		/* printed name of Parent */
+    const char *name,	/* printed name of Parent */
     /* --------------- */
     cholmod_common *Common
 ) ;
 
-int cholmod_l_print_parent (UF_long *, size_t, char *, cholmod_common *) ;
+int cholmod_l_print_parent (UF_long *, size_t, const char *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_read_sparse: read a sparse matrix from a file */
@@ -390,13 +391,13 @@ int cholmod_write_sparse
     FILE *f,		    /* file to write to, must already be open */
     cholmod_sparse *A,	    /* matrix to print */
     cholmod_sparse *Z,	    /* optional matrix with pattern of explicit zeros */
-    char *comments,	    /* optional filename of comments to include */
+    const char *comments,    /* optional filename of comments to include */
     /* --------------- */
     cholmod_common *Common
 ) ;
 
 int cholmod_l_write_sparse (FILE *, cholmod_sparse *, cholmod_sparse *,
-    char *c, cholmod_common *) ;
+    const char *c, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_write_dense: write a dense matrix to a file */
@@ -407,11 +408,11 @@ int cholmod_write_dense
     /* ---- input ---- */
     FILE *f,		    /* file to write to, must already be open */
     cholmod_dense *X,	    /* matrix to print */
-    char *comments,	    /* optional filename of comments to include */
+    const char *comments,    /* optional filename of comments to include */
     /* --------------- */
     cholmod_common *Common
 ) ;
 
-int cholmod_l_write_dense (FILE *, cholmod_dense *, char *, cholmod_common *) ;
-
+int cholmod_l_write_dense (FILE *, cholmod_dense *, const char *,
+    cholmod_common *) ;
 #endif

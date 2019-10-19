@@ -1,3 +1,8 @@
+Sept 8, 2008, v2.2.2
+
+    * minor change to cs_make.m, to change "/" to filesep ("/" on Unix, "\"
+	on Windows), to handle limitations in some Windows compilers
+
 Nov 1, 2007, v2.2.1
 
     * very minor change to Include/cs.h:  Changed name of 2nd argument of

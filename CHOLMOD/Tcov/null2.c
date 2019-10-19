@@ -611,9 +611,17 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
 	    NULL, NULL, NULL, NULL, NULL, cm) ;			    NOT (ok) ;
     L = CHOLMOD(analyze)(NULL, cm) ;				    NOP (L) ;
     L = CHOLMOD(analyze)(Abad2, cm) ;				    NOP (L) ;
+    L = CHOLMOD(analyze)(A, cm) ;				    NOP (L) ;
+
+    /* test AMD backup strategy */
+    cm->nmethods = 2 ;
+    cm->method [0].ordering = -1 ;
+    cm->method [1].ordering = -1 ;
     L = CHOLMOD(analyze)(A, cm) ;				    OKP (L) ;
+
     cm->nmethods = 0 ;	/* restore defaults */
     cm->method [0].ordering = CHOLMOD_GIVEN ;
+    cm->method [1].ordering = CHOLMOD_AMD ;
     cm->print = 4 ;
     ok = CHOLMOD(print_common)("OKcm", cm) ;			    OK (ok) ;
     ok = CHOLMOD(print_factor)(L, "L symbolic", cm) ;		    OK (ok) ;
@@ -2117,7 +2125,8 @@ if (do_nantests)
 	cm->final_ll = FALSE ;
 	L6 = CHOLMOD(analyze)(C, cm) ;				    OKP (L6) ;
 	ok = CHOLMOD(factorize)(C, L6, cm) ;			    OK (ok) ;
-	ok1 = (cm->status == CHOLMOD_OK) ;
+        /* sometimes LAPACK says NaN is not pos.def, sometimes it doesn't...*/
+	ok1 = (cm->status == CHOLMOD_OK || cm->status == CHOLMOD_NOT_POSDEF) ;
 	ok = CHOLMOD(print_factor)(L6, "L6 supernan2", cm) ;	    OK (ok) ;
 	OK (ok1) ;
 	rcond = CHOLMOD(rcond) (L6, cm) ;		    OK (rcond == 0) ;
@@ -2151,7 +2160,8 @@ if (do_nantests)
 	cm->final_ll = FALSE ;
 	L6 = CHOLMOD(analyze)(C, cm) ;				    OKP (L6) ;
 	ok = CHOLMOD(factorize)(C, L6, cm) ;			    OK (ok) ;
-	ok1 = (cm->status == CHOLMOD_OK) ;
+        /* sometimes LAPACK says NaN is not pos.def, sometimes it doesn't...*/
+	ok1 = (cm->status == CHOLMOD_OK || cm->status == CHOLMOD_NOT_POSDEF) ;
 	ok = CHOLMOD(print_factor)(L6, "L6 supernan0", cm) ;	    OK (ok) ;
 	OK (ok1) ;
 	rcond = CHOLMOD(rcond) (L6, cm) ;		    OK (rcond == 0) ;

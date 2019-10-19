@@ -5,21 +5,23 @@ function Problem = UFget (matrix, UF_Index)
 %   specified as either a number (1 to the # of matrices in the collection) or
 %   as a string (the name of the matrix).  With no input parameters, index=UFget
 %   returns an index of matrices in the collection.  A local copy of the matrix
-%   is saved (be aware that as of May 2007 the entire collection is over 8GB
+%   is saved (be aware that as of March 2008 the entire collection is 9.5GB
 %   in size).  If no input or output arguments are provided, the index is
 %   printed.  With a 2nd parameter (Problem = UFget (matrix, index)), the index
 %   file is not loaded.  This is faster if you are loading lots of matrices.
 %
 %   Examples:
-%       index = UFget ;
-%       Problem = UFget (6)
+%       index = UFget ;                     % loads index
+%       index = UFget ('refresh') ;         % forces download of new index
+%
+%       Problem = UFget (6)                 % 4 ways of loading the same Problem
 %       Problem = UFget ('HB/arc130')
 %       Problem = UFget (6, index)
 %       Problem = UFget ('HB/arc130', index)
 %
 %   See also UFgrep, UFweb, UFget_example, UFget_defaults, urlwrite.
 
-%   Copyright 2007, Tim Davis, University of Florida.
+%   Copyright 2008, Tim Davis, University of Florida.
 
 %-------------------------------------------------------------------------------
 % get the parameter settings
@@ -33,23 +35,51 @@ indexurl = sprintf ('%s/UF_Index.mat', params.url) ;
 % get the index file (download a new one if necessary)
 %-------------------------------------------------------------------------------
 
-try
-    % load the existing index file
-    if (nargin < 2)
-	load (indexfile) ;
+refresh = 0 ;
+if nargin == 0
+    % if the user passed in a zero or no argument at all, return the index file
+    matrix = 0 ;
+else
+    % UFget ('refresh') downloads the latest index file from the web
+    if (ischar (matrix))
+        if (strcmp (matrix, 'refresh'))
+            matrix = 0 ;
+            refresh = 1 ;
+        end
     end
-    % see if the index file is old; if so, download a fresh copy
-    refresh = (UF_Index.DownloadTimeStamp + params.refresh < now) ;
-catch
-    % oops, no index file.  download it.
-    refresh = 1 ;
 end
+
+if (~refresh)
+    try
+        % load the existing index file
+        if (nargin < 2)
+            load (indexfile) ;
+        end
+        % see if the index file is old; if so, download a fresh copy
+        refresh = (UF_Index.DownloadTimeStamp + params.refresh < now) ;
+    catch
+        % oops, no index file, or a refresh is due.  download it.
+        refresh = 1 ;
+    end
+end
+
+err = '' ;      % to catch a download error, if any
 
 if (refresh)
     % a new UF_Index.mat file to get access to new matrices (if any)
-    fprintf ('downloading %s\n', indexurl) ;
-    fprintf ('to %s\n', indexfile) ;
-    urlwrite (indexurl, indexfile) ;
+    try
+        tmp = tempname ;                        % download to a temp file first
+        old = sprintf ('%sUF_Index_old.mat', params.dir) ;
+        urlwrite (indexurl, tmp) ;              % download the latest index file
+        try
+            movefile (indexfile, old, 'f') ;    % keep a backup of the old index
+        catch
+            % backup failed, continue anyway
+        end
+        movefile (tmp, indexfile, 'f') ;        % move the new index into place
+    catch
+        err = lasterr ;
+    end
     load (indexfile) ;
     UF_Index.DownloadTimeStamp = now ;
     save (indexfile, 'UF_Index') ;
@@ -58,11 +88,6 @@ end
 %-------------------------------------------------------------------------------
 % return the index file if requested
 %-------------------------------------------------------------------------------
-
-% if the user passed in a zero or no argument at all, return the index file
-if nargin == 0
-    matrix = 0 ;
-end
 
 if (matrix == 0)
     if (nargout == 0)
@@ -107,6 +132,11 @@ if (matrix == 0)
     else
         Problem = UF_Index ;
     end
+
+    if (~isempty (err))
+        fprintf ('\nUFget: unable to download latest index; using old one.\n') ;
+        disp (err) ;
+    end
     return ;
 end
 
@@ -128,15 +158,15 @@ matfile = sprintf ('%s%s%s.mat', matdir, filesep, matrix) ;
 maturl = sprintf ('%s/%s/%s.mat', params.url, group, matrix) ;
 
 if (~exist (matdir, 'dir'))
-    mkdir (matdir) ;
+    mkdir (matdir) ;                        % create the Group directory
 end
 
-if (exist (matfile, 'file'))
-    load (matfile)
-else
+if (~exist (matfile, 'file'))
     fprintf ('downloading %s\n', maturl) ;
     fprintf ('to %s\n', matfile) ;
-    urlwrite (maturl, matfile) ;
-    load (matfile)
-    save (matfile, 'Problem') ;
+    tmp = tempname ;                        % download to a temp file first
+    urlwrite (maturl, tmp) ;
+    movefile (tmp, matfile, 'f') ;          % move the new matrix into place
 end
+
+load (matfile) ;

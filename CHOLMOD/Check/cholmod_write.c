@@ -40,7 +40,7 @@
  * otherwise.
  */
 
-static int include_comments (FILE *f, char *comments)
+static int include_comments (FILE *f, const char *comments)
 {
     FILE *cf = NULL ;
     char buffer [MAXLINE] ;
@@ -354,7 +354,7 @@ int CHOLMOD(write_sparse)
     FILE *f,		    /* file to write to, must already be open */
     cholmod_sparse *A,	    /* matrix to print */
     cholmod_sparse *Z,	    /* optional matrix with pattern of explicit zeros */
-    char *comments,	    /* optional filename of comments to include */
+    const char *comments,    /* optional filename of comments to include */
     /* --------------- */
     cholmod_common *Common
 )
@@ -657,7 +657,7 @@ int CHOLMOD(write_dense)
     /* ---- input ---- */
     FILE *f,		    /* file to write to, must already be open */
     cholmod_dense *X,	    /* matrix to print */
-    char *comments,	    /* optional filename of comments to include */
+    const char *comments,    /* optional filename of comments to include */
     /* --------------- */
     cholmod_common *Common
 )

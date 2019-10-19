@@ -1,0 +1,54 @@
+./qrdemoc < ../Matrix/a2.mtx
+Matrix      2-by-2      nnz:      3 residual:  1.5e-17 rank:      2
+./qrdemoc < ../Matrix/r2.mtx
+Matrix      2-by-3      nnz:      4 residual:  1.1e-17 rank:      2
+./qrdemoc < ../Matrix/a04.mtx
+Matrix      0-by-4      nnz:      0 residual:  0.0e+00 rank:      0
+./qrdemoc < ../Matrix/a2.mtx
+Matrix      2-by-2      nnz:      3 residual:  1.5e-17 rank:      2
+./qrdemoc < ../Matrix/west0067.mtx
+Matrix     67-by-67     nnz:    294 residual:  4.1e-17 rank:     67
+./qrdemoc < ../Matrix/c2.mtx
+Matrix      2-by-2      nnz:      4 residual:  1.1e-16 rank:      2
+./qrdemoc < ../Matrix/a0.mtx
+Matrix      0-by-0      nnz:      0 residual:  0.0e+00 rank:      0
+./qrdemoc < ../Matrix/lfat5b.mtx
+Matrix     14-by-14     nnz:     46 residual:  5.1e-17 rank:     14
+./qrdemoc < ../Matrix/bfwa62.mtx
+Matrix     62-by-62     nnz:    450 residual:  3.7e-17 rank:     62
+./qrdemoc < ../Matrix/LFAT5.mtx
+Matrix     14-by-14     nnz:     46 residual:  2.4e-22 rank:     14
+./qrdemoc < ../Matrix/b1_ss.mtx
+Matrix      7-by-7      nnz:     15 residual:  1.0e-17 rank:      7
+./qrdemoc < ../Matrix/bcspwr01.mtx
+Matrix     39-by-39     nnz:    131 residual:  5.8e-17 rank:     39
+./qrdemoc < ../Matrix/lpi_galenet.mtx
+Matrix      8-by-14     nnz:     22 residual:  0.0e+00 rank:      8
+./qrdemoc < ../Matrix/lpi_itest6.mtx
+Matrix     11-by-17     nnz:     29 residual:  0.0e+00 rank:     11
+./qrdemoc < ../Matrix/ash219.mtx
+Matrix    219-by-85     nnz:    438 residual:  2.9e-15 rank:     85
+./qrdemoc < ../Matrix/a4.mtx
+Matrix      4-by-2      nnz:      4 residual:  1.4e+00 rank:      2
+./qrdemoc < ../Matrix/s32.mtx
+Matrix      3-by-2      nnz:      6 residual:  1.1e-02 rank:      2
+./qrdemoc < ../Matrix/c32.mtx
+Matrix      3-by-2      nnz:      6 residual:  1.9e-01 rank:      2
+./qrdemoc < ../Matrix/lp_share1b.mtx
+Matrix    117-by-253    nnz:   1179 residual:  8.4e-20 rank:    117
+./qrdemoc < ../Matrix/a1.mtx
+Matrix      4-by-4      nnz:      7 residual:  6.1e-01 rank:      2
+./qrdemoc < ../Matrix/GD06_theory.mtx
+Matrix    101-by-101    nnz:    380 residual:  7.2e-02 rank:     20
+./qrdemoc < ../Matrix/GD01_b.mtx
+Matrix     18-by-18     nnz:     37 residual:  8.6e-17 rank:     17
+./qrdemoc < ../Matrix/Tina_AskCal_perm.mtx
+Matrix     11-by-11     nnz:     29 residual:  7.9e-18 rank:      9
+./qrdemoc < ../Matrix/Tina_AskCal.mtx
+Matrix     11-by-11     nnz:     29 residual:  5.6e-18 rank:      9
+./qrdemoc < ../Matrix/GD98_a.mtx
+Matrix     38-by-38     nnz:     50 residual:  2.4e-01 rank:     14
+./qrdemoc < ../Matrix/Ragusa16.mtx
+Matrix     24-by-24     nnz:     81 residual:  2.1e-02 rank:     18
+./qrdemoc < ../Matrix/young1c.mtx
+Matrix    841-by-841    nnz:   4089 residual:  1.2e-16 rank:    841

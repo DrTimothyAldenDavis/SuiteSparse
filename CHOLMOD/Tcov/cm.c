@@ -127,7 +127,7 @@ void progress (Int force, char s)
 
 /* An error occurred that should not have occurred */
 
-void my_handler (int status, char *file, int line, char *msg)
+void my_handler (int status, const char *file, int line, const char *msg)
 {
     printf ("Error handler: file %s line %d status %d: %s\n", 
 	    file, line, status, msg) ;

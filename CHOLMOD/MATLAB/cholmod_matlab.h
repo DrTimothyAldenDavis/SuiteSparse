@@ -107,7 +107,8 @@ void sputil_sparse		/* top-level wrapper for "sparse" function */
     const mxArray *pargin [ ]
 ) ;
 
-void sputil_error_handler (int status, char *file, int line, char *message) ;
+void sputil_error_handler (int status, const char *file, int line,
+    const char *message) ;
 
 void sputil_config (Int spumoni, cholmod_common *cm) ;
 

@@ -309,11 +309,11 @@ fsize (f, [topdir 'RB/' fullname '.tar.gz']) ;
 % link to images
 %-------------------------------------------------------------------------------
 
-fprintf (f, '<p><img alt="%s" src="%s.png"></a>\n', fullname, name) ;
+fprintf (f, '\n\n<p><img alt="%s" src="%s.png"></a>\n', fullname, name) ;
 
 % dmspy, if it exists
 if (do_dmspy)
-    fprintf (f, '<p><img alt="dmperm of %s" src="%s_dmperm.png">\n', ...
+    fprintf (f, '\n<p><img alt="dmperm of %s" src="%s_dmperm.png">\n', ...
     fullname, name) ;
 end
 
@@ -330,6 +330,16 @@ if (do_gplot)
 '<a href="%s_gplot_big.png"><img alt="%s graph" src="%s_gplot.png"></a>\n', ...
     name, fullname, name) ;
 end
+
+% Yifan Hu's graph plot, for all matrices
+yifan = 'http://www.research.att.com/~yifanhu/GALLERY/GRAPHS/GIF_SMALL/' ;
+yname = strrep (fullname, '/', '@') ;
+%% if (m == n)
+    fprintf (f, '<p>') ;
+    fprintf (f, ...
+        '<a href="%s%s.html"><img alt="%s graph" src="%s%s.gif"></a>\n', ...
+        yifan, yname, fullname, yifan, yname) ;
+%% end
 
 %-------------------------------------------------------------------------------
 % table of matrix properties
@@ -552,12 +562,15 @@ end
 % etc ...
 %-------------------------------------------------------------------------------
 
-fprintf (f, '<p><p><i>Maintained by <a href="http://www.cise.ufl.edu/~davis">');
-fprintf (f, 'Tim Davis</a>, last updated %s.', date) ;
+fprintf (f, '<p><p><i>Maintained by Tim Davis</a>, last updated %s.', date) ;
 fprintf (f, '<br>Matrix pictures by <a href=') ;
 fprintf (f, '"%sCSparse/CSparse/MATLAB/CSparse/cspy.m">cspy</a>, a ', url) ;
 fprintf (f, 'MATLAB function in the <a href="%sCSparse">CSparse</a>', url) ;
-fprintf (f, ' package.\n</body>\n</html>\n') ;
+fprintf (f, ' package.<br>\n') ;
+if (m == n)
+    fprintf (f, 'Matrix graphs by Yifan Hu, AT&T Labs Visualization Group.\n') ;
+end
+fprintf (f, '</body>\n</html>\n') ;
 
 fclose (f) ;
 

@@ -20,7 +20,7 @@ function list = UFgrep (expression, index)
 %
 % See also regexp, UFget.
 
-% Copyright 2007, Timothy A. Davis
+% Copyright 2008, Timothy A. Davis
 
 if (nargin < 2)
     index = UFget ;

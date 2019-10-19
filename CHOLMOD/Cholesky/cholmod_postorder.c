@@ -129,9 +129,9 @@ static Int dfs		/* return the new value of k */
  * permutation if Parent is a component tree.
  *
  * An optional node weight can be given.  When starting a postorder at node j,
- * the children of j are ordered in decreasing order of their weight.
+ * the children of j are ordered in increasing order of their weight.
  * If no weights are given (Weight is NULL) then children are ordered in
- * decreasing order of their node number.  The weight of a node must be in the
+ * increasing order of their node number.  The weight of a node must be in the
  * range 0 to n-1.  Weights outside that range are silently converted to that
  * range (weights < 0 are treated as zero, and weights >= n are treated as n-1).
  *

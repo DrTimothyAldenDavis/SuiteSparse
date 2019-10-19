@@ -13,7 +13,7 @@ function params = UFget_defaults
 %
 %   See also UFget.
 
-%   Copyright 2007, Tim Davis, University of Florida.
+%   Copyright 2008, Tim Davis, University of Florida.
 
 %-------------------------------------------------------------------------------
 % location of the UF sparse matrix collection
@@ -28,7 +28,7 @@ s = s (1:i(end)) ;
 %-------------------------------------------------------------------------------
 % define the directory to download into.  Should end in file separator.
 % Some examples include:
-% params.dir = '/cise/research/sparse/public_html/mat/' ;   % if at UF
+% params.dir = '/cise/research/sparse/public_html/mat/' ;
 % params.dir = 'your directory here/' ;
 % params.dir = 'c:\matlab\work\UFget\mat\' ;
 
@@ -39,5 +39,5 @@ params.dir = sprintf ('%smat%s', s, filesep) ;
 % define how often to check for a new index file (in # of days)
 % inf will force the program to ignore the need to refresh
 
-% params.refresh = Inf ;				    % if at UF
+% params.refresh = Inf ;
 params.refresh = 90 ;

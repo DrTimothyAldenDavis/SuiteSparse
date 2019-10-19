@@ -18,8 +18,9 @@ C = $(CC) $(CFLAGS) $(CHOLMOD_CONFIG) $(NANTESTS)
 
 # LAPACK and the Fortran reference BLAS, compiled with gfortran -g -O:
 # LIB = $(METIS) -lm -llapack_plain -lblas_plain -lg2c
-LIB = $(METIS) -lm -llapack_plain -lblas_plain -lgfortran -lgfortranbegin
-LIB = $(METIS) -lm -llapack -lblas -lgfortran -lgfortranbegin
+# LIB = $(METIS) -lm -llapack_plain -lblas_plain -lgfortran -lgfortranbegin
+# LIB = $(METIS) -lm -llapack -lblas -lgfortran -lgfortranbegin
+LIB = $(METIS) -lm -llapack -lblas_plain -lgfortran -lgfortranbegin -lpthread -lg2c
 
 # Solaris
 # LIB = $(METIS) -xlic_lib=sunperf

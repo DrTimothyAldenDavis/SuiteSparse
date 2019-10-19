@@ -23,6 +23,7 @@ function SuiteSparse_install (do_demo)
 % MESHND         2D and 3D regular mesh generation and nested dissection
 % LINFACTOR      illustrates the use of LU and CHOL (MATLAB 7.3 or later)
 % MATLAB_Tools   various simple m-files and demos
+% SuiteSparseQR  sparse QR factorization
 %
 % CXSparse is installed in place of CSparse; cd to CSparse/MATLAB and type
 % cs_install if you wish to use the latter.  Since Microsoft Windows does not
@@ -38,9 +39,9 @@ function SuiteSparse_install (do_demo)
 %
 % See also AMD, COLAMD, CAMD, CCOLAMD, CHOLMOD, UMFPACK, CSPARSE, CXSPARSE,
 %      UFget, RBio, UFcollection, KLU, BTF, MESHND, SSMULT, LINFACTOR,
-%      SuiteSparse, PATHTOOL, PATH.
+%      SuiteSparse, SPQR, PATHTOOL, PATH.
 
-% Copyright 1990-2007, Timothy A. Davis.
+% Copyright 1990-2008, Timothy A. Davis.
 % http://www.cise.ufl.edu/research/sparse
 % In collaboration with Patrick Amestoy, Yanqing Chen, Iain Duff, John Gilbert,
 % Steve Hadfield, Bill Hager, Stefan Larimore, Esmond Ng, Eka Palamadai, and
@@ -61,9 +62,10 @@ pc = ispc ;
 % check if METIS 4.0.1 is present where it's supposed to be
 have_metis = exist ('metis-4.0', 'dir') ;
 if (~have_metis)
-    fprintf ('CHOLMOD and KLU optionally use METIS 4.0.1.  Download it\n') ;
-    fprintf ('from http://glaros.dtc.umn.edu/gkhome/views/metis\n');
+    fprintf ('SPQR, CHOLMOD, and KLU optionally use METIS 4.0.1.  Download\n') ;
+    fprintf ('it from http://glaros.dtc.umn.edu/gkhome/views/metis\n');
     fprintf ('and place the metis-4.0 directory in this directory.\n') ;
+    input ('or hit enter to continue without METIS: ', 's') ;
     fprintf ('Now compiling without METIS...\n\n') ;
 end
 
@@ -81,11 +83,11 @@ try
     cd ([SuiteSparse '/UMFPACK/MATLAB']) ;
     paths = add_to_path (paths, pwd) ;
     umfpack_make
-catch
+catch                                                                       %#ok
     try
 	fprintf ('Trying to install with lcc_lib/libmwlapack.lib instead\n') ;
 	umfpack_make ('lcc_lib/libmwlapack.lib') ;
-    catch
+    catch                                                                   %#ok
 	fprintf ('UMFPACK not installed\n') ;
     end
 end
@@ -100,7 +102,7 @@ try
     else
        cholmod_make ('no metis') ;
     end
-catch
+catch                                                                       %#ok
     fprintf ('CHOLMOD not installed\n') ;
 end
 
@@ -109,7 +111,7 @@ try
     cd ([SuiteSparse '/AMD/MATLAB']) ;
     paths = add_to_path (paths, pwd) ;
     amd_make
-catch
+catch                                                                       %#ok
     fprintf ('AMD not installed\n') ;
 end
 
@@ -118,7 +120,7 @@ try
     cd ([SuiteSparse '/COLAMD/MATLAB']) ;
     paths = add_to_path (paths, pwd) ;
     colamd_make
-catch
+catch                                                                       %#ok
     fprintf ('COLAMD not installed\n') ;
 end
 
@@ -127,7 +129,7 @@ try
     cd ([SuiteSparse '/CCOLAMD/MATLAB']) ;
     paths = add_to_path (paths, pwd) ;
     ccolamd_make
-catch
+catch                                                                       %#ok
     fprintf ('CCOLAMD not installed\n') ;
 end
 
@@ -136,7 +138,7 @@ try
     cd ([SuiteSparse '/CAMD/MATLAB']) ;
     paths = add_to_path (paths, pwd) ;
     camd_make
-catch
+catch                                                                       %#ok
     fprintf ('CAMD not installed\n') ;
 end
 
@@ -158,7 +160,7 @@ try
     else
 	cs_make (1) ;
     end
-catch
+catch                                                                       %#ok
     fprintf ('CXSparse not installed\n') ;
 end
 
@@ -167,7 +169,7 @@ try
     cd ([SuiteSparse '/LDL/MATLAB']) ;
     paths = add_to_path (paths, pwd) ;
     ldl_make
-catch
+catch                                                                       %#ok
     fprintf ('LDL not installed\n') ;
 end
 
@@ -176,7 +178,7 @@ try
     cd ([SuiteSparse '/BTF/MATLAB']) ;
     paths = add_to_path (paths, pwd) ;
     btf_make
-catch
+catch                                                                       %#ok
     fprintf ('BTF not installed\n') ;
 end
 
@@ -185,7 +187,7 @@ try
     cd ([SuiteSparse '/KLU/MATLAB']) ;
     paths = add_to_path (paths, pwd) ;
     klu_make (have_metis) ;
-catch
+catch                                                                       %#ok
     fprintf ('KLU not installed\n') ;
 end
 
@@ -193,8 +195,8 @@ end
 try
     cd ([SuiteSparse '/SSMULT']) ;
     paths = add_to_path (paths, pwd) ;
-    ssmult_install (0) ;
-catch
+    ssmult_make ;
+catch                                                                       %#ok
     fprintf ('SSMULT not installed\n') ;
 end
 
@@ -204,7 +206,7 @@ try
     cd ([SuiteSparse '/UFcollection']) ;
     paths = add_to_path (paths, pwd) ;
     UFcollection_install (v < 7.0) ;
-catch
+catch                                                                       %#ok
     fprintf ('UFcollection not installed\n') ;
 end
 
@@ -218,13 +220,38 @@ try
         paths = add_to_path (paths, pwd) ;
         fprintf ('LINFACTOR installed\n') ;
     end
+    cd ([SuiteSparse '/MATLAB_Tools/find_components']) ;
+    paths = add_to_path (paths, pwd) ;
+    cd ([SuiteSparse '/MATLAB_Tools/GEE']) ;
+    paths = add_to_path (paths, pwd) ;
     cd ([SuiteSparse '/MATLAB_Tools/shellgui']) ;
     paths = add_to_path (paths, pwd) ;
     cd ([SuiteSparse '/MATLAB_Tools/waitmex']) ;
     paths = add_to_path (paths, pwd) ;
-    fprintf ('MESHND, MATLAB_Tools installed\n') ;
-catch
-    fprintf ('LINFACTOR, MESHND, or MATLAB_Tools not installed\n') ;
+    cd ([SuiteSparse '/MATLAB_Tools/spok']) ;
+    paths = add_to_path (paths, pwd) ;
+    mex spok.c spok_mex.c
+    fprintf ('LINFACTOR, MESHND, MATLAB_Tools installed\n') ;
+catch                                                                       %#ok
+    fprintf ('LINFACTOR, MESHND, and/or MATLAB_Tools not installed\n') ;
+end
+
+% compile and install SuiteSparseQR
+try
+    if (pc)
+        fprintf ('Note that SuiteSparseQR will not compile with the lcc\n') ;
+        fprintf ('compiler provided with MATLAB on Windows\n') ;
+    end
+    cd ([SuiteSparse '/SPQR/MATLAB']) ;
+    paths = add_to_path (paths, pwd) ;
+    if (have_metis)
+       spqr_make
+    else
+       spqr_make ('no metis') ;
+    end
+catch                                                                       %#ok
+    disp (lasterr) ;                                                        %#ok
+    fprintf ('SuiteSparseQR not installed\n') ;
 end
 
 % compile and install RBio (not on Windows ... no default Fortran compiler)
@@ -233,8 +260,8 @@ if (~pc)
 	cd ([SuiteSparse '/RBio']) ;
 	RBmake
 	paths = add_to_path (paths, pwd) ;
-    catch
-	disp (lasterr)
+    catch                                                                   %#ok
+	disp (lasterr) ;                                                    %#ok
 	fprintf ('RBio not installed (Fortran compiler required).\n') ;
     end
 end
@@ -255,7 +282,7 @@ end
 if (do_demo)
     try
 	SuiteSparse_demo ;
-    catch
+    catch                                                                   %#ok
 	fprintf ('SuiteSparse demo failed\n') ;
     end
 end

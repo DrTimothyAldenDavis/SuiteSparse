@@ -1,0 +1,32 @@
+./qrtest matrixlist.txt > qrtest_out.txt
+../Matrix/r2.mtx                   2 by     3 : OK
+../Matrix/a04.mtx                  0 by     4 : OK
+../Matrix/a2.mtx                   2 by     2 : OK
+../Matrix/west0067.mtx            67 by    67 : OK
+../Matrix/c2.mtx                   2 by     2 : OK
+../Matrix/a0.mtx                   0 by     0 : OK
+../Matrix/lfat5b.mtx              14 by    14 : OK
+../Matrix/bfwa62.mtx              62 by    62 : OK
+../Matrix/LFAT5.mtx               14 by    14 : OK
+../Matrix/b1_ss.mtx                7 by     7 : OK
+../Matrix/bcspwr01.mtx            39 by    39 : OK
+../Matrix/lpi_galenet.mtx          8 by    14 : OK
+../Matrix/lpi_itest6.mtx          11 by    17 : OK
+../Matrix/ash219.mtx             219 by    85 : OK
+../Matrix/a4.mtx                   4 by     2 : OK
+../Matrix/s32.mtx                  3 by     2 : OK
+../Matrix/c32.mtx                  3 by     2 : OK
+../Matrix/lp_share1b.mtx         117 by   253 : OK
+../Matrix/a1.mtx                   4 by     4 : OK
+../Matrix/GD06_theory.mtx        101 by   101 : OK
+../Matrix/GD01_b.mtx              18 by    18 : OK
+../Matrix/Tina_AskCal_perm.mtx    11 by    11 : OK
+../Matrix/Tina_AskCal.mtx         11 by    11 : OK
+../Matrix/GD98_a.mtx              38 by    38 : OK
+../Matrix/Ragusa16.mtx            24 by    24 : OK
+../Matrix/young1c.mtx            841 by   841 : please wait ... OK
+../Matrix/arrow.mtx            46500 by 46500 : OK
+
+All tests passed
+./cov
+statements not tested: 0

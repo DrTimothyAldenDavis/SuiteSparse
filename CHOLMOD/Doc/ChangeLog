@@ -1,3 +1,20 @@
+Sept 20, 2008, version 1.7.0
+
+    * update for SuiteSparseQR:
+
+	- add SuiteSparseQR knobs and stats to CHOLMOD Common
+	- SuiteSparseQR uses CHOLMOD for its multifrontal symbolic analysis
+	- changed (char *) input parameters to (const char *), to avoid
+	    spurious compiler warnings when C++ calls C.
+	- minor change to the AMD backup strategy in cholmod_analyze, to better
+	    suit SuiteSparseQR
+	- modified cholmod_analyze and cholmod_super_symbolic,
+	    to add "for_cholesky" parameter; new function cholmod_analyze_p2.
+	    This parameter is false for SuiteSparseQR.
+	- minor correction to comments in cholmod_postorder.c
+	- performance enhancement to supernodal symbolic analysis, when
+	    A or AA' is fairly dense
+
 Nov 1, 2007, version 1.6.0
 
     * minor lint cleanup (no bugs)

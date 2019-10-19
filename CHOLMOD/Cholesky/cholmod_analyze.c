@@ -139,7 +139,31 @@ cholmod_factor *CHOLMOD(analyze)
     cholmod_common *Common
 )
 {
-    return (CHOLMOD(analyze_p) (A, NULL, NULL, 0, Common)) ;
+    return (CHOLMOD(analyze_p2) (TRUE, A, NULL, NULL, 0, Common)) ;
+}
+
+
+/* ========================================================================== */
+/* === cholmod_analyze_p ==================================================== */
+/* ========================================================================== */
+
+/* Orders and analyzes A, AA', PAP', PAA'P', FF', or PFF'P and returns a
+ * symbolic factor that can later be passed to cholmod_factorize, where
+ * F = A(:,fset) if fset is not NULL and A->stype is zero.
+ * UserPerm is tried if non-NULL.  */
+
+cholmod_factor *CHOLMOD(analyze_p)
+(
+    /* ---- input ---- */
+    cholmod_sparse *A,	/* matrix to order and analyze */
+    Int *UserPerm,	/* user-provided permutation, size A->nrow */
+    Int *fset,		/* subset of 0:(A->ncol)-1 */
+    size_t fsize,	/* size of fset */
+    /* --------------- */
+    cholmod_common *Common
+)
+{
+    return (CHOLMOD(analyze_p2) (TRUE, A, UserPerm, fset, fsize, Common)) ;
 }
 
 
@@ -302,7 +326,7 @@ int CHOLMOD(analyze_ordering)
     Int *Post,		/* size n, postordering of elimination tree */
     Int *ColCount,	/* size n, nnz in each column of L */
     /* ---- workspace  */
-    Int *First,		/* size nworkspace for cholmod_postorder */
+    Int *First,		/* size n workspace for cholmod_postorder */
     Int *Level,		/* size n workspace for cholmod_postorder */
     /* --------------- */
     cholmod_common *Common
@@ -373,17 +397,17 @@ int CHOLMOD(analyze_ordering)
 
 
 /* ========================================================================== */
-/* === cholmod_analyze_p ==================================================== */
+/* === cholmod_analyze_p2 =================================================== */
 /* ========================================================================== */
 
-/* Orders and analyzes A, AA', PAP', PAA'P', FF', or PFF'P and returns a
- * symbolic factor that can later be passed to cholmod_factorize, where
- * F = A(:,fset) if fset is not NULL and A->stype is zero.
- * UserPerm is tried if non-NULL.  */
+/* Ordering and analysis for sparse Cholesky or sparse QR.  CHOLMOD itself
+ * always uses for_cholesky = TRUE.  The for_cholesky = FALSE option is
+ * for SuiteSparseQR only. */
 
-cholmod_factor *CHOLMOD(analyze_p)
+cholmod_factor *CHOLMOD(analyze_p2)
 (
     /* ---- input ---- */
+    int for_cholesky,   /* if TRUE, then analyze for Cholesky; else for QR */
     cholmod_sparse *A,	/* matrix to order and analyze */
     Int *UserPerm,	/* user-provided permutation, size A->nrow */
     Int *fset,		/* subset of 0:(A->ncol)-1 */
@@ -398,6 +422,7 @@ cholmod_factor *CHOLMOD(analyze_p)
     cholmod_factor *L ;
     Int k, n, ordering, method, nmethods, status, default_strategy, ncol, uncol,
 	skip_analysis, skip_best ;
+    Int amd_backup ;
     size_t s ;
     int ok = TRUE ;
 
@@ -434,21 +459,29 @@ cholmod_factor *CHOLMOD(analyze_p)
     default_strategy = (nmethods == 0) ;
     if (default_strategy)
     {
-	/* default strategy: try UserPerm, if given.  Try AMD for A, or COLAMD
+	/* default strategy: try UserPerm, if given.  Try AMD for A, or AMD
 	 * to order A*A'.  Try METIS for the symmetric case only if AMD reports
-	 * a high degree of fill-in and flop count.  Always try METIS for the
-	 * unsymmetric case.  METIS is not tried if the Partition Module
-	 * isn't installed.   If Common->default_nesdis is TRUE, then NESDIS
-	 * is used as the 3rd ordering instead. */
+         * a high degree of fill-in and flop count.  METIS is not tried if the
+         * Partition Module isn't installed.   If Common->default_nesdis is
+         * TRUE, then NESDIS is used as the 3rd ordering instead. */
 	Common->method [0].ordering = CHOLMOD_GIVEN ;/* skip if UserPerm NULL */
 	Common->method [1].ordering = CHOLMOD_AMD ;
 	Common->method [2].ordering = 
 	    (Common->default_nesdis ? CHOLMOD_NESDIS : CHOLMOD_METIS) ;
+        amd_backup = FALSE ;
 #ifndef NPARTITION
 	nmethods = 3 ;
 #else
 	nmethods = 2 ;
 #endif
+    }
+    else
+    {
+        /* If only METIS and NESDIS are selected, or if 2 or more methods are
+         * being tried, then enable AMD backup */
+        amd_backup = (nmethods > 1) || (nmethods == 1 &&
+            (Common->method [0].ordering == CHOLMOD_METIS ||
+             Common->method [0].ordering == CHOLMOD_NESDIS)) ;
     }
 
 #ifdef NSUPERNODAL
@@ -543,7 +576,7 @@ cholmod_factor *CHOLMOD(analyze_p)
 	if (method == nmethods)
 	{
 	    /* All methods failed: backup to AMD */
-	    if (Common->selected == EMPTY && !default_strategy)
+	    if (Common->selected == EMPTY && amd_backup)
 	    {
 		PRINT1 (("All methods requested failed: backup to AMD\n")) ;
 		ordering = CHOLMOD_AMD ;
@@ -604,6 +637,7 @@ cholmod_factor *CHOLMOD(analyze_p)
 	    /* AMD ordering of A, A*A', or A(:,f)*A(:,f)' */
 	    /* -------------------------------------------------------------- */
 
+            amd_backup = FALSE ;    /* no need to try AMD twice ... */
 	    CHOLMOD(amd) (A, fset, fsize, Perm, Common) ;
 	    skip_analysis = TRUE ;
 
@@ -759,7 +793,7 @@ cholmod_factor *CHOLMOD(analyze_p)
 		 * better (this heuristic is based on tests on all symmetric
 		 * positive definite matrices in the UF sparse matrix
 		 * collection, and it works well across a wide range of
-		 * problems).  METIS can take much more time and AMD. */
+		 * problems).  METIS can take much more time than AMD. */
 		break ;
 	    }
 	}
@@ -879,7 +913,7 @@ cholmod_factor *CHOLMOD(analyze_p)
 		&A1, &A2, &S, &F, Common) ;
 
 	/* workspace: Flag (nrow), Head (nrow), Iwork (5*nrow) */
-	CHOLMOD(super_symbolic) (S, F, Lparent, L, Common) ;
+	CHOLMOD(super_symbolic2) (for_cholesky, S, F, Lparent, L, Common) ;
 	PRINT1 (("status %d\n", Common->status)) ;
 
 	CHOLMOD(free_sparse) (&A1, Common) ;

@@ -129,8 +129,8 @@ void prune_row (cholmod_sparse *A, Int k) ;
 double pnorm (cholmod_dense *X, Int *P, cholmod_dense *B, Int inv) ;
 double test_solver (cholmod_sparse *A) ;
 Int *rand_set (Int len, Int n) ;
-void my_handler  (int status, char *file, int line, char *msg) ;
-void my_handler2 (int status, char *file, int line, char *msg) ;
+void my_handler  (int status, const char *file, int line, const char *msg) ;
+void my_handler2 (int status, const char *file, int line, const char *msg) ;
 double resid3 (cholmod_sparse *A1, cholmod_sparse *A2, cholmod_sparse *A3,
     cholmod_dense *X, cholmod_dense *B) ;
 double xrand (double range) ;

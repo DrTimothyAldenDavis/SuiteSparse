@@ -5,13 +5,14 @@ SuiteSparse/README
 ------------------
 
 ================================================================================
-QUICK START FOR MATLAB USERS:  unzip the SuiteSparse.zip file, then in the
+QUICK START FOR MATLAB USERS:  uncompress the SuiteSparse.zip or
+SuiteSparse.tar.gz archive file (they contain the same thing), then in the
 MATLAB Command Window, cd to the SuiteSparse directory and type
 SuiteSparse_install.  All packages will be compiled, and several demos will be
 run.
 ================================================================================
 
-Nov 1, 2007.  SuiteSparse version 3.1
+Sept 20, 2008.  SuiteSparse version 3.2.0
 
     AMD		approximate minimum degree ordering
 
@@ -58,11 +59,14 @@ Nov 1, 2007.  SuiteSparse version 3.1
 
     MATLAB_Tools    various simple m-files for use in MATLAB
 
+    SuiteSparseQR   sparse QR factorization
+
 CHOLMOD optionally uses METIS 4.0.1
 (http://www-users.cs.umn.edu/~karypis/metis).  To use METIS, place a copy of
-the metis-4.0 directory in the same directory (CHOLMOD_ACM_TOMS) containing
-this README file.  The use of METIS will improve the ordering quality in
-CHOLMOD.
+the metis-4.0 directory in the same directory containing this README file.
+Be sure that you do not have a nested metis-4.0/metis-4.0 directory; SuiteSparse
+won't find METIS if you do this, which can happen with a zip file of metis-4.0
+on Windows.  The use of METIS will improve the ordering quality in CHOLMOD.
 
 Refer to each package for license, copyright, and author information.  All
 codes are authored or co-authored by Timothy A. Davis, CISE Dept., Univ. of
@@ -88,25 +92,36 @@ To use "make" in Unix/Linux:
     otherwise UMFPACK and CHOLMOD will be slow.  Change -lblas to -l(your BLAS
     library here) in the UFconfig/UFconfig.mk file.
 
-(2) Configure METIS (or don't use METIS)
+(2) Install Intel's Threading Building Blocks (TBB)
+
+    This is optionally used by SuiteSparseQR.  Refer to the User Guide in 
+    SuiteSparse/SPQR/Doc/spqr_user_guide.pdf for details.
+
+(3) Configure METIS (or don't use METIS)
 
     cd to metis-4.0 and edit the Makefile.in file.  I recommend making these
     changes to metis-4.0/Makefile.in:
 
         CC = gcc
         OPTFLAGS = -O3
+
+    And, if you want to use METIS in MATLAB and compile with "make" instead
+    of using SuiteSparse_install.m:
+
         COPTIONS = -fexceptions -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
 
     Next, cd to metis-4.0 and type "make".
 
     If you do not wish to use METIS, then edit the UFconfig/UFconfig.mk file,
-    and change the line
+    and change the lines
 
         CHOLMOD_CONFIG =
+        SPQR_CONFIG =
 
     to
 
         CHOLMOD_CONFIG = -DNPARTITION
+        SPQR_CONFIG = -DNPARTITION
 
     Also change the line
 
@@ -116,14 +131,19 @@ To use "make" in Unix/Linux:
 
         METIS =
 
-(3) Make other changes to UFconfig/UFconfig.mk as needed
+(4) Make other changes to UFconfig/UFconfig.mk as needed
 
     Edit the UFconfig/UFconfig.mk file as needed.  Directions are in that file.
     If you have compiled SuiteSparse already (partially or completely), then
     whenever you edit the UFconfig/UFconfig.mk file, you should then type
     "make purge" (or "make realclean") in this directory.
 
-(4) Type "make" in this directory.  All packages will be be compiled.  METIS
+    If you want to use "make" to compile mexFunctions, I recommend adding
+    these options to the CFLAGS = line:
+
+        -fexceptions -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
+
+(5) Type "make" in this directory.  All packages will be be compiled.  METIS
     will be compiled if you have it.  Several demos will be run.
 
     The libraries will appear in */Lib/*.a.  Include files, as needed by user
@@ -133,3 +153,10 @@ To use "make" in Unix/Linux:
     The METIS library is in metis-4.0/libmetis.a.  METIS Include files (not
     needed by the end user of SuiteSparse) are in located in metis-4.0/Lib/*.h.
 
+
+In a future version, I will include a "make install" that will create *.so
+libraries and place them in /usr/lib.  The libraries should be called
+libPACKAGE.so.VERSION.SUBVERSION.SUBSUBVERSION.  For example, 
+libcolamd.so.2.7.1 should be the library name for COLAMD version 2.7.1.
+The version numbers are located in UFconfig.h (in comments) and in each
+package (as a #define).

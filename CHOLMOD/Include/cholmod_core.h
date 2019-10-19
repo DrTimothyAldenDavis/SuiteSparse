@@ -244,10 +244,10 @@
  *	#endif
  */
 
-#define CHOLMOD_DATE "Nov 1, 2007"
+#define CHOLMOD_DATE "Sept 20, 2008"
 #define CHOLMOD_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define CHOLMOD_MAIN_VERSION 1
-#define CHOLMOD_SUB_VERSION 6
+#define CHOLMOD_SUB_VERSION 7
 #define CHOLMOD_SUBSUB_VERSION 0
 #define CHOLMOD_VERSION \
     CHOLMOD_VER_CODE(CHOLMOD_MAIN_VERSION,CHOLMOD_SUB_VERSION)
@@ -356,8 +356,8 @@
  */
 
 /* Definitions for cholmod_common: */
-#define CHOLMOD_MAXMETHODS 9	/* maximum number of different methods that
-				 * cholmod_analyze can try. Must be >= 9. */
+#define CHOLMOD_MAXMETHODS 9	/* maximum number of different methods that */
+				/* cholmod_analyze can try. Must be >= 9. */
 
 /* Common->status values.  zero means success, negative means a fatal error,
  * positive is a warning. */
@@ -367,16 +367,16 @@
 #define CHOLMOD_TOO_LARGE (-3)		/* failure: integer overflow occured */
 #define CHOLMOD_INVALID (-4)		/* failure: invalid input */
 #define CHOLMOD_NOT_POSDEF (1)		/* warning: matrix not pos. def. */
-#define CHOLMOD_DSMALL (2)		/* warning: D for LDL'  or diag(L) or
-					 * LL' has tiny absolute value */
+#define CHOLMOD_DSMALL (2)		/* warning: D for LDL'  or diag(L) or */
+					/* LL' has tiny absolute value */
 
 /* ordering method (also used for L->ordering) */
 #define CHOLMOD_NATURAL 0	/* use natural ordering */
 #define CHOLMOD_GIVEN 1		/* use given permutation */
 #define CHOLMOD_AMD 2		/* use minimum degree (AMD) */
 #define CHOLMOD_METIS 3		/* use METIS' nested dissection */
-#define CHOLMOD_NESDIS 4	/* use CHOLMOD's version of nested dissection:
-				 * node bisector applied recursively, followed
+#define CHOLMOD_NESDIS 4	/* use CHOLMOD's version of nested dissection:*/
+				/* node bisector applied recursively, followed
 				 * by constrained minimum degree (CSYMAMD or
 				 * CCOLAMD) */
 #define CHOLMOD_COLAMD 5	/* use AMD for A, COLAMD for A*A' */
@@ -531,7 +531,8 @@ typedef struct cholmod_common_struct
 			 * of a try/catch block.  No error message is printed
 	 * and the Common->error_handler function is not called. */
 
-    void (*error_handler) (int status, char *file, int line, char *message) ;
+    void (*error_handler) (int status, const char *file,
+        int line, const char *message) ;
 
 	/* Common->error_handler is the user's error handling routine.  If not
 	 * NULL, this routine is called if an error occurs in CHOLMOD.  status
@@ -901,9 +902,21 @@ typedef struct cholmod_common_struct
      * v1.1 to the current version are binary compatible.
      */
 
-    double  other1 [16] ;
-    UF_long other2 [16] ;
-    int     other3 [13] ;   /* reduced from size 16 in v1.1. */
+    /* ---------------------------------------------------------------------- */
+    double other1 [12] ;        /* reduced from size 16 in v1.6 */
+
+    double SPQR_xstat [2] ;     /* for SuiteSparseQR statistics */
+
+    /* SuiteSparseQR control parameters: */
+    double SPQR_grain ;         /* task size is >= max (total flops / grain) */
+    double SPQR_small ;         /* task size is >= small */
+
+    /* ---------------------------------------------------------------------- */
+    UF_long SPQR_istat [10] ;   /* for SuiteSparseQR statistics */
+    UF_long other2 [6] ;        /* reduced from size 16 in v1.6 */
+
+    /* ---------------------------------------------------------------------- */
+    int other3 [10] ;       /* reduced from size 16 in v1.1. */
 
     int prefer_binary ;	    /* cholmod_read_triplet converts a symmetric
 			     * pattern-only matrix into a real matrix.  If
@@ -925,7 +938,16 @@ typedef struct cholmod_common_struct
     int called_nd ;	    /* TRUE if the last call to
 			     * cholmod_analyze called NESDIS or METIS. */
 
+    int blas_ok ;           /* FALSE if BLAS int overflow; TRUE otherwise */
+
+    /* SuiteSparseQR control parameters: */
+    int SPQR_shrink ;        /* controls stack realloc method */
+    int SPQR_nthreads ;      /* number of TBB threads, 0 = auto */
+
+    /* ---------------------------------------------------------------------- */
     size_t  other4 [16] ;
+
+    /* ---------------------------------------------------------------------- */
     void   *other5 [16] ;
 
 } cholmod_common ;
@@ -1034,14 +1056,14 @@ int cholmod_error
 (
     /* ---- input ---- */
     int status,		/* error status */
-    char *file,		/* name of source code file where error occured */
+    const char *file,	/* name of source code file where error occured */
     int line,		/* line number in source code file where error occured*/
-    char *message,	/* error message */
+    const char *message,/* error message */
     /* --------------- */
     cholmod_common *Common
 ) ;
 
-int cholmod_l_error (int, char *, int, char *, cholmod_common *) ;
+int cholmod_l_error (int, const char *, int, const char *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_dbound:  for internal use in CHOLMOD only */

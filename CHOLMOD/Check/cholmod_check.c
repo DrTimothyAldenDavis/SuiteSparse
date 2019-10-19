@@ -197,7 +197,7 @@ static void print_value
 static int check_common
 (
     Int print,
-    char *name,
+    const char *name,
     cholmod_common *Common
 )
 {
@@ -205,8 +205,8 @@ static int check_common
     double *Xwork ;
     Int *Flag, *Head ;
     UF_long mark ;
-    Int i, nrow, nmethods, ordering, xworksize, amd_printed, init_print ;
-    char *type = "common" ;
+    Int i, nrow, nmethods, ordering, xworksize, amd_backup, init_print ;
+    const char *type = "common" ;
 
     /* ---------------------------------------------------------------------- */
     /* print control parameters and statistics */
@@ -315,6 +315,9 @@ static int check_common
     {
 	P3 ("%s", "  nmethods:   number of ordering methods to try: ") ;
 	P3 (""ID"\n", nmethods) ;
+        amd_backup = (nmethods > 1) || (nmethods == 1 &&
+            (Common->method [0].ordering == CHOLMOD_METIS ||
+             Common->method [0].ordering == CHOLMOD_NESDIS)) ;
     }
     else
     {
@@ -335,7 +338,9 @@ static int check_common
 	P3 ("%s", "    Select best ordering tried.\n") ;
 	Common->method [0].ordering = CHOLMOD_GIVEN ;
 	Common->method [1].ordering = CHOLMOD_AMD ;
-	Common->method [2].ordering = CHOLMOD_METIS ;
+	Common->method [2].ordering = 
+            (Common->default_nesdis ? CHOLMOD_NESDIS : CHOLMOD_METIS) ;
+        amd_backup = FALSE ;
 #ifndef NPARTITION
 	nmethods = 3 ;
 #else
@@ -343,7 +348,6 @@ static int check_common
 #endif
     }
 
-    amd_printed = FALSE ;
     for (i = 0 ; i < nmethods ; i++)
     {
 	P3 ("    method "ID": ", i) ;
@@ -363,12 +367,12 @@ static int check_common
 
 	    case CHOLMOD_AMD:
 		P3 ("%s", "AMD (or COLAMD if factorizing AA')\n") ;
-		amd_printed = TRUE ;
+		amd_backup = FALSE ;
 		break ;
 
 	    case CHOLMOD_COLAMD:
 		P3 ("%s", "AMD if factorizing A, COLAMD if factorizing AA')\n");
-		amd_printed = TRUE ;
+		amd_backup = FALSE ;
 		break ;
 
 	    case CHOLMOD_METIS:
@@ -433,7 +437,7 @@ static int check_common
     }
 
     /* backup AMD results, if any */
-    if (!amd_printed)
+    if (amd_backup)
     {
 	P3 ("%s", "    backup method: ") ;
 	P3 ("%s", "AMD (or COLAMD if factorizing AA')\n") ;
@@ -579,7 +583,7 @@ int CHOLMOD(check_common)
 int CHOLMOD(print_common)
 (
     /* ---- input ---- */
-    char *name,		/* printed name of Common object */
+    const char *name,		/* printed name of Common object */
     /* --------------- */
     cholmod_common *Common
 )
@@ -603,7 +607,7 @@ static UF_long check_sparse
 (
     Int *Wi,
     Int print,
-    char *name,
+    const char *name,
     cholmod_sparse *A,
     UF_long *nnzdiag,
     cholmod_common *Common
@@ -613,7 +617,7 @@ static UF_long check_sparse
     Int *Ap, *Ai, *Anz ;
     Int nrow, ncol, nzmax, sorted, packed, j, p, pend, i, nz, ilast,
 	space, init_print, dnz, count, xtype ;
-    char *type = "sparse" ;
+    const char *type = "sparse" ;
 
     /* ---------------------------------------------------------------------- */
     /* print header information */
@@ -868,7 +872,7 @@ int CHOLMOD(print_sparse)
 (
     /* ---- input ---- */
     cholmod_sparse *A,	/* sparse matrix to print */
-    char *name,		/* printed name of sparse matrix */
+    const char *name,	/* printed name of sparse matrix */
     /* --------------- */
     cholmod_common *Common
 )
@@ -889,14 +893,14 @@ int CHOLMOD(print_sparse)
 static int check_dense
 (
     Int print,
-    char *name,
+    const char *name,
     cholmod_dense *X,
     cholmod_common *Common
 )
 {
     double *Xx, *Xz ;
     Int i, j, d, nrow, ncol, nzmax, nz, init_print, count, xtype ;
-    char *type = "dense" ;
+    const char *type = "dense" ;
 
     /* ---------------------------------------------------------------------- */
     /* print header information */
@@ -1005,7 +1009,7 @@ int CHOLMOD(print_dense)
 (
     /* ---- input ---- */
     cholmod_dense *X,	/* dense matrix to print */
-    char *name,		/* printed name of dense matrix */
+    const char *name,	/* printed name of dense matrix */
     /* --------------- */
     cholmod_common *Common
 )
@@ -1038,12 +1042,12 @@ static int check_subset
     UF_long len,
     size_t n,
     Int print,
-    char *name,
+    const char *name,
     cholmod_common *Common
 )
 {
     Int i, k, init_print, count ;
-    char *type = "subset" ;
+    const char *type = "subset" ;
 
     init_print = print ;
 
@@ -1129,7 +1133,7 @@ int CHOLMOD(print_subset)
     Int *Set,		/* Set [0:len-1] is a subset of 0:n-1.  Duplicates OK */
     UF_long len,	/* size of Set (an integer array), or < 0 if 0:n-1 */
     size_t n,		/* 0:n-1 is valid range */
-    char *name,		/* printed name of Set */
+    const char *name,	/* printed name of Set */
     /* --------------- */
     cholmod_common *Common
 )
@@ -1162,7 +1166,7 @@ static int check_perm
 (
     Int *Wi,
     Int print,
-    char *name,
+    const char *name,
     Int *Perm,
     size_t len,
     size_t n,
@@ -1171,7 +1175,7 @@ static int check_perm
 {
     Int *Flag ;
     Int i, k, mark, init_print, count ;
-    char *type = "perm" ;
+    const char *type = "perm" ;
 
     /* ---------------------------------------------------------------------- */
     /* checks that take O(1) time */
@@ -1300,7 +1304,7 @@ int CHOLMOD(print_perm)
     Int *Perm,		/* Perm [0:len-1] is a permutation of subset of 0:n-1 */
     size_t len,		/* size of Perm (an integer array) */
     size_t n,		/* 0:n-1 is valid range */
-    char *name,		/* printed name of Perm */
+    const char *name,	/* printed name of Perm */
     /* --------------- */
     cholmod_common *Common
 )
@@ -1346,12 +1350,12 @@ static int check_parent
     Int *Parent,
     size_t n,
     Int print,
-    char *name,
+    const char *name,
     cholmod_common *Common
 )
 {
     Int j, p, init_print, count ;
-    char *type = "parent" ;
+    const char *type = "parent" ;
 
     init_print = print ;
 
@@ -1412,7 +1416,7 @@ int CHOLMOD(print_parent)
     /* ---- input ---- */
     Int *Parent,	/* Parent [0:n-1] is an elimination tree */
     size_t n,		/* size of Parent */
-    char *name,		/* printed name of Parent */
+    const char *name,	/* printed name of Parent */
     /* --------------- */
     cholmod_common *Common
 )
@@ -1431,7 +1435,7 @@ static int check_factor
 (
     Int *Wi,
     Int print,
-    char *name,
+    const char *name,
     cholmod_factor *L,
     cholmod_common *Common
 )
@@ -1443,7 +1447,8 @@ static int check_factor
 	count, precise, init_print, ilast, lnz, head, tail, jprev, plast,
 	jnext, examine_super, nsuper, s, k1, k2, psi, psend, psx, nsrow, nscol,
 	ps2, psxend, ssize, xsize, maxcsize, maxesize, nsrow2, jj, ii, xtype ;
-    char *type = "factor" ;
+    Int for_cholesky ;
+    const char *type = "factor" ;
 
     /* ---------------------------------------------------------------------- */
     /* print header information */
@@ -1827,7 +1832,9 @@ static int check_factor
 			Lpi [0], nsuper, Lpi [nsuper])) ;
 		ERR ("invalid: L->pi invalid") ;
 	    }
-	    if (Lpx [0] != 0 || MAX (1, Lpx [nsuper]) != xsize)
+
+            for_cholesky = (Lpx [0] != 123456) ;
+	    if (for_cholesky && (Lpx [0] != 0 || MAX (1, Lpx[nsuper]) != xsize))
 	    {
 		ERR ("invalid: L->px invalid") ;
 	    }
@@ -1839,12 +1846,16 @@ static int check_factor
 		k2 = Super [s+1] ;
 		psi = Lpi [s] ;
 		psend = Lpi [s+1] ;
-		psx = Lpx [s] ;
 		nsrow = psend - psi ;
 		nscol = k2 - k1 ;
 		nsrow2 = nsrow - nscol ;
 		ps2 = psi + nscol ;
-		psxend = Lpx [s+1] ;
+
+                if (for_cholesky)
+                {
+                    psx = Lpx [s] ;
+                    psxend = Lpx [s+1] ;
+                }
 
 		ETC (s == nsuper-1, count, 4) ;
 
@@ -1852,11 +1863,15 @@ static int check_factor
 		P4 ("col "ID" ", k1) ;
 		P4 ("to "ID". ", k2-1) ;
 		P4 ("nz in first col: "ID".\n", nsrow) ;
-		P4 ("  values start "ID", ", psx) ;
-		P4 ("end "ID"\n", psxend) ;
+
+                if (for_cholesky)
+                {
+                    P4 ("  values start "ID", ", psx) ;
+                    P4 ("end "ID"\n", psxend) ;
+                }
 
 		if (k1 > k2 || k1 < 0 || k2 > n || nsrow < nscol || nsrow2 < 0
-		    || psxend - psx != nsrow * nscol)
+                    || (for_cholesky && psxend - psx != nsrow * nscol))
 		{
 		    ERR ("invalid supernode") ;
 		}
@@ -1963,7 +1978,7 @@ int CHOLMOD(print_factor)
 (
     /* ---- input ---- */
     cholmod_factor *L,	/* factor to print */
-    char *name,		/* printed name of factor */
+    const char *name,	/* printed name of factor */
     /* --------------- */
     cholmod_common *Common
 )
@@ -1983,7 +1998,7 @@ int CHOLMOD(print_factor)
 static int check_triplet
 (
     Int print,
-    char *name,
+    const char *name,
     cholmod_triplet *T,
     cholmod_common *Common
 )
@@ -1991,7 +2006,7 @@ static int check_triplet
     double *Tx, *Tz ;
     Int *Ti, *Tj ;
     Int i, j, p, nrow, ncol, nzmax, nz, xtype, init_print, count ;
-    char *type = "triplet" ;
+    const char *type = "triplet" ;
 
     /* ---------------------------------------------------------------------- */
     /* print header information */
@@ -2150,7 +2165,7 @@ int CHOLMOD(print_triplet)
 (
     /* ---- input ---- */
     cholmod_triplet *T,	/* triplet matrix to print */
-    char *name,		/* printed name of triplet matrix */
+    const char *name,	/* printed name of triplet matrix */
     /* --------------- */
     cholmod_common *Common
 )
@@ -2178,7 +2193,7 @@ int CHOLMOD(dump_malloc) = -1 ;
 /* === cholmod_dump_init ==================================================== */
 /* ========================================================================== */
 
-void CHOLMOD(dump_init) (char *s, cholmod_common *Common)
+void CHOLMOD(dump_init) (const char *s, cholmod_common *Common)
 {
     FILE *f ;
     f = fopen ("debug", "r") ;
@@ -2202,7 +2217,7 @@ void CHOLMOD(dump_init) (char *s, cholmod_common *Common)
 UF_long CHOLMOD(dump_sparse)	/* returns nnz (diag (A)) or EMPTY if error */
 (
     cholmod_sparse *A,
-    char *name,
+    const char *name,
     cholmod_common *Common
 )
 {
@@ -2232,7 +2247,7 @@ UF_long CHOLMOD(dump_sparse)	/* returns nnz (diag (A)) or EMPTY if error */
 int CHOLMOD(dump_factor)
 (
     cholmod_factor *L,
-    char *name,
+    const char *name,
     cholmod_common *Common
 )
 {
@@ -2262,7 +2277,7 @@ int CHOLMOD(dump_perm)
     Int *Perm,
     size_t len,
     size_t n,
-    char *name,
+    const char *name,
     cholmod_common *Common
 )
 {
@@ -2289,7 +2304,7 @@ int CHOLMOD(dump_perm)
 int CHOLMOD(dump_dense)
 (
     cholmod_dense *X,
-    char *name,
+    const char *name,
     cholmod_common *Common
 )
 {
@@ -2310,7 +2325,7 @@ int CHOLMOD(dump_dense)
 int CHOLMOD(dump_triplet)
 (
     cholmod_triplet *T,
-    char *name,
+    const char *name,
     cholmod_common *Common
 )
 {
@@ -2333,7 +2348,7 @@ int CHOLMOD(dump_subset)
     Int *S,
     size_t len,
     size_t n,
-    char *name,
+    const char *name,
     cholmod_common *Common
 )
 {
@@ -2355,7 +2370,7 @@ int CHOLMOD(dump_parent)
 (
     Int *Parent,
     size_t n,
-    char *name,
+    const char *name,
     cholmod_common *Common
 )
 {
@@ -2375,7 +2390,8 @@ int CHOLMOD(dump_parent)
 
 void CHOLMOD(dump_real)
 (
-    char *name, Real *X, UF_long nrow, UF_long ncol, int lower, int xentry,
+    const char *name,
+    Real *X, UF_long nrow, UF_long ncol, int lower, int xentry,
     cholmod_common *Common
 )
 {
@@ -2466,7 +2482,12 @@ void CHOLMOD(dump_super)
 /* === cholmod_dump_mem ===================================================== */
 /* ========================================================================== */
 
-int CHOLMOD(dump_mem) (char *where, UF_long should, cholmod_common *Common)
+int CHOLMOD(dump_mem)
+(
+    const char *where,
+    UF_long should,
+    cholmod_common *Common
+)
 {
     UF_long diff = should - Common->memory_inuse ;
     if (diff != 0)

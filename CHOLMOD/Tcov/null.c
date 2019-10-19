@@ -19,7 +19,7 @@
 /* === my_hander2 =========================================================== */
 /* ========================================================================== */
 
-void my_handler2 (int status, char *file, int line, char *msg)
+void my_handler2 (int status, const char *file, int line, const char *msg)
 {
     printf ("This ERROR is expected: file %s line %d\n%d: %s\n",
 	    file, line, status, msg) ;

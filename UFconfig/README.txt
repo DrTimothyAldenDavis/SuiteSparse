@@ -15,6 +15,7 @@ do not require UFconfig.
   BTF	   permutation to block triangular form
   LDL	   concise sparse LDL'
   LPDASA   LP Dual Active Set Algorithm
+  SuiteSparseQR     sparse QR factorization
 
 UFconfig is not required by:
 

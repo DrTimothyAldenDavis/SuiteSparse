@@ -87,7 +87,8 @@ void sputil_config (Int spumoni, cholmod_common *cm)
 /* === sputil_error_handler ================================================= */
 /* ========================================================================== */
 
-void sputil_error_handler (int status, char *file, int line, char *message)
+void sputil_error_handler (int status, const char *file, int line,
+    const char *message)
 {
     if (status < CHOLMOD_OK)
     {
@@ -136,7 +137,7 @@ cholmod_sparse *sputil_get_sparse
     A->packed = TRUE ;
     A->sorted = TRUE ;
     A->nz = NULL ;
-    A->itype = CHOLMOD_INT ;
+    A->itype = CHOLMOD_LONG ;       /* was CHOLMOD_INT in v1.6 and earlier */
     A->dtype = CHOLMOD_DOUBLE ;
     A->stype = stype ;
 

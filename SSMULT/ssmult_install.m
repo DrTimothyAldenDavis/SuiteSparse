@@ -24,29 +24,7 @@ help ssmult_install
 % compile ssmult and add it to the path
 %-------------------------------------------------------------------------------
 
-d = '' ;
-if (~isempty (strfind (computer, '64')))
-    % 64-bit MATLAB
-    d = ' -largeArrayDims -DIS64' ;
-end
-
-v = getversion ;
-if (v < 6.5)
-    % mxIsDouble is false for a double sparse matrix in MATLAB 6.1 or earlier
-    d = [d ' -DMATLAB_6p1_OR_EARLIER'] ;
-end
-
-cmd = sprintf ('mex -O%s ssmult.c', d) ;
-disp (cmd) ;
-eval (cmd) ;
-
-cmd = sprintf ('mex -O%s ssmultsym.c', d) ;
-disp (cmd) ;
-eval (cmd) ;
-
-cmd = sprintf ('mex -O%s -DUNSORTED ssmult.c -output ssmult_unsorted', d) ;
-disp (cmd) ;
-eval (cmd) ;
+ssmult_make
 
 addpath (pwd) ;
 fprintf ('\nssmult has been compiled, and the following directory has been\n') ;
@@ -66,9 +44,3 @@ end
 if (dotests)
     ssmult_test ;
 end
-
-%-------------------------------------------------------------------------------
-function v = getversion
-% determine the MATLAB version, and return it as a double.
-v = sscanf (version, '%d.%d.%d') ;
-v = 10.^(0:-1:-(length(v)-1)) * v ;

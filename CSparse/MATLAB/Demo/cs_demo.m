@@ -33,15 +33,15 @@ help cs_demo3
 cs_demo3 (do_pause, matrixpath) ;
 
 fprintf ('\n\n-------------------------------------------------------\n') ;
-help ex_1
+help private/ex_1
 ex_1
 
 fprintf ('\n\n-------------------------------------------------------\n') ;
-help ex2
+help private/ex2
 ex2
 
 fprintf ('\n\n-------------------------------------------------------\n') ;
-help ex3
+help private/ex3
 ex3
 
 fprintf ('\nAll CSparse demos finished.\n') ;

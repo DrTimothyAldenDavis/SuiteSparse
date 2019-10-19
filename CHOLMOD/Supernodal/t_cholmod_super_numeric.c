@@ -119,7 +119,7 @@ static int TEMPLATE (cholmod_super_numeric)
 
     /* If integer overflow occurs in the BLAS, Common->status is set to
      * CHOLMOD_TOO_LARGE, and the contents of Lx are undefined. */
-    int blas_ok = TRUE ;
+    Common->blas_ok = TRUE ;
 
     /* ---------------------------------------------------------------------- */
     /* get inputs */
@@ -599,7 +599,7 @@ static int TEMPLATE (cholmod_super_numeric)
 
 	/* info is set to one in LAPACK_*potrf if blas_ok is FALSE.  It is
 	 * set to zero in dpotrf/zpotrf if the factorization was successful. */
-	if (CHECK_BLAS_INT && !blas_ok)
+	if (CHECK_BLAS_INT && !Common->blas_ok)
 	{
 	    ERROR (CHOLMOD_TOO_LARGE, "problem too large for the BLAS") ;
 	}
@@ -695,7 +695,7 @@ static int TEMPLATE (cholmod_super_numeric)
 		nsrow) ;
 #endif
 
-	    if (CHECK_BLAS_INT && !blas_ok)
+	    if (CHECK_BLAS_INT && !Common->blas_ok)
 	    {
 		ERROR (CHOLMOD_TOO_LARGE, "problem too large for the BLAS") ;
 	    }

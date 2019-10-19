@@ -188,6 +188,7 @@ end
 %-------------------------------------------------------------------------------
 function kk = do_cmd (s, kk, details)
 %DO_CMD: evaluate a command, and either print it or print a "."
+s = strrep (s, '/', filesep) ;
 if (details)
     fprintf ('%s', s) ;
 else

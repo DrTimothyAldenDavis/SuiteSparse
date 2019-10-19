@@ -18,6 +18,7 @@
 # LDL	  1.2 or later	concise sparse LDL'
 # LPDASA  any		linear program solve (dual active set algorithm)
 # CXSparse any		extended version of CSparse (int/long, real/complex)
+# SuiteSparseQR	any	sparse QR factorization
 #
 # The UFconfig directory and the above packages should all appear in a single
 # directory, in order for the Makefile's within each package to find this file.
@@ -33,7 +34,10 @@
 # performance.  You should select the optimization parameters that are best
 # for your system.  On Linux, use "CFLAGS = -O3 -fexceptions" for example.
 CC = cc
-CFLAGS = -O
+# CFLAGS = -O   (for example; see below for details)
+
+# C++ compiler (also uses CFLAGS)
+CPLUSPLUS = g++
 
 # ranlib, and ar, for generating libraries
 RANLIB = ranlib
@@ -51,7 +55,7 @@ F77LIB =
 # C and Fortran libraries
 LIB = -lm
 
-# For compiling MATLAB mexFunctions (MATLAB 7.5)
+# For compiling MATLAB mexFunctions (MATLAB 7.5 or later)
 MEX = mex -O -largeArrayDims -lmwlapack -lmwblas
 
 # For compiling MATLAB mexFunctions (MATLAB 7.3 and 7.4)
@@ -82,11 +86,15 @@ MEX = mex -O -largeArrayDims -lmwlapack -lmwblas
 # naming the BLAS and LAPACK library (*.a or *.so) files.
 
 # Using the Goto BLAS:
-# BLAS = -lgoto -lgfortran -lgfortranbegin
+# BLAS = -lgoto -lgfortran -lgfortranbegin -lg2c
 
 # This is probably slow ... it might connect to the Standard Reference BLAS:
-BLAS = -lblas -lgfortran -lgfortranbegin
+BLAS = -lblas -lgfortran -lgfortranbegin -lg2c
 LAPACK = -llapack
+
+# Using non-optimized versions:
+# BLAS = -lblas_plain -lgfortran -lgfortranbegin -lg2c
+# LAPACK = -llapack_plain
 
 # The BLAS might not contain xerbla, an error-handling routine for LAPACK and
 # the BLAS.  Also, the standard xerbla requires the Fortran I/O library, and
@@ -179,12 +187,40 @@ UMFPACK_CONFIG =
 CHOLMOD_CONFIG =
 
 #------------------------------------------------------------------------------
+# SuiteSparseQR configuration:
+#------------------------------------------------------------------------------
+
+# The SuiteSparseQR library can be compiled with the following options:
+#
+# -DNPARTITION      do not include the CHOLMOD partition module
+# -DNEXPERT         do not include the functions in SuiteSparseQR_expert.cpp
+# -DTIMING          enable timing and flop counts
+# -DHAVE_TBB        enable the use of Intel's Threading Building Blocks (TBB)
+
+# default, without timing, without TBB:
+SPQR_CONFIG =
+# with timing and TBB:
+# SPQR_CONFIG = -DTIMING -DHAVE_TBB
+# with timing
+# SPQR_CONFIG = -DTIMING
+
+# with TBB, you must select this:
+# TBB = -ltbb
+# without TBB:
+TBB =
+
+# with timing, you must include the timing library:
+# RTLIB = -lrt
+# without timing
+RTLIB =
+
+#------------------------------------------------------------------------------
 # Linux
 #------------------------------------------------------------------------------
 
 # Using default compilers:
 # CC = gcc
-CFLAGS = -O3
+CFLAGS = -O3 -fexceptions
 
 # alternatives:
 # CFLAGS = -g -fexceptions \
@@ -195,6 +231,7 @@ CFLAGS = -O3
     	-Wredundant-decls -Wnested-externs -Wdisabled-optimization -ansi
 # CFLAGS = -O3 -fexceptions -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
 # CFLAGS = -O3
+# CFLAGS = -O3 -g -fexceptions
 
 # consider:
 # -fforce-addr -fmove-all-movables -freduce-all-givs -ftsp-ordering
@@ -231,13 +268,17 @@ CFLAGS = -O3
 #------------------------------------------------------------------------------
 
 # 32-bit
-# CFLAGS = -KPIC -dalign -xc99=%none -Xc -xlibmieee -xO5 -xlibmil
+# CFLAGS = -KPIC -dalign -xc99=%none -Xc -xlibmieee -xO5 -xlibmil -m32
 
 # 64-bit
-# CFLAGS = -KPIC -dalign -xc99=%none -Xc -xlibmieee -xO5 -xlibmil -xarch=v9
+# CFLAGS = -fast -KPIC -xc99=%none -xlibmieee -xlibmil -m64 -Xc
 
+# FFLAGS = -fast -KPIC -dalign -xlibmil -m64
+
+# The Sun Performance Library includes both LAPACK and the BLAS:
 # BLAS = -xlic_lib=sunperf
 # LAPACK =
+
 
 #------------------------------------------------------------------------------
 # Compaq Alpha
@@ -307,4 +348,4 @@ CFLAGS = -O3
 # remove object files and profile output
 #------------------------------------------------------------------------------
 
-CLEAN = *.o *.obj *.ln *.bb *.bbg *.da *.tcov *.gcov gmon.out *.bak *.d
+CLEAN = *.o *.obj *.ln *.bb *.bbg *.da *.tcov *.gcov gmon.out *.bak *.d *.gcda *.gcno

@@ -220,12 +220,12 @@ for more details.
     double Control [UMFPACK_CONTROL], Info [UMFPACK_INFO], Ax [nz], X [n], B [n] ;
     void *Symbolic, *Numeric ;
 
+    umfpack_di_defaults (Control) ;
     status = umfpack_di_symbolic (m, n, Ap, Ai, Ax, &Symbolic, Control, Info) ;
     status = umfpack_di_numeric (Ap, Ai, Ax, Symbolic, &Numeric, Control, Info) ;
     status = umfpack_di_solve (sys, Ap, Ai, Ax, X, B, Numeric, Control, Info) ;
     umfpack_di_free_symbolic (&Symbolic) ;
     umfpack_di_free_numeric (&Numeric) ;
-    umfpack_di_defaults (Control) ;
 \end{verbatim}
 }
 

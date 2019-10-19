@@ -5,6 +5,7 @@
 %
 %   ssmult          - multiplies two sparse matrices.
 %   ssmult_install  - compiles, installs, and tests ssmult.
+%   ssmult_make     - compiles ssmult.
 %   ssmult_unsorted - multiplies two sparse matrices, returning non-standard result.
 %   ssmultsym       - computes nnz(C), memory, and flops to compute C=A*B; A and B sparse.
 %   ssmult_test     - tests ssmult, ssmultsym (sparse times sparse matrix multiply)

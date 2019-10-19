@@ -297,6 +297,7 @@ cholmod_mex_src = { ...
 if (pc)
     % Windows does not have drand48 and srand48, required by METIS.  Use
     % drand48 and srand48 in CHOLMOD/MATLAB/Windows/rand48.c instead.
+    % Also provide Windows with an empty <strings.h> include file.
     obj_extension = '.obj' ;
     cholmod_matlab = [cholmod_matlab {'Windows/rand48'}] ;
     include = [include ' -IWindows'] ;

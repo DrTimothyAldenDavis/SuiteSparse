@@ -1,10 +1,10 @@
 UFget:  a MATLAB interface to the UF sparse matrix collection.
 MATLAB 7.0 or later is required.
 
-Date: May 31, 2007.
+Date: April 1, 2008.
 
-Copyright 2005-2007, Tim Davis, University of Florida.
-Authors: Tim Davis and Erich Mirable.
+Copyright 2005-2008, Tim Davis, University of Florida.
+Authors: Tim Davis and Erich Mirabel.
 Availability: http://www.cise.ufl.edu/research/sparse/mat/UFget
 
 See http://www.cise.ufl.edu/research/sparse/mat/UFget.tar.gz
@@ -62,6 +62,12 @@ To open the web page for one matrix, use either of these formats:
 
     UFweb ('HB/arc130')
     UFweb (6)
+
+To download a new index, to get access to new matrices:
+
+    UFget ('refresh')
+
+(by default, using UFget downloads the index every 90 days anyway).
 
 For more information on how the index entries were created, see
 http://www.cise.ufl.edu/research/sparse/SuiteSparse.

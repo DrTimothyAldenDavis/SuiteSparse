@@ -1,10 +1,14 @@
-# Modify the "-O" optimization option for best performance (-O3 on Linux):
-CC = cc
-CFLAGS = -O
+# CC = cc
+# CFLAGS = -O
+
+default: all
+
+include ../../UFconfig/UFconfig.mk
+
 I = -I../../UFconfig -I../Include
 
-AR = ar cr
-RANLIB = ranlib
+# AR = ar cr
+# RANLIB = ranlib
 
 all: libcxsparse.a
 

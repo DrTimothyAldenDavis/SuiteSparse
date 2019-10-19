@@ -36,6 +36,9 @@
  *
  * s = hypot (x,y) computes s = sqrt (x*x + y*y) but does so more accurately.
  * The NaN cases for the double relops x >= y and x+y == x are safely ignored.
+ * 
+ * Source: Algorithm 312, "Absolute value and square root of a complex number,"
+ * P. Friedland, Comm. ACM, vol 10, no 10, October 1967, page 665.
  */
 
 double CHOLMOD(hypot) (double x, double y)

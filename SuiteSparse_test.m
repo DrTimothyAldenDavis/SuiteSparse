@@ -22,7 +22,8 @@ if (v < 7)
 end
 
 % if at UF, ensure pre-installed UF Sparse Matrix Collection is used
-uf = { '/cise/homes/davis/Install/UFget', 'd:/UFget', '/share/UFget' } ;
+uf = { '/cise/homes/davis/Install/UFget', 'd:/UFget', '/share/UFget', ...
+    '/windows/UFget' } ;
 for k = 1:length(uf)
     if (exist (uf {k}, 'dir'))
         addpath (uf {k}) ;
@@ -169,14 +170,14 @@ try
 
     % no exhaustive tests; tested via other packages
 
-catch
+catch                                                                       %#ok
 
     %---------------------------------------------------------------------------
     % test failure
     %---------------------------------------------------------------------------
 
     cd (SuiteSparse) ;
-    disp (lasterr) ;
+    disp (lasterr) ;                                                        %#ok
     fprintf ('SuiteSparse test: FAILED\n') ;
     return
 

@@ -54,8 +54,6 @@ int CHOLMOD(super_lsolve)   /* TRUE if OK, FALSE if BLAS overflow occured */
     cholmod_common *Common
 )
 {
-    int blas_ok = TRUE ;
-
     /* ---------------------------------------------------------------------- */
     /* check inputs */
     /* ---------------------------------------------------------------------- */
@@ -108,19 +106,19 @@ int CHOLMOD(super_lsolve)   /* TRUE if OK, FALSE if BLAS overflow occured */
     {
 
 	case CHOLMOD_REAL:
-	    blas_ok = r_cholmod_super_lsolve (L, X, E, Common) ;
+	    r_cholmod_super_lsolve (L, X, E, Common) ;
 	    break ;
 
 	case CHOLMOD_COMPLEX:
-	    blas_ok = c_cholmod_super_lsolve (L, X, E, Common) ;
+	    c_cholmod_super_lsolve (L, X, E, Common) ;
 	    break ;
     }
 
-    if (CHECK_BLAS_INT && !blas_ok)
+    if (CHECK_BLAS_INT && !Common->blas_ok)
     {
 	ERROR (CHOLMOD_TOO_LARGE, "problem too large for the BLAS") ;
     }
-    return (blas_ok) ;
+    return (Common->blas_ok) ;
 }
 
 
@@ -149,8 +147,6 @@ int CHOLMOD(super_ltsolve)  /* TRUE if OK, FALSE if BLAS overflow occured */
     cholmod_common *Common
 )
 {
-    int blas_ok = TRUE ;
-
     /* ---------------------------------------------------------------------- */
     /* check inputs */
     /* ---------------------------------------------------------------------- */
@@ -203,19 +199,18 @@ int CHOLMOD(super_ltsolve)  /* TRUE if OK, FALSE if BLAS overflow occured */
     {
 
 	case CHOLMOD_REAL:
-	    blas_ok = r_cholmod_super_ltsolve (L, X, E, Common) ;
+	    r_cholmod_super_ltsolve (L, X, E, Common) ;
 	    break ;
 
 	case CHOLMOD_COMPLEX:
-	    blas_ok = c_cholmod_super_ltsolve (L, X, E, Common) ;
+	    c_cholmod_super_ltsolve (L, X, E, Common) ;
 	    break ;
     }
 
-    if (CHECK_BLAS_INT && !blas_ok)
+    if (CHECK_BLAS_INT && !Common->blas_ok)
     {
 	ERROR (CHOLMOD_TOO_LARGE, "problem too large for the BLAS") ;
     }
-
-    return (blas_ok) ;
+    return (Common->blas_ok) ;
 }
 #endif

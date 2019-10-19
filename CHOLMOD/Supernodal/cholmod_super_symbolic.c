@@ -51,13 +51,28 @@
 /* ========================================================================== */
 
 /* In the symmetric case, traverse the kth row subtree from the nonzeros in
- * A (0:k,k) and add the new entries found to the pattern of the kth row of L.
+ * A (0:k1-1,k) and add the new entries found to the pattern of the kth row
+ * of L.  The current supernode s contains the diagonal block k1:k2-1, so it
+ * can be skipped.
  *
- * In the unsymmetric case, the nonzero pattern of A*F is computed one column at
- * one column at a time.  The kth column is A*F(:,k), or the set union of all
- * columns A(:,j) for which F(j,k) is nonzero.  This routine is called once
- * for each entry j.  Only the upper triangular part is needed, so only
- * A (0:k,j) is accessed.
+ * In the unsymmetric case, the nonzero pattern of A*F is computed one column
+ * at a time (thus, the total time spent in this function is bounded below by
+ * the time taken to multiply A*F, which can be high if A is tall and thin).
+ * The kth column is A*F(:,k), or the set union of all columns A(:,j) for which
+ * F(j,k) is nonzero.  This routine is called once for each entry j.  Only the
+ * upper triangular part is needed, so only A (0:k1-1,j) is accessed, where
+ * k1:k2-1 are the columns of the current supernode s (k is in the range k1 to
+ * k2-1).
+ *
+ * If A is sorted, then the total time taken by this function is proportional
+ * to the number of nonzeros in the strictly block upper triangular part of A,
+ * plus the number of entries in the strictly block lower triangular part of
+ * the supernodal part of L.  This excludes entries in the diagonal blocks
+ * corresponding to the columns in each supernode.  That is, if k1:k2-1 are
+ * in a single supernode, then only A (0:k1-1,k1:k2-1) are accessed.
+ *
+ * For the unsymmetric case, only the strictly block upper triangular part
+ * of A*F is constructed.
  *
  * Only adds column indices corresponding to the leading columns of each
  * relaxed supernode.
@@ -74,6 +89,8 @@ static void subtree
     Int SuperMap [ ],
     Int Sparent [ ],
     Int mark,
+    Int sorted,         /* true if the columns of A are sorted */
+    Int k1,             /* only consider A (0:k1-1,k) */
 
     /* input/output: */
     Int Flag [ ],
@@ -84,10 +101,11 @@ static void subtree
     Int p, pend, i, si ;
     p = Ap [j] ;
     pend = (Anz == NULL) ? (Ap [j+1]) : (p + Anz [j]) ;
+
     for ( ; p < pend ; p++)
     {
 	i = Ai [p] ;
-	if (i < k)
+	if (i < k1)
 	{
 	    /* (i,k) is an entry in the upper triangular part of A or A*F'.
 	     * symmetric case:   A(i,k) is nonzero (j=k).
@@ -106,6 +124,10 @@ static void subtree
 		Flag [si] = mark ;
 	    }
 	}
+        else if (sorted)
+        {
+            break ;
+        }
     }
 }
 
@@ -124,21 +146,17 @@ static void subtree
 
 
 /* ========================================================================== */
-/* === cholmod_super_symbolic =============================================== */
+/* === cholmod_super_symbolic2 ============================================== */
 /* ========================================================================== */
 
-/* Analyzes A, AA', or A(:,f)*A(:,f)' in preparation for a supernodal numeric
- * factorization.  The user need not call this directly; cholmod_analyze is
- * a "simple" wrapper for this routine.
- *
- * workspace: Flag (nrow), Head (nrow), Iwork (2*nrow),
- * and temporary space of size 3*nfsuper*sizeof(Int), where nfsuper <= n
- * is the number of fundamental supernodes.
- */
+/* Analyze for supernodal Cholesky or multifrontal QR.  CHOLMOD itself always
+ * analyzes for supernodal Cholesky, of course.  The "for_cholesky = TRUE"
+ * option is used by SuiteSparseQR only. */
 
-int CHOLMOD(super_symbolic)
+int CHOLMOD(super_symbolic2)
 (
     /* ---- input ---- */
+    int for_cholesky,   /* Cholesky if TRUE, QR if FALSE */
     cholmod_sparse *A,	/* matrix to analyze */
     cholmod_sparse *F,	/* F = A' or A(:,f)' */
     Int *Parent,	/* elimination tree */
@@ -156,7 +174,7 @@ int CHOLMOD(super_symbolic)
     Int nsuper, d, n, j, k, s, mark, parent, p, pend, k1, k2, packed, nscol,
 	nsrow, ndrow1, ndrow2, stype, ssize, xsize, sparent, plast, slast,
 	csize, maxcsize, ss, nscol0, nscol1, ns, nfsuper, newzeros, totzeros,
-	merge, snext, esize, maxesize, nrelax0, nrelax1, nrelax2 ;
+	merge, snext, esize, maxesize, nrelax0, nrelax1, nrelax2, Asorted ;
     size_t w ;
     int ok = TRUE ;
 
@@ -528,17 +546,25 @@ int CHOLMOD(super_symbolic)
 	nsrow = Snz [s] ;
 	ASSERT (nscol > 0) ;
 	ssize += nsrow ;
-	xsize += nscol * nsrow ;
-	/* also compute xsize in double to guard against Int overflow */
-	xxsize += ((double) nscol) * ((double) nsrow) ;
-	if (xxsize > Int_max)
+        if (for_cholesky)
+        {
+            xsize += nscol * nsrow ;
+            /* also compute xsize in double to guard against Int overflow */
+            xxsize += ((double) nscol) * ((double) nsrow) ;
+        }
+	if (ssize < 0 || (for_cholesky && xxsize > Int_max))
 	{
-	    /* Int overflow, clear workspace and return */
+	    /* Int overflow, clear workspace and return.
+               QR factorization will not use xxsize, so that error is ignored.
+               For Cholesky factorization, however, memory of space xxsize
+               will be allocated, so this is a failure.  Both QR and Cholesky
+               fail if ssize overflows. */
 	    ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
 	    FREE_WORKSPACE ;
 	    return (FALSE) ;
 	}
-	ASSERT (ssize > 0 && xsize > 0) ;
+	ASSERT (ssize > 0) ;
+        ASSERT (IMPLIES (for_cholesky, xsize > 0)) ;
     }
     xsize = MAX (1, xsize) ;
     ssize = MAX (1, ssize) ;
@@ -568,6 +594,7 @@ int CHOLMOD(super_symbolic)
     Lpx = L->px ;
     Ls = L->s ;
     Ls [0] = 0 ;    /* flag for cholmod_check_factor; supernodes are defined */
+    Lpx [0] = for_cholesky ? 0 : 123456 ;   /* magic number for sparse QR */
     Lsuper = L->super ;
 
     /* copy the list of relaxed supernodes into the final list in L */
@@ -599,16 +626,21 @@ int CHOLMOD(super_symbolic)
     /* construct pointers for supernodal values (L->px) */
     /* ---------------------------------------------------------------------- */
 
-    p = 0 ;
-    for (s = 0 ; s < nsuper ; s++)
+    if (for_cholesky)
     {
-	nscol = Super [s+1] - Super [s] ;   /* number of columns in s */
-	nsrow = Snz [s] ;		    /* # of rows, incl triangular part*/
-	Lpx [s] = p ;			    /* pointer to numerical part of s */
-	p += nscol * nsrow ;
+        /* L->px is not needed for QR factorization (it may lead to Int
+           overflow, anyway, if xsize caused Int overflow above) */
+        p = 0 ;
+        for (s = 0 ; s < nsuper ; s++)
+        {
+            nscol = Super [s+1] - Super [s] ;   /* number of columns in s */
+            nsrow = Snz [s] ;           /* # of rows, incl triangular part*/
+            Lpx [s] = p ;               /* pointer to numerical part of s */
+            p += nscol * nsrow ;
+        }
+        Lpx [s] = p ;
+        ASSERT ((Int) (L->xsize) == MAX (1,p)) ;
     }
-    Lpx [s] = p ;
-    ASSERT ((Int) (L->xsize) == MAX (1,p)) ;
 
     /* Snz no longer needed ] */
 
@@ -621,6 +653,8 @@ int CHOLMOD(super_symbolic)
     {
 	Lpi2 [s] = Lpi [s] ;
     }
+
+    Asorted = A->sorted ;
 
     for (s = 0 ; s < nsuper ; s++)
     {
@@ -657,22 +691,21 @@ int CHOLMOD(super_symbolic)
 	    if (stype != 0)
 	    {
 		subtree (k, k, Ap, Ai, Anz, SuperMap, Sparent, mark,
-			Flag, Ls, Lpi2) ;
+                        Asorted, k1, Flag, Ls, Lpi2) ;
 	    }
 	    else
 	    {
-		/* for each nonzero in F (k,:) do */
+		/* for each j nonzero in F (:,k) do */
 		p = Fp [k] ;
 		pend = (packed) ? (Fp [k+1]) : (p + Fnz [k]) ;
 		for ( ; p < pend ; p++)
 		{
 		    subtree (Fj [p], k, Ap, Ai, Anz, SuperMap, Sparent, mark,
-			    Flag, Ls, Lpi2) ;
+			    Asorted, k1, Flag, Ls, Lpi2) ;
 		}
 	    }
 	}
     }
-
 #ifndef NDEBUG
     for (s = 0 ; s < nsuper ; s++)
     {
@@ -747,35 +780,39 @@ int CHOLMOD(super_symbolic)
     maxcsize = 1 ;
     maxesize = 1 ;
 
-    /* do not need to guard csize against Int overflow if xsize is OK */
+    /* Do not need to guard csize against Int overflow since xsize is OK. */
 
-    for (d = 0 ; d < nsuper ; d++)
+    if (for_cholesky)
     {
-	nscol = Super [d+1] - Super [d] ;
-	p = Lpi [d] + nscol ;
-	plast = p ;
-	pend = Lpi [d+1] ;
-	esize = pend - p ;
-	maxesize = MAX (maxesize, esize) ;
-	slast = (p == pend) ? (EMPTY) : (SuperMap [Ls [p]]) ;
-	for ( ; p <= pend ; p++)
-	{
-	    s = (p == pend) ? (EMPTY) : (SuperMap [Ls [p]]) ;
-	    if (s != slast)
-	    {
-		/* row i is the start of a new supernode */
-		ndrow1 = p - plast ;
-		ndrow2 = pend - plast ;
-		csize = ndrow2 * ndrow1 ;
-		PRINT1 (("Supernode "ID" ancestor "ID" C: "ID"-by-"ID"  csize "
-			""ID"\n", d, slast, ndrow1, ndrow2, csize)) ;
-		maxcsize = MAX (maxcsize, csize) ;
-		plast = p ;
-		slast = s ;
-	    }
-	}
+        /* this is not needed for QR factorization */
+        for (d = 0 ; d < nsuper ; d++)
+        {
+            nscol = Super [d+1] - Super [d] ;
+            p = Lpi [d] + nscol ;
+            plast = p ;
+            pend = Lpi [d+1] ;
+            esize = pend - p ;
+            maxesize = MAX (maxesize, esize) ;
+            slast = (p == pend) ? (EMPTY) : (SuperMap [Ls [p]]) ;
+            for ( ; p <= pend ; p++)
+            {
+                s = (p == pend) ? (EMPTY) : (SuperMap [Ls [p]]) ;
+                if (s != slast)
+                {
+                    /* row i is the start of a new supernode */
+                    ndrow1 = p - plast ;
+                    ndrow2 = pend - plast ;
+                    csize = ndrow2 * ndrow1 ;
+                    PRINT1 (("Supernode "ID" ancestor "ID" C: "ID"-by-"ID
+                        "  csize "ID"\n", d, slast, ndrow1, ndrow2, csize)) ;
+                    maxcsize = MAX (maxcsize, csize) ;
+                    plast = p ;
+                    slast = s ;
+                }
+            }
+        }
+        PRINT1 (("max csize "ID"\n", maxcsize)) ;
     }
-    PRINT1 (("max csize "ID"\n", maxcsize)) ;
 
     /* Wj no longer needed for SuperMap } */
 
@@ -790,5 +827,36 @@ int CHOLMOD(super_symbolic)
 
     FREE_WORKSPACE ;
     return (TRUE) ;
+}
+
+/* ========================================================================== */
+/* === cholmod_super_symbolic =============================================== */
+/* ========================================================================== */
+
+/* Analyzes A, AA', or A(:,f)*A(:,f)' in preparation for a supernodal numeric
+ * factorization.  The user need not call this directly; cholmod_analyze is
+ * a "simple" wrapper for this routine.
+ * 
+ * This function does all the analysis for a supernodal Cholesky factorization.
+ *
+ * workspace: Flag (nrow), Head (nrow), Iwork (2*nrow),
+ * and temporary space of size 3*nfsuper*sizeof(Int), where nfsuper <= n
+ * is the number of fundamental supernodes.
+ */
+
+int CHOLMOD(super_symbolic)
+(
+    /* ---- input ---- */
+    cholmod_sparse *A,	/* matrix to analyze */
+    cholmod_sparse *F,	/* F = A' or A(:,f)' */
+    Int *Parent,	/* elimination tree */
+    /* ---- in/out --- */
+    cholmod_factor *L,	/* simplicial symbolic on input,
+			 * supernodal symbolic on output */
+    /* --------------- */
+    cholmod_common *Common
+)
+{
+    return (CHOLMOD(super_symbolic2) (TRUE, A, F, Parent, L, Common)) ;
 }
 #endif

@@ -69,6 +69,8 @@ for id = list
 		fprintf ('%s\n', lasterr) ;
 	    end
 	    if (~isempty (P2) && ~isequal (Problem, P2))
+                Problem
+                P2
 		error ('%s version mismatch: %s\n', format {1}, Problem.name) ;
 	    end
 	    clear P2

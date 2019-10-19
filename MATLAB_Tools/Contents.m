@@ -6,8 +6,11 @@
 %   pagerankdemo - draw a 6-node web and compute its pagerank
 %
 % Directories:
-%   shellgui   draw a pretty seashell
-%   waitmex    use a waitbar in a C mexFunction
+%   shellgui        draw a pretty seashell
+%   waitmex         use a waitbar in a C mexFunction
+%   GEE             Gaussian Elimination Example
+%   spok            "SParse OK": check if a sparse matrix is valid
+%   find_components find connected components in an image
 %
 % Examples:
 %   gipper              % add all files in current directory X to X.zip
@@ -15,5 +18,6 @@
 %   pagerankdemo        % run the pagerank demo
 %   shellgui            % draw a pretty seashell
 %   waitmex             % example mexFunction that creates a waitbar
+%   find_commponents_example
 %
-% Copyright 2007, Tim Davis, University of Florida
+% Copyright 2008, Tim Davis, University of Florida

@@ -36,9 +36,9 @@ int CHOLMOD(error)
 (
     /* ---- input ---- */
     int status,		/* error status */
-    char *file,		/* name of source code file where error occured */ 
+    const char *file,	/* name of source code file where error occured */ 
     int line,		/* line number in source code file where error occured*/
-    char *message,	/* error message */
+    const char *message,    /* error message */
     /* --------------- */
     cholmod_common *Common
 )

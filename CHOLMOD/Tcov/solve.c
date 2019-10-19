@@ -188,7 +188,7 @@ double solve (cholmod_sparse *A)
 	     *First, *Level, *rcount, *ccount, *Lp, *Li ;
     Int p, i, j, k, n, nrhs, save, save2, csize, rank, nrow, ncol, is_ll,
 	xtype, isreal, prefer_zomplex, Lxtype, xtype2, save3 ;
-    int blas_ok = TRUE ;
+    cm->blas_ok = TRUE ;
 
     if (cm->print > 1)
     {
@@ -382,6 +382,7 @@ double solve (cholmod_sparse *A)
 	    if (A3 != NULL && C3 != NULL && E3 != NULL)
 	    {
 		/* E3 = A3*C3-I */
+                cholmod_common *Common = cm ;
 		if (isreal)
 		{
 		    BLAS_dgemm ("N", "N", n, n, n, one, A3->x, n, C3->x, n,
@@ -392,7 +393,7 @@ double solve (cholmod_sparse *A)
 		    BLAS_zgemm ("N", "N", n, n, n, one, A3->x, n, C3->x, n,
 			minusone, E3->x, n) ;
 		}
-		OK (blas_ok) ;
+		OK (cm->blas_ok) ;
 	    }
 	    r = CHOLMOD(norm_dense) (E3, 1, cm) ;
 	    CHOLMOD(free_dense) (&A3, cm) ;

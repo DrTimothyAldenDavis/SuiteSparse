@@ -1,0 +1,21 @@
+#!/bin/csh
+
+echo "Test coverage summary" > cov.out
+echo '=================================================================' >> cov.out
+
+foreach file (../Source/*)
+	gcov $file >& /dev/null
+	end
+
+foreach file (spqr_*.?cov S*.?cov)
+	echo $file >> cov.out
+	grep "#####" $file | grep -v "__dev" | grep -v "__major" | \
+	    grep -v "#####:[ ]*[0-9]*:[{}]" | grep -v DEAD >> cov.out
+	echo '=================================================================' >> cov.out
+	end
+
+echo -n "statements not tested: "
+grep "\#\#\#\#\#:" spqr_*v S*v | grep -v DEAD | wc -l
+
+set status=0
+

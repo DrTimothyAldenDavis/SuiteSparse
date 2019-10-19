@@ -315,16 +315,17 @@ size_t cholmod_l_mult_size_t (size_t a, size_t k, int *ok) ;
 /* double, int */
 EXTERN int cholmod_dump ;
 EXTERN int cholmod_dump_malloc ;
-UF_long cholmod_dump_sparse (cholmod_sparse  *, char *, cholmod_common *) ;
-int  cholmod_dump_factor (cholmod_factor  *, char *, cholmod_common *) ;
-int  cholmod_dump_triplet (cholmod_triplet *, char *, cholmod_common *) ;
-int  cholmod_dump_dense (cholmod_dense   *, char *, cholmod_common *) ;
-int  cholmod_dump_subset (int *, size_t, size_t, char *, cholmod_common *) ;
-int  cholmod_dump_perm (int *, size_t, size_t, char *, cholmod_common *) ;
-int  cholmod_dump_parent (int *, size_t, char *, cholmod_common *) ;
-void cholmod_dump_init (char *, cholmod_common *) ;
-int  cholmod_dump_mem (char *, UF_long, cholmod_common *) ;
-void cholmod_dump_real (char *, Real *, UF_long, UF_long, int, int,
+UF_long cholmod_dump_sparse (cholmod_sparse  *, const char *, cholmod_common *);
+int  cholmod_dump_factor (cholmod_factor  *, const char *, cholmod_common *) ;
+int  cholmod_dump_triplet (cholmod_triplet *, const char *, cholmod_common *) ;
+int  cholmod_dump_dense (cholmod_dense   *, const char *, cholmod_common *) ;
+int  cholmod_dump_subset (int *, size_t, size_t, const char *,
+    cholmod_common *) ;
+int  cholmod_dump_perm (int *, size_t, size_t, const char *, cholmod_common *) ;
+int  cholmod_dump_parent (int *, size_t, const char *, cholmod_common *) ;
+void cholmod_dump_init (const char *, cholmod_common *) ;
+int  cholmod_dump_mem (const char *, UF_long, cholmod_common *) ;
+void cholmod_dump_real (const char *, Real *, UF_long, UF_long, int, int,
 	cholmod_common *) ;
 void cholmod_dump_super (UF_long, int *, int *, int *, int *, double *, int,
 	cholmod_common *) ;
@@ -335,17 +336,19 @@ int  cholmod_dump_work(int, int, UF_long, cholmod_common *) ;
 /* double, UF_long */
 EXTERN int cholmod_l_dump ;
 EXTERN int cholmod_l_dump_malloc ;
-UF_long cholmod_l_dump_sparse (cholmod_sparse  *, char *, cholmod_common *) ;
-int  cholmod_l_dump_factor (cholmod_factor  *, char *, cholmod_common *) ;
-int  cholmod_l_dump_triplet (cholmod_triplet *, char *, cholmod_common *) ;
-int  cholmod_l_dump_dense (cholmod_dense   *, char *, cholmod_common *) ;
-int  cholmod_l_dump_subset (UF_long *, size_t, size_t, char *,
+UF_long cholmod_l_dump_sparse (cholmod_sparse  *, const char *,
     cholmod_common *) ;
-int  cholmod_l_dump_perm (UF_long *, size_t, size_t, char *, cholmod_common *) ;
-int  cholmod_l_dump_parent (UF_long *, size_t, char *, cholmod_common *) ;
-void cholmod_l_dump_init (char *, cholmod_common *) ;
-int  cholmod_l_dump_mem (char *, UF_long, cholmod_common *) ;
-void cholmod_l_dump_real (char *, Real *, UF_long, UF_long, int, int,
+int  cholmod_l_dump_factor (cholmod_factor  *, const char *, cholmod_common *) ;
+int  cholmod_l_dump_triplet (cholmod_triplet *, const char *, cholmod_common *);
+int  cholmod_l_dump_dense (cholmod_dense   *, const char *, cholmod_common *) ;
+int  cholmod_l_dump_subset (UF_long *, size_t, size_t, const char *,
+    cholmod_common *) ;
+int  cholmod_l_dump_perm (UF_long *, size_t, size_t, const char *,
+    cholmod_common *) ;
+int  cholmod_l_dump_parent (UF_long *, size_t, const char *, cholmod_common *) ;
+void cholmod_l_dump_init (const char *, cholmod_common *) ;
+int  cholmod_l_dump_mem (const char *, UF_long, cholmod_common *) ;
+void cholmod_l_dump_real (const char *, Real *, UF_long, UF_long, int, int,
 	cholmod_common *) ;
 void cholmod_l_dump_super (UF_long, UF_long *, UF_long *, UF_long *, UF_long *,
         double *, int, cholmod_common *) ;
