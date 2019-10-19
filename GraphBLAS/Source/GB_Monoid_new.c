@@ -73,7 +73,7 @@ GrB_Info GB_Monoid_new          // create a monoid
     GB_MALLOC_MEMORY (mon->identity, 1, op->ztype->size) ;
     if (mon->identity == NULL)
     {
-        GB_FREE_MEMORY (*monoid) ;
+        GB_FREE_MEMORY (*monoid, 1, sizeof (GB_Monoid_opaque)) ;
         return (ERROR (GrB_OUT_OF_MEMORY, (LOG, "out of memory"))) ;
     }
 

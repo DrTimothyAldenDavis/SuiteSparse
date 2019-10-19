@@ -48,7 +48,7 @@ int main (int argc, char **argv)
 {
     GrB_Matrix C = NULL, A = NULL, L = NULL, U = NULL ;
     GrB_Info info ;
-    double tic [2] ;
+    double tic [2], r1, r2 ;
     OK (GrB_init (GrB_NONBLOCKING)) ;
     fprintf (stderr, "tri_demo:\n") ;
     printf ("--------------------------------------------------------------\n");
@@ -57,12 +57,12 @@ int main (int argc, char **argv)
     // get a symmetric matrix with no self edges
     //--------------------------------------------------------------------------
 
-    // get_matrix reads in a double-precision matrix.  It could easily be
-    // changed to read in uint32 matrix instead, but this would affect the
-    // other GraphBLAS demos.  So the time to typecast A = (uint32) C is added
-    // to the read time, not the prep time for triangle counting.
+    // get_matrix reads in a boolean matrix.  It could easily be changed to
+    // read in uint32 matrix instead, but this would affect the other GraphBLAS
+    // demos.  So the time to typecast A = (uint32) C is added to the read
+    // time, not the prep time for triangle counting.
     simple_tic (tic) ;
-    OK (get_matrix (&C, argc, argv, true)) ;
+    OK (get_matrix (&C, argc, argv, true, true)) ;
     GrB_Index n, nedges ;
     OK (GrB_Matrix_nrows (&n, C)) ;
 
@@ -83,6 +83,19 @@ int main (int argc, char **argv)
     double t_prune = simple_toc (tic) ;
     printf ("U=triu(A) time:  %14.6f sec\n", t_prune) ;
 
+    GxB_Statistics stats ;
+
+    int64_t maxused1 ;
+    GxB_stats (&stats) ;
+    maxused1 = stats.maxused ;
+
+    printf ("read A, create U memory usage: %g GB\n",
+        1e-9 * (double) maxused1) ;
+
+    //--------------------------------------------------------------------------
+    // count the triangles via C<U> = L'*U (dot-produt)
+    //--------------------------------------------------------------------------
+
     // L = tril (A,-1), for method 4
     simple_tic (tic) ;
     OK (GrB_Matrix_new (&L, GrB_UINT32, n, n)) ;
@@ -90,39 +103,13 @@ int main (int argc, char **argv)
     OK (GxB_select (L, NULL, NULL, GxB_TRIL, A, &k, NULL)) ;
     double t_trans = simple_toc (tic) ;
     printf ("L=tril(A) time:  %14.6f sec\n", t_trans) ;
-
-    //--------------------------------------------------------------------------
-    // count the triangles via C<U> = U*U (outer-product)
-    //--------------------------------------------------------------------------
-
-    double t_mark [2] = { 0, 0 } ;
-    int64_t ntri1 ;
-    OK (tricount (&ntri1, 3, A, NULL, NULL, U, t_mark)) ;
-
-    printf ("# triangles %.16g\n\n", (double) ntri1) ;
-
-    printf ("tricount time:   %14.6f sec (outer product method)\n",
-        t_mark [0] + t_mark [1]) ;
-    printf ("tri+prep time:   %14.6f sec (incl time to compute U)\n",
-        t_mark [0] + t_mark [1] + t_prune) ;
-
-    printf ("compute C time:  %14.6f sec\n", t_mark [0]) ;
-    printf ("reduce (C) time: %14.6f sec\n", t_mark [1]) ;
-
-    double r1 = 1e-6*((double)nedges) / (t_mark [0] + t_mark [1] + t_prune) ;
-    double r2 = 1e-6*((double)nedges) / (t_mark [0] + t_mark [1]) ;
-    printf ("rate %10.2f million edges/sec (incl time for U=triu(A))\n", r1) ;
-    printf ("rate %10.2f million edges/sec (just tricount itself)\n\n",  r2) ;
-    fprintf (stderr,
-            "rate %10.2f (with prep), %10.2f (just tricount)\n", r1, r2) ;
-
-    //--------------------------------------------------------------------------
-    // count the triangles via C<U> = L'*U (dot-produt)
-    //--------------------------------------------------------------------------
+    OK (GrB_free (&A)) ;
 
     double t_dot [2] ;
     int64_t ntri2 ;
-    OK (tricount (&ntri2, 5, A, NULL, L, U, t_dot)) ;
+    OK (tricount (&ntri2, 5, NULL, NULL, L, U, t_dot)) ;
+
+    printf ("# triangles %.16g\n", (double) ntri2) ;
 
     printf ("\ntricount time:   %14.6f sec (dot product method)\n",
         t_dot [0] + t_dot [1]) ;
@@ -138,6 +125,41 @@ int main (int argc, char **argv)
     printf ("rate %10.2f million edges/sec (just tricount itself)\n\n",  r2) ;
     fprintf (stderr,
             "rate %10.2f (with prep), %10.2f (just tricount)\n", r1, r2) ;
+
+    int64_t maxused2 ;
+    GxB_stats (&stats) ;
+    maxused2 = MAX (maxused1, stats.maxused) ;
+    printf ("tricount (dot)   memory usage: %g GB\n",
+        1e-9 * (double) maxused2) ;
+
+    //--------------------------------------------------------------------------
+    // count the triangles via C<U> = U*U (outer-product)
+    //--------------------------------------------------------------------------
+
+    double t_mark [2] = { 0, 0 } ;
+    int64_t ntri1 ;
+    OK (tricount (&ntri1, 3, NULL, NULL, NULL, U, t_mark)) ;
+
+    printf ("tricount time:   %14.6f sec (outer product method)\n",
+        t_mark [0] + t_mark [1]) ;
+    printf ("tri+prep time:   %14.6f sec (incl time to compute U)\n",
+        t_mark [0] + t_mark [1] + t_prune) ;
+
+    printf ("compute C time:  %14.6f sec\n", t_mark [0]) ;
+    printf ("reduce (C) time: %14.6f sec\n", t_mark [1]) ;
+
+    r1 = 1e-6*((double)nedges) / (t_mark [0] + t_mark [1] + t_prune) ;
+    r2 = 1e-6*((double)nedges) / (t_mark [0] + t_mark [1]) ;
+    printf ("rate %10.2f million edges/sec (incl time for U=triu(A))\n", r1) ;
+    printf ("rate %10.2f million edges/sec (just tricount itself)\n\n",  r2) ;
+    fprintf (stderr,
+            "rate %10.2f (with prep), %10.2f (just tricount)\n", r1, r2) ;
+
+    int64_t maxused3 ;
+    GxB_stats (&stats) ;
+    maxused3 = MAX (maxused1, stats.maxused) ;
+    printf ("tricount (outer) memory usage: %g GB\n",
+        1e-9 * (double) maxused3) ;
 
     //--------------------------------------------------------------------------
     // check result and free workspace

@@ -51,12 +51,13 @@ wildtype_demo.c         demo program with arbitrary struct as user-defined type
 in Demo/Output:
 --------------------------------------------------------------------------------
 
-bfs_demo.out_ok         output of bfs_demo
-complex_demo_out_ok.m   output of complex_demo, run in MATLAB to check results
-mis_demo.out_ok         output of mis_demo
-simple_test.out_ok      output of simple_demo
-tri_demo.out_ok         output of tri_demo
-wildtype_demo.out_ok    output of wildtype_demo
+bfs_demo.out            output of bfs_demo
+complex_demo_out.m      output of complex_demo, run in MATLAB to check results
+go_out_laptop.txt       output of go.m on a MacBook Pro
+mis_demo.out            output of mis_demo
+simple_test.out         output of simple_demo
+tri_demo.out            output of tri_demo
+wildtype_demo.out       output of wildtype_demo
 
 --------------------------------------------------------------------------------
 in Demo/Include:
@@ -75,6 +76,8 @@ tricount.m              five triangle counting methods using MATLAB
 adj_to_edges.m          convert adjacency matrix to incidence matrix
 edges_to_adj.m          convert incidence matrix to adjacency matrix
 check_adj.m             check an adjaceny matrix
+tri_matlab.m            run a set of GraphChallenge matrices
+tri_matlab_out.txt      output of tri_matlab.m
 
 --------------------------------------------------------------------------------
 in Demo/Matrix:

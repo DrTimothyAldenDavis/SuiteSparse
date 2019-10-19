@@ -1,3 +1,16 @@
+Dec 23, 2017: SuiteSparse 5.1.2
+
+    * improved build process for GraphBLAS
+    * minor change to CSparse/Lib/Makefile, no change in CSparse version
+
+Dec 17, 2017: SuiteSparse 5.1.1
+
+    * GraphBLAS added to top-level SuiteSparse/Makefile
+    * GraphBLAS 1.1.1: bug fix to *assign, split AxB for faster compile,
+        added memory usage statistics, AxB performance improvment
+    * minor update to [AMD CAMD KLU]/Doc/Makefile's, no change to
+        version numbers of AMD, CAMD, or KLU
+
 Dec 1, 2017: SuiteSparse 5.1.0
 
     * GraphBLAS 1.1.0

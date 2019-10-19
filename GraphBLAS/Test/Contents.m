@@ -22,7 +22,7 @@
 %   GB_spec_eWiseMult_Matrix      - a MATLAB mimic of GrB_eWiseMult_Matrix
 %   GB_spec_eWiseMult_Vector      - a MATLAB mimic of GrB_eWiseMult_Vector
 %   GB_spec_extractTuples         - a MATLAB mimic of GrB_*_extractTuples
-%   GB_spec_identity              - the additive identity of a semiring
+%   GB_spec_identity              - the additive identity of a monoid
 %   GB_spec_mask                  - a pure MATLAB implementation of GrB_mask
 %   GB_spec_matrix                - a MATLAB mimic that conforms a matrix to the GraphBLAS spec
 %   GB_spec_mxm                   - a MATLAB mimic of GrB_mxm
@@ -33,6 +33,7 @@
 %   GB_spec_random                - generate random matrix
 %   GB_spec_reduce_to_scalar      - a MATLAB mimic of GrB_reduce (to scalar)
 %   GB_spec_reduce_to_vector      - a MATLAB mimic of GrB_reduce (to vector)
+%   GB_spec_select                - a MATLAB mimic of GxB_select
 %   GB_spec_semiring              - create a semiring
 %   GB_spec_subassign             - a MATLAB mimic of GxB_subassign
 %   GB_spec_transpose             - a MATLAB mimic of GrB_transpose
@@ -76,6 +77,11 @@
 %   test22   - test GrB_transpose
 %   test23   - test GrB_*_build
 %   test24   - test GrB_reduce
+%   test25   - test GxB_select
+%   test26   - performance test for GxB_select
+%   test27   - test GxB_select with user-defined select op (band)
+%   test28   - test mxm with aliased inputs, C<C> = accum(C,C*C)
+%   test29   - GrB_reduce with zombies
 %   test30   - test GxB_subassign
 %   test30b  - test GrB_assign
 %   test31   - test GrB_transpose
@@ -120,6 +126,11 @@
 %   test66   - test GrB_reduce
 %   test67   - test GrB_apply
 %   test68   - performance tests for eWiseMult
+%   test69   - test GrB_assign with aliased inputs, C<C>(:,:) = accum(C(:,:),C)
+%   test72   - special cases for mxm, ewise, ...
+%   test73   - performance of C = A*B, with mask
+%   test74   - test GrB_mxm: dot product method
+%   test75   - test GrB_mxm and GrB_vxm on all semirings (A'B dot product)
 %   test97   - test GB_assign, scalar expansion and zombies
 %   test98   - test GB_mxm, typecasting on the fly
 %   test99   - test GB_mex_transpose with explicit zeros in the Mask
@@ -135,9 +146,6 @@
 %   testca   - test complex mxm, mxv, and vxm
 %   testcb   - test complex reduce
 %   testcc   - test complex transpose
-%   test72   - special cases for mxm, ewise, ...
-%   test74   - test GrB_mxm: dot product method
-%   test73   - performance of C = A*B, with mask
 %
 % Helper functions
 %

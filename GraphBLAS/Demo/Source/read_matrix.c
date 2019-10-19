@@ -45,13 +45,14 @@ void scale2 (double *z, const double *x)
 // read a matrix from a file
 //------------------------------------------------------------------------------
 
-GrB_Info read_matrix        // read a double-precision matrix
+GrB_Info read_matrix        // read a double-precision or boolean matrix
 (
     GrB_Matrix *A_output,   // handle of matrix to create
     FILE *f,                // file to read the tuples from
     bool make_symmetric,    // if true, return A as symmetric
     bool no_self_edges,     // if true, then remove self edges from A
-    bool one_based          // if true, input matrix is 1-based
+    bool one_based,         // if true, input matrix is 1-based
+    bool boolean            // if true, input is GrB_BOOL, otherwise GrB_FP64
 )
 {
 
@@ -72,9 +73,13 @@ GrB_Info read_matrix        // read a double-precision matrix
     // allocate initial space for tuples
     //--------------------------------------------------------------------------
 
+    size_t xsize = ((boolean) ? sizeof (bool) : sizeof (double)) ;
     GrB_Index *I = malloc (len * sizeof (int64_t)), *I2 = NULL ;
     GrB_Index *J = malloc (len * sizeof (int64_t)), *J2 = NULL ;
-    double    *X = malloc (len * sizeof (double )), *X2 = NULL ;
+    void *X = malloc (len * xsize) ;
+    bool *Xbool ;
+    double *Xdouble ;
+    void *X2 = NULL ;
     if (I == NULL || J == NULL || X == NULL)
     {
         // out of memory
@@ -82,6 +87,9 @@ GrB_Info read_matrix        // read a double-precision matrix
         FREE_ALL ;
         return (GrB_OUT_OF_MEMORY) ;
     }
+
+    Xbool   = (bool   *) X ;
+    Xdouble = (double *) X ;
 
     //--------------------------------------------------------------------------
     // read in the tuples from stdin, one per line
@@ -97,7 +105,7 @@ GrB_Info read_matrix        // read a double-precision matrix
         {
             I2 = realloc (I, 2 * len * sizeof (int64_t)) ;
             J2 = realloc (J, 2 * len * sizeof (int64_t)) ;
-            X2 = realloc (X, 2 * len * sizeof (double )) ;
+            X2 = realloc (X, 2 * len * xsize) ;
             if (I2 == NULL || J2 == NULL || X2 == NULL)
             {
                 printf ("out of memory for tuples\n") ;
@@ -108,6 +116,8 @@ GrB_Info read_matrix        // read a double-precision matrix
             J = J2 ; J2 = NULL ;
             X = X2 ; X2 = NULL ;
             len = len * 2 ;
+            Xbool   = (bool   *) X ;
+            Xdouble = (double *) X ;
         }
         if (one_based)
         {
@@ -116,7 +126,14 @@ GrB_Info read_matrix        // read a double-precision matrix
         }
         I [ntuples] = i ;
         J [ntuples] = j ;
-        X [ntuples] = x ;
+        if (boolean)
+        {
+            Xbool [ntuples] = (x != 0) ;
+        }
+        else
+        {
+            Xdouble [ntuples] = x ;
+        }
         ntuples++ ;
     }
 
@@ -154,7 +171,14 @@ GrB_Info read_matrix        // read a double-precision matrix
                 // keep this off-diagonal edge
                 I [ntuples2] = I [k] ;
                 J [ntuples2] = J [k] ;
-                X [ntuples2] = X [k] ;
+                if (boolean)
+                {
+                    Xbool [ntuples2] = Xbool [k] ;
+                }
+                else
+                {
+                    Xdouble [ntuples2] = Xdouble [k] ;
+                }
                 ntuples2++ ;
             }
         }
@@ -167,10 +191,32 @@ GrB_Info read_matrix        // read a double-precision matrix
     // build the matrix, summing up duplicates, and then free the tuples
     //--------------------------------------------------------------------------
 
+    GrB_Type xtype ;
+    GrB_BinaryOp xop, xop2 ;
+    if (boolean)
+    {
+        xtype = GrB_BOOL ;
+        xop   = GrB_LOR ;
+        xop2  = GrB_FIRST_BOOL ;
+    }
+    else
+    {
+        xtype = xtype ;
+        xop   = GrB_PLUS_FP64 ;
+        xop2  = GrB_FIRST_FP64 ;
+    }
+
     simple_tic (tic) ;
     GrB_Info info ;
-    OK (GrB_Matrix_new (&C, GrB_FP64, nrows, ncols)) ;
-    OK (GrB_Matrix_build (C, I, J, X, ntuples, GrB_PLUS_FP64)) ;
+    OK (GrB_Matrix_new (&C, xtype, nrows, ncols)) ;
+    if (boolean)
+    {
+        OK (GrB_Matrix_build (C, I, J, Xbool, ntuples, xop)) ;
+    }
+    else
+    {
+        OK (GrB_Matrix_build (C, I, J, Xdouble, ntuples, xop)) ;
+    }
     t1 = simple_toc (tic) ;
     printf ("time to build the graph with GrB_Matrix_build: %12.6f\n", t1) ;
 
@@ -186,7 +232,7 @@ GrB_Info read_matrix        // read a double-precision matrix
         // rebuilt every time a single entry is added.
 
         simple_tic (tic) ;
-        OK (GrB_Matrix_new (&B, GrB_FP64, nrows, ncols)) ;
+        OK (GrB_Matrix_new (&B, xtype, nrows, ncols)) ;
         for (int64_t k = 0 ; k < ntuples ; k++)
         {
             // B (I[k], J[k]) = X [k]
@@ -238,16 +284,26 @@ GrB_Info read_matrix        // read a double-precision matrix
             printf ("A = (C+C')/2\n") ;
             double tic [2], t ;
             simple_tic (tic) ;
-            OK (GrB_Matrix_new (&A, GrB_FP64, nrows, nrows)) ;
-            OK (GrB_eWiseAdd (A, NULL, NULL, GrB_PLUS_FP64, C, C, dt2)) ;
+            OK (GrB_Matrix_new (&A, xtype, nrows, nrows)) ;
+            OK (GrB_eWiseAdd (A, NULL, NULL, xop, C, C, dt2)) ;
             OK (GrB_free (&C)) ;
-            OK (GrB_Matrix_new (&C, GrB_FP64, nrows, nrows)) ;
-            OK (GrB_UnaryOp_new (&scale2_op, scale2, GrB_FP64, GrB_FP64)) ;
-            OK (GrB_apply (C, NULL, NULL, scale2_op, A, NULL)) ;
-            OK (GrB_free (&A)) ;
-            OK (GrB_free (&scale2_op)) ;
-            *A_output = C ;
-            C = NULL ;
+
+            if (boolean)
+            {
+                *A_output = A ;
+                A = NULL ;
+            }
+            else
+            {
+                OK (GrB_Matrix_new (&C, xtype, nrows, nrows)) ;
+                OK (GrB_UnaryOp_new (&scale2_op, scale2, xtype, xtype)) ;
+                OK (GrB_apply (C, NULL, NULL, scale2_op, A, NULL)) ;
+                OK (GrB_free (&A)) ;
+                OK (GrB_free (&scale2_op)) ;
+                *A_output = C ;
+                C = NULL ;
+            }
+
             t = simple_toc (tic) ;
             printf ("A = (C+C')/2 time %12.6f\n", t) ;
 
@@ -266,7 +322,7 @@ GrB_Info read_matrix        // read a double-precision matrix
             simple_tic (tic) ;
 
             int64_t n = nrows + ncols ;
-            OK (GrB_Matrix_new (&A, GrB_FP64, n, n)) ;
+            OK (GrB_Matrix_new (&A, xtype, n, n)) ;
 
             I = malloc (nrows * sizeof (int64_t)) ;
             J = malloc (ncols * sizeof (int64_t)) ;
@@ -294,11 +350,11 @@ GrB_Info read_matrix        // read a double-precision matrix
             }
 
             // A (nrows:n-1, 0:nrows-1) += C'
-            OK (GrB_assign (A, NULL, GrB_FIRST_FP64, // or NULL,
+            OK (GrB_assign (A, NULL, xop2, // or NULL,
                 C, J, ncols, I, nrows, dt1)) ;
 
             // A (0:nrows-1, nrows:n-1) += C
-            OK (GrB_assign (A, NULL, GrB_FIRST_FP64, // or NULL,
+            OK (GrB_assign (A, NULL, xop2, // or NULL,
                 C, I, nrows, J, ncols, NULL)) ;
 
             // force completion; if this statement does not appear, the

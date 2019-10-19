@@ -37,6 +37,7 @@ SuiteSparse_config is not required by these packages:
 
   CSparse       a Concise Sparse matrix package
   MATLAB_Tools  toolboxes for use in MATLAB
+  GraphBLAS     graph algorithms in the language of linear algebra
 
 In addition, the xerbla/ directory contains Fortan and C versions of the
 BLAS/LAPACK xerbla routine, which is called when an invalid input is passed to

@@ -1,7 +1,7 @@
 SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
 http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
-VERSION 1.1.0, Dec 1, 2017
+VERSION 1.1.2, Dec 28, 2017
 
 SuiteSparse:GraphBLAS is an full implementation of the GraphBLAS standard,
 which defines a set of sparse matrix operations on an extended algebra of
@@ -72,8 +72,11 @@ build           build directory, intially empty
 
 --------------------------------------------------------------------------------
 
-SPEC: This version fully conforms to GraphBLAS C API Specification 1.1.0.
-It includes several additional functions and features as extensions to the
-spec.  These extensions are tagged with the keyword SPEC: in the code and in
-the User Guide, and in the Include/GraphBLAS.h file.
+SPEC: This version fully conforms to GraphBLAS C API Specification 1.1.0.  It
+includes several additional functions and features as extensions to the spec.
+These extensions are tagged with the keyword SPEC: in the code and in the User
+Guide, and in the Include/GraphBLAS.h file.  All functions and objects with the
+name GxB_* are extensions to the spec, as are all macros of the form GXB_*.
+Functions, objects, and macros with prefix GB_* must not be accessed by user
+code.  They are for internal use in GraphBLAS only.
 

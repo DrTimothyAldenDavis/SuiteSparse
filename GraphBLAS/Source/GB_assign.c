@@ -30,28 +30,12 @@
 
 #include "GB.h"
 
-#define FREE_ALL                \
-{                               \
-    GB_FREE_MEMORY (I2) ;       \
-    GB_FREE_MEMORY (J2) ;       \
-    GB_MATRIX_FREE (&AT) ;      \
-    GB_MATRIX_FREE (&Mask2) ;   \
-}
-
-// free workspace, put C in the queue, clear Mark, and block on C if needed
-#define CLEANUP_AND_RETURN                                          \
-{                                                                   \
-    FREE_ALL ;                                                      \
-    if (C->nzombies > 0)                                            \
-    {                                                               \
-        /* make sure C is in the queue */                           \
-        GB_queue_insert (C) ;                                       \
-    }                                                               \
-    /* clear the Mark array */                                      \
-    GB_Mark_reset (1,0) ;                                           \
-    /* finalize C if blocking mode is enabled, and return result */ \
-    ASSERT_OK (GB_check (C, "Final C for assign", 0)) ;             \
-    return (GB_block (C)) ;                                         \
+#define FREE_ALL                                    \
+{                                                   \
+    GB_FREE_MEMORY (I2, ni, sizeof (GrB_Index)) ;   \
+    GB_FREE_MEMORY (J2, nj, sizeof (GrB_Index)) ;   \
+    GB_MATRIX_FREE (&AT) ;                          \
+    GB_MATRIX_FREE (&Mask2) ;                       \
 }
 
 GrB_Info GB_assign                  // C<Mask>(I,J) = accum (C(I,J),A)
@@ -60,7 +44,7 @@ GrB_Info GB_assign                  // C<Mask>(I,J) = accum (C(I,J),A)
     const bool C_replace,
     const GrB_Matrix Mask,          // optional mask for C, unused if NULL
     const bool Mask_comp,
-    const GrB_BinaryOp accum,       // optional accum for Z=accum(C,T)
+    const GrB_BinaryOp accum,       // optional accum for accum(C,T)
     const GrB_Matrix A,             // input matrix
     const bool A_transpose,
     const GrB_Index *I_in,          // row indices
@@ -211,15 +195,6 @@ GrB_Info GB_assign                  // C<Mask>(I,J) = accum (C(I,J),A)
     }
 
     //--------------------------------------------------------------------------
-    // initialize workspace
-    //--------------------------------------------------------------------------
-
-    GrB_Index *I2 = NULL ;
-    GrB_Index *J2 = NULL ;
-    GrB_Matrix AT = NULL ;
-    GrB_Matrix Mask2 = NULL ;
-
-    //--------------------------------------------------------------------------
     // quick return if an empty Mask is complemented
     //--------------------------------------------------------------------------
 
@@ -230,6 +205,10 @@ GrB_Info GB_assign                  // C<Mask>(I,J) = accum (C(I,J),A)
         // is either untouched (if C_replace is false) or cleared (if C_replace
         // is true).  However, the GrB_Row_assign and GrB_Col_assign only clear
         // their specific row or column of C, respectively.
+
+        // Mask is NULL so C and Mask cannot be the same, and A is ignored so
+        // it doesn't matter whether or not C == A.  Thus C is not aliased
+        // to the inputs.
 
         if (C_replace)
         {
@@ -293,7 +272,14 @@ GrB_Info GB_assign                  // C<Mask>(I,J) = accum (C(I,J),A)
             }
         }
 
-        CLEANUP_AND_RETURN ;
+        if (C->nzombies > 0)
+        {
+            // make sure C is in the queue
+            GB_queue_insert (C) ;
+        }
+        // finalize C if blocking mode is enabled, and return result
+        ASSERT_OK (GB_check (C, "Final C for assign, quick mask", 0)) ;
+        return (GB_block (C)) ;
     }
 
     //--------------------------------------------------------------------------
@@ -343,6 +329,8 @@ GrB_Info GB_assign                  // C<Mask>(I,J) = accum (C(I,J),A)
     // apply pending updates to A and Mask
     //--------------------------------------------------------------------------
 
+    // if C == Mask or C == A, pending updates are applied to C as well
+
     // delete any lingering zombies and assemble any pending tuples
     // but only in A and Mask, not C
     APPLY_PENDING_UPDATES (Mask) ;
@@ -350,6 +338,15 @@ GrB_Info GB_assign                  // C<Mask>(I,J) = accum (C(I,J),A)
     {
         APPLY_PENDING_UPDATES (A) ;
     }
+
+    //--------------------------------------------------------------------------
+    // initialize workspace
+    //--------------------------------------------------------------------------
+
+    GrB_Index *I2 = NULL ;
+    GrB_Index *J2 = NULL ;
+    GrB_Matrix AT = NULL ;
+    GrB_Matrix Mask2 = NULL ;
 
     //--------------------------------------------------------------------------
     // scalar expansion: sort I and J and remove duplicates
@@ -493,11 +490,41 @@ GrB_Info GB_assign                  // C<Mask>(I,J) = accum (C(I,J),A)
     }
 
     //--------------------------------------------------------------------------
-    // C(I,J)<SubMask> = A or accum (C(I,J),A)
+    // Z = C
+    //--------------------------------------------------------------------------
+
+    // GB_subassign_kernel modifies C efficiently in place, but it can only do
+    // so if C is not aliased with A2 or SubMask.  If C is aliased a copy must
+    // be made.  GB_subassign_kernel operates on the copy, Z, which is then
+    // transplanted back into C when done.  This is costly, and can have
+    // performance implications, but it is the only reasonable method.  If C is
+    // aliased, then the assignment is a large one and copying the whole matrix
+    // will not add much time.
+
+    GrB_Matrix Z ;
+    bool aliased = (C == A2 || C == SubMask) ;
+    if (aliased)
+    {
+        // Z = duplicate of C
+        info = GB_Matrix_dup (&Z, C) ;
+        if (info != GrB_SUCCESS)
+        {
+            FREE_ALL ;
+            return (info) ;
+        }
+    }
+    else
+    {
+        // GB_subassign_kernel can safely operate on C in place
+        Z = C ;
+    }
+
+    //--------------------------------------------------------------------------
+    // Z(I,J)<SubMask> = A or accum (Z(I,J),A)
     //--------------------------------------------------------------------------
 
     info = GB_subassign_kernel (
-        C,          C_replace,      // C matrix and its descriptor
+        Z,          C_replace,      // Z matrix and its descriptor
         SubMask,    Mask_comp,      // Mask matrix and its descriptor
         accum,                      // for accum (C(I,J),A)
         A2,                         // A matrix, NULL for scalar expansion
@@ -514,18 +541,19 @@ GrB_Info GB_assign                  // C<Mask>(I,J) = accum (C(I,J),A)
     // return if GB_subassign_kernel failed
     if (info != GrB_SUCCESS)
     {
+        if (aliased) GB_MATRIX_FREE (&Z) ;
         FREE_ALL ;
         return (info) ;
     }
 
     //--------------------------------------------------------------------------
-    // examine C outside the C(I,J) submatrix
+    // examine Z outside the Z(I,J) submatrix
     //--------------------------------------------------------------------------
 
     if (C_replace_phase)
     {
         // Let M be the mask operator as determined by the Mask matrix.  If
-        // C_replace is true and M(i,j)=0 for any entry outside the C(I,J)
+        // C_replace is true and M(i,j)=0 for any entry outside the Z(I,J)
         // submatrix, then that entry must be deleted.  This phase is very
         // costly but it is what the GraphBLAS Specification requires.
         // This phase is skipped if C_replace is false.
@@ -534,30 +562,31 @@ GrB_Info GB_assign                  // C<Mask>(I,J) = accum (C(I,J),A)
         // or not).  If the Mask is not present, then it is not complemented
         // (see the "quick return" case above).  So if there is no Mask
         // matrix, M(I,J)=1 is true, so C_replace has no effect outside the
-        // C(I,J) submatrix.
+        // Z(I,J) submatrix.
 
         // Also, if IJ_whole_matrix is true, then there is nothing outside
-        // the C(I,J) submatrix to modify, so this phase is skipped if
+        // the Z(I,J) submatrix to modify, so this phase is skipped if
         // IJ_whole_matrix is true.
+
+        // This code assumes Z and Mask are not aliased to each other.
 
         //----------------------------------------------------------------------
         // assemble any pending tuples
         //----------------------------------------------------------------------
 
-        if (PENDING (C))
+        if (Z->npending > 0)
         {
-            info = GB_wait (C) ;
+            info = GB_wait (Z) ;
             if (info != GrB_SUCCESS)
             {
+                if (aliased) GB_MATRIX_FREE (&Z) ;
                 FREE_ALL ;
                 return (info) ;
             }
         }
 
-        // at this point, success is guaranteed
-
         //----------------------------------------------------------------------
-        // use Mark workspace to flag rows/cols inside the C(I,J) submatrix
+        // use Mark workspace to flag rows/cols inside the Z(I,J) submatrix
         //----------------------------------------------------------------------
 
         int64_t flag = GB_Mark_reset (1,0) ;
@@ -566,9 +595,9 @@ GrB_Info GB_assign                  // C<Mask>(I,J) = accum (C(I,J),A)
 
         if (I != GrB_ALL)
         {
-            // Mark_row has size C->nrows
+            // Mark_row has size Z->nrows
             Mark_row = Mark ;
-            Mark += C->nrows ;
+            Mark += Z->nrows ;
             for (int64_t k = 0 ; k < ni ; k++)
             {
                 Mark_row [I [k]] = flag ;
@@ -577,7 +606,7 @@ GrB_Info GB_assign                  // C<Mask>(I,J) = accum (C(I,J),A)
 
         if (J != GrB_ALL)
         {
-            // Mark_col has size C->ncols
+            // Mark_col has size Z->ncols
             Mark_col = Mark ;
             for (int64_t k = 0 ; k < nj ; k++)
             {
@@ -586,11 +615,11 @@ GrB_Info GB_assign                  // C<Mask>(I,J) = accum (C(I,J),A)
         }
 
         //----------------------------------------------------------------------
-        // get C and the Mask
+        // get Z and the Mask
         //----------------------------------------------------------------------
 
-        const int64_t *Cp = C->p ;
-        int64_t *Ci = C->i ;
+        const int64_t *Zp = Z->p ;
+        int64_t *Zi = Z->i ;
 
         const int64_t *Maskp = Mask->p ;
         const int64_t *Maski = Mask->i ;
@@ -600,36 +629,36 @@ GrB_Info GB_assign                  // C<Mask>(I,J) = accum (C(I,J),A)
             GB_cast_factory (GB_BOOL_code, Mask->type->code) ;
 
         //----------------------------------------------------------------------
-        // delete entries outside C(I,J) for which M(i,j) is false
+        // delete entries outside Z(I,J) for which M(i,j) is false
         //----------------------------------------------------------------------
 
         if (row_assign)
         {
 
             //------------------------------------------------------------------
-            // row assignment, examine just C(i,:)
+            // row assignment, examine just Z(i,:)
             //------------------------------------------------------------------
 
-            // GrB_Row_assign: only examine the row C(i,:)
+            // GrB_Row_assign: only examine the row Z(i,:)
             // Mask is a single row
             int64_t i = I [0] ;
 
-            for (int64_t j = 0 ; j < C->ncols ; j++)
+            for (int64_t j = 0 ; j < Z->ncols ; j++)
             {
-                // j_outside is true if column j is outside the C(I,J) submatrix
+                // j_outside is true if column j is outside the Z(I,J) submatrix
                 bool j_outside = (Mark_col != NULL) && (Mark_col [j] < flag) ;
 
                 if (j_outside)
                 {
-                    // find C(i,j) if it exists
-                    int64_t p = Cp [j] ;
-                    int64_t pright = Cp [j+1]-1 ;
+                    // find Z(i,j) if it exists
+                    int64_t p = Zp [j] ;
+                    int64_t pright = Zp [j+1]-1 ;
                     bool found, is_zombie ;
-                    GB_BINARY_ZOMBIE (i, Ci, p, pright, found, C->nzombies,
+                    GB_BINARY_ZOMBIE (i, Zi, p, pright, found, Z->nzombies,
                         is_zombie) ;
                     if (found && !is_zombie)
                     {
-                        // C(i,j) is a live entry not in the C(I,J) submatrix.
+                        // Z(i,j) is a live entry not in the Z(I,J) submatrix.
                         // Check the Mask(0,j) to see if it should be deleted.
                         bool Mij = false ;
                         int64_t pmask = Maskp [j] ;
@@ -645,9 +674,9 @@ GrB_Info GB_assign                  // C<Mask>(I,J) = accum (C(I,J),A)
                         }
                         if (Mij == false)
                         {
-                            // delete C(i,j) by marking it as a zombie
-                            C->nzombies++ ;
-                            Ci [p] = FLIP (i) ;
+                            // delete Z(i,j) by marking it as a zombie
+                            Z->nzombies++ ;
+                            Zi [p] = FLIP (i) ;
                         }
                     }
                 }
@@ -658,27 +687,27 @@ GrB_Info GB_assign                  // C<Mask>(I,J) = accum (C(I,J),A)
         {
 
             //------------------------------------------------------------------
-            // column assignment, examine just C(:,j)
+            // column assignment, examine just Z(:,j)
             //------------------------------------------------------------------
 
             // Mask is a single column
             int64_t j = J [0] ;
 
-            for (int64_t p = Cp [j] ; p < Cp [j+1] ; p++)
+            for (int64_t p = Zp [j] ; p < Zp [j+1] ; p++)
             {
-                // C(i,j) is outside the C(I,j) subcolumn if either i is
+                // Z(i,j) is outside the Z(I,j) subcolumn if either i is
                 // not in the list I
-                int64_t i = Ci [p] ;
+                int64_t i = Zi [p] ;
                 if (i < 0)
                 {
-                    // C(i,j) is already a zombie; skip it.
+                    // Z(i,j) is already a zombie; skip it.
                     continue ;
                 }
                 bool i_outside = (Mark_row != NULL) && (Mark_row [i] < flag) ;
 
                 if (i_outside)
                 {
-                    // C(i,j) is a live entry not in the C(I,j) subcolumn.
+                    // Z(i,j) is a live entry not in the Z(I,j) subcolumn.
                     // Check the Mask to see if it should be deleted.
                     bool Mij ;
                     int64_t pleft  = Maskp [0] ;
@@ -702,9 +731,9 @@ GrB_Info GB_assign                  // C<Mask>(I,J) = accum (C(I,J),A)
                     }
                     if (Mij == false)
                     {
-                        // delete C(i,j) by marking it as a zombie
-                        C->nzombies++ ;
-                        Ci [p] = FLIP (i) ;
+                        // delete Z(i,j) by marking it as a zombie
+                        Z->nzombies++ ;
+                        Zi [p] = FLIP (i) ;
                     }
                 }
             }
@@ -713,23 +742,23 @@ GrB_Info GB_assign                  // C<Mask>(I,J) = accum (C(I,J),A)
         {
 
             //------------------------------------------------------------------
-            // Matrix/vector assignment: examine all of C
+            // Matrix/vector assignment: examine all of Z
             //------------------------------------------------------------------
 
-            // Mask has the same size as C
-            for (int64_t j = 0 ; j < C->ncols ; j++)
+            // Mask has the same size as Z
+            for (int64_t j = 0 ; j < Z->ncols ; j++)
             {
-                // j_outside is true if column j is outside the C(I,J) submatrix
+                // j_outside is true if column j is outside the Z(I,J) submatrix
                 bool j_outside = (Mark_col != NULL) && (Mark_col [j] < flag) ;
 
-                for (int64_t p = Cp [j] ; p < Cp [j+1] ; p++)
+                for (int64_t p = Zp [j] ; p < Zp [j+1] ; p++)
                 {
-                    // C(i,j) is outside the C(I,J) submatrix if either i is
+                    // Z(i,j) is outside the Z(I,J) submatrix if either i is
                     // not in the list I, or j is not in J, or both.
-                    int64_t i = Ci [p] ;
+                    int64_t i = Zi [p] ;
                     if (i < 0)
                     {
-                        // C(i,j) is already a zombie; skip it.
+                        // Z(i,j) is already a zombie; skip it.
                         continue ;
                     }
                     bool i_outside = (Mark_row != NULL)
@@ -737,7 +766,7 @@ GrB_Info GB_assign                  // C<Mask>(I,J) = accum (C(I,J),A)
 
                     if (j_outside || i_outside)
                     {
-                        // C(i,j) is a live entry not in the C(I,J) submatrix.
+                        // Z(i,j) is a live entry not in the Z(I,J) submatrix.
                         // Check the Mask to see if it should be deleted.
                         bool Mij ;
                         int64_t pleft  = Maskp [j] ;
@@ -761,13 +790,47 @@ GrB_Info GB_assign                  // C<Mask>(I,J) = accum (C(I,J),A)
                         }
                         if (Mij == false)
                         {
-                            // delete C(i,j) by marking it as a zombie
-                            C->nzombies++ ;
-                            Ci [p] = FLIP (i) ;
+                            // delete Z(i,j) by marking it as a zombie
+                            Z->nzombies++ ;
+                            Zi [p] = FLIP (i) ;
                         }
                     }
                 }
             }
+        }
+
+        // clear the Mark array
+        GB_Mark_reset (1,0) ;
+    }
+
+    // free workspace
+    FREE_ALL ;
+
+    //--------------------------------------------------------------------------
+    // C = Z
+    //--------------------------------------------------------------------------
+
+    if (aliased)
+    {
+        // zombies can be transplanted into C but pending tuples cannot
+        if (Z->npending > 0)
+        {
+            // assemble all pending tuples, and delete all zombies too
+            info = GB_wait (Z) ;
+        }
+        if (info == GrB_SUCCESS)
+        {
+            // transplants the content of Z into C and frees Z.
+            // this always succeeds since nothing gets allocated.
+            info = GB_Matrix_transplant (C, C->type, &Z) ;
+            ASSERT (info == GrB_SUCCESS) ;
+        }
+        if (info != GrB_SUCCESS)
+        {
+            // Z needs to be freed if C is aliased but info != GrB_SUCCESS.
+            // C remains unchanged.
+            GB_MATRIX_FREE (&Z) ;
+            return (info) ;
         }
     }
 
@@ -775,9 +838,16 @@ GrB_Info GB_assign                  // C<Mask>(I,J) = accum (C(I,J),A)
     // cleanup
     //--------------------------------------------------------------------------
 
-    CLEANUP_AND_RETURN ;
+    if (C->nzombies > 0)
+    {
+        // make sure C is in the queue
+        GB_queue_insert (C) ;
+    }
+
+    // finalize C if blocking mode is enabled, and return result
+    ASSERT_OK (GB_check (C, "Final C for assign", 0)) ;
+    return (GB_block (C)) ;
 }
 
 #undef FREE_ALL
-#undef CLEANUP_AND_RETURN
 

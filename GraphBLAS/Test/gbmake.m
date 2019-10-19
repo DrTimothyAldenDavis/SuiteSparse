@@ -67,7 +67,8 @@ if (nargin < 3)
 end
 
 if (nargin < 4)
-    cfiles = [ dir('../Source/*.c') ; dir('GB_mx_*.c') ; dir('../Demo/Source/*.c') ] ;
+    cfiles = [ dir('../Source/*.c') ; dir('../Source/Generated/*.c') ; ...
+               dir('GB_mx_*.c') ; dir('../Demo/Source/*.c') ] ;
 end
 
 if (nargin < 5)
@@ -76,13 +77,14 @@ if (nargin < 5)
                dir('Template/*.c') ; ...
                dir('Template/*.h') ; ...
                dir('../Source/*.h') ; ...
+               dir('../Source/Generated/*.h') ; ...
                dir('../Demo/Include*.h') ; ...
                dir('../Source/Template/*.h') ; ...
                dir('../Source/Template/*.c') ] ;
 end
 
 if (nargin < 6)
-    inc = '-ITemplate -I../Include -I../Source -I../Source/Template -I../Demo/Include' ;
+    inc = '-ITemplate -I../Include -I../Source -I../Source/Generated -I../Source/Template -I../Demo/Include' ;
 end
 
 %-------------------------------------------------------------------------------
@@ -148,7 +150,8 @@ for k = 1:length (cfiles)
     % compile the cfile if it is newer than its object file, or any hfile
     if (tc > tobj || htime > tobj)
         % compile the cfile
-        fprintf ('.', cfile) ;
+        % fprintf ('.', cfile) ;
+        fprintf ('%s\n', cfile) ;
         mexcmd = sprintf ('mex -c %s -silent %s %s', flags, inc, cfile) ;
         eval (mexcmd) ;
         any_c_compiled = true ;
@@ -178,7 +181,8 @@ for k = 1:length (mexfunctions)
         % compile the mexFunction
         mexcmd = sprintf ('mex %s -silent %s %s %s', ...
             flags, inc, mexfunction, objlist) ;
-        fprintf ('.') ;
+        % fprintf (':') ;
+        fprintf ('%s\n', mexfunction) ;
         eval (mexcmd) ;
     end
 end

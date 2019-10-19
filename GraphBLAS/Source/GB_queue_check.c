@@ -19,7 +19,7 @@ void GB_queue_check
 )
 {
 
-    #pragma omp critical GB_queue
+    #pragma omp critical (GB_queue)
     {
         // get the status of the queue for this matrix
         (*head) = (GrB_Matrix) (GB_Global.queue_head) ;

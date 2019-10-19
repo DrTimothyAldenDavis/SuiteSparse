@@ -19,7 +19,7 @@ systype = $(shell uname -s)
 BUILDDIR = build/$(systype)-$(cputype)
 
 # Process configuration options.
-CONFIG_FLAGS = -DCMAKE_VERBOSE_MAKEFILE=1
+CONFIG_FLAGS = 
 ifeq ($(gklib_path), not-set)
     gklib_path = GKlib
 endif

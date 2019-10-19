@@ -38,7 +38,10 @@ GrB_Info GB_Matrix_transplant   // transplant one matrix into another
     ASSERT (C != NULL && !C->p_shallow) ;
     ASSERT_OK (GB_check (A, "A before transplant", 0)) ;
     ASSERT_OK (GB_check (ctype, "new type for C", 0)) ;
-    ASSERT (!PENDING (A)) ; ASSERT (!ZOMBIES (A)) ;
+    ASSERT (!PENDING (A)) ;
+
+    // zombies in A can be safely transplanted into C
+    ASSERT (ZOMBIES_OK (A)) ;
 
     // C must be the same dimensions as A, and the types must be compatible
     ASSERT (C->nrows == A->nrows && C->ncols == A->ncols) ;
@@ -76,7 +79,7 @@ GrB_Info GB_Matrix_transplant   // transplant one matrix into another
     {
         // A->p is not shallow, so free the existing C->p if it exists and
         // replace with A->p
-        GB_FREE_MEMORY (C->p) ;
+        GB_FREE_MEMORY (C->p, C->ncols+1, sizeof (int64_t)) ;
         C->p = A->p ;
         A->p = NULL ;
     }
@@ -165,7 +168,7 @@ GrB_Info GB_Matrix_transplant   // transplant one matrix into another
         GB_cast_array (C->x, C->type->code, A->x, A->type->code, anz) ;
         if (!A->x_shallow)
         {
-            GB_FREE_MEMORY (A->x) ;
+            GB_FREE_MEMORY (A->x, A->nzmax, A->type->size) ;
         }
         A->x = NULL ;
     }
@@ -193,16 +196,20 @@ GrB_Info GB_Matrix_transplant   // transplant one matrix into another
         A->i = NULL ;
     }
 
-    ASSERT (A->i == NULL) ;     // has been freed or removed
+    ASSERT (A->i == NULL) ;         // has been freed or removed
     A->i_shallow = false ; 
 
     ASSERT (C->i != NULL) ;
     C->i_shallow = false ;
 
+    C->nzombies = A->nzombies ;     // zombies have been transplanted into C
+    GB_queue_insert (C) ;
+
     //--------------------------------------------------------------------------
     // free A and return result
     //--------------------------------------------------------------------------
 
+    // if A has zombies, it is removed from the queue by GB_Matrix_free
     GB_MATRIX_FREE (Ahandle) ;
     ASSERT_OK (GB_check (C, "C after transplant", 0)) ;
     return (REPORT_SUCCESS) ;

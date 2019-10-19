@@ -22,7 +22,8 @@ GrB_Info get_matrix         // get a matrix from stdin, or create random one
     GrB_Matrix *A_output,   // matrix to create
     int argc,               // command-line arguments
     char **argv,
-    bool no_self_edges      // if true, ensure the matrix has no self-edges
+    bool no_self_edges,     // if true, ensure the matrix has no self-edges
+    bool boolean            // if true, file is read as GrB_BOOL, else GrB_FP64
 )
 {
 
@@ -133,6 +134,7 @@ GrB_Info get_matrix         // get a matrix from stdin, or create random one
                 OK (GrB_Descriptor_set (desc, GrB_OUTP, GrB_REPLACE)) ;
                 OK (GrB_transpose (A, Mask, NULL, A, desc)) ;
                 GrB_free (&Mask) ;
+                GrB_free (&desc) ;
                 t = simple_toc (tic) ;
             }
         }
@@ -154,7 +156,7 @@ GrB_Info get_matrix         // get a matrix from stdin, or create random one
         bool one_based = false ;
         if (argc > 2) one_based = strtol (argv [1], NULL, 0) ;
 
-        OK (read_matrix (&A, stdin, true, no_self_edges, one_based)) ;
+        OK (read_matrix (&A, stdin, true, no_self_edges, one_based, boolean)) ;
 
         OK (GrB_Matrix_nrows (&nrows, A)) ;
         OK (GrB_Matrix_ncols (&ncols, A)) ;

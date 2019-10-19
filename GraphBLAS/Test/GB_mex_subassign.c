@@ -40,6 +40,8 @@
     GB_MATRIX_FREE (&Mask) ;            \
     GB_MATRIX_FREE (&C) ;               \
     GrB_free (&desc) ;                  \
+    GrB_free (&op) ;                    \
+    if (!reduce_is_complex) GrB_free (&reduce) ;                \
     GB_mx_put_global (malloc_debug) ;   \
 }
 
@@ -57,6 +59,9 @@ GrB_Index *I = NULL, ni ;
 GrB_Index *J = NULL, nj ;
 bool malloc_debug = false ;
 GrB_Info info = GrB_SUCCESS ;
+GrB_Monoid reduce = NULL ;
+GrB_BinaryOp op = NULL ;
+bool reduce_is_complex = false ;
 
 //------------------------------------------------------------------------------
 // assign: perform a single assignment
@@ -271,8 +276,8 @@ GrB_Info many_subassign
         mxArray *p ;
 
         // [ turn off malloc debugging
-        bool save = GB_thread_local.malloc_debug ;
-        GB_thread_local.malloc_debug = false ;
+        bool save = GB_Global.malloc_debug ;
+        GB_Global.malloc_debug = false ;
 
         // get Mask (shallow copy)
         Mask = NULL ;
@@ -338,7 +343,7 @@ GrB_Info many_subassign
             }
         }
         // restore malloc debugging to test the method
-        GB_thread_local.malloc_debug = save ;   // ]
+        GB_Global.malloc_debug = save ;   // ]
 
         // GB_check (desc, "desc", 3) ;
 
@@ -382,12 +387,17 @@ void mexFunction
     C = NULL ;
     Mask = NULL ;
     desc = NULL ;
+    reduce_is_complex = false ;
+    op = NULL ;
+    reduce = NULL ;
 
-    if (nargout > 1 || ! (nargin == 2 || nargin == 6 || nargin == 7))
+    if (!((nargout == 1 && (nargin == 2 || nargin == 6 || nargin == 7)) ||
+          ((nargout == 2 || nargout == 3) && nargin == 8)))
     {
-        mexErrMsgTxt ("Usage: C = GB_mex_subassign "
-       "(C, Mask, accum, A, I, J, desc) or (C, Work)");
+        mexErrMsgTxt ("Usage: [C,s,t] = GB_mex_subassign "
+       "(C, Mask, accum, A, I, J, desc, reduce) or (C, Work)");
     }
+
 
     //--------------------------------------------------------------------------
     // get C (make a deep copy)
@@ -494,9 +504,98 @@ void mexFunction
             mexErrMsgTxt ("desc failed") ;
         }
 
+        if (nargin == 8 && (nargout == 2 || nargout == 3))
+        {
+            // get reduce operator
+            if (!GB_mx_mxArray_to_BinaryOp (&op, PARGIN (7), "op",
+                GB_NOP_opcode, cclass, C->type == Complex, C->type == Complex))
+            {
+                FREE_ALL ;
+                mexErrMsgTxt ("op failed") ;
+            }
+
+            // get the reduce monoid
+            if (op == Complex_plus)
+            {
+                reduce_is_complex = true ;
+                reduce = Complex_plus_monoid ;
+            }
+            else if (op == Complex_times)
+            {
+                reduce_is_complex = true ;
+                reduce = Complex_times_monoid ;
+            }
+            else
+            {
+                // create the reduce monoid
+                if (!GB_mx_Monoid (&reduce, op, malloc_debug))
+                {
+                    FREE_ALL ;
+                    mexErrMsgTxt ("reduce failed") ;
+                }
+            }
+        }
+
         // C(I,J)<Mask> = A
 
         METHOD (assign ( )) ;
+
+        // apply the reduce monoid
+        if (nargin == 8 && (nargout == 2 || nargout == 3))
+        {
+            // if (C->nzombies > 0)
+            //    printf ("do the reduce thing, zombies %lld\n", C->nzombies) ;
+            // GB_check (C, "C to reduce", 1) ;
+
+            #define REDUCE(type)                                             \
+            {                                                                \
+                type c = 0 ;                                                 \
+                GrB_reduce (&c, NULL, reduce, C, NULL) ;                     \
+                pargout [1] = mxCreateNumericMatrix (1, 1, cclass, mxREAL) ; \
+                void *p = mxGetData (pargout [1]) ;                          \
+                memcpy (p, &c, sizeof (type)) ;                              \
+                double d = 0 ;                                               \
+                GrB_reduce (&d, NULL, GxB_PLUS_FP64_MONOID, C, NULL) ;       \
+                if (nargout > 2) pargout [2] = mxCreateDoubleScalar (d) ;    \
+            }                                                                \
+            break ;
+
+            if (reduce_is_complex)
+            {
+                double c [2] = {0, 0} ;
+                GrB_reduce ((void *) c, NULL, reduce, C, NULL) ;
+                pargout [1] = mxCreateNumericMatrix (1, 1,
+                    mxDOUBLE_CLASS, mxCOMPLEX) ;
+                GB_mx_complex_split (1, c, pargout [1]) ;
+            }
+            else
+            {
+                switch (cclass)
+                {
+
+                    case mxLOGICAL_CLASS : REDUCE (bool) ;
+                    case mxINT8_CLASS    : REDUCE (int8_t) ;
+                    case mxUINT8_CLASS   : REDUCE (uint8_t) ;
+                    case mxINT16_CLASS   : REDUCE (int16_t) ;
+                    case mxUINT16_CLASS  : REDUCE (uint16_t) ;
+                    case mxINT32_CLASS   : REDUCE (int32_t) ;
+                    case mxUINT32_CLASS  : REDUCE (uint32_t) ;
+                    case mxINT64_CLASS   : REDUCE (int64_t) ;
+                    case mxUINT64_CLASS  : REDUCE (uint64_t) ;
+                    case mxSINGLE_CLASS  : REDUCE (float) ;
+                    case mxDOUBLE_CLASS  : REDUCE (double) ;
+
+                    case mxCELL_CLASS    :
+                    case mxCHAR_CLASS    :
+                    case mxUNKNOWN_CLASS :
+                    case mxFUNCTION_CLASS:
+                    case mxSTRUCT_CLASS  :
+                    default              :
+                        FREE_ALL ;
+                        mexErrMsgTxt ("unsupported class") ;
+                }
+            }
+        }
     }
 
     //--------------------------------------------------------------------------
@@ -505,6 +604,7 @@ void mexFunction
 
     ASSERT_OK (GB_check (C, "Final C before wait", 0)) ;
     GrB_wait ( ) ;
+    // GB_check (C, "C final", 1) ;
     pargout [0] = GB_mx_Matrix_to_mxArray (&C, "C assign result", true) ;
     FREE_ALL ;
 }

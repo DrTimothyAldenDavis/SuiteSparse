@@ -17,7 +17,7 @@
 
 #include "GB.h"
 
-#define GBCOVER_MAX 40000
+#define GBCOVER_MAX 80000
 int64_t gbcov [GBCOVER_MAX] ;
 
 extern int gbcover_max ;

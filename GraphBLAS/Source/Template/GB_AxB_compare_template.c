@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-// A template file #include'd in GB_AxB_builtin.c
+// A template file #include'd in GB_AxB_factory.c
 
 // The multiply operator is a comparator: EQ, NE, GT, LT, GE, LE.
 // z=f(x,y): x and x are either boolean or non-boolean.  z is boolean.
@@ -19,9 +19,9 @@
 
 // There is one special case to consider.  For boolean x, y, and z, the
 // function z=NE(x,y) is the same as z=XOR(x,y).  If z is boolean, the multiply
-// operator NE has already been renamed XOR by GB_AxB_builtin, and thus NE will
-// never use the boolean case, below.  Thus it is removed with the #ifndef
-// NO_BOOLEAN.
+// operator NE has already been renamed XOR by GB_AxB_semiring_builtin, and
+// thus NE will never use the boolean case, below.  Thus it is removed with the
+// #ifndef NO_BOOLEAN.
 
 ASSERT (zcode == GB_BOOL_code) ;
 {
@@ -35,122 +35,92 @@ ASSERT (zcode == GB_BOOL_code) ;
 
         case GB_LOR_opcode     :
 
-            #define ADD(w,t) w = (w || t)
             switch (xycode)
             {
-                //   xycode                ztype     xytype    identity
-                #define MULT(x,y) IMULT(x,y)
                 #ifndef NO_BOOLEAN
-                case GB_BOOL_code   : AxB (bool    , bool    , false)      ;
+                case GB_BOOL_code   : AxB (_lor, mult, _bool  )
                 #endif
-                case GB_INT8_code   : AxB (bool    , int8_t  , false)      ;
-                case GB_UINT8_code  : AxB (bool    , uint8_t , false)      ;
-                case GB_INT16_code  : AxB (bool    , int16_t , false)      ;
-                case GB_UINT16_code : AxB (bool    , uint16_t, false)      ;
-                case GB_INT32_code  : AxB (bool    , int32_t , false)      ;
-                case GB_UINT32_code : AxB (bool    , uint32_t, false)      ;
-                case GB_INT64_code  : AxB (bool    , int64_t , false)      ;
-                case GB_UINT64_code : AxB (bool    , uint64_t, false)      ;
-                #undef  MULT
-                #define MULT(x,y) FMULT(x,y)
-                case GB_FP32_code   : AxB (bool    , float   , false)      ;
-                case GB_FP64_code   : AxB (bool    , double  , false)      ;
-                #undef  MULT
+                case GB_INT8_code   : AxB (_lor, mult, _int8  )
+                case GB_UINT8_code  : AxB (_lor, mult, _uint8 )
+                case GB_INT16_code  : AxB (_lor, mult, _int16 )
+                case GB_UINT16_code : AxB (_lor, mult, _uint16)
+                case GB_INT32_code  : AxB (_lor, mult, _int32 )
+                case GB_UINT32_code : AxB (_lor, mult, _uint32)
+                case GB_INT64_code  : AxB (_lor, mult, _int64 )
+                case GB_UINT64_code : AxB (_lor, mult, _uint64)
+                case GB_FP32_code   : AxB (_lor, mult, _fp32  )
+                case GB_FP64_code   : AxB (_lor, mult, _fp64  )
                 default: ;
             }
             break ;
-            #undef  ADD
 
         case GB_LAND_opcode    :
 
-            #define ADD(w,t) w = (w && t)
             switch (xycode)
             {
-                //   xycode                ztype     xytype    identity
-                #define MULT(x,y) IMULT(x,y)
                 #ifndef NO_BOOLEAN
-                case GB_BOOL_code   : AxB (bool    , bool    , true)       ;
+                case GB_BOOL_code   : AxB (_land, mult, _bool  )
                 #endif
-                case GB_INT8_code   : AxB (bool    , int8_t  , true)       ;
-                case GB_UINT8_code  : AxB (bool    , uint8_t , true)       ;
-                case GB_INT16_code  : AxB (bool    , int16_t , true)       ;
-                case GB_UINT16_code : AxB (bool    , uint16_t, true)       ;
-                case GB_INT32_code  : AxB (bool    , int32_t , true)       ;
-                case GB_UINT32_code : AxB (bool    , uint32_t, true)       ;
-                case GB_INT64_code  : AxB (bool    , int64_t , true)       ;
-                case GB_UINT64_code : AxB (bool    , uint64_t, true)       ;
-                #undef  MULT
-                #define MULT(x,y) FMULT(x,y)
-                case GB_FP32_code   : AxB (bool    , float   , true)       ;
-                case GB_FP64_code   : AxB (bool    , double  , true)       ;
-                #undef  MULT
+                case GB_INT8_code   : AxB (_land, mult, _int8  )
+                case GB_UINT8_code  : AxB (_land, mult, _uint8 )
+                case GB_INT16_code  : AxB (_land, mult, _int16 )
+                case GB_UINT16_code : AxB (_land, mult, _uint16)
+                case GB_INT32_code  : AxB (_land, mult, _int32 )
+                case GB_UINT32_code : AxB (_land, mult, _uint32)
+                case GB_INT64_code  : AxB (_land, mult, _int64 )
+                case GB_UINT64_code : AxB (_land, mult, _uint64)
+                case GB_FP32_code   : AxB (_land, mult, _fp32  )
+                case GB_FP64_code   : AxB (_land, mult, _fp64  )
                 default: ;
             }
             break ;
-            #undef  ADD
 
         case GB_LXOR_opcode    :
 
-            #define ADD(w,t) w = (w != t)
             switch (xycode)
             {
-                //   xycode                ztype     xytype    identity
-                #define MULT(x,y) IMULT(x,y)
                 #ifndef NO_BOOLEAN
-                case GB_BOOL_code   : AxB (bool    , bool    , false)      ;
+                case GB_BOOL_code   : AxB (_lxor, mult, _bool  )
                 #endif
-                case GB_INT8_code   : AxB (bool    , int8_t  , false)      ;
-                case GB_UINT8_code  : AxB (bool    , uint8_t , false)      ;
-                case GB_INT16_code  : AxB (bool    , int16_t , false)      ;
-                case GB_UINT16_code : AxB (bool    , uint16_t, false)      ;
-                case GB_INT32_code  : AxB (bool    , int32_t , false)      ;
-                case GB_UINT32_code : AxB (bool    , uint32_t, false)      ;
-                case GB_INT64_code  : AxB (bool    , int64_t , false)      ;
-                case GB_UINT64_code : AxB (bool    , uint64_t, false)      ;
-                #undef  MULT
-                #define MULT(x,y) FMULT(x,y)
-                case GB_FP32_code   : AxB (bool    , float   , false)      ;
-                case GB_FP64_code   : AxB (bool    , double  , false)      ;
-                #undef  MULT
+                case GB_INT8_code   : AxB (_lxor, mult, _int8  )
+                case GB_UINT8_code  : AxB (_lxor, mult, _uint8 )
+                case GB_INT16_code  : AxB (_lxor, mult, _int16 )
+                case GB_UINT16_code : AxB (_lxor, mult, _uint16)
+                case GB_INT32_code  : AxB (_lxor, mult, _int32 )
+                case GB_UINT32_code : AxB (_lxor, mult, _uint32)
+                case GB_INT64_code  : AxB (_lxor, mult, _int64 )
+                case GB_UINT64_code : AxB (_lxor, mult, _uint64)
+                case GB_FP32_code   : AxB (_lxor, mult, _fp32  )
+                case GB_FP64_code   : AxB (_lxor, mult, _fp64  )
                 default: ;
             }
             break ;
-            #undef  ADD
 
         case GB_EQ_opcode    :
 
-            #define ADD(w,t) w = (w == t)
             switch (xycode)
             {
-                //   xycode                ztype     xytype    identity
-                #define MULT(x,y) IMULT(x,y)
                 #ifndef NO_BOOLEAN
-                case GB_BOOL_code   : AxB (bool    , bool    , true)       ;
+                case GB_BOOL_code   : AxB (_eq, mult, _bool  )
                 #endif
-                case GB_INT8_code   : AxB (bool    , int8_t  , true)       ;
-                case GB_UINT8_code  : AxB (bool    , uint8_t , true)       ;
-                case GB_INT16_code  : AxB (bool    , int16_t , true)       ;
-                case GB_UINT16_code : AxB (bool    , uint16_t, true)       ;
-                case GB_INT32_code  : AxB (bool    , int32_t , true)       ;
-                case GB_UINT32_code : AxB (bool    , uint32_t, true)       ;
-                case GB_INT64_code  : AxB (bool    , int64_t , true)       ;
-                case GB_UINT64_code : AxB (bool    , uint64_t, true)       ;
-                #undef  MULT
-                #define MULT(x,y) FMULT(x,y)
-                case GB_FP32_code   : AxB (bool    , float   , true)       ;
-                case GB_FP64_code   : AxB (bool    , double  , true)       ;
-                #undef  MULT
+                case GB_INT8_code   : AxB (_eq, mult, _int8  )
+                case GB_UINT8_code  : AxB (_eq, mult, _uint8 )
+                case GB_INT16_code  : AxB (_eq, mult, _int16 )
+                case GB_UINT16_code : AxB (_eq, mult, _uint16)
+                case GB_INT32_code  : AxB (_eq, mult, _int32 )
+                case GB_UINT32_code : AxB (_eq, mult, _uint32)
+                case GB_INT64_code  : AxB (_eq, mult, _int64 )
+                case GB_UINT64_code : AxB (_eq, mult, _uint64)
+                case GB_FP32_code   : AxB (_eq, mult, _fp32  )
+                case GB_FP64_code   : AxB (_eq, mult, _fp64  )
                 default: ;
             }
             break ;
-            #undef  ADD
 
         default: ;
     }
 }
 
 #undef NO_BOOLEAN
-#undef MULT
-#undef IMULT
-#undef FMULT
+#undef mult
 

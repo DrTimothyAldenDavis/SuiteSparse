@@ -49,16 +49,19 @@ logstat ('test13') ;  % simple tests of GB_mex_transpose
 logstat ('test15') ;  % simple test of GB_mex_AxB
 logstat ('test17') ;  % quick test of GrB_*_extractElement
 logstat ('test72') ;  % several special cases
-logstat ('test20') ;  % quick test of GB_mex_mxm on a few semirings
-logstat ('test25') ;  % quick test of GxB_select
 logstat ('test26') ;  % quick test of GxB_select
-logstat ('test27') ;  % quick test of GxB_select (band)
+logstat ('test29') ;  % reduce with zombies
+logstat ('test69') ;  % assign and subassign with alias
+logstat ('test28') ;  % mxm with aliased inputs, C<C> = accum(C,C*C)
 logstat ('test11') ;  % exhaustive test of GrB_extractTuples
 logstat ('test14') ;  % GrB_reduce
+logstat ('test20') ;  % quick test of GB_mex_mxm on a few semirings
 logstat ('test00') ;  % GB_mex_mis
 logstat ('test19') ;  % GxB_subassign, many pending operators
 logstat ('test12') ;  % Wathen finite-element matrices (short test)
 logstat ('test10') ;  % GrB_apply
+logstat ('test27') ;  % quick test of GxB_select (band)
+logstat ('test25') ;  % quick test of GxB_select
 logstat ('test74') ;  % test GrB_mxm on all semirings, just dot product method
 logstat ('test99') ;  % GB_mex_transpose with explicit zeros in the Mask
 logstat ('test23') ;  % quick test of GB_*_build
@@ -67,6 +70,7 @@ logstat ('test16') ;  % user-defined complex operators
 logstat ('test24') ;  % test of GrB_Matrix_reduce
 logstat ('test21') ;  % quick test of GB_mex_subassign
 logstat ('test06') ;  % test GrB_mxm on all semirings
+logstat ('test75') ;  % test GrB_mxm A'*B on all semirings
 logstat ('test19b') ; % GrB_assign, many pending operators
 logstat ('test22') ;  % quick test of GB_mex_transpose
 
@@ -78,7 +82,7 @@ logstat ('test22') ;  % quick test of GB_mex_transpose
 if (longtests)
     % useful tests but not needed for statement coverage
     logstat ('test26(1)') ;  % longer test of GxB_select
-    logstat ('test20(1)') ;  % exhaustive test of GB_mex_mxm on all built-in semirings
+    logstat ('test20(1)') ;  % test of GB_mex_mxm on all built-in semirings
     logstat ('test18(1)') ;  % lengthy tests of GrB_eWiseAdd and eWiseMult
     logstat ('test08b') ; % quick test GB_mex_assign
     logstat ('test09b') ; % duplicate I,J test of GB_mex_assign

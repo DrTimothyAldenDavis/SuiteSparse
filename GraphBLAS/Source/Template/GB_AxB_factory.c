@@ -20,8 +20,7 @@
 
             // 44 semirings: (min,max,plus,times) for non-boolean, and
             // (or,and,xor,eq) for boolean
-            #define IMULT(x,y) x
-            #define FMULT(x,y) x
+            #define mult _first
             #include "GB_AxB_template.c"
             break ;
 
@@ -31,8 +30,7 @@
 
             // 44 semirings: (min,max,plus,times) for non-boolean, and
             // (or,and,xor,eq) for boolean
-            #define IMULT(x,y) y
-            #define FMULT(x,y) y
+            #define mult _second
             #include "GB_AxB_template.c"
             break ;
 
@@ -43,8 +41,7 @@
             // 40 semirings: (min,max,plus,times) for non-boolean
             // MIN == TIMES == AND for boolean
             #define NO_BOOLEAN
-            #define IMULT(x,y) IMIN (x,y)
-            #define FMULT(x,y) FMIN (x,y)
+            #define mult _min
             #include "GB_AxB_template.c"
             break ;
 
@@ -55,8 +52,7 @@
             // 40 semirings: (min,max,plus,times) for non-boolean
             // MAX == PLUS == OR for boolean
             #define NO_BOOLEAN
-            #define IMULT(x,y) IMAX (x,y)
-            #define FMULT(x,y) FMAX (x,y)
+            #define mult _max
             #include "GB_AxB_template.c"
             break ;
 
@@ -67,8 +63,7 @@
             // 40 semirings: (min,max,plus,times) for non-boolean
             // MAX == PLUS == OR for boolean
             #define NO_BOOLEAN
-            #define IMULT(x,y) (x + y)
-            #define FMULT(x,y) (x + y)
+            #define mult _plus
             #include "GB_AxB_template.c"
             break ;
 
@@ -79,8 +74,7 @@
             // 40 semirings: (min,max,plus,times) for non-boolean
             // MINUS == NE == ISNE == XOR for boolean
             #define NO_BOOLEAN
-            #define IMULT(x,y) (flipxy ? (y-x) : (x-y))
-            #define FMULT(x,y) (flipxy ? (y-x) : (x-y))
+            #define mult _minus
             #include "GB_AxB_template.c"
             break ;
 
@@ -91,8 +85,7 @@
             // 40 semirings: (min,max,plus,times) for non-boolean
             // MIN == TIMES == AND for boolean
             #define NO_BOOLEAN
-            #define IMULT(x,y) (x * y)
-            #define FMULT(x,y) (x * y)
+            #define mult _times
             #include "GB_AxB_template.c"
             break ;
 
@@ -104,8 +97,7 @@
             // FIRST == DIV for boolean
             // See Source/GB.h for disscusion on integer division
             #define NO_BOOLEAN
-            #define IMULT(x,y) (flipxy ? IDIV(y,x) : IDIV(x,y))
-            #define FMULT(x,y) (flipxy ? (y/x) : (x/y))
+            #define mult _div
             #include "GB_AxB_template.c"
             break ;
 
@@ -116,8 +108,7 @@
             // 40 semirings: (min,max,plus,times) for non-boolean
             // ISEQ == EQ for boolean
             #define NO_BOOLEAN
-            #define IMULT(x,y) (x == y)
-            #define FMULT(x,y) (x == y)
+            #define mult _iseq
             #include "GB_AxB_template.c"
             break ;
 
@@ -128,8 +119,7 @@
             // 40 semirings: (min,max,plus,times) for non-boolean
             // MINUS == NE == ISNE == XOR for boolean
             #define NO_BOOLEAN
-            #define IMULT(x,y) (x != y)
-            #define FMULT(x,y) (x != y)
+            #define mult _isne
             #include "GB_AxB_template.c"
             break ;
 
@@ -140,8 +130,7 @@
             // 40 semirings: (min,max,plus,times) for non-boolean
             // ISGT == GT for boolean
             #define NO_BOOLEAN
-            #define IMULT(x,y) (x >  y)
-            #define FMULT(x,y) (x >  y)
+            #define mult _isgt
             #include "GB_AxB_template.c"
             break ;
 
@@ -152,8 +141,7 @@
             // 40 semirings: (min,max,plus,times) for non-boolean
             // ISLT == LT for boolean
             #define NO_BOOLEAN
-            #define IMULT(x,y) (x <  y)
-            #define FMULT(x,y) (x <  y)
+            #define mult _islt
             #include "GB_AxB_template.c"
             break ;
 
@@ -164,8 +152,7 @@
             // 40 semirings: (min,max,plus,times) for non-boolean
             // ISGE == GE for boolean
             #define NO_BOOLEAN
-            #define IMULT(x,y) (x >= y)
-            #define FMULT(x,y) (x >= y)
+            #define mult _isge
             #include "GB_AxB_template.c"
             break ;
 
@@ -176,8 +163,7 @@
             // 40 semirings: (min,max,plus,times) for non-boolean
             // ISLE == LE for boolean
             #define NO_BOOLEAN
-            #define IMULT(x,y) (x <= y)
-            #define FMULT(x,y) (x <= y)
+            #define mult _isle
             #include "GB_AxB_template.c"
             break ;
 
@@ -186,8 +172,7 @@
         //----------------------------------------------------------------------
 
             // 44 semirings: (and,or,xor,eq) * (11 types)
-            #define IMULT(x,y) (x == y)
-            #define FMULT(x,y) (x == y)
+            #define mult _eq
             #include "GB_AxB_compare_template.c"
             break ;
 
@@ -198,8 +183,7 @@
             // 40 semirings: (and,or,xor,eq) * (10 types)
             // MINUS == NE == ISNE == XOR for boolean
             #define NO_BOOLEAN
-            #define IMULT(x,y) (x != y)
-            #define FMULT(x,y) (x != y)
+            #define mult _ne
             #include "GB_AxB_compare_template.c"
             break ;
 
@@ -208,8 +192,7 @@
         //----------------------------------------------------------------------
 
             // 44 semirings: (and,or,xor,eq) * (11 types)
-            #define IMULT(x,y) (x >  y)
-            #define FMULT(x,y) (x >  y)
+            #define mult _gt
             #include "GB_AxB_compare_template.c"
             break ;
 
@@ -218,8 +201,7 @@
         //----------------------------------------------------------------------
 
             // 44 semirings: (and,or,xor,eq) * (11 types)
-            #define IMULT(x,y) (x <  y)
-            #define FMULT(x,y) (x <  y)
+            #define mult _lt
             #include "GB_AxB_compare_template.c"
             break ;
 
@@ -228,8 +210,7 @@
         //----------------------------------------------------------------------
 
             // 44 semirings: (and,or,xor,eq) * (11 types)
-            #define IMULT(x,y) (x >= y)
-            #define FMULT(x,y) (x >= y)
+            #define mult _ge
             #include "GB_AxB_compare_template.c"
             break ;
 
@@ -238,8 +219,7 @@
         //----------------------------------------------------------------------
 
             // 44 semirings: (and,or,xor,eq) * (11 types)
-            #define IMULT(x,y) (x <= y)
-            #define FMULT(x,y) (x <= y)
+            #define mult _le
             #include "GB_AxB_compare_template.c"
             break ;
 
@@ -253,8 +233,7 @@
 
             // 44 semirings: (min,max,plus,times) for non-boolean, and
             // (or,and,xor,eq) for boolean
-            #define IMULT(x,y) ((x != 0) || (y != 0))
-            #define FMULT(x,y) ((x != 0) || (y != 0))
+            #define mult _lor
             #include "GB_AxB_template.c"
             break ;
 
@@ -264,8 +243,7 @@
 
             // 44 semirings: (min,max,plus,times) for non-boolean, and
             // (or,and,xor,eq) for boolean
-            #define IMULT(x,y) ((x != 0) && (y != 0))
-            #define FMULT(x,y) ((x != 0) && (y != 0))
+            #define mult _land
             #include "GB_AxB_template.c"
             break ;
 
@@ -275,8 +253,7 @@
 
             // 44 semirings: (min,max,plus,times) for non-boolean, and
             // (or,and,xor,eq) for boolean
-            #define IMULT(x,y) ((x != 0) != (y != 0))
-            #define FMULT(x,y) ((x != 0) != (y != 0))
+            #define mult _lxor
             #include "GB_AxB_template.c"
             break ;
 

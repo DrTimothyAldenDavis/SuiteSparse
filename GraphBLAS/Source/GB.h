@@ -210,7 +210,12 @@ GrB_Info GB_Vector_check    // check a GraphBLAS vector
     // debugging enabled
     #ifdef MATLAB_MEX_FILE
     #define ASSERT(x) \
-    if (!(x)) mexErrMsgTxt ("failure: " __FILE__ " line: " GB_XSTR(__LINE__)) ;
+    {                                                                       \
+        if (!(x))                                                           \
+        {                                                                   \
+            mexErrMsgTxt ("failure: " __FILE__ " line: " GB_XSTR(__LINE__)) ; \
+        }                                                                   \
+    }
     #else
     #include <assert.h>
     #define ASSERT(x) assert (x) ;
@@ -723,9 +728,11 @@ void *GB_realloc_memory     // pointer to reallocated block of memory, or
     bool *ok                // true if successful, false otherwise
 ) ;
 
-void GB_free_memory         // pointer to allocated block of memory to free
+void GB_free_memory
 (
-    void *p                 // only free p is if is not NULL
+    void *p,                // pointer to allocated block of memory to free
+    size_t nitems,          // number of items to free
+    size_t size_of_item     // sizeof each item
 ) ;
 
 //------------------------------------------------------------------------------
@@ -741,7 +748,7 @@ void GB_free_memory         // pointer to allocated block of memory to free
 {                                                                             \
     printf ("\nmatrix new:                   "                                \
     "%s = new (%s, %s = "GBd", %s = "GBd", %d, %d) line %d file %s\n",        \
-    GB_STR(A), GB_STR(type), GB_STR(nrows), GB_STR (nrows), GB_STR(ncols),    \
+    GB_STR(A), GB_STR(type), GB_STR(nrows), nrows, GB_STR(ncols),             \
     ncols, Ap_calloc, Ap_malloc, __LINE__, __FILE__) ;                        \
     info = GB_new (A, type, nrows, ncols, Ap_calloc, Ap_malloc) ;             \
 }
@@ -785,12 +792,14 @@ void GB_free_memory         // pointer to allocated block of memory to free
     p = GB_realloc_memory (nnew, nold, s, p, ok) ;                            \
 }
 
-#define GB_FREE_MEMORY(p)                                                     \
+#define GB_FREE_MEMORY(p,n,s)                                                 \
 {                                                                             \
     if (p)                                                                    \
-    printf ("\nfree:                         "                                \
-    "free (%s) line %d file %s\n", GB_STR(p), __LINE__,__FILE__) ;            \
-    GB_free_memory (p) ;                                                      \
+    printf ("\nfree:    %14p       "                                          \
+    "(%s, %s = "GBd", %s = "GBd") line %d file %s\n",                         \
+    p, GB_STR(p), GB_STR(n), (int64_t) n, GB_STR(s), (int64_t) s,             \
+    __LINE__,__FILE__) ;                                                      \
+    GB_free_memory (p, n, s) ;                                                \
     (p) = NULL ;                                                              \
 }
 
@@ -822,9 +831,9 @@ void GB_free_memory         // pointer to allocated block of memory to free
     p = GB_realloc_memory (nnew, nold, s, p, ok) ;                            \
 }
 
-#define GB_FREE_MEMORY(p)                                                     \
+#define GB_FREE_MEMORY(p,n,s)                                                 \
 {                                                                             \
-    GB_free_memory (p) ;                                                      \
+    GB_free_memory (p, n, s) ;                                                \
     (p) = NULL ;                                                              \
 }
 
@@ -906,7 +915,6 @@ bool GB_AxB_builtin                 // true if C=A*B is handled
     const GrB_Matrix Mask,          // Mask matrix for C<M> (not complemented)
     const GrB_Matrix A,             // input matrix
     const GrB_Matrix B,             // input matrix
-    void *work,                     // workspace of size A->nrows == C->nrows
     const GrB_Semiring semiring,    // semiring that defines C=A*B
     const bool flipxy               // if true, do z=fmult(b,a) vs fmult(a,b)
 ) ;
@@ -1167,6 +1175,7 @@ GrB_Info GB_builder
     const bool already_sorted,      // true if tuples already sorted on input
     const void *X,                  // array of values of tuples
     const int64_t len,              // number of tuples
+    const int64_t ijlen,            // size of i,j work arrays
     const GrB_BinaryOp dup,         // binary function to assemble duplicates,
                                     // if NULL use the "SECOND" function to
                                     // keep the most recent duplicate.
@@ -1179,7 +1188,8 @@ GrB_Info GB_build_factory           // build a matrix
     int64_t **iwork_handle,         // for (i,k) or (j,i,k) tuples
     int64_t **kwork_handle,         // for (i,k) or (j,i,k) tuples
     const void *X,                  // array of values of tuples
-    const int64_t len,              // number of tuples
+    const int64_t len,              // number of tuples and size of kwork
+    const int64_t ilen,             // size of iwork array
     const GrB_BinaryOp dup,         // binary function to assemble duplicates,
                                     // if NULL use the "SECOND" function to
                                     // keep the most recent duplicate.
@@ -1203,11 +1213,6 @@ GrB_Info GB_add_pending         // add a pending tuple A(i,j) to a matrix
 void GB_free_pending            // free all pending tuples
 (
     GrB_Matrix A                // matrix with pending tuples to free
-) ;
-
-void GB_queue_init
-(
-    const GrB_Mode mode         // blocking or non-blocking mode
 ) ;
 
 void GB_queue_remove            // remove matrix from queue
@@ -1400,6 +1405,34 @@ typedef struct
 
     GrB_Mode mode ;             // GrB_NONBLOCKING or GrB_BLOCKING
 
+    //--------------------------------------------------------------------------
+    // malloc tracking
+    //--------------------------------------------------------------------------
+
+    // nmalloc:  To aid in searching for memory leaks, GraphBLAS keeps track of
+    // the number of blocks of allocated by malloc, calloc, or realloc that
+    // have not yet been freed.  The count starts at zero.  malloc and calloc
+    // increment this count, and free (of a non-NULL pointer) decrements it.
+    // realloc increments the count it if is allocating a new block, but it
+    // does this by calling GB_malloc_memory.
+    
+    // inuse: the # of bytes currently in use by all threads
+
+    // maxused: the max value of inuse since the call to GrB_init
+
+    // malloc_debug: this is used for testing only (GraphBLAS/Tcov).  If true,
+    // then use malloc_debug_count for testing memory allocation and
+    // out-of-memory conditions.  If malloc_debug_count > 0, the value is
+    // decremented after each allocation of memory.  If malloc_debug_count <=
+    // 0, the GB_*_memory routines pretend to fail; returning NULL and not
+    // allocating anything.
+
+    int64_t nmalloc ;               // number of blocks allocated but not freed
+    bool malloc_debug ;             // if true, test memory hanlding
+    int64_t malloc_debug_count ;    // for testing memory handling
+    int64_t inuse ;                 // memory space current in use
+    int64_t maxused ;               // high water memory usage
+
 }
 GB_Global_struct ;
 
@@ -1414,7 +1447,8 @@ extern GB_Global_struct GB_Global ;
 // each thread that calls GraphBLAS needs its own private copy of these
 // variables.
 
-#define GB_RLEN 2048
+#define GB_RLEN 3000
+#define GB_DLEN 2048
 
 typedef struct
 {
@@ -1429,7 +1463,7 @@ typedef struct
     const char *where ;         // GraphBLAS function where error occurred
     const char *file ;          // GraphBLAS filename where error occured
     int line ;                  // line in the GraphBLAS file of error
-    char details [GB_RLEN+1] ;  // string with details of the error
+    char details [GB_DLEN+1] ;  // string with details of the error
     char report [GB_RLEN+1] ;   // string returned by GrB_error
 
     //--------------------------------------------------------------------------
@@ -1452,31 +1486,6 @@ typedef struct
 
     int8_t *Flag ;                  // initialized space
     int64_t Flag_size ;             // current size of Flag array
-
-    //--------------------------------------------------------------------------
-    // malloc tracking
-    //--------------------------------------------------------------------------
-
-    // This is useful only for testing and development of GraphBLAS, not for
-    // end user applications.  Using nmalloc assumes the application that uses
-    // GraphBLAS is single-threaded.  It is not meant to be thread-safe.
-
-    // nmalloc:  To aid in searching for memory leaks, GraphBLAS keeps track of
-    // the number of blocks of allocated by malloc, calloc, or realloc that
-    // have not yet been freed.  The count starts at zero.  malloc and calloc
-    // increment this count, and free (of a non-NULL pointer) decrements it.
-    // realloc increments the count it if is allocating a new block, but it
-    // does this by calling GB_malloc_memory.
-
-    // malloc_debug: if true, then use malloc_debug_count for testing memory
-    // allocation and out-of-memory conditions.  If malloc_debug_count > 0, the
-    // value is decremented after each allocation of memory.  If
-    // malloc_debug_count <= 0, the GB_*_memory routines pretend to fail;
-    // returning NULL and not allocating anything.
-
-    int64_t nmalloc ;               // number of blocks allocated but not freed
-    bool malloc_debug ;             // if true, test memory hanlding
-    int64_t malloc_debug_count ;    // for testing memory handling
 
     //--------------------------------------------------------------------------
     // random seed for GB_rand
@@ -1536,7 +1545,7 @@ static inline GrB_Index GB_rand ( )
 // details ("Row index 102 out of bounds, must be < 100"), and finally the
 // exact GraphBLAS filename and line number where the error was caught.
 
-#define LOG GB_thread_local.details, GB_RLEN
+#define LOG GB_thread_local.details, GB_DLEN
 #define ERROR(f,s)                          \
 (                                           \
         snprintf s ,                        \
@@ -1722,7 +1731,9 @@ void GB_Flag_free ( ) ;             // free the Flag array
 #define EMPTY               (-1)
 #define FLIP(i)             (-(i)-2)
 #define IS_FLIPPED(i)       ((i) < 0)
+#define IS_ZOMBIE(i)        ((i) < 0)
 #define IS_NOT_FLIPPED(i)   ((i) >= 0)
+#define IS_NOT_ZOMBIE(i)    ((i) >= 0)
 #define UNFLIP(i)           (((i) < 0) ? FLIP(i) : (i))
 
 // true if a matrix has pending tuples
@@ -2145,7 +2156,7 @@ void GB_Flag_free ( ) ;             // free the Flag array
         if (pleft == pright)                                                \
         {                                                                   \
             int64_t i2 = X [pleft] ;                                        \
-            is_zombie = IS_FLIPPED (i2) ;                                   \
+            is_zombie = IS_ZOMBIE (i2) ;                                    \
             if (is_zombie)                                                  \
             {                                                               \
                 i2 = FLIP (i2) ;                                            \
@@ -2215,74 +2226,4 @@ void GB_Flag_free ( ) ;             // free the Flag array
 // MAX for floating-point, same as max(x,y,'includenan') in MATLAB
 #define FMAX(x,y) ((isnan (x) || isnan (y)) ? NAN : IMAX (x,y))
 
-//------------------------------------------------------------------------------
-// empty: for masked matrix multiply, C<M>=A*B
-//------------------------------------------------------------------------------
-
-// empty: return true if column j of matrix A is empty.  If not empty,
-// return the first and last row index in the column, and Ap [j] and Ap [j+1]
-
-static inline bool empty
-(
-    const int64_t *restrict Ap,
-    const int64_t *restrict Ai,
-    int64_t j,
-    int64_t *pstart,
-    int64_t *pend,
-    int64_t *ilo,
-    int64_t *ihi
-)
-{
-    (*pstart) = Ap [j] ;
-    (*pend)   = Ap [j+1] ;
-    if ((*pstart) < (*pend))
-    {
-        // column j has at least one entry; return false and find ilo and ihi
-        (*ilo) = Ai [(*pstart)] ;
-        (*ihi) = Ai [(*pend)-1] ;
-        return (false) ;
-    }
-    else
-    {
-        // column j is empty
-        return (true) ;
-    }
-}
-
-//------------------------------------------------------------------------------
-// scatter_mask:  for masked matrix multiply, C<M>=A*B
-//------------------------------------------------------------------------------
-
-// scatter Mask(:,j) into Flag if it hasn't already been done
-
-static inline void scatter_mask
-(
-    const int64_t pm1,                  // pm1 = Maskp [j]
-    const int64_t pm2,                  // pm2 = Maskp [j+1]
-    GB_cast_function cast_Mask_to_bool, // cast function for Maskx
-    const int64_t *restrict Maski,      // row indices of Mask
-    const void    *restrict Maskx,      // values of Mask
-    const size_t msize,                 // size of Mask entries
-    int8_t *restrict Flag,              // array of size Mask->nrows
-    bool *marked                        // true if Mask already scattered
-)
-{
-    if (!(*marked))
-    {
-        for (int64_t p = pm1 ; p < pm2 ; p++)
-        {
-            // Mij = (bool) Mask (i,j)
-            bool Mij ;
-            cast_Mask_to_bool (&Mij, Maskx +(p*msize), 0) ;
-            if (Mij)
-            {
-                // M(i,j) is true
-                Flag [Maski [p]] = 1 ;
-            }
-        }
-        (*marked) = true ;
-    }
-}
-
 #endif
-

@@ -12,6 +12,7 @@ include SuiteSparse_config/SuiteSparse_config.mk
 # Compile the default rules for each package
 go: metis
 	( cd SuiteSparse_config && $(MAKE) )
+	( cd GraphBLAS && $(MAKE) )
 	( cd AMD && $(MAKE) )
 	( cd BTF && $(MAKE) )
 	( cd CAMD && $(MAKE) )
@@ -36,6 +37,7 @@ endif
 # (note that CSparse is not installed; CXSparse is installed instead)
 install: metisinstall
 	( cd SuiteSparse_config && $(MAKE) install )
+	( cd GraphBLAS && $(MAKE) install )
 	( cd AMD && $(MAKE) install )
 	( cd BTF && $(MAKE) install )
 	( cd CAMD && $(MAKE) install )
@@ -80,6 +82,7 @@ uninstall:
 	$(RM) $(INSTALL_DOC)/SuiteSparse_README.txt
 	( cd SuiteSparse_config && $(MAKE) uninstall )
 	- ( cd metis-5.1.0 && $(MAKE) uninstall )
+	- ( cd GraphBLAS && $(MAKE) uninstall )
 	( cd AMD && $(MAKE) uninstall )
 	( cd CAMD && $(MAKE) uninstall )
 	( cd COLAMD && $(MAKE) uninstall )
@@ -106,9 +109,11 @@ ifeq (,$(MY_METIS_LIB))
 endif
 	$(RM) -r $(INSTALL_DOC)
 
-# compile the dynamic libraries
+# compile the dynamic libraries.  For GraphBLAS, this also builds the
+# static library
 library: metis
 	( cd SuiteSparse_config && $(MAKE) )
+	( cd GraphBLAS && $(MAKE) library )
 	( cd AMD && $(MAKE) library )
 	( cd BTF && $(MAKE) library )
 	( cd CAMD && $(MAKE) library )
@@ -129,7 +134,9 @@ endif
 #	( cd PIRO_BAND && $(MAKE) library )
 #	( cd SKYLINE_SVD && $(MAKE) library )
 
-# compile the static libraries (except for metis, which is only dynamic)
+# compile the static libraries (except for metis and GraphBLAS.  metis is only
+# dynamic, and the single 'make library' for GraphBLAS makes both the dynamic
+# and static libraries.
 static: metis
 	( cd SuiteSparse_config && $(MAKE) static )
 	( cd AMD && $(MAKE) static )
@@ -157,6 +164,7 @@ purge:
 	- ( cd SuiteSparse_config && $(MAKE) purge )
 	- ( cd metis-5.1.0 && $(MAKE) distclean )
 	- ( cd AMD && $(MAKE) purge )
+	- ( cd GraphBLAS && $(MAKE) purge )
 	- ( cd CAMD && $(MAKE) purge )
 	- ( cd COLAMD && $(MAKE) purge )
 	- ( cd BTF && $(MAKE) purge )
@@ -182,6 +190,7 @@ purge:
 clean:
 	- ( cd SuiteSparse_config && $(MAKE) clean )
 	- ( cd metis-5.1.0 && $(MAKE) clean )
+	- ( cd GraphBLAS && $(MAKE) clean )
 	- ( cd AMD && $(MAKE) clean )
 	- ( cd CAMD && $(MAKE) clean )
 	- ( cd COLAMD && $(MAKE) clean )
@@ -202,6 +211,7 @@ clean:
 
 # Create the PDF documentation
 docs:
+	( cd GraphBLAS && $(MAKE) docs )
 	( cd AMD && $(MAKE) docs )
 	( cd CAMD && $(MAKE) docs )
 	( cd KLU && $(MAKE) docs )

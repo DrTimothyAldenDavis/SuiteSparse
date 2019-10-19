@@ -45,4 +45,5 @@ Files in GraphBLAS/Tcov:
     gbcover_finish.c    save the last test coverage counter
     gbcover_start.c     declare the test coverage counter array
     gbcover_util.c      get/put the coverage to/from MATLAB
-    log_Nov25.txt       100% test coverage certificate
+    log_*.txt           100% test coverage certificate
+

@@ -85,8 +85,7 @@ GrB_Info GB_wait                // finish all pending computations
             for ( ; p < Ap [j+1] ; p++)
             {
                 int64_t i = Ai [p] ;
-                bool is_zombie = IS_FLIPPED (i) ;
-                if (!is_zombie)
+                if (IS_NOT_ZOMBIE (i))
                 {
                     // A(i,j) is not a zombie, keep it
                     Ai [anz] = i ;
@@ -163,7 +162,7 @@ GrB_Info GB_wait                // finish all pending computations
     // if NULL operator: an implicit 'SECOND' function will be used
     // otherwise use A->operator_pending
     info = GB_builder (T, &(A->ipending), &(A->jpending),
-        A->sorted_pending, A->xpending, A->npending,
+        A->sorted_pending, A->xpending, A->npending, A->max_npending,
         A->operator_pending,  A->type->code) ;
 
     //--------------------------------------------------------------------------

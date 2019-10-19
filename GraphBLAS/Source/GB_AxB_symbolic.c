@@ -272,6 +272,7 @@ GrB_Info GB_AxB_symbolic        // pattern of C = A*B, A'*B, A*B', or A'*B'
         cmax = cnz + anrows ;
         if (cmax > C->nzmax)
         {
+            int64_t cold = C->nzmax ;
             int64_t cnew = 4*(C->nzmax + anrows) ;
             GB_REALLOC_MEMORY (Ci, cnew, C->nzmax, sizeof (int64_t), &ok) ;
             Ci_memory = GBYTES (C->nzmax, sizeof (int64_t)) ;
@@ -280,7 +281,7 @@ GrB_Info GB_AxB_symbolic        // pattern of C = A*B, A'*B, A*B', or A'*B'
                 // out of memory
                 GB_MATRIX_FREE (&AT) ;
                 GB_MATRIX_FREE (&BT) ;
-                GB_FREE_MEMORY (Ci) ;
+                GB_FREE_MEMORY (Ci, cold, sizeof (int64_t)) ;
                 GB_Matrix_clear (C) ;
                 GB_Mark_free ( ) ;
                 GB_Work_free ( ) ;
@@ -511,7 +512,7 @@ GrB_Info GB_AxB_symbolic        // pattern of C = A*B, A'*B, A*B', or A'*B'
     if (C->i == NULL)
     {
         // out of memory
-        GB_FREE_MEMORY (Ci) ;
+        GB_FREE_MEMORY (Ci, cnew, sizeof (int64_t)) ;
         GB_Matrix_clear (C) ;
         GB_Mark_free ( ) ;
         GB_Work_free ( ) ;
@@ -530,7 +531,7 @@ GrB_Info GB_AxB_symbolic        // pattern of C = A*B, A'*B, A*B', or A'*B'
 
     // free workspace and the column-oriented form
     ASSERT_OK (GB_check (C, "C output for symbolic C=(A*B)'", 0)) ;
-    GB_FREE_MEMORY (Ci) ;               // Ci no longer needed
+    GB_FREE_MEMORY (Ci, cnew, sizeof (int64_t)) ; // Ci no longer needed
     return (REPORT_SUCCESS) ;
 }
 

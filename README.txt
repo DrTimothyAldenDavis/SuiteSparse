@@ -1,8 +1,8 @@
 SuiteSparse:  A Suite of Sparse matrix packages at http://www.suitesparse.com
 
-Nov 25, 2017.  SuiteSparse VERSION 5.0.0
+Dec 28, 2017.  SuiteSparse VERSION 5.1.2
 
-Now includes GraphBLAS 1.0.0 and a new interface to the SuiteSparse Matrix
+Now includes GraphBLAS and a new interface to the SuiteSparse Matrix
 Collection (ssget), via MATLAB and a Java GUI, to http://sparse.tamu.edu.
 
 ------------------
@@ -333,6 +333,8 @@ Step-by-step details:
     files required by user programs are then copied into SuiteSparse/include,
     and the compiled libraries are copied into SuiteSparse/lib.  Documentation
     is copied into SuiteSparse/doc.
+
+    The GraphBLAS libraries are created by cmake and placed in GraphBLAS/build.
 
     NOTE: on Linux, you may see some errors when you compile METIS
     ('make: *** No rule to make target 'w'.).  You can safely ignore those

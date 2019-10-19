@@ -9,7 +9,9 @@
 
 // c = accum (c, reduce_to_scalar(A)), reduce entries in a matrix
 // to a scalar.  Not user-callable.  Does the work for GrB_*_reduce_TYPE,
-// both matrix and vector.
+// both matrix and vector.  This funciton tolerates zombies and does not
+// delete them.  It does not tolerate pending tuples, so if they are present,
+// all zombies are deleted and all pending tuples are assembled.
 
 #include "GB.h"
 
@@ -27,9 +29,21 @@ GrB_Info GB_reduce_to_scalar    // twork = reduce_to_scalar (A)
     // check inputs
     //--------------------------------------------------------------------------
 
-    // delete any lingering zombies and assemble any pending tuples
-    // (required by Table 2.4 of the spec)
-    APPLY_PENDING_UPDATES (A) ;
+    // Zombies are an opaque internal detail of the GrB_Matrix data structure
+    // that do not depend on anything outside the matrix.  Thus, Table 2.4 of
+    // the GrapBLAS spec, version 1.1.0, does not require their deletion.
+    // Pending tuples are different, since they rely on another object outside
+    // the matrix: the pending operator, which might be user-defined.  Per
+    // Table 2.4, the user can expect that GrB_reduce applies the pending
+    // operator, which can then be deleted by the user.  Thus, if the pending
+    // operator is user-defined it must be applied here.  Assembling pending
+    // tuples requires zombies to be deleted first.  Note that if the pending
+    // operator is built-in, then the updates could in principle be skipped,
+    // but this could be done only if the reduce monoid is the same as the
+    // pending operator.
+
+    if (PENDING (A)) APPLY_PENDING_UPDATES (A) ;
+    ASSERT (ZOMBIES_OK (A)) ;       // Zombies are tolerated, and not deleted
     RETURN_IF_NULL_OR_UNINITIALIZED (reduce) ;
     RETURN_IF_UNINITIALIZED (accum) ;
     RETURN_IF_NULL (c) ;
@@ -63,7 +77,7 @@ GrB_Info GB_reduce_to_scalar    // twork = reduce_to_scalar (A)
 
     int64_t asize = A->type->size ;
     int64_t anz = NNZ (A) ;
-    const void *Ax = A->x ;
+    const int64_t *restrict Ai = A->i ;
 
     int64_t zsize = ztype->size ;
 
@@ -78,7 +92,7 @@ GrB_Info GB_reduce_to_scalar    // twork = reduce_to_scalar (A)
     // twork = 0
     memcpy (twork, reduce->identity, zsize) ;
 
-    // reduce all the entries in the matrix
+    // reduce all the entries in the matrix, but skip any zombies
 
     if (A->type == ztype)
     {
@@ -99,13 +113,25 @@ GrB_Info GB_reduce_to_scalar    // twork = reduce_to_scalar (A)
         // define the worker for the switch factory
         #define WORKER(type)                                                \
         {                                                                   \
-            const type *ax = (type *) Ax ;                                  \
+            const type *restrict Ax = (type *) A->x ;                       \
             type s ;                                                        \
             memcpy (&s, twork, zsize) ;                                     \
-            for (int64_t p = 0 ; p < anz ; p++)                             \
+            if (A->nzombies == 0)                                           \
             {                                                               \
-                /* s "+=" ax [p] */                                         \
-                ADD (s, ax [p]) ;                                           \
+                for (int64_t p = 0 ; p < anz ; p++)                         \
+                {                                                           \
+                    /* s += A(i,j) */                                       \
+                    ASSERT (IS_NOT_ZOMBIE (Ai [p])) ;                       \
+                    ADD (s, Ax [p]) ;                                       \
+                }                                                           \
+            }                                                               \
+            else                                                            \
+            {                                                               \
+                for (int64_t p = 0 ; p < anz ; p++)                         \
+                {                                                           \
+                    /* s += A(i,j) if the entry is not a zombie */          \
+                    if (IS_NOT_ZOMBIE (Ai [p])) ADD (s, Ax [p]) ;           \
+                }                                                           \
             }                                                               \
             memcpy (twork, &s, zsize) ;                                     \
             done = true ;                                                   \
@@ -137,19 +163,36 @@ GrB_Info GB_reduce_to_scalar    // twork = reduce_to_scalar (A)
 
         if (!done)
         {
-
-            GB_binary_function freduce = reduce->op->function ;
-
             // the switch factory didn't handle this case
-            for (int64_t p = 0 ; p < anz ; p++)
+            GB_binary_function freduce = reduce->op->function ;
+            const void *Ax = A->x ;
+            if (A->nzombies == 0)
             {
-                // wwork = twork
-                memcpy (wwork, twork, zsize) ;
-                // twork = wwork "+" Ax [p]
-                freduce (twork, wwork, Ax +(p*asize)) ;
+                for (int64_t p = 0 ; p < anz ; p++)
+                {
+                    // twork += A(i,j)
+                    ASSERT (IS_NOT_ZOMBIE (Ai [p])) ;
+                    // wwork = twork
+                    memcpy (wwork, twork, zsize) ;
+                    // twork = wwork + Ax [p]
+                    freduce (twork, wwork, Ax +(p*asize)) ;
+                }
+            }
+            else
+            {
+                for (int64_t p = 0 ; p < anz ; p++)
+                {
+                    // twork += A(i,j) if not a zombie
+                    if (IS_NOT_ZOMBIE (Ai [p]))
+                    {
+                        // wwork = twork
+                        memcpy (wwork, twork, zsize) ;
+                        // twork = wwork + Ax [p]
+                        freduce (twork, wwork, Ax +(p*asize)) ;
+                    }
+                }
             }
         }
-
     }
     else
     {
@@ -162,14 +205,36 @@ GrB_Info GB_reduce_to_scalar    // twork = reduce_to_scalar (A)
         GB_cast_function
             cast_A_to_Z = GB_cast_factory (ztype->code, A->type->code) ;
 
-        for (int64_t p = 0 ; p < anz ; p++)
+        const void *Ax = A->x ;
+        if (A->nzombies == 0)
         {
-            // awork = (ztype) Ax [p]
-            cast_A_to_Z (awork, Ax +(p*asize), zsize) ;
-            // wwork = twork
-            memcpy (wwork, twork, zsize) ;
-            // twork = wwork "+" awork
-            freduce (twork, wwork, awork) ;
+            for (int64_t p = 0 ; p < anz ; p++)
+            {
+                // twork += (ztype) A(i,j)
+                ASSERT (IS_NOT_ZOMBIE (Ai [p])) ;
+                // awork = (ztype) Ax [p]
+                cast_A_to_Z (awork, Ax +(p*asize), zsize) ;
+                // wwork = twork
+                memcpy (wwork, twork, zsize) ;
+                // twork = wwork + awork
+                freduce (twork, wwork, awork) ;
+            }
+        }
+        else
+        {
+            for (int64_t p = 0 ; p < anz ; p++)
+            {
+                // twork += (ztype) A(i,j) if not a zombie
+                if (IS_NOT_ZOMBIE (Ai [p]))
+                {
+                    // awork = (ztype) Ax [p]
+                    cast_A_to_Z (awork, Ax +(p*asize), zsize) ;
+                    // wwork = twork
+                    memcpy (wwork, twork, zsize) ;
+                    // twork = wwork + awork
+                    freduce (twork, wwork, awork) ;
+                }
+            }
         }
     }
 

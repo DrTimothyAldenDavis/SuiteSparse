@@ -18,26 +18,23 @@ GrB_Matrix GB_queue_remove_head ( )   // return matrix or NULL if queue empty
 
     GrB_Matrix A = NULL ;
 
-    #pragma omp critical GB_queue
+    #pragma omp critical (GB_queue)
     {
-
-        // GraphBLAS is not (yet) parallel, but the user application might
-        // be.  This update to the global queue must be done in a critical
-        // section.  If both GraphBLAS and the user application are
-        // compiled with OpenMP, then the #pragma will protect the queue
-        // from a race condition of simulateneous updates.
-
         // get the matrix at the head of the queue
         A = (GrB_Matrix) (GB_Global.queue_head) ;
-
-        // remove it from the queue
+        // remove A from the queue, if it exists
         if (A != NULL)
         {
-            // shift the head to the next matrix in the queue
-            GB_Global.queue_head = A->queue_next ;
-
-            // mark this matrix has no longer in the queue
+            ASSERT (A->enqueued) ;
             ASSERT (A->queue_prev == NULL) ;
+            // shift the head to the next matrix in the queue
+            GrB_Matrix Next = (GrB_Matrix) A->queue_next ;
+            GB_Global.queue_head = Next ;
+            if (Next != NULL)
+            {
+                Next->queue_prev = NULL ;
+            }
+            // A has been removed from the queue
             A->queue_next = NULL ;
             A->enqueued = false ;
         }

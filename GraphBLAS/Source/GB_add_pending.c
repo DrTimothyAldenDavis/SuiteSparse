@@ -93,7 +93,7 @@ GrB_Info GB_add_pending         // add a pending tuple A(i,j) to a matrix
 
     if (A->npending == A->max_npending)
     {
-        int64_t newsize = IMAX (4 * A->max_npending, INITIAL_NPENDING_MAX) ;
+        int64_t newsize = IMAX (2 * A->max_npending, INITIAL_NPENDING_MAX) ;
         bool ok1 = true ;
         bool ok2 = true ;
         bool ok3 = true ;

@@ -15,10 +15,11 @@ bool GB_Mark_alloc                  // allocate Mark space
 )
 {
 
-    if (Mark_required > GB_thread_local.Mark_size)
+    int64_t currsize = GB_thread_local.Mark_size ;
+    if (Mark_required > currsize)
     {
         // free the existing space
-        GB_FREE_MEMORY (GB_thread_local.Mark) ;
+        GB_FREE_MEMORY (GB_thread_local.Mark, currsize, sizeof (int64_t)) ;
         GB_thread_local.Mark_size = 0 ;
 
         // calloc the new space

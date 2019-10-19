@@ -63,7 +63,7 @@ bool GB_mx_get_global      // true if doing malloc_debug
     // return malloc debug status
     //--------------------------------------------------------------------------
 
-    // the caller will set GB_thread_local.malloc_debug, not done here
+    // the caller will set GB_Global.malloc_debug, not done here
     return (malloc_debug) ;
 }
 

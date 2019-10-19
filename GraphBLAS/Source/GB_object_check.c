@@ -193,7 +193,7 @@ GrB_Info GB_object_check    // check a GraphBLAS matrix
         for (int64_t p = A->p [j] ; p < A->p [j+1] ; p++)
         {
             int64_t i = A->i [p] ;
-            bool is_zombie = IS_FLIPPED (i) ;
+            bool is_zombie = IS_ZOMBIE (i) ;
             i = UNFLIP (i) ;
             if (is_zombie) nzombies++ ;
             if (prcol)

@@ -44,7 +44,7 @@ GrB_Info GB_Matrix_multiply         // C = A*B, A'*B, A*B', or A'*B'
     // check inputs
     //--------------------------------------------------------------------------
 
-    // [ [ [ [ [ C need not be initialized, just the column pointers present
+    // C need not be initialized, just the column pointers present
     ASSERT (C != NULL && C->p != NULL && !C->p_shallow) ;
     ASSERT_OK_OR_NULL (GB_check (Mask, "Mask for generic A*B", 0)) ;
     ASSERT_OK (GB_check (A, "A for generic A*B", 0)) ;
@@ -120,6 +120,7 @@ GrB_Info GB_Matrix_multiply         // C = A*B, A'*B, A*B', or A'*B'
             OK (GB_AxB_symbolic (C, M, A, B, false, false, false)) ;
             OK (GB_AxB_numeric  (C, M, A, B, semiring, flipxy, flo)) ;
             did_mask = (M != NULL) ;
+            if (did_mask) ASSERT (ZOMBIES_OK (C)) ;
 
         }
         else
@@ -129,11 +130,21 @@ GrB_Info GB_Matrix_multiply         // C = A*B, A'*B, A*B', or A'*B'
             // C<M> = A'*B
             //------------------------------------------------------------------
 
-            // select the method that uses the least workspace
-            bool C_is_small = C->nrows <= 4 && C->ncols <= 4 &&
-                             (C->nrows * C->ncols) <= 4 ;
+            bool use_adotb ;
+            if (Mask != NULL)
+            {
+                // C<M> = A'*B always uses the dot product method
+                use_adotb = true ;
+            }
+            else
+            {
+                // C = A'*B uses the dot product method only if C is small
+                GrB_Index cwork ;
+                bool ok = GB_Index_multiply (&cwork, C->nrows, C->ncols) ;
+                use_adotb = ok && cwork < IMIN (at_workspace, 4 * bt_workspace);
+            }
 
-            if (Mask != NULL || C_is_small)
+            if (use_adotb)
             {
 
                 //--------------------------------------------------------------
@@ -144,14 +155,14 @@ GrB_Info GB_Matrix_multiply         // C = A*B, A'*B, A*B', or A'*B'
                 // are computed, which makes this method very efficient when
                 // the mask is very sparse (triangle counting, for example).
                 // Each entry C(i,j) for which Mask(i,j)=1 is computed via a
-                // dot product, C(i,j)=sum(A(:,i)*B(:,j)).  If the mask is not
+                // dot product, C(i,j)=A(:,i)'*B(:,j).  If the mask is not
                 // present, the dot-product method is very slow in general, and
                 // thus the outer-product method (GB_AxB_symbolic and _numeric,
                 // in the two cases below) is used instead, with A or B being
                 // explicitly transposed.
 
                 OK (GB_Matrix_AdotB (C, Mask, A, B, semiring, flipxy)) ;
-                did_mask = true ;
+                did_mask = (Mask != NULL) ;
 
             }
             else if (at_workspace < 4 * bt_workspace)
@@ -170,6 +181,7 @@ GrB_Info GB_Matrix_multiply         // C = A*B, A'*B, A*B', or A'*B'
                 bool flo = GB_AxB_flopcount (AT, B, flimit, &f) ;
                 OK (GB_AxB_symbolic (C, NULL, AT, B, false, false, false)) ;
                 OK (GB_AxB_numeric  (C, NULL, AT, B, semiring, flipxy, flo)) ;
+                ASSERT (!ZOMBIES (C)) ;
 
             }
             else
@@ -191,6 +203,7 @@ GrB_Info GB_Matrix_multiply         // C = A*B, A'*B, A*B', or A'*B'
                 bool flo = GB_AxB_flopcount (BT, A, flimit, &f) ;
                 OK (GB_AxB_symbolic (CT, NULL, BT, A, false, false, false)) ;
                 OK (GB_AxB_numeric  (CT, NULL, BT, A, semiring, !flipxy, flo)) ;
+                ASSERT (!ZOMBIES (CT)) ;
                 GrB_free (&BT) ;
 
                 // C = CT', no typecasting, no operator
@@ -227,6 +240,7 @@ GrB_Info GB_Matrix_multiply         // C = A*B, A'*B, A*B', or A'*B'
                 OK (GB_AxB_symbolic (C, M, A, BT, false, false, false)) ;
                 OK (GB_AxB_numeric  (C, M, A, BT, semiring, flipxy, flo)) ;
                 did_mask = (M != NULL) ;
+                if (did_mask) ASSERT (ZOMBIES_OK (C)) ;
 
             }
             else
@@ -259,10 +273,12 @@ GrB_Info GB_Matrix_multiply         // C = A*B, A'*B, A*B', or A'*B'
                 OK (GB_AxB_symbolic (CT, M, B, AT, false, false, false)) ;
                 OK (GB_AxB_numeric  (CT, M, B, AT, semiring, !flipxy, flo)) ;
                 did_mask = (M != NULL) ;
+                if (did_mask) ASSERT (ZOMBIES_OK (CT)) ;
                 GrB_free (&MT) ;
                 GrB_free (&AT) ;
 
                 // C = CT', no typecasting, no operator
+                APPLY_PENDING_UPDATES (CT) ;
                 OK (GB_Matrix_transpose (C, CT, NULL, true)) ;
             }
 
@@ -291,6 +307,7 @@ GrB_Info GB_Matrix_multiply         // C = A*B, A'*B, A*B', or A'*B'
                 // transpose A or B in the symbolic analysis.
                 OK (GB_AxB_symbolic (CT, NULL, B, A, false, false, false)) ;
                 OK (GB_AxB_numeric  (CT, NULL, B, A, semiring, !flipxy, true)) ;
+                ASSERT (!ZOMBIES (CT)) ;
 
             }
             else
@@ -318,12 +335,13 @@ GrB_Info GB_Matrix_multiply         // C = A*B, A'*B, A*B', or A'*B'
                 //  GB_AxB_symbolic (CT, MT, B, A, false, false, false)) ;
                 OK (GB_AxB_numeric  (CT, MT, B, A, semiring, !flipxy, false)) ;
                 did_mask = (MT != NULL) ;
+                if (did_mask) ASSERT (ZOMBIES_OK (CT)) ;
                 GrB_free (&MT) ;
+                APPLY_PENDING_UPDATES (CT) ;
             }
 
             // C = CT', no typecasting, no operator
             OK (GB_Matrix_transpose (C, CT, NULL, true)) ;
-
         }
     }
 
@@ -334,6 +352,7 @@ GrB_Info GB_Matrix_multiply         // C = A*B, A'*B, A*B', or A'*B'
     FREE_ALL ;
     ASSERT_OK (GB_check (C, "C output for generic C=A*B", 0)) ;
     (*mask_applied) = did_mask ;
+    if (did_mask) { ASSERT (ZOMBIES_OK (C)) ; } else { ASSERT (!ZOMBIES (C)) ; }
     return (REPORT_SUCCESS) ;
 }
 

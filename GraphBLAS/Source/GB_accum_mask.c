@@ -167,6 +167,7 @@ GrB_Info GB_accum_mask          // C<Mask> = accum (C,T)
         // need to do a deep copy if T is shallow.  T is normally not shallow,
         // but there are a few cases in which it can be a shallow copy of the
         // user's input matrix.  T is freed by GB_Matrix_transplant.
+        // T may have zombies, which are transplanted into Z.
         info = GB_Matrix_transplant (Z, C->type, Thandle) ;
         // Z is now initialized, and Z->p, Z->i, and Z->x are allocated ]
     }

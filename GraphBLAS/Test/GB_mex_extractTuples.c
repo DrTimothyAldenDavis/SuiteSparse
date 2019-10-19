@@ -12,7 +12,7 @@
 #define FREE_ALL                        \
 {                                       \
     GB_MATRIX_FREE (&A) ;               \
-    GB_FREE_MEMORY (Xtemp) ;            \
+    GB_FREE_MEMORY (Xtemp, nvals, sizeof (double complex)) ; \
     GB_mx_put_global (malloc_debug) ;   \
 }
 
@@ -30,6 +30,7 @@ void mexFunction
     void *Y = NULL ;
     void *Xtemp = NULL ;
     void *X = NULL ;
+    GrB_Index nvals = 0 ;
 
     // check inputs
     if (nargout > 3 || nargin < 1 || nargin > 2)
@@ -50,7 +51,6 @@ void mexFunction
     mxClassID aclass = GB_mx_Type_to_classID (A->type) ;
 
     // get the number of entries in A
-    GrB_Index nvals ;
     GrB_Matrix_nvals (&nvals, A) ;
 
     mxClassID xclass ;

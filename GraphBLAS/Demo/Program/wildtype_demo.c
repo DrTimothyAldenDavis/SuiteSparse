@@ -225,6 +225,7 @@ int main (void)
     GrB_free (&C) ;
     GrB_free (&A) ;
     GrB_free (&B) ;
+    GrB_free (&D) ;
     GrB_free (&InTheWild) ;
     GrB_free (&WildAdder) ;
     GrB_free (&WildAdd) ;

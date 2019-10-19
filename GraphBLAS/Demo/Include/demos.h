@@ -53,7 +53,8 @@ GrB_Info read_matrix        // read a double-precision matrix
     FILE *f,                // file to read the tuples from
     bool make_symmetric,    // if true, return A as symmetric
     bool no_self_edges,     // if true, then remove self edges from A
-    bool one_based          // if true, input matrix is 1-based
+    bool one_based,         // if true, input matrix is 1-based
+    bool boolean            // if true, input is GrB_BOOL, otherwise GrB_FP64
 ) ;
 
 GrB_Info mis                    // compute a maximal independent set
@@ -91,7 +92,8 @@ GrB_Info get_matrix         // get a matrix from stdin, or create random one
     GrB_Matrix *A_output,   // matrix to create
     int argc,               // command-line arguments
     char **argv,
-    bool no_self_edges      // if true, ensure the matrix has no self-edges
+    bool no_self_edges,     // if true, ensure the matrix has no self-edges
+    bool boolean            // if true, file is read as GrB_BOOL, else GrB_FP64
 ) ;
 
 GrB_Info wathen             // construct a random Wathen matrix

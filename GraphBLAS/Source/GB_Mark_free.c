@@ -11,7 +11,8 @@
 
 void GB_Mark_free ( )               // free the Mark array
 {
-    GB_FREE_MEMORY (GB_thread_local.Mark) ;
+    int64_t currsize = GB_thread_local.Mark_size ;
+    GB_FREE_MEMORY (GB_thread_local.Mark, currsize, sizeof (int64_t)) ;
     GB_thread_local.Mark_size = 0 ;
     GB_thread_local.Mark_flag = 1 ;
 }

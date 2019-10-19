@@ -16,19 +16,29 @@
 // mathematics of sparse matrix operations on a semiring.
 
 // This GraphBLAS.h file contains GraphBLAS definitions for user applications
-// to #include.  Functions and variables with GB_ or _opaque in their name need
-// to be defined in this file and are thus technically visible to the user, but
-// they must not be not accessed in user code.  They are not guaranteed to be
-// present in all implementations of GraphBLAS.
+// to #include.  Functions and variables with the prefix GB_ need to be defined
+// in this file and are thus technically visible to the user, but they must not
+// be accessed in user code.  They are here only so that the ANSI C11 _Generic
+// feature can be used in the user-accessible polymorphic functions.  For
+// example GrB_free is a macro that uses _Generic to select the right method,
+// depending on the type of its argument.
 
 // The GraphBLAS API Specification 1.1.0 is provisional, but this
-// implementation fully conforms to that specificatin.  It does include
-// functions and features that are extensions to the spec.  These are cataloged
-// here and tagged with "SPEC".
+// implementation fully conforms to that specification.  This implementation
+// does include functions and features that are extensions to the spec.  These
+// are cataloged here and tagged with "SPEC."
 
 // All functions and definitions that are extensions to the spec are given
 // names of the form GxB_* for functions and built-in objects, or GXB_ for
 // macros, so it is clear which are in the spec and which are extensions.
+// Extensions with the name GxB_* or GXB_* are user-accessible in
+// SuiteSparse:GraphBLAS but cannot be guaranteed to appear in all GraphBLAS
+// implementations.  In the future, if any GxB_* functions are included as-is
+// in the GraphBLAS API spec with GrB_* names, the prior GxB_* variants that
+// appear here will be kept for backward compatibility.  If they must change
+// for inclusion in the spec, a reasonable attempt will be made to keep the
+// prior GxB_* variant alongside the GrB_* version, also for backward
+// compatibility.
 
 #ifndef GRAPHBLAS_H
 #define GRAPHBLAS_H
@@ -61,16 +71,10 @@
 #define GXB_VERSION(major,minor,sub) \
     (((major)*1000ULL + (minor))*1000ULL + (sub))
 
-// This implementation conforms to the GraphBLAS provisional release 1.1.0
-#define GXB_MAJOR 1
-#define GXB_MINOR 1
-#define GXB_SUB   0
-#define GXB GXB_VERSION(GXB_MAJOR, GXB_MINOR, GXB_SUB)
-
 // The version of this implementation:
 #define GXB_IMPLEMENTATION_MAJOR 1
 #define GXB_IMPLEMENTATION_MINOR 1
-#define GXB_IMPLEMENTATION_SUB   0
+#define GXB_IMPLEMENTATION_SUB   2
 #define GXB_IMPLEMENTATION \
         GXB_VERSION (GXB_IMPLEMENTATION_MAJOR, \
                      GXB_IMPLEMENTATION_MINOR, \
@@ -82,16 +86,7 @@
 "http://suitesparse.com  Dept of Computer Sci. & Eng, Texas A&M University\n"
 
 // and its date:
-#define GXB_DATE "Dec 1, 2017"
-
-// The 'spec' string describes the GraphBLAS spec:
-#define GXB_SPEC \
-"GraphBLAS C API, provisional release, by Aydin Buluc, Timothy\n"   \
-"Mattson, Scott McMillan, Jose' Moreira, Carl Yang.  Based on\n"    \
-"\"GraphBLAS Mathematics\" by Jeremy Kepner.\n"
-
-// and its date:
-#define GXB_SPEC_DATE "Oct 10, 2017"
+#define GXB_DATE "Dec 28, 2017"
 
 // The GraphBLAS license for this particular implementation of GraphBLAS:
 #define GXB_LICENSE \
@@ -108,6 +103,25 @@
 "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n" \
 "See the License for the specific language governing permissions and\n"      \
 "limitations under the License.\n"
+
+//------------------------------------------------------------------------------
+// GraphBLAS C API version
+//------------------------------------------------------------------------------
+
+// This implementation conforms to the GraphBLAS provisional release 1.1.0
+#define GXB_MAJOR 1
+#define GXB_MINOR 1
+#define GXB_SUB   0
+#define GXB GXB_VERSION(GXB_MAJOR, GXB_MINOR, GXB_SUB)
+
+// The 'spec' string describes the GraphBLAS spec:
+#define GXB_SPEC \
+"GraphBLAS C API, provisional release, by Aydin Buluc, Timothy\n"   \
+"Mattson, Scott McMillan, Jose' Moreira, Carl Yang.  Based on\n"    \
+"\"GraphBLAS Mathematics\" by Jeremy Kepner.\n"
+
+// and its date:
+#define GXB_SPEC_DATE "Oct 10, 2017"
 
 //------------------------------------------------------------------------------
 // include files required by GraphBLAS
@@ -283,6 +297,7 @@ const char *GrB_error ( ) ;     // return a string describing the last error
 // also define new types based on any typedef in the C language whose values
 // are held in a contiguous region of memory.
 
+// USER CODE SHOULD NOT RELY ON GB_LEN
 #define GB_LEN 128
 
 typedef struct
@@ -294,7 +309,7 @@ typedef struct
 }
 GB_Type_opaque ;            // CONTENT NOT USER-ACCESSIBLE
 
-// The GrB_Type handle user-accessible, but GB_Type_opaque is not:
+// The GrB_Type handle is user-accessible, but GB_Type_opaque is not:
 typedef GB_Type_opaque *GrB_Type ;
 
 // GraphBLAS predefined types and the counterparts in pure C and in MATLAB
@@ -323,7 +338,7 @@ GrB_Info GrB_Type_new           // create a new GraphBLAS type
 ) ;
 
 */
-
+// USER CODE SHOULD NOT RELY ON GB_STR OR GB_XSTR
 // GB_STR: convert the content of x into a string "x"
 #define GB_XSTR(x) GB_STR(x)
 #define GB_STR(x) #x
@@ -334,7 +349,7 @@ GrB_Info GrB_Type_new           // create a new GraphBLAS type
 
 // This function is not user-callable; use GrB_Type_new instead
 
-GrB_Info GB_Type_new            // create a new GraphBLAS type
+GrB_Info GB_Type_new        // USER CODE SHOULD NOT USE THIS FUNCTION DIRECTLY
 (
     GrB_Type *type,             // handle of user type to create
     const size_t size,          // size of the user type
@@ -466,7 +481,7 @@ GrB_Info GrB_UnaryOp_new            // create a new user-defined unary operator
 
 // This function is NOT user-callable:
 
-GrB_Info GB_UnaryOp_new             // create a new user-defined unary operator
+GrB_Info GB_UnaryOp_new     // USER CODE SHOULD NOT USE THIS FUNCTION DIRECTLY
 (
     GrB_UnaryOp *unaryop,           // handle for the new unary operator
     void *function,                 // pointer to the unary function
@@ -763,7 +778,7 @@ GrB_Info GrB_BinaryOp_new
 
 // This function is NOT user-callable:
 
-GrB_Info GB_BinaryOp_new
+GrB_Info GB_BinaryOp_new    // USER CODE SHOULD NOT USE THIS FUNCTION DIRECTLY
 (
     GrB_BinaryOp *binaryop,         // handle for the new binary operator
     void *function,                 // pointer to the binary function
@@ -858,7 +873,7 @@ extern GxB_SelectOp
                     //                for any built-in or user-defined type
 
 // For GxB_TRIL, GxB_TRIU, GxB_DIAG, and GxB_OFFDIAG, the parameter k is a
-// const void * pointer to a single scalar value of type GrB_Index.  These
+// const void * pointer to a single scalar value of type int64_t.  These
 // select operators do not depend on the values of A, but just their position.
 
 // For GxB_NONZERO, the result depends only on the value of A(i,j), and the k
@@ -890,7 +905,7 @@ GrB_Info GxB_SelectOp_new       // create a new user-defined select operator
 
 // This function is NOT user-callable:
 
-GrB_Info GB_SelectOp_new        // create a new user-defined select operator
+GrB_Info GB_SelectOp_new    // USER CODE SHOULD NOT USE THIS FUNCTION DIRECTLY
 (
     GxB_SelectOp *selectop,     // handle for the new select operator
     void *function,             // pointer to the select function
@@ -3514,12 +3529,12 @@ GrB_Info GxB_Matrix_subassign_UDT      // C(I,J)<Mask> = accum (C(I,J),x)
 // GxB_subassign is a generic function that provides access to all specific
 // GxB_*_subassign* functions:
 
-// GxB_Vector_subassign   (w,mask,acc,u,I,ni,d)     // w(I)<mask>   =acc(w(I),u)
-// GxB_Matrix_subassign   (C,Mask,acc,A,I,ni,J,nj,d)// C(I,J)<Mask> =acc(C(I,J),A)
-// GxB_Col_subassign      (C,mask,acc,u,I,ni,j,d)   // C(I,j)<mask> =acc(C(I,j),u)
-// GxB_Row_subassign      (C,mask,acc,u,i,J,nj,d)   // C(i,J)<mask'>=acc(C(i,J),u')
-// GxB_Vector_subassign_T (w,mask,acc,x,I,ni,d)     // w(I)<mask>   =acc(w(I),x)
-// GxB_Matrix_subassign_T (C,Mask,acc,x,I,ni,J,nj,d)// C(I,J)<Mask> =acc(C(I,J),x)
+// GxB_Vector_subassign   (w,m,acc,u,I,ni,d)     // w(I)<m>   =acc(w(I),u)
+// GxB_Matrix_subassign   (C,M,acc,A,I,ni,J,nj,d)// C(I,J)<M> =acc(C(I,J),A)
+// GxB_Col_subassign      (C,m,acc,u,I,ni,j,d)   // C(I,j)<m> =acc(C(I,j),u)
+// GxB_Row_subassign      (C,m,acc,u,i,J,nj,d)   // C(i,J)<m'>=acc(C(i,J),u')
+// GxB_Vector_subassign_T (w,m,acc,x,I,ni,d)     // w(I)<m>   =acc(w(I),x)
+// GxB_Matrix_subassign_T (C,M,acc,x,I,ni,J,nj,d)// C(I,J)<M> =acc(C(I,J),x)
 
 #define GxB_subassign(arg1,Mask,accum,arg4,arg5,...)               \
     _Generic                                                    \
@@ -4149,7 +4164,7 @@ GrB_Info GxB_Matrix_select          // C<Mask> = accum (C, op(A,k)) or op(A',k)
 // GxB_select: generic matrix/vector select
 //------------------------------------------------------------------------------
 
-// GrB_select is a generic function for applying a select operator to a matrix
+// GxB_select is a generic function for applying a select operator to a matrix
 // or vector and provides access to these functions:
 
 // GrB_Vector_select (w,mask,acc,op,u,k,d)  // w<mask> = accum (w, op(u,k))
@@ -4969,6 +4984,25 @@ GxB_LOR_GT_BOOL        , GxB_LAND_GT_BOOL       , GxB_LXOR_GT_BOOL       , GxB_E
 GxB_LOR_LT_BOOL        , GxB_LAND_LT_BOOL       , GxB_LXOR_LT_BOOL       , GxB_EQ_LT_BOOL         , 
 GxB_LOR_GE_BOOL        , GxB_LAND_GE_BOOL       , GxB_LXOR_GE_BOOL       , GxB_EQ_GE_BOOL         , 
 GxB_LOR_LE_BOOL        , GxB_LAND_LE_BOOL       , GxB_LXOR_LE_BOOL       , GxB_EQ_LE_BOOL         ; 
+
+//------------------------------------------------------------------------------
+// GxB_stats: memory usage and other statistics
+//------------------------------------------------------------------------------
+
+typedef struct
+{
+    int64_t nmalloc ;       // # of objects malloc'ed but not yet freed
+    int64_t inuse ;         // memory in use (in bytes)
+    int64_t maxused ;       // max memory used since last call to GxB_stats
+    int64_t future [20] ;   // not used, reserved for future use
+    double xfuture [20] ;   // not used, reserved for future use
+}
+GxB_Statistics ;
+
+GrB_Info GxB_stats
+(
+    GxB_Statistics *stats
+) ;
 
 #endif
 

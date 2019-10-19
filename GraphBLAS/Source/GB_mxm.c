@@ -134,15 +134,23 @@ GrB_Info GB_mxm                     // C<Mask> = A*B
         && (Mask == NULL || (Mask != NULL && mask_applied))
         && (C_replace || NNZ (C) == 0))
     {
+        // C = 0 ; C = (ctype) T
         // The Mask (if any) has already been applied in GB_Matrix_multiply.
-        // If C is empty, or to be cleared anyway, and if accum is not present,
-        // then C = (ctype) T, typecasting if needed.  If no typecasting is
-        // done then this takes no time at all and is a pure transplant.
+        // If C is also empty, or to be cleared anyway, and if accum is not
+        // present, then T can be transplanted directly into C, as C = (ctype)
+        // T, typecasting if needed.  If no typecasting is done then this takes
+        // no time at all and is a pure transplant.  If T has zombies then they
+        // are safely transplanted into C, and are left in the final result, C.
+        ASSERT (ZOMBIES_OK (T)) ;
         return (GB_Matrix_transplant (C, C->type, &T)) ;
     }
     else
     {
         // C<Mask> = accum (C,T)
+        // T may have zombies from the masked multiply, so delete them now.
+        ASSERT (ZOMBIES_OK (T)) ;
+        APPLY_PENDING_UPDATES (T) ;
+        ASSERT (!ZOMBIES (T)) ;
         return (GB_accum_mask (C, Mask, accum, &T, C_replace, Mask_comp)) ;
     }
 }

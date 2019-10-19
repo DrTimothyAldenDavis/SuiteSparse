@@ -17,7 +17,7 @@
 #define FREE_ALL                        \
 {                                       \
     GB_MATRIX_FREE (&A) ;               \
-    GB_FREE_MEMORY (Xtemp) ;            \
+    GB_FREE_MEMORY (Xtemp, ni, sizeof (double complex)) ; \
     GB_mx_put_global (malloc_debug) ;   \
 }
 
@@ -34,6 +34,10 @@ void mexFunction
     GrB_Matrix A = NULL ;
     void *Y = NULL ;
     void *Xtemp = NULL ;
+    GrB_Index *I = NULL, ni = 0 ; 
+    GrB_Index *J = NULL, nj = 0 ; 
+    mxClassID xclass ;
+    GrB_Type xtype ;
 
     // check inputs
     if (nargout > 1 || nargin < 3 || nargin > 4)
@@ -55,7 +59,6 @@ void mexFunction
     mxClassID aclass = GB_mx_Type_to_classID (A->type) ;
 
     // get I
-    GrB_Index *I, ni ; 
     if (!GB_mx_mxArray_to_indices (&I, pargin [1], &ni))
     {
         FREE_ALL ;
@@ -63,7 +66,6 @@ void mexFunction
     }
 
     // get J
-    GrB_Index *J, nj ; 
     if (!GB_mx_mxArray_to_indices (&J, pargin [2], &nj))
     {
         FREE_ALL ;
@@ -77,8 +79,6 @@ void mexFunction
     }
 
     // get xclass, default is class (A), and the corresponding xtype
-    mxClassID xclass ;
-    GrB_Type xtype ;
 
     if (A->type == Complex)
     {

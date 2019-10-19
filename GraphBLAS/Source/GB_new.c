@@ -312,7 +312,7 @@ GrB_Info GB_new                 // create a new matrix
     if ((Ap_calloc || Ap_malloc) && A->p == NULL)
     {
         // out of memory
-        GB_FREE_MEMORY (*matrix_handle) ;
+        GB_FREE_MEMORY (*matrix_handle, 1, sizeof (GB_Matrix_opaque)) ;
         return (ERROR (GrB_OUT_OF_MEMORY, (LOG,
             "out of memory, %g GBytes required",
             GBYTES (A->ncols+1, sizeof (int64_t))))) ;

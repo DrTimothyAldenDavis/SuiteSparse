@@ -1,5 +1,5 @@
 function C = GB_spec_select (C, Mask, accum, opname, A, k, descriptor)
-%GB_SPEC_APPLY a MATLAB mimic of GrB_select
+%GB_SPEC_SELECT a MATLAB mimic of GxB_select
 %
 % Usage:
 % C = GB_spec_select (C, Mask, accum, opname, A, k, descriptor)

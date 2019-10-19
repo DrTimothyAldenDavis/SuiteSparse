@@ -1,5 +1,5 @@
 function identity = GB_spec_identity (arg1,arg2)
-%GB_SPEC_IDENTITY the additive identity of a semiring
+%GB_SPEC_IDENTITY the additive identity of a monoid
 %
 % identity = GB_spec_identity (add) ;
 % or

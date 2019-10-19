@@ -13,15 +13,16 @@
 \hyphenation{Graph-BLAS}
 \hyphenation{Suite-Sparse-Graph-BLAS}
 
-\title{User's Guide for SuiteSparse:GraphBLAS}
+\title{User Guide for SuiteSparse:GraphBLAS}
 
-\author{Timothy A. Davis\thanks{
-davis@tamu.edu,
-Texas A\&M University. \newline
+\author{Timothy A. Davis \\
+\small
+davis@tamu.edu, Texas A\&M University. \\
+\small
 http://www.suitesparse.com and http://aldenmath.com
-}}
+}
 
-\date{VERSION 1.1.0, Dec 1, 2017}
+\date{VERSION 1.1.2, Dec 28, 2017}
 
 %-------------------------------------------------------------------------------
 \begin{document}
@@ -41,7 +42,7 @@ sparse matrix operations on a semiring.
 \maketitle
 
 \newpage
-{\footnotesize
+{\small
 \tableofcontents
 }
 
@@ -72,6 +73,8 @@ A full and precise definition of the GraphBLAS specification is provided in
 {\em The GraphBLAS C API Specification} by {Ayd\i n Bulu\c{c}, Timothy Mattson,
 Scott McMillan, Jos\'e Moreira, and Carl Yang} \cite{spec}, based on {\em
 GraphBLAS Mathematics} by Jeremy Kepner \cite{Kepner2017}.
+The GraphBLAS C API
+Specification is available at \url{http://graphblas.org}.
 This version of SuiteSparse:GraphBLAS fully conforms to Version 1.1.0 of that
 specification.  In this User Guide, aspects of the GraphBLAS specification that
 would be true for any GraphBLAS implementation are simply called ``GraphBLAS.''
@@ -83,8 +86,12 @@ SuiteSparse:GraphBLAS.
 All functions and objects with a name of the form \verb'GxB_*'
 and all macros with a name of the form \verb'GXB_'
 are extensions to the spec.
+Functions and objects prefixed with \verb'GB_' are
+internal to SuiteSparse:GraphBLAS and should not be referenced by user
+applications.
 \end{spec}
 
+\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Basic Concepts} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -99,7 +106,8 @@ However, including them here is not essential and the additional information on
 the page might detract from a clearer view of the essential features of the
 GraphBLAS functions.
 
-This User Guide also assumes the reader is familiar with the MATLAB, by Cleve
+This User Guide also assumes the reader is familiar with the MATLAB language,
+created by Cleve
 Moler.  MATLAB supports only the conventional plus-times semiring on sparse
 double and complex matrices, but a MATLAB-like notation easily extends to the
 arbitrary semirings used in GraphBLAS.  The matrix multiplication in the
@@ -667,6 +675,28 @@ A user application that directly relies on GraphBLAS must include the
     #include "GraphBLAS.h"
 \end{verbatim}
 } \end{mdframed}
+
+The \verb'GraphBLAS.h' file defines functions, types, and macros prefixed with
+\verb'GrB_', \verb'GRB_', \verb'GxB_', and \verb'GXB_' that may be used in user
+applications.  The prefixes \verb'GrB_' and \verb'GRB_' denote items that
+appear in the official GraphBLAS API C Specification.  The prefixes \verb'GxB_'
+and \verb'GXB_' refer to SuiteSparse-specific extensions to the GraphBLAS API.
+Both may be used in user applications but be aware that items with prefixes
+\verb'GxB_' and \verb'GXB_' will not appear in other implementations of the
+GraphBLAS standard.
+
+There are a few functions and objects prefixed with \verb'GB_' that also appear
+in \verb'GraphBLAS.h', but all names with this prefix are internal to
+SuiteSparse:GraphBLAS and must not be referenced by user applications.  They
+are not documented in this User Guide, and no guarantee at all is made about
+them in future versions of this package.  They can change or even be removed
+without notice.  In addition, no contents of any GraphBLAS object (\verb'A',
+say) should be dereferenced with \verb'A->whatever'.  This content is opaque to
+end user applications and can change without notice in future versions of this
+package.  These names and content are technically visible to end-user
+applications, but this is only to enable the creation and use of polymorphic
+functions via the \verb'_Generic' keyword in ANSI C11.
+
 
 \begin{spec}
 {\bf SPEC:} The following macros are extensions to the spec.
@@ -1399,7 +1429,7 @@ object:
 \begin{mdframed}[userdefinedwidth=6in]
 {\footnotesize
 \begin{verbatim}
-GrB_Info GB_UnaryOp_new             // create a new user-defined unary operator
+GrB_Info GrB_UnaryOp_new            // create a new user-defined unary operator
 (
     GrB_UnaryOp *unaryop,           // handle for the new unary operator
     void *function,                 // pointer to the unary function
@@ -1857,9 +1887,10 @@ bool f                      // returns true if A(i,j) is kept
     const void *k           // user-defined auxiliary data
 ) ; \end{verbatim}}
 
-There are five built-in select operators listed in the table below.  Each can
-be used on any type including user-defined types.  User-defined select
-operators can also be created.
+There are five built-in select operators listed in the table below.  For the
+first four operators, \verb'k' is a pointer to a single scalar of type
+\verb'int64_t'.  Each operator can be used on any type, including user-defined
+types.  User-defined select operators can also be created.
 
 \vspace{0.2in}
 {\footnotesize
@@ -1878,11 +1909,10 @@ GraphBLAS name          & MATLAB            & description \\
 }
 \vspace{0.2in}
 
-\begin{specbeta}
+\begin{spec}
 {\bf SPEC:} \verb'GxB_SelectOp' and all built-in functions in the table above
-are extensions to the spec.  They were introduced in SuiteSparse:GraphBLAS
-Version 1.1.0, Dec 1, 2017, and should be considered in Beta status.
-\end{specbeta}
+are extensions to the spec.
+\end{spec}
 
 The built-in \verb'GxB_NONZERO' select operator is unique in that it is a
 function of the value of the entry $a_{ij}$, but it is still type-generic.  It
@@ -1912,7 +1942,7 @@ object:
 \vspace{0.1in}
 
 %-------------------------------------------------------------------------------
-\subsubsection{{\sf GrB\_SelectOp\_new:} create a user-defined select operator}
+\subsubsection{{\sf GxB\_SelectOp\_new:} create a user-defined select operator}
 %-------------------------------------------------------------------------------
 \label{selectop_new}
 
@@ -3557,7 +3587,7 @@ the table below.
 \verb'GrB_apply'     & apply unary operator    & ${\bf C \langle M \rangle = C \odot} f{\bf (A)}$ \\
                      &                         & ${\bf w \langle m \rangle = w \odot} f{\bf (u)}$ \\
 \hline
-\verb'GrB_select'    & apply select operator   & ${\bf C \langle M \rangle = C \odot} f{\bf (A,k)}$ \\
+\verb'GxB_select'    & apply select operator   & ${\bf C \langle M \rangle = C \odot} f{\bf (A,k)}$ \\
                      &                         & ${\bf w \langle m \rangle = w \odot} f{\bf (u,k)}$ \\
 \hline
 \verb'GrB_reduce'    & reduce to vector        & ${\bf w \langle m \rangle = w \odot} [{\oplus}_j {\bf A}(:,j)]$ \\
@@ -3574,11 +3604,10 @@ the table below.
 
 \newpage
 %===============================================================================
-\subsection{The GraphBLAS specification written in {MATLAB}} %==================
+\subsection{The GraphBLAS specification in {MATLAB}} %==========================
 %===============================================================================
 \label{spec}
 
-Each operation is described in the following sections.  In addition,
 SuiteSparse:GraphBLAS includes a MATLAB implementation of nearly the entire
 GraphBLAS specification, including all built-in types and operators.  The
 typecasting rules and integer operator rules from GraphBLAS are implemented in
@@ -3670,7 +3699,7 @@ MATLAB \verb'GB_spec' function          & corresponding GraphBLAS           & Se
 Additional files are included for creating test problems and providing
 inputs to the above files, or supporting functions:
 
-\vspace{0.2in}
+\vspace{0.1in}
 {\footnotesize
 \begin{tabular}{ll}
 MATLAB \verb'GB_spec' function  & purpose \\
@@ -3688,7 +3717,6 @@ MATLAB \verb'GB_spec' function  & purpose \\
 \hline
 \end{tabular}
 }
-\vspace{0.2in}
 
 \newpage
 An intensive test suite has been written that generates test graphs in MATLAB,
@@ -4532,7 +4560,7 @@ Step 2 accumulates the results ${\bf S \langle M \rangle  = S \odot T}$,
 exactly as described in Section~\ref{accummask}, but operating on the submatrix
 ${\bf S}$, not ${\bf C}$, using the optional \verb'Mask' and \verb'accum'
 operator.  The matrix ${\bf T}$ is simply ${\bf T}={\bf A}$, or ${\bf T}={\bf
-A}^T$ if ${\bf A}$ is transposed via the \verb'desc' descriptor,
+A}'$ if ${\bf A}$ is transposed via the \verb'desc' descriptor,
 \verb'GrB_INP0'.  The \verb'GrB_REPLACE' option in the descriptor clears ${\bf
 S}$ after computing ${\bf Z = T}$ or ${\bf Z = C \odot T}$, not all of ${\bf
 C}$ since this operation can only modify the specified submatrix of ${\bf C}$.
@@ -5004,7 +5032,7 @@ they differ in three ways:
     present but \verb'GrB_SCMP' is true).  After (optionally) complementing the
     mask, the value of \verb'M(i,j)' can be 0 for some entry outside the
     \verb'C(I,J)' submatrix.  If the \verb'GrB_REPLACE' descriptor is also
-    true, the \verb'GrB_assign' deletes this entry.
+    true, then \verb'GrB_assign' deletes this entry.
 
 \item
     They differ in how duplicate indices are treated in \verb'I' and \verb'J'.
@@ -5030,7 +5058,7 @@ identical and have the same performance.
 
 \verb'GxB_subassign' is much faster than \verb'GrB_assign', when the latter
 must examine the entire matrix \verb'C' to delete entries (when
-\verb'GrB__REPLACE' is true), and if it must deal with a much larger
+\verb'GrB_REPLACE' is true), and if it must deal with a much larger
 \verb'Mask' matrix.  However, both methods have specific uses.
 
 Consider using \verb'C(I,J)+=F' for many submatrices \verb'F' (for example,
@@ -5102,7 +5130,7 @@ The Mask/Replace Phase, described in Section~\ref{accummask} is different:
 
 \item
     For \verb'GxB_Matrix_subassign' (Step 2), the mask is applied to just ${\bf
-    S}$.  The mask has the same size as ${\bf C(I,J)}$, ${\bf S}$ and ${\bf A}$.
+    S}$.  The mask has the same size as ${\bf C(I,J)}$, ${\bf S}$, and ${\bf A}$.
     Just prior to making the assignment via the mask, the \verb'GrB_REPLACE'
     option can be used to clear ${\bf S}$ first.  No entries in ${\bf C}$ that
     are outside the ${\bf C(I,J)}$ can be modified by this operation.  Thus,
@@ -5404,18 +5432,11 @@ costly, since the matrix may need to be completed after each assignment.  The
 time complexity can become quadratic in the worst case.
 
 \item However, any single assignment takes no more than $O (a + s \log n + n +
-k + s \log s )$ time, even including the time for a matrix completion.  This
-time is essentially linear in the size of the matrix \verb'C', if \verb'A' is
-relatively small and sparse compared with \verb'C'.  In this case, $n+k$ are
-the two dominant terms.  This is the case for the example given in
-Section~\ref{subassign_matrix}, where SuiteSparse:GraphBLAS takes only 0.74
-seconds to compute \verb'C(I,J)=A' just once, where MATLAB takes 87 seconds for
-the same computation.  The time for SuiteSparse:GraphBLAS includes the final
-completion, and it returns the matrix back to MATLAB as a valid MATLAB sparse
-matrix with all pending computations completed.  In this example, \verb'C' is
-much bigger than \verb'A'.  As a comparison, MATLAB takes just 0.42 seconds to
-compute \verb"C+C'" for this matrix, which also takes time linear in the size
-of the matrix, $O(n+k)$.
+k + s \log s )$ time, even including the time for a matrix completion, where
+\verb'C' is $n$-by-$n$ with $k$ entries and \verb'A' is $a$-by-$a$ with $s$
+entries.  This time is essentially linear in the size of the matrix \verb'C',
+if \verb'A' is relatively small and sparse compared with \verb'C'.  In this
+case, $n+k$ are the two dominant terms.
 
 \item In general, \verb'GxB_subassign' is faster than \verb'GrB_assign'.
 If \verb'GrB_REPLACE' is used with \verb'GrB_assign', the entire matrix
@@ -5439,7 +5460,11 @@ measurements in this document were done on a  MacBook Pro, 2.8 GHz Intel Core
 i7, 16 GB Ram, OSX 10.11.6, clang 8.0.0, MATLAB R2017A.} The same computation
 takes 0.74 seconds in SuiteSparse:GraphBLAS, a speedup of over 100.  This is
 after finishing all pending computations in GraphBLAS and returning result to
-MATLAB as a valid MATLAB sparse matrix. 
+MATLAB as a valid MATLAB sparse matrix.  The dominant time complexity for
+GraphBLAS is $O(n+k)$, where $n$ is the dimension of \verb'C' and $k$ is its
+number of nonzeros.  As a comparison, MATLAB takes just 0.42 seconds to compute
+\verb"C+C'" for this matrix, which also takes time linear in the size of the
+matrix data structure, $O(n+k)$.
 
 \newpage
 %===============================================================================
@@ -5474,7 +5499,7 @@ GrB_Info GrB_apply                  // w<mask> = accum (w, op(u))
 \end{verbatim} } \end{mdframed}
 
 \verb'GrB_Vector_apply' applies a unary operator to the entries of a vector,
-analogous to \verb't = op (u)'  in MATLAB except the operator \verb'op' is only
+analogous to \verb't = op(u)'  in MATLAB except the operator \verb'op' is only
 applied to entries in the pattern of \verb'u'.  Implicit values outside the
 pattern of \verb'u' are not affected.  The entries in \verb'u' are typecasted
 into the \verb'xtype' of the unary operator.  The vector \verb't' has the same
@@ -5504,7 +5529,7 @@ GrB_Info GrB_apply                  // C<Mask> = accum (C, op(A)) or op(A')
 
 \verb'GrB_Matrix_apply'
 applies a unary operator to the entries of a matrix, analogous to
-\verb'T = op (A)'  in MATLAB except the operator \verb'op' is only applied to
+\verb'T = op(A)'  in MATLAB except the operator \verb'op' is only applied to
 entries in the pattern of \verb'A'.  Implicit values outside the pattern of
 \verb'A' are not affected.  The input matrix \verb'A' may be transposed first.
 The entries in \verb'A' are typecasted into the \verb'xtype' of the unary
@@ -5548,12 +5573,10 @@ appears in the function prototypes, but the specific function name is used when
 describing each variation.  When discussing features that apply to both
 versions, the simple name \verb'GxB_select' is used.
 
-\begin{specbeta}
+\begin{spec}
 {\bf SPEC:} The \verb'GxB_select' operation and \verb'GxB_SelectOp' operator
-are extensions to the spec.  They were added to SuiteSparse:GraphBLAS 1.1.0
-on Dec 1, 2017, and should be considred as Beta.  Their design may change as
-feedback is received on this feature.
-\end{specbeta}
+are extensions to the spec.
+\end{spec}
 
 % \newpage
 %-------------------------------------------------------------------------------
@@ -6490,7 +6513,7 @@ method above.
         }
     } \end{verbatim}}
 
-Since there is no \verb'Mask', and since \verb'GrB_REPLACE' not used, the call
+Since there is no \verb'Mask', and since \verb'GrB_REPLACE' is not used, the call
 to \verb'GrB_assign' in the example above is identical to \verb'GxB_subassign'.
 Either one can be used, and their performance would be identical.
 
@@ -6511,7 +6534,7 @@ just to test that method and compare the run times.  A comparison of
 Section~\ref{random}.
 
 The function can return the matrix as-is, which may be rectangular or
-unsymmetric.  If an input parameter is set to make the matrix symmetric, the
+unsymmetric.  If an input parameter is set to make the matrix symmetric,
 \verb'read_matrix' computes \verb"A=(A+A')/2" if \verb'A' is square (turning
 all directed edges into undirected ones.  If \verb'A' is rectangular, it
 creates a bipartite graph, which is the same as the augmented matrix,
@@ -6625,7 +6648,7 @@ details and derivations on how these methods work.
 When a mask is present and not complemented, \verb'GrB_INP0' is
 \verb'GrB_TRAN', and \verb'GrB_INP1' is \verb'GxB_DEFAULT', the
 SuiteSparse:GraphBLAS implementation of \verb'GrB_mxm' always uses a dot-product
-formulation.  Thus, the ${\bf C \langle L \rangle} = {\bf U}^T{\bf L}$ method
+formulation.  Thus, the ${\bf C \langle L \rangle} = {\bf U}'{\bf L}$ method
 uses dot products.  This provides a mechanism for the end-user to select a
 masked dot product matrix multiplication method in SuiteSparse:GraphBLAS, which
 is occassionally faster than the outer product method.
@@ -6649,7 +6672,7 @@ Cohen \cite{AzadBulucGilbert15,Cohen09} & \verb"sum(sum((L*U).*A))/2"
 Sandia \cite{WolfDeveciBerryHammondRajamanickam17} & \verb"sum(sum((U*U).*U))"
     & ${\bf C \langle U \rangle} = {\bf UU}$ (outer product) \\
 SandiaDot & \verb"sum(sum((U'*L).*L))"
-    & ${\bf C \langle L \rangle} = {\bf U}^T{\bf L}$ (dot product) \\
+    & ${\bf C \langle L \rangle} = {\bf U}'{\bf L}$ (dot product) \\
 SandiaL  & \verb"sum(sum((L*L).*L))"
     & ${\bf C \langle L \rangle} = {\bf LL}$ (outer product) \\
 \hline 
@@ -6691,7 +6714,8 @@ the two GraphBLAS methods, on a MacBook Pro (Retina, 13inch, Late 2013), 2.8
 Ghz Intel Core i7, 16 GB RAM, OSX 10.11.6, MATLAB 2017a, with the clang 8.0.0
 compiler.  Only a single core was used for these results.  In addition, the
 matrix \verb'L=tril(A)' and/or \verb'U=triu(A)' are used as-is without any
-reordering.  MATLAB failed on three matrices because \verb'U*U' is too large.
+reordering.  The run times include the time to construct \verb'L' or \verb'U'.
+MATLAB failed on one matrix because \verb'U*U' is too large.
 For the first set of matrices, the outer product formulation (${\bf C \langle U
 \rangle} = {\bf UU}$) is always faster than the dot product formulation, but
 this is not the case for the second set.
@@ -6704,7 +6728,7 @@ multiply in KokkosKernels.  These results were done on an Intel Xeon Haswell
 using the Intel \verb'icc' 17.1 compiler.  Unlike the other three methods,
 \verb'L' is sorted by decreasing row degree, which improves the performance.
 The Kokkos time includes the time taken to do the sort.  The run time listed is
-the best time obtained from several runs with 1 to 64 threads.
+the best time obtained from several runs with 1 to 32 threads.
 
 Comparing GraphBLAS and Kokkos is difficult since these results were obtained
 on different machines.  Also, the results in
@@ -6714,9 +6738,9 @@ are with a reordered \verb'L' in Kokkos, but not in GraphBLAS.  Wolf et al.
 \cite{WolfDeveciBerryHammondRajamanickam17} state that reordering \verb'L'
 improves the run time.  However, with these many caveats, the last column lists
 the speedup of Kokkos over the GraphBLAS outer-product formulation.  Since the
-Kokkos method is parallel (with up to 64 threads on 32 cores) these preliminary
+Kokkos method is parallel these preliminary
 comparisons indicate that the sequential performance of GraphBLAS is
-competitive.  Using up to 64 threads, Kokkos is about 3 to 15 faster than
+competitive.  Using up to 32 threads, Kokkos is about 3 to 18 faster than
 SuiteSparse:GraphBLAS, which is currently sequential (median speedup of about
 9).  Further comparisons are required, however.  A parallel implementation of
 the matrix-matrix multiply in \verb'GrB_mxm' is also in progress.
@@ -6775,120 +6799,120 @@ vanHeukelum/cage15 & 5,154,859 & 47,022,346 & 36,106,416 \\
 \hline
 matrix % & $n$  & \# entries & \# triangles
 & \multicolumn{2}{|c|}{MATLAB}  % (U*U).*U
-& \multicolumn{2}{|c|}{${ \bf C \langle U \rangle} = {\bf L}^T{\bf U}$}
+& \multicolumn{2}{|c|}{${ \bf C \langle U \rangle} = {\bf L}'{\bf U}$}
 & \multicolumn{2}{|c||}{${\bf C \langle U \rangle} = {\bf UU}$}
 & \multicolumn{3}{|c|}{Kokkos} \\
 & time & rate & time & rate & time & rate & time & rate & speedup \\
 \hline
 %------------------------------------
 SNAP/cit-HepPh & % 34,546 & 420,877 & 1,276,868 &
-    0.357  &     1.18 &  % MATLAB
-    0.165  &     2.56 &  % dot                      C<U>=L'*U
-    0.042  &    10.14 &  % outer                    C<U>=U*U
-    0.0044 &     95.4 &      9.4 \\ % Kokkos
+    0.363  &     1.16 &  % MATLAB
+    0.180  &     2.47 &  % dot                      C<U>=L'*U
+    0.049  &     9.59 &  % outer                    C<U>=U*U
+    0.0044 &     79.9 &      8.3  \\ % Kokkos
 %------------------------------------
 SNAP/cit-HepTh & % 27,770 & 352,285 & 1,478,735 &
     0.415  &     0.85 &  % MATLAB
-    0.165  &     2.13 &  % dot
-    0.041  &     8.49 &  % outer
-    0.0050 &     70.2 &      8.3 \\ % Kokkos
+    0.171  &     2.05 &  % dot
+    0.046  &     8.31 &  % outer
+    0.0050 &     72.5 &      8.7  \\ % Kokkos
 %------------------------------------
 SNAP/email-EuAll & % 265,214 & 364,481 & 267,313 &
-    0.180  &     2.03 &  % MATLAB
-    0.121  &     3.00 &  %  dot
-    0.032  &    11.45 &  %  outer
-    0.0058 &     62.8 &      5.4 \\ % Kokkos
+    1.264  &     0.29 &  % MATLAB
+    0.133  &     2.73 &  %  dot
+    0.035  &    10.33 &  %  outer
+    0.0058 &     70.7 &      6.8  \\ % Kokkos
 %------------------------------------
 SNAP/soc-Epinions1 & % 75,888 & 405,740 & 1,624,481 &
-    0.535  &     0.76 &  % MATLAB
-    0.360  &     1.13 &  % dot
-    0.059  &     6.87 &  % outer
-    0.0039 &    104.0 &     15.1 \\ % Kokkos
+    0.778  &     0.52 &  % MATLAB
+    0.376  &     1.08 &  % dot
+    0.067  &     6.01 &  % outer
+    0.0039 &    108.0 &     18.0  \\ % Kokkos
 %------------------------------------
 SNAP/soc-Slashdot0811 & % 77,360 & 469,180 & 551,724 &
-    1.022  &     0.46 &  % MATLAB
-    0.281  &     1.67 &  % dot
-    0.044  &    10.56 &  % outer
-    0.0061 &     76.8 &      7.3 \\ % Kokkos
+    0.990  &     0.47 &  % MATLAB
+    0.318  &     1.47 &  % dot
+    0.052  &     9.04 &  % outer
+    0.0061 &     76.8 &      8.5 \\ % Kokkos
 %------------------------------------
 SNAP/soc-Slashdot0902 & % 82,168 & 504,230 & 602,592 &
-    0.856  &     0.59 &  % MATLAB
-    0.308  &     1.64 &  % dot
-    0.047  &    10.70 &  % outer
-    0.0063 &    80.0  &     7.6 \\ % Kokkos
+    0.985  &     0.51 &  % MATLAB
+    0.339  &     1.49 &  % dot
+    0.059  &     8.61 &  % outer
+    0.0063 &    80.1  &     9.3 \\ % Kokkos
 %------------------------------------
 SNAP/amazon0312 & % 400,727 & 2,349,869 & 3,686,467 &
-    0.727  &     3.23 &  % MATLAB
-    0.436  &     5.39 &  % dot
-    0.250  &     9.40 &  % outer
-    0.0754 &    31.2  &      3.3 \\ % Kokkos
+    1.285  &     1.83 &  % MATLAB
+    0.514  &     5.32 &  % dot
+    0.306  &     8.61 &  % outer
+    0.0754 &    30.7  &      3.6  \\ % Kokkos
 %------------------------------------
 SNAP/amazon0505 & % 410,236 & 2,439,437 & 3,951,063 &
-    0.819  &     2.98 &  % MATLAB
-    0.460  &     5.31 &  % dot
-    0.254  &     9.59 &  % outer
-    0.0177 &   137.8  &     14.4 \\ % Kokkos
+    1.018  &     2.07 &  % MATLAB
+    0.545  &     4.48 &  % dot
+    0.297  &     8.21 &  % outer
+    0.0177 &   133.0  &     16.2 \\ % Kokkos
 %------------------------------------
 SNAP/amazon0601 & % 403,394 & 2,443,408 & 3,986,507 &
-    0.741  &     3.30 &  % MATLAB
-    0.461  &     5.39 &  % dot
-    0.255  &     9.59 &  % outer
-    0.0184 &   132.8  &     13.8 \\ % Kokkos
+    1.018  &     2.40 &  % MATLAB
+    0.563  &     4.34 &  % dot
+    0.296  &     8.27 &  % outer
+    0.0184 &   132.0  &     16.0 \\ % Kokkos
 %------------------------------------
 SNAP/cit-Patents & % 3,774,768 & 16,518,947 & 7,515,023 &
-   11.382  &     1.45 &  % MATLAB
-    3.676  &     4.49 &  % dot
-    2.042  &     8.09 &  % outer
-    0.4970 &    33.2  &      4.1 \\ % Kokkos
+   11.026  &     1.50 &  % MATLAB
+    4.416  &     3.74 &  % dot
+    2.300  &     7.18 &  % outer
+    0.4970 &    31.5  &      4.4  \\ % Kokkos
 %------------------------------------
 SNAP/soc-LiveJournal1 & % 4,847,571 & 42,851,237 & 285,730,264 &
-       mem &          &  % MATLAB
-   38.253  &     1.12 &  % dot
-    9.671  &     4.43 &  % outer
-    0.7330 &    58.5  &     13.2 \\ % Kokkos
+   11.026  &     0.40 &  % MATLAB
+   39.767  &     1.08 &  % dot
+   10.123  &     4.23 &  % outer
+    0.7330 &    58.5  &     13.8 \\ % Kokkos
 %------------------------------------
 Gleich/wb-edu & % 9,845,725 & 46,236,105 & 254,718,147 &
-       mem &          &  % MATLAB
-    6.720  &     6.88 &  % dot
-    3.097  &    14.93 &  % outer
-    0.2320 &   199.3  &     13.3 \\ % Kokkos
+  67.636   &     0.68 &  % MATLAB
+    8.016  &     5.77 &  % dot
+    3.605  &    12.82 &  % outer
+    0.2320 &   199.0  &     15.5 \\ % Kokkos
 %------------------------------------
 \hline
 %------------------------------------
 SNAP/p2p-Gnutella09 &
-    0.010  &     2.55 &  % MATLAB
-    0.002  &    13.29 &  % dot
-    0.001  &    32.80 &  % outer
+    0.004  &     6.50 &  % MATLAB
+    0.002  &    10.65 &  % dot
+    0.001  &    24.24 &  % outer
            &          & \\ % Kokkos
 %------------------------------------
 Mallya/lhr71 & % 70,304 & 1,492,794 & 160,592 &
-    0.285  &     5.25 &  % MATLAB
-    0.017  &    89.33 &  % C<U>=L'*U
-    0.017  &    86.84 &  % C<U>=U*U
+    0.252  &     5.93 &  % MATLAB
+    0.058  &    25.90 &  % C<U>=L'*U
+    0.030  &    50.37 &  % C<U>=U*U
            &          & \\ % Kokkos
 %------------------------------------
 Freescale/Freescale2 & % 2,999,349 & 5,744,934 & 21,027,280 \\
-     0.486 &    11.82 &  % MATLAB
-     0.293 &    19.60 &  % dot
-     0.180 &    31.90 &  % outer
+     0.741 &     7.75 &  % MATLAB
+     0.501 &    11.46 &  % dot
+     0.276 &    20.83 &  % outer
            &          & \\ % Kokkos
 %------------------------------------
 Freescale/circuit5M & % 5,558,326 & 26,983,926 & 31,019,473 &
        mem &          &  % MATLAB
-    2.091  &    12.91 &  % dot
-  193.375  &     0.14 &  % outer
+    2.819  &     9.57 &  % dot
+  194.142  &     0.14 &  % outer
            &          & \\ % Kokkos
 %------------------------------------
 DIMACS10/hugebubbles-00020 & % 21,198,119 & 31,790,179 & 0 &
-    6.824  &     4.66 &  % MATLAB
-    2.026  &    15.69 &  % dot
-    5.963  &     5.33 &  % outer
+    7.406  &     4.29 &  % MATLAB
+    3.417  &     9.30 &  % dot
+    6.568  &     4.84 &  % outer
            &          & \\ % Kokkos
 %------------------------------------
 vanHeukelum/cage15 & % 5,154,859 & 47,022,346 & 36,106,416 &
-    8.836  &     5.32 &  % MATLAB
-    3.078  &    15.28 &  % dot
-    2.087  &    22.53 &  % outer
+   10.187  &     4.62 &  % MATLAB
+    4.407  &    10.67 &  % dot
+    2.443  &    19.25 &  % outer
            &          & \\ % Kokkos
 %------------------------------------
 \hline
@@ -6903,33 +6927,59 @@ in GraphBLAS is very simple:
 {\footnotesize
 \begin{verbatim}
         int64_t ntriangles ;
-        GrB_Index n ;
-        GrB_Matrix C ;
-        GrB_Matrix_nrows (&n, U) ;
+        GrB_Index n, one = 1 ;
+        GrB_Matrix C, U ;
+        GrB_Matrix_nrows (&n, A) ;
+
+        // U = triu (A, 1)
+        GrB_Matrix_new (&U, GrB_UINT32, n, n) ;
+        GxB_select (U, NULL, NULL, GxB_TRIU, A, &one, NULL) ;
+
+        // C<U> = U*U
         GrB_Matrix_new (&C, GrB_UINT32, n, n) ;
         GrB_mxm (C, U, NULL, GxB_PLUS_TIMES_UINT32, U, U, NULL) ;
+
+        // ntriangles = sum (C)
         GrB_reduce (&ntriangles, NULL, GxB_PLUS_INT64_MONOID, C, NULL) ;
+
         GrB_free (&C) ;
+        GrB_free (&U) ;
 \end{verbatim}
 }
 
+\newpage
 The dot product method
-${ \bf C \langle U \rangle} = {\bf L}^T{\bf U}$
-in GraphBLAS is:
+${ \bf C \langle U \rangle} = {\bf L}'{\bf U}$
+in GraphBLAS is similar:
 
 {\footnotesize
 \begin{verbatim}
         int64_t ntriangles ;
-        GrB_Index n ;
-        GrB_Matrix C ;
-        GrB_Matrix_nrows (&n, U) ;
+        GrB_Index n, one = 1, minusone = -1 ;
+        GrB_Matrix C, L, U ;
+        GrB_Matrix_nrows (&n, A) ;
+
+        // U = triu (A, 1)
+        GrB_Matrix_new (&U, GrB_UINT32, n, n) ;
+        GxB_select (U, NULL, NULL, GxB_TRIU, A, &one, NULL) ;
+
+        // L = tril (A,-1)
+        GrB_Matrix_new (&L, GrB_UINT32, n, n) ;
+        GxB_select (L, NULL, NULL, GxB_TRIL, A, &minusone, NULL) ;
+
+        // C<U> = L'*U
         GrB_Matrix_new (&C, GrB_UINT32, n, n) ;
         GrB_Descriptor_new (&d) ;
         GrB_Descriptor_set (d, GrB_INP0, GrB_TRAN) ;
         GrB_mxm (C, U, NULL, GxB_PLUS_TIMES_UINT32, L, U, d) ;
-        GrB_reduce (&ntriangles, NULL, GxB_PLUS_INT64_MONOID, C, NULL) ;
-        GrB_free (&C) ;
         GrB_free (&d) ;
+
+        // ntriangles = sum (C)
+        GrB_reduce (&ntriangles, NULL, GxB_PLUS_INT64_MONOID, C, NULL) ;
+
+        GrB_free (&C) ;
+        GrB_free (&L) ;
+        GrB_free (&U) ;
 \end{verbatim}
 }
 
@@ -7010,19 +7060,19 @@ although earlier versions of \verb'Xcode' may work as well.  For the GNU
 \verb'icc' compiler, version 18.0 or later is required.  Version 2.8.12 or
 later of \verb'cmake' is required; version 3.0.0 is preferred.
 
-To compile SuiteSparse:GraphBLAS and the demo programs:
+To compile SuiteSparse:GraphBLAS and the demo programs, simply type \verb'make'
+in the main GraphBLAS folder, which compiles the library and runs several
+demos.
 
-    {\small
-    \begin{verbatim}
-    cd build
-    cmake ..
-    make \end{verbatim} }
-
-{\bf Please be patient.  Some files take very long time to compile.}
+GraphBLAS is not yet parallel, but it is thread-safe if multiple simultaneous
+calls are made to GraphBLAS functions.  For this usage, GraphBLAS must be
+compiled with OpenMP so that GraphBLAS has access to a critical section
+mechanism.  OpenMP is optional if the user application does not make
+multiple simultaneous calls to GraphBLAS.
 
 If \verb'cmake' or \verb'make' fail, it might be that your default compiler
 does not support ANSI C11.  Try another compiler.  For example, try one of
-these options:
+these options.  Go into the \verb'build' directory and type:
 
     {\small
     \begin{verbatim}
@@ -7031,10 +7081,11 @@ these options:
     CC=xlc cmake ..
     CC=icc cmake ..  \end{verbatim} }
 
-If this still fails, see the \verb'GraphBLAS/CMakeLists.txt' file.  You may
-need to pass compiler-specific options to your compiler.  Locate this section
-in the \verb'CMakeLists.txt' file.  Use the \verb'set' command in \verb'cmake',
-as in the example below, to set the compiler flags you need.
+Then do \verb'make' in the \verb'build' directory.  If this still fails, see
+the \verb'CMakeLists.txt' file.  You may need to pass compiler-specific options
+to your compiler.  Locate this section in the \verb'CMakeLists.txt' file.  Use
+the \verb'set' command in \verb'cmake', as in the example below, to set the
+compiler flags you need.
 
     {\small
     \begin{verbatim}
@@ -7043,7 +7094,7 @@ as in the example below, to set the compiler flags you need.
     if ("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
         # cmake 2.8 workaround: gcc needs to be told to do ANSI C11.
         # cmake 3.0 doesn't have this problem.
-        set (CMAKE_C_FLAGS  "-std=c11 -lm")
+        set (CMAKE_C_FLAGS  "-std=c11 -lm -fopenmp")
         ...
     elseif ("${CMAKE_C_COMPILER_ID}" STREQUAL "Intel")
         ...
@@ -7066,42 +7117,46 @@ The \verb'./demo' command is a script that runs the demos with various input
 matrices in the \verb'Demo/Matrix' folder.  The output of the demos will be
 compared with expected output files in \verb'Demo/Output'.
 
-To install the library in \verb'/usr/local/lib' and \verb'/usr/local/include':
+To install the library in \verb'/usr/local/lib' and \verb'/usr/local/include',
+go to the top-level GraphBLAS folder and type:
 
     {\small
     \begin{verbatim}
-    cd build
     sudo make install \end{verbatim} }
 
-SuiteSparse:GraphBLAS creates 960 hard-coded versions of \verb'C=A*B', one for
-each possible semiring that can be constructed from built-in types, operators,
-and monoids (see Section~\ref{semiring_new}).  To compile faster without these
-960 versions, edit \verb'Source/GB.h' and uncomment \verb'#define GBCOMPACT'.
-GraphBLAS will still be able to compute \verb'C=A*B' for any valid semiring,
-but it will be slower for built-in semirings.  Alternatively, edit the
-\verb'CMakeLists.txt' and change the \verb'CMAKE_BUILD_TYPE' to \verb'Debug',
-which enables the 960 built-in semirings but compiles with no optimization.
-These options are not recommended for end-users and are intended only for code
-development of GraphBLAS itself.
-
-Several other compile-time options can be selected by editing the
-\verb'Source/GB.h' file, but these are meant only for code development of
-SuiteSparse:GraphBLAS itself, not for end-users of SuiteSparse:GraphBLAS.
+Several compile-time options can be selected by editing the \verb'Source/GB.h'
+file, but these are meant only for code development of SuiteSparse:GraphBLAS
+itself, not for end-users of SuiteSparse:GraphBLAS.
 
 To perform the extensive tests in the \verb'Test' folder, and the statement
 coverage tests in \verb'Tcov', MATLAB R2017A is required.  See the
 \verb'README.txt' files in those two folders for instructions on how to run the
 tests.
 
-To remove all compiled files:
-
-    {\small
-    \begin{verbatim}
-    cd build ; rm -rf * \end{verbatim} }
+To remove all compiled files, type \verb'make' \verb'distclean' in the top-level
+GraphBLAS folder.
 
 {\bf NOTE: SuiteSparse:GraphBLAS has not yet been ported to Windows.}
 However, with \verb'cmake' the port to Windows should be straight-forward
-(in progress).
+(this is in progress).
+
+\newpage
+%-------------------------------------------------------------------------------
+\section{Acknowledgements}
+%-------------------------------------------------------------------------------
+
+I would like to thank Jeremy Kepner (MIT Lincoln Laboratory Supercomputing
+Center), and the GraphBLAS API Committee: Ayd\i n Bulu\c{c} (Lawrence Berkeley
+National Laboratory), Timothy G. Mattson (Intel Corporation) Scott McMillan
+(Software Engineering Institute at Carnegie Mellon University), Jos\'e Moreira
+(IBM Corporation), and Carl Yang (UC Davis), for creating the GraphBLAS
+specification and for patiently answering my many questions while I was
+implementing it.
+
+I would also like to thank S\'ebastien Villemot (Debian Developer,
+\url{http://sebastien.villemot.name}) for helping me with various build issues
+and other code issues with GraphBLAS (and all of SuiteSparse) for its packaging
+in Debian Linux.
 
 \newpage
 %-------------------------------------------------------------------------------
@@ -7110,7 +7165,7 @@ However, with \verb'cmake' the port to Windows should be straight-forward
 {\small
 \addcontentsline{toc}{section}{References}
 \bibliographystyle{annotate}
-\bibliography{GraphBLAS_userguide.bib}
+\bibliography{GraphBLAS_UserGuide.bib}
 }
 \end{document}
 

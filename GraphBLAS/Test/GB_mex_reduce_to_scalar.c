@@ -20,7 +20,7 @@
     }                                   \
     if (ctype == Complex)               \
     {                                   \
-        GB_FREE_MEMORY (c) ;            \
+        GB_FREE_MEMORY (c, 1, sizeof (double complex)) ; \
     }                                   \
     GB_mx_put_global (malloc_debug) ;   \
 }
@@ -73,6 +73,7 @@ void mexFunction
         FREE_ALL ;
         mexErrMsgTxt ("A failed") ;
     }
+    // GB_check (A, "A to reduce", 3) ;
 
     // get reduce; default: NOP, default class is class(C)
     GrB_BinaryOp reduceop ;

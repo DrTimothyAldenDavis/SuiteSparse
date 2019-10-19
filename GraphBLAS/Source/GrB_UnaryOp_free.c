@@ -24,7 +24,7 @@ GrB_Info GrB_UnaryOp_free           // free a user-created unary operator
             if (op->magic == MAGIC)
             {
                 op->magic = FREED ;         // to help detect dangling pointers
-                GB_FREE_MEMORY (*unaryop) ;
+                GB_FREE_MEMORY (*unaryop, 1, sizeof (GB_UnaryOp_opaque)) ;
             }
             (*unaryop) = NULL ;
         }

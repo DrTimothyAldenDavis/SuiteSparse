@@ -26,11 +26,11 @@ void GB_Matrix_free             // free a matrix
             A->magic = FREED ;      // to help detect dangling pointers
             if (!A->p_shallow)
             {
-                GB_FREE_MEMORY (A->p) ;
+                GB_FREE_MEMORY (A->p, A->ncols+1, sizeof (int64_t)) ;
             }
             A->p = NULL ;
             GB_Matrix_ixfree (A) ;
-            GB_FREE_MEMORY (*matrix) ;
+            GB_FREE_MEMORY (*matrix, 1, sizeof (GB_Matrix_opaque)) ;
         }
         (*matrix) = NULL ;
     }

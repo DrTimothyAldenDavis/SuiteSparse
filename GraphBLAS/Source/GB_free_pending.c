@@ -25,9 +25,9 @@ void GB_free_pending            // free all pending tuples
     // free all pending tuples
     //--------------------------------------------------------------------------
 
-    GB_FREE_MEMORY (A->ipending) ;
-    GB_FREE_MEMORY (A->jpending) ;
-    GB_FREE_MEMORY (A->xpending) ;
+    GB_FREE_MEMORY (A->ipending, A->max_npending, sizeof (int64_t)) ;
+    GB_FREE_MEMORY (A->jpending, A->max_npending, sizeof (int64_t)) ;
+    GB_FREE_MEMORY (A->xpending, A->max_npending, A->type->size) ;
     A->npending = 0 ;
     A->max_npending = 0 ;
     A->sorted_pending = true ;

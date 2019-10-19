@@ -42,18 +42,12 @@ bool GB_semiring_builtin            // true if semiring is builtin
     // or not this function handles the semiring as hard-coded.  Now return for
     // cases this function does not handle.
 
-    // This function requires A and B must have the same built-in type,
-    // and they must match the types x,y for fmult.
-    // If this condition doesn't hold, punt to the generic C=A*B:
+    // This function requires A and B to have the same built-in type, and they
+    // must match the types x,y for fmult.  If this condition doesn't hold,
+    // punt to the generic C=A*B:
     if ((A->type != (flipxy ? mult->ytype : mult->xtype)) ||
         (B->type != (flipxy ? mult->xtype : mult->ytype)) ||
         (A->type != B->type) || (A->type->code == GB_UDT_code)
-        // This function handles only built-in operators.  If either is
-        // user-defined, punt to generic C=A*B.  Note that the switch factory
-        // below would also return false, but doing this here makes it
-        // explicit, just for better understanding of what this function does.
-        // It also means ASSERT's can be added, which serve to both explain the
-        // logic to the reader, and as a test when debugging is enabled:
        || (*add_opcode == GB_USER_opcode) || (*mult_opcode == GB_USER_opcode))
     {
         return (false) ;

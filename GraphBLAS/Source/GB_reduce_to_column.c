@@ -140,6 +140,8 @@ GrB_Info GB_reduce_to_column        // w<mask> = accum (w,reduce(A))
     ASSERT (!PENDING (T)) ; ASSERT (!ZOMBIES (T)) ;
     ASSERT (!PENDING (A)) ; ASSERT (!ZOMBIES (A)) ;
 
+    // FUTURE: this function could easily tolerate zombies in A
+
     //--------------------------------------------------------------------------
     // scalar workspace
     //--------------------------------------------------------------------------

@@ -3,9 +3,11 @@
 #===============================================================================
 
 # This file contains all configuration settings for all packages in SuiteSparse,
-# except for CSparse (which is stand-alone) and the packages in MATLAB_Tools.
+# except for CSparse (which is stand-alone), the packages in MATLAB_Tools,
+# and GraphBLAS.  The configuration settings for GraphBLAS are determined by
+# GraphBLAS/CMakeLists.txt
 
-SUITESPARSE_VERSION = 5.1.0
+SUITESPARSE_VERSION = 5.1.2
 
 #===============================================================================
 # Options you can change without editing this file:

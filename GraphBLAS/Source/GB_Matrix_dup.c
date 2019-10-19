@@ -10,6 +10,18 @@
 // C = A, making a deep copy.  Not user-callable; this function does the work
 // for user-callable functions GrB_*_dup.
 
+// (*handle) and A might be identical, with GrB_Matrix_dup (&A, A), so the
+// final output is written into the handle only at the very last step.  The
+// input matrix A will be lost, and will result in a memory leak, unless the
+// user application does:
+
+//  B = A ;
+//  GrB_Matrix (&A, A) ;
+//  GrB_free (&A) ;
+//  GrB_free (&B) ;
+
+// A is the new copy and B is the old copy.  Each should be freed when done.
+
 #include "GB.h"
 
 GrB_Info GB_Matrix_dup      // make an exact copy of a matrix
@@ -45,13 +57,14 @@ GrB_Info GB_Matrix_dup      // make an exact copy of a matrix
     // [ [ create C; malloc C->p and do not initialize it
     double memory = GBYTES (A->ncols + 1, sizeof (int64_t)) ;
     GrB_Info info ;
-    GB_NEW (handle, A->type, A->nrows, A->ncols, false, true) ;
+    GrB_Matrix C ;
+    GB_NEW (&C, A->type, A->nrows, A->ncols, false, true) ;
+
     if (info != GrB_SUCCESS)
     {
         (*handle) = NULL ;
         return (info) ;
     }
-    GrB_Matrix C = *handle ;
 
     // quick return if A is empty
     if (A->nzmax == 0)
@@ -59,6 +72,7 @@ GrB_Info GB_Matrix_dup      // make an exact copy of a matrix
         // both the input matrix A and the output matrix C are empty
         GB_Matrix_clear (C) ;
         // C is now intialized ]
+        (*handle) = C ;
         return (REPORT_SUCCESS) ;
     }
 
@@ -67,7 +81,7 @@ GrB_Info GB_Matrix_dup      // make an exact copy of a matrix
     if (!GB_Matrix_alloc (C, nnz, true, &memory))
     {
         // out of memory
-        GB_MATRIX_FREE (handle) ;
+        GB_MATRIX_FREE (&C) ;
         (*handle) = NULL ;
         return (ERROR (GrB_OUT_OF_MEMORY, (LOG,
             "out of memory, %g GBytes required", memory))) ;
@@ -80,6 +94,7 @@ GrB_Info GB_Matrix_dup      // make an exact copy of a matrix
     memcpy (C->x, A->x, nnz * A->type->size) ;
 
     ASSERT_OK (GB_check (C, "C duplicate of A", 0)) ;
+    (*handle) = C ;
     return (REPORT_SUCCESS) ;
 }
 

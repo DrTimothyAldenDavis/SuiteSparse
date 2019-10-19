@@ -56,7 +56,7 @@ void mexFunction
             mxCOMPLEX) ;
         GB_mx_complex_split (nrows*ncols, X, pargout [0]) ;
         // X is a deep copy that must be freed
-        GB_FREE_MEMORY (X) ;
+        GB_FREE_MEMORY (X, nrows*ncols, sizeof (double complex)) ;
     }
     else
     {

@@ -48,6 +48,7 @@ Test/log.txt
 Doc/GraphBLAS_UserGuide.log
 Doc/GraphBLAS_UserGuide.out
 Tcov/cover_GB_2type_template.c
+Tcov/cover_GB_AxB.c
 Tcov/cover_GB_AxB_compare_template.c
 Tcov/cover_GB_AxB_factory.c
 Tcov/cover_GB_AxB_template.c

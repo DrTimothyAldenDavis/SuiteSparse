@@ -19,9 +19,9 @@
 
 #define FREE_ALL                        \
 {                                       \
-    if (op_ztype == Complex && Z != NULL) GB_FREE_MEMORY (Z) ;   \
-    if (X_type   == Complex && X != NULL) GB_FREE_MEMORY (X) ;   \
-    if (Y_type   == Complex && Y != NULL) GB_FREE_MEMORY (Y) ;   \
+    if (op_ztype == Complex) GB_FREE_MEMORY (Z, nx+1, sizeof (double complex));\
+    if (X_type   == Complex) GB_FREE_MEMORY (X, nx+1, sizeof (double complex));\
+    if (Y_type   == Complex) GB_FREE_MEMORY (Y, ny+1, sizeof (double complex));\
     GB_mx_put_global (malloc_debug) ;   \
 }
 
@@ -38,6 +38,8 @@ void mexFunction
 
     void *X = NULL, *Y = NULL, *Z = NULL ;
     GrB_Type X_type = NULL, Y_type = NULL ;
+    int64_t nrows = 0, ncols = 0, nx = 0, ny = 0, nrows2 = 0, ncols2 = 0 ;
+    size_t Y_size = 1 ;
 
     bool malloc_debug = GB_mx_get_global ( ) ;
 
@@ -100,9 +102,9 @@ void mexFunction
     // get X
     //--------------------------------------------------------------------------
 
-    int64_t nrows, ncols ;
     mxClassID xclass ;
     GB_mx_mxArray_to_array (pargin [1], &X, &nrows, &ncols, &xclass, &X_type) ;
+    nx = nrows * ncols ;
     if (X_type == NULL)
     {
         FREE_ALL ;
@@ -117,19 +119,16 @@ void mexFunction
         mexErrMsgTxt ("op xtype not compatible with X") ;
     }
 
-    int64_t n = nrows * ncols ;
-
     //--------------------------------------------------------------------------
     // get Y
     //--------------------------------------------------------------------------
 
-    size_t Y_size = 1 ;
     if (nargin > 2)
     {
-        int64_t nrows2, ncols2 ;
         mxClassID yclass ;
         GB_mx_mxArray_to_array (pargin [2], &Y, &nrows2, &ncols2, &yclass,
             &Y_type) ;
+        ny = nrows2 * ncols2 ;
         if (nrows2 != nrows || ncols2 != ncols)
         {
             FREE_ALL ;
@@ -163,7 +162,7 @@ void mexFunction
     else if (op_ztype == Complex)
     {
         // Z is complex, create a temporary array
-        GB_MALLOC_MEMORY (Z, n + 1, sizeof (double complex)) ;
+        GB_MALLOC_MEMORY (Z, nx + 1, sizeof (double complex)) ;
         // Z must be copied into the MATLAB pargout [0] when done, then freed
     }
     else
@@ -193,7 +192,7 @@ void mexFunction
         GB_binary_function f_binary = op2->function ;
 
         GB_cast_function cast_Y = GB_cast_factory (op_ytype->code,Y_type->code);
-        for (int64_t k = 0 ; k < n ; k++)
+        for (int64_t k = 0 ; k < nx ; k++)
         {
             cast_X (xwork, X +(k*X_size), X_size) ;
             cast_Y (ywork, Y +(k*Y_size), Y_size) ;
@@ -205,7 +204,7 @@ void mexFunction
     {
         // Z = f (X)
         GB_unary_function f_unary = op1->function ;
-        for (int64_t k = 0 ; k < n ; k++)
+        for (int64_t k = 0 ; k < nx ; k++)
         {
             cast_X (xwork, X +(k*X_size), X_size) ;
             f_unary (Z +(k*op_zsize), xwork) ;
@@ -220,7 +219,7 @@ void mexFunction
     {
         pargout [0] = mxCreateNumericMatrix (nrows, ncols,
             mxDOUBLE_CLASS, mxCOMPLEX) ;
-        GB_mx_complex_split (n, Z, pargout [0]) ;
+        GB_mx_complex_split (nx, Z, pargout [0]) ;
     }
 
     //--------------------------------------------------------------------------

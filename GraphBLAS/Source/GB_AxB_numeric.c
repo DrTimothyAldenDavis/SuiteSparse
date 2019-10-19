@@ -20,18 +20,16 @@
 // This option is used when C=A'*B' is computed via C=(B*A)' by GrB_mxm, and
 // for all uses of GrB_vxm.
 
-// If the Mask is not NULL, then the pattern of C has not been computed.
-// C->p and C->i are only allocated.  This function computes the pattern of
-// C as a subset of the Mask.
+// If the Mask is not NULL, then the pattern of C has not been computed.  C->p
+// and C->i are only allocated.  This function constucts the pattern of C as
+// the same as the Mask, but with zombies if an entry appears in the Mask but
+// not in A*B.
 
 // FUTURE: this can be done in parallel.  The computation of each column C(:,j)
 // is an independent task.  Each thread would need its own Flag and Work array.
-// When the Mask is present, rather than computing a subset of the Mask, the
-// pattern of the Mask can be used as-is, except that any entry not in C would
-// be flagged as a zombie.  Then a parallel prefix sum method could be used to
-// delete the zombies, if necessary.
 
 #include "GB.h"
+#include "GB_AxB_methods.h"
 
 GrB_Info GB_AxB_numeric             // compute the values of C = A*B
 (
@@ -117,7 +115,8 @@ GrB_Info GB_AxB_numeric             // compute the values of C = A*B
     // free C->x unless it is shallow, then reallocate it at the right size
     if (!C->x_shallow)
     {
-        GB_FREE_MEMORY (C->x) ;
+        // C->x is normally NULL already so this should do nothing
+        GB_FREE_MEMORY (C->x, C->nzmax, zsize) ;
     }
     GB_MALLOC_MEMORY (C->x, C->nzmax, zsize) ;
     C->x_shallow = false ;
@@ -192,7 +191,7 @@ GrB_Info GB_AxB_numeric             // compute the values of C = A*B
     // With a low flop count, the full symbolic analysis becomes very cheap.
 
     // As a result, if the flop count is low, Mask must be NULL both here and
-    // in the symbolic analsys.
+    // in the symbolic analysis.
 
     bool a_cast = atype_required->code != A->type->code ;
     bool b_cast = btype_required->code != B->type->code ;
@@ -351,7 +350,7 @@ GrB_Info GB_AxB_numeric             // compute the values of C = A*B
     // created, and this function is not used.  All C=A*B computations are done
     // with the generic worker below.
 
-    if (GB_AxB_builtin (C, Mask, A2, B2, w, semiring, flipxy))
+    if (GB_AxB_builtin (C, Mask, A2, B2, semiring, flipxy))
     {
         // C = A2*B2 has been done via a hard-coded case; free memory and return
         GB_MATRIX_FREE (&A2) ;
@@ -394,9 +393,12 @@ GrB_Info GB_AxB_numeric             // compute the values of C = A*B
         // C<M> = A*B, using Mask as a superset of the symbolic pattern of C
         //----------------------------------------------------------------------
 
-        // get the function pointer for casting Mask(i,j) from its current
-        // type into boolean
-        GB_cast_function cast_Mask_to_bool =
+        // The pattern of C and Mask are the same, except that the Mask has no
+        // zombies but C may have them.  Entries in the Mask but not in A*B
+        // become zombies in C.
+
+        // get cast function for casting Mask(i,j) from current type to boolean
+        GB_cast_function cast_Mask =
             GB_cast_factory (GB_BOOL_code, Mask->type->code) ;
 
         const int64_t *restrict Maski = Mask->i ;
@@ -406,34 +408,25 @@ GrB_Info GB_AxB_numeric             // compute the values of C = A*B
 
         char bkj [bsize] ;
 
-        int64_t cnz = 0 ;
-        int64_t *restrict Cp = C->p ;
         int64_t *restrict Ci = C->i ;
+
+        // copy Maskp into C->p
+        memcpy (C->p, Maskp, (n+1) * sizeof (int64_t)) ;
+        C->magic = MAGIC ;
 
         for (int64_t j = 0 ; j < n ; j++)
         {
-            // log the start of C(:j) ;
-            Cp [j] = cnz ;
-            // get Mask(:,j) and skip if empty
-            int64_t pm1, pm2, mlo, mhi ;
-            if (empty (Maskp, Maski, j, &pm1, &pm2, &mlo, &mhi)) continue ;
+            // scatter Mask(:,j) into Flag
             bool marked = false ;
+            scatter_mask (j, Maskp, Maski, Maskx, msize, cast_Mask, Flag,
+                &marked) ;
             // compute C(:,j) = A * B(:,j), both values and pattern
-            for (int64_t pb = Bp [j] ; pb < Bp [j+1] ; pb++)
+            for (int64_t p = Bp [j] ; p < Bp [j+1] ; p++)
             {
                 // B(k,j) is present
-                int64_t k = Bi [pb] ;
-                /* get A(:,k) and skip if empty */
-                int64_t pa1, pa2, alo, ahi ;
-                if (empty (Ap, Ai, k, &pa1, &pa2, &alo, &ahi)) continue ;
-                /* skip if all A(:,k) entries outside range of Mask(:,j)*/
-                if (ahi < mlo || alo > mhi) continue ;
-                /* scatter Mask(:,j) into Flag if not yet done */
-                scatter_mask (pm1, pm2, cast_Mask_to_bool,
-                    Maski, Maskx, msize, Flag, &marked) ;
-                // bkj = B(k,j)
-                memcpy (bkj, Bx +(pb*bsize), bsize) ;
-                for (int64_t pa = pa1 ; pa < pa2 ; pa++)
+                int64_t k = Bi [p] ;
+                memcpy (bkj, Bx +(p*bsize), bsize) ;
+                for (int64_t pa = Ap [k] ; pa < Ap [k+1] ; pa++)
                 {
                     // w [i] += (A(i,k) * B(k,j)) .* Mask(i,j)
                     int64_t i = Ai [pa] ;
@@ -467,25 +460,33 @@ GrB_Info GB_AxB_numeric             // compute the values of C = A*B
                     }
                 }
             }
-            // gather C(:,j), both values and pattern
-            if (marked)
+            // gather C(:,j), both values and pattern, from the Mask(:,j)
+            for (int64_t p = Maskp [j] ; p < Maskp [j+1] ; p++)
             {
-                for (int64_t p = pm1 ; p < pm2 ; p++)
+                int64_t i = Maski [p] ;
+                // C(i,j) is present
+                if (Flag [i] < 0)
                 {
-                    int64_t i = Maski [p] ;
-                    if (Flag [i] < 0)
-                    {
-                        // Cx [cnz] = w [i] ;
-                        memcpy (Cx +(cnz*zsize), w +(i*zsize), zsize) ;
-                        Ci [cnz++] = i ;
-                    }
-                    Flag [i] = 0 ;
+                    // C(i,j) is a live entry, gather its row and value
+                    // Cx [p] = w [i] ;
+                    memcpy (Cx +(p*zsize), w +(i*zsize), zsize) ;
+                    Ci [p] = i ;
                 }
+                else
+                {
+                    // C(i,j) is a zombie; in the Mask but not in A*B
+                    // Cx [p] left uninitialized, or this could be done:
+                    // memcpy (Cx +(p*zsize), identity, zsize) ;
+                    Ci [p] = FLIP (i) ;
+                    C->nzombies++ ;
+                }
+                Flag [i] = 0 ;
             }
         }
-        Cp [n] = cnz ;
-        C->magic = MAGIC ;
         ASSERT_FLAG_IS_CLEAR ;
+        ASSERT (ZOMBIES_OK (C)) ;
+        GB_queue_insert (C) ;
+        ASSERT_OK (GB_check (C, "C<M> = A*B, with built-in mask", 0)) ;
 
     }
     else
@@ -513,7 +514,6 @@ GrB_Info GB_AxB_numeric             // compute the values of C = A*B
             {
                 // B(k,j) is present
                 int64_t k = Bi [p] ;
-                // bkj = B(k,j)
                 memcpy (bkj, Bx +(p*bsize), bsize) ;
                 for (int64_t pa = Ap [k] ; pa < Ap [k+1] ; pa++)
                 {
@@ -542,6 +542,7 @@ GrB_Info GB_AxB_numeric             // compute the values of C = A*B
                 memcpy (Cx +(p*zsize), w +((Ci [p])*zsize), zsize) ;
             }
         }
+        ASSERT (!ZOMBIES (C)) ;
     }
 
     //--------------------------------------------------------------------------

@@ -47,10 +47,12 @@ end
 
 k = 10e6 ;
 fprintf ('\nbuilding random sparse matrices %d by M\n', k) ;
-for m = 1:20
+for m = [1:8 10:2:20 50 100 500 1000 3000]
     A = sprandn (k, m, 0.1) ;
     B = sprandn (k, m, 0.1) ;
     Mask = spones (sprandn (m, m, 0.5)) ;
+    A (:,m) = sparse (rand (k,1)) ;
+    B (:,m) = sparse (rand (k,1)) ;
 
     % fprintf ('MATLAB:\n') ;
     tic
@@ -77,7 +79,7 @@ for m = 1:20
 
     % fprintf ('MATLAB:\n') ;
     tic
-    C = spones (Mask) .* (A'*B) ;
+    C = Mask .* (A'*B) ;
     t1 = toc ;
 
     % fprintf ('GrB AdotB:\n') ;
@@ -87,7 +89,7 @@ for m = 1:20
 
     % fprintf ('GrB A''*B native:\n') ;
     tic
-    C4 = spones (Mask) .* GB_mex_AxB (A,B, true) ;
+    C4 = Mask .* GB_mex_AxB (A,B, true) ;
     t4 = toc ;
 
     fprintf (...
@@ -159,6 +161,83 @@ toc
 assert (isequal (C, C2)) ;
 assert (isequal (C, C3)) ;
 assert (isequal (C, C4)) ;
+
+fprintf ('\nA''*x where A is big and x is a dense vector\n') ;
+Prob = ssget (2662) ;
+A = Prob.A ;
+n = size (A, 1) ;
+x = sparse (rand (n,1)) ;
+z = full (x) ;
+
+fprintf ('MATLAB: x full:\n') ;
+tic
+y0 = A'*z ;
+toc
+
+fprintf ('MATLAB: x sparse:\n') ;
+tic
+y1 = A'*x ;
+toc
+
+fprintf ('GrB AdotB:\n') ;
+tic
+y2 = GB_mex_AdotB (A,x) ;
+toc
+
+fprintf ('GrB A''xB auto select:\n') ;
+tic
+y3 = GB_mex_AxB (A,x, true) ;
+toc
+
+assert (isequal (y1, sparse (y0))) ;
+assert (isequal (y1, y2)) ;
+assert (isequal (y1, y3)) ;
+
+fprintf ('\nx''A where A is big and x is a dense vector\n') ;
+
+fprintf ('MATLAB: x full:\n') ;
+tic
+y0 = z'*A ;
+toc
+
+fprintf ('MATLAB: x sparse:\n') ;
+tic
+y1 = x'*A ;
+toc
+
+fprintf ('GrB AdotB:\n') ;
+tic
+y2 = GB_mex_AdotB (x,A) ;
+toc
+
+fprintf ('GrB A''xB auto select:\n') ;
+tic
+y3 = GB_mex_AxB (x, A, true) ;
+toc
+
+assert (isequal (y1, sparse (y0))) ;
+assert (isequal (y1, y2)) ;
+assert (isequal (y1, y3)) ;
+
+fprintf ('\nA*x where A is big and x is a dense vector\n') ;
+
+fprintf ('MATLAB: x full:\n') ;
+tic
+y0 = A*z ;
+toc
+
+fprintf ('MATLAB: x sparse:\n') ;
+tic
+y1 = A*x ;
+toc
+
+fprintf ('GrB AxB:\n') ;
+tic
+y3 = GB_mex_AxB (A, x, false) ;
+toc
+
+assert (isequal (y1, sparse (y0))) ;
+assert (isequal (y1, y3)) ;
 
 fprintf ('\ntest52: all tests passed\n') ;
 

@@ -29,6 +29,7 @@ void *GB_malloc_memory      // pointer to allocated block of memory
 
     void *p ;
     size_t size ;
+    int nmalloc ;
 
     // make sure at least one item is allocated
     nitems = IMAX (1, nitems) ;
@@ -45,36 +46,44 @@ void *GB_malloc_memory      // pointer to allocated block of memory
     else
     {
 
-        if (GB_thread_local.malloc_debug)
+        // check the malloc debug status.  This debug flag is set outside
+        // of GraphBLAS and not modified, so it is safe to check it outside
+        // a critical section.
+        bool pretend_to_fail = false ;
+        if (GB_Global.malloc_debug)
         {
             // brutal malloc debug; pretend to fail if the count <= 0
-            if (GB_thread_local.malloc_debug_count <= 0)
+            #pragma omp critical (GB_memory)
             {
-                return (false) ;
+                pretend_to_fail = (GB_Global.malloc_debug_count-- <= 0) ;
             }
         }
 
-        p = (void *) MALLOC (size) ;
+        if (pretend_to_fail)
+        {
+            p = NULL ;
+        }
+        else
+        {
+            p = (void *) MALLOC (size) ;
+        }
 
         if (p != NULL)
         {
-            GB_thread_local.nmalloc++ ;
+
+            #pragma omp critical (GB_memory)
+            {
+                nmalloc = ++GB_Global.nmalloc ;
+                GB_Global.inuse += nitems * size_of_item ;
+                GB_Global.maxused = IMAX (GB_Global.maxused, GB_Global.inuse) ;
+            }
 
 #ifdef PRINT_MALLOC
-            printf ("malloc:  %14p %3d %1d n "GBu" size "GBu"\n", 
-                p,
-                (int) GB_thread_local.nmalloc,
-                GB_thread_local.malloc_debug,
-                nitems, size_of_item) ;
+            printf ("malloc:  %14p %3d %1d n "GBd" size "GBd"\n", 
+                p, nmalloc, GB_Global.malloc_debug,
+                (int64_t) nitems, (int64_t) size_of_item) ;
 #endif
-
-            // a malloc has been used up
-            if (GB_thread_local.malloc_debug)
-            {
-                GB_thread_local.malloc_debug_count-- ;
-            }
         }
-
     }
     return (p) ;
 }

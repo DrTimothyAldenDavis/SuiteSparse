@@ -6,6 +6,9 @@ function testc7
 
 rng ('default')
 
+dclear.outp = 'replace' ;
+dclear.mask = 'scmp' ;
+
 seed = 1 ;
 for m = [1 5 10 50]
     for n = [1 5 10 50]
@@ -16,7 +19,9 @@ for m = [1 5 10 50]
                 I = randperm (m, ni) ;
                 J = randperm (n, nj) ;
                 seed = seed + 1 ;
-                A = GB_mex_random (ni, nj, 4*(ni+nj), 1, seed) ;
+                A = GB_mex_random (ni, nj, 2*(ni+nj), 1, seed) ;
+                seed = seed + 1 ;
+                M = GB_mex_random (ni, nj, 4*(ni+nj), 0, seed) ;
                 C1 = C ;
                 C1 (I,J) = A ;
 
@@ -24,6 +29,11 @@ for m = [1 5 10 50]
                 J0 = uint64 (J-1) ;
                 C2 = GB_mex_subassign (C, [ ], [ ], A, I0, J0, []) ;
                 assert (isequal (C1, C2.matrix)) ;
+
+                [C3,c1] = GB_mex_subassign (C, M, [ ], A, I0, J0, [], 'plus') ;
+                cin = complex (0,0) ;
+                c2 = GB_mex_reduce_to_scalar (cin, '', 'plus', C3) ;
+                assert (isequal (c1,c2)) ;
 
                 C1 = C ;
                 C1 (I,J) = C1 (I,J) + A ;
@@ -33,6 +43,20 @@ for m = [1 5 10 50]
 
             end
         end
+
+        C = GB_mex_random (m, n, 100*(m*n), 1, seed) ; seed = seed + 1 ;
+        M = GB_mex_random (m, n, 4*(ni+nj), 0, seed) ; seed = seed + 1 ;
+        A = GB_mex_random (m, n, m+n, 1, seed) ;       seed = seed + 1 ;
+        [C3,c1] = GB_mex_subassign (C, M, [ ], A, [ ], [ ], dclear, 'plus') ;
+        cin = complex (0,0) ;
+        c2 = GB_mex_reduce_to_scalar (cin, '', 'plus', C3) ;
+        assert (isequal (c1,c2)) ;
+
+        [C3,c1] = GB_mex_subassign (C, [ ], [ ], A, [ ], [ ], dclear, 'plus') ;
+        cin = complex (0,0) ;
+        c2 = GB_mex_reduce_to_scalar (cin, '', 'plus', C3) ;
+        assert (isequal (c1,c2)) ;
+
     end
 end
 

@@ -1,3 +1,19 @@
+Version 1.1.2: Dec 28, 2017
+
+    * build issues with cmake
+    * performance improvement of dot product method, C=A'*B and v=u'*A,
+        particularly when A, B and u have dense columns, or nearly dense
+        columns.
+
+Version 1.1.1: Dec 17, 2017
+
+    * bug fix to GrB_assign and GxB_subassign: result was incorrect when
+        output C was the same as the input A or Mask.
+    * performance improvement in C<M>=A*B and GrB_reduce to scalar
+    * split AxB built-in semirings into Source/Generated/* for
+        faster compilation
+    * added memory usage statistics
+
 Version 1.1.0: Dec 1, 2017
 
     * add new feature: GxB_SelectOp operator and GxB_select operation
@@ -10,8 +26,8 @@ Version 1.1.0: Dec 1, 2017
 Version 1.0.0: Nov 25, 2017
 
     * transition to CMake
-    * tested on many compilers (gcc 4.9 to 7.2 on Linux, clang 8 and gcc 6.2.0 on
-        the Mac, xlc 13.01 on IBM Power)
+    * tested on many compilers (gcc 4.9 to 7.2 on Linux, clang 8 and gcc 6.2.0
+        on the Mac, xlc 13.01 on IBM Power)
     * changed printf formats in Demo/ to silence warnings from older compilers
     * complex.h in gcc-6.2.0 on the Mac doesn't #define CMPLX; added to usercomplex.h
     * mergesort removed, quicksort performance improved

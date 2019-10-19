@@ -58,7 +58,7 @@ int main (int argc, char **argv)
     //--------------------------------------------------------------------------
 
     // self edges are OK
-    OK (get_matrix (&A, argc, argv, false)) ;
+    OK (get_matrix (&A, argc, argv, false, true)) ;
     GrB_Index n ;
     OK (GrB_Matrix_nrows (&n, A)) ;
 
@@ -147,6 +147,8 @@ int main (int argc, char **argv)
         fprintf (stderr, "nodes reached: %.16g of %.16g levels: %.16g "
             "time: %12.6f seconds\n", (double) nreachable, (double) n,
                 (double) nlevels, t) ;
+
+        OK (GrB_free (&v)) ;
     }
 
     // free all workspace, including A, v, and max_monoid if allocated

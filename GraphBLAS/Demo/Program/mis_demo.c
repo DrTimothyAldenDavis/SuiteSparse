@@ -67,7 +67,7 @@ int main (int argc, char **argv)
     // get a symmetric matrix with no self edges
     //--------------------------------------------------------------------------
 
-    OK (get_matrix (&A, argc, argv, true)) ;
+    OK (get_matrix (&A, argc, argv, true, true)) ;
 
     GrB_Index n ;
     OK (GrB_Matrix_nrows (&n, A)) ;

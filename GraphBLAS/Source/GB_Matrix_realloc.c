@@ -64,7 +64,7 @@ bool GB_Matrix_realloc      // reallocate space in a matrix
     }
     else
     {
-        GB_FREE_MEMORY (A->x) ;
+        GB_FREE_MEMORY (A->x, A->nzmax, A->type->size) ;
     }
     bool ok = ok1 && ok2 ;
 

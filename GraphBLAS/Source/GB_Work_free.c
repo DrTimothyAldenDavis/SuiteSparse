@@ -11,7 +11,8 @@
 
 void GB_Work_free ( )               // free the Work array
 {
-    GB_FREE_MEMORY (GB_thread_local.Work) ;
+    int64_t currsize = GB_thread_local.Work_size ;
+    GB_FREE_MEMORY (GB_thread_local.Work, currsize, sizeof (char)) ;
     GB_thread_local.Work_size = 0 ;
 }
 

@@ -22,7 +22,7 @@ bool GB_mx_mxArray_to_indices      // true if successful, false otherwise
     (*handle) = NULL ;
 
     GrB_Index *I ;
-    if (mxIsEmpty (I_matlab))
+    if (I_matlab == NULL || mxIsEmpty (I_matlab))
     {
         I = (GrB_Index *) GrB_ALL ;       // like the ":" in C=A(:,j)
         (*ni) = 0 ;

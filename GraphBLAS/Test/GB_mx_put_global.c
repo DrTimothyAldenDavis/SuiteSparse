@@ -35,9 +35,12 @@ void GB_mx_put_global
 
     GrB_finalize ( ) ;
 
-    if (GB_thread_local.nmalloc != 0)
+    GxB_Statistics stats ;
+    GxB_stats (&stats) ;
+    if (stats.nmalloc != 0)
     {
-        printf ("GraphBLAS nmalloc "GBd"!\n", GB_thread_local.nmalloc) ;
+        printf ("GraphBLAS nmalloc "GBd"! inuse "GBd" maxused "GBd"\n",
+            stats.nmalloc, stats.inuse, stats.maxused) ;
         mexErrMsgTxt ("memory leak!") ;
     }
 }

@@ -4,6 +4,7 @@ function testca
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
+rng ('default') ;
 dnt = struct ('inp1', 'tran') ;
 dtn = struct ('inp0', 'tran') ;
 dtt = struct ('inp0', 'tran', 'inp1', 'tran') ;
@@ -12,7 +13,7 @@ seed = 1 ;
 for m = [1 5 10 100]
     for n = [1 5 10 100]
         for k = [1 5 10 100]
-            for trial = 1:20
+            for trial = 1:30
 
                 A = GB_mex_random (m, k, 10*(m+k), 1, seed) ; seed = seed + 1 ;
                 B = GB_mex_random (k, n, 10*(k+n), 1, seed) ; seed = seed + 1 ;

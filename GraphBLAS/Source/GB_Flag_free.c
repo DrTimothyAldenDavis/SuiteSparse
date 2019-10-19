@@ -11,7 +11,8 @@
 
 void GB_Flag_free ( )               // free the Flag array
 {
-    GB_FREE_MEMORY (GB_thread_local.Flag) ;
+    int64_t currsize = GB_thread_local.Flag_size ;
+    GB_FREE_MEMORY (GB_thread_local.Flag, currsize, sizeof (int8_t)) ;
     GB_thread_local.Flag_size = 0 ;
 }
 

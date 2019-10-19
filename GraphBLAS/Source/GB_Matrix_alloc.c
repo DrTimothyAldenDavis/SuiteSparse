@@ -65,8 +65,8 @@ bool GB_Matrix_alloc        // allocate space in a matrix
     if (A->i == NULL || (numeric && A->x == NULL))
     {
         // out of memory
-        GB_FREE_MEMORY (A->x) ;
-        GB_FREE_MEMORY (A->i) ;
+        GB_FREE_MEMORY (A->x, A->nzmax, A->type->size) ;
+        GB_FREE_MEMORY (A->i, A->nzmax, sizeof (int64_t)) ;
         return (false) ;
     }
 

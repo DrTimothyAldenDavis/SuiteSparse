@@ -184,8 +184,8 @@ int SuiteSparse_divcomplex
  *
  * SuiteSparse contains the following packages:
  *
- *  SuiteSparse_config version 5.1.0 (version always the same as SuiteSparse)
- *  GraphBLAS       version 1.1.0
+ *  SuiteSparse_config version 5.1.2 (version always the same as SuiteSparse)
+ *  GraphBLAS       version 1.1.2
  *  ssget           version 2.0.0
  *  AMD             version 2.4.6
  *  BTF             version 1.2.6
@@ -235,11 +235,11 @@ int SuiteSparse_version     /* returns SUITESPARSE_VERSION */
 */
 #define SUITESPARSE_HAS_VERSION_FUNCTION
 
-#define SUITESPARSE_DATE "Dec 1, 2017"
+#define SUITESPARSE_DATE "Dec 28, 2017"
 #define SUITESPARSE_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define SUITESPARSE_MAIN_VERSION 5
 #define SUITESPARSE_SUB_VERSION 1
-#define SUITESPARSE_SUBSUB_VERSION 0
+#define SUITESPARSE_SUBSUB_VERSION 2
 #define SUITESPARSE_VERSION \
     SUITESPARSE_VER_CODE(SUITESPARSE_MAIN_VERSION,SUITESPARSE_SUB_VERSION)
 

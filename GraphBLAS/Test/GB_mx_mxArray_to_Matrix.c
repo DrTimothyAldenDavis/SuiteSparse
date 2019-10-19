@@ -127,14 +127,6 @@ GrB_Matrix GB_mx_mxArray_to_Matrix     // returns GraphBLAS version of A
         // get the GraphBLAS types
         atype_in  = GB_mx_classID_to_Type (aclass_in) ;
         atype_out = GB_mx_classID_to_Type (aclass_out) ;
-        ASSERT_OK (GB_check (atype_in,  "A type in",  0)) ;
-        ASSERT_OK (GB_check (atype_out, "A type out", 0)) ;
-        if (atype_in == NULL || atype_out == NULL)
-        {
-            FREE_ALL ;
-            mexWarnMsgIdAndTxt ("GB:warn", "types must be numeric") ;
-            return (NULL) ;
-        }
     }
 
     // get the size and content of the MATLAB matrix
@@ -142,8 +134,34 @@ GrB_Matrix GB_mx_mxArray_to_Matrix     // returns GraphBLAS version of A
     int64_t ncols = mxGetN (Amatrix) ;
     int64_t *Mp = (int64_t *) mxGetJc (Amatrix) ;
     int64_t *Mi = (int64_t *) mxGetIr (Amatrix) ;
-    void *Mx = mxGetData (Amatrix) ;
     int64_t anz = Mp [ncols] ;
+    void *Mx = mxGetData (Amatrix) ;
+
+    // look for A.values
+    if (mxIsStruct (A_matlab))
+    {
+        int fieldnumber = mxGetFieldNumber (A_matlab, "values") ;
+        if (fieldnumber >= 0)
+        {
+            mxArray *values = mxGetFieldByNumber (A_matlab, 0, fieldnumber) ;
+            if (mxGetNumberOfElements (values) >= anz)
+            {
+                Mx = mxGetData (values) ;
+                aclass_in = mxGetClassID (values) ;
+                atype_in = GB_mx_classID_to_Type (aclass_in) ;
+            }
+        }
+    }
+
+    ASSERT_OK (GB_check (atype_in,  "A type in",  0)) ;
+    ASSERT_OK (GB_check (atype_out, "A type out", 0)) ;
+    if (atype_in == NULL || atype_out == NULL)
+    {
+        FREE_ALL ;
+        mexWarnMsgIdAndTxt ("GB:warn", "types must be numeric") ;
+        return (NULL) ;
+    }
+
     GrB_Info info ;
 
     // get the pattern of A

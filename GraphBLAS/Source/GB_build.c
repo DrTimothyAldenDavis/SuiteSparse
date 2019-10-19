@@ -187,8 +187,8 @@ GrB_Info GB_build               // check inputs then build matrix
     if (!ok)
     {
         // out of memory
-        GB_FREE_MEMORY (iwork) ;
-        GB_FREE_MEMORY (jwork) ;
+        GB_FREE_MEMORY (iwork, len, sizeof (int64_t)) ;
+        GB_FREE_MEMORY (jwork, len, sizeof (int64_t)) ;
         return (ERROR (GrB_OUT_OF_MEMORY, (LOG,
             "out of memory, %g GBytes required", memory))) ;
     }
@@ -219,8 +219,8 @@ GrB_Info GB_build               // check inputs then build matrix
             if (out_of_bounds)
             {
                 // invalid index
-                GB_FREE_MEMORY (iwork) ;
-                GB_FREE_MEMORY (jwork) ;
+                GB_FREE_MEMORY (iwork, len, sizeof (int64_t)) ;
+                GB_FREE_MEMORY (jwork, len, sizeof (int64_t)) ;
                 return (ERROR (GrB_INDEX_OUT_OF_BOUNDS, (LOG,
                     "index ("GBu","GBu") out of bounds,"
                     " must be < ("GBd", "GBd")",
@@ -258,8 +258,8 @@ GrB_Info GB_build               // check inputs then build matrix
             if (out_of_bounds)
             {
                 // invalid index
-                GB_FREE_MEMORY (iwork) ;
-                GB_FREE_MEMORY (jwork) ;
+                GB_FREE_MEMORY (iwork, len, sizeof (int64_t)) ;
+                GB_FREE_MEMORY (jwork, len, sizeof (int64_t)) ;
                 return (ERROR (GrB_INDEX_OUT_OF_BOUNDS, (LOG,
                     "index ("GBu") out of bounds, must be < ("GBd")",
                     I [k], nrows))) ;
@@ -289,7 +289,7 @@ GrB_Info GB_build               // check inputs then build matrix
     if (C->type == dup->ztype)
     {
         // construct C directly; this is the fastest option
-        info = GB_builder (C, &iwork, &jwork, sorted, X, len, dup, X_code) ;
+        info = GB_builder (C, &iwork, &jwork, sorted, X, len, len, dup, X_code) ;
         ASSERT (iwork == NULL) ;
         ASSERT (jwork == NULL) ;
         ASSERT (info == GrB_SUCCESS || info == GrB_OUT_OF_MEMORY) ;
@@ -302,14 +302,14 @@ GrB_Info GB_build               // check inputs then build matrix
         GB_NEW (&T, dup->ztype, C->nrows, C->ncols, false, true) ;
         if (info != GrB_SUCCESS)
         {
-            GB_FREE_MEMORY (iwork) ;
-            GB_FREE_MEMORY (jwork) ;
+            GB_FREE_MEMORY (iwork, len, sizeof (int64_t)) ;
+            GB_FREE_MEMORY (jwork, len, sizeof (int64_t)) ;
             ASSERT (info == GrB_OUT_OF_MEMORY) ;
             return (info) ;
         }
 
         // build T from the tuples
-        info = GB_builder (T, &iwork, &jwork, sorted, X, len, dup, X_code) ;
+        info = GB_builder (T, &iwork, &jwork, sorted, X, len, len, dup, X_code) ;
         ASSERT (iwork == NULL) ;
         ASSERT (jwork == NULL) ;
         if (info != GrB_SUCCESS)

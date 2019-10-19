@@ -19,6 +19,7 @@ GrB_Info GB_builder
     const bool already_sorted,      // true if tuples already sorted on input
     const void *X,                  // array of values of tuples
     const int64_t len,              // number of tuples
+    const int64_t ijlen,            // size of i,j work arrays
     const GrB_BinaryOp dup,         // binary function to assemble duplicates,
                                     // if NULL use the "SECOND" function to 
                                     // keep the most recent duplicate.
@@ -74,8 +75,8 @@ GrB_Info GB_builder
         GB_MALLOC_MEMORY (kwork, len, sizeof (int64_t)) ;
         if (kwork == NULL)
         {
-            GB_FREE_MEMORY (*iwork_handle) ;
-            GB_FREE_MEMORY (*jwork_handle) ;
+            GB_FREE_MEMORY (*iwork_handle, ijlen, sizeof (int64_t)) ;
+            GB_FREE_MEMORY (*jwork_handle, ijlen, sizeof (int64_t)) ;
             GB_Matrix_clear (C) ;
             return (ERROR (GrB_OUT_OF_MEMORY, (LOG,
                 "out of memory, %g GBytes required", 
@@ -266,7 +267,7 @@ GrB_Info GB_builder
     // one column.  But the jwork_handle itself is always non-NULL.
 
     ASSERT (jwork_handle != NULL) ;
-    GB_FREE_MEMORY (*jwork_handle) ;
+    GB_FREE_MEMORY (*jwork_handle, ijlen, sizeof (int64_t)) ;
 
     //--------------------------------------------------------------------------
     // numerical phase of the build via switch factory or generic workers
@@ -283,6 +284,6 @@ GrB_Info GB_builder
     // input tuples in I and J, also of size len (len == nvals), and it must
     // also construct the column pointers C->p.
 
-    return (GB_build_factory (C, iwork_handle, &kwork, X, len, dup, X_code)) ;
+    return (GB_build_factory (C, iwork_handle, &kwork, X, len, ijlen, dup, X_code)) ;
 }
 

@@ -42,7 +42,7 @@ GrB_Info GB_subassign_kernel        // C(I,J)<Mask> = A or accum (C (I,J), A)
     const GrB_Matrix Mask,          // optional mask for C(I,J), unused if NULL
     const bool Mask_comp,           // Mask descriptor
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),A)
-    const GrB_Matrix A,             // input matrix
+    const GrB_Matrix A,             // input matrix (NULL for scalar expansion)
     const GrB_Index *I,             // row indices
     const GrB_Index ni,             // number of row indices
     const GrB_Index *J,             // column indices
@@ -52,6 +52,14 @@ GrB_Info GB_subassign_kernel        // C(I,J)<Mask> = A or accum (C (I,J), A)
     const GB_Type_code scalar_code  // type code of scalar to expand
 )
 {
+
+    //--------------------------------------------------------------------------
+    // check inputs
+    //--------------------------------------------------------------------------
+
+    // this function operates on C in place and this cannot be aliased with
+    // A or Mask
+    ASSERT (C != Mask && C != A) ;
 
     //--------------------------------------------------------------------------
     // check empty Mask conditions
@@ -308,7 +316,7 @@ GrB_Info GB_subassign_kernel        // C(I,J)<Mask> = A or accum (C (I,J), A)
     #define C_LOOKUP                                                        \
         int64_t pC = Sx [pS] ;                                              \
         int64_t iC = Ci [pC] ;                                              \
-        bool is_zombie = IS_FLIPPED (iC) ;                                  \
+        bool is_zombie = IS_ZOMBIE (iC) ;                                   \
         if (is_zombie) iC = FLIP (iC) ;
 
     //--------------------------------------------------------------------------
@@ -1189,7 +1197,6 @@ GrB_Info GB_subassign_kernel        // C(I,J)<Mask> = A or accum (C (I,J), A)
                     // ----[C - 0] replace
                     // action: ( delete ): becomes a zombie
                     C->nzombies++ ;
-                    // printf ("C_repl delete , nzombies %lld\n", C->nzombies) ;
                     Ci [pC] = FLIP (iC) ;
                 }
             }
@@ -1355,7 +1362,7 @@ GrB_Info GB_subassign_kernel        // C(I,J)<Mask> = A or accum (C (I,J), A)
                     {
                         int64_t iC = Maski [pM] ;
                         int64_t pC = Cp [jC] + iC ;
-                        bool is_zombie = IS_FLIPPED (Ci [pC]) ;
+                        bool is_zombie = IS_ZOMBIE (Ci [pC]) ;
                         ASSERT (UNFLIP (Ci [pC]) == iC) ;
 
                         //------------------------------------------------------

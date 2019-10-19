@@ -57,7 +57,7 @@ void GB_transpose_ix        // transpose the pattern and values of a matrix
     int64_t anz = Ap [n] ;
     for (int64_t p = 0 ; p < anz ; p++)
     {
-        ASSERT (!IS_FLIPPED (Ai [p])) ;
+        ASSERT (IS_NOT_ZOMBIE (Ai [p])) ;
     }
     #endif
 

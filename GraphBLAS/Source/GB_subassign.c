@@ -10,7 +10,7 @@
 // submatrix assignment: C(I,J)<Mask> = accum (C(I,J),A)
 // compare/contrast this function with GB_assign.
 
-// All GrB_*_subassign operations rely on this function.
+// All GxB_*_subassign operations rely on this function.
 
 // With scalar_expansion = false, this method does the work for the standard
 // GxB_*subassign operations (GxB_Matrix_subassign, GxB_Vector_subassign,
@@ -154,6 +154,8 @@ GrB_Info GB_subassign               // C(I,J)<Mask> = accum (C(I,J),A)
     // apply pending updates to A and Mask
     //--------------------------------------------------------------------------
 
+    // if C == Mask or C == A, pending updates are applied to C as well
+
     // delete any lingering zombies and assemble any pending tuples
     // but only in A and Mask, not C
     APPLY_PENDING_UPDATES (Mask) ;
@@ -196,11 +198,41 @@ GrB_Info GB_subassign               // C(I,J)<Mask> = accum (C(I,J),A)
     }
 
     //--------------------------------------------------------------------------
-    // C(I,J)<Mask> = A or accum (C(I,J),A), no transpose of A
+    // Z = C
+    //--------------------------------------------------------------------------
+
+    // GB_subassign_kernel modifies C efficiently in place, but it can only do
+    // so if C is not aliased with A2 or Mask.  If C is aliased a copy must
+    // be made.  GB_subassign_kernel operates on the copy, Z, which is then
+    // transplanted back into C when done.  This is costly, and can have
+    // performance implications, but it is the only reasonable method.  If C is
+    // aliased, then the assignment is a large one and copying the whole matrix
+    // will not add much time.
+
+    GrB_Matrix Z ;
+    bool aliased = (C == A2 || C == Mask) ;
+    if (aliased)
+    {
+        // Z = duplicate of C
+        info = GB_Matrix_dup (&Z, C) ;
+        if (info != GrB_SUCCESS)
+        {
+            GB_MATRIX_FREE (&AT) ;
+            return (info) ;
+        }
+    }
+    else
+    {
+        // GB_subassign_kernel can safely operate on C in place
+        Z = C ;
+    }
+
+    //--------------------------------------------------------------------------
+    // Z(I,J)<Mask> = A or accum (Z(I,J),A), no transpose of A
     //--------------------------------------------------------------------------
 
     info = GB_subassign_kernel (
-        C,          C_replace,      // C matrix and its descriptor
+        Z,          C_replace,      // Z matrix and its descriptor
         Mask,       Mask_comp,      // Mask matrix and its descriptor
         accum,                      // for accum (C(I,J),A)
         A2,                         // A matrix, NULL for scalar expansion
@@ -211,6 +243,35 @@ GrB_Info GB_subassign               // C(I,J)<Mask> = accum (C(I,J),A)
         scalar_code) ;              // type code of scalar to expand
 
     GB_MATRIX_FREE (&AT) ;
+
+    //--------------------------------------------------------------------------
+    // C = Z
+    //--------------------------------------------------------------------------
+
+    if (aliased)
+    {
+        if (info == GrB_SUCCESS)
+        {
+            // zombies can be transplanted into C but pending tuples cannot
+            if (Z->npending > 0)
+            {
+                // assemble all pending tuples, and delete all zombies too
+                info = GB_wait (Z) ;
+            }
+        }
+        if (info == GrB_SUCCESS)
+        {
+            // transplants the content of Z into C and frees Z
+            return (GB_Matrix_transplant (C, C->type, &Z)) ;
+        }
+        else
+        {
+            // Z needs to be freed if C is aliased but info != GrB_SUCCESS.
+            // (out of memory, or inputs invalid).  C remains unchanged.
+            GB_MATRIX_FREE (&Z) ;
+        }
+    }
+
     return (info) ;             // pass info directly from GB_subassign_kernel
 }
 

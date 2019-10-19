@@ -60,7 +60,6 @@ GrB_Info GrB_Vector_reduce_UDT      // c = accum (c, reduce_to_scalar (u))
     // See comments on GrB_Matrix_reduce_UDT
     WHERE ("GrB_Vector_reduce_UDT (&c, accum, reduce, u, desc)") ;
     RETURN_IF_NULL_OR_UNINITIALIZED (u) ;
-    APPLY_PENDING_UPDATES (u) ;                     // do this early (see spec)
     RETURN_IF_NULL_OR_UNINITIALIZED (reduce) ;
     return (GB_reduce_to_scalar (c, reduce->op->ztype,
         accum, reduce, (GrB_Matrix) u)) ;

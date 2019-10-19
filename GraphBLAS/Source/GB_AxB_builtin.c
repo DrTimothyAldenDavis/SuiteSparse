@@ -20,6 +20,8 @@
 
 #ifndef GBCOMPACT
 
+#include "GB_AxB_methods.h"
+
 // A semiring is defined by a binary "multiply" operator, and an associative
 // "add" monoid.  For a built-in semiring, the multiply op can be any one of
 // 256 built-in binary operators.
@@ -205,7 +207,6 @@ bool GB_AxB_builtin                 // true if C=A*B is handled
     const GrB_Matrix Mask,          // Mask matrix for C<M> (not complemented)
     const GrB_Matrix A,             // input matrix
     const GrB_Matrix B,             // input matrix
-    void *work,                     // workspace of size A->nrows == C->nrows
     const GrB_Semiring semiring,    // semiring that defines C=A*B
     const bool flipxy               // if true, do z=fmult(b,a) vs fmult(a,b)
 )
@@ -215,14 +216,23 @@ bool GB_AxB_builtin                 // true if C=A*B is handled
     // check inputs
     //--------------------------------------------------------------------------
 
-    ASSERT_OK (GB_check (C, "C input for builtin AxB", 0)) ;
-    ASSERT_OK_OR_NULL (GB_check (Mask, "Mask input for builtin AxB", 0)) ;
+    if (Mask == NULL)
+    {
+        // C contains the pattern of C=A*B
+        ASSERT_OK (GB_check (C, "C input for builtin AxB", 0)) ;
+    }
+    else
+    {
+        // Mask is present.  C->p and C->i are allocated but not initialized
+        ASSERT (C != NULL && C->p != NULL && C->i != NULL) ;
+        ASSERT (!C->p_shallow && !C->i_shallow) ;
+        ASSERT_OK (GB_check (Mask, "Mask input for builtin AxB", 0)) ;
+    }
     ASSERT_OK (GB_check (A, "A for builtin AxB", 0)) ;
     ASSERT_OK (GB_check (B, "B for builtin AxB", 0)) ;
     ASSERT (!PENDING (C)) ; ASSERT (!ZOMBIES (C)) ;
     ASSERT (!PENDING (A)) ; ASSERT (!ZOMBIES (A)) ;
     ASSERT (!PENDING (B)) ; ASSERT (!ZOMBIES (B)) ;
-    ASSERT (work != NULL) ;
     ASSERT_OK (GB_check (semiring, "semiring for builtin", 0)) ;
     ASSERT (C->type == semiring->add->op->ztype) ;
 
@@ -237,17 +247,6 @@ bool GB_AxB_builtin                 // true if C=A*B is handled
     }
 
     //--------------------------------------------------------------------------
-    // get the Flag workspace (already allocated and cleared)
-    //--------------------------------------------------------------------------
-
-    int8_t *restrict Flag = NULL ;
-    if (Mask != NULL)
-    {
-        Flag = GB_thread_local.Flag ;
-        ASSERT_FLAG_IS_CLEAR ;
-    }
-
-    //--------------------------------------------------------------------------
     // define the worker for the switch factory
     //--------------------------------------------------------------------------
 
@@ -259,139 +258,12 @@ bool GB_AxB_builtin                 // true if C=A*B is handled
     // additional hard-coded workers, if the set of built-in operators is
     // extended.
 
-    // The void * work array has size C->nrows * sizeof (ztype).  It is
-    // uninitialized on input, and its contents are not defined on output.
+    #define GB_AXB(add,mult,xyname) GB_AxB_ ## add ## mult ## xyname
 
-    const int64_t n = C->ncols ;
-    const int64_t *restrict Ap = A->p ;
-    const int64_t *restrict Ai = A->i ;
-    const int64_t *restrict Bp = B->p ;
-    const int64_t *restrict Bi = B->i ;
-
-    const int64_t *restrict Maskp = NULL ;
-    const int64_t *restrict Maski = NULL ;
-    const void    *restrict Maskx = NULL ;
-    GB_cast_function cast_Mask_to_bool = NULL ;
-    size_t msize = 0 ;
-
-    if (Mask != NULL)
-    {
-        // get the mask
-        Maskp = Mask->p ;
-        Maski = Mask->i ;
-        Maskx = Mask->x ;
-        cast_Mask_to_bool = GB_cast_factory (GB_BOOL_code, Mask->type->code) ;
-        msize = Mask->type->size ;
-        // Cp will soon be defined below
-        C->magic = MAGIC ;
-    }
-
-    #define AxB(ztype,xytype,identity)                                  \
-    {                                                                   \
-        ztype *restrict w = work ;                                      \
-        ztype *restrict Cx = C->x ;                                     \
-        const xytype *restrict Ax = A->x ;                              \
-        const xytype *restrict Bx = B->x ;                              \
-        if (Mask != NULL)                                               \
-        {                                                               \
-            int64_t cnz = 0 ;                                           \
-            int64_t *restrict Cp = C->p ;                               \
-            int64_t *restrict Ci = C->i ;                               \
-            for (int64_t j = 0 ; j < n ; j++)                           \
-            {                                                           \
-                /* log the start of C(:,j) */                           \
-                Cp [j] = cnz ;                                          \
-                /* get Mask(:,j) and skip if empty */                   \
-                int64_t pm1, pm2, mlo, mhi ;                            \
-                if (empty (Maskp, Maski, j, &pm1, &pm2, &mlo, &mhi)) continue ;\
-                bool marked = false ;                                   \
-                /* compute C(;,j) */                                    \
-                for (int64_t p = Bp [j] ; p < Bp [j+1] ; p++)           \
-                {                                                       \
-                    /* B(k,j) is present */                             \
-                    int64_t k = Bi [p] ;                                \
-                    /* get A(:,k) and skip if empty */                  \
-                    int64_t pa1, pa2, alo, ahi ;                        \
-                    if (empty (Ap, Ai, k, &pa1, &pa2, &alo, &ahi)) continue ;  \
-                    /* skip if all A(:,k) entries outside range of Mask(:,j)*/ \
-                    if (ahi < mlo || alo > mhi) continue ;              \
-                    /* scatter Mask(:,j) into Flag if not yet done */   \
-                    scatter_mask (pm1, pm2, cast_Mask_to_bool,          \
-                        Maski, Maskx, msize, Flag, &marked) ;           \
-                    xytype bkj = Bx [p] ;                               \
-                    for (int64_t pa = pa1 ; pa < pa2 ; pa++)            \
-                    {                                                   \
-                        /* w [i] += (A(i,k) * B(k,j)) .* Mask(i,j) */   \
-                        int64_t i = Ai [pa] ;                           \
-                        int8_t flag = Flag [i] ;                        \
-                        if (flag == 0) continue ;                       \
-                        /* Mask(i,j) == 1 so do the work */             \
-                        xytype aik = Ax [pa] ;                          \
-                        ztype t = MULT (aik, bkj) ;                     \
-                        if (flag > 0)                                   \
-                        {                                               \
-                            /* first time C(i,j) seen */                \
-                            Flag [i] = -1 ;                             \
-                            w [i] = t ;                                 \
-                        }                                               \
-                        else                                            \
-                        {                                               \
-                            /* C(i,j) seen before, update it */         \
-                            ADD (w [i], t) ;                            \
-                        }                                               \
-                    }                                                   \
-                }                                                       \
-                /* gather C(:,j), both values and pattern */            \
-                if (marked)                                             \
-                {                                                       \
-                    for (int64_t p = pm1 ; p < pm2 ; p++)               \
-                    {                                                   \
-                        int64_t i = Maski [p] ;                         \
-                        if (Flag [i] < 0)                               \
-                        {                                               \
-                            Cx [cnz] = w [i] ;                          \
-                            Ci [cnz++] = i ;                            \
-                        }                                               \
-                        Flag [i] = 0 ;                                  \
-                    }                                                   \
-                }                                                       \
-            }                                                           \
-            Cp [n] = cnz ;                                              \
-        }                                                               \
-        else                                                            \
-        {                                                               \
-            const int64_t *restrict Cp = C->p ;                         \
-            const int64_t *restrict Ci = C->i ;                         \
-            for (int64_t j = 0 ; j < n ; j++)                           \
-            {                                                           \
-                /* clear w */                                           \
-                for (int64_t p = Cp [j] ; p < Cp [j+1] ; p++)           \
-                {                                                       \
-                    w [Ci [p]] = identity ;                             \
-                }                                                       \
-                /* compute C(;,j) */                                    \
-                for (int64_t p = Bp [j] ; p < Bp [j+1] ; p++)           \
-                {                                                       \
-                    /* B(k,j) is present */                             \
-                    int64_t k = Bi [p] ;                                \
-                    xytype bkj = Bx [p] ;                               \
-                    for (int64_t pa = Ap [k] ; pa < Ap [k+1] ; pa++)    \
-                    {                                                   \
-                        /* w [i] += A(i,k) * B(k,j) */                  \
-                        int64_t i = Ai [pa] ;                           \
-                        xytype aik = Ax [pa] ;                          \
-                        ztype t = MULT (aik, bkj) ;                     \
-                        ADD (w [i], t) ;                                \
-                    }                                                   \
-                }                                                       \
-                /* gather C(:,j) */                                     \
-                for (int64_t p = Cp [j] ; p < Cp [j+1] ; p++)           \
-                {                                                       \
-                    Cx [p] = w [Ci [p]] ;                               \
-                }                                                       \
-            }                                                           \
-        }                                                               \
-        return (true) ;                                                 \
+    #define AxB(add,mult,xyname) \
+    { \
+        GB_AXB (add,mult,xyname) (C, Mask, A, B, flipxy) ; \
+        return (true) ; \
     }
 
     //--------------------------------------------------------------------------
@@ -400,6 +272,7 @@ bool GB_AxB_builtin                 // true if C=A*B is handled
 
     #include "GB_AxB_factory.c"
     #undef AxB
+    #undef GB_AXB
 
     //--------------------------------------------------------------------------
     // no built-in worker for this semiring

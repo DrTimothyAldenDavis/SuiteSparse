@@ -218,15 +218,37 @@ void GB_mx_complex_split    // split complex array to real/imag part for MATLAB
     mxArray *Y          // MATLAB array with n elements
 ) ;
 
+bool GB_mx_same     // true if arrays X and Y are the same
+(
+    char *X,
+    char *Y,
+    int64_t len     // length of X and Y
+) ;
+
+bool GB_mx_xsame    // true if arrays X and Y are the same (ignoring zombies)
+(
+    char *X,
+    char *Y,
+    int64_t len,    // length of X and Y
+    size_t s,       // size of each entry of X and Y
+    int64_t *I      // row indices (for zombies), same length as X and Y
+) ;
+
+bool GB_mx_isequal  // true if A and B are exactly the same
+(
+    GrB_Matrix A,
+    GrB_Matrix B
+) ;
+
 #ifdef PRINT_MALLOC
 
 #define AS_IF_FREE(p)           \
 {                               \
-    GB_thread_local.nmalloc-- ; \
+    GB_Global.nmalloc-- ;       \
     printf ("\nfree:                         to MATLAB (%s) line %d file %s\n",\
         GB_STR(p), __LINE__,__FILE__); \
     printf ("free:    %14p %3d %1d\n", \
-        p, GB_thread_local.nmalloc, GB_thread_local.malloc_debug) ; \
+        p, GB_Global.nmalloc, GB_Global.malloc_debug) ; \
     (p) = NULL ;                \
 }
 
@@ -234,7 +256,7 @@ void GB_mx_complex_split    // split complex array to real/imag part for MATLAB
 
 #define AS_IF_FREE(p)           \
 {                               \
-    GB_thread_local.nmalloc-- ; \
+    GB_Global.nmalloc-- ;       \
     (p) = NULL ;                \
 }
 
@@ -244,7 +266,7 @@ void GB_mx_complex_split    // split complex array to real/imag part for MATLAB
 
 #define METHOD_START(OP) \
     printf ("\n================================================================================\n") ; \
-    printf ("method: [%s] start: %d\n", #OP, GB_thread_local.nmalloc) ; \
+    printf ("method: [%s] start: %d\n", #OP, GB_Global.nmalloc) ; \
     printf ("================================================================================\n") ;
 
 #define METHOD_TRY \
@@ -280,7 +302,7 @@ void GB_mx_complex_split    // split complex array to real/imag part for MATLAB
     else                                                                    \
     {                                                                       \
         /* brutal malloc debug */                                           \
-        int nmalloc_start = (int) GB_thread_local.nmalloc                   \
+        int nmalloc_start = (int) GB_Global.nmalloc                         \
             - ((GB_thread_local.Mark == NULL) ? 0:1 )                       \
             - ((GB_thread_local.Work == NULL) ? 0:1 )                       \
             - ((GB_thread_local.Flag == NULL) ? 0:1 ) ;                     \
@@ -288,13 +310,13 @@ void GB_mx_complex_split    // split complex array to real/imag part for MATLAB
         {                                                                   \
             /* give GraphBLAS the ability to do a # of mallocs, */          \
             /* callocs, and reallocs of larger size, equal to tries */      \
-            GB_thread_local.malloc_debug_count = tries ;                    \
+            GB_Global.malloc_debug_count = tries ;                          \
             METHOD_TRY ;                                                    \
             /* call the method with malloc debug enabled */                 \
-            GB_thread_local.malloc_debug = true ;                           \
+            GB_Global.malloc_debug = true ;                                 \
             GB_thread_local.info = GrB_SUCCESS ;                            \
             GrB_Info info = GRAPHBLAS_OPERATION ;                           \
-            GB_thread_local.malloc_debug = false ;                          \
+            GB_Global.malloc_debug = false ;                                \
             if (info == GrB_SUCCESS || info == GrB_NO_VALUE)                \
             {                                                               \
                 /* finally gave GraphBLAS enough malloc's to do the work */ \
@@ -308,7 +330,7 @@ void GB_mx_complex_split    // split complex array to real/imag part for MATLAB
                 /* but turn off malloc debugging to get the copy */         \
                 FREE_DEEP_COPY ;                                            \
                 GET_DEEP_COPY ;                                             \
-                int nmalloc_end = (int) GB_thread_local.nmalloc             \
+                int nmalloc_end = (int) GB_Global.nmalloc                   \
                     - ((GB_thread_local.Mark == NULL) ? 0:1 )               \
                     - ((GB_thread_local.Work == NULL) ? 0:1 )               \
                     - ((GB_thread_local.Flag == NULL) ? 0:1 ) ;             \

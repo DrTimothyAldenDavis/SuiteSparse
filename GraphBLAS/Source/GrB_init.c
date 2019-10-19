@@ -65,14 +65,33 @@ _Thread_local GB_thread_local_struct GB_thread_local =
     .Flag = NULL,               // initialized space
     .Flag_size = 0,             // size of Flag array
 
-    // malloc tracking, for testing and debugging only
-    .nmalloc = 0,               // memory block counter
-    .malloc_debug = false,      // do not test memory handling
-    .malloc_debug_count = 0,    // counter for testing memory handling
-
     // random seed for each thread
     .seed = 1
 
+} ;
+
+//------------------------------------------------------------------------------
+// All Global storage is declared and initialized here
+//------------------------------------------------------------------------------
+
+// If the user creates threads that work on GraphBLAS matrices, then all of
+// those threads must share the same matrix queue, and the same mode.
+
+GB_Global_struct GB_Global =
+{
+
+    // queued matrices with work to do
+    .queue_head = NULL,         // pointer to first queued matrix
+
+    // GraphBLAS mode
+    .mode = GrB_NONBLOCKING,    // default is nonblocking
+
+    // malloc tracking, for testing, statistics, and debugging only
+    .nmalloc = 0,               // memory block counter
+    .malloc_debug = false,      // do not test memory handling
+    .malloc_debug_count = 0,    // counter for testing memory handling
+    .inuse = 0,                 // memory space current in use
+    .maxused = 0                // high water memory usage
 } ;
 
 //------------------------------------------------------------------------------
@@ -113,12 +132,24 @@ GrB_Info GrB_init           // start up GraphBLAS
     GB_thread_local.report  [0] = '\0' ;
 
     // queue of matrices for nonblocking mode and set the mode
-    GB_queue_init (mode) ;
+    #pragma omp critical (GB_queue)
+    {
+        // clear the queue
+        GB_Global.queue_head = NULL ;
+
+        // set the mode: blocking or nonblocking
+        GB_Global.mode = mode ;             // default is non-blocking
+    }
 
     // malloc tracking
-    GB_thread_local.nmalloc = 0 ;
-    GB_thread_local.malloc_debug = false ;
-    GB_thread_local.malloc_debug_count = 0 ;
+    #pragma omp critical (GB_memory)
+    {
+        GB_Global.nmalloc = 0 ;
+        GB_Global.malloc_debug = false ;
+        GB_Global.malloc_debug_count = 0 ;
+        GB_Global.inuse = 0 ;
+        GB_Global.maxused = 0 ;
+    }
 
     // workspace
     GB_thread_local.Mark = NULL ;       // initialized space

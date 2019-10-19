@@ -15,10 +15,11 @@ bool GB_Flag_alloc                  // allocate Flag space
 )
 {
 
-    if (Flag_required > GB_thread_local.Flag_size)
+    int64_t currsize = GB_thread_local.Flag_size ;
+    if (Flag_required > currsize)
     {
         // free the existing space
-        GB_FREE_MEMORY (GB_thread_local.Flag) ;
+        GB_FREE_MEMORY (GB_thread_local.Flag, currsize, sizeof (int8_t)) ;
         GB_thread_local.Flag_size = 0 ;
 
         // calloc the new space

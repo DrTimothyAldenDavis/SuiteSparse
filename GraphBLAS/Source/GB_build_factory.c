@@ -49,7 +49,8 @@ GrB_Info GB_build_factory           // build a matrix
     int64_t **iwork_handle,         // for (i,k) or (j,i,k) tuples
     int64_t **kwork_handle,         // for (i,k) or (j,i,k) tuples
     const void *X,                  // array of values of tuples
-    const int64_t len,              // number of tuples
+    const int64_t len,              // number of tuples and size of kwork
+    const int64_t ilen,             // size of iwork array
     const GrB_BinaryOp dup,         // binary function to assemble duplicates,
                                     // if NULL use the "SECOND" function to 
                                     // keep the most recent duplicate.
@@ -90,8 +91,8 @@ GrB_Info GB_build_factory           // build a matrix
     if (C->x == NULL)
     {
         // out of memory
-        GB_FREE_MEMORY (*kwork_handle) ;
-        GB_FREE_MEMORY (*iwork_handle) ;
+        GB_FREE_MEMORY (*kwork_handle, len, sizeof (int64_t)) ;
+        GB_FREE_MEMORY (*iwork_handle, ilen, sizeof (int64_t)) ;
         GB_Matrix_clear ((GrB_Matrix) C) ;
         return (ERROR (GrB_OUT_OF_MEMORY, (LOG,
             "out of memory, %g GBytes required", memory))) ;
@@ -302,7 +303,7 @@ GrB_Info GB_build_factory           // build a matrix
     // phases, kwork is part of the symbolic analysis and should be kept for
     // subsequent builds with the same I and J but different X.
 
-    GB_FREE_MEMORY (*kwork_handle) ;
+    GB_FREE_MEMORY (*kwork_handle, len, sizeof (int64_t)) ;
     kwork = NULL ;
 
     //--------------------------------------------------------------------------
@@ -310,11 +311,11 @@ GrB_Info GB_build_factory           // build a matrix
     //--------------------------------------------------------------------------
 
     // shrink iwork from size len to size C->nzmax
-    if (C->nzmax < len)
+    if (C->nzmax < ilen)
     {
         // this cannot fail since the size is shrinking.
         bool ok ;
-        GB_REALLOC_MEMORY (iwork, C->nzmax, len, sizeof (int64_t), &ok) ;
+        GB_REALLOC_MEMORY (iwork, C->nzmax, ilen, sizeof (int64_t), &ok) ;
         ASSERT (ok) ;
     }
     C->i = iwork ;

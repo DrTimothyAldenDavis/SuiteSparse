@@ -136,9 +136,14 @@ void mexFunction
     fprintf (f,"========================================================\n") ;
     fprintf (f,"many errors are expected\n") ;
 
-    printf ("nmalloc %d at start\n", GB_thread_local.nmalloc) ;
+    GxB_Statistics stats ;
+    int64_t nmalloc ;
+    GxB_stats (&stats) ; nmalloc = stats.nmalloc ;
+
+    printf ("nmalloc %d at start\n", nmalloc) ;
     bool malloc_debug = GB_mx_get_global ( ) ;
-    printf ("nmalloc %d after complex init\n", GB_thread_local.nmalloc) ;
+    GxB_stats (&stats) ; nmalloc = stats.nmalloc ;
+    printf ("nmalloc %d after complex init\n", nmalloc) ;
 
     GrB_Matrix A = NULL, B = NULL, C = NULL, Z = NULL, Agunk = NULL,
                Aempty = NULL, E = NULL, F = NULL, A0 = NULL, H = NULL,
@@ -156,7 +161,7 @@ void mexFunction
     GrB_Descriptor desc = NULL, dgunk = NULL, d0 = NULL,
         dnt = NULL, dtn = NULL, dtt = NULL, descb = NULL ;
     GrB_Desc_Value dval ;
-    GrB_Index n = 0, nvals = 0, n2 = 0, i = 0, j = 0, a, b ;
+    GrB_Index n = 0, nvals = 0, n2 = 0, i = 0, j = 0, a, b, uvals = 0 ;
     GrB_Index *I0 = NULL, *J0 = NULL ;
     #define LEN 100
     GrB_Index I [5] = { 0,   7,   8,   3,    2 },       I2 [LEN] ;
@@ -425,8 +430,6 @@ void mexFunction
     // SelectOp
     //--------------------------------------------------------------------------
 
-    // int nmalloc1 = GB_thread_local.nmalloc ;
-
     CHECK (selectop == NULL) ;
     OK (GxB_SelectOp_new (&selectop, fselect, GrB_FP64)) ;
     OK (GxB_SelectOp_free (&selectop)) ;
@@ -455,8 +458,6 @@ void mexFunction
 
     OK (GxB_SelectOp_free (&selectop)) ;
     CHECK (selectop == NULL) ;
-
-    // int nmalloc2 = GB_thread_local.nmalloc ;
 
     //--------------------------------------------------------------------------
     // Monoid
@@ -520,7 +521,7 @@ void mexFunction
     ERR (GrB_Monoid_new (&monoid, GrB_EQ_FP64, (double) 0)) ;
     CHECK (monoid == NULL) ;
 
-    // These feel like they should work, but '0' becomes int, and it doesn't 
+    // These feel like they should work, but '0' becomes int, and it does not
     // match the type of the operator.  So it is expected to fail with a
     // domain mismatch.
     ERR (GrB_Monoid_new (&monoid, GrB_PLUS_FP64, 0)) ;
@@ -2279,6 +2280,27 @@ void mexFunction
     ERR (GxB_subassign (A, NULL, NULL, A, I, 2, J, 3, dtn)) ;
     ERR (GxB_subassign (A , v   , NULL, v ,  0, J, 0, NULL)) ;
 
+    // for (int k = 0 ; k < 3 ; k++) printf ("I [%d] = %lld\n", k, I [k]) ;
+    // for (int k = 0 ; k < 2 ; k++) printf ("J [%d] = %lld\n", k, J [k]) ;
+    // GB_check (A, "Aok", 3) ;
+    expected = GrB_INDEX_OUT_OF_BOUNDS ;
+    ERR (GxB_subassign (A, NULL, GrB_PLUS_FP64, C, I, 3, J, 2, NULL)) ;
+
+    // GB_check (A, "Aok1", 3) ;
+    // GB_check (C, "Cok", 3) ;
+
+    GrB_Index I3 [5] = { 0,   1,   2,   3,    4 } ;
+    GrB_Index J3 [5] = { 0,   1,   2,   3,    4 } ;
+
+    OK (GxB_subassign (A, NULL, GrB_PLUS_FP64, C, I3, 3, J3, 2, NULL)) ;
+    // GB_check (A, "Aok2", 3) ;
+
+    OK (GxB_subassign (C, C, GrB_PLUS_FP64, C, I3, 3, J3, 2, NULL)) ;
+
+    J3 [0] = 999 ;
+    ERR (GxB_subassign (C, C, GrB_PLUS_FP64, C, I3, 3, J3, 2, NULL)) ;
+    ERR (GxB_subassign (A, NULL, GrB_PLUS_FP64, x_double, I3, 1, J3, 1, NULL)) ;
+
     //--------------------------------------------------------------------------
     // assign
     //--------------------------------------------------------------------------
@@ -2663,8 +2685,6 @@ void mexFunction
     // select
     //--------------------------------------------------------------------------
 
-    // int nmalloc3 = GB_thread_local.nmalloc ;
-
     CHECK (selectop == NULL) ;
     OK (GxB_SelectOp_new (&selectop, fselect, GrB_FP64)) ;
     CHECK (selectop != NULL) ;
@@ -2733,8 +2753,6 @@ void mexFunction
     expected = GrB_DIMENSION_MISMATCH ;
 
     ERR (GxB_select (A , NULL, NULL, GxB_TRIL, C , &thresh, d0)) ;
-
-    // int nmalloc4 = GB_thread_local.nmalloc ;
 
     //--------------------------------------------------------------------------
     // reduce to scalar
@@ -3233,8 +3251,6 @@ void mexFunction
     // SelectOp check
     //--------------------------------------------------------------------------
 
-    // int nmalloc5 = GB_thread_local.nmalloc ;
-
     printf ("\n-------------- GB_SelectOp_check:\n") ;
 
     WHERE ("GB_SelectOp_check") ;
@@ -3272,8 +3288,6 @@ void mexFunction
     OK (GB_SelectOp_check (selectop, "user selectop ok", 3)) ;
 
     printf ("\nAll GB_SelectOp_check tests passed (errors expected)\n") ;
-
-    // int nmalloc6 = GB_thread_local.nmalloc ;
 
     //--------------------------------------------------------------------------
     // Monoid check
@@ -3603,7 +3617,6 @@ void mexFunction
 
     A->i [0] = 1 ;
     A->i [1] = 0 ;
-    printf ("GB_mex_errors, line %d:", __LINE__) ;
     info = GB_Matrix_check (A, "jumbled", 3) ;
     printf ("jumbled info %d\n", info) ;
     CHECK (info == GrB_INDEX_OUT_OF_BOUNDS) ;
@@ -3842,18 +3855,311 @@ void mexFunction
     OK (GB_op_is_second (GrB_SECOND_FP64, NULL)) ;
 
     //--------------------------------------------------------------------------
+    // check for inputs aliased with outputs
+    //--------------------------------------------------------------------------
+
+    Complex_finalize ( ) ;
+
+    GrB_free (&A) ;
+    GrB_free (&B) ;
+    GrB_free (&C) ;
+    GrB_free (&E) ;
+    GrB_free (&F) ;
+    GrB_free (&v) ;
+    GrB_free (&u) ;
+    GrB_free (&z) ;
+
+    #define NWHAT 12
+    n = NWHAT ;
+    nvals = 40 ;
+    uvals = 4 ;
+    GrB_Index ilist [NWHAT] = { 8, 9, 0, 1, 5, 6, 11, 3, 2, 10, 7, 4 } ;
+    GrB_Index jlist [NWHAT] = { 0, 11, 1, 7, 8, 4, 2, 3, 5, 6, 10, 9 } ;
+
+    OK (random_matrix (&A, false, false, n, n, nvals, 0, false)) ;
+    OK (GrB_Vector_new (&u, GrB_FP64, n)) ;
+    OK (GrB_Vector_setElement (u, (double) 3.4, 0)) ;
+
+    E = A ;
+    GrB_Matrix_dup (&A, A) ;
+    CHECK (GB_mx_isequal (A,E)) ;
+    GrB_free (&E) ;
+
+    z = u ;
+    GrB_Vector_dup (&u, u) ;
+    CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) z)) ;
+    GrB_free (&z) ;
+
+    for (int what = 0 ; what <= 2 ; what++)
+    {
+
+        GrB_Matrix Amask ;
+        GrB_Vector umask ;
+        switch (what)
+        {
+            case 0: Amask = NULL ; umask = NULL ; break ;
+            case 1: Amask = A    ; umask = u    ; break ;
+            case 2:
+            OK (random_matrix (&Amask, false, false, n, n, nvals, 0, false)) ;
+            OK (random_matrix (&F,     false, false, n, 1, uvals, 0, false)) ;
+            umask = (GrB_Vector) F ;
+            F = NULL ;
+            break ;
+        }
+
+        //----------------------------------------------------------------------
+        // GrB_mxm, GrB_vxm, and GrB_mxv
+        //----------------------------------------------------------------------
+
+        OK (GrB_Matrix_dup (&B, A)) ;
+        OK (GrB_mxm (B, Amask, NULL, GxB_PLUS_TIMES_FP64, A, A, NULL)) ;
+        OK (GrB_mxm (A, Amask, NULL, GxB_PLUS_TIMES_FP64, A, A, NULL)) ;
+        CHECK (GB_mx_isequal (A,B)) ;
+        GrB_free (&B) ;
+
+        OK (GrB_Vector_dup (&v, u)) ;
+        OK (GrB_vxm (v, umask, NULL, GxB_PLUS_TIMES_FP64, u, A, NULL)) ;
+        OK (GrB_vxm (u, umask, NULL, GxB_PLUS_TIMES_FP64, u, A, NULL)) ;
+        CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v)) ;
+        GrB_free (&v) ;
+
+        OK (GrB_Vector_dup (&v, u)) ;
+        OK (GrB_mxv (v, umask, NULL, GxB_PLUS_TIMES_FP64, A, u, NULL)) ;
+        OK (GrB_mxv (u, umask, NULL, GxB_PLUS_TIMES_FP64, A, u, NULL)) ;
+        CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v)) ;
+        GrB_free (&v) ;
+
+        //----------------------------------------------------------------------
+        // GrB_eWiseMult
+        //----------------------------------------------------------------------
+
+        OK (GrB_Vector_dup (&v, u)) ;
+        OK (GrB_eWiseMult (v, umask, NULL, GxB_PLUS_TIMES_FP64,  u, u, NULL)) ;
+        OK (GrB_eWiseMult (u, umask, NULL, GxB_PLUS_TIMES_FP64,  u, u, NULL)) ;
+        CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v)) ;
+        GrB_free (&v) ;
+
+        OK (GrB_Vector_dup (&v, u)) ;
+        OK (GrB_eWiseMult (v, umask, NULL, GxB_PLUS_FP64_MONOID, u, u, NULL)) ;
+        OK (GrB_eWiseMult (u, umask, NULL, GxB_PLUS_FP64_MONOID, u, u, NULL)) ;
+        CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v)) ;
+        GrB_free (&v) ;
+
+        OK (GrB_Vector_dup (&v, u)) ;
+        OK (GrB_eWiseMult (v, umask, NULL, GrB_PLUS_FP64,        u, u, NULL)) ;
+        OK (GrB_eWiseMult (u, umask, NULL, GrB_PLUS_FP64,        u, u, NULL)) ;
+        CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v)) ;
+        GrB_free (&v) ;
+
+        OK (GrB_Matrix_dup (&B, A)) ;
+        OK (GrB_eWiseMult (B, Amask, NULL, GxB_PLUS_TIMES_FP64,  A, A, NULL)) ;
+        OK (GrB_eWiseMult (A, Amask, NULL, GxB_PLUS_TIMES_FP64,  A, A, NULL)) ;
+        CHECK (GB_mx_isequal (A,B)) ;
+        GrB_free (&B) ;
+
+        OK (GrB_Matrix_dup (&B, A)) ;
+        OK (GrB_eWiseMult (B, Amask, NULL, GxB_PLUS_FP64_MONOID, A, A, NULL)) ;
+        OK (GrB_eWiseMult (A, Amask, NULL, GxB_PLUS_FP64_MONOID, A, A, NULL)) ;
+        CHECK (GB_mx_isequal (A,B)) ;
+        GrB_free (&B) ;
+
+        OK (GrB_Matrix_dup (&B, A)) ;
+        OK (GrB_eWiseMult (B, Amask, NULL, GrB_PLUS_FP64,        A, A, NULL)) ;
+        OK (GrB_eWiseMult (A, Amask, NULL, GrB_PLUS_FP64,        A, A, NULL)) ;
+        CHECK (GB_mx_isequal (A,B)) ;
+        GrB_free (&B) ;
+
+        //----------------------------------------------------------------------
+        // GrB_eWiseAdd
+        //----------------------------------------------------------------------
+
+        OK (GrB_Vector_dup (&v, u)) ;
+        OK (GrB_eWiseAdd  (v, umask, NULL, GxB_PLUS_TIMES_FP64,  u, u, NULL)) ;
+        OK (GrB_eWiseAdd  (u, umask, NULL, GxB_PLUS_TIMES_FP64,  u, u, NULL)) ;
+        CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v)) ;
+        GrB_free (&v) ;
+
+        OK (GrB_Vector_dup (&v, u)) ;
+        OK (GrB_eWiseAdd  (v, umask, NULL, GxB_PLUS_FP64_MONOID, u, u, NULL)) ;
+        OK (GrB_eWiseAdd  (u, umask, NULL, GxB_PLUS_FP64_MONOID, u, u, NULL)) ;
+        CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v)) ;
+        GrB_free (&v) ;
+
+        OK (GrB_Vector_dup (&v, u)) ;
+        OK (GrB_eWiseAdd  (v, umask, NULL, GrB_PLUS_FP64,        u, u, NULL)) ;
+        OK (GrB_eWiseAdd  (u, umask, NULL, GrB_PLUS_FP64,        u, u, NULL)) ;
+        CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v)) ;
+        GrB_free (&v) ;
+
+        OK (GrB_Matrix_dup (&B, A)) ;
+        OK (GrB_eWiseAdd  (B, Amask, NULL, GxB_PLUS_TIMES_FP64,  A, A, NULL)) ;
+        OK (GrB_eWiseAdd  (A, Amask, NULL, GxB_PLUS_TIMES_FP64,  A, A, NULL)) ;
+        CHECK (GB_mx_isequal (A,B)) ;
+        GrB_free (&B) ;
+
+        OK (GrB_Matrix_dup (&B, A)) ;
+        OK (GrB_eWiseAdd  (B, Amask, NULL, GxB_PLUS_FP64_MONOID, A, A, NULL)) ;
+        OK (GrB_eWiseAdd  (A, Amask, NULL, GxB_PLUS_FP64_MONOID, A, A, NULL)) ;
+        CHECK (GB_mx_isequal (A,B)) ;
+        GrB_free (&B) ;
+
+        OK (GrB_Matrix_dup (&B, A)) ;
+        OK (GrB_eWiseAdd  (B, Amask, NULL, GrB_PLUS_FP64,        A, A, NULL)) ;
+        OK (GrB_eWiseAdd  (A, Amask, NULL, GrB_PLUS_FP64,        A, A, NULL)) ;
+        CHECK (GB_mx_isequal (A,B)) ;
+        GrB_free (&B) ;
+
+        //----------------------------------------------------------------------
+        // GrB_extract
+        //----------------------------------------------------------------------
+
+        OK (GrB_Vector_dup (&v, u)) ;
+        OK (GrB_extract   (u, umask, NULL, u, GrB_ALL, n, NULL)) ;
+        CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v)) ;
+        GrB_free (&v) ;
+
+        OK (GrB_Matrix_dup (&B, A)) ;
+        OK (GrB_extract   (B, Amask, NULL, A, GrB_ALL, n, GrB_ALL, n, NULL)) ;
+        OK (GrB_extract   (A, Amask, NULL, A, GrB_ALL, n, GrB_ALL, n, NULL)) ;
+        CHECK (GB_mx_isequal (A,B)) ;
+        GrB_free (&B) ;
+
+        OK (GrB_Vector_dup (&v, u)) ;
+        OK (GrB_extract   (v, umask, NULL, A, GrB_ALL, n, 0, NULL)) ;
+        OK (GrB_extract   (u, umask, NULL, A, GrB_ALL, n, 0, NULL)) ;
+        CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v)) ;
+        GrB_free (&v) ;
+
+        //----------------------------------------------------------------------
+        // GxB_subassign
+        //----------------------------------------------------------------------
+
+        OK (GrB_Matrix_dup (&B, A)) ;
+        OK (GxB_subassign (B, Amask, NULL, A, GrB_ALL, n, GrB_ALL, n, NULL)) ;
+        OK (GxB_subassign (A, Amask, NULL, A, GrB_ALL, n, GrB_ALL, n, NULL)) ;
+        GB_wait (B) ;
+        CHECK (GB_mx_isequal (A,B)) ;
+        GrB_free (&B) ;
+
+        OK (GrB_Matrix_dup (&B, A)) ;
+        OK (GxB_subassign (B, Amask, NULL, A, ilist, n, jlist, n, NULL)) ;
+        OK (GxB_subassign (A, Amask, NULL, A, ilist, n, jlist, n, NULL)) ;
+        GB_wait (B) ;
+        CHECK (GB_mx_isequal (A,B)) ;
+        GrB_free (&B) ;
+
+        OK (GrB_Vector_dup (&v, u)) ;
+        OK (GxB_subassign (v, umask, NULL, u, GrB_ALL, n, NULL)) ;
+        OK (GxB_subassign (u, umask, NULL, u, GrB_ALL, n, NULL)) ;
+        GB_wait ((GrB_Matrix) v) ;
+        CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v)) ;
+        GrB_free (&v) ;
+
+        OK (GrB_Vector_dup (&v, u)) ;
+        OK (GxB_subassign (v, umask, NULL, u, ilist, n, NULL)) ;
+        OK (GxB_subassign (u, umask, NULL, u, ilist, n, NULL)) ;
+        GB_wait ((GrB_Matrix) v) ;
+        GB_wait ((GrB_Matrix) u) ;
+        CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v)) ;
+        GrB_free (&v) ;
+
+        //----------------------------------------------------------------------
+        // GrB_assign
+        //----------------------------------------------------------------------
+
+        OK (GrB_Matrix_dup (&B, A)) ;
+        OK (GrB_assign (B, Amask, NULL, A, GrB_ALL, n, GrB_ALL, n, NULL)) ;
+        OK (GrB_assign (A, Amask, NULL, A, GrB_ALL, n, GrB_ALL, n, NULL)) ;
+        CHECK (GB_mx_isequal (A,B)) ;
+        GrB_free (&B) ;
+
+        OK (GrB_Matrix_dup (&B, A)) ;
+        OK (GrB_assign (B, Amask, NULL, A, ilist, n, jlist, n, NULL)) ;
+        OK (GrB_assign (A, Amask, NULL, A, ilist, n, jlist, n, NULL)) ;
+        GB_wait (B) ;
+        GB_wait (A) ;
+        CHECK (GB_mx_isequal (A,B)) ;
+        GrB_free (&B) ;
+
+        OK (GrB_Vector_dup (&v, u)) ;
+        OK (GrB_assign (v, umask, NULL, u, GrB_ALL, n, NULL)) ;
+        OK (GrB_assign (u, umask, NULL, u, GrB_ALL, n, NULL)) ;
+        CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v)) ;
+        GrB_free (&v) ;
+
+        OK (GrB_Vector_dup (&v, u)) ;
+        OK (GrB_assign (v, umask, NULL, u, ilist, n, NULL)) ;
+        OK (GrB_assign (u, umask, NULL, u, ilist, n, NULL)) ;
+        GB_wait ((GrB_Matrix) v) ;
+        GB_wait ((GrB_Matrix) u) ;
+        CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v)) ;
+        GrB_free (&v) ;
+
+        //----------------------------------------------------------------------
+        // GrB_apply
+        //----------------------------------------------------------------------
+
+        OK (GrB_Matrix_dup (&B, A)) ;
+        OK (GrB_apply (B, Amask, NULL, GrB_AINV_FP64, A, NULL)) ;
+        OK (GrB_apply (A, Amask, NULL, GrB_AINV_FP64, A, NULL)) ;
+        CHECK (GB_mx_isequal (A,B)) ;
+        GrB_free (&B) ;
+
+        OK (GrB_Vector_dup (&v, u)) ;
+        OK (GrB_apply (v, umask, NULL, GrB_AINV_FP64, u, NULL)) ;
+        OK (GrB_apply (u, umask, NULL, GrB_AINV_FP64, u, NULL)) ;
+        CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v)) ;
+        GrB_free (&v) ;
+
+        //----------------------------------------------------------------------
+        // GxB_select
+        //----------------------------------------------------------------------
+
+        OK (GrB_Matrix_dup (&B, A)) ;
+        OK (GxB_select (B, Amask, NULL, GxB_NONZERO, A, NULL, NULL)) ;
+        OK (GxB_select (A, Amask, NULL, GxB_NONZERO, A, NULL, NULL)) ;
+        CHECK (GB_mx_isequal (A,B)) ;
+        GrB_free (&B) ;
+
+        OK (GrB_Vector_dup (&v, u)) ;
+        OK (GxB_select (v, umask, NULL, GxB_NONZERO, u, NULL, NULL)) ;
+        OK (GxB_select (u, umask, NULL, GxB_NONZERO, u, NULL, NULL)) ;
+        CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v)) ;
+        GrB_free (&v) ;
+
+        //----------------------------------------------------------------------
+        // GrB_transepose
+        //----------------------------------------------------------------------
+
+        OK (GrB_Matrix_dup (&B, A)) ;
+        OK (GrB_transpose (B, Amask, NULL, A, NULL)) ;
+        OK (GrB_transpose (A, Amask, NULL, A, NULL)) ;
+        CHECK (GB_mx_isequal (A,B)) ;
+        GrB_free (&B) ;
+
+        if (what == 2)
+        {
+            GrB_free (&Amask) ;
+            GrB_free (&umask) ;
+        }
+    }
+
+    //--------------------------------------------------------------------------
     // free all
     //--------------------------------------------------------------------------
 
     // this is also done by FREE_ALL, but the list here is meant to be
     // accurate, so nmalloc should be zero at the check below
 
-    printf ("nmalloc %d\n", GB_thread_local.nmalloc) ;
+    GxB_stats (&stats) ; nmalloc = stats.nmalloc ;
+    printf ("nmalloc %d\n", nmalloc) ;
 
-    // int nmalloc7 = GB_thread_local.nmalloc ;
+    expected = GrB_NULL_POINTER ;
+    ERR (GxB_stats (NULL)) ;
 
     GrB_free (&Empty1) ;       CHECK (Empty1       == NULL) ;
     GrB_free (&v) ;            CHECK (v            == NULL) ;
+    GrB_free (&u) ;            CHECK (u            == NULL) ;
     GrB_free (&A) ;            CHECK (A            == NULL) ;
     GrB_free (&u) ;            CHECK (u            == NULL) ;
     GrB_free (&z) ;            CHECK (z            == NULL) ;
@@ -3887,30 +4193,25 @@ void mexFunction
     GrB_free (&dnt) ;          CHECK (dnt          == NULL) ;
     GrB_free (&dtt) ;          CHECK (dtt          == NULL) ;
     GrB_free (&dgunk) ;        CHECK (dgunk        == NULL) ;
-    // int nmalloc8 = GB_thread_local.nmalloc ;
     GrB_free (&selectop) ;     CHECK (selectop     == NULL) ;
     GrB_free (&selectopgunk) ; CHECK (selectopgunk == NULL) ;
-    // int nmalloc9 = GB_thread_local.nmalloc ;
 
-    /*
-    printf ("nmalloc1 %d\n", nmalloc1) ;
-    printf ("nmalloc2 %d\n", nmalloc2) ;
-    printf ("nmalloc3 %d\n", nmalloc3) ;
-    printf ("nmalloc4 %d\n", nmalloc4) ;
-    printf ("nmalloc5 %d\n", nmalloc5) ;
-    printf ("nmalloc6 %d\n", nmalloc6) ;
-    printf ("nmalloc7 %d\n", nmalloc7) ;
-    printf ("nmalloc8 %d\n", nmalloc8) ;
-    printf ("nmalloc9 %d\n", nmalloc9) ;
-    */
-
-    printf ("nmalloc %d before complex_finalize\n", GB_thread_local.nmalloc) ;
+    GxB_stats (&stats) ; nmalloc = stats.nmalloc ;
+    printf ("nmalloc %d before complex_finalize\n", nmalloc) ;
     Complex_finalize ( ) ;
-    printf ("nmalloc %d done\n", GB_thread_local.nmalloc) ;
+    GxB_stats (&stats) ; nmalloc = stats.nmalloc ;
+    printf ("nmalloc %d done\n", nmalloc) ;
+    GrB_finalize ( ) ;
+    GxB_stats (&stats) ; nmalloc = stats.nmalloc ;
+    printf ("nmalloc %d all freed\n", nmalloc) ;
 
     FREE_ALL ;
+    GxB_stats (&stats) ; nmalloc = stats.nmalloc ;
+    printf ("nmalloc %d all freed\n", nmalloc) ;
     GrB_finalize ( ) ;
-    CHECK (GB_thread_local.nmalloc == 0) ;
+    GxB_stats (&stats) ; nmalloc = stats.nmalloc ;
+    printf ("nmalloc %d after finalize\n", nmalloc) ;
+    CHECK (nmalloc == 0) ;
 
     printf ("\ncheck errlog.txt for errors tested\n") ;
     printf ("All error-handling tests passed"

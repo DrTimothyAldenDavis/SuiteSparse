@@ -1,4 +1,4 @@
-function test06 (A)
+function test06 (A,B)
 %TEST06 test GrB_mxm on all semirings
 %
 % Usage: test06(A)
@@ -98,14 +98,11 @@ n = size (A,1) ;
 for k1 = 1:length(mult_ops)
     mulop = mult_ops {k1} ;
     if (n <= 500)
-        fprintf ('\n%6s', mulop) ;
+        fprintf ('\n%s', mulop) ;
     end
 
     for k2 = 1:length(add_ops)
         addop = add_ops {k2} ;
-        if (n <= 500)
-            fprintf (' %s', addop) ;
-        end
 
         for k3 = 1:length (classes)
             clas = classes {k3} ;
