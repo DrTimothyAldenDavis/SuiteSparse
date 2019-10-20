@@ -12,7 +12,7 @@ function ssexport (list, check, tmp)
 % See also ssget, sswrite, RBio, mwrite.
 
 
-% Copyright 2006-2018, Timothy A. Davis
+% Copyright 2006-2019, Timothy A. Davis
 
 %-------------------------------------------------------------------------------
 % get the input arguments

@@ -27,11 +27,11 @@ if (POLICY CMP0048)
     cmake_policy(SET CMP0048 NEW)
 endif (POLICY CMP0048)
 
-set(Mongoose_DATE "Dec 28, 2018")
-set(Mongoose_NUMERIC_DATE "2018-12-28")
+set(Mongoose_DATE "May 25, 2019")
+set(Mongoose_NUMERIC_DATE "2019-05-25")
 set(Mongoose_VERSION_MAJOR 2)
 set(Mongoose_VERSION_MINOR 0)
-set(Mongoose_VERSION_PATCH 3)
+set(Mongoose_VERSION_PATCH 4)
 
 if(CMAKE_MAJOR_VERSION GREATER 2)
 project(Mongoose

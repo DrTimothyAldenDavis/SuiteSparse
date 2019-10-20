@@ -20,7 +20,7 @@ function list = ssgrep (expression, index)
 %
 % See also regexp, ssget.
 
-% Copyright 2009-2017, Timothy A. Davis
+% Copyright 2009-2019, Timothy A. Davis
 
 if (nargin < 2)
     index = ssget ;

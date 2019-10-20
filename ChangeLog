@@ -1,3 +1,15 @@
+Oct 20, 2019, SuiteSparse 5.5.0
+
+    * GraphBLAS 2.3.5: Collected Algorithm of the ACM
+    * UMFPACK 5.7.9: fix for compiling in MATLAB R2018b; BLAS library
+    * SPQR, CHOLMOD: fix to *_make.m for compiling in MATLAB; same version
+    * KLU: fix to Tcov/Makefile; no change to version number
+    * CXSparse 3.2.0: version was incorrect in CXSparse/Include/cs.h;
+        the corresponding CSparse v3.2.0 had the correct version information
+        in its cs.h include file.
+    * ssget and MATLAB_Tools/SuiteSparseCollection: update to sparse.tamu.edu
+    * Mongoose 2.0.4: update to sparse.tamu.edu
+
 Dec 28, 2018: SuiteSparse 5.4.0
 
     * GraphBLAS 2.2.2: many upgrades and new features, a few bug fixes

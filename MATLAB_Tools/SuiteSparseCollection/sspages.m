@@ -12,7 +12,7 @@ function sspages (list)
 %
 % See also sspage, ssget.
 
-% Copyright 2006-2018, Timothy A. Davis
+% Copyright 2006-2019, Timothy A. Davis
 
 index = ssget ;
 if (nargin < 1)

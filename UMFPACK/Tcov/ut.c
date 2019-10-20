@@ -29,6 +29,7 @@
 #include "umf_realloc.h"
 #include "umf_free.h"
 #include "umf_malloc.h"
+#include "umf_cholmod.h"
 
 /*
 #if defined (UMF_MALLOC_COUNT) || !defined (NDEBUG)
@@ -3985,12 +3986,14 @@ static void matgen_file
     Int i, j, k, *Ti, *Tj, nr, nc, nz, *Bp, *Bi, *Q, status, isreal, nz1, n ;
     double x, *Tx, *Bx, *Tz, *Bz, ximag, Control [UMFPACK_CONTROL],
 	    d_x, d_z, d_real ;
+    int ioerr ;
 
     printf ("\nFile: %s\n", filename) ;
     f = fopen (filename, "r") ;
     if (!f) error ("bad file", 0.) ;
 
-    fscanf (f, ""ID" "ID" "ID" "ID"\n", &nr, &nc, &nz, &isreal) ;
+    ioerr = fscanf (f, ""ID" "ID" "ID" "ID"\n", &nr, &nc, &nz, &isreal) ;
+    if (ioerr == EOF) error ("bad file", 0.) ;
     n = MAX (nr, nc) ;
     n = MAX (n,1) ;
 
@@ -4011,13 +4014,14 @@ static void matgen_file
     {
 	if (isreal)
 	{
-	     fscanf (f, ""ID" "ID" %lg\n", &i, &j, &x) ;
+	     ioerr = fscanf (f, ""ID" "ID" %lg\n", &i, &j, &x) ;
 	     ximag = 0. ;
 	}
 	else
 	{
-	     fscanf (f, ""ID" "ID" %lg %lg\n", &i, &j, &x, &ximag) ;
+	     ioerr = fscanf (f, ""ID" "ID" %lg %lg\n", &i, &j, &x, &ximag) ;
 	}
+        if (ioerr == EOF) error ("bad file", 0.) ;
 	Ti [k] = i-1 ;	/* convert to 0-based */ 
 	Tj [k] = j-1 ;
 	Tx [k] = x ;
@@ -4031,20 +4035,23 @@ static void matgen_file
 
     for (k = 0 ; k < nc ; k++)
     {
-	fscanf (f, ""ID"\n", &i) ;
+	ioerr = fscanf (f, ""ID"\n", &i) ;
+        if (ioerr == EOF) error ("bad file", 0.) ;
 	Q [k] = i-1 ;	/* convert to 0-based */
     }
 
     if (isreal)
     {
-	fscanf (f, "%lg\n", &d_x) ;
+	ioerr = fscanf (f, "%lg\n", &d_x) ;
 	d_z = 0 ;
     }
     else
     {
-	fscanf (f, "%lg %lg\n", &d_x, &d_z) ;
+	ioerr = fscanf (f, "%lg %lg\n", &d_x, &d_z) ;
     }
-    fscanf (f, "%lg\n", &d_real) ;
+    if (ioerr == EOF) error ("bad file", 0.) ;
+    ioerr = fscanf (f, "%lg\n", &d_real) ;
+    if (ioerr == EOF) error ("bad file", 0.) ;
     printf ("%s det: %g + (%g)i, real(A): %g\n", filename, d_x, d_z, d_real) ;
 
 #ifdef COMPLEX
@@ -4547,7 +4554,7 @@ int main (int argc, char **argv)
     NumericType *Num ;
     DIR *dir ;
     struct dirent *direntp ;
-    char filename [200] ;
+    char filename [400] ;
     FILE *f ;
     Int my_params [3], csave ;
     double my_info [3] ;

@@ -7,7 +7,7 @@
 # and GraphBLAS.  The configuration settings for GraphBLAS are determined by
 # GraphBLAS/CMakeLists.txt
 
-SUITESPARSE_VERSION = 5.4.0
+SUITESPARSE_VERSION = 5.5.0
 
 #===============================================================================
 # Options you can change without editing this file:
@@ -59,14 +59,14 @@ SUITESPARSE_VERSION = 5.4.0
     INSTALL_INCLUDE ?= $(INSTALL)/include
     INSTALL_DOC ?= $(INSTALL)/share/doc/suitesparse-$(SUITESPARSE_VERSION)
 
-    CMAKE_OPTIONS ?= -DCMAKE_INSTALL_PREFIX=$(INSTALL)
-
     #---------------------------------------------------------------------------
     # parallel make
     #---------------------------------------------------------------------------
 
-    # sequential make's by default
-    JOBS ?= 1
+    # use 16 jobs by default
+    JOBS ?= 16
+
+    CMAKE_OPTIONS ?= -DCMAKE_INSTALL_PREFIX=$(INSTALL)
 
     #---------------------------------------------------------------------------
     # optimization level
@@ -83,12 +83,12 @@ SUITESPARSE_VERSION = 5.4.0
         # statement coverage.  The Tcov tests require Linux and gcc, and use
         # the vanilla BLAS.  For those tests, the packages use 'make TCOV=yes',
         # which overrides the following settings:
-        MKLROOT =
+        # MKLROOT =
         AUTOCC = no
         CC = gcc
         CXX = g++
-        BLAS = -lrefblas -lgfortran -lstdc++
-        LAPACK = -llapack
+        # BLAS = -lrefblas -lgfortran -lstdc++
+        # LAPACK = -llapack
         CFLAGS += --coverage
         OPTIMIZATION = -g
         LDFLAGS += --coverage
@@ -154,11 +154,9 @@ SUITESPARSE_VERSION = 5.4.0
     LDLIBS ?= -lm
     LDFLAGS += -L$(INSTALL_LIB)
 
-    # See http://www.openblas.net for a recent and freely available optimzed
-    # BLAS.  LAPACK is at http://www.netlib.org/lapack/ .  You can use the
-    # standard Fortran LAPACK along with OpenBLAS to obtain very good
-    # performance.  This script can also detect if the Intel MKL BLAS is
-    # installed.
+    # NOTE: Use of the Intel MKL BLAS is strongly recommended.  The OpenBLAS can
+    # result in severe performance degradation, in CHOLMOD in particular.
+    # This script can also detect if the Intel MKL BLAS is installed.
 
     LAPACK ?= -llapack
 
@@ -175,7 +173,7 @@ SUITESPARSE_VERSION = 5.4.0
             BLAS = -lmkl_intel_lp64 -lmkl_core -lmkl_intel_thread -liomp5 -lpthread -lm
             LAPACK =
         else
-            # use the OpenBLAS at http://www.openblas.net
+            # use the OpenBLAS at http://www.openblas.net (CAN BE VERY SLOW)
             BLAS = -lopenblas
         endif
     endif
@@ -209,6 +207,7 @@ SUITESPARSE_VERSION = 5.4.0
 
     # CUDA is detected automatically, and used if found.  To disable CUDA,
     # use CUDA=no
+    CUDA = auto
 
     ifneq ($(CUDA),no)
         CUDA_PATH = $(shell which nvcc 2>/dev/null | sed "s/\/bin\/nvcc//")
@@ -615,6 +614,7 @@ config:
 	@echo 'CHOLMOD Partition config: ' '$(CONFIG_PARTITION)'
 	@echo 'CHOLMOD Partition libs:   ' '$(LIB_WITH_PARTITION)'
 	@echo 'CHOLMOD Partition include:' '$(I_WITH_PARTITION)'
+	@echo 'CMake options: ' '$(CMAKE_OPTIONS)'
 ifeq ($(TCOV),yes)
 	@echo 'TCOV=yes, for extensive testing only (gcc, g++, vanilla BLAS)'
 endif

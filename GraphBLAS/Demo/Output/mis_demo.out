@@ -1,4 +1,4 @@
-Wathen: nx 4 ny 4 n 65 nz 817 method 0, time: 0.000 sec
+Wathen: nx 4 ny 4 n 65 nz 752 method 0, time: 0.000 sec
 
 GraphBLAS matrix: from get_matrix: 
 nrows: 65 ncols: 65 max # entries: 817
@@ -7,39 +7,39 @@ hyper_ratio 0.0625
 GraphBLAS type:  double size: 8
 number of entries: 752 
 row: 0 : 7 entries [0:6]
-    column 1: double -6.85160883409121
-    column 2: double 2.28386961136374
-    column 9: double -6.85160883409121
-    column 10: double -9.13547844545495
-    column 14: double 2.28386961136374
-    column 15: double -9.13547844545495
-    column 16: double 3.42580441704561
+    column 1: double -3.43365642660378
+    column 2: double 1.14455214220126
+    column 9: double -3.43365642660378
+    column 10: double -4.57820856880504
+    column 14: double 1.14455214220126
+    column 15: double -4.57820856880504
+    column 16: double 1.71682821330189
 row: 1 : 7 entries [7:13]
-    column 0: double -6.85160883409121
-    column 2: double -6.85160883409121
-    column 9: double 22.8386961136374
-    column 10: double 22.8386961136374
-    column 14: double -9.13547844545495
-    column 15: double 18.2709568909099
-    column 16: double -9.13547844545495
+    column 0: double -3.43365642660378
+    column 2: double -3.43365642660378
+    column 9: double 11.4455214220126
+    column 10: double 11.4455214220126
+    column 14: double -4.57820856880504
+    column 15: double 9.15641713761008
+    column 16: double -4.57820856880504
 row: 2 : 12 entries [14:25]
-    column 0: double 2.28386961136374
-    column 1: double -6.85160883409121
-    column 3: double -2.34300770083722
-    column 4: double 0.781002566945742
-    column 9: double -9.13547844545495
-    column 10: double -9.19461653492844
-    column 11: double -3.12401026778297
-    column 14: double 3.42580441704561
-    column 15: double -9.13547844545495
-    column 16: double 3.06487217830948
-    column 17: double -3.12401026778297
-    column 18: double 1.17150385041861
+    column 0: double 1.14455214220126
+    column 1: double -3.43365642660378
+    column 3: double -9.1794115743147
+    column 4: double 3.0598038581049
+    column 9: double -4.57820856880504
+    column 10: double -12.6130680009185
+    column 11: double -12.2392154324196
+    column 14: double 1.71682821330189
+    column 15: double -4.57820856880504
+    column 16: double 4.20435600030616
+    column 17: double -12.2392154324196
+    column 18: double 4.58970578715735
 row: 3 : 7 entries [26:32]
-    column 2: double -2.34300770083722
-    column 4: double -2.34300770083722
-    column 10: double 7.81002566945742
-    column 11: double 7.81002566945742
+    column 2: double -9.1794115743147
+    column 4: double -9.1794115743147
+    column 10: double 30.598038581049
+    column 11: double 30.598038581049
     ...
 row: 4 : 12 entries [33:44]
     ...
@@ -54,42 +54,44 @@ row: 8 : 7 entries [71:77]
 row: 9 : 7 entries [78:84]
     ...
 ...
-MIS time in seconds:       0.001366
-isize: 11
-independent set found: 11 of 65 nodes
+MIS time in seconds:       0.000308
+isize: 13
+independent set found: 13 of 65 nodes
 maximal independent set status verified
-random 5 by 5, nz: 16, method 1 time 0.000 sec
+random 5 by 5, nz: 18, method 1 time 0.000 sec
 
 GraphBLAS matrix: from get_matrix: 
-nrows: 5 ncols: 5 max # entries: 16
+nrows: 5 ncols: 5 max # entries: 18
 format: standard CSR vlen: 5 nvec_nonempty: 5 nvec: 5 plen: 5 vdim: 5
 hyper_ratio 0.0625
 GraphBLAS type:  double size: 8
-number of entries: 16 
+number of entries: 18 
 row: 0 : 3 entries [0:2]
-    column 1: double 0.654957731864376
-    column 2: double 0.625904110843226
-    column 4: double 0.0357371745963927
-row: 1 : 3 entries [3:5]
-    column 0: double 0.654957731864376
-    column 2: double 0.0953093050935392
-    column 3: double 0.919644764549699
-row: 2 : 4 entries [6:9]
-    column 0: double 0.625904110843226
-    column 1: double 0.0953093050935392
-    column 3: double 0.0680867946409497
-    column 4: double 0.331888790551469
-row: 3 : 3 entries [10:12]
-    column 1: double 0.919644764549699
-    column 2: double 0.0680867946409497
-    column 4: double 0.885311441389203
-row: 4 : 3 entries [13:15]
-    column 0: double 0.0357371745963927
-    column 2: double 0.331888790551469
-    column 3: double 0.885311441389203
-MIS time in seconds:       0.001505
-isize: 2
-independent set found: 2 of 5 nodes
+    column 1: double 0.717388479790099
+    column 2: double 0.159899455348467
+    column 3: double 0.937600838142916
+row: 1 : 4 entries [3:6]
+    column 0: double 0.717388479790099
+    column 2: double 0.951473352740709
+    column 3: double 0.82691712979873
+    column 4: double 0.620002095185994
+row: 2 : 4 entries [7:10]
+    column 0: double 0.159899455348467
+    column 1: double 0.951473352740709
+    column 3: double 0.855698335145892
+    column 4: double 0.867500482629324
+row: 3 : 4 entries [11:14]
+    column 0: double 0.937600838142916
+    column 1: double 0.82691712979873
+    column 2: double 0.855698335145892
+    column 4: double 0.992311681061557
+row: 4 : 3 entries [15:17]
+    column 1: double 0.620002095185994
+    column 2: double 0.867500482629324
+    column 3: double 0.992311681061557
+MIS time in seconds:       0.000212
+isize: 1
+independent set found: 1 of 5 nodes
 maximal independent set status verified
 matrix 3 by 3, 0 entries, from stdin
 
@@ -100,7 +102,7 @@ hyper_ratio 0.0625
 GraphBLAS type:  bool size: 1
 empty
 number of entries: 0 
-MIS time in seconds:       0.000099
+MIS time in seconds:       0.000123
 isize: 3
 independent set found: 3 of 3 nodes
 maximal independent set status verified
@@ -120,7 +122,7 @@ row: 2 : 1 entries [2:2]
     column 3: bool 1
 row: 3 : 1 entries [3:3]
     column 2: bool 1
-MIS time in seconds:       0.000202
+MIS time in seconds:       0.000178
 isize: 2
 independent set found: 2 of 4 nodes
 maximal independent set status verified
@@ -146,7 +148,7 @@ row: 2 : 2 entries [6:7]
 row: 3 : 2 entries [8:9]
     column 0: bool 1
     column 1: bool 1
-MIS time in seconds:       0.000449
+MIS time in seconds:       0.000222
 isize: 2
 independent set found: 2 of 4 nodes
 maximal independent set status verified
@@ -181,9 +183,9 @@ row: 6 : 3 entries [13:15]
     column 0: bool 1
     column 1: bool 1
     column 3: bool 1
-MIS time in seconds:       0.000188
-isize: 3
-independent set found: 3 of 7 nodes
+MIS time in seconds:       0.000260
+isize: 4
+independent set found: 4 of 7 nodes
 maximal independent set status verified
 matrix 304 by 304, 876 entries, from stdin
 
@@ -223,9 +225,9 @@ row: 8 : 2 entries [16:17]
 row: 9 : 2 entries [18:19]
     column 221: bool 1
 ...
-MIS time in seconds:       0.000280
-isize: 216
-independent set found: 216 of 304 nodes
+MIS time in seconds:       0.000371
+isize: 218
+independent set found: 218 of 304 nodes
 maximal independent set status verified
 matrix 48 by 48, 352 entries, from stdin
 
@@ -282,7 +284,7 @@ row: 8 : 7 entries [56:62]
 row: 9 : 7 entries [63:69]
     ...
 ...
-MIS time in seconds:       0.000236
+MIS time in seconds:       0.000318
 isize: 12
 independent set found: 12 of 48 nodes
 maximal independent set status verified
@@ -343,9 +345,9 @@ row: 12 : 39 entries [192:230]
 row: 13 : 39 entries [231:269]
     ...
 ...
-MIS time in seconds:       0.009390
-isize: 274
-independent set found: 274 of 4884 nodes
+MIS time in seconds:       0.006577
+isize: 268
+independent set found: 268 of 4884 nodes
 maximal independent set status verified
 matrix 183 by 183, 1402 entries, from stdin
 
@@ -406,9 +408,9 @@ row: 8 : 4 entries [216:219]
 row: 9 : 4 entries [220:223]
     ...
 ...
-MIS time in seconds:       0.000247
-isize: 88
-independent set found: 88 of 183 nodes
+MIS time in seconds:       0.000352
+isize: 89
+independent set found: 89 of 183 nodes
 maximal independent set status verified
 matrix 63 by 63, 246 entries, from stdin
 
@@ -464,9 +466,9 @@ row: 8 : 4 entries [39:42]
 row: 9 : 3 entries [43:45]
     ...
 ...
-MIS time in seconds:       0.000365
-isize: 27
-independent set found: 27 of 63 nodes
+MIS time in seconds:       0.000295
+isize: 24
+independent set found: 24 of 63 nodes
 maximal independent set status verified
 matrix 63 by 63, 246 entries, from stdin
 
@@ -521,7 +523,7 @@ row: 8 : 7 entries [38:44]
 row: 9 : 7 entries [45:51]
     ...
 ...
-MIS time in seconds:       0.000199
+MIS time in seconds:       0.000242
 isize: 25
 independent set found: 25 of 63 nodes
 maximal independent set status verified
@@ -575,9 +577,9 @@ row: 8 : 3 entries [27:29]
 row: 9 : 3 entries [30:32]
     ...
 ...
-MIS time in seconds:       0.000232
-isize: 49
-independent set found: 49 of 78 nodes
+MIS time in seconds:       0.000229
+isize: 50
+independent set found: 50 of 78 nodes
 maximal independent set status verified
 matrix 982 by 982, 99840 entries, from stdin
 
@@ -638,9 +640,9 @@ row: 8 : 4 entries [334:337]
 row: 9 : 190 entries [338:527]
     ...
 ...
-MIS time in seconds:       0.002316
-isize: 329
-independent set found: 329 of 982 nodes
+MIS time in seconds:       0.002244
+isize: 384
+independent set found: 384 of 982 nodes
 maximal independent set status verified
 matrix 67 by 67, 574 entries, from stdin
 
@@ -698,11 +700,11 @@ row: 8 : 7 entries [62:68]
 row: 9 : 9 entries [69:77]
     ...
 ...
-MIS time in seconds:       0.000210
+MIS time in seconds:       0.000232
 isize: 15
 independent set found: 15 of 67 nodes
 maximal independent set status verified
-Wathen: nx 200 ny 200 n 120801 nz 1883201 method 0, time: 0.284 sec
+Wathen: nx 200 ny 200 n 120801 nz 1762400 method 0, time: 0.382 sec
 
 GraphBLAS matrix: from get_matrix: 
 nrows: 120801 ncols: 120801 max # entries: 1883201
@@ -711,39 +713,39 @@ hyper_ratio 0.0625
 GraphBLAS type:  double size: 8
 number of entries: 1762400 
 row: 0 : 7 entries [0:6]
-    column 1: double -6.85160883409121
-    column 2: double 2.28386961136374
-    column 401: double -6.85160883409121
-    column 402: double -9.13547844545495
-    column 602: double 2.28386961136374
-    column 603: double -9.13547844545495
-    column 604: double 3.42580441704561
+    column 1: double -3.43365642660378
+    column 2: double 1.14455214220126
+    column 401: double -3.43365642660378
+    column 402: double -4.57820856880504
+    column 602: double 1.14455214220126
+    column 603: double -4.57820856880504
+    column 604: double 1.71682821330189
 row: 1 : 7 entries [7:13]
-    column 0: double -6.85160883409121
-    column 2: double -6.85160883409121
-    column 401: double 22.8386961136374
-    column 402: double 22.8386961136374
-    column 602: double -9.13547844545495
-    column 603: double 18.2709568909099
-    column 604: double -9.13547844545495
+    column 0: double -3.43365642660378
+    column 2: double -3.43365642660378
+    column 401: double 11.4455214220126
+    column 402: double 11.4455214220126
+    column 602: double -4.57820856880504
+    column 603: double 9.15641713761008
+    column 604: double -4.57820856880504
 row: 2 : 12 entries [14:25]
-    column 0: double 2.28386961136374
-    column 1: double -6.85160883409121
-    column 3: double -2.34300770083722
-    column 4: double 0.781002566945742
-    column 401: double -9.13547844545495
-    column 402: double -9.19461653492844
-    column 403: double -3.12401026778297
-    column 602: double 3.42580441704561
-    column 603: double -9.13547844545495
-    column 604: double 3.06487217830948
-    column 605: double -3.12401026778297
-    column 606: double 1.17150385041861
+    column 0: double 1.14455214220126
+    column 1: double -3.43365642660378
+    column 3: double -9.1794115743147
+    column 4: double 3.0598038581049
+    column 401: double -4.57820856880504
+    column 402: double -12.6130680009185
+    column 403: double -12.2392154324196
+    column 602: double 1.71682821330189
+    column 603: double -4.57820856880504
+    column 604: double 4.20435600030616
+    column 605: double -12.2392154324196
+    column 606: double 4.58970578715735
 row: 3 : 7 entries [26:32]
-    column 2: double -2.34300770083722
-    column 4: double -2.34300770083722
-    column 402: double 7.81002566945742
-    column 403: double 7.81002566945742
+    column 2: double -9.1794115743147
+    column 4: double -9.1794115743147
+    column 402: double 30.598038581049
+    column 403: double 30.598038581049
     ...
 row: 4 : 12 entries [33:44]
     ...
@@ -758,257 +760,257 @@ row: 8 : 12 entries [71:82]
 row: 9 : 7 entries [83:89]
     ...
 ...
-MIS time in seconds:       0.077708
-isize: 18446
-independent set found: 18446 of 120801 nodes
+MIS time in seconds:       0.097297
+isize: 18430
+independent set found: 18430 of 120801 nodes
 maximal independent set status verified
-random 10000 by 10000, nz: 199746, method 0 time 0.041 sec
+random 10000 by 10000, nz: 199768, method 0 time 0.047 sec
 
 GraphBLAS matrix: from get_matrix: 
-nrows: 10000 ncols: 10000 max # entries: 199746
+nrows: 10000 ncols: 10000 max # entries: 199768
 format: standard CSR vlen: 10000 nvec_nonempty: 10000 nvec: 10000 plen: 10000 vdim: 10000
 hyper_ratio 0.0625
 GraphBLAS type:  double size: 8
-number of entries: 199746 
-row: 0 : 18 entries [0:17]
-    column 3143: double 0.782006286812952
-    column 3238: double 0.645985290078433
-    column 3371: double 0.50297555467391
-    column 3825: double 0.460524307992798
-    column 4050: double 0.971861934263131
-    column 4513: double 0.410321359904782
-    column 5038: double 0.570909756767479
-    column 5240: double 0.578295236060671
-    column 5464: double 0.300881984923856
-    column 6319: double 0.275124362926115
-    column 6677: double 0.84743797112949
-    column 7119: double 0.40964995269631
-    column 7891: double 0.120975371562853
-    column 8001: double 0.408520767845698
-    column 8797: double 0.390728476821192
-    column 9203: double 0.541062654499954
-    column 9414: double 0.551927243873409
-    column 9469: double 0.729483932004761
-row: 1 : 18 entries [18:35]
-    column 1047: double 0.184179204687643
-    column 2165: double 0.833704641865291
-    column 2440: double 0.50007629627369
-    column 3153: double 0.576281014435255
-    column 3154: double 0.032624286629841
-    column 3793: double 0.164860988189337
-    column 3811: double 0.879757072664571
-    column 3950: double 0.0151371807000946
-    column 4019: double 0.136539811395611
-    column 5055: double 0.671987060151982
-    column 5712: double 0.970946378978851
-    column 6151: double 0.0406811731315043
+number of entries: 199768 
+row: 0 : 27 entries [0:26]
+    column 214: double 0.611428854126681
+    column 599: double 0.759817736907767
+    column 687: double 0.490404969132481
+    column 1945: double 0.220198646141235
+    column 2206: double 0.469879566865097
+    column 3108: double 0.861235641490359
+    column 3938: double 0.161881899547966
+    column 4048: double 0.974307955822525
+    column 4050: double 0.0806984691326516
+    column 4327: double 0.845122101573719
+    column 4526: double 0.917189450706256
+    column 4651: double 0.953684565813323
+    column 5080: double 0.524531191328185
+    column 5289: double 0.373677450804412
+    column 5397: double 0.147001725909933
+    column 5574: double 0.741414052708653
+    column 5603: double 0.0243003910252495
+    column 6319: double 0.386650481372716
+    column 6693: double 0.985725408162066
+    column 7242: double 0.387267836971157
+    column 7597: double 0.148198968114398
+    column 7855: double 0.161521142087958
+    column 8149: double 0.80591885984148
+    column 8307: double 0.583442051968559
+    column 8807: double 0.201124811360069
+    column 9224: double 0.246570360972623
+    column 9320: double 0.810676243146442
+row: 1 : 18 entries [27:44]
+    column 222: double 0.199748643507498
+    column 1002: double 0.723475211370372
+    column 1776: double 0.424430120199892
     ...
-row: 2 : 25 entries [36:60]
+row: 2 : 18 entries [45:62]
     ...
-row: 3 : 19 entries [61:79]
+row: 3 : 20 entries [63:82]
     ...
-row: 4 : 22 entries [80:101]
+row: 4 : 27 entries [83:109]
     ...
-row: 5 : 25 entries [102:126]
+row: 5 : 23 entries [110:132]
     ...
-row: 6 : 19 entries [127:145]
+row: 6 : 23 entries [133:155]
     ...
-row: 7 : 29 entries [146:174]
+row: 7 : 18 entries [156:173]
     ...
-row: 8 : 26 entries [175:200]
+row: 8 : 22 entries [174:195]
     ...
-row: 9 : 29 entries [201:229]
+row: 9 : 17 entries [196:212]
     ...
 ...
-MIS time in seconds:       0.008232
-isize: 1671
-independent set found: 1671 of 10000 nodes
+MIS time in seconds:       0.010690
+isize: 1684
+independent set found: 1684 of 10000 nodes
 maximal independent set status verified
-random 10000 by 10000, nz: 199746, method 1 time 0.039 sec
+random 10000 by 10000, nz: 199768, method 1 time 0.041 sec
 
 GraphBLAS matrix: from get_matrix: 
-nrows: 10000 ncols: 10000 max # entries: 199746
+nrows: 10000 ncols: 10000 max # entries: 199768
 format: standard CSR vlen: 10000 nvec_nonempty: 10000 nvec: 10000 plen: 10000 vdim: 10000
 hyper_ratio 0.0625
 GraphBLAS type:  double size: 8
-number of entries: 199746 
-row: 0 : 18 entries [0:17]
-    column 3143: double 0.782006286812952
-    column 3238: double 0.645985290078433
-    column 3371: double 0.50297555467391
-    column 3825: double 0.460524307992798
-    column 4050: double 0.971861934263131
-    column 4513: double 0.410321359904782
-    column 5038: double 0.570909756767479
-    column 5240: double 0.578295236060671
-    column 5464: double 0.300881984923856
-    column 6319: double 0.275124362926115
-    column 6677: double 0.84743797112949
-    column 7119: double 0.40964995269631
-    column 7891: double 0.120975371562853
-    column 8001: double 0.408520767845698
-    column 8797: double 0.390728476821192
-    column 9203: double 0.541062654499954
-    column 9414: double 0.551927243873409
-    column 9469: double 0.729483932004761
-row: 1 : 18 entries [18:35]
-    column 1047: double 0.184179204687643
-    column 2165: double 0.833704641865291
-    column 2440: double 0.50007629627369
-    column 3153: double 0.576281014435255
-    column 3154: double 0.032624286629841
-    column 3793: double 0.164860988189337
-    column 3811: double 0.879757072664571
-    column 3950: double 0.0151371807000946
-    column 4019: double 0.136539811395611
-    column 5055: double 0.671987060151982
-    column 5712: double 0.970946378978851
-    column 6151: double 0.0406811731315043
+number of entries: 199768 
+row: 0 : 27 entries [0:26]
+    column 214: double 0.611428854126681
+    column 599: double 0.759817736907767
+    column 687: double 0.490404969132481
+    column 1945: double 0.220198646141235
+    column 2206: double 0.469879566865097
+    column 3108: double 0.861235641490359
+    column 3938: double 0.161881899547966
+    column 4048: double 0.974307955822525
+    column 4050: double 0.0806984691326516
+    column 4327: double 0.845122101573719
+    column 4526: double 0.917189450706256
+    column 4651: double 0.953684565813323
+    column 5080: double 0.524531191328185
+    column 5289: double 0.373677450804412
+    column 5397: double 0.147001725909933
+    column 5574: double 0.741414052708653
+    column 5603: double 0.0243003910252495
+    column 6319: double 0.386650481372716
+    column 6693: double 0.985725408162066
+    column 7242: double 0.387267836971157
+    column 7597: double 0.148198968114398
+    column 7855: double 0.161521142087958
+    column 8149: double 0.80591885984148
+    column 8307: double 0.583442051968559
+    column 8807: double 0.201124811360069
+    column 9224: double 0.246570360972623
+    column 9320: double 0.810676243146442
+row: 1 : 18 entries [27:44]
+    column 222: double 0.199748643507498
+    column 1002: double 0.723475211370372
+    column 1776: double 0.424430120199892
     ...
-row: 2 : 25 entries [36:60]
+row: 2 : 18 entries [45:62]
     ...
-row: 3 : 19 entries [61:79]
+row: 3 : 20 entries [63:82]
     ...
-row: 4 : 22 entries [80:101]
+row: 4 : 27 entries [83:109]
     ...
-row: 5 : 25 entries [102:126]
+row: 5 : 23 entries [110:132]
     ...
-row: 6 : 19 entries [127:145]
+row: 6 : 23 entries [133:155]
     ...
-row: 7 : 29 entries [146:174]
+row: 7 : 18 entries [156:173]
     ...
-row: 8 : 26 entries [175:200]
+row: 8 : 22 entries [174:195]
     ...
-row: 9 : 29 entries [201:229]
+row: 9 : 17 entries [196:212]
     ...
 ...
-MIS time in seconds:       0.007269
-isize: 1671
-independent set found: 1671 of 10000 nodes
+MIS time in seconds:       0.012969
+isize: 1684
+independent set found: 1684 of 10000 nodes
 maximal independent set status verified
-random 100000 by 100000, nz: 19979838, method 0 time 4.765 sec
+random 100000 by 100000, nz: 19980330, method 0 time 5.938 sec
 
 GraphBLAS matrix: from get_matrix: 
-nrows: 100000 ncols: 100000 max # entries: 19979838
+nrows: 100000 ncols: 100000 max # entries: 19980330
 format: standard CSR vlen: 100000 nvec_nonempty: 100000 nvec: 100000 plen: 100000 vdim: 100000
 hyper_ratio 0.0625
 GraphBLAS type:  double size: 8
-number of entries: 19979838 
-row: 0 : 174 entries [0:173]
-    column 46: double 0.839075899533067
-    column 170: double 0.728598895229957
-    column 798: double 0.881557664723655
-    column 2726: double 0.329691457869198
-    column 2762: double 0.448011719107639
-    column 3535: double 0.0736106448561052
-    column 3921: double 0.722190008239998
-    column 4491: double 0.945402386547441
-    column 4808: double 0.825495162816248
-    column 5290: double 0.0121463667714469
-    column 5514: double 0.153294473097934
-    column 6015: double 0.0816064943388165
-    column 6022: double 0.464827417828913
-    column 6822: double 0.928586687826167
-    column 7237: double 0.931943723868526
-    column 8100: double 0.886684774315622
-    column 8420: double 0.845210119937742
-    column 8797: double 0.390728476821192
-    column 8979: double 0.402142399365215
-    column 9648: double 0.181340983306375
-    column 10387: double 0.205145420697653
-    column 11015: double 0.779412213507492
-    column 11243: double 0.054475539414655
-    column 11903: double 0.434827723014008
-    column 11996: double 0.701254310739464
-    column 12390: double 0.84621723075045
-    column 13056: double 0.750144962920011
-    column 13111: double 0.548020874660482
-    column 14644: double 0.688772240363781
-    column 14724: double 0.186590166936247
+number of entries: 19980330 
+row: 0 : 189 entries [0:188]
+    column 68: double 0.661716873588655
+    column 778: double 0.346667912736641
+    column 1801: double 0.371952817962016
+    column 1839: double 0.197836379076741
+    column 3356: double 0.878444087311034
+    column 3756: double 0.217022247656947
+    column 4441: double 0.2577766982832
+    column 4808: double 0.392707915752597
+    column 4922: double 0.0962031972027673
+    column 5075: double 0.691830102660204
+    column 6296: double 0.917483099015425
+    column 7151: double 0.193326447087741
+    column 7221: double 0.230494023532692
+    column 8657: double 0.934093089488637
+    column 9473: double 0.795621154107574
+    column 9524: double 0.0817629687243753
+    column 9648: double 0.357546753659551
+    column 11313: double 0.0928425661313169
+    column 11744: double 0.444733012853217
+    column 12263: double 0.615758200269077
+    column 12332: double 0.251131194044459
+    column 13111: double 0.219714040656976
+    column 13699: double 0.761268198442996
+    column 14471: double 0.123158921695327
+    column 14892: double 0.85213404597076
+    column 15591: double 0.442234173393239
+    column 16106: double 0.422217457293673
+    column 16346: double 0.705855402008225
+    column 16403: double 0.434678226736306
+    column 16612: double 0.994128715640082
     ...
-row: 1 : 197 entries [174:370]
+row: 1 : 163 entries [189:351]
     ...
-row: 2 : 198 entries [371:568]
+row: 2 : 201 entries [352:552]
     ...
-row: 3 : 176 entries [569:744]
+row: 3 : 205 entries [553:757]
     ...
-row: 4 : 170 entries [745:914]
+row: 4 : 214 entries [758:971]
     ...
-row: 5 : 203 entries [915:1117]
+row: 5 : 193 entries [972:1164]
     ...
-row: 6 : 205 entries [1118:1322]
+row: 6 : 215 entries [1165:1379]
     ...
-row: 7 : 191 entries [1323:1513]
+row: 7 : 195 entries [1380:1574]
     ...
-row: 8 : 214 entries [1514:1727]
+row: 8 : 210 entries [1575:1784]
     ...
-row: 9 : 197 entries [1728:1924]
+row: 9 : 205 entries [1785:1989]
     ...
 ...
-MIS time in seconds:       0.713707
-isize: 2838
-independent set found: 2838 of 100000 nodes
+MIS time in seconds:       0.737787
+isize: 2798
+independent set found: 2798 of 100000 nodes
 maximal independent set status verified
-random 100000 by 100000, nz: 19979838, method 1 time 4.059 sec
+random 100000 by 100000, nz: 19980330, method 1 time 4.902 sec
 
 GraphBLAS matrix: from get_matrix: 
-nrows: 100000 ncols: 100000 max # entries: 19979838
+nrows: 100000 ncols: 100000 max # entries: 19980330
 format: standard CSR vlen: 100000 nvec_nonempty: 100000 nvec: 100000 plen: 100000 vdim: 100000
 hyper_ratio 0.0625
 GraphBLAS type:  double size: 8
-number of entries: 19979838 
-row: 0 : 174 entries [0:173]
-    column 46: double 0.839075899533067
-    column 170: double 0.728598895229957
-    column 798: double 0.881557664723655
-    column 2726: double 0.329691457869198
-    column 2762: double 0.448011719107639
-    column 3535: double 0.0736106448561052
-    column 3921: double 0.722190008239998
-    column 4491: double 0.945402386547441
-    column 4808: double 0.825495162816248
-    column 5290: double 0.0121463667714469
-    column 5514: double 0.153294473097934
-    column 6015: double 0.0816064943388165
-    column 6022: double 0.464827417828913
-    column 6822: double 0.928586687826167
-    column 7237: double 0.931943723868526
-    column 8100: double 0.886684774315622
-    column 8420: double 0.845210119937742
-    column 8797: double 0.390728476821192
-    column 8979: double 0.402142399365215
-    column 9648: double 0.181340983306375
-    column 10387: double 0.205145420697653
-    column 11015: double 0.779412213507492
-    column 11243: double 0.054475539414655
-    column 11903: double 0.434827723014008
-    column 11996: double 0.701254310739464
-    column 12390: double 0.84621723075045
-    column 13056: double 0.750144962920011
-    column 13111: double 0.548020874660482
-    column 14644: double 0.688772240363781
-    column 14724: double 0.186590166936247
+number of entries: 19980330 
+row: 0 : 189 entries [0:188]
+    column 68: double 0.661716873588655
+    column 778: double 0.346667912736641
+    column 1801: double 0.371952817962016
+    column 1839: double 0.197836379076741
+    column 3356: double 0.878444087311034
+    column 3756: double 0.217022247656947
+    column 4441: double 0.2577766982832
+    column 4808: double 0.392707915752597
+    column 4922: double 0.0962031972027673
+    column 5075: double 0.691830102660204
+    column 6296: double 0.917483099015425
+    column 7151: double 0.193326447087741
+    column 7221: double 0.230494023532692
+    column 8657: double 0.934093089488637
+    column 9473: double 0.795621154107574
+    column 9524: double 0.0817629687243753
+    column 9648: double 0.357546753659551
+    column 11313: double 0.0928425661313169
+    column 11744: double 0.444733012853217
+    column 12263: double 0.615758200269077
+    column 12332: double 0.251131194044459
+    column 13111: double 0.219714040656976
+    column 13699: double 0.761268198442996
+    column 14471: double 0.123158921695327
+    column 14892: double 0.85213404597076
+    column 15591: double 0.442234173393239
+    column 16106: double 0.422217457293673
+    column 16346: double 0.705855402008225
+    column 16403: double 0.434678226736306
+    column 16612: double 0.994128715640082
     ...
-row: 1 : 197 entries [174:370]
+row: 1 : 163 entries [189:351]
     ...
-row: 2 : 198 entries [371:568]
+row: 2 : 201 entries [352:552]
     ...
-row: 3 : 176 entries [569:744]
+row: 3 : 205 entries [553:757]
     ...
-row: 4 : 170 entries [745:914]
+row: 4 : 214 entries [758:971]
     ...
-row: 5 : 203 entries [915:1117]
+row: 5 : 193 entries [972:1164]
     ...
-row: 6 : 205 entries [1118:1322]
+row: 6 : 215 entries [1165:1379]
     ...
-row: 7 : 191 entries [1323:1513]
+row: 7 : 195 entries [1380:1574]
     ...
-row: 8 : 214 entries [1514:1727]
+row: 8 : 210 entries [1575:1784]
     ...
-row: 9 : 197 entries [1728:1924]
+row: 9 : 205 entries [1785:1989]
     ...
 ...
-MIS time in seconds:       0.651781
-isize: 2838
-independent set found: 2838 of 100000 nodes
+MIS time in seconds:       0.683122
+isize: 2798
+independent set found: 2798 of 100000 nodes
 maximal independent set status verified

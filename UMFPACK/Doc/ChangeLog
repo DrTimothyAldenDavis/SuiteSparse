@@ -1,3 +1,8 @@
+Oct 20, 2019: version 5.7.9
+
+    * update to Makefile, Tcov, and MATLAB: BLAS and LAPACK libraries
+    * Tcov/ut.c: avoiding compiler warnings
+
 Nov 9, 2018: version 5.7.8
 
     * minor change to umf_analyze.h

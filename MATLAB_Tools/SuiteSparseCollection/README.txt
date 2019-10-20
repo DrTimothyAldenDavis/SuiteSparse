@@ -1,4 +1,4 @@
-SuiteSparseCollection, Copyright 2007-2018, Timothy A. Davis,
+SuiteSparseCollection, Copyright 2007-2019, Timothy A. Davis,
 http://www.suitesparse.com
 
 SuiteSparseCollection is a MATLAB toolbox for managing the SuiteSparse Matrix

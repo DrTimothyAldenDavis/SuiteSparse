@@ -2,7 +2,7 @@
 // GB_code_compatible: return true if domains are compatible
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2019, All Rights Reserved.
 // http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 //------------------------------------------------------------------------------
@@ -11,6 +11,8 @@
 // types (of any kind) or if both are the same user-defined type.  This
 // function does not have the type itself, but just the code.  If the types are
 // available, GB_Type_compatible should be called instead.
+
+// not parallel: this function does O(1) work and is already thread-safe.
 
 #include "GB.h"
 

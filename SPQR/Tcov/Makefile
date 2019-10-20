@@ -17,8 +17,8 @@ include ../../SuiteSparse_config/SuiteSparse_config.mk
 # this test requires gcc
 CC = gcc
 CXX= g++
-BLAS = -lrefblas
-LAPACK = -llapack
+# BLAS = -lrefblas
+# LAPACK = -llapack
 
 # for statement coverage (with gcov; see go) and picky compiler warnings
 CF = -pg \

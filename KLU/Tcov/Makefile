@@ -9,8 +9,8 @@ default: all
 
 include ../../SuiteSparse_config/SuiteSparse_config.mk
 
-BLAS = -lrefblas
-LAPACK = -llapack
+# BLAS = -lrefblas
+# LAPACK = -llapack
 
 # CF = -Wall -W -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
 # 	-Wredundant-decls -Wnested-externs -Wdisabled-optimization \

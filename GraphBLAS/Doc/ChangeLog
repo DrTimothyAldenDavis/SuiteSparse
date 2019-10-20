@@ -1,3 +1,70 @@
+Version 2.3.5, Oct 20, 2019
+
+    * Collected Algorithm of the ACM
+    * minor update: fix for tests in MATLAB R2019b
+
+Version 2.3.4, July 4, 2019
+
+    * minor bug fix to GrB_*_extractTuples: nvals was left unchanged
+        if the matrix or vector had no entries (now returned as zero).
+
+Version 2.3.3, May 27, 2019
+
+    * minor changes to the documentation: no change to the code
+
+Version 2.3.2, Mar 18, 2019
+
+    * GxB_Matrix_Option_set: removed spurious check of input matrix
+
+Version 2.3.1, Mar 9, 2019
+
+    * _Generic:  further modifications for 'int' vs 'const int', needed for
+        icc 19.0.0.
+    * bug fix in user_def1.m4: compile-time GxB_Semring_define with terminal
+        monoids
+
+Version 2.3.0, Feb 25, 2019
+
+    * early exit: for integer TIMES monoids (terminal value is 0);
+        cannot use zero for floating-point, to preserve NaN behavior
+    * GrB_assign / GxB_subassign: further exploit of aliased inputs
+    * Test/: MATLAB mexFunctions now link against the dynamic -lgraphblas
+    * bug fix for Demo/mis*: random number generator could create
+        duplicate scores, which leads to a stall
+    * terminal values for user monoids: added GxB_Monoid_terminal_new,
+        GxB_Monoid_terminal_define, and GxB_Monoid_terminal
+    * added GxB_init: GrB_init with malloc/calloc/realloc/free redefinition
+    * _Generic: compilers differ on _Generic(x,int:,const int:). gcc, clang,
+        icc 18.0.0 treat int and const int the same; icc 18.0.3 treats them
+        as different.  This is a result of an ambiguity in the ANSI C11
+        specification.  Minor update so that the use of _Generic(...) is
+        compatible with all compilers.
+    * early exit: for GrB_reduce
+
+Version 2.3.0 (BETA1), Feb 16, 2019
+
+    * simplified GBI_*_iterators
+    * towards OpenMP: PARALLEL comments added to most files (all upper case)
+        where parallelism will be added in the future.
+    * early exit: for monoids: MIN, MAX, AND, OR, based on terminal values
+    * Demo/bfs*: much faster (prior versions had performance bug)
+    * GrB_assign for accum/mask step: faster, zombies and pending tuples
+        exploited by C<M>=accum(C,T) for any GraphBLAS method, when either the
+        mask M or accum are present.
+    * moved persistent thread-workspace from the matrix to a global array
+    * added isequal function to Demos/
+    * added import/export method
+    * added nthreads: to descriptor, the matrix, and a global nthreads
+        for GrB_wait, and added Context as parameter in many internal
+        functions, to pass in Context->nthreads for future parallelism
+    * defined all enum constants explicitly: no change to their values,
+        this just ensures they remain fixed in future versions
+
+Version 2.2.3, Dec 30, 2018
+
+    * added doxygen documentation: minor changes to the code
+        comments to accomodate doxygen.  Added Doxyfile settings file.
+
 Version 2.2.2, Dec 18, 2018
 
     * GxB_print: better output for compile-time user objects

@@ -1,6 +1,6 @@
 SuiteSparse:  A Suite of Sparse matrix packages at http://www.suitesparse.com
 
-Dec 20, 2018.  SuiteSparse VERSION 5.4.0
+Oct 19, 2019.  SuiteSparse VERSION 5.5.0
 
 Now includes GraphBLAS and a new interface to the SuiteSparse Matrix
 Collection (ssget), via MATLAB and a Java GUI, to http://sparse.tamu.edu.
@@ -158,7 +158,7 @@ Packages in SuiteSparse, and files in this directory:
                                 reliable factorizations, etc.  With Leslie
                                 Foster, San Jose State Univ.
                 SSMULT          C=A*B where A and B are both sparse
-                SuiteSparseCollection    maitains the SuiteSparse Matrix Collection
+                SuiteSparseCollection    for the SuiteSparse Matrix Collection
                 waitmex         waitbar for use inside a mexFunction
 
                 The SSMULT and SFMULT functions are the basis for the
@@ -318,6 +318,9 @@ options that you can either list on the 'make' command line, or you can just
 edit that file.  For example, to compile with your own BLAS:
 
     make BLAS=-lmyblaslibraryhere
+
+NOTE: Use of the Intel MKL BLAS is strongly recommended.  The OpenBLAS can
+result in severe performance degradation, in CHOLMOD in particular.
 
 To list all configuration options (but not compile anything), do:
 

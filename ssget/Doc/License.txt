@@ -1,4 +1,4 @@
-ssget, Copyright (c), 2009-2017, Timothy A. Davis, All Rights Reserved.
+ssget, Copyright (c), 2009-2019, Timothy A. Davis, All Rights Reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:

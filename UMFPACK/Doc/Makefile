@@ -38,9 +38,9 @@ UMFPACK = umfpack_col_to_triplet umfpack_defaults umfpack_free_numeric \
 
 UMFPACKW = umfpack_wsolve
 
-USER = $(UMFPACKW) $(UMFPACK)
+UMFUSER = $(UMFPACKW) $(UMFPACK)
 
-SRC = $(addprefix ../Include/, $(addsuffix .h,$(USER))) ../Demo/umfpack_simple.c
+SRC = $(addprefix ../Include/, $(addsuffix .h,$(UMFUSER))) ../Demo/umfpack_simple.c
 
 UMFPACK_UserGuide.pdf:  UMFPACK_UserGuide.stex UserGuide.sed1 UserGuide.sed2 $(SRC) UserGuide.bib
 	sed -f UserGuide.sed1 < UMFPACK_UserGuide.stex | sed -f UserGuide.sed2 \

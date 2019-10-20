@@ -3,7 +3,7 @@
 #-------------------------------------------------------------------------------
 
 LIBRARY = libumfpack
-VERSION = 5.7.8
+VERSION = 5.7.9
 SO_VERSION = 5
 
 default: library
@@ -78,7 +78,7 @@ UMFPACK = umfpack_col_to_triplet umfpack_defaults umfpack_free_numeric \
 # with int/SuiteSparse_long and real/complex versions:
 UMFPACKW = umfpack_wsolve
 
-USER = $(UMFPACKW) $(UMFPACK)
+UMFUSER = $(UMFPACKW) $(UMFPACK)
 
 # user-callable, only one version for int/SuiteSparse_long,
 # real/complex, *.[ch] files:
@@ -93,7 +93,7 @@ INC = ../Include/umfpack.h ../../SuiteSparse_config/SuiteSparse_config.h \
 	../Source/umf_internal.h ../Source/umf_triplet.h \
 	$(addprefix ../Source/,  $(addsuffix .h,$(UMFCH))) \
 	$(addprefix ../Source/,  $(addsuffix .h,$(UMFINT))) \
-	$(addprefix ../Include/, $(addsuffix .h,$(USER))) \
+	$(addprefix ../Include/, $(addsuffix .h,$(UMFUSER))) \
 	$(addprefix ../Include/, $(addsuffix .h,$(GENERIC))) \
 	../../AMD/Include/amd_internal.h ../../AMD/Include/amd.h
 
@@ -101,10 +101,10 @@ INC = ../Include/umfpack.h ../../SuiteSparse_config/SuiteSparse_config.h \
 # object files for each version
 #-------------------------------------------------------------------------------
 
-DI = $(addsuffix .o, $(subst umf_,umf_di_,$(UMF)) $(subst umfpack_,umfpack_di_,$(USER)))
-DL = $(addsuffix .o, $(subst umf_,umf_dl_,$(UMF)) $(subst umfpack_,umfpack_dl_,$(USER)))
-ZI = $(addsuffix .o, $(subst umf_,umf_zi_,$(UMF)) $(subst umfpack_,umfpack_zi_,$(USER)))
-ZL = $(addsuffix .o, $(subst umf_,umf_zl_,$(UMF)) $(subst umfpack_,umfpack_zl_,$(USER)))
+DI = $(addsuffix .o, $(subst umf_,umf_di_,$(UMF)) $(subst umfpack_,umfpack_di_,$(UMFUSER)))
+DL = $(addsuffix .o, $(subst umf_,umf_dl_,$(UMF)) $(subst umfpack_,umfpack_dl_,$(UMFUSER)))
+ZI = $(addsuffix .o, $(subst umf_,umf_zi_,$(UMF)) $(subst umfpack_,umfpack_zi_,$(UMFUSER)))
+ZL = $(addsuffix .o, $(subst umf_,umf_zl_,$(UMF)) $(subst umfpack_,umfpack_zl_,$(UMFUSER)))
 II = $(addsuffix .o, $(subst umf_,umf_i_,$(UMFINT)))
 LL = $(addsuffix .o, $(subst umf_,umf_l_,$(UMFINT)))
 GN = $(addsuffix .o, $(subst umfpack_,umfpack_gn_,$(GENERIC)))

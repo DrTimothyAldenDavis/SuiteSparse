@@ -6,7 +6,7 @@
  * Collection.
  */
 
-/* Copyright 2007-2018, Timothy A. Davis, http://www.suitesparse.com */
+/* Copyright 2007-2019, Timothy A. Davis, http://www.suitesparse.com */
 
 /* ========================================================================== */
 

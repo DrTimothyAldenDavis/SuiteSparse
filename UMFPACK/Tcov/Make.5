@@ -6,12 +6,14 @@ INSTALL ?= /garbage
 INSTALL_LIB = $(INSTALL)/lib
 INSTALL_INCLUDE = $(INSTALL)/include
 INSTALL_DOC = $(INSTALL)/doc
+LAPACK =
+BLAS = -lmkl_intel_lp64 -lmkl_core -lmkl_intel_thread -liomp5 -lpthread -lm
 
 CC = gcc
 CF = -O0 -g --coverage -fPIC -fopenmp
 LDFLAGS = --coverage
 UMFPACK_CONFIG = -DNBLAS -DTEST_FOR_INTEGER_OVERFLOW -DTESTING -DNRECIPROCAL
-LDLIBS = -L$(INSTALL)/lib -llapack -lrefblas -lgfortran -lm -lrt \
+LDLIBS = -L$(INSTALL)/lib $(LAPACK) $(BLAS) -lm -lrt \
     -Wl,-rpath=lib -lgcov
 
 ifneq ($(CUDA),no)
@@ -33,6 +35,7 @@ SO_MAIN   = $(LIBRARY).so.$(SO_VERSION)
 SO_TARGET = $(LIBRARY).so.$(VERSION)
 SO_OPTS   = -shared -Wl,-soname -Wl,$(SO_MAIN)
 SO_INSTALL_NAME = echo
+JOBS = 1
 
 #===============================================================================
 

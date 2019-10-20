@@ -59,22 +59,20 @@ kk = 0 ;
 %-------------------------------------------------------------------------------
 
 % This is exceedingly ugly.  The MATLAB mex command needs to be told where to
-% fine the LAPACK and BLAS libraries, which is a real portability nightmare.
+% find the LAPACK and BLAS libraries, which is a real portability nightmare.
 
 if (pc)
     if (verLessThan ('matlab', '7.5'))
         lapack = 'libmwlapack.lib' ;
-    else
-        % MATLAB R2007b (7.5) made the problem worse
+    elseif (verLessThan ('matlab', '9.5'))
         lapack = 'libmwlapack.lib libmwblas.lib' ;
+    else
+        lapack = '-lmwlapack -lmwblas' ;
     end
 else
-    % For other systems, mex should find lapack on its own, but this has
-    % been broken in MATLAB R2007a; the following is now required.
     if (verLessThan ('matlab', '7.5'))
         lapack = '-lmwlapack' ;
     else
-        % MATLAB R2007b (7.5) made the problem worse
         lapack = '-lmwlapack -lmwblas' ;
     end
 end

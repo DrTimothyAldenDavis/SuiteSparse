@@ -28,5 +28,5 @@
 %
 % Requires ssget, CSparse, CHOLMOD, AMD, COLAMD, METIS.
 
-% Copyright 2006-2018, Timothy A. Davis
+% Copyright 2006-2019, Timothy A. Davis
 

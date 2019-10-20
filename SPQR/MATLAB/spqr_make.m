@@ -92,9 +92,10 @@ if (pc)
     elseif (verLessThan ('matlab', '7.5'))
         % use the built-in LAPACK lib (which includes the BLAS)
         lib = 'libmwlapack.lib' ;
-    else
-        % need to also use the built-in BLAS lib 
+    elseif (verLessThan ('matlab', '9.5'))
         lib = 'libmwlapack.lib libmwblas.lib' ;
+    else
+        lib = '-lmwlapack -lmwblas' ;
     end
 else
     if (verLessThan ('matlab', '7.5'))

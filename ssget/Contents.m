@@ -15,4 +15,4 @@
 % Example:
 %   help ssget
 
-% Copyright 2017, Timothy A. Davis
+% Copyright 2019, Timothy A. Davis

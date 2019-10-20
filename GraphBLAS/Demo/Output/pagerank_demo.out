@@ -2,8 +2,8 @@
 pagerank_demo:
 ntuples: 3
 nrows 3 ncols 3
-time to prune self-edges:     0.000010
-time to build the graph with GrB_Matrix_build:     0.000064
+time to prune self-edges:     0.000014
+time to build the graph with GrB_Matrix_build:     0.000077
 leave A as-is
 
 Matrix from file:
@@ -20,10 +20,10 @@ row: 1 : 1 entries [1:1]
     column 1: bool 1
 row: 2 : 1 entries [2:2]
     column 2: bool 1
-n 3 edges 3  dpagerank time :       0.000953 iters: 20
-n 3 edges 3  ipagerank time :       0.000889 iters: 20
+n 3 edges 3  dpagerank time :       0.000271 iters: 20
+n 3 edges 3  ipagerank time :       0.000585 iters: 20
 dpagerank2: pagerank objects defined at compile-time
-n 3 edges 3  dpagerank time :       0.001452 iters: 1
+n 3 edges 3  dpagerank time :       0.000265 iters: 1
 Top 3 nodes:
     0 d:[     1 :   3.43536876e-01] i:[     1 :   1.62660004e+08] x:[     0 :   3.33333333e-01]mismatch
     1 d:[     2 :   3.36048258e-01] i:[     2 :   1.59114246e+08] x:[     1 :   3.33333333e-01]mismatch
@@ -32,8 +32,8 @@ Top 3 nodes:
 pagerank_demo:
 ntuples: 8
 nrows 4 ncols 4
-time to prune self-edges:     0.000009
-time to build the graph with GrB_Matrix_build:     0.000064
+time to prune self-edges:     0.000013
+time to build the graph with GrB_Matrix_build:     0.000077
 leave A as-is
 
 Matrix from file:
@@ -56,10 +56,10 @@ row: 2 : 2 entries [4:5]
 row: 3 : 2 entries [6:7]
     column 2: bool 1
     column 3: bool 1
-n 4 edges 8  dpagerank time :       0.000333 iters: 20
-n 4 edges 8  ipagerank time :       0.000240 iters: 20
+n 4 edges 8  dpagerank time :       0.000268 iters: 20
+n 4 edges 8  ipagerank time :       0.000241 iters: 20
 dpagerank2: pagerank objects defined at compile-time
-n 4 edges 8  dpagerank time :       0.000059 iters: 1
+n 4 edges 8  dpagerank time :       0.000062 iters: 1
 Top 4 nodes:
     0 d:[     2 :   2.52317658e-01] i:[     2 :   1.87371606e+08] x:[     0 :   2.50000000e-01]mismatch
     1 d:[     3 :   2.52317658e-01] i:[     3 :   1.87371606e+08] x:[     1 :   2.50000000e-01]mismatch
@@ -69,8 +69,8 @@ Top 4 nodes:
 pagerank_demo:
 ntuples: 10
 nrows 4 ncols 4
-time to prune self-edges:     0.000006
-time to build the graph with GrB_Matrix_build:     0.000084
+time to prune self-edges:     0.000014
+time to build the graph with GrB_Matrix_build:     0.000128
 leave A as-is
 
 Matrix from file:
@@ -95,10 +95,10 @@ row: 3 : 3 entries [7:9]
     column 0: bool 1
     column 1: bool 1
     column 3: bool 1
-n 4 edges 10  dpagerank time :       0.000241 iters: 20
-n 4 edges 10  ipagerank time :       0.000178 iters: 20
+n 4 edges 10  dpagerank time :       0.000265 iters: 20
+n 4 edges 10  ipagerank time :       0.000211 iters: 20
 dpagerank2: pagerank objects defined at compile-time
-n 4 edges 10  dpagerank time :       0.000074 iters: 12
+n 4 edges 10  dpagerank time :       0.000113 iters: 12
 Top 4 nodes:
     0 d:[     0 :   2.83169317e-01] i:[     0 :   2.10282109e+08] x:[     0 :   2.83169438e-01]
     1 d:[     1 :   2.79491856e-01] i:[     1 :   2.07551220e+08] x:[     1 :   2.79491122e-01]
@@ -108,8 +108,8 @@ Top 4 nodes:
 pagerank_demo:
 ntuples: 224
 nrows 48 ncols 48
-time to prune self-edges:     0.000007
-time to build the graph with GrB_Matrix_build:     0.000083
+time to prune self-edges:     0.000018
+time to build the graph with GrB_Matrix_build:     0.000116
 leave A as-is
 
 Matrix from file:
@@ -152,10 +152,10 @@ row: 8 : 2 entries [18:19]
 row: 9 : 5 entries [20:24]
     column 1: bool 1
 ...
-n 48 edges 224  dpagerank time :       0.000258 iters: 20
-n 48 edges 224  ipagerank time :       0.000244 iters: 20
+n 48 edges 224  dpagerank time :       0.000331 iters: 20
+n 48 edges 224  ipagerank time :       0.000414 iters: 20
 dpagerank2: pagerank objects defined at compile-time
-n 48 edges 224  dpagerank time :       0.000163 iters: 16
+n 48 edges 224  dpagerank time :       0.000180 iters: 16
 Top 48 nodes:
     0 d:[     2 :   2.01321299e-01] i:[     2 :   2.05208622e+08] x:[     2 :   2.01807617e-01]
     1 d:[     0 :   1.92670034e-01] i:[     0 :   1.96390309e+08] x:[     0 :   1.92211713e-01]
@@ -209,8 +209,8 @@ Top 48 nodes:
 pagerank_demo:
 ntuples: 147631
 nrows 4884 ncols 4884
-time to prune self-edges:     0.000009
-time to build the graph with GrB_Matrix_build:     0.013487
+time to prune self-edges:     0.000013
+time to build the graph with GrB_Matrix_build:     0.017407
 leave A as-is
 
 Matrix from file:
@@ -257,10 +257,10 @@ row: 8 : 1 entries [23:23]
 row: 9 : 5 entries [24:28]
     column 3: bool 1
 ...
-n 4884 edges 147631  dpagerank time :       0.016334 iters: 20
-n 4884 edges 147631  ipagerank time :       0.012592 iters: 20
+n 4884 edges 147631  dpagerank time :       0.016602 iters: 20
+n 4884 edges 147631  ipagerank time :       0.012623 iters: 20
 dpagerank2: pagerank objects defined at compile-time
-n 4884 edges 147631  dpagerank time :       0.024227 iters: 46
+n 4884 edges 147631  dpagerank time :       0.023806 iters: 46
 Top 4884 nodes:
     0 d:[     0 :   2.94577327e-02] i:[     0 :   3.13472590e+07] x:[     0 :   3.32228314e-02]
     1 d:[     1 :   5.01366807e-03] i:[     1 :   5.33513900e+06] x:[     1 :   4.99132478e-03]
@@ -1068,8 +1068,8 @@ Top 4884 nodes:
   803 d:[  1698 :   2.64956087e-04] i:[  1698 :   2.81934000e+05] x:[  3443 :   2.63767386e-04]mismatch
   804 d:[   237 :   2.64930156e-04] i:[   237 :   2.81908000e+05] x:[  2801 :   2.63668422e-04]mismatch
   805 d:[   921 :   2.64917632e-04] i:[   921 :   2.81893000e+05] x:[  3244 :   2.63633261e-04]mismatch
-  806 d:[   366 :   2.64887528e-04] i:[  2919 :   2.81861000e+05] x:[  2142 :   2.63609955e-04]mismatch
-  807 d:[  2919 :   2.64887199e-04] i:[   366 :   2.81861000e+05] x:[  2346 :   2.63425439e-04]mismatch
+  806 d:[   366 :   2.64887528e-04] i:[   366 :   2.81861000e+05] x:[  2142 :   2.63609955e-04]mismatch
+  807 d:[  2919 :   2.64887199e-04] i:[  2919 :   2.81861000e+05] x:[  2346 :   2.63425439e-04]mismatch
   808 d:[  2031 :   2.64879219e-04] i:[  2031 :   2.81852000e+05] x:[  2253 :   2.63378800e-04]mismatch
   809 d:[  1809 :   2.64873275e-04] i:[  1809 :   2.81846000e+05] x:[  2364 :   2.63088186e-04]mismatch
   810 d:[  2586 :   2.64868041e-04] i:[  2586 :   2.81840000e+05] x:[  2457 :   2.62848727e-04]mismatch
@@ -2097,9 +2097,9 @@ Top 4884 nodes:
  1832 d:[  2472 :   2.07379263e-04] i:[  2472 :   2.20668000e+05] x:[  3831 :   2.05059744e-04]mismatch
  1833 d:[  1028 :   2.07374184e-04] i:[  1028 :   2.20663000e+05] x:[   829 :   2.05018649e-04]mismatch
  1834 d:[  3358 :   2.07369704e-04] i:[  3358 :   2.20657000e+05] x:[  3167 :   2.04975491e-04]mismatch
- 1835 d:[  2361 :   2.07361885e-04] i:[  2361 :   2.20649000e+05] x:[  3925 :   2.04960302e-04]mismatch
- 1836 d:[  1694 :   2.07355298e-04] i:[  4850 :   2.20642000e+05] x:[  3926 :   2.04960302e-04]mismatch
- 1837 d:[  4850 :   2.07354290e-04] i:[  1694 :   2.20642000e+05] x:[   719 :   2.04914416e-04]mismatch
+ 1835 d:[  2361 :   2.07361885e-04] i:[  2361 :   2.20649000e+05] x:[  3926 :   2.04960302e-04]mismatch
+ 1836 d:[  1694 :   2.07355298e-04] i:[  1694 :   2.20642000e+05] x:[  3925 :   2.04960302e-04]mismatch
+ 1837 d:[  4850 :   2.07354290e-04] i:[  4850 :   2.20642000e+05] x:[   719 :   2.04914416e-04]mismatch
  1838 d:[  2915 :   2.07312756e-04] i:[  2915 :   2.20597000e+05] x:[   608 :   2.04848730e-04]mismatch
  1839 d:[   917 :   2.07308864e-04] i:[   917 :   2.20593000e+05] x:[  4140 :   2.04824468e-04]mismatch
  1840 d:[  1805 :   2.07287915e-04] i:[  1805 :   2.20571000e+05] x:[  2693 :   2.04817491e-04]mismatch
@@ -2270,8 +2270,8 @@ Top 4884 nodes:
  2005 d:[  1263 :   1.99844509e-04] i:[  1263 :   2.12649000e+05] x:[  2140 :   1.99569251e-04]mismatch
  2006 d:[  1596 :   1.99805728e-04] i:[  1596 :   2.12608000e+05] x:[  2251 :   1.99396516e-04]mismatch
  2007 d:[  2817 :   1.99797917e-04] i:[  2817 :   2.12600000e+05] x:[  3829 :   1.99395146e-04]mismatch
- 2008 d:[  1152 :   1.99791848e-04] i:[  3028 :   2.12593000e+05] x:[  2362 :   1.99179640e-04]mismatch
- 2009 d:[  3028 :   1.99790930e-04] i:[  1152 :   2.12593000e+05] x:[  3934 :   1.99131863e-04]mismatch
+ 2008 d:[  1152 :   1.99791848e-04] i:[  1152 :   2.12593000e+05] x:[  2362 :   1.99179640e-04]mismatch
+ 2009 d:[  3028 :   1.99790930e-04] i:[  3028 :   2.12593000e+05] x:[  3934 :   1.99131863e-04]mismatch
  2010 d:[  1707 :   1.99743923e-04] i:[  1707 :   2.12542000e+05] x:[   264 :   1.99105991e-04]mismatch
  2011 d:[  1041 :   1.99734055e-04] i:[  1041 :   2.12532000e+05] x:[   375 :   1.99088587e-04]mismatch
  2012 d:[  2706 :   1.99731961e-04] i:[  2706 :   2.12529000e+05] x:[   486 :   1.99054996e-04]mismatch
@@ -2630,8 +2630,8 @@ Top 4884 nodes:
  2365 d:[  1376 :   1.86747591e-04] i:[  1376 :   1.98713000e+05] x:[   401 :   1.86151828e-04]mismatch
  2366 d:[  1487 :   1.86731721e-04] i:[  1487 :   1.98696000e+05] x:[   266 :   1.86048445e-04]mismatch
  2367 d:[  1265 :   1.86727041e-04] i:[  1265 :   1.98691000e+05] x:[   290 :   1.86034116e-04]mismatch
- 2368 d:[   512 :   1.86686185e-04] i:[   512 :   1.98647000e+05] x:[   377 :   1.86032178e-04]mismatch
- 2369 d:[  1598 :   1.86685147e-04] i:[  1598 :   1.98647000e+05] x:[   488 :   1.86000780e-04]mismatch
+ 2368 d:[   512 :   1.86686185e-04] i:[  1598 :   1.98647000e+05] x:[   377 :   1.86032178e-04]mismatch
+ 2369 d:[  1598 :   1.86685147e-04] i:[   512 :   1.98647000e+05] x:[   488 :   1.86000780e-04]mismatch
  2370 d:[  2819 :   1.86684014e-04] i:[  2819 :   1.98645000e+05] x:[  3484 :   1.85970965e-04]mismatch
  2371 d:[  1154 :   1.86679238e-04] i:[  1154 :   1.98640000e+05] x:[  2962 :   1.85968595e-04]mismatch
  2372 d:[  1709 :   1.86627873e-04] i:[  1709 :   1.98586000e+05] x:[   932 :   1.85941568e-04]mismatch
@@ -3271,8 +3271,8 @@ Top 4884 nodes:
  3006 d:[  4272 :   1.69500594e-04] i:[  4272 :   1.80359000e+05] x:[  3293 :   1.68795403e-04]mismatch
  3007 d:[  4185 :   1.69361712e-04] i:[  4185 :   1.80211000e+05] x:[   506 :   1.68788859e-04]mismatch
  3008 d:[  1394 :   1.69326197e-04] i:[  1394 :   1.80175000e+05] x:[  2933 :   1.68786790e-04]mismatch
- 3009 d:[  1505 :   1.69322108e-04] i:[   284 :   1.80170000e+05] x:[   839 :   1.68752931e-04]mismatch
- 3010 d:[   284 :   1.69321759e-04] i:[  1505 :   1.80170000e+05] x:[   617 :   1.68741629e-04]mismatch
+ 3009 d:[  1505 :   1.69322108e-04] i:[  1505 :   1.80170000e+05] x:[   839 :   1.68752931e-04]mismatch
+ 3010 d:[   284 :   1.69321759e-04] i:[   284 :   1.80170000e+05] x:[   617 :   1.68741629e-04]mismatch
  3011 d:[  1283 :   1.69310339e-04] i:[  1283 :   1.80158000e+05] x:[   728 :   1.68693822e-04]mismatch
  3012 d:[   395 :   1.69303956e-04] i:[   395 :   1.80151000e+05] x:[   950 :   1.68688020e-04]mismatch
  3013 d:[  2837 :   1.69299578e-04] i:[  2837 :   1.80146000e+05] x:[  1061 :   1.68684519e-04]mismatch
@@ -3702,8 +3702,8 @@ Top 4884 nodes:
  3437 d:[  2655 :   1.36536062e-04] i:[  2655 :   1.45283000e+05] x:[  2322 :   1.36186747e-04]mismatch
  3438 d:[  2988 :   1.36534777e-04] i:[  2988 :   1.45282000e+05] x:[  2433 :   1.36164918e-04]mismatch
  3439 d:[  2100 :   1.36523307e-04] i:[  2100 :   1.45269000e+05] x:[  2544 :   1.36136070e-04]mismatch
- 3440 d:[  2544 :   1.36503637e-04] i:[  2544 :   1.45248000e+05] x:[  2655 :   1.36097812e-04]mismatch
- 3441 d:[  2211 :   1.36503200e-04] i:[  2211 :   1.45248000e+05] x:[  3950 :   1.36094728e-04]mismatch
+ 3440 d:[  2544 :   1.36503637e-04] i:[  2211 :   1.45248000e+05] x:[  2655 :   1.36097812e-04]mismatch
+ 3441 d:[  2211 :   1.36503200e-04] i:[  2544 :   1.45248000e+05] x:[  3950 :   1.36094728e-04]mismatch
  3442 d:[  2322 :   1.36487651e-04] i:[  2322 :   1.45231000e+05] x:[  2766 :   1.36046893e-04]mismatch
  3443 d:[  2433 :   1.36486376e-04] i:[  2433 :   1.45230000e+05] x:[   215 :   1.36034156e-04]mismatch
  3444 d:[  3099 :   1.36386220e-04] i:[  3099 :   1.45124000e+05] x:[  2877 :   1.35978877e-04]mismatch
@@ -4404,16 +4404,16 @@ Top 4884 nodes:
  4139 d:[  1104 :   1.01623525e-04] i:[  1104 :   1.08133000e+05] x:[  1437 :   1.01438773e-04]mismatch
  4140 d:[  1881 :   1.01621617e-04] i:[  1881 :   1.08132000e+05] x:[  1548 :   1.01437119e-04]mismatch
  4141 d:[   771 :   1.01620891e-04] i:[   771 :   1.08131000e+05] x:[  1659 :   1.01435078e-04]mismatch
- 4142 d:[   993 :   1.01619591e-04] i:[   993 :   1.08129000e+05] x:[  1770 :   1.01432509e-04]mismatch
- 4143 d:[   882 :   1.01618890e-04] i:[   882 :   1.08129000e+05] x:[  1881 :   1.01429220e-04]mismatch
+ 4142 d:[   993 :   1.01619591e-04] i:[   882 :   1.08129000e+05] x:[  1770 :   1.01432509e-04]mismatch
+ 4143 d:[   882 :   1.01618890e-04] i:[   993 :   1.08129000e+05] x:[  1881 :   1.01429220e-04]mismatch
  4144 d:[  1992 :   1.01614437e-04] i:[  1992 :   1.08124000e+05] x:[  1992 :   1.01424958e-04]
  4145 d:[  2658 :   1.01613546e-04] i:[  2658 :   1.08123000e+05] x:[  2103 :   1.01419397e-04]mismatch
  4146 d:[  2991 :   1.01611466e-04] i:[  2991 :   1.08121000e+05] x:[  2214 :   1.01412105e-04]mismatch
  4147 d:[  2103 :   1.01604368e-04] i:[  2103 :   1.08113000e+05] x:[  4566 :   1.01411864e-04]mismatch
  4148 d:[  2547 :   1.01593531e-04] i:[  2547 :   1.08102000e+05] x:[  2325 :   1.01402505e-04]mismatch
  4149 d:[  2214 :   1.01592050e-04] i:[  2214 :   1.08100000e+05] x:[  2436 :   1.01389824e-04]mismatch
- 4150 d:[  2325 :   1.01582886e-04] i:[  2325 :   1.08090000e+05] x:[  2547 :   1.01373012e-04]mismatch
- 4151 d:[  2436 :   1.01582575e-04] i:[  2436 :   1.08090000e+05] x:[  2658 :   1.01350645e-04]mismatch
+ 4150 d:[  2325 :   1.01582886e-04] i:[  2436 :   1.08090000e+05] x:[  2547 :   1.01373012e-04]mismatch
+ 4151 d:[  2436 :   1.01582575e-04] i:[  2325 :   1.08090000e+05] x:[  2658 :   1.01350645e-04]mismatch
  4152 d:[  3974 :   1.01567844e-04] i:[  3974 :   1.08074000e+05] x:[  2769 :   1.01320778e-04]mismatch
  4153 d:[  4607 :   1.01553650e-04] i:[  4607 :   1.08058000e+05] x:[  2880 :   1.01280745e-04]mismatch
  4154 d:[  3102 :   1.01521072e-04] i:[  3102 :   1.08025000e+05] x:[  2991 :   1.01226879e-04]mismatch
@@ -5150,8 +5150,8 @@ Top 4884 nodes:
 pagerank_demo:
 ntuples: 1069
 nrows 183 ncols 183
-time to prune self-edges:     0.000007
-time to build the graph with GrB_Matrix_build:     0.000147
+time to prune self-edges:     0.000013
+time to build the graph with GrB_Matrix_build:     0.000159
 leave A as-is
 
 Matrix from file:
@@ -5213,10 +5213,10 @@ row: 8 : 3 entries [160:162]
 row: 9 : 2 entries [163:164]
     ...
 ...
-n 183 edges 1069  dpagerank time :       0.000431 iters: 20
-n 183 edges 1069  ipagerank time :       0.000422 iters: 20
+n 183 edges 1069  dpagerank time :       0.000409 iters: 20
+n 183 edges 1069  ipagerank time :       0.000343 iters: 20
 dpagerank2: pagerank objects defined at compile-time
-n 183 edges 1069  dpagerank time :       0.000360 iters: 37
+n 183 edges 1069  dpagerank time :       0.000351 iters: 37
 Top 183 nodes:
     0 d:[   136 :   1.44417299e-01] i:[   136 :   1.54974807e+08] x:[   136 :   1.44252744e-01]
     1 d:[     0 :   6.91790584e-02] i:[     0 :   7.42363140e+07] x:[     0 :   6.91214864e-02]
@@ -5405,8 +5405,8 @@ Top 183 nodes:
 pagerank_demo:
 ntuples: 299
 nrows 67 ncols 67
-time to prune self-edges:     0.000006
-time to build the graph with GrB_Matrix_build:     0.000068
+time to prune self-edges:     0.000012
+time to build the graph with GrB_Matrix_build:     0.000101
 leave A as-is
 
 Matrix from file:
@@ -5461,10 +5461,10 @@ row: 8 : 5 entries [32:36]
 row: 9 : 6 entries [37:42]
     ...
 ...
-n 67 edges 294  dpagerank time :       0.000277 iters: 20
-n 67 edges 294  ipagerank time :       0.000266 iters: 20
+n 67 edges 294  dpagerank time :       0.000324 iters: 20
+n 67 edges 294  ipagerank time :       0.000245 iters: 20
 dpagerank2: pagerank objects defined at compile-time
-n 67 edges 294  dpagerank time :       0.000130 iters: 11
+n 67 edges 294  dpagerank time :       0.000123 iters: 11
 Top 67 nodes:
     0 d:[    19 :   3.94517117e-02] i:[    19 :   4.32121520e+07] x:[    19 :   3.94480927e-02]
     1 d:[    30 :   3.14483557e-02] i:[    30 :   3.44459360e+07] x:[    30 :   3.14475525e-02]

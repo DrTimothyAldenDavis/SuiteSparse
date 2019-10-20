@@ -7,39 +7,39 @@ hyper_ratio 0.0625
 GraphBLAS type:  double size: 8
 number of entries: 817 
 row: 0 : 8 entries [0:7]
-    column 0: double 6.85160883409121
-    column 1: double -6.85160883409121
-    column 2: double 2.28386961136374
-    column 9: double -6.85160883409121
-    column 10: double -9.13547844545495
-    column 14: double 2.28386961136374
-    column 15: double -9.13547844545495
-    column 16: double 3.42580441704561
+    column 0: double 3.43365642660378
+    column 1: double -3.43365642660378
+    column 2: double 1.14455214220126
+    column 9: double -3.43365642660378
+    column 10: double -4.57820856880504
+    column 14: double 1.14455214220126
+    column 15: double -4.57820856880504
+    column 16: double 1.71682821330189
 row: 1 : 8 entries [8:15]
-    column 0: double -6.85160883409121
-    column 1: double 36.5419137818198
-    column 2: double -6.85160883409121
-    column 9: double 22.8386961136374
-    column 10: double 22.8386961136374
-    column 14: double -9.13547844545495
-    column 15: double 18.2709568909099
-    column 16: double -9.13547844545495
+    column 0: double -3.43365642660378
+    column 1: double 18.3128342752202
+    column 2: double -3.43365642660378
+    column 9: double 11.4455214220126
+    column 10: double 11.4455214220126
+    column 14: double -4.57820856880504
+    column 15: double 9.15641713761008
+    column 16: double -4.57820856880504
 row: 2 : 13 entries [16:28]
-    column 0: double 2.28386961136374
-    column 1: double -6.85160883409121
-    column 2: double 9.19461653492844
-    column 3: double -2.34300770083722
-    column 4: double 0.781002566945742
-    column 9: double -9.13547844545495
-    column 10: double -9.19461653492844
-    column 11: double -3.12401026778297
-    column 14: double 3.42580441704561
-    column 15: double -9.13547844545495
-    column 16: double 3.06487217830948
-    column 17: double -3.12401026778297
-    column 18: double 1.17150385041861
+    column 0: double 1.14455214220126
+    column 1: double -3.43365642660378
+    column 2: double 12.6130680009185
+    column 3: double -9.1794115743147
+    column 4: double 3.0598038581049
+    column 9: double -4.57820856880504
+    column 10: double -12.6130680009185
+    column 11: double -12.2392154324196
+    column 14: double 1.71682821330189
+    column 15: double -4.57820856880504
+    column 16: double 4.20435600030616
+    column 17: double -12.2392154324196
+    column 18: double 4.58970578715735
 row: 3 : 8 entries [29:36]
-    column 2: double -2.34300770083722
+    column 2: double -9.1794115743147
     ...
 row: 4 : 13 entries [37:49]
     ...
@@ -57,81 +57,79 @@ row: 9 : 8 entries [87:94]
 number of nodes: 65
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000174
+BFS time in seconds:       0.000403
 nodes reachable from node 0: 65 out of 65
 max BFS level: 5
 
 method 5: same but check each result
-BFS time in seconds:       0.000051
+BFS time in seconds:       0.000102
 nodes reachable from node 0: 65 out of 65
 max BFS level: 5
 
 method 6: apply unary operator
-BFS time in seconds:       0.000097
+BFS time in seconds:       0.000109
 nodes reachable from node 0: 65 out of 65
 max BFS level: 5
 
 method 6: same but check each result
-BFS time in seconds:       0.000068
+BFS time in seconds:       0.000091
 nodes reachable from node 0: 65 out of 65
 max BFS level: 5
-random 5 by 5, nz: 23, method 1 time 0.000 sec
+random 5 by 5, nz: 21, method 1 time 0.000 sec
 
 GraphBLAS matrix: from get_matrix: 
-nrows: 5 ncols: 5 max # entries: 23
+nrows: 5 ncols: 5 max # entries: 21
 format: standard CSR vlen: 5 nvec_nonempty: 5 nvec: 5 plen: 5 vdim: 5
 hyper_ratio 0.0625
 GraphBLAS type:  double size: 8
-number of entries: 23 
-row: 0 : 5 entries [0:4]
-    column 0: double 0.344126712851344
-    column 1: double 0.674092837305826
-    column 2: double 0.738242744224372
-    column 3: double 0.184392834253975
-    column 4: double 0.1721549119541
-row: 1 : 4 entries [5:8]
-    column 0: double 0.674092837305826
-    column 2: double 0.977111117893002
-    column 3: double 0.171788689840388
-    column 4: double 0.0787987914670247
-row: 2 : 5 entries [9:13]
-    column 0: double 0.738242744224372
-    column 1: double 0.977111117893002
-    column 2: double 0.565385906552324
-    column 3: double 0.126438184759056
-    column 4: double 0.0278939176610614
-row: 3 : 5 entries [14:18]
-    column 0: double 0.184392834253975
-    column 1: double 0.171788689840388
-    column 2: double 0.126438184759056
-    column 3: double 0.880855739005707
-    column 4: double 0.690511795403912
-row: 4 : 4 entries [19:22]
-    column 0: double 0.1721549119541
-    column 1: double 0.0787987914670247
-    column 2: double 0.0278939176610614
-    column 3: double 0.690511795403912
+number of entries: 21 
+row: 0 : 3 entries [0:2]
+    column 1: double 0.70501889367129
+    column 2: double 0.159899455348467
+    column 3: double 0.955580004812297
+row: 1 : 4 entries [3:6]
+    column 0: double 0.70501889367129
+    column 2: double 0.951473352740709
+    column 3: double 0.82691712979873
+    column 4: double 0.683445578060021
+row: 2 : 5 entries [7:11]
+    column 0: double 0.159899455348467
+    column 1: double 0.951473352740709
+    column 2: double 0.981332247573239
+    column 3: double 0.904890411820296
+    column 4: double 0.619947394488639
+row: 3 : 5 entries [12:16]
+    column 0: double 0.955580004812297
+    column 1: double 0.82691712979873
+    column 2: double 0.904890411820296
+    column 3: double 0.674999397183715
+    column 4: double 0.137173323118519
+row: 4 : 4 entries [17:20]
+    column 1: double 0.683445578060021
+    column 2: double 0.619947394488639
+    column 3: double 0.137173323118519
+    column 4: double 0.723917890505425
 number of nodes: 5
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000221
+BFS time in seconds:       0.000213
 nodes reachable from node 0: 5 out of 5
-max BFS level: 2
+max BFS level: 3
 
 method 5: same but check each result
-BFS time in seconds:       0.000038
+BFS time in seconds:       0.000037
 nodes reachable from node 0: 5 out of 5
-max BFS level: 2
+max BFS level: 3
 
 method 6: apply unary operator
-BFS time in seconds:       0.000092
+BFS time in seconds:       0.000062
 nodes reachable from node 0: 5 out of 5
-max BFS level: 2
+max BFS level: 3
 
 method 6: same but check each result
-BFS time in seconds:       0.000030
+BFS time in seconds:       0.000050
 nodes reachable from node 0: 5 out of 5
-max BFS level: 2
+max BFS level: 3
 matrix 3 by 3, 3 entries, from stdin
 
 GraphBLAS matrix: from get_matrix: 
@@ -149,22 +147,22 @@ row: 2 : 1 entries [2:2]
 number of nodes: 3
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000158
+BFS time in seconds:       0.000171
 nodes reachable from node 0: 1 out of 3
 max BFS level: 1
 
 method 5: same but check each result
-BFS time in seconds:       0.000029
+BFS time in seconds:       0.000044
 nodes reachable from node 0: 1 out of 3
 max BFS level: 1
 
 method 6: apply unary operator
-BFS time in seconds:       0.000034
+BFS time in seconds:       0.000058
 nodes reachable from node 0: 1 out of 3
 max BFS level: 1
 
 method 6: same but check each result
-BFS time in seconds:       0.000021
+BFS time in seconds:       0.000042
 nodes reachable from node 0: 1 out of 3
 max BFS level: 1
 matrix 4 by 4, 8 entries, from stdin
@@ -190,22 +188,22 @@ row: 3 : 2 entries [6:7]
 number of nodes: 4
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000139
+BFS time in seconds:       0.000165
 nodes reachable from node 0: 2 out of 4
 max BFS level: 2
 
 method 5: same but check each result
-BFS time in seconds:       0.000117
+BFS time in seconds:       0.000033
 nodes reachable from node 0: 2 out of 4
 max BFS level: 2
 
 method 6: apply unary operator
-BFS time in seconds:       0.000041
+BFS time in seconds:       0.000055
 nodes reachable from node 0: 2 out of 4
 max BFS level: 2
 
 method 6: same but check each result
-BFS time in seconds:       0.000018
+BFS time in seconds:       0.000031
 nodes reachable from node 0: 2 out of 4
 max BFS level: 2
 
@@ -246,22 +244,22 @@ row: 3 : 3 entries [11:13]
 number of nodes: 4
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000193
+BFS time in seconds:       0.000225
 nodes reachable from node 0: 4 out of 4
 max BFS level: 2
 
 method 5: same but check each result
-BFS time in seconds:       0.000040
+BFS time in seconds:       0.000049
 nodes reachable from node 0: 4 out of 4
 max BFS level: 2
 
 method 6: apply unary operator
-BFS time in seconds:       0.000039
+BFS time in seconds:       0.000060
 nodes reachable from node 0: 4 out of 4
 max BFS level: 2
 
 method 6: same but check each result
-BFS time in seconds:       0.000020
+BFS time in seconds:       0.000046
 nodes reachable from node 0: 4 out of 4
 max BFS level: 2
 
@@ -307,22 +305,22 @@ row: 6 : 3 entries [13:15]
 number of nodes: 7
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000130
+BFS time in seconds:       0.000314
 nodes reachable from node 0: 7 out of 7
 max BFS level: 5
 
 method 5: same but check each result
-BFS time in seconds:       0.000063
+BFS time in seconds:       0.000061
 nodes reachable from node 0: 7 out of 7
 max BFS level: 5
 
 method 6: apply unary operator
-BFS time in seconds:       0.000048
+BFS time in seconds:       0.000078
 nodes reachable from node 0: 7 out of 7
 max BFS level: 5
 
 method 6: same but check each result
-BFS time in seconds:       0.000057
+BFS time in seconds:       0.000068
 nodes reachable from node 0: 7 out of 7
 max BFS level: 5
 matrix 304 by 304, 876 entries, from stdin
@@ -366,22 +364,22 @@ row: 9 : 2 entries [18:19]
 number of nodes: 304
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000270
+BFS time in seconds:       0.000356
 nodes reachable from node 0: 304 out of 304
 max BFS level: 17
 
 method 5: same but check each result
-BFS time in seconds:       0.000226
+BFS time in seconds:       0.000195
 nodes reachable from node 0: 304 out of 304
 max BFS level: 17
 
 method 6: apply unary operator
-BFS time in seconds:       0.000174
+BFS time in seconds:       0.000212
 nodes reachable from node 0: 304 out of 304
 max BFS level: 17
 
 method 6: same but check each result
-BFS time in seconds:       0.000180
+BFS time in seconds:       0.000195
 nodes reachable from node 0: 304 out of 304
 max BFS level: 17
 matrix 48 by 48, 400 entries, from stdin
@@ -443,22 +441,22 @@ row: 9 : 8 entries [72:79]
 number of nodes: 48
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000169
+BFS time in seconds:       0.000229
 nodes reachable from node 0: 48 out of 48
 max BFS level: 4
 
 method 5: same but check each result
-BFS time in seconds:       0.000081
+BFS time in seconds:       0.000088
 nodes reachable from node 0: 48 out of 48
 max BFS level: 4
 
 method 6: apply unary operator
-BFS time in seconds:       0.000083
+BFS time in seconds:       0.000111
 nodes reachable from node 0: 48 out of 48
 max BFS level: 4
 
 method 6: same but check each result
-BFS time in seconds:       0.000050
+BFS time in seconds:       0.000106
 nodes reachable from node 0: 48 out of 48
 max BFS level: 4
 matrix 4884 by 4884, 290378 entries, from stdin
@@ -521,22 +519,22 @@ row: 9 : 30 entries [143:172]
 number of nodes: 4884
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.002191
+BFS time in seconds:       0.001725
 nodes reachable from node 0: 4810 out of 4884
 max BFS level: 44
 
 method 5: same but check each result
-BFS time in seconds:       0.002738
+BFS time in seconds:       0.001473
 nodes reachable from node 0: 4810 out of 4884
 max BFS level: 44
 
 method 6: apply unary operator
-BFS time in seconds:       0.004753
+BFS time in seconds:       0.001505
 nodes reachable from node 0: 4810 out of 4884
 max BFS level: 44
 
 method 6: same but check each result
-BFS time in seconds:       0.002840
+BFS time in seconds:       0.001517
 nodes reachable from node 0: 4810 out of 4884
 max BFS level: 44
 matrix 183 by 183, 1585 entries, from stdin
@@ -601,22 +599,22 @@ row: 9 : 5 entries [229:233]
 number of nodes: 183
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000193
+BFS time in seconds:       0.000283
 nodes reachable from node 0: 183 out of 183
 max BFS level: 4
 
 method 5: same but check each result
-BFS time in seconds:       0.000127
+BFS time in seconds:       0.000102
 nodes reachable from node 0: 183 out of 183
 max BFS level: 4
 
 method 6: apply unary operator
-BFS time in seconds:       0.000099
+BFS time in seconds:       0.000104
 nodes reachable from node 0: 183 out of 183
 max BFS level: 4
 
 method 6: same but check each result
-BFS time in seconds:       0.000115
+BFS time in seconds:       0.000082
 nodes reachable from node 0: 183 out of 183
 max BFS level: 4
 matrix 63 by 63, 246 entries, from stdin
@@ -676,22 +674,22 @@ row: 9 : 3 entries [43:45]
 number of nodes: 63
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000170
+BFS time in seconds:       0.000335
 nodes reachable from node 0: 63 out of 63
 max BFS level: 6
 
 method 5: same but check each result
-BFS time in seconds:       0.000114
+BFS time in seconds:       0.000096
 nodes reachable from node 0: 63 out of 63
 max BFS level: 6
 
 method 6: apply unary operator
-BFS time in seconds:       0.000092
+BFS time in seconds:       0.000112
 nodes reachable from node 0: 63 out of 63
 max BFS level: 6
 
 method 6: same but check each result
-BFS time in seconds:       0.000095
+BFS time in seconds:       0.000092
 nodes reachable from node 0: 63 out of 63
 max BFS level: 6
 matrix 63 by 63, 246 entries, from stdin
@@ -750,22 +748,22 @@ row: 9 : 7 entries [45:51]
 number of nodes: 63
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000188
+BFS time in seconds:       0.000371
 nodes reachable from node 0: 63 out of 63
 max BFS level: 6
 
 method 5: same but check each result
-BFS time in seconds:       0.000054
+BFS time in seconds:       0.000114
 nodes reachable from node 0: 63 out of 63
 max BFS level: 6
 
 method 6: apply unary operator
-BFS time in seconds:       0.000134
+BFS time in seconds:       0.000095
 nodes reachable from node 0: 63 out of 63
 max BFS level: 6
 
 method 6: same but check each result
-BFS time in seconds:       0.000071
+BFS time in seconds:       0.000082
 nodes reachable from node 0: 63 out of 63
 max BFS level: 6
 matrix 78 by 78, 204 entries, from stdin
@@ -821,22 +819,22 @@ row: 9 : 3 entries [30:32]
 number of nodes: 78
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000272
+BFS time in seconds:       0.000277
 nodes reachable from node 0: 78 out of 78
 max BFS level: 10
 
 method 5: same but check each result
-BFS time in seconds:       0.000118
+BFS time in seconds:       0.000111
 nodes reachable from node 0: 78 out of 78
 max BFS level: 10
 
 method 6: apply unary operator
-BFS time in seconds:       0.000118
+BFS time in seconds:       0.000132
 nodes reachable from node 0: 78 out of 78
 max BFS level: 10
 
 method 6: same but check each result
-BFS time in seconds:       0.000091
+BFS time in seconds:       0.000115
 nodes reachable from node 0: 78 out of 78
 max BFS level: 10
 matrix 982 by 982, 99840 entries, from stdin
@@ -901,22 +899,22 @@ row: 9 : 190 entries [338:527]
 number of nodes: 982
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000522
+BFS time in seconds:       0.000941
 nodes reachable from node 0: 933 out of 982
 max BFS level: 5
 
 method 5: same but check each result
-BFS time in seconds:       0.000554
+BFS time in seconds:       0.000563
 nodes reachable from node 0: 933 out of 982
 max BFS level: 5
 
 method 6: apply unary operator
-BFS time in seconds:       0.000494
+BFS time in seconds:       0.000661
 nodes reachable from node 0: 933 out of 982
 max BFS level: 5
 
 method 6: same but check each result
-BFS time in seconds:       0.001558
+BFS time in seconds:       0.000497
 nodes reachable from node 0: 933 out of 982
 max BFS level: 5
 matrix 67 by 67, 576 entries, from stdin
@@ -978,25 +976,25 @@ row: 9 : 9 entries [70:78]
 number of nodes: 67
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000202
+BFS time in seconds:       0.000266
 nodes reachable from node 0: 67 out of 67
 max BFS level: 5
 
 method 5: same but check each result
-BFS time in seconds:       0.000103
+BFS time in seconds:       0.000055
 nodes reachable from node 0: 67 out of 67
 max BFS level: 5
 
 method 6: apply unary operator
-BFS time in seconds:       0.000097
+BFS time in seconds:       0.000100
 nodes reachable from node 0: 67 out of 67
 max BFS level: 5
 
 method 6: same but check each result
-BFS time in seconds:       0.000094
+BFS time in seconds:       0.000081
 nodes reachable from node 0: 67 out of 67
 max BFS level: 5
-Wathen: nx 200 ny 200 n 120801 nz 1883201 method 0, time: 0.286 sec
+Wathen: nx 200 ny 200 n 120801 nz 1883201 method 0, time: 0.347 sec
 
 GraphBLAS matrix: from get_matrix: 
 nrows: 120801 ncols: 120801 max # entries: 1883201
@@ -1005,39 +1003,39 @@ hyper_ratio 0.0625
 GraphBLAS type:  double size: 8
 number of entries: 1883201 
 row: 0 : 8 entries [0:7]
-    column 0: double 6.85160883409121
-    column 1: double -6.85160883409121
-    column 2: double 2.28386961136374
-    column 401: double -6.85160883409121
-    column 402: double -9.13547844545495
-    column 602: double 2.28386961136374
-    column 603: double -9.13547844545495
-    column 604: double 3.42580441704561
+    column 0: double 3.43365642660378
+    column 1: double -3.43365642660378
+    column 2: double 1.14455214220126
+    column 401: double -3.43365642660378
+    column 402: double -4.57820856880504
+    column 602: double 1.14455214220126
+    column 603: double -4.57820856880504
+    column 604: double 1.71682821330189
 row: 1 : 8 entries [8:15]
-    column 0: double -6.85160883409121
-    column 1: double 36.5419137818198
-    column 2: double -6.85160883409121
-    column 401: double 22.8386961136374
-    column 402: double 22.8386961136374
-    column 602: double -9.13547844545495
-    column 603: double 18.2709568909099
-    column 604: double -9.13547844545495
+    column 0: double -3.43365642660378
+    column 1: double 18.3128342752202
+    column 2: double -3.43365642660378
+    column 401: double 11.4455214220126
+    column 402: double 11.4455214220126
+    column 602: double -4.57820856880504
+    column 603: double 9.15641713761008
+    column 604: double -4.57820856880504
 row: 2 : 13 entries [16:28]
-    column 0: double 2.28386961136374
-    column 1: double -6.85160883409121
-    column 2: double 9.19461653492844
-    column 3: double -2.34300770083722
-    column 4: double 0.781002566945742
-    column 401: double -9.13547844545495
-    column 402: double -9.19461653492844
-    column 403: double -3.12401026778297
-    column 602: double 3.42580441704561
-    column 603: double -9.13547844545495
-    column 604: double 3.06487217830948
-    column 605: double -3.12401026778297
-    column 606: double 1.17150385041861
+    column 0: double 1.14455214220126
+    column 1: double -3.43365642660378
+    column 2: double 12.6130680009185
+    column 3: double -9.1794115743147
+    column 4: double 3.0598038581049
+    column 401: double -4.57820856880504
+    column 402: double -12.6130680009185
+    column 403: double -12.2392154324196
+    column 602: double 1.71682821330189
+    column 603: double -4.57820856880504
+    column 604: double 4.20435600030616
+    column 605: double -12.2392154324196
+    column 606: double 4.58970578715735
 row: 3 : 8 entries [29:36]
-    column 2: double -2.34300770083722
+    column 2: double -9.1794115743147
     ...
 row: 4 : 13 entries [37:49]
     ...
@@ -1055,339 +1053,339 @@ row: 9 : 8 entries [92:99]
 number of nodes: 120801
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.148828
+BFS time in seconds:       0.050263
 nodes reachable from node 0: 120801 out of 120801
 max BFS level: 201
 
 method 5: same but check each result
-BFS time in seconds:       0.151243
+BFS time in seconds:       0.064319
 nodes reachable from node 0: 120801 out of 120801
 max BFS level: 201
 
 method 6: apply unary operator
-BFS time in seconds:       0.093763
+BFS time in seconds:       0.041205
 nodes reachable from node 0: 120801 out of 120801
 max BFS level: 201
 
 method 6: same but check each result
-BFS time in seconds:       0.092091
+BFS time in seconds:       0.042743
 nodes reachable from node 0: 120801 out of 120801
 max BFS level: 201
-random 10000 by 10000, nz: 199764, method 0 time 0.040 sec
+random 10000 by 10000, nz: 199777, method 0 time 0.041 sec
 
 GraphBLAS matrix: from get_matrix: 
-nrows: 10000 ncols: 10000 max # entries: 199764
+nrows: 10000 ncols: 10000 max # entries: 199777
 format: standard CSR vlen: 10000 nvec_nonempty: 10000 nvec: 10000 plen: 10000 vdim: 10000
 hyper_ratio 0.0625
 GraphBLAS type:  double size: 8
-number of entries: 199764 
-row: 0 : 18 entries [0:17]
-    column 992: double 0.0477919858394116
-    column 3179: double 0.847682119205298
-    column 3444: double 0.289895321512497
-    column 4048: double 0.431196020386364
-    column 4570: double 0.832789086581011
-    column 5035: double 0.826960051271096
-    column 5038: double 0.570909756767479
-    column 5333: double 0.168675801873836
-    column 5375: double 0.639332255012665
-    column 5574: double 0.634235663930174
-    column 5752: double 0.120731223487045
-    column 5851: double 0.789696951200903
-    column 7709: double 0.793450727866451
-    column 8083: double 0.441206091494491
-    column 8587: double 0.475936155278176
-    column 8797: double 0.390728476821192
-    column 9514: double 0.0571916867580187
-    column 9602: double 0.400341807306131
-row: 1 : 22 entries [18:39]
-    column 145: double 0.451185644093142
-    column 1047: double 0.184179204687643
-    column 1453: double 0.467757194738609
-    column 1637: double 0.466139713736381
-    column 1773: double 0.621509445478683
-    column 2483: double 0.508651997436445
-    column 2664: double 0.899288918729209
-    column 2871: double 0.767632068849757
-    column 3727: double 0.0164799951170385
-    column 4055: double 0.75838496047853
-    column 4407: double 0.760765404217658
-    column 4620: double 0.278450880458998
+number of entries: 199777 
+row: 0 : 29 entries [0:28]
+    column 214: double 0.611428854126681
+    column 599: double 0.759817736907767
+    column 687: double 0.490404969132481
+    column 1945: double 0.220198646141235
+    column 2720: double 0.768448885400963
+    column 3040: double 0.780898528422568
+    column 3108: double 0.861235641490359
+    column 3629: double 0.362730505563746
+    column 3816: double 0.0339266832780264
+    column 4032: double 0.380474997044081
+    column 4327: double 0.845122101573719
+    column 4503: double 0.274564012010246
+    column 4651: double 0.953684565813323
+    column 5289: double 0.373677450804412
+    column 5464: double 0.126295522580637
+    column 5603: double 0.0243003910252495
+    column 5733: double 0.126285945791964
+    column 5752: double 0.258192960275479
+    column 5869: double 0.124510616349963
+    column 5917: double 0.234865299189669
+    column 6693: double 0.985725408162066
+    column 7242: double 0.387267836971157
+    column 7597: double 0.148198968114398
+    column 7601: double 0.660823536101813
+    column 8171: double 0.559858856562101
+    column 8307: double 0.583442051968559
+    column 9224: double 0.246570360972623
+    column 9602: double 0.828404016202389
+    column 9626: double 0.498666322176063
+row: 1 : 22 entries [29:50]
+    column 145: double 0.924827177620641
     ...
-row: 2 : 27 entries [40:66]
+row: 2 : 19 entries [51:69]
     ...
-row: 3 : 12 entries [67:78]
+row: 3 : 23 entries [70:92]
     ...
-row: 4 : 19 entries [79:97]
+row: 4 : 18 entries [93:110]
     ...
-row: 5 : 30 entries [98:127]
+row: 5 : 30 entries [111:140]
     ...
-row: 6 : 10 entries [128:137]
+row: 6 : 19 entries [141:159]
     ...
-row: 7 : 21 entries [138:158]
+row: 7 : 23 entries [160:182]
     ...
-row: 8 : 20 entries [159:178]
+row: 8 : 26 entries [183:208]
     ...
-row: 9 : 21 entries [179:199]
+row: 9 : 16 entries [209:224]
     ...
 ...
 number of nodes: 10000
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.003575
+BFS time in seconds:       0.005230
 nodes reachable from node 0: 10000 out of 10000
 max BFS level: 5
 
 method 5: same but check each result
-BFS time in seconds:       0.003397
+BFS time in seconds:       0.003304
 nodes reachable from node 0: 10000 out of 10000
 max BFS level: 5
 
 method 6: apply unary operator
-BFS time in seconds:       0.002631
+BFS time in seconds:       0.003201
 nodes reachable from node 0: 10000 out of 10000
 max BFS level: 5
 
 method 6: same but check each result
-BFS time in seconds:       0.002658
+BFS time in seconds:       0.003067
 nodes reachable from node 0: 10000 out of 10000
 max BFS level: 5
-random 10000 by 10000, nz: 199764, method 1 time 0.038 sec
+random 10000 by 10000, nz: 199777, method 1 time 0.033 sec
 
 GraphBLAS matrix: from get_matrix: 
-nrows: 10000 ncols: 10000 max # entries: 199764
+nrows: 10000 ncols: 10000 max # entries: 199777
 format: standard CSR vlen: 10000 nvec_nonempty: 10000 nvec: 10000 plen: 10000 vdim: 10000
 hyper_ratio 0.0625
 GraphBLAS type:  double size: 8
-number of entries: 199764 
-row: 0 : 18 entries [0:17]
-    column 992: double 0.0477919858394116
-    column 3179: double 0.847682119205298
-    column 3444: double 0.289895321512497
-    column 4048: double 0.431196020386364
-    column 4570: double 0.832789086581011
-    column 5035: double 0.826960051271096
-    column 5038: double 0.570909756767479
-    column 5333: double 0.168675801873836
-    column 5375: double 0.639332255012665
-    column 5574: double 0.634235663930174
-    column 5752: double 0.120731223487045
-    column 5851: double 0.789696951200903
-    column 7709: double 0.793450727866451
-    column 8083: double 0.441206091494491
-    column 8587: double 0.475936155278176
-    column 8797: double 0.390728476821192
-    column 9514: double 0.0571916867580187
-    column 9602: double 0.400341807306131
-row: 1 : 22 entries [18:39]
-    column 145: double 0.451185644093142
-    column 1047: double 0.184179204687643
-    column 1453: double 0.467757194738609
-    column 1637: double 0.466139713736381
-    column 1773: double 0.621509445478683
-    column 2483: double 0.508651997436445
-    column 2664: double 0.899288918729209
-    column 2871: double 0.767632068849757
-    column 3727: double 0.0164799951170385
-    column 4055: double 0.75838496047853
-    column 4407: double 0.760765404217658
-    column 4620: double 0.278450880458998
+number of entries: 199777 
+row: 0 : 29 entries [0:28]
+    column 214: double 0.611428854126681
+    column 599: double 0.759817736907767
+    column 687: double 0.490404969132481
+    column 1945: double 0.220198646141235
+    column 2720: double 0.768448885400963
+    column 3040: double 0.780898528422568
+    column 3108: double 0.861235641490359
+    column 3629: double 0.362730505563746
+    column 3816: double 0.0339266832780264
+    column 4032: double 0.380474997044081
+    column 4327: double 0.845122101573719
+    column 4503: double 0.274564012010246
+    column 4651: double 0.953684565813323
+    column 5289: double 0.373677450804412
+    column 5464: double 0.126295522580637
+    column 5603: double 0.0243003910252495
+    column 5733: double 0.126285945791964
+    column 5752: double 0.258192960275479
+    column 5869: double 0.124510616349963
+    column 5917: double 0.234865299189669
+    column 6693: double 0.985725408162066
+    column 7242: double 0.387267836971157
+    column 7597: double 0.148198968114398
+    column 7601: double 0.660823536101813
+    column 8171: double 0.559858856562101
+    column 8307: double 0.583442051968559
+    column 9224: double 0.246570360972623
+    column 9602: double 0.828404016202389
+    column 9626: double 0.498666322176063
+row: 1 : 22 entries [29:50]
+    column 145: double 0.924827177620641
     ...
-row: 2 : 27 entries [40:66]
+row: 2 : 19 entries [51:69]
     ...
-row: 3 : 12 entries [67:78]
+row: 3 : 23 entries [70:92]
     ...
-row: 4 : 19 entries [79:97]
+row: 4 : 18 entries [93:110]
     ...
-row: 5 : 30 entries [98:127]
+row: 5 : 30 entries [111:140]
     ...
-row: 6 : 10 entries [128:137]
+row: 6 : 19 entries [141:159]
     ...
-row: 7 : 21 entries [138:158]
+row: 7 : 23 entries [160:182]
     ...
-row: 8 : 20 entries [159:178]
+row: 8 : 26 entries [183:208]
     ...
-row: 9 : 21 entries [179:199]
+row: 9 : 16 entries [209:224]
     ...
 ...
 number of nodes: 10000
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.005985
+BFS time in seconds:       0.003663
 nodes reachable from node 0: 10000 out of 10000
 max BFS level: 5
 
 method 5: same but check each result
-BFS time in seconds:       0.003522
+BFS time in seconds:       0.006787
 nodes reachable from node 0: 10000 out of 10000
 max BFS level: 5
 
 method 6: apply unary operator
-BFS time in seconds:       0.002806
+BFS time in seconds:       0.003246
 nodes reachable from node 0: 10000 out of 10000
 max BFS level: 5
 
 method 6: same but check each result
-BFS time in seconds:       0.002713
+BFS time in seconds:       0.003638
 nodes reachable from node 0: 10000 out of 10000
 max BFS level: 5
-random 100000 by 100000, nz: 19980358, method 0 time 4.634 sec
+random 100000 by 100000, nz: 19980256, method 0 time 5.535 sec
 
 GraphBLAS matrix: from get_matrix: 
-nrows: 100000 ncols: 100000 max # entries: 19980358
+nrows: 100000 ncols: 100000 max # entries: 19980256
 format: standard CSR vlen: 100000 nvec_nonempty: 100000 nvec: 100000 plen: 100000 vdim: 100000
 hyper_ratio 0.0625
 GraphBLAS type:  double size: 8
-number of entries: 19980358 
-row: 0 : 210 entries [0:209]
-    column 68: double 0.890102847376934
-    column 266: double 0.880367442854091
-    column 1086: double 0.0749534592730491
-    column 1639: double 0.89684743797113
-    column 1744: double 0.174565874202704
-    column 1801: double 0.0485244300668355
-    column 2426: double 0.82815027314066
-    column 2851: double 0.797021393475143
-    column 3535: double 0.0736106448561052
-    column 3756: double 0.0606402783288064
-    column 4303: double 0.52607806634724
-    column 4392: double 0.517319254127628
-    column 4441: double 0.982207708975494
-    column 6022: double 0.464827417828913
-    column 7079: double 0.401226844080935
-    column 8567: double 0.889187292092654
-    column 8652: double 0.859492782372509
-    column 8797: double 0.390728476821192
-    column 9221: double 0.459486678670614
-    column 9524: double 0.46104312265389
-    column 9924: double 0.935819574571978
-    column 9962: double 0.951872310556352
-    column 10357: double 0.307657094027528
-    column 10970: double 0.0696432386242256
-    column 11015: double 0.779412213507492
-    column 11301: double 0.926328318124943
-    column 11313: double 0.189519943845943
-    column 11996: double 0.701254310739464
-    column 12332: double 0.925534836878567
-    column 12390: double 0.84621723075045
+number of entries: 19980256 
+row: 0 : 197 entries [0:196]
+    column 778: double 0.346667912736641
+    column 1533: double 0.923157396004585
+    column 1773: double 0.0587615429272369
+    column 1839: double 0.197836379076741
+    column 1992: double 0.177908755216155
+    column 3857: double 0.440961556066804
+    column 4245: double 0.60738988148067
+    column 4491: double 0.54540457794676
+    column 4808: double 0.392707915752597
+    column 4923: double 0.382813060633608
+    column 5128: double 0.155354202430441
+    column 5198: double 0.78273932540827
+    column 5290: double 0.893963933912545
+    column 5609: double 0.13457847123939
+    column 5953: double 0.531853923375954
+    column 6296: double 0.917483099015425
+    column 7091: double 0.479443834514252
+    column 7119: double 0.816814382031207
+    column 7151: double 0.193326447087741
+    column 7215: double 0.326093077038443
+    column 7221: double 0.230494023532692
+    column 7272: double 0.867327956531743
+    column 8019: double 0.944500718448853
+    column 8657: double 0.934093089488637
+    column 9473: double 0.795621154107574
+    column 9567: double 0.439237695822068
+    column 11313: double 0.0928425661313169
+    column 11660: double 0.0084962289548536
+    column 11744: double 0.444733012853217
+    column 11996: double 0.00641771660641777
     ...
-row: 1 : 208 entries [210:417]
+row: 1 : 193 entries [197:389]
     ...
-row: 2 : 196 entries [418:613]
+row: 2 : 208 entries [390:597]
     ...
-row: 3 : 188 entries [614:801]
+row: 3 : 214 entries [598:811]
     ...
-row: 4 : 186 entries [802:987]
+row: 4 : 199 entries [812:1010]
     ...
-row: 5 : 188 entries [988:1175]
+row: 5 : 184 entries [1011:1194]
     ...
-row: 6 : 191 entries [1176:1366]
+row: 6 : 205 entries [1195:1399]
     ...
-row: 7 : 184 entries [1367:1550]
+row: 7 : 197 entries [1400:1596]
     ...
-row: 8 : 215 entries [1551:1765]
+row: 8 : 212 entries [1597:1808]
     ...
-row: 9 : 215 entries [1766:1980]
+row: 9 : 209 entries [1809:2017]
     ...
 ...
 number of nodes: 100000
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.128161
+BFS time in seconds:       0.146082
 nodes reachable from node 0: 100000 out of 100000
 max BFS level: 4
 
 method 5: same but check each result
-BFS time in seconds:       0.149650
+BFS time in seconds:       0.148871
 nodes reachable from node 0: 100000 out of 100000
 max BFS level: 4
 
 method 6: apply unary operator
-BFS time in seconds:       0.132967
+BFS time in seconds:       0.153663
 nodes reachable from node 0: 100000 out of 100000
 max BFS level: 4
 
 method 6: same but check each result
-BFS time in seconds:       0.138632
+BFS time in seconds:       0.136408
 nodes reachable from node 0: 100000 out of 100000
 max BFS level: 4
-random 100000 by 100000, nz: 19980358, method 1 time 4.050 sec
+random 100000 by 100000, nz: 19980256, method 1 time 4.925 sec
 
 GraphBLAS matrix: from get_matrix: 
-nrows: 100000 ncols: 100000 max # entries: 19980358
+nrows: 100000 ncols: 100000 max # entries: 19980256
 format: standard CSR vlen: 100000 nvec_nonempty: 100000 nvec: 100000 plen: 100000 vdim: 100000
 hyper_ratio 0.0625
 GraphBLAS type:  double size: 8
-number of entries: 19980358 
-row: 0 : 210 entries [0:209]
-    column 68: double 0.890102847376934
-    column 266: double 0.880367442854091
-    column 1086: double 0.0749534592730491
-    column 1639: double 0.89684743797113
-    column 1744: double 0.174565874202704
-    column 1801: double 0.0485244300668355
-    column 2426: double 0.82815027314066
-    column 2851: double 0.797021393475143
-    column 3535: double 0.0736106448561052
-    column 3756: double 0.0606402783288064
-    column 4303: double 0.52607806634724
-    column 4392: double 0.517319254127628
-    column 4441: double 0.982207708975494
-    column 6022: double 0.464827417828913
-    column 7079: double 0.401226844080935
-    column 8567: double 0.889187292092654
-    column 8652: double 0.859492782372509
-    column 8797: double 0.390728476821192
-    column 9221: double 0.459486678670614
-    column 9524: double 0.46104312265389
-    column 9924: double 0.935819574571978
-    column 9962: double 0.951872310556352
-    column 10357: double 0.307657094027528
-    column 10970: double 0.0696432386242256
-    column 11015: double 0.779412213507492
-    column 11301: double 0.926328318124943
-    column 11313: double 0.189519943845943
-    column 11996: double 0.701254310739464
-    column 12332: double 0.925534836878567
-    column 12390: double 0.84621723075045
+number of entries: 19980256 
+row: 0 : 197 entries [0:196]
+    column 778: double 0.346667912736641
+    column 1533: double 0.923157396004585
+    column 1773: double 0.0587615429272369
+    column 1839: double 0.197836379076741
+    column 1992: double 0.177908755216155
+    column 3857: double 0.440961556066804
+    column 4245: double 0.60738988148067
+    column 4491: double 0.54540457794676
+    column 4808: double 0.392707915752597
+    column 4923: double 0.382813060633608
+    column 5128: double 0.155354202430441
+    column 5198: double 0.78273932540827
+    column 5290: double 0.893963933912545
+    column 5609: double 0.13457847123939
+    column 5953: double 0.531853923375954
+    column 6296: double 0.917483099015425
+    column 7091: double 0.479443834514252
+    column 7119: double 0.816814382031207
+    column 7151: double 0.193326447087741
+    column 7215: double 0.326093077038443
+    column 7221: double 0.230494023532692
+    column 7272: double 0.867327956531743
+    column 8019: double 0.944500718448853
+    column 8657: double 0.934093089488637
+    column 9473: double 0.795621154107574
+    column 9567: double 0.439237695822068
+    column 11313: double 0.0928425661313169
+    column 11660: double 0.0084962289548536
+    column 11744: double 0.444733012853217
+    column 11996: double 0.00641771660641777
     ...
-row: 1 : 208 entries [210:417]
+row: 1 : 193 entries [197:389]
     ...
-row: 2 : 196 entries [418:613]
+row: 2 : 208 entries [390:597]
     ...
-row: 3 : 188 entries [614:801]
+row: 3 : 214 entries [598:811]
     ...
-row: 4 : 186 entries [802:987]
+row: 4 : 199 entries [812:1010]
     ...
-row: 5 : 188 entries [988:1175]
+row: 5 : 184 entries [1011:1194]
     ...
-row: 6 : 191 entries [1176:1366]
+row: 6 : 205 entries [1195:1399]
     ...
-row: 7 : 184 entries [1367:1550]
+row: 7 : 197 entries [1400:1596]
     ...
-row: 8 : 215 entries [1551:1765]
+row: 8 : 212 entries [1597:1808]
     ...
-row: 9 : 215 entries [1766:1980]
+row: 9 : 209 entries [1809:2017]
     ...
 ...
 number of nodes: 100000
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.131545
+BFS time in seconds:       0.130102
 nodes reachable from node 0: 100000 out of 100000
 max BFS level: 4
 
 method 5: same but check each result
-BFS time in seconds:       0.139092
+BFS time in seconds:       0.149609
 nodes reachable from node 0: 100000 out of 100000
 max BFS level: 4
 
 method 6: apply unary operator
-BFS time in seconds:       0.130828
+BFS time in seconds:       0.178093
 nodes reachable from node 0: 100000 out of 100000
 max BFS level: 4
 
 method 6: same but check each result
-BFS time in seconds:       0.128561
+BFS time in seconds:       0.279759
 nodes reachable from node 0: 100000 out of 100000
 max BFS level: 4

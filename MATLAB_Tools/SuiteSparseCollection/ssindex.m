@@ -32,6 +32,7 @@ function ss_index = ssindex (matrixlist)
 %   pattern_symmetry    pattern symmetry (0 to 1, where 1=symmetric)
 %   nnzdiag         nnz (diag (A)) if A is square, 0 otherwise
 %   nzero           nnz (Problem.Zeros)
+%   nentries        nnz + nzero
 %   amd_lnz         nnz(L) for chol(C(p,p)) where, C=A+A', p=amd(C)
 %   amd_flops       flop count for chol(C(p,p)) where, C=A+A', p=amd(C)
 %   amd_vnz         nnz in Householder vectors for qr(A(:,colamd(A)))
@@ -68,7 +69,7 @@ function ss_index = ssindex (matrixlist)
 %
 % See also ssstats.
 
-% Copyright 2006-2018, Timothy A. Davis
+% Copyright 2006-2019, Timothy A. Davis
 
 % Requires the SuiteSparse set of packages: CHOLMOD, RBio, CSparse
 
@@ -139,6 +140,7 @@ if (create_new)
     ss_index.ncols = nothing ;
     ss_index.nnz = nothing ;
     ss_index.nzero = nothing ;
+    ss_index.nentries = nothing ;
     ss_index.pattern_symmetry = nothing ;
     ss_index.numerical_symmetry = nothing ;
     ss_index.isBinary = nothing ;
@@ -180,6 +182,7 @@ else
             ss_index.ncols      = [ss_index.ncols nothing] ;
             ss_index.nnz        = [ss_index.nnz nothing] ;
             ss_index.nzero      = [ss_index.nzero nothing] ;
+            ss_index.nentries   = [ss_index.nentries nothing] ;
             ss_index.pattern_symmetry = [ss_index.pattern_symmetry nothing] ;
             ss_index.numerical_symmetry = [ss_index.numerical_symmetry nothing];
             ss_index.isBinary   = [ss_index.isBinary nothing] ;
@@ -354,6 +357,7 @@ for k = 1:length (matrixlist)
     ss_index.ncols (id) = stats.ncols ;
     ss_index.nnz (id) = stats.nnz ;
     ss_index.nzero (id) = stats.nzero ;
+    ss_index.nentries (id) = stats.nentries ;
     ss_index.pattern_symmetry (id) = stats.pattern_symmetry ;
     ss_index.numerical_symmetry (id) = stats.numerical_symmetry ;
     ss_index.isBinary (id) = stats.isBinary ;
@@ -391,25 +395,8 @@ for k = 1:length (matrixlist)
 
         fprintf ('\nCreating ssstats.csv in current directory:\n')
         fprintf ('%s/ssstats.csv\n', pwd) ;
-        f = fopen ('ssstats.csv', 'w') ;
-        fprintf (f, '%d\n', nmat) ;
-        fprintf (f, '%s\n', ss_index.LastRevisionDate) ;
-        for id = 1:nmat
-            fprintf (f,'%s,%s,%d,%d,%d,%d,%d,%d,%d,%.16g,%.16g,%s\n', ...
-                ss_index.Group {id}, ...
-                ss_index.Name {id}, ...
-                ss_index.nrows (id), ...
-                ss_index.ncols (id), ...
-                ss_index.nnz (id), ...
-                ss_index.isReal (id), ...
-                ss_index.isBinary (id), ...
-                ss_index.isND (id), ...
-                ss_index.posdef (id), ...
-                ss_index.pattern_symmetry (id), ...   % formatted with %.16g
-                ss_index.numerical_symmetry (id), ... % formatted with %.16g
-                kinds {id}) ;
-        end
-        fclose (f) ;
+
+        sscsv_write (ss_index, kinds) ;
 
         % flush the diary
         if (strcmp (get (0, 'Diary'), 'on'))
@@ -418,3 +405,4 @@ for k = 1:length (matrixlist)
         end
     end
 end
+

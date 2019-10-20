@@ -23,7 +23,7 @@ function ssfull_write (filename, A)					    %#ok
 %
 % See also mread, mwrite, RBwrite, RBread.
 
-% Copyright 2006-2018, Timothy A. Davis
+% Copyright 2006-2019, Timothy A. Davis
 
 error ('ssfull_write mexFunction not found') ;
 

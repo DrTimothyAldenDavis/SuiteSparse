@@ -19,8 +19,8 @@ T = $(TCOV_TMP)/CHOLMOD_TCOV_TMP
 
 # Tcov requires gcc
 CC = gcc
-BLAS = -lrefblas -lgfortran
-LAPACK = -llapack
+# BLAS = -lrefblas -lgfortran
+# LAPACK = -llapack
 
 # to test Tcov without METIS, but with CAMD, CCOLAMD, and CSYMAMD:
 # C = $(CC) $(CF) $(CHOLMOD_CONFIG) $(NANTESTS) -DNPARTITION

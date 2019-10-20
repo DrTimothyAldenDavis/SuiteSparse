@@ -31,7 +31,7 @@ GraphBLAS BinaryOp: monoid->op (run-time user-defined) z=wildtype_add(x,y)
 GraphBLAS type: ztype run-time user-defined: [wildtype] size: 128
 GraphBLAS type: xtype run-time user-defined: [wildtype] size: 128
 GraphBLAS type: ytype run-time user-defined: [wildtype] size: 128
-identity: [ [user-defined value] ]
+identity: [ [user-defined value] ] 
 
 GraphBLAS BinaryOp: semiring->multiply (run-time user-defined) z=wildtype_mult(x,y)
 GraphBLAS type: ztype run-time user-defined: [wildtype] size: 128
@@ -400,7 +400,7 @@ The matrix D is not wild enough to print.
 
 This supposed to fail, as a demo of GrB_error:
 GraphBLAS error: GrB_DOMAIN_MISMATCH
-function: GrB_eWiseAdd_Matrix_BinaryOp (C, Mask, accum, add, A, B, desc)
+function: GrB_eWiseAdd_Matrix_BinaryOp (C, M, accum, add, A, B, desc)
 incompatible type for z=wildtype_add(x,y):
 second input of type [float]
 cannot be typecast to y input of type [wildtype]

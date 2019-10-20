@@ -6,7 +6,7 @@ function ss_install (nlargefile)
 %
 % See also ssget.
 
-% Copyright 2006-2018, Timothy A. Davis
+% Copyright 2006-2019, Timothy A. Davis
 
 if (nargin < 1)
     % try with large-file I/O

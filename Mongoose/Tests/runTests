@@ -40,7 +40,7 @@ def runTests(args):
         matrix_id = 0
         for row in reader:
 
-            if len(row) == 12: # Only rows with 12 elements represent matrix data
+            if len(row) == 13: # Only rows with 13 elements represent matrix data
                 matrix_id += 1
 
                 # Check if the matrix ID is in the proper range and 

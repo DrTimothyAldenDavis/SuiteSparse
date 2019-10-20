@@ -9,7 +9,7 @@ make[3]: Nothing to be done for `install'.
 --- cs_idemo, size of CS_INT: 4
 
 T:
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 triplet: 4-by-4, nzmax: 16 nnz: 10
     2 2 : (3, 3.14159)
     1 0 : (3.1, 42)
@@ -23,7 +23,7 @@ triplet: 4-by-4, nzmax: 16 nnz: 10
     2 1 : (1.7, 1)
 
 Treal:
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 triplet: 4-by-4, nzmax: 16 nnz: 10
     2 2 : 3
     1 0 : 3.1
@@ -37,7 +37,7 @@ triplet: 4-by-4, nzmax: 16 nnz: 10
     2 1 : 1.7
 
 Timag:
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 triplet: 4-by-4, nzmax: 16 nnz: 10
     2 2 : 3.14159
     1 0 : 42
@@ -51,7 +51,7 @@ triplet: 4-by-4, nzmax: 16 nnz: 10
     2 1 : 1
 
 A:
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 106.075
     col 0 : locations 0 to 2
       1 : (3.1, 42)
@@ -69,7 +69,7 @@ CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
       1 : (0.9, 99)
 
 C1 = real(A):
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 11.1
     col 0 : locations 0 to 2
       1 : 3.1
@@ -87,7 +87,7 @@ CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
       1 : 0.9
 
 C2 = imag(A):
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 106
     col 0 : locations 0 to 2
       1 : 42
@@ -105,7 +105,7 @@ CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
       1 : 99
 
 A1:
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 11.1
     col 0 : locations 0 to 2
       1 : (3.1, 0)
@@ -123,7 +123,7 @@ CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
       1 : (0.9, 0)
 
 A2:
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 106
     col 0 : locations 0 to 2
       1 : (0, 42)
@@ -141,7 +141,7 @@ CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
       1 : (0, 99)
 
 B = conj(A):
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 106.075
     col 0 : locations 0 to 2
       1 : (3.1, -42)
@@ -162,7 +162,7 @@ CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
 --- cs_ldemo, size of CS_INT: 8
 
 T:
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 triplet: 4-by-4, nzmax: 16 nnz: 10
     2 2 : (3, 3.14159)
     1 0 : (3.1, 42)
@@ -176,7 +176,7 @@ triplet: 4-by-4, nzmax: 16 nnz: 10
     2 1 : (1.7, 1)
 
 Treal:
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 triplet: 4-by-4, nzmax: 16 nnz: 10
     2 2 : 3
     1 0 : 3.1
@@ -190,7 +190,7 @@ triplet: 4-by-4, nzmax: 16 nnz: 10
     2 1 : 1.7
 
 Timag:
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 triplet: 4-by-4, nzmax: 16 nnz: 10
     2 2 : 3.14159
     1 0 : 42
@@ -204,7 +204,7 @@ triplet: 4-by-4, nzmax: 16 nnz: 10
     2 1 : 1
 
 A:
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 106.075
     col 0 : locations 0 to 2
       1 : (3.1, 42)
@@ -222,7 +222,7 @@ CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
       1 : (0.9, 99)
 
 C1 = real(A):
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 11.1
     col 0 : locations 0 to 2
       1 : 3.1
@@ -240,7 +240,7 @@ CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
       1 : 0.9
 
 C2 = imag(A):
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 106
     col 0 : locations 0 to 2
       1 : 42
@@ -258,7 +258,7 @@ CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
       1 : 99
 
 A1:
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 11.1
     col 0 : locations 0 to 2
       1 : (3.1, 0)
@@ -276,7 +276,7 @@ CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
       1 : (0.9, 0)
 
 A2:
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 106
     col 0 : locations 0 to 2
       1 : (0, 42)
@@ -294,7 +294,7 @@ CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
       1 : (0, 99)
 
 B = conj(A):
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 106.075
     col 0 : locations 0 to 2
       1 : (3.1, -42)
@@ -312,7 +312,7 @@ CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
       1 : (0.9, -99)
 ./cs_demo1 < ../Matrix/t1
 T:
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 triplet: 4-by-4, nzmax: 16 nnz: 10
     2 2 : 3
     1 0 : 3.1
@@ -325,7 +325,7 @@ triplet: 4-by-4, nzmax: 16 nnz: 10
     0 0 : 4.5
     2 1 : 1.7
 A:
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 11.1
     col 0 : locations 0 to 2
       1 : 3.1
@@ -342,7 +342,7 @@ CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
       3 : 1
       1 : 0.9
 AT:
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 7.7
     col 0 : locations 0 to 1
       0 : 4.5
@@ -359,7 +359,7 @@ CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
       1 : 0.4
       3 : 1
 D:
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 4-by-4, nzmax: 16 nnz: 16, 1-norm: 139.58
     col 0 : locations 0 to 3
       1 : 13.95
@@ -461,10 +461,10 @@ downdate: time:     0.00 (incl solve) resid: 4.32e-17
 
 --- Matrix: 4884-by-4884, nnz: 147631 (sym: -1: nnz 290378), norm: 7.01e+09
 blocks: 75 singletons: 74 structural rank: 4884
-QR   amd(A'*A)  time:     0.49 resid: 2.01e-22
-LU   amd(A+A')  time:     0.27 resid: 1.10e-22
-LU   amd(S'*S)  time:     0.27 resid: 1.28e-22
-LU   amd(A'*A)  time:     0.28 resid: 1.78e-22
+QR   amd(A'*A)  time:     0.50 resid: 2.01e-22
+LU   amd(A+A')  time:     0.25 resid: 1.10e-22
+LU   amd(S'*S)  time:     0.26 resid: 1.28e-22
+LU   amd(A'*A)  time:     0.27 resid: 1.78e-22
 Chol amd(A+A')  time:     0.08 resid: 1.19e-22
 ./cs_demo3 < ../Matrix/bcsstk16
 
@@ -477,12 +477,12 @@ solve    chol time     0.00
 original: resid: 1.19e-22
 update:   time:     0.00
 update:   time:     0.00 (incl solve) resid: 1.71e-23
-rechol:   time:     0.09 (incl solve) resid: 1.61e-23
+rechol:   time:     0.07 (incl solve) resid: 1.61e-23
 downdate: time:     0.00
 downdate: time:     0.00 (incl solve) resid: 1.24e-21
 ./cs_di_demo1 < ../Matrix/t1
 T:
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 triplet: 4-by-4, nzmax: 16 nnz: 10
     2 2 : 3
     1 0 : 3.1
@@ -495,7 +495,7 @@ triplet: 4-by-4, nzmax: 16 nnz: 10
     0 0 : 4.5
     2 1 : 1.7
 A:
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 11.1
     col 0 : locations 0 to 2
       1 : 3.1
@@ -512,7 +512,7 @@ CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
       3 : 1
       1 : 0.9
 AT:
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 7.7
     col 0 : locations 0 to 1
       0 : 4.5
@@ -529,7 +529,7 @@ CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
       1 : 0.4
       3 : 1
 D:
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 4-by-4, nzmax: 16 nnz: 16, 1-norm: 139.58
     col 0 : locations 0 to 3
       1 : 13.95
@@ -600,7 +600,7 @@ QR   amd(A'*A)  time:     0.00 resid: 1.61e-02
 --- Matrix: 492-by-490, nnz: 49920 (sym: 0: nnz 0), norm: 9.29e-01
 blocks: 10 singletons: 8 structural rank: 448
 QR   natural    time:     0.04 resid:      nan
-QR   amd(A'*A)  time:     0.06 resid:      nan
+QR   amd(A'*A)  time:     0.05 resid:      nan
 ./cs_di_demo2 < ../Matrix/bcsstk01
 
 --- Matrix: 48-by-48, nnz: 224 (sym: -1: nnz 400), norm: 3.57e+09
@@ -632,8 +632,8 @@ downdate: time:     0.00 (incl solve) resid: 4.32e-17
 --- Matrix: 4884-by-4884, nnz: 147631 (sym: -1: nnz 290378), norm: 7.01e+09
 blocks: 75 singletons: 74 structural rank: 4884
 QR   amd(A'*A)  time:     0.50 resid: 2.01e-22
-LU   amd(A+A')  time:     0.29 resid: 1.10e-22
-LU   amd(S'*S)  time:     0.26 resid: 1.28e-22
+LU   amd(A+A')  time:     0.25 resid: 1.10e-22
+LU   amd(S'*S)  time:     0.25 resid: 1.28e-22
 LU   amd(A'*A)  time:     0.27 resid: 1.78e-22
 Chol amd(A+A')  time:     0.08 resid: 1.19e-22
 ./cs_di_demo3 < ../Matrix/bcsstk16
@@ -647,12 +647,12 @@ solve    chol time     0.00
 original: resid: 1.19e-22
 update:   time:     0.00
 update:   time:     0.00 (incl solve) resid: 1.71e-23
-rechol:   time:     0.08 (incl solve) resid: 1.61e-23
+rechol:   time:     0.07 (incl solve) resid: 1.61e-23
 downdate: time:     0.00
 downdate: time:     0.00 (incl solve) resid: 1.24e-21
 ./cs_dl_demo1 < ../Matrix/t1
 T:
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 triplet: 4-by-4, nzmax: 16 nnz: 10
     2 2 : 3
     1 0 : 3.1
@@ -665,7 +665,7 @@ triplet: 4-by-4, nzmax: 16 nnz: 10
     0 0 : 4.5
     2 1 : 1.7
 A:
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 11.1
     col 0 : locations 0 to 2
       1 : 3.1
@@ -682,7 +682,7 @@ CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
       3 : 1
       1 : 0.9
 AT:
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 7.7
     col 0 : locations 0 to 1
       0 : 4.5
@@ -699,7 +699,7 @@ CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
       1 : 0.4
       3 : 1
 D:
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 4-by-4, nzmax: 16 nnz: 16, 1-norm: 139.58
     col 0 : locations 0 to 3
       1 : 13.95
@@ -770,7 +770,7 @@ QR   amd(A'*A)  time:     0.00 resid: 1.61e-02
 --- Matrix: 492-by-490, nnz: 49920 (sym: 0: nnz 0), norm: 9.29e-01
 blocks: 10 singletons: 8 structural rank: 448
 QR   natural    time:     0.04 resid:      nan
-QR   amd(A'*A)  time:     0.06 resid:      nan
+QR   amd(A'*A)  time:     0.05 resid:      nan
 ./cs_dl_demo2 < ../Matrix/bcsstk01
 
 --- Matrix: 48-by-48, nnz: 224 (sym: -1: nnz 400), norm: 3.57e+09
@@ -801,11 +801,11 @@ downdate: time:     0.00 (incl solve) resid: 4.32e-17
 
 --- Matrix: 4884-by-4884, nnz: 147631 (sym: -1: nnz 290378), norm: 7.01e+09
 blocks: 75 singletons: 74 structural rank: 4884
-QR   amd(A'*A)  time:     0.52 resid: 2.01e-22
-LU   amd(A+A')  time:     0.27 resid: 1.10e-22
-LU   amd(S'*S)  time:     0.29 resid: 1.28e-22
-LU   amd(A'*A)  time:     0.28 resid: 1.78e-22
-Chol amd(A+A')  time:     0.08 resid: 1.19e-22
+QR   amd(A'*A)  time:     0.53 resid: 2.01e-22
+LU   amd(A+A')  time:     0.26 resid: 1.10e-22
+LU   amd(S'*S)  time:     0.27 resid: 1.28e-22
+LU   amd(A'*A)  time:     0.29 resid: 1.78e-22
+Chol amd(A+A')  time:     0.09 resid: 1.19e-22
 ./cs_dl_demo3 < ../Matrix/bcsstk16
 
 --- Matrix: 4884-by-4884, nnz: 147631 (sym: -1: nnz 290378), norm: 7.01e+09
@@ -822,7 +822,7 @@ downdate: time:     0.00
 downdate: time:     0.00 (incl solve) resid: 1.24e-21
 ./cs_ci_demo1 < ../Matrix/t2
 T:
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 triplet: 4-by-4, nzmax: 16 nnz: 10
     2 2 : (3, 3.14159)
     1 0 : (3.1, 42)
@@ -835,7 +835,7 @@ triplet: 4-by-4, nzmax: 16 nnz: 10
     0 0 : (4.5, 6)
     2 1 : (1.7, 1)
 A:
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 106.075
     col 0 : locations 0 to 2
       1 : (3.1, 42)
@@ -852,7 +852,7 @@ CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
       3 : (1, 7)
       1 : (0.9, 99)
 AT:
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 144.296
     col 0 : locations 0 to 1
       0 : (4.5, -6)
@@ -869,7 +869,7 @@ CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
       1 : (0.4, -2.71828)
       3 : (1, -7)
 D:
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 4-by-4, nzmax: 16 nnz: 16, 1-norm: 25308.3
     col 0 : locations 0 to 3
       1 : (265.95, 170.4)
@@ -896,7 +896,7 @@ CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
 --- Matrix: 4-by-4, nnz: 10 (sym: 0: nnz 0), norm: 1.06e+02
 blocks: 1 singletons: 0 structural rank: 4
 QR   natural    time:     0.00 resid: 1.95e-17
-QR   amd(A'*A)  time:     0.00 resid: 3.09e-17
+QR   amd(A'*A)  time:     0.00 resid: 1.24e-17
 LU   natural    time:     0.00 resid: 7.38e-18
 LU   amd(A+A')  time:     0.00 resid: 5.40e-18
 LU   amd(S'*S)  time:     0.00 resid: 3.84e-18
@@ -905,8 +905,8 @@ LU   amd(A'*A)  time:     0.00 resid: 5.40e-18
 
 --- Matrix: 3-by-4, nnz: 12 (sym: 0: nnz 0), norm: 3.06e+00
 blocks: 1 singletons: 0 structural rank: 3
-QR   natural    time:     0.00 resid: 7.81e-17
-QR   amd(A'*A)  time:     0.00 resid: 7.81e-17
+QR   natural    time:     0.00 resid: 1.10e-16
+QR   amd(A'*A)  time:     0.00 resid: 1.10e-16
 ./cs_ci_demo2 < ../Matrix/t4
 
 --- Matrix: 2-by-2, nnz: 3 (sym: 1: nnz 4), norm: 2.83e+00
@@ -923,8 +923,8 @@ Chol amd(A+A')  time:     0.00     (failed)
 
 --- Matrix: 67-by-67, nnz: 294 (sym: 0: nnz 0), norm: 6.17e+00
 blocks: 2 singletons: 1 structural rank: 67
-QR   natural    time:     0.00 resid: 7.86e-17
-QR   amd(A'*A)  time:     0.00 resid: 1.13e-16
+QR   natural    time:     0.00 resid: 1.06e-16
+QR   amd(A'*A)  time:     0.00 resid: 7.93e-17
 LU   natural    time:     0.00 resid: 6.30e-17
 LU   amd(A+A')  time:     0.00 resid: 5.29e-17
 LU   amd(S'*S)  time:     0.00 resid: 5.28e-17
@@ -933,24 +933,24 @@ LU   amd(A'*A)  time:     0.00 resid: 4.33e-17
 
 --- Matrix: 492-by-490, nnz: 49920 (sym: 0: nnz 0), norm: 9.29e-01
 blocks: 10 singletons: 8 structural rank: 448
-QR   natural    time:     0.14 resid:      nan
+QR   natural    time:     0.13 resid:      nan
 QR   amd(A'*A)  time:     0.14 resid:      nan
 ./cs_ci_demo2 < ../Matrix/young1c
 
 --- Matrix: 841-by-841, nnz: 4089 (sym: 0: nnz 0), norm: 7.30e+02
 blocks: 1 singletons: 0 structural rank: 841
-QR   natural    time:     0.01 resid: 1.76e-16
-QR   amd(A'*A)  time:     0.00 resid: 1.36e-16
-LU   natural    time:     0.01 resid: 1.56e-16
-LU   amd(A+A')  time:     0.01 resid: 3.55e-16
+QR   natural    time:     0.01 resid: 1.52e-16
+QR   amd(A'*A)  time:     0.01 resid: 1.35e-16
+LU   natural    time:     0.00 resid: 1.56e-16
+LU   amd(A+A')  time:     0.00 resid: 3.55e-16
 LU   amd(S'*S)  time:     0.00 resid: 2.93e-16
 LU   amd(A'*A)  time:     0.00 resid: 2.93e-16
 ./cs_ci_demo2 < ../Matrix/qc324
 
 --- Matrix: 324-by-324, nnz: 26730 (sym: 0: nnz 0), norm: 1.71e+00
 blocks: 1 singletons: 0 structural rank: 324
-QR   natural    time:     0.02 resid: 9.31e-17
-QR   amd(A'*A)  time:     0.02 resid: 9.34e-17
+QR   natural    time:     0.02 resid: 8.43e-17
+QR   amd(A'*A)  time:     0.03 resid: 8.86e-17
 LU   natural    time:     0.01 resid: 4.32e-17
 LU   amd(A+A')  time:     0.01 resid: 3.99e-17
 LU   amd(S'*S)  time:     0.01 resid: 4.00e-17
@@ -959,7 +959,7 @@ LU   amd(A'*A)  time:     0.01 resid: 4.00e-17
 
 --- Matrix: 1600-by-1600, nnz: 7840 (sym: 0: nnz 0), norm: 1.41e+01
 blocks: 1 singletons: 0 structural rank: 1600
-QR   amd(A'*A)  time:     0.01 resid: 8.80e-16
+QR   amd(A'*A)  time:     0.01 resid: 1.07e-15
 LU   amd(A+A')  time:     0.00 resid: 4.59e-16
 LU   amd(S'*S)  time:     0.01 resid: 4.56e-16
 LU   amd(A'*A)  time:     0.01 resid: 4.56e-16
@@ -967,8 +967,8 @@ LU   amd(A'*A)  time:     0.01 resid: 4.56e-16
 
 --- Matrix: 4-by-4, nnz: 10 (sym: -1: nnz 16), norm: 7.37e+01
 blocks: 1 singletons: 0 structural rank: 4
-QR   natural    time:     0.00 resid: 5.98e-17
-QR   amd(A'*A)  time:     0.00 resid: 5.98e-17
+QR   natural    time:     0.00 resid: 1.04e-16
+QR   amd(A'*A)  time:     0.00 resid: 1.04e-16
 LU   natural    time:     0.00 resid: 4.59e-17
 LU   amd(A+A')  time:     0.00 resid: 4.59e-17
 LU   amd(S'*S)  time:     0.00 resid: 4.59e-17
@@ -1015,7 +1015,7 @@ downdate: time:     0.00
 downdate: time:     0.00 (incl solve) resid: 6.54e-25
 ./cs_cl_demo1 < ../Matrix/t2
 T:
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 triplet: 4-by-4, nzmax: 16 nnz: 10
     2 2 : (3, 3.14159)
     1 0 : (3.1, 42)
@@ -1028,7 +1028,7 @@ triplet: 4-by-4, nzmax: 16 nnz: 10
     0 0 : (4.5, 6)
     2 1 : (1.7, 1)
 A:
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 106.075
     col 0 : locations 0 to 2
       1 : (3.1, 42)
@@ -1045,7 +1045,7 @@ CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
       3 : (1, 7)
       1 : (0.9, 99)
 AT:
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 4-by-4, nzmax: 10 nnz: 10, 1-norm: 144.296
     col 0 : locations 0 to 1
       0 : (4.5, -6)
@@ -1062,7 +1062,7 @@ CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
       1 : (0.4, -2.71828)
       3 : (1, -7)
 D:
-CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
+CXSparse Version 3.2.0, Sept 12, 2017.  Copyright (c) Timothy A. Davis, 2006-2016
 4-by-4, nzmax: 16 nnz: 16, 1-norm: 25308.3
     col 0 : locations 0 to 3
       1 : (265.95, 170.4)
@@ -1089,7 +1089,7 @@ CXSparse Version 3.1.9, May 4, 2016.  Copyright (c) Timothy A. Davis, 2006-2016
 --- Matrix: 4-by-4, nnz: 10 (sym: 0: nnz 0), norm: 1.06e+02
 blocks: 1 singletons: 0 structural rank: 4
 QR   natural    time:     0.00 resid: 1.95e-17
-QR   amd(A'*A)  time:     0.00 resid: 3.09e-17
+QR   amd(A'*A)  time:     0.00 resid: 1.24e-17
 LU   natural    time:     0.00 resid: 7.38e-18
 LU   amd(A+A')  time:     0.00 resid: 5.40e-18
 LU   amd(S'*S)  time:     0.00 resid: 3.84e-18
@@ -1098,8 +1098,8 @@ LU   amd(A'*A)  time:     0.00 resid: 5.40e-18
 
 --- Matrix: 3-by-4, nnz: 12 (sym: 0: nnz 0), norm: 3.06e+00
 blocks: 1 singletons: 0 structural rank: 3
-QR   natural    time:     0.00 resid: 7.81e-17
-QR   amd(A'*A)  time:     0.00 resid: 7.81e-17
+QR   natural    time:     0.00 resid: 1.10e-16
+QR   amd(A'*A)  time:     0.00 resid: 1.10e-16
 ./cs_cl_demo2 < ../Matrix/t4
 
 --- Matrix: 2-by-2, nnz: 3 (sym: 1: nnz 4), norm: 2.83e+00
@@ -1116,8 +1116,8 @@ Chol amd(A+A')  time:     0.00     (failed)
 
 --- Matrix: 67-by-67, nnz: 294 (sym: 0: nnz 0), norm: 6.17e+00
 blocks: 2 singletons: 1 structural rank: 67
-QR   natural    time:     0.00 resid: 7.86e-17
-QR   amd(A'*A)  time:     0.00 resid: 1.13e-16
+QR   natural    time:     0.00 resid: 1.06e-16
+QR   amd(A'*A)  time:     0.00 resid: 7.93e-17
 LU   natural    time:     0.00 resid: 6.30e-17
 LU   amd(A+A')  time:     0.00 resid: 5.29e-17
 LU   amd(S'*S)  time:     0.00 resid: 5.28e-17
@@ -1126,15 +1126,15 @@ LU   amd(A'*A)  time:     0.00 resid: 4.33e-17
 
 --- Matrix: 492-by-490, nnz: 49920 (sym: 0: nnz 0), norm: 9.29e-01
 blocks: 10 singletons: 8 structural rank: 448
-QR   natural    time:     0.15 resid:      nan
-QR   amd(A'*A)  time:     0.15 resid:      nan
+QR   natural    time:     0.13 resid:      nan
+QR   amd(A'*A)  time:     0.14 resid:      nan
 ./cs_cl_demo2 < ../Matrix/young1c
 
 --- Matrix: 841-by-841, nnz: 4089 (sym: 0: nnz 0), norm: 7.30e+02
 blocks: 1 singletons: 0 structural rank: 841
-QR   natural    time:     0.01 resid: 1.76e-16
-QR   amd(A'*A)  time:     0.01 resid: 1.36e-16
-LU   natural    time:     0.01 resid: 1.56e-16
+QR   natural    time:     0.01 resid: 1.52e-16
+QR   amd(A'*A)  time:     0.01 resid: 1.35e-16
+LU   natural    time:     0.00 resid: 1.56e-16
 LU   amd(A+A')  time:     0.01 resid: 3.55e-16
 LU   amd(S'*S)  time:     0.00 resid: 2.93e-16
 LU   amd(A'*A)  time:     0.00 resid: 2.93e-16
@@ -1142,8 +1142,8 @@ LU   amd(A'*A)  time:     0.00 resid: 2.93e-16
 
 --- Matrix: 324-by-324, nnz: 26730 (sym: 0: nnz 0), norm: 1.71e+00
 blocks: 1 singletons: 0 structural rank: 324
-QR   natural    time:     0.02 resid: 9.31e-17
-QR   amd(A'*A)  time:     0.03 resid: 9.34e-17
+QR   natural    time:     0.02 resid: 8.43e-17
+QR   amd(A'*A)  time:     0.02 resid: 8.86e-17
 LU   natural    time:     0.01 resid: 4.32e-17
 LU   amd(A+A')  time:     0.01 resid: 3.99e-17
 LU   amd(S'*S)  time:     0.01 resid: 4.00e-17
@@ -1152,7 +1152,7 @@ LU   amd(A'*A)  time:     0.01 resid: 4.00e-17
 
 --- Matrix: 1600-by-1600, nnz: 7840 (sym: 0: nnz 0), norm: 1.41e+01
 blocks: 1 singletons: 0 structural rank: 1600
-QR   amd(A'*A)  time:     0.02 resid: 8.80e-16
+QR   amd(A'*A)  time:     0.02 resid: 1.07e-15
 LU   amd(A+A')  time:     0.00 resid: 4.59e-16
 LU   amd(S'*S)  time:     0.01 resid: 4.56e-16
 LU   amd(A'*A)  time:     0.01 resid: 4.56e-16
@@ -1160,8 +1160,8 @@ LU   amd(A'*A)  time:     0.01 resid: 4.56e-16
 
 --- Matrix: 4-by-4, nnz: 10 (sym: -1: nnz 16), norm: 7.37e+01
 blocks: 1 singletons: 0 structural rank: 4
-QR   natural    time:     0.00 resid: 5.98e-17
-QR   amd(A'*A)  time:     0.00 resid: 5.98e-17
+QR   natural    time:     0.00 resid: 1.04e-16
+QR   amd(A'*A)  time:     0.00 resid: 1.04e-16
 LU   natural    time:     0.00 resid: 4.59e-17
 LU   amd(A+A')  time:     0.00 resid: 4.59e-17
 LU   amd(S'*S)  time:     0.00 resid: 4.59e-17

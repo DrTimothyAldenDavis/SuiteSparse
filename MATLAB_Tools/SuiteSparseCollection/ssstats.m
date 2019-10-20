@@ -22,6 +22,7 @@ function stats = ssstats (A, kind, skip_chol, skip_dmperm, Z)
 %   pattern_symmetry    pattern symmetry (0 to 1, where 1=symmetric)
 %   nnzdiag             nnz (diag (A)) if A is square, 0 otherwise
 %   nzero               nnz (Z)
+%   nentries            nnz (A) + nnz (Z)
 %   amd_lnz             nnz(L) for chol(C(p,p)) where, C=A+A', p=amd(C)
 %   amd_flops           flop count for chol(C(p,p)) where, C=A+A', p=amd(C)
 %   amd_vnz             nnz in Householder vectors for qr(A(:,colamd(A)))
@@ -130,6 +131,7 @@ psym_A = stats.pattern_symmetry ;   % symmetry of the pattern of A (excluding Z)
 stats.nnzdiag = nnzdiag ;
 stats.cholcand = (s >= 6) ;         % check if Cholesky candidate
 stats.nzero = nnz (Z) ;
+stats.nentries = stats.nnz + stats.nzero ;
 
 fprintf ('cholcand: %d\n', stats.cholcand) ;
 fprintf ('numerical_symmetry: %g pattern_symmetry: %g time: %g\n', ...

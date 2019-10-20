@@ -8,7 +8,7 @@
 %
 %   See also ssget, ssweb, ssgrep.
 
-% Copyright 2009-2017, Timothy A. Davis, http://www.suitesparse.com
+% Copyright 2009-2019, Timothy A. Davis, http://www.suitesparse.com
 
 type ssget_example ;
 

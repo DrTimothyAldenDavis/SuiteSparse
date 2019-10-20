@@ -1,5 +1,5 @@
 --------------------------------------------------------------
-Wathen: nx 4 ny 4 n 65 nz 817 method 0, time: 0.000 sec
+Wathen: nx 4 ny 4 n 65 nz 752 method 0, time: 0.000 sec
 
 GraphBLAS matrix: from get_matrix: 
 nrows: 65 ncols: 65 max # entries: 817
@@ -8,39 +8,39 @@ hyper_ratio 0.0625
 GraphBLAS type:  double size: 8
 number of entries: 752 
 row: 0 : 7 entries [0:6]
-    column 1: double -6.85160883409121
-    column 2: double 2.28386961136374
-    column 9: double -6.85160883409121
-    column 10: double -9.13547844545495
-    column 14: double 2.28386961136374
-    column 15: double -9.13547844545495
-    column 16: double 3.42580441704561
+    column 1: double -3.43365642660378
+    column 2: double 1.14455214220126
+    column 9: double -3.43365642660378
+    column 10: double -4.57820856880504
+    column 14: double 1.14455214220126
+    column 15: double -4.57820856880504
+    column 16: double 1.71682821330189
 row: 1 : 7 entries [7:13]
-    column 0: double -6.85160883409121
-    column 2: double -6.85160883409121
-    column 9: double 22.8386961136374
-    column 10: double 22.8386961136374
-    column 14: double -9.13547844545495
-    column 15: double 18.2709568909099
-    column 16: double -9.13547844545495
+    column 0: double -3.43365642660378
+    column 2: double -3.43365642660378
+    column 9: double 11.4455214220126
+    column 10: double 11.4455214220126
+    column 14: double -4.57820856880504
+    column 15: double 9.15641713761008
+    column 16: double -4.57820856880504
 row: 2 : 12 entries [14:25]
-    column 0: double 2.28386961136374
-    column 1: double -6.85160883409121
-    column 3: double -2.34300770083722
-    column 4: double 0.781002566945742
-    column 9: double -9.13547844545495
-    column 10: double -9.19461653492844
-    column 11: double -3.12401026778297
-    column 14: double 3.42580441704561
-    column 15: double -9.13547844545495
-    column 16: double 3.06487217830948
-    column 17: double -3.12401026778297
-    column 18: double 1.17150385041861
+    column 0: double 1.14455214220126
+    column 1: double -3.43365642660378
+    column 3: double -9.1794115743147
+    column 4: double 3.0598038581049
+    column 9: double -4.57820856880504
+    column 10: double -12.6130680009185
+    column 11: double -12.2392154324196
+    column 14: double 1.71682821330189
+    column 15: double -4.57820856880504
+    column 16: double 4.20435600030616
+    column 17: double -12.2392154324196
+    column 18: double 4.58970578715735
 row: 3 : 7 entries [26:32]
-    column 2: double -2.34300770083722
-    column 4: double -2.34300770083722
-    column 10: double 7.81002566945742
-    column 11: double 7.81002566945742
+    column 2: double -9.1794115743147
+    column 4: double -9.1794115743147
+    column 10: double 30.598038581049
+    column 11: double 30.598038581049
     ...
 row: 4 : 12 entries [33:44]
     ...
@@ -56,87 +56,89 @@ row: 9 : 7 entries [78:84]
     ...
 ...
 
-total time to read A matrix:       0.001015 sec
+total time to read A matrix:       0.000703 sec
 
 n 65 # edges 376
-U=triu(A) time:        0.000063 sec
+U=triu(A) time:        0.000030 sec
 
 ------------------------------------- dot product method:
-L=tril(A) time:        0.000032 sec
+L=tril(A) time:        0.000017 sec
 # triangles 872
 
-tricount time:         0.000190 sec (dot product method)
-tri+prep time:         0.000285 sec (incl time to compute L and U)
-compute C time:        0.000126 sec
-reduce (C) time:       0.000064 sec
-rate       1.32 million edges/sec (incl time for U=triu(A))
-rate       1.98 million edges/sec (just tricount itself)
+tricount time:         0.000087 sec (dot product method)
+tri+prep time:         0.000134 sec (incl time to compute L and U)
+compute C time:        0.000065 sec
+reduce (C) time:       0.000022 sec
+rate       2.80 million edges/sec (incl time for U=triu(A))
+rate       4.32 million edges/sec (just tricount itself)
 
 
 ----------------------------------- outer product method:
-tricount time:         0.000126 sec (outer product method)
-tri+prep time:         0.000158 sec (incl time to compute L)
-compute C time:        0.000107 sec
-reduce (C) time:       0.000020 sec
-rate       2.38 million edges/sec (incl time for L=tril(A))
-rate       2.98 million edges/sec (just tricount itself)
+tricount time:         0.000067 sec (outer product method)
+tri+prep time:         0.000084 sec (incl time to compute L)
+compute C time:        0.000055 sec
+reduce (C) time:       0.000012 sec
+rate       4.49 million edges/sec (incl time for L=tril(A))
+rate       5.62 million edges/sec (just tricount itself)
 
 
 --------------------------------------------------------------
-random 5 by 5, nz: 16, method 1 time 0.000 sec
+random 5 by 5, nz: 18, method 1 time 0.000 sec
 
 GraphBLAS matrix: from get_matrix: 
-nrows: 5 ncols: 5 max # entries: 16
+nrows: 5 ncols: 5 max # entries: 18
 format: standard CSR vlen: 5 nvec_nonempty: 5 nvec: 5 plen: 5 vdim: 5
 hyper_ratio 0.0625
 GraphBLAS type:  double size: 8
-number of entries: 16 
+number of entries: 18 
 row: 0 : 3 entries [0:2]
-    column 1: double 0.654957731864376
-    column 2: double 0.625904110843226
-    column 4: double 0.0357371745963927
-row: 1 : 3 entries [3:5]
-    column 0: double 0.654957731864376
-    column 2: double 0.0953093050935392
-    column 3: double 0.919644764549699
-row: 2 : 4 entries [6:9]
-    column 0: double 0.625904110843226
-    column 1: double 0.0953093050935392
-    column 3: double 0.0680867946409497
-    column 4: double 0.331888790551469
-row: 3 : 3 entries [10:12]
-    column 1: double 0.919644764549699
-    column 2: double 0.0680867946409497
-    column 4: double 0.885311441389203
-row: 4 : 3 entries [13:15]
-    column 0: double 0.0357371745963927
-    column 2: double 0.331888790551469
-    column 3: double 0.885311441389203
+    column 1: double 0.717388479790099
+    column 2: double 0.159899455348467
+    column 3: double 0.937600838142916
+row: 1 : 4 entries [3:6]
+    column 0: double 0.717388479790099
+    column 2: double 0.951473352740709
+    column 3: double 0.82691712979873
+    column 4: double 0.620002095185994
+row: 2 : 4 entries [7:10]
+    column 0: double 0.159899455348467
+    column 1: double 0.951473352740709
+    column 3: double 0.855698335145892
+    column 4: double 0.867500482629324
+row: 3 : 4 entries [11:14]
+    column 0: double 0.937600838142916
+    column 1: double 0.82691712979873
+    column 2: double 0.855698335145892
+    column 4: double 0.992311681061557
+row: 4 : 3 entries [15:17]
+    column 1: double 0.620002095185994
+    column 2: double 0.867500482629324
+    column 3: double 0.992311681061557
 
-total time to read A matrix:       0.000218 sec
+total time to read A matrix:       0.000324 sec
 
-n 5 # edges 8
-U=triu(A) time:        0.000020 sec
+n 5 # edges 9
+U=triu(A) time:        0.000042 sec
 
 ------------------------------------- dot product method:
-L=tril(A) time:        0.000010 sec
-# triangles 4
+L=tril(A) time:        0.000009 sec
+# triangles 7
 
-tricount time:         0.000087 sec (dot product method)
-tri+prep time:         0.000117 sec (incl time to compute L and U)
-compute C time:        0.000058 sec
-reduce (C) time:       0.000029 sec
-rate       0.07 million edges/sec (incl time for U=triu(A))
-rate       0.09 million edges/sec (just tricount itself)
+tricount time:         0.000060 sec (dot product method)
+tri+prep time:         0.000111 sec (incl time to compute L and U)
+compute C time:        0.000043 sec
+reduce (C) time:       0.000017 sec
+rate       0.08 million edges/sec (incl time for U=triu(A))
+rate       0.15 million edges/sec (just tricount itself)
 
 
 ----------------------------------- outer product method:
-tricount time:         0.000092 sec (outer product method)
-tri+prep time:         0.000102 sec (incl time to compute L)
-compute C time:        0.000083 sec
-reduce (C) time:       0.000009 sec
-rate       0.08 million edges/sec (incl time for L=tril(A))
-rate       0.09 million edges/sec (just tricount itself)
+tricount time:         0.000085 sec (outer product method)
+tri+prep time:         0.000094 sec (incl time to compute L)
+compute C time:        0.000075 sec
+reduce (C) time:       0.000010 sec
+rate       0.10 million edges/sec (incl time for L=tril(A))
+rate       0.11 million edges/sec (just tricount itself)
 
 
 --------------------------------------------------------------
@@ -150,28 +152,28 @@ GraphBLAS type:  bool size: 1
 empty
 number of entries: 0 
 
-total time to read A matrix:       0.000267 sec
+total time to read A matrix:       0.000586 sec
 
 n 3 # edges 0
-U=triu(A) time:        0.000018 sec
+U=triu(A) time:        0.000023 sec
 
 ------------------------------------- dot product method:
-L=tril(A) time:        0.000009 sec
+L=tril(A) time:        0.000012 sec
 # triangles 0
 
-tricount time:         0.000076 sec (dot product method)
-tri+prep time:         0.000103 sec (incl time to compute L and U)
-compute C time:        0.000054 sec
-reduce (C) time:       0.000022 sec
+tricount time:         0.000071 sec (dot product method)
+tri+prep time:         0.000105 sec (incl time to compute L and U)
+compute C time:        0.000051 sec
+reduce (C) time:       0.000019 sec
 rate       0.00 million edges/sec (incl time for U=triu(A))
 rate       0.00 million edges/sec (just tricount itself)
 
 
 ----------------------------------- outer product method:
-tricount time:         0.000044 sec (outer product method)
-tri+prep time:         0.000054 sec (incl time to compute L)
-compute C time:        0.000037 sec
-reduce (C) time:       0.000007 sec
+tricount time:         0.000071 sec (outer product method)
+tri+prep time:         0.000084 sec (incl time to compute L)
+compute C time:        0.000063 sec
+reduce (C) time:       0.000009 sec
 rate       0.00 million edges/sec (incl time for L=tril(A))
 rate       0.00 million edges/sec (just tricount itself)
 
@@ -194,30 +196,30 @@ row: 2 : 1 entries [2:2]
 row: 3 : 1 entries [3:3]
     column 2: bool 1
 
-total time to read A matrix:       0.000250 sec
+total time to read A matrix:       0.000726 sec
 
 n 4 # edges 2
-U=triu(A) time:        0.000018 sec
+U=triu(A) time:        0.000023 sec
 
 ------------------------------------- dot product method:
-L=tril(A) time:        0.000009 sec
+L=tril(A) time:        0.000017 sec
 # triangles 0
 
-tricount time:         0.000070 sec (dot product method)
-tri+prep time:         0.000097 sec (incl time to compute L and U)
-compute C time:        0.000051 sec
-reduce (C) time:       0.000019 sec
+tricount time:         0.000065 sec (dot product method)
+tri+prep time:         0.000105 sec (incl time to compute L and U)
+compute C time:        0.000050 sec
+reduce (C) time:       0.000015 sec
 rate       0.02 million edges/sec (incl time for U=triu(A))
 rate       0.03 million edges/sec (just tricount itself)
 
 
 ----------------------------------- outer product method:
-tricount time:         0.000039 sec (outer product method)
-tri+prep time:         0.000048 sec (incl time to compute L)
-compute C time:        0.000033 sec
+tricount time:         0.000053 sec (outer product method)
+tri+prep time:         0.000070 sec (incl time to compute L)
+compute C time:        0.000046 sec
 reduce (C) time:       0.000006 sec
-rate       0.04 million edges/sec (incl time for L=tril(A))
-rate       0.05 million edges/sec (just tricount itself)
+rate       0.03 million edges/sec (incl time for L=tril(A))
+rate       0.04 million edges/sec (just tricount itself)
 
 
 --------------------------------------------------------------
@@ -244,30 +246,30 @@ row: 3 : 2 entries [8:9]
     column 0: bool 1
     column 1: bool 1
 
-total time to read A matrix:       0.000196 sec
+total time to read A matrix:       0.000558 sec
 
 n 4 # edges 5
-U=triu(A) time:        0.000012 sec
+U=triu(A) time:        0.000020 sec
 
 ------------------------------------- dot product method:
-L=tril(A) time:        0.000006 sec
+L=tril(A) time:        0.000012 sec
 # triangles 2
 
-tricount time:         0.000057 sec (dot product method)
-tri+prep time:         0.000075 sec (incl time to compute L and U)
-compute C time:        0.000040 sec
-reduce (C) time:       0.000017 sec
-rate       0.07 million edges/sec (incl time for U=triu(A))
-rate       0.09 million edges/sec (just tricount itself)
+tricount time:         0.000069 sec (dot product method)
+tri+prep time:         0.000101 sec (incl time to compute L and U)
+compute C time:        0.000048 sec
+reduce (C) time:       0.000021 sec
+rate       0.05 million edges/sec (incl time for U=triu(A))
+rate       0.07 million edges/sec (just tricount itself)
 
 
 ----------------------------------- outer product method:
-tricount time:         0.000031 sec (outer product method)
-tri+prep time:         0.000037 sec (incl time to compute L)
-compute C time:        0.000026 sec
-reduce (C) time:       0.000005 sec
-rate       0.14 million edges/sec (incl time for L=tril(A))
-rate       0.16 million edges/sec (just tricount itself)
+tricount time:         0.000048 sec (outer product method)
+tri+prep time:         0.000060 sec (incl time to compute L)
+compute C time:        0.000039 sec
+reduce (C) time:       0.000009 sec
+rate       0.08 million edges/sec (incl time for L=tril(A))
+rate       0.10 million edges/sec (just tricount itself)
 
 
 --------------------------------------------------------------
@@ -303,29 +305,29 @@ row: 6 : 3 entries [13:15]
     column 1: bool 1
     column 3: bool 1
 
-total time to read A matrix:       0.000334 sec
+total time to read A matrix:       0.000548 sec
 
 n 7 # edges 8
-U=triu(A) time:        0.000387 sec
+U=triu(A) time:        0.000016 sec
 
 ------------------------------------- dot product method:
-L=tril(A) time:        0.000012 sec
+L=tril(A) time:        0.000033 sec
 # triangles 0
 
-tricount time:         0.000080 sec (dot product method)
-tri+prep time:         0.000480 sec (incl time to compute L and U)
-compute C time:        0.000058 sec
-reduce (C) time:       0.000023 sec
-rate       0.02 million edges/sec (incl time for U=triu(A))
-rate       0.10 million edges/sec (just tricount itself)
+tricount time:         0.000072 sec (dot product method)
+tri+prep time:         0.000121 sec (incl time to compute L and U)
+compute C time:        0.000056 sec
+reduce (C) time:       0.000016 sec
+rate       0.07 million edges/sec (incl time for U=triu(A))
+rate       0.11 million edges/sec (just tricount itself)
 
 
 ----------------------------------- outer product method:
-tricount time:         0.000067 sec (outer product method)
-tri+prep time:         0.000079 sec (incl time to compute L)
-compute C time:        0.000059 sec
-reduce (C) time:       0.000008 sec
-rate       0.10 million edges/sec (incl time for L=tril(A))
+tricount time:         0.000069 sec (outer product method)
+tri+prep time:         0.000102 sec (incl time to compute L)
+compute C time:        0.000062 sec
+reduce (C) time:       0.000007 sec
+rate       0.08 million edges/sec (incl time for L=tril(A))
 rate       0.12 million edges/sec (just tricount itself)
 
 
@@ -369,30 +371,30 @@ row: 9 : 2 entries [18:19]
     column 221: bool 1
 ...
 
-total time to read A matrix:       0.000465 sec
+total time to read A matrix:       0.001309 sec
 
 n 304 # edges 438
-U=triu(A) time:        0.000018 sec
+U=triu(A) time:        0.000035 sec
 
 ------------------------------------- dot product method:
-L=tril(A) time:        0.000015 sec
+L=tril(A) time:        0.000026 sec
 # triangles 0
 
-tricount time:         0.000059 sec (dot product method)
-tri+prep time:         0.000092 sec (incl time to compute L and U)
-compute C time:        0.000044 sec
-reduce (C) time:       0.000015 sec
-rate       4.74 million edges/sec (incl time for U=triu(A))
-rate       7.41 million edges/sec (just tricount itself)
+tricount time:         0.000085 sec (dot product method)
+tri+prep time:         0.000146 sec (incl time to compute L and U)
+compute C time:        0.000065 sec
+reduce (C) time:       0.000020 sec
+rate       3.00 million edges/sec (incl time for U=triu(A))
+rate       5.15 million edges/sec (just tricount itself)
 
 
 ----------------------------------- outer product method:
-tricount time:         0.000053 sec (outer product method)
-tri+prep time:         0.000068 sec (incl time to compute L)
-compute C time:        0.000048 sec
-reduce (C) time:       0.000005 sec
-rate       6.42 million edges/sec (incl time for L=tril(A))
-rate       8.26 million edges/sec (just tricount itself)
+tricount time:         0.000106 sec (outer product method)
+tri+prep time:         0.000132 sec (incl time to compute L)
+compute C time:        0.000097 sec
+reduce (C) time:       0.000010 sec
+rate       3.32 million edges/sec (incl time for L=tril(A))
+rate       4.12 million edges/sec (just tricount itself)
 
 
 --------------------------------------------------------------
@@ -452,30 +454,30 @@ row: 9 : 7 entries [63:69]
     ...
 ...
 
-total time to read A matrix:       0.000335 sec
+total time to read A matrix:       0.001199 sec
 
 n 48 # edges 176
-U=triu(A) time:        0.000015 sec
+U=triu(A) time:        0.000033 sec
 
 ------------------------------------- dot product method:
-L=tril(A) time:        0.000008 sec
+L=tril(A) time:        0.000020 sec
 # triangles 160
 
-tricount time:         0.000067 sec (dot product method)
-tri+prep time:         0.000090 sec (incl time to compute L and U)
-compute C time:        0.000051 sec
-reduce (C) time:       0.000017 sec
-rate       1.96 million edges/sec (incl time for U=triu(A))
-rate       2.61 million edges/sec (just tricount itself)
+tricount time:         0.000092 sec (dot product method)
+tri+prep time:         0.000145 sec (incl time to compute L and U)
+compute C time:        0.000068 sec
+reduce (C) time:       0.000024 sec
+rate       1.21 million edges/sec (incl time for U=triu(A))
+rate       1.92 million edges/sec (just tricount itself)
 
 
 ----------------------------------- outer product method:
-tricount time:         0.000038 sec (outer product method)
-tri+prep time:         0.000046 sec (incl time to compute L)
-compute C time:        0.000032 sec
-reduce (C) time:       0.000006 sec
-rate       3.86 million edges/sec (incl time for L=tril(A))
-rate       4.64 million edges/sec (just tricount itself)
+tricount time:         0.000045 sec (outer product method)
+tri+prep time:         0.000066 sec (incl time to compute L)
+compute C time:        0.000039 sec
+reduce (C) time:       0.000007 sec
+rate       2.67 million edges/sec (incl time for L=tril(A))
+rate       3.88 million edges/sec (just tricount itself)
 
 
 --------------------------------------------------------------
@@ -537,30 +539,30 @@ row: 13 : 39 entries [231:269]
     ...
 ...
 
-total time to read A matrix:       0.116337 sec
+total time to read A matrix:       0.173033 sec
 
 n 4884 # edges 142747
-U=triu(A) time:        0.001048 sec
+U=triu(A) time:        0.004681 sec
 
 ------------------------------------- dot product method:
-L=tril(A) time:        0.001527 sec
+L=tril(A) time:        0.001643 sec
 # triangles 1512964
 
-tricount time:         0.010477 sec (dot product method)
-tri+prep time:         0.013051 sec (incl time to compute L and U)
-compute C time:        0.009828 sec
-reduce (C) time:       0.000649 sec
-rate      10.94 million edges/sec (incl time for U=triu(A))
-rate      13.63 million edges/sec (just tricount itself)
+tricount time:         0.015815 sec (dot product method)
+tri+prep time:         0.022139 sec (incl time to compute L and U)
+compute C time:        0.015058 sec
+reduce (C) time:       0.000757 sec
+rate       6.45 million edges/sec (incl time for U=triu(A))
+rate       9.03 million edges/sec (just tricount itself)
 
 
 ----------------------------------- outer product method:
-tricount time:         0.009926 sec (outer product method)
-tri+prep time:         0.011452 sec (incl time to compute L)
-compute C time:        0.009329 sec
-reduce (C) time:       0.000597 sec
-rate      12.46 million edges/sec (incl time for L=tril(A))
-rate      14.38 million edges/sec (just tricount itself)
+tricount time:         0.011032 sec (outer product method)
+tri+prep time:         0.012675 sec (incl time to compute L)
+compute C time:        0.010305 sec
+reduce (C) time:       0.000727 sec
+rate      11.26 million edges/sec (incl time for L=tril(A))
+rate      12.94 million edges/sec (just tricount itself)
 
 
 --------------------------------------------------------------
@@ -624,30 +626,30 @@ row: 9 : 4 entries [220:223]
     ...
 ...
 
-total time to read A matrix:       0.001041 sec
+total time to read A matrix:       0.002149 sec
 
 n 183 # edges 701
-U=triu(A) time:        0.000034 sec
+U=triu(A) time:        0.000068 sec
 
 ------------------------------------- dot product method:
-L=tril(A) time:        0.000024 sec
+L=tril(A) time:        0.000039 sec
 # triangles 863
 
-tricount time:         0.000112 sec (dot product method)
-tri+prep time:         0.000170 sec (incl time to compute L and U)
-compute C time:        0.000089 sec
-reduce (C) time:       0.000023 sec
-rate       4.13 million edges/sec (incl time for U=triu(A))
-rate       6.26 million edges/sec (just tricount itself)
+tricount time:         0.000156 sec (dot product method)
+tri+prep time:         0.000262 sec (incl time to compute L and U)
+compute C time:        0.000126 sec
+reduce (C) time:       0.000030 sec
+rate       2.67 million edges/sec (incl time for U=triu(A))
+rate       4.51 million edges/sec (just tricount itself)
 
 
 ----------------------------------- outer product method:
-tricount time:         0.000067 sec (outer product method)
-tri+prep time:         0.000091 sec (incl time to compute L)
-compute C time:        0.000056 sec
-reduce (C) time:       0.000010 sec
-rate       7.73 million edges/sec (incl time for L=tril(A))
-rate      10.50 million edges/sec (just tricount itself)
+tricount time:         0.000088 sec (outer product method)
+tri+prep time:         0.000128 sec (incl time to compute L)
+compute C time:        0.000076 sec
+reduce (C) time:       0.000012 sec
+rate       5.50 million edges/sec (incl time for L=tril(A))
+rate       7.93 million edges/sec (just tricount itself)
 
 
 --------------------------------------------------------------
@@ -706,30 +708,30 @@ row: 9 : 3 entries [43:45]
     ...
 ...
 
-total time to read A matrix:       0.000356 sec
+total time to read A matrix:       0.000830 sec
 
 n 63 # edges 123
-U=triu(A) time:        0.000022 sec
+U=triu(A) time:        0.000027 sec
 
 ------------------------------------- dot product method:
-L=tril(A) time:        0.000011 sec
+L=tril(A) time:        0.000016 sec
 # triangles 0
 
-tricount time:         0.000085 sec (dot product method)
-tri+prep time:         0.000118 sec (incl time to compute L and U)
-compute C time:        0.000056 sec
-reduce (C) time:       0.000029 sec
-rate       1.04 million edges/sec (incl time for U=triu(A))
-rate       1.44 million edges/sec (just tricount itself)
+tricount time:         0.000078 sec (dot product method)
+tri+prep time:         0.000122 sec (incl time to compute L and U)
+compute C time:        0.000058 sec
+reduce (C) time:       0.000020 sec
+rate       1.01 million edges/sec (incl time for U=triu(A))
+rate       1.57 million edges/sec (just tricount itself)
 
 
 ----------------------------------- outer product method:
-tricount time:         0.000067 sec (outer product method)
-tri+prep time:         0.000078 sec (incl time to compute L)
-compute C time:        0.000059 sec
-reduce (C) time:       0.000008 sec
-rate       1.58 million edges/sec (incl time for L=tril(A))
-rate       1.85 million edges/sec (just tricount itself)
+tricount time:         0.000117 sec (outer product method)
+tri+prep time:         0.000133 sec (incl time to compute L)
+compute C time:        0.000107 sec
+reduce (C) time:       0.000010 sec
+rate       0.93 million edges/sec (incl time for L=tril(A))
+rate       1.05 million edges/sec (just tricount itself)
 
 
 --------------------------------------------------------------
@@ -787,30 +789,30 @@ row: 9 : 7 entries [45:51]
     ...
 ...
 
-total time to read A matrix:       0.000404 sec
+total time to read A matrix:       0.000899 sec
 
 n 63 # edges 123
-U=triu(A) time:        0.000020 sec
+U=triu(A) time:        0.000026 sec
 
 ------------------------------------- dot product method:
-L=tril(A) time:        0.000010 sec
+L=tril(A) time:        0.000014 sec
 # triangles 0
 
-tricount time:         0.000075 sec (dot product method)
-tri+prep time:         0.000105 sec (incl time to compute L and U)
-compute C time:        0.000055 sec
+tricount time:         0.000077 sec (dot product method)
+tri+prep time:         0.000117 sec (incl time to compute L and U)
+compute C time:        0.000058 sec
 reduce (C) time:       0.000019 sec
-rate       1.17 million edges/sec (incl time for U=triu(A))
-rate       1.65 million edges/sec (just tricount itself)
+rate       1.06 million edges/sec (incl time for U=triu(A))
+rate       1.60 million edges/sec (just tricount itself)
 
 
 ----------------------------------- outer product method:
-tricount time:         0.000062 sec (outer product method)
-tri+prep time:         0.000073 sec (incl time to compute L)
-compute C time:        0.000055 sec
-reduce (C) time:       0.000007 sec
-rate       1.69 million edges/sec (incl time for L=tril(A))
-rate       1.97 million edges/sec (just tricount itself)
+tricount time:         0.000103 sec (outer product method)
+tri+prep time:         0.000117 sec (incl time to compute L)
+compute C time:        0.000094 sec
+reduce (C) time:       0.000010 sec
+rate       1.05 million edges/sec (incl time for L=tril(A))
+rate       1.19 million edges/sec (just tricount itself)
 
 
 --------------------------------------------------------------
@@ -865,30 +867,30 @@ row: 9 : 3 entries [30:32]
     ...
 ...
 
-total time to read A matrix:       0.000408 sec
+total time to read A matrix:       0.000787 sec
 
 n 78 # edges 102
-U=triu(A) time:        0.000049 sec
+U=triu(A) time:        0.000031 sec
 
 ------------------------------------- dot product method:
-L=tril(A) time:        0.000008 sec
+L=tril(A) time:        0.000018 sec
 # triangles 0
 
-tricount time:         0.000065 sec (dot product method)
-tri+prep time:         0.000122 sec (incl time to compute L and U)
-compute C time:        0.000051 sec
+tricount time:         0.000059 sec (dot product method)
+tri+prep time:         0.000108 sec (incl time to compute L and U)
+compute C time:        0.000045 sec
 reduce (C) time:       0.000014 sec
-rate       0.84 million edges/sec (incl time for U=triu(A))
-rate       1.56 million edges/sec (just tricount itself)
+rate       0.95 million edges/sec (incl time for U=triu(A))
+rate       1.73 million edges/sec (just tricount itself)
 
 
 ----------------------------------- outer product method:
-tricount time:         0.000069 sec (outer product method)
-tri+prep time:         0.000076 sec (incl time to compute L)
-compute C time:        0.000058 sec
-reduce (C) time:       0.000011 sec
-rate       1.34 million edges/sec (incl time for L=tril(A))
-rate       1.49 million edges/sec (just tricount itself)
+tricount time:         0.000101 sec (outer product method)
+tri+prep time:         0.000119 sec (incl time to compute L)
+compute C time:        0.000091 sec
+reduce (C) time:       0.000010 sec
+rate       0.86 million edges/sec (incl time for L=tril(A))
+rate       1.01 million edges/sec (just tricount itself)
 
 
 --------------------------------------------------------------
@@ -952,30 +954,30 @@ row: 9 : 190 entries [338:527]
     ...
 ...
 
-total time to read A matrix:       0.042089 sec
+total time to read A matrix:       0.058195 sec
 
 n 982 # edges 49920
-U=triu(A) time:        0.000340 sec
+U=triu(A) time:        0.000625 sec
 
 ------------------------------------- dot product method:
-L=tril(A) time:        0.000276 sec
+L=tril(A) time:        0.001184 sec
 # triangles 0
 
-tricount time:         0.000310 sec (dot product method)
-tri+prep time:         0.000925 sec (incl time to compute L and U)
-compute C time:        0.000294 sec
-reduce (C) time:       0.000016 sec
-rate      53.95 million edges/sec (incl time for U=triu(A))
-rate     161.25 million edges/sec (just tricount itself)
+tricount time:         0.000583 sec (dot product method)
+tri+prep time:         0.002393 sec (incl time to compute L and U)
+compute C time:        0.000560 sec
+reduce (C) time:       0.000023 sec
+rate      20.86 million edges/sec (incl time for U=triu(A))
+rate      85.56 million edges/sec (just tricount itself)
 
 
 ----------------------------------- outer product method:
-tricount time:         0.000169 sec (outer product method)
-tri+prep time:         0.000445 sec (incl time to compute L)
-compute C time:        0.000164 sec
-reduce (C) time:       0.000005 sec
-rate     112.10 million edges/sec (incl time for L=tril(A))
-rate     294.72 million edges/sec (just tricount itself)
+tricount time:         0.000264 sec (outer product method)
+tri+prep time:         0.001448 sec (incl time to compute L)
+compute C time:        0.000255 sec
+reduce (C) time:       0.000009 sec
+rate      34.47 million edges/sec (incl time for L=tril(A))
+rate     188.85 million edges/sec (just tricount itself)
 
 
 --------------------------------------------------------------
@@ -1036,34 +1038,34 @@ row: 9 : 9 entries [69:77]
     ...
 ...
 
-total time to read A matrix:       0.000480 sec
+total time to read A matrix:       0.001001 sec
 
 n 67 # edges 287
-U=triu(A) time:        0.000025 sec
+U=triu(A) time:        0.000034 sec
 
 ------------------------------------- dot product method:
-L=tril(A) time:        0.000013 sec
+L=tril(A) time:        0.000024 sec
 # triangles 120
 
-tricount time:         0.000079 sec (dot product method)
-tri+prep time:         0.000117 sec (incl time to compute L and U)
-compute C time:        0.000063 sec
-reduce (C) time:       0.000016 sec
-rate       2.45 million edges/sec (incl time for U=triu(A))
-rate       3.63 million edges/sec (just tricount itself)
+tricount time:         0.000096 sec (dot product method)
+tri+prep time:         0.000153 sec (incl time to compute L and U)
+compute C time:        0.000073 sec
+reduce (C) time:       0.000022 sec
+rate       1.87 million edges/sec (incl time for U=triu(A))
+rate       3.00 million edges/sec (just tricount itself)
 
 
 ----------------------------------- outer product method:
-tricount time:         0.000041 sec (outer product method)
-tri+prep time:         0.000054 sec (incl time to compute L)
-compute C time:        0.000035 sec
-reduce (C) time:       0.000006 sec
-rate       5.30 million edges/sec (incl time for L=tril(A))
-rate       7.03 million edges/sec (just tricount itself)
+tricount time:         0.000068 sec (outer product method)
+tri+prep time:         0.000092 sec (incl time to compute L)
+compute C time:        0.000056 sec
+reduce (C) time:       0.000012 sec
+rate       3.13 million edges/sec (incl time for L=tril(A))
+rate       4.24 million edges/sec (just tricount itself)
 
 
 --------------------------------------------------------------
-Wathen: nx 200 ny 200 n 120801 nz 1883201 method 0, time: 0.290 sec
+Wathen: nx 200 ny 200 n 120801 nz 1762400 method 0, time: 0.470 sec
 
 GraphBLAS matrix: from get_matrix: 
 nrows: 120801 ncols: 120801 max # entries: 1883201
@@ -1072,39 +1074,39 @@ hyper_ratio 0.0625
 GraphBLAS type:  double size: 8
 number of entries: 1762400 
 row: 0 : 7 entries [0:6]
-    column 1: double -6.85160883409121
-    column 2: double 2.28386961136374
-    column 401: double -6.85160883409121
-    column 402: double -9.13547844545495
-    column 602: double 2.28386961136374
-    column 603: double -9.13547844545495
-    column 604: double 3.42580441704561
+    column 1: double -3.43365642660378
+    column 2: double 1.14455214220126
+    column 401: double -3.43365642660378
+    column 402: double -4.57820856880504
+    column 602: double 1.14455214220126
+    column 603: double -4.57820856880504
+    column 604: double 1.71682821330189
 row: 1 : 7 entries [7:13]
-    column 0: double -6.85160883409121
-    column 2: double -6.85160883409121
-    column 401: double 22.8386961136374
-    column 402: double 22.8386961136374
-    column 602: double -9.13547844545495
-    column 603: double 18.2709568909099
-    column 604: double -9.13547844545495
+    column 0: double -3.43365642660378
+    column 2: double -3.43365642660378
+    column 401: double 11.4455214220126
+    column 402: double 11.4455214220126
+    column 602: double -4.57820856880504
+    column 603: double 9.15641713761008
+    column 604: double -4.57820856880504
 row: 2 : 12 entries [14:25]
-    column 0: double 2.28386961136374
-    column 1: double -6.85160883409121
-    column 3: double -2.34300770083722
-    column 4: double 0.781002566945742
-    column 401: double -9.13547844545495
-    column 402: double -9.19461653492844
-    column 403: double -3.12401026778297
-    column 602: double 3.42580441704561
-    column 603: double -9.13547844545495
-    column 604: double 3.06487217830948
-    column 605: double -3.12401026778297
-    column 606: double 1.17150385041861
+    column 0: double 1.14455214220126
+    column 1: double -3.43365642660378
+    column 3: double -9.1794115743147
+    column 4: double 3.0598038581049
+    column 401: double -4.57820856880504
+    column 402: double -12.6130680009185
+    column 403: double -12.2392154324196
+    column 602: double 1.71682821330189
+    column 603: double -4.57820856880504
+    column 604: double 4.20435600030616
+    column 605: double -12.2392154324196
+    column 606: double 4.58970578715735
 row: 3 : 7 entries [26:32]
-    column 2: double -2.34300770083722
-    column 4: double -2.34300770083722
-    column 402: double 7.81002566945742
-    column 403: double 7.81002566945742
+    column 2: double -9.1794115743147
+    column 4: double -9.1794115743147
+    column 402: double 30.598038581049
+    column 403: double 30.598038581049
     ...
 row: 4 : 12 entries [33:44]
     ...
@@ -1120,375 +1122,375 @@ row: 9 : 7 entries [83:89]
     ...
 ...
 
-total time to read A matrix:       0.366005 sec
+total time to read A matrix:       0.500207 sec
 
 n 120801 # edges 881200
-U=triu(A) time:        0.010234 sec
+U=triu(A) time:        0.010464 sec
 
 ------------------------------------- dot product method:
-L=tril(A) time:        0.011095 sec
+L=tril(A) time:        0.008937 sec
 # triangles 2160400
 
-tricount time:         0.022213 sec (dot product method)
-tri+prep time:         0.043542 sec (incl time to compute L and U)
-compute C time:        0.019322 sec
-reduce (C) time:       0.002891 sec
-rate      20.24 million edges/sec (incl time for U=triu(A))
-rate      39.67 million edges/sec (just tricount itself)
+tricount time:         0.026678 sec (dot product method)
+tri+prep time:         0.046079 sec (incl time to compute L and U)
+compute C time:        0.022880 sec
+reduce (C) time:       0.003798 sec
+rate      19.12 million edges/sec (incl time for U=triu(A))
+rate      33.03 million edges/sec (just tricount itself)
 
 
 ----------------------------------- outer product method:
-tricount time:         0.017995 sec (outer product method)
-tri+prep time:         0.029090 sec (incl time to compute L)
-compute C time:        0.014989 sec
-reduce (C) time:       0.003005 sec
-rate      30.29 million edges/sec (incl time for L=tril(A))
-rate      48.97 million edges/sec (just tricount itself)
+tricount time:         0.021253 sec (outer product method)
+tri+prep time:         0.030190 sec (incl time to compute L)
+compute C time:        0.018004 sec
+reduce (C) time:       0.003248 sec
+rate      29.19 million edges/sec (incl time for L=tril(A))
+rate      41.46 million edges/sec (just tricount itself)
 
 
 --------------------------------------------------------------
-random 10000 by 10000, nz: 199746, method 0 time 0.046 sec
+random 10000 by 10000, nz: 199768, method 0 time 0.046 sec
 
 GraphBLAS matrix: from get_matrix: 
-nrows: 10000 ncols: 10000 max # entries: 199746
+nrows: 10000 ncols: 10000 max # entries: 199768
 format: standard CSR vlen: 10000 nvec_nonempty: 10000 nvec: 10000 plen: 10000 vdim: 10000
 hyper_ratio 0.0625
 GraphBLAS type:  double size: 8
-number of entries: 199746 
-row: 0 : 18 entries [0:17]
-    column 3143: double 0.782006286812952
-    column 3238: double 0.645985290078433
-    column 3371: double 0.50297555467391
-    column 3825: double 0.460524307992798
-    column 4050: double 0.971861934263131
-    column 4513: double 0.410321359904782
-    column 5038: double 0.570909756767479
-    column 5240: double 0.578295236060671
-    column 5464: double 0.300881984923856
-    column 6319: double 0.275124362926115
-    column 6677: double 0.84743797112949
-    column 7119: double 0.40964995269631
-    column 7891: double 0.120975371562853
-    column 8001: double 0.408520767845698
-    column 8797: double 0.390728476821192
-    column 9203: double 0.541062654499954
-    column 9414: double 0.551927243873409
-    column 9469: double 0.729483932004761
-row: 1 : 18 entries [18:35]
-    column 1047: double 0.184179204687643
-    column 2165: double 0.833704641865291
-    column 2440: double 0.50007629627369
-    column 3153: double 0.576281014435255
-    column 3154: double 0.032624286629841
-    column 3793: double 0.164860988189337
-    column 3811: double 0.879757072664571
-    column 3950: double 0.0151371807000946
-    column 4019: double 0.136539811395611
-    column 5055: double 0.671987060151982
-    column 5712: double 0.970946378978851
-    column 6151: double 0.0406811731315043
+number of entries: 199768 
+row: 0 : 27 entries [0:26]
+    column 214: double 0.611428854126681
+    column 599: double 0.759817736907767
+    column 687: double 0.490404969132481
+    column 1945: double 0.220198646141235
+    column 2206: double 0.469879566865097
+    column 3108: double 0.861235641490359
+    column 3938: double 0.161881899547966
+    column 4048: double 0.974307955822525
+    column 4050: double 0.0806984691326516
+    column 4327: double 0.845122101573719
+    column 4526: double 0.917189450706256
+    column 4651: double 0.953684565813323
+    column 5080: double 0.524531191328185
+    column 5289: double 0.373677450804412
+    column 5397: double 0.147001725909933
+    column 5574: double 0.741414052708653
+    column 5603: double 0.0243003910252495
+    column 6319: double 0.386650481372716
+    column 6693: double 0.985725408162066
+    column 7242: double 0.387267836971157
+    column 7597: double 0.148198968114398
+    column 7855: double 0.161521142087958
+    column 8149: double 0.80591885984148
+    column 8307: double 0.583442051968559
+    column 8807: double 0.201124811360069
+    column 9224: double 0.246570360972623
+    column 9320: double 0.810676243146442
+row: 1 : 18 entries [27:44]
+    column 222: double 0.199748643507498
+    column 1002: double 0.723475211370372
+    column 1776: double 0.424430120199892
     ...
-row: 2 : 25 entries [36:60]
+row: 2 : 18 entries [45:62]
     ...
-row: 3 : 19 entries [61:79]
+row: 3 : 20 entries [63:82]
     ...
-row: 4 : 22 entries [80:101]
+row: 4 : 27 entries [83:109]
     ...
-row: 5 : 25 entries [102:126]
+row: 5 : 23 entries [110:132]
     ...
-row: 6 : 19 entries [127:145]
+row: 6 : 23 entries [133:155]
     ...
-row: 7 : 29 entries [146:174]
+row: 7 : 18 entries [156:173]
     ...
-row: 8 : 26 entries [175:200]
+row: 8 : 22 entries [174:195]
     ...
-row: 9 : 29 entries [201:229]
+row: 9 : 17 entries [196:212]
     ...
 ...
 
-total time to read A matrix:       0.049173 sec
+total time to read A matrix:       0.053126 sec
 
-n 10000 # edges 99873
-U=triu(A) time:        0.001170 sec
+n 10000 # edges 99884
+U=triu(A) time:        0.001366 sec
 
 ------------------------------------- dot product method:
-L=tril(A) time:        0.001116 sec
-# triangles 1301
+L=tril(A) time:        0.001113 sec
+# triangles 1357
 
-tricount time:         0.005715 sec (dot product method)
-tri+prep time:         0.008001 sec (incl time to compute L and U)
-compute C time:        0.005680 sec
-reduce (C) time:       0.000035 sec
-rate      12.48 million edges/sec (incl time for U=triu(A))
-rate      17.48 million edges/sec (just tricount itself)
+tricount time:         0.017467 sec (dot product method)
+tri+prep time:         0.019946 sec (incl time to compute L and U)
+compute C time:        0.017426 sec
+reduce (C) time:       0.000041 sec
+rate       5.01 million edges/sec (incl time for U=triu(A))
+rate       5.72 million edges/sec (just tricount itself)
 
 
 ----------------------------------- outer product method:
-tricount time:         0.003289 sec (outer product method)
-tri+prep time:         0.004405 sec (incl time to compute L)
-compute C time:        0.003247 sec
-reduce (C) time:       0.000042 sec
-rate      22.67 million edges/sec (incl time for L=tril(A))
-rate      30.36 million edges/sec (just tricount itself)
+tricount time:         0.005752 sec (outer product method)
+tri+prep time:         0.006866 sec (incl time to compute L)
+compute C time:        0.005697 sec
+reduce (C) time:       0.000055 sec
+rate      14.55 million edges/sec (incl time for L=tril(A))
+rate      17.36 million edges/sec (just tricount itself)
 
 
 --------------------------------------------------------------
-random 10000 by 10000, nz: 199746, method 1 time 0.039 sec
+random 10000 by 10000, nz: 199768, method 1 time 0.041 sec
 
 GraphBLAS matrix: from get_matrix: 
-nrows: 10000 ncols: 10000 max # entries: 199746
+nrows: 10000 ncols: 10000 max # entries: 199768
 format: standard CSR vlen: 10000 nvec_nonempty: 10000 nvec: 10000 plen: 10000 vdim: 10000
 hyper_ratio 0.0625
 GraphBLAS type:  double size: 8
-number of entries: 199746 
-row: 0 : 18 entries [0:17]
-    column 3143: double 0.782006286812952
-    column 3238: double 0.645985290078433
-    column 3371: double 0.50297555467391
-    column 3825: double 0.460524307992798
-    column 4050: double 0.971861934263131
-    column 4513: double 0.410321359904782
-    column 5038: double 0.570909756767479
-    column 5240: double 0.578295236060671
-    column 5464: double 0.300881984923856
-    column 6319: double 0.275124362926115
-    column 6677: double 0.84743797112949
-    column 7119: double 0.40964995269631
-    column 7891: double 0.120975371562853
-    column 8001: double 0.408520767845698
-    column 8797: double 0.390728476821192
-    column 9203: double 0.541062654499954
-    column 9414: double 0.551927243873409
-    column 9469: double 0.729483932004761
-row: 1 : 18 entries [18:35]
-    column 1047: double 0.184179204687643
-    column 2165: double 0.833704641865291
-    column 2440: double 0.50007629627369
-    column 3153: double 0.576281014435255
-    column 3154: double 0.032624286629841
-    column 3793: double 0.164860988189337
-    column 3811: double 0.879757072664571
-    column 3950: double 0.0151371807000946
-    column 4019: double 0.136539811395611
-    column 5055: double 0.671987060151982
-    column 5712: double 0.970946378978851
-    column 6151: double 0.0406811731315043
+number of entries: 199768 
+row: 0 : 27 entries [0:26]
+    column 214: double 0.611428854126681
+    column 599: double 0.759817736907767
+    column 687: double 0.490404969132481
+    column 1945: double 0.220198646141235
+    column 2206: double 0.469879566865097
+    column 3108: double 0.861235641490359
+    column 3938: double 0.161881899547966
+    column 4048: double 0.974307955822525
+    column 4050: double 0.0806984691326516
+    column 4327: double 0.845122101573719
+    column 4526: double 0.917189450706256
+    column 4651: double 0.953684565813323
+    column 5080: double 0.524531191328185
+    column 5289: double 0.373677450804412
+    column 5397: double 0.147001725909933
+    column 5574: double 0.741414052708653
+    column 5603: double 0.0243003910252495
+    column 6319: double 0.386650481372716
+    column 6693: double 0.985725408162066
+    column 7242: double 0.387267836971157
+    column 7597: double 0.148198968114398
+    column 7855: double 0.161521142087958
+    column 8149: double 0.80591885984148
+    column 8307: double 0.583442051968559
+    column 8807: double 0.201124811360069
+    column 9224: double 0.246570360972623
+    column 9320: double 0.810676243146442
+row: 1 : 18 entries [27:44]
+    column 222: double 0.199748643507498
+    column 1002: double 0.723475211370372
+    column 1776: double 0.424430120199892
     ...
-row: 2 : 25 entries [36:60]
+row: 2 : 18 entries [45:62]
     ...
-row: 3 : 19 entries [61:79]
+row: 3 : 20 entries [63:82]
     ...
-row: 4 : 22 entries [80:101]
+row: 4 : 27 entries [83:109]
     ...
-row: 5 : 25 entries [102:126]
+row: 5 : 23 entries [110:132]
     ...
-row: 6 : 19 entries [127:145]
+row: 6 : 23 entries [133:155]
     ...
-row: 7 : 29 entries [146:174]
+row: 7 : 18 entries [156:173]
     ...
-row: 8 : 26 entries [175:200]
+row: 8 : 22 entries [174:195]
     ...
-row: 9 : 29 entries [201:229]
+row: 9 : 17 entries [196:212]
     ...
 ...
 
-total time to read A matrix:       0.041496 sec
+total time to read A matrix:       0.045037 sec
 
-n 10000 # edges 99873
-U=triu(A) time:        0.000900 sec
+n 10000 # edges 99884
+U=triu(A) time:        0.001321 sec
 
 ------------------------------------- dot product method:
-L=tril(A) time:        0.000733 sec
-# triangles 1301
+L=tril(A) time:        0.000779 sec
+# triangles 1357
 
-tricount time:         0.004237 sec (dot product method)
-tri+prep time:         0.005869 sec (incl time to compute L and U)
-compute C time:        0.004205 sec
-reduce (C) time:       0.000032 sec
-rate      17.02 million edges/sec (incl time for U=triu(A))
-rate      23.57 million edges/sec (just tricount itself)
+tricount time:         0.016029 sec (dot product method)
+tri+prep time:         0.018128 sec (incl time to compute L and U)
+compute C time:        0.015983 sec
+reduce (C) time:       0.000045 sec
+rate       5.51 million edges/sec (incl time for U=triu(A))
+rate       6.23 million edges/sec (just tricount itself)
 
 
 ----------------------------------- outer product method:
-tricount time:         0.002898 sec (outer product method)
-tri+prep time:         0.003631 sec (incl time to compute L)
-compute C time:        0.002884 sec
-reduce (C) time:       0.000014 sec
-rate      27.50 million edges/sec (incl time for L=tril(A))
-rate      34.46 million edges/sec (just tricount itself)
+tricount time:         0.005097 sec (outer product method)
+tri+prep time:         0.005876 sec (incl time to compute L)
+compute C time:        0.005070 sec
+reduce (C) time:       0.000028 sec
+rate      17.00 million edges/sec (incl time for L=tril(A))
+rate      19.60 million edges/sec (just tricount itself)
 
 
 --------------------------------------------------------------
-random 100000 by 100000, nz: 19979838, method 0 time 4.579 sec
+random 100000 by 100000, nz: 19980330, method 0 time 6.241 sec
 
 GraphBLAS matrix: from get_matrix: 
-nrows: 100000 ncols: 100000 max # entries: 19979838
+nrows: 100000 ncols: 100000 max # entries: 19980330
 format: standard CSR vlen: 100000 nvec_nonempty: 100000 nvec: 100000 plen: 100000 vdim: 100000
 hyper_ratio 0.0625
 GraphBLAS type:  double size: 8
-number of entries: 19979838 
-row: 0 : 174 entries [0:173]
-    column 46: double 0.839075899533067
-    column 170: double 0.728598895229957
-    column 798: double 0.881557664723655
-    column 2726: double 0.329691457869198
-    column 2762: double 0.448011719107639
-    column 3535: double 0.0736106448561052
-    column 3921: double 0.722190008239998
-    column 4491: double 0.945402386547441
-    column 4808: double 0.825495162816248
-    column 5290: double 0.0121463667714469
-    column 5514: double 0.153294473097934
-    column 6015: double 0.0816064943388165
-    column 6022: double 0.464827417828913
-    column 6822: double 0.928586687826167
-    column 7237: double 0.931943723868526
-    column 8100: double 0.886684774315622
-    column 8420: double 0.845210119937742
-    column 8797: double 0.390728476821192
-    column 8979: double 0.402142399365215
-    column 9648: double 0.181340983306375
-    column 10387: double 0.205145420697653
-    column 11015: double 0.779412213507492
-    column 11243: double 0.054475539414655
-    column 11903: double 0.434827723014008
-    column 11996: double 0.701254310739464
-    column 12390: double 0.84621723075045
-    column 13056: double 0.750144962920011
-    column 13111: double 0.548020874660482
-    column 14644: double 0.688772240363781
-    column 14724: double 0.186590166936247
+number of entries: 19980330 
+row: 0 : 189 entries [0:188]
+    column 68: double 0.661716873588655
+    column 778: double 0.346667912736641
+    column 1801: double 0.371952817962016
+    column 1839: double 0.197836379076741
+    column 3356: double 0.878444087311034
+    column 3756: double 0.217022247656947
+    column 4441: double 0.2577766982832
+    column 4808: double 0.392707915752597
+    column 4922: double 0.0962031972027673
+    column 5075: double 0.691830102660204
+    column 6296: double 0.917483099015425
+    column 7151: double 0.193326447087741
+    column 7221: double 0.230494023532692
+    column 8657: double 0.934093089488637
+    column 9473: double 0.795621154107574
+    column 9524: double 0.0817629687243753
+    column 9648: double 0.357546753659551
+    column 11313: double 0.0928425661313169
+    column 11744: double 0.444733012853217
+    column 12263: double 0.615758200269077
+    column 12332: double 0.251131194044459
+    column 13111: double 0.219714040656976
+    column 13699: double 0.761268198442996
+    column 14471: double 0.123158921695327
+    column 14892: double 0.85213404597076
+    column 15591: double 0.442234173393239
+    column 16106: double 0.422217457293673
+    column 16346: double 0.705855402008225
+    column 16403: double 0.434678226736306
+    column 16612: double 0.994128715640082
     ...
-row: 1 : 197 entries [174:370]
+row: 1 : 163 entries [189:351]
     ...
-row: 2 : 198 entries [371:568]
+row: 2 : 201 entries [352:552]
     ...
-row: 3 : 176 entries [569:744]
+row: 3 : 205 entries [553:757]
     ...
-row: 4 : 170 entries [745:914]
+row: 4 : 214 entries [758:971]
     ...
-row: 5 : 203 entries [915:1117]
+row: 5 : 193 entries [972:1164]
     ...
-row: 6 : 205 entries [1118:1322]
+row: 6 : 215 entries [1165:1379]
     ...
-row: 7 : 191 entries [1323:1513]
+row: 7 : 195 entries [1380:1574]
     ...
-row: 8 : 214 entries [1514:1727]
+row: 8 : 210 entries [1575:1784]
     ...
-row: 9 : 197 entries [1728:1924]
+row: 9 : 205 entries [1785:1989]
     ...
 ...
 
-total time to read A matrix:       4.901840 sec
+total time to read A matrix:       6.672073 sec
 
-n 100000 # edges 9989919
-U=triu(A) time:        0.140367 sec
+n 100000 # edges 9990165
+U=triu(A) time:        0.166200 sec
 
 ------------------------------------- dot product method:
-L=tril(A) time:        0.128073 sec
-# triangles 1328523
+L=tril(A) time:        0.136051 sec
+# triangles 1330131
 
-tricount time:         4.428469 sec (dot product method)
-tri+prep time:         4.696909 sec (incl time to compute L and U)
-compute C time:        4.422852 sec
-reduce (C) time:       0.005617 sec
-rate       2.13 million edges/sec (incl time for U=triu(A))
-rate       2.26 million edges/sec (just tricount itself)
+tricount time:        10.895035 sec (dot product method)
+tri+prep time:        11.197286 sec (incl time to compute L and U)
+compute C time:       10.888513 sec
+reduce (C) time:       0.006522 sec
+rate       0.89 million edges/sec (incl time for U=triu(A))
+rate       0.92 million edges/sec (just tricount itself)
 
 
 ----------------------------------- outer product method:
-tricount time:         3.161164 sec (outer product method)
-tri+prep time:         3.289237 sec (incl time to compute L)
-compute C time:        3.151661 sec
-reduce (C) time:       0.009503 sec
-rate       3.04 million edges/sec (incl time for L=tril(A))
-rate       3.16 million edges/sec (just tricount itself)
+tricount time:         3.647234 sec (outer product method)
+tri+prep time:         3.783285 sec (incl time to compute L)
+compute C time:        3.632954 sec
+reduce (C) time:       0.014280 sec
+rate       2.64 million edges/sec (incl time for L=tril(A))
+rate       2.74 million edges/sec (just tricount itself)
 
 
 --------------------------------------------------------------
-random 100000 by 100000, nz: 19979838, method 1 time 4.001 sec
+random 100000 by 100000, nz: 19980330, method 1 time 5.050 sec
 
 GraphBLAS matrix: from get_matrix: 
-nrows: 100000 ncols: 100000 max # entries: 19979838
+nrows: 100000 ncols: 100000 max # entries: 19980330
 format: standard CSR vlen: 100000 nvec_nonempty: 100000 nvec: 100000 plen: 100000 vdim: 100000
 hyper_ratio 0.0625
 GraphBLAS type:  double size: 8
-number of entries: 19979838 
-row: 0 : 174 entries [0:173]
-    column 46: double 0.839075899533067
-    column 170: double 0.728598895229957
-    column 798: double 0.881557664723655
-    column 2726: double 0.329691457869198
-    column 2762: double 0.448011719107639
-    column 3535: double 0.0736106448561052
-    column 3921: double 0.722190008239998
-    column 4491: double 0.945402386547441
-    column 4808: double 0.825495162816248
-    column 5290: double 0.0121463667714469
-    column 5514: double 0.153294473097934
-    column 6015: double 0.0816064943388165
-    column 6022: double 0.464827417828913
-    column 6822: double 0.928586687826167
-    column 7237: double 0.931943723868526
-    column 8100: double 0.886684774315622
-    column 8420: double 0.845210119937742
-    column 8797: double 0.390728476821192
-    column 8979: double 0.402142399365215
-    column 9648: double 0.181340983306375
-    column 10387: double 0.205145420697653
-    column 11015: double 0.779412213507492
-    column 11243: double 0.054475539414655
-    column 11903: double 0.434827723014008
-    column 11996: double 0.701254310739464
-    column 12390: double 0.84621723075045
-    column 13056: double 0.750144962920011
-    column 13111: double 0.548020874660482
-    column 14644: double 0.688772240363781
-    column 14724: double 0.186590166936247
+number of entries: 19980330 
+row: 0 : 189 entries [0:188]
+    column 68: double 0.661716873588655
+    column 778: double 0.346667912736641
+    column 1801: double 0.371952817962016
+    column 1839: double 0.197836379076741
+    column 3356: double 0.878444087311034
+    column 3756: double 0.217022247656947
+    column 4441: double 0.2577766982832
+    column 4808: double 0.392707915752597
+    column 4922: double 0.0962031972027673
+    column 5075: double 0.691830102660204
+    column 6296: double 0.917483099015425
+    column 7151: double 0.193326447087741
+    column 7221: double 0.230494023532692
+    column 8657: double 0.934093089488637
+    column 9473: double 0.795621154107574
+    column 9524: double 0.0817629687243753
+    column 9648: double 0.357546753659551
+    column 11313: double 0.0928425661313169
+    column 11744: double 0.444733012853217
+    column 12263: double 0.615758200269077
+    column 12332: double 0.251131194044459
+    column 13111: double 0.219714040656976
+    column 13699: double 0.761268198442996
+    column 14471: double 0.123158921695327
+    column 14892: double 0.85213404597076
+    column 15591: double 0.442234173393239
+    column 16106: double 0.422217457293673
+    column 16346: double 0.705855402008225
+    column 16403: double 0.434678226736306
+    column 16612: double 0.994128715640082
     ...
-row: 1 : 197 entries [174:370]
+row: 1 : 163 entries [189:351]
     ...
-row: 2 : 198 entries [371:568]
+row: 2 : 201 entries [352:552]
     ...
-row: 3 : 176 entries [569:744]
+row: 3 : 205 entries [553:757]
     ...
-row: 4 : 170 entries [745:914]
+row: 4 : 214 entries [758:971]
     ...
-row: 5 : 203 entries [915:1117]
+row: 5 : 193 entries [972:1164]
     ...
-row: 6 : 205 entries [1118:1322]
+row: 6 : 215 entries [1165:1379]
     ...
-row: 7 : 191 entries [1323:1513]
+row: 7 : 195 entries [1380:1574]
     ...
-row: 8 : 214 entries [1514:1727]
+row: 8 : 210 entries [1575:1784]
     ...
-row: 9 : 197 entries [1728:1924]
+row: 9 : 205 entries [1785:1989]
     ...
 ...
 
-total time to read A matrix:       4.369014 sec
+total time to read A matrix:       5.476703 sec
 
-n 100000 # edges 9989919
-U=triu(A) time:        0.152012 sec
+n 100000 # edges 9990165
+U=triu(A) time:        0.158366 sec
 
 ------------------------------------- dot product method:
-L=tril(A) time:        0.132913 sec
-# triangles 1328523
+L=tril(A) time:        0.150133 sec
+# triangles 1330131
 
-tricount time:         4.330285 sec (dot product method)
-tri+prep time:         4.615210 sec (incl time to compute L and U)
-compute C time:        4.324971 sec
-reduce (C) time:       0.005315 sec
-rate       2.16 million edges/sec (incl time for U=triu(A))
-rate       2.31 million edges/sec (just tricount itself)
+tricount time:        11.709715 sec (dot product method)
+tri+prep time:        12.018214 sec (incl time to compute L and U)
+compute C time:       11.703620 sec
+reduce (C) time:       0.006095 sec
+rate       0.83 million edges/sec (incl time for U=triu(A))
+rate       0.85 million edges/sec (just tricount itself)
 
 
 ----------------------------------- outer product method:
-tricount time:         3.014967 sec (outer product method)
-tri+prep time:         3.147880 sec (incl time to compute L)
-compute C time:        3.005188 sec
-reduce (C) time:       0.009779 sec
-rate       3.17 million edges/sec (incl time for L=tril(A))
-rate       3.31 million edges/sec (just tricount itself)
+tricount time:         3.455971 sec (outer product method)
+tri+prep time:         3.606104 sec (incl time to compute L)
+compute C time:        3.445793 sec
+reduce (C) time:       0.010178 sec
+rate       2.77 million edges/sec (incl time for L=tril(A))
+rate       2.89 million edges/sec (just tricount itself)
 
 

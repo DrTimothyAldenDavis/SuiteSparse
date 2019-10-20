@@ -47,6 +47,7 @@ Demo/tri_demo.out
 Demo/wildtype_demo.out
 Demo/*.log
 Demo/complex_demo_out.m
+Demo/import_demo.out
 
 Test/*.log
 Test/errlog.txt
@@ -58,6 +59,8 @@ Tcov/log.txt
 Tcov/gbstat.mat
 Tcov/fprint.txt
 Test/fprint.txt
+
+Doc/html
 
 # Do not ignore this file
 !.gitignore

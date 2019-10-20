@@ -33,7 +33,7 @@ function stats = ssweb (matrix, opts)
 %
 %   See also web, ssget, ssget_defaults.
 
-% Copyright 2009-2017, Timothy A. Davis, http://www.suitesparse.com
+% Copyright 2009-2019, Timothy A. Davis, http://www.suitesparse.com
 
 params = ssget_defaults ;
 ss_index = ssget ;

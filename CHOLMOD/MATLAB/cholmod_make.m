@@ -80,8 +80,10 @@ end
 if (pc)
     if (verLessThan ('matlab', '7.5'))
         lapack = 'libmwlapack.lib' ;
-    else
+    elseif (verLessThan ('matlab', '9.5'))
         lapack = 'libmwlapack.lib libmwblas.lib' ;
+    else
+        lapack = '-lmwlapack -lmwblas' ;
     end
 else
     if (verLessThan ('matlab', '7.5'))

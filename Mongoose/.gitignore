@@ -22,3 +22,4 @@ Doc/Mongoose_UserGuide.out
 Doc/Mongoose_UserGuide.toc
 *.o
 *.a
+.DS_Store

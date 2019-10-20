@@ -106,7 +106,7 @@ else
     if (issparse (X))
         % For a sparse matrix, use the actual pattern.  Entries not in the
         % the pattern are assumed to be equal to the addititve identity.
-        xpattern = cast (full (spones (X)), 'logical') ;
+        xpattern = cast (full (GB_spones_mex (X)), 'logical') ;
     else
         xpattern = (X ~= identity) ;
     end

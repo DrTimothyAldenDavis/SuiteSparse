@@ -16,7 +16,7 @@ function ssgplot (A, xyz, directed, nodename)
 %
 % See also gplot, ssget.
 
-% Copyright 2006-2018, Timothy A. Davis
+% Copyright 2006-2019, Timothy A. Davis
 
 %-------------------------------------------------------------------------------
 % check inputs
