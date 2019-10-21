@@ -2,7 +2,7 @@
 // GB_mex_mxm: C<Mask> = accum(C,A*B)
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2019, All Rights Reserved.
 // http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 //------------------------------------------------------------------------------
@@ -48,6 +48,13 @@ void mexFunction
         FREE_ALL ;
         mexErrMsgTxt ("A failed") ;
     }
+    printf ("%p %p\n", A->type, Complex) ;
+    GxB_print (A->type, 3) ;
+    GxB_print (Complex, 3) ;
+    #ifdef MY_COMPLEX
+    printf ("%p\n", My_Complex) ;
+    GxB_print (My_Complex, 3) ;
+    #endif
     if (A->type != Complex)
     {
         FREE_ALL ;

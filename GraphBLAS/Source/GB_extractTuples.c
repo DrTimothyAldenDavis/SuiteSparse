@@ -19,8 +19,6 @@
 // This function is not user-callable.  It does the work for the user-callable
 // GrB_*_extractTuples functions.
 
-// PARALLEL: easy.  Does large memcpy's and fully parallel loops.
-
 #include "GB.h"
 
 GrB_Info GB_extractTuples       // extract all tuples from a matrix
@@ -80,7 +78,8 @@ GrB_Info GB_extractTuples       // extract all tuples from a matrix
     // determine the number of threads to use
     //--------------------------------------------------------------------------
 
-    GB_GET_NTHREADS (nthreads, Context) ;
+    GB_GET_NTHREADS_MAX (nthreads_max, chunk, Context) ;
+    int nthreads = GB_nthreads (anz + A->nvec, chunk, nthreads_max) ;
 
     //-------------------------------------------------------------------------
     // handle the CSR/CSC format
@@ -104,7 +103,7 @@ GrB_Info GB_extractTuples       // extract all tuples from a matrix
 
     if (I != NULL)
     { 
-        memcpy (I, A->i, anz * sizeof (int64_t)) ;  // do parallel
+        GB_memcpy (I, A->i, anz * sizeof (int64_t), nthreads) ;
     }
 
     //--------------------------------------------------------------------------
@@ -113,12 +112,10 @@ GrB_Info GB_extractTuples       // extract all tuples from a matrix
 
     if (J != NULL)
     {
-        GBI_for_each_vector (A)
+        if (!GB_extract_vector_list ((int64_t *) J, A, nthreads))
         {
-            GBI_for_each_entry (j, p, pend)
-            { 
-                J [p] = j ;
-            }
+            // out of memory
+            return (GB_OUT_OF_MEMORY) ;
         }
     }
 
@@ -135,7 +132,7 @@ GrB_Info GB_extractTuples       // extract all tuples from a matrix
             // user-defined type, but this can't be checked.  For built-in
             // types, xcode has already been determined by the type of X in the
             // function signature of the caller.
-            memcpy (X, A->x, anz * A->type->size) ; // do parallel
+            GB_memcpy (X, A->x, anz * A->type->size, nthreads) ;
         }
         else
         { 

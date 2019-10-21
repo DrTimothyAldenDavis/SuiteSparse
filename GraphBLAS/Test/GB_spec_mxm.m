@@ -43,7 +43,7 @@ function C = GB_spec_mxm (C, Mask, accum, semiring, A, B, descriptor)
 % C<Mask> = accum (C,T).  See GrB_accum_mask for a description of this
 % last step.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2019, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 %-------------------------------------------------------------------------------
@@ -97,7 +97,7 @@ for j = 1:n
             % T (i,j) += A (i,k) * B (k,j), using the semiring
             if (A.pattern (i,k) && B.pattern (k,j))
                 z = GB_spec_op (multiply, A_matrix (i,k), B_matrix (k,j)) ;
-                T.matrix (i,j) = GB_spec_op (add, T.matrix (i,j),  z)  ;
+                T.matrix (i,j) = GB_spec_op (add, T.matrix (i,j), z) ;
                 T.pattern (i,j) = true ;
             end
         end

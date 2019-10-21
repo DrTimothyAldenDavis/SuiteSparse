@@ -10,17 +10,15 @@
 // This is not used for built-in types.  Those are created statically.
 // Users should not call this function directly; use GrB_Type_new instead.
 
-// not parallel: this function does O(1) work and is already thread-safe.
-
 #include "GB.h"
 
 GrB_Info GB_Type_new
 (
     GrB_Type *type,             // handle of user type to create
-    const size_t sizeof_ctype,  // size of the user type
+    size_t sizeof_ctype,        // size of the user type
     const char *name            // name of the type, as "sizeof (ctype)"
 )
-{ 
+{
 
     //--------------------------------------------------------------------------
     // check inputs
@@ -30,12 +28,23 @@ GrB_Info GB_Type_new
     GB_RETURN_IF_NULL (type) ;
     (*type) = NULL ;
 
+    #ifdef PGI_COMPILER_BUG
+
+        if (sizeof_ctype > PGI_COMPILER_BUG_MAXSIZE_FOR_ANY_GRB_TYPE)
+        {
+            return (GB_ERROR (GrB_INVALID_VALUE, (GB_LOG, "Due to a PGI"
+                "compiler bug, user-defined types are limited to %d bytes",
+                PGI_COMPILER_BUG_MAXSIZE_FOR_ANY_GRB_TYPE))) ;
+        }
+
+    #endif
+
     //--------------------------------------------------------------------------
     // create the type
     //--------------------------------------------------------------------------
 
     // allocate the type
-    GB_CALLOC_MEMORY (*type, 1, sizeof (struct GB_Type_opaque), NULL) ;
+    GB_CALLOC_MEMORY (*type, 1, sizeof (struct GB_Type_opaque)) ;
     if (*type == NULL)
     { 
         // out of memory

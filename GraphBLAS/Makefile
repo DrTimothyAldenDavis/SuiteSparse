@@ -2,7 +2,7 @@
 # GraphBLAS/Makefile
 #-------------------------------------------------------------------------------
 
-# SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
+# SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2019, All Rights Reserved.
 # http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 #-------------------------------------------------------------------------------
@@ -12,20 +12,27 @@
 
 JOBS ?= 1
 
-# build the GraphBLAS library (static and dynamic) and run a quick test
-default:
-	( cd build ; cmake $(CMAKE_OPTIONS) .. ; $(MAKE) --jobs=$(JOBS) ; cd ../Demo ; ./demo )
+default: library
 
 # just build the static and dynamic libraries; do not run the demo
 library:
 	( cd build ; cmake $(CMAKE_OPTIONS) .. ; $(MAKE) --jobs=$(JOBS) )
+
+# just run the demos: assumes the library is already compiled
+run:
+	( cd Demo ; ./demo )
+
+# just do 'make' in build; do not rerun the cmake script
+remake:
+	( cd build ; $(MAKE) --jobs=$(JOBS) )
 
 # just run cmake; do not compile
 cmake:
 	( cd build ; cmake $(CMAKE_OPTIONS) .. ; )
 
 # the same as "make library"
-static: library
+static:
+	( cd build ; cmake $(CMAKE_OPTIONS) -DBUILD_GRB_STATIC_LIBRARY=1 .. ; $(MAKE) --jobs=$(JOBS) )
 
 # installs GraphBLAS to the install location defined by cmake, usually
 # /usr/local/lib and /usr/local/include
@@ -35,11 +42,6 @@ install:
 # create the Doc/GraphBLAS_UserGuide.pdf
 docs:
 	( cd Doc ; $(MAKE) )
-
-# create the doxygen documentation in Doc/html (first run Doc/dox_headers
-# in MATLAB if you have editted the code)
-dox:
-	doxygen
 
 # remove any installed libraries and #include files
 uninstall:
@@ -51,9 +53,11 @@ purge: distclean
 
 # remove all files not in the distribution
 distclean:
-	rm -rf build/* Demo/*_demo.out Demo/complex_demo_out.m Tcov/log.txt
+	rm -rf build/* Demo/*.out Demo/complex_demo_out.m Tcov/log.txt
 	rm -rf Config/*.tmp Source/control.m4
 	rm -rf Doc/html/* Doc/*.tmp
+	( cd GraphBLAS/test/tcov ; $(MAKE) distclean )
+	( cd GraphBLAS/@GrB/private ; $(MAKE) distclean )
 	( cd Test ; $(MAKE) distclean )
 	( cd Tcov ; $(MAKE) distclean )
 	( cd Doc  ; $(MAKE) distclean )

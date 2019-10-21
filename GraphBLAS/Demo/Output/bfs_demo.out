@@ -1,114 +1,26 @@
 Wathen: nx 4 ny 4 n 65 nz 817 method 0, time: 0.000 sec
-
-GraphBLAS matrix: from get_matrix: 
-nrows: 65 ncols: 65 max # entries: 817
-format: standard CSR vlen: 65 nvec_nonempty: 65 nvec: 65 plen: 65 vdim: 65
-hyper_ratio 0.0625
-GraphBLAS type:  double size: 8
-number of entries: 817 
-row: 0 : 8 entries [0:7]
-    column 0: double 3.43365642660378
-    column 1: double -3.43365642660378
-    column 2: double 1.14455214220126
-    column 9: double -3.43365642660378
-    column 10: double -4.57820856880504
-    column 14: double 1.14455214220126
-    column 15: double -4.57820856880504
-    column 16: double 1.71682821330189
-row: 1 : 8 entries [8:15]
-    column 0: double -3.43365642660378
-    column 1: double 18.3128342752202
-    column 2: double -3.43365642660378
-    column 9: double 11.4455214220126
-    column 10: double 11.4455214220126
-    column 14: double -4.57820856880504
-    column 15: double 9.15641713761008
-    column 16: double -4.57820856880504
-row: 2 : 13 entries [16:28]
-    column 0: double 1.14455214220126
-    column 1: double -3.43365642660378
-    column 2: double 12.6130680009185
-    column 3: double -9.1794115743147
-    column 4: double 3.0598038581049
-    column 9: double -4.57820856880504
-    column 10: double -12.6130680009185
-    column 11: double -12.2392154324196
-    column 14: double 1.71682821330189
-    column 15: double -4.57820856880504
-    column 16: double 4.20435600030616
-    column 17: double -12.2392154324196
-    column 18: double 4.58970578715735
-row: 3 : 8 entries [29:36]
-    column 2: double -9.1794115743147
-    ...
-row: 4 : 13 entries [37:49]
-    ...
-row: 5 : 8 entries [50:57]
-    ...
-row: 6 : 13 entries [58:70]
-    ...
-row: 7 : 8 entries [71:78]
-    ...
-row: 8 : 8 entries [79:86]
-    ...
-row: 9 : 8 entries [87:94]
-    ...
-...
 number of nodes: 65
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000403
+BFS time in seconds:       0.000292
 nodes reachable from node 0: 65 out of 65
 max BFS level: 5
 
 method 5: same but check each result
-BFS time in seconds:       0.000102
+BFS time in seconds:       0.000179
 nodes reachable from node 0: 65 out of 65
 max BFS level: 5
 
 method 6: apply unary operator
-BFS time in seconds:       0.000109
+BFS time in seconds:       0.000249
 nodes reachable from node 0: 65 out of 65
 max BFS level: 5
 
 method 6: same but check each result
-BFS time in seconds:       0.000091
+BFS time in seconds:       0.000234
 nodes reachable from node 0: 65 out of 65
 max BFS level: 5
 random 5 by 5, nz: 21, method 1 time 0.000 sec
-
-GraphBLAS matrix: from get_matrix: 
-nrows: 5 ncols: 5 max # entries: 21
-format: standard CSR vlen: 5 nvec_nonempty: 5 nvec: 5 plen: 5 vdim: 5
-hyper_ratio 0.0625
-GraphBLAS type:  double size: 8
-number of entries: 21 
-row: 0 : 3 entries [0:2]
-    column 1: double 0.70501889367129
-    column 2: double 0.159899455348467
-    column 3: double 0.955580004812297
-row: 1 : 4 entries [3:6]
-    column 0: double 0.70501889367129
-    column 2: double 0.951473352740709
-    column 3: double 0.82691712979873
-    column 4: double 0.683445578060021
-row: 2 : 5 entries [7:11]
-    column 0: double 0.159899455348467
-    column 1: double 0.951473352740709
-    column 2: double 0.981332247573239
-    column 3: double 0.904890411820296
-    column 4: double 0.619947394488639
-row: 3 : 5 entries [12:16]
-    column 0: double 0.955580004812297
-    column 1: double 0.82691712979873
-    column 2: double 0.904890411820296
-    column 3: double 0.674999397183715
-    column 4: double 0.137173323118519
-row: 4 : 4 entries [17:20]
-    column 1: double 0.683445578060021
-    column 2: double 0.619947394488639
-    column 3: double 0.137173323118519
-    column 4: double 0.723917890505425
 number of nodes: 5
 
 method 5: vector assign and reduce:
@@ -117,93 +29,61 @@ nodes reachable from node 0: 5 out of 5
 max BFS level: 3
 
 method 5: same but check each result
-BFS time in seconds:       0.000037
+BFS time in seconds:       0.000117
 nodes reachable from node 0: 5 out of 5
 max BFS level: 3
 
 method 6: apply unary operator
-BFS time in seconds:       0.000062
+BFS time in seconds:       0.000156
 nodes reachable from node 0: 5 out of 5
 max BFS level: 3
 
 method 6: same but check each result
-BFS time in seconds:       0.000050
+BFS time in seconds:       0.000143
 nodes reachable from node 0: 5 out of 5
 max BFS level: 3
 matrix 3 by 3, 3 entries, from stdin
-
-GraphBLAS matrix: from get_matrix: 
-nrows: 3 ncols: 3 max # entries: 3
-format: standard CSR vlen: 3 nvec_nonempty: 3 nvec: 3 plen: 3 vdim: 3
-hyper_ratio 0.0625
-GraphBLAS type:  bool size: 1
-number of entries: 3 
-row: 0 : 1 entries [0:0]
-    column 0: bool 1
-row: 1 : 1 entries [1:1]
-    column 1: bool 1
-row: 2 : 1 entries [2:2]
-    column 2: bool 1
 number of nodes: 3
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000171
+BFS time in seconds:       0.000228
 nodes reachable from node 0: 1 out of 3
 max BFS level: 1
 
 method 5: same but check each result
-BFS time in seconds:       0.000044
+BFS time in seconds:       0.000120
 nodes reachable from node 0: 1 out of 3
 max BFS level: 1
 
 method 6: apply unary operator
-BFS time in seconds:       0.000058
+BFS time in seconds:       0.000133
 nodes reachable from node 0: 1 out of 3
 max BFS level: 1
 
 method 6: same but check each result
-BFS time in seconds:       0.000042
+BFS time in seconds:       0.000122
 nodes reachable from node 0: 1 out of 3
 max BFS level: 1
 matrix 4 by 4, 8 entries, from stdin
-
-GraphBLAS matrix: from get_matrix: 
-nrows: 4 ncols: 4 max # entries: 8
-format: standard CSR vlen: 4 nvec_nonempty: 4 nvec: 4 plen: 4 vdim: 4
-hyper_ratio 0.0625
-GraphBLAS type:  bool size: 1
-number of entries: 8 
-row: 0 : 2 entries [0:1]
-    column 0: bool 1
-    column 1: bool 1
-row: 1 : 2 entries [2:3]
-    column 0: bool 1
-    column 1: bool 1
-row: 2 : 2 entries [4:5]
-    column 2: bool 1
-    column 3: bool 1
-row: 3 : 2 entries [6:7]
-    column 2: bool 1
-    column 3: bool 1
 number of nodes: 4
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000165
+BFS time in seconds:       0.000204
 nodes reachable from node 0: 2 out of 4
 max BFS level: 2
 
 method 5: same but check each result
-BFS time in seconds:       0.000033
+BFS time in seconds:       0.000120
 nodes reachable from node 0: 2 out of 4
 max BFS level: 2
 
 method 6: apply unary operator
-BFS time in seconds:       0.000055
+BFS time in seconds:       0.000152
 nodes reachable from node 0: 2 out of 4
 max BFS level: 2
 
 method 6: same but check each result
-BFS time in seconds:       0.000031
+BFS time in seconds:       0.000194
 nodes reachable from node 0: 2 out of 4
 max BFS level: 2
 
@@ -216,50 +96,25 @@ must be identical to monoid operator z=or(x,y) of type [bool]
 
 ------------------- this is OK: 0 (should be GrB_SUCCESS = 0)
 matrix 4 by 4, 14 entries, from stdin
-
-GraphBLAS matrix: from get_matrix: 
-nrows: 4 ncols: 4 max # entries: 14
-format: standard CSR vlen: 4 nvec_nonempty: 4 nvec: 4 plen: 4 vdim: 4
-hyper_ratio 0.0625
-GraphBLAS type:  bool size: 1
-number of entries: 14 
-row: 0 : 4 entries [0:3]
-    column 0: bool 1
-    column 1: bool 1
-    column 2: bool 1
-    column 3: bool 1
-row: 1 : 4 entries [4:7]
-    column 0: bool 1
-    column 1: bool 1
-    column 2: bool 1
-    column 3: bool 1
-row: 2 : 3 entries [8:10]
-    column 0: bool 1
-    column 1: bool 1
-    column 2: bool 1
-row: 3 : 3 entries [11:13]
-    column 0: bool 1
-    column 1: bool 1
-    column 3: bool 1
 number of nodes: 4
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000225
+BFS time in seconds:       0.000222
 nodes reachable from node 0: 4 out of 4
 max BFS level: 2
 
 method 5: same but check each result
-BFS time in seconds:       0.000049
+BFS time in seconds:       0.000162
 nodes reachable from node 0: 4 out of 4
 max BFS level: 2
 
 method 6: apply unary operator
-BFS time in seconds:       0.000060
+BFS time in seconds:       0.000156
 nodes reachable from node 0: 4 out of 4
 max BFS level: 2
 
 method 6: same but check each result
-BFS time in seconds:       0.000046
+BFS time in seconds:       0.000143
 nodes reachable from node 0: 4 out of 4
 max BFS level: 2
 
@@ -272,1120 +127,332 @@ must be identical to monoid operator z=or(x,y) of type [bool]
 
 ------------------- this is OK: 0 (should be GrB_SUCCESS = 0)
 matrix 7 by 7, 16 entries, from stdin
-
-GraphBLAS matrix: from get_matrix: 
-nrows: 7 ncols: 7 max # entries: 16
-format: standard CSR vlen: 7 nvec_nonempty: 7 nvec: 7 plen: 7 vdim: 7
-hyper_ratio 0.0625
-GraphBLAS type:  bool size: 1
-number of entries: 16 
-row: 0 : 2 entries [0:1]
-    column 5: bool 1
-    column 6: bool 1
-row: 1 : 2 entries [2:3]
-    column 5: bool 1
-    column 6: bool 1
-row: 2 : 1 entries [4:4]
-    column 4: bool 1
-row: 3 : 3 entries [5:7]
-    column 4: bool 1
-    column 5: bool 1
-    column 6: bool 1
-row: 4 : 2 entries [8:9]
-    column 2: bool 1
-    column 3: bool 1
-row: 5 : 3 entries [10:12]
-    column 0: bool 1
-    column 1: bool 1
-    column 3: bool 1
-row: 6 : 3 entries [13:15]
-    column 0: bool 1
-    column 1: bool 1
-    column 3: bool 1
 number of nodes: 7
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000314
+BFS time in seconds:       0.000164
 nodes reachable from node 0: 7 out of 7
 max BFS level: 5
 
 method 5: same but check each result
-BFS time in seconds:       0.000061
+BFS time in seconds:       0.000109
 nodes reachable from node 0: 7 out of 7
 max BFS level: 5
 
 method 6: apply unary operator
-BFS time in seconds:       0.000078
+BFS time in seconds:       0.000159
 nodes reachable from node 0: 7 out of 7
 max BFS level: 5
 
 method 6: same but check each result
-BFS time in seconds:       0.000068
+BFS time in seconds:       0.000144
 nodes reachable from node 0: 7 out of 7
 max BFS level: 5
 matrix 304 by 304, 876 entries, from stdin
-
-GraphBLAS matrix: from get_matrix: 
-nrows: 304 ncols: 304 max # entries: 876
-format: standard CSR vlen: 304 nvec_nonempty: 304 nvec: 304 plen: 304 vdim: 304
-hyper_ratio 0.0625
-GraphBLAS type:  bool size: 1
-number of entries: 876 
-row: 0 : 2 entries [0:1]
-    column 219: bool 1
-    column 220: bool 1
-row: 1 : 2 entries [2:3]
-    column 219: bool 1
-    column 226: bool 1
-row: 2 : 2 entries [4:5]
-    column 219: bool 1
-    column 225: bool 1
-row: 3 : 2 entries [6:7]
-    column 219: bool 1
-    column 224: bool 1
-row: 4 : 2 entries [8:9]
-    column 220: bool 1
-    column 221: bool 1
-row: 5 : 2 entries [10:11]
-    column 220: bool 1
-    column 228: bool 1
-row: 6 : 2 entries [12:13]
-    column 220: bool 1
-    column 227: bool 1
-row: 7 : 2 entries [14:15]
-    column 220: bool 1
-    column 226: bool 1
-row: 8 : 2 entries [16:17]
-    column 221: bool 1
-    column 222: bool 1
-row: 9 : 2 entries [18:19]
-    column 221: bool 1
-...
 number of nodes: 304
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000356
+BFS time in seconds:       0.000448
 nodes reachable from node 0: 304 out of 304
 max BFS level: 17
 
 method 5: same but check each result
-BFS time in seconds:       0.000195
+BFS time in seconds:       0.000379
 nodes reachable from node 0: 304 out of 304
 max BFS level: 17
 
 method 6: apply unary operator
-BFS time in seconds:       0.000212
+BFS time in seconds:       0.000555
 nodes reachable from node 0: 304 out of 304
 max BFS level: 17
 
 method 6: same but check each result
-BFS time in seconds:       0.000195
+BFS time in seconds:       0.000773
 nodes reachable from node 0: 304 out of 304
 max BFS level: 17
 matrix 48 by 48, 400 entries, from stdin
-
-GraphBLAS matrix: from get_matrix: 
-nrows: 48 ncols: 48 max # entries: 400
-format: standard CSR vlen: 48 nvec_nonempty: 48 nvec: 48 plen: 48 vdim: 48
-hyper_ratio 0.0625
-GraphBLAS type:  bool size: 1
-number of entries: 400 
-row: 0 : 8 entries [0:7]
-    column 0: bool 1
-    column 4: bool 1
-    column 5: bool 1
-    column 6: bool 1
-    column 10: bool 1
-    column 18: bool 1
-    column 24: bool 1
-    column 29: bool 1
-row: 1 : 8 entries [8:15]
-    column 1: bool 1
-    column 3: bool 1
-    column 5: bool 1
-    column 7: bool 1
-    column 9: bool 1
-    column 19: bool 1
-    column 23: bool 1
-    column 25: bool 1
-row: 2 : 8 entries [16:23]
-    column 2: bool 1
-    column 3: bool 1
-    column 4: bool 1
-    column 8: bool 1
-    column 20: bool 1
-    column 22: bool 1
-    column 26: bool 1
-    column 27: bool 1
-row: 3 : 8 entries [24:31]
-    column 1: bool 1
-    column 2: bool 1
-    column 3: bool 1
-    column 7: bool 1
-    column 9: bool 1
-    column 21: bool 1
-    ...
-row: 4 : 8 entries [32:39]
-    ...
-row: 5 : 8 entries [40:47]
-    ...
-row: 6 : 8 entries [48:55]
-    ...
-row: 7 : 8 entries [56:63]
-    ...
-row: 8 : 8 entries [64:71]
-    ...
-row: 9 : 8 entries [72:79]
-    ...
-...
 number of nodes: 48
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000229
+BFS time in seconds:       0.000177
 nodes reachable from node 0: 48 out of 48
 max BFS level: 4
 
 method 5: same but check each result
-BFS time in seconds:       0.000088
+BFS time in seconds:       0.000104
 nodes reachable from node 0: 48 out of 48
 max BFS level: 4
 
 method 6: apply unary operator
-BFS time in seconds:       0.000111
+BFS time in seconds:       0.000139
 nodes reachable from node 0: 48 out of 48
 max BFS level: 4
 
 method 6: same but check each result
-BFS time in seconds:       0.000106
+BFS time in seconds:       0.000132
 nodes reachable from node 0: 48 out of 48
 max BFS level: 4
 matrix 4884 by 4884, 290378 entries, from stdin
-
-GraphBLAS matrix: from get_matrix: 
-nrows: 4884 ncols: 4884 max # entries: 290378
-format: standard CSR vlen: 4884 nvec_nonempty: 4884 nvec: 4884 plen: 4884 vdim: 4884
-hyper_ratio 0.0625
-GraphBLAS type:  bool size: 1
-number of entries: 290378 
-row: 0 : 15 entries [0:14]
-    column 0: bool 1
-    column 1: bool 1
-    column 3: bool 1
-    column 4: bool 1
-    column 6: bool 1
-    column 7: bool 1
-    column 111: bool 1
-    column 112: bool 1
-    column 113: bool 1
-    column 114: bool 1
-    column 115: bool 1
-    column 116: bool 1
-    column 117: bool 1
-    column 118: bool 1
-    column 119: bool 1
-row: 1 : 15 entries [15:29]
-    column 0: bool 1
-    column 1: bool 1
-    column 3: bool 1
-    column 4: bool 1
-    column 6: bool 1
-    column 7: bool 1
-    column 111: bool 1
-    column 112: bool 1
-    column 113: bool 1
-    column 114: bool 1
-    column 115: bool 1
-    column 116: bool 1
-    column 117: bool 1
-    column 118: bool 1
-    column 119: bool 1
-row: 2 : 1 entries [30:30]
-    ...
-row: 3 : 25 entries [31:55]
-    ...
-row: 4 : 25 entries [56:80]
-    ...
-row: 5 : 1 entries [81:81]
-    ...
-row: 6 : 30 entries [82:111]
-    ...
-row: 7 : 30 entries [112:141]
-    ...
-row: 8 : 1 entries [142:142]
-    ...
-row: 9 : 30 entries [143:172]
-    ...
-...
 number of nodes: 4884
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.001725
+BFS time in seconds:       0.003146
 nodes reachable from node 0: 4810 out of 4884
 max BFS level: 44
 
 method 5: same but check each result
-BFS time in seconds:       0.001473
+BFS time in seconds:       0.003059
 nodes reachable from node 0: 4810 out of 4884
 max BFS level: 44
 
 method 6: apply unary operator
-BFS time in seconds:       0.001505
+BFS time in seconds:       0.003773
 nodes reachable from node 0: 4810 out of 4884
 max BFS level: 44
 
 method 6: same but check each result
-BFS time in seconds:       0.001517
+BFS time in seconds:       0.003574
 nodes reachable from node 0: 4810 out of 4884
 max BFS level: 44
 matrix 183 by 183, 1585 entries, from stdin
-
-GraphBLAS matrix: from get_matrix: 
-nrows: 183 ncols: 183 max # entries: 1585
-format: standard CSR vlen: 183 nvec_nonempty: 183 nvec: 183 plen: 183 vdim: 183
-hyper_ratio 0.0625
-GraphBLAS type:  bool size: 1
-number of entries: 1585 
-row: 0 : 105 entries [0:104]
-    column 0: bool 1
-    column 1: bool 1
-    column 19: bool 1
-    column 20: bool 1
-    column 21: bool 1
-    column 22: bool 1
-    column 23: bool 1
-    column 25: bool 1
-    column 26: bool 1
-    column 41: bool 1
-    column 42: bool 1
-    column 43: bool 1
-    column 48: bool 1
-    column 49: bool 1
-    column 50: bool 1
-    column 55: bool 1
-    column 56: bool 1
-    column 58: bool 1
-    column 59: bool 1
-    column 60: bool 1
-    column 61: bool 1
-    column 63: bool 1
-    column 64: bool 1
-    column 66: bool 1
-    column 67: bool 1
-    column 69: bool 1
-    column 70: bool 1
-    column 71: bool 1
-    column 72: bool 1
-    column 73: bool 1
-    ...
-row: 1 : 77 entries [105:181]
-    ...
-row: 2 : 7 entries [182:188]
-    ...
-row: 3 : 16 entries [189:204]
-    ...
-row: 4 : 3 entries [205:207]
-    ...
-row: 5 : 4 entries [208:211]
-    ...
-row: 6 : 6 entries [212:217]
-    ...
-row: 7 : 6 entries [218:223]
-    ...
-row: 8 : 5 entries [224:228]
-    ...
-row: 9 : 5 entries [229:233]
-    ...
-...
 number of nodes: 183
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000283
+BFS time in seconds:       0.000297
 nodes reachable from node 0: 183 out of 183
 max BFS level: 4
 
 method 5: same but check each result
-BFS time in seconds:       0.000102
+BFS time in seconds:       0.000212
 nodes reachable from node 0: 183 out of 183
 max BFS level: 4
 
 method 6: apply unary operator
-BFS time in seconds:       0.000104
+BFS time in seconds:       0.000271
 nodes reachable from node 0: 183 out of 183
 max BFS level: 4
 
 method 6: same but check each result
-BFS time in seconds:       0.000082
+BFS time in seconds:       0.000258
 nodes reachable from node 0: 183 out of 183
 max BFS level: 4
 matrix 63 by 63, 246 entries, from stdin
-
-GraphBLAS matrix: from get_matrix: 
-nrows: 63 ncols: 63 max # entries: 246
-format: standard CSR vlen: 63 nvec_nonempty: 63 nvec: 63 plen: 63 vdim: 63
-hyper_ratio 0.0625
-GraphBLAS type:  bool size: 1
-number of entries: 246 
-row: 0 : 6 entries [0:5]
-    column 32: bool 1
-    column 33: bool 1
-    column 37: bool 1
-    column 39: bool 1
-    column 41: bool 1
-    column 50: bool 1
-row: 1 : 6 entries [6:11]
-    column 32: bool 1
-    column 33: bool 1
-    column 34: bool 1
-    column 42: bool 1
-    column 46: bool 1
-    column 54: bool 1
-row: 2 : 8 entries [12:19]
-    column 32: bool 1
-    column 34: bool 1
-    column 35: bool 1
-    column 36: bool 1
-    column 38: bool 1
-    column 45: bool 1
-    column 52: bool 1
-    column 60: bool 1
-row: 3 : 4 entries [20:23]
-    column 32: bool 1
-    column 35: bool 1
-    column 47: bool 1
-    column 48: bool 1
-row: 4 : 4 entries [24:27]
-    column 35: bool 1
-    column 36: bool 1
-    column 58: bool 1
-    column 60: bool 1
-row: 5 : 5 entries [28:32]
-    column 34: bool 1
-    column 37: bool 1
-    ...
-row: 6 : 3 entries [33:35]
-    ...
-row: 7 : 3 entries [36:38]
-    ...
-row: 8 : 4 entries [39:42]
-    ...
-row: 9 : 3 entries [43:45]
-    ...
-...
 number of nodes: 63
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000335
+BFS time in seconds:       0.000208
 nodes reachable from node 0: 63 out of 63
 max BFS level: 6
 
 method 5: same but check each result
-BFS time in seconds:       0.000096
+BFS time in seconds:       0.000149
 nodes reachable from node 0: 63 out of 63
 max BFS level: 6
 
 method 6: apply unary operator
-BFS time in seconds:       0.000112
+BFS time in seconds:       0.000217
 nodes reachable from node 0: 63 out of 63
 max BFS level: 6
 
 method 6: same but check each result
-BFS time in seconds:       0.000092
+BFS time in seconds:       0.000208
 nodes reachable from node 0: 63 out of 63
 max BFS level: 6
 matrix 63 by 63, 246 entries, from stdin
-
-GraphBLAS matrix: from get_matrix: 
-nrows: 63 ncols: 63 max # entries: 246
-format: standard CSR vlen: 63 nvec_nonempty: 63 nvec: 63 plen: 63 vdim: 63
-hyper_ratio 0.0625
-GraphBLAS type:  bool size: 1
-number of entries: 246 
-row: 0 : 6 entries [0:5]
-    column 31: bool 1
-    column 32: bool 1
-    column 33: bool 1
-    column 34: bool 1
-    column 37: bool 1
-    column 56: bool 1
-row: 1 : 5 entries [6:10]
-    column 31: bool 1
-    column 32: bool 1
-    column 39: bool 1
-    column 51: bool 1
-    column 58: bool 1
-row: 2 : 6 entries [11:16]
-    column 32: bool 1
-    column 33: bool 1
-    column 36: bool 1
-    column 38: bool 1
-    column 39: bool 1
-    column 59: bool 1
-row: 3 : 4 entries [17:20]
-    column 33: bool 1
-    column 34: bool 1
-    column 35: bool 1
-    column 42: bool 1
-row: 4 : 4 entries [21:24]
-    column 33: bool 1
-    column 35: bool 1
-    column 53: bool 1
-    column 57: bool 1
-row: 5 : 3 entries [25:27]
-    column 31: bool 1
-    column 36: bool 1
-    column 46: bool 1
-row: 6 : 5 entries [28:32]
-    column 33: bool 1
-    column 37: bool 1
-    ...
-row: 7 : 5 entries [33:37]
-    ...
-row: 8 : 7 entries [38:44]
-    ...
-row: 9 : 7 entries [45:51]
-    ...
-...
 number of nodes: 63
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000371
+BFS time in seconds:       0.000205
 nodes reachable from node 0: 63 out of 63
 max BFS level: 6
 
 method 5: same but check each result
-BFS time in seconds:       0.000114
+BFS time in seconds:       0.000149
 nodes reachable from node 0: 63 out of 63
 max BFS level: 6
 
 method 6: apply unary operator
-BFS time in seconds:       0.000095
+BFS time in seconds:       0.000216
 nodes reachable from node 0: 63 out of 63
 max BFS level: 6
 
 method 6: same but check each result
-BFS time in seconds:       0.000082
+BFS time in seconds:       0.000207
 nodes reachable from node 0: 63 out of 63
 max BFS level: 6
 matrix 78 by 78, 204 entries, from stdin
-
-GraphBLAS matrix: from get_matrix: 
-nrows: 78 ncols: 78 max # entries: 204
-format: standard CSR vlen: 78 nvec_nonempty: 78 nvec: 78 plen: 78 vdim: 78
-hyper_ratio 0.0625
-GraphBLAS type:  bool size: 1
-number of entries: 204 
-row: 0 : 3 entries [0:2]
-    column 46: bool 1
-    column 47: bool 1
-    column 48: bool 1
-row: 1 : 2 entries [3:4]
-    column 46: bool 1
-    column 49: bool 1
-row: 2 : 2 entries [5:6]
-    column 27: bool 1
-    column 46: bool 1
-row: 3 : 3 entries [7:9]
-    column 28: bool 1
-    column 47: bool 1
-    column 58: bool 1
-row: 4 : 6 entries [10:15]
-    column 50: bool 1
-    column 51: bool 1
-    column 52: bool 1
-    column 53: bool 1
-    column 58: bool 1
-    column 59: bool 1
-row: 5 : 5 entries [16:20]
-    column 50: bool 1
-    column 51: bool 1
-    column 52: bool 1
-    column 53: bool 1
-    column 60: bool 1
-row: 6 : 3 entries [21:23]
-    column 29: bool 1
-    column 50: bool 1
-    column 54: bool 1
-row: 7 : 3 entries [24:26]
-    column 30: bool 1
-    column 51: bool 1
-    column 55: bool 1
-row: 8 : 3 entries [27:29]
-    column 31: bool 1
-    column 52: bool 1
-    column 56: bool 1
-row: 9 : 3 entries [30:32]
-    ...
-...
 number of nodes: 78
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000277
+BFS time in seconds:       0.000313
 nodes reachable from node 0: 78 out of 78
 max BFS level: 10
 
 method 5: same but check each result
-BFS time in seconds:       0.000111
+BFS time in seconds:       0.000235
 nodes reachable from node 0: 78 out of 78
 max BFS level: 10
 
 method 6: apply unary operator
-BFS time in seconds:       0.000132
+BFS time in seconds:       0.000348
 nodes reachable from node 0: 78 out of 78
 max BFS level: 10
 
 method 6: same but check each result
-BFS time in seconds:       0.000115
+BFS time in seconds:       0.000411
 nodes reachable from node 0: 78 out of 78
 max BFS level: 10
 matrix 982 by 982, 99840 entries, from stdin
-
-GraphBLAS matrix: from get_matrix: 
-nrows: 982 ncols: 982 max # entries: 99840
-format: standard CSR vlen: 982 nvec_nonempty: 933 nvec: 982 plen: 982 vdim: 982
-hyper_ratio 0.0625
-GraphBLAS type:  bool size: 1
-number of entries: 99840 
-row: 0 : 40 entries [0:39]
-    column 494: bool 1
-    column 496: bool 1
-    column 497: bool 1
-    column 498: bool 1
-    column 500: bool 1
-    column 501: bool 1
-    column 503: bool 1
-    column 506: bool 1
-    column 510: bool 1
-    column 574: bool 1
-    column 575: bool 1
-    column 578: bool 1
-    column 579: bool 1
-    column 580: bool 1
-    column 581: bool 1
-    column 582: bool 1
-    column 583: bool 1
-    column 584: bool 1
-    column 585: bool 1
-    column 587: bool 1
-    column 589: bool 1
-    column 591: bool 1
-    column 592: bool 1
-    column 594: bool 1
-    column 597: bool 1
-    column 600: bool 1
-    column 607: bool 1
-    column 608: bool 1
-    column 614: bool 1
-    column 616: bool 1
-    ...
-row: 1 : 34 entries [40:73]
-    ...
-row: 2 : 41 entries [74:114]
-    ...
-row: 3 : 50 entries [115:164]
-    ...
-row: 4 : 40 entries [165:204]
-    ...
-row: 5 : 44 entries [205:248]
-    ...
-row: 6 : 50 entries [249:298]
-    ...
-row: 7 : 35 entries [299:333]
-    ...
-row: 8 : 4 entries [334:337]
-    ...
-row: 9 : 190 entries [338:527]
-    ...
-...
 number of nodes: 982
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000941
+BFS time in seconds:       0.000806
 nodes reachable from node 0: 933 out of 982
 max BFS level: 5
 
 method 5: same but check each result
-BFS time in seconds:       0.000563
+BFS time in seconds:       0.000582
 nodes reachable from node 0: 933 out of 982
 max BFS level: 5
 
 method 6: apply unary operator
-BFS time in seconds:       0.000661
+BFS time in seconds:       0.000678
 nodes reachable from node 0: 933 out of 982
 max BFS level: 5
 
 method 6: same but check each result
-BFS time in seconds:       0.000497
+BFS time in seconds:       0.000641
 nodes reachable from node 0: 933 out of 982
 max BFS level: 5
 matrix 67 by 67, 576 entries, from stdin
-
-GraphBLAS matrix: from get_matrix: 
-nrows: 67 ncols: 67 max # entries: 576
-format: standard CSR vlen: 67 nvec_nonempty: 67 nvec: 67 plen: 67 vdim: 67
-hyper_ratio 0.0625
-GraphBLAS type:  bool size: 1
-number of entries: 576 
-row: 0 : 12 entries [0:11]
-    column 4: bool 1
-    column 5: bool 1
-    column 6: bool 1
-    column 7: bool 1
-    column 8: bool 1
-    column 12: bool 1
-    column 17: bool 1
-    column 24: bool 1
-    column 25: bool 1
-    column 26: bool 1
-    column 27: bool 1
-    column 28: bool 1
-row: 1 : 7 entries [12:18]
-    column 4: bool 1
-    column 8: bool 1
-    column 13: bool 1
-    column 17: bool 1
-    column 20: bool 1
-    column 24: bool 1
-    column 60: bool 1
-row: 2 : 7 entries [19:25]
-    column 5: bool 1
-    column 9: bool 1
-    column 14: bool 1
-    column 17: bool 1
-    column 21: bool 1
-    column 25: bool 1
-    column 60: bool 1
-row: 3 : 7 entries [26:32]
-    column 6: bool 1
-    column 10: bool 1
-    column 15: bool 1
-    column 17: bool 1
-    ...
-row: 4 : 8 entries [33:40]
-    ...
-row: 5 : 7 entries [41:47]
-    ...
-row: 6 : 9 entries [48:56]
-    ...
-row: 7 : 6 entries [57:62]
-    ...
-row: 8 : 7 entries [63:69]
-    ...
-row: 9 : 9 entries [70:78]
-    ...
-...
 number of nodes: 67
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.000266
+BFS time in seconds:       0.000201
 nodes reachable from node 0: 67 out of 67
 max BFS level: 5
 
 method 5: same but check each result
-BFS time in seconds:       0.000055
+BFS time in seconds:       0.000124
 nodes reachable from node 0: 67 out of 67
 max BFS level: 5
 
 method 6: apply unary operator
-BFS time in seconds:       0.000100
+BFS time in seconds:       0.000174
 nodes reachable from node 0: 67 out of 67
 max BFS level: 5
 
 method 6: same but check each result
-BFS time in seconds:       0.000081
+BFS time in seconds:       0.000163
 nodes reachable from node 0: 67 out of 67
 max BFS level: 5
-Wathen: nx 200 ny 200 n 120801 nz 1883201 method 0, time: 0.347 sec
-
-GraphBLAS matrix: from get_matrix: 
-nrows: 120801 ncols: 120801 max # entries: 1883201
-format: standard CSR vlen: 120801 nvec_nonempty: 120801 nvec: 120801 plen: 120801 vdim: 120801
-hyper_ratio 0.0625
-GraphBLAS type:  double size: 8
-number of entries: 1883201 
-row: 0 : 8 entries [0:7]
-    column 0: double 3.43365642660378
-    column 1: double -3.43365642660378
-    column 2: double 1.14455214220126
-    column 401: double -3.43365642660378
-    column 402: double -4.57820856880504
-    column 602: double 1.14455214220126
-    column 603: double -4.57820856880504
-    column 604: double 1.71682821330189
-row: 1 : 8 entries [8:15]
-    column 0: double -3.43365642660378
-    column 1: double 18.3128342752202
-    column 2: double -3.43365642660378
-    column 401: double 11.4455214220126
-    column 402: double 11.4455214220126
-    column 602: double -4.57820856880504
-    column 603: double 9.15641713761008
-    column 604: double -4.57820856880504
-row: 2 : 13 entries [16:28]
-    column 0: double 1.14455214220126
-    column 1: double -3.43365642660378
-    column 2: double 12.6130680009185
-    column 3: double -9.1794115743147
-    column 4: double 3.0598038581049
-    column 401: double -4.57820856880504
-    column 402: double -12.6130680009185
-    column 403: double -12.2392154324196
-    column 602: double 1.71682821330189
-    column 603: double -4.57820856880504
-    column 604: double 4.20435600030616
-    column 605: double -12.2392154324196
-    column 606: double 4.58970578715735
-row: 3 : 8 entries [29:36]
-    column 2: double -9.1794115743147
-    ...
-row: 4 : 13 entries [37:49]
-    ...
-row: 5 : 8 entries [50:57]
-    ...
-row: 6 : 13 entries [58:70]
-    ...
-row: 7 : 8 entries [71:78]
-    ...
-row: 8 : 13 entries [79:91]
-    ...
-row: 9 : 8 entries [92:99]
-    ...
-...
+Wathen: nx 200 ny 200 n 120801 nz 1883201 method 0, time: 0.084 sec
 number of nodes: 120801
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.050263
+BFS time in seconds:       0.092873
 nodes reachable from node 0: 120801 out of 120801
 max BFS level: 201
 
 method 5: same but check each result
-BFS time in seconds:       0.064319
+BFS time in seconds:       0.089280
 nodes reachable from node 0: 120801 out of 120801
 max BFS level: 201
 
 method 6: apply unary operator
-BFS time in seconds:       0.041205
+BFS time in seconds:       0.120832
 nodes reachable from node 0: 120801 out of 120801
 max BFS level: 201
 
 method 6: same but check each result
-BFS time in seconds:       0.042743
+BFS time in seconds:       0.123596
 nodes reachable from node 0: 120801 out of 120801
 max BFS level: 201
-random 10000 by 10000, nz: 199777, method 0 time 0.041 sec
-
-GraphBLAS matrix: from get_matrix: 
-nrows: 10000 ncols: 10000 max # entries: 199777
-format: standard CSR vlen: 10000 nvec_nonempty: 10000 nvec: 10000 plen: 10000 vdim: 10000
-hyper_ratio 0.0625
-GraphBLAS type:  double size: 8
-number of entries: 199777 
-row: 0 : 29 entries [0:28]
-    column 214: double 0.611428854126681
-    column 599: double 0.759817736907767
-    column 687: double 0.490404969132481
-    column 1945: double 0.220198646141235
-    column 2720: double 0.768448885400963
-    column 3040: double 0.780898528422568
-    column 3108: double 0.861235641490359
-    column 3629: double 0.362730505563746
-    column 3816: double 0.0339266832780264
-    column 4032: double 0.380474997044081
-    column 4327: double 0.845122101573719
-    column 4503: double 0.274564012010246
-    column 4651: double 0.953684565813323
-    column 5289: double 0.373677450804412
-    column 5464: double 0.126295522580637
-    column 5603: double 0.0243003910252495
-    column 5733: double 0.126285945791964
-    column 5752: double 0.258192960275479
-    column 5869: double 0.124510616349963
-    column 5917: double 0.234865299189669
-    column 6693: double 0.985725408162066
-    column 7242: double 0.387267836971157
-    column 7597: double 0.148198968114398
-    column 7601: double 0.660823536101813
-    column 8171: double 0.559858856562101
-    column 8307: double 0.583442051968559
-    column 9224: double 0.246570360972623
-    column 9602: double 0.828404016202389
-    column 9626: double 0.498666322176063
-row: 1 : 22 entries [29:50]
-    column 145: double 0.924827177620641
-    ...
-row: 2 : 19 entries [51:69]
-    ...
-row: 3 : 23 entries [70:92]
-    ...
-row: 4 : 18 entries [93:110]
-    ...
-row: 5 : 30 entries [111:140]
-    ...
-row: 6 : 19 entries [141:159]
-    ...
-row: 7 : 23 entries [160:182]
-    ...
-row: 8 : 26 entries [183:208]
-    ...
-row: 9 : 16 entries [209:224]
-    ...
-...
+random 10000 by 10000, nz: 199777, method 0 time 0.046 sec
 number of nodes: 10000
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.005230
+BFS time in seconds:       0.006886
 nodes reachable from node 0: 10000 out of 10000
 max BFS level: 5
 
 method 5: same but check each result
-BFS time in seconds:       0.003304
+BFS time in seconds:       0.006159
 nodes reachable from node 0: 10000 out of 10000
 max BFS level: 5
 
 method 6: apply unary operator
-BFS time in seconds:       0.003201
+BFS time in seconds:       0.006411
 nodes reachable from node 0: 10000 out of 10000
 max BFS level: 5
 
 method 6: same but check each result
-BFS time in seconds:       0.003067
+BFS time in seconds:       0.006403
 nodes reachable from node 0: 10000 out of 10000
 max BFS level: 5
-random 10000 by 10000, nz: 199777, method 1 time 0.033 sec
-
-GraphBLAS matrix: from get_matrix: 
-nrows: 10000 ncols: 10000 max # entries: 199777
-format: standard CSR vlen: 10000 nvec_nonempty: 10000 nvec: 10000 plen: 10000 vdim: 10000
-hyper_ratio 0.0625
-GraphBLAS type:  double size: 8
-number of entries: 199777 
-row: 0 : 29 entries [0:28]
-    column 214: double 0.611428854126681
-    column 599: double 0.759817736907767
-    column 687: double 0.490404969132481
-    column 1945: double 0.220198646141235
-    column 2720: double 0.768448885400963
-    column 3040: double 0.780898528422568
-    column 3108: double 0.861235641490359
-    column 3629: double 0.362730505563746
-    column 3816: double 0.0339266832780264
-    column 4032: double 0.380474997044081
-    column 4327: double 0.845122101573719
-    column 4503: double 0.274564012010246
-    column 4651: double 0.953684565813323
-    column 5289: double 0.373677450804412
-    column 5464: double 0.126295522580637
-    column 5603: double 0.0243003910252495
-    column 5733: double 0.126285945791964
-    column 5752: double 0.258192960275479
-    column 5869: double 0.124510616349963
-    column 5917: double 0.234865299189669
-    column 6693: double 0.985725408162066
-    column 7242: double 0.387267836971157
-    column 7597: double 0.148198968114398
-    column 7601: double 0.660823536101813
-    column 8171: double 0.559858856562101
-    column 8307: double 0.583442051968559
-    column 9224: double 0.246570360972623
-    column 9602: double 0.828404016202389
-    column 9626: double 0.498666322176063
-row: 1 : 22 entries [29:50]
-    column 145: double 0.924827177620641
-    ...
-row: 2 : 19 entries [51:69]
-    ...
-row: 3 : 23 entries [70:92]
-    ...
-row: 4 : 18 entries [93:110]
-    ...
-row: 5 : 30 entries [111:140]
-    ...
-row: 6 : 19 entries [141:159]
-    ...
-row: 7 : 23 entries [160:182]
-    ...
-row: 8 : 26 entries [183:208]
-    ...
-row: 9 : 16 entries [209:224]
-    ...
-...
+random 10000 by 10000, nz: 199777, method 1 time 0.034 sec
 number of nodes: 10000
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.003663
+BFS time in seconds:       0.006534
 nodes reachable from node 0: 10000 out of 10000
 max BFS level: 5
 
 method 5: same but check each result
-BFS time in seconds:       0.006787
+BFS time in seconds:       0.005678
 nodes reachable from node 0: 10000 out of 10000
 max BFS level: 5
 
 method 6: apply unary operator
-BFS time in seconds:       0.003246
+BFS time in seconds:       0.005877
 nodes reachable from node 0: 10000 out of 10000
 max BFS level: 5
 
 method 6: same but check each result
-BFS time in seconds:       0.003638
+BFS time in seconds:       0.005922
 nodes reachable from node 0: 10000 out of 10000
 max BFS level: 5
-random 100000 by 100000, nz: 19980256, method 0 time 5.535 sec
-
-GraphBLAS matrix: from get_matrix: 
-nrows: 100000 ncols: 100000 max # entries: 19980256
-format: standard CSR vlen: 100000 nvec_nonempty: 100000 nvec: 100000 plen: 100000 vdim: 100000
-hyper_ratio 0.0625
-GraphBLAS type:  double size: 8
-number of entries: 19980256 
-row: 0 : 197 entries [0:196]
-    column 778: double 0.346667912736641
-    column 1533: double 0.923157396004585
-    column 1773: double 0.0587615429272369
-    column 1839: double 0.197836379076741
-    column 1992: double 0.177908755216155
-    column 3857: double 0.440961556066804
-    column 4245: double 0.60738988148067
-    column 4491: double 0.54540457794676
-    column 4808: double 0.392707915752597
-    column 4923: double 0.382813060633608
-    column 5128: double 0.155354202430441
-    column 5198: double 0.78273932540827
-    column 5290: double 0.893963933912545
-    column 5609: double 0.13457847123939
-    column 5953: double 0.531853923375954
-    column 6296: double 0.917483099015425
-    column 7091: double 0.479443834514252
-    column 7119: double 0.816814382031207
-    column 7151: double 0.193326447087741
-    column 7215: double 0.326093077038443
-    column 7221: double 0.230494023532692
-    column 7272: double 0.867327956531743
-    column 8019: double 0.944500718448853
-    column 8657: double 0.934093089488637
-    column 9473: double 0.795621154107574
-    column 9567: double 0.439237695822068
-    column 11313: double 0.0928425661313169
-    column 11660: double 0.0084962289548536
-    column 11744: double 0.444733012853217
-    column 11996: double 0.00641771660641777
-    ...
-row: 1 : 193 entries [197:389]
-    ...
-row: 2 : 208 entries [390:597]
-    ...
-row: 3 : 214 entries [598:811]
-    ...
-row: 4 : 199 entries [812:1010]
-    ...
-row: 5 : 184 entries [1011:1194]
-    ...
-row: 6 : 205 entries [1195:1399]
-    ...
-row: 7 : 197 entries [1400:1596]
-    ...
-row: 8 : 212 entries [1597:1808]
-    ...
-row: 9 : 209 entries [1809:2017]
-    ...
-...
+random 100000 by 100000, nz: 19980256, method 0 time 2.134 sec
 number of nodes: 100000
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.146082
+BFS time in seconds:       0.112415
 nodes reachable from node 0: 100000 out of 100000
 max BFS level: 4
 
 method 5: same but check each result
-BFS time in seconds:       0.148871
+BFS time in seconds:       0.108608
 nodes reachable from node 0: 100000 out of 100000
 max BFS level: 4
 
 method 6: apply unary operator
-BFS time in seconds:       0.153663
+BFS time in seconds:       0.111228
 nodes reachable from node 0: 100000 out of 100000
 max BFS level: 4
 
 method 6: same but check each result
-BFS time in seconds:       0.136408
+BFS time in seconds:       0.110731
 nodes reachable from node 0: 100000 out of 100000
 max BFS level: 4
-random 100000 by 100000, nz: 19980256, method 1 time 4.925 sec
-
-GraphBLAS matrix: from get_matrix: 
-nrows: 100000 ncols: 100000 max # entries: 19980256
-format: standard CSR vlen: 100000 nvec_nonempty: 100000 nvec: 100000 plen: 100000 vdim: 100000
-hyper_ratio 0.0625
-GraphBLAS type:  double size: 8
-number of entries: 19980256 
-row: 0 : 197 entries [0:196]
-    column 778: double 0.346667912736641
-    column 1533: double 0.923157396004585
-    column 1773: double 0.0587615429272369
-    column 1839: double 0.197836379076741
-    column 1992: double 0.177908755216155
-    column 3857: double 0.440961556066804
-    column 4245: double 0.60738988148067
-    column 4491: double 0.54540457794676
-    column 4808: double 0.392707915752597
-    column 4923: double 0.382813060633608
-    column 5128: double 0.155354202430441
-    column 5198: double 0.78273932540827
-    column 5290: double 0.893963933912545
-    column 5609: double 0.13457847123939
-    column 5953: double 0.531853923375954
-    column 6296: double 0.917483099015425
-    column 7091: double 0.479443834514252
-    column 7119: double 0.816814382031207
-    column 7151: double 0.193326447087741
-    column 7215: double 0.326093077038443
-    column 7221: double 0.230494023532692
-    column 7272: double 0.867327956531743
-    column 8019: double 0.944500718448853
-    column 8657: double 0.934093089488637
-    column 9473: double 0.795621154107574
-    column 9567: double 0.439237695822068
-    column 11313: double 0.0928425661313169
-    column 11660: double 0.0084962289548536
-    column 11744: double 0.444733012853217
-    column 11996: double 0.00641771660641777
-    ...
-row: 1 : 193 entries [197:389]
-    ...
-row: 2 : 208 entries [390:597]
-    ...
-row: 3 : 214 entries [598:811]
-    ...
-row: 4 : 199 entries [812:1010]
-    ...
-row: 5 : 184 entries [1011:1194]
-    ...
-row: 6 : 205 entries [1195:1399]
-    ...
-row: 7 : 197 entries [1400:1596]
-    ...
-row: 8 : 212 entries [1597:1808]
-    ...
-row: 9 : 209 entries [1809:2017]
-    ...
-...
+random 100000 by 100000, nz: 19980256, method 1 time 1.370 sec
 number of nodes: 100000
 
 method 5: vector assign and reduce:
-BFS time in seconds:       0.130102
+BFS time in seconds:       0.113270
 nodes reachable from node 0: 100000 out of 100000
 max BFS level: 4
 
 method 5: same but check each result
-BFS time in seconds:       0.149609
+BFS time in seconds:       0.103206
 nodes reachable from node 0: 100000 out of 100000
 max BFS level: 4
 
 method 6: apply unary operator
-BFS time in seconds:       0.178093
+BFS time in seconds:       0.100382
 nodes reachable from node 0: 100000 out of 100000
 max BFS level: 4
 
 method 6: same but check each result
-BFS time in seconds:       0.279759
+BFS time in seconds:       0.100796
 nodes reachable from node 0: 100000 out of 100000
 max BFS level: 4

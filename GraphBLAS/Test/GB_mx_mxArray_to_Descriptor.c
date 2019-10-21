@@ -2,13 +2,13 @@
 // GB_mx_mxArray_to_Descriptor: get the contents of a GraphBLAS Descriptor
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2018, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2019, All Rights Reserved.
 // http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 //------------------------------------------------------------------------------
 
 // get a GraphBLAS descriptor from a MATLAB struct.
-// D.output, D.input0, D.input1, and D.mask must all be strings.
+// D.out, D.in0, D.in0, and D.mask must all be strings.
 // Fields that are not present are left unchanged.
 
 #include "GB_mex.h"
@@ -62,11 +62,11 @@ static bool get_descriptor
         {
             info = GxB_set (D, field, GxB_DEFAULT) ;
         }
-        else if (MATCH (s, "tran"))
+        else if (MATCH (s, "tran") || MATCH (s, "transpose"))
         {
             info = GxB_set (D, field, GrB_TRAN) ;
         }
-        else if (MATCH (s, "scmp"))
+        else if (MATCH (s, "scmp") || MATCH (s, "complement"))
         {
             info = GxB_set (D, field, GrB_SCMP) ;
         }

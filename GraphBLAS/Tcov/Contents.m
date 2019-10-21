@@ -1,8 +1,7 @@
 % GraphBLAS/Tcov/Contents.m:
 %
-%   gbcmake      - compile GraphBLAS mexFunctions with coverage tests
-%   gbcover      - compile GraphBLAS for statement coverage testing
-%   gbcover_edit - create a version of GraphBLAS for statement coverage tests
-%   testcov      - run all GraphBLAS tests, with statement coverage
-%   gbshow       - create a test coverage report in tmp_cover/
-%   gbmake       - compiles the MATLAB interface to GraphBLAS (for testing only).
+%   grbcover      - compile the ../Test mexFunctions for statement coverage testing
+%   grbcover_edit - create a version of GraphBLAS for statement coverage tests
+%   testcov       - run all GraphBLAS tests, with statement coverage
+%   grbshow       - create a test coverage report in tmp_cover/
+%   grbmake       - compile the GraphBLAS library for statement coverage testing

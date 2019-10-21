@@ -1,3 +1,7 @@
+Oct 21, 2019, SuiteSparse 5.6.0
+
+    * GraphBLAS 3.1.1: OpenMP parallelism and MATLAB interface
+
 Oct 20, 2019, SuiteSparse 5.5.0
 
     * GraphBLAS 2.3.5: Collected Algorithm of the ACM
