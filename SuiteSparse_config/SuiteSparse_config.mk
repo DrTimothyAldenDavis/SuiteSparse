@@ -63,8 +63,8 @@ SUITESPARSE_VERSION = 5.5.0
     # parallel make
     #---------------------------------------------------------------------------
 
-    # use 16 jobs by default
-    JOBS ?= 16
+    # use 8 jobs by default
+    JOBS ?= 8
 
     CMAKE_OPTIONS ?= -DCMAKE_INSTALL_PREFIX=$(INSTALL)
 
@@ -106,11 +106,12 @@ SUITESPARSE_VERSION = 5.5.0
     # compiler
     #---------------------------------------------------------------------------
 
-    # By default, look for the Intel compilers.  If present, they are used
-    # instead of $(CC), $(CXX), and $(F77).  To disable this feature and
+    # If AUTOCCC is yes, look for the Intel compilers.  If present, they are
+    # used instead of $(CC), $(CXX), and $(F77).  To disable this feature and
     # use the $(CC), $(CXX), and $(F77) compilers, use 'make AUTOCC=no'
 
-    AUTOCC ?= yes
+    # AUTOCC ?= yes
+    AUTOCC ?= no
 
     ifneq ($(AUTOCC),no)
         ifneq ($(shell which icc 2>/dev/null),)
@@ -614,6 +615,7 @@ config:
 	@echo 'CHOLMOD Partition config: ' '$(CONFIG_PARTITION)'
 	@echo 'CHOLMOD Partition libs:   ' '$(LIB_WITH_PARTITION)'
 	@echo 'CHOLMOD Partition include:' '$(I_WITH_PARTITION)'
+	@echo 'MAKE: ' '$(MAKE)'
 	@echo 'CMake options: ' '$(CMAKE_OPTIONS)'
 ifeq ($(TCOV),yes)
 	@echo 'TCOV=yes, for extensive testing only (gcc, g++, vanilla BLAS)'

@@ -15,11 +15,11 @@ JOBS ?= 1
 
 # build the Mongoose library (static and dynamic) and run a quick test
 default:
-	( cd build ; CC=$(CC) CXX=$(CXX) cmake $(CMAKE_OPTIONS) .. ; $(MAKE) --jobs=$(JOBS) ; ./bin/demo )
+	( cd build ; cmake $(CMAKE_OPTIONS) .. ; $(MAKE) --jobs=$(JOBS) ; ./bin/demo )
 
 # just build the static and dynamic libraries; do not run the demo
 library:
-	( cd build ; CC=$(CC) CXX=$(CXX) cmake $(CMAKE_OPTIONS) .. ; $(MAKE) --jobs=$(JOBS) )
+	( cd build ; cmake $(CMAKE_OPTIONS) .. ; $(MAKE) --jobs=$(JOBS) )
 
 # the same as "make library"
 static: library
@@ -27,7 +27,7 @@ static: library
 # installs Mongoose to the install location defined by cmake, usually
 # /usr/local/lib and /usr/local/include
 install:
-	( cd build ; CC=$(CC) CXX=$(CXX) cmake $(CMAKE_OPTIONS) .. ; $(MAKE) --jobs=$(JOBS) ; $(MAKE) install )
+	( cd build ; cmake $(CMAKE_OPTIONS) .. ; $(MAKE) --jobs=$(JOBS) ; $(MAKE) install )
 
 # create the Doc/Mongoose_UserGuide.pdf
 docs:
@@ -39,7 +39,7 @@ uninstall:
 
 # run the extensive tests
 test:
-	( cd build ; CC=$(CC) CXX=$(CXX) cmake $(CMAKE_OPTIONS) .. ; $(MAKE) test )
+	( cd build ; cmake $(CMAKE_OPTIONS) .. ; $(MAKE) test )
 
 clean: distclean
 
