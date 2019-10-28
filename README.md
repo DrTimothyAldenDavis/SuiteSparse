@@ -1,4 +1,6 @@
+-----------------------------------------------------------------------------
 SuiteSparse:  A Suite of Sparse matrix packages at http://www.suitesparse.com
+-----------------------------------------------------------------------------
 
 Oct 20, 2019.  SuiteSparse VERSION 5.6.0
 
@@ -18,13 +20,20 @@ Additional algorithm designers: Esmond Ng and John Gilbert.
 Refer to each package for license, copyright, and author information.  All
 codes are authored or co-authored by Timothy A. Davis.
 
+-----------------------------------------------------------------------------
+About the BLAS and LAPACK libraries
+-----------------------------------------------------------------------------
+
+*NOTE: Use of the Intel MKL BLAS is strongly recommended.  A recent OpenBLAS
+can result in severe performance degradation.  The reason for this is being
+investigated, and this may be resolved in the near future.  Ignore the comments
+about OpenBLAS in the various user guides; those are out of date.*
+
 ------------------
 SuiteSparse/README
 ------------------
 
-================================================================================
 Packages in SuiteSparse, and files in this directory:
-================================================================================
 
     GraphBLAS   graph algorithms in the language of linear algebra.
                 https://graphblas.org
@@ -94,10 +103,6 @@ Packages in SuiteSparse, and files in this directory:
                 author: Tim Davis, David Bateman
 
     share       'make' places documentation for each package here
-
-    GPUQREngine GPU support package for SPQR (not built into MATLAB, however)
-                authors: Tim Davis, Nuri Yeralan, Sanjay Ranka,
-                    Wissam Sid-Lakhdar
 
     include     'make' places user-visible include fomes for each package here
 
@@ -185,13 +190,18 @@ Packages in SuiteSparse, and files in this directory:
                 author of GPU modules: Tim Davis, Nuri Yeralan,
                     Wissam Sid-Lakhdar, Sanjay Ranka
 
+                SPQR/GPUQREngine: GPU support package for SPQR
+                (not built into MATLAB, however)
+                authors: Tim Davis, Nuri Yeralan, Sanjay Ranka,
+                    Wissam Sid-Lakhdar
+
     SuiteSparse_config    configuration file for all the above packages.  The
                 SuiteSparse_config/SuiteSparse_config.mk is included in the
                 Makefile's of all packages.  CSparse and MATLAB_Tools do not
                 use SuiteSparse_config.
                 author: Tim Davis
 
-    SuiteSparse_GPURuntime      GPU support package for SPQR
+    SuiteSparse_GPURuntime      GPU support package for SPQR and CHOLMOD
                 (not builtin to MATLAB, however).
 
     SuiteSparse_install.m       install SuiteSparse for MATLAB
@@ -259,17 +269,19 @@ files for CXSparse and ssget:
 METIS 5.0.1 is distributed with SuiteSparse, and is Copyright (c)
 by George Karypis.  Please refer to that package for its License.
 
-================================================================================
-QUICK START FOR MATLAB USERS (Linux, Mac, or Windows):  uncompress the
-SuiteSparse.zip or SuiteSparse.tar.gz archive file (they contain the same
-thing), then in the MATLAB Command Window, cd to the SuiteSparse directory and
-type SuiteSparse_install.  All packages will be compiled, and several demos
-will be run.  To run a (long!) exhaustive test, do SuiteSparse_test.
-================================================================================
+-----------------------------------------------------------------------------
+QUICK START FOR MATLAB USERS (Linux, Mac, or Windows):
+-----------------------------------------------------------------------------
 
+Uncompress the SuiteSparse.zip or SuiteSparse.tar.gz archive file (they contain
+the same thing), then in the MATLAB Command Window, cd to the SuiteSparse
+directory and type SuiteSparse_install.  All packages will be compiled, and
+several demos will be run.  To run a (long!) exhaustive test, do
+SuiteSparse_test.
 
-================================================================================
+-----------------------------------------------------------------------------
 QUICK START FOR THE C/C++ LIBRARIES:
+-----------------------------------------------------------------------------
 
 For just GraphBLAS, do this:
 
@@ -363,14 +375,12 @@ The 'make uninstall' takes the same command-line arguments.
 Step-by-step details:
 ----------------------------------
 
-(1) Use the right BLAS and LAPACK libraries
-
+(1) Use the right BLAS and LAPACK libraries.
     Determine where your BLAS and LAPACK libraries are.  If the default
     'make' does not find them, use
     'make BLAS=-lmyblaslibraryhere LAPACK=-lmylapackgoeshere'
 
-(2) Install Intel's Threading Building Blocks (TBB)
-
+(2) Install Intel's Threading Building Blocks (TBB).
     This is optionally used by SuiteSparseQR.  Refer to the User Guide in 
     SuiteSparse/SPQR/Doc/spqr_user_guide.pdf for details.
 
@@ -382,23 +392,17 @@ Step-by-step details:
 
 (4) Type "make" in this directory.  All packages will be be compiled.  METIS
     5.1.0 will be compiled if you have it (note that METIS require CMake to
-    build it).  Several demos will be run.
-
-    To compile just the libraries, without running any demos, use
-    "make library".
-
-    The libraries will appear in */Lib/*.so.* (*.dylib for the Mac).  Include
-    files, as needed by user programs that use CHOLMOD, AMD, CAMD, COLAMD,
-    CCOLAMD, BTF, KLU, UMFPACK, LDL, etc. are in */Include/*.h.  The include
-    files required by user programs are then copied into SuiteSparse/include,
-    and the compiled libraries are copied into SuiteSparse/lib.  Documentation
-    is copied into SuiteSparse/doc.
-
-    The GraphBLAS libraries are created by cmake and placed in GraphBLAS/build.
-
-    NOTE: on Linux, you may see some errors when you compile METIS
-    ('make: *** No rule to make target 'w'.).  You can safely ignore those
-    errors.
+    build it).  Several demos will be run.  To compile just the libraries,
+    without running any demos, use "make library".  The libraries will appear
+    in */Lib/*.so.* (*.dylib for the Mac).  Include files, as needed by user
+    programs that use CHOLMOD, AMD, CAMD, COLAMD, CCOLAMD, BTF, KLU, UMFPACK,
+    LDL, etc. are in */Include/*.h.  The include files required by user
+    programs are then copied into SuiteSparse/include, and the compiled
+    libraries are copied into SuiteSparse/lib.  Documentation is copied into
+    SuiteSparse/doc.  The GraphBLAS libraries are created by cmake and placed
+    in GraphBLAS/build.  NOTE: on Linux, you may see some errors when you
+    compile METIS ('make: *** No rule to make target 'w'.).  You can safely
+    ignore those errors.
 
 (6) To install, type "make install".  This will place copies of all
     libraries in SuiteSparse/lib, and all include files in SuiteSparse/include,
