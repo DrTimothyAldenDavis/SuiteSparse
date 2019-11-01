@@ -669,7 +669,7 @@ static SuiteSparse_long check_sparse
     double *Ax, *Az ;
     Int *Ap, *Ai, *Anz ;
     Int nrow, ncol, nzmax, sorted, packed, j, p, pend, i, nz, ilast,
-	space, init_print, dnz, count, xtype ;
+	init_print, dnz, count, xtype ;
     const char *type = "sparse" ;
 
     /* ---------------------------------------------------------------------- */
@@ -844,16 +844,10 @@ static SuiteSparse_long check_sparse
 	    nz = MAX (0, Anz [j]) ;
 	    pend = p + nz ;
 	}
-	/* Note that space can be negative if the matrix is non-monotonic */
-	space = Ap [j+1] - p ;
 	P4 ("  col "ID":", j) ;
 	P4 (" nz "ID"", nz) ;
 	P4 (" start "ID"", p) ;
 	P4 (" end "ID"", pend) ;
-	if (!packed)
-	{
-	    P4 (" space "ID"", space) ;
-	}
 	P4 ("%s", ":\n") ;
 	if (p < 0 || pend > nzmax)
 	{

@@ -3,8 +3,8 @@ SuiteSparse_config, 2018, Timothy A. Davis, http://www.suitesparse.com
 
 This directory contains a default SuiteSparse_config.mk file.  It tries to
 detect your system (Linux, SunOS, or Mac), which compiler to use (icc or cc),
-which BLAS and LAPACK library to use (OpenBLAS or MKL), and whether or not to
-compile with CUDA.
+which BLAS and LAPACK library to use (Intel MKL is strongly preferred), and
+whether or not to compile with CUDA.
 
 For alternatives, see the comments in the SuiteSparse_config.mk file.
 

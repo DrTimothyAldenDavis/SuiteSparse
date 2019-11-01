@@ -299,7 +299,7 @@ int CHOLMOD(super_symbolic2)
         if ( Common->useGPU == 1 )
         {
             /* fprintf (stderr, "\nprobe GPU:\n") ; */
-            Common->useGPU = CHOLMOD(gpu_probe) (Common); 
+            Common->useGPU = CHOLMOD(gpu_probe) (Common);   // Cholesky only, not SPQR
             /* fprintf (stderr, "\nprobe GPU: result %d\n", Common->useGPU) ; */
         }
 
@@ -307,7 +307,7 @@ int CHOLMOD(super_symbolic2)
         {
             /* Cholesky + GPU, so allocate space */
             /* fprintf (stderr, "allocate GPU:\n") ; */
-            CHOLMOD(gpu_allocate) ( Common );
+            CHOLMOD(gpu_allocate) ( Common );               // Cholesky only, not SPQR
             /* fprintf (stderr, "allocate GPU done\n") ; */
         }
 #else

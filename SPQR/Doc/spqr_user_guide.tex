@@ -618,11 +618,9 @@ found.  Selecting the right BLAS is critical.  There is no standard naming
 scheme for the name and location of these libraries.  The defaults in the
 \verb'SuiteSparse_config.mk' file use \verb'-llapack' and \verb'-lblas'; the latter may
 link against the standard Fortran reference BLAS, which will not provide
-optimal performance.  For best results, you should use the OpenBLAS
-at openblas.net
-(based on the Goto BLAS)
-\cite{GotoVanDeGeijn08}, or high-performance vendor-supplied BLAS such as the
-Intel MKL, AMD ACML, or the Sun Performance Library.  Selection of LAPACK and
+optimal performance.  For best results, you should use a
+high-performance vendor-supplied BLAS such as the
+Intel MKL.  Selection of LAPACK and
 the BLAS is done with the \verb'LAPACK=' and \verb'BLAS=' lines in the
 \verb'SuiteSparse_config.mk' file.
 

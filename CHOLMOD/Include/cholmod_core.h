@@ -4,7 +4,7 @@
 
 /* -----------------------------------------------------------------------------
  * CHOLMOD/Include/cholmod_core.h.
- * Copyright (C) 2005-2013, Univ. of Florida.  Author: Timothy A. Davis
+ * Copyright (C) 2005-2019, Univ. of Florida.  Author: Timothy A. Davis
  * -------------------------------------------------------------------------- */
 
 /* CHOLMOD Core module: basic CHOLMOD objects and routines.
@@ -243,11 +243,11 @@
 
 #define CHOLMOD_HAS_VERSION_FUNCTION
 
-#define CHOLMOD_DATE "Dec 20, 2018"
+#define CHOLMOD_DATE "Oct 22, 2019"
 #define CHOLMOD_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define CHOLMOD_MAIN_VERSION 3
 #define CHOLMOD_SUB_VERSION 0
-#define CHOLMOD_SUBSUB_VERSION 13
+#define CHOLMOD_SUBSUB_VERSION 14
 #define CHOLMOD_VERSION \
     CHOLMOD_VER_CODE(CHOLMOD_MAIN_VERSION,CHOLMOD_SUB_VERSION)
 
