@@ -36,7 +36,7 @@
 
 #include <time.h>
 
-#if defined ( __linux__ )
+#if defined ( __linux__ ) || defined ( __GNU__ )
 #include <sys/time.h>
 #endif
 
@@ -44,7 +44,7 @@
 #include <omp.h>
 #endif
 
-#if defined ( __MACH__ )
+#if defined ( __MACH__ ) && defined ( __APPLE__ )
 #include <mach/clock.h>
 #include <mach/mach.h>
 #endif
