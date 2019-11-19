@@ -464,6 +464,7 @@ else
         SO_TARGET = $(LIBRARY).$(VERSION).dylib
         SO_OPTS  += -dynamiclib -compatibility_version $(SO_VERSION) \
                     -current_version $(VERSION) \
+                    -Wl,-install_name -Wl,$(SO_MAIN) \
                     -shared -undefined dynamic_lookup
         # When a Mac *.dylib file is moved, this command is required
         # to change its internal name to match its location in the filesystem:
