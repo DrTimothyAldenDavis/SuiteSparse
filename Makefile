@@ -58,7 +58,7 @@ endif
 	( cd GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' install )
 #	( cd PIRO_BAND && $(MAKE) install )
 #	( cd SKYLINE_SVD && $(MAKE) install )
-	$(CP) README.txt $(INSTALL_DOC)/SuiteSparse_README.txt
+	$(CP) README.md $(INSTALL_DOC)/SuiteSparse_README.txt
 	chmod 644 $(INSTALL_DOC)/SuiteSparse_README.txt
 
 metisinstall: metis
