@@ -1,0 +1,40 @@
+# simple makefile for building a static linked klu_simple
+#
+# use: cd KLU/Demo; make -f Makefile.simple
+#
+
+SUITESPARSE_ROOT:=$(shell pwd)/../..
+
+INCLUDE=${SUITESPARSE_ROOT}/include
+
+CONFIGLIB=${SUITESPARSE_ROOT}/SuiteSparse_config/libsuitesparseconfig.a
+BTFLIB=${SUITESPARSE_ROOT}/BTF/Lib/libbtf.a
+AMDLIB=${SUITESPARSE_ROOT}/AMD/Lib/libamd.a
+COLAMDLIB=${SUITESPARSE_ROOT}/COLAMD/Lib/libcolamd.a
+KLULIB=${SUITESPARSE_ROOT}/KLU/Lib/libklu.a
+
+src=${SUITESPARSE_ROOT}/KLU/Demo/klu_simple.c
+exe=klu_simple
+
+${exe}: ${src} ${KLULIB} ${CONFIGLIB} ${BTFLIB} ${AMDLIB} ${COLAMDLIB}
+	gcc -o $@ -I${INCLUDE} $^ -lm
+	./${exe}
+
+
+clean:
+	rm -f ${exe}
+
+${CONFIGLIB}: ${CONFIGLIB}
+	make -C ${SUITESPARSE_ROOT}/SuiteSparse_config
+
+${BTFLIB}: ${CONFIGLIB}
+	make -C ${SUITESPARSE_ROOT}/BTF
+
+${AMDLIB}: ${CONFIGLIB}
+	make -C ${SUITESPARSE_ROOT}/AMD
+
+${COLAMDLIB}: ${CONFIGLIB}
+	make -C ${SUITESPARSE_ROOT}/COLAMD
+
+${KLULIB}: ${COLAMDLIB} ${BTFLIB} ${AMDLIB} ${CONFIGLIB}
+	-make -C ${SUITESPARSE_ROOT}/KLU
