@@ -176,6 +176,7 @@ int main (void)
 
     klu_defaults (&Common) ;
     Common.scale = 0; // no row scaling
+    Common.btf = 0; // no btf: factor the whole matrix
 
     Symbolic = klu_analyze (n, Ap, Ai, &Common) ;
     dump_symbolic(Symbolic);
