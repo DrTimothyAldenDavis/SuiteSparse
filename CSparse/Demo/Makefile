@@ -1,10 +1,10 @@
-CF = $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -O
+CF = $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -Og -g
 I = -I../Include
 
 LDLIBS += -lm
 CS = $(LDFLAGS) ../Lib/libcsparse.a $(LDLIBS)
 
-all: lib cs_demo1 cs_demo2 cs_demo3
+all: lib cs_demo1 cs_demo2 cs_demo3 cs_lu
 	- ./cs_demo1 < ../Matrix/t1
 	- ./cs_demo2 < ../Matrix/t1
 	- ./cs_demo2 < ../Matrix/ash219
@@ -19,6 +19,9 @@ all: lib cs_demo1 cs_demo2 cs_demo3
 
 lib:
 	( cd ../Lib ; $(MAKE) )
+
+cs_lu: lib cs_lu.c mmio.c Makefile
+	$(CC) $(CF) $(I) -o cs_lu cs_lu.c mmio.c $(CS)
 
 cs_demo1: lib cs_demo1.c Makefile
 	$(CC) $(CF) $(I) -o cs_demo1 cs_demo1.c $(CS)
@@ -35,4 +38,4 @@ clean:
 purge: distclean
 
 distclean: clean
-	- $(RM) -r cs_demo1 cs_demo2 cs_demo3 *.a *.dSYM *.obj *.dll
+	- $(RM) -r cs_lu cs_demo1 cs_demo2 cs_demo3 *.a *.dSYM *.obj *.dll

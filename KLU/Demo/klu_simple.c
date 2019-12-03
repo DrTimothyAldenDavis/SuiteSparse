@@ -176,9 +176,14 @@ int main (void)
 
     klu_defaults (&Common) ;
     Common.scale = 0; // no row scaling
-    Common.btf = 0; // no btf: factor the whole matrix
+    //Common.btf = 0;   // no btf: factor the whole matrix
 
+#if (0)
     Symbolic = klu_analyze (n, Ap, Ai, &Common) ;
+#else
+    // no ordering at all: P=Q=NULL
+    Symbolic = klu_analyze_given(n, Ap, Ai, NULL, NULL, &Common);
+#endif
     dump_symbolic(Symbolic);
 
     Numeric = klu_factor (Ap, Ai, Ax, Symbolic, &Common) ;

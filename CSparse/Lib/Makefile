@@ -15,7 +15,7 @@
 # CSparse/Lib.  It does not install it for system-wide usage.
 
 LIBRARY = libcsparse
-CF = $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -O
+CF = $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -Og -g
 
 I = -I../Include
 RANLIB = ranlib
