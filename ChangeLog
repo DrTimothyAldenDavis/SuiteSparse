@@ -1,3 +1,7 @@
+Feb 20, 2020, SuiteSparse 5.7.1
+
+    * Makefile: fixed install issue with README.txt
+
 Feb 20, 2020, SuiteSparse 5.7.0
 
     * GraphBLAS 3.2.0: better performance, new ANY and PAIR operators,
