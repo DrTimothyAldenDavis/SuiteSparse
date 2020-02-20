@@ -58,8 +58,8 @@ endif
 	( cd GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' install )
 #	( cd PIRO_BAND && $(MAKE) install )
 #	( cd SKYLINE_SVD && $(MAKE) install )
-	$(CP) README.txt $(INSTALL_DOC)/SuiteSparse_README.txt
-	chmod 644 $(INSTALL_DOC)/SuiteSparse_README.txt
+	$(CP) README.md $(INSTALL_DOC)/SuiteSparse_README.md
+	chmod 644 $(INSTALL_DOC)/SuiteSparse_README.md
 
 metisinstall: metis
 ifeq (,$(MY_METIS_LIB))
@@ -81,7 +81,7 @@ endif
 
 # uninstall all packages
 uninstall:
-	$(RM) $(INSTALL_DOC)/SuiteSparse_README.txt
+	$(RM) $(INSTALL_DOC)/SuiteSparse_README.md
 	( cd SuiteSparse_config && $(MAKE) uninstall )
 	- ( cd metis-5.1.0 && $(MAKE) uninstall )
 	- ( cd GraphBLAS && $(MAKE) uninstall )
