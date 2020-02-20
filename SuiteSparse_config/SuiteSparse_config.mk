@@ -7,7 +7,7 @@
 # and GraphBLAS.  The configuration settings for GraphBLAS are determined by
 # GraphBLAS/CMakeLists.txt
 
-SUITESPARSE_VERSION = 5.6.0
+SUITESPARSE_VERSION = 5.7.0
 
 #===============================================================================
 # Options you can change without editing this file:

@@ -1,5 +1,5 @@
 WildType size: 128
-    GraphBLAS type: WildType run-time user-defined: [wildtype] size: 128
+    GraphBLAS type: WildType user-defined: [wildtype] size: 128
 
 a wildtype scalar: scalar1 [this is from scalar1]
        0.0        1.0        2.0        3.0 
@@ -25,18 +25,18 @@ a wildtype scalar: scalar_identity for the monoid [identity]
        0.0        0.0        0.0        0.0 
        0.0        0.0        0.0        0.0 
 
-    GraphBLAS Semiring: InTheWild (user-defined at run-time)
-    GraphBLAS Monoid: semiring->add (user-defined at run-time)
-    GraphBLAS BinaryOp: monoid->op (run-time user-defined) z=wildtype_add(x,y)
-    GraphBLAS type: ztype run-time user-defined: [wildtype] size: 128
-    GraphBLAS type: xtype run-time user-defined: [wildtype] size: 128
-    GraphBLAS type: ytype run-time user-defined: [wildtype] size: 128
+    GraphBLAS Semiring: InTheWild (user-defined)
+    GraphBLAS Monoid: semiring->add (user-defined)
+    GraphBLAS BinaryOp: monoid->op (user-defined) z=wildtype_add(x,y)
+    GraphBLAS type: ztype user-defined: [wildtype] size: 128
+    GraphBLAS type: xtype user-defined: [wildtype] size: 128
+    GraphBLAS type: ytype user-defined: [wildtype] size: 128
     identity: [ [user-defined value] ] 
 
-    GraphBLAS BinaryOp: semiring->multiply (run-time user-defined) z=wildtype_mult(x,y)
-    GraphBLAS type: ztype run-time user-defined: [wildtype] size: 128
-    GraphBLAS type: xtype run-time user-defined: [wildtype] size: 128
-    GraphBLAS type: ytype run-time user-defined: [wildtype] size: 128
+    GraphBLAS BinaryOp: semiring->multiply (user-defined) z=wildtype_mult(x,y)
+    GraphBLAS type: ztype user-defined: [wildtype] size: 128
+    GraphBLAS type: xtype user-defined: [wildtype] size: 128
+    GraphBLAS type: ytype user-defined: [wildtype] size: 128
 
 multiplication C=A*B InTheWild semiring:
 
@@ -84,7 +84,7 @@ Printing the matrix with GxB_Matrix_fprint:
   input B, no entries
   pending tuples: 3 max pending: 256 zombies: 0
   pending tuples:
-    GraphBLAS type:  run-time user-defined: [wildtype] size: 128
+    GraphBLAS type:  user-defined: [wildtype] size: 128
     row: 7 col: 2 [user-defined value]
     row: 7 col: 5 [user-defined value]
     row: 4 col: 2 [user-defined value]
@@ -119,27 +119,6 @@ a wildtype scalar:  [here is B(7,5)]
 
 ============= that was the WildType matrix input B
 
-a wildtype scalar: x for multiply: [this is A(2,7)]
-       0.0        1.0        2.0        3.0 
-     100.0      101.0      102.0      103.0 
-     200.0      201.0      202.0      203.0 
-     300.0      301.0      302.0      303.0 
-
-a wildtype scalar: y for multiply: [this is B(7,2)]
-       0.5        1.5        2.5        3.5 
-      -0.5        0.5        1.5        2.5 
-      -1.5       -0.5        0.5        1.5 
-      -2.5       -1.5       -0.5        0.5 
-
-do the multiply:
-   [this was multiplied] = [this is A(2,7)] * [this is B(7,2)]
-
-a wildtype scalar: z = x*y: [this was multiplied]
-     -11.0       -5.0        1.0        7.0 
-    -411.0       -5.0      401.0      807.0 
-    -811.0       -5.0      801.0     1607.0 
-   -1211.0       -5.0     1201.0     2407.0 
-
 a wildtype scalar: x for multiply: [this is A(2,4)]
        0.0        1.0        2.0        3.0 
      100.0      101.0      102.0      103.0 
@@ -161,17 +140,38 @@ a wildtype scalar: z = x*y: [this was multiplied]
    -2876.0    -1064.0      448.0    16660.0 
    -1008.5      386.5     1331.5    24326.5 
 
-a wildtype scalar: x for add: [this was multiplied]
+a wildtype scalar: x for multiply: [this is A(2,7)]
+       0.0        1.0        2.0        3.0 
+     100.0      101.0      102.0      103.0 
+     200.0      201.0      202.0      203.0 
+     300.0      301.0      302.0      303.0 
+
+a wildtype scalar: y for multiply: [this is B(7,2)]
+       0.5        1.5        2.5        3.5 
+      -0.5        0.5        1.5        2.5 
+      -1.5       -0.5        0.5        1.5 
+      -2.5       -1.5       -0.5        0.5 
+
+do the multiply:
+   [this was multiplied] = [this is A(2,7)] * [this is B(7,2)]
+
+a wildtype scalar: z = x*y: [this was multiplied]
      -11.0       -5.0        1.0        7.0 
     -411.0       -5.0      401.0      807.0 
     -811.0       -5.0      801.0     1607.0 
    -1211.0       -5.0     1201.0     2407.0 
 
-a wildtype scalar: y for add: [this was multiplied]
+a wildtype scalar: x for add: [this was multiplied]
      -11.0       -5.0        1.0        7.0 
     -561.0       -5.0      401.0     8157.0 
    -2876.0    -1064.0      448.0    16660.0 
    -1008.5      386.5     1331.5    24326.5 
+
+a wildtype scalar: y for add: [this was multiplied]
+     -11.0       -5.0        1.0        7.0 
+    -411.0       -5.0      401.0      807.0 
+    -811.0       -5.0      801.0     1607.0 
+   -1211.0       -5.0     1201.0     2407.0 
 
 do the add:
     [this was added] = [this was added] + [this was multiplied]

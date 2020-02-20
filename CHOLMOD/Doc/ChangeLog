@@ -1,3 +1,7 @@
+Feb 20, 2020: version 3.0.14
+
+    * minor update to cholmod_check to print a matrix
+
 Dec 20, 2018: version 3.0.13
 
     * bug fix to cholmod_core.h: so that a CUDA include file is properly

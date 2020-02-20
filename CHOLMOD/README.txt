@@ -1,4 +1,4 @@
-CHOLMOD: a sparse CHOLesky MODification package, Copyright (c) 2005-2014.
+CHOLMOD: a sparse CHOLesky MODification package, Copyright (c) 2005-2020.
 http://www.suitesparse.com
 -----------------------------------------------
 
