@@ -1,5 +1,6 @@
 Feb 20, 2020, SuiteSparse 5.7.1
 
+    * SuiteSparse_config: update version number
     * Makefile: fixed install issue with README.txt
 
 Feb 20, 2020, SuiteSparse 5.7.0
