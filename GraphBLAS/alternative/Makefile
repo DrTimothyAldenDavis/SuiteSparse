@@ -37,13 +37,13 @@ ifeq ($(UNAME),Darwin)
     SO_NAME = libgraphblas.dylib.$(VER1).$(VER2).$(VER3)
     SO_NAME0 = libgraphblas.dylib
     SO_NAME1 = libgraphblas.dylib.$(VER1)
-    SO_OPTS += -dynamiclib -shared -undefined dynamic_lookup
+    SO_OPTS += -dynamiclib -shared  -Wl,-install_name -Wl,$(SO_NAME1) -undefined dynamic_lookup
 else
     # Linux
     SO_NAME = libgraphblas.so.$(VER1).$(VER2).$(VER3)
     SO_NAME0 = libgraphblas.so
     SO_NAME1 = libgraphblas.so.$(VER1)
-    SO_OPTS += -shared -Wl,-soname -Wl,$(SO_NAME)
+    SO_OPTS += -shared -Wl,-soname -Wl,$(SO_NAME1)
 endif
 
 %.o: ../Source/%.c $(INC)
