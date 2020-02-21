@@ -171,12 +171,12 @@ SUITESPARSE_VERSION = 5.7.1
             #   $(MKLROOT)/lib/intel64/libmkl_intel_thread.a \
             #   -Wl,--end-group -lpthread -lm
             # using dynamic linking:
-            BLAS = -lmkl_intel_lp64 -lmkl_core -lmkl_intel_thread -liomp5 -lpthread -lm
-            LAPACK =
+            BLAS ?= -lmkl_intel_lp64 -lmkl_core -lmkl_intel_thread -liomp5 -lpthread -lm
+            LAPACK ?=
         else
             # use the OpenBLAS at http://www.openblas.net (CAN BE VERY SLOW;
             # CHOLMOD can be slowed down by a factor of 100x in extreme cases)
-            BLAS = -lopenblas
+            BLAS ?= -lopenblas
         endif
     endif
 
@@ -371,8 +371,8 @@ SUITESPARSE_VERSION = 5.7.1
         # command line in the Terminal, before doing 'make':
         # xcode-select --install
         CF += -fno-common
-        BLAS = -framework Accelerate
-        LAPACK = -framework Accelerate
+        BLAS ?= -framework Accelerate
+        LAPACK ?= -framework Accelerate
         # OpenMP is not yet supported by default in clang
         CFOPENMP =
     endif
@@ -387,8 +387,8 @@ SUITESPARSE_VERSION = 5.7.1
         # I leave it here in case you need it.  It likely needs updating.
         CF += -fast -KPIC -xc99=%none -xlibmieee -xlibmil -m64 -Xc
         F77FLAGS = -O -fast -KPIC -dalign -xlibmil -m64
-        BLAS = -xlic_lib=sunperf
-        LAPACK =
+        BLAS ?= -xlic_lib=sunperf
+        LAPACK ?=
         # Using the GCC compiler and the reference BLAS
         ## CC = gcc
         ## CXX = g++
@@ -405,9 +405,9 @@ SUITESPARSE_VERSION = 5.7.1
         # hasn't been tested for a very long time...
         # I leave it here in case you need it.  It likely needs updating.
         CF += -O4 -qipa -qmaxmem=16384 -q64 -qproto -DBLAS_NO_UNDERSCORE
-        F77FLAGS =  -O4 -qipa -qmaxmem=16384 -q64
-        BLAS = -lessl
-        LAPACK =
+        F77FLAGS ?=  -O4 -qipa -qmaxmem=16384 -q64
+        BLAS ?= -lessl
+        LAPACK ?=
     endif
 
 #===============================================================================
