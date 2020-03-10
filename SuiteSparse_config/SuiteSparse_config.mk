@@ -159,8 +159,6 @@ SUITESPARSE_VERSION = 5.7.1
     # result in severe performance degradation, in CHOLMOD in particular.
     # This script can also detect if the Intel MKL BLAS is installed.
 
-    LAPACK ?= -llapack
-
     ifndef BLAS
         ifdef MKLROOT
             # use the Intel MKL for BLAS and LAPACK
@@ -177,6 +175,7 @@ SUITESPARSE_VERSION = 5.7.1
             # use the OpenBLAS at http://www.openblas.net (CAN BE VERY SLOW;
             # CHOLMOD can be slowed down by a factor of 100x in extreme cases)
             BLAS ?= -lopenblas
+            LAPACK ?= -llapack
         endif
     endif
 
