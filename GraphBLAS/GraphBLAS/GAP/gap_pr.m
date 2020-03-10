@@ -1,6 +1,9 @@
 function gap_pr
 %GAP_PR run pagerank for the GAP benchmark
 
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
+% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+
 rng ('default') ;
 
 % warmup, to make sure GrB library is loaded
@@ -25,10 +28,15 @@ if (isequal (result (1:5), 'hyper'))
     fprintf ('hypersparse: %d threads\n', GrB.threads (40)) ;
 elseif (isequal (result (1:5), 'slash'))
     fprintf ('slash: %d threads\n', GrB.threads (8)) ;
+elseif (isequal (result (1:9), 'backslash'))
+    fprintf ('slash: %d threads\n', GrB.threads (24)) ;
 else
     fprintf ('default: %d threads\n', GrB.threads) ;
 end
 clear result
+
+threads = GrB.threads ;
+threads = [threads threads/2]
 
 for k = 1:length(matrices)
 
@@ -65,16 +73,19 @@ for k = 1:length(matrices)
     % PageRank with gap_pagerank
     %---------------------------------------------------------------------------
 
-    fprintf ('\nGAP PageRank tests:\n') ;
-    tot = 0 ;
-    for trial = 1:ntrials
-        tstart = tic ;
-        [g, iter] = gap_pagerank (A, d) ;
-        t = toc (tstart) ;
-        tot = tot + t ;
-        fprintf ('trial: %2d GAP pagerank time: %g iter: %d\n', trial, t, iter);
+    for nthreads = threads
+        GrB.threads (nthreads) ;
+        fprintf ('\nGAP PageRank tests: %d threads\n', nthreads) ;
+        tot = 0 ;
+        for trial = 1:ntrials
+            tstart = tic ;
+            [g, iter] = gap_pagerank (A, d) ;
+            t = toc (tstart) ;
+            tot = tot + t ;
+            fprintf ('trial: %2d GAP pagerank time: %g iter: %d\n', trial, t, iter);
+        end
+        fprintf ('avg gap_pagerank time:  %g (%d trials)\n', tot/ntrials, ntrials) ;
     end
-    fprintf ('avg gap_pagerank time:  %g (%d trials)\n', tot/ntrials, ntrials) ;
 
     clear d
 
@@ -87,6 +98,7 @@ for k = 1:length(matrices)
     % matches the MATLAB @graph/centrality (A, 'pagerank') method, which
     % handles such nodes properly.
 
+%{
     fprintf ('\nGrB PageRank tests:\n') ;
     opts.type = 'single' ;
 
@@ -100,11 +112,13 @@ for k = 1:length(matrices)
             trial, t, stats.tinit, stats.trank, stats.iter) ;
     end
     fprintf ('avg GrB.pagerank time:  %g (%d trials)\n', tot/ntrials, ntrials) ;
+%}
 
     %---------------------------------------------------------------------------
     % PageRank with MATLAB
     %---------------------------------------------------------------------------
 
+%{
     % if (n < 24*1e6)
     try
         fprintf ('\nCompare with built-in MATLAB pagerank:\n') ;
@@ -132,5 +146,7 @@ for k = 1:length(matrices)
     end
 
     clear G r g rmatlab d A r1 r2 r3 i1 i2 i3
+%}
+
 end
 

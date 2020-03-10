@@ -21,10 +21,11 @@ n = size (A, 1) ;
 % native, if A is already stored by column
 native = GrB.isbycol (A) ;
 if (~native)
-    error ('wrong matrix') ;
+    error ('A must be stored by column') ;
 end
 
 if (nargin < 2)
+    % compute d if not provided on input
     td = tic ;
     d = GrB.entries (A, 'row', 'degree') ;
     sinks = find (d == 0) ;

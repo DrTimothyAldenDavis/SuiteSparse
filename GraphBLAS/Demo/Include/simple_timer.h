@@ -36,18 +36,34 @@
 
 #include <time.h>
 
-#if defined ( __linux__ )
-#include <sys/time.h>
-#endif
+/* -------------------------------------------------------------------------- */
+/* decide which timer to use */
+/* -------------------------------------------------------------------------- */
 
 #if defined ( _OPENMP )
-#include <omp.h>
+
+    /* if OpenMP is available, use omp_get_wtime */
+    #include <omp.h>
+
+#elif defined ( __linux__ ) || defined ( __GNU__ )
+
+    /* otherwise, on Linux/GNU, use clock_gettime. May require -lrt */
+    #include <sys/time.h>
+
+#elif defined ( __MACH__ ) && defined ( __APPLE__ )
+
+    /* otherwise, on the Mac, use the MACH timer */
+    #include <mach/clock.h>
+    #include <mach/mach.h>
+
+#else
+
+    /* Finally, the ANSI C11 clock() function is used if no other timer
+       is available. */
+
 #endif
 
-#if defined ( __MACH__ )
-#include <mach/clock.h>
-#include <mach/mach.h>
-#endif
+/* -------------------------------------------------------------------------- */
 
 void simple_tic         /* returns current time in seconds and nanoseconds */
 (

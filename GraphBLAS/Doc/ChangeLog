@@ -1,3 +1,16 @@
+Version 3.2.1, Mar 10, 2020
+
+    * GAP benchmarks in MATLAB: in GraphBLAS/GraphBLAS/GAP (all but CC).
+    * atomic read/write: faster atomics for icc (see Source/GB_atomics.h)
+    * install name for Mac: in alternative/Makefile and Tcov/Makefile
+    * enable -DGBCOMPACT from CMake: for faster Travis builds
+    * MATLAB interface: better error message in GrB.reduce
+    * MATLAB triangle count: added sorting heuristic in GrB.tricount.
+    * bug fix for GraphBLAS/Demo/simple_timer: better selection of which
+        timer to use; simple_timer.[ch] made consistent.
+    * no bug fixes needed in primary GraphBLAS library: just in Demo, test,
+        and alternative/Makefile.
+
 Version 3.2.0, Feb 20, 2020
 
     * GxB_*_define for user-defined compile-time objects: removed.  Not
@@ -19,6 +32,7 @@ Version 3.2.0, Feb 20, 2020
         subset of "#pragma omp atomic" statements.  This will be resolved in a
         future version; in the meantime, use v3.1.2 with MS Visual Studio
         instead of v3.2.0.
+    * no bug fixes
 
 Version 3.1.2, Dec 16, 2019
 

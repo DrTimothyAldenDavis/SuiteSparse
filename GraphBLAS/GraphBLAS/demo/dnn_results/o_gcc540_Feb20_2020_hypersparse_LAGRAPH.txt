@@ -205,5 +205,17 @@ check time: 0.0251191 sec
 read net time 980.087 sec
 # edges in all layers: 4026.53 million
 
-nthreads  1: (in progress)
+nthreads  1: soln time     59774.93 sec                  rate     4.0417 (1e9 edges/sec) 
+nthreads  2: soln time     30692.49 sec speedup     1.95 rate     7.8714 (1e9 edges/sec) 
+nthreads  4: soln time     15334.38 sec speedup     3.90 rate    15.7549 (1e9 edges/sec) 
+nthreads  8: soln time      7942.44 sec speedup     7.53 rate    30.4178 (1e9 edges/sec) 
+nthreads 16: soln time      4237.19 sec speedup    14.11 rate    57.0170 (1e9 edges/sec) 
+nthreads 20: soln time      3517.46 sec speedup    16.99 rate    68.6836 (1e9 edges/sec) 
+nthreads 32: soln time      3645.80 sec speedup    16.40 rate    66.2658 (1e9 edges/sec) 
+nthreads 40: soln time      3570.33 sec speedup    16.74 rate    67.6666 (1e9 edges/sec) 
 
+# entries in final Y: 130.679 million
+check time: 0.0250661 sec
+all tests passed
+
+Script done on Fri 21 Feb 2020 01:39:45 PM CST

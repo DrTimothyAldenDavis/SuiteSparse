@@ -13,18 +13,35 @@
 
 #if GB_MICROSOFT
 
-// FUTURE::: atomics with MS Visual Studio
-#define GB_ATOMIC_READ
-#define GB_ATOMIC_WRITE
-#define GB_ATOMIC_UPDATE  GB_PRAGMA (omp atomic)
-#define GB_ATOMIC_CAPTURE GB_PRAGMA (omp atomic)
+    // -------------------------------------------------------------------------
+    // FUTURE::: atomics with MS Visual Studio
+    // -------------------------------------------------------------------------
+
+    #define GB_ATOMIC_READ
+    #define GB_ATOMIC_WRITE
+    #define GB_ATOMIC_UPDATE  GB_PRAGMA (omp atomic)
+    #define GB_ATOMIC_CAPTURE GB_PRAGMA (omp atomic)
 
 #else
 
-#define GB_ATOMIC_READ    GB_PRAGMA (omp atomic read)
-#define GB_ATOMIC_WRITE   GB_PRAGMA (omp atomic write)
-#define GB_ATOMIC_UPDATE  GB_PRAGMA (omp atomic update)
-#define GB_ATOMIC_CAPTURE GB_PRAGMA (omp atomic capture)
+    // -------------------------------------------------------------------------
+    // atomics with gcc, icc, and other compilers
+    // -------------------------------------------------------------------------
+
+    #if __x86_64__
+    // No need for atomic read/write on x86_64.  gcc already treats atomic
+    // read/write as plain read/write, so these definitions only affect icc.
+    #define GB_ATOMIC_READ
+    #define GB_ATOMIC_WRITE
+    #else
+    // ARM, Power8/9, and others need the explicit atomic read/write
+    #define GB_ATOMIC_READ    GB_PRAGMA (omp atomic read)
+    #define GB_ATOMIC_WRITE   GB_PRAGMA (omp atomic write)
+    #endif
+
+    // all architectures need these atomic pragmas
+    #define GB_ATOMIC_UPDATE  GB_PRAGMA (omp atomic update)
+    #define GB_ATOMIC_CAPTURE GB_PRAGMA (omp atomic capture)
 
 #endif
 #endif

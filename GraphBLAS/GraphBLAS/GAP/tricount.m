@@ -66,10 +66,10 @@ if (n > 1000 && GrB.entries (A) >= 10*n)
     sample = d (randperm (n, 1000)) ;
     dmean = full (mean (sample)) ;
     dmed  = full (median (sample)) ;
-    % fprintf ('mean degree: %g median: %g\n', dmean, dmed) ;
+    fprintf ('mean degree: %g median: %g\n', dmean, dmed) ;
     if (dmean > 4 * dmed)
         % sort if the average degree is very high compared to the median
-        % fprintf ('sorting A first\n') ;
+        fprintf ('sorting A first\n') ;
         [~, p] = sort (d, 'descend') ;
         A = A (p,p) ;
         clear p

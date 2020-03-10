@@ -9,8 +9,8 @@
 
 // FUTURE: extend to handle typecasting and generic operators.
 
-#ifndef GBCOMPACT
 #include "GB_dense.h"
+#ifndef GBCOMPACT
 #include "GB_binop__include.h"
 
 #define GB_FREE_ALL ;

@@ -7,8 +7,8 @@
 
 //------------------------------------------------------------------------------
 
-#ifndef GBCOMPACT
 #include "GB_dense.h"
+#ifndef GBCOMPACT
 #include "GB_binop__include.h"
 
 void GB_dense_ewise3_accum          // C += A+B, all matrices dense

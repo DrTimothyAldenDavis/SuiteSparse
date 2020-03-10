@@ -40,7 +40,7 @@
 // #define GB_DEBUG
 
 // to reduce code size and for faster time to compile, uncomment this line;
-// GraphBLAS will be slower:
+// GraphBLAS will be slower.  Alternatively, use cmake with -DGBCOMPACT=1
 // #define GBCOMPACT 1
 
 // for code development only

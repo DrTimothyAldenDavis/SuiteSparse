@@ -27,7 +27,7 @@ void simple_tic         /* returns current time in seconds and nanoseconds */
         tic [0] = omp_get_wtime ( ) ;
         tic [1] = 0 ;
 
-    #elif defined ( __linux__ )
+    #elif defined ( __linux__ ) || defined ( __GNU__ )
 
         /* Linux has a very low resolution clock() function, so use the high
            resolution clock_gettime instead.  May require -lrt */
@@ -36,8 +36,9 @@ void simple_tic         /* returns current time in seconds and nanoseconds */
         tic [0] = (double) t.tv_sec ;
         tic [1] = (double) t.tv_nsec ;
 
-    #elif defined ( __MACH__ )
+    #elif defined ( __MACH__ ) && defined ( __APPLE__ )
 
+        /* otherwise, on the Mac, use the MACH timer */
         clock_serv_t cclock ;
         mach_timespec_t t ;
         host_get_clock_service (mach_host_self ( ), SYSTEM_CLOCK, &cclock) ;
