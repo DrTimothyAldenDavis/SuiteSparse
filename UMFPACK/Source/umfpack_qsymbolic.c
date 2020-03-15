@@ -2690,8 +2690,8 @@ GLOBAL Int UMFPACK_qsymbolic
         Quser,
 
         /* no user provided ordering function */
-        (void *) NULL,
-        (void *) NULL,
+        NULL,
+        NULL,
 
         SymbolicHandle, Control, User_Info)) ;
 }
