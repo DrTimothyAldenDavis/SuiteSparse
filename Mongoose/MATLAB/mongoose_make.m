@@ -24,7 +24,7 @@ if (is64)
     flags = ' -largeArrayDims' ;
 end
 
-include = '-I. -I../Include -I../External/Include -I../SuiteSparse_config' ;
+include = '-I. -I../Include -I../External/Include -I../../SuiteSparse_config' ;
 
 % Linux/Unix require these flags for large file support
 flags = [flags ' -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE'] ;
@@ -51,7 +51,7 @@ lib = strrep (lib, '/', filesep) ;
 %-------------------------------------------------------------------------------
 
 config_src = {
-    '../SuiteSparse_config/SuiteSparse_config' };
+    '../../SuiteSparse_config/SuiteSparse_config' };
 
 mongoose_src = {
     '../Source/Mongoose_BoundaryHeap', ...
