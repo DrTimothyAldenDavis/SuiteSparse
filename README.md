@@ -118,7 +118,10 @@ Packages in SuiteSparse, and files in this directory:
 
     Makefile    to compile all of SuiteSparse (except GraphBLAS)
                 make            compiles SuiteSparse libraries and runs demos
-                make install    compiles SuiteSparse and installs in /usr/local
+                make install    compiles SuiteSparse and installs in the
+                                current directory (./lib, ./include).
+                                Use "sudo make INSTALL=/usr/local" to install
+                                in /usr/local/lib and /usr/local/include.
                 make uninstall  undoes 'make install'
                 make library    compiles SuiteSparse libraries (not demos)
                 make distclean  removes all files not in distribution, including
