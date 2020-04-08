@@ -436,7 +436,7 @@ GrB_Info GB_subassigner             // C(I,J)<#M> = A or accum (C (I,J), A)
         // C_replace is already effectively false (see no_mask case above)
         ASSERT (C_replace == false) ;
 
-        // free pending tuples early but do not clear all of C.  If it is
+        // free pending tuples early but do not clear C.  If it is
         // already dense then its pattern can be reused.
         GB_Pending_free (&(C->Pending)) ;
 

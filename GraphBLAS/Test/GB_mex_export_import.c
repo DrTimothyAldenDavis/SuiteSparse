@@ -46,7 +46,7 @@
 GrB_Matrix A = NULL ;
 GrB_Matrix C = NULL ;
 GrB_Index *Cp = NULL, *Ch = NULL, *Ci = NULL ;
-void *Cx = NULL ;
+GB_void *Cx = NULL ;
 GB_Context Context = NULL ;
 size_t csize = 0 ;
 GrB_Index nvec = 0, nvals = 0, nrows = 0, ncols = 0 ;
@@ -81,32 +81,32 @@ GrB_Info export_import
         case 0 :    // standard CSR
         //----------------------------------------------------------------------
 
-            OK (GxB_set (C, GxB_HYPER,  GxB_NEVER_HYPER)) ;
-            OK (GxB_set (C, GxB_FORMAT, GxB_BY_ROW)) ;
+            OK (GxB_Matrix_Option_set (C, GxB_HYPER,  GxB_NEVER_HYPER)) ;
+            OK (GxB_Matrix_Option_set (C, GxB_FORMAT, GxB_BY_ROW)) ;
             break ;
 
         //----------------------------------------------------------------------
         case 1 :    // standard CSC
         //----------------------------------------------------------------------
 
-            OK (GxB_set (C, GxB_HYPER,  GxB_NEVER_HYPER)) ;
-            OK (GxB_set (C, GxB_FORMAT, GxB_BY_COL)) ;
+            OK (GxB_Matrix_Option_set (C, GxB_HYPER,  GxB_NEVER_HYPER)) ;
+            OK (GxB_Matrix_Option_set (C, GxB_FORMAT, GxB_BY_COL)) ;
             break ;
 
         //----------------------------------------------------------------------
         case 2 :    // hypersparse CSR
         //----------------------------------------------------------------------
 
-            OK (GxB_set (C, GxB_HYPER,  GxB_ALWAYS_HYPER)) ;
-            OK (GxB_set (C, GxB_FORMAT, GxB_BY_ROW)) ;
+            OK (GxB_Matrix_Option_set (C, GxB_HYPER,  GxB_ALWAYS_HYPER)) ;
+            OK (GxB_Matrix_Option_set (C, GxB_FORMAT, GxB_BY_ROW)) ;
             break ;
 
         //----------------------------------------------------------------------
         case 3 :    // hypersparse CSC
         //----------------------------------------------------------------------
 
-            OK (GxB_set (C, GxB_HYPER,  GxB_ALWAYS_HYPER)) ;
-            OK (GxB_set (C, GxB_FORMAT, GxB_BY_COL)) ;
+            OK (GxB_Matrix_Option_set (C, GxB_HYPER,  GxB_ALWAYS_HYPER)) ;
+            OK (GxB_Matrix_Option_set (C, GxB_FORMAT, GxB_BY_COL)) ;
             break ;
 
         default : mexErrMsgTxt ("invalid format") ;

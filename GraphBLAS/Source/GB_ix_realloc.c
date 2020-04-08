@@ -13,6 +13,7 @@
 
 #include "GB.h"
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_ix_realloc      // reallocate space in a matrix
 (
     GrB_Matrix A,           // matrix to allocate space for

@@ -138,7 +138,8 @@ void GB_AxB_saxpy3_symbolic
                 // Scatter the values of M(:,j) into Hf.  No atomics needed
                 // since all indices i in M(;,j) are unique.
 
-                uint8_t *GB_RESTRICT Hf = TaskList [taskid].Hf ;
+                int8_t *GB_RESTRICT
+                    Hf = (int8_t *GB_RESTRICT) TaskList [taskid].Hf ;
                 GB_SCATTER_M_j (mystart, myend, 1) ;
 
             }
@@ -160,7 +161,8 @@ void GB_AxB_saxpy3_symbolic
                 // h == 0,   f == 0: unoccupied and unlocked
                 // h == i+1, f == 1: occupied with M(i,j)=1
 
-                int64_t *GB_RESTRICT Hf = TaskList [taskid].Hf ;
+                int64_t *GB_RESTRICT
+                    Hf = (int64_t *GB_RESTRICT) TaskList [taskid].Hf ;
                 int64_t hash_bits = (hash_size-1) ;
                 for (int64_t pM = mystart ; pM < myend ; pM++) // scan my M(:,j)
                 {
@@ -171,11 +173,10 @@ void GB_AxB_saxpy3_symbolic
                     for (GB_HASH (i))
                     { 
                         int64_t hf ;
-                        // swap my hash entry into the hash table
-                        GB_ATOMIC_CAPTURE
-                        {
-                            hf = Hf [hash] ; Hf [hash] = i_mine ;
-                        }
+                        // swap my hash entry into the hash table;
+                        // does the following using an atomic capture:
+                        // { hf = Hf [hash] ; Hf [hash] = i_mine ; }
+                        GB_ATOMIC_CAPTURE_INT64 (hf, Hf [hash], i_mine) ;
                         if (hf == 0) break ;        // success
                         // i_mine has been inserted, but a prior entry was
                         // already there.  It needs to be replaced, so take
@@ -194,7 +195,8 @@ void GB_AxB_saxpy3_symbolic
             // coarse tasks: compute nnz in each vector of A*B(:,kfirst:klast)
             //------------------------------------------------------------------
 
-            int64_t *GB_RESTRICT Hf = TaskList [taskid].Hf ;
+            int64_t *GB_RESTRICT
+                Hf = (int64_t *GB_RESTRICT) TaskList [taskid].Hf ;
             int64_t kfirst = TaskList [taskid].start ;
             int64_t klast  = TaskList [taskid].end ;
             int64_t mark = 0 ;
@@ -574,7 +576,8 @@ void GB_AxB_saxpy3_symbolic
             if (use_Gustavson)
             {
                 // phase1: fine Gustavson task, C<M>=A*B or C<!M>=A*B
-                uint8_t *GB_RESTRICT Hf = TaskList [taskid].Hf ;
+                int8_t *GB_RESTRICT
+                    Hf = (int8_t *GB_RESTRICT) TaskList [taskid].Hf ;
                 for (int64_t pM = pM_start ; pM < pM_end ; pM++)
                 {
                     GB_GET_M_ij ;                    // get M(i,j)
@@ -592,7 +595,8 @@ void GB_AxB_saxpy3_symbolic
                 // phase1: fine hash task, C<M>=A*B or C<!M>=A*B
                 // h == 0,   f == 0: unoccupied and unlocked
                 // h == i+1, f == 1: occupied with M(i,j)=1
-                int64_t *GB_RESTRICT Hf = TaskList [taskid].Hf ;
+                int64_t *GB_RESTRICT
+                    Hf = (int64_t *GB_RESTRICT) TaskList [taskid].Hf ;
                 int64_t hash_bits = (hash_size-1) ;
                 for (int64_t pM = pM_start ; pM < pM_end ; pM++)
                 {

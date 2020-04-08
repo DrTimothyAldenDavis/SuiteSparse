@@ -65,10 +65,10 @@
 #define DUP_ARG 3
 #define CLASS_ARG 4
 
-#define FREE_ALL                \
-{                               \
-    GrB_free (&C) ;             \
-    GB_mx_put_global (true, 0) ;        \
+#define FREE_ALL                    \
+{                                   \
+    GrB_Matrix_free (&C) ;          \
+    GB_mx_put_global (true, 0) ;    \
 }
 
 #endif
@@ -90,7 +90,7 @@ GrB_Info builder
     GrB_Index ncols,
     GrB_Index *I,
     GrB_Index *J,
-    void *X,
+    GB_void *X,
     GrB_Index ni,
     GrB_BinaryOp dup,
     bool C_is_csc,
@@ -112,7 +112,7 @@ GrB_Info builder
     GrB_Index ncols,
     GrB_Index *I,
     GrB_Index *J,
-    void *X,
+    GB_void *X,
     GrB_Index ni,
     GrB_BinaryOp dup,
     bool C_is_csc,
@@ -155,9 +155,11 @@ GrB_Info builder
 
     // build the matrix or vector from the tuples
     #ifdef MATRIX
-    #define BUILD(type) info = GrB_Matrix_build (C,I,J,(const type *)X,ni,dup)
+    #define BUILD(suffix,type) \
+        info = GrB_Matrix_build ## suffix (C,I,J,(const type *)X,ni,dup)
     #else
-    #define BUILD(type) info = GrB_Vector_build (C,I,  (const type *)X,ni,dup)
+    #define BUILD(suffix,type) \
+        info = GrB_Vector_build ## suffix (C,I,  (const type *)X,ni,dup)
     #endif
 
     ASSERT_TYPE_OK (ctype, "ctype for build", GB0) ;
@@ -166,17 +168,17 @@ GrB_Info builder
 
     switch (xclass)
     {
-        case mxLOGICAL_CLASS  : BUILD (bool    ) ; break ;
-        case mxINT8_CLASS     : BUILD (int8_t  ) ; break ;
-        case mxUINT8_CLASS    : BUILD (uint8_t ) ; break ;
-        case mxINT16_CLASS    : BUILD (int16_t ) ; break ;
-        case mxUINT16_CLASS   : BUILD (uint16_t) ; break ;
-        case mxINT32_CLASS    : BUILD (int32_t ) ; break ;
-        case mxUINT32_CLASS   : BUILD (uint32_t) ; break ;
-        case mxINT64_CLASS    : BUILD (int64_t ) ; break ;
-        case mxUINT64_CLASS   : BUILD (uint64_t) ; break ;
-        case mxSINGLE_CLASS   : BUILD (float   ) ; break ;
-        case mxDOUBLE_CLASS   : BUILD (double  ) ; break ;
+        case mxLOGICAL_CLASS  : BUILD (_BOOL,   bool    ) ; break ;
+        case mxINT8_CLASS     : BUILD (_INT8,   int8_t  ) ; break ;
+        case mxUINT8_CLASS    : BUILD (_UINT8,  uint8_t ) ; break ;
+        case mxINT16_CLASS    : BUILD (_INT16,  int16_t ) ; break ;
+        case mxUINT16_CLASS   : BUILD (_UINT16, uint16_t) ; break ;
+        case mxINT32_CLASS    : BUILD (_INT32,  int32_t ) ; break ;
+        case mxUINT32_CLASS   : BUILD (_UINT32, uint32_t) ; break ;
+        case mxINT64_CLASS    : BUILD (_INT64,  int64_t ) ; break ;
+        case mxUINT64_CLASS   : BUILD (_UINT64, uint64_t) ; break ;
+        case mxSINGLE_CLASS   : BUILD (_FP32,   float   ) ; break ;
+        case mxDOUBLE_CLASS   : BUILD (_FP64,   double  ) ; break ;
         case mxCELL_CLASS     :
         case mxCHAR_CLASS     :
         case mxUNKNOWN_CLASS  :
@@ -277,7 +279,7 @@ void mexFunction
         FREE_ALL ;
         mexErrMsgTxt ("X cannot be sparse") ;
     }
-    void *X = mxGetData (pargin [X_ARG]) ;
+    GB_void *X = mxGetData (pargin [X_ARG]) ;
     mxClassID xclass = mxGetClassID (pargin [X_ARG]) ;
     GrB_Type xtype = GB_mx_classID_to_Type (xclass) ;
     if (xtype == NULL)

@@ -4,6 +4,11 @@ function test89
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
+if (~GB_mex_have_complex)
+    fprintf ('\ntest89: skipped\n') ;
+    return ;
+end
+
 [save save_chunk] = nthreads_get ;
 chunk = 4096 ;
 nthreads = feature ('numcores') ;

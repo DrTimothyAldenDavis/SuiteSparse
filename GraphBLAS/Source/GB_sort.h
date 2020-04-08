@@ -18,12 +18,14 @@
 
 #define GB_BASECASE (64 * 1024)
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void GB_qsort_1a    // sort array A of size 1-by-n
 (
     int64_t *GB_RESTRICT A_0,      // size n array
     const int64_t n
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void GB_qsort_1b    // sort array A of size 2-by-n, using 1 key (A [0][])
 (
     int64_t *GB_RESTRICT A_0,      // size n array
@@ -32,6 +34,7 @@ void GB_qsort_1b    // sort array A of size 2-by-n, using 1 key (A [0][])
     const int64_t n
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void GB_qsort_2     // sort array A of size 2-by-n, using 2 keys (A [0:1][])
 (
     int64_t *GB_RESTRICT A_0,      // size n array
@@ -39,6 +42,7 @@ void GB_qsort_2     // sort array A of size 2-by-n, using 2 keys (A [0:1][])
     const int64_t n
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void GB_qsort_3     // sort array A of size 3-by-n, using 3 keys (A [0:2][])
 (
     int64_t *GB_RESTRICT A_0,      // size n array
@@ -47,35 +51,57 @@ void GB_qsort_3     // sort array A of size 3-by-n, using 3 keys (A [0:2][])
     const int64_t n
 ) ;
 
-void GB_msort_1     // sort array A of size n
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
+void GB_msort_1     // sort array A of size n.
 (
-    int64_t *GB_RESTRICT A_0,      // size n array
-    int64_t *GB_RESTRICT W_0,      // size n array, workspace
+    int64_t *GB_RESTRICT A_0,   // size n array
+    int64_t *GB_RESTRICT W_0,   // size n array, workspace
     const int64_t n,
-    const int nthreads          // # of threads to use
+    int nthreads                // # of threads to use
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void GB_msort_2     // sort array A of size 2-by-n, using 2 keys (A [0:1][])
 (
-    int64_t *GB_RESTRICT A_0,      // size n array
-    int64_t *GB_RESTRICT A_1,      // size n array
-    int64_t *GB_RESTRICT W_0,      // size n array, workspace
-    int64_t *GB_RESTRICT W_1,      // size n array, workspace
+    int64_t *GB_RESTRICT A_0,   // size n array
+    int64_t *GB_RESTRICT A_1,   // size n array
+    int64_t *GB_RESTRICT W_0,   // size n array, workspace
+    int64_t *GB_RESTRICT W_1,   // size n array, workspace
     const int64_t n,
-    const int nthreads          // # of threads to use
+    int nthreads                // # of threads to use
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void GB_msort_3     // sort array A of size 3-by-n, using 3 keys (A [0:2][])
 (
-    int64_t *GB_RESTRICT A_0,      // size n array
-    int64_t *GB_RESTRICT A_1,      // size n array
-    int64_t *GB_RESTRICT A_2,      // size n array
-    int64_t *GB_RESTRICT W_0,      // size n array, workspace
-    int64_t *GB_RESTRICT W_1,      // size n array, workspace
-    int64_t *GB_RESTRICT W_2,      // size n array, workspace
+    int64_t *GB_RESTRICT A_0,   // size n array
+    int64_t *GB_RESTRICT A_1,   // size n array
+    int64_t *GB_RESTRICT A_2,   // size n array
+    int64_t *GB_RESTRICT W_0,   // size n array, workspace
+    int64_t *GB_RESTRICT W_1,   // size n array, workspace
+    int64_t *GB_RESTRICT W_2,   // size n array, workspace
     const int64_t n,
-    const int nthreads          // # of threads to use
+    int nthreads                // # of threads to use
 ) ;
+
+//------------------------------------------------------------------------------
+// # of threads to use in parallel mergesort
+//------------------------------------------------------------------------------
+
+#if defined ( _OPENMP ) && GB_HAS_OPENMP_TASKS
+
+    // With OpenMP v4.0: use all available threads in a parallel mergesort.
+    #define GB_MSORT_NTHREADS(nthreads) nthreads
+
+#else
+
+    // OpenMP tasks are not available, so just use a sequential quicksort
+    // with a single thread.  OpenMP tasks requires OpenMP v4.0 or later.
+    // Microsoft Visual Studio only supports OpenMP 2.0, so the parallel
+    // mergesort is not available when using that compiler.
+    #define GB_MSORT_NTHREADS(nthreads) 1
+
+#endif
 
 //------------------------------------------------------------------------------
 // GB_lt_1: sorting comparator function, one key

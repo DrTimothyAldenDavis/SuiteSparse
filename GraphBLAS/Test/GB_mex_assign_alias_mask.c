@@ -15,7 +15,7 @@
 {                                           \
     GB_MATRIX_FREE (&C) ;                   \
     GB_MATRIX_FREE (&A) ;                   \
-    GrB_free (&desc) ;                      \
+    GrB_Descriptor_free (&desc) ;           \
     GB_mx_put_global (true, 0) ;            \
 }
 
@@ -71,7 +71,8 @@ void mexFunction
     GrB_Matrix_nvals (&ncols, C) ;
 
     // C<A> = A
-    METHOD (GrB_assign (C, A, NULL, A, GrB_ALL, nrows, GrB_ALL, ncols, desc)) ;
+    METHOD (GrB_Matrix_assign (C, A, NULL, A,
+        GrB_ALL, nrows, GrB_ALL, ncols, desc)) ;
 
     // return C to MATLAB as a struct and free the GraphBLAS C
     pargout [0] = GB_mx_Matrix_to_mxArray (&C, "C output", true) ;

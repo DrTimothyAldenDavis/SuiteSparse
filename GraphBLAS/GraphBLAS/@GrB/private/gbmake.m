@@ -80,7 +80,34 @@ end
 
 inc = '-Iutil -I../../../Include -I../../../Source -I../../../Source/Template' ;
 
-ldflags = sprintf ('-L''%s/../../../build''', pwd) ;
+if ispc
+    % First do the following in GraphBLAS/build, in the Windows console:
+    %
+    %   cmake ..
+    %   devenv graphblas.sln /build "release|x64" /project graphblas
+    %
+    % The above commands require MS Visual Studio.  The graphblas.lib is
+    % compiled and placed in GraphBLAS/build/Release.  Then in MATLAB in this
+    % folder, do:
+    %
+    %   gbmake
+    library = sprintf ('%s/../../../build/Release', pwd) ;
+else
+    % First do one the following in GraphBLAS (use JOBS=n for a parallel
+    % build, which is faster):
+    %
+    %   make
+    %   make JOBS=8
+    %   sudo make install
+    %
+    % If you can't do "sudo make install" then add the GraphBLAS/build
+    % folder to your LD_LIBRARY_PATH.  Then in this folder in MATLAB do:
+    %
+    %   gbmake
+    library = sprintf ('%s/../../../build', pwd) ;
+end
+
+ldflags = sprintf ('-L''%s''', library) ;
 
 hfiles = [ dir('*.h') ; dir('util/*.h') ] ;
 
@@ -162,4 +189,19 @@ try
     GrB.init
 catch
 end
+
+fprintf ('Compilation of the MATLAB interface to GraphBLAS is complete.\n') ;
+fprintf ('Add the following commands to your startup.m file:\n') ;
+cd ../..
+fprintf ('\n  addpath (''%s'') ;\n', pwd) ;
+cd ..
+if ispc
+    fprintf ('  addpath (''%s/build/Release'') ;\n', pwd) ;
+else
+    fprintf ('  addpath (''%s/build'') ;\n', pwd) ;
+end
+
+fprintf ('\nTo test GraphBLAS, type the following commands:\n\n') ;
+fprintf ('  cd GraphBLAS/test\n') ;
+fprintf ('  gbtest\n') ;
 

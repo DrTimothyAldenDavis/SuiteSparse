@@ -15,9 +15,9 @@
 
 #define FREE_ALL                        \
 {                                       \
-    GrB_free (&A) ;                     \
-    GrB_free (&C) ;                     \
-    GrB_free (&desc) ;                  \
+    GrB_Matrix_free (&A) ;              \
+    GrB_Matrix_free (&C) ;              \
+    GrB_Descriptor_free (&desc) ;       \
     GB_mx_put_global (true, 0) ;        \
 }
 
@@ -102,12 +102,12 @@ void mexFunction
                 GrB_Matrix_ncols (&ncols, A) ;                  \
                 GrB_Matrix_new (&C, type, nrows, ncols) ;       \
                 GrB_Descriptor_new (&desc) ;                    \
-                GxB_set (desc, GrB_INP0, GrB_TRAN) ;            \
+                GxB_Desc_set (desc, GrB_INP0, GrB_TRAN) ;       \
             }
             #define FREE_DEEP_COPY                              \
             {                                                   \
-                GrB_free (&C) ;                                 \
-                GrB_free (&desc) ;                              \
+                GrB_Matrix_free (&C) ;                          \
+                GrB_Descriptor_free (&desc) ;                   \
             }
 
             GET_DEEP_COPY ;
@@ -131,12 +131,12 @@ void mexFunction
             GrB_Matrix_ncols (&ncols, A) ;                  \
             GrB_Matrix_new (&C, ctype, nrows, ncols) ;      \
             GrB_Descriptor_new (&desc) ;                    \
-            GxB_set (desc, GrB_INP0, GrB_TRAN) ;            \
+            GxB_Desc_set (desc, GrB_INP0, GrB_TRAN) ;       \
         }
         #define FREE_DEEP_COPY                              \
         {                                                   \
-            GrB_free (&C) ;                                 \
-            GrB_free (&desc) ;                              \
+            GrB_Matrix_free (&C) ;                          \
+            GrB_Descriptor_free (&desc) ;                   \
         }
 
         GET_DEEP_COPY ;

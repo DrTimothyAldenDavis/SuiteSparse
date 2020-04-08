@@ -21,7 +21,7 @@ bool debug_wait = false ;
 #define FREE_ALL                        \
 {                                       \
     GB_MATRIX_FREE (&A) ;               \
-    GB_FREE_MEMORY (Xtemp, ni, sizeof (double complex)) ; \
+    GB_FREE_MEMORY (Xtemp, ni, 2 * sizeof (double)) ; \
     GB_mx_put_global (true, 0) ;        \
 }
 
@@ -62,7 +62,9 @@ setEl (FP32   , float         ) ;
 setEl (FP64   , double        ) ;
 #undef  AMPERSAND
 #define AMPERSAND(x) &x
+#if GxB_STDC_VERSION >= 201112L
 setEl (UDT    , double complex) ;
+#endif
 #undef  AMPERSAND
 
 
@@ -100,7 +102,9 @@ vsetEl (FP32   , float         ) ;
 vsetEl (FP64   , double        ) ;
 #undef  AMPERSAND
 #define AMPERSAND(x) &x
+#if GxB_STDC_VERSION >= 201112L
 vsetEl (UDT    , double complex) ;
+#endif
 #undef  AMPERSAND
 
 void mexFunction
@@ -115,9 +119,9 @@ void mexFunction
     bool malloc_debug = GB_mx_get_global (true) ;
 
     GrB_Matrix A = NULL ;
-    void *Y ;
+    GB_void *Y ;
     GrB_Type xtype ;
-    void *Xtemp = NULL ;
+    GB_void *Xtemp = NULL ;
     GrB_Index *I = NULL, ni = 0, I_range [3] ;
     GrB_Index *J = NULL, nj = 0, J_range [3] ;
     bool is_list ;
@@ -191,11 +195,15 @@ void mexFunction
 
     if (mxIsComplex (pargin [3]))
     {
+        #if GxB_STDC_VERSION >= 201112L
         // copy the MATLAB complex
         xtype = Complex ;
         GB_MALLOC_MEMORY (Xtemp, ni, sizeof (double complex)) ;
         GB_mx_complex_merge (ni, Xtemp, pargin [3]) ;
         Y = Xtemp ;
+        #else
+        mexErrMsgTxt ("complex type not available") ;
+        #endif
     }
     else
     {
@@ -209,7 +217,7 @@ void mexFunction
         }
     }
 
-    size_t s = sizeof (double complex) ;
+    size_t s = 2 * sizeof (double) ;
 
     // A (i,j) = x, for a list of elements
 
@@ -236,7 +244,9 @@ void mexFunction
             case GB_UINT64_code : METHOD (vset_UINT64 (A, Y, I, ni)) ; break ;
             case GB_FP32_code   : METHOD (vset_FP32   (A, Y, I, ni)) ; break ;
             case GB_FP64_code   : METHOD (vset_FP64   (A, Y, I, ni)) ; break ;
+            #if GxB_STDC_VERSION >= 201112L
             case GB_UDT_code    : METHOD (vset_UDT    (A, Y, I, ni)) ; break ;
+            #endif
             default:
                 FREE_ALL ;
                 mexErrMsgTxt ("unsupported class") ;
@@ -258,7 +268,9 @@ void mexFunction
             case GB_UINT64_code : METHOD (set_UINT64 (A, Y, I, J, ni)) ; break ;
             case GB_FP32_code   : METHOD (set_FP32   (A, Y, I, J, ni)) ; break ;
             case GB_FP64_code   : METHOD (set_FP64   (A, Y, I, J, ni)) ; break ;
+            #if GxB_STDC_VERSION >= 201112L
             case GB_UDT_code    : METHOD (set_UDT    (A, Y, I, J, ni)) ; break ;
+            #endif
             default:
                 FREE_ALL ;
                 mexErrMsgTxt ("unsupported class") ;

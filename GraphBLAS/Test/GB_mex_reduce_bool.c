@@ -16,7 +16,7 @@
 #define FREE_ALL                        \
 {                                       \
     GB_MATRIX_FREE (&A) ;               \
-    GrB_free (&reduce) ;                \
+    GrB_Monoid_free (&reduce) ;         \
     GB_mx_put_global (true, 0) ;        \
 }
 
@@ -81,11 +81,11 @@ void mexFunction
     // create the reduce monoid
     if (has_terminal)
     {
-        info = GxB_Monoid_terminal_new (&reduce, reduceop, identity, terminal) ;
+        info = GxB_Monoid_terminal_new_BOOL (&reduce, reduceop, identity, terminal) ;
     }
     else
     {
-        info = GrB_Monoid_new (&reduce, reduceop, identity) ;
+        info = GrB_Monoid_new_BOOL (&reduce, reduceop, identity) ;
     }
 
     if (info != GrB_SUCCESS)
@@ -96,7 +96,7 @@ void mexFunction
 
     // reduce to a scalar
     bool result = false ;
-    info = GrB_reduce (&result, NULL, reduce, A, NULL) ;
+    info = GrB_Matrix_reduce_BOOL (&result, NULL, reduce, A, NULL) ;
 
     if (info != GrB_SUCCESS)
     {
@@ -106,7 +106,7 @@ void mexFunction
 
     // return result to MATLAB as a boolean scalar
     pargout [0] = mxCreateNumericMatrix (1, 1, mxLOGICAL_CLASS, mxREAL) ;
-    void *p = mxGetData (pargout [0]) ;
+    GB_void *p = mxGetData (pargout [0]) ;
     memcpy (p, &result, sizeof (bool)) ;
 
     FREE_ALL ;

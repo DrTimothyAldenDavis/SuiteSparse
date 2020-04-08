@@ -15,16 +15,16 @@
 
 #define USAGE "C = GB_mex_AdotB (A,B,Mask,flipxy)"
 
-#define FREE_ALL                        \
-{                                       \
-    GB_MATRIX_FREE (&A) ;               \
-    GB_MATRIX_FREE (&Aconj) ;           \
-    GB_MATRIX_FREE (&B) ;               \
-    GB_MATRIX_FREE (&C) ;               \
-    GB_MATRIX_FREE (&Mask) ;            \
-    GrB_free (&add) ;                   \
-    GrB_free (&semiring) ;              \
-    GB_mx_put_global (true, GxB_AxB_DOT) ; \
+#define FREE_ALL                            \
+{                                           \
+    GB_MATRIX_FREE (&A) ;                   \
+    GB_MATRIX_FREE (&Aconj) ;               \
+    GB_MATRIX_FREE (&B) ;                   \
+    GB_MATRIX_FREE (&C) ;                   \
+    GB_MATRIX_FREE (&Mask) ;                \
+    GrB_Monoid_free (&add) ;                \
+    GrB_Semiring_free (&semiring) ;         \
+    GB_mx_put_global (true, GxB_AxB_DOT) ;  \
 }
 
 GrB_Matrix A = NULL, B = NULL, C = NULL, Aconj = NULL, Mask = NULL ;
@@ -41,10 +41,10 @@ GrB_Info adotb_complex (GB_Context Context)
 {
     GrB_Info info = GrB_Matrix_new (&Aconj, Complex, anrows, ancols) ;
     if (info != GrB_SUCCESS) return (info) ;
-    info = GrB_apply (Aconj, NULL, NULL, Complex_conj, A, NULL) ;
+    info = GrB_Matrix_apply (Aconj, NULL, NULL, Complex_conj, A, NULL) ;
     if (info != GrB_SUCCESS)
     {
-        GrB_free (&Aconj) ;
+        GrB_Matrix_free (&Aconj) ;
         return (info) ;
     }
 
@@ -52,7 +52,7 @@ GrB_Info adotb_complex (GB_Context Context)
     info = GrB_wait ( ) ;
     if (info != GrB_SUCCESS)
     {
-        GrB_free (&Aconj) ;
+        GrB_Matrix_free (&Aconj) ;
         return (info) ;
     }
 
@@ -66,7 +66,8 @@ GrB_Info adotb_complex (GB_Context Context)
     if (Mask != NULL)
     {
         // C<M> = A'*B using dot product method
-        info = GB_AxB_dot3 (&C, Mask, false, Aconj, B, semiring, flipxy, Context);
+        info = GB_AxB_dot3 (&C, Mask, false, Aconj, B, semiring, flipxy,
+            Context) ;
         mask_applied = true ;
     }
     else
@@ -78,7 +79,7 @@ GrB_Info adotb_complex (GB_Context Context)
             1, 1, 1, Context) ;
     }
 
-    GrB_free (&Aconj) ;
+    GrB_Matrix_free (&Aconj) ;
     return (info) ;
 }
 
@@ -87,12 +88,12 @@ GrB_Info adotb_complex (GB_Context Context)
 GrB_Info adotb (GB_Context Context) 
 {
     // create the Semiring for regular z += x*y
-    GrB_Info info = GrB_Monoid_new (&add, GrB_PLUS_FP64, (double) 0) ;
+    GrB_Info info = GrB_Monoid_new_FP64 (&add, GrB_PLUS_FP64, (double) 0) ;
     if (info != GrB_SUCCESS) return (info) ;
     info = GrB_Semiring_new (&semiring, add, GrB_TIMES_FP64) ;
     if (info != GrB_SUCCESS)
     {
-        GrB_free (&add) ;
+        GrB_Monoid_free (&add) ;
         return (info) ;
     }
     // C = A'*B
@@ -117,8 +118,8 @@ GrB_Info adotb (GB_Context Context)
             1, 1, 1, Context) ;
     }
 
-    GrB_free (&add) ;
-    GrB_free (&semiring) ;
+    GrB_Monoid_free (&add) ;
+    GrB_Semiring_free (&semiring) ;
     return (info) ;
 }
 
@@ -205,8 +206,12 @@ void mexFunction
 
     if (A->type == Complex)
     {
+        #if GxB_STDC_VERSION >= 201112L
         // C = A'*B, complex case
         METHOD (adotb_complex (Context)) ;
+        #else
+        mexErrMsgTxt ("complex type not available") ;
+        #endif
     }
     else
     {

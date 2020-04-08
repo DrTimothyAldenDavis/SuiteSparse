@@ -16,7 +16,7 @@
     GB_MATRIX_FREE (&A) ;                   \
     GB_MATRIX_FREE (&M) ;                   \
     GB_MATRIX_FREE (&C) ;                   \
-    GrB_free (&desc) ;                      \
+    GrB_Descriptor_free (&desc) ;           \
     GB_mx_put_global (true, 0) ;            \
 }
 
@@ -85,7 +85,7 @@ void mexFunction
     }
 
     // C<M> = M+A
-    METHOD (GrB_eWiseAdd (C, M, NULL, op, M, A, desc)) ;
+    METHOD (GrB_eWiseAdd_Matrix_BinaryOp (C, M, NULL, op, M, A, desc)) ;
 
     // return C to MATLAB as a struct and free the GraphBLAS C
     pargout [0] = GB_mx_Matrix_to_mxArray (&C, "C output", true) ;

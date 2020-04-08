@@ -65,6 +65,8 @@ bool GB_mx_string_to_UnaryOp           // true if successful, false otherwise
         //----------------------------------------------------------------------
         // X complex
         //----------------------------------------------------------------------
+    
+        #if GxB_STDC_VERSION >= 201112L
 
         // user-defined Complex unary operator
         opcode  = GB_USER_opcode ;      // user-defined opcode
@@ -96,6 +98,10 @@ bool GB_mx_string_to_UnaryOp           // true if successful, false otherwise
             mexWarnMsgIdAndTxt ("GB:warn", "Complex op unrecognized") ;
         }
 
+        #else
+        mexErrMsgTxt ("complex type not available") ;
+        #endif
+
     }
     else
     {
@@ -124,17 +130,25 @@ bool GB_mx_string_to_UnaryOp           // true if successful, false otherwise
         // 2 unary operators z=f(x) where x is double and z is Complex
         else if (MATCH (opname, "complex_real"))
         { 
+            #if GxB_STDC_VERSION >= 201112L
             // z = cmplx (x,0), convert x double to real part of Complex z
             op = Complex_complex_real ;
             opcode = GB_USER_opcode ;
             opclass = mxDOUBLE_CLASS ;
+            #else
+            mexErrMsgTxt ("complex type not available") ;
+            #endif
         }
         else if (MATCH (opname, "complex_imag" ))
         { 
+            #if GxB_STDC_VERSION >= 201112L
             // z = cmplx (0,x), convert x double to imag part of Complex z
             op = Complex_complex_imag ;
             opcode = GB_USER_opcode ;
             opclass = mxDOUBLE_CLASS ;
+            #else
+            mexErrMsgTxt ("complex type not available") ;
+            #endif
         }
         else
         {

@@ -7,12 +7,15 @@
 
 //------------------------------------------------------------------------------
 
-#include "demos.h"
-
 // Create a finite-element matrix on an nx-by-ny 2D mesh, as computed by
 // wathen.m in MATLAB.  To view the wathen.m file, use this command in MATLAB:
 //
 //      type private/wathen
+
+#include "GraphBLAS.h"
+#undef GB_PUBLIC
+#define GB_LIBRARY
+#include "graphblas_demos.h"
 
 //------------------------------------------------------------------------------
 // scale by rho
@@ -28,6 +31,7 @@ void rho_scale (double *f, const double *e)
 // Wathen function
 //------------------------------------------------------------------------------
 
+GB_PUBLIC
 GrB_Info wathen             // construct a random Wathen matrix
 (
     GrB_Matrix *A_output,   // output matrix

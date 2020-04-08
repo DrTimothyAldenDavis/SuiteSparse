@@ -26,6 +26,7 @@
 
 #include "GB_apply.h"
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_shallow_op      // create shallow matrix and apply operator
 (
     GrB_Matrix *Chandle,    // output matrix C, of type op->ztype

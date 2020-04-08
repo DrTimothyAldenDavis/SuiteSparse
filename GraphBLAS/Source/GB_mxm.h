@@ -47,6 +47,7 @@ GrB_Info GB_AxB_dot                 // dot product (multiple methods)
     GB_Context Context
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_AxB_flopcount
 (
     int64_t *Mwork,             // amount of work to handle the mask M
@@ -58,6 +59,7 @@ GrB_Info GB_AxB_flopcount
     GB_Context Context
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_AxB_meta                // C<M>=A*B meta algorithm
 (
     GrB_Matrix *Chandle,            // output matrix (if not done in place)
@@ -119,7 +121,7 @@ bool GB_AxB_semiring_builtin        // true if semiring is builtin
     GB_Type_code *zcode             // type code for z output
 ) ;
 
-
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_AxB_dot2                // C = A'*B using dot product method
 (
     GrB_Matrix *Chandle,            // output matrix
@@ -147,6 +149,7 @@ bool GB_is_diagonal             // true if A is diagonal
     GB_Context Context
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_AxB_dot3                // C<M> = A'*B using dot product method
 (
     GrB_Matrix *Chandle,            // output matrix
@@ -186,8 +189,8 @@ GrB_Info GB_AxB_dot3_one_slice
 GrB_Info GB_AxB_saxpy3              // C = A*B using Gustavson+Hash
 (
     GrB_Matrix *Chandle,            // output matrix
-    GrB_Matrix M_input,             // optional mask matrix
-    const bool Mask_comp,           // if true, use !M
+    const GrB_Matrix M_input,       // optional mask matrix
+    const bool Mask_comp_input,     // if true, use !M
     const bool Mask_struct,         // if true, use the only structure of M
     const GrB_Matrix A,             // input matrix A
     const GrB_Matrix B,             // input matrix B

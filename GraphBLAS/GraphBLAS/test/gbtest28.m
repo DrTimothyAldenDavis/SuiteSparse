@@ -30,7 +30,7 @@ A = kron (A,B) ;
 clear B
 t = toc ;
 n = size (A, 1) ;
-fprintf ('%12.4f sec : A n-by-n, whth n: %g nnz: %g\n', t, n, nnz (A)) ;
+fprintf ('%12.4f sec : A n-by-n, with n: %g nnz: %g\n', t, n, nnz (A)) ;
 
 [i, j, x] = find (A) ;
 [m, n] = size (A) ;

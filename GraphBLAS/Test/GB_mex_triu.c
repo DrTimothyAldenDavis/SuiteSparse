@@ -15,7 +15,7 @@
 
 #define FREE_ALL                        \
 {                                       \
-    GB_VECTOR_FREE (&Thunk) ;           \
+    GB_SCALAR_FREE (&Thunk) ;           \
     GB_MATRIX_FREE (&A) ;               \
     GB_MATRIX_FREE (&C) ;               \
     GB_mx_put_global (true, 0) ;        \
@@ -32,7 +32,7 @@ void mexFunction
 
     bool malloc_debug = GB_mx_get_global (true) ;
     GrB_Matrix A = NULL, C = NULL ;
-    GrB_Vector Thunk = NULL ;
+    GxB_Scalar Thunk = NULL ;
 
     // check inputs
     GB_WHERE (USAGE) ;
@@ -66,12 +66,12 @@ void mexFunction
     #undef FREE_DEEP_COPY
 
     #define GET_DEEP_COPY  GrB_Matrix_new (&C, GrB_FP64, A->vlen, A->vdim) ;
-    #define FREE_DEEP_COPY GrB_free (&C) ;
+    #define FREE_DEEP_COPY GrB_Matrix_free (&C) ;
 
-    GrB_Vector_new (&Thunk, GrB_INT64, 1) ;
-    GrB_Vector_setElement (Thunk, k, 0) ;
+    GxB_Scalar_new (&Thunk, GrB_INT64) ;
+    GxB_Scalar_setElement_INT64 (Thunk, k) ;
     GrB_Index ignore ;
-    GrB_Vector_nvals (&ignore, Thunk) ;
+    GxB_Scalar_nvals (&ignore, Thunk) ;
 
     // C = triu (A,k)
     METHOD (GxB_Matrix_select (C, NULL, NULL, GxB_TRIU, A, Thunk, NULL)) ;

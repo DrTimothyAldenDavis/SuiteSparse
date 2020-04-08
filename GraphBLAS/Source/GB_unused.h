@@ -18,7 +18,9 @@
 #pragma warning (disable: 177 593)
 #elif defined ( __GNUC__ )
 // disable gcc -Wall -Wextra -Wpedantic warnings
+#if (__GNUC__ > 4)
 #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+#endif
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
 

@@ -22,6 +22,7 @@
 // way, the caller must not free it.
 
 #include "GB_emult.h"
+#include "GB_unused.h"
 #ifndef GBCOMPACT
 #include "GB_binop__include.h"
 #endif

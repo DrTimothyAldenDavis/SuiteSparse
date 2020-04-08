@@ -11,19 +11,19 @@
 
 #define USAGE "C = GB_mex_mxm_alias (C, accum, semiring, desc)"
 
-#define FREE_ALL                            \
-{                                           \
-    GB_MATRIX_FREE (&C) ;                   \
-    if (semiring != Complex_plus_times)     \
-    {                                       \
-        if (semiring != NULL)               \
-        {                                   \
-            GrB_free (&(semiring->add)) ;   \
-        }                                   \
-        GrB_free (&semiring) ;              \
-    }                                       \
-    GrB_free (&desc) ;                      \
-    GB_mx_put_global (true, AxB_method_used) ; \
+#define FREE_ALL                                    \
+{                                                   \
+    GB_MATRIX_FREE (&C) ;                           \
+    if (semiring != Complex_plus_times)             \
+    {                                               \
+        if (semiring != NULL)                       \
+        {                                           \
+            GrB_Monoid_free (&(semiring->add)) ;    \
+        }                                           \
+        GrB_Semiring_free (&semiring) ;             \
+    }                                               \
+    GrB_Descriptor_free (&desc) ;                   \
+    GB_mx_put_global (true, AxB_method_used) ;      \
 }
 
 void mexFunction

@@ -22,20 +22,20 @@
 // indices that appear in the files.  The file C.tsv is the filename of the
 // output file for C=kron(A,B), also with 1-based indices.
 
-#include "demos.h"
-
 // macro used by OK(...) to free workspace if an error occurs
-#define FREE_ALL                \
-    GrB_Matrix_free (&A) ;             \
-    GrB_Matrix_free (&B) ;             \
-    GrB_Matrix_free (&C) ;             \
-    if (Afile != NULL) fclose (Afile) ; \
-    if (Bfile != NULL) fclose (Bfile) ; \
-    if (Cfile != NULL) fclose (Cfile) ; \
-    if (I != NULL) free (I) ;   \
-    if (J != NULL) free (J) ;   \
-    if (X != NULL) free (X) ;   \
+#define FREE_ALL                            \
+    GrB_Matrix_free (&A) ;                  \
+    GrB_Matrix_free (&B) ;                  \
+    GrB_Matrix_free (&C) ;                  \
+    if (Afile != NULL) fclose (Afile) ;     \
+    if (Bfile != NULL) fclose (Bfile) ;     \
+    if (Cfile != NULL) fclose (Cfile) ;     \
+    if (I != NULL) free (I) ;               \
+    if (J != NULL) free (J) ;               \
+    if (X != NULL) free (X) ;               \
     GrB_finalize ( ) ;
+
+#include "graphblas_demos.h"
 
 int main (int argc, char **argv)
 {
@@ -52,7 +52,7 @@ int main (int argc, char **argv)
 
     OK (GrB_init (GrB_NONBLOCKING)) ;
     int nthreads ;
-    OK (GxB_get (GxB_NTHREADS, &nthreads)) ;
+    OK (GxB_Global_Option_get (GxB_NTHREADS, &nthreads)) ;
     fprintf (stderr, "kron demo: nthreads %d\n", nthreads) ;
 
     // printf ("argc %d\n", argc) ;

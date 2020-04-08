@@ -35,6 +35,8 @@
     C = floor ((2^30) * C) ;        % scale the result to integer
 */
 
+#include "GraphBLAS.h"
+
 //------------------------------------------------------------------------------
 // helper macros
 //------------------------------------------------------------------------------
@@ -55,12 +57,15 @@
     FREEWORK ;                  \
 }
 
-#include "demos.h"
+#undef GB_PUBLIC
+#define GB_LIBRARY
+#include "graphblas_demos.h"
 
 //------------------------------------------------------------------------------
 // irowscale: C = D*A + I*0 where D(i,i) = ZSCALE/sum(A(i,:)
 //------------------------------------------------------------------------------
 
+GB_PUBLIC
 GrB_Info irowscale          // GrB_SUCCESS or error condition
 (
     GrB_Matrix *Chandle,    // output matrix C = rowscale (A)

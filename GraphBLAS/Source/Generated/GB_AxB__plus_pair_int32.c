@@ -129,8 +129,13 @@
     1
 
 // 1 if monoid update can be done with an OpenMP atomic update, 0 otherwise
-#define GB_HAS_OMP_ATOMIC \
-    1
+#if GB_MICROSOFT
+    #define GB_HAS_OMP_ATOMIC \
+        1
+#else
+    #define GB_HAS_OMP_ATOMIC \
+        1
+#endif
 
 // 1 for the ANY_PAIR semirings
 #define GB_IS_ANY_PAIR_SEMIRING \
@@ -139,6 +144,10 @@
 // 1 if PAIR is the multiply operator 
 #define GB_IS_PAIR_MULTIPLIER \
     1
+
+// atomic compare-exchange
+#define GB_ATOMIC_COMPARE_EXCHANGE(target, expected, desired) \
+    GB_ATOMIC_COMPARE_EXCHANGE_32 (target, expected, desired)
 
 #if GB_IS_ANY_PAIR_SEMIRING
 

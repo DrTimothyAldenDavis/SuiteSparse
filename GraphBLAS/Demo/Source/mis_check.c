@@ -31,29 +31,31 @@
     #define Boolean         GxB_LOR_LAND_BOOL
 #endif
 
-// "OK(x)" macro defined in demos.h calls a GraphBLAS method, and if it fails,
-// prints the error, frees workspace, and returns to the caller.  It uses the
-// FREE_ALL macro to free the workspace.
-#define FREE_ALL                \
-    GrB_Vector_free (&iset) ;          \
-    GrB_Vector_free (&prob) ;          \
-    GrB_Vector_free (&neighbor_max) ;  \
-    GrB_Vector_free (&new_members) ;   \
-    GrB_Vector_free (&new_neighbors) ; \
-    GrB_Vector_free (&candidates) ;    \
-    GrB_Monoid_free (&Max) ;           \
-    GrB_Semiring_free (&maxSelect1st) ;  \
-    GrB_Monoid_free (&Lor) ;           \
-    GrB_Semiring_free (&Boolean) ;       \
-    GrB_Descriptor_free (&r_desc) ;        \
-    GrB_Descriptor_free (&sr_desc) ;       \
-    GrB_BinaryOp_free (&set_random) ;    \
-    GrB_Vector_free (&degrees) ;       \
-    GrB_Vector_free (&Seed) ;          \
-    GrB_Vector_free (&X) ;             \
+// "OK(x)" macro defined in graphblas_demos.h calls a GraphBLAS method, and if
+// it fails, prints the error, frees workspace, and returns to the caller.  It
+// uses the FREE_ALL macro to free the workspace.
+#define FREE_ALL                        \
+    GrB_Vector_free (&iset) ;           \
+    GrB_Vector_free (&prob) ;           \
+    GrB_Vector_free (&neighbor_max) ;   \
+    GrB_Vector_free (&new_members) ;    \
+    GrB_Vector_free (&new_neighbors) ;  \
+    GrB_Vector_free (&candidates) ;     \
+    GrB_Monoid_free (&Max) ;            \
+    GrB_Semiring_free (&maxSelect1st) ; \
+    GrB_Monoid_free (&Lor) ;            \
+    GrB_Semiring_free (&Boolean) ;      \
+    GrB_Descriptor_free (&r_desc) ;     \
+    GrB_Descriptor_free (&sr_desc) ;    \
+    GrB_BinaryOp_free (&set_random) ;   \
+    GrB_Vector_free (&degrees) ;        \
+    GrB_Vector_free (&Seed) ;           \
+    GrB_Vector_free (&X) ;              \
     prand_finalize ( ) ;
 
-#include "demos.h"
+#undef GB_PUBLIC
+#define GB_LIBRARY
+#include "graphblas_demos.h"
 
 //------------------------------------------------------------------------------
 // mis_check: maximal independent set, with error checking
@@ -75,6 +77,7 @@
 // selected and cause the method to stall.  To avoid this case they are removed
 // from the candidate set at the begining, and added to the iset.
 
+GB_PUBLIC
 GrB_Info mis_check              // compute a maximal independent set
 (
     GrB_Vector *iset_output,    // iset(i) = true if i is in the set

@@ -14,6 +14,8 @@ function.  None of the GB_mex_*.c mexFunctions have corresponding GB_mex_*.m
 files to provide 'help GB_mex...' documentation.
 
 Requirements:  the mex command must use a C compiler supporting ANSI C11.
+Microft Visual Studio does not support ANSI C11 so this test is not available
+on Windows unless you use another compiler.
 
 To run the tests, use the following command in this directory, in MATLAB:
 

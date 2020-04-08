@@ -21,6 +21,7 @@
 
 #include "GB.h"
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void *GB_malloc_memory      // pointer to allocated block of memory
 (
     size_t nitems,          // number of items to allocate

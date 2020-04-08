@@ -42,6 +42,7 @@
 
 #include "GB.h"
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void GB_slice_vector
 (
     // output: return i, pA, and pB

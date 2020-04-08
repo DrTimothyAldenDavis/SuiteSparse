@@ -10,6 +10,7 @@
 // C += x where C is a dense matrix and x is a scalar
 
 #include "GB_dense.h"
+#include "GB_unused.h"
 #ifndef GBCOMPACT
 #include "GB_binop__include.h"
 #endif

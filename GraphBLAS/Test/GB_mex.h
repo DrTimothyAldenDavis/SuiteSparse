@@ -24,7 +24,7 @@
 #include "GB_sort.h"
 #include "GB_apply.h"
 
-#include "demos.h"
+#include "graphblas_demos.h"
 
 // demos.h use mxMalloc, etc, and so do the MATLAB Test/* mexFunctions,
 // but the tests here need to distinguish between mxMalloc and malloc.
@@ -176,7 +176,7 @@ void GB_mx_mxArray_to_array     // convert mxArray to array
 (
     const mxArray *Xmatlab,     // input MATLAB array
     // output:
-    void **X,                   // pointer to numerical values
+    GB_void **X,                // pointer to numerical values
     int64_t *nrows,             // number of rows of X
     int64_t *ncols,             // number of columns of X
     mxClassID *xclass,          // MATLAB class of X

@@ -4,6 +4,12 @@ function [complex_binaryops complex_unaryops ] = GB_user_opsall
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
+if (~GB_mex_have_complex)
+    complex_binaryops = { } ;
+    complex_unaryops = { } ;
+    return ;
+end
+
 [mult_ops, ~, ~, ~, ~, ~] = GB_spec_opsall ;
 
 % complex binary operators

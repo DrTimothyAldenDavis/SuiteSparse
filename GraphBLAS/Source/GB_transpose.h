@@ -12,6 +12,7 @@
 #include "GB.h"
 #include "GB_iterator.h"
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_transpose           // C=A', C=(ctype)A or C=op(A')
 (
     GrB_Matrix *Chandle,        // output matrix C, possibly modified in place
@@ -23,6 +24,7 @@ GrB_Info GB_transpose           // C=A', C=(ctype)A or C=op(A')
     GB_Context Context
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_transpose_bucket    // bucket transpose; typecast and apply op
 (
     GrB_Matrix *Chandle,        // output matrix (unallocated on input)

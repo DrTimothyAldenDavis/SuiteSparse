@@ -94,7 +94,7 @@ GrB_Info GB_dense_subassign_24      // C = A, copy A into an existing matrix C
         // copy a sparse matrix from A to C
         //----------------------------------------------------------------------
 
-        // clear all prior content of C, but keep the CSR/CSC format
+        // clear prior content of C, but keep the CSR/CSC format
         GBBURBLE ("(deep copy) ") ;
         GrB_Info info ;
         bool C_is_csc = C->is_csc ;

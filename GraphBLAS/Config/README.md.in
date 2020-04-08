@@ -102,11 +102,3 @@ file.  All functions, objects, and macros with the prefix GxB are extensions to
 the spec.  Functions, objects, and macros with prefix GB must not be accessed
 by user code.  They are for internal use in GraphBLAS only.
 
-
---------------------------------------------------------------------------------
-## For Windows users:
-
-This version is not compatible with Microsoft Visual Studio.  Use another
-compiler, or use SuiteSparse:GraphBLAS v3.1.2 instead.  See the User Guide
-for more details.
-

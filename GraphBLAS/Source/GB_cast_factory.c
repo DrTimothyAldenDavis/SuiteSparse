@@ -16,6 +16,7 @@
 
 #include "GB.h"
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GB_cast_function GB_cast_factory   // returns pointer to function to cast x to z
 (
     const GB_Type_code code1,      // the type of z, the output value

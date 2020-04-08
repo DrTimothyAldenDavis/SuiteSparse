@@ -18,6 +18,7 @@
 
 #include "GB_subassign_methods.h"
 #include "GB_dense.h"
+#include "GB_unused.h"
 #ifndef GBCOMPACT
 #include "GB_type__include.h"
 #endif

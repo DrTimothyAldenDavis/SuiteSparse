@@ -55,13 +55,17 @@
 // C<M>=A'*B uses the dot product method by default, whereas C<M>=A*B' uses the
 // dot product method if the matrices are stored by row.
 
+#include "GraphBLAS.h"
+
 #define FREE_ALL                \
-    GrB_UnaryOp_free (&Two) ;           \
-    GrB_Descriptor_free (&d) ;             \
-    GrB_Matrix_free (&S) ;             \
+    GrB_UnaryOp_free (&Two) ;   \
+    GrB_Descriptor_free (&d) ;  \
+    GrB_Matrix_free (&S) ;      \
     GrB_Matrix_free (&C) ;
 
-#include "demos.h"
+#undef GB_PUBLIC
+#define GB_LIBRARY
+#include "graphblas_demos.h"
 
 //------------------------------------------------------------------------------
 // two:  unary function for GrB_apply
@@ -76,6 +80,7 @@ void two (uint32_t *z, const uint32_t *x)
 // tricount: count the number of triangles in a graph
 //------------------------------------------------------------------------------
 
+GB_PUBLIC
 GrB_Info tricount           // count # of triangles
 (
     int64_t *p_ntri,        // # of trianagles

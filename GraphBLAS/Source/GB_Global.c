@@ -15,7 +15,6 @@
 // matrix options, and other settings.
 
 #include "GB.h"
-#include "GB_printf.h"
 
 //------------------------------------------------------------------------------
 // Global storage: for all threads in a user application that uses GraphBLAS
@@ -193,11 +192,13 @@ GB_Global_struct GB_Global =
 // queue_head
 //------------------------------------------------------------------------------
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void GB_Global_queue_head_set (void *p)
 { 
     GB_Global.queue_head = p ;
 }
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void *GB_Global_queue_head_get (void)
 { 
     return (GB_Global.queue_head) ;
@@ -253,6 +254,7 @@ int GB_Global_nthreads_max_get (void)
 // OpenMP max_threads
 //------------------------------------------------------------------------------
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 int GB_Global_omp_get_max_threads (void)
 { 
     return (GB_OPENMP_MAX_THREADS) ;
@@ -313,11 +315,13 @@ bool GB_Global_is_csc_get (void)
 // abort_function
 //------------------------------------------------------------------------------
 
+GB_PUBLIC   // accessed by the MATLAB interface only
 void GB_Global_abort_function_set (void (* abort_function) (void))
 { 
     GB_Global.abort_function = abort_function ;
 }
 
+GB_PUBLIC   // accessed by the MATLAB interface only
 void GB_Global_abort_function (void)
 {
     GB_Global.abort_function ( ) ;
@@ -445,11 +449,13 @@ void GB_Global_free_function (void *p)
 // malloc_is_thread_safe
 //------------------------------------------------------------------------------
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void GB_Global_malloc_is_thread_safe_set (bool malloc_is_thread_safe)
 { 
     GB_Global.malloc_is_thread_safe = malloc_is_thread_safe ;
 }
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 bool GB_Global_malloc_is_thread_safe_get (void)
 { 
     return (GB_Global.malloc_is_thread_safe) ;
@@ -459,6 +465,7 @@ bool GB_Global_malloc_is_thread_safe_get (void)
 // malloc_tracking
 //------------------------------------------------------------------------------
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void GB_Global_malloc_tracking_set (bool malloc_tracking)
 { 
     GB_Global.malloc_tracking = malloc_tracking ;
@@ -478,6 +485,7 @@ void GB_Global_nmalloc_clear (void)
     GB_Global.nmalloc = 0 ;
 }
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 int64_t GB_Global_nmalloc_get (void)
 { 
     return (GB_Global.nmalloc) ;
@@ -488,6 +496,7 @@ int64_t GB_Global_nmalloc_increment (void)
     return (++(GB_Global.nmalloc)) ;
 }
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 int64_t GB_Global_nmalloc_decrement (void)
 { 
     return (--(GB_Global.nmalloc)) ;
@@ -497,6 +506,7 @@ int64_t GB_Global_nmalloc_decrement (void)
 // malloc_debug
 //------------------------------------------------------------------------------
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void GB_Global_malloc_debug_set (bool malloc_debug)
 { 
     GB_Global.malloc_debug = malloc_debug ;
@@ -511,6 +521,7 @@ bool GB_Global_malloc_debug_get (void)
 // malloc_debug_count
 //------------------------------------------------------------------------------
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void GB_Global_malloc_debug_count_set (int64_t malloc_debug_count)
 { 
     GB_Global.malloc_debug_count = malloc_debug_count ;
@@ -542,11 +553,13 @@ void GB_Global_inuse_decrement (int64_t s)
     GB_Global.inuse -= s ;
 }
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 int64_t GB_Global_inuse_get (void)
 { 
     return (GB_Global.inuse) ;
 }
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 int64_t GB_Global_maxused_get (void)
 { 
     return (GB_Global.maxused) ;
@@ -556,11 +569,13 @@ int64_t GB_Global_maxused_get (void)
 // hack: for setting an internal value for development only
 //------------------------------------------------------------------------------
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void GB_Global_hack_set (int64_t hack)
 { 
     GB_Global.hack = hack ;
 }
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 int64_t GB_Global_hack_get (void)
 { 
     return (GB_Global.hack) ;
@@ -575,6 +590,7 @@ void GB_Global_burble_set (bool burble)
     GB_Global.burble = burble ;
 }
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 bool GB_Global_burble_get (void)
 { 
     return (GB_Global.burble) ;

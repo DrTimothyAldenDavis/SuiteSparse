@@ -9,7 +9,7 @@
 
 // GxB_Scalar: same as a GrB_Vector of length 1
 
-#include "GB_printf.h"
+#include "GB.h"
 
 GrB_Info GB_Scalar_check    // check a GraphBLAS GxB_Scalar
 (

@@ -12,8 +12,9 @@
 
 #include "GB_Pending.h"
 #include "GB_iterator.h"
-#include "GB_printf.h"
+#include "GB.h"
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
 (
     const GrB_Matrix A,     // GraphBLAS matrix to print and check

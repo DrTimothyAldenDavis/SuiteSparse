@@ -41,7 +41,7 @@ void mexFunction
     }
 
     // get X
-    void *X ;
+    GB_void *X ;
     int64_t nrows, ncols ;
     mxClassID xclass ;
     GrB_Type xtype ;
@@ -62,18 +62,22 @@ void mexFunction
     // create C
     if (xtype == Complex)
     {
+        #if GxB_STDC_VERSION >= 201112L
         // ignore cclass, just copy the Complex X to the mxArray output
         pargout [0] = mxCreateNumericMatrix (nrows, ncols, mxDOUBLE_CLASS,
             mxCOMPLEX) ;
         GB_mx_complex_split (nrows*ncols, X, pargout [0]) ;
         // X is a deep copy that must be freed
-        GB_FREE_MEMORY (X, nrows*ncols, sizeof (double complex)) ;
+        GB_FREE_MEMORY (X, nrows*ncols, 2 * sizeof (double)) ;
+        #else
+        mexErrMsgTxt ("complex type not available") ;
+        #endif
     }
     else
     {
         // typecast the shallow MATLAB X into the output C
         pargout [0] = mxCreateNumericMatrix (nrows, ncols, cclass, mxREAL) ;
-        void *C = mxGetData (pargout [0]) ;
+        GB_void *C = mxGetData (pargout [0]) ;
 
         // cast the data from X to C
         GB_cast_array (C, ctype->code, X, xtype->code, nrows*ncols, Context) ;

@@ -1,5 +1,4 @@
 function [z tol] = GB_user_op (op, x, y)
-%
 %GB_USER_OP apply a complex binary and unary operator
 %
 % MATLAB equivalents of the GraphBLAS user-defined Complex operators.
@@ -14,6 +13,10 @@ function [z tol] = GB_user_op (op, x, y)
 
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+
+if (~GB_mex_have_complex)
+    error ('complex type not available') ;
+end
 
 tol = false ;
 

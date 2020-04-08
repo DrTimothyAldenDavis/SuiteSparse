@@ -9,8 +9,9 @@
 
 // GrB_Vector: same as GrB_Matrix, except it has exactly one column
 
-#include "GB_printf.h"
+#include "GB.h"
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_Vector_check    // check a GraphBLAS vector
 (
     const GrB_Vector v,     // GraphBLAS vector to print and check

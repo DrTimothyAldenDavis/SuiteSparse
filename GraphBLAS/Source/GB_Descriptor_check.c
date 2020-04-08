@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-#include "GB_printf.h"
+#include "GB.h"
 
 //------------------------------------------------------------------------------
 // GB_dc: check a single descriptor field
@@ -95,6 +95,7 @@ static GrB_Info GB_dc
 // GB_Descriptor_check
 //------------------------------------------------------------------------------
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_Descriptor_check    // check a GraphBLAS descriptor
 (
     const GrB_Descriptor D,     // GraphBLAS descriptor to print and check

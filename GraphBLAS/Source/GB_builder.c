@@ -558,6 +558,9 @@ GrB_Info GB_builder                 // build a matrix from tuples
         { 
             K_work [k] = k ;
         }
+    
+        // determine # of threads to use in the parallel mergesort
+        int nth = GB_MSORT_NTHREADS (nthreads) ;
 
         // sort all the tuples
         if (vdim > 1)
@@ -567,23 +570,8 @@ GrB_Info GB_builder                 // build a matrix from tuples
             // sort a set of (j,i,k) tuples
             //------------------------------------------------------------------
 
-            if (nthreads == 1)
-            { 
-
-                //--------------------------------------------------------------
-                // sequential quicksort
-                //--------------------------------------------------------------
-
-                GB_qsort_3 (J_work, I_work, K_work, nvals) ;
-
-            }
-            else
+            if (nth > 1)
             {
-
-                //--------------------------------------------------------------
-                // parallel mergesort
-                //--------------------------------------------------------------
-
                 GB_MALLOC_MEMORY (W0, nvals, sizeof (int64_t)) ;
                 GB_MALLOC_MEMORY (W1, nvals, sizeof (int64_t)) ;
                 GB_MALLOC_MEMORY (W2, nvals, sizeof (int64_t)) ;
@@ -593,14 +581,9 @@ GrB_Info GB_builder                 // build a matrix from tuples
                     GB_FREE_WORK ;
                     return (GB_OUT_OF_MEMORY) ;
                 }
-
-                GB_msort_3 (J_work, I_work, K_work, W0, W1, W2, nvals,
-                    nthreads) ;
-
-                GB_FREE_MEMORY (W0, nvals, sizeof (int64_t)) ;
-                GB_FREE_MEMORY (W1, nvals, sizeof (int64_t)) ;
-                GB_FREE_MEMORY (W2, nvals, sizeof (int64_t)) ;
             }
+
+            GB_msort_3 (J_work, I_work, K_work, W0, W1, W2, nvals, nth) ;
 
         }
         else
@@ -610,23 +593,8 @@ GrB_Info GB_builder                 // build a matrix from tuples
             // sort a set of (i,k) tuples
             //------------------------------------------------------------------
 
-            if (nthreads == 1)
+            if (nth > 1)
             { 
-
-                //--------------------------------------------------------------
-                // sequential quicksort
-                //--------------------------------------------------------------
-
-                GB_qsort_2 (I_work, K_work, nvals) ;
-
-            }
-            else
-            {
-
-                //--------------------------------------------------------------
-                // parallel mergesort
-                //--------------------------------------------------------------
-
                 GB_MALLOC_MEMORY (W0, nvals, sizeof (int64_t)) ;
                 GB_MALLOC_MEMORY (W1, nvals, sizeof (int64_t)) ;
                 if (W0 == NULL || W1 == NULL)
@@ -635,13 +603,14 @@ GrB_Info GB_builder                 // build a matrix from tuples
                     GB_FREE_WORK ;
                     return (GB_OUT_OF_MEMORY) ;
                 }
-
-                GB_msort_2 (I_work, K_work, W0, W1, nvals, nthreads) ;
-
-                GB_FREE_MEMORY (W0, nvals, sizeof (int64_t)) ;
-                GB_FREE_MEMORY (W1, nvals, sizeof (int64_t)) ;
             }
+
+            GB_msort_2 (I_work, K_work, W0, W1, nvals, nth) ;
         }
+
+        GB_FREE_MEMORY (W0, nvals, sizeof (int64_t)) ;
+        GB_FREE_MEMORY (W1, nvals, sizeof (int64_t)) ;
+        GB_FREE_MEMORY (W2, nvals, sizeof (int64_t)) ;
     }
 
     //--------------------------------------------------------------------------

@@ -77,7 +77,7 @@ GrB_Info GB_dense_subassign_21      // C(:,:) = x; C is a matrix and x a scalar
         // C is not yet dense: create pattern and allocate values
         //----------------------------------------------------------------------
 
-        // clear all prior content and recreate it; use exising header for C.
+        // clear prior content and recreate it; use exising header for C.
         // do not malloc C->x if the scalar is zero; calloc it later.
         bool scalar_is_nonzero = GB_is_nonzero (cwork, csize) ;
         GB_PHIX_FREE (C) ;

@@ -11,22 +11,22 @@
 
 #define USAGE "w = GB_mex_mxv (w, mask, accum, semiring, A, u, desc)"
 
-#define FREE_ALL                            \
-{                                           \
-    GrB_free (&w) ;                         \
-    GrB_free (&u) ;                         \
-    GB_MATRIX_FREE (&A) ;                   \
-    GrB_free (&mask) ;                      \
-    if (semiring != Complex_plus_times)     \
-    {                                       \
-        if (semiring != NULL)               \
-        {                                   \
-            GrB_free (&(semiring->add)) ;   \
-        }                                   \
-        GrB_free (&semiring) ;              \
-    }                                       \
-    GrB_free (&desc) ;                      \
-    GB_mx_put_global (true, AxB_method_used) ; \
+#define FREE_ALL                                    \
+{                                                   \
+    GrB_Vector_free (&w) ;                          \
+    GrB_Vector_free (&u) ;                          \
+    GB_MATRIX_FREE (&A) ;                           \
+    GrB_Vector_free (&mask) ;                       \
+    if (semiring != Complex_plus_times)             \
+    {                                               \
+        if (semiring != NULL)                       \
+        {                                           \
+            GrB_Semiring_free (&(semiring->add)) ;  \
+        }                                           \
+        GrB_Semiring_free (&semiring) ;             \
+    }                                               \
+    GrB_Descriptor_free (&desc) ;                   \
+    GB_mx_put_global (true, AxB_method_used) ;      \
 }
 
 void mexFunction
@@ -57,7 +57,7 @@ void mexFunction
     // get w (make a deep copy)
     #define GET_DEEP_COPY \
     w = GB_mx_mxArray_to_Vector (pargin [0], "w input", true, true) ;
-    #define FREE_DEEP_COPY GrB_free (&w) ;
+    #define FREE_DEEP_COPY GrB_Vector_free (&w) ;
     GET_DEEP_COPY ;
     if (w == NULL)
     {

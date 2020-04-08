@@ -73,16 +73,16 @@ GrB_Matrix gb_get_shallow   // return a shallow copy of MATLAB sparse matrix
         // get the scalar info
         mxArray *opaque = mxGetField (X, 0, "s") ;
         IF (opaque == NULL, ".s missing") ;
-        double *s = mxGetDoubles (opaque) ;
-        A->hyper_ratio   = s [0] ;
-        A->plen          = (int64_t) s [1] ;
-        A->vlen          = (int64_t) s [2] ;
-        A->vdim          = (int64_t) s [3] ;
-        A->nvec          = (int64_t) s [4] ;
-        A->nvec_nonempty = (int64_t) s [5] ;
-        A->is_hyper      = (int64_t) s [6] ;
-        A->is_csc        = (int64_t) s [7] ;    // format already defined
-        A->nzmax         = (int64_t) s [8] ;
+        int64_t *s = mxGetInt64s (opaque) ;
+        A->hyper_ratio   = GxB_HYPER_DEFAULT ;
+        A->plen          = s [0] ;
+        A->vlen          = s [1] ;
+        A->vdim          = s [2] ;
+        A->nvec          = s [3] ;
+        A->nvec_nonempty = s [4] ;
+        A->is_hyper      = (bool) (s [5]) ;
+        A->is_csc        = (bool) (s [6]) ;
+        A->nzmax         = s [7] ;
 
         // get the pointers
         mxArray *Ap = mxGetField (X, 0, "p") ;

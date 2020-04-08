@@ -16,9 +16,9 @@
     GB_MATRIX_FREE (&A) ;           \
     GB_MATRIX_FREE (&B) ;           \
     GB_MATRIX_FREE (&C) ;           \
-    GrB_free (&desc) ;              \
+    GrB_Descriptor_free (&desc) ;   \
     GB_MATRIX_FREE (&Mask) ;        \
-    GB_mx_put_global (true, 0) ;        \
+    GB_mx_put_global (true, 0) ;    \
 }
 
 void mexFunction

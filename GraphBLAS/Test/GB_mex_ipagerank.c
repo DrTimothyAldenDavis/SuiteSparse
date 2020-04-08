@@ -10,7 +10,7 @@
 // This is for testing only.
 
 #include "GB_mex.h"
-#include "demos.h"
+#include "graphblas_demos.h"
 
 #define USAGE "[r,irank] = GB_mex_ipagerank (A)"
 

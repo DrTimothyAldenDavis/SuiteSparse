@@ -17,7 +17,7 @@
 {                                       \
     GB_MATRIX_FREE (&C) ;               \
     GB_MATRIX_FREE (&A) ;               \
-    GrB_free (&desc) ;                  \
+    GrB_Descriptor_free (&desc) ;       \
     GB_mx_put_global (true, 0) ;        \
 }
 
@@ -91,12 +91,12 @@ void mexFunction
     if (GB_NCOLS (C) == 1 && (desc == NULL || desc->in0 == GxB_DEFAULT))
     {
         // this is just to test the Vector version
-        METHOD (GrB_apply ((GrB_Vector) C, (GrB_Vector) C, accum, op,
+        METHOD (GrB_Vector_apply ((GrB_Vector) C, (GrB_Vector) C, accum, op,
             (GrB_Vector) A, desc)) ;
     }
     else
     {
-        METHOD (GrB_apply (C, C, accum, op, A, desc)) ;
+        METHOD (GrB_Matrix_apply (C, C, accum, op, A, desc)) ;
     }
 
     // return C to MATLAB as a struct and free the GraphBLAS C

@@ -11,7 +11,8 @@
 // types (of any kind) or if both are the same user-defined type.
 
 #include "GB.h"
-
+ 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 bool GB_Type_compatible             // check if two types can be typecast
 (
     const GrB_Type atype,

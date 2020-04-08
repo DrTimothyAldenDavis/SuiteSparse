@@ -26,6 +26,7 @@
     GB_MATRIX_FREE (Chandle) ;                                          \
 }
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_AxB_dot3                // C<M> = A'*B using dot product method
 (
     GrB_Matrix *Chandle,            // output matrix

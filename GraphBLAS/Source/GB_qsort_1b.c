@@ -45,6 +45,7 @@
 
 #include "GB_qsort_template.c"
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void GB_qsort_1b    // sort array A of size 2-by-n, using 1 key (A [0][])
 (
     int64_t *GB_RESTRICT A_0,      // size n array

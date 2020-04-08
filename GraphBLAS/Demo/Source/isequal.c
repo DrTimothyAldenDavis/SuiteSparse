@@ -19,7 +19,10 @@
 // NaN equality (like isequalwithequalnans in MATLAB), use isequal_type with a
 // user-defined operator f(x,y) that returns true if x and y are both NaN.
 
-#include "demos.h"
+#include "GraphBLAS.h"
+#undef GB_PUBLIC
+#define GB_LIBRARY
+#include "graphblas_demos.h"
 
 // call a GraphBLAS method and return if an error occurs
 #undef  OK
@@ -39,6 +42,7 @@
 // isequal_type: check two matrices, works in any GraphBLAS
 //------------------------------------------------------------------------------
 
+GB_PUBLIC
 GrB_Info isequal_type       // return GrB_SUCCESS if successful
 (
     bool *result,           // true if A == B, false if A != B or error

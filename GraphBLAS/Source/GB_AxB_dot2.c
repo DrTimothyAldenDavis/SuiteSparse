@@ -34,6 +34,7 @@
     GB_FREE_MEMORY (C_counts, naslice, sizeof (int64_t *)) ;                \
 }
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_AxB_dot2                // C=A'*B or C<!M>=A'*B, dot product method
 (
     GrB_Matrix *Chandle,            // output matrix

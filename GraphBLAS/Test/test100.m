@@ -37,11 +37,13 @@ r0 = isequal (A, A') ;
 r1 = GB_mex_isequal (A, A') ;
 assert (r0 == r1) 
 
-A = sprand (5, 5, 0.1) + 1i * sprand (5, 5, 0.1) ;
-B = sprand (5, 5, 0.1) + 1i * sprand (5, 5, 0.1) ;
-r0 = isequal (A, B) ;
-r1 = GB_mex_isequal (A, B) ;
-assert (r0 == r1) 
+if (GB_mex_have_complex)
+    A = sprand (5, 5, 0.1) + 1i * sprand (5, 5, 0.1) ;
+    B = sprand (5, 5, 0.1) + 1i * sprand (5, 5, 0.1) ;
+    r0 = isequal (A, B) ;
+    r1 = GB_mex_isequal (A, B) ;
+    assert (r0 == r1) 
+end
 
 r0 = isequal (A, A) ;
 r1 = GB_mex_isequal (A, A) ;

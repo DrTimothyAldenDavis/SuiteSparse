@@ -23,7 +23,6 @@ in Demo/Source:
     bfs5m_check.c           as above, but with error checking
     bfs6.c                  breadth-first serach using apply
     bfs6_check.c            as above, but with error checking
-    bfs_level.c             assign level for bfs6
     get_matrix.c            get a matrix (file, Wathen, or random)
     mis.c                   maximal independent set
     mis_check.c             as above, but with error checking
@@ -103,7 +102,7 @@ library and is thus not thread-safe.
 in Demo/Include:
 --------------------------------------------------------------------------------
 
-    demos.h                 include file for all demos
+    graphblas_demos.h       include file for all demos
     simple_rand.h           include file for simple_rand.c
     simple_timer.h          include file for simple_timer
     usercomplex.h           include file for usercomplex.h

@@ -48,8 +48,8 @@
     GB_MATRIX_FREE (&C) ;               \
     if (C_is_M) M = NULL ;              \
     GB_MATRIX_FREE (&M) ;               \
-    GrB_free (&desc) ;                  \
-    if (!reduce_is_complex) GrB_free (&reduce) ;                \
+    GrB_Descriptor_free (&desc) ;       \
+    if (!reduce_is_complex) GrB_Monoid_free (&reduce) ;                \
     GB_mx_put_global (true, 0) ;        \
 }
 
@@ -134,7 +134,7 @@ GrB_Info assign (GB_Context Context)
     if (GB_NROWS (A) == 1 && GB_NCOLS (A) == 1 && GB_NNZ (A) == 1)
     {
         // scalar expansion to matrix or vector
-        void *Ax = A->x ;
+        GB_void *Ax = A->x ;
 
         if (ni == 1 && nj == 1 && M == NULL && I != GrB_ALL && J != GrB_ALL
             && GB_op_is_second (accum, C->type) && A->type->code <= GB_FP64_code
@@ -142,25 +142,27 @@ GrB_Info assign (GB_Context Context)
         {
             if (ph) printf ("setElement\n") ;
             // test GrB_Matrix_setElement
-            #define ASSIGN(type)                                        \
+            #define ASSIGN(suffix,type)                                 \
             {                                                           \
                 type x = ((type *) Ax) [0] ;                            \
-                OK (GrB_Matrix_setElement (C, x, I [0], J [0])) ;       \
+                OK (GrB_Matrix_setElement ## suffix (C, x, I [0], J [0])) ;       \
             } break ;
 
             switch (A->type->code)
             {
-                case GB_BOOL_code   : ASSIGN (bool) ;
-                case GB_INT8_code   : ASSIGN (int8_t) ;
-                case GB_UINT8_code  : ASSIGN (uint8_t) ;
-                case GB_INT16_code  : ASSIGN (int16_t) ;
-                case GB_UINT16_code : ASSIGN (uint16_t) ;
-                case GB_INT32_code  : ASSIGN (int32_t) ;
-                case GB_UINT32_code : ASSIGN (uint32_t) ;
-                case GB_INT64_code  : ASSIGN (int64_t) ;
-                case GB_UINT64_code : ASSIGN (uint64_t) ;
-                case GB_FP32_code   : ASSIGN (float) ;
-                case GB_FP64_code   : ASSIGN (double) ;
+
+                case GB_BOOL_code   : ASSIGN (_BOOL,   bool) ;
+                case GB_INT8_code   : ASSIGN (_INT8,   int8_t) ;
+                case GB_UINT8_code  : ASSIGN (_UINT8,  uint8_t) ;
+                case GB_INT16_code  : ASSIGN (_INT16,  int16_t) ;
+                case GB_UINT16_code : ASSIGN (_UINT16, uint16_t) ;
+                case GB_INT32_code  : ASSIGN (_INT32,  int32_t) ;
+                case GB_UINT32_code : ASSIGN (_UINT32, uint32_t) ;
+                case GB_INT64_code  : ASSIGN (_INT64,  int64_t) ;
+                case GB_UINT64_code : ASSIGN (_UINT64, uint64_t) ;
+                case GB_FP32_code   : ASSIGN (_FP32,   float) ;
+                case GB_FP64_code   : ASSIGN (_FP64,   double) ;
+
                 case GB_UDT_code    :
                 default:
                     FREE_ALL ;
@@ -174,29 +176,33 @@ GrB_Info assign (GB_Context Context)
 
             // test GxB_Vector_subassign_scalar functions
             if (ph) printf ("scalar assign to vector\n") ;
-            #define ASSIGN(type)                                        \
-            {                                                           \
-                type x = ((type *) Ax) [0] ;                            \
-                OK (GxB_subassign ((GrB_Vector) C, (GrB_Vector) M,      \
-                    accum, x, I, ni, desc)) ;      \
+            #define ASSIGN(suffix,type)                 \
+            {                                           \
+                type x = ((type *) Ax) [0] ;            \
+                OK (GxB_Vector_subassign ## suffix      \
+                    ((GrB_Vector) C, (GrB_Vector) M,    \
+                    accum, x, I, ni, desc)) ;           \
             } break ;
 
             switch (A->type->code)
             {
-                case GB_BOOL_code   : ASSIGN (bool) ;
-                case GB_INT8_code   : ASSIGN (int8_t) ;
-                case GB_UINT8_code  : ASSIGN (uint8_t) ;
-                case GB_INT16_code  : ASSIGN (int16_t) ;
-                case GB_UINT16_code : ASSIGN (uint16_t) ;
-                case GB_INT32_code  : ASSIGN (int32_t) ;
-                case GB_UINT32_code : ASSIGN (uint32_t) ;
-                case GB_INT64_code  : ASSIGN (int64_t) ;
-                case GB_UINT64_code : ASSIGN (uint64_t) ;
-                case GB_FP32_code   : ASSIGN (float) ;
-                case GB_FP64_code   : ASSIGN (double) ;
+
+                case GB_BOOL_code   : ASSIGN (_BOOL,   bool) ;
+                case GB_INT8_code   : ASSIGN (_INT8,   int8_t) ;
+                case GB_UINT8_code  : ASSIGN (_UINT8,  uint8_t) ;
+                case GB_INT16_code  : ASSIGN (_INT16,  int16_t) ;
+                case GB_UINT16_code : ASSIGN (_UINT16, uint16_t) ;
+                case GB_INT32_code  : ASSIGN (_INT32,  int32_t) ;
+                case GB_UINT32_code : ASSIGN (_UINT32, uint32_t) ;
+                case GB_INT64_code  : ASSIGN (_INT64,  int64_t) ;
+                case GB_UINT64_code : ASSIGN (_UINT64, uint64_t) ;
+                case GB_FP32_code   : ASSIGN (_FP32,   float) ;
+                case GB_FP64_code   : ASSIGN (_FP64,   double) ;
+
                 case GB_UDT_code    :
                 {
-                    OK (GxB_subassign ((GrB_Vector) C, (GrB_Vector) M,
+                    OK (GxB_Vector_subassign_UDT
+                        ((GrB_Vector) C, (GrB_Vector) M,
                         accum, Ax, I, ni, desc)) ;
                 }
                 break ;
@@ -212,28 +218,32 @@ GrB_Info assign (GB_Context Context)
 
             // test Matrix_subassign_scalar functions
             if (ph) printf ("scalar assign to matrix\n") ;
-            #define ASSIGN(type)                                            \
-            {                                                               \
-                type x = ((type *) Ax) [0] ;                                \
-                OK (GxB_subassign (C, M, accum, x, I, ni, J, nj,desc)) ;    \
+            #define ASSIGN(suffix,type)                     \
+            {                                               \
+                type x = ((type *) Ax) [0] ;                \
+                OK (GxB_Matrix_subassign ## suffix          \
+                    (C, M, accum, x, I, ni, J, nj,desc)) ;  \
             } break ;
 
             switch (A->type->code)
             {
-                case GB_BOOL_code   : ASSIGN (bool) ;
-                case GB_INT8_code   : ASSIGN (int8_t) ;
-                case GB_UINT8_code  : ASSIGN (uint8_t) ;
-                case GB_INT16_code  : ASSIGN (int16_t) ;
-                case GB_UINT16_code : ASSIGN (uint16_t) ;
-                case GB_INT32_code  : ASSIGN (int32_t) ;
-                case GB_UINT32_code : ASSIGN (uint32_t) ;
-                case GB_INT64_code  : ASSIGN (int64_t) ;
-                case GB_UINT64_code : ASSIGN (uint64_t) ;
-                case GB_FP32_code   : ASSIGN (float) ;
-                case GB_FP64_code   : ASSIGN (double) ;
+
+                case GB_BOOL_code   : ASSIGN (_BOOL,   bool) ;
+                case GB_INT8_code   : ASSIGN (_INT8,   int8_t) ;
+                case GB_UINT8_code  : ASSIGN (_UINT8,  uint8_t) ;
+                case GB_INT16_code  : ASSIGN (_INT16,  int16_t) ;
+                case GB_UINT16_code : ASSIGN (_UINT16, uint16_t) ;
+                case GB_INT32_code  : ASSIGN (_INT32,  int32_t) ;
+                case GB_UINT32_code : ASSIGN (_UINT32, uint32_t) ;
+                case GB_INT64_code  : ASSIGN (_INT64,  int64_t) ;
+                case GB_UINT64_code : ASSIGN (_UINT64, uint64_t) ;
+                case GB_FP32_code   : ASSIGN (_FP32,   float) ;
+                case GB_FP64_code   : ASSIGN (_FP64,   double) ;
+
                 case GB_UDT_code    :
                 {
-                    OK (GxB_subassign (C, M, accum, Ax, I, ni, J, nj, desc)) ;
+                    OK (GxB_Matrix_subassign_UDT
+                        (C, M, accum, Ax, I, ni, J, nj, desc)) ;
                 }
                 break ;
 
@@ -250,7 +260,7 @@ GrB_Info assign (GB_Context Context)
     {
         // test GxB_Vector_subassign
         if (ph) printf ("vector assign\n") ;
-        OK (GxB_subassign ((GrB_Vector) C, (GrB_Vector) M, accum,
+        OK (GxB_Vector_subassign ((GrB_Vector) C, (GrB_Vector) M, accum,
             (GrB_Vector) A, I, ni, desc)) ;
     }
     else if (GB_VECTOR_OK (A) && nj == 1 &&
@@ -258,7 +268,7 @@ GrB_Info assign (GB_Context Context)
     {
         // test GxB_Col_subassign
         if (ph) printf ("col assign\n") ;
-        OK (GxB_subassign (C, (GrB_Vector) M, accum, (GrB_Vector) A,
+        OK (GxB_Col_subassign (C, (GrB_Vector) M, accum, (GrB_Vector) A,
             I, ni, J [0], desc)) ;
     }
     else if (A->vlen == 1 && ni == 1 &&
@@ -275,7 +285,7 @@ GrB_Info assign (GB_Context Context)
         }
         OK (GB_transpose_bucket (&u, A->type, true, A, NULL, Context)) ;
         ASSERT (GB_VECTOR_OK (u)) ;
-        OK (GxB_subassign (C, (GrB_Vector) mask, accum, (GrB_Vector) u,
+        OK (GxB_Row_subassign (C, (GrB_Vector) mask, accum, (GrB_Vector) u,
             I [0], J, nj, desc)) ;
         GB_MATRIX_FREE (&mask) ;
         GB_MATRIX_FREE (&u) ;
@@ -284,7 +294,7 @@ GrB_Info assign (GB_Context Context)
     {
         // standard submatrix assignment
         if (ph) printf ("submatrix assign\n") ;
-        OK (GxB_subassign (C, M, accum, A, I, ni, J, nj, desc)) ;
+        OK (GxB_Matrix_subassign (C, M, accum, A, I, ni, J, nj, desc)) ;
     }
 
     ASSERT_MATRIX_OK (C, "C after assign", pr) ;
@@ -404,7 +414,7 @@ GrB_Info many_subassign
 
         GB_MATRIX_FREE (&A) ;
         GB_MATRIX_FREE (&M) ;
-        GrB_free (&desc) ;
+        GrB_Descriptor_free (&desc) ;
 
         if (info != GrB_SUCCESS)
         {
@@ -609,15 +619,16 @@ void mexFunction
             // if (C->nzombies > 0)
             //  printf ("do the reduce thing, zombies %lld\n", C->nzombies) ;
 
-            #define REDUCE(type)                                             \
+            #define REDUCE(suffix,type)                                      \
             {                                                                \
                 type c = 0 ;                                                 \
-                GrB_reduce (&c, NULL, reduce, C, NULL) ;                     \
+                GrB_Matrix_reduce ## suffix (&c, NULL, reduce, C, NULL) ;    \
                 pargout [1] = mxCreateNumericMatrix (1, 1, cclass, mxREAL) ; \
-                void *p = mxGetData (pargout [1]) ;                          \
+                GB_void *p = mxGetData (pargout [1]) ;                       \
                 memcpy (p, &c, sizeof (type)) ;                              \
                 double d = 0 ;                                               \
-                GrB_reduce (&d, NULL, GxB_PLUS_FP64_MONOID, C, NULL) ;       \
+                GrB_Matrix_reduce_FP64 (&d, NULL, GxB_PLUS_FP64_MONOID,      \
+                    C, NULL) ;                                               \
                 if (nargout > 2) pargout [2] = mxCreateDoubleScalar (d) ;    \
             }                                                                \
             break ;
@@ -625,7 +636,7 @@ void mexFunction
             if (reduce_is_complex)
             {
                 double c [2] = {0, 0} ;
-                GrB_reduce ((void *) c, NULL, reduce, C, NULL) ;
+                GrB_Matrix_reduce_UDT ((void *) c, NULL, reduce, C, NULL) ;
                 pargout [1] = mxCreateNumericMatrix (1, 1,
                     mxDOUBLE_CLASS, mxCOMPLEX) ;
                 GB_mx_complex_split (1, c, pargout [1]) ;
@@ -635,17 +646,17 @@ void mexFunction
                 switch (cclass)
                 {
 
-                    case mxLOGICAL_CLASS : REDUCE (bool) ;
-                    case mxINT8_CLASS    : REDUCE (int8_t) ;
-                    case mxUINT8_CLASS   : REDUCE (uint8_t) ;
-                    case mxINT16_CLASS   : REDUCE (int16_t) ;
-                    case mxUINT16_CLASS  : REDUCE (uint16_t) ;
-                    case mxINT32_CLASS   : REDUCE (int32_t) ;
-                    case mxUINT32_CLASS  : REDUCE (uint32_t) ;
-                    case mxINT64_CLASS   : REDUCE (int64_t) ;
-                    case mxUINT64_CLASS  : REDUCE (uint64_t) ;
-                    case mxSINGLE_CLASS  : REDUCE (float) ;
-                    case mxDOUBLE_CLASS  : REDUCE (double) ;
+                    case mxLOGICAL_CLASS : REDUCE (_BOOL,   bool) ;
+                    case mxINT8_CLASS    : REDUCE (_INT8,   int8_t) ;
+                    case mxUINT8_CLASS   : REDUCE (_UINT8,  uint8_t) ;
+                    case mxINT16_CLASS   : REDUCE (_INT16,  int16_t) ;
+                    case mxUINT16_CLASS  : REDUCE (_UINT16, uint16_t) ;
+                    case mxINT32_CLASS   : REDUCE (_INT32,  int32_t) ;
+                    case mxUINT32_CLASS  : REDUCE (_UINT32, uint32_t) ;
+                    case mxINT64_CLASS   : REDUCE (_INT64,  int64_t) ;
+                    case mxUINT64_CLASS  : REDUCE (_UINT64, uint64_t) ;
+                    case mxSINGLE_CLASS  : REDUCE (_FP32,   float) ;
+                    case mxDOUBLE_CLASS  : REDUCE (_FP64,   double) ;
 
                     case mxCELL_CLASS    :
                     case mxCHAR_CLASS    :

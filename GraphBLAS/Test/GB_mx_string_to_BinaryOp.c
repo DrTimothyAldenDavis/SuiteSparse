@@ -41,7 +41,7 @@ bool GB_mx_string_to_BinaryOp          // true if successful, false otherwise
     const bool YisComplex               // true Y is complex
 )
 {
-    
+
     GB_WHERE ("GB_mx_string_to_BinaryOp") ;
 
     (*handle) = NULL ;
@@ -51,7 +51,7 @@ bool GB_mx_string_to_BinaryOp          // true if successful, false otherwise
     // get the string
     //--------------------------------------------------------------------------
 
-    #define LEN 256
+#define LEN 256
     char opname [LEN+2] ;
     int len = GB_mx_mxArray_to_string (opname, LEN, opname_mx) ;
     if (len < 0)
@@ -71,6 +71,8 @@ bool GB_mx_string_to_BinaryOp          // true if successful, false otherwise
         //----------------------------------------------------------------------
         // X or Y complex
         //----------------------------------------------------------------------
+
+        #if GxB_STDC_VERSION >= 201112L
 
         // user-defined Complex binary operator
         opcode  = GB_USER_opcode ;      // user-defined opcode
@@ -120,6 +122,10 @@ bool GB_mx_string_to_BinaryOp          // true if successful, false otherwise
         {
             mexWarnMsgIdAndTxt ("GB:warn", "Complex op unrecognized") ;
         }
+
+        #else
+        mexErrMsgTxt ("complex type not available") ;
+        #endif
 
     }
     else
@@ -176,10 +182,14 @@ bool GB_mx_string_to_BinaryOp          // true if successful, false otherwise
         // 1 user-defined Complex operator z=f(x,y), x,y double and z Complex
         else if (MATCH (opname, "complex" ))
         {
+            #if GxB_STDC_VERSION >= 201112L
             // z = complex(x,y) = x + i*y
             op = Complex_complex ;
             opcode = GB_USER_opcode ;
             opclass = mxDOUBLE_CLASS ;
+            #else
+            mexErrMsgTxt ("complex type not available") ;
+            #endif
         }
 
         else

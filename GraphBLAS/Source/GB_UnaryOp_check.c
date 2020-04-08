@@ -7,8 +7,9 @@
 
 //------------------------------------------------------------------------------
 
-#include "GB_printf.h"
+#include "GB.h"
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_UnaryOp_check   // check a GraphBLAS unary operator
 (
     const GrB_UnaryOp op,   // GraphBLAS operator to print and check

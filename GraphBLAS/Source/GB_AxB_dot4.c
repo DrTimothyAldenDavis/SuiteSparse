@@ -12,6 +12,7 @@
 // this function.
 
 #include "GB_mxm.h"
+#include "GB_unused.h"
 #ifndef GBCOMPACT
 #include "GB_AxB__include.h"
 #endif

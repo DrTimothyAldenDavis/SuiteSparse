@@ -4,6 +4,11 @@ function testca
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
+if (~GB_mex_have_complex)
+    fprintf ('\ntestca: skipped\n') ;
+    return ;
+end
+
 fprintf ('testca: test complex mxm, mxv, and vxm\n') ;
 rng ('default') ;
 dnn = struct ;

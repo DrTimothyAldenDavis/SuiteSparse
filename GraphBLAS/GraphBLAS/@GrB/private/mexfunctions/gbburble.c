@@ -49,6 +49,9 @@ void mexFunction
             ERROR ("input must be a scalar") ;
         }
         OK (GxB_Global_Option_set (GxB_BURBLE, b)) ;
+
+        // if burble enabled, flush mexPrintf output to MATLAB Command Window
+        GB_flush_function = b ? gb_flush : NULL ;
     }
 
     //--------------------------------------------------------------------------

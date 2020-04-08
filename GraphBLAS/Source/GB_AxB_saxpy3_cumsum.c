@@ -60,7 +60,7 @@ int64_t GB_AxB_saxpy3_cumsum    // return cjnz_max for fine tasks
 
             // Hf [i] == 2 if C(i,j) is an entry in C(:,j)
 
-            uint8_t *GB_RESTRICT Hf = TaskList [taskid].Hf ;
+            int8_t *GB_RESTRICT Hf = (int8_t *GB_RESTRICT) TaskList [taskid].Hf;
             int64_t istart, iend ;
             GB_PARTITION (istart, iend, cvlen, my_teamid, team_size) ;
             for (int64_t i = istart ; i < iend ; i++)
@@ -82,7 +82,8 @@ int64_t GB_AxB_saxpy3_cumsum    // return cjnz_max for fine tasks
             // (Hf [hash] & 3) == 2 if C(i,j) is an entry in C(:,j),
             // and the index i of the entry is (Hf [hash] >> 2) - 1.
 
-            int64_t *GB_RESTRICT Hf = TaskList [taskid].Hf ;
+            int64_t *GB_RESTRICT
+                Hf = (int64_t *GB_RESTRICT) TaskList [taskid].Hf ;
             int64_t mystart, myend ;
             GB_PARTITION (mystart, myend, hash_size, my_teamid, team_size) ;
             for (int64_t hash = mystart ; hash < myend ; hash++)

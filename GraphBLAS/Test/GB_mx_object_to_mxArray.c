@@ -58,7 +58,7 @@ mxArray *GB_mx_object_to_mxArray   // returns the MATLAB mxArray
     ASSERT_MATRIX_OK (C, "TO MATLAB after assembling pending tuples", GB0) ;
 
     // convert C to non-hypersparse
-    GxB_set (C, GxB_HYPER, GxB_NEVER_HYPER) ;
+    GxB_Matrix_Option_set (C, GxB_HYPER, GxB_NEVER_HYPER) ;
 
     ASSERT_MATRIX_OK (C, "TO MATLAB, non-hyper", GB0) ;
     ASSERT (!C->is_hyper) ;
@@ -68,7 +68,7 @@ mxArray *GB_mx_object_to_mxArray   // returns the MATLAB mxArray
     // GrB_Matrix CT ;
     if (!C->is_csc)
     {
-        GxB_set (C, GxB_FORMAT, GxB_BY_COL) ;
+        GxB_Matrix_Option_set (C, GxB_FORMAT, GxB_BY_COL) ;
     }
 
     ASSERT_MATRIX_OK (C, "TO MATLAB, non-hyper CSC", GB0) ;

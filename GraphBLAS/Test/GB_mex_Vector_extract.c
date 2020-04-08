@@ -13,10 +13,10 @@
 
 #define FREE_ALL                        \
 {                                       \
-    GrB_free (&w) ;                     \
-    GrB_free (&mask) ;                  \
-    GrB_free (&u) ;                     \
-    GrB_free (&desc) ;                  \
+    GrB_Vector_free (&w) ;              \
+    GrB_Vector_free (&mask) ;           \
+    GrB_Vector_free (&u) ;              \
+    GrB_Descriptor_free (&desc) ;       \
     GB_mx_put_global (true, 0) ;        \
 }
 
@@ -47,7 +47,7 @@ void mexFunction
     // get w (make a deep copy)
     #define GET_DEEP_COPY \
     w = GB_mx_mxArray_to_Vector (pargin [0], "w input", true, true) ;
-    #define FREE_DEEP_COPY GrB_free (&w) ;
+    #define FREE_DEEP_COPY GrB_Vector_free (&w) ;
     GET_DEEP_COPY ;
     if (w == NULL)
     {

@@ -11,7 +11,9 @@
 // complex matrices and vectors.  Run the output of this program in MATLAB
 // to check the results.
 
-#include "demos.h"
+#include "graphblas_demos.h"
+
+#if GxB_STDC_VERSION >= 201112L
 
 //------------------------------------------------------------------------------
 // print a complex matrix
@@ -65,7 +67,7 @@ int main (int argc, char **argv)
     // initialize GraphBLAS and create the user-defined Complex type
     GrB_init (GrB_NONBLOCKING) ;
     int nthreads ;
-    GxB_get (GxB_NTHREADS, &nthreads) ;
+    GxB_Global_Option_get (GxB_NTHREADS, &nthreads) ;
     fprintf (stderr, "complex_demo: nthreads: %d\n", nthreads) ;
     Complex_init ( ) ;
 
@@ -104,4 +106,15 @@ int main (int argc, char **argv)
     // finalize GraphBLAS
     GrB_finalize ( ) ;
 }
+
+//------------------------------------------------------------------------------
+
+#else
+
+int main ( )
+{
+    printf ("complex data type not available (ANSI C11 or higher required)\n") ;
+}
+
+#endif
 

@@ -11,11 +11,11 @@
 //
 //  mis_demo < infile
 
-#include "demos.h"
-
 // macro used by OK(...) to free workspace if an error occurs
-#define FREE_ALL                \
-    GrB_Matrix_free (&A) ;             \
+#define FREE_ALL            \
+    GrB_Matrix_free (&A) ;  \
+
+#include "graphblas_demos.h"
 
 int main (int argc, char **argv)
 {
@@ -23,7 +23,7 @@ int main (int argc, char **argv)
     GrB_Info info ;
     OK (GrB_init (GrB_NONBLOCKING)) ;
     int nthreads ;
-    OK (GxB_get (GxB_NTHREADS, &nthreads)) ;
+    OK (GxB_Global_Option_get (GxB_NTHREADS, &nthreads)) ;
     fprintf (stderr, "import_demo: nthreads: %d\n", nthreads) ;
 
     //--------------------------------------------------------------------------

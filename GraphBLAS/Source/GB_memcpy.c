@@ -38,8 +38,11 @@ void GB_memcpy                  // parallel memcpy
         // memcpy using a multiple threads
         //----------------------------------------------------------------------
 
-        nthreads = GB_IMIN (nthreads, n / GB_MEM_CHUNK) ;
         size_t nchunks = 1 + (n / GB_MEM_CHUNK) ;
+        if (((size_t) nthreads) > nchunks)
+        { 
+            nthreads = (int) nchunks ;
+        }
         GB_void *pdest = dest ;
         const GB_void *psrc = src ;
 

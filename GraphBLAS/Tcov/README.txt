@@ -4,6 +4,8 @@ http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 GraphBLAS/Tcov: statement coverage tests
 
 Requirements:  the mex command must use a C compiler supporting ANSI C11.
+Microft Visual Studio does not support ANSI C11 so this test is not available
+on Windows unless you use another compiler.
 
 Since nearly all GraphBLAS tests are in MATLAB, I have taken the unusual step
 of creating a statement coverage mechanism to use within a MATLAB mexFunction.

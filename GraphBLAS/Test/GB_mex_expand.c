@@ -63,39 +63,43 @@ void mexFunction
     }
     else if (mxIsComplex (pargin [1]))
     {
+        #if GxB_STDC_VERSION >= 201112L
         // complex case
         double xcomplex [2] ;
         GB_mx_complex_merge (1, xcomplex, pargin [1]) ;
         GrB_Matrix_new (&C, Complex, nrows, ncols) ;
         GxB_Matrix_subassign_UDT (C, M, NULL, (void *) xcomplex,
             GrB_ALL, nrows, GrB_ALL, ncols, GrB_DESC_RS) ;
+        #else
+        mexErrMsgTxt ("complex type not available") ;
+        #endif
     }
     else
     {
         // built-in GraphBLAS types
 
-        #define CREATE(grb_type,c_type)                             \
+        #define CREATE(suffix,grb_type,c_type)                      \
         {                                                           \
             GrB_Matrix_new (&C, grb_type, nrows, ncols) ;           \
             c_type *scalar = (c_type *) mxGetData (pargin [1]) ;    \
-            GxB_subassign (C, M, NULL, *scalar,                     \
+            GxB_Matrix_subassign ## suffix (C, M, NULL, *scalar,    \
                 GrB_ALL, nrows, GrB_ALL, ncols, GrB_DESC_RS) ;      \
         }                                                           \
         break ;
 
         switch (mxGetClassID (pargin [1]))
         {
-            case mxLOGICAL_CLASS : CREATE (GrB_BOOL   , bool     ) ;
-            case mxDOUBLE_CLASS  : CREATE (GrB_FP64   , double   ) ;
-            case mxSINGLE_CLASS  : CREATE (GrB_FP32   , float    ) ;
-            case mxINT8_CLASS    : CREATE (GrB_INT8   , int8_t   ) ;
-            case mxUINT8_CLASS   : CREATE (GrB_UINT8  , uint8_t  ) ;
-            case mxINT16_CLASS   : CREATE (GrB_INT16  , int16_t  ) ;
-            case mxUINT16_CLASS  : CREATE (GrB_UINT16 , uint16_t ) ;
-            case mxINT32_CLASS   : CREATE (GrB_INT32  , int32_t  ) ;
-            case mxUINT32_CLASS  : CREATE (GrB_UINT32 , uint32_t ) ;
-            case mxINT64_CLASS   : CREATE (GrB_INT64  , int64_t  ) ;
-            case mxUINT64_CLASS  : CREATE (GrB_UINT64 , uint64_t ) ;
+            case mxLOGICAL_CLASS : CREATE (_BOOL,   GrB_BOOL   , bool     ) ;
+            case mxDOUBLE_CLASS  : CREATE (_FP64,   GrB_FP64   , double   ) ;
+            case mxSINGLE_CLASS  : CREATE (_FP32,   GrB_FP32   , float    ) ;
+            case mxINT8_CLASS    : CREATE (_INT8,   GrB_INT8   , int8_t   ) ;
+            case mxUINT8_CLASS   : CREATE (_UINT8,  GrB_UINT8  , uint8_t  ) ;
+            case mxINT16_CLASS   : CREATE (_INT16,  GrB_INT16  , int16_t  ) ;
+            case mxUINT16_CLASS  : CREATE (_UINT16, GrB_UINT16 , uint16_t ) ;
+            case mxINT32_CLASS   : CREATE (_INT32,  GrB_INT32  , int32_t  ) ;
+            case mxUINT32_CLASS  : CREATE (_UINT32, GrB_UINT32 , uint32_t ) ;
+            case mxINT64_CLASS   : CREATE (_INT64,  GrB_INT64  , int64_t  ) ;
+            case mxUINT64_CLASS  : CREATE (_UINT32, GrB_UINT64 , uint64_t ) ;
             default: mexErrMsgTxt ("scalar type not supported") ;
         }
     }

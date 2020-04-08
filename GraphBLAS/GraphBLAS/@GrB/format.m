@@ -59,8 +59,7 @@ function f = format (arg)
 %       it is not a row or column vector, then its format is used for C.
 %   (7) Otherwise, the global default format is used for C.
 %
-% The GrB.format setting is reset to 'by col', by 'clear all' or by
-% GrB.clear.
+% The GrB.format setting is reset to its default ('by col'), via GrB.clear.
 %
 % To query the format for a given GraphBLAS matrix G, use the following
 % (which does not affect the global format setting):

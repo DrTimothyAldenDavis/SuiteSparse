@@ -15,8 +15,8 @@
 
 #define FREE_ALL                        \
 {                                       \
-    GrB_free (&A) ;                     \
-    GrB_free (&C) ;                     \
+    GrB_Matrix_free (&A) ;              \
+    GrB_Matrix_free (&C) ;              \
     GB_mx_put_global (true, 0) ;        \
 }
 
@@ -40,7 +40,7 @@ void mexFunction
     }
 
     #define GET_DEEP_COPY       GrB_Matrix_dup (&C, A) ;
-    #define FREE_DEEP_COPY      GrB_free (&C) ;
+    #define FREE_DEEP_COPY      GrB_Matrix_free (&C) ;
 
     // get A (shallow copy)
     A = GB_mx_mxArray_to_Matrix (pargin [0], "A input", false, true) ;

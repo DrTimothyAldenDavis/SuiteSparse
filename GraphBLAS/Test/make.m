@@ -17,8 +17,12 @@ function make (what)
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
-if (isempty (strfind (pwd, 'GraphBLAS/Test')))
-    % make with no arguments should only be done in GraphBLAS/Test
+here = pwd ;
+if (ispc)
+    here = strrep (here, filesep, '/') ;
+end
+if (isempty (strfind (here, 'GraphBLAS/Test')))
+    % this function should only be done in GraphBLAS/Test
     error ('make should be used in Test directory only') ;
 end
 
@@ -92,6 +96,10 @@ if (ismac)
 %   flags = [ flags   ' CFLAGS="$CXXFLAGS -Xpreprocessor -fopenmp" ' ] ;
 %   flags = [ flags ' CXXFLAGS="$CXXFLAGS -Xpreprocessor -fopenmp" ' ] ;
 %   flags = [ flags  ' LDFLAGS="$LDFLAGS  -fopenmp"' ] ;
+elseif (ispc)
+    % Windows
+    libraries = '-L../build/Release -L. -lgraphblas' ;
+    flags = [ flags ' CFLAGS="$CXXFLAGS -wd\"4244\" -wd\"4146\" -wd\"4217\" -wd\"4286\" -wd\"4018\" -wd\"4996\" -wd\"4047\" -wd\"4554\"" '] ;
 else
     % Linux
     libraries = '-L../build -L. -lgraphblas' ;
@@ -114,6 +122,12 @@ for k = 1:length (hfiles)
     htime = max (htime, t) ;
 end
 
+if (ispc)
+    obj_extension = '.obj' ;
+else
+    obj_extension = '.o' ;
+end
+
 % compile any source files that need compiling
 any_c_compiled = false ;
 objlist = '' ;
@@ -125,7 +139,7 @@ for k = 1:length (cfiles)
 
     % get the object file name
     ofile = cfiles(k).name ;
-    objfile = [ ofile(1:end-2) '.o' ] ;
+    objfile = [ ofile(1:end-2) obj_extension ] ;
 
     % get the object file modification time
     ofiles {k} = objfile ;
@@ -147,6 +161,7 @@ for k = 1:length (cfiles)
         if (dryrun)
             fprintf ('%s\n', mexcmd) ;
         else
+            fprintf ('%s\n', mexcmd) ;
             eval (mexcmd) ;
         end
         any_c_compiled = true ;
@@ -181,6 +196,7 @@ for k = 1:length (mexfunctions)
         if (dryrun)
             fprintf ('%s\n', mexcmd) ;
         else
+            fprintf ('%s\n', mexcmd) ;
             eval (mexcmd) ;
         end
     end
@@ -188,4 +204,12 @@ end
 
 % compile GB_spones_mex
 mex -O -R2018a GB_spones_mex.c
+
+% load the library
+if (ispc)
+    cd ../build/Release
+    GrB (1)
+    cd ../../Test
+    pwd
+end
 

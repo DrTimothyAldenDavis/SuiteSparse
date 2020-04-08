@@ -14,6 +14,7 @@
 #include "GB_add.h"
 #include "GB_ij.h"
 #include "GB_Pending.h"
+#include "GB_unused.h"
 
 //------------------------------------------------------------------------------
 // free workspace

@@ -32,15 +32,15 @@
 // nx-by-ny grid.  Method is 0 to 3; refer to wathen.c for details.
 
 // macro used by OK(...) to free workspace if an error occurs
-#define FREE_ALL            \
-    GrB_Vector_free (&v) ;         \
-    GrB_Vector_free (&v0) ;        \
-    GrB_Matrix_free (&A) ;         \
-    GrB_Matrix_free (&Abool) ;     \
-    GrB_Vector_free (&is_reachable) ; \
+#define FREE_ALL                        \
+    GrB_Vector_free (&v) ;              \
+    GrB_Vector_free (&v0) ;             \
+    GrB_Matrix_free (&A) ;              \
+    GrB_Matrix_free (&Abool) ;          \
+    GrB_Vector_free (&is_reachable) ;   \
     GrB_Monoid_free (&max_monoid) ;
 
-#include "demos.h"
+#include "graphblas_demos.h"
 
 int main (int argc, char **argv)
 {
@@ -55,7 +55,7 @@ int main (int argc, char **argv)
     double tic [2], t ;
     OK (GrB_init (GrB_NONBLOCKING)) ;
     int nthreads ;
-    OK (GxB_get (GxB_NTHREADS, &nthreads)) ;
+    OK (GxB_Global_Option_get (GxB_NTHREADS, &nthreads)) ;
     fprintf (stderr, "bfs_demo: nthreads %d\n", nthreads) ;
 
     //--------------------------------------------------------------------------

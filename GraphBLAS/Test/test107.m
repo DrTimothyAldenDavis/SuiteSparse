@@ -19,10 +19,6 @@ else
     nthreads_list = [1 nthreads_max 2*nthreads_max] ;
 end
 
-% clear all
-% delete 'GB_mex_reduce_terminal.mex*'
-% make
-
 % create a matrix with entries [0..2]
 A = 2 * sparse (rand (4)) ;
 s = full (max (max (A))) ;

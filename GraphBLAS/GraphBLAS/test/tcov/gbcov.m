@@ -5,7 +5,6 @@ function gbcov
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 % compile the coverage-test version of the @GrB mexFunctions
-clear all %#ok<*CLALL>
 global gbcov_global %#ok<*NUSED>
 
 try

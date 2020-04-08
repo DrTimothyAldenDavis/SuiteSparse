@@ -35,16 +35,18 @@ void mexFunction
     char s [LEN+1] ;
     if (cnz == 0)
     {
-        sprintf (s, "no nonzeros") ;
+        snprintf (s, LEN, "no nonzeros") ;
     }
     else if (cnz == 1)
     {
-        sprintf (s, "1 nonzero") ;
+        snprintf (s, LEN, "1 nonzero") ;
     }
     else
     {
-        sprintf (s, GBd " nonzeros", cnz) ;
+        snprintf (s, LEN, GBd " nonzeros", cnz) ;
     }
+
+    s [LEN] = '\0' ;
 
     //--------------------------------------------------------------------------
     // print the GraphBLAS matrix
@@ -52,7 +54,6 @@ void mexFunction
 
     GrB_Matrix C = gb_get_shallow (pargin [0]) ;
     OK (GxB_Matrix_fprint (C, s, level, NULL)) ;
-    printf ("\n") ;
     OK (GrB_Matrix_free (&C)) ;
     GB_WRAPUP ;
 }

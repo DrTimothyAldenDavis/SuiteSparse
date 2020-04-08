@@ -7,7 +7,10 @@
 
 //------------------------------------------------------------------------------
 
-#include "usercomplex.h"
+#include "GraphBLAS.h"
+#undef GB_PUBLIC
+#define GB_LIBRARY
+#include "graphblas_demos.h"
 
 #if defined __INTEL_COMPILER
 #pragma warning (disable: 58 167 144 161 177 181 186 188 589 593 869 981 1418 1419 1572 1599 2259 2282 2557 2547 3280 )
@@ -16,13 +19,46 @@
 #pragma GCC diagnostic ignored "-Wincompatible-pointer-types"
 #endif
 
+GrB_BinaryOp Complex_first = NULL, Complex_second = NULL, Complex_min = NULL,
+             Complex_max   = NULL, Complex_plus   = NULL, Complex_minus = NULL,
+             Complex_times = NULL, Complex_div    = NULL, Complex_rminus = NULL,
+             Complex_rdiv  = NULL, Complex_pair   = NULL ;
+
+GrB_BinaryOp Complex_iseq = NULL, Complex_isne = NULL,
+             Complex_isgt = NULL, Complex_islt = NULL,
+             Complex_isge = NULL, Complex_isle = NULL ;
+
+GrB_BinaryOp Complex_or = NULL, Complex_and = NULL, Complex_xor = NULL ;
+
+GrB_BinaryOp Complex_eq = NULL, Complex_ne = NULL,
+             Complex_gt = NULL, Complex_lt = NULL,
+             Complex_ge = NULL, Complex_le = NULL ;
+
+GrB_BinaryOp Complex_complex = NULL ;
+
+GrB_UnaryOp  Complex_identity = NULL, Complex_ainv = NULL, Complex_minv = NULL,
+             Complex_not = NULL,      Complex_conj = NULL,
+             Complex_one = NULL,      Complex_abs  = NULL ;
+
+GrB_UnaryOp Complex_real = NULL, Complex_imag = NULL,
+            Complex_cabs = NULL, Complex_angle = NULL ;
+
+GrB_UnaryOp Complex_complex_real = NULL, Complex_complex_imag = NULL ;
+
+GrB_Type Complex = NULL ;
+GrB_Monoid   Complex_plus_monoid = NULL, Complex_times_monoid = NULL ;
+GrB_Semiring Complex_plus_times = NULL ;
+
+#if GxB_STDC_VERSION >= 201112L
+
+#define ONE  CMPLX(1,0)
+#define ZERO CMPLX(0,0)
 #define C double complex
+
 #define X *x
 #define Y *y
 #define Z *z
 
-#define ONE  CMPLX(1,0)
-#define ZERO CMPLX(0,0)
 #define T ONE
 #define F ZERO
 #define BOOL(X) (X != ZERO)
@@ -31,16 +67,17 @@
 // binary functions, z=f(x,y), where CxC -> C
 //------------------------------------------------------------------------------
 
-void complex_first  (C Z, const C X, const C Y) { Z = X ; }
-void complex_second (C Z, const C X, const C Y) { Z = Y ; }
-void complex_pair   (C Z, const C X, const C Y) { Z = ONE ; }
-void complex_plus   (C Z, const C X, const C Y) { Z = X + Y ; }
-void complex_minus  (C Z, const C X, const C Y) { Z = X - Y ; }
-void complex_rminus (C Z, const C X, const C Y) { Z = Y - X ; }
-void complex_times  (C Z, const C X, const C Y) { Z = X * Y ; }
-void complex_div    (C Z, const C X, const C Y) { Z = X / Y ; }
-void complex_rdiv   (C Z, const C X, const C Y) { Z = Y / X ; }
+GB_PUBLIC void complex_first  (C Z, const C X, const C Y) { Z = X ; }
+GB_PUBLIC void complex_second (C Z, const C X, const C Y) { Z = Y ; }
+GB_PUBLIC void complex_pair   (C Z, const C X, const C Y) { Z = ONE ; }
+GB_PUBLIC void complex_plus   (C Z, const C X, const C Y) { Z = X + Y ; }
+GB_PUBLIC void complex_minus  (C Z, const C X, const C Y) { Z = X - Y ; }
+GB_PUBLIC void complex_rminus (C Z, const C X, const C Y) { Z = Y - X ; }
+GB_PUBLIC void complex_times  (C Z, const C X, const C Y) { Z = X * Y ; }
+GB_PUBLIC void complex_div    (C Z, const C X, const C Y) { Z = X / Y ; }
+GB_PUBLIC void complex_rdiv   (C Z, const C X, const C Y) { Z = Y / X ; }
 
+GB_PUBLIC
 void complex_min (C Z, const C X, const C Y)
 {
     // min (x,y): complex number with smallest magnitude.  If tied, select the
@@ -69,6 +106,7 @@ void complex_min (C Z, const C X, const C Y)
     }
 }
 
+GB_PUBLIC
 void complex_max (C Z, const C X, const C Y)
 {
     // max (x,y): complex number with largest magnitude.  If tied, select the
@@ -97,11 +135,6 @@ void complex_max (C Z, const C X, const C Y)
     }
 }
 
-GrB_BinaryOp Complex_first = NULL, Complex_second = NULL, Complex_min = NULL,
-             Complex_max   = NULL, Complex_plus   = NULL, Complex_minus = NULL,
-             Complex_times = NULL, Complex_div    = NULL, Complex_rminus = NULL,
-             Complex_rdiv  = NULL, Complex_pair   = NULL ;
-
 //------------------------------------------------------------------------------
 // 6 binary functions, z=f(x,y), where CxC -> C ; (1,0) = true, (0,0) = false
 //------------------------------------------------------------------------------
@@ -110,37 +143,40 @@ GrB_BinaryOp Complex_first = NULL, Complex_second = NULL, Complex_min = NULL,
 
 #define R(x) creal(x)
 
+GB_PUBLIC
 void complex_iseq (C Z, const C X, const C Y) { Z = (X == Y) ? T : F ; }
+GB_PUBLIC
 void complex_isne (C Z, const C X, const C Y) { Z = (X != Y) ? T : F ; }
+GB_PUBLIC
 void complex_isgt (C Z, const C X, const C Y) { Z = (R(X) >  R(Y)) ? T : F ; }
+GB_PUBLIC
 void complex_islt (C Z, const C X, const C Y) { Z = (R(X) <  R(Y)) ? T : F ; }
+GB_PUBLIC
 void complex_isge (C Z, const C X, const C Y) { Z = (R(X) >= R(Y)) ? T : F ; }
+GB_PUBLIC
 void complex_isle (C Z, const C X, const C Y) { Z = (R(X) <= R(Y)) ? T : F ; }
-
-GrB_BinaryOp Complex_iseq = NULL, Complex_isne = NULL,
-             Complex_isgt = NULL, Complex_islt = NULL,
-             Complex_isge = NULL, Complex_isle = NULL ;
 
 //------------------------------------------------------------------------------
 // binary boolean functions, z=f(x,y), where CxC -> C
 //------------------------------------------------------------------------------
 
+GB_PUBLIC
 void complex_or (C Z, const C X, const C Y)
 {
     Z = (BOOL (X) || BOOL (Y)) ? T : F ;
 }
 
+GB_PUBLIC
 void complex_and (C Z, const C X, const C Y)
 {
     Z = (BOOL (X) && BOOL (Y)) ? T : F ;
 }
 
+GB_PUBLIC
 void complex_xor (C Z, const C X, const C Y)
 {
     Z = (BOOL (X) != BOOL (Y)) ? T : F ;
 }
-
-GrB_BinaryOp Complex_or = NULL, Complex_and = NULL, Complex_xor = NULL ;
 
 //------------------------------------------------------------------------------
 // 6 binary functions, z=f(x,y), where CxC -> bool
@@ -148,72 +184,84 @@ GrB_BinaryOp Complex_or = NULL, Complex_and = NULL, Complex_xor = NULL ;
 
 // inequality operators follow the MATLAB convention
 
+GB_PUBLIC
 void complex_eq (bool Z, const C X, const C Y) { Z = (X == Y) ; }
+GB_PUBLIC
 void complex_ne (bool Z, const C X, const C Y) { Z = (X != Y) ; }
+GB_PUBLIC
 void complex_gt (bool Z, const C X, const C Y) { Z = (R (X) >  R (Y)) ;}
+GB_PUBLIC
 void complex_lt (bool Z, const C X, const C Y) { Z = (R (X) <  R (Y)) ;}
+GB_PUBLIC
 void complex_ge (bool Z, const C X, const C Y) { Z = (R (X) >= R (Y)) ;}
+GB_PUBLIC
 void complex_le (bool Z, const C X, const C Y) { Z = (R (X) <= R (Y)) ;}
-
-GrB_BinaryOp Complex_eq = NULL, Complex_ne = NULL,
-             Complex_gt = NULL, Complex_lt = NULL,
-             Complex_ge = NULL, Complex_le = NULL ;
 
 //------------------------------------------------------------------------------
 // binary functions, z=f(x,y), where double x double -> complex
 //------------------------------------------------------------------------------
 
+GB_PUBLIC
 void complex_complex (C Z, const double X, const double Y) { Z = CMPLX (X,Y) ; }
-
-GrB_BinaryOp Complex_complex = NULL ;
 
 //------------------------------------------------------------------------------
 // unary functions, z=f(x) where C -> C
 //------------------------------------------------------------------------------
 
+GB_PUBLIC
 void complex_one      (C Z, const C X) { Z =       1. ; }
+GB_PUBLIC
 void complex_identity (C Z, const C X) { Z =       X  ; }
+GB_PUBLIC
 void complex_ainv     (C Z, const C X) { Z =      -X  ; }
+GB_PUBLIC
 void complex_abs      (C Z, const C X) { Z = CMPLX (cabs (X), 0) ; }
+GB_PUBLIC
 void complex_minv     (C Z, const C X) { Z =  1. / X  ; } 
+GB_PUBLIC
 void complex_not      (C Z, const C X) { Z = BOOL (X) ? F : T ; }
+GB_PUBLIC
 void complex_conj     (C Z, const C X) { Z = conj (X) ; }
-
-GrB_UnaryOp  Complex_identity = NULL, Complex_ainv = NULL, Complex_minv = NULL,
-             Complex_not = NULL,      Complex_conj = NULL,
-             Complex_one = NULL,      Complex_abs  = NULL ;
 
 //------------------------------------------------------------------------------
 // unary functions, z=f(x) where C -> double
 //------------------------------------------------------------------------------
 
+GB_PUBLIC
 void complex_real  (double Z, const C X) { Z = creal (X) ; }
+GB_PUBLIC
 void complex_imag  (double Z, const C X) { Z = cimag (X) ; }
+GB_PUBLIC
 void complex_cabs  (double Z, const C X) { Z = cabs  (X) ; }
+GB_PUBLIC
 void complex_angle (double Z, const C X) { Z = carg  (X) ; }
-
-GrB_UnaryOp Complex_real = NULL, Complex_imag = NULL,
-            Complex_cabs = NULL, Complex_angle = NULL ;
 
 //------------------------------------------------------------------------------
 // unary functions, z=f(x) where double -> C
 //------------------------------------------------------------------------------
 
+GB_PUBLIC
 void complex_complex_real (C Z, const double X) { Z = CMPLX (X, 0) ; }
+GB_PUBLIC
 void complex_complex_imag (C Z, const double X) { Z = CMPLX (0, X) ; }
 
-GrB_UnaryOp Complex_complex_real = NULL, Complex_complex_imag = NULL ;
+#else
 
 //------------------------------------------------------------------------------
-// Complex type, scalars, monoids, and semiring
+// Pre-ANSI C11: just make to easier to write this file
 //------------------------------------------------------------------------------
 
-GrB_Type Complex = NULL ;
-GrB_Monoid   Complex_plus_monoid = NULL, Complex_times_monoid = NULL ;
-GrB_Semiring Complex_plus_times = NULL ;
-C Complex_1  = ONE ;
-C Complex_0 = ZERO ;
+#define ONE  0
+#define ZERO 1
+#define C double
 
+#endif
+
+//------------------------------------------------------------------------------
+// OK: check if a method fails
+//------------------------------------------------------------------------------
+
+#undef OK
 #define OK(method)              \
     info = method ;             \
     if (info != GrB_SUCCESS)    \
@@ -226,15 +274,17 @@ C Complex_0 = ZERO ;
 // Complex_init: create the complex type, operators, monoids, and semiring
 //------------------------------------------------------------------------------
 
+GB_PUBLIC
 GrB_Info Complex_init ( )
 {
-
-    GrB_Info info ;
 
     //--------------------------------------------------------------------------
     // create the Complex type
     //--------------------------------------------------------------------------
 
+#if GxB_STDC_VERSION >= 201112L
+
+    GrB_Info info ;
     OK (GrB_Type_new (&Complex, sizeof (C))) ;    
 
     #undef C
@@ -326,6 +376,9 @@ GrB_Info Complex_init ( )
     // create the Complex monoids
     //--------------------------------------------------------------------------
 
+    double complex Complex_1 = ONE ;
+    double complex Complex_0 = ZERO ;
+
     OK (GrB_Monoid_new_UDT (&Complex_plus_monoid,  Complex_plus,  &Complex_0)) ;
     OK (GrB_Monoid_new_UDT (&Complex_times_monoid, Complex_times, &Complex_1)) ;
 
@@ -336,6 +389,7 @@ GrB_Info Complex_init ( )
     // more could be created, but this suffices for testing GraphBLAS
     OK (GrB_Semiring_new
         (&Complex_plus_times, Complex_plus_monoid, Complex_times)) ;
+#endif
 
     return (GrB_SUCCESS) ;
 }
@@ -345,8 +399,11 @@ GrB_Info Complex_init ( )
 // Complex_finalize: free all complex types, operators, monoids, and semiring
 //------------------------------------------------------------------------------
 
+GB_PUBLIC
 GrB_Info Complex_finalize ( )
 {
+
+#if GxB_STDC_VERSION >= 201112L
 
     //--------------------------------------------------------------------------
     // free the Complex plus-times semiring
@@ -438,6 +495,7 @@ GrB_Info Complex_finalize ( )
     //--------------------------------------------------------------------------
 
     GrB_Type_free (&Complex) ;
+#endif
 
     return (GrB_SUCCESS) ;
 }

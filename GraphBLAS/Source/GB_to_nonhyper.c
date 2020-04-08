@@ -21,6 +21,7 @@
 
 #include "GB.h"
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_to_nonhyper     // convert a matrix to non-hypersparse
 (
     GrB_Matrix A,           // matrix to convert to non-hypersparse

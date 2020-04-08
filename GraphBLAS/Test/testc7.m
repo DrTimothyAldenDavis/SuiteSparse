@@ -4,6 +4,11 @@ function testc7
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
+if (~GB_mex_have_complex)
+    fprintf ('\ntestc7: skipped\n') ;
+    return
+end
+
 fprintf ('\ntestc7: all complex assign C(I,J)=A --------------------------\n') ;
 rng ('default')
 

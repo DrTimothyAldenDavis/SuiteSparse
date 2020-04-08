@@ -83,6 +83,7 @@
 // GB_transpose
 //------------------------------------------------------------------------------
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_transpose           // C=A', C=(ctype)A or C=op(A')
 (
     GrB_Matrix *Chandle,        // output matrix C, possibly modified in place

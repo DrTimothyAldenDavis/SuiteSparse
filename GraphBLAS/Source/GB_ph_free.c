@@ -14,6 +14,7 @@
 
 #include "GB.h"
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void GB_ph_free                 // free A->p and A->h of a matrix
 (
     GrB_Matrix A                // matrix with content to free

@@ -14,7 +14,7 @@
 #define FREE_ALL                        \
 {                                       \
     GB_MATRIX_FREE (&A) ;               \
-    GB_FREE_MEMORY (Xtemp, nvals, sizeof (double complex)) ; \
+    GB_FREE_MEMORY (Xtemp, nvals, 2 * sizeof (double)) ; \
     GB_mx_put_global (true, 0) ;        \
 }
 
@@ -29,9 +29,9 @@ void mexFunction
 
     bool malloc_debug = GB_mx_get_global (true) ;
     GrB_Matrix A = NULL ;
-    void *Y = NULL ;
-    void *Xtemp = NULL ;
-    void *X = NULL ;
+    GB_void *Y = NULL ;
+    GB_void *Xtemp = NULL ;
+    GB_void *X = NULL ;
     GrB_Index nvals = 0 ;
 
     // check inputs
@@ -67,7 +67,7 @@ void mexFunction
         // create Xtemp
         if (nargout > 2)
         {
-            GB_MALLOC_MEMORY (Xtemp, nvals, sizeof (double complex)) ;
+            GB_MALLOC_MEMORY (Xtemp, nvals, 2 * sizeof (double)) ;
         }
     }
     else
@@ -84,7 +84,7 @@ void mexFunction
         if (nargout > 2)
         {
             pargout [2] = mxCreateNumericMatrix (nvals, 1, xclass, mxREAL) ;
-            X = (void *) mxGetData (pargout [2]) ;
+            X = (GB_void *) mxGetData (pargout [2]) ;
         }
     }
 
@@ -107,19 +107,18 @@ void mexFunction
         GrB_Vector v = (GrB_Vector) A ;
         switch (xtype->code)
         {
-            case GB_BOOL_code   : METHOD (GrB_Vector_extractTuples (I, (bool     *) X, &nvals, v)) ; break ;
-            case GB_INT8_code   : METHOD (GrB_Vector_extractTuples (I, (int8_t   *) X, &nvals, v)) ; break ;
-            case GB_UINT8_code  : METHOD (GrB_Vector_extractTuples (I, (uint8_t  *) X, &nvals, v)) ; break ;
-            case GB_INT16_code  : METHOD (GrB_Vector_extractTuples (I, (int16_t  *) X, &nvals, v)) ; break ;
-            case GB_UINT16_code : METHOD (GrB_Vector_extractTuples (I, (uint16_t *) X, &nvals, v)) ; break ;
-            case GB_INT32_code  : METHOD (GrB_Vector_extractTuples (I, (int32_t  *) X, &nvals, v)) ; break ;
-            case GB_UINT32_code : METHOD (GrB_Vector_extractTuples (I, (uint32_t *) X, &nvals, v)) ; break ;
-            case GB_INT64_code  : METHOD (GrB_Vector_extractTuples (I, (int64_t  *) X, &nvals, v)) ; break ;
-            case GB_UINT64_code : METHOD (GrB_Vector_extractTuples (I, (uint64_t *) X, &nvals, v)) ; break ;
-            case GB_FP32_code   : METHOD (GrB_Vector_extractTuples (I, (float    *) X, &nvals, v)) ; break ;
-            case GB_FP64_code   : METHOD (GrB_Vector_extractTuples (I, (double   *) X, &nvals, v)) ; break ;
-            case GB_UDT_code    : 
-              METHOD (GrB_Vector_extractTuples (I, Xtemp, &nvals, v)) ; break ;
+            case GB_BOOL_code   : METHOD (GrB_Vector_extractTuples_BOOL   (I, (bool     *) X, &nvals, v)) ; break ;
+            case GB_INT8_code   : METHOD (GrB_Vector_extractTuples_INT8   (I, (int8_t   *) X, &nvals, v)) ; break ;
+            case GB_UINT8_code  : METHOD (GrB_Vector_extractTuples_UINT8  (I, (uint8_t  *) X, &nvals, v)) ; break ;
+            case GB_INT16_code  : METHOD (GrB_Vector_extractTuples_INT16  (I, (int16_t  *) X, &nvals, v)) ; break ;
+            case GB_UINT16_code : METHOD (GrB_Vector_extractTuples_UINT16 (I, (uint16_t *) X, &nvals, v)) ; break ;
+            case GB_INT32_code  : METHOD (GrB_Vector_extractTuples_INT32  (I, (int32_t  *) X, &nvals, v)) ; break ;
+            case GB_UINT32_code : METHOD (GrB_Vector_extractTuples_UINT32 (I, (uint32_t *) X, &nvals, v)) ; break ;
+            case GB_INT64_code  : METHOD (GrB_Vector_extractTuples_INT64  (I, (int64_t  *) X, &nvals, v)) ; break ;
+            case GB_UINT64_code : METHOD (GrB_Vector_extractTuples_UINT64 (I, (uint64_t *) X, &nvals, v)) ; break ;
+            case GB_FP32_code   : METHOD (GrB_Vector_extractTuples_FP32   (I, (float    *) X, &nvals, v)) ; break ;
+            case GB_FP64_code   : METHOD (GrB_Vector_extractTuples_FP64   (I, (double   *) X, &nvals, v)) ; break ;
+            case GB_UDT_code    : METHOD (GrB_Vector_extractTuples_UDT    (I, Xtemp,          &nvals, v)) ; break ;
             default             : FREE_ALL ; mexErrMsgTxt ("unsupported class") ;
         }
         if (J != NULL)
@@ -131,19 +130,18 @@ void mexFunction
     {
         switch (xtype->code)
         {
-            case GB_BOOL_code   : METHOD (GrB_Matrix_extractTuples (I, J, (bool     *) X, &nvals, A)) ; break ;
-            case GB_INT8_code   : METHOD (GrB_Matrix_extractTuples (I, J, (int8_t   *) X, &nvals, A)) ; break ;
-            case GB_UINT8_code  : METHOD (GrB_Matrix_extractTuples (I, J, (uint8_t  *) X, &nvals, A)) ; break ;
-            case GB_INT16_code  : METHOD (GrB_Matrix_extractTuples (I, J, (int16_t  *) X, &nvals, A)) ; break ;
-            case GB_UINT16_code : METHOD (GrB_Matrix_extractTuples (I, J, (uint16_t *) X, &nvals, A)) ; break ;
-            case GB_INT32_code  : METHOD (GrB_Matrix_extractTuples (I, J, (int32_t  *) X, &nvals, A)) ; break ;
-            case GB_UINT32_code : METHOD (GrB_Matrix_extractTuples (I, J, (uint32_t *) X, &nvals, A)) ; break ;
-            case GB_INT64_code  : METHOD (GrB_Matrix_extractTuples (I, J, (int64_t  *) X, &nvals, A)) ; break ;
-            case GB_UINT64_code : METHOD (GrB_Matrix_extractTuples (I, J, (uint64_t *) X, &nvals, A)) ; break ;
-            case GB_FP32_code   : METHOD (GrB_Matrix_extractTuples (I, J, (float    *) X, &nvals, A)) ; break ;
-            case GB_FP64_code   : METHOD (GrB_Matrix_extractTuples (I, J, (double   *) X, &nvals, A)) ; break;
-            case GB_UDT_code    :
-                METHOD (GrB_Matrix_extractTuples (I, J, Xtemp, &nvals, A)) ; break;
+            case GB_BOOL_code   : METHOD (GrB_Matrix_extractTuples_BOOL   (I, J, (bool     *) X, &nvals, A)) ; break ;
+            case GB_INT8_code   : METHOD (GrB_Matrix_extractTuples_INT8   (I, J, (int8_t   *) X, &nvals, A)) ; break ;
+            case GB_UINT8_code  : METHOD (GrB_Matrix_extractTuples_UINT8  (I, J, (uint8_t  *) X, &nvals, A)) ; break ;
+            case GB_INT16_code  : METHOD (GrB_Matrix_extractTuples_INT16  (I, J, (int16_t  *) X, &nvals, A)) ; break ;
+            case GB_UINT16_code : METHOD (GrB_Matrix_extractTuples_UINT16 (I, J, (uint16_t *) X, &nvals, A)) ; break ;
+            case GB_INT32_code  : METHOD (GrB_Matrix_extractTuples_INT32  (I, J, (int32_t  *) X, &nvals, A)) ; break ;
+            case GB_UINT32_code : METHOD (GrB_Matrix_extractTuples_UINT32 (I, J, (uint32_t *) X, &nvals, A)) ; break ;
+            case GB_INT64_code  : METHOD (GrB_Matrix_extractTuples_INT64  (I, J, (int64_t  *) X, &nvals, A)) ; break ;
+            case GB_UINT64_code : METHOD (GrB_Matrix_extractTuples_UINT64 (I, J, (uint64_t *) X, &nvals, A)) ; break ;
+            case GB_FP32_code   : METHOD (GrB_Matrix_extractTuples_FP32   (I, J, (float    *) X, &nvals, A)) ; break ;
+            case GB_FP64_code   : METHOD (GrB_Matrix_extractTuples_FP64   (I, J, (double   *) X, &nvals, A)) ; break;
+            case GB_UDT_code    : METHOD (GrB_Matrix_extractTuples_UDT    (I, J, Xtemp,          &nvals, A)) ; break;
             default             : FREE_ALL ; mexErrMsgTxt ("unsupported class") ;
         }
     }

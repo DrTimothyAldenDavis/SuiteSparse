@@ -19,7 +19,7 @@
     GB_MATRIX_FREE (&C) ;               \
     GB_MATRIX_FREE (&M) ;               \
     GB_MATRIX_FREE (&A) ;               \
-    GrB_free (&desc) ;                  \
+    GrB_Descriptor_free (&desc) ;       \
     GB_mx_put_global (true, 0) ;        \
 }
 
@@ -111,7 +111,7 @@ void mexFunction
             // get k
             int64_t k = (int64_t) mxGetScalar (pargin [5]) ;
             GxB_Scalar_new (&Thunk, GrB_INT64) ;
-            GxB_Scalar_setElement (Thunk, k) ;
+            GxB_Scalar_setElement_INT64 (Thunk, k) ;
             GrB_Index ignore ;
             GxB_Scalar_nvals (&ignore, Thunk) ;
         }
@@ -136,12 +136,12 @@ void mexFunction
     if (C->vdim == 1 && (desc == NULL || desc->in0 == GxB_DEFAULT))
     {
         // this is just to test the Vector version
-        METHOD (GxB_select ((GrB_Vector) C, (GrB_Vector) M, accum, op,
+        METHOD (GxB_Vector_select ((GrB_Vector) C, (GrB_Vector) M, accum, op,
             (GrB_Vector) A, Thunk, desc)) ;
     }
     else
     {
-        METHOD (GxB_select (C, M, accum, op, A, Thunk, desc)) ;
+        METHOD (GxB_Matrix_select (C, M, accum, op, A, Thunk, desc)) ;
     }
 
     // return C to MATLAB as a struct and free the GraphBLAS C

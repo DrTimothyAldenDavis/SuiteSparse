@@ -24,31 +24,33 @@
 // Acknowledgements:  this method was written with input from Richard Veras,
 // Franz Franchetti, and Scott McMillan, Carnegie Mellon University.
 
+#include "GraphBLAS.h"
+
 //------------------------------------------------------------------------------
 // helper macros
 //------------------------------------------------------------------------------
 
 // free all workspace
-#define FREEWORK                    \
-{                                   \
-    GrB_Vector_free (&rdouble) ;           \
-    GrB_Vector_free (&r) ;                 \
-    GrB_Vector_free (&rnew) ;              \
-    GrB_Vector_free (&dout) ;              \
-    GrB_Vector_free (&rdiff) ;             \
-    GrB_Descriptor_free (&desc) ;              \
-    if (I != NULL) free (I) ;       \
-    if (X != NULL) free (X) ;       \
-    GrB_BinaryOp_free (&PageRank_accum) ;    \
-    GrB_BinaryOp_free (&PageRank_add) ;      \
-    GrB_Monoid_free (&PageRank_monoid) ;   \
-    GrB_BinaryOp_free (&PageRank_multiply) ; \
-    GrB_Semiring_free (&PageRank_semiring) ; \
-    GrB_BinaryOp_free (&PageRank_diff) ;     \
-    GrB_Type_free (&PageRank_type) ;     \
-    GrB_UnaryOp_free (&PageRank_div) ;      \
-    GrB_UnaryOp_free (&PageRank_get) ;      \
-    GrB_UnaryOp_free (&PageRank_init) ;     \
+#define FREEWORK                                \
+{                                               \
+    GrB_Vector_free (&rdouble) ;                \
+    GrB_Vector_free (&r) ;                      \
+    GrB_Vector_free (&rnew) ;                   \
+    GrB_Vector_free (&dout) ;                   \
+    GrB_Vector_free (&rdiff) ;                  \
+    GrB_Descriptor_free (&desc) ;               \
+    if (I != NULL) free (I) ;                   \
+    if (X != NULL) free (X) ;                   \
+    GrB_BinaryOp_free (&PageRank_accum) ;       \
+    GrB_BinaryOp_free (&PageRank_add) ;         \
+    GrB_Monoid_free (&PageRank_monoid) ;        \
+    GrB_BinaryOp_free (&PageRank_multiply) ;    \
+    GrB_Semiring_free (&PageRank_semiring) ;    \
+    GrB_BinaryOp_free (&PageRank_diff) ;        \
+    GrB_Type_free (&PageRank_type) ;            \
+    GrB_UnaryOp_free (&PageRank_div) ;          \
+    GrB_UnaryOp_free (&PageRank_get) ;          \
+    GrB_UnaryOp_free (&PageRank_init) ;         \
 }
 
 // error handler: free output P and all workspace (used by CHECK and OK macros)
@@ -58,7 +60,9 @@
     FREEWORK ;                  \
 }
 
-#include "demos.h"
+#undef GB_PUBLIC
+#define GB_LIBRARY
+#include "graphblas_demos.h"
 
 //------------------------------------------------------------------------------
 // scalar types and operators
@@ -225,6 +229,7 @@ int pagerank_compar (const void *x, const void *y)
 // dpagerank2: compute the PageRank of all nodes in a graph
 //------------------------------------------------------------------------------
 
+GB_PUBLIC
 GrB_Info dpagerank2         // GrB_SUCCESS or error condition
 (
     PageRank **Phandle,     // output: pointer to array of PageRank structs

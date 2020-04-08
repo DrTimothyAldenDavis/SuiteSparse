@@ -61,7 +61,7 @@ void mexFunction
     #undef FREE_DEEP_COPY
 
     #define GET_DEEP_COPY  GrB_Matrix_new (&C, GrB_FP64, A->vlen, A->vdim) ;
-    #define FREE_DEEP_COPY GrB_free (&C) ;
+    #define FREE_DEEP_COPY GrB_Matrix_free (&C) ;
 
     // C = nonzero (A)
     METHOD (GxB_Matrix_select (C, NULL, NULL, GxB_NONZERO, A, NULL, NULL)) ;

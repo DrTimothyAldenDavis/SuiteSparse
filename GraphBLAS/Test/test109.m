@@ -4,6 +4,11 @@ function test109
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
+if (~GB_mex_have_complex)
+    fprintf ('\ntest109: skipped\n') ;
+    return ;
+end
+
 fprintf ('\ntest109: terminal monoid with user-defined type\n') ;
 
 rng ('default') ;

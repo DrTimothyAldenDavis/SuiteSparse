@@ -6,6 +6,11 @@ function test16
 
 % all complex matrix tests
 
+if (~GB_mex_have_complex)
+    fprintf ('\ntest16: skipped\n') ;
+    return ;
+end
+
 fprintf ('\nTesting user-defined complex type:\n') ;
 testc1  % test ops
 testc2  % A'*B, A+B, A*B

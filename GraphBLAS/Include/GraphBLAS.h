@@ -107,10 +107,10 @@
 
 // The version of this implementation, and the GraphBLAS API version:
 #define GxB_IMPLEMENTATION_NAME "SuiteSparse:GraphBLAS"
-#define GxB_IMPLEMENTATION_DATE "Mar 10, 2020"
+#define GxB_IMPLEMENTATION_DATE "Apr 2, 2020"
 #define GxB_IMPLEMENTATION_MAJOR 3
 #define GxB_IMPLEMENTATION_MINOR 2
-#define GxB_IMPLEMENTATION_SUB   1
+#define GxB_IMPLEMENTATION_SUB   2
 #define GxB_SPEC_DATE "May 18, 2018"
 #define GxB_SPEC_MAJOR 1
 #define GxB_SPEC_MINOR 2
@@ -6518,7 +6518,7 @@ GrB_Info GxB_kron                   // C<Mask> = accum (C, kron(A,B))
 // is NULL, it is treated as the empty string.
 //
 // GxB_print (object, GxB_Print_Level pr) is the same as GxB_fprint, except
-// that it prints the contents of the object to stdout instead of a file f.
+// that it prints the contents with printf instead of fprintf to a file f.
 //
 // The exact content and format of what is printed is implementation-dependent,
 // and will change from version to version of SuiteSparse:GraphBLAS.  Do not
@@ -6655,7 +6655,7 @@ GrB_Info GxB_Scalar_fprint          // print and check a GxB_Scalar
 #endif
 
 #if GxB_STDC_VERSION >= 201112L
-#define GxB_print(object,pr) GxB_fprint(object,pr,stdout)
+#define GxB_print(object,pr) GxB_fprint(object,pr,NULL)
 #endif
 
 //==============================================================================

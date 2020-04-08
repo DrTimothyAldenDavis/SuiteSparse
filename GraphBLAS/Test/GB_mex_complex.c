@@ -17,6 +17,7 @@
 #include "matrix.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 
 #define USAGE "C = GB_mex_complex (A)"
 

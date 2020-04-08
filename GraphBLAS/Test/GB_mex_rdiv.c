@@ -20,8 +20,8 @@
     GB_MATRIX_FREE (&A) ;               \
     GB_MATRIX_FREE (&B) ;               \
     GB_MATRIX_FREE (&C) ;               \
-    GrB_free (&My_rdiv) ;               \
-    GrB_free (&My_plus_rdiv) ;          \
+    GrB_BinaryOp_free (&My_rdiv) ;      \
+    GrB_Semiring_free (&My_plus_rdiv) ; \
     GB_mx_put_global (true, 0) ;        \
 }
 
@@ -60,7 +60,7 @@ GrB_Info axb (GB_Context Context, bool cprint)
     info = GrB_Semiring_new (&My_plus_rdiv, GxB_PLUS_FP64_MONOID, My_rdiv) ;
     if (info != GrB_SUCCESS)
     {
-        GrB_free (&My_rdiv) ;
+        GrB_BinaryOp_free (&My_rdiv) ;
         return (info) ;
     }
 
@@ -86,11 +86,11 @@ GrB_Info axb (GB_Context Context, bool cprint)
     if (C != NULL)
     {
         C->AxB_method_used = AxB_method_used ;
-        if (cprint) GxB_print (C, GxB_COMPLETE) ;
+        if (cprint) GxB_Matrix_fprint (C, "C", GxB_COMPLETE, NULL) ;
     }
 
-    GrB_free (&My_rdiv) ;
-    GrB_free (&My_plus_rdiv) ;
+    GrB_BinaryOp_free (&My_rdiv) ;
+    GrB_Semiring_free (&My_plus_rdiv) ;
 
     return (info) ;
 }

@@ -11,6 +11,7 @@
 #define GB_ADD_H
 #include "GB.h"
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_add             // C=A+B or C<M>=A+B
 (
     GrB_Matrix *Chandle,    // output matrix (unallocated on input)

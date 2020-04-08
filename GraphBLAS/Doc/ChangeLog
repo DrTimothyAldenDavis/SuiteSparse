@@ -1,3 +1,15 @@
+Version 3.2.2, Apr 2, 2020
+
+    * (16) bug fix to MATLAB interface: for matrices with dimension > 2^53.
+        Note that MATLAB will not display the size correctly in 'whos', which
+        rounds the int64 values of m and n for [m,n]=size(A) of a GrB_matrix to
+        a 'flint', which is a double value, that then gets rounded.  This is
+        outside of my control.  size(A) is correct, just the 'whos' is wrong.
+    * port to Microsoft Visual Studio: including GraphBLAS/Demo and
+        GraphBLAS/Test, which had not been ported in v3.1.2.
+    * remove dependency on m4: end-users no longer need m4;  still needed by
+        the Source/codegen*.m scripts but those are for development only.
+
 Version 3.2.1, Mar 10, 2020
 
     * GAP benchmarks in MATLAB: in GraphBLAS/GraphBLAS/GAP (all but CC).

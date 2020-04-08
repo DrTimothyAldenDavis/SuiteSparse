@@ -28,6 +28,7 @@
 
 #include "GB_thread_local.h"
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_error           // log an error in thread-local-storage
 (
     GrB_Info info,          // error return code from a GraphBLAS function

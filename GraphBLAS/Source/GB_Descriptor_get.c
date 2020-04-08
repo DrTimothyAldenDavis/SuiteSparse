@@ -77,6 +77,7 @@
 
 #include "GB.h"
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_Descriptor_get      // get the contents of a descriptor
 (
     const GrB_Descriptor desc,  // descriptor to query, may be NULL

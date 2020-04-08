@@ -18,9 +18,9 @@
     GB_SCALAR_FREE (&Thunk) ;           \
     GB_MATRIX_FREE (&C) ;               \
     GB_MATRIX_FREE (&A) ;               \
-    GrB_free (&Thunk_type) ;            \
-    GrB_free (&op) ;                    \
-    GrB_free (&desc) ;                  \
+    GxB_Scalar_free (&Thunk_type) ;     \
+    GxB_SelectOp_free (&op) ;           \
+    GrB_Descriptor_free (&desc) ;       \
     GB_mx_put_global (true, 0) ;        \
 }
 
@@ -109,7 +109,7 @@ void mexFunction
     if (atranspose)
     {
         OK (GrB_Descriptor_new (&desc)) ;
-        OK (GxB_set (desc, GrB_INP0, GrB_TRAN)) ;
+        OK (GxB_Desc_set (desc, GrB_INP0, GrB_TRAN)) ;
     }
 
     GB_MEX_TIC ;
@@ -132,12 +132,12 @@ void mexFunction
     if (GB_NCOLS (C) == 1 && !atranspose)
     {
         // this is just to test the Vector version
-        OK (GxB_select ((GrB_Vector) C, NULL, NULL, op, (GrB_Vector) A,
+        OK (GxB_Vector_select ((GrB_Vector) C, NULL, NULL, op, (GrB_Vector) A,
             Thunk, NULL)) ;
     }
     else
     {
-        OK (GxB_select (C, NULL, NULL, op, A, Thunk, desc)) ;
+        OK (GxB_Matrix_select (C, NULL, NULL, op, A, Thunk, desc)) ;
     }
 
     GB_MEX_TOC ;

@@ -126,7 +126,7 @@
 
             // Hf [i] == 3: locked.  Hx [i] cannot be accessed.
 
-            uint8_t *GB_RESTRICT Hf = TaskList [taskid].Hf ;
+            int8_t *GB_RESTRICT Hf = (int8_t *GB_RESTRICT) TaskList [taskid].Hf;
 
             if (M == NULL)
             {
@@ -152,7 +152,7 @@
                     {
                         int64_t i = Ai [pA] ;    // get A(i,k)
                         GB_MULT_A_ik_B_kj ;      // t = A(i,k) * B(k,j)
-                        uint8_t f ;
+                        int8_t f ;
 
                         #if GB_IS_ANY_MONOID
 
@@ -176,10 +176,9 @@
                         #endif
                         do  // lock the entry
                         {
-                            GB_ATOMIC_CAPTURE
-                            {
-                                f = Hf [i] ; Hf [i] = 3 ;
-                            }
+                            // do this atomically:
+                            // { f = Hf [i] ; Hf [i] = 3 ; }
+                            GB_ATOMIC_CAPTURE_INT8 (f, Hf [i], 3) ;
                         } while (f == 3) ; // lock owner gets f=0 or 2
                         if (f == 0)
                         { 
@@ -226,7 +225,7 @@
                     #if GB_IS_ANY_MONOID
 
                     #define GB_IKJ                                             \
-                        uint8_t f ;                                            \
+                        int8_t f ;                                             \
                         GB_ATOMIC_READ                                         \
                         f = Hf [i] ;            /* grab the entry */           \
                         if (f == 0 || f == 2) continue ;                       \
@@ -240,7 +239,7 @@
                     #define GB_IKJ                                             \
                     {                                                          \
                         GB_MULT_A_ik_B_kj ;     /* t = A(i,k) * B(k,j) */      \
-                        uint8_t f ;                                            \
+                        int8_t f ;                                             \
                         GB_ATOMIC_READ                                         \
                         f = Hf [i] ;            /* grab the entry */           \
                         if (GB_HAS_ATOMIC && (f == 2))                         \
@@ -252,10 +251,9 @@
                         if (f == 0) continue ; /* M(i,j)=0; ignore C(i,j)*/    \
                         do  /* lock the entry */                               \
                         {                                                      \
-                            GB_ATOMIC_CAPTURE                                  \
-                            {                                                  \
-                                f = Hf [i] ; Hf [i] = 3 ;                      \
-                            }                                                  \
+                            /* do this atomically: */                          \
+                            /* { f = Hf [i] ; Hf [i] = 3 ; } */                \
+                            GB_ATOMIC_CAPTURE_INT8 (f, Hf [i], 3) ;            \
                         } while (f == 3) ; /* lock owner gets f=1 or 2 */      \
                         if (f == 1)                                            \
                         {                                                      \
@@ -307,7 +305,7 @@
                     {
                         int64_t i = Ai [pA] ;   // get A(i,k)
                         GB_MULT_A_ik_B_kj ;     // t = A(i,k) * B(k,j)
-                        uint8_t f ;
+                        int8_t f ;
 
                         #if GB_IS_ANY_MONOID
 
@@ -332,10 +330,9 @@
                         if (f == 1) continue ; // M(i,j)=1; ignore C(i,j)
                         do  // lock the entry
                         {
-                            GB_ATOMIC_CAPTURE
-                            {
-                                f = Hf [i] ; Hf [i] = 3 ;
-                            }
+                            // do this atomically:
+                            // { f = Hf [i] ; Hf [i] = 3 ; }
+                            GB_ATOMIC_CAPTURE_INT8 (f, Hf [i], 3) ;
                         } while (f == 3) ; // lock owner of gets f=0 or 2
                         if (f == 0)
                         { 
@@ -386,7 +383,8 @@
 
             // h == (anything), f == 3: locked.
 
-            int64_t *GB_RESTRICT Hf = TaskList [taskid].Hf ;
+            int64_t *GB_RESTRICT
+                Hf = (int64_t *GB_RESTRICT) TaskList [taskid].Hf ;
             int64_t hash_bits = (hash_size-1) ;
 
             if (M == NULL)
@@ -438,10 +436,9 @@
                                 // h=0: unoccupied, h=i1: occupied by i
                                 do  // lock the entry
                                 {
-                                    GB_ATOMIC_CAPTURE
-                                    {
-                                        hf = Hf [hash] ; Hf [hash] |= 3 ;
-                                    }
+                                    // do this atomically:
+                                    // { hf = Hf [hash] ; Hf [hash] |= 3 ; }
+                                    GB_ATOMIC_CAPTURE_INT64_OR (hf,Hf[hash],3) ;
                                 } while ((hf & 3) == 3) ; // owner: f=0 or 2
                                 if (hf == 0) // f == 0
                                 { 
@@ -523,10 +520,9 @@
                             {                                                  \
                                 do /* lock the entry */                        \
                                 {                                              \
-                                    GB_ATOMIC_CAPTURE                          \
-                                    {                                          \
-                                        hf = Hf [hash] ; Hf [hash] |= 3 ;      \
-                                    }                                          \
+                                    /* do this atomically: */                  \
+                                    /* { hf = Hf [hash] ; Hf [hash] |= 3 ; }*/ \
+                                    GB_ATOMIC_CAPTURE_INT64_OR (hf,Hf[hash],3);\
                                 } while ((hf & 3) == 3) ; /* own: f=1,2 */     \
                                 if ((hf & 3) == 1) /* f == 1 */                \
                                 {                                              \
@@ -608,10 +604,9 @@
                                 // h=0: unoccupied, h=i1: occupied by i
                                 do // lock the entry
                                 {
-                                    GB_ATOMIC_CAPTURE
-                                    {
-                                        hf = Hf [hash] ; Hf [hash] |= 3 ;
-                                    }
+                                    // do this atomically:
+                                    // { hf = Hf [hash] ; Hf [hash] |= 3 ; }
+                                    GB_ATOMIC_CAPTURE_INT64_OR (hf,Hf[hash],3) ;
                                 } while ((hf & 3) == 3) ; // owner: f=0,1,2
                                 if (hf == 0)            // f == 0
                                 { 
@@ -726,8 +721,8 @@
                 //--------------------------------------------------------------
 
                 // Hf [i] == 2 if C(i,j) is an entry in C(:,j)
-                uint8_t *GB_RESTRICT Hf = TaskList [taskid].Hf ;
-
+                int8_t *GB_RESTRICT
+                    Hf = (int8_t *GB_RESTRICT) TaskList [taskid].Hf ;
                 int64_t cjnz = Cp [kk+1] - pC ;
                 int64_t istart, iend ;
                 GB_PARTITION (istart, iend, cvlen, my_teamid, team_size) ;
@@ -770,7 +765,8 @@
                 // (Hf [hash] & 3) == 2 if C(i,j) is an entry in C(:,j),
                 // and the index i of the entry is (Hf [hash] >> 2) - 1.
 
-                int64_t *GB_RESTRICT Hf = TaskList [taskid].Hf ;
+                int64_t *GB_RESTRICT
+                    Hf = (int64_t *GB_RESTRICT) TaskList [taskid].Hf ;
                 int64_t mystart, myend ;
                 GB_PARTITION (mystart, myend, hash_size, my_teamid, team_size) ;
                 pC += TaskList [taskid].my_cjnz ;
@@ -793,7 +789,8 @@
             // numeric coarse task: compute C(:,kfirst:klast)
             //------------------------------------------------------------------
 
-            int64_t *GB_RESTRICT Hf = TaskList [taskid].Hf ;
+            int64_t *GB_RESTRICT
+                Hf = (int64_t *GB_RESTRICT) TaskList [taskid].Hf ;
             int64_t kfirst = TaskList [taskid].start ;
             int64_t klast = TaskList [taskid].end ;
             int64_t nk = klast - kfirst + 1 ;
@@ -1302,8 +1299,9 @@
     if (cjnz_max > 0)
     {
         int64_t *GB_RESTRICT W = NULL ;
-        bool parallel_sort = (cjnz_max > GB_BASECASE && nthreads > 1) ;
-        if (parallel_sort)
+        int nthreads_msort = GB_MSORT_NTHREADS (nthreads) ;
+        if (cjnz_max <= GB_BASECASE) nthreads_msort = 1 ;
+        if (nthreads_msort > 1)
         {
             // allocate workspace for parallel mergesort
             GB_MALLOC_MEMORY (W, cjnz_max, sizeof (int64_t)) ;
@@ -1330,21 +1328,13 @@
 
                 int64_t kk = TaskList [taskid].vector ;
                 int64_t hash_bits = (hash_size-1) ;
-                int64_t  *GB_RESTRICT Hf = TaskList [taskid].Hf ;
+                int64_t  *GB_RESTRICT
+                    Hf = (int64_t  *GB_RESTRICT) TaskList [taskid].Hf ;
                 int64_t cjnz = Cp [kk+1] - Cp [kk] ;
 
                 // sort the pattern of C(:,j)
-                int nth = GB_nthreads (cjnz, chunk, nthreads) ;
-                if (parallel_sort && nth > 1)
-                { 
-                    // parallel mergesort
-                    GB_msort_1 (Ci + Cp [kk], W, cjnz, nth) ;
-                }
-                else
-                { 
-                    // sequential quicksort
-                    GB_qsort_1a (Ci + Cp [kk], cjnz) ;
-                }
+                int nth = GB_nthreads (cjnz, chunk, nthreads_msort) ;
+                GB_msort_1 (Ci + Cp [kk], W, cjnz, nth) ;
 
                 #if !GB_IS_ANY_PAIR_SEMIRING
 

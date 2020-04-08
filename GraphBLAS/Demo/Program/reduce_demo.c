@@ -22,7 +22,7 @@ int main (void)
     // start GraphBLAS
     GrB_init (GrB_NONBLOCKING) ;
     int nthreads ;
-    GxB_get (GxB_NTHREADS, &nthreads) ;
+    GxB_Global_Option_get (GxB_NTHREADS, &nthreads) ;
     printf ("demo: reduce a matrix to a scalar, nthreads: %d\n", nthreads) ;
 
     int nthreads_max ;

@@ -443,7 +443,7 @@ as a result it can do both methods above equally as fast as the MATLAB
 \label{accummask}
 
 Most GraphBLAS operations can be modified via transposing input matrices, using
-an accumulator operator, applying a mask or its complement, and by clear all
+an accumulator operator, applying a mask or its complement, and by clearing all
 entries the matrix \verb'C' after using it in the accumulator operator but
 before the final results are written back into it.  All of these steps are
 optional, and are controlled by a descriptor object that holds parameter
@@ -868,6 +868,14 @@ Some features for MATLAB sparse matrices are not yet available for
 GraphBLAS matrices.  Some of these may be added in future releases.
 
 \begin{packed_itemize}
+    \item Saving a GrB matrix object from MATLAB can be done, but the
+        resulting \verb'*.mat' file must be read in by the same version
+        of GraphBLAS.
+    \item \verb'GrB' matrices with dimension larger than \verb'2^53' do not
+        display properly in the MATLAB \verb'whos' command.  MATLAB gets this
+        information from \verb'size(A)', which returns a correct result, but
+        MATLAB rounds it to double before displaying it.  The size is displayed
+        correctly with \verb'disp' or \verb'display'.
     \item Non-blocking mode is not exploited; this would require
         a MATLAB mexFunction to modify its inputs, which is
         technically possible but not permitted by the MATLAB API.
@@ -5292,7 +5300,7 @@ need not be an array:
 %   large gather/scatter workspace.  The heap has size $b$, equal to the
 %   maximum number of entries in any one vector of \verb'B'.
 
-    \item \verb'GxB_AxB_HASH':  a hash-based method, based on 
+    \item \verb'GxB_AxB_HASH':  a hash-based method, based on
         \cite{10.1145/3229710.3229720}.  Very efficient for hypersparse
         matrices, matrix-vector-multiply, and when $|{\bf B}|$ is small.
 
@@ -5663,7 +5671,7 @@ on the amount of time or memory taken.
 
 \item \verb'GxB_set (GrB_Descriptor desc, field, value)' is another way to
     set the value of a field in a \verb'GrB_Descriptor'.  It is identical to \\
-    \verb'GrB_Descriptor_set', just with a generic name. 
+    \verb'GrB_Descriptor_set', just with a generic name.
 
 \end{itemize}
 
@@ -5725,7 +5733,7 @@ is a \verb'double'.
     {\footnotesize
     \begin{verbatim}
     GrB_Descriptor desc ;
-    GrB_Descriptor_new (&desc) 
+    GrB_Descriptor_new (&desc)
     int nthreads_max = 40 ;
     GxB_set (desc, GxB_NTHREADS, nthreads_max) ;
     double chunk = 20000 ;
@@ -9993,7 +10001,7 @@ candidate set:
 
     while (nvals > 0)
     {
-        // sparsify the random number seeds (just keep it for each candidate) 
+        // sparsify the random number seeds (just keep it for each candidate)
         GrB_assign (Seed, candidates, NULL, Seed, GrB_ALL, n, r_desc) ;
         // compute a random probability scaled by inverse of degree
         prand_xget (X, Seed) ;  // two calls to GrB_apply
@@ -10604,6 +10612,9 @@ other user application.  When the user application is done, the
 \verb'Complex_finalize' function frees the \verb'Complex' type and its
 operators, monoids, and semiring.
 
+NOTE: the \verb'Complex' type is not supported in this Demo in Microsoft
+Visual Studio.
+
 {\bf Struct-based:}
 In addition, the \verb'wildtype.c' program  creates a user-defined
 \verb'typedef' of a \verb'struct' containing a dense 4-by-4 \verb'float'
@@ -10743,48 +10754,105 @@ to use 32 parallel jobs and the \verb'gcc' compiler, do the following:
     JOBS=32 CC=gcc make \end{verbatim} }
 
 %----------------------------------------
-\subsection{On Microsoft Windows (v3.1.2 only)}
+\subsection{On Microsoft Windows}
+\label{sec:windows}
 %----------------------------------------
 
-SuiteSparse:GraphBLAS v3.1.2 is now ported to Microsoft Visual Studio.  That
-compiler is not ANSI C11 compliant.  It does not support the \verb'_Generic'
+SuiteSparse:GraphBLAS is now ported to Microsoft Visual Studio.  However, that
+compiler is not ANSI C11 compliant and does not support OpenMP v4.0.  As a
+result, GraphBLAS on Windows will have a few limitations.
+
+\begin{itemize}
+
+\item The MS Visual Studio compiler does not support the \verb'_Generic'
 keyword, required for the polymorphic GraphBLAS functions.  So for example, you
 will need to use \verb'GrB_Matrix_free' instead of just \verb'GrB_free'.
-Another limitation is the lack of support for OpenMP tasking, used in the
+
+\item Another limitation is the lack of support for OpenMP tasking, used in the
 parallel sort inside GraphBLAS.  With Microsoft Visual Studio, the sort is
 compiled to use just a single thread.  The sort is used for
 \verb'GrB_Matrix_build' and \verb'GrB_Vector_build', and for \verb'GrB_assign'
-and  \verb'GxB_subassign' when the index lists are unsorted on input.  In
-addition, variable-length arrays are not supported, so user-defined types are
-limited to 128 bytes in size.  These changes have no effect if you have an ANSI
-C11 compliant compiler.
+and  \verb'GxB_subassign' when the index lists are unsorted on input.  The
+internal sort still works as specified; it will just be single-threaded and
+thus these GraphBLAS functions will be slower on Windows as compared to Linux
+or MacOS.
+
+\item In addition, variable-length arrays are not supported, so user-defined
+types are limited to 128 bytes in size.
+\end{itemize}
+
+If you use a recent \verb'gcc' or \verb'icc' compiler on Windows other than the
+Microsoft Compiler (\verb'cl'), these limitations can be avoided.
 
 The following instructions apply to Windows 10, CMake 3.16, and
 Visual Studio 2019, but may work for earlier versions.
 
 \begin{enumerate}
-\item
-Open a terminal window and type the following in the top-level
-SuiteSparse/GraphBLAS folder.
+
+\item Install CMake 3.16 or later, if not already installed.
+    See \url{https://cmake.org/} for details.
+
+\item Install Microsoft Visual Studio, if not already installed.
+    See \url{https://visualstudio.microsoft.com/} for details.
+    Version 2019 is preferred, but earlier versions may also work.
+
+\item Open a terminal window and type the following in the
+    \verb'SuiteSparse/GraphBLAS/build' folder.
 
     {\small
     \begin{verbatim}
-    cmake .  \end{verbatim} }
+    cmake ..  \end{verbatim} }
 
-\item Open the generated \verb'GraphBLAS.sln' file in Visual Studio.
-Alternatively, type this command in the terminal window:
+\item The \verb'cmake' command generates many files in
+    \verb'SuiteSparse/GraphBLAS/build', and the file \verb'graphblas.sln' in
+    particular.  Open the generated \verb'graphblas.sln' file in Visual Studio.
 
-    {\small
-    \begin{verbatim}
-    devenv graphblas.sln /build "release|x64" /project graphblas \end{verbatim} }
+\item Optionally: right-click \verb'graphblas' in the left panel (Solution
+    Explorer) and select properties; then navigate to \verb'Configuration'
+    \verb'Properties', \verb'C/C++', \verb'General' and change the parameter
+    \verb'Multiprocessor Compilation' to \verb'Yes (/MP)'.  Click \verb'OK'.
+    This will significantly speed up the compilation of GraphBLAS.
 
-    This should create a folder called \verb'Release' and place the
-    compiled DLL and LIB file there.
+\item Select the \verb'Build' menu item at the top of the window and
+    select \verb'Build Solution'.  This should create a folder called
+    \verb'Release' and place the compiled \verb'graphblas.dll',
+    \verb'graphblas.lib', and \verb'graphblas.exp' files there.  Please be
+    patient; some files may take a while to compile and sometimes may appear to
+    be stalled.  Just wait.
 
-\item Move the DLL and LIB files from the \verb'Release' folder
-    to the \verb'GraphBLAS/build' folder.
+    % Alternatively, type this command in the terminal window:
+    % {\small
+    % \begin{verbatim}
+    % devenv graphblas.sln /build "release|x64" /project graphblas \end{verbatim}}
 
-\item Add the \verb'GraphBLAS/build' folder to the Windows System path.
+\item Add the \verb'GraphBLAS/build/Release' folder to the Windows System path:
+
+    \begin{itemize}
+    \item Open the \verb'Start Menu' and type \verb'Control Panel'.
+    \item Select the \verb'Control Panel' app.
+    \item When the app opens, select \verb'System'.
+    \item From the top left side of the \verb'System' window, select
+        \verb'Advanced System Settings'.  You may have to authenticate
+        at this step.
+    \item The \verb'Systems Properties' window should appear with the
+        \verb'Advanced' tab selected;
+        select \verb'Environment Variables'.
+    \item The \verb'Environment Variables' window displays 2 sections, one for
+        \verb'User' variables and the other for \verb'System' variables.  Under
+        the \verb'Systems' variable section, scroll to and select \verb'Path',
+        then select \verb'Edit'.   A editor window appears allowing to add,
+        modify, delete or re-order the parts of the \verb'Path'.
+    \item Add the full path of the \verb'GraphBLAS\build\Release' folder
+        (typically starting with \verb'C:\Users\you\'..., where \verb'you' is
+        your Windows username) to the \verb'Path'.
+    \item If the above steps do not work, you can instead copy the
+        \verb'graphblas.*' files from \verb'GraphBLAS\build\Release' into any
+        existing folder listed in your \verb'Path'. 
+    \end{itemize}
+
+\item The \verb'GraphBLAS/Include/GraphBLAS.h' file must be included in user
+    applications via \verb'#include "GraphBLAS.h"'.  This is already done for
+    you in the MATLAB interface discussed in the next section.
 
 \end{enumerate}
 
@@ -10808,6 +10876,36 @@ subsections.  Next:
 \item Follow the remaining instructions in the
     \verb'GraphBLAS/GraphBLAS/README.md' file, to revise your
     MATLAB path and \verb'startup.m' file.
+
+\item As a quick test, try the MATLAB command \verb'GrB(1)', which
+    creates and displays a 1-by-1 GraphBLAS matrix.  For a longer test, do the
+    following:
+
+    {\small
+    \begin{verbatim}
+    cd GraphBLAS/GraphBLAS/test
+    gbtest \end{verbatim} }
+
+\item In Windows, if the tests fail with an error stating that the
+    mex file is invalid because the module could not be found, it means
+    that MATLAB could not find the compiled \verb'graphblas.lib', \verb'*.dll'
+    or \verb'*.exp' files in the \verb'build/Release' folder.  This can happen
+    if your Windows System path is not set properly, or if Windows is not
+    recognizing the \verb'GraphBLAS/build/Release' folder (see
+    Section~\ref{sec:windows})  Or, you might p have permission to change your
+    Windows System path.  In this case, do the following in the MATLAB Command
+    Window:
+
+    {\small
+    \begin{verbatim}
+    cd GraphBLAS/build/Release
+    GrB(1) \end{verbatim} }
+
+    After this step, the GraphBLAS library will be loaded into MATLAB.  You may
+    need to add the above lines in your \verb'Documents/MATLAB/startup.m' file,
+    so that they are done each time MATLAB starts.  You will also need to do
+    this after \verb'clear all' or \verb'clear mex', since those MATLAB
+    commands remove all loaded libraries from MATLAB.
 
 \end{enumerate}
 
@@ -10993,7 +11091,8 @@ folder and type:
 To perform the extensive tests in the \verb'Test' folder, and the statement
 coverage tests in \verb'Tcov', MATLAB R2017A is required.  See the
 \verb'README.txt' files in those two folders for instructions on how to run the
-tests.
+tests.  The tests in the \verb'Test' folder have been ported to MATLAB on
+Linux, MacOS, and Windows.  The \verb'Tcov' tests do not work on Windows.
 
 %----------------------------------------
 \subsection{Cleaning up}

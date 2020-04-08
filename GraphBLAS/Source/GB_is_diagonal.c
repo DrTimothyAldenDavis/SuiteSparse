@@ -83,13 +83,8 @@ bool GB_is_diagonal             // true if A is diagonal
 
         int diag = true ;
         { 
-            #if GB_MICROSOFT
-                #pragma omp critical (GB_is_diagonal)
-                diag = diagonal ;
-            #else
-                GB_ATOMIC_READ
-                diag = diagonal ;
-            #endif
+            GB_ATOMIC_READ
+            diag = diagonal ;
         }
         if (!diag) continue ;
 
@@ -122,13 +117,8 @@ bool GB_is_diagonal             // true if A is diagonal
 
         if (!diag)
         { 
-            #if GB_MICROSOFT
-                #pragma omp critical (GB_is_diagonal)
-                diagonal = false ;
-            #else
-                GB_ATOMIC_WRITE
-                diagonal = false ;
-            #endif
+            GB_ATOMIC_WRITE
+            diagonal = false ;
         }
     }
 

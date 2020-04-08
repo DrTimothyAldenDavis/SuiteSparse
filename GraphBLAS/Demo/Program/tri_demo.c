@@ -36,14 +36,14 @@
 // nx-by-ny grid.  Method is 0 to 3; refer to wathen.c for details.
 
 // macro used by OK(...) to free workspace if an error occurs
-#define FREE_ALL                \
-    GxB_Scalar_free (&Thunk) ;         \
-    GrB_Matrix_free (&C) ;             \
-    GrB_Matrix_free (&A) ;             \
-    GrB_Matrix_free (&L) ;             \
+#define FREE_ALL                    \
+    GxB_Scalar_free (&Thunk) ;      \
+    GrB_Matrix_free (&C) ;          \
+    GrB_Matrix_free (&A) ;          \
+    GrB_Matrix_free (&L) ;          \
     GrB_Matrix_free (&U) ;
 
-#include "demos.h"
+#include "graphblas_demos.h"
 
 int main (int argc, char **argv)
 {
@@ -53,7 +53,7 @@ int main (int argc, char **argv)
     double tic [2], r1, r2 ;
     OK (GrB_init (GrB_NONBLOCKING)) ;
     int nthreads ;
-    OK (GxB_get (GxB_NTHREADS, &nthreads)) ;
+    OK (GxB_Global_Option_get (GxB_NTHREADS, &nthreads)) ;
     fprintf (stderr, "tri_demo: nthreads %d\n", nthreads) ;
     printf ("--------------------------------------------------------------\n");
 
@@ -109,7 +109,10 @@ int main (int argc, char **argv)
 
     printf ("\n------------------------------------- dot product method:\n") ;
 
-    int64_t ntri2 [nthreads_max+1], nt = -1 ;
+    #define NTHREADS_MAX 2048
+    nthreads_max = MIN (nthreads_max, NTHREADS_MAX) ;
+
+    int64_t ntri2 [NTHREADS_MAX+1], nt = -1 ;
     double t1 ;
 
     for (int nthreads = 1 ; nthreads <= nthreads_max ; nthreads *= 2)
@@ -215,14 +218,8 @@ int main (int argc, char **argv)
     //--------------------------------------------------------------------------
 
     printf ("\n----------------------------------- saxpy method:\n") ;
-    // warmup
-//    int64_t ntri ;
-//    double tt [2] ;
-//    GxB_Global_Option_set (GxB_NTHREADS, 1) ;
-//    OK (tricount (&ntri, 3, NULL, NULL, L, NULL, tt)) ;
-//    // printf ("warmup %g %g\n", tt [0], tt [1]) ;
 
-    int64_t ntri1 [nthreads_max+1] ;
+    int64_t ntri1 [NTHREADS_MAX+1] ;
 
     for (int nthreads = 1 ; nthreads <= nthreads_max ; nthreads *= 2)
     {

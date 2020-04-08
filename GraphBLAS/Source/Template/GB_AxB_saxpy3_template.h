@@ -423,21 +423,14 @@ break ;
                 /* xnew = xold + t */                               \
                 xnew = GB_ADD_FUNCTION (xold, t) ;                  \
             }                                                       \
-            while (!__atomic_compare_exchange (px, &xold, &xnew,    \
-                true, __ATOMIC_RELAXED, __ATOMIC_RELAXED))
+            while (!GB_ATOMIC_COMPARE_EXCHANGE (px, xold, xnew))
 
     #endif
-
-//          prior version:
-//          while (!__sync_bool_compare_and_swap
-//              ((GB_CTYPE_PUN *) px,
-//              * ((GB_CTYPE_PUN *) (&xold)),
-//              * ((GB_CTYPE_PUN *) (&xnew))))
 
 #else
 
     // Hx [i] += t can only be done inside the critical section
-    #define GB_ATOMIC_UPDATE_HX(i,t)       \
+    #define GB_ATOMIC_UPDATE_HX(i,t)    \
         GB_PRAGMA (omp flush)           \
         GB_HX_UPDATE (i, t) ;           \
         GB_PRAGMA (omp flush)

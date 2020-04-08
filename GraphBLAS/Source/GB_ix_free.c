@@ -12,6 +12,7 @@
 
 #include "GB_Pending.h"
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_ix_free             // free A->i and A->x of a matrix
 (
     GrB_Matrix A                // matrix with content to free

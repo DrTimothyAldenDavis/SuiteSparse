@@ -4,6 +4,11 @@ function test137
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
+if (~GB_mex_have_complex)
+    fprintf ('\ntest137: skipped\n') ;
+    return ;
+end
+
 fprintf ('test137: GrB_eWiseMult with FIRST and SECOND operators\n') ;
 
 rng ('default') ;

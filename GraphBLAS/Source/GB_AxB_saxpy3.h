@@ -73,7 +73,7 @@ typedef struct
     int64_t vector ;    // -1 for coarse task, vector j for fine task
     int64_t hsize ;     // size of hash table
     int64_t *Hi ;       // Hi array for hash table (coarse hash tasks only)
-    GB_void *Hf ;       // Hf array for hash table (uint8_t or int64_t)
+    GB_void *Hf ;       // Hf array for hash table (int8_t or int64_t)
     GB_void *Hx ;       // Hx array for hash table
     int64_t my_cjnz ;   // # entries in C(:,j) found by this fine task
     int64_t flops ;     // # of flops in this task

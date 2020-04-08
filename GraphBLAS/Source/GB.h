@@ -29,9 +29,9 @@
 // just before the statement:
 // #include "GB.h"
 
-// set GB_BURBLE to 1 to enable extensive diagnostic output to stdout,
-// or compile with -DGB_BURBLE=1.  This setting can also be added at the top
-// of any individual Source/* files, before #including any other files.
+// set GB_BURBLE to 1 to enable extensive diagnostic output, or compile with
+// -DGB_BURBLE=1.  This setting can also be added at the top of any individual
+// Source/* files, before #including any other files.
 #ifndef GB_BURBLE
 #define GB_BURBLE 0
 #endif
@@ -101,15 +101,20 @@
 
 #elif defined __GNUC__
 
-// disable warnings for gcc 8.2:
+// disable warnings for gcc 5.x and higher:
+#if (__GNUC__ > 4)
+// disable warnings
 // #pragma GCC diagnostic ignored "-Wunknown-warning-option"
 #pragma GCC diagnostic ignored "-Wint-in-bool-context"
 #pragma GCC diagnostic ignored "-Wformat-truncation="
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+// enable these warnings as errors
+#pragma GCC diagnostic error "-Wmisleading-indentation"
+#endif
 
 // disable warnings from -Wall -Wextra -Wpendantic
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #pragma GCC diagnostic ignored "-Wsign-compare"
-#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
 #pragma GCC diagnostic ignored "-Wincompatible-pointer-types"
 
 // See GB_unused.h, where these two pragmas are used:
@@ -123,7 +128,6 @@
 // #pragma GCC diagnostic ignored "-Wdiscarded-qualifiers"
 
 // enable these warnings as errors
-#pragma GCC diagnostic error "-Wmisleading-indentation"
 #pragma GCC diagnostic error "-Wswitch-default"
 #pragma GCC diagnostic error "-Wmissing-prototypes"
 
@@ -175,6 +179,14 @@
     #define GB_HAS_VLA  0
     #define GB_HAS_OPENMP_TASKS 1
 
+#endif
+
+//------------------------------------------------------------------------------
+// Microsoft specific include files
+//------------------------------------------------------------------------------
+
+#if GB_MICROSOFT
+#include <malloc.h>
 #endif
 
 //------------------------------------------------------------------------------
@@ -731,6 +743,108 @@ int64_t GB_Pending_n        // return # of pending tuples in A
 #include "GB_Global.h"
 
 //------------------------------------------------------------------------------
+// printing control
+//------------------------------------------------------------------------------
+
+GB_PUBLIC int (* GB_printf_function ) (const char *format, ...) ;
+GB_PUBLIC int (* GB_flush_function  ) ( void ) ;
+
+// print to the standard output, and flush the result.  This function can
+// print to the MATLAB command window.  No error check is done.  This function
+// is meant only for debugging.
+#define GBDUMP(...)                             \
+{                                               \
+    if (GB_printf_function != NULL)             \
+    {                                           \
+        GB_printf_function (__VA_ARGS__) ;      \
+        if (GB_flush_function != NULL)          \
+        {                                       \
+            GB_flush_function ( ) ;             \
+        }                                       \
+    }                                           \
+    else                                        \
+    {                                           \
+        printf (__VA_ARGS__) ;                  \
+        fflush (stdout) ;                       \
+    }                                           \
+}
+
+// print to a file f, or to stdout if f is NULL, and check the result.  This
+// macro is used by all user-callable GxB_*print and GB_*check functions. 
+#define GBPR(...)                                                           \
+{                                                                           \
+    int printf_result = 0 ;                                                 \
+    if (f == NULL)                                                          \
+    {                                                                       \
+        if (GB_printf_function != NULL)                                     \
+        {                                                                   \
+            printf_result = GB_printf_function (__VA_ARGS__) ;              \
+        }                                                                   \
+        else                                                                \
+        {                                                                   \
+            printf_result = printf (__VA_ARGS__) ;                          \
+        }                                                                   \
+        if (GB_flush_function != NULL)                                      \
+        {                                                                   \
+            GB_flush_function ( ) ;                                         \
+        }                                                                   \
+        else                                                                \
+        {                                                                   \
+            fflush (stdout) ;                                               \
+        }                                                                   \
+    }                                                                       \
+    else                                                                    \
+    {                                                                       \
+        printf_result = fprintf (f, __VA_ARGS__)  ;                         \
+        fflush (f) ;                                                        \
+    }                                                                       \
+    if (printf_result < 0)                                                  \
+    {                                                                       \
+        int err = errno ;                                                   \
+        return (GB_ERROR (GrB_INVALID_VALUE, (GB_LOG,                       \
+            "File output error (%d): %s", err, strerror (err)))) ;          \
+    }                                                                       \
+}
+
+// print if the print level is greater than zero
+#define GBPR0(...)                  \
+{                                   \
+    if (pr > 0)                     \
+    {                               \
+        GBPR (__VA_ARGS__) ;        \
+    }                               \
+}
+
+// check object->magic and print an error if invalid
+#define GB_CHECK_MAGIC(object,kind)                                     \
+{                                                                       \
+    switch (object->magic)                                              \
+    {                                                                   \
+        case GB_MAGIC :                                                 \
+            /* the object is valid */                                   \
+            break ;                                                     \
+                                                                        \
+        case GB_FREED :                                                 \
+            /* dangling pointer! */                                     \
+            GBPR0 ("already freed!\n") ;                                \
+            return (GB_ERROR (GrB_UNINITIALIZED_OBJECT, (GB_LOG,        \
+                "%s is freed: [%s]", kind, name))) ;                    \
+                                                                        \
+        case GB_MAGIC2 :                                                \
+            /* invalid */                                               \
+            GBPR0 ("invalid\n") ;                                       \
+            return (GB_ERROR (GrB_INVALID_OBJECT, (GB_LOG,              \
+                "%s is invalid: [%s]", kind, name))) ;                  \
+                                                                        \
+        default :                                                       \
+            /* uninitialized */                                         \
+            GBPR0 ("uninititialized\n") ;                               \
+            return (GB_ERROR (GrB_UNINITIALIZED_OBJECT, (GB_LOG,        \
+                "%s is uninitialized: [%s]", kind, name))) ;            \
+    }                                                                   \
+}
+
+//------------------------------------------------------------------------------
 // burble
 //------------------------------------------------------------------------------
 
@@ -749,21 +863,12 @@ int64_t GB_Pending_n        // return # of pending tuples in A
 #if GB_BURBLE
 
 // define the printf function to use to burble
-#include "GB_printf.h"
 #define GBBURBLE(...)                               \
 {                                                   \
     bool burble = GB_Global_burble_get ( ) ;        \
     if (burble)                                     \
     {                                               \
-        if (GB_printf_function != NULL)             \
-        {                                           \
-            GB_printf_function (__VA_ARGS__) ;      \
-        }                                           \
-        else                                        \
-        {                                           \
-            printf (__VA_ARGS__) ;                  \
-            fflush (stdout) ;                       \
-        }                                           \
+        GBDUMP (__VA_ARGS__) ;                      \
     }                                               \
 }
 
@@ -834,7 +939,7 @@ bool burble = GB_Global_burble_get ( ) ;            \
     {                                                                       \
         if (!(X))                                                           \
         {                                                                   \
-            printf ("assert(" GB_STR(X) ") failed: "                        \
+            GBDUMP ("assert(" GB_STR(X) ") failed: "                        \
                 __FILE__ " line %d\n", __LINE__) ;                          \
             GB_Global_abort_function ( ) ;                                  \
         }                                                                   \
@@ -882,18 +987,18 @@ bool burble = GB_Global_burble_get ( ) ;            \
 #define GB_GOTCHA                                                   \
 {                                                                   \
     fprintf (stderr, "gotcha: " __FILE__ " line: %d\n", __LINE__) ; \
-    printf ("gotcha: " __FILE__ " line: %d\n", __LINE__) ;          \
+    GBDUMP ("gotcha: " __FILE__ " line: %d\n", __LINE__) ;          \
 }
 #else
 #define GB_GOTCHA                                                   \
 {                                                                   \
     fprintf (stderr, "gotcha: " __FILE__ " line: %d\n", __LINE__) ; \
-    printf ("gotcha: " __FILE__ " line: %d\n", __LINE__) ;          \
+    GBDUMP ("gotcha: " __FILE__ " line: %d\n", __LINE__) ;          \
     GB_Global_abort_function ( ) ;                                  \
 }
 #endif
 
-#define GB_HERE printf ("%2d: Here: " __FILE__ " line: %d\n",  \
+#define GB_HERE GBDUMP ("%2d: Here: " __FILE__ " line: %d\n",       \
     GB_OPENMP_THREAD_ID, __LINE__) ;
 
 // ASSERT (GB_DEAD_CODE) marks code that is intentionally dead, leftover from
@@ -911,6 +1016,7 @@ bool burble = GB_Global_burble_get ( ) ;            \
 // more restrictive.
 
 // GB_aliased also checks the content of A and B
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 bool GB_aliased             // determine if A and B are aliased
 (
     GrB_Matrix A,           // input A matrix
@@ -1177,8 +1283,10 @@ static inline int GB_nthreads   // return # of threads to use
 // encountered the error, the error status (GrB_INDEX_OUT_OF_BOUNDS), the
 // details ("Row index 102 out of bounds, must be < 100").
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 const char *GB_status_code (GrB_Info info) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_error           // log an error in thread-local-storage
 (
     GrB_Info info,          // error return code from a GraphBLAS function
@@ -1211,6 +1319,7 @@ GrB_Info GB_error           // log an error in thread-local-storage
 // a NULL name is treated as the empty string
 #define GB_NAME ((name != NULL) ? name : "")
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_entry_check     // print a single value
 (
     const GrB_Type type,    // type of value to print
@@ -1219,6 +1328,7 @@ GrB_Info GB_entry_check     // print a single value
     GB_Context Context
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_code_check          // print and check an entry using a type code
 (
     const GB_Type_code code,    // type code of value to print
@@ -1227,6 +1337,7 @@ GrB_Info GB_code_check          // print and check an entry using a type code
     GB_Context Context
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_Type_check      // check a GraphBLAS Type
 (
     const GrB_Type type,    // GraphBLAS type to print and check
@@ -1237,6 +1348,7 @@ GrB_Info GB_Type_check      // check a GraphBLAS Type
     GB_Context Context
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_BinaryOp_check  // check a GraphBLAS binary operator
 (
     const GrB_BinaryOp op,  // GraphBLAS operator to print and check
@@ -1247,6 +1359,7 @@ GrB_Info GB_BinaryOp_check  // check a GraphBLAS binary operator
     GB_Context Context
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_UnaryOp_check   // check a GraphBLAS unary operator
 (
     const GrB_UnaryOp op,   // GraphBLAS operator to print and check
@@ -1257,6 +1370,7 @@ GrB_Info GB_UnaryOp_check   // check a GraphBLAS unary operator
     GB_Context Context
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_SelectOp_check  // check a GraphBLAS select operator
 (
     const GxB_SelectOp op,  // GraphBLAS operator to print and check
@@ -1267,6 +1381,7 @@ GrB_Info GB_SelectOp_check  // check a GraphBLAS select operator
     GB_Context Context
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_Monoid_check        // check a GraphBLAS monoid
 (
     const GrB_Monoid monoid,    // GraphBLAS monoid to print and check
@@ -1277,6 +1392,7 @@ GrB_Info GB_Monoid_check        // check a GraphBLAS monoid
     GB_Context Context
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_Semiring_check          // check a GraphBLAS semiring
 (
     const GrB_Semiring semiring,    // GraphBLAS semiring to print and check
@@ -1287,6 +1403,7 @@ GrB_Info GB_Semiring_check          // check a GraphBLAS semiring
     GB_Context Context
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_Descriptor_check    // check a GraphBLAS descriptor
 (
     const GrB_Descriptor D,     // GraphBLAS descriptor to print and check
@@ -1297,6 +1414,7 @@ GrB_Info GB_Descriptor_check    // check a GraphBLAS descriptor
     GB_Context Context
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
 (
     const GrB_Matrix A,     // GraphBLAS matrix to print and check
@@ -1310,6 +1428,7 @@ GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
     GB_Context Context
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_Matrix_check    // check a GraphBLAS matrix
 (
     const GrB_Matrix A,     // GraphBLAS matrix to print and check
@@ -1320,6 +1439,7 @@ GrB_Info GB_Matrix_check    // check a GraphBLAS matrix
     GB_Context Context
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_Vector_check    // check a GraphBLAS vector
 (
     const GrB_Vector v,     // GraphBLAS vector to print and check
@@ -1340,90 +1460,62 @@ GrB_Info GB_Scalar_check    // check a GraphBLAS GxB_Scalar
     GB_Context Context
 ) ;
 
-/*
-#define GB_check(x,name,pr)                             \
-    _Generic                                            \
-    (                                                   \
-        (x),                                            \
-        const GrB_Type       : GB_Type_check       ,    \
-              GrB_Type       : GB_Type_check       ,    \
-        const GrB_BinaryOp   : GB_BinaryOp_check   ,    \
-              GrB_BinaryOp   : GB_BinaryOp_check   ,    \
-        const GxB_SelectOp   : GB_SelectOp_check   ,    \
-              GxB_SelectOp   : GB_SelectOp_check   ,    \
-        const GrB_UnaryOp    : GB_UnaryOp_check    ,    \
-              GrB_UnaryOp    : GB_UnaryOp_check    ,    \
-        const GrB_Monoid     : GB_Monoid_check     ,    \
-              GrB_Monoid     : GB_Monoid_check     ,    \
-        const GrB_Semiring   : GB_Semiring_check   ,    \
-              GrB_Semiring   : GB_Semiring_check   ,    \
-        const GrB_Matrix     : GB_Matrix_check     ,    \
-              GrB_Matrix     : GB_Matrix_check     ,    \
-        const GrB_Vector     : GB_Vector_check     ,    \
-              GrB_Vector     : GB_Vector_check     ,    \
-        const GxB_Scalar     : GB_Scalar_check     ,    \
-              GxB_Scalar     : GB_Scalar_check     ,    \
-        const GrB_Descriptor : GB_Descriptor_check ,    \
-              GrB_Descriptor : GB_Descriptor_check      \
-    ) (x, name, pr, stdout, Context)
-*/
-
 #define ASSERT_TYPE_OK(t,name,pr)  \
-    ASSERT_OK (GB_Type_check (t, name, pr, stdout, Context))
+    ASSERT_OK (GB_Type_check (t, name, pr, NULL, Context))
 
 #define ASSERT_TYPE_OK_OR_NULL(t,name,pr)  \
-    ASSERT_OK_OR_NULL (GB_Type_check (t, name, pr, stdout, Context))
+    ASSERT_OK_OR_NULL (GB_Type_check (t, name, pr, NULL, Context))
 
 #define ASSERT_BINARYOP_OK(op,name,pr)  \
-    ASSERT_OK (GB_BinaryOp_check (op, name, pr, stdout, Context))
+    ASSERT_OK (GB_BinaryOp_check (op, name, pr, NULL, Context))
 
 #define ASSERT_BINARYOP_OK_OR_NULL(op,name,pr)  \
-    ASSERT_OK_OR_NULL (GB_BinaryOp_check (op, name, pr, stdout, Context))
+    ASSERT_OK_OR_NULL (GB_BinaryOp_check (op, name, pr, NULL, Context))
 
 #define ASSERT_UNARYOP_OK(op,name,pr)  \
-    ASSERT_OK (GB_UnaryOp_check (op, name, pr, stdout, Context))
+    ASSERT_OK (GB_UnaryOp_check (op, name, pr, NULL, Context))
 
 #define ASSERT_UNARYOP_OK_OR_NULL(op,name,pr)  \
-    ASSERT_OK_OR_NULL (GB_UnaryOp_check (op, name, pr, stdout, Context))
+    ASSERT_OK_OR_NULL (GB_UnaryOp_check (op, name, pr, NULL, Context))
 
 #define ASSERT_SELECTOP_OK(op,name,pr)  \
-    ASSERT_OK (GB_SelectOp_check (op, name, pr, stdout, Context))
+    ASSERT_OK (GB_SelectOp_check (op, name, pr, NULL, Context))
 
 #define ASSERT_SELECTOP_OK_OR_NULL(op,name,pr)  \
-    ASSERT_OK_OR_NULL (GB_SelectOp_check (op, name, pr, stdout, Context))
+    ASSERT_OK_OR_NULL (GB_SelectOp_check (op, name, pr, NULL, Context))
 
 #define ASSERT_MONOID_OK(mon,name,pr)  \
-    ASSERT_OK (GB_Monoid_check (mon, name, pr, stdout, Context))
+    ASSERT_OK (GB_Monoid_check (mon, name, pr, NULL, Context))
 
 #define ASSERT_SEMIRING_OK(s,name,pr)  \
-    ASSERT_OK (GB_Semiring_check (s, name, pr, stdout, Context))
+    ASSERT_OK (GB_Semiring_check (s, name, pr, NULL, Context))
 
 #define ASSERT_MATRIX_OK(A,name,pr)  \
-    ASSERT_OK (GB_Matrix_check (A, name, pr, stdout, Context))
+    ASSERT_OK (GB_Matrix_check (A, name, pr, NULL, Context))
 
 #define ASSERT_MATRIX_OK_OR_NULL(A,name,pr)  \
-    ASSERT_OK_OR_NULL (GB_Matrix_check (A, name, pr, stdout, Context))
+    ASSERT_OK_OR_NULL (GB_Matrix_check (A, name, pr, NULL, Context))
 
 #define ASSERT_MATRIX_OK_OR_JUMBLED(A,name,pr)  \
-    ASSERT_OK_OR_JUMBLED (GB_Matrix_check (A, name, pr, stdout, Context))
+    ASSERT_OK_OR_JUMBLED (GB_Matrix_check (A, name, pr, NULL, Context))
 
 #define ASSERT_VECTOR_OK(v,name,pr)  \
-    ASSERT_OK (GB_Vector_check (v, name, pr, stdout, Context))
+    ASSERT_OK (GB_Vector_check (v, name, pr, NULL, Context))
 
 #define ASSERT_VECTOR_OK_OR_NULL(v,name,pr)  \
-    ASSERT_OK_OR_NULL (GB_Vector_check (v, name, pr, stdout, Context))
+    ASSERT_OK_OR_NULL (GB_Vector_check (v, name, pr, NULL, Context))
 
 #define ASSERT_SCALAR_OK(s,name,pr)  \
-    ASSERT_OK (GB_Scalar_check (s, name, pr, stdout, Context))
+    ASSERT_OK (GB_Scalar_check (s, name, pr, NULL, Context))
 
 #define ASSERT_SCALAR_OK_OR_NULL(s,name,pr)  \
-    ASSERT_OK_OR_NULL (GB_Scalar_check (s, name, pr, stdout, Context))
+    ASSERT_OK_OR_NULL (GB_Scalar_check (s, name, pr, NULL, Context))
 
 #define ASSERT_DESCRIPTOR_OK(d,name,pr)  \
-    ASSERT_OK (GB_Descriptor_check (d, name, pr, stdout, Context))
+    ASSERT_OK (GB_Descriptor_check (d, name, pr, NULL, Context))
 
 #define ASSERT_DESCRIPTOR_OK_OR_NULL(d,name,pr)  \
-    ASSERT_OK_OR_NULL (GB_Descriptor_check (d, name, pr, stdout, Context))
+    ASSERT_OK_OR_NULL (GB_Descriptor_check (d, name, pr, NULL, Context))
 
 //------------------------------------------------------------------------------
 // internal GraphBLAS functions
@@ -1451,6 +1543,7 @@ typedef enum                    // input parameter to GB_new and GB_create
 }
 GB_Ap_code ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_new                 // create matrix, except for indices & values
 (
     GrB_Matrix *Ahandle,        // handle of matrix to create
@@ -1535,6 +1628,7 @@ GrB_Info GB_matvec_type            // get the type of a matrix
     GB_Context Context
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_ix_alloc        // allocate A->i and A->x space in a matrix
 (
     GrB_Matrix A,           // matrix to allocate space for
@@ -1543,6 +1637,7 @@ GrB_Info GB_ix_alloc        // allocate A->i and A->x space in a matrix
     GB_Context Context
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_ix_realloc      // reallocate space in a matrix
 (
     GrB_Matrix A,           // matrix to allocate space for
@@ -1562,11 +1657,13 @@ GrB_Info GB_ix_resize           // resize a matrix
 #define GB_IX_FREE(A)                                                       \
     if (GB_ix_free (A) == GrB_PANIC) GB_PANIC
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_ix_free             // free A->i and A->x of a matrix
 (
     GrB_Matrix A                // matrix with content to free
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void GB_ph_free                 // free A->p and A->h of a matrix
 (
     GrB_Matrix A                // matrix with content to free
@@ -1581,11 +1678,13 @@ GrB_Info GB_phix_free           // free all content of a matrix
     GrB_Matrix A                // matrix with content to free
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_free                // free a matrix
 (
     GrB_Matrix *matrix_handle   // handle of matrix to free
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 bool GB_Type_compatible         // check if two types can be typecast
 (
     const GrB_Type atype,
@@ -1598,6 +1697,7 @@ bool GB_code_compatible         // check if two types can be typecast
     const GB_Type_code bcode
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void GB_cast_array              // typecast an array
 (
     GB_void *Cx,                // output array
@@ -1608,6 +1708,7 @@ void GB_cast_array              // typecast an array
     GB_Context Context
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GB_cast_function GB_cast_factory   // returns pointer to function to cast x to z
 (
     const GB_Type_code code1,      // the type of z, the output value
@@ -1711,6 +1812,7 @@ GrB_Info GB_ewise_slice
     GB_Context Context
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void GB_slice_vector
 (
     // output: return i, pA, and pB
@@ -1780,24 +1882,28 @@ GrB_Info GB_transplant_conform      // transplant and conform hypersparsity
     GB_Context Context
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 size_t GB_code_size             // return the size of a type, given its code
 (
     const GB_Type_code code,    // input code of the type to find the size of
     const size_t usize          // known size of user-defined type
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void *GB_calloc_memory      // pointer to allocated block of memory
 (
     size_t nitems,          // number of items to allocate
     size_t size_of_item     // sizeof each item
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void *GB_malloc_memory      // pointer to allocated block of memory
 (
     size_t nitems,          // number of items to allocate
     size_t size_of_item     // sizeof each item
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void *GB_realloc_memory     // pointer to reallocated block of memory, or
                             // to original block if the realloc failed.
 (
@@ -1808,6 +1914,7 @@ void *GB_realloc_memory     // pointer to reallocated block of memory, or
     bool *ok                // true if successful, false otherwise
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void GB_free_memory
 (
     void *p,                // pointer to allocated block of memory to free
@@ -1826,7 +1933,7 @@ void GB_free_memory
 
 #define GB_NEW(A,type,vlen,vdim,Ap_option,is_csc,hopt,h,plen,Context)         \
 {                                                                             \
-    printf ("\nmatrix new:                   %s = new (%s, vlen = "GBd        \
+    GBDUMP("\nmatrix new:                   %s = new (%s, vlen = "GBd         \
         ", vdim = "GBd", Ap:%d, csc:%d, hyper:%d %g, plen:"GBd")"             \
         " line %d file %s\n", GB_STR(A), GB_STR(type),                        \
         (int64_t) vlen, (int64_t) vdim, Ap_option, is_csc, hopt, h,           \
@@ -1837,7 +1944,7 @@ void GB_free_memory
 
 #define GB_CREATE(A,type,vlen,vdim,Ap_option,is_csc,hopt,h,plen,anz,numeric,Context)  \
 {                                                                             \
-    printf ("\nmatrix create:                %s = new (%s, vlen = "GBd        \
+    GBDUMP("\nmatrix create:                %s = new (%s, vlen = "GBd         \
         ", vdim = "GBd", Ap:%d, csc:%d, hyper:%d %g, plen:"GBd", anz:"GBd     \
         " numeric:%d) line %d file %s\n", GB_STR(A), GB_STR(type),            \
         (int64_t) vlen, (int64_t) vdim, Ap_option, is_csc, hopt, h,           \
@@ -1849,7 +1956,7 @@ void GB_free_memory
 #define GB_MATRIX_FREE(A)                                                     \
 {                                                                             \
     if (A != NULL && *(A) != NULL)                                            \
-        printf ("\nmatrix free:                  "                            \
+        GBDUMP("\nmatrix free:                  "                             \
         "matrix_free (%s) line %d file %s\n", GB_STR(A), __LINE__, __FILE__) ;\
     if (GB_free (A) == GrB_PANIC) GB_PANIC ;                                  \
 }
@@ -1857,7 +1964,7 @@ void GB_free_memory
 #define GB_VECTOR_FREE(v)                                                     \
 {                                                                             \
     if (v != NULL && *(v) != NULL)                                            \
-        printf ("\nvector free:                  "                            \
+        GBDUMP("\nvector free:                  "                             \
         "vector_free (%s) line %d file %s\n", GB_STR(v), __LINE__, __FILE__) ;\
     if (GB_free ((GrB_Matrix *) v) == GrB_PANIC) GB_PANIC ;                   \
 }
@@ -1865,28 +1972,28 @@ void GB_free_memory
 #define GB_SCALAR_FREE(v)                                                     \
 {                                                                             \
     if (v != NULL && *(v) != NULL)                                            \
-        printf ("\nscalar free:                  "                            \
+        GBDUMP("\nscalar free:                  "                             \
         "scalar_free (%s) line %d file %s\n", GB_STR(v), __LINE__, __FILE__) ;\
     if (GB_free ((GrB_Matrix *) v) == GrB_PANIC) GB_PANIC ;                   \
 }
 
 #define GB_CALLOC_MEMORY(p,n,s)                                               \
-    printf ("\nCalloc:                       "                                \
+    GBDUMP("\nCalloc:                       "                                 \
     "%s = calloc (%s = "GBd", %s = "GBd") line %d file %s\n",                 \
     GB_STR(p), GB_STR(n), (int64_t) n, GB_STR(s), (int64_t) s,                \
     __LINE__,__FILE__) ;                                                      \
     p = GB_calloc_memory (n, s) ;
 
 #define GB_MALLOC_MEMORY(p,n,s)                                               \
-    printf ("\nMalloc:                       "                                \
+    GBDUMP("\nMalloc:                       "                                 \
     "%s = malloc (%s = "GBd", %s = "GBd") line %d file %s\n",                 \
     GB_STR(p), GB_STR(n), (int64_t) n, GB_STR(s), (int64_t) s,                \
     __LINE__,__FILE__) ;                                                      \
     p = GB_malloc_memory (n, s) ;
 
-#define GB_REALLOC_MEMORY(p,nnew,nold,s,ok)                                    \
+#define GB_REALLOC_MEMORY(p,nnew,nold,s,ok)                                   \
 {                                                                             \
-    printf ("\nRealloc: %14p       "                                          \
+    GBDUMP("\nRealloc: %14p       "                                           \
     "%s = realloc (%s = "GBd", %s = "GBd", %s = "GBd") line %d file %s\n",    \
     p, GB_STR(p), GB_STR(nnew), (int64_t) nnew, GB_STR(nold), (int64_t) nold, \
     GB_STR(s), (int64_t) s, __LINE__,__FILE__) ;                              \
@@ -1896,7 +2003,7 @@ void GB_free_memory
 #define GB_FREE_MEMORY(p,n,s)                                                 \
 {                                                                             \
     if (p)                                                                    \
-    printf ("\nFree:               "                                          \
+    GBDUMP("\nFree:               "                                           \
     "(%s, %s = "GBd", %s = "GBd") line %d file %s\n",                         \
     GB_STR(p), GB_STR(n), (int64_t) n, GB_STR(s), (int64_t) s,                \
     __LINE__,__FILE__) ;                                                      \
@@ -1942,12 +2049,14 @@ void GB_free_memory
 
 //------------------------------------------------------------------------------
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Type GB_code_type           // return the GrB_Type corresponding to the code
 (
     const GB_Type_code code,    // type code to convert
     const GrB_Type type         // user type if code is GB_UDT_code
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_slice       // slice B into nthreads slices or hyperslices
 (
     GrB_Matrix B,       // matrix to slice
@@ -1957,6 +2066,7 @@ GrB_Info GB_slice       // slice B into nthreads slices or hyperslices
     GB_Context Context
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 bool GB_pslice          // slice Ap; return true if ok, false if out of memory
 (
     int64_t *GB_RESTRICT *Slice_handle,    // size ntasks+1
@@ -1989,6 +2099,7 @@ bool GB_binop_builtin               // true if binary operator is builtin
     GB_Type_code *zcode             // type code for z output
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void GB_cumsum                      // cumulative sum of an array
 (
     int64_t *GB_RESTRICT count,     // size n+1, input/output
@@ -1997,6 +2108,7 @@ void GB_cumsum                      // cumulative sum of an array
     int nthreads
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_Descriptor_get      // get the contents of a descriptor
 (
     const GrB_Descriptor desc,  // descriptor to query, may be NULL
@@ -2049,13 +2161,15 @@ GB_Opcode GB_boolean_rename     // renamed opcode
     const GB_Opcode opcode      // opcode to rename
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB interface only
 bool GB_Index_multiply      // true if ok, false if overflow
 (
-    GrB_Index *c,           // c = a*b, or zero if overflow occurs
+    GrB_Index *GB_RESTRICT c,  // c = a*b, or zero if overflow occurs
     const int64_t a,
     const int64_t b
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 bool GB_size_t_multiply     // true if ok, false if overflow
 (
     size_t *c,              // c = a*b, or zero if overflow occurs
@@ -2103,6 +2217,7 @@ GrB_Info GB_Monoid_new          // create a monoid
     GB_Context Context
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_wait                // finish all pending computations
 (
     GrB_Matrix A,               // matrix with pending computations
@@ -2207,12 +2322,14 @@ GrB_Info GB_setElement              // set a single entry, C(row,col) = scalar
     GB_Context Context
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_block   // apply all pending computations if blocking mode enabled
 (
     GrB_Matrix A,
     GB_Context Context
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 bool GB_op_is_second    // return true if op is SECOND, of the right type
 (
     GrB_BinaryOp op,
@@ -2222,6 +2339,7 @@ bool GB_op_is_second    // return true if op is SECOND, of the right type
 
 //------------------------------------------------------------------------------
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 char *GB_code_string            // return a static string for a type name
 (
     const GB_Type_code code     // code to convert to string
@@ -2235,18 +2353,21 @@ GrB_Info GB_resize              // change the size of a matrix
     GB_Context Context
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 int64_t GB_nvec_nonempty        // return # of non-empty vectors
 (
     const GrB_Matrix A,         // input matrix to examine
     GB_Context Context
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_to_nonhyper     // convert a matrix to non-hypersparse
 (
     GrB_Matrix A,           // matrix to convert to non-hypersparse
     GB_Context Context
 ) ;
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_to_hyper        // convert a matrix to hypersparse
 (
     GrB_Matrix A,           // matrix to convert to hypersparse

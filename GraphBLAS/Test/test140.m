@@ -4,16 +4,12 @@ function test140
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
-clear all
-% addpath ../GraphBLAS
-
 rng ('default') ;
 
 n = 6 ;
 A = 100 * sprand (n, n, 0.5) ;
 M = sparse (rand (n)) > 0.5 ;
 Cin = sprand (n, n, 0.5) ;
-
 
 Cout = gb.assign (Cin, A, { }, { }) ;
 assert (isequal (A, sparse (Cout))) ;
@@ -35,6 +31,4 @@ J0 = uint64(J)-1 ;
 C_spec = GB_spec_assign (Cin, [ ], [ ], B, I, J, [ ], [ ])
 C_mex  = GB_mex_assign  (Cin, [ ], [ ], B, I0, J0, [ ], [ ])
 GB_spec_compare (C_spec, C_mex) ;
-
-% assert (isequal (C7, sparse (Cout))) ;
 

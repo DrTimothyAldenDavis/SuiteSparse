@@ -14,6 +14,7 @@
 
 #include "GB.h"
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_free                // free a matrix
 (
     GrB_Matrix *matrix          // handle of matrix to free

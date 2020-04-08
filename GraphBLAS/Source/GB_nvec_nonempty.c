@@ -12,6 +12,7 @@
 
 #include "GB.h"
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 int64_t GB_nvec_nonempty        // return # of non-empty vectors
 (
     const GrB_Matrix A,         // input matrix to examine

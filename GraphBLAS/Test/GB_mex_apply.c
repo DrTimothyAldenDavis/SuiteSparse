@@ -18,7 +18,7 @@
     GB_MATRIX_FREE (&C) ;               \
     GB_MATRIX_FREE (&Mask) ;            \
     GB_MATRIX_FREE (&A) ;               \
-    GrB_free (&desc) ;                  \
+    GrB_Descriptor_free (&desc) ;       \
     GB_mx_put_global (true, 0) ;        \
 }
 
@@ -38,11 +38,11 @@ GrB_Info apply (bool is_matrix)
 
     if (is_matrix)
     {
-        info = GrB_apply (C, Mask, accum, op, A, desc) ;
+        info = GrB_Matrix_apply (C, Mask, accum, op, A, desc) ;
     }
     else
     {
-        info = GrB_apply ((GrB_Vector) C, (GrB_Vector) Mask, accum, op,
+        info = GrB_Vector_apply ((GrB_Vector) C, (GrB_Vector) Mask, accum, op,
             (GrB_Vector) A, desc) ;
     }
 

@@ -50,6 +50,7 @@
     GB_MATRIX_FREE (&(Aslice [1])) ;    \
 }
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_wait                // finish all pending computations
 (
     GrB_Matrix A,               // matrix with pending computations

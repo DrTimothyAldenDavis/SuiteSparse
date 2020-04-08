@@ -54,13 +54,14 @@ message ( STATUS "CMake version: " ${CMAKE_VERSION} )
 if ( CMAKE_VERSION VERSION_GREATER "3.0" )
     cmake_policy ( SET CMP0042 NEW )
     cmake_policy ( SET CMP0048 NEW )
+    cmake_policy ( SET CMP0054 NEW )
 endif ( )
 
 # version of SuiteSparse:GraphBLAS
-set ( GraphBLAS_DATE "Mar 10, 2020" )
+set ( GraphBLAS_DATE "Apr 2, 2020" )
 set ( GraphBLAS_VERSION_MAJOR 3 )
 set ( GraphBLAS_VERSION_MINOR 2 )
-set ( GraphBLAS_VERSION_SUB   1 )
+set ( GraphBLAS_VERSION_SUB   2 )
 
 # GraphBLAS C API Specification version, at graphblas.org
 set ( GraphBLAS_API_DATE "May 18, 2018" )
@@ -94,7 +95,7 @@ endif ( )
 # or use cmake with -DBUILD_GRB_STATIC_LIBRARY=1
 
 if ( BUILD_GRB_STATIC_LIBRARY )
-    message ( STATUS "Building both static and dynamic GraphBLAS libraries" )
+    message ( STATUS "Building all GraphBLAS libraries (static and dynamic)" )
 else ( )
     message ( STATUS "Building dynamic GraphBLAS library only" )
 endif ( )
@@ -112,27 +113,11 @@ if ( GBCOMPACT )
 endif ( )
 
 #-------------------------------------------------------------------------------
-# configure GraphBLAS
-#-------------------------------------------------------------------------------
-
-find_program ( M4EXISTS m4 )
-if ( NOT M4EXISTS )
-    message ( FATAL_ERROR "m4 not found, but is required.  Install via your system package manager, or download at http://www.gnu.org/software/m4/m4.html or http://gnuwin32.sourceforge.net for Windows" )
-endif ( )
-
-set ( DEC0 "Config/GraphBLAS.h.in" )
-execute_process (
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-    COMMAND m4 -P ${DEC0}
-    OUTPUT_FILE "Config/GraphBLAS.h.tmp"
-)
-
-#-------------------------------------------------------------------------------
 # Configure Include/GraphBLAS.h and documentation with version number
 #-------------------------------------------------------------------------------
 
 configure_file (
-    "Config/GraphBLAS.h.tmp"
+    "Config/GraphBLAS.h.in"
     "${PROJECT_SOURCE_DIR}/Include/GraphBLAS.h"
 )
 configure_file (
@@ -248,7 +233,7 @@ elseif ( "${CMAKE_C_COMPILER_ID}" STREQUAL "Intel" )
     # The -g option is useful for the Intel VTune tool, but it should be
     # removed in production.  Comment this line out if not in use:
     # set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -g" )
-    set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -qopt-malloc-options=3" )
+#   set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -qopt-malloc-options=3" )
     # check all warnings and remarks (uncomment for development only):
 #   set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -w3 -Wremarks -Werror " )
     if ( CMAKE_C_COMPILER_VERSION VERSION_LESS 19.0 )
@@ -261,7 +246,7 @@ elseif ( "${CMAKE_C_COMPILER_ID}" STREQUAL "Clang" )
     endif ( )
 elseif ( "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
     # options for MicroSoft Visual Studio
-    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -wd\"4244\" -wd\"4146\" -wd\"4018\" -wd\"4996\" -wd\"4047\" -wd\"4554\"")
+    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /O2 -wd\"4244\" -wd\"4146\" -wd\"4018\" -wd\"4996\" -wd\"4047\" -wd\"4554\"")
 elseif ( "${CMAKE_C_COMPILER_ID}" STREQUAL "PGI" )
     # options for PGI pgcc compiler.  The compiler has a bug, and the
     # -DPGI_COMPILER_BUG causes GraphBLAS to use a workaround.
@@ -443,7 +428,10 @@ message ( STATUS "CMAKE C flags: " ${CMAKE_C_FLAGS} )
 
 file ( GLOB DEMO_SOURCES "Demo/Source/*.c" )
 add_library ( graphblasdemo SHARED ${DEMO_SOURCES} )
+
 SET_TARGET_PROPERTIES ( graphblasdemo PROPERTIES
+    VERSION ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
+    SOVERSION ${GraphBLAS_VERSION_MAJOR}
     C_STANDARD_REQUIRED 11 )
 set_property ( TARGET graphblasdemo PROPERTY C_STANDARD 11 )
 target_link_libraries ( graphblasdemo ${M_LIB} graphblas )
@@ -451,6 +439,7 @@ target_link_libraries ( graphblasdemo ${M_LIB} graphblas )
 if ( BUILD_GRB_STATIC_LIBRARY )
     add_library ( graphblasdemo_static STATIC ${DEMO_SOURCES} )
     SET_TARGET_PROPERTIES ( graphblasdemo_static PROPERTIES
+        VERSION ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
         C_STANDARD_REQUIRED 11 )
     set_property ( TARGET graphblasdemo_static PROPERTY C_STANDARD 11 )
     target_link_libraries ( graphblasdemo_static  graphblas_static )
@@ -482,7 +471,7 @@ target_link_libraries ( openmp_demo   graphblas graphblasdemo )
 target_link_libraries ( mis_demo      graphblas graphblasdemo )
 target_link_libraries ( complex_demo  graphblas graphblasdemo )
 target_link_libraries ( kron_demo     graphblas graphblasdemo )
-target_link_libraries ( simple_demo   graphblasdemo )
+target_link_libraries ( simple_demo             graphblasdemo )
 target_link_libraries ( wildtype_demo graphblas )
 target_link_libraries ( reduce_demo   graphblas )
 target_link_libraries ( import_demo   graphblas graphblasdemo )
@@ -490,8 +479,6 @@ target_link_libraries ( import_demo   graphblas graphblasdemo )
 #-------------------------------------------------------------------------------
 # graphblas installation location
 #-------------------------------------------------------------------------------
-
-# note that the demo libraries are not installed
 
 if ( BUILD_GRB_STATIC_LIBRARY )
 
@@ -503,12 +490,11 @@ if ( BUILD_GRB_STATIC_LIBRARY )
 
 else ( )
 
-    # only install the dynamic library
+    # only install the dynamic graphblas library
     install ( TARGETS graphblas
          LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
          PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
          ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
 
 endif ( )
-
 

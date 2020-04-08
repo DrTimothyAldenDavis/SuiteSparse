@@ -55,6 +55,7 @@ void mexFunction
     }
 
     int GET_SCALAR (3, int, nthreads, 1) ;
+    nthreads = GB_MSORT_NTHREADS (nthreads) ;
 
     pargout [0] = mxCreateNumericMatrix (n, 1, mxINT64_CLASS, mxREAL) ;
     int64_t *Iout = mxGetData (pargout [0]) ;
@@ -69,9 +70,16 @@ void mexFunction
     memcpy (Kout, K, n * sizeof (int64_t)) ;
 
     // get workspace
-    int64_t *Work_0 = mxMalloc ((n+1) * sizeof (int64_t)) ;
-    int64_t *Work_1 = mxMalloc ((n+1) * sizeof (int64_t)) ;
-    int64_t *Work_2 = mxMalloc ((n+1) * sizeof (int64_t)) ;
+    int64_t *Work_0 = NULL ;
+    int64_t *Work_1 = NULL ;
+    int64_t *Work_2 = NULL ;
+
+    if (nthreads > 1)
+    {
+        Work_0 = mxMalloc ((n+1) * sizeof (int64_t)) ;
+        Work_1 = mxMalloc ((n+1) * sizeof (int64_t)) ;
+        Work_2 = mxMalloc ((n+1) * sizeof (int64_t)) ;
+    }
 
     GB_MEX_TIC ;
 
@@ -80,9 +88,12 @@ void mexFunction
     GB_MEX_TOC ;
 
     // free workspace
-    mxFree (Work_0) ;
-    mxFree (Work_1) ;
-    mxFree (Work_2) ;
+    if (nthreads > 1)
+    {
+        mxFree (Work_0) ;
+        mxFree (Work_1) ;
+        mxFree (Work_2) ;
+    }
 
     GB_mx_put_global (true, 0) ;
 }

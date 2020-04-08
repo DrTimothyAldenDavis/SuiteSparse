@@ -27,6 +27,7 @@
 
 #include "GB.h"
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_slice       // slice B into nslices slices or hyperslices
 (
     GrB_Matrix B,       // matrix to slice

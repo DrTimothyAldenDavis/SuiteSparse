@@ -7,8 +7,9 @@
 
 //------------------------------------------------------------------------------
 
-#include "GB_printf.h"
+#include "GB.h"
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_Monoid_check        // check a GraphBLAS monoid
 (
     const GrB_Monoid monoid,    // GraphBLAS monoid to print and check

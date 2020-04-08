@@ -15,6 +15,7 @@
 
 #include "GB.h"
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 bool GB_pslice          // slice Ap; return true if ok, false if out of memory
 (
     int64_t *GB_RESTRICT *Slice_handle,    // size ntasks+1

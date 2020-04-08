@@ -11,14 +11,14 @@
 
 #define USAGE "w = GB_mex_eWiseMult_Vector (w, mask, accum, mult, u, v, desc)"
 
-#define FREE_ALL            \
-{                           \
-    GrB_free (&w) ;         \
-    GrB_free (&u) ;         \
-    GrB_free (&v) ;         \
-    GrB_free (&desc) ;      \
-    GrB_free (&mask) ;      \
-    GB_mx_put_global (true, 0) ;        \
+#define FREE_ALL                    \
+{                                   \
+    GrB_Vector_free (&w) ;          \
+    GrB_Vector_free (&u) ;          \
+    GrB_Vector_free (&v) ;          \
+    GrB_Descriptor_free (&desc) ;   \
+    GrB_Vector_free (&mask) ;       \
+    GB_mx_put_global (true, 0) ;    \
 }
 
 void mexFunction
@@ -47,7 +47,7 @@ void mexFunction
     // get w (make a deep copy)
     #define GET_DEEP_COPY \
     w = GB_mx_mxArray_to_Vector (pargin [0], "w input", true, true) ;
-    #define FREE_DEEP_COPY GrB_free (&w) ;
+    #define FREE_DEEP_COPY GrB_Vector_free (&w) ;
     GET_DEEP_COPY ;
     if (w == NULL)
     {
@@ -106,7 +106,7 @@ void mexFunction
     }
 
     // w<mask> = accum(w,u.*v)
-    METHOD (GrB_eWiseMult (w, mask, accum, mult, u, v, desc)) ;
+    METHOD (GrB_eWiseMult_Vector_BinaryOp (w, mask, accum, mult, u, v, desc)) ;
 
     // return w to MATLAB as a struct and free the GraphBLAS w
     pargout [0] = GB_mx_Vector_to_mxArray (&w, "w output", true) ;

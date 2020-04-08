@@ -9,6 +9,7 @@
 
 #include "GB_Pending.h"
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_block   // apply all pending computations if blocking mode enabled
 (
     GrB_Matrix A,

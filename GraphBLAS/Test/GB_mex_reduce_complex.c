@@ -16,7 +16,7 @@
 #define FREE_ALL                            \
 {                                           \
     GB_MATRIX_FREE (&A) ;                   \
-    GrB_free (&Times_terminal) ;            \
+    GrB_Monoid_free (&Times_terminal) ;     \
     GB_mx_put_global (true, 0) ;            \
 }
 
@@ -28,6 +28,8 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
+
+#if GxB_STDC_VERSION >= 201112L
 
     bool malloc_debug = GB_mx_get_global (true) ;
     GrB_Info info ;
@@ -89,5 +91,9 @@ void mexFunction
     GB_mx_complex_split (1, (double *) (&c), pargout [0]) ;
 
     FREE_ALL ;
+
+#else
+    mexErrMsgTxt ("complex type not available") ;
+#endif
 }
 

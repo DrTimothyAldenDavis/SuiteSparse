@@ -22,7 +22,8 @@
 % uint16, uint32, and uint64.  Complex matrices will be added in the
 % future.
 
-clear all
+clear
+GrB.clear
 format compact
 rng ('default') ;
 X = 100 * rand (2) ;
@@ -332,7 +333,7 @@ disp (G,1)
 
 %%
 rng ('default') ;
-GrB.clear ;                      % clear all prior GraphBLAS settings
+GrB.clear ;                      % clear prior GraphBLAS settings
 fprintf ('the default format is: %s\n', GrB.format) ;
 C = sparse (rand (2))
 G = GrB (C)
@@ -362,7 +363,7 @@ err = norm (H-G,1)
 % O(n+nnz(A)) space.  MATLAB can create huge column vectors, but not huge
 % matrices (when n is huge).
 
-clear all
+clear
 [c, huge] = computer ;
 C = sparse (huge, 1)    % MATLAB can create a huge-by-1 sparse column
 try
@@ -492,7 +493,7 @@ assert (isequal (nonzeros (C2), double (mod (nonzeros (C3), 256))))
 % as v(s) = 1 for the source node, v(i) = 2 for nodes adjacent to the
 % source, and so on.
 
-clear all
+clear
 rng ('default') ;
 n = 1e5 ;
 A = logical (sprandn (n, n, 1e-3)) ;
@@ -549,7 +550,7 @@ assert (logical (all (deg > 0)))
 % for a randomly constructed neural network.  See the GrB.dnn and
 % dnn_matlab.m functions for details.
 
-clear all
+clear
 rng ('default') ;
 nlayers = 16 ;
 nneurons = 4096 ;

@@ -36,7 +36,7 @@ static inline void GB_jstartup          // no longer used in v3.2.0
     (*jlast) = -1 ;         // last sentinal vector is -1
     if (C->is_hyper)
     {
-        C->nvec = 0 ;       // clear all existing vectors from C
+        C->nvec = 0 ;       // clear existing vectors from C
     }
     C->nvec_nonempty = 0 ;  // # of non-empty vectors will be counted
 }

@@ -147,10 +147,14 @@ GrB_Matrix GB_mx_mxArray_to_Matrix     // returns GraphBLAS version of A
 
     if (mxIsComplex (Amatrix))
     {
+        #if GxB_STDC_VERSION >= 201112L
         // use the user-defined Complex type
         atype_in  = Complex ;
         atype_out = Complex ;
         deep_copy = true ;
+        #else
+        mexErrMsgTxt ("complex type not available") ;
+        #endif
     }
     else
     {
@@ -168,7 +172,7 @@ GrB_Matrix GB_mx_mxArray_to_Matrix     // returns GraphBLAS version of A
     int64_t *Mp = (int64_t *) mxGetJc (Amatrix) ;
     int64_t *Mi = (int64_t *) mxGetIr (Amatrix) ;
     int64_t anz = Mp [ncols] ;
-    void *Mx = mxGetData (Amatrix) ;
+    GB_void *Mx = mxGetData (Amatrix) ;
 
     //--------------------------------------------------------------------------
     // look for A.values
@@ -357,7 +361,7 @@ GrB_Matrix GB_mx_mxArray_to_Matrix     // returns GraphBLAS version of A
     if (!is_csc)
     {
         // this might convert A to hypersparse
-        GxB_set (A, GxB_FORMAT, GxB_BY_ROW) ;
+        GxB_Matrix_Option_set (A, GxB_FORMAT, GxB_BY_ROW) ;
         // so convert it back; hypersparsity is defined below
         GB_to_nonhyper (A, Context) ;
         ASSERT (!A->is_csc) ;
@@ -375,12 +379,12 @@ GrB_Matrix GB_mx_mxArray_to_Matrix     // returns GraphBLAS version of A
     {
         // this sets the hyper_ratio and then conforms the matrix to its
         // desired hypersparsity.  It may stay non-hypersparse.
-        GxB_set (A, GxB_HYPER, hyper_ratio) ;
+        GxB_Matrix_Option_set (A, GxB_HYPER, hyper_ratio) ;
     }
     else if (is_hyper)
     {
         // this forces the matrix to be always hypersparse
-        GxB_set (A, GxB_HYPER, GxB_ALWAYS_HYPER) ;
+        GxB_Matrix_Option_set (A, GxB_HYPER, GxB_ALWAYS_HYPER) ;
         if (A->vdim > 1)
         {
             ASSERT (A->is_hyper == is_hyper) ;

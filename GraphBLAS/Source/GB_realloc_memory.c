@@ -38,6 +38,7 @@
 
 #include "GB.h"
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void *GB_realloc_memory     // pointer to reallocated block of memory, or
                             // to original block if the reallocation failed.
 (

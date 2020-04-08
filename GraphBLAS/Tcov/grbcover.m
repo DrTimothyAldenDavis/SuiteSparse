@@ -9,6 +9,10 @@ function grbcover (what)
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
+if (ispc)
+    error ('The tests in Tcov are not ported to Windows') ;
+end
+
 % compile the mexFunctions
 
 if (nargin < 1)

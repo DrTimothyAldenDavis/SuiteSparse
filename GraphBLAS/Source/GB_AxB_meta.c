@@ -36,6 +36,7 @@
 #include "GB_mxm.h"
 #include "GB_transpose.h"
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_AxB_meta                // C<M>=A*B meta algorithm
 (
     GrB_Matrix *Chandle,            // output matrix (if not done in place)

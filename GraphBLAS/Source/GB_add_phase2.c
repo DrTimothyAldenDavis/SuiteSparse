@@ -26,6 +26,7 @@
 // This is used by GB_wait only, for merging the pending tuple matrix T into A.
 
 #include "GB_add.h"
+#include "GB_unused.h"
 #ifndef GBCOMPACT
 #include "GB_binop__include.h"
 #endif

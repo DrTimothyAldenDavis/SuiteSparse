@@ -16,16 +16,16 @@
 
 #define USAGE "C = GB_mex_rdiv2 (A, B, atrans, btrans, axb_method, flipxy, C_scalar)"
 
-#define FREE_ALL                        \
-{                                       \
-    GB_MATRIX_FREE (&A) ;               \
-    GB_MATRIX_FREE (&B) ;               \
-    GB_MATRIX_FREE (&B64) ;             \
-    GB_MATRIX_FREE (&C) ;               \
-    GB_MATRIX_FREE (&T) ;               \
-    GrB_free (&My_rdiv2) ;              \
-    GrB_free (&My_plus_rdiv2) ;         \
-    GB_mx_put_global (true, 0) ;        \
+#define FREE_ALL                            \
+{                                           \
+    GB_MATRIX_FREE (&A) ;                   \
+    GB_MATRIX_FREE (&B) ;                   \
+    GB_MATRIX_FREE (&B64) ;                 \
+    GB_MATRIX_FREE (&C) ;                   \
+    GB_MATRIX_FREE (&T) ;                   \
+    GrB_BinaryOp_free (&My_rdiv2) ;         \
+    GrB_Semiring_free (&My_plus_rdiv2) ;    \
+    GB_mx_put_global (true, 0) ;            \
 }
 
 //------------------------------------------------------------------------------
@@ -67,7 +67,7 @@ GrB_Info axb (GB_Context Context)
     info = GrB_Semiring_new (&My_plus_rdiv2, GxB_PLUS_FP64_MONOID, My_rdiv2) ;
     if (info != GrB_SUCCESS)
     {
-        GrB_free (&My_rdiv2) ;
+        GrB_BinaryOp_free (&My_rdiv2) ;
         return (info) ;
     }
 
@@ -82,17 +82,17 @@ GrB_Info axb (GB_Context Context)
         info = GrB_Matrix_new (&C, GrB_FP64, cnrows, cncols) ;
         if (info != GrB_SUCCESS)
         {
-            GrB_free (&My_rdiv2) ;
-            GrB_free (&My_plus_rdiv2) ;
+            GrB_BinaryOp_free (&My_rdiv2) ;
+            GrB_Semiring_free (&My_plus_rdiv2) ;
             return (info) ;
         }
-        info = GrB_assign (C, NULL, NULL, C_scalar,
+        info = GrB_Matrix_assign_FP64 (C, NULL, NULL, C_scalar,
             GrB_ALL, cnrows, GrB_ALL, cncols, NULL) ;
         if (info != GrB_SUCCESS) 
         {
-            GrB_free (&My_rdiv2) ;
-            GrB_free (&My_plus_rdiv2) ;
-            GrB_free (&C) ;
+            GrB_BinaryOp_free (&My_rdiv2) ;
+            GrB_Semiring_free (&My_plus_rdiv2) ;
+            GrB_Matrix_free (&C) ;
             return (info) ;
         }
         // GxB_print (C, 3) ;
@@ -127,19 +127,19 @@ GrB_Info axb (GB_Context Context)
         }
         if (!done_in_place)
         {
-            GrB_free (&C) ;
+            GrB_Matrix_free (&C) ;
             C = T ;
             T = NULL ;
         }
     }
     else
     {
-        GrB_free (&C) ;
-        GrB_free (&T) ;
+        GrB_Matrix_free (&C) ;
+        GrB_Matrix_free (&T) ;
     }
 
-    GrB_free (&My_rdiv2) ;
-    GrB_free (&My_plus_rdiv2) ;
+    GrB_BinaryOp_free (&My_rdiv2) ;
+    GrB_Semiring_free (&My_plus_rdiv2) ;
 
     return (info) ;
 }
@@ -242,7 +242,7 @@ void mexFunction
 
     // convert B64 (double) to B (float)
     GrB_Matrix_new (&B, GrB_FP32, bnrows, bncols) ;
-    GrB_assign (B, NULL, NULL, B64, GrB_ALL, 0, GrB_ALL, 0, NULL) ;
+    GrB_Matrix_assign (B, NULL, NULL, B64, GrB_ALL, 0, GrB_ALL, 0, NULL) ;
 
     // B must be completed
     GrB_Index nvals ;

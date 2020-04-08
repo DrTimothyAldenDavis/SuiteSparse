@@ -57,6 +57,7 @@
     GB_FREE_WORK ;                                                      \
 }
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_transpose_bucket    // bucket transpose; typecast and apply op
 (
     GrB_Matrix *Chandle,        // output matrix (unallocated on input)

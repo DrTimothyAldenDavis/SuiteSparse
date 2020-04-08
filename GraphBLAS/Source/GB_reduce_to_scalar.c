@@ -203,52 +203,25 @@ GrB_Info GB_reduce_to_scalar    // s = reduce_to_scalar (A)
                     if (memcmp (s, terminal, zsize) == 0) break ;   \
                 }
 
+            // skip the work for this task if early exit is reached
+            #define GB_IF_NOT_EARLY_EXIT                            \
+                bool my_exit ;                                      \
+                GB_ATOMIC_READ                                      \
+                my_exit = early_exit ;                              \
+                if (!my_exit)
 
-            #if GB_MICROSOFT
-
-                // skip the work for this task if early exit is reached
-                #define GB_IF_NOT_EARLY_EXIT                            \
-                    bool my_exit ;                                      \
-                    GB_PRAGMA (omp critical (GB_reduce_to_scalar))      \
-                    my_exit = early_exit ;                              \
-                    if (!my_exit)
-
-                // break if terminal value reached, inside parallel task
-                #define GB_PARALLEL_BREAK_IF_TERMINAL(s)                \
-                    if (terminal != NULL)                               \
-                    {                                                   \
-                        if (memcmp (s, terminal, zsize) == 0)           \
-                        {                                               \
-                            /* tell the other tasks to exit early */    \
-                            GB_PRAGMA (omp critical (GB_reduce_to_scalar))  \
-                            early_exit = true ;                         \
-                            break ;                                     \
-                        }                                               \
-                    }
-
-            #else
-
-                // skip the work for this task if early exit is reached
-                #define GB_IF_NOT_EARLY_EXIT                            \
-                    bool my_exit ;                                      \
-                    GB_ATOMIC_READ                                      \
-                    my_exit = early_exit ;                              \
-                    if (!my_exit)
-
-                // break if terminal value reached, inside parallel task
-                #define GB_PARALLEL_BREAK_IF_TERMINAL(s)                \
-                    if (terminal != NULL)                               \
-                    {                                                   \
-                        if (memcmp (s, terminal, zsize) == 0)           \
-                        {                                               \
-                            /* tell the other tasks to exit early */    \
-                            GB_ATOMIC_WRITE                             \
-                            early_exit = true ;                         \
-                            break ;                                     \
-                        }                                               \
-                    }
-
-            #endif
+            // break if terminal value reached, inside parallel task
+            #define GB_PARALLEL_BREAK_IF_TERMINAL(s)                \
+                if (terminal != NULL)                               \
+                {                                                   \
+                    if (memcmp (s, terminal, zsize) == 0)           \
+                    {                                               \
+                        /* tell the other tasks to exit early */    \
+                        GB_ATOMIC_WRITE                             \
+                        early_exit = true ;                         \
+                        break ;                                     \
+                    }                                               \
+                }
 
             // ztype t ;
             #define GB_SCALAR(t)                                    \

@@ -16,6 +16,7 @@
 
 #include "GB.h"
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void GB_free_memory
 (
     void *p,                // pointer to allocated block of memory to free

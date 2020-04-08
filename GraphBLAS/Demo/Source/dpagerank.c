@@ -18,17 +18,19 @@
 // See dpagerank.m for the equivalent computation in MATLAB (except the random
 // number generator differs).
 
+#include "GraphBLAS.h"
+
 //------------------------------------------------------------------------------
 // helper macros
 //------------------------------------------------------------------------------
 
 // free all workspace
-#define FREEWORK                \
-{                               \
-    GrB_Matrix_free (&C) ;      \
-    GrB_Matrix_free (&r) ;             \
-    if (I != NULL) free (I) ;   \
-    if (X != NULL) free (X) ;   \
+#define FREEWORK                        \
+{                                       \
+    GrB_Matrix_free (&C) ;              \
+    GrB_Vector_free (&r) ;              \
+    if (I != NULL) free (I) ;           \
+    if (X != NULL) free (X) ;           \
     GrB_UnaryOp_free (&op_scale) ;      \
     GrB_UnaryOp_free (&op_div) ;        \
 }
@@ -40,7 +42,9 @@
     FREEWORK ;                  \
 }
 
-#include "demos.h"
+#undef GB_PUBLIC
+#define GB_LIBRARY
+#include "graphblas_demos.h"
 
 //------------------------------------------------------------------------------
 // scalar operators
@@ -80,6 +84,7 @@ int compar (const void *x, const void *y)
 // dpagerank: compute the PageRank of all nodes in a graph
 //------------------------------------------------------------------------------
 
+GB_PUBLIC
 GrB_Info dpagerank          // GrB_SUCCESS or error condition
 (
     PageRank **Phandle,     // output: pointer to array of PageRank structs

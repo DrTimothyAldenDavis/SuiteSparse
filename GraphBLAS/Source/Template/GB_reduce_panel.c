@@ -149,13 +149,8 @@
             // check if another task has called for an early exit
             bool my_exit ;
 
-            #if GB_MICROSOFT
-                #pragma omp critical (GB_reduce_panel)
-                my_exit = early_exit ;
-            #else
-                GB_ATOMIC_READ
-                my_exit = early_exit ;
-            #endif
+            GB_ATOMIC_READ
+            my_exit = early_exit ;
 
             if (!my_exit)
             #endif
@@ -240,13 +235,8 @@
                 if (t == GB_TERMINAL_VALUE)
                 { 
                     // tell all other tasks to exit early
-                    #if GB_MICROSOFT
-                        #pragma omp critical (GB_reduce_panel)
-                        early_exit = true ;
-                    #else
-                        GB_ATOMIC_WRITE
-                        early_exit = true ;
-                    #endif
+                    GB_ATOMIC_WRITE
+                    early_exit = true ;
                 }
                 #endif
             }

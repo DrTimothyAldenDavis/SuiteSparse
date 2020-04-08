@@ -24,7 +24,7 @@
     GB_MATRIX_FREE (&C) ;               \
     if (C_is_M) M = NULL ;              \
     GB_MATRIX_FREE (&M) ;               \
-    GrB_free (&desc) ;                  \
+    GrB_Descriptor_free (&desc) ;       \
     GB_mx_put_global (true, 0) ;        \
 }
 

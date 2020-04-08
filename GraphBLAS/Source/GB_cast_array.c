@@ -16,6 +16,7 @@
 #include "GB_unaryop__include.h"
 #endif
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void GB_cast_array              // typecast an array
 (
     GB_void *Cx,                // output array

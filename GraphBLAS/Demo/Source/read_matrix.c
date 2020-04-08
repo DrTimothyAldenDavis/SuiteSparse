@@ -15,6 +15,8 @@
 // where i and j are the row and column indices, and x is the value.
 // The matrix is read in double precision.
 
+#include "GraphBLAS.h"
+
 // free all workspace; this used by the OK(...) macro if an error occurs
 #define FREE_ALL                    \
     if (I  != NULL) free (I) ;      \
@@ -30,7 +32,9 @@
     GrB_Matrix_free (&B) ;          \
     GrB_Matrix_free (&C) ;
 
-#include "demos.h"
+#undef GB_PUBLIC
+#define GB_LIBRARY
+#include "graphblas_demos.h"
 
 //------------------------------------------------------------------------------
 // unary operator to divide by 2
@@ -45,6 +49,7 @@ void scale2 (double *z, const double *x)
 // read a matrix from a file
 //------------------------------------------------------------------------------
 
+GB_PUBLIC
 GrB_Info read_matrix        // read a double-precision or boolean matrix
 (
     GrB_Matrix *A_output,   // handle of matrix to create

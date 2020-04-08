@@ -50,19 +50,21 @@ for k1 = 1:length (classes)
     end
 end
 
-% duplicate a complex matrix (can't be typecasted)
-A = GB_mex_random (4, 4, 10, 1) ;
-assert (spok (1*A) == 1) ;
+if (GB_mex_have_complex)
+    % duplicate a complex matrix (can't be typecasted)
+    A = GB_mex_random (4, 4, 10, 1) ;
+    assert (spok (1*A) == 1) ;
 
-C = GB_mex_dup (A) ;
-C_matrix = full (C.matrix) ;
-assert (isequal (A, C.matrix))  ;
-assert (spok (1*C.matrix) == 1) ;
+    C = GB_mex_dup (A) ;
+    C_matrix = full (C.matrix) ;
+    assert (isequal (A, C.matrix))  ;
+    assert (spok (1*C.matrix) == 1) ;
 
-C = GB_mex_dup (A, 'double', 1) ;
-C_matrix = full (C.matrix) ;
-assert (isequal (A, C.matrix))  ;
-assert (spok (1*C.matrix) == 1) ;
+    C = GB_mex_dup (A, 'double', 1) ;
+    C_matrix = full (C.matrix) ;
+    assert (isequal (A, C.matrix))  ;
+    assert (spok (1*C.matrix) == 1) ;
+end
 
 format
 

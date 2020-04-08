@@ -274,7 +274,6 @@
 %   test_other       - installs all packages needed for extensive tests
 
 %   grb_clear_coverage - clear current statement coverage
-%   gbclear            - clear and reload GraphBLAS
 %   grb_get_coverage   - return current statement coverage
 
 %   bfs_book         - run BFS on a small graph

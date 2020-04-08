@@ -11,6 +11,7 @@
 
 #include "GB.h"
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 char *GB_code_string            // return a static string for a type name
 (
     const GB_Type_code code     // code to convert to string

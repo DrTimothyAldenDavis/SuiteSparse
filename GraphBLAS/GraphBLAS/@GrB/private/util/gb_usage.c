@@ -8,7 +8,6 @@
 //------------------------------------------------------------------------------
 
 #include "gb_matlab.h"
-#include "GB_printf.h"
 
 void gb_usage       // check usage and make sure GrB.init has been called
 (
@@ -28,6 +27,7 @@ void gb_usage       // check usage and make sure GrB.init has been called
         // initialize GraphBLAS
         //----------------------------------------------------------------------
 
+        // must use mexPrintf to print to MATLAB Command Window
         GB_printf_function = mexPrintf ;
 
         OK (GxB_init (GrB_NONBLOCKING, mxMalloc, mxCalloc, mxRealloc, mxFree,
@@ -41,6 +41,9 @@ void gb_usage       // check usage and make sure GrB.init has been called
 
         // print 1-based indices
         GB_Global_print_one_based_set (true) ;
+
+        // for debug assertions only
+        GB_Global_abort_function_set (gb_abort) ;
     }
 
     //--------------------------------------------------------------------------

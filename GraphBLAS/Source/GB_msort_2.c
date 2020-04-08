@@ -361,41 +361,63 @@ void GB_mergesort_2 // sort array A of size 2-by-n, using 2 keys (A [0:1][])
 // GB_msort_2: gateway for parallel merge sort
 //------------------------------------------------------------------------------
 
+GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void GB_msort_2     // sort array A of size 2-by-n, using 2 keys (A [0:1][])
 (
-    int64_t *GB_RESTRICT A_0,      // size n array
-    int64_t *GB_RESTRICT A_1,      // size n array
-    int64_t *GB_RESTRICT W_0,      // size n array, workspace
-    int64_t *GB_RESTRICT W_1,      // size n array, workspace
+    int64_t *GB_RESTRICT A_0,   // size n array
+    int64_t *GB_RESTRICT A_1,   // size n array
+    int64_t *GB_RESTRICT W_0,   // size n array, workspace
+    int64_t *GB_RESTRICT W_1,   // size n array, workspace
     const int64_t n,
-    const int nthreads          // # of threads to use
+    int nthreads                // # of threads to use
 )
 {
 
-    if (GB_OPENMP_GET_NUM_THREADS > 1)
+    nthreads = GB_MSORT_NTHREADS (nthreads) ;
+
+    if (nthreads > 1)
     {
 
         // ---------------------------------------------------------------------
-        // parallel mergesort: already in parallel region
+        // parallel mergesort
         // ---------------------------------------------------------------------
 
-        // GB_msort_2 is already in a parallel region in the caller.  This
-        // does not occur inside GraphBLAS, but the user application might be
-        // calling GraphBLAS inside its own parallel region.
+        if (GB_OPENMP_GET_NUM_THREADS > 1)
+        {
 
-        GB_mergesort_2 (A_0, A_1, W_0, W_1, n) ;
+            // -----------------------------------------------------------------
+            // parallel mergesort: already in parallel region
+            // -----------------------------------------------------------------
+
+            // GB_msort_2 is already in a parallel region in the caller.  This
+            // does not occur inside GraphBLAS, but the user application might
+            // be calling GraphBLAS inside its own parallel region.
+
+            GB_mergesort_2 (A_0, A_1, W_0, W_1, n) ;
+
+        }
+        else
+        { 
+
+            // -----------------------------------------------------------------
+            // parallel mergesort: start a parallel region
+            // -----------------------------------------------------------------
+
+            GB_TASK_MASTER (nthreads)
+            GB_mergesort_2 (A_0, A_1, W_0, W_1, n) ;
+
+        }
 
     }
     else
-    { 
+    {
 
         // ---------------------------------------------------------------------
-        // parallel mergesort: start a parallel region
+        // sequential quicksort
         // ---------------------------------------------------------------------
 
-        GB_TASK_MASTER (nthreads)
-        GB_mergesort_2 (A_0, A_1, W_0, W_1, n) ;
-
+        // The method is in-place, and the workspace is not used.
+        GB_qsort_2 (A_0, A_1, n) ;
     }
 }
 

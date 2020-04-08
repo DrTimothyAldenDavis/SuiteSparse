@@ -13,7 +13,7 @@
 
 #define FREE_ALL                        \
 {                                       \
-    GrB_free (&C) ;                     \
+    GrB_Matrix_free (&C) ;              \
     GB_mx_put_global (true, 0) ;        \
 }
 
@@ -58,12 +58,12 @@ void mexFunction
     if (GB_VECTOR_OK (C) && vdim_new == 1)
     {
         // resize C as a vector
-        METHOD (GxB_resize ((GrB_Vector) C, vlen_new)) ;
+        METHOD (GxB_Vector_resize ((GrB_Vector) C, vlen_new)) ;
     }
     else
     {
         // resize C as a matrix
-        METHOD (GxB_resize (C, vlen_new, vdim_new)) ;
+        METHOD (GxB_Matrix_resize (C, vlen_new, vdim_new)) ;
     }
 
     // return C to MATLAB as a struct and free the GraphBLAS C
