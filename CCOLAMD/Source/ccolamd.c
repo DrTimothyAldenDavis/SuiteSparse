@@ -671,9 +671,9 @@ typedef struct CColamd_Col_struct
     } shared1 ;
     union
     {
-	Int score ;	
+	Int score ;
 	Int order ;
-    } shared2 ; 
+    } shared2 ;
     union
     {
 	Int headhash ;	/* head of a hash bucket, if col is at the head of */
@@ -728,9 +728,9 @@ typedef struct CColamd_Row_struct
 #define MIN(a,b) (((a) < (b)) ? (a) : (b))
 
 /* Routines are either PUBLIC (user-callable) or PRIVATE (not user-callable) */
-#define GLOBAL 
+#define GLOBAL
 #define PUBLIC
-#define PRIVATE static 
+#define PRIVATE static
 
 #define DENSE_DEGREE(alpha,n) \
     ((Int) MAX (16.0, (alpha) * sqrt ((double) (n))))
@@ -808,9 +808,9 @@ PRIVATE Int ccolamd_debug ;
 #endif
 
 PRIVATE void ccolamd_get_debug
-(   
+(
     char *method
-) ; 
+) ;
 
 PRIVATE void debug_mark
 (
@@ -3902,7 +3902,7 @@ GLOBAL void CCOLAMD_apply_order
 /* === CCOLAMD_fsize ======================================================== */
 /* ========================================================================== */
 
-/* Determine the largest frontal matrix size for each subtree. 
+/* Determine the largest frontal matrix size for each subtree.
  * Only required to sort the children of each
  * node prior to postordering the column elimination tree. */
 
@@ -4014,7 +4014,7 @@ GLOBAL void CCOLAMD_postorder
 		if (CMEMBER (Front_cols[parent]) == CMEMBER (Front_cols[j]))
 		{
 		    Child [parent] = j ;
-		}   
+		}
 	    }
 	}
     }
