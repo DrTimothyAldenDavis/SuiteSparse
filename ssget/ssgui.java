@@ -2261,8 +2261,28 @@ public class ssgui extends JFrame
 
         try
         {
+            // Follow redirects manually
+            int max_redirects = 5;
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            for(int redirect_count = 0; redirect_count < max_redirects; redirect_count++)
+            {
+                int status = conn.getResponseCode();
+                if (status >= 300 && status <= 308)
+                {
+                    // Redirecting
+                    String loc = conn.getHeaderField("Location");
+                    url = new URL(loc);
+                    conn = (HttpURLConnection) url.openConnection();
+                }
+                else
+                {
+                    break;
+                }
+            }
+
             // determine the file size (fails for files > 2GB)
-            int len = url.openConnection ( ).getContentLength ( ) ;
+            int len = conn.getContentLength();
 
             // start the progress bar
             if (gui_ready)
@@ -2291,7 +2311,8 @@ public class ssgui extends JFrame
             }
 
             // open the source and destination files
-            url_in = new BufferedInputStream (url.openStream ( )) ;
+            //url_in = new BufferedInputStream (url.openStream ( )) ;
+            url_in = new BufferedInputStream (conn.getInputStream()) ;
             ftemp_out = new BufferedOutputStream (new FileOutputStream
                 (fix_name (ftemp_name)), buffersize) ;
 
@@ -2318,9 +2339,10 @@ public class ssgui extends JFrame
         }
         catch (Exception e)
         {
-            // display warning dialog
-            JOptionPane.showMessageDialog (this, "Download failed: "
-                + urlstring, "Warning", JOptionPane.WARNING_MESSAGE) ;
+            if (debug)
+            {
+                System.out.println("Download failed: " + urlstring);
+            }
             ok = false ;
         }
 
