@@ -14,8 +14,8 @@
 // If C(row,col) is already present in the matrix, its value is overwritten
 // with the scalar.  Otherwise, if the mode determined by GrB_init is
 // non-blocking, the tuple (i,j,scalar) is appended to a list of pending tuples
-// to C.  When calling GrB_wait, these pending tuples are assembled.  They are
-// also assembled if the mode is blocking.
+// to C.  When calling GrB_Matrix_wait, these pending tuples are assembled.
+// They are also assembled if the mode is blocking.
 
 // GrB_setElement is the same as GrB_*assign with an implied SECOND accum
 // operator whose ztype, xtype, and ytype are the same as C, with I=i, J=1, a
@@ -23,9 +23,11 @@
 // C_replace effectively false (its value is ignored), and A transpose
 // effectively false (since transposing a scalar has no effect).
 
-// Compare this function with GB_extractElement.
+// Compare this function with GrB_*_extractElement_*
 
 #include "GB_Pending.h"
+
+#define GB_FREE_ALL ;
 
 GrB_Info GB_setElement              // set a single entry, C(row,col) = scalar
 (
@@ -42,19 +44,20 @@ GrB_Info GB_setElement              // set a single entry, C(row,col) = scalar
     // check inputs
     //--------------------------------------------------------------------------
 
+    GrB_Info info ;
     ASSERT (C != NULL) ;
     GB_RETURN_IF_NULL (scalar) ;
 
     if (row >= GB_NROWS (C))
     { 
         return (GB_ERROR (GrB_INVALID_INDEX, (GB_LOG,
-            "Row index "GBu" out of range; must be < "GBd,
+            "Row index " GBu " out of range; must be < " GBd,
             row, GB_NROWS (C)))) ;
     }
     if (col >= GB_NCOLS (C))
     { 
         return (GB_ERROR (GrB_INVALID_INDEX, (GB_LOG,
-            "Column index "GBu" out of range; must be < "GBd,
+            "Column index " GBu " out of range; must be < " GBd,
             col, GB_NCOLS (C)))) ;
     }
 
@@ -67,7 +70,7 @@ GrB_Info GB_setElement              // set a single entry, C(row,col) = scalar
     if (!GB_code_compatible (scalar_code, ccode))
     { 
         return (GB_ERROR (GrB_DOMAIN_MISMATCH, (GB_LOG,
-            "input scalar of type [%s]\n"
+            "Input scalar of type [%s]\n"
             "cannot be typecast to entry of type [%s]",
             GB_code_string (scalar_code), ctype->name))) ;
     }
@@ -141,31 +144,17 @@ GrB_Info GB_setElement              // set a single entry, C(row,col) = scalar
 
         // found C (i,j), assign its value
         size_t csize = ctype->size ;
-        GB_void *Cx = C->x ;
-        if (scalar_code >= GB_UDT_code || scalar_code == ccode)
-        { 
-            // copy the values without typecasting
-            memcpy (Cx +(pleft*csize), scalar, csize) ;
-        }
-        else
-        { 
-            // typecast scalar into C
-            GB_cast_array (Cx +(pleft*csize), ccode, scalar, scalar_code, 1,
-                Context) ;
-        }
+
+        // typecast or copy the scalar into C
+        GB_cast_array (((GB_void *) C->x) +(pleft*csize), ccode,
+            (GB_void *) scalar, scalar_code, csize, 1, 1) ;
 
         if (is_zombie)
         {
             // bring the zombie back to life
-            ASSERT (C->enqueued) ;
             C->i [pleft] = i ;
             C->nzombies-- ;
-            if (C->nzombies == 0 && C->Pending == NULL)
-            { 
-                // remove from queue if no zombies or pending tuples
-                // FUTURE:: may thrash; see GrB_wait.
-                GB_CRITICAL (GB_queue_remove (C)) ;
-            }
+            if (C->nzombies == 0 && C->Pending == NULL) { if (!GB_queue_remove (C)) GB_PANIC ; } // TODO in 4.0: delete
         }
 
         // the check is fine but just costly even when debugging
@@ -233,7 +222,7 @@ GrB_Info GB_setElement              // set a single entry, C(row,col) = scalar
             #endif
 
             // delete any lingering zombies and assemble the pending tuples
-            GB_WAIT (C) ;
+            GB_MATRIX_WAIT (C) ;
 
             #if GB_BURBLE
             if (burble)
@@ -261,20 +250,16 @@ GrB_Info GB_setElement              // set a single entry, C(row,col) = scalar
         // becomes the type of this scalar, and the pending operator becomes
         // NULL, which is the implicit SECOND_ctype operator.
 
-        if (!GB_Pending_add (&(C->Pending), scalar, stype, NULL, i, j,
-            C->vdim > 1))
+        if (!GB_Pending_add (&(C->Pending), (GB_void *)scalar,
+            stype, NULL, i, j, C->vdim > 1))
         { 
             // out of memory
             GB_PHIX_FREE (C) ;
             return (GB_OUT_OF_MEMORY) ;
         }
 
-        // insert C in the queue if it isn't already queued
         ASSERT (GB_PENDING (C)) ;
-        if (!(C->enqueued))
-        { 
-            GB_CRITICAL (GB_queue_insert (C)) ;
-        }
+        if (!(C->enqueued)) { if (!GB_queue_insert (C)) GB_PANIC ; } // TODO in 4.0: delete
 
         // if this was the first tuple, then the pending operator and
         // pending type have been defined
@@ -286,7 +271,7 @@ GrB_Info GB_setElement              // set a single entry, C(row,col) = scalar
         // ASSERT_MATRIX_OK (C, "did C for setElement (not found)", GB0) ;
 
         #if GB_BURBLE
-        // only burble if GB_wait will be called
+        // only burble if GB_Matrix_wait will be called
         burble = (burble && GB_shall_block (C)) ;
         if (burble)
         {
@@ -297,7 +282,7 @@ GrB_Info GB_setElement              // set a single entry, C(row,col) = scalar
         }
         #endif
 
-        GrB_Info info = GB_block (C, Context) ;
+        info = GB_block (C, Context) ;
 
         #if GB_BURBLE
         if (burble)

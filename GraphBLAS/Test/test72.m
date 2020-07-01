@@ -33,7 +33,7 @@ C2 = (A'*B') .* Mask ;
 GB_spec_compare (C0, C1, 0) ;
 assert (isequal (C2, C0.matrix)) ;
 
-M = GB_mex_eWiseAdd_Matrix (Z, [ ], [ ], 'minus', Mask, Mask, [ ]) ;
+M = GB_mex_Matrix_eWiseAdd (Z, [ ], [ ], 'minus', Mask, Mask, [ ]) ;
 C0 = GB_spec_mxm (Z, M.matrix, [ ], semiring, A, B, dtn);
 C1 = GB_mex_mxm  (Z, M.matrix, [ ], semiring, A, B, dtn);
 GB_spec_compare (C0, C1, 0) ;
@@ -46,20 +46,20 @@ A = speye (n) ;
 B = sparse (rand (n)) ;
 Z = sparse (n,n) ;
 
-C0 = GB_mex_eWiseMult_Matrix  (Z, [ ], [ ], 'times', A, B, [ ]) ;
+C0 = GB_mex_Matrix_eWiseMult  (Z, [ ], [ ], 'times', A, B, [ ]) ;
 C1 = A .* B ;
 assert (isequal (C1, sparse (C0.matrix))) ;
 
-C0 = GB_mex_eWiseMult_Matrix  (Z, [ ], [ ], 'times', B, A, [ ]) ;
+C0 = GB_mex_Matrix_eWiseMult  (Z, [ ], [ ], 'times', B, A, [ ]) ;
 C1 = B .* A ;
 assert (isequal (C1, sparse (C0.matrix))) ;
 
 A = logical (A) ;
-C0 = GB_mex_eWiseMult_Matrix  (Z, [ ], [ ], 'times', A, B, [ ]) ;
+C0 = GB_mex_Matrix_eWiseMult  (Z, [ ], [ ], 'times', A, B, [ ]) ;
 C1 = double (A) .* B ;
 assert (isequal (C1, sparse (C0.matrix))) ;
 
-C0 = GB_mex_eWiseMult_Matrix  (Z, [ ], [ ], 'times', B, A, [ ]) ;
+C0 = GB_mex_Matrix_eWiseMult  (Z, [ ], [ ], 'times', B, A, [ ]) ;
 C1 = B .* double (A) ;
 assert (isequal (C1, sparse (C0.matrix))) ;
 

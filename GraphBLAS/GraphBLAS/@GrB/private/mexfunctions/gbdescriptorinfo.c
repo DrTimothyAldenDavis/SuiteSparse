@@ -7,6 +7,11 @@
 
 //------------------------------------------------------------------------------
 
+// Usage:
+
+// gbdescriptorinfo
+// gbdescriptorinfo (desc)
+
 #include "gb_matlab.h"
 
 void mexFunction
@@ -23,7 +28,7 @@ void mexFunction
     //--------------------------------------------------------------------------
 
     gb_usage (nargin <= 1 && nargout == 0,
-        "usage: GrB.descriptorinfo or GrB.descriptorinfo (d)") ;
+        "usage: GrB.descriptorinfo or GrB.descriptorinfo (desc)") ;
 
     //--------------------------------------------------------------------------
     // construct the GraphBLAS descriptor
@@ -32,20 +37,23 @@ void mexFunction
     base_enum_t base = BASE_DEFAULT ;
     kind_enum_t kind = KIND_GRB ;
     GxB_Format_Value fmt = GxB_NO_FORMAT ;
-    GrB_Descriptor d = (nargin == 0) ? NULL :
-        gb_mxarray_to_descriptor (pargin [nargin-1], &kind, &fmt, &base) ;
+    GrB_Descriptor desc = NULL ;
+    if (nargin > 0)
+    {
+        desc = gb_mxarray_to_descriptor (pargin [nargin-1], &kind, &fmt, &base);
+    }
 
-    if (d == NULL)
+    if (desc == NULL)
     { 
         printf ("\nDefault GraphBLAS descriptor:\n") ;
-        OK (GrB_Descriptor_new (&d)) ;
+        OK (GrB_Descriptor_new (&desc)) ;
     }
 
     //--------------------------------------------------------------------------
     // print the GraphBLAS descriptor
     //--------------------------------------------------------------------------
 
-    OK (GxB_Descriptor_fprint (d, "", GxB_COMPLETE, NULL)) ;
+    OK (GxB_Descriptor_fprint (desc, "", GxB_COMPLETE, NULL)) ;
 
     //--------------------------------------------------------------------------
     // print the extra terms in the MATLAB interface descriptor
@@ -83,7 +91,7 @@ void mexFunction
     // free the descriptor
     //--------------------------------------------------------------------------
 
-    OK (GrB_Descriptor_free (&d)) ;
+    OK (GrB_Descriptor_free (&desc)) ;
     GB_WRAPUP ;
 }
 

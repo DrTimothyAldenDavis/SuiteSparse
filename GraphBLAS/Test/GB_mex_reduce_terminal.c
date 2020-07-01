@@ -17,8 +17,8 @@
 #define FREE_ALL                        \
 {                                       \
     GB_MATRIX_FREE (&A) ;               \
-    GrB_BinaryOp_free (&Max) ;          \
-    GrB_Monoid_free (&Max_Terminal) ;   \
+    GrB_BinaryOp_free_(&Max) ;          \
+    GrB_Monoid_free_(&Max_Terminal) ;   \
     GB_mx_put_global (true, 0) ;        \
 }
 
@@ -85,7 +85,7 @@ void mexFunction
     // printf ("create the monoid:\n") ;
 
     // create the Max monoid
-    info = GxB_Monoid_terminal_new_FP64 (&Max_Terminal, Max, (double) 0,
+    info = GxB_Monoid_terminal_new_FP64_(&Max_Terminal, Max, (double) 0,
         terminal) ;
     if (info != GrB_SUCCESS)
     {
@@ -95,7 +95,7 @@ void mexFunction
 
     // reduce to a scalar
     double c ;
-    info = GrB_Matrix_reduce_FP64 (&c, NULL, Max_Terminal, A, NULL) ;
+    info = GrB_Matrix_reduce_FP64_(&c, NULL, Max_Terminal, A, NULL) ;
     if (info != GrB_SUCCESS)
     {
         printf ("error: %d %s\n", info, GrB_error ( )) ;

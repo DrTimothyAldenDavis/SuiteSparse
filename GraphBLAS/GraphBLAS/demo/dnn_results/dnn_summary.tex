@@ -110,10 +110,10 @@ GrB_Info LAGraph_dnn    // returns GrB_SUCCESS if successful
     for (int layer = 0 ; layer < nlayers ; layer++)
     {
         // Y = Y * W [layer], using the conventional PLUS_TIMES semiring
-        GrB_mxm (Y, NULL, NULL, GxB__PLUS_TIMES_FP32,
+        GrB_mxm (Y, NULL, NULL, GxB_PLUS_TIMES_FP32,
             ((layer == 0) ? Y0 : Y), W [layer], NULL) ;
         // Y = Y * Bias [layer], using the PLUS_PLUS semiring.
-        GrB_mxm (Y, NULL, NULL, GxB__PLUS_PLUS_FP32, Y, Bias [layer], NULL) ;
+        GrB_mxm (Y, NULL, NULL, GxB_PLUS_PLUS_FP32, Y, Bias [layer], NULL) ;
         // delete entries from Y: keep only those entries greater than zero
         GxB_select (Y, NULL, NULL, GxB_GT_ZERO, Y, NULL, NULL) ;
         // threshold maximum values: Y (Y > 32) = 32

@@ -56,7 +56,7 @@ inc = '-Itmp_include -I../Test -I../Test/Template' ;
 addpath ../Test
 addpath ../Test/spok
 
-flags = '-g -DGBCOVER -largeArrayDims' ;
+flags = '-g -DGBCOVER -R2018a' ;
 
 fprintf ('\nCompiling GraphBLAS tests\nplease wait [') ;
 

@@ -20,7 +20,7 @@ k = 3000 ;
     I1 = randperm (k) ;
     I0 = uint64 (I1) - 1 ;
 
-d.mask = 'scmp' ;
+d.mask = 'complement' ;
 
 ncores = feature ('numcores') ;
 

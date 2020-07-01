@@ -14,7 +14,7 @@
 
 // Usage:
 
-//      C = gblogextract (A, M)
+// C = gblogextract (A, M)
 
 //  This function is the C equivalent of the following m-function:
 
@@ -74,6 +74,8 @@
 // use of GrB.extracttuples and GrB.build.  Instead, it accesses the internal
 // structure of the GrB_Matrix objects, and creates shallow copies.  The
 // m-file above is useful for understanding that this C mexFunction does.
+
+// C is always returned as a GrB matrix.
 
 #include "gb_matlab.h"
 #include "GB_transpose.h"
@@ -211,9 +213,9 @@ void mexFunction
     OK (GrB_Vector_new (&V, type, mnz)) ;
     gb_mxfree (&V->i) ;
     gb_mxfree (&V->x) ;
-    V->i = Tx ;         // transplant the values of T as the row indices of V
+    V->i = (int64_t *) Tx ; // transplant values of T as the row indices of V
     T->x = NULL ;
-    V->x = Gx ;         // transplant the values of G as the values of V
+    V->x = Gx ;             // transplant the values of G as the values of V
     V->nzmax = tnvals ;
     int64_t *Vp = V->p ;
     Vp [0] = 0 ;

@@ -25,6 +25,7 @@
     info = method ;                                                 \
     fprintf (f,"GB_mex_errors, line %d:", __LINE__) ;               \
     fprintf (f,"%s\n", GrB_error ( )) ;                             \
+    if (info != expected) fprintf (f, "got %d expected %d\n", info, expected) ; \
     CHECK2 (info == expected, method) ;                             \
 }
 

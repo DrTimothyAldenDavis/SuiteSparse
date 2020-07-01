@@ -71,7 +71,7 @@ void GB_AxB_saxpy3_symbolic
         Mp = M->p ;
         Mh = M->h ;
         Mi = M->i ;
-        Mx = (Mask_struct ? NULL : (M->x)) ;
+        Mx = (GB_void *) (Mask_struct ? NULL : (M->x)) ;
         msize = M->type->size ;
         mnvec = M->nvec ;
         M_is_hyper = M->is_hyper ;
@@ -298,8 +298,6 @@ void GB_AxB_saxpy3_symbolic
                             int64_t k = Bi [pB] ;       // get B(k,j)
                             GB_GET_A_k ;                // get A(:,k)
                             GB_SKIP_IF_A_k_DISJOINT_WITH_M_j ;
-                            #define GB_IKJ_VECTORIZE GB_PRAGMA_VECTORIZE
-                            #define GB_IKJ_IVDEP     GB_PRAGMA_IVDEP
                             #define GB_IKJ                                     \
                             {                                                  \
                                 if (Hf [i] == mark)   /* if true, M(i,j) is 1*/\
@@ -309,8 +307,6 @@ void GB_AxB_saxpy3_symbolic
                                 }                                              \
                             }
                             GB_SCAN_M_j_OR_A_k ;
-                            #undef GB_IKJ_VECTORIZE
-                            #undef GB_IKJ_IVDEP
                             #undef GB_IKJ
                         }
                         Cp [kk] = cjnz ;    // count the entries in C(:,j)
@@ -467,8 +463,6 @@ void GB_AxB_saxpy3_symbolic
                             int64_t k = Bi [pB] ;       // get B(k,j)
                             GB_GET_A_k ;                // get A(:,k)
                             GB_SKIP_IF_A_k_DISJOINT_WITH_M_j ;
-                            #define GB_IKJ_VECTORIZE
-                            #define GB_IKJ_IVDEP
                             #define GB_IKJ                                     \
                             {                                                  \
                                 for (GB_HASH (i))       /* find i in hash */   \
@@ -487,8 +481,6 @@ void GB_AxB_saxpy3_symbolic
                                 }                                              \
                             }
                             GB_SCAN_M_j_OR_A_k ;
-                            #undef GB_IKJ_VECTORIZE
-                            #undef GB_IKJ_IVDEP
                             #undef GB_IKJ
                         }
                         Cp [kk] = cjnz ;    // count the entries in C(:,j)

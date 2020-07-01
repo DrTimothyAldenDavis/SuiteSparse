@@ -12,7 +12,7 @@ clear functions
 % warning ('off', 'MATLAB:nearlySingularMatrix') ;
 % warning ('off', 'MATLAB:divideByZero') ;
 
-index = UFget ;
+index = ssget ;
 f = find (index.nrows == index.ncols) ;
 [ignore i] = sort (index.nnz (f)) ;                                         %#ok
 f = f (i) ;
@@ -43,7 +43,7 @@ clf
 
     for kk = 1:nmat
 
-        Prob = UFget (f (kk), index) ;
+        Prob = ssget (f (kk), index) ;
 
         waitbar (kk/nmat, h) ;
 
@@ -155,12 +155,14 @@ clf
             end
 
             lumax = max (LUnz (1:k)) ;
-            loglog (...
-                LUnz (1:k), Tmatlab (1:k) ./ Tklu (1:k), 'o', ...
-                LUnz (1:k), Tcsparse (1:k) ./ Tklu (1:k), 'x', ...
-                [20 lumax], [1 1], 'r-') ;
-            axis ([20 lumax .1 20]) ;
-            drawnow
+            if (k > 1)
+                loglog (...
+                    LUnz (1:k), Tmatlab (1:k) ./ Tklu (1:k), 'o', ...
+                    LUnz (1:k), Tcsparse (1:k) ./ Tklu (1:k), 'x', ...
+                    [20 lumax], [1 1], 'r-') ;
+                axis ([sort([20 lumax]) .1 20]) ;
+                drawnow
+            end
 
             fprintf ('err %g %g %g\n', err, er2, erc) ;
         end

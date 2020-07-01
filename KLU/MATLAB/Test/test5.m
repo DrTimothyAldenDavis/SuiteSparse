@@ -96,7 +96,7 @@ circ = [
 
 fprintf ('Running KLU on %d circuits.\n', length (circ)) ;
 
-index = UFget ;
+index = ssget ;
 
 opts_noscale.scale = -1 ;
 opts_sum.scale = 1 ;
@@ -110,7 +110,7 @@ try
     for kk = 1:nmat
 
         k = circ (kk) ;
-        Prob = UFget (k, index) ;
+        Prob = ssget (k, index) ;
 
         waitbar (kk/nmat, h) ;
 

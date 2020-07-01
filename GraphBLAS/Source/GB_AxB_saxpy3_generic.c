@@ -59,8 +59,8 @@ GrB_Info GB_AxB_saxpy3_generic
     size_t aik_size = flipxy ? ysize : xsize ;
     size_t bkj_size = flipxy ? xsize : ysize ;
 
-    GB_void *GB_RESTRICT terminal = add->terminal ;
-    GB_void *GB_RESTRICT identity = add->identity ;
+    GB_void *GB_RESTRICT terminal = (GB_void *) add->terminal ;
+    GB_void *GB_RESTRICT identity = (GB_void *) add->identity ;
 
     GB_cast_function cast_A, cast_B ;
     if (flipxy)
@@ -98,7 +98,7 @@ GrB_Info GB_AxB_saxpy3_generic
 
     // t = A(i,k) * B(k,j)
     #define GB_MULT(t, aik, bkj)                                        \
-        GB_MULTIPLY (t, aik, bkj)
+        GB_FMULT (t, aik, bkj)
 
     // define t for each task
     #define GB_CIJ_DECLARE(t)                                           \
@@ -154,23 +154,22 @@ GrB_Info GB_AxB_saxpy3_generic
     #define GB_CTYPE GB_void
 
     // no vectorization
-    #define GB_PRAGMA_VECTORIZE
-    #define GB_PRAGMA_VECTORIZE_DOT
+    #define GB_PRAGMA_SIMD_VECTORIZE ;
 
     // definitions for GB_AxB_saxpy3_template.c
     #include "GB_AxB_saxpy3_template.h"
 
     if (flipxy)
     { 
-        #define GB_MULTIPLY(z,x,y) fmult (z,y,x)
+        #define GB_FMULT(z,x,y) fmult (z,y,x)
         #include "GB_AxB_saxpy3_template.c"
-        #undef GB_MULTIPLY
+        #undef GB_FMULT
     }
     else
     { 
-        #define GB_MULTIPLY(z,x,y) fmult (z,x,y)
+        #define GB_FMULT(z,x,y) fmult (z,x,y)
         #include "GB_AxB_saxpy3_template.c"
-        #undef GB_MULTIPLY
+        #undef GB_FMULT
     }
 
     return (GrB_SUCCESS) ;

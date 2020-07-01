@@ -76,16 +76,15 @@ GrB_Info GB_mask_phase2     // phase2 for R = masker (M,C,Z)
     bool R_is_hyper = (Rh != NULL) ;
 
     // allocate the result R (but do not allocate R->p or R->h)
-    GrB_Info info ;
     GrB_Matrix R = NULL ;
-    GB_CREATE (&R, C->type, C->vlen, C->vdim, GB_Ap_null, R_is_csc,
-        GB_SAME_HYPER_AS (R_is_hyper), C->hyper_ratio, Rnvec, rnz, true,
-        Context) ;
+    GrB_Info info = GB_create (&R, C->type, C->vlen, C->vdim, GB_Ap_null,
+        R_is_csc, GB_SAME_HYPER_AS (R_is_hyper), C->hyper_ratio, Rnvec, rnz,
+        true, Context) ;
     if (info != GrB_SUCCESS)
     { 
         // out of memory; caller must free R_to_M, R_to_C, R_to_Z
-        GB_FREE_MEMORY (Rp, GB_IMAX (2, Rnvec+1), sizeof (int64_t)) ;
-        GB_FREE_MEMORY (Rh, Rnvec, sizeof (int64_t)) ;
+        GB_FREE (Rp) ;
+        GB_FREE (Rh) ;
         return (info) ;
     }
 
@@ -122,33 +121,6 @@ GrB_Info GB_mask_phase2     // phase2 for R = masker (M,C,Z)
         GB_MATRIX_FREE (&R) ;
         return (info) ;
     }
-
-#if 0
-    // see GB_hypermatrix_prune
-    if (R_is_hyper && R->nvec_nonempty < Rnvec)
-    {
-        // create new Rp_new and Rh_new arrays, with no empty vectors
-        int64_t *GB_RESTRICT Rp_new = NULL ;
-        int64_t *GB_RESTRICT Rh_new = NULL ;
-        int64_t nvec_new ;
-        info = GB_hyper_prune (&Rp_new, &Rh_new, &nvec_new, R->p, R->h, Rnvec,
-            Context) ;
-        if (info != GrB_SUCCESS)
-        { 
-            // out of memory
-            GB_MATRIX_FREE (&R) ;
-            return (info) ;
-        }
-        // transplant the new hyperlist into R
-        GB_FREE_MEMORY (R->p, GB_IMAX (2, Rnvec+1), sizeof (int64_t)) ;
-        GB_FREE_MEMORY (R->h, Rnvec, sizeof (int64_t)) ;
-        R->p = Rp_new ;
-        R->h = Rh_new ;
-        R->nvec = nvec_new ;
-        R->plen = nvec_new ;
-        ASSERT (R->nvec == R->nvec_nonempty) ;
-    }
-#endif
 
     //--------------------------------------------------------------------------
     // return result

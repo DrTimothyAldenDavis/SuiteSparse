@@ -42,15 +42,24 @@ GrB_Matrix gb_typecast      // A = (type) S, where A is deep
         OK (GrB_Matrix_ncols (&ncols, S)) ;
         OK (GrB_Matrix_new (&A, type, nrows, ncols)) ;
         OK (GxB_Matrix_Option_set (A, GxB_FORMAT, fmt)) ;
+        GrB_Type stype ;
+        OK (GxB_Matrix_type (&stype, S)) ;
 
-        // create a descriptor with d.trans = transpose
-        GrB_Descriptor d ;
-        OK (GrB_Descriptor_new (&d)) ;
-        OK (GrB_Descriptor_set (d, GrB_INP0, GrB_TRAN)) ;
-
-        // A = (type) S
-        OK (GrB_transpose (A, NULL, NULL, S, d)) ;
-        OK (GrB_Descriptor_free (&d)) ;
+        if (gb_is_integer (type) && gb_is_float (stype))
+        { 
+            // A = (type) round (S), using MATLAB rules for typecasting.
+            OK (GrB_Matrix_apply (A, NULL, NULL, gb_round_binop (stype), S,
+                NULL)) ;
+        }
+        else
+        { 
+            // A = (type) S, no rounding.  Use GraphBLAS typecasting if needed.
+            GrB_Descriptor d ;
+            OK (GrB_Descriptor_new (&d)) ;
+            OK (GrB_Descriptor_set (d, GrB_INP0, GrB_TRAN)) ;
+            OK (GrB_transpose (A, NULL, NULL, S, d)) ;
+            OK (GrB_Descriptor_free (&d)) ;
+        }
     }
 
     //--------------------------------------------------------------------------

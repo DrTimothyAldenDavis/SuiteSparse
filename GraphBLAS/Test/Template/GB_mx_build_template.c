@@ -16,7 +16,7 @@
 
 // The type of dup and C may differ.  A matrix T is first built that has the
 // same type as dup, and then typecasted to the desired type of C, given by
-// the last argument, "class".
+// the last argument, "type".
 
 // This particular GraphBLAS implementation provides a well-defined order of
 // 'summation'.  Entries in [I,J,X] are first sorted in increasing order of row
@@ -39,14 +39,14 @@
 #ifdef MATRIX
 #define MAX_NARGIN 8
 #define MIN_NARGIN 3
-#define USAGE "GB_mex_Matrix_build (I,J,X,nrows,ncols,dup,class,csc)"
+#define USAGE "GB_mex_Matrix_build (I,J,X,nrows,ncols,dup,type,csc)"
 #define I_ARG 0
 #define J_ARG 1
 #define X_ARG 2
 #define NROWS_ARG 3
 #define NCOLS_ARG 4
 #define DUP_ARG 5
-#define CLASS_ARG 6
+#define TYPE_ARG 6
 #define CSC_ARG 7
 
 #define FREE_ALL                \
@@ -58,16 +58,16 @@
 #else
 #define MAX_NARGIN 5
 #define MIN_NARGIN 2
-#define USAGE "GB_mex_Vector_build (I,X,nrows,dup,class)"
+#define USAGE "GB_mex_Vector_build (I,X,nrows,dup,type)"
 #define I_ARG 0
 #define X_ARG 1
 #define NROWS_ARG 2
 #define DUP_ARG 3
-#define CLASS_ARG 4
+#define TYPE_ARG 4
 
 #define FREE_ALL                    \
 {                                   \
-    GrB_Matrix_free (&C) ;          \
+    GrB_Matrix_free_(&C) ;          \
     GB_mx_put_global (true, 0) ;    \
 }
 
@@ -94,7 +94,7 @@ GrB_Info builder
     GrB_Index ni,
     GrB_BinaryOp dup,
     bool C_is_csc,
-    mxClassID xclass,
+    GrB_Type xtype,
     GB_Context Context
 ) ;
 
@@ -116,7 +116,7 @@ GrB_Info builder
     GrB_Index ni,
     GrB_BinaryOp dup,
     bool C_is_csc,
-    mxClassID xclass,
+    GrB_Type xtype,
     GB_Context Context
 )
 {
@@ -155,38 +155,35 @@ GrB_Info builder
 
     // build the matrix or vector from the tuples
     #ifdef MATRIX
-    #define BUILD(suffix,type) \
-        info = GrB_Matrix_build ## suffix (C,I,J,(const type *)X,ni,dup)
+    #define BUILD(prefix,suffix,type) \
+        info = prefix ## Matrix_build ## suffix (C,I,J,(const type *)X,ni,dup)
     #else
-    #define BUILD(suffix,type) \
-        info = GrB_Vector_build ## suffix (C,I,  (const type *)X,ni,dup)
+    #define BUILD(prefix,suffix,type) \
+        info = prefix ## Vector_build ## suffix (C,I,  (const type *)X,ni,dup)
     #endif
 
     ASSERT_TYPE_OK (ctype, "ctype for build", GB0) ;
     ASSERT_BINARYOP_OK (dup, "dup for build", GB0) ;
     // printf ("code %d biulding ni "GBd"\n", ctype->code, ni) ;
 
-    switch (xclass)
+    switch (xtype->code)
     {
-        case mxLOGICAL_CLASS  : BUILD (_BOOL,   bool    ) ; break ;
-        case mxINT8_CLASS     : BUILD (_INT8,   int8_t  ) ; break ;
-        case mxUINT8_CLASS    : BUILD (_UINT8,  uint8_t ) ; break ;
-        case mxINT16_CLASS    : BUILD (_INT16,  int16_t ) ; break ;
-        case mxUINT16_CLASS   : BUILD (_UINT16, uint16_t) ; break ;
-        case mxINT32_CLASS    : BUILD (_INT32,  int32_t ) ; break ;
-        case mxUINT32_CLASS   : BUILD (_UINT32, uint32_t) ; break ;
-        case mxINT64_CLASS    : BUILD (_INT64,  int64_t ) ; break ;
-        case mxUINT64_CLASS   : BUILD (_UINT64, uint64_t) ; break ;
-        case mxSINGLE_CLASS   : BUILD (_FP32,   float   ) ; break ;
-        case mxDOUBLE_CLASS   : BUILD (_FP64,   double  ) ; break ;
-        case mxCELL_CLASS     :
-        case mxCHAR_CLASS     :
-        case mxUNKNOWN_CLASS  :
-        case mxFUNCTION_CLASS :
-        case mxSTRUCT_CLASS   :
-        default               :
+        case GB_BOOL_code    : BUILD (GrB_, _BOOL,   bool    ) ; break ;
+        case GB_INT8_code    : BUILD (GrB_, _INT8,   int8_t  ) ; break ;
+        case GB_UINT8_code   : BUILD (GrB_, _UINT8,  uint8_t ) ; break ;
+        case GB_INT16_code   : BUILD (GrB_, _INT16,  int16_t ) ; break ;
+        case GB_UINT16_code  : BUILD (GrB_, _UINT16, uint16_t) ; break ;
+        case GB_INT32_code   : BUILD (GrB_, _INT32,  int32_t ) ; break ;
+        case GB_UINT32_code  : BUILD (GrB_, _UINT32, uint32_t) ; break ;
+        case GB_INT64_code   : BUILD (GrB_, _INT64,  int64_t ) ; break ;
+        case GB_UINT64_code  : BUILD (GrB_, _UINT64, uint64_t) ; break ;
+        case GB_FP32_code    : BUILD (GrB_, _FP32,   float   ) ; break ;
+        case GB_FP64_code    : BUILD (GrB_, _FP64,   double  ) ; break ;
+        case GB_FC32_code    : BUILD (GxB_, _FC32,   GxB_FC32_t) ; break ;
+        case GB_FC64_code    : BUILD (GxB_, _FC64,   GxB_FC64_t) ; break ;
+        default              :
             FREE_ALL ;
-            mexErrMsgTxt ("X class not supported")  ;
+            mexErrMsgTxt ("xtype not supported")  ;
     }
 
     // printf ("info %d\n", info) ;
@@ -280,8 +277,7 @@ void mexFunction
         mexErrMsgTxt ("X cannot be sparse") ;
     }
     GB_void *X = mxGetData (pargin [X_ARG]) ;
-    mxClassID xclass = mxGetClassID (pargin [X_ARG]) ;
-    GrB_Type xtype = GB_mx_classID_to_Type (xclass) ;
+    GrB_Type xtype = GB_mx_Type (pargin [X_ARG]) ;
     if (xtype == NULL)
     {
         FREE_ALL ;
@@ -321,18 +317,40 @@ void mexFunction
     }
     #endif
 
-    // get dup; default: PLUS, default class is class(X)
+    // get dup; default is xtype
+    bool user_complex = (Complex != GxB_FC64) && (xtype == Complex) ;
     GrB_BinaryOp dup ;
     if (!GB_mx_mxArray_to_BinaryOp (&dup, PARGIN (DUP_ARG), "dup",
-        GB_PLUS_opcode, xclass, false, false) || dup == NULL)
+        xtype, user_complex))
     {
         FREE_ALL ;
         mexErrMsgTxt ("dup failed") ;
     }
 
-    // get the type for C, default is same as xclass and dup->ztype
-    mxClassID cclass = GB_mx_string_to_classID (xclass, PARGIN (CLASS_ARG)) ;
-    GrB_Type ctype = GB_mx_classID_to_Type (cclass) ;
+    // get the type for C, default is same as xtype
+    GrB_Type ctype = GB_mx_string_to_Type (PARGIN (TYPE_ARG), xtype) ;
+
+    if (dup == NULL)
+    {
+        switch (xtype->code)
+        {
+            case GB_BOOL_code    : dup = GrB_PLUS_BOOL   ; break ;
+            case GB_INT8_code    : dup = GrB_PLUS_INT8   ; break ;
+            case GB_INT16_code   : dup = GrB_PLUS_INT16  ; break ;
+            case GB_INT32_code   : dup = GrB_PLUS_INT32  ; break ;
+            case GB_INT64_code   : dup = GrB_PLUS_INT64  ; break ;
+            case GB_UINT8_code   : dup = GrB_PLUS_UINT8  ; break ;
+            case GB_UINT16_code  : dup = GrB_PLUS_UINT16 ; break ;
+            case GB_UINT32_code  : dup = GrB_PLUS_UINT32 ; break ;
+            case GB_UINT64_code  : dup = GrB_PLUS_UINT64 ; break ;
+            case GB_FP32_code    : dup = GrB_PLUS_FP32   ; break ;
+            case GB_FP64_code    : dup = GrB_PLUS_FP64   ; break ;
+            case GB_FC32_code    : dup = GxB_PLUS_FC32   ; break ;
+            case GB_FC64_code    : dup = GxB_PLUS_FC64   ; break ;
+            default              : 
+                mexErrMsgTxt ("unknown operator") ;
+        }
+    }
 
     bool C_is_csc = true ;
     #ifdef MATRIX
@@ -344,7 +362,7 @@ void mexFunction
     #endif
 
     METHOD (builder (&C, ctype, nrows, ncols, I, J, X, ni, dup,
-        C_is_csc, xclass, Context)) ;
+        C_is_csc, xtype, Context)) ;
 
     ASSERT_MATRIX_OK (C, "C built", GB0) ;
 

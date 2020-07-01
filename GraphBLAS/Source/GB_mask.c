@@ -244,7 +244,7 @@ GrB_Info GB_mask                // C<M> = Z
         //----------------------------------------------------------------------
 
         // delete any lingering zombies and assemble any pending tuples
-        if (GB_PENDING (M) || GB_ZOMBIES (M)) GB_OK (GB_wait (M, Context)) ;
+        GB_MATRIX_WAIT (M) ;
 
         // R has the same CSR/CSC format as C_result.  It is hypersparse if
         // both C and Z are hypersparse.
@@ -265,10 +265,9 @@ GrB_Info GB_mask                // C<M> = Z
                 // The C_cleared matrix has the same hypersparsity and CSC/CSR
                 // format as the orginal C matrix.
                 C_cleared = NULL;   // allocate a new header for C_cleared
-                GB_CREATE (&C_cleared, C_result->type, vlen, vdim,
+                GB_OK (GB_create (&C_cleared, C_result->type, vlen, vdim,
                     GB_Ap_calloc, R_is_csc, GB_AUTO_HYPER,
-                    C_result->hyper_ratio, 0, 0, true, Context) ;
-                GB_OK (info) ;
+                    C_result->hyper_ratio, 0, 0, true, Context)) ;
                 C = C_cleared ;
             }
             else
@@ -284,10 +283,10 @@ GrB_Info GB_mask                // C<M> = Z
             C = C_result ;
 
             // delete any lingering zombies and assemble any pending tuples
-            if (GB_PENDING (C) || GB_ZOMBIES (C)) GB_OK (GB_wait (C, Context)) ;
+            GB_MATRIX_WAIT (C) ;
         }
 
-        // no more zombies or pending tuples
+        // no more zombies or pending tuples in M or C
         ASSERT (!GB_PENDING (M)) ; ASSERT (!GB_ZOMBIES (M)) ;
         ASSERT (!GB_PENDING (C)) ; ASSERT (!GB_ZOMBIES (C)) ;
 

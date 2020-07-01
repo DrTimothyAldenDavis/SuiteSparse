@@ -21,7 +21,7 @@ for C_replace = [false true]
 
         D = [ ] ;
         if (Mask_comp)
-            D.mask = 'scmp' ;
+            D.mask = 'complement' ;
         end
         if (C_replace)
             D.outp = 'replace' ;
@@ -46,14 +46,14 @@ for C_replace = [false true]
 
         D = [ ] ;
         if (Mask_comp)
-            D.mask = 'scmp' ;
+            D.mask = 'complement' ;
         end
         if (C_replace)
             D.outp = 'replace' ;
         end
 
         A = Z ;
-        fprintf ('C3 <no mask scmp:%d replace:%d> = C + A'' :\n', ...
+        fprintf ('C3 <no mask complement:%d replace:%d> = C + A'' :\n', ...
             Mask_comp, C_replace) ;
 D
         C3 = GB_spec_transpose (C, [ ], 'plus', A, D) ;

@@ -13,7 +13,7 @@ if (nargin < 1)
     do_metis = 1 ;
 end
 
-Prob = UFget ('HB/bcsstk01') ;
+Prob = ssget ('HB/bcsstk01') ;
 A = Prob.A ;
 p = amd2 (A) ;
 n = size (A,1) ;

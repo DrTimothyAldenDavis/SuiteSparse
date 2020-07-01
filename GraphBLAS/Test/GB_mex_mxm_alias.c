@@ -18,11 +18,11 @@
     {                                               \
         if (semiring != NULL)                       \
         {                                           \
-            GrB_Monoid_free (&(semiring->add)) ;    \
+            GrB_Monoid_free_(&(semiring->add)) ;    \
         }                                           \
-        GrB_Semiring_free (&semiring) ;             \
+        GrB_Semiring_free_(&semiring) ;             \
     }                                               \
-    GrB_Descriptor_free (&desc) ;                   \
+    GrB_Descriptor_free_(&desc) ;                   \
     GB_mx_put_global (true, AxB_method_used) ;      \
 }
 
@@ -58,29 +58,21 @@ void mexFunction
         FREE_ALL ;
         mexErrMsgTxt ("C failed") ;
     }
-    mxClassID cclass = GB_mx_Type_to_classID (C->type) ;
+
+    bool user_complex = (Complex != GxB_FC64) && (C->type == Complex) ;
 
     // get semiring
-    if (C->type == Complex)
+    if (!GB_mx_mxArray_to_Semiring (&semiring, pargin [2], "semiring",
+        C->type, user_complex))
     {
-        // semiring input argument is ignored and may be empty
-        semiring = Complex_plus_times ;
-    }
-    else
-    {
-        if (!GB_mx_mxArray_to_Semiring (&semiring, pargin [2], "semiring",
-            cclass))
-        {
-            FREE_ALL ;
-            mexErrMsgTxt ("semiring failed") ;
-        }
+        FREE_ALL ;
+        mexErrMsgTxt ("semiring failed") ;
     }
 
-    // get accum; default: NOP, default class is class(C)
+    // get accum, if present
     GrB_BinaryOp accum ;
     if (!GB_mx_mxArray_to_BinaryOp (&accum, pargin [1], "accum",
-        GB_NOP_opcode, cclass, C->type == Complex,
-        semiring->add->op->ztype == Complex))
+        C->type, user_complex))
     {
         FREE_ALL ;
         mexErrMsgTxt ("accum failed") ;

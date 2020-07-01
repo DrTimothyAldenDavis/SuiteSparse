@@ -9,7 +9,7 @@ function test25
 fprintf ('=================================================================\n');
 fprintf ('test25: test sdmult on a large matrix\n') ;
 
-Prob = UFget (936) ;
+Prob = ssget (936) ;
 A = Prob.A ;
 n = size (A,1) ;
 

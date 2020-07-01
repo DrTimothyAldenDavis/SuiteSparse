@@ -52,8 +52,7 @@ void mexFunction
         {
             mexErrMsgTxt ("rho has wrong size") ;
         }
-        if (mxGetClassID (pargin [4]) != mxDOUBLE_CLASS ||
-            mxIsSparse (pargin [4]))
+        if (!mxIsClass (pargin [4], "double") || mxIsSparse (pargin [4]))
         {
             mexErrMsgTxt ("rho must be a dense and double") ;
         }

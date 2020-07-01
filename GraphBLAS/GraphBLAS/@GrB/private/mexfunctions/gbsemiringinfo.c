@@ -27,7 +27,7 @@ void mexFunction
     // check inputs
     //--------------------------------------------------------------------------
 
-    gb_usage (nargin <= 2 && nargout == 0,
+    gb_usage (nargin >= 1 && nargin <= 2 && nargout == 0,
     "usage: GrB.semiringinfo (semiring) or GrB.semiringinfo (semiring,type)") ;
 
     //--------------------------------------------------------------------------
@@ -39,13 +39,13 @@ void mexFunction
     gb_mxstring_to_string (opstring, LEN, pargin [0], "binary operator") ;
 
     GrB_Type type = NULL ;
-    if (nargin == 2)
+    if (nargin > 1)
     { 
         type = gb_mxstring_to_type (pargin [1]) ;
         CHECK_ERROR (type == NULL, "unknown type") ;
     }
 
-    GrB_Semiring semiring = gb_mxstring_to_semiring (pargin [0], type) ;
+    GrB_Semiring semiring = gb_mxstring_to_semiring (pargin [0], type, type) ;
     OK (GxB_Semiring_fprint (semiring, opstring, GxB_COMPLETE, NULL)) ;
     GB_WRAPUP ;
 }

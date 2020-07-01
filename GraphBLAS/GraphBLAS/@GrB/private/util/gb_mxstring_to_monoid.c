@@ -12,7 +12,7 @@
 GrB_Monoid gb_mxstring_to_monoid        // return monoid from a string
 (
     const mxArray *mxstring,            // MATLAB string
-    const GrB_Type default_type         // default type if not in the string
+    const GrB_Type type                 // default type if not in the string
 )
 {
 
@@ -37,6 +37,6 @@ GrB_Monoid gb_mxstring_to_monoid        // return monoid from a string
     // convert the string to a monoid
     //--------------------------------------------------------------------------
 
-    return (gb_string_to_monoid (opstring, default_type)) ;
+    return (gb_string_to_monoid (opstring, type)) ;
 }
 

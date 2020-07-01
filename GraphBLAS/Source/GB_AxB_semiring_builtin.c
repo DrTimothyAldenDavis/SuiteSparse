@@ -11,6 +11,7 @@
 // opcodes and type codes of the semiring.
 
 #include "GB_mxm.h"
+#include "GB_binop.h"
 
 #ifndef GBCOMPACT
 
@@ -26,7 +27,8 @@ bool GB_AxB_semiring_builtin        // true if semiring is builtin
     // outputs, unused by caller if this function returns false
     GB_Opcode *mult_opcode,         // multiply opcode
     GB_Opcode *add_opcode,          // add opcode
-    GB_Type_code *xycode,           // type code for x and y inputs
+    GB_Type_code *xcode,            // type code for x input
+    GB_Type_code *ycode,            // type code for y input
     GB_Type_code *zcode             // type code for z output
 )
 {
@@ -77,7 +79,7 @@ bool GB_AxB_semiring_builtin        // true if semiring is builtin
     //--------------------------------------------------------------------------
 
     if (!GB_binop_builtin (A->type, A_is_pattern, B->type, B_is_pattern,
-        mult, flipxy, mult_opcode, xycode, zcode))
+        mult, flipxy, mult_opcode, xcode, ycode, zcode))
     { 
         return (false) ;
     }
@@ -102,3 +104,4 @@ bool GB_AxB_semiring_builtin        // true if semiring is builtin
 }
 
 #endif
+

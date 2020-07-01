@@ -16,9 +16,9 @@
 
 // Usage:
 
-//      Cout = gbassign (Cin, M, accum, A, I, J, desc)
+//      C = gbassign (Cin, M, accum, A, I, J, desc)
 
-// Cin, A, and desc are required.  See GrB.m for more details.
+// Cin and A required.  See GrB.m for more details.
 
 #include "gb_matlab.h"
 
@@ -31,6 +31,6 @@ void mexFunction
 )
 {
     gb_assign (nargout, pargout, nargin, pargin, false,
-        "usage: Cout = GrB.assign (Cin, M, accum, A, I, J, desc)") ;
+        "usage: C = GrB.assign (Cin, M, accum, A, I, J, desc)") ;
 }
 

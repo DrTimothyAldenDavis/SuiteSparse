@@ -13,7 +13,10 @@
 #ifndef GB_UNUSED_H
 #define GB_UNUSED_H
 
-#if defined ( __INTEL_COMPILER )
+#if ( _MSC_VER && !__INTEL_COMPILER )
+// disable MS Visual Studio warnings
+GB_PRAGMA (warning (disable : 4101 ))
+#elif defined ( __INTEL_COMPILER )
 // disable icc -w3 warnings
 #pragma warning (disable: 177 593)
 #elif defined ( __GNUC__ )

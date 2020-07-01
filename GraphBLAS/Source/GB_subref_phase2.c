@@ -65,16 +65,15 @@ GrB_Info GB_subref_phase2   // C=A(I,J)
     GrB_Type ctype = (symbolic) ? GrB_INT64 : A->type ;
 
     // allocate the result C (but do not allocate C->p or C->h)
-    GrB_Info info ;
     GrB_Matrix C = NULL ;           // allocate a new header for C
-    GB_CREATE (&C, ctype, nI, nJ, GB_Ap_null, C_is_csc,
+    GrB_Info info = GB_create (&C, ctype, nI, nJ, GB_Ap_null, C_is_csc,
         GB_SAME_HYPER_AS (C_is_hyper), A->hyper_ratio, Cnvec, cnz, true,
         Context) ;
     if (info != GrB_SUCCESS)
     { 
         // out of memory
-        GB_FREE_MEMORY (Cp, GB_IMAX (2, Cnvec+1), sizeof (int64_t)) ;
-        GB_FREE_MEMORY (Ch, Cnvec, sizeof (int64_t)) ;
+        GB_FREE (Cp) ;
+        GB_FREE (Ch) ;
         return (info) ;
     }
 
@@ -123,33 +122,6 @@ GrB_Info GB_subref_phase2   // C=A(I,J)
         GB_MATRIX_FREE (&C) ;
         return (info) ;
     }
-
-#if 0
-    // see GB_hypermatrix_prune
-    if (C_is_hyper && C->nvec_nonempty < Cnvec)
-    {
-        // create new Cp_new and Ch_new arrays, with no empty vectors
-        int64_t *GB_RESTRICT Cp_new = NULL ;
-        int64_t *GB_RESTRICT Ch_new = NULL ;
-        int64_t nvec_new ;
-        info = GB_hyper_prune (&Cp_new, &Ch_new, &nvec_new, C->p, C->h, Cnvec,
-            Context) ;
-        if (info != GrB_SUCCESS)
-        { 
-            // out of memory
-            GB_MATRIX_FREE (&C) ;
-            return (info) ;
-        }
-        // transplant the new hyperlist into C
-        GB_FREE_MEMORY (C->p, Cnvec+1, sizeof (int64_t)) ;
-        GB_FREE_MEMORY (C->h, Cnvec,   sizeof (int64_t)) ;
-        C->p = Cp_new ;
-        C->h = Ch_new ;
-        C->nvec = nvec_new ;
-        C->plen = nvec_new ;
-        ASSERT (C->nvec == C->nvec_nonempty) ;
-    }
-#endif
 
     //--------------------------------------------------------------------------
     // return result

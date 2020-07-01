@@ -47,7 +47,8 @@ GrB_Info GrB_Col_extract        // w<M> = accum (w, A(I,j)) or (A(j,I))'
     if (j >= ancols)
     { 
         return (GB_ERROR (GrB_INVALID_INDEX, (GB_LOG,
-            "Column index j="GBu" out of bounds; must be < "GBu, j, ancols))) ;
+            "Column index j=" GBu " out of bounds; must be < " GBu ,
+            j, ancols))) ;
     }
 
     //--------------------------------------------------------------------------

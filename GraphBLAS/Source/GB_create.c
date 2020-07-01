@@ -10,8 +10,6 @@
 // Creates a matrix (with GB_new), then allocates a given space for indices and
 // values.
 
-// This function is called via the GB_CREATE(...) macro.
-
 // Ahandle must be non-NULL on input.
 
 // If *Ahandle is NULL on input:

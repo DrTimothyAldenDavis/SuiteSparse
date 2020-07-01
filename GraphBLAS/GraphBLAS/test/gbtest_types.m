@@ -3,8 +3,8 @@ function types = gbtest_types
 %
 % See also gbtest_binops.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
+% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
 
 types = {
     'double'
@@ -18,7 +18,7 @@ types = {
     'uint16'
     'uint32'
     'uint64'
+    'single complex'
+    'double complex'
     } ;
-
-% FUTURE: add 'complex'
 

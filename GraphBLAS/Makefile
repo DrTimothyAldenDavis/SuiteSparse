@@ -43,6 +43,10 @@ install:
 docs:
 	( cd Doc ; $(MAKE) )
 
+# compile the CUDA kernels
+gpu:
+	( cd CUDA ; $(MAKE) )
+
 # remove any installed libraries and #include files
 uninstall:
 	- xargs rm < build/install_manifest.txt
@@ -53,7 +57,7 @@ purge: distclean
 
 # remove all files not in the distribution
 distclean:
-	rm -rf build/* Demo/*.out Demo/complex_demo_out.m Tcov/log.txt
+	rm -rf build/* Demo/*.out Demo/complex_demo_out*.m Tcov/log.txt
 	rm -rf Config/*.tmp Source/control.m4
 	rm -rf Doc/html/* Doc/*.tmp
 	( cd GraphBLAS/test/tcov ; $(MAKE) distclean )

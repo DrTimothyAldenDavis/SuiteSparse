@@ -25,7 +25,7 @@
     // get A
     //--------------------------------------------------------------------------
 
-    const GB_ATYPE *GB_RESTRICT Ax = A->x ;
+    const GB_ATYPE *GB_RESTRICT Ax = (GB_ATYPE *) A->x ;
     const int64_t  *GB_RESTRICT Ai = A->i ;
     const int64_t n = A->vlen ;
     size_t zsize = ttype->size ;
@@ -37,15 +37,10 @@
     int ntasks = 256 * nthreads ;
     ntasks = GB_IMIN (ntasks, n) ;
 
-    GB_CTYPE *GB_RESTRICT *Works = NULL ;      // size nth
-    bool     *GB_RESTRICT *Marks = NULL ;      // size nth
-    int64_t  *GB_RESTRICT Tnz = NULL ;         // size nth
-    int64_t  *GB_RESTRICT Count = NULL ;       // size ntasks+1
-
-    GB_CALLOC_MEMORY (Works, nth, sizeof (GB_CTYPE *)) ;
-    GB_CALLOC_MEMORY (Marks, nth, sizeof (bool *)) ;
-    GB_CALLOC_MEMORY (Tnz, nth, sizeof (int64_t)) ;
-    GB_CALLOC_MEMORY (Count, ntasks+1, sizeof (int64_t)) ;
+    GB_void *GB_RESTRICT *Works = GB_CALLOC (nth, GB_void *) ;
+    bool    *GB_RESTRICT *Marks = GB_CALLOC (nth, bool *) ;
+    int64_t *GB_RESTRICT Tnz    = GB_CALLOC (nth, int64_t) ;
+    int64_t *GB_RESTRICT Count  = GB_CALLOC (ntasks+1, int64_t) ;
     bool ok = (Works != NULL && Marks != NULL && Tnz != NULL && Count != NULL) ;
 
     // This does not need to be parallel.  The calloc does not take O(n) time.
@@ -53,8 +48,8 @@
     {
         for (int tid = 0 ; tid < nth ; tid++)
         { 
-            GB_MALLOC_MEMORY (Works [tid], n, zsize) ;
-            GB_CALLOC_MEMORY (Marks [tid], n, sizeof (bool)) ;
+            Works [tid] = GB_MALLOC (n * zsize, GB_void) ;
+            Marks [tid] = GB_CALLOC (n, bool) ;
             ok = ok && (Works [tid] != NULL && Marks [tid] != NULL) ;
         }
     }
@@ -66,20 +61,20 @@
         {
             for (int tid = 0 ; tid < nth ; tid++)
             { 
-                GB_FREE_MEMORY (Works [tid], n, zsize) ;
+                GB_FREE (Works [tid]) ;
             }
         }
         if (Marks != NULL)
         {
             for (int tid = 0 ; tid < nth ; tid++)
             { 
-                GB_FREE_MEMORY (Marks [tid], n, sizeof (bool)) ;
+                GB_FREE (Marks [tid]) ;
             }
         }
-        GB_FREE_MEMORY (Works, nth, sizeof (GB_CTYPE *)) ;
-        GB_FREE_MEMORY (Marks, nth, sizeof (bool *)) ;
-        GB_FREE_MEMORY (Tnz, nth, sizeof (int64_t)) ;
-        GB_FREE_MEMORY (Count, ntasks+1, sizeof (int64_t)) ;
+        GB_FREE (Works) ;
+        GB_FREE (Marks) ;
+        GB_FREE (Tnz) ;
+        GB_FREE (Count) ;
         GB_FREE_ALL ;
         return (GB_OUT_OF_MEMORY) ;
     }
@@ -98,7 +93,7 @@
         // get the workspace for this thread
         //----------------------------------------------------------------------
 
-        GB_CTYPE *GB_RESTRICT Work = Works [tid] ;
+        GB_CTYPE *GB_RESTRICT Work = (GB_CTYPE *) Works [tid] ;
         bool     *GB_RESTRICT Mark = Marks [tid] ;
         int64_t my_tnz = 0 ;
 
@@ -133,7 +128,7 @@
     // reduce all workspace to Work [0] and count # entries in T
     //--------------------------------------------------------------------------
 
-    GB_CTYPE *GB_RESTRICT Work0 = Works [0] ;
+    GB_CTYPE *GB_RESTRICT Work0 = (GB_CTYPE *) Works [0] ;
     bool     *GB_RESTRICT Mark0 = Marks [0] ;
     int64_t tnz = Tnz [0] ;
 
@@ -150,7 +145,7 @@
                 if (Mark [i])
                 {
                     // thread tid has a contribution to index i
-                    const GB_CTYPE *GB_RESTRICT Work = Works [tid] ;
+                    const GB_CTYPE *GB_RESTRICT Work = (GB_CTYPE *) Works [tid];
                     if (!Mark0 [i])
                     { 
                         // first time index i has been seen
@@ -171,8 +166,8 @@
         // free all but workspace for thread 0
         for (int tid = 1 ; tid < nth ; tid++)
         {
-            GB_FREE_MEMORY (Works [tid], n, zsize) ;
-            GB_FREE_MEMORY (Marks [tid], n, sizeof (bool)) ;
+            GB_FREE (Works [tid]) ;
+            GB_FREE (Marks [tid]) ;
         }
     }
 
@@ -180,23 +175,23 @@
     // free workspace
     //--------------------------------------------------------------------------
 
-    GB_FREE_MEMORY (Works, nth, sizeof (GB_CTYPE *)) ;
-    GB_FREE_MEMORY (Marks, nth, sizeof (bool *)) ;
-    GB_FREE_MEMORY (Tnz, nth, sizeof (int64_t)) ;
+    GB_FREE (Works) ;
+    GB_FREE (Marks) ;
+    GB_FREE (Tnz) ;
 
     //--------------------------------------------------------------------------
     // allocate T
     //--------------------------------------------------------------------------
 
     // since T is a GrB_Vector, it is CSC and not hypersparse
-    GB_CREATE (&T, ttype, n, 1, GB_Ap_calloc, true,
+    info = GB_create (&T, ttype, n, 1, GB_Ap_calloc, true,
         GB_FORCE_NONHYPER, GB_HYPER_DEFAULT, 1, tnz, true, Context) ;
     if (info != GrB_SUCCESS)
     { 
         // out of memory
-        GB_FREE_MEMORY (Work0, n, zsize) ;
-        GB_FREE_MEMORY (Mark0, n, sizeof (bool)) ;
-        GB_FREE_MEMORY (Count, ntasks+1, sizeof (int64_t)) ;
+        GB_FREE (Work0) ;
+        GB_FREE (Mark0) ;
+        GB_FREE (Count) ;
         GB_FREE_ALL ;
         return (GB_OUT_OF_MEMORY) ;
     }
@@ -204,7 +199,7 @@
     T->p [0] = 0 ;
     T->p [1] = tnz ;
     int64_t  *GB_RESTRICT Ti = T->i ;
-    GB_CTYPE *GB_RESTRICT Tx = T->x ;
+    GB_CTYPE *GB_RESTRICT Tx = (GB_CTYPE *) T->x ;
     T->nvec_nonempty = (tnz > 0) ? 1 : 0 ;
 
     //--------------------------------------------------------------------------
@@ -224,7 +219,7 @@
         { 
             Ti [i] = i ;
         }
-        GB_FREE_MEMORY (T->x, n, zsize) ;
+        GB_FREE (T->x) ;
         T->x = Work0 ;
         Work0 = NULL ;
 
@@ -323,8 +318,8 @@
     // free workspace
     //--------------------------------------------------------------------------
 
-    GB_FREE_MEMORY (Count, ntasks+1, sizeof (int64_t)) ;
-    GB_FREE_MEMORY (Work0, n, zsize) ;
-    GB_FREE_MEMORY (Mark0, n, sizeof (bool)) ;
+    GB_FREE (Count) ;
+    GB_FREE (Work0) ;
+    GB_FREE (Mark0) ;
 }
 

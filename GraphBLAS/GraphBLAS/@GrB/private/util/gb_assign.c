@@ -21,12 +21,12 @@
 // then it is first expanded to an empty matrix of size length(I)-by-length(J),
 // and G*B_Matrix_*assign is used (not GraphBLAS scalar assignment).
 
-// MATLAB Usage:
+// Usage:
 
-//      Cout = GrB.assign    (Cin, M, accum, A, I, J, desc)
-//      Cout = GrB.subassign (Cin, M, accum, A, I, J, desc)
+//      C = gbassign    (Cin, M, accum, A, I, J, desc)
+//      C = gbsubassign (Cin, M, accum, A, I, J, desc)
 
-// Cin, A, and desc are required.  See GrB.m for more details.
+// Cin and A are required.  See GrB.m for more details.
 
 #include "gb_matlab.h"
 
@@ -45,7 +45,7 @@ void gb_assign                  // gbassign or gbsubassign mexFunctions
     // check inputs
     //--------------------------------------------------------------------------
 
-    gb_usage (nargin >= 3 && nargin <= 7 && nargout <= 1, usage) ;
+    gb_usage (nargin >= 2 && nargin <= 7 && nargout <= 2, usage) ;
 
     //--------------------------------------------------------------------------
     // find the arguments
@@ -92,7 +92,7 @@ void gb_assign                  // gbassign or gbsubassign mexFunctions
 
     if (nstrings == 1)
     { 
-        accum = gb_mxstring_to_binop (String [0], ctype) ;
+        accum = gb_mxstring_to_binop (String [0], ctype, ctype) ;
     }
 
     //--------------------------------------------------------------------------
@@ -111,6 +111,11 @@ void gb_assign                  // gbassign or gbsubassign mexFunctions
     GrB_Index *J = (GrB_Index *) GrB_ALL ;
     GrB_Index ni = cnrows, nj = cncols ;
     bool I_allocated = false, J_allocated = false ;
+
+    if (cnrows > 1 && cncols > 1 && ncells == 1)
+    {
+        ERROR ("linear indexing not yet supported") ;
+    }
 
     if (cnrows == 1 && ncells == 1)
     { 
@@ -186,6 +191,7 @@ void gb_assign                  // gbassign or gbsubassign mexFunctions
     //--------------------------------------------------------------------------
 
     pargout [0] = gb_export (&C, kind) ;
+    pargout [1] = mxCreateDoubleScalar (kind) ;
     GB_WRAPUP ;
 }
 

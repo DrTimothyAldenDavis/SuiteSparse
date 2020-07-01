@@ -14,6 +14,7 @@
 #include "GB_control.h"
 #include "GB_ek_slice.h"
 #include "GB_dense.h"
+#include "GB_mkl.h"
 #include "GB_binop__include.h"
 
 // C=binop(A,B) is defined by the following types and operators:
@@ -22,14 +23,18 @@
 // A.*B function (eWiseMult):       GB_AemultB__second_int16
 // A*D function (colscale):         GB_AxD__second_int16
 // D*A function (rowscale):         GB_DxB__second_int16
-// C+=A function (dense accum):     GB_Cdense_accumA__second_int16
-// C+=x function (dense accum):     GB_Cdense_accumX__second_int16
+// C+=B function (dense accum):     GB_Cdense_accumB__second_int16
+// C+=b function (dense accum):     GB_Cdense_accumb__second_int16
 // C+=A+B function (dense ewise3):  (none)
 // C=A+B function (dense ewise3):   GB_Cdense_ewise3_noaccum__second_int16
+// C=scalar+B                       (none)
+// C=scalar+B'                      (none)
+// C=A+scalar                       GB_bind2nd__second_int16
+// C=A'+scalar                      GB_bind2nd_tran__second_int16
 
 // C type:   int16_t
 // A type:   int16_t
-// B type:   int16_t
+// B,b type: int16_t
 // BinaryOp: cij = bij
 
 #define GB_ATYPE \
@@ -40,6 +45,18 @@
 
 #define GB_CTYPE \
     int16_t
+
+// true if the types of A and B are identical
+#define GB_ATYPE_IS_BTYPE \
+    1
+
+// true if the types of C and A are identical
+#define GB_CTYPE_IS_ATYPE \
+    1
+
+// true if the types of C and B are identical
+#define GB_CTYPE_IS_BTYPE \
+    1
 
 // aij = Ax [pA]
 #define GB_GETA(aij,Ax,pA)  \
@@ -54,10 +71,12 @@
     int16_t t
 
 // cij = Ax [pA]
-#define GB_COPY_A_TO_C(cij,Ax,pA) cij = Ax [pA] ;
+#define GB_COPY_A_TO_C(cij,Ax,pA) \
+    cij = Ax [pA]
 
 // cij = Bx [pB]
-#define GB_COPY_B_TO_C(cij,Bx,pB) cij = Bx [pB] ;
+#define GB_COPY_B_TO_C(cij,Bx,pB) \
+    cij = Bx [pB]
 
 #define GB_CX(p) Cx [p]
 
@@ -85,7 +104,7 @@
 #define GB_PHASE_2_OF_2
 
 // hard-coded loops can be vectorized
-#define GB_PRAGMA_VECTORIZE GB_PRAGMA_SIMD
+#define GB_PRAGMA_SIMD_VECTORIZE GB_PRAGMA_SIMD
 
 // disable this operator and use the generic case if these conditions hold
 #define GB_DISABLE \
@@ -133,13 +152,13 @@ GrB_Info GB_Cdense_ewise3_noaccum__second_int16
 }
 
 //------------------------------------------------------------------------------
-// C += A, accumulate a sparse matrix into a dense matrix
+// C += B, accumulate a sparse matrix into a dense matrix
 //------------------------------------------------------------------------------
 
-GrB_Info GB_Cdense_accumA__second_int16
+GrB_Info GB_Cdense_accumB__second_int16
 (
     GrB_Matrix C,
-    const GrB_Matrix A,
+    const GrB_Matrix B,
     const int64_t *GB_RESTRICT kfirst_slice,
     const int64_t *GB_RESTRICT klast_slice,
     const int64_t *GB_RESTRICT pstart_slice,
@@ -160,13 +179,13 @@ GrB_Info GB_Cdense_accumA__second_int16
 }
 
 //------------------------------------------------------------------------------
-// C += x, accumulate a scalar into a dense matrix
+// C += b, accumulate a scalar into a dense matrix
 //------------------------------------------------------------------------------
 
-GrB_Info GB_Cdense_accumX__second_int16
+GrB_Info GB_Cdense_accumb__second_int16
 (
     GrB_Matrix C,
-    const GB_void *p_ywork,
+    const GB_void *p_bwork,
     const int nthreads
 )
 {
@@ -175,7 +194,8 @@ GrB_Info GB_Cdense_accumX__second_int16
     #else
     
     { 
-        int16_t ywork = (*((int16_t *) p_ywork)) ;
+        // get the scalar b for C += b, of type int16_t
+        int16_t bwork = (*((int16_t *) p_bwork)) ;
         #include "GB_dense_subassign_22_template.c"
         return (GrB_SUCCESS) ;
     }
@@ -187,6 +207,8 @@ GrB_Info GB_Cdense_accumX__second_int16
 //------------------------------------------------------------------------------
 // C = A*D, column scale with diagonal D matrix
 //------------------------------------------------------------------------------
+
+
 
 GrB_Info GB_AxD__second_int16
 (
@@ -203,15 +225,19 @@ GrB_Info GB_AxD__second_int16
     #if GB_DISABLE
     return (GrB_NO_VALUE) ;
     #else
-    int16_t *GB_RESTRICT Cx = C->x ;
+    int16_t *GB_RESTRICT Cx = (int16_t *) C->x ;
     #include "GB_AxB_colscale_meta.c"
     return (GrB_SUCCESS) ;
     #endif
 }
 
+
+
 //------------------------------------------------------------------------------
 // C = D*B, row scale with diagonal D matrix
 //------------------------------------------------------------------------------
+
+
 
 GrB_Info GB_DxB__second_int16
 (
@@ -224,11 +250,13 @@ GrB_Info GB_DxB__second_int16
     #if GB_DISABLE
     return (GrB_NO_VALUE) ;
     #else
-    int16_t *GB_RESTRICT Cx = C->x ;
+    int16_t *GB_RESTRICT Cx = (int16_t *) C->x ;
     #include "GB_AxB_rowscale_meta.c"
     return (GrB_SUCCESS) ;
     #endif
 }
+
+
 
 //------------------------------------------------------------------------------
 // eWiseAdd: C = A+B or C<M> = A+B
@@ -284,6 +312,156 @@ GrB_Info GB_AemultB__second_int16
     return (GrB_SUCCESS) ;
     #endif
 }
+
+//------------------------------------------------------------------------------
+// Cx = op (x,Bx):  apply a binary operator to a matrix with scalar bind1st
+//------------------------------------------------------------------------------
+
+#if 0
+
+GrB_Info (none)
+(
+    GB_void *Cx_output,         // Cx and Bx may be aliased
+    const GB_void *x_input,
+    const GB_void *Bx_input,
+    int64_t anz,
+    int nthreads
+)
+{ 
+    #if GB_DISABLE
+    return (GrB_NO_VALUE) ;
+    #else
+    int16_t *Cx = (int16_t *) Cx_output ;
+    int16_t   x = (*((int16_t *) x_input)) ;
+    int16_t *Bx = (int16_t *) Bx_input ;
+    int64_t p ;
+    #pragma omp parallel for num_threads(nthreads) schedule(static)
+    for (p = 0 ; p < anz ; p++)
+    {
+        int16_t bij = Bx [p] ;
+        Cx [p] = bij ;
+    }
+    return (GrB_SUCCESS) ;
+    #endif
+}
+
+#endif
+
+//------------------------------------------------------------------------------
+// Cx = op (Ax,y):  apply a binary operator to a matrix with scalar bind2nd
+//------------------------------------------------------------------------------
+
+
+
+GrB_Info GB_bind2nd__second_int16
+(
+    GB_void *Cx_output,         // Cx and Ax may be aliased
+    const GB_void *Ax_input,
+    const GB_void *y_input,
+    int64_t anz,
+    int nthreads
+)
+{ 
+    #if GB_DISABLE
+    return (GrB_NO_VALUE) ;
+    #else
+    int64_t p ;
+    int16_t *Cx = (int16_t *) Cx_output ;
+    int16_t *Ax = (int16_t *) Ax_input ;
+    int16_t   y = (*((int16_t *) y_input)) ;
+    #pragma omp parallel for num_threads(nthreads) schedule(static)
+    for (p = 0 ; p < anz ; p++)
+    {
+        ; ;
+        Cx [p] = y ;
+    }
+    return (GrB_SUCCESS) ;
+    #endif
+}
+
+
+
+//------------------------------------------------------------------------------
+// C = op (x, A'): transpose and apply a binary operator
+//------------------------------------------------------------------------------
+
+#if 0
+
+// cij = op (x, aij), no typcasting (in spite of the macro name)
+#undef  GB_CAST_OP
+#define GB_CAST_OP(pC,pA)               \
+{                                       \
+    int16_t aij = Ax [pA] ;              \
+    Cx [pC] = aij ;      \
+}
+
+GrB_Info (none)
+(
+    GrB_Matrix C,
+    const GB_void *x_input,
+    const GrB_Matrix A,
+    int64_t *GB_RESTRICT *Rowcounts,
+    GBI_single_iterator Iter,
+    const int64_t *GB_RESTRICT A_slice,
+    int naslice
+)
+{ 
+    // GB_unop_transpose.c uses GB_ATYPE, but A is
+    // the 2nd input to binary operator z=f(x,y).
+    #undef  GB_ATYPE
+    #define GB_ATYPE \
+    int16_t
+    #if GB_DISABLE
+    return (GrB_NO_VALUE) ;
+    #else
+    int16_t x = (*((const int16_t *) x_input)) ;
+    #define GB_PHASE_2_OF_2
+    #include "GB_unop_transpose.c"
+    return (GrB_SUCCESS) ;
+    #endif
+    #undef  GB_ATYPE
+    #define GB_ATYPE \
+    int16_t
+}
+
+#endif
+
+//------------------------------------------------------------------------------
+// C = op (A', y): transpose and apply a binary operator
+//------------------------------------------------------------------------------
+
+
+
+// cij = op (aij, y), no typcasting (in spite of the macro name)
+#undef  GB_CAST_OP
+#define GB_CAST_OP(pC,pA)               \
+{                                       \
+    ; ;              \
+    Cx [pC] = y ;      \
+}
+
+GrB_Info GB_bind2nd_tran__second_int16
+(
+    GrB_Matrix C,
+    const GrB_Matrix A,
+    const GB_void *y_input,
+    int64_t *GB_RESTRICT *Rowcounts,
+    GBI_single_iterator Iter,
+    const int64_t *GB_RESTRICT A_slice,
+    int naslice
+)
+{ 
+    #if GB_DISABLE
+    return (GrB_NO_VALUE) ;
+    #else
+    int16_t y = (*((const int16_t *) y_input)) ;
+    #define GB_PHASE_2_OF_2
+    #include "GB_unop_transpose.c"
+    return (GrB_SUCCESS) ;
+    #endif
+}
+
+
 
 #endif
 

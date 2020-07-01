@@ -372,7 +372,7 @@ GrB_Info GB_emult_phase0        // find vectors in C for C=A.*B or C<M>=A.*B
     if (M_is_hyper && Ch != Mh)
     {
         // allocate C_to_M
-        GB_MALLOC_MEMORY (C_to_M, Cnvec, sizeof (int64_t)) ;
+        C_to_M = GB_MALLOC (Cnvec, int64_t) ;
         if (C_to_M == NULL)
         { 
             // out of memory
@@ -402,11 +402,11 @@ GrB_Info GB_emult_phase0        // find vectors in C for C=A.*B or C<M>=A.*B
     if (A_is_hyper && Ch != Ah)
     {
         // allocate C_to_A
-        GB_MALLOC_MEMORY (C_to_A, Cnvec, sizeof (int64_t)) ;
+        C_to_A = GB_MALLOC (Cnvec, int64_t) ;
         if (C_to_A == NULL)
         { 
             // out of memory
-            GB_FREE_MEMORY (C_to_M, Cnvec, sizeof (int64_t)) ;
+            GB_FREE (C_to_M) ;
             return (GB_OUT_OF_MEMORY) ;
         }
 
@@ -432,12 +432,12 @@ GrB_Info GB_emult_phase0        // find vectors in C for C=A.*B or C<M>=A.*B
     if (B_is_hyper && Ch != Bh)
     {
         // allocate C_to_B
-        GB_MALLOC_MEMORY (C_to_B, Cnvec, sizeof (int64_t)) ;
+        C_to_B = GB_MALLOC (Cnvec, int64_t) ;
         if (C_to_B == NULL)
         { 
             // out of memory
-            GB_FREE_MEMORY (C_to_M, Cnvec, sizeof (int64_t)) ;
-            GB_FREE_MEMORY (C_to_A, Cnvec, sizeof (int64_t)) ;
+            GB_FREE (C_to_M) ;
+            GB_FREE (C_to_A) ;
             return (GB_OUT_OF_MEMORY) ;
         }
 

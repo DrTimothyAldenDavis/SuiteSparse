@@ -32,6 +32,8 @@ size_t GB_code_size             // return the size of a type, given its code
         case GB_UINT64_code : return (sizeof (uint64_t)) ;
         case GB_FP32_code   : return (sizeof (float))    ;
         case GB_FP64_code   : return (sizeof (double))   ;
+        case GB_FC32_code   : return (sizeof (GxB_FC32_t)) ;
+        case GB_FC64_code   : return (sizeof (GxB_FC64_t)) ;
         case GB_UDT_code    : return (usize) ;
         default             : return (0) ;
     }

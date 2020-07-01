@@ -7,6 +7,11 @@
 
 //------------------------------------------------------------------------------
 
+// Usage:
+
+// chunk = gbchunk ;
+// chunk = gbchunk (chunk) ;
+
 #include "gb_matlab.h"
 
 void mexFunction

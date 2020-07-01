@@ -9,7 +9,7 @@ function test19
 fprintf ('=================================================================\n');
 fprintf ('test19: look for NaN''s from lchol (caused by Intel MKL 7.x bug)\n') ;
 
-Prob = UFget (936)							    %#ok
+Prob = ssget (936)							    %#ok
 A = Prob.A ;
 [p count] = analyze (A) ;
 A = A (p,p) ;

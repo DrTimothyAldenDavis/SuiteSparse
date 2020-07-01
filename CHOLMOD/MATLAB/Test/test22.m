@@ -11,7 +11,7 @@ function test22(nmat)
 fprintf ('=================================================================\n');
 fprintf ('test22: test pos.def and indef. matrices\n') ;
 
-index = UFget ;
+index = ssget ;
 
 [ignore f] = sort (index.nrows) ;
 
@@ -76,7 +76,7 @@ for i = f
 	continue ;
     end
 
-    Problem = UFget (i) ;
+    Problem = ssget (i) ;
     A = Problem.A ;
     [m n] = size (A) ;
     fprintf ('\n================== %4d: Problem: %s  m: %d n: %d nnz: %d', ...

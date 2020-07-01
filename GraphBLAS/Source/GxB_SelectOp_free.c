@@ -24,8 +24,7 @@ GrB_Info GxB_SelectOp_free          // free a user-created select operator
             if (op->magic == GB_MAGIC)
             { 
                 op->magic = GB_FREED ;  // to help detect dangling pointers
-                GB_FREE_MEMORY (*selectop, 1,
-                    sizeof (struct GB_SelectOp_opaque)) ;
+                GB_FREE (*selectop) ;
             }
             (*selectop) = NULL ;
         }

@@ -119,7 +119,7 @@ void GB_merge_parallel_3                // parallel merge
     long pleft = 0, pright = nsmaller-1 ;
     while (pleft < pright)
     {
-        long pmiddle = (pleft + pright) / 2 ;
+        long pmiddle = (pleft + pright) >> 1 ;
         if (GB_lt_3 (Smaller_0, Smaller_1, Smaller_2, pmiddle,
                      Pivot_0, Pivot_1, Pivot_2, 0))
         { 
@@ -316,13 +316,13 @@ void GB_mergesort_3 // sort array A of size 3-by-n, using 3 keys (A [0:1][])
         // split A into four quarters
         // ---------------------------------------------------------------------
 
-        int64_t n12 = n / 2 ;           // split n into n12 and n34
+        int64_t n12 = n >> 1 ;          // split n into n12 and n34
         int64_t n34 = n - n12 ;
 
-        int64_t n1 = n12 / 2 ;          // split n12 into n1 and n2
+        int64_t n1 = n12 >> 1 ;         // split n12 into n1 and n2
         int64_t n2 = n12 - n1 ;
 
-        int64_t n3 = n34 / 2 ;          // split n34 into n3 and n4
+        int64_t n3 = n34 >> 1 ;         // split n34 into n3 and n4
         int64_t n4 = n34 - n3 ;
 
         int64_t n123 = n12 + n3 ;       // start of 4th quarter = n1 + n2 + n3

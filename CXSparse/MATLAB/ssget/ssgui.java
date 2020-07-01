@@ -39,7 +39,7 @@
 //
 //      proxy port: default is 80 if left blank
 //
-// Copyright (c) 2009-2017, Timothy A. Davis.  See sshelp.html for the license,
+// Copyright (c) 2009-2019, Timothy A. Davis.  See sshelp.html for the license,
 // and for help on how to use this program, or click "Help" in the GUI.
 //------------------------------------------------------------------------------
 
@@ -95,8 +95,8 @@ public class ssgui extends JFrame
     private JTable matrix_Table ;
     private JButton download_Button, cancel_Button ;
     private JTextField minrow_Field, maxrow_Field, mincol_Field, maxcol_Field,
-        minnz_Field, maxnz_Field, minpsym_Field, maxpsym_Field, minnsym_Field,
-        maxnsym_Field ;
+        minnentries_Field, maxnentries_Field, minpsym_Field, maxpsym_Field,
+        minnsym_Field, maxnsym_Field ;
     private JRadioButton posdef_yes_Button, posdef_no_Button,
         posdef_either_Button, nd_yes_Button, nd_no_Button, nd_either_Button,
         real_yes_Button, real_no_Button, real_either_Button,
@@ -395,7 +395,7 @@ public class ssgui extends JFrame
         download_Panel.setMaximumSize (new Dimension (0,0)) ;
 
         //----------------------------------------------------------------------
-        // panel for m, n, nnz, psym, and nsym
+        // panel for m, n, nentries, psym, and nsym
 
         // # of rows
         minrow_Field = new JTextField ("") ;
@@ -420,15 +420,15 @@ public class ssgui extends JFrame
         maxcol_Field.setMinimumSize (new Dimension (120,0)) ;
 
         // # of entries
-        minnz_Field = new JTextField ("") ;
-        JLabel nnzlabel = new JLabel (" \u2264 number of nonzeros \u2264 ") ;
-        maxnz_Field = new JTextField ("") ;
-        minnz_Field.setColumns (16) ;
-        maxnz_Field.setColumns (16) ;
-        minnz_Field.setToolTipText ("Leave blank for 'zero'.") ;
-        maxnz_Field.setToolTipText ("Leave blank for 'infinite'.") ;
-        minnz_Field.setMinimumSize (new Dimension (120,0)) ;
-        maxnz_Field.setMinimumSize (new Dimension (120,0)) ;
+        minnentries_Field = new JTextField ("") ;
+        JLabel nentrieslabel = new JLabel (" \u2264 number of entries \u2264 ");
+        maxnentries_Field = new JTextField ("") ;
+        minnentries_Field.setColumns (16) ;
+        maxnentries_Field.setColumns (16) ;
+        minnentries_Field.setToolTipText ("Leave blank for 'zero'.") ;
+        maxnentries_Field.setToolTipText ("Leave blank for 'infinite'.") ;
+        minnentries_Field.setMinimumSize (new Dimension (120,0)) ;
+        maxnentries_Field.setMinimumSize (new Dimension (120,0)) ;
 
         // pattern symmetry
         minpsym_Field = new JTextField ("0.0") ;
@@ -437,7 +437,7 @@ public class ssgui extends JFrame
         minpsym_Field.setColumns (16) ;
         maxpsym_Field.setColumns (16) ;
         maxpsym_Field.setToolTipText (
-        "Refers to position of nonzeros, not their values.\n" +
+        "Refers to position of entries, not their values.\n" +
         "1 = perfectly symmetric pattern, 0 = perfectly unsymmetric pattern.") ;
         minpsym_Field.setMinimumSize (new Dimension (120,0)) ;
         maxpsym_Field.setMinimumSize (new Dimension (120,0)) ;
@@ -467,7 +467,7 @@ public class ssgui extends JFrame
                     layout5.createParallelGroup (GroupLayout.Alignment.LEADING)
                         .addComponent (minrow_Field)
                         .addComponent (mincol_Field)
-                        .addComponent (minnz_Field)
+                        .addComponent (minnentries_Field)
                         .addComponent (minpsym_Field)
                         .addComponent (minnsym_Field)
                 )
@@ -476,7 +476,7 @@ public class ssgui extends JFrame
                     layout5.createParallelGroup (GroupLayout.Alignment.LEADING)
                         .addComponent (rowlabel)
                         .addComponent (collabel)
-                        .addComponent (nnzlabel)
+                        .addComponent (nentrieslabel)
                         .addComponent (psymlabel)
                         .addComponent (nsymlabel)
                 )
@@ -485,7 +485,7 @@ public class ssgui extends JFrame
                     layout5.createParallelGroup (GroupLayout.Alignment.LEADING)
                         .addComponent (maxrow_Field)
                         .addComponent (maxcol_Field)
-                        .addComponent (maxnz_Field)
+                        .addComponent (maxnentries_Field)
                         .addComponent (maxpsym_Field)
                         .addComponent (maxnsym_Field)
                 )
@@ -512,9 +512,9 @@ public class ssgui extends JFrame
                 .addGroup
                 (
                     layout5.createParallelGroup (GroupLayout.Alignment.LEADING)
-                        .addComponent (minnz_Field)
-                        .addComponent (nnzlabel)
-                        .addComponent (maxnz_Field)
+                        .addComponent (minnentries_Field)
+                        .addComponent (nentrieslabel)
+                        .addComponent (maxnentries_Field)
                 )
                 .addGroup
                 (
@@ -892,7 +892,7 @@ public class ssgui extends JFrame
             150,    // 6:Name
             70,     // 7:nrows
             70,     // 8:ncols
-            70,     // 9:nnz
+            70,     // 9:nentries
             40,     // 10:isReal
             40,     // 11:isBinary
             40,     // 12:isND
@@ -1089,7 +1089,8 @@ public class ssgui extends JFrame
                 S [id-1][2]  = r [1] ;                          // Name
                 S [id-1][3]  = Long.parseLong (r [2]) ;         // nrows
                 S [id-1][4]  = Long.parseLong (r [3]) ;         // ncols
-                S [id-1][5]  = Long.parseLong (r [4]) ;         // nnz
+                // NOTE: r [4] = nnz is now ignored, and r [12] used instead
+                S [id-1][5]  = Long.parseLong (r [12]) ;        // nentries
 
                 S [id-1][6]  = ternary (r [5]) ;                // isReal
                 S [id-1][7]  = ternary (r [6]) ;                // isBinary
@@ -1130,13 +1131,14 @@ public class ssgui extends JFrame
         "matrix name (full name is Group/Name)",            // 6:Name
         "# of rows in the matrix",                          // 7:nrows
         "# of columns in the matrix",                       // 8:ncols
-        "# of nonzeros in the matrix",                      // 9:nnz
+        "# of entries in the matrix (both nonzeros and explicit zeros)",
+                                                            // 9:nentries
         "if the matrix is real (not complex)",              // 10:isReal
         "if the matrix is binary",                          // 11:isBinary
         "if the matrix arises from a 2D/3D discretization", // 12:isND
         "if the matrix is symmetric positive definite",     // 13:posdef
         // 14:psym:
-        "symmetry of nonzero pattern (0: none, 1: pattern(A)=pattern(A')",
+        "symmetry of pattern (0: none, 1: pattern(A)=pattern(A')",
         "symmetry of nonzero values (0: none, 1: A=A'",     // 15:nsym
         // 16:kind:
         "the matrix 'kind' is the problem domain from which it arises" 
@@ -1167,7 +1169,7 @@ public class ssgui extends JFrame
         private String [ ] columnNames =
             {
             "select", "mat", "MM", "RB",
-            "id", "Group", "Name", "# rows", "# cols", "# nonzeros", "real",
+            "id", "Group", "Name", "# rows", "# cols", "# entries", "real",
             "binary", "2D/3D", "posdef", "psym", "nsym", "kind" } ;
 
         private Object [ ][ ] data = null ;
@@ -1241,7 +1243,7 @@ public class ssgui extends JFrame
                 for (int j = 0 ; j < 13 ; j++)
                 {
                     // matrix stats, which do not change:
-                    // 4:id, 5:Group, 6:Name, 7:nrows, 8:ncols, 9:nnz,
+                    // 4:id, 5:Group, 6:Name, 7:nrows, 8:ncols, 9:nentries,
                     // 10:isreal, 11:isBinary, 12:isND, 13:posdef, 14: psym,
                     // 15:nsym, 16:kind
                     if (j >= 6 && j <= 9)
@@ -1671,8 +1673,8 @@ public class ssgui extends JFrame
         long mincol = getLong (mincol_Field, 0) ;
         long maxcol = getLong (maxcol_Field, INF) ;
 
-        long minnz = getLong (minnz_Field, 0) ;
-        long maxnz = getLong (maxnz_Field, INF) ;
+        long minnentries = getLong (minnentries_Field, 0) ;
+        long maxnentries = getLong (maxnentries_Field, INF) ;
 
         double minpsym = getDouble (minpsym_Field, 0) ;
         double maxpsym = getDouble (maxpsym_Field, 1.0) ;
@@ -1738,7 +1740,7 @@ public class ssgui extends JFrame
             // look at the matrix properties to see if it fits the selection
             long nrows = (Long) Stats [id-1][3] ;
             long ncols = (Long) Stats [id-1][4] ;
-            long nnz   = (Long) Stats [id-1][5] ;
+            long nentries = (Long) Stats [id-1][5] ;
 
             int isReal   = (Integer) Stats [id-1][6] ;
             int isBinary = (Integer) Stats [id-1][7] ;
@@ -1764,7 +1766,7 @@ public class ssgui extends JFrame
 
             if ((minrow <= nrows && nrows <= maxrow) &&
                 (mincol <= ncols && ncols <= maxcol) &&
-                (minnz <= nnz && nnz <= maxnz) &&
+                (minnentries <= nentries && nentries <= maxnentries) &&
                 (minpsym <= psym && psym <= maxpsym) &&
                 (minnsym <= nsym && nsym <= maxnsym) &&
                 (posdef_either ||
@@ -1804,8 +1806,8 @@ public class ssgui extends JFrame
         mincol_Field.setText ("") ;
         maxcol_Field.setText ("") ;
 
-        minnz_Field.setText ("") ;
-        maxnz_Field.setText ("") ;
+        minnentries_Field.setText ("") ;
+        maxnentries_Field.setText ("") ;
 
         minpsym_Field.setText ("0.0") ;
         maxpsym_Field.setText ("1.0") ;
@@ -1884,7 +1886,7 @@ public class ssgui extends JFrame
                 if (csv)
                 {
                     print_out.println ("mat, MM, RB, id, Group, Name, rows, " +
-                        "cols, nonzeros, real, binary, 2D/3D, posdef, psym, " +
+                        "cols, entries, real, binary, 2D/3D, posdef, psym, " +
                         "nsym, kind") ;
                 }
                 else
@@ -1906,7 +1908,7 @@ public class ssgui extends JFrame
                     String Name        = (String)  Stats [id-1][2] ;
                     long nrows         = (Long)    Stats [id-1][3] ;
                     long ncols         = (Long)    Stats [id-1][4] ;
-                    long nnz           = (Long)    Stats [id-1][5] ;
+                    long nentries      = (Long)    Stats [id-1][5] ;
                     int isReal         = (Integer) Stats [id-1][6] ;
                     int isBinary       = (Integer) Stats [id-1][7] ;
                     int isND           = (Integer) Stats [id-1][8] ;
@@ -1922,7 +1924,7 @@ public class ssgui extends JFrame
                             exists [0] + ", " + exists [1] + ", " +
                             exists [2] + ", " + id + ", " + Group + ", " +
                             Name + ", " + nrows + ", " + ncols + ", " +
-                            nnz + ", " + isReal + ", " + isBinary + ", " +
+                            nentries + ", " + isReal + ", " + isBinary + ", " +
                             isND + ", " + posdef + ", " + psym + ", " +
                             nsym + ", " + kind) ;
                     }
@@ -2259,8 +2261,28 @@ public class ssgui extends JFrame
 
         try
         {
+            // Follow redirects manually
+            int max_redirects = 5;
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            for(int redirect_count = 0; redirect_count < max_redirects; redirect_count++)
+            {
+                int status = conn.getResponseCode();
+                if (status >= 300 && status <= 308)
+                {
+                    // Redirecting
+                    String loc = conn.getHeaderField("Location");
+                    url = new URL(loc);
+                    conn = (HttpURLConnection) url.openConnection();
+                }
+                else
+                {
+                    break;
+                }
+            }
+
             // determine the file size (fails for files > 2GB)
-            int len = url.openConnection ( ).getContentLength ( ) ;
+            int len = conn.getContentLength();
 
             // start the progress bar
             if (gui_ready)
@@ -2289,7 +2311,8 @@ public class ssgui extends JFrame
             }
 
             // open the source and destination files
-            url_in = new BufferedInputStream (url.openStream ( )) ;
+            //url_in = new BufferedInputStream (url.openStream ( )) ;
+            url_in = new BufferedInputStream (conn.getInputStream()) ;
             ftemp_out = new BufferedOutputStream (new FileOutputStream
                 (fix_name (ftemp_name)), buffersize) ;
 
@@ -2316,9 +2339,10 @@ public class ssgui extends JFrame
         }
         catch (Exception e)
         {
-            // display warning dialog
-            JOptionPane.showMessageDialog (this, "Download failed: "
-                + urlstring, "Warning", JOptionPane.WARNING_MESSAGE) ;
+            if (debug)
+            {
+                System.out.println("Download failed: " + urlstring);
+            }
             ok = false ;
         }
 

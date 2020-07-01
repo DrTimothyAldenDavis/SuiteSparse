@@ -4,11 +4,6 @@ function testc4
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
-if (~GB_mex_have_complex)
-    fprintf ('\ntestc4: skipped\n') ;
-    return ;
-end
-
 rng ('default') ;
 
 seed = 1 ;

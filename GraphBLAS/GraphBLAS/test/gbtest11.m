@@ -1,12 +1,12 @@
 function gbtest11
 %GBTEST11 test GrB, sparse
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
+% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
 
 rng ('default') ;
 A = 100 * rand (4) ;
-A (1,1) = 0 %#ok<*NOPRT>
+A (1,1:2) = 0 %#ok<*NOPRT>
 S = sparse (A)
 assert (gbtest_eq (S, double (full (GrB (S)))))
 assert (gbtest_eq (S, double (full (full (GrB (S))))))
@@ -63,6 +63,19 @@ G = GrB (X)
 full (G)
 assert (gbtest_eq (X, full (uint64 (G))))
 assert (gbtest_eq (X, uint64 (full (G))))
+
+B = 100 * rand (4) ;
+B (1,[1 3]) = 0 ;
+
+X = complex (A)
+G = GrB (X)
+assert (gbtest_eq (X, full (complex (G))))
+assert (gbtest_eq (X, complex (full (G))))
+
+X = complex (A,B)
+G = GrB (X)
+assert (gbtest_eq (X, full (complex (G))))
+assert (gbtest_eq (X, complex (full (G))))
 
 fprintf ('gbtest11: all tests passed\n') ;
 

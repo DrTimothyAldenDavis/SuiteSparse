@@ -14,8 +14,7 @@ GrB_Info GB_BinaryOp_check  // check a GraphBLAS binary operator
 (
     const GrB_BinaryOp op,  // GraphBLAS operator to print and check
     const char *name,       // name of the operator
-    int pr,                 // 0: print nothing, 1: print header and errors,
-                            // 2: print brief, 3: print all
+    int pr,                 // print level
     FILE *f,                // file for output
     GB_Context Context
 )
@@ -40,16 +39,13 @@ GrB_Info GB_BinaryOp_check  // check a GraphBLAS binary operator
 
     GB_CHECK_MAGIC (op, "BinaryOp") ;
 
-    if (pr > 0)
-    {
-        if (op->opcode >= GB_USER_opcode)
-        { 
-            GBPR ("(user-defined) ") ;
-        }
-        else
-        { 
-            GBPR ("(built-in) ") ;
-        }
+    if (op->opcode >= GB_USER_opcode)
+    { 
+        GBPR0 ("(user-defined) ") ;
+    }
+    else
+    { 
+        GBPR0 ("(built-in) ") ;
     }
 
     GBPR0 ("z=%s(x,y)\n", op->name) ;

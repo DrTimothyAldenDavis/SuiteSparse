@@ -12,8 +12,6 @@
 // MATLAB interface to GrB_reduce, which relies on GrB_Matrix_reduce_BinaryOp
 // and GrB_Matrix_reduce_Monoid to reduce a matrix to a vector.
 
-// #define GB_PRINT_MALLOC 1
-
 #include "GB_mex.h"
 
 #define USAGE "w = GB_mex_reduce_to_vector (w, mask, accum, reduce, A, desc)"
@@ -21,12 +19,12 @@
 #define FREE_ALL                        \
 {                                       \
     GB_MATRIX_FREE (&A) ;               \
-    GrB_Vector_free (&w) ;              \
-    GrB_Vector_free (&mask) ;           \
-    GrB_Descriptor_free (&desc) ;       \
-    if (!reduce_is_complex)             \
+    GrB_Vector_free_(&w) ;              \
+    GrB_Vector_free_(&mask) ;           \
+    GrB_Descriptor_free_(&desc) ;       \
+    if (!user_complex)                  \
     {                                   \
-        GrB_Monoid_free (&reduce) ;     \
+        GrB_Monoid_free_(&reduce) ;     \
     }                                   \
     GB_mx_put_global (true, 0) ;        \
 }
@@ -46,7 +44,7 @@ void mexFunction
     GrB_Vector mask = NULL ;
     GrB_Descriptor desc = NULL ;
     GrB_Monoid reduce = NULL ;
-    bool reduce_is_complex = false ;
+    bool user_complex = false ;
 
     // check inputs
     GB_WHERE (USAGE) ;
@@ -58,14 +56,13 @@ void mexFunction
     // get w (make a deep copy)
     #define GET_DEEP_COPY \
     w = GB_mx_mxArray_to_Vector (pargin [0], "w input", true, true) ;
-    #define FREE_DEEP_COPY GrB_Vector_free (&w) ;
+    #define FREE_DEEP_COPY GrB_Vector_free_(&w) ;
     GET_DEEP_COPY ;
     if (w == NULL)
     {
         FREE_ALL ;
         mexErrMsgTxt ("w failed") ;
     }
-    mxClassID cclass = GB_mx_Type_to_classID (w->type) ;
 
     // get mask (shallow copy)
     mask = GB_mx_mxArray_to_Vector (pargin [1], "mask", false, false) ;
@@ -83,25 +80,32 @@ void mexFunction
         mexErrMsgTxt ("A failed") ;
     }
 
-    // get reduce operator; default: NOP, default class is class(w)
+    // get reduce operator
+    user_complex = (Complex != GxB_FC64) && (A->type == Complex) ;
     GrB_BinaryOp reduceop ;
     if (!GB_mx_mxArray_to_BinaryOp (&reduceop, pargin [3], "reduceop",
-        GB_NOP_opcode, cclass, A->type == Complex, A->type == Complex))
+        w->type, user_complex) || reduceop == NULL)
     {
         FREE_ALL ;
         mexErrMsgTxt ("reduceop failed") ;
     }
 
     // get the reduce monoid
-    if (reduceop == Complex_plus)
+    if (user_complex)
     {
-        reduce_is_complex = true ;
-        reduce = Complex_plus_monoid ;
-    }
-    else if (reduceop == Complex_times)
-    {
-        reduce_is_complex = true ;
-        reduce = Complex_times_monoid ;
+        if (reduceop == Complex_plus)
+        {
+            reduce = Complex_plus_monoid ;
+        }
+        else if (reduceop == Complex_times)
+        {
+            reduce = Complex_times_monoid ;
+        }
+        else
+        {
+            FREE_ALL ;
+            mexErrMsgTxt ("reduce failed") ;
+        }
     }
     else
     {
@@ -113,10 +117,11 @@ void mexFunction
         }
     }
 
-    // get accum; default: NOP, default class is class(C)
+    // get accum, if present
+    user_complex = (Complex != GxB_FC64) && (w->type == Complex) ;
     GrB_BinaryOp accum ;
     if (!GB_mx_mxArray_to_BinaryOp (&accum, pargin [2], "accum",
-        GB_NOP_opcode, cclass, w->type == Complex, reduce_is_complex))
+        w->type, user_complex))
     {
         FREE_ALL ;
         mexErrMsgTxt ("accum failed") ;
@@ -130,7 +135,7 @@ void mexFunction
     }
 
     // w<mask> = accum (w, reduce_to_vector (A))
-    METHOD (GrB_Matrix_reduce_Monoid (w, mask, accum, reduce, A, desc)) ;
+    METHOD (GrB_Matrix_reduce_Monoid_(w, mask, accum, reduce, A, desc)) ;
 
     // return w to MATLAB as a struct and free the GraphBLAS w
     pargout [0] = GB_mx_Vector_to_mxArray (&w, "w output", true) ;

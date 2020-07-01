@@ -11,8 +11,8 @@
 // computed from one or two input matrices A and B.  The following rules are
 // used, in order:
 
-// (1) GraphBLAS operations of the form Cout = GrB.method (Cin, ...) use the
-//      format of Cin for the new matrix Cout.
+// (1) GraphBLAS operations of the form C = GrB.method (Cin, ...) use the
+//      format of Cin for the new matrix C.
 
 // (1) If the format is determined by the descriptor to the method, then that
 //      determines the format of C.
@@ -21,11 +21,11 @@
 
 // (3) If C is a row vector (cnrows == 1) then C is stored by row.
 
-// (4) If A is present, and not a row or column vector, then its format is used
-//      for C.
+// (4) If A is present, and not a row or column vector or scalar, then its
+//      format is used for C.
 
-// (5) If B is present, and not a row or column vector, then its format is used
-//      for C.
+// (5) If B is present, and not a row or column vector or scalar, then its
+//      format is used for C.
 
 // (6) Otherwise, the global default format is used for C.
 

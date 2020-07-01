@@ -27,18 +27,18 @@ bool GB_mx_xsame32  // true if arrays X and Y are the same (ignoring zombies)
         // check X [i] and Y [i], but ignore zombies
         if (I [i] >= 0)
         {
-            int xclass = fpclassify (X [i]) ;
-            if (xclass != fpclassify (Y [i])) return (false) ;
-            if (xclass == FP_ZERO)
+            int c = fpclassify (X [i]) ;
+            if (c != fpclassify (Y [i])) return (false) ;
+            if (c == FP_ZERO)
             {
                 // both are zero, which is OK
             }
-            else if (xclass == FP_INFINITE)
+            else if (c == FP_INFINITE)
             {
                 // + or -infinity
                 if (X [i] != Y [i]) return (false) ;
             }
-            else if (xclass != FP_NAN)
+            else if (c != FP_NAN)
             {
                 // both are normal or subnormal, and nonzero
                 float err = fabsf (X [i] - Y [i]) / fabsf (X [i]) ;

@@ -75,7 +75,7 @@ Files in this distribution:
     Makefile_no_CHOLMOD Makefile for KLU mexFunction, without CHOLMOD
     Test                MATLAB tests
 
-./MATLAB/Test:          KLU tests, requires UFget
+./MATLAB/Test:          KLU tests, requires ssget
     test1.m             
     test2.m
     test3.m

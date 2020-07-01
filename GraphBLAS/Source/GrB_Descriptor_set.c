@@ -47,10 +47,11 @@ GrB_Info GrB_Descriptor_set     // set a parameter in a descriptor
                     "must be GxB_DEFAULT [%d] or GrB_REPLACE [%d]",
                     (int) value, (int) GxB_DEFAULT, (int) GrB_REPLACE))) ;
             }
-            desc->out  = value ;
+            desc->out = value ;
             break ;
 
         case GrB_MASK : 
+        {
 
             if (! (value == GxB_DEFAULT ||
                    value == GrB_COMP ||
@@ -65,13 +66,16 @@ GrB_Info GrB_Descriptor_set     // set a parameter in a descriptor
                     (int) GrB_STRUCTURE,
                     (int) (GrB_COMP + GrB_STRUCTURE)))) ;
             }
+            int mask = (int) desc->mask ;
             switch (value)
             {
-                case GrB_COMP:      desc->mask |= GrB_COMP ;      break ;
-                case GrB_STRUCTURE: desc->mask |= GrB_STRUCTURE ; break ;
-                default:            desc->mask = value ;          break ;
+                case GrB_COMP      : mask |= GrB_COMP ;      break ;
+                case GrB_STRUCTURE : mask |= GrB_STRUCTURE ; break ;
+                default            : mask = (int) value ;    break ;
             }
-            break ;
+            desc->mask = (GrB_Desc_Value) mask ;
+        }
+        break ;
 
         case GrB_INP0 : 
 
@@ -82,7 +86,7 @@ GrB_Info GrB_Descriptor_set     // set a parameter in a descriptor
                     "must be GxB_DEFAULT [%d] or GrB_TRAN [%d]",
                     (int) value, (int) GxB_DEFAULT, (int) GrB_TRAN))) ;
             }
-            desc->in0  = value ;
+            desc->in0 = value ;
             break ;
 
         case GrB_INP1 : 
@@ -94,7 +98,7 @@ GrB_Info GrB_Descriptor_set     // set a parameter in a descriptor
                     "must be GxB_DEFAULT [%d] or GrB_TRAN [%d]",
                     (int) value, (int) GxB_DEFAULT, (int) GrB_TRAN))) ;
             }
-            desc->in1  = value ;
+            desc->in1 = value ;
             break ;
 
         case GxB_AxB_METHOD : 
@@ -112,7 +116,7 @@ GrB_Info GrB_Descriptor_set     // set a parameter in a descriptor
                     (int) GxB_AxB_HEAP, (int) GxB_AxB_DOT,
                     (int) GxB_AxB_HASH, (int) GxB_AxB_SAXPY))) ;
             }
-            desc->axb  = value ;
+            desc->axb = value ;
             break ;
 
         default : 
@@ -120,8 +124,8 @@ GrB_Info GrB_Descriptor_set     // set a parameter in a descriptor
             return (GB_ERROR (GrB_INVALID_VALUE, (GB_LOG,
                 "invalid descriptor field [%d], must be one of:\n"
                 "GrB_OUTP [%d], GrB_MASK [%d], GrB_INP0 [%d], GrB_INP1 [%d]"
-                "or GxB_AxB_METHOD [%d]", (int) field,
-                (int) GrB_OUTP, (int) GrB_MASK, (int) GrB_INP0, (int) GrB_INP1,
+                "or GxB_AxB_METHOD [%d]", (int) field, (int) GrB_OUTP,
+                (int) GrB_MASK, (int) GrB_INP0, (int) GrB_INP1,
                 (int) GxB_AxB_METHOD))) ;
     }
 

@@ -7,13 +7,12 @@
 
 //------------------------------------------------------------------------------
 
-// Usage: C = GB_mex_cast (X, classname) casts the dense array X to the MATLAB
-// class given by classname, using C-style typecasting rules instead of
-// MATLAB's rules.
+// Usage: C = GB_mex_cast (X, type) casts the dense array X to given type using
+// C-style typecasting rules instead of MATLAB's rules.
 
 #include "GB_mex.h"
 
-#define USAGE "C = GB_mex_cast (X, classname, cover)"
+#define USAGE "C = GB_mex_cast (X, type, cover)"
 
 void mexFunction
 (
@@ -43,47 +42,56 @@ void mexFunction
     // get X
     GB_void *X ;
     int64_t nrows, ncols ;
-    mxClassID xclass ;
     GrB_Type xtype ;
-    GB_mx_mxArray_to_array (pargin [0], &X, &nrows, &ncols, &xclass, &xtype) ;
+    GB_mx_mxArray_to_array (pargin [0], &X, &nrows, &ncols, &xtype) ;
     if (xtype == NULL)
     {
         mexErrMsgTxt ("X must be numeric") ;
     }
 
     // get the type for C, default is same as X
-    mxClassID cclass = GB_mx_string_to_classID (xclass, PARGIN (1)) ;
-    GrB_Type ctype = GB_mx_classID_to_Type (cclass) ;
+    GrB_Type ctype = GB_mx_string_to_Type (PARGIN (1), xtype) ;
     if (ctype == NULL)
     {
         mexErrMsgTxt ("C must be numeric") ;
     }
 
     // create C
-    if (xtype == Complex)
-    {
-        #if GxB_STDC_VERSION >= 201112L
-        // ignore cclass, just copy the Complex X to the mxArray output
-        pargout [0] = mxCreateNumericMatrix (nrows, ncols, mxDOUBLE_CLASS,
-            mxCOMPLEX) ;
-        GB_mx_complex_split (nrows*ncols, X, pargout [0]) ;
-        // X is a deep copy that must be freed
-        GB_FREE_MEMORY (X, nrows*ncols, 2 * sizeof (double)) ;
-        #else
-        mexErrMsgTxt ("complex type not available") ;
-        #endif
-    }
-    else
-    {
-        // typecast the shallow MATLAB X into the output C
-        pargout [0] = mxCreateNumericMatrix (nrows, ncols, cclass, mxREAL) ;
-        GB_void *C = mxGetData (pargout [0]) ;
+    pargout [0] = GB_mx_create_full (nrows, ncols, ctype) ;
+    if (xtype == Complex) xtype = GxB_FC64 ;
+    GB_void *C = mxGetData (pargout [0]) ;
 
-        // cast the data from X to C
-        GB_cast_array (C, ctype->code, X, xtype->code, nrows*ncols, Context) ;
+//  GxB_print (xtype, 3) ;
+//  GxB_print (ctype, 3) ;
+//  printf ("\nGB_mex_cast from %d to %d: size %ld\n", xtype->code,
+//      ctype->code, nrows*ncols) ;
 
-        // X is a shallow copy that must not be freed
-    }
+//  printf ("X input:\n") ;
+//  for (int k = 0 ; k < nrows*ncols ; k++)
+//  {
+//      printf ("X [%d] = ", k) ;
+//      GB_code_check (xtype->code, X + k*(xtype->size), 3, NULL, Context) ;
+//      printf ("\n") ;
+//  }
+
+    // cast the data from X to C
+    GB_cast_array (C, ctype->code, X, xtype->code, xtype->size, nrows*ncols, 1) ;
+
+//  printf ("X input again:\n") ;
+//  for (int k = 0 ; k < nrows*ncols ; k++)
+//  {
+//      printf ("X [%d] = ", k) ;
+//      GB_code_check (xtype->code, X + k*(xtype->size), 3, NULL, Context) ;
+//      printf ("\n") ;
+//  }
+
+//  printf ("C output:\n") ;
+//  for (int k = 0 ; k < nrows*ncols ; k++)
+//  {
+//      printf ("C [%d] = ", k) ;
+//      GB_code_check (ctype->code, C + k*(ctype->size), 3, NULL, Context) ;
+//      printf ("\n") ;
+//  }
 
     GB_mx_put_global (do_cover, 0) ;
 }

@@ -103,8 +103,8 @@ GrB_Info irowscale          // GrB_SUCCESS or error condition
     // if row i of A has no entries.
 
     // [I,~,X] = find (dout) ;
-    I = malloc ((n+1) * sizeof (GrB_Index)) ;
-    X = malloc ((n+1) * sizeof (uint64_t)) ;
+    I = (GrB_Index *) malloc ((n+1) * sizeof (GrB_Index)) ;
+    X = (uint64_t *) malloc ((n+1) * sizeof (uint64_t)) ;
     CHECK (I != NULL && X != NULL, GrB_OUT_OF_MEMORY) ;
     GrB_Index nvals = n ;
     OK (GrB_Vector_extractTuples_UINT64 (I, X, &nvals, dout)) ;

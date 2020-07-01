@@ -132,5 +132,28 @@ GrB_Info GB_AxB_saxpy3_generic
     GB_Context Context
 ) ;
 
+//------------------------------------------------------------------------------
+// AVX2 instructions
+//------------------------------------------------------------------------------
+
+#if defined ( __AVX2__ )
+
+    #include <x86intrin.h>
+    #include <immintrin.h>
+
+    // int64_t vector of length 4
+    typedef union i4vector64
+    {
+        // in avxintrin.h:
+        // typedef long long __v4di __attribute__ ((__vector_size__ (32)));
+        // __v4di v ;
+        int64_t i [4] ;
+        __m256i m ;
+        __m256d d ;
+    }
+    GB_vector ;
+
+#endif
+
 #endif
 

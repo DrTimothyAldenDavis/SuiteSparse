@@ -15,6 +15,10 @@
 #include "GB_transpose.h"
 #include "GB_accum_mask.h"
 
+#define GB_FREE_ALL         \
+    GB_MATRIX_FREE (&AT) ;  \
+    GB_MATRIX_FREE (&BT) ;
+
 GrB_Info GB_kron                    // C<M> = accum (C, kron(A,B))
 (
     GrB_Matrix C,                   // input/output matrix for results
@@ -38,6 +42,10 @@ GrB_Info GB_kron                    // C<M> = accum (C, kron(A,B))
 
     // C may be aliased with M, A, and/or B
 
+    GrB_Info info ;
+    GrB_Matrix AT = NULL ;
+    GrB_Matrix BT = NULL ;
+
     GB_RETURN_IF_NULL_OR_FAULTY (C) ;
     GB_RETURN_IF_NULL_OR_FAULTY (A) ;
     GB_RETURN_IF_NULL_OR_FAULTY (B) ;
@@ -53,25 +61,17 @@ GrB_Info GB_kron                    // C<M> = accum (C, kron(A,B))
     ASSERT_MATRIX_OK (B, "B for GB_kron", GB0) ;
 
     // check domains and dimensions for C<M> = accum (C,T)
-    GrB_Info info = GB_compatible (C->type, C, M, accum, op->ztype, Context) ;
-    if (info != GrB_SUCCESS)
-    { 
-        return (info) ;
-    }
+    GB_OK (GB_compatible (C->type, C, M, accum, op->ztype, Context)) ;
 
     // T=op(A,B) via op operator, so A and B must be compatible with z=op(a,b)
-    info = GB_BinaryOp_compatible (op, NULL, A->type, B->type,
-        GB_ignore_code, Context) ;
-    if (info != GrB_SUCCESS)
-    { 
-        return (info) ;
-    }
+    GB_OK (GB_BinaryOp_compatible (op, NULL, A->type, B->type,
+        GB_ignore_code, Context)) ;
 
     // delete any lingering zombies and assemble any pending tuples in A and B,
     // so that cnz = nnz(A) * nnz(B) can be computed.  Updates of C and M are
     // done after this check.
-    GB_WAIT (A) ;
-    GB_WAIT (B) ;
+    GB_MATRIX_WAIT (A) ;
+    GB_MATRIX_WAIT (B) ;
 
     // check the dimensions of C
     int64_t anrows = (A_transpose) ? GB_NCOLS (A) : GB_NROWS (A) ;
@@ -85,9 +85,9 @@ GrB_Info GB_kron                    // C<M> = accum (C, kron(A,B))
     if (!ok || GB_NROWS (C) != cnrows || GB_NCOLS (C) != cncols)
     { 
         return (GB_ERROR (GrB_DIMENSION_MISMATCH, (GB_LOG, "%s:\n"
-            "output is "GBd"-by-"GBd"; must be "GBu"-by-"GBu"\n"
-            "first input is "GBd"-by-"GBd"%s with "GBd" entries\n"
-            "second input is "GBd"-by-"GBd"%s with "GBd" entries",
+            "output is " GBd "-by-" GBd "; must be " GBu "-by-" GBu "\n"
+            "first input is " GBd "-by-" GBd "%s with " GBd " entries\n"
+            "second input is " GBd "-by-" GBd "%s with " GBd " entries",
             ok ? "Dimensions not compatible:" : "Problem too large:",
             GB_NROWS (C), GB_NCOLS (C), cnrows, cncols,
             anrows, ancols, A_transpose ? " (transposed)" : "", GB_NNZ (A),
@@ -98,8 +98,7 @@ GrB_Info GB_kron                    // C<M> = accum (C, kron(A,B))
     GB_RETURN_IF_QUICK_MASK (C, C_replace, M, Mask_comp) ;
 
     // delete any lingering zombies and assemble any pending tuples
-    // GB_WAIT (C) ;
-    GB_WAIT (M) ;
+    GB_MATRIX_WAIT (M) ;
 
     //--------------------------------------------------------------------------
     // transpose A and B if requested
@@ -117,33 +116,24 @@ GrB_Info GB_kron                    // C<M> = accum (C, kron(A,B))
         B_transpose = !B_transpose ;
     }
 
-    GrB_Matrix AT = NULL ;
     if (A_transpose)
     {
         // AT = A' and typecast to op->xtype
         // transpose: typecast, no op, not in place
         GBBURBLE ("(A transpose) ") ;
-        info = GB_transpose (&AT, op->xtype, is_csc, A, NULL, Context) ;
-        if (info != GrB_SUCCESS)
-        { 
-            return (info) ;
-        }
+        GB_OK (GB_transpose (&AT, op->xtype, is_csc, A,
+            NULL, NULL, NULL, false, Context)) ;
         ASSERT_MATRIX_OK (A , "A after AT kron", GB0) ;
         ASSERT_MATRIX_OK (AT, "AT kron", GB0) ;
     }
 
-    GrB_Matrix BT = NULL ;
     if (B_transpose)
     {
         // BT = B' and typecast to op->ytype
         // transpose: typecast, no op, not in place
         GBBURBLE ("(B transpose) ") ;
-        info = GB_transpose (&BT, op->ytype, is_csc, B, NULL, Context) ;
-        if (info != GrB_SUCCESS)
-        { 
-            GB_MATRIX_FREE (&AT) ;
-            return (info) ;
-        }
+        GB_OK (GB_transpose (&BT, op->ytype, is_csc, B,
+            NULL, NULL, NULL, false, Context)) ;
         ASSERT_MATRIX_OK (BT, "BT kron", GB0) ;
     }
 
@@ -152,17 +142,11 @@ GrB_Info GB_kron                    // C<M> = accum (C, kron(A,B))
     //--------------------------------------------------------------------------
 
     GrB_Matrix T ;
-    info = GB_kroner (&T, C->is_csc, op,
-        A_transpose ? AT : A, B_transpose ? BT : B, Context) ;
+    GB_OK (GB_kroner (&T, C->is_csc, op,
+        A_transpose ? AT : A, B_transpose ? BT : B, Context)) ;
 
     // free workspace
-    GB_MATRIX_FREE (&AT) ;
-    GB_MATRIX_FREE (&BT) ;
-
-    if (info != GrB_SUCCESS)
-    { 
-        return (info) ;
-    }
+    GB_FREE_ALL ;
 
     ASSERT_MATRIX_OK (T, "T = kron(A,B)", GB0) ;
 

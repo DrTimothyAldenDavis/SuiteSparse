@@ -27,7 +27,7 @@ void mexFunction
     // check inputs
     //--------------------------------------------------------------------------
 
-    gb_usage (nargin <= 2 && nargout == 0,
+    gb_usage (nargin >= 1 && nargin <= 2 && nargout == 0,
         "usage: GrB.monoidinfo (monoid) or GrB.monoidinfo (monoid,type)") ;
 
     //--------------------------------------------------------------------------
@@ -39,7 +39,7 @@ void mexFunction
     gb_mxstring_to_string (opstring, LEN, pargin [0], "binary operator") ;
 
     GrB_Type type = NULL ;
-    if (nargin == 2)
+    if (nargin > 1)
     { 
         type = gb_mxstring_to_type (pargin [1]) ;
         CHECK_ERROR (type == NULL, "unknown type") ;

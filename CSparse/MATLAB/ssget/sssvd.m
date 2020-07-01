@@ -16,7 +16,7 @@ function S = sssvd (matrix, ss_index)                                       %#ok
 %
 % See also ssget.
 
-% Copyright 2017, Timothy A. Davis, http://www.suitesparse.com
+% Copyright 2017-2019, Timothy A. Davis, http://www.suitesparse.com
 
 if (nargin < 2)
     % load the SuiteSparse index

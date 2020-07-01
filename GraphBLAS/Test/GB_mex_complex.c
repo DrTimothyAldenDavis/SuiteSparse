@@ -11,7 +11,8 @@
 // If A is complex, then C = A.
 
 // This is a sparse version of the MATLAB 'complex' function, which does not
-// work for sparse matrices.  It does not use GraphBLAS at all.
+// work for sparse matrices.  This is self-contained and does not use GraphBLAS
+// at all.
 
 #include "mex.h"
 #include "matrix.h"
@@ -42,10 +43,23 @@ void mexFunction
     {
         mexErrMsgTxt ("A must be sparse") ;
     }
+    if (mxIsLogical (A))
+    {
+        mexErrMsgTxt ("A must be double or double complex") ;
+    }
+
     int64_t *Ap = (int64_t *) mxGetJc (A) ;
     int64_t *Ai = (int64_t *) mxGetIr (A) ;
-    double  *Ax = (double  *) mxGetPr (A) ;
-    double  *Az = mxIsComplex (A) ? ((double *) mxGetPi (A)) : NULL ;
+    double  *Ax = NULL ;
+    if (mxIsComplex (A))
+    {
+        Ax = (double *) mxGetComplexDoubles (pargin [0]) ;
+    }
+    else
+    {
+        Ax = (double *) mxGetDoubles (pargin [0]) ;
+    }
+
     int64_t m = mxGetM (A) ;
     int64_t n = mxGetN (A) ;
     int64_t anz = Ap [n] ;
@@ -55,20 +69,24 @@ void mexFunction
     mxArray *C = pargout [0] ;
     int64_t *Cp = (int64_t *) mxGetJc (C) ;
     int64_t *Ci = (int64_t *) mxGetIr (C) ;
-    double  *Cx = (double  *) mxGetPr (C) ;
-    double  *Cz = (double  *) mxGetPi (C) ;
+    double  *Cx = (double  *) mxGetComplexDoubles (C) ;
 
-    // copy A into C
+    // copy the pattern of A into C
     memcpy (Cp, Ap, (n+1) * sizeof (int64_t)) ;
     memcpy (Ci, Ai, anz   * sizeof (int64_t)) ;
-    memcpy (Cx, Ax, anz   * sizeof (double )) ;
-    if (Az == NULL)
+
+    // copy the values of A into C
+    if (mxIsComplex (A))
     {
-        for (int64_t k = 0 ; k < anz ; k++) Cz [k] = 0 ;
+        memcpy (Cx, Ax, anz * 2 * sizeof (double)) ;
     }
     else
     {
-        memcpy (Cz, Az, anz * sizeof (double )) ;
+        for (int64_t k = 0 ; k < anz ; k++)
+        {
+            Cx [2*k  ] = Ax [k] ;
+            Cx [2*k+1] = 0 ;
+        }
     }
 }
 

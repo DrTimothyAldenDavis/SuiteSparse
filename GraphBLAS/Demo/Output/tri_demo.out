@@ -1,293 +1,305 @@
 --------------------------------------------------------------
 Wathen: nx 4 ny 4 n 65 nz 752 method 0, time: 0.000 sec
 
-total time to read A matrix:       0.000251 sec
+total time to read A matrix:       0.000279 sec
 
 n 65 # edges 376
-U=triu(A) time:        0.000031 sec
-L=tril(A) time:        0.000010 sec
+U=triu(A) time:        0.000032 sec
+L=tril(A) time:        0.000008 sec
 
 ------------------------------------- dot product method:
 # triangles 872
-L*U' time (dot):         0.000048 sec
-tricount time:         0.000058 sec (dot product method)
-tri+prep time:         0.000099 sec (incl time to compute L and U)
-compute C time:        0.000048 sec
-reduce (C) time:       0.000010 sec
-rate     3.79 million edges/sec (incl time for U=triu(A))
-rate     6.47 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000014 sec (nthreads: 2 speedup 3.51141)
-tricount time:         0.000018 sec (dot product method)
-tri+prep time:         0.000059 sec (incl time to compute L and U)
-compute C time:        0.000014 sec
-reduce (C) time:       0.000004 sec
-rate     6.36 million edges/sec (incl time for U=triu(A))
-rate    20.96 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000013 sec (nthreads: 4 speedup 3.66527)
-tricount time:         0.000019 sec (dot product method)
-tri+prep time:         0.000060 sec (incl time to compute L and U)
-compute C time:        0.000013 sec
-reduce (C) time:       0.000005 sec
-rate     6.30 million edges/sec (incl time for U=triu(A))
-rate    20.32 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000015 sec (nthreads: 8 speedup 3.24119)
-tricount time:         0.000019 sec (dot product method)
-tri+prep time:         0.000060 sec (incl time to compute L and U)
-compute C time:        0.000015 sec
-reduce (C) time:       0.000004 sec
-rate     6.27 million edges/sec (incl time for U=triu(A))
-rate    20.03 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000019 sec
-tricount time:         0.000025 sec (dot product method)
-tri+prep time:         0.000067 sec (incl time to compute L and U)
-compute C time:        0.000019 sec
-reduce (C) time:       0.000006 sec
-rate     5.65 million edges/sec (incl time for U=triu(A))
-rate    14.83 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000016 sec (nthreads: 2 speedup 1.23569)
+L*U' time (dot):         0.000055 sec
+tricount time:         0.000071 sec (dot product method)
+tri+prep time:         0.000111 sec (incl time to compute L and U)
+compute C time:        0.000055 sec
+reduce (C) time:       0.000016 sec
+rate     3.39 million edges/sec (incl time for U=triu(A))
+rate     5.27 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000015 sec (nthreads: 2 speedup 3.70945)
 tricount time:         0.000020 sec (dot product method)
-tri+prep time:         0.000061 sec (incl time to compute L and U)
+tri+prep time:         0.000059 sec (incl time to compute L and U)
+compute C time:        0.000015 sec
+reduce (C) time:       0.000005 sec
+rate     6.34 million edges/sec (incl time for U=triu(A))
+rate    19.13 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000013 sec (nthreads: 4 speedup 4.16316)
+tricount time:         0.000017 sec (dot product method)
+tri+prep time:         0.000057 sec (incl time to compute L and U)
+compute C time:        0.000013 sec
+reduce (C) time:       0.000004 sec
+rate     6.58 million edges/sec (incl time for U=triu(A))
+rate    21.52 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000012 sec (nthreads: 8 speedup 4.43079)
+tricount time:         0.000016 sec (dot product method)
+tri+prep time:         0.000056 sec (incl time to compute L and U)
+compute C time:        0.000012 sec
+reduce (C) time:       0.000004 sec
+rate     6.72 million edges/sec (incl time for U=triu(A))
+rate    23.04 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000016 sec
+tricount time:         0.000021 sec (dot product method)
+tri+prep time:         0.000060 sec (incl time to compute L and U)
 compute C time:        0.000016 sec
 reduce (C) time:       0.000004 sec
-rate     6.18 million edges/sec (incl time for U=triu(A))
-rate    19.09 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000013 sec (nthreads: 4 speedup 1.4938)
-tricount time:         0.000018 sec (dot product method)
-tri+prep time:         0.000060 sec (incl time to compute L and U)
+rate     6.25 million edges/sec (incl time for U=triu(A))
+rate    18.32 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000013 sec (nthreads: 2 speedup 1.23168)
+tricount time:         0.000017 sec (dot product method)
+tri+prep time:         0.000057 sec (incl time to compute L and U)
 compute C time:        0.000013 sec
-reduce (C) time:       0.000005 sec
-rate     6.31 million edges/sec (incl time for U=triu(A))
-rate    20.46 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000015 sec (nthreads: 8 speedup 1.31382)
-tricount time:         0.000019 sec (dot product method)
-tri+prep time:         0.000060 sec (incl time to compute L and U)
-compute C time:        0.000015 sec
 reduce (C) time:       0.000004 sec
-rate     6.27 million edges/sec (incl time for U=triu(A))
-rate    20.06 million edges/sec (just tricount itself)
+rate     6.65 million edges/sec (incl time for U=triu(A))
+rate    22.27 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000013 sec (nthreads: 4 speedup 1.27601)
+tricount time:         0.000017 sec (dot product method)
+tri+prep time:         0.000056 sec (incl time to compute L and U)
+compute C time:        0.000013 sec
+reduce (C) time:       0.000004 sec
+rate     6.67 million edges/sec (incl time for U=triu(A))
+rate    22.52 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000012 sec (nthreads: 8 speedup 1.31332)
+tricount time:         0.000016 sec (dot product method)
+tri+prep time:         0.000056 sec (incl time to compute L and U)
+compute C time:        0.000012 sec
+reduce (C) time:       0.000004 sec
+rate     6.77 million edges/sec (incl time for U=triu(A))
+rate    23.59 million edges/sec (just tricount itself)
 
 ----------------------------------- saxpy method:
-C<L>=L*L time (saxpy):         0.000046 sec
-tricount time:         0.000048 sec (saxpy method)
-tri+prep time:         0.000058 sec (incl time to compute L)
-compute C time:        0.000046 sec
-reduce (C) time:       0.000002 sec
-rate     6.51 million edges/sec (incl time for L=tril(A))
-rate     7.83 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000020 sec (nthreads: 2 speedup 2.36859)
-tricount time:         0.000021 sec (saxpy method)
-tri+prep time:         0.000031 sec (incl time to compute L)
-compute C time:        0.000020 sec
+triangles, method 3: 872
+C<L>=L*L time (saxpy):         0.000045 sec
+tricount time:         0.000047 sec (saxpy method)
+tri+prep time:         0.000055 sec (incl time to compute L)
+compute C time:        0.000045 sec
 reduce (C) time:       0.000001 sec
-rate    12.31 million edges/sec (incl time for L=tril(A))
-rate    18.09 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000019 sec (nthreads: 4 speedup 2.3942)
-tricount time:         0.000021 sec (saxpy method)
+rate     6.88 million edges/sec (incl time for L=tril(A))
+rate     8.06 million edges/sec (just tricount itself)
+triangles, method 3: 872
+C<L>=L*L time (saxpy):         0.000021 sec (nthreads: 2 speedup 2.10986)
+tricount time:         0.000023 sec (saxpy method)
 tri+prep time:         0.000031 sec (incl time to compute L)
+compute C time:        0.000021 sec
+reduce (C) time:       0.000001 sec
+rate    12.24 million edges/sec (incl time for L=tril(A))
+rate    16.56 million edges/sec (just tricount itself)
+triangles, method 3: 872
+C<L>=L*L time (saxpy):         0.000022 sec (nthreads: 4 speedup 2.06334)
+tricount time:         0.000023 sec (saxpy method)
+tri+prep time:         0.000031 sec (incl time to compute L)
+compute C time:        0.000022 sec
+reduce (C) time:       0.000001 sec
+rate    12.00 million edges/sec (incl time for L=tril(A))
+rate    16.12 million edges/sec (just tricount itself)
+triangles, method 3: 872
+C<L>=L*L time (saxpy):         0.000019 sec (nthreads: 8 speedup 2.35071)
+tricount time:         0.000021 sec (saxpy method)
+tri+prep time:         0.000029 sec (incl time to compute L)
 compute C time:        0.000019 sec
-reduce (C) time:       0.000002 sec
-rate    12.18 million edges/sec (incl time for L=tril(A))
-rate    17.80 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000025 sec (nthreads: 8 speedup 1.85853)
-tricount time:         0.000026 sec (saxpy method)
-tri+prep time:         0.000036 sec (incl time to compute L)
-compute C time:        0.000025 sec
 reduce (C) time:       0.000001 sec
-rate    10.40 million edges/sec (incl time for L=tril(A))
-rate    14.23 million edges/sec (just tricount itself)
+rate    13.13 million edges/sec (incl time for L=tril(A))
+rate    18.22 million edges/sec (just tricount itself)
 
 --------------------------------------------------------------
 random 5 by 5, nz: 18, method 1 time 0.000 sec
 
-total time to read A matrix:       0.000102 sec
+total time to read A matrix:       0.000128 sec
 
 n 5 # edges 9
-U=triu(A) time:        0.000035 sec
-L=tril(A) time:        0.000005 sec
+U=triu(A) time:        0.000041 sec
+L=tril(A) time:        0.000006 sec
 
 ------------------------------------- dot product method:
 # triangles 7
-L*U' time (dot):         0.000035 sec
-tricount time:         0.000043 sec (dot product method)
-tri+prep time:         0.000084 sec (incl time to compute L and U)
-compute C time:        0.000035 sec
-reduce (C) time:       0.000008 sec
-rate     0.11 million edges/sec (incl time for U=triu(A))
-rate     0.21 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000005 sec (nthreads: 2 speedup 6.64765)
+L*U' time (dot):         0.000039 sec
+tricount time:         0.000053 sec (dot product method)
+tri+prep time:         0.000100 sec (incl time to compute L and U)
+compute C time:        0.000039 sec
+reduce (C) time:       0.000014 sec
+rate     0.09 million edges/sec (incl time for U=triu(A))
+rate     0.17 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000005 sec (nthreads: 2 speedup 7.69034)
 tricount time:         0.000008 sec (dot product method)
-tri+prep time:         0.000049 sec (incl time to compute L and U)
-compute C time:        0.000005 sec
-reduce (C) time:       0.000003 sec
-rate     0.18 million edges/sec (incl time for U=triu(A))
-rate     1.12 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000005 sec (nthreads: 4 speedup 7.46184)
-tricount time:         0.000007 sec (dot product method)
-tri+prep time:         0.000048 sec (incl time to compute L and U)
+tri+prep time:         0.000054 sec (incl time to compute L and U)
 compute C time:        0.000005 sec
 reduce (C) time:       0.000002 sec
-rate     0.19 million edges/sec (incl time for U=triu(A))
-rate     1.33 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000003 sec (nthreads: 8 speedup 13.0022)
-tricount time:         0.000004 sec (dot product method)
-tri+prep time:         0.000045 sec (incl time to compute L and U)
+rate     0.17 million edges/sec (incl time for U=triu(A))
+rate     1.18 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000003 sec (nthreads: 4 speedup 11.3518)
+tricount time:         0.000006 sec (dot product method)
+tri+prep time:         0.000053 sec (incl time to compute L and U)
+compute C time:        0.000003 sec
+reduce (C) time:       0.000003 sec
+rate     0.17 million edges/sec (incl time for U=triu(A))
+rate     1.50 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000006 sec (nthreads: 8 speedup 6.84178)
+tricount time:         0.000009 sec (dot product method)
+tri+prep time:         0.000056 sec (incl time to compute L and U)
+compute C time:        0.000006 sec
+reduce (C) time:       0.000003 sec
+rate     0.16 million edges/sec (incl time for U=triu(A))
+rate     0.98 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000008 sec
+tricount time:         0.000010 sec (dot product method)
+tri+prep time:         0.000057 sec (incl time to compute L and U)
+compute C time:        0.000008 sec
+reduce (C) time:       0.000003 sec
+rate     0.16 million edges/sec (incl time for U=triu(A))
+rate     0.87 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000005 sec (nthreads: 2 speedup 1.63061)
+tricount time:         0.000007 sec (dot product method)
+tri+prep time:         0.000054 sec (incl time to compute L and U)
+compute C time:        0.000005 sec
+reduce (C) time:       0.000002 sec
+rate     0.17 million edges/sec (incl time for U=triu(A))
+rate     1.25 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000006 sec (nthreads: 4 speedup 1.29289)
+tricount time:         0.000009 sec (dot product method)
+tri+prep time:         0.000055 sec (incl time to compute L and U)
+compute C time:        0.000006 sec
+reduce (C) time:       0.000002 sec
+rate     0.16 million edges/sec (incl time for U=triu(A))
+rate     1.06 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000003 sec (nthreads: 8 speedup 2.37394)
+tricount time:         0.000005 sec (dot product method)
+tri+prep time:         0.000052 sec (incl time to compute L and U)
 compute C time:        0.000003 sec
 reduce (C) time:       0.000002 sec
-rate     0.20 million edges/sec (incl time for U=triu(A))
-rate     2.06 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000005 sec
-tricount time:         0.000007 sec (dot product method)
-tri+prep time:         0.000048 sec (incl time to compute L and U)
-compute C time:        0.000005 sec
-reduce (C) time:       0.000002 sec
-rate     0.19 million edges/sec (incl time for U=triu(A))
-rate     1.29 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000004 sec (nthreads: 2 speedup 1.25108)
-tricount time:         0.000006 sec (dot product method)
-tri+prep time:         0.000047 sec (incl time to compute L and U)
-compute C time:        0.000004 sec
-reduce (C) time:       0.000002 sec
-rate     0.19 million edges/sec (incl time for U=triu(A))
-rate     1.49 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000004 sec (nthreads: 4 speedup 1.09584)
-tricount time:         0.000006 sec (dot product method)
-tri+prep time:         0.000047 sec (incl time to compute L and U)
-compute C time:        0.000004 sec
-reduce (C) time:       0.000002 sec
-rate     0.19 million edges/sec (incl time for U=triu(A))
-rate     1.42 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000002 sec (nthreads: 8 speedup 2.01637)
-tricount time:         0.000004 sec (dot product method)
-tri+prep time:         0.000045 sec (incl time to compute L and U)
-compute C time:        0.000002 sec
-reduce (C) time:       0.000002 sec
-rate     0.20 million edges/sec (incl time for U=triu(A))
-rate     2.24 million edges/sec (just tricount itself)
+rate     0.17 million edges/sec (incl time for U=triu(A))
+rate     1.73 million edges/sec (just tricount itself)
 
 ----------------------------------- saxpy method:
-C<L>=L*L time (saxpy):         0.000018 sec
-tricount time:         0.000019 sec (saxpy method)
-tri+prep time:         0.000024 sec (incl time to compute L)
-compute C time:        0.000018 sec
+triangles, method 3: 7
+C<L>=L*L time (saxpy):         0.000029 sec
+tricount time:         0.000030 sec (saxpy method)
+tri+prep time:         0.000036 sec (incl time to compute L)
+compute C time:        0.000029 sec
+reduce (C) time:       0.000001 sec
+rate     0.25 million edges/sec (incl time for L=tril(A))
+rate     0.30 million edges/sec (just tricount itself)
+triangles, method 3: 7
+C<L>=L*L time (saxpy):         0.000007 sec (nthreads: 2 speedup 4.44424)
+tricount time:         0.000007 sec (saxpy method)
+tri+prep time:         0.000013 sec (incl time to compute L)
+compute C time:        0.000007 sec
 reduce (C) time:       0.000000 sec
-rate     0.37 million edges/sec (incl time for L=tril(A))
-rate     0.48 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000005 sec (nthreads: 2 speedup 3.96474)
-tricount time:         0.000005 sec (saxpy method)
-tri+prep time:         0.000010 sec (incl time to compute L)
+rate     0.69 million edges/sec (incl time for L=tril(A))
+rate     1.29 million edges/sec (just tricount itself)
+triangles, method 3: 7
+C<L>=L*L time (saxpy):         0.000005 sec (nthreads: 4 speedup 5.59661)
+tricount time:         0.000006 sec (saxpy method)
+tri+prep time:         0.000012 sec (incl time to compute L)
 compute C time:        0.000005 sec
 reduce (C) time:       0.000000 sec
-rate     0.87 million edges/sec (incl time for L=tril(A))
-rate     1.84 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000004 sec (nthreads: 4 speedup 5.08173)
-tricount time:         0.000004 sec (saxpy method)
-tri+prep time:         0.000009 sec (incl time to compute L)
-compute C time:        0.000004 sec
-reduce (C) time:       0.000000 sec
-rate     0.96 million edges/sec (incl time for L=tril(A))
-rate     2.33 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000005 sec (nthreads: 8 speedup 3.7378)
-tricount time:         0.000005 sec (saxpy method)
-tri+prep time:         0.000011 sec (incl time to compute L)
-compute C time:        0.000005 sec
-reduce (C) time:       0.000000 sec
-rate     0.84 million edges/sec (incl time for L=tril(A))
-rate     1.70 million edges/sec (just tricount itself)
+rate     0.78 million edges/sec (incl time for L=tril(A))
+rate     1.61 million edges/sec (just tricount itself)
+triangles, method 3: 7
+C<L>=L*L time (saxpy):         0.000010 sec (nthreads: 8 speedup 3.02562)
+tricount time:         0.000011 sec (saxpy method)
+tri+prep time:         0.000017 sec (incl time to compute L)
+compute C time:        0.000010 sec
+reduce (C) time:       0.000001 sec
+rate     0.54 million edges/sec (incl time for L=tril(A))
+rate     0.85 million edges/sec (just tricount itself)
 
 --------------------------------------------------------------
 matrix 3 by 3, 0 entries, from stdin
 
-total time to read A matrix:       0.000138 sec
+total time to read A matrix:       0.000168 sec
 
 n 3 # edges 0
-U=triu(A) time:        0.000033 sec
-L=tril(A) time:        0.000005 sec
+U=triu(A) time:        0.000052 sec
+L=tril(A) time:        0.000007 sec
 
 ------------------------------------- dot product method:
 # triangles 0
-L*U' time (dot):         0.000025 sec
-tricount time:         0.000027 sec (dot product method)
-tri+prep time:         0.000065 sec (incl time to compute L and U)
-compute C time:        0.000025 sec
-reduce (C) time:       0.000003 sec
+L*U' time (dot):         0.000039 sec
+tricount time:         0.000043 sec (dot product method)
+tri+prep time:         0.000102 sec (incl time to compute L and U)
+compute C time:        0.000039 sec
+reduce (C) time:       0.000004 sec
 rate     0.00 million edges/sec (incl time for U=triu(A))
 rate     0.00 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000003 sec (nthreads: 2 speedup 8.4299)
+L*U' time (dot):         0.000004 sec (nthreads: 2 speedup 9.51825)
+tricount time:         0.000005 sec (dot product method)
+tri+prep time:         0.000064 sec (incl time to compute L and U)
+compute C time:        0.000004 sec
+reduce (C) time:       0.000000 sec
+rate     0.00 million edges/sec (incl time for U=triu(A))
+rate     0.00 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000003 sec (nthreads: 4 speedup 13.9081)
 tricount time:         0.000003 sec (dot product method)
-tri+prep time:         0.000041 sec (incl time to compute L and U)
+tri+prep time:         0.000062 sec (incl time to compute L and U)
 compute C time:        0.000003 sec
 reduce (C) time:       0.000000 sec
 rate     0.00 million edges/sec (incl time for U=triu(A))
 rate     0.00 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000002 sec (nthreads: 4 speedup 11.9314)
-tricount time:         0.000002 sec (dot product method)
-tri+prep time:         0.000040 sec (incl time to compute L and U)
-compute C time:        0.000002 sec
-reduce (C) time:       0.000000 sec
-rate     0.00 million edges/sec (incl time for U=triu(A))
-rate     0.00 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000002 sec (nthreads: 8 speedup 13.4563)
-tricount time:         0.000002 sec (dot product method)
-tri+prep time:         0.000040 sec (incl time to compute L and U)
-compute C time:        0.000002 sec
-reduce (C) time:       0.000000 sec
-rate     0.00 million edges/sec (incl time for U=triu(A))
-rate     0.00 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000002 sec
+L*U' time (dot):         0.000002 sec (nthreads: 8 speedup 15.989)
 tricount time:         0.000003 sec (dot product method)
-tri+prep time:         0.000040 sec (incl time to compute L and U)
+tri+prep time:         0.000062 sec (incl time to compute L and U)
 compute C time:        0.000002 sec
 reduce (C) time:       0.000000 sec
 rate     0.00 million edges/sec (incl time for U=triu(A))
 rate     0.00 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000002 sec (nthreads: 2 speedup 1.1864)
-tricount time:         0.000002 sec (dot product method)
-tri+prep time:         0.000040 sec (incl time to compute L and U)
-compute C time:        0.000002 sec
+L*U' time (dot):         0.000003 sec
+tricount time:         0.000003 sec (dot product method)
+tri+prep time:         0.000062 sec (incl time to compute L and U)
+compute C time:        0.000003 sec
 reduce (C) time:       0.000000 sec
 rate     0.00 million edges/sec (incl time for U=triu(A))
 rate     0.00 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000002 sec (nthreads: 4 speedup 1.17933)
-tricount time:         0.000002 sec (dot product method)
-tri+prep time:         0.000040 sec (incl time to compute L and U)
-compute C time:        0.000002 sec
+L*U' time (dot):         0.000003 sec (nthreads: 2 speedup 0.949015)
+tricount time:         0.000003 sec (dot product method)
+tri+prep time:         0.000062 sec (incl time to compute L and U)
+compute C time:        0.000003 sec
 reduce (C) time:       0.000000 sec
 rate     0.00 million edges/sec (incl time for U=triu(A))
 rate     0.00 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000002 sec (nthreads: 8 speedup 1.18819)
-tricount time:         0.000002 sec (dot product method)
-tri+prep time:         0.000040 sec (incl time to compute L and U)
+L*U' time (dot):         0.000003 sec (nthreads: 4 speedup 0.985999)
+tricount time:         0.000003 sec (dot product method)
+tri+prep time:         0.000062 sec (incl time to compute L and U)
+compute C time:        0.000003 sec
+reduce (C) time:       0.000000 sec
+rate     0.00 million edges/sec (incl time for U=triu(A))
+rate     0.00 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000002 sec (nthreads: 8 speedup 1.04575)
+tricount time:         0.000003 sec (dot product method)
+tri+prep time:         0.000062 sec (incl time to compute L and U)
 compute C time:        0.000002 sec
 reduce (C) time:       0.000000 sec
 rate     0.00 million edges/sec (incl time for U=triu(A))
 rate     0.00 million edges/sec (just tricount itself)
 
 ----------------------------------- saxpy method:
-C<L>=L*L time (saxpy):         0.000016 sec
-tricount time:         0.000016 sec (saxpy method)
-tri+prep time:         0.000021 sec (incl time to compute L)
-compute C time:        0.000016 sec
+triangles, method 3: 0
+C<L>=L*L time (saxpy):         0.000022 sec
+tricount time:         0.000023 sec (saxpy method)
+tri+prep time:         0.000029 sec (incl time to compute L)
+compute C time:        0.000022 sec
 reduce (C) time:       0.000000 sec
 rate     0.00 million edges/sec (incl time for L=tril(A))
 rate     0.00 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000004 sec (nthreads: 2 speedup 4.13975)
-tricount time:         0.000004 sec (saxpy method)
-tri+prep time:         0.000009 sec (incl time to compute L)
+triangles, method 3: 0
+C<L>=L*L time (saxpy):         0.000005 sec (nthreads: 2 speedup 4.57078)
+tricount time:         0.000005 sec (saxpy method)
+tri+prep time:         0.000012 sec (incl time to compute L)
+compute C time:        0.000005 sec
+reduce (C) time:       0.000000 sec
+rate     0.00 million edges/sec (incl time for L=tril(A))
+rate     0.00 million edges/sec (just tricount itself)
+triangles, method 3: 0
+C<L>=L*L time (saxpy):         0.000004 sec (nthreads: 4 speedup 5.3183)
+tricount time:         0.000005 sec (saxpy method)
+tri+prep time:         0.000011 sec (incl time to compute L)
 compute C time:        0.000004 sec
 reduce (C) time:       0.000000 sec
 rate     0.00 million edges/sec (incl time for L=tril(A))
 rate     0.00 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000003 sec (nthreads: 4 speedup 4.78922)
-tricount time:         0.000004 sec (saxpy method)
-tri+prep time:         0.000009 sec (incl time to compute L)
-compute C time:        0.000003 sec
-reduce (C) time:       0.000000 sec
-rate     0.00 million edges/sec (incl time for L=tril(A))
-rate     0.00 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000005 sec (nthreads: 8 speedup 3.47362)
-tricount time:         0.000005 sec (saxpy method)
-tri+prep time:         0.000010 sec (incl time to compute L)
-compute C time:        0.000005 sec
+triangles, method 3: 0
+C<L>=L*L time (saxpy):         0.000006 sec (nthreads: 8 speedup 3.45239)
+tricount time:         0.000007 sec (saxpy method)
+tri+prep time:         0.000014 sec (incl time to compute L)
+compute C time:        0.000006 sec
 reduce (C) time:       0.000000 sec
 rate     0.00 million edges/sec (incl time for L=tril(A))
 rate     0.00 million edges/sec (just tricount itself)
@@ -295,1666 +307,1734 @@ rate     0.00 million edges/sec (just tricount itself)
 --------------------------------------------------------------
 matrix 4 by 4, 4 entries, from stdin
 
-total time to read A matrix:       0.000148 sec
+total time to read A matrix:       0.000174 sec
 
 n 4 # edges 2
-U=triu(A) time:        0.000038 sec
-L=tril(A) time:        0.000005 sec
+U=triu(A) time:        0.000044 sec
+L=tril(A) time:        0.000007 sec
 
 ------------------------------------- dot product method:
 # triangles 0
-L*U' time (dot):         0.000028 sec
-tricount time:         0.000037 sec (dot product method)
-tri+prep time:         0.000079 sec (incl time to compute L and U)
-compute C time:        0.000028 sec
+L*U' time (dot):         0.000029 sec
+tricount time:         0.000039 sec (dot product method)
+tri+prep time:         0.000090 sec (incl time to compute L and U)
+compute C time:        0.000029 sec
 reduce (C) time:       0.000009 sec
-rate     0.03 million edges/sec (incl time for U=triu(A))
+rate     0.02 million edges/sec (incl time for U=triu(A))
 rate     0.05 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000005 sec (nthreads: 2 speedup 5.56541)
-tricount time:         0.000010 sec (dot product method)
-tri+prep time:         0.000052 sec (incl time to compute L and U)
-compute C time:        0.000005 sec
+L*U' time (dot):         0.000007 sec (nthreads: 2 speedup 4.16357)
+tricount time:         0.000012 sec (dot product method)
+tri+prep time:         0.000064 sec (incl time to compute L and U)
+compute C time:        0.000007 sec
 reduce (C) time:       0.000005 sec
-rate     0.04 million edges/sec (incl time for U=triu(A))
-rate     0.21 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000005 sec (nthreads: 4 speedup 5.54574)
-tricount time:         0.000008 sec (dot product method)
-tri+prep time:         0.000051 sec (incl time to compute L and U)
+rate     0.03 million edges/sec (incl time for U=triu(A))
+rate     0.16 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000005 sec (nthreads: 4 speedup 5.49784)
+tricount time:         0.000009 sec (dot product method)
+tri+prep time:         0.000060 sec (incl time to compute L and U)
 compute C time:        0.000005 sec
 reduce (C) time:       0.000003 sec
-rate     0.04 million edges/sec (incl time for U=triu(A))
-rate     0.24 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000002 sec (nthreads: 8 speedup 12.1662)
+rate     0.03 million edges/sec (incl time for U=triu(A))
+rate     0.23 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000003 sec (nthreads: 8 speedup 9.85422)
 tricount time:         0.000005 sec (dot product method)
-tri+prep time:         0.000047 sec (incl time to compute L and U)
-compute C time:        0.000002 sec
+tri+prep time:         0.000057 sec (incl time to compute L and U)
+compute C time:        0.000003 sec
 reduce (C) time:       0.000002 sec
 rate     0.04 million edges/sec (incl time for U=triu(A))
-rate     0.43 million edges/sec (just tricount itself)
+rate     0.36 million edges/sec (just tricount itself)
 L*U' time (dot):         0.000003 sec
-tricount time:         0.000005 sec (dot product method)
-tri+prep time:         0.000047 sec (incl time to compute L and U)
+tricount time:         0.000006 sec (dot product method)
+tri+prep time:         0.000058 sec (incl time to compute L and U)
 compute C time:        0.000003 sec
 reduce (C) time:       0.000003 sec
-rate     0.04 million edges/sec (incl time for U=triu(A))
-rate     0.40 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000004 sec (nthreads: 2 speedup 0.644123)
+rate     0.03 million edges/sec (incl time for U=triu(A))
+rate     0.32 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000005 sec (nthreads: 2 speedup 0.592958)
 tricount time:         0.000008 sec (dot product method)
-tri+prep time:         0.000051 sec (incl time to compute L and U)
-compute C time:        0.000004 sec
-reduce (C) time:       0.000004 sec
-rate     0.04 million edges/sec (incl time for U=triu(A))
-rate     0.25 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000005 sec (nthreads: 4 speedup 0.545989)
-tricount time:         0.000007 sec (dot product method)
-tri+prep time:         0.000050 sec (incl time to compute L and U)
+tri+prep time:         0.000060 sec (incl time to compute L and U)
 compute C time:        0.000005 sec
 reduce (C) time:       0.000003 sec
-rate     0.04 million edges/sec (incl time for U=triu(A))
-rate     0.27 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000002 sec (nthreads: 8 speedup 1.134)
-tricount time:         0.000004 sec (dot product method)
-tri+prep time:         0.000047 sec (incl time to compute L and U)
-compute C time:        0.000002 sec
+rate     0.03 million edges/sec (incl time for U=triu(A))
+rate     0.24 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000003 sec (nthreads: 4 speedup 1.04212)
+tricount time:         0.000005 sec (dot product method)
+tri+prep time:         0.000057 sec (incl time to compute L and U)
+compute C time:        0.000003 sec
 reduce (C) time:       0.000002 sec
 rate     0.04 million edges/sec (incl time for U=triu(A))
-rate     0.45 million edges/sec (just tricount itself)
+rate     0.38 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000003 sec (nthreads: 8 speedup 1.20878)
+tricount time:         0.000006 sec (dot product method)
+tri+prep time:         0.000057 sec (incl time to compute L and U)
+compute C time:        0.000003 sec
+reduce (C) time:       0.000003 sec
+rate     0.03 million edges/sec (incl time for U=triu(A))
+rate     0.36 million edges/sec (just tricount itself)
 
 ----------------------------------- saxpy method:
-C<L>=L*L time (saxpy):         0.000040 sec
-tricount time:         0.000041 sec (saxpy method)
-tri+prep time:         0.000046 sec (incl time to compute L)
-compute C time:        0.000040 sec
+triangles, method 3: 0
+C<L>=L*L time (saxpy):         0.000042 sec
+tricount time:         0.000043 sec (saxpy method)
+tri+prep time:         0.000050 sec (incl time to compute L)
+compute C time:        0.000042 sec
 reduce (C) time:       0.000001 sec
 rate     0.04 million edges/sec (incl time for L=tril(A))
 rate     0.05 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000018 sec (nthreads: 2 speedup 2.21528)
-tricount time:         0.000019 sec (saxpy method)
-tri+prep time:         0.000024 sec (incl time to compute L)
-compute C time:        0.000018 sec
+triangles, method 3: 0
+C<L>=L*L time (saxpy):         0.000014 sec (nthreads: 2 speedup 2.90987)
+tricount time:         0.000015 sec (saxpy method)
+tri+prep time:         0.000022 sec (incl time to compute L)
+compute C time:        0.000014 sec
+reduce (C) time:       0.000000 sec
+rate     0.09 million edges/sec (incl time for L=tril(A))
+rate     0.13 million edges/sec (just tricount itself)
+triangles, method 3: 0
+C<L>=L*L time (saxpy):         0.000014 sec (nthreads: 4 speedup 3.02766)
+tricount time:         0.000014 sec (saxpy method)
+tri+prep time:         0.000022 sec (incl time to compute L)
+compute C time:        0.000014 sec
 reduce (C) time:       0.000001 sec
+rate     0.09 million edges/sec (incl time for L=tril(A))
+rate     0.14 million edges/sec (just tricount itself)
+triangles, method 3: 0
+C<L>=L*L time (saxpy):         0.000017 sec (nthreads: 8 speedup 2.42674)
+tricount time:         0.000018 sec (saxpy method)
+tri+prep time:         0.000025 sec (incl time to compute L)
+compute C time:        0.000017 sec
+reduce (C) time:       0.000000 sec
 rate     0.08 million edges/sec (incl time for L=tril(A))
 rate     0.11 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000019 sec (nthreads: 4 speedup 2.15104)
-tricount time:         0.000019 sec (saxpy method)
-tri+prep time:         0.000024 sec (incl time to compute L)
-compute C time:        0.000019 sec
-reduce (C) time:       0.000001 sec
-rate     0.08 million edges/sec (incl time for L=tril(A))
-rate     0.10 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000024 sec (nthreads: 8 speedup 1.64287)
-tricount time:         0.000025 sec (saxpy method)
-tri+prep time:         0.000030 sec (incl time to compute L)
-compute C time:        0.000024 sec
-reduce (C) time:       0.000001 sec
-rate     0.07 million edges/sec (incl time for L=tril(A))
-rate     0.08 million edges/sec (just tricount itself)
 
 --------------------------------------------------------------
 matrix 4 by 4, 10 entries, from stdin
 
-total time to read A matrix:       0.000188 sec
+total time to read A matrix:       0.000112 sec
 
 n 4 # edges 5
-U=triu(A) time:        0.000038 sec
+U=triu(A) time:        0.000024 sec
 L=tril(A) time:        0.000005 sec
 
 ------------------------------------- dot product method:
 # triangles 2
-L*U' time (dot):         0.000030 sec
-tricount time:         0.000038 sec (dot product method)
-tri+prep time:         0.000080 sec (incl time to compute L and U)
-compute C time:        0.000030 sec
-reduce (C) time:       0.000008 sec
-rate     0.06 million edges/sec (incl time for U=triu(A))
-rate     0.13 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000004 sec (nthreads: 2 speedup 8.52063)
-tricount time:         0.000006 sec (dot product method)
-tri+prep time:         0.000049 sec (incl time to compute L and U)
+L*U' time (dot):         0.000021 sec
+tricount time:         0.000027 sec (dot product method)
+tri+prep time:         0.000056 sec (incl time to compute L and U)
+compute C time:        0.000021 sec
+reduce (C) time:       0.000006 sec
+rate     0.09 million edges/sec (incl time for U=triu(A))
+rate     0.18 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000004 sec (nthreads: 2 speedup 4.75515)
+tricount time:         0.000007 sec (dot product method)
+tri+prep time:         0.000035 sec (incl time to compute L and U)
 compute C time:        0.000004 sec
 reduce (C) time:       0.000002 sec
-rate     0.10 million edges/sec (incl time for U=triu(A))
-rate     0.87 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000003 sec (nthreads: 4 speedup 11.9581)
-tricount time:         0.000004 sec (dot product method)
-tri+prep time:         0.000047 sec (incl time to compute L and U)
+rate     0.14 million edges/sec (incl time for U=triu(A))
+rate     0.74 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000003 sec (nthreads: 4 speedup 6.41806)
+tricount time:         0.000005 sec (dot product method)
+tri+prep time:         0.000034 sec (incl time to compute L and U)
 compute C time:        0.000003 sec
 reduce (C) time:       0.000002 sec
-rate     0.11 million edges/sec (incl time for U=triu(A))
-rate     1.12 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000002 sec (nthreads: 8 speedup 13.6524)
+rate     0.15 million edges/sec (incl time for U=triu(A))
+rate     0.98 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000003 sec (nthreads: 8 speedup 7.51145)
 tricount time:         0.000004 sec (dot product method)
-tri+prep time:         0.000047 sec (incl time to compute L and U)
-compute C time:        0.000002 sec
+tri+prep time:         0.000033 sec (incl time to compute L and U)
+compute C time:        0.000003 sec
 reduce (C) time:       0.000002 sec
-rate     0.11 million edges/sec (incl time for U=triu(A))
-rate     1.23 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000004 sec
-tricount time:         0.000008 sec (dot product method)
-tri+prep time:         0.000050 sec (incl time to compute L and U)
-compute C time:        0.000004 sec
-reduce (C) time:       0.000003 sec
-rate     0.10 million edges/sec (incl time for U=triu(A))
-rate     0.66 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000004 sec (nthreads: 2 speedup 1.01534)
-tricount time:         0.000006 sec (dot product method)
-tri+prep time:         0.000049 sec (incl time to compute L and U)
-compute C time:        0.000004 sec
+rate     0.15 million edges/sec (incl time for U=triu(A))
+rate     1.12 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000003 sec
+tricount time:         0.000005 sec (dot product method)
+tri+prep time:         0.000033 sec (incl time to compute L and U)
+compute C time:        0.000003 sec
 reduce (C) time:       0.000002 sec
-rate     0.10 million edges/sec (incl time for U=triu(A))
-rate     0.81 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000004 sec (nthreads: 4 speedup 1.07426)
-tricount time:         0.000006 sec (dot product method)
-tri+prep time:         0.000049 sec (incl time to compute L and U)
-compute C time:        0.000004 sec
+rate     0.15 million edges/sec (incl time for U=triu(A))
+rate     1.00 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000003 sec (nthreads: 2 speedup 1.02638)
+tricount time:         0.000005 sec (dot product method)
+tri+prep time:         0.000033 sec (incl time to compute L and U)
+compute C time:        0.000003 sec
 reduce (C) time:       0.000002 sec
-rate     0.10 million edges/sec (incl time for U=triu(A))
-rate     0.86 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000004 sec (nthreads: 8 speedup 1.02727)
-tricount time:         0.000006 sec (dot product method)
-tri+prep time:         0.000049 sec (incl time to compute L and U)
-compute C time:        0.000004 sec
+rate     0.15 million edges/sec (incl time for U=triu(A))
+rate     1.07 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000003 sec (nthreads: 4 speedup 1.11222)
+tricount time:         0.000004 sec (dot product method)
+tri+prep time:         0.000033 sec (incl time to compute L and U)
+compute C time:        0.000003 sec
 reduce (C) time:       0.000002 sec
-rate     0.10 million edges/sec (incl time for U=triu(A))
-rate     0.83 million edges/sec (just tricount itself)
+rate     0.15 million edges/sec (incl time for U=triu(A))
+rate     1.14 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000003 sec (nthreads: 8 speedup 1.11541)
+tricount time:         0.000004 sec (dot product method)
+tri+prep time:         0.000033 sec (incl time to compute L and U)
+compute C time:        0.000003 sec
+reduce (C) time:       0.000002 sec
+rate     0.15 million edges/sec (incl time for U=triu(A))
+rate     1.16 million edges/sec (just tricount itself)
 
 ----------------------------------- saxpy method:
-C<L>=L*L time (saxpy):         0.000025 sec
-tricount time:         0.000026 sec (saxpy method)
-tri+prep time:         0.000031 sec (incl time to compute L)
-compute C time:        0.000025 sec
-reduce (C) time:       0.000001 sec
-rate     0.16 million edges/sec (incl time for L=tril(A))
-rate     0.19 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000007 sec (nthreads: 2 speedup 3.8032)
-tricount time:         0.000007 sec (saxpy method)
-tri+prep time:         0.000012 sec (incl time to compute L)
-compute C time:        0.000007 sec
+triangles, method 3: 2
+C<L>=L*L time (saxpy):         0.000018 sec
+tricount time:         0.000019 sec (saxpy method)
+tri+prep time:         0.000024 sec (incl time to compute L)
+compute C time:        0.000018 sec
 reduce (C) time:       0.000000 sec
-rate     0.41 million edges/sec (incl time for L=tril(A))
-rate     0.71 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000006 sec (nthreads: 4 speedup 4.31124)
+rate     0.21 million edges/sec (incl time for L=tril(A))
+rate     0.27 million edges/sec (just tricount itself)
+triangles, method 3: 2
+C<L>=L*L time (saxpy):         0.000006 sec (nthreads: 2 speedup 3.25856)
 tricount time:         0.000006 sec (saxpy method)
 tri+prep time:         0.000011 sec (incl time to compute L)
 compute C time:        0.000006 sec
 reduce (C) time:       0.000000 sec
-rate     0.44 million edges/sec (incl time for L=tril(A))
-rate     0.81 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000005 sec (nthreads: 8 speedup 5.42519)
+rate     0.46 million edges/sec (incl time for L=tril(A))
+rate     0.84 million edges/sec (just tricount itself)
+triangles, method 3: 2
+C<L>=L*L time (saxpy):         0.000005 sec (nthreads: 4 speedup 3.87265)
 tricount time:         0.000005 sec (saxpy method)
 tri+prep time:         0.000010 sec (incl time to compute L)
 compute C time:        0.000005 sec
 reduce (C) time:       0.000000 sec
-rate     0.49 million edges/sec (incl time for L=tril(A))
-rate     0.98 million edges/sec (just tricount itself)
+rate     0.50 million edges/sec (incl time for L=tril(A))
+rate     0.99 million edges/sec (just tricount itself)
+triangles, method 3: 2
+C<L>=L*L time (saxpy):         0.000005 sec (nthreads: 8 speedup 3.318)
+tricount time:         0.000006 sec (saxpy method)
+tri+prep time:         0.000011 sec (incl time to compute L)
+compute C time:        0.000005 sec
+reduce (C) time:       0.000000 sec
+rate     0.46 million edges/sec (incl time for L=tril(A))
+rate     0.84 million edges/sec (just tricount itself)
 
 --------------------------------------------------------------
 matrix 7 by 7, 16 entries, from stdin
 
-total time to read A matrix:       0.000156 sec
+total time to read A matrix:       0.000151 sec
 
 n 7 # edges 8
-U=triu(A) time:        0.000019 sec
+U=triu(A) time:        0.000020 sec
 L=tril(A) time:        0.000005 sec
 
 ------------------------------------- dot product method:
 # triangles 0
-L*U' time (dot):         0.000020 sec
-tricount time:         0.000026 sec (dot product method)
-tri+prep time:         0.000050 sec (incl time to compute L and U)
-compute C time:        0.000020 sec
+L*U' time (dot):         0.000027 sec
+tricount time:         0.000034 sec (dot product method)
+tri+prep time:         0.000059 sec (incl time to compute L and U)
+compute C time:        0.000027 sec
 reduce (C) time:       0.000007 sec
-rate     0.16 million edges/sec (incl time for U=triu(A))
-rate     0.30 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000005 sec (nthreads: 2 speedup 3.78177)
+rate     0.14 million edges/sec (incl time for U=triu(A))
+rate     0.24 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000005 sec (nthreads: 2 speedup 5.12151)
 tricount time:         0.000009 sec (dot product method)
-tri+prep time:         0.000032 sec (incl time to compute L and U)
+tri+prep time:         0.000034 sec (incl time to compute L and U)
 compute C time:        0.000005 sec
 reduce (C) time:       0.000003 sec
-rate     0.25 million edges/sec (incl time for U=triu(A))
-rate     0.92 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000004 sec (nthreads: 4 speedup 5.03558)
-tricount time:         0.000007 sec (dot product method)
-tri+prep time:         0.000031 sec (incl time to compute L and U)
-compute C time:        0.000004 sec
-reduce (C) time:       0.000003 sec
+rate     0.24 million edges/sec (incl time for U=triu(A))
+rate     0.93 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000003 sec (nthreads: 4 speedup 9.05404)
+tricount time:         0.000005 sec (dot product method)
+tri+prep time:         0.000030 sec (incl time to compute L and U)
+compute C time:        0.000003 sec
+reduce (C) time:       0.000002 sec
 rate     0.26 million edges/sec (incl time for U=triu(A))
-rate     1.17 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000004 sec (nthreads: 8 speedup 5.07063)
-tricount time:         0.000007 sec (dot product method)
-tri+prep time:         0.000031 sec (incl time to compute L and U)
-compute C time:        0.000004 sec
-reduce (C) time:       0.000003 sec
-rate     0.26 million edges/sec (incl time for U=triu(A))
-rate     1.19 million edges/sec (just tricount itself)
+rate     1.46 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000006 sec (nthreads: 8 speedup 4.59057)
+tricount time:         0.000010 sec (dot product method)
+tri+prep time:         0.000035 sec (incl time to compute L and U)
+compute C time:        0.000006 sec
+reduce (C) time:       0.000004 sec
+rate     0.23 million edges/sec (incl time for U=triu(A))
+rate     0.79 million edges/sec (just tricount itself)
 L*U' time (dot):         0.000004 sec
-tricount time:         0.000008 sec (dot product method)
+tricount time:         0.000007 sec (dot product method)
 tri+prep time:         0.000032 sec (incl time to compute L and U)
 compute C time:        0.000004 sec
-reduce (C) time:       0.000004 sec
+reduce (C) time:       0.000003 sec
 rate     0.25 million edges/sec (incl time for U=triu(A))
-rate     1.03 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000004 sec (nthreads: 2 speedup 0.982245)
-tricount time:         0.000007 sec (dot product method)
-tri+prep time:         0.000031 sec (incl time to compute L and U)
-compute C time:        0.000004 sec
-reduce (C) time:       0.000003 sec
-rate     0.26 million edges/sec (incl time for U=triu(A))
-rate     1.09 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000004 sec (nthreads: 4 speedup 0.984639)
-tricount time:         0.000007 sec (dot product method)
-tri+prep time:         0.000031 sec (incl time to compute L and U)
-compute C time:        0.000004 sec
-reduce (C) time:       0.000003 sec
-rate     0.26 million edges/sec (incl time for U=triu(A))
-rate     1.09 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000003 sec (nthreads: 8 speedup 1.49371)
+rate     1.16 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000003 sec (nthreads: 2 speedup 1.18959)
 tricount time:         0.000006 sec (dot product method)
-tri+prep time:         0.000029 sec (incl time to compute L and U)
+tri+prep time:         0.000031 sec (incl time to compute L and U)
 compute C time:        0.000003 sec
 reduce (C) time:       0.000003 sec
-rate     0.27 million edges/sec (incl time for U=triu(A))
-rate     1.42 million edges/sec (just tricount itself)
+rate     0.26 million edges/sec (incl time for U=triu(A))
+rate     1.28 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000006 sec (nthreads: 4 speedup 0.659947)
+tricount time:         0.000009 sec (dot product method)
+tri+prep time:         0.000034 sec (incl time to compute L and U)
+compute C time:        0.000006 sec
+reduce (C) time:       0.000004 sec
+rate     0.23 million edges/sec (incl time for U=triu(A))
+rate     0.86 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000003 sec (nthreads: 8 speedup 1.16779)
+tricount time:         0.000006 sec (dot product method)
+tri+prep time:         0.000031 sec (incl time to compute L and U)
+compute C time:        0.000003 sec
+reduce (C) time:       0.000003 sec
+rate     0.26 million edges/sec (incl time for U=triu(A))
+rate     1.31 million edges/sec (just tricount itself)
 
 ----------------------------------- saxpy method:
-C<L>=L*L time (saxpy):         0.000022 sec
-tricount time:         0.000022 sec (saxpy method)
-tri+prep time:         0.000027 sec (incl time to compute L)
-compute C time:        0.000022 sec
+triangles, method 3: 0
+C<L>=L*L time (saxpy):         0.000029 sec
+tricount time:         0.000029 sec (saxpy method)
+tri+prep time:         0.000035 sec (incl time to compute L)
+compute C time:        0.000029 sec
+reduce (C) time:       0.000001 sec
+rate     0.23 million edges/sec (incl time for L=tril(A))
+rate     0.27 million edges/sec (just tricount itself)
+triangles, method 3: 0
+C<L>=L*L time (saxpy):         0.000014 sec (nthreads: 2 speedup 2.0437)
+tricount time:         0.000014 sec (saxpy method)
+tri+prep time:         0.000020 sec (incl time to compute L)
+compute C time:        0.000014 sec
 reduce (C) time:       0.000000 sec
-rate     0.30 million edges/sec (incl time for L=tril(A))
-rate     0.36 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000012 sec (nthreads: 2 speedup 1.85364)
-tricount time:         0.000012 sec (saxpy method)
-tri+prep time:         0.000017 sec (incl time to compute L)
-compute C time:        0.000012 sec
-reduce (C) time:       0.000000 sec
-rate     0.48 million edges/sec (incl time for L=tril(A))
-rate     0.67 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000012 sec (nthreads: 4 speedup 1.75144)
-tricount time:         0.000013 sec (saxpy method)
-tri+prep time:         0.000017 sec (incl time to compute L)
-compute C time:        0.000012 sec
-reduce (C) time:       0.000000 sec
-rate     0.46 million edges/sec (incl time for L=tril(A))
-rate     0.63 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000026 sec (nthreads: 8 speedup 0.816327)
-tricount time:         0.000027 sec (saxpy method)
-tri+prep time:         0.000031 sec (incl time to compute L)
-compute C time:        0.000026 sec
-reduce (C) time:       0.000000 sec
-rate     0.25 million edges/sec (incl time for L=tril(A))
-rate     0.30 million edges/sec (just tricount itself)
+rate     0.41 million edges/sec (incl time for L=tril(A))
+rate     0.55 million edges/sec (just tricount itself)
+triangles, method 3: 0
+C<L>=L*L time (saxpy):         0.000013 sec (nthreads: 4 speedup 2.19743)
+tricount time:         0.000014 sec (saxpy method)
+tri+prep time:         0.000019 sec (incl time to compute L)
+compute C time:        0.000013 sec
+reduce (C) time:       0.000001 sec
+rate     0.43 million edges/sec (incl time for L=tril(A))
+rate     0.59 million edges/sec (just tricount itself)
+triangles, method 3: 0
+C<L>=L*L time (saxpy):         0.000035 sec (nthreads: 8 speedup 0.811284)
+tricount time:         0.000036 sec (saxpy method)
+tri+prep time:         0.000041 sec (incl time to compute L)
+compute C time:        0.000035 sec
+reduce (C) time:       0.000001 sec
+rate     0.20 million edges/sec (incl time for L=tril(A))
+rate     0.22 million edges/sec (just tricount itself)
 
 --------------------------------------------------------------
 matrix 304 by 304, 876 entries, from stdin
 
-total time to read A matrix:       0.000336 sec
+total time to read A matrix:       0.000324 sec
 
 n 304 # edges 438
-U=triu(A) time:        0.000027 sec
-L=tril(A) time:        0.000008 sec
+U=triu(A) time:        0.000021 sec
+L=tril(A) time:        0.000007 sec
 
 ------------------------------------- dot product method:
 # triangles 0
-L*U' time (dot):         0.000026 sec
-tricount time:         0.000036 sec (dot product method)
-tri+prep time:         0.000071 sec (incl time to compute L and U)
-compute C time:        0.000026 sec
+L*U' time (dot):         0.000029 sec
+tricount time:         0.000039 sec (dot product method)
+tri+prep time:         0.000066 sec (incl time to compute L and U)
+compute C time:        0.000029 sec
 reduce (C) time:       0.000010 sec
-rate     6.15 million edges/sec (incl time for U=triu(A))
-rate    12.12 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000016 sec (nthreads: 2 speedup 1.58173)
-tricount time:         0.000025 sec (dot product method)
-tri+prep time:         0.000060 sec (incl time to compute L and U)
-compute C time:        0.000016 sec
-reduce (C) time:       0.000009 sec
-rate     7.29 million edges/sec (incl time for U=triu(A))
-rate    17.49 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000016 sec (nthreads: 4 speedup 1.61796)
-tricount time:         0.000024 sec (dot product method)
-tri+prep time:         0.000059 sec (incl time to compute L and U)
-compute C time:        0.000016 sec
-reduce (C) time:       0.000008 sec
-rate     7.40 million edges/sec (incl time for U=triu(A))
-rate    18.15 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000015 sec (nthreads: 8 speedup 1.67222)
-tricount time:         0.000024 sec (dot product method)
-tri+prep time:         0.000059 sec (incl time to compute L and U)
-compute C time:        0.000015 sec
-reduce (C) time:       0.000009 sec
-rate     7.41 million edges/sec (incl time for U=triu(A))
-rate    18.22 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000015 sec
-tricount time:         0.000024 sec (dot product method)
-tri+prep time:         0.000059 sec (incl time to compute L and U)
-compute C time:        0.000015 sec
-reduce (C) time:       0.000009 sec
-rate     7.44 million edges/sec (incl time for U=triu(A))
-rate    18.39 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000014 sec (nthreads: 2 speedup 1.07105)
-tricount time:         0.000022 sec (dot product method)
-tri+prep time:         0.000058 sec (incl time to compute L and U)
-compute C time:        0.000014 sec
-reduce (C) time:       0.000009 sec
-rate     7.61 million edges/sec (incl time for U=triu(A))
-rate    19.51 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000015 sec (nthreads: 4 speedup 1.00587)
-tricount time:         0.000024 sec (dot product method)
-tri+prep time:         0.000059 sec (incl time to compute L and U)
-compute C time:        0.000015 sec
-reduce (C) time:       0.000009 sec
-rate     7.44 million edges/sec (incl time for U=triu(A))
-rate    18.38 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000015 sec (nthreads: 8 speedup 1.00443)
-tricount time:         0.000023 sec (dot product method)
-tri+prep time:         0.000058 sec (incl time to compute L and U)
-compute C time:        0.000015 sec
-reduce (C) time:       0.000008 sec
-rate     7.54 million edges/sec (incl time for U=triu(A))
-rate    19.06 million edges/sec (just tricount itself)
+rate     6.59 million edges/sec (incl time for U=triu(A))
+rate    11.34 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000011 sec (nthreads: 2 speedup 2.6523)
+tricount time:         0.000017 sec (dot product method)
+tri+prep time:         0.000045 sec (incl time to compute L and U)
+compute C time:        0.000011 sec
+reduce (C) time:       0.000007 sec
+rate     9.66 million edges/sec (incl time for U=triu(A))
+rate    25.07 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000010 sec (nthreads: 4 speedup 3.01903)
+tricount time:         0.000015 sec (dot product method)
+tri+prep time:         0.000043 sec (incl time to compute L and U)
+compute C time:        0.000010 sec
+reduce (C) time:       0.000006 sec
+rate    10.12 million edges/sec (incl time for U=triu(A))
+rate    28.41 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000009 sec (nthreads: 8 speedup 3.12291)
+tricount time:         0.000015 sec (dot product method)
+tri+prep time:         0.000043 sec (incl time to compute L and U)
+compute C time:        0.000009 sec
+reduce (C) time:       0.000005 sec
+rate    10.29 million edges/sec (incl time for U=triu(A))
+rate    29.82 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000009 sec
+tricount time:         0.000014 sec (dot product method)
+tri+prep time:         0.000042 sec (incl time to compute L and U)
+compute C time:        0.000009 sec
+reduce (C) time:       0.000005 sec
+rate    10.50 million edges/sec (incl time for U=triu(A))
+rate    31.63 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000008 sec (nthreads: 2 speedup 1.04126)
+tricount time:         0.000013 sec (dot product method)
+tri+prep time:         0.000041 sec (incl time to compute L and U)
+compute C time:        0.000008 sec
+reduce (C) time:       0.000005 sec
+rate    10.69 million edges/sec (incl time for U=triu(A))
+rate    33.47 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000008 sec (nthreads: 4 speedup 1.02962)
+tricount time:         0.000013 sec (dot product method)
+tri+prep time:         0.000041 sec (incl time to compute L and U)
+compute C time:        0.000008 sec
+reduce (C) time:       0.000005 sec
+rate    10.66 million edges/sec (incl time for U=triu(A))
+rate    33.15 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000008 sec (nthreads: 8 speedup 1.06811)
+tricount time:         0.000013 sec (dot product method)
+tri+prep time:         0.000041 sec (incl time to compute L and U)
+compute C time:        0.000008 sec
+reduce (C) time:       0.000005 sec
+rate    10.79 million edges/sec (incl time for U=triu(A))
+rate    34.38 million edges/sec (just tricount itself)
 
 ----------------------------------- saxpy method:
-C<L>=L*L time (saxpy):         0.000043 sec
-tricount time:         0.000044 sec (saxpy method)
-tri+prep time:         0.000052 sec (incl time to compute L)
-compute C time:        0.000043 sec
-reduce (C) time:       0.000001 sec
-rate     8.50 million edges/sec (incl time for L=tril(A))
-rate     9.99 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000030 sec (nthreads: 2 speedup 1.45681)
-tricount time:         0.000030 sec (saxpy method)
-tri+prep time:         0.000038 sec (incl time to compute L)
-compute C time:        0.000030 sec
-reduce (C) time:       0.000001 sec
-rate    11.58 million edges/sec (incl time for L=tril(A))
-rate    14.53 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000029 sec (nthreads: 4 speedup 1.46942)
-tricount time:         0.000030 sec (saxpy method)
-tri+prep time:         0.000038 sec (incl time to compute L)
-compute C time:        0.000029 sec
+triangles, method 3: 0
+C<L>=L*L time (saxpy):         0.000028 sec
+tricount time:         0.000028 sec (saxpy method)
+tri+prep time:         0.000036 sec (incl time to compute L)
+compute C time:        0.000028 sec
 reduce (C) time:       0.000000 sec
-rate    11.67 million edges/sec (incl time for L=tril(A))
-rate    14.67 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000035 sec (nthreads: 8 speedup 1.23519)
-tricount time:         0.000035 sec (saxpy method)
-tri+prep time:         0.000043 sec (incl time to compute L)
-compute C time:        0.000035 sec
-reduce (C) time:       0.000001 sec
-rate    10.15 million edges/sec (incl time for L=tril(A))
-rate    12.35 million edges/sec (just tricount itself)
+rate    12.34 million edges/sec (incl time for L=tril(A))
+rate    15.52 million edges/sec (just tricount itself)
+triangles, method 3: 0
+C<L>=L*L time (saxpy):         0.000020 sec (nthreads: 2 speedup 1.37094)
+tricount time:         0.000021 sec (saxpy method)
+tri+prep time:         0.000028 sec (incl time to compute L)
+compute C time:        0.000020 sec
+reduce (C) time:       0.000000 sec
+rate    15.64 million edges/sec (incl time for L=tril(A))
+rate    21.15 million edges/sec (just tricount itself)
+triangles, method 3: 0
+C<L>=L*L time (saxpy):         0.000019 sec (nthreads: 4 speedup 1.46644)
+tricount time:         0.000019 sec (saxpy method)
+tri+prep time:         0.000027 sec (incl time to compute L)
+compute C time:        0.000019 sec
+reduce (C) time:       0.000000 sec
+rate    16.49 million edges/sec (incl time for L=tril(A))
+rate    22.72 million edges/sec (just tricount itself)
+triangles, method 3: 0
+C<L>=L*L time (saxpy):         0.000025 sec (nthreads: 8 speedup 1.09045)
+tricount time:         0.000026 sec (saxpy method)
+tri+prep time:         0.000033 sec (incl time to compute L)
+compute C time:        0.000025 sec
+reduce (C) time:       0.000000 sec
+rate    13.17 million edges/sec (incl time for L=tril(A))
+rate    16.87 million edges/sec (just tricount itself)
 
 --------------------------------------------------------------
 matrix 48 by 48, 352 entries, from stdin
 
-total time to read A matrix:       0.000328 sec
+total time to read A matrix:       0.000230 sec
 
 n 48 # edges 176
-U=triu(A) time:        0.000035 sec
-L=tril(A) time:        0.000009 sec
+U=triu(A) time:        0.000027 sec
+L=tril(A) time:        0.000006 sec
 
 ------------------------------------- dot product method:
 # triangles 160
-L*U' time (dot):         0.000039 sec
-tricount time:         0.000050 sec (dot product method)
-tri+prep time:         0.000094 sec (incl time to compute L and U)
-compute C time:        0.000039 sec
-reduce (C) time:       0.000011 sec
-rate     1.87 million edges/sec (incl time for U=triu(A))
-rate     3.54 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000011 sec (nthreads: 2 speedup 3.60124)
-tricount time:         0.000015 sec (dot product method)
-tri+prep time:         0.000059 sec (incl time to compute L and U)
-compute C time:        0.000011 sec
+L*U' time (dot):         0.000027 sec
+tricount time:         0.000034 sec (dot product method)
+tri+prep time:         0.000068 sec (incl time to compute L and U)
+compute C time:        0.000027 sec
+reduce (C) time:       0.000007 sec
+rate     2.60 million edges/sec (incl time for U=triu(A))
+rate     5.16 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000010 sec (nthreads: 2 speedup 2.57265)
+tricount time:         0.000014 sec (dot product method)
+tri+prep time:         0.000048 sec (incl time to compute L and U)
+compute C time:        0.000010 sec
 reduce (C) time:       0.000004 sec
-rate     2.99 million edges/sec (incl time for U=triu(A))
-rate    12.01 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000008 sec (nthreads: 4 speedup 4.82118)
-tricount time:         0.000011 sec (dot product method)
-tri+prep time:         0.000055 sec (incl time to compute L and U)
+rate     3.70 million edges/sec (incl time for U=triu(A))
+rate    12.62 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000008 sec (nthreads: 4 speedup 3.32946)
+tricount time:         0.000012 sec (dot product method)
+tri+prep time:         0.000045 sec (incl time to compute L and U)
 compute C time:        0.000008 sec
-reduce (C) time:       0.000003 sec
-rate     3.20 million edges/sec (incl time for U=triu(A))
-rate    16.24 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000008 sec (nthreads: 8 speedup 5.09536)
-tricount time:         0.000010 sec (dot product method)
-tri+prep time:         0.000055 sec (incl time to compute L and U)
-compute C time:        0.000008 sec
-reduce (C) time:       0.000003 sec
-rate     3.22 million edges/sec (incl time for U=triu(A))
-rate    16.86 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000012 sec
-tricount time:         0.000016 sec (dot product method)
-tri+prep time:         0.000060 sec (incl time to compute L and U)
-compute C time:        0.000012 sec
 reduce (C) time:       0.000004 sec
-rate     2.93 million edges/sec (incl time for U=triu(A))
-rate    11.11 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000010 sec (nthreads: 2 speedup 1.2077)
+rate     3.90 million edges/sec (incl time for U=triu(A))
+rate    15.24 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000010 sec (nthreads: 8 speedup 2.6774)
 tricount time:         0.000013 sec (dot product method)
-tri+prep time:         0.000057 sec (incl time to compute L and U)
+tri+prep time:         0.000047 sec (incl time to compute L and U)
 compute C time:        0.000010 sec
 reduce (C) time:       0.000003 sec
-rate     3.07 million edges/sec (incl time for U=triu(A))
-rate    13.37 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000009 sec (nthreads: 4 speedup 1.38824)
-tricount time:         0.000012 sec (dot product method)
-tri+prep time:         0.000056 sec (incl time to compute L and U)
-compute C time:        0.000009 sec
+rate     3.78 million edges/sec (incl time for U=triu(A))
+rate    13.55 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000011 sec
+tricount time:         0.000015 sec (dot product method)
+tri+prep time:         0.000048 sec (incl time to compute L and U)
+compute C time:        0.000011 sec
+reduce (C) time:       0.000004 sec
+rate     3.64 million edges/sec (incl time for U=triu(A))
+rate    11.91 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000010 sec (nthreads: 2 speedup 1.10836)
+tricount time:         0.000014 sec (dot product method)
+tri+prep time:         0.000048 sec (incl time to compute L and U)
+compute C time:        0.000010 sec
+reduce (C) time:       0.000004 sec
+rate     3.67 million edges/sec (incl time for U=triu(A))
+rate    12.25 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000010 sec (nthreads: 4 speedup 1.10109)
+tricount time:         0.000013 sec (dot product method)
+tri+prep time:         0.000047 sec (incl time to compute L and U)
+compute C time:        0.000010 sec
 reduce (C) time:       0.000003 sec
-rate     3.15 million edges/sec (incl time for U=triu(A))
-rate    15.17 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000008 sec (nthreads: 8 speedup 1.55024)
+rate     3.77 million edges/sec (incl time for U=triu(A))
+rate    13.40 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000007 sec (nthreads: 8 speedup 1.50666)
 tricount time:         0.000010 sec (dot product method)
-tri+prep time:         0.000055 sec (incl time to compute L and U)
-compute C time:        0.000008 sec
-reduce (C) time:       0.000003 sec
-rate     3.22 million edges/sec (incl time for U=triu(A))
-rate    16.95 million edges/sec (just tricount itself)
+tri+prep time:         0.000043 sec (incl time to compute L and U)
+compute C time:        0.000007 sec
+reduce (C) time:       0.000002 sec
+rate     4.06 million edges/sec (incl time for U=triu(A))
+rate    17.96 million edges/sec (just tricount itself)
 
 ----------------------------------- saxpy method:
-C<L>=L*L time (saxpy):         0.000032 sec
-tricount time:         0.000033 sec (saxpy method)
-tri+prep time:         0.000042 sec (incl time to compute L)
-compute C time:        0.000032 sec
+triangles, method 3: 160
+C<L>=L*L time (saxpy):         0.000031 sec
+tricount time:         0.000032 sec (saxpy method)
+tri+prep time:         0.000038 sec (incl time to compute L)
+compute C time:        0.000031 sec
 reduce (C) time:       0.000001 sec
-rate     4.20 million edges/sec (incl time for L=tril(A))
-rate     5.31 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000014 sec (nthreads: 2 speedup 2.30991)
-tricount time:         0.000015 sec (saxpy method)
-tri+prep time:         0.000023 sec (incl time to compute L)
-compute C time:        0.000014 sec
+rate     4.59 million edges/sec (incl time for L=tril(A))
+rate     5.51 million edges/sec (just tricount itself)
+triangles, method 3: 160
+C<L>=L*L time (saxpy):         0.000015 sec (nthreads: 2 speedup 2.0114)
+tricount time:         0.000016 sec (saxpy method)
+tri+prep time:         0.000022 sec (incl time to compute L)
+compute C time:        0.000015 sec
 reduce (C) time:       0.000001 sec
-rate     7.51 million edges/sec (incl time for L=tril(A))
-rate    12.02 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000011 sec (nthreads: 4 speedup 2.91911)
-tricount time:         0.000012 sec (saxpy method)
+rate     7.84 million edges/sec (incl time for L=tril(A))
+rate    10.98 million edges/sec (just tricount itself)
+triangles, method 3: 160
+C<L>=L*L time (saxpy):         0.000012 sec (nthreads: 4 speedup 2.52172)
+tricount time:         0.000013 sec (saxpy method)
 tri+prep time:         0.000020 sec (incl time to compute L)
-compute C time:        0.000011 sec
+compute C time:        0.000012 sec
 reduce (C) time:       0.000001 sec
-rate     8.60 million edges/sec (incl time for L=tril(A))
-rate    15.07 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000011 sec (nthreads: 8 speedup 2.88764)
-tricount time:         0.000012 sec (saxpy method)
-tri+prep time:         0.000021 sec (incl time to compute L)
-compute C time:        0.000011 sec
+rate     8.98 million edges/sec (incl time for L=tril(A))
+rate    13.34 million edges/sec (just tricount itself)
+triangles, method 3: 160
+C<L>=L*L time (saxpy):         0.000015 sec (nthreads: 8 speedup 2.03312)
+tricount time:         0.000016 sec (saxpy method)
+tri+prep time:         0.000023 sec (incl time to compute L)
+compute C time:        0.000015 sec
 reduce (C) time:       0.000001 sec
-rate     8.47 million edges/sec (incl time for L=tril(A))
-rate    14.68 million edges/sec (just tricount itself)
+rate     7.78 million edges/sec (incl time for L=tril(A))
+rate    10.86 million edges/sec (just tricount itself)
 
 --------------------------------------------------------------
 matrix 4884 by 4884, 285494 entries, from stdin
 
-total time to read A matrix:       0.070829 sec
+total time to read A matrix:       0.070533 sec
 
 n 4884 # edges 142747
 U=triu(A) time:        0.000237 sec
-L=tril(A) time:        0.000214 sec
+L=tril(A) time:        0.000177 sec
 
 ------------------------------------- dot product method:
 # triangles 1512964
-L*U' time (dot):         0.016448 sec
-tricount time:         0.017444 sec (dot product method)
-tri+prep time:         0.017895 sec (incl time to compute L and U)
-compute C time:        0.016448 sec
-reduce (C) time:       0.000995 sec
-rate     7.98 million edges/sec (incl time for U=triu(A))
-rate     8.18 million edges/sec (just tricount itself)
-L*U' time (dot):         0.007960 sec (nthreads: 2 speedup 2.06624)
-tricount time:         0.009635 sec (dot product method)
-tri+prep time:         0.010086 sec (incl time to compute L and U)
-compute C time:        0.007960 sec
-reduce (C) time:       0.001674 sec
-rate    14.15 million edges/sec (incl time for U=triu(A))
-rate    14.82 million edges/sec (just tricount itself)
-L*U' time (dot):         0.004200 sec (nthreads: 4 speedup 3.91649)
-tricount time:         0.004743 sec (dot product method)
-tri+prep time:         0.005194 sec (incl time to compute L and U)
-compute C time:        0.004200 sec
-reduce (C) time:       0.000543 sec
-rate    27.48 million edges/sec (incl time for U=triu(A))
-rate    30.10 million edges/sec (just tricount itself)
-L*U' time (dot):         0.009520 sec (nthreads: 8 speedup 1.72783)
-tricount time:         0.010260 sec (dot product method)
-tri+prep time:         0.010711 sec (incl time to compute L and U)
-compute C time:        0.009520 sec
-reduce (C) time:       0.000741 sec
-rate    13.33 million edges/sec (incl time for U=triu(A))
-rate    13.91 million edges/sec (just tricount itself)
-L*U' time (dot):         0.015530 sec
-tricount time:         0.016475 sec (dot product method)
-tri+prep time:         0.016926 sec (incl time to compute L and U)
-compute C time:        0.015530 sec
-reduce (C) time:       0.000945 sec
-rate     8.43 million edges/sec (incl time for U=triu(A))
-rate     8.66 million edges/sec (just tricount itself)
-L*U' time (dot):         0.008395 sec (nthreads: 2 speedup 1.84985)
-tricount time:         0.008839 sec (dot product method)
-tri+prep time:         0.009290 sec (incl time to compute L and U)
-compute C time:        0.008395 sec
-reduce (C) time:       0.000444 sec
-rate    15.37 million edges/sec (incl time for U=triu(A))
-rate    16.15 million edges/sec (just tricount itself)
-L*U' time (dot):         0.004378 sec (nthreads: 4 speedup 3.54732)
-tricount time:         0.004727 sec (dot product method)
-tri+prep time:         0.005179 sec (incl time to compute L and U)
-compute C time:        0.004378 sec
-reduce (C) time:       0.000349 sec
-rate    27.56 million edges/sec (incl time for U=triu(A))
-rate    30.20 million edges/sec (just tricount itself)
-L*U' time (dot):         0.005409 sec (nthreads: 8 speedup 2.87118)
-tricount time:         0.005899 sec (dot product method)
-tri+prep time:         0.006350 sec (incl time to compute L and U)
-compute C time:        0.005409 sec
-reduce (C) time:       0.000490 sec
-rate    22.48 million edges/sec (incl time for U=triu(A))
-rate    24.20 million edges/sec (just tricount itself)
+L*U' time (dot):         0.015604 sec
+tricount time:         0.016610 sec (dot product method)
+tri+prep time:         0.017023 sec (incl time to compute L and U)
+compute C time:        0.015604 sec
+reduce (C) time:       0.001006 sec
+rate     8.39 million edges/sec (incl time for U=triu(A))
+rate     8.59 million edges/sec (just tricount itself)
+L*U' time (dot):         0.007760 sec (nthreads: 2 speedup 2.01076)
+tricount time:         0.008425 sec (dot product method)
+tri+prep time:         0.008838 sec (incl time to compute L and U)
+compute C time:        0.007760 sec
+reduce (C) time:       0.000664 sec
+rate    16.15 million edges/sec (incl time for U=triu(A))
+rate    16.94 million edges/sec (just tricount itself)
+L*U' time (dot):         0.004202 sec (nthreads: 4 speedup 3.71338)
+tricount time:         0.004798 sec (dot product method)
+tri+prep time:         0.005212 sec (incl time to compute L and U)
+compute C time:        0.004202 sec
+reduce (C) time:       0.000596 sec
+rate    27.39 million edges/sec (incl time for U=triu(A))
+rate    29.75 million edges/sec (just tricount itself)
+L*U' time (dot):         0.002794 sec (nthreads: 8 speedup 5.58414)
+tricount time:         0.003421 sec (dot product method)
+tri+prep time:         0.003834 sec (incl time to compute L and U)
+compute C time:        0.002794 sec
+reduce (C) time:       0.000626 sec
+rate    37.23 million edges/sec (incl time for U=triu(A))
+rate    41.73 million edges/sec (just tricount itself)
+L*U' time (dot):         0.014963 sec
+tricount time:         0.015630 sec (dot product method)
+tri+prep time:         0.016043 sec (incl time to compute L and U)
+compute C time:        0.014963 sec
+reduce (C) time:       0.000667 sec
+rate     8.90 million edges/sec (incl time for U=triu(A))
+rate     9.13 million edges/sec (just tricount itself)
+L*U' time (dot):         0.007483 sec (nthreads: 2 speedup 1.99945)
+tricount time:         0.007839 sec (dot product method)
+tri+prep time:         0.008253 sec (incl time to compute L and U)
+compute C time:        0.007483 sec
+reduce (C) time:       0.000356 sec
+rate    17.30 million edges/sec (incl time for U=triu(A))
+rate    18.21 million edges/sec (just tricount itself)
+L*U' time (dot):         0.004180 sec (nthreads: 4 speedup 3.57986)
+tricount time:         0.004810 sec (dot product method)
+tri+prep time:         0.005223 sec (incl time to compute L and U)
+compute C time:        0.004180 sec
+reduce (C) time:       0.000630 sec
+rate    27.33 million edges/sec (incl time for U=triu(A))
+rate    29.68 million edges/sec (just tricount itself)
+L*U' time (dot):         0.002833 sec (nthreads: 8 speedup 5.28111)
+tricount time:         0.003473 sec (dot product method)
+tri+prep time:         0.003887 sec (incl time to compute L and U)
+compute C time:        0.002833 sec
+reduce (C) time:       0.000640 sec
+rate    36.73 million edges/sec (incl time for U=triu(A))
+rate    41.10 million edges/sec (just tricount itself)
 
 ----------------------------------- saxpy method:
-C<L>=L*L time (saxpy):         0.011343 sec
-tricount time:         0.011732 sec (saxpy method)
-tri+prep time:         0.011946 sec (incl time to compute L)
-compute C time:        0.011343 sec
-reduce (C) time:       0.000390 sec
-rate    11.95 million edges/sec (incl time for L=tril(A))
-rate    12.17 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.006111 sec (nthreads: 2 speedup 1.85609)
-tricount time:         0.006302 sec (saxpy method)
-tri+prep time:         0.006516 sec (incl time to compute L)
-compute C time:        0.006111 sec
-reduce (C) time:       0.000191 sec
-rate    21.91 million edges/sec (incl time for L=tril(A))
-rate    22.65 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.003317 sec (nthreads: 4 speedup 3.4192)
-tricount time:         0.003506 sec (saxpy method)
-tri+prep time:         0.003720 sec (incl time to compute L)
-compute C time:        0.003317 sec
-reduce (C) time:       0.000189 sec
-rate    38.37 million edges/sec (incl time for L=tril(A))
-rate    40.71 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.004551 sec (nthreads: 8 speedup 2.49242)
-tricount time:         0.004741 sec (saxpy method)
-tri+prep time:         0.004955 sec (incl time to compute L)
-compute C time:        0.004551 sec
-reduce (C) time:       0.000190 sec
-rate    28.81 million edges/sec (incl time for L=tril(A))
-rate    30.11 million edges/sec (just tricount itself)
+triangles, method 3: 1512964
+C<L>=L*L time (saxpy):         0.013017 sec
+tricount time:         0.013408 sec (saxpy method)
+tri+prep time:         0.013585 sec (incl time to compute L)
+compute C time:        0.013017 sec
+reduce (C) time:       0.000392 sec
+rate    10.51 million edges/sec (incl time for L=tril(A))
+rate    10.65 million edges/sec (just tricount itself)
+triangles, method 3: 1512964
+C<L>=L*L time (saxpy):         0.006626 sec (nthreads: 2 speedup 1.96461)
+tricount time:         0.006824 sec (saxpy method)
+tri+prep time:         0.007000 sec (incl time to compute L)
+compute C time:        0.006626 sec
+reduce (C) time:       0.000198 sec
+rate    20.39 million edges/sec (incl time for L=tril(A))
+rate    20.92 million edges/sec (just tricount itself)
+triangles, method 3: 1512964
+C<L>=L*L time (saxpy):         0.004039 sec (nthreads: 4 speedup 3.22239)
+tricount time:         0.004249 sec (saxpy method)
+tri+prep time:         0.004426 sec (incl time to compute L)
+compute C time:        0.004039 sec
+reduce (C) time:       0.000210 sec
+rate    32.25 million edges/sec (incl time for L=tril(A))
+rate    33.59 million edges/sec (just tricount itself)
+triangles, method 3: 1512964
+C<L>=L*L time (saxpy):         0.002870 sec (nthreads: 8 speedup 4.53567)
+tricount time:         0.003111 sec (saxpy method)
+tri+prep time:         0.003288 sec (incl time to compute L)
+compute C time:        0.002870 sec
+reduce (C) time:       0.000241 sec
+rate    43.42 million edges/sec (incl time for L=tril(A))
+rate    45.88 million edges/sec (just tricount itself)
 
 --------------------------------------------------------------
 matrix 183 by 183, 1402 entries, from stdin
 
-total time to read A matrix:       0.000583 sec
+total time to read A matrix:       0.000648 sec
 
 n 183 # edges 701
-U=triu(A) time:        0.000028 sec
+U=triu(A) time:        0.000034 sec
 L=tril(A) time:        0.000010 sec
 
 ------------------------------------- dot product method:
 # triangles 863
-L*U' time (dot):         0.000061 sec
-tricount time:         0.000073 sec (dot product method)
-tri+prep time:         0.000111 sec (incl time to compute L and U)
-compute C time:        0.000061 sec
-reduce (C) time:       0.000012 sec
-rate     6.32 million edges/sec (incl time for U=triu(A))
-rate     9.62 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000042 sec (nthreads: 2 speedup 1.46194)
-tricount time:         0.000050 sec (dot product method)
-tri+prep time:         0.000088 sec (incl time to compute L and U)
-compute C time:        0.000042 sec
-reduce (C) time:       0.000008 sec
-rate     7.99 million edges/sec (incl time for U=triu(A))
-rate    14.11 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000038 sec (nthreads: 4 speedup 1.60703)
-tricount time:         0.000045 sec (dot product method)
-tri+prep time:         0.000083 sec (incl time to compute L and U)
-compute C time:        0.000038 sec
-reduce (C) time:       0.000007 sec
-rate     8.44 million edges/sec (incl time for U=triu(A))
-rate    15.55 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000037 sec (nthreads: 8 speedup 1.66533)
-tricount time:         0.000043 sec (dot product method)
-tri+prep time:         0.000081 sec (incl time to compute L and U)
-compute C time:        0.000037 sec
-reduce (C) time:       0.000007 sec
-rate     8.60 million edges/sec (incl time for U=triu(A))
-rate    16.12 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000048 sec
-tricount time:         0.000055 sec (dot product method)
-tri+prep time:         0.000093 sec (incl time to compute L and U)
-compute C time:        0.000048 sec
-reduce (C) time:       0.000007 sec
-rate     7.52 million edges/sec (incl time for U=triu(A))
-rate    12.70 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000043 sec (nthreads: 2 speedup 1.11068)
-tricount time:         0.000050 sec (dot product method)
-tri+prep time:         0.000088 sec (incl time to compute L and U)
-compute C time:        0.000043 sec
-reduce (C) time:       0.000007 sec
-rate     7.96 million edges/sec (incl time for U=triu(A))
-rate    14.01 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000041 sec (nthreads: 4 speedup 1.17128)
+L*U' time (dot):         0.000067 sec
+tricount time:         0.000081 sec (dot product method)
+tri+prep time:         0.000125 sec (incl time to compute L and U)
+compute C time:        0.000067 sec
+reduce (C) time:       0.000014 sec
+rate     5.62 million edges/sec (incl time for U=triu(A))
+rate     8.68 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000041 sec (nthreads: 2 speedup 1.64645)
 tricount time:         0.000048 sec (dot product method)
-tri+prep time:         0.000086 sec (incl time to compute L and U)
+tri+prep time:         0.000092 sec (incl time to compute L and U)
 compute C time:        0.000041 sec
 reduce (C) time:       0.000007 sec
-rate     8.20 million edges/sec (incl time for U=triu(A))
-rate    14.75 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000038 sec (nthreads: 8 speedup 1.25408)
+rate     7.60 million edges/sec (incl time for U=triu(A))
+rate    14.54 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000037 sec (nthreads: 4 speedup 1.80399)
 tricount time:         0.000044 sec (dot product method)
-tri+prep time:         0.000082 sec (incl time to compute L and U)
-compute C time:        0.000038 sec
+tri+prep time:         0.000088 sec (incl time to compute L and U)
+compute C time:        0.000037 sec
+reduce (C) time:       0.000007 sec
+rate     7.96 million edges/sec (incl time for U=triu(A))
+rate    15.91 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000036 sec (nthreads: 8 speedup 1.86393)
+tricount time:         0.000042 sec (dot product method)
+tri+prep time:         0.000086 sec (incl time to compute L and U)
+compute C time:        0.000036 sec
 reduce (C) time:       0.000006 sec
-rate     8.50 million edges/sec (incl time for U=triu(A))
-rate    15.77 million edges/sec (just tricount itself)
+rate     8.12 million edges/sec (incl time for U=triu(A))
+rate    16.58 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000041 sec
+tricount time:         0.000048 sec (dot product method)
+tri+prep time:         0.000092 sec (incl time to compute L and U)
+compute C time:        0.000041 sec
+reduce (C) time:       0.000007 sec
+rate     7.62 million edges/sec (incl time for U=triu(A))
+rate    14.61 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000038 sec (nthreads: 2 speedup 1.07256)
+tricount time:         0.000045 sec (dot product method)
+tri+prep time:         0.000089 sec (incl time to compute L and U)
+compute C time:        0.000038 sec
+reduce (C) time:       0.000007 sec
+rate     7.91 million edges/sec (incl time for U=triu(A))
+rate    15.69 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000036 sec (nthreads: 4 speedup 1.12909)
+tricount time:         0.000042 sec (dot product method)
+tri+prep time:         0.000086 sec (incl time to compute L and U)
+compute C time:        0.000036 sec
+reduce (C) time:       0.000006 sec
+rate     8.11 million edges/sec (incl time for U=triu(A))
+rate    16.51 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000035 sec (nthreads: 8 speedup 1.15865)
+tricount time:         0.000041 sec (dot product method)
+tri+prep time:         0.000085 sec (incl time to compute L and U)
+compute C time:        0.000035 sec
+reduce (C) time:       0.000006 sec
+rate     8.22 million edges/sec (incl time for U=triu(A))
+rate    16.99 million edges/sec (just tricount itself)
 
 ----------------------------------- saxpy method:
-C<L>=L*L time (saxpy):         0.000044 sec
-tricount time:         0.000046 sec (saxpy method)
-tri+prep time:         0.000055 sec (incl time to compute L)
-compute C time:        0.000044 sec
+triangles, method 3: 863
+C<L>=L*L time (saxpy):         0.000055 sec
+tricount time:         0.000056 sec (saxpy method)
+tri+prep time:         0.000066 sec (incl time to compute L)
+compute C time:        0.000055 sec
 reduce (C) time:       0.000001 sec
-rate    12.67 million edges/sec (incl time for L=tril(A))
-rate    15.36 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000034 sec (nthreads: 2 speedup 1.30181)
-tricount time:         0.000035 sec (saxpy method)
-tri+prep time:         0.000045 sec (incl time to compute L)
-compute C time:        0.000034 sec
+rate    10.62 million edges/sec (incl time for L=tril(A))
+rate    12.41 million edges/sec (just tricount itself)
+triangles, method 3: 863
+C<L>=L*L time (saxpy):         0.000035 sec (nthreads: 2 speedup 1.57783)
+tricount time:         0.000036 sec (saxpy method)
+tri+prep time:         0.000046 sec (incl time to compute L)
+compute C time:        0.000035 sec
 reduce (C) time:       0.000001 sec
-rate    15.60 million edges/sec (incl time for L=tril(A))
-rate    19.89 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000031 sec (nthreads: 4 speedup 1.4348)
+rate    15.33 million edges/sec (incl time for L=tril(A))
+rate    19.36 million edges/sec (just tricount itself)
+triangles, method 3: 863
+C<L>=L*L time (saxpy):         0.000032 sec (nthreads: 4 speedup 1.74196)
+tricount time:         0.000033 sec (saxpy method)
+tri+prep time:         0.000042 sec (incl time to compute L)
+compute C time:        0.000032 sec
+reduce (C) time:       0.000001 sec
+rate    16.51 million edges/sec (incl time for L=tril(A))
+rate    21.29 million edges/sec (just tricount itself)
+triangles, method 3: 863
+C<L>=L*L time (saxpy):         0.000031 sec (nthreads: 8 speedup 1.78544)
 tricount time:         0.000032 sec (saxpy method)
 tri+prep time:         0.000042 sec (incl time to compute L)
 compute C time:        0.000031 sec
 reduce (C) time:       0.000001 sec
-rate    16.79 million edges/sec (incl time for L=tril(A))
-rate    21.86 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000030 sec (nthreads: 8 speedup 1.46692)
-tricount time:         0.000031 sec (saxpy method)
-tri+prep time:         0.000041 sec (incl time to compute L)
-compute C time:        0.000030 sec
-reduce (C) time:       0.000001 sec
-rate    17.03 million edges/sec (incl time for L=tril(A))
-rate    22.28 million edges/sec (just tricount itself)
+rate    16.75 million edges/sec (incl time for L=tril(A))
+rate    21.69 million edges/sec (just tricount itself)
 
 --------------------------------------------------------------
 matrix 63 by 63, 246 entries, from stdin
 
-total time to read A matrix:       0.000168 sec
+total time to read A matrix:       0.000285 sec
 
 n 63 # edges 123
-U=triu(A) time:        0.000016 sec
-L=tril(A) time:        0.000004 sec
+U=triu(A) time:        0.000035 sec
+L=tril(A) time:        0.000008 sec
 
 ------------------------------------- dot product method:
 # triangles 0
-L*U' time (dot):         0.000016 sec
-tricount time:         0.000022 sec (dot product method)
-tri+prep time:         0.000042 sec (incl time to compute L and U)
-compute C time:        0.000016 sec
-reduce (C) time:       0.000006 sec
-rate     2.90 million edges/sec (incl time for U=triu(A))
-rate     5.52 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000004 sec (nthreads: 2 speedup 3.74828)
+L*U' time (dot):         0.000037 sec
+tricount time:         0.000047 sec (dot product method)
+tri+prep time:         0.000091 sec (incl time to compute L and U)
+compute C time:        0.000037 sec
+reduce (C) time:       0.000010 sec
+rate     1.35 million edges/sec (incl time for U=triu(A))
+rate     2.61 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000005 sec (nthreads: 2 speedup 7.05837)
+tricount time:         0.000009 sec (dot product method)
+tri+prep time:         0.000053 sec (incl time to compute L and U)
+compute C time:        0.000005 sec
+reduce (C) time:       0.000004 sec
+rate     2.31 million edges/sec (incl time for U=triu(A))
+rate    12.98 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000004 sec (nthreads: 4 speedup 9.18526)
 tricount time:         0.000008 sec (dot product method)
-tri+prep time:         0.000028 sec (incl time to compute L and U)
+tri+prep time:         0.000051 sec (incl time to compute L and U)
 compute C time:        0.000004 sec
-reduce (C) time:       0.000003 sec
-rate     4.43 million edges/sec (incl time for U=triu(A))
-rate    16.19 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000004 sec (nthreads: 4 speedup 4.66372)
+reduce (C) time:       0.000004 sec
+rate     2.39 million edges/sec (incl time for U=triu(A))
+rate    16.02 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000006 sec (nthreads: 8 speedup 6.37217)
+tricount time:         0.000010 sec (dot product method)
+tri+prep time:         0.000054 sec (incl time to compute L and U)
+compute C time:        0.000006 sec
+reduce (C) time:       0.000004 sec
+rate     2.28 million edges/sec (incl time for U=triu(A))
+rate    12.12 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000006 sec
+tricount time:         0.000010 sec (dot product method)
+tri+prep time:         0.000054 sec (incl time to compute L and U)
+compute C time:        0.000006 sec
+reduce (C) time:       0.000004 sec
+rate     2.29 million edges/sec (incl time for U=triu(A))
+rate    12.29 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000004 sec (nthreads: 2 speedup 1.65)
 tricount time:         0.000007 sec (dot product method)
-tri+prep time:         0.000027 sec (incl time to compute L and U)
+tri+prep time:         0.000051 sec (incl time to compute L and U)
 compute C time:        0.000004 sec
 reduce (C) time:       0.000003 sec
-rate     4.56 million edges/sec (incl time for U=triu(A))
+rate     2.43 million edges/sec (incl time for U=triu(A))
 rate    18.14 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000003 sec (nthreads: 8 speedup 4.82743)
-tricount time:         0.000006 sec (dot product method)
-tri+prep time:         0.000026 sec (incl time to compute L and U)
-compute C time:        0.000003 sec
-reduce (C) time:       0.000003 sec
-rate     4.70 million edges/sec (incl time for U=triu(A))
-rate    20.55 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000004 sec
-tricount time:         0.000007 sec (dot product method)
-tri+prep time:         0.000027 sec (incl time to compute L and U)
-compute C time:        0.000004 sec
-reduce (C) time:       0.000003 sec
-rate     4.53 million edges/sec (incl time for U=triu(A))
-rate    17.55 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000003 sec (nthreads: 2 speedup 1.17227)
-tricount time:         0.000006 sec (dot product method)
-tri+prep time:         0.000026 sec (incl time to compute L and U)
-compute C time:        0.000003 sec
-reduce (C) time:       0.000003 sec
-rate     4.64 million edges/sec (incl time for U=triu(A))
-rate    19.46 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000003 sec (nthreads: 4 speedup 1.1764)
-tricount time:         0.000006 sec (dot product method)
-tri+prep time:         0.000026 sec (incl time to compute L and U)
-compute C time:        0.000003 sec
-reduce (C) time:       0.000002 sec
-rate     4.73 million edges/sec (incl time for U=triu(A))
-rate    21.10 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000003 sec (nthreads: 8 speedup 1.22307)
-tricount time:         0.000006 sec (dot product method)
-tri+prep time:         0.000026 sec (incl time to compute L and U)
-compute C time:        0.000003 sec
-reduce (C) time:       0.000002 sec
-rate     4.76 million edges/sec (incl time for U=triu(A))
-rate    21.74 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000006 sec (nthreads: 4 speedup 1.08933)
+tricount time:         0.000010 sec (dot product method)
+tri+prep time:         0.000054 sec (incl time to compute L and U)
+compute C time:        0.000006 sec
+reduce (C) time:       0.000005 sec
+rate     2.27 million edges/sec (incl time for U=triu(A))
+rate    11.81 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000007 sec (nthreads: 8 speedup 0.944525)
+tricount time:         0.000012 sec (dot product method)
+tri+prep time:         0.000055 sec (incl time to compute L and U)
+compute C time:        0.000007 sec
+reduce (C) time:       0.000005 sec
+rate     2.22 million edges/sec (incl time for U=triu(A))
+rate    10.53 million edges/sec (just tricount itself)
 
 ----------------------------------- saxpy method:
-C<L>=L*L time (saxpy):         0.000020 sec
-tricount time:         0.000020 sec (saxpy method)
-tri+prep time:         0.000025 sec (incl time to compute L)
-compute C time:        0.000020 sec
+triangles, method 3: 0
+C<L>=L*L time (saxpy):         0.000038 sec
+tricount time:         0.000039 sec (saxpy method)
+tri+prep time:         0.000048 sec (incl time to compute L)
+compute C time:        0.000038 sec
+reduce (C) time:       0.000001 sec
+rate     2.59 million edges/sec (incl time for L=tril(A))
+rate     3.15 million edges/sec (just tricount itself)
+triangles, method 3: 0
+C<L>=L*L time (saxpy):         0.000018 sec (nthreads: 2 speedup 2.11677)
+tricount time:         0.000019 sec (saxpy method)
+tri+prep time:         0.000027 sec (incl time to compute L)
+compute C time:        0.000018 sec
+reduce (C) time:       0.000001 sec
+rate     4.52 million edges/sec (incl time for L=tril(A))
+rate     6.55 million edges/sec (just tricount itself)
+triangles, method 3: 0
+C<L>=L*L time (saxpy):         0.000018 sec (nthreads: 4 speedup 2.10611)
+tricount time:         0.000019 sec (saxpy method)
+tri+prep time:         0.000027 sec (incl time to compute L)
+compute C time:        0.000018 sec
+reduce (C) time:       0.000001 sec
+rate     4.52 million edges/sec (incl time for L=tril(A))
+rate     6.55 million edges/sec (just tricount itself)
+triangles, method 3: 0
+C<L>=L*L time (saxpy):         0.000030 sec (nthreads: 8 speedup 1.2624)
+tricount time:         0.000031 sec (saxpy method)
+tri+prep time:         0.000039 sec (incl time to compute L)
+compute C time:        0.000030 sec
+reduce (C) time:       0.000001 sec
+rate     3.12 million edges/sec (incl time for L=tril(A))
+rate     3.97 million edges/sec (just tricount itself)
+
+--------------------------------------------------------------
+matrix 63 by 63, 246 entries, from stdin
+
+total time to read A matrix:       0.000222 sec
+
+n 63 # edges 123
+U=triu(A) time:        0.000024 sec
+L=tril(A) time:        0.000005 sec
+
+------------------------------------- dot product method:
+# triangles 0
+L*U' time (dot):         0.000030 sec
+tricount time:         0.000037 sec (dot product method)
+tri+prep time:         0.000067 sec (incl time to compute L and U)
+compute C time:        0.000030 sec
+reduce (C) time:       0.000008 sec
+rate     1.84 million edges/sec (incl time for U=triu(A))
+rate     3.28 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000005 sec (nthreads: 2 speedup 6.03715)
+tricount time:         0.000008 sec (dot product method)
+tri+prep time:         0.000038 sec (incl time to compute L and U)
+compute C time:        0.000005 sec
+reduce (C) time:       0.000003 sec
+rate     3.26 million edges/sec (incl time for U=triu(A))
+rate    14.95 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000004 sec (nthreads: 4 speedup 7.86954)
+tricount time:         0.000007 sec (dot product method)
+tri+prep time:         0.000037 sec (incl time to compute L and U)
+compute C time:        0.000004 sec
+reduce (C) time:       0.000003 sec
+rate     3.36 million edges/sec (incl time for U=triu(A))
+rate    17.25 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000004 sec (nthreads: 8 speedup 8.28384)
+tricount time:         0.000006 sec (dot product method)
+tri+prep time:         0.000036 sec (incl time to compute L and U)
+compute C time:        0.000004 sec
+reduce (C) time:       0.000003 sec
+rate     3.45 million edges/sec (incl time for U=triu(A))
+rate    19.84 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000004 sec
+tricount time:         0.000007 sec (dot product method)
+tri+prep time:         0.000037 sec (incl time to compute L and U)
+compute C time:        0.000004 sec
+reduce (C) time:       0.000003 sec
+rate     3.35 million edges/sec (incl time for U=triu(A))
+rate    17.09 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000004 sec (nthreads: 2 speedup 1.06995)
+tricount time:         0.000007 sec (dot product method)
+tri+prep time:         0.000036 sec (incl time to compute L and U)
+compute C time:        0.000004 sec
+reduce (C) time:       0.000003 sec
+rate     3.37 million edges/sec (incl time for U=triu(A))
+rate    17.57 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000004 sec (nthreads: 4 speedup 1.17271)
+tricount time:         0.000006 sec (dot product method)
+tri+prep time:         0.000036 sec (incl time to compute L and U)
+compute C time:        0.000004 sec
+reduce (C) time:       0.000003 sec
+rate     3.46 million edges/sec (incl time for U=triu(A))
+rate    20.24 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000004 sec (nthreads: 8 speedup 1.19076)
+tricount time:         0.000006 sec (dot product method)
+tri+prep time:         0.000035 sec (incl time to compute L and U)
+compute C time:        0.000004 sec
+reduce (C) time:       0.000002 sec
+rate     3.47 million edges/sec (incl time for U=triu(A))
+rate    20.68 million edges/sec (just tricount itself)
+
+----------------------------------- saxpy method:
+triangles, method 3: 0
+C<L>=L*L time (saxpy):         0.000021 sec
+tricount time:         0.000022 sec (saxpy method)
+tri+prep time:         0.000027 sec (incl time to compute L)
+compute C time:        0.000021 sec
 reduce (C) time:       0.000000 sec
-rate     4.97 million edges/sec (incl time for L=tril(A))
-rate     6.07 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000012 sec (nthreads: 2 speedup 1.68975)
+rate     4.63 million edges/sec (incl time for L=tril(A))
+rate     5.69 million edges/sec (just tricount itself)
+triangles, method 3: 0
+C<L>=L*L time (saxpy):         0.000012 sec (nthreads: 2 speedup 1.768)
 tricount time:         0.000012 sec (saxpy method)
 tri+prep time:         0.000017 sec (incl time to compute L)
 compute C time:        0.000012 sec
 reduce (C) time:       0.000000 sec
-rate     7.44 million edges/sec (incl time for L=tril(A))
-rate    10.22 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000013 sec (nthreads: 4 speedup 1.59131)
-tricount time:         0.000013 sec (saxpy method)
-tri+prep time:         0.000017 sec (incl time to compute L)
-compute C time:        0.000013 sec
+rate     7.09 million edges/sec (incl time for L=tril(A))
+rate     9.95 million edges/sec (just tricount itself)
+triangles, method 3: 0
+C<L>=L*L time (saxpy):         0.000011 sec (nthreads: 4 speedup 1.90467)
+tricount time:         0.000012 sec (saxpy method)
+tri+prep time:         0.000016 sec (incl time to compute L)
+compute C time:        0.000011 sec
 reduce (C) time:       0.000000 sec
-rate     7.13 million edges/sec (incl time for L=tril(A))
-rate     9.63 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000017 sec (nthreads: 8 speedup 1.18573)
-tricount time:         0.000017 sec (saxpy method)
-tri+prep time:         0.000022 sec (incl time to compute L)
-compute C time:        0.000017 sec
-reduce (C) time:       0.000000 sec
-rate     5.69 million edges/sec (incl time for L=tril(A))
-rate     7.19 million edges/sec (just tricount itself)
-
---------------------------------------------------------------
-matrix 63 by 63, 246 entries, from stdin
-
-total time to read A matrix:       0.000170 sec
-
-n 63 # edges 123
-U=triu(A) time:        0.000021 sec
-L=tril(A) time:        0.000005 sec
-
-------------------------------------- dot product method:
-# triangles 0
-L*U' time (dot):         0.000016 sec
-tricount time:         0.000022 sec (dot product method)
-tri+prep time:         0.000048 sec (incl time to compute L and U)
-compute C time:        0.000016 sec
-reduce (C) time:       0.000006 sec
-rate     2.59 million edges/sec (incl time for U=triu(A))
-rate     5.63 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000007 sec (nthreads: 2 speedup 2.38811)
-tricount time:         0.000012 sec (dot product method)
-tri+prep time:         0.000038 sec (incl time to compute L and U)
-compute C time:        0.000007 sec
-reduce (C) time:       0.000005 sec
-rate     3.27 million edges/sec (incl time for U=triu(A))
-rate    10.33 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000007 sec (nthreads: 4 speedup 2.43022)
-tricount time:         0.000012 sec (dot product method)
-tri+prep time:         0.000037 sec (incl time to compute L and U)
-compute C time:        0.000007 sec
-reduce (C) time:       0.000005 sec
-rate     3.28 million edges/sec (incl time for U=triu(A))
-rate    10.43 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000006 sec (nthreads: 8 speedup 2.53585)
-tricount time:         0.000011 sec (dot product method)
-tri+prep time:         0.000037 sec (incl time to compute L and U)
-compute C time:        0.000006 sec
-reduce (C) time:       0.000005 sec
-rate     3.36 million edges/sec (incl time for U=triu(A))
-rate    11.28 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000007 sec
-tricount time:         0.000012 sec (dot product method)
-tri+prep time:         0.000037 sec (incl time to compute L and U)
-compute C time:        0.000007 sec
-reduce (C) time:       0.000005 sec
-rate     3.28 million edges/sec (incl time for U=triu(A))
-rate    10.40 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000006 sec (nthreads: 2 speedup 1.13474)
-tricount time:         0.000011 sec (dot product method)
-tri+prep time:         0.000036 sec (incl time to compute L and U)
-compute C time:        0.000006 sec
-reduce (C) time:       0.000005 sec
-rate     3.38 million edges/sec (incl time for U=triu(A))
-rate    11.43 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000006 sec (nthreads: 4 speedup 1.07643)
-tricount time:         0.000011 sec (dot product method)
-tri+prep time:         0.000037 sec (incl time to compute L and U)
-compute C time:        0.000006 sec
-reduce (C) time:       0.000005 sec
-rate     3.34 million edges/sec (incl time for U=triu(A))
-rate    11.04 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000006 sec (nthreads: 8 speedup 1.1264)
-tricount time:         0.000011 sec (dot product method)
-tri+prep time:         0.000036 sec (incl time to compute L and U)
-compute C time:        0.000006 sec
-reduce (C) time:       0.000005 sec
-rate     3.38 million edges/sec (incl time for U=triu(A))
-rate    11.45 million edges/sec (just tricount itself)
-
------------------------------------ saxpy method:
-C<L>=L*L time (saxpy):         0.000023 sec
-tricount time:         0.000023 sec (saxpy method)
-tri+prep time:         0.000028 sec (incl time to compute L)
-compute C time:        0.000023 sec
-reduce (C) time:       0.000000 sec
-rate     4.39 million edges/sec (incl time for L=tril(A))
-rate     5.29 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000018 sec (nthreads: 2 speedup 1.27137)
-tricount time:         0.000018 sec (saxpy method)
-tri+prep time:         0.000023 sec (incl time to compute L)
-compute C time:        0.000018 sec
-reduce (C) time:       0.000000 sec
-rate     5.33 million edges/sec (incl time for L=tril(A))
-rate     6.73 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000018 sec (nthreads: 4 speedup 1.29131)
-tricount time:         0.000018 sec (saxpy method)
-tri+prep time:         0.000023 sec (incl time to compute L)
-compute C time:        0.000018 sec
-reduce (C) time:       0.000000 sec
-rate     5.39 million edges/sec (incl time for L=tril(A))
-rate     6.83 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000020 sec (nthreads: 8 speedup 1.1211)
-tricount time:         0.000021 sec (saxpy method)
-tri+prep time:         0.000026 sec (incl time to compute L)
-compute C time:        0.000020 sec
-reduce (C) time:       0.000000 sec
-rate     4.82 million edges/sec (incl time for L=tril(A))
-rate     5.93 million edges/sec (just tricount itself)
-
---------------------------------------------------------------
-matrix 78 by 78, 204 entries, from stdin
-
-total time to read A matrix:       0.000157 sec
-
-n 78 # edges 102
-U=triu(A) time:        0.000015 sec
-L=tril(A) time:        0.000005 sec
-
-------------------------------------- dot product method:
-# triangles 0
-L*U' time (dot):         0.000021 sec
-tricount time:         0.000026 sec (dot product method)
-tri+prep time:         0.000047 sec (incl time to compute L and U)
-compute C time:        0.000021 sec
-reduce (C) time:       0.000006 sec
-rate     2.19 million edges/sec (incl time for U=triu(A))
-rate     3.88 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000004 sec (nthreads: 2 speedup 4.80607)
-tricount time:         0.000008 sec (dot product method)
-tri+prep time:         0.000028 sec (incl time to compute L and U)
-compute C time:        0.000004 sec
-reduce (C) time:       0.000003 sec
-rate     3.65 million edges/sec (incl time for U=triu(A))
-rate    13.29 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000004 sec (nthreads: 4 speedup 5.43748)
-tricount time:         0.000007 sec (dot product method)
-tri+prep time:         0.000027 sec (incl time to compute L and U)
-compute C time:        0.000004 sec
-reduce (C) time:       0.000003 sec
-rate     3.79 million edges/sec (incl time for U=triu(A))
-rate    15.37 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000003 sec (nthreads: 8 speedup 6.34682)
-tricount time:         0.000007 sec (dot product method)
-tri+prep time:         0.000027 sec (incl time to compute L and U)
-compute C time:        0.000003 sec
-reduce (C) time:       0.000004 sec
-rate     3.74 million edges/sec (incl time for U=triu(A))
-rate    14.49 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000004 sec
-tricount time:         0.000007 sec (dot product method)
-tri+prep time:         0.000028 sec (incl time to compute L and U)
-compute C time:        0.000004 sec
-reduce (C) time:       0.000003 sec
-rate     3.70 million edges/sec (incl time for U=triu(A))
-rate    13.98 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000003 sec (nthreads: 2 speedup 1.15271)
-tricount time:         0.000006 sec (dot product method)
-tri+prep time:         0.000027 sec (incl time to compute L and U)
-compute C time:        0.000003 sec
-reduce (C) time:       0.000003 sec
-rate     3.83 million edges/sec (incl time for U=triu(A))
-rate    16.06 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000003 sec (nthreads: 4 speedup 1.14478)
-tricount time:         0.000006 sec (dot product method)
-tri+prep time:         0.000026 sec (incl time to compute L and U)
-compute C time:        0.000003 sec
-reduce (C) time:       0.000003 sec
-rate     3.87 million edges/sec (incl time for U=triu(A))
-rate    16.79 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000003 sec (nthreads: 8 speedup 1.13797)
-tricount time:         0.000006 sec (dot product method)
-tri+prep time:         0.000026 sec (incl time to compute L and U)
-compute C time:        0.000003 sec
-reduce (C) time:       0.000003 sec
-rate     3.87 million edges/sec (incl time for U=triu(A))
-rate    16.68 million edges/sec (just tricount itself)
-
------------------------------------ saxpy method:
-C<L>=L*L time (saxpy):         0.000019 sec
-tricount time:         0.000019 sec (saxpy method)
-tri+prep time:         0.000024 sec (incl time to compute L)
-compute C time:        0.000019 sec
-reduce (C) time:       0.000000 sec
-rate     4.28 million edges/sec (incl time for L=tril(A))
-rate     5.35 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000012 sec (nthreads: 2 speedup 1.51135)
-tricount time:         0.000013 sec (saxpy method)
-tri+prep time:         0.000017 sec (incl time to compute L)
-compute C time:        0.000012 sec
-reduce (C) time:       0.000000 sec
-rate     5.86 million edges/sec (incl time for L=tril(A))
-rate     8.08 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000013 sec (nthreads: 4 speedup 1.43971)
+rate     7.46 million edges/sec (incl time for L=tril(A))
+rate    10.69 million edges/sec (just tricount itself)
+triangles, method 3: 0
+C<L>=L*L time (saxpy):         0.000013 sec (nthreads: 8 speedup 1.69722)
 tricount time:         0.000013 sec (saxpy method)
 tri+prep time:         0.000018 sec (incl time to compute L)
 compute C time:        0.000013 sec
 reduce (C) time:       0.000000 sec
-rate     5.66 million edges/sec (incl time for L=tril(A))
-rate     7.70 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000025 sec (nthreads: 8 speedup 0.737911)
-tricount time:         0.000026 sec (saxpy method)
-tri+prep time:         0.000030 sec (incl time to compute L)
-compute C time:        0.000025 sec
+rate     6.88 million edges/sec (incl time for L=tril(A))
+rate     9.53 million edges/sec (just tricount itself)
+
+--------------------------------------------------------------
+matrix 78 by 78, 204 entries, from stdin
+
+total time to read A matrix:       0.000178 sec
+
+n 78 # edges 102
+U=triu(A) time:        0.000021 sec
+L=tril(A) time:        0.000006 sec
+
+------------------------------------- dot product method:
+# triangles 0
+L*U' time (dot):         0.000031 sec
+tricount time:         0.000038 sec (dot product method)
+tri+prep time:         0.000066 sec (incl time to compute L and U)
+compute C time:        0.000031 sec
+reduce (C) time:       0.000008 sec
+rate     1.55 million edges/sec (incl time for U=triu(A))
+rate     2.66 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000005 sec (nthreads: 2 speedup 5.82485)
+tricount time:         0.000009 sec (dot product method)
+tri+prep time:         0.000036 sec (incl time to compute L and U)
+compute C time:        0.000005 sec
+reduce (C) time:       0.000004 sec
+rate     2.81 million edges/sec (incl time for U=triu(A))
+rate    11.53 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000004 sec (nthreads: 4 speedup 7.9056)
+tricount time:         0.000007 sec (dot product method)
+tri+prep time:         0.000034 sec (incl time to compute L and U)
+compute C time:        0.000004 sec
+reduce (C) time:       0.000003 sec
+rate     2.99 million edges/sec (incl time for U=triu(A))
+rate    15.34 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000003 sec (nthreads: 8 speedup 9.02629)
+tricount time:         0.000008 sec (dot product method)
+tri+prep time:         0.000035 sec (incl time to compute L and U)
+compute C time:        0.000003 sec
+reduce (C) time:       0.000005 sec
+rate     2.88 million edges/sec (incl time for U=triu(A))
+rate    12.84 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000006 sec
+tricount time:         0.000010 sec (dot product method)
+tri+prep time:         0.000037 sec (incl time to compute L and U)
+compute C time:        0.000006 sec
+reduce (C) time:       0.000004 sec
+rate     2.76 million edges/sec (incl time for U=triu(A))
+rate    10.69 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000004 sec (nthreads: 2 speedup 1.45911)
+tricount time:         0.000007 sec (dot product method)
+tri+prep time:         0.000034 sec (incl time to compute L and U)
+compute C time:        0.000004 sec
+reduce (C) time:       0.000003 sec
+rate     2.98 million edges/sec (incl time for U=triu(A))
+rate    15.00 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000004 sec (nthreads: 4 speedup 1.47275)
+tricount time:         0.000006 sec (dot product method)
+tri+prep time:         0.000034 sec (incl time to compute L and U)
+compute C time:        0.000004 sec
+reduce (C) time:       0.000003 sec
+rate     3.01 million edges/sec (incl time for U=triu(A))
+rate    15.96 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000003 sec (nthreads: 8 speedup 1.66235)
+tricount time:         0.000006 sec (dot product method)
+tri+prep time:         0.000033 sec (incl time to compute L and U)
+compute C time:        0.000003 sec
+reduce (C) time:       0.000002 sec
+rate     3.07 million edges/sec (incl time for U=triu(A))
+rate    17.70 million edges/sec (just tricount itself)
+
+----------------------------------- saxpy method:
+triangles, method 3: 0
+C<L>=L*L time (saxpy):         0.000030 sec
+tricount time:         0.000030 sec (saxpy method)
+tri+prep time:         0.000037 sec (incl time to compute L)
+compute C time:        0.000030 sec
+reduce (C) time:       0.000001 sec
+rate     2.77 million edges/sec (incl time for L=tril(A))
+rate     3.36 million edges/sec (just tricount itself)
+triangles, method 3: 0
+C<L>=L*L time (saxpy):         0.000013 sec (nthreads: 2 speedup 2.37011)
+tricount time:         0.000013 sec (saxpy method)
+tri+prep time:         0.000019 sec (incl time to compute L)
+compute C time:        0.000013 sec
 reduce (C) time:       0.000000 sec
-rate     3.35 million edges/sec (incl time for L=tril(A))
-rate     3.97 million edges/sec (just tricount itself)
+rate     5.29 million edges/sec (incl time for L=tril(A))
+rate     7.92 million edges/sec (just tricount itself)
+triangles, method 3: 0
+C<L>=L*L time (saxpy):         0.000013 sec (nthreads: 4 speedup 2.26979)
+tricount time:         0.000014 sec (saxpy method)
+tri+prep time:         0.000020 sec (incl time to compute L)
+compute C time:        0.000013 sec
+reduce (C) time:       0.000001 sec
+rate     5.06 million edges/sec (incl time for L=tril(A))
+rate     7.41 million edges/sec (just tricount itself)
+triangles, method 3: 0
+C<L>=L*L time (saxpy):         0.000026 sec (nthreads: 8 speedup 1.16697)
+tricount time:         0.000026 sec (saxpy method)
+tri+prep time:         0.000033 sec (incl time to compute L)
+compute C time:        0.000026 sec
+reduce (C) time:       0.000001 sec
+rate     3.13 million edges/sec (incl time for L=tril(A))
+rate     3.89 million edges/sec (just tricount itself)
 
 --------------------------------------------------------------
 matrix 982 by 982, 99840 entries, from stdin
 
-total time to read A matrix:       0.026821 sec
+total time to read A matrix:       0.027242 sec
 
 n 982 # edges 49920
-U=triu(A) time:        0.000158 sec
-L=tril(A) time:        0.000129 sec
+U=triu(A) time:        0.000163 sec
+L=tril(A) time:        0.000136 sec
 
 ------------------------------------- dot product method:
 # triangles 0
-L*U' time (dot):         0.000394 sec
-tricount time:         0.000486 sec (dot product method)
-tri+prep time:         0.000774 sec (incl time to compute L and U)
-compute C time:        0.000394 sec
-reduce (C) time:       0.000092 sec
-rate    64.51 million edges/sec (incl time for U=triu(A))
-rate   102.66 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000377 sec (nthreads: 2 speedup 1.04644)
-tricount time:         0.000466 sec (dot product method)
-tri+prep time:         0.000754 sec (incl time to compute L and U)
-compute C time:        0.000377 sec
-reduce (C) time:       0.000089 sec
-rate    66.22 million edges/sec (incl time for U=triu(A))
-rate   107.08 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000313 sec (nthreads: 4 speedup 1.26114)
-tricount time:         0.000402 sec (dot product method)
-tri+prep time:         0.000689 sec (incl time to compute L and U)
-compute C time:        0.000313 sec
-reduce (C) time:       0.000089 sec
-rate    72.41 million edges/sec (incl time for U=triu(A))
-rate   124.26 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000290 sec (nthreads: 8 speedup 1.35934)
-tricount time:         0.000417 sec (dot product method)
-tri+prep time:         0.000705 sec (incl time to compute L and U)
-compute C time:        0.000290 sec
-reduce (C) time:       0.000127 sec
-rate    70.85 million edges/sec (incl time for U=triu(A))
-rate   119.74 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000431 sec
-tricount time:         0.000554 sec (dot product method)
-tri+prep time:         0.000842 sec (incl time to compute L and U)
-compute C time:        0.000431 sec
-reduce (C) time:       0.000123 sec
-rate    59.32 million edges/sec (incl time for U=triu(A))
-rate    90.13 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000338 sec (nthreads: 2 speedup 1.2737)
-tricount time:         0.000428 sec (dot product method)
-tri+prep time:         0.000715 sec (incl time to compute L and U)
-compute C time:        0.000338 sec
-reduce (C) time:       0.000089 sec
-rate    69.78 million edges/sec (incl time for U=triu(A))
-rate   116.70 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000297 sec (nthreads: 4 speedup 1.45141)
-tricount time:         0.000385 sec (dot product method)
-tri+prep time:         0.000672 sec (incl time to compute L and U)
-compute C time:        0.000297 sec
-reduce (C) time:       0.000088 sec
-rate    74.26 million edges/sec (incl time for U=triu(A))
-rate   129.79 million edges/sec (just tricount itself)
-L*U' time (dot):         0.005728 sec (nthreads: 8 speedup 0.0752694)
-tricount time:         0.005857 sec (dot product method)
-tri+prep time:         0.006144 sec (incl time to compute L and U)
-compute C time:        0.005728 sec
-reduce (C) time:       0.000129 sec
-rate     8.12 million edges/sec (incl time for U=triu(A))
-rate     8.52 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000341 sec
+tricount time:         0.000413 sec (dot product method)
+tri+prep time:         0.000711 sec (incl time to compute L and U)
+compute C time:        0.000341 sec
+reduce (C) time:       0.000072 sec
+rate    70.16 million edges/sec (incl time for U=triu(A))
+rate   120.85 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000306 sec (nthreads: 2 speedup 1.11459)
+tricount time:         0.000369 sec (dot product method)
+tri+prep time:         0.000668 sec (incl time to compute L and U)
+compute C time:        0.000306 sec
+reduce (C) time:       0.000064 sec
+rate    74.75 million edges/sec (incl time for U=triu(A))
+rate   135.12 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000250 sec (nthreads: 4 speedup 1.36541)
+tricount time:         0.000314 sec (dot product method)
+tri+prep time:         0.000613 sec (incl time to compute L and U)
+compute C time:        0.000250 sec
+reduce (C) time:       0.000065 sec
+rate    81.48 million edges/sec (incl time for U=triu(A))
+rate   158.86 million edges/sec (just tricount itself)
+L*U' time (dot):         0.001259 sec (nthreads: 8 speedup 0.270668)
+tricount time:         0.001334 sec (dot product method)
+tri+prep time:         0.001632 sec (incl time to compute L and U)
+compute C time:        0.001259 sec
+reduce (C) time:       0.000075 sec
+rate    30.58 million edges/sec (incl time for U=triu(A))
+rate    37.42 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000366 sec
+tricount time:         0.000436 sec (dot product method)
+tri+prep time:         0.000734 sec (incl time to compute L and U)
+compute C time:        0.000366 sec
+reduce (C) time:       0.000070 sec
+rate    67.98 million edges/sec (incl time for U=triu(A))
+rate   114.50 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000291 sec (nthreads: 2 speedup 1.2581)
+tricount time:         0.000355 sec (dot product method)
+tri+prep time:         0.000654 sec (incl time to compute L and U)
+compute C time:        0.000291 sec
+reduce (C) time:       0.000064 sec
+rate    76.36 million edges/sec (incl time for U=triu(A))
+rate   140.49 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000247 sec (nthreads: 4 speedup 1.4854)
+tricount time:         0.000319 sec (dot product method)
+tri+prep time:         0.000617 sec (incl time to compute L and U)
+compute C time:        0.000247 sec
+reduce (C) time:       0.000072 sec
+rate    80.90 million edges/sec (incl time for U=triu(A))
+rate   156.64 million edges/sec (just tricount itself)
+L*U' time (dot):         0.002759 sec (nthreads: 8 speedup 0.132738)
+tricount time:         0.002832 sec (dot product method)
+tri+prep time:         0.003130 sec (incl time to compute L and U)
+compute C time:        0.002759 sec
+reduce (C) time:       0.000073 sec
+rate    15.95 million edges/sec (incl time for U=triu(A))
+rate    17.63 million edges/sec (just tricount itself)
 
 ----------------------------------- saxpy method:
-C<L>=L*L time (saxpy):         0.000281 sec
-tricount time:         0.000282 sec (saxpy method)
-tri+prep time:         0.000411 sec (incl time to compute L)
-compute C time:        0.000281 sec
+triangles, method 3: 0
+C<L>=L*L time (saxpy):         0.000248 sec
+tricount time:         0.000248 sec (saxpy method)
+tri+prep time:         0.000384 sec (incl time to compute L)
+compute C time:        0.000248 sec
 reduce (C) time:       0.000001 sec
-rate   121.51 million edges/sec (incl time for L=tril(A))
-rate   177.33 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000272 sec (nthreads: 2 speedup 1.03328)
-tricount time:         0.000272 sec (saxpy method)
-tri+prep time:         0.000402 sec (incl time to compute L)
-compute C time:        0.000272 sec
+rate   130.04 million edges/sec (incl time for L=tril(A))
+rate   200.99 million edges/sec (just tricount itself)
+triangles, method 3: 0
+C<L>=L*L time (saxpy):         0.000232 sec (nthreads: 2 speedup 1.06781)
+tricount time:         0.000233 sec (saxpy method)
+tri+prep time:         0.000368 sec (incl time to compute L)
+compute C time:        0.000232 sec
 reduce (C) time:       0.000001 sec
-rate   124.28 million edges/sec (incl time for L=tril(A))
-rate   183.31 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000196 sec (nthreads: 4 speedup 1.43261)
-tricount time:         0.000197 sec (saxpy method)
-tri+prep time:         0.000326 sec (incl time to compute L)
-compute C time:        0.000196 sec
+rate   135.59 million edges/sec (incl time for L=tril(A))
+rate   214.58 million edges/sec (just tricount itself)
+triangles, method 3: 0
+C<L>=L*L time (saxpy):         0.000231 sec (nthreads: 4 speedup 1.07507)
+tricount time:         0.000231 sec (saxpy method)
+tri+prep time:         0.000367 sec (incl time to compute L)
+compute C time:        0.000231 sec
 reduce (C) time:       0.000001 sec
-rate   153.13 million edges/sec (incl time for L=tril(A))
-rate   253.85 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000191 sec (nthreads: 8 speedup 1.4685)
-tricount time:         0.000192 sec (saxpy method)
-tri+prep time:         0.000321 sec (incl time to compute L)
-compute C time:        0.000191 sec
+rate   136.18 million edges/sec (incl time for L=tril(A))
+rate   216.05 million edges/sec (just tricount itself)
+triangles, method 3: 0
+C<L>=L*L time (saxpy):         0.000232 sec (nthreads: 8 speedup 1.06746)
+tricount time:         0.000233 sec (saxpy method)
+tri+prep time:         0.000368 sec (incl time to compute L)
+compute C time:        0.000232 sec
 reduce (C) time:       0.000001 sec
-rate   155.53 million edges/sec (incl time for L=tril(A))
-rate   260.51 million edges/sec (just tricount itself)
+rate   135.55 million edges/sec (incl time for L=tril(A))
+rate   214.48 million edges/sec (just tricount itself)
 
 --------------------------------------------------------------
 matrix 67 by 67, 574 entries, from stdin
 
-total time to read A matrix:       0.000263 sec
+total time to read A matrix:       0.000244 sec
 
 n 67 # edges 287
-U=triu(A) time:        0.000029 sec
+U=triu(A) time:        0.000023 sec
 L=tril(A) time:        0.000007 sec
 
 ------------------------------------- dot product method:
 # triangles 120
-L*U' time (dot):         0.000037 sec
-tricount time:         0.000047 sec (dot product method)
-tri+prep time:         0.000083 sec (incl time to compute L and U)
-compute C time:        0.000037 sec
-reduce (C) time:       0.000009 sec
-rate     3.46 million edges/sec (incl time for U=triu(A))
-rate     6.16 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000012 sec (nthreads: 2 speedup 3.08711)
+L*U' time (dot):         0.000029 sec
+tricount time:         0.000036 sec (dot product method)
+tri+prep time:         0.000066 sec (incl time to compute L and U)
+compute C time:        0.000029 sec
+reduce (C) time:       0.000007 sec
+rate     4.35 million edges/sec (incl time for U=triu(A))
+rate     7.90 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000012 sec (nthreads: 2 speedup 2.40315)
 tricount time:         0.000016 sec (dot product method)
-tri+prep time:         0.000053 sec (incl time to compute L and U)
+tri+prep time:         0.000046 sec (incl time to compute L and U)
 compute C time:        0.000012 sec
 reduce (C) time:       0.000004 sec
-rate     5.46 million edges/sec (incl time for U=triu(A))
-rate    17.74 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000010 sec (nthreads: 4 speedup 3.72583)
+rate     6.29 million edges/sec (incl time for U=triu(A))
+rate    18.03 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000010 sec (nthreads: 4 speedup 2.98421)
 tricount time:         0.000013 sec (dot product method)
-tri+prep time:         0.000050 sec (incl time to compute L and U)
+tri+prep time:         0.000043 sec (incl time to compute L and U)
 compute C time:        0.000010 sec
 reduce (C) time:       0.000003 sec
-rate     5.78 million edges/sec (incl time for U=triu(A))
-rate    21.63 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000009 sec (nthreads: 8 speedup 4.15757)
-tricount time:         0.000013 sec (dot product method)
-tri+prep time:         0.000049 sec (incl time to compute L and U)
+rate     6.69 million edges/sec (incl time for U=triu(A))
+rate    21.80 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000009 sec (nthreads: 8 speedup 3.27907)
+tricount time:         0.000012 sec (dot product method)
+tri+prep time:         0.000042 sec (incl time to compute L and U)
 compute C time:        0.000009 sec
 reduce (C) time:       0.000003 sec
-rate     5.87 million edges/sec (incl time for U=triu(A))
-rate    22.94 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000014 sec
-tricount time:         0.000018 sec (dot product method)
-tri+prep time:         0.000054 sec (incl time to compute L and U)
-compute C time:        0.000014 sec
-reduce (C) time:       0.000004 sec
-rate     5.30 million edges/sec (incl time for U=triu(A))
-rate    16.09 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000012 sec (nthreads: 2 speedup 1.16494)
+rate     6.89 million edges/sec (incl time for U=triu(A))
+rate    24.07 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000012 sec
 tricount time:         0.000016 sec (dot product method)
-tri+prep time:         0.000052 sec (incl time to compute L and U)
+tri+prep time:         0.000045 sec (incl time to compute L and U)
 compute C time:        0.000012 sec
 reduce (C) time:       0.000004 sec
-rate     5.53 million edges/sec (incl time for U=triu(A))
-rate    18.47 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000010 sec (nthreads: 4 speedup 1.32671)
+rate     6.31 million edges/sec (incl time for U=triu(A))
+rate    18.20 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000011 sec (nthreads: 2 speedup 1.12003)
 tricount time:         0.000014 sec (dot product method)
-tri+prep time:         0.000050 sec (incl time to compute L and U)
-compute C time:        0.000010 sec
+tri+prep time:         0.000044 sec (incl time to compute L and U)
+compute C time:        0.000011 sec
 reduce (C) time:       0.000003 sec
-rate     5.73 million edges/sec (incl time for U=triu(A))
-rate    20.90 million edges/sec (just tricount itself)
-L*U' time (dot):         0.000010 sec (nthreads: 8 speedup 1.42599)
+rate     6.59 million edges/sec (incl time for U=triu(A))
+rate    20.81 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000010 sec (nthreads: 4 speedup 1.22214)
 tricount time:         0.000012 sec (dot product method)
-tri+prep time:         0.000049 sec (incl time to compute L and U)
+tri+prep time:         0.000042 sec (incl time to compute L and U)
 compute C time:        0.000010 sec
 reduce (C) time:       0.000003 sec
-rate     5.89 million edges/sec (incl time for U=triu(A))
-rate    23.17 million edges/sec (just tricount itself)
+rate     6.81 million edges/sec (incl time for U=triu(A))
+rate    23.09 million edges/sec (just tricount itself)
+L*U' time (dot):         0.000009 sec (nthreads: 8 speedup 1.3117)
+tricount time:         0.000011 sec (dot product method)
+tri+prep time:         0.000041 sec (incl time to compute L and U)
+compute C time:        0.000009 sec
+reduce (C) time:       0.000002 sec
+rate     6.97 million edges/sec (incl time for U=triu(A))
+rate    25.02 million edges/sec (just tricount itself)
 
 ----------------------------------- saxpy method:
-C<L>=L*L time (saxpy):         0.000033 sec
-tricount time:         0.000033 sec (saxpy method)
-tri+prep time:         0.000040 sec (incl time to compute L)
-compute C time:        0.000033 sec
+triangles, method 3: 120
+C<L>=L*L time (saxpy):         0.000028 sec
+tricount time:         0.000029 sec (saxpy method)
+tri+prep time:         0.000035 sec (incl time to compute L)
+compute C time:        0.000028 sec
 reduce (C) time:       0.000001 sec
-rate     7.13 million edges/sec (incl time for L=tril(A))
-rate     8.64 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000015 sec (nthreads: 2 speedup 2.19723)
-tricount time:         0.000015 sec (saxpy method)
-tri+prep time:         0.000022 sec (incl time to compute L)
-compute C time:        0.000015 sec
+rate     8.17 million edges/sec (incl time for L=tril(A))
+rate    10.03 million edges/sec (just tricount itself)
+triangles, method 3: 120
+C<L>=L*L time (saxpy):         0.000016 sec (nthreads: 2 speedup 1.73448)
+tricount time:         0.000017 sec (saxpy method)
+tri+prep time:         0.000023 sec (incl time to compute L)
+compute C time:        0.000016 sec
 reduce (C) time:       0.000001 sec
-rate    12.81 million edges/sec (incl time for L=tril(A))
-rate    18.67 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000012 sec (nthreads: 4 speedup 2.71136)
-tricount time:         0.000013 sec (saxpy method)
+rate    12.39 million edges/sec (incl time for L=tril(A))
+rate    17.24 million edges/sec (just tricount itself)
+triangles, method 3: 120
+C<L>=L*L time (saxpy):         0.000013 sec (nthreads: 4 speedup 2.10791)
+tricount time:         0.000014 sec (saxpy method)
 tri+prep time:         0.000020 sec (incl time to compute L)
-compute C time:        0.000012 sec
-reduce (C) time:       0.000000 sec
-rate    14.69 million edges/sec (incl time for L=tril(A))
-rate    22.95 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.000012 sec (nthreads: 8 speedup 2.68857)
+compute C time:        0.000013 sec
+reduce (C) time:       0.000001 sec
+rate    14.15 million edges/sec (incl time for L=tril(A))
+rate    20.84 million edges/sec (just tricount itself)
+triangles, method 3: 120
+C<L>=L*L time (saxpy):         0.000012 sec (nthreads: 8 speedup 2.27045)
 tricount time:         0.000013 sec (saxpy method)
-tri+prep time:         0.000020 sec (incl time to compute L)
+tri+prep time:         0.000019 sec (incl time to compute L)
 compute C time:        0.000012 sec
 reduce (C) time:       0.000001 sec
-rate    14.56 million edges/sec (incl time for L=tril(A))
-rate    22.62 million edges/sec (just tricount itself)
+rate    14.77 million edges/sec (incl time for L=tril(A))
+rate    22.23 million edges/sec (just tricount itself)
 
 --------------------------------------------------------------
-Wathen: nx 200 ny 200 n 120801 nz 1762400 method 0, time: 0.133 sec
+Wathen: nx 200 ny 200 n 120801 nz 1762400 method 0, time: 0.126 sec
 
-total time to read A matrix:       0.135067 sec
+total time to read A matrix:       0.127766 sec
 
 n 120801 # edges 881200
-U=triu(A) time:        0.002560 sec
-L=tril(A) time:        0.002522 sec
+U=triu(A) time:        0.002563 sec
+L=tril(A) time:        0.002483 sec
 
 ------------------------------------- dot product method:
 # triangles 2160400
-L*U' time (dot):         0.034713 sec
-tricount time:         0.038972 sec (dot product method)
-tri+prep time:         0.044054 sec (incl time to compute L and U)
-compute C time:        0.034713 sec
-reduce (C) time:       0.004259 sec
-rate    20.00 million edges/sec (incl time for U=triu(A))
-rate    22.61 million edges/sec (just tricount itself)
-L*U' time (dot):         0.022245 sec (nthreads: 2 speedup 1.56046)
-tricount time:         0.026859 sec (dot product method)
-tri+prep time:         0.031941 sec (incl time to compute L and U)
-compute C time:        0.022245 sec
-reduce (C) time:       0.004614 sec
-rate    27.59 million edges/sec (incl time for U=triu(A))
-rate    32.81 million edges/sec (just tricount itself)
-L*U' time (dot):         0.006826 sec (nthreads: 4 speedup 5.08539)
-tricount time:         0.008731 sec (dot product method)
-tri+prep time:         0.013813 sec (incl time to compute L and U)
-compute C time:        0.006826 sec
-reduce (C) time:       0.001905 sec
-rate    63.79 million edges/sec (incl time for U=triu(A))
-rate   100.93 million edges/sec (just tricount itself)
-L*U' time (dot):         0.008368 sec (nthreads: 8 speedup 4.14848)
-tricount time:         0.010726 sec (dot product method)
-tri+prep time:         0.015808 sec (incl time to compute L and U)
-compute C time:        0.008368 sec
-reduce (C) time:       0.002358 sec
+L*U' time (dot):         0.031311 sec
+tricount time:         0.037246 sec (dot product method)
+tri+prep time:         0.042292 sec (incl time to compute L and U)
+compute C time:        0.031311 sec
+reduce (C) time:       0.005935 sec
+rate    20.84 million edges/sec (incl time for U=triu(A))
+rate    23.66 million edges/sec (just tricount itself)
+L*U' time (dot):         0.011505 sec (nthreads: 2 speedup 2.72157)
+tricount time:         0.014218 sec (dot product method)
+tri+prep time:         0.019264 sec (incl time to compute L and U)
+compute C time:        0.011505 sec
+reduce (C) time:       0.002713 sec
+rate    45.74 million edges/sec (incl time for U=triu(A))
+rate    61.98 million edges/sec (just tricount itself)
+L*U' time (dot):         0.007691 sec (nthreads: 4 speedup 4.07101)
+tricount time:         0.010764 sec (dot product method)
+tri+prep time:         0.015810 sec (incl time to compute L and U)
+compute C time:        0.007691 sec
+reduce (C) time:       0.003073 sec
 rate    55.74 million edges/sec (incl time for U=triu(A))
-rate    82.16 million edges/sec (just tricount itself)
-L*U' time (dot):         0.026884 sec
-tricount time:         0.031204 sec (dot product method)
-tri+prep time:         0.036286 sec (incl time to compute L and U)
-compute C time:        0.026884 sec
-reduce (C) time:       0.004320 sec
-rate    24.28 million edges/sec (incl time for U=triu(A))
-rate    28.24 million edges/sec (just tricount itself)
-L*U' time (dot):         0.013448 sec (nthreads: 2 speedup 1.99905)
-tricount time:         0.016759 sec (dot product method)
-tri+prep time:         0.021841 sec (incl time to compute L and U)
-compute C time:        0.013448 sec
-reduce (C) time:       0.003310 sec
-rate    40.35 million edges/sec (incl time for U=triu(A))
-rate    52.58 million edges/sec (just tricount itself)
-L*U' time (dot):         0.007162 sec (nthreads: 4 speedup 3.75373)
-tricount time:         0.009101 sec (dot product method)
-tri+prep time:         0.014183 sec (incl time to compute L and U)
-compute C time:        0.007162 sec
-reduce (C) time:       0.001939 sec
-rate    62.13 million edges/sec (incl time for U=triu(A))
-rate    96.83 million edges/sec (just tricount itself)
-L*U' time (dot):         0.008760 sec (nthreads: 8 speedup 3.069)
-tricount time:         0.011839 sec (dot product method)
-tri+prep time:         0.016921 sec (incl time to compute L and U)
-compute C time:        0.008760 sec
-reduce (C) time:       0.003079 sec
-rate    52.08 million edges/sec (incl time for U=triu(A))
-rate    74.43 million edges/sec (just tricount itself)
+rate    81.87 million edges/sec (just tricount itself)
+L*U' time (dot):         0.009845 sec (nthreads: 8 speedup 3.18048)
+tricount time:         0.011741 sec (dot product method)
+tri+prep time:         0.016787 sec (incl time to compute L and U)
+compute C time:        0.009845 sec
+reduce (C) time:       0.001896 sec
+rate    52.49 million edges/sec (incl time for U=triu(A))
+rate    75.05 million edges/sec (just tricount itself)
+L*U' time (dot):         0.023385 sec
+tricount time:         0.027309 sec (dot product method)
+tri+prep time:         0.032355 sec (incl time to compute L and U)
+compute C time:        0.023385 sec
+reduce (C) time:       0.003925 sec
+rate    27.24 million edges/sec (incl time for U=triu(A))
+rate    32.27 million edges/sec (just tricount itself)
+L*U' time (dot):         0.010843 sec (nthreads: 2 speedup 2.1567)
+tricount time:         0.013844 sec (dot product method)
+tri+prep time:         0.018890 sec (incl time to compute L and U)
+compute C time:        0.010843 sec
+reduce (C) time:       0.003001 sec
+rate    46.65 million edges/sec (incl time for U=triu(A))
+rate    63.65 million edges/sec (just tricount itself)
+L*U' time (dot):         0.007708 sec (nthreads: 4 speedup 3.03387)
+tricount time:         0.011627 sec (dot product method)
+tri+prep time:         0.016673 sec (incl time to compute L and U)
+compute C time:        0.007708 sec
+reduce (C) time:       0.003919 sec
+rate    52.85 million edges/sec (incl time for U=triu(A))
+rate    75.79 million edges/sec (just tricount itself)
+L*U' time (dot):         0.006164 sec (nthreads: 8 speedup 3.79354)
+tricount time:         0.008035 sec (dot product method)
+tri+prep time:         0.013081 sec (incl time to compute L and U)
+compute C time:        0.006164 sec
+reduce (C) time:       0.001871 sec
+rate    67.36 million edges/sec (incl time for U=triu(A))
+rate   109.67 million edges/sec (just tricount itself)
 
 ----------------------------------- saxpy method:
-C<L>=L*L time (saxpy):         0.023525 sec
-tricount time:         0.025656 sec (saxpy method)
-tri+prep time:         0.028178 sec (incl time to compute L)
-compute C time:        0.023525 sec
-reduce (C) time:       0.002131 sec
-rate    31.27 million edges/sec (incl time for L=tril(A))
-rate    34.35 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.011029 sec (nthreads: 2 speedup 2.13306)
-tricount time:         0.011980 sec (saxpy method)
-tri+prep time:         0.014502 sec (incl time to compute L)
-compute C time:        0.011029 sec
-reduce (C) time:       0.000951 sec
-rate    60.76 million edges/sec (incl time for L=tril(A))
-rate    73.56 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.005803 sec (nthreads: 4 speedup 4.05405)
-tricount time:         0.006265 sec (saxpy method)
-tri+prep time:         0.008787 sec (incl time to compute L)
-compute C time:        0.005803 sec
-reduce (C) time:       0.000462 sec
-rate   100.28 million edges/sec (incl time for L=tril(A))
-rate   140.65 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.006089 sec (nthreads: 8 speedup 3.86381)
-tricount time:         0.006851 sec (saxpy method)
-tri+prep time:         0.009374 sec (incl time to compute L)
-compute C time:        0.006089 sec
-reduce (C) time:       0.000763 sec
-rate    94.01 million edges/sec (incl time for L=tril(A))
-rate   128.62 million edges/sec (just tricount itself)
+triangles, method 3: 2160400
+C<L>=L*L time (saxpy):         0.028242 sec
+tricount time:         0.030344 sec (saxpy method)
+tri+prep time:         0.032826 sec (incl time to compute L)
+compute C time:        0.028242 sec
+reduce (C) time:       0.002101 sec
+rate    26.84 million edges/sec (incl time for L=tril(A))
+rate    29.04 million edges/sec (just tricount itself)
+triangles, method 3: 2160400
+C<L>=L*L time (saxpy):         0.024173 sec (nthreads: 2 speedup 1.16837)
+tricount time:         0.025586 sec (saxpy method)
+tri+prep time:         0.028068 sec (incl time to compute L)
+compute C time:        0.024173 sec
+reduce (C) time:       0.001413 sec
+rate    31.39 million edges/sec (incl time for L=tril(A))
+rate    34.44 million edges/sec (just tricount itself)
+triangles, method 3: 2160400
+C<L>=L*L time (saxpy):         0.012087 sec (nthreads: 4 speedup 2.33654)
+tricount time:         0.012740 sec (saxpy method)
+tri+prep time:         0.015223 sec (incl time to compute L)
+compute C time:        0.012087 sec
+reduce (C) time:       0.000653 sec
+rate    57.89 million edges/sec (incl time for L=tril(A))
+rate    69.17 million edges/sec (just tricount itself)
+triangles, method 3: 2160400
+C<L>=L*L time (saxpy):         0.008452 sec (nthreads: 8 speedup 3.34138)
+tricount time:         0.008817 sec (saxpy method)
+tri+prep time:         0.011300 sec (incl time to compute L)
+compute C time:        0.008452 sec
+reduce (C) time:       0.000365 sec
+rate    77.99 million edges/sec (incl time for L=tril(A))
+rate    99.94 million edges/sec (just tricount itself)
 
 --------------------------------------------------------------
 random 10000 by 10000, nz: 199768, method 0 time 0.023 sec
 
-total time to read A matrix:       0.023445 sec
+total time to read A matrix:       0.023617 sec
 
 n 10000 # edges 99884
-U=triu(A) time:        0.000208 sec
-L=tril(A) time:        0.000138 sec
+U=triu(A) time:        0.000328 sec
+L=tril(A) time:        0.000219 sec
 
 ------------------------------------- dot product method:
 # triangles 1357
-L*U' time (dot):         0.010097 sec
-tricount time:         0.010654 sec (dot product method)
-tri+prep time:         0.011000 sec (incl time to compute L and U)
-compute C time:        0.010097 sec
-reduce (C) time:       0.000557 sec
-rate     9.08 million edges/sec (incl time for U=triu(A))
-rate     9.38 million edges/sec (just tricount itself)
-L*U' time (dot):         0.005951 sec (nthreads: 2 speedup 1.69652)
-tricount time:         0.006160 sec (dot product method)
-tri+prep time:         0.006506 sec (incl time to compute L and U)
-compute C time:        0.005951 sec
-reduce (C) time:       0.000209 sec
-rate    15.35 million edges/sec (incl time for U=triu(A))
-rate    16.22 million edges/sec (just tricount itself)
-L*U' time (dot):         0.003291 sec (nthreads: 4 speedup 3.06807)
-tricount time:         0.003470 sec (dot product method)
-tri+prep time:         0.003816 sec (incl time to compute L and U)
-compute C time:        0.003291 sec
-reduce (C) time:       0.000179 sec
-rate    26.17 million edges/sec (incl time for U=triu(A))
-rate    28.78 million edges/sec (just tricount itself)
-L*U' time (dot):         0.005730 sec (nthreads: 8 speedup 1.76216)
-tricount time:         0.005924 sec (dot product method)
-tri+prep time:         0.006270 sec (incl time to compute L and U)
-compute C time:        0.005730 sec
-reduce (C) time:       0.000195 sec
-rate    15.93 million edges/sec (incl time for U=triu(A))
-rate    16.86 million edges/sec (just tricount itself)
-L*U' time (dot):         0.009789 sec
-tricount time:         0.010226 sec (dot product method)
-tri+prep time:         0.010572 sec (incl time to compute L and U)
-compute C time:        0.009789 sec
-reduce (C) time:       0.000436 sec
-rate     9.45 million edges/sec (incl time for U=triu(A))
-rate     9.77 million edges/sec (just tricount itself)
-L*U' time (dot):         0.005670 sec (nthreads: 2 speedup 1.72665)
-tricount time:         0.005965 sec (dot product method)
-tri+prep time:         0.006311 sec (incl time to compute L and U)
-compute C time:        0.005670 sec
-reduce (C) time:       0.000295 sec
-rate    15.83 million edges/sec (incl time for U=triu(A))
-rate    16.74 million edges/sec (just tricount itself)
-L*U' time (dot):         0.003481 sec (nthreads: 4 speedup 2.81227)
-tricount time:         0.003752 sec (dot product method)
-tri+prep time:         0.004098 sec (incl time to compute L and U)
-compute C time:        0.003481 sec
-reduce (C) time:       0.000271 sec
-rate    24.37 million edges/sec (incl time for U=triu(A))
-rate    26.62 million edges/sec (just tricount itself)
-L*U' time (dot):         0.003737 sec (nthreads: 8 speedup 2.61945)
-tricount time:         0.003946 sec (dot product method)
-tri+prep time:         0.004292 sec (incl time to compute L and U)
-compute C time:        0.003737 sec
-reduce (C) time:       0.000209 sec
-rate    23.27 million edges/sec (incl time for U=triu(A))
-rate    25.31 million edges/sec (just tricount itself)
+L*U' time (dot):         0.008270 sec
+tricount time:         0.008607 sec (dot product method)
+tri+prep time:         0.009154 sec (incl time to compute L and U)
+compute C time:        0.008270 sec
+reduce (C) time:       0.000337 sec
+rate    10.91 million edges/sec (incl time for U=triu(A))
+rate    11.60 million edges/sec (just tricount itself)
+L*U' time (dot):         0.004090 sec (nthreads: 2 speedup 2.02205)
+tricount time:         0.004246 sec (dot product method)
+tri+prep time:         0.004793 sec (incl time to compute L and U)
+compute C time:        0.004090 sec
+reduce (C) time:       0.000156 sec
+rate    20.84 million edges/sec (incl time for U=triu(A))
+rate    23.53 million edges/sec (just tricount itself)
+L*U' time (dot):         0.002451 sec (nthreads: 4 speedup 3.37446)
+tricount time:         0.002603 sec (dot product method)
+tri+prep time:         0.003150 sec (incl time to compute L and U)
+compute C time:        0.002451 sec
+reduce (C) time:       0.000153 sec
+rate    31.71 million edges/sec (incl time for U=triu(A))
+rate    38.37 million edges/sec (just tricount itself)
+L*U' time (dot):         0.002521 sec (nthreads: 8 speedup 3.28008)
+tricount time:         0.002687 sec (dot product method)
+tri+prep time:         0.003234 sec (incl time to compute L and U)
+compute C time:        0.002521 sec
+reduce (C) time:       0.000165 sec
+rate    30.89 million edges/sec (incl time for U=triu(A))
+rate    37.18 million edges/sec (just tricount itself)
+L*U' time (dot):         0.007348 sec
+tricount time:         0.007734 sec (dot product method)
+tri+prep time:         0.008280 sec (incl time to compute L and U)
+compute C time:        0.007348 sec
+reduce (C) time:       0.000386 sec
+rate    12.06 million edges/sec (incl time for U=triu(A))
+rate    12.92 million edges/sec (just tricount itself)
+L*U' time (dot):         0.004463 sec (nthreads: 2 speedup 1.64641)
+tricount time:         0.004677 sec (dot product method)
+tri+prep time:         0.005224 sec (incl time to compute L and U)
+compute C time:        0.004463 sec
+reduce (C) time:       0.000214 sec
+rate    19.12 million edges/sec (incl time for U=triu(A))
+rate    21.36 million edges/sec (just tricount itself)
+L*U' time (dot):         0.002655 sec (nthreads: 4 speedup 2.76719)
+tricount time:         0.002886 sec (dot product method)
+tri+prep time:         0.003433 sec (incl time to compute L and U)
+compute C time:        0.002655 sec
+reduce (C) time:       0.000231 sec
+rate    29.09 million edges/sec (incl time for U=triu(A))
+rate    34.60 million edges/sec (just tricount itself)
+L*U' time (dot):         0.004552 sec (nthreads: 8 speedup 1.61416)
+tricount time:         0.004864 sec (dot product method)
+tri+prep time:         0.005411 sec (incl time to compute L and U)
+compute C time:        0.004552 sec
+reduce (C) time:       0.000311 sec
+rate    18.46 million edges/sec (incl time for U=triu(A))
+rate    20.54 million edges/sec (just tricount itself)
 
 ----------------------------------- saxpy method:
-C<L>=L*L time (saxpy):         0.003094 sec
-tricount time:         0.003098 sec (saxpy method)
-tri+prep time:         0.003237 sec (incl time to compute L)
-compute C time:        0.003094 sec
+triangles, method 3: 1357
+C<L>=L*L time (saxpy):         0.003086 sec
+tricount time:         0.003091 sec (saxpy method)
+tri+prep time:         0.003310 sec (incl time to compute L)
+compute C time:        0.003086 sec
+reduce (C) time:       0.000005 sec
+rate    30.17 million edges/sec (incl time for L=tril(A))
+rate    32.31 million edges/sec (just tricount itself)
+triangles, method 3: 1357
+C<L>=L*L time (saxpy):         0.001912 sec (nthreads: 2 speedup 1.61403)
+tricount time:         0.001916 sec (saxpy method)
+tri+prep time:         0.002136 sec (incl time to compute L)
+compute C time:        0.001912 sec
 reduce (C) time:       0.000004 sec
-rate    30.86 million edges/sec (incl time for L=tril(A))
-rate    32.24 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.001952 sec (nthreads: 2 speedup 1.58528)
-tricount time:         0.001956 sec (saxpy method)
-tri+prep time:         0.002094 sec (incl time to compute L)
-compute C time:        0.001952 sec
+rate    46.77 million edges/sec (incl time for L=tril(A))
+rate    52.12 million edges/sec (just tricount itself)
+triangles, method 3: 1357
+C<L>=L*L time (saxpy):         0.001379 sec (nthreads: 4 speedup 2.23754)
+tricount time:         0.001383 sec (saxpy method)
+tri+prep time:         0.001603 sec (incl time to compute L)
+compute C time:        0.001379 sec
 reduce (C) time:       0.000004 sec
-rate    47.70 million edges/sec (incl time for L=tril(A))
-rate    51.07 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.001451 sec (nthreads: 4 speedup 2.13166)
-tricount time:         0.001456 sec (saxpy method)
-tri+prep time:         0.001594 sec (incl time to compute L)
-compute C time:        0.001451 sec
-reduce (C) time:       0.000004 sec
-rate    62.65 million edges/sec (incl time for L=tril(A))
-rate    68.60 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.001367 sec (nthreads: 8 speedup 2.26374)
-tricount time:         0.001373 sec (saxpy method)
-tri+prep time:         0.001511 sec (incl time to compute L)
-compute C time:        0.001367 sec
-reduce (C) time:       0.000006 sec
-rate    66.09 million edges/sec (incl time for L=tril(A))
-rate    72.75 million edges/sec (just tricount itself)
+rate    62.32 million edges/sec (incl time for L=tril(A))
+rate    72.20 million edges/sec (just tricount itself)
+triangles, method 3: 1357
+C<L>=L*L time (saxpy):         0.001191 sec (nthreads: 8 speedup 2.59029)
+tricount time:         0.001196 sec (saxpy method)
+tri+prep time:         0.001416 sec (incl time to compute L)
+compute C time:        0.001191 sec
+reduce (C) time:       0.000005 sec
+rate    70.56 million edges/sec (incl time for L=tril(A))
+rate    83.49 million edges/sec (just tricount itself)
 
 --------------------------------------------------------------
-random 10000 by 10000, nz: 199768, method 1 time 0.020 sec
+random 10000 by 10000, nz: 199768, method 1 time 0.018 sec
 
-total time to read A matrix:       0.020932 sec
+total time to read A matrix:       0.019086 sec
 
 n 10000 # edges 99884
-U=triu(A) time:        0.000217 sec
-L=tril(A) time:        0.000126 sec
+U=triu(A) time:        0.000581 sec
+L=tril(A) time:        0.000302 sec
 
 ------------------------------------- dot product method:
 # triangles 1357
-L*U' time (dot):         0.010906 sec
-tricount time:         0.011256 sec (dot product method)
-tri+prep time:         0.011598 sec (incl time to compute L and U)
-compute C time:        0.010906 sec
-reduce (C) time:       0.000350 sec
-rate     8.61 million edges/sec (incl time for U=triu(A))
-rate     8.87 million edges/sec (just tricount itself)
-L*U' time (dot):         0.006398 sec (nthreads: 2 speedup 1.70455)
-tricount time:         0.006774 sec (dot product method)
-tri+prep time:         0.007116 sec (incl time to compute L and U)
-compute C time:        0.006398 sec
-reduce (C) time:       0.000376 sec
-rate    14.04 million edges/sec (incl time for U=triu(A))
-rate    14.75 million edges/sec (just tricount itself)
-L*U' time (dot):         0.004006 sec (nthreads: 4 speedup 2.72215)
-tricount time:         0.004308 sec (dot product method)
-tri+prep time:         0.004651 sec (incl time to compute L and U)
-compute C time:        0.004006 sec
-reduce (C) time:       0.000302 sec
-rate    21.48 million edges/sec (incl time for U=triu(A))
-rate    23.19 million edges/sec (just tricount itself)
-L*U' time (dot):         0.006057 sec (nthreads: 8 speedup 1.80051)
-tricount time:         0.006477 sec (dot product method)
-tri+prep time:         0.006820 sec (incl time to compute L and U)
-compute C time:        0.006057 sec
+L*U' time (dot):         0.008025 sec
+tricount time:         0.008343 sec (dot product method)
+tri+prep time:         0.009226 sec (incl time to compute L and U)
+compute C time:        0.008025 sec
+reduce (C) time:       0.000319 sec
+rate    10.83 million edges/sec (incl time for U=triu(A))
+rate    11.97 million edges/sec (just tricount itself)
+L*U' time (dot):         0.004084 sec (nthreads: 2 speedup 1.96498)
+tricount time:         0.004253 sec (dot product method)
+tri+prep time:         0.005136 sec (incl time to compute L and U)
+compute C time:        0.004084 sec
+reduce (C) time:       0.000169 sec
+rate    19.45 million edges/sec (incl time for U=triu(A))
+rate    23.48 million edges/sec (just tricount itself)
+L*U' time (dot):         0.002465 sec (nthreads: 4 speedup 3.25503)
+tricount time:         0.002619 sec (dot product method)
+tri+prep time:         0.003501 sec (incl time to compute L and U)
+compute C time:        0.002465 sec
+reduce (C) time:       0.000154 sec
+rate    28.53 million edges/sec (incl time for U=triu(A))
+rate    38.14 million edges/sec (just tricount itself)
+L*U' time (dot):         0.002651 sec (nthreads: 8 speedup 3.02704)
+tricount time:         0.003370 sec (dot product method)
+tri+prep time:         0.004252 sec (incl time to compute L and U)
+compute C time:        0.002651 sec
+reduce (C) time:       0.000719 sec
+rate    23.49 million edges/sec (incl time for U=triu(A))
+rate    29.64 million edges/sec (just tricount itself)
+L*U' time (dot):         0.007855 sec
+tricount time:         0.008275 sec (dot product method)
+tri+prep time:         0.009157 sec (incl time to compute L and U)
+compute C time:        0.007855 sec
 reduce (C) time:       0.000420 sec
-rate    14.65 million edges/sec (incl time for U=triu(A))
-rate    15.42 million edges/sec (just tricount itself)
-L*U' time (dot):         0.011083 sec
-tricount time:         0.011476 sec (dot product method)
-tri+prep time:         0.011819 sec (incl time to compute L and U)
-compute C time:        0.011083 sec
-reduce (C) time:       0.000393 sec
-rate     8.45 million edges/sec (incl time for U=triu(A))
-rate     8.70 million edges/sec (just tricount itself)
-L*U' time (dot):         0.006107 sec (nthreads: 2 speedup 1.81493)
-tricount time:         0.006325 sec (dot product method)
-tri+prep time:         0.006668 sec (incl time to compute L and U)
-compute C time:        0.006107 sec
-reduce (C) time:       0.000219 sec
-rate    14.98 million edges/sec (incl time for U=triu(A))
-rate    15.79 million edges/sec (just tricount itself)
-L*U' time (dot):         0.003795 sec (nthreads: 4 speedup 2.92064)
-tricount time:         0.004084 sec (dot product method)
-tri+prep time:         0.004426 sec (incl time to compute L and U)
-compute C time:        0.003795 sec
-reduce (C) time:       0.000289 sec
-rate    22.57 million edges/sec (incl time for U=triu(A))
-rate    24.46 million edges/sec (just tricount itself)
-L*U' time (dot):         0.005885 sec (nthreads: 8 speedup 1.88311)
-tricount time:         0.006190 sec (dot product method)
-tri+prep time:         0.006532 sec (incl time to compute L and U)
-compute C time:        0.005885 sec
-reduce (C) time:       0.000304 sec
-rate    15.29 million edges/sec (incl time for U=triu(A))
-rate    16.14 million edges/sec (just tricount itself)
+rate    10.91 million edges/sec (incl time for U=triu(A))
+rate    12.07 million edges/sec (just tricount itself)
+L*U' time (dot):         0.004511 sec (nthreads: 2 speedup 1.7412)
+tricount time:         0.004818 sec (dot product method)
+tri+prep time:         0.005701 sec (incl time to compute L and U)
+compute C time:        0.004511 sec
+reduce (C) time:       0.000307 sec
+rate    17.52 million edges/sec (incl time for U=triu(A))
+rate    20.73 million edges/sec (just tricount itself)
+L*U' time (dot):         0.002717 sec (nthreads: 4 speedup 2.89116)
+tricount time:         0.002905 sec (dot product method)
+tri+prep time:         0.003787 sec (incl time to compute L and U)
+compute C time:        0.002717 sec
+reduce (C) time:       0.000188 sec
+rate    26.37 million edges/sec (incl time for U=triu(A))
+rate    34.39 million edges/sec (just tricount itself)
+L*U' time (dot):         0.002350 sec (nthreads: 8 speedup 3.34247)
+tricount time:         0.002517 sec (dot product method)
+tri+prep time:         0.003400 sec (incl time to compute L and U)
+compute C time:        0.002350 sec
+reduce (C) time:       0.000167 sec
+rate    29.38 million edges/sec (incl time for U=triu(A))
+rate    39.68 million edges/sec (just tricount itself)
 
 ----------------------------------- saxpy method:
-C<L>=L*L time (saxpy):         0.003407 sec
-tricount time:         0.003411 sec (saxpy method)
-tri+prep time:         0.003537 sec (incl time to compute L)
-compute C time:        0.003407 sec
+triangles, method 3: 1357
+C<L>=L*L time (saxpy):         0.002995 sec
+tricount time:         0.002999 sec (saxpy method)
+tri+prep time:         0.003301 sec (incl time to compute L)
+compute C time:        0.002995 sec
+reduce (C) time:       0.000004 sec
+rate    30.26 million edges/sec (incl time for L=tril(A))
+rate    33.31 million edges/sec (just tricount itself)
+triangles, method 3: 1357
+C<L>=L*L time (saxpy):         0.001938 sec (nthreads: 2 speedup 1.54549)
+tricount time:         0.001942 sec (saxpy method)
+tri+prep time:         0.002244 sec (incl time to compute L)
+compute C time:        0.001938 sec
 reduce (C) time:       0.000005 sec
-rate    28.24 million edges/sec (incl time for L=tril(A))
-rate    29.28 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.002249 sec (nthreads: 2 speedup 1.51486)
-tricount time:         0.002254 sec (saxpy method)
-tri+prep time:         0.002380 sec (incl time to compute L)
-compute C time:        0.002249 sec
+rate    44.51 million edges/sec (incl time for L=tril(A))
+rate    51.43 million edges/sec (just tricount itself)
+triangles, method 3: 1357
+C<L>=L*L time (saxpy):         0.001348 sec (nthreads: 4 speedup 2.22153)
+tricount time:         0.001352 sec (saxpy method)
+tri+prep time:         0.001654 sec (incl time to compute L)
+compute C time:        0.001348 sec
+reduce (C) time:       0.000004 sec
+rate    60.40 million edges/sec (incl time for L=tril(A))
+rate    73.86 million edges/sec (just tricount itself)
+triangles, method 3: 1357
+C<L>=L*L time (saxpy):         0.001254 sec (nthreads: 8 speedup 2.38776)
+tricount time:         0.001259 sec (saxpy method)
+tri+prep time:         0.001561 sec (incl time to compute L)
+compute C time:        0.001254 sec
 reduce (C) time:       0.000005 sec
-rate    41.98 million edges/sec (incl time for L=tril(A))
-rate    44.32 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.001689 sec (nthreads: 4 speedup 2.01672)
-tricount time:         0.001697 sec (saxpy method)
-tri+prep time:         0.001822 sec (incl time to compute L)
-compute C time:        0.001689 sec
-reduce (C) time:       0.000007 sec
-rate    54.81 million edges/sec (incl time for L=tril(A))
-rate    58.87 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         0.001550 sec (nthreads: 8 speedup 2.19831)
-tricount time:         0.001558 sec (saxpy method)
-tri+prep time:         0.001684 sec (incl time to compute L)
-compute C time:        0.001550 sec
-reduce (C) time:       0.000008 sec
-rate    59.32 million edges/sec (incl time for L=tril(A))
-rate    64.11 million edges/sec (just tricount itself)
+rate    63.99 million edges/sec (incl time for L=tril(A))
+rate    79.32 million edges/sec (just tricount itself)
 
 --------------------------------------------------------------
-random 100000 by 100000, nz: 19980330, method 0 time 2.288 sec
+random 100000 by 100000, nz: 19980330, method 0 time 2.296 sec
 
-total time to read A matrix:       2.312987 sec
+total time to read A matrix:       2.325069 sec
 
 n 100000 # edges 9990165
-U=triu(A) time:        0.018055 sec
-L=tril(A) time:        0.019905 sec
+U=triu(A) time:        0.017604 sec
+L=tril(A) time:        0.019649 sec
 
 ------------------------------------- dot product method:
 # triangles 1330131
-L*U' time (dot):        10.406264 sec
-tricount time:        10.444652 sec (dot product method)
-tri+prep time:        10.482612 sec (incl time to compute L and U)
-compute C time:       10.406264 sec
-reduce (C) time:       0.038388 sec
-rate     0.95 million edges/sec (incl time for U=triu(A))
-rate     0.96 million edges/sec (just tricount itself)
-L*U' time (dot):         5.500298 sec (nthreads: 2 speedup 1.89195)
-tricount time:         5.522717 sec (dot product method)
-tri+prep time:         5.560678 sec (incl time to compute L and U)
-compute C time:        5.500298 sec
-reduce (C) time:       0.022419 sec
-rate     1.80 million edges/sec (incl time for U=triu(A))
-rate     1.81 million edges/sec (just tricount itself)
-L*U' time (dot):         3.877952 sec (nthreads: 4 speedup 2.68344)
-tricount time:         3.897149 sec (dot product method)
-tri+prep time:         3.935109 sec (incl time to compute L and U)
-compute C time:        3.877952 sec
-reduce (C) time:       0.019197 sec
-rate     2.54 million edges/sec (incl time for U=triu(A))
-rate     2.56 million edges/sec (just tricount itself)
-L*U' time (dot):         2.696096 sec (nthreads: 8 speedup 3.85975)
-tricount time:         2.716718 sec (dot product method)
-tri+prep time:         2.754678 sec (incl time to compute L and U)
-compute C time:        2.696096 sec
-reduce (C) time:       0.020622 sec
-rate     3.63 million edges/sec (incl time for U=triu(A))
-rate     3.68 million edges/sec (just tricount itself)
-L*U' time (dot):        11.380700 sec
-tricount time:        11.415574 sec (dot product method)
-tri+prep time:        11.453534 sec (incl time to compute L and U)
-compute C time:       11.380700 sec
-reduce (C) time:       0.034874 sec
-rate     0.87 million edges/sec (incl time for U=triu(A))
-rate     0.88 million edges/sec (just tricount itself)
-L*U' time (dot):         6.448143 sec (nthreads: 2 speedup 1.76496)
-tricount time:         6.472799 sec (dot product method)
-tri+prep time:         6.510759 sec (incl time to compute L and U)
-compute C time:        6.448143 sec
-reduce (C) time:       0.024655 sec
-rate     1.53 million edges/sec (incl time for U=triu(A))
-rate     1.54 million edges/sec (just tricount itself)
-L*U' time (dot):         3.976479 sec (nthreads: 4 speedup 2.862)
-tricount time:         3.995512 sec (dot product method)
-tri+prep time:         4.033473 sec (incl time to compute L and U)
-compute C time:        3.976479 sec
-reduce (C) time:       0.019033 sec
-rate     2.48 million edges/sec (incl time for U=triu(A))
-rate     2.50 million edges/sec (just tricount itself)
-L*U' time (dot):         2.843621 sec (nthreads: 8 speedup 4.00219)
-tricount time:         2.863759 sec (dot product method)
-tri+prep time:         2.901720 sec (incl time to compute L and U)
-compute C time:        2.843621 sec
-reduce (C) time:       0.020138 sec
-rate     3.44 million edges/sec (incl time for U=triu(A))
-rate     3.49 million edges/sec (just tricount itself)
+L*U' time (dot):         7.128369 sec
+tricount time:         7.163533 sec (dot product method)
+tri+prep time:         7.200786 sec (incl time to compute L and U)
+compute C time:        7.128369 sec
+reduce (C) time:       0.035164 sec
+rate     1.39 million edges/sec (incl time for U=triu(A))
+rate     1.39 million edges/sec (just tricount itself)
+L*U' time (dot):         3.510440 sec (nthreads: 2 speedup 2.03062)
+tricount time:         3.532405 sec (dot product method)
+tri+prep time:         3.569658 sec (incl time to compute L and U)
+compute C time:        3.510440 sec
+reduce (C) time:       0.021965 sec
+rate     2.80 million edges/sec (incl time for U=triu(A))
+rate     2.83 million edges/sec (just tricount itself)
+L*U' time (dot):         1.912733 sec (nthreads: 4 speedup 3.7268)
+tricount time:         1.929098 sec (dot product method)
+tri+prep time:         1.966351 sec (incl time to compute L and U)
+compute C time:        1.912733 sec
+reduce (C) time:       0.016365 sec
+rate     5.08 million edges/sec (incl time for U=triu(A))
+rate     5.18 million edges/sec (just tricount itself)
+L*U' time (dot):         1.096600 sec (nthreads: 8 speedup 6.50043)
+tricount time:         1.113480 sec (dot product method)
+tri+prep time:         1.150733 sec (incl time to compute L and U)
+compute C time:        1.096600 sec
+reduce (C) time:       0.016880 sec
+rate     8.68 million edges/sec (incl time for U=triu(A))
+rate     8.97 million edges/sec (just tricount itself)
+L*U' time (dot):         8.085635 sec
+tricount time:         8.117637 sec (dot product method)
+tri+prep time:         8.154890 sec (incl time to compute L and U)
+compute C time:        8.085635 sec
+reduce (C) time:       0.032002 sec
+rate     1.23 million edges/sec (incl time for U=triu(A))
+rate     1.23 million edges/sec (just tricount itself)
+L*U' time (dot):         3.666974 sec (nthreads: 2 speedup 2.20499)
+tricount time:         3.686753 sec (dot product method)
+tri+prep time:         3.724006 sec (incl time to compute L and U)
+compute C time:        3.666974 sec
+reduce (C) time:       0.019779 sec
+rate     2.68 million edges/sec (incl time for U=triu(A))
+rate     2.71 million edges/sec (just tricount itself)
+L*U' time (dot):         2.156598 sec (nthreads: 4 speedup 3.74925)
+tricount time:         2.181005 sec (dot product method)
+tri+prep time:         2.218258 sec (incl time to compute L and U)
+compute C time:        2.156598 sec
+reduce (C) time:       0.024407 sec
+rate     4.50 million edges/sec (incl time for U=triu(A))
+rate     4.58 million edges/sec (just tricount itself)
+L*U' time (dot):         1.662084 sec (nthreads: 8 speedup 4.86476)
+tricount time:         1.681525 sec (dot product method)
+tri+prep time:         1.718778 sec (incl time to compute L and U)
+compute C time:        1.662084 sec
+reduce (C) time:       0.019441 sec
+rate     5.81 million edges/sec (incl time for U=triu(A))
+rate     5.94 million edges/sec (just tricount itself)
 
 ----------------------------------- saxpy method:
-C<L>=L*L time (saxpy):         5.509919 sec
-tricount time:         5.514612 sec (saxpy method)
-tri+prep time:         5.534517 sec (incl time to compute L)
-compute C time:        5.509919 sec
-reduce (C) time:       0.004693 sec
-rate     1.81 million edges/sec (incl time for L=tril(A))
-rate     1.81 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         3.173495 sec (nthreads: 2 speedup 1.73623)
-tricount time:         3.176608 sec (saxpy method)
-tri+prep time:         3.196513 sec (incl time to compute L)
-compute C time:        3.173495 sec
-reduce (C) time:       0.003114 sec
-rate     3.13 million edges/sec (incl time for L=tril(A))
-rate     3.14 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         1.828458 sec (nthreads: 4 speedup 3.01342)
-tricount time:         1.830920 sec (saxpy method)
-tri+prep time:         1.850825 sec (incl time to compute L)
-compute C time:        1.828458 sec
-reduce (C) time:       0.002462 sec
-rate     5.40 million edges/sec (incl time for L=tril(A))
-rate     5.46 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         2.238881 sec (nthreads: 8 speedup 2.46101)
-tricount time:         2.239755 sec (saxpy method)
-tri+prep time:         2.259660 sec (incl time to compute L)
-compute C time:        2.238881 sec
-reduce (C) time:       0.000873 sec
-rate     4.42 million edges/sec (incl time for L=tril(A))
-rate     4.46 million edges/sec (just tricount itself)
+triangles, method 3: 1330131
+C<L>=L*L time (saxpy):         5.713133 sec
+tricount time:         5.717672 sec (saxpy method)
+tri+prep time:         5.737321 sec (incl time to compute L)
+compute C time:        5.713133 sec
+reduce (C) time:       0.004539 sec
+rate     1.74 million edges/sec (incl time for L=tril(A))
+rate     1.75 million edges/sec (just tricount itself)
+triangles, method 3: 1330131
+C<L>=L*L time (saxpy):         3.236083 sec (nthreads: 2 speedup 1.76545)
+tricount time:         3.240762 sec (saxpy method)
+tri+prep time:         3.260411 sec (incl time to compute L)
+compute C time:        3.236083 sec
+reduce (C) time:       0.004679 sec
+rate     3.06 million edges/sec (incl time for L=tril(A))
+rate     3.08 million edges/sec (just tricount itself)
+triangles, method 3: 1330131
+C<L>=L*L time (saxpy):         2.169659 sec (nthreads: 4 speedup 2.63319)
+tricount time:         2.172323 sec (saxpy method)
+tri+prep time:         2.191972 sec (incl time to compute L)
+compute C time:        2.169659 sec
+reduce (C) time:       0.002664 sec
+rate     4.56 million edges/sec (incl time for L=tril(A))
+rate     4.60 million edges/sec (just tricount itself)
+triangles, method 3: 1330131
+C<L>=L*L time (saxpy):         2.109164 sec (nthreads: 8 speedup 2.70872)
+tricount time:         2.110115 sec (saxpy method)
+tri+prep time:         2.129765 sec (incl time to compute L)
+compute C time:        2.109164 sec
+reduce (C) time:       0.000952 sec
+rate     4.69 million edges/sec (incl time for L=tril(A))
+rate     4.73 million edges/sec (just tricount itself)
 
 --------------------------------------------------------------
-random 100000 by 100000, nz: 19980330, method 1 time 1.729 sec
+random 100000 by 100000, nz: 19980330, method 1 time 2.239 sec
 
-total time to read A matrix:       1.752646 sec
+total time to read A matrix:       2.273442 sec
 
 n 100000 # edges 9990165
-U=triu(A) time:        0.017521 sec
-L=tril(A) time:        0.019028 sec
+U=triu(A) time:        0.021285 sec
+L=tril(A) time:        0.019572 sec
 
 ------------------------------------- dot product method:
 # triangles 1330131
-L*U' time (dot):        10.763829 sec
-tricount time:        10.801652 sec (dot product method)
-tri+prep time:        10.838201 sec (incl time to compute L and U)
-compute C time:       10.763829 sec
-reduce (C) time:       0.037823 sec
-rate     0.92 million edges/sec (incl time for U=triu(A))
-rate     0.92 million edges/sec (just tricount itself)
-L*U' time (dot):         5.594314 sec (nthreads: 2 speedup 1.92407)
-tricount time:         5.620549 sec (dot product method)
-tri+prep time:         5.657098 sec (incl time to compute L and U)
-compute C time:        5.594314 sec
-reduce (C) time:       0.026235 sec
-rate     1.77 million edges/sec (incl time for U=triu(A))
-rate     1.78 million edges/sec (just tricount itself)
-L*U' time (dot):         3.932143 sec (nthreads: 4 speedup 2.7374)
-tricount time:         3.951585 sec (dot product method)
-tri+prep time:         3.988135 sec (incl time to compute L and U)
-compute C time:        3.932143 sec
-reduce (C) time:       0.019443 sec
-rate     2.50 million edges/sec (incl time for U=triu(A))
-rate     2.53 million edges/sec (just tricount itself)
-L*U' time (dot):         2.689850 sec (nthreads: 8 speedup 4.00165)
-tricount time:         2.710086 sec (dot product method)
-tri+prep time:         2.746635 sec (incl time to compute L and U)
-compute C time:        2.689850 sec
-reduce (C) time:       0.020236 sec
-rate     3.64 million edges/sec (incl time for U=triu(A))
-rate     3.69 million edges/sec (just tricount itself)
-L*U' time (dot):        10.959365 sec
-tricount time:        10.994169 sec (dot product method)
-tri+prep time:        11.030718 sec (incl time to compute L and U)
-compute C time:       10.959365 sec
-reduce (C) time:       0.034805 sec
-rate     0.91 million edges/sec (incl time for U=triu(A))
-rate     0.91 million edges/sec (just tricount itself)
-L*U' time (dot):         6.370761 sec (nthreads: 2 speedup 1.72026)
-tricount time:         6.394619 sec (dot product method)
-tri+prep time:         6.431168 sec (incl time to compute L and U)
-compute C time:        6.370761 sec
-reduce (C) time:       0.023858 sec
-rate     1.55 million edges/sec (incl time for U=triu(A))
-rate     1.56 million edges/sec (just tricount itself)
-L*U' time (dot):         3.950553 sec (nthreads: 4 speedup 2.77413)
-tricount time:         3.970562 sec (dot product method)
-tri+prep time:         4.007111 sec (incl time to compute L and U)
-compute C time:        3.950553 sec
-reduce (C) time:       0.020008 sec
-rate     2.49 million edges/sec (incl time for U=triu(A))
-rate     2.52 million edges/sec (just tricount itself)
-L*U' time (dot):         2.815654 sec (nthreads: 8 speedup 3.8923)
-tricount time:         2.836292 sec (dot product method)
-tri+prep time:         2.872841 sec (incl time to compute L and U)
-compute C time:        2.815654 sec
-reduce (C) time:       0.020638 sec
-rate     3.48 million edges/sec (incl time for U=triu(A))
-rate     3.52 million edges/sec (just tricount itself)
+L*U' time (dot):         7.395066 sec
+tricount time:         7.429692 sec (dot product method)
+tri+prep time:         7.470549 sec (incl time to compute L and U)
+compute C time:        7.395066 sec
+reduce (C) time:       0.034626 sec
+rate     1.34 million edges/sec (incl time for U=triu(A))
+rate     1.34 million edges/sec (just tricount itself)
+L*U' time (dot):         3.486968 sec (nthreads: 2 speedup 2.12077)
+tricount time:         3.508906 sec (dot product method)
+tri+prep time:         3.549763 sec (incl time to compute L and U)
+compute C time:        3.486968 sec
+reduce (C) time:       0.021938 sec
+rate     2.81 million edges/sec (incl time for U=triu(A))
+rate     2.85 million edges/sec (just tricount itself)
+L*U' time (dot):         2.862556 sec (nthreads: 4 speedup 2.58338)
+tricount time:         2.902115 sec (dot product method)
+tri+prep time:         2.942972 sec (incl time to compute L and U)
+compute C time:        2.862556 sec
+reduce (C) time:       0.039559 sec
+rate     3.39 million edges/sec (incl time for U=triu(A))
+rate     3.44 million edges/sec (just tricount itself)
+L*U' time (dot):         1.379506 sec (nthreads: 8 speedup 5.36066)
+tricount time:         1.406556 sec (dot product method)
+tri+prep time:         1.447413 sec (incl time to compute L and U)
+compute C time:        1.379506 sec
+reduce (C) time:       0.027050 sec
+rate     6.90 million edges/sec (incl time for U=triu(A))
+rate     7.10 million edges/sec (just tricount itself)
+L*U' time (dot):        13.986013 sec
+tricount time:        14.047180 sec (dot product method)
+tri+prep time:        14.088037 sec (incl time to compute L and U)
+compute C time:       13.986013 sec
+reduce (C) time:       0.061167 sec
+rate     0.71 million edges/sec (incl time for U=triu(A))
+rate     0.71 million edges/sec (just tricount itself)
+L*U' time (dot):         5.212362 sec (nthreads: 2 speedup 2.68324)
+tricount time:         5.232665 sec (dot product method)
+tri+prep time:         5.273522 sec (incl time to compute L and U)
+compute C time:        5.212362 sec
+reduce (C) time:       0.020303 sec
+rate     1.89 million edges/sec (incl time for U=triu(A))
+rate     1.91 million edges/sec (just tricount itself)
+L*U' time (dot):         2.603460 sec (nthreads: 4 speedup 5.37209)
+tricount time:         2.621100 sec (dot product method)
+tri+prep time:         2.661957 sec (incl time to compute L and U)
+compute C time:        2.603460 sec
+reduce (C) time:       0.017640 sec
+rate     3.75 million edges/sec (incl time for U=triu(A))
+rate     3.81 million edges/sec (just tricount itself)
+L*U' time (dot):         1.643353 sec (nthreads: 8 speedup 8.51066)
+tricount time:         1.678784 sec (dot product method)
+tri+prep time:         1.719641 sec (incl time to compute L and U)
+compute C time:        1.643353 sec
+reduce (C) time:       0.035431 sec
+rate     5.81 million edges/sec (incl time for U=triu(A))
+rate     5.95 million edges/sec (just tricount itself)
 
 ----------------------------------- saxpy method:
-C<L>=L*L time (saxpy):         5.317642 sec
-tricount time:         5.322329 sec (saxpy method)
-tri+prep time:         5.341357 sec (incl time to compute L)
-compute C time:        5.317642 sec
-reduce (C) time:       0.004687 sec
-rate     1.87 million edges/sec (incl time for L=tril(A))
-rate     1.88 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         2.962654 sec (nthreads: 2 speedup 1.79489)
-tricount time:         2.965725 sec (saxpy method)
-tri+prep time:         2.984754 sec (incl time to compute L)
-compute C time:        2.962654 sec
-reduce (C) time:       0.003071 sec
-rate     3.35 million edges/sec (incl time for L=tril(A))
-rate     3.37 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         1.746472 sec (nthreads: 4 speedup 3.04479)
-tricount time:         1.748662 sec (saxpy method)
-tri+prep time:         1.767690 sec (incl time to compute L)
-compute C time:        1.746472 sec
-reduce (C) time:       0.002190 sec
-rate     5.65 million edges/sec (incl time for L=tril(A))
-rate     5.71 million edges/sec (just tricount itself)
-C<L>=L*L time (saxpy):         1.784942 sec (nthreads: 8 speedup 2.97917)
-tricount time:         1.785944 sec (saxpy method)
-tri+prep time:         1.804972 sec (incl time to compute L)
-compute C time:        1.784942 sec
-reduce (C) time:       0.001002 sec
-rate     5.53 million edges/sec (incl time for L=tril(A))
-rate     5.59 million edges/sec (just tricount itself)
+triangles, method 3: 1330131
+C<L>=L*L time (saxpy):         8.392654 sec
+tricount time:         8.397451 sec (saxpy method)
+tri+prep time:         8.417023 sec (incl time to compute L)
+compute C time:        8.392654 sec
+reduce (C) time:       0.004796 sec
+rate     1.19 million edges/sec (incl time for L=tril(A))
+rate     1.19 million edges/sec (just tricount itself)
+triangles, method 3: 1330131
+C<L>=L*L time (saxpy):         3.096104 sec (nthreads: 2 speedup 2.71071)
+tricount time:         3.099485 sec (saxpy method)
+tri+prep time:         3.119057 sec (incl time to compute L)
+compute C time:        3.096104 sec
+reduce (C) time:       0.003381 sec
+rate     3.20 million edges/sec (incl time for L=tril(A))
+rate     3.22 million edges/sec (just tricount itself)
+triangles, method 3: 1330131
+C<L>=L*L time (saxpy):         1.860165 sec (nthreads: 4 speedup 4.51178)
+tricount time:         1.862493 sec (saxpy method)
+tri+prep time:         1.882065 sec (incl time to compute L)
+compute C time:        1.860165 sec
+reduce (C) time:       0.002328 sec
+rate     5.31 million edges/sec (incl time for L=tril(A))
+rate     5.36 million edges/sec (just tricount itself)
+triangles, method 3: 1330131
+C<L>=L*L time (saxpy):         2.169445 sec (nthreads: 8 speedup 3.86857)
+tricount time:         2.170250 sec (saxpy method)
+tri+prep time:         2.189823 sec (incl time to compute L)
+compute C time:        2.169445 sec
+reduce (C) time:       0.000806 sec
+rate     4.56 million edges/sec (incl time for L=tril(A))
+rate     4.60 million edges/sec (just tricount itself)
 

@@ -7,6 +7,11 @@
 
 //------------------------------------------------------------------------------
 
+// Usage
+
+// b = gbburble ;
+// b = gbburble (b) ;
+
 #include "gb_matlab.h"
 
 void mexFunction
@@ -35,17 +40,17 @@ void mexFunction
     { 
         // set the burble
         if (gb_mxarray_is_scalar (pargin [0]))
-        {
+        { 
             // argument is a numeric scalar
             b = (bool) mxGetScalar (pargin [0]) ;
         }
         else if (mxIsLogicalScalar (pargin [0]))
-        {
+        { 
             // argument is a logical scalar
             b = (bool) mxIsLogicalScalarTrue (pargin [0]) ;
         }
         else
-        {
+        { 
             ERROR ("input must be a scalar") ;
         }
         OK (GxB_Global_Option_set (GxB_BURBLE, b)) ;

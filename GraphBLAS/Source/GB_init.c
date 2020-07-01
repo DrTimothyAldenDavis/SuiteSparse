@@ -7,49 +7,31 @@
 
 //------------------------------------------------------------------------------
 
-// GrB_init (or GxB_init) must called before any other GraphBLAS operation;
-// both rely on this internal function.  If GraphBLAS is used by multiple user
-// threads, only one can call GrB_init or GxB_init.
+// GrB_init, GxB_init, or GxB_cuda_init must called before any other GraphBLAS
+// operation; all three rely on this internal function.  If GraphBLAS is used
+// by multiple user threads, only one can call GrB_init, GxB_init or
+// GxB_cuda_init.
 
 // Result are undefined if multiple user threads simultaneously
-// call GrB_init (or GxB_init).
+// call GrB_init, GxB_init, or GxB_cuda_init.
 
 // GrB_finalize must be called as the last GraphBLAS operation.
 
-// GrB_init or GxB_init define the mode that GraphBLAS will use:  blocking or
-// non-blocking.  With blocking mode, all operations finish before returning to
-// the user application.  With non-blocking mode, operations can be left
-// pending, and are computed only when needed.
+// GrB_init, GxB_init, or GxB_cuda_init define the mode that GraphBLAS will
+// use:  blocking or non-blocking.  With blocking mode, all operations finish
+// before returning to the user application.  With non-blocking mode,
+// operations can be left pending, and are computed only when needed.
 
 // GxB_init is the same as GrB_init except that it also defines the
 // malloc/calloc/realloc/free functions to use.
 
+// GxB_cuda_init is the same as GrB_init, except that it passes in
+// caller_is_GxB_cuda_init as true to this function.  GxB_init and GrB_init
+// both pass this flag in as false.
+
+#include "GB.h"
 #include "GB_thread_local.h"
-
-//------------------------------------------------------------------------------
-// critical section for user threads
-//------------------------------------------------------------------------------
-
-// User-level threads may call GraphBLAS in parallel, so the access to the
-// global queue for GrB_wait must be protected by a critical section.  The
-// critical section method should match the user threading model.
-
-#if defined (USER_POSIX_THREADS)
-// for user applications that use POSIX pthreads
-pthread_mutex_t GB_sync ;
-
-#elif defined (USER_WINDOWS_THREADS)
-// for user applications that use Windows threads (not yet supported)
-CRITICAL_SECTION GB_sync ; 
-
-#elif defined (USER_ANSI_THREADS)
-// for user applications that use ANSI C11 threads (not yet supported)
-mtx_t GB_sync ;
-
-#else // USER_OPENMP_THREADS, or USER_NO_THREADS
-// nothing to do for OpenMP, or for no user threading
-
-#endif
+#include "GB_mkl.h"
 
 //------------------------------------------------------------------------------
 // GB_init
@@ -65,6 +47,8 @@ GrB_Info GB_init            // start up GraphBLAS
     void * (* realloc_function ) (void *, size_t),
     void   (* free_function    ) (void *),
     bool malloc_is_thread_safe,
+
+    bool caller_is_GxB_cuda_init,       // true for GxB_cuda_init only
 
     GB_Context Context      // from GrB_init or GxB_init
 )
@@ -95,12 +79,42 @@ GrB_Info GB_init            // start up GraphBLAS
     //--------------------------------------------------------------------------
 
     // GrB_init passes in the ANSI C11 malloc/calloc/realloc/free
+    // GxB_cuda_init passes in NULL pointers; they are now defined below.
+
+    if (caller_is_GxB_cuda_init)
+    {
+        #if defined ( GBCUDA )
+        // CUDA is available at compile time, and requested at run time via
+        // GxB_cuda_init.  Use CUDA unified memory management functions.
+        malloc_function = GxB_cuda_malloc ;
+        calloc_function = GxB_cuda_calloc ;
+        realloc_function = NULL ;
+        free_function = GxB_cuda_free ;
+        #else
+        // CUDA not available at compile time.  Use ANSI C memory managment
+        // functions instead, even though the caller is GxB_cuda_init.
+        // No GPUs will be used.
+        malloc_function = malloc ;
+        calloc_function = calloc ;
+        realloc_function = realloc ;
+        free_function = free ;
+        #endif
+    }
 
     GB_Global_malloc_function_set  (malloc_function ) ;
     GB_Global_calloc_function_set  (calloc_function ) ;
     GB_Global_realloc_function_set (realloc_function) ;
     GB_Global_free_function_set    (free_function   ) ;
     GB_Global_malloc_is_thread_safe_set (malloc_is_thread_safe) ;
+
+    #if GB_HAS_MKL_GRAPH
+    printf ("MKL version: %d\n", GB_INTEL_MKL_VERSION) ;
+    // also set the MKL allocator functions
+    i_malloc  = malloc_function ;
+    i_calloc  = calloc_function ;
+    i_realloc = realloc_function ;
+    i_free    = free_function ;
+    #endif
 
     //--------------------------------------------------------------------------
     // max number of threads
@@ -116,57 +130,30 @@ GrB_Info GB_init            // start up GraphBLAS
     GB_Global_chunk_set (GB_CHUNK_DEFAULT) ;
 
     //--------------------------------------------------------------------------
+    // control usage of Intel MKL
+    //--------------------------------------------------------------------------
+
+    GB_Global_use_mkl_set (false) ;
+
+    //--------------------------------------------------------------------------
     // initialize thread-local storage
     //--------------------------------------------------------------------------
 
     if (!GB_thread_local_init (free_function)) GB_PANIC ;
 
-    //--------------------------------------------------------------------------
-    // create the mutex for the critical section
-    //--------------------------------------------------------------------------
-
     #if defined (USER_POSIX_THREADS)
     {
-        // initialize the critical section for POSIX pthreads
+        // TODO in 4.0: delete
         bool ok = (pthread_mutex_init (&GB_sync, NULL) == 0) ;
         if (!ok) GB_PANIC ;
-    }
-
-    #elif defined (USER_WINDOWS_THREADS)
-    {
-        // initialize the critical section for Microsoft Windows.
-        // This is not yet supported.  See:
-        // https://docs.microsoft.com/en-us/windows/desktop/sync
-        //  /using-critical-section-objects
-        bool ok = InitializeCriticalSectionAndSpinCount (&GB_sync, 0x00000400) ;
-        // also do whatever Windows needs for thread-local-storage
-        if (!ok) GB_PANIC ;
-    }
-
-    #elif defined (USER_ANSI_THREADS)
-    {
-        // initialize the critical section for ANSI C11 threads
-        // This should work but is not yet supported.
-        bool ok = (mtx_init (&GB_sync, mtx_plain) == thrd_success) ;
-        if (!ok) GB_PANIC ;
-    }
-
-    #else // _OPENMP, USER_OPENMP_THREADS, or USER_NO_THREADS
-    { 
-        // no need to initialize anything for OpenMP
-        ;
     }
     #endif
 
     //--------------------------------------------------------------------------
-    // initialize the global queue
+    // initialize the blocking/nonblocking mode
     //--------------------------------------------------------------------------
 
-    // clear the queue of matrices for nonblocking mode and set the mode.  The
-    // queue must be protected and can be initialized only once by any thread.
-
-    // clear the queue
-    GB_Global_queue_head_set (NULL) ;
+    GB_Global_queue_head_set (NULL) ;   // TODO in 4.0: delete
 
     // set the mode: blocking or nonblocking
     GB_Global_mode_set (mode) ;
@@ -189,13 +176,50 @@ GrB_Info GB_init            // start up GraphBLAS
     GB_Global_nmalloc_clear ( ) ;
     GB_Global_malloc_debug_set (false) ;
     GB_Global_malloc_debug_count_set (0) ;
-    GB_Global_inuse_clear ( ) ;
 
     //--------------------------------------------------------------------------
     // development use only; controls diagnostic output
     //--------------------------------------------------------------------------
 
     GB_Global_burble_set (false) ;
+
+    //--------------------------------------------------------------------------
+    // CUDA initializations
+    //--------------------------------------------------------------------------
+
+    // If CUDA exists (#define GBCUDA) and if the caller is GxB_cuda_init, then
+    // query the system for the # of GPUs available, their memory sizes, SM
+    // counts, and other capabilities.  Unified Memory support is assumed.
+    // Then warmup each GPU.
+
+    #if defined ( GBCUDA )
+    if (caller_is_GxB_cuda_init)
+    {
+        // query the system for the # of GPUs
+        GB_Global_gpu_control_set (GxB_DEFAULT) ;
+        if (!GB_Global_gpu_count_set (true)) GB_PANIC ;
+        int gpu_count = GB_Global_gpu_count_get ( ) ;
+        fprintf (stderr, "gpu_count: %d\n", gpu_count) ;
+        for (int device = 0 ; device < gpu_count ; device++)
+        {
+            // query the GPU and then warm it up
+            if (!GB_Global_gpu_device_properties_get (device)) GB_PANIC ;
+            if (!GB_cuda_warmup (device)) GB_PANIC ;
+            fprintf (stderr, "gpu %d memory %g Gbytes, %d SMs\n", device,
+                ((double) GB_Global_gpu_memorysize_get (device)) / 1e9,
+                GB_Global_gpu_sm_get (device)) ;
+        }
+        // TODO for GPU: check for jit cache
+    }
+    else
+    #endif
+    {
+        // CUDA not available at compile-time, or available but not requested.
+        GB_Global_gpu_control_set (GxB_GPU_NEVER) ;
+        GB_Global_gpu_count_set (0) ;
+    }
+
+    GB_Global_gpu_chunk_set (GxB_DEFAULT) ;
 
     //--------------------------------------------------------------------------
     // return result

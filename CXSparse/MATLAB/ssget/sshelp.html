@@ -11,7 +11,7 @@ BODY
 <html>
 <body>
 <font family="sans-serif">
-<h1>The SuiteSparse Matrix Collection</h1>
+<h1>SSGUI: Java interface to The SuiteSparse Matrix Collection</h1>
 
 Tim Davis,
 <a href=http://www.suitesparse.com>http://www.suitesparse.com</a>,
@@ -305,7 +305,9 @@ over each column header for a short description):
 
         <li><b># cols</b>: the number of columns of the matrix.
 
-        <li><b># nonzeros</b>: the number of nonzeros in the matrix.
+        <li><b># entries</b>: the number of entries in the matrix.
+            These include all the entries in the pattern of the matrix.
+
 
         <li><b>real</b>: this box is checked if the matrix is real.
             It is complex otherwise.
@@ -323,11 +325,12 @@ over each column header for a short description):
         <li> <b>posdef</b>: this box is checked if the matrix is
             symmetric and positive definite.
 
-        <li><b>psym</b>: the symmetry of the nonzero pattern of the
+        <li><b>psym</b>: the symmetry of the pattern of the
             matrix A (including the binary <i>Zeros</i> matrix as well).  Let
             <i>S = pattern(pattern(A)+Zeros)</i> where <i>pattern(A)</i> is a
             binary matrix with entries equal to 1 where <i>A(i,j)</i> is
-            nonzero, and zero elsewhere.  The <i>psym</i> metric is zero if the
+            an entry in the pattern of A, and zero elsewhere.
+            The <i>psym</i> metric is zero if the
             pattern of <i>S</i> is completely unsymmetric, and 1.0 if the
             pattern is exactly symmetric.  Let <i>pmatched</i> be the number of
             off-diagonal entries <i>S(i,j)</i> for which <i>S(i,j)=S(j,i)</i>
@@ -364,9 +367,9 @@ three check boxes, three buttons, and informational items:
         remove the file and restart the ssgui).  Matrices are downloaded into
         the <i>mat</i>, <i>MM</i>, and <i>RB</i> folders inside the ssget
         folder, in the same order as they appear in the table view.  For
-        example, if you click on the <i># nonzeros</i> column heading prior to
+        example, if you click on the <i># entries</i> column heading prior to
         clicking <i>Download</i>, your selected matrices will be downloaded in
-        order of increasing number of nonzero entries.  If you hover your mouse
+        order of increasing number of entries.  If you hover your mouse
         over the download button, a tool tip will tell you what it will do.
 
     <li><b>MATLAB (mat)</b> format: click this to download the selected
@@ -488,7 +491,7 @@ ssgui.jar file.  Each parameter is a string.
 <h2>8. Copyright and License</h2>
 
 <ul>
-Copyright (c) 2009-2017, Timothy A. Davis.  All rights reserved.
+Copyright (c) 2009-2019, Timothy A. Davis.  All rights reserved.
 See ssget/Doc/License.txt for the license.
 </ul>
 
@@ -497,6 +500,9 @@ See ssget/Doc/License.txt for the license.
 
 <ul>
 <li> See ssget/Doc/Changelog for the changes in each version.
+
+<li>Version 2.1.0, Jan 16, 2019.  Changed "# nonzeros" column to
+    "# entries".
 
 <li> Version 2.0.0, Sept 3, 2017.  Transition from UFgui to ssgui.
     Collection renamed to the SuiteSparse Matrix Collection.

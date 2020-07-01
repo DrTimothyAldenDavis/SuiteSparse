@@ -7,7 +7,7 @@ function test11results
 % Copyright 2007, Timothy A. Davis, http://www.suitesparse.com
 
 load Results
-index = UFget ;
+index = ssget ;
 
 c = E1(1:kkk) < 1 & T1(1:kkk) > 0 ;
 m = E2(1:kkk) < 1 & T2(1:kkk) > 0 ;

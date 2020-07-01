@@ -6,7 +6,7 @@ This folder contains the following files:
 
     CONTRIBUTOR-LICENSE.txt     how to contribute to GraphBLAS
     ChangeLog                   changes in GraphBLAS
-    GraphBLAS_API_C.pdf         the GraphBLAS C API Specification
+    GraphBLAS_API_C_v13.pdf     the GraphBLAS C API Specification
     GraphBLAS_API_version.tex   the version of the C API that this version
                                 of SuiteSparse:GraphBLAS conforms to.
     GraphBLAS_UserGuide.pdf     the SuiteSparse:GraphBLAS User Guide 
@@ -27,6 +27,8 @@ Papers on SuiteSparse:GraphBLAS.  See the User Guide for the full citations.
     Davis_HPEC18.pdf            "Graph algorithms via SuiteSparse:GraphBLAS..."
     lagraph-grapl19.pdf         "LAGraph: a community effort to collect graph
                                  algorithms built on top of the GraphBLAS"
+    HPEC20_Python_and_MATLAB.pdf    "GraphBLAS programmability", by Mattson
+                                    Pelletier, and Davis.  submitted to HPEC'20
 
 Additional installation notes are below.
 

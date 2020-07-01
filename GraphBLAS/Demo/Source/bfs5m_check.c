@@ -19,11 +19,6 @@
 // instead of GrB_mxv.  It now more closely matches the BFS example in the
 // GraphBLAS C API Specification.
 
-// This version uses a predefined semiring (GxB_LOR_LAND_BOOL) and a predefined
-// monoid (GxB_LOR_BOOL_MONOID), in GraphBLAS.h.  It also checks the status of
-// each call to GraphBLAS functions.  These two changes are unrelated.  Both
-// change are made here to illustrate two different things.
-
 // "OK(x)" macro calls a GraphBLAS method, and if it fails, prints the error,
 // frees workspace, and returns to the caller.  It uses the FREE_ALL macro
 // to free the workspace
@@ -101,10 +96,10 @@ GrB_Info bfs5m_check        // BFS of a graph (using vector assign & reduce)
 
         // q<!v> = q ||.&& A ; finds all the unvisited
         // successors from current q, using !v as the mask
-        OK (GrB_vxm (q, v, NULL, GxB_LOR_LAND_BOOL, q, A, desc)) ;
+        OK (GrB_vxm (q, v, NULL, GrB_LOR_LAND_SEMIRING_BOOL, q, A, desc)) ;
 
         // successor = ||(q)
-        OK (GrB_Vector_reduce_BOOL (&successor, NULL, GxB_LOR_BOOL_MONOID,
+        OK (GrB_Vector_reduce_BOOL (&successor, NULL, GrB_LOR_MONOID_BOOL,
             q, NULL)) ;
     }
 

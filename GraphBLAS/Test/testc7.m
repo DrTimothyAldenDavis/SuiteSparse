@@ -4,16 +4,11 @@ function testc7
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
-if (~GB_mex_have_complex)
-    fprintf ('\ntestc7: skipped\n') ;
-    return
-end
-
 fprintf ('\ntestc7: all complex assign C(I,J)=A --------------------------\n') ;
 rng ('default')
 
 dclear.outp = 'replace' ;
-dclear.mask = 'scmp' ;
+dclear.mask = 'complement' ;
 tol = 1e-13 ;
 
 seed = 1 ;
@@ -68,7 +63,7 @@ for m = [1 5 10 50]
         c2 = GB_mex_reduce_to_scalar (cin, '', 'plus', C3) ;
         assert (abs (c1-c2) <= tol * (abs (c1) + 1)) ;
 
-        GrB.burble (1) ;
+        % GrB.burble (1) ;
         clear S
         S.matrix = sparse (1i * ones (m,n)) ;
         S.pattern = false (m,n) ;
@@ -78,7 +73,7 @@ for m = [1 5 10 50]
         C1 = sparse (ones (m,n)) ;
         C1 (:,:) = cin ;
         assert (norm (C1-C2.matrix, 1) < 1e-12)
-        GrB.burble (0) ;
+        % GrB.burble (0) ;
 
     end
 end

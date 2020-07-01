@@ -59,11 +59,12 @@ void mexFunction
         FREE_ALL ;
         mexErrMsgTxt ("failed") ;
     }
-    mxClassID aclass = GB_mx_Type_to_classID (A->type) ;
 
-    // get op; default: NOP, default class is class(A)
+    // get op
+    bool user_complex = (Complex != GxB_FC64)
+        && (A->type == Complex || B->type == Complex) ;
     if (!GB_mx_mxArray_to_BinaryOp (&op, pargin [2], "op",
-        GB_NOP_opcode, aclass, A->type == Complex, B->type == Complex))
+        A->type, user_complex) || op == NULL)
     {
         FREE_ALL ;
         mexErrMsgTxt ("op failed") ;

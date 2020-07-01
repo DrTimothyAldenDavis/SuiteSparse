@@ -23,7 +23,7 @@ if (nargout > 1 || nargin ~= 8)
     error ('usage: C = GB_spec_subassign (C, Mask, accum, A, I, J, descriptor, scalar)') ;
 end
 
-% Convert inputs to dense matrices with explicit patterns and classes,
+% Convert inputs to dense matrices with explicit patterns and types,
 % and with where X(~X.pattern)==identity for all matrices A, B, and C.
 C = GB_spec_matrix (C) ;
 A = GB_spec_matrix (A) ;
@@ -35,7 +35,7 @@ Mask = GB_spec_getmask (Mask, Mask_struct) ;
 
 % apply the descriptor to A
 if (Atrans)
-    A.matrix = A.matrix' ;
+    A.matrix = A.matrix.' ;
     A.pattern = A.pattern' ;
 end
 

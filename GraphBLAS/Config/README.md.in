@@ -19,8 +19,9 @@ applications.
 
 See http://graphblas.org for more information on GraphBLAS, including the
 GraphBLAS C API (also in `Doc/GraphBLAS_API_C.pdf`).  See
-https://github.com/szarnyasg/graphblas-pointers for additional resources on
-GraphBLAS.
+https://github.com/GraphBLAS/GraphBLAS-Pointers
+for additional resources on GraphBLAS.
+
 
 QUICK START: To compile, run several demos, and install, do these commands in
 this directory:

@@ -55,9 +55,9 @@ for problem = 0:2
         if (c == 10)
             d = struct ('outp', 'replace') ;
         elseif (c == 9)
-            d = struct ('outp', 'replace', 'mask', 'scmp') ;
+            d = struct ('outp', 'replace', 'mask', 'complement') ;
         elseif (c == 8)
-            d = struct ('mask', 'scmp') ;
+            d = struct ('mask', 'complement') ;
         else
             d = [ ] ;
         end

@@ -4,5 +4,4 @@ RAM: 32GB
 GPU: AMD Radeon R7 250
 MATLAB R2019b
 Microsoft Visual Studio 2019
-GraphBLAS v3.2.2
 

@@ -19,13 +19,13 @@
 #include "GB_ij.h"
 #include "GB_sort.h"
 
-#define GB_FREE_WORK                                        \
-{                                                           \
-    GB_FREE_MEMORY (Count, ntasks+1, sizeof (int64_t)) ;    \
-    GB_FREE_MEMORY (W0,  ni, sizeof (GrB_Index)) ;          \
-    GB_FREE_MEMORY (W1,  ni, sizeof (GrB_Index)) ;          \
-    GB_FREE_MEMORY (I1,  ni, sizeof (GrB_Index)) ;          \
-    GB_FREE_MEMORY (I1k, ni, sizeof (GrB_Index)) ;          \
+#define GB_FREE_WORK    \
+{                       \
+    GB_FREE (Count) ;   \
+    GB_FREE (W0) ;      \
+    GB_FREE (W1) ;      \
+    GB_FREE (I1) ;      \
+    GB_FREE (I1k) ;     \
 }
 
 GrB_Info GB_ijsort
@@ -74,8 +74,8 @@ GrB_Info GB_ijsort
     // allocate workspace
     //--------------------------------------------------------------------------
 
-    GB_MALLOC_MEMORY (I1,  ni, sizeof (GrB_Index)) ;
-    GB_MALLOC_MEMORY (I1k, ni, sizeof (GrB_Index)) ;
+    I1  = GB_MALLOC (ni, GrB_Index) ;
+    I1k = GB_MALLOC (ni, GrB_Index) ;
     if (I1 == NULL || I1k == NULL)
     { 
         // out of memory
@@ -108,8 +108,8 @@ GrB_Info GB_ijsort
 
     if (nth > 1)
     { 
-        GB_MALLOC_MEMORY (W0, ni, sizeof (int64_t)) ;
-        GB_MALLOC_MEMORY (W1, ni, sizeof (int64_t)) ;
+        W0 = GB_MALLOC (ni, int64_t) ;
+        W1 = GB_MALLOC (ni, int64_t) ;
         if (W0 == NULL || W1 == NULL)
         { 
             // out of memory
@@ -120,8 +120,8 @@ GrB_Info GB_ijsort
 
     GB_msort_2 ((int64_t *) I1, (int64_t *) I1k, W0, W1, ni, nth) ;
 
-    GB_FREE_MEMORY (W0, ni, sizeof (int64_t)) ;
-    GB_FREE_MEMORY (W1, ni, sizeof (int64_t)) ;
+    GB_FREE (W0) ;
+    GB_FREE (W1) ;
 
     //--------------------------------------------------------------------------
     // determine number of tasks to create
@@ -135,7 +135,7 @@ GrB_Info GB_ijsort
     // allocate workspace
     //--------------------------------------------------------------------------
 
-    GB_MALLOC_MEMORY (Count, ntasks+1, sizeof (int64_t)) ;
+    Count = GB_MALLOC (ntasks+1, int64_t) ;
     if (Count == NULL)
     { 
         // out of memory
@@ -170,14 +170,14 @@ GrB_Info GB_ijsort
     // allocate the result I2
     //--------------------------------------------------------------------------
 
-    GB_MALLOC_MEMORY (I2 , ni2, sizeof (GrB_Index)) ;
-    GB_MALLOC_MEMORY (I2k, ni2, sizeof (GrB_Index)) ;
+    I2  = GB_MALLOC (ni2, GrB_Index) ;
+    I2k = GB_MALLOC (ni2, GrB_Index) ;
     if (I2 == NULL || I2k == NULL)
     { 
         // out of memory
         GB_FREE_WORK ;
-        GB_FREE_MEMORY (I2 , ni2, sizeof (GrB_Index)) ;
-        GB_FREE_MEMORY (I2k, ni2, sizeof (GrB_Index)) ;
+        GB_FREE (I2) ;
+        GB_FREE (I2k) ;
         return (GB_OUT_OF_MEMORY) ;
     }
 

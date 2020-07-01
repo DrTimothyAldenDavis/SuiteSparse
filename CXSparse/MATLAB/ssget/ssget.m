@@ -23,7 +23,7 @@ function Problem = ssget (matrix, ss_index)
 %
 %   See also ssgrep, ssweb, ssget_example, ssget_defaults, websave.
 
-% Copyright 2009-2017, Timothy A. Davis, http://www.suitesparse.com
+% Copyright 2009-2019, Timothy A. Davis, http://www.suitesparse.com
 
 %-------------------------------------------------------------------------------
 % get the parameter settings

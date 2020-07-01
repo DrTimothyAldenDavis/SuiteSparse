@@ -38,17 +38,13 @@ bool GB_ek_slice        // true if successful, false if out of memory
     (*kfirst_slice_handle) = NULL ;
     (*klast_slice_handle ) = NULL ;
 
-    int64_t *GB_RESTRICT pstart_slice = NULL ;
-    int64_t *GB_RESTRICT kfirst_slice = NULL ;
-    int64_t *GB_RESTRICT klast_slice  = NULL ;
-
-    GB_CALLOC_MEMORY (pstart_slice, ntasks+1, sizeof (int64_t)) ;
-    GB_CALLOC_MEMORY (kfirst_slice, ntasks, sizeof (int64_t)) ;
-    GB_CALLOC_MEMORY (klast_slice, ntasks, sizeof (int64_t)) ;
+    int64_t *GB_RESTRICT pstart_slice = GB_CALLOC (ntasks+1, int64_t) ;
+    int64_t *GB_RESTRICT kfirst_slice = GB_CALLOC (ntasks  , int64_t) ;
+    int64_t *GB_RESTRICT klast_slice  = GB_CALLOC (ntasks  , int64_t) ;
 
     if (pstart_slice == NULL || kfirst_slice == NULL || klast_slice == NULL)
     { 
-        GB_ek_slice_free (&pstart_slice, &kfirst_slice, &klast_slice, ntasks) ;
+        GB_ek_slice_free (&pstart_slice, &kfirst_slice, &klast_slice) ;
         return (false) ;
     }
 

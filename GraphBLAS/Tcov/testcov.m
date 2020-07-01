@@ -7,7 +7,6 @@ end
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
-all_tcov_time = tic ;
 try
     addpath ('../Test') ;
     addpath ('../Test/spok') ;
@@ -24,6 +23,5 @@ catch me
     rethrow (me) ;
 end
 
-t = toc (all_tcov_time) ;
-fprintf ('\ntestcov: all tests passed, total time %0.5g minutes\n', t / 60) ;
+fprintf ('\ntestcov: all tests passed\n') ;
 

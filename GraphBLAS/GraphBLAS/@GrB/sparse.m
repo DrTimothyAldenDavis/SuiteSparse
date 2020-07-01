@@ -3,10 +3,10 @@ function C = sparse (G)
 % Since G is already sparse, C = sparse (G) simply makes a copy of G.
 % Explicit zeros are not removed.  To remove them use C = GrB.prune(G).
 %
-% See also GrB/issparse, GrB/full, GrB.type, GrB.
+% See also GrB/issparse, GrB/full, GrB.type, GrB/prune, GrB.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
+% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
 
 C = G ;
 

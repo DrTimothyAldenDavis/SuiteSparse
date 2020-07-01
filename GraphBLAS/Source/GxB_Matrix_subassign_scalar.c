@@ -35,7 +35,7 @@ GrB_Info GxB_Matrix_subassign_ ## T /* C(Rows,Cols)<M> += x                 */ \
 {                                                                              \
     GB_WHERE ("GxB_Matrix_subassign_" GB_STR(T)                                \
         " (C, M, accum, x, Rows, nRows, Cols, nCols, desc)") ;                 \
-    GB_BURBLE_START ("GxB_subassign") ;                                        \
+    GB_BURBLE_START ("GxB_Matrix_subassign " GB_STR(T)) ;                      \
     GB_RETURN_IF_NULL_OR_FAULTY (C) ;                                          \
     GB_RETURN_IF_FAULTY (M) ;                                                  \
     GrB_Info info = GB_subassign_scalar (C, M, accum, ampersand x,             \
@@ -44,16 +44,18 @@ GrB_Info GxB_Matrix_subassign_ ## T /* C(Rows,Cols)<M> += x                 */ \
     return (info) ;                                                            \
 }
 
-GB_ASSIGN (bool     , BOOL   , &)
-GB_ASSIGN (int8_t   , INT8   , &)
-GB_ASSIGN (uint8_t  , UINT8  , &)
-GB_ASSIGN (int16_t  , INT16  , &)
-GB_ASSIGN (uint16_t , UINT16 , &)
-GB_ASSIGN (int32_t  , INT32  , &)
-GB_ASSIGN (uint32_t , UINT32 , &)
-GB_ASSIGN (int64_t  , INT64  , &)
-GB_ASSIGN (uint64_t , UINT64 , &)
-GB_ASSIGN (float    , FP32   , &)
-GB_ASSIGN (double   , FP64   , &)
-GB_ASSIGN (void *   , UDT    ,  )
+GB_ASSIGN (bool      , BOOL   , &)
+GB_ASSIGN (int8_t    , INT8   , &)
+GB_ASSIGN (uint8_t   , UINT8  , &)
+GB_ASSIGN (int16_t   , INT16  , &)
+GB_ASSIGN (uint16_t  , UINT16 , &)
+GB_ASSIGN (int32_t   , INT32  , &)
+GB_ASSIGN (uint32_t  , UINT32 , &)
+GB_ASSIGN (int64_t   , INT64  , &)
+GB_ASSIGN (uint64_t  , UINT64 , &)
+GB_ASSIGN (float     , FP32   , &)
+GB_ASSIGN (double    , FP64   , &)
+GB_ASSIGN (GxB_FC32_t, FC32   , &)
+GB_ASSIGN (GxB_FC64_t, FC64   , &)
+GB_ASSIGN (void *    , UDT    ,  )
 

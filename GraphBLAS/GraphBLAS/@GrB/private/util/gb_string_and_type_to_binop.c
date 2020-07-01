@@ -9,11 +9,15 @@
 
 #include "gb_matlab.h"
 
-// op_name: a MATLAB string defining the operator name (25 kinds):
-// 11: 1st, 2nd, pair, min, max, +, -, rminus, *, /, \
-//  6: iseq, isne, isgt, islt, isge, isle,
-//  6: ==, ~=, >, <, >=, <=,
-//  3: ||, &&, xor
+// op_name: a MATLAB string defining the operator name:
+//  1st, 2nd, pair, min, max, +, -, rminus, *, /, \
+//  iseq, isne, isgt, islt, isge, isle,
+//  ==, ~=, >, <, >=, <=,
+//  ||, &&, xor
+//  atan2, hypot, fmod, remainder, copysign, cmplx, pow, pow2
+
+//  bitwise operators:
+//      bitand, bitor, bitxor, bitxnor, bitget, bitset, bitclr, bitshift
 
 // The following synonyms are allowed for specifying these operators:
 //
@@ -34,11 +38,7 @@
 //      ||    |     or  lor
 //      &&    &     and land
 //      xor   lxor
-
-// Total # of ops: 26*11 = 286, not including GrB_LOR, GrB_LAND, GrB_XOR,
-// which are equivalent to the GxB_*_BOOL versions.
-
-// FUTURE: add complex operators
+//      pow2  ldexp
 
 GrB_BinaryOp gb_string_and_type_to_binop    // return op from string and type
 (
@@ -63,9 +63,8 @@ GrB_BinaryOp gb_string_and_type_to_binop    // return op from string and type
         if (type == GrB_UINT64) return (GrB_FIRST_UINT64) ;
         if (type == GrB_FP32  ) return (GrB_FIRST_FP32  ) ;
         if (type == GrB_FP64  ) return (GrB_FIRST_FP64  ) ;
-        #ifdef GB_COMPLEX_TYPE
-        if (type == gb_complex_type) return (... ) ;
-        #endif
+        if (type == GxB_FC32  ) return (GxB_FIRST_FC32  ) ;
+        if (type == GxB_FC64  ) return (GxB_FIRST_FC64  ) ;
 
     }
     else if (MATCH (op_name, "2nd") || MATCH (op_name, "second"))
@@ -82,28 +81,8 @@ GrB_BinaryOp gb_string_and_type_to_binop    // return op from string and type
         if (type == GrB_UINT64) return (GrB_SECOND_UINT64) ;
         if (type == GrB_FP32  ) return (GrB_SECOND_FP32  ) ;
         if (type == GrB_FP64  ) return (GrB_SECOND_FP64  ) ;
-        #ifdef GB_COMPLEX_TYPE
-        if (type == gb_complex_type) return (...) ;
-        #endif
-
-    }
-    else if (MATCH (op_name, "pair"))
-    { 
-
-        if (type == GrB_BOOL  ) return (GxB_PAIR_BOOL  ) ;
-        if (type == GrB_INT8  ) return (GxB_PAIR_INT8  ) ;
-        if (type == GrB_INT16 ) return (GxB_PAIR_INT16 ) ;
-        if (type == GrB_INT32 ) return (GxB_PAIR_INT32 ) ;
-        if (type == GrB_INT64 ) return (GxB_PAIR_INT64 ) ;
-        if (type == GrB_UINT8 ) return (GxB_PAIR_UINT8 ) ;
-        if (type == GrB_UINT16) return (GxB_PAIR_UINT16) ;
-        if (type == GrB_UINT32) return (GxB_PAIR_UINT32) ;
-        if (type == GrB_UINT64) return (GxB_PAIR_UINT64) ;
-        if (type == GrB_FP32  ) return (GxB_PAIR_FP32  ) ;
-        if (type == GrB_FP64  ) return (GxB_PAIR_FP64  ) ;
-        #ifdef GB_COMPLEX_TYPE
-        if (type == gb_complex_type) return (... ) ;
-        #endif
+        if (type == GxB_FC32  ) return (GxB_SECOND_FC32  ) ;
+        if (type == GxB_FC64  ) return (GxB_SECOND_FC64  ) ;
 
     }
     else if (MATCH (op_name, "any"))
@@ -120,9 +99,26 @@ GrB_BinaryOp gb_string_and_type_to_binop    // return op from string and type
         if (type == GrB_UINT64) return (GxB_ANY_UINT64) ;
         if (type == GrB_FP32  ) return (GxB_ANY_FP32  ) ;
         if (type == GrB_FP64  ) return (GxB_ANY_FP64  ) ;
-        #ifdef GB_COMPLEX_TYPE
-        if (type == gb_complex_type) return (... ) ;
-        #endif
+        if (type == GxB_FC32  ) return (GxB_ANY_FC32  ) ;
+        if (type == GxB_FC64  ) return (GxB_ANY_FC64  ) ;
+
+    }
+    else if (MATCH (op_name, "pair"))
+    { 
+
+        if (type == GrB_BOOL  ) return (GxB_PAIR_BOOL  ) ;
+        if (type == GrB_INT8  ) return (GxB_PAIR_INT8  ) ;
+        if (type == GrB_INT16 ) return (GxB_PAIR_INT16 ) ;
+        if (type == GrB_INT32 ) return (GxB_PAIR_INT32 ) ;
+        if (type == GrB_INT64 ) return (GxB_PAIR_INT64 ) ;
+        if (type == GrB_UINT8 ) return (GxB_PAIR_UINT8 ) ;
+        if (type == GrB_UINT16) return (GxB_PAIR_UINT16) ;
+        if (type == GrB_UINT32) return (GxB_PAIR_UINT32) ;
+        if (type == GrB_UINT64) return (GxB_PAIR_UINT64) ;
+        if (type == GrB_FP32  ) return (GxB_PAIR_FP32  ) ;
+        if (type == GrB_FP64  ) return (GxB_PAIR_FP64  ) ;
+        if (type == GxB_FC32  ) return (GxB_PAIR_FC32  ) ;
+        if (type == GxB_FC64  ) return (GxB_PAIR_FC64  ) ;
 
     }
     else if (MATCH (op_name, "min"))
@@ -139,9 +135,7 @@ GrB_BinaryOp gb_string_and_type_to_binop    // return op from string and type
         if (type == GrB_UINT64) return (GrB_MIN_UINT64) ;
         if (type == GrB_FP32  ) return (GrB_MIN_FP32  ) ;
         if (type == GrB_FP64  ) return (GrB_MIN_FP64  ) ;
-        #ifdef GB_COMPLEX_TYPE
-        if (type == gb_complex_type) return (...) ;
-        #endif
+        // no complex min
 
     }
     else if (MATCH (op_name, "max"))
@@ -158,9 +152,7 @@ GrB_BinaryOp gb_string_and_type_to_binop    // return op from string and type
         if (type == GrB_UINT64) return (GrB_MAX_UINT64) ;
         if (type == GrB_FP32  ) return (GrB_MAX_FP32  ) ;
         if (type == GrB_FP64  ) return (GrB_MAX_FP64  ) ;
-        #ifdef GB_COMPLEX_TYPE
-        if (type == gb_complex_type) return (...) ;
-        #endif
+        // no complex max
 
     }
     else if (MATCH (op_name, "+") || MATCH (op_name, "plus"))
@@ -177,9 +169,8 @@ GrB_BinaryOp gb_string_and_type_to_binop    // return op from string and type
         if (type == GrB_UINT64) return (GrB_PLUS_UINT64) ;
         if (type == GrB_FP32  ) return (GrB_PLUS_FP32  ) ;
         if (type == GrB_FP64  ) return (GrB_PLUS_FP64  ) ;
-        #ifdef GB_COMPLEX_TYPE
-        if (type == gb_complex_type) return (...) ;
-        #endif
+        if (type == GxB_FC32  ) return (GxB_PLUS_FC32  ) ;
+        if (type == GxB_FC64  ) return (GxB_PLUS_FC64  ) ;
 
     }
     else if (MATCH (op_name, "-") || MATCH (op_name, "minus"))
@@ -196,9 +187,8 @@ GrB_BinaryOp gb_string_and_type_to_binop    // return op from string and type
         if (type == GrB_UINT64) return (GrB_MINUS_UINT64) ;
         if (type == GrB_FP32  ) return (GrB_MINUS_FP32  ) ;
         if (type == GrB_FP64  ) return (GrB_MINUS_FP64  ) ;
-        #ifdef GB_COMPLEX_TYPE
-        if (type == gb_complex_type) return (...) ;
-        #endif
+        if (type == GxB_FC32  ) return (GxB_MINUS_FC32  ) ;
+        if (type == GxB_FC64  ) return (GxB_MINUS_FC64  ) ;
 
     }
     else if (MATCH (op_name, "rminus"))
@@ -215,9 +205,8 @@ GrB_BinaryOp gb_string_and_type_to_binop    // return op from string and type
         if (type == GrB_UINT64) return (GxB_RMINUS_UINT64) ;
         if (type == GrB_FP32  ) return (GxB_RMINUS_FP32  ) ;
         if (type == GrB_FP64  ) return (GxB_RMINUS_FP64  ) ;
-        #ifdef GB_COMPLEX_TYPE
-        if (type == gb_complex_type) return (...) ;
-        #endif
+        if (type == GxB_FC32  ) return (GxB_RMINUS_FC32  ) ;
+        if (type == GxB_FC64  ) return (GxB_RMINUS_FC64  ) ;
 
     }
     else if (MATCH (op_name, "*") || MATCH (op_name, "times"))
@@ -234,9 +223,8 @@ GrB_BinaryOp gb_string_and_type_to_binop    // return op from string and type
         if (type == GrB_UINT64) return (GrB_TIMES_UINT64) ;
         if (type == GrB_FP32  ) return (GrB_TIMES_FP32  ) ;
         if (type == GrB_FP64  ) return (GrB_TIMES_FP64  ) ;
-        #ifdef GB_COMPLEX_TYPE
-        if (type == gb_complex_type) return (...) ;
-        #endif
+        if (type == GxB_FC32  ) return (GxB_TIMES_FC32  ) ;
+        if (type == GxB_FC64  ) return (GxB_TIMES_FC64  ) ;
 
     }
     else if (MATCH (op_name, "/") || MATCH (op_name, "div"))
@@ -253,9 +241,8 @@ GrB_BinaryOp gb_string_and_type_to_binop    // return op from string and type
         if (type == GrB_UINT64) return (GrB_DIV_UINT64) ;
         if (type == GrB_FP32  ) return (GrB_DIV_FP32  ) ;
         if (type == GrB_FP64  ) return (GrB_DIV_FP64  ) ;
-        #ifdef GB_COMPLEX_TYPE
-        if (type == gb_complex_type) return (...) ;
-        #endif
+        if (type == GxB_FC32  ) return (GxB_DIV_FC32  ) ;
+        if (type == GxB_FC64  ) return (GxB_DIV_FC64  ) ;
 
     }
     else if (MATCH (op_name, "\\") || MATCH (op_name, "rdiv"))
@@ -272,9 +259,8 @@ GrB_BinaryOp gb_string_and_type_to_binop    // return op from string and type
         if (type == GrB_UINT64) return (GxB_RDIV_UINT64) ;
         if (type == GrB_FP32  ) return (GxB_RDIV_FP32  ) ;
         if (type == GrB_FP64  ) return (GxB_RDIV_FP64  ) ;
-        #ifdef GB_COMPLEX_TYPE
-        if (type == gb_complex_type) return (...) ;
-        #endif
+        if (type == GxB_FC32  ) return (GxB_RDIV_FC32  ) ;
+        if (type == GxB_FC64  ) return (GxB_RDIV_FC64  ) ;
 
     }
     else if (MATCH (op_name, "iseq"))
@@ -291,9 +277,8 @@ GrB_BinaryOp gb_string_and_type_to_binop    // return op from string and type
         if (type == GrB_UINT64) return (GxB_ISEQ_UINT64) ;
         if (type == GrB_FP32  ) return (GxB_ISEQ_FP32  ) ;
         if (type == GrB_FP64  ) return (GxB_ISEQ_FP64  ) ;
-        #ifdef GB_COMPLEX_TYPE
-        if (type == gb_complex_type) return (...) ;
-        #endif
+        if (type == GxB_FC32  ) return (GxB_ISEQ_FC32  ) ;
+        if (type == GxB_FC64  ) return (GxB_ISEQ_FC64  ) ;
 
     }
     else if (MATCH (op_name, "isne"))
@@ -310,9 +295,8 @@ GrB_BinaryOp gb_string_and_type_to_binop    // return op from string and type
         if (type == GrB_UINT64) return (GxB_ISNE_UINT64) ;
         if (type == GrB_FP32  ) return (GxB_ISNE_FP32  ) ;
         if (type == GrB_FP64  ) return (GxB_ISNE_FP64  ) ;
-        #ifdef GB_COMPLEX_TYPE
-        if (type == gb_complex_type) return (...) ;
-        #endif
+        if (type == GxB_FC32  ) return (GxB_ISNE_FC32  ) ;
+        if (type == GxB_FC64  ) return (GxB_ISNE_FC64  ) ;
 
     }
     else if (MATCH (op_name, "isgt"))
@@ -329,9 +313,6 @@ GrB_BinaryOp gb_string_and_type_to_binop    // return op from string and type
         if (type == GrB_UINT64) return (GxB_ISGT_UINT64) ;
         if (type == GrB_FP32  ) return (GxB_ISGT_FP32  ) ;
         if (type == GrB_FP64  ) return (GxB_ISGT_FP64  ) ;
-        #ifdef GB_COMPLEX_TYPE
-        if (type == gb_complex_type) return (...) ;
-        #endif
 
     }
     else if (MATCH (op_name, "islt"))
@@ -348,9 +329,6 @@ GrB_BinaryOp gb_string_and_type_to_binop    // return op from string and type
         if (type == GrB_UINT64) return (GxB_ISLT_UINT64) ;
         if (type == GrB_FP32  ) return (GxB_ISLT_FP32  ) ;
         if (type == GrB_FP64  ) return (GxB_ISLT_FP64  ) ;
-        #ifdef GB_COMPLEX_TYPE
-        if (type == gb_complex_type) return (...) ;
-        #endif
 
     }
     else if (MATCH (op_name, "isge"))
@@ -367,9 +345,6 @@ GrB_BinaryOp gb_string_and_type_to_binop    // return op from string and type
         if (type == GrB_UINT64) return (GxB_ISGE_UINT64) ;
         if (type == GrB_FP32  ) return (GxB_ISGE_FP32  ) ;
         if (type == GrB_FP64  ) return (GxB_ISGE_FP64  ) ;
-        #ifdef GB_COMPLEX_TYPE
-        if (type == gb_complex_type) return (...) ;
-        #endif
 
     }
     else if (MATCH (op_name, "isle"))
@@ -386,15 +361,12 @@ GrB_BinaryOp gb_string_and_type_to_binop    // return op from string and type
         if (type == GrB_UINT64) return (GxB_ISLE_UINT64) ;
         if (type == GrB_FP32  ) return (GxB_ISLE_FP32  ) ;
         if (type == GrB_FP64  ) return (GxB_ISLE_FP64  ) ;
-        #ifdef GB_COMPLEX_TYPE
-        if (type == gb_complex_type) return (...) ;
-        #endif
 
     }
     else if (MATCH (op_name, "==") || MATCH (op_name, "eq"))
     { 
 
-        if (type == GrB_BOOL  ) return (GrB_EQ_BOOL  ) ;
+        if (type == GrB_BOOL  ) return (GrB_EQ_BOOL  ) ;    // == GrB_LXNOR
         if (type == GrB_INT8  ) return (GrB_EQ_INT8  ) ;
         if (type == GrB_INT16 ) return (GrB_EQ_INT16 ) ;
         if (type == GrB_INT32 ) return (GrB_EQ_INT32 ) ;
@@ -405,9 +377,8 @@ GrB_BinaryOp gb_string_and_type_to_binop    // return op from string and type
         if (type == GrB_UINT64) return (GrB_EQ_UINT64) ;
         if (type == GrB_FP32  ) return (GrB_EQ_FP32  ) ;
         if (type == GrB_FP64  ) return (GrB_EQ_FP64  ) ;
-        #ifdef GB_COMPLEX_TYPE
-        if (type == gb_complex_type) return (...) ;
-        #endif
+        if (type == GxB_FC32  ) return (GxB_EQ_FC32  ) ;
+        if (type == GxB_FC64  ) return (GxB_EQ_FC64  ) ;
 
     }
     else if (MATCH (op_name, "~=") || MATCH (op_name, "ne"))
@@ -424,9 +395,8 @@ GrB_BinaryOp gb_string_and_type_to_binop    // return op from string and type
         if (type == GrB_UINT64) return (GrB_NE_UINT64) ;
         if (type == GrB_FP32  ) return (GrB_NE_FP32  ) ;
         if (type == GrB_FP64  ) return (GrB_NE_FP64  ) ;
-        #ifdef GB_COMPLEX_TYPE
-        if (type == gb_complex_type) return (...) ;
-        #endif
+        if (type == GxB_FC32  ) return (GxB_NE_FC32  ) ;
+        if (type == GxB_FC64  ) return (GxB_NE_FC64  ) ;
 
     }
     else if (MATCH (op_name, ">") || MATCH (op_name, "gt"))
@@ -443,9 +413,6 @@ GrB_BinaryOp gb_string_and_type_to_binop    // return op from string and type
         if (type == GrB_UINT64) return (GrB_GT_UINT64) ;
         if (type == GrB_FP32  ) return (GrB_GT_FP32  ) ;
         if (type == GrB_FP64  ) return (GrB_GT_FP64  ) ;
-        #ifdef GB_COMPLEX_TYPE
-        if (type == gb_complex_type) return (...) ;
-        #endif
 
     }
     else if (MATCH (op_name, "<") || MATCH (op_name, "lt"))
@@ -462,9 +429,6 @@ GrB_BinaryOp gb_string_and_type_to_binop    // return op from string and type
         if (type == GrB_UINT64) return (GrB_LT_UINT64) ;
         if (type == GrB_FP32  ) return (GrB_LT_FP32  ) ;
         if (type == GrB_FP64  ) return (GrB_LT_FP64  ) ;
-        #ifdef GB_COMPLEX_TYPE
-        if (type == gb_complex_type) return (...) ;
-        #endif
 
     }
     else if (MATCH (op_name, ">=") || MATCH (op_name, "ge"))
@@ -481,9 +445,6 @@ GrB_BinaryOp gb_string_and_type_to_binop    // return op from string and type
         if (type == GrB_UINT64) return (GrB_GE_UINT64) ;
         if (type == GrB_FP32  ) return (GrB_GE_FP32  ) ;
         if (type == GrB_FP64  ) return (GrB_GE_FP64  ) ;
-        #ifdef GB_COMPLEX_TYPE
-        if (type == gb_complex_type) return (...) ;
-        #endif
 
     }
     else if (MATCH (op_name, "<=") || MATCH (op_name, "le"))
@@ -500,9 +461,6 @@ GrB_BinaryOp gb_string_and_type_to_binop    // return op from string and type
         if (type == GrB_UINT64) return (GrB_LE_UINT64) ;
         if (type == GrB_FP32  ) return (GrB_LE_FP32  ) ;
         if (type == GrB_FP64  ) return (GrB_LE_FP64  ) ;
-        #ifdef GB_COMPLEX_TYPE
-        if (type == gb_complex_type) return (...) ;
-        #endif
 
     }
     else if (MATCH (op_name, "||") || MATCH (op_name, "|")  ||
@@ -520,9 +478,6 @@ GrB_BinaryOp gb_string_and_type_to_binop    // return op from string and type
         if (type == GrB_UINT64) return (GxB_LOR_UINT64) ;
         if (type == GrB_FP32  ) return (GxB_LOR_FP32  ) ;
         if (type == GrB_FP64  ) return (GxB_LOR_FP64  ) ;
-        #ifdef GB_COMPLEX_TYPE
-        if (type == gb_complex_type) return (...) ;
-        #endif
 
     }
     else if (MATCH (op_name, "&&")  || MATCH (op_name, "&")   ||
@@ -540,9 +495,6 @@ GrB_BinaryOp gb_string_and_type_to_binop    // return op from string and type
         if (type == GrB_UINT64) return (GxB_LAND_UINT64) ;
         if (type == GrB_FP32  ) return (GxB_LAND_FP32  ) ;
         if (type == GrB_FP64  ) return (GxB_LAND_FP64  ) ;
-        #ifdef GB_COMPLEX_TYPE
-        if (type == gb_complex_type) return (...) ;
-        #endif
 
     }
     else if (MATCH (op_name, "xor") || MATCH (op_name, "lxor"))
@@ -559,9 +511,183 @@ GrB_BinaryOp gb_string_and_type_to_binop    // return op from string and type
         if (type == GrB_UINT64) return (GxB_LXOR_UINT64) ;
         if (type == GrB_FP32  ) return (GxB_LXOR_FP32  ) ;
         if (type == GrB_FP64  ) return (GxB_LXOR_FP64  ) ;
-        #ifdef GB_COMPLEX_TYPE
-        if (type == gb_complex_type) return (...) ;
-        #endif
+
+    }
+    else if (MATCH (op_name, "lxnor") || MATCH (op_name, "xnor"))
+    { 
+
+        if (type == GrB_BOOL  ) return (GrB_LXNOR ) ; // == GrB_EQ_BOOL
+
+    }
+    else if (MATCH (op_name, "atan2"))
+    { 
+
+        if (type == GrB_FP32  ) return (GxB_ATAN2_FP32  ) ;
+        if (type == GrB_FP64  ) return (GxB_ATAN2_FP64  ) ;
+
+    }
+    else if (MATCH (op_name, "hypot"))
+    { 
+
+        if (type == GrB_FP32  ) return (GxB_HYPOT_FP32  ) ;
+        if (type == GrB_FP64  ) return (GxB_HYPOT_FP64  ) ;
+
+    }
+    else if (MATCH (op_name, "fmod"))
+    { 
+
+        if (type == GrB_FP32  ) return (GxB_FMOD_FP32  ) ;
+        if (type == GrB_FP64  ) return (GxB_FMOD_FP64  ) ;
+
+    }
+    else if (MATCH (op_name, "remainder"))
+    { 
+
+        if (type == GrB_FP32  ) return (GxB_REMAINDER_FP32  ) ;
+        if (type == GrB_FP64  ) return (GxB_REMAINDER_FP64  ) ;
+
+    }
+    else if (MATCH (op_name, "copysign"))
+    { 
+
+        if (type == GrB_FP32  ) return (GxB_COPYSIGN_FP32  ) ;
+        if (type == GrB_FP64  ) return (GxB_COPYSIGN_FP64  ) ;
+
+    }
+    else if (MATCH (op_name, "cmplx"))
+    { 
+
+        if (type == GrB_FP32  ) return (GxB_CMPLX_FP32  ) ;
+        if (type == GrB_FP64  ) return (GxB_CMPLX_FP64  ) ;
+
+    }
+    else if (MATCH (op_name, "ldexp") || MATCH (op_name, "pow2"))
+    { 
+
+        if (type == GrB_FP32  ) return (GxB_LDEXP_FP32  ) ;
+        if (type == GrB_FP64  ) return (GxB_LDEXP_FP64  ) ;
+
+    }
+    else if (MATCH (op_name, "pow"))
+    { 
+
+        if (type == GrB_BOOL  ) return (GxB_POW_BOOL  ) ;
+        if (type == GrB_INT8  ) return (GxB_POW_INT8  ) ;
+        if (type == GrB_INT16 ) return (GxB_POW_INT16 ) ;
+        if (type == GrB_INT32 ) return (GxB_POW_INT32 ) ;
+        if (type == GrB_INT64 ) return (GxB_POW_INT64 ) ;
+        if (type == GrB_UINT8 ) return (GxB_POW_UINT8 ) ;
+        if (type == GrB_UINT16) return (GxB_POW_UINT16) ;
+        if (type == GrB_UINT32) return (GxB_POW_UINT32) ;
+        if (type == GrB_UINT64) return (GxB_POW_UINT64) ;
+        if (type == GrB_FP32  ) return (GxB_POW_FP32  ) ;
+        if (type == GrB_FP64  ) return (GxB_POW_FP64  ) ;
+        if (type == GxB_FC32  ) return (GxB_POW_FC32  ) ;
+        if (type == GxB_FC64  ) return (GxB_POW_FC64  ) ;
+
+    }
+    else if (MATCH (op_name, "bitor"))
+    { 
+
+        if (type == GrB_INT8  ) return (GrB_BOR_INT8  ) ;
+        if (type == GrB_INT16 ) return (GrB_BOR_INT16 ) ;
+        if (type == GrB_INT32 ) return (GrB_BOR_INT32 ) ;
+        if (type == GrB_INT64 ) return (GrB_BOR_INT64 ) ;
+        if (type == GrB_UINT8 ) return (GrB_BOR_UINT8 ) ;
+        if (type == GrB_UINT16) return (GrB_BOR_UINT16) ;
+        if (type == GrB_UINT32) return (GrB_BOR_UINT32) ;
+        if (type == GrB_UINT64) return (GrB_BOR_UINT64) ;
+
+    }
+    else if (MATCH (op_name, "bitand"))
+    { 
+
+        if (type == GrB_INT8  ) return (GrB_BAND_INT8  ) ;
+        if (type == GrB_INT16 ) return (GrB_BAND_INT16 ) ;
+        if (type == GrB_INT32 ) return (GrB_BAND_INT32 ) ;
+        if (type == GrB_INT64 ) return (GrB_BAND_INT64 ) ;
+        if (type == GrB_UINT8 ) return (GrB_BAND_UINT8 ) ;
+        if (type == GrB_UINT16) return (GrB_BAND_UINT16) ;
+        if (type == GrB_UINT32) return (GrB_BAND_UINT32) ;
+        if (type == GrB_UINT64) return (GrB_BAND_UINT64) ;
+
+    }
+    else if (MATCH (op_name, "bitxor"))
+    { 
+
+        if (type == GrB_INT8  ) return (GrB_BXOR_INT8  ) ;
+        if (type == GrB_INT16 ) return (GrB_BXOR_INT16 ) ;
+        if (type == GrB_INT32 ) return (GrB_BXOR_INT32 ) ;
+        if (type == GrB_INT64 ) return (GrB_BXOR_INT64 ) ;
+        if (type == GrB_UINT8 ) return (GrB_BXOR_UINT8 ) ;
+        if (type == GrB_UINT16) return (GrB_BXOR_UINT16) ;
+        if (type == GrB_UINT32) return (GrB_BXOR_UINT32) ;
+        if (type == GrB_UINT64) return (GrB_BXOR_UINT64) ;
+
+    }
+    else if (MATCH (op_name, "bitxnor"))
+    { 
+
+        if (type == GrB_INT8  ) return (GrB_BXNOR_INT8  ) ;
+        if (type == GrB_INT16 ) return (GrB_BXNOR_INT16 ) ;
+        if (type == GrB_INT32 ) return (GrB_BXNOR_INT32 ) ;
+        if (type == GrB_INT64 ) return (GrB_BXNOR_INT64 ) ;
+        if (type == GrB_UINT8 ) return (GrB_BXNOR_UINT8 ) ;
+        if (type == GrB_UINT16) return (GrB_BXNOR_UINT16) ;
+        if (type == GrB_UINT32) return (GrB_BXNOR_UINT32) ;
+        if (type == GrB_UINT64) return (GrB_BXNOR_UINT64) ;
+
+    }
+    else if (MATCH (op_name, "bitget"))
+    { 
+
+        if (type == GrB_INT8  ) return (GxB_BGET_INT8  ) ;
+        if (type == GrB_INT16 ) return (GxB_BGET_INT16 ) ;
+        if (type == GrB_INT32 ) return (GxB_BGET_INT32 ) ;
+        if (type == GrB_INT64 ) return (GxB_BGET_INT64 ) ;
+        if (type == GrB_UINT8 ) return (GxB_BGET_UINT8 ) ;
+        if (type == GrB_UINT16) return (GxB_BGET_UINT16) ;
+        if (type == GrB_UINT32) return (GxB_BGET_UINT32) ;
+        if (type == GrB_UINT64) return (GxB_BGET_UINT64) ;
+
+    }
+    else if (MATCH (op_name, "bitset"))
+    { 
+
+        if (type == GrB_INT8  ) return (GxB_BSET_INT8  ) ;
+        if (type == GrB_INT16 ) return (GxB_BSET_INT16 ) ;
+        if (type == GrB_INT32 ) return (GxB_BSET_INT32 ) ;
+        if (type == GrB_INT64 ) return (GxB_BSET_INT64 ) ;
+        if (type == GrB_UINT8 ) return (GxB_BSET_UINT8 ) ;
+        if (type == GrB_UINT16) return (GxB_BSET_UINT16) ;
+        if (type == GrB_UINT32) return (GxB_BSET_UINT32) ;
+        if (type == GrB_UINT64) return (GxB_BSET_UINT64) ;
+
+    }
+    else if (MATCH (op_name, "bitclr"))
+    { 
+
+        if (type == GrB_INT8  ) return (GxB_BCLR_INT8  ) ;
+        if (type == GrB_INT16 ) return (GxB_BCLR_INT16 ) ;
+        if (type == GrB_INT32 ) return (GxB_BCLR_INT32 ) ;
+        if (type == GrB_INT64 ) return (GxB_BCLR_INT64 ) ;
+        if (type == GrB_UINT8 ) return (GxB_BCLR_UINT8 ) ;
+        if (type == GrB_UINT16) return (GxB_BCLR_UINT16) ;
+        if (type == GrB_UINT32) return (GxB_BCLR_UINT32) ;
+        if (type == GrB_UINT64) return (GxB_BCLR_UINT64) ;
+
+    }
+    else if (MATCH (op_name, "bitshift"))
+    { 
+
+        if (type == GrB_INT8  ) return (GxB_BSHIFT_INT8  ) ;
+        if (type == GrB_INT16 ) return (GxB_BSHIFT_INT16 ) ;
+        if (type == GrB_INT32 ) return (GxB_BSHIFT_INT32 ) ;
+        if (type == GrB_INT64 ) return (GxB_BSHIFT_INT64 ) ;
+        if (type == GrB_UINT8 ) return (GxB_BSHIFT_UINT8 ) ;
+        if (type == GrB_UINT16) return (GxB_BSHIFT_UINT16) ;
+        if (type == GrB_UINT32) return (GxB_BSHIFT_UINT32) ;
+        if (type == GrB_UINT64) return (GxB_BSHIFT_UINT64) ;
 
     }
 

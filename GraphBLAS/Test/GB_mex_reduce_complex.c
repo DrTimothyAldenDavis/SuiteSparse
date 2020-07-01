@@ -16,7 +16,7 @@
 #define FREE_ALL                            \
 {                                           \
     GB_MATRIX_FREE (&A) ;                   \
-    GrB_Monoid_free (&Times_terminal) ;     \
+    GrB_Monoid_free_(&Times_terminal) ;     \
     GB_mx_put_global (true, 0) ;            \
 }
 
@@ -28,8 +28,6 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-
-#if GxB_STDC_VERSION >= 201112L
 
     bool malloc_debug = GB_mx_get_global (true) ;
     GrB_Info info ;
@@ -57,28 +55,48 @@ void mexFunction
         mexErrMsgTxt ("A must be complex") ;
     }
 
-    double complex one  = CMPLX(1,0) ;
-    double complex zero = CMPLX(0,0) ;
+    GxB_FC64_t one  = GxB_CMPLX (1,0) ;
+    GxB_FC64_t zero = GxB_CMPLX (0,0) ;
 
     // create the monoid
-    info = GxB_Monoid_terminal_new_UDT (&Times_terminal,
-        Complex_times, &one, &zero) ;
-    if (info != GrB_SUCCESS)
+    // GxB_print (Complex_times, 5) ;
+
+    if (Complex == GxB_FC64)
     {
-        FREE_ALL ;
-        mexErrMsgTxt ("Times_terminal failed") ;
+        Times_terminal = GxB_TIMES_FC64_MONOID ;
+    }
+    else
+    {
+        info = GxB_Monoid_terminal_new_UDT (&Times_terminal,
+            Complex_times, &one, &zero) ;
+        if (info != GrB_SUCCESS)
+        {
+            printf ("Error:\n%s\n", GrB_error ( )) ;
+            FREE_ALL ;
+            mexErrMsgTxt ("Times_terminal failed") ;
+        }
     }
 
     int64_t GET_SCALAR (1, int64_t, hack, -1) ;
     if (hack >= 0)
     {
-        double complex *Ax = A->x ;
-        Ax [hack] = 0 ;
+        GxB_FC64_t *Ax = A->x ;
+        Ax [hack] = GxB_CMPLX (0,0) ;
     }
 
+    // allocate the MATLAB output scalar
+    pargout [0] = GB_mx_create_full (1, 1, GxB_FC64) ;
+    GxB_FC64_t *c = (GxB_FC64_t *) mxGetComplexDoubles (pargout [0]) ;
+
     // reduce to a scalar
-    double complex c = zero ;
-    info = GrB_Matrix_reduce_UDT (&c, NULL, Times_terminal, A, NULL) ;
+    if (Complex == GxB_FC64)
+    {
+        info = GxB_Matrix_reduce_FC64_(c, NULL, Times_terminal, A, NULL) ;
+    }
+    else
+    {
+        info = GrB_Matrix_reduce_UDT (c, NULL, Times_terminal, A, NULL) ;
+    }
     if (info != GrB_SUCCESS)
     {
         printf ("Error:\n%s\n", GrB_error ( )) ;
@@ -86,14 +104,6 @@ void mexFunction
         mexErrMsgTxt ("reduce failed") ;
     }
 
-    // return C to MATLAB as a scalar
-    pargout [0] = mxCreateNumericMatrix (1, 1, mxDOUBLE_CLASS, mxCOMPLEX) ;
-    GB_mx_complex_split (1, (double *) (&c), pargout [0]) ;
-
     FREE_ALL ;
-
-#else
-    mexErrMsgTxt ("complex type not available") ;
-#endif
 }
 

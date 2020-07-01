@@ -20,8 +20,8 @@
     GB_MATRIX_FREE (&A) ;               \
     GB_MATRIX_FREE (&B) ;               \
     GB_MATRIX_FREE (&C) ;               \
-    GrB_BinaryOp_free (&My_rdiv) ;      \
-    GrB_Semiring_free (&My_plus_rdiv) ; \
+    GrB_BinaryOp_free_(&My_rdiv) ;      \
+    GrB_Semiring_free_(&My_plus_rdiv) ; \
     GB_mx_put_global (true, 0) ;        \
 }
 
@@ -57,10 +57,12 @@ GrB_Info axb (GB_Context Context, bool cprint)
     // create the rdiv operator
     info = GrB_BinaryOp_new (&My_rdiv, my_rdiv, GrB_FP64, GrB_FP64, GrB_FP64) ;
     if (info != GrB_SUCCESS) return (info) ;
+    GrB_BinaryOp_wait_(&My_rdiv) ;
+    if (info != GrB_SUCCESS) return (info) ;
     info = GrB_Semiring_new (&My_plus_rdiv, GxB_PLUS_FP64_MONOID, My_rdiv) ;
     if (info != GrB_SUCCESS)
     {
-        GrB_BinaryOp_free (&My_rdiv) ;
+        GrB_BinaryOp_free_(&My_rdiv) ;
         return (info) ;
     }
 
@@ -86,11 +88,11 @@ GrB_Info axb (GB_Context Context, bool cprint)
     if (C != NULL)
     {
         C->AxB_method_used = AxB_method_used ;
-        if (cprint) GxB_Matrix_fprint (C, "C", GxB_COMPLETE, NULL) ;
+        if (cprint) GxB_Matrix_fprint_(C, GxB_COMPLETE, NULL) ;
     }
 
-    GrB_BinaryOp_free (&My_rdiv) ;
-    GrB_Semiring_free (&My_plus_rdiv) ;
+    GrB_BinaryOp_free_(&My_rdiv) ;
+    GrB_Semiring_free_(&My_plus_rdiv) ;
 
     return (info) ;
 }

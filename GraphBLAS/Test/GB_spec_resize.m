@@ -16,7 +16,7 @@ if (nargout > 1 || nargin ~= 3)
 end
 
 C = GB_spec_matrix (A) ;
-clas = C.class ;
+c_class = C.class ;
 
 %-------------------------------------------------------------------------------
 % do the work via a clean MATLAB interpretation of the entire GraphBLAS spec
@@ -28,7 +28,8 @@ if (ncols_new < ncols_old)
     C.matrix  = C.matrix  (:, 1:ncols_new) ;
     C.pattern = C.pattern (:, 1:ncols_new) ;
 elseif (ncols_new > ncols_old)
-    C.matrix  = [C.matrix  (zeros (nrows_old, ncols_new - ncols_old, clas))] ;
+    z = GB_spec_zeros ([nrows_old, ncols_new - ncols_old], c_class) ;
+    C.matrix  = [C.matrix  z ] ;
     C.pattern = [C.pattern (false (nrows_old, ncols_new - ncols_old))] ;
 end
 
@@ -36,7 +37,8 @@ if (nrows_new < nrows_old)
     C.matrix  = C.matrix  (1:nrows_new, :) ;
     C.pattern = C.pattern (1:nrows_new, :) ;
 elseif (nrows_new > nrows_old)
-    C.matrix  = [C.matrix  ; (zeros (nrows_new - nrows_old, ncols_new, clas))] ;
+    z = GB_spec_zeros ([nrows_new - nrows_old, ncols_new], c_class) ;
+    C.matrix  = [C.matrix  ; z ] ;
     C.pattern = [C.pattern ; (false (nrows_new - nrows_old, ncols_new))] ;
 end
 

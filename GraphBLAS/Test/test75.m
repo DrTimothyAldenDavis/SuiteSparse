@@ -4,7 +4,9 @@ function test75
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
-[mult_ops, ~, add_ops, classes, ~, ~] = GB_spec_opsall ;
+[binops, ~, add_ops, types, ~, ~] = GB_spec_opsall ;
+types = types.all ;
+mult_ops = binops.all ;
 
 rng ('default') ;
 
@@ -88,20 +90,20 @@ for k1 = 1:length(mult_ops)
     for k2 = 1:length(add_ops)
         addop = add_ops {k2} ;
 
-        for k3 = 1:length (classes)
-            clas = classes {k3} ;
+        for k3 = 1:length (types)
+            semiring_type = types {k3} ;
 
             semiring.multiply = mulop ;
             semiring.add = addop ;
-            semiring.class = clas ;
+            semiring.class = semiring_type ;
 
             % create the semiring.  some are not valid because the or,and,xor,eq
             % monoids can only be used when z is boolean for z=mult(x,y).
             try
                 [mult_op add_op id] = GB_spec_semiring (semiring) ;
-                [mult_opname mult_opclass zclass] = GB_spec_operator (mult_op) ;
-                [ add_opname  add_opclass] = GB_spec_operator (add_op) ;
-                identity = GB_spec_identity (semiring.add, add_opclass) ;
+                [mult_opname mult_optype ztype xtype ytype] = GB_spec_operator (mult_op) ;
+                [ add_opname  add_optype] = GB_spec_operator (add_op) ;
+                identity = GB_spec_identity (semiring.add, add_optype) ;
             catch me
                 if (~isempty (strfind (me.message, 'gotcha')))
                     semiring
@@ -110,11 +112,11 @@ for k1 = 1:length(mult_ops)
                 continue
             end
 
-            A.class = clas ;
-            B.class = clas ;
-            X.class = clas ;
-            Y.class = clas ;
-            D.class = add_op.opclass ;
+            A.class = semiring_type ;
+            B.class = semiring_type ;
+            X.class = semiring_type ;
+            Y.class = semiring_type ;
+            D.class = add_op.optype ;
 
             n_semirings = n_semirings + 1 ;
             fprintf ('.') ;

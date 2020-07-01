@@ -9,7 +9,7 @@ function test12 (nmat)
 fprintf ('=================================================================\n');
 fprintf ('test12: test etree2 and compare with etree\n') ;
 
-index = UFget ;
+index = ssget ;
 
 % only test matrices with nrows = 109000 or less.  large ones nearly always
 % cause a MATLAB segfault.
@@ -60,7 +60,7 @@ for i = f
 
     % try
 
-	Problem = UFget (i) ;
+	Problem = ssget (i) ;
 	A = spones (Problem.A) ;
 	[m n] = size (A) ;
 	fprintf ('\n%4d: %-20s nrow: %6d ncol: %6d nnz: %10d\n', ...

@@ -76,7 +76,7 @@ GrB_Info GB_slice       // slice B into nslices slices or hyperslices
 
         // allocate just the header for Bslice [s]; all content is shallow
         Bslice [s] = NULL ;
-        GB_NEW (&(Bslice [s]), B->type, B->vlen, B->vdim, GB_Ap_null,
+        info = GB_new (&(Bslice [s]), B->type, B->vlen, B->vdim, GB_Ap_null,
             B->is_csc, GB_SAME_HYPER_AS (B->is_hyper), B->hyper_ratio,
             bslice_nvec, NULL) ;
         if (info != GrB_SUCCESS)

@@ -12,7 +12,7 @@ fprintf ('test18: test cholmod2 on a few large matrices\n') ;
 rand ('state',1) ;
 randn ('state',1) ;
 
-Prob = UFget (887)							    %#ok
+Prob = ssget (887)							    %#ok
 A = Prob.A ;
 n = size (A,1) ;
 b = rand (n,1) ;
@@ -21,7 +21,7 @@ norm (A*x-b,1)
 
 clear all
 
-Prob = UFget (936)							    %#ok
+Prob = ssget (936)							    %#ok
 A = Prob.A ;
 n = size (A,1) ;
 b = rand (n,1) ;
@@ -30,7 +30,7 @@ norm (A*x-b,1)
 
 clear all
 
-Prob = UFget (887)							    %#ok
+Prob = ssget (887)							    %#ok
 A = Prob.A ;
 n = size (A,1) ;
 b = rand (n,1) ;

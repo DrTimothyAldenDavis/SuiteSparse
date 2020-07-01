@@ -24,12 +24,12 @@
 // A(:,i) and B(:,j) would use GB_slice_vector, where no mask would be used.
 
 #define GB_FREE_WORK \
-    GB_FREE_MEMORY (Coarse, ntasks1+1, sizeof (int64_t)) ;
+    GB_FREE (Coarse) ;
 
-#define GB_FREE_ALL                                                     \
-{                                                                       \
-    GB_FREE_WORK ;                                                      \
-    GB_FREE_MEMORY (TaskList, max_ntasks+1, sizeof (GB_task_struct)) ;  \
+#define GB_FREE_ALL         \
+{                           \
+    GB_FREE_WORK ;          \
+    GB_FREE (TaskList) ;    \
 }
 
 #include "GB_mxm.h"

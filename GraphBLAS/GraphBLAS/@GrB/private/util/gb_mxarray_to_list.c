@@ -68,20 +68,20 @@ int64_t *gb_mxarray_to_list     // return List of integers
         (*allocated) = true ;
         int64_t *List = mxMalloc ((*len) * sizeof (int64_t)) ;
         if (class == mxDOUBLE_CLASS)
-        {
+        { 
             // input list is 1-based double
             double *List_double = mxGetDoubles (mxList) ;
             bool ok = GB_matlab_helper3 (List, List_double, (*len), List_max) ;
             CHECK_ERROR (!ok, "index must be integer") ;
         }
         else if (class == mxINT64_CLASS)
-        {
+        { 
             // input list is 1-based int64
             int64_t *List_int64 = (int64_t *) mxGetInt64s (mxList) ;
             GB_matlab_helper3i (List, List_int64, (*len), List_max) ;
         }
         else // if (class == mxUINT64_CLASS)
-        {
+        { 
             // input list is 1-based uint64
             int64_t *List_int64 = (int64_t *) mxGetUint64s (mxList) ;
             GB_matlab_helper3i (List, List_int64, (*len), List_max) ;
@@ -91,6 +91,7 @@ int64_t *gb_mxarray_to_list     // return List of integers
     else
     { 
         ERROR ("integer array must be double, int64, or uint64") ;
+        return (NULL) ;
     }
 }
 

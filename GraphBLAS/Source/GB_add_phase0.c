@@ -16,8 +16,8 @@
 // not here.
 
 // The A matrix can be sparse, hypersparse, slice, or hyperslice.  The B matrix
-// can only be sparse or hypersparse.  See GB_wait, which can pass in A as any
-// of the four formats.  In this case, no mask is present.
+// can only be sparse or hypersparse.  See GB_Matrix_wait, which can pass in A
+// as any of the four formats.  In this case, no mask is present.
 
 // On output, an integer (Cnvec) a boolean (Ch_to_Mh) and up to 3 arrays are
 // returned, either NULL or of size Cnvec.  Let n = A->vdim be the vector
@@ -58,11 +58,11 @@
 
 #include "GB_add.h"
 
-#define GB_FREE_WORK                                            \
-{                                                               \
-    GB_FREE_MEMORY (kA_start, ntasks+1, sizeof (int64_t)) ;     \
-    GB_FREE_MEMORY (kB_start, ntasks+1, sizeof (int64_t)) ;     \
-    GB_FREE_MEMORY (kC_start, ntasks+1, sizeof (int64_t)) ;     \
+#define GB_FREE_WORK        \
+{                           \
+    GB_FREE (kA_start) ;    \
+    GB_FREE (kB_start) ;    \
+    GB_FREE (kC_start) ;    \
 }
 
 //------------------------------------------------------------------------------
@@ -81,22 +81,22 @@ static inline bool GB_allocate_result
     bool ok = true ;
     if (Ch_handle != NULL)
     { 
-        GB_MALLOC_MEMORY (*Ch_handle, Cnvec, sizeof (int64_t)) ;
+        (*Ch_handle) = GB_MALLOC (Cnvec, int64_t) ;
         ok = (*Ch_handle != NULL) ;
     }
     if (C_to_M_handle != NULL)
     { 
-        GB_MALLOC_MEMORY (*C_to_M_handle, Cnvec, sizeof (int64_t)) ;
+        (*C_to_M_handle) = GB_MALLOC (Cnvec, int64_t) ;
         ok = ok && (*C_to_M_handle != NULL) ;
     }
     if (C_to_A_handle != NULL)
     { 
-        GB_MALLOC_MEMORY (*C_to_A_handle, Cnvec, sizeof (int64_t)) ;
+        *C_to_A_handle = GB_MALLOC (Cnvec, int64_t) ;
         ok = ok && (*C_to_A_handle != NULL) ;
     }
     if (C_to_B_handle != NULL)
     { 
-        GB_MALLOC_MEMORY (*C_to_B_handle, Cnvec, sizeof (int64_t)) ;
+        *C_to_B_handle = GB_MALLOC (Cnvec, int64_t) ;
         ok = ok && (*C_to_B_handle != NULL) ;
     }
 
@@ -105,19 +105,19 @@ static inline bool GB_allocate_result
         // out of memory
         if (Ch_handle != NULL)
         { 
-            GB_FREE_MEMORY (*Ch_handle,     Cnvec, sizeof (int64_t)) ;
+            GB_FREE (*Ch_handle) ;
         }
         if (C_to_M_handle != NULL)
         { 
-            GB_FREE_MEMORY (*C_to_M_handle, Cnvec, sizeof (int64_t)) ;
+            GB_FREE (*C_to_M_handle) ;
         }
         if (C_to_A_handle != NULL)
         { 
-            GB_FREE_MEMORY (*C_to_A_handle, Cnvec, sizeof (int64_t)) ;
+            GB_FREE (*C_to_A_handle) ;
         }
         if (C_to_B_handle != NULL)
         { 
-            GB_FREE_MEMORY (*C_to_B_handle, Cnvec, sizeof (int64_t)) ;
+            GB_FREE (*C_to_B_handle) ;
         }
     }
     return (ok) ;
@@ -235,9 +235,9 @@ GrB_Info GB_add_phase0          // find vectors in C for C=A+B or C<M>=A+B
         // C is hypersparse, with the same vectors as the hypersparse M
         //----------------------------------------------------------------------
 
-        // This step is done for GB_add only, not GB_masker.
-        // GB_wait is the only place where A may be a slice, and it does not
-        // use a mask.  So this phase can ignore the case where A is a slice.
+        // This step is done for GB_add only, not GB_masker.  GB_Matrix_wait is
+        // the only place where A may be a slice, and it does not use a mask.
+        // So this phase can ignore the case where A is a slice.
 
         Cnvec = Mnvec ;
         nthreads = GB_nthreads (Cnvec, chunk, nthreads_max) ;
@@ -302,9 +302,9 @@ GrB_Info GB_add_phase0          // find vectors in C for C=A+B or C<M>=A+B
         ntasks = GB_IMIN (ntasks, work) ;
 
         // allocate workspace
-        GB_MALLOC_MEMORY (kA_start, ntasks+1, sizeof (int64_t)) ;
-        GB_MALLOC_MEMORY (kB_start, ntasks+1, sizeof (int64_t)) ;
-        GB_MALLOC_MEMORY (kC_start, ntasks+1, sizeof (int64_t)) ;
+        kA_start = GB_MALLOC (ntasks+1, int64_t) ;
+        kB_start = GB_MALLOC (ntasks+1, int64_t) ;
+        kC_start = GB_MALLOC (ntasks+1, int64_t) ;
         if (kA_start == NULL || kB_start == NULL || kC_start == NULL)
         {
             // out of memory

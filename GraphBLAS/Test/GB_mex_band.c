@@ -18,9 +18,9 @@
     GB_SCALAR_FREE (&Thunk) ;           \
     GB_MATRIX_FREE (&C) ;               \
     GB_MATRIX_FREE (&A) ;               \
-    GxB_Scalar_free (&Thunk_type) ;     \
-    GxB_SelectOp_free (&op) ;           \
-    GrB_Descriptor_free (&desc) ;       \
+    GxB_Scalar_free_(&Thunk_type) ;     \
+    GxB_SelectOp_free_(&op) ;           \
+    GrB_Descriptor_free_(&desc) ;       \
     GB_mx_put_global (true, 0) ;        \
 }
 
@@ -41,10 +41,10 @@ typedef struct
     int64_t hi ;
 } LoHi_type ; 
 
-bool band (GrB_Index i, GrB_Index j, GrB_Index nrows,
+bool LoHi_band (GrB_Index i, GrB_Index j, GrB_Index nrows,
     GrB_Index ncols, /* x is unused: */ const void *x, const LoHi_type *thunk) ;
 
-bool band (GrB_Index i, GrB_Index j, GrB_Index nrows,
+bool LoHi_band (GrB_Index i, GrB_Index j, GrB_Index nrows,
     GrB_Index ncols, /* x is unused: */ const void *x, const LoHi_type *thunk)
 {
     int64_t i2 = (int64_t) i ;
@@ -115,8 +115,17 @@ void mexFunction
     GB_MEX_TIC ;
 
     // create operator
-    // use the user-defined operator, from the band function
-    METHOD (GxB_SelectOp_new (&op, band, NULL, Thunk_type)) ;
+    // use the user-defined operator, from the LoHi_band function
+    METHOD (GxB_SelectOp_new (&op, (GxB_select_function) LoHi_band,
+        NULL, Thunk_type)) ;
+
+    GrB_Index nrows, ncols ;
+    GrB_Matrix_nrows (&nrows, A) ;
+    GrB_Matrix_ncols (&ncols, A) ;
+    if (bandwidth.lo == 0 && bandwidth.hi == 0 && nrows == 10 && ncols == 10)
+    {
+        GxB_SelectOp_fprint_ (op, 3, NULL) ;
+    }
 
     // create result matrix C
     if (atranspose)
@@ -132,12 +141,12 @@ void mexFunction
     if (GB_NCOLS (C) == 1 && !atranspose)
     {
         // this is just to test the Vector version
-        OK (GxB_Vector_select ((GrB_Vector) C, NULL, NULL, op, (GrB_Vector) A,
+        OK (GxB_Vector_select_((GrB_Vector) C, NULL, NULL, op, (GrB_Vector) A,
             Thunk, NULL)) ;
     }
     else
     {
-        OK (GxB_Matrix_select (C, NULL, NULL, op, A, Thunk, desc)) ;
+        OK (GxB_Matrix_select_(C, NULL, NULL, op, A, Thunk, desc)) ;
     }
 
     GB_MEX_TOC ;

@@ -16,7 +16,11 @@
 #pragma warning (disable: 58 167 144 177 181 186 188 589 593 869 981 1418 1419 1572 1599 2259 2282 2557 2547 3280 )
 #elif defined __GNUC__
 #pragma GCC diagnostic ignored "-Wunused-parameter"
+#if defined ( __cplusplus )
+#pragma GCC diagnostic ignored "-Wwrite-strings"
+#else
 #pragma GCC diagnostic ignored "-Wincompatible-pointer-types"
+#endif
 #endif
 
 //------------------------------------------------------------------------------
@@ -154,7 +158,7 @@ int main (void)
     // start GraphBLAS
     GrB_init (GrB_NONBLOCKING) ;
     int nthreads ;
-    GxB_Global_Option_get (GxB_NTHREADS, &nthreads) ;
+    GxB_Global_Option_get (GxB_GLOBAL_NTHREADS, &nthreads) ;
     fprintf (stderr, "wildtype demo: nthreads %d\n", nthreads) ;
 
     /* alternative method via #defines:
@@ -228,7 +232,7 @@ int main (void)
     }
 
     int nthreads_max ;
-    GxB_Global_Option_get (GxB_NTHREADS, &nthreads_max) ;
+    GxB_Global_Option_get (GxB_GLOBAL_NTHREADS, &nthreads_max) ;
     fprintf (stderr, "max # of threads used internally: %d\n", nthreads_max) ;
 
     // create the WildType
@@ -284,11 +288,13 @@ int main (void)
 
     // create the WildAdd operator
     GrB_BinaryOp WildAdd ;
-    GrB_BinaryOp_new (&WildAdd, wildtype_add, WildType, WildType, WildType) ;
+    GrB_BinaryOp_new (&WildAdd, 
+        (GxB_binary_function) wildtype_add, WildType, WildType, WildType) ;
 
     // create the WildMult operator
     GrB_BinaryOp WildMult ;
-    GrB_BinaryOp_new (&WildMult, wildtype_mult, WildType, WildType, WildType) ;
+    GrB_BinaryOp_new (&WildMult, 
+        (GxB_binary_function) wildtype_mult, WildType, WildType, WildType) ;
 
     // create a matrix B with B (7,2) = scalar2
     GrB_Matrix B ;
@@ -361,7 +367,7 @@ int main (void)
     wildtype_print_matrix (D, "D") ;
 
     // do something invalid
-    info = GrB_eWiseAdd_Matrix_BinaryOp (C, NULL, NULL, WildAdd, A, D, NULL) ;
+    info = GrB_Matrix_eWiseAdd_BinaryOp (C, NULL, NULL, WildAdd, A, D, NULL) ;
     if (info != GrB_SUCCESS)
     {
         printf ("\nThis is supposed to fail, as a demo of GrB_error:\n%s\n",

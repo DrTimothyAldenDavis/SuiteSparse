@@ -9,6 +9,8 @@
 
 #include "GB_Pending.h"
 
+#define GB_FREE_ALL ;
+
 GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_block   // apply all pending computations if blocking mode enabled
 (
@@ -21,6 +23,7 @@ GrB_Info GB_block   // apply all pending computations if blocking mode enabled
     // check inputs
     //--------------------------------------------------------------------------
 
+    GrB_Info info ;
     ASSERT (A != NULL) ;
 
     //--------------------------------------------------------------------------
@@ -30,7 +33,7 @@ GrB_Info GB_block   // apply all pending computations if blocking mode enabled
     if (GB_shall_block (A))
     { 
         // delete any lingering zombies and assemble any pending tuples
-        GB_WAIT (A) ;
+        GB_MATRIX_WAIT (A) ;
     }
     return (GrB_SUCCESS) ;
 }

@@ -10,8 +10,8 @@
 #include "GB_thread_local.h"
 
 // if dynamic allocation of memory for POSIX threads fails, use this string:
-const char panic [GB_RLEN+1] = "GraphBLAS error: GrB_PANIC\n"
-    "Out of memory for thread-local storage\n" ;
+const char panic [GB_RLEN+1] =
+"GraphBLAS error: GrB_PANIC: unable to allocate thread-local storage.\n" ;
 
 const char *GrB_error ( )       // return a string describing the last error
 { 

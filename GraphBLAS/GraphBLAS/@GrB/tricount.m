@@ -1,6 +1,6 @@
 function s = tricount (A, arg2, arg3)
 %GRB.TRICOUNT count triangles in a matrix.
-% s = GrB.tricount (A) counts the number of triangles in the matrix A.
+% s = GrB.tricount (A) is the number of triangles in the matrix A.
 % spones (A) must be symmetric; results are undefined if spones (A) is
 % unsymmetric.  Diagonal entries are ignored.
 %
@@ -12,12 +12,15 @@ function s = tricount (A, arg2, arg3)
 % the degrees first.
 %
 % See also GrB.ktruss, GrB.entries.
-%
-% ADDED: sort if warranted.  See LAGraph_tricount.
+
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
+% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+
+% NOTE: this is a high-level algorithm that uses GrB objects.
 
 [m, n] = size (A) ;
 if (m ~= n)
-    gb_error ('A must be square') ;
+    error ('A must be square') ;
 end
 
 d = [ ] ;
@@ -44,7 +47,7 @@ elseif (nargin == 3)
 end
 
 if (check && ~issymmetric (spones (A)))
-    gb_error ('pattern of A must be symmetric') ;
+    error ('pattern of A must be symmetric') ;
 end
 
 if (isequal (class (d), 'GrB'))
@@ -62,16 +65,14 @@ if (n > 1000 && GrB.entries (A) >= 10*n)
         end
     end
     % sample the degree
-    p = randperm (n, 1000) ;
     sample = d (randperm (n, 1000)) ;
     dmean = full (mean (sample)) ;
     dmed  = full (median (sample)) ;
-    % fprintf ('mean degree: %g median: %g\n', dmean, dmed) ;
     if (dmean > 4 * dmed)
         % sort if the average degree is very high compared to the median
-        % fprintf ('sorting A first\n') ;
         [~, p] = sort (d, 'descend') ;
-        A = A (p,p) ;
+        % A = A (p,p) ;
+        A = GrB.extract (A, { p }, { p }) ;
         clear p
     end
 end

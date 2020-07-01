@@ -1,3 +1,8 @@
+June 30, 2020, SuiteSparse 5.8.0
+
+    * GraphBLAS v3.3.1: see the GraphBLAS/Doc/Changlog
+    * replaced UFget with ssget
+
 Apr 8, 2020, SuiteSparse 5.7.2
 
     * GraphBLAS v3.2.2: port to Microsoft Windows (with MS Visual Studio)

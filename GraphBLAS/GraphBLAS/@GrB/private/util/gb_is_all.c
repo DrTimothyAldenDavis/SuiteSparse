@@ -63,7 +63,7 @@ bool gb_is_all              // true if op (A,B) is all true, false otherwise
     OK (GxB_Matrix_Option_get (A, GxB_FORMAT, &fmt)) ;
     OK (GxB_Matrix_Option_set (C, GxB_FORMAT, fmt)) ;
 
-    OK (GrB_eWiseMult_Matrix_BinaryOp (C, NULL, NULL, op, A, B, NULL)) ;
+    OK (GrB_Matrix_eWiseMult_BinaryOp (C, NULL, NULL, op, A, B, NULL)) ;
 
     // ensure C has the same number of entries as A and B
     OK (GrB_Matrix_nvals (&nvals, C)) ;
@@ -76,7 +76,7 @@ bool gb_is_all              // true if op (A,B) is all true, false otherwise
 
     // result = and (C)
     bool result = true ;
-    OK (GrB_Matrix_reduce_BOOL (&result, NULL, GxB_LAND_BOOL_MONOID, C, NULL)) ;
+    OK (GrB_Matrix_reduce_BOOL (&result, NULL, GrB_LAND_MONOID_BOOL, C, NULL)) ;
 
     // free workspace and return result
     GrB_Matrix_free (&C) ;

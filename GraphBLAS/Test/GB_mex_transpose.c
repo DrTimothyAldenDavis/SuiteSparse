@@ -24,7 +24,7 @@
     GB_MATRIX_FREE (&C) ;               \
     if (C_is_M) M = NULL ;              \
     GB_MATRIX_FREE (&M) ;               \
-    GrB_Descriptor_free (&desc) ;       \
+    GrB_Descriptor_free_(&desc) ;       \
     GB_mx_put_global (true, 0) ;        \
 }
 
@@ -103,12 +103,13 @@ void mexFunction
         FREE_ALL ;
         mexErrMsgTxt ("C failed") ;
     }
-    mxClassID cclass = GB_mx_Type_to_classID (C->type) ;
 
-    // get accum; default: NOP, default class is class(C)
+    // get accum; default: NOP, default is C->type
+    bool user_complex = (Complex != GxB_FC64)
+        && (C->type == Complex || A->type == Complex) ;
     GrB_BinaryOp accum ;
     if (!GB_mx_mxArray_to_BinaryOp (&accum, pargin [2], "accum",
-        GB_NOP_opcode, cclass, C->type == Complex, A->type == Complex))
+        C->type, user_complex))
     {
         FREE_ALL ;
         mexErrMsgTxt ("accum failed") ;

@@ -47,13 +47,13 @@ void mexFunction
     double s ;
 
     if (norm_kind == INT64_MIN && !GB_is_dense (A))
-    {
+    { 
         // norm (A,-inf) is zero if A is not dense
         s = 0 ;
     }
     else if ((atype == GrB_FP32 || atype == GrB_FP64)
         && (anrows == 1 || ancols == 1 || norm_kind == 0))
-    {
+    { 
         // s = norm (A,p) where A is an FP32 or FP64 vector,
         // or when p = 0 (for Frobenius norm)
         GrB_Index anz ;
@@ -62,7 +62,7 @@ void mexFunction
         if (s < 0) ERROR ("unknown norm") ;
     }
     else
-    {
+    { 
         // s = norm (A, norm_kind)
         s = gb_norm (A, norm_kind) ;
     }

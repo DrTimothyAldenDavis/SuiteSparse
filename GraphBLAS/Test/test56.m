@@ -5,7 +5,7 @@ function test56
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 op.opname = 'min'
-op.opclass = 'uint32'
+op.optype = 'uint32'
 
 fprintf ('ktriplets:\n') ;
 I = uint64 ([0 0 0]') ;

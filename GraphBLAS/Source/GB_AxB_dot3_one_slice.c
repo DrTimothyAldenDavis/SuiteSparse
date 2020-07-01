@@ -13,13 +13,12 @@
 // simple general-purpose method for slicing a single matrix.  It could be
 // called GB_one_slice, and used for other methods as well.
 
-#define GB_FREE_WORK \
-    GB_FREE_MEMORY (Coarse, ntasks1+1, sizeof (int64_t)) ;
+#define GB_FREE_WORK GB_FREE (Coarse) ;
 
-#define GB_FREE_ALL                                                     \
-{                                                                       \
-    GB_FREE_WORK ;                                                      \
-    GB_FREE_MEMORY (TaskList, max_ntasks+1, sizeof (GB_task_struct)) ;  \
+#define GB_FREE_ALL         \
+{                           \
+    GB_FREE_WORK ;          \
+    GB_FREE (TaskList) ;    \
 }
 
 #include "GB_mxm.h"

@@ -46,17 +46,17 @@
         Mp = M->p ;
         Mh = M->h ;
         Mi = M->i ;
-        Mx = (Mask_struct ? NULL : (M->x)) ;
+        Mx = (GB_void *) (Mask_struct ? NULL : (M->x)) ;
         msize = M->type->size ;
     }
 
     #if defined ( GB_PHASE_2_OF_2 )
-    const GB_ATYPE *GB_RESTRICT Ax = A->x ;
-    const GB_ATYPE *GB_RESTRICT Bx = B->x ;
+    const GB_ATYPE *GB_RESTRICT Ax = (GB_ATYPE *) A->x ;
+    const GB_BTYPE *GB_RESTRICT Bx = (GB_BTYPE *) B->x ;
     const int64_t  *GB_RESTRICT Cp = C->p ;
     const int64_t  *GB_RESTRICT Ch = C->h ;
           int64_t  *GB_RESTRICT Ci = C->i ;
-          GB_CTYPE *GB_RESTRICT Cx = C->x ;
+          GB_CTYPE *GB_RESTRICT Cx = (GB_CTYPE *) C->x ;
     #endif
 
     //--------------------------------------------------------------------------
@@ -252,6 +252,7 @@
                     cjnz = ajnz ;
                     #else
                     ASSERT (cjnz == ajnz) ;
+                    GB_PRAGMA_SIMD_VECTORIZE
                     for (int64_t p = 0 ; p < ajnz ; p++)
                     { 
                         Ci [pC + p] = p + iA_first ;
@@ -273,6 +274,7 @@
                     cjnz = bjnz ;
                     #else
                     ASSERT (cjnz == bjnz) ;
+                    GB_PRAGMA_SIMD_VECTORIZE
                     for (int64_t p = 0 ; p < bjnz ; p++)
                     { 
                         int64_t i = Bi [pB + p] ;
@@ -295,6 +297,7 @@
                     cjnz = ajnz ;
                     #else
                     ASSERT (cjnz == ajnz) ;
+                    GB_PRAGMA_SIMD_VECTORIZE
                     for (int64_t p = 0 ; p < ajnz ; p++)
                     { 
                         int64_t i = Ai [pA + p] ;

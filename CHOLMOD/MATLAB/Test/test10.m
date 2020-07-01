@@ -12,7 +12,7 @@ fprintf ('test10: test cholmod2''s backslash\n') ;
 rand ('state',0) ;
 randn ('state',0) ;
 
-index = UFget ;
+index = ssget ;
 f = find (index.posdef) ;
 [ignore i] = sort (index.nrows (f)) ;
 f = f (i) ;
@@ -71,7 +71,7 @@ for nn = f
 
 		if (~complexity)
 		    nn					%#ok
-		    Prob = UFget (nn)			%#ok
+		    Prob = ssget (nn)			%#ok
 		end
 		A = Prob.A ;
 		if (complexity)

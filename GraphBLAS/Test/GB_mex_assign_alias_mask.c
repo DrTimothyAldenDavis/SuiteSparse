@@ -15,7 +15,7 @@
 {                                           \
     GB_MATRIX_FREE (&C) ;                   \
     GB_MATRIX_FREE (&A) ;                   \
-    GrB_Descriptor_free (&desc) ;           \
+    GrB_Descriptor_free_(&desc) ;           \
     GB_mx_put_global (true, 0) ;            \
 }
 
@@ -49,7 +49,6 @@ void mexFunction
         FREE_ALL ;
         mexErrMsgTxt ("C failed") ;
     }
-    mxClassID cclass = GB_mx_Type_to_classID (C->type) ;
 
     // get A (shallow copy)
     A = GB_mx_mxArray_to_Matrix (pargin [1], "A input", false, true) ;
@@ -71,7 +70,7 @@ void mexFunction
     GrB_Matrix_nvals (&ncols, C) ;
 
     // C<A> = A
-    METHOD (GrB_Matrix_assign (C, A, NULL, A,
+    METHOD (GrB_Matrix_assign_(C, A, NULL, A,
         GrB_ALL, nrows, GrB_ALL, ncols, desc)) ;
 
     // return C to MATLAB as a struct and free the GraphBLAS C

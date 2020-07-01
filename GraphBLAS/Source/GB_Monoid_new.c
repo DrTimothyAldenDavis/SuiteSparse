@@ -76,9 +76,9 @@ GrB_Info GB_Monoid_new          // create a monoid
         // ISNE, NE, MINUS, RMINUS, and XOR are the same for boolean:
         op = GrB_LXOR ;
     }
-    else if (op == GxB_ISEQ_BOOL)
+    else if (op == GxB_ISEQ_BOOL || op == GrB_LXNOR)
     { 
-        // ISEQ, EQ are the same for boolean:
+        // LXNOR, ISEQ, EQ are the same for boolean:
         op = GrB_EQ_BOOL ;
     }
     else if (op == GxB_ISGT_BOOL)
@@ -137,7 +137,7 @@ GrB_Info GB_Monoid_new          // create a monoid
     //--------------------------------------------------------------------------
 
     // allocate the monoid
-    GB_CALLOC_MEMORY (*monoid, 1, sizeof (struct GB_Monoid_opaque)) ;
+    (*monoid) = GB_CALLOC (1, struct GB_Monoid_opaque) ;
     if (*monoid == NULL)
     { 
         // out of memory
@@ -148,7 +148,7 @@ GrB_Info GB_Monoid_new          // create a monoid
     GrB_Monoid mon = *monoid ;
     mon->magic = GB_MAGIC ;
     mon->op = op ;
-    mon->object_kind = GB_USER_RUNTIME ;
+    mon->builtin = false ;
     size_t zsize = op->ztype->size ;
     mon->op_ztype_size = zsize ;
     mon->identity = NULL ;                  // defined below
@@ -161,14 +161,14 @@ GrB_Info GB_Monoid_new          // create a monoid
     // allocate both the identity and terminal value
     #define GB_ALLOC_IDENTITY_AND_TERMINAL                                  \
     {                                                                       \
-        GB_CALLOC_MEMORY (mon->identity, 1, zsize) ;                        \
-        GB_CALLOC_MEMORY (mon->terminal, 1, zsize) ;                        \
+        mon->identity = GB_CALLOC (zsize, GB_void) ;                        \
+        mon->terminal = GB_CALLOC (zsize, GB_void) ;                        \
         if (mon->identity == NULL || mon->terminal == NULL)                 \
         {                                                                   \
             /* out of memory */                                             \
-            GB_FREE_MEMORY (mon->identity, 1, zsize) ;                      \
-            GB_FREE_MEMORY (mon->terminal, 1, zsize) ;                      \
-            GB_FREE_MEMORY (*monoid, 1, sizeof (struct GB_Monoid_opaque)) ; \
+            GB_FREE (mon->identity) ;                                       \
+            GB_FREE (mon->terminal) ;                                       \
+            GB_FREE (*monoid) ;                                             \
             return (GB_OUT_OF_MEMORY) ;                                     \
         }                                                                   \
     }
@@ -176,11 +176,11 @@ GrB_Info GB_Monoid_new          // create a monoid
     // allocate just the identity, not the terminal
     #define GB_ALLOC_JUST_IDENTITY                                          \
     {                                                                       \
-        GB_CALLOC_MEMORY (mon->identity, 1, zsize) ;                        \
+        mon->identity = GB_CALLOC (zsize, GB_void) ;                        \
         if (mon->identity == NULL)                                          \
         {                                                                   \
             /* out of memory */                                             \
-            GB_FREE_MEMORY (*monoid, 1, sizeof (struct GB_Monoid_opaque)) ; \
+            GB_FREE (*monoid) ;                                             \
             return (GB_OUT_OF_MEMORY) ;                                     \
         }                                                                   \
     }
@@ -202,8 +202,8 @@ GrB_Info GB_Monoid_new          // create a monoid
     #define GB_IT(ztype,identity_value,terminal_value)                      \
     {                                                                       \
         GB_ALLOC_IDENTITY_AND_TERMINAL ;                                    \
-        ztype *identity = mon->identity ;                                   \
-        ztype *terminal = mon->terminal ;                                   \
+        ztype *identity = (ztype *) mon->identity ;                         \
+        ztype *terminal = (ztype *) mon->terminal ;                         \
         (*identity) = identity_value ;                                      \
         (*terminal) = terminal_value ;                                      \
         done = true ;                                                       \
@@ -215,7 +215,7 @@ GrB_Info GB_Monoid_new          // create a monoid
     #define GB_IN(ztype,identity_value)                                     \
     {                                                                       \
         GB_ALLOC_JUST_IDENTITY ;                                            \
-        ztype *identity = mon->identity ;                                   \
+        ztype *identity = (ztype *) mon->identity ;                         \
         (*identity) = identity_value ;                                      \
         done = true ;                                                       \
     }                                                                       \
@@ -237,8 +237,8 @@ GrB_Info GB_Monoid_new          // create a monoid
                 case GB_UINT32_code : GB_IT (uint32_t, UINT32_MAX, 0         )
                 case GB_UINT64_code : GB_IT (uint64_t, UINT64_MAX, 0         )
                 case GB_FP32_code   : GB_IT (float   , INFINITY  , -INFINITY )
-                case GB_FP64_code   : GB_IT (double  , ((double) INFINITY)  ,
-                                                       ((double) -INFINITY) )
+                case GB_FP64_code   : GB_IT (double  , ((double)  INFINITY)  ,
+                                                       ((double) -INFINITY)  )
                 default: ;
             }
             break ;
@@ -258,7 +258,7 @@ GrB_Info GB_Monoid_new          // create a monoid
                 case GB_UINT64_code : GB_IT (uint64_t, 0         , UINT64_MAX)
                 case GB_FP32_code   : GB_IT (float   , -INFINITY , INFINITY  )
                 case GB_FP64_code   : GB_IT (double  , ((double) -INFINITY)  ,
-                                                       ((double) INFINITY) )
+                                                       ((double)  INFINITY)  )
                 default: ;
             }
             break ;
@@ -278,6 +278,8 @@ GrB_Info GB_Monoid_new          // create a monoid
                 case GB_UINT64_code : GB_IN (uint64_t, 0 )
                 case GB_FP32_code   : GB_IN (float   , 0 )
                 case GB_FP64_code   : GB_IN (double  , 0 )
+                case GB_FC32_code   : GB_IN (GxB_FC32_t, GxB_CMPLXF(0,0) )
+                case GB_FC64_code   : GB_IN (GxB_FC64_t, GxB_CMPLX(0,0) )
                 default: ;
             }
             break ;
@@ -297,26 +299,52 @@ GrB_Info GB_Monoid_new          // create a monoid
                 case GB_UINT64_code : GB_IN (uint64_t, 1 )
                 case GB_FP32_code   : GB_IN (float   , 1 )
                 case GB_FP64_code   : GB_IN (double  , 1 )
+                case GB_FC32_code   : GB_IN (GxB_FC32_t, GxB_CMPLXF(1,0) )
+                case GB_FC64_code   : GB_IN (GxB_FC64_t, GxB_CMPLX(1,0) )
                 default: ;
             }
             break ;
 
-        case GB_LOR_opcode :
+        case GB_ANY_opcode :
+
+            // ANY monoid:  identity is anything, terminal value is anything
+            switch (zcode)
+            {
+                case GB_BOOL_code   : GB_IT (bool    , 0, 0 )
+                case GB_INT8_code   : GB_IT (int8_t  , 0, 0 )
+                case GB_INT16_code  : GB_IT (int16_t , 0, 0 )
+                case GB_INT32_code  : GB_IT (int32_t , 0, 0 )
+                case GB_INT64_code  : GB_IT (int64_t , 0, 0 )
+                case GB_UINT8_code  : GB_IT (uint8_t , 0, 0 )
+                case GB_UINT16_code : GB_IT (uint16_t, 0, 0 )
+                case GB_UINT32_code : GB_IT (uint32_t, 0, 0 )
+                case GB_UINT64_code : GB_IT (uint64_t, 0, 0 )
+                case GB_FP32_code   : GB_IT (float   , 0, 0 )
+                case GB_FP64_code   : GB_IT (double  , 0, 0 )
+                case GB_FC32_code   :
+                    GB_IT (GxB_FC32_t, GxB_CMPLXF(0,0), GxB_CMPLXF(0,0))
+                case GB_FC64_code   :
+                    GB_IT (GxB_FC64_t, GxB_CMPLX(0,0), GxB_CMPLX(0,0))
+                default: ;
+            }
+            break ;
+
+        case GB_LOR_opcode : 
 
             // boolean OR monoid:  identity is false, terminal is true
             if (zcode == GB_BOOL_code) GB_IT (bool, false, true)
 
-        case GB_LAND_opcode :
+        case GB_LAND_opcode : 
 
             // boolean AND monoid:  identity is true, terminal is false
             if (zcode == GB_BOOL_code) GB_IT (bool, true, false)
 
-        case GB_LXOR_opcode :
+        case GB_LXOR_opcode : 
 
             // boolean XOR monoid:  identity is false, no terminal value
             if (zcode == GB_BOOL_code) GB_IN (bool, false)
 
-        case GB_EQ_opcode :
+        case GB_EQ_opcode : 
 
             // boolean EQ monoid:  identity is true, no terminal value
             if (zcode == GB_BOOL_code) GB_IN (bool, true)

@@ -171,65 +171,74 @@ GrB_Matrix gb_get_shallow   // return a shallow copy of MATLAB sparse matrix
             // MATLAB sparse or dense double matrix
             Xx = mxGetDoubles (X) ;
         }
-        #ifdef GB_COMPLEX_TYPE
-        else if (type == gb_complex_type)
-        {
+        else if (type == GxB_FC64)
+        { 
             // MATLAB sparse or dense double complex matrix
             Xx = mxGetComplexDoubles (X) ;
         }
-        #endif
         else if (type == GrB_BOOL)
         { 
             // MATLAB sparse or dense logical matrix
-            Xx = mxGetData (X) ;
+            Xx = mxGetData (X) ;        // OK:bool
+        }
+        else if (X_is_sparse)
+        {
+            // MATLAB does not support any other kinds of sparse matrices
+            ERROR ("unsupported type") ;
+        }
+        else if (type == GrB_INT8)
+        { 
+            // dense int8 matrix
+            Xx = mxGetInt8s (X) ;
+        }
+        else if (type == GrB_INT16)
+        { 
+            // dense int16 matrix
+            Xx = mxGetInt16s (X) ;
+        }
+        else if (type == GrB_INT32)
+        { 
+            // dense int32 matrix
+            Xx = mxGetInt32s (X) ;
+        }
+        else if (type == GrB_INT64)
+        { 
+            // dense int64 matrix
+            Xx = mxGetInt64s (X) ;
+        }
+        else if (type == GrB_UINT8)
+        { 
+            // dense uint8 matrix
+            Xx = mxGetUint8s (X) ;
+        }
+        else if (type == GrB_UINT16)
+        { 
+            // dense uint16 matrix
+            Xx = mxGetUint16s (X) ;
+        }
+        else if (type == GrB_UINT32)
+        { 
+            // dense uint32 matrix
+            Xx = mxGetUint32s (X) ;
+        }
+        else if (type == GrB_UINT64)
+        { 
+            // dense uint64 matrix
+            Xx = mxGetUint64s (X) ;
+        }
+        else if (type == GrB_FP32)
+        { 
+            // dense single matrix
+            Xx = mxGetSingles (X) ;
+        }
+        else if (type == GxB_FC32)
+        { 
+            // dense single complex matrix
+            Xx = mxGetComplexSingles (X) ;
         }
         else
         {
-            // MATLAB does not support any other kinds of sparse matrices
-            if (X_is_sparse)
-            {
-                ERROR ("unsupported type") ;
-            }
-            else if (type == GrB_INT8)
-            { 
-                Xx = mxGetInt8s (X) ;
-            }
-            else if (type == GrB_INT16)
-            { 
-                Xx = mxGetInt16s (X) ;
-            }
-            else if (type == GrB_INT32)
-            { 
-                Xx = mxGetInt32s (X) ;
-            }
-            else if (type == GrB_INT64)
-            { 
-                Xx = mxGetInt64s (X) ;
-            }
-            else if (type == GrB_UINT8)
-            { 
-                Xx = mxGetUint8s (X) ;
-            }
-            else if (type == GrB_UINT16)
-            { 
-                Xx = mxGetUint16s (X) ;
-            }
-            else if (type == GrB_UINT32)
-            { 
-                Xx = mxGetUint32s (X) ;
-            }
-            else if (type == GrB_UINT64)
-            { 
-                Xx = mxGetUint64s (X) ;
-            }
-            else if (type == GrB_FP32)
-            { 
-                Xx = mxGetSingles (X) ;
-            }
-            else
-            {
-                ERROR ("unsupported type") ;
-            }
+            ERROR ("unsupported type") ;
         }
 
         // import the matrix in CSC format.  This sets Xp, Xi, and Xx to NULL,

@@ -9,15 +9,13 @@
 
 // Only built-in GraphBLAS types and operators are supported.
 
-// FUTURE: complex semirings
-
 #include "gb_matlab.h"
 
 GrB_Semiring gb_string_to_semiring      // return a semiring from a string
 (
     char *semiring_string,              // string defining the semiring
-    const GrB_Type default_type         // default type if not in the string:
-                                        // type of x,y inputs to mult operator
+    const GrB_Type atype,               // type of A
+    const GrB_Type btype                // type of B
 )
 {
 
@@ -52,7 +50,7 @@ GrB_Semiring gb_string_to_semiring      // return a semiring from a string
     GrB_Type mult_type ;
     if (mult_typename == NULL)
     { 
-        mult_type = default_type ;
+        mult_type = gb_default_type (atype, btype) ;
     }
     else
     { 

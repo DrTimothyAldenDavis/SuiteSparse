@@ -7,6 +7,11 @@
 
 //------------------------------------------------------------------------------
 
+// Usage:
+
+// nthreads = gbthreads
+// nthreads = gbthreads (nthreads)
+
 #include "gb_matlab.h"
 
 void mexFunction

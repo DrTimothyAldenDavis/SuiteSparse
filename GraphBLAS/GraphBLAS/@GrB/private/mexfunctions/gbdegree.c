@@ -10,9 +10,18 @@
 // The input may be either a GraphBLAS matrix struct or a standard MATLAB
 // sparse matrix.
 
+//  gbdegree (X, 'row')     row degree
+//  gbdegree (X, 'col')     column degree
+//  gbdegree (X, true)      native (get degree of each vector):
+//                          row degree if X is held by row,
+//                          col degree if X is held by col.
+//  gbdegree (X, false)     non-native (sum across vectors):
+//                          col degree if X is held by row,
+//                          row degree if X is held by col.
+
 #include "gb_matlab.h"
 
-#define USAGE "usage: degree = gbdegree (X, native)"
+#define USAGE "usage: degree = gbdegree (X, dim)"
 
 void mexFunction
 (
@@ -34,7 +43,28 @@ void mexFunction
     //--------------------------------------------------------------------------
 
     GrB_Matrix X = gb_get_shallow (pargin [0]) ;
-    bool native = (mxGetScalar (pargin [1]) != 0) ;
+    GxB_Format_Value fmt ;
+    OK (GxB_Matrix_Option_get (X, GxB_FORMAT, &fmt)) ;
+
+    bool native ;
+    if (mxIsChar (pargin [1]))
+    {
+        #define LEN 256
+        char dim_string [LEN+2] ;
+        gb_mxstring_to_string (dim_string, LEN, pargin [1], "dim") ;
+        if (MATCH (dim_string, "row"))
+        { 
+            native = (fmt == GxB_BY_ROW) ;
+        }
+        else // if (MATCH (dim_string, "col"))
+        { 
+            native = (fmt == GxB_BY_COL) ;
+        }
+    }
+    else
+    { 
+        native = (mxGetScalar (pargin [1]) != 0) ;
+    }
 
     //--------------------------------------------------------------------------
     // get the degree of each row or column of X
@@ -45,7 +75,7 @@ void mexFunction
     GrB_Vector d = NULL ;
 
     if (native)
-    {
+    { 
 
         //----------------------------------------------------------------------
         // get the degree of each vector of X
@@ -70,8 +100,6 @@ void mexFunction
         OK (GrB_Matrix_nvals (&nvals, X)) ;
         OK (GrB_Matrix_nrows (&nrows, X)) ;
         OK (GrB_Matrix_ncols (&ncols, X)) ;
-        GxB_Format_Value fmt ;
-        OK (GxB_Matrix_Option_get (X, GxB_FORMAT, &fmt)) ;
         GrB_Vector y = NULL ;
 
         if (fmt == GxB_BY_COL)
@@ -82,7 +110,7 @@ void mexFunction
             //------------------------------------------------------------------
 
             if (nvals < ncols / 16 && ncols > 256)
-            {
+            { 
                 // X is hypersparse, or might as well be, so let y be the
                 // pattern of nonempty columns of X.
                 if (!GB_matlab_helper9 (X, &degree, &list, &nvec))
@@ -93,7 +121,7 @@ void mexFunction
                     &list, &degree, NULL)) ;
             }
             else
-            {
+            { 
                 // y = dense vector of size ncols-by-1; value is not relevant
                 OK (GrB_Vector_new (&y, GrB_BOOL, ncols)) ;
                 OK (GrB_Vector_assign_BOOL (y, NULL, NULL, false, GrB_ALL,
@@ -113,7 +141,7 @@ void mexFunction
             //------------------------------------------------------------------
 
             if (nvals < nrows / 16 && nrows > 256)
-            {
+            { 
                 // X is hypersparse, or might as well be, so let y be the
                 // pattern of nonempty rows of X.
                 if (!GB_matlab_helper9 (X, &degree, &list, &nvec))
@@ -124,7 +152,7 @@ void mexFunction
                     &list, &degree, NULL)) ;
             }
             else
-            {
+            { 
                 // y = dense vector of size nrows-by-1; value is not relevant
                 OK (GrB_Vector_new (&y, GrB_BOOL, nrows)) ;
                 OK (GrB_Vector_assign_BOOL (y, NULL, NULL, false, GrB_ALL,

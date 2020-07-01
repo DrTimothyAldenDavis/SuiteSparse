@@ -704,6 +704,88 @@ void GB_sel_phase2__nonzombie_fp64
     const int nthreads
 ) ;
 
+#if 0
+
+void GB_sel_phase1__(none)
+(
+    int64_t *GB_RESTRICT Zp,
+    int64_t *GB_RESTRICT Cp,
+    GB_void *GB_RESTRICT Wfirst_space,
+    GB_void *GB_RESTRICT Wlast_space,
+    const GrB_Matrix A,
+    const int64_t *GB_RESTRICT kfirst_slice,
+    const int64_t *GB_RESTRICT klast_slice,
+    const int64_t *GB_RESTRICT pstart_slice,
+    const bool flipij,
+    const int64_t ithunk,
+    const GxB_FC32_t *GB_RESTRICT xthunk,
+    const GxB_select_function user_select,
+    const int ntasks,
+    const int nthreads
+) ;
+
+#endif
+
+void GB_sel_phase2__nonzombie_fc32
+(
+    int64_t *GB_RESTRICT Ci,
+    GxB_FC32_t *GB_RESTRICT Cx,
+    const int64_t *GB_RESTRICT Zp,
+    const int64_t *GB_RESTRICT Cp,
+    const int64_t *GB_RESTRICT C_pstart_slice,
+    const GrB_Matrix A,
+    const int64_t *GB_RESTRICT kfirst_slice,
+    const int64_t *GB_RESTRICT klast_slice,
+    const int64_t *GB_RESTRICT pstart_slice,
+    const bool flipij,
+    const int64_t ithunk,
+    const GxB_FC32_t *GB_RESTRICT xthunk,
+    const GxB_select_function user_select,
+    const int ntasks,
+    const int nthreads
+) ;
+
+#if 0
+
+void GB_sel_phase1__(none)
+(
+    int64_t *GB_RESTRICT Zp,
+    int64_t *GB_RESTRICT Cp,
+    GB_void *GB_RESTRICT Wfirst_space,
+    GB_void *GB_RESTRICT Wlast_space,
+    const GrB_Matrix A,
+    const int64_t *GB_RESTRICT kfirst_slice,
+    const int64_t *GB_RESTRICT klast_slice,
+    const int64_t *GB_RESTRICT pstart_slice,
+    const bool flipij,
+    const int64_t ithunk,
+    const GxB_FC64_t *GB_RESTRICT xthunk,
+    const GxB_select_function user_select,
+    const int ntasks,
+    const int nthreads
+) ;
+
+#endif
+
+void GB_sel_phase2__nonzombie_fc64
+(
+    int64_t *GB_RESTRICT Ci,
+    GxB_FC64_t *GB_RESTRICT Cx,
+    const int64_t *GB_RESTRICT Zp,
+    const int64_t *GB_RESTRICT Cp,
+    const int64_t *GB_RESTRICT C_pstart_slice,
+    const GrB_Matrix A,
+    const int64_t *GB_RESTRICT kfirst_slice,
+    const int64_t *GB_RESTRICT klast_slice,
+    const int64_t *GB_RESTRICT pstart_slice,
+    const bool flipij,
+    const int64_t ithunk,
+    const GxB_FC64_t *GB_RESTRICT xthunk,
+    const GxB_select_function user_select,
+    const int ntasks,
+    const int nthreads
+) ;
+
 
 
 void GB_sel_phase1__nonzombie_any
@@ -1198,6 +1280,88 @@ void GB_sel_phase2__nonzero_fp64
 
 
 
+void GB_sel_phase1__nonzero_fc32
+(
+    int64_t *GB_RESTRICT Zp,
+    int64_t *GB_RESTRICT Cp,
+    GB_void *GB_RESTRICT Wfirst_space,
+    GB_void *GB_RESTRICT Wlast_space,
+    const GrB_Matrix A,
+    const int64_t *GB_RESTRICT kfirst_slice,
+    const int64_t *GB_RESTRICT klast_slice,
+    const int64_t *GB_RESTRICT pstart_slice,
+    const bool flipij,
+    const int64_t ithunk,
+    const GxB_FC32_t *GB_RESTRICT xthunk,
+    const GxB_select_function user_select,
+    const int ntasks,
+    const int nthreads
+) ;
+
+
+
+void GB_sel_phase2__nonzero_fc32
+(
+    int64_t *GB_RESTRICT Ci,
+    GxB_FC32_t *GB_RESTRICT Cx,
+    const int64_t *GB_RESTRICT Zp,
+    const int64_t *GB_RESTRICT Cp,
+    const int64_t *GB_RESTRICT C_pstart_slice,
+    const GrB_Matrix A,
+    const int64_t *GB_RESTRICT kfirst_slice,
+    const int64_t *GB_RESTRICT klast_slice,
+    const int64_t *GB_RESTRICT pstart_slice,
+    const bool flipij,
+    const int64_t ithunk,
+    const GxB_FC32_t *GB_RESTRICT xthunk,
+    const GxB_select_function user_select,
+    const int ntasks,
+    const int nthreads
+) ;
+
+
+
+void GB_sel_phase1__nonzero_fc64
+(
+    int64_t *GB_RESTRICT Zp,
+    int64_t *GB_RESTRICT Cp,
+    GB_void *GB_RESTRICT Wfirst_space,
+    GB_void *GB_RESTRICT Wlast_space,
+    const GrB_Matrix A,
+    const int64_t *GB_RESTRICT kfirst_slice,
+    const int64_t *GB_RESTRICT klast_slice,
+    const int64_t *GB_RESTRICT pstart_slice,
+    const bool flipij,
+    const int64_t ithunk,
+    const GxB_FC64_t *GB_RESTRICT xthunk,
+    const GxB_select_function user_select,
+    const int ntasks,
+    const int nthreads
+) ;
+
+
+
+void GB_sel_phase2__nonzero_fc64
+(
+    int64_t *GB_RESTRICT Ci,
+    GxB_FC64_t *GB_RESTRICT Cx,
+    const int64_t *GB_RESTRICT Zp,
+    const int64_t *GB_RESTRICT Cp,
+    const int64_t *GB_RESTRICT C_pstart_slice,
+    const GrB_Matrix A,
+    const int64_t *GB_RESTRICT kfirst_slice,
+    const int64_t *GB_RESTRICT klast_slice,
+    const int64_t *GB_RESTRICT pstart_slice,
+    const bool flipij,
+    const int64_t ithunk,
+    const GxB_FC64_t *GB_RESTRICT xthunk,
+    const GxB_select_function user_select,
+    const int ntasks,
+    const int nthreads
+) ;
+
+
+
 void GB_sel_phase1__nonzero_any
 (
     int64_t *GB_RESTRICT Zp,
@@ -1683,6 +1847,88 @@ void GB_sel_phase2__eq_zero_fp64
     const bool flipij,
     const int64_t ithunk,
     const double *GB_RESTRICT xthunk,
+    const GxB_select_function user_select,
+    const int ntasks,
+    const int nthreads
+) ;
+
+
+
+void GB_sel_phase1__eq_zero_fc32
+(
+    int64_t *GB_RESTRICT Zp,
+    int64_t *GB_RESTRICT Cp,
+    GB_void *GB_RESTRICT Wfirst_space,
+    GB_void *GB_RESTRICT Wlast_space,
+    const GrB_Matrix A,
+    const int64_t *GB_RESTRICT kfirst_slice,
+    const int64_t *GB_RESTRICT klast_slice,
+    const int64_t *GB_RESTRICT pstart_slice,
+    const bool flipij,
+    const int64_t ithunk,
+    const GxB_FC32_t *GB_RESTRICT xthunk,
+    const GxB_select_function user_select,
+    const int ntasks,
+    const int nthreads
+) ;
+
+
+
+void GB_sel_phase2__eq_zero_fc32
+(
+    int64_t *GB_RESTRICT Ci,
+    GxB_FC32_t *GB_RESTRICT Cx,
+    const int64_t *GB_RESTRICT Zp,
+    const int64_t *GB_RESTRICT Cp,
+    const int64_t *GB_RESTRICT C_pstart_slice,
+    const GrB_Matrix A,
+    const int64_t *GB_RESTRICT kfirst_slice,
+    const int64_t *GB_RESTRICT klast_slice,
+    const int64_t *GB_RESTRICT pstart_slice,
+    const bool flipij,
+    const int64_t ithunk,
+    const GxB_FC32_t *GB_RESTRICT xthunk,
+    const GxB_select_function user_select,
+    const int ntasks,
+    const int nthreads
+) ;
+
+
+
+void GB_sel_phase1__eq_zero_fc64
+(
+    int64_t *GB_RESTRICT Zp,
+    int64_t *GB_RESTRICT Cp,
+    GB_void *GB_RESTRICT Wfirst_space,
+    GB_void *GB_RESTRICT Wlast_space,
+    const GrB_Matrix A,
+    const int64_t *GB_RESTRICT kfirst_slice,
+    const int64_t *GB_RESTRICT klast_slice,
+    const int64_t *GB_RESTRICT pstart_slice,
+    const bool flipij,
+    const int64_t ithunk,
+    const GxB_FC64_t *GB_RESTRICT xthunk,
+    const GxB_select_function user_select,
+    const int ntasks,
+    const int nthreads
+) ;
+
+
+
+void GB_sel_phase2__eq_zero_fc64
+(
+    int64_t *GB_RESTRICT Ci,
+    GxB_FC64_t *GB_RESTRICT Cx,
+    const int64_t *GB_RESTRICT Zp,
+    const int64_t *GB_RESTRICT Cp,
+    const int64_t *GB_RESTRICT C_pstart_slice,
+    const GrB_Matrix A,
+    const int64_t *GB_RESTRICT kfirst_slice,
+    const int64_t *GB_RESTRICT klast_slice,
+    const int64_t *GB_RESTRICT pstart_slice,
+    const bool flipij,
+    const int64_t ithunk,
+    const GxB_FC64_t *GB_RESTRICT xthunk,
     const GxB_select_function user_select,
     const int ntasks,
     const int nthreads
@@ -3125,6 +3371,88 @@ void GB_sel_phase2__ne_thunk_fp64
 
 
 
+void GB_sel_phase1__ne_thunk_fc32
+(
+    int64_t *GB_RESTRICT Zp,
+    int64_t *GB_RESTRICT Cp,
+    GB_void *GB_RESTRICT Wfirst_space,
+    GB_void *GB_RESTRICT Wlast_space,
+    const GrB_Matrix A,
+    const int64_t *GB_RESTRICT kfirst_slice,
+    const int64_t *GB_RESTRICT klast_slice,
+    const int64_t *GB_RESTRICT pstart_slice,
+    const bool flipij,
+    const int64_t ithunk,
+    const GxB_FC32_t *GB_RESTRICT xthunk,
+    const GxB_select_function user_select,
+    const int ntasks,
+    const int nthreads
+) ;
+
+
+
+void GB_sel_phase2__ne_thunk_fc32
+(
+    int64_t *GB_RESTRICT Ci,
+    GxB_FC32_t *GB_RESTRICT Cx,
+    const int64_t *GB_RESTRICT Zp,
+    const int64_t *GB_RESTRICT Cp,
+    const int64_t *GB_RESTRICT C_pstart_slice,
+    const GrB_Matrix A,
+    const int64_t *GB_RESTRICT kfirst_slice,
+    const int64_t *GB_RESTRICT klast_slice,
+    const int64_t *GB_RESTRICT pstart_slice,
+    const bool flipij,
+    const int64_t ithunk,
+    const GxB_FC32_t *GB_RESTRICT xthunk,
+    const GxB_select_function user_select,
+    const int ntasks,
+    const int nthreads
+) ;
+
+
+
+void GB_sel_phase1__ne_thunk_fc64
+(
+    int64_t *GB_RESTRICT Zp,
+    int64_t *GB_RESTRICT Cp,
+    GB_void *GB_RESTRICT Wfirst_space,
+    GB_void *GB_RESTRICT Wlast_space,
+    const GrB_Matrix A,
+    const int64_t *GB_RESTRICT kfirst_slice,
+    const int64_t *GB_RESTRICT klast_slice,
+    const int64_t *GB_RESTRICT pstart_slice,
+    const bool flipij,
+    const int64_t ithunk,
+    const GxB_FC64_t *GB_RESTRICT xthunk,
+    const GxB_select_function user_select,
+    const int ntasks,
+    const int nthreads
+) ;
+
+
+
+void GB_sel_phase2__ne_thunk_fc64
+(
+    int64_t *GB_RESTRICT Ci,
+    GxB_FC64_t *GB_RESTRICT Cx,
+    const int64_t *GB_RESTRICT Zp,
+    const int64_t *GB_RESTRICT Cp,
+    const int64_t *GB_RESTRICT C_pstart_slice,
+    const GrB_Matrix A,
+    const int64_t *GB_RESTRICT kfirst_slice,
+    const int64_t *GB_RESTRICT klast_slice,
+    const int64_t *GB_RESTRICT pstart_slice,
+    const bool flipij,
+    const int64_t ithunk,
+    const GxB_FC64_t *GB_RESTRICT xthunk,
+    const GxB_select_function user_select,
+    const int ntasks,
+    const int nthreads
+) ;
+
+
+
 void GB_sel_phase1__ne_thunk_any
 (
     int64_t *GB_RESTRICT Zp,
@@ -3569,6 +3897,88 @@ void GB_sel_phase2__eq_thunk_fp64
     const bool flipij,
     const int64_t ithunk,
     const double *GB_RESTRICT xthunk,
+    const GxB_select_function user_select,
+    const int ntasks,
+    const int nthreads
+) ;
+
+
+
+void GB_sel_phase1__eq_thunk_fc32
+(
+    int64_t *GB_RESTRICT Zp,
+    int64_t *GB_RESTRICT Cp,
+    GB_void *GB_RESTRICT Wfirst_space,
+    GB_void *GB_RESTRICT Wlast_space,
+    const GrB_Matrix A,
+    const int64_t *GB_RESTRICT kfirst_slice,
+    const int64_t *GB_RESTRICT klast_slice,
+    const int64_t *GB_RESTRICT pstart_slice,
+    const bool flipij,
+    const int64_t ithunk,
+    const GxB_FC32_t *GB_RESTRICT xthunk,
+    const GxB_select_function user_select,
+    const int ntasks,
+    const int nthreads
+) ;
+
+
+
+void GB_sel_phase2__eq_thunk_fc32
+(
+    int64_t *GB_RESTRICT Ci,
+    GxB_FC32_t *GB_RESTRICT Cx,
+    const int64_t *GB_RESTRICT Zp,
+    const int64_t *GB_RESTRICT Cp,
+    const int64_t *GB_RESTRICT C_pstart_slice,
+    const GrB_Matrix A,
+    const int64_t *GB_RESTRICT kfirst_slice,
+    const int64_t *GB_RESTRICT klast_slice,
+    const int64_t *GB_RESTRICT pstart_slice,
+    const bool flipij,
+    const int64_t ithunk,
+    const GxB_FC32_t *GB_RESTRICT xthunk,
+    const GxB_select_function user_select,
+    const int ntasks,
+    const int nthreads
+) ;
+
+
+
+void GB_sel_phase1__eq_thunk_fc64
+(
+    int64_t *GB_RESTRICT Zp,
+    int64_t *GB_RESTRICT Cp,
+    GB_void *GB_RESTRICT Wfirst_space,
+    GB_void *GB_RESTRICT Wlast_space,
+    const GrB_Matrix A,
+    const int64_t *GB_RESTRICT kfirst_slice,
+    const int64_t *GB_RESTRICT klast_slice,
+    const int64_t *GB_RESTRICT pstart_slice,
+    const bool flipij,
+    const int64_t ithunk,
+    const GxB_FC64_t *GB_RESTRICT xthunk,
+    const GxB_select_function user_select,
+    const int ntasks,
+    const int nthreads
+) ;
+
+
+
+void GB_sel_phase2__eq_thunk_fc64
+(
+    int64_t *GB_RESTRICT Ci,
+    GxB_FC64_t *GB_RESTRICT Cx,
+    const int64_t *GB_RESTRICT Zp,
+    const int64_t *GB_RESTRICT Cp,
+    const int64_t *GB_RESTRICT C_pstart_slice,
+    const GrB_Matrix A,
+    const int64_t *GB_RESTRICT kfirst_slice,
+    const int64_t *GB_RESTRICT klast_slice,
+    const int64_t *GB_RESTRICT pstart_slice,
+    const bool flipij,
+    const int64_t ithunk,
+    const GxB_FC64_t *GB_RESTRICT xthunk,
     const GxB_select_function user_select,
     const int ntasks,
     const int nthreads

@@ -38,11 +38,11 @@ function SuiteSparse_install (do_demo)
 % See also AMD, COLAMD, CAMD, CCOLAMD, CHOLMOD, UMFPACK, CSPARSE, CXSPARSE,
 %      ssget, RBio, SuiteSparseCollection, KLU, BTF, MESHND, SSMULT, LINFACTOR,
 %      SPOK, SPQR_RANK, SuiteSparse, SPQR, PATHTOOL, PATH, FACTORIZE,
-%      SPARSEINV, Mongoose.
+%      SPARSEINV, Mongoose, GraphBLAS.
 %
 % This script installs the full-featured CXSparse rather than CSparse.
 %
-% Copyright 1990-2018, Timothy A. Davis, http://www.suitesparse.com.
+% Copyright 1990-2020, Timothy A. Davis, http://www.suitesparse.com.
 % In collaboration with (in alphabetical order): Patrick Amestoy, David
 % Bateman, Yanqing Chen, Iain Duff, Les Foster, William Hager, Scott Kolodziej,
 % Stefan Larimore, Ekanathan Palamadai Natarajan, Sivasankaran Rajamanickam,
@@ -292,6 +292,18 @@ try
 catch me
     disp (me.message) ;
     fprintf ('Mongoose not installed\n') ;
+end
+
+% compile and install GraphBLAS
+try
+    paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/build']) ;
+    paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/GraphBLAS/demo']) ;
+    paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/GraphBLAS']) ;
+    cd ('@GrB/private') ;
+    gbmake ;
+catch me
+    disp (me.message) ;
+    fprintf ('GraphBLAS not installed\n') ;
 end
 
 %-------------------------------------------------------------------------------

@@ -9,7 +9,7 @@ function test14 (nmat)
 fprintf ('=================================================================\n');
 fprintf ('test14: test metis, symbfact2, and etree2\n') ;
 
-index = UFget ;
+index = ssget ;
 
 [ignore f] = sort (max (index.nrows, index.ncols)) ;
 
@@ -39,7 +39,7 @@ for i = f
 
     % try
 
-	Prob = UFget (i)						    %#ok
+	Prob = ssget (i)						    %#ok
 	A = Prob.A ;
 	[m n] = size (A) ;
 

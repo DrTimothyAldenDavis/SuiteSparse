@@ -164,3 +164,14 @@ Us
 Timothy A. Davis, and all SuiteSparse co-authors (varies according to
 the SuiteSparse package)
 
+
+You:
+
+    Your Name (printed):
+
+
+    Your Signature:
+
+
+    Date:
+

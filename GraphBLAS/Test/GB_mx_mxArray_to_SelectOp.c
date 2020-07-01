@@ -30,7 +30,7 @@ bool GB_mx_mxArray_to_SelectOp          // true if successful
     }
     else if (mxIsChar (op_matlab))
     {
-        // op is a string.  default class will be used
+        // op is a string
         opname_mx = op_matlab ;
     }
     else

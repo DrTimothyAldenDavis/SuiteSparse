@@ -17,9 +17,7 @@
 
 // phase1: GB_sel_phase1__le_thunk_uint32
 // phase2: GB_sel_phase2__le_thunk_uint32
-
-// A type:   uint32_t
-// selectop: (Ax [p] <= thunk)
+// A type: uint32_t
 
 // kind
 #define GB_ENTRY_SELECTOR
@@ -27,44 +25,17 @@
 #define GB_ATYPE \
     uint32_t
 
-// test Ax [p]
-#define GB_SELECT(p)                                    \
-    (Ax [p] <= thunk)
+// test value of Ax [p]
+#define GB_TEST_VALUE_OF_ENTRY(p)                       \
+    Ax [p] <= thunk
 
 // get the vector index (user select operators only)
 #define GB_GET_J                                        \
     ;
 
-// W [k] = s, no typecast
-#define GB_COPY_SCALAR_TO_ARRAY(W,k,s)                  \
-    W [k] = s
-
-// W [k] = S [i], no typecast
-#define GB_COPY_ARRAY_TO_ARRAY(W,k,S,i)                 \
-    W [k] = S [i]
-
-// W [k] += S [i], no typecast
-#define GB_ADD_ARRAY_TO_ARRAY(W,k,S,i)                  \
-    W [k] += S [i]
-
-// no terminal value
-#define GB_BREAK_IF_TERMINAL(t) ;
-
-// ztype s = (ztype) Ax [p], with typecast
-#define GB_CAST_ARRAY_TO_SCALAR(s,Ax,p)                 \
-    s = GB_SELECT (p)
-
-// s += (ztype) Ax [p], with typecast
-#define GB_ADD_CAST_ARRAY_TO_SCALAR(s,Ax,p)             \
-    s += GB_SELECT (p)
-
 // Cx [pC] = Ax [pA], no typecast
 #define GB_SELECT_ENTRY(Cx,pC,Ax,pA)                    \
     Cx [pC] = Ax [pA]
-
-// declare scalar for GB_reduce_each_vector
-#define GB_SCALAR(s)                                    \
-    int64_t s
 
 //------------------------------------------------------------------------------
 // GB_sel_phase1__le_thunk_uint32

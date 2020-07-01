@@ -120,7 +120,7 @@ GrB_Info GB_subassign               // C(Rows,Cols)<M> += A or A'
         if (!GB_code_compatible (C->type->code, scalar_code))
         { 
             return (GB_ERROR (GrB_DOMAIN_MISMATCH, (GB_LOG,
-                "input scalar of type [%s]\n"
+                "Input scalar of type [%s]\n"
                 "cannot be typecast to output of type [%s]",
                 GB_code_string (scalar_code), C->type->name))) ;
         }
@@ -130,7 +130,7 @@ GrB_Info GB_subassign               // C(Rows,Cols)<M> += A or A'
         if (!GB_Type_compatible (C->type, A->type))
         { 
             return (GB_ERROR (GrB_DOMAIN_MISMATCH, (GB_LOG,
-                "input of type [%s]\n"
+                "Input of type [%s]\n"
                 "cannot be typecast to output of type [%s]",
                 A->type->name, C->type->name))) ;
         }
@@ -152,8 +152,8 @@ GrB_Info GB_subassign               // C(Rows,Cols)<M> += A or A'
         if (mnrows != nRows || mncols != nCols)
         { 
             return (GB_ERROR (GrB_DIMENSION_MISMATCH, (GB_LOG,
-                "M is "GBd"-by-"GBd"%s, "
-                "must match size of result C(I,J): "GBd"-by-"GBd"",
+                "M is " GBd "-by-" GBd "%s, "
+                "must match size of result C(I,J): " GBd "-by-" GBd "",
                 mnrows, mncols, M_transpose ? " (transposed)" : "",
                 nRows, nCols))) ;
         }
@@ -168,8 +168,8 @@ GrB_Info GB_subassign               // C(Rows,Cols)<M> += A or A'
         { 
             return (GB_ERROR (GrB_DIMENSION_MISMATCH, (GB_LOG,
                 "Dimensions not compatible:\n"
-                "C(Rows,Cols) is "GBd"-by-"GBd"\n"
-                "input is "GBd"-by-"GBd"%s",
+                "C(Rows,Cols) is " GBd "-by-" GBd "\n"
+                "input is " GBd "-by-" GBd "%s",
                 nRows, nCols, anrows, ancols,
                 A_transpose ? " (transposed)" : ""))) ;
         }
@@ -183,10 +183,10 @@ GrB_Info GB_subassign               // C(Rows,Cols)<M> += A or A'
 
     // delete any lingering zombies and assemble any pending tuples
     // but only in A and M, not C
-    GB_WAIT (M) ;
+    GB_MATRIX_WAIT (M) ;
     if (!scalar_expansion)
     { 
-        GB_WAIT (A) ;
+        GB_MATRIX_WAIT (A) ;
     }
 
     //--------------------------------------------------------------------------
@@ -228,7 +228,8 @@ GrB_Info GB_subassign               // C(Rows,Cols)<M> += A or A'
         // AT = A', with no typecasting
         // transpose: no typecast, no op, not in place
         GBBURBLE ("(A transpose) ") ;
-        GB_OK (GB_transpose (&AT, NULL, C_is_csc, A, NULL, Context)) ;
+        GB_OK (GB_transpose (&AT, NULL, C_is_csc, A,
+            NULL, NULL, NULL, false, Context)) ;
         A = AT ;
     }
 
@@ -256,7 +257,8 @@ GrB_Info GB_subassign               // C(Rows,Cols)<M> += A or A'
             // typecast to boolean, if a full matrix transpose is done.
             // transpose: no typecast, no op, not in place
             GBBURBLE ("(M transpose) ") ;
-            GB_OK (GB_transpose (&MT, GrB_BOOL, C_is_csc, M, NULL, Context)) ;
+            GB_OK (GB_transpose (&MT, GrB_BOOL, C_is_csc, M,
+                NULL, NULL, NULL, false, Context)) ;
             M = MT ;
         }
     }
@@ -287,10 +289,9 @@ GrB_Info GB_subassign               // C(Rows,Cols)<M> += A or A'
             // is about to be cleared in GB_subassigner anyway, but a duplicate
             // is need.  Instead of duplicating it, create an empty matrix Z2.
             // This also prevents the C_replace_phase from being needed.
-            GB_NEW (&Z2, C->type, C->vlen, C->vdim, GB_Ap_calloc,
+            GB_OK (GB_new (&Z2, C->type, C->vlen, C->vdim, GB_Ap_calloc,
                 C->is_csc, GB_SAME_HYPER_AS (C->is_hyper), C->hyper_ratio,
-                1, Context) ;
-            GB_OK (info)  ;
+                1, Context)) ;
             GBBURBLE ("(C alias cleared; C_replace early) ") ;
             C_replace = false ;
         }
@@ -348,14 +349,14 @@ GrB_Info GB_subassign               // C(Rows,Cols)<M> += A or A'
         if (GB_PENDING (Z2))
         { 
             // assemble all pending tuples, and delete all zombies too
-            GB_OK (GB_wait (Z2, Context)) ;
+            GB_OK (GB_Matrix_wait (Z2, Context)) ;
         }
         // transplants the content of Z2 into C and frees Z2
         GB_OK (GB_transplant (C, C->type, &Z2, Context)) ;
     }
 
     // The hypersparsity of C is not modified.  This will be done eventually,
-    // when all pending operations are completed via GB_wait.
+    // when all pending operations are completed via GB_Matrix_wait.
 
     //--------------------------------------------------------------------------
     // free workspace, finalize C, and return result

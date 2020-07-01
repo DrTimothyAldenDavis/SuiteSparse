@@ -25,8 +25,12 @@ fprintf (f, 'define(`GB_sel_phase2'', `GB_sel_phase2__%s'')\n', name) ;
 % the type of A (no typecasting)
 fprintf (f, 'define(`GB_atype'', `%s'')\n', atype) ;
 
-% create the operator
-fprintf (f, 'define(`GB_SELECT_OP'', `%s'')\n', func) ;
+% create the operator to test the numerical values of the entries
+if (isempty (func))
+    fprintf (f, 'define(`GB_test_value_of_entry'', `(no test; %s ignores values)'')\n', opname) ;
+else
+    fprintf (f, 'define(`GB_test_value_of_entry'', `%s'')\n', func) ;
+end
 
 fprintf (f, 'define(`GB_kind'', `#define %s'')\n', kind) ;
 
@@ -56,7 +60,7 @@ end
 
 % for phase2: copy the numerical value of the entry
 if (isequal (opname, 'eq_zero'))
-    fprintf (f, 'define(`GB_select_entry'', `/* Cx already zero */'')\n') ;
+    fprintf (f, 'define(`GB_select_entry'', `/* assignment skipped, Cx already all zero */'')\n') ;
 elseif (isequal (opname, 'eq_thunk'))
     if (isequal (atype, 'GB_void'))
         fprintf (f, 'define(`GB_select_entry'', `memcpy (Cx +((pC)*asize), xthunk, asize)'')\n') ;

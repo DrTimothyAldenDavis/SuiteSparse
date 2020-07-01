@@ -43,8 +43,7 @@ end
 
 make_all = (isequal (what, 'all')) ;
 
-% flags = '-g' ;
-  flags = '-O' ;
+flags = '-g -R2018a' ;
 
 try
     if (strncmp (computer, 'GLNX', 4))
@@ -108,8 +107,6 @@ else
     flags = [ flags  ' LDFLAGS="$LDFLAGS  -fopenmp -fPIC" '] ;
 end
 
-flags = [flags ' -largeArrayDims'] ;
-
 %-------------------------------------------------------------------------------
 
 dryrun = false ;
@@ -155,13 +152,13 @@ for k = 1:length (cfiles)
     % compile the cfile if it is newer than its object file, or any hfile
     if (make_all || tc > tobj || htime > tobj)
         % compile the cfile
-        % fprintf ('.', cfile) ;
-        fprintf ('%s\n', cfile) ;
+        fprintf ('.', cfile) ;
+        % fprintf ('%s\n', cfile) ;
         mexcmd = sprintf ('mex -c %s -silent %s %s', flags, inc, cfile) ;
         if (dryrun)
             fprintf ('%s\n', mexcmd) ;
         else
-            fprintf ('%s\n', mexcmd) ;
+            % fprintf ('%s\n', mexcmd) ;
             eval (mexcmd) ;
         end
         any_c_compiled = true ;
@@ -191,12 +188,12 @@ for k = 1:length (mexfunctions)
         % compile the mexFunction
         mexcmd = sprintf ('mex -silent %s %s %s %s %s', ...
             flags, inc, mexfunction, objlist, libraries) ;
-        % fprintf (':') ;
-        fprintf ('%s\n', mexfunction) ;
+        fprintf (':') ;
+        % fprintf ('%s\n', mexfunction) ;
         if (dryrun)
             fprintf ('%s\n', mexcmd) ;
         else
-            fprintf ('%s\n', mexcmd) ;
+            % fprintf ('%s\n', mexcmd) ;
             eval (mexcmd) ;
         end
     end

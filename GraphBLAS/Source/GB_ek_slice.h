@@ -33,19 +33,13 @@ bool GB_ek_slice        // true if successful, false if out of memory
 
 void GB_ek_slice_free
 (
-    int64_t *GB_RESTRICT *pstart_slice_handle, // size ntasks+1
-    int64_t *GB_RESTRICT *kfirst_slice_handle, // size ntasks
-    int64_t *GB_RESTRICT *klast_slice_handle,  // size ntasks
-    int ntasks                              // # of tasks
+    int64_t *GB_RESTRICT *pstart_slice_handle,
+    int64_t *GB_RESTRICT *kfirst_slice_handle,
+    int64_t *GB_RESTRICT *klast_slice_handle
 ) ;
 
-int64_t GB_search_for_vector        // return the vector k that contains p
-(
-    const int64_t p,                // search for vector k that contains p
-    const int64_t *GB_RESTRICT Ap,     // vector pointers to search
-    int64_t kleft,                  // left-most k to search
-    int64_t anvec                   // Ap is of size anvec+1
-) ;
+// define the static inline function GB_search_for_vector:
+#include "GB_search_for_vector_template.c"
 
 //------------------------------------------------------------------------------
 // GB_get_pA_and_pC: find the part of A(:,k) to be operated on by this task

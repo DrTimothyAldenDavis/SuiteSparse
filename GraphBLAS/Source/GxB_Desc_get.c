@@ -99,6 +99,17 @@ GrB_Info GxB_Desc_get           // get a parameter from a descriptor
             }
             break ;
 
+        case GxB_DESCRIPTOR_MKL :     // same as GxB_MKL
+
+            {
+                va_start (ap, field) ;
+                int *use_mkl = va_arg (ap, int *) ;
+                va_end (ap) ;
+                GB_RETURN_IF_NULL (use_mkl) ;
+                (*use_mkl) = (desc == NULL) ? false : desc->use_mkl ;
+            }
+            break ;
+
         case GxB_AxB_METHOD : 
 
             {

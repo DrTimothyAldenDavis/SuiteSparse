@@ -18,7 +18,6 @@ bool GB_mx_isequal     // true if A and B are exactly the same
                     // difference is less than or equal to eps.
 )
 {
-    // printf ("mx_isequal\n") ;
 
     if (A == B) return (true) ;
     if (A == NULL) return (false) ;
@@ -42,8 +41,6 @@ bool GB_mx_isequal     // true if A and B are exactly the same
     // if (A->plen  != B->plen ) return (false) ;
     // if (A->nzmax != B->nzmax) return (false) ;
     // if (AP->nmax != BP->nmax) return (false) ;
-    // queue_next and queue_prev are expected to differ
-    // if (A->enqueued != B->enqueued) return (false) ;
 
     if (A->p_shallow        != B->p_shallow        ) return (false) ;
     if (A->h_shallow        != B->h_shallow        ) return (false) ;
@@ -68,21 +65,17 @@ bool GB_mx_isequal     // true if A and B are exactly the same
     size_t asize = A->type->size ;
 
     ASSERT (n >= 0 && n <= A->vdim) ;
-    // printf ("mx_isequal: nvec "GBd" nnz "GBd", np "GBd"\n", n, nnz, np) ;
 
     if (!GB_mx_same  ((char *) A->p, (char *) B->p, (n+1) * s)) return (false) ;
-    // printf ("p same\n") ;
     if (A->is_hyper)
     {
         if (!GB_mx_same ((char *) A->h, (char *) B->h, n * s)) return (false) ;
     }
-    // printf ("h same\n") ;
 
     if (A->nzmax > 0 && B->nzmax > 0)
     {
         if (!GB_mx_same  ((char *) A->i, (char *) B->i, nnz * s))
             return (false) ;
-        // printf ("i same\n") ;
 
         if (A->type == GrB_FP32 && eps > 0)
         {
@@ -99,7 +92,6 @@ bool GB_mx_isequal     // true if A and B are exactly the same
             if (!GB_mx_xsame (A->x, B->x, nnz, asize, A->i))
                 return (false) ;
         }
-        // printf ("x same\n") ;
     }
 
     if (AP != NULL)
@@ -112,7 +104,6 @@ bool GB_mx_isequal     // true if A and B are exactly the same
         {
             return (false) ;
         }
-        // printf ("xp same\n") ;
     }
 
     return (true) ;

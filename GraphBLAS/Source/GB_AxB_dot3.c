@@ -8,16 +8,16 @@
 //------------------------------------------------------------------------------
 
 // This function only computes C<M>=A'*B.  The mask must be present, and not
-// complemented.  The mask is always applied.
+// complemented, either valued or structural.  The mask is always applied.
 
 #include "GB_mxm.h"
 #ifndef GBCOMPACT
 #include "GB_AxB__include.h"
 #endif
 
-#define GB_FREE_WORK                                                    \
-{                                                                       \
-    GB_FREE_MEMORY (TaskList, max_ntasks+1, sizeof (GB_task_struct)) ;  \
+#define GB_FREE_WORK        \
+{                           \
+    GB_FREE (TaskList) ;    \
 }
 
 #define GB_FREE_ALL                                                     \
@@ -103,7 +103,7 @@ GrB_Info GB_AxB_dot3                // C<M> = A'*B using dot product method
     const int64_t *GB_RESTRICT Mp = M->p ;
     const int64_t *GB_RESTRICT Mh = M->h ;
     const int64_t *GB_RESTRICT Mi = M->i ;
-    const GB_void *GB_RESTRICT Mx = (Mask_struct ? NULL : (M->x)) ;
+    const GB_void *GB_RESTRICT Mx = (GB_void *) (Mask_struct ? NULL : (M->x)) ;
     const size_t msize = M->type->size ;
     const int64_t mvlen = M->vlen ;
     const int64_t mvdim = M->vdim ;
@@ -139,7 +139,7 @@ GrB_Info GB_AxB_dot3                // C<M> = A'*B using dot product method
     int64_t cnz = mnz ;
     int64_t cnvec = mnvec ;
 
-    GB_CREATE (Chandle, ctype, cvlen, cvdim, GB_Ap_malloc, true,
+    info = GB_create (Chandle, ctype, cvlen, cvdim, GB_Ap_malloc, true,
         GB_SAME_HYPER_AS (M_is_hyper), M->hyper_ratio, cnvec,
         cnz+1,  // add one to cnz for GB_cumsum of Cwork in GB_AxB_dot3_slice
         true, Context) ;
@@ -195,7 +195,7 @@ GrB_Info GB_AxB_dot3                // C<M> = A'*B using dot product method
     // The work to compute C(i,j) is held in Cwork [p], if C(i,j) appears in
     // as the pth entry in C.
 
-    int taskid;
+    int taskid ;
     #pragma omp parallel for num_threads(nthreads) schedule(dynamic,1)
     for (taskid = 0 ; taskid < ntasks ; taskid++)
     {
@@ -286,7 +286,7 @@ GrB_Info GB_AxB_dot3                // C<M> = A'*B using dot product method
     // free the current tasks and construct the tasks for the second phase
     //--------------------------------------------------------------------------
 
-    GB_FREE_MEMORY (TaskList, max_ntasks+1, sizeof (GB_task_struct)) ;
+    GB_FREE (TaskList) ;
     GB_OK (GB_AxB_dot3_slice (&TaskList, &max_ntasks, &ntasks, &nthreads,
         C, Context)) ;
 
@@ -298,37 +298,36 @@ GrB_Info GB_AxB_dot3                // C<M> = A'*B using dot product method
 
     bool done = false ;
 
-#ifndef GBCOMPACT
+    #ifndef GBCOMPACT
 
-    //--------------------------------------------------------------------------
-    // define the worker for the switch factory
-    //--------------------------------------------------------------------------
+        //----------------------------------------------------------------------
+        // define the worker for the switch factory
+        //----------------------------------------------------------------------
 
-    #define GB_Adot3B(add,mult,xyname) GB_Adot3B_ ## add ## mult ## xyname
+        #define GB_Adot3B(add,mult,xname) GB_Adot3B_ ## add ## mult ## xname
 
-    #define GB_AxB_WORKER(add,mult,xyname)                              \
-    {                                                                   \
-        info = GB_Adot3B (add,mult,xyname) (C, M, Mask_struct,          \
-            A, A_is_pattern, B, B_is_pattern,                           \
-            TaskList, ntasks, nthreads) ;                               \
-        done = (info != GrB_NO_VALUE) ;                                 \
-    }                                                                   \
-    break ;
+        #define GB_AxB_WORKER(add,mult,xname)                               \
+        {                                                                   \
+            info = GB_Adot3B (add,mult,xname) (C, M, Mask_struct,           \
+                A, A_is_pattern, B, B_is_pattern,                           \
+                TaskList, ntasks, nthreads) ;                               \
+            done = (info != GrB_NO_VALUE) ;                                 \
+        }                                                                   \
+        break ;
 
-    //--------------------------------------------------------------------------
-    // launch the switch factory
-    //--------------------------------------------------------------------------
+        //----------------------------------------------------------------------
+        // launch the switch factory
+        //----------------------------------------------------------------------
 
-    GB_Opcode mult_opcode, add_opcode ;
-    GB_Type_code xycode, zcode ;
+        GB_Opcode mult_opcode, add_opcode ;
+        GB_Type_code xcode, ycode, zcode ;
+        if (GB_AxB_semiring_builtin (A, A_is_pattern, B, B_is_pattern, semiring,
+            flipxy, &mult_opcode, &add_opcode, &xcode, &ycode, &zcode))
+        { 
+            #include "GB_AxB_factory.c"
+        }
 
-    if (GB_AxB_semiring_builtin (A, A_is_pattern, B, B_is_pattern, semiring,
-        flipxy, &mult_opcode, &add_opcode, &xycode, &zcode))
-    { 
-        #include "GB_AxB_factory.c"
-    }
-
-#endif
+    #endif
 
     //--------------------------------------------------------------------------
     // C<M> = A'*B, via masked dot product method and typecasting
@@ -359,7 +358,7 @@ GrB_Info GB_AxB_dot3                // C<M> = A'*B using dot product method
         size_t aki_size = flipxy ? ysize : xsize ;
         size_t bkj_size = flipxy ? xsize : ysize ;
 
-        GB_void *GB_RESTRICT terminal = add->terminal ;
+        GB_void *GB_RESTRICT terminal = (GB_void *) add->terminal ;
 
         GB_cast_function cast_A, cast_B ;
         if (flipxy)
@@ -402,12 +401,12 @@ GrB_Info GB_AxB_dot3                // C<M> = A'*B using dot product method
 
         // C(i,j) = A(i,k) * B(k,j)
         #define GB_MULT(cij, aki, bkj)                                      \
-            GB_MULTIPLY (cij, aki, bkj)
+            GB_FMULT (cij, aki, bkj)
 
         // C(i,j) += A(i,k) * B(k,j)
         #define GB_MULTADD(cij, aki, bkj)                                   \
             GB_void zwork [GB_VLA(csize)] ;                                 \
-            GB_MULTIPLY (zwork, aki, bkj) ;                                 \
+            GB_MULT (zwork, aki, bkj) ;                                     \
             fadd (cij, cij, zwork)
 
         // define cij for each task
@@ -426,20 +425,20 @@ GrB_Info GB_AxB_dot3                // C<M> = A'*B using dot product method
         #define GB_CTYPE GB_void
 
         // no vectorization
-        #define GB_PRAGMA_VECTORIZE
-        #define GB_PRAGMA_VECTORIZE_DOT
+        #define GB_PRAGMA_SIMD_VECTORIZE ;
+        #define GB_PRAGMA_SIMD_DOT(cij) ;
 
         if (flipxy)
         { 
-            #define GB_MULTIPLY(z,x,y) fmult (z,y,x)
+            #define GB_FMULT(z,x,y) fmult (z,y,x)
             #include "GB_AxB_dot3_template.c"
-            #undef GB_MULTIPLY
+            #undef GB_FMULT
         }
         else
         { 
-            #define GB_MULTIPLY(z,x,y) fmult (z,x,y)
+            #define GB_FMULT(z,x,y) fmult (z,x,y)
             #include "GB_AxB_dot3_template.c"
-            #undef GB_MULTIPLY
+            #undef GB_FMULT
         }
     }
 
@@ -447,11 +446,7 @@ GrB_Info GB_AxB_dot3                // C<M> = A'*B using dot product method
     // free workspace and return result
     //--------------------------------------------------------------------------
 
-    if (C->nzombies > 0)
-    {
-        // C has been created with zombies, so place it in the queue
-        GB_CRITICAL (GB_queue_insert (C)) ;
-    }
+    if (C->nzombies > 0) { if (!GB_queue_insert (C)) GB_PANIC ; } // TODO in 4.0: delete
 
     GB_FREE_WORK ;
     ASSERT_MATRIX_OK (C, "dot3: C<M> = A'*B output", GB0) ;

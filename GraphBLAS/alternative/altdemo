@@ -2,6 +2,7 @@
 ./wildtype_demo                         > wildtype_demo.out
 ./simple_demo                           > simple_demo.out
 ./complex_demo                          > complex_demo_out.m
+./complex_demo 1                        > complex_demo_out2.m
 ./pthread_demo                          > pthread_demo.out
 ./openmp_demo                           > openmp_demo.out
 

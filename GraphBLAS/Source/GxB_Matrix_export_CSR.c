@@ -50,7 +50,8 @@ GrB_Info GxB_Matrix_export_CSR  // export and free a CSR matrix
     { 
         // A = A', done in place, to put A in CSR format
         GBBURBLE ("(transpose) ") ;
-        GB_OK (GB_transpose (NULL, NULL, false, (*A), NULL, Context)) ;
+        GB_OK (GB_transpose (NULL, NULL, false, (*A),
+            NULL, NULL, NULL, false, Context)) ;
     }
     if ((*A)->is_hyper)
     { 

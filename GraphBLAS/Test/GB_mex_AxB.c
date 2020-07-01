@@ -22,8 +22,8 @@
     GB_MATRIX_FREE (&Bconj) ;                   \
     GB_MATRIX_FREE (&C) ;                       \
     GB_MATRIX_FREE (&Mask) ;                    \
-    GrB_Monoid_free (&add) ;                    \
-    GrB_Semiring_free (&semiring) ;             \
+    GrB_Monoid_free_(&add) ;                    \
+    GrB_Semiring_free_(&semiring) ;             \
     GB_mx_put_global (true, AxB_method_used) ;  \
 }
 
@@ -55,13 +55,13 @@ GrB_Info axb (GB_Context Context)
 {
 
     // create the Semiring for regular z += x*y
-    info = GrB_Monoid_new_FP64 (&add, GrB_PLUS_FP64, (double) 0) ;
+    info = GrB_Monoid_new_FP64_(&add, GrB_PLUS_FP64, (double) 0) ;
     if (info != GrB_SUCCESS) return (info) ;
 
     info = GrB_Semiring_new (&semiring, add, GrB_TIMES_FP64) ;
     if (info != GrB_SUCCESS)
     {
-        GrB_Monoid_free (&add) ;
+        GrB_Monoid_free_(&add) ;
         return (info) ;
     }
 
@@ -84,8 +84,8 @@ GrB_Info axb (GB_Context Context)
         &ignore2,   // done_in_place
         AxB_method, &AxB_method_used, Context) ;
 
-    GrB_Monoid_free (&add) ;
-    GrB_Semiring_free (&semiring) ;
+    GrB_Monoid_free_(&add) ;
+    GrB_Semiring_free_(&semiring) ;
 
     return (info) ;
 }
@@ -105,10 +105,10 @@ GrB_Info axb_complex (GB_Context Context)
         // Aconj = A
         info = GrB_Matrix_new (&Aconj, Complex, A->vlen, A->vdim) ;
         if (info != GrB_SUCCESS) return (info) ;
-        info = GrB_Matrix_apply (Aconj, NULL, NULL, Complex_conj, A, NULL) ;
+        info = GrB_Matrix_apply_(Aconj, NULL, NULL, Complex_conj, A, NULL) ;
         if (info != GrB_SUCCESS)
         {
-            GrB_Matrix_free (&Aconj) ;
+            GrB_Matrix_free_(&Aconj) ;
             return (info) ;
         }
     }
@@ -119,27 +119,41 @@ GrB_Info axb_complex (GB_Context Context)
         info = GrB_Matrix_new (&Bconj, Complex, B->vlen, B->vdim) ;
         if (info != GrB_SUCCESS)
         {
-            GrB_Matrix_free (&Aconj) ;
+            GrB_Matrix_free_(&Aconj) ;
             return (info) ;
         }
 
-        info = GrB_Matrix_apply (Bconj, NULL, NULL, Complex_conj, B, NULL) ;
+        info = GrB_Matrix_apply_(Bconj, NULL, NULL, Complex_conj, B, NULL) ;
         if (info != GrB_SUCCESS)
         {
-            GrB_Matrix_free (&Bconj) ;
-            GrB_Matrix_free (&Aconj) ;
+            GrB_Matrix_free_(&Bconj) ;
+            GrB_Matrix_free_(&Aconj) ;
             return (info) ;
         }
 
     }
 
     // force completion
-    info = GrB_wait ( ) ;
-    if (info != GrB_SUCCESS)
+    if (Aconj != NULL)
     {
-        GrB_Matrix_free (&Aconj) ;
-        GrB_Matrix_free (&Bconj) ;
-        return (info) ;
+        info = GrB_Matrix_wait_(&Aconj) ;
+        if (info != GrB_SUCCESS)
+        {
+            GrB_Matrix_free_(&Aconj) ;
+            GrB_Matrix_free_(&Bconj) ;
+            return (info) ;
+        }
+    }
+
+    if (Bconj != NULL)
+    {
+        info = GrB_Matrix_wait_(&Bconj) ;
+        if (info != GrB_SUCCESS)
+        {
+            GrB_Matrix_free_(&Aconj) ;
+            GrB_Matrix_free_(&Bconj) ;
+            return (info) ;
+        }
     }
 
     info = GB_AxB_meta (&C,
@@ -161,8 +175,8 @@ GrB_Info axb_complex (GB_Context Context)
         &ignore2,   // done_in_place
         AxB_method, &AxB_method_used, Context) ;
 
-    GrB_Matrix_free (&Bconj) ;
-    GrB_Matrix_free (&Aconj) ;
+    GrB_Matrix_free_(&Bconj) ;
+    GrB_Matrix_free_(&Aconj) ;
 
     return (info) ;
 }
@@ -252,11 +266,7 @@ void mexFunction
 
     if (A->type == Complex)
     {
-        #if GxB_STDC_VERSION >= 201112L
         METHOD (axb_complex (Context)) ;
-        #else
-        mexErrMsgTxt ("complex type not available") ;
-        #endif
     }
     else
     {

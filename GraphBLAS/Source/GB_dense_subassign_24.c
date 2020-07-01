@@ -10,6 +10,10 @@
 // C = A, making a deep copy into an existing non-shallow matrix C, but
 // possibly reusing parts of C if C is dense.  See also GB_dup.
 
+// Handles arbitrary typecasting.  A is either sparse or dense; the name of
+// the function is a bit of a misnomer since it implies that only the dense
+// case is handled.
+
 #include "GB_dense.h"
 #define GB_FREE_ALL ;
 
@@ -25,6 +29,7 @@ GrB_Info GB_dense_subassign_24      // C = A, copy A into an existing matrix C
     // check inputs
     //--------------------------------------------------------------------------
 
+    GrB_Info info ;
     ASSERT_MATRIX_OK (C, "C for C_dense_subassign_24", GB0) ;
     ASSERT_MATRIX_OK (A, "A for A_dense_subassign_24", GB0) ;
     ASSERT (GB_ZOMBIES_OK (A) && GB_PENDING_OK (A)) ;
@@ -34,7 +39,7 @@ GrB_Info GB_dense_subassign_24      // C = A, copy A into an existing matrix C
     // delete any lingering zombies and assemble any pending tuples
     //--------------------------------------------------------------------------
 
-    GB_WAIT (A) ;
+    GB_MATRIX_WAIT (A) ;
     if (A->nvec_nonempty < 0)
     { 
         A->nvec_nonempty = GB_nvec_nonempty (A, Context) ;
@@ -59,7 +64,7 @@ GrB_Info GB_dense_subassign_24      // C = A, copy A into an existing matrix C
             && !GB_ZOMBIES (C)          //      C has no pending work
             && !GB_PENDING (C)          // (FUTURE::: tolerate pending tuples)
 //          && !GB_ZOMBIES (A)          //      A has no pending work
-//          && !GB_PENDING (A)          //      (see GB_WAIT (A) above)
+//          && !GB_PENDING (A)          //      (see GB_MATRIX_WAIT (A) above)
             && !(C->p_shallow)          //      C is not shallow
             && !(C->h_shallow)
             && !(C->i_shallow)
@@ -79,12 +84,10 @@ GrB_Info GB_dense_subassign_24      // C = A, copy A into an existing matrix C
     { 
 
         //----------------------------------------------------------------------
-        // copy the values from A to C; nothing else changes
+        // only copy the values from A to C; nothing else changes
         //----------------------------------------------------------------------
 
         GBBURBLE ("(dense copy) ") ;
-        int nthreads = GB_nthreads (anz, chunk, nthreads_max) ;
-        GB_memcpy (C->x, A->x, anz * A->type->size, nthreads) ;
 
     }
     else
@@ -94,14 +97,27 @@ GrB_Info GB_dense_subassign_24      // C = A, copy A into an existing matrix C
         // copy a sparse matrix from A to C
         //----------------------------------------------------------------------
 
-        // clear prior content of C, but keep the CSR/CSC format
+        // clear prior content of C, but keep the CSR/CSC format and its type
         GBBURBLE ("(deep copy) ") ;
-        GrB_Info info ;
         bool C_is_csc = C->is_csc ;
         GB_PHIX_FREE (C) ;
-        GB_OK (GB_dup2 (&C, A, true, A->type, Context)) ;
+        // copy the pattern, not the values
+        GB_OK (GB_dup2 (&C, A, false, C->type, Context)) ;
         C->is_csc = C_is_csc ;      // do not change the CSR/CSC format of C
     }
+
+    //-------------------------------------------------------------------------
+    // copy the values from A to C, typecasting as needed
+    //-------------------------------------------------------------------------
+
+    if (C->type != A->type)
+    { 
+        GBBURBLE ("(typecast) ") ;
+    }
+
+    int nthreads = GB_nthreads (anz, chunk, nthreads_max) ;
+    GB_cast_array (C->x, C->type->code, A->x, A->type->code, A->type->size,
+                       anz, nthreads) ;
 
     //-------------------------------------------------------------------------
     // return the result

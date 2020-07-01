@@ -48,8 +48,8 @@ GrB_Info GB_Mask_compatible     // check type and dimensions of mask
         if (GB_NROWS (M) != cnrows || GB_NCOLS (M) != cncols)
         { 
             return (GB_ERROR (GrB_DIMENSION_MISMATCH, (GB_LOG,
-                "M is "GBd"-by-"GBd"; "
-                "does not match output dimensions ("GBu"-by-"GBu")",
+                "M is " GBd "-by-" GBd "; "
+                "does not match output dimensions (" GBu "-by-" GBu ")",
                 GB_NROWS (M), GB_NCOLS (M), cnrows, cncols))) ;
         }
     }

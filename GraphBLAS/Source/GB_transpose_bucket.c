@@ -38,17 +38,17 @@
 
 #include "GB_transpose.h"
 
-#define GB_FREE_WORK                                                        \
-{                                                                           \
-    if (Rowcounts != NULL)                                                  \
-    {                                                                       \
-        for (int taskid = 0 ; taskid < naslice ; taskid++)                  \
-        {                                                                   \
-            GB_FREE_MEMORY (Rowcounts [taskid], vlen+1, sizeof (int64_t)) ; \
-        }                                                                   \
-    }                                                                       \
-    GB_FREE_MEMORY (Rowcounts, naslice, sizeof (int64_t *)) ;               \
-    GB_FREE_MEMORY (A_slice, naslice+1, sizeof (int64_t)) ;                 \
+#define GB_FREE_WORK                                                    \
+{                                                                       \
+    if (Rowcounts != NULL)                                              \
+    {                                                                   \
+        for (int taskid = 0 ; taskid < naslice ; taskid++)              \
+        {                                                               \
+            GB_FREE (Rowcounts [taskid]) ;                              \
+        }                                                               \
+    }                                                                   \
+    GB_FREE (Rowcounts) ;                                               \
+    GB_FREE (A_slice) ;                                                 \
 }
 
 #define GB_FREE_ALL                                                     \
@@ -64,7 +64,11 @@ GrB_Info GB_transpose_bucket    // bucket transpose; typecast and apply op
     const GrB_Type ctype,       // type of output matrix C
     const bool C_is_csc,        // format of output matrix C
     const GrB_Matrix A,         // input matrix
-    const GrB_UnaryOp op,       // operator to apply, NULL if no operator
+        // no operator is applied if both op1 and op2 are NULL
+        const GrB_UnaryOp op1,          // unary operator to apply
+        const GrB_BinaryOp op2,         // binary operator to apply
+        const GxB_Scalar scalar,        // scalar to bind to binary operator
+        bool binop_bind1st,             // if true, binop(x,A) else binop(A,y)
     GB_Context Context
 )
 {
@@ -80,12 +84,7 @@ GrB_Info GB_transpose_bucket    // bucket transpose; typecast and apply op
     ASSERT_MATRIX_OK_OR_JUMBLED (A, "A input for transpose_bucket", GB0) ;
     ASSERT (!GB_PENDING (A)) ; ASSERT (!GB_ZOMBIES (A)) ;
 
-    if (op != NULL)
-    { 
-        ASSERT_UNARYOP_OK (op, "op for transpose", GB0) ;
-        ASSERT (ctype == op->ztype) ;
-        ASSERT (GB_Type_compatible (A->type, op->xtype)) ;
-    }
+    // if op1 and op2 are NULL, then no operator is applied
 
     //--------------------------------------------------------------------------
     // get A
@@ -127,9 +126,8 @@ GrB_Info GB_transpose_bucket    // bucket transpose; typecast and apply op
     // [ C->p is allocated but not initialized.  It is NON-hypersparse.
     GrB_Info info ;
     GrB_Matrix C = NULL ;
-    GB_CREATE (&C, ctype, A->vdim, vlen, GB_Ap_malloc, C_is_csc,
-        GB_FORCE_NONHYPER, A->hyper_ratio, vlen, anz, true, Context) ;
-    GB_OK (info) ;
+    GB_OK (GB_create (&C, ctype, A->vdim, vlen, GB_Ap_malloc, C_is_csc,
+        GB_FORCE_NONHYPER, A->hyper_ratio, vlen, anz, true, Context)) ;
 
     int64_t *GB_RESTRICT Cp = C->p ;
 
@@ -137,7 +135,7 @@ GrB_Info GB_transpose_bucket    // bucket transpose; typecast and apply op
     // allocate workspace
     //--------------------------------------------------------------------------
 
-    GB_CALLOC_MEMORY (Rowcounts, naslice, sizeof (int64_t *)) ;
+    Rowcounts = GB_CALLOC (naslice, int64_t *) ;
     if (Rowcounts == NULL)
     { 
         // out of memory
@@ -147,8 +145,7 @@ GrB_Info GB_transpose_bucket    // bucket transpose; typecast and apply op
 
     for (int taskid = 0 ; taskid < naslice ; taskid++)
     {
-        int64_t *rowcount = NULL ;
-        GB_CALLOC_MEMORY (rowcount, vlen + 1, sizeof (int64_t)) ;
+        int64_t *rowcount = GB_CALLOC (vlen + 1, int64_t) ;
         if (rowcount == NULL)
         { 
             // out of memory
@@ -203,7 +200,7 @@ GrB_Info GB_transpose_bucket    // bucket transpose; typecast and apply op
 
         // compute the row counts of A for each slice
         #define GB_PHASE_1_OF_2
-        #include "GB_unaryop_transpose.c"
+        #include "GB_unop_transpose.c"
 
         // cumulative sum of the rowcounts across the slices
         int64_t i ;
@@ -247,7 +244,7 @@ GrB_Info GB_transpose_bucket    // bucket transpose; typecast and apply op
     //--------------------------------------------------------------------------
 
     // transpose both the pattern and the values
-    if (op == NULL)
+    if (op1 == NULL && op2 == NULL)
     { 
         // do not apply an operator; optional typecast to ctype
         GB_transpose_ix (C, A, Rowcounts, Iter, A_slice, naslice) ;
@@ -255,7 +252,9 @@ GrB_Info GB_transpose_bucket    // bucket transpose; typecast and apply op
     else
     { 
         // apply an operator, C has type op->ztype
-        GB_transpose_op (C, op, A, Rowcounts, Iter, A_slice, naslice) ;
+        GB_transpose_op (C, 
+            op1, op2, scalar, binop_bind1st,
+            A, Rowcounts, Iter, A_slice, naslice) ;
     }
 
     //--------------------------------------------------------------------------

@@ -7,10 +7,10 @@
 
 //------------------------------------------------------------------------------
 
-// This is used by GB_AxB_Gustavson_builtin.c, GB_AxB_dot.c and GB_AxB_heap.c
-// to create built-in versions of sparse matrix-matrix multiplication.  The
-// #include'ing file defines the GB_AxB_WORKER macro, and mult_opcode,
-// add_opcode, xycode, and zcode.
+// This is used by GB_AxB_saxpy3.c and GB_AxB_dot[234].c to create 1438
+// built-in versions of sparse matrix-matrix multiplication.  The #include'ing
+// file defines the GB_AxB_WORKER macro, and mult_opcode, add_opcode, xcode,
+// ycode, and zcode.
 
 // Two 2nd level switch factories are used:
 
@@ -21,9 +21,12 @@
 //          operator is TxT->bool (for the comparison operators, LT, GT, etc),
 //          and where the monoid is bool x bool -> bool.
 
-// If the multiplicative operator is ANY, then it is replaced here by SECOND,
-// since that is faster for the saxpy-based methods (y is the value of B(k,j),
-// which is loaded less frequently from memory than A(i,k)).
+// If the multiplicative operator is ANY, then it has already been renamed to
+// SECOND, prior to using this factory, since that is faster for the
+// saxpy-based methods (y is the value of B(k,j), which is loaded less
+// frequently from memory than A(i,k)).
+
+ASSERT (mult_opcode != GB_ANY_opcode) ;
 
 {
     //--------------------------------------------------------------------------
@@ -37,20 +40,25 @@
         case GB_FIRST_opcode   :    // z = x
         //----------------------------------------------------------------------
 
-            // 44 semirings: (min,max,plus,times) for non-boolean, and
-            // (or,and,xor,eq) for boolean
+            // 61 semirings with FIRST:
+            // 50: (min,max,plus,times,any) for 10 non-boolean real
+            // 5: (or,and,xor,eq,any) for boolean
+            // 6: (plus,times,any) for 2 complex
             #define GB_MULT_NAME _first
+            #define GB_COMPLEX
             #include "GB_AxB_type_factory.c"
             break ;
 
         //----------------------------------------------------------------------
         case GB_SECOND_opcode  :    // z = y
-        case GB_ANY_opcode     :    // z = y
         //----------------------------------------------------------------------
 
-            // 44 semirings: (min,max,plus,times) for non-boolean, and
-            // (or,and,xor,eq) for boolean
+            // 61 semirings with SECOND:
+            // 50: (min,max,plus,times,any) for 10 real non-boolean
+            // 5: (or,and,xor,eq,any) for boolean
+            // 6: (plus,times,any) for 2 complex
             #define GB_MULT_NAME _second
+            #define GB_COMPLEX
             #include "GB_AxB_type_factory.c"
             break ;
 
@@ -58,13 +66,15 @@
         case GB_PAIR_opcode   :    // z = 1
         //----------------------------------------------------------------------
 
-            // land_pair, lor_pair, max_pair, min_pair, times_pair
+            // 26 semirings with PAIR:
+            // 20: (plus,any) for 10 real non-boolean
+            // 2: (xor,any) for boolean
+            // 4: (plus,any) for 2 complex
+            // land_pair, lor_pair, max_pair, min_pair, times_pair, eq_pair
             // all become any_pair.
-
-            // 44 semirings: (min,max,plus,times) for non-boolean, and
-            // (or,and,xor,eq) for boolean
             #define GB_MULT_IS_PAIR_OPERATOR
             #define GB_MULT_NAME _pair
+            #define GB_COMPLEX
             #include "GB_AxB_type_factory.c"
             #undef  GB_MULT_IS_PAIR_OPERATOR
             break ;
@@ -73,7 +83,7 @@
         case GB_MIN_opcode     :    // z = min(x,y)
         //----------------------------------------------------------------------
 
-            // 40 semirings: (min,max,plus,times) for non-boolean
+            // 50 semirings: (min,max,plus,times,any) for 10 real non-boolean
             // MIN == TIMES == AND for boolean
             #define GB_NO_BOOLEAN
             #define GB_MULT_NAME _min
@@ -84,7 +94,7 @@
         case GB_MAX_opcode     :    // z = max(x,y)
         //----------------------------------------------------------------------
 
-            // 40 semirings: (min,max,plus,times) for non-boolean
+            // 50 semirings: (min,max,plus,times,any) for 10 real non-boolean
             // MAX == PLUS == OR for boolean
             #define GB_NO_BOOLEAN
             #define GB_MULT_NAME _max
@@ -95,10 +105,13 @@
         case GB_PLUS_opcode    :    // z = x + y
         //----------------------------------------------------------------------
 
-            // 40 semirings: (min,max,plus,times) for non-boolean
+            // 56 semirings:
+            // 50: (min,max,plus,times,any) for 10 real non-boolean
+            // 6: (plus,times,any) for 2 complex types
             // MAX == PLUS == OR for boolean
             #define GB_NO_BOOLEAN
             #define GB_MULT_NAME _plus
+            #define GB_COMPLEX
             #include "GB_AxB_type_factory.c"
             break ;
 
@@ -106,10 +119,13 @@
         case GB_MINUS_opcode   :    // z = x - y
         //----------------------------------------------------------------------
 
-            // 40 semirings: (min,max,plus,times) for non-boolean
+            // 56 semirings:
+            // 50 semirings: (min,max,plus,times,any) for 10 real non-boolean
+            // 6: (plus,times,any) for 2 complex types
             // MINUS == RMINUS == NE == ISNE == XOR for boolean
             #define GB_NO_BOOLEAN
             #define GB_MULT_NAME _minus
+            #define GB_COMPLEX
             #include "GB_AxB_type_factory.c"
             break ;
 
@@ -117,10 +133,12 @@
         case GB_RMINUS_opcode   :    // z = y - x (reverse minus)
         //----------------------------------------------------------------------
 
-            // 40 semirings: (min,max,plus,times) for non-boolean
-            // MINUS == RMINUS == NE == ISNE == XOR for boolean
+            // 56 semirings:
+            // 50 semirings: (min,max,plus,times,any) for 10 real non-boolean
+            // 6: (plus,times,any) for 2 complex types
             #define GB_NO_BOOLEAN
             #define GB_MULT_NAME _rminus
+            #define GB_COMPLEX
             #include "GB_AxB_type_factory.c"
             break ;
 
@@ -128,10 +146,12 @@
         case GB_TIMES_opcode   :    // z = x * y
         //----------------------------------------------------------------------
 
-            // 40 semirings: (min,max,plus,times) for non-boolean
-            // MIN == TIMES == AND for boolean
+            // 56 semirings:
+            // 50 semirings: (min,max,plus,times,any) for 10 real non-boolean
+            // 6: (plus,times,any) for 2 complex types
             #define GB_NO_BOOLEAN
             #define GB_MULT_NAME _times
+            #define GB_COMPLEX
             #include "GB_AxB_type_factory.c"
             break ;
 
@@ -139,11 +159,13 @@
         case GB_DIV_opcode   :      // z = x / y
         //----------------------------------------------------------------------
 
-            // 40 semirings: (min,max,plus,times) for non-boolean
+            // 56 semirings:
+            // 50 semirings: (min,max,plus,times,any) for 10 real non-boolean
+            // 6: (plus,times,any) for 2 complex types
             // FIRST == DIV for boolean
-            // See Source/GB.h for discusion on integer division
             #define GB_NO_BOOLEAN
             #define GB_MULT_NAME _div
+            #define GB_COMPLEX
             #include "GB_AxB_type_factory.c"
             break ;
 
@@ -151,11 +173,13 @@
         case GB_RDIV_opcode   :     // z = y / x (reverse division)
         //----------------------------------------------------------------------
 
-            // 40 semirings: (min,max,plus,times) for non-boolean
+            // 56 semirings:
+            // 50 semirings: (min,max,plus,times,any) for 10 real non-boolean
+            // 6: (plus,times,any) for 2 complex types
             // SECOND == RDIV for boolean
-            // See Source/GB.h for discusion on integer division
             #define GB_NO_BOOLEAN
             #define GB_MULT_NAME _rdiv
+            #define GB_COMPLEX
             #include "GB_AxB_type_factory.c"
             break ;
 
@@ -163,7 +187,7 @@
         case GB_ISEQ_opcode    :    // z = (x == y)
         //----------------------------------------------------------------------
 
-            // 40 semirings: (min,max,plus,times) for non-boolean
+            // 50 semirings: (min,max,plus,times,any) for 10 real non-boolean
             // ISEQ == EQ for boolean
             #define GB_NO_BOOLEAN
             #define GB_MULT_NAME _iseq
@@ -174,7 +198,7 @@
         case GB_ISNE_opcode    :    // z = (x != y)
         //----------------------------------------------------------------------
 
-            // 40 semirings: (min,max,plus,times) for non-boolean
+            // 50 semirings: (min,max,plus,times,any) for 10 real non-boolean
             // MINUS == RMINUS == NE == ISNE == XOR for boolean
             #define GB_NO_BOOLEAN
             #define GB_MULT_NAME _isne
@@ -185,7 +209,7 @@
         case GB_ISGT_opcode    :    // z = (x >  y)
         //----------------------------------------------------------------------
 
-            // 40 semirings: (min,max,plus,times) for non-boolean
+            // 50 semirings: (min,max,plus,times,any) for 10 real non-boolean
             // ISGT == GT for boolean
             #define GB_NO_BOOLEAN
             #define GB_MULT_NAME _isgt
@@ -196,7 +220,7 @@
         case GB_ISLT_opcode    :    // z = (x <  y)
         //----------------------------------------------------------------------
 
-            // 40 semirings: (min,max,plus,times) for non-boolean
+            // 50 semirings: (min,max,plus,times,any) for 10 real non-boolean
             // ISLT == LT for boolean
             #define GB_NO_BOOLEAN
             #define GB_MULT_NAME _islt
@@ -207,7 +231,7 @@
         case GB_ISGE_opcode    :    // z = (x >= y)
         //----------------------------------------------------------------------
 
-            // 40 semirings: (min,max,plus,times) for non-boolean
+            // 50 semirings: (min,max,plus,times,any) for 10 real non-boolean
             // ISGE == GE for boolean
             #define GB_NO_BOOLEAN
             #define GB_MULT_NAME _isge
@@ -218,7 +242,7 @@
         case GB_ISLE_opcode     :    // z = (x <= y)
         //----------------------------------------------------------------------
 
-            // 40 semirings: (min,max,plus,times) for non-boolean
+            // 50 semirings: (min,max,plus,times,any) for 10 real non-boolean
             // ISLE == LE for boolean
             #define GB_NO_BOOLEAN
             #define GB_MULT_NAME _isle
@@ -229,7 +253,7 @@
         case GB_EQ_opcode      :    // z = (x == y)
         //----------------------------------------------------------------------
 
-            // 44 semirings: (and,or,xor,eq) * (11 types)
+            // 55 semirings: (and,or,xor,eq,any) * 11 types (all but complex)
             #define GB_MULT_NAME _eq
             #include "GB_AxB_compare_factory.c"
             break ;
@@ -238,7 +262,7 @@
         case GB_NE_opcode      :    // z = (x != y)
         //----------------------------------------------------------------------
 
-            // 40 semirings: (and,or,xor,eq) * (10 types)
+            // 50 semirings: (and,or,xor,eq,any) * (10 real non-boolean types)
             // MINUS == RMINUS == NE == ISNE == XOR for boolean
             #define GB_NO_BOOLEAN
             #define GB_MULT_NAME _ne
@@ -249,7 +273,7 @@
         case GB_GT_opcode      :    // z = (x >  y)
         //----------------------------------------------------------------------
 
-            // 44 semirings: (and,or,xor,eq) * (11 types)
+            // 55 semirings: (and,or,xor,eq,any) * 11 types (all but complex)
             #define GB_MULT_NAME _gt
             #include "GB_AxB_compare_factory.c"
             break ;
@@ -258,7 +282,7 @@
         case GB_LT_opcode      :    // z = (x <  y)
         //----------------------------------------------------------------------
 
-            // 44 semirings: (and,or,xor,eq) * (11 types)
+            // 55 semirings: (and,or,xor,eq,any) * 11 types (all but complex)
             #define GB_MULT_NAME _lt
             #include "GB_AxB_compare_factory.c"
             break ;
@@ -267,7 +291,7 @@
         case GB_GE_opcode      :    // z = (x >= y)
         //----------------------------------------------------------------------
 
-            // 44 semirings: (and,or,xor,eq) * (11 types)
+            // 55 semirings: (and,or,xor,eq,any) * 11 types (all but complex)
             #define GB_MULT_NAME _ge
             #include "GB_AxB_compare_factory.c"
             break ;
@@ -276,7 +300,7 @@
         case GB_LE_opcode      :    // z = (x <= y)
         //----------------------------------------------------------------------
 
-            // 44 semirings: (and,or,xor,eq) * (11 types)
+            // 55 semirings: (and,or,xor,eq,any) * 11 types (all but complex)
             #define GB_MULT_NAME _le
             #include "GB_AxB_compare_factory.c"
             break ;
@@ -285,12 +309,7 @@
         case GB_LOR_opcode     :    // z = x || y
         //----------------------------------------------------------------------
 
-            // The boolean operators OR, AND, and XOR for the "multiply"
-            // function need to typecast their inputs from the xytype into
-            // boolean, so they need to have the "(x != 0) ..." form.
-
-            // 44 semirings: (min,max,plus,times) for non-boolean, and
-            // (or,and,xor,eq) for boolean
+            // 55 semirings: (and,or,xor,eq,any) * 11 types (all but complex)
             #define GB_MULT_NAME _lor
             #include "GB_AxB_type_factory.c"
             break ;
@@ -299,8 +318,7 @@
         case GB_LAND_opcode    :    // z = x && y
         //----------------------------------------------------------------------
 
-            // 44 semirings: (min,max,plus,times) for non-boolean, and
-            // (or,and,xor,eq) for boolean
+            // 55 semirings: (and,or,xor,eq,any) * 11 types (all but complex)
             #define GB_MULT_NAME _land
             #include "GB_AxB_type_factory.c"
             break ;
@@ -309,10 +327,45 @@
         case GB_LXOR_opcode    :    // z = x != y
         //----------------------------------------------------------------------
 
-            // 44 semirings: (min,max,plus,times) for non-boolean, and
-            // (or,and,xor,eq) for boolean
+            // 55 semirings: (and,or,xor,eq,any) * 11 types (all but complex)
             #define GB_MULT_NAME _lxor
             #include "GB_AxB_type_factory.c"
+            break ;
+
+        //----------------------------------------------------------------------
+        case GB_BOR_opcode :     // z = (x | y), bitwise or
+        //----------------------------------------------------------------------
+
+            // 16 semirings: (bor,band,bxor,bxnor) * (uint8,16,32,64)
+            #define GB_MULT_NAME _bor
+            #include "GB_AxB_bitwise_factory.c"
+            break ;
+
+        //----------------------------------------------------------------------
+        case GB_BAND_opcode :    // z = (x & y), bitwise and
+        //----------------------------------------------------------------------
+
+            // 16 semirings: (bor,band,bxor,bxnor) * (uint8,16,32,64)
+            #define GB_MULT_NAME _band
+            #include "GB_AxB_bitwise_factory.c"
+            break ;
+
+        //----------------------------------------------------------------------
+        case GB_BXOR_opcode :    // z = (x ^ y), bitwise xor
+        //----------------------------------------------------------------------
+
+            // 16 semirings: (bor,band,bxor,bxnor) * (uint8,16,32,64)
+            #define GB_MULT_NAME _bxor
+            #include "GB_AxB_bitwise_factory.c"
+            break ;
+
+        //----------------------------------------------------------------------
+        case GB_BXNOR_opcode :   // z = ~(x ^ y), bitwise xnor
+        //----------------------------------------------------------------------
+
+            // 16 semirings: (bor,band,bxor,bxnor) * (uint8,16,32,64)
+            #define GB_MULT_NAME _bxnor
+            #include "GB_AxB_bitwise_factory.c"
             break ;
 
         default: ;

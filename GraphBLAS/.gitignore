@@ -47,12 +47,14 @@ Demo/tri_demo.out
 Demo/wildtype_demo.out
 Demo/*.log
 Demo/complex_demo_out.m
+Demo/complex_demo_out2.m
 Demo/import_demo.out
 Demo/t1.out
 Demo/t2.out
 
 alternative/*.out
 alternative/*_out.m
+alternative/*_out2.m
 alternative/*_demo
 
 Test/*.log
@@ -72,6 +74,10 @@ Tcov/grbstat.mat
 Tcov/fprint.txt
 
 Doc/html
+
+CUDA/test/googletest/*
+
+desktop.ini
 
 # Do not ignore this file
 !.gitignore

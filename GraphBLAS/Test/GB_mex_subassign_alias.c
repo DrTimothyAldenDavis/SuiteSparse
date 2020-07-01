@@ -14,7 +14,7 @@
 #define FREE_ALL                            \
 {                                           \
     GB_MATRIX_FREE (&C) ;                   \
-    GrB_Descriptor_free (&desc) ;           \
+    GrB_Descriptor_free_(&desc) ;           \
     GB_mx_put_global (true, 0) ;            \
 }
 
@@ -48,12 +48,12 @@ void mexFunction
         FREE_ALL ;
         mexErrMsgTxt ("C failed") ;
     }
-    mxClassID cclass = GB_mx_Type_to_classID (C->type) ;
 
-    // get accum; default: NOP, default class is class(C)
+    // get accum, if present
+    bool user_complex = (Complex != GxB_FC64) && (C->type == Complex) ;
     GrB_BinaryOp accum ;
     if (!GB_mx_mxArray_to_BinaryOp (&accum, pargin [1], "accum",
-        GB_NOP_opcode, cclass, C->type == Complex, C->type == Complex))
+        C->type, user_complex))
     {
         FREE_ALL ;
         mexErrMsgTxt ("accum failed") ;
@@ -71,7 +71,7 @@ void mexFunction
     GrB_Matrix_nvals (&ncols, C) ;
 
     // C<C>(:,:) = accum (C(:,:),C)
-    METHOD (GxB_Matrix_subassign (C, C, accum, C,
+    METHOD (GxB_Matrix_subassign_(C, C, accum, C,
         GrB_ALL, nrows, GrB_ALL, ncols, desc)) ;
 
     // return C to MATLAB as a struct and free the GraphBLAS C

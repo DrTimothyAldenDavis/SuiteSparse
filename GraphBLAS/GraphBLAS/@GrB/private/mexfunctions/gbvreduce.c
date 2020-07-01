@@ -11,17 +11,18 @@
 
 // Usage:
 
-//  Cout = GrB.vreduce (op, A, desc)
-//  Cout = GrB.vreduce (Cin, M, op, A, desc)
-//  Cout = GrB.vreduce (Cin, accum, op, A, desc)
-//  Cout = GrB.vreduce (Cin, M, accum, op, A, desc)
+//  C = gbvreduce (op, A)
+//  C = gbvreduce (op, A, desc)
+//  C = gbvreduce (Cin, M, op, A, desc)
+//  C = gbvreduce (Cin, accum, op, A, desc)
+//  C = gbvreduce (Cin, M, accum, op, A, desc)
 
 // If Cin is not present then it is implicitly a matrix with no entries, of the
 // right size (which depends on A and the descriptor).
 
 #include "gb_matlab.h"
 
-#define USAGE "usage: Cout = GrB.vreduce (Cin, M, accum, op, A, desc)"
+#define USAGE "usage: C = GrB.vreduce (Cin, M, accum, op, A, desc)"
 
 void mexFunction
 (
@@ -36,8 +37,7 @@ void mexFunction
     // check inputs
     //--------------------------------------------------------------------------
 
-    gb_usage ((nargin == 3 || nargin == 5 || nargin == 6) && nargout <= 1,
-        USAGE) ;
+    gb_usage (nargin >= 2 && nargin <= 6 && nargout <= 2, USAGE) ;
 
     //--------------------------------------------------------------------------
     // find the arguments
@@ -102,7 +102,7 @@ void mexFunction
     { 
         // if accum appears, then Cin must also appear
         CHECK_ERROR (C == NULL, USAGE) ;
-        accum  = gb_mxstring_to_binop  (String [0], ctype) ;
+        accum  = gb_mxstring_to_binop  (String [0], ctype, ctype) ;
         monoid = gb_mxstring_to_monoid (String [1], atype) ;
     }
 
@@ -157,6 +157,7 @@ void mexFunction
     //--------------------------------------------------------------------------
 
     pargout [0] = gb_export (&C, kind) ;
+    pargout [1] = mxCreateDoubleScalar (kind) ;
     GB_WRAPUP ;
 }
 

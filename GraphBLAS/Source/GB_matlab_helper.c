@@ -26,8 +26,7 @@
 //------------------------------------------------------------------------------
 
 #define GB_ALLOCATE_WORK(work_type)                             \
-    work_type *Work ;                                           \
-    GB_MALLOC_MEMORY (Work, nthreads, sizeof (work_type)) ;     \
+    work_type *Work = GB_MALLOC (nthreads, work_type) ;         \
     if (Work == NULL) return (false) ;
 
 //------------------------------------------------------------------------------
@@ -35,7 +34,7 @@
 //------------------------------------------------------------------------------
 
 #define GB_FREE_WORK(work_type)                                 \
-    GB_FREE_MEMORY (Work, nthreads, sizeof (work_type)) ;
+    GB_FREE (Work) ;
 
 //------------------------------------------------------------------------------
 // GB_matlab_helper1: convert 0-based indices to 1-based for gbextracttuples
@@ -367,15 +366,13 @@ bool GB_matlab_helper9  // true if successful, false if out of memory
     int64_t anvec = A->nvec ;
     GB_NTHREADS (anvec) ;
 
-    uint64_t *List = NULL ;
-    int64_t  *Degree = NULL ;
-    GB_MALLOC_MEMORY (List,   anvec, sizeof (int64_t)) ;
-    GB_MALLOC_MEMORY (Degree, anvec, sizeof (int64_t)) ;
+    uint64_t *List   = GB_MALLOC (anvec, uint64_t) ;
+    int64_t  *Degree = GB_MALLOC (anvec, int64_t) ;
 
     if (List == NULL || Degree == NULL)
     {
-        GB_FREE_MEMORY (List,   anvec, sizeof (int64_t)) ;
-        GB_FREE_MEMORY (Degree, anvec, sizeof (int64_t)) ;
+        GB_FREE (List) ;
+        GB_FREE (Degree) ;
         return (false) ;
     }
 

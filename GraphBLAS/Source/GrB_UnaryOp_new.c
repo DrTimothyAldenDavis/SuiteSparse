@@ -24,6 +24,6 @@ GrB_Info GrB_UnaryOp_new            // create a new user-defined unary operator
     GrB_Type xtype                  // type of input x
 )
 { 
-    return (GB_UnaryOp_new (unaryop, function, ztype, xtype, "f")) ;
+    return (GB_UnaryOp_new (unaryop, function, ztype, xtype, NULL)) ;
 }
 

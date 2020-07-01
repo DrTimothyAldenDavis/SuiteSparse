@@ -85,7 +85,7 @@ GrB_Info GB_subassign_05e
     // worker for built-in types
     #define GB_WORKER(ctype)                                                \
     {                                                                       \
-        ctype *GB_RESTRICT Cx = C->x ;                                      \
+        ctype *GB_RESTRICT Cx = (ctype *) C->x ;                            \
         ctype x = (*(ctype *) cwork) ;                                      \
         GB_PRAGMA (omp parallel for num_threads(nthreads) schedule(static)) \
         for (pC = 0 ; pC < mnz ; pC++)                                      \
@@ -112,11 +112,13 @@ GrB_Info GB_subassign_05e
         case GB_UINT64_code : GB_WORKER (uint64_t) ;
         case GB_FP32_code   : GB_WORKER (float) ;
         case GB_FP64_code   : GB_WORKER (double) ;
+        case GB_FC32_code   : GB_WORKER (GxB_FC32_t) ;
+        case GB_FC64_code   : GB_WORKER (GxB_FC64_t) ;
         default:
             {
                 // worker for all user-defined types
                 GB_BURBLE_N (mnz, "generic ") ;
-                GB_void *GB_RESTRICT Cx = C->x ;
+                GB_void *GB_RESTRICT Cx = (GB_void *) C->x ;
                 #pragma omp parallel for num_threads(nthreads) schedule(static)
                 for (pC = 0 ; pC < mnz ; pC++)
                 { 

@@ -19,17 +19,25 @@ GrB_Info GB_apply                   // C<M> = accum (C, op(A)) or op(A')
     const bool Mask_comp,           // M descriptor
     const bool Mask_struct,         // if true, use the only structure of M
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C,T)
-    const GrB_UnaryOp op,           // operator to apply to the entries
+        const GrB_UnaryOp op1,          // unary operator to apply
+        const GrB_BinaryOp op2,         // binary operator to apply
+        const GxB_Scalar scalar,        // scalar to bind to binary operator
+        bool binop_bind1st,             // if true, binop(x,A) else binop(A,y)
     const GrB_Matrix A,             // first input:  matrix A
     bool A_transpose,               // A matrix descriptor
     GB_Context Context
 ) ;
 
+// Cx and Ax may be aliased in GB_apply_op
+
 void GB_apply_op            // apply a unary operator, Cx = op ((xtype) Ax)
 (
-    GB_void *GB_RESTRICT Cx,           // output array, of type op->ztype
-    const GrB_UnaryOp op,           // operator to apply
-    const GB_void *GB_RESTRICT Ax,     // input array, of type Atype
+    GB_void *Cx,                    // output array, of type op->ztype
+        const GrB_UnaryOp op1,          // unary operator to apply
+        const GrB_BinaryOp op2,         // binary operator to apply
+        const GxB_Scalar scalar,        // scalar to bind to binary operator
+        bool binop_bind1st,             // if true, binop(x,A) else binop(A,y)
+    const GB_void *Ax,              // input array, of type Atype
     const GrB_Type Atype,           // type of Ax
     const int64_t anz,              // size of Ax and Cx
     GB_Context Context
@@ -38,9 +46,12 @@ void GB_apply_op            // apply a unary operator, Cx = op ((xtype) Ax)
 GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_shallow_op      // create shallow matrix and apply operator
 (
-    GrB_Matrix *Chandle,    // output matrix C, of type op->ztype
+    GrB_Matrix *Chandle,    // output matrix C, of type op*->ztype
     const bool C_is_csc,    // desired CSR/CSC format of C
-    const GrB_UnaryOp op,   // operator to apply
+        const GrB_UnaryOp op1,          // unary operator to apply
+        const GrB_BinaryOp op2,         // binary operator to apply
+        const GxB_Scalar scalar,        // scalar to bind to binary operator
+        bool binop_bind1st,             // if true, binop(x,A) else binop(A,y)
     const GrB_Matrix A,     // input matrix to typecast
     GB_Context Context
 ) ;

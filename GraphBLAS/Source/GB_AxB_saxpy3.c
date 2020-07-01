@@ -85,6 +85,7 @@
 
 #include "GB_mxm.h"
 #include "GB_AxB_saxpy3.h"
+#include "GB_mkl.h"
 #ifndef GBCOMPACT
 #include "GB_AxB__include.h"
 #endif
@@ -105,19 +106,19 @@
 // This workspace is not needed in the GB_Asaxpy3B* worker functions.
 #define GB_FREE_INITIAL_WORK                                                \
 {                                                                           \
-    GB_FREE_MEMORY (Bflops2, max_bjnz+1, sizeof (int64_t)) ;                \
-    GB_FREE_MEMORY (Coarse_Work, nthreads_max, sizeof (int64_t)) ;          \
-    GB_FREE_MEMORY (Coarse_initial, ntasks_initial+1, sizeof (int64_t)) ;   \
-    GB_FREE_MEMORY (Fine_slice, ntasks+1, sizeof (int64_t)) ;               \
+    GB_FREE (Bflops2) ;                                                     \
+    GB_FREE (Coarse_Work) ;                                                 \
+    GB_FREE (Coarse_initial) ;                                              \
+    GB_FREE (Fine_slice) ;                                                  \
 }
 
 #define GB_FREE_WORK                                                        \
 {                                                                           \
     GB_FREE_INITIAL_WORK ;                                                  \
-    GB_FREE_MEMORY (TaskList, ntasks, sizeof (GB_saxpy3task_struct)) ;      \
-    GB_FREE_MEMORY (Hi_all, Hi_size_total, sizeof (int64_t)) ;              \
-    GB_FREE_MEMORY (Hf_all, Hf_size_total, sizeof (int64_t)) ;              \
-    GB_FREE_MEMORY (Hx_all, Hx_size_total, 1) ;                             \
+    GB_FREE (TaskList) ;                                                    \
+    GB_FREE (Hi_all) ;                                                      \
+    GB_FREE (Hf_all) ;                                                      \
+    GB_FREE (Hx_all) ;                                                      \
 }
 
 #define GB_FREE_ALL                                                         \
@@ -292,6 +293,56 @@ GrB_Info GB_AxB_saxpy3              // C = A*B using Gustavson+Hash
     ASSERT_SEMIRING_OK (semiring, "semiring for saxpy3 A*B", GB0) ;
     ASSERT (A->vdim == B->vlen) ;
 
+    (*Chandle) = NULL ;
+
+    //--------------------------------------------------------------------------
+    // determine the # of threads to use, and the use_mkl flag
+    //--------------------------------------------------------------------------
+
+    GB_GET_NTHREADS_MAX (nthreads_max, chunk, Context) ;
+    bool use_mkl = (Context == NULL) ? false : Context->use_mkl ;
+
+    //--------------------------------------------------------------------------
+    // use MKL_graph if it available and has this semiring
+    //--------------------------------------------------------------------------
+
+    // Note that GB_AxB_saxpy3 computes C=A*B where A and B treated as if CSC,
+    // but MKL views the matrices as CSR.  So they are flipped below:
+
+    #if GB_HAS_MKL_GRAPH
+
+    if (use_mkl)
+    {
+        info = GB_AxB_saxpy3_mkl (
+            Chandle,            // output matrix to construct
+            M,                  // input mask M (may be NULL)
+            Mask_comp,          // true if M is complemented
+            Mask_struct,        // true if M is structural
+            B,                  // first input matrix
+            A,                  // second input matrix
+            semiring,           // semiring that defines C=A*B
+            !flipxy,            // true if multiply operator is flipped
+            mask_applied,       // if true, then mask was applied
+            Context) ;
+
+        if (info != GrB_NO_VALUE)
+        {
+            // MKL_graph supports this semiring, and has ether computed C=A*B,
+            // C<M>=A*B, or C<!M>=A*B, or has failed.
+            return (info) ;
+        }
+
+        GBBURBLE ("(MKL tried) ") ;
+
+        // If MKL_graph doesn't support this semiring, it returns GrB_NO_VALUE,
+        // so fall through to use GraphBLAS, below.
+    }
+    #endif
+
+    //--------------------------------------------------------------------------
+    // define workspace
+    //--------------------------------------------------------------------------
+
     int64_t *GB_RESTRICT Hi_all = NULL ;
     int64_t *GB_RESTRICT Hf_all = NULL ;
     GB_void *GB_RESTRICT Hx_all = NULL ;
@@ -315,48 +366,21 @@ GrB_Info GB_AxB_saxpy3              // C = A*B using Gustavson+Hash
     GrB_BinaryOp mult = semiring->multiply ;
     GrB_Monoid add = semiring->add ;
     ASSERT (mult->ztype == add->op->ztype) ;
-
-    bool op_is_first  = mult->opcode == GB_FIRST_opcode ;
-    bool op_is_second = mult->opcode == GB_SECOND_opcode ;
-    bool op_is_pair   = mult->opcode == GB_PAIR_opcode ;
-    bool A_is_pattern = false ;
-    bool B_is_pattern = false ;
-
-    if (flipxy)
-    { 
-        // z = fmult (b,a) will be computed
-        A_is_pattern = op_is_first  || op_is_pair ;
-        B_is_pattern = op_is_second || op_is_pair ;
-        ASSERT (GB_IMPLIES (!A_is_pattern,
-            GB_Type_compatible (A->type, mult->ytype))) ;
-        ASSERT (GB_IMPLIES (!B_is_pattern,
-            GB_Type_compatible (B->type, mult->xtype))) ;
-    }
-    else
-    { 
-        // z = fmult (a,b) will be computed
-        A_is_pattern = op_is_second || op_is_pair ;
-        B_is_pattern = op_is_first  || op_is_pair ;
-        ASSERT (GB_IMPLIES (!A_is_pattern,
-            GB_Type_compatible (A->type, mult->xtype))) ;
-        ASSERT (GB_IMPLIES (!B_is_pattern,
-            GB_Type_compatible (B->type, mult->ytype))) ;
-    }
+    bool A_is_pattern, B_is_pattern ;
+    GB_AxB_pattern (&A_is_pattern, &B_is_pattern, flipxy, mult->opcode) ;
 
     #ifdef GBCOMPACT
     bool is_any_pair_semiring = false ;
     #else
     GB_Opcode mult_opcode, add_opcode ;
-    GB_Type_code xycode, zcode ;
+    GB_Type_code xcode, ycode, zcode ;
     bool builtin_semiring = GB_AxB_semiring_builtin (A, A_is_pattern, B,
-        B_is_pattern, semiring, flipxy, &mult_opcode, &add_opcode, &xycode,
-        &zcode) ;
+        B_is_pattern, semiring, flipxy, &mult_opcode, &add_opcode, &xcode,
+        &ycode, &zcode) ;
     bool is_any_pair_semiring = builtin_semiring
         && (add_opcode == GB_ANY_opcode)
         && (mult_opcode == GB_PAIR_opcode) ;
     #endif
-
-    (*Chandle) = NULL ;
 
     //--------------------------------------------------------------------------
     // get A, and B
@@ -378,12 +402,6 @@ GrB_Info GB_AxB_saxpy3              // C = A*B using Gustavson+Hash
     const bool B_is_hyper = B->is_hyper ;
 
     //--------------------------------------------------------------------------
-    // determine the # of threads to use
-    //--------------------------------------------------------------------------
-
-    GB_GET_NTHREADS_MAX (nthreads_max, chunk, Context) ;
-
-    //--------------------------------------------------------------------------
     // allocate C (just C->p and C->h, but not C->i or C->x)
     //--------------------------------------------------------------------------
 
@@ -394,7 +412,7 @@ GrB_Info GB_AxB_saxpy3              // C = A*B using Gustavson+Hash
     int64_t cnvec = bnvec ;
 
     // calloc Cp so it can be used as the Bflops workspace
-    GB_NEW (Chandle, ctype, cvlen, cvdim, GB_Ap_calloc, true,
+    info = GB_new (Chandle, ctype, cvlen, cvdim, GB_Ap_calloc, true,
         GB_SAME_HYPER_AS (B_is_hyper), B->hyper_ratio, cnvec, Context) ;
     if (info != GrB_SUCCESS)
     { 
@@ -485,7 +503,7 @@ GrB_Info GB_AxB_saxpy3              // C = A*B using Gustavson+Hash
         Mp = M->p ;
         Mh = M->h ;
         Mi = M->i ;
-        // Mx = M->x ;
+        // Mx = (GB_void *) (Mask_struct ? NULL : (M->x)) ;
         // msize = M->type->size ;
         mnvec = M->nvec ;
         M_is_hyper = M->is_hyper ;
@@ -625,13 +643,13 @@ GrB_Info GB_AxB_saxpy3              // C = A*B using Gustavson+Hash
     // allocate the tasks, and workspace to construct fine tasks
     //--------------------------------------------------------------------------
 
-    GB_CALLOC_MEMORY (TaskList, ntasks, sizeof (GB_saxpy3task_struct)) ;
-    GB_MALLOC_MEMORY (Coarse_Work, nthreads_max, sizeof (int64_t)) ;
+    TaskList    = GB_CALLOC (ntasks, GB_saxpy3task_struct) ;
+    Coarse_Work = GB_MALLOC (nthreads_max, int64_t) ;
     if (max_bjnz > 0)
     { 
         // also allocate workspace to construct fine tasks
-        GB_MALLOC_MEMORY (Fine_slice, ntasks+1, sizeof (int64_t)) ;
-        GB_MALLOC_MEMORY (Bflops2, max_bjnz+1, sizeof (int64_t)) ;
+        Fine_slice = GB_MALLOC (ntasks+1  , int64_t) ;
+        Bflops2    = GB_MALLOC (max_bjnz+1, int64_t) ;
     }
 
     if (TaskList == NULL || Coarse_Work == NULL ||
@@ -958,7 +976,7 @@ GrB_Info GB_AxB_saxpy3              // C = A*B using Gustavson+Hash
         { 
             // Hf is int8_t for the fine Gustavson tasks, but round up
             // to the nearest number of int64_t values.
-            Hf_size_total += GB_CEIL ((hash_size + hi_pad), sizeof (int64_t)) ;
+            Hf_size_total += GB_ICEIL ((hash_size + hi_pad), sizeof (int64_t)) ;
         }
         else
         { 
@@ -981,15 +999,15 @@ GrB_Info GB_AxB_saxpy3              // C = A*B using Gustavson+Hash
     // allocate space for all hash tables
     if (Hi_size_total > 0)
     { 
-        GB_MALLOC_MEMORY (Hi_all, Hi_size_total, sizeof (int64_t)) ;
+        Hi_all = GB_MALLOC (Hi_size_total, int64_t) ;
     }
     if (Hf_size_total > 0)
     { 
-        GB_CALLOC_MEMORY (Hf_all, Hf_size_total, sizeof (int64_t)) ;
+        Hf_all = GB_CALLOC (Hf_size_total, int64_t) ;
     }
     if (Hx_size_total > 0)
     { 
-        GB_MALLOC_MEMORY (Hx_all, Hx_size_total, 1) ;
+        Hx_all = GB_MALLOC (Hx_size_total, GB_void) ;
     }
 
     if ((Hi_size_total > 0 && Hi_all == NULL) ||
@@ -1016,7 +1034,7 @@ GrB_Info GB_AxB_saxpy3              // C = A*B using Gustavson+Hash
         }
 
         TaskList [taskid].Hi = Hi_split ;
-        TaskList [taskid].Hf = (void *) Hf_split ;
+        TaskList [taskid].Hf = (GB_void *) Hf_split ;
         TaskList [taskid].Hx = Hx_split ;
 
         int64_t hash_size = TaskList [taskid].hsize ;
@@ -1029,7 +1047,7 @@ GrB_Info GB_AxB_saxpy3              // C = A*B using Gustavson+Hash
         if (is_fine && use_Gustavson)
         { 
             // Hf is int8_t for the fine Gustavson method
-            Hf_split += GB_CEIL ((hash_size + hi_pad), sizeof (int64_t)) ;
+            Hf_split += GB_ICEIL ((hash_size + hi_pad), sizeof (int64_t)) ;
         }
         else
         { 
@@ -1076,33 +1094,34 @@ GrB_Info GB_AxB_saxpy3              // C = A*B using Gustavson+Hash
 
     bool done = false ;
 
-#ifndef GBCOMPACT
+    #ifndef GBCOMPACT
 
-    //--------------------------------------------------------------------------
-    // define the worker for the switch factory
-    //--------------------------------------------------------------------------
+        //----------------------------------------------------------------------
+        // define the worker for the switch factory
+        //----------------------------------------------------------------------
 
-    #define GB_Asaxpy3B(add,mult,xyname) GB_Asaxpy3B_ ## add ## mult ## xyname
+        #define GB_Asaxpy3B(add,mult,xname) \
+            GB_Asaxpy3B_ ## add ## mult ## xname
 
-    #define GB_AxB_WORKER(add,mult,xyname)                              \
-    {                                                                   \
-        info = GB_Asaxpy3B (add,mult,xyname) (C, M, Mask_comp,          \
-            Mask_struct, A, A_is_pattern, B, B_is_pattern,              \
-            TaskList, ntasks, nfine, nthreads, Context) ;               \
-        done = (info != GrB_NO_VALUE) ;                                 \
-    }                                                                   \
-    break ;
+        #define GB_AxB_WORKER(add,mult,xname)                               \
+        {                                                                   \
+            info = GB_Asaxpy3B (add,mult,xname) (C, M, Mask_comp,           \
+                Mask_struct, A, A_is_pattern, B, B_is_pattern,              \
+                TaskList, ntasks, nfine, nthreads, Context) ;               \
+            done = (info != GrB_NO_VALUE) ;                                 \
+        }                                                                   \
+        break ;
 
-    //--------------------------------------------------------------------------
-    // launch the switch factory
-    //--------------------------------------------------------------------------
+        //----------------------------------------------------------------------
+        // launch the switch factory
+        //----------------------------------------------------------------------
 
-    if (builtin_semiring)
-    { 
-        #include "GB_AxB_factory.c"
-    }
+        if (builtin_semiring)
+        { 
+            #include "GB_AxB_factory.c"
+        }
 
-#endif
+    #endif
 
     //==========================================================================
     // C = A*B, via the generic saxpy3 method, with typecasting

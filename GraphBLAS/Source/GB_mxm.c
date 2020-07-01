@@ -15,6 +15,12 @@
 #include "GB_mxm.h"
 #include "GB_accum_mask.h"
 
+#define GB_FREE_ALL         \
+{                           \
+    GB_MATRIX_FREE (&MT) ;  \
+    GB_MATRIX_FREE (&T) ;   \
+}
+
 GrB_Info GB_mxm                     // C<M> = A*B
 (
     GrB_Matrix C,                   // input/output matrix for results
@@ -40,6 +46,9 @@ GrB_Info GB_mxm                     // C<M> = A*B
 
     // C may be aliased with M, A, and/or B
 
+    GrB_Info info ;
+    GrB_Matrix T = NULL, MT = NULL ;
+
     GB_RETURN_IF_FAULTY (accum) ;
     GB_RETURN_IF_NULL_OR_FAULTY (semiring) ;
 
@@ -52,28 +61,20 @@ GrB_Info GB_mxm                     // C<M> = A*B
 
     // check domains and dimensions for C<M> = accum (C,T)
     GrB_Type T_type = semiring->add->op->ztype ;
-    GrB_Info info = GB_compatible (C->type, C, M, accum, T_type, Context) ;
-    if (info != GrB_SUCCESS)
-    { 
-        return (info) ;
-    }
+    GB_OK (GB_compatible (C->type, C, M, accum, T_type, Context)) ;
 
     // T=A*B via semiring: A and B must be compatible with semiring->multiply
     if (flipxy)
     { 
         // z=fmult(b,a), for entries a from A, and b from B
-        info = GB_BinaryOp_compatible (semiring->multiply,
-                NULL, B->type, A->type, GB_ignore_code, Context) ;
+        GB_OK (GB_BinaryOp_compatible (semiring->multiply,
+                NULL, B->type, A->type, GB_ignore_code, Context)) ;
     }
     else
     { 
         // z=fmult(a,b), for entries a from A, and b from B
-        info = GB_BinaryOp_compatible (semiring->multiply,
-                NULL, A->type, B->type, GB_ignore_code, Context) ;
-    }
-    if (info != GrB_SUCCESS)
-    { 
-        return (info) ;
+        GB_OK (GB_BinaryOp_compatible (semiring->multiply,
+                NULL, A->type, B->type, GB_ignore_code, Context)) ;
     }
 
     // check the dimensions
@@ -85,9 +86,9 @@ GrB_Info GB_mxm                     // C<M> = A*B
     { 
         return (GB_ERROR (GrB_DIMENSION_MISMATCH, (GB_LOG,
             "Dimensions not compatible:\n"
-            "output is "GBd"-by-"GBd"\n"
-            "first input is "GBd"-by-"GBd"%s\n"
-            "second input is "GBd"-by-"GBd"%s",
+            "output is " GBd "-by-" GBd "\n"
+            "first input is " GBd "-by-" GBd "%s\n"
+            "second input is " GBd "-by-" GBd "%s",
             GB_NROWS (C), GB_NCOLS (C),
             anrows, ancols, A_transpose ? " (transposed)" : "",
             bnrows, bncols, B_transpose ? " (transposed)" : ""))) ;
@@ -97,10 +98,9 @@ GrB_Info GB_mxm                     // C<M> = A*B
     GB_RETURN_IF_QUICK_MASK (C, C_replace, M, Mask_comp) ;
 
     // delete any lingering zombies and assemble any pending tuples
-    // GB_WAIT (C) ;
-    GB_WAIT (M) ;
-    GB_WAIT (A) ;
-    GB_WAIT (B) ;
+    GB_MATRIX_WAIT (M) ;
+    GB_MATRIX_WAIT (A) ;
+    GB_MATRIX_WAIT (B) ;
 
     //--------------------------------------------------------------------------
     // T = A*B, A'*B, A*B', or A'*B', also using the mask to cut time and memory
@@ -114,19 +114,10 @@ GrB_Info GB_mxm                     // C<M> = A*B
 
     bool mask_applied = false ;
     bool done_in_place = false ;
-    GrB_Matrix T = NULL, MT = NULL ;
-    info = GB_AxB_meta (&T, C, C_replace, C->is_csc, &MT, M, Mask_comp,
+    GB_OK (GB_AxB_meta (&T, C, C_replace, C->is_csc, &MT, M, Mask_comp,
         Mask_struct, accum, A, B, semiring, A_transpose, B_transpose, flipxy,
         &mask_applied, &done_in_place, AxB_method, &(C->AxB_method_used),
-        Context) ;
-
-    if (info != GrB_SUCCESS)
-    { 
-        // out of memory
-        ASSERT (T == NULL) ;
-        ASSERT (MT == NULL) ;
-        return (info) ;
-    }
+        Context)) ;
 
     if (done_in_place)
     { 
@@ -168,13 +159,7 @@ GrB_Info GB_mxm                     // C<M> = A*B
             // are ignored.  But valgrind complains about it, so they are
             // killed now.  Also see the discussion in GB_transplant.
             GBBURBLE ("(wait, so zombies are not typecasted) ") ;
-            info = GB_wait (T, Context) ;
-            if (info != GrB_SUCCESS)
-            { 
-                // out of memory
-                GB_MATRIX_FREE (&T) ;
-                return (info) ;
-            }
+            GB_OK (GB_Matrix_wait (T, Context)) ;
         }
         info = GB_transplant_conform (C, C->type, &T, Context) ;
         #ifdef GB_DEBUG

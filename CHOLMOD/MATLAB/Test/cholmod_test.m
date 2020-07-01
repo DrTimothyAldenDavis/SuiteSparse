@@ -4,7 +4,8 @@ function cholmod_test (nmat, do_diary)
 % Example:
 % cholmod_test(nmat,do_diary)
 %
-% The UFget interface to the UF sparse matrix collection is required.
+% The ssget interface to the SuiteSparse matrix collection is required.
+% See sparse.tamu.edu.
 %
 % nmat is optional.  If present, it is the # of matrices used in
 %   tests 0, 8, 10, 11, 12, and 12.  tests 14 and 15 use 2*nmat matrices.
@@ -50,7 +51,7 @@ function cholmod_test (nmat, do_diary)
 % This extensive test is not included:
 % test28: test nesdis
 
-% Copyright 2006-2007, Timothy A. Davis, http://www.suitesparse.com
+% Copyright 2006-2020, Timothy A. Davis, http://www.suitesparse.com
 
 if (nargin < 2)
     do_diary = 0 ;
@@ -66,6 +67,7 @@ end
 
 fprintf ('Running CHOLMOD tests.\n') ;
 help cholmod_test
+mex -O -R2018a GB_spones_mex.c
 
 test_path = pwd ;
 % addpath (test_path) ;

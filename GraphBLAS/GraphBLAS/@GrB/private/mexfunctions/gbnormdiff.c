@@ -70,12 +70,27 @@ void mexFunction
         GrB_Type xtype ;
         GrB_BinaryOp op ;
         if (atype == GrB_FP32 && atype == btype)
-        {
+        { 
+            // both A and B are single: use FP32
             xtype = GrB_FP32 ;
             op = GrB_MINUS_FP32 ;
         }
+        else if (atype == GxB_FC32 && btype == GxB_FC32)
+        { 
+            // both A and B are single complex: use FC32
+            xtype = GxB_FC32 ;
+            op = GxB_MINUS_FC32 ;
+        }
+        else if (atype == GxB_FC64 || btype == GxB_FC64 ||
+                 atype == GxB_FC32 || btype == GxB_FC32)
+        { 
+            // either A or B are any kind of complex: use FC64
+            xtype = GxB_FC64 ;
+            op = GxB_MINUS_FC64 ;
+        }
         else
-        {
+        { 
+            // both A and B are real (any kind): use FP64
             xtype = GrB_FP64 ;
             op = GrB_MINUS_FP64 ;
         }
@@ -83,7 +98,7 @@ void mexFunction
         // X = A-B
         GrB_Matrix X ;
         OK (GrB_Matrix_new (&X, xtype, anrows, ancols)) ;
-        OK (GrB_eWiseAdd_Matrix_BinaryOp (X, NULL, NULL, op, A, B, NULL)) ;
+        OK (GrB_Matrix_eWiseAdd_BinaryOp (X, NULL, NULL, op, A, B, NULL)) ;
 
         // s = norm (X, norm_kind)
         s = gb_norm (X, norm_kind) ;

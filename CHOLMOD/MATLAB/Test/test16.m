@@ -12,7 +12,7 @@ fprintf ('test16: test cholmod2 on a large matrix\n') ;
 rand ('state',1) ;
 randn ('state',1) ;
 
-Prob = UFget (936)							    %#ok
+Prob = ssget (936)							    %#ok
 A = Prob.A ;
 % tic
 % [L,s,p] = lchol (A) ;

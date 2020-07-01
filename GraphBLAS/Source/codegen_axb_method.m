@@ -1,39 +1,57 @@
-function codegen_axb_method (addop, multop, add, addfunc, mult, ztype, xytype, identity, terminal, omp_atomic, omp_microsoft_atomic)
+function codegen_axb_method (addop, multop, add, addfunc, mult, ztype, ...
+    xytype, identity, terminal, omp_atomic, omp_microsoft_atomic)
 %CODEGEN_AXB_METHOD create a function to compute C=A*B over a semiring
 %
 % codegen_axb_method (addop, multop, add, addfunc, mult, ztype, xytype, identity, terminal, omp_atomic, omp_microsoft_atomic)
 
+if (isempty (mult))
+    return
+end
+
 f = fopen ('control.m4', 'w') ;
 
-is_first    = isequal (multop, 'first') ;
-is_second   = isequal (multop, 'second') ;
-is_pair     = isequal (multop, 'pair') ;
-is_any      = isequal (addop, 'any') ;
-is_eq       = isequal (addop, 'eq') ;
-is_any_pair = is_any && isequal (multop, 'pair') ;
-is_real     = isequal (ztype, 'float') || isequal (ztype, 'double') ;
+is_first     = isequal (multop, 'first') ;
+is_second    = isequal (multop, 'second') ;
+is_pair      = isequal (multop, 'pair') ;
+is_any       = isequal (addop, 'any') ;
+is_eq        = isequal (addop, 'eq') ;
+is_any_pair  = is_any && isequal (multop, 'pair') ;
+ztype_is_real = ~contains (ztype, 'FC') ;
+is_plus_pair_real = isequal (addop, 'plus') && isequal (multop, 'pair') ...
+    && ztype_is_real ;
 
 switch (ztype)
     case { 'bool' }
+        ztype_ignore_overflow = false ;
         nbits = 8 ;
         bits = '0x1L' ;
     case { 'int8_t', 'uint8_t' }
+        ztype_ignore_overflow = false ;
         nbits = 8 ;
         bits = '0xffL' ;
     case { 'int16_t', 'uint16_t' }
+        ztype_ignore_overflow = false ;
         nbits = 16 ;
         bits = '0xffffL' ;
     case { 'int32_t', 'uint32_t' }
+        ztype_ignore_overflow = false ;
         nbits = 32 ;
         bits = '0xffffffffL' ;
     case { 'int64_t', 'uint64_t' }
+        ztype_ignore_overflow = true ;
         nbits = 64 ;
         bits = '0' ;
     case { 'float' }
+        ztype_ignore_overflow = true ;
         nbits = 32 ;
         bits = '0' ;
-    case { 'double' }
+    case { 'double', 'GxB_FC32_t' }
+        ztype_ignore_overflow = true ;
         nbits = 64 ;
+        bits = '0' ;
+    case { 'GxB_FC64_t' }
+        ztype_ignore_overflow = true ;
+        nbits = 128 ;
         bits = '0' ;
     otherwise
         error ('unknown type') ;
@@ -44,10 +62,6 @@ fprintf (f, 'define(`GB_ctype_bits'', `%s'')\n', bits) ;
 
 % nbits: # of bits in the type, needed for the atomic compare-exchange:
 fprintf (f, 'define(`GB_atomic_compare_exchange'', `GB_ATOMIC_COMPARE_EXCHANGE_%d'')\n', nbits) ;
-
-if isequal (addop, 'plus') && isequal (multop, 'times') && isequal (ztype, 'float')
-    % plus_times_fp32 semiring
-end
 
 if (is_pair)
     % these semirings are renamed to any_pair, and not thus created
@@ -76,6 +90,19 @@ fprintf (f, 'define(`GB_ctype'', `%s'')\n', ztype) ;
 fprintf (f, 'define(`GB_atype'', `%s'')\n', xytype) ;
 fprintf (f, 'define(`GB_btype'', `%s'')\n', xytype) ;
 
+% flag if ztype can ignore overflow in some computations
+fprintf (f, 'define(`GB_ctype_ignore_overflow'', `%d'')\n', ztype_ignore_overflow) ;
+
+% simple typecast from 1 (or 2) real scalars to any other type
+switch (ztype)
+    case { 'GxB_FC32_t' }
+        fprintf (f, 'define(`GB_ctype_cast'', `GxB_CMPLXF (((float) $1), ((float) $2))'')\n') ;
+    case { 'GxB_FC64_t' }
+        fprintf (f, 'define(`GB_ctype_cast'', `GxB_CMPLX (((double) $1), ((double) $2))'')\n') ;
+    otherwise
+        fprintf (f, 'define(`GB_ctype_cast'', `((GB_ctype) $1)'')\n') ;
+end
+
 % identity and terminal values for the monoid
 fprintf (f, 'define(`GB_identity'', `%s'')\n', identity) ;
 
@@ -83,6 +110,12 @@ if (is_any_pair)
     fprintf (f, 'define(`GB_is_any_pair_semiring'', `1'')\n') ;
 else
     fprintf (f, 'define(`GB_is_any_pair_semiring'', `0'')\n') ;
+end
+
+if (is_plus_pair_real)
+    fprintf (f, 'define(`GB_is_plus_pair_real_semiring'', `1'')\n') ;
+else
+    fprintf (f, 'define(`GB_is_plus_pair_real_semiring'', `0'')\n') ;
 end
 
 if (is_pair)
@@ -100,20 +133,72 @@ end
 if (is_any)
     % the ANY monoid terminates on the first entry seen
     fprintf (f, 'define(`GB_is_any_monoid'', `1'')\n') ;
-    fprintf (f, 'define(`GB_terminal'', `break ;'')\n') ;
+    fprintf (f, 'define(`GB_terminal'', `{ cij_is_terminal = true ; break ; }'')\n') ;
     fprintf (f, 'define(`GB_dot_simd_vectorize'', `;'')\n') ;
 elseif (~isempty (terminal))
     fprintf (f, 'define(`GB_is_any_monoid'', `0'')\n') ;
-    fprintf (f, 'define(`GB_terminal'', `if (cij == %s) break ;'')\n', terminal) ;
+    fprintf (f, 'define(`GB_terminal'', `if (cij == %s) { cij_is_terminal = true ; break ; }'')\n', terminal) ;
     fprintf (f, 'define(`GB_dot_simd_vectorize'', `;'')\n') ;
 else
     fprintf (f, 'define(`GB_is_any_monoid'', `0'')\n') ;
     fprintf (f, 'define(`GB_terminal'', `;'')\n') ;
-    fprintf (f, 'define(`GB_dot_simd_vectorize'', `GB_PRAGMA_SIMD'')\n') ;
+    fprintf (f, 'define(`GB_terminal_flag'', `;'')\n') ;
+    op = '' ;
+    if (ztype_is_real)
+        switch (addop)
+            case { 'plus' }
+                op = '+' ;
+            case { 'times' }
+                op = '*' ;
+            case { 'lor' }
+                op = '||' ;
+            case { 'land' }
+                op = '&&' ;
+            case { 'lxor' }
+                op = '^' ;
+            case { 'bor' }
+                op = '|' ;
+            case { 'band' }
+                op = '&' ;
+            case { 'bxor' }
+                op = '^' ;
+            otherwise
+                op = '' ;
+        end
+    end
+    if (isempty (op))
+        fprintf (f, 'define(`GB_dot_simd_vectorize'', `;'')\n') ;
+    else
+        pragma = sprintf ('GB_PRAGMA_SIMD_REDUCTION (%s,$1)', op) ;
+        fprintf (f, 'define(`GB_dot_simd_vectorize'', `%s'')\n', pragma) ;
+    end
 end
 
-% all built-in monoids are atomic
-fprintf (f, 'define(`GB_has_atomic'', `1'')\n') ;
+if (ztype_is_real)
+    % all built-in real monoids are atomic
+    fprintf (f, 'define(`GB_has_atomic'', `1'')\n') ;
+else
+    % complex monoids are not atomic, except for 'plus'
+    if (isequal (addop, 'plus'))
+        fprintf (f, 'define(`GB_has_atomic'', `1'')\n') ;
+    else
+        fprintf (f, 'define(`GB_has_atomic'', `0'')\n') ;
+    end
+end
+
+% plus_fc32 monoid:
+if (isequal (addop, 'plus') && isequal (ztype, 'GxB_FC32_t'))
+    fprintf (f, 'define(`GB_is_plus_fc32_monoid'', `1'')\n') ;
+else
+    fprintf (f, 'define(`GB_is_plus_fc32_monoid'', `0'')\n') ;
+end
+
+% plus_fc64 monoid:
+if (isequal (addop, 'plus') && isequal (ztype, 'GxB_FC64_t'))
+    fprintf (f, 'define(`GB_is_plus_fc64_monoid'', `1'')\n') ;
+else
+    fprintf (f, 'define(`GB_is_plus_fc64_monoid'', `0'')\n') ;
+end
 
 % only PLUS, TIMES, LOR, LAND, and LXOR can be done with OpenMP atomics
 % in gcc and icc.  However, only PLUS and TIMES work with OpenMP atomics
@@ -159,10 +244,10 @@ if (~isempty (strfind (mult, 'IDIV')))
     mult = strrep (mult, ')', sprintf (', %d)', bits)) ;
 end
 
-% create the multiply operator
+% create the multiply operator (assignment)
 mult2 = strrep (mult,  'xarg', '`$2''') ;
 mult2 = strrep (mult2, 'yarg', '`$3''') ;
-fprintf (f, 'define(`GB_MULTIPLY'', `$1 = %s'')\n', mult2) ;
+fprintf (f, 'define(`GB_multiply'', `$1 = %s'')\n', mult2) ;
 
 % create the add operator, of the form w += t
 add2 = strrep (add,  'w', '`$1''') ;
@@ -220,14 +305,14 @@ fclose (f) ;
 
 % construct the *.c file
 cmd = sprintf (...
-'cat control.m4 Generator/GB_AxB.c | m4 | tail -n +30 > Generated/GB_AxB__%s.c', ...
+'cat control.m4 Generator/GB_AxB.c | m4 | tail -n +35 > Generated/GB_AxB__%s.c', ...
 name) ;
 fprintf ('.') ;
 system (cmd) ;
 
 % append to the *.h file
 cmd = sprintf (...
-'cat control.m4 Generator/GB_AxB.h | m4 | tail -n +30 >> Generated/GB_AxB__include.h') ;
+'cat control.m4 Generator/GB_AxB.h | m4 | tail -n +35 >> Generated/GB_AxB__include.h') ;
 system (cmd) ;
 
 delete ('control.m4') ;

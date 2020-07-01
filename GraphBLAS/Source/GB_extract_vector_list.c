@@ -14,7 +14,7 @@
 #include "GB_ek_slice.h"
 
 #define GB_FREE_WORK \
-    GB_ek_slice_free (&pstart_slice, &kfirst_slice, &klast_slice, ntasks) ;
+    GB_ek_slice_free (&pstart_slice, &kfirst_slice, &klast_slice) ;
 
 bool GB_extract_vector_list     // true if successful, false if out of memory
 (

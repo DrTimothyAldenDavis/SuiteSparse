@@ -14,6 +14,7 @@
 // This function is not directly user-callable.  Use GrB_BinaryOp_new instead.
 
 #include "GB.h"
+#include <ctype.h>
 
 GrB_Info GB_BinaryOp_new
 (
@@ -43,7 +44,7 @@ GrB_Info GB_BinaryOp_new
     //--------------------------------------------------------------------------
 
     // allocate the binary operator
-    GB_CALLOC_MEMORY (*binaryop, 1, sizeof (struct GB_BinaryOp_opaque)) ;
+    (*binaryop) = GB_CALLOC (1, struct GB_BinaryOp_opaque) ;
     if (*binaryop == NULL)
     { 
         // out of memory
@@ -57,8 +58,42 @@ GrB_Info GB_BinaryOp_new
     op->ytype = ytype ;
     op->ztype = ztype ;
     op->function = function ;
-    strncpy (op->name, name, GB_LEN-1) ;
     op->opcode = GB_USER_opcode ;     // user-defined operator
+
+    //--------------------------------------------------------------------------
+    // find the name of the operator
+    //--------------------------------------------------------------------------
+
+    if (name == NULL)
+    { 
+        // if no name , a generic name is used instead
+        strncpy (op->name, "user_binary_operator", GB_LEN-1) ;
+    }
+    else
+    {
+        // see if the typecast "(GxB_binary_function)" appears in the name
+        char *p = NULL ;
+        p = strstr ((char *) name, "GxB_binary_function") ;
+        if (p != NULL)
+        { 
+            // skip past the typecast, the left parenthesis, and any whitespace
+            p += 19 ;
+            while (isspace (*p)) p++ ;
+            if (*p == ')') p++ ;
+            while (isspace (*p)) p++ ;
+            strncpy (op->name, p, GB_LEN-1) ;
+        }
+        else
+        { 
+            // copy the entire name as-is
+            strncpy (op->name, name, GB_LEN-1) ;
+        }
+    }
+
+    //--------------------------------------------------------------------------
+    // return result
+    //--------------------------------------------------------------------------
+
     ASSERT_BINARYOP_OK (op, "new user-defined binary op", GB0) ;
     return (GrB_SUCCESS) ;
 }

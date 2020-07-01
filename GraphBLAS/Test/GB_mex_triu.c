@@ -66,15 +66,15 @@ void mexFunction
     #undef FREE_DEEP_COPY
 
     #define GET_DEEP_COPY  GrB_Matrix_new (&C, GrB_FP64, A->vlen, A->vdim) ;
-    #define FREE_DEEP_COPY GrB_Matrix_free (&C) ;
+    #define FREE_DEEP_COPY GrB_Matrix_free_(&C) ;
 
     GxB_Scalar_new (&Thunk, GrB_INT64) ;
-    GxB_Scalar_setElement_INT64 (Thunk, k) ;
+    GxB_Scalar_setElement_INT64_(Thunk, k) ;
     GrB_Index ignore ;
     GxB_Scalar_nvals (&ignore, Thunk) ;
 
     // C = triu (A,k)
-    METHOD (GxB_Matrix_select (C, NULL, NULL, GxB_TRIU, A, Thunk, NULL)) ;
+    METHOD (GxB_Matrix_select_(C, NULL, NULL, GxB_TRIU, A, Thunk, NULL)) ;
 
     // return C to MATLAB as a regular MATLAB sparse matrix
     pargout [0] = GB_mx_Matrix_to_mxArray (&C, "C triu", false) ;

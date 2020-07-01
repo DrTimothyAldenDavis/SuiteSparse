@@ -7,6 +7,8 @@
 
 //------------------------------------------------------------------------------
 
+// TODO in 4.0: delete this
+
 // This implementation is complete for user threading with POSIX threads,
 // OpenMP, and no user threads.  Windows and ANSI C11 threads are not yet
 // supported.
@@ -32,17 +34,7 @@
 // thread-local storage for POSIX THREADS
 pthread_key_t GB_thread_local_key ;
 
-#elif defined ( USER_WINDOWS_THREADS )
-// for user applications that use Windows threads:
-#error "Windows threading not yet supported"
-
-#elif defined ( USER_ANSI_THREADS )
-// for user applications that use ANSI C11 threads:
-// (this should work per the ANSI C11 specification but is not yet supported)
-_Thread_local
-char GB_thread_local_report [GB_RLEN+1] = "" ;
-
-#else // USER_OPENMP_THREADS, or USER_NO_THREADS
+#else
 // OpenMP user threads, or no user threads: this is the default
 char GB_thread_local_report [GB_RLEN+1] = "" ;
 #pragma omp threadprivate(GB_thread_local_report)
@@ -64,15 +56,8 @@ bool GB_thread_local_init
         // GB_Global_free_function.
         return (pthread_key_create (&GB_thread_local_key, free_function) == 0) ;
     }
-    #elif defined ( USER_WINDOWS_THREADS )
-    {
-        // do whatever Windows needs for thread-local-storage
-        #error "Windows threads not yet supported"
-        return (false) ;        // not yet implemented
-    }
     #else
     {
-        // _OPENMP, USER_OPENMP_THREADS, USER_ANSI_THREADS, or USER_NO_THREADS
         GB_thread_local_report [0] = '\0' ;
         return (true) ;
     }
@@ -96,17 +81,10 @@ char *GB_thread_local_get (void)        // get pointer to thread-local storage
             if (p != NULL) pthread_setspecific (GB_thread_local_key, p) ;
         }
         // do not attempt to recover from a failure to allocate the space;
-        // just return the NULL pointer on failure.  The caller will catch it
-        // and return a GrB_PANIC to its caller.
+        // just return the NULL pointer on failure.  The caller will catch it.
         return (p) ;
     }
-    #elif defined ( USER_WINDOWS_THREADS )
-    {
-        // for user applications that use Windows threads:
-        #error "Windows threads not yet supported"
-        return (NULL) ;
-    }
-    #else // USER_OPENMP_THREADS, USER_NO_THREADS, USER_ANSI_THREADS,
+    #else
     {
         return (GB_thread_local_report) ;
     }

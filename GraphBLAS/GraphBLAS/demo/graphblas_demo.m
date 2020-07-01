@@ -11,16 +11,17 @@
 % GraphBLAS is not only useful for creating graph algorithms; it also
 % supports a wide range of sparse matrix data types and operations.
 % MATLAB can compute C=A*B with just two semirings: 'plus.times.double'
-% and 'plus.times.complex' for complex matrices.  GraphBLAS has 1,040
+% and 'plus.times.complex' for complex matrices.  GraphBLAS has 1,473
 % unique built-in semirings, such as 'max.plus'
 % (https://en.wikipedia.org/wiki/Tropical_semiring).  These semirings can
 % be used to construct a wide variety of graph algorithms, based on
 % operations on sparse adjacency matrices.
 %
-% GraphBLAS supports sparse double and single precision matrices,
-% logical, and sparse integer matrices: int8, int16, int32, int64, uint8,
-% uint16, uint32, and uint64.  Complex matrices will be added in the
-% future.
+% MATLAB and GraphBLAS both provide sparse matrices of type double,
+% logical, and double complex.  GraphBLAS adds sparse matrices of type:
+% single, int8, int16, int32, int64, uint8, uint16, uint32, uint64, and
+% single complex (with MATLAB matrices, these types can only be held in
+% full matrices).
 
 clear
 GrB.clear
@@ -88,8 +89,7 @@ fprintf ('Speedup of GraphBLAS over MATLAB: %g\n', ...
 % '+.*.complex' semirings.  A semiring is defined in terms of a string,
 % 'add.mult.type', where 'add' is a monoid that takes the place of the
 % additive operator, 'mult' is the multiplicative operator, and 'type' is
-% the data type for the two inputs to the mult operator (the type
-% defaults to the type of A for C=A*B).
+% the data type for the two inputs to the mult operator.
 %
 % In the standard semiring, C=A*B is defined as:
 %
@@ -122,7 +122,9 @@ fprintf ('\nerr = norm (C-C2,1) = %g\n', norm (C-C2,1)) ;
 
 %% The max.plus tropical semiring
 % Here are details of the "max.plus" tropical semiring.  The identity
-% value is -inf since max(x,-inf) = max (-inf,x) = -inf for any x.
+% value is -inf since max(x,-inf) = max (-inf,x) = x for any x.
+% The identity for the conventional "plus.times" semiring is zero,
+% since x+0 = 0+x = x for any x.
 
 GrB.semiringinfo ('max.+.double') ;
 
@@ -161,12 +163,10 @@ GrB.type (C2)
 % The C interface for SuiteSparse:GraphBLAS allows for arbitrary types
 % and operators to be constructed.  However, the MATLAB interface to
 % SuiteSparse:GraphBLAS is restricted to pre-defined types and operators:
-% a mere 11 types, 66 unary operators, 275 binary operators, 44 monoids,
-% 16 select operators, and 1,865 semirings (1,040 of which are unique,
+% a mere 13 types, 204 unary operators, 385 binary operators, 77 monoids,
+% 16 select operators, and 2,438 semirings (1,473 of which are unique,
 % since some binary operators are equivalent: 'min.logical' and
-% '&.logical' are the same thing, for example).  The complex type and
-% its binary operators, monoids, and semirings will be added in the
-% near future.
+% '&.logical' are the same thing, for example).
 %
 % That gives you a lot of tools to create all kinds of interesting
 % graph algorithms.  For example:
@@ -177,13 +177,16 @@ GrB.type (C2)
 %
 % See 'help GrB.binopinfo' for a list of the binary operators, and
 % 'help GrB.monoidinfo' for the ones that can be used as the additive
-% monoid in a semiring.
+% monoid in a semiring.  'help GrB.unopinfo' lists the unary operators.
 
 %% 
 help GrB.binopinfo
 
 %% 
 help GrB.monoidinfo
+
+%% 
+help GrB.unopinfo
 
 %% Element-wise operations
 % Binary operators can be used in element-wise matrix operations, like
@@ -233,11 +236,12 @@ C2 = GrB.emult ('max', A, B)
 %% Overloaded operators
 % The following operators all work as you would expect for any matrix.
 % The matrices A and B can be GraphBLAS matrices, or MATLAB sparse or
-% dense matrices, in any combination, or scalars where appropriate:
+% dense matrices, in any combination, or scalars where appropriate,
+% The matrix M is logical (MATLAB or GraphBLAS):
 %
-%    A+B   A-B  A*B   A.*B  A./B  A.\B  A.^b   A/b   C=A(I,J)
-%    -A    +A   ~A    A'    A.'   A&B   A|B    b\A   C(I,J)=A
-%    A~=B  A>B  A==B  A<=B  A>=B  A<B   [A,B]  [A;B]
+%    A+B   A-B  A*B   A.*B  A./B  A.\B  A.^b   A/b   C=A(I,J)  C(M)=A
+%    -A    +A   ~A    A'    A.'   A&B   A|B    b\A   C(I,J)=A  C=A(M)
+%    A~=B  A>B  A==B  A<=B  A>=B  A<B   [A,B]  [A;B] C(A)
 %    A(1:end,1:end)
 %
 % For A^b, b must be a non-negative integer.
@@ -418,7 +422,7 @@ whos C G H K
 A = rand (3) 
 C = GrB.assign (A, A > 0.5, 3) ;     % in GraphBLAS
 C1 = GrB (A) ; C1 (A > .5) = 3       % also in GraphBLAS
-C2 = A      ; C2 (A > .5) = 3       % in MATLAB
+C2 = A       ; C2 (A > .5) = 3       % in MATLAB
 err = norm (C - C1, 1)
 err = norm (C - C2, 1)
 
@@ -455,35 +459,23 @@ err = norm (C1-C2,1)
 % Furthermore, C=A*B is not defined for integer types in MATLAB, except
 % when A and/or B are scalars.
 %
-% GraphBLAS supports all of those types for its sparse matrices (except
-% for complex, which will be added in the future).  All operations are
-% supported, including C=A*B when A or B are any integer type, for all
-% 1,865 semirings (1,040 of which are unique).
+% GraphBLAS supports all of those types for its sparse matrices.  All
+% operations are supported, including C=A*B when A or B are any integer
+% type, in 1000s of semirings.
 %
 % However, integer arithmetic differs in GraphBLAS and MATLAB.  In
 % MATLAB, integer values saturate if they exceed their maximum value.  In
 % GraphBLAS, integer operators act in a modular fashion.  The latter is
 % essential when computing C=A*B over a semiring.  A saturating integer
 % operator cannot be used as a monoid since it is not associative.
-%
-% The C API for GraphBLAS allows for the creation of arbitrary
-% user-defined types, so it would be possible to create different binary
-% operators to allow element-wise integer operations to saturate,
-% perhaps:
-%
-%   C = GrB.eadd('+saturate',A,B)
-%
-% This would require an extension to this MATLAB interface.
 
 %%
 C = uint8 (magic (3)) ;
 G = GrB (C) ;
 C1 = C * 40
-C2 = G * 40
-C3 = double (G) * 40 ;
+C2 = G * uint8 (40)
 S = double (C1 < 255) ;
 assert (isequal (double (C1).*S, double (C2).*S))
-assert (isequal (nonzeros (C2), double (mod (nonzeros (C3), 256))))
 
 %% An example graph algorithm: breadth-first search
 % The breadth-first search of a graph finds all nodes reachable from the
@@ -514,12 +506,11 @@ fprintf ('Speedup of GraphBLAS over MATLAB: %g\n', ...
     matlab_time / gb_time) ;
 
 %% Example graph algorithm: Luby's method in GraphBLAS
-% The GrB.mis.m function is variant of Luby's randomized algorithm [Luby
+% The GrB.mis function is variant of Luby's randomized algorithm [Luby
 % 1985].  It is a parallel method for finding an maximal independent set
-% of nodes, where no two nodes are adjacent.  See the
-% GraphBLAS/@GrB/GrB.mis.m function for details.  The graph must be
-% symmetric with a zero-free diagonal, so A is symmetrized first and any
-% diagonal entries are removed.
+% of nodes, where no two nodes are adjacent.  See the GraphBLAS/@GrB/mis.m
+% function for details.  The graph must be symmetric with a zero-free
+% diagonal, so A is symmetrized first and any diagonal entries are removed.
 
 A = GrB (A) ;
 A = GrB.offdiag (A|A') ;
@@ -612,7 +603,9 @@ err = norm (Y1-Y2,1)
 % Thus, to compute C = A (start:inc:fini) for very huge matrices,
 % you need to use use a cell array to represent the colon notation,
 % as { start, inc, fini }, instead of start:inc:fini. See
-% 'help GrB.extract' and 'help.gbsubassign' for, for C(I,J)=A.  The
+% 'help GrB.extract', 'help GrB.assign' for the functional form.
+% For the overloaded syntax C(I,J)=A and C=A(I,J), see
+% 'help GrB/subsasgn' and 'help GrB/subsfref'.  The cell array
 % syntax isn't conventional, but it is far faster than the MATLAB
 % colon notation for objects, and takes far less memory when I is huge.
 
@@ -683,9 +676,7 @@ norm (A*x-b)
 %
 %    gbdemo2 (20000)
 %
-% assuming you have enough memory.  The gbdemo2 is not part of this demo
-% since it can take a long time; it tries a range of problem sizes,
-% and each one takes several minutes in MATLAB.
+% assuming you have enough memory.
 
 %% Sparse logical indexing is much, much faster in GraphBLAS
 % The mask in GraphBLAS acts much like logical indexing in MATLAB, but it
@@ -704,7 +695,7 @@ norm (A*x-b)
 % GraphBLAS can also compute C (M) = A (M) using overloaded operators
 % for subsref and subsasgn, but C = GrB.assign (C, M, A) is a bit faster.
 %
-% First, both methods in GraphBLAS (both are very fast):
+% Here are both methods in GraphBLAS (both are very fast).  Setting up:
 
 clear
 n = 4000 ;
@@ -717,7 +708,8 @@ fprintf ('nnz(C): %g, nnz(M): %g, nnz(A): %g\n', ...
     nnz(C), nnz(M), nnz(A)) ;
 fprintf ('\nsetup time:     %g sec\n', t_setup) ;
 
-% include the time to convert C1 from a GraphBLAS
+%% First method in GraphBLAS, with GrB.assign
+% Including the time to convert C1 from a GraphBLAS
 % matrix to a MATLAB sparse matrix:
 tic
 C1 = GrB.assign (C, M, A) ;
@@ -725,6 +717,7 @@ C1 = double (C1) ;
 gb_time = toc ;
 fprintf ('\nGraphBLAS time: %g sec for GrB.assign\n', gb_time) ;
 
+%% Second method in GraphBLAS, with C(M)=A(M)
 % now using overloaded operators, also include the time to
 % convert back to a MATLAB sparse matrix, for good measure:
 A2 = GrB (A) ;
@@ -735,7 +728,7 @@ C2 = double (C2) ;
 gb_time2 = toc ;
 fprintf ('\nGraphBLAS time: %g sec for C(M)=A(M)\n', gb_time2) ;
 
-%%
+%% Now with MATLAB matrices, with C(M)=A(M) 
 % Please wait, this will take about 10 minutes or so ...
 
 tic
@@ -766,26 +759,10 @@ C2 - C
 % as C(I,J)=A.  However, in its MATLAB interface, this would require a
 % MATLAB mexFunction to modify its inputs.  That breaks the MATLAB API
 % standard, so it cannot be safely done.  As a result, using GraphBLAS
-% via its MATLAB interface can be slower than when using its C API.  This
-% restriction would not be a limitation if GraphBLAS were to be
-% incorporated into MATLAB itself, but there is likely no way to do this
-% in a mexFunction interface to GraphBLAS.
+% via its MATLAB interface can be slower than when using its C API.
 
 %%
-% (2) Complex matrices:
-%
-% GraphBLAS can operate on matrices with arbitrary user-defined types and
-% operators.  The only constraint is that the type be a fixed sized
-% typedef that can be copied with the ANSI C memcpy; variable-sized types
-% are not yet supported.  However, in this MATLAB interface,
-% SuiteSparse:GraphBLAS has access to only predefined types, operators,
-% and semirings.  Complex types and operators will be added to this
-% MATLAB interface in the future.  They already appear in the C version
-% of GraphBLAS, with user-defined operators in
-% GraphBLAS/Demo/Source/usercomplex.c.
-
-%%
-% (3) Integer element-wise operations:
+% (2) Integer element-wise operations:
 %
 % Integer operations in MATLAB saturate, so that uint8(255)+1 is 255.  To
 % allow for integer monoids, GraphBLAS uses modular arithmetic instead.
@@ -804,7 +781,7 @@ C2 - C
 % matrices, since it doesn't support sparse integer matrices.
 
 %%
-% (4) Faster methods:
+% (3) Faster methods:
 %
 % Most methods in this MATLAB interface are based on efficient parallel C
 % functions in GraphBLAS itself, and are typically as fast or faster than
@@ -817,9 +794,7 @@ C2 - C
 % illustrated below in the next example.
 %
 % Other methods that will be faster in the future include bandwidth,
-% istriu, istril, eps, ceil, floor, round, fix, isfinite, isinf, isnan,
-% spfun, and A.^B.  These methods are currently implemented in
-% m-files, not in efficient parallel C functions.
+% istriu, istril, isdiag, reshape, issymmetric, and ishermitian.
 
 %%
 % Here is an example that illustrates the performance of C = [A B]
@@ -845,22 +820,22 @@ if (gb_time > matlab_time)
 end
 
 %%
-% (5) Linear indexing:
+% (4) Linear indexing:
 %
 % If A is an m-by-n 2D MATLAB matrix, with n > 1, A(:) is a column vector
 % of length m*n.  The index operation A(i) accesses the ith entry in the
 % vector A(:).  This is called linear indexing in MATLAB.  It is not yet
 % available for GraphBLAS matrices in this MATLAB interface to GraphBLAS,
-% but it could be added in the future.
+% but will be added in the future.
 
 %%
-% (6) Implicit singleton dimension expansion 
+% (5) Implicit singleton dimension expansion 
 %
 % In MATLAB C=A+B where A is m-by-n and B is a 1-by-n row vector
 % implicitly expands B to a matrix, computing C(i,j)=A(i,j)+B(j).  This
 % implicit expansion is not yet suported in GraphBLAS with C=A+B.
 % However, it can be done with C = GrB.mxm ('+.+', A, diag(GrB(B))).
-% That's an nice example of the power of semirings, but it's not
+% That's a nice example of the power of semirings, but it's not
 % immediately obvious, and not as clear a syntax as C=A+B.  The
 % GraphBLAS/@GrB/dnn.m function uses this 'plus.plus' semiring to
 % apply the bias to each neuron.
@@ -871,13 +846,36 @@ C1 = A + B
 C2 = GrB.mxm ('+.+', A, diag (GrB (B)))
 err = norm (C1-C2,1)
 
+%%
+% (6) Performance issues
+%
+% The GrB matrix is a MATLAB object, and there are some cases where
+% performance issues can arise.  Extracting the contents of a MATLAB
+% object (G.field) takes much more time than for a MATLAB struct with
+% the same syntax, and building an object has similar issues.  The
+% difference is small, and it does not affect large problems.  But if
+% you have many calls to GrB operations with a small amount of work,
+% then the time can be dominated by the MATLAB object-oriented overhead.
+
+A = rand (3,4) ;
+G = GrB (A) ;
+tic
+for k = 1:100000
+    [m, n] = size (A) ;
+end
+toc
+tic
+for k = 1:100000
+    [m, n] = size (G) ;
+end
+toc
+
 %% GraphBLAS operations
 % In addition to the overloaded operators (such as C=A*B) and overloaded
 % functions (such as L=tril(A)), GraphBLAS also has methods of the form
-% GrB.method, listed on the next page.  Most of them take an optional
-% input matrix Cin, which is the initial value of the matrix C for the
-% expression below, an optional mask matrix M, and an optional
-% accumulator operator.
+% GrB.method.  Most of them take an optional input matrix Cin, which is
+% the initial value of the matrix C for the expression below, an optional
+% mask matrix M, and an optional accumulator operator.
 %
 %      C<#M,replace> = accum (C, T)
 %
@@ -888,245 +886,12 @@ err = norm (C1-C2,1)
 % Z=accum(C,T).  The matrix T is the result of some operation, such as
 % T=A*B for GrB.mxm, or T=op(A,B) for GrB.eadd.
 %
-% A summary of these GrB.methods is on the next pages.
-
-%% Methods for the GrB class:
+% For a complete list of GraphBLAS overloaded operators and methods, type:
 %
-%   These methods operate on GraphBLAS matrices only, and they overload
-%   the existing MATLAB functions of the same name.
-%
-%   C = GrB (...)           construct a GraphBLAS matrix
-%   C = sparse (G)          makes a copy of a GrB matrix
-%   C = full (G, ...)       adds explicit zeros or id values to a GrB matrix
-%   C = double (G)          cast GrB matrix to MATLAB sparse double matrix
-%   C = logical (G)         cast GrB matrix to MATLAB sparse logical matrix
-%   C = complex (G)         cast GrB matrix to MATLAB sparse complex
-%   C = single (G)          cast GrB matrix to MATLAB full single matrix
-%   C = int8 (G)            cast GrB matrix to MATLAB full int8 matrix
-%   C = int16 (G)           cast GrB matrix to MATLAB full int16 matrix
-%   C = int32 (G)           cast GrB matrix to MATLAB full int32 matrix
-%   C = int64 (G)           cast GrB matrix to MATLAB full int64 matrix
-%   C = uint8 (G)           cast GrB matrix to MATLAB full uint8 matrix
-%   C = uint16 (G)          cast GrB matrix to MATLAB full uint16 matrix
-%   C = uint32 (G)          cast GrB matrix to MATLAB full uint32 matrix
-%   C = uint64 (G)          cast GrB matrix to MATLAB full uint64 matrix
-%   C = cast (G,...)        cast GrB matrix to MATLAB matrix (as above)
-
-%%
-%   X = nonzeros (G)        extract all entries from a GrB matrix
-%   [I,J,X] = find (G)      extract all entries from a GrB matrix
-%   C = spones (G)          return pattern of GrB matrix
-%   disp (G, level)         display a GrB matrix G
-%   display (G)             display a GrB matrix G; same as disp(G,2)
-%   mn = numel (G)          m*n for an m-by-n GrB matrix G
-%   e = nnz (G)             number of entries in a GrB matrix G
-%   e = nzmax (G)           number of entries in a GrB matrix G
-%   [m n] = size (G)        size of a GrB matrix G
-%   n = length (G)          length of a GrB vector
-%   s = isempty (G)         true if any dimension of G is zero
-%   s = issparse (G)        true for any GrB matrix G
-%   s = ismatrix (G)        true for any GrB matrix G
-%   s = isvector (G)        true if m=1 or n=1, for an m-by-n GrB matrix G
-%   s = iscolumn (G)        true if n=1, for an m-by-n GrB matrix G
-%   s = isrow (G)           true if m=1, for an m-by-n GrB matrix G
-%   s = isscalar (G)        true if G is a 1-by-1 GrB matrix
-%   s = isnumeric (G)       true for any GrB matrix G (even logical)
-%   s = isfloat (G)         true if GrB matrix is double, single, complex
-%   s = isreal (G)          true if GrB matrix is not complex
-%   s = isinteger (G)       true if GrB matrix is int8, int16, ..., uint64
-%   s = islogical (G)       true if GrB matrix is logical
-%   s = isa (G, classname)  check if a GrB matrix is of a specific class
-
-%%
-%   C = diag (G,k)          diagonal matrices and diagonals of GrB matrix G
-%   L = tril (G,k)          lower triangular part of GrB matrix G
-%   U = triu (G,k)          upper triangular part of GrB matrix G
-%   C = kron (A,B)          Kronecker product
-%   C = repmat (G, ...)     replicate and tile a GraphBLAS matrix
-%   C = reshape (G, ...)    reshape a GraphBLAS matrix
-%   C = abs (G)             absolute value
-%   C = sign (G)            signum function
-%   s = istril (G)          true if G is lower triangular
-%   s = istriu (G)          true if G is upper triangular
-%   s = isbanded (G,...)    true if G is banded
-%   s = isdiag (G)          true if G is diagonal
-%   s = ishermitian (G)     true if G is Hermitian
-%   s = issymmetric (G)     true if G is symmetric
-%   [lo,hi] = bandwidth (G) determine the lower & upper bandwidth of G
-%   C = sum (G, option)     reduce via sum, to vector or scalar
-%   C = prod (G, option)    reduce via product, to vector or scalar
-%   s = norm (G, kind)      1-norm or inf-norm of a GrB matrix
-%   C = max (G, ...)        reduce via max, to vector or scalar
-%   C = min (G, ...)        reduce via min, to vector or scalar
-%   C = any (G, ...)        reduce via '|', to vector or scalar
-%   C = all (G, ...)        reduce via '&', to vector or scalar
-
-%%
-%   C = sqrt (G)            element-wise square root
-%   C = eps (G)             floating-point spacing
-%   C = ceil (G)            round towards infinity
-%   C = floor (G)           round towards -infinity
-%   C = round (G)           round towards nearest
-%   C = fix (G)             round towards zero
-%   C = isfinite (G)        test if finite
-%   C = isinf (G)           test if infinite
-%   C = isnan (G)           test if NaN
-%   C = spfun (fun, G)      evaluate a function on the entries of G
-%   p = amd (G)             approximate minimum degree ordering
-%   p = colamd (G)          column approximate minimum degree ordering
-%   p = symamd (G)          approximate minimum degree ordering
-%   p = symrcm (G)          reverse Cuthill-McKee ordering
-%   [...] = dmperm (G)      Dulmage-Mendelsohn permutation
-%   parent = etree (G)      elimination tree
-%   C = conj (G)            complex conjugate
-%   C = real (G)            real part of a complex GraphBLAS matrix
-%   [V, ...] = eig (G,...)  eigenvalues and eigenvectors
-%   assert (G)              generate an error if G is false
-%   C = zeros (...,'like',G)   all-zero matrix, same type as G
-%   C = false (...,'like',G)   all-false logical matrix
-%   C = ones (...,'like',G)    matrix with all ones, same type as G
-
-%% Operator overloading:
-%
-%   C = plus (A, B)         C = A + B
-%   C = minus (A, B)        C = A - B
-%   C = uminus (G)          C = -G
-%   C = uplus (G)           C = +G
-%   C = times (A, B)        C = A .* B
-%   C = mtimes (A, B)       C = A * B
-%   C = rdivide (A, B)      C = A ./ B
-%   C = ldivide (A, B)      C = A .\ B
-%   C = mrdivide (A, B)     C = A / B
-%   C = mldivide (A, B)     C = A \ B
-%   C = power (A, B)        C = A .^ B
-%   C = mpower (A, B)       C = A ^ B
-%   C = lt (A, B)           C = A < B
-%   C = gt (A, B)           C = A > B
-%   C = le (A, B)           C = A <= B
-%   C = ge (A, B)           C = A >= B
-%   C = ne (A, B)           C = A ~= B
-%   C = eq (A, B)           C = A == B
-%   C = and (A, B)          C = A & B
-%   C = or (A, B)           C = A | B
-%   C = not (G)             C = ~G
-%   C = ctranspose (G)      C = G'
-%   C = transpose (G)       C = G.'
-%   C = horzcat (A, B)      C = [A , B]
-%   C = vertcat (A, B)      C = [A ; B]
-%   C = subsref (A, I, J)   C = A (I,J) or C = A (M)
-%   C = subsasgn (A, I, J)  C (I,J) = A
-%   index = end (A, k, n)   for object indexing, A(1:end,1:end)
-
-%% Static Methods:
-%
-%   The Static Methods for the GrB class can be used on input matrices of
-%   any kind: GraphBLAS sparse matrices, MATLAB sparse matrices, or
-%   MATLAB dense matrices, in any combination.  The output matrix Cout is
-%   a GraphBLAS matrix, by default, but can be optionally returned as a
-%   MATLAB sparse or dense matrix.  The static methods divide into two
-%   categories: those that perform basic functions, and the GraphBLAS
-%   operations that use the mask/accum.
-
-%% GraphBLAS basic functions:
-%
-%   GrB.clear                    clear GraphBLAS workspace and settings
-%   GrB.descriptorinfo (d)       list properties of a descriptor
-%   GrB.unopinfo (op, type)      list properties of a unary operator
-%   GrB.binopinfo (op, type)     list properties of a binary operator
-%   GrB.monoidinfo (op, type)    list properties of a monoid
-%   GrB.semiringinfo (s, type)   list properties of a semiring
-%   t = GrB.threads (t)          set/get # of threads to use in GraphBLAS
-%   c = GrB.chunk (c)            set/get chunk size to use in GraphBLAS
-%   b = GrB.burble (b)           set/get burble (diagnostic output)
-%   result = GrB.entries (G,...) count or query entries in a matrix
-%   result = GrB.nonz (G,...)    count or query nonzeros in a matrix
-%   C = GrB.prune (A, id)        prune entries equal to id
-%   C = GrB.offdiag (A)          prune diagonal entries
-%   s = GrB.isfull (A)           true if all entries present
-%   [C,I,J] = GrB.compact (A,id) remove empty rows and columns
-%   G = GrB.empty (m, n)         return an empty GraphBLAS matrix
-%   s = GrB.type (A)             get the type of a MATLAB or GrB matrix A
-%   s = GrB.issigned (type)      true if type is signed
-%   f = GrB.format (f)           set/get matrix format to use in GraphBLAS
-%   s = GrB.isbyrow (A)          true if format f A is 'by row'
-%   s = GrB.isbycol (A)          true if format f A is 'by col'
-%   C = GrB.expand (scalar, A)   expand a scalar (C = scalar*spones(A))
-%   C = GrB.eye                  identity matrix of any type
-%   C = GrB.speye                identity matrix (of type 'double')
-%   C = GrB.build (I, J, X, m, n, dup, type, desc)
-%                                build a GrB matrix from list of entries
-%   [I,J,X] = GrB.extracttuples (A, desc)
-%                                extract all entries from a matrix
-%   s = GrB.normdiff (A, B, kind)   norm (A-B,kind)
-
-%% GraphBLAS operations with Cout, mask M, and accum.
-%
-%   Cout = GrB.mxm (Cin, M, accum, semiring, A, B, desc)
-%                   sparse matrix-matrix multiplication over a semiring
-%   Cout = GrB.select (Cin, M, accum, op, A, b, desc)
-%                   select a subset of entries from a matrix
-%   Cout = GrB.assign (Cin, M, accum, A, I, J, desc)
-%                   sparse matrix assignment, such as C(I,J)=A
-%   Cout = GrB.subassign (Cin, M, accum, A, I, J, desc)
-%                   sparse matrix assignment, such as C(I,J)=A
-%   Cout = GrB.vreduce (Cin, M, accum, op, A, desc)
-%                   reduce a matrix to a vector
-%   Cout = GrB.reduce (Cin, accum, op, A, desc)
-%                   reduce a matrix to a scalar
-%   Cout = GrB.kronecker (Cin, M, accum, op, A, B, desc)
-%                   Kronecker product
-%   Cout = GrB.trans (Cin, M, accum, A, desc)
-%                   transpose a matrix
-%   Cout = GrB.eadd (Cin, M, accum, op, A, B, desc)
-%                   element-wise addition
-%   Cout = GrB.emult (Cin, M, accum, op, A, B, desc)
-%                   element-wise multiplication
-%   Cout = GrB.apply (Cin, M, accum, op, A, desc)
-%                   apply a unary operator
-%   Cout = GrB.extract (Cin, M, accum, A, I, J, desc)
-%                   extract submatrix, like C=A(I,J) in MATLAB
-%
-%%
-% GraphBLAS operations (with Cout, Cin arguments) take the following form:
-%
-%   C<#M,replace> = accum (C, operation (A or A', B or B'))
-%
-%   C is both an input and output matrix.  In this MATLAB interface to
-%   GraphBLAS, it is split into Cin (the value of C on input) and Cout
-%   (the value of C on output).  M is the optional mask matrix, and #M is
-%   either M or !M depending on whether or not the mask is complemented
-%   via the desc.mask option.  The replace option is determined by
-%   desc.out; if present, C is cleared after it is used in the accum
-%   operation but before the final assignment.  A and/or B may optionally
-%   be transposed via the descriptor fields desc.in0 and desc.in1,
-%   respectively.  To select the format of Cout, use desc.format.  See
-%   GrB.descriptorinfo for more details.
-%
-%   accum is optional; if not is not present, then the operation becomes
-%   C<...> = operation(A,B).  Otherwise, C = C + operation(A,B) is
-%   computed where '+' is the accum operator.  It acts like a sparse
-%   matrix addition (see GrB.eadd), in terms of the structure of the
-%   result C, but any binary operator can be used.
-%
-%   The mask M acts like MATLAB logical indexing.  If M(i,j)=1 then
-%   C(i,j) can be modified; if zero, it cannot be modified by the
-%   operation.
-
-%% Static Methods for graph algorithms:
-%
-%   r = GrB.pagerank (A, opts) ;            % PageRank of a matrix
-%   C = GrB.ktruss (A, k, check) ;          % k-truss
-%   s = GrB.tricount (A, check) ;           % triangle count
-%   L = GrB.laplacian (A, type, check) ;    % Laplacian graph
-%   C = GrB.incidence (A, ...) ;            % incidence matrix
-%   [v, parent] = GrB.bfs (A, s, ...) ;     % breadth-first search
-%   iset = GrB.mis (A, check) ;             % maximal independent set
-%   Y = GrB.dnn (W, bias, Y0) ;             % deep neural network
-%
-%   More graph algorithms will be added in the future.
+%   help GrB
 %
 % Thanks for watching!
 %
 % Tim Davis, Texas A&M University, http://faculty.cse.tamu.edu/davis
-% See also sparse, doc sparse, and https://twitter.com/DocSparse
+% See also doc sparse and https://twitter.com/DocSparse
 

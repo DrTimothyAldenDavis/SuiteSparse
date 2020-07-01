@@ -13,7 +13,7 @@ debug_off
     test30b ; % performance test GB_mex_assign, scalar expansion
 
     test12(0) ; % Wathen finite-element matrices (full test)
-    test58(0) ; % longer GB_mex_eWiseAdd_Matrix performance test
+    test58(0) ; % longer GB_mex_Matrix_eWiseAdd performance test
 
     test53 ;  % exhaustive test of GB_mex_Matrix_extract
     test62 ;  % exhaustive test of GrB_apply

@@ -12,13 +12,13 @@
 #include "GB_ij.h"
 
 // FUTURE:: if limit=0, print a different message.  see also setEl, extractEl.
-#define GB_ICHECK(i,limit)                                              \
-{                                                                       \
-    if ((i) < 0 || (i) >= (limit))                                      \
-    {                                                                   \
-        return (GB_ERROR (GrB_INDEX_OUT_OF_BOUNDS, (GB_LOG,             \
-        "index "GBd" out of bounds, must be < "GBd, (i), (limit)))) ;   \
-    }                                                                   \
+#define GB_ICHECK(i,limit)                                                  \
+{                                                                           \
+    if ((i) < 0 || (i) >= (limit))                                          \
+    {                                                                       \
+        return (GB_ERROR (GrB_INDEX_OUT_OF_BOUNDS, (GB_LOG,                 \
+        "index " GBd " out of bounds, must be < " GBd , (i), (limit)))) ;   \
+    }                                                                       \
 }
 
 GrB_Info GB_ijproperties        // check I and determine its properties
@@ -65,7 +65,7 @@ GrB_Info GB_ijproperties        // check I and determine its properties
 
     ASSERT (I != NULL) ;
     ASSERT (limit >= 0) ;
-    ASSERT (limit <= GB_INDEX_MAX) ;
+    ASSERT (limit <= GxB_INDEX_MAX) ;
     int64_t imin, imax ;
 
     //--------------------------------------------------------------------------
@@ -199,8 +199,7 @@ GrB_Info GB_ijproperties        // check I and determine its properties
         imax = -1 ;
 
         // allocate workspace for imin and imax
-        int64_t *Work = NULL ;
-        GB_MALLOC_MEMORY (Work, 2*ntasks, sizeof (int64_t)) ;
+        int64_t *Work = GB_MALLOC (2*ntasks, int64_t) ;
         if (Work == NULL)
         { 
             // out of memory
@@ -263,7 +262,7 @@ GrB_Info GB_ijproperties        // check I and determine its properties
         }
 
         // free workspace
-        GB_FREE_MEMORY (Work, 2*ntasks, sizeof (int64_t)) ;
+        GB_FREE (Work) ;
 
         #ifdef GB_DEBUG
         {

@@ -31,7 +31,8 @@
             (a_taskid == 0) ?         NULL : C_counts [a_taskid] ;
         const int64_t *GB_RESTRICT C_count_end   =
             (a_taskid == naslice-1) ? NULL : C_counts [a_taskid+1] ;
-        const GB_ATYPE *GB_RESTRICT Ax = A_is_pattern ? NULL : A->x ;
+        const GB_ATYPE *GB_RESTRICT Ax =
+            (GB_ATYPE *) (A_is_pattern ? NULL : A->x) ;
         #endif
 
         //----------------------------------------------------------------------

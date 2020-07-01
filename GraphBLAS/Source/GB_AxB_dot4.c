@@ -13,14 +13,15 @@
 
 #include "GB_mxm.h"
 #include "GB_unused.h"
+#include "GB_mkl.h"
 #ifndef GBCOMPACT
 #include "GB_AxB__include.h"
 #endif
 
-#define GB_FREE_WORK                                            \
-{                                                               \
-    GB_FREE_MEMORY (A_slice, naslice+1, sizeof (int64_t)) ;     \
-    GB_FREE_MEMORY (B_slice, nbslice+1, sizeof (int64_t)) ;     \
+#define GB_FREE_WORK        \
+{                           \
+    GB_FREE (A_slice) ;     \
+    GB_FREE (B_slice) ;     \
 }
 
 GrB_Info GB_AxB_dot4                // C+=A'*B, dot product method
@@ -51,6 +52,57 @@ GrB_Info GB_AxB_dot4                // C+=A'*B, dot product method
 
     int64_t *GB_RESTRICT A_slice = NULL ;
     int64_t *GB_RESTRICT B_slice = NULL ;
+
+    //--------------------------------------------------------------------------
+    // determine the number of threads to use, and the use_mkl flag
+    //--------------------------------------------------------------------------
+
+    int64_t anz = GB_NNZ (A) ;
+    int64_t bnz = GB_NNZ (B) ;
+    GB_GET_NTHREADS_MAX (nthreads_max, chunk, Context) ;
+    int nthreads = GB_nthreads (anz + bnz, chunk, nthreads_max) ;
+    bool use_mkl = (Context == NULL) ? false : Context->use_mkl ;
+
+    //--------------------------------------------------------------------------
+    // use MKL_graph if it available and has this semiring
+    //--------------------------------------------------------------------------
+
+    // Note that GB_AxB_dot4 computes C+=A'*B where A and B treated as if CSC,
+    // but MKL views the matrices as CSR.  MKL only handles the case when B
+    // is a dense vector in mkl_graph_mxv, and A' in CSC format is the same
+    // as A in CSR.
+
+    #if GB_HAS_MKL_GRAPH
+
+    if (use_mkl &&
+        (semiring == GrB_PLUS_TIMES_SEMIRING_FP32 ||
+         semiring == GxB_PLUS_SECOND_FP32) && GB_VECTOR_OK (C)
+        && GB_is_dense (C) && GB_is_dense (B) && GB_VECTOR_OK (B) && !flipxy
+        && !GB_IS_HYPER (A))
+    {
+
+        info = // GrB_NO_VALUE ;
+        #if 1
+        GB_AxB_dot4_mkl (
+            (GrB_Vector) C,     // input/output (now a vector)
+            A,                  // first input matrix
+            (GrB_Vector) B,     // second input (now a vector)
+            semiring,           // semiring that defines C=A*B
+            Context) ;
+        #endif
+
+        if (info != GrB_NO_VALUE)
+        {
+            // MKL_graph supports this semiring, and has ether computed C=A*B,
+            // C<M>=A*B, or C<!M>=A*B, or has failed.
+            return (info) ;
+        }
+
+        // If MKL_graph doesn't support this semiring, it returns GrB_NO_VALUE,
+        // so fall through to use GraphBLAS, below.
+    }
+    #endif
+
 
     //--------------------------------------------------------------------------
     // get the semiring operators
@@ -89,16 +141,6 @@ GrB_Info GB_AxB_dot4                // C+=A'*B, dot product method
     }
 
     //--------------------------------------------------------------------------
-    // determine the number of threads to use
-    //--------------------------------------------------------------------------
-
-    int64_t anz = GB_NNZ (A) ;
-    int64_t bnz = GB_NNZ (B) ;
-
-    GB_GET_NTHREADS_MAX (nthreads_max, chunk, Context) ;
-    int nthreads = GB_nthreads (anz + bnz, chunk, nthreads_max) ;
-
-    //--------------------------------------------------------------------------
     // slice A and B
     //--------------------------------------------------------------------------
 
@@ -125,38 +167,38 @@ GrB_Info GB_AxB_dot4                // C+=A'*B, dot product method
 
     bool done = false ;
 
-#ifndef GBCOMPACT
+    #ifndef GBCOMPACT
 
-    //--------------------------------------------------------------------------
-    // define the worker for the switch factory
-    //--------------------------------------------------------------------------
+        //----------------------------------------------------------------------
+        // define the worker for the switch factory
+        //----------------------------------------------------------------------
 
-    #define GB_Adot4B(add,mult,xyname) GB_Adot4B_ ## add ## mult ## xyname
+        #define GB_Adot4B(add,mult,xname) GB_Adot4B_ ## add ## mult ## xname
 
-    #define GB_AxB_WORKER(add,mult,xyname)          \
-    {                                               \
-        info = GB_Adot4B (add,mult,xyname) (C,      \
-            A, A_is_pattern, A_slice, naslice,      \
-            B, B_is_pattern, B_slice, nbslice,      \
-            nthreads) ;                             \
-        done = (info != GrB_NO_VALUE) ;             \
-    }                                               \
-    break ;
+        #define GB_AxB_WORKER(add,mult,xname)           \
+        {                                               \
+            info = GB_Adot4B (add,mult,xname) (C,       \
+                A, A_is_pattern, A_slice, naslice,      \
+                B, B_is_pattern, B_slice, nbslice,      \
+                nthreads) ;                             \
+            done = (info != GrB_NO_VALUE) ;             \
+        }                                               \
+        break ;
 
-    //--------------------------------------------------------------------------
-    // launch the switch factory
-    //--------------------------------------------------------------------------
+        //----------------------------------------------------------------------
+        // launch the switch factory
+        //----------------------------------------------------------------------
 
-    GB_Opcode mult_opcode, add_opcode ;
-    GB_Type_code xycode, zcode ;
+        GB_Opcode mult_opcode, add_opcode ;
+        GB_Type_code xcode, ycode, zcode ;
 
-    if (GB_AxB_semiring_builtin (A, A_is_pattern, B, B_is_pattern, semiring,
-        flipxy, &mult_opcode, &add_opcode, &xycode, &zcode))
-    { 
-        #include "GB_AxB_factory.c"
-    }
+        if (GB_AxB_semiring_builtin (A, A_is_pattern, B, B_is_pattern, semiring,
+            flipxy, &mult_opcode, &add_opcode, &xcode, &ycode, &zcode))
+        { 
+            #include "GB_AxB_factory.c"
+        }
 
-#endif
+    #endif
 
     //--------------------------------------------------------------------------
     // C += A'*B, computing each entry with a dot product, with typecasting
@@ -187,7 +229,7 @@ GrB_Info GB_AxB_dot4                // C+=A'*B, dot product method
         size_t aki_size = flipxy ? ysize : xsize ;
         size_t bkj_size = flipxy ? xsize : ysize ;
 
-        GB_void *GB_RESTRICT terminal = add->terminal ;
+        GB_void *GB_RESTRICT terminal = (GB_void *) add->terminal ;
 
         GB_cast_function cast_A, cast_B ;
         if (flipxy)
@@ -231,7 +273,7 @@ GrB_Info GB_AxB_dot4                // C+=A'*B, dot product method
         // C(i,j) += A(i,k) * B(k,j)
         #define GB_MULTADD(cij, aki, bkj)                                   \
             GB_void zwork [GB_VLA(csize)] ;                                 \
-            GB_MULTIPLY (zwork, aki, bkj) ;                                 \
+            GB_FMULT (zwork, aki, bkj) ;                                    \
             fadd (cij, cij, zwork)
 
         // define cij for each task
@@ -254,20 +296,20 @@ GrB_Info GB_AxB_dot4                // C+=A'*B, dot product method
         #define GB_CTYPE GB_void
 
         // no vectorization
-        #define GB_PRAGMA_VECTORIZE
-        #define GB_PRAGMA_VECTORIZE_DOT
+        #define GB_PRAGMA_SIMD_VECTORIZE ;
+        #define GB_PRAGMA_SIMD_DOT(cij) ;
 
         if (flipxy)
         { 
-            #define GB_MULTIPLY(z,x,y) fmult (z,y,x)
+            #define GB_FMULT(z,x,y) fmult (z,y,x)
             #include "GB_AxB_dot4_template.c"
-            #undef GB_MULTIPLY
+            #undef GB_FMULT
         }
         else
         { 
-            #define GB_MULTIPLY(z,x,y) fmult (z,x,y)
+            #define GB_FMULT(z,x,y) fmult (z,x,y)
             #include "GB_AxB_dot4_template.c"
-            #undef GB_MULTIPLY
+            #undef GB_FMULT
         }
     }
 

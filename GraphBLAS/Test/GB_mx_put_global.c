@@ -49,10 +49,7 @@ void GB_mx_put_global
     int64_t nmalloc = GB_Global_nmalloc_get ( ) ;
     if (nmalloc != 0)
     {
-        int64_t inuse   = GB_Global_inuse_get ( ) ;
-        int64_t maxused = GB_Global_maxused_get ( ) ;
-        printf ("GraphBLAS nmalloc "GBd"! inuse "GBd" maxused "GBd"\n",
-            nmalloc, inuse, maxused) ;
+        printf ("GraphBLAS nmalloc "GBd"!\n", nmalloc) ;
         mexErrMsgTxt ("memory leak!") ;
     }
 }

@@ -64,7 +64,7 @@ GrB_Info GB_mask_phase1                 // count nnz in each R(:,j)
     // allocate the result
     //--------------------------------------------------------------------------
 
-    GB_CALLOC_MEMORY (Rp, GB_IMAX (2, Rnvec+1), sizeof (int64_t)) ;
+    Rp = GB_CALLOC (GB_IMAX (2, Rnvec+1), int64_t) ;
     if (Rp == NULL)
     { 
         // out of memory

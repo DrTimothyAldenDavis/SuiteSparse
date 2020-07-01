@@ -164,7 +164,7 @@ break ;
     // PAIR multiplier: t is always 1; no numeric work to do to compute t.
     // The LXOR_PAIR and PLUS_PAIR semirings need the value t = 1 to use in
     // their monoid operator, however.
-    #define t 1
+    #define t (GB_CTYPE_CAST (1, 0))
     #define GB_MULT_A_ik_B_kj
 
 #else
@@ -395,13 +395,37 @@ break ;
 
 #if GB_IS_ANY_MONOID
 
+    //--------------------------------------------------------------------------
     // The update Hx [i] += t can be skipped entirely, for the ANY monoid.
+    //--------------------------------------------------------------------------
+
     #define GB_ATOMIC_UPDATE_HX(i,t)
 
 #elif GB_HAS_ATOMIC
 
+    //--------------------------------------------------------------------------
     // Hx [i] += t via atomic update
-    #if GB_HAS_OMP_ATOMIC
+    //--------------------------------------------------------------------------
+
+    #if GB_IS_PLUS_FC32_MONOID
+
+        // built-in PLUS_FC32 monoid
+        #define GB_ATOMIC_UPDATE_HX(i,t)                            \
+            GB_ATOMIC_UPDATE                                        \
+            Hx_real [2*(i)] += crealf (t) ;                         \
+            GB_ATOMIC_UPDATE                                        \
+            Hx_imag [2*(i)] += cimagf (t) ;
+
+    #elif GB_IS_PLUS_FC64_MONOID
+
+        // built-in PLUS_FC64 monoid
+        #define GB_ATOMIC_UPDATE_HX(i,t)                            \
+            GB_ATOMIC_UPDATE                                        \
+            Hx_real [2*(i)] += creal (t) ;                          \
+            GB_ATOMIC_UPDATE                                        \
+            Hx_imag [2*(i)] += cimag (t) ;
+
+    #elif GB_HAS_OMP_ATOMIC
 
         // built-in PLUS, TIMES, LOR, LAND, LXOR monoids can be
         // implemented with an OpenMP pragma
@@ -429,7 +453,10 @@ break ;
 
 #else
 
+    //--------------------------------------------------------------------------
     // Hx [i] += t can only be done inside the critical section
+    //--------------------------------------------------------------------------
+
     #define GB_ATOMIC_UPDATE_HX(i,t)    \
         GB_PRAGMA (omp flush)           \
         GB_HX_UPDATE (i, t) ;           \
@@ -443,24 +470,55 @@ break ;
 
 #if GB_IS_ANY_PAIR_SEMIRING
 
+    //--------------------------------------------------------------------------
     // ANY_PAIR: result is purely symbolic; no numeric work to do
+    //--------------------------------------------------------------------------
+
     #define GB_ATOMIC_WRITE_HX(i,t)
 
-#else 
+#elif GB_HAS_ATOMIC
 
-    // atomic write
-    #if GB_HAS_ATOMIC
-        // Hx [i] = t via atomic write
-        #define GB_ATOMIC_WRITE_HX(i,t)       \
-            GB_ATOMIC_WRITE   \
-            GB_HX_WRITE (i, t)
+    //--------------------------------------------------------------------------
+    // Hx [i] = t via atomic write
+    //--------------------------------------------------------------------------
+
+    #if GB_IS_PLUS_FC32_MONOID
+
+        // built-in PLUS_FC32 monoid
+        #define GB_ATOMIC_WRITE_HX(i,t)                             \
+            GB_ATOMIC_WRITE                                         \
+            Hx_real [2*(i)] = crealf (t) ;                          \
+            GB_ATOMIC_WRITE                                         \
+            Hx_imag [2*(i)] = cimagf (t) ;
+
+    #elif GB_IS_PLUS_FC64_MONOID
+
+        // built-in PLUS_FC64 monoid
+        #define GB_ATOMIC_WRITE_HX(i,t)                             \
+            GB_ATOMIC_WRITE                                         \
+            Hx_real [2*(i)] = creal (t) ;                           \
+            GB_ATOMIC_WRITE                                         \
+            Hx_imag [2*(i)] = cimag (t) ;
+
     #else
-        // Hx [i] = t via critical section
-        #define GB_ATOMIC_WRITE_HX(i,t)       \
-            GB_PRAGMA (omp flush)          \
-            GB_HX_WRITE (i, t) ;           \
-            GB_PRAGMA (omp flush)
+
+        // all other atomic monoids
+        #define GB_ATOMIC_WRITE_HX(i,t)                             \
+            GB_ATOMIC_WRITE                                         \
+            GB_HX_WRITE (i, t)
+
     #endif
+
+#else
+
+    //--------------------------------------------------------------------------
+    // Hx [i] = t via critical section
+    //--------------------------------------------------------------------------
+
+    #define GB_ATOMIC_WRITE_HX(i,t)    \
+        GB_PRAGMA (omp flush)          \
+        GB_HX_WRITE (i, t) ;           \
+        GB_PRAGMA (omp flush)
 
 #endif
 
@@ -484,10 +542,10 @@ break ;
 #undef  GB_FREE_TASKLIST_AND_HASH_TABLES
 #define GB_FREE_TASKLIST_AND_HASH_TABLES                                    \
 {                                                                           \
-    GB_FREE_MEMORY (*(TaskList_handle), ntasks, sizeof (GB_saxpy3task_struct));\
-    GB_FREE_MEMORY (Hi_all, Hi_size_total, sizeof (int64_t)) ;              \
-    GB_FREE_MEMORY (Hf_all, Hf_size_total, sizeof (int64_t)) ;              \
-    GB_FREE_MEMORY (Hx_all, Hx_size_total, 1) ;                             \
+    GB_FREE (*(TaskList_handle)) ;                                          \
+    GB_FREE (Hi_all) ;                                                      \
+    GB_FREE (Hf_all) ;                                                      \
+    GB_FREE (Hx_all) ;                                                      \
 }
 
 #undef  GB_FREE_WORK

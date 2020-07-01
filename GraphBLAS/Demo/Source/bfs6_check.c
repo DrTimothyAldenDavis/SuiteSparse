@@ -19,11 +19,6 @@
 // instead of GrB_mxv.  It now more closely matches the BFS example in the
 // GraphBLAS C API Specification.
 
-// This version uses a predefined semiring (GxB_LOR_LAND_BOOL) and a predefined
-// monoid (GxB_LOR_BOOL_MONOID), in GraphBLAS.h.  It also checks the status of
-// each call to GraphBLAS functions.  These two changes are unrelated.  Both
-// change are made here to illustrate two different things.
-
 // "OK(x)" macro calls a GraphBLAS method, and if it fails, prints the error,
 // frees workspace, and returns to the caller.  It uses the FREE_ALL macro
 // to free the workspace
@@ -58,9 +53,6 @@
 // Note the operator accesses a global variable outside the control of
 // GraphBLAS.  This is safe, but care must be taken not to change the global
 // variable "level" while pending operations have yet to be completed.
-// See the User Guide on GrB_wait, which forces completion of pending work
-// on all matrices, and also methods that force completion on individual
-// matries (GrB_Matrix_nvals in particular).
 
 int32_t bfs_level2_global = 0 ;
 
@@ -138,10 +130,10 @@ GrB_Info bfs6_check         // BFS of a graph (using apply)
 
         // q'<!v> = q ||.&& A ; finds all the unvisited
         // successors from current q, using !v as the mask
-        OK (GrB_vxm (q, v, NULL, GxB_LOR_LAND_BOOL, q, A, desc)) ;
+        OK (GrB_vxm (q, v, NULL, GrB_LOR_LAND_SEMIRING_BOOL, q, A, desc)) ;
 
         // successor = ||(q)
-        GrB_Vector_reduce_BOOL (&successor, NULL, GxB_LOR_BOOL_MONOID,
+        GrB_Vector_reduce_BOOL (&successor, NULL, GrB_LOR_MONOID_BOOL,
             q, NULL) ;
     }
 

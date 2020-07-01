@@ -36,7 +36,7 @@ for trial = 1:2
     t0 = toc ;
 
     tic
-    C1 = GB_mex_eWiseMult_Matrix  (C, [ ], [ ], 'times', A, B, [ ]);
+    C1 = GB_mex_Matrix_eWiseMult  (C, [ ], [ ], 'times', A, B, [ ]);
     t1 = toc ;
     fprintf ('MATLAB %0.4f  GB %0.4f speedup %g\n', t0, t1, t0/t1) ;
     assert (isequal (C0, C1.matrix)) ;
@@ -49,7 +49,7 @@ A = sprand (n, n, 0.001) ;
     C0 = A .* B ;
     t0 = toc ;
     tic
-    C1 = GB_mex_eWiseMult_Matrix  (C, [ ], [ ], 'times', A, B, [ ]);
+    C1 = GB_mex_Matrix_eWiseMult  (C, [ ], [ ], 'times', A, B, [ ]);
     t1 = toc ;
     fprintf ('MATLAB %0.4f  GB %0.4f speedup %g\n', t0, t1, t0/t1) ;
     assert (isequal (C0, C1.matrix)) ;
@@ -62,7 +62,7 @@ A (n,:) = 1 ;
     C0 = A .* B ;
     t0 = toc ;
     tic
-    C1 = GB_mex_eWiseMult_Matrix  (C, [ ], [ ], 'times', A, B, [ ]);
+    C1 = GB_mex_Matrix_eWiseMult  (C, [ ], [ ], 'times', A, B, [ ]);
     t1 = toc ;
     fprintf ('MATLAB %0.4f  GB %0.4f speedup %g\n', t0, t1, t0/t1) ;
     assert (isequal (C0, C1.matrix)) ;
@@ -75,7 +75,7 @@ A (1,:) = 1 ;
     C0 = A .* B ;
     t0 = toc ;
     tic
-    C1 = GB_mex_eWiseMult_Matrix  (C, [ ], [ ], 'times', A, B, [ ]);
+    C1 = GB_mex_Matrix_eWiseMult  (C, [ ], [ ], 'times', A, B, [ ]);
     t1 = toc ;
     fprintf ('MATLAB %0.4f  GB %0.4f speedup %g\n', t0, t1, t0/t1) ;
     assert (isequal (C0, C1.matrix)) ;
@@ -88,7 +88,7 @@ for d =  [0.000:0.002:0.1]
     C0 = A .* B ;
     t0 = toc ;
     tic
-    C1 = GB_mex_eWiseMult_Matrix  (C, [ ], [ ], 'times', A, B, [ ]);
+    C1 = GB_mex_Matrix_eWiseMult  (C, [ ], [ ], 'times', A, B, [ ]);
     t1 = toc ;
     fprintf ('d %8.3f MATLAB %0.4f  GB %0.4f speedup %g\n', d, t0, t1, t0/t1) ;
     assert (isequal (C0, C1.matrix)) ;

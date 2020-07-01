@@ -49,7 +49,7 @@ void GB_assign_zombie3
 
     const int64_t *GB_RESTRICT Mp = M->p ;
     const int64_t *GB_RESTRICT Mi = M->i ;
-    const GB_void *GB_RESTRICT Mx = (Mask_struct ? NULL : (M->x)) ;
+    const GB_void *GB_RESTRICT Mx = (GB_void *) (Mask_struct ? NULL : (M->x)) ;
     const size_t msize = M->type->size ;
     int64_t pM_start = Mp [0] ;
     int64_t pM_end = Mp [1] ;

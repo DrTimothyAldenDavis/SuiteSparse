@@ -26,7 +26,7 @@ void mexFunction
     // check inputs
     //--------------------------------------------------------------------------
 
-    gb_usage (nargin <= 1 && nargout == 0,
+    gb_usage (nargin == 1 && nargout == 0,
         "usage: GrB.selectopinfo (selectop)") ;
 
     //--------------------------------------------------------------------------

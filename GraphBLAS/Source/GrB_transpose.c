@@ -12,6 +12,8 @@
 #include "GB_transpose.h"
 #include "GB_accum_mask.h"
 
+#define GB_FREE_ALL ;
+
 GrB_Info GrB_transpose              // C<M> = accum(C,A') or accum(C,A)
 (
     GrB_Matrix C,                   // input/output matrix for results
@@ -25,6 +27,8 @@ GrB_Info GrB_transpose              // C<M> = accum(C,A') or accum(C,A)
     //--------------------------------------------------------------------------
     // check inputs
     //--------------------------------------------------------------------------
+
+    GrB_Matrix T = NULL ;
 
     // C may be aliased with M and/or A
 
@@ -45,11 +49,7 @@ GrB_Info GrB_transpose              // C<M> = accum(C,A') or accum(C,A)
         A_transpose, xx1, xx2) ;
 
     // check domains and dimensions for C<M> = accum (C,T)
-    info = GB_compatible (C->type, C, M, accum, A->type, Context) ;
-    if (info != GrB_SUCCESS)
-    { 
-        return (info) ;
-    }
+    GB_OK (GB_compatible (C->type, C, M, accum, A->type, Context)) ;
 
     // check the dimensions
     int64_t tnrows = (!A_transpose) ? GB_NCOLS (A) : GB_NROWS (A) ;
@@ -58,8 +58,8 @@ GrB_Info GrB_transpose              // C<M> = accum(C,A') or accum(C,A)
     { 
         return (GB_ERROR (GrB_DIMENSION_MISMATCH, (GB_LOG,
             "Dimensions not compatible:\n"
-            "output is "GBd"-by-"GBd"\n"
-            "input is "GBd"-by-"GBd"%s",
+            "output is " GBd "-by-" GBd "\n"
+            "input is " GBd "-by-" GBd "%s",
             GB_NROWS (C), GB_NCOLS (C),
             tnrows, tncols, (!A_transpose) ? " (transposed)" : ""))) ;
     }
@@ -68,9 +68,8 @@ GrB_Info GrB_transpose              // C<M> = accum(C,A') or accum(C,A)
     GB_RETURN_IF_QUICK_MASK (C, C_replace, M, Mask_comp) ;
 
     // delete any lingering zombies and assemble any pending tuples
-    // GB_WAIT (C) ;
-    GB_WAIT (M) ;
-    GB_WAIT (A) ;
+    GB_MATRIX_WAIT (M) ;
+    GB_MATRIX_WAIT (A) ;
 
     //--------------------------------------------------------------------------
     // T = A or A', where T can have the type of C or the type of A
@@ -82,8 +81,6 @@ GrB_Info GrB_transpose              // C<M> = accum(C,A') or accum(C,A)
         // Flip the sense of A_transpose
         A_transpose = !A_transpose ;
     }
-
-    GrB_Matrix T = NULL ;
 
     if (!A_transpose)
     {
@@ -98,7 +95,8 @@ GrB_Info GrB_transpose              // C<M> = accum(C,A') or accum(C,A)
             // If there is no accum operator, T is transplanted into Z and
             // typecasted into the C->type during the transpose.
             // transpose: typecast, no op, not in place
-            info = GB_transpose (&T, C->type, C_is_csc, A, NULL, Context) ;
+            GB_OK (GB_transpose (&T, C->type, C_is_csc, A,
+                NULL, NULL, NULL, false, Context)) ;
         }
         else
         { 
@@ -108,7 +106,8 @@ GrB_Info GrB_transpose              // C<M> = accum(C,A') or accum(C,A)
             // typecast of T (if any) must wait, and be done in call to GB_add
             // in GB_accum_mask.
             // transpose: no typecast, no op, not in place
-            info = GB_transpose (&T, A->type, C_is_csc, A, NULL, Context) ;
+            GB_OK (GB_transpose (&T, A->type, C_is_csc, A,
+                NULL, NULL, NULL, false, Context)) ;
         }
 
         // no operator; typecasting done if accum is NULL
@@ -125,13 +124,7 @@ GrB_Info GrB_transpose              // C<M> = accum(C,A') or accum(C,A)
         // differ.  That can be postponed at no cost since the following step
         // is free.
         GBBURBLE ("(cheap) ") ;
-        info = GB_shallow_copy (&T, C_is_csc, A, Context) ;
-    }
-
-    if (info != GrB_SUCCESS)
-    { 
-        ASSERT (T == NULL) ;
-        return (info) ;
+        GB_OK (GB_shallow_copy (&T, C_is_csc, A, Context)) ;
     }
 
     ASSERT (T->is_csc == C->is_csc) ;

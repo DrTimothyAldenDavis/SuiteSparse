@@ -15,7 +15,7 @@
 // C, M, A, and B can be standard sparse or hypersparse, as determined by
 // GB_add_phase0.  The mask M may be present, but it is not complemented.
 
-// GB_wait computes A=A+T where T is the matrix of the assembled pending
+// GB_Matrix_wait computes A=A+T where T is the matrix of the assembled pending
 // tuples.  A and T are disjoint, so this function does not need to examine
 // the pattern of A and T at all.  No mask is used in this case.
 
@@ -66,7 +66,7 @@ GrB_Info GB_add_phase1                  // count nnz in each C(:,j)
     // allocate the result
     //--------------------------------------------------------------------------
 
-    GB_CALLOC_MEMORY (Cp, GB_IMAX (2, Cnvec+1), sizeof (int64_t)) ;
+    Cp = GB_CALLOC (GB_IMAX (2, Cnvec+1), int64_t) ;
     if (Cp == NULL)
     { 
         // out of memory

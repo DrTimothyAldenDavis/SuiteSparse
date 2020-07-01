@@ -23,9 +23,11 @@
 // and C->h.  Either way, the caller must not free them.
 
 // op may be NULL.  In this case, the intersection of A and B must be empty.
-// This is used by GB_wait only, for merging the pending tuple matrix T into A.
+// This is used by GB_Matrix_wait only, for merging the pending tuple matrix T
+// into A.
 
 #include "GB_add.h"
+#include "GB_binop.h"
 #include "GB_unused.h"
 #ifndef GBCOMPACT
 #include "GB_binop__include.h"
@@ -73,7 +75,7 @@ GrB_Info GB_add_phase2      // C=A+B or C<M>=A+B
 
     if (op == NULL)
     { 
-        // GB_wait does no typecasting.  A and T have the same type when
+        // GB_Matrix_wait does no typecasting.  A and T have the same type when
         // computing A=A+T, and no operator is used since A and T have disjoint
         // nonzero patterns.  No mask is used.
         ASSERT (ctype == A->type) ;
@@ -103,16 +105,15 @@ GrB_Info GB_add_phase2      // C=A+B or C<M>=A+B
     bool C_is_hyper = (Ch != NULL) ;
 
     // allocate the result C (but do not allocate C->p or C->h)
-    GrB_Info info ;
     GrB_Matrix C = NULL ;           // allocate a new header for C
-    GB_CREATE (&C, ctype, A->vlen, A->vdim, GB_Ap_null, C_is_csc,
-        GB_SAME_HYPER_AS (C_is_hyper), A->hyper_ratio, Cnvec, cnz, true,
-        Context) ;
+    GrB_Info info = GB_create (&C, ctype, A->vlen, A->vdim, GB_Ap_null,
+        C_is_csc, GB_SAME_HYPER_AS (C_is_hyper), A->hyper_ratio, Cnvec, cnz,
+        true, Context) ;
     if (info != GrB_SUCCESS)
     { 
         // out of memory; caller must free C_to_M, C_to_A, C_to_B
-        GB_FREE_MEMORY (Cp, GB_IMAX (2, Cnvec+1), sizeof (int64_t)) ;
-        GB_FREE_MEMORY (Ch, Cnvec, sizeof (int64_t)) ;
+        GB_FREE (Cp) ;
+        GB_FREE (Ch) ;
         return (info) ;
     }
 
@@ -140,33 +141,32 @@ GrB_Info GB_add_phase2      // C=A+B or C<M>=A+B
 
 #ifndef GBCOMPACT
 
-    //--------------------------------------------------------------------------
-    // define the worker for the switch factory
-    //--------------------------------------------------------------------------
+        //----------------------------------------------------------------------
+        // define the worker for the switch factory
+        //----------------------------------------------------------------------
 
-    #define GB_AaddB(mult,xyname) GB_AaddB_ ## mult ## xyname
+        #define GB_AaddB(mult,xname) GB_AaddB_ ## mult ## xname
 
-    #define GB_BINOP_WORKER(mult,xyname)                            \
-    {                                                               \
-        info = GB_AaddB(mult,xyname) (C, M, Mask_struct, A, B, Ch_is_Mh, \
-            C_to_M, C_to_A, C_to_B, TaskList, ntasks, nthreads) ;   \
-        done = (info != GrB_NO_VALUE) ;                             \
-    }                                                               \
-    break ;
+        #define GB_BINOP_WORKER(mult,xname)                                  \
+        {                                                                    \
+            info = GB_AaddB(mult,xname) (C, M, Mask_struct, A, B, Ch_is_Mh,  \
+                C_to_M, C_to_A, C_to_B, TaskList, ntasks, nthreads) ;        \
+            done = (info != GrB_NO_VALUE) ;                                  \
+        }                                                                    \
+        break ;
 
-    //--------------------------------------------------------------------------
-    // launch the switch factory
-    //--------------------------------------------------------------------------
+        //----------------------------------------------------------------------
+        // launch the switch factory
+        //----------------------------------------------------------------------
 
-    GB_Opcode opcode ;
-    GB_Type_code xycode, zcode ;
-
-    if (GB_binop_builtin (A->type, false, B->type, false, op,
-        false, &opcode, &xycode, &zcode) && ccode == zcode)
-    { 
-        #include "GB_binop_factory.c"
-        ASSERT (done) ;
-    }
+        GB_Opcode opcode ;
+        GB_Type_code xcode, ycode, zcode ;
+        if (GB_binop_builtin (A->type, false, B->type, false,
+            op, false, &opcode, &xcode, &ycode, &zcode) && ccode == zcode)
+        { 
+            #include "GB_binop_factory.c"
+            ASSERT (done) ;
+        }
 
 #endif
 
@@ -252,7 +252,7 @@ GrB_Info GB_add_phase2      // C=A+B or C<M>=A+B
         #define GB_PHASE_2_OF_2
 
         // loops cannot be vectorized
-        #define GB_PRAGMA_VECTORIZE
+        #define GB_PRAGMA_SIMD_VECTORIZE ;
 
         #include "GB_add_template.c"
     }

@@ -26,10 +26,10 @@
 #include "GB_unused.h"
 
 #undef  GB_FREE_ALL
-#define GB_FREE_ALL                                                         \
-{                                                                           \
-    GB_FREE_EMULT_SLICE ;                                                   \
-    GB_FREE_MEMORY (TaskList, max_ntasks+1, sizeof (GB_task_struct)) ;      \
+#define GB_FREE_ALL             \
+{                               \
+    GB_FREE_EMULT_SLICE ;       \
+    GB_FREE (TaskList) ;        \
 }
 
 GrB_Info GB_subassign_emult_slice

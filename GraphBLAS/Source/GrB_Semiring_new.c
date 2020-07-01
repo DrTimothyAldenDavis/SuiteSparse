@@ -62,7 +62,7 @@ GrB_Info GrB_Semiring_new           // create a semiring
     //--------------------------------------------------------------------------
 
     // allocate the semiring
-    GB_CALLOC_MEMORY (*semiring, 1, sizeof (struct GB_Semiring_opaque)) ;
+    (*semiring) = GB_CALLOC (1, struct GB_Semiring_opaque) ;
     if (*semiring == NULL)
     { 
         // out of memory
@@ -74,7 +74,7 @@ GrB_Info GrB_Semiring_new           // create a semiring
     s->magic = GB_MAGIC ;
     s->add = add ;
     s->multiply = multiply ;
-    s->object_kind = GB_USER_RUNTIME ;
+    s->builtin = false ;
 
     ASSERT_SEMIRING_OK (s, "new semiring", GB0) ;
     return (GrB_SUCCESS) ;

@@ -14,7 +14,7 @@ Cin.matrix = 50 * sparse (rand (2))  ;
 Cin.class = 'int16' ;
 
 accum.opname = '' ;
-accum.opclass = 'logical'
+accum.optype = 'logical'
 
 C = GB_mex_transpose  (Cin, [ ], accum, A, [ ]) ;
 assert (spok (C.matrix*1) == 1) ;

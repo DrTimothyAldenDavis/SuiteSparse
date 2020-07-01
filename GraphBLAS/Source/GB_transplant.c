@@ -91,7 +91,6 @@ GrB_Info GB_transplant          // transplant one matrix into another
     int64_t *GB_RESTRICT Ci_keep = NULL ;
     int64_t cplen_keep = 0 ;
     int64_t cnvec_keep = 0 ;
-    int64_t cnzmax_keep = 0 ;
 
     if (keep_Cp_and_Ci)
     { 
@@ -103,7 +102,6 @@ GrB_Info GB_transplant          // transplant one matrix into another
         Ci_keep = C->i ;
         cplen_keep = C->plen ;
         cnvec_keep = C->nvec ;
-        cnzmax_keep = C->nzmax ;
         C->p = NULL ;
         C->i = NULL ;
     }
@@ -171,8 +169,8 @@ GrB_Info GB_transplant          // transplant one matrix into another
             // A is hypersparse, create new C->p and C->h
             C->plen = anvec ;
             C->nvec = anvec ;
-            GB_MALLOC_MEMORY (C->p, C->plen+1, sizeof (int64_t)) ;
-            GB_MALLOC_MEMORY (C->h, C->plen,   sizeof (int64_t)) ;
+            C->p = GB_MALLOC (C->plen+1, int64_t) ;
+            C->h = GB_MALLOC (C->plen  , int64_t) ;
             if (C->p == NULL || C->h == NULL)
             { 
                 // out of memory
@@ -190,7 +188,7 @@ GrB_Info GB_transplant          // transplant one matrix into another
             // A is non-hypersparse, create new C->p
             C->plen = avdim ;
             C->nvec = avdim ;
-            GB_MALLOC_MEMORY (C->p, C->plen+1, sizeof (int64_t)) ;
+            C->p = GB_MALLOC (C->plen+1, int64_t) ;
             if (C->p == NULL)
             { 
                 // out of memory
@@ -252,7 +250,7 @@ GrB_Info GB_transplant          // transplant one matrix into another
     { 
         // quick return if A has no entries
         // Ci_keep is not needed after all, since C is empty
-        GB_FREE_MEMORY (Ci_keep, cnzmax_keep, sizeof (int64_t)) ;
+        GB_FREE (Ci_keep) ;
         ASSERT_MATRIX_OK (C, "C empty transplant", GB0) ;
         GB_MATRIX_FREE (Ahandle) ;
         return (GrB_SUCCESS) ;
@@ -279,7 +277,7 @@ GrB_Info GB_transplant          // transplant one matrix into another
     if (allocate_Cx)
     { 
         // allocate new C->x component
-        GB_MALLOC_MEMORY (C->x, C->nzmax, C->type->size) ;
+        C->x = GB_MALLOC (C->nzmax * C->type->size, GB_void) ;
         ok = ok && (C->x != NULL) ;
     }
 
@@ -287,7 +285,7 @@ GrB_Info GB_transplant          // transplant one matrix into another
     { 
 
         // allocate new C->i component
-        GB_MALLOC_MEMORY (C->i, C->nzmax, sizeof (int64_t)) ;
+        C->i = GB_MALLOC (C->nzmax, int64_t) ;
         ok = ok && (C->i != NULL) ;
     }
 
@@ -296,7 +294,7 @@ GrB_Info GB_transplant          // transplant one matrix into another
         // out of memory
         GB_PHIX_FREE (C) ;
         GB_MATRIX_FREE (Ahandle) ;
-        GB_FREE_MEMORY (Ci_keep, cnzmax_keep, sizeof (int64_t)) ;
+        GB_FREE (Ci_keep) ;
         return (GB_OUT_OF_MEMORY) ;
     }
 
@@ -333,10 +331,13 @@ GrB_Info GB_transplant          // transplant one matrix into another
     else
     {
         // types differ, must typecast from A to C.
-        GB_cast_array (C->x, C->type->code, A->x, A->type->code, anz, Context) ;
+        GB_void *GB_RESTRICT Cx = (GB_void *) C->x ;
+        GB_void *GB_RESTRICT Ax = (GB_void *) A->x ;
+        GB_cast_array (Cx, C->type->code,
+            Ax, A->type->code, A->type->size, anz, nthreads) ;
         if (!A->x_shallow)
         { 
-            GB_FREE_MEMORY (A->x, A->nzmax, A->type->size) ;
+            GB_FREE (A->x) ;
         }
         A->x = NULL ;
     }
@@ -406,7 +407,8 @@ GrB_Info GB_transplant          // transplant one matrix into another
     C->i_shallow = false ;
 
     C->nzombies = A->nzombies ;     // zombies may have been transplanted into C
-    GB_CRITICAL (GB_queue_insert (C)) ;
+
+    if (!GB_queue_insert (C)) GB_PANIC ;    // TODO in 4.0: delete
 
     //--------------------------------------------------------------------------
     // free A and return result

@@ -48,13 +48,13 @@ GrB_Info GB_I_inverse           // invert the I list for C=A(I,:)
     // allocate workspace
     //--------------------------------------------------------------------------
 
-    GB_CALLOC_MEMORY (Mark,  avlen, sizeof (int64_t)) ;
-    GB_MALLOC_MEMORY (Inext, nI,    sizeof (int64_t)) ;
+    Mark  = GB_CALLOC (avlen, int64_t) ;
+    Inext = GB_MALLOC (nI,    int64_t) ;
     if (Inext == NULL || Mark == NULL)
     { 
         // out of memory
-        GB_FREE_MEMORY (Mark,  avlen, sizeof (int64_t)) ;
-        GB_FREE_MEMORY (Inext, nI,    sizeof (int64_t)) ;
+        GB_FREE (Mark) ;
+        GB_FREE (Inext) ;
         return (GB_OUT_OF_MEMORY) ;
     }
 

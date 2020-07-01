@@ -172,7 +172,7 @@ GrB_Matrix gb_typecast      // A = (type) S, where A is deep
     GrB_Matrix S                // may be shallow
 ) ;
 
-void gb_abort ( void ) ;        // assertion failure
+void gb_abort ( void ) ;    // failure
 
 int gb_flush ( void ) ;     // flush mexPrintf output to MATLAB Command Window
 
@@ -214,13 +214,15 @@ GrB_UnaryOp gb_string_and_type_to_unop  // return op from string and type
 GrB_BinaryOp gb_mxstring_to_binop       // return binary operator from a string
 (
     const mxArray *mxstring,            // MATLAB string
-    const GrB_Type default_type         // default type if not in the string
+    const GrB_Type atype,               // type of A
+    const GrB_Type btype                // type of B
 ) ;
 
 GrB_BinaryOp gb_string_to_binop         // return binary operator from a string
 (
     char *opstring,                     // string defining the operator
-    const GrB_Type default_type         // default type if not in the string
+    const GrB_Type atype,               // type of A
+    const GrB_Type btype                // type of B
 ) ;
 
 GrB_BinaryOp gb_string_and_type_to_binop    // return op from string and type
@@ -232,14 +234,15 @@ GrB_BinaryOp gb_string_and_type_to_binop    // return op from string and type
 GrB_Semiring gb_mxstring_to_semiring    // return semiring from a string
 (
     const mxArray *mxstring,            // MATLAB string
-    const GrB_Type default_type         // default type if not in the string
+    const GrB_Type atype,               // type of A
+    const GrB_Type btype                // type of B
 ) ;
 
 GrB_Semiring gb_string_to_semiring      // return a semiring from a string
 (
     char *semiring_string,              // string defining the semiring
-    const GrB_Type default_type         // default type if not in the string:
-                                        // type of x,y inputs to mult operator
+    const GrB_Type atype,               // type of A
+    const GrB_Type btype                // type of B
 ) ;
 
 GrB_Semiring gb_semiring            // built-in semiring, or NULL if error
@@ -248,9 +251,9 @@ GrB_Semiring gb_semiring            // built-in semiring, or NULL if error
     const GrB_BinaryOp mult         // multiply operator
 ) ;
 
-GrB_Descriptor gb_mxarray_to_descriptor     // return a new descriptor
+GrB_Descriptor gb_mxarray_to_descriptor // new descriptor, or NULL if none
 (
-    const mxArray *D_matlab,    // MATLAB struct
+    const mxArray *desc_matlab, // MATLAB struct with possible descriptor
     kind_enum_t *kind,          // GrB, sparse, or full
     GxB_Format_Value *fmt,      // by row or by col
     base_enum_t *base           // 0-based int, 1-based int, or 1-based double
@@ -341,13 +344,13 @@ GrB_Monoid gb_binop_to_monoid           // return monoid from a binary op
 GrB_Monoid gb_string_to_monoid          // return monoid from a string
 (
     char *opstring,                     // string defining the operator
-    const GrB_Type default_type         // default type if not in the string
+    const GrB_Type type                 // default type if not in the string
 ) ;
 
 GrB_Monoid gb_mxstring_to_monoid        // return monoid from a string
 (
     const mxArray *mxstring,            // MATLAB string
-    const GrB_Type default_type         // default type if not in the string
+    const GrB_Type type                 // default type if not in the string
 ) ;
 
 GxB_Format_Value gb_mxstring_to_format  // GxB_BY_ROW or GxB_BY_COL
@@ -373,7 +376,7 @@ void gb_assign                  // gbassign or gbsubassign mexFunctions
 (
     int nargout,                // # output arguments for mexFunction
     mxArray *pargout [ ],       // output arguments for mexFunction
-    int nargin,                 // # inpu arguments for mexFunction
+    int nargin,                 // # input arguments for mexFunction
     const mxArray *pargin [ ],  // input arguments for mexFunction
     bool do_subassign,          // true: do subassign, false: do assign
     const char *usage           // usage string to print if error
@@ -430,13 +433,24 @@ bool gb_isnotnan32 (GrB_Index i, GrB_Index j, GrB_Index nrows, GrB_Index ncols,
 bool gb_isnotnan64 (GrB_Index i, GrB_Index j, GrB_Index nrows, GrB_Index ncols,
     const void *x, const void *b) ;
 
+bool gb_isnanfc32 (GrB_Index i, GrB_Index j, GrB_Index nrows,
+    GrB_Index ncols, const void *x, const void *b) ;
+
+bool gb_isnanfc64 (GrB_Index i, GrB_Index j, GrB_Index nrows,
+    GrB_Index ncols, const void *x, const void *b) ;
+
+bool gb_isnotnanfc32 (GrB_Index i, GrB_Index j, GrB_Index nrows,
+    GrB_Index ncols, const void *x, const void *b) ;
+
+bool gb_isnotnanfc64 (GrB_Index i, GrB_Index j, GrB_Index nrows,
+    GrB_Index ncols, const void *x, const void *b) ;
+
 void gb_get_mxargs
 (
     // input:
     int nargin,                 // # input arguments for mexFunction
     const mxArray *pargin [ ],  // input arguments for mexFunction
     const char *usage,          // usage to print, if too many args appear
-
     // output:
     const mxArray *Matrix [4],  // matrix arguments
     int *nmatrices,             // # of matrix arguments
@@ -457,6 +471,20 @@ double gb_norm              // compute norm (A,kind)
     GrB_Matrix A,
     int64_t norm_kind       // 0, 1, 2, INT64_MAX, or INT64_MIN
 ) ;
+
+GrB_Type gb_default_type        // return the default type to use
+(
+    const GrB_Type atype,       // type of the A matrix
+    const GrB_Type btype        // type of the B matrix
+) ;
+
+bool gb_is_integer (const GrB_Type type) ;
+
+bool gb_is_float (const GrB_Type type) ;
+
+GrB_BinaryOp gb_round_binop (const GrB_Type type) ;
+
+mxArray *gb_mxclass_to_mxstring (mxClassID class, bool is_complex) ;
 
 #endif
 

@@ -1,6 +1,6 @@
 ssget:  MATLAB and Java interfaces to the SuiteSparse Matrix Collection
 (Formerly the University of Florida Sparse Matrix Collection).
-Copyright 2005-2017, Timothy A. Davis, http://www.suitesparse.com,
+Copyright 2005-2019, Timothy A. Davis, http://www.suitesparse.com,
 Texas A&M University.
 
 REQUIREMENTS:

@@ -23,7 +23,9 @@ C2 (I,J) = A ;
 I0 = uint64 (I-1) ;
 J0 = uint64 (J-1) ;
 
-C3 = GB_mex_assign (C, [ ], '', A, I0, J0, [ ]) ;
+'here'
+C3 = GB_mex_assign (C, [ ], '', A, I0, J0, [ ]) 
+'did it'
 % C3.matrix
 % full (C3.matrix)
 assert (isequal (C3.matrix, C2))

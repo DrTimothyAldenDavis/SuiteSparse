@@ -19,7 +19,7 @@
     GB_MATRIX_FREE (&C) ;               \
     GB_MATRIX_FREE (&M) ;               \
     GB_MATRIX_FREE (&A) ;               \
-    GrB_Descriptor_free (&desc) ;       \
+    GrB_Descriptor_free_(&desc) ;       \
     GB_mx_put_global (true, 0) ;        \
 }
 
@@ -58,8 +58,6 @@ void mexFunction
         mexErrMsgTxt ("C failed") ;
     }
 
-    mxClassID cclass = GB_mx_Type_to_classID (C->type) ;
-
     // get M (shallow copy)
     M = GB_mx_mxArray_to_Matrix (pargin [1], "M", false, false) ;
     if (M == NULL && !mxIsEmpty (pargin [1]))
@@ -76,10 +74,12 @@ void mexFunction
         mexErrMsgTxt ("A failed") ;
     }
 
-    // get accum; default: NOP, default class is class(C)
+    // get accum, if present
+    bool user_complex = (Complex != GxB_FC64)
+        && (C->type == Complex || A->type == Complex) ;
     GrB_BinaryOp accum ;
     if (!GB_mx_mxArray_to_BinaryOp (&accum, pargin [2], "accum",
-        GB_NOP_opcode, cclass, C->type == Complex, A->type == Complex))
+        C->type, user_complex))
     {
         FREE_ALL ;
         mexErrMsgTxt ("accum failed") ;
@@ -109,11 +109,83 @@ void mexFunction
         else
         {
             // get k
-            int64_t k = (int64_t) mxGetScalar (pargin [5]) ;
-            GxB_Scalar_new (&Thunk, GrB_INT64) ;
-            GxB_Scalar_setElement_INT64 (Thunk, k) ;
-            GrB_Index ignore ;
-            GxB_Scalar_nvals (&ignore, Thunk) ;
+            GrB_Type thunk_type = GB_mx_Type (pargin [5]) ;
+            GxB_Scalar_new (&Thunk, thunk_type) ;
+            if (thunk_type == GrB_BOOL)
+            {
+                bool *p = mxGetData (pargin [5]) ;
+                GxB_Scalar_setElement_BOOL_(Thunk, *p) ;
+            }
+            else if (thunk_type == GrB_INT8)
+            {
+                int8_t *p = mxGetInt8s (pargin [5]) ;
+                GxB_Scalar_setElement_INT8_(Thunk, *p) ;
+            }
+            else if (thunk_type == GrB_INT16)
+            {
+                int16_t *p = mxGetInt16s (pargin [5]) ;
+                GxB_Scalar_setElement_INT16_(Thunk, *p) ;
+            }
+            else if (thunk_type == GrB_INT32)
+            {
+                int32_t *p = mxGetInt32s (pargin [5]) ;
+                GxB_Scalar_setElement_INT32_(Thunk, *p) ;
+            }
+            else if (thunk_type == GrB_INT64)
+            {
+                int64_t *p = mxGetInt64s (pargin [5]) ;
+                GxB_Scalar_setElement_INT64_(Thunk, *p) ;
+            }
+            else if (thunk_type == GrB_UINT8)
+            {
+                uint8_t *p = mxGetUint8s (pargin [5]) ;
+                GxB_Scalar_setElement_UINT8_(Thunk, *p) ;
+            }
+            else if (thunk_type == GrB_UINT16)
+            {
+                uint16_t *p = mxGetUint16s (pargin [5]) ;
+                GxB_Scalar_setElement_UINT16_(Thunk, *p) ;
+            }
+            else if (thunk_type == GrB_UINT32)
+            {
+                uint32_t *p = mxGetUint32s (pargin [5]) ;
+                GxB_Scalar_setElement_UINT32_(Thunk, *p) ;
+            }
+            else if (thunk_type == GrB_UINT64)
+            {
+                uint64_t *p = mxGetUint64s (pargin [5]) ;
+                GxB_Scalar_setElement_UINT64_(Thunk, *p) ;
+            }
+            else if (thunk_type == GrB_FP32)
+            {
+                float *p = mxGetSingles (pargin [5]) ;
+                GxB_Scalar_setElement_FP32_(Thunk, *p) ;
+            }
+            else if (thunk_type == GrB_FP64)
+            {
+                double *p = mxGetDoubles (pargin [5]) ;
+                GxB_Scalar_setElement_FP64_(Thunk, *p) ;
+            }
+            else if (thunk_type == GxB_FC32)
+            {
+                GxB_FC32_t *p = mxGetComplexSingles (pargin [5]) ;
+                GxB_Scalar_setElement_FC32_(Thunk, *p) ;
+            }
+            else if (thunk_type == GxB_FC64)
+            {
+                GxB_FC64_t *p = mxGetComplexDoubles (pargin [5]) ;
+                GxB_Scalar_setElement_FC64_(Thunk, *p) ;
+            }
+            else if (thunk_type == Complex)
+            {
+                GxB_FC64_t *p = mxGetComplexDoubles (pargin [5]) ;
+                GxB_Scalar_setElement_UDT (Thunk, p) ;
+            }
+            else
+            {
+                mexErrMsgTxt ("unknown type") ;
+            }
+            GxB_Scalar_wait_(&Thunk) ;
         }
     }
 
@@ -136,12 +208,12 @@ void mexFunction
     if (C->vdim == 1 && (desc == NULL || desc->in0 == GxB_DEFAULT))
     {
         // this is just to test the Vector version
-        METHOD (GxB_Vector_select ((GrB_Vector) C, (GrB_Vector) M, accum, op,
-            (GrB_Vector) A, Thunk, desc)) ;
+        METHOD (GxB_Vector_select_((GrB_Vector) C, (GrB_Vector) M, accum, op,
+            (GrB_Vector) A, Thunk, desc)) ; // C
     }
     else
     {
-        METHOD (GxB_Matrix_select (C, M, accum, op, A, Thunk, desc)) ;
+        METHOD (GxB_Matrix_select_(C, M, accum, op, A, Thunk, desc)) ; // C
     }
 
     // return C to MATLAB as a struct and free the GraphBLAS C

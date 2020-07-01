@@ -12,7 +12,7 @@ fprintf ('test8: factorize a large range of sparse matrices\n') ;
 
 % get list of test matrices
 
-index = UFget ;
+index = ssget ;
 
 % GHS posdef test set (more or less)
 f = find (...
@@ -62,7 +62,7 @@ junk = sparse (1) ;
 
 for k = 1:length (f)
 
-    Problem = UFget (f(k)) ;
+    Problem = ssget (f(k)) ;
     A = Problem.A ; 
     fprintf ('\n================== Problem: %s  n: %d nnz: %d\n', ...
 	Problem.name, size (A,1), nnz (A)) ;

@@ -18,8 +18,7 @@ void GB_mx_put_time
 {
 
     // create a MATLAB array with the right size
-    mxArray * grbresults_matlab = mxCreateNumericMatrix (1, 2,
-            mxDOUBLE_CLASS, mxREAL) ;
+    mxArray * grbresults_matlab = GB_mx_create_full (1, 2, GrB_FP64) ;
 
     // copy the time into the MATLAB array
     double *t = (double *) mxGetData (grbresults_matlab) ;

@@ -103,7 +103,7 @@ void GB_slice_vector
         // find the index i in the middle of ileft:iright
         //----------------------------------------------------------------------
 
-        i = (ileft + iright) / 2 ;
+        i = (ileft + iright) >> 1 ;
 
         //----------------------------------------------------------------------
         // find where i appears in A(:,kA)

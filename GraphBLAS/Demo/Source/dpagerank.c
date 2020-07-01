@@ -135,8 +135,10 @@ GrB_Info dpagerank          // GrB_SUCCESS or error condition
     OK (drowscale (&C, A)) ;    // C = scale A by out-degree
 
     // create unary operators
-    OK (GrB_UnaryOp_new (&op_scale, fscale, GrB_FP64, GrB_FP64)) ;
-    OK (GrB_UnaryOp_new (&op_div  , fdiv,   GrB_FP64, GrB_FP64)) ;
+    OK (GrB_UnaryOp_new (&op_scale,
+        (GxB_unary_function) fscale, GrB_FP64, GrB_FP64)) ;
+    OK (GrB_UnaryOp_new (&op_div  ,
+        (GxB_unary_function) fdiv,   GrB_FP64, GrB_FP64)) ;
 
     //--------------------------------------------------------------------------
     // iterate to compute the pagerank of each node
@@ -147,7 +149,7 @@ GrB_Info dpagerank          // GrB_SUCCESS or error condition
         // r = ((c*r) * C) + (a * sum (r)) ;
 
         // s = a * sum (r) ;
-        OK (GrB_Vector_reduce_FP64 (&s, NULL, GxB_PLUS_FP64_MONOID, r, NULL)) ;
+        OK (GrB_Vector_reduce_FP64 (&s, NULL, GrB_PLUS_MONOID_FP64, r, NULL)) ;
         s *= a ;
 
         // r = c * r
@@ -166,7 +168,7 @@ GrB_Info dpagerank          // GrB_SUCCESS or error condition
     //--------------------------------------------------------------------------
 
     // s = sum (r)
-    OK (GrB_Vector_reduce_FP64 (&s, NULL, GxB_PLUS_FP64_MONOID, r, NULL)) ;
+    OK (GrB_Vector_reduce_FP64 (&s, NULL, GrB_PLUS_MONOID_FP64, r, NULL)) ;
 
     // r = r / s
     OK (GrB_Vector_apply (r, NULL, NULL, op_div, r, NULL)) ;
@@ -178,8 +180,8 @@ GrB_Info dpagerank          // GrB_SUCCESS or error condition
     // [r,irank] = sort (r, 'descend') ;
 
     // [I,X] = find (r) ;
-    X = malloc (n * sizeof (double)) ;
-    I = malloc (n * sizeof (GrB_Index)) ;
+    X = (double *) malloc (n * sizeof (double)) ;
+    I = (GrB_Index *) malloc (n * sizeof (GrB_Index)) ;
     CHECK (I != NULL && X != NULL, GrB_OUT_OF_MEMORY) ;
     GrB_Index nvals = n ;
     OK (GrB_Vector_extractTuples_FP64 (I, X, &nvals, r)) ;
@@ -191,7 +193,7 @@ GrB_Info dpagerank          // GrB_SUCCESS or error condition
     GrB_Vector_free (&r) ;
 
     // P = struct (X,I)
-    P = malloc (n * sizeof (PageRank)) ;
+    P = (PageRank *) malloc (n * sizeof (PageRank)) ;
     CHECK (P != NULL, GrB_OUT_OF_MEMORY) ;
     for (int64_t k = 0 ; k < nvals ; k++)
     {

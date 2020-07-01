@@ -29,7 +29,7 @@ Mask = GB_spec_getmask (Mask, Mask_struct) ;
 
 % apply the descriptor to A
 if (Atrans)
-    A.matrix = A.matrix' ;
+    A.matrix = A.matrix.' ;
     A.pattern = A.pattern' ;
 end
 

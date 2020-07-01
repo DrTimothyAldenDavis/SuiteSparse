@@ -18,7 +18,7 @@ dr = struct ('outp', 'replace') ;
     A   = GB_spec_random (m, n, 0.3, 100, aclass) ;
     Cin = GB_spec_random (m, n, 0.3, 100, aclass) ;
     B   = GB_spec_random (n, m, 0.3, 100, aclass) ;
-    cin = cast (0, aclass) ;
+    cin = GB_mex_cast (0, aclass) ;
     Mask = GB_random_mask (m, n, 0.5, true, false) ;
 
     if (isequal (aclass, 'double'))
@@ -46,7 +46,7 @@ dr = struct ('outp', 'replace') ;
 
         fprintf ('.') ;
 
-            op.opclass = 'double' ;
+            op.optype = 'double' ;
 
             % no mask
             C1 = GB_spec_apply (Cin, [], [], op, A, []) ;
@@ -72,12 +72,12 @@ dr = struct ('outp', 'replace') ;
 
             % with C == mask, and outp = replace
             C1 = GB_spec_apply (Cin, Cmask, [], op, A, dr) ;
-            C2 = GB_mex_apply2 (Cin,        [], op, A, dr) ;
+            C2 = GB_mex_apply_maskalias (Cin,        [], op, A, dr) ;
             GB_spec_compare (C1, C2) ;
 
             % with C == mask and accum, and outp = replace
             C1 = GB_spec_apply (Cin, Cmask, 'plus', op, A, dr) ;
-            C2 = GB_mex_apply2 (Cin,        'plus', op, A, dr) ;
+            C2 = GB_mex_apply_maskalias (Cin,        'plus', op, A, dr) ;
             GB_spec_compare (C1, C2) ;
 
             % no mask, transpose

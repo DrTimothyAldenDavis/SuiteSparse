@@ -40,7 +40,7 @@ GrB_Info GB_subassign_00
     //--------------------------------------------------------------------------
 
     int64_t *GB_RESTRICT Ci = C->i ;
-    const int64_t *GB_RESTRICT Sx = S->x ;
+    const int64_t *GB_RESTRICT Sx = (int64_t *) S->x ;
 
     //--------------------------------------------------------------------------
     // Method 00: C(I,J)<!,repl> = empty ; using S

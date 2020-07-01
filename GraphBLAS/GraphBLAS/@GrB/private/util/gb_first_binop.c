@@ -26,12 +26,8 @@ GrB_BinaryOp gb_first_binop         // return GrB_FIRST_[type] operator
     else if (type == GrB_UINT64) return (GrB_FIRST_UINT64) ;
     else if (type == GrB_FP32)   return (GrB_FIRST_FP32) ;
     else if (type == GrB_FP64)   return (GrB_FIRST_FP64) ;
-    #ifdef GB_COMPLEX_TYPE
-    else if (type == gb_complex_type)
-    {
-        return (gb_first_complex) ;
-    }
-    #endif
+    else if (type == GxB_FC32)   return (GxB_FIRST_FC32) ;
+    else if (type == GxB_FC64)   return (GxB_FIRST_FC64) ;
     else
     {
         ERROR ("unsupported type") ;

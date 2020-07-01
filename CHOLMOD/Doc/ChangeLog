@@ -1,3 +1,9 @@
+June 30, 2020: no change to version number
+
+    * minor update to MATLAB tests: no change to compiled library,
+        so version number remains 3.0.14.
+    * replaced UFget with ssget in MATLAB tests
+
 Feb 20, 2020: version 3.0.14
 
     * minor update to cholmod_check to print a matrix

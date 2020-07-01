@@ -4,20 +4,15 @@ function testc1
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
-if (~GB_mex_have_complex)
-    fprintf ('\ntestc1: skipped\n') ;
-    return ;
-end
-
 rng 'default'
 
-a = GB_mex_op ('min', complex(1), 1i, 1)  ;
-b = min (complex (1), 1i)  ;
-assert (isequal (a, complex (b))) ;
+% a = GB_mex_op ('min', complex(1), 1i, 1)  ;
+% b = min (complex (1), 1i)  ;
+% assert (isequal (a, complex (b))) ;
 
-a = GB_mex_op ('max', complex(1), -1i, 1)  ;
-b = max (complex (1), -1i)  ;
-assert (isequal (a, b)) ;
+% a = GB_mex_op ('max', complex(1), -1i, 1)  ;
+% b = max (complex (1), -1i)  ;
+% assert (isequal (a, b)) ;
 
 A = sparse (rand (2) + 1i * rand (2))  ;
 
@@ -66,18 +61,10 @@ for m = [1 5 10 50 100 ]
                 end
 
             % test unary ops with complex x
-            for k = 1:11
+            for k = 1:length (complex_unary)
                 op = complex_unary {k} ;
                 C1 = GB_mex_op (op, A, '',1) ;
                 [C2 tol] = GB_user_op (op, A) ;
-                GB_complex_compare (C1, C2, tol) ;
-            end
-
-            % test unary ops with real x
-            for k = 12:13
-                op = complex_unary {k} ;
-                C1 = GB_mex_op (op, real (A), '',1) ;
-                [C2 tol] = GB_user_op (op, real (A)) ;
                 GB_complex_compare (C1, C2, tol) ;
             end
 

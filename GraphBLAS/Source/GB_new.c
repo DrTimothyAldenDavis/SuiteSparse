@@ -10,8 +10,6 @@
 // Creates a new matrix but does not allocate space for A->i and A->x.
 // See GB_create instead.
 
-// This function is called via the GB_NEW(...) macro.
-
 // If the Ap_option is GB_Ap_calloc, the A->p and A->h are allocated and
 // initialized, and A->magic is set to GB_MAGIC to denote a valid matrix.
 // Otherwise, the matrix has not yet been fully initialized, and A->magic is
@@ -60,8 +58,8 @@ GrB_Info GB_new                 // create matrix, except for indices & values
 
     ASSERT (Ahandle != NULL) ;
     ASSERT_TYPE_OK (type, "type for GB_new", GB0) ;
-    ASSERT (vlen >= 0 && vlen <= GB_INDEX_MAX)
-    ASSERT (vdim >= 0 && vdim <= GB_INDEX_MAX) ;
+    ASSERT (vlen >= 0 && vlen <= GxB_INDEX_MAX)
+    ASSERT (vdim >= 0 && vdim <= GxB_INDEX_MAX) ;
 
     //--------------------------------------------------------------------------
     // allocate the matrix header, if not already allocated on input
@@ -70,7 +68,7 @@ GrB_Info GB_new                 // create matrix, except for indices & values
     bool allocated_header = false ;
     if ((*Ahandle) == NULL)
     {
-        GB_CALLOC_MEMORY (*Ahandle, 1, sizeof (struct GB_Matrix_opaque)) ;
+        (*Ahandle) = GB_CALLOC (1, struct GB_Matrix_opaque) ;
         if (*Ahandle == NULL)
         { 
             // out of memory
@@ -140,6 +138,7 @@ GrB_Info GB_new                 // create matrix, except for indices & values
     A->p_shallow = false ;
     A->h_shallow = false ;
     A->nvec_nonempty = 0 ;      // all vectors are empty
+    A->mkl = NULL ;             // no analysis from MKL yet
 
     // content that is freed or reset in GB_ix_free
     A->i = NULL ;
@@ -150,10 +149,9 @@ GrB_Info GB_new                 // create matrix, except for indices & values
     A->nzombies = 0 ;
     A->Pending = NULL ;
 
-    // content freed or reset by GB_queue_remove:
-    A->queue_next = NULL ;
-    A->queue_prev = NULL ;
-    A->enqueued = false ;
+    A->queue_next = NULL ;      // TODO in 4.0: delete
+    A->queue_prev = NULL ;      // TODO in 4.0: delete
+    A->enqueued = false ;       // TODO in 4.0: delete
 
     // method used in GrB_mxm, vxm, and mxv
     A->AxB_method_used = GxB_DEFAULT ;
@@ -167,12 +165,12 @@ GrB_Info GB_new                 // create matrix, except for indices & values
     {
         // Sets the vector pointers to zero, which defines all vectors as empty
         A->magic = GB_MAGIC ;
-        GB_CALLOC_MEMORY (A->p, A->plen+1, sizeof (int64_t)) ;
+        A->p = GB_CALLOC (A->plen+1, int64_t) ;
         ok = (A->p != NULL) ;
         if (is_hyper)
         { 
             // since nvec is zero, there is never any need to initialize A->h
-            GB_MALLOC_MEMORY (A->h, A->plen, sizeof (int64_t)) ;
+            A->h = GB_MALLOC (A->plen, int64_t) ;
             ok = ok && (A->h != NULL) ;
         }
     }
@@ -184,11 +182,11 @@ GrB_Info GB_new                 // create matrix, except for indices & values
         // returning the matrix to the user application.  GB_NNZ(A) must check
         // A->nzmax == 0 since A->p [A->nvec] is undefined.
         A->magic = GB_MAGIC2 ;
-        GB_MALLOC_MEMORY (A->p, A->plen+1, sizeof (int64_t)) ;
+        A->p = GB_MALLOC (A->plen+1, int64_t) ;
         ok = (A->p != NULL) ;
         if (is_hyper)
         { 
-            GB_MALLOC_MEMORY (A->h, A->plen, sizeof (int64_t)) ;
+            A->h = GB_MALLOC (A->plen, int64_t) ;
             ok = ok && (A->h != NULL) ;
         }
     }

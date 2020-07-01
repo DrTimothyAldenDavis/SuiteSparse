@@ -19,7 +19,11 @@
 #elif defined __GNUC__
 
 #pragma GCC diagnostic ignored "-Wunknown-pragmas"
-#pragma GCC diagnostic ignored "-Wunknown-warning-option"
+#if !defined ( __cplusplus )
+#pragma GCC diagnostic ignored "-Wincompatible-pointer-types"
+#else
+#pragma GCC diagnostic ignored "-Wwrite-strings"
+#endif
 #pragma GCC diagnostic ignored "-Wformat-truncation="
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #pragma GCC diagnostic ignored "-Wunused-result"
@@ -27,7 +31,6 @@
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #pragma GCC diagnostic ignored "-Wsign-compare"
 #pragma GCC diagnostic ignored "-Wtype-limits"
-#pragma GCC diagnostic ignored "-Wincompatible-pointer-types"
 
 // enable these warnings as errors
 #pragma GCC diagnostic error "-Wmisleading-indentation"

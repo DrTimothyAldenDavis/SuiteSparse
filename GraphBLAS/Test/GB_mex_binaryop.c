@@ -29,7 +29,7 @@ void mexFunction
 
     GrB_BinaryOp binaryop = NULL ;
     GB_mx_mxArray_to_BinaryOp (&binaryop, pargin [0], "binaryop",
-        GB_PLUS_opcode, mxDOUBLE_CLASS, false, false) ;
+        GrB_FP64, false) ;
 
     GrB_Info info = GB_BinaryOp_check (binaryop, "binaryop", GxB_COMPLETE,
         stdout, Context) ;

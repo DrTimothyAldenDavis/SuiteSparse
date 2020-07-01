@@ -69,13 +69,13 @@
 //      detected in A.  Since pa = Cx [pc] holds the position of the entry in
 //      A, the entry is a zombie if Ai [pa] has been flipped.
 
-#define GB_FREE_WORK                                                        \
-{                                                                           \
-    GB_FREE_MEMORY (TaskList, max_ntasks+1, sizeof (GB_task_struct)) ;      \
-    GB_FREE_MEMORY (Ap_start, Cnvec, sizeof (int64_t)) ;                    \
-    GB_FREE_MEMORY (Ap_end,   Cnvec, sizeof (int64_t)) ;                    \
-    GB_FREE_MEMORY (Mark,     A->vlen, sizeof (int64_t)) ;                  \
-    GB_FREE_MEMORY (Inext,    nI, sizeof (int64_t)) ;                       \
+#define GB_FREE_WORK        \
+{                           \
+    GB_FREE (TaskList) ;    \
+    GB_FREE (Ap_start) ;    \
+    GB_FREE (Ap_end) ;      \
+    GB_FREE (Mark) ;        \
+    GB_FREE (Inext) ;       \
 }
 
 #include "GB_subref.h"
@@ -153,7 +153,7 @@ GrB_Info GB_subref              // C = A(I,J): either symbolic or numeric
     if (info != GrB_SUCCESS)
     { 
         // out of memory
-        GB_FREE_MEMORY (Ch, Cnvec, sizeof (int64_t)) ;
+        GB_FREE (Ch) ;
         GB_FREE_WORK ;
         return (info) ;
     }
@@ -175,7 +175,7 @@ GrB_Info GB_subref              // C = A(I,J): either symbolic or numeric
     if (info != GrB_SUCCESS)
     { 
         // out of memory
-        GB_FREE_MEMORY (Ch, Cnvec, sizeof (int64_t)) ;
+        GB_FREE (Ch) ;
         GB_FREE_WORK ;
         return (info) ;
     }

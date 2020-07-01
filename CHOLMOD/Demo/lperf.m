@@ -2,7 +2,7 @@
 
 clear
 rng ('default')
-index = UFget ;
+index = ssget ;
 f = find (index.posdef & (index.amd_lnz > 0)) ;
 f = setdiff (f, [1425 228 353 354]) ; % not really posdef
 [ignore i] = sort (index.amd_lnz (f)) ;
@@ -15,7 +15,7 @@ maxresid = 0 ;
 
 for k = 1:nmat
     id = f (k) ;
-    Prob = UFget (id, index)
+    Prob = ssget (id, index)
     A = Prob.A ;
     n = size (A,1) ;
 

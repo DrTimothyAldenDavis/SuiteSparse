@@ -53,7 +53,7 @@ int main (int argc, char **argv)
     double tic [2], r1, r2 ;
     OK (GrB_init (GrB_NONBLOCKING)) ;
     int nthreads ;
-    OK (GxB_Global_Option_get (GxB_NTHREADS, &nthreads)) ;
+    OK (GxB_Global_Option_get (GxB_GLOBAL_NTHREADS, &nthreads)) ;
     fprintf (stderr, "tri_demo: nthreads %d\n", nthreads) ;
     printf ("--------------------------------------------------------------\n");
 
@@ -62,17 +62,19 @@ int main (int argc, char **argv)
     //--------------------------------------------------------------------------
 
     // get_matrix reads in a boolean matrix.  It could easily be changed to
-    // read in uint32 matrix instead, but this would affect the other GraphBLAS
-    // demos.  So the time to typecast A = (uint32) C is added to the read
+    // read in int32 matrix instead, but this would affect the other GraphBLAS
+    // demos.  So the time to typecast A = (int32) C is added to the read
     // time, not the prep time for triangle counting.
     simple_tic (tic) ;
     OK (get_matrix (&C, argc, argv, true, true)) ;
     GrB_Index n, nedges ;
     OK (GrB_Matrix_nrows (&n, C)) ;
 
-    // A = spones (C), and typecast to uint32
-    OK (GrB_Matrix_new (&A, GrB_UINT32, n, n)) ;
-    OK (GrB_Matrix_apply (A, NULL, NULL, GxB_ONE_UINT32, C, NULL)) ;
+    GrB_Type ctype = GrB_INT32 ;
+
+    // A = spones (C), and typecast to int32
+    OK (GrB_Matrix_new (&A, ctype, n, n)) ;
+    OK (GrB_Matrix_apply (A, NULL, NULL, GxB_ONE_INT32, C, NULL)) ;
     double t_read = simple_toc (tic) ;
     printf ("\ntotal time to read A matrix: %14.6f sec\n", t_read) ;
     GrB_Matrix_free (&C) ;
@@ -82,7 +84,7 @@ int main (int argc, char **argv)
     // U = triu (A,1)
     simple_tic (tic) ;
     OK (GxB_Scalar_setElement_INT64 (Thunk, (int64_t) 1)) ;
-    OK (GrB_Matrix_new (&U, GrB_UINT32, n, n)) ;
+    OK (GrB_Matrix_new (&U, ctype, n, n)) ;
     OK (GxB_Matrix_select (U, NULL, NULL, GxB_TRIU, A, Thunk, NULL)) ;
     OK (GrB_Matrix_nvals (&nedges, U)) ;
     printf ("\nn %.16g # edges %.16g\n", (double) n, (double) nedges) ;
@@ -91,7 +93,7 @@ int main (int argc, char **argv)
 
     // L = tril (A,-1)
     simple_tic (tic) ;
-    OK (GrB_Matrix_new (&L, GrB_UINT32, n, n)) ;
+    OK (GrB_Matrix_new (&L, ctype, n, n)) ;
     OK (GxB_Scalar_setElement_INT64 (Thunk, (int64_t) (-1))) ;
     OK (GxB_Matrix_select (L, NULL, NULL, GxB_TRIL, A, Thunk, NULL)) ;
     double t_L = simple_toc (tic) ;
@@ -117,7 +119,7 @@ int main (int argc, char **argv)
 
     for (int nthreads = 1 ; nthreads <= nthreads_max ; nthreads *= 2)
     {
-        GxB_Global_Option_set (GxB_NTHREADS, nthreads) ;
+        GxB_Global_Option_set (GxB_GLOBAL_NTHREADS, nthreads) ;
 
         double t_dot [2] ;
         OK (tricount (&(ntri2 [nthreads]), 5, NULL, NULL, L, U, t_dot)) ;
@@ -130,7 +132,7 @@ int main (int argc, char **argv)
         }
         if (ntri2 [nthreads] != nt)
         {
-            printf ("error!\n") ;
+            printf ("error 5!\n") ;
             fprintf (stderr, "error!\n") ;
             exit (1) ;
         }
@@ -170,7 +172,7 @@ int main (int argc, char **argv)
 
     for (int nthreads = 1 ; nthreads <= nthreads_max ; nthreads *= 2)
     {
-        GxB_Global_Option_set (GxB_NTHREADS, nthreads) ;
+        GxB_Global_Option_set (GxB_GLOBAL_NTHREADS, nthreads) ;
 
         double t_dot [2] ;
         OK (tricount (&(ntri2 [nthreads]), 6, NULL, NULL, L, U, t_dot)) ;
@@ -179,7 +181,7 @@ int main (int argc, char **argv)
 //      fprintf (stderr, "# triangles %.16g\n", (double) ntri2 [nthreads]) ;
         if (ntri2 [nthreads] != nt)
         {
-            printf ("error!\n") ;
+            printf ("error 6!\n") ;
             fprintf (stderr, "error!\n") ;
             exit (1) ;
         }
@@ -223,13 +225,14 @@ int main (int argc, char **argv)
 
     for (int nthreads = 1 ; nthreads <= nthreads_max ; nthreads *= 2)
     {
-        GxB_Global_Option_set (GxB_NTHREADS, nthreads) ;
+        GxB_Global_Option_set (GxB_GLOBAL_NTHREADS, nthreads) ;
 
         double t_mark [2] = { 0, 0 } ;
         OK (tricount (&ntri1 [nthreads], 3, NULL, NULL, L, NULL, t_mark)) ;
+        printf ("triangles, method 3: %0.16g\n", (double) ntri1 [nthreads]) ;
         if (ntri1 [nthreads] != nt)
         {
-            printf ("error!\n") ;
+            printf ("error 3!\n") ;
             fprintf (stderr, "error!\n") ;
             exit (1) ;
         }

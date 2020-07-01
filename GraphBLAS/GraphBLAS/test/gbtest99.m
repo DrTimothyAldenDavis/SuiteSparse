@@ -1,8 +1,8 @@
 function gbtest99 (doplots)
-%GBTEST99 test GrB.bfs
+%GBTEST99 test GrB.bfs and plot (graph (G))
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
+% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
 
 if (nargin < 1)
     doplots = true ;
@@ -138,4 +138,5 @@ GrB.threads (save_threads) ;
 GrB.chunk (save_chunk) ;
 
 fprintf ('gbtest99: all tests passed\n') ;
+
 

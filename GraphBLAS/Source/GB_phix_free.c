@@ -13,11 +13,6 @@
 
 // This function normally returns GrB_SUCCESS. 
 
-// If A is in the queue, it is removed, which requires access to the critical
-// section for the queue.  Normally this cannot fail, but In the rare event
-// that the critical section does fail, a GrB_PANIC is returned.
-
-
 #include "GB.h"
 
 GrB_Info GB_phix_free           // free all content of a matrix
@@ -27,6 +22,6 @@ GrB_Info GB_phix_free           // free all content of a matrix
 { 
 
     GB_ph_free (A) ;
-    return (GB_ix_free (A)) ;   // GrB_SUCCESS or GrB_PANIC
+    return (GB_ix_free (A)) ;
 }
 

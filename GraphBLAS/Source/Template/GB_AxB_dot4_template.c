@@ -37,22 +37,23 @@
     // get A, B, and C
     //--------------------------------------------------------------------------
 
-    GB_CTYPE *GB_RESTRICT Cx = C->x ;
+    GB_CTYPE *GB_RESTRICT Cx = (GB_CTYPE *) C->x ;
     const int64_t cvlen = C->vlen ;
 
     const int64_t  *GB_RESTRICT Bp = B->p ;
     const int64_t  *GB_RESTRICT Bh = B->h ;
     const int64_t  *GB_RESTRICT Bi = B->i ;
-    const GB_BTYPE *GB_RESTRICT Bx = B_is_pattern ? NULL : B->x ;
+    const GB_BTYPE *GB_RESTRICT Bx = (GB_BTYPE *) (B_is_pattern ? NULL : B->x) ;
     const int64_t bvlen = B->vlen ;
 
     const int64_t  *GB_RESTRICT Ap = A->p ;
     const int64_t  *GB_RESTRICT Ah = A->h ;
     const int64_t  *GB_RESTRICT Ai = A->i ;
-    const GB_ATYPE *GB_RESTRICT Ax = A_is_pattern ? NULL : A->x ;
+    const GB_ATYPE *GB_RESTRICT Ax = (GB_ATYPE *) (A_is_pattern ? NULL : A->x) ;
     ASSERT (A->vlen == B->vlen) ;
 
     int ntasks = naslice * nbslice ;
+    bool cij_is_terminal ;
 
     //--------------------------------------------------------------------------
     // C += A'*B
@@ -132,7 +133,8 @@
 
                         #if GB_IS_ANY_MONOID
                         // ANY monoid: take the first entry found
-                        cij = 1 ;
+                        // cij = 1, or CMPLX(1,0) for complex ANY
+                        GB_MULT (cij, ignore, ignore) ;
                         #elif GB_IS_EQ_MONOID
                         // A(:,i)'*B(:j) is one, so this result must be
                         // accumulated into cij, as cij += 1, where the
@@ -143,6 +145,12 @@
                         // for bool, 8-bit, 16-bit, or 32-bit integer
                         uint64_t t = ((uint64_t) cij) + ainz ;
                         cij = (GB_CTYPE) (t & GB_CTYPE_BITS) ;
+                        #elif GB_IS_PLUS_FC32_MONOID
+                        // PLUS monoid for float complex
+                        cij = GxB_CMPLXF (crealf (cij) + (float) ainz, 0) ;
+                        #elif GB_IS_PLUS_FC64_MONOID
+                        // PLUS monoid for double complex
+                        cij = GxB_CMPLX (creal (cij) + (double) ainz, 0) ;
                         #else
                         // PLUS monoid for float, double, or 64-bit integers 
                         cij += (GB_CTYPE) ainz ;
@@ -161,7 +169,7 @@
                         // both A(:,i) and B(:,j) are dense
                         //------------------------------------------------------
 
-                        GB_PRAGMA_VECTORIZE_DOT
+                        GB_PRAGMA_SIMD_DOT (cij)
                         for (int64_t k = 0 ; k < bvlen ; k++)
                         { 
                             GB_DOT_TERMINAL (cij) ;         // break if terminal
@@ -179,7 +187,7 @@
                         // A(:,i) is sparse and B(:,j) is dense
                         //------------------------------------------------------
 
-                        GB_PRAGMA_VECTORIZE_DOT
+                        GB_PRAGMA_SIMD_DOT (cij)
                         for (int64_t p = pA ; p < pA_end ; p++)
                         { 
                             GB_DOT_TERMINAL (cij) ;         // break if terminal
@@ -243,7 +251,8 @@
 
                             #if GB_IS_ANY_MONOID
                             // ANY monoid: take the first entry found
-                            cij = 1 ;
+                            // cij = 1, or CMPLX(1,0) for complex ANY
+                            GB_MULT (cij, ignore, ignore) ;
                             #elif GB_IS_EQ_MONOID
                             // A(:,i)'*B(:j) is one, so this result must be
                             // accumulated into cij, as cij += 1, where the
@@ -254,6 +263,12 @@
                             // for bool, 8-bit, 16-bit, or 32-bit integer
                             uint64_t t = ((uint64_t) cij) + bjnz ;
                             cij = (GB_CTYPE) (t & GB_CTYPE_BITS) ;
+                            #elif GB_IS_PLUS_FC32_MONOID
+                            // PLUS monoid for float complex
+                            cij = GxB_CMPLXF (crealf (cij) + (float) bjnz, 0) ;
+                            #elif GB_IS_PLUS_FC64_MONOID
+                            // PLUS monoid for double complex
+                            cij = GxB_CMPLX (creal (cij) + (double) bjnz, 0) ;
                             #else
                             // PLUS monoid for float, double, or 64-bit integers
                             cij += (GB_CTYPE) bjnz ;
@@ -261,7 +276,7 @@
 
                         #else
 
-                            GB_PRAGMA_VECTORIZE_DOT
+                            GB_PRAGMA_SIMD_DOT (cij)
                             for (int64_t p = pB ; p < pB_end ; p++)
                             { 
                                 GB_DOT_TERMINAL (cij) ;   // break if terminal

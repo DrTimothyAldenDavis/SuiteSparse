@@ -24,6 +24,7 @@ GrB_Info GB_resize              // change the size of a matrix
     // check inputs
     //--------------------------------------------------------------------------
 
+    GrB_Info info ;
     ASSERT_MATRIX_OK (A, "A to resize", GB0) ;
 
     //--------------------------------------------------------------------------
@@ -64,7 +65,7 @@ GrB_Info GB_resize              // change the size of a matrix
     if (vdim_new < vdim_old || vlen_new < vlen_old ||
         (GB_PENDING (A) && vdim_old <= 1 && vdim_new > 1))
     { 
-        GB_WAIT (A) ;
+        GB_MATRIX_WAIT (A) ;
         ASSERT_MATRIX_OK (A, "A to resize, wait", GB0) ;
     }
 
@@ -75,8 +76,6 @@ GrB_Info GB_resize              // change the size of a matrix
     // If the # of vectors grows very large, it is costly to reallocate enough
     // space for the non-hypersparse A->p component.  So convert the matrix to
     // hypersparse if that happens.
-
-    GrB_Info info ;
 
     if (A->nvec_nonempty < 0)
     { 
@@ -134,8 +133,7 @@ GrB_Info GB_resize              // change the size of a matrix
         if (vdim_new != vdim_old)
         {
             // change the size of A->p
-            GB_REALLOC_MEMORY (A->p, vdim_new+1, vdim_old+1, sizeof (int64_t),
-                &ok) ;
+            A->p = GB_REALLOC (A->p, vdim_new+1, vdim_old+1, int64_t, &ok) ;
             if (!ok)
             { 
                 // out of memory

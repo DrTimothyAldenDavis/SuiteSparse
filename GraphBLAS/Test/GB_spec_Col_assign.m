@@ -23,7 +23,7 @@ if (length (j) ~= 1)
     error ('j must be a scalar') ;
 end
 
-% Convert inputs to dense matrices with explicit patterns and classes,
+% Convert inputs to dense matrices with explicit patterns and types,
 C = GB_spec_matrix (C) ;
 
 % extract the C(:,j) column

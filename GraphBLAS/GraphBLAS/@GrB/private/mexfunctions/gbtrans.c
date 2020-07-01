@@ -11,10 +11,11 @@
 
 // Usage:
 
-// Cout = GrB.trans (A, desc)
-// Cout = GrB.trans (Cin, accum, A, desc)
-// Cout = GrB.trans (Cin, M, A, desc)
-// Cout = GrB.trans (Cin, M, accum, A, desc)
+// C = gbtrans (A)
+// C = gbtrans (A, desc)
+// C = gbtrans (Cin, accum, A, desc)
+// C = gbtrans (Cin, M, A, desc)
+// C = gbtrans (Cin, M, accum, A, desc)
 
 // If Cin is not present then it is implicitly a matrix with no entries, of the
 // right size (which depends on A and the descriptor).  Note that if desc.in0
@@ -23,7 +24,7 @@
 
 #include "gb_matlab.h"
 
-#define USAGE "usage: Cout = GrB.trans (Cin, M, accum, A, desc)"
+#define USAGE "usage: C = GrB.trans (Cin, M, accum, A, desc)"
 
 void mexFunction
 (
@@ -38,8 +39,7 @@ void mexFunction
     // check inputs
     //--------------------------------------------------------------------------
 
-    gb_usage ((nargin == 2 || nargin == 4 || nargin == 5) && nargout <= 1,
-        USAGE) ;
+    gb_usage (nargin >= 1 && nargin <= 5 && nargout <= 2, USAGE) ;
 
     //--------------------------------------------------------------------------
     // find the arguments
@@ -96,7 +96,7 @@ void mexFunction
     { 
         // if accum appears, then Cin must also appear
         CHECK_ERROR (C == NULL, USAGE) ;
-        accum = gb_mxstring_to_binop (String [0], ctype) ;
+        accum = gb_mxstring_to_binop (String [0], ctype, ctype) ;
     }
 
     //--------------------------------------------------------------------------
@@ -149,6 +149,7 @@ void mexFunction
     //--------------------------------------------------------------------------
 
     pargout [0] = gb_export (&C, kind) ;
+    pargout [1] = mxCreateDoubleScalar (kind) ;
     GB_WRAPUP ;
 }
 

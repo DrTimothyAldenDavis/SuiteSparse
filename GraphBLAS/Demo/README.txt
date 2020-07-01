@@ -50,7 +50,7 @@ in Demo/Program:
     bfs_demo.c              demo program to test bfs
     complex_demo.c          demo program to test complex type
     import_demo.c           demo program to test import/export
-    kron_demo.c             demo program to test GxB_kron
+    kron_demo.c             demo program to test GrB_kronecker
     mis_demo.c              demo program to test mis
     tri_demo.c              demo program to test tricount
     simple_demo.c           demo program to test simple_rand and simple_timer

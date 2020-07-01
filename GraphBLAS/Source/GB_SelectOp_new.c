@@ -13,6 +13,7 @@
 //              const void *x, const void *thunk) ;
 
 #include "GB.h"
+#include <ctype.h>
 
 GrB_Info GB_SelectOp_new        // create a new user-defined select operator
 (
@@ -40,7 +41,7 @@ GrB_Info GB_SelectOp_new        // create a new user-defined select operator
     //--------------------------------------------------------------------------
 
     // allocate the select operator
-    GB_CALLOC_MEMORY (*selectop, 1, sizeof (struct GB_SelectOp_opaque)) ;
+    (*selectop) = GB_CALLOC (1, struct GB_SelectOp_opaque) ;
     if (*selectop == NULL)
     { 
         // out of memory
@@ -53,8 +54,42 @@ GrB_Info GB_SelectOp_new        // create a new user-defined select operator
     op->xtype = xtype ;
     op->ttype = ttype ;
     op->function = function ;
-    strncpy (op->name, name, GB_LEN-1) ;
     op->opcode = GB_USER_SELECT_opcode ;
+
+    //--------------------------------------------------------------------------
+    // find the name of the operator
+    //--------------------------------------------------------------------------
+
+    if (name == NULL)
+    { 
+        // if no name , a generic name is used instead
+        strncpy (op->name, "user_select_operator", GB_LEN-1) ;
+    }
+    else
+    {
+        // see if the typecast "(GxB_select_function)" appears in the name
+        char *p = NULL ;
+        p = strstr ((char *) name, "GxB_select_function") ;
+        if (p != NULL)
+        { 
+            // skip past the typecast, the left parenthesis, and any whitespace
+            p += 19 ;
+            while (isspace (*p)) p++ ;
+            if (*p == ')') p++ ;
+            while (isspace (*p)) p++ ;
+            strncpy (op->name, p, GB_LEN-1) ;
+        }
+        else
+        { 
+            // copy the entire name as-is
+            strncpy (op->name, name, GB_LEN-1) ;
+        }
+    }
+
+    //--------------------------------------------------------------------------
+    // return result
+    //--------------------------------------------------------------------------
+
     ASSERT_SELECTOP_OK (op, "new user-defined select op", GB0) ;
     return (GrB_SUCCESS) ;
 }

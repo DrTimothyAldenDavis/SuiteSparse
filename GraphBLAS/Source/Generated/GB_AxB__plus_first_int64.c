@@ -1,3 +1,4 @@
+
 //------------------------------------------------------------------------------
 // GB_AxB:  hard-coded functions for semiring: C<M>=A*B or A'*B
 //------------------------------------------------------------------------------
@@ -14,7 +15,6 @@
 #include "GB_control.h"
 #include "GB_ek_slice.h"
 #include "GB_bracket.h"
-#include "GB_iterator.h"
 #include "GB_sort.h"
 #include "GB_atomics.h"
 #include "GB_AxB_saxpy3.h"
@@ -49,6 +49,10 @@
 #define GB_CTYPE \
     int64_t
 
+// true for int64, uint64, float, double, float complex, and double complex 
+#define GB_CTYPE_IGNORE_OVERFLOW \
+    1
+
 // aik = Ax [pA]
 #define GB_GETA(aik,Ax,pA) \
     int64_t aik = Ax [pA]
@@ -63,6 +67,10 @@
 #define GB_MULT(z, x, y) \
     z = x
 
+// cast from a real scalar (or 2, if C is complex) to the type of C
+#define GB_CTYPE_CAST(x,y) \
+    ((int64_t) x)
+
 // multiply-add
 #define GB_MULTADD(z, x, y) \
     z += x
@@ -76,15 +84,26 @@
     ;
 
 // simd pragma for dot-product loop vectorization
-#define GB_PRAGMA_VECTORIZE_DOT \
-    GB_PRAGMA_SIMD
+#define GB_PRAGMA_SIMD_DOT(cij) \
+    GB_PRAGMA_SIMD_REDUCTION (+,cij)
 
 // simd pragma for other loop vectorization
-#define GB_PRAGMA_VECTORIZE GB_PRAGMA_SIMD
+#define GB_PRAGMA_SIMD_VECTORIZE GB_PRAGMA_SIMD
+
+// 1 for the PLUS_PAIR_(real) semirings, not for the complex case
+#define GB_IS_PLUS_PAIR_REAL_SEMIRING \
+    0
 
 // declare the cij scalar
-#define GB_CIJ_DECLARE(cij) \
-    int64_t cij
+#if GB_IS_PLUS_PAIR_REAL_SEMIRING
+    // also initialize cij to zero
+    #define GB_CIJ_DECLARE(cij) \
+        int64_t cij = 0
+#else
+    // all other semirings: just declare cij, do not initialize it
+    #define GB_CIJ_DECLARE(cij) \
+        int64_t cij
+#endif
 
 // save the value of C(i,j)
 #define GB_CIJ_SAVE(cij,p) Cx [p] = cij
@@ -143,6 +162,14 @@
 
 // 1 if PAIR is the multiply operator 
 #define GB_IS_PAIR_MULTIPLIER \
+    0
+
+// 1 if monoid is PLUS_FC32
+#define GB_IS_PLUS_FC32_MONOID \
+    0
+
+// 1 if monoid is PLUS_FC64
+#define GB_IS_PLUS_FC64_MONOID \
     0
 
 // atomic compare-exchange

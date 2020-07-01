@@ -1,6 +1,9 @@
 function gbtest32
 %GBTEST32 test nonzeros
 
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
+% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+
 rng ('default') ;
 
 for d = 0:.1:1

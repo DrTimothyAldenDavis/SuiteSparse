@@ -19,11 +19,15 @@
 
 // C<M>=x (C is dense): GB_Cdense_05d__int32
 // C<A>=A (C is dense): GB_Cdense_06d__int32
+// C<M>=A (C is empty, A dense): GB_Cdense_25__int32
 
 // C type:   int32_t
 
 #define GB_CTYPE \
     int32_t
+
+// C must have the same type as A or the scalar x
+#define GB_ATYPE GB_CTYPE
 
 #define GB_CX(p) Cx [p]
 
@@ -34,10 +38,11 @@
 #define GB_COPY_A_TO_C(Cx,p,Ax,pA) Cx [p] = Ax [pA]
 
 // test the mask condition with Ax [pA]
-#define GB_AX_MASK(Ax,pA,asize) (Ax [pA] != 0)
+#define GB_AX_MASK(Ax,pA,asize) \
+    (Ax [pA] != 0)
 
 // hard-coded loops can be vectorized
-#define GB_PRAGMA_VECTORIZE GB_PRAGMA_SIMD
+#define GB_PRAGMA_SIMD_VECTORIZE GB_PRAGMA_SIMD
 
 // disable this operator and use the generic case if these conditions hold
 #define GB_DISABLE \
@@ -52,7 +57,7 @@ GrB_Info GB_Cdense_05d__int32
     GrB_Matrix C,
     const GrB_Matrix M,
     const bool Mask_struct,
-    const GB_void *p_cwork,
+    const GB_void *p_cwork,     // scalar of type C->type
     const int64_t *GB_RESTRICT kfirst_slice,
     const int64_t *GB_RESTRICT klast_slice,
     const int64_t *GB_RESTRICT pstart_slice,
@@ -88,6 +93,7 @@ GrB_Info GB_Cdense_06d__int32
     #if GB_DISABLE
     return (GrB_NO_VALUE) ;
     #else
+    ASSERT (C->type == A->type) ;
     #include "GB_dense_subassign_06d_template.c"
     return (GrB_SUCCESS) ;
     #endif
@@ -112,6 +118,7 @@ GrB_Info GB_Cdense_25__int32
     #if GB_DISABLE
     return (GrB_NO_VALUE) ;
     #else
+    ASSERT (C->type == A->type) ;
     #include "GB_dense_subassign_25_template.c"
     return (GrB_SUCCESS) ;
     #endif

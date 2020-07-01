@@ -30,6 +30,11 @@ GrB_Info GrB_init           // start up GraphBLAS
 
     // default:  use the ANSI C11 malloc memory manager, which is thread-safe 
 
-    return (GB_init (mode, malloc, calloc, realloc, free, true, Context)) ;
+    return (GB_init
+        (mode,                          // blocking or non-blocking mode
+        malloc, calloc, realloc, free,  // ANSI C memory management functions
+        true,                           // memory functions are thread-safe
+        false,                          // do not use CUDA
+        Context)) ;
 }
 

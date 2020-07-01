@@ -169,7 +169,9 @@ static inline bool GB_ij_is_in_list // determine if i is in the list I
         bool found ;
         int64_t pleft = 0 ;
         int64_t pright = nI-1 ;
-        GB_BINARY_SEARCH (i, I, pleft, pright, found) ;
+        if (i < 0) return (false) ;
+        GrB_Index ui = (GrB_Index) i ;
+        GB_BINARY_SEARCH (ui, I, pleft, pright, found) ;
         return (found) ;
     }
 }

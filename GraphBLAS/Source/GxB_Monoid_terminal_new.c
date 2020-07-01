@@ -29,17 +29,19 @@ GrB_Info GxB_Monoid_terminal_new_ ## T   /* create a new monoid */          \
     return (GB_Monoid_new (monoid, op, &id, &tr, GB_ ## T ## _code, Context)) ;\
 }
 
-GB_MONOID_TERMINAL_NEW (bool     , BOOL   )
-GB_MONOID_TERMINAL_NEW (int8_t   , INT8   )
-GB_MONOID_TERMINAL_NEW (uint8_t  , UINT8  )
-GB_MONOID_TERMINAL_NEW (int16_t  , INT16  )
-GB_MONOID_TERMINAL_NEW (uint16_t , UINT16 )
-GB_MONOID_TERMINAL_NEW (int32_t  , INT32  )
-GB_MONOID_TERMINAL_NEW (uint32_t , UINT32 )
-GB_MONOID_TERMINAL_NEW (int64_t  , INT64  )
-GB_MONOID_TERMINAL_NEW (uint64_t , UINT64 )
-GB_MONOID_TERMINAL_NEW (float    , FP32   )
-GB_MONOID_TERMINAL_NEW (double   , FP64   )
+GB_MONOID_TERMINAL_NEW (bool      , BOOL   )
+GB_MONOID_TERMINAL_NEW (int8_t    , INT8   )
+GB_MONOID_TERMINAL_NEW (uint8_t   , UINT8  )
+GB_MONOID_TERMINAL_NEW (int16_t   , INT16  )
+GB_MONOID_TERMINAL_NEW (uint16_t  , UINT16 )
+GB_MONOID_TERMINAL_NEW (int32_t   , INT32  )
+GB_MONOID_TERMINAL_NEW (uint32_t  , UINT32 )
+GB_MONOID_TERMINAL_NEW (int64_t   , INT64  )
+GB_MONOID_TERMINAL_NEW (uint64_t  , UINT64 )
+GB_MONOID_TERMINAL_NEW (float     , FP32   )
+GB_MONOID_TERMINAL_NEW (double    , FP64   )
+GB_MONOID_TERMINAL_NEW (GxB_FC32_t, FC32   )
+GB_MONOID_TERMINAL_NEW (GxB_FC64_t, FC64   )
 
 GrB_Info GxB_Monoid_terminal_new_UDT        // create a monoid with a user type
 (

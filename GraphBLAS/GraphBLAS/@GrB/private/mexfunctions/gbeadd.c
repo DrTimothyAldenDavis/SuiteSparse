@@ -7,21 +7,23 @@
 
 //------------------------------------------------------------------------------
 
-// gbeadd is an interface to GrB_eWiseAdd_Matrix_*.
+// gbeadd is an interface to GrB_Matrix_eWiseAdd_BinaryOp.
+// Note that gbeadd and gbemult are nearly identical mexFunctions.
 
 // Usage:
 
-// Cout = GrB.eadd (op, A, B, desc)
-// Cout = GrB.eadd (Cin, accum, op, A, B, desc)
-// Cout = GrB.eadd (Cin, M, op, A, B, desc)
-// Cout = GrB.eadd (Cin, M, accum, op, A, B, desc)
+// C = gbeadd (binop, A, B)
+// C = gbeadd (binop, A, B, desc)
+// C = gbeadd (Cin, accum, binop, A, B, desc)
+// C = gbeadd (Cin, M, binop, A, B, desc)
+// C = gbeadd (Cin, M, accum, binop, A, B, desc)
 
-// If Cin is not present then it is implicitly a matrix with no entries, of
-// the right size (which depends on A, B, and the descriptor).
+// If Cin is not present then it is implicitly a matrix with no entries, of the
+// right size (which depends on A, B, and the descriptor).
 
 #include "gb_matlab.h"
 
-#define USAGE "usage: Cout = GrB.eadd (Cin, M, accum, op, A, B, desc)"
+#define USAGE "usage: C = GrB.eadd (Cin, M, accum, binop, A, B, desc)"
 
 void mexFunction
 (
@@ -36,8 +38,7 @@ void mexFunction
     // check inputs
     //--------------------------------------------------------------------------
 
-    gb_usage ((nargin == 4 || nargin == 6 || nargin == 7) && nargout <= 1,
-        USAGE) ;
+    gb_usage (nargin >= 3 && nargin <= 7 && nargout <= 2, USAGE) ;
 
     //--------------------------------------------------------------------------
     // find the arguments
@@ -58,7 +59,7 @@ void mexFunction
     // get the matrices
     //--------------------------------------------------------------------------
 
-    GrB_Type atype, ctype = NULL ;
+    GrB_Type atype, btype, ctype = NULL ;
     GrB_Matrix C = NULL, M = NULL, A, B ;
 
     if (nmatrices == 2)
@@ -81,6 +82,7 @@ void mexFunction
     }
 
     OK (GxB_Matrix_type (&atype, A)) ;
+    OK (GxB_Matrix_type (&btype, B)) ;
     if (C != NULL)
     { 
         OK (GxB_Matrix_type (&ctype, C)) ;
@@ -94,14 +96,14 @@ void mexFunction
 
     if (nstrings == 1)
     { 
-        op    = gb_mxstring_to_binop (String [0], atype) ;
+        op    = gb_mxstring_to_binop (String [0], atype, btype) ;
     }
     else 
     { 
         // if accum appears, then Cin must also appear
         CHECK_ERROR (C == NULL, USAGE) ;
-        accum = gb_mxstring_to_binop (String [0], ctype) ;
-        op    = gb_mxstring_to_binop (String [1], atype) ;
+        accum = gb_mxstring_to_binop (String [0], ctype, ctype) ;
+        op    = gb_mxstring_to_binop (String [1], atype, btype) ;
     }
 
     //--------------------------------------------------------------------------
@@ -139,7 +141,7 @@ void mexFunction
     // compute C<M> += A+B
     //--------------------------------------------------------------------------
 
-    OK (GrB_eWiseAdd_Matrix_BinaryOp (C, M, accum, op, A, B, desc)) ;
+    OK (GrB_Matrix_eWiseAdd_BinaryOp (C, M, accum, op, A, B, desc)) ;
 
     //--------------------------------------------------------------------------
     // free shallow copies
@@ -155,6 +157,7 @@ void mexFunction
     //--------------------------------------------------------------------------
 
     pargout [0] = gb_export (&C, kind) ;
+    pargout [1] = mxCreateDoubleScalar (kind) ;
     GB_WRAPUP ;
 }
 

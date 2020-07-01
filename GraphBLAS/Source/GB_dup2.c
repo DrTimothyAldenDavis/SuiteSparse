@@ -40,16 +40,14 @@ GrB_Info GB_dup2            // make an exact copy of a matrix
 
     // [ create C; allocate C->p and do not initialize it
     // C has the exact same hypersparsity as A.
-    GrB_Info info ;
     int64_t anz = GB_NNZ (A) ;
 
     // allocate a new header for C if (*Chandle) is NULL, or reuse the
     // existing header if (*Chandle) is not NULL.
     GrB_Matrix C = (*Chandle) ;
-
-    GB_CREATE (&C, numeric ? A->type : ctype, A->vlen, A->vdim, GB_Ap_malloc,
-        A->is_csc, GB_SAME_HYPER_AS (A->is_hyper), A->hyper_ratio, A->plen,
-        anz, true, Context) ;
+    GrB_Info info = GB_create (&C, numeric ? A->type : ctype, A->vlen, A->vdim,
+        GB_Ap_malloc, A->is_csc, GB_SAME_HYPER_AS (A->is_hyper),
+        A->hyper_ratio, A->plen, anz, true, Context) ;
     if (info != GrB_SUCCESS)
     { 
         // out of memory

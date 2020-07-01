@@ -22,8 +22,8 @@
     GB_MATRIX_FREE (&B) ;                   \
     GB_MATRIX_FREE (&C) ;                   \
     GB_MATRIX_FREE (&Mask) ;                \
-    GrB_Monoid_free (&add) ;                \
-    GrB_Semiring_free (&semiring) ;         \
+    GrB_Monoid_free_(&add) ;                \
+    GrB_Semiring_free_(&semiring) ;         \
     GB_mx_put_global (true, GxB_AxB_DOT) ;  \
 }
 
@@ -41,18 +41,18 @@ GrB_Info adotb_complex (GB_Context Context)
 {
     GrB_Info info = GrB_Matrix_new (&Aconj, Complex, anrows, ancols) ;
     if (info != GrB_SUCCESS) return (info) ;
-    info = GrB_Matrix_apply (Aconj, NULL, NULL, Complex_conj, A, NULL) ;
+    info = GrB_Matrix_apply_(Aconj, NULL, NULL, Complex_conj, A, NULL) ;
     if (info != GrB_SUCCESS)
     {
-        GrB_Matrix_free (&Aconj) ;
+        GrB_Matrix_free_(&Aconj) ;
         return (info) ;
     }
 
     // force completion
-    info = GrB_wait ( ) ;
+    info = GrB_Matrix_wait_(&Aconj) ;
     if (info != GrB_SUCCESS)
     {
-        GrB_Matrix_free (&Aconj) ;
+        GrB_Matrix_free_(&Aconj) ;
         return (info) ;
     }
 
@@ -79,7 +79,7 @@ GrB_Info adotb_complex (GB_Context Context)
             1, 1, 1, Context) ;
     }
 
-    GrB_Matrix_free (&Aconj) ;
+    GrB_Matrix_free_(&Aconj) ;
     return (info) ;
 }
 
@@ -88,12 +88,12 @@ GrB_Info adotb_complex (GB_Context Context)
 GrB_Info adotb (GB_Context Context) 
 {
     // create the Semiring for regular z += x*y
-    GrB_Info info = GrB_Monoid_new_FP64 (&add, GrB_PLUS_FP64, (double) 0) ;
+    GrB_Info info = GrB_Monoid_new_FP64_(&add, GrB_PLUS_FP64, (double) 0) ;
     if (info != GrB_SUCCESS) return (info) ;
     info = GrB_Semiring_new (&semiring, add, GrB_TIMES_FP64) ;
     if (info != GrB_SUCCESS)
     {
-        GrB_Monoid_free (&add) ;
+        GrB_Monoid_free_(&add) ;
         return (info) ;
     }
     // C = A'*B
@@ -118,8 +118,8 @@ GrB_Info adotb (GB_Context Context)
             1, 1, 1, Context) ;
     }
 
-    GrB_Monoid_free (&add) ;
-    GrB_Semiring_free (&semiring) ;
+    GrB_Monoid_free_(&add) ;
+    GrB_Semiring_free_(&semiring) ;
     return (info) ;
 }
 
@@ -206,12 +206,8 @@ void mexFunction
 
     if (A->type == Complex)
     {
-        #if GxB_STDC_VERSION >= 201112L
         // C = A'*B, complex case
         METHOD (adotb_complex (Context)) ;
-        #else
-        mexErrMsgTxt ("complex type not available") ;
-        #endif
     }
     else
     {

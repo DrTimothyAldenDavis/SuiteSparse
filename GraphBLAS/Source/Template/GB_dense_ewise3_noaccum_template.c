@@ -16,9 +16,9 @@
     //--------------------------------------------------------------------------
 
     // any matrix may be aliased to any other (C==A, C==B, and/or A==B)
-    GB_ATYPE *Ax = A->x ;
-    GB_BTYPE *Bx = B->x ;
-    GB_CTYPE *Cx = C->x ;
+    GB_ATYPE *Ax = (GB_ATYPE *) A->x ;
+    GB_BTYPE *Bx = (GB_BTYPE *) B->x ;
+    GB_CTYPE *Cx = (GB_CTYPE *) C->x ;
     const int64_t cnz = GB_NNZ (C) ;
     ASSERT (GB_is_dense (A)) ;
     ASSERT (GB_is_dense (B)) ;
@@ -29,6 +29,8 @@
     // C = A+B where all 3 matrices are dense
     //--------------------------------------------------------------------------
 
+    #if GB_CTYPE_IS_BTYPE
+
     if (C == B)
     {
 
@@ -36,12 +38,16 @@
         // C = A+C where A and C are dense
         //----------------------------------------------------------------------
 
-        #if GB_HAS_CBLAS & GB_OP_IS_PLUS_REAL
+        // C and B cannot be aliased if their types differ
 
+        #if defined ( GB_HAS_CBLAS ) && GB_OP_IS_PLUS_REAL
+
+            // C += A via GB_cblas_saxpy or GB_cblas_daxpy
             GB_CBLAS_AXPY (cnz, (GB_CTYPE) 1, Ax, Cx, nthreads) ;   // C += A
 
-        #elif GB_HAS_CBLAS & GB_OP_IS_MINUS_REAL
+        #elif defined ( GB_HAS_CBLAS ) && GB_OP_IS_MINUS_REAL
 
+            // C -= A via GB_cblas_saxpy or GB_cblas_daxpy
             GB_CBLAS_AXPY (cnz, (GB_CTYPE) -1, Ax, Cx, nthreads) ;  // C -= A
 
         #else
@@ -56,19 +62,26 @@
         #endif
 
     }
-    else if (C == A)
+    else 
+    #endif
+
+    #if GB_CTYPE_IS_ATYPE
+
+    if (C == A)
     {
 
         //----------------------------------------------------------------------
         // C = C+B where B and C are dense
         //----------------------------------------------------------------------
 
-        #if GB_HAS_CBLAS & GB_OP_IS_PLUS_REAL
+        #if defined ( GB_HAS_CBLAS ) && GB_OP_IS_PLUS_REAL
 
+            // C += B via GB_cblas_saxpy or GB_cblas_daxpy
             GB_CBLAS_AXPY (cnz, (GB_CTYPE) 1, Bx, Cx, nthreads) ;   // C += B
 
-        #elif GB_HAS_CBLAS & GB_OP_IS_MINUS_REAL
+        #elif defined ( GB_HAS_CBLAS ) && GB_OP_IS_MINUS_REAL
 
+            // C -= B via GB_cblas_saxpy or GB_cblas_daxpy
             GB_CBLAS_AXPY (cnz, (GB_CTYPE) -1, Bx, Cx, nthreads) ;  // C -= B
 
         #else
@@ -84,6 +97,8 @@
 
     }
     else
+    #endif
+
     {
 
         //----------------------------------------------------------------------
@@ -92,13 +107,15 @@
 
         // note that A and B may still be aliased to each other
 
-        #if GB_HAS_CBLAS && GB_OP_IS_PLUS_REAL
+        #if defined ( GB_HAS_CBLAS ) && GB_OP_IS_PLUS_REAL
 
+            // C = A+B via GB_cblas_saxpy or GB_cblas_daxpy
             GB_memcpy (Cx, Ax, cnz * sizeof (GB_CTYPE), nthreads) ; // C = A
             GB_CBLAS_AXPY (cnz, (GB_CTYPE) 1, Bx, Cx, nthreads) ;   // C += B
 
-        #elif GB_HAS_CBLAS && GB_OP_IS_MINUS_REAL
+        #elif defined ( GB_HAS_CBLAS ) && GB_OP_IS_MINUS_REAL
 
+            // C = A-B via GB_cblas_saxpy or GB_cblas_daxpy
             GB_memcpy (Cx, Ax, cnz * sizeof (GB_CTYPE), nthreads) ; // C = A
             GB_CBLAS_AXPY (cnz, (GB_CTYPE) -1, Bx, Cx, nthreads) ;  // C -= B
 

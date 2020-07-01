@@ -8,6 +8,7 @@
 //------------------------------------------------------------------------------
 
 #include "GB_mxm.h"
+#include "GB_binop.h"
 #ifndef GBCOMPACT
 #include "GB_binop__include.h"
 #endif
@@ -95,38 +96,39 @@ GrB_Info GB_AxB_rowscale            // C = D*B, row scale with diagonal D
     GrB_Matrix C = (*Chandle) ;
 
     //--------------------------------------------------------------------------
-    // C = D*B, row scale
+    // C = D*B, row scale, via built-in binary operators
     //--------------------------------------------------------------------------
 
     bool done = false ;
 
-    //--------------------------------------------------------------------------
-    // define the worker for the switch factory
-    //--------------------------------------------------------------------------
-
-    #define GB_DxB(mult,xyname) GB_DxB_ ## mult ## xyname
-
-    #define GB_BINOP_WORKER(mult,xyname)                                    \
-    {                                                                       \
-        info = GB_DxB(mult,xyname) (C, D, D_is_pattern, B, B_is_pattern,    \
-            nthreads) ;                                                     \
-        done = (info != GrB_NO_VALUE) ;                                     \
-    }                                                                       \
-    break ;
-
-    //--------------------------------------------------------------------------
-    // launch the switch factory
-    //--------------------------------------------------------------------------
-
     #ifndef GBCOMPACT
 
-        GB_Opcode opcode ;
-        GB_Type_code xycode, zcode ;
+        //----------------------------------------------------------------------
+        // define the worker for the switch factory
+        //----------------------------------------------------------------------
 
+        #define GB_DxB(mult,xname) GB_DxB_ ## mult ## xname
+
+        #define GB_BINOP_WORKER(mult,xname)                                   \
+        {                                                                     \
+            info = GB_DxB(mult,xname) (C, D, D_is_pattern, B, B_is_pattern,   \
+                nthreads) ;                                                   \
+            done = (info != GrB_NO_VALUE) ;                                   \
+        }                                                                     \
+        break ;
+
+        //----------------------------------------------------------------------
+        // launch the switch factory
+        //----------------------------------------------------------------------
+
+        GB_Opcode opcode ;
+        GB_Type_code xcode, ycode, zcode ;
         if (GB_binop_builtin (D->type, D_is_pattern, B->type, B_is_pattern,
-            mult, flipxy, &opcode, &xycode, &zcode))
+            mult, flipxy, &opcode, &xcode, &ycode, &zcode))
         { 
+            #define GB_BINOP_IS_SEMIRING_MULTIPLIER
             #include "GB_binop_factory.c"
+            #undef  GB_BINOP_IS_SEMIRING_MULTIPLIER
         }
 
     #endif
@@ -159,7 +161,7 @@ GrB_Info GB_AxB_rowscale            // C = D*B, row scale with diagonal D
         size_t dii_size = flipxy ? ysize : xsize ;
         size_t bij_size = flipxy ? xsize : ysize ;
 
-        GB_void *GB_RESTRICT Cx = C->x ;
+        GB_void *GB_RESTRICT Cx = (GB_void *) C->x ;
 
         GB_cast_function cast_D, cast_B ;
         if (flipxy)
@@ -193,10 +195,6 @@ GrB_Info GB_AxB_rowscale            // C = D*B, row scale with diagonal D
             GB_void bij [GB_VLA(bij_size)] ;                                \
             if (!B_is_pattern) cast_B (bij, Bx +((pB)*bsize), bsize) ;
 
-        // C(i,j) = D(i,i) * B(i,j)
-        #define GB_BINOP(cij, dii, bij)                                     \
-            GB_BINARYOP (cij, dii, bij) ;                                   \
-
         // address of Cx [p]
         #define GB_CX(p) Cx +((p)*csize)
 
@@ -205,20 +203,19 @@ GrB_Info GB_AxB_rowscale            // C = D*B, row scale with diagonal D
         #define GB_CTYPE GB_void
 
         // no vectorization
-        #define GB_PRAGMA_VECTORIZE
-        #define GB_PRAGMA_VECTORIZE_DOT
+        #define GB_PRAGMA_SIMD_VECTORIZE ;
 
         if (flipxy)
         { 
-            #define GB_BINARYOP(z,x,y) fmult (z,y,x)
+            #define GB_BINOP(z,x,y) fmult (z,y,x)
             #include "GB_AxB_rowscale_meta.c"
-            #undef GB_BINARYOP
+            #undef GB_BINOP
         }
         else
         { 
-            #define GB_BINARYOP(z,x,y) fmult (z,x,y)
+            #define GB_BINOP(z,x,y) fmult (z,x,y)
             #include "GB_AxB_rowscale_meta.c"
-            #undef GB_BINARYOP
+            #undef GB_BINOP
         }
     }
 

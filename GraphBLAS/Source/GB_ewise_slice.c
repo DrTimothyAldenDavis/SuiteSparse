@@ -12,16 +12,16 @@
 // C=op(A,B).  The mask is ignored for computing where to slice the work, but
 // it is sliced once the location has been found.
 
-#define GB_FREE_WORK                                                    \
-{                                                                       \
-    GB_FREE_MEMORY (Coarse, ntasks1+1, sizeof (int64_t)) ;              \
-    GB_FREE_MEMORY (Cwork, Cnvec+1, sizeof (int64_t)) ;                 \
+#define GB_FREE_WORK    \
+{                       \
+    GB_FREE (Coarse) ;  \
+    GB_FREE (Cwork) ;   \
 }
 
-#define GB_FREE_ALL                                                     \
-{                                                                       \
-    GB_FREE_WORK ;                                                      \
-    GB_FREE_MEMORY (TaskList, max_ntasks+1, sizeof (GB_task_struct)) ;  \
+#define GB_FREE_ALL         \
+{                           \
+    GB_FREE_WORK ;          \
+    GB_FREE (TaskList) ;    \
 }
 
 #include "GB.h"
@@ -137,7 +137,7 @@ GrB_Info GB_ewise_slice
     // allocate workspace
     //--------------------------------------------------------------------------
 
-    GB_MALLOC_MEMORY (Cwork, Cnvec+1, sizeof (int64_t)) ;
+    Cwork = GB_MALLOC (Cnvec+1, int64_t) ;
     if (Cwork == NULL)
     { 
         // out of memory

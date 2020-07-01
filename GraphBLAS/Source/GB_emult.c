@@ -26,6 +26,8 @@
 
 #include "GB_emult.h"
 
+#define GB_FREE_ALL ;
+
 GrB_Info GB_emult           // C=A.*B or C<M>=A.*B
 (
     GrB_Matrix *Chandle,    // output matrix (unallocated on input)
@@ -106,9 +108,9 @@ GrB_Info GB_emult           // C=A.*B or C<M>=A.*B
     if (info != GrB_SUCCESS)
     { 
         // out of memory; free everything allocated by GB_emult_phase0
-        GB_FREE_MEMORY (C_to_M, Cnvec, sizeof (int64_t)) ;
-        GB_FREE_MEMORY (C_to_A, Cnvec, sizeof (int64_t)) ;
-        GB_FREE_MEMORY (C_to_B, Cnvec, sizeof (int64_t)) ;
+        GB_FREE (C_to_M) ;
+        GB_FREE (C_to_A) ;
+        GB_FREE (C_to_B) ;
         return (info) ;
     }
 
@@ -129,10 +131,10 @@ GrB_Info GB_emult           // C=A.*B or C<M>=A.*B
     if (info != GrB_SUCCESS)
     { 
         // out of memory; free everything allocated by phase 0
-        GB_FREE_MEMORY (TaskList, max_ntasks+1, sizeof (GB_task_struct)) ;
-        GB_FREE_MEMORY (C_to_M, Cnvec, sizeof (int64_t)) ;
-        GB_FREE_MEMORY (C_to_A, Cnvec, sizeof (int64_t)) ;
-        GB_FREE_MEMORY (C_to_B, Cnvec, sizeof (int64_t)) ;
+        GB_FREE (TaskList) ;
+        GB_FREE (C_to_M) ;
+        GB_FREE (C_to_A) ;
+        GB_FREE (C_to_B) ;
         return (info) ;
     }
 
@@ -156,10 +158,10 @@ GrB_Info GB_emult           // C=A.*B or C<M>=A.*B
         M, Mask_struct, A, B, Context) ;
 
     // free workspace
-    GB_FREE_MEMORY (TaskList, max_ntasks+1, sizeof (GB_task_struct)) ;
-    GB_FREE_MEMORY (C_to_M, Cnvec, sizeof (int64_t)) ;
-    GB_FREE_MEMORY (C_to_A, Cnvec, sizeof (int64_t)) ;
-    GB_FREE_MEMORY (C_to_B, Cnvec, sizeof (int64_t)) ;
+    GB_FREE (TaskList) ;
+    GB_FREE (C_to_M) ;
+    GB_FREE (C_to_A) ;
+    GB_FREE (C_to_B) ;
 
     if (info != GrB_SUCCESS)
     { 

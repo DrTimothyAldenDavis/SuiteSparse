@@ -4,11 +4,6 @@ function testc2(quick)
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
-if (~GB_mex_have_complex)
-    fprintf ('\ntestc2: skipped\n') ;
-    return ;
-end
-
 rng ('default') ;
 
 if (nargin < 1)

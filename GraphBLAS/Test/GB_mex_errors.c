@@ -19,74 +19,73 @@
 
 #define FREE_ALL                                                          \
 {                                                                         \
-    GrB_Matrix_free (&Empty1) ;       CHECK (Empty1       == NULL) ;      \
-    GrB_Matrix_free (&A) ;            CHECK (A            == NULL) ;      \
-    GrB_Matrix_free (&B) ;            CHECK (B            == NULL) ;      \
-    GrB_Matrix_free (&C) ;            CHECK (C            == NULL) ;      \
-    GrB_Matrix_free (&Z) ;            CHECK (Z            == NULL) ;      \
-    GrB_Matrix_free (&E) ;            CHECK (E            == NULL) ;      \
-    GrB_Matrix_free (&F) ;            CHECK (F            == NULL) ;      \
-    GrB_Matrix_free (&H) ;            CHECK (H            == NULL) ;      \
-    GrB_Matrix_free (&Agunk) ;        CHECK (Agunk        == NULL) ;      \
-    GrB_Matrix_free (&Aempty) ;       CHECK (Aempty       == NULL) ;      \
-    GrB_Type_free (&T) ;              CHECK (T            == NULL) ;      \
-    GrB_Type_free (&Tgunk) ;          CHECK (Tgunk        == NULL) ;      \
-    GrB_UnaryOp_free (&op1) ;         CHECK (op1          == NULL) ;      \
-    GrB_UnaryOp_free (&op1gunk) ;     CHECK (op1gunk      == NULL) ;      \
-    GrB_BinaryOp_free (&op2) ;        CHECK (op2          == NULL) ;      \
-    GrB_BinaryOp_free (&op3) ;        CHECK (op3          == NULL) ;      \
-    GrB_UnaryOp_free (&op1b) ;        CHECK (op1b         == NULL) ;      \
-    GrB_BinaryOp_free (&op2b) ;       CHECK (op2b         == NULL) ;      \
-    GrB_Monoid_free (&monoidb) ;      CHECK (monoidb      == NULL) ;      \
-    GrB_Semiring_free (&semiring2) ;  CHECK (semiring2    == NULL) ;      \
-    GrB_Descriptor_free (&descb) ;    CHECK (descb        == NULL) ;      \
-    GrB_Vector_free (&vb) ;           CHECK (vb           == NULL) ;      \
-    GrB_BinaryOp_free (&op2gunk) ;    CHECK (op2gunk      == NULL) ;      \
-    GrB_Monoid_free (&monoid) ;       CHECK (monoid       == NULL) ;      \
-    GrB_Monoid_free (&monoid_gunk) ;  CHECK (monoid_gunk  == NULL) ;      \
-    GrB_Semiring_free (&semiring) ;   CHECK (semiring     == NULL) ;      \
-    GrB_Semiring_free (&semigunk) ;   CHECK (semigunk     == NULL) ;      \
-    GrB_Vector_free (&v) ;            CHECK (v            == NULL) ;      \
-    GrB_Vector_free (&w) ;            CHECK (w            == NULL) ;      \
-    GrB_Vector_free (&u) ;            CHECK (u            == NULL) ;      \
-    GrB_Vector_free (&z) ;            CHECK (z            == NULL) ;      \
-    GrB_Vector_free (&h) ;            CHECK (h            == NULL) ;      \
-    GrB_Vector_free (&vgunk) ;        CHECK (vgunk        == NULL) ;      \
-    GrB_Vector_free (&vempty) ;       CHECK (vempty       == NULL) ;      \
-    GrB_Descriptor_free (&desc) ;     CHECK (desc         == NULL) ;      \
-    GrB_Descriptor_free (&dtn) ;      CHECK (dtn          == NULL) ;      \
-    GrB_Descriptor_free (&dnt) ;      CHECK (dnt          == NULL) ;      \
-    GrB_Descriptor_free (&dtt) ;      CHECK (dtt          == NULL) ;      \
-    GrB_Descriptor_free (&dgunk) ;    CHECK (dgunk        == NULL) ;      \
-    GxB_SelectOp_free (&selectop) ;   CHECK (selectop     == NULL) ;      \
-    GxB_SelectOp_free (&selectopgunk) ; CHECK (selectopgunk == NULL) ;    \
+    GrB_Matrix_free_(&Empty1) ;       CHECK (Empty1       == NULL) ;      \
+    GrB_Matrix_free_(&A) ;            CHECK (A            == NULL) ;      \
+    GrB_Matrix_free_(&B) ;            CHECK (B            == NULL) ;      \
+    GrB_Matrix_free_(&C) ;            CHECK (C            == NULL) ;      \
+    GrB_Matrix_free_(&Z) ;            CHECK (Z            == NULL) ;      \
+    GrB_Matrix_free_(&E) ;            CHECK (E            == NULL) ;      \
+    GrB_Matrix_free_(&F) ;            CHECK (F            == NULL) ;      \
+    GrB_Matrix_free_(&H) ;            CHECK (H            == NULL) ;      \
+    GrB_Matrix_free_(&Agunk) ;        CHECK (Agunk        == NULL) ;      \
+    GrB_Matrix_free_(&Aempty) ;       CHECK (Aempty       == NULL) ;      \
+    GrB_Type_free_(&T) ;              CHECK (T            == NULL) ;      \
+    GrB_Type_free_(&Tgunk) ;          CHECK (Tgunk        == NULL) ;      \
+    GrB_UnaryOp_free_(&op1) ;         CHECK (op1          == NULL) ;      \
+    GrB_UnaryOp_free_(&op1gunk) ;     CHECK (op1gunk      == NULL) ;      \
+    GrB_BinaryOp_free_(&op2) ;        CHECK (op2          == NULL) ;      \
+    GrB_BinaryOp_free_(&op3) ;        CHECK (op3          == NULL) ;      \
+    GrB_UnaryOp_free_(&op1b) ;        CHECK (op1b         == NULL) ;      \
+    GrB_BinaryOp_free_(&op2b) ;       CHECK (op2b         == NULL) ;      \
+    GrB_Monoid_free_(&monoidb) ;      CHECK (monoidb      == NULL) ;      \
+    GrB_Semiring_free_(&semiring2) ;  CHECK (semiring2    == NULL) ;      \
+    GrB_Descriptor_free_(&descb) ;    CHECK (descb        == NULL) ;      \
+    GrB_Vector_free_(&vb) ;           CHECK (vb           == NULL) ;      \
+    GrB_BinaryOp_free_(&op2gunk) ;    CHECK (op2gunk      == NULL) ;      \
+    GrB_Monoid_free_(&monoid) ;       CHECK (monoid       == NULL) ;      \
+    GrB_Monoid_free_(&monoid_gunk) ;  CHECK (monoid_gunk  == NULL) ;      \
+    GrB_Semiring_free_(&semiring) ;   CHECK (semiring     == NULL) ;      \
+    GrB_Semiring_free_(&semigunk) ;   CHECK (semigunk     == NULL) ;      \
+    GrB_Vector_free_(&v) ;            CHECK (v            == NULL) ;      \
+    GrB_Vector_free_(&w) ;            CHECK (w            == NULL) ;      \
+    GrB_Vector_free_(&u) ;            CHECK (u            == NULL) ;      \
+    GrB_Vector_free_(&z) ;            CHECK (z            == NULL) ;      \
+    GrB_Vector_free_(&h) ;            CHECK (h            == NULL) ;      \
+    GrB_Vector_free_(&vgunk) ;        CHECK (vgunk        == NULL) ;      \
+    GrB_Vector_free_(&vempty) ;       CHECK (vempty       == NULL) ;      \
+    GrB_Descriptor_free_(&desc) ;     CHECK (desc         == NULL) ;      \
+    GrB_Descriptor_free_(&dtn) ;      CHECK (dtn          == NULL) ;      \
+    GrB_Descriptor_free_(&dnt) ;      CHECK (dnt          == NULL) ;      \
+    GrB_Descriptor_free_(&dtt) ;      CHECK (dtt          == NULL) ;      \
+    GrB_Descriptor_free_(&dgunk) ;    CHECK (dgunk        == NULL) ;      \
+    GxB_SelectOp_free_(&selectop) ;   CHECK (selectop     == NULL) ;      \
+    GxB_SelectOp_free_(&selectopgunk) ; CHECK (selectopgunk == NULL) ;    \
+    GxB_Scalar_free_(&a_scalar) ;                                         \
     GB_mx_put_global (true, 0) ;                                          \
 }
 
 #include "GB_mex_errors.h"
 
-void f1 (double *z, uint32_t *x) ;
-void f2 (int32_t *z, uint8_t *x, int16_t *y) ;
+void f1 (double *z, const uint32_t *x) ;
+void f2 (int32_t *z, const uint8_t *x, const int16_t *y) ;
 bool fselect (GrB_Index i, GrB_Index j, GrB_Index nrows,
     GrB_Index ncols, const double *x, const double *k) ;
 
-void f1 (double *z, uint32_t *x)
+void f1 (double *z, const uint32_t *x)
 { 
     (*z) = (*x) + 1 ;
 }
 
-void f2 (int32_t *z, uint8_t *x, int16_t *y)
+void f2 (int32_t *z, const uint8_t *x, const int16_t *y)
 {
     (*z) = (*x) + (*y) + 1 ;
 }
 
-#if GxB_STDC_VERSION >= 201112L
-void f3 (double complex *z, double complex *x, double *y) ;
-void f3 (double complex *z, double complex *x, double *y)
+void f3 (GxB_FC64_t *z, const GxB_FC64_t *x, const double *y) ;
+void f3 (GxB_FC64_t *z, const GxB_FC64_t *x, const double *y)
 {
-    (*z) = (*x) + CMPLX (0,(*y))  ;
+    (*z) = GB_FC64_add ((*x), GxB_CMPLX (0,(*y))) ;
 }
-#endif
 
 bool fselect (GrB_Index i, GrB_Index j, GrB_Index nrows,
     GrB_Index ncols, const double *x, const double *k)
@@ -117,7 +116,8 @@ void mexFunction
     OK (GrB_finalize ( )) ;
 
     GB_Global_GrB_init_called_set (false) ;
-    OK (GxB_init (GrB_NONBLOCKING, mxMalloc, mxCalloc, mxRealloc, mxFree, false)) ;
+    OK (GxB_init (GrB_NONBLOCKING, mxMalloc, mxCalloc, mxRealloc, mxFree,
+        false)) ;
     GB_Global_abort_function_set (GB_mx_abort) ;
     GB_Global_malloc_tracking_set (true) ;
 
@@ -126,9 +126,9 @@ void mexFunction
     fprintf (f,"========================================================\n") ;
     fprintf (f,"many errors are expected\n") ;
 
-    OK (GxB_Type_fprint (GrB_BOOL, "bool", GB3, ff)) ;
+    OK (GxB_Type_fprint_(GrB_BOOL, GB3, ff)) ;
     expected = GrB_INVALID_VALUE ;
-    ERR (GxB_Type_fprint (GrB_BOOL, "bool", GB3, stdin)) ;
+    ERR (GxB_Type_fprint_(GrB_BOOL, GB3, stdin)) ;
     fprintf (ff, "GrB_error for testing failed I/O:\n%s\n", GrB_error ( )) ;
 
     int64_t nmalloc ;
@@ -174,13 +174,12 @@ void mexFunction
     uint64_t    x_uint64 ;
     float       x_float ;
     double      x_double, x = 0 ;
-    #if GxB_STDC_VERSION >= 201112L
-    double complex c ;
-    #endif
+    GxB_FC64_t  c ;
 
     GB_void *pp = NULL ;
 
     GxB_SelectOp selectop = NULL, selectopgunk = NULL, sel0 ;
+    GxB_Scalar a_scalar = NULL ;
 
     //--------------------------------------------------------------------------
     // check inputs
@@ -250,7 +249,7 @@ void mexFunction
     ERR (GxB_Type_size (&s, Tgunk)) ;
 
     T = GrB_INT32 ;
-    OK (GrB_Type_free (&GrB_INT32)) ;
+    OK (GrB_Type_free_(&GrB_INT32)) ;
     CHECK (GrB_INT32 == T) ;
     T = NULL ;
 
@@ -261,10 +260,10 @@ void mexFunction
     CHECK (s == sizeof (int)) ;
     s = 0 ;
 
-    OK (GrB_Type_free (&T)) ;
+    OK (GrB_Type_free_(&T)) ;
     CHECK (T == NULL) ;
 
-    OK (GrB_Type_free (&T)) ;
+    OK (GrB_Type_free_(&T)) ;
     CHECK (T == NULL) ;
 
     s = GB_code_size (-1,1) ;
@@ -276,25 +275,19 @@ void mexFunction
     METHOD (GrB_Type_new (&T, sizeof (int))) ;
     OK (GB_Type_check (T, "new type", GB3, NULL, Context)) ;
     OK (GxB_Type_fprint (T, "new type", GB3, ff)) ;
-    OK (GrB_Type_free (&T)) ;
+    OK (GrB_Type_free_(&T)) ;
     CHECK (T == NULL) ;
 
     #undef FREE_DEEP_COPY
     #undef GET_DEEP_COPY
 
-    #if GxB_STDC_VERSION >= 201112L
-    #define LAST_CODE GB_UDT_code 
-    #else
-    #define LAST_CODE GB_FP64_code 
-    #endif
-
-    for (GB_Type_code tcode = 0 ; tcode <= LAST_CODE ; tcode++)
+    for (GB_Type_code tcode = 0 ; tcode <= GB_UDT_code ; tcode++)
     {
         GrB_Type utype = Complex ;
         GrB_Type ttype = GB_code_type (tcode, utype) ;
         printf ("\n----------------------------------tcode: %d\n", tcode) ;
         OK (GB_Type_check (ttype, "GB_code_type:", GB3, NULL, Context)) ;
-        OK (GxB_Type_fprint (ttype, "ttype", GB3, ff)) ;
+        OK (GxB_Type_fprint_(ttype, GB3, ff)) ;
     }
 
     // Tgunk is allocated but uninitialized
@@ -370,17 +363,17 @@ void mexFunction
     CHECK (T == NULL) ;
 
     o1 = GrB_IDENTITY_BOOL ;
-    OK (GrB_UnaryOp_free (&o1)) ;
+    OK (GrB_UnaryOp_free_(&o1)) ;
     CHECK (o1 == GrB_IDENTITY_BOOL) ;
     o1 = NULL ;
 
     OK (GrB_UnaryOp_new (&o1, f1, GrB_FP64, GrB_UINT32)) ;
     CHECK (o1 != NULL) ;
 
-    OK (GrB_UnaryOp_free (&o1)) ;
+    OK (GrB_UnaryOp_free_(&o1)) ;
     o1 = NULL ;
 
-    OK (GrB_UnaryOp_free (&o1)) ;
+    OK (GrB_UnaryOp_free_(&o1)) ;
     o1 = NULL ;
 
     #define FREE_DEEP_COPY ;
@@ -390,7 +383,7 @@ void mexFunction
     METHOD (GrB_UnaryOp_new (&opzz, f1, GrB_FP64, GrB_UINT32)) ;
     OK (GB_UnaryOp_check (opzz, "new unary opzz", GB3, NULL, Context)) ;
     OK (GxB_UnaryOp_fprint (opzz, "new unary opzz", GB3, ff)) ;
-    OK (GrB_UnaryOp_free (&opzz)) ;
+    OK (GrB_UnaryOp_free_(&opzz)) ;
     CHECK (opzz == NULL) ;
 
     #undef FREE_DEEP_COPY
@@ -459,17 +452,17 @@ void mexFunction
     CHECK (T == NULL) ;
 
     o2 = GrB_PLUS_FP64 ;
-    OK (GrB_BinaryOp_free (&o2)) ;
+    OK (GrB_BinaryOp_free_(&o2)) ;
     CHECK (o2 == GrB_PLUS_FP64) ;
     o2 = NULL ;
 
     OK (GrB_BinaryOp_new (&o2, f2, GrB_INT32, GrB_UINT8, GrB_INT16)) ;
     CHECK (o2 != NULL) ;
 
-    OK (GrB_BinaryOp_free (&o2)) ;
+    OK (GrB_BinaryOp_free_(&o2)) ;
     CHECK (o2 == NULL) ;
 
-    OK (GrB_BinaryOp_free (&o2)) ;
+    OK (GrB_BinaryOp_free_(&o2)) ;
     CHECK (o2 == NULL) ;
 
     #define FREE_DEEP_COPY ;
@@ -479,8 +472,8 @@ void mexFunction
     METHOD (GrB_BinaryOp_new (&opxx, f2, GrB_INT32, GrB_UINT8, GrB_INT16)) ;
     OK (GB_BinaryOp_check (opxx, "new binary opxx", GB3, NULL, Context)) ;
     OK (GxB_BinaryOp_fprint (opxx, "new binary opxx", GB3, ff)) ;
-    OK (GxB_BinaryOp_fprint (opxx, "opx", GB3, ff)) ;
-    OK (GrB_BinaryOp_free (&opxx)) ;
+    OK (GxB_BinaryOp_fprint_(opxx, GB3, ff)) ;
+    OK (GrB_BinaryOp_free_(&opxx)) ;
     CHECK (opxx == NULL) ;
 
     #undef FREE_DEEP_COPY
@@ -493,7 +486,7 @@ void mexFunction
     printf ("GxB_SelectOp-------------------------------------------------\n") ;
     CHECK (selectop == NULL) ;
     OK (GxB_SelectOp_new (&selectop, fselect, GrB_FP64, GrB_FP64)) ;
-    OK (GxB_SelectOp_free (&selectop)) ;
+    OK (GxB_SelectOp_free_(&selectop)) ;
     CHECK (selectop == NULL) ;
 
     expected = GrB_NULL_POINTER ;
@@ -519,14 +512,14 @@ void mexFunction
     CHECK (T == GrB_FP64) ;
     T = NULL ;
 
-    OK (GxB_SelectOp_free (&selectop)) ;
+    OK (GxB_SelectOp_free_(&selectop)) ;
     CHECK (selectop == NULL) ;
 
     expected = GrB_NULL_POINTER ;
     ERR (GxB_SelectOp_new (&selectop, NULL, GrB_FP64, GrB_FP64)) ;
     CHECK (selectop == NULL) ;
 
-    OK (GxB_SelectOp_free (&selectop)) ;
+    OK (GxB_SelectOp_free_(&selectop)) ;
     CHECK (selectop == NULL) ;
 
     //--------------------------------------------------------------------------
@@ -632,6 +625,12 @@ void mexFunction
     ERR (GrB_Monoid_new_FP64 (&monoid, GrB_PLUS_FP32, (double) 0)) ;
     CHECK (monoid == NULL) ;
 
+    ERR (GxB_Monoid_new_FC32 (&monoid, GrB_PLUS_FP64, GxB_CMPLXF(0,0))) ;
+    CHECK (monoid == NULL) ;
+
+    ERR (GxB_Monoid_new_FC64 (&monoid, GrB_PLUS_FP32, GxB_CMPLX (0,0))) ;
+    CHECK (monoid == NULL) ;
+
     // this works
     OK (GrB_Monoid_new_FP64 (&monoid, GrB_PLUS_FP64, (double) 0)) ;
     CHECK (monoid != NULL) ;
@@ -683,7 +682,7 @@ void mexFunction
     CHECK (o2 == GrB_TIMES_FP64) ;
 
     m2 = GxB_TIMES_FP64_MONOID ;
-    OK (GrB_Monoid_free (&m2)) ;
+    OK (GrB_Monoid_free_(&m2)) ;
     CHECK (m2 == GxB_TIMES_FP64_MONOID) ;
     m2 = NULL ;
 
@@ -696,10 +695,10 @@ void mexFunction
     OK (GrB_Monoid_new_FP64 (&m2, GrB_PLUS_FP64, (double) 0)) ;
     CHECK (m2 != NULL) ;
 
-    OK (GrB_Monoid_free (&m2)) ;
+    OK (GrB_Monoid_free_(&m2)) ;
     CHECK (m2 == NULL) ;
 
-    OK (GrB_Monoid_free (&m2)) ;
+    OK (GrB_Monoid_free_(&m2)) ;
     CHECK (m2 == NULL) ;
 
     // monoid_gunk is allocated but not initialized
@@ -778,14 +777,14 @@ void mexFunction
     o2 = NULL ;
 
     s2 = GxB_PLUS_TIMES_FP64 ;
-    OK (GrB_Semiring_free (&s2)) ;
+    OK (GrB_Semiring_free_(&s2)) ;
     CHECK (s2 == GxB_PLUS_TIMES_FP64) ;
     s2 = NULL ;
 
     OK (GrB_Semiring_new (&s2, GxB_MAX_FP64_MONOID, GrB_PLUS_FP64)) ;
     CHECK (s2 != NULL) ;
 
-    OK (GrB_Semiring_free (&s2)) ;
+    OK (GrB_Semiring_free_(&s2)) ;
     CHECK (s2 == NULL) ;
 
     // semigunk is allocated but not initialized
@@ -798,10 +797,53 @@ void mexFunction
     #define GET_DEEP_COPY ;
 
     METHOD (Complex_finalize ( )) ;
-    METHOD (Complex_init ( )) ;
+    METHOD (Complex_init (true)) ;
+    METHOD (Complex_finalize ( )) ;
+    METHOD (Complex_init (false)) ;
 
     #undef FREE_DEEP_COPY
     #undef GET_DEEP_COPY
+
+    //--------------------------------------------------------------------------
+    // basic Scalar methods
+    //--------------------------------------------------------------------------
+
+    printf ("GrB_Vector---------------------------------------------------\n") ;
+
+    OK (GxB_Scalar_new (&a_scalar, GrB_INT32)) ;
+    CHECK (a_scalar != NULL) ;
+
+    int32_t i_scalar = 33 ;
+    OK (GxB_Scalar_setElement_INT32 (a_scalar, 42)) ;
+    OK (GxB_Scalar_extractElement_INT32_(&i_scalar, a_scalar)) ;
+    CHECK (i_scalar == 42) ;
+    i_scalar = 33 ;
+
+    // force a zombie
+    a_scalar->i [0] = GB_FLIP (0) ;
+    a_scalar->nzombies = 1 ;
+    GB_queue_insert ((GrB_Matrix) a_scalar) ;
+
+    info = GxB_Scalar_extractElement_INT32_(&i_scalar, a_scalar) ;
+    CHECK (i_scalar == 33) ;
+    CHECK (info == GrB_NO_VALUE) ;
+
+    OK (GxB_Scalar_free_(&a_scalar)) ;
+
+    OK (GrB_Type_new (&T, sizeof (int))) ;
+
+    expected = GrB_DOMAIN_MISMATCH ;
+    OK (GxB_Scalar_new (&a_scalar, T)) ;
+    GxB_Scalar_fprint_(a_scalar, 3, NULL) ;
+    GxB_Type_fprint_(T, 3, NULL) ;
+    ERR (GxB_Scalar_setElement_INT32 (a_scalar, 42)) ;
+    ERR (GxB_Scalar_extractElement_INT32_(&i_scalar, a_scalar)) ;
+    CHECK (i_scalar == 33) ;
+
+    printf ("error expected: %s\n", GrB_error ( )) ;
+
+    OK (GrB_Type_free_(&T)) ;
+    OK (GxB_Scalar_free_(&a_scalar)) ;
 
     //--------------------------------------------------------------------------
     // basic Vector methods
@@ -823,10 +865,10 @@ void mexFunction
     OK (GrB_Vector_new (&vempty, GrB_BOOL, 0)) ;
     CHECK (vempty != NULL) ;
 
-    OK (GrB_Vector_free (&vempty)) ;
+    OK (GrB_Vector_free_(&vempty)) ;
     CHECK (vempty == NULL) ;
 
-    OK (GrB_Vector_free (&vempty)) ;
+    OK (GrB_Vector_free_(&vempty)) ;
     CHECK (vempty == NULL) ;
 
     OK (GrB_Vector_new (&vempty, GrB_BOOL, 0)) ;
@@ -842,10 +884,10 @@ void mexFunction
     OK (GrB_Vector_dup (&u, v)) ;
     CHECK (u != NULL) ;
 
-    OK (GrB_Vector_free (&u)) ;
+    OK (GrB_Vector_free_(&u)) ;
     CHECK (u == NULL) ;
 
-    OK (GrB_Vector_free (&u)) ;
+    OK (GrB_Vector_free_(&u)) ;
     CHECK (u == NULL) ;
 
     expected = GrB_NULL_POINTER ;
@@ -922,7 +964,7 @@ void mexFunction
     GB_to_hyper ((GrB_Matrix) zz, Context) ;
     ERR (GB_Vector_check (zz, "zz mangled: vectors cannot be hyper", GB3, ff,
         Context)) ;
-    OK (GrB_Vector_free (&zz)) ;
+    OK (GrB_Vector_free_(&zz)) ;
 
     OK (GrB_Vector_clear (v)) ;
     OK (GrB_Vector_nvals (&nvals, v)) ;
@@ -948,7 +990,7 @@ void mexFunction
     ERR (GrB_Vector_nvals (&nvals, vgunk)) ;
     CHECK (nvals == 42) ;
 
-    OK (GrB_Vector_free (&v)) ;
+    OK (GrB_Vector_free_(&v)) ;
     CHECK (v == NULL) ;
 
     // vgunk is allocated but not initialized
@@ -992,46 +1034,57 @@ void mexFunction
 
     OK  (GrB_Vector_new (&v, GrB_FP64, 10)) ;
     ERR (GrB_Vector_build_FP64 (v, I, NULL, 0, NULL)) ;
-    ERR (GrB_Vector_build_FP64 (v, I, X,    0, NULL)) ;
+    ERR (GrB_Vector_build_FP64_(v, I, X,    0, NULL)) ;
 
     expected = GrB_INVALID_VALUE ;
     o2 = GrB_SECOND_FP64 ;
     ERR (GrB_Vector_build_FP64 (v, GrB_ALL, X, 0, o2)) ;
 
-    ERR (GrB_Vector_build_FP64 (v, I, X, GB_INDEX_MAX+1, o2)) ;
+    ERR (GrB_Vector_build_FP64_(v, I, X, GxB_INDEX_MAX+1, o2)) ;
 
     expected = GrB_UNINITIALIZED_OBJECT ;
 
-    ERR (GrB_Vector_build_FP64 (v, I, X, 5, op2gunk)) ;
+    ERR (GrB_Vector_build_FP64_(v, I, X, 5, op2gunk)) ;
 
     expected = GrB_DOMAIN_MISMATCH ;
 
-    ERR (GrB_Vector_build_FP64 (v, I, X, 5, GrB_LE_FP64)) ;
-    #if GxB_STDC_VERSION >= 201112L
-    ERR (GrB_Vector_build_FP64 (v, I, X, 5, Complex_plus)) ;
-    #endif
-    ERR (GrB_Vector_build_UDT (v, I, (void *) X, 5, GrB_PLUS_FP64)) ;
+    ERR (GrB_Vector_build_FP64_(v, I, X, 5, GrB_LE_FP64)) ;
+    ERR (GrB_Vector_build_UDT_(v, I, (void *) X, 5, GrB_PLUS_FP64)) ;
+
+    OK (GxB_BinaryOp_fprint (Complex_plus, "Complex-plus op", GB3, f)) ;
+    OK (GxB_Type_fprint (Complex, "Complex user type", GB3, f)) ;
+    OK (GxB_Type_fprint (GxB_FC64, "Complex built-in type", GB3, f)) ;
+    if (Complex == GxB_FC64)
+    {
+        OK (GrB_Vector_build_FP64_(v, I, X, 5, Complex_plus)) ;
+        GrB_Vector_free_(&v) ;
+        OK  (GrB_Vector_new (&v, GrB_FP64, 10)) ;
+    }
+    else
+    {
+        ERR (GrB_Vector_build_FP64_(v, I, X, 5, Complex_plus)) ;
+    }
 
     expected = GrB_OUTPUT_NOT_EMPTY ;
 
     OK  (GrB_Vector_setElement_INT32 (v, 12, 0)) ;
 
-    ERR (GrB_Vector_build_FP64 (v, I, X, 5, GrB_PLUS_FP64)) ;
+    ERR (GrB_Vector_build_FP64_(v, I, X, 5, GrB_PLUS_FP64)) ;
 
     OK  (GrB_Vector_clear (v)) ;
-    OK  (GrB_Vector_build_FP64 (v, I, X, 5, GrB_PLUS_FP64)) ;
+    OK  (GrB_Vector_build_FP64_(v, I, X, 5, GrB_PLUS_FP64)) ;
     OK  (GrB_Vector_clear (v)) ;
     GB_Vector_check (v, "v clear", GB3, NULL, Context) ;
     GxB_Vector_fprint (v, "v", GB3, ff) ;
 
     expected = GrB_INVALID_VALUE ;
-    ERR (GrB_Vector_build_FP64 (v, I, X, GxB_RANGE, GrB_PLUS_FP64)) ;
+    ERR (GrB_Vector_build_FP64_(v, I, X, GxB_RANGE, GrB_PLUS_FP64)) ;
     printf ("%s\n", GrB_error ( )) ;
 
     expected = GrB_INDEX_OUT_OF_BOUNDS ;
 
     I [0] = 10 ;
-    ERR (GrB_Vector_build_FP64 (v, I, X, 5, GrB_PLUS_FP64)) ;
+    ERR (GrB_Vector_build_FP64_(v, I, X, 5, GrB_PLUS_FP64)) ;
     printf ("expected error, index out of bounds:\n%s\n", GrB_error ()) ;
 
     GB_Vector_check (v, "v bad", GB3, NULL, Context) ;
@@ -1040,18 +1093,18 @@ void mexFunction
     expected = GrB_INVALID_OBJECT ;
     ERR (GrB_Vector_nvals (&nvals, v)) ;
 
-    OK (GrB_Vector_free (&v)) ;
+    OK (GrB_Vector_free_(&v)) ;
     OK (GrB_Vector_new (&v, GrB_FP64, 10)) ;
 
     I [0] = -1 ;
     expected = GrB_INDEX_OUT_OF_BOUNDS ;
-    ERR (GrB_Vector_build_FP64 (v, I, X, 5, GrB_PLUS_FP64)) ;
+    ERR (GrB_Vector_build_FP64_(v, I, X, 5, GrB_PLUS_FP64)) ;
 
     expected = GrB_INVALID_OBJECT ;
     ERR (GrB_Vector_nvals (&nvals, v)) ;
     I [0] = 0 ;
 
-    OK (GrB_Vector_free (&v)) ;
+    OK (GrB_Vector_free_(&v)) ;
     OK (GrB_Vector_new (&v, GrB_FP64, 10)) ;
 
     // v is a valid 10-by-1 FP64 vector with no entries
@@ -1150,8 +1203,8 @@ void mexFunction
 
     expected = GrB_INVALID_INDEX ;
 
-    ERR (GrB_Vector_extractElement_FP64 (&x_double, v, -1)) ;
-    ERR (GrB_Vector_extractElement_FP64 (&x_double, v, 10)) ;
+    ERR (GrB_Vector_extractElement_FP64_(&x_double, v, -1)) ;
+    ERR (GrB_Vector_extractElement_FP64_(&x_double, v, 10)) ;
 
     expected = GrB_DOMAIN_MISMATCH ;
 
@@ -1161,14 +1214,14 @@ void mexFunction
     OK (GrB_Vector_setElement_FP64 (v, 44.9, 4)) ;
 
     x_double = 404 ;
-    OK (GrB_Vector_extractElement_FP64 (&x_double, v, 3)) ;
+    OK (GrB_Vector_extractElement_FP64_(&x_double, v, 3)) ;
     CHECK (x_double == 404) ;
     CHECK (info == GrB_NO_VALUE) ;
     fprintf (f, "%s\n", GrB_error ()) ;
 
     OK (GrB_Vector_setElement_FP64 (v, 77.3, 0)) ;
 
-    OK (GrB_Vector_extractElement_FP64 (&x_double, v, 0)) ;
+    OK (GrB_Vector_extractElement_FP64_(&x_double, v, 0)) ;
 
     CHECK (info == GrB_SUCCESS) ;
     CHECK (x_double == 77.3) ;
@@ -1233,9 +1286,9 @@ void mexFunction
     expected = GrB_INSUFFICIENT_SPACE ;
 
     nvals = n2-1 ;
-    ERR (GrB_Vector_extractTuples_FP64 (I2, X2, &nvals, v)) ;
+    ERR (GrB_Vector_extractTuples_FP64_(I2, X2, &nvals, v)) ;
     nvals = n2 ;
-    OK  (GrB_Vector_extractTuples_FP64 (I2, X2, &nvals, v)) ;
+    OK  (GrB_Vector_extractTuples_FP64_(I2, X2, &nvals, v)) ;
 
     for (int k = 0 ; k < n2 ; k++)
     {
@@ -1245,9 +1298,9 @@ void mexFunction
 
     expected = GrB_DOMAIN_MISMATCH ;
 
-    ERR (GrB_Vector_extractTuples_UDT (I2, (void *) X2, &nvals, v)) ;
+    ERR (GrB_Vector_extractTuples_UDT_(I2, (void *) X2, &nvals, v)) ;
 
-    GrB_Vector_free (&v) ;
+    GrB_Vector_free_(&v) ;
     CHECK (v == NULL) ;
 
     //--------------------------------------------------------------------------
@@ -1270,10 +1323,10 @@ void mexFunction
     OK (GrB_Matrix_new (&Aempty, GrB_BOOL, 0, 0)) ;
     CHECK (Aempty != NULL) ;
 
-    OK (GrB_Matrix_free (&Aempty)) ;
+    OK (GrB_Matrix_free_(&Aempty)) ;
     CHECK (Aempty == NULL) ;
 
-    OK (GrB_Matrix_free (&Aempty)) ;
+    OK (GrB_Matrix_free_(&Aempty)) ;
     CHECK (Aempty == NULL) ;
 
     OK (GrB_Matrix_new (&Aempty, GrB_BOOL, 0, 0)) ;
@@ -1289,10 +1342,10 @@ void mexFunction
     OK (GrB_Matrix_dup (&C, A)) ;
     CHECK (C != NULL) ;
 
-    OK (GrB_Matrix_free (&C)) ;
+    OK (GrB_Matrix_free_(&C)) ;
     CHECK (C == NULL) ;
 
-    OK (GrB_Matrix_free (&C)) ;
+    OK (GrB_Matrix_free_(&C)) ;
     CHECK (C == NULL) ;
 
     expected = GrB_NULL_POINTER ;
@@ -1385,7 +1438,7 @@ void mexFunction
     ERR (GrB_Matrix_nvals (&nvals, Agunk)) ;
     CHECK (nvals == 42) ;
 
-    OK (GrB_Matrix_free (&A)) ;
+    OK (GrB_Matrix_free_(&A)) ;
     CHECK (A == NULL) ;
 
     // Agunk is allocated but not initialized
@@ -1431,50 +1484,57 @@ void mexFunction
     ERR (GrB_Matrix_build_FP64 (A, I,    NULL, NULL, 0, NULL)) ;
     ERR (GrB_Matrix_build_FP64 (A, NULL, NULL, NULL, 0, NULL)) ;
     ERR (GrB_Matrix_build_FP64 (A, I,    J,    NULL, 0, NULL)) ;
-    ERR (GrB_Matrix_build_FP64 (A, I,    J,    X,    0, NULL)) ;
+    ERR (GrB_Matrix_build_FP64_(A, I,    J,    X,    0, NULL)) ;
 
     expected = GrB_INVALID_VALUE ;
 
     o2 = GrB_SECOND_FP64 ;
-    ERR (GrB_Matrix_build_FP64 (A, GrB_ALL, J, X, 0, o2)) ;
-    ERR (GrB_Matrix_build_FP64 (A, I, GrB_ALL, X, 0, o2)) ;
-    ERR (GrB_Matrix_build_FP64 (A, I,       J, X, GB_INDEX_MAX+1, o2)) ;
+    ERR (GrB_Matrix_build_FP64_(A, GrB_ALL, J, X, 0, o2)) ;
+    ERR (GrB_Matrix_build_FP64_(A, I, GrB_ALL, X, 0, o2)) ;
+    ERR (GrB_Matrix_build_FP64_(A, I,       J, X, GxB_INDEX_MAX+1, o2)) ;
 
     expected = GrB_UNINITIALIZED_OBJECT ;
 
-    ERR (GrB_Matrix_build_FP64 (A, I, J, X, 5, op2gunk)) ;
+    ERR (GrB_Matrix_build_FP64_(A, I, J, X, 5, op2gunk)) ;
 
     expected = GrB_DOMAIN_MISMATCH ;
 
-    ERR (GrB_Matrix_build_FP64 (A, I, J,          X, 5, GrB_LE_FP64)) ;
-    #if GxB_STDC_VERSION >= 201112L
-    ERR (GrB_Matrix_build_FP64 (A, I, J,          X, 5, Complex_plus)) ;
-    #endif
-    ERR (GrB_Matrix_build_UDT (A, I, J, (void *) X, 5, GrB_PLUS_FP64)) ;
+    ERR (GrB_Matrix_build_FP64_(A, I, J, X, 5, GrB_LE_FP64)) ;
+    if (Complex == GxB_FC64)
+    {
+        OK (GrB_Matrix_build_FP64_(A, I, J, X, 5, Complex_plus)) ;
+        GrB_Matrix_free_(&A) ;
+        OK (GrB_Matrix_new (&A, GrB_FP64, 10, 5)) ;
+    }
+    else
+    {
+        ERR (GrB_Matrix_build_FP64_(A, I, J, X, 5, Complex_plus)) ;
+    }
+    ERR (GrB_Matrix_build_UDT_(A, I, J, (void *) X, 5, GrB_PLUS_FP64)) ;
 
     expected = GrB_OUTPUT_NOT_EMPTY ;
 
     OK  (GrB_Matrix_setElement_INT32 (A, 12, 0, 0)) ;
-    ERR (GrB_Matrix_build_FP64 (A, I, J, X, 5, GrB_PLUS_FP64)) ;
+    ERR (GrB_Matrix_build_FP64_(A, I, J, X, 5, GrB_PLUS_FP64)) ;
     OK  (GrB_Matrix_clear (A)) ;
-    OK  (GrB_Matrix_build_FP64 (A, I, J, X, 5, GrB_PLUS_FP64)) ;
+    OK  (GrB_Matrix_build_FP64_(A, I, J, X, 5, GrB_PLUS_FP64)) ;
     OK  (GrB_Matrix_clear (A)) ;
 
     expected = GrB_INDEX_OUT_OF_BOUNDS ;
 
     I [0] = 10 ;
-    ERR (GrB_Matrix_build_FP64 (A, I, J, X, 5, GrB_PLUS_FP64)) ;
+    ERR (GrB_Matrix_build_FP64_(A, I, J, X, 5, GrB_PLUS_FP64)) ;
 
     expected = GrB_INVALID_OBJECT ;
     ERR (GrB_Matrix_nvals (&nvals, A)) ;
 
-    OK (GrB_Matrix_free (&A)) ;
+    OK (GrB_Matrix_free_(&A)) ;
     OK (GrB_Matrix_new (&A, GrB_FP64, 10, 5)) ;
 
     I [0] = -1 ;
 
     expected = GrB_INDEX_OUT_OF_BOUNDS ;
-    ERR (GrB_Matrix_build_FP64 (A, I, J, X, 5, GrB_PLUS_FP64)) ;
+    ERR (GrB_Matrix_build_FP64_(A, I, J, X, 5, GrB_PLUS_FP64)) ;
     printf ("expected error:\n%s\n", GrB_error ( )) ;
 
     expected = GrB_INVALID_OBJECT ;
@@ -1482,7 +1542,7 @@ void mexFunction
     printf ("expected error:\n%s\n", GrB_error ( )) ;
     I [0] = 0 ;
 
-    OK (GrB_Matrix_free (&A)) ;
+    OK (GrB_Matrix_free_(&A)) ;
     OK (GrB_Matrix_new (&A, GrB_FP64, 10, 5)) ;
 
     // A is a valid 10-by-5 FP64 matrix with no entries
@@ -1581,9 +1641,9 @@ void mexFunction
 
     expected = GrB_INVALID_INDEX ;
 
-    ERR (GrB_Matrix_extractElement_FP64 (&x_double, A, -1, 0)) ;
-    ERR (GrB_Matrix_extractElement_FP64 (&x_double, A, 10, 0)) ;
-    ERR (GrB_Matrix_extractElement_FP64 (&x_double, A, 0, 911)) ;
+    ERR (GrB_Matrix_extractElement_FP64_(&x_double, A, -1, 0)) ;
+    ERR (GrB_Matrix_extractElement_FP64_(&x_double, A, 10, 0)) ;
+    ERR (GrB_Matrix_extractElement_FP64_(&x_double, A, 0, 911)) ;
 
     expected = GrB_DOMAIN_MISMATCH ;
 
@@ -1593,14 +1653,14 @@ void mexFunction
     OK (GrB_Matrix_setElement_FP64 (A, 44.9, 4, 0)) ;
 
     x_double = 404 ;
-    OK (GrB_Matrix_extractElement_FP64 (&x_double, A, 3, 0)) ;
+    OK (GrB_Matrix_extractElement_FP64_(&x_double, A, 3, 0)) ;
     CHECK (x_double == 404) ;
     CHECK (info == GrB_NO_VALUE) ;
     fprintf (f, "%s\n", GrB_error ()) ;
 
     OK (GrB_Matrix_setElement_FP64 (A, 707.3, 0, 0)) ;
 
-    OK (GrB_Matrix_extractElement_FP64 (&x_double, A, 0, 0)) ;
+    OK (GrB_Matrix_extractElement_FP64_(&x_double, A, 0, 0)) ;
 
     CHECK (info == GrB_SUCCESS) ;
     CHECK (x_double == 707.3) ;
@@ -1663,9 +1723,9 @@ void mexFunction
     expected = GrB_INSUFFICIENT_SPACE ;
 
     nvals = n2-1 ;
-    ERR (GrB_Matrix_extractTuples_FP64 (I2, J2, X2, &nvals, A)) ;
+    ERR (GrB_Matrix_extractTuples_FP64_(I2, J2, X2, &nvals, A)) ;
     nvals = n2 ;
-    OK  (GrB_Matrix_extractTuples_FP64 (I2, J2, X2, &nvals, A)) ;
+    OK  (GrB_Matrix_extractTuples_FP64_(I2, J2, X2, &nvals, A)) ;
 
     for (int k = 0 ; k < n2 ; k++)
     {
@@ -1676,9 +1736,9 @@ void mexFunction
     expected = GrB_DOMAIN_MISMATCH ;
 
     nvals = n2 ;
-    ERR (GrB_Matrix_extractTuples_UDT (I2, J2, (void *) X2, &nvals, A)) ;
+    ERR (GrB_Matrix_extractTuples_UDT_(I2, J2, (void *) X2, &nvals, A)) ;
 
-    GrB_Matrix_free (&A) ;
+    GrB_Matrix_free_(&A) ;
     CHECK (A == NULL) ;
 
     // The following are now allocated; keep them for the rest the tests:
@@ -1832,7 +1892,7 @@ void mexFunction
     ERR (GxB_Descriptor_fprint (d7, "d7", GB3, ff)) ;
     d7->out = GxB_DEFAULT ;
 
-    OK (GrB_Descriptor_free (&d7)) ;
+    OK (GrB_Descriptor_free_(&d7)) ;
     CHECK (d7 == NULL) ;
 
     //--------------------------------------------------------------------------
@@ -1842,34 +1902,39 @@ void mexFunction
     printf ("create test matrices-----------------------------------------\n") ;
 
     OK (random_matrix (&A, false, false, 3, 4, 12, 0, false)) ;
-
     OK (random_matrix (&B, false, false, 4, 2,  6, 0, false)) ;
     OK (random_matrix (&C, false, false, 3, 2,  4, 0, false)) ;
     OK (random_matrix (&E, false, false, 3, 2,  4, 0, false)) ;
     OK (random_matrix (&F, false, false, 3, 2,  4, 0, false)) ;
-    #if GxB_STDC_VERSION >= 201112L
     OK (random_matrix (&Z, false, false, 3, 2,  8, 0, true)) ;   // Z complex
-    #endif
+
+    OK (GrB_Matrix_wait_(&A)) ;
+    OK (GrB_Matrix_wait_(&B)) ;
+    OK (GrB_Matrix_wait_(&C)) ;
+    OK (GrB_Matrix_wait_(&E)) ;
+    OK (GrB_Matrix_wait_(&F)) ;
+    OK (GrB_Matrix_wait_(&Z)) ;
 
     OK (GrB_Vector_new (&v, GrB_FP64, 5)) ;
     OK (GrB_Vector_new (&u, GrB_FP64, 5)) ;
+    OK (GrB_Vector_wait_(&v)) ;
+    OK (GrB_Vector_wait_(&u)) ;
 
-    #if GxB_STDC_VERSION >= 201112L
     printf ("complex vector:\n") ;
     OK (GrB_Vector_new (&z, Complex, 5)) ;
-    #endif
 
     OK (GrB_Descriptor_new (&dnt)) ;
     OK (GxB_Desc_set (dnt, GrB_INP1, GrB_TRAN)) ;
+    OK (GrB_Descriptor_wait_(&dnt)) ;
 
     OK (GrB_Descriptor_new (&dtn)) ;
     OK (GxB_Desc_set (dtn, GrB_INP0, GrB_TRAN)) ;
+    OK (GrB_Descriptor_wait_(&dtn)) ;
 
     OK (GrB_Descriptor_new (&dtt)) ;
     OK (GxB_Desc_set (dtt, GrB_INP0, GrB_TRAN)) ;
     OK (GxB_Desc_set (dtt, GrB_INP1, GrB_TRAN)) ;
-
-    OK (GrB_wait ( )) ;
+    OK (GrB_Descriptor_wait_(&dtt)) ;
 
     //--------------------------------------------------------------------------
     // GrB_mxm, mxv, and vxm
@@ -1927,15 +1992,21 @@ void mexFunction
     ERR (GrB_mxm (C   , NULL, NULL, s2  , B   , A   , NULL)) ;
     ERR (GrB_mxm (C   , A   , NULL, s2  , A   , B   , NULL)) ;
 
-    expected = GrB_DOMAIN_MISMATCH ;
-
-    #if GxB_STDC_VERSION >= 201112L
-    ERR (GrB_mxm (C, NULL, NULL, Complex_plus_times, A, B, NULL)) ;
-    ERR (GrB_mxm (Z, NULL, NULL, s2, A, B, NULL)) ;
+    expected = (Complex == GxB_FC64) ? GrB_DIMENSION_MISMATCH : GrB_DOMAIN_MISMATCH ;
     ERR (GrB_mxm (C, NULL, NULL, s2, Z, B, NULL)) ;
     ERR (GrB_mxm (C, NULL, NULL, s2, B, Z, NULL)) ;
-    ERR (GrB_mxm (C, Z   , NULL, s2, A, B, NULL)) ;
-    #endif
+    if (Complex == GxB_FC64)
+    {
+        OK  (GrB_mxm (C, NULL, NULL, Complex_plus_times, A, B, NULL)) ;
+        OK  (GrB_mxm (Z, NULL, NULL, s2, A, B, NULL)) ;
+        OK  (GrB_mxm (C, Z   , NULL, s2, A, B, NULL)) ;
+    }
+    else
+    {
+        ERR (GrB_mxm (C, NULL, NULL, Complex_plus_times, A, B, NULL)) ;
+        ERR (GrB_mxm (Z, NULL, NULL, s2, A, B, NULL)) ;
+        ERR (GrB_mxm (C, Z   , NULL, s2, A, B, NULL)) ;
+    }
 
     printf ("here we are, last error was %s\n", GrB_error ( )) ;
     OK (GrB_mxm (C, NULL, o2 , s2, A, B, NULL)) ;
@@ -1949,7 +2020,7 @@ void mexFunction
     // GrB_mxm dot product
     //--------------------------------------------------------------------------
 
-    GrB_Index huge = GB_INDEX_MAX ;
+    GrB_Index huge = GxB_INDEX_MAX ;
     GrB_Matrix HugeRow, HugeMatrix = NULL ;
     OK (GrB_Matrix_new (&HugeRow, GrB_FP64, 1, huge)) ;
     GB_Matrix_check (HugeRow, "huge row", GB3, NULL, Context) ;
@@ -1962,8 +2033,8 @@ void mexFunction
         GxB_PLUS_TIMES_FP64, false, &mask_applied, 1, 1, 1, Context)) ;
 
     GxB_Matrix_fprint (HugeMatrix, "HugeMatrix", GB3, ff) ;
-    GrB_Matrix_free (&HugeMatrix) ;
-    GrB_Matrix_free (&HugeRow) ;
+    GrB_Matrix_free_(&HugeMatrix) ;
+    GrB_Matrix_free_(&HugeRow) ;
 
     //--------------------------------------------------------------------------
     // eWiseMult and eWiseAdd
@@ -1976,65 +2047,65 @@ void mexFunction
 
     expected = GrB_NULL_POINTER ;
 
-    ERR (GrB_eWiseMult_Vector_Semiring (v0, NULL, NULL, s0 , v0, v0, d0)) ;  // vector semiring
-    ERR (GrB_eWiseMult_Vector_Semiring (v0, NULL, NULL, s2 , v0, v0, d0)) ;
-    ERR (GrB_eWiseMult_Vector_Semiring (v , NULL, NULL, s2 , v0, v0, d0)) ;
-    ERR (GrB_eWiseMult_Vector_Semiring (v , NULL, NULL, s2 , v , v0, d0)) ;
+    ERR (GrB_Vector_eWiseMult_Semiring_(v0, NULL, NULL, s0 , v0, v0, d0)) ;  // vector semiring
+    ERR (GrB_Vector_eWiseMult_Semiring_(v0, NULL, NULL, s2 , v0, v0, d0)) ;
+    ERR (GrB_Vector_eWiseMult_Semiring_(v , NULL, NULL, s2 , v0, v0, d0)) ;
+    ERR (GrB_Vector_eWiseMult_Semiring_(v , NULL, NULL, s2 , v , v0, d0)) ;
 
-    ERR (GrB_eWiseMult_Vector_Monoid (v0, NULL, NULL, m0 , v0, v0, d0)) ;  // vector monoid
-    ERR (GrB_eWiseMult_Vector_Monoid (v0, NULL, NULL, m2 , v0, v0, d0)) ;
-    ERR (GrB_eWiseMult_Vector_Monoid (v , NULL, NULL, m2 , v0, v0, d0)) ;
-    ERR (GrB_eWiseMult_Vector_Monoid (v , NULL, NULL, m2 , v , v0, d0)) ;
+    ERR (GrB_Vector_eWiseMult_Monoid_(v0, NULL, NULL, m0 , v0, v0, d0)) ;  // vector monoid
+    ERR (GrB_Vector_eWiseMult_Monoid_(v0, NULL, NULL, m2 , v0, v0, d0)) ;
+    ERR (GrB_Vector_eWiseMult_Monoid_(v , NULL, NULL, m2 , v0, v0, d0)) ;
+    ERR (GrB_Vector_eWiseMult_Monoid_(v , NULL, NULL, m2 , v , v0, d0)) ;
 
-    ERR (GrB_eWiseMult_Vector_BinaryOp (v0, NULL, NULL, op0, v0, v0, d0)) ;  // vector op
-    ERR (GrB_eWiseMult_Vector_BinaryOp (v0, NULL, NULL, o2 , v0, v0, d0)) ;
-    ERR (GrB_eWiseMult_Vector_BinaryOp (v , NULL, NULL, o2 , v0, v0, d0)) ;
-    ERR (GrB_eWiseMult_Vector_BinaryOp (v , NULL, NULL, o2 , v , v0, d0)) ;
+    ERR (GrB_Vector_eWiseMult_BinaryOp_(v0, NULL, NULL, op0, v0, v0, d0)) ;  // vector op
+    ERR (GrB_Vector_eWiseMult_BinaryOp_(v0, NULL, NULL, o2 , v0, v0, d0)) ;
+    ERR (GrB_Vector_eWiseMult_BinaryOp_(v , NULL, NULL, o2 , v0, v0, d0)) ;
+    ERR (GrB_Vector_eWiseMult_BinaryOp_(v , NULL, NULL, o2 , v , v0, d0)) ;
 
-    ERR (GrB_eWiseMult_Matrix_Semiring (A0, NULL, NULL, s0 , A0, A0, d0)) ;  // matrix semiring
-    ERR (GrB_eWiseMult_Matrix_Semiring (A0, NULL, NULL, s2 , A0, A0, d0)) ;
-    ERR (GrB_eWiseMult_Matrix_Semiring (A , NULL, NULL, s2 , A0, A0, d0)) ;
-    ERR (GrB_eWiseMult_Matrix_Semiring (A , NULL, NULL, s2 , A , A0, d0)) ;
+    ERR (GrB_Matrix_eWiseMult_Semiring_(A0, NULL, NULL, s0 , A0, A0, d0)) ;  // matrix semiring
+    ERR (GrB_Matrix_eWiseMult_Semiring_(A0, NULL, NULL, s2 , A0, A0, d0)) ;
+    ERR (GrB_Matrix_eWiseMult_Semiring_(A , NULL, NULL, s2 , A0, A0, d0)) ;
+    ERR (GrB_Matrix_eWiseMult_Semiring_(A , NULL, NULL, s2 , A , A0, d0)) ;
 
-    ERR (GrB_eWiseMult_Matrix_Monoid (A0, NULL, NULL, m0 , A0, A0, d0)) ;  // matrix monoid
-    ERR (GrB_eWiseMult_Matrix_Monoid (A0, NULL, NULL, m2 , A0, A0, d0)) ;
-    ERR (GrB_eWiseMult_Matrix_Monoid (A , NULL, NULL, m2 , A0, A0, d0)) ;
-    ERR (GrB_eWiseMult_Matrix_Monoid (A , NULL, NULL, m2 , A , A0, d0)) ;
+    ERR (GrB_Matrix_eWiseMult_Monoid_(A0, NULL, NULL, m0 , A0, A0, d0)) ;  // matrix monoid
+    ERR (GrB_Matrix_eWiseMult_Monoid_(A0, NULL, NULL, m2 , A0, A0, d0)) ;
+    ERR (GrB_Matrix_eWiseMult_Monoid_(A , NULL, NULL, m2 , A0, A0, d0)) ;
+    ERR (GrB_Matrix_eWiseMult_Monoid_(A , NULL, NULL, m2 , A , A0, d0)) ;
 
-    ERR (GrB_eWiseMult_Matrix_BinaryOp (A0, NULL, NULL, op0, A0, A0, d0)) ;  // matrix op
-    ERR (GrB_eWiseMult_Matrix_BinaryOp (A0, NULL, NULL, o2 , A0, A0, d0)) ;
-    ERR (GrB_eWiseMult_Matrix_BinaryOp (A , NULL, NULL, o2 , A0, A0, d0)) ;
-    ERR (GrB_eWiseMult_Matrix_BinaryOp (A , NULL, NULL, o2 , A , A0, d0)) ;
+    ERR (GrB_Matrix_eWiseMult_BinaryOp_(A0, NULL, NULL, op0, A0, A0, d0)) ;  // matrix op
+    ERR (GrB_Matrix_eWiseMult_BinaryOp_(A0, NULL, NULL, o2 , A0, A0, d0)) ;
+    ERR (GrB_Matrix_eWiseMult_BinaryOp_(A , NULL, NULL, o2 , A0, A0, d0)) ;
+    ERR (GrB_Matrix_eWiseMult_BinaryOp_(A , NULL, NULL, o2 , A , A0, d0)) ;
 
-    ERR (GrB_eWiseAdd_Vector_Semiring  (v0, NULL, NULL, s0 , v0, v0, d0)) ;  // vector semiring
-    ERR (GrB_eWiseAdd_Vector_Semiring  (v0, NULL, NULL, s2 , v0, v0, d0)) ;
-    ERR (GrB_eWiseAdd_Vector_Semiring  (v , NULL, NULL, s2 , v0, v0, d0)) ;
-    ERR (GrB_eWiseAdd_Vector_Semiring  (v , NULL, NULL, s2 , v , v0, d0)) ;
+    ERR (GrB_Vector_eWiseAdd_Semiring_(v0, NULL, NULL, s0 , v0, v0, d0)) ;  // vector semiring
+    ERR (GrB_Vector_eWiseAdd_Semiring_(v0, NULL, NULL, s2 , v0, v0, d0)) ;
+    ERR (GrB_Vector_eWiseAdd_Semiring_(v , NULL, NULL, s2 , v0, v0, d0)) ;
+    ERR (GrB_Vector_eWiseAdd_Semiring_(v , NULL, NULL, s2 , v , v0, d0)) ;
 
-    ERR (GrB_eWiseAdd_Vector_Monoid  (v0, NULL, NULL, m0 , v0, v0, d0)) ;  // vector monoid
-    ERR (GrB_eWiseAdd_Vector_Monoid  (v0, NULL, NULL, m2 , v0, v0, d0)) ;
-    ERR (GrB_eWiseAdd_Vector_Monoid  (v , NULL, NULL, m2 , v0, v0, d0)) ;
-    ERR (GrB_eWiseAdd_Vector_Monoid  (v , NULL, NULL, m2 , v , v0, d0)) ;
+    ERR (GrB_Vector_eWiseAdd_Monoid_(v0, NULL, NULL, m0 , v0, v0, d0)) ;  // vector monoid
+    ERR (GrB_Vector_eWiseAdd_Monoid_(v0, NULL, NULL, m2 , v0, v0, d0)) ;
+    ERR (GrB_Vector_eWiseAdd_Monoid_(v , NULL, NULL, m2 , v0, v0, d0)) ;
+    ERR (GrB_Vector_eWiseAdd_Monoid_(v , NULL, NULL, m2 , v , v0, d0)) ;
 
-    ERR (GrB_eWiseAdd_Vector_BinaryOp  (v0, NULL, NULL, op0, v0, v0, d0)) ;  // vector op
-    ERR (GrB_eWiseAdd_Vector_BinaryOp  (v0, NULL, NULL, o2 , v0, v0, d0)) ;
-    ERR (GrB_eWiseAdd_Vector_BinaryOp  (v , NULL, NULL, o2 , v0, v0, d0)) ;
-    ERR (GrB_eWiseAdd_Vector_BinaryOp  (v , NULL, NULL, o2 , v , v0, d0)) ;
+    ERR (GrB_Vector_eWiseAdd_BinaryOp_(v0, NULL, NULL, op0, v0, v0, d0)) ;  // vector op
+    ERR (GrB_Vector_eWiseAdd_BinaryOp_(v0, NULL, NULL, o2 , v0, v0, d0)) ;
+    ERR (GrB_Vector_eWiseAdd_BinaryOp_(v , NULL, NULL, o2 , v0, v0, d0)) ;
+    ERR (GrB_Vector_eWiseAdd_BinaryOp_(v , NULL, NULL, o2 , v , v0, d0)) ;
 
-    ERR (GrB_eWiseAdd_Matrix_Semiring  (A0, NULL, NULL, s0 , A0, A0, d0)) ;  // matrix semiring
-    ERR (GrB_eWiseAdd_Matrix_Semiring  (A0, NULL, NULL, s2 , A0, A0, d0)) ;
-    ERR (GrB_eWiseAdd_Matrix_Semiring  (A , NULL, NULL, s2 , A0, A0, d0)) ;
-    ERR (GrB_eWiseAdd_Matrix_Semiring  (A , NULL, NULL, s2 , A , A0, d0)) ;
+    ERR (GrB_Matrix_eWiseAdd_Semiring_(A0, NULL, NULL, s0 , A0, A0, d0)) ;  // matrix semiring
+    ERR (GrB_Matrix_eWiseAdd_Semiring_(A0, NULL, NULL, s2 , A0, A0, d0)) ;
+    ERR (GrB_Matrix_eWiseAdd_Semiring_(A , NULL, NULL, s2 , A0, A0, d0)) ;
+    ERR (GrB_Matrix_eWiseAdd_Semiring_(A , NULL, NULL, s2 , A , A0, d0)) ;
 
-    ERR (GrB_eWiseAdd_Matrix_Monoid  (A0, NULL, NULL, m0 , A0, A0, d0)) ;  // matrix monoid
-    ERR (GrB_eWiseAdd_Matrix_Monoid  (A0, NULL, NULL, m2 , A0, A0, d0)) ;
-    ERR (GrB_eWiseAdd_Matrix_Monoid  (A , NULL, NULL, m2 , A0, A0, d0)) ;
-    ERR (GrB_eWiseAdd_Matrix_Monoid  (A , NULL, NULL, m2 , A , A0, d0)) ;
+    ERR (GrB_Matrix_eWiseAdd_Monoid_(A0, NULL, NULL, m0 , A0, A0, d0)) ;  // matrix monoid
+    ERR (GrB_Matrix_eWiseAdd_Monoid_(A0, NULL, NULL, m2 , A0, A0, d0)) ;
+    ERR (GrB_Matrix_eWiseAdd_Monoid_(A , NULL, NULL, m2 , A0, A0, d0)) ;
+    ERR (GrB_Matrix_eWiseAdd_Monoid_(A , NULL, NULL, m2 , A , A0, d0)) ;
 
-    ERR (GrB_eWiseAdd_Matrix_BinaryOp  (A0, NULL, NULL, op0, A0, A0, d0)) ;  // matrix op
-    ERR (GrB_eWiseAdd_Matrix_BinaryOp  (A0, NULL, NULL, o2 , A0, A0, d0)) ;
-    ERR (GrB_eWiseAdd_Matrix_BinaryOp  (A , NULL, NULL, o2 , A0, A0, d0)) ;
-    ERR (GrB_eWiseAdd_Matrix_BinaryOp  (A , NULL, NULL, o2 , A , A0, d0)) ;
+    ERR (GrB_Matrix_eWiseAdd_BinaryOp_(A0, NULL, NULL, op0, A0, A0, d0)) ;  // matrix op
+    ERR (GrB_Matrix_eWiseAdd_BinaryOp_(A0, NULL, NULL, o2 , A0, A0, d0)) ;
+    ERR (GrB_Matrix_eWiseAdd_BinaryOp_(A , NULL, NULL, o2 , A0, A0, d0)) ;
+    ERR (GrB_Matrix_eWiseAdd_BinaryOp_(A , NULL, NULL, o2 , A , A0, d0)) ;
 
     expected = GrB_UNINITIALIZED_OBJECT ;
 
@@ -2044,124 +2115,140 @@ void mexFunction
     A0 = Agunk ;
     op0 = op2gunk ;
 
-    ERR (GrB_eWiseMult_Vector_Semiring (v0, NULL, NULL, s0 , v0, v0, d0)) ;  // vector semiring
-    ERR (GrB_eWiseMult_Vector_Semiring (v0, NULL, NULL, s2 , v0, v0, d0)) ;
-    ERR (GrB_eWiseMult_Vector_Semiring (v , NULL, NULL, s2 , v0, v0, d0)) ;
-    ERR (GrB_eWiseMult_Vector_Semiring (v , NULL, NULL, s2 , v , v0, d0)) ;
-    ERR (GrB_eWiseMult_Vector_Semiring (v , v0  , NULL, s2 , v , v , d0)) ;
-    ERR (GrB_eWiseMult_Vector_Semiring (v , NULL, op0 , s2 , v , v , NULL)) ;
+    ERR (GrB_Vector_eWiseMult_Semiring_(v0, NULL, NULL, s0 , v0, v0, d0)) ;  // vector semiring
+    ERR (GrB_Vector_eWiseMult_Semiring_(v0, NULL, NULL, s2 , v0, v0, d0)) ;
+    ERR (GrB_Vector_eWiseMult_Semiring_(v , NULL, NULL, s2 , v0, v0, d0)) ;
+    ERR (GrB_Vector_eWiseMult_Semiring_(v , NULL, NULL, s2 , v , v0, d0)) ;
+    ERR (GrB_Vector_eWiseMult_Semiring_(v , v0  , NULL, s2 , v , v , d0)) ;
+    ERR (GrB_Vector_eWiseMult_Semiring_(v , NULL, op0 , s2 , v , v , NULL)) ;
 
-    ERR (GrB_eWiseMult_Vector_Monoid (v0, NULL, NULL, m0 , v0, v0, d0)) ;  // vector monoid
-    ERR (GrB_eWiseMult_Vector_Monoid (v0, NULL, NULL, m2 , v0, v0, d0)) ;
-    ERR (GrB_eWiseMult_Vector_Monoid (v , NULL, NULL, m2 , v0, v0, d0)) ;
-    ERR (GrB_eWiseMult_Vector_Monoid (v , NULL, NULL, m2 , v , v0, d0)) ;
-    ERR (GrB_eWiseMult_Vector_Monoid (v , v0  , NULL, m2 , v , v , d0)) ;
-    ERR (GrB_eWiseMult_Vector_Monoid (v , NULL, op0 , m2 , v , v , NULL)) ;
+    ERR (GrB_Vector_eWiseMult_Monoid_(v0, NULL, NULL, m0 , v0, v0, d0)) ;  // vector monoid
+    ERR (GrB_Vector_eWiseMult_Monoid_(v0, NULL, NULL, m2 , v0, v0, d0)) ;
+    ERR (GrB_Vector_eWiseMult_Monoid_(v , NULL, NULL, m2 , v0, v0, d0)) ;
+    ERR (GrB_Vector_eWiseMult_Monoid_(v , NULL, NULL, m2 , v , v0, d0)) ;
+    ERR (GrB_Vector_eWiseMult_Monoid_(v , v0  , NULL, m2 , v , v , d0)) ;
+    ERR (GrB_Vector_eWiseMult_Monoid_(v , NULL, op0 , m2 , v , v , NULL)) ;
 
-    ERR (GrB_eWiseMult_Vector_BinaryOp (v0, NULL, NULL, op0, v0, v0, d0)) ;  // vector op
-    ERR (GrB_eWiseMult_Vector_BinaryOp (v0, NULL, NULL, o2 , v0, v0, d0)) ;
-    ERR (GrB_eWiseMult_Vector_BinaryOp (v , NULL, NULL, o2 , v0, v0, d0)) ;
-    ERR (GrB_eWiseMult_Vector_BinaryOp (v , NULL, NULL, o2 , v , v0, d0)) ;
-    ERR (GrB_eWiseMult_Vector_BinaryOp (v , v0  , NULL, o2 , v , v , d0)) ;
-    ERR (GrB_eWiseMult_Vector_BinaryOp (v , NULL, op0 , o2 , v , v , NULL)) ;
+    ERR (GrB_Vector_eWiseMult_BinaryOp_(v0, NULL, NULL, op0, v0, v0, d0)) ;  // vector op
+    ERR (GrB_Vector_eWiseMult_BinaryOp_(v0, NULL, NULL, o2 , v0, v0, d0)) ;
+    ERR (GrB_Vector_eWiseMult_BinaryOp_(v , NULL, NULL, o2 , v0, v0, d0)) ;
+    ERR (GrB_Vector_eWiseMult_BinaryOp_(v , NULL, NULL, o2 , v , v0, d0)) ;
+    ERR (GrB_Vector_eWiseMult_BinaryOp_(v , v0  , NULL, o2 , v , v , d0)) ;
+    ERR (GrB_Vector_eWiseMult_BinaryOp_(v , NULL, op0 , o2 , v , v , NULL)) ;
 
-    ERR (GrB_eWiseMult_Matrix_Semiring (A0, NULL, NULL, s0 , A0, A0, d0)) ;  // matrix semiring
-    ERR (GrB_eWiseMult_Matrix_Semiring (A0, NULL, NULL, s2 , A0, A0, d0)) ;
-    ERR (GrB_eWiseMult_Matrix_Semiring (A , NULL, NULL, s2 , A0, A0, d0)) ;
-    ERR (GrB_eWiseMult_Matrix_Semiring (A , NULL, NULL, s2 , A , A0, d0)) ;
-    ERR (GrB_eWiseMult_Matrix_Semiring (A , A0  , NULL, s2 , A , A , d0)) ;
-    ERR (GrB_eWiseMult_Matrix_Semiring (A , NULL, op0 , s2 , A , A , NULL)) ;
+    ERR (GrB_Matrix_eWiseMult_Semiring_(A0, NULL, NULL, s0 , A0, A0, d0)) ;  // matrix semiring
+    ERR (GrB_Matrix_eWiseMult_Semiring_(A0, NULL, NULL, s2 , A0, A0, d0)) ;
+    ERR (GrB_Matrix_eWiseMult_Semiring_(A , NULL, NULL, s2 , A0, A0, d0)) ;
+    ERR (GrB_Matrix_eWiseMult_Semiring_(A , NULL, NULL, s2 , A , A0, d0)) ;
+    ERR (GrB_Matrix_eWiseMult_Semiring_(A , A0  , NULL, s2 , A , A , d0)) ;
+    ERR (GrB_Matrix_eWiseMult_Semiring_(A , NULL, op0 , s2 , A , A , NULL)) ;
 
-    ERR (GrB_eWiseMult_Matrix_Monoid (A0, NULL, NULL, m0 , A0, A0, d0)) ;  // matrix monoid
-    ERR (GrB_eWiseMult_Matrix_Monoid (A0, NULL, NULL, m2 , A0, A0, d0)) ;
-    ERR (GrB_eWiseMult_Matrix_Monoid (A , NULL, NULL, m2 , A0, A0, d0)) ;
-    ERR (GrB_eWiseMult_Matrix_Monoid (A , NULL, NULL, m2 , A , A0, d0)) ;
-    ERR (GrB_eWiseMult_Matrix_Monoid (A , A0  , NULL, m2 , A , A , d0)) ;
-    ERR (GrB_eWiseMult_Matrix_Monoid (A , NULL, op0 , m2 , A , A , NULL)) ;
+    ERR (GrB_Matrix_eWiseMult_Monoid_(A0, NULL, NULL, m0 , A0, A0, d0)) ;  // matrix monoid
+    ERR (GrB_Matrix_eWiseMult_Monoid_(A0, NULL, NULL, m2 , A0, A0, d0)) ;
+    ERR (GrB_Matrix_eWiseMult_Monoid_(A , NULL, NULL, m2 , A0, A0, d0)) ;
+    ERR (GrB_Matrix_eWiseMult_Monoid_(A , NULL, NULL, m2 , A , A0, d0)) ;
+    ERR (GrB_Matrix_eWiseMult_Monoid_(A , A0  , NULL, m2 , A , A , d0)) ;
+    ERR (GrB_Matrix_eWiseMult_Monoid_(A , NULL, op0 , m2 , A , A , NULL)) ;
 
-    ERR (GrB_eWiseMult_Matrix_BinaryOp (A0, NULL, NULL, op0, A0, A0, d0)) ;  // matrix op
-    ERR (GrB_eWiseMult_Matrix_BinaryOp (A0, NULL, NULL, o2 , A0, A0, d0)) ;
-    ERR (GrB_eWiseMult_Matrix_BinaryOp (A , NULL, NULL, o2 , A0, A0, d0)) ;
-    ERR (GrB_eWiseMult_Matrix_BinaryOp (A , NULL, NULL, o2 , A , A0, d0)) ;
-    ERR (GrB_eWiseMult_Matrix_BinaryOp (A , A0  , NULL, o2 , A , A , d0)) ;
-    ERR (GrB_eWiseMult_Matrix_BinaryOp (A , NULL, op0 , o2 , A , A , NULL)) ;
+    ERR (GrB_Matrix_eWiseMult_BinaryOp_(A0, NULL, NULL, op0, A0, A0, d0)) ;  // matrix op
+    ERR (GrB_Matrix_eWiseMult_BinaryOp_(A0, NULL, NULL, o2 , A0, A0, d0)) ;
+    ERR (GrB_Matrix_eWiseMult_BinaryOp_(A , NULL, NULL, o2 , A0, A0, d0)) ;
+    ERR (GrB_Matrix_eWiseMult_BinaryOp_(A , NULL, NULL, o2 , A , A0, d0)) ;
+    ERR (GrB_Matrix_eWiseMult_BinaryOp_(A , A0  , NULL, o2 , A , A , d0)) ;
+    ERR (GrB_Matrix_eWiseMult_BinaryOp_(A , NULL, op0 , o2 , A , A , NULL)) ;
 
-    ERR (GrB_eWiseAdd_Vector_Semiring  (v0, NULL, NULL, s0 , v0, v0, d0)) ;  // vector semiring
-    ERR (GrB_eWiseAdd_Vector_Semiring  (v0, NULL, NULL, s2 , v0, v0, d0)) ;
-    ERR (GrB_eWiseAdd_Vector_Semiring  (v , NULL, NULL, s2 , v0, v0, d0)) ;
-    ERR (GrB_eWiseAdd_Vector_Semiring  (v , NULL, NULL, s2 , v , v0, d0)) ;
-    ERR (GrB_eWiseAdd_Vector_Semiring  (v , v0  , NULL, s2 , v , v , d0)) ;
-    ERR (GrB_eWiseAdd_Vector_Semiring  (v , NULL, op0 , s2 , v , v , NULL)) ;
+    ERR (GrB_Vector_eWiseAdd_Semiring_(v0, NULL, NULL, s0 , v0, v0, d0)) ;  // vector semiring
+    ERR (GrB_Vector_eWiseAdd_Semiring_(v0, NULL, NULL, s2 , v0, v0, d0)) ;
+    ERR (GrB_Vector_eWiseAdd_Semiring_(v , NULL, NULL, s2 , v0, v0, d0)) ;
+    ERR (GrB_Vector_eWiseAdd_Semiring_(v , NULL, NULL, s2 , v , v0, d0)) ;
+    ERR (GrB_Vector_eWiseAdd_Semiring_(v , v0  , NULL, s2 , v , v , d0)) ;
+    ERR (GrB_Vector_eWiseAdd_Semiring_(v , NULL, op0 , s2 , v , v , NULL)) ;
 
-    ERR (GrB_eWiseAdd_Vector_Monoid  (v0, NULL, NULL, m0 , v0, v0, d0)) ;  // vector monoid
-    ERR (GrB_eWiseAdd_Vector_Monoid  (v0, NULL, NULL, m2 , v0, v0, d0)) ;
-    ERR (GrB_eWiseAdd_Vector_Monoid  (v , NULL, NULL, m2 , v0, v0, d0)) ;
-    ERR (GrB_eWiseAdd_Vector_Monoid  (v , NULL, NULL, m2 , v , v0, d0)) ;
-    ERR (GrB_eWiseAdd_Vector_Monoid  (v , v0  , NULL, m2 , v , v , d0)) ;
-    ERR (GrB_eWiseAdd_Vector_Monoid  (v , NULL, op0 , m2 , v , v , NULL)) ;
+    ERR (GrB_Vector_eWiseAdd_Monoid_(v0, NULL, NULL, m0 , v0, v0, d0)) ;  // vector monoid
+    ERR (GrB_Vector_eWiseAdd_Monoid_(v0, NULL, NULL, m2 , v0, v0, d0)) ;
+    ERR (GrB_Vector_eWiseAdd_Monoid_(v , NULL, NULL, m2 , v0, v0, d0)) ;
+    ERR (GrB_Vector_eWiseAdd_Monoid_(v , NULL, NULL, m2 , v , v0, d0)) ;
+    ERR (GrB_Vector_eWiseAdd_Monoid_(v , v0  , NULL, m2 , v , v , d0)) ;
+    ERR (GrB_Vector_eWiseAdd_Monoid_(v , NULL, op0 , m2 , v , v , NULL)) ;
 
-    ERR (GrB_eWiseAdd_Vector_BinaryOp  (v0, NULL, NULL, op0, v0, v0, d0)) ;  // vector op
-    ERR (GrB_eWiseAdd_Vector_BinaryOp  (v0, NULL, NULL, o2 , v0, v0, d0)) ;
-    ERR (GrB_eWiseAdd_Vector_BinaryOp  (v , NULL, NULL, o2 , v0, v0, d0)) ;
-    ERR (GrB_eWiseAdd_Vector_BinaryOp  (v , NULL, NULL, o2 , v , v0, d0)) ;
-    ERR (GrB_eWiseAdd_Vector_BinaryOp  (v , v0  , NULL, o2 , v , v , d0)) ;
-    ERR (GrB_eWiseAdd_Vector_BinaryOp  (v , NULL, op0 , o2 , v , v , NULL)) ;
+    ERR (GrB_Vector_eWiseAdd_BinaryOp_(v0, NULL, NULL, op0, v0, v0, d0)) ;  // vector op
+    ERR (GrB_Vector_eWiseAdd_BinaryOp_(v0, NULL, NULL, o2 , v0, v0, d0)) ;
+    ERR (GrB_Vector_eWiseAdd_BinaryOp_(v , NULL, NULL, o2 , v0, v0, d0)) ;
+    ERR (GrB_Vector_eWiseAdd_BinaryOp_(v , NULL, NULL, o2 , v , v0, d0)) ;
+    ERR (GrB_Vector_eWiseAdd_BinaryOp_(v , v0  , NULL, o2 , v , v , d0)) ;
+    ERR (GrB_Vector_eWiseAdd_BinaryOp_(v , NULL, op0 , o2 , v , v , NULL)) ;
 
-    ERR (GrB_eWiseAdd_Matrix_Semiring  (A0, NULL, NULL, s0 , A0, A0, d0)) ;  // matrix semiring
-    ERR (GrB_eWiseAdd_Matrix_Semiring  (A0, NULL, NULL, s2 , A0, A0, d0)) ;
-    ERR (GrB_eWiseAdd_Matrix_Semiring  (A , NULL, NULL, s2 , A0, A0, d0)) ;
-    ERR (GrB_eWiseAdd_Matrix_Semiring  (A , NULL, NULL, s2 , A , A0, d0)) ;
-    ERR (GrB_eWiseAdd_Matrix_Semiring  (A , A0  , NULL, s2 , A , A , d0)) ;
-    ERR (GrB_eWiseAdd_Matrix_Semiring  (A , NULL, op0 , s2 , A , A , NULL)) ;
+    ERR (GrB_Matrix_eWiseAdd_Semiring_(A0, NULL, NULL, s0 , A0, A0, d0)) ;  // matrix semiring
+    ERR (GrB_Matrix_eWiseAdd_Semiring_(A0, NULL, NULL, s2 , A0, A0, d0)) ;
+    ERR (GrB_Matrix_eWiseAdd_Semiring_(A , NULL, NULL, s2 , A0, A0, d0)) ;
+    ERR (GrB_Matrix_eWiseAdd_Semiring_(A , NULL, NULL, s2 , A , A0, d0)) ;
+    ERR (GrB_Matrix_eWiseAdd_Semiring_(A , A0  , NULL, s2 , A , A , d0)) ;
+    ERR (GrB_Matrix_eWiseAdd_Semiring_(A , NULL, op0 , s2 , A , A , NULL)) ;
 
-    ERR (GrB_eWiseAdd_Matrix_Monoid  (A0, NULL, NULL, m0 , A0, A0, d0)) ;  // matrix monoid
-    ERR (GrB_eWiseAdd_Matrix_Monoid  (A0, NULL, NULL, m2 , A0, A0, d0)) ;
-    ERR (GrB_eWiseAdd_Matrix_Monoid  (A , NULL, NULL, m2 , A0, A0, d0)) ;
-    ERR (GrB_eWiseAdd_Matrix_Monoid  (A , NULL, NULL, m2 , A , A0, d0)) ;
-    ERR (GrB_eWiseAdd_Matrix_Monoid  (A , A0  , NULL, m2 , A , A , d0)) ;
-    ERR (GrB_eWiseAdd_Matrix_Monoid  (A , NULL, op0 , m2 , A , A , NULL)) ;
+    ERR (GrB_Matrix_eWiseAdd_Monoid_(A0, NULL, NULL, m0 , A0, A0, d0)) ;  // matrix monoid
+    ERR (GrB_Matrix_eWiseAdd_Monoid_(A0, NULL, NULL, m2 , A0, A0, d0)) ;
+    ERR (GrB_Matrix_eWiseAdd_Monoid_(A , NULL, NULL, m2 , A0, A0, d0)) ;
+    ERR (GrB_Matrix_eWiseAdd_Monoid_(A , NULL, NULL, m2 , A , A0, d0)) ;
+    ERR (GrB_Matrix_eWiseAdd_Monoid_(A , A0  , NULL, m2 , A , A , d0)) ;
+    ERR (GrB_Matrix_eWiseAdd_Monoid_(A , NULL, op0 , m2 , A , A , NULL)) ;
 
-    ERR (GrB_eWiseAdd_Matrix_BinaryOp  (A0, NULL, NULL, op0, A0, A0, d0)) ;  // matrix op
-    ERR (GrB_eWiseAdd_Matrix_BinaryOp  (A0, NULL, NULL, o2 , A0, A0, d0)) ;
-    ERR (GrB_eWiseAdd_Matrix_BinaryOp  (A , NULL, NULL, o2 , A0, A0, d0)) ;
-    ERR (GrB_eWiseAdd_Matrix_BinaryOp  (A , NULL, NULL, o2 , A , A0, d0)) ;
-    ERR (GrB_eWiseAdd_Matrix_BinaryOp  (A , A0  , NULL, o2 , A , A , d0)) ;
-    ERR (GrB_eWiseAdd_Matrix_BinaryOp  (A , NULL, op0 , o2 , A , A , NULL)) ;
+    ERR (GrB_Matrix_eWiseAdd_BinaryOp_(A0, NULL, NULL, op0, A0, A0, d0)) ;  // matrix op
+    ERR (GrB_Matrix_eWiseAdd_BinaryOp_(A0, NULL, NULL, o2 , A0, A0, d0)) ;
+    ERR (GrB_Matrix_eWiseAdd_BinaryOp_(A , NULL, NULL, o2 , A0, A0, d0)) ;
+    ERR (GrB_Matrix_eWiseAdd_BinaryOp_(A , NULL, NULL, o2 , A , A0, d0)) ;
+    ERR (GrB_Matrix_eWiseAdd_BinaryOp_(A , A0  , NULL, o2 , A , A , d0)) ;
+    ERR (GrB_Matrix_eWiseAdd_BinaryOp_(A , NULL, op0 , o2 , A , A , NULL)) ;
 
-    expected = GrB_DOMAIN_MISMATCH ;
+    expected = (Complex == GxB_FC64) ? GrB_DIMENSION_MISMATCH : GrB_DOMAIN_MISMATCH ;
+    ERR (GrB_Matrix_eWiseAdd_BinaryOp_(A , NULL, NULL, o2 , Z , A , d0)) ;
+    ERR (GrB_Matrix_eWiseAdd_BinaryOp_(A , NULL, NULL, o2 , A , Z , d0)) ;
+    ERR (GrB_Matrix_eWiseAdd_BinaryOp_(A , NULL, NULL, Complex_plus, Z , A , d0)) ;
+    ERR (GrB_Matrix_eWiseAdd_BinaryOp_(A , NULL, NULL, Complex_plus, A , Z , d0)) ;
+    ERR (GrB_Matrix_eWiseAdd_BinaryOp_(A , NULL, NULL, Complex_plus, Z , Z , d0)) ;
+    ERR (GrB_Matrix_eWiseAdd_BinaryOp_(Z , NULL, NULL, Complex_complex, A , A , d0)) ;
 
-    #if GxB_STDC_VERSION >= 201112L
-    ERR (GrB_eWiseAdd_Matrix_BinaryOp  (A , NULL, NULL, o2 , Z , A , d0)) ;
-    ERR (GrB_eWiseAdd_Matrix_BinaryOp  (A , NULL, NULL, o2 , A , Z , d0)) ;
-    ERR (GrB_eWiseAdd_Matrix_BinaryOp  (A , NULL, NULL, Complex_plus, Z , A , d0)) ;
-    ERR (GrB_eWiseAdd_Matrix_BinaryOp  (A , NULL, NULL, Complex_plus, A , Z , d0)) ;
-    ERR (GrB_eWiseAdd_Matrix_BinaryOp  (A , NULL, NULL, Complex_plus, Z , Z , d0)) ;
-    ERR (GrB_eWiseAdd_Matrix_BinaryOp  (Z , Z   , NULL, Complex_plus, Z , Z , d0)) ;
-    ERR (GrB_eWiseAdd_Matrix_BinaryOp  (Z , NULL, NULL, Complex_complex, A , A , d0)) ;
+    if (Complex == GxB_FC64)
+    {
+        OK  (GrB_Matrix_eWiseAdd_BinaryOp_(Z , Z   , NULL, Complex_plus, Z , Z , d0)) ;
+    }
+    else
+    {
+        ERR (GrB_Matrix_eWiseAdd_BinaryOp_(Z , Z   , NULL, Complex_plus, Z , Z , d0)) ;
+    }
 
     OK (GrB_BinaryOp_new (&op3, f3, Complex, Complex, GrB_FP64)) ;
-    ERR (GrB_eWiseAdd_Matrix_BinaryOp  (Z , NULL, NULL, op3, Z , A , d0)) ;
-    ERR (GrB_eWiseAdd_Matrix_BinaryOp  (Z , NULL, op3 , o2 , A , A , d0)) ;
-    ERR (GrB_eWiseAdd_Matrix_BinaryOp  (A , NULL, op3 , o2 , A , A , d0)) ;
-    ERR (GrB_eWiseAdd_Matrix_BinaryOp  (A , NULL, Complex_complex, o2 , A , A , d0)) ;
-    #endif
+
+    expected = (Complex == GxB_FC64) ? GrB_DIMENSION_MISMATCH : GrB_DOMAIN_MISMATCH ;
+    ERR (GrB_Matrix_eWiseAdd_BinaryOp_(Z , NULL, NULL, op3, Z , A , d0)) ;
+    ERR (GrB_Matrix_eWiseAdd_BinaryOp_(Z , NULL, op3 , o2 , A , A , d0)) ;
+
+    if (Complex == GxB_FC64)
+    {
+        OK  (GrB_Matrix_eWiseAdd_BinaryOp_(A , NULL, op3 , o2 , A , A , d0)) ;
+        OK  (GrB_Matrix_eWiseAdd_BinaryOp_(A , NULL, Complex_complex, o2 , A , A , d0)) ;
+    }
+    else
+    {
+        ERR (GrB_Matrix_eWiseAdd_BinaryOp_(A , NULL, op3 , o2 , A , A , d0)) ;
+        ERR (GrB_Matrix_eWiseAdd_BinaryOp_(A , NULL, Complex_complex, o2 , A , A , d0)) ;
+    }
 
     expected = GrB_DIMENSION_MISMATCH ;
 
-    ERR (GrB_eWiseAdd_Matrix_BinaryOp  (C , NULL, NULL, o2 , A , B , d0)) ;
-    ERR (GrB_eWiseAdd_Matrix_BinaryOp  (C , NULL, NULL, o2 , A , B , dtn)) ;
-    ERR (GrB_eWiseAdd_Matrix_BinaryOp  (C , NULL, NULL, o2 , A , B , dnt)) ;
-    ERR (GrB_eWiseAdd_Matrix_BinaryOp  (C , NULL, NULL, o2 , A , B , dtt)) ;
+    ERR (GrB_Matrix_eWiseAdd_BinaryOp_(C , NULL, NULL, o2 , A , B , d0)) ;
+    ERR (GrB_Matrix_eWiseAdd_BinaryOp_(C , NULL, NULL, o2 , A , B , dtn)) ;
+    ERR (GrB_Matrix_eWiseAdd_BinaryOp_(C , NULL, NULL, o2 , A , B , dnt)) ;
+    ERR (GrB_Matrix_eWiseAdd_BinaryOp_(C , NULL, NULL, o2 , A , B , dtt)) ;
 
     // The following are now allocated; keep them for the rest the tests:
     // Agunk, Tgunk, op1gunk, op2gunk, monoid_gunk, semigunk, Aempty, vempty,
     // desc, dgunk, A, B, C, E, F, Z, v, u, dnt, dtn, dtt
 
     //--------------------------------------------------------------------------
-    // GxB_kron
+    // GrB_kronecker
     //--------------------------------------------------------------------------
 
-    printf ("GxB_kron ----------------------------------------------------\n") ;
+    printf ("GrB_kronecker -----------------------------------------------\n") ;
 
     m2 = GxB_MIN_FP64_MONOID ;
     s2 = GxB_PLUS_ISEQ_FP32 ;
@@ -2174,10 +2261,10 @@ void mexFunction
 
     expected = GrB_NULL_POINTER ;
 
-    info = (GxB_kron (A0, NULL, NULL, op0, A0, A0, d0)) ;  // matrix op
-    ERR (GxB_kron (A0, NULL, NULL, o2 , A0, A0, d0)) ;
-    ERR (GxB_kron (A , NULL, NULL, o2 , A0, A0, d0)) ;
-    ERR (GxB_kron (A , NULL, NULL, o2 , A , A0, d0)) ;
+    info = (GrB_Matrix_kronecker_BinaryOp_(A0, NULL, NULL, op0, A0, A0, d0)) ;  // matrix op
+    ERR (GrB_Matrix_kronecker_BinaryOp_(A0, NULL, NULL, o2 , A0, A0, d0)) ;
+    ERR (GrB_Matrix_kronecker_BinaryOp_(A , NULL, NULL, o2 , A0, A0, d0)) ;
+    ERR (GrB_Matrix_kronecker_BinaryOp_(A , NULL, NULL, o2 , A , A0, d0)) ;
 
     expected = GrB_UNINITIALIZED_OBJECT ;
 
@@ -2187,30 +2274,28 @@ void mexFunction
     A0 = Agunk ;
     op0 = op2gunk ;
 
-    ERR (GxB_kron (A0, NULL, NULL, op0, A0, A0, d0)) ;  // matrix op
-    ERR (GxB_kron (A0, NULL, NULL, o2 , A0, A0, d0)) ;
-    ERR (GxB_kron (A , NULL, NULL, o2 , A0, A0, d0)) ;
-    ERR (GxB_kron (A , NULL, NULL, o2 , A , A0, d0)) ;
-    ERR (GxB_kron (A , A0  , NULL, o2 , A , A , d0)) ;
-    ERR (GxB_kron (A , NULL, op0 , o2 , A , A , NULL)) ;
+    ERR (GrB_Matrix_kronecker_BinaryOp_(A0, NULL, NULL, op0, A0, A0, d0)) ;  // matrix op
+    ERR (GrB_Matrix_kronecker_BinaryOp_(A0, NULL, NULL, o2 , A0, A0, d0)) ;
+    ERR (GrB_Matrix_kronecker_BinaryOp_(A , NULL, NULL, o2 , A0, A0, d0)) ;
+    ERR (GrB_Matrix_kronecker_BinaryOp_(A , NULL, NULL, o2 , A , A0, d0)) ;
+    ERR (GrB_Matrix_kronecker_BinaryOp_(A , A0  , NULL, o2 , A , A , d0)) ;
+    ERR (GrB_Matrix_kronecker_BinaryOp_(A , NULL, op0 , o2 , A , A , NULL)) ;
 
-    expected = GrB_DOMAIN_MISMATCH ;
+    expected = (Complex == GxB_FC64) ? GrB_DIMENSION_MISMATCH : GrB_DOMAIN_MISMATCH ;
 
-    #if GxB_STDC_VERSION >= 201112L
-    ERR (GxB_kron  (A , NULL, NULL, o2 , Z , A , d0)) ;
-    ERR (GxB_kron  (A , NULL, NULL, o2 , A , Z , d0)) ;
-    ERR (GxB_kron  (A , NULL, NULL, Complex_plus, Z , A , d0)) ;
-    ERR (GxB_kron  (A , NULL, NULL, Complex_plus, A , Z , d0)) ;
-    ERR (GxB_kron  (A , NULL, NULL, Complex_plus, Z , Z , d0)) ;
-    ERR (GxB_kron  (Z , Z   , NULL, Complex_plus, Z , Z , d0)) ;
-    #endif
+    ERR (GrB_Matrix_kronecker_BinaryOp_  (A , NULL, NULL, o2 , Z , A , d0)) ;
+    ERR (GrB_Matrix_kronecker_BinaryOp_  (A , NULL, NULL, o2 , A , Z , d0)) ;
+    ERR (GrB_Matrix_kronecker_BinaryOp_  (A , NULL, NULL, Complex_plus, Z , A , d0)) ;
+    ERR (GrB_Matrix_kronecker_BinaryOp_  (A , NULL, NULL, Complex_plus, A , Z , d0)) ;
+    ERR (GrB_Matrix_kronecker_BinaryOp_  (A , NULL, NULL, Complex_plus, Z , Z , d0)) ;
+    ERR (GrB_Matrix_kronecker_BinaryOp_  (Z , Z   , NULL, Complex_plus, Z , Z , d0)) ;
 
     expected = GrB_DIMENSION_MISMATCH ;
 
-    ERR (GxB_kron  (C , NULL, NULL, o2 , A , B , d0)) ;
-    ERR (GxB_kron  (C , NULL, NULL, o2 , A , B , dtn)) ;
-    ERR (GxB_kron  (C , NULL, NULL, o2 , A , B , dnt)) ;
-    ERR (GxB_kron  (C , NULL, NULL, o2 , A , B , dtt)) ;
+    ERR (GrB_Matrix_kronecker_BinaryOp_  (C , NULL, NULL, o2 , A , B , d0)) ;
+    ERR (GrB_Matrix_kronecker_BinaryOp_  (C , NULL, NULL, o2 , A , B , dtn)) ;
+    ERR (GrB_Matrix_kronecker_BinaryOp_  (C , NULL, NULL, o2 , A , B , dnt)) ;
+    ERR (GrB_Matrix_kronecker_BinaryOp_  (C , NULL, NULL, o2 , A , B , dtt)) ;
 
     //--------------------------------------------------------------------------
     // extract
@@ -2226,18 +2311,18 @@ void mexFunction
     A0 = NULL ;
     op0 = NULL ;
 
-    ERR (GrB_Vector_extract (v0, NULL, NULL, v0, I0, 0,    d0)) ;     // vector extract
-    ERR (GrB_Vector_extract (v , NULL, NULL, v0, I0, 0,    d0)) ;
-    ERR (GrB_Vector_extract (v , NULL, NULL, u , I0, 0,    d0)) ;
+    ERR (GrB_Vector_extract_(v0, NULL, NULL, v0, I0, 0,    d0)) ;     // vector extract
+    ERR (GrB_Vector_extract_(v , NULL, NULL, v0, I0, 0,    d0)) ;
+    ERR (GrB_Vector_extract_(v , NULL, NULL, u , I0, 0,    d0)) ;
 
-    ERR (GrB_Col_extract (v0, NULL, NULL, A0, I0, 0, 0, d0)) ;     // column extract
-    ERR (GrB_Col_extract (v , NULL, NULL, A0, I0, 0, 0, d0)) ;
-    ERR (GrB_Col_extract (v , NULL, NULL, A , I0, 0, 0, d0)) ;
+    ERR (GrB_Col_extract_(v0, NULL, NULL, A0, I0, 0, 0, d0)) ;     // column extract
+    ERR (GrB_Col_extract_(v , NULL, NULL, A0, I0, 0, 0, d0)) ;
+    ERR (GrB_Col_extract_(v , NULL, NULL, A , I0, 0, 0, d0)) ;
 
-    ERR (GrB_Matrix_extract (A0, NULL, NULL, A0, I0, 0, J0, 0, d0)) ; // matrix extract
-    ERR (GrB_Matrix_extract (A , NULL, NULL, A0, I0, 0, J0, 0, d0)) ;
-    ERR (GrB_Matrix_extract (A , NULL, NULL, A , I0, 0, J0, 0, d0)) ;
-    ERR (GrB_Matrix_extract (A , NULL, NULL, A , I , 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_extract_(A0, NULL, NULL, A0, I0, 0, J0, 0, d0)) ; // matrix extract
+    ERR (GrB_Matrix_extract_(A , NULL, NULL, A0, I0, 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_extract_(A , NULL, NULL, A , I0, 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_extract_(A , NULL, NULL, A , I , 0, J0, 0, d0)) ;
 
     expected = GrB_UNINITIALIZED_OBJECT ;
 
@@ -2246,62 +2331,59 @@ void mexFunction
     d0 = dgunk ;
     op0 = op2gunk ;
 
-    ERR (GrB_Vector_extract (v0, NULL, NULL, v0, I0, 0,    d0)) ;     // vector extract
-    ERR (GrB_Vector_extract (v , v0  , NULL, v0, I0, 0,    d0)) ;
-    ERR (GrB_Vector_extract (v , v   , NULL, v0, I0, 0,    d0)) ;
-    ERR (GrB_Vector_extract (v , v   , NULL, v , I , 1,    d0)) ;
-    ERR (GrB_Vector_extract (v , v   , op0 , v , I , 1,    NULL)) ;
+    ERR (GrB_Vector_extract_(v0, NULL, NULL, v0, I0, 0,    d0)) ;     // vector extract
+    ERR (GrB_Vector_extract_(v , v0  , NULL, v0, I0, 0,    d0)) ;
+    ERR (GrB_Vector_extract_(v , v   , NULL, v0, I0, 0,    d0)) ;
+    ERR (GrB_Vector_extract_(v , v   , NULL, v , I , 1,    d0)) ;
+    ERR (GrB_Vector_extract_(v , v   , op0 , v , I , 1,    NULL)) ;
 
-    ERR (GrB_Col_extract (v0, NULL, NULL, A0, I0, 0, 0, d0)) ;     // column extract
-    ERR (GrB_Col_extract (v , v0  , NULL, A0, I0, 0, 0, d0)) ;
-    ERR (GrB_Col_extract (v , v   , NULL, A0, I0, 0, 0, d0)) ;
-    ERR (GrB_Col_extract (v , v   , NULL, A , I , 1, 0, d0)) ;
-    ERR (GrB_Col_extract (v , v   , op0 , A , I , 1, 0, NULL)) ;
+    ERR (GrB_Col_extract_(v0, NULL, NULL, A0, I0, 0, 0, d0)) ;     // column extract
+    ERR (GrB_Col_extract_(v , v0  , NULL, A0, I0, 0, 0, d0)) ;
+    ERR (GrB_Col_extract_(v , v   , NULL, A0, I0, 0, 0, d0)) ;
+    ERR (GrB_Col_extract_(v , v   , NULL, A , I , 1, 0, d0)) ;
+    ERR (GrB_Col_extract_(v , v   , op0 , A , I , 1, 0, NULL)) ;
 
-    ERR (GrB_Matrix_extract (A0, NULL, NULL, A0, I0, 0, J0, 0, d0)) ; // matrix extract
-    ERR (GrB_Matrix_extract (A , A0  , NULL, A0, I0, 0, J0, 0, d0)) ;
-    ERR (GrB_Matrix_extract (A , A   , NULL, A0, I0, 0, J0, 0, d0)) ;
-    ERR (GrB_Matrix_extract (A , A   , NULL, A0, I , 1, J , 1, d0)) ;
-    ERR (GrB_Matrix_extract (A , A   , op0 , A , I , 1, J , 1, NULL)) ;
+    ERR (GrB_Matrix_extract_(A0, NULL, NULL, A0, I0, 0, J0, 0, d0)) ; // matrix extract
+    ERR (GrB_Matrix_extract_(A , A0  , NULL, A0, I0, 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_extract_(A , A   , NULL, A0, I0, 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_extract_(A , A   , NULL, A0, I , 1, J , 1, d0)) ;
+    ERR (GrB_Matrix_extract_(A , A   , op0 , A , I , 1, J , 1, NULL)) ;
 
     v0 = NULL ;
     A0 = NULL ;
     d0 = NULL ;
+    expected = (Complex == GxB_FC64) ? GrB_DIMENSION_MISMATCH : GrB_DOMAIN_MISMATCH ;
 
-    expected = GrB_DOMAIN_MISMATCH ;
+    ERR (GrB_Vector_extract_(v, z, NULL, u, I, 0, d0)) ;              // vector extract
+    ERR (GrB_Vector_extract_(v, NULL, Complex_plus, u, I, 0, d0)) ;
+    ERR (GrB_Vector_extract_(v, NULL, Complex_plus, z, I, 0, d0)) ;
+    ERR (GrB_Vector_extract_(z, NULL, o2 , u, I, 0, d0)) ;
+    ERR (GrB_Vector_extract_(v, NULL, o2 , z, I, 0, d0)) ;
 
-    #if GxB_STDC_VERSION >= 201112L
-    ERR (GrB_Vector_extract (v, z, NULL, u, I, 0, d0)) ;              // vector extract
-    ERR (GrB_Vector_extract (v, NULL, Complex_plus, u, I, 0, d0)) ;
-    ERR (GrB_Vector_extract (v, NULL, Complex_plus, z, I, 0, d0)) ;
-    ERR (GrB_Vector_extract (z, NULL, o2 , u, I, 0, d0)) ;
-    ERR (GrB_Vector_extract (v, NULL, o2 , z, I, 0, d0)) ;
+    ERR (GrB_Col_extract_(v, z, NULL, A, I, 0, 0, d0)) ;           // column extract
+    ERR (GrB_Col_extract_(v, NULL, Complex_plus, A, I, 0, 0, d0)) ;
+    ERR (GrB_Col_extract_(v, NULL, Complex_plus, Z, I, 0, 0, d0)) ;
+    ERR (GrB_Col_extract_(z, NULL, o2 , A, I, 0, 0, d0)) ;
+    ERR (GrB_Col_extract_(v, NULL, o2 , Z, I, 0, 0, d0)) ;
 
-    ERR (GrB_Col_extract (v, z, NULL, A, I, 0, 0, d0)) ;           // column extract
-    ERR (GrB_Col_extract (v, NULL, Complex_plus, A, I, 0, 0, d0)) ;
-    ERR (GrB_Col_extract (v, NULL, Complex_plus, Z, I, 0, 0, d0)) ;
-    ERR (GrB_Col_extract (z, NULL, o2 , A, I, 0, 0, d0)) ;
-    ERR (GrB_Col_extract (v, NULL, o2 , Z, I, 0, 0, d0)) ;
-
-    ERR (GrB_Matrix_extract (A, Z, NULL, A, I, 0, J, 0, d0)) ;        // matrix extract
-    ERR (GrB_Matrix_extract (A, NULL, Complex_plus, A, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_extract (A, NULL, Complex_plus, Z, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_extract (Z, NULL, o2 , A, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_extract (A, NULL, o2 , Z, I, 0, J, 0, d0)) ;
-    #endif
+    ERR (GrB_Matrix_extract_(A, Z, NULL, A, I, 0, J, 0, d0)) ;        // matrix extract
+    ERR (GrB_Matrix_extract_(A, NULL, Complex_plus, A, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_extract_(A, NULL, Complex_plus, Z, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_extract_(Z, NULL, o2 , A, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_extract_(A, NULL, o2 , Z, I, 0, J, 0, d0)) ;
 
     expected = GrB_DIMENSION_MISMATCH ;
 
-    ERR (GrB_Matrix_extract (A, NULL, NULL, A, I, 1, J, 2, d0)) ;
-    ERR (GrB_Matrix_extract (A, NULL, NULL, A, I, 1, J, 2, dtn)) ;
+    ERR (GrB_Matrix_extract_(A, NULL, NULL, A, I, 1, J, 2, d0)) ;
+    ERR (GrB_Matrix_extract_(A, NULL, NULL, A, I, 1, J, 2, dtn)) ;
 
     expected = GrB_INVALID_INDEX ;
 
     OK (GrB_Vector_new (&h, GrB_FP64, 1)) ;
 
-    OK  (GrB_Col_extract (h, NULL, NULL, A, I, 1,   0, d0)) ;  // column extract
+    OK  (GrB_Col_extract_(h, NULL, NULL, A, I, 1,   0, d0)) ;  // column extract
 
-    ERR (GrB_Col_extract (h, NULL, NULL, A, I, 1, 911, d0)) ;  // column extract
+    ERR (GrB_Col_extract_(h, NULL, NULL, A, I, 1, 911, d0)) ;  // column extract
 
     expected = GrB_INDEX_OUT_OF_BOUNDS ;
 
@@ -2329,109 +2411,109 @@ void mexFunction
     // GxB_Vector_subassign_T (w,mask,acc,x,I,ni,d)
     // GxB_Matrix_subassign_T (C,Mask,acc,x,I,ni,J,nj,d)
 
-    ERR (GxB_Vector_subassign (v0, NULL, NULL, v0, I0, 0, d0)) ;       // vector assign
-    ERR (GxB_Vector_subassign (v , NULL, NULL, v0, I0, 0, d0)) ;
-    ERR (GxB_Vector_subassign (v , NULL, NULL, v , I0, 0, d0)) ;
+    ERR (GxB_Vector_subassign_(v0, NULL, NULL, v0, I0, 0, d0)) ;       // vector assign
+    ERR (GxB_Vector_subassign_(v , NULL, NULL, v0, I0, 0, d0)) ;
+    ERR (GxB_Vector_subassign_(v , NULL, NULL, v , I0, 0, d0)) ;
 
-    ERR (GxB_Matrix_subassign (A0, NULL, NULL, A0, I0, 0, J0, 0, d0)) ;// matrix assign
-    ERR (GxB_Matrix_subassign (A , NULL, NULL, A0, I0, 0, J0, 0, d0)) ;
-    ERR (GxB_Matrix_subassign (A , NULL, NULL, A , I0, 0, J0, 0, d0)) ;
-    ERR (GxB_Matrix_subassign (A , NULL, NULL, A , I , 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_(A0, NULL, NULL, A0, I0, 0, J0, 0, d0)) ;// matrix assign
+    ERR (GxB_Matrix_subassign_(A , NULL, NULL, A0, I0, 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_(A , NULL, NULL, A , I0, 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_(A , NULL, NULL, A , I , 0, J0, 0, d0)) ;
 
-    ERR (GxB_Col_subassign (A0, NULL, NULL, v0, I0, 0,  0, d0)) ;   // column assign
-    ERR (GxB_Col_subassign (A , NULL, NULL, v0, I0, 0,  0, d0)) ;
-    ERR (GxB_Col_subassign (A , NULL, NULL, v , I0, 0,  0, d0)) ;
+    ERR (GxB_Col_subassign_(A0, NULL, NULL, v0, I0, 0,  0, d0)) ;   // column assign
+    ERR (GxB_Col_subassign_(A , NULL, NULL, v0, I0, 0,  0, d0)) ;
+    ERR (GxB_Col_subassign_(A , NULL, NULL, v , I0, 0,  0, d0)) ;
 
-    ERR (GxB_Row_subassign (A0, NULL, NULL, v0,  0, J0, 0, d0)) ;   // row assign
-    ERR (GxB_Row_subassign (A , NULL, NULL, v0,  0, J0, 0, d0)) ;
-    ERR (GxB_Row_subassign (A , NULL, NULL, v ,  0, J0, 0, d0)) ;
+    ERR (GxB_Row_subassign_(A0, NULL, NULL, v0,  0, J0, 0, d0)) ;   // row assign
+    ERR (GxB_Row_subassign_(A , NULL, NULL, v0,  0, J0, 0, d0)) ;
+    ERR (GxB_Row_subassign_(A , NULL, NULL, v ,  0, J0, 0, d0)) ;
 
-    ERR (GxB_Vector_subassign_FP64 (v0, NULL, NULL,  x, I0, 0, d0)) ;       // vector scalar
-    ERR (GxB_Vector_subassign_FP64 (v , NULL, NULL,  x, I0, 0, d0)) ;
+    ERR (GxB_Vector_subassign_FP64_(v0, NULL, NULL,  x, I0, 0, d0)) ;       // vector scalar
+    ERR (GxB_Vector_subassign_FP64_(v , NULL, NULL,  x, I0, 0, d0)) ;
 
-    ERR (GxB_Vector_subassign_BOOL (v0, NULL, NULL,  (bool) 0, I0, 0, d0)) ;
-    ERR (GxB_Vector_subassign_BOOL (v , NULL, NULL,  (bool) 0, I0, 0, d0)) ;
+    ERR (GxB_Vector_subassign_BOOL_(v0, NULL, NULL,  (bool) 0, I0, 0, d0)) ;
+    ERR (GxB_Vector_subassign_BOOL_(v , NULL, NULL,  (bool) 0, I0, 0, d0)) ;
 
-    ERR (GxB_Vector_subassign_INT8 (v0, NULL, NULL,  (int8_t) 0, I0, 0, d0)) ;
-    ERR (GxB_Vector_subassign_INT8 (v , NULL, NULL,  (int8_t) 0, I0, 0, d0)) ;
+    ERR (GxB_Vector_subassign_INT8_(v0, NULL, NULL,  (int8_t) 0, I0, 0, d0)) ;
+    ERR (GxB_Vector_subassign_INT8_(v , NULL, NULL,  (int8_t) 0, I0, 0, d0)) ;
 
-    ERR (GxB_Vector_subassign_UINT8 (v0, NULL, NULL,  (uint8_t) 0, I0, 0, d0)) ;
-    ERR (GxB_Vector_subassign_UINT8 (v , NULL, NULL,  (uint8_t) 0, I0, 0, d0)) ;
+    ERR (GxB_Vector_subassign_UINT8_(v0, NULL, NULL,  (uint8_t) 0, I0, 0, d0)) ;
+    ERR (GxB_Vector_subassign_UINT8_(v , NULL, NULL,  (uint8_t) 0, I0, 0, d0)) ;
 
-    ERR (GxB_Vector_subassign_INT16 (v0, NULL, NULL,  (int16_t) 0, I0, 0, d0)) ;
-    ERR (GxB_Vector_subassign_INT16 (v , NULL, NULL,  (int16_t) 0, I0, 0, d0)) ;
+    ERR (GxB_Vector_subassign_INT16_(v0, NULL, NULL,  (int16_t) 0, I0, 0, d0)) ;
+    ERR (GxB_Vector_subassign_INT16_(v , NULL, NULL,  (int16_t) 0, I0, 0, d0)) ;
 
-    ERR (GxB_Vector_subassign_UINT16 (v0, NULL, NULL,  (uint16_t) 0, I0, 0, d0)) ;
-    ERR (GxB_Vector_subassign_UINT16 (v , NULL, NULL,  (uint16_t) 0, I0, 0, d0)) ;
+    ERR (GxB_Vector_subassign_UINT16_(v0, NULL, NULL,  (uint16_t) 0, I0, 0, d0)) ;
+    ERR (GxB_Vector_subassign_UINT16_(v , NULL, NULL,  (uint16_t) 0, I0, 0, d0)) ;
 
-    ERR (GxB_Vector_subassign_INT32 (v0, NULL, NULL,  (int32_t) 0, I0, 0, d0)) ;
-    ERR (GxB_Vector_subassign_INT32 (v , NULL, NULL,  (int32_t) 0, I0, 0, d0)) ;
+    ERR (GxB_Vector_subassign_INT32_(v0, NULL, NULL,  (int32_t) 0, I0, 0, d0)) ;
+    ERR (GxB_Vector_subassign_INT32_(v , NULL, NULL,  (int32_t) 0, I0, 0, d0)) ;
 
-    ERR (GxB_Vector_subassign_UINT32 (v0, NULL, NULL,  (uint32_t) 0, I0, 0, d0)) ;
-    ERR (GxB_Vector_subassign_UINT32 (v , NULL, NULL,  (uint32_t) 0, I0, 0, d0)) ;
+    ERR (GxB_Vector_subassign_UINT32_(v0, NULL, NULL,  (uint32_t) 0, I0, 0, d0)) ;
+    ERR (GxB_Vector_subassign_UINT32_(v , NULL, NULL,  (uint32_t) 0, I0, 0, d0)) ;
 
-    ERR (GxB_Vector_subassign_INT64 (v0, NULL, NULL,  (int64_t) 0, I0, 0, d0)) ;
-    ERR (GxB_Vector_subassign_INT64 (v , NULL, NULL,  (int64_t) 0, I0, 0, d0)) ;
+    ERR (GxB_Vector_subassign_INT64_(v0, NULL, NULL,  (int64_t) 0, I0, 0, d0)) ;
+    ERR (GxB_Vector_subassign_INT64_(v , NULL, NULL,  (int64_t) 0, I0, 0, d0)) ;
 
-    ERR (GxB_Vector_subassign_UINT64 (v0, NULL, NULL,  (uint64_t) 0, I0, 0, d0)) ;
-    ERR (GxB_Vector_subassign_UINT64 (v , NULL, NULL,  (uint64_t) 0, I0, 0, d0)) ;
+    ERR (GxB_Vector_subassign_UINT64_(v0, NULL, NULL,  (uint64_t) 0, I0, 0, d0)) ;
+    ERR (GxB_Vector_subassign_UINT64_(v , NULL, NULL,  (uint64_t) 0, I0, 0, d0)) ;
 
-    ERR (GxB_Vector_subassign_FP32 (v0, NULL, NULL,  (float) 0, I0, 0, d0)) ;
-    ERR (GxB_Vector_subassign_FP32 (v , NULL, NULL,  (float) 0, I0, 0, d0)) ;
+    ERR (GxB_Vector_subassign_FP32_(v0, NULL, NULL,  (float) 0, I0, 0, d0)) ;
+    ERR (GxB_Vector_subassign_FP32_(v , NULL, NULL,  (float) 0, I0, 0, d0)) ;
 
-    ERR (GxB_Vector_subassign_UDT (v0, NULL, NULL,  (void *) X, I0, 0, d0)) ;
-    ERR (GxB_Vector_subassign_UDT (v , NULL, NULL,  (void *) X, I0, 0, d0)) ;
-    ERR (GxB_Vector_subassign_UDT (v , NULL, NULL,  (void *) NULL, I, 0, d0)) ;
+    ERR (GxB_Vector_subassign_UDT_(v0, NULL, NULL,  (void *) X, I0, 0, d0)) ;
+    ERR (GxB_Vector_subassign_UDT_(v , NULL, NULL,  (void *) X, I0, 0, d0)) ;
+    ERR (GxB_Vector_subassign_UDT_(v , NULL, NULL,  (void *) NULL, I, 0, d0)) ;
 
 
-    ERR (GxB_Matrix_subassign_FP64 (A0, NULL, NULL,  x, I0, 0, J0, 0, d0)) ;// matrix scalar
-    ERR (GxB_Matrix_subassign_FP64 (A , NULL, NULL,  x, I0, 0, J0, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_FP64 (A , NULL, NULL,  x, I , 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_FP64_(A0, NULL, NULL,  x, I0, 0, J0, 0, d0)) ;// matrix scalar
+    ERR (GxB_Matrix_subassign_FP64_(A , NULL, NULL,  x, I0, 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_FP64_(A , NULL, NULL,  x, I , 0, J0, 0, d0)) ;
 
-    ERR (GxB_Matrix_subassign_BOOL (A0, NULL, NULL,  (bool) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_BOOL (A , NULL, NULL,  (bool) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_BOOL (A , NULL, NULL,  (bool) 0, I , 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_BOOL_(A0, NULL, NULL,  (bool) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_BOOL_(A , NULL, NULL,  (bool) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_BOOL_(A , NULL, NULL,  (bool) 0, I , 0, J0, 0, d0)) ;
 
-    ERR (GxB_Matrix_subassign_INT8 (A0, NULL, NULL,  (int8_t) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_INT8 (A , NULL, NULL,  (int8_t) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_INT8 (A , NULL, NULL,  (int8_t) 0, I , 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_INT8_(A0, NULL, NULL,  (int8_t) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_INT8_(A , NULL, NULL,  (int8_t) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_INT8_(A , NULL, NULL,  (int8_t) 0, I , 0, J0, 0, d0)) ;
 
-    ERR (GxB_Matrix_subassign_UINT8 (A0, NULL, NULL,  (uint8_t) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_UINT8 (A , NULL, NULL,  (uint8_t) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_UINT8 (A , NULL, NULL,  (uint8_t) 0, I , 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_UINT8_(A0, NULL, NULL,  (uint8_t) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_UINT8_(A , NULL, NULL,  (uint8_t) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_UINT8_(A , NULL, NULL,  (uint8_t) 0, I , 0, J0, 0, d0)) ;
 
-    ERR (GxB_Matrix_subassign_INT16 (A0, NULL, NULL,  (int16_t) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_INT16 (A , NULL, NULL,  (int16_t) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_INT16 (A , NULL, NULL,  (int16_t) 0, I , 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_INT16_(A0, NULL, NULL,  (int16_t) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_INT16_(A , NULL, NULL,  (int16_t) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_INT16_(A , NULL, NULL,  (int16_t) 0, I , 0, J0, 0, d0)) ;
 
-    ERR (GxB_Matrix_subassign_UINT16 (A0, NULL, NULL,  (uint16_t) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_UINT16 (A , NULL, NULL,  (uint16_t) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_UINT16 (A , NULL, NULL,  (uint16_t) 0, I , 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_UINT16_(A0, NULL, NULL,  (uint16_t) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_UINT16_(A , NULL, NULL,  (uint16_t) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_UINT16_(A , NULL, NULL,  (uint16_t) 0, I , 0, J0, 0, d0)) ;
 
-    ERR (GxB_Matrix_subassign_INT32 (A0, NULL, NULL,  (int32_t) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_INT32 (A , NULL, NULL,  (int32_t) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_INT32 (A , NULL, NULL,  (int32_t) 0, I , 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_INT32_(A0, NULL, NULL,  (int32_t) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_INT32_(A , NULL, NULL,  (int32_t) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_INT32_(A , NULL, NULL,  (int32_t) 0, I , 0, J0, 0, d0)) ;
 
-    ERR (GxB_Matrix_subassign_UINT32 (A0, NULL, NULL,  (uint32_t) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_UINT32 (A , NULL, NULL,  (uint32_t) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_UINT32 (A , NULL, NULL,  (uint32_t) 0, I , 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_UINT32_(A0, NULL, NULL,  (uint32_t) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_UINT32_(A , NULL, NULL,  (uint32_t) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_UINT32_(A , NULL, NULL,  (uint32_t) 0, I , 0, J0, 0, d0)) ;
 
-    ERR (GxB_Matrix_subassign_INT64 (A0, NULL, NULL,  (int64_t) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_INT64 (A , NULL, NULL,  (int64_t) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_INT64 (A , NULL, NULL,  (int64_t) 0, I , 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_INT64_(A0, NULL, NULL,  (int64_t) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_INT64_(A , NULL, NULL,  (int64_t) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_INT64_(A , NULL, NULL,  (int64_t) 0, I , 0, J0, 0, d0)) ;
 
-    ERR (GxB_Matrix_subassign_UINT64 (A0, NULL, NULL,  (uint64_t) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_UINT64 (A , NULL, NULL,  (uint64_t) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_UINT64 (A , NULL, NULL,  (uint64_t) 0, I , 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_UINT64_(A0, NULL, NULL,  (uint64_t) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_UINT64_(A , NULL, NULL,  (uint64_t) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_UINT64_(A , NULL, NULL,  (uint64_t) 0, I , 0, J0, 0, d0)) ;
 
-    ERR (GxB_Matrix_subassign_FP32 (A0, NULL, NULL,  (float) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_FP32 (A , NULL, NULL,  (float) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_FP32 (A , NULL, NULL,  (float) 0, I , 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_FP32_(A0, NULL, NULL,  (float) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_FP32_(A , NULL, NULL,  (float) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_FP32_(A , NULL, NULL,  (float) 0, I , 0, J0, 0, d0)) ;
 
-    ERR (GxB_Matrix_subassign_UDT (A0, NULL, NULL,  (void *) X, I0, 0, J0, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_UDT (A , NULL, NULL,  (void *) X, I0, 0, J0, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_UDT (A , NULL, NULL,  (void *) X, I , 0, J0, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_UDT (A , NULL, NULL,  (void *) NULL, I , 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_UDT_(A0, NULL, NULL,  (void *) X, I0, 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_UDT_(A , NULL, NULL,  (void *) X, I0, 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_UDT_(A , NULL, NULL,  (void *) X, I , 0, J0, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_UDT_(A , NULL, NULL,  (void *) NULL, I , 0, J, 0, d0)) ;
 
     expected = GrB_UNINITIALIZED_OBJECT ;
 
@@ -2440,29 +2522,29 @@ void mexFunction
     d0 = dgunk ;
     op0 = op2gunk ;
 
-    ERR (GxB_Vector_subassign (v0, NULL, NULL, v0, I, 0, d0)) ;        // vector assign
-    ERR (GxB_Vector_subassign (v , v0  , NULL, v0, I, 0, d0)) ;
-    ERR (GxB_Vector_subassign (v , v   , NULL, v0, I, 0, d0)) ;
-    ERR (GxB_Vector_subassign (v , v   , NULL, v , I, 0, d0)) ;
-    ERR (GxB_Vector_subassign (v , v   , op0 , v , I, 0, NULL)) ;
+    ERR (GxB_Vector_subassign_(v0, NULL, NULL, v0, I, 0, d0)) ;        // vector assign
+    ERR (GxB_Vector_subassign_(v , v0  , NULL, v0, I, 0, d0)) ;
+    ERR (GxB_Vector_subassign_(v , v   , NULL, v0, I, 0, d0)) ;
+    ERR (GxB_Vector_subassign_(v , v   , NULL, v , I, 0, d0)) ;
+    ERR (GxB_Vector_subassign_(v , v   , op0 , v , I, 0, NULL)) ;
 
-    ERR (GxB_Matrix_subassign (A0, NULL, NULL, A0, I, 0, J, 0, d0)) ;  // matrix assign
-    ERR (GxB_Matrix_subassign (A , A0  , NULL, A0, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign (A , A   , NULL, A0, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign (A , A   , NULL, A , I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign (A , A   , op0 , A , I, 0, J, 0, NULL)) ;
+    ERR (GxB_Matrix_subassign_(A0, NULL, NULL, A0, I, 0, J, 0, d0)) ;  // matrix assign
+    ERR (GxB_Matrix_subassign_(A , A0  , NULL, A0, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_(A , A   , NULL, A0, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_(A , A   , NULL, A , I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_(A , A   , op0 , A , I, 0, J, 0, NULL)) ;
 
-    ERR (GxB_Col_subassign (A0, NULL, NULL, v0, I, 0,  0, d0)) ;    // column assign
-    ERR (GxB_Col_subassign (A , v0  , NULL, v0, I, 0,  0, d0)) ;
-    ERR (GxB_Col_subassign (A , v   , NULL, v0, I, 0,  0, d0)) ;
-    ERR (GxB_Col_subassign (A , v   , NULL, v , I, 0,  0, d0)) ;
-    ERR (GxB_Col_subassign (A , v   , op0 , v , I, 0,  0, NULL)) ;
+    ERR (GxB_Col_subassign_(A0, NULL, NULL, v0, I, 0,  0, d0)) ;    // column assign
+    ERR (GxB_Col_subassign_(A , v0  , NULL, v0, I, 0,  0, d0)) ;
+    ERR (GxB_Col_subassign_(A , v   , NULL, v0, I, 0,  0, d0)) ;
+    ERR (GxB_Col_subassign_(A , v   , NULL, v , I, 0,  0, d0)) ;
+    ERR (GxB_Col_subassign_(A , v   , op0 , v , I, 0,  0, NULL)) ;
 
-    ERR (GxB_Row_subassign (A0, NULL, NULL, v0,  0, J, 0, d0)) ;    // row assign
-    ERR (GxB_Row_subassign (A , v0  , NULL, v0,  0, J, 0, d0)) ;
-    ERR (GxB_Row_subassign (A , v   , NULL, v0,  0, J, 0, d0)) ;
-    ERR (GxB_Row_subassign (A , v   , NULL, v ,  0, J, 0, d0)) ;
-    ERR (GxB_Row_subassign (A , NULL, op0 , v ,  0, J, 0, NULL)) ;
+    ERR (GxB_Row_subassign_(A0, NULL, NULL, v0,  0, J, 0, d0)) ;    // row assign
+    ERR (GxB_Row_subassign_(A , v0  , NULL, v0,  0, J, 0, d0)) ;
+    ERR (GxB_Row_subassign_(A , v   , NULL, v0,  0, J, 0, d0)) ;
+    ERR (GxB_Row_subassign_(A , v   , NULL, v ,  0, J, 0, d0)) ;
+    ERR (GxB_Row_subassign_(A , NULL, op0 , v ,  0, J, 0, NULL)) ;
 
     ERR (GxB_Vector_subassign_FP64 (v0, NULL, NULL,  x, I, 0, d0)) ;       // vector scalar
     ERR (GxB_Vector_subassign_FP64 (v , v0  , NULL,  x, I, 0, d0)) ;
@@ -2524,124 +2606,152 @@ void mexFunction
     ERR (GxB_Vector_subassign_UDT (v , v   , NULL,  (void *) X, I, 0, d0)) ;
     ERR (GxB_Vector_subassign_UDT (v , v   , op0 ,  (void *) X, I, 0, NULL)) ;
 
-    ERR (GxB_Matrix_subassign_FP64 (A0, NULL, NULL,  x, I, 0, J, 0, d0)) ;  // matrix scalar
-    ERR (GxB_Matrix_subassign_FP64 (A , A0  , NULL,  x, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_FP64 (A , A   , NULL,  x, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_FP64 (A , A   , op0 ,  x, I, 0, J, 0, NULL)) ;
+    ERR (GxB_Matrix_subassign_FP64_(A0, NULL, NULL,  x, I, 0, J, 0, d0)) ;  // matrix scalar
+    ERR (GxB_Matrix_subassign_FP64_(A , A0  , NULL,  x, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_FP64_(A , A   , NULL,  x, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_FP64_(A , A   , op0 ,  x, I, 0, J, 0, NULL)) ;
 
-    ERR (GxB_Matrix_subassign_BOOL (A0, NULL, NULL,  (bool) 0, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_BOOL (A , A0  , NULL,  (bool) 0, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_BOOL (A , A   , NULL,  (bool) 0, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_BOOL (A , A   , op0 ,  (bool) 0, I, 0, J, 0, NULL)) ;
+    ERR (GxB_Matrix_subassign_BOOL_(A0, NULL, NULL,  (bool) 0, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_BOOL_(A , A0  , NULL,  (bool) 0, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_BOOL_(A , A   , NULL,  (bool) 0, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_BOOL_(A , A   , op0 ,  (bool) 0, I, 0, J, 0, NULL)) ;
 
-    ERR (GxB_Matrix_subassign_INT8 (A0, NULL, NULL,  (int8_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_INT8 (A , A0  , NULL,  (int8_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_INT8 (A , A   , NULL,  (int8_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_INT8 (A , A   , op0 ,  (int8_t) 0, I, 0, J, 0, NULL)) ;
+    ERR (GxB_Matrix_subassign_INT8_(A0, NULL, NULL,  (int8_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_INT8_(A , A0  , NULL,  (int8_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_INT8_(A , A   , NULL,  (int8_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_INT8_(A , A   , op0 ,  (int8_t) 0, I, 0, J, 0, NULL)) ;
 
-    ERR (GxB_Matrix_subassign_UINT8 (A0, NULL, NULL,  (uint8_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_UINT8 (A , A0  , NULL,  (uint8_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_UINT8 (A , A   , NULL,  (uint8_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_UINT8 (A , A   , op0 ,  (uint8_t) 0, I, 0, J, 0, NULL)) ;
+    ERR (GxB_Matrix_subassign_UINT8_(A0, NULL, NULL,  (uint8_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_UINT8_(A , A0  , NULL,  (uint8_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_UINT8_(A , A   , NULL,  (uint8_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_UINT8_(A , A   , op0 ,  (uint8_t) 0, I, 0, J, 0, NULL)) ;
 
-    ERR (GxB_Matrix_subassign_INT16 (A0, NULL, NULL,  (int16_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_INT16 (A , A0  , NULL,  (int16_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_INT16 (A , A   , NULL,  (int16_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_INT16 (A , A   , op0 ,  (int16_t) 0, I, 0, J, 0, NULL)) ;
+    ERR (GxB_Matrix_subassign_INT16_(A0, NULL, NULL,  (int16_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_INT16_(A , A0  , NULL,  (int16_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_INT16_(A , A   , NULL,  (int16_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_INT16_(A , A   , op0 ,  (int16_t) 0, I, 0, J, 0, NULL)) ;
 
-    ERR (GxB_Matrix_subassign_UINT16 (A0, NULL, NULL,  (uint16_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_UINT16 (A , A0  , NULL,  (uint16_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_UINT16 (A , A   , NULL,  (uint16_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_UINT16 (A , A   , op0 ,  (uint16_t) 0, I, 0, J, 0, NULL)) ;
+    ERR (GxB_Matrix_subassign_UINT16_(A0, NULL, NULL,  (uint16_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_UINT16_(A , A0  , NULL,  (uint16_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_UINT16_(A , A   , NULL,  (uint16_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_UINT16_(A , A   , op0 ,  (uint16_t) 0, I, 0, J, 0, NULL)) ;
 
-    ERR (GxB_Matrix_subassign_INT32 (A0, NULL, NULL,  (int32_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_INT32 (A , A0  , NULL,  (int32_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_INT32 (A , A   , NULL,  (int32_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_INT32 (A , A   , op0 ,  (int32_t) 0, I, 0, J, 0, NULL)) ;
+    ERR (GxB_Matrix_subassign_INT32_(A0, NULL, NULL,  (int32_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_INT32_(A , A0  , NULL,  (int32_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_INT32_(A , A   , NULL,  (int32_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_INT32_(A , A   , op0 ,  (int32_t) 0, I, 0, J, 0, NULL)) ;
 
-    ERR (GxB_Matrix_subassign_UINT32 (A0, NULL, NULL,  (uint32_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_UINT32 (A , A0  , NULL,  (uint32_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_UINT32 (A , A   , NULL,  (uint32_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_UINT32 (A , A   , op0 ,  (uint32_t) 0, I, 0, J, 0, NULL)) ;
+    ERR (GxB_Matrix_subassign_UINT32_(A0, NULL, NULL,  (uint32_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_UINT32_(A , A0  , NULL,  (uint32_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_UINT32_(A , A   , NULL,  (uint32_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_UINT32_(A , A   , op0 ,  (uint32_t) 0, I, 0, J, 0, NULL)) ;
 
-    ERR (GxB_Matrix_subassign_INT64 (A0, NULL, NULL,  (int64_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_INT64 (A , A0  , NULL,  (int64_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_INT64 (A , A   , NULL,  (int64_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_INT64 (A , A   , op0 ,  (int64_t) 0, I, 0, J, 0, NULL)) ;
+    ERR (GxB_Matrix_subassign_INT64_(A0, NULL, NULL,  (int64_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_INT64_(A , A0  , NULL,  (int64_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_INT64_(A , A   , NULL,  (int64_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_INT64_(A , A   , op0 ,  (int64_t) 0, I, 0, J, 0, NULL)) ;
 
-    ERR (GxB_Matrix_subassign_UINT64 (A0, NULL, NULL,  (uint64_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_UINT64 (A , A0  , NULL,  (uint64_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_UINT64 (A , A   , NULL,  (uint64_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_UINT64 (A , A   , op0 ,  (uint64_t) 0, I, 0, J, 0, NULL)) ;
+    ERR (GxB_Matrix_subassign_UINT64_(A0, NULL, NULL,  (uint64_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_UINT64_(A , A0  , NULL,  (uint64_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_UINT64_(A , A   , NULL,  (uint64_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_UINT64_(A , A   , op0 ,  (uint64_t) 0, I, 0, J, 0, NULL)) ;
 
-    ERR (GxB_Matrix_subassign_FP32 (A0, NULL, NULL,  (float) 0, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_FP32 (A , A0  , NULL,  (float) 0, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_FP32 (A , A   , NULL,  (float) 0, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_FP32 (A , A   , op0 ,  (float) 0, I, 0, J, 0, NULL)) ;
+    ERR (GxB_Matrix_subassign_FP32_(A0, NULL, NULL,  (float) 0, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_FP32_(A , A0  , NULL,  (float) 0, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_FP32_(A , A   , NULL,  (float) 0, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_FP32_(A , A   , op0 ,  (float) 0, I, 0, J, 0, NULL)) ;
 
-    ERR (GxB_Matrix_subassign_UDT (A0, NULL, NULL,  (void *) X, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_UDT (A , A0  , NULL,  (void *) X, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_UDT (A , A   , NULL,  (void *) X, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_UDT (A , A   , op0 ,  (void *) X, I, 0, J, 0, NULL)) ;
+    ERR (GxB_Matrix_subassign_UDT_(A0, NULL, NULL,  (void *) X, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_UDT_(A , A0  , NULL,  (void *) X, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_UDT_(A , A   , NULL,  (void *) X, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_UDT_(A , A   , op0 ,  (void *) X, I, 0, J, 0, NULL)) ;
 
     v0 = NULL ;
     A0 = NULL ;
     d0 = NULL ;
-    op0 = NULL ;
+    op0 = Complex_plus ;
+    expected = (Complex == GxB_FC64) ? GrB_DIMENSION_MISMATCH : GrB_DOMAIN_MISMATCH ;
+
+    ERR (GxB_Vector_subassign_(v, z , NULL, v, I, 0, d0)) ;            // vector assign
+    ERR (GxB_Vector_subassign_(v, v0, op0 , v, I, 0, d0)) ;
+    ERR (GxB_Vector_subassign_(v, v0, op0 , z, I, 0, d0)) ;
+    ERR (GxB_Vector_subassign_(z, v0, o2  , v, I, 0, d0)) ;
+    ERR (GxB_Vector_subassign_(v, v0, o2  , z, I, 0, d0)) ;
+    ERR (GxB_Vector_subassign_(v, v0, NULL, z, I, 0, d0)) ;
+
+    ERR (GxB_Matrix_subassign_(A, Z , NULL, A, I, 0, J, 0, d0)) ;      // matrix assign
+    ERR (GxB_Matrix_subassign_(A, A0, op0 , A, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_(A, A0, op0 , Z, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_(Z, A0, o2  , A, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_(A, A0, o2  , Z, I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_(A, A0, NULL, Z, I, 0, J, 0, d0)) ;
+
+    ERR (GxB_Col_subassign_(A, z , NULL, v, I, 0, 0, d0)) ;         // column assign
+    ERR (GxB_Col_subassign_(A, v0, op0 , v, I, 0, 0, d0)) ;
+    ERR (GxB_Col_subassign_(A, v0, op0 , z, I, 0, 0, d0)) ;
+    ERR (GxB_Col_subassign_(Z, v0, o2  , v, I, 0, 0, d0)) ;
+    ERR (GxB_Col_subassign_(A, v0, o2  , z, I, 0, 0, d0)) ;
+    ERR (GxB_Col_subassign_(A, v0, NULL, z, I, 0, 0, d0)) ;
+
+    ERR (GxB_Row_subassign_(A, z , NULL, v, 0, J, 0, d0)) ;         // row assign
+    ERR (GxB_Row_subassign_(A, v0, op0 , v, 0, J, 0, d0)) ;
+    ERR (GxB_Row_subassign_(A, v0, op0 , z, 0, J, 0, d0)) ;
+    ERR (GxB_Row_subassign_(Z, v0, o2  , v, 0, J, 0, d0)) ;
+    ERR (GxB_Row_subassign_(A, v0, o2  , z, 0, J, 0, d0)) ;
+    ERR (GxB_Row_subassign_(A, v0, NULL, z, 0, J, 0, d0)) ;
+
+    ERR (GxB_Vector_subassign_FP64_(v, z , NULL, x, I, 0, d0)) ;            // vector scalar
+
+    if (Complex == GxB_FC64)
+    {
+        OK (GxB_Vector_subassign_FP64_(v, v0, op0 , x, I, 0, d0)) ;
+    }
+    else
+    {
+        ERR (GxB_Vector_subassign_FP64_(v, v0, op0 , x, I, 0, d0)) ;
+    }
 
     expected = GrB_DOMAIN_MISMATCH ;
 
-    #if GxB_STDC_VERSION >= 201112L
-    op0 = Complex_plus ;
+    ERR (GxB_Vector_subassign_UDT_(v, v0, op0 ,(void *) &c, I, 0, d0)) ;
 
-    ERR (GxB_Vector_subassign (v, z , NULL, v, I, 0, d0)) ;            // vector assign
-    ERR (GxB_Vector_subassign (v, v0, op0 , v, I, 0, d0)) ;
-    ERR (GxB_Vector_subassign (v, v0, op0 , z, I, 0, d0)) ;
-    ERR (GxB_Vector_subassign (z, v0, o2  , v, I, 0, d0)) ;
-    ERR (GxB_Vector_subassign (v, v0, o2  , z, I, 0, d0)) ;
-    ERR (GxB_Vector_subassign (v, v0, NULL, z, I, 0, d0)) ;
+    if (Complex == GxB_FC64)
+    {
+        OK (GxB_Vector_subassign_FP64_(z, v0, o2  , x, I, 0, d0)) ;
+    }
+    else
+    {
+        ERR (GxB_Vector_subassign_FP64_(z, v0, o2  , x, I, 0, d0)) ;
+    }
 
-    ERR (GxB_Matrix_subassign (A, Z , NULL, A, I, 0, J, 0, d0)) ;      // matrix assign
-    ERR (GxB_Matrix_subassign (A, A0, op0 , A, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign (A, A0, op0 , Z, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign (Z, A0, o2  , A, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign (A, A0, o2  , Z, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign (A, A0, NULL, Z, I, 0, J, 0, d0)) ;
+    ERR (GxB_Vector_subassign_UDT_(v, v0, o2  ,(void *) &c, I, 0, d0)) ;
+    ERR (GxB_Vector_subassign_UDT_(v, v0, NULL,(void *) &c, I, 0, d0)) ;
 
-    ERR (GxB_Col_subassign (A, z , NULL, v, I, 0, 0, d0)) ;         // column assign
-    ERR (GxB_Col_subassign (A, v0, op0 , v, I, 0, 0, d0)) ;
-    ERR (GxB_Col_subassign (A, v0, op0 , z, I, 0, 0, d0)) ;
-    ERR (GxB_Col_subassign (Z, v0, o2  , v, I, 0, 0, d0)) ;
-    ERR (GxB_Col_subassign (A, v0, o2  , z, I, 0, 0, d0)) ;
-    ERR (GxB_Col_subassign (A, v0, NULL, z, I, 0, 0, d0)) ;
+    // matrix scalar
+    if (Complex == GxB_FC64)
+    {
+        expected = GrB_DIMENSION_MISMATCH ;
+        OK (GxB_Matrix_subassign_FP64_(A, A0, op0 , x, I, 0, J, 0, d0)) ;
+        OK (GxB_Matrix_subassign_FP64_(Z, A0, o2  , x, I, 0, J, 0, d0)) ;
+    }
+    else
+    {
+        expected = GrB_DOMAIN_MISMATCH ;
+        ERR (GxB_Matrix_subassign_FP64_(A, A0, op0 , x, I, 0, J, 0, d0)) ;
+        ERR (GxB_Matrix_subassign_FP64_(Z, A0, o2  , x, I, 0, J, 0, d0)) ;
+    }
+    ERR (GxB_Matrix_subassign_FP64_(A, Z , NULL, x, I, 0, J, 0, d0)) ;
 
-    ERR (GxB_Row_subassign (A, z , NULL, v, 0, J, 0, d0)) ;         // row assign
-    ERR (GxB_Row_subassign (A, v0, op0 , v, 0, J, 0, d0)) ;
-    ERR (GxB_Row_subassign (A, v0, op0 , z, 0, J, 0, d0)) ;
-    ERR (GxB_Row_subassign (Z, v0, o2  , v, 0, J, 0, d0)) ;
-    ERR (GxB_Row_subassign (A, v0, o2  , z, 0, J, 0, d0)) ;
-    ERR (GxB_Row_subassign (A, v0, NULL, z, 0, J, 0, d0)) ;
-
-    ERR (GxB_Vector_subassign_FP64 (v, z , NULL, x, I, 0, d0)) ;            // vector scalar
-    ERR (GxB_Vector_subassign_FP64 (v, v0, op0 , x, I, 0, d0)) ;
-    ERR (GxB_Vector_subassign_UDT  (v, v0, op0 ,(void *) &c, I, 0, d0)) ;
-    ERR (GxB_Vector_subassign_FP64 (z, v0, o2  , x, I, 0, d0)) ;
-    ERR (GxB_Vector_subassign_UDT  (v, v0, o2  ,(void *) &c, I, 0, d0)) ;
-    ERR (GxB_Vector_subassign_UDT  (v, v0, NULL,(void *) &c, I, 0, d0)) ;
-
-    ERR (GxB_Matrix_subassign_FP64 (A, Z , NULL, x, I, 0, J, 0, d0)) ;      // matrix scalar
-    ERR (GxB_Matrix_subassign_FP64 (A, A0, op0 , x, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_UDT  (A, A0, op0 ,(void *) &c , I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_FP64 (Z, A0, o2  , x, I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_UDT  (A, A0, o2  ,(void *) &c , I, 0, J, 0, d0)) ;
-    ERR (GxB_Matrix_subassign_UDT  (A, A0, NULL,(void *) &c , I, 0, J, 0, d0)) ;
-    #endif
+    expected = GrB_DOMAIN_MISMATCH ;
+    ERR (GxB_Matrix_subassign_UDT_(A, A0, op0 ,(void *) &c , I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_UDT_(A, A0, o2  ,(void *) &c , I, 0, J, 0, d0)) ;
+    ERR (GxB_Matrix_subassign_UDT_(A, A0, NULL,(void *) &c , I, 0, J, 0, d0)) ;
 
     expected = GrB_DIMENSION_MISMATCH ;
 
-    ERR (GxB_Matrix_subassign (A, NULL, NULL, A, I, 2, J, 3, d0)) ;
-    ERR (GxB_Matrix_subassign (A, NULL, NULL, A, I, 2, J, 3, dtn)) ;
-    ERR (GxB_Row_subassign (A , v   , NULL, v ,  0, J, 0, NULL)) ;
+    ERR (GxB_Matrix_subassign_(A, NULL, NULL, A, I, 2, J, 3, d0)) ;
+    ERR (GxB_Matrix_subassign_(A, NULL, NULL, A, I, 2, J, 3, dtn)) ;
+    ERR (GxB_Row_subassign_(A , v   , NULL, v ,  0, J, 0, NULL)) ;
 
     fprintf (ff, "test for indices out of bounds:\n") ;
     OK (GxB_Matrix_fprint (A, "A", GxB_COMPLETE, ff)) ;
@@ -2657,35 +2767,35 @@ void mexFunction
     expected = GrB_INDEX_OUT_OF_BOUNDS ;
 
     OK (GrB_Matrix_dup (&A4, A)) ;
-    ERR (GxB_Matrix_subassign (A4, NULL, GrB_PLUS_FP64, C, I, 3, J, 2, NULL)) ;
-    OK (GrB_Matrix_free (&A4)) ;
+    ERR (GxB_Matrix_subassign_(A4, NULL, GrB_PLUS_FP64, C, I, 3, J, 2, NULL)) ;
+    OK (GrB_Matrix_free_(&A4)) ;
     fprintf (ff, "done bounds test: error returned:\n%s\n", GrB_error ( )) ;
 
     GrB_Index I3 [5] = { 0,   1,   2,   3,    4 } ;
     GrB_Index J3 [5] = { 0,   1,   2,   3,    4 } ;
 
     printf ("here2\n") ;
-    OK (GxB_Matrix_fprint (A, "A", GxB_COMPLETE, NULL)) ;
-    OK (GxB_Matrix_fprint (A, "A", GxB_COMPLETE, ff)) ;
-    OK (GxB_Matrix_subassign (A, NULL, GrB_PLUS_FP64, C, I3, 3, J3, 2, NULL)) ;
+    OK (GxB_Matrix_fprint_(A, GxB_COMPLETE, NULL)) ;
+    OK (GxB_Matrix_fprint_(A, GxB_COMPLETE, ff)) ;
+    OK (GxB_Matrix_subassign_(A, NULL, GrB_PLUS_FP64, C, I3, 3, J3, 2, NULL)) ;
 
     OK (GxB_Matrix_subassign (C, C, GrB_PLUS_FP64, C, I3, 3, J3, 2, NULL)) ;
 
     J3 [0] = 999 ;
     OK (GrB_Matrix_dup (&C4, C)) ;
     ERR (GxB_Matrix_subassign (C4, C4, GrB_PLUS_FP64, C4, I3, 3, J3, 2, NULL)) ;
-    OK (GrB_Matrix_free (&C4)) ;
+    OK (GrB_Matrix_free_(&C4)) ;
 
     OK (GrB_Matrix_dup (&A4, A)) ;
-    ERR (GxB_Matrix_subassign_FP64 (A4, NULL, GrB_PLUS_FP64, x_double, I3, 1, J3, 1, NULL));
-    OK (GrB_Matrix_free (&A4)) ;
+    ERR (GxB_Matrix_subassign_FP64_(A4, NULL, GrB_PLUS_FP64, x_double, I3, 1, J3, 1, NULL));
+    OK (GrB_Matrix_free_(&A4)) ;
 
     J3 [0] = 0 ;
     I3 [0] = 999 ;
 
     OK (GrB_Matrix_dup (&A4, A)) ;
-    ERR (GxB_Matrix_subassign_FP64 (A4, NULL, GrB_PLUS_FP64, x_double, I3, 1, J3, 1, NULL));
-    OK (GrB_Matrix_free (&A4)) ;
+    ERR (GxB_Matrix_subassign_FP64_(A4, NULL, GrB_PLUS_FP64, x_double, I3, 1, J3, 1, NULL));
+    OK (GrB_Matrix_free_(&A4)) ;
 
     //--------------------------------------------------------------------------
     // assign
@@ -2701,108 +2811,108 @@ void mexFunction
     // GrB_Vector_assign_T (w,mask,acc,x,I,ni,d)
     // GrB_Matrix_assign_T (C,Mask,acc,x,I,ni,J,nj,d)
 
-    ERR (GrB_Vector_assign (v0, NULL, NULL, v0, I0, 0, d0)) ;          // vector assign
-    ERR (GrB_Vector_assign (v , NULL, NULL, v0, I0, 0, d0)) ;
-    ERR (GrB_Vector_assign (v , NULL, NULL, v , I0, 0, d0)) ;
+    ERR (GrB_Vector_assign_(v0, NULL, NULL, v0, I0, 0, d0)) ;          // vector assign
+    ERR (GrB_Vector_assign_(v , NULL, NULL, v0, I0, 0, d0)) ;
+    ERR (GrB_Vector_assign_(v , NULL, NULL, v , I0, 0, d0)) ;
 
-    ERR (GrB_Matrix_assign (A0, NULL, NULL, A0, I0, 0, J0, 0, d0)) ;   // matrix assign
-    ERR (GrB_Matrix_assign (A , NULL, NULL, A0, I0, 0, J0, 0, d0)) ;
-    ERR (GrB_Matrix_assign (A , NULL, NULL, A , I0, 0, J0, 0, d0)) ;
-    ERR (GrB_Matrix_assign (A , NULL, NULL, A , I , 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_(A0, NULL, NULL, A0, I0, 0, J0, 0, d0)) ;   // matrix assign
+    ERR (GrB_Matrix_assign_(A , NULL, NULL, A0, I0, 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_(A , NULL, NULL, A , I0, 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_(A , NULL, NULL, A , I , 0, J0, 0, d0)) ;
 
-    ERR (GrB_Col_assign (A0, NULL, NULL, v0, I0, 0,  0, d0)) ;      // column assign
-    ERR (GrB_Col_assign (A , NULL, NULL, v0, I0, 0,  0, d0)) ;
-    ERR (GrB_Col_assign (A , NULL, NULL, v , I0, 0,  0, d0)) ;
+    ERR (GrB_Col_assign_(A0, NULL, NULL, v0, I0, 0,  0, d0)) ;      // column assign
+    ERR (GrB_Col_assign_(A , NULL, NULL, v0, I0, 0,  0, d0)) ;
+    ERR (GrB_Col_assign_(A , NULL, NULL, v , I0, 0,  0, d0)) ;
 
-    ERR (GrB_Row_assign (A0, NULL, NULL, v0,  0, J0, 0, d0)) ;      // row assign
-    ERR (GrB_Row_assign (A , NULL, NULL, v0,  0, J0, 0, d0)) ;
-    ERR (GrB_Row_assign (A , NULL, NULL, v ,  0, J0, 0, d0)) ;
+    ERR (GrB_Row_assign_(A0, NULL, NULL, v0,  0, J0, 0, d0)) ;      // row assign
+    ERR (GrB_Row_assign_(A , NULL, NULL, v0,  0, J0, 0, d0)) ;
+    ERR (GrB_Row_assign_(A , NULL, NULL, v ,  0, J0, 0, d0)) ;
 
-    ERR (GrB_Vector_assign_FP64 (v0, NULL, NULL,  x, I0, 0, d0)) ;          // vector scalar
-    ERR (GrB_Vector_assign_FP64 (v , NULL, NULL,  x, I0, 0, d0)) ;
+    ERR (GrB_Vector_assign_FP64_(v0, NULL, NULL,  x, I0, 0, d0)) ;          // vector scalar
+    ERR (GrB_Vector_assign_FP64_(v , NULL, NULL,  x, I0, 0, d0)) ;
 
-    ERR (GrB_Vector_assign_BOOL (v0, NULL, NULL,  (bool) 0, I0, 0, d0)) ;
-    ERR (GrB_Vector_assign_BOOL (v , NULL, NULL,  (bool) 0, I0, 0, d0)) ;
+    ERR (GrB_Vector_assign_BOOL_(v0, NULL, NULL,  (bool) 0, I0, 0, d0)) ;
+    ERR (GrB_Vector_assign_BOOL_(v , NULL, NULL,  (bool) 0, I0, 0, d0)) ;
 
-    ERR (GrB_Vector_assign_INT8 (v0, NULL, NULL,  (int8_t) 0, I0, 0, d0)) ;
-    ERR (GrB_Vector_assign_INT8 (v , NULL, NULL,  (int8_t) 0, I0, 0, d0)) ;
+    ERR (GrB_Vector_assign_INT8_(v0, NULL, NULL,  (int8_t) 0, I0, 0, d0)) ;
+    ERR (GrB_Vector_assign_INT8_(v , NULL, NULL,  (int8_t) 0, I0, 0, d0)) ;
 
-    ERR (GrB_Vector_assign_UINT8 (v0, NULL, NULL,  (uint8_t) 0, I0, 0, d0)) ;
-    ERR (GrB_Vector_assign_UINT8 (v , NULL, NULL,  (uint8_t) 0, I0, 0, d0)) ;
+    ERR (GrB_Vector_assign_UINT8_(v0, NULL, NULL,  (uint8_t) 0, I0, 0, d0)) ;
+    ERR (GrB_Vector_assign_UINT8_(v , NULL, NULL,  (uint8_t) 0, I0, 0, d0)) ;
 
-    ERR (GrB_Vector_assign_INT16 (v0, NULL, NULL,  (int16_t) 0, I0, 0, d0)) ;
-    ERR (GrB_Vector_assign_INT16 (v , NULL, NULL,  (int16_t) 0, I0, 0, d0)) ;
+    ERR (GrB_Vector_assign_INT16_(v0, NULL, NULL,  (int16_t) 0, I0, 0, d0)) ;
+    ERR (GrB_Vector_assign_INT16_(v , NULL, NULL,  (int16_t) 0, I0, 0, d0)) ;
 
-    ERR (GrB_Vector_assign_UINT16 (v0, NULL, NULL,  (uint16_t) 0, I0, 0, d0)) ;
-    ERR (GrB_Vector_assign_UINT16 (v , NULL, NULL,  (uint16_t) 0, I0, 0, d0)) ;
+    ERR (GrB_Vector_assign_UINT16_(v0, NULL, NULL,  (uint16_t) 0, I0, 0, d0)) ;
+    ERR (GrB_Vector_assign_UINT16_(v , NULL, NULL,  (uint16_t) 0, I0, 0, d0)) ;
 
-    ERR (GrB_Vector_assign_INT32 (v0, NULL, NULL,  (int32_t) 0, I0, 0, d0)) ;
-    ERR (GrB_Vector_assign_INT32 (v , NULL, NULL,  (int32_t) 0, I0, 0, d0)) ;
+    ERR (GrB_Vector_assign_INT32_(v0, NULL, NULL,  (int32_t) 0, I0, 0, d0)) ;
+    ERR (GrB_Vector_assign_INT32_(v , NULL, NULL,  (int32_t) 0, I0, 0, d0)) ;
 
-    ERR (GrB_Vector_assign_UINT32 (v0, NULL, NULL,  (uint32_t) 0, I0, 0, d0)) ;
-    ERR (GrB_Vector_assign_UINT32 (v , NULL, NULL,  (uint32_t) 0, I0, 0, d0)) ;
+    ERR (GrB_Vector_assign_UINT32_(v0, NULL, NULL,  (uint32_t) 0, I0, 0, d0)) ;
+    ERR (GrB_Vector_assign_UINT32_(v , NULL, NULL,  (uint32_t) 0, I0, 0, d0)) ;
 
-    ERR (GrB_Vector_assign_INT64 (v0, NULL, NULL,  (int64_t) 0, I0, 0, d0)) ;
-    ERR (GrB_Vector_assign_INT64 (v , NULL, NULL,  (int64_t) 0, I0, 0, d0)) ;
+    ERR (GrB_Vector_assign_INT64_(v0, NULL, NULL,  (int64_t) 0, I0, 0, d0)) ;
+    ERR (GrB_Vector_assign_INT64_(v , NULL, NULL,  (int64_t) 0, I0, 0, d0)) ;
 
-    ERR (GrB_Vector_assign_UINT64 (v0, NULL, NULL,  (uint64_t) 0, I0, 0, d0)) ;
-    ERR (GrB_Vector_assign_UINT64 (v , NULL, NULL,  (uint64_t) 0, I0, 0, d0)) ;
+    ERR (GrB_Vector_assign_UINT64_(v0, NULL, NULL,  (uint64_t) 0, I0, 0, d0)) ;
+    ERR (GrB_Vector_assign_UINT64_(v , NULL, NULL,  (uint64_t) 0, I0, 0, d0)) ;
 
-    ERR (GrB_Vector_assign_FP32 (v0, NULL, NULL,  (float) 0, I0, 0, d0)) ;
-    ERR (GrB_Vector_assign_FP32 (v , NULL, NULL,  (float) 0, I0, 0, d0)) ;
+    ERR (GrB_Vector_assign_FP32_(v0, NULL, NULL,  (float) 0, I0, 0, d0)) ;
+    ERR (GrB_Vector_assign_FP32_(v , NULL, NULL,  (float) 0, I0, 0, d0)) ;
 
-    ERR (GrB_Vector_assign_UDT (v0, NULL, NULL,  (void *) X, I0, 0, d0)) ;
-    ERR (GrB_Vector_assign_UDT (v , NULL, NULL,  (void *) X, I0, 0, d0)) ;
-    ERR (GrB_Vector_assign_UDT (v , NULL, NULL,  (void *) NULL, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_UDT_(v0, NULL, NULL,  (void *) X, I0, 0, d0)) ;
+    ERR (GrB_Vector_assign_UDT_(v , NULL, NULL,  (void *) X, I0, 0, d0)) ;
+    ERR (GrB_Vector_assign_UDT_(v , NULL, NULL,  (void *) NULL, I, 0, d0)) ;
 
-    ERR (GrB_Matrix_assign_FP64 (A0, NULL, NULL,  x, I0, 0, J0, 0, d0)) ;   // matrix scalar
-    ERR (GrB_Matrix_assign_FP64 (A , NULL, NULL,  x, I0, 0, J0, 0, d0)) ;
-    ERR (GrB_Matrix_assign_FP64 (A , NULL, NULL,  x, I , 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_FP64_(A0, NULL, NULL,  x, I0, 0, J0, 0, d0)) ;   // matrix scalar
+    ERR (GrB_Matrix_assign_FP64_(A , NULL, NULL,  x, I0, 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_FP64_(A , NULL, NULL,  x, I , 0, J0, 0, d0)) ;
 
-    ERR (GrB_Matrix_assign_BOOL (A0, NULL, NULL,  (bool) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GrB_Matrix_assign_BOOL (A , NULL, NULL,  (bool) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GrB_Matrix_assign_BOOL (A , NULL, NULL,  (bool) 0, I , 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_BOOL_(A0, NULL, NULL,  (bool) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_BOOL_(A , NULL, NULL,  (bool) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_BOOL_(A , NULL, NULL,  (bool) 0, I , 0, J0, 0, d0)) ;
 
-    ERR (GrB_Matrix_assign_INT8 (A0, NULL, NULL,  (int8_t) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GrB_Matrix_assign_INT8 (A , NULL, NULL,  (int8_t) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GrB_Matrix_assign_INT8 (A , NULL, NULL,  (int8_t) 0, I , 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_INT8_(A0, NULL, NULL,  (int8_t) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_INT8_(A , NULL, NULL,  (int8_t) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_INT8_(A , NULL, NULL,  (int8_t) 0, I , 0, J0, 0, d0)) ;
 
-    ERR (GrB_Matrix_assign_UINT8 (A0, NULL, NULL,  (uint8_t) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GrB_Matrix_assign_UINT8 (A , NULL, NULL,  (uint8_t) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GrB_Matrix_assign_UINT8 (A , NULL, NULL,  (uint8_t) 0, I , 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_UINT8_(A0, NULL, NULL,  (uint8_t) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_UINT8_(A , NULL, NULL,  (uint8_t) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_UINT8_(A , NULL, NULL,  (uint8_t) 0, I , 0, J0, 0, d0)) ;
 
-    ERR (GrB_Matrix_assign_INT16 (A0, NULL, NULL,  (int16_t) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GrB_Matrix_assign_INT16 (A , NULL, NULL,  (int16_t) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GrB_Matrix_assign_INT16 (A , NULL, NULL,  (int16_t) 0, I , 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_INT16_(A0, NULL, NULL,  (int16_t) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_INT16_(A , NULL, NULL,  (int16_t) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_INT16_(A , NULL, NULL,  (int16_t) 0, I , 0, J0, 0, d0)) ;
 
-    ERR (GrB_Matrix_assign_UINT16 (A0, NULL, NULL,  (uint16_t) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GrB_Matrix_assign_UINT16 (A , NULL, NULL,  (uint16_t) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GrB_Matrix_assign_UINT16 (A , NULL, NULL,  (uint16_t) 0, I , 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_UINT16_(A0, NULL, NULL,  (uint16_t) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_UINT16_(A , NULL, NULL,  (uint16_t) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_UINT16_(A , NULL, NULL,  (uint16_t) 0, I , 0, J0, 0, d0)) ;
 
-    ERR (GrB_Matrix_assign_INT32 (A0, NULL, NULL,  (int32_t) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GrB_Matrix_assign_INT32 (A , NULL, NULL,  (int32_t) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GrB_Matrix_assign_INT32 (A , NULL, NULL,  (int32_t) 0, I , 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_INT32_(A0, NULL, NULL,  (int32_t) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_INT32_(A , NULL, NULL,  (int32_t) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_INT32_(A , NULL, NULL,  (int32_t) 0, I , 0, J0, 0, d0)) ;
 
-    ERR (GrB_Matrix_assign_UINT32 (A0, NULL, NULL,  (uint32_t) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GrB_Matrix_assign_UINT32 (A , NULL, NULL,  (uint32_t) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GrB_Matrix_assign_UINT32 (A , NULL, NULL,  (uint32_t) 0, I , 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_UINT32_(A0, NULL, NULL,  (uint32_t) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_UINT32_(A , NULL, NULL,  (uint32_t) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_UINT32_(A , NULL, NULL,  (uint32_t) 0, I , 0, J0, 0, d0)) ;
 
-    ERR (GrB_Matrix_assign_INT64 (A0, NULL, NULL,  (int64_t) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GrB_Matrix_assign_INT64 (A , NULL, NULL,  (int64_t) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GrB_Matrix_assign_INT64 (A , NULL, NULL,  (int64_t) 0, I , 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_INT64_(A0, NULL, NULL,  (int64_t) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_INT64_(A , NULL, NULL,  (int64_t) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_INT64_(A , NULL, NULL,  (int64_t) 0, I , 0, J0, 0, d0)) ;
 
-    ERR (GrB_Matrix_assign_UINT64 (A0, NULL, NULL,  (uint64_t) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GrB_Matrix_assign_UINT64 (A , NULL, NULL,  (uint64_t) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GrB_Matrix_assign_UINT64 (A , NULL, NULL,  (uint64_t) 0, I , 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_UINT64_(A0, NULL, NULL,  (uint64_t) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_UINT64_(A , NULL, NULL,  (uint64_t) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_UINT64_(A , NULL, NULL,  (uint64_t) 0, I , 0, J0, 0, d0)) ;
 
-    ERR (GrB_Matrix_assign_FP32 (A0, NULL, NULL,  (float) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GrB_Matrix_assign_FP32 (A , NULL, NULL,  (float) 0, I0, 0, J0, 0, d0)) ;
-    ERR (GrB_Matrix_assign_FP32 (A , NULL, NULL,  (float) 0, I , 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_FP32_(A0, NULL, NULL,  (float) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_FP32_(A , NULL, NULL,  (float) 0, I0, 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_FP32_(A , NULL, NULL,  (float) 0, I , 0, J0, 0, d0)) ;
 
-    ERR (GrB_Matrix_assign_UDT (A0, NULL, NULL,  (void *) X, I0, 0, J0, 0, d0)) ;
-    ERR (GrB_Matrix_assign_UDT (A , NULL, NULL,  (void *) X, I0, 0, J0, 0, d0)) ;
-    ERR (GrB_Matrix_assign_UDT (A , NULL, NULL,  (void *) X, I , 0, J0, 0, d0)) ;
-    ERR (GrB_Matrix_assign_UDT (A , NULL, NULL,  (void *) NULL, I , 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_UDT_(A0, NULL, NULL,  (void *) X, I0, 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_UDT_(A , NULL, NULL,  (void *) X, I0, 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_UDT_(A , NULL, NULL,  (void *) X, I , 0, J0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_UDT_(A , NULL, NULL,  (void *) NULL, I , 0, J, 0, d0)) ;
 
     expected = GrB_UNINITIALIZED_OBJECT ;
 
@@ -2811,226 +2921,240 @@ void mexFunction
     d0 = dgunk ;
     op0 = op2gunk ;
 
-    ERR (GrB_Vector_assign (v0, NULL, NULL, v0, I, 0, d0)) ;          // vector assign
-    ERR (GrB_Vector_assign (v , v0  , NULL, v0, I, 0, d0)) ;
-    ERR (GrB_Vector_assign (v , v   , NULL, v0, I, 0, d0)) ;
-    ERR (GrB_Vector_assign (v , v   , NULL, v , I, 0, d0)) ;
-    ERR (GrB_Vector_assign (v , v   , op0 , v , I, 0, NULL)) ;
+    ERR (GrB_Vector_assign_(v0, NULL, NULL, v0, I, 0, d0)) ;          // vector assign
+    ERR (GrB_Vector_assign_(v , v0  , NULL, v0, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_(v , v   , NULL, v0, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_(v , v   , NULL, v , I, 0, d0)) ;
+    ERR (GrB_Vector_assign_(v , v   , op0 , v , I, 0, NULL)) ;
 
-    ERR (GrB_Matrix_assign (A0, NULL, NULL, A0, I, 0, J, 0, d0)) ;   // matrix assign
-    ERR (GrB_Matrix_assign (A , A0  , NULL, A0, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign (A , A   , NULL, A0, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign (A , A   , NULL, A , I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign (A , A   , op0 , A , I, 0, J, 0, NULL)) ;
+    ERR (GrB_Matrix_assign_(A0, NULL, NULL, A0, I, 0, J, 0, d0)) ;   // matrix assign
+    ERR (GrB_Matrix_assign_(A , A0  , NULL, A0, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_(A , A   , NULL, A0, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_(A , A   , NULL, A , I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_(A , A   , op0 , A , I, 0, J, 0, NULL)) ;
 
-    ERR (GrB_Col_assign (A0, NULL, NULL, v0, I, 0,  0, d0)) ;      // column assign
-    ERR (GrB_Col_assign (A , v0  , NULL, v0, I, 0,  0, d0)) ;
-    ERR (GrB_Col_assign (A , v   , NULL, v0, I, 0,  0, d0)) ;
-    ERR (GrB_Col_assign (A , v   , NULL, v , I, 0,  0, d0)) ;
-    ERR (GrB_Col_assign (A , v   , op0 , v , I, 0,  0, NULL)) ;
+    ERR (GrB_Col_assign_(A0, NULL, NULL, v0, I, 0,  0, d0)) ;      // column assign
+    ERR (GrB_Col_assign_(A , v0  , NULL, v0, I, 0,  0, d0)) ;
+    ERR (GrB_Col_assign_(A , v   , NULL, v0, I, 0,  0, d0)) ;
+    ERR (GrB_Col_assign_(A , v   , NULL, v , I, 0,  0, d0)) ;
+    ERR (GrB_Col_assign_(A , v   , op0 , v , I, 0,  0, NULL)) ;
 
-    ERR (GrB_Row_assign (A0, NULL, NULL, v0,  0, J, 0, d0)) ;      // row assign
-    ERR (GrB_Row_assign (A , v0  , NULL, v0,  0, J, 0, d0)) ;
-    ERR (GrB_Row_assign (A , v   , NULL, v0,  0, J, 0, d0)) ;
-    ERR (GrB_Row_assign (A , v   , NULL, v ,  0, J, 0, d0)) ;
-    ERR (GrB_Row_assign (A , NULL, op0 , v ,  0, J, 0, NULL)) ;
+    ERR (GrB_Row_assign_(A0, NULL, NULL, v0,  0, J, 0, d0)) ;      // row assign
+    ERR (GrB_Row_assign_(A , v0  , NULL, v0,  0, J, 0, d0)) ;
+    ERR (GrB_Row_assign_(A , v   , NULL, v0,  0, J, 0, d0)) ;
+    ERR (GrB_Row_assign_(A , v   , NULL, v ,  0, J, 0, d0)) ;
+    ERR (GrB_Row_assign_(A , NULL, op0 , v ,  0, J, 0, NULL)) ;
 
-    ERR (GrB_Vector_assign_FP64 (v0, NULL, NULL,  x, I, 0, d0)) ;          // vector scalar
-    ERR (GrB_Vector_assign_FP64 (v , v0  , NULL,  x, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_FP64 (v , v   , NULL,  x, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_FP64 (v , v   , op0 ,  x, I, 0, NULL)) ;
+    ERR (GrB_Vector_assign_FP64_(v0, NULL, NULL,  x, I, 0, d0)) ;          // vector scalar
+    ERR (GrB_Vector_assign_FP64_(v , v0  , NULL,  x, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_FP64_(v , v   , NULL,  x, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_FP64_(v , v   , op0 ,  x, I, 0, NULL)) ;
 
-    ERR (GrB_Vector_assign_BOOL (v0, NULL, NULL,  (bool) 0, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_BOOL (v , v0  , NULL,  (bool) 0, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_BOOL (v , v   , NULL,  (bool) 0, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_BOOL (v , v   , op0 ,  (bool) 0, I, 0, NULL)) ;
+    ERR (GrB_Vector_assign_BOOL_(v0, NULL, NULL,  (bool) 0, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_BOOL_(v , v0  , NULL,  (bool) 0, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_BOOL_(v , v   , NULL,  (bool) 0, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_BOOL_(v , v   , op0 ,  (bool) 0, I, 0, NULL)) ;
 
-    ERR (GrB_Vector_assign_INT8 (v0, NULL, NULL,  (int8_t) 0, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_INT8 (v , v0  , NULL,  (int8_t) 0, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_INT8 (v , v   , NULL,  (int8_t) 0, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_INT8 (v , v   , op0 ,  (int8_t) 0, I, 0, NULL)) ;
+    ERR (GrB_Vector_assign_INT8_(v0, NULL, NULL,  (int8_t) 0, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_INT8_(v , v0  , NULL,  (int8_t) 0, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_INT8_(v , v   , NULL,  (int8_t) 0, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_INT8_(v , v   , op0 ,  (int8_t) 0, I, 0, NULL)) ;
 
-    ERR (GrB_Vector_assign_UINT8 (v0, NULL, NULL,  (uint8_t) 0, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_UINT8 (v , v0  , NULL,  (uint8_t) 0, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_UINT8 (v , v   , NULL,  (uint8_t) 0, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_UINT8 (v , v   , NULL,  (uint8_t) 0, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_UINT8_(v0, NULL, NULL,  (uint8_t) 0, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_UINT8_(v , v0  , NULL,  (uint8_t) 0, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_UINT8_(v , v   , NULL,  (uint8_t) 0, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_UINT8_(v , v   , NULL,  (uint8_t) 0, I, 0, d0)) ;
 
-    ERR (GrB_Vector_assign_INT16 (v0, NULL, NULL,  (int16_t) 0, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_INT16 (v , v0  , NULL,  (int16_t) 0, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_INT16 (v , v   , NULL,  (int16_t) 0, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_INT16 (v , v   , op0 ,  (int16_t) 0, I, 0, NULL)) ;
+    ERR (GrB_Vector_assign_INT16_(v0, NULL, NULL,  (int16_t) 0, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_INT16_(v , v0  , NULL,  (int16_t) 0, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_INT16_(v , v   , NULL,  (int16_t) 0, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_INT16_(v , v   , op0 ,  (int16_t) 0, I, 0, NULL)) ;
 
-    ERR (GrB_Vector_assign_UINT16 (v0, NULL, NULL,  (uint16_t) 0, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_UINT16 (v , v0  , NULL,  (uint16_t) 0, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_UINT16 (v , v   , NULL,  (uint16_t) 0, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_UINT16 (v , v   , op0 ,  (uint16_t) 0, I, 0, NULL)) ;
+    ERR (GrB_Vector_assign_UINT16_(v0, NULL, NULL,  (uint16_t) 0, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_UINT16_(v , v0  , NULL,  (uint16_t) 0, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_UINT16_(v , v   , NULL,  (uint16_t) 0, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_UINT16_(v , v   , op0 ,  (uint16_t) 0, I, 0, NULL)) ;
 
-    ERR (GrB_Vector_assign_INT32 (v0, NULL, NULL,  (int32_t) 0, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_INT32 (v , v0  , NULL,  (int32_t) 0, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_INT32 (v , v   , NULL,  (int32_t) 0, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_INT32 (v , v   , op0 ,  (int32_t) 0, I, 0, NULL)) ;
+    ERR (GrB_Vector_assign_INT32_(v0, NULL, NULL,  (int32_t) 0, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_INT32_(v , v0  , NULL,  (int32_t) 0, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_INT32_(v , v   , NULL,  (int32_t) 0, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_INT32_(v , v   , op0 ,  (int32_t) 0, I, 0, NULL)) ;
 
-    ERR (GrB_Vector_assign_UINT32 (v0, NULL, NULL,  (uint32_t) 0, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_UINT32 (v , v0  , NULL,  (uint32_t) 0, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_UINT32 (v , v   , NULL,  (uint32_t) 0, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_UINT32 (v , v   , op0 ,  (uint32_t) 0, I, 0, NULL)) ;
+    ERR (GrB_Vector_assign_UINT32_(v0, NULL, NULL,  (uint32_t) 0, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_UINT32_(v , v0  , NULL,  (uint32_t) 0, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_UINT32_(v , v   , NULL,  (uint32_t) 0, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_UINT32_(v , v   , op0 ,  (uint32_t) 0, I, 0, NULL)) ;
 
-    ERR (GrB_Vector_assign_INT64 (v0, NULL, NULL,  (int64_t) 0, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_INT64 (v , v0  , NULL,  (int64_t) 0, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_INT64 (v , v   , NULL,  (int64_t) 0, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_INT64 (v , v   , op0 ,  (int64_t) 0, I, 0, NULL)) ;
+    ERR (GrB_Vector_assign_INT64_(v0, NULL, NULL,  (int64_t) 0, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_INT64_(v , v0  , NULL,  (int64_t) 0, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_INT64_(v , v   , NULL,  (int64_t) 0, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_INT64_(v , v   , op0 ,  (int64_t) 0, I, 0, NULL)) ;
 
-    ERR (GrB_Vector_assign_UINT64 (v0, NULL, NULL,  (uint64_t) 0, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_UINT64 (v , v0  , NULL,  (uint64_t) 0, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_UINT64 (v , v   , NULL,  (uint64_t) 0, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_UINT64 (v , v   , op0 ,  (uint64_t) 0, I, 0, NULL)) ;
+    ERR (GrB_Vector_assign_UINT64_(v0, NULL, NULL,  (uint64_t) 0, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_UINT64_(v , v0  , NULL,  (uint64_t) 0, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_UINT64_(v , v   , NULL,  (uint64_t) 0, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_UINT64_(v , v   , op0 ,  (uint64_t) 0, I, 0, NULL)) ;
 
-    ERR (GrB_Vector_assign_FP32 (v0, NULL, NULL,  (float) 0, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_FP32 (v , v0  , NULL,  (float) 0, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_FP32 (v , v   , NULL,  (float) 0, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_FP32 (v , v   , op0 ,  (float) 0, I, 0, NULL)) ;
+    ERR (GrB_Vector_assign_FP32_(v0, NULL, NULL,  (float) 0, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_FP32_(v , v0  , NULL,  (float) 0, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_FP32_(v , v   , NULL,  (float) 0, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_FP32_(v , v   , op0 ,  (float) 0, I, 0, NULL)) ;
 
-    ERR (GrB_Vector_assign_UDT (v0, NULL, NULL,  (void *) X, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_UDT (v , v0  , NULL,  (void *) X, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_UDT (v , v   , NULL,  (void *) X, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_UDT (v , v   , op0 ,  (void *) X, I, 0, NULL)) ;
+    ERR (GrB_Vector_assign_UDT_(v0, NULL, NULL,  (void *) X, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_UDT_(v , v0  , NULL,  (void *) X, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_UDT_(v , v   , NULL,  (void *) X, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_UDT_(v , v   , op0 ,  (void *) X, I, 0, NULL)) ;
 
-    ERR (GrB_Matrix_assign_FP64 (A0, NULL, NULL,  x, I, 0, J, 0, d0)) ;   // matrix scalar
-    ERR (GrB_Matrix_assign_FP64 (A , A0  , NULL,  x, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_FP64 (A , A   , NULL,  x, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_FP64 (A , A   , op0 ,  x, I, 0, J, 0, NULL)) ;
+    ERR (GrB_Matrix_assign_FP64_(A0, NULL, NULL,  x, I, 0, J, 0, d0)) ;   // matrix scalar
+    ERR (GrB_Matrix_assign_FP64_(A , A0  , NULL,  x, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_FP64_(A , A   , NULL,  x, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_FP64_(A , A   , op0 ,  x, I, 0, J, 0, NULL)) ;
 
-    ERR (GrB_Matrix_assign_BOOL (A0, NULL, NULL,  (bool) 0, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_BOOL (A , A0  , NULL,  (bool) 0, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_BOOL (A , A   , NULL,  (bool) 0, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_BOOL (A , A   , op0 ,  (bool) 0, I, 0, J, 0, NULL)) ;
+    ERR (GrB_Matrix_assign_BOOL_(A0, NULL, NULL,  (bool) 0, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_BOOL_(A , A0  , NULL,  (bool) 0, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_BOOL_(A , A   , NULL,  (bool) 0, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_BOOL_(A , A   , op0 ,  (bool) 0, I, 0, J, 0, NULL)) ;
 
-    ERR (GrB_Matrix_assign_INT8 (A0, NULL, NULL,  (int8_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_INT8 (A , A0  , NULL,  (int8_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_INT8 (A , A   , NULL,  (int8_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_INT8 (A , A   , op0 ,  (int8_t) 0, I, 0, J, 0, NULL)) ;
+    ERR (GrB_Matrix_assign_INT8_(A0, NULL, NULL,  (int8_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_INT8_(A , A0  , NULL,  (int8_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_INT8_(A , A   , NULL,  (int8_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_INT8_(A , A   , op0 ,  (int8_t) 0, I, 0, J, 0, NULL)) ;
 
-    ERR (GrB_Matrix_assign_UINT8 (A0, NULL, NULL,  (uint8_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_UINT8 (A , A0  , NULL,  (uint8_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_UINT8 (A , A   , NULL,  (uint8_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_UINT8 (A , A   , op0 ,  (uint8_t) 0, I, 0, J, 0, NULL)) ;
+    ERR (GrB_Matrix_assign_UINT8_(A0, NULL, NULL,  (uint8_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_UINT8_(A , A0  , NULL,  (uint8_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_UINT8_(A , A   , NULL,  (uint8_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_UINT8_(A , A   , op0 ,  (uint8_t) 0, I, 0, J, 0, NULL)) ;
 
-    ERR (GrB_Matrix_assign_INT16 (A0, NULL, NULL,  (int16_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_INT16 (A , A0  , NULL,  (int16_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_INT16 (A , A   , NULL,  (int16_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_INT16 (A , A   , op0 ,  (int16_t) 0, I, 0, J, 0, NULL)) ;
+    ERR (GrB_Matrix_assign_INT16_(A0, NULL, NULL,  (int16_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_INT16_(A , A0  , NULL,  (int16_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_INT16_(A , A   , NULL,  (int16_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_INT16_(A , A   , op0 ,  (int16_t) 0, I, 0, J, 0, NULL)) ;
 
-    ERR (GrB_Matrix_assign_UINT16 (A0, NULL, NULL,  (uint16_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_UINT16 (A , A0  , NULL,  (uint16_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_UINT16 (A , A   , NULL,  (uint16_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_UINT16 (A , A   , op0 ,  (uint16_t) 0, I, 0, J, 0, NULL)) ;
+    ERR (GrB_Matrix_assign_UINT16_(A0, NULL, NULL,  (uint16_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_UINT16_(A , A0  , NULL,  (uint16_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_UINT16_(A , A   , NULL,  (uint16_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_UINT16_(A , A   , op0 ,  (uint16_t) 0, I, 0, J, 0, NULL)) ;
 
-    ERR (GrB_Matrix_assign_INT32 (A0, NULL, NULL,  (int32_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_INT32 (A , A0  , NULL,  (int32_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_INT32 (A , A   , NULL,  (int32_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_INT32 (A , A   , op0 ,  (int32_t) 0, I, 0, J, 0, NULL)) ;
+    ERR (GrB_Matrix_assign_INT32_(A0, NULL, NULL,  (int32_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_INT32_(A , A0  , NULL,  (int32_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_INT32_(A , A   , NULL,  (int32_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_INT32_(A , A   , op0 ,  (int32_t) 0, I, 0, J, 0, NULL)) ;
 
-    ERR (GrB_Matrix_assign_UINT32 (A0, NULL, NULL,  (uint32_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_UINT32 (A , A0  , NULL,  (uint32_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_UINT32 (A , A   , NULL,  (uint32_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_UINT32 (A , A   , op0 ,  (uint32_t) 0, I, 0, J, 0, NULL)) ;
+    ERR (GrB_Matrix_assign_UINT32_(A0, NULL, NULL,  (uint32_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_UINT32_(A , A0  , NULL,  (uint32_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_UINT32_(A , A   , NULL,  (uint32_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_UINT32_(A , A   , op0 ,  (uint32_t) 0, I, 0, J, 0, NULL)) ;
 
-    ERR (GrB_Matrix_assign_INT64 (A0, NULL, NULL,  (int64_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_INT64 (A , A0  , NULL,  (int64_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_INT64 (A , A   , NULL,  (int64_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_INT64 (A , A   , op0 ,  (int64_t) 0, I, 0, J, 0, NULL)) ;
+    ERR (GrB_Matrix_assign_INT64_(A0, NULL, NULL,  (int64_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_INT64_(A , A0  , NULL,  (int64_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_INT64_(A , A   , NULL,  (int64_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_INT64_(A , A   , op0 ,  (int64_t) 0, I, 0, J, 0, NULL)) ;
 
-    ERR (GrB_Matrix_assign_UINT64 (A0, NULL, NULL,  (uint64_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_UINT64 (A , A0  , NULL,  (uint64_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_UINT64 (A , A   , NULL,  (uint64_t) 0, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_UINT64 (A , A   , op0 ,  (uint64_t) 0, I, 0, J, 0, NULL)) ;
+    ERR (GrB_Matrix_assign_UINT64_(A0, NULL, NULL,  (uint64_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_UINT64_(A , A0  , NULL,  (uint64_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_UINT64_(A , A   , NULL,  (uint64_t) 0, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_UINT64_(A , A   , op0 ,  (uint64_t) 0, I, 0, J, 0, NULL)) ;
 
-    ERR (GrB_Matrix_assign_FP32 (A0, NULL, NULL,  (float) 0, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_FP32 (A , A0  , NULL,  (float) 0, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_FP32 (A , A   , NULL,  (float) 0, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_FP32 (A , A   , op0 ,  (float) 0, I, 0, J, 0, NULL)) ;
+    ERR (GrB_Matrix_assign_FP32_(A0, NULL, NULL,  (float) 0, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_FP32_(A , A0  , NULL,  (float) 0, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_FP32_(A , A   , NULL,  (float) 0, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_FP32_(A , A   , op0 ,  (float) 0, I, 0, J, 0, NULL)) ;
 
-    ERR (GrB_Matrix_assign_UDT (A0, NULL, NULL,  (void *) X, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_UDT (A , A0  , NULL,  (void *) X, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_UDT (A , A   , NULL,  (void *) X, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_UDT (A , A   , op0 ,  (void *) X, I, 0, J, 0, NULL)) ;
+    ERR (GrB_Matrix_assign_UDT_(A0, NULL, NULL,  (void *) X, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_UDT_(A , A0  , NULL,  (void *) X, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_UDT_(A , A   , NULL,  (void *) X, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_UDT_(A , A   , op0 ,  (void *) X, I, 0, J, 0, NULL)) ;
 
     v0 = NULL ;
     A0 = NULL ;
     d0 = NULL ;
-    op0 = NULL ;
-
-    expected = GrB_DOMAIN_MISMATCH ;
-
-    #if GxB_STDC_VERSION >= 201112L
     op0 = Complex_plus ;
 
-    ERR (GrB_Vector_assign (v, z , NULL, v, I, 0, d0)) ;               // vector assign
-    ERR (GrB_Vector_assign (v, v0, op0 , v, I, 0, d0)) ;
-    ERR (GrB_Vector_assign (v, v0, op0 , z, I, 0, d0)) ;
-    ERR (GrB_Vector_assign (z, v0, o2  , v, I, 0, d0)) ;
-    ERR (GrB_Vector_assign (v, v0, o2  , z, I, 0, d0)) ;
-    ERR (GrB_Vector_assign (v, v0, NULL, z, I, 0, d0)) ;
+    expected = (Complex == GxB_FC64) ? GrB_DIMENSION_MISMATCH : GrB_DOMAIN_MISMATCH ;
 
-    ERR (GrB_Matrix_assign (A, Z , NULL, A, I, 0, J, 0, d0)) ;         // matrix assign
-    ERR (GrB_Matrix_assign (A, A0, op0 , A, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign (A, A0, op0 , Z, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign (Z, A0, o2  , A, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign (A, A0, o2  , Z, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign (A, A0, NULL, Z, I, 0, J, 0, d0)) ;
+    ERR (GrB_Vector_assign_(v, z , NULL, v, I, 0, d0)) ;               // vector assign
+    ERR (GrB_Vector_assign_(v, v0, op0 , v, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_(v, v0, op0 , z, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_(z, v0, o2  , v, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_(v, v0, o2  , z, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_(v, v0, NULL, z, I, 0, d0)) ;
 
-    ERR (GrB_Col_assign (A, z , NULL, v, I, 0, 0, d0)) ;            // column assign
-    ERR (GrB_Col_assign (A, v0, op0 , v, I, 0, 0, d0)) ;
-    ERR (GrB_Col_assign (A, v0, op0 , z, I, 0, 0, d0)) ;
-    ERR (GrB_Col_assign (Z, v0, o2  , v, I, 0, 0, d0)) ;
-    ERR (GrB_Col_assign (A, v0, o2  , z, I, 0, 0, d0)) ;
-    ERR (GrB_Col_assign (A, v0, NULL, z, I, 0, 0, d0)) ;
+    ERR (GrB_Matrix_assign_(A, Z , NULL, A, I, 0, J, 0, d0)) ;         // matrix assign
+    ERR (GrB_Matrix_assign_(A, A0, op0 , A, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_(A, A0, op0 , Z, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_(Z, A0, o2  , A, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_(A, A0, o2  , Z, I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_(A, A0, NULL, Z, I, 0, J, 0, d0)) ;
 
-    ERR (GrB_Row_assign (A, z , NULL, v, 0, J, 0, d0)) ;            // row assign
-    ERR (GrB_Row_assign (A, v0, op0 , v, 0, J, 0, d0)) ;
-    ERR (GrB_Row_assign (A, v0, op0 , z, 0, J, 0, d0)) ;
-    ERR (GrB_Row_assign (Z, v0, o2  , v, 0, J, 0, d0)) ;
-    ERR (GrB_Row_assign (A, v0, o2  , z, 0, J, 0, d0)) ;
-    ERR (GrB_Row_assign (A, v0, NULL, z, 0, J, 0, d0)) ;
+    ERR (GrB_Col_assign_(A, z , NULL, v, I, 0, 0, d0)) ;            // column assign
+    ERR (GrB_Col_assign_(A, v0, op0 , v, I, 0, 0, d0)) ;
+    ERR (GrB_Col_assign_(A, v0, op0 , z, I, 0, 0, d0)) ;
+    ERR (GrB_Col_assign_(Z, v0, o2  , v, I, 0, 0, d0)) ;
+    ERR (GrB_Col_assign_(A, v0, o2  , z, I, 0, 0, d0)) ;
+    ERR (GrB_Col_assign_(A, v0, NULL, z, I, 0, 0, d0)) ;
 
-    ERR (GrB_Vector_assign_FP64 (v, z , NULL, x, I, 0, d0)) ;               // vector scalar
-    ERR (GrB_Vector_assign_FP64 (v, v0, op0 , x, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_UDT  (v, v0, op0 ,(void *) &c, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_FP64 (z, v0, o2  , x, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_UDT  (v, v0, o2  ,(void *) &c, I, 0, d0)) ;
-    ERR (GrB_Vector_assign_UDT  (v, v0, NULL,(void *) &c, I, 0, d0)) ;
+    ERR (GrB_Row_assign_(A, z , NULL, v, 0, J, 0, d0)) ;            // row assign
+    ERR (GrB_Row_assign_(A, v0, op0 , v, 0, J, 0, d0)) ;
+    ERR (GrB_Row_assign_(A, v0, op0 , z, 0, J, 0, d0)) ;
+    ERR (GrB_Row_assign_(Z, v0, o2  , v, 0, J, 0, d0)) ;
+    ERR (GrB_Row_assign_(A, v0, o2  , z, 0, J, 0, d0)) ;
+    ERR (GrB_Row_assign_(A, v0, NULL, z, 0, J, 0, d0)) ;
 
-    ERR (GrB_Matrix_assign_FP64 (A, Z , NULL, x, I, 0, J, 0, d0)) ;         // matrix scalar
-    ERR (GrB_Matrix_assign_FP64 (A, A0, op0 , x, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_UDT  (A, A0, op0 ,(void *) &c , I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_FP64 (Z, A0, o2  , x, I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_UDT  (A, A0, o2  ,(void *) &c , I, 0, J, 0, d0)) ;
-    ERR (GrB_Matrix_assign_UDT  (A, A0, NULL,(void *) &c , I, 0, J, 0, d0)) ;
-    #endif
+    // vector scalar and matrix-scalar
+    if (Complex == GxB_FC64)
+    {
+        OK (GrB_Vector_assign_FP64_(v, z , NULL, x, I, 0, d0)) ;
+        OK (GrB_Vector_assign_FP64_(v, v0, op0 , x, I, 0, d0)) ;
+        OK (GrB_Vector_assign_FP64_(z, v0, o2  , x, I, 0, d0)) ;
+        OK (GrB_Matrix_assign_FP64_(A, A0, op0 , x, I, 0, J, 0, d0)) ;
+        OK (GrB_Matrix_assign_FP64_(Z, A0, o2  , x, I, 0, J, 0, d0)) ;
+    }
+    else
+    {
+        ERR (GrB_Vector_assign_FP64_(v, z , NULL, x, I, 0, d0)) ;
+        ERR (GrB_Vector_assign_FP64_(v, v0, op0 , x, I, 0, d0)) ;
+        ERR (GrB_Vector_assign_FP64_(z, v0, o2  , x, I, 0, d0)) ;
+        ERR (GrB_Matrix_assign_FP64_(A, A0, op0 , x, I, 0, J, 0, d0)) ;
+        ERR (GrB_Matrix_assign_FP64_(Z, A0, o2  , x, I, 0, J, 0, d0)) ;
+    }
+
+    expected = GrB_DOMAIN_MISMATCH ;
+    ERR (GrB_Vector_assign_UDT_(v, v0, op0 ,(void *) &c, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_UDT_(v, v0, o2  ,(void *) &c, I, 0, d0)) ;
+    ERR (GrB_Vector_assign_UDT_(v, v0, NULL,(void *) &c, I, 0, d0)) ;
+
+    expected = (Complex == GxB_FC64) ? GrB_DIMENSION_MISMATCH : GrB_DOMAIN_MISMATCH ;
+    
+    ERR (GrB_Matrix_assign_FP64_(A, Z , NULL, x, I, 0, J, 0, d0)) ;
+
+    expected = GrB_DOMAIN_MISMATCH ;
+    ERR (GrB_Matrix_assign_UDT_(A, A0, op0 ,(void *) &c , I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_UDT_(A, A0, o2  ,(void *) &c , I, 0, J, 0, d0)) ;
+    ERR (GrB_Matrix_assign_UDT_(A, A0, NULL,(void *) &c , I, 0, J, 0, d0)) ;
 
     expected = GrB_DIMENSION_MISMATCH ;
 
-    ERR (GrB_Matrix_assign (A, NULL, NULL, A, I, 2, J, 3, d0)) ;
-    ERR (GrB_Matrix_assign (A, NULL, NULL, A, I, 2, J, 3, dtn)) ;
-    ERR (GrB_Row_assign (A , v   , NULL, v ,  0, J, 0, NULL)) ;
+    ERR (GrB_Matrix_assign_(A, NULL, NULL, A, I, 2, J, 3, d0)) ;
+    ERR (GrB_Matrix_assign_(A, NULL, NULL, A, I, 2, J, 3, dtn)) ;
+    ERR (GrB_Row_assign_(A , v   , NULL, v ,  0, J, 0, NULL)) ;
 
     GrB_Vector v5 ;
     OK (GrB_Vector_new (&v5, GrB_BOOL, 5)) ;
-    GxB_Matrix_fprint (A, "A", GB3, NULL) ;
-    GxB_Vector_fprint (v5, "v5", GB3, NULL) ;
-    GxB_Vector_fprint (v, "v", GB3, NULL) ;
-    ERR (GrB_Col_assign (A, v5 , NULL, v, GrB_ALL, 0, 0, NULL)) ; // column assign
+    GxB_Matrix_fprint_(A, GB3, NULL) ;
+    GxB_Vector_fprint_(v5, GB3, NULL) ;
+    GxB_Vector_fprint_(v, GB3, NULL) ;
+    ERR (GrB_Col_assign_(A, v5 , NULL, v, GrB_ALL, 0, 0, NULL)) ; // column assign
     printf ("mask wrong size:\n%s\n", GrB_error ( )) ;
-    OK (GrB_Vector_free (&v5)) ;
+    OK (GrB_Vector_free_(&v5)) ;
 
     // matrix assign, mask wrong size
     GrB_Matrix A5 ;
     OK (GrB_Matrix_new (&A5, GrB_BOOL, 5, 5)) ;
     GB_Matrix_check (A, "A", GB3, NULL, Context) ;
     GB_Matrix_check (A5, "A5", GB3, NULL, Context) ;
-    ERR (GrB_Matrix_assign (A, A5, NULL, A, GrB_ALL, 0, GrB_ALL, 0, NULL)) ;
+    ERR (GrB_Matrix_assign_(A, A5, NULL, A, GrB_ALL, 0, GrB_ALL, 0, NULL)) ;
     printf ("mask wrong size:\n%s\n", GrB_error ( )) ;
-    OK (GrB_Matrix_free (&A5)) ;
+    OK (GrB_Matrix_free_(&A5)) ;
 
     // change of op-2nd type
     int64_t I_0 = 0 ;
@@ -3047,7 +3171,7 @@ void mexFunction
     CHECK (nvals == 25) ;
     GB_Matrix_check (A5, "A5 done", GB3, NULL, Context) ;
 
-    OK (GrB_Matrix_free (&A5)) ;
+    OK (GrB_Matrix_free_(&A5)) ;
 
     //--------------------------------------------------------------------------
     // apply
@@ -3071,31 +3195,46 @@ void mexFunction
     d0 = dgunk ;
     op0 = op2gunk ;
 
-    ERR (GrB_Vector_apply (v0, NULL, NULL, op1gunk, v0, d0)) ;
-    ERR (GrB_Vector_apply (v , v0  , NULL, op1gunk, v0, d0)) ;
-    ERR (GrB_Vector_apply (v , v   , NULL, op1gunk, v0, d0)) ;
-    ERR (GrB_Vector_apply (v , v   , NULL, op1gunk, v , d0)) ;
-    ERR (GrB_Vector_apply (v , v   , op0 , op1gunk, v , NULL)) ;
-    ERR (GrB_Vector_apply (v , v   , NULL, op1gunk, v , NULL)) ;
+    ERR (GrB_Vector_apply_(v0, NULL, NULL, op1gunk, v0, d0)) ;
+    ERR (GrB_Vector_apply_(v , v0  , NULL, op1gunk, v0, d0)) ;
+    ERR (GrB_Vector_apply_(v , v   , NULL, op1gunk, v0, d0)) ;
+    ERR (GrB_Vector_apply_(v , v   , NULL, op1gunk, v , d0)) ;
+    ERR (GrB_Vector_apply_(v , v   , op0 , op1gunk, v , NULL)) ;
+    ERR (GrB_Vector_apply_(v , v   , NULL, op1gunk, v , NULL)) ;
 
-    ERR (GrB_Matrix_apply (A0, NULL, NULL, op1gunk, A0, d0)) ;
-    ERR (GrB_Matrix_apply (A , A0  , NULL, op1gunk, A0, d0)) ;
-    ERR (GrB_Matrix_apply (A , A   , NULL, op1gunk, A0, d0)) ;
-    ERR (GrB_Matrix_apply (A , A   , NULL, op1gunk, A , d0)) ;
-    ERR (GrB_Matrix_apply (A , A   , op0 , op1gunk, A , NULL)) ;
-    ERR (GrB_Matrix_apply (A , A   , NULL, op1gunk, A , NULL)) ;
+    ERR (GrB_Matrix_apply_(A0, NULL, NULL, op1gunk, A0, d0)) ;
+    ERR (GrB_Matrix_apply_(A , A0  , NULL, op1gunk, A0, d0)) ;
+    ERR (GrB_Matrix_apply_(A , A   , NULL, op1gunk, A0, d0)) ;
+    ERR (GrB_Matrix_apply_(A , A   , NULL, op1gunk, A , d0)) ;
+    ERR (GrB_Matrix_apply_(A , A   , op0 , op1gunk, A , NULL)) ;
+    ERR (GrB_Matrix_apply_(A , A   , NULL, op1gunk, A , NULL)) ;
 
-    expected = GrB_DOMAIN_MISMATCH ;
+    expected = (Complex == GxB_FC64) ? GrB_DIMENSION_MISMATCH : GrB_DOMAIN_MISMATCH ;
 
-    #if GxB_STDC_VERSION >= 201112L
     o2  = Complex_plus ;
-    ERR (GrB_Matrix_apply (A, Z   , NULL, GrB_AINV_FP64, A, NULL)) ;
-    ERR (GrB_Matrix_apply (A, NULL, o2  , GrB_AINV_FP64, A, NULL)) ;
-    ERR (GrB_Matrix_apply (A, NULL, o2  , GrB_AINV_FP64, Z, NULL)) ;
-    ERR (GrB_Matrix_apply (A, NULL, NULL, GrB_AINV_FP64, Z, NULL)) ;
-    ERR (GrB_Matrix_apply (Z, NULL, NULL, GrB_AINV_FP64, A, NULL)) ;
-    ERR (GrB_Matrix_apply (Z, NULL, NULL, GrB_AINV_FP64, Z, NULL)) ;
-    #endif
+    ERR (GrB_Matrix_apply_(A, Z   , NULL, GrB_AINV_FP64, A, NULL)) ;
+
+    if (Complex == GxB_FC64)
+    {
+        OK (GrB_Matrix_apply_(A, NULL, o2  , GrB_AINV_FP64, A, NULL)) ;
+        OK (GrB_Matrix_apply_(Z, NULL, NULL, GrB_AINV_FP64, Z, NULL)) ;
+        OK (GrB_Matrix_apply_BinaryOp1st_INT32_(Z, NULL, NULL, o2, 1, Z, NULL)) ;
+        OK (GrB_Matrix_apply_BinaryOp2nd_INT32_(Z, NULL, NULL, o2, Z, 1, NULL)) ;
+    }
+    else
+    {
+        ERR (GrB_Matrix_apply_(A, NULL, o2  , GrB_AINV_FP64, A, NULL)) ;
+        ERR (GrB_Matrix_apply_(Z, NULL, NULL, GrB_AINV_FP64, Z, NULL)) ;
+        ERR (GrB_Matrix_apply_BinaryOp1st_INT32_(Z, NULL, NULL, o2, 1, Z, NULL)) ;
+        ERR (GrB_Matrix_apply_BinaryOp2nd_INT32_(Z, NULL, NULL, o2, Z, 1, NULL)) ;
+    }
+
+    ERR (GrB_Matrix_apply_(A, NULL, o2  , GrB_AINV_FP64, Z, NULL)) ;
+    ERR (GrB_Matrix_apply_(A, NULL, NULL, GrB_AINV_FP64, Z, NULL)) ;
+    ERR (GrB_Matrix_apply_(Z, NULL, NULL, GrB_AINV_FP64, A, NULL)) ;
+
+    ERR (GrB_Matrix_apply_BinaryOp1st_INT32_(Z, NULL, NULL, o2, 1, A, NULL)) ;
+    ERR (GrB_Matrix_apply_BinaryOp2nd_INT32_(Z, NULL, NULL, o2, A, 1, NULL)) ;
 
     v0 = NULL ;
     A0 = NULL ;
@@ -3104,7 +3243,7 @@ void mexFunction
 
     expected = GrB_DIMENSION_MISMATCH ;
 
-    ERR (GrB_Matrix_apply (A , NULL, NULL, GrB_AINV_FP64, C , d0)) ;
+    ERR (GrB_Matrix_apply_(A , NULL, NULL, GrB_AINV_FP64, C , d0)) ;
 
     //--------------------------------------------------------------------------
     // select
@@ -3118,13 +3257,13 @@ void mexFunction
 
     expected = GrB_NULL_POINTER ;
 
-    ERR (GxB_Vector_select (v0, NULL, NULL, NULL, v0, NULL, d0)) ;
-    ERR (GxB_Vector_select (v , NULL, NULL, NULL, v0, NULL, d0)) ;
-    ERR (GxB_Vector_select (v , NULL, NULL, NULL, v , NULL, d0)) ;
+    ERR (GxB_Vector_select_(v0, NULL, NULL, NULL, v0, NULL, d0)) ;
+    ERR (GxB_Vector_select_(v , NULL, NULL, NULL, v0, NULL, d0)) ;
+    ERR (GxB_Vector_select_(v , NULL, NULL, NULL, v , NULL, d0)) ;
 
-    ERR (GxB_Matrix_select (A0, NULL, NULL, NULL, A0, NULL, d0)) ;
-    ERR (GxB_Matrix_select (A , NULL, NULL, NULL, A0, NULL, d0)) ;
-    ERR (GxB_Matrix_select (A , NULL, NULL, NULL, A , NULL, d0)) ;
+    ERR (GxB_Matrix_select_(A0, NULL, NULL, NULL, A0, NULL, d0)) ;
+    ERR (GxB_Matrix_select_(A , NULL, NULL, NULL, A0, NULL, d0)) ;
+    ERR (GxB_Matrix_select_(A , NULL, NULL, NULL, A , NULL, d0)) ;
 
     CHECK (selectopgunk == NULL) ;
     OK (GxB_SelectOp_new (&selectopgunk, fselect, GrB_FP64, GrB_FP64)) ;
@@ -3141,19 +3280,19 @@ void mexFunction
     op0 = op2gunk ;
     sel0 = selectopgunk ;
 
-    ERR (GxB_Vector_select (v0, NULL, NULL, sel0, v0, NULL, d0)) ;
-    ERR (GxB_Vector_select (v , v0  , NULL, sel0, v0, NULL, d0)) ;
-    ERR (GxB_Vector_select (v , v   , NULL, sel0, v0, NULL, d0)) ;
-    ERR (GxB_Vector_select (v , v   , NULL, sel0, v , NULL, d0)) ;
-    ERR (GxB_Vector_select (v , v   , op0 , sel0, v , NULL, NULL)) ;
-    ERR (GxB_Vector_select (v , v   , NULL, sel0, v , NULL, NULL)) ;
+    ERR (GxB_Vector_select_(v0, NULL, NULL, sel0, v0, NULL, d0)) ;
+    ERR (GxB_Vector_select_(v , v0  , NULL, sel0, v0, NULL, d0)) ;
+    ERR (GxB_Vector_select_(v , v   , NULL, sel0, v0, NULL, d0)) ;
+    ERR (GxB_Vector_select_(v , v   , NULL, sel0, v , NULL, d0)) ;
+    ERR (GxB_Vector_select_(v , v   , op0 , sel0, v , NULL, NULL)) ;
+    ERR (GxB_Vector_select_(v , v   , NULL, sel0, v , NULL, NULL)) ;
 
-    ERR (GxB_Matrix_select (A0, NULL, NULL, sel0, A0, NULL, d0)) ;
-    ERR (GxB_Matrix_select (A , A0  , NULL, sel0, A0, NULL, d0)) ;
-    ERR (GxB_Matrix_select (A , A   , NULL, sel0, A0, NULL, d0)) ;
-    ERR (GxB_Matrix_select (A , A   , NULL, sel0, A , NULL, d0)) ;
-    ERR (GxB_Matrix_select (A , A   , op0 , sel0, A , NULL, NULL)) ;
-    ERR (GxB_Matrix_select (A , A   , NULL, sel0, A , NULL, NULL)) ;
+    ERR (GxB_Matrix_select_(A0, NULL, NULL, sel0, A0, NULL, d0)) ;
+    ERR (GxB_Matrix_select_(A , A0  , NULL, sel0, A0, NULL, d0)) ;
+    ERR (GxB_Matrix_select_(A , A   , NULL, sel0, A0, NULL, d0)) ;
+    ERR (GxB_Matrix_select_(A , A   , NULL, sel0, A , NULL, d0)) ;
+    ERR (GxB_Matrix_select_(A , A   , op0 , sel0, A , NULL, NULL)) ;
+    ERR (GxB_Matrix_select_(A , A   , NULL, sel0, A , NULL, NULL)) ;
 
     expected = GrB_DOMAIN_MISMATCH ;
 
@@ -3163,16 +3302,23 @@ void mexFunction
     OK (GxB_Scalar_new (&Thunk, GrB_FP64)) ;
     OK (GxB_Scalar_setElement_FP64 (Thunk, thresh)) ;
 
-    #if GxB_STDC_VERSION >= 201112L
     o2  = Complex_plus ;
+    expected = (Complex == GxB_FC64) ? GrB_DIMENSION_MISMATCH : GrB_DOMAIN_MISMATCH ;
+    if (Complex == GxB_FC64)
+    {
+        OK  (GxB_Matrix_select_(A, NULL, o2  , selectop, A, Thunk, NULL)) ;
+        OK  (GxB_Matrix_select_(Z, NULL, NULL, selectop, Z, Thunk, NULL)) ;
+    }
+    else
+    {
+        ERR (GxB_Matrix_select_(A, NULL, o2  , selectop, A, Thunk, NULL)) ;
+        ERR (GxB_Matrix_select_(Z, NULL, NULL, selectop, Z, Thunk, NULL)) ;
+    }
 
-    ERR (GxB_Matrix_select (A, Z   , NULL, selectop, A, Thunk, NULL)) ;
-    ERR (GxB_Matrix_select (A, NULL, o2  , selectop, A, Thunk, NULL)) ;
-    ERR (GxB_Matrix_select (A, NULL, o2  , selectop, Z, Thunk, NULL)) ;
-    ERR (GxB_Matrix_select (A, NULL, NULL, selectop, Z, Thunk, NULL)) ;
-    ERR (GxB_Matrix_select (Z, NULL, NULL, selectop, A, Thunk, NULL)) ;
-    ERR (GxB_Matrix_select (Z, NULL, NULL, selectop, Z, Thunk, NULL)) ;
-    #endif
+    ERR (GxB_Matrix_select_(A, Z   , NULL, selectop, A, Thunk, NULL)) ;
+    ERR (GxB_Matrix_select_(A, NULL, o2  , selectop, Z, Thunk, NULL)) ;
+    ERR (GxB_Matrix_select_(A, NULL, NULL, selectop, Z, Thunk, NULL)) ;
+    ERR (GxB_Matrix_select_(Z, NULL, NULL, selectop, A, Thunk, NULL)) ;
 
     v0 = NULL ;
     A0 = NULL ;
@@ -3180,14 +3326,14 @@ void mexFunction
     op0 = NULL ;
     sel0 = NULL ;
 
-    OK (GxB_SelectOp_free (&selectop)) ;
+    OK (GxB_SelectOp_free_(&selectop)) ;
     CHECK (selectop == NULL) ;
 
     expected = GrB_DIMENSION_MISMATCH ;
 
-    ERR (GxB_Matrix_select (A , NULL, NULL, GxB_TRIL, C , NULL, d0)) ;
+    ERR (GxB_Matrix_select_(A , NULL, NULL, GxB_TRIL, C , NULL, d0)) ;
 
-    OK (GxB_Scalar_free (&Thunk)) ;
+    OK (GxB_Scalar_free_(&Thunk)) ;
 
     //--------------------------------------------------------------------------
     // reduce to scalar
@@ -3201,103 +3347,103 @@ void mexFunction
 
     // matrix to scalar
 
-    ERR (GrB_Matrix_reduce_BOOL ((bool     *) NULL, op0, m0, A0, d0)) ;
-    ERR (GrB_Matrix_reduce_BOOL ((bool     *) NULL, op0, m0, A , d0)) ;
-    ERR (GrB_Matrix_reduce_BOOL ((bool     *) NULL, op0, m2, A , d0)) ;
+    ERR (GrB_Matrix_reduce_BOOL_((bool     *) NULL, op0, m0, A0, d0)) ;
+    ERR (GrB_Matrix_reduce_BOOL_((bool     *) NULL, op0, m0, A , d0)) ;
+    ERR (GrB_Matrix_reduce_BOOL_((bool     *) NULL, op0, m2, A , d0)) ;
 
-    ERR (GrB_Matrix_reduce_INT8 ((int8_t   *) NULL, op0, m0, A0, d0)) ;
-    ERR (GrB_Matrix_reduce_INT8 ((int8_t   *) NULL, op0, m0, A , d0)) ;
-    ERR (GrB_Matrix_reduce_INT8 ((int8_t   *) NULL, op0, m2, A , d0)) ;
+    ERR (GrB_Matrix_reduce_INT8_((int8_t   *) NULL, op0, m0, A0, d0)) ;
+    ERR (GrB_Matrix_reduce_INT8_((int8_t   *) NULL, op0, m0, A , d0)) ;
+    ERR (GrB_Matrix_reduce_INT8_((int8_t   *) NULL, op0, m2, A , d0)) ;
 
-    ERR (GrB_Matrix_reduce_UINT8 ((uint8_t  *) NULL, op0, m0, A0, d0)) ;
-    ERR (GrB_Matrix_reduce_UINT8 ((uint8_t  *) NULL, op0, m0, A , d0)) ;
-    ERR (GrB_Matrix_reduce_UINT8 ((uint8_t  *) NULL, op0, m2, A , d0)) ;
+    ERR (GrB_Matrix_reduce_UINT8_((uint8_t  *) NULL, op0, m0, A0, d0)) ;
+    ERR (GrB_Matrix_reduce_UINT8_((uint8_t  *) NULL, op0, m0, A , d0)) ;
+    ERR (GrB_Matrix_reduce_UINT8_((uint8_t  *) NULL, op0, m2, A , d0)) ;
 
-    ERR (GrB_Matrix_reduce_INT16 ((int16_t  *) NULL, op0, m0, A0, d0)) ;
-    ERR (GrB_Matrix_reduce_INT16 ((int16_t  *) NULL, op0, m0, A , d0)) ;
-    ERR (GrB_Matrix_reduce_INT16 ((int16_t  *) NULL, op0, m2, A , d0)) ;
+    ERR (GrB_Matrix_reduce_INT16_((int16_t  *) NULL, op0, m0, A0, d0)) ;
+    ERR (GrB_Matrix_reduce_INT16_((int16_t  *) NULL, op0, m0, A , d0)) ;
+    ERR (GrB_Matrix_reduce_INT16_((int16_t  *) NULL, op0, m2, A , d0)) ;
 
-    ERR (GrB_Matrix_reduce_UINT16 ((uint16_t *) NULL, op0, m0, A0, d0)) ;
-    ERR (GrB_Matrix_reduce_UINT16 ((uint16_t *) NULL, op0, m0, A , d0)) ;
-    ERR (GrB_Matrix_reduce_UINT16 ((uint16_t *) NULL, op0, m2, A , d0)) ;
+    ERR (GrB_Matrix_reduce_UINT16_((uint16_t *) NULL, op0, m0, A0, d0)) ;
+    ERR (GrB_Matrix_reduce_UINT16_((uint16_t *) NULL, op0, m0, A , d0)) ;
+    ERR (GrB_Matrix_reduce_UINT16_((uint16_t *) NULL, op0, m2, A , d0)) ;
 
-    ERR (GrB_Matrix_reduce_INT32 ((int32_t  *) NULL, op0, m0, A0, d0)) ;
-    ERR (GrB_Matrix_reduce_INT32 ((int32_t  *) NULL, op0, m0, A , d0)) ;
-    ERR (GrB_Matrix_reduce_INT32 ((int32_t  *) NULL, op0, m2, A , d0)) ;
+    ERR (GrB_Matrix_reduce_INT32_((int32_t  *) NULL, op0, m0, A0, d0)) ;
+    ERR (GrB_Matrix_reduce_INT32_((int32_t  *) NULL, op0, m0, A , d0)) ;
+    ERR (GrB_Matrix_reduce_INT32_((int32_t  *) NULL, op0, m2, A , d0)) ;
 
-    ERR (GrB_Matrix_reduce_UINT32 ((uint32_t *) NULL, op0, m0, A0, d0)) ;
-    ERR (GrB_Matrix_reduce_UINT32 ((uint32_t *) NULL, op0, m0, A , d0)) ;
-    ERR (GrB_Matrix_reduce_UINT32 ((uint32_t *) NULL, op0, m2, A , d0)) ;
+    ERR (GrB_Matrix_reduce_UINT32_((uint32_t *) NULL, op0, m0, A0, d0)) ;
+    ERR (GrB_Matrix_reduce_UINT32_((uint32_t *) NULL, op0, m0, A , d0)) ;
+    ERR (GrB_Matrix_reduce_UINT32_((uint32_t *) NULL, op0, m2, A , d0)) ;
 
-    ERR (GrB_Matrix_reduce_INT64 ((int64_t  *) NULL, op0, m0, A0, d0)) ;
-    ERR (GrB_Matrix_reduce_INT64 ((int64_t  *) NULL, op0, m0, A , d0)) ;
-    ERR (GrB_Matrix_reduce_INT64 ((int64_t  *) NULL, op0, m2, A , d0)) ;
+    ERR (GrB_Matrix_reduce_INT64_((int64_t  *) NULL, op0, m0, A0, d0)) ;
+    ERR (GrB_Matrix_reduce_INT64_((int64_t  *) NULL, op0, m0, A , d0)) ;
+    ERR (GrB_Matrix_reduce_INT64_((int64_t  *) NULL, op0, m2, A , d0)) ;
 
-    ERR (GrB_Matrix_reduce_UINT64 ((uint64_t *) NULL, op0, m0, A0, d0)) ;
-    ERR (GrB_Matrix_reduce_UINT64 ((uint64_t *) NULL, op0, m0, A , d0)) ;
-    ERR (GrB_Matrix_reduce_UINT64 ((uint64_t *) NULL, op0, m2, A , d0)) ;
+    ERR (GrB_Matrix_reduce_UINT64_((uint64_t *) NULL, op0, m0, A0, d0)) ;
+    ERR (GrB_Matrix_reduce_UINT64_((uint64_t *) NULL, op0, m0, A , d0)) ;
+    ERR (GrB_Matrix_reduce_UINT64_((uint64_t *) NULL, op0, m2, A , d0)) ;
 
-    ERR (GrB_Matrix_reduce_FP32 ((float    *) NULL, op0, m0, A0, d0)) ;
-    ERR (GrB_Matrix_reduce_FP32 ((float    *) NULL, op0, m0, A , d0)) ;
-    ERR (GrB_Matrix_reduce_FP32 ((float    *) NULL, op0, m2, A , d0)) ;
+    ERR (GrB_Matrix_reduce_FP32_((float    *) NULL, op0, m0, A0, d0)) ;
+    ERR (GrB_Matrix_reduce_FP32_((float    *) NULL, op0, m0, A , d0)) ;
+    ERR (GrB_Matrix_reduce_FP32_((float    *) NULL, op0, m2, A , d0)) ;
 
-    ERR (GrB_Matrix_reduce_FP64 ((double   *) NULL, op0, m0, A0, d0)) ;
-    ERR (GrB_Matrix_reduce_FP64 ((double   *) NULL, op0, m0, A , d0)) ;
-    ERR (GrB_Matrix_reduce_FP64 ((double   *) NULL, op0, m2, A , d0)) ;
+    ERR (GrB_Matrix_reduce_FP64_((double   *) NULL, op0, m0, A0, d0)) ;
+    ERR (GrB_Matrix_reduce_FP64_((double   *) NULL, op0, m0, A , d0)) ;
+    ERR (GrB_Matrix_reduce_FP64_((double   *) NULL, op0, m2, A , d0)) ;
 
-    ERR (GrB_Matrix_reduce_UDT ((void     *) NULL, op0, m0, A0, d0)) ;
-    ERR (GrB_Matrix_reduce_UDT ((void     *) NULL, op0, m0, A , d0)) ;
-    ERR (GrB_Matrix_reduce_UDT ((void     *) NULL, op0, m2, A , d0)) ;
+    ERR (GrB_Matrix_reduce_UDT_((void     *) NULL, op0, m0, A0, d0)) ;
+    ERR (GrB_Matrix_reduce_UDT_((void     *) NULL, op0, m0, A , d0)) ;
+    ERR (GrB_Matrix_reduce_UDT_((void     *) NULL, op0, m2, A , d0)) ;
 
     // vector to scalar
 
-    ERR (GrB_Vector_reduce_BOOL ((bool     *) NULL, op0, m0, v0, d0)) ;
-    ERR (GrB_Vector_reduce_BOOL ((bool     *) NULL, op0, m0, v , d0)) ;
-    ERR (GrB_Vector_reduce_BOOL ((bool     *) NULL, op0, m2, v , d0)) ;
+    ERR (GrB_Vector_reduce_BOOL_((bool     *) NULL, op0, m0, v0, d0)) ;
+    ERR (GrB_Vector_reduce_BOOL_((bool     *) NULL, op0, m0, v , d0)) ;
+    ERR (GrB_Vector_reduce_BOOL_((bool     *) NULL, op0, m2, v , d0)) ;
 
-    ERR (GrB_Vector_reduce_INT8 ((int8_t   *) NULL, op0, m0, v0, d0)) ;
-    ERR (GrB_Vector_reduce_INT8 ((int8_t   *) NULL, op0, m0, v , d0)) ;
-    ERR (GrB_Vector_reduce_INT8 ((int8_t   *) NULL, op0, m2, v , d0)) ;
+    ERR (GrB_Vector_reduce_INT8_((int8_t   *) NULL, op0, m0, v0, d0)) ;
+    ERR (GrB_Vector_reduce_INT8_((int8_t   *) NULL, op0, m0, v , d0)) ;
+    ERR (GrB_Vector_reduce_INT8_((int8_t   *) NULL, op0, m2, v , d0)) ;
 
-    ERR (GrB_Vector_reduce_UINT8 ((uint8_t  *) NULL, op0, m0, v0, d0)) ;
-    ERR (GrB_Vector_reduce_UINT8 ((uint8_t  *) NULL, op0, m0, v , d0)) ;
-    ERR (GrB_Vector_reduce_UINT8 ((uint8_t  *) NULL, op0, m2, v , d0)) ;
+    ERR (GrB_Vector_reduce_UINT8_((uint8_t  *) NULL, op0, m0, v0, d0)) ;
+    ERR (GrB_Vector_reduce_UINT8_((uint8_t  *) NULL, op0, m0, v , d0)) ;
+    ERR (GrB_Vector_reduce_UINT8_((uint8_t  *) NULL, op0, m2, v , d0)) ;
 
-    ERR (GrB_Vector_reduce_INT16 ((int16_t  *) NULL, op0, m0, v0, d0)) ;
-    ERR (GrB_Vector_reduce_INT16 ((int16_t  *) NULL, op0, m0, v , d0)) ;
-    ERR (GrB_Vector_reduce_INT16 ((int16_t  *) NULL, op0, m2, v , d0)) ;
+    ERR (GrB_Vector_reduce_INT16_((int16_t  *) NULL, op0, m0, v0, d0)) ;
+    ERR (GrB_Vector_reduce_INT16_((int16_t  *) NULL, op0, m0, v , d0)) ;
+    ERR (GrB_Vector_reduce_INT16_((int16_t  *) NULL, op0, m2, v , d0)) ;
 
-    ERR (GrB_Vector_reduce_UINT16 ((uint16_t *) NULL, op0, m0, v0, d0)) ;
-    ERR (GrB_Vector_reduce_UINT16 ((uint16_t *) NULL, op0, m0, v , d0)) ;
-    ERR (GrB_Vector_reduce_UINT16 ((uint16_t *) NULL, op0, m2, v , d0)) ;
+    ERR (GrB_Vector_reduce_UINT16_((uint16_t *) NULL, op0, m0, v0, d0)) ;
+    ERR (GrB_Vector_reduce_UINT16_((uint16_t *) NULL, op0, m0, v , d0)) ;
+    ERR (GrB_Vector_reduce_UINT16_((uint16_t *) NULL, op0, m2, v , d0)) ;
 
-    ERR (GrB_Vector_reduce_INT32 ((int32_t  *) NULL, op0, m0, v0, d0)) ;
-    ERR (GrB_Vector_reduce_INT32 ((int32_t  *) NULL, op0, m0, v , d0)) ;
-    ERR (GrB_Vector_reduce_INT32 ((int32_t  *) NULL, op0, m2, v , d0)) ;
+    ERR (GrB_Vector_reduce_INT32_((int32_t  *) NULL, op0, m0, v0, d0)) ;
+    ERR (GrB_Vector_reduce_INT32_((int32_t  *) NULL, op0, m0, v , d0)) ;
+    ERR (GrB_Vector_reduce_INT32_((int32_t  *) NULL, op0, m2, v , d0)) ;
 
-    ERR (GrB_Vector_reduce_UINT32 ((uint32_t *) NULL, op0, m0, v0, d0)) ;
-    ERR (GrB_Vector_reduce_UINT32 ((uint32_t *) NULL, op0, m0, v , d0)) ;
-    ERR (GrB_Vector_reduce_UINT32 ((uint32_t *) NULL, op0, m2, v , d0)) ;
+    ERR (GrB_Vector_reduce_UINT32_((uint32_t *) NULL, op0, m0, v0, d0)) ;
+    ERR (GrB_Vector_reduce_UINT32_((uint32_t *) NULL, op0, m0, v , d0)) ;
+    ERR (GrB_Vector_reduce_UINT32_((uint32_t *) NULL, op0, m2, v , d0)) ;
 
-    ERR (GrB_Vector_reduce_INT64 ((int64_t  *) NULL, op0, m0, v0, d0)) ;
-    ERR (GrB_Vector_reduce_INT64 ((int64_t  *) NULL, op0, m0, v , d0)) ;
-    ERR (GrB_Vector_reduce_INT64 ((int64_t  *) NULL, op0, m2, v , d0)) ;
+    ERR (GrB_Vector_reduce_INT64_((int64_t  *) NULL, op0, m0, v0, d0)) ;
+    ERR (GrB_Vector_reduce_INT64_((int64_t  *) NULL, op0, m0, v , d0)) ;
+    ERR (GrB_Vector_reduce_INT64_((int64_t  *) NULL, op0, m2, v , d0)) ;
 
-    ERR (GrB_Vector_reduce_UINT64 ((uint64_t *) NULL, op0, m0, v0, d0)) ;
-    ERR (GrB_Vector_reduce_UINT64 ((uint64_t *) NULL, op0, m0, v , d0)) ;
-    ERR (GrB_Vector_reduce_UINT64 ((uint64_t *) NULL, op0, m2, v , d0)) ;
+    ERR (GrB_Vector_reduce_UINT64_((uint64_t *) NULL, op0, m0, v0, d0)) ;
+    ERR (GrB_Vector_reduce_UINT64_((uint64_t *) NULL, op0, m0, v , d0)) ;
+    ERR (GrB_Vector_reduce_UINT64_((uint64_t *) NULL, op0, m2, v , d0)) ;
 
-    ERR (GrB_Vector_reduce_FP32 ((float    *) NULL, op0, m0, v0, d0)) ;
-    ERR (GrB_Vector_reduce_FP32 ((float    *) NULL, op0, m0, v , d0)) ;
-    ERR (GrB_Vector_reduce_FP32 ((float    *) NULL, op0, m2, v , d0)) ;
+    ERR (GrB_Vector_reduce_FP32_((float    *) NULL, op0, m0, v0, d0)) ;
+    ERR (GrB_Vector_reduce_FP32_((float    *) NULL, op0, m0, v , d0)) ;
+    ERR (GrB_Vector_reduce_FP32_((float    *) NULL, op0, m2, v , d0)) ;
 
-    ERR (GrB_Vector_reduce_FP64 ((double   *) NULL, op0, m0, v0, d0)) ;
-    ERR (GrB_Vector_reduce_FP64 ((double   *) NULL, op0, m0, v , d0)) ;
-    ERR (GrB_Vector_reduce_FP64 ((double   *) NULL, op0, m2, v , d0)) ;
+    ERR (GrB_Vector_reduce_FP64_((double   *) NULL, op0, m0, v0, d0)) ;
+    ERR (GrB_Vector_reduce_FP64_((double   *) NULL, op0, m0, v , d0)) ;
+    ERR (GrB_Vector_reduce_FP64_((double   *) NULL, op0, m2, v , d0)) ;
 
-    ERR (GrB_Vector_reduce_UDT ((void     *) NULL, op0, m0, v0, d0)) ;
-    ERR (GrB_Vector_reduce_UDT ((void     *) NULL, op0, m0, v , d0)) ;
-    ERR (GrB_Vector_reduce_UDT ((void     *) NULL, op0, m2, v , d0)) ;
+    ERR (GrB_Vector_reduce_UDT_((void     *) NULL, op0, m0, v0, d0)) ;
+    ERR (GrB_Vector_reduce_UDT_((void     *) NULL, op0, m0, v , d0)) ;
+    ERR (GrB_Vector_reduce_UDT_((void     *) NULL, op0, m2, v , d0)) ;
 
     expected = GrB_UNINITIALIZED_OBJECT ;
 
@@ -3308,119 +3454,127 @@ void mexFunction
 
     // matrix to scalar
 
-    ERR (GrB_Matrix_reduce_BOOL ((bool     *) NULL, op0, m0, A0, d0)) ;
-    ERR (GrB_Matrix_reduce_BOOL ((bool     *) NULL, op0, m0, A , d0)) ;
-    ERR (GrB_Matrix_reduce_BOOL ((bool     *) NULL, op0, m2, A , d0)) ;
+    ERR (GrB_Matrix_reduce_BOOL_((bool     *) NULL, op0, m0, A0, d0)) ;
+    ERR (GrB_Matrix_reduce_BOOL_((bool     *) NULL, op0, m0, A , d0)) ;
+    ERR (GrB_Matrix_reduce_BOOL_((bool     *) NULL, op0, m2, A , d0)) ;
 
-    ERR (GrB_Matrix_reduce_INT8 ((int8_t   *) NULL, op0, m0, A0, d0)) ;
-    ERR (GrB_Matrix_reduce_INT8 ((int8_t   *) NULL, op0, m0, A , d0)) ;
-    ERR (GrB_Matrix_reduce_INT8 ((int8_t   *) NULL, op0, m2, A , d0)) ;
+    ERR (GrB_Matrix_reduce_INT8_((int8_t   *) NULL, op0, m0, A0, d0)) ;
+    ERR (GrB_Matrix_reduce_INT8_((int8_t   *) NULL, op0, m0, A , d0)) ;
+    ERR (GrB_Matrix_reduce_INT8_((int8_t   *) NULL, op0, m2, A , d0)) ;
 
-    ERR (GrB_Matrix_reduce_UINT8 ((uint8_t  *) NULL, op0, m0, A0, d0)) ;
-    ERR (GrB_Matrix_reduce_UINT8 ((uint8_t  *) NULL, op0, m0, A , d0)) ;
-    ERR (GrB_Matrix_reduce_UINT8 ((uint8_t  *) NULL, op0, m2, A , d0)) ;
+    ERR (GrB_Matrix_reduce_UINT8_((uint8_t  *) NULL, op0, m0, A0, d0)) ;
+    ERR (GrB_Matrix_reduce_UINT8_((uint8_t  *) NULL, op0, m0, A , d0)) ;
+    ERR (GrB_Matrix_reduce_UINT8_((uint8_t  *) NULL, op0, m2, A , d0)) ;
 
-    ERR (GrB_Matrix_reduce_INT16 ((int16_t  *) NULL, op0, m0, A0, d0)) ;
-    ERR (GrB_Matrix_reduce_INT16 ((int16_t  *) NULL, op0, m0, A , d0)) ;
-    ERR (GrB_Matrix_reduce_INT16 ((int16_t  *) NULL, op0, m2, A , d0)) ;
+    ERR (GrB_Matrix_reduce_INT16_((int16_t  *) NULL, op0, m0, A0, d0)) ;
+    ERR (GrB_Matrix_reduce_INT16_((int16_t  *) NULL, op0, m0, A , d0)) ;
+    ERR (GrB_Matrix_reduce_INT16_((int16_t  *) NULL, op0, m2, A , d0)) ;
 
-    ERR (GrB_Matrix_reduce_UINT16 ((uint16_t *) NULL, op0, m0, A0, d0)) ;
-    ERR (GrB_Matrix_reduce_UINT16 ((uint16_t *) NULL, op0, m0, A , d0)) ;
-    ERR (GrB_Matrix_reduce_UINT16 ((uint16_t *) NULL, op0, m2, A , d0)) ;
+    ERR (GrB_Matrix_reduce_UINT16_((uint16_t *) NULL, op0, m0, A0, d0)) ;
+    ERR (GrB_Matrix_reduce_UINT16_((uint16_t *) NULL, op0, m0, A , d0)) ;
+    ERR (GrB_Matrix_reduce_UINT16_((uint16_t *) NULL, op0, m2, A , d0)) ;
 
-    ERR (GrB_Matrix_reduce_INT32 ((int32_t  *) NULL, op0, m0, A0, d0)) ;
-    ERR (GrB_Matrix_reduce_INT32 ((int32_t  *) NULL, op0, m0, A , d0)) ;
-    ERR (GrB_Matrix_reduce_INT32 ((int32_t  *) NULL, op0, m2, A , d0)) ;
+    ERR (GrB_Matrix_reduce_INT32_((int32_t  *) NULL, op0, m0, A0, d0)) ;
+    ERR (GrB_Matrix_reduce_INT32_((int32_t  *) NULL, op0, m0, A , d0)) ;
+    ERR (GrB_Matrix_reduce_INT32_((int32_t  *) NULL, op0, m2, A , d0)) ;
 
-    ERR (GrB_Matrix_reduce_UINT32 ((uint32_t *) NULL, op0, m0, A0, d0)) ;
-    ERR (GrB_Matrix_reduce_UINT32 ((uint32_t *) NULL, op0, m0, A , d0)) ;
-    ERR (GrB_Matrix_reduce_UINT32 ((uint32_t *) NULL, op0, m2, A , d0)) ;
+    ERR (GrB_Matrix_reduce_UINT32_((uint32_t *) NULL, op0, m0, A0, d0)) ;
+    ERR (GrB_Matrix_reduce_UINT32_((uint32_t *) NULL, op0, m0, A , d0)) ;
+    ERR (GrB_Matrix_reduce_UINT32_((uint32_t *) NULL, op0, m2, A , d0)) ;
 
-    ERR (GrB_Matrix_reduce_INT64 ((int64_t  *) NULL, op0, m0, A0, d0)) ;
-    ERR (GrB_Matrix_reduce_INT64 ((int64_t  *) NULL, op0, m0, A , d0)) ;
-    ERR (GrB_Matrix_reduce_INT64 ((int64_t  *) NULL, op0, m2, A , d0)) ;
+    ERR (GrB_Matrix_reduce_INT64_((int64_t  *) NULL, op0, m0, A0, d0)) ;
+    ERR (GrB_Matrix_reduce_INT64_((int64_t  *) NULL, op0, m0, A , d0)) ;
+    ERR (GrB_Matrix_reduce_INT64_((int64_t  *) NULL, op0, m2, A , d0)) ;
 
-    ERR (GrB_Matrix_reduce_UINT64 ((uint64_t *) NULL, op0, m0, A0, d0)) ;
-    ERR (GrB_Matrix_reduce_UINT64 ((uint64_t *) NULL, op0, m0, A , d0)) ;
-    ERR (GrB_Matrix_reduce_UINT64 ((uint64_t *) NULL, op0, m2, A , d0)) ;
+    ERR (GrB_Matrix_reduce_UINT64_((uint64_t *) NULL, op0, m0, A0, d0)) ;
+    ERR (GrB_Matrix_reduce_UINT64_((uint64_t *) NULL, op0, m0, A , d0)) ;
+    ERR (GrB_Matrix_reduce_UINT64_((uint64_t *) NULL, op0, m2, A , d0)) ;
 
-    ERR (GrB_Matrix_reduce_FP32 ((float    *) NULL, op0, m0, A0, d0)) ;
-    ERR (GrB_Matrix_reduce_FP32 ((float    *) NULL, op0, m0, A , d0)) ;
-    ERR (GrB_Matrix_reduce_FP32 ((float    *) NULL, op0, m2, A , d0)) ;
+    ERR (GrB_Matrix_reduce_FP32_((float    *) NULL, op0, m0, A0, d0)) ;
+    ERR (GrB_Matrix_reduce_FP32_((float    *) NULL, op0, m0, A , d0)) ;
+    ERR (GrB_Matrix_reduce_FP32_((float    *) NULL, op0, m2, A , d0)) ;
 
-    ERR (GrB_Matrix_reduce_FP64 ((double   *) NULL, op0, m0, A0, d0)) ;
-    ERR (GrB_Matrix_reduce_FP64 ((double   *) NULL, op0, m0, A , d0)) ;
-    ERR (GrB_Matrix_reduce_FP64 ((double   *) NULL, op0, m2, A , d0)) ;
+    ERR (GrB_Matrix_reduce_FP64_((double   *) NULL, op0, m0, A0, d0)) ;
+    ERR (GrB_Matrix_reduce_FP64_((double   *) NULL, op0, m0, A , d0)) ;
+    ERR (GrB_Matrix_reduce_FP64_((double   *) NULL, op0, m2, A , d0)) ;
 
-    ERR (GrB_Matrix_reduce_UDT ((void     *) NULL, op0, m0, A0, d0)) ;
-    ERR (GrB_Matrix_reduce_UDT ((void     *) NULL, op0, m0, A , d0)) ;
-    ERR (GrB_Matrix_reduce_UDT ((void     *) NULL, op0, m2, A , d0)) ;
+    ERR (GrB_Matrix_reduce_UDT_((void     *) NULL, op0, m0, A0, d0)) ;
+    ERR (GrB_Matrix_reduce_UDT_((void     *) NULL, op0, m0, A , d0)) ;
+    ERR (GrB_Matrix_reduce_UDT_((void     *) NULL, op0, m2, A , d0)) ;
 
     // vector to scalar
 
-    ERR (GrB_Vector_reduce_BOOL ((bool     *) NULL, op0, m0, v0, d0)) ;
-    ERR (GrB_Vector_reduce_BOOL ((bool     *) NULL, op0, m0, v , d0)) ;
-    ERR (GrB_Vector_reduce_BOOL ((bool     *) NULL, op0, m2, v , d0)) ;
+    ERR (GrB_Vector_reduce_BOOL_((bool     *) NULL, op0, m0, v0, d0)) ;
+    ERR (GrB_Vector_reduce_BOOL_((bool     *) NULL, op0, m0, v , d0)) ;
+    ERR (GrB_Vector_reduce_BOOL_((bool     *) NULL, op0, m2, v , d0)) ;
 
     ERR (GrB_Vector_reduce_INT8 ((int8_t   *) NULL, op0, m0, v0, d0)) ;
     ERR (GrB_Vector_reduce_INT8 ((int8_t   *) NULL, op0, m0, v , d0)) ;
-    ERR (GrB_Vector_reduce_INT8 ((int8_t   *) NULL, op0, m2, v , d0)) ;
+    ERR (GrB_Vector_reduce_INT8_((int8_t   *) NULL, op0, m2, v , d0)) ;
 
-    ERR (GrB_Vector_reduce_UINT8 ((uint8_t  *) NULL, op0, m0, v0, d0)) ;
-    ERR (GrB_Vector_reduce_UINT8 ((uint8_t  *) NULL, op0, m0, v , d0)) ;
-    ERR (GrB_Vector_reduce_UINT8 ((uint8_t  *) NULL, op0, m2, v , d0)) ;
+    ERR (GrB_Vector_reduce_UINT8_((uint8_t  *) NULL, op0, m0, v0, d0)) ;
+    ERR (GrB_Vector_reduce_UINT8_((uint8_t  *) NULL, op0, m0, v , d0)) ;
+    ERR (GrB_Vector_reduce_UINT8_((uint8_t  *) NULL, op0, m2, v , d0)) ;
 
-    ERR (GrB_Vector_reduce_INT16 ((int16_t  *) NULL, op0, m0, v0, d0)) ;
-    ERR (GrB_Vector_reduce_INT16 ((int16_t  *) NULL, op0, m0, v , d0)) ;
-    ERR (GrB_Vector_reduce_INT16 ((int16_t  *) NULL, op0, m2, v , d0)) ;
+    ERR (GrB_Vector_reduce_INT16_((int16_t  *) NULL, op0, m0, v0, d0)) ;
+    ERR (GrB_Vector_reduce_INT16_((int16_t  *) NULL, op0, m0, v , d0)) ;
+    ERR (GrB_Vector_reduce_INT16_((int16_t  *) NULL, op0, m2, v , d0)) ;
 
-    ERR (GrB_Vector_reduce_UINT16 ((uint16_t *) NULL, op0, m0, v0, d0)) ;
-    ERR (GrB_Vector_reduce_UINT16 ((uint16_t *) NULL, op0, m0, v , d0)) ;
-    ERR (GrB_Vector_reduce_UINT16 ((uint16_t *) NULL, op0, m2, v , d0)) ;
+    ERR (GrB_Vector_reduce_UINT16_((uint16_t *) NULL, op0, m0, v0, d0)) ;
+    ERR (GrB_Vector_reduce_UINT16_((uint16_t *) NULL, op0, m0, v , d0)) ;
+    ERR (GrB_Vector_reduce_UINT16_((uint16_t *) NULL, op0, m2, v , d0)) ;
 
-    ERR (GrB_Vector_reduce_INT32 ((int32_t  *) NULL, op0, m0, v0, d0)) ;
-    ERR (GrB_Vector_reduce_INT32 ((int32_t  *) NULL, op0, m0, v , d0)) ;
-    ERR (GrB_Vector_reduce_INT32 ((int32_t  *) NULL, op0, m2, v , d0)) ;
+    ERR (GrB_Vector_reduce_INT32_((int32_t  *) NULL, op0, m0, v0, d0)) ;
+    ERR (GrB_Vector_reduce_INT32_((int32_t  *) NULL, op0, m0, v , d0)) ;
+    ERR (GrB_Vector_reduce_INT32_((int32_t  *) NULL, op0, m2, v , d0)) ;
 
-    ERR (GrB_Vector_reduce_UINT32 ((uint32_t *) NULL, op0, m0, v0, d0)) ;
-    ERR (GrB_Vector_reduce_UINT32 ((uint32_t *) NULL, op0, m0, v , d0)) ;
-    ERR (GrB_Vector_reduce_UINT32 ((uint32_t *) NULL, op0, m2, v , d0)) ;
+    ERR (GrB_Vector_reduce_UINT32_((uint32_t *) NULL, op0, m0, v0, d0)) ;
+    ERR (GrB_Vector_reduce_UINT32_((uint32_t *) NULL, op0, m0, v , d0)) ;
+    ERR (GrB_Vector_reduce_UINT32_((uint32_t *) NULL, op0, m2, v , d0)) ;
 
-    ERR (GrB_Vector_reduce_INT64 ((int64_t  *) NULL, op0, m0, v0, d0)) ;
-    ERR (GrB_Vector_reduce_INT64 ((int64_t  *) NULL, op0, m0, v , d0)) ;
-    ERR (GrB_Vector_reduce_INT64 ((int64_t  *) NULL, op0, m2, v , d0)) ;
+    ERR (GrB_Vector_reduce_INT64_((int64_t  *) NULL, op0, m0, v0, d0)) ;
+    ERR (GrB_Vector_reduce_INT64_((int64_t  *) NULL, op0, m0, v , d0)) ;
+    ERR (GrB_Vector_reduce_INT64_((int64_t  *) NULL, op0, m2, v , d0)) ;
 
-    ERR (GrB_Vector_reduce_UINT64 ((uint64_t *) NULL, op0, m0, v0, d0)) ;
-    ERR (GrB_Vector_reduce_UINT64 ((uint64_t *) NULL, op0, m0, v , d0)) ;
-    ERR (GrB_Vector_reduce_UINT64 ((uint64_t *) NULL, op0, m2, v , d0)) ;
+    ERR (GrB_Vector_reduce_UINT64_((uint64_t *) NULL, op0, m0, v0, d0)) ;
+    ERR (GrB_Vector_reduce_UINT64_((uint64_t *) NULL, op0, m0, v , d0)) ;
+    ERR (GrB_Vector_reduce_UINT64_((uint64_t *) NULL, op0, m2, v , d0)) ;
 
-    ERR (GrB_Vector_reduce_FP32 ((float    *) NULL, op0, m0, v0, d0)) ;
-    ERR (GrB_Vector_reduce_FP32 ((float    *) NULL, op0, m0, v , d0)) ;
-    ERR (GrB_Vector_reduce_FP32 ((float    *) NULL, op0, m2, v , d0)) ;
+    ERR (GrB_Vector_reduce_FP32_((float    *) NULL, op0, m0, v0, d0)) ;
+    ERR (GrB_Vector_reduce_FP32_((float    *) NULL, op0, m0, v , d0)) ;
+    ERR (GrB_Vector_reduce_FP32_((float    *) NULL, op0, m2, v , d0)) ;
 
-    ERR (GrB_Vector_reduce_FP64 ((double   *) NULL, op0, m0, v0, d0)) ;
-    ERR (GrB_Vector_reduce_FP64 ((double   *) NULL, op0, m0, v , d0)) ;
-    ERR (GrB_Vector_reduce_FP64 ((double   *) NULL, op0, m2, v , d0)) ;
+    ERR (GrB_Vector_reduce_FP64_((double   *) NULL, op0, m0, v0, d0)) ;
+    ERR (GrB_Vector_reduce_FP64_((double   *) NULL, op0, m0, v , d0)) ;
+    ERR (GrB_Vector_reduce_FP64_((double   *) NULL, op0, m2, v , d0)) ;
 
-    ERR (GrB_Vector_reduce_UDT ((void     *) NULL, op0, m0, v0, d0)) ;
-    ERR (GrB_Vector_reduce_UDT ((void     *) NULL, op0, m0, v , d0)) ;
-    ERR (GrB_Vector_reduce_UDT ((void     *) NULL, op0, m2, v , d0)) ;
+    ERR (GrB_Vector_reduce_UDT_((void     *) NULL, op0, m0, v0, d0)) ;
+    ERR (GrB_Vector_reduce_UDT_((void     *) NULL, op0, m0, v , d0)) ;
+    ERR (GrB_Vector_reduce_UDT_((void     *) NULL, op0, m2, v , d0)) ;
 
     m0 = NULL ;
     v0 = NULL ;
     A0 = NULL ;
     op0 = NULL ;
-
     expected = GrB_DOMAIN_MISMATCH ;
-
-    #if GxB_STDC_VERSION >= 201112L
     o2  = Complex_plus ;
-    ERR (GrB_Matrix_reduce_FP64 (&x, op0 , GxB_PLUS_FP64_MONOID , Z , d0)) ;
-    ERR (GrB_Matrix_reduce_FP64 (&x, op0 , Complex_plus_monoid  , Z , d0)) ;
-    ERR (GrB_Matrix_reduce_FP64 (&x, op0 , Complex_plus_monoid  , A , d0)) ;
-    ERR (GrB_Matrix_reduce_FP64 (&x, o2  , Complex_plus_monoid  , Z , d0)) ;
-    ERR (GrB_Matrix_reduce_UDT  (&c, o2  , Complex_plus_monoid  , A , d0)) ;
-    #endif
+
+    if (Complex == GxB_FC64)
+    {
+        OK  (GrB_Matrix_reduce_FP64 (&x, op0 , GxB_PLUS_FP64_MONOID , Z , d0)) ;
+        OK  (GrB_Matrix_reduce_FP64 (&x, op0 , Complex_plus_monoid  , Z , d0)) ;
+        OK  (GrB_Matrix_reduce_FP64 (&x, op0 , Complex_plus_monoid  , A , d0)) ;
+        OK  (GrB_Matrix_reduce_FP64 (&x, o2  , Complex_plus_monoid  , Z , d0)) ;
+        OK  (GrB_Matrix_reduce_UDT  (&c, o2  , Complex_plus_monoid  , A , d0)) ;
+    }
+    else
+    {
+        ERR (GrB_Matrix_reduce_FP64 (&x, op0 , GxB_PLUS_FP64_MONOID , Z , d0)) ;
+        ERR (GrB_Matrix_reduce_FP64 (&x, op0 , Complex_plus_monoid  , Z , d0)) ;
+        ERR (GrB_Matrix_reduce_FP64 (&x, op0 , Complex_plus_monoid  , A , d0)) ;
+        ERR (GrB_Matrix_reduce_FP64 (&x, o2  , Complex_plus_monoid  , Z , d0)) ;
+        ERR (GrB_Matrix_reduce_UDT  (&c, o2  , Complex_plus_monoid  , A , d0)) ;
+    }
 
     //--------------------------------------------------------------------------
     // reduce to vector
@@ -3432,13 +3586,13 @@ void mexFunction
     o2 = GrB_PLUS_FP64 ;
     m2 = GxB_TIMES_FP64_MONOID ;
 
-    ERR (GrB_Matrix_reduce_BinaryOp (v0, NULL, NULL, op0, A0, d0)) ;    // reduce via op
-    ERR (GrB_Matrix_reduce_BinaryOp (v0, NULL, NULL, o2 , A0, d0)) ;
-    ERR (GrB_Matrix_reduce_BinaryOp (v , NULL, NULL, o2 , A0, d0)) ;
+    ERR (GrB_Matrix_reduce_BinaryOp_(v0, NULL, NULL, op0, A0, d0)) ;    // reduce via op
+    ERR (GrB_Matrix_reduce_BinaryOp_(v0, NULL, NULL, o2 , A0, d0)) ;
+    ERR (GrB_Matrix_reduce_BinaryOp_(v , NULL, NULL, o2 , A0, d0)) ;
 
-    ERR (GrB_Matrix_reduce_Monoid (v0, NULL, NULL, m0 , A0, d0)) ;    // reduce via monoid
-    ERR (GrB_Matrix_reduce_Monoid (v0, NULL, NULL, m2 , A0, d0)) ;
-    ERR (GrB_Matrix_reduce_Monoid (v , NULL, NULL, m2 , A0, d0)) ;
+    ERR (GrB_Matrix_reduce_Monoid_(v0, NULL, NULL, m0 , A0, d0)) ;    // reduce via monoid
+    ERR (GrB_Matrix_reduce_Monoid_(v0, NULL, NULL, m2 , A0, d0)) ;
+    ERR (GrB_Matrix_reduce_Monoid_(v , NULL, NULL, m2 , A0, d0)) ;
 
     expected = GrB_UNINITIALIZED_OBJECT ;
 
@@ -3448,19 +3602,19 @@ void mexFunction
     op0 = op2gunk ;
     d0 = dgunk ;
 
-    ERR (GrB_Matrix_reduce_BinaryOp (v0, v0  , op0 , op0, A0, d0)) ;    // reduce via op
-    ERR (GrB_Matrix_reduce_BinaryOp (v0, v0  , op0 , o2 , A0, d0)) ;
-    ERR (GrB_Matrix_reduce_BinaryOp (v , v0  , op0 , o2 , A0, d0)) ;
-    ERR (GrB_Matrix_reduce_BinaryOp (v , v   , op0 , o2 , A0, d0)) ;
-    ERR (GrB_Matrix_reduce_BinaryOp (v , v   , o2  , o2 , A0, d0)) ;
-    ERR (GrB_Matrix_reduce_BinaryOp (v , v   , o2  , o2 , A , d0)) ;
+    ERR (GrB_Matrix_reduce_BinaryOp_(v0, v0  , op0 , op0, A0, d0)) ;    // reduce via op
+    ERR (GrB_Matrix_reduce_BinaryOp_(v0, v0  , op0 , o2 , A0, d0)) ;
+    ERR (GrB_Matrix_reduce_BinaryOp_(v , v0  , op0 , o2 , A0, d0)) ;
+    ERR (GrB_Matrix_reduce_BinaryOp_(v , v   , op0 , o2 , A0, d0)) ;
+    ERR (GrB_Matrix_reduce_BinaryOp_(v , v   , o2  , o2 , A0, d0)) ;
+    ERR (GrB_Matrix_reduce_BinaryOp_(v , v   , o2  , o2 , A , d0)) ;
 
-    ERR (GrB_Matrix_reduce_BinaryOp (v0, v0  , op0 , m0 , A0, d0)) ;    // reduce via op
-    ERR (GrB_Matrix_reduce_BinaryOp (v0, v0  , op0 , m2 , A0, d0)) ;
-    ERR (GrB_Matrix_reduce_BinaryOp (v , v0  , op0 , m2 , A0, d0)) ;
-    ERR (GrB_Matrix_reduce_BinaryOp (v , v   , op0 , m2 , A0, d0)) ;
-    ERR (GrB_Matrix_reduce_BinaryOp (v , v   , o2  , m2 , A0, d0)) ;
-    ERR (GrB_Matrix_reduce_BinaryOp (v , v   , o2  , m2 , A , d0)) ;
+    ERR (GrB_Matrix_reduce_Monoid_(v0, v0  , op0 , m0 , A0, d0)) ;    // reduce via monoid
+    ERR (GrB_Matrix_reduce_Monoid_(v0, v0  , op0 , m2 , A0, d0)) ;
+    ERR (GrB_Matrix_reduce_Monoid_(v , v0  , op0 , m2 , A0, d0)) ;
+    ERR (GrB_Matrix_reduce_Monoid_(v , v   , op0 , m2 , A0, d0)) ;
+    ERR (GrB_Matrix_reduce_Monoid_(v , v   , o2  , m2 , A0, d0)) ;
+    ERR (GrB_Matrix_reduce_Monoid_(v , v   , o2  , m2 , A , d0)) ;
 
     m0 = NULL ;
     v0 = NULL ;
@@ -3468,29 +3622,29 @@ void mexFunction
     op0 = NULL ;
     d0 = NULL ;
 
-    expected = GrB_DOMAIN_MISMATCH ;
+    expected = (Complex == GxB_FC64) ? GrB_DIMENSION_MISMATCH : GrB_DOMAIN_MISMATCH ;
 
-    #if GxB_STDC_VERSION >= 201112L
     o2 = Complex_plus ;
-    ERR (GrB_Matrix_reduce_BinaryOp (v, z   , NULL, GrB_PLUS_FP64, A, d0)) ;
-    ERR (GrB_Matrix_reduce_BinaryOp (z, NULL, NULL, GrB_PLUS_FP64, A, d0)) ;
-    ERR (GrB_Matrix_reduce_BinaryOp (v, NULL, o2  , GrB_PLUS_FP64, A, d0)) ;
-    ERR (GrB_Matrix_reduce_BinaryOp (v, NULL, NULL, GrB_EQ_FP64  , A, d0)) ;
-    ERR (GrB_Matrix_reduce_BinaryOp (v, NULL, NULL, GrB_PLUS_FP64, Z, d0)) ;
+    ERR (GrB_Matrix_reduce_BinaryOp_(v, z   , NULL, GrB_PLUS_FP64, A, d0)) ;
+    ERR (GrB_Matrix_reduce_BinaryOp_(z, NULL, NULL, GrB_PLUS_FP64, A, d0)) ;
+    ERR (GrB_Matrix_reduce_BinaryOp_(v, NULL, o2  , GrB_PLUS_FP64, A, d0)) ;
+    ERR (GrB_Matrix_reduce_BinaryOp_(v, NULL, NULL, GrB_PLUS_FP64, Z, d0)) ;
 
-    ERR (GrB_Matrix_reduce_Monoid (v, z   , NULL, GxB_PLUS_FP64_MONOID, A, d0)) ;
-    ERR (GrB_Matrix_reduce_Monoid (z, NULL, NULL, GxB_PLUS_FP64_MONOID, A, d0)) ;
-    ERR (GrB_Matrix_reduce_Monoid (v, NULL, o2  , GxB_PLUS_FP64_MONOID, A, d0)) ;
-    ERR (GrB_Matrix_reduce_Monoid (v, NULL, NULL, GxB_PLUS_FP64_MONOID, Z, d0)) ;
-    #endif
+    ERR (GrB_Matrix_reduce_Monoid_(v, z   , NULL, GxB_PLUS_FP64_MONOID, A, d0)) ;
+    ERR (GrB_Matrix_reduce_Monoid_(z, NULL, NULL, GxB_PLUS_FP64_MONOID, A, d0)) ;
+    ERR (GrB_Matrix_reduce_Monoid_(v, NULL, o2  , GxB_PLUS_FP64_MONOID, A, d0)) ;
+    ERR (GrB_Matrix_reduce_Monoid_(v, NULL, NULL, GxB_PLUS_FP64_MONOID, Z, d0)) ;
+
+    expected = GrB_DOMAIN_MISMATCH ;
+    ERR (GrB_Matrix_reduce_BinaryOp_(v, NULL, NULL, GrB_EQ_FP64  , A, d0)) ;
 
     expected = GrB_DIMENSION_MISMATCH ;
 
-    ERR (GrB_Matrix_reduce_BinaryOp (v, NULL, NULL, GrB_PLUS_FP64, A, dtn)) ;
-    ERR (GrB_Matrix_reduce_BinaryOp (v, NULL, NULL, GrB_PLUS_FP64, A, d0)) ;
+    ERR (GrB_Matrix_reduce_BinaryOp_(v, NULL, NULL, GrB_PLUS_FP64, A, dtn)) ;
+    ERR (GrB_Matrix_reduce_BinaryOp_(v, NULL, NULL, GrB_PLUS_FP64, A, d0)) ;
 
-    ERR (GrB_Matrix_reduce_Monoid (v, NULL, NULL, GxB_PLUS_FP64_MONOID, A, dtn)) ;
-    ERR (GrB_Matrix_reduce_Monoid (v, NULL, NULL, GxB_PLUS_FP64_MONOID, A, d0)) ;
+    ERR (GrB_Matrix_reduce_Monoid_(v, NULL, NULL, GxB_PLUS_FP64_MONOID, A, dtn)) ;
+    ERR (GrB_Matrix_reduce_Monoid_(v, NULL, NULL, GxB_PLUS_FP64_MONOID, A, d0)) ;
 
     //--------------------------------------------------------------------------
     // transpose
@@ -3510,9 +3664,8 @@ void mexFunction
     ERR (GrB_transpose (A    , NULL , NULL   , Agunk, NULL )) ;
     ERR (GrB_transpose (A    , NULL , NULL   , A    , dgunk)) ;
 
-    expected = GrB_DOMAIN_MISMATCH ;
+    expected = (Complex == GxB_FC64) ? GrB_DIMENSION_MISMATCH : GrB_DOMAIN_MISMATCH ;
 
-    #if GxB_STDC_VERSION >= 201112L
     o2 = Complex_plus ;
     ERR (GrB_transpose (A   , Z   , NULL, A, NULL)) ;
     ERR (GrB_transpose (A   , NULL, NULL, Z, NULL)) ;
@@ -3521,7 +3674,6 @@ void mexFunction
     ERR (GrB_transpose (A   , NULL, o2  , A, NULL)) ;
     ERR (GrB_transpose (A   , NULL, o2  , Z, NULL)) ;
     ERR (GrB_transpose (Z   , NULL, o2  , A, NULL)) ;
-    #endif
 
     expected = GrB_DIMENSION_MISMATCH ;
 
@@ -3538,18 +3690,18 @@ void mexFunction
 
     printf ("\n-------------- GB_entry_check:\n") ;
 
-    Context->where = "GB_entry_check (type, x, f)" ;
+    Context->where = "GB_entry_check (type, x, pr, f)" ;
 
     expected = GrB_NULL_POINTER ;
 
-    ERR (GB_entry_check (NULL, NULL, NULL, Context)) ;
-    ERR (GB_entry_check (NULL, X, NULL, Context)) ;
-    OK (GB_entry_check (GrB_FP64, X, NULL, Context)) ;
+    ERR (GB_entry_check (NULL, NULL, 5, NULL, Context)) ;
+    ERR (GB_entry_check (NULL, X, 5, NULL, Context)) ;
+    OK (GB_entry_check (GrB_FP64, X, 5, NULL, Context)) ;
     printf ("\n") ;
 
     expected = GrB_UNINITIALIZED_OBJECT ;
 
-    ERR (GB_entry_check (Tgunk, X, NULL, Context)) ;
+    ERR (GB_entry_check (Tgunk, X, 5, NULL, Context)) ;
     printf ("\nAll GB_entry_check tests passed (errors expected)\n") ;
 
     //--------------------------------------------------------------------------
@@ -3614,6 +3766,7 @@ void mexFunction
     #undef GrB_UnaryOp_new
     OK (GrB_UnaryOp_new (&op1b, f1, GrB_FP64, GrB_UINT32)) ;
     CHECK (op1b != NULL) ;
+    OK (GrB_UnaryOp_wait_(&op1b)) ;
 
     Context->where = "GB_UnaryOp_check" ;
     OK (GB_UnaryOp_check (op1b, "op1b ok (via function)", GB3, ff, Context)) ;
@@ -3778,12 +3931,10 @@ void mexFunction
         Context)) ;
     monoidb->op = GrB_TIMES_INT32 ;
 
-    #if GxB_STDC_VERSION >= 201112L
     OK (GB_Monoid_check (Complex_plus_monoid, "complex plus monoid", GB3, ff,
         Context)) ;
     OK (GB_Monoid_check (Complex_times_monoid, "complex times monoid", GB3, ff,
         Context)) ;
-    #endif
 
     printf ("\nAll GB_Monoid_check tests passed (errors expected)\n") ;
 
@@ -3868,7 +4019,7 @@ void mexFunction
 
     printf ("\n-------------- GB_Vector_check:\n") ;
 
-    OK (GrB_Vector_free (&v)) ;
+    OK (GrB_Vector_free_(&v)) ;
     CHECK (v == NULL) ;
 
     Context->where = "GB_Vector_check" ;
@@ -3927,11 +4078,8 @@ void mexFunction
 
     printf ("\n-------------- GB_Matrix_check:\n") ;
 
-    OK (GrB_Matrix_free (&A)) ;
+    OK (GrB_Matrix_free_(&A)) ;
     CHECK (A == NULL) ;
-
-    OK (GrB_wait ( )) ;
-    CHECK (GB_Global_queue_head_get ( ) == NULL) ;
 
     Context->where = "GB_Matrix_check" ;
 
@@ -3977,7 +4125,7 @@ void mexFunction
     mxFree (A->i) ;
     A->i = NULL ;
 
-    OK (GrB_Matrix_free (&A)) ;
+    OK (GrB_Matrix_free_(&A)) ;
     OK (GrB_Matrix_new (&A, GrB_FP64, 10, 4)) ;
 
     GrB_Index I00 [1] = { 0 } ;
@@ -3992,7 +4140,7 @@ void mexFunction
     OK (GB_Matrix_check (A, "valid pi", GB3, NULL, Context)) ;
     printf ("\n===================================================\n") ;
 
-    OK (GrB_Matrix_free (&A)) ;
+    OK (GrB_Matrix_free_(&A)) ;
     OK (GrB_Matrix_new (&A, GrB_FP64, 10, 4)) ;
     OK (GB_Matrix_check (A, "A empty here", GB3, NULL, Context)) ;
 
@@ -4217,15 +4365,15 @@ void mexFunction
     OK (GB_Matrix_check (A, "A now hyper", GB3, NULL, Context)) ;
     CHECK (A->is_hyper) ;
 
-    OK (GxB_Matrix_Option_set (A, GxB_HYPER, GxB_NEVER_HYPER)) ;
+    OK (GxB_Matrix_Option_set_(A, GxB_HYPER, GxB_NEVER_HYPER)) ;
     CHECK (!A->is_hyper) ;
     bool A_is_hyper ;
-    OK (GxB_Matrix_Option_get (A, GxB_IS_HYPER, &A_is_hyper)) ;
+    OK (GxB_Matrix_Option_get_(A, GxB_IS_HYPER, &A_is_hyper)) ;
     CHECK (!A_is_hyper) ;
 
-    OK (GxB_Matrix_Option_set (A, GxB_HYPER, GxB_ALWAYS_HYPER)) ;
+    OK (GxB_Matrix_Option_set_(A, GxB_HYPER, GxB_ALWAYS_HYPER)) ;
     CHECK (A->is_hyper) ;
-    OK (GxB_Matrix_Option_get (A, GxB_IS_HYPER, &A_is_hyper)) ;
+    OK (GxB_Matrix_Option_get_(A, GxB_IS_HYPER, &A_is_hyper)) ;
     CHECK (A_is_hyper) ;
 
     // make sure A->nvec_nonempty is valid
@@ -4244,85 +4392,85 @@ void mexFunction
     OK (GB_Matrix_check (A, "A fixed", GB0, NULL, Context)) ;
 
     double hratio = 0.5;
-    OK (GxB_Matrix_Option_set (A, GxB_HYPER, hratio)) ;
+    OK (GxB_Matrix_Option_set_(A, GxB_HYPER, hratio)) ;
 
     double hratio2 = 0 ;
-    OK (GxB_Matrix_Option_get (A, GxB_HYPER, &hratio2)) ;
+    OK (GxB_Matrix_Option_get_(A, GxB_HYPER, &hratio2)) ;
     CHECK (hratio == hratio2) ;
 
-    OK (GxB_Matrix_Option_set (A, GxB_FORMAT, GxB_BY_COL)) ;
+    OK (GxB_Matrix_Option_set_(A, GxB_FORMAT, GxB_BY_COL)) ;
     CHECK (A->is_csc) ;
 
     GxB_Format_Value format = 0;
-    OK (GxB_Matrix_Option_get (A, GxB_FORMAT, &format)) ;
+    OK (GxB_Matrix_Option_get_(A, GxB_FORMAT, &format)) ;
     CHECK (format == GxB_BY_COL) ;
 
-    OK (GxB_Matrix_Option_set (A, GxB_FORMAT, GxB_BY_ROW)) ;
+    OK (GxB_Matrix_Option_set_(A, GxB_FORMAT, GxB_BY_ROW)) ;
     CHECK (!A->is_csc) ;
 
-    OK (GxB_Matrix_Option_get (A, GxB_FORMAT, &format)) ;
+    OK (GxB_Matrix_Option_get_(A, GxB_FORMAT, &format)) ;
     CHECK (format == GxB_BY_ROW) ;
 
-    OK (GxB_Matrix_Option_set (A, GxB_FORMAT, GxB_BY_COL)) ;
+    OK (GxB_Matrix_Option_set_(A, GxB_FORMAT, GxB_BY_COL)) ;
     CHECK (A->is_csc) ;
 
-    OK (GxB_Global_Option_set (GxB_FORMAT, GxB_BY_ROW)) ;
+    OK (GxB_Global_Option_set_(GxB_FORMAT, GxB_BY_ROW)) ;
     format = 99 ;
-    OK (GxB_Global_Option_get (GxB_FORMAT, &format)) ;
+    OK (GxB_Global_Option_get_(GxB_FORMAT, &format)) ;
     CHECK (format == 0) ;
 
 //    OK (GxB_Global_Option_set (GxB_FORMAT, GxB_BY_COL)) ;
 
-    OK (GxB_Global_Option_set (GxB_HYPER, 77.33)) ;
-    OK (GxB_Global_Option_get (GxB_HYPER, &hratio)) ;
+    OK (GxB_Global_Option_set_(GxB_HYPER, 77.33)) ;
+    OK (GxB_Global_Option_get_(GxB_HYPER, &hratio)) ;
     CHECK (hratio == 77.33) ;
 
-    OK (GxB_Global_Option_set (GxB_HYPER, GxB_HYPER_DEFAULT)) ;
-    OK (GxB_Global_Option_get (GxB_HYPER, &hratio)) ;
+    OK (GxB_Global_Option_set_(GxB_HYPER, GxB_HYPER_DEFAULT)) ;
+    OK (GxB_Global_Option_get_(GxB_HYPER, &hratio)) ;
     CHECK (hratio == GxB_HYPER_DEFAULT) ;
 
     expected = GrB_NULL_POINTER ;
     GrB_Matrix O_NULL = NULL ;
-    ERR (GxB_Matrix_Option_set (O_NULL, GxB_FORMAT, GxB_BY_COL)) ;
+    ERR (GxB_Matrix_Option_set_(O_NULL, GxB_FORMAT, GxB_BY_COL)) ;
     printf ("error expected (A is null):%s\n", GrB_error ( )) ;
 
     expected = GrB_NULL_POINTER ;
-    ERR (GxB_Global_Option_get (GxB_FORMAT, NULL)) ;
+    ERR (GxB_Global_Option_get_(GxB_FORMAT, NULL)) ;
     printf ("error expected (global null):%s\n", GrB_error ( )) ;
 
     expected = GrB_NULL_POINTER ;
-    ERR (GxB_Matrix_Option_get (A, GxB_FORMAT, NULL)) ;
+    ERR (GxB_Matrix_Option_get_(A, GxB_FORMAT, NULL)) ;
     printf ("error expected (A format null):%s\n", GrB_error ( )) ;
 
     expected = GrB_NULL_POINTER ;
-    ERR (GxB_Matrix_Option_get (A, GxB_HYPER, NULL)) ;
+    ERR (GxB_Matrix_Option_get_(A, GxB_HYPER, NULL)) ;
     printf ("error expected:%s\n", GrB_error ( )) ;
 
     expected = GrB_NULL_POINTER ;
-    ERR (GxB_Global_Option_get (GxB_HYPER, NULL)) ;
+    ERR (GxB_Global_Option_get_(GxB_HYPER, NULL)) ;
     printf ("error expected (global hyper null):%s\n", GrB_error ( )) ;
 
     expected = GrB_INVALID_VALUE ;
-    ERR (GxB_Global_Option_get (-1, NULL)) ;
+    ERR (GxB_Global_Option_get_(-1, NULL)) ;
     printf ("error expected (bad field):%s\n", GrB_error ( )) ;
 
-    ERR (GxB_Matrix_Option_get (A, 999, NULL)) ;
+    ERR (GxB_Matrix_Option_get_(A, 999, NULL)) ;
     printf ("error expected (bad field):%s\n", GrB_error ( )) ;
 
-    ERR (GxB_Matrix_Option_set (A, 999, GxB_BY_ROW)) ;
+    ERR (GxB_Matrix_Option_set_(A, 999, GxB_BY_ROW)) ;
     printf ("error expected:%s\n", GrB_error ( )) ;
 
-    ERR (GxB_Global_Option_set (999, GxB_BY_ROW)) ;
+    ERR (GxB_Global_Option_set_(999, GxB_BY_ROW)) ;
     printf ("error expected:%s\n", GrB_error ( )) ;
 
     expected = GrB_INVALID_VALUE ;
-    ERR (GxB_Global_Option_set (GxB_FORMAT, 9999)) ;
+    ERR (GxB_Global_Option_set_(GxB_FORMAT, 9999)) ;
     printf ("error expected:%s\n", GrB_error ( )) ;
 
-    ERR (GxB_Matrix_Option_set (A, 999, GxB_BY_ROW)) ;
+    ERR (GxB_Matrix_Option_set_(A, 999, GxB_BY_ROW)) ;
     printf ("error expected:%s\n", GrB_error ( )) ;
 
-    ERR (GxB_Matrix_Option_set (A, GxB_FORMAT, 909090)) ;
+    ERR (GxB_Matrix_Option_set_(A, GxB_FORMAT, 909090)) ;
     printf ("error expected:%s\n", GrB_error ( )) ;
 
     CHECK (A != NULL) ;
@@ -4368,7 +4516,7 @@ void mexFunction
     AP->type = tsave ;
     OK (GB_Matrix_check (Eleven, "Eleven", GB2, NULL, Context)) ;
 
-    GB_wait (Eleven, Context) ;
+    GB_Matrix_wait (Eleven, Context) ;
 
     for (int pr = -4 ; pr <= 3 ; pr++)
     {
@@ -4385,7 +4533,7 @@ void mexFunction
     ERR (GxB_Matrix_fprint (Eleven, "Eleven invalid", GB2, ff)) ;
     Eleven->h = NULL ;
 
-    OK (GrB_Matrix_free (&Eleven)) ;
+    OK (GrB_Matrix_free_(&Eleven)) ;
 
     OK (GrB_Matrix_new (&Eleven, GrB_BOOL, 11, 11)) ;
     for (int64_t i = 0 ; i < 11 ; i++)
@@ -4398,7 +4546,7 @@ void mexFunction
     OK (GrB_Matrix_nvals (&nvals, Eleven)) ;
     CHECK (nvals == 121) ;
     OK (GB_Matrix_check (Eleven, "Eleven", GB2, NULL, Context)) ;
-    OK (GrB_Matrix_free (&Eleven)) ;
+    OK (GrB_Matrix_free_(&Eleven)) ;
 
     printf ("\nAll GB_Matrix_check tests passed (errors expected)\n") ;
 
@@ -4406,8 +4554,6 @@ void mexFunction
     // blocking vs non-blocking mode
     //--------------------------------------------------------------------------
 
-    OK (GrB_wait ( )) ;
-    CHECK (GB_Global_queue_head_get ( ) == NULL) ;
     OK (GrB_Matrix_setElement_FP64 (A, 32.4, 3, 2)) ;
     OK (GB_Matrix_check (A, "A with one pending", GB3, NULL, Context)) ;
     AP = A->Pending ;
@@ -4436,7 +4582,7 @@ void mexFunction
 
     expected = GrB_UNINITIALIZED_OBJECT ;
 
-    Context->where = "GB_*_check" ;
+    Context->where = "GB *_check" ;
 
     ERR (GB_Type_check (Tgunk, "", GB0, NULL, Context)) ;
     ERR (GB_UnaryOp_check (op1gunk, "", GB0, NULL, Context)) ;
@@ -4482,15 +4628,15 @@ void mexFunction
     OK (GB_Descriptor_check (dgunk, "", GB0, NULL, Context)) ;
     OK (GB_SelectOp_check (selectopgunk, "", GB0, NULL, Context)) ;
 
-    OK (GxB_Type_fprint (Tgunk, "Tgunk", GB0, ff)) ;
-    OK (GxB_UnaryOp_fprint (op1gunk, "op1gunk", GB0, ff)) ;
-    OK (GxB_BinaryOp_fprint (op2gunk, "op2gunk", GB0, ff)) ;
-    OK (GxB_Monoid_fprint (monoid_gunk, "monoid_gunk", GB0, ff)) ;
-    OK (GxB_Semiring_fprint (semigunk, "semigunk", GB0, ff)) ;
-    OK (GxB_Vector_fprint (vgunk, "vgunk", GB0, ff)) ;
-    OK (GxB_Matrix_fprint (Agunk, "Agunk", GB0, ff)) ;
-    OK (GxB_Descriptor_fprint (dgunk, "dgunk", GB0, ff)) ;
-    OK (GxB_SelectOp_fprint (selectopgunk, "selectopgunk", GB0, ff)) ;
+    OK (GxB_Type_fprint_(Tgunk, GB0, ff)) ;
+    OK (GxB_UnaryOp_fprint_(op1gunk, GB0, ff)) ;
+    OK (GxB_BinaryOp_fprint_(op2gunk, GB0, ff)) ;
+    OK (GxB_Monoid_fprint_(monoid_gunk, GB0, ff)) ;
+    OK (GxB_Semiring_fprint_(semigunk, GB0, ff)) ;
+    OK (GxB_Vector_fprint_(vgunk, GB0, ff)) ;
+    OK (GxB_Matrix_fprint_(Agunk, GB0, ff)) ;
+    OK (GxB_Descriptor_fprint_(dgunk, GB0, ff)) ;
+    OK (GxB_SelectOp_fprint_(selectopgunk, GB0, ff)) ;
 
     //--------------------------------------------------------------------------
     // GB_Descriptor_get
@@ -4516,11 +4662,11 @@ void mexFunction
     // malloc wrappers
     //--------------------------------------------------------------------------
 
-    pp = &x ;
+    pp = (GB_void *) &x ;
     pp = GB_malloc_memory (UINT64_MAX, 1) ;
     CHECK (pp == NULL) ;
 
-    pp = &x ;
+    pp = (GB_void *) &x ;
     pp = GB_calloc_memory (UINT64_MAX, 1) ;
     CHECK (pp == NULL) ;
 
@@ -4566,18 +4712,18 @@ void mexFunction
     CHECK (n == 0) ;
 
     n = 911 ;
-    ok = GB_Index_multiply (&n, 1, GB_INDEX_MAX+1) ;
+    ok = GB_Index_multiply (&n, 1, GxB_INDEX_MAX+1) ;
     CHECK (!ok) ;
     CHECK (n == 0) ;
 
     ok = GB_Index_multiply (&n,
-        ((GrB_Index) GB_INDEX_MAX)+1,
-        ((GrB_Index) GB_INDEX_MAX)+1) ;
+        ((GrB_Index) GxB_INDEX_MAX)+1,
+        ((GrB_Index) GxB_INDEX_MAX)+1) ;
     CHECK (!ok) ;
 
     ok = GB_Index_multiply (&n,
-        ((GrB_Index) GB_INDEX_MAX),
-        ((GrB_Index) GB_INDEX_MAX)) ;
+        ((GrB_Index) GxB_INDEX_MAX),
+        ((GrB_Index) GxB_INDEX_MAX)) ;
     CHECK (!ok) ;
 
     a = (GrB_Index) 16777216/2 ;     // (2^24)/2
@@ -4588,18 +4734,18 @@ void mexFunction
     CHECK (n == a*b)
 
     //--------------------------------------------------------------------------
-    // internal GB_* routines
+    // internal GB * routines
     //--------------------------------------------------------------------------
 
     CHECK (A != NULL) ;
     Context->where = "GB_ix_alloc" ;
-    info = GB_ix_alloc (A, GB_INDEX_MAX+1, true, Context) ;
+    info = GB_ix_alloc (A, GxB_INDEX_MAX+1, true, Context) ;
     CHECK (info == GrB_OUT_OF_MEMORY) ;
 
     Context->where = "GB_ix_realloc" ;
 
     CHECK (A != NULL) ;
-    info = GB_ix_realloc (A, GB_INDEX_MAX+1, true, Context) ;
+    info = GB_ix_realloc (A, GxB_INDEX_MAX+1, true, Context) ;
     CHECK (info == GrB_OUT_OF_MEMORY) ;
 
     OK (GB_Matrix_check (A, "A pattern 1", GB3, NULL, Context)) ;
@@ -4610,16 +4756,18 @@ void mexFunction
     GB_ix_free (NULL) ;
     GB_ph_free (NULL) ;
 
-    GrB_Matrix_free (&C) ;
-    GrB_Matrix_free (&B) ;
+    GrB_Matrix_free_(&C) ;
+    GrB_Matrix_free_(&B) ;
     CHECK (C == NULL) ;
     CHECK (B == NULL) ;
     OK (GrB_Matrix_new (&C, GrB_FP32, 1, 1)) ;
     OK (GB_Matrix_check (A, "A for shallow op", GB3, NULL, Context)) ;
     Context->where = "GB_shallow_op" ;
-    OK (GB_shallow_op (&B, true, GrB_AINV_FP32, C, Context)) ;
+    OK (GB_shallow_op (&B, true,
+        GrB_AINV_FP32, NULL, NULL, false,
+        C, Context)) ;
     OK (GB_Matrix_check (B, "B empty, float", GB3, NULL, Context)) ;
-    GrB_Matrix_free (&B) ;
+    GrB_Matrix_free_(&B) ;
 
     bool b1, b2 ;
     int64_t imin, imax ;
@@ -4630,14 +4778,14 @@ void mexFunction
     // check for inputs aliased with outputs
     //--------------------------------------------------------------------------
 
-    GrB_Matrix_free (&A) ;
-    GrB_Matrix_free (&B) ;
-    GrB_Matrix_free (&C) ;
-    GrB_Matrix_free (&E) ;
-    GrB_Matrix_free (&F) ;
-    GrB_Vector_free (&v) ;
-    GrB_Vector_free (&u) ;
-    GrB_Vector_free (&z) ;
+    GrB_Matrix_free_(&A) ;
+    GrB_Matrix_free_(&B) ;
+    GrB_Matrix_free_(&C) ;
+    GrB_Matrix_free_(&E) ;
+    GrB_Matrix_free_(&F) ;
+    GrB_Vector_free_(&v) ;
+    GrB_Vector_free_(&u) ;
+    GrB_Vector_free_(&z) ;
 
     #define NWHAT 12
     n = NWHAT ;
@@ -4653,12 +4801,12 @@ void mexFunction
     E = A ;
     GrB_Matrix_dup (&A, A) ;
     CHECK (GB_mx_isequal (A, E, 0)) ;
-    GrB_Matrix_free (&E) ;
+    GrB_Matrix_free_(&E) ;
 
     z = u ;
     GrB_Vector_dup (&u, u) ;
     CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) z, 0)) ;
-    GrB_Vector_free (&z) ;
+    GrB_Vector_free_(&z) ;
 
     for (int what = 0 ; what <= 2 ; what++)
     {
@@ -4675,7 +4823,7 @@ void mexFunction
             // vectors cannot be hypersparse
             GB_to_nonhyper (F, Context) ;
             // vectors cannot be CSC: this is a hack just for brutal testing
-            OK (GxB_Matrix_Option_set (F, GxB_FORMAT, GxB_BY_COL)) ;
+            OK (GxB_Matrix_Option_set_(F, GxB_FORMAT, GxB_BY_COL)) ;
             umask = (GrB_Vector) F ;
             F = NULL ;
             default:
@@ -4692,100 +4840,180 @@ void mexFunction
         OK (GrB_mxm (B, Amask, NULL, GxB_PLUS_TIMES_FP64, A, A, NULL)) ;
         OK (GrB_mxm (A, Amask, NULL, GxB_PLUS_TIMES_FP64, A, A, NULL)) ;
         CHECK (GB_mx_isequal (A, B, 1e-14)) ;
-        GrB_Matrix_free (&B) ;
+        GrB_Matrix_free_(&B) ;
 
         OK (GrB_Vector_dup (&v, u)) ;
         OK (GrB_vxm (v, umask, NULL, GxB_PLUS_TIMES_FP64, u, A, NULL)) ;
 
         OK (GrB_vxm (u, umask, NULL, GxB_PLUS_TIMES_FP64, u, A, NULL)) ;
         CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v, 1e-14)) ;
-        GrB_Vector_free (&v) ;
+        GrB_Vector_free_(&v) ;
 
         OK (GrB_Vector_dup (&v, u)) ;
         OK (GrB_mxv (v, umask, NULL, GxB_PLUS_TIMES_FP64, A, u, NULL)) ;
         OK (GrB_mxv (u, umask, NULL, GxB_PLUS_TIMES_FP64, A, u, NULL)) ;
         CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v, 1e-14)) ;
-        GrB_Vector_free (&v) ;
+        GrB_Vector_free_(&v) ;
 
         //----------------------------------------------------------------------
         // GrB_eWiseMult
         //----------------------------------------------------------------------
 
         OK (GrB_Vector_dup (&v, u)) ;
-        OK (GrB_eWiseMult_Vector_Semiring (v, umask, NULL, GxB_PLUS_TIMES_FP64,  u, u, NULL)) ;
-        OK (GrB_eWiseMult_Vector_Semiring (u, umask, NULL, GxB_PLUS_TIMES_FP64,  u, u, NULL)) ;
+        OK (GrB_Vector_eWiseMult_Semiring_(v, umask, NULL, GxB_PLUS_TIMES_FP64,  u, u, NULL)) ;
+        OK (GrB_Vector_eWiseMult_Semiring_(u, umask, NULL, GxB_PLUS_TIMES_FP64,  u, u, NULL)) ;
         CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v, 1e-14)) ;
-        GrB_Vector_free (&v) ;
+        GrB_Vector_free_(&v) ;
 
         OK (GrB_Vector_dup (&v, u)) ;
-        OK (GrB_eWiseMult_Vector_Monoid (v, umask, NULL, GxB_PLUS_FP64_MONOID, u, u, NULL)) ;
-        OK (GrB_eWiseMult_Vector_Monoid (u, umask, NULL, GxB_PLUS_FP64_MONOID, u, u, NULL)) ;
+        OK (GrB_Vector_eWiseMult_Monoid_(v, umask, NULL, GxB_PLUS_FP64_MONOID, u, u, NULL)) ;
+        OK (GrB_Vector_eWiseMult_Monoid_(u, umask, NULL, GxB_PLUS_FP64_MONOID, u, u, NULL)) ;
         CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v, 1e-14)) ;
-        GrB_Vector_free (&v) ;
+        GrB_Vector_free_(&v) ;
 
         OK (GrB_Vector_dup (&v, u)) ;
-        OK (GrB_eWiseMult_Vector_BinaryOp (v, umask, NULL, GrB_PLUS_FP64,        u, u, NULL)) ;
-        OK (GrB_eWiseMult_Vector_BinaryOp (u, umask, NULL, GrB_PLUS_FP64,        u, u, NULL)) ;
+        OK (GrB_Vector_eWiseMult_BinaryOp_(v, umask, NULL, GrB_PLUS_FP64,        u, u, NULL)) ;
+        OK (GrB_Vector_eWiseMult_BinaryOp_(u, umask, NULL, GrB_PLUS_FP64,        u, u, NULL)) ;
         CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v, 1e-14)) ;
-        GrB_Vector_free (&v) ;
+        GrB_Vector_free_(&v) ;
 
         OK (GrB_Matrix_dup (&B, A)) ;
-        OK (GrB_eWiseMult_Matrix_Semiring (B, Amask, NULL, GxB_PLUS_TIMES_FP64,  A, A, NULL)) ;
-        OK (GrB_eWiseMult_Matrix_Semiring (A, Amask, NULL, GxB_PLUS_TIMES_FP64,  A, A, NULL)) ;
+        OK (GrB_Matrix_eWiseMult_Semiring_(B, Amask, NULL, GxB_PLUS_TIMES_FP64,  A, A, NULL)) ;
+        OK (GrB_Matrix_eWiseMult_Semiring_(A, Amask, NULL, GxB_PLUS_TIMES_FP64,  A, A, NULL)) ;
         CHECK (GB_mx_isequal (A, B, 1e-14)) ;
-        GrB_Matrix_free (&B) ;
+        GrB_Matrix_free_(&B) ;
 
         OK (GrB_Matrix_dup (&B, A)) ;
-        OK (GrB_eWiseMult_Matrix_Monoid (B, Amask, NULL, GxB_PLUS_FP64_MONOID, A, A, NULL)) ;
-        OK (GrB_eWiseMult_Matrix_Monoid (A, Amask, NULL, GxB_PLUS_FP64_MONOID, A, A, NULL)) ;
+        OK (GrB_Matrix_eWiseMult_Monoid_(B, Amask, NULL, GxB_PLUS_FP64_MONOID, A, A, NULL)) ;
+        OK (GrB_Matrix_eWiseMult_Monoid_(A, Amask, NULL, GxB_PLUS_FP64_MONOID, A, A, NULL)) ;
         CHECK (GB_mx_isequal (A, B, 1e-14)) ;
-        GrB_Matrix_free (&B) ;
+        GrB_Matrix_free_(&B) ;
 
         OK (GrB_Matrix_dup (&B, A)) ;
-        OK (GrB_eWiseMult_Matrix_BinaryOp (B, Amask, NULL, GrB_PLUS_FP64,        A, A, NULL)) ;
-        OK (GrB_eWiseMult_Matrix_BinaryOp (A, Amask, NULL, GrB_PLUS_FP64,        A, A, NULL)) ;
+        OK (GrB_Matrix_eWiseMult_BinaryOp_(B, Amask, NULL, GrB_PLUS_FP64,        A, A, NULL)) ;
+        OK (GrB_Matrix_eWiseMult_BinaryOp_(A, Amask, NULL, GrB_PLUS_FP64,        A, A, NULL)) ;
         CHECK (GB_mx_isequal (A, B, 1e-14)) ;
-        GrB_Matrix_free (&B) ;
+        GrB_Matrix_free_(&B) ;
 
         //----------------------------------------------------------------------
         // GrB_eWiseAdd
         //----------------------------------------------------------------------
 
         OK (GrB_Vector_dup (&v, u)) ;
+        OK (GrB_Vector_eWiseAdd_Semiring_(v, umask, NULL, GxB_PLUS_TIMES_FP64,  u, u, NULL)) ;
+        OK (GrB_Vector_eWiseAdd_Semiring_(u, umask, NULL, GxB_PLUS_TIMES_FP64,  u, u, NULL)) ;
+        CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v, 1e-14)) ;
+        GrB_Vector_free_(&v) ;
+
+        OK (GrB_Vector_dup (&v, u)) ;
+        OK (GrB_Vector_eWiseAdd_Monoid_(v, umask, NULL, GxB_PLUS_FP64_MONOID, u, u, NULL)) ;
+        OK (GrB_Vector_eWiseAdd_Monoid_(u, umask, NULL, GxB_PLUS_FP64_MONOID, u, u, NULL)) ;
+        CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v, 1e-14)) ;
+        GrB_Vector_free_(&v) ;
+
+        OK (GrB_Vector_dup (&v, u)) ;
+        OK (GrB_Vector_eWiseAdd_BinaryOp_(v, umask, NULL, GrB_PLUS_FP64,        u, u, NULL)) ;
+        OK (GrB_Vector_eWiseAdd_BinaryOp_(u, umask, NULL, GrB_PLUS_FP64,        u, u, NULL)) ;
+        CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v, 1e-14)) ;
+        GrB_Vector_free_(&v) ;
+
+        OK (GrB_Matrix_dup (&B, A)) ;
+        OK (GrB_Matrix_eWiseAdd_Semiring_(B, Amask, NULL, GxB_PLUS_TIMES_FP64,  A, A, NULL)) ;
+        OK (GrB_Matrix_eWiseAdd_Semiring_(A, Amask, NULL, GxB_PLUS_TIMES_FP64,  A, A, NULL)) ;
+        CHECK (GB_mx_isequal (A, B, 1e-14)) ;
+        GrB_Matrix_free_(&B) ;
+
+        OK (GrB_Matrix_dup (&B, A)) ;
+        OK (GrB_Matrix_eWiseAdd_Monoid_(B, Amask, NULL, GxB_PLUS_FP64_MONOID, A, A, NULL)) ;
+        OK (GrB_Matrix_eWiseAdd_Monoid_(A, Amask, NULL, GxB_PLUS_FP64_MONOID, A, A, NULL)) ;
+        CHECK (GB_mx_isequal (A, B, 1e-14)) ;
+        GrB_Matrix_free_(&B) ;
+
+        OK (GrB_Matrix_dup (&B, A)) ;
+        OK (GrB_Matrix_eWiseAdd_BinaryOp_(B, Amask, NULL, GrB_PLUS_FP64,        A, A, NULL)) ;
+        OK (GrB_Matrix_eWiseAdd_BinaryOp_(A, Amask, NULL, GrB_PLUS_FP64,        A, A, NULL)) ;
+        CHECK (GB_mx_isequal (A, B, 1e-14)) ;
+        GrB_Matrix_free_(&B) ;
+
+        //----------------------------------------------------------------------
+        // GrB_eWiseMult (misnamed)
+        //----------------------------------------------------------------------
+
+        OK (GrB_Vector_dup (&v, u)) ;
+        OK (GrB_eWiseMult_Vector_Semiring (v, umask, NULL, GxB_PLUS_TIMES_FP64,  u, u, NULL)) ;
+        OK (GrB_eWiseMult_Vector_Semiring (u, umask, NULL, GxB_PLUS_TIMES_FP64,  u, u, NULL)) ;
+        CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v, 1e-14)) ;
+        GrB_Vector_free_(&v) ;
+
+        OK (GrB_Vector_dup (&v, u)) ;
+        OK (GrB_eWiseMult_Vector_Monoid (v, umask, NULL, GxB_PLUS_FP64_MONOID, u, u, NULL)) ;
+        OK (GrB_eWiseMult_Vector_Monoid (u, umask, NULL, GxB_PLUS_FP64_MONOID, u, u, NULL)) ;
+        CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v, 1e-14)) ;
+        GrB_Vector_free_(&v) ;
+
+        OK (GrB_Vector_dup (&v, u)) ;
+        OK (GrB_eWiseMult_Vector_BinaryOp (v, umask, NULL, GrB_PLUS_FP64,        u, u, NULL)) ;
+        OK (GrB_eWiseMult_Vector_BinaryOp (u, umask, NULL, GrB_PLUS_FP64,        u, u, NULL)) ;
+        CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v, 1e-14)) ;
+        GrB_Vector_free_(&v) ;
+
+        OK (GrB_Matrix_dup (&B, A)) ;
+        OK (GrB_eWiseMult_Matrix_Semiring (B, Amask, NULL, GxB_PLUS_TIMES_FP64,  A, A, NULL)) ;
+        OK (GrB_eWiseMult_Matrix_Semiring (A, Amask, NULL, GxB_PLUS_TIMES_FP64,  A, A, NULL)) ;
+        CHECK (GB_mx_isequal (A, B, 1e-14)) ;
+        GrB_Matrix_free_(&B) ;
+
+        OK (GrB_Matrix_dup (&B, A)) ;
+        OK (GrB_eWiseMult_Matrix_Monoid (B, Amask, NULL, GxB_PLUS_FP64_MONOID, A, A, NULL)) ;
+        OK (GrB_eWiseMult_Matrix_Monoid (A, Amask, NULL, GxB_PLUS_FP64_MONOID, A, A, NULL)) ;
+        CHECK (GB_mx_isequal (A, B, 1e-14)) ;
+        GrB_Matrix_free_(&B) ;
+
+        OK (GrB_Matrix_dup (&B, A)) ;
+        OK (GrB_eWiseMult_Matrix_BinaryOp (B, Amask, NULL, GrB_PLUS_FP64,        A, A, NULL)) ;
+        OK (GrB_eWiseMult_Matrix_BinaryOp (A, Amask, NULL, GrB_PLUS_FP64,        A, A, NULL)) ;
+        CHECK (GB_mx_isequal (A, B, 1e-14)) ;
+        GrB_Matrix_free_(&B) ;
+
+        //----------------------------------------------------------------------
+        // GrB_eWiseAdd (misnamed)
+        //----------------------------------------------------------------------
+
+        OK (GrB_Vector_dup (&v, u)) ;
         OK (GrB_eWiseAdd_Vector_Semiring (v, umask, NULL, GxB_PLUS_TIMES_FP64,  u, u, NULL)) ;
         OK (GrB_eWiseAdd_Vector_Semiring (u, umask, NULL, GxB_PLUS_TIMES_FP64,  u, u, NULL)) ;
         CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v, 1e-14)) ;
-        GrB_Vector_free (&v) ;
+        GrB_Vector_free_(&v) ;
 
         OK (GrB_Vector_dup (&v, u)) ;
         OK (GrB_eWiseAdd_Vector_Monoid (v, umask, NULL, GxB_PLUS_FP64_MONOID, u, u, NULL)) ;
         OK (GrB_eWiseAdd_Vector_Monoid (u, umask, NULL, GxB_PLUS_FP64_MONOID, u, u, NULL)) ;
         CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v, 1e-14)) ;
-        GrB_Vector_free (&v) ;
+        GrB_Vector_free_(&v) ;
 
         OK (GrB_Vector_dup (&v, u)) ;
         OK (GrB_eWiseAdd_Vector_BinaryOp  (v, umask, NULL, GrB_PLUS_FP64,        u, u, NULL)) ;
         OK (GrB_eWiseAdd_Vector_BinaryOp  (u, umask, NULL, GrB_PLUS_FP64,        u, u, NULL)) ;
         CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v, 1e-14)) ;
-        GrB_Vector_free (&v) ;
+        GrB_Vector_free_(&v) ;
 
         OK (GrB_Matrix_dup (&B, A)) ;
         OK (GrB_eWiseAdd_Matrix_Semiring (B, Amask, NULL, GxB_PLUS_TIMES_FP64,  A, A, NULL)) ;
         OK (GrB_eWiseAdd_Matrix_Semiring (A, Amask, NULL, GxB_PLUS_TIMES_FP64,  A, A, NULL)) ;
         CHECK (GB_mx_isequal (A, B, 1e-14)) ;
-        GrB_Matrix_free (&B) ;
+        GrB_Matrix_free_(&B) ;
 
         OK (GrB_Matrix_dup (&B, A)) ;
         OK (GrB_eWiseAdd_Matrix_Monoid (B, Amask, NULL, GxB_PLUS_FP64_MONOID, A, A, NULL)) ;
         OK (GrB_eWiseAdd_Matrix_Monoid (A, Amask, NULL, GxB_PLUS_FP64_MONOID, A, A, NULL)) ;
         CHECK (GB_mx_isequal (A, B, 1e-14)) ;
-        GrB_Matrix_free (&B) ;
+        GrB_Matrix_free_(&B) ;
 
         OK (GrB_Matrix_dup (&B, A)) ;
         OK (GrB_eWiseAdd_Matrix_BinaryOp (B, Amask, NULL, GrB_PLUS_FP64,        A, A, NULL)) ;
         OK (GrB_eWiseAdd_Matrix_BinaryOp (A, Amask, NULL, GrB_PLUS_FP64,        A, A, NULL)) ;
         CHECK (GB_mx_isequal (A, B, 1e-14)) ;
-        GrB_Matrix_free (&B) ;
+        GrB_Matrix_free_(&B) ;
 
         //----------------------------------------------------------------------
         // GrB_extract
@@ -4798,23 +5026,23 @@ void mexFunction
         GB_Vector_check (v, "start v ", GB3, NULL, Context) ;
         CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v, 0)) ;
 
-        OK (GrB_Vector_extract (u, umask, NULL, u, GrB_ALL, n, NULL)) ;
+        OK (GrB_Vector_extract_(u, umask, NULL, u, GrB_ALL, n, NULL)) ;
         GB_Vector_check (u, "u to check", GB3, NULL, Context) ;
         GB_Vector_check (v, "v to check", GB3, NULL, Context) ;
         CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v, 0)) ;
-        GrB_Vector_free (&v) ;
+        GrB_Vector_free_(&v) ;
 
         OK (GrB_Matrix_dup (&B, A)) ;
-        OK (GrB_Matrix_extract (B, Amask, NULL, A, GrB_ALL, n, GrB_ALL, n, NULL)) ;
-        OK (GrB_Matrix_extract (A, Amask, NULL, A, GrB_ALL, n, GrB_ALL, n, NULL)) ;
+        OK (GrB_Matrix_extract_(B, Amask, NULL, A, GrB_ALL, n, GrB_ALL, n, NULL)) ;
+        OK (GrB_Matrix_extract_(A, Amask, NULL, A, GrB_ALL, n, GrB_ALL, n, NULL)) ;
         CHECK (GB_mx_isequal (A, B, 0)) ;
-        GrB_Matrix_free (&B) ;
+        GrB_Matrix_free_(&B) ;
 
         OK (GrB_Vector_dup (&v, u)) ;
-        OK (GrB_Col_extract (v, umask, NULL, A, GrB_ALL, n, 0, NULL)) ;
-        OK (GrB_Col_extract (u, umask, NULL, A, GrB_ALL, n, 0, NULL)) ;
+        OK (GrB_Col_extract_(v, umask, NULL, A, GrB_ALL, n, 0, NULL)) ;
+        OK (GrB_Col_extract_(u, umask, NULL, A, GrB_ALL, n, 0, NULL)) ;
         CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v, 0)) ;
-        GrB_Vector_free (&v) ;
+        GrB_Vector_free_(&v) ;
 
         //----------------------------------------------------------------------
         // GxB_subassign
@@ -4824,95 +5052,95 @@ void mexFunction
         OK (GxB_Matrix_subassign (B, Amask, NULL, A, GrB_ALL, n, GrB_ALL, n, NULL)) ;
         OK (GxB_Matrix_subassign (A, Amask, NULL, A, GrB_ALL, n, GrB_ALL, n, NULL)) ;
 
-        GB_wait (B, Context) ;
+        GB_Matrix_wait (B, Context) ;
         CHECK (GB_mx_isequal (A, B, 0)) ;
-        GrB_Matrix_free (&B) ;
+        GrB_Matrix_free_(&B) ;
 
         OK (GrB_Matrix_dup (&B, A)) ;
         OK (GxB_Matrix_subassign (B, Amask, NULL, A, ilist, n, jlist, n, NULL)) ;
         OK (GxB_Matrix_subassign (A, Amask, NULL, A, ilist, n, jlist, n, NULL)) ;
-        GB_wait (B, Context) ;
+        GB_Matrix_wait (B, Context) ;
         CHECK (GB_mx_isequal (A, B, 0)) ;
-        GrB_Matrix_free (&B) ;
+        GrB_Matrix_free_(&B) ;
 
         OK (GrB_Vector_dup (&v, u)) ;
         OK (GxB_Vector_subassign (v, umask, NULL, u, GrB_ALL, n, NULL)) ;
         OK (GxB_Vector_subassign (u, umask, NULL, u, GrB_ALL, n, NULL)) ;
-        GB_wait ((GrB_Matrix) v, Context) ;
+        GB_Matrix_wait ((GrB_Matrix) v, Context) ;
         CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v, 0)) ;
-        GrB_Vector_free (&v) ;
+        GrB_Vector_free_(&v) ;
 
         OK (GrB_Vector_dup (&v, u)) ;
         OK (GxB_Vector_subassign (v, umask, NULL, u, ilist, n, NULL)) ;
         OK (GxB_Vector_subassign (u, umask, NULL, u, ilist, n, NULL)) ;
-        GB_wait ((GrB_Matrix) v, Context) ;
-        GB_wait ((GrB_Matrix) u, Context) ;
+        GB_Matrix_wait ((GrB_Matrix) v, Context) ;
+        GB_Matrix_wait ((GrB_Matrix) u, Context) ;
         CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v, 0)) ;
-        GrB_Vector_free (&v) ;
+        GrB_Vector_free_(&v) ;
 
         //----------------------------------------------------------------------
         // GrB_assign
         //----------------------------------------------------------------------
 
         OK (GrB_Matrix_dup (&B, A)) ;
-        OK (GrB_Matrix_assign (B, Amask, NULL, A, GrB_ALL, n, GrB_ALL, n, NULL)) ;
-        OK (GrB_Matrix_assign (A, Amask, NULL, A, GrB_ALL, n, GrB_ALL, n, NULL)) ;
+        OK (GrB_Matrix_assign_(B, Amask, NULL, A, GrB_ALL, n, GrB_ALL, n, NULL)) ;
+        OK (GrB_Matrix_assign_(A, Amask, NULL, A, GrB_ALL, n, GrB_ALL, n, NULL)) ;
         CHECK (GB_mx_isequal (A, B, 0)) ;
-        GrB_Matrix_free (&B) ;
+        GrB_Matrix_free_(&B) ;
 
         OK (GrB_Matrix_dup (&B, A)) ;
-        OK (GrB_Matrix_assign (B, Amask, NULL, A, ilist, n, jlist, n, NULL)) ;
-        OK (GrB_Matrix_assign (A, Amask, NULL, A, ilist, n, jlist, n, NULL)) ;
-        GB_wait (B, Context) ;
-        GB_wait (A, Context) ;
+        OK (GrB_Matrix_assign_(B, Amask, NULL, A, ilist, n, jlist, n, NULL)) ;
+        OK (GrB_Matrix_assign_(A, Amask, NULL, A, ilist, n, jlist, n, NULL)) ;
+        GB_Matrix_wait (B, Context) ;
+        GB_Matrix_wait (A, Context) ;
         CHECK (GB_mx_isequal (A, B, 0)) ;
-        GrB_Matrix_free (&B) ;
+        GrB_Matrix_free_(&B) ;
 
         OK (GrB_Vector_dup (&v, u)) ;
-        OK (GrB_Vector_assign (v, umask, NULL, u, GrB_ALL, n, NULL)) ;
-        OK (GrB_Vector_assign (u, umask, NULL, u, GrB_ALL, n, NULL)) ;
+        OK (GrB_Vector_assign_(v, umask, NULL, u, GrB_ALL, n, NULL)) ;
+        OK (GrB_Vector_assign_(u, umask, NULL, u, GrB_ALL, n, NULL)) ;
         CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v, 0)) ;
-        GrB_Vector_free (&v) ;
+        GrB_Vector_free_(&v) ;
 
         OK (GrB_Vector_dup (&v, u)) ;
-        OK (GrB_Vector_assign (v, umask, NULL, u, ilist, n, NULL)) ;
-        OK (GrB_Vector_assign (u, umask, NULL, u, ilist, n, NULL)) ;
-        GB_wait ((GrB_Matrix) v, Context) ;
-        GB_wait ((GrB_Matrix) u, Context) ;
+        OK (GrB_Vector_assign_(v, umask, NULL, u, ilist, n, NULL)) ;
+        OK (GrB_Vector_assign_(u, umask, NULL, u, ilist, n, NULL)) ;
+        GB_Matrix_wait ((GrB_Matrix) v, Context) ;
+        GB_Matrix_wait ((GrB_Matrix) u, Context) ;
         CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v, 0)) ;
-        GrB_Vector_free (&v) ;
+        GrB_Vector_free_(&v) ;
 
         //----------------------------------------------------------------------
         // GrB_apply
         //----------------------------------------------------------------------
 
         OK (GrB_Matrix_dup (&B, A)) ;
-        OK (GrB_Matrix_apply (B, Amask, NULL, GrB_AINV_FP64, A, NULL)) ;
-        OK (GrB_Matrix_apply (A, Amask, NULL, GrB_AINV_FP64, A, NULL)) ;
+        OK (GrB_Matrix_apply_(B, Amask, NULL, GrB_AINV_FP64, A, NULL)) ;
+        OK (GrB_Matrix_apply_(A, Amask, NULL, GrB_AINV_FP64, A, NULL)) ;
         CHECK (GB_mx_isequal (A, B, 1e-14)) ;
-        GrB_Matrix_free (&B) ;
+        GrB_Matrix_free_(&B) ;
 
         OK (GrB_Vector_dup (&v, u)) ;
-        OK (GrB_Vector_apply (v, umask, NULL, GrB_AINV_FP64, u, NULL)) ;
-        OK (GrB_Vector_apply (u, umask, NULL, GrB_AINV_FP64, u, NULL)) ;
+        OK (GrB_Vector_apply_(v, umask, NULL, GrB_AINV_FP64, u, NULL)) ;
+        OK (GrB_Vector_apply_(u, umask, NULL, GrB_AINV_FP64, u, NULL)) ;
         CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v, 1e-14)) ;
-        GrB_Vector_free (&v) ;
+        GrB_Vector_free_(&v) ;
 
         //----------------------------------------------------------------------
         // GxB_select
         //----------------------------------------------------------------------
 
         OK (GrB_Matrix_dup (&B, A)) ;
-        OK (GxB_Matrix_select (B, Amask, NULL, GxB_NONZERO, A, NULL, NULL)) ;
-        OK (GxB_Matrix_select (A, Amask, NULL, GxB_NONZERO, A, NULL, NULL)) ;
+        OK (GxB_Matrix_select_(B, Amask, NULL, GxB_NONZERO, A, NULL, NULL)) ;
+        OK (GxB_Matrix_select_(A, Amask, NULL, GxB_NONZERO, A, NULL, NULL)) ;
         CHECK (GB_mx_isequal (A, B, 0)) ;
-        GrB_Matrix_free (&B) ;
+        GrB_Matrix_free_(&B) ;
 
         OK (GrB_Vector_dup (&v, u)) ;
-        OK (GxB_Vector_select (v, umask, NULL, GxB_NONZERO, u, NULL, NULL)) ;
-        OK (GxB_Vector_select (u, umask, NULL, GxB_NONZERO, u, NULL, NULL)) ;
+        OK (GxB_Vector_select_(v, umask, NULL, GxB_NONZERO, u, NULL, NULL)) ;
+        OK (GxB_Vector_select_(u, umask, NULL, GxB_NONZERO, u, NULL, NULL)) ;
         CHECK (GB_mx_isequal ((GrB_Matrix) u, (GrB_Matrix) v, 0)) ;
-        GrB_Vector_free (&v) ;
+        GrB_Vector_free_(&v) ;
 
         //----------------------------------------------------------------------
         // GrB_transepose
@@ -4926,12 +5154,12 @@ void mexFunction
         OK (GrB_Matrix_nvals (&ignore, A)) ;
         OK (GrB_Matrix_nvals (&ignore, B)) ;
         CHECK (GB_mx_isequal (A, B, 0)) ;
-        GrB_Matrix_free (&B) ;
+        GrB_Matrix_free_(&B) ;
 
         if (what == 2)
         {
-            GrB_Matrix_free (&Amask) ;
-            GrB_Vector_free (&umask) ;
+            GrB_Matrix_free_(&Amask) ;
+            GrB_Vector_free_(&umask) ;
         }
     }
 
@@ -4943,8 +5171,8 @@ void mexFunction
 
     int nthreads ;
 
-    OK (GxB_Global_Option_set (GxB_NTHREADS, 42)) ;
-    OK (GxB_Global_Option_get (GxB_NTHREADS, &nthreads)) ;
+    OK (GxB_Global_Option_set_(GxB_NTHREADS, 42)) ;
+    OK (GxB_Global_Option_get_(GxB_NTHREADS, &nthreads)) ;
     CHECK (nthreads == 42) ;
 
     OK (GxB_Desc_set (desc, GxB_NTHREADS, 43)) ;
@@ -4969,10 +5197,10 @@ void mexFunction
         &Ap, &Aj, &Ax, desc)) ;
     OK (GxB_Type_fprint (atype, "type of A", GxB_COMPLETE, stdout)) ;
     printf ("nvals %llu\n", nvals) ;
-    for (int64_t i = 0 ; i < nrows ; i++)
+    for (int64_t i = 0 ; i < ((int64_t) nrows) ; i++)
     {
         printf ("exported row %lld\n", j) ;
-        for (int64_t p = Ap [i] ; p < Ap [i+1] ; p++)
+        for (int64_t p = Ap [i] ; p < ((int64_t) (Ap [i+1])) ; p++)
         {
             printf ("   col %lld value %g\n", Aj [p], Ax [p]) ;
         }
@@ -5214,7 +5442,7 @@ void mexFunction
     OK (GxB_Vector_export (&u, &utype, &n, &nvals, &Ai, &Ax, desc)) ;
     OK (GxB_Type_fprint (utype, "type of u", GxB_COMPLETE, stdout)) ;
     printf ("nvals %llu\n", nvals) ;
-    for (int64_t p = 0 ; p < nvals ; p++)
+    for (int64_t p = 0 ; p < ((int64_t) nvals) ; p++)
     {
         printf ("   col %lld value %g\n", Ai [p], Ax [p]) ;
     }
@@ -5270,43 +5498,43 @@ void mexFunction
     nmalloc = GB_Global_nmalloc_get ( ) ;
     printf ("\n\nfree all: nmalloc %d\n", nmalloc) ;
 
-    GrB_Matrix_free (&Empty1) ;       CHECK (Empty1       == NULL) ;
-    GrB_Vector_free (&v) ;            CHECK (v            == NULL) ;
-    GrB_Vector_free (&u) ;            CHECK (u            == NULL) ;
-    GrB_Vector_free (&A) ;            CHECK (A            == NULL) ;
-    GrB_Vector_free (&u) ;            CHECK (u            == NULL) ;
-    GrB_Vector_free (&z) ;            CHECK (z            == NULL) ;
-    GrB_Vector_free (&h) ;            CHECK (h            == NULL) ;
-    GrB_Matrix_free (&B) ;            CHECK (B            == NULL) ;
-    GrB_Matrix_free (&C) ;            CHECK (C            == NULL) ;
-    GrB_Matrix_free (&E) ;            CHECK (E            == NULL) ;
-    GrB_Matrix_free (&F) ;            CHECK (F            == NULL) ;
-    GrB_Matrix_free (&Z) ;            CHECK (Z            == NULL) ;
-    GrB_Matrix_free (&H) ;            CHECK (H            == NULL) ;
-    GrB_Type_free (&T) ;              CHECK (T            == NULL) ;
-    GrB_Matrix_free (&Agunk) ;        CHECK (Agunk        == NULL) ;
-    GrB_Type_free (&Tgunk) ;          CHECK (Tgunk        == NULL) ;
-    GrB_UnaryOp_free (&op1gunk) ;     CHECK (op1gunk      == NULL) ;
-    GrB_BinaryOp_free (&op2gunk) ;    CHECK (op2gunk      == NULL) ;
-    GrB_BinaryOp_free (&op3) ;        CHECK (op3          == NULL) ;
-    GrB_UnaryOp_free (&op1b) ;        CHECK (op1b         == NULL) ;
-    GrB_BinaryOp_free (&op2b) ;       CHECK (op2b         == NULL) ;
-    GrB_Semiring_free (&semiring2) ;  CHECK (semiring2    == NULL) ;
-    GrB_Descriptor_free (&descb) ;    CHECK (descb        == NULL) ;
-    GrB_Vector_free (&vb) ;           CHECK (vb           == NULL) ;
-    GrB_Monoid_free (&monoidb) ;      CHECK (monoidb      == NULL) ;
-    GrB_Monoid_free (&monoid_gunk) ;  CHECK (monoid_gunk  == NULL) ;
-    GrB_Semiring_free (&semigunk) ;   CHECK (semigunk     == NULL) ;
-    GrB_Vector_free (&vgunk) ;        CHECK (vgunk        == NULL) ;
-    GrB_Matrix_free (&Aempty) ;       CHECK (Aempty       == NULL) ;
-    GrB_Vector_free (&vempty) ;       CHECK (vempty       == NULL) ;
-    GrB_Descriptor_free (&desc) ;     CHECK (desc         == NULL) ;
-    GrB_Descriptor_free (&dtn) ;      CHECK (dtn          == NULL) ;
-    GrB_Descriptor_free (&dnt) ;      CHECK (dnt          == NULL) ;
-    GrB_Descriptor_free (&dtt) ;      CHECK (dtt          == NULL) ;
-    GrB_Descriptor_free (&dgunk) ;    CHECK (dgunk        == NULL) ;
-    GxB_SelectOp_free (&selectop) ;   CHECK (selectop     == NULL) ;
-    GxB_SelectOp_free (&selectopgunk) ; CHECK (selectopgunk == NULL) ;
+    GrB_Matrix_free_(&Empty1) ;       CHECK (Empty1       == NULL) ;
+    GrB_Vector_free_(&v) ;            CHECK (v            == NULL) ;
+    GrB_Vector_free_(&u) ;            CHECK (u            == NULL) ;
+    GrB_Matrix_free_(&A) ;            CHECK (A            == NULL) ;
+    GrB_Vector_free_(&u) ;            CHECK (u            == NULL) ;
+    GrB_Vector_free_(&z) ;            CHECK (z            == NULL) ;
+    GrB_Vector_free_(&h) ;            CHECK (h            == NULL) ;
+    GrB_Matrix_free_(&B) ;            CHECK (B            == NULL) ;
+    GrB_Matrix_free_(&C) ;            CHECK (C            == NULL) ;
+    GrB_Matrix_free_(&E) ;            CHECK (E            == NULL) ;
+    GrB_Matrix_free_(&F) ;            CHECK (F            == NULL) ;
+    GrB_Matrix_free_(&Z) ;            CHECK (Z            == NULL) ;
+    GrB_Matrix_free_(&H) ;            CHECK (H            == NULL) ;
+    GrB_Type_free_(&T) ;              CHECK (T            == NULL) ;
+    GrB_Matrix_free_(&Agunk) ;        CHECK (Agunk        == NULL) ;
+    GrB_Type_free_(&Tgunk) ;          CHECK (Tgunk        == NULL) ;
+    GrB_UnaryOp_free_(&op1gunk) ;     CHECK (op1gunk      == NULL) ;
+    GrB_BinaryOp_free_(&op2gunk) ;    CHECK (op2gunk      == NULL) ;
+    GrB_BinaryOp_free_(&op3) ;        CHECK (op3          == NULL) ;
+    GrB_UnaryOp_free_(&op1b) ;        CHECK (op1b         == NULL) ;
+    GrB_BinaryOp_free_(&op2b) ;       CHECK (op2b         == NULL) ;
+    GrB_Semiring_free_(&semiring2) ;  CHECK (semiring2    == NULL) ;
+    GrB_Descriptor_free_(&descb) ;    CHECK (descb        == NULL) ;
+    GrB_Vector_free_(&vb) ;           CHECK (vb           == NULL) ;
+    GrB_Monoid_free_(&monoidb) ;      CHECK (monoidb      == NULL) ;
+    GrB_Monoid_free_(&monoid_gunk) ;  CHECK (monoid_gunk  == NULL) ;
+    GrB_Semiring_free_(&semigunk) ;   CHECK (semigunk     == NULL) ;
+    GrB_Vector_free_(&vgunk) ;        CHECK (vgunk        == NULL) ;
+    GrB_Matrix_free_(&Aempty) ;       CHECK (Aempty       == NULL) ;
+    GrB_Vector_free_(&vempty) ;       CHECK (vempty       == NULL) ;
+    GrB_Descriptor_free_(&desc) ;     CHECK (desc         == NULL) ;
+    GrB_Descriptor_free_(&dtn) ;      CHECK (dtn          == NULL) ;
+    GrB_Descriptor_free_(&dnt) ;      CHECK (dnt          == NULL) ;
+    GrB_Descriptor_free_(&dtt) ;      CHECK (dtt          == NULL) ;
+    GrB_Descriptor_free_(&dgunk) ;    CHECK (dgunk        == NULL) ;
+    GxB_SelectOp_free_(&selectop) ;   CHECK (selectop     == NULL) ;
+    GxB_SelectOp_free_(&selectopgunk) ; CHECK (selectopgunk == NULL) ;
 
     nmalloc = GB_Global_nmalloc_get ( ) ;
     printf ("nmalloc %d before complex_finalize\n", nmalloc) ;

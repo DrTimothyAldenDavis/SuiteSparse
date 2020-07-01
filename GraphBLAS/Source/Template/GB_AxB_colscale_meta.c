@@ -21,8 +21,8 @@
 
     const int64_t  *GB_RESTRICT Ap = A->p ;
     const int64_t  *GB_RESTRICT Ah = A->h ;
-    const GB_ATYPE *GB_RESTRICT Ax = A_is_pattern ? NULL : A->x ;
-    const GB_BTYPE *GB_RESTRICT Dx = D_is_pattern ? NULL : D->x ;
+    const GB_ATYPE *GB_RESTRICT Ax = (GB_ATYPE *) (A_is_pattern ? NULL : A->x) ;
+    const GB_BTYPE *GB_RESTRICT Dx = (GB_BTYPE *) (D_is_pattern ? NULL : D->x) ;
 
     //--------------------------------------------------------------------------
     // C=A*D
@@ -58,7 +58,7 @@
             //------------------------------------------------------------------
 
             GB_GETB (djj, Dx, j) ;                  // djj = D (j,j)
-            GB_PRAGMA_VECTORIZE
+            GB_PRAGMA_SIMD_VECTORIZE
             for (int64_t p = pA_start ; p < pA_end ; p++)
             { 
                 GB_GETA (aij, Ax, p) ;              // aij = A(i,j)

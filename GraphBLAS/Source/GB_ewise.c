@@ -79,7 +79,7 @@ GrB_Info GB_ewise                   // C<M> = accum (C, A+B) or A.*B
         if (!GB_Type_compatible (C->type, A->type))
         { 
             return (GB_ERROR (GrB_DOMAIN_MISMATCH, (GB_LOG,
-                "first input of type [%s]\n"
+                "First input of type [%s]\n"
                 "cannot be typecast to final output of type [%s]",
                 A->type->name, C->type->name))) ;
         }
@@ -87,7 +87,7 @@ GrB_Info GB_ewise                   // C<M> = accum (C, A+B) or A.*B
         if (!GB_Type_compatible (C->type, B->type))
         { 
             return (GB_ERROR (GrB_DOMAIN_MISMATCH, (GB_LOG,
-                "second input of type [%s]\n"
+                "Second input of type [%s]\n"
                 "cannot be typecast to final output of type [%s]",
                 B->type->name, C->type->name))) ;
         }
@@ -105,9 +105,9 @@ GrB_Info GB_ewise                   // C<M> = accum (C, A+B) or A.*B
     { 
         return (GB_ERROR (GrB_DIMENSION_MISMATCH, (GB_LOG,
             "Dimensions not compatible:\n"
-            "output is "GBd"-by-"GBd"\n"
-            "first input is "GBd"-by-"GBd"%s\n"
-            "second input is "GBd"-by-"GBd"%s",
+            "output is " GBd "-by-" GBd "\n"
+            "first input is " GBd "-by-" GBd "%s\n"
+            "second input is " GBd "-by-" GBd "%s",
             cnrows, cncols,
             anrows, ancols, A_transpose ? " (transposed)" : "",
             bnrows, bncols, B_transpose ? " (transposed)" : ""))) ;
@@ -117,10 +117,9 @@ GrB_Info GB_ewise                   // C<M> = accum (C, A+B) or A.*B
     GB_RETURN_IF_QUICK_MASK (C, C_replace, M, Mask_comp) ;
 
     // delete any lingering zombies and assemble any pending tuples
-    // GB_WAIT (C) ;
-    GB_WAIT (M) ;
-    GB_WAIT (A) ;
-    GB_WAIT (B) ;
+    GB_MATRIX_WAIT (M) ;
+    GB_MATRIX_WAIT (A) ;
+    GB_MATRIX_WAIT (B) ;
 
     //--------------------------------------------------------------------------
     // handle CSR and CSC formats
@@ -195,7 +194,8 @@ GrB_Info GB_ewise                   // C<M> = accum (C, A+B) or A.*B
             if (C_is_csc != M_is_csc)
             { 
                 GBBURBLE ("(M transpose) ") ;
-                GB_OK (GB_transpose (&MT, GrB_BOOL, C_is_csc, M, NULL, Context));
+                GB_OK (GB_transpose (&MT, GrB_BOOL, C_is_csc, M,
+                    NULL, NULL, NULL, false, Context)) ;
                 M1 = MT ;
             }
             mask_applied = true ;
@@ -224,7 +224,8 @@ GrB_Info GB_ewise                   // C<M> = accum (C, A+B) or A.*B
         // AT = A'
         // transpose: no typecast, no op, not in place
         GBBURBLE ("(A transpose) ") ;
-        GB_OK (GB_transpose (&AT, NULL, C_is_csc, A, NULL, Context)) ;
+        GB_OK (GB_transpose (&AT, NULL, C_is_csc, A,
+            NULL, NULL, NULL, false, Context)) ;
         A1 = AT ;
     }
 
@@ -238,7 +239,8 @@ GrB_Info GB_ewise                   // C<M> = accum (C, A+B) or A.*B
         // BT = B'
         // transpose: no typecast, no op, not in place
         GBBURBLE ("(B transpose) ") ;
-        GB_OK (GB_transpose (&BT, NULL, C_is_csc, B, NULL, Context)) ;
+        GB_OK (GB_transpose (&BT, NULL, C_is_csc, B,
+            NULL, NULL, NULL, false, Context)) ;
         B1 = BT ;
     }
 

@@ -1,4 +1,4 @@
-function test0 (nmat)
+function test0 (nmat,f)
 %TEST0 test most CHOLMOD functions
 % Example:
 %   test0(nmat)
@@ -9,18 +9,20 @@ function test0 (nmat)
 fprintf ('=================================================================\n');
 fprintf ('test0: test most CHOLMOD functions\n') ;
 
-% This test requires UFget, the MATLAB interface to the UF sparse matrix
-% collection.  You can obtain UFget from http://www.suitesparse.com.
+% This test requires ssget, the MATLAB interface to the UF sparse matrix
+% collection.  You can obtain ssget from http://www.suitesparse.com.
 
 try
-    index = UFget ;
+    index = ssget ;
 catch
     error ('Test aborted.  UF sparse matrix collection not available.\n') ;
 end
 
-f = find (index.posdef) ;
-[ignore i] = sort (index.nrows (f)) ;
-f = f (i) ;
+if (nargin < 2)
+    f = find (index.posdef) ;
+    [ignore i] = sort (index.nrows (f)) ;
+    f = f (i) ;
+end
 
 rand ('state', 0) ;
 randn ('state', 0) ;
@@ -60,7 +62,7 @@ for i = f
 
     % try
 
-	Problem = UFget (i) ;
+	Problem = ssget (i) ;
 	A = Problem.A ; 
 	fprintf ('\n================== Problem: %d: %s  n: %d nnz: %d\n', ...
 	    i, Problem.name, size (A,1), nnz (A)) ;
@@ -250,9 +252,19 @@ for i = f
 	if (nnz (LD5) ~= nnz (LD4))
 	    error ('!') ;
 	end
-	if (nnz (spones (LD5) - spones (LD4)) ~= 0)
-	    error ('!') ;
-	end
+
+        % revised June 30, 2020
+        if (nnz (GB_spones_mex (LD5) - GB_spones_mex (LD4)) ~= 0)
+            error ('!') ;
+        end
+
+%       if (nnz (spones (LD5) - spones (LD4)) ~= 0)
+%           % TODO: fails on ssget (878) because MATLAB changed spones(...).
+%           LD5 (262,246)
+%           LD4 (262,246)
+%           spones (LD5) - spones (LD4)
+%           error ('!') ;
+%       end
 
 	b = rand (n,2) ;
 	x = ldlsolve (LD4, b) ;

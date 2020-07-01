@@ -14,6 +14,7 @@ GrB_Info GB_entry_check     // print a single value
 (
     const GrB_Type type,    // type of value to print
     const void *x,          // value to print
+    int pr,                 // print level
     FILE *f,                // file to print to
     GB_Context Context
 )
@@ -30,6 +31,6 @@ GrB_Info GB_entry_check     // print a single value
     // print the value
     //--------------------------------------------------------------------------
 
-    return (GB_code_check (type->code, x, f, Context)) ;
+    return (GB_code_check (type->code, x, pr, f, Context)) ;
 }
 

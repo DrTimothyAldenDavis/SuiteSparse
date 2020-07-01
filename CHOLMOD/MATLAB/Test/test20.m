@@ -16,7 +16,7 @@ f = spd ;
 spparms ('spumoni',0) ;
 
 for i = f
-    Prob = UFget (i)							    %#ok
+    Prob = ssget (i)							    %#ok
     A = Prob.A ;
     clear Prob ;
     n = size (A,1) ;

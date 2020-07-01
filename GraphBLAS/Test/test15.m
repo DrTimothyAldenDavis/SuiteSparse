@@ -39,11 +39,11 @@ assert (isequal (C, C1)) ;
 
 S = sparse (10000,2) ;
 C1 = A.*B ;
-C = GB_mex_eWiseMult_Matrix (S, [], [], 'times', A, B) ;
+C = GB_mex_Matrix_eWiseMult (S, [], [], 'times', A, B) ;
 assert (spok (C.matrix) == 1) ;
 assert (isequal (C.matrix, C1)) ;
 C1 = B.*A ;
-C = GB_mex_eWiseMult_Matrix (S, [], [], 'times', B, A) ;
+C = GB_mex_Matrix_eWiseMult (S, [], [], 'times', B, A) ;
 assert (spok (C.matrix) == 1) ;
 assert (isequal (C.matrix, C1)) ;
 

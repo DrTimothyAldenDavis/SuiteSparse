@@ -1,23 +1,7 @@
-function codegen_axb_template (multop, bmult, imult, fmult, dmult)
+function codegen_axb_template (multop, bmult, imult, fmult, dmult, fcmult, dcmult)
 %CODEGEN_AXB_TEMPLATE create a function for a semiring with a TxT->T multiplier
 
 fprintf ('\n%-7s', multop) ;
-
-if (nargin < 4)
-    fmult = [ ] ;
-end
-
-if (nargin < 5)
-    dmult = [ ] ;
-end
-
-if (isempty (fmult))
-    fmult = imult ;
-end
-
-if (isempty (dmult))
-    dmult = fmult ;
-end
 
 plusinf32 = 'INFINITY' ;
 neginf32  = '(-INFINITY)' ;
@@ -74,8 +58,13 @@ codegen_axb_method ('any', multop, add, addfunc, imult, 'uint32_t', 'uint32_t', 
 codegen_axb_method ('any', multop, add, addfunc, imult, 'uint64_t', 'uint64_t', '0' , [ ], 0, 0) ;
 codegen_axb_method ('any', multop, add, addfunc, fmult, 'float'   , 'float'   , '0' , [ ], 0, 0) ;
 codegen_axb_method ('any', multop, add, addfunc, dmult, 'double'  , 'double'  , '0' , [ ], 0, 0) ;
+% complex case:
+id = 'GxB_CMPLXF(0,0)' ;
+codegen_axb_method ('any', multop, add, addfunc, fcmult, 'GxB_FC32_t', 'GxB_FC32_t', id, [ ], 0, 0) ;
+id = 'GxB_CMPLX(0,0)' ;
+codegen_axb_method ('any', multop, add, addfunc, dcmult, 'GxB_FC64_t', 'GxB_FC64_t', id, [ ], 0, 0) ;
 
-% PLUS monoid: none are terminal.  All can be done with OpenMP atomic update
+% PLUS monoid: none are terminal.  All reals can be done with OpenMP atomic update
 add = 'w += t' ;
 addfunc = 'w + t' ;
 codegen_axb_method ('plus', multop, add, addfunc, imult, 'int8_t'  , 'int8_t'  , '0', [ ], 1, 1) ;
@@ -88,9 +77,18 @@ codegen_axb_method ('plus', multop, add, addfunc, imult, 'int64_t' , 'int64_t' ,
 codegen_axb_method ('plus', multop, add, addfunc, imult, 'uint64_t', 'uint64_t', '0', [ ], 1, 1) ;
 codegen_axb_method ('plus', multop, add, addfunc, fmult, 'float'   , 'float'   , '0', [ ], 1, 1) ;
 codegen_axb_method ('plus', multop, add, addfunc, dmult, 'double'  , 'double'  , '0', [ ], 1, 1) ;
+% complex types done with two OpenMP atomic updates:
+add = 'w = GB_FC32_add (w, t)' ;
+addfunc = 'GB_FC32_add (w, t)' ;
+id = 'GxB_CMPLXF(0,0)' ;
+codegen_axb_method ('plus', multop, add, addfunc, fcmult, 'GxB_FC32_t', 'GxB_FC32_t', id, [ ], 1, 1) ;
+add = 'w = GB_FC64_add (w, t)' ;
+addfunc = 'GB_FC64_add (w, t)' ;
+id = 'GxB_CMPLX(0,0)' ;
+codegen_axb_method ('plus', multop, add, addfunc, dcmult, 'GxB_FC64_t', 'GxB_FC64_t', id, [ ], 1, 1) ;
 
 % TIMES monoid: integers are terminal, float and double are not.
-% All can be done with OpenMP atomic update
+% All real types can be done with OpenMP atomic update
 add = 'w *= t' ;
 addfunc = 'w * t' ;
 codegen_axb_method ('times', multop, add, addfunc, imult, 'int8_t'  , 'int8_t'  , '1', '0', 1, 1) ;
@@ -103,17 +101,24 @@ codegen_axb_method ('times', multop, add, addfunc, imult, 'int64_t' , 'int64_t' 
 codegen_axb_method ('times', multop, add, addfunc, imult, 'uint64_t', 'uint64_t', '1', '0', 1, 1) ;
 codegen_axb_method ('times', multop, add, addfunc, fmult, 'float'   , 'float'   , '1', [ ], 1, 1) ;
 codegen_axb_method ('times', multop, add, addfunc, dmult, 'double'  , 'double'  , '1', [ ], 1, 1) ;
+% complex types cannot be done with OpenMP atomic update:
+add = 'w = GB_FC32_mul (w, t)' ;
+addfunc = 'GB_FC32_mul (w, t)' ;
+id = 'GxB_CMPLXF(1,0)' ;
+codegen_axb_method ('times', multop, add, addfunc, fcmult, 'GxB_FC32_t', 'GxB_FC32_t', id, [ ], 0, 0) ;
+add = 'w = GB_FC64_mul (w, t)' ;
+addfunc = 'GB_FC64_mul (w, t)' ;
+id = 'GxB_CMPLX(1,0)' ;
+codegen_axb_method ('times', multop, add, addfunc, dcmult, 'GxB_FC64_t', 'GxB_FC64_t', id, [ ], 0, 0) ;
 
 % boolean monoids: LOR, LAND are terminal; LXOR, EQ are not.
 % For gcc and icc: LOR, LAND, and LXOR can be done as OpenMP atomic updates; EQ cannot.
 % For MS Visual Studio: none can be done with OpenMP atomic updates.
-if (~isempty (bmult))
-    codegen_axb_method ('lor',  multop, 'w |= t', 'w | t', bmult, 'bool', 'bool', 'false', 'true' , 1, 0) ;
-    codegen_axb_method ('land', multop, 'w &= t', 'w & t', bmult, 'bool', 'bool', 'true' , 'false', 1, 0) ;
-    codegen_axb_method ('lxor', multop, 'w ^= t', 'w ^ t', bmult, 'bool', 'bool', 'false', [ ]    , 1, 0) ;
-    codegen_axb_method ('any' , multop, 'w = t' , 't'    , bmult, 'bool', 'bool', '0'    , [ ]    , 0, 0) ;
-    add = 'w = (w == t)' ;
-    addfunc = 'w == t' ;
-    codegen_axb_method ('eq',   multop, add,      addfunc, bmult, 'bool', 'bool', 'true' , [ ]    , 0, 0) ;
-end
+codegen_axb_method ('lor',  multop, 'w |= t', 'w | t', bmult, 'bool', 'bool', 'false', 'true' , 1, 0) ;
+codegen_axb_method ('land', multop, 'w &= t', 'w & t', bmult, 'bool', 'bool', 'true' , 'false', 1, 0) ;
+codegen_axb_method ('lxor', multop, 'w ^= t', 'w ^ t', bmult, 'bool', 'bool', 'false', [ ]    , 1, 0) ;
+codegen_axb_method ('any' , multop, 'w = t' , 't'    , bmult, 'bool', 'bool', '0'    , [ ]    , 0, 0) ;
+add = 'w = (w == t)' ;
+addfunc = 'w == t' ;
+codegen_axb_method ('eq',   multop, add,      addfunc, bmult, 'bool', 'bool', 'true' , [ ]    , 0, 0) ;
 

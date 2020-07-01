@@ -19,10 +19,10 @@
 
 #define FREE_WORK                       \
 {                                       \
-    GB_FREE_MEMORY (Cp, nvec+1, sizeof (GrB_Index)) ; \
-    GB_FREE_MEMORY (Ch, nvec  , sizeof (GrB_Index)) ; \
-    GB_FREE_MEMORY (Ci, nvals , sizeof (GrB_Index)) ; \
-    GB_FREE_MEMORY (Cx, nvals , csize) ; \
+    GB_FREE (Cp) ;                      \
+    GB_FREE (Ch) ;                      \
+    GB_FREE (Ci) ;                      \
+    GB_FREE (Cx) ;                      \
     GB_MATRIX_FREE (&C) ;               \
 }
 
@@ -81,32 +81,32 @@ GrB_Info export_import
         case 0 :    // standard CSR
         //----------------------------------------------------------------------
 
-            OK (GxB_Matrix_Option_set (C, GxB_HYPER,  GxB_NEVER_HYPER)) ;
-            OK (GxB_Matrix_Option_set (C, GxB_FORMAT, GxB_BY_ROW)) ;
+            OK (GxB_Matrix_Option_set_(C, GxB_HYPER,  GxB_NEVER_HYPER)) ;
+            OK (GxB_Matrix_Option_set_(C, GxB_FORMAT, GxB_BY_ROW)) ;
             break ;
 
         //----------------------------------------------------------------------
         case 1 :    // standard CSC
         //----------------------------------------------------------------------
 
-            OK (GxB_Matrix_Option_set (C, GxB_HYPER,  GxB_NEVER_HYPER)) ;
-            OK (GxB_Matrix_Option_set (C, GxB_FORMAT, GxB_BY_COL)) ;
+            OK (GxB_Matrix_Option_set_(C, GxB_HYPER,  GxB_NEVER_HYPER)) ;
+            OK (GxB_Matrix_Option_set_(C, GxB_FORMAT, GxB_BY_COL)) ;
             break ;
 
         //----------------------------------------------------------------------
         case 2 :    // hypersparse CSR
         //----------------------------------------------------------------------
 
-            OK (GxB_Matrix_Option_set (C, GxB_HYPER,  GxB_ALWAYS_HYPER)) ;
-            OK (GxB_Matrix_Option_set (C, GxB_FORMAT, GxB_BY_ROW)) ;
+            OK (GxB_Matrix_Option_set_(C, GxB_HYPER,  GxB_ALWAYS_HYPER)) ;
+            OK (GxB_Matrix_Option_set_(C, GxB_FORMAT, GxB_BY_ROW)) ;
             break ;
 
         //----------------------------------------------------------------------
         case 3 :    // hypersparse CSC
         //----------------------------------------------------------------------
 
-            OK (GxB_Matrix_Option_set (C, GxB_HYPER,  GxB_ALWAYS_HYPER)) ;
-            OK (GxB_Matrix_Option_set (C, GxB_FORMAT, GxB_BY_COL)) ;
+            OK (GxB_Matrix_Option_set_(C, GxB_HYPER,  GxB_ALWAYS_HYPER)) ;
+            OK (GxB_Matrix_Option_set_(C, GxB_FORMAT, GxB_BY_COL)) ;
             break ;
 
         default : mexErrMsgTxt ("invalid format") ;

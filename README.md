@@ -2,7 +2,7 @@
 SuiteSparse:  A Suite of Sparse matrix packages at http://www.suitesparse.com
 -----------------------------------------------------------------------------
 
-Apr 8, 2020.  SuiteSparse VERSION 5.7.2
+June 30, 2020.  SuiteSparse VERSION 5.8.0
 
 Now includes GraphBLAS and a new interface to the SuiteSparse Matrix
 Collection (ssget), via MATLAB and a Java GUI, to http://sparse.tamu.edu.
@@ -277,7 +277,8 @@ QUICK START FOR MATLAB USERS (Linux, Mac, or Windows):
 -----------------------------------------------------------------------------
 
 Uncompress the SuiteSparse.zip or SuiteSparse.tar.gz archive file (they contain
-the same thing), then in the MATLAB Command Window, cd to the SuiteSparse
+the same thing).  Next, compile the GraphBLAS library (see instructions in
+GraphBLAS/Doc).  Then in the MATLAB Command Window, cd to the SuiteSparse
 directory and type SuiteSparse_install.  All packages will be compiled, and
 several demos will be run.  To run a (long!) exhaustive test, do
 SuiteSparse_test.

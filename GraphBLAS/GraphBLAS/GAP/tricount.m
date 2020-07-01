@@ -12,8 +12,9 @@ function s = tricount (A, arg2, arg3)
 % the degrees first.
 %
 % See also GrB.ktruss, GrB.entries.
-%
-% ADDED: sort if warranted.  See LAGraph_tricount.
+
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
+% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
 
 [m, n] = size (A) ;
 if (m ~= n)

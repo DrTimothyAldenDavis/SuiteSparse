@@ -38,6 +38,8 @@ GrB_Type GB_code_type           // return the GrB_Type corresponding to the code
         case GB_UINT64_code : return (GrB_UINT64) ;
         case GB_FP32_code   : return (GrB_FP32)   ;
         case GB_FP64_code   : return (GrB_FP64)   ;
+        case GB_FC32_code   : return (GxB_FC32)   ;
+        case GB_FC64_code   : return (GxB_FC64)   ;
         case GB_UDT_code    : 
         default             : return (type) ;
     }

@@ -7,7 +7,7 @@ function lxtest
 % Copyright 2013, Timothy A. Davis, http://www.suitesparse.com
 
 rng ('default')
-index = UFget ;
+index = ssget ;
 
 %{
 f = find (index.posdef & index.amd_lnz > 0) ;
@@ -23,13 +23,13 @@ nmat = length (f) ;
 
 for k = 1:nmat
     id = f (k) ;
-    Prob = UFget (id, index)
+    Prob = ssget (id, index)
     A = Prob.A ;
     n = size (A,1) ;
     [LD gunk p] = ldlchol (A) ;
     C = A (p,p) ;
     [count h parent post Lpattern] = symbfact (C, 'sym', 'lower') ;
-    if (~isequal (Lpattern, spones (LD)))
+    if (~isequal (Lpattern, GB_spones_mex (LD)))
         error ('!') ;
     end
 
@@ -44,8 +44,8 @@ for k = 1:nmat
     end
 
     D2 = chol (D) ;
-    L2 = L*D2 + 1e-50 * spones (L) ;
-    if (~isequal (spones (L), spones (L2)))
+    L2 = L*D2 + 1e-50 * GB_spones_mex (L) ;
+    if (~isequal (GB_spones_mex (L), GB_spones_mex (L2)))
         error ('oops') ;
     end
     err = norm (L2*L2' - C, 1) / norm (C, 1) ;

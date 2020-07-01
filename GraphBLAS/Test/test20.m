@@ -4,7 +4,9 @@ function test20(fulltest)
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
-[mult_ops, ~, add_ops, classes, ~, ~] = GB_spec_opsall ;
+[binops, ~, add_ops, types, ~, ~] = GB_spec_opsall ;
+mult_ops = binops.all ;
+types = types.all ;
 
 tic
 
@@ -20,7 +22,7 @@ else
     n_semirings_max = 1 ;
 end
 
-% classes to test:
+% types to test:
 kk = 1 ;
 
 % accum ops to test
@@ -31,14 +33,14 @@ aa = 1 ;
 if (fulltest > 0)
     k1_list = 1:length(mult_ops) ;
     k2_list = 1:length(add_ops) ;
-    k3_list = 1:length(classes) ;
+    k3_list = 1:length(types) ;
 else
     k1_list = [ 9 ] ;   % times
     k2_list = [ 3 ] ;   % plus
     k3_list = [ 11 ] ;  % double
 end
 
-kk = min (kk, length (classes)) ;
+kk = min (kk, length (types)) ;
 
 dnn = struct ;
 dtn = struct ( 'inp0', 'tran' ) ;
@@ -55,13 +57,13 @@ for k1 = k1_list % 1:length(mult_ops)
         addop = add_ops {k2} ;
         fprintf ('\nsemiring %s:%s ', addop, mulop) ;
 
-        for k3 = k3_list % 1:length (classes)
+        for k3 = k3_list % 1:length (types)
             rng ('default') ;
-            clas = classes {k3} ;
+            type = types {k3} ;
 
             semiring.multiply = mulop ;
             semiring.add = addop ;
-            semiring.class = clas ;
+            semiring.class = type ;
             if (n_semirings_max == 1)
                 semiring
             end
@@ -70,9 +72,9 @@ for k1 = k1_list % 1:length(mult_ops)
             % monoids can only be used when z is boolean for z=mult(x,y).
             try
                 [mult_op add_op id] = GB_spec_semiring (semiring) ;
-                [mult_opname mult_opclass zclass] = GB_spec_operator (mult_op);
-                [ add_opname  add_opclass] = GB_spec_operator (add_op) ;
-                identity = GB_spec_identity (semiring.add, add_opclass) ;
+                [mult_opname mult_optype ztype] = GB_spec_operator (mult_op);
+                [ add_opname  add_optype] = GB_spec_operator (add_op) ;
+                identity = GB_spec_identity (semiring.add, add_optype) ;
             catch
                 continue
             end
@@ -83,7 +85,7 @@ for k1 = k1_list % 1:length(mult_ops)
             end
 
             % fprintf ('\n%4d ', n_semirings) ;
-            % fprintf ('%12.2f mxm semiring %s:%s:%s ', toc,addop,mulop,clas) ;
+            % fprintf ('%12.2f mxm semiring %s:%s:%s ', toc,addop,mulop,type) ;
             % fprintf (' id: %g ', double (identity)) ;
             n_semirings = n_semirings + 1 ;
 
@@ -91,32 +93,38 @@ for k1 = k1_list % 1:length(mult_ops)
             for k4 = [ 0 randperm(length(mult_ops), aa)]
                 if (k4 == 0)
                     accum_op = '' ;
-                    nclasses = 1 ;
+                    ntypes = 1 ;
                 else
                     accum_op = mult_ops {k4} ;
-                    % nclasses = [1 2 8 ] ; % length (classes) ;
-                    % nclasses = 1:length (classes) ;
-                    nclasses = randperm (length (classes),kk) ;
+                    % ntypes = [1 2 8 ] ; % length (types) ;
+                    % ntypes = 1:length (types) ;
+                    ntypes = randperm (length (types),kk) ;
                 end
 
-                for k5 = nclasses
+                for k5 = ntypes
                     clear accum
                     if (~isempty (accum_op))
-                        accum_class = classes {k5} ;
+                        accum_type = types {k5} ;
                         accum.opname = accum_op ;
-                        accum.opclass = accum_class ;
+                        accum.optype = accum_type ;
                     else
                         accum = '' ;
-                        accum_class = '' ;
+                        accum_type = '' ;
+                    end
+
+                    try
+                        GB_spec_operator (accum) ;
+                    catch
+                        continue
                     end
 
                     for Mask_complement = [false true]
 
                         if (Mask_complement)
-                            dnn.mask = 'scmp' ;
-                            dtn.mask = 'scmp' ;
-                            dnt.mask = 'scmp' ;
-                            dtt.mask = 'scmp' ;
+                            dnn.mask = 'complement' ;
+                            dtn.mask = 'complement' ;
+                            dnt.mask = 'complement' ;
+                            dtt.mask = 'complement' ;
                         else
                             dnn.mask = 'default' ;
                             dtn.mask = 'default' ;
@@ -139,14 +147,16 @@ for k1 = k1_list % 1:length(mult_ops)
                             end
 
                             % pick a random class, and int32
-                            aclasses = randperm(length(classes),kk) ; %  1:length (classes)
-                            aclasses = unique ([aclasses 6]) ;
+                            atypes = randperm(length(types),kk) ;
+                            %  1:length (types)
+                            atypes = unique ([atypes 6]) ;
 
-                            % try all matrix classes, to test casting
-                            for k6 = aclasses
-                                aclas = classes {k6} ;
+                            % try all matrix types, to test casting
+                            for k6 = atypes
+                                aclas = types {k6} ;
 
-                                if (isequal (aclas, 'int32') && mod (n_semirings, 100) == 1)
+                                if (isequal (aclas, 'int32') && ...
+                                    mod (n_semirings, 100) == 1)
                                     % single or double would lead to
                                     % different roundoff errors
                                     hyper_range = 0:1 ;
@@ -162,7 +172,8 @@ for k1 = k1_list % 1:length(mult_ops)
                                         for s = 4 % [ 1 5 10 ]
                                         for density = [0.1 0.2 0.3 0.5]
 
-                                            % try all combinations of hyper/non-hyper and CSR/CSC
+                                            % try all combinations of hyper/
+                                            % non-hyper and CSR/CSC
                                             for A_is_hyper = hyper_range
                                             for A_is_csc   = csc_range
                                             for B_is_hyper = hyper_range
@@ -176,9 +187,9 @@ for k1 = k1_list % 1:length(mult_ops)
                                                 fprintf ('.') ;
                                             end
 
-                                            %---------------------------------------
+                                            %-----------------------------------
                                             % A*B
-                                            %---------------------------------------
+                                            %-----------------------------------
 
                                             A = GB_spec_random (m,s,density,100,aclas, A_is_csc, A_is_hyper) ;
                                             B = GB_spec_random (s,n,density,100,aclas, B_is_csc, B_is_hyper) ;
@@ -191,8 +202,8 @@ for k1 = k1_list % 1:length(mult_ops)
                                             GB_spec_compare (C0, C1, identity) ;
 
                                             % w = A*u, no mask
-                                            w = GB_spec_random (m,1,density,100,clas) ;
-                                            u = GB_spec_random (s,1,density,100,clas) ;
+                                            w = GB_spec_random (m,1,density,100,type) ;
+                                            u = GB_spec_random (s,1,density,100,type) ;
 
                                             w0 = GB_spec_mxv (w, [ ], accum, semiring, A, u, dnn);
                                             w1 = GB_mex_mxv  (w, [ ], accum, semiring, A, u, dnn);
@@ -214,7 +225,7 @@ for k1 = k1_list % 1:length(mult_ops)
                                             Mask1 = sprandn (m,n,0.2) ~= 0 ;
                                             Mask2 = Mask1 .* spones (sprandn (m,n,0.5)) ;
                                             S = sparse (m,n) ;
-                                            Mask3 = GB_mex_eWiseAdd_Matrix (S,[ ],[ ],'minus',Mask1,Mask2) ;
+                                            Mask3 = GB_mex_Matrix_eWiseAdd (S,[ ],[ ],'minus',Mask1,Mask2) ;
                                             clear Mask
                                             Mask.matrix = Mask3.matrix ;
                                             Mask.is_csc = M_is_csc ;
@@ -239,9 +250,9 @@ for k1 = k1_list % 1:length(mult_ops)
                                             w1 = GB_mex_vxm  (w, mask, accum, semiring, u, A, dnt) ;
                                             GB_spec_compare (w0, w1, identity) ;
 
-                                            %---------------------------------------
+                                            %-----------------------------------
                                             % A'*B
-                                            %---------------------------------------
+                                            %-----------------------------------
 
                                             A = GB_spec_random (s,m,density,100,aclas, A_is_csc, A_is_hyper) ;
                                             B = GB_spec_random (s,n,density,100,aclas, B_is_csc, B_is_hyper) ;
@@ -274,7 +285,7 @@ for k1 = k1_list % 1:length(mult_ops)
                                             Mask1 = sprandn (m,n,0.2) ~= 0 ;
                                             Mask2 = Mask1 .* spones (sprandn (m,n,0.5)) ;
                                             S = sparse (m,n) ;
-                                            Mask3 = GB_mex_eWiseAdd_Matrix (S,[ ],[ ],'minus',Mask1,Mask2) ;
+                                            Mask3 = GB_mex_Matrix_eWiseAdd (S,[ ],[ ],'minus',Mask1,Mask2) ;
                                             clear Mask
                                             Mask.matrix = Mask3.matrix ;
                                             Mask.is_csc = M_is_csc ;
@@ -298,9 +309,10 @@ for k1 = k1_list % 1:length(mult_ops)
                                             w1 = GB_mex_vxm  (w, mask, accum, semiring, u, A, dnn);
                                             GB_spec_compare (w0, w1, identity) ;
 
-                                            %---------------------------------------
+                                            %-----------------------------------
                                             % A*B'
-                                            %---------------------------------------
+                                            %-----------------------------------
+
                                             % no mask
 
                                             A = GB_spec_random (m,s,density,100,aclas, A_is_csc, A_is_hyper) ;
@@ -318,9 +330,9 @@ for k1 = k1_list % 1:length(mult_ops)
                                             C1 = GB_mex_mxm  (C, Mask, accum, semiring, A, B, dnt);
                                             GB_spec_compare (C0, C1, identity) ;
 
-                                            %---------------------------------------
+                                            %-----------------------------------
                                             % A'*B'
-                                            %---------------------------------------
+                                            %-----------------------------------
 
                                             % no Mask
 
@@ -364,7 +376,6 @@ for k1 = k1_list % 1:length(mult_ops)
     end
 end
 
-% fprintf ('%d options tested\n', ntrials) ;
 fprintf ('semirings tested: %d\n', n_semirings) ;
 fprintf ('\ntest20: all tests passed\n') ;
 

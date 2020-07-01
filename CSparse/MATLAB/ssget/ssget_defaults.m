@@ -26,7 +26,7 @@ function params = ssget_defaults
 %
 %   See also ssget.
 
-% Copyright 2009-2017, Timothy A. Davis, http://www.suitesparse.com
+% Copyright 2009-2019, Timothy A. Davis, http://www.suitesparse.com
 
 % decode the current directory for this M-file
 s = which (mfilename) ;

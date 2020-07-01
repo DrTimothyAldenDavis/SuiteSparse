@@ -138,8 +138,7 @@
 %   SuiteSparseCollection    for managing the SuiteSparse Matrix Collection
 %   RBio            for reading/writing Rutherford/Boeing sparse matrices
 %   ssget           MATLAB interface to the SuiteSparse Matrix Collection
-%   GraphBLAS       graph algorithms via sparse linear algebra (graphblas.org),
-%                   does not yet have a MATLAB interface
+%   GraphBLAS       graph algorithms via sparse linear algebra (graphblas.org)
 %
 %-------------------------------------------------------------------------------
 %

@@ -4,12 +4,13 @@ function test03
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
-[~, ~, ~, classes, ~, ~] = GB_spec_opsall ;
+[~, ~, ~, types, ~, ~] = GB_spec_opsall ;
+types = types.all ;
 
 rng ('default') ;
 
-for k = 1:length (classes)
-    aclass = classes {k} ;
+for k = 1:length (types)
+    aclass = types {k} ;
     for is_hyper = 0:1
         for is_csc = 0:1
             A = GB_spec_random (10,30,0.2,100,aclass, is_csc, is_hyper) ;
@@ -29,7 +30,11 @@ for is_hyper = 0:1
     end
 end
 
-if (GB_mex_have_complex)
+for k = [false true]
+    fprintf ('builtin_complex: %d\n', k) ;
+    GB_builtin_complex_set (k) ;
+
+    % complex case:
     A = GB_mex_random (10, 30, 15, 1, 1, 0, 0, 0) ;
     GB_mex_dump (A,2) ;
     A = GB_mex_random (10, 30, 15, 1, 1, 0, 0, 1) ;

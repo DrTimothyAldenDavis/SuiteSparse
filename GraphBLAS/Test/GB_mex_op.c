@@ -13,9 +13,9 @@
 // Z = GB_mex_op (op, X)
 
 // Apply a built-in GraphBLAS operator or a user-defined Complex operator to
-// one or two arrays X and Y of any MATLAB logical or numeric class.  X and Y
+// one or two arrays X and Y of any MATLAB logical or numeric type.  X and Y
 // are first typecasted into the x and y operand types of the op.  The output Z
-// has the same class as the z type of the op.
+// has the same type as the z type of the op.
 
 #include "GB_mex.h"
 
@@ -23,9 +23,6 @@
 
 #define FREE_ALL                        \
 {                                       \
-    if (op_ztype == Complex) GB_FREE_MEMORY (Z, nx+1, 2*sizeof (double)) ; \
-    if (X_type   == Complex) GB_FREE_MEMORY (X, nx+1, 2*sizeof (double)) ; \
-    if (Y_type   == Complex) GB_FREE_MEMORY (Y, ny+1, 2*sizeof (double)) ; \
     GB_mx_put_global (do_cover, 0) ;    \
 }
 
@@ -66,28 +63,25 @@ void mexFunction
     }
 
     //--------------------------------------------------------------------------
-    // get op; default class is class(X)
+    // get op; default type is the same type as X
     //--------------------------------------------------------------------------
 
     GrB_UnaryOp  op1 = NULL ;
     GrB_BinaryOp op2 = NULL ;
     GrB_Type op_ztype = NULL, op_xtype, op_ytype ;
     size_t   op_zsize, op_xsize, op_ysize ;
+    GrB_Type xtype = GB_mx_Type (pargin [1]) ;
 
     // check for complex case
     bool XisComplex = mxIsComplex (pargin [1]) ;
     bool YisComplex = (nargin > 2) ? mxIsComplex (pargin [2]) : false ;
-
-    #if GxB_STDC_VERSION < 201112L
-    if (XisComplex || YisComplex) mexErrMsgTxt ("complex type not available") ;
-    #endif
+    bool user_complex = (Complex != GxB_FC64) && (XisComplex || YisComplex) ;
 
     if (nargin > 2)
     {
         // get a binary op
         if (!GB_mx_mxArray_to_BinaryOp (&op2, pargin [0], "GB_mex_op",
-            GB_NOP_opcode, mxGetClassID (pargin [1]),
-            XisComplex, YisComplex) || op2 == NULL)
+            xtype, user_complex) || op2 == NULL)
         {
             FREE_ALL ;
             mexErrMsgTxt ("binary op missing") ;
@@ -101,8 +95,7 @@ void mexFunction
     {
         // get a unary op
         if (!GB_mx_mxArray_to_UnaryOp (&op1, pargin [0], "GB_mex_op",
-            GB_NOP_opcode, mxGetClassID (pargin [1]),
-            XisComplex) || op1 == NULL)
+            xtype, user_complex) || op1 == NULL)
         {
             FREE_ALL ;
             mexErrMsgTxt ("unary op missing") ;
@@ -119,8 +112,7 @@ void mexFunction
     // get X
     //--------------------------------------------------------------------------
 
-    mxClassID xclass ;
-    GB_mx_mxArray_to_array (pargin [1], &X, &nrows, &ncols, &xclass, &X_type) ;
+    GB_mx_mxArray_to_array (pargin [1], &X, &nrows, &ncols, &X_type) ;
     nx = nrows * ncols ;
     if (X_type == NULL)
     {
@@ -142,9 +134,7 @@ void mexFunction
 
     if (nargin > 2)
     {
-        mxClassID yclass ;
-        GB_mx_mxArray_to_array (pargin [2], &Y, &nrows2, &ncols2, &yclass,
-            &Y_type) ;
+        GB_mx_mxArray_to_array (pargin [2], &Y, &nrows2, &ncols2, &Y_type) ;
         ny = nrows2 * ncols2 ;
         if (nrows2 != nrows || ncols2 != ncols)
         {
@@ -167,28 +157,11 @@ void mexFunction
     }
 
     //--------------------------------------------------------------------------
-    // create Z of the same class as op_ztype
+    // create Z of the same type as op_ztype
     //--------------------------------------------------------------------------
 
-    if (op_ztype->code == GB_BOOL_code)
-    {
-        // Z is boolean, use a shallow copy of the MATLAB Z
-        pargout [0] = mxCreateLogicalMatrix (nrows, ncols) ;
-        Z = mxGetData (pargout [0]) ;
-    }
-    else if (op_ztype == Complex)
-    {
-        // Z is complex, create a temporary array
-        GB_MALLOC_MEMORY (Z, nx + 1, 2 * sizeof (double)) ;
-        // Z must be copied into the MATLAB pargout [0] when done, then freed
-    }
-    else
-    {
-        // Z is any other built-in type, use a shallow copy of the MATLAB Z
-        mxClassID zclass = GB_mx_Type_to_classID (op_ztype) ;
-        pargout [0] = mxCreateNumericMatrix (nrows, ncols, zclass, mxREAL) ;
-        Z = mxGetData (pargout [0]) ;
-    }
+    pargout [0] = GB_mx_create_full (nrows, ncols, op_ztype) ;
+    Z = mxGetData (pargout [0]) ;
 
     //--------------------------------------------------------------------------
     // get scalar workspace
@@ -213,7 +186,14 @@ void mexFunction
         {
             cast_X (xwork, X +(k*X_size), X_size) ;
             cast_Y (ywork, Y +(k*Y_size), Y_size) ;
+            // printf ("x: ") ;
+            // GB_code_check (op_xtype->code, xwork, 3, NULL, NULL) ;
+            // printf ("\ny: ") ;
+            // GB_code_check (op_ytype->code, ywork, 3, NULL, NULL) ;
+            // printf ("\nz: ") ;
             f_binary (Z +(k*op_zsize), xwork, ywork) ;
+            // GB_code_check (op_ztype->code, Z +(k*op_zsize), 3, NULL, NULL) ;
+            // printf ("\n") ;
         }
 
     }
@@ -226,17 +206,6 @@ void mexFunction
             cast_X (xwork, X +(k*X_size), X_size) ;
             f_unary (Z +(k*op_zsize), xwork) ;
         }
-    }
-
-    //--------------------------------------------------------------------------
-    // copy the complex Z back to MATLAB
-    //--------------------------------------------------------------------------
-
-    if (op_ztype == Complex)
-    {
-        pargout [0] = mxCreateNumericMatrix (nrows, ncols,
-            mxDOUBLE_CLASS, mxCOMPLEX) ;
-        GB_mx_complex_split (nx, Z, pargout [0]) ;
     }
 
     //--------------------------------------------------------------------------

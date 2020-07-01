@@ -21,7 +21,7 @@ f = [
 
 for i = f
 
-    Prob = UFget (i)							    %#ok
+    Prob = ssget (i)							    %#ok
     A = Prob.A ;
     n = size (A,1) ;
     x = ones (n,2) ;

@@ -39,7 +39,7 @@ void mexFunction
     nthreads = GB_MSORT_NTHREADS (nthreads) ;
 
     // make a copy of the input array
-    pargout [0] = mxCreateNumericMatrix (n, 1, mxINT64_CLASS, mxREAL) ;
+    pargout [0] = GB_mx_create_full (n, 1, GrB_INT64) ;
     int64_t *Iout = mxGetData (pargout [0]) ;
     memcpy (Iout, I, n * sizeof (int64_t)) ;
 

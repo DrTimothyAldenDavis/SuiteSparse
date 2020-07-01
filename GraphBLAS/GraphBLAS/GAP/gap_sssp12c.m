@@ -5,6 +5,9 @@ function path_length = gap_sssp12c (source, A, delta)
 % only positive entries.  The method is based on LAGraph_sssp12c.  This is
 % slower than gap_sssp12. 
 
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
+% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+
 %-------------------------------------------------------------------------------
 % check inputs
 %-------------------------------------------------------------------------------

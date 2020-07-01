@@ -9,8 +9,8 @@
 
 #include "gb_matlab.h"
 
-void gb_abort ( void )                    // assertion failure
+void gb_abort ( void )      // failure
 {
-    mexErrMsgIdAndTxt ("GraphBLAS:assert", "assertion failed") ;
+    mexErrMsgIdAndTxt ("GraphBLAS:abort", "GraphBLAS failed") ;
 }
 

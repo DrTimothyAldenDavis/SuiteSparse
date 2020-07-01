@@ -8,13 +8,14 @@
 //------------------------------------------------------------------------------
 
 #include "GB_mxm.h"
+#include "GB_binop.h"
 #include "GB_ek_slice.h"
 #ifndef GBCOMPACT
 #include "GB_binop__include.h"
 #endif
 
 #define GB_FREE_WORK \
-    GB_ek_slice_free (&pstart_slice, &kfirst_slice, &klast_slice, ntasks) ;
+    GB_ek_slice_free (&pstart_slice, &kfirst_slice, &klast_slice) ;
 
 GrB_Info GB_AxB_colscale            // C = A*D, column scale with diagonal D
 (
@@ -120,38 +121,40 @@ GrB_Info GB_AxB_colscale            // C = A*D, column scale with diagonal D
     GrB_Matrix C = (*Chandle) ;
 
     //--------------------------------------------------------------------------
-    // C = A*D, column scale
+    // C = A*D, column scale, via built-in binary operators
     //--------------------------------------------------------------------------
 
     bool done = false ;
 
-    //--------------------------------------------------------------------------
-    // define the worker for the switch factory
-    //--------------------------------------------------------------------------
-
-    #define GB_AxD(mult,xyname) GB_AxD_ ## mult ## xyname
-
-    #define GB_BINOP_WORKER(mult,xyname)                                    \
-    {                                                                       \
-        info = GB_AxD(mult,xyname) (C, A, A_is_pattern, D, D_is_pattern,    \
-            kfirst_slice, klast_slice, pstart_slice, ntasks, nthreads) ;    \
-        done = (info != GrB_NO_VALUE) ;                                     \
-    }                                                                       \
-    break ;
-
-    //--------------------------------------------------------------------------
-    // launch the switch factory
-    //--------------------------------------------------------------------------
-
     #ifndef GBCOMPACT
 
+        //----------------------------------------------------------------------
+        // define the worker for the switch factory
+        //----------------------------------------------------------------------
+
+        #define GB_AxD(mult,xname) GB_AxD_ ## mult ## xname
+
+        #define GB_BINOP_WORKER(mult,xname)                                  \
+        {                                                                    \
+            info = GB_AxD(mult,xname) (C, A, A_is_pattern, D, D_is_pattern,  \
+                kfirst_slice, klast_slice, pstart_slice, ntasks, nthreads) ; \
+            done = (info != GrB_NO_VALUE) ;                                  \
+        }                                                                    \
+        break ;
+
+        //----------------------------------------------------------------------
+        // launch the switch factory
+        //----------------------------------------------------------------------
+
         GB_Opcode opcode ;
-        GB_Type_code xycode, zcode ;
+        GB_Type_code xcode, ycode, zcode ;
         if (GB_binop_builtin (A->type, A_is_pattern, D->type, D_is_pattern,
-            mult, flipxy, &opcode, &xycode, &zcode))
+            mult, flipxy, &opcode, &xcode, &ycode, &zcode))
         { 
             // C=A*D, colscale with built-in operator
+            #define GB_BINOP_IS_SEMIRING_MULTIPLIER
             #include "GB_binop_factory.c"
+            #undef  GB_BINOP_IS_SEMIRING_MULTIPLIER
         }
 
     #endif
@@ -185,7 +188,7 @@ GrB_Info GB_AxB_colscale            // C = A*D, column scale with diagonal D
         size_t aij_size = flipxy ? ysize : xsize ;
         size_t djj_size = flipxy ? xsize : ysize ;
 
-        GB_void *GB_RESTRICT Cx = C->x ;
+        GB_void *GB_RESTRICT Cx = (GB_void *) C->x ;
 
         GB_cast_function cast_A, cast_D ;
         if (flipxy)
@@ -219,10 +222,6 @@ GrB_Info GB_AxB_colscale            // C = A*D, column scale with diagonal D
             GB_void djj [GB_VLA(djj_size)] ;                                \
             if (!D_is_pattern) cast_D (djj, Dx +((j)*dsize), dsize) ;
 
-        // C(i,j) = A(i,j) * D(j,j)
-        #define GB_BINOP(cij, aij, djj)                                     \
-            GB_BINARYOP (cij, aij, djj) ;                                   \
-
         // address of Cx [p]
         #define GB_CX(p) Cx +((p)*csize)
 
@@ -231,20 +230,19 @@ GrB_Info GB_AxB_colscale            // C = A*D, column scale with diagonal D
         #define GB_CTYPE GB_void
 
         // no vectorization
-        #define GB_PRAGMA_VECTORIZE
-        #define GB_PRAGMA_VECTORIZE_DOT
+        #define GB_PRAGMA_SIMD_VECTORIZE ;
 
         if (flipxy)
         { 
-            #define GB_BINARYOP(z,x,y) fmult (z,y,x)
+            #define GB_BINOP(z,x,y) fmult (z,y,x)
             #include "GB_AxB_colscale_meta.c"
-            #undef GB_BINARYOP
+            #undef GB_BINOP
         }
         else
         { 
-            #define GB_BINARYOP(z,x,y) fmult (z,x,y)
+            #define GB_BINOP(z,x,y) fmult (z,x,y)
             #include "GB_AxB_colscale_meta.c"
-            #undef GB_BINARYOP
+            #undef GB_BINOP
         }
     }
 

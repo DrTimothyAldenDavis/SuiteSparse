@@ -13,7 +13,7 @@ fprintf ('test11 : compare CHOLMOD and MATLAB, save results in Results.mat\n');
 rand ('state',0) ;
 randn ('state',0) ;
 
-index = UFget ;
+index = ssget ;
 f = find (index.posdef) ;
 [ignore i] = sort (index.nrows (f)) ;
 f = f (i) ;
@@ -59,7 +59,7 @@ for kkk = 1:length(f)
     % try
 
 	fprintf ('\n%3d: %s/%s\n', nn, index.Group {nn}, index.Name {nn}) ;
-	Prob = UFget (nn) ;
+	Prob = ssget (nn) ;
 	A = Prob.A ;
 	clear Prob
 	n = size (A,1) ;

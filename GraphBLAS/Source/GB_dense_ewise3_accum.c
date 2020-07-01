@@ -8,6 +8,7 @@
 //------------------------------------------------------------------------------
 
 #include "GB_dense.h"
+#include "GB_binop.h"
 #ifndef GBCOMPACT
 #include "GB_binop__include.h"
 
@@ -56,12 +57,12 @@ void GB_dense_ewise3_accum          // C += A+B, all matrices dense
     // define the worker for the switch factory
     //--------------------------------------------------------------------------
 
-    #define GB_Cdense_ewise3_accum(op,xyname) \
-        GB_Cdense_ewise3_accum_ ## op ## xyname
+    #define GB_Cdense_ewise3_accum(op,xname) \
+        GB_Cdense_ewise3_accum_ ## op ## xname
 
-    #define GB_BINOP_WORKER(op,xyname)                                      \
+    #define GB_BINOP_WORKER(op,xname)                                       \
     {                                                                       \
-        GB_Cdense_ewise3_accum(op,xyname) (C, A, B, nthreads) ;             \
+        GB_Cdense_ewise3_accum(op,xname) (C, A, B, nthreads) ;              \
     }                                                                       \
     break ;
 
@@ -70,12 +71,17 @@ void GB_dense_ewise3_accum          // C += A+B, all matrices dense
     //--------------------------------------------------------------------------
 
     GB_Opcode opcode ;
-    GB_Type_code xycode, zcode ;
-    if (GB_binop_builtin (A->type, false, B->type, false, op, false,
-        &opcode, &xycode, &zcode))
+    GB_Type_code xcode, ycode, zcode ;
+    if (GB_binop_builtin (A->type, false, B->type, false,
+        op, false, &opcode, &xcode, &ycode, &zcode))
     { 
         #define GB_BINOP_SUBSET
         #include "GB_binop_factory.c"
+    }
+    else
+    {
+        // this function is not called if the op cannot be applied
+        ASSERT (GB_DEAD_CODE) ;
     }
 
     //--------------------------------------------------------------------------

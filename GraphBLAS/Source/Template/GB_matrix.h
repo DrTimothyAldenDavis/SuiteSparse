@@ -184,7 +184,7 @@ size_t type_size ;      // type->size, copied here since the type could be
 // the comments, but this is short-hand for the phrase "an entry A(i,j) whose
 // value is explicity held in the matrix and which appears in the pattern; its
 // value can be anything".  Entries not in the pattern are simply "not there";
-// see for example GB_extractElement.  The actual numerical value of these
+// see for example GrB_*_extractElement.  The actual numerical value of these
 // implicit entries is dependent upon the identity value of the semiring's
 // monoid operation used on the matrix.  The actual semiring is not held in the
 // matrix itself, and there are no restrictions on using a matrix in multiple
@@ -339,9 +339,9 @@ GB_Pending Pending ;        // list of pending tuples
 // in the right place in the matrix.  However, methods and operations in
 // GraphBLAS that cannot tolerate zombies in their input matries can check the
 // condition (A->nzombies > 0), and then delete all of them if they appear, via
-// GB_wait.
+// GB_Matrix_wait.
 
-int64_t nzombies ;      // number of zombies marked for deletion
+uint64_t nzombies ;     // number of zombies marked for deletion
 
 //------------------------------------------------------------------------------
 // statistics
@@ -349,20 +349,9 @@ int64_t nzombies ;      // number of zombies marked for deletion
 
 GrB_Desc_Value AxB_method_used ;    // last method used for C=A*B (this is C)
 
-//------------------------------------------------------------------------------
-// queue of matrices with work to do
-//------------------------------------------------------------------------------
-
-// The GrB_wait function tells GraphBLAS to finish all pending computations on
-// all matrices.  The function takes no arguments, so a list must be
-// maintained.  The list is implemented as a simple doubly-linked list.  All
-// matrices with either pending tuples, or zombies, or both, appear in this
-// list.  If a matrix has neither pending tuples nor zombies, then it does not
-// appear in this list.
-
-void *queue_next ;      // next matrix in the matrix queue
-void *queue_prev ;      // prev matrix in the matrix queue
-bool enqueued ;         // true if the matrix is in the queue
+void *queue_next ;      // TODO in 4.0: delete
+void *queue_prev ;      // TODO in 4.0: delete
+bool enqueued ;         // TODO in 4.0: delete
 
 //------------------------------------------------------------------------------
 // shallow matrices: like MATLAB but not in CSparse
@@ -393,4 +382,10 @@ bool x_shallow ;        // true if x is a shallow copy
 bool is_hyper ;         // true if the matrix is hypersparse
 bool is_csc ;           // true if stored by column (CSC or hypersparse CSC)
 bool is_slice ;         // true if the matrix is a slice or hyperslice
+
+//-----------------------------------------------------------------------------
+// MKL analysis, if available
+//-----------------------------------------------------------------------------
+
+void *mkl ;
 

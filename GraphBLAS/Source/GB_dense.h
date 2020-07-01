@@ -58,7 +58,7 @@ GrB_Info GB_dense_subassign_23      // C += A; C is dense, A is sparse or dense
 GrB_Info GB_dense_subassign_22      // C += x where C is dense and x is a scalar
 (
     GrB_Matrix C,                   // input/output matrix
-    const GB_void *scalar,          // input scalar
+    const void *scalar,             // input scalar
     const GrB_Type atype,           // type of the input scalar
     const GrB_BinaryOp accum,       // operator to apply
     GB_Context Context
@@ -71,7 +71,7 @@ GrB_Info GB_dense_subassign_22      // C += x where C is dense and x is a scalar
 GrB_Info GB_dense_subassign_21      // C(:,:) = x; C is a matrix and x a scalar
 (
     GrB_Matrix C,                   // input/output matrix
-    const GB_void *scalar,          // input scalar
+    const void *scalar,             // input scalar
     const GrB_Type atype,           // type of the input scalar
     GB_Context Context
 ) ;
@@ -86,7 +86,7 @@ GrB_Info GB_dense_subassign_05d
     // input:
     const GrB_Matrix M,
     const bool Mask_struct,
-    const GB_void *scalar,
+    const void *scalar,
     const GrB_Type atype,
     GB_Context Context
 ) ;
@@ -126,32 +126,6 @@ GrB_Info GB_dense_subassign_25
     const GrB_Matrix M,
     const GrB_Matrix A,
     GB_Context Context
-) ;
-
-//------------------------------------------------------------------------------
-// GB_cblas_saxpy: Y += alpha*X where X and Y are dense float arrays
-//------------------------------------------------------------------------------
-
-void GB_cblas_saxpy         // Y += alpha*X
-(
-    const int64_t n,        // length of X and Y (note the int64_t type)
-    const float alpha,      // scale factor
-    const float *X,         // the array X, always stride 1
-    float *Y,               // the array Y, always stride 1
-    int nthreads            // maximum # of threads to use
-) ;
-
-//------------------------------------------------------------------------------
-// GB_cblas_daxpy: Y += alpha*X where X and Y are dense double arrays
-//------------------------------------------------------------------------------
-
-void GB_cblas_daxpy         // Y += alpha*X
-(
-    const int64_t n,        // length of X and Y (note the int64_t type)
-    const double alpha,     // scale factor
-    const double *X,        // the array X, always stride 1
-    double *Y,              // the array Y, always stride 1
-    int nthreads            // maximum # of threads to use
 ) ;
 
 #endif

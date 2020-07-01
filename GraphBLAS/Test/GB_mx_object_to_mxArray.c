@@ -40,8 +40,9 @@ mxArray *GB_mx_object_to_mxArray   // returns the MATLAB mxArray
     GB_WHERE ("GB_mx_object_to_mxArray") ;
 
     // get the inputs
-    mxArray *A, *Aclass, *Astruct, *X = NULL ;
+    mxArray *A, *Astruct, *X = NULL ;
     GrB_Matrix C = *handle ;
+    GrB_Type ctype = C->type ;
 
     // may have pending tuples
     ASSERT_MATRIX_OK (C, name, GB0) ;
@@ -50,15 +51,15 @@ mxArray *GB_mx_object_to_mxArray   // returns the MATLAB mxArray
     ASSERT (!C->i_shallow && !C->x_shallow && !C->p_shallow && !C->h_shallow) ;
 
     // make sure there are no pending computations
-    GB_wait (C, Context) ;
+    GB_Matrix_wait (C, Context) ;
 
-    // must be done after GB_wait:
+    // must be done after GB_Matrix_wait:
     int64_t cnz = GB_NNZ (C) ;
 
     ASSERT_MATRIX_OK (C, "TO MATLAB after assembling pending tuples", GB0) ;
 
     // convert C to non-hypersparse
-    GxB_Matrix_Option_set (C, GxB_HYPER, GxB_NEVER_HYPER) ;
+    GxB_Matrix_Option_set_(C, GxB_HYPER, GxB_NEVER_HYPER) ;
 
     ASSERT_MATRIX_OK (C, "TO MATLAB, non-hyper", GB0) ;
     ASSERT (!C->is_hyper) ;
@@ -68,39 +69,40 @@ mxArray *GB_mx_object_to_mxArray   // returns the MATLAB mxArray
     // GrB_Matrix CT ;
     if (!C->is_csc)
     {
-        GxB_Matrix_Option_set (C, GxB_FORMAT, GxB_BY_COL) ;
+        GxB_Matrix_Option_set_(C, GxB_FORMAT, GxB_BY_COL) ;
     }
 
     ASSERT_MATRIX_OK (C, "TO MATLAB, non-hyper CSC", GB0) ;
     ASSERT (!C->is_hyper) ;
     ASSERT (C->is_csc) ;
 
-    mxClassID C_classID = GB_mx_Type_to_classID (C->type) ;
-
     // MATLAB doesn't want NULL pointers in its empty matrices
     if (C->x == NULL)
     {
         ASSERT (C->nzmax == 0 && cnz == 0) ;
-        GB_CALLOC_MEMORY (C->x, 1, sizeof (double)) ;
+        C->x = GB_CALLOC (2 * sizeof (double), GB_void) ;
         C->x_shallow = false ;
     }
     if (C->i == NULL)
     {
         ASSERT (C->nzmax == 0 && cnz == 0) ;
-        GB_CALLOC_MEMORY (C->i, 1, sizeof (int64_t)) ;
+        C->i = GB_CALLOC (1, int64_t) ;
         C->i_shallow = false ;
     }
     if (C->p == NULL)
     {
         ASSERT (C->nzmax == 0 && cnz == 0) ;
-        GB_CALLOC_MEMORY (C->p, C->vdim + 1, sizeof (int64_t)) ;
+        C->p = GB_CALLOC (C->vdim + 1, int64_t) ;
         C->p_shallow = false ;
     }
 
     C->nzmax = GB_IMAX (C->nzmax, 1) ;
 
+    //--------------------------------------------------------------------------
     // create the MATLAB matrix A and link in the numerical values of C
-    if (C->type->code == GB_BOOL_code)
+    //--------------------------------------------------------------------------
+
+    if (C->type == GrB_BOOL)
     {
         // C is boolean, which is the same as a MATLAB logical sparse matrix
         A = mxCreateSparseLogicalMatrix (0, 0, 0) ;
@@ -112,7 +114,7 @@ mxArray *GB_mx_object_to_mxArray   // returns the MATLAB mxArray
         AS_IF_FREE (C->x) ;   // unlink C->x from C since it's now in MATLAB C
 
     }
-    else if (C->type->code == GB_FP64_code)
+    else if (C->type == GrB_FP64)
     {
         // C is double, which is the same as a MATLAB double sparse matrix
         A = mxCreateSparse (0, 0, 0, mxREAL) ;
@@ -124,20 +126,31 @@ mxArray *GB_mx_object_to_mxArray   // returns the MATLAB mxArray
         AS_IF_FREE (C->x) ;   // unlink C->x from C since it's now in MATLAB C
 
     }
-    else if (C->type == Complex)
+    else if (C->type == Complex || C->type == GxB_FC64)
     {
 
-        // user-defined Complex type
+        // user-defined Complex type, or GraphBLAS GxB_FC64
         A = mxCreateSparse (C->vlen, C->vdim, C->nzmax, mxCOMPLEX) ;
-        GB_mx_complex_split (cnz, C->x, A) ;
+        memcpy (mxGetComplexDoubles (A), C->x, cnz * sizeof (GxB_FC64_t)) ;
+
+    }
+    else if (C->type == GxB_FC32)
+    {
+
+        // C is single complex, typecast to sparse double complex
+        A = mxCreateSparse (C->vlen, C->vdim, C->nzmax, mxCOMPLEX) ;
+        GB_cast_array (mxGetComplexDoubles (A), GB_FC64_code,
+            C->x, C->type->code, C->type->size, cnz, 1) ;
 
     }
     else
     {
+
         // otherwise C is cast into a MATLAB double sparse matrix
         A = mxCreateSparse (0, 0, 0, mxREAL) ;
-        GB_MALLOC_MEMORY (double *Sx, cnz+1, sizeof (double)) ;
-        GB_cast_array (Sx, GB_FP64_code, C->x, C->type->code, cnz, Context) ;
+        double *Sx = GB_MALLOC (cnz+1, double) ;
+        GB_cast_array (Sx, GB_FP64_code,
+            C->x, C->type->code, C->type->size, cnz, 1) ;
         mexMakeMemoryPersistent (Sx) ;
         mxSetPr (A, Sx) ;
 
@@ -149,7 +162,7 @@ mxArray *GB_mx_object_to_mxArray   // returns the MATLAB mxArray
         {
             // If C is int64 or uint64, then typecasting can lose information,
             // so keep an uncasted copy of C->x as well.
-            X = mxCreateNumericMatrix (0, 0, C_classID, mxREAL) ;
+            X = GB_mx_create_full (0, 0, C->type) ;
             mxSetM (X, cnz) ;
             mxSetN (X, 1) ;
             mxSetData (X, C->x) ;
@@ -184,13 +197,13 @@ mxArray *GB_mx_object_to_mxArray   // returns the MATLAB mxArray
 
     if (create_struct)
     {
-        // create the class
-        Aclass = GB_mx_classID_to_string (C_classID) ;
+        // create the type
+        mxArray *atype = GB_mx_Type_to_mxstring (ctype) ;
         // create the output struct
         Astruct = mxCreateStructMatrix (1, 1,
            (X == NULL) ? 2 : 3, MatrixFields) ;
         mxSetFieldByNumber (Astruct, 0, 0, A) ;
-        mxSetFieldByNumber (Astruct, 0, 1, Aclass) ;
+        mxSetFieldByNumber (Astruct, 0, 1, atype) ;
         if (X != NULL)
         {
             mxSetFieldByNumber (Astruct, 0, 2, X) ;

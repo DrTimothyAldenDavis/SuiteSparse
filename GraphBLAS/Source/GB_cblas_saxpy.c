@@ -11,8 +11,9 @@
 
 // X and Y can have any size, and will often be larger than 2^31.
 
-#include "GB_dense.h"
-#include "GB_cblas.h"
+#include "GB_mkl.h"
+
+#if defined ( GB_HAS_CBLAS )
 
 void GB_cblas_saxpy         // Y += alpha*X
 (
@@ -29,14 +30,14 @@ void GB_cblas_saxpy         // Y += alpha*X
     //--------------------------------------------------------------------------
 
     // The GB_cblas_* gateway functions always exist in the GraphBLAS library,
-    // but if GB_HAS_CBLAS is false at compile time, they become stubs that do
-    // nothing at all, and they are never called.
+    // but if GB_HAS_CBLAS is not defined at compile time, they become stubs
+    // that do nothing at all, and they are never called.
 
     ASSERT (Y != NULL) ;
     ASSERT (X != NULL) ;
     ASSERT (nthreads >= 1) ;
 
-    #if GB_HAS_CBLAS
+    GBBURBLE ("(cblas_saxpy) ") ;
 
     //--------------------------------------------------------------------------
     // determine the number of threads to use
@@ -112,6 +113,7 @@ void GB_cblas_saxpy         // Y += alpha*X
     mkl_set_num_threads_local (save_nthreads) ;
     #endif
 
-    #endif
 }
+
+#endif
 

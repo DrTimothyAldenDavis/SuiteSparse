@@ -61,10 +61,10 @@ void mexFunction
     #undef FREE_DEEP_COPY
 
     #define GET_DEEP_COPY  GrB_Matrix_new (&C, GrB_FP64, A->vlen, A->vdim) ;
-    #define FREE_DEEP_COPY GrB_Matrix_free (&C) ;
+    #define FREE_DEEP_COPY GrB_Matrix_free_(&C) ;
 
     // C = nonzero (A)
-    METHOD (GxB_Matrix_select (C, NULL, NULL, GxB_NONZERO, A, NULL, NULL)) ;
+    METHOD (GxB_Matrix_select_(C, NULL, NULL, GxB_NONZERO, A, NULL, NULL)) ;
 
     // return C to MATLAB as a regular MATLAB sparse matrix
     pargout [0] = GB_mx_Matrix_to_mxArray (&C, "C nonzero", false) ;

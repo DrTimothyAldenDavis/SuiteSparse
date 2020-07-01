@@ -7,7 +7,7 @@ function dg(A)
 
 % Copyright 2007, Timothy A. Davis, http://www.suitesparse.com
 
-A = spones (A) ;
+A = GB_spones_mex (A) ;
 [p cp cm] = nesdis (A, 'row') ;
 
 % get the corresponding column ordering.  Order the columns

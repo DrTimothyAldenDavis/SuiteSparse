@@ -24,9 +24,6 @@ GrB_Info GrB_Matrix_nvals   // get the number of entries in a matrix
     GB_BURBLE_START ("GrB_Matrix_nvals") ;
     GB_RETURN_IF_NULL_OR_FAULTY (A) ;
 
-    // do not check nvals; pending updates must be applied first, in
-    // GB_nvals, per Table 2.4 in the spec
-
     //--------------------------------------------------------------------------
     // get the number of entries
     //--------------------------------------------------------------------------

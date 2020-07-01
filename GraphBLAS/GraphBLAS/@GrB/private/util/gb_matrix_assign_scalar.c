@@ -13,7 +13,7 @@
 // if do_subassign false: GrB_Matrix_assign_[TYPE]
 
 // The input scalar is held as A(0,0) in a GrB_Matrix A.  If A(0,0) is not
-// present, the value zero is used.
+// present in A, the value zero is used.
 
 void gb_matrix_assign_scalar
 (
@@ -175,21 +175,32 @@ void gb_matrix_assign_scalar
             OK (GrB_Matrix_assign_FP64 (C, M, op, x, I, ni, J, nj, desc)) ;
         }
     }
-    #ifdef GB_COMPLEX_TYPE
-    else if (atype == gb_complex_type)
+    else if (atype == GxB_FC32)
     {
-        double complex x = 0 ;
-        OK2 (GrB_Matrix_extractElement_UDT (&x, A, 0, 0)) ;
+        GxB_FC32_t x = GxB_CMPLXF (0,0) ;
+        OK2 (GxB_Matrix_extractElement_FC32 (&x, A, 0, 0)) ;
         if (do_subassign)
-        {
-            OK (GxB_Matrix_subassign_UDT (C, M, op, &x, I, ni, J, nj, desc)) ;
+        { 
+            OK (GxB_Matrix_subassign_FC32 (C, M, op, x, I, ni, J, nj, desc)) ;
         }
         else
-        {
-            OK (GrB_Matrix_assign_UDT (C, M, op, &x, I, ni, J, nj, desc)) ;
+        { 
+            OK (GxB_Matrix_assign_FC32 (C, M, op, x, I, ni, J, nj, desc)) ;
         }
     }
-    #endif
+    else if (atype == GxB_FC64)
+    {
+        GxB_FC64_t x = GxB_CMPLX (0,0) ;
+        OK2 (GxB_Matrix_extractElement_FC64 (&x, A, 0, 0)) ;
+        if (do_subassign)
+        { 
+            OK (GxB_Matrix_subassign_FC64 (C, M, op, x, I, ni, J, nj, desc)) ;
+        }
+        else
+        { 
+            OK (GxB_Matrix_assign_FC64 (C, M, op, x, I, ni, J, nj, desc)) ;
+        }
+    }
     else
     {
         ERROR ("unsupported type") ;

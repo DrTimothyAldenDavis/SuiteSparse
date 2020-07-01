@@ -24,8 +24,7 @@ GrB_Info GrB_BinaryOp_free          // free a user-created binary operator
             if (op->magic == GB_MAGIC)
             { 
                 op->magic = GB_FREED ;  // to help detect dangling pointers
-                GB_FREE_MEMORY (*binaryop, 1,
-                    sizeof (struct GB_BinaryOp_opaque)) ;
+                GB_FREE (*binaryop) ;
             }
             (*binaryop) = NULL ;
         }

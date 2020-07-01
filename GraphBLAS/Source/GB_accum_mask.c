@@ -173,7 +173,7 @@ GrB_Info GB_accum_mask          // C<M> = accum (C,T)
     if (GB_PENDING_OR_ZOMBIES (T))
     { 
         // if this fails, *Thandle must be freed
-        GB_OK (GB_wait (T, Context)) ;
+        GB_OK (GB_Matrix_wait (T, Context)) ;
     }
 
     //--------------------------------------------------------------------------
@@ -189,14 +189,14 @@ GrB_Info GB_accum_mask          // C<M> = accum (C,T)
     { 
         // transpose: no typecast, no op, in place of T, jumbled, but T
         // cannot have any zombies or pending tuples.
-        GB_OK (GB_transpose (Thandle, NULL, C->is_csc, NULL, NULL, Context)) ;
+        GB_OK (GB_transpose (Thandle, NULL, C->is_csc, NULL,
+            NULL, NULL, NULL, false, Context)) ;
         #if GB_BURBLE
         T_transposed = true ;
         #endif
         T = (*Thandle) ;
+        ASSERT_MATRIX_OK (T, "[T = transposed]", GB0) ;
     }
-
-    ASSERT_MATRIX_OK (T, "[T = transposed]", GB0) ;
 
     if (M != NULL && C->is_csc != M->is_csc)
     {
@@ -210,9 +210,10 @@ GrB_Info GB_accum_mask          // C<M> = accum (C,T)
             if (GB_PENDING_OR_ZOMBIES (M))
             {
                 // remove zombies and pending tuples from M
-                GB_OK (GB_wait (M, Context)) ;
+                GB_OK (GB_Matrix_wait (M, Context)) ;
             }
-            GB_OK (GB_transpose (&MT, GrB_BOOL, C->is_csc, M, NULL, Context)) ;
+            GB_OK (GB_transpose (&MT, GrB_BOOL, C->is_csc, M,
+                NULL, NULL, NULL, false, Context)) ;
             // use the transpose mask
             M = MT ;
             #if GB_BURBLE
@@ -311,7 +312,7 @@ GrB_Info GB_accum_mask          // C<M> = accum (C,T)
             // [ Z is just the header; the rest can be allocated by the
             // transplant if needed.  Z has the same hypersparsity as T.
 
-            GB_NEW (&Z, C->type, C->vlen, C->vdim, GB_Ap_null, C->is_csc,
+            info = GB_new (&Z, C->type, C->vlen, C->vdim, GB_Ap_null, C->is_csc,
                 GB_SAME_HYPER_AS (T->is_hyper), T->hyper_ratio, T->plen,
                 Context) ;
             GB_OK (info) ;

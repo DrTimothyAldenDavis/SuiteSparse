@@ -7,7 +7,7 @@ function ltest
 % Copyright 2013, Timothy A. Davis, http://www.suitesparse.com
 
 rng ('default')
-index = UFget ;
+index = ssget ;
 
 %{
 f = find (index.nrows == index.ncols & index.amd_lnz > 0) ;
@@ -23,7 +23,7 @@ nmat = length (f) ;
 
 for k = 1:nmat
     id = f (k) ;
-    Prob = UFget (id, index)
+    Prob = ssget (id, index)
     A = spones (Prob.A) ;
     n = size (A,1) ;
     A = A+A' ;

@@ -67,12 +67,12 @@ GrB_Info GB_matvec_build        // check inputs then build matrix or vector
     ASSERT_BINARYOP_OK (dup, "dup operator for assembling duplicates", GB0) ;
     ASSERT (scode <= GB_UDT_code) ;
 
-    if (nvals > GB_INDEX_MAX)
+    if (nvals > GxB_INDEX_MAX)
     { 
         // problem too large
         return (GB_ERROR (GrB_INVALID_VALUE, (GB_LOG,
-            "problem too large: nvals "GBu" exceeds "GBu,
-            nvals, GB_INDEX_MAX))) ;
+            "Problem too large: nvals " GBu " exceeds " GBu,
+            nvals, GxB_INDEX_MAX))) ;
     }
 
     // check types of dup
@@ -90,7 +90,7 @@ GrB_Info GB_matvec_build        // check inputs then build matrix or vector
     { 
         // the type of C and dup must be compatible
         return (GB_ERROR (GrB_DOMAIN_MISMATCH, (GB_LOG,
-        "operator dup [%s] has type [%s]\n"
+        "Operator dup [%s] has type [%s]\n"
         "cannot be typecast to entries in output of type [%s]",
         dup->name, dup->ztype->name, C->type->name))) ;
     }
@@ -105,7 +105,7 @@ GrB_Info GB_matvec_build        // check inputs then build matrix or vector
         // condition requires all three types to be identical: the same
         // user-defined type.  No casting will be done in this case.
         return (GB_ERROR (GrB_DOMAIN_MISMATCH, (GB_LOG,
-        "numerical values of tuples of type [%s]\n"
+        "Numerical values of tuples of type [%s]\n"
         "cannot be typecast as input to the dup operator\n"
         "z=%s(x,y), whose input types are [%s]",
         GB_code_string (scode), dup->name, dup->ztype->name))) ;
@@ -119,7 +119,7 @@ GrB_Info GB_matvec_build        // check inputs then build matrix or vector
         // this test is not required, except to conform to the spec.  Zombies
         // are excluded from this test.
         return (GB_ERROR (GrB_OUTPUT_NOT_EMPTY, (GB_LOG,
-            "output already has existing entries"))) ;
+            "Output already has existing entries"))) ;
     }
 
     //--------------------------------------------------------------------------

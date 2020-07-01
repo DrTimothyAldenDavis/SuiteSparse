@@ -11,34 +11,6 @@
 #define USERCOMPLEX_H
 
 //------------------------------------------------------------------------------
-// ANSI C11 is required for the 'double complex' type
-//------------------------------------------------------------------------------
-
-// See the following link for complex math support in Microsoft Visual Studio:
-// https://docs.microsoft.com/en-us/cpp/c-runtime-library/complex-math-support?view=vs-2019
-// The complex data type is not supported for this demo, when compiling with MS
-// Visual Studio.
-
-// The GraphBLAS objects defined here are still visible if 'double complex'
-// is not supported, but they are all NULL in that case.
-
-#if GxB_STDC_VERSION >= 201112L
-#include <complex.h>
-#endif
-
-// This macro is defined but cannot be used without ANSI C11:
-#ifndef CMPLX
-#define CMPLX(real,imag)                                \
-    (                                                   \
-        (double complex)((double)(real)) +              \
-        (double complex)((double)(imag) * _Complex_I)   \
-    )
-#endif
-
-// "I" is used in GraphBLAS to denote a list of row indices; remove it here
-#undef I
-
-//------------------------------------------------------------------------------
 // 10 binary functions, z=f(x,y), where CxC -> C
 //------------------------------------------------------------------------------
 
@@ -109,8 +81,87 @@ GB_PUBLIC GrB_UnaryOp Complex_complex_real, Complex_complex_imag ;
 GB_PUBLIC GrB_Type Complex ;
 GB_PUBLIC GrB_Monoid   Complex_plus_monoid, Complex_times_monoid ;
 GB_PUBLIC GrB_Semiring Complex_plus_times ;
-GB_PUBLIC GrB_Info Complex_init ( ) ;
+GB_PUBLIC GrB_Info Complex_init (bool builtin_complex) ;
 GB_PUBLIC GrB_Info Complex_finalize ( ) ;
+
+//------------------------------------------------------------------------------
+// C++ compatibility
+//------------------------------------------------------------------------------
+
+#if defined ( __cplusplus )
+
+    using namespace std ;
+
+    #define crealf(x)   real(x)
+    #define creal(x)    real(x)
+    #define cimagf(x)   imag(x)
+    #define cimag(x)    imag(x)
+    #define cpowf(x,y)  pow(x,y)
+    #define cpow(x,y)   pow(x,y)
+    #define powf(x,y)   pow(x,y)
+    #define cexpf(x)    exp(x)
+    #define cexp(x)     exp(x)
+    #define expf(x)     exp(x)
+
+    #define clogf(x)    log(x)
+    #define clog(x)     log(x)
+    #define logf(x)     log(x)
+
+    #define cabsf(x)    abs(x)
+    #define cabs(x)     abs(x)
+    #define absf(x)     abs(x)
+
+    #define csqrtf(x)   sqrt(x)
+    #define csqrt(x)    sqrt(x)
+    #define sqrtf(x)    sqrt(x)
+
+    #define conjf(x)    conj(x)
+
+    #define cargf(x)    arg(x)
+    #define carg(x)     arg(x)
+
+    #define csinf(x)    sin(x)
+    #define csin(x)     sin(x)
+    #define sinf(x)     sin(x)
+    #define ccosf(x)    cos(x)
+    #define ccos(x)     cos(x)
+    #define cosf(x)     cos(x)
+    #define ctanf(x)    tan(x)
+    #define ctan(x)     tan(x)
+    #define tanf(x)     tan(x)
+
+    #define casinf(x)   asin(x)
+    #define casin(x)    asin(x)
+    #define asinf(x)    asin(x)
+    #define cacosf(x)   acos(x)
+    #define cacos(x)    acos(x)
+    #define acosf(x)    acos(x)
+    #define catanf(x)   atan(x)
+    #define catan(x)    atan(x)
+    #define atanf(x)    atan(x)
+
+    #define csinhf(x)   sinh(x)
+    #define csinh(x)    sinh(x)
+    #define sinhf(x)    sinh(x)
+    #define ccoshf(x)   cosh(x)
+    #define ccosh(x)    cosh(x)
+    #define coshf(x)    cosh(x)
+    #define ctanhf(x)   tanh(x)
+    #define ctanh(x)    tanh(x)
+    #define tanhf(x)    tanh(x)
+
+    #define casinhf(x)  asinh(x)
+    #define casinh(x)   asinh(x)
+    #define asinhf(x)   asinh(x)
+    #define cacoshf(x)  acosh(x)
+    #define cacosh(x)   acosh(x)
+    #define acoshf(x)   acosh(x)
+    #define catanhf(x)  atanh(x)
+    #define catanh(x)   atanh(x)
+    #define atanhf(x)   atanh(x)
+
+#endif
+
 
 #endif
 

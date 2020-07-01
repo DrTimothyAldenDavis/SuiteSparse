@@ -6,7 +6,7 @@ function test28
 
 % Copyright 2007, Timothy A. Davis, http://www.suitesparse.com
 
-index = UFget ;
+index = ssget ;
 
 [ignore f] = sort (index.nnz) ;
 
@@ -20,7 +20,7 @@ for i = f
 
     try
 
-	Prob = UFget (i, index) ;
+	Prob = ssget (i, index) ;
 	A = spones (Prob.A) ;
 	[m n] = size (A) ;
 

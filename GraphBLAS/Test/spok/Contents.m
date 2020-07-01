@@ -22,4 +22,4 @@
 %   spok (A + 1i*A)         % complex sparse
 %   spok (A > .5)           % logical sparse
 
-% Copyright 2008-2011, Timothy A. Davis, http://www.suitesparse.com
+% Copyright 2008-2011, Timothy A. Davis, http://suitesparse.com

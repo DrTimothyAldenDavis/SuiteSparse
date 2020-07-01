@@ -51,7 +51,7 @@ GrB_Info GB_subassign_11
     const int64_t *GB_RESTRICT Mp = M->p ;
 //  const int64_t *GB_RESTRICT Mh = M->h ;
     const int64_t *GB_RESTRICT Mi = M->i ;
-    const GB_void *GB_RESTRICT Mx = (Mask_struct ? NULL : (M->x)) ;
+    const GB_void *GB_RESTRICT Mx = (GB_void *) (Mask_struct ? NULL : (M->x)) ;
     const size_t msize = M->type->size ;
     GB_GET_ACCUM_SCALAR ;
     GB_GET_S ;

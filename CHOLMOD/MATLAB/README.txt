@@ -10,9 +10,9 @@ the MATLAB command line, while in the CHOLMOD/MATLAB directory.
 cholmod_demo is a short demo program for CHOLMOD.  Type "cholmod_demo" in
 your MATLAB command window to test your newly compiling CHOLMOD functions.
 Test/cholmod_test.m runs the test suite for the MATLAB interface to CHOLMOD.
-It requires the "UFget" interface to the UF sparse matrix collection, but
-provides a more extensive test for CHOLMOD.  To obtain a copy of UFget, see
-http://www.suitesparse.com .
+It requires the "ssget" interface to the SuiteSparse matrix collection, but
+provides a more extensive test for CHOLMOD.  To obtain a copy of ssget, see
+http://sparse.tamu.edu.
 
 ----------------------------------------
 Using AMD, CCOLAMD, and COLAMD in MATLAB

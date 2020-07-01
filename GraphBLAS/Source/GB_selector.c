@@ -17,17 +17,17 @@
     GB_FREE_WORK ;                          \
 }
 
-#define GB_FREE_WORK                                    \
-{                                                       \
-    GB_ek_slice_free (&pstart_slice, &kfirst_slice, &klast_slice, ntasks) ; \
-    GB_FREE_MEMORY (Wfirst, ntasks, sizeof (int64_t)) ;             \
-    GB_FREE_MEMORY (Wlast, ntasks, sizeof (int64_t)) ;              \
-    GB_FREE_MEMORY (C_pstart_slice, ntasks, sizeof (int64_t)) ;     \
-    GB_FREE_MEMORY (Zp, aplen,   sizeof (int64_t)) ;                \
-    GB_FREE_MEMORY (Cp, aplen+1, sizeof (int64_t)) ;                \
-    GB_FREE_MEMORY (Ch, aplen,   sizeof (int64_t)) ;                \
-    GB_FREE_MEMORY (Ci, cnz,     sizeof (int64_t)) ;                \
-    GB_FREE_MEMORY (Cx, cnz,     asize) ;                           \
+#define GB_FREE_WORK                \
+{                                   \
+    GB_ek_slice_free (&pstart_slice, &kfirst_slice, &klast_slice) ; \
+    GB_FREE (Wfirst) ;              \
+    GB_FREE (Wlast) ;               \
+    GB_FREE (C_pstart_slice) ;      \
+    GB_FREE (Zp) ;                  \
+    GB_FREE (Cp) ;                  \
+    GB_FREE (Ch) ;                  \
+    GB_FREE (Ci) ;                  \
+    GB_FREE (Cx) ;                  \
 }
 
 //------------------------------------------------------------------------------
@@ -51,8 +51,6 @@ GrB_Info GB_selector
     // check inputs
     //--------------------------------------------------------------------------
 
-    // If the opcode is NONZOMBIE, then GB_wait has removed A from the queue.
-    // A will have zombies and pending tuples, but it is not in the queue.
     ASSERT_MATRIX_OK (A, "A input for GB_selector", GB_FLIP (GB0)) ;
     ASSERT_SELECTOP_OK_OR_NULL (op, "selectop for GB_selector", GB0) ;
     ASSERT_SCALAR_OK_OR_NULL (Thunk, "Thunk for GB_selector", GB0) ;
@@ -91,7 +89,7 @@ GrB_Info GB_selector
     int64_t *GB_RESTRICT Ah = A->h ;
     int64_t *GB_RESTRICT Ap = A->p ;
     int64_t *GB_RESTRICT Ai = A->i ;
-    GB_void *GB_RESTRICT Ax = A->x ;
+    GB_void *GB_RESTRICT Ax = (GB_void *) A->x ;
     int64_t asize = A->type->size ;
     int64_t aplen = A->plen ;
     int64_t avlen = A->vlen ;
@@ -117,16 +115,18 @@ GrB_Info GB_selector
     if (Thunk != NULL && GB_NNZ (Thunk) > 0)
     {
         // xthunk points to Thunk->x for user-defined select operators
-        xthunk = Thunk->x ;
+        xthunk = (GB_void *) Thunk->x ;
         GB_Type_code tcode = Thunk->type->code ;
         ithunk = 0 ;
         if (tcode <= GB_FP64_code && opcode < GB_USER_SELECT_opcode)
         { 
             // ithunk = (int64_t) Thunk (0)
-            GB_cast_array ((GB_void *GB_RESTRICT) &ithunk,
-                                   GB_INT64_code, Thunk->x, tcode, 1, NULL) ;
+            size_t tsize = Thunk->type->size ;
+            GB_cast_array ((GB_void *GB_RESTRICT) &ithunk, GB_INT64_code,
+                xthunk, tcode, tsize, 1, 1) ;
             // athunk = (atype) Thunk (0)
-            GB_cast_array (athunk, A->type->code, Thunk->x, tcode, 1, NULL) ;
+            GB_cast_array (athunk, A->type->code,
+                xthunk, tcode, tsize, 1, 1) ;
             // xthunk now points to the typecasted (atype) Thunk (0)
             xthunk = athunk ;
         }
@@ -148,11 +148,10 @@ GrB_Info GB_selector
     //--------------------------------------------------------------------------
 
     GrB_Matrix C = NULL ;
-    int64_t *GB_RESTRICT Cp = NULL ;
+    int64_t *GB_RESTRICT Cp = GB_CALLOC (aplen+1, int64_t) ;
     int64_t *GB_RESTRICT Ch = NULL ;
     int64_t *GB_RESTRICT Ci = NULL ;
     GB_void *GB_RESTRICT Cx = NULL ;
-    GB_CALLOC_MEMORY (Cp, aplen+1, sizeof (int64_t)) ;
     int64_t cnz = 0 ;
     if (Cp == NULL)
     { 
@@ -181,10 +180,9 @@ GrB_Info GB_selector
     // allocate workspace for each task
     //--------------------------------------------------------------------------
 
-    GB_CALLOC_MEMORY (Wfirst, ntasks, sizeof (int64_t)) ;
-    GB_CALLOC_MEMORY (Wlast, ntasks, sizeof (int64_t)) ;
-    GB_CALLOC_MEMORY (C_pstart_slice, ntasks, sizeof (int64_t)) ;
-
+    Wfirst         = GB_CALLOC (ntasks, int64_t) ;
+    Wlast          = GB_CALLOC (ntasks, int64_t) ;
+    C_pstart_slice = GB_CALLOC (ntasks, int64_t) ;
     if (Wfirst == NULL || Wlast  == NULL || C_pstart_slice == NULL)
     { 
         // out of memory
@@ -203,7 +201,7 @@ GrB_Info GB_selector
     if (opcode <= GB_RESIZE_opcode)
     {
         // allocate Zp
-        GB_MALLOC_MEMORY (Zp, aplen, sizeof (int64_t)) ;
+        Zp = GB_MALLOC (aplen, int64_t) ;
         if (Zp == NULL)
         { 
             // out of memory
@@ -281,17 +279,17 @@ GrB_Info GB_selector
     // allocate new space for the compacted Ci and Cx
     //--------------------------------------------------------------------------
 
-    GB_MALLOC_MEMORY (Ci, cnz, sizeof (int64_t)) ;
+    Ci = GB_MALLOC (cnz, int64_t) ;
 
     if (opcode == GB_EQ_ZERO_opcode)
     { 
         // since Cx [0..cnz-1] is all zero, phase2 only needs to construct
         // the pattern in Ci
-        GB_CALLOC_MEMORY (Cx, cnz, asize) ;
+        Cx = GB_CALLOC (cnz * asize, GB_void) ;
     }
     else
     { 
-        GB_MALLOC_MEMORY (Cx, cnz, asize) ;
+        Cx = GB_MALLOC (cnz * asize, GB_void) ;
     }
 
     if (Ci == NULL || Cx == NULL)
@@ -345,18 +343,18 @@ GrB_Info GB_selector
             Ap [cnvec] = Cp [anvec] ;
             A->nvec = cnvec ;
             ASSERT (A->nvec == C_nvec_nonempty) ;
-            GB_FREE_MEMORY (Cp, aplen+1, sizeof (int64_t)) ;
+            GB_FREE (Cp) ;
         }
         else
         { 
-            GB_FREE_MEMORY (Ap, aplen+1, sizeof (int64_t)) ;
+            GB_FREE (Ap) ;
             A->p = Cp ; Cp = NULL ;
         }
 
         ASSERT (Cp == NULL) ;
 
-        GB_FREE_MEMORY (Ai, A->nzmax, sizeof (int64_t)) ;
-        GB_FREE_MEMORY (Ax, A->nzmax, asize) ;
+        GB_FREE (Ai) ;
+        GB_FREE (Ax) ;
         A->i = Ci ; Ci = NULL ;
         A->x = Cx ; Cx = NULL ;
         A->nzmax = cnz ;
@@ -364,12 +362,12 @@ GrB_Info GB_selector
 
         if (A->nzmax == 0)
         { 
-            GB_FREE_MEMORY (A->i, A->nzmax, sizeof (int64_t)) ;
-            GB_FREE_MEMORY (A->x, A->nzmax, asize) ;
+            GB_FREE (A->i) ;
+            GB_FREE (A->x) ;
         }
 
         // the NONZOMBIES opcode may have removed all zombies, but A->nzombie
-        // is still nonzero.  It set to zero in GB_wait.
+        // is still nonzero.  It set to zero in GB_Matrix_wait.
         ASSERT_MATRIX_OK (A, "A output for GB_selector", GB_FLIP (GB0)) ;
 
     }
@@ -380,13 +378,13 @@ GrB_Info GB_selector
         // create C and transplant Cp, Ch, Ci, Cx into C
         //----------------------------------------------------------------------
 
-        GB_NEW (&C, A->type, avlen, avdim, GB_Ap_null, true,
+        info = GB_new (&C, A->type, avlen, avdim, GB_Ap_null, true,
             GB_SAME_HYPER_AS (A->is_hyper), A->hyper_ratio, aplen, Context) ;
         GB_OK (info) ;
 
         if (A->is_hyper)
         {
-            GB_MALLOC_MEMORY (Ch, aplen, sizeof (int64_t)) ;
+            Ch = GB_MALLOC (aplen, int64_t) ;
             if (Ch == NULL)
             { 
                 // out of memory
@@ -420,8 +418,8 @@ GrB_Info GB_selector
 
         if (C->nzmax == 0)
         { 
-            GB_FREE_MEMORY (C->i, C->nzmax, sizeof (int64_t)) ;
-            GB_FREE_MEMORY (C->x, C->nzmax, asize) ;
+            GB_FREE (C->i) ;
+            GB_FREE (C->x) ;
         }
 
         (*Chandle) = C ;

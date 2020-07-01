@@ -16,7 +16,7 @@
 GrB_Info GB_dense_subassign_21      // C(:,:) = x; C is a matrix and x a scalar
 (
     GrB_Matrix C,                   // input/output matrix
-    const GB_void *scalar,          // input scalar
+    const void *scalar,             // input scalar
     const GrB_Type atype,           // type of the input scalar
     GB_Context Context
 )
@@ -81,7 +81,7 @@ GrB_Info GB_dense_subassign_21      // C(:,:) = x; C is a matrix and x a scalar
         // do not malloc C->x if the scalar is zero; calloc it later.
         bool scalar_is_nonzero = GB_is_nonzero (cwork, csize) ;
         GB_PHIX_FREE (C) ;
-        GB_CREATE (&C, C->type, cvlen, cvdim, GB_Ap_malloc, C->is_csc,
+        info = GB_create (&C, C->type, cvlen, cvdim, GB_Ap_malloc, C->is_csc,
             GB_FORCE_NONHYPER, C->hyper_ratio, C->vdim, cnzmax,
             scalar_is_nonzero, Context) ;
         if (info != GrB_SUCCESS)
@@ -115,7 +115,7 @@ GrB_Info GB_dense_subassign_21      // C(:,:) = x; C is a matrix and x a scalar
         if (!scalar_is_nonzero)
         { 
             GBBURBLE ("calloc ") ;
-            GB_CALLOC_MEMORY (C->x, cnzmax, csize) ;
+            C->x = GB_CALLOC (cnzmax * csize, GB_void) ;
         }
 
         if (C->x == NULL)
@@ -140,7 +140,7 @@ GrB_Info GB_dense_subassign_21      // C(:,:) = x; C is a matrix and x a scalar
     // worker for built-in types
     #define GB_WORKER(ctype)                                                \
     {                                                                       \
-        ctype *GB_RESTRICT Cx = C->x ;                                      \
+        ctype *GB_RESTRICT Cx = (ctype *) C->x ;                            \
         ctype x = (*(ctype *) cwork) ;                                      \
         GB_PRAGMA (omp parallel for num_threads(nthreads) schedule(static)) \
         for (pC = 0 ; pC < cnzmax ; pC++)                                   \
@@ -167,11 +167,13 @@ GrB_Info GB_dense_subassign_21      // C(:,:) = x; C is a matrix and x a scalar
         case GB_UINT64_code : GB_WORKER (uint64_t) ;
         case GB_FP32_code   : GB_WORKER (float) ;
         case GB_FP64_code   : GB_WORKER (double) ;
+        case GB_FC32_code   : GB_WORKER (GxB_FC32_t) ;
+        case GB_FC64_code   : GB_WORKER (GxB_FC64_t) ;
         default:
             {
                 // worker for all user-defined types
                 GB_BURBLE_N (cnzmax, "generic ") ;
-                GB_void *GB_RESTRICT Cx = C->x ;
+                GB_void *GB_RESTRICT Cx = (GB_void *) C->x ;
                 #pragma omp parallel for num_threads(nthreads) schedule(static)
                 for (pC = 0 ; pC < cnzmax ; pC++)
                 { 

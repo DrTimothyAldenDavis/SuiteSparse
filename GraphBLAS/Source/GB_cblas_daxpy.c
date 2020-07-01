@@ -11,8 +11,9 @@
 
 // X and Y can have any size, and will often be larger than 2^31.
 
-#include "GB_dense.h"
-#include "GB_cblas.h"
+#include "GB_mkl.h"
+
+#if defined ( GB_HAS_CBLAS )
 
 void GB_cblas_daxpy         // Y += alpha*X
 (
@@ -32,7 +33,7 @@ void GB_cblas_daxpy         // Y += alpha*X
     ASSERT (X != NULL) ;
     ASSERT (nthreads >= 1) ;
 
-    #if GB_HAS_CBLAS
+    GBBURBLE ("(cblas_daxpy) ") ;
 
     //--------------------------------------------------------------------------
     // determine the number of threads to use
@@ -90,6 +91,6 @@ void GB_cblas_daxpy         // Y += alpha*X
     mkl_set_num_threads_local (save_nthreads) ;
     #endif
 
-    #endif
 }
 
+#endif

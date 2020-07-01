@@ -9,11 +9,11 @@
 
 // gb_get_mxargs collects all the input arguments for the 12 foundational
 // GraphBLAS operations.  The user-level view is described below.  For
-// the private mexFunctions, the descriptor always appears as the last
+// the private mexFunctions, the descriptor optionally appears as the last
 // argument.  The matrix arguments are either MATLAB sparse or full matrices,
 // GraphBLAS matrices.  To call the mexFunction, the opaque content of the
 // GraphBLAS matrices has been extracted, so they appear here as GraphBLAS
-// structs.
+// structs (a MATLAB struct G whose first field is always G.GraphBLAS).
 
 #include "gb_matlab.h"
 
@@ -23,7 +23,6 @@ void gb_get_mxargs
     int nargin,                 // # input arguments for mexFunction
     const mxArray *pargin [ ],  // input arguments for mexFunction
     const char *usage,          // usage to print, if too many args appear
-
     // output:
     const mxArray *Matrix [4],  // matrix arguments
     int *nmatrices,             // # of matrix arguments
@@ -39,10 +38,22 @@ void gb_get_mxargs
 {
 
     //--------------------------------------------------------------------------
-    // get the descriptor
+    // find the descriptor
     //--------------------------------------------------------------------------
 
-    (*desc) = gb_mxarray_to_descriptor (pargin [nargin-1], kind, fmt, base) ;
+    (*desc) = NULL ;
+    (*kind) = KIND_GRB ;
+    (*fmt) = GxB_NO_FORMAT ;
+    (*base) = BASE_DEFAULT ;
+    if (nargin > 0)
+    { 
+        (*desc) = gb_mxarray_to_descriptor (pargin [nargin-1], kind, fmt, base);
+    }
+    if ((*desc) != NULL)
+    { 
+        // descriptor is present, remove it from further consideration
+        nargin-- ;
+    }
 
     //--------------------------------------------------------------------------
     // find the remaining arguments
@@ -52,7 +63,7 @@ void gb_get_mxargs
     (*nstrings) = 0 ;
     (*ncells) = 0 ;
 
-    for (int k = 0 ; k < (nargin-1) ; k++)
+    for (int k = 0 ; k < nargin ; k++)
     {
         if (mxIsCell (pargin [k]))
         {

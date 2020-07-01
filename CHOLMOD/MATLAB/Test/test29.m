@@ -75,9 +75,9 @@ end
 
 % test with the UF sparse matrix collection
 r = zeros (0,2) ;
-index = UFget ;
+index = ssget ;
 for i = [168 27 2137 56 231 1621 -1621] ;
-    Prob = UFget (abs (i),index)
+    Prob = ssget (abs (i),index)
     A = Prob.A ;
     if (i < 0)
         % UF collection does not contain any matrices for which spsym(A) = 4.

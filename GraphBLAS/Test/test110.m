@@ -20,7 +20,7 @@ C1 = GB_mex_apply  (C, M, 'plus', 'identity', A) ;
 C2 = GB_spec_apply (C, M, 'plus', 'identity', A, [ ]) ;
 GB_spec_compare (C1,C2) ;
 
-d.mask = 'scmp' ;
+d.mask = 'complement' ;
 
 C1 = GB_mex_apply  (C, M, 'plus', 'identity', A, d) ;
 C2 = GB_spec_apply (C, M, 'plus', 'identity', A, d) ;

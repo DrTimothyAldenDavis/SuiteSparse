@@ -17,9 +17,7 @@
 
 // phase1: GB_sel_phase1__eq_zero_any
 // phase2: GB_sel_phase2__eq_zero_any
-
-// A type:   GB_void
-// selectop: (!GB_is_nonzero (Ax +((p)*asize), asize))
+// A type: GB_void
 
 // kind
 #define GB_ENTRY_SELECTOR
@@ -27,44 +25,17 @@
 #define GB_ATYPE \
     GB_void
 
-// test Ax [p]
-#define GB_SELECT(p)                                    \
-    (!GB_is_nonzero (Ax +((p)*asize), asize))
+// test value of Ax [p]
+#define GB_TEST_VALUE_OF_ENTRY(p)                       \
+    !GB_is_nonzero (Ax +((p)*asize), asize)
 
 // get the vector index (user select operators only)
 #define GB_GET_J                                        \
     ;
 
-// W [k] = s, no typecast
-#define GB_COPY_SCALAR_TO_ARRAY(W,k,s)                  \
-    W [k] = s
-
-// W [k] = S [i], no typecast
-#define GB_COPY_ARRAY_TO_ARRAY(W,k,S,i)                 \
-    W [k] = S [i]
-
-// W [k] += S [i], no typecast
-#define GB_ADD_ARRAY_TO_ARRAY(W,k,S,i)                  \
-    W [k] += S [i]
-
-// no terminal value
-#define GB_BREAK_IF_TERMINAL(t) ;
-
-// ztype s = (ztype) Ax [p], with typecast
-#define GB_CAST_ARRAY_TO_SCALAR(s,Ax,p)                 \
-    s = GB_SELECT (p)
-
-// s += (ztype) Ax [p], with typecast
-#define GB_ADD_CAST_ARRAY_TO_SCALAR(s,Ax,p)             \
-    s += GB_SELECT (p)
-
 // Cx [pC] = Ax [pA], no typecast
 #define GB_SELECT_ENTRY(Cx,pC,Ax,pA)                    \
-    /* Cx already zero */
-
-// declare scalar for GB_reduce_each_vector
-#define GB_SCALAR(s)                                    \
-    int64_t s
+    /* assignment skipped, Cx already all zero */
 
 //------------------------------------------------------------------------------
 // GB_sel_phase1__eq_zero_any

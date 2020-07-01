@@ -35,12 +35,12 @@ void GB_ph_free                 // free A->p and A->h of a matrix
     //--------------------------------------------------------------------------
 
     // free A->p unless it is shallow
-    if (!A->p_shallow) GB_FREE_MEMORY (A->p, A->plen+1, sizeof (int64_t)) ;
+    if (!A->p_shallow) GB_FREE (A->p) ;
     A->p = NULL ;
     A->p_shallow = false ;
 
     // free A->h unless it is shallow
-    if (!A->h_shallow) GB_FREE_MEMORY (A->h, A->plen,   sizeof (int64_t)) ;
+    if (!A->h_shallow) GB_FREE (A->h) ;
     A->h = NULL ;
     A->h_shallow = false ;
 

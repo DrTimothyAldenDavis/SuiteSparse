@@ -26,12 +26,8 @@ GrB_Type gb_type_to_mxstring    // return the MATLAB string from a GrB_Type
     else if (type == GrB_UINT64) return (mxCreateString ("uint64")) ;
     else if (type == GrB_FP32)   return (mxCreateString ("single")) ;
     else if (type == GrB_FP64)   return (mxCreateString ("double")) ;
-    #ifdef GB_COMPLEX_TYPE
-    else if (type == gb_complex_type)
-    {
-        return (mxCreateString ("complex")) ;
-    }
-    #endif
+    else if (type == GxB_FC32)   return (mxCreateString ("single complex")) ;
+    else if (type == GxB_FC64)   return (mxCreateString ("double complex")) ;
     else
     {
         ERROR ("unsupported type") ;

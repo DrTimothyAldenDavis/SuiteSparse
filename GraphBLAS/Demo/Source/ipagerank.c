@@ -178,8 +178,10 @@ GrB_Info ipagerank          // GrB_SUCCESS or error condition
     OK (irowscale (&C, A)) ;    // C = scale A by out-degree
 
     // create unary operators
-    OK (GrB_UnaryOp_new (&op_scale, iscale, GrB_UINT64, GrB_UINT64)) ;
-    OK (GrB_UnaryOp_new (&op_div,   idiv,   GrB_UINT64, GrB_UINT64)) ;
+    OK (GrB_UnaryOp_new (&op_scale,
+        (GxB_unary_function) iscale, GrB_UINT64, GrB_UINT64)) ;
+    OK (GrB_UnaryOp_new (&op_div,
+        (GxB_unary_function) idiv,   GrB_UINT64, GrB_UINT64)) ;
 
     //--------------------------------------------------------------------------
     // iterate to compute the pagerank of each node
@@ -194,7 +196,7 @@ GrB_Info ipagerank          // GrB_SUCCESS or error condition
 
         // s = ia * sum (r) ;
         uint64_t s ;
-        OK (GrB_Vector_reduce_UINT64 (&s, NULL, GxB_PLUS_UINT64_MONOID,
+        OK (GrB_Vector_reduce_UINT64 (&s, NULL, GrB_PLUS_MONOID_UINT64,
             r, NULL)) ;
         s = s * ia ;
 
@@ -222,8 +224,8 @@ GrB_Info ipagerank          // GrB_SUCCESS or error condition
     // [r,irank] = sort (r, 'descend') ;
 
     // [I,X] = find (r) ;
-    X = malloc (n * sizeof (uint64_t)) ;
-    I = malloc (n * sizeof (GrB_Index)) ;
+    X = (uint64_t *) malloc (n * sizeof (uint64_t)) ;
+    I = (GrB_Index *) malloc (n * sizeof (GrB_Index)) ;
     CHECK (I != NULL && X != NULL, GrB_OUT_OF_MEMORY) ;
     GrB_Index nvals = n ;
     OK (GrB_Vector_extractTuples_UINT64 (I, X, &nvals, r)) ;
@@ -235,7 +237,7 @@ GrB_Info ipagerank          // GrB_SUCCESS or error condition
     GrB_Vector_free (&r) ;
 
     // P = struct (X,I)
-    P = malloc (n * sizeof (iPageRank)) ;
+    P = (iPageRank *) malloc (n * sizeof (iPageRank)) ;
     CHECK (P != NULL, GrB_OUT_OF_MEMORY) ;
     for (int64_t k = 0 ; k < nvals ; k++)
     {

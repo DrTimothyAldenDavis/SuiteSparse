@@ -57,7 +57,7 @@ GrB_Info GB_kroner                  // C = kron (A,B)
     const int64_t *GB_RESTRICT Ap = A->p ;
     const int64_t *GB_RESTRICT Ah = A->h ;
     const int64_t *GB_RESTRICT Ai = A->i ;
-    const GB_void *GB_RESTRICT Ax = A->x ;
+    const GB_void *GB_RESTRICT Ax = (GB_void *) A->x ;
     const int64_t asize = A->type->size ;
     const int64_t avlen = A->vlen ;
     const int64_t avdim = A->vdim ;
@@ -67,7 +67,7 @@ GrB_Info GB_kroner                  // C = kron (A,B)
     const int64_t *GB_RESTRICT Bp = B->p ;
     const int64_t *GB_RESTRICT Bh = B->h ;
     const int64_t *GB_RESTRICT Bi = B->i ;
-    const GB_void *GB_RESTRICT Bx = B->x ;
+    const GB_void *GB_RESTRICT Bx = (GB_void *) B->x ;
     const int64_t bsize = B->type->size ;
     const int64_t bvlen = B->vlen ;
     const int64_t bvdim = B->vdim ;
@@ -102,9 +102,9 @@ GrB_Info GB_kroner                  // C = kron (A,B)
     bool C_is_hyper = (cvdim > 1) && (A->is_hyper || B->is_hyper) ;
 
     GrB_Matrix C = NULL ;           // allocate a new header for C
-    GB_CREATE (&C, op->ztype, (int64_t) cvlen, (int64_t) cvdim, GB_Ap_malloc,
-        C_is_csc, GB_SAME_HYPER_AS (C_is_hyper), B->hyper_ratio, cnvec,
-        cnzmax, true, Context) ;
+    info = GB_create (&C, op->ztype, (int64_t) cvlen, (int64_t) cvdim,
+        GB_Ap_malloc, C_is_csc, GB_SAME_HYPER_AS (C_is_hyper), B->hyper_ratio,
+        cnvec, cnzmax, true, Context) ;
     if (info != GrB_SUCCESS)
     { 
         // out of memory
@@ -118,7 +118,7 @@ GrB_Info GB_kroner                  // C = kron (A,B)
     int64_t *GB_RESTRICT Cp = C->p ;
     int64_t *GB_RESTRICT Ch = C->h ;
     int64_t *GB_RESTRICT Ci = C->i ;
-    GB_void *GB_RESTRICT Cx = C->x ;
+    GB_void *GB_RESTRICT Cx = (GB_void *) C->x ;
     const int64_t csize = C->type->size ;
 
     GxB_binary_function fmult = op->function ;
@@ -219,33 +219,6 @@ GrB_Info GB_kroner                  // C = kron (A,B)
         GB_MATRIX_FREE (&C) ;
         return (info) ;
     }
-
-#if 0
-    // see GB_hypermatrix_prune
-    if (C_is_hyper && C->nvec_nonempty < cnvec)
-    {
-        // create new Cp_new and Ch_new arrays, with no empty vectors
-        int64_t *GB_RESTRICT Cp_new = NULL ;
-        int64_t *GB_RESTRICT Ch_new = NULL ;
-        int64_t nvec_new ;
-        info = GB_hyper_prune (&Cp_new, &Ch_new, &nvec_new, C->p, C->h, cnvec,
-            Context) ;
-        if (info != GrB_SUCCESS)
-        { 
-            // out of memory
-            GB_MATRIX_FREE (&C) ;
-            return (info) ;
-        }
-        // transplant the new hyperlist into C
-        GB_FREE_MEMORY (C->p, cnvec+1, sizeof (int64_t)) ;
-        GB_FREE_MEMORY (C->h, cnvec,   sizeof (int64_t)) ;
-        C->p = Cp_new ;
-        C->h = Ch_new ;
-        C->nvec = nvec_new ;
-        C->plen = nvec_new ;
-        ASSERT (C->nvec == C->nvec_nonempty) ;
-    }
-#endif
 
     ASSERT (C->nvec_nonempty == GB_nvec_nonempty (C, Context)) ;
 

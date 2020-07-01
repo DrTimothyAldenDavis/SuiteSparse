@@ -16,7 +16,7 @@
     GB_MATRIX_FREE (&A) ;           \
     GB_MATRIX_FREE (&B) ;           \
     GB_MATRIX_FREE (&C) ;           \
-    GrB_Descriptor_free (&desc) ;   \
+    GrB_Descriptor_free_(&desc) ;   \
     GB_MATRIX_FREE (&Mask) ;        \
     GB_mx_put_global (true, 0) ;    \
 }
@@ -57,8 +57,6 @@ void mexFunction
         mexErrMsgTxt ("C failed") ;
     }
 
-    mxClassID cclass = GB_mx_Type_to_classID (C->type) ;
-
     // get Mask (shallow copy)
     Mask = GB_mx_mxArray_to_Matrix (pargin [1], "Mask", false, false) ;
     if (Mask == NULL && !mxIsEmpty (pargin [1]))
@@ -84,17 +82,21 @@ void mexFunction
     }
 
     // get mult operator
+    bool user_complex = (Complex != GxB_FC64)
+        && (A->type == Complex || B->type == Complex) ;
     if (!GB_mx_mxArray_to_BinaryOp (&mult, pargin [3], "mult",
-        GB_NOP_opcode, cclass, A->type == Complex, B->type == Complex))
+        C->type, user_complex) || mult == NULL)
     {
         FREE_ALL ;
         mexErrMsgTxt ("mult failed") ;
     }
 
-    // get accum; default: NOP, default class is class(C)
+    // get accum, if present
+    user_complex = (Complex != GxB_FC64)
+        && (C->type == Complex || mult->ztype == Complex) ;
     GrB_BinaryOp accum ;
     if (!GB_mx_mxArray_to_BinaryOp (&accum, pargin [2], "accum",
-        GB_NOP_opcode, cclass, C->type == Complex, mult->ztype == Complex))
+        C->type, user_complex))
     {
         FREE_ALL ;
         mexErrMsgTxt ("accum failed") ;
@@ -107,8 +109,29 @@ void mexFunction
         mexErrMsgTxt ("desc failed") ;
     }
 
-    // C<Mask> = accum(C,kron(A,B))
-    METHOD (GxB_kron (C, Mask, accum, mult, A, B, desc)) ;
+    // test all 3 variants: monoid, semiring, and binary op
+    if (mult == GrB_PLUS_FP64)
+    {
+        // C<Mask> = accum(C,kron(A,B)), monoid variant
+        METHOD (GrB_Matrix_kronecker_Monoid_ (C, Mask, accum, GrB_PLUS_MONOID_FP64,
+            A, B, desc)) ;
+    }
+    else if (mult == GrB_TIMES_FP64)
+    {
+        // C<Mask> = accum(C,kron(A,B)), semiring variant
+        METHOD (GrB_Matrix_kronecker_Semiring_ (C, Mask, accum, GrB_PLUS_TIMES_SEMIRING_FP64,
+            A, B, desc)) ;
+    }
+    else if (mult == GrB_TIMES_FP32)
+    {
+        // C<Mask> = accum(C,kron(A,B)), binary op variant (old name)
+        METHOD (GxB_kron (C, Mask, accum, mult, A, B, desc)) ;
+    }
+    else
+    {
+        // C<Mask> = accum(C,kron(A,B)), binary op variant (new name)
+        METHOD (GrB_Matrix_kronecker_BinaryOp_ (C, Mask, accum, mult, A, B, desc)) ;
+    }
 
     // return C to MATLAB as a struct and free the GraphBLAS C
     pargout [0] = GB_mx_Matrix_to_mxArray (&C, "C output", true) ;

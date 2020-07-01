@@ -29,7 +29,7 @@
     GB_MATRIX_FREE (&A) ;               \
     GB_MATRIX_FREE (&Mask) ;            \
     GB_MATRIX_FREE (&C) ;               \
-    GrB_Descriptor_free (&desc) ;       \
+    GrB_Descriptor_free_(&desc) ;       \
     GB_mx_put_global (true, 0) ;        \
 }
 
@@ -60,7 +60,6 @@ GrB_Info many_assign
     int faccum,
     int fMask,
     int fdesc,
-    mxClassID cclass,
     int fkind,
     const mxArray *pargin [ ]
 ) ;
@@ -131,7 +130,7 @@ GrB_Info assign ( )
         // test GrB_Col_assign
         ASSERT (GB_VECTOR_OK (A)) ;
         ASSERT (Mask == NULL || GB_VECTOR_OK (Mask)) ;
-        OK (GrB_Col_assign (C, (GrB_Vector) Mask, accum, (GrB_Vector) A,
+        OK (GrB_Col_assign_(C, (GrB_Vector) Mask, accum, (GrB_Vector) A,
             I, ni, J [0], desc)) ;
     }
     else if (kind == 2)
@@ -142,7 +141,7 @@ GrB_Info assign ( )
         ASSERT_VECTOR_OK_OR_NULL ((GrB_Vector) Mask, "row mask", GB0) ;
         ASSERT_VECTOR_OK ((GrB_Vector) A, "row u", GB0) ;
 
-        OK (GrB_Row_assign (C, (GrB_Vector) Mask, accum, (GrB_Vector) A,
+        OK (GrB_Row_assign_(C, (GrB_Vector) Mask, accum, (GrB_Vector) A,
             I [0], J, nj, desc)) ;
     }
     else if (GB_NROWS (A) == 1 && GB_NCOLS (A) == 1 && GB_NNZ (A) == 1)
@@ -151,100 +150,108 @@ GrB_Info assign ( )
         GB_void *Ax = A->x ;
 
         if (ni == 1 && nj == 1 && Mask == NULL && I != GrB_ALL && J != GrB_ALL
-            && GB_op_is_second (accum, C->type) && A->type->code <= GB_FP64_code
+            && GB_op_is_second (accum, C->type) && A->type->code <= GB_FC64_code
             && desc == NULL)
         {
             // test GrB_Matrix_setElement
-            #define ASSIGN(suffix, type)                                    \
-            {                                                               \
-                type x = ((type *) Ax) [0] ;                                \
-                OK (GrB_Matrix_setElement ## suffix (C, x, I [0], J [0])) ; \
+            #define ASSIGN(prefix,suffix, type)                         \
+            {                                                           \
+                type x = ((type *) Ax) [0] ;                            \
+                OK (prefix ## Matrix_setElement ## suffix               \
+                    (C, x, I [0], J [0])) ;                             \
             } break ;
 
             switch (A->type->code)
             {
-                case GB_BOOL_code   : ASSIGN (_BOOL,   bool) ;
-                case GB_INT8_code   : ASSIGN (_INT8,   int8_t) ;
-                case GB_UINT8_code  : ASSIGN (_UINT8,  uint8_t) ;
-                case GB_INT16_code  : ASSIGN (_INT16,  int16_t) ;
-                case GB_UINT16_code : ASSIGN (_UINT16, uint16_t) ;
-                case GB_INT32_code  : ASSIGN (_INT32,  int32_t) ;
-                case GB_UINT32_code : ASSIGN (_UINT32, uint32_t) ;
-                case GB_INT64_code  : ASSIGN (_INT64,  int64_t) ;
-                case GB_UINT64_code : ASSIGN (_UINT64, uint64_t) ;
-                case GB_FP32_code   : ASSIGN (_FP32,   float) ;
-                case GB_FP64_code   : ASSIGN (_FP64,   double) ;
+                case GB_BOOL_code   : ASSIGN (GrB_, _BOOL,   bool) ;
+                case GB_INT8_code   : ASSIGN (GrB_, _INT8,   int8_t) ;
+                case GB_INT16_code  : ASSIGN (GrB_, _INT16,  int16_t) ;
+                case GB_INT32_code  : ASSIGN (GrB_, _INT32,  int32_t) ;
+                case GB_INT64_code  : ASSIGN (GrB_, _INT64,  int64_t) ;
+                case GB_UINT8_code  : ASSIGN (GrB_, _UINT8,  uint8_t) ;
+                case GB_UINT16_code : ASSIGN (GrB_, _UINT16, uint16_t) ;
+                case GB_UINT32_code : ASSIGN (GrB_, _UINT32, uint32_t) ;
+                case GB_UINT64_code : ASSIGN (GrB_, _UINT64, uint64_t) ;
+                case GB_FP32_code   : ASSIGN (GrB_, _FP32,   float) ;
+                case GB_FP64_code   : ASSIGN (GrB_, _FP64,   double) ;
+                case GB_FC32_code   : ASSIGN (GxB_, _FC32,   GxB_FC32_t) ;
+                case GB_FC64_code   : ASSIGN (GxB_, _FC64,   GxB_FC64_t) ;
                 case GB_UDT_code    :
                 default:
                     FREE_ALL ;
-                    mexErrMsgTxt ("unsupported class") ;
+                    mexErrMsgTxt ("GB_mex_assign: unknown type, setEl") ;
             }
-            #undef ASSIGN
 
             ASSERT_MATRIX_OK (C, "C after setElement", GB0) ;
 
         }
+
         if (GB_VECTOR_OK (C) && (Mask == NULL || GB_VECTOR_OK (Mask)))
         {
 
             // test GrB_Vector_assign_scalar functions
-            #define ASSIGN(suffix,type)                             \
-            {                                                       \
-                type x = ((type *) Ax) [0] ;                        \
-                OK (GrB_Vector_assign ## suffix ((GrB_Vector) C,    \
-                    (GrB_Vector) Mask, accum, x, I, ni, desc)) ;    \
+            #undef  ASSIGN
+            #define ASSIGN(prefix,suffix,type)                          \
+            {                                                           \
+                type x = ((type *) Ax) [0] ;                            \
+                OK (prefix ## Vector_assign ## suffix ((GrB_Vector) C,  \
+                    (GrB_Vector) Mask, accum, x, I, ni, desc)) ;        \
             } break ;
 
             switch (A->type->code)
             {
-                case GB_BOOL_code   : ASSIGN (_BOOL,   bool) ;
-                case GB_INT8_code   : ASSIGN (_INT8,   int8_t) ;
-                case GB_UINT8_code  : ASSIGN (_UINT8,  uint8_t) ;
-                case GB_INT16_code  : ASSIGN (_INT16,  int16_t) ;
-                case GB_UINT16_code : ASSIGN (_UINT16, uint16_t) ;
-                case GB_INT32_code  : ASSIGN (_INT32,  int32_t) ;
-                case GB_UINT32_code : ASSIGN (_UINT32, uint32_t) ;
-                case GB_INT64_code  : ASSIGN (_INT64,  int64_t) ;
-                case GB_UINT64_code : ASSIGN (_UINT64, uint64_t) ;
-                case GB_FP32_code   : ASSIGN (_FP32,   float) ;
-                case GB_FP64_code   : ASSIGN (_FP64,   double) ;
+                case GB_BOOL_code   : ASSIGN (GrB_, _BOOL,   bool) ;
+                case GB_INT8_code   : ASSIGN (GrB_, _INT8,   int8_t) ;
+                case GB_INT16_code  : ASSIGN (GrB_, _INT16,  int16_t) ;
+                case GB_INT32_code  : ASSIGN (GrB_, _INT32,  int32_t) ;
+                case GB_INT64_code  : ASSIGN (GrB_, _INT64,  int64_t) ;
+                case GB_UINT8_code  : ASSIGN (GrB_, _UINT8,  uint8_t) ;
+                case GB_UINT16_code : ASSIGN (GrB_, _UINT16, uint16_t) ;
+                case GB_UINT32_code : ASSIGN (GrB_, _UINT32, uint32_t) ;
+                case GB_UINT64_code : ASSIGN (GrB_, _UINT64, uint64_t) ;
+                case GB_FP32_code   : ASSIGN (GrB_, _FP32,   float) ;
+                case GB_FP64_code   : ASSIGN (GrB_, _FP64,   double) ;
+                case GB_FC32_code   : ASSIGN (GxB_, _FC32,   GxB_FC32_t) ;
+                case GB_FC64_code   : ASSIGN (GxB_, _FC64,   GxB_FC64_t) ;
                 case GB_UDT_code    :
-                {
-                    OK (GrB_Vector_assign_UDT ((GrB_Vector) C,
-                        (GrB_Vector) Mask, accum, Ax, I, ni, desc)) ;
-                }
-                break ;
+                    {
+                        OK (GrB_Vector_assign_UDT ((GrB_Vector) C,
+                            (GrB_Vector) Mask, accum, Ax, I, ni, desc)) ;
+                    }
+                    break ;
                 default:
                     FREE_ALL ;
-                    mexErrMsgTxt ("unsupported class") ;
+                    mexErrMsgTxt ("GB_mex_assign: unknown type") ;
             }
-            #undef ASSIGN
 
         }
         else
         {
 
             // test Matrix_assign_scalar functions
-            #define ASSIGN(suffix,type)                         \
+            #undef  ASSIGN
+            #define ASSIGN(prefix,suffix,type)                  \
             {                                                   \
                 type x = ((type *) Ax) [0] ;                    \
-                OK (GrB_Matrix_assign ## suffix                 \
+                OK (prefix ## Matrix_assign ## suffix           \
                     (C, Mask, accum, x, I, ni, J, nj,desc)) ;   \
             } break ;
 
             switch (A->type->code)
             {
-                case GB_BOOL_code   : ASSIGN (_BOOL,   bool) ;
-                case GB_INT8_code   : ASSIGN (_INT8,   int8_t) ;
-                case GB_UINT8_code  : ASSIGN (_UINT8,  uint8_t) ;
-                case GB_INT16_code  : ASSIGN (_INT16,  int16_t) ;
-                case GB_UINT16_code : ASSIGN (_UINT16, uint16_t) ;
-                case GB_INT32_code  : ASSIGN (_INT32,  int32_t) ;
-                case GB_UINT32_code : ASSIGN (_UINT32, uint32_t) ;
-                case GB_INT64_code  : ASSIGN (_INT64,  int64_t) ;
-                case GB_UINT64_code : ASSIGN (_UINT64, uint64_t) ;
-                case GB_FP32_code   : ASSIGN (_FP32,   float) ;
-                case GB_FP64_code   : ASSIGN (_FP64,   double) ;
+                case GB_BOOL_code   : ASSIGN (GrB_, _BOOL,   bool) ;
+                case GB_INT8_code   : ASSIGN (GrB_, _INT8,   int8_t) ;
+                case GB_INT16_code  : ASSIGN (GrB_, _INT16,  int16_t) ;
+                case GB_INT32_code  : ASSIGN (GrB_, _INT32,  int32_t) ;
+                case GB_INT64_code  : ASSIGN (GrB_, _INT64,  int64_t) ;
+                case GB_UINT8_code  : ASSIGN (GrB_, _UINT8,  uint8_t) ;
+                case GB_UINT16_code : ASSIGN (GrB_, _UINT16, uint16_t) ;
+                case GB_UINT32_code : ASSIGN (GrB_, _UINT32, uint32_t) ;
+                case GB_UINT64_code : ASSIGN (GrB_, _UINT64, uint64_t) ;
+                case GB_FP32_code   : ASSIGN (GrB_, _FP32,   float) ;
+                case GB_FP64_code   : ASSIGN (GrB_, _FP64,   double) ;
+                case GB_FC32_code   : ASSIGN (GxB_, _FC32,   GxB_FC32_t) ;
+                case GB_FC64_code   : ASSIGN (GxB_, _FC64,   GxB_FC64_t) ;
                 case GB_UDT_code    :
                 {
                     OK (GrB_Matrix_assign_UDT
@@ -254,28 +261,25 @@ GrB_Info assign ( )
 
                 default:
                     FREE_ALL ;
-                    mexErrMsgTxt ("unsupported class") ;
+                    mexErrMsgTxt ("unknown type: mtx assign") ;
             }
-            #undef ASSIGN
         }
     }
     else if (GB_VECTOR_OK (C) && GB_VECTOR_OK (A) &&
         (Mask == NULL || GB_VECTOR_OK (Mask)) && !at)
     {
         // test GrB_Vector_assign
-        OK (GrB_Vector_assign ((GrB_Vector) C, (GrB_Vector) Mask, accum,
+        OK (GrB_Vector_assign_((GrB_Vector) C, (GrB_Vector) Mask, accum,
             (GrB_Vector) A, I, ni, desc)) ;
     }
     else
     {
         // standard submatrix assignment
-        OK (GrB_Matrix_assign (C, Mask, accum, A, I, ni, J, nj, desc)) ;
+        OK (GrB_Matrix_assign_(C, Mask, accum, A, I, ni, J, nj, desc)) ;
     }
 
     ASSERT_MATRIX_OK (C, "Final C before wait", GB0) ;
-    // double tt [2], t ; simple_tic (tt) ;
-    OK (GrB_wait ( )) ;
-    // t = simple_toc (tt) ; printf ("wait %g sec\n", t) ;
+    OK (GrB_Matrix_wait_(&C)) ;
     return (info) ;
 }
 
@@ -294,7 +298,6 @@ GrB_Info many_assign
     int faccum,
     int fMask,
     int fdesc,
-    mxClassID cclass,
     int fkind,
     const mxArray *pargin [ ]
 )
@@ -339,14 +342,15 @@ GrB_Info many_assign
             mexErrMsgTxt ("A failed") ;
         }
 
-        // get accum; default: NOP, default class is class(C)
+        // get accum, if present
         accum = NULL ;
         if (faccum >= 0)
         {
             p = mxGetFieldByNumber (pargin [1], k, faccum) ;
+            bool user_complex = (Complex != GxB_FC64)
+                && (C->type == Complex || A->type == Complex) ;
             if (!GB_mx_mxArray_to_BinaryOp (&accum, p, "accum",
-                GB_NOP_opcode, cclass,
-                C->type == Complex, A->type == Complex))
+                C->type, user_complex))
             {
                 FREE_ALL ;
                 mexErrMsgTxt ("accum failed") ;
@@ -405,7 +409,7 @@ GrB_Info many_assign
 
         GB_MATRIX_FREE (&A) ;
         GB_MATRIX_FREE (&Mask) ;
-        GrB_Descriptor_free (&desc) ;
+        GrB_Descriptor_free_(&desc) ;
 
         if (info != GrB_SUCCESS)
         {
@@ -414,7 +418,7 @@ GrB_Info many_assign
     }
 
     ASSERT_MATRIX_OK (C, "Final C before wait", GB0) ;
-    OK (GrB_wait ( )) ;
+    OK (GrB_Matrix_wait_(&C)) ;
     return (info) ;
 }
 
@@ -459,7 +463,6 @@ void mexFunction
         FREE_ALL ;
         mexErrMsgTxt ("C failed") ;
     }
-    mxClassID cclass = GB_mx_Type_to_classID (C->type) ;
 
     if (nargin == 2)
     {
@@ -498,8 +501,8 @@ void mexFunction
 
         if (fA < 0 || fI < 0 || fJ < 0) mexErrMsgTxt ("A,I,J required") ;
 
-        METHOD (many_assign (nwork, fA, fI, fJ, faccum, fMask, fdesc, cclass,
-            fkind, pargin)) ;
+        METHOD (many_assign (nwork, fA, fI, fJ, faccum, fMask, fdesc, fkind,
+            pargin)) ;
 
     }
     else
@@ -525,10 +528,12 @@ void mexFunction
             mexErrMsgTxt ("A failed") ;
         }
 
-        // get accum; default: NOP, default class is class(C)
+        // get accum, if present
+        bool user_complex = (Complex != GxB_FC64)
+            && (C->type == Complex || A->type == Complex) ;
         accum = NULL ;
         if (!GB_mx_mxArray_to_BinaryOp (&accum, pargin [2], "accum",
-            GB_NOP_opcode, cclass, C->type == Complex, A->type == Complex))
+            C->type, user_complex))
         {
             FREE_ALL ;
             mexErrMsgTxt ("accum failed") ;
@@ -563,7 +568,6 @@ void mexFunction
         }
 
         // C<Mask>(I,J) = A
-
         METHOD (assign ( )) ;
     }
 

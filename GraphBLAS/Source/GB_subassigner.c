@@ -49,15 +49,15 @@
 // can be changed by turning an entry into a zombie, or by bringing a zombie
 // back to life, but no entry in C->i moves in position.
 
-#define GB_FREE_WORK                                    \
-{                                                       \
-    GB_MATRIX_FREE (&S) ;                               \
-    GB_MATRIX_FREE (&A2) ;                              \
-    GB_MATRIX_FREE (&M2) ;                              \
-    GB_FREE_MEMORY (I2,  ni, sizeof (GrB_Index)) ;      \
-    GB_FREE_MEMORY (I2k, ni, sizeof (GrB_Index)) ;      \
-    GB_FREE_MEMORY (J2,  nj, sizeof (GrB_Index)) ;      \
-    GB_FREE_MEMORY (J2k, nj, sizeof (GrB_Index)) ;      \
+#define GB_FREE_WORK            \
+{                               \
+    GB_MATRIX_FREE (&S) ;       \
+    GB_MATRIX_FREE (&A2) ;      \
+    GB_MATRIX_FREE (&M2) ;      \
+    GB_FREE (I2) ;              \
+    GB_FREE (I2k) ;             \
+    GB_FREE (J2) ;              \
+    GB_FREE (J2k) ;             \
 }
 
 #include "GB_subassign.h"
@@ -123,15 +123,15 @@ GrB_Info GB_subassigner             // C(I,J)<#M> = A or accum (C (I,J), A)
     ASSERT (!GB_aliased (C, M)) ;
     ASSERT (!GB_aliased (C, A)) ;
 
+    ASSERT_MATRIX_OK (C, "C input for subassigner", GB0) ;
+
     //--------------------------------------------------------------------------
     // delete any lingering zombies and assemble any pending tuples
     //--------------------------------------------------------------------------
 
-    ASSERT_MATRIX_OK (C, "C input for subassigner", GB0) ;
-
     // subassign tolerates both zombies and pending tuples in C, but not M or A
-    GB_WAIT (M) ;
-    GB_WAIT (A) ;
+    GB_MATRIX_WAIT (M) ;
+    GB_MATRIX_WAIT (A) ;
 
     //--------------------------------------------------------------------------
     // check mask conditions
@@ -185,9 +185,9 @@ GrB_Info GB_subassigner             // C(I,J)<#M> = A or accum (C (I,J), A)
     if (C_is_empty)
     { 
         // C is completely empty.  C_replace is irrelevant, so set it to false.
-        // The burble for this case occurs below, after GB_wait (C), since C
-        // may become empty if it contains nothing but zombies, or after the
-        // GB_clear (C) below.
+        // The burble for this case occurs below, after GB_Matrix_wait (C),
+        // since C may become empty if it contains nothing but zombies, or
+        // after the GB_clear (C) below.
         C_replace = false ;
     }
 
@@ -337,8 +337,8 @@ GrB_Info GB_subassigner             // C(I,J)<#M> = A or accum (C (I,J), A)
             M = M2 ;
         }
 
-        GB_FREE_MEMORY (I2k, ni, sizeof (GrB_Index)) ;
-        GB_FREE_MEMORY (J2k, nj, sizeof (GrB_Index)) ;
+        GB_FREE (I2k) ;
+        GB_FREE (J2k) ;
     }
 
     // I and J are now sorted, with no duplicate entries.  They are either
@@ -639,7 +639,7 @@ GrB_Info GB_subassigner             // C(I,J)<#M> = A or accum (C (I,J), A)
         // prior work must be finished.  This potentially costly.
         // delete any lingering zombies and assemble any pending tuples
         ASSERT_MATRIX_OK (C, "C before wait", GB0) ;
-        GB_OK (GB_wait (C, Context)) ;
+        GB_OK (GB_Matrix_wait (C, Context)) ;
     }
 
     ASSERT_MATRIX_OK (C, "C before subassign", GB0) ;
@@ -649,8 +649,9 @@ GrB_Info GB_subassigner             // C(I,J)<#M> = A or accum (C (I,J), A)
     // check again if C is empty
     //--------------------------------------------------------------------------
 
-    // GB_clear or GB_wait, above, may have deleted all the zombies in C, so
-    // check again if C is empty.
+    // GB_clear or GB_Matrix_wait, above, may have deleted all the zombies in
+    // C, so check again if C is empty.
+
     C_is_empty = (GB_NNZ (C) == 0 && !GB_PENDING (C) && !GB_ZOMBIES (C)) ;
     if (C_is_empty)
     { 
@@ -669,8 +670,8 @@ GrB_Info GB_subassigner             // C(I,J)<#M> = A or accum (C (I,J), A)
         // now effectively false.  If C_replace was false on input, then the
         // "quick" case above has already been triggered.  However, if C is now
         // empty (either cleared with GB_clear, empty on input, or empty after
-        // GB_wait), then C_replace is now effectively false.  In this case,
-        // the "quick" case can be checked again.  No more work to do.
+        // GB_Matrix_wait), then C_replace is now effectively false.  In this
+        // case, the "quick" case can be checked again.  No more work to do.
         GBBURBLE ("quick ") ;
         return (GrB_SUCCESS) ;
     }
@@ -830,7 +831,7 @@ GrB_Info GB_subassigner             // C(I,J)<#M> = A or accum (C (I,J), A)
 
         #ifdef GB_DEBUG
         const int64_t *GB_RESTRICT Si = S->i ;
-        const int64_t *GB_RESTRICT Sx = S->x ;
+        const int64_t *GB_RESTRICT Sx = (int64_t *) S->x ;
         // this body of code explains what S contains.
         // S is nI-by-nJ where nI = length (I) and nJ = length (J)
         GBI_for_each_vector (S)
@@ -868,14 +869,14 @@ GrB_Info GB_subassigner             // C(I,J)<#M> = A or accum (C (I,J), A)
     // submatrix assignment C(I,J)<M> = accum (C(I,J),A): meta-algorithm
     //==========================================================================
 
-    // There are up to 64 combinations of options, but not required to be
+    // There are up to 128 combinations of options, but not all must be
     // implemented, because they are either identical to another method
     // (C_replace is effectively false if M=NULL and Mask_comp=false), or they
     // are not used (the last option, whether or not S is constructed, is
     // determined here; it is not a user input).  The first 5 options are
     // determined by the input.  The table below has been pruned to remove
     // combinations that are not used, or equivalent to other entries in the
-    // table.  Only 22 unique combinations of the 64 combinations are needed,
+    // table.  Only 22 unique combinations of the 128 combinations are needed,
     // with additional special cases when C(:,:) is dense.
 
     //      M           present or NULL
@@ -1408,30 +1409,8 @@ GrB_Info GB_subassigner             // C(I,J)<#M> = A or accum (C (I,J), A)
 
     GB_FREE_WORK ;
 
-    //--------------------------------------------------------------------------
-    // insert C in the queue if it has work to do and isn't already queued
-    //--------------------------------------------------------------------------
-
-    if (C->nzombies == 0 && C->Pending == NULL)
-    { 
-        // C may be in the queue from a prior assignment, but this assignemt
-        // can bring zombies back to life, and the zombie count can go to zero.
-        // In that case, C must be removed from the queue.  The removal does
-        // nothing if C is already not in the queue.
-
-        // FUTURE:: this might cause thrashing if lots of assigns or
-        // setElements are done in parallel.  Instead, leave the matrix in the
-        // queue, and allow matrices to be in the queue even if they have no
-        // unfinished computations.  See also GB_setElement.
-
-        GB_CRITICAL (GB_queue_remove (C)) ;
-    }
-    else
-    { 
-        // If C has any zombies or pending tuples, it must be in the queue.
-        // The queue insert does nothing if C is already in the queue.
-        GB_CRITICAL (GB_queue_insert (C)) ;
-    }
+    // TODO in 4.0: delete this:
+    if (C->nzombies == 0 && C->Pending == NULL) { if (!GB_queue_remove (C)) GB_PANIC ; } else { if (!GB_queue_insert (C)) GB_PANIC ; }
 
     //--------------------------------------------------------------------------
     // finalize C and return result

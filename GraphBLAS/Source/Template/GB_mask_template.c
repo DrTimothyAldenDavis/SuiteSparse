@@ -85,19 +85,19 @@
         Mp = M->p ;
         // Mh = M->h ;
         Mi = M->i ;
-        Mx = (Mask_struct ? NULL : (M->x)) ;
+        Mx = (GB_void *) (Mask_struct ? NULL : (M->x)) ;
         msize = M->type->size ;
         // Mnvec = M->nvec ;
         // M_is_hyper = M->is_hyper ;
     }
 
     #if defined ( GB_PHASE_2_OF_2 )
-    const GB_void *GB_RESTRICT Cx = C->x ;
-    const GB_void *GB_RESTRICT Zx = Z->x ;
+    const GB_void *GB_RESTRICT Cx = (GB_void *) C->x ;
+    const GB_void *GB_RESTRICT Zx = (GB_void *) Z->x ;
     const int64_t *GB_RESTRICT Rp = R->p ;
     const int64_t *GB_RESTRICT Rh = R->h ;
           int64_t *GB_RESTRICT Ri = R->i ;
-          GB_void *GB_RESTRICT Rx = R->x ;
+          GB_void *GB_RESTRICT Rx = (GB_void *) R->x ;
     size_t rsize = R->type->size ;
     #endif
 
@@ -745,7 +745,8 @@
                             for ( ; pC < pC_end ; pC++)
                             { 
                                 int64_t i = Ci [pC] ;
-                                bool mij = false ;  // M(i,j) false if not present
+                                // M(i,j) false if not present
+                                bool mij = false ; 
                                 int64_t pright = pM_end - 1 ;
                                 bool found ;
                                 GB_BINARY_SEARCH (i, Mi, pM, pright, found) ;

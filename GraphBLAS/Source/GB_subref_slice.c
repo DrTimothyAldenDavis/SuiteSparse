@@ -29,18 +29,18 @@
 // Compare this function with GB_ewise_slice, which constructs coarse/fine
 // tasks for the eWise operations (C=A+B, C=A.*B, and C<M>=Z).
 
-#define GB_FREE_WORK                                                    \
-{                                                                       \
-    GB_FREE_MEMORY (Coarse, ntasks1+1, sizeof (int64_t)) ;              \
-    GB_FREE_MEMORY (Cwork, Cnvec+1, sizeof (int64_t)) ;                 \
+#define GB_FREE_WORK        \
+{                           \
+    GB_FREE (Coarse) ;      \
+    GB_FREE (Cwork) ;       \
 }
 
-#define GB_FREE_ALL                                                     \
-{                                                                       \
-    GB_FREE_WORK ;                                                      \
-    GB_FREE_MEMORY (TaskList, max_ntasks+1, sizeof (GB_task_struct)) ;  \
-    GB_FREE_MEMORY (Mark,  avlen, sizeof (int64_t)) ;                   \
-    GB_FREE_MEMORY (Inext, nI,    sizeof (int64_t)) ;                   \
+#define GB_FREE_ALL         \
+{                           \
+    GB_FREE_WORK ;          \
+    GB_FREE (TaskList) ;    \
+    GB_FREE (Mark) ;        \
+    GB_FREE (Inext) ;       \
 }
 
 #include "GB_subref.h"
@@ -149,7 +149,7 @@ GrB_Info GB_subref_slice
     // allocate workspace
     //--------------------------------------------------------------------------
 
-    GB_MALLOC_MEMORY (Cwork, Cnvec+1, sizeof (int64_t)) ;
+    Cwork = GB_MALLOC (Cnvec+1, int64_t) ;
     if (Cwork == NULL)
     { 
         // out of memory

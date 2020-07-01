@@ -15,15 +15,15 @@
 
 // Usage:
 
-//      Cout = gbextract (Cin, M, accum, A, I, J, desc)
+//      C = gbextract (Cin, M, accum, A, I, J, desc)
 
-// A and desc are required.  See GrB.m for more details.
+// A is required.  See GrB.m for more details.
 // If accum or M is used, then Cin must appear.
 
 #include "gb_matlab.h"
 #include "GB_ij.h"
 
-#define USAGE "usage: Cout = GrB.extract (Cin, M, accum, A, I, J, desc)"
+#define USAGE "usage: C = GrB.extract (Cin, M, accum, A, I, J, desc)"
 
 void mexFunction
 (
@@ -38,7 +38,7 @@ void mexFunction
     // check inputs
     //--------------------------------------------------------------------------
 
-    gb_usage (nargin >= 2 && nargin <= 7 && nargout <= 1, USAGE) ;
+    gb_usage (nargin >= 1 && nargin <= 7 && nargout <= 2, USAGE) ;
 
     //--------------------------------------------------------------------------
     // find the arguments
@@ -94,7 +94,7 @@ void mexFunction
     { 
         // if accum appears, then Cin must also appear
         CHECK_ERROR (C == NULL, USAGE) ;
-        accum  = gb_mxstring_to_binop  (String [0], ctype) ;
+        accum  = gb_mxstring_to_binop  (String [0], ctype, ctype) ;
     }
 
     //--------------------------------------------------------------------------
@@ -156,8 +156,8 @@ void mexFunction
         int I_kind, J_kind ;
         int64_t I_colon [3], J_colon [3] ;
         GrB_Index cnrows, cncols ;
-        GB_ijlength (I, ni, anrows, &cnrows, &I_kind, I_colon) ;
-        GB_ijlength (J, nj, ancols, &cncols, &J_kind, J_colon) ;
+        GB_ijlength (I, ni, anrows, (int64_t *) &cnrows, &I_kind, I_colon) ;
+        GB_ijlength (J, nj, ancols, (int64_t *) &cncols, &J_kind, J_colon) ;
         ctype = atype ;
 
         OK (GrB_Matrix_new (&C, ctype, cnrows, cncols)) ;
@@ -186,6 +186,7 @@ void mexFunction
     //--------------------------------------------------------------------------
 
     pargout [0] = gb_export (&C, kind) ;
+    pargout [1] = mxCreateDoubleScalar (kind) ;
     GB_WRAPUP ;
 }
 

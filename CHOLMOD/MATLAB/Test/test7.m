@@ -12,8 +12,8 @@ fprintf ('test7: test sparse2\n') ;
 randn ('state', 0) ;
 rand  ('state', 0) ;
 
-% Prob = UFget (437)
-Prob = UFget (750)							    %#ok
+% Prob = ssget (437)
+Prob = ssget (750)							    %#ok
 A = Prob.A ;
 [m n] = size (A) ;
 

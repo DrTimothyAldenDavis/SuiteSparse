@@ -10,7 +10,7 @@ function test1 (nmat)
 clear functions
 % rand ('state', 0) ;
 
-index = UFget ;
+index = ssget ;
 f = find (index.nrows == index.ncols & index.isReal) ;
 [ignore i] = sort (index.nnz (f)) ;                                         %#ok
 f = f (i) ;
@@ -53,7 +53,7 @@ clf
             r2 = 0 ;
             err = 0 ;
 
-            Prob = UFget (i,index) ;
+            Prob = ssget (i,index) ;
             A = Prob.A ;
             c = condest (A) ;
             fprintf ('condest %8.2e :', c) ;

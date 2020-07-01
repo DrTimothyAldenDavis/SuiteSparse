@@ -12,7 +12,8 @@
 GrB_BinaryOp gb_mxstring_to_binop       // return binary operator from a string
 (
     const mxArray *mxstring,            // MATLAB string
-    const GrB_Type default_type         // default type if not in the string
+    const GrB_Type atype,               // type of A
+    const GrB_Type btype                // type of B
 )
 {
 
@@ -40,6 +41,6 @@ GrB_BinaryOp gb_mxstring_to_binop       // return binary operator from a string
     // convert the string to a binary operator
     //--------------------------------------------------------------------------
 
-    return (gb_string_to_binop (opstring, default_type)) ;
+    return (gb_string_to_binop (opstring, atype, btype)) ;
 }
 

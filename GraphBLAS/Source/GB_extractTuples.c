@@ -13,13 +13,12 @@
 // which must be at least as large as GrB_nvals (&nvals, A).  The values in the
 // matrix are typecasted to the type of X, as needed.
 
-// If all arrays I, J, X are NULL, this function does nothing except to force
-// all pending tuples to be assembled.  This is an intended side effect.
-
 // This function is not user-callable.  It does the work for the user-callable
 // GrB_*_extractTuples functions.
 
 #include "GB.h"
+
+#define GB_FREE_ALL ;
 
 GrB_Info GB_extractTuples       // extract all tuples from a matrix
 (
@@ -37,11 +36,12 @@ GrB_Info GB_extractTuples       // extract all tuples from a matrix
     // check inputs
     //--------------------------------------------------------------------------
 
+    GrB_Info info ;
+
     // delete any lingering zombies and assemble any pending tuples
-    // do this as early as possible (see Table 2.4 in spec)
     ASSERT (A != NULL) ;
     ASSERT (p_nvals != NULL) ;
-    GB_WAIT (A) ;
+    GB_MATRIX_WAIT (A) ;
     ASSERT (xcode <= GB_UDT_code) ;
 
     // xcode and A must be compatible
@@ -70,8 +70,8 @@ GrB_Info GB_extractTuples       // extract all tuples from a matrix
     { 
         // output arrays are not big enough
         return (GB_ERROR (GrB_INSUFFICIENT_SPACE, (GB_LOG,
-            "output arrays I,J,X are not big enough: nvals "GBd" < "
-            "number of entries "GBd, nvals, anz))) ;
+            "output arrays I,J,X are not big enough: nvals " GBd " < "
+            "number of entries " GBd, nvals, anz))) ;
     }
 
     //--------------------------------------------------------------------------
@@ -120,25 +120,14 @@ GrB_Info GB_extractTuples       // extract all tuples from a matrix
     }
 
     //--------------------------------------------------------------------------
-    // extract the values, typecasting as needed
+    // extract the values
     //--------------------------------------------------------------------------
 
     if (X != NULL)
-    {
-        if (xcode > GB_FP64_code || xcode == A->type->code)
-        { 
-            // Copy the values without typecasting.  For user-defined types,
-            // the (void *) X array is assumed to point to values of the right
-            // user-defined type, but this can't be checked.  For built-in
-            // types, xcode has already been determined by the type of X in the
-            // function signature of the caller.
-            GB_memcpy (X, A->x, anz * A->type->size, nthreads) ;
-        }
-        else
-        { 
-            // typecast the values from A into X, for built-in types only
-            GB_cast_array (X, xcode, A->x, A->type->code, anz, Context) ;
-        }
+    { 
+        // typecast or copy the values from A into X
+        GB_cast_array ((GB_void *) X, xcode,
+            (GB_void *) A->x, A->type->code, A->type->size, anz, nthreads) ;
     }
 
     //--------------------------------------------------------------------------

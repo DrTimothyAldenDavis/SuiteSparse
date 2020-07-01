@@ -9,7 +9,7 @@ function test4
 fprintf ('=================================================================\n');
 fprintf ('test4: test cholmod2 with multiple and sparse right-hand-sides\n') ;
 
-Prob = UFget ('HB/bcsstk01') ;
+Prob = ssget ('HB/bcsstk01') ;
 A = Prob.A ;
 n = size (A,1) ;
 b = rand (n,1) ;

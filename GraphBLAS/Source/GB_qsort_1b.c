@@ -48,9 +48,9 @@
 GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void GB_qsort_1b    // sort array A of size 2-by-n, using 1 key (A [0][])
 (
-    int64_t *GB_RESTRICT A_0,      // size n array
-    GB_void *GB_RESTRICT A_1,      // size n array
-    const size_t xsize,         // size of entries in A_1
+    int64_t *GB_RESTRICT A_0,       // size n array
+    GB_void *GB_RESTRICT A_1,       // size n array
+    const size_t xsize,             // size of entries in A_1
     const int64_t n
 )
 { 

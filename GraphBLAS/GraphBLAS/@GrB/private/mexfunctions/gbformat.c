@@ -7,6 +7,11 @@
 
 //------------------------------------------------------------------------------
 
+// Usage
+
+// f = gbformat ;
+// f = gbformat (f) ;
+
 #include "gb_matlab.h"
 
 void mexFunction
@@ -65,9 +70,11 @@ void mexFunction
             //------------------------------------------------------------------
 
             // get the format of the input matrix G
-            GrB_Matrix G = gb_get_shallow (pargin [0]) ;
-            OK (GxB_Matrix_Option_get (G, GxB_FORMAT, &fmt)) ;
-            OK (GrB_Matrix_free (&G)) ;
+            mxArray *opaque = mxGetField (pargin [0], 0, "s") ;
+            CHECK_ERROR (opaque == NULL, "invalid GraphBLAS struct") ;
+            int64_t *s = mxGetInt64s (opaque) ;
+            bool is_csc = (bool) (s [6]) ;
+            fmt = (is_csc) ? GxB_BY_COL : GxB_BY_ROW ;
         }
     }
 

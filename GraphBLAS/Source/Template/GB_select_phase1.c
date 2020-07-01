@@ -9,7 +9,46 @@
 
 #if defined ( GB_ENTRY_SELECTOR )
 
+    //--------------------------------------------------------------------------
+    // declarations for Template/GB_reduce_each_vector.c
+    //--------------------------------------------------------------------------
+
+    // The two if tests below are written carefully so that typecasting from
+    // Bool works properly.  The user might import a Bool array whose values
+    // are not 0 and 1, and this can lead to subtle errors with compiler
+    // optimization.  The compiler may assume that the array contains only 0's
+    // and 1's, which leads to a miscount.
+
+    // declare scalar and initialize it to zero
+    #define GB_SCALAR(s)                                    \
+        int64_t s = 0 ;
+
+    // ztype s = (ztype) Ax [p], with typecast.
+    #define GB_CAST_ARRAY_TO_SCALAR(s,Ax,p)                 \
+        if (GB_TEST_VALUE_OF_ENTRY (p)) { s = 1 ; } else { s = 0 ; }
+
+    // s += (ztype) Ax [p], with typecast
+    #define GB_ADD_CAST_ARRAY_TO_SCALAR(s,Ax,p)             \
+        if (GB_TEST_VALUE_OF_ENTRY (p)) s++ ;
+
+    // The scalar s and array W are always of type int64_t (GB_CTYPE)
     #define GB_CTYPE int64_t
+
+    // W [k] = s
+    #define GB_COPY_SCALAR_TO_ARRAY(W,k,s)                  \
+        W [k] = s
+
+    // W [k] = S [i]
+    #define GB_COPY_ARRAY_TO_ARRAY(W,k,S,i)                 \
+        W [k] = S [i]
+
+    // W [k] += S [i]
+    #define GB_ADD_ARRAY_TO_ARRAY(W,k,S,i)                  \
+        W [k] += S [i]
+
+    // no terminal value
+    #define GB_BREAK_IF_TERMINAL(t) ;
+
     #include "GB_reduce_each_vector.c"
 
 #else

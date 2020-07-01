@@ -97,17 +97,24 @@ error messages during the test.  This is expected.
 # FUTURE: Not yet supported for GrB matrices in MATLAB:
 
     linear indexing
-    complex matrices
     2nd output for [x,i] = max (...) and [x,i] = min (...); needs
         modified reduction methods inside GraphBLAS
     'includenan' for min and max
+    min and max for complex matrices
     singleton expansion
     3D and higher dimensional matrices:
         this might be done by converting the higher dimensioal
-        indices down to a large 2D space, ad relying on hypersparsity.
-    saturating element-wise binary and unary operators for integers 
+        indices down to a large 2D space, and relying on hypersparsity.
+    saturating element-wise binary and unary operators for integers.
+        See also the discussion in the User Guide, and the details
+        in MATLAB_vs_GraphBLAS.txt in this folder.
 
 The last two features don't exist for MATLAB sparse matrices.
+
+These features are supported, but are not as fast as they could be:
+
+    concatenation: [A B], [A;B], and the built-in functions: bandwidth, eps,
+    isbanded, isdiag, ishermitian, issymmetric, istril, istriu, spfun.
 
 For Windows: Microsoft Visual Studio does not support OpenMP tasking,
     which means that the internal sort is not parallel, but sequential.

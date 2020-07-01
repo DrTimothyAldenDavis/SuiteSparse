@@ -40,6 +40,9 @@ extra {2} = [1 1] ;
 % clear the statement coverage counts
 clear global GraphBLAS_grbcov
 
+% use built-in complex data types by default
+GB_builtin_complex_set (1) ;
+
 % many of the tests use SuiteSparse/MATLAB_Tools/spok, a copy of which is
 % included here in GraphBLAS/Test/spok.
 addpath ('../Test/spok') ;
@@ -65,6 +68,10 @@ logstat ;             % start the log.txt
 % test taking less than 1 second:
 %----------------------------------------
 
+logstat ('test152',t) ; % test binops with C=A+B, all matrices dense
+logstat ('test155',t) ; % test GrB_*_setElement and GrB_*_removeElement
+logstat ('test156',t) ; % test GrB_assign C=A with typecasting
+
 logstat ('test07b',t) ; % quick test GB_mex_assign
 logstat ('test01',t) ;  % error handling
 logstat ('test01',s) ;  % error handling
@@ -75,7 +82,7 @@ logstat ('test84',t) ;  % GrB_assign (row and column with C in CSR format)
 logstat ('test85',t) ;  % GrB_transpose (1-by-n with typecasting)
 logstat ('test02',t) ;  % matrix copy and dup tests
 logstat ('test148',t) ; % ewise with alias
-logstat ('test150',t) ; % mxm with zombies and typecasting
+logstat ('test150',t) ; % mxm with zombies and typecasting (dot3 and saxpy)
 
 logstat ('test137',s) ; % GrB_eWiseMult with FIRST and SECOND operators
 logstat ('test138',s) ; % test assign, with coarse-only tasks in IxJ slice
@@ -90,8 +97,6 @@ logstat ('test132',t) ; % setElement
 logstat ('test92',t) ;  % GB_subref (symbolic case)
 logstat ('test97',t) ;  % GB_mex_assign, scalar expansion and zombies
 logstat ('test04',t) ;  % simple mask and transpose test
-logstat ('test05',t) ;  % quick setElement test, with typecasting
-logstat ('test05',s);   % quick setElement test, with typecasting
 logstat ('test15',t) ;  % simple test of GB_mex_AxB
 logstat ('test78',t) ;  % quick test of hypersparse subref
 logstat ('test82',t) ;  % GrB_extract with index range (hypersparse)
@@ -114,11 +119,13 @@ logstat ('test147',t) ; % C<M>=A*B with very sparse M
 logstat ('test146',t) ; % expand scalar
 logstat ('test149',t) ; % test fine hash tasks for C<!M>=A*B
 logstat ('test133',t) ; % test mask operations (GB_masker)
+logstat ('test151',t) ; % test bitwise operators
 
 %----------------------------------------
 % tests taking 1 to 10 seconds:
 %----------------------------------------
 
+logstat ('test99',t) ;  % GB_mex_transpose with explicit zeros in the Mask
 logstat ('test29',t) ;  % reduce with zombies
 logstat ('test90',t) ;  % test user-defined semirings
 logstat ('testc2(1)',t) ;  % complex tests (quick case)
@@ -131,14 +138,12 @@ logstat ('test102',t);  % GB_AxB_flopcount
 logstat ('test12',t) ;  % Wathen finite-element matrices (short test)
 logstat ('test28',t) ;  % mxm with aliased inputs, C<C> = accum(C,C*C)
 logstat ('test107',t) ; % monoids with terminal values
-logstat ('test103',t) ; % GrB_transpose aliases
 logstat ('test93',t) ;  % pagerank
 logstat ('test135',t) ; % reduce to scalar
-logstat ('test100',t) ; % GB_mex_isequal
 logstat ('test11',t) ;  % exhaustive test of GrB_extractTuples
 logstat ('test106',t) ; % GxB_subassign with alias
 logstat ('test69',t) ;  % assign and subassign with alias
-logstat ('test77',t) ;  % quick tests of GxB_kron
+logstat ('test77',t) ;  % quick tests of GrB_kronecker
 logstat ('test19b',t) ; % GrB_assign, many pending operators (malloc debug off)
 logstat ('test19b',s);  % GrB_assign, many pending operators (malloc debug off)
 logstat ('test104',t) ; % export/import
@@ -147,6 +152,7 @@ logstat ('test104',t) ; % export/import
 % tests taking 10 to 200 seconds
 %----------------------------------------
 
+logstat ('test154',t) ; % apply with binop and scalar binding
 logstat ('test125',t) ; % test GrB_mxm: row and column scaling
 logstat ('test74',t) ;  % test GrB_mxm on all semirings
 logstat ('test54',t) ;  % assign and extract with begin:inc:end
@@ -157,10 +163,9 @@ logstat ('test76',t) ;  % GxB_resize
 logstat ('test88',t) ;  % hypersparse matrices with heap-based method
 logstat ('test127',t) ; % test eWiseAdd, eWiseMult (all types and operators)
 logstat ('test143',t) ; % mxm, special cases
-logstat ('test99',t) ;  % GB_mex_transpose with explicit zeros in the Mask
 logstat ('test19',t) ;  % GxB_subassign, many pending operators
 logstat ('test53',t) ;  % quick test of GB_mex_Matrix_extract
-logstat ('test27',t) ;  % quick test of GxB_select (band)
+logstat ('test27',t) ;  % quick test of GxB_select (LoHi_band)
 
 %----------------------------------------
 % longer tests (200 seconds to 600 seconds)
@@ -198,6 +203,9 @@ if (longtests)
 % test script              % time % description
 % ------------------------ % ---- % ------------------------------
 
+logstat ('test05',t) ;     %      % quick setElement test, with typecasting
+logstat ('test103',t) ;    %      % GrB_transpose aliases
+logstat ('test100',t) ;    %    5 % GB_mex_isequal
 logstat ('test75',t) ;     %      % test GrB_mxm A'*B on all semirings
 logstat ('test00',t) ;     %    8 % GB_mex_mis (multiple threads)
 logstat ('test07',t) ;     %    0 % quick test GB_mex_subassign
@@ -226,7 +234,7 @@ logstat ('test30b') ;      %    9 % performance GB_mex_assign, scalar expansion
 logstat ('test31',t) ;     %      % simple tests of GB_mex_transpose
 logstat ('test32',t) ;     %      % quick GB_mex_mxm test
 logstat ('test33',t) ;     %      % create a semiring
-logstat ('test34',t) ;     %      % quick GB_mex_eWiseAdd_Matrix test
+logstat ('test34',t) ;     %      % quick GB_mex_Matrix_eWiseAdd test
 logstat ('test35') ;       %      % performance test for GrB_extractTuples
 logstat ('test36') ;       %      % performance test for GB_mex_Matrix_subref
 logstat ('test37') ;       %      % performance test for GrB_qsort1
@@ -255,7 +263,7 @@ logstat ('test55',t) ;     %      % GxB_subassign, dupl, MATLAB vs GraphBLAS
 logstat ('test55b',t) ;    %      % GrB_assign, duplicates, MATLAB vs GraphBLAS
 logstat ('test56',t) ;     %      % test GrB_*_build
 logstat ('test57',t) ;     %      % test operator on large uint32 values
-logstat ('test58(0)') ;    %      % longer GB_mex_eWiseAdd_Matrix performance
+logstat ('test58(0)') ;    %      % longer GB_mex_Matrix_eWiseAdd performance
 logstat ('test58') ;       %      % test GrB_eWiseAdd
 logstat ('test59',t) ;     %      % test GrB_mxm
 
@@ -326,5 +334,5 @@ if (malloc_debugging)
 end
 
 t = toc (testall_time) ;
-fprintf ('\ntestall: all tests passed, total time %0.2g hours\n', t / 3600) ;
+fprintf ('\ntestall: all tests passed, total time %0.4g minutes\n', t / 60) ;
 

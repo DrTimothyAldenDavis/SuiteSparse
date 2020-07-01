@@ -65,8 +65,7 @@ GrB_Info GB_to_hyper        // convert a matrix to hypersparse
         const int64_t *GB_RESTRICT Ap_old = A->p ;
         bool Ap_old_shallow = A->p_shallow ;
 
-        int64_t *GB_RESTRICT Count ;
-        GB_MALLOC_MEMORY (Count, ntasks+1, sizeof (int64_t)) ;
+        int64_t *GB_RESTRICT Count = GB_MALLOC (ntasks+1, int64_t) ;
         if (Count == NULL)
         { 
             // out of memory
@@ -99,16 +98,14 @@ GrB_Info GB_to_hyper        // convert a matrix to hypersparse
         // allocate the new A->p and A->h
         //----------------------------------------------------------------------
 
-        int64_t *GB_RESTRICT Ap_new ;
-        int64_t *GB_RESTRICT Ah_new ;
-        GB_MALLOC_MEMORY (Ap_new, nvec_nonempty+1, sizeof (int64_t)) ;
-        GB_MALLOC_MEMORY (Ah_new, nvec_nonempty,   sizeof (int64_t)) ;
+        int64_t *GB_RESTRICT Ap_new = GB_MALLOC (nvec_nonempty+1, int64_t) ;
+        int64_t *GB_RESTRICT Ah_new = GB_MALLOC (nvec_nonempty  , int64_t) ;
         if (Ap_new == NULL || Ah_new == NULL)
         { 
             // out of memory
-            GB_FREE_MEMORY (Count, ntasks+1, sizeof (int64_t)) ;
-            GB_FREE_MEMORY (Ap_new, nvec_nonempty+1, sizeof (int64_t)) ;
-            GB_FREE_MEMORY (Ah_new, nvec_nonempty,   sizeof (int64_t)) ;
+            GB_FREE (Count) ;
+            GB_FREE (Ap_new) ;
+            GB_FREE (Ah_new) ;
             GB_PHIX_FREE (A) ;
             return (GB_OUT_OF_MEMORY) ;
         }
@@ -154,10 +151,10 @@ GrB_Info GB_to_hyper        // convert a matrix to hypersparse
         // free workspace, and free the old A->p unless it's shallow
         //----------------------------------------------------------------------
 
-        GB_FREE_MEMORY (Count, ntasks+1, sizeof (int64_t)) ;
+        GB_FREE (Count) ;
         if (!Ap_old_shallow)
         { 
-            GB_FREE_MEMORY (Ap_old, n+1, sizeof (int64_t)) ;
+            GB_FREE (Ap_old) ;
         }
     }
 

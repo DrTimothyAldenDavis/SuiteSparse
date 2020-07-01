@@ -49,7 +49,7 @@ function kinds = sskinds
 %
 % See also ssget.
 
-% Copyright 2009-2017, Timothy A. Davis, http://www.suitesparse.com
+% Copyright 2009-2019, Timothy A. Davis, http://www.suitesparse.com
 
 params = ssget_defaults ;
 statfile = sprintf ('%sfiles/ssstats.csv', params.topdir) ;
@@ -61,8 +61,10 @@ try
     kinds = cell (nmat,1) ;
     for id = 1:nmat
         s = fgetl (f) ;
-        t = find (s == ',', 1, 'last') ;
-        r = s ((t+1):end) ;
+        t = find (s == ',') ;
+        t1 = t (11) ;
+        t2 = t (12) ;
+        r = s ((t1+1):(t2-1)) ;
         kinds {id} = r ;
     end
 catch

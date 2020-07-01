@@ -53,14 +53,12 @@ GrB_Info GB_emult_phase1                // count nnz in each C(:,j)
     ASSERT_MATRIX_OK_OR_NULL (M, "M for emult phase1", GB0) ;
     ASSERT (A->vdim == B->vdim) ;
 
-    int64_t *GB_RESTRICT Cp = NULL ;
-    (*Cp_handle) = NULL ;
-
     //--------------------------------------------------------------------------
     // allocate the result
     //--------------------------------------------------------------------------
 
-    GB_CALLOC_MEMORY (Cp, GB_IMAX (2, Cnvec+1), sizeof (int64_t)) ;
+    (*Cp_handle) = NULL ;
+    int64_t *GB_RESTRICT Cp = GB_CALLOC (GB_IMAX (2, Cnvec+1), int64_t) ;
     if (Cp == NULL)
     { 
         // out of memory

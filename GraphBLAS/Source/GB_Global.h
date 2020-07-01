@@ -14,10 +14,8 @@
 #ifndef GB_GLOBAL_H
 #define GB_GLOBAL_H
 
-GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
-void     GB_Global_queue_head_set (void *p) ;
-GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
-void  *  GB_Global_queue_head_get (void) ;
+GB_PUBLIC void   GB_Global_queue_head_set (void *p) ;   // TODO in 4.0: delete
+GB_PUBLIC void * GB_Global_queue_head_get (void) ;  // TODO in 4.0: delete
 
 GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void     GB_Global_mode_set (GrB_Mode mode) ;
@@ -48,6 +46,11 @@ void     GB_Global_is_csc_set (bool is_csc) ;
 bool     GB_Global_is_csc_get (void) ;
 
 GB_PUBLIC   // accessed by the MATLAB interface only
+void     GB_Global_use_mkl_set (bool use_mkl) ;
+GB_PUBLIC   // accessed by the MATLAB interface only
+bool     GB_Global_use_mkl_get (void) ;
+
+GB_PUBLIC   // accessed by the MATLAB interface only
 void     GB_Global_abort_function_set (void (* abort_function) (void)) ;
 GB_PUBLIC   // accessed by the MATLAB interface only
 void     GB_Global_abort_function (void) ;
@@ -69,6 +72,7 @@ void     GB_Global_realloc_function_set
              void * (* realloc_function) (void *, size_t)
          ) ;
 void  *  GB_Global_realloc_function (void *p, size_t size) ;
+bool     GB_Global_have_realloc_function (void) ;
 
 void     GB_Global_free_function_set (void (* free_function) (void *)) ;
 void     GB_Global_free_function (void *p) ;
@@ -88,9 +92,9 @@ bool     GB_Global_malloc_tracking_get (void) ;
 void     GB_Global_nmalloc_clear (void) ;
 GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 int64_t  GB_Global_nmalloc_get (void) ;
-int64_t  GB_Global_nmalloc_increment (void) ;
+void     GB_Global_nmalloc_increment (void) ;
 GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
-int64_t  GB_Global_nmalloc_decrement (void) ;
+void     GB_Global_nmalloc_decrement (void) ;
 
 GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void     GB_Global_malloc_debug_set (bool malloc_debug) ;
@@ -100,14 +104,6 @@ bool     GB_Global_malloc_debug_get (void) ;
 GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void     GB_Global_malloc_debug_count_set (int64_t malloc_debug_count) ;
 bool     GB_Global_malloc_debug_count_decrement (void) ;
-
-void     GB_Global_inuse_clear (void) ;
-void     GB_Global_inuse_increment (int64_t s) ;
-void     GB_Global_inuse_decrement (int64_t s) ;
-GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
-int64_t  GB_Global_inuse_get (void) ;
-GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
-int64_t  GB_Global_maxused_get (void) ;
 
 GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void     GB_Global_hack_set (int64_t hack) ;
@@ -122,10 +118,16 @@ GB_PUBLIC   // accessed by the MATLAB interface only
 void     GB_Global_print_one_based_set (bool onebased) ;
 GB_PUBLIC   // accessed by the MATLAB interface only
 bool     GB_Global_print_one_based_get (void) ;
-GB_PUBLIC   // accessed by the MATLAB interface only
-void     GB_Global_print_format_set (int print_format) ;
-GB_PUBLIC   // accessed by the MATLAB interface only
-int      GB_Global_print_format_get (void) ;
+
+void     GB_Global_gpu_control_set (GrB_Desc_Value value) ;
+GrB_Desc_Value GB_Global_gpu_control_get (void);
+void     GB_Global_gpu_chunk_set (double gpu_chunk) ;
+double   GB_Global_gpu_chunk_get (void) ;
+bool     GB_Global_gpu_count_set (bool enable_cuda) ;
+int      GB_Global_gpu_count_get (void) ;
+size_t   GB_Global_gpu_memorysize_get (int device) ;
+int      GB_Global_gpu_sm_get (int device) ;
+bool     GB_Global_gpu_device_properties_get (int device) ;
 
 #endif
 

@@ -25,11 +25,11 @@
 #endif
 
 #undef  GB_FREE_ALL
-#define GB_FREE_ALL                                                         \
-{                                                                           \
-    GB_FREE_WORK ;                                                          \
-    GB_FREE_MEMORY (Npending, ntasks+1, sizeof (int64_t)) ;                 \
-    GB_FREE_MEMORY (TaskList, max_ntasks+1, sizeof (GB_task_struct)) ;      \
+#define GB_FREE_ALL         \
+{                           \
+    GB_FREE_WORK ;          \
+    GB_FREE (Npending) ;    \
+    GB_FREE (TaskList) ;    \
 }
 
 //------------------------------------------------------------------------------
@@ -38,9 +38,9 @@
 
 #define GB_GET_C                                                            \
     GrB_Info info ;                                                         \
-    ASSERT_MATRIX_OK (C, "C for subassign kernel", GB0) ;               \
-    int64_t *GB_RESTRICT Ci = C->i ;                                           \
-    GB_void *GB_RESTRICT Cx = C->x ;                                           \
+    ASSERT_MATRIX_OK (C, "C for subassign kernel", GB0) ;                   \
+    int64_t *GB_RESTRICT Ci = C->i ;                                        \
+    GB_void *GB_RESTRICT Cx = (GB_void *) C->x ;                            \
     const size_t csize = C->type->size ;                                    \
     const GB_Type_code ccode = C->type->code ;                              \
     const int64_t cvdim = C->vdim ;                                         \
@@ -62,7 +62,7 @@
     const int64_t *GB_RESTRICT Mp = M->p ;                                     \
     const int64_t *GB_RESTRICT Mh = M->h ;                                     \
     const int64_t *GB_RESTRICT Mi = M->i ;                                     \
-    const GB_void *GB_RESTRICT Mx = (Mask_struct ? NULL : (M->x)) ;            \
+    const GB_void *GB_RESTRICT Mx = (GB_void *) (Mask_struct ? NULL : (M->x)) ;\
     const size_t msize = M->type->size ;
 
 //  const bool M_is_hyper = M->is_hyper ;
@@ -73,7 +73,7 @@
 //------------------------------------------------------------------------------
 
 #define GB_GET_ACCUM                                                        \
-    ASSERT_BINARYOP_OK (accum, "accum for assign", GB0) ;                 \
+    ASSERT_BINARYOP_OK (accum, "accum for assign", GB0) ;                   \
     GxB_binary_function faccum = accum->function ;                          \
     GB_cast_function cast_A_to_Y = GB_cast_factory (accum->ytype->code, acode);\
     GB_cast_function cast_C_to_X = GB_cast_factory (accum->xtype->code, ccode);\
@@ -93,7 +93,7 @@
     GB_Type_code acode = atype->code ;                                      \
     const int64_t *GB_RESTRICT Ap = A->p ;                                  \
     const int64_t *GB_RESTRICT Ai = A->i ;                                  \
-    const GB_void *GB_RESTRICT Ax = A->x ;                                  \
+    const GB_void *GB_RESTRICT Ax = (GB_void *) A->x ;                      \
     GB_cast_function cast_A_to_C = GB_cast_factory (ccode, acode) ;
 
 //  const int64_t *GB_RESTRICT Ah = A->h ;
@@ -127,10 +127,10 @@
 //------------------------------------------------------------------------------
 
 #define GB_GET_S                                                            \
-    ASSERT_MATRIX_OK (S, "S extraction", GB0) ;                         \
-    const int64_t *GB_RESTRICT Sp = S->p ;                                     \
-    const int64_t *GB_RESTRICT Si = S->i ;                                     \
-    const int64_t *GB_RESTRICT Sx = S->x ;
+    ASSERT_MATRIX_OK (S, "S extraction", GB0) ;                             \
+    const int64_t *GB_RESTRICT Sp = S->p ;                                  \
+    const int64_t *GB_RESTRICT Si = S->i ;                                  \
+    const int64_t *GB_RESTRICT Sx = (int64_t *) S->x ;
 
 //  const int64_t *GB_RESTRICT Sh = S->h ;
 //  const int64_t Snvec = S->nvec ;
@@ -1536,7 +1536,7 @@ GrB_Info GB_subassign_20
 //------------------------------------------------------------------------------
 
 #define GB_ALLOCATE_NPENDING                                                \
-    GB_MALLOC_MEMORY (Npending, ntasks+1, sizeof (int64_t)) ;               \
+    Npending = GB_MALLOC (ntasks+1, int64_t) ;                              \
     if (Npending == NULL)                                                   \
     {                                                                       \
         GB_FREE_ALL ;                                                       \
@@ -1587,9 +1587,9 @@ GrB_Info GB_subassign_20
 
 #define GB_FREE_TWO_SLICE                                                   \
 {                                                                           \
-    GB_FREE_MEMORY (Zh,     Znvec, sizeof (int64_t)) ;                      \
-    GB_FREE_MEMORY (Z_to_X, Znvec, sizeof (int64_t)) ;                      \
-    GB_FREE_MEMORY (Z_to_S, Znvec, sizeof (int64_t)) ;                      \
+    GB_FREE (Zh) ;                                                          \
+    GB_FREE (Z_to_X) ;                                                      \
+    GB_FREE (Z_to_S) ;                                                      \
 }
 
 //------------------------------------------------------------------------------
@@ -1604,9 +1604,9 @@ GrB_Info GB_subassign_20
 #define GB_SUBASSIGN_EMULT_SLICE(A,M)                                       \
     GB_EMPTY_TASKLIST ;                                                     \
     int64_t Znvec ;                                                         \
-    const int64_t *GB_RESTRICT Zh = NULL ;                                     \
-    int64_t *GB_RESTRICT Z_to_A = NULL ;                                       \
-    int64_t *GB_RESTRICT Z_to_M = NULL ;                                       \
+    const int64_t *GB_RESTRICT Zh = NULL ;                                  \
+    int64_t *GB_RESTRICT Z_to_A = NULL ;                                    \
+    int64_t *GB_RESTRICT Z_to_M = NULL ;                                    \
     GB_OK (GB_subassign_emult_slice (                                       \
         &TaskList, &max_ntasks, &ntasks, &nthreads,                         \
         &Znvec, &Zh, &Z_to_A, &Z_to_M,                                      \
@@ -1616,8 +1616,8 @@ GrB_Info GB_subassign_20
 
 #define GB_FREE_EMULT_SLICE                                                 \
 {                                                                           \
-    GB_FREE_MEMORY (Z_to_A, Znvec, sizeof (int64_t)) ;                      \
-    GB_FREE_MEMORY (Z_to_M, Znvec, sizeof (int64_t)) ;                      \
+    GB_FREE (Z_to_A) ;                                                      \
+    GB_FREE (Z_to_M) ;                                                      \
 }
 
 //------------------------------------------------------------------------------
@@ -1891,8 +1891,7 @@ GrB_Info GB_subassign_emult_slice
     {                                                                       \
         /* no pending tuples, so skip phase 2 */                            \
         GB_FREE_ALL ;                                                       \
-        /* C is valid, but might not be in the queue; thus the FLIP */      \
-        ASSERT_MATRIX_OK (C, "C, no pending tuples ", GB_FLIP (GB0)) ;  \
+        ASSERT_MATRIX_OK (C, "C, no pending tuples ", GB_FLIP (GB0)) ;      \
         return (GrB_SUCCESS) ;                                              \
     }                                                                       \
     /* ensure that C->Pending is large enough to handle nnew more tuples */ \
@@ -1954,24 +1953,19 @@ GrB_Info GB_subassign_emult_slice
                 /* (i,j) is the first pending tuple for this task; check */ \
                 /* with the pending tuple just before it                 */ \
                 ASSERT (n < npending_orig + nnew) ;                         \
-                /* printf ("taskid %d n "GBd"\n", taskid, n) ; */           \
                 int64_t i = Pending_i [n] ;                                 \
                 int64_t j = (Pending_j != NULL) ? Pending_j [n] : 0 ;       \
                 int64_t ilast = Pending_i [n-1] ;                           \
                 int64_t jlast = (Pending_j != NULL) ? Pending_j [n-1] : 0 ; \
-                /* printf ("i "GBd" j "GBd" ilast "GBd" jlast "GBd"\n", */  \
-                /*     i, j, ilast, jlast) ; */                             \
                 pending_sorted = pending_sorted &&                          \
                     ((jlast < j) || (jlast == j && ilast <= i)) ;           \
-                /* printf ("pending_sorted now %d\n", pending_sorted) ; */  \
             }                                                               \
         }                                                                   \
     }                                                                       \
     Pending->n += nnew ;                                                    \
     Pending->sorted = pending_sorted ;                                      \
     GB_FREE_ALL ;                                                           \
-    /* C is valid, but might not be in the queue; thus the FLIP */          \
-    ASSERT_MATRIX_OK (C, "C with pending tuples ", GB_FLIP (GB0)) ;     \
+    ASSERT_MATRIX_OK (C, "C with pending tuples ", GB_FLIP (GB0)) ;         \
     return (GrB_SUCCESS) ;
 
 #endif

@@ -262,20 +262,23 @@ GrB_Info dpagerank2         // GrB_SUCCESS or error condition
     // create the new Page type
     OK (GrB_Type_new (&PageRank_type, sizeof (pagerank_type))) ;
 
+    #define U (GxB_unary_function)
+    #define B (GxB_binary_function)
+
     // create the unary operator to initialize the PageRank_type of each node
-    OK (GrB_UnaryOp_new (&PageRank_init, init_page, PageRank_type, GrB_FP64)) ;
+    OK (GrB_UnaryOp_new (&PageRank_init, U init_page, PageRank_type, GrB_FP64));
 
     // create PageRank_accum
-    OK (GrB_BinaryOp_new (&PageRank_accum, pagerank_accum,
+    OK (GrB_BinaryOp_new (&PageRank_accum, B pagerank_accum,
         PageRank_type, PageRank_type, PageRank_type)) ;
 
     // create PageRank_add operator and monoid
-    OK (GrB_BinaryOp_new (&PageRank_add, pagerank_add,
+    OK (GrB_BinaryOp_new (&PageRank_add, B pagerank_add,
         PageRank_type, PageRank_type, PageRank_type)) ;
     OK (GrB_Monoid_new_UDT (&PageRank_monoid, PageRank_add, &pagerank_zero)) ;
 
     // create PageRank_multiply operator
-    OK (GrB_BinaryOp_new (&PageRank_multiply, pagerank_multiply,
+    OK (GrB_BinaryOp_new (&PageRank_multiply, B pagerank_multiply,
         PageRank_type, PageRank_type, GrB_BOOL)) ;
 
     // create PageRank_semiring
@@ -283,14 +286,14 @@ GrB_Info dpagerank2         // GrB_SUCCESS or error condition
         PageRank_multiply)) ;
 
     // create unary operator that typecasts the PageRank_type to double
-    OK (GrB_UnaryOp_new (&PageRank_get, pagerank_get_rank, GrB_FP64,
+    OK (GrB_UnaryOp_new (&PageRank_get, U pagerank_get_rank, GrB_FP64,
         PageRank_type)) ;
 
     // create unary operator that scales the rank by pagerank_rsum
-    OK (GrB_UnaryOp_new (&PageRank_div, pagerank_div, GrB_FP64, GrB_FP64)) ;
+    OK (GrB_UnaryOp_new (&PageRank_div, U pagerank_div, GrB_FP64, GrB_FP64)) ;
 
     // create PageRank_diff operator
-    OK (GrB_BinaryOp_new (&PageRank_diff, pagerank_diff,
+    OK (GrB_BinaryOp_new (&PageRank_diff, B pagerank_diff,
         PageRank_type, PageRank_type, PageRank_type)) ;
 
     //--------------------------------------------------------------------------
@@ -349,7 +352,7 @@ GrB_Info dpagerank2         // GrB_SUCCESS or error condition
             desc)) ;
 
         // compute pagerank_rdiff = sum ((r - rnew).^2)
-        OK (GrB_eWiseAdd_Vector_BinaryOp (rdiff, NULL, NULL, PageRank_diff,
+        OK (GrB_Vector_eWiseAdd_BinaryOp (rdiff, NULL, NULL, PageRank_diff,
             r, rnew, NULL)) ;
         pagerank_type rsum ;
         OK (GrB_Vector_reduce_UDT (&rsum, NULL, PageRank_monoid, rdiff, NULL)) ;
@@ -376,7 +379,7 @@ GrB_Info dpagerank2         // GrB_SUCCESS or error condition
     GrB_Vector_free (&r) ;
 
     // pagerank_rsum = sum (rdouble)
-    OK (GrB_Vector_reduce_FP64 (&pagerank_rsum, NULL, GxB_PLUS_FP64_MONOID,
+    OK (GrB_Vector_reduce_FP64 (&pagerank_rsum, NULL, GrB_PLUS_MONOID_FP64,
         rdouble, NULL)) ;
 
     // could also do this with GrB_vxm, with a 1-by-1 matrix
@@ -394,8 +397,8 @@ GrB_Info dpagerank2         // GrB_SUCCESS or error condition
     // [r,irank] = sort (r, 'descend') ;
 
     // [I,X] = find (r) ;
-    X = malloc (n * sizeof (double)) ;
-    I = malloc (n * sizeof (GrB_Index)) ;
+    X = (double *) malloc (n * sizeof (double)) ;
+    I = (GrB_Index *) malloc (n * sizeof (GrB_Index)) ;
     CHECK (I != NULL && X != NULL, GrB_OUT_OF_MEMORY) ;
     GrB_Index nvals = n ;
     OK (GrB_Vector_extractTuples_FP64 (I, X, &nvals, rdouble)) ;
@@ -404,7 +407,7 @@ GrB_Info dpagerank2         // GrB_SUCCESS or error condition
     GrB_Vector_free (&rdouble) ;
 
     // P = struct (X,I)
-    P = malloc (n * sizeof (PageRank)) ;
+    P = (PageRank *) malloc (n * sizeof (PageRank)) ;
     CHECK (P != NULL, GrB_OUT_OF_MEMORY) ;
     int64_t k ;
     for (k = 0 ; k < nvals ; k++)

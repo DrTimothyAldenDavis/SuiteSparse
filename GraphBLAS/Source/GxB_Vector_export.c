@@ -11,6 +11,8 @@
 
 #include "GB_export.h"
 
+#define GB_FREE_ALL ;
+
 GrB_Info GxB_Vector_export  // export and free a vector
 (
     GrB_Vector *v,          // handle of vector to export and free
@@ -35,7 +37,8 @@ GrB_Info GxB_Vector_export  // export and free a vector
     ASSERT_VECTOR_OK (*v, "v to export", GB0) ;
 
     // finish any pending work
-    GB_WAIT (*v) ;
+    GrB_Info info ;
+    GB_VECTOR_WAIT (*v) ;
 
     // check these after forcing completion
     GB_RETURN_IF_NULL (type) ;

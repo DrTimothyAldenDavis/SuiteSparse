@@ -39,7 +39,7 @@ for probs = 1:nprobs
             A1 = spones (sprand (10, 10, 0.5)) ;
             A2 = spones (sprand (10, 10, 0.5)) ;
             A3 = sparse (10,10) ;
-            A4 = GB_mex_eWiseAdd_Matrix (A3, [], [], 'minus', A1, A2, [ ]) ;
+            A4 = GB_mex_Matrix_eWiseAdd (A3, [], [], 'minus', A1, A2, [ ]) ;
             A = A4.matrix ;
             % spok(A) will fail since it has intentional explicit zeros
         case 4

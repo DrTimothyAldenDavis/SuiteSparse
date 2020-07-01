@@ -16,9 +16,9 @@
     const int64_t  *GB_RESTRICT Ap = A->p ;
     const int64_t  *GB_RESTRICT Ah = A->h ;
     const int64_t  *GB_RESTRICT Ai = A->i ;
-    const GB_CTYPE *GB_RESTRICT Ax = A->x ;
+    const GB_ATYPE *GB_RESTRICT Ax = (GB_ATYPE *) A->x ;
 
-    GB_CTYPE *GB_RESTRICT Cx = C->x ;
+    GB_CTYPE *GB_RESTRICT Cx = (GB_CTYPE *) C->x ;
     const int64_t cvlen = C->vlen ;
 
     //--------------------------------------------------------------------------
@@ -59,7 +59,7 @@
 
             if (Mask_struct)
             {
-                GB_PRAGMA_VECTORIZE
+                GB_PRAGMA_SIMD_VECTORIZE
                 for (int64_t pA = pA_start ; pA < pA_end ; pA++)
                 { 
                     int64_t p = pC + Ai [pA] ;
@@ -68,7 +68,7 @@
             }
             else
             {
-                GB_PRAGMA_VECTORIZE
+                GB_PRAGMA_SIMD_VECTORIZE
                 for (int64_t pA = pA_start ; pA < pA_end ; pA++)
                 {
                     if (GB_AX_MASK (Ax, pA, asize))

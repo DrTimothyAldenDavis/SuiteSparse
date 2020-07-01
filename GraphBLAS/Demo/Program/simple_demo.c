@@ -48,7 +48,7 @@ int main (void)
     double n = ((double) LEN) / 1e6 ;
 
     // calloc the space for more accurate timing
-    x = calloc (LEN, sizeof (double)) ;
+    x = (double *) calloc (LEN, sizeof (double)) ;
     if (x == NULL)
     {
         fprintf (stderr, "simple_demo: out of memory\n") ;

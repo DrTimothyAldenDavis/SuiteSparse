@@ -9,7 +9,7 @@ function test27
 fprintf ('=================================================================\n');
 fprintf ('test27: test nesdis\n') ;
 
-Prob = UFget ('HB/west0479') ;
+Prob = ssget ('HB/west0479') ;
 dg (Prob.A) ;
 
 fprintf ('test27 passed\n') ;

@@ -16,10 +16,10 @@
     const int64_t *GB_RESTRICT Mp = M->p ;
     const int64_t *GB_RESTRICT Mh = M->h ;
     const int64_t *GB_RESTRICT Mi = M->i ;
-    const GB_void *GB_RESTRICT Mx = (Mask_struct ? NULL : (M->x)) ;
+    const GB_void *GB_RESTRICT Mx = (GB_void *) (Mask_struct ? NULL : (M->x)) ;
     const size_t msize = M->type->size ;
 
-    GB_CTYPE *GB_RESTRICT Cx = C->x ;
+    GB_CTYPE *GB_RESTRICT Cx = (GB_CTYPE *) C->x ;
     const int64_t cvlen = C->vlen ;
 
     //--------------------------------------------------------------------------
@@ -60,7 +60,7 @@
 
             if (Mx == NULL)
             {
-                GB_PRAGMA_VECTORIZE
+                GB_PRAGMA_SIMD_VECTORIZE
                 for (int64_t pM = pM_start ; pM < pM_end ; pM++)
                 { 
                     int64_t p = pC + Mi [pM] ;
@@ -69,7 +69,7 @@
             }
             else
             {
-                GB_PRAGMA_VECTORIZE
+                GB_PRAGMA_SIMD_VECTORIZE
                 for (int64_t pM = pM_start ; pM < pM_end ; pM++)
                 {
                     if (GB_mcast (Mx, pM, msize))

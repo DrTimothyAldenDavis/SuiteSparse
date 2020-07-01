@@ -141,7 +141,7 @@ static inline void GB_find_Ap_start_end
 //------------------------------------------------------------------------------
 
 #define GB_FREE_WORK \
-    GB_FREE_MEMORY (Count, max_ntasks+1, sizeof (int64_t)) ;
+    GB_FREE (Count) ;
 
 GrB_Info GB_subref_phase0
 (
@@ -325,7 +325,7 @@ GrB_Info GB_subref_phase0
     // allocate workspace
     //--------------------------------------------------------------------------
 
-    GB_CALLOC_MEMORY (Count, max_ntasks+1, sizeof (int64_t)) ;
+    Count = GB_CALLOC (max_ntasks+1, int64_t) ;
     if (Count == NULL)
     {
         // out of memory
@@ -474,7 +474,7 @@ GrB_Info GB_subref_phase0
 
     if (C_is_hyper)
     {
-        GB_MALLOC_MEMORY (Ch, Cnvec, sizeof (int64_t)) ;
+        Ch = GB_MALLOC (Cnvec, int64_t) ;
         if (Ch == NULL)
         { 
             GB_FREE_WORK ;
@@ -484,15 +484,15 @@ GrB_Info GB_subref_phase0
 
     if (Cnvec > 0)
     {
-        GB_MALLOC_MEMORY (Ap_start, Cnvec, sizeof (int64_t)) ;
-        GB_MALLOC_MEMORY (Ap_end,   Cnvec, sizeof (int64_t)) ;
+        Ap_start = GB_MALLOC (Cnvec, int64_t) ;
+        Ap_end   = GB_MALLOC (Cnvec, int64_t) ;
         if (Ap_start == NULL || Ap_end == NULL)
         { 
             // out of memory
             GB_FREE_WORK ;
-            GB_FREE_MEMORY (Ch, Cnvec, sizeof (int64_t)) ;
-            GB_FREE_MEMORY (Ap_start, Cnvec, sizeof (int64_t)) ;
-            GB_FREE_MEMORY (Ap_end,   Cnvec, sizeof (int64_t)) ;
+            GB_FREE (Ch) ;
+            GB_FREE (Ap_start) ;
+            GB_FREE (Ap_end) ;
             return (GB_OUT_OF_MEMORY) ;
         }
     }

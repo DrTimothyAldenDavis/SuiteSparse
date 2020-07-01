@@ -1,4 +1,4 @@
-function Cout = gbselect (Cin, M, accum, op, A, b, desc)        %#ok
+function C = gbselect (Cin, M, accum, op, A, b, desc)        %#ok
 
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
 % http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.

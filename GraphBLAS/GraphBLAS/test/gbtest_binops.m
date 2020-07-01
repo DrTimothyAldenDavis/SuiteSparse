@@ -1,5 +1,5 @@
 function [binops, synonyms] = gbtest_binops
-%GBTEST_BINOPS return a cell array of strings, listing all binary operators
+%GBTEST_BINOPS list of all binary operators
 % Types are not included; see gbtest_types.
 %
 % [binops synonyms] = gbtest_binops ;
@@ -9,8 +9,8 @@ function [binops, synonyms] = gbtest_binops
 %
 % See also GrB.binopinfo.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
+% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
 
 binops = {
     '1st'
@@ -40,6 +40,19 @@ binops = {
     '|'
     '&'
     'xor'
+    'atan2'
+    'hypot'
+    'fmod'
+    'remainder'
+    'copysign'
+    'cmplx'
+    'pow2'
+    'xnor'
+    'pow'
+    'bitor'
+    'bitand'
+    'bitxor'
+    'bitxnor'
     } ;
 
 synonyms = {
@@ -62,5 +75,6 @@ synonyms = {
     'ge'
     'le'
     'lt'
-    'gt' } ;
+    'gt'
+    'lxnor' } ;
 

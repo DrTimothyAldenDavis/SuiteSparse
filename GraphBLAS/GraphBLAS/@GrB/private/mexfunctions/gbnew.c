@@ -10,6 +10,19 @@
 // A may be a MATLAB sparse matrix, or a MATLAB struct containing a GraphBLAS
 // matrix.  C is returned as a MATLAB struct containing a GraphBLAS matrix.
 
+// Usage:
+
+// C = gbnew (A)
+// C = gbnew (A, type)
+// C = gbnew (A, format)
+// C = gbnew (m, n)
+// C = gbnew (m, n, format)
+// C = gbnew (m, n, type)
+// C = gbnew (A, type, format)
+// C = gbnew (A, format, type)
+// C = gbnew (m, n, type, format)
+// C = gbnew (m, n, format, type)
+
 #include "gb_matlab.h"
 
 void mexFunction

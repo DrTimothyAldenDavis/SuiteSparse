@@ -8,7 +8,8 @@ function test134
 
 fprintf ('\ntest134: GxB_select tests\n') ;
 
-[~, ~, ~, classes, ~, select_ops] = GB_spec_opsall ;
+[~, ~, ~, types, ~, select_ops] = GB_spec_opsall ;
+types = types.all ;
 
 rng ('default') ;
 
@@ -16,9 +17,9 @@ m = 10 ;
 n = 6 ;
 dt = struct ('inp0', 'tran') ;
 
-for k1 = 1:length(classes)
-    aclass = classes {k1} ;
-    fprintf ('%s: ', aclass) ;
+for k1 = 1:length(types)
+    atype = types {k1} ;
+    fprintf ('%-14s ', atype) ;
 
     for A_is_hyper = 0:1
     for A_is_csc   = 0:1
@@ -45,13 +46,12 @@ for k1 = 1:length(classes)
         hm = 0 ;
     end
 
-    A = GB_spec_random (m, n, 0.3, 100, aclass, A_is_csc, A_is_hyper, ha) ;
+    A = GB_spec_random (m, n, 0.3, 100, atype, A_is_csc, A_is_hyper, ha) ;
     A.matrix (:,1) = rand (m,1) ;
     A.pattern (:,1) = true (m,1) ;
-    Cin = GB_spec_random (m, n, 0.3, 100, aclass, C_is_csc, C_is_hyper, hc) ;
-    B = GB_spec_random (n, m, 0.3, 100, aclass, A_is_csc, A_is_hyper, ha) ;
-    cin = cast (0, aclass) ;
-    % Mask = (sprand (m, n, 0.5) ~= 0) ;
+    Cin = GB_spec_random (m, n, 0.3, 100, atype, C_is_csc, C_is_hyper, hc) ;
+    B = GB_spec_random (n, m, 0.3, 100, atype, A_is_csc, A_is_hyper, ha) ;
+    cin = GB_mex_cast (0, atype) ;
     Mask = GB_random_mask (m, n, 0.5, M_is_csc, M_is_hyper) ;
     Mask.hyper_ratio = hm ;
 
@@ -59,7 +59,17 @@ for k1 = 1:length(classes)
 
     for k2 = 1:length(select_ops)
         op = select_ops {k2} ;
-        % fprintf ('%s ', op) ;
+
+        if (contains (atype, 'complex'))
+            switch (op)
+                case { 'gt_zero', 'ge_zero', 'lt_zero', 'le_zero', ...
+                       'gt_thunk', 'ge_thunk', 'lt_thunk', 'le_thunk' }
+                    continue ;
+                    % error ('op %s not defined for complex types', op) ;
+                otherwise
+                    % op is OK
+            end
+        end
 
         switch op
             case {'tril'    }
@@ -95,6 +105,8 @@ for k1 = 1:length(classes)
             case {'le_thunk'}
                 klist = [0 1] ;
         end
+
+
 
         for k = klist
 

@@ -12,7 +12,7 @@ function test4 (nmat)
 % warning ('off', 'KLU:rcond') ;
 % warning ('off', 'MATLAB:Axes:NegativeDataInLogAxis') ;
 
-index = UFget ;
+index = ssget ;
 f = find (index.nrows == index.ncols & index.isReal & index.amd_lnz > 0) ;
 [ignore i] = sort (index.amd_lnz (f)) ;                                     %#ok
 f = f (i) ;
@@ -48,7 +48,7 @@ clf
 
     for kk = 1:nmat
 
-        Prob = UFget (f (kk), index) ;
+        Prob = ssget (f (kk), index) ;
 
         waitbar (kk/nmat, h) ;
 

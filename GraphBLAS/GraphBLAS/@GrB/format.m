@@ -39,16 +39,16 @@ function f = format (arg)
 % all subsequent newly created matrices.
 %
 % All prior matrices created before GrB.format (f) are kept in their same
-% format; this setting only applies to new matrices.  Operations on matrices
-% can be done with any mix of with different formats.  The format only affects
-% time and memory usage, not the results.
+% format; this setting only applies to new matrices.  Operations on
+% matrices can be done with any mix of with different formats.  The format
+% only affects time and memory usage, not the results.
 %
 % The format of the output C of a GraphBLAS method is defined using the
 % following rules.  The first rule that holds is used:
 %
-%   (1) GraphBLAS operations of the form Cout = GrB.method (Cin, ...)
+%   (1) GraphBLAS operations of the form C = GrB.method (Cin, ...)
 %       that take a Cin input matrix, use the format of Cin as the format
-%       for Cout, if Cin is provided on input.
+%       for C, if Cin is provided on input.
 %   (2) If the format is determined by the descriptor to the method, then
 %       that determines the format of C.
 %   (3) If C is a column vector then C is stored by column.
@@ -77,23 +77,23 @@ function f = format (arg)
 %   GrB.format (G)
 %   GrB.format ('by row') ;      % set the default format to 'by row'
 %   G = GrB.build (1:3, 1:3, 1:3)
-%   GrB.format (G)               % query the format of G (which is 'by row')
+%   GrB.format (G)               % query the format of G, which is 'by row'
 %
 % See also GrB.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
+% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
 
 if (nargin == 0)
     % f = GrB.format ; get the global format
     f = gbformat ;
 else
-    if (isa (arg, 'GrB'))
-        % f = GrB.format (G) ; get the format of the matrix G
-        f = gbformat (arg.opaque) ;
-    else
-        % f = GrB.format (f) ; set the global format for all future matrices
-        f = gbformat (arg) ;
+    if (isobject (arg))
+        % f = GrB.format (G) ; get the format of the GraphBLAS matrix
+        arg = arg.opaque ;
     end
+    % f = GrB.format (A) ; get the format of the matrix A (MATLAB or GraphBLAS)
+    % f = GrB.format (f) ; set the global format for all matrices.
+    f = gbformat (arg) ;
 end
 

@@ -28,7 +28,7 @@ d = nnz (A) / prod (size (A)) ;
     t1 = toc ;
 
     tic
-    C2 = GB_mex_eWiseMult_Matrix (S, [ ], [ ], 'times', A, B, [ ]) ;
+    C2 = GB_mex_Matrix_eWiseMult (S, [ ], [ ], 'times', A, B, [ ]) ;
     t2 = toc ;
 
     fprintf (...
@@ -50,7 +50,7 @@ for d = [0.00001:0.00001:0.0001 0.0002:0.0001: 0.001 0.002:.001:0.01 0.02:0.01:.
     t1 = toc ;
 
     tic
-    C2 = GB_mex_eWiseMult_Matrix (S, [ ], [ ], 'times', A, B, [ ]) ;
+    C2 = GB_mex_Matrix_eWiseMult (S, [ ], [ ], 'times', A, B, [ ]) ;
     t2 = toc ;
 
     fprintf (...

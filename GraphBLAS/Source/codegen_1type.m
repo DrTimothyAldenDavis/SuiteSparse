@@ -1,5 +1,5 @@
 function codegen_1type
-%CODEGEN_1TYPE create functions for all 11 built-in types
+%CODEGEN_1TYPE create functions for all 13 built-in types
 %
 % This function creates all files of the form GB_type__*.[ch], including 11
 % functions (GB_type__*.c) and one include file, GB_type__include.h.
@@ -29,6 +29,8 @@ codegen_1type_template ('uint32_t') ;
 codegen_1type_template ('uint64_t') ;
 codegen_1type_template ('float') ;
 codegen_1type_template ('double') ;
+codegen_1type_template ('GxB_FC32_t') ;
+codegen_1type_template ('GxB_FC64_t') ;
 
 fprintf ('\n') ;
 

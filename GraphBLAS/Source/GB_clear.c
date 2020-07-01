@@ -80,8 +80,8 @@ GrB_Info GB_clear           // clear a matrix, type and dimensions unchanged
         int64_t plen = GB_IMIN (1, A->vdim) ;
         A->nvec = 0 ;
         A->plen = plen ;
-        GB_CALLOC_MEMORY (A->p, plen+1, sizeof (int64_t)) ;
-        GB_CALLOC_MEMORY (A->h, plen  , sizeof (int64_t)) ;
+        A->p = GB_CALLOC (plen+1, int64_t) ;
+        A->h = GB_CALLOC (plen  , int64_t) ;
         if (A->p == NULL || A->h == NULL)
         { 
             // out of memory
@@ -100,7 +100,7 @@ GrB_Info GB_clear           // clear a matrix, type and dimensions unchanged
         int64_t plen = A->vdim ;
         A->nvec = plen ;
         A->plen = plen ;
-        GB_CALLOC_MEMORY (A->p, plen+1, sizeof (int64_t)) ;
+        A->p = GB_CALLOC (plen+1, int64_t) ;
         ASSERT (A->h == NULL) ;
         if (A->p == NULL)
         { 

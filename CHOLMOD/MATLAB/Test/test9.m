@@ -9,8 +9,8 @@ function test9
 fprintf ('=================================================================\n');
 fprintf ('test9: test metis, etree, bisect, nesdis\n') ;
 
-% Prob = UFget ('LPnetlib/lp_qap15') ;
-Prob = UFget ('HB/bcsstk15')						    %#ok
+% Prob = ssget ('LPnetlib/lp_qap15') ;
+Prob = ssget ('HB/bcsstk15')						    %#ok
 A = Prob.A ;
 C = A'*A ;
 R = A*A' ;

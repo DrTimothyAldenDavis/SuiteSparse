@@ -10,6 +10,7 @@
 // FUTURE: extend to handle typecasting and generic operators.
 
 #include "GB_dense.h"
+#include "GB_binop.h"
 #ifndef GBCOMPACT
 #include "GB_binop__include.h"
 
@@ -72,12 +73,12 @@ GrB_Info GB_dense_ewise3_noaccum    // C = A+B
     // define the worker for the switch factory
     //--------------------------------------------------------------------------
 
-    #define GB_Cdense_ewise3_noaccum(op,xyname) \
-        GB_Cdense_ewise3_noaccum_ ## op ## xyname
+    #define GB_Cdense_ewise3_noaccum(op,xname) \
+        GB_Cdense_ewise3_noaccum_ ## op ## xname
 
-    #define GB_BINOP_WORKER(op,xyname)                                      \
+    #define GB_BINOP_WORKER(op,xname)                                       \
     {                                                                       \
-        info = GB_Cdense_ewise3_noaccum(op,xyname) (C, A, B, nthreads) ;    \
+        info = GB_Cdense_ewise3_noaccum(op,xname) (C, A, B, nthreads) ;     \
     }                                                                       \
     break ;
 
@@ -86,11 +87,16 @@ GrB_Info GB_dense_ewise3_noaccum    // C = A+B
     //--------------------------------------------------------------------------
 
     GB_Opcode opcode ;
-    GB_Type_code xycode, zcode ;
-    if (GB_binop_builtin (A->type, false, B->type, false, op, false,
-        &opcode, &xycode, &zcode))
+    GB_Type_code xcode, ycode, zcode ;
+    if (GB_binop_builtin (A->type, false, B->type, false,
+        op, false, &opcode, &xcode, &ycode, &zcode))
     { 
         #include "GB_binop_factory.c"
+    }
+    else
+    {
+        // this function is not called if the op cannot be applied
+        ASSERT (0) ;
     }
 
     //--------------------------------------------------------------------------

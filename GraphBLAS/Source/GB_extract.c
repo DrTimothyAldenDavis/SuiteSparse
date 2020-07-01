@@ -23,6 +23,8 @@
 #include "GB_subref.h"
 #include "GB_accum_mask.h"
 
+#define GB_FREE_ALL ;
+
 GrB_Info GB_extract                 // C<M> = accum (C, A(I,J))
 (
     GrB_Matrix C,                   // input/output matrix for results
@@ -47,6 +49,7 @@ GrB_Info GB_extract                 // C<M> = accum (C, A(I,J))
 
     // C may be aliased with M and/or A
 
+    GrB_Info info ;
     GB_RETURN_IF_NULL (Rows) ;
     GB_RETURN_IF_NULL (Cols) ;
     GB_RETURN_IF_FAULTY (accum) ;
@@ -57,11 +60,7 @@ GrB_Info GB_extract                 // C<M> = accum (C, A(I,J))
     ASSERT_MATRIX_OK (A, "A input for GB_Matrix_extract", GB0) ;
 
     // check domains and dimensions for C<M> = accum (C,T)
-    GrB_Info info = GB_compatible (C->type, C, M, accum, A->type, Context) ;
-    if (info != GrB_SUCCESS)
-    { 
-        return (info) ;
-    }
+    GB_OK (GB_compatible (C->type, C, M, accum, A->type, Context)) ;
 
     // check the dimensions of C
     int64_t cnrows = GB_NROWS (C) ;
@@ -87,8 +86,8 @@ GrB_Info GB_extract                 // C<M> = accum (C, A(I,J))
     { 
         return (GB_ERROR (GrB_DIMENSION_MISMATCH, (GB_LOG,
             "Dimensions not compatible:\n"
-            "required size of output is "GBd"-by-"GBd"\n"
-            "but actual size output is  "GBd"-by-"GBd"\n",
+            "required size of output is " GBd "-by-" GBd "\n"
+            "but actual size output is  " GBd "-by-" GBd "\n",
             nRows, nCols, cnrows, cncols))) ;
     }
 
@@ -96,9 +95,8 @@ GrB_Info GB_extract                 // C<M> = accum (C, A(I,J))
     GB_RETURN_IF_QUICK_MASK (C, C_replace, M, Mask_comp) ;
 
     // delete any lingering zombies and assemble any pending tuples
-    // GB_WAIT (C) ;
-    GB_WAIT (M) ;
-    GB_WAIT (A) ;
+    GB_MATRIX_WAIT (M) ;
+    GB_MATRIX_WAIT (A) ;
 
     //--------------------------------------------------------------------------
     // handle the CSR/CSC format and transpose; T = A (I,J) or T = A (J,I)
@@ -169,11 +167,8 @@ GrB_Info GB_extract                 // C<M> = accum (C, A(I,J))
     //--------------------------------------------------------------------------
 
     GrB_Matrix T ;
-    info = GB_subref (&T, T_is_csc, A, I, ni, J, nj, false, must_sort, Context);
-    if (info != GrB_SUCCESS)
-    { 
-        return (info) ;
-    }
+    GB_OK (GB_subref (&T, T_is_csc, A, I, ni, J, nj, false, must_sort,
+        Context)) ;
 
     if (must_sort)
     { 

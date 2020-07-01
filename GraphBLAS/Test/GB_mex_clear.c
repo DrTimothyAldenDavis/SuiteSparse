@@ -15,8 +15,8 @@
 
 #define FREE_ALL                        \
 {                                       \
-    GrB_Matrix_free (&A) ;              \
-    GrB_Matrix_free (&C) ;              \
+    GrB_Matrix_free_(&A) ;              \
+    GrB_Matrix_free_(&C) ;              \
     GB_mx_put_global (true, 0) ;        \
 }
 
@@ -40,7 +40,7 @@ void mexFunction
     }
 
     #define GET_DEEP_COPY       GrB_Matrix_dup (&C, A) ;
-    #define FREE_DEEP_COPY      GrB_Matrix_free (&C) ;
+    #define FREE_DEEP_COPY      GrB_Matrix_free_(&C) ;
 
     // get A (shallow copy)
     A = GB_mx_mxArray_to_Matrix (pargin [0], "A input", false, true) ;
@@ -49,7 +49,6 @@ void mexFunction
         FREE_ALL ;
         mexErrMsgTxt ("A failed") ;
     }
-    mxClassID aclass = GB_mx_Type_to_classID (A->type) ;
 
     // output matrix has same type as input matrix
     GrB_Type ctype = A->type ;

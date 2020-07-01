@@ -9,6 +9,8 @@
 
 #include "GB_transpose.h"
 
+#define GB_FREE_ALL ;
+
 GrB_Info GxB_Matrix_Option_set      // set an option in a matrix
 (
     GrB_Matrix A,                   // descriptor to modify
@@ -21,19 +23,19 @@ GrB_Info GxB_Matrix_Option_set      // set an option in a matrix
     // check inputs
     //--------------------------------------------------------------------------
 
+    GrB_Info info = GrB_SUCCESS ;
     GB_WHERE ("GxB_Matrix_Option_set (A, field, value)") ;
     GB_BURBLE_START ("GxB_set") ;
     GB_RETURN_IF_NULL_OR_FAULTY (A) ;
     ASSERT_MATRIX_OK (A, "A to set option", GB0) ;
 
-    GB_WAIT (A) ;
+    GB_MATRIX_WAIT (A) ;
 
     //--------------------------------------------------------------------------
     // set the matrix option
     //--------------------------------------------------------------------------
 
     va_list ap ;
-    GrB_Info info = GrB_SUCCESS ;
 
     switch (field)
     {
@@ -54,13 +56,13 @@ GrB_Info GxB_Matrix_Option_set      // set an option in a matrix
 
             {
                 va_start (ap, field) ;
-                GxB_Format_Value format = va_arg (ap, GxB_Format_Value) ;
+                int format = va_arg (ap, int) ;
                 va_end (ap) ;
                 if (! (format == GxB_BY_ROW || format == GxB_BY_COL))
                 { 
                     return (GB_ERROR (GrB_INVALID_VALUE, (GB_LOG,
                             "unsupported format [%d], must be one of:\n"
-                            "GxB_BY_ROW [%d] or GxB_BY_COL [%d]", (int) format,
+                            "GxB_BY_ROW [%d] or GxB_BY_COL [%d]", format,
                             (int) GxB_BY_ROW, (int) GxB_BY_COL))) ;
                 }
                 // the value is normally GxB_BY_ROW (0) or GxB_BY_COL (1), but
@@ -72,7 +74,8 @@ GrB_Info GxB_Matrix_Option_set      // set an option in a matrix
                     // A = A', done in place, and change to the new format.
                     // transpose: no typecast, no op, in place of A
                     GBBURBLE ("(transpose) ") ;
-                    info = GB_transpose (NULL, NULL, new_csc, A, NULL, Context);
+                    info = GB_transpose (NULL, NULL, new_csc, A,
+                        NULL, NULL, NULL, false, Context);
                     ASSERT (GB_IMPLIES (info == GrB_SUCCESS,
                         A->is_csc == new_csc)) ;
                 }

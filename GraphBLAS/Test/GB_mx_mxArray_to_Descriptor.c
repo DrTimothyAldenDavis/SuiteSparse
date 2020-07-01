@@ -66,8 +66,7 @@ static bool get_descriptor
         {
             info = GxB_Desc_set (D, field, GrB_TRAN) ;
         }
-        else if (MATCH (s, "scmp") || MATCH (s, "complement")
-              || MATCH (s, "comp"))
+        else if (MATCH (s, "complement"))
         {
             info = GxB_Desc_set (D, field, GrB_COMP) ;
         }
@@ -143,7 +142,7 @@ bool GB_mx_mxArray_to_Descriptor   // true if successful, false otherwise
     GrB_Info info = GrB_Descriptor_new (&D) ;
     if (info != GrB_SUCCESS)
     {
-        GrB_Matrix_free (&D) ;
+        GrB_Matrix_free_(&D) ;
         mexWarnMsgIdAndTxt ("GB:warn", "new D failed") ;
         return (false) ;
     }
@@ -155,7 +154,7 @@ bool GB_mx_mxArray_to_Descriptor   // true if successful, false otherwise
         !get_descriptor (D, D_matlab, "mask", GrB_MASK) ||
         !get_descriptor (D, D_matlab, "axb",  GxB_AxB_METHOD))
     {
-        GrB_Matrix_free (&D) ;
+        GrB_Matrix_free_(&D) ;
         mexWarnMsgIdAndTxt ("GB:warn", "descriptor failed") ;
         return (false) ;
     }

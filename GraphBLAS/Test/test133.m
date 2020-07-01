@@ -20,7 +20,7 @@ C2 = GB_spec_transpose (S, M, [ ], Z, dtn) ;
 GB_spec_compare (C1, C2) ;
 
 d2.inp0 = 'tran' ;
-d2.mask = 'scmp' ;
+d2.mask = 'complement' ;
 
 C1 = GB_mex_transpose  (S, Z, [ ], M, d2) ;
 C2 = GB_spec_transpose (S, Z, [ ], M, d2) ;

@@ -14,7 +14,6 @@
 #include "GB_control.h"
 #include "GB_ek_slice.h"
 #include "GB_bracket.h"
-#include "GB_iterator.h"
 #include "GB_sort.h"
 #include "GB_atomics.h"
 #include "GB_AxB_saxpy3.h"
@@ -38,7 +37,7 @@
 //           OpenMP atomic? 1
 // MultAdd:  uint8_t x_op_y = (bkj - aik) ; cij *= x_op_y
 // Identity: 1
-// Terminal: if (cij == 0) break ;
+// Terminal: if (cij == 0) { cij_is_terminal = true ; break ; }
 
 #define GB_ATYPE \
     uint8_t
@@ -48,6 +47,10 @@
 
 #define GB_CTYPE \
     uint8_t
+
+// true for int64, uint64, float, double, float complex, and double complex 
+#define GB_CTYPE_IGNORE_OVERFLOW \
+    0
 
 // aik = Ax [pA]
 #define GB_GETA(aik,Ax,pA) \
@@ -63,6 +66,10 @@
 #define GB_MULT(z, x, y) \
     z = (y - x)
 
+// cast from a real scalar (or 2, if C is complex) to the type of C
+#define GB_CTYPE_CAST(x,y) \
+    ((uint8_t) x)
+
 // multiply-add
 #define GB_MULTADD(z, x, y) \
     uint8_t x_op_y = (y - x) ; z *= x_op_y
@@ -73,18 +80,29 @@
 
 // break if cij reaches the terminal value (dot product only)
 #define GB_DOT_TERMINAL(cij) \
-    if (cij == 0) break ;
+    if (cij == 0) { cij_is_terminal = true ; break ; }
 
 // simd pragma for dot-product loop vectorization
-#define GB_PRAGMA_VECTORIZE_DOT \
+#define GB_PRAGMA_SIMD_DOT(cij) \
     ;
 
 // simd pragma for other loop vectorization
-#define GB_PRAGMA_VECTORIZE GB_PRAGMA_SIMD
+#define GB_PRAGMA_SIMD_VECTORIZE GB_PRAGMA_SIMD
+
+// 1 for the PLUS_PAIR_(real) semirings, not for the complex case
+#define GB_IS_PLUS_PAIR_REAL_SEMIRING \
+    0
 
 // declare the cij scalar
-#define GB_CIJ_DECLARE(cij) \
-    uint8_t cij
+#if GB_IS_PLUS_PAIR_REAL_SEMIRING
+    // also initialize cij to zero
+    #define GB_CIJ_DECLARE(cij) \
+        uint8_t cij = 0
+#else
+    // all other semirings: just declare cij, do not initialize it
+    #define GB_CIJ_DECLARE(cij) \
+        uint8_t cij
+#endif
 
 // save the value of C(i,j)
 #define GB_CIJ_SAVE(cij,p) Cx [p] = cij
@@ -143,6 +161,14 @@
 
 // 1 if PAIR is the multiply operator 
 #define GB_IS_PAIR_MULTIPLIER \
+    0
+
+// 1 if monoid is PLUS_FC32
+#define GB_IS_PLUS_FC32_MONOID \
+    0
+
+// 1 if monoid is PLUS_FC64
+#define GB_IS_PLUS_FC64_MONOID \
     0
 
 // atomic compare-exchange

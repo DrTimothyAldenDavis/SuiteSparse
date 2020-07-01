@@ -24,7 +24,7 @@ GrB_Info GrB_Type_free          // free a user-defined type
             if (t->magic == GB_MAGIC)
             { 
                 t->magic = GB_FREED ;   // to help detect dangling pointers
-                GB_FREE_MEMORY (*type, 1, sizeof (struct GB_Type_opaque)) ;
+                GB_FREE (*type) ;
             }
             (*type) = NULL ;
         }

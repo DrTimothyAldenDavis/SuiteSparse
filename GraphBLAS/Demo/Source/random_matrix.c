@@ -58,7 +58,6 @@ GrB_Info random_matrix      // create a random double-precision matrix
 
     if (A_complex)
     {
-        #if GxB_STDC_VERSION >= 201112L
         // Areal = real random matrix
         OK (random_matrix (&Areal, make_symmetric, no_self_edges, nrows,
             ncols, nedges, method, false)) ;
@@ -75,10 +74,6 @@ GrB_Info random_matrix      // create a random double-precision matrix
         A = NULL ;
         FREE_ALL ;
         return (GrB_SUCCESS) ;
-        #else
-        printf ("complex data type not available\n") ;
-        return (GrB_INVALID_VALUE) ;
-        #endif
     }
 
     //--------------------------------------------------------------------------
@@ -141,9 +136,9 @@ GrB_Info random_matrix      // create a random double-precision matrix
         // by the mode (blocking or non-blocking).
 
         int64_t s = ((make_symmetric) ? 2 : 1) * nedges + 1 ;
-        I = malloc (s * sizeof (GrB_Index)) ;
-        J = malloc (s * sizeof (GrB_Index)) ;
-        X = malloc (s * sizeof (double   )) ;
+        I = (GrB_Index *) malloc (s * sizeof (GrB_Index)) ;
+        J = (GrB_Index *) malloc (s * sizeof (GrB_Index)) ;
+        X = (double *) malloc (s * sizeof (double   )) ;
         if (I == NULL || J == NULL || X == NULL)
         {   // out of memory
             FREE_ALL ;

@@ -7,6 +7,9 @@
 
 //------------------------------------------------------------------------------
 
+// This function now appears in the C API Specification as GrB_Matrix_resize.
+// The new name is preferred.
+
 #include "GB.h"
 
 GrB_Info GxB_Matrix_resize      // change the size of a matrix
@@ -16,18 +19,6 @@ GrB_Info GxB_Matrix_resize      // change the size of a matrix
     GrB_Index ncols_new         // new number of columns in matrix
 )
 { 
-
-    //--------------------------------------------------------------------------
-    // check inputs
-    //--------------------------------------------------------------------------
-
-    GB_WHERE ("GxB_Matrix_resize (A, nrows_new, ncols_new)") ;
-    GB_RETURN_IF_NULL_OR_FAULTY (A) ;
-
-    //--------------------------------------------------------------------------
-    // resize the matrix
-    //--------------------------------------------------------------------------
-
-    return (GB_resize (A, nrows_new, ncols_new, Context)) ;
+    return (GrB_Matrix_resize (A, nrows_new, ncols_new)) ;
 }
 

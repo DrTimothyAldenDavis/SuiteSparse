@@ -7,21 +7,22 @@
 
 //------------------------------------------------------------------------------
 
-// gbkronecker is an interface to GxB_kron
+// gbkronecker is an interface to GrB_kronecker
 
 // Usage:
 
-// Cout = GrB.kronecker (op, A, B, desc)
-// Cout = GrB.kronecker (Cin, accum, op, A, B, desc)
-// Cout = GrB.kronecker (Cin, M, op, A, B, desc)
-// Cout = GrB.kronecker (Cin, M, accum, op, A, B, desc)
+// C = gbkronecker (op, A, B)
+// C = gbkronecker (op, A, B, desc)
+// C = gbkronecker (Cin, accum, op, A, B, desc)
+// C = gbkronecker (Cin, M, op, A, B, desc)
+// C = gbkronecker (Cin, M, accum, op, A, B, desc)
 
 // If Cin is not present then it is implicitly a matrix with no entries, of the
 // right size (which depends on A, B, and the descriptor).
 
 #include "gb_matlab.h"
 
-#define USAGE "usage: Cout = GrB.kronecker (Cin, M, accum, op, A, B, desc)"
+#define USAGE "usage: C = GrB.kronecker (Cin, M, accum, op, A, B, desc)"
 
 void mexFunction
 (
@@ -36,8 +37,7 @@ void mexFunction
     // check inputs
     //--------------------------------------------------------------------------
 
-    gb_usage ((nargin == 4 || nargin == 6 || nargin == 7) && nargout <= 1,
-        USAGE) ;
+    gb_usage (nargin >= 3 && nargin <= 7 && nargout <= 2, USAGE) ;
 
     //--------------------------------------------------------------------------
     // find the arguments
@@ -58,7 +58,7 @@ void mexFunction
     // get the matrices
     //--------------------------------------------------------------------------
 
-    GrB_Type atype, ctype = NULL ;
+    GrB_Type atype, btype, ctype = NULL ;
     GrB_Matrix C = NULL, M = NULL, A, B ;
 
     if (nmatrices == 2)
@@ -81,6 +81,7 @@ void mexFunction
     }
 
     OK (GxB_Matrix_type (&atype, A)) ;
+    OK (GxB_Matrix_type (&btype, B)) ;
     if (C != NULL)
     { 
         OK (GxB_Matrix_type (&ctype, C)) ;
@@ -94,14 +95,14 @@ void mexFunction
 
     if (nstrings == 1)
     { 
-        op    = gb_mxstring_to_binop (String [0], atype) ;
+        op    = gb_mxstring_to_binop (String [0], atype, btype) ;
     }
     else 
     { 
         // if accum appears, then Cin must also appear
         CHECK_ERROR (C == NULL, USAGE) ;
-        accum = gb_mxstring_to_binop (String [0], ctype) ;
-        op    = gb_mxstring_to_binop (String [1], atype) ;
+        accum = gb_mxstring_to_binop (String [0], ctype, ctype) ;
+        op    = gb_mxstring_to_binop (String [1], atype, btype) ;
     }
 
     //--------------------------------------------------------------------------
@@ -159,7 +160,7 @@ void mexFunction
     // compute C<M> += kron (A,B)
     //--------------------------------------------------------------------------
 
-    OK (GxB_kron (C, M, accum, op, A, B, desc)) ;
+    OK (GrB_Matrix_kronecker_BinaryOp (C, M, accum, op, A, B, desc)) ;
 
     //--------------------------------------------------------------------------
     // free shallow copies
@@ -175,6 +176,7 @@ void mexFunction
     //--------------------------------------------------------------------------
 
     pargout [0] = gb_export (&C, kind) ;
+    pargout [1] = mxCreateDoubleScalar (kind) ;
     GB_WRAPUP ;
 }
 

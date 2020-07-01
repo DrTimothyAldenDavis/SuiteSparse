@@ -6,7 +6,7 @@
 
 % Copyright 2007, Timothy A. Davis, http://www.suitesparse.com
 
-index = UFget ;
+index = ssget ;
 f = find (index.amd_lnz > 0) ;
 [ignore i] = sort (index.amd_lnz (f)) ;
 f = f (i) ;
@@ -25,7 +25,7 @@ FlM = zeros (1,nmat) ;
 for k = 1:nmat
 
     i = f (k) ;
-    Prob = UFget (i,index) ;
+    Prob = ssget (i,index) ;
     A = Prob.A ;
     [m n] = size (A) ;
 

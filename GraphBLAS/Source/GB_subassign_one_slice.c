@@ -23,14 +23,14 @@
 #include "GB_subassign_methods.h"
 
 #undef  GB_FREE_WORK
-#define GB_FREE_WORK \
-    GB_FREE_MEMORY (Coarse, ntasks1+1, sizeof (int64_t)) ;
+#define GB_FREE_WORK    \
+    GB_FREE (Coarse) ;
 
 #undef  GB_FREE_ALL
-#define GB_FREE_ALL                                                     \
-{                                                                       \
-    GB_FREE_WORK ;                                                      \
-    GB_FREE_MEMORY (TaskList, max_ntasks+1, sizeof (GB_task_struct)) ;  \
+#define GB_FREE_ALL         \
+{                           \
+    GB_FREE_WORK ;          \
+    GB_FREE (TaskList) ;    \
 }
 
 //------------------------------------------------------------------------------

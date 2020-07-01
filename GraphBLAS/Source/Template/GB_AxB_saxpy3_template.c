@@ -38,7 +38,7 @@
     const int64_t *GB_RESTRICT Bp = B->p ;
     const int64_t *GB_RESTRICT Bh = B->h ;
     const int64_t *GB_RESTRICT Bi = B->i ;
-    const GB_BTYPE *GB_RESTRICT Bx = B_is_pattern ? NULL : B->x ;
+    const GB_BTYPE *GB_RESTRICT Bx = (GB_BTYPE *) (B_is_pattern ? NULL : B->x) ;
     // const int64_t bvlen = B->vlen ;
     // const int64_t bnvec = B->nvec ;
     // const bool B_is_hyper = B->is_hyper ;
@@ -48,7 +48,7 @@
     const int64_t *GB_RESTRICT Ai = A->i ;
     const int64_t anvec = A->nvec ;
     const bool A_is_hyper = GB_IS_HYPER (A) ;
-    const GB_ATYPE *GB_RESTRICT Ax = A_is_pattern ? NULL : A->x ;
+    const GB_ATYPE *GB_RESTRICT Ax = (GB_ATYPE *) (A_is_pattern ? NULL : A->x) ;
 
     const int64_t *GB_RESTRICT Mp = NULL ;
     const int64_t *GB_RESTRICT Mh = NULL ;
@@ -62,7 +62,7 @@
         Mp = M->p ;
         Mh = M->h ;
         Mi = M->i ;
-        Mx = (Mask_struct ? NULL : (M->x)) ;
+        Mx = (GB_void *) (Mask_struct ? NULL : (M->x)) ;
         msize = M->type->size ;
         mnvec = M->nvec ;
         M_is_hyper = M->is_hyper ;
@@ -97,10 +97,19 @@
         bool use_Gustavson = (hash_size == cvlen) ;
         int64_t pB     = TaskList [taskid].start ;
         int64_t pB_end = TaskList [taskid].end + 1 ;
+        int64_t pleft = 0, pright = anvec-1 ;
+
         #if !GB_IS_ANY_PAIR_SEMIRING
         GB_CTYPE *GB_RESTRICT Hx = (GB_CTYPE *) TaskList [taskid].Hx ;
         #endif
-        int64_t pleft = 0, pright = anvec-1 ;
+
+        #if GB_IS_PLUS_FC32_MONOID
+        float  *GB_RESTRICT Hx_real = (float *) Hx ;
+        float  *GB_RESTRICT Hx_imag = Hx_real + 1 ;
+        #elif GB_IS_PLUS_FC64_MONOID
+        double *GB_RESTRICT Hx_real = (double *) Hx ;
+        double *GB_RESTRICT Hx_imag = Hx_real + 1 ;
+        #endif
 
         if (use_Gustavson)
         {
@@ -169,7 +178,7 @@
                         GB_ATOMIC_READ
                         f = Hf [i] ;            // grab the entry
                         if (f == 2)             // if true, update C(i,j)
-                        { 
+                        {
                             GB_ATOMIC_UPDATE_HX (i, t) ;   // Hx [i] += t
                             continue ;          // C(i,j) has been updated
                         }
@@ -270,11 +279,7 @@
                     }
                     #endif
 
-                    #define GB_IKJ_VECTORIZE
-                    #define GB_IKJ_IVDEP
                     GB_SCAN_M_j_OR_A_k ;
-                    #undef GB_IKJ_VECTORIZE
-                    #undef GB_IKJ_IVDEP
                     #undef GB_IKJ
                 }
 
@@ -322,7 +327,7 @@
                         f = Hf [i] ;            // grab the entry
                         #if GB_HAS_ATOMIC
                         if (f == 2)             // if true, update C(i,j)
-                        { 
+                        {
                             GB_ATOMIC_UPDATE_HX (i, t) ;   // Hx [i] += t
                             continue ;          // C(i,j) has been updated
                         }
@@ -425,7 +430,7 @@
                             hf = Hf [hash] ;        // grab the entry
                             #if GB_HAS_ATOMIC
                             if (hf == i_unlocked)  // if true, update C(i,j)
-                            { 
+                            {
                                 GB_ATOMIC_UPDATE_HX (hash, t) ;// Hx [.]+=t
                                 break ;         // C(i,j) has been updated
                             }
@@ -497,8 +502,6 @@
                     GB_GET_A_k ;                // get A(:,k)
                     GB_SKIP_IF_A_k_DISJOINT_WITH_M_j ;
                     GB_GET_B_kj ;               // bkj = B(k,j)
-                    #define GB_IKJ_VECTORIZE
-                    #define GB_IKJ_IVDEP
                     #define GB_IKJ                                             \
                     {                                                          \
                         GB_MULT_A_ik_B_kj ;      /* t = A(i,k) * B(k,j) */     \
@@ -543,14 +546,12 @@
                         }                                                      \
                     }
                     GB_SCAN_M_j_OR_A_k ;
-                    #undef GB_IKJ_VECTORIZE
-                    #undef GB_IKJ_IVDEP
                     #undef GB_IKJ
                 }
 
             }
             else
-            { 
+            {
 
                 //--------------------------------------------------------------
                 // phase2: fine hash task, C<!M>=A*B
@@ -592,7 +593,7 @@
                             hf = Hf [hash] ;        // grab the entry
                             #if GB_HAS_ATOMIC
                             if (hf == i_unlocked)  // if true, update C(i,j)
-                            { 
+                            {
                                 GB_ATOMIC_UPDATE_HX (hash, t) ;// Hx [.]+=t
                                 break ;         // C(i,j) has been updated
                             }
@@ -659,7 +660,7 @@
     }
 
     int64_t  *GB_RESTRICT Ci = C->i ;
-    GB_CTYPE *GB_RESTRICT Cx = C->x ;
+    GB_CTYPE *GB_RESTRICT Cx = (GB_CTYPE *) C->x ;
 
     #if GB_IS_ANY_PAIR_SEMIRING
 
@@ -668,7 +669,7 @@
         #pragma omp parallel for num_threads(nthreads) schedule(static)
         for (pC = 0 ; pC < cnz ; pC++)
         { 
-            Cx [pC] = 1 ;
+            Cx [pC] = GB_CTYPE_CAST (1, 0) ;
         }
 
         // Just a precaution; these variables are not used below.  Any attempt
@@ -923,8 +924,6 @@
                                 GB_GET_A_k ;                // get A(:,k)
                                 GB_SKIP_IF_A_k_DISJOINT_WITH_M_j ;
                                 GB_GET_B_kj ;               // bkj = B(k,j)
-                                #define GB_IKJ_VECTORIZE GB_PRAGMA_VECTORIZE
-                                #define GB_IKJ_IVDEP     GB_PRAGMA_IVDEP
                                 #define GB_IKJ                                 \
                                 {                                              \
                                     int64_t hf = Hf [i] ;                      \
@@ -943,8 +942,6 @@
                                     }                                          \
                                 }
                                 GB_SCAN_M_j_OR_A_k ;
-                                #undef GB_IKJ_VECTORIZE
-                                #undef GB_IKJ_IVDEP
                                 #undef GB_IKJ
                             }
                             GB_GATHER_ALL_C_j(mark1) ;  // gather into C(:,j) 
@@ -957,8 +954,6 @@
                                 GB_GET_A_k ;                // get A(:,k)
                                 GB_SKIP_IF_A_k_DISJOINT_WITH_M_j ;
                                 GB_GET_B_kj ;               // bkj = B(k,j)
-                                #define GB_IKJ_VECTORIZE GB_PRAGMA_VECTORIZE
-                                #define GB_IKJ_IVDEP     GB_PRAGMA_IVDEP
                                 #define GB_IKJ                                 \
                                 {                                              \
                                     int64_t hf = Hf [i] ;                      \
@@ -978,8 +973,6 @@
                                     }                                          \
                                 }
                                 GB_SCAN_M_j_OR_A_k ;
-                                #undef GB_IKJ_VECTORIZE
-                                #undef GB_IKJ_IVDEP
                                 #undef GB_IKJ
                             }
                             GB_SORT_AND_GATHER_C_j ;    // gather into C(:,j)
@@ -1187,8 +1180,6 @@
                             GB_GET_A_k ;                // get A(:,k)
                             GB_SKIP_IF_A_k_DISJOINT_WITH_M_j ;
                             GB_GET_B_kj ;               // bkj = B(k,j)
-                            #define GB_IKJ_VECTORIZE
-                            #define GB_IKJ_IVDEP
                             #define GB_IKJ                                     \
                             {                                                  \
                                 for (GB_HASH (i))       /* find i in hash */   \
@@ -1215,8 +1206,6 @@
                                 }                                              \
                             }
                             GB_SCAN_M_j_OR_A_k ;
-                            #undef GB_IKJ_VECTORIZE
-                            #undef GB_IKJ_IVDEP
                             #undef GB_IKJ
                         }
                         // found i if: Hf [hash] == mark1 and Hi [hash] == i
@@ -1304,7 +1293,7 @@
         if (nthreads_msort > 1)
         {
             // allocate workspace for parallel mergesort
-            GB_MALLOC_MEMORY (W, cjnz_max, sizeof (int64_t)) ;
+            W = GB_MALLOC (cjnz_max, int64_t) ;
             if (W == NULL)
             { 
                 // out of memory
@@ -1364,7 +1353,7 @@
         }
 
         // free workspace
-        GB_FREE_MEMORY (W, cjnz_max, sizeof (int64_t)) ;
+        GB_FREE (W) ;
     }
 }
 

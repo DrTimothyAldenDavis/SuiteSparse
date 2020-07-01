@@ -25,10 +25,7 @@
 #ifdef GxB_SUITESPARSE_GRAPHBLAS
     // use predefined semirings.  They are safe to free,
     // so the FREE_ALL macro can be used as-is in either case.
-    #define Max             GxB_MAX_FP64_MONOID
     #define maxSelect1st    GxB_MAX_FIRST_FP64
-    #define Lor             GxB_LOR_BOOL_MONOID
-    #define Boolean         GxB_LOR_LAND_BOOL
 #endif
 
 // "OK(x)" macro defined in graphblas_demos.h calls a GraphBLAS method, and if
@@ -41,10 +38,7 @@
     GrB_Vector_free (&new_members) ;    \
     GrB_Vector_free (&new_neighbors) ;  \
     GrB_Vector_free (&candidates) ;     \
-    GrB_Monoid_free (&Max) ;            \
     GrB_Semiring_free (&maxSelect1st) ; \
-    GrB_Monoid_free (&Lor) ;            \
-    GrB_Semiring_free (&Boolean) ;      \
     GrB_Descriptor_free (&r_desc) ;     \
     GrB_Descriptor_free (&sr_desc) ;    \
     GrB_BinaryOp_free (&set_random) ;   \
@@ -95,10 +89,7 @@ GrB_Info mis_check              // compute a maximal independent set
     GrB_Vector new_neighbors = NULL ;   // new neighbors to new iset members
     GrB_Vector candidates = NULL ;      // candidate members to iset
 #ifndef GxB_SUITESPARSE_GRAPHBLAS
-    GrB_Monoid Max = NULL ;
     GrB_Semiring maxSelect1st = NULL ;  // Max/Select1st "semiring"
-    GrB_Monoid Lor = NULL ;
-    GrB_Semiring Boolean = NULL ;       // Boolean semiring
 #endif
     GrB_Descriptor r_desc = NULL ;
     GrB_Descriptor sr_desc = NULL ;
@@ -123,12 +114,7 @@ GrB_Info mis_check              // compute a maximal independent set
 
 #ifndef GxB_SUITESPARSE_GRAPHBLAS
     // create the maxSelect1st semiring
-    OK (GrB_Monoid_new_FP64 (&Max, GrB_MAX_FP64, (double) 0.0)) ;
-    OK (GrB_Semiring_new (&maxSelect1st, Max, GrB_FIRST_FP64)) ;
-
-    // create the OR-AND-BOOL semiring
-    OK (GrB_Monoid_new_BOOL (&Lor, GrB_LOR, (bool) false)) ;
-    OK (GrB_Semiring_new (&Boolean, Lor, GrB_LAND)) ;
+    OK (GrB_Semiring_new (&maxSelect1st, GrB_MAX_MONOID_FP64, GrB_FIRST_FP64)) ;
 #endif
 
     // descriptor: C_replace
@@ -178,7 +164,7 @@ GrB_Info mis_check              // compute a maximal independent set
 
         // compute a random probability scaled by inverse of degree
         OK (prand_xget (X, Seed)) ;
-        OK (GrB_eWiseMult_Vector_BinaryOp (prob, candidates, NULL, set_random,
+        OK (GrB_Vector_eWiseMult_BinaryOp (prob, candidates, NULL, set_random,
             degrees, X, r_desc)) ;
 
         // compute the max probability of all neighbors
@@ -186,11 +172,11 @@ GrB_Info mis_check              // compute a maximal independent set
             prob, A, r_desc)) ;
 
         // select node if its probability is > than all its active neighbors
-        OK (GrB_eWiseAdd_Vector_BinaryOp (new_members, NULL, NULL, GrB_GT_FP64,
+        OK (GrB_Vector_eWiseAdd_BinaryOp (new_members, NULL, NULL, GrB_GT_FP64,
             prob, neighbor_max, NULL)) ;
 
         // add new members to independent set.
-        OK (GrB_eWiseAdd_Vector_BinaryOp (iset, NULL, NULL, GrB_LOR, iset,
+        OK (GrB_Vector_eWiseAdd_BinaryOp (iset, NULL, NULL, GrB_LOR, iset,
             new_members, NULL)) ;
 
         // remove new members from set of candidates c = c & !new
@@ -201,8 +187,8 @@ GrB_Info mis_check              // compute a maximal independent set
         if (nvals == 0) { break ; }                  // early exit condition
 
         // Neighbors of new members can also be removed from candidates
-        OK (GrB_vxm (new_neighbors, candidates, NULL, Boolean,
-            new_members, A, NULL)) ;
+        OK (GrB_vxm (new_neighbors, candidates, NULL,
+            GrB_LOR_LAND_SEMIRING_BOOL, new_members, A, NULL)) ;
 
         OK (GrB_Vector_apply (candidates, new_neighbors, NULL,
             GrB_IDENTITY_BOOL, candidates, sr_desc)) ;

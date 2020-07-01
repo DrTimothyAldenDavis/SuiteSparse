@@ -60,7 +60,7 @@ GrB_Info GB_to_nonhyper     // convert a matrix to non-hypersparse
         //----------------------------------------------------------------------
 
         int64_t *GB_RESTRICT Ap_new ;
-        GB_MALLOC_MEMORY (Ap_new, n+1, sizeof (int64_t)) ;
+        Ap_new = GB_MALLOC (n+1, int64_t) ;
         if (Ap_new == NULL)
         { 
             // out of memory

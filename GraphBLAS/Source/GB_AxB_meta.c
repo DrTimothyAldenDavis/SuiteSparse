@@ -265,7 +265,8 @@ GrB_Info GB_AxB_meta                // C<M>=A*B meta algorithm
     { 
         // MT = M_in' also typecasting to boolean.  It is not freed here
         // unless an error occurs, but is returned to the caller.
-        GB_OK (GB_transpose (&MT, GrB_BOOL, C_is_csc, M_in, NULL, Context)) ;
+        GB_OK (GB_transpose (&MT, GrB_BOOL, C_is_csc, M_in,
+            NULL, NULL, NULL, false, Context)) ;
         M = MT ;
         M_transposed = true ;
     }
@@ -301,13 +302,13 @@ GrB_Info GB_AxB_meta                // C<M>=A*B meta algorithm
     //--------------------------------------------------------------------------
 
     #if GB_BURBLE
-    char *M_str = (M == NULL) ? "" : (Mask_comp ?  "<!M>" : "<M>") ;
+    const char *M_str = (M == NULL) ? "" : (Mask_comp ?  "<!M>" : "<M>") ;
     #define GB_PROP_LEN (GB_LEN+128)
     char A_str [GB_PROP_LEN+1] ;
     char B_str [GB_PROP_LEN+1] ;
-    snprintf (A_str, GB_PROP_LEN, "A: "GBd"-by-"GBd", %s, "GBd" entries",
+    snprintf (A_str, GB_PROP_LEN, "A: " GBd "-by-" GBd ", %s, " GBd " entries",
         GB_NROWS (A), GB_NCOLS (A), A->type->name, GB_NNZ (A)) ;
-    snprintf (B_str, GB_PROP_LEN, "B: "GBd"-by-"GBd", %s, "GBd" entries",
+    snprintf (B_str, GB_PROP_LEN, "B: " GBd "-by-" GBd ", %s, " GBd " entries",
         GB_NROWS (B), GB_NCOLS (B), B->type->name, GB_NNZ (B)) ;
     #endif
 
@@ -367,7 +368,8 @@ GrB_Info GB_AxB_meta                // C<M>=A*B meta algorithm
             // with the swap_rule as defined above, this case will never occur.
             // The code is left here in case swap_rule changes in the future.
             ASSERT (GB_DEAD_CODE) ;
-            GB_OK (GB_transpose (&BT, btype_required, true, B, NULL, Context)) ;
+            GB_OK (GB_transpose (&BT, btype_required, true, B,
+                NULL, NULL, NULL, false, Context)) ;
             B = BT ;
         }
 
@@ -442,7 +444,8 @@ GrB_Info GB_AxB_meta                // C<M>=A*B meta algorithm
         { 
             // C = A'*D
             GBBURBLE ("C%s=A'*B, colscale (transposed %s) ", M_str, A_str) ;
-            GB_OK (GB_transpose (&AT, atype_required, true, A, NULL, Context)) ;
+            GB_OK (GB_transpose (&AT, atype_required, true, A,
+                NULL, NULL, NULL, false, Context)) ;
             GB_OK (GB_AxB_colscale (Chandle, AT, B, semiring, flipxy, Context));
         }
         else if (do_adotb)
@@ -459,7 +462,8 @@ GrB_Info GB_AxB_meta                // C<M>=A*B meta algorithm
         { 
             // C = A'*B via saxpy3: Gustavson + Hash method
             GBBURBLE ("C%s=A'*B, saxpy (transposed %s) ", M_str, A_str) ;
-            GB_OK (GB_transpose (&AT, atype_required, true, A, NULL, Context)) ;
+            GB_OK (GB_transpose (&AT, atype_required, true, A,
+                NULL, NULL, NULL, false, Context)) ;
             GB_OK (GB_AxB_saxpy3 (Chandle, M, Mask_comp, Mask_struct,
                 AT, B, semiring, flipxy, mask_applied, AxB_method, Context)) ;
             (*AxB_method_used) = GxB_AxB_SAXPY ;
@@ -483,7 +487,8 @@ GrB_Info GB_AxB_meta                // C<M>=A*B meta algorithm
         { 
             // C = D*B'
             GBBURBLE ("C%s=A*B', rowscale (transposed %s) ", M_str, B_str) ;
-            GB_OK (GB_transpose (&BT, btype_required, true, B, NULL, Context)) ;
+            GB_OK (GB_transpose (&BT, btype_required, true, B,
+                NULL, NULL, NULL, false, Context)) ;
             GB_OK (GB_AxB_rowscale (Chandle, A, BT, semiring, flipxy, Context));
         }
         else if (AxB_method == GxB_AxB_DOT)
@@ -491,8 +496,10 @@ GrB_Info GB_AxB_meta                // C<M>=A*B meta algorithm
             // C<M>=A*B' via dot product, or C_in_place<M>+=A*B' if in place
             GBBURBLE ("C%s=A*B', dot_product (transposed %s) (transposed %s) ",
                 M_str, A_str, B_str) ;
-            GB_OK (GB_transpose (&AT, atype_required, true, A, NULL, Context)) ;
-            GB_OK (GB_transpose (&BT, btype_required, true, B, NULL, Context)) ;
+            GB_OK (GB_transpose (&AT, atype_required, true, A,
+                NULL, NULL, NULL, false, Context)) ;
+            GB_OK (GB_transpose (&BT, btype_required, true, B,
+                NULL, NULL, NULL, false, Context)) ;
             GB_OK (GB_AxB_dot (Chandle, (can_do_in_place) ? C_in_place : NULL,
                 M, Mask_comp, Mask_struct, AT, BT, semiring, flipxy,
                 mask_applied, done_in_place, Context)) ;
@@ -502,7 +509,8 @@ GrB_Info GB_AxB_meta                // C<M>=A*B meta algorithm
         { 
             // C = A*B' via saxpy3: Gustavson + Hash method
             GBBURBLE ("C%s=A*B', saxpy (transposed %s) ", M_str, B_str) ;
-            GB_OK (GB_transpose (&BT, btype_required, true, B, NULL, Context)) ;
+            GB_OK (GB_transpose (&BT, btype_required, true, B,
+                NULL, NULL, NULL, false, Context)) ;
             GB_OK (GB_AxB_saxpy3 (Chandle, M, Mask_comp, Mask_struct,
                 A, BT, semiring, flipxy, mask_applied, AxB_method, Context)) ;
             (*AxB_method_used) = GxB_AxB_SAXPY ;
@@ -532,7 +540,8 @@ GrB_Info GB_AxB_meta                // C<M>=A*B meta algorithm
         { 
             // C<M>=A*B via dot product, or C_in_place<M>+=A*B if in place
             GBBURBLE ("C%s=A*B', dot_product (transposed %s) ", M_str, A_str) ;
-            GB_OK (GB_transpose (&AT, atype_required, true, A, NULL, Context)) ;
+            GB_OK (GB_transpose (&AT, atype_required, true, A,
+                NULL, NULL, NULL, false, Context)) ;
             GB_OK (GB_AxB_dot (Chandle, (can_do_in_place) ? C_in_place : NULL,
                 M, Mask_comp, Mask_struct, AT, B, semiring, flipxy,
                 mask_applied, done_in_place, Context)) ;

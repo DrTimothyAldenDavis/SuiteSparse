@@ -55,7 +55,7 @@ int main (int argc, char **argv)
     double tic [2], t ;
     OK (GrB_init (GrB_NONBLOCKING)) ;
     int nthreads ;
-    OK (GxB_Global_Option_get (GxB_NTHREADS, &nthreads)) ;
+    OK (GxB_Global_Option_get (GxB_GLOBAL_NTHREADS, &nthreads)) ;
     fprintf (stderr, "bfs_demo: nthreads %d\n", nthreads) ;
 
     //--------------------------------------------------------------------------
@@ -92,7 +92,7 @@ int main (int argc, char **argv)
         // All methods give identical results, just using different methods
 
         GrB_Index s = 0 ;
-        GxB_Global_Option_set (GxB_NTHREADS, 2) ;
+        GxB_Global_Option_set (GxB_GLOBAL_NTHREADS, 2) ;
 
         switch (method)
         {
@@ -142,21 +142,16 @@ int main (int argc, char **argv)
         OK (GrB_Vector_new (&is_reachable, GrB_BOOL, n)) ;
         OK (GrB_Vector_apply (is_reachable, NULL, NULL, GrB_IDENTITY_BOOL,
             v, NULL)) ;
-        OK (GrB_Vector_reduce_UINT64 (&nreachable, NULL, GxB_PLUS_INT32_MONOID,
+        OK (GrB_Vector_reduce_UINT64 (&nreachable, NULL, GrB_PLUS_MONOID_INT32,
             is_reachable, NULL)) ;
         OK (GrB_Vector_free (&is_reachable)) ;
         // OK (GrB_Vector_nvals (&nreachable, v)) ;
         printf ("nodes reachable from node %.16g: %.16g out of %.16g\n",
             (double) s, (double) nreachable, (double) n) ;
 
-//      // note the typecast to int32_t
-//      // using a predefined monoid instead, GrB_MAX_INT32_MONOID.
-//      OK (GrB_Monoid_new_INT32 (&max_monoid, GrB_MAX_INT32,
-//              (int32_t) INT32_MIN)) ;
-
         // find the max BFS level
         int64_t nlevels = -1 ;
-        OK (GrB_Vector_reduce_INT64 (&nlevels, NULL, GxB_MAX_INT32_MONOID,
+        OK (GrB_Vector_reduce_INT64 (&nlevels, NULL, GrB_MAX_MONOID_INT32,
             v, NULL)) ;
         printf ("max BFS level: %.16g\n", (double) nlevels) ;
 
@@ -196,8 +191,8 @@ int main (int argc, char **argv)
             {
                 fprintf (stderr, "test failure!\n") ;
                 printf  ("test failure!\n") ;
-                GxB_Vector_fprint (v0, "v0", 3, stdout) ;
-                GxB_Vector_fprint (v , "v",  3, stdout) ;
+                GxB_Vector_fprint (v0, "v0", GxB_COMPLETE, stdout) ;
+                GxB_Vector_fprint (v , "v",  GxB_COMPLETE, stdout) ;
                 exit (1) ;
             }
         }

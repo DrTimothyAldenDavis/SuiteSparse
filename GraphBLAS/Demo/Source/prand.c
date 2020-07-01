@@ -212,8 +212,8 @@ GrB_Info prand_seed
     OK (GrB_Vector_new (Seed, prand_type, n)) ;
 
     // allocate the I and X arrays
-    I = malloc ((n+1) * sizeof (GrB_Index)) ;
-    X = malloc ((n+1) * sizeof (prand_t)) ;
+    I = (GrB_Index *) malloc ((n+1) * sizeof (GrB_Index)) ;
+    X = (prand_t *) malloc ((n+1) * sizeof (prand_t)) ;
     if (I == NULL || X == NULL)
     {
         PRAND_FREE_ALL ;

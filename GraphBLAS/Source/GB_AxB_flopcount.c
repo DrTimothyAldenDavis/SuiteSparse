@@ -77,11 +77,11 @@
 #include "GB_ek_slice.h"
 #include "GB_bracket.h"
 
-#define GB_FREE_WORK                                                        \
-{                                                                           \
-    GB_ek_slice_free (&pstart_slice, &kfirst_slice, &klast_slice, ntasks) ; \
-    GB_FREE_MEMORY (Wfirst, ntasks, sizeof (int64_t)) ;                     \
-    GB_FREE_MEMORY (Wlast,  ntasks, sizeof (int64_t)) ;                     \
+#define GB_FREE_WORK                                                    \
+{                                                                       \
+    GB_ek_slice_free (&pstart_slice, &kfirst_slice, &klast_slice) ;     \
+    GB_FREE (Wfirst) ;                                                  \
+    GB_FREE (Wlast) ;                                                   \
 }
 
 GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
@@ -188,8 +188,8 @@ GrB_Info GB_AxB_flopcount
     // allocate workspace
     //--------------------------------------------------------------------------
 
-    GB_MALLOC_MEMORY (Wfirst, ntasks, sizeof (int64_t)) ;
-    GB_MALLOC_MEMORY (Wlast,  ntasks, sizeof (int64_t)) ;
+    Wfirst = GB_MALLOC (ntasks, int64_t) ;
+    Wlast  = GB_MALLOC (ntasks, int64_t) ;
     if (Wfirst == NULL || Wlast == NULL)
     { 
         // out of memory

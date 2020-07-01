@@ -47,7 +47,7 @@ GrB_Info GxB_Matrix_import_HyperCSC     // import a hypersparse CSC matrix
     if (nvec > ncols)
     { 
         return (GB_ERROR (GrB_INVALID_VALUE, (GB_LOG,
-            "nvec ["GBu"] must be <= ncols ["GBu"]\n", nvec, ncols))) ;
+            "nvec [" GBu "] must be <= ncols [" GBu "]\n", nvec, ncols))) ;
     }
 
     //--------------------------------------------------------------------------
@@ -55,7 +55,7 @@ GrB_Info GxB_Matrix_import_HyperCSC     // import a hypersparse CSC matrix
     //--------------------------------------------------------------------------
 
     // allocate just the header of the matrix, not the content
-    GB_NEW (A, type, nrows, ncols, GB_Ap_null, true,
+    info = GB_new (A, type, nrows, ncols, GB_Ap_null, true,
         GB_FORCE_HYPER, GB_Global_hyper_ratio_get ( ), nvec, Context) ;
     if (info != GrB_SUCCESS)
     { 
@@ -77,8 +77,8 @@ GrB_Info GxB_Matrix_import_HyperCSC     // import a hypersparse CSC matrix
     if (nvals == 0)
     { 
         // free the user input Ai and Ax arrays, if they exist
-        if (Ai != NULL) GB_FREE_MEMORY (*Ai, nvals, sizeof (GrB_Index)) ;
-        if (Ax != NULL) GB_FREE_MEMORY (*Ax, nvals, type->size) ;
+        if (Ai != NULL) GB_FREE (*Ai) ;
+        if (Ax != NULL) GB_FREE (*Ax) ;
     }
     else
     { 

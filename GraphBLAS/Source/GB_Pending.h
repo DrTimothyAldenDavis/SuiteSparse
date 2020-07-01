@@ -187,14 +187,16 @@ static inline bool GB_Pending_add   // add a tuple to the list
 // GB_shall_block: see if the matrix should be finished
 //------------------------------------------------------------------------------
 
-static inline bool GB_shall_block   // return true if GB_wait (A) should be done
+// returns true if GB_Matrix_wait (A) should be done
+
+static inline bool GB_shall_block
 (
     GrB_Matrix A
 )
 {
 
     if (!GB_PENDING_OR_ZOMBIES (A)) return (false) ;
-    double npending = GB_Pending_n (A) ;
+    double npending = (double) GB_Pending_n (A) ;
     double anzmax = ((double) A->vlen) * ((double) A->vdim) ;
     bool many_pending = (npending >= anzmax) ;
     bool blocking = (GB_Global_mode_get ( ) == GrB_BLOCKING) ;

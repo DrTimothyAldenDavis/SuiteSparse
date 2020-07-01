@@ -18,7 +18,8 @@
 
 static const char *MatrixFields [NFIELDS] =
 {
-    "GraphBLAS",        // 0: "logical", "int8", ... "double", "complex"
+    "GraphBLAS",        // 0: "logical", "int8", ... "double",
+                        //    "single complex", or "double complex"
     "s",                // 1: all scalar info goes here
     "p",                // 2: array of int64_t, size plen+1
     "i",                // 3: array of int64_t, size nzmax
@@ -60,7 +61,7 @@ mxArray *gb_export_to_mxstruct  // return exported MATLAB struct G
     // export content into the output struct
     //--------------------------------------------------------------------------
 
-    // export the GraphBLAS type
+    // export the GraphBLAS type as a string
     mxSetFieldByNumber (G, 0, 0, gb_type_to_mxstring (A->type)) ;
 
     // export the scalar content
