@@ -3,6 +3,7 @@ project(METIS)
 
 set(GKLIB_PATH "GKlib" CACHE PATH "path to GKlib")
 set(SHARED FALSE CACHE BOOL "build a shared library")
+set(CMAKE_MACOSX_RPATH TRUE)
 
 if(MSVC)
   set(METIS_INSTALL FALSE)
