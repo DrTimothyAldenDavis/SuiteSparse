@@ -97,7 +97,9 @@ SLIP_info SLIP_LU_analyze
         double Control [AMD_CONTROL];           // Declare AMD control
         amd_l_defaults (Control) ;              // Set AMD defaults
         double Info [AMD_INFO];
-        amd_l_order(n, A->p, A->i, S->q, Control, Info); // Perform AMD
+        // Perform AMD
+        amd_l_order(n, (SuiteSparse_long *) A->p, (SuiteSparse_long *) A->i,
+            (SuiteSparse_long *) S->q, Control, Info) ;
         S->lnz = S->unz = Info[AMD_LNZ];        // estimate for unz and lnz
         if (pr > 0)   // Output AMD info if desired
         {
@@ -134,7 +136,9 @@ SLIP_info SLIP_LU_analyze
             A2[i] = A->i[i];
         }
         int64_t stats [COLAMD_STATS];
-        colamd_l (n, n, Alen, A2, S->q, (double *) NULL, stats);
+        colamd_l (n, n, Alen, (SuiteSparse_long *) A2,
+            (SuiteSparse_long *) S->q, (double *) NULL,
+            (SuiteSparse_long *) stats) ;
         // estimate for lnz and unz
         S->lnz = S->unz = 10*anz;
 
@@ -142,7 +146,7 @@ SLIP_info SLIP_LU_analyze
         if (pr > 0)
         {
             SLIP_PRINTF ("\n****Column Ordering Information****\n") ;
-            colamd_l_report (stats) ;
+            colamd_l_report ((SuiteSparse_long *) stats) ;
             SLIP_PRINTF ("\nEstimated L and U nonzeros: %" PRId64 "\n", S->lnz);
         }
         SLIP_FREE(A2);
