@@ -9,6 +9,23 @@
 
 SUITESPARSE_VERSION = 5.8.0
 
+    #---------------------------------------------------------------------------
+    # determine what system we are on
+    #---------------------------------------------------------------------------
+
+    # To disable these auto configurations, use 'make UNAME=custom'
+
+    ifndef UNAME
+        ifeq ($(OS),Windows_NT)
+            # Cygwin Make on Windows has an $(OS) variable, but not uname.
+            # Note that this option is untested.
+            UNAME = Windows
+        else
+            # Linux and Darwin (Mac OSX) have been tested.
+            UNAME := $(shell uname)
+        endif
+    endif
+
 #===============================================================================
 # Options you can change without editing this file:
 #===============================================================================
@@ -169,8 +186,10 @@ SUITESPARSE_VERSION = 5.8.0
             #   $(MKLROOT)/lib/intel64/libmkl_intel_thread.a \
             #   -Wl,--end-group -lpthread -lm
             # using dynamic linking:
-            BLAS ?= -lmkl_intel_lp64 -lmkl_core -lmkl_intel_thread -liomp5 -lpthread -lm
-            LAPACK ?=
+            ifeq ($(UNAME),Linux)
+                BLAS ?= -lmkl_intel_lp64 -lmkl_core -lmkl_intel_thread -liomp5 -lpthread -lm
+                LAPACK ?=
+            endif
         else
             BLAS ?= -lblas
             LAPACK ?= -llapack
@@ -332,23 +351,6 @@ SUITESPARSE_VERSION = 5.8.0
 #===============================================================================
 # System-dependent configurations
 #===============================================================================
-
-    #---------------------------------------------------------------------------
-    # determine what system we are on
-    #---------------------------------------------------------------------------
-
-    # To disable these auto configurations, use 'make UNAME=custom'
-
-    ifndef UNAME
-        ifeq ($(OS),Windows_NT)
-            # Cygwin Make on Windows has an $(OS) variable, but not uname.
-            # Note that this option is untested.
-            UNAME = Windows
-        else
-            # Linux and Darwin (Mac OSX) have been tested.
-            UNAME := $(shell uname)
-        endif
-    endif
 
     #---------------------------------------------------------------------------
     # Linux
