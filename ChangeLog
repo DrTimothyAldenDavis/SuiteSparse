@@ -1,6 +1,6 @@
 July 2, 2020, SuiteSparse 5.8.0
 
-    * SLIP_LU v1.0.0 added: for solving Ax=b exactly.  Requires
+    * SLIP_LU v1.0.1 added: for solving Ax=b exactly.  Requires
         the GNU GMP and MPRF libraries.
     * GraphBLAS v3.3.1: see the GraphBLAS/Doc/Changlog
     * replaced UFget with ssget: affects nearly all packages:
