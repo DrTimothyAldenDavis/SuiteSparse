@@ -1,6 +1,7 @@
 July 3, 2020: version 1.0.1
 
     * minor change to MATLAB install process
+    * port to clang on the Mac
 
 May 16, 2020: version 1.0.0
 
