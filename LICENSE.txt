@@ -1,3 +1,49 @@
+This file lists all licenses for all packages in SuiteSparse, for your
+convenience.  Each package has its own separate license, which can be
+found in the lists below.
+
+==> SLIP_LU/License/license.txt <==
+
+    SLIP LU: a Sparse Left-looking Integer-Preserving LU Factorization
+
+    Copyright (c) 2019-2020, Christopher Lourenco, JinHao Chen, Erick Moreno-
+    Centeno, and Timothy A. Davis.
+
+    Available at:
+
+        https://github.com/clouren/SLIP_LU
+        http://suitesparse.com
+
+    Contact Chris Lourenco, chrisjlourenco@gmail.com, or Tim Davis
+    (timdavis@aldenmath.com or DrTimothyAldenDavis@gmail.com) for a commercial
+    license.
+
+    --------------------------------------------------------------------------------
+
+    SLIP LU is free software; you can redistribute it and/or modify
+    it under the terms of either:
+
+      * the GNU Lesser General Public License as published by the Free
+        Software Foundation; either version 3 of the License, or (at your
+        option) any later version.
+
+    or
+
+      * the GNU General Public License as published by the Free Software
+        Foundation; either version 2 of the License, or (at your option) any
+        later version.
+
+    or both in parallel, as here.
+
+    SLIP LU is distributed in the hope that it will be useful, but
+    WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+    or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+    for more details.
+
+    You should have received copies of the GNU General Public License and the
+    GNU Lesser General Public License along with this software.  If not,
+    see https://www.gnu.org/licenses/.
+
 ==> AMD/Doc/License.txt <==
 
     AMD, Copyright (c), 1996-2015, Timothy A. Davis,
@@ -5,7 +51,7 @@
 
     Availability:
 
-        http://www.suitesparse.com
+        http://suitesparse.com
 
     -------------------------------------------------------------------------------
     AMD License: BSD 3-clause:
@@ -39,7 +85,7 @@
     BTF, Copyright (C) 2004-2013, University of Florida
     by Timothy A. Davis and Ekanathan Palamadai.
     BTF is also available under other licenses; contact authors for details.
-    http://www.suitesparse.com
+    http://suitesparse.com
 
     --------------------------------------------------------------------------------
 
@@ -92,7 +138,7 @@
 
     Availability:
 
-        http://www.suitesparse.com
+        http://suitesparse.com
 
 ==> CCOLAMD/Doc/License.txt <==
 
@@ -100,7 +146,7 @@
     Copyright (C) 2005-2016, Univ. of Florida.  Authors: Timothy A. Davis,
     Sivasankaran Rajamanickam, and Stefan Larimore.  Closely based on COLAMD by
     Davis, Stefan Larimore, in collaboration with Esmond Ng, and John Gilbert.
-    http://www.suitesparse.com
+    http://suitesparse.com
 
     --------------------------------------------------------------------------------
 
@@ -139,7 +185,7 @@
 
             CHOLMOD/Check Module.  Copyright (C) 2005-2006, Timothy A. Davis CHOLMOD is
             also available under other licenses; contact authors for details.
-            http://www.suitesparse.com
+            http://suitesparse.com
 
             Note that this license is for the CHOLMOD/Check module only.
             All CHOLMOD modules are licensed separately.
@@ -166,7 +212,7 @@
 
             CHOLMOD/Cholesky module, Copyright (C) 2005-2006, Timothy A. Davis.
             CHOLMOD is also available under other licenses; contact authors for
-            details.  http://www.suitesparse.com
+            details.  http://suitesparse.com
 
             Note that this license is for the CHOLMOD/Cholesky module only.
             All CHOLMOD modules are licensed separately.
@@ -194,7 +240,7 @@
 
             CHOLMOD/Core Module.  Copyright (C) 2005-2006, Univ. of Florida.  Author:
             Timothy A. Davis.  CHOLMOD is also available under other licenses; contact
-            authors for details.  http://www.suitesparse.com
+            authors for details.  http://suitesparse.com
 
             Note that this license is for the CHOLMOD/Core module only.
             All CHOLMOD modules are licensed separately.
@@ -223,7 +269,7 @@
 
             CHOLMOD/Demo Module.  Copyright (C) 2005-2006, Timothy A. Davis.  CHOLMOD
             is also available under other licenses; contact authors for details.
-            http://www.suitesparse.com
+            http://suitesparse.com
 
             Note that this license is for the CHOLMOD/Demo module only.
             All CHOLMOD modules are licensed separately.
@@ -282,7 +328,7 @@
             CHOLMOD/MATLAB Module.  Copyright (C) 2005-2006, Timothy A. Davis.  CHOLMOD
             is also available under other licenses; contact authors for details.
             MATLAB(tm) is a Registered Trademark of The MathWorks, Inc.
-            http://www.suitesparse.com
+            http://suitesparse.com
 
             Note that this license is for the CHOLMOD/MATLAB module only.
             All CHOLMOD modules are licensed separately.
@@ -310,7 +356,7 @@
 
             CHOLMOD/MatrixOps Module.  Copyright (C) 2005-2006, Timothy A. Davis.
             CHOLMOD is also available under other licenses; contact authors for
-            details.  http://www.suitesparse.com
+            details.  http://suitesparse.com
 
             Note that this license is for the CHOLMOD/MatrixOps module only.
             All CHOLMOD modules are licensed separately.
@@ -339,7 +385,7 @@
 
             CHOLMOD/Modify Module.  Copyright (C) 2005-2006, Timothy A. Davis and
             William W. Hager.  CHOLMOD is also available under other licenses; contact
-            authors for details.  http://www.suitesparse.com
+            authors for details.  http://suitesparse.com
 
             Note that this license is for the CHOLMOD/Modify module only.
             All CHOLMOD modules are licensed separately.
@@ -369,7 +415,7 @@
             CHOLMOD/Partition Module.
             Copyright (C) 2005-2006, Univ. of Florida.  Author: Timothy A. Davis
             CHOLMOD is also available under other licenses; contact authors for details.
-            http://www.suitesparse.com
+            http://suitesparse.com
 
             Note that this license is for the CHOLMOD/Partition module only.
             All CHOLMOD modules are licensed separately.
@@ -399,7 +445,7 @@
             CHOLMOD/Supernodal Module.
             Copyright (C) 2005-2006, Timothy A. Davis
             CHOLMOD is also available under other licenses; contact authors for details.
-            http://www.suitesparse.com
+            http://suitesparse.com
 
             Note that this license is for the CHOLMOD/Supernodal module only.
             All CHOLMOD modules are licensed separately.
@@ -428,7 +474,7 @@
 
             CHOLMOD/Tcov Module.  Copyright (C) 2005-2006, Timothy A. Davis
             CHOLMOD is also available under other licenses; contact authors for details.
-            http://www.suitesparse.com
+            http://suitesparse.com
 
             Note that this license is for the CHOLMOD/Tcov module only.
             All CHOLMOD modules are licensed separately.
@@ -457,7 +503,7 @@
 
             CHOLMOD/Valgrind Module.  Copyright (C) 2005-2006, Timothy A. Davis.
             CHOLMOD is also available under other licenses; contact authors for details.
-            http://www.suitesparse.com
+            http://suitesparse.com
 
             Note that this license is for the CHOLMOD/Valgrind module only.
             All CHOLMOD modules are licensed separately.
@@ -481,8 +527,8 @@
             Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301, USA.
 
 ==> COLAMD/Doc/License.txt <==
-    COLAMD, Copyright 1998-2016, Timothy A. Davis.  http://www.suitesparse.com
-    http://www.suitesparse.com
+    COLAMD, Copyright 1998-2016, Timothy A. Davis.  http://suitesparse.com
+    http://suitesparse.com
 
     COLAMD License: BSD 3-clause
 
@@ -513,7 +559,7 @@
 ==> CSparse/Doc/License.txt <==
     CSparse: a Concise Sparse matrix package.
     Copyright (c) 2006, Timothy A. Davis.
-    http://www.suitesparse.com
+    http://suitesparse.com
 
     --------------------------------------------------------------------------------
 
@@ -534,7 +580,7 @@
 ==> CXSparse/Doc/License.txt <==
     CXSparse: a Concise Sparse matrix package - Extended.
     Copyright (c) 2006, Timothy A. Davis.
-    http://www.suitesparse.com
+    http://suitesparse.com
 
     --------------------------------------------------------------------------------
 
@@ -555,7 +601,7 @@
 ==> CXSparse_newfiles/Doc/License.txt <==
     CXSparse: a Concise Sparse matrix package - Extended.
     Copyright (c) 2006, Timothy A. Davis.
-    http://www.suitesparse.com
+    http://suitesparse.com
 
     --------------------------------------------------------------------------------
 
@@ -576,7 +622,7 @@
 ==> GPUQREngine/Doc/License.txt <==
     GPUQREngine Copyright (c) 2013, Timothy A. Davis, Sencer Nuri Yeralan,
     and Sanjay Ranka.
-    http://www.suitesparse.com
+    http://suitesparse.com
 
     GPUQREngine is free software; you can redistribute it and/or modify it under
     the terms of the GNU General Public License as published by the Free Software
@@ -596,7 +642,7 @@
     KLU, Copyright (C) 2004-2013, University of Florida
     by Timothy A. Davis and Ekanathan Palamadai.
     KLU is also available under other licenses; contact authors for details.
-    http://www.suitesparse.com
+    http://suitesparse.com
 
     --------------------------------------------------------------------------------
 
@@ -617,7 +663,7 @@
 ==> LDL/Doc/License.txt <==
     LDL Copyright (c) 2005-2013 by Timothy A. Davis.
     LDL is also available under other licenses; contact the author for details.
-    http://www.suitesparse.com
+    http://suitesparse.com
 
     --------------------------------------------------------------------------------
 
@@ -695,7 +741,7 @@
     --------------------------------------------------------------------------------
 
         SSMULT, Copyright (c) 2007-2011, Timothy A. Davis,
-        http://www.suitesparse.com.
+        http://suitesparse.com.
 
         SSMULT is free software; you can redistribute it and/or modify it under the
         terms of the GNU General Public License as published by the Free Software
@@ -715,7 +761,7 @@
 ==> RBio/Doc/License.txt <==
     RBio toolbox.  Copyright (C) 2006-2009, Timothy A. Davis
     RBio is also available under other licenses; contact authors for details.
-    http://www.suitesparse.com
+    http://suitesparse.com
 
     --------------------------------------------------------------------------------
 
@@ -771,12 +817,12 @@
 
     Availability:
 
-        http://www.suitesparse.com
+        http://suitesparse.com
 
 
 ==> SuiteSparse_GPURuntime/Doc/License.txt <==
     SuiteSparse_GPURuntime Copyright (c) 2013-2016, Timothy A. Davis,
-    Sencer Nuri Yeralan, and Sanjay Ranka.  http://www.suitesparse.com
+    Sencer Nuri Yeralan, and Sanjay Ranka.  http://suitesparse.com
 
     --------------------------------------------------------------------------------
 
@@ -859,7 +905,7 @@
 
     Availability:
 
-        http://www.suitesparse.com
+        http://suitesparse.com
 
 
 ==> CSparse/MATLAB/ssget/Doc/License.txt <==

@@ -9,10 +9,14 @@ default: go
 
 include SuiteSparse_config/SuiteSparse_config.mk
 
-# Compile the default rules for each package
+# Compile the default rules for each package.  Compiled libraries for all
+# packages are placed in SuiteSparse/lib, except for Mongoose and GraphBLAS.
+# Those two packages use CMake, and their compiled libraries are placed in
+# Mongoose/build and GraphBLAS/build, respectively.  Then "make install"
+# installs all libraries SuiteSparse/lib.
 go: metis
 	( cd SuiteSparse_config && $(MAKE) )
-	( cd Mongoose  && $(MAKE) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' )
+	( cd Mongoose && $(MAKE) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' )
 	( cd AMD && $(MAKE) )
 	( cd BTF && $(MAKE) )
 	( cd CAMD && $(MAKE) )
@@ -31,10 +35,14 @@ ifneq ($(GPU_CONFIG),)
 endif
 	( cd SPQR && $(MAKE) )
 	( cd GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' )
+	( cd SLIP_LU && $(MAKE) )
 #	( cd PIRO_BAND && $(MAKE) )
 #	( cd SKYLINE_SVD && $(MAKE) )
 
-# install all packages in /usr/local/lib and /usr/local/include
+# install all packages in SuiteSparse/lib and SuiteSparse/include.  Use the
+# following command to install in /usr/local/lib and /usr/local/include:
+#       sudo make install INSTALL=/usr/local
+# See SuiteSparse/README.md for more details.
 # (note that CSparse is not installed; CXSparse is installed instead)
 install: metisinstall
 	( cd SuiteSparse_config && $(MAKE) install )
@@ -58,6 +66,7 @@ endif
 	( cd GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' install )
 #	( cd PIRO_BAND && $(MAKE) install )
 #	( cd SKYLINE_SVD && $(MAKE) install )
+	( cd SLIP_LU && $(MAKE) install )
 	$(CP) README.md $(INSTALL_DOC)/SuiteSparse_README.md
 	chmod 644 $(INSTALL_DOC)/SuiteSparse_README.md
 
@@ -101,6 +110,7 @@ uninstall:
 	( cd SuiteSparse_GPURuntime && $(MAKE) uninstall )
 	( cd GPUQREngine && $(MAKE) uninstall )
 	( cd SPQR && $(MAKE) uninstall )
+	( cd SLIP_LU && $(MAKE) uninstall )
 #	( cd PIRO_BAND && $(MAKE) uninstall )
 #	( cd SKYLINE_SVD && $(MAKE) uninstall )
 ifeq (,$(MY_METIS_LIB))
@@ -135,6 +145,7 @@ ifneq (,$(GPU_CONFIG))
 endif
 	( cd SPQR && $(MAKE) library )
 	( cd GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' library )
+	( cd SLIP_LU && $(MAKE) library )
 #	( cd PIRO_BAND && $(MAKE) library )
 #	( cd SKYLINE_SVD && $(MAKE) library )
 
@@ -162,6 +173,7 @@ ifneq (,$(GPU_CONFIG))
 endif
 	( cd SPQR && $(MAKE) static )
 	( cd GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' static )
+	( cd SLIP_LU && $(MAKE) static )
 #	( cd PIRO_BAND && $(MAKE) static )
 #	( cd SKYLINE_SVD && $(MAKE) static )
 
@@ -188,6 +200,7 @@ purge:
 	- ( cd SuiteSparse_GPURuntime && $(MAKE) purge )
 	- ( cd GPUQREngine && $(MAKE) purge )
 	- ( cd SPQR && $(MAKE) purge )
+	- ( cd SLIP_LU && $(MAKE) purge )
 #	- ( cd PIRO_BAND && $(MAKE) purge )
 #	- ( cd SKYLINE_SVD && $(MAKE) purge )
 	- $(RM) MATLAB_Tools/*/*.mex* MATLAB_Tools/spok/private/*.mex*
@@ -214,6 +227,7 @@ clean:
 	- ( cd SuiteSparse_GPURuntime && $(MAKE) clean )
 	- ( cd GPUQREngine && $(MAKE) clean )
 	- ( cd SPQR && $(MAKE) clean )
+	- ( cd SLIP_LU && $(MAKE) clean )
 #	- ( cd PIRO_BAND && $(MAKE) clean )
 #	- ( cd SKYLINE_SVD && $(MAKE) clean )
 
@@ -254,6 +268,7 @@ cov: purge
 	( cd KLU && $(MAKE) cov )
 	( cd SPQR && $(MAKE) cov )
 	( cd UMFPACK && $(MAKE) cov )
+	( cd SLIP_LU && $(MAKE) cov )
 #	( cd PIRO_BAND && $(MAKE) cov )
 #	( cd SKYLINE_SVD && $(MAKE) cov )
 
@@ -284,4 +299,12 @@ gb:
 gbinstall:
 	echo $(CMAKE_OPTIONS)
 	( cd GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' install )
+
+# just compile Mongoose
+mon:
+	( cd Mongoose && $(MAKE) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' )
+
+# just install Mongoose
+moninstall:
+	( cd Mongoose  && $(MAKE) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' install )
 

@@ -1,7 +1,14 @@
-June 30, 2020, SuiteSparse 5.8.0
+July 2, 2020, SuiteSparse 5.8.0
 
+    * SLIP_LU v1.0.0 added: for solving Ax=b exactly.  Requires
+        the GNU GMP and MPRF libraries.
     * GraphBLAS v3.3.1: see the GraphBLAS/Doc/Changlog
-    * replaced UFget with ssget
+    * replaced UFget with ssget: affects nearly all packages:
+        UMFPACK, KLU, CHOLMOD, CXSparse/CSparse, etc,
+        but their version numbers are left unchanged since it affects
+        the MATLAB tests only, not the compiled libraries.
+    * ssget v2.2.0: better URL redirects
+    * updates to SuiteSparse build system
 
 Apr 8, 2020, SuiteSparse 5.7.2
 

@@ -32,6 +32,7 @@ these packages do not require SuiteSparse_config.
   LPDASA   LP Dual Active Set Algorithm
   RBio     read/write files in Rutherford/Boeing format
   SPQR     sparse QR factorization (full name: SuiteSparseQR)
+  SLIP_LU  sparse left-looking integer-preserving LU factorization
 
 SuiteSparse_config is not required by these packages:
 

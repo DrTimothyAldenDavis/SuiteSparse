@@ -7,6 +7,10 @@ Version 4.0.0, FUTURE, 2020 (this list is tentative):
     * GrB_error: will have two inputs: a string (char **) and an object
     * V4.0.0 will otherwise be identical to V3.3.0.
 
+Version 3.3.2, July 3, 2020
+
+    * minor changes to build system
+
 Version 3.3.1, June 30, 2020
 
     * (19) bug fix: incorrect typecasting when GrB_assign or GxB_subassign
@@ -37,7 +41,7 @@ Version 3.3.0, June 26, 2020
     * DRAFT interfaces: A few functions have been added to use CUDA and the
         Intel MKL library.  These are visible in GraphBLAS.h but are
         undocumented; do *not* use them yet.  They will likely change without
-        warning, and without change the SuiteSparse:GraphBLAS version number.
+        warning, and without changing the SuiteSparse:GraphBLAS version number.
 
 Version 3.2.2, Apr 2, 2020
 

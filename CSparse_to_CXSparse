@@ -14,7 +14,7 @@
 #
 # Created by David Bateman, Feb. 2006, David dot Bateman atsign motorola dot
 # com, and released by him to Tim Davis' copyright.  Modified by Tim Davis,
-# 2006-2012, http://www.suitesparse.com.
+# 2006-2012, http://suitesparse.com.
 
 use strict;
 use Cwd;

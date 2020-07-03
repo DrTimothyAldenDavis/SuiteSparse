@@ -172,9 +172,7 @@ SUITESPARSE_VERSION = 5.8.0
             BLAS ?= -lmkl_intel_lp64 -lmkl_core -lmkl_intel_thread -liomp5 -lpthread -lm
             LAPACK ?=
         else
-            # use the OpenBLAS at http://www.openblas.net (CAN BE VERY SLOW;
-            # CHOLMOD can be slowed down by a factor of 100x in extreme cases)
-            BLAS ?= -lopenblas
+            BLAS ?= -lblas
             LAPACK ?= -llapack
         endif
     endif

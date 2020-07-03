@@ -202,7 +202,7 @@ int SuiteSparse_version     /* returns SUITESPARSE_VERSION */
 */
 #define SUITESPARSE_HAS_VERSION_FUNCTION
 
-#define SUITESPARSE_DATE "June 30, 2020"
+#define SUITESPARSE_DATE "July 2, 2020"
 #define SUITESPARSE_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define SUITESPARSE_MAIN_VERSION 5
 #define SUITESPARSE_SUB_VERSION 8

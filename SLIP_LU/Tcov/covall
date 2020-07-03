@@ -1,0 +1,7 @@
+#!/bin/csh
+        ./gcovs SLIP_*.c slip_*.c |& awk -f cov.awk | sort -n > cov.out
+        sort -n cov.out > cov.sort
+        ./covs > covs.out
+        echo -n "statments not yet tested: "
+        grep "#####" *.c.gcov | wc -l
+        ./cover *.c.*v > cover.out

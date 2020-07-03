@@ -10,7 +10,7 @@ function SuiteSparse_test
 %
 % See also SuiteSparse_install, SuiteSparse_demo.
 
-% Copyright 1990-2015, Timothy A. Davis, http://www.suitesparse.com.
+% Copyright 1990-2015, Timothy A. Davis, http://suitesparse.com.
 
 help SuiteSparse_test
 
@@ -156,7 +156,7 @@ try
     shellgui ;
     cd ([SuiteSparse '/MATLAB_Tools/waitmex']) ;
     waitmex ;
-    url = 'http://www.suitesparse.com' ;
+    url = 'http://suitesparse.com' ;
     fprintf ('<a href="%s">Click here for more details</a>\n', url) ;
     hprintf ('or see <a href="%s">\n', url) ;
     cd ([SuiteSparse '/MATLAB_Tools/find_components']) ;

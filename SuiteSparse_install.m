@@ -5,8 +5,8 @@ function SuiteSparse_install (do_demo)
 % Packages in SuiteSparse:
 %
 % GraphBLAS      graph algorithms via sparse linear algebra (graphblas.org)
-%                (does not yet have a MATLAB interface)
 % Mongoose       graph partitioner
+% SLIP_LU        solve sparse Ax=b exactly
 % UMFPACK        sparse LU factorization (multifrontal)
 % CHOLMOD        sparse Cholesky factorization, and many other operations
 % AMD            sparse symmetric approximate minimum degree ordering
@@ -38,15 +38,19 @@ function SuiteSparse_install (do_demo)
 % See also AMD, COLAMD, CAMD, CCOLAMD, CHOLMOD, UMFPACK, CSPARSE, CXSPARSE,
 %      ssget, RBio, SuiteSparseCollection, KLU, BTF, MESHND, SSMULT, LINFACTOR,
 %      SPOK, SPQR_RANK, SuiteSparse, SPQR, PATHTOOL, PATH, FACTORIZE,
-%      SPARSEINV, Mongoose, GraphBLAS.
+%      SPARSEINV, Mongoose, GraphBLAS, SLIP_LU.
 %
 % This script installs the full-featured CXSparse rather than CSparse.
 %
-% Copyright 1990-2020, Timothy A. Davis, http://www.suitesparse.com.
+% If you get errors building or using METIS, just remove the metis-5.1.0
+% folder.  This often occurs on Windows.
+%
+% Copyright 1990-2020, Timothy A. Davis, http://suitesparse.com.
 % In collaboration with (in alphabetical order): Patrick Amestoy, David
-% Bateman, Yanqing Chen, Iain Duff, Les Foster, William Hager, Scott Kolodziej,
-% Stefan Larimore, Ekanathan Palamadai Natarajan, Sivasankaran Rajamanickam,
-% Sanjay Ranka, Wissam Sid-Lakhdar, and Nuri Yeralan.
+% Bateman, Jinhao Chen.  Yanqing Chen, Iain Duff, Les Foster, William Hager,
+% Scott Kolodziej, Chris Lourenco, Stefan Larimore, Erick Moreno-Centeno,
+% Ekanathan Palamadai, Sivasankaran Rajamanickam, Sanjay Ranka, Wissam
+% Sid-Lakhdar, Nuri Yeralan.
 
 %-------------------------------------------------------------------------------
 % initializations
@@ -63,6 +67,7 @@ pc = ispc ;
 help SuiteSparse_install
 
 fprintf ('\nInstalling SuiteSparse for MATLAB version %s\n\n', v) ;
+failed = cell (1,0) ;
 
 % add SuiteSparse to the path
 paths = add_to_path (paths, SuiteSparse) ;
@@ -78,6 +83,7 @@ try
 catch me
     disp (me.message) ;
     fprintf ('UMFPACK not installed\n') ;
+    failed {end+1} = 'umfpack' ;
 end
 
 % compile and install CHOLMOD
@@ -87,6 +93,7 @@ try
 catch me
     disp (me.message) ;
     fprintf ('CHOLMOD not installed\n') ;
+    failed {end+1} = 'cholmod' ;
 end
 
 % compile and install AMD
@@ -96,6 +103,7 @@ try
 catch me
     disp (me.message) ;
     fprintf ('AMD not installed\n') ;
+    failed {end+1} = 'amd' ;
 end
 
 % compile and install COLAMD
@@ -105,6 +113,7 @@ try
 catch me
     disp (me.message) ;
     fprintf ('COLAMD not installed\n') ;
+    failed {end+1} = 'colamd' ;
 end
 
 % compile and install CCOLAMD
@@ -114,6 +123,7 @@ try
 catch me
     disp (me.message) ;
     fprintf ('CCOLAMD not installed\n') ;
+    failed {end+1} = 'ccolamd' ;
 end
 
 % compile and install CAMD
@@ -123,6 +133,7 @@ try
 catch me
     disp (me.message) ;
     fprintf ('CAMD not installed\n') ;
+    failed {end+1} = 'camd' ;
 end
 
 % install ssget, unless it's already in the path
@@ -142,6 +153,7 @@ if (isempty (index))
     catch me
         disp (me.message) ;
         fprintf ('ssget not installed\n') ;
+        failed {end+1} = 'ssget' ;
     end
 end
 
@@ -159,6 +171,7 @@ try
 catch me
     disp (me.message) ;
     fprintf ('CXSparse not installed\n') ;
+    failed {end+1} = 'cxsparse' ;
 end
 
 % compile and install LDL
@@ -168,6 +181,7 @@ try
 catch me
     disp (me.message) ;
     fprintf ('LDL not installed\n') ;
+    failed {end+1} = 'ldl' ;
 end
 
 % compile and install BTF
@@ -177,6 +191,7 @@ try
 catch me
     disp (me.message) ;
     fprintf ('BTF not installed\n') ;
+    failed {end+1} = 'btf' ;
 end
 
 % compile and install KLU
@@ -186,6 +201,7 @@ try
 catch me
     disp (me.message) ;
     fprintf ('KLU not installed\n') ;
+    failed {end+1} = 'klu' ;
 end
 
 % compile and install SuiteSparseQR
@@ -199,6 +215,7 @@ try
 catch me
     disp (me.message) ;
     fprintf ('SuiteSparseQR not installed\n') ;
+    failed {end+1} = 'spqr' ;
 end
 
 % compile and install RBio
@@ -208,6 +225,7 @@ try
 catch me
     disp (me.message) ;
     fprintf ('RBio not installed.\n') ;
+    failed {end+1} = 'rbio' ;
 end
 
 % install MATLAB_Tools/*
@@ -226,6 +244,7 @@ try
 catch me
     disp (me.message) ;
     fprintf ('MATLAB_Tools not installed\n') ;
+    failed {end+1} = 'matlab_tools' ;
 end
 
 % compile and install SuiteSparseCollection
@@ -236,6 +255,7 @@ try
 catch me
     disp (me.message) ;
     fprintf ('SuiteSparseCollection not installed\n') ;
+    failed {end+1} = 'SuiteSparseCollection' ;
 end
 
 % compile and install SSMULT
@@ -245,6 +265,7 @@ try
 catch me
     disp (me.message) ;
     fprintf ('SSMULT not installed\n') ;
+    failed {end+1} = 'ssmult' ;
 end
 
 % compile and install dimacs10
@@ -254,6 +275,7 @@ try
 catch me
     disp (me.message) ;
     fprintf ('MATLAB_Tools/dimacs10 not installed\n') ;
+    failed {end+1} = 'dimacs10' ;
 end
 
 % compile and install spok
@@ -263,6 +285,7 @@ try
 catch me
     disp (me.message) ;
     fprintf ('MATLAB_Tools/spok not installed\n') ;
+    failed {end+1} = 'spok' ;
 end
 
 %{
@@ -283,6 +306,7 @@ try
 catch me
     disp (me.message) ;
     fprintf ('MATLAB_Tools/sparseinv not installed\n') ;
+    failed {end+1} = 'sparseinv' ;
 end
 
 % compile and install Mongoose
@@ -292,6 +316,7 @@ try
 catch me
     disp (me.message) ;
     fprintf ('Mongoose not installed\n') ;
+    failed {end+1} = 'mongoose' ;
 end
 
 % compile and install GraphBLAS
@@ -304,6 +329,17 @@ try
 catch me
     disp (me.message) ;
     fprintf ('GraphBLAS not installed\n') ;
+    failed {end+1} = 'GraphBLAS' ;
+end
+
+% compile and install SLIP_LU
+try
+    paths = add_to_path (paths, [SuiteSparse '/SLIP_LU/MATLAB']) ;
+    SLIP_install (do_demo) ;
+catch me
+    disp (me.message) ;
+    fprintf ('SLIP_LU not installed\n') ;
+    failed {end+1} = 'SLIP_LU' ;
 end
 
 %-------------------------------------------------------------------------------
@@ -312,6 +348,15 @@ end
 
 cd (SuiteSparse)
 fprintf ('SuiteSparse is now installed.\n\n') ;
+
+nfail = length (failed) ;
+if (nfail > 0)
+    fprintf ('packages not installed: ') ;
+    for k = 1:nfail
+        fprintf ('%s ', failed {k}) ;
+    end
+    fprintf ('\n') ;
+end
 
 % run the demo, if requested
 if (nargin < 1)
