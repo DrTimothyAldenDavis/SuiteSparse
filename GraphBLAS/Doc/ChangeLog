@@ -5,11 +5,17 @@ Version 4.0.0, FUTURE, 2020 (this list is tentative):
     * GrB_*_nvals: will no longer guarantee completion; use GrB_wait(&object)
         or non-polymorphic GrB_*_wait (&object) instead
     * GrB_error: will have two inputs: a string (char **) and an object
-    * V4.0.0 will otherwise be identical to V3.3.0.
+
+Version 3.3.3, July 14, 2020
+
+    * (20) bug fix: w<mask>=A*u with mask non-empty and u empty (issue #13).
+        affects mxm (A*B when B is a vector), vxm, and mxv.
+    * GraphBLAS v3.3.3 released as part of SuiteSparse v5.8.1
 
 Version 3.3.2, July 3, 2020
 
     * minor changes to build system
+    * GraphBLAS v3.3.2 released as part of SuiteSparse v5.8.0
 
 Version 3.3.1, June 30, 2020
 

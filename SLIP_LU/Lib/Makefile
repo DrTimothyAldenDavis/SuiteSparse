@@ -9,7 +9,7 @@
 #       cd ../Demo ; make
 
 LIBRARY = libsliplu
-VERSION = 1.0.1
+VERSION = 1.0.2
 SO_VERSION = 1
 
 default: library
@@ -17,7 +17,7 @@ default: library
 include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 # uncomment for extra error checking:
-CFLAGS += -Wall -Wextra -Wpedantic -Werror
+# CFLAGS += -Wall -Wextra -Wpedantic -Werror
 
 # SLIP_LU depends on SuiteSparse_config, AMD, COLAMD, M, GMP, and MPFR
 LDLIBS += -lsuitesparseconfig -lamd -lcolamd -lm -lgmp -lmpfr

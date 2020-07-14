@@ -1,3 +1,8 @@
+July 14, 2020, SuiteSparse 5.8.1
+
+    * SLIP_LU v1.0.2: resolved issue #51
+    * GraphBLAS v3.3.3: bug fix (GraphBLAS issue #13)
+
 July 2, 2020, SuiteSparse 5.8.0
 
     * SLIP_LU v1.0.1 added: for solving Ax=b exactly.  Requires

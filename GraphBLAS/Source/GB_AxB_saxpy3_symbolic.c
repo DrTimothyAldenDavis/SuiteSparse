@@ -118,6 +118,10 @@ void GB_AxB_saxpy3_symbolic
             //------------------------------------------------------------------
         
             int64_t kk = TaskList [taskid].vector ;
+            int64_t bjnz = Bp [kk+1] - Bp [kk] ;
+            // no work to do if B(:,j) is empty
+            if (bjnz == 0) continue ;
+
             // partition M(:,j)
             GB_GET_M_j ;        // get M(:,j)
             int team_size = TaskList [taskid].team_size ;
@@ -164,6 +168,7 @@ void GB_AxB_saxpy3_symbolic
                 int64_t *GB_RESTRICT
                     Hf = (int64_t *GB_RESTRICT) TaskList [taskid].Hf ;
                 int64_t hash_bits = (hash_size-1) ;
+                ASSERT (hash_size >= mjnz) ;
                 for (int64_t pM = mystart ; pM < myend ; pM++) // scan my M(:,j)
                 {
                     GB_GET_M_ij ;                   // get M(i,j)
@@ -553,6 +558,9 @@ void GB_AxB_saxpy3_symbolic
         {
             int64_t kk = TaskList [taskid].vector ;
             ASSERT (kk >= 0 && kk < B->nvec) ;
+            int64_t bjnz = Bp [kk+1] - Bp [kk] ;
+            // no work to do if B(:,j) is empty
+            if (bjnz == 0) continue ;
             int64_t hash_size = TaskList [taskid].hsize ;
             bool use_Gustavson = (hash_size == cvlen) ;
             int master = TaskList [taskid].master ;

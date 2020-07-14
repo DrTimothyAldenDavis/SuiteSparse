@@ -13,7 +13,7 @@ default: all
 include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 # uncomment for extra error checking:
-CFLAGS += -Wall -Wextra -Wpedantic -Werror
+# CFLAGS += -Wall -Wextra -Wpedantic -Werror
 
 # CF = $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -O
 I = -I../Include -I../Source -I../../SuiteSparse_config -I../../COLAMD/Include -I../../AMD/Include
