@@ -20,9 +20,9 @@ include ../../SuiteSparse_config/SuiteSparse_config.mk
 # CFLAGS += -Wall -Wextra -Wpedantic -Werror
 
 # SLIP_LU depends on SuiteSparse_config, AMD, COLAMD, M, GMP, and MPFR
-LDLIBS += -lsuitesparseconfig -lamd -lcolamd -lm -lgmp -lmpfr
+LDLIBS += -L${GMP_ROOT}/lib -L${MPFR_ROOT}/lib -lsuitesparseconfig -lamd -lcolamd -lm -lgmp -lmpfr
 
-C = $(CC) $(CF) -I../Include -I../../COLAMD/Include -I../../AMD/Include -I../../SuiteSparse_config
+C = $(CC) $(CF) -I../Include -I../../COLAMD/Include -I../../AMD/Include -I../../SuiteSparse_config -I${GMP_ROOT}/include -I${MPFR_ROOT}/include
 
 all: install
 
