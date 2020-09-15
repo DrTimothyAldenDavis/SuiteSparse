@@ -6,6 +6,14 @@
  * All Rights Reserved.  See LDL/Doc/License.txt for the License.
  */
 
+#ifndef LDL_H
+#define LDL_H
+
+/* make it easy for C++ programs to include LDL */
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "SuiteSparse_config.h"
 
 #ifdef LDL_LONG
@@ -110,3 +118,8 @@ SuiteSparse_long ldl_l_valid_matrix ( SuiteSparse_long n,
 #define LDL_SUBSUB_VERSION 6
 #define LDL_VERSION LDL_VERSION_CODE(LDL_MAIN_VERSION,LDL_SUB_VERSION)
 
+#ifdef __cplusplus
+}
+#endif
+
+#endif
