@@ -183,7 +183,8 @@ if ( SUITESPARSE_CONFIG_LIBRARY )
     target_link_libraries(mongoose_lib ${SUITESPARSE_CONFIG_LIBRARY})
 endif ()
 
-if (UNIX AND NOT APPLE)
+CHECK_LIBRARY_EXISTS(rt clock_gettime "time.h" NEED_LIBRT)
+if (NEED_LIBRT)
     target_link_libraries(mongoose_lib rt)
 endif ()
 
@@ -211,7 +212,7 @@ endif ()
 set_target_properties(mongoose_dylib PROPERTIES PUBLIC_HEADER Include/Mongoose.hpp)
 target_include_directories(mongoose_dylib PRIVATE .)
 
-if (UNIX AND NOT APPLE)
+if (NEED_LIBRT)
     target_link_libraries(mongoose_dylib rt)
 endif ()
 
