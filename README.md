@@ -45,7 +45,7 @@ Packages in SuiteSparse, and files in this directory:
                 author: Tim Davis
 
     SLIP_LU     solves sparse linear systems in exact arithmetic.
-                Requires the GNU GMP and MPRF libraries.
+                Requires the GNU GMP and MPFR libraries.
 
     AMD         approximate minimum degree ordering.  This is the built-in AMD
                 function in MATLAB.
