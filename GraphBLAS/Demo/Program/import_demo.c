@@ -2,8 +2,8 @@
 // GraphBLAS/Demo/Program/import_demo.c: test import/export
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -55,7 +55,7 @@ int main (int argc, char **argv)
             for (int format = 0 ; format <= 3 ; format++)
             {
 
-                OK (GxB_Matrix_Option_set (A, GxB_HYPER, h)) ;
+                OK (GxB_Matrix_Option_set (A, GxB_HYPER_SWITCH, h)) ;
                 OK (GxB_Matrix_Option_set (A, GxB_FORMAT, f)) ;
                 OK (import_test (&A, format, dump)) ;
             }
@@ -65,5 +65,6 @@ int main (int argc, char **argv)
     FREE_ALL ;
 
     OK (GrB_finalize ( )) ;
+    printf ("import_demp: all tests passed\n") ;
 }
 

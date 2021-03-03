@@ -2,8 +2,8 @@
 // GB_mex_Vector_eWiseMult: w<mask> = accum(w,u.*v)
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -18,7 +18,7 @@
     GrB_Vector_free_(&v) ;          \
     GrB_Descriptor_free_(&desc) ;   \
     GrB_Vector_free_(&mask) ;       \
-    GB_mx_put_global (true, 0) ;    \
+    GB_mx_put_global (true) ;       \
 }
 
 void mexFunction
@@ -38,7 +38,6 @@ void mexFunction
     GrB_Descriptor desc = NULL ;
 
     // check inputs
-    GB_WHERE (USAGE) ;
     if (nargout > 1 || nargin < 6 || nargin > 7)
     {
         mexErrMsgTxt ("Usage: " USAGE) ;

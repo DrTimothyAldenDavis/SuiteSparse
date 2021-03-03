@@ -2,8 +2,8 @@
 // GB_mx_mxArray_to_Descriptor: get the contents of a GraphBLAS Descriptor
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -94,10 +94,6 @@ static bool get_descriptor
         {
             info = GxB_Desc_set (D, field, GxB_AxB_DOT) ;
         }
-        else if (MATCH (s, "heap"))
-        {
-            info = GxB_Desc_set (D, field, GxB_AxB_HEAP) ;
-        }
         else if (MATCH (s, "hash"))
         {
             info = GxB_Desc_set (D, field, GxB_AxB_HASH) ;
@@ -128,8 +124,6 @@ bool GB_mx_mxArray_to_Descriptor   // true if successful, false otherwise
     const char *name                // name of the descriptor
 )
 {
-    GB_WHERE ("GB_mx_mxArray_to_Descriptor") ;
-
     // a null descriptor is OK; the method will use defaults
     (*handle) = NULL ;
     if (D_matlab == NULL || mxIsEmpty (D_matlab))

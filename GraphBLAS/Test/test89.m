@@ -1,8 +1,8 @@
 function test89
 %TEST89 performance test of complex A*B
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 [save save_chunk] = nthreads_get ;
 chunk = 4096 ;
@@ -39,7 +39,6 @@ for do_real = 0:1
     fprintf ('MATLAB %g\n', tm) ;
 
         % 1001: Gustavson
-        % 1002: heap
         % 1003: dot
 
     for k = [false true]
@@ -64,11 +63,10 @@ for do_real = 0:1
         % these are expected to be slower still; they do not use the default method
         % (Gustavson) which is selected by the auto-strategy.
 
-        C2 = GB_mex_AxB (A, B, 0, 0, 1002) ;
+        C2 = GB_mex_AxB (A, B, 0, 0, 1004) ;
         tg = grbresults ;
         err = norm (C1-C2,1) ;
-        fprintf ('GraphBLAS %g speedup %g (heap) err: %g\n', tg, tm/tg, err) ;
-
+        fprintf ('GraphBLAS %g speedup %g (hash) err: %g\n', tg, tm/tg, err) ;
 
         C2 = GB_mex_AxB (A, B, 0, 0, 1003) ;
         tg = grbresults ;

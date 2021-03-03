@@ -2,8 +2,8 @@
 // gb_flush: flush mexPrintf output to MATLAB Command Window
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -23,6 +23,8 @@
 
 int gb_flush ( void )       // flush mexPrintf output to MATLAB Command Window
 {
-    return (mexEvalString ("drawnow ; pause (1e-8) ;")) ;
+    // 'drawnow' is slow when logging in remotely: disable it.
+    // return (mexEvalString ("drawnow ; pause (1e-8) ;")) ;
+    return (mexEvalString ("pause (1e-8) ;")) ;
 }
 

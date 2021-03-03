@@ -2,8 +2,8 @@
 // gbselect: select entries from a GraphBLAS matrix
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -44,57 +44,49 @@
 // nan operators
 //------------------------------------------------------------------------------
 
-bool gb_isnan32 (GrB_Index i, GrB_Index j, GrB_Index nrows, GrB_Index ncols,
-    const void *x, const void *b)
+bool gb_isnan32 (GrB_Index i, GrB_Index j, const void *x, const void *b)
 { 
     float aij = * ((float *) x) ;
     return (isnan (aij)) ;
 }
 
-bool gb_isnan64 (GrB_Index i, GrB_Index j, GrB_Index nrows, GrB_Index ncols,
-    const void *x, const void *b)
+bool gb_isnan64 (GrB_Index i, GrB_Index j, const void *x, const void *b)
 { 
     double aij = * ((double *) x) ;
     return (isnan (aij)) ;
 }
 
-bool gb_isnotnan32 (GrB_Index i, GrB_Index j, GrB_Index nrows, GrB_Index ncols,
-    const void *x, const void *b)
+bool gb_isnotnan32 (GrB_Index i, GrB_Index j, const void *x, const void *b)
 { 
     float aij = * ((float *) x) ;
     return (!isnan (aij)) ;
 }
 
-bool gb_isnotnan64 (GrB_Index i, GrB_Index j, GrB_Index nrows, GrB_Index ncols,
-    const void *x, const void *b)
+bool gb_isnotnan64 (GrB_Index i, GrB_Index j, const void *x, const void *b)
 { 
     double aij = * ((double *) x) ;
     return (!isnan (aij)) ;
 }
 
-bool gb_isnanfc32 (GrB_Index i, GrB_Index j, GrB_Index nrows,
-    GrB_Index ncols, const void *x, const void *b)
+bool gb_isnanfc32 (GrB_Index i, GrB_Index j, const void *x, const void *b)
 { 
     GxB_FC32_t aij = * ((GxB_FC32_t *) x) ;
     return (isnan (crealf (aij)) || isnan (cimagf (aij))) ;
 }
 
-bool gb_isnanfc64 (GrB_Index i, GrB_Index j, GrB_Index nrows,
-    GrB_Index ncols, const void *x, const void *b)
+bool gb_isnanfc64 (GrB_Index i, GrB_Index j, const void *x, const void *b)
 { 
     GxB_FC64_t aij = * ((GxB_FC64_t *) x) ;
     return (isnan (creal (aij)) || isnan (cimag (aij))) ;
 }
 
-bool gb_isnotnanfc32 (GrB_Index i, GrB_Index j, GrB_Index nrows,
-    GrB_Index ncols, const void *x, const void *b)
+bool gb_isnotnanfc32 (GrB_Index i, GrB_Index j, const void *x, const void *b)
 { 
     GxB_FC32_t aij = * ((GxB_FC32_t *) x) ;
     return (!isnan (crealf (aij)) && !isnan (cimagf (aij))) ;
 }
 
-bool gb_isnotnanfc64 (GrB_Index i, GrB_Index j, GrB_Index nrows,
-    GrB_Index ncols, const void *x, const void *b)
+bool gb_isnotnanfc64 (GrB_Index i, GrB_Index j, const void *x, const void *b)
 { 
     GxB_FC64_t aij = * ((GxB_FC64_t *) x) ;
     return (!isnan (creal (aij)) && !isnan (cimag (aij))) ;
@@ -127,10 +119,10 @@ void mexFunction
     base_enum_t base ;
     kind_enum_t kind ;
     GxB_Format_Value fmt ;
-    int nmatrices, nstrings, ncells ;
+    int nmatrices, nstrings, ncells, sparsity ;
     GrB_Descriptor desc ;
     gb_get_mxargs (nargin, pargin, USAGE, Matrix, &nmatrices, String, &nstrings,
-        Cell, &ncells, &desc, &base, &kind, &fmt) ;
+        Cell, &ncells, &desc, &base, &kind, &fmt, &sparsity) ;
 
     CHECK_ERROR (nmatrices < 1 || nstrings < 1 || ncells > 0, USAGE) ;
 
@@ -246,9 +238,10 @@ void mexFunction
         // C has the same type as A
         OK (GxB_Matrix_type (&ctype, A)) ;
 
-        OK (GrB_Matrix_new (&C, ctype, cnrows, cncols)) ;
+        // create the matrix C and set its format and sparsity
         fmt = gb_get_format (cnrows, cncols, A, NULL, fmt) ;
-        OK (GxB_Matrix_Option_set (C, GxB_FORMAT, fmt)) ;
+        sparsity = gb_get_sparsity (A, NULL, sparsity) ;
+        C = gb_new (ctype, cnrows, cncols, fmt, sparsity) ;
     }
 
     //--------------------------------------------------------------------------
@@ -356,7 +349,7 @@ void mexFunction
     // compute C<M> += select (A, b2)
     //--------------------------------------------------------------------------
 
-    OK (GxB_Matrix_select (C, M, accum, op, A, b2, desc)) ;
+    OK1 (C, GxB_Matrix_select (C, M, accum, op, A, (GxB_Scalar) b2, desc)) ;
 
     //--------------------------------------------------------------------------
     // free shallow copies

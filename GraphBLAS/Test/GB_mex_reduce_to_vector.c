@@ -2,8 +2,8 @@
 // GB_mex_reduce_to_vector: c = accum(c,reduce_to_vector(A))
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -18,7 +18,7 @@
 
 #define FREE_ALL                        \
 {                                       \
-    GB_MATRIX_FREE (&A) ;               \
+    GrB_Matrix_free_(&A) ;               \
     GrB_Vector_free_(&w) ;              \
     GrB_Vector_free_(&mask) ;           \
     GrB_Descriptor_free_(&desc) ;       \
@@ -26,7 +26,7 @@
     {                                   \
         GrB_Monoid_free_(&reduce) ;     \
     }                                   \
-    GB_mx_put_global (true, 0) ;        \
+    GB_mx_put_global (true) ;           \
 }
 
 void mexFunction
@@ -47,7 +47,6 @@ void mexFunction
     bool user_complex = false ;
 
     // check inputs
-    GB_WHERE (USAGE) ;
     if (nargout > 1 || nargin < 5 || nargin > 6)
     {
         mexErrMsgTxt ("Usage: " USAGE) ;
@@ -82,22 +81,22 @@ void mexFunction
 
     // get reduce operator
     user_complex = (Complex != GxB_FC64) && (A->type == Complex) ;
-    GrB_BinaryOp reduceop ;
-    if (!GB_mx_mxArray_to_BinaryOp (&reduceop, pargin [3], "reduceop",
-        w->type, user_complex) || reduceop == NULL)
+    GrB_BinaryOp op ;
+    if (!GB_mx_mxArray_to_BinaryOp (&op, pargin [3], "op",
+        w->type, user_complex) || op == NULL)
     {
         FREE_ALL ;
-        mexErrMsgTxt ("reduceop failed") ;
+        mexErrMsgTxt ("op failed") ;
     }
 
     // get the reduce monoid
     if (user_complex)
     {
-        if (reduceop == Complex_plus)
+        if (op == Complex_plus)
         {
             reduce = Complex_plus_monoid ;
         }
-        else if (reduceop == Complex_times)
+        else if (op == Complex_times)
         {
             reduce = Complex_times_monoid ;
         }
@@ -110,7 +109,7 @@ void mexFunction
     else
     {
         // create the reduce monoid
-        if (!GB_mx_Monoid (&reduce, reduceop, malloc_debug))
+        if (!GB_mx_Monoid (&reduce, op, malloc_debug))
         {
             FREE_ALL ;
             mexErrMsgTxt ("reduce failed") ;
@@ -134,8 +133,94 @@ void mexFunction
         mexErrMsgTxt ("desc failed") ;
     }
 
-    // w<mask> = accum (w, reduce_to_vector (A))
-    METHOD (GrB_Matrix_reduce_Monoid_(w, mask, accum, reduce, A, desc)) ;
+    // test GrB_Matrix_reduce_BinaryOp, if possible
+
+    if (op == GrB_MIN_INT8
+    ||  op == GrB_MIN_INT16
+    ||  op == GrB_MIN_INT32
+    ||  op == GrB_MIN_INT64
+    ||  op == GrB_MIN_UINT8
+    ||  op == GrB_MIN_UINT16
+    ||  op == GrB_MIN_UINT32
+    ||  op == GrB_MIN_UINT64
+    ||  op == GrB_MIN_FP32
+    ||  op == GrB_MIN_FP64
+    ||  op == GrB_MAX_INT8
+    ||  op == GrB_MAX_INT16
+    ||  op == GrB_MAX_INT32
+    ||  op == GrB_MAX_INT64
+    ||  op == GrB_MAX_UINT8
+    ||  op == GrB_MAX_UINT16
+    ||  op == GrB_MAX_UINT32
+    ||  op == GrB_MAX_UINT64
+    ||  op == GrB_MAX_FP32
+    ||  op == GrB_MAX_FP64
+    ||  op == GrB_PLUS_INT8
+    ||  op == GrB_PLUS_INT16
+    ||  op == GrB_PLUS_INT32
+    ||  op == GrB_PLUS_INT64
+    ||  op == GrB_PLUS_UINT8
+    ||  op == GrB_PLUS_UINT16
+    ||  op == GrB_PLUS_UINT32
+    ||  op == GrB_PLUS_UINT64
+    ||  op == GrB_PLUS_FP32
+    ||  op == GrB_PLUS_FP64
+    ||  op == GxB_PLUS_FC32
+    ||  op == GxB_PLUS_FC64
+    ||  op == GrB_TIMES_INT8
+    ||  op == GrB_TIMES_INT16
+    ||  op == GrB_TIMES_INT32
+    ||  op == GrB_TIMES_INT64
+    ||  op == GrB_TIMES_UINT8
+    ||  op == GrB_TIMES_UINT16
+    ||  op == GrB_TIMES_UINT32
+    ||  op == GrB_TIMES_UINT64
+    ||  op == GrB_TIMES_FP32
+    ||  op == GrB_TIMES_FP64
+    ||  op == GxB_TIMES_FC32
+    ||  op == GxB_TIMES_FC64
+    ||  op == GxB_ANY_BOOL
+    ||  op == GxB_ANY_INT8
+    ||  op == GxB_ANY_INT16
+    ||  op == GxB_ANY_INT32
+    ||  op == GxB_ANY_INT64
+    ||  op == GxB_ANY_UINT8
+    ||  op == GxB_ANY_UINT16
+    ||  op == GxB_ANY_UINT32
+    ||  op == GxB_ANY_UINT64
+    ||  op == GxB_ANY_FP32
+    ||  op == GxB_ANY_FP64
+    ||  op == GxB_ANY_FC32
+    ||  op == GxB_ANY_FC64
+    ||  op == GrB_LOR
+    ||  op == GrB_LAND
+    ||  op == GrB_LXOR
+    ||  op == GrB_LXNOR
+    ||  op == GrB_BOR_UINT8
+    ||  op == GrB_BOR_UINT16
+    ||  op == GrB_BOR_UINT32
+    ||  op == GrB_BOR_UINT64
+    ||  op == GrB_BAND_UINT8
+    ||  op == GrB_BAND_UINT16
+    ||  op == GrB_BAND_UINT32
+    ||  op == GrB_BAND_UINT64
+    ||  op == GrB_BXOR_UINT8
+    ||  op == GrB_BXOR_UINT16
+    ||  op == GrB_BXOR_UINT32
+    ||  op == GrB_BXOR_UINT64
+    ||  op == GrB_BXNOR_UINT8
+    ||  op == GrB_BXNOR_UINT16
+    ||  op == GrB_BXNOR_UINT32
+    ||  op == GrB_BXNOR_UINT64)
+    {
+        // w<mask> = accum (w, reduce_to_vector (A)) using a binary op
+        METHOD (GrB_Matrix_reduce_BinaryOp_(w, mask, accum, op, A, desc)) ;
+    }
+    else
+    {
+        // w<mask> = accum (w, reduce_to_vector (A)) using a monoid
+        METHOD (GrB_Matrix_reduce_Monoid_(w, mask, accum, reduce, A, desc)) ;
+    }
 
     // return w to MATLAB as a struct and free the GraphBLAS w
     pargout [0] = GB_mx_Vector_to_mxArray (&w, "w output", true) ;

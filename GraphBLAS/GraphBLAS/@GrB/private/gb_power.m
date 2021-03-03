@@ -2,8 +2,8 @@ function C = gb_power (A, B)
 %GB_POWER .^ Array power.
 % C = A.^B computes element-wise powers.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 [am, an, atype] = gbsize (A) ;
 [bm, bn, btype] = gbsize (B) ;
@@ -71,7 +71,7 @@ else
         b = gb_scalar (B) ;
         if (b == 0)
             % special case:  C = A.^0 = ones (am, an, ctype)
-            C = gb_scalar_to_full (am, an, ctype, 1) ;
+            C = gb_scalar_to_full (am, an, ctype, gb_fmt (A), 1) ;
             return ;
         elseif (b == 1)
             % special case: C = A.^1 = A

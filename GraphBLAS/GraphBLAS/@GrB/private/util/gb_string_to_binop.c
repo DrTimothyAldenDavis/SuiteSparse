@@ -2,16 +2,16 @@
 // gb_string_to_binop: get a GraphBLAS operator from a string
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
 #include "gb_matlab.h"
 
 // The string has the form op_name.op_type.  For example '+.double' is the
-// GrB_PLUS_FP64 operator.  The type is optional.  If not present, it defaults
-// to the default_type parameter.
+// GrB_PLUS_FP64 operator.  The type is optional.  If not present in the
+// string, it is found by gb_default_type (atype, btype).
 
 GrB_BinaryOp gb_string_to_binop         // return binary operator from a string
 (
@@ -40,8 +40,9 @@ GrB_BinaryOp gb_string_to_binop         // return binary operator from a string
     // get the operator type
     //--------------------------------------------------------------------------
 
+    bool type_not_given = (op_typename == NULL) ;
     GrB_Type type ;
-    if (op_typename == NULL)
+    if (type_not_given)
     { 
         type = gb_default_type (atype, btype) ;
     }
@@ -54,6 +55,6 @@ GrB_BinaryOp gb_string_to_binop         // return binary operator from a string
     // convert the string to a GraphBLAS binary operator, built-in or Complex
     //--------------------------------------------------------------------------
 
-    return (gb_string_and_type_to_binop (op_name, type)) ;
+    return (gb_string_and_type_to_binop (op_name, type, type_not_given)) ;
 }
 

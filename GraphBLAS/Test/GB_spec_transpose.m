@@ -57,8 +57,8 @@ function C = GB_spec_transpose (C, Mask, accum, A, descriptor)
 % Use an empty value ([ ] or '') to obtain the default value for optional
 % parameters.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 %-------------------------------------------------------------------------------
 % get inputs

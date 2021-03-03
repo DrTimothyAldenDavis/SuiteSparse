@@ -2,8 +2,8 @@
 // gbvreduce: reduce a matrix to a vector
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -47,13 +47,20 @@ void mexFunction
     base_enum_t base ;
     kind_enum_t kind ;
     GxB_Format_Value fmt ;
-    int nmatrices, nstrings, ncells ;
+    int nmatrices, nstrings, ncells, sparsity ;
     GrB_Descriptor desc ;
     gb_get_mxargs (nargin, pargin, USAGE, Matrix, &nmatrices, String, &nstrings,
-        Cell, &ncells, &desc, &base, &kind, &fmt) ;
+        Cell, &ncells, &desc, &base, &kind, &fmt, &sparsity) ;
 
     CHECK_ERROR (nmatrices < 1 || nmatrices > 3 || nstrings < 1 || ncells > 0,
         USAGE) ;
+
+    // ensure the descriptor is present, and set GxB_SORT to true
+    if (desc == NULL)
+    { 
+        OK (GrB_Descriptor_new (&desc)) ;
+    }
+    OK (GxB_Desc_set (desc, GxB_SORT, true)) ;
 
     //--------------------------------------------------------------------------
     // get the matrices
@@ -81,7 +88,7 @@ void mexFunction
     OK (GxB_Matrix_type (&atype, A)) ;
     if (C != NULL)
     { 
-        CHECK_ERROR (C->is_hyper, "Cin cannot be hypersparse") ;
+        CHECK_ERROR (C->h != NULL, "Cin cannot be hypersparse") ;
         CHECK_ERROR (!(C->is_csc), "Cin must be stored by column") ;
         CHECK_ERROR (!GB_VECTOR_OK (C), "Cin must be a column vector") ;
         OK (GxB_Matrix_type (&ctype, C)) ;
@@ -133,16 +140,17 @@ void mexFunction
         OK (GxB_Monoid_operator (&binop, monoid)) ;
         OK (GxB_BinaryOp_ztype (&ctype, binop)) ;
 
-        OK (GrB_Matrix_new (&C, ctype, cnrows, 1)) ;
+        // create the matrix C and set its format and sparsity
         fmt = gb_get_format (cnrows, 1, A, NULL, fmt) ;
-        OK (GxB_Matrix_Option_set (C, GxB_FORMAT, fmt)) ;
+        sparsity = gb_get_sparsity (A, NULL, sparsity) ;
+        C = gb_new (ctype, cnrows, 1, fmt, sparsity) ;
     }
 
     //--------------------------------------------------------------------------
     // compute C<M> += reduce(A)
     //--------------------------------------------------------------------------
 
-    OK (GrB_Matrix_reduce_Monoid (C, M, accum, monoid, A, desc)) ;
+    OK1 (C, GrB_Matrix_reduce_Monoid (C, M, accum, monoid, A, desc)) ;
 
     //--------------------------------------------------------------------------
     // free shallow copies

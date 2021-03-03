@@ -10,8 +10,8 @@ function C = gb_eadd (A, op, B)
 %
 % See also GrB/plus, GrB/minus, GrB/bitxor, GrB/bitor, GrB/hypot.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved.  http://suitesparse.com   See GraphBLAS/Doc/License.txt.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 [am, an, atype] = gbsize (A) ;
 [bm, bn, btype] = gbsize (B) ;
@@ -30,7 +30,7 @@ if (a_is_scalar)
             C = B ;
         else
             % expand A to a full matrix
-            A = gb_scalar_to_full (bm, bn, type, A) ;
+            A = gb_scalar_to_full (bm, bn, type, gb_fmt (B), A) ;
             C = gbeadd (A, op, B) ;
         end
     end
@@ -42,7 +42,7 @@ else
             C = A ;
         else
             % expand B to a full matrix
-            B = gb_scalar_to_full (am, an, type, B) ;
+            B = gb_scalar_to_full (am, an, type, gb_fmt (A), B) ;
             C = gbeadd (A, op, B) ;
         end
     else

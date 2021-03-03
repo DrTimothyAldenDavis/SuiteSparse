@@ -1,8 +1,8 @@
 function test26(longtests)
 %TEST26 performance test for GxB_select
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 fprintf ('\ntest26 ------------------------------performance of GxB_select\n') ;
 
@@ -41,7 +41,7 @@ for probs = 1:nprobs
             A3 = sparse (10,10) ;
             A4 = GB_mex_Matrix_eWiseAdd (A3, [], [], 'minus', A1, A2, [ ]) ;
             A = A4.matrix ;
-            % spok(A) will fail since it has intentional explicit zeros
+            % GB_spok(A) will fail since it has intentional explicit zeros
         case 4
             A = sparse (rand (6000)) ;
         case 5

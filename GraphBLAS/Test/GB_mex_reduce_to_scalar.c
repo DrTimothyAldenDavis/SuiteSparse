@@ -2,8 +2,8 @@
 // GB_mex_reduce_to_scalar: c = accum(c,reduce_to_scalar(A))
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -15,12 +15,12 @@
 
 #define FREE_ALL                        \
 {                                       \
-    GB_MATRIX_FREE (&A) ;               \
+    GrB_Matrix_free_(&A) ;               \
     if (reduce_monoid_allocated)        \
     {                                   \
         GrB_Monoid_free_(&reduce) ;     \
     }                                   \
-    GB_mx_put_global (true, 0) ;        \
+    GB_mx_put_global (true) ;           \
 }
 
 void mexFunction
@@ -39,7 +39,6 @@ void mexFunction
     bool reduce_monoid_allocated = false ;
 
     // check inputs
-    GB_WHERE (USAGE) ;
     if (nargout > 1 || nargin != 4)
     {
         mexErrMsgTxt ("Usage: " USAGE) ;

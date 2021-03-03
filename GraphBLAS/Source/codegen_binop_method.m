@@ -3,6 +3,9 @@ function codegen_binop_method (binop, op, xtype)
 %
 % codegen_binop_method (binop, op, xtype)
 
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
+
 f = fopen ('control.m4', 'w') ;
 
 % no code is generated for the ANY operator (SECOND is used in its place)
@@ -123,7 +126,7 @@ end
 % determine type of z, x, and y from xtype and binop
 switch (binop)
     case { 'eq', 'ne', 'gt', 'lt', 'ge', 'le' }
-        % GrB_LT_* and related operators are TxT->bool
+        % GrB_LT_* and related operators are TxT -> bool
         ztype = 'bool' ;
         ytype = xtype ;
     case { 'cmplx' }

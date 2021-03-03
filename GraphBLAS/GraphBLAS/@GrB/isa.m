@@ -19,8 +19,8 @@ function s = isa (G, type)
 % See also class, GrB.type, GrB/isnumeric, GrB/islogical, GrB/isfloat,
 % GrB/isinteger, isobject, GrB/issparse, GrB/isreal.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 if (isequal (type, 'GrB') || isequal (type, 'numeric'))
     % all GraphBLAS matrices are numeric, and have class name 'GrB'

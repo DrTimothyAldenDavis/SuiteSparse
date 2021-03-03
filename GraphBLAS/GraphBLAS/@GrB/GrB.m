@@ -14,8 +14,8 @@ classdef GrB
 %
 % constructs a GraphBLAS matrix G, which is the result of C<M>=A in
 % GraphBLAS notation (like C(M)=A(M) in MATLAB).  The matrices used in any
-% GrB.method may be MATLAB matrices (sparse or dense) or GraphBLAS sparse
-% matrices, in any combination.
+% GrB.method may be MATLAB matrices (sparse or full) or GraphBLAS matrices
+% (hyper, sparse, bitmap, or full, by row or column), in any combination.
 %
 % --------------------
 % The GrB constructor:
@@ -32,13 +32,15 @@ classdef GrB
 %   The m and n parameters above are MATLAB scalars.  The type and format
 %   parameters are strings.  The default format is 'by col', to match the
 %   format used in MATLAB (see also GrB.format), but many graph
-%   algorithms are faster if the format is 'by row'.
+%   algorithms are faster if the format is 'by row'.  The format can also
+%   specify the data structure to use (hypersparse, sparse, bitmap, and/or
+%   full).
 %
 %   The usage C = GrB (m, n, type) is analgous to A = sparse (m, n),
 %   which creates an empty MATLAB sparse matrix A.  The type parameter is
 %   a string, which defaults to 'double' if not present.
 %
-%   For the usage C = GrB (A, type), A is either a MATLAB sparse or dense
+%   For the usage C = GrB (A, type), A is either a MATLAB sparse or full
 %   matrix, or a GraphBLAS sparse matrix object.  C is created as a
 %   GraphBLAS sparse matrix object that contains a copy of A, typecasted
 %   to the given type if the type string does not match the type of A.
@@ -92,6 +94,10 @@ classdef GrB
 %
 %   When a GraphBLAS matrix is converted into a MATLAB sparse or full
 %   matrix, it is always returned to MATLAB 'by col'.
+%
+%   The format can also specify the data structure to use.  By default
+%   GraphBLAS selects automatically between hypersparse, sparse, bitmap,
+%   and full formats.  See 'help GrB.format' for details.
 %
 %--------------------
 % Integer operations:
@@ -315,12 +321,12 @@ classdef GrB
 %-------------------------------------------------------------------------
 %
 %   The Static Methods for the GrB class can be used on input matrices of
-%   any kind: GraphBLAS sparse matrices, MATLAB sparse matrices, or
-%   MATLAB dense matrices, in any combination.  The output matrix C is
-%   a GraphBLAS matrix, by default, but can be optionally returned as a
-%   MATLAB sparse or dense matrix.  The static methods divide into three
-%   categories: those that perform basic functions, graph algorithms,
-%   and the 12 foundational GraphBLAS operations.
+%   any kind: GraphBLAS sparse matrices, MATLAB sparse matrices, or MATLAB
+%   full matrices, in any combination.  The output matrix C is a GraphBLAS
+%   matrix, by default, but can be optionally returned as a MATLAB sparse
+%   or full matrix.  The static methods divide into three categories:
+%   those that perform basic functions, graph algorithms, and the 12
+%   foundational GraphBLAS operations.
 %
 %---------------------------
 % GraphBLAS basic functions:
@@ -362,6 +368,8 @@ classdef GrB
 %   C = GrB.random (...)         random GraphBLAS matrix (like 'sprand')
 %   C = GrB.speye (m,n,type)     identity matrix of any type (like 'speye')
 %   t = GrB.type (A)             get the type of a MATLAB or GrB matrix A
+%   v = GrB.version              string with SuiteSparse:GraphBLAS version
+%   v = GrB.ver                  struct with SuiteSparse:GraphBLAS version
 %
 %-------------------------------------
 % Static Methods for graph algorithms:
@@ -547,8 +555,8 @@ classdef GrB
 %
 % See also sparse.
 %
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 properties (SetAccess = private, GetAccess = private)
     % The struct contains the entire opaque content of a GraphBLAS
@@ -590,8 +598,8 @@ methods
                 % GraphBLAS mexFunction into a GrB matrix object.
                 C.opaque = arg1 ;
             elseif (isobject (arg1))
-                % arg1 is already a GrB matrix; nothing to do
-                C = arg1 ;
+                % arg1 is already a GrB matrix; make a deep copy
+                C.opaque = gbnew (arg1.opaque) ;
             else
                 % arg1 is a MATLAB matrix; convert to a GrB matrix
                 C.opaque = gbnew (arg1) ;
@@ -915,6 +923,7 @@ methods
     C = sprandsym (arg1, arg2) ;
     c = sprintf (varargin) ;
     C = sqrt (G) ;
+    S = struct (G) ;
     C = sum (G, option) ;
     [p, varargout] = symamd (G, varargin) ;
     p = symrcm (G) ;
@@ -977,7 +986,7 @@ methods (Static)
     [I, J, X] = extracttuples (A, desc) ;
     C = eye (m, n, type) ;
     finalize ;
-    f = format (arg) ;
+    [f, s] = format (arg) ;
     C = incidence (A, varargin) ;
     init ;
     s = isbyrow (A) ;
@@ -1008,6 +1017,8 @@ methods (Static)
     s = tricount (A, check, d) ;                % uses GrB matrices
     s = type (A) ;
     unopinfo (op, type) ;
+    v = version ;
+    v = ver ;
     C = vreduce (Cin, M, accum, monoid, A, desc) ;
 
 end

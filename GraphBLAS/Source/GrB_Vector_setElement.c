@@ -2,8 +2,8 @@
 // GrB_Vector_setElement: set an entry in a vector, w (row) = x
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -20,7 +20,8 @@ GrB_Info prefix ## Vector_setElement_ ## T    /* w(row) = x */              \
     GrB_Index row                       /* row index                  */    \
 )                                                                           \
 {                                                                           \
-    GB_WHERE (GB_STR(prefix) "Vector_setElement_" GB_STR(T) " (w, x, row)");\
+    GB_WHERE (w, GB_STR(prefix) "Vector_setElement_" GB_STR(T)              \
+        " (w, x, row)");                                                    \
     GB_RETURN_IF_NULL_OR_FAULTY (w) ;                                       \
     ASSERT (GB_VECTOR_OK (w)) ;                                             \
     return (GB_setElement ((GrB_Matrix) w, ampersand x, row, 0,             \

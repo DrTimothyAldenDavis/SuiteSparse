@@ -2,8 +2,8 @@
 // GB_binary_search.h: binary search in a sorted list
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -18,6 +18,9 @@
 // The list X [pleft ... pright] is in ascending order.  It may have
 // duplicates.
 
+#if GB_KERNEL
+
+// version for the GPU, with fewer branches
 #define GB_TRIM_BINARY_SEARCH(i,X,pleft,pright)                             \
 {                                                                           \
     /* binary search of X [pleft ... pright] for integer i */               \
@@ -33,8 +36,9 @@
     ASSERT (pleft == pright || pleft == pright + 1) ;                       \
 }
 
-#if 0
-// slower version
+#else
+
+// version for the CPU
 #define GB_TRIM_BINARY_SEARCH(i,X,pleft,pright)                             \
 {                                                                           \
     /* binary search of X [pleft ... pright] for integer i */               \
@@ -106,6 +110,9 @@
 // GB_TRIM_BINARY_SEARCH_ZOMBIE: binary search in the presence of zombies
 //------------------------------------------------------------------------------
 
+#if GB_KERNEL
+
+// version for the GPU, with fewer branches
 #define GB_TRIM_BINARY_SEARCH_ZOMBIE(i,X,pleft,pright)                      \
 {                                                                           \
     /* binary search of X [pleft ... pright] for integer i */               \
@@ -121,7 +128,9 @@
     ASSERT (pleft == pright || pleft == pright + 1) ;                       \
 }
 
-#if 0
+#else
+
+// version for the CPU
 #define GB_TRIM_BINARY_SEARCH_ZOMBIE(i,X,pleft,pright)                      \
 {                                                                           \
     /* binary search of X [pleft ... pright] for integer i */               \
@@ -217,11 +226,6 @@
 //------------------------------------------------------------------------------
 // GB_lookup: find k so that j == Ah [k]
 //------------------------------------------------------------------------------
-
-// Given a sparse, hypersparse, or hyperslice matrix, find k so that j == Ah
-// [k], if it appears in the list.  k is not needed by the caller, just the
-// variables pstart, pend, pleft, and found.  GB_lookup cannot be used if
-// A is a slice (it could be extended to handle this case).
 
 #include "GB_lookup_template.c"
 

@@ -2,8 +2,8 @@
 // GxB_Scalar_setElement: set an entry in a GxB_Scalar
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -19,7 +19,7 @@ GrB_Info GxB_Scalar_setElement_ ## T    /* s = x */                         \
     type x                              /* user scalar to assign to s */    \
 )                                                                           \
 {                                                                           \
-    GB_WHERE ("GxB_Scalar_setElement_" GB_STR(T) " (w, x)") ;               \
+    GB_WHERE (s, "GxB_Scalar_setElement_" GB_STR(T) " (w, x)") ;            \
     GB_RETURN_IF_NULL_OR_FAULTY (s) ;                                       \
     ASSERT (GB_SCALAR_OK (s)) ;                                             \
     return (GB_setElement ((GrB_Matrix) s, ampersand x, 0, 0,               \

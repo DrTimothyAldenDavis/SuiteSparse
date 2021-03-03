@@ -2,8 +2,8 @@
 // GB_binop:  hard-coded functions for each built-in binary operator
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -14,7 +14,8 @@
 #include "GB_control.h"
 #include "GB_ek_slice.h"
 #include "GB_dense.h"
-#include "GB_mkl.h"
+#include "GB_atomics.h"
+#include "GB_bitmap_assign_methods.h"
 #include "GB_binop__include.h"
 
 // C=binop(A,B) is defined by the following types and operators:
@@ -81,7 +82,7 @@
 #define GB_CX(p) Cx [p]
 
 // binary operator
-#define GB_BINOP(z, x, y)   \
+#define GB_BINOP(z, x, y, i, j) \
     z = (x > y) ;
 
 // op is second
@@ -262,11 +263,21 @@ GrB_Info GB_DxB__isgt_int32
 // eWiseAdd: C = A+B or C<M> = A+B
 //------------------------------------------------------------------------------
 
+#undef  GB_FREE_ALL
+#define GB_FREE_ALL                                                     \
+{                                                                       \
+    GB_ek_slice_free (&pstart_Mslice, &kfirst_Mslice, &klast_Mslice) ;  \
+    GB_ek_slice_free (&pstart_Aslice, &kfirst_Aslice, &klast_Aslice) ;  \
+    GB_ek_slice_free (&pstart_Bslice, &kfirst_Bslice, &klast_Bslice) ;  \
+}
+
 GrB_Info GB_AaddB__isgt_int32
 (
     GrB_Matrix C,
+    const int C_sparsity,
     const GrB_Matrix M,
     const bool Mask_struct,
+    const bool Mask_comp,
     const GrB_Matrix A,
     const GrB_Matrix B,
     const bool Ch_is_Mh,
@@ -274,14 +285,19 @@ GrB_Info GB_AaddB__isgt_int32
     const int64_t *GB_RESTRICT C_to_A,
     const int64_t *GB_RESTRICT C_to_B,
     const GB_task_struct *GB_RESTRICT TaskList,
-    const int ntasks,
-    const int nthreads
+    const int C_ntasks,
+    const int C_nthreads,
+    GB_Context Context
 )
 { 
     #if GB_DISABLE
     return (GrB_NO_VALUE) ;
     #else
+    int64_t *pstart_Mslice = NULL, *kfirst_Mslice = NULL, *klast_Mslice = NULL ;
+    int64_t *pstart_Aslice = NULL, *kfirst_Aslice = NULL, *klast_Aslice = NULL ;
+    int64_t *pstart_Bslice = NULL, *kfirst_Bslice = NULL, *klast_Bslice = NULL ;
     #include "GB_add_template.c"
+    GB_FREE_ALL ;
     return (GrB_SUCCESS) ;
     #endif
 }
@@ -293,22 +309,29 @@ GrB_Info GB_AaddB__isgt_int32
 GrB_Info GB_AemultB__isgt_int32
 (
     GrB_Matrix C,
+    const int C_sparsity,
     const GrB_Matrix M,
     const bool Mask_struct,
+    const bool Mask_comp,
     const GrB_Matrix A,
     const GrB_Matrix B,
     const int64_t *GB_RESTRICT C_to_M,
     const int64_t *GB_RESTRICT C_to_A,
     const int64_t *GB_RESTRICT C_to_B,
     const GB_task_struct *GB_RESTRICT TaskList,
-    const int ntasks,
-    const int nthreads
+    const int C_ntasks,
+    const int C_nthreads,
+    GB_Context Context
 )
 { 
     #if GB_DISABLE
     return (GrB_NO_VALUE) ;
     #else
+    int64_t *pstart_Mslice = NULL, *kfirst_Mslice = NULL, *klast_Mslice = NULL ;
+    int64_t *pstart_Aslice = NULL, *kfirst_Aslice = NULL, *klast_Aslice = NULL ;
+    int64_t *pstart_Bslice = NULL, *kfirst_Bslice = NULL, *klast_Bslice = NULL ;
     #include "GB_emult_template.c"
+    GB_FREE_ALL ;
     return (GrB_SUCCESS) ;
     #endif
 }
@@ -324,6 +347,7 @@ GrB_Info GB_bind1st__isgt_int32
     GB_void *Cx_output,         // Cx and Bx may be aliased
     const GB_void *x_input,
     const GB_void *Bx_input,
+    const int8_t *GB_RESTRICT Bb,
     int64_t anz,
     int nthreads
 )
@@ -338,6 +362,7 @@ GrB_Info GB_bind1st__isgt_int32
     #pragma omp parallel for num_threads(nthreads) schedule(static)
     for (p = 0 ; p < anz ; p++)
     {
+        if (!GBB (Bb, p)) continue ;
         int32_t bij = Bx [p] ;
         Cx [p] = (x > bij) ;
     }
@@ -358,6 +383,7 @@ GrB_Info GB_bind2nd__isgt_int32
     GB_void *Cx_output,         // Cx and Ax may be aliased
     const GB_void *Ax_input,
     const GB_void *y_input,
+    const int8_t *GB_RESTRICT Ab,
     int64_t anz,
     int nthreads
 )
@@ -372,6 +398,7 @@ GrB_Info GB_bind2nd__isgt_int32
     #pragma omp parallel for num_threads(nthreads) schedule(static)
     for (p = 0 ; p < anz ; p++)
     {
+        if (!GBB (Ab, p)) continue ;
         int32_t aij = Ax [p] ;
         Cx [p] = (aij > y) ;
     }
@@ -387,12 +414,12 @@ GrB_Info GB_bind2nd__isgt_int32
 
 
 
-// cij = op (x, aij), no typcasting (in spite of the macro name)
+// cij = op (x, aij), no typecasting (in spite of the macro name)
 #undef  GB_CAST_OP
-#define GB_CAST_OP(pC,pA)               \
-{                                       \
-    int32_t aij = Ax [pA] ;              \
-    Cx [pC] = (x > aij) ;      \
+#define GB_CAST_OP(pC,pA)                       \
+{                                               \
+    int32_t aij = Ax [pA] ;                      \
+    Cx [pC] = (x > aij) ;        \
 }
 
 GrB_Info GB_bind1st_tran__isgt_int32
@@ -400,10 +427,10 @@ GrB_Info GB_bind1st_tran__isgt_int32
     GrB_Matrix C,
     const GB_void *x_input,
     const GrB_Matrix A,
-    int64_t *GB_RESTRICT *Rowcounts,
-    GBI_single_iterator Iter,
+    int64_t *GB_RESTRICT *Workspaces,
     const int64_t *GB_RESTRICT A_slice,
-    int naslice
+    int nworkspaces,
+    int nthreads
 )
 { 
     // GB_unop_transpose.c uses GB_ATYPE, but A is
@@ -415,7 +442,6 @@ GrB_Info GB_bind1st_tran__isgt_int32
     return (GrB_NO_VALUE) ;
     #else
     int32_t x = (*((const int32_t *) x_input)) ;
-    #define GB_PHASE_2_OF_2
     #include "GB_unop_transpose.c"
     return (GrB_SUCCESS) ;
     #endif
@@ -432,12 +458,12 @@ GrB_Info GB_bind1st_tran__isgt_int32
 
 
 
-// cij = op (aij, y), no typcasting (in spite of the macro name)
+// cij = op (aij, y), no typecasting (in spite of the macro name)
 #undef  GB_CAST_OP
-#define GB_CAST_OP(pC,pA)               \
-{                                       \
-    int32_t aij = Ax [pA] ;              \
-    Cx [pC] = (aij > y) ;      \
+#define GB_CAST_OP(pC,pA)                       \
+{                                               \
+    int32_t aij = Ax [pA] ;                      \
+    Cx [pC] = (aij > y) ;        \
 }
 
 GrB_Info GB_bind2nd_tran__isgt_int32
@@ -445,17 +471,16 @@ GrB_Info GB_bind2nd_tran__isgt_int32
     GrB_Matrix C,
     const GrB_Matrix A,
     const GB_void *y_input,
-    int64_t *GB_RESTRICT *Rowcounts,
-    GBI_single_iterator Iter,
+    int64_t *GB_RESTRICT *Workspaces,
     const int64_t *GB_RESTRICT A_slice,
-    int naslice
+    int nworkspaces,
+    int nthreads
 )
 { 
     #if GB_DISABLE
     return (GrB_NO_VALUE) ;
     #else
     int32_t y = (*((const int32_t *) y_input)) ;
-    #define GB_PHASE_2_OF_2
     #include "GB_unop_transpose.c"
     return (GrB_SUCCESS) ;
     #endif

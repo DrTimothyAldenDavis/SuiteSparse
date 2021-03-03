@@ -5,8 +5,8 @@ function C = or (A, B)
 %
 % See also GrB/and, GrB/xor, GrB/not.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 if (isobject (A))
     A = A.opaque ;
@@ -32,7 +32,7 @@ if (a_is_scalar)
             C = GrB (gbnew (B, 'logical')) ;
         else
             % A is true, so C is a full matrix the same size as B
-            C = GrB (gb_scalar_to_full (bm, bn, 'logical', true)) ;
+            C = GrB (gb_scalar_to_full (bm, bn, 'logical', gb_fmt (B), true)) ;
         end
     end
 else
@@ -43,7 +43,7 @@ else
             C = GrB (A, 'logical') ;
         else
             % B is true, so C is a full matrix the same size as A
-            C = GrB (gb_scalar_to_full (am, an, 'logical', true)) ;
+            C = GrB (gb_scalar_to_full (am, an, 'logical', gb_fmt (A), true)) ;
         end
     else
         % both A and B are matrices.  C is the set union of A and B

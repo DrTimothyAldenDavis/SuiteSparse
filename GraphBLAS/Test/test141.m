@@ -1,8 +1,8 @@
 function test141
 %TEST141 test GrB_eWiseAdd (all types and operators) for dense matrices
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 [binops, ~, ~, types, ~, ~] = GB_spec_opsall ;
 binops = binops.all ;
@@ -115,10 +115,11 @@ for k2 = 1:length(binops)
         % C += A+B
         %---------------------------------------
 
-        C0 = GB_spec_Matrix_eWiseAdd (C, [ ], op, op, A, B, [ ]) ;
-        C1 = GB_mex_Matrix_eWiseAdd  (C, [ ], op, op, A, B, [ ]) ;
-        GB_spec_compare (C0, C1) ;
-
+        if (~GB_spec_is_positional (op))
+            C0 = GB_spec_Matrix_eWiseAdd (C, [ ], op, op, A, B, [ ]) ;
+            C1 = GB_mex_Matrix_eWiseAdd  (C, [ ], op, op, A, B, [ ]) ;
+            GB_spec_compare (C0, C1) ;
+        end
     end
 end
 

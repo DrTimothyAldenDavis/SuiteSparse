@@ -3,8 +3,8 @@ function C = gb_expand (scalar, S, type)
 % Implements C = GrB.expand (scalar, S, type).  This function assumes the
 % first input is a scalar; the caller has checked this already.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 % typecast the scalar to the desired type
 scalar = gbnew (scalar, type) ;

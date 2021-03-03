@@ -46,8 +46,8 @@ function [S,p] = GB_spec_build (I, J, X, nrows, ncols, op, order, sclass)
 % parameters, or pass fewer inputs.  For exampe S = GB_spec_build (I, J, X,
 % nrows, ncols) uses defaults for op, and order, but not X, nrows and ncols.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 %-------------------------------------------------------------------------------
 % get inputs
@@ -106,6 +106,10 @@ if (isempty (op))
     op = 'plus' ;
 end
 [opname optype ztype xtype ytype] = GB_spec_operator (op, GB_spec_type (X)) ;
+
+if (GB_spec_is_positional (opname))
+    error ('dup operator cannot be positional') ;
+end
 
 assert (isequal (ztype, xtype)) ;
 assert (isequal (ztype, ytype)) ;

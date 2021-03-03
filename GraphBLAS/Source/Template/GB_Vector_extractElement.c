@@ -2,8 +2,8 @@
 // GB_Vector_extractElement: x = V(i)
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -30,40 +30,32 @@ GrB_Info GB_EXTRACT_ELEMENT     // extract a single entry, x = V(i)
     // check inputs
     //--------------------------------------------------------------------------
 
-    GB_CONTEXT_RETURN_IF_NULL (V) ;
-    GB_CONTEXT_RETURN_IF_FAULTY (V) ;
+    GB_RETURN_IF_NULL_OR_FAULTY (V) ;
+    GB_RETURN_IF_NULL (x) ;
 
-    // delete any lingering zombies and assemble any pending tuples
-    if (GB_PENDING_OR_ZOMBIES (V))
+    // delete any lingering zombies, assemble any pending tuples, and unjumble
+    if (GB_ANY_PENDING_WORK (V))
     { 
         GrB_Info info ;
-        GB_WHERE (GB_WHERE_STRING) ;
+        GB_WHERE1 (GB_WHERE_STRING) ;
         GB_BURBLE_START ("GrB_Vector_extractElement") ;
         GB_OK (GB_Matrix_wait ((GrB_Matrix) V, Context)) ;
-        ASSERT (!GB_ZOMBIES (V)) ;
-        ASSERT (!GB_PENDING (V)) ;
         GB_BURBLE_END ;
     }
 
-    GB_CONTEXT_RETURN_IF_NULL (x) ;
+    ASSERT (!GB_ANY_PENDING_WORK (V)) ;
 
     // check index
     if (i >= V->vlen)
     { 
-        GB_WHERE (GB_WHERE_STRING) ;
-        return (GB_ERROR (GrB_INVALID_INDEX, (GB_LOG, "Row index "
-            GBu " out of range; must be < " GBd, i, V->vlen))) ;
+        return (GrB_INVALID_INDEX) ;
     }
 
     // GB_XCODE and V must be compatible
     GB_Type_code vcode = V->type->code ;
     if (!GB_code_compatible (GB_XCODE, vcode))
     { 
-        GB_WHERE (GB_WHERE_STRING) ;
-        return (GB_ERROR (GrB_DOMAIN_MISMATCH, (GB_LOG,
-            "entry v(i) of type [%s] cannot be typecast\n"
-            "to output scalar x of type [%s]",
-            V->type->name, GB_code_string (GB_XCODE)))) ;
+        return (GrB_DOMAIN_MISMATCH) ;
     }
 
     if (V->nzmax == 0)
@@ -73,23 +65,41 @@ GrB_Info GB_EXTRACT_ELEMENT     // extract a single entry, x = V(i)
     }
 
     //--------------------------------------------------------------------------
-    // get the pattern of the vector
+    // find the entry V(i)
     //--------------------------------------------------------------------------
 
-    const int64_t *GB_RESTRICT Vp = V->p ;
-    const int64_t *GB_RESTRICT Vi = V->i ;
+    int64_t pleft ;
     bool found ;
+    const int64_t *GB_RESTRICT Vp = V->p ;
 
-    // extract from a GrB_Vector
-    int64_t pleft = 0 ;
-    int64_t pright = Vp [1] - 1 ;
+    if (Vp != NULL)
+    { 
+        // V is sparse
+        const int64_t *GB_RESTRICT Vi = V->i ;
 
-    //--------------------------------------------------------------------------
-    // binary search in kth vector for index i
-    //--------------------------------------------------------------------------
+        pleft = 0 ;
+        int64_t pright = Vp [1] - 1 ;
 
-    // Time taken for this step is at most O(log(nnz(V))).
-    GB_BINARY_SEARCH (i, Vi, pleft, pright, found) ;
+        // binary search for index i
+        // Time taken for this step is at most O(log(nnz(V))).
+        GB_BINARY_SEARCH (i, Vi, pleft, pright, found) ;
+    }
+    else
+    {
+        // V is bitmap or full
+        pleft = i ;
+        const int8_t *GB_RESTRICT Vb = V->b ;
+        if (Vb != NULL)
+        { 
+            // V is bitmap
+            found = (Vb [pleft] == 1) ;
+        }
+        else
+        { 
+            // V is full
+            found = true ;
+        }
+    }
 
     //--------------------------------------------------------------------------
     // extract the element
@@ -111,7 +121,7 @@ GrB_Info GB_EXTRACT_ELEMENT     // extract a single entry, x = V(i)
             // typecast the value from V into x
             size_t vsize = V->type->size ;
             GB_cast_array ((GB_void *) x, GB_XCODE,
-                ((GB_void *) V->x) +(pleft*vsize), vcode, vsize, 1, 1) ;
+                ((GB_void *) V->x) +(pleft*vsize), vcode, NULL, vsize, 1, 1) ;
         }
         return (GrB_SUCCESS) ;
     }

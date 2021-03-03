@@ -1,15 +1,23 @@
-function test134
+function test134(short)
 %TEST134 test GxB_select
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 % A shorter version of test25
 
 fprintf ('\ntest134: GxB_select tests\n') ;
 
+if (nargin < 1)
+    short = false ;
+end
+
 [~, ~, ~, types, ~, select_ops] = GB_spec_opsall ;
 types = types.all ;
+
+if (short)
+    types = { 'double' } ;
+end
 
 rng ('default') ;
 
@@ -21,12 +29,23 @@ for k1 = 1:length(types)
     atype = types {k1} ;
     fprintf ('%-14s ', atype) ;
 
-    for A_is_hyper = 0:1
+    for A_sparsity = [0 1 2]
     for A_is_csc   = 0:1
     for C_is_hyper = 0:1
     for C_is_csc   = 0:1
     for M_is_hyper = 0:1
     for M_is_csc   = 0:1
+
+    if (A_sparsity == 0)
+        A_is_hyper = 0 ;
+        A_sparsity_control = 2 ;    % sparse
+    elseif (A_sparsity == 1)
+        A_is_hyper = 1 ;
+        A_sparsity_control = 1 ;    % hypersparse
+    else
+        A_is_hyper = 0 ;
+        A_sparsity_control = 4 ;    % bitmap
+    end
 
     if (A_is_hyper)
         ha = 1 ;
@@ -53,7 +72,10 @@ for k1 = 1:length(types)
     B = GB_spec_random (n, m, 0.3, 100, atype, A_is_csc, A_is_hyper, ha) ;
     cin = GB_mex_cast (0, atype) ;
     Mask = GB_random_mask (m, n, 0.5, M_is_csc, M_is_hyper) ;
-    Mask.hyper_ratio = hm ;
+    Mask.hyper_switch = hm ;
+
+    A.sparsity = A_sparsity_control ;
+    B.sparsity = A_sparsity_control ;
 
     fprintf ('.') ;
 

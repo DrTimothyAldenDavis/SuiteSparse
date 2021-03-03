@@ -2,8 +2,8 @@
 // GB_binop_factory: switch factory for built-in methods for C=binop(A,B)
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -18,6 +18,9 @@
     //--------------------------------------------------------------------------
     // launch the switch factory
     //--------------------------------------------------------------------------
+
+    // this switch factory does not handle positional operators
+    ASSERT (!GB_OPCODE_IS_POSITIONAL (opcode)) ;
 
     switch (opcode)
     {

@@ -78,6 +78,12 @@ function unopinfo (op, type)
 % For integer types only (result is same type as input):
 %   bitcmp      z = ~(x)        bitwise complement, also 'bitnot'
 %
+% For int32 and int64 types, applied to an entry A(i,j)
+%   positioni0  z = i-1     also 'i0'
+%   positioni1  z = i       also 'i', 'i1', and 'positioni'
+%   positionj0  z = j-1     also 'j0'
+%   positionj1  z = j       also 'j', 'j1', and 'positionj'
+%
 % Example:
 %
 %   % valid unary operators
@@ -93,8 +99,8 @@ function unopinfo (op, type)
 % See also GrB.binopinfo, GrB.descriptorinfo, GrB.monoidinfo,
 % GrB.selectopinfo, GrB.semiringinfo.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 if (nargin == 0)
     help GrB.unopinfo

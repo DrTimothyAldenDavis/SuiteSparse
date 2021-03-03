@@ -2,8 +2,8 @@
 // GB_mex_setElement: MATLAB interface for A(i,j) = x
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -20,8 +20,8 @@ bool debug_wait = false ;
 
 #define FREE_ALL                        \
 {                                       \
-    GB_MATRIX_FREE (&A) ;               \
-    GB_mx_put_global (true, 0) ;        \
+    GrB_Matrix_free_(&A) ;               \
+    GB_mx_put_global (true) ;           \
 }
 
 #if defined ( __GNUC__ )
@@ -125,7 +125,6 @@ void mexFunction
     bool is_list ;
 
     // check inputs
-    GB_WHERE (USAGE) ;
     if (nargout > 1 || nargin < 4 || nargin > 5)
     {
         mexErrMsgTxt ("Usage: " USAGE) ;
@@ -134,7 +133,7 @@ void mexFunction
     // get A (deep copy)
     #define GET_DEEP_COPY \
     A = GB_mx_mxArray_to_Matrix (pargin [0], "A input", true, true) ;
-    #define FREE_DEEP_COPY GB_MATRIX_FREE (&A) ;
+    #define FREE_DEEP_COPY GrB_Matrix_free_(&A) ;
     GET_DEEP_COPY ;
     if (A == NULL)
     {

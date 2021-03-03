@@ -8,8 +8,8 @@ function result = nonz (A, varargin)
 %
 % e = GrB.nonz (A)         number of nonzeros
 % e = GrB.nonz (A, 'all')  number of nonzeros
-% e = GrB.nonz (A, 'row')  number of rows with at least one nonzeros
-% e = GrB.nonz (A, 'col')  number of columns with at least one nonzeros
+% e = GrB.nonz (A, 'row')  number of rows with at least one nonzero
+% e = GrB.nonz (A, 'col')  number of columns with at least one nonzero
 %
 % X = GrB.nonz (A, 'list')         list of values of unique nonzeros
 % X = GrB.nonz (A, 'all', 'list')  list of values of unique nonzeros
@@ -52,8 +52,8 @@ function result = nonz (A, varargin)
 %
 % See also GrB.entries, GrB/nnz, GrB/nonzeros, GrB.prune.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 matlab_sparse = false ;
 if (isobject (A))
@@ -80,7 +80,9 @@ if (id ~= 0)
     % id is nonzero, so prune A first (for any matrix A)
     A = gbselect (A, '~=', id) ;
 elseif (~matlab_sparse)
-    % id is zero, so prune A only if it is a GraphBLAS matrix
+    % id is zero, so prune A only if it is a GraphBLAS matrix,
+    % or a MATLAB full matrix.  A MATLAB sparse matrix can remain
+    % unchanged.
     A = gbselect (A, 'nonzero') ;
 end
 

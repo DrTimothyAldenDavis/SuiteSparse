@@ -2,8 +2,8 @@
 // GB_AxB:  hard-coded functions for semiring: C<M>=A*B or A'*B
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -18,6 +18,8 @@
 #include "GB_atomics.h"
 #include "GB_AxB_saxpy3.h"
 #include "GB_AxB__include.h"
+#include "GB_unused.h"
+#include "GB_bitmap_assign_methods.h"
 
 // The C=A*B semiring is defined by the following types and operators:
 
@@ -37,7 +39,7 @@
 //           OpenMP atomic? 1
 // MultAdd:  cij &= (aik == bkj)
 // Identity: true
-// Terminal: if (cij == false) { cij_is_terminal = true ; break ; }
+// Terminal: if (cij == false) break ;
 
 #define GB_ATYPE \
     int64_t
@@ -47,6 +49,10 @@
 
 #define GB_CTYPE \
     bool
+
+#define GB_ASIZE (sizeof (GB_BTYPE))
+#define GB_BSIZE (sizeof (GB_BTYPE))
+#define GB_CSIZE (sizeof (GB_CTYPE))
 
 // true for int64, uint64, float, double, float complex, and double complex 
 #define GB_CTYPE_IGNORE_OVERFLOW \
@@ -60,27 +66,47 @@
 #define GB_GETB(bkj,Bx,pB) \
     int64_t bkj = Bx [pB]
 
+// Gx [pG] = Ax [pA]
+#define GB_LOADA(Gx,pG,Ax,pA) \
+    Gx [pG] = Ax [pA]
+
+// Gx [pG] = Bx [pB]
+#define GB_LOADB(Gx,pG,Bx,pB) \
+    Gx [pG] = Bx [pB]
+
 #define GB_CX(p) Cx [p]
 
 // multiply operator
-#define GB_MULT(z, x, y) \
+#define GB_MULT(z, x, y, i, k, j) \
     z = (x == y)
 
 // cast from a real scalar (or 2, if C is complex) to the type of C
 #define GB_CTYPE_CAST(x,y) \
     ((bool) x)
 
+// cast from a real scalar (or 2, if A is complex) to the type of A
+#define GB_ATYPE_CAST(x,y) \
+    ((int64_t) x)
+
 // multiply-add
-#define GB_MULTADD(z, x, y) \
+#define GB_MULTADD(z, x, y, i, k, j) \
     z &= (x == y)
 
 // monoid identity value
 #define GB_IDENTITY \
     true
 
+// 1 if the identity value can be assigned via memset, with all bytes the same
+#define GB_HAS_IDENTITY_BYTE \
+    1
+
+// identity byte, for memset
+#define GB_IDENTITY_BYTE \
+    1
+
 // break if cij reaches the terminal value (dot product only)
 #define GB_DOT_TERMINAL(cij) \
-    if (cij == false) { cij_is_terminal = true ; break ; }
+    if (cij == false) break ;
 
 // simd pragma for dot-product loop vectorization
 #define GB_PRAGMA_SIMD_DOT(cij) \
@@ -91,6 +117,10 @@
 
 // 1 for the PLUS_PAIR_(real) semirings, not for the complex case
 #define GB_IS_PLUS_PAIR_REAL_SEMIRING \
+    0
+
+// 1 for performance-critical semirings, which get extra optimization
+#define GB_IS_PERFORMANCE_CRITICAL_SEMIRING \
     0
 
 // declare the cij scalar
@@ -104,16 +134,11 @@
         bool cij
 #endif
 
-// save the value of C(i,j)
-#define GB_CIJ_SAVE(cij,p) Cx [p] = cij
-
 // cij = Cx [pC]
-#define GB_GETC(cij,pC) \
-    cij = Cx [pC]
+#define GB_GETC(cij,p) cij = Cx [p]
 
 // Cx [pC] = cij
-#define GB_PUTC(cij,pC) \
-    Cx [pC] = cij
+#define GB_PUTC(cij,p) Cx [p] = cij
 
 // Cx [p] = t
 #define GB_CIJ_WRITE(p,t) Cx [p] = t
@@ -125,10 +150,6 @@
 // x + y
 #define GB_ADD_FUNCTION(x,y) \
     x & y
-
-// type with size of GB_CTYPE, and can be used in compare-and-swap
-#define GB_CTYPE_PUN \
-    bool
 
 // bit pattern for bool, 8-bit, 16-bit, and 32-bit integers
 #define GB_CTYPE_BITS \
@@ -171,6 +192,42 @@
 #define GB_IS_PLUS_FC64_MONOID \
     0
 
+// 1 if monoid is ANY_FC32
+#define GB_IS_ANY_FC32_MONOID \
+    0
+
+// 1 if monoid is ANY_FC64
+#define GB_IS_ANY_FC64_MONOID \
+    0
+
+// 1 if monoid is MIN for signed or unsigned integers
+#define GB_IS_IMIN_MONOID \
+    0
+
+// 1 if monoid is MAX for signed or unsigned integers
+#define GB_IS_IMAX_MONOID \
+    0
+
+// 1 if monoid is MIN for float or double
+#define GB_IS_FMIN_MONOID \
+    0
+
+// 1 if monoid is MAX for float or double
+#define GB_IS_FMAX_MONOID \
+    0
+
+// 1 for the FIRSTI or FIRSTI1 multiply operator
+#define GB_IS_FIRSTI_MULTIPLIER \
+    0
+
+// 1 for the FIRSTJ or FIRSTJ1 multiply operator
+#define GB_IS_FIRSTJ_MULTIPLIER \
+    0
+
+// 1 for the SECONDJ or SECONDJ1 multiply operator
+#define GB_IS_SECONDJ_MULTIPLIER \
+    0
+
 // atomic compare-exchange
 #define GB_ATOMIC_COMPARE_EXCHANGE(target, expected, desired) \
     GB_ATOMIC_COMPARE_EXCHANGE_8 (target, expected, desired)
@@ -180,6 +237,7 @@
     // result is purely symbolic; no numeric work to do.  Hx is not used.
     #define GB_HX_WRITE(i,t)
     #define GB_CIJ_GATHER(p,i)
+    #define GB_CIJ_GATHER_UPDATE(p,i)
     #define GB_HX_UPDATE(i,t)
     #define GB_CIJ_MEMCPY(p,i,len)
 
@@ -191,6 +249,10 @@
     // Cx [p] = Hx [i]
     #define GB_CIJ_GATHER(p,i) Cx [p] = Hx [i]
 
+    // Cx [p] += Hx [i]
+    #define GB_CIJ_GATHER_UPDATE(p,i) \
+        Cx [p] &= Hx [i]
+
     // Hx [i] += t
     #define GB_HX_UPDATE(i,t) \
         Hx [i] &= t
@@ -201,38 +263,55 @@
 
 #endif
 
+// 1 if the semiring has a concise bitmap multiply-add
+#define GB_HAS_BITMAP_MULTADD \
+    1
+
+// concise statement(s) for the bitmap case:
+//  if (exists)
+//      if (cb == 0)
+//          cx = ax * bx
+//          cb = 1
+//      else
+//          cx += ax * bx
+#define GB_BITMAP_MULTADD(cb,cx,exists,ax,bx) \
+    cx &= ~exists | ((ax == bx)) ; cb |= exists
+
+// define X for bitmap multiply-add
+#define GB_XINIT \
+    ;
+
+// load X [1] = bkj for bitmap multiply-add
+#define GB_XLOAD(bkj) \
+    ;
+
 // disable this semiring and use the generic case if these conditions hold
 #define GB_DISABLE \
     (GxB_NO_LAND || GxB_NO_EQ || GxB_NO_INT64 || GxB_NO_LAND_BOOL || GxB_NO_EQ_INT64 || GxB_NO_LAND_EQ_INT64)
 
 //------------------------------------------------------------------------------
-// C=A'*B or C<!M>=A'*B: dot product (phase 2)
+// C=A'*B, C<M>=A'*B, or C<!M>=A'*B: dot product method where C is bitmap
 //------------------------------------------------------------------------------
 
 GrB_Info GB_Adot2B__land_eq_int64
 (
     GrB_Matrix C,
-    const GrB_Matrix M, const bool Mask_struct,
-    const GrB_Matrix *Aslice, bool A_is_pattern,
-    const GrB_Matrix B, bool B_is_pattern,
-    int64_t *GB_RESTRICT B_slice,
-    int64_t *GB_RESTRICT *C_counts,
+    const GrB_Matrix M, const bool Mask_comp, const bool Mask_struct,
+    const GrB_Matrix A, bool A_is_pattern, int64_t *GB_RESTRICT A_slice,
+    const GrB_Matrix B, bool B_is_pattern, int64_t *GB_RESTRICT B_slice,
     int nthreads, int naslice, int nbslice
 )
 { 
-    // C<M>=A'*B now uses dot3
     #if GB_DISABLE
     return (GrB_NO_VALUE) ;
     #else
-    #define GB_PHASE_2_OF_2
     #include "GB_AxB_dot2_meta.c"
-    #undef GB_PHASE_2_OF_2
     return (GrB_SUCCESS) ;
     #endif
 }
 
 //------------------------------------------------------------------------------
-// C<M>=A'*B: masked dot product method (phase 2)
+// C<M>=A'*B: masked dot product method (phase 2) where C is sparse or hyper
 //------------------------------------------------------------------------------
 
 GrB_Info GB_Adot3B__land_eq_int64
@@ -249,7 +328,7 @@ GrB_Info GB_Adot3B__land_eq_int64
     #if GB_DISABLE
     return (GrB_NO_VALUE) ;
     #else
-    #include "GB_AxB_dot3_template.c"
+    #include "GB_AxB_dot3_meta.c"
     return (GrB_SUCCESS) ;
     #endif
 }
@@ -271,7 +350,7 @@ GrB_Info GB_Adot4B__land_eq_int64
     #if GB_DISABLE
     return (GrB_NO_VALUE) ;
     #else
-    #include "GB_AxB_dot4_template.c"
+    #include "GB_AxB_dot4_meta.c"
     return (GrB_SUCCESS) ;
     #endif
 }
@@ -285,20 +364,22 @@ GrB_Info GB_Adot4B__land_eq_int64
 GrB_Info GB_Asaxpy3B__land_eq_int64
 (
     GrB_Matrix C,
-    const GrB_Matrix M, bool Mask_comp, const bool Mask_struct,
+    const GrB_Matrix M, const bool Mask_comp, const bool Mask_struct,
+    const bool M_dense_in_place,
     const GrB_Matrix A, bool A_is_pattern,
     const GrB_Matrix B, bool B_is_pattern,
     GB_saxpy3task_struct *GB_RESTRICT TaskList,
-    const int ntasks,
-    const int nfine,
-    const int nthreads,
+    int ntasks,
+    int nfine,
+    int nthreads,
+    const int do_sort,
     GB_Context Context
 )
 { 
     #if GB_DISABLE
     return (GrB_NO_VALUE) ;
     #else
-    #include "GB_AxB_saxpy3_template.c"
+    #include "GB_AxB_saxpy_template.c"
     return (GrB_SUCCESS) ;
     #endif
 }

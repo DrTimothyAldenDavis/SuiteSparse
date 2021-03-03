@@ -2,8 +2,8 @@
 // GB_mex_clear: clear a matrix
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -17,7 +17,7 @@
 {                                       \
     GrB_Matrix_free_(&A) ;              \
     GrB_Matrix_free_(&C) ;              \
-    GB_mx_put_global (true, 0) ;        \
+    GB_mx_put_global (true) ;           \
 }
 
 void mexFunction
@@ -33,7 +33,6 @@ void mexFunction
     GrB_Matrix A = NULL, C = NULL ;
 
     // check inputs
-    GB_WHERE (USAGE) ;
     if (nargout > 1 || nargin < 1 || nargin > 3)
     {
         mexErrMsgTxt ("Usage: " USAGE) ;

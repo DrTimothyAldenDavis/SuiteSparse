@@ -2,8 +2,8 @@
 // GB_init: initialize GraphBLAS
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -30,8 +30,6 @@
 // both pass this flag in as false.
 
 #include "GB.h"
-#include "GB_thread_local.h"
-#include "GB_mkl.h"
 
 //------------------------------------------------------------------------------
 // GB_init
@@ -58,12 +56,10 @@ GrB_Info GB_init            // start up GraphBLAS
     // check inputs
     //--------------------------------------------------------------------------
 
-    // Do not log the error for GrB_error, since it might not be initialized.
-
     if (GB_Global_GrB_init_called_get ( ))
     { 
         // GrB_init can only be called once
-        return (GrB_PANIC) ;
+        return (GrB_INVALID_VALUE) ;
     }
 
     GB_Global_GrB_init_called_set (true) ;
@@ -107,14 +103,7 @@ GrB_Info GB_init            // start up GraphBLAS
     GB_Global_free_function_set    (free_function   ) ;
     GB_Global_malloc_is_thread_safe_set (malloc_is_thread_safe) ;
 
-    #if GB_HAS_MKL_GRAPH
-    printf ("MKL version: %d\n", GB_INTEL_MKL_VERSION) ;
-    // also set the MKL allocator functions
-    i_malloc  = malloc_function ;
-    i_calloc  = calloc_function ;
-    i_realloc = realloc_function ;
-    i_free    = free_function ;
-    #endif
+    // #include "GB_init_mkl_template.c"
 
     //--------------------------------------------------------------------------
     // max number of threads
@@ -123,37 +112,15 @@ GrB_Info GB_init            // start up GraphBLAS
     // Maximum number of threads for internal parallelization.
     // SuiteSparse:GraphBLAS requires OpenMP to use parallelization within
     // calls to GraphBLAS.  The user application may also call GraphBLAS in
-    // parallel, from multiple user threads.  The user threads can use OpenMP,
-    // or POSIX pthreads.
+    // parallel, from multiple user threads.  The user threads can use
+    // any threading library; this has no effect on GraphBLAS.
 
     GB_Global_nthreads_max_set (GB_Global_omp_get_max_threads ( )) ;
     GB_Global_chunk_set (GB_CHUNK_DEFAULT) ;
 
     //--------------------------------------------------------------------------
-    // control usage of Intel MKL
-    //--------------------------------------------------------------------------
-
-    GB_Global_use_mkl_set (false) ;
-
-    //--------------------------------------------------------------------------
-    // initialize thread-local storage
-    //--------------------------------------------------------------------------
-
-    if (!GB_thread_local_init (free_function)) GB_PANIC ;
-
-    #if defined (USER_POSIX_THREADS)
-    {
-        // TODO in 4.0: delete
-        bool ok = (pthread_mutex_init (&GB_sync, NULL) == 0) ;
-        if (!ok) GB_PANIC ;
-    }
-    #endif
-
-    //--------------------------------------------------------------------------
     // initialize the blocking/nonblocking mode
     //--------------------------------------------------------------------------
-
-    GB_Global_queue_head_set (NULL) ;   // TODO in 4.0: delete
 
     // set the mode: blocking or nonblocking
     GB_Global_mode_set (mode) ;
@@ -162,10 +129,11 @@ GrB_Info GB_init            // start up GraphBLAS
     // set the global default format
     //--------------------------------------------------------------------------
 
-    // set the default hypersparsity ratio and CSR/CSC format;  any thread
+    // set the default hyper_switch and CSR/CSC format;  any thread
     // can do this later as well, so there is no race condition danger.
 
-    GB_Global_hyper_ratio_set (GB_HYPER_DEFAULT) ;
+    GB_Global_hyper_switch_set (GB_HYPER_SWITCH_DEFAULT) ;
+    GB_Global_bitmap_switch_default ( ) ;
     GB_Global_is_csc_set (GB_FORMAT_DEFAULT != GxB_BY_ROW) ;
 
     //--------------------------------------------------------------------------
@@ -178,10 +146,16 @@ GrB_Info GB_init            // start up GraphBLAS
     GB_Global_malloc_debug_count_set (0) ;
 
     //--------------------------------------------------------------------------
-    // development use only; controls diagnostic output
+    // diagnostic output
     //--------------------------------------------------------------------------
 
     GB_Global_burble_set (false) ;
+
+    //--------------------------------------------------------------------------
+    // development use only
+    //--------------------------------------------------------------------------
+
+    GB_Global_timing_clear_all ( ) ;
 
     //--------------------------------------------------------------------------
     // CUDA initializations
@@ -196,20 +170,26 @@ GrB_Info GB_init            // start up GraphBLAS
     if (caller_is_GxB_cuda_init)
     {
         // query the system for the # of GPUs
+        // TODO for GPU: make this a function in the CUDA folder
         GB_Global_gpu_control_set (GxB_DEFAULT) ;
-        if (!GB_Global_gpu_count_set (true)) GB_PANIC ;
+        if (!GB_Global_gpu_count_set (true)) return (GrB_PANIC) ;
         int gpu_count = GB_Global_gpu_count_get ( ) ;
-        fprintf (stderr, "gpu_count: %d\n", gpu_count) ;
-        for (int device = 0 ; device < gpu_count ; device++)
+        for (int device = 0 ; device < 1 ; device++) // TODO for GPU: gpu_count
         {
             // query the GPU and then warm it up
-            if (!GB_Global_gpu_device_properties_get (device)) GB_PANIC ;
-            if (!GB_cuda_warmup (device)) GB_PANIC ;
-            fprintf (stderr, "gpu %d memory %g Gbytes, %d SMs\n", device,
-                ((double) GB_Global_gpu_memorysize_get (device)) / 1e9,
-                GB_Global_gpu_sm_get (device)) ;
+            if (!GB_Global_gpu_device_properties_get (device))
+            {
+                return (GrB_PANIC) ;
+            }
+            if (!GB_cuda_warmup (device))
+            {
+                return (GrB_PANIC) ;
+            }
         }
-        // TODO for GPU: check for jit cache
+        // make GPU 0 the default device
+        GB_cuda_set_device( 0 );
+
+        // also check for jit cache, pre-load library of common kernels ...
     }
     else
     #endif

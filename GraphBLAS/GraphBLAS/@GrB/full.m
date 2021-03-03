@@ -1,6 +1,6 @@
 function C = full (A, type, identity)
-%FULL convert a matrix into a GraphBLAS 'dense' matrix.
-% C = full (A, type, identity) converts the matrix A into a GraphBLAS dense
+%FULL convert a matrix into a GraphBLAS full matrix.
+% C = full (A, type, identity) converts the matrix A into a GraphBLAS full
 % matrix C of the given type, by inserting identity values.  The type may
 % be any GraphBLAS type: 'double', 'single', 'single complex', 'double
 % complex', 'logical', 'int8', 'int16', 'int32', 'int64', 'uint8',
@@ -25,8 +25,8 @@ function C = full (A, type, identity)
 %
 % See also GrB/issparse, sparse, cast, GrB.type, GrB, GrB.isfull.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 A_is_GrB = isobject (A) ;
 if (A_is_GrB)

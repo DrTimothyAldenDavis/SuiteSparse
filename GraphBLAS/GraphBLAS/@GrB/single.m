@@ -11,14 +11,18 @@ function C = single (G)
 % See also GrB, GrB/double, GrB/complex, GrB/logical, GrB/int8, GrB/int16,
 % GrB/int32, GrB/int64, GrB/uint8, GrB/uint16, GrB/uint32, GrB/uint64.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 G = G.opaque ;
 desc.kind = 'full' ;
 if (contains (gbtype (G), 'complex'))
-    C = gbfull (G, 'single complex', complex (single (0)), desc) ;
+    z = complex (single (0)) ;
+    ctype = 'single complex' ;
 else
-    C = gbfull (G, 'single', single (0), desc) ;
+    z = single (0) ;
+    ctype = 'single complex' ;
 end
+
+C = gbfull (G, ctype, z, desc) ;                % export as a MATLAB full matrix
 

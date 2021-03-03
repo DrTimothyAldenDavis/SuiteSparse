@@ -2,8 +2,8 @@
 // GB_mex_apply_maskalias: C<C> = accum(C,op(A)) or op(A')
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -15,10 +15,10 @@
 
 #define FREE_ALL                        \
 {                                       \
-    GB_MATRIX_FREE (&C) ;               \
-    GB_MATRIX_FREE (&A) ;               \
+    GrB_Matrix_free_(&C) ;               \
+    GrB_Matrix_free_(&A) ;               \
     GrB_Descriptor_free_(&desc) ;       \
-    GB_mx_put_global (true, 0) ;        \
+    GB_mx_put_global (true) ;           \
 }
 
 void mexFunction
@@ -36,7 +36,6 @@ void mexFunction
     GrB_Descriptor desc = NULL ;
 
     // check inputs
-    GB_WHERE (USAGE) ;
     if (nargout > 1 || nargin < 4 || nargin > 5)
     {
         mexErrMsgTxt ("Usage: " USAGE) ;
@@ -45,7 +44,7 @@ void mexFunction
     // get C (make a deep copy)
     #define GET_DEEP_COPY \
     C = GB_mx_mxArray_to_Matrix (pargin [0], "C input", true, true) ;
-    #define FREE_DEEP_COPY GB_MATRIX_FREE (&C) ;
+    #define FREE_DEEP_COPY GrB_Matrix_free_(&C) ;
     GET_DEEP_COPY ;
     if (C == NULL)
     {

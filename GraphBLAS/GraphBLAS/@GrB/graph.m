@@ -23,8 +23,8 @@ function Graph = graph (G, varargin)
 %
 % See also graph, digraph, GrB/digraph.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 G = G.opaque ;
 
@@ -77,13 +77,13 @@ switch (type)
 
     case { 'logical' }
 
-        % The MATLAB digraph(...) function allows for sparse logical
+        % The MATLAB digraph(...) function allows for logical
         % adjacency matrices (no edge weights are created).
-        Graph = graph (gbsparse (G, 'logical'), side) ;
+        Graph = graph (gbmatlab (G, 'logical'), side) ;
 
     otherwise
 
         % typecast to double
-        Graph = graph (gbsparse (G, 'double'), side) ;
+        Graph = graph (gbmatlab (G, 'double'), side) ;
 end
 

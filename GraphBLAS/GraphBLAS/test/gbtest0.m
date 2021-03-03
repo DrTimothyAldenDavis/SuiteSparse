@@ -1,8 +1,8 @@
 function gbtest0
 %GBTEST0 test GrB.clear
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 GrB.clear
 
@@ -21,6 +21,8 @@ try
     GrB.burble (rand (2)) ;
     ok = false ;
 catch me
+    fprintf ('expected error:\n') ;
+    disp (me) ;
 end
 assert (ok) ;
 

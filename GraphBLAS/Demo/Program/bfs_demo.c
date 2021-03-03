@@ -2,8 +2,8 @@
 // GraphBLAS/Demo/Program/bfs_demo.c: breadth first search using vxm with a mask
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -56,6 +56,7 @@ int main (int argc, char **argv)
     OK (GrB_init (GrB_NONBLOCKING)) ;
     int nthreads ;
     OK (GxB_Global_Option_get (GxB_GLOBAL_NTHREADS, &nthreads)) ;
+    OK (GxB_Global_Option_set (GxB_BURBLE, false)) ;
     fprintf (stderr, "bfs_demo: nthreads %d\n", nthreads) ;
 
     //--------------------------------------------------------------------------
@@ -92,7 +93,6 @@ int main (int argc, char **argv)
         // All methods give identical results, just using different methods
 
         GrB_Index s = 0 ;
-        GxB_Global_Option_set (GxB_GLOBAL_NTHREADS, 2) ;
 
         switch (method)
         {
@@ -214,12 +214,12 @@ int main (int argc, char **argv)
         // constant "0".
         GrB_Monoid Lor ;
         info = GrB_Monoid_new_INT32 (&Lor, GrB_LOR, false) ;        
-        printf ("\n------------------- this fails:\n%s\n", GrB_error ( )) ;
+        printf ("\n------------------- this fails: info %d\n", info) ;
         GrB_Monoid_free (&Lor) ;
 
         // this selects the correct GrB_Monoid_new_BOOL function
         info = GrB_Monoid_new_BOOL (&Lor, GrB_LOR, (bool) false) ;        
-        printf ("\n------------------- this is OK: %d (should be"
+        printf ("\n------------------- this is OK %d (should be"
             " GrB_SUCCESS = %d)\n", info, GrB_SUCCESS) ;
         GrB_Monoid_free (&Lor) ;
     }

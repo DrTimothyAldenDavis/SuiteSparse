@@ -1,8 +1,8 @@
 function test29
 %TEST29 GrB_reduce with zombies
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 [~, ~, add_ops, types, ~, ~] = GB_spec_opsall ;
 types = types.all ;
@@ -34,15 +34,6 @@ for m = [1 5 10]
             for kk4 = 1:length(add_ops)
 
                 op = add_ops {kk4} ;
-                try
-                    GB_spec_operator (op, atype) ;
-                    cin = GB_spec_identity (op, atype) ;
-                catch
-                    continue
-                end
-                if (isempty (cin))
-                    cin = GB_mex_cast (0, atype) ;
-                end
 
                 if (~builtin)
                     % no user-defined Complex_any_monoid
@@ -53,11 +44,35 @@ for m = [1 5 10]
                     end
                 end
 
+                try
+                    GB_spec_operator (op, atype) ;
+                    GB_builtin_complex_set (1) ;
+                    cin = GB_spec_identity (op, atype) ;
+                    GB_builtin_complex_set (builtin) ;
+                catch
+                    continue
+                end
+
+                if (isempty (cin))
+                    GB_builtin_complex_set (1) ;
+                    cin = GB_mex_cast (0, atype) ;
+                    GB_builtin_complex_set (builtin) ;
+                end
+
                 [C3,c1,c3] = GB_mex_subassign (C, [ ], [ ], A, ...
                     [ ], [ ], [ ], op) ;
                 c2 = GB_mex_reduce_to_scalar (cin, '', op, C3) ;
 
-                if (isfloat (c1))
+                if (isequal (op, 'any'))
+                    [i,j,x] = find (C3.matrix) ;
+                    if (length (x) == 0)
+                        assert (c1 == 0) ;
+                        assert (c2 == 0) ;
+                    else
+                        assert (any (c1 == x)) ;
+                        assert (any (c2 == x)) ;
+                    end
+                elseif (isfloat (c1))
                     assert (isequal (c1,c2) || ...
                         (abs (c1-c2) <= 8 * eps (c2)))  ;
                 else

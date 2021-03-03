@@ -9,8 +9,8 @@ function C = gb_emult (A, op, B)
 % The input matrices may be either GraphBLAS structs and/or MATLAB matrices,
 % in any combination.  C is returned as a GraphBLAS struct.
 
-% SuiteSparse:GraphBLAS, T. A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 if (gb_isscalar (A) || gb_isscalar (B))
     % either A or B are scalars

@@ -7,8 +7,8 @@ function gbtest88
 % C = GrB.emult (C, M, op, A, B, desc)
 % C = GrB.emult (C, M, accum, op, A, B, desc)
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 % fprintf ('gbtest88: test GrB.emult\n') ;
 rng ('default')

@@ -2,10 +2,11 @@ function test125
 %TEST125 test GrB_mxm: row and column scaling
 % all built-in semirings, no typecast, no mask
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 [binops, ~, add_ops, types, ~, ~] = GB_spec_opsall ;
+% mult_ops = binops.positional ;
 mult_ops = binops.all ;
 types = types.all ;
 

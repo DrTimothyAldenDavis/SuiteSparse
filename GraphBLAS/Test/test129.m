@@ -3,8 +3,8 @@ function test129
 
 % This is a shorter version of test25
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 fprintf ('\ntest129: GxB_select tests (tril and nonzero)\n') ;
 
@@ -73,7 +73,7 @@ dt = struct ('inp0', 'tran') ;
     cin = GB_mex_cast (0, atype) ;
     % Mask = (sprand (m, n, 0.5) ~= 0) ;
     Mask = GB_random_mask (m, n, 0.5, M_is_csc, M_is_hyper) ;
-    Mask.hyper_ratio = hm ;
+    Mask.hyper_switch = hm ;
 
     fprintf ('.') ;
 

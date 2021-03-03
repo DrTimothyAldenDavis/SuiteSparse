@@ -2,8 +2,8 @@
 // GrB_Vector_build: build a sparse GraphBLAS vector
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -19,7 +19,7 @@ GrB_Info prefix ## Vector_build_ ## T   /* build a vector from (I,X) tuples*/ \
     const GrB_BinaryOp dup          /* binary op to assemble duplicates   */  \
 )                                                                             \
 {                                                                             \
-    GB_WHERE (GB_STR(prefix) "Vector_build_" GB_STR(T)                        \
+    GB_WHERE (w, GB_STR(prefix) "Vector_build_" GB_STR(T)                     \
         " (w, I, X, nvals, dup)") ;                                           \
     GB_BURBLE_START ("GrB_Vector_build") ;                                    \
     GB_RETURN_IF_NULL_OR_FAULTY (w) ;                                         \

@@ -2,8 +2,8 @@
 // gb_get_format: determine the format of a matrix result 
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -55,7 +55,7 @@ GxB_Format_Value gb_get_format          // GxB_BY_ROW or GxB_BY_COL
     }
     else if (cnrows == 1)
     { 
-        // (3) row vectors are stored by column, by default
+        // (3) row vectors are stored by row, by default
         fmt = GxB_BY_ROW ;
     }
     else if (A != NULL && !gb_is_vector (A))

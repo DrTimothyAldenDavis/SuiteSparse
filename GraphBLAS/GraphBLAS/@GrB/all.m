@@ -9,8 +9,8 @@ function C = all (G, option)
 %
 % See also GrB/any, GrB/nnz, GrB/prod, GrB.entries.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 G = G.opaque ;
 

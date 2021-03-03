@@ -1,8 +1,8 @@
 function testc6
 %TESTC6 test complex apply
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 rng 'default'
 
@@ -32,6 +32,7 @@ for m = [1 5 10 50 100 ]
             C1 = GB_mex_op (op, a, '',1) ;
             [C2 tol] = GB_user_op (op, a) ;
             GB_complex_compare (C1, C2, tol) ;
+
             C1 = GB_mex_apply (C, [], [], op, A, dr) ;
             [i j x1] = find (C1.matrix) ;
             x1 = complex (x1) ;
@@ -59,10 +60,13 @@ for m = [1 5 10 50 100 ]
             C1 = GB_mex_op (op, a, '',1) ;
             [C2 tol] = GB_user_op (op, a) ;
             GB_complex_compare (C1, C2, tol) ;
+
             C1 = GB_mex_apply (B, [], [], op, A, dr) ;
-            [i j x1] = find (C1.matrix) ;
+            % [i j x1] = find (sparse (C1.matrix)) ;
+            [i j x1] = GB_mex_extractTuples (C1.matrix) ;
             x1 = complex (x1) ;
-            [i j s] = find (A) ;
+            % [i j s] = find (sparse (A)) ;
+            [i j s] = GB_mex_extractTuples (A) ;
             x2 = GB_user_op (op, complex (s)) ;
             x2 = complex (x2) ;
             GB_complex_compare (x1, x2, tol) ;
@@ -72,9 +76,11 @@ for m = [1 5 10 50 100 ]
         for k = 8:length(complex_unary)
             op = complex_unary {k} ;
             C1 = GB_mex_apply (B, [], [], op, D, dtr) ;
-            [i j x1] = find (C1.matrix) ;
+            % [i j x1] = find (C1.matrix) ;
+            [i j x1] = GB_mex_extractTuples (C1.matrix) ;
             x1 = complex (x1) ;
-            [i j s] = find (D.') ;
+            % [i j s] = find (D.') ;
+            [i j s] = GB_mex_extractTuples (D.') ;
             x2 = GB_user_op (op, complex (s)) ;
             x2 = complex (x2) ;
             GB_complex_compare (x1, x2, true) ;

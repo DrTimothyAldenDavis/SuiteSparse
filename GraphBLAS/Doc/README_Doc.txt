@@ -16,7 +16,7 @@ This folder contains the following files:
     Makefile                    to create the User Gude
 
     GraphBLAS_version.tex       this version of SuiteSparse:GraphBLAS
-    License.txt                 the license: Apache 2.0
+    License.txt                 SPDX-License-Identifier: Apache-2.0
     README_Doc.txt              this file
 
 Papers on SuiteSparse:GraphBLAS.  See the User Guide for the full citations.
@@ -34,11 +34,8 @@ Additional installation notes are below.
 
 --------------------------------------------------------------------------------
 
-SuiteSparse:GraphBLAS requires OpenMP for its internal parallelism.  It also
-needs either POSIX pthreads or OpenMP to be thread-safe, for multithreaded user
-applications.  The Mac has POSIX pthreads built-in, which works fine for
-user-thread safety, but will not be enough to get internal parallelism in
-GraphBLAS.  To install OpenMP on the Mac, try these instructions.
+SuiteSparse:GraphBLAS requires OpenMP for its internal parallelism.
+To install OpenMP on the Mac, try these instructions.
 
 To use OpenMP in GraphBLAS on the Mac:
 

@@ -2,8 +2,8 @@
 // GB_mex_subassign: C(I,J)<M> = accum (C (I,J), A)
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 // This function is a wrapper for all GxB_*_subassign functions.
 // For these uses, the mask M must always be the same size as C(I,J) and A.
@@ -42,21 +42,25 @@
     bool A_is_M = (A == M) ;            \
     bool A_is_C = (A == C) ;            \
     bool C_is_M = (C == M) ;            \
-    GB_MATRIX_FREE (&A) ;               \
+    GrB_Matrix_free_(&A) ;               \
     if (A_is_C) C = NULL ;              \
     if (A_is_M) M = NULL ;              \
-    GB_MATRIX_FREE (&C) ;               \
+    GrB_Matrix_free_(&C) ;               \
     if (C_is_M) M = NULL ;              \
-    GB_MATRIX_FREE (&M) ;               \
+    GrB_Matrix_free_(&M) ;               \
     GrB_Descriptor_free_(&desc) ;       \
     if (!user_complex) GrB_Monoid_free_(&reduce) ;                \
-    GB_mx_put_global (true, 0) ;        \
+    GB_mx_put_global (true) ;           \
 }
 
 #define GET_DEEP_COPY                                                   \
 {                                                                       \
     C = GB_mx_mxArray_to_Matrix (pargin [0], "C input", true, true) ;   \
-    if (nargin > 2 && mxIsChar (pargin [1]))                            \
+    if (have_sparsity_control)                                          \
+    {                                                                   \
+        GxB_Matrix_Option_set (C, GxB_SPARSITY_CONTROL, C_sparsity_control) ; \
+    }                                                                   \
+    if (nargin > 3 && mxIsChar (pargin [1]))                            \
     {                                                                   \
         M = GB_mx_alias ("M", pargin [1], "C", C, "A", A) ;             \
     }                                                                   \
@@ -70,7 +74,7 @@
 {                               \
     if (A == C) A = NULL ;      \
     if (M == C) M = NULL ;      \
-    GB_MATRIX_FREE (&C) ;       \
+    GrB_Matrix_free_(&C) ;       \
 }
 
 GrB_Matrix C = NULL ;
@@ -87,6 +91,9 @@ GrB_Info info = GrB_SUCCESS ;
 GrB_Monoid reduce = NULL ;
 GrB_BinaryOp op = NULL ;
 bool user_complex = false ;
+int C_sparsity_control ;
+int M_sparsity_control ;
+bool have_sparsity_control = false ;
 
 GrB_Info assign (GB_Context Context) ;
 
@@ -113,8 +120,8 @@ GrB_Info many_subassign
     info = method ;                     \
     if (info != GrB_SUCCESS)            \
     {                                   \
-        GB_MATRIX_FREE (&mask) ;        \
-        GB_MATRIX_FREE (&u) ;           \
+        GrB_Matrix_free_(&mask) ;       \
+        GrB_Matrix_free_(&u) ;          \
         return (info) ;                 \
     }                                   \
 }
@@ -277,7 +284,7 @@ GrB_Info assign (GB_Context Context)
         OK (GxB_Col_subassign_(C, (GrB_Vector) M, accum, (GrB_Vector) A,
             I, ni, J [0], desc)) ;
     }
-    else if (A->vlen == 1 && ni == 1 &&
+    else if (A->vlen == 1 && ni == 1 && nj > 0 &&
         (M == NULL || M->vlen == 1) && !at)
     {
         // test GxB_Row_subassign; this is not meant to be efficient,
@@ -285,19 +292,27 @@ GrB_Info assign (GB_Context Context)
         if (ph) printf ("row assign\n") ;
         if (M != NULL)
         {
-            OK (GB_transpose_bucket (&mask, GrB_BOOL, true, M,
-                NULL, NULL, NULL, false,
-                Context)) ;
+            // mask = M'
+            int64_t mnrows, mncols ;
+            OK (GrB_Matrix_nrows (&mnrows, M)) ;
+            OK (GrB_Matrix_ncols (&mncols, M)) ;
+            OK (GrB_Matrix_new (&mask, M->type, mncols, mnrows)) ;
+            OK (GrB_transpose (mask, NULL, NULL, M, NULL)) ;
+            mask->is_csc = true ;
             ASSERT (GB_VECTOR_OK (mask)) ;
         }
-        OK (GB_transpose_bucket (&u, A->type, true, A,
-            NULL, NULL, NULL, false,
-            Context)) ;
+        // u = A'
+        int64_t ancols, anrows ;
+        OK (GrB_Matrix_nrows (&anrows, A)) ;
+        OK (GrB_Matrix_ncols (&ancols, A)) ;
+        OK (GrB_Matrix_new (&u, A->type, ancols, anrows)) ;
+        OK (GrB_transpose (u, NULL, NULL, A, NULL)) ;
+        u->is_csc = true ;
         ASSERT (GB_VECTOR_OK (u)) ;
         OK (GxB_Row_subassign_(C, (GrB_Vector) mask, accum, (GrB_Vector) u,
             I [0], J, nj, desc)) ;
-        GB_MATRIX_FREE (&mask) ;
-        GB_MATRIX_FREE (&u) ;
+        GrB_Matrix_free_(&mask) ;
+        GrB_Matrix_free_(&u) ;
     }
     else
     {
@@ -334,7 +349,6 @@ GrB_Info many_subassign
 
     for (int64_t k = 0 ; k < nwork ; k++)
     {
-        // printf ("work %g of %g\n", (double) k, (double) nwork-1) ;
 
         //----------------------------------------------------------------------
         // get the kth work to do
@@ -348,22 +362,27 @@ GrB_Info many_subassign
         bool save = GB_Global_malloc_debug_get ( ) ;
         GB_Global_malloc_debug_set (false) ;
 
-        // get M (shallow copy)
+        // get M (deep copy)
         M = NULL ;
         if (fM >= 0)
         {
             p = mxGetFieldByNumber (pargin [1], k, fM) ;
-            M = GB_mx_mxArray_to_Matrix (p, "Mask", false, false) ;
+            M = GB_mx_mxArray_to_Matrix (p, "Mask", true, false) ;
             if (M == NULL && !mxIsEmpty (p))
             {
                 FREE_ALL ;
                 mexErrMsgTxt ("M failed") ;
             }
+            if (have_sparsity_control)
+            {
+                GxB_Matrix_Option_set (M, GxB_SPARSITY_CONTROL,
+                    M_sparsity_control) ;
+            }
         }
 
-        // get A (shallow copy)
+        // get A (true copy)
         p = mxGetFieldByNumber (pargin [1], k, fA) ;
-        A = GB_mx_mxArray_to_Matrix (p, "A", false, true) ;
+        A = GB_mx_mxArray_to_Matrix (p, "A", true, true) ;
         if (A == NULL)
         {
             FREE_ALL ;
@@ -422,8 +441,8 @@ GrB_Info many_subassign
 
         info = assign (Context) ;
 
-        GB_MATRIX_FREE (&A) ;
-        GB_MATRIX_FREE (&M) ;
+        GrB_Matrix_free_(&A) ;
+        GrB_Matrix_free_(&M) ;
         GrB_Descriptor_free_(&desc) ;
 
         if (info != GrB_SUCCESS)
@@ -449,6 +468,24 @@ void mexFunction
 )
 {
 
+    C = NULL ;
+    M = NULL ;
+    A = NULL ;
+    mask = NULL ;
+    u = NULL ;
+    desc = NULL ;
+    accum = NULL ;
+    I = NULL ; ni = 0 ;
+    J = NULL ; nj = 0 ;
+    malloc_debug = false ;
+    info = GrB_SUCCESS ;
+    reduce = NULL ;
+    op = NULL ;
+    user_complex = false ;
+    C_sparsity_control = GxB_AUTO_SPARSITY ;
+    M_sparsity_control = GxB_AUTO_SPARSITY ;
+    have_sparsity_control = false ;
+
     //--------------------------------------------------------------------------
     // check inputs
     //--------------------------------------------------------------------------
@@ -462,15 +499,28 @@ void mexFunction
     op = NULL ;
     reduce = NULL ;
 
-    GB_WHERE (USAGE) ;
-    if (!((nargout == 1 && (nargin == 2 || nargin == 6 || nargin == 7)) ||
+    GB_CONTEXT (USAGE) ;
+    if (!((nargout == 1 && (nargin == 2 || nargin == 3 ||
+            nargin == 6 || nargin == 7)) ||
           ((nargout == 2 || nargout == 3) && nargin == 8)))
     {
         mexErrMsgTxt ("Usage: " USAGE) ;
     }
 
-    if (nargin == 2)
+    if (nargin == 2 || nargin == 3)
     {
+
+        // get sparsity control if present
+        if (nargin == 3)
+        {
+            int n = mxGetNumberOfElements (pargin [2]) ;
+            if (n != 2) mexErrMsgTxt ("invalid sparsity control") ;
+            have_sparsity_control = true ;
+            double *p = mxGetDoubles (pargin [2]) ;
+            C_sparsity_control = (int) p [0] ;
+            M_sparsity_control = (int) p [1] ;
+        }
+
         // get C (deep copy)
         GET_DEEP_COPY ;
         if (C == NULL)
@@ -523,10 +573,10 @@ void mexFunction
         // C(I,J)<M> = A, with a single assignment
         //----------------------------------------------------------------------
 
-        // get M (shallow copy)
+        // get M (deep copy)
         if (!mxIsChar (pargin [1]))
         {
-            M = GB_mx_mxArray_to_Matrix (pargin [1], "M", false, false) ;
+            M = GB_mx_mxArray_to_Matrix (pargin [1], "M", true, false) ;
             if (M == NULL && !mxIsEmpty (pargin [1]))
             {
                 FREE_ALL ;
@@ -534,10 +584,10 @@ void mexFunction
             }
         }
 
-        // get A (shallow copy)
+        // get A (deep copy)
         if (!mxIsChar (pargin [3]))
         {
-            A = GB_mx_mxArray_to_Matrix (pargin [3], "A", false, true) ;
+            A = GB_mx_mxArray_to_Matrix (pargin [3], "A", true, true) ;
             if (A == NULL)
             {
                 FREE_ALL ;
@@ -625,14 +675,11 @@ void mexFunction
         }
 
         // C(I,J)<M> = A
-
         METHOD (assign (Context)) ;
 
         // apply the reduce monoid
         if (nargin == 8 && (nargout == 2 || nargout == 3))
         {
-            // if (C->nzombies > 0)
-            //  printf ("do the reduce thing, zombies %lld\n", C->nzombies) ;
 
             pargout [1] = GB_mx_create_full (1, 1, C->type) ;
             GB_void *p = mxGetData (pargout [1]) ;

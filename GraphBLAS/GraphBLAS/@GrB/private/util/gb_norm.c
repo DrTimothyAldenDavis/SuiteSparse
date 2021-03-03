@@ -2,8 +2,8 @@
 // gb_norm: compute the norm of a GraphBLAS matrix
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -39,7 +39,7 @@ double gb_norm              // compute norm (A,kind)
     { 
         // if A is FP32, use the FP32 type and operators
         xtype = GrB_FP32 ;
-        absop = GxB_ABS_FP32 ;
+        absop = GrB_ABS_FP32 ;
         sumop = GrB_PLUS_MONOID_FP32 ;
         maxop = GrB_MAX_MONOID_FP32 ;
         minop = GrB_MIN_MONOID_FP32 ;
@@ -69,7 +69,7 @@ double gb_norm              // compute norm (A,kind)
         // otherwise, use FP64 type and operators; this will typecast the 
         // input matrix to FP64 if A is not of that type.
         xtype = GrB_FP64 ;
-        absop = GxB_ABS_FP64 ;
+        absop = GrB_ABS_FP64 ;
         sumop = GrB_PLUS_MONOID_FP64 ;
         maxop = GrB_MAX_MONOID_FP64 ;
         minop = GrB_MIN_MONOID_FP64 ;
@@ -99,23 +99,23 @@ double gb_norm              // compute norm (A,kind)
                 if (is_complex)
                 { 
                     // X = abs (A)
-                    OK (GrB_Matrix_apply (X, NULL, NULL, absop, A, NULL)) ;
+                    OK1 (X, GrB_Matrix_apply (X, NULL, NULL, absop, A, NULL)) ;
                     // X = X.^2
                     if (atype == GxB_FC32)
                     {
-                        OK (GrB_Matrix_apply_BinaryOp2nd_FP32 (X, NULL, NULL,
-                            GxB_POW_FP32, X, (float) 2.0, NULL)) ;
+                        OK1 (X, GrB_Matrix_apply_BinaryOp2nd_FP32 (X, NULL,
+                            NULL, GxB_POW_FP32, X, (float) 2.0, NULL)) ;
                     }
                     else
                     {
-                        OK (GrB_Matrix_apply_BinaryOp2nd_FP64 (X, NULL, NULL,
-                            GxB_POW_FP64, X, (double) 2.0, NULL)) ;
+                        OK1 (X, GrB_Matrix_apply_BinaryOp2nd_FP64 (X, NULL,
+                            NULL, GxB_POW_FP64, X, (double) 2.0, NULL)) ;
                     }
                 }
                 else
                 { 
                     // X = A.^2
-                    OK (GrB_Matrix_apply_BinaryOp2nd_FP64 (X, NULL, NULL,
+                    OK1 (X, GrB_Matrix_apply_BinaryOp2nd_FP64 (X, NULL, NULL,
                         GxB_POW_FP64, A, (double) 2.0, NULL)) ;
                 }
                 // s = sum (X)
@@ -126,7 +126,7 @@ double gb_norm              // compute norm (A,kind)
             case 1 :    // 1-norm
 
                 // X = abs (A)
-                OK (GrB_Matrix_apply (X, NULL, NULL, absop, A, NULL)) ;
+                OK1 (X, GrB_Matrix_apply (X, NULL, NULL, absop, A, NULL)) ;
                 // s = sum (X)
                 OK (GrB_Matrix_reduce_FP64 (&s, NULL, sumop, X, NULL)) ;
                 break ;
@@ -134,7 +134,7 @@ double gb_norm              // compute norm (A,kind)
             case INT64_MAX :    // inf-norm
 
                 // X = abs (A)
-                OK (GrB_Matrix_apply (X, NULL, NULL, absop, A, NULL)) ;
+                OK1 (X, GrB_Matrix_apply (X, NULL, NULL, absop, A, NULL)) ;
                 // s = max (X)
                 OK (GrB_Matrix_reduce_FP64 (&s, NULL, maxop, X, NULL)) ;
                 break ;
@@ -144,7 +144,7 @@ double gb_norm              // compute norm (A,kind)
                 if (GB_is_dense (A))
                 { 
                     // X = abs (A)
-                    OK (GrB_Matrix_apply (X, NULL, NULL, absop, A, NULL)) ;
+                    OK1 (X, GrB_Matrix_apply (X, NULL, NULL, absop, A, NULL)) ;
                     // s = min (X)
                     OK (GrB_Matrix_reduce_FP64 (&s, NULL, minop, X, NULL)) ;
                 }
@@ -175,7 +175,7 @@ double gb_norm              // compute norm (A,kind)
             case 1 :    // 1-norm:  max sum of columns of abs (A)
 
                 // X = abs (A)
-                OK (GrB_Matrix_apply (X, NULL, NULL, absop, A, NULL)) ;
+                OK1 (X, GrB_Matrix_apply (X, NULL, NULL, absop, A, NULL)) ;
                 // t = zeros (ncols,1)
                 OK (GrB_Vector_new (&t, xtype, ncols)) ;
                 // t(j) = sum of the ith column, X(:,j)
@@ -188,7 +188,7 @@ double gb_norm              // compute norm (A,kind)
             case INT64_MAX :    // inf-norm:  max sum of rows of abs (A)
 
                 // X = abs (A)
-                OK (GrB_Matrix_apply (X, NULL, NULL, absop, A, NULL)) ;
+                OK1 (X, GrB_Matrix_apply (X, NULL, NULL, absop, A, NULL)) ;
                 // t = zeros (nrows,1)
                 OK (GrB_Vector_new (&t, xtype, nrows)) ;
                 // t(i) = sum of the ith row, X(i,:)

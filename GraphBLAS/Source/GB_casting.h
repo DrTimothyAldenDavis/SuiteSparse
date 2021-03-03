@@ -2,10 +2,12 @@
 // GB_casting.h: define the unary typecasting functions
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
+
+// TODO: complex code is #ifdef'd out when using CUDA.
 
 #ifndef GB_CASTING_H
 #define GB_CASTING_H
@@ -33,8 +35,8 @@ GB_cast_function GB_cast_factory   // returns pointer to function to cast x to z
 // outside the range of the integer type.  MATLAB handles this case by
 // typecasting a float or double that is larger than the maximum integer to the
 // max integer, and a value less than the minimum integer to the min integer.
-// GraphBLAS v3.3.0 follows this rule (earlier versions handled this
-// differently).  NaN's are typecasted to the integer value zero.
+// NaN's are typecasted to the integer value zero.  GraphBLAS follows the same
+// rules as MATLAB.
 
 inline int8_t GB_cast_to_int8_t (double x)
 { 
@@ -148,12 +150,15 @@ GB_CAST_FUNCTION (bool      , uint32_t  )
 GB_CAST_FUNCTION (bool      , uint64_t  )
 GB_CAST_FUNCTION (bool      , float     )
 GB_CAST_FUNCTION (bool      , double    )
+#ifndef GBCUDA
+// TODO: this does not work on CUDA yet
 #undef  GB_CAST
 #define GB_CAST(ztype,x) (crealf (x) != 0 || cimagf (x) != 0)
 GB_CAST_FUNCTION (bool      , GxB_FC32_t)
 #undef  GB_CAST
 #define GB_CAST(ztype,x) (creal (x) != 0 || cimag (x) != 0)
 GB_CAST_FUNCTION (bool      , GxB_FC64_t)
+#endif
 
 //------------------------------------------------------------------------------
 // typecast to int8_t
@@ -174,12 +179,15 @@ GB_CAST_FUNCTION (int8_t    , uint64_t  )
 #define GB_CAST(ztype,x) GB_cast_to_int8_t ((double) x)
 GB_CAST_FUNCTION (int8_t    , float     )
 GB_CAST_FUNCTION (int8_t    , double    )
+#ifndef GBCUDA
+// TODO: this does not work on CUDA yet
 #undef  GB_CAST
 #define GB_CAST(ztype,x) GB_cast_to_int8_t ((double) crealf (x))
 GB_CAST_FUNCTION (int8_t    , GxB_FC32_t)
 #undef  GB_CAST
 #define GB_CAST(ztype,x) GB_cast_to_int8_t (creal (x))
 GB_CAST_FUNCTION (int8_t    , GxB_FC64_t)
+#endif
 
 //------------------------------------------------------------------------------
 // typecast to int16_t
@@ -200,12 +208,15 @@ GB_CAST_FUNCTION (int16_t   , uint64_t  )
 #define GB_CAST(ztype,x) GB_cast_to_int16_t ((double) x)
 GB_CAST_FUNCTION (int16_t   , float     )
 GB_CAST_FUNCTION (int16_t   , double    )
+#ifndef GBCUDA
+// TODO: this does not work on CUDA yet
 #undef  GB_CAST
 #define GB_CAST(ztype,x) GB_cast_to_int16_t ((double) crealf (x))
 GB_CAST_FUNCTION (int16_t   , GxB_FC32_t)
 #undef  GB_CAST
 #define GB_CAST(ztype,x) GB_cast_to_int16_t (creal (x))
 GB_CAST_FUNCTION (int16_t   , GxB_FC64_t)
+#endif
 
 //------------------------------------------------------------------------------
 // typecast to int32_t
@@ -226,12 +237,15 @@ GB_CAST_FUNCTION (int32_t   , uint64_t  )
 #define GB_CAST(ztype,x) GB_cast_to_int32_t ((double) x)
 GB_CAST_FUNCTION (int32_t   , float     )
 GB_CAST_FUNCTION (int32_t   , double    )
+#ifndef GBCUDA
+// TODO: this does not work on CUDA yet
 #undef  GB_CAST
 #define GB_CAST(ztype,x) GB_cast_to_int32_t ((double) crealf (x))
 GB_CAST_FUNCTION (int32_t   , GxB_FC32_t)
 #undef  GB_CAST
 #define GB_CAST(ztype,x) GB_cast_to_int32_t (creal (x))
 GB_CAST_FUNCTION (int32_t   , GxB_FC64_t)
+#endif
 
 //------------------------------------------------------------------------------
 // typecast to int64_t
@@ -252,12 +266,15 @@ GB_CAST_FUNCTION (int64_t   , uint64_t  )
 #define GB_CAST(ztype,x) GB_cast_to_int64_t ((double) x)
 GB_CAST_FUNCTION (int64_t   , float     )
 GB_CAST_FUNCTION (int64_t   , double    )
+#ifndef GBCUDA
+// TODO: this does not work on CUDA yet
 #undef  GB_CAST
 #define GB_CAST(ztype,x) GB_cast_to_int64_t ((double) crealf (x))
 GB_CAST_FUNCTION (int64_t   , GxB_FC32_t)
 #undef  GB_CAST
 #define GB_CAST(ztype,x) GB_cast_to_int64_t (creal (x))
 GB_CAST_FUNCTION (int64_t   , GxB_FC64_t)
+#endif
 
 //------------------------------------------------------------------------------
 // typecast to uint8_t
@@ -278,12 +295,15 @@ GB_CAST_FUNCTION (uint8_t   , uint64_t  )
 #define GB_CAST(ztype,x) GB_cast_to_uint8_t ((double) x)
 GB_CAST_FUNCTION (uint8_t   , float     )
 GB_CAST_FUNCTION (uint8_t   , double    )
+#ifndef GBCUDA
+// TODO: this does not work on CUDA yet
 #undef  GB_CAST
 #define GB_CAST(ztype,x) GB_cast_to_uint8_t ((double) crealf (x))
 GB_CAST_FUNCTION (uint8_t   , GxB_FC32_t)
 #undef  GB_CAST
 #define GB_CAST(ztype,x) GB_cast_to_uint8_t (creal (x))
 GB_CAST_FUNCTION (uint8_t   , GxB_FC64_t)
+#endif
 
 //------------------------------------------------------------------------------
 // typecast to uint16_t
@@ -304,12 +324,15 @@ GB_CAST_FUNCTION (uint16_t  , uint64_t  )
 #define GB_CAST(ztype,x) GB_cast_to_uint16_t ((double) x)
 GB_CAST_FUNCTION (uint16_t  , float     )
 GB_CAST_FUNCTION (uint16_t  , double    )
+#ifndef GBCUDA
+// TODO: this does not work on CUDA yet
 #undef  GB_CAST
 #define GB_CAST(ztype,x) GB_cast_to_uint16_t ((double) crealf (x))
 GB_CAST_FUNCTION (uint16_t  , GxB_FC32_t)
 #undef  GB_CAST
 #define GB_CAST(ztype,x) GB_cast_to_uint16_t (creal (x))
 GB_CAST_FUNCTION (uint16_t  , GxB_FC64_t)
+#endif
 
 //------------------------------------------------------------------------------
 // typecast to uint32_t
@@ -330,12 +353,15 @@ GB_CAST_FUNCTION (uint32_t  , uint64_t  )
 #define GB_CAST(ztype,x) GB_cast_to_uint32_t ((double) x)
 GB_CAST_FUNCTION (uint32_t  , float     )
 GB_CAST_FUNCTION (uint32_t  , double    )
+#ifndef GBCUDA
+// TODO: this does not work on CUDA yet
 #undef  GB_CAST
 #define GB_CAST(ztype,x) GB_cast_to_uint32_t ((double) crealf (x))
 GB_CAST_FUNCTION (uint32_t  , GxB_FC32_t)
 #undef  GB_CAST
 #define GB_CAST(ztype,x) GB_cast_to_uint32_t (creal (x))
 GB_CAST_FUNCTION (uint32_t  , GxB_FC64_t)
+#endif 
 
 //------------------------------------------------------------------------------
 // typecast to uint64_t
@@ -356,12 +382,15 @@ GB_CAST_FUNCTION (uint64_t  , uint64_t  )
 #define GB_CAST(ztype,x) GB_cast_to_uint64_t ((double) x)
 GB_CAST_FUNCTION (uint64_t  , float     )
 GB_CAST_FUNCTION (uint64_t  , double    )
+#ifndef GBCUDA
+// TODO: this does not work on CUDA yet
 #undef  GB_CAST
 #define GB_CAST(ztype,x) GB_cast_to_uint64_t ((double) crealf (x))
 GB_CAST_FUNCTION (uint64_t  , GxB_FC32_t)
 #undef  GB_CAST
 #define GB_CAST(ztype,x) GB_cast_to_uint64_t (creal (x))
 GB_CAST_FUNCTION (uint64_t  , GxB_FC64_t)
+#endif
 
 //------------------------------------------------------------------------------
 // typecast to float
@@ -380,12 +409,15 @@ GB_CAST_FUNCTION (float     , uint32_t  )
 GB_CAST_FUNCTION (float     , uint64_t  )
 GB_CAST_FUNCTION (float     , float     )
 GB_CAST_FUNCTION (float     , double    )
+#ifndef GBCUDA
+// TODO: this does not work on CUDA yet
 #undef  GB_CAST
 #define GB_CAST(ztype,x) crealf (x)
 GB_CAST_FUNCTION (float     , GxB_FC32_t)
 #undef  GB_CAST
 #define GB_CAST(ztype,x) ((float) creal (x))
 GB_CAST_FUNCTION (float     , GxB_FC64_t)
+#endif
 
 //------------------------------------------------------------------------------
 // typecast to double
@@ -404,12 +436,15 @@ GB_CAST_FUNCTION (double    , uint32_t  )
 GB_CAST_FUNCTION (double    , uint64_t  )
 GB_CAST_FUNCTION (double    , float     )
 GB_CAST_FUNCTION (double    , double    )
+#ifndef GBCUDA
+// TODO: this does not work on CUDA yet
 #undef  GB_CAST
 #define GB_CAST(ztype,x) ((double) crealf (x))
 GB_CAST_FUNCTION (double    , GxB_FC32_t)
 #undef  GB_CAST
 #define GB_CAST(ztype,x) creal (x)
 GB_CAST_FUNCTION (double    , GxB_FC64_t)
+#endif
 
 //------------------------------------------------------------------------------
 // typecast to float complex
@@ -428,12 +463,15 @@ GB_CAST_FUNCTION (GxB_FC32_t, uint32_t  )
 GB_CAST_FUNCTION (GxB_FC32_t, uint64_t  )
 GB_CAST_FUNCTION (GxB_FC32_t, float     )
 GB_CAST_FUNCTION (GxB_FC32_t, double    )
+#ifndef GBCUDA
+// TODO: this does not work on CUDA yet
 #undef  GB_CAST
 #define GB_CAST(ztype,x) x
 GB_CAST_FUNCTION (GxB_FC32_t, GxB_FC32_t)
 #undef  GB_CAST
 #define GB_CAST(ztype,x) GxB_CMPLXF ((float) creal (x), (float) cimag (x))
 GB_CAST_FUNCTION (GxB_FC32_t, GxB_FC64_t)
+#endif
 
 //------------------------------------------------------------------------------
 // typecast to double complex
@@ -452,6 +490,8 @@ GB_CAST_FUNCTION (GxB_FC64_t, uint32_t  )
 GB_CAST_FUNCTION (GxB_FC64_t, uint64_t  )
 GB_CAST_FUNCTION (GxB_FC64_t, float     )
 GB_CAST_FUNCTION (GxB_FC64_t, double    )
+#ifndef GBCUDA
+// TODO: this does not work on CUDA yet
 #undef  GB_CAST
 #define GB_CAST(ztype,x) GxB_CMPLX ((double) crealf (x), (double) cimagf (x))
 GB_CAST_FUNCTION (GxB_FC64_t, GxB_FC32_t)
@@ -461,6 +501,7 @@ GB_CAST_FUNCTION (GxB_FC64_t, GxB_FC64_t)
 
 #undef  GB_CAST
 #undef  GB_CAST_FUNCTION
+#endif
 
 //------------------------------------------------------------------------------
 // GB_mcast: cast a mask entry from any native type to boolean

@@ -14,8 +14,8 @@ function C = false (varargin)
 %
 % See also GrB/ones, GrB/true, GrB/zeros.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 [m, n, ~] = gb_parse_args ('false', varargin {:}) ;
 C = GrB (gbnew (m, n, 'logical')) ;

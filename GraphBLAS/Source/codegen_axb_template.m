@@ -1,6 +1,9 @@
 function codegen_axb_template (multop, bmult, imult, fmult, dmult, fcmult, dcmult)
 %CODEGEN_AXB_TEMPLATE create a function for a semiring with a TxT->T multiplier
 
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
+
 fprintf ('\n%-7s', multop) ;
 
 plusinf32 = 'INFINITY' ;

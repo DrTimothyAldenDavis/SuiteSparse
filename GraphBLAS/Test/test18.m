@@ -1,8 +1,8 @@
 function test18(fulltest)
 %TEST18 test GrB_eWiseAdd and GrB_eWiseMult
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 [binops, ~, ~, types, ~, ~] = GB_spec_opsall ;
 bin_ops = binops.all ;
@@ -159,11 +159,14 @@ for k1 = k1test % 1:length (types)
                     if (k4 == 0)
                         accum = ''  ;
                         ntypes = 1 ;
-                        % fprintf ('accum: [ none ]') ;
                     else
                         accum.opname = bin_ops {k4}  ;
                         ntypes = length (types) ;
                         fprintf ('accum: %s ', accum.opname) ;
+                    end
+
+                    if (GB_spec_is_positional (accum))
+                        continue
                     end
 
                     for k5 = randi ([1 ntypes]) % ntypes

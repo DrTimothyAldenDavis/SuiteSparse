@@ -2,17 +2,17 @@
 // GB_subref_template: C = A(I,J), or C = pattern (A(I,J))
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
 #if defined ( GB_SYMBOLIC )
 // symbolic method must tolerate zombies
-#define GB_Ai(p) GB_UNFLIP (Ai [p])
+#define GB_Ai(p) GBI_UNFLIP (Ai, p, avlen)
 #else
 // numeric method will not see any zombies
-#define GB_Ai(p) Ai [p]
+#define GB_Ai(p) GBI (Ai, p, avlen)
 #endif
 
 // to iterate across all entries in a bucket:
@@ -323,6 +323,7 @@
                         // with zombies
                         for (int64_t k = 0 ; k < alen ; k++)
                         { 
+                            // symbolic C(:,kC) = A(:,kA) where A has zombies
                             int64_t i = GB_Ai (pA + k) ;
                             ASSERT (i == GB_ijlist (I, i, Ikind, Icolon)) ;
                             Ci [pC + k] = i ;
@@ -540,6 +541,9 @@
                         }
                     }
 
+                    // TODO: skip the sort if C is allowed to be jumbled on
+                    // output.  Flag C as jumbled instead.
+
                     #if defined ( GB_PHASE_2_OF_2 )
                     ASSERT (pC == pC_end) ;
                     if (!fine_task)
@@ -562,7 +566,7 @@
                     // Case 11 works well when I has many entries and A(:,kA)
                     // has few entries.  It requires that I be sorted on input,
                     // so that no sort is required for C(:,kC).  It is
-                    // otherwise identical to Case 9.
+                    // otherwise identical to Case 10.
 
                     ASSERT (Ikind == GB_LIST) ;
                     for (int64_t k = 0 ; k < alen ; k++)
@@ -626,7 +630,7 @@
                     break ;
 
                 //--------------------------------------------------------------
-                default:;
+                default: ;
                 //--------------------------------------------------------------
             }
 
@@ -650,6 +654,9 @@
     //--------------------------------------------------------------------------
     // phase2: post sort for any vectors handled by fine tasks with method 10
     //--------------------------------------------------------------------------
+
+    // TODO: skip the sort if C is allowed to be jumbled on output.
+    // Flag C as jumbled instead.
 
     #if defined ( GB_PHASE_2_OF_2 )
     if (post_sort)

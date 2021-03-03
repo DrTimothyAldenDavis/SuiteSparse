@@ -1,7 +1,7 @@
 # GraphBLAS/GraphBLAS: MATLAB interface for SuiteSparse:GraphBLAS
 
-SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+SPDX-License-Identifier: Apache-2.0
 
 The GrB class provides an easy-to-use MATLAB interface to SuiteSparse:GraphBLAS.
 
@@ -116,8 +116,9 @@ These features are supported, but are not as fast as they could be:
     concatenation: [A B], [A;B], and the built-in functions: bandwidth, eps,
     isbanded, isdiag, ishermitian, issymmetric, istril, istriu, spfun.
 
-For Windows: Microsoft Visual Studio does not support OpenMP tasking,
-    which means that the internal sort is not parallel, but sequential.
-    This affects the performance of GrB.build, and some uses of matrix
-    subreferencing (C(I,J) when I and/or J are unsorted lists).
+A GrB matrix object can be saved to a mat-file and loaded back in, but
+must be loaded in with the same major version of SuiteSparse:GraphBLAS.
+v4.0.1. cannot load mat-files saved from v3.3.3 for example.  In the
+future, I will consider GrB.load and GrB.save methods that would work
+across different versions.
 

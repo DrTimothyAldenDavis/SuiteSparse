@@ -35,12 +35,18 @@ function C = GB_spec_op (op, A, B)
 % divide-by-zero and overflow rules for integers differs between MATLAB and C.
 % Also, typecasting in MATLAB and GraphBLAS differs with underflow and overflow
 % conditions.
+%
+% Positional ops are not computed by this function.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 % get the operator name and class
 [opname optype ztype xtype ytype] = GB_spec_operator (op, GB_spec_type (A)) ;
+
+if (GB_spec_is_positional (opname))
+    error ('positional op not supported by this funciton') ;
+end
 
 % cast the inputs A and B to the inputs of the operator
 if (~isequal (GB_spec_type (A), xtype))
@@ -52,7 +58,7 @@ end
 use_matlab = (isa (x, 'float') && ...
     (contains (optype, 'single') || contains (optype, 'double'))) ;
 
-if (nargin > 2)
+if (nargin > 2 && ~ischar (B))
     if (~isequal (GB_spec_type (B), ytype))
         y = GB_mex_cast (B, ytype) ;
     else

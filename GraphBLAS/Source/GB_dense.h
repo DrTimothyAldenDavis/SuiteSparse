@@ -2,8 +2,8 @@
 // GB_dense.h: defintions for dense matrix operations 
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -68,11 +68,11 @@ GrB_Info GB_dense_subassign_22      // C += x where C is dense and x is a scalar
 // GB_dense_subassign_21: C(:,:) = scalar where C becomes dense
 //------------------------------------------------------------------------------
 
-GrB_Info GB_dense_subassign_21      // C(:,:) = x; C is a matrix and x a scalar
+GrB_Info GB_dense_subassign_21      // C(:,:) = x, scalar to matrix assignment
 (
     GrB_Matrix C,                   // input/output matrix
     const void *scalar,             // input scalar
-    const GrB_Type atype,           // type of the input scalar
+    const GrB_Type scalar_type,     // type of the input scalar
     GB_Context Context
 ) ;
 
@@ -105,10 +105,10 @@ GrB_Info GB_dense_subassign_06d
 ) ;
 
 //------------------------------------------------------------------------------
-// GB_dense_subassign_24: C(:,:) = A ; C is dense
+// GB_subassign_24: C = A
 //------------------------------------------------------------------------------
 
-GrB_Info GB_dense_subassign_24   // C = A, copy A into an existing matrix C
+GrB_Info GB_subassign_24    // C = A, copy A into an existing matrix C
 (
     GrB_Matrix C,           // output matrix to modify
     const GrB_Matrix A,     // input matrix to copy

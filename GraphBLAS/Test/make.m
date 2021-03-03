@@ -14,8 +14,8 @@ function make (what)
 % GraphBLAS requires an ANSI C11 compliant compiler.  On the Mac, clang 8.0
 % suffices.  gcc should be version 4.9.3 or later
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 here = pwd ;
 if (ispc)

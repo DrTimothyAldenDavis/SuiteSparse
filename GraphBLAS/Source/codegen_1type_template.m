@@ -3,6 +3,9 @@ function codegen_1type_method (xtype)
 %
 % codegen_1type_method (xtype)
 
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
+
 f = fopen ('control.m4', 'w') ;
 
 [fname, unsigned, bits] = codegen_type (xtype) ;
@@ -12,9 +15,9 @@ fprintf ('%-11s:  suffix: %-7s  unsigned: %d bits: %d\n', xtype, fname, unsigned
 fprintf (f, 'define(`GB_Cdense_05d'', `GB_Cdense_05d__%s'')\n', fname) ;
 fprintf (f, 'define(`GB_Cdense_06d'', `GB_Cdense_06d__%s'')\n', fname) ;
 fprintf (f, 'define(`GB_Cdense_25'', `GB_Cdense_25__%s'')\n', fname) ;
+fprintf (f, 'define(`GB_convert_s2b'', `GB_convert_s2b__%s'')\n', fname) ;
 
 fprintf (f, 'define(`GB_ctype'', `%s'')\n', xtype) ;
-
 
 % mask macro
 if (isequal (xtype, 'GxB_FC32_t') || isequal (xtype, 'GxB_FC64_t'))
@@ -31,13 +34,13 @@ fclose (f) ;
 
 % construct the *.c file
 cmd = sprintf (...
-'cat control.m4 Generator/GB_type.c | m4 | tail -n +7 > Generated/GB_type__%s.c', ...
+'cat control.m4 Generator/GB_type.c | m4 | tail -n +8 > Generated/GB_type__%s.c', ...
 fname) ;
 system (cmd) ;
 
 % append to the *.h file
 cmd = sprintf (...
-'cat control.m4 Generator/GB_type.h | m4 | tail -n +7 >> Generated/GB_type__include.h') ;
+'cat control.m4 Generator/GB_type.h | m4 | tail -n +8 >> Generated/GB_type__include.h') ;
 system (cmd) ;
 
 delete ('control.m4') ;

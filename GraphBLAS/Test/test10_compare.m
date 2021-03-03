@@ -7,8 +7,8 @@ function test10_compare (op, C1, C2, tol)
 % acos, asin, and other a* trig functions can return different but valid
 % results.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 C1 = GB_spec_matrix (C1, 0) ;
 C2 = GB_spec_matrix (C2, 0) ;

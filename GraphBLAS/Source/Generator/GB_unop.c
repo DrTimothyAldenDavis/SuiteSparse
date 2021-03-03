@@ -2,8 +2,8 @@
 // GB_unop:  hard-coded functions for each built-in unary operator
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -12,6 +12,7 @@
 #include "GB.h"
 #ifndef GBCOMPACT
 #include "GB_control.h"
+#include "GB_atomics.h"
 #include "GB_unop__include.h"
 
 // C=unop(A) is defined by the following types and operators:
@@ -54,6 +55,10 @@
     GB_unaryop(Cx [pC], z) ;        \
 }
 
+// true if operator is the identity op with no typecasting
+#define GB_OP_IS_IDENTITY_WITH_NO_TYPECAST \
+    GB_op_is_identity_with_no_typecast
+
 // disable this operator and use the generic case if these conditions hold
 #define GB_DISABLE \
     GB_disable
@@ -62,32 +67,48 @@
 // Cx = op (cast (Ax)): apply a unary operator
 //------------------------------------------------------------------------------
 
-if_operator_is_enabled
-
 GrB_Info GB_unop_apply
 (
     GB_ctype *Cx,       // Cx and Ax may be aliased
     const GB_atype *Ax,
+    const int8_t *GB_RESTRICT Ab,   // A->b if A is bitmap
     int64_t anz,
     int nthreads
 )
-{ 
+{
     #if GB_DISABLE
     return (GrB_NO_VALUE) ;
     #else
     int64_t p ;
-    #pragma omp parallel for num_threads(nthreads) schedule(static)
-    for (p = 0 ; p < anz ; p++)
-    {
-        GB_geta(aij, Ax, p) ;
-        GB_cast(z, aij) ;
-        GB_unaryop(Cx [p], z) ;
+    if (Ab == NULL)
+    { 
+        #if ( GB_OP_IS_IDENTITY_WITH_NO_TYPECAST )
+            GB_memcpy (Cx, Ax, anz * sizeof (GB_atype), nthreads) ;
+        #else
+            #pragma omp parallel for num_threads(nthreads) schedule(static)
+            for (p = 0 ; p < anz ; p++)
+            {
+                GB_geta(aij, Ax, p) ;
+                GB_cast(z, aij) ;
+                GB_unaryop(Cx [p], z) ;
+            }
+        #endif
+    }
+    else
+    { 
+        // bitmap case, no transpose; A->b already memcpy'd into C->b
+        #pragma omp parallel for num_threads(nthreads) schedule(static)
+        for (p = 0 ; p < anz ; p++)
+        {
+            if (!Ab [p]) continue ;
+            GB_geta(aij, Ax, p) ;
+            GB_cast(z, aij) ;
+            GB_unaryop(Cx [p], z) ;
+        }
     }
     return (GrB_SUCCESS) ;
     #endif
 }
-
-endif_operator_is_enabled
 
 //------------------------------------------------------------------------------
 // C = op (cast (A')): transpose, typecast, and apply a unary operator
@@ -97,16 +118,15 @@ GrB_Info GB_unop_tran
 (
     GrB_Matrix C,
     const GrB_Matrix A,
-    int64_t *GB_RESTRICT *Rowcounts,
-    GBI_single_iterator Iter,
+    int64_t *GB_RESTRICT *Workspaces,
     const int64_t *GB_RESTRICT A_slice,
-    int naslice
+    int nworkspaces,
+    int nthreads
 )
 { 
     #if GB_DISABLE
     return (GrB_NO_VALUE) ;
     #else
-    #define GB_PHASE_2_OF_2
     #include "GB_unop_transpose.c"
     return (GrB_SUCCESS) ;
     #endif

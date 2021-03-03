@@ -2,8 +2,8 @@
 // gblogassign: logical assignment: C(M) = A
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -86,11 +86,10 @@ void mexFunction
     gb_usage (nargin == 3 && nargout <= 1, "usage: C = gblogassign (C, M, A)") ;
 
     //--------------------------------------------------------------------------
-    // get a deep copy of C
+    // get a deep copy of C, of any sparsity structure
     //--------------------------------------------------------------------------
 
     GrB_Matrix C = gb_get_deep (pargin [0]) ;
-
     GrB_Index nrows, ncols ;
     OK (GrB_Matrix_nrows (&nrows, C)) ;
     OK (GrB_Matrix_ncols (&ncols, C)) ;
@@ -99,14 +98,13 @@ void mexFunction
     // get M
     //--------------------------------------------------------------------------
 
-    // make M boolean, stored by column, and drop explicit zeros
+    // make M boolean, sparse/hyper, stored by column, and drop explicit zeros
     GrB_Matrix M_input = gb_get_shallow (pargin [1]) ;
-    GrB_Matrix M ;
-    OK (GrB_Matrix_new (&M, GrB_BOOL, nrows, ncols)) ;
-    OK (GxB_Matrix_Option_set (M, GxB_FORMAT, GxB_BY_COL)) ;
-    OK (GxB_Matrix_select (M, NULL, NULL, GxB_NONZERO, M_input, NULL, NULL)) ;
+    GrB_Matrix M = gb_new (GrB_BOOL, nrows, ncols, GxB_BY_COL,
+        GxB_SPARSE + GxB_HYPERSPARSE) ;
+    OK1 (M, GxB_Matrix_select (M, NULL, NULL, GxB_NONZERO, M_input,
+        NULL, NULL)) ;
     OK (GrB_Matrix_free (&M_input)) ;
-
     GrB_Index mnz ;
     OK (GrB_Matrix_nvals (&mnz, M)) ;
 
@@ -115,24 +113,36 @@ void mexFunction
     //--------------------------------------------------------------------------
 
     GrB_Matrix A_input = gb_get_shallow (pargin [2]) ;
+    GrB_Matrix A = A_input ;
     GrB_Type atype ;
     GrB_Index anrows, ancols, anz ;
     GxB_Format_Value fmt ;
-    OK (GrB_Matrix_nrows (&anrows, A_input)) ;
-    OK (GrB_Matrix_ncols (&ancols, A_input)) ;
-    OK (GxB_Matrix_type (&atype, A_input)) ;
-    OK (GrB_Matrix_nvals (&anz, A_input)) ;
-    OK (GxB_Matrix_Option_get (A_input, GxB_FORMAT, &fmt)) ;
+    int A_sparsity ;
+    OK (GrB_Matrix_nrows (&anrows, A)) ;
+    OK (GrB_Matrix_ncols (&ancols, A)) ;
+    OK (GxB_Matrix_type (&atype, A)) ;
+    OK (GrB_Matrix_nvals (&anz, A)) ;
+    OK (GxB_Matrix_Option_get (A, GxB_FORMAT, &fmt)) ;
+    OK (GxB_Matrix_Option_get (A, GxB_SPARSITY_CONTROL, &A_sparsity)) ;
+
+    GrB_Matrix A_copy = NULL ;
+    GrB_Matrix A_copy2 = NULL ;
+
+    // make sure A is not bitmap; it can be sparse, hypersparse, or full
+    if (A_sparsity == GxB_BITMAP)
+    {
+        OK (GrB_Matrix_dup (&A_copy2, A)) ;
+        OK1 (A_copy2, GxB_Matrix_Option_set (A_copy2, GxB_SPARSITY_CONTROL,
+            GxB_SPARSE + GxB_HYPERSPARSE + GxB_FULL)) ;
+        A = A_copy2 ;
+    }
 
     // make sure A is a vector of the right size
-    GrB_Matrix A, A_copy = NULL ;
-
     if (mnz == 0)
     { 
         // M is empty, so A must have no entries.  The dimensions and format of
         // A are not relevant, since the content of A will not be accessed.
         CHECK_ERROR (anz != 0, ERR) ;
-        A = A_input ;
     }
     else if (anrows == 1)
     {
@@ -142,15 +152,11 @@ void mexFunction
         if (fmt == GxB_BY_COL)
         { 
             // A is 1-by-ancols and held by column: transpose it
-            OK (GrB_Matrix_new (&A_copy, atype, mnz, 1)) ;
-            OK (GxB_Matrix_Option_set (A_copy, GxB_FORMAT, GxB_BY_COL)) ;
-            OK (GrB_transpose (A_copy, NULL, NULL, A_input, NULL)) ;
-            OK (GrB_Matrix_wait (&A_copy)) ;
+            A_copy = gb_new (atype, mnz, 1, GxB_BY_COL, 
+                GxB_SPARSE + GxB_HYPERSPARSE + GxB_FULL) ;
+            OK1 (A_copy, GrB_transpose (A_copy, NULL, NULL, A, NULL)) ;
+            OK1 (A_copy, GrB_Matrix_wait (&A_copy)) ;
             A = A_copy ;
-        }
-        else
-        { 
-            A = A_input ;
         }
     }
     else if (ancols == 1)
@@ -161,15 +167,11 @@ void mexFunction
         if (fmt == GxB_BY_ROW)
         { 
             // A is anrows-by-1 and held by row: transpose it
-            OK (GrB_Matrix_new (&A_copy, atype, 1, mnz)) ;
-            OK (GxB_Matrix_Option_set (A_copy, GxB_FORMAT, GxB_BY_ROW)) ;
-            OK (GrB_transpose (A_copy, NULL, NULL, A_input, NULL)) ;
-            OK (GrB_Matrix_wait (&A_copy)) ;
+            A_copy = gb_new (atype, 1, mnz, GxB_BY_ROW,
+                GxB_SPARSE + GxB_HYPERSPARSE + GxB_FULL) ;
+            OK1 (A_copy, GrB_transpose (A_copy, NULL, NULL, A, NULL)) ;
+            OK1 (A_copy, GrB_Matrix_wait (&A_copy)) ;
             A = A_copy ;
-        }
-        else
-        { 
-            A = A_input ;
         }
     }
     else
@@ -177,7 +179,7 @@ void mexFunction
         ERROR (ERR) ;
     }
 
-    int64_t *Ai = A->i ;
+    GrB_Index *Ai = (GrB_Index *) A->i ;        // NULL if A is full
     void *Ax = A->x ;
     double empty ;
     if (Ax == NULL) Ax = &empty ;
@@ -197,63 +199,61 @@ void mexFunction
     GrB_Index *Si = mxMalloc (MAX (anz, 1) * sizeof (GrB_Index)) ;
     GrB_Index *Sj = mxMalloc (MAX (anz, 1) * sizeof (GrB_Index)) ;
 
-    GB_matlab_helper5 (Si, Sj, Mi, Mj, (GrB_Index *) Ai, anz) ;
+    GB_matlab_helper5 (Si, Sj, Mi, Mj, M->vlen, Ai, A->vlen, anz) ;
 
-    GrB_Matrix S ;
-    OK (GrB_Matrix_new (&S, atype, nrows, ncols)) ;
-    OK (GxB_Matrix_Option_set (S, GxB_FORMAT, GxB_BY_COL)) ;
+    GrB_Matrix S = gb_new (atype, nrows, ncols, GxB_BY_COL, 0) ;
 
     if (atype == GrB_BOOL)
     { 
-        OK (GrB_Matrix_build_BOOL (S, Si, Sj, Ax, anz, GrB_LOR)) ;
+        OK1 (S, GrB_Matrix_build_BOOL (S, Si, Sj, Ax, anz, GrB_LOR)) ;
     }
     else if (atype == GrB_INT8)
     { 
-        OK (GrB_Matrix_build_INT8 (S, Si, Sj, Ax, anz, GrB_PLUS_INT8)) ;
+        OK1 (S, GrB_Matrix_build_INT8 (S, Si, Sj, Ax, anz, GrB_PLUS_INT8)) ;
     }
     else if (atype == GrB_INT16)
     { 
-        OK (GrB_Matrix_build_INT16 (S, Si, Sj, Ax, anz, GrB_PLUS_INT16)) ;
+        OK1 (S, GrB_Matrix_build_INT16 (S, Si, Sj, Ax, anz, GrB_PLUS_INT16)) ;
     }
     else if (atype == GrB_INT32)
     { 
-        OK (GrB_Matrix_build_INT32 (S, Si, Sj, Ax, anz, GrB_PLUS_INT32)) ;
+        OK1 (S, GrB_Matrix_build_INT32 (S, Si, Sj, Ax, anz, GrB_PLUS_INT32)) ;
     }
     else if (atype == GrB_INT64)
     { 
-        OK (GrB_Matrix_build_INT64 (S, Si, Sj, Ax, anz, GrB_PLUS_INT64)) ;
+        OK1 (S, GrB_Matrix_build_INT64 (S, Si, Sj, Ax, anz, GrB_PLUS_INT64)) ;
     }
     else if (atype == GrB_UINT8)
     { 
-        OK (GrB_Matrix_build_UINT8 (S, Si, Sj, Ax, anz, GrB_PLUS_UINT8)) ;
+        OK1 (S, GrB_Matrix_build_UINT8 (S, Si, Sj, Ax, anz, GrB_PLUS_UINT8)) ;
     }
     else if (atype == GrB_UINT16)
     { 
-        OK (GrB_Matrix_build_UINT16 (S, Si, Sj, Ax, anz, GrB_PLUS_UINT16)) ;
+        OK1 (S, GrB_Matrix_build_UINT16 (S, Si, Sj, Ax, anz, GrB_PLUS_UINT16)) ;
     }
     else if (atype == GrB_UINT32)
     { 
-        OK (GrB_Matrix_build_UINT32 (S, Si, Sj, Ax, anz, GrB_PLUS_UINT32)) ;
+        OK1 (S, GrB_Matrix_build_UINT32 (S, Si, Sj, Ax, anz, GrB_PLUS_UINT32)) ;
     }
     else if (atype == GrB_UINT64)
     { 
-        OK (GrB_Matrix_build_UINT64 (S, Si, Sj, Ax, anz, GrB_PLUS_UINT64)) ;
+        OK1 (S, GrB_Matrix_build_UINT64 (S, Si, Sj, Ax, anz, GrB_PLUS_UINT64)) ;
     }
     else if (atype == GrB_FP32)
     { 
-        OK (GrB_Matrix_build_FP32 (S, Si, Sj, Ax, anz, GrB_PLUS_FP32)) ;
+        OK1 (S, GrB_Matrix_build_FP32 (S, Si, Sj, Ax, anz, GrB_PLUS_FP32)) ;
     }
     else if (atype == GrB_FP64)
     { 
-        OK (GrB_Matrix_build_FP64 (S, Si, Sj, Ax, anz, GrB_PLUS_FP64)) ;
+        OK1 (S, GrB_Matrix_build_FP64 (S, Si, Sj, Ax, anz, GrB_PLUS_FP64)) ;
     }
     else if (atype == GxB_FC32)
     { 
-        OK (GxB_Matrix_build_FC32 (S, Si, Sj, Ax, anz, GxB_PLUS_FC32)) ;
+        OK1 (S, GxB_Matrix_build_FC32 (S, Si, Sj, Ax, anz, GxB_PLUS_FC32)) ;
     }
     else if (atype == GxB_FC64)
     { 
-        OK (GxB_Matrix_build_FC64 (S, Si, Sj, Ax, anz, GxB_PLUS_FC64)) ;
+        OK1 (S, GxB_Matrix_build_FC64 (S, Si, Sj, Ax, anz, GxB_PLUS_FC64)) ;
     }
     else
     {
@@ -261,12 +261,13 @@ void mexFunction
     }
 
     OK (GrB_Matrix_free (&A_copy)) ;
+    OK (GrB_Matrix_free (&A_copy2)) ;
 
     //--------------------------------------------------------------------------
     // C<M> = S
     //--------------------------------------------------------------------------
 
-    OK (GxB_Matrix_subassign (C, M, NULL,
+    OK1 (C, GxB_Matrix_subassign (C, M, NULL,
         S, GrB_ALL, nrows, GrB_ALL, ncols, NULL)) ;
 
     //--------------------------------------------------------------------------
@@ -280,7 +281,7 @@ void mexFunction
     OK (GrB_Matrix_free (&M_input)) ;
 
     //--------------------------------------------------------------------------
-    // export the output matrix C back to MATLAB
+    // export the output matrix C back to MATLAB as a GraphBLAS matrix
     //--------------------------------------------------------------------------
 
     pargout [0] = gb_export (&C, KIND_GRB) ;

@@ -6,10 +6,9 @@ function gbtest83
 % C = GrB.apply (C, M, op, A)
 % C = GrB.apply (C, M, accum, op, A)
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
-% fprintf ('gbtest83: test GrB.apply\n') ;
 rng ('default')
 
 C     = GrB.random (9, 9, 0.5) ;

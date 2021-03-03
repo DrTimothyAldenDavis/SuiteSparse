@@ -2,8 +2,8 @@
 // GB_printf.h: definitions for printing from GraphBLAS
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -16,6 +16,8 @@
 
 GB_PUBLIC int (* GB_printf_function ) (const char *format, ...) ;
 GB_PUBLIC int (* GB_flush_function  ) ( void ) ;
+
+#define GB_STRING_MATCH(s,t) (strcmp (s,t) == 0)
 
 //------------------------------------------------------------------------------
 // printing control
@@ -77,8 +79,7 @@ GB_PUBLIC int (* GB_flush_function  ) ( void ) ;
     if (printf_result < 0)                                                  \
     {                                                                       \
         int err = errno ;                                                   \
-        return (GB_ERROR (GrB_INVALID_VALUE, (GB_LOG,                       \
-            "File output error (%d): %s", err, strerror (err)))) ;          \
+        return (GrB_INVALID_VALUE) ;                                        \
     }                                                                       \
 }
 
@@ -102,21 +103,18 @@ GB_PUBLIC int (* GB_flush_function  ) ( void ) ;
                                                                         \
         case GB_FREED :                                                 \
             /* dangling pointer! */                                     \
-            GBPR0 ("already freed!\n") ;                                \
-            return (GB_ERROR (GrB_UNINITIALIZED_OBJECT, (GB_LOG,        \
-                "%s is freed: [%s]", kind, name))) ;                    \
+            GBPR0 (" object already freed!\n") ;                        \
+            return (GrB_UNINITIALIZED_OBJECT) ;                         \
                                                                         \
         case GB_MAGIC2 :                                                \
             /* invalid */                                               \
-            GBPR0 ("invalid\n") ;                                       \
-            return (GB_ERROR (GrB_INVALID_OBJECT, (GB_LOG,              \
-                "%s is invalid: [%s]", kind, name))) ;                  \
+            GBPR0 (" invalid object\n") ;                               \
+            return (GrB_INVALID_OBJECT) ;                               \
                                                                         \
         default :                                                       \
             /* uninitialized */                                         \
-            GBPR0 ("uninititialized\n") ;                               \
-            return (GB_ERROR (GrB_UNINITIALIZED_OBJECT, (GB_LOG,        \
-                "%s is uninitialized: [%s]", kind, name))) ;            \
+            GBPR0 (" uninititialized object\n") ;                       \
+            return (GrB_UNINITIALIZED_OBJECT) ;                         \
     }                                                                   \
 }
 
@@ -124,78 +122,104 @@ GB_PUBLIC int (* GB_flush_function  ) ( void ) ;
 // burble
 //------------------------------------------------------------------------------
 
-// GB_BURBLE is meant for development use, not production use.  To enable it,
-// set GB_BURBLE to 1, either with -DGB_BURBLE=1 as a compiler option, by
-// editting the setting above, or by adding the line
-//
-//      #define GB_BURBLE 1
-//
-// at the top of any source file, before #including any other file.  After
-// enabling it in the library, use GxB_set (GxB_BURBLE, true) to turn it on
-// at run time, and GxB_set (GxB_BURBLE, false) to turn it off.  By default,
-// the feature is not enabled when SuiteSparse:GraphBLAS is compiled, and
-// even then, the setting is set to false by GrB_init.
+// GB_BURBLE provides diagnostic output.
+// Use GxB_set (GxB_BURBLE, true) to turn it on
+// and GxB_set (GxB_BURBLE, false) to turn it off.
 
 #if GB_BURBLE
 
+void GB_burble_assign
+(
+    const bool C_replace,       // descriptor for C
+    const int Ikind,
+    const int Jkind,
+    const GrB_Matrix M,         // mask matrix, which is not NULL here
+    const bool Mask_comp,       // true for !M, false for M
+    const bool Mask_struct,     // true if M is structural, false if valued
+    const GrB_BinaryOp accum,   // present here
+    const GrB_Matrix A,         // input matrix, not transposed
+    const int assign_kind       // row assign, col assign, assign, or subassign
+) ;
+
 // define the function to use to burble
-#define GBBURBLE(...)                               \
+#define GBURBLE(...)                                \
 {                                                   \
-    bool burble = GB_Global_burble_get ( ) ;        \
-    if (burble)                                     \
+    if (GB_Global_burble_get ( ))                   \
     {                                               \
         GBDUMP (__VA_ARGS__) ;                      \
     }                                               \
 }
 
+// burble if a matrix is dense or full
+#define GB_BURBLE_DENSE(A,format)                               \
+{                                                               \
+    if (GB_IS_FULL (A))                                         \
+    {                                                           \
+        GBURBLE (format, "full") ;                              \
+    }                                                           \
+    else if (GB_IS_BITMAP (A))                                  \
+    {                                                           \
+        GBURBLE (format, "bitmap") ;                            \
+    }                                                           \
+    else if (GB_is_dense (A) && !GB_PENDING_OR_ZOMBIES (A))     \
+    {                                                           \
+        GBURBLE (format, "dense") ;                             \
+    }                                                           \
+}
+
 #if defined ( _OPENMP )
 
-// burble with timing
-#define GB_BURBLE_START(func)                       \
-double t_burble = 0 ;                               \
-bool burble = GB_Global_burble_get ( ) ;            \
-{                                                   \
-    if (burble)                                     \
-    {                                               \
-        GBBURBLE (" [ " func " ") ;                 \
-        t_burble = GB_OPENMP_GET_WTIME ;            \
-    }                                               \
-}
+    // burble with timing
+    #define GB_BURBLE_START(func)                       \
+    double t_burble = 0 ;                               \
+    {                                                   \
+        if (GB_Global_burble_get ( ))                   \
+        {                                               \
+            GBURBLE (" [ " func " ") ;                  \
+            t_burble = GB_OPENMP_GET_WTIME ;            \
+        }                                               \
+    }
 
-#define GB_BURBLE_END                               \
-{                                                   \
-    if (burble)                                     \
-    {                                               \
-        t_burble = GB_OPENMP_GET_WTIME - t_burble ; \
-        GBBURBLE ("%.3g sec ]\n", t_burble) ;       \
-    }                                               \
-}
+    #define GB_BURBLE_END                               \
+    {                                                   \
+        if (GB_Global_burble_get ( ))                   \
+        {                                               \
+            t_burble = GB_OPENMP_GET_WTIME - t_burble ; \
+            GBURBLE ("\n   %.3g sec ]\n", t_burble) ;   \
+        }                                               \
+    }
 
 #else
 
-// burble with no timing
-#define GB_BURBLE_START(func)                   \
-    GBBURBLE (" [ " func " ")
+    // burble with no timing
 
-#define GB_BURBLE_END                           \
-    GBBURBLE ("]\n")
+    #define GB_BURBLE_START(func)                       \
+        GBURBLE (" [ " func " ")
+
+    #define GB_BURBLE_END                               \
+        GBURBLE ("]\n")
 
 #endif
 
-#define GB_BURBLE_N(n,...)                      \
-    if (n > 1) GBBURBLE (__VA_ARGS__)
+#define GB_BURBLE_N(n,...)                              \
+{                                                       \
+    if (n > 1) GBURBLE (__VA_ARGS__)                    \
+}
 
-#define GB_BURBLE_MATRIX(A, ...)                \
-    if (!(A->vlen <= 1 && A->vdim <= 1)) GBBURBLE (__VA_ARGS__)
+#define GB_BURBLE_MATRIX(A, ...)                                    \
+{                                                                   \
+    if (!(A->vlen <= 1 && A->vdim <= 1)) GBURBLE (__VA_ARGS__)      \
+}
 
 #else
 
 // no burble
-#define GBBURBLE(...)
+#define GBURBLE(...)
 #define GB_BURBLE_START(func)
 #define GB_BURBLE_END
 #define GB_BURBLE_N(n,...)
 #define GB_BURBLE_MATRIX(A,...)
+#define GB_BURBLE_DENSE(A,format)
 
 #endif
 #endif

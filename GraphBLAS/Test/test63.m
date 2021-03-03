@@ -1,8 +1,8 @@
 function test63
 %TEST63 test GraphBLAS binary operators
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 [binops, ~, ~, types, ~, ~] = GB_spec_opsall ;
 ops = binops.all ;
@@ -15,6 +15,9 @@ rng ('default') ;
 n_operators = 0 ;
 for k2 = 1:length(ops)
     mulop = ops {k2} ;
+    if (GB_spec_is_positional (mulop))
+        continue
+    end
     fprintf ('\n%-10s ', mulop) ;
 
     for k1 = 1:length (types)

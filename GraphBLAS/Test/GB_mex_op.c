@@ -2,8 +2,8 @@
 // GB_mex_op: apply a built-in GraphBLAS operator to MATLAB arrays
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -23,7 +23,7 @@
 
 #define FREE_ALL                        \
 {                                       \
-    GB_mx_put_global (do_cover, 0) ;    \
+    GB_mx_put_global (do_cover) ;       \
 }
 
 void mexFunction
@@ -56,7 +56,6 @@ void mexFunction
     // check inputs
     //--------------------------------------------------------------------------
 
-    GB_WHERE (USAGE) ;
     if (nargout > 1 || nargin < 2 || nargin > 4)
     {
         mexErrMsgTxt ("Usage: " USAGE) ;
@@ -90,6 +89,11 @@ void mexFunction
         op_xtype = op2->xtype ; op_xsize = op_xtype->size ;
         op_ytype = op2->ytype ; op_ysize = op_ytype->size ;
         ASSERT_BINARYOP_OK (op2, "binary op", GB0) ;
+        if (GB_OP_IS_POSITIONAL (op2))
+        { 
+            FREE_ALL ;
+            mexErrMsgTxt ("binary positional op not supported") ;
+        }
     }
     else
     {
@@ -104,6 +108,11 @@ void mexFunction
         op_xtype = op1->xtype ; op_xsize = op_xtype->size ;
         op_ytype = NULL       ; op_ysize = 1 ;
         ASSERT_UNARYOP_OK (op1, "unary op", GB0) ;
+        if (GB_OP_IS_POSITIONAL (op1))
+        { 
+            FREE_ALL ;
+            mexErrMsgTxt ("unary positional op not supported") ;
+        }
     }
 
     ASSERT_TYPE_OK (op_ztype, "Z type", GB0) ;
@@ -186,14 +195,11 @@ void mexFunction
         {
             cast_X (xwork, X +(k*X_size), X_size) ;
             cast_Y (ywork, Y +(k*Y_size), Y_size) ;
-            // printf ("x: ") ;
-            // GB_code_check (op_xtype->code, xwork, 3, NULL, NULL) ;
-            // printf ("\ny: ") ;
-            // GB_code_check (op_ytype->code, ywork, 3, NULL, NULL) ;
-            // printf ("\nz: ") ;
+            // printf ("x: ")   ; GB_code_check (op_xtype->code,xwork,3,NULL) ;
+            // printf ("\ny: ") ; GB_code_check (op_ytype->code,ywork,3,NULL) ;
             f_binary (Z +(k*op_zsize), xwork, ywork) ;
-            // GB_code_check (op_ztype->code, Z +(k*op_zsize), 3, NULL, NULL) ;
-            // printf ("\n") ;
+            // printf ("\nz: ") ; GB_code_check (op_ztype->code,
+            //                    Z +(k*op_zsize), 3, NULL) ; printf ("\n") ;
         }
 
     }

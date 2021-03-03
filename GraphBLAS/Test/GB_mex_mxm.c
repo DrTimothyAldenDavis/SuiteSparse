@@ -2,8 +2,8 @@
 // GB_mex_mxm: C<Mask> = accum(C,A*B)
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -13,10 +13,10 @@
 
 #define FREE_ALL                                    \
 {                                                   \
-    GB_MATRIX_FREE (&A) ;                           \
-    GB_MATRIX_FREE (&B) ;                           \
-    GB_MATRIX_FREE (&C) ;                           \
-    GB_MATRIX_FREE (&Mask) ;                        \
+    GrB_Matrix_free_(&A) ;                          \
+    GrB_Matrix_free_(&B) ;                          \
+    GrB_Matrix_free_(&C) ;                          \
+    GrB_Matrix_free_(&Mask) ;                       \
     if (semiring != Complex_plus_times)             \
     {                                               \
         if (semiring != NULL)                       \
@@ -26,7 +26,7 @@
         GrB_Semiring_free_(&semiring) ;             \
     }                                               \
     GrB_Descriptor_free_(&desc) ;                   \
-    GB_mx_put_global (true, AxB_method_used) ;      \
+    GB_mx_put_global (true) ;                       \
 }
 
 void mexFunction
@@ -45,10 +45,8 @@ void mexFunction
     GrB_Matrix Mask = NULL ;
     GrB_Semiring semiring = NULL ;
     GrB_Descriptor desc = NULL ;
-    GrB_Desc_Value AxB_method_used = GxB_DEFAULT ;
 
     // check inputs
-    GB_WHERE (USAGE) ;
     if (nargout > 1 || nargin < 6 || nargin > 7)
     {
         mexErrMsgTxt ("Usage: " USAGE) ;
@@ -57,7 +55,7 @@ void mexFunction
     // get C (make a deep copy)
     #define GET_DEEP_COPY \
     C = GB_mx_mxArray_to_Matrix (pargin [0], "C input", true, true) ;
-    #define FREE_DEEP_COPY GB_MATRIX_FREE (&C) ;
+    #define FREE_DEEP_COPY GrB_Matrix_free_(&C) ;
     GET_DEEP_COPY ;
     if (C == NULL)
     {
@@ -118,11 +116,8 @@ void mexFunction
     // C<Mask> = accum(C,A*B)
     METHOD (GrB_mxm (C, Mask, accum, semiring, A, B, desc)) ;
 
-    if (C != NULL) AxB_method_used = C->AxB_method_used ;
-
     // return C to MATLAB as a struct and free the GraphBLAS C
     pargout [0] = GB_mx_Matrix_to_mxArray (&C, "C output from GrB_mxm", true) ;
-
     FREE_ALL ;
 }
 

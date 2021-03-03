@@ -2,8 +2,8 @@
 // GB_mex_Vector_extractElement: MATLAB interface for x = v(i)
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -14,7 +14,7 @@
 #define FREE_ALL                                        \
 {                                                       \
     GrB_Vector_free_(&v) ;                              \
-    GB_mx_put_global (true, 0) ;                        \
+    GB_mx_put_global (true) ;                           \
 }
 
 void mexFunction
@@ -33,7 +33,6 @@ void mexFunction
     bool is_list ;
 
     // check inputs
-    GB_WHERE (USAGE) ;
     if (nargout > 1 || nargin < 2 || nargin > 3)
     {
         mexErrMsgTxt ("Usage: " USAGE) ;

@@ -2,8 +2,8 @@
 // gb_mxarray_to_list: convert a MATLAB array to a list of integers
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -29,6 +29,7 @@ int64_t *gb_mxarray_to_list     // return List of integers
 
     CHECK_ERROR (!mxIsNumeric (mxList), "index list must be numeric") ;
     CHECK_ERROR (mxIsSparse (mxList), "index list cannot be sparse") ;
+    CHECK_ERROR (mxIsComplex (mxList), "index list cannot be complex") ;
 
     //--------------------------------------------------------------------------
     // get the length and class of the MATLAB list
@@ -71,6 +72,7 @@ int64_t *gb_mxarray_to_list     // return List of integers
         { 
             // input list is 1-based double
             double *List_double = mxGetDoubles (mxList) ;
+            CHECK_ERROR (List_double == NULL, "index list must be integer") ;
             bool ok = GB_matlab_helper3 (List, List_double, (*len), List_max) ;
             CHECK_ERROR (!ok, "index must be integer") ;
         }

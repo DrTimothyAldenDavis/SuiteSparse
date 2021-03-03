@@ -6,8 +6,8 @@ function w = GB_spec_reduce_to_vector (w, mask, accum, reduce, A, descriptor)
 %
 % Reduces a matrix to a vector
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 %-------------------------------------------------------------------------------
 % get inputs
@@ -30,6 +30,10 @@ if (isempty (reduce))
     reduce = 'plus'
 end
 [reduce_op reduce_class] = GB_spec_operator (reduce, aclass) ;
+
+if (GB_spec_is_positional (reduce_op))
+    error ('reduce op must not be positional') ;
+end
 
 % get the identity
 identity = GB_spec_identity (reduce_op, reduce_class) ;

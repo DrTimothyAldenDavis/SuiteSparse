@@ -7,11 +7,11 @@ function C = vertcat (varargin)
 %
 % See also GrB/horzcat, GrB.optype.
 
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
+
 % FUTURE: this will be much faster when it is a mexFunction.
 % The version below requires a sort in GrB.build.
-
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
 
 % determine the size of each matrix and the size of the result
 nmatrices = length (varargin) ;

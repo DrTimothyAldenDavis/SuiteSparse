@@ -2,8 +2,8 @@
 // GraphBLAS/Demo/Source/usercomplex.c:  complex numbers as a user-defined type
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -304,7 +304,7 @@ GB_PUBLIC
 void complex_complex_imag (C Z, const double X) { Z = GxB_CMPLX (0, X) ; }
 
 //------------------------------------------------------------------------------
-// OK: check if a method fails
+// macro to check if a method fails
 //------------------------------------------------------------------------------
 
 #undef OK

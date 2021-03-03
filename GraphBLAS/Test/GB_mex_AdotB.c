@@ -2,8 +2,8 @@
 // GB_mex_AdotB: compute C=spones(Mask).*(A'*B)
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -17,14 +17,14 @@
 
 #define FREE_ALL                            \
 {                                           \
-    GB_MATRIX_FREE (&A) ;                   \
-    GB_MATRIX_FREE (&Aconj) ;               \
-    GB_MATRIX_FREE (&B) ;                   \
-    GB_MATRIX_FREE (&C) ;                   \
-    GB_MATRIX_FREE (&Mask) ;                \
+    GrB_Matrix_free_(&A) ;                   \
+    GrB_Matrix_free_(&Aconj) ;               \
+    GrB_Matrix_free_(&B) ;                   \
+    GrB_Matrix_free_(&C) ;                   \
+    GrB_Matrix_free_(&Mask) ;                \
     GrB_Monoid_free_(&add) ;                \
     GrB_Semiring_free_(&semiring) ;         \
-    GB_mx_put_global (true, GxB_AxB_DOT) ;  \
+    GB_mx_put_global (true) ;               \
 }
 
 GrB_Matrix A = NULL, B = NULL, C = NULL, Aconj = NULL, Mask = NULL ;
@@ -60,9 +60,6 @@ GrB_Info adotb_complex (GB_Context Context)
 
     GrB_Semiring semiring = Complex_plus_times ;
 
-    GrB_Matrix Aslice [1] ;
-    Aslice [0] = Aconj ;
-
     if (Mask != NULL)
     {
         // C<M> = A'*B using dot product method
@@ -73,10 +70,9 @@ GrB_Info adotb_complex (GB_Context Context)
     else
     {
         // C = A'*B using dot product method
-        info = GB_AxB_dot2 (&C, NULL, false, Aslice, B, semiring, flipxy,
-            &mask_applied,
-            /* single thread: */
-            1, 1, 1, Context) ;
+        mask_applied = false ;  // no mask to apply
+        info = GB_AxB_dot2 (&C, NULL, false, false, Aconj, B, semiring, flipxy,
+            Context) ;
     }
 
     GrB_Matrix_free_(&Aconj) ;
@@ -98,8 +94,6 @@ GrB_Info adotb (GB_Context Context)
     }
     // C = A'*B
     bool mask_applied = false ;
-    GrB_Matrix Aslice [1] ;
-    Aslice [0] = A ;
 
     if (Mask != NULL)
     {
@@ -111,11 +105,9 @@ GrB_Info adotb (GB_Context Context)
     }
     else
     {
-        info = GB_AxB_dot2 (&C, NULL, false, Aslice, B,
-            semiring /* GxB_PLUS_TIMES_FP64 */,
-            flipxy, &mask_applied,
-            // single thread:
-            1, 1, 1, Context) ;
+        mask_applied = false ;  // no mask to apply
+        info = GB_AxB_dot2 (&C, NULL, false, false, A, B,
+            semiring /* GxB_PLUS_TIMES_FP64 */, flipxy, Context) ;
     }
 
     GrB_Monoid_free_(&add) ;
@@ -136,7 +128,7 @@ void mexFunction
 
     bool malloc_debug = GB_mx_get_global (true) ;
 
-    GB_WHERE (USAGE) ;
+    GB_CONTEXT (USAGE) ;
 
     // check inputs
     if (nargout > 1 || nargin < 2 || nargin > 4)
@@ -199,6 +191,12 @@ void mexFunction
     {
         FREE_ALL ;
         mexErrMsgTxt ("inner dimensions of A'*B do not match") ;
+    }
+
+    if (anrows == 0)
+    {
+        FREE_ALL ;
+        mexErrMsgTxt ("inner dimensions of A'*B must be > 0") ;
     }
 
     // get flipxy

@@ -2,8 +2,8 @@
 // GB_SelectOp_new: create a new select operator
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -29,7 +29,7 @@ GrB_Info GB_SelectOp_new        // create a new user-defined select operator
     // check inputs
     //--------------------------------------------------------------------------
 
-    GB_WHERE ("GxB_SelectOp_new (selectop, function, xtype)") ;
+    GB_WHERE1 ("GxB_SelectOp_new (selectop, function, xtype)") ;
     GB_RETURN_IF_NULL (selectop) ;
     (*selectop) = NULL ;
     GB_RETURN_IF_NULL (function) ;
@@ -45,7 +45,7 @@ GrB_Info GB_SelectOp_new        // create a new user-defined select operator
     if (*selectop == NULL)
     { 
         // out of memory
-        return (GB_OUT_OF_MEMORY) ;
+        return (GrB_OUT_OF_MEMORY) ;
     }
 
     // initialize the select operator

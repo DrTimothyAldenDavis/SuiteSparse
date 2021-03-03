@@ -1,16 +1,44 @@
-Version 4.0.0, FUTURE, 2020 (this list is tentative):
+Version 4.0.3, Jan 19, 2021
 
-    * GrB_wait(), with no inputs: will be removed
-    * GrB_wait(&object): polymorphic function will be added
-    * GrB_*_nvals: will no longer guarantee completion; use GrB_wait(&object)
-        or non-polymorphic GrB_*_wait (&object) instead
-    * GrB_error: will have two inputs: a string (char **) and an object
+    * faster min/max monoids
+    * MATLAB: G=GrB(G) converts G from v3 object to v4
+
+Version 4.0.2, Jan 11, 2021
+
+    * added ability to load *.mat files saved with GraphBLAS v3.
+    * GrB_wait: added #pragma omp flush after any GrB_wait
+
+Version 4.0.1, Jan 4, 2021
+
+    * substantial performance gains: compared with v3.3.3: up to 5x faster in
+        BFS (with LAGraph_bfs_parent2), 2x faster in Betweeness-Centrality (in
+        LAgraph_bc_bactch5); BC now faster than GAP for kron, urand, and
+        twitter (the 3 largest matrices in the GAP benchmark).
+    * GrB_wait(), with no inputs: removed
+    * GrB_wait(&object): polymorphic function added
+    * GrB_*_nvals: no longer guarantees completion; use GrB_wait for that
+    * GrB_error: now has two parameters: a string (char **) and an object
+    * GrB_Matrix_reduce_BinaryOp: limited to certain built-in ops
+    * GrB_*_extractTuples: may return indices out of order
+    * removed internal features: GBI iterator, slice and hyperslice matrices
+    * bitmap/full matrices and vectors added: faster and lower memory usage
+        when many entries present in a matrix or vector
+    * GxB_SPARSITY_CONTROL, GxB_SPARSITY_STATUS added: for matrix get/set
+    * positional operators and semirings: GxB_FIRSTI_INT32 and related ops
+    * jumbled matrices: sort left pending, like zombies and pending tuples
+    * GxB_get/set: added GxB_SPARSITY_* (hyper, sparse, bitmap, or full)
+    * GxB_HYPER: enum renamed to GxB_HYPER_SWITCH
+    * GxB_BITMAP_SWITCH added: for matrix/vector get/set and global get/set
+    * GxB*import/export: API modified
+    * GxB_SelectOp: nrows and ncols removed from function signature
+    * OpenMP tasking removed from mergesort: just as fast; now ports to Windows
+    * GxB_BURBLE added: for diagnostic output
+    * (21) bug fix: A({lo,hi})=scalar in MATLAB; A(lo:hi)=scalar was OK
 
 Version 3.3.3, July 14, 2020
 
     * (20) bug fix: w<mask>=A*u with mask non-empty and u empty (issue #13).
         affects mxm (A*B when B is a vector), vxm, and mxv.
-    * GraphBLAS v3.3.3 released as part of SuiteSparse v5.8.1
 
 Version 3.3.2, July 3, 2020
 
@@ -44,10 +72,6 @@ Version 3.3.0, June 26, 2020
     * (18) bug fix: fixed typecasting in GB_dense_subassign_23, generic case
     * (17) bug fix: non-polymorphic GrB_eWiseAdd and eWiseMult functions
         were misnamed.
-    * DRAFT interfaces: A few functions have been added to use CUDA and the
-        Intel MKL library.  These are visible in GraphBLAS.h but are
-        undocumented; do *not* use them yet.  They will likely change without
-        warning, and without changing the SuiteSparse:GraphBLAS version number.
 
 Version 3.2.2, Apr 2, 2020
 

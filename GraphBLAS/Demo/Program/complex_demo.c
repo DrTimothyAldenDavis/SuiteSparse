@@ -2,8 +2,8 @@
 // GraphBLAS/Demo/Program/complex_demo.c: demo for user-defined complex type
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -90,7 +90,7 @@ int main (int argc, char **argv)
     info = Complex_init (predefined) ;
     if (info != GrB_SUCCESS)
     {
-        fprintf (stderr, "Complex init failed: %s\n", GrB_error ( )) ;
+        fprintf (stderr, "Complex init failed\n") ;
         abort ( ) ;
     }
 

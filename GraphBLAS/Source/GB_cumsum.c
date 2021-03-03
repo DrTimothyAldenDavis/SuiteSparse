@@ -2,8 +2,8 @@
 // GB_cumsum: cumlative sum of an array
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -19,8 +19,6 @@
 // On output, count [n] is the total sum.
 
 #include "GB.h"
-
-// TODO for GPU: add error handling and GrB_Info return value
 
 GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void GB_cumsum                      // cumulative sum of an array
@@ -59,18 +57,6 @@ void GB_cumsum                      // cumulative sum of an array
 
     if (kresult == NULL)
     {
-
-#if 0
-        // FIXME
-        #if defined ( GBCUDA )
-        if (GB_cuda_is_on_GPU (count))
-        {
-            // 'count' is already on the GPU: compute the cumulative sum there
-            GB_cuda_cumsum (count, n) ;
-        }
-        else
-        #endif
-#endif
 
         if (nthreads <= 2)
         {
@@ -150,19 +136,6 @@ void GB_cumsum                      // cumulative sum of an array
     }
     else
     {
-
-#if 0
-        // TODO for GPU: pop count on the GPU for GB_cumsum
-        #if defined ( GBCUDA )
-        if (GB_cuda_is_on_GPU (count))
-        {
-            // 'count' is already on the GPU: compute the cumulative sum there
-            (*kresult) = GB_cuda_population_count_int64 (count, n) ;
-            GB_cuda_cumsum (count, n) ;
-        }
-        else
-        #endif
-#endif
 
         if (nthreads <= 2)
         {

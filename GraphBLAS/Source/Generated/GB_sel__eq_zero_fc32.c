@@ -2,8 +2,8 @@
 // GB_sel:  hard-coded functions for selection operators
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -47,8 +47,8 @@ void GB_sel_phase1__eq_zero_fc32
 (
     int64_t *GB_RESTRICT Zp,
     int64_t *GB_RESTRICT Cp,
-    GB_void *GB_RESTRICT Wfirst_space,
-    GB_void *GB_RESTRICT Wlast_space,
+    int64_t *GB_RESTRICT Wfirst,
+    int64_t *GB_RESTRICT Wlast,
     const GrB_Matrix A,
     const int64_t *GB_RESTRICT kfirst_slice,
     const int64_t *GB_RESTRICT klast_slice,
@@ -61,7 +61,6 @@ void GB_sel_phase1__eq_zero_fc32
     const int nthreads
 )
 { 
-    int64_t *GB_RESTRICT Tx = Cp ;
     ;
     #include "GB_select_phase1.c"
 }
@@ -94,4 +93,28 @@ void GB_sel_phase2__eq_zero_fc32
     ;
     #include "GB_select_phase2.c"
 }
+
+//------------------------------------------------------------------------------
+// GB_sel_bitmap__eq_zero_fc32
+//------------------------------------------------------------------------------
+
+
+
+void GB_sel_bitmap__eq_zero_fc32
+(
+    int8_t *Cb,
+    GxB_FC32_t *GB_RESTRICT Cx,
+    int64_t *cnvals_handle,
+    GrB_Matrix A,
+    const bool flipij,
+    const int64_t ithunk,
+    const GxB_FC32_t *GB_RESTRICT xthunk,
+    const GxB_select_function user_select,
+    const int nthreads
+)
+{ 
+    ;
+    #include "GB_bitmap_select_template.c"
+}
+
 

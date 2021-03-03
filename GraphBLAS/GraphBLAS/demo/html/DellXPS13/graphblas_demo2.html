@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>graphblas_demo2</title><meta name="generator" content="MATLAB 9.8"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-06-25"><meta name="DC.source" content="graphblas_demo2.m"><style type="text/css">
+      --><title>graphblas_demo2</title><meta name="generator" content="MATLAB 9.8"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-01-03"><meta name="DC.source" content="graphblas_demo2.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -69,8 +69,13 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
   </style></head><body><div class="content"><pre class="codeinput"><span class="comment">% Run the GraphBLAS demo2</span>
 
-<span class="comment">% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.</span>
-<span class="comment">% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.</span>
+<span class="comment">% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.</span>
+<span class="comment">% SPDX-License-Identifier: Apache-2.0</span>
+
+<span class="comment">% reset to the default number of threads</span>
+clear <span class="string">all</span>
+maxNumCompThreads (<span class="string">'automatic'</span>) ;
+GrB.clear ;
 
 gbdemo2
 </pre><pre class="codeoutput"> GBDEMO2 Extreme performance differences: GraphBLAS vs MATLAB.
@@ -80,8 +85,8 @@ gbdemo2
         gbdemo2             % uses a default bnz = 6000
         gbdemo2 (20000)     % uses bnz = 20000
  
-  The GraphBLAS operations used in gbdemo are perhaps 3x to 50x
-  faster than the corresponding MATLAB operations, depending on how
+  Many of the GraphBLAS operations used in gbdemo are perhaps 3x to
+  50x faster than the corresponding MATLAB operations, depending on how
   many cores your computer has.  Here's an example where GraphBLAS is
   asymptotically far faster than MATLAB R2019a: a simple assignment
   for a large matrix C:
@@ -110,86 +115,91 @@ gbdemo2
   See also GrB.assign, subsasgn.
 
 
-# of threads used in GraphBLAS: 8
+# of threads used in GraphBLAS: 4
 
 
 C(I,J)=A where C is 1 million -by- 1 million
 with 35.7126 million entries:
 
     A is 5000-by-5000 with 49954 entries
-    setup time:     0.261989 sec
-    GraphBLAS time: 0.272427 sec
+    setup time:     0.292615 sec
+    GraphBLAS time: 0.400704 sec
     Starting MATLAB ... please wait ... 
-    MATLAB time:    0.349314 sec
-    Speedup of GraphBLAS over MATLAB: 1.28223
-    check time:     0.260897 sec
+    MATLAB time:    0.423449 sec
+    Speedup of GraphBLAS over MATLAB: 1.05676
+    check time:     0.402826 sec
     all tests passed
 
 C(I,J)=A where C is 4 million -by- 4 million
 with 35.8202 million entries:
 
     A is 5000-by-5000 with 49954 entries
-    setup time:     0.319877 sec
-    GraphBLAS time: 0.333537 sec
+    setup time:     0.354804 sec
+    GraphBLAS time: 0.400309 sec
     Starting MATLAB ... please wait ... 
-    MATLAB time:    0.345186 sec
-    Speedup of GraphBLAS over MATLAB: 1.03493
-    check time:     0.297323 sec
+    MATLAB time:    0.342458 sec
+    Speedup of GraphBLAS over MATLAB: 0.855484
+    check time:     0.312558 sec
     all tests passed
 
 C(I,J)=A where C is 9 million -by- 9 million
 with 35.928 million entries:
 
     A is 5000-by-5000 with 49954 entries
-    setup time:     0.356083 sec
-    GraphBLAS time: 0.391448 sec
+    setup time:     0.379629 sec
+    GraphBLAS time: 0.459797 sec
     Starting MATLAB ... please wait ... 
-    MATLAB time:    187.06 sec
-    Speedup of GraphBLAS over MATLAB: 477.866
-    check time:     0.292156 sec
+    MATLAB time:    190.938 sec
+    Speedup of GraphBLAS over MATLAB: 415.266
+    check time:     0.36055 sec
     all tests passed
 
 C(I,J)=A where C is 16 million -by- 16 million
 with 35.916 million entries:
 
     A is 5000-by-5000 with 49954 entries
-    setup time:     0.40299 sec
-    GraphBLAS time: 0.446623 sec
+    setup time:     0.443602 sec
+    GraphBLAS time: 0.546551 sec
     Starting MATLAB ... please wait ... 
-    MATLAB time:    199.164 sec
-    Speedup of GraphBLAS over MATLAB: 445.934
-    check time:     0.492775 sec
+    MATLAB time:    208.425 sec
+    Speedup of GraphBLAS over MATLAB: 381.346
+    check time:     0.376075 sec
     all tests passed
 
 C(I,J)=A where C is 25 million -by- 25 million
 with 35.964 million entries:
 
     A is 5000-by-5000 with 49954 entries
-    setup time:     0.464605 sec
-    GraphBLAS time: 0.395374 sec
+    setup time:     0.483604 sec
+    GraphBLAS time: 0.472668 sec
     Starting MATLAB ... please wait ... 
-    MATLAB time:    230.122 sec
-    Speedup of GraphBLAS over MATLAB: 582.036
-    check time:     0.369713 sec
+    MATLAB time:    249.645 sec
+    Speedup of GraphBLAS over MATLAB: 528.162
+    check time:     0.444949 sec
     all tests passed
 
 C(I,J)=A where C is 36 million -by- 36 million
 with 35.976 million entries:
 
     A is 5000-by-5000 with 49954 entries
-    setup time:     0.510898 sec
-    GraphBLAS time: 0.681213 sec
+    setup time:     0.554859 sec
+    GraphBLAS time: 0.868482 sec
     Starting MATLAB ... please wait ... 
-    MATLAB time:    251.809 sec
-    Speedup of GraphBLAS over MATLAB: 369.649
-    check time:     0.416664 sec
+    MATLAB time:    275.087 sec
+    Speedup of GraphBLAS over MATLAB: 316.744
+    check time:     0.528343 sec
     all tests passed
 </pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 % Run the GraphBLAS demo2
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
+
+% reset to the default number of threads
+clear all
+maxNumCompThreads ('automatic') ;
+GrB.clear ;
 
 gbdemo2
 

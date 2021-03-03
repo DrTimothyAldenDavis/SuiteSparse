@@ -3,20 +3,20 @@ pagerank_demo: nthreads: 8
 ntuples: 3
 nrows 3 ncols 3
 time to prune self-edges:     0.000000
-time to build the graph with GrB_Matrix_build:     0.000033
+time to build the graph with GrB_Matrix_build:     0.000044
 leave A as-is
 
 Matrix from file:
 
-  3x3 GraphBLAS bool matrix, sparse by row:
+  3x3 GraphBLAS bool matrix, bitmap by row
   *A_output, 3 entries
 
     (0,0)   1
     (1,1)   1
     (2,2)   1
-n 3 edges 3  dpagerank time :       0.000128 iters: 20
-n 3 edges 3  ipagerank time :       0.000080 iters: 20
-n 3 edges 3  dpagerank time :       0.000031 iters: 1
+n 3 edges 3  dpagerank time :       0.000178 iters: 20
+n 3 edges 3  ipagerank time :       0.000107 iters: 20
+n 3 edges 3  dpagerank time :       0.000035 iters: 1
 Top 3 nodes:
     0 d:[     0 :   3.38861694e-01] i:[     0 :   2.86096486e+08] x:[     0 :   3.33333333e-01]
     1 d:[     2 :   3.33331362e-01] i:[     2 :   2.81427298e+08] x:[     1 :   3.33333333e-01]mismatch
@@ -25,13 +25,13 @@ Top 3 nodes:
 pagerank_demo: nthreads: 8
 ntuples: 8
 nrows 4 ncols 4
-time to prune self-edges:     0.000001
-time to build the graph with GrB_Matrix_build:     0.000033
+time to prune self-edges:     0.000000
+time to build the graph with GrB_Matrix_build:     0.000056
 leave A as-is
 
 Matrix from file:
 
-  4x4 GraphBLAS bool matrix, sparse by row:
+  4x4 GraphBLAS bool matrix, bitmap by row
   *A_output, 8 entries
 
     (0,0)   1
@@ -42,9 +42,9 @@ Matrix from file:
     (2,3)   1
     (3,2)   1
     (3,3)   1
-n 4 edges 8  dpagerank time :       0.000152 iters: 20
-n 4 edges 8  ipagerank time :       0.000108 iters: 20
-n 4 edges 8  dpagerank time :       0.000029 iters: 1
+n 4 edges 8  dpagerank time :       0.000138 iters: 20
+n 4 edges 8  ipagerank time :       0.000107 iters: 20
+n 4 edges 8  dpagerank time :       0.000026 iters: 1
 Top 4 nodes:
     0 d:[     0 :   2.53865987e-01] i:[     0 :   2.04675869e+08] x:[     0 :   2.50000000e-01]
     1 d:[     1 :   2.53865987e-01] i:[     1 :   2.04675869e+08] x:[     1 :   2.50000000e-01]
@@ -55,12 +55,12 @@ pagerank_demo: nthreads: 8
 ntuples: 10
 nrows 4 ncols 4
 time to prune self-edges:     0.000000
-time to build the graph with GrB_Matrix_build:     0.000033
+time to build the graph with GrB_Matrix_build:     0.000044
 leave A as-is
 
 Matrix from file:
 
-  4x4 GraphBLAS bool matrix, sparse by row:
+  4x4 GraphBLAS bool matrix, bitmap by row
   *A_output, 10 entries
 
     (0,0)   1
@@ -73,9 +73,9 @@ Matrix from file:
     (3,0)   1
     (3,1)   1
     (3,3)   1
-n 4 edges 10  dpagerank time :       0.000144 iters: 20
-n 4 edges 10  ipagerank time :       0.000110 iters: 20
-n 4 edges 10  dpagerank time :       0.000108 iters: 12
+n 4 edges 10  dpagerank time :       0.000131 iters: 20
+n 4 edges 10  ipagerank time :       0.000090 iters: 20
+n 4 edges 10  dpagerank time :       0.000057 iters: 12
 Top 4 nodes:
     0 d:[     0 :   2.83169320e-01] i:[     0 :   2.28301264e+08] x:[     0 :   2.83169438e-01]
     1 d:[     1 :   2.79491864e-01] i:[     1 :   2.25336367e+08] x:[     1 :   2.79491122e-01]
@@ -86,12 +86,12 @@ pagerank_demo: nthreads: 8
 ntuples: 224
 nrows 48 ncols 48
 time to prune self-edges:     0.000000
-time to build the graph with GrB_Matrix_build:     0.000049
+time to build the graph with GrB_Matrix_build:     0.000057
 leave A as-is
 
 Matrix from file:
 
-  48x48 GraphBLAS bool matrix, sparse by row:
+  48x48 GraphBLAS bool matrix, sparse by row
   *A_output, 224 entries
 
     (0,0)   1
@@ -115,10 +115,18 @@ Matrix from file:
     (8,2)   1
     (8,8)   1
     (9,1)   1
+    (9,3)   1
+    (9,7)   1
+    (9,8)   1
+    (9,9)   1
+    (10,0)   1
+    (10,4)   1
+    (10,6)   1
+    (10,8)   1
     ...
-n 48 edges 224  dpagerank time :       0.000188 iters: 20
-n 48 edges 224  ipagerank time :       0.000180 iters: 20
-n 48 edges 224  dpagerank time :       0.000289 iters: 16
+n 48 edges 224  dpagerank time :       0.000252 iters: 20
+n 48 edges 224  ipagerank time :       0.000217 iters: 20
+n 48 edges 224  dpagerank time :       0.000214 iters: 16
 Top 48 nodes:
     0 d:[     2 :   2.00526870e-01] i:[     2 :   2.04212630e+08] x:[     2 :   2.01807617e-01]
     1 d:[     0 :   1.93646215e-01] i:[     0 :   1.97205508e+08] x:[     0 :   1.92211713e-01]
@@ -172,13 +180,13 @@ Top 48 nodes:
 pagerank_demo: nthreads: 8
 ntuples: 147631
 nrows 4884 ncols 4884
-time to prune self-edges:     0.000001
-time to build the graph with GrB_Matrix_build:     0.006729
+time to prune self-edges:     0.000000
+time to build the graph with GrB_Matrix_build:     0.006355
 leave A as-is
 
 Matrix from file:
 
-  4884x4884 GraphBLAS bool matrix, sparse by row:
+  4884x4884 GraphBLAS bool matrix, sparse by row
   *A_output, 147631 entries
 
     (0,0)   1
@@ -206,10 +214,14 @@ Matrix from file:
     (7,7)   1
     (8,8)   1
     (9,3)   1
+    (9,4)   1
+    (9,6)   1
+    (9,7)   1
+    (9,9)   1
     ...
-n 4884 edges 147631  dpagerank time :       0.008657 iters: 20
-n 4884 edges 147631  ipagerank time :       0.008946 iters: 20
-n 4884 edges 147631  dpagerank time :       0.042111 iters: 46
+n 4884 edges 147631  dpagerank time :       0.004990 iters: 20
+n 4884 edges 147631  ipagerank time :       0.004938 iters: 20
+n 4884 edges 147631  dpagerank time :       0.022664 iters: 46
 Top 4884 nodes:
     0 d:[     0 :   2.91912462e-02] i:[     0 :   3.10526730e+07] x:[     0 :   3.32228314e-02]
     1 d:[     1 :   5.00313528e-03] i:[     1 :   5.32204600e+06] x:[     1 :   4.99132478e-03]
@@ -5099,13 +5111,13 @@ Top 4884 nodes:
 pagerank_demo: nthreads: 8
 ntuples: 1069
 nrows 183 ncols 183
-time to prune self-edges:     0.000000
-time to build the graph with GrB_Matrix_build:     0.000138
+time to prune self-edges:     0.000001
+time to build the graph with GrB_Matrix_build:     0.000182
 leave A as-is
 
 Matrix from file:
 
-  183x183 GraphBLAS bool matrix, sparse by row:
+  183x183 GraphBLAS bool matrix, sparse by row
   *A_output, 1069 entries
 
     (0,0)   1
@@ -5137,11 +5149,10 @@ Matrix from file:
     (0,86)   1
     (0,89)   1
     (0,90)   1
-    (0,91)   1
     ...
-n 183 edges 1069  dpagerank time :       0.000408 iters: 20
-n 183 edges 1069  ipagerank time :       0.000374 iters: 20
-n 183 edges 1069  dpagerank time :       0.001947 iters: 37
+n 183 edges 1069  dpagerank time :       0.000378 iters: 20
+n 183 edges 1069  ipagerank time :       0.000260 iters: 20
+n 183 edges 1069  dpagerank time :       0.000660 iters: 37
 Top 183 nodes:
     0 d:[   136 :   1.44427493e-01] i:[   136 :   1.51941845e+08] x:[   136 :   1.44252744e-01]
     1 d:[     0 :   6.91824797e-02] i:[     0 :   7.27819210e+07] x:[     0 :   6.91214864e-02]
@@ -5331,12 +5342,12 @@ pagerank_demo: nthreads: 8
 ntuples: 299
 nrows 67 ncols 67
 time to prune self-edges:     0.000000
-time to build the graph with GrB_Matrix_build:     0.000077
+time to build the graph with GrB_Matrix_build:     0.000108
 leave A as-is
 
 Matrix from file:
 
-  67x67 GraphBLAS bool matrix, sparse by row:
+  67x67 GraphBLAS bool matrix, sparse by row
   *A_output, 294 entries
 
     (0,7)   1
@@ -5368,11 +5379,10 @@ Matrix from file:
     (6,14)   1
     (7,0)   1
     (7,4)   1
-    (7,6)   1
     ...
-n 67 edges 294  dpagerank time :       0.000244 iters: 20
-n 67 edges 294  ipagerank time :       0.000195 iters: 20
-n 67 edges 294  dpagerank time :       0.000278 iters: 11
+n 67 edges 294  dpagerank time :       0.000227 iters: 20
+n 67 edges 294  ipagerank time :       0.000153 iters: 20
+n 67 edges 294  dpagerank time :       0.000120 iters: 11
 Top 67 nodes:
     0 d:[    19 :   3.94516997e-02] i:[    19 :   4.03104180e+07] x:[    19 :   3.94480927e-02]
     1 d:[    30 :   3.14483462e-02] i:[    30 :   3.21328600e+07] x:[    30 :   3.14475525e-02]

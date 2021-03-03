@@ -2,8 +2,8 @@
 // GB_mex.h: definitions for the MATLAB interface to GraphBLAS
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -12,8 +12,6 @@
 
 #ifndef GB_MEXH
 #define GB_MEXH
-
-#define GB_PANIC mexErrMsgTxt ("panic") ;
 
 // #include "GB.h"
 #include "GB_mxm.h"
@@ -50,10 +48,7 @@
 
 // timer functions, and result statistics
 extern double grbtime, tic [2] ;
-void GB_mx_put_time
-(
-    GrB_Desc_Value AxB_method_used
-) ;
+void GB_mx_put_time (void) ;
 void GB_mx_clear_time (void) ;          // clear the time and start the tic
 #define GB_MEX_TIC { GB_mx_clear_time ( ) ; }
 #define GB_MEX_TOC { grbtime = simple_toc (tic) ; }
@@ -214,8 +209,7 @@ bool GB_mx_get_global       // true if doing malloc_debug
 
 void GB_mx_put_global
 (   
-    bool cover,
-    GrB_Desc_Value AxB_method_used
+    bool cover
 ) ;
 
 bool GB_mx_same     // true if arrays X and Y are the same
@@ -229,6 +223,7 @@ bool GB_mx_xsame    // true if arrays X and Y are the same (ignoring zombies)
 (
     char *X,
     char *Y,
+    int8_t *Xb,     // bitmap of X and Y (NULL if no bitmap)
     int64_t len,    // length of X and Y
     size_t s,       // size of each entry of X and Y
     int64_t *I      // row indices (for zombies), same length as X and Y
@@ -238,6 +233,7 @@ bool GB_mx_xsame32  // true if arrays X and Y are the same (ignoring zombies)
 (
     float *X,
     float *Y,
+    int8_t *Xb,     // bitmap of X and Y (NULL if no bitmap)
     int64_t len,    // length of X and Y
     int64_t *I,     // row indices (for zombies), same length as X and Y
     float eps       // error tolerance allowed (eps > 0)
@@ -247,6 +243,7 @@ bool GB_mx_xsame64  // true if arrays X and Y are the same (ignoring zombies)
 (
     double *X,
     double *Y,
+    int8_t *Xb,     // bitmap of X and Y (NULL if no bitmap)
     int64_t len,    // length of X and Y
     int64_t *I,     // row indices (for zombies), same length as X and Y
     double eps      // error tolerance allowed (eps > 0)
@@ -333,7 +330,7 @@ GrB_Type GB_mx_string_to_Type       // GrB_Type from the string
         if (! (info == GrB_SUCCESS || info == GrB_NO_VALUE))                \
         {                                                                   \
             FREE_ALL ;                                                      \
-            mexErrMsgTxt (GrB_error ( )) ;                                  \
+            mexErrMsgTxt ("method failed") ;                                \
         }                                                                   \
     }                                                                       \
     else                                                                    \
@@ -378,7 +375,7 @@ GrB_Type GB_mx_string_to_Type       // GrB_Type from the string
                         "method [%s]\n",                                    \
                         tries, nleak, nmalloc_end, nmalloc_start,           \
                         GB_STR (GRAPHBLAS_OPERATION)) ;                     \
-                    mexWarnMsgIdAndTxt ("GB:leak", GrB_error ( )) ;         \
+                    mexWarnMsgIdAndTxt ("GB:leak", "memory leak") ;         \
                     FREE_ALL ;                                              \
                     mexErrMsgTxt ("Leak!") ;                                \
                 }                                                           \
@@ -386,11 +383,9 @@ GrB_Type GB_mx_string_to_Type       // GrB_Type from the string
             else                                                            \
             {                                                               \
                 /* another error has occurred */                            \
-                printf ("an error: %s line %d\n%s\n", __FILE__, __LINE__,   \
-                    GrB_error ()) ;                                         \
                 FREE_ALL ;                                                  \
                 if (info == GrB_PANIC) mexErrMsgTxt ("panic!") ;            \
-                mexErrMsgTxt (GrB_error ( )) ;                              \
+                mexErrMsgTxt ("unexpected error in mex brutal malloc debug") ; \
             }                                                               \
         }                                                                   \
     }

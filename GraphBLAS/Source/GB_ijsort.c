@@ -2,8 +2,8 @@
 // GB_ijsort:  sort an index array I and remove duplicates
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -22,8 +22,6 @@
 #define GB_FREE_WORK    \
 {                       \
     GB_FREE (Count) ;   \
-    GB_FREE (W0) ;      \
-    GB_FREE (W1) ;      \
     GB_FREE (I1) ;      \
     GB_FREE (I1k) ;     \
 }
@@ -56,8 +54,6 @@ GrB_Info GB_ijsort
     GrB_Index *GB_RESTRICT I1k = NULL ;
     GrB_Index *GB_RESTRICT I2  = NULL ;
     GrB_Index *GB_RESTRICT I2k = NULL ;
-    int64_t *GB_RESTRICT W0 = NULL ;
-    int64_t *GB_RESTRICT W1 = NULL ;
     int64_t ni = *p_ni ;
     ASSERT (ni > 1) ;
     int64_t *GB_RESTRICT Count = NULL ;        // size ntasks+1
@@ -80,7 +76,7 @@ GrB_Info GB_ijsort
     { 
         // out of memory
         GB_FREE_WORK ;
-        return (GB_OUT_OF_MEMORY) ;
+        return (GrB_OUT_OF_MEMORY) ;
     }
 
     //--------------------------------------------------------------------------
@@ -103,25 +99,7 @@ GrB_Info GB_ijsort
     // sort [I1 I1k]
     //--------------------------------------------------------------------------
 
-    // determine # of threads to use in the parallel mergesort
-    int nth = GB_MSORT_NTHREADS (nthreads) ;
-
-    if (nth > 1)
-    { 
-        W0 = GB_MALLOC (ni, int64_t) ;
-        W1 = GB_MALLOC (ni, int64_t) ;
-        if (W0 == NULL || W1 == NULL)
-        { 
-            // out of memory
-            GB_FREE_WORK ;
-            return (GB_OUT_OF_MEMORY) ;
-        }
-    }
-
-    GB_msort_2 ((int64_t *) I1, (int64_t *) I1k, W0, W1, ni, nth) ;
-
-    GB_FREE (W0) ;
-    GB_FREE (W1) ;
+    GB_msort_2b ((int64_t *) I1, (int64_t *) I1k, ni, nthreads) ;
 
     //--------------------------------------------------------------------------
     // determine number of tasks to create
@@ -140,7 +118,7 @@ GrB_Info GB_ijsort
     { 
         // out of memory
         GB_FREE_WORK ;
-        return (GB_OUT_OF_MEMORY) ;
+        return (GrB_OUT_OF_MEMORY) ;
     }
 
     //--------------------------------------------------------------------------
@@ -178,7 +156,7 @@ GrB_Info GB_ijsort
         GB_FREE_WORK ;
         GB_FREE (I2) ;
         GB_FREE (I2k) ;
-        return (GB_OUT_OF_MEMORY) ;
+        return (GrB_OUT_OF_MEMORY) ;
     }
 
     //--------------------------------------------------------------------------

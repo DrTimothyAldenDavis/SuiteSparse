@@ -2,8 +2,8 @@
 // GB_type:  hard-coded functions for each built-in type
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -120,6 +120,31 @@ GrB_Info GB_Cdense_25__uint64
     #else
     ASSERT (C->type == A->type) ;
     #include "GB_dense_subassign_25_template.c"
+    return (GrB_SUCCESS) ;
+    #endif
+}
+
+//------------------------------------------------------------------------------
+// convert sparse to bitmap
+//------------------------------------------------------------------------------
+
+GrB_Info GB_convert_s2b__uint64
+(
+    GrB_Matrix A,
+    GB_void *GB_RESTRICT Ax_new_void,
+    int8_t  *GB_RESTRICT Ab,
+    const int64_t *GB_RESTRICT kfirst_slice,
+    const int64_t *GB_RESTRICT klast_slice,
+    const int64_t *GB_RESTRICT pstart_slice,
+    const int ntasks,
+    const int nthreads
+)
+{ 
+    #if GB_DISABLE
+    return (GrB_NO_VALUE) ;
+    #else
+    uint64_t *GB_RESTRICT Ax_new = (uint64_t *) Ax_new_void ;
+    #include "GB_convert_sparse_to_bitmap_template.c"
     return (GrB_SUCCESS) ;
     #endif
 }

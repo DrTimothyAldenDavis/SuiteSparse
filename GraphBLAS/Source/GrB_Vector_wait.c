@@ -2,10 +2,12 @@
 // GrB_Vector_wait: wait for a vector to complete
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
+
+// Finishes all work on a vector, followed by an OpenMP flush.
 
 #include "GB.h"
 
@@ -21,8 +23,8 @@ GrB_Info GrB_Vector_wait    // finish all work on a vector
     // check inputs
     //--------------------------------------------------------------------------
 
-    GB_WHERE ("GrB_Vector_wait (&v)") ;
-    GB_BURBLE_START ("GrB_Vector_wait") ;
+    #pragma omp flush
+    GB_WHERE ((*v), "GrB_Vector_wait (&v)") ;
     GB_RETURN_IF_NULL (v) ;
     GB_RETURN_IF_NULL_OR_FAULTY (*v) ;
 
@@ -30,14 +32,19 @@ GrB_Info GrB_Vector_wait    // finish all work on a vector
     // finish all pending work on the vector
     //--------------------------------------------------------------------------
 
-    GrB_Info info ;
-    GB_VECTOR_WAIT (*v) ;
+    if (GB_ANY_PENDING_WORK (*v))
+    {
+        GrB_Info info ;
+        GB_BURBLE_START ("GrB_Vector_wait") ;
+        GB_OK (GB_Matrix_wait ((GrB_Matrix) (*v), Context)) ;
+        GB_BURBLE_END ;
+    }
 
     //--------------------------------------------------------------------------
     // return result
     //--------------------------------------------------------------------------
 
-    GB_BURBLE_END ;
+    #pragma omp flush
     return (GrB_SUCCESS) ;
 }
 

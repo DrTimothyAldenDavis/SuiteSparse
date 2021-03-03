@@ -1,5 +1,8 @@
 function codegen_axb_compare_template (multop, bmult, mult)
-%CODEGEN_AXB_COMPARE_TEMPLATE create a function for a semiring with a TxT->bool multiplier
+%CODEGEN_AXB_COMPARE_TEMPLATE create a function for a semiring with a TxT -> bool multiplier
+
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 % For gcc and icc: lor, land, and lxor monoids can be done with OpenMP atomics.
 % For Microsoft Visual Studio: no boolean monoids work with OpenMP atomics.
@@ -7,8 +10,8 @@ function codegen_axb_compare_template (multop, bmult, mult)
 fprintf ('\n%-7s', multop) ;
 
 % lor monoid
-add = 'w |= t' ;
-addfunc = 'w | t' ;
+add = 'w |= t' ;        % TODO: should this be w ||= t ?
+addfunc = 'w | t' ;     % TODO: should this be w || t ?
 codegen_axb_method ('lor', multop, add, addfunc, bmult, 'bool', 'bool'    , 'false', 'true', 1, 0) ;
 codegen_axb_method ('lor', multop, add, addfunc,  mult, 'bool', 'int8_t'  , 'false', 'true', 1, 0) ;
 codegen_axb_method ('lor', multop, add, addfunc,  mult, 'bool', 'uint8_t' , 'false', 'true', 1, 0) ;
@@ -37,8 +40,8 @@ codegen_axb_method ('any', multop, add, addfunc,  mult, 'bool', 'float'   , 'fal
 codegen_axb_method ('any', multop, add, addfunc,  mult, 'bool', 'double'  , 'false', '(any value)', 0, 0) ;
 
 % land monoid
-add = 'w &= t' ;
-addfunc = 'w & t' ;
+add = 'w &= t' ;        % TODO: should this be w &&= t ?
+addfunc = 'w & t' ;     % TODO: should this be w && t ?
 codegen_axb_method ('land', multop, add, addfunc, bmult, 'bool', 'bool'    , 'true', 'false', 1, 0) ;
 codegen_axb_method ('land', multop, add, addfunc,  mult, 'bool', 'int8_t'  , 'true', 'false', 1, 0) ;
 codegen_axb_method ('land', multop, add, addfunc,  mult, 'bool', 'uint8_t' , 'true', 'false', 1, 0) ;

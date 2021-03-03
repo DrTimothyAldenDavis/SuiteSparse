@@ -2,8 +2,8 @@
 // SuiteSparse/GraphBLAS/Demo/Source/dpagerank: pagerank using a real semiring
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -187,7 +187,7 @@ GrB_Info dpagerank          // GrB_SUCCESS or error condition
     OK (GrB_Vector_extractTuples_FP64 (I, X, &nvals, r)) ;
 
     // this will always be true since r is dense, but double-check anyway:
-    CHECK (nvals == n, GrB_PANIC) ;
+    CHECK (nvals == n, GrB_INVALID_VALUE) ;
 
     // r no longer needed
     GrB_Vector_free (&r) ;

@@ -2,8 +2,8 @@
 // GB_binop_builtin:  determine if a binary operator is built-in
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -17,8 +17,6 @@
 #include "GB.h"
 #include "GB_binop.h"
 #include "GB_unused.h"
-
-#ifndef GBCOMPACT
 
 bool GB_binop_builtin               // true if binary operator is builtin
 (
@@ -38,18 +36,13 @@ bool GB_binop_builtin               // true if binary operator is builtin
 {
 
     //--------------------------------------------------------------------------
-    // check inputs
-    //--------------------------------------------------------------------------
-
-    // A and B may be aliased
-
-    //--------------------------------------------------------------------------
     // check if the operator is builtin, with no typecasting
     //--------------------------------------------------------------------------
 
     GrB_Type op_xtype, op_ytype, op_ztype ;
     if (op == NULL)
     { 
+        // implicit GB_SECOND_[TYPE] operator
         ASSERT (A_type == B_type) ;
         (*opcode) = GB_SECOND_opcode ;
         op_xtype = A_type ;
@@ -70,8 +63,10 @@ bool GB_binop_builtin               // true if binary operator is builtin
         return (false) ;
     }
 
+    bool op_is_positional = GB_OPCODE_IS_POSITIONAL (*opcode) ;
+
     // check if A matches the input to the operator
-    if (!A_is_pattern)
+    if (!A_is_pattern && !op_is_positional)
     {
         if ((A_type != (flipxy ? op_ytype : op_xtype)) ||
             (A_type->code >= GB_UDT_code))
@@ -83,7 +78,7 @@ bool GB_binop_builtin               // true if binary operator is builtin
     }
 
     // check if B matches the input to the operator
-    if (!B_is_pattern)
+    if (!B_is_pattern && !op_is_positional)
     {
         if ((B_type != (flipxy ? op_xtype : op_ytype)) ||
             (B_type->code >= GB_UDT_code))
@@ -134,7 +129,7 @@ bool GB_binop_builtin               // true if binary operator is builtin
     // functions rminus (z=y-x)and rdiv (z=y/x).
 
     if (flipxy)
-    {
+    { 
         // All built-in semirings use either commutative multiplicative
         // operators (PLUS, TIMES, ANY, ...), or operators that have flipped
         // versions (DIV vs RDIV, ...).
@@ -143,6 +138,4 @@ bool GB_binop_builtin               // true if binary operator is builtin
 
     return (true) ;
 }
-
-#endif
 

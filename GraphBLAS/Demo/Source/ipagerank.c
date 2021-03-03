@@ -1,8 +1,8 @@
 //------------------------------------------------------------------------------
 // SuiteSparse/GraphBLAS/Demo/Source/ipagerank: pagerank using uint64 semiring
 //------------------------------------------------------------------------------ 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------ 
 // A is a square unsymmetric binary matrix of size n-by-n, where A(i,j) is the
@@ -231,7 +231,7 @@ GrB_Info ipagerank          // GrB_SUCCESS or error condition
     OK (GrB_Vector_extractTuples_UINT64 (I, X, &nvals, r)) ;
 
     // this will always be true since r is dense, but double-check anyway:
-    CHECK (nvals == n, GrB_PANIC) ;
+    CHECK (nvals == n, GrB_INVALID_VALUE) ;
 
     // r no longer needed
     GrB_Vector_free (&r) ;

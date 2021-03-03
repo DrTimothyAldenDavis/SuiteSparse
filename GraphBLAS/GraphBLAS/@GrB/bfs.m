@@ -58,8 +58,8 @@ function [v, parent] = bfs (A, s, varargin)
 %
 % See also graph/bfsearch, graph/shortestpathtree, treeplot.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 % NOTE: this is a high-level algorithm that uses GrB objects.
 

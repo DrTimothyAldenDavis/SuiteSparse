@@ -2,8 +2,8 @@
 // GraphBLAS/Demo/Program/mis_demo.c: maximal independent set
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -163,7 +163,7 @@ GrB_Info mis_check_results
 
     free (I) ; I = NULL ;
 
-    fprintf (stderr, "maximal independent set OK: %.16g of %.16g nodes"
+    fprintf (stderr, "maximal independent set OK %.16g of %.16g nodes"
         " time: %g\n", (double) isize, (double) n, t) ;
     return (GrB_SUCCESS) ;
 }

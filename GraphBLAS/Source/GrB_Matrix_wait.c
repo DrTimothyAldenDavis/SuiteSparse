@@ -2,10 +2,12 @@
 // GrB_Matrix_wait: wait for a matrix to complete
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
+
+// Finishes all work on a matrix, followed by an OpenMP flush.
 
 #include "GB.h"
 
@@ -21,8 +23,8 @@ GrB_Info GrB_Matrix_wait    // finish all work on a matrix
     // check inputs
     //--------------------------------------------------------------------------
 
-    GB_WHERE ("GrB_Matrix_wait (&A)") ;
-    GB_BURBLE_START ("GrB_Matrix_wait") ;
+    #pragma omp flush
+    GB_WHERE ((*A), "GrB_Matrix_wait (&A)") ;
     GB_RETURN_IF_NULL (A) ;
     GB_RETURN_IF_NULL_OR_FAULTY (*A) ;
 
@@ -30,14 +32,19 @@ GrB_Info GrB_Matrix_wait    // finish all work on a matrix
     // finish all pending work on the matrix
     //--------------------------------------------------------------------------
 
-    GrB_Info info ;
-    GB_MATRIX_WAIT (*A) ;
+    if (GB_ANY_PENDING_WORK (*A))
+    { 
+        GrB_Info info ;
+        GB_BURBLE_START ("GrB_Matrix_wait") ;
+        GB_OK (GB_Matrix_wait (*A, Context)) ;
+        GB_BURBLE_END ;
+    }
 
     //--------------------------------------------------------------------------
     // return result
     //--------------------------------------------------------------------------
 
-    GB_BURBLE_END ;
+    #pragma omp flush
     return (GrB_SUCCESS) ;
 }
 

@@ -6,8 +6,8 @@ function [arg1, arg2] = bandwidth (G, uplo)
 %
 % See also GrB/isbanded, GrB/isdiag, GrB/istril, GrB/istriu.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 % FUTURE: this will be much faster when implemented in a mexFunction.
 % It is currently much slower than the MATLAB bandwidth function.

@@ -21,8 +21,8 @@ function C = gb_union_op (op, A, B)
 % See also GrB/lt, GrB/min, GrB/max, GrB/ne, GrB/pow2, GrB/atan2,
 % GrB/bitset, GrB/complex.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 % FUTURE: this is slower than it could be.
 % affects: lt, gt, min(A,B), max(A,B), minus, ne, pow2, atan2, bitset, complex,

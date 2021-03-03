@@ -2,8 +2,8 @@
 // GxB_Global_Option_get: get a global default option for all future matrices
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -20,7 +20,7 @@ GrB_Info GxB_Global_Option_get      // gets the current global option
     // check inputs
     //--------------------------------------------------------------------------
 
-    GB_WHERE ("GxB_Global_Option_get (field, &value)") ;
+    GB_WHERE1 ("GxB_Global_Option_get (field, &value)") ;
 
     //--------------------------------------------------------------------------
     // get the option
@@ -32,27 +32,38 @@ GrB_Info GxB_Global_Option_get      // gets the current global option
     {
 
         //----------------------------------------------------------------------
-        // hyper_ratio
+        // matrix format
         //----------------------------------------------------------------------
 
-        case GxB_HYPER :
+        case GxB_HYPER_SWITCH : 
 
-            { 
+            {
                 va_start (ap, field) ;
-                double *hyper_ratio = va_arg (ap, double *) ;
+                double *hyper_switch = va_arg (ap, double *) ;
                 va_end (ap) ;
-                GB_RETURN_IF_NULL (hyper_ratio) ;
-                (*hyper_ratio) = GB_Global_hyper_ratio_get ( ) ;
+                GB_RETURN_IF_NULL (hyper_switch) ;
+                (*hyper_switch) = (double) GB_Global_hyper_switch_get ( ) ;
             }
             break ;
 
-        //----------------------------------------------------------------------
-        // matrix format (CSR or CSC)
-        //----------------------------------------------------------------------
+        case GxB_BITMAP_SWITCH : 
+
+            {
+                va_start (ap, field) ;
+                double *bitmap_switch = va_arg (ap, double *) ;
+                va_end (ap) ;
+                GB_RETURN_IF_NULL (bitmap_switch) ;
+                for (int k = 0 ; k < GxB_NBITMAP_SWITCH ; k++)
+                {
+                    double b = (double) GB_Global_bitmap_switch_get (k) ;
+                    bitmap_switch [k] = b ;
+                }
+            }
+            break ;
 
         case GxB_FORMAT : 
 
-            { 
+            {
                 va_start (ap, field) ;
                 GxB_Format_Value *format = va_arg (ap, GxB_Format_Value *) ;
                 va_end (ap) ;
@@ -68,7 +79,7 @@ GrB_Info GxB_Global_Option_get      // gets the current global option
 
         case GxB_MODE : 
 
-            { 
+            {
                 va_start (ap, field) ;
                 GrB_Mode *mode = va_arg (ap, GrB_Mode *) ;
                 va_end (ap) ;
@@ -78,53 +89,12 @@ GrB_Info GxB_Global_Option_get      // gets the current global option
             break ;
 
         //----------------------------------------------------------------------
-        // threading model for synchronizing user threads
-        //----------------------------------------------------------------------
-
-        case GxB_THREAD_SAFETY : 
-
-            { 
-                va_start (ap, field) ;
-                GxB_Thread_Model *safety = va_arg (ap, GxB_Thread_Model *) ;
-                va_end (ap) ;
-                GB_RETURN_IF_NULL (safety) ;
-                (*safety) = 
-                    #if defined (USER_POSIX_THREADS)
-                    GxB_THREAD_POSIX ;
-                    #elif defined ( _OPENMP ) || defined (USER_OPENMP_THREADS)
-                    GxB_THREAD_OPENMP ;
-                    #else
-                    GxB_THREAD_NONE ;
-                    #endif
-            }
-            break ;
-
-        //----------------------------------------------------------------------
-        // internal parallel threading in GraphBLAS
-        //----------------------------------------------------------------------
-
-        case GxB_THREADING : 
-
-            { 
-                va_start (ap, field) ;
-                GxB_Thread_Model *threading = va_arg (ap, GxB_Thread_Model *) ;
-                va_end (ap) ;
-                GB_RETURN_IF_NULL (threading) ;
-                #if defined ( _OPENMP )
-                (*threading) = GxB_THREAD_OPENMP ;
-                #else
-                (*threading) = GxB_THREAD_NONE ;
-                #endif
-            }
-            break ;
-
-        //----------------------------------------------------------------------
         // default number of threads
         //----------------------------------------------------------------------
 
         case GxB_GLOBAL_NTHREADS :      // same as GxB_NTHREADS
 
-            { 
+            {
                 va_start (ap, field) ;
                 int *nthreads_max = va_arg (ap, int *) ;
                 va_end (ap) ;
@@ -139,7 +109,7 @@ GrB_Info GxB_Global_Option_get      // gets the current global option
 
         case GxB_GLOBAL_CHUNK :         // same as GxB_CHUNK
 
-            { 
+            {
                 va_start (ap, field) ;
                 double *chunk = va_arg (ap, double *) ;
                 va_end (ap) ;
@@ -149,12 +119,12 @@ GrB_Info GxB_Global_Option_get      // gets the current global option
             break ;
 
         //----------------------------------------------------------------------
-        // SuiteSparse:GraphBLAS version, etc
+        // SuiteSparse:GraphBLAS version, date, license, etc
         //----------------------------------------------------------------------
 
-        case GxB_LIBRARY_NAME :
+        case GxB_LIBRARY_NAME : 
 
-            { 
+            {
                 va_start (ap, field) ;
                 char **name = va_arg (ap, char **) ;
                 va_end (ap) ;
@@ -163,9 +133,9 @@ GrB_Info GxB_Global_Option_get      // gets the current global option
             }
             break ;
 
-        case GxB_LIBRARY_VERSION :
+        case GxB_LIBRARY_VERSION : 
 
-            { 
+            {
                 va_start (ap, field) ;
                 int *version = va_arg (ap, int *) ;
                 va_end (ap) ;
@@ -176,9 +146,9 @@ GrB_Info GxB_Global_Option_get      // gets the current global option
             }
             break ;
 
-        case GxB_LIBRARY_DATE :
+        case GxB_LIBRARY_DATE : 
 
-            { 
+            {
                 va_start (ap, field) ;
                 char **date = va_arg (ap, char **) ;
                 va_end (ap) ;
@@ -187,9 +157,9 @@ GrB_Info GxB_Global_Option_get      // gets the current global option
             }
             break ;
 
-        case GxB_LIBRARY_ABOUT :
+        case GxB_LIBRARY_ABOUT : 
 
-            { 
+            {
                 va_start (ap, field) ;
                 char **about = va_arg (ap, char **) ;
                 va_end (ap) ;
@@ -198,9 +168,9 @@ GrB_Info GxB_Global_Option_get      // gets the current global option
             }
             break ;
 
-        case GxB_LIBRARY_LICENSE :
+        case GxB_LIBRARY_LICENSE : 
 
-            { 
+            {
                 va_start (ap, field) ;
                 char **license = va_arg (ap, char **) ;
                 va_end (ap) ;
@@ -209,9 +179,9 @@ GrB_Info GxB_Global_Option_get      // gets the current global option
             }
             break ;
 
-        case GxB_LIBRARY_COMPILE_DATE :
+        case GxB_LIBRARY_COMPILE_DATE : 
 
-            { 
+            {
                 va_start (ap, field) ;
                 char **compile_date = va_arg (ap, char **) ;
                 va_end (ap) ;
@@ -220,9 +190,9 @@ GrB_Info GxB_Global_Option_get      // gets the current global option
             }
             break ;
 
-        case GxB_LIBRARY_COMPILE_TIME :
+        case GxB_LIBRARY_COMPILE_TIME : 
 
-            { 
+            {
                 va_start (ap, field) ;
                 char **compile_time = va_arg (ap, char **) ;
                 va_end (ap) ;
@@ -231,9 +201,9 @@ GrB_Info GxB_Global_Option_get      // gets the current global option
             }
             break ;
 
-        case GxB_LIBRARY_URL :
+        case GxB_LIBRARY_URL : 
 
-            { 
+            {
                 va_start (ap, field) ;
                 char **url = va_arg (ap, char **) ;
                 va_end (ap) ;
@@ -243,12 +213,12 @@ GrB_Info GxB_Global_Option_get      // gets the current global option
             break ;
 
         //----------------------------------------------------------------------
-        // GraphBLAS API version, tec
+        // GraphBLAS API version, date, etc
         //----------------------------------------------------------------------
 
-        case GxB_API_VERSION :
+        case GxB_API_VERSION : 
 
-            { 
+            {
                 va_start (ap, field) ;
                 int *api_version = va_arg (ap, int *) ;
                 va_end (ap) ;
@@ -259,9 +229,9 @@ GrB_Info GxB_Global_Option_get      // gets the current global option
             }
             break ;
 
-        case GxB_API_DATE :
+        case GxB_API_DATE : 
 
-            { 
+            {
                 va_start (ap, field) ;
                 char **api_date = va_arg (ap, char **) ;
                 va_end (ap) ;
@@ -270,9 +240,9 @@ GrB_Info GxB_Global_Option_get      // gets the current global option
             }
             break ;
 
-        case GxB_API_ABOUT :
+        case GxB_API_ABOUT : 
 
-            { 
+            {
                 va_start (ap, field) ;
                 char **api_about = va_arg (ap, char **) ;
                 va_end (ap) ;
@@ -281,9 +251,9 @@ GrB_Info GxB_Global_Option_get      // gets the current global option
             }
             break ;
 
-        case GxB_API_URL :
+        case GxB_API_URL : 
 
-            { 
+            {
                 va_start (ap, field) ;
                 char **api_url = va_arg (ap, char **) ;
                 va_end (ap) ;
@@ -293,12 +263,12 @@ GrB_Info GxB_Global_Option_get      // gets the current global option
             break ;
 
         //----------------------------------------------------------------------
-        // controlling diagnostic output, for development only
+        // controlling diagnostic output
         //----------------------------------------------------------------------
 
         case GxB_BURBLE : 
 
-            { 
+            {
                 va_start (ap, field) ;
                 bool *burble = va_arg (ap, bool *) ;
                 va_end (ap) ;
@@ -308,12 +278,12 @@ GrB_Info GxB_Global_Option_get      // gets the current global option
             break ;
 
         //----------------------------------------------------------------------
-        // CUDA (in progress)
+        // CUDA (DRAFT: in progress, do not use)
         //----------------------------------------------------------------------
 
         case GxB_GLOBAL_GPU_CONTROL :       // same as GxB_GPU_CONTROL
 
-            { 
+            {
                 va_start (ap, field) ;
                 GrB_Desc_Value *gpu_control = va_arg (ap, GrB_Desc_Value *) ;
                 va_end (ap) ;
@@ -324,7 +294,7 @@ GrB_Info GxB_Global_Option_get      // gets the current global option
 
         case GxB_GLOBAL_GPU_CHUNK :         // same as GxB_GPU_CHUNK
 
-            { 
+            {
                 va_start (ap, field) ;
                 double *gpu_chunk = va_arg (ap, double *) ;
                 va_end (ap) ;
@@ -333,41 +303,11 @@ GrB_Info GxB_Global_Option_get      // gets the current global option
             }
             break ;
 
-        case GxB_GPU_COUNT : 
-
-            { 
-                va_start (ap, field) ;
-                int *gpu_count = va_arg (ap, int *) ;
-                va_end (ap) ;
-                GB_RETURN_IF_NULL (gpu_count) ;
-                (*gpu_count) = GB_Global_gpu_count_get ( ) ;
-            }
-            break ;
-
-
-        //----------------------------------------------------------------------
-        // Intel MKL (in progress)
-        //----------------------------------------------------------------------
-
-        case GxB_GLOBAL_MKL :           // same as GxB_MKL
-
-            { 
-                va_start (ap, field) ;
-                int *use_mkl = va_arg (ap, int *) ;
-                va_end (ap) ;
-                GB_RETURN_IF_NULL (use_mkl) ;
-                (*use_mkl) = GB_Global_use_mkl_get ( ) ;
-            }
-            break ;
-
-        //----------------------------------------------------------------------
-        // invalid option
-        //----------------------------------------------------------------------
+        // #include "GxB_Global_Option_get_mkl_template.c"
 
         default : 
 
-            return (GB_ERROR (GrB_INVALID_VALUE, (GB_LOG,
-                    "invalid option field [%d]\n", (int) field))) ;
+            return (GrB_INVALID_VALUE) ;
     }
 
     return (GrB_SUCCESS) ;

@@ -3,8 +3,8 @@ function [binops unary_ops add_ops types semirings selops] = GB_spec_opsall
 %
 % [binops unary_ops add_ops types semirings select_ops] = GB_spec_opsall
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 %-------------------------------------------------------------------------------
 % types
@@ -89,9 +89,13 @@ binops.fpreal = {
 % binary ops for FC32 and FC64 only
 binops.complex = { } ;
 
+% binary positional ops
+binops.positional = { 'firsti' , 'firsti1' , 'firstj' , 'firstj1', ...
+                      'secondi', 'secondi1', 'secondj', 'secondj1' } ;
+
 % list of all binary ops
 binops.all = [ binops.alltypes, binops.real, binops.int, ...
-    binops.float, binops.fpreal, binops.complex ] ;
+    binops.float, binops.fpreal, binops.complex, binops.positional ] ;
 
 %-------------------------------------------------------------------------------
 % unary ops
@@ -135,9 +139,13 @@ unary_ops.fpreal = {
 unary_ops.complex = {
     'conj', 'real', 'imag', 'carg' } ;
 
+% unary positional ops
+unary_ops.positional = { 'positioni', 'positioni1', 'positionj', 'positionj1' };
+
 % list of all unary ops
 unary_ops.all = [ unary_ops.alltypes, unary_ops.real, unary_ops.int, ...
-    unary_ops.float, unary_ops.fpreal, unary_ops.complex ] ;
+    unary_ops.float, unary_ops.fpreal, unary_ops.complex, ...
+    unary_ops.positional ] ;
 
 %-------------------------------------------------------------------------------
 % valid binary ops
@@ -243,6 +251,20 @@ for mult = {'first', 'second', 'pair', 'plus', 'minus', ...
             semirings {n} = s ;
             % fprintf ('%3d %s-%s-%s\n', n, add{1}, mult{1}, c{1}) ;
         end
+    end
+end
+
+%-------------------------------------------------------------------------------
+% 40: positional
+%-------------------------------------------------------------------------------
+
+for mult = { 'firsti' , 'firsti1' , 'firstj' , 'firstj1', ...
+              'secondi', 'secondi1', 'secondj', 'secondj1' } ;
+    for add = { 'min', 'max', 'plus', 'times', 'any' }
+        n = n + 1 ;
+        c = { 'int64' } ;
+        s = struct ('multiply', mult{1}, 'add', add{1}, 'class', c{1}) ;
+        semirings {n} = s ;
     end
 end
 

@@ -2,18 +2,12 @@
 // GrB_Vector_eWiseMult: vector element-wise multiplication
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
 // w<M> = accum (w,u.*v)
-
-// SuiteSparse:GraphBLAS v3.2 and earlier included these functions from the C
-// API with the wrong name.  It is corrected in this version.  The prior
-// misnamed functions are kept for backward compatibility, but they are
-// deprecated and their use is not recommend. The generic version,
-// GrB_eWiseMult, is not affected.
 
 #include "GB_ewise.h"
 
@@ -29,7 +23,7 @@
     ASSERT (M == NULL || GB_VECTOR_OK (M)) ;                                \
     /* get the descriptor */                                                \
     GB_GET_DESCRIPTOR (info, desc, C_replace, Mask_comp, Mask_struct,       \
-        xx1, xx2, xx3) ;                                                    \
+        xx1, xx2, xx3, xx7) ;                                               \
     /* w<M> = accum (w,t) where t = u.*v, u'.*v, u.*v', or u'.*v' */        \
     info = GB_ewise (                                                       \
         (GrB_Matrix) w, C_replace,  /* w and its descriptor        */       \
@@ -61,7 +55,8 @@ GrB_Info GrB_Vector_eWiseMult_BinaryOp       // w<M> = accum (w, u.*v)
     // check inputs
     //--------------------------------------------------------------------------
 
-    GB_WHERE ("GrB_Vector_eWiseMult_BinaryOp (w, M, accum, mult, u, v, desc)") ;
+    GB_WHERE (w, "GrB_Vector_eWiseMult_BinaryOp "
+        "(w, M, accum, mult, u, v, desc)") ;
     GB_BURBLE_START ("GrB_eWiseMult") ;
     GB_RETURN_IF_NULL_OR_FAULTY (mult) ;
 
@@ -72,17 +67,6 @@ GrB_Info GrB_Vector_eWiseMult_BinaryOp       // w<M> = accum (w, u.*v)
     GB_EWISE (mult) ;
     GB_BURBLE_END ;
     return (info) ;
-}
-
-GrB_Info GrB_eWiseMult_Vector_BinaryOp       // misnamed
-(
-    GrB_Vector w, const GrB_Vector M, const GrB_BinaryOp accum,
-    const GrB_BinaryOp mult, const GrB_Vector u, const GrB_Vector v,
-    const GrB_Descriptor desc
-)
-{ 
-    // call the correctly-named function:
-    return (GrB_Vector_eWiseMult_BinaryOp (w, M, accum, mult, u, v, desc)) ;
 }
 
 //------------------------------------------------------------------------------
@@ -105,7 +89,8 @@ GrB_Info GrB_Vector_eWiseMult_Monoid         // w<M> = accum (w, u.*v)
     // check inputs
     //--------------------------------------------------------------------------
 
-    GB_WHERE ("GrB_Vector_eWiseMult_Monoid (w, M, accum, monoid, u, v, desc)") ;
+    GB_WHERE (w, "GrB_Vector_eWiseMult_Monoid "
+        "(w, M, accum, monoid, u, v, desc)") ;
     GB_BURBLE_START ("GrB_eWiseMult") ;
     GB_RETURN_IF_NULL_OR_FAULTY (monoid) ;
 
@@ -116,17 +101,6 @@ GrB_Info GrB_Vector_eWiseMult_Monoid         // w<M> = accum (w, u.*v)
     GB_EWISE (monoid->op) ;
     GB_BURBLE_END ;
     return (info) ;
-}
-
-GrB_Info GrB_eWiseMult_Vector_Monoid         // misnamed
-(
-    GrB_Vector w, const GrB_Vector M, const GrB_BinaryOp accum,
-    const GrB_Monoid monoid, const GrB_Vector u, const GrB_Vector v,
-    const GrB_Descriptor desc
-)
-{ 
-    // call the correctly-named function:
-    return (GrB_Vector_eWiseMult_Monoid (w, M, accum, monoid, u, v, desc)) ;
 }
 
 //------------------------------------------------------------------------------
@@ -149,8 +123,8 @@ GrB_Info GrB_Vector_eWiseMult_Semiring       // w<M> = accum (w, u.*v)
     // check inputs
     //--------------------------------------------------------------------------
 
-    GB_WHERE ("GrB_Vector_eWiseMult_Semiring (w, M, accum, semiring, u, v,"
-        " desc)") ;
+    GB_WHERE (w, "GrB_Vector_eWiseMult_Semiring "
+        "(w, M, accum, semiring, u, v, desc)") ;
     GB_BURBLE_START ("GrB_eWiseMult") ;
     GB_RETURN_IF_NULL_OR_FAULTY (semiring) ;
 
@@ -161,16 +135,5 @@ GrB_Info GrB_Vector_eWiseMult_Semiring       // w<M> = accum (w, u.*v)
     GB_EWISE (semiring->multiply) ;
     GB_BURBLE_END ;
     return (info) ;
-}
-
-GrB_Info GrB_eWiseMult_Vector_Semiring       // misnamed
-(
-    GrB_Vector w, const GrB_Vector M, const GrB_BinaryOp accum,
-    const GrB_Semiring semiring, const GrB_Vector u, const GrB_Vector v,
-    const GrB_Descriptor desc
-)
-{ 
-    // call the correctly-named function:
-    return (GrB_Vector_eWiseMult_Semiring (w, M, accum, semiring, u, v, desc)) ;
 }
 

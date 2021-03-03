@@ -2,8 +2,8 @@
 // GraphBLAS/Demo/Source/prand: parallel random number generator
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -127,7 +127,7 @@ void prand_dup_f (prand_t *z, /* unused: */ const prand_t *x, const prand_t *y)
     if (info != GrB_SUCCESS)                                \
     {                                                       \
         PRAND_FREE_ALL ;                                    \
-        printf ("GraphBLAS error:\n%s\n", GrB_error ( )) ;  \
+        printf ("GraphBLAS error: %d\n", info) ;            \
         return (info) ;                                     \
     }                                                       \
 }

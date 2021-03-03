@@ -42,11 +42,11 @@ function C = bitset (A, B, arg3, arg4)
 % See also GrB/bitor, GrB/bitand, GrB/bitxor, GrB/bitcmp, GrB/bitshift,
 % GrB/bitset, GrB/bitclr.
 
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
+
 % FUTURE: bitset(A,B,V) for two matrices A and B is slower than it could be.
 % See comments in gb_union_op.
-
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
 
 if (isobject (A))
     A = A.opaque ;
@@ -156,11 +156,11 @@ else
 
     if (a_is_scalar)
         % expand A to a full matrix the same size as V.
-        A = gb_scalar_to_full (m, n, atype, A) ;
+        A = gb_scalar_to_full (m, n, atype, gb_fmt (V), A) ;
     end
     if (b_is_scalar)
         % expand B to a full matrix the same size as V.
-        B = gb_scalar_to_full (m, n, atype, B) ;
+        B = gb_scalar_to_full (m, n, atype, gb_fmt (V), B) ;
     end
 
     % Set all bits referenced by B(i,j) to 1, even those that need to be

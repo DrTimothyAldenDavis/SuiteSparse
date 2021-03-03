@@ -5,8 +5,8 @@ function gbtest4
 % names.  For example, the spec has many boolean operators with different
 % names but they compute the same thing.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 types = gbtest_types ;
 ops = gbtest_binops ;
@@ -42,7 +42,7 @@ fprintf ('\n') ;
 GrB.semiringinfo
 
 fprintf ('number of semirings: %d\n', nsemirings) ;
-assert (nsemirings == 2438) ;
+assert (nsemirings == 2518) ;
 
 fprintf ('\ngbtest4: all tests passed\n') ;
 

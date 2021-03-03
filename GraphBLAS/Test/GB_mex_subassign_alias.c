@@ -2,8 +2,8 @@
 // GB_mex_subassign_alias: C<C>(:,:) = accum(C(:,:),C)
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -13,9 +13,9 @@
 
 #define FREE_ALL                            \
 {                                           \
-    GB_MATRIX_FREE (&C) ;                   \
+    GrB_Matrix_free_(&C) ;                   \
     GrB_Descriptor_free_(&desc) ;           \
-    GB_mx_put_global (true, 0) ;            \
+    GB_mx_put_global (true) ;               \
 }
 
 void mexFunction
@@ -32,7 +32,6 @@ void mexFunction
     GrB_Descriptor desc = NULL ;
 
     // check inputs
-    GB_WHERE (USAGE) ;
     if (nargout > 1 || nargin < 2 || nargin > 3)
     {
         mexErrMsgTxt ("Usage: " USAGE) ;
@@ -41,7 +40,7 @@ void mexFunction
     // get C (make a deep copy)
     #define GET_DEEP_COPY \
     C = GB_mx_mxArray_to_Matrix (pargin [0], "C input", true, true) ;
-    #define FREE_DEEP_COPY GB_MATRIX_FREE (&C) ;
+    #define FREE_DEEP_COPY GrB_Matrix_free_(&C) ;
     GET_DEEP_COPY ;
     if (C == NULL)
     {
@@ -67,8 +66,8 @@ void mexFunction
     }
 
     GrB_Index nrows, ncols ;
-    GrB_Matrix_nvals (&nrows, C) ;
-    GrB_Matrix_nvals (&ncols, C) ;
+    GrB_Matrix_nrows (&nrows, C) ;
+    GrB_Matrix_ncols (&ncols, C) ;
 
     // C<C>(:,:) = accum (C(:,:),C)
     METHOD (GxB_Matrix_subassign_(C, C, accum, C,

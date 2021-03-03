@@ -2,8 +2,8 @@
 // GB_mx_build_template: build a sparse vector or matrix
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -51,8 +51,8 @@
 
 #define FREE_ALL                \
 {                               \
-    GB_MATRIX_FREE (&C) ;       \
-    GB_mx_put_global (true, 0) ;        \
+    GrB_Matrix_free_(&C) ;       \
+    GB_mx_put_global (true) ;           \
 }
 
 #else
@@ -68,7 +68,7 @@
 #define FREE_ALL                    \
 {                                   \
     GrB_Matrix_free_(&C) ;          \
-    GB_mx_put_global (true, 0) ;    \
+    GB_mx_put_global (true) ;       \
 }
 
 #endif
@@ -125,17 +125,22 @@ GrB_Info builder
     (*Chandle) = NULL ;
 
     // create the GraphBLAS output object C
+    int sparsity = GxB_SPARSE + GxB_HYPERSPARSE ;
     #ifdef MATRIX
     if (C_is_csc)
     {
         // create a hypersparse CSC matrix
-        info = GrB_Matrix_new (Chandle, ctype, nrows, ncols) ;
+        // was: info = GrB_Matrix_new (Chandle, ctype, nrows, ncols) ;
+        info = GB_new (Chandle, // auto (sparse or hyper), new header
+            ctype, nrows, ncols, GB_Ap_calloc,
+            true, sparsity, GxB_HYPER_DEFAULT, 1, Context) ;
     }
     else
     {
         // create a hypersparse CSR matrix
-        info = GB_new (Chandle, ctype, ncols, nrows, GB_Ap_calloc,
-            false, GB_AUTO_HYPER, GB_HYPER_DEFAULT, 1, Context) ;
+        info = GB_new (Chandle, // auto (sparse or hyper), new header
+            ctype, ncols, nrows, GB_Ap_calloc,
+            false, sparsity, GxB_HYPER_DEFAULT, 1, Context) ;
     }
     #else
     info = GrB_Vector_new (Chandle, ctype, nrows) ;
@@ -186,8 +191,6 @@ GrB_Info builder
             mexErrMsgTxt ("xtype not supported")  ;
     }
 
-    // printf ("info %d\n", info) ;
-
     if (info == GrB_SUCCESS)
     {
         ASSERT_MATRIX_OK (C, "C built", GB0) ;
@@ -222,7 +225,7 @@ void mexFunction
     GrB_Vector C = NULL ;
     #endif
 
-    GB_WHERE (USAGE) ;
+    GB_CONTEXT (USAGE) ;
 
     // check inputs
     if (nargout > 1 || nargin < MIN_NARGIN || nargin > MAX_NARGIN)

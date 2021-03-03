@@ -2,8 +2,8 @@
 // GB_assert.h: assertions
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -17,7 +17,6 @@
 #undef ASSERT
 #undef ASSERT_OK
 #undef ASSERT_OK_OR_NULL
-#undef ASSERT_OK_OR_JUMBLED
 
 #ifdef GB_DEBUG
 
@@ -26,8 +25,7 @@
     {                                                                       \
         if (!(X))                                                           \
         {                                                                   \
-            GBDUMP ("assert(" GB_STR(X) ") failed: "                        \
-                __FILE__ " line %d\n", __LINE__) ;                          \
+            GBDUMP ("assertion failed: " __FILE__ " line %d\n", __LINE__) ; \
             GB_Global_abort_function ( ) ;                                  \
         }                                                                   \
     }
@@ -47,22 +45,12 @@
         ASSERT (Info == GrB_SUCCESS || Info == GrB_NULL_POINTER) ;          \
     }
 
-    // call a GraphBLAS method and assert that it returns GrB_SUCCESS
-    // or GrB_INDEX_OUT_OF_BOUNDS.  Used by GB_Matrix_check(A,...) when the
-    // indices in the vectors of A may be jumbled.
-    #define ASSERT_OK_OR_JUMBLED(X)                                         \
-    {                                                                       \
-        GrB_Info Info = (X) ;                                               \
-        ASSERT (Info == GrB_SUCCESS || Info == GrB_INDEX_OUT_OF_BOUNDS) ;   \
-    }
-
 #else
 
     // debugging disabled
     #define ASSERT(X)
     #define ASSERT_OK(X)
     #define ASSERT_OK_OR_NULL(X)
-    #define ASSERT_OK_OR_JUMBLED(X)
 
 #endif
 
@@ -70,11 +58,12 @@
 
 // for finding tests that trigger statement coverage.  If running a test
 // in GraphBLAS/Tcov, the test does not terminate.
+#if 1
 #ifdef GBTESTCOV
 #define GB_GOTCHA                                                   \
 {                                                                   \
-    fprintf (stderr, "gotcha: " __FILE__ " line: %d\n", __LINE__) ; \
-    GBDUMP ("gotcha: " __FILE__ " line: %d\n", __LINE__) ;          \
+    fprintf (stderr, "Gotcha: " __FILE__ " line: %d\n", __LINE__) ; \
+    GBDUMP ("Gotcha: " __FILE__ " line: %d\n", __LINE__) ;          \
 }
 #else
 #define GB_GOTCHA                                                   \
@@ -84,8 +73,13 @@
     GB_Global_abort_function ( ) ;                                  \
 }
 #endif
+#endif
 
-#define GB_HERE GBDUMP ("%2d: Here: " __FILE__ " line: %d\n", __LINE__) ;
+#ifndef GB_GOTCHA
+#define GB_GOTCHA
+#endif
+
+#define GB_HERE GBDUMP ("%2d: Here: " __FILE__ "\n", __LINE__) ;
 
 // ASSERT (GB_DEAD_CODE) marks code that is intentionally dead, leftover from
 // prior versions of SuiteSparse:GraphBLAS but no longer used in the current
@@ -98,60 +92,58 @@
 //------------------------------------------------------------------------------
 
 #define ASSERT_TYPE_OK(t,name,pr)  \
-    ASSERT_OK (GB_Type_check (t, name, pr, NULL, Context))
+    ASSERT_OK (GB_Type_check (t, name, pr, NULL))
 
 #define ASSERT_TYPE_OK_OR_NULL(t,name,pr)  \
-    ASSERT_OK_OR_NULL (GB_Type_check (t, name, pr, NULL, Context))
+    ASSERT_OK_OR_NULL (GB_Type_check (t, name, pr, NULL))
 
 #define ASSERT_BINARYOP_OK(op,name,pr)  \
-    ASSERT_OK (GB_BinaryOp_check (op, name, pr, NULL, Context))
+    ASSERT_OK (GB_BinaryOp_check (op, name, pr, NULL))
 
 #define ASSERT_BINARYOP_OK_OR_NULL(op,name,pr)  \
-    ASSERT_OK_OR_NULL (GB_BinaryOp_check (op, name, pr, NULL, Context))
+    ASSERT_OK_OR_NULL (GB_BinaryOp_check (op, name, pr, NULL))
 
 #define ASSERT_UNARYOP_OK(op,name,pr)  \
-    ASSERT_OK (GB_UnaryOp_check (op, name, pr, NULL, Context))
+    ASSERT_OK (GB_UnaryOp_check (op, name, pr, NULL))
 
 #define ASSERT_UNARYOP_OK_OR_NULL(op,name,pr)  \
-    ASSERT_OK_OR_NULL (GB_UnaryOp_check (op, name, pr, NULL, Context))
+    ASSERT_OK_OR_NULL (GB_UnaryOp_check (op, name, pr, NULL))
 
 #define ASSERT_SELECTOP_OK(op,name,pr)  \
-    ASSERT_OK (GB_SelectOp_check (op, name, pr, NULL, Context))
+    ASSERT_OK (GB_SelectOp_check (op, name, pr, NULL))
 
 #define ASSERT_SELECTOP_OK_OR_NULL(op,name,pr)  \
-    ASSERT_OK_OR_NULL (GB_SelectOp_check (op, name, pr, NULL, Context))
+    ASSERT_OK_OR_NULL (GB_SelectOp_check (op, name, pr, NULL))
 
 #define ASSERT_MONOID_OK(mon,name,pr)  \
-    ASSERT_OK (GB_Monoid_check (mon, name, pr, NULL, Context))
+    ASSERT_OK (GB_Monoid_check (mon, name, pr, NULL))
 
 #define ASSERT_SEMIRING_OK(s,name,pr)  \
-    ASSERT_OK (GB_Semiring_check (s, name, pr, NULL, Context))
+    ASSERT_OK (GB_Semiring_check (s, name, pr, NULL))
 
 #define ASSERT_MATRIX_OK(A,name,pr)  \
-    ASSERT_OK (GB_Matrix_check (A, name, pr, NULL, Context))
+    ASSERT_OK (GB_Matrix_check (A, name, pr, NULL))
 
 #define ASSERT_MATRIX_OK_OR_NULL(A,name,pr)  \
-    ASSERT_OK_OR_NULL (GB_Matrix_check (A, name, pr, NULL, Context))
-
-#define ASSERT_MATRIX_OK_OR_JUMBLED(A,name,pr)  \
-    ASSERT_OK_OR_JUMBLED (GB_Matrix_check (A, name, pr, NULL, Context))
+    ASSERT_OK_OR_NULL (GB_Matrix_check (A, name, pr, NULL))
 
 #define ASSERT_VECTOR_OK(v,name,pr)  \
-    ASSERT_OK (GB_Vector_check (v, name, pr, NULL, Context))
+    ASSERT_OK (GB_Vector_check (v, name, pr, NULL))
 
 #define ASSERT_VECTOR_OK_OR_NULL(v,name,pr)  \
-    ASSERT_OK_OR_NULL (GB_Vector_check (v, name, pr, NULL, Context))
+    ASSERT_OK_OR_NULL (GB_Vector_check (v, name, pr, NULL))
 
 #define ASSERT_SCALAR_OK(s,name,pr)  \
-    ASSERT_OK (GB_Scalar_check (s, name, pr, NULL, Context))
+    ASSERT_OK (GB_Scalar_check (s, name, pr, NULL))
 
 #define ASSERT_SCALAR_OK_OR_NULL(s,name,pr)  \
-    ASSERT_OK_OR_NULL (GB_Scalar_check (s, name, pr, NULL, Context))
+    ASSERT_OK_OR_NULL (GB_Scalar_check (s, name, pr, NULL))
 
 #define ASSERT_DESCRIPTOR_OK(d,name,pr)  \
-    ASSERT_OK (GB_Descriptor_check (d, name, pr, NULL, Context))
+    ASSERT_OK (GB_Descriptor_check (d, name, pr, NULL))
 
 #define ASSERT_DESCRIPTOR_OK_OR_NULL(d,name,pr)  \
-    ASSERT_OK_OR_NULL (GB_Descriptor_check (d, name, pr, NULL, Context))
+    ASSERT_OK_OR_NULL (GB_Descriptor_check (d, name, pr, NULL))
 
 #endif
+

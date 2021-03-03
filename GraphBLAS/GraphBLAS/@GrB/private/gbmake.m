@@ -14,14 +14,10 @@ function gbmake (what)
 % used is ../build/libgraphblas.so if found, or in /usr/local/lib if not found
 % there.
 %
-% If GraphBLAS has been initialized already, then gbmake must first finalize
-% GraphBLAS, just as GrB.clear does.  It then calls GrB.init to initialize
-% GraphBLAS.
-%
 % See also mex, version, GrB.clear.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 have_octave = (exist ('OCTAVE_VERSION', 'builtin') == 5) ;
 
@@ -73,7 +69,7 @@ else
                 if (~isempty (ansi))
                     cflags = [cflags(1:ansi-1) '-std=c11' cflags(ansi+5:end)] ;
                     flags = [flags ' ' cflags] ;
-                    fprintf ('compiling with -std=c11 instead of default -ansi\n') ;
+                    fprintf ('using -std=c11 instead of default -ansi\n') ;
                 end
             end
         end

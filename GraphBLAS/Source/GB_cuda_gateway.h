@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------------
 
 // SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2019, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -44,6 +44,10 @@ typedef struct
     int  number_of_sms ;
     int  compute_capability_major;
     int  compute_capability_minor;
+    bool use_memory_pool;
+    int  pool_size;             // TODO: should this be size_t?
+    int  max_pool_size;         // TODO: should this be size_t?
+    void *memory_resource;
 }
 GB_cuda_device ;
 
@@ -92,6 +96,10 @@ bool GB_cuda_get_device_count   // true if OK, false if failure
 
 bool GB_cuda_warmup (int device) ;
 
+bool GB_cuda_get_device( int *device) ;
+
+bool GB_cuda_set_device( int device) ;
+
 bool GB_cuda_get_device_properties
 (
     int device,
@@ -119,7 +127,8 @@ GrB_Info GB_cuda_red__plus_int64
 GrB_Info GB_AxB_dot3_cuda           // C<M> = A'*B using dot product method
 (
     GrB_Matrix *Chandle,            // output matrix
-    const GrB_Matrix M,             // mask matrix for C<M>=A'*B or C<!M>=A'*B
+    const GrB_Matrix M,             // mask matrix
+    const bool Mask_struct,         // if true, use the only structure of M
     const GrB_Matrix A,             // input matrix
     const GrB_Matrix B,             // input matrix
     const GrB_Semiring semiring,    // semiring that defines C=A*B

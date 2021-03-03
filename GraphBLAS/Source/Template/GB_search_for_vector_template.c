@@ -2,13 +2,16 @@
 // GB_search_for_vector_template: find the vector k that contains p
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
 // Given an index p, find k so that Ap [k] <= p && p < Ap [k+1].  The search is
 // limited to k in the range Ap [kleft ... anvec].
+
+// A->p can come from any matrix: hypersparse, sparse, bitmap, or full.
+// For the latter two cases, A->p is NULL.
 
 #ifdef GB_KERNEL
 __device__
@@ -20,7 +23,8 @@ static inline int64_t GB_search_for_vector // return vector k that contains p
     const int64_t p,                // search for vector k that contains p
     const int64_t *GB_RESTRICT Ap,  // vector pointers to search
     int64_t kleft,                  // left-most k to search
-    int64_t anvec                   // Ap is of size anvec+1
+    int64_t anvec,                  // Ap is of size anvec+1
+    int64_t avlen                   // A->vlen
 )
 {
 
@@ -28,6 +32,14 @@ static inline int64_t GB_search_for_vector // return vector k that contains p
     // check inputs
     //--------------------------------------------------------------------------
 
+    if (Ap == NULL)
+    { 
+        // A is full or bitmap
+        ASSERT (p >= 0 && p < avlen * anvec) ;
+        return ((avlen == 0) ? 0 : (p / avlen)) ;
+    }
+
+    // A is sparse
     ASSERT (p >= 0 && p < Ap [anvec]) ;
 
     //--------------------------------------------------------------------------

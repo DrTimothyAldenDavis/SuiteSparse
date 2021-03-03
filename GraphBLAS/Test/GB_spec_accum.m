@@ -5,11 +5,15 @@ function [Z simple] = GB_spec_accum (accum, C, T, identity)
 %
 % Apply accum binary operator to the input C and the intermediate result T.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 % get the operator; of is type(C) if type is not present in the accum op
 [opname optype ztype xtype ytype] = GB_spec_operator (accum, C.class) ;
+
+if (GB_spec_is_positional (opname))
+    error ('accum operator cannot be positional') ;
+end
 
 if (nargin < 4)
     identity = 0 ;

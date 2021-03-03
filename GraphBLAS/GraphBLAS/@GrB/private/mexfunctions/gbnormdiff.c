@@ -2,8 +2,8 @@
 // gbnormdiff: norm (A-B,kind)
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -58,7 +58,7 @@ void mexFunction
         (atype == GrB_FP32 || atype == GrB_FP64) && (atype == btype)
         && (anrows == 1 || ancols == 1 || norm_kind == 0))
     {
-        // s = norm (A-B,p) where A and B are dense FP32 or FP64 vectors,
+        // s = norm (A-B,p) where A and B are full FP32 or FP64 vectors,
         // or when p = 0 (for Frobenius norm)
         GrB_Index anz ;
         OK (GrB_Matrix_nvals (&anz, A)) ;
@@ -98,7 +98,7 @@ void mexFunction
         // X = A-B
         GrB_Matrix X ;
         OK (GrB_Matrix_new (&X, xtype, anrows, ancols)) ;
-        OK (GrB_Matrix_eWiseAdd_BinaryOp (X, NULL, NULL, op, A, B, NULL)) ;
+        OK1 (X, GrB_Matrix_eWiseAdd_BinaryOp (X, NULL, NULL, op, A, B, NULL)) ;
 
         // s = norm (X, norm_kind)
         s = gb_norm (X, norm_kind) ;

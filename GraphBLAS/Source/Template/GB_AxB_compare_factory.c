@@ -2,8 +2,8 @@
 // GB_AxB_compare_factory.c: switch factory for C=A*B with comparator ops
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -41,18 +41,18 @@ ASSERT (zcode == GB_BOOL_code) ;
             switch (xcode)
             {
                 #ifndef GB_NO_BOOLEAN
-                case GB_BOOL_code   : GB_AxB_WORKER (_lor, GB_MULT_NAME, _bool  )
+                case GB_BOOL_code   : GB_AxB_WORKER (_lor, GB_MNAME, _bool  )
                 #endif
-                case GB_INT8_code   : GB_AxB_WORKER (_lor, GB_MULT_NAME, _int8  )
-                case GB_INT16_code  : GB_AxB_WORKER (_lor, GB_MULT_NAME, _int16 )
-                case GB_INT32_code  : GB_AxB_WORKER (_lor, GB_MULT_NAME, _int32 )
-                case GB_INT64_code  : GB_AxB_WORKER (_lor, GB_MULT_NAME, _int64 )
-                case GB_UINT8_code  : GB_AxB_WORKER (_lor, GB_MULT_NAME, _uint8 )
-                case GB_UINT16_code : GB_AxB_WORKER (_lor, GB_MULT_NAME, _uint16)
-                case GB_UINT32_code : GB_AxB_WORKER (_lor, GB_MULT_NAME, _uint32)
-                case GB_UINT64_code : GB_AxB_WORKER (_lor, GB_MULT_NAME, _uint64)
-                case GB_FP32_code   : GB_AxB_WORKER (_lor, GB_MULT_NAME, _fp32  )
-                case GB_FP64_code   : GB_AxB_WORKER (_lor, GB_MULT_NAME, _fp64  )
+                case GB_INT8_code   : GB_AxB_WORKER (_lor, GB_MNAME, _int8  )
+                case GB_INT16_code  : GB_AxB_WORKER (_lor, GB_MNAME, _int16 )
+                case GB_INT32_code  : GB_AxB_WORKER (_lor, GB_MNAME, _int32 )
+                case GB_INT64_code  : GB_AxB_WORKER (_lor, GB_MNAME, _int64 )
+                case GB_UINT8_code  : GB_AxB_WORKER (_lor, GB_MNAME, _uint8 )
+                case GB_UINT16_code : GB_AxB_WORKER (_lor, GB_MNAME, _uint16)
+                case GB_UINT32_code : GB_AxB_WORKER (_lor, GB_MNAME, _uint32)
+                case GB_UINT64_code : GB_AxB_WORKER (_lor, GB_MNAME, _uint64)
+                case GB_FP32_code   : GB_AxB_WORKER (_lor, GB_MNAME, _fp32  )
+                case GB_FP64_code   : GB_AxB_WORKER (_lor, GB_MNAME, _fp64  )
                 default: ;
             }
             break ;
@@ -63,18 +63,18 @@ ASSERT (zcode == GB_BOOL_code) ;
             {
                 // 10 real, non-boolean types, plus boolean
                 #ifndef GB_NO_BOOLEAN
-                case GB_BOOL_code   : GB_AxB_WORKER (_land, GB_MULT_NAME, _bool  )
+                case GB_BOOL_code   : GB_AxB_WORKER (_land, GB_MNAME, _bool  )
                 #endif
-                case GB_INT8_code   : GB_AxB_WORKER (_land, GB_MULT_NAME, _int8  )
-                case GB_INT16_code  : GB_AxB_WORKER (_land, GB_MULT_NAME, _int16 )
-                case GB_INT32_code  : GB_AxB_WORKER (_land, GB_MULT_NAME, _int32 )
-                case GB_INT64_code  : GB_AxB_WORKER (_land, GB_MULT_NAME, _int64 )
-                case GB_UINT8_code  : GB_AxB_WORKER (_land, GB_MULT_NAME, _uint8 )
-                case GB_UINT16_code : GB_AxB_WORKER (_land, GB_MULT_NAME, _uint16)
-                case GB_UINT32_code : GB_AxB_WORKER (_land, GB_MULT_NAME, _uint32)
-                case GB_UINT64_code : GB_AxB_WORKER (_land, GB_MULT_NAME, _uint64)
-                case GB_FP32_code   : GB_AxB_WORKER (_land, GB_MULT_NAME, _fp32  )
-                case GB_FP64_code   : GB_AxB_WORKER (_land, GB_MULT_NAME, _fp64  )
+                case GB_INT8_code   : GB_AxB_WORKER (_land, GB_MNAME, _int8  )
+                case GB_INT16_code  : GB_AxB_WORKER (_land, GB_MNAME, _int16 )
+                case GB_INT32_code  : GB_AxB_WORKER (_land, GB_MNAME, _int32 )
+                case GB_INT64_code  : GB_AxB_WORKER (_land, GB_MNAME, _int64 )
+                case GB_UINT8_code  : GB_AxB_WORKER (_land, GB_MNAME, _uint8 )
+                case GB_UINT16_code : GB_AxB_WORKER (_land, GB_MNAME, _uint16)
+                case GB_UINT32_code : GB_AxB_WORKER (_land, GB_MNAME, _uint32)
+                case GB_UINT64_code : GB_AxB_WORKER (_land, GB_MNAME, _uint64)
+                case GB_FP32_code   : GB_AxB_WORKER (_land, GB_MNAME, _fp32  )
+                case GB_FP64_code   : GB_AxB_WORKER (_land, GB_MNAME, _fp64  )
                 default: ;
             }
             break ;
@@ -84,18 +84,18 @@ ASSERT (zcode == GB_BOOL_code) ;
             switch (xcode)
             {
                 #ifndef GB_NO_BOOLEAN
-                case GB_BOOL_code   : GB_AxB_WORKER (_lxor, GB_MULT_NAME, _bool  )
+                case GB_BOOL_code   : GB_AxB_WORKER (_lxor, GB_MNAME, _bool  )
                 #endif
-                case GB_INT8_code   : GB_AxB_WORKER (_lxor, GB_MULT_NAME, _int8  )
-                case GB_INT16_code  : GB_AxB_WORKER (_lxor, GB_MULT_NAME, _int16 )
-                case GB_INT32_code  : GB_AxB_WORKER (_lxor, GB_MULT_NAME, _int32 )
-                case GB_INT64_code  : GB_AxB_WORKER (_lxor, GB_MULT_NAME, _int64 )
-                case GB_UINT8_code  : GB_AxB_WORKER (_lxor, GB_MULT_NAME, _uint8 )
-                case GB_UINT16_code : GB_AxB_WORKER (_lxor, GB_MULT_NAME, _uint16)
-                case GB_UINT32_code : GB_AxB_WORKER (_lxor, GB_MULT_NAME, _uint32)
-                case GB_UINT64_code : GB_AxB_WORKER (_lxor, GB_MULT_NAME, _uint64)
-                case GB_FP32_code   : GB_AxB_WORKER (_lxor, GB_MULT_NAME, _fp32  )
-                case GB_FP64_code   : GB_AxB_WORKER (_lxor, GB_MULT_NAME, _fp64  )
+                case GB_INT8_code   : GB_AxB_WORKER (_lxor, GB_MNAME, _int8  )
+                case GB_INT16_code  : GB_AxB_WORKER (_lxor, GB_MNAME, _int16 )
+                case GB_INT32_code  : GB_AxB_WORKER (_lxor, GB_MNAME, _int32 )
+                case GB_INT64_code  : GB_AxB_WORKER (_lxor, GB_MNAME, _int64 )
+                case GB_UINT8_code  : GB_AxB_WORKER (_lxor, GB_MNAME, _uint8 )
+                case GB_UINT16_code : GB_AxB_WORKER (_lxor, GB_MNAME, _uint16)
+                case GB_UINT32_code : GB_AxB_WORKER (_lxor, GB_MNAME, _uint32)
+                case GB_UINT64_code : GB_AxB_WORKER (_lxor, GB_MNAME, _uint64)
+                case GB_FP32_code   : GB_AxB_WORKER (_lxor, GB_MNAME, _fp32  )
+                case GB_FP64_code   : GB_AxB_WORKER (_lxor, GB_MNAME, _fp64  )
                 default: ;
             }
             break ;
@@ -105,18 +105,18 @@ ASSERT (zcode == GB_BOOL_code) ;
             switch (xcode)
             {
                 #ifndef GB_NO_BOOLEAN
-                case GB_BOOL_code   : GB_AxB_WORKER (_eq, GB_MULT_NAME, _bool  )
+                case GB_BOOL_code   : GB_AxB_WORKER (_eq, GB_MNAME, _bool  )
                 #endif
-                case GB_INT8_code   : GB_AxB_WORKER (_eq, GB_MULT_NAME, _int8  )
-                case GB_INT16_code  : GB_AxB_WORKER (_eq, GB_MULT_NAME, _int16 )
-                case GB_INT32_code  : GB_AxB_WORKER (_eq, GB_MULT_NAME, _int32 )
-                case GB_INT64_code  : GB_AxB_WORKER (_eq, GB_MULT_NAME, _int64 )
-                case GB_UINT8_code  : GB_AxB_WORKER (_eq, GB_MULT_NAME, _uint8 )
-                case GB_UINT16_code : GB_AxB_WORKER (_eq, GB_MULT_NAME, _uint16)
-                case GB_UINT32_code : GB_AxB_WORKER (_eq, GB_MULT_NAME, _uint32)
-                case GB_UINT64_code : GB_AxB_WORKER (_eq, GB_MULT_NAME, _uint64)
-                case GB_FP32_code   : GB_AxB_WORKER (_eq, GB_MULT_NAME, _fp32  )
-                case GB_FP64_code   : GB_AxB_WORKER (_eq, GB_MULT_NAME, _fp64  )
+                case GB_INT8_code   : GB_AxB_WORKER (_eq, GB_MNAME, _int8  )
+                case GB_INT16_code  : GB_AxB_WORKER (_eq, GB_MNAME, _int16 )
+                case GB_INT32_code  : GB_AxB_WORKER (_eq, GB_MNAME, _int32 )
+                case GB_INT64_code  : GB_AxB_WORKER (_eq, GB_MNAME, _int64 )
+                case GB_UINT8_code  : GB_AxB_WORKER (_eq, GB_MNAME, _uint8 )
+                case GB_UINT16_code : GB_AxB_WORKER (_eq, GB_MNAME, _uint16)
+                case GB_UINT32_code : GB_AxB_WORKER (_eq, GB_MNAME, _uint32)
+                case GB_UINT64_code : GB_AxB_WORKER (_eq, GB_MNAME, _uint64)
+                case GB_FP32_code   : GB_AxB_WORKER (_eq, GB_MNAME, _fp32  )
+                case GB_FP64_code   : GB_AxB_WORKER (_eq, GB_MNAME, _fp64  )
                 default: ;
             }
             break ;
@@ -126,18 +126,18 @@ ASSERT (zcode == GB_BOOL_code) ;
             switch (xcode)
             {
                 #ifndef GB_NO_BOOLEAN
-                case GB_BOOL_code   : GB_AxB_WORKER (_any, GB_MULT_NAME, _bool  )
+                case GB_BOOL_code   : GB_AxB_WORKER (_any, GB_MNAME, _bool  )
                 #endif
-                case GB_INT8_code   : GB_AxB_WORKER (_any, GB_MULT_NAME, _int8  )
-                case GB_INT16_code  : GB_AxB_WORKER (_any, GB_MULT_NAME, _int16 )
-                case GB_INT32_code  : GB_AxB_WORKER (_any, GB_MULT_NAME, _int32 )
-                case GB_INT64_code  : GB_AxB_WORKER (_any, GB_MULT_NAME, _int64 )
-                case GB_UINT8_code  : GB_AxB_WORKER (_any, GB_MULT_NAME, _uint8 )
-                case GB_UINT16_code : GB_AxB_WORKER (_any, GB_MULT_NAME, _uint16)
-                case GB_UINT32_code : GB_AxB_WORKER (_any, GB_MULT_NAME, _uint32)
-                case GB_UINT64_code : GB_AxB_WORKER (_any, GB_MULT_NAME, _uint64)
-                case GB_FP32_code   : GB_AxB_WORKER (_any, GB_MULT_NAME, _fp32  )
-                case GB_FP64_code   : GB_AxB_WORKER (_any, GB_MULT_NAME, _fp64  )
+                case GB_INT8_code   : GB_AxB_WORKER (_any, GB_MNAME, _int8  )
+                case GB_INT16_code  : GB_AxB_WORKER (_any, GB_MNAME, _int16 )
+                case GB_INT32_code  : GB_AxB_WORKER (_any, GB_MNAME, _int32 )
+                case GB_INT64_code  : GB_AxB_WORKER (_any, GB_MNAME, _int64 )
+                case GB_UINT8_code  : GB_AxB_WORKER (_any, GB_MNAME, _uint8 )
+                case GB_UINT16_code : GB_AxB_WORKER (_any, GB_MNAME, _uint16)
+                case GB_UINT32_code : GB_AxB_WORKER (_any, GB_MNAME, _uint32)
+                case GB_UINT64_code : GB_AxB_WORKER (_any, GB_MNAME, _uint64)
+                case GB_FP32_code   : GB_AxB_WORKER (_any, GB_MNAME, _fp32  )
+                case GB_FP64_code   : GB_AxB_WORKER (_any, GB_MNAME, _fp64  )
                 default: ;
             }
             break ;
@@ -147,5 +147,5 @@ ASSERT (zcode == GB_BOOL_code) ;
 }
 
 #undef GB_NO_BOOLEAN
-#undef GB_MULT_NAME
+#undef GB_MNAME
 

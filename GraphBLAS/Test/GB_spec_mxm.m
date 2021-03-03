@@ -42,8 +42,8 @@ function C = GB_spec_mxm (C, Mask, accum, semiring, A, B, descriptor)
 % C<Mask> = accum (C,T).  See GrB_accum_mask for a description of this
 % last step.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 %-------------------------------------------------------------------------------
 % get inputs
@@ -93,12 +93,19 @@ T.class = ztype ;
 A_matrix = GB_mex_cast (A.matrix, xtype) ;
 B_matrix = GB_mex_cast (B.matrix, ytype) ;
 
+op_is_positional = GB_spec_is_positional (multiply) ;
+multop = multiply.opname ;
+
 for j = 1:n
     for i = 1:m
         for k = 1:s
             % T (i,j) += A (i,k) * B (k,j), using the semiring
             if (A.pattern (i,k) && B.pattern (k,j))
-                z = GB_spec_op (multiply, A_matrix (i,k), B_matrix (k,j)) ;
+                if (op_is_positional)
+                    z = GB_spec_binop_positional (multop, i, k, k, j) ;
+                else
+                    z = GB_spec_op (multiply, A_matrix (i,k), B_matrix (k,j)) ;
+                end
                 T.matrix (i,j) = GB_spec_op (add, T.matrix (i,j), z) ;
                 T.pattern (i,j) = true ;
             end

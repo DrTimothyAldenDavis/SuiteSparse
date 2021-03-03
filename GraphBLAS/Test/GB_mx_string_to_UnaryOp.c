@@ -2,8 +2,8 @@
 // GB_mx_string_to_UnaryOp.c: get a GraphBLAS operator from MATLAB strings
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -24,7 +24,6 @@ bool GB_mx_string_to_UnaryOp            // true if successful, false otherwise
     const bool user_complex             // true if X is complex
 )
 {
-    GB_WHERE ("GB_mx_string_to_UnaryOp") ;
 
     (*op_handle) = NULL ;
     GrB_UnaryOp op = NULL ;
@@ -155,16 +154,32 @@ bool GB_mx_string_to_UnaryOp            // true if successful, false otherwise
         else if (MATCH (opname, "bnot"    )) { opcode = GB_BNOT_opcode ; }
         else if (MATCH (opname, "bcmp"    )) { opcode = GB_BNOT_opcode ; }
 
+        else if (MATCH (opname, "positioni" )) { opcode = GB_POSITIONI_opcode ; }
+        else if (MATCH (opname, "i"         )) { opcode = GB_POSITIONI_opcode ; }
+        else if (MATCH (opname, "positioni1")) { opcode = GB_POSITIONI1_opcode ; }
+        else if (MATCH (opname, "i1"        )) { opcode = GB_POSITIONI1_opcode ; }
+        else if (MATCH (opname, "positionj" )) { opcode = GB_POSITIONJ_opcode ; }
+        else if (MATCH (opname, "j"         )) { opcode = GB_POSITIONJ_opcode ; }
+        else if (MATCH (opname, "positionj1")) { opcode = GB_POSITIONJ1_opcode ; }
+        else if (MATCH (opname, "j1"        )) { opcode = GB_POSITIONJ1_opcode ; }
+
         else
         {
             mexWarnMsgIdAndTxt ("GB:warn", "unrecognized function name") ;
             return (false) ;
         }
 
-//      GxB_print (default_optype, 3) ;
-//      GxB_print (optype, 3) ;
-
         GB_Type_code xcode = optype->code ;
+        bool is64 = (xcode == GB_INT64_code) ;
+
+        if (GB_OPCODE_IS_POSITIONAL (opcode))
+        {
+            if (! (xcode == GB_INT64_code || xcode == GB_INT32_code))
+            {
+                mexWarnMsgIdAndTxt ("GB:warn","unknown operator") ;
+                return (false) ;
+            }
+        }
 
         switch (opcode)
         {
@@ -862,6 +877,14 @@ bool GB_mx_string_to_UnaryOp            // true if successful, false otherwise
                 }
                 break ;
 
+    //--------------------------------------------------------------------------
+    // positional ops
+    //--------------------------------------------------------------------------
+
+            case GB_POSITIONI_opcode  : op = is64 ? GxB_POSITIONI_INT64  : GxB_POSITIONI_INT32  ; break ;
+            case GB_POSITIONI1_opcode : op = is64 ? GxB_POSITIONI1_INT64 : GxB_POSITIONI1_INT32 ; break ;
+            case GB_POSITIONJ_opcode  : op = is64 ? GxB_POSITIONJ_INT64  : GxB_POSITIONJ_INT32  ; break ;
+            case GB_POSITIONJ1_opcode : op = is64 ? GxB_POSITIONJ1_INT64 : GxB_POSITIONJ1_INT32 ; break ;
 
     //--------------------------------------------------------------------------
 

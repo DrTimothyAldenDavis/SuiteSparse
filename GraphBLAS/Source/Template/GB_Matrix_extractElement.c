@@ -2,8 +2,8 @@
 // GB_Matrix_extractElement: x = A(row,col)
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -31,22 +31,20 @@ GrB_Info GB_EXTRACT_ELEMENT     // extract a single entry, x = A(row,col)
     // check inputs
     //--------------------------------------------------------------------------
 
-    GB_CONTEXT_RETURN_IF_NULL (A) ;
-    GB_CONTEXT_RETURN_IF_FAULTY (A) ;
+    GB_RETURN_IF_NULL_OR_FAULTY (A) ;
+    GB_RETURN_IF_NULL (x) ;
 
-    // delete any lingering zombies and assemble any pending tuples
-    if (GB_PENDING_OR_ZOMBIES (A))
+    // delete any lingering zombies, assemble any pending tuples, and unjumble
+    if (GB_ANY_PENDING_WORK (A))
     { 
         GrB_Info info ;
-        GB_WHERE (GB_WHERE_STRING) ;
+        GB_WHERE1 (GB_WHERE_STRING) ;
         GB_BURBLE_START ("GrB_Matrix_extractElement") ;
         GB_OK (GB_Matrix_wait (A, Context)) ;
-        ASSERT (!GB_ZOMBIES (A)) ;
-        ASSERT (!GB_PENDING (A)) ;
         GB_BURBLE_END ;
     }
 
-    GB_CONTEXT_RETURN_IF_NULL (x) ;
+    ASSERT (!GB_ANY_PENDING_WORK (A)) ;
 
     // look for index i in vector j
     int64_t i, j, nrows, ncols ;
@@ -66,28 +64,16 @@ GrB_Info GB_EXTRACT_ELEMENT     // extract a single entry, x = A(row,col)
     }
 
     // check row and column indices
-    if (row >= nrows)
+    if (row >= nrows || col >= ncols)
     { 
-        GB_WHERE (GB_WHERE_STRING) ;
-        return (GB_ERROR (GrB_INVALID_INDEX, (GB_LOG, "Row index "
-            GBu " out of range; must be < " GBd, row, nrows))) ;
-    }
-    if (col >= ncols)
-    { 
-        GB_WHERE (GB_WHERE_STRING) ;
-        return (GB_ERROR (GrB_INVALID_INDEX, (GB_LOG, "Column index "
-            GBu " out of range; must be < " GBd, col, ncols))) ;
+        return (GrB_INVALID_INDEX) ;
     }
 
     // GB_XCODE and A must be compatible
     GB_Type_code acode = A->type->code ;
     if (!GB_code_compatible (GB_XCODE, acode))
     { 
-        GB_WHERE (GB_WHERE_STRING) ;
-        return (GB_ERROR (GrB_DOMAIN_MISMATCH, (GB_LOG,
-            "entry A(i,j) of type [%s] cannot be typecast\n"
-            "to output scalar x of type [%s]",
-            A->type->name, GB_code_string (GB_XCODE)))) ;
+        return (GrB_DOMAIN_MISMATCH) ;
     }
 
     if (A->nzmax == 0)
@@ -97,43 +83,64 @@ GrB_Info GB_EXTRACT_ELEMENT     // extract a single entry, x = A(row,col)
     }
 
     //--------------------------------------------------------------------------
-    // binary search in A->h for vector j
+    // find the entry A(i,j)
     //--------------------------------------------------------------------------
 
-    const int64_t *GB_RESTRICT Ap = A->p ;
-    const int64_t *GB_RESTRICT Ai = A->i ;
+    int64_t pleft ;
     bool found ;
+    const int64_t *GB_RESTRICT Ap = A->p ;
 
-    // extract from vector j of a GrB_Matrix
-    int64_t k ;
-    if (A->is_hyper)
-    {
-        // look for vector j in hyperlist A->h [0 ... A->nvec-1]
-        const int64_t *Ah = A->h ;
-        int64_t pleft = 0 ;
-        int64_t pright = A->nvec-1 ;
-        GB_BINARY_SEARCH (j, Ah, pleft, pright, found) ;
-        if (!found)
-        { 
-            // vector j is empty
-            return (GrB_NO_VALUE) ;
+    if (Ap != NULL)
+    { 
+        // A is sparse or hypersparse
+        const int64_t *GB_RESTRICT Ai = A->i ;
+
+        // extract from vector j of a GrB_Matrix
+        int64_t k ;
+        if (A->h != NULL)
+        {
+            // A is hypersparse: look for j in hyperlist A->h [0 ... A->nvec-1]
+            const int64_t *GB_RESTRICT Ah = A->h ;
+            int64_t pleft = 0 ;
+            int64_t pright = A->nvec-1 ;
+            GB_BINARY_SEARCH (j, Ah, pleft, pright, found) ;
+            if (!found)
+            { 
+                // vector j is empty
+                return (GrB_NO_VALUE) ;
+            }
+            ASSERT (j == Ah [pleft]) ;
+            k = pleft ;
         }
-        ASSERT (j == Ah [pleft]) ;
-        k = pleft ;
+        else
+        { 
+            // A is sparse: j = k is the kth vector
+            k = j ;
+        }
+
+        pleft = Ap [k] ;
+        int64_t pright = Ap [k+1] - 1 ;
+
+        // binary search in kth vector for index i
+        // Time taken for this step is at most O(log(nnz(A(:,j))).
+        GB_BINARY_SEARCH (i, Ai, pleft, pright, found) ;
     }
     else
-    { 
-        k = j ;
+    {
+        // A is bitmap or full
+        pleft = i + j * A->vlen ;
+        const int8_t *GB_RESTRICT Ab = A->b ;
+        if (Ab != NULL)
+        { 
+            // A is bitmap
+            found = (Ab [pleft] == 1) ;
+        }
+        else
+        { 
+            // A is full
+            found = true ;
+        }
     }
-    int64_t pleft = Ap [k] ;
-    int64_t pright = Ap [k+1] - 1 ;
-
-    //--------------------------------------------------------------------------
-    // binary search in kth vector for index i
-    //--------------------------------------------------------------------------
-
-    // Time taken for this step is at most O(log(nnz(A(:,j))).
-    GB_BINARY_SEARCH (i, Ai, pleft, pright, found) ;
 
     //--------------------------------------------------------------------------
     // extract the element
@@ -155,7 +162,7 @@ GrB_Info GB_EXTRACT_ELEMENT     // extract a single entry, x = A(row,col)
             // typecast the value from A into x
             size_t asize = A->type->size ;
             GB_cast_array ((GB_void *) x, GB_XCODE,
-                ((GB_void *) A->x) +(pleft*asize), acode, asize, 1, 1) ;
+                ((GB_void *) A->x) +(pleft*asize), acode, NULL, asize, 1, 1) ;
         }
         return (GrB_SUCCESS) ;
     }

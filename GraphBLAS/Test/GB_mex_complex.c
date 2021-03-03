@@ -2,8 +2,8 @@
 // GB_mex_complex: convert a real matrix into a complex one
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -39,18 +39,26 @@ void mexFunction
 
     // get the input matrix
     const mxArray *A = pargin [0] ;
-    if (!mxIsSparse (A))
-    {
-        mexErrMsgTxt ("A must be sparse") ;
-    }
+    bool A_is_sparse = mxIsSparse (A) ;
     if (mxIsLogical (A))
     {
         mexErrMsgTxt ("A must be double or double complex") ;
     }
 
-    int64_t *Ap = (int64_t *) mxGetJc (A) ;
-    int64_t *Ai = (int64_t *) mxGetIr (A) ;
-    double  *Ax = NULL ;
+    int64_t *Ap, *Ai ;
+
+    if (A_is_sparse)
+    {
+        Ap = (int64_t *) mxGetJc (A) ;
+        Ai = (int64_t *) mxGetIr (A) ;
+    }
+    else
+    {
+        Ap = NULL ;
+        Ai = NULL ;
+    }
+
+    double *Ax = NULL ;
     if (mxIsComplex (A))
     {
         Ax = (double *) mxGetComplexDoubles (pargin [0]) ;
@@ -62,20 +70,27 @@ void mexFunction
 
     int64_t m = mxGetM (A) ;
     int64_t n = mxGetN (A) ;
-    int64_t anz = Ap [n] ;
+    int64_t anz = (A_is_sparse) ? Ap [n] : (m*n) ;
 
     // create the output matrix
-    pargout [0] = mxCreateSparse (m, n, anz+1, mxCOMPLEX) ;
-    mxArray *C = pargout [0] ;
-    int64_t *Cp = (int64_t *) mxGetJc (C) ;
-    int64_t *Ci = (int64_t *) mxGetIr (C) ;
-    double  *Cx = (double  *) mxGetComplexDoubles (C) ;
-
-    // copy the pattern of A into C
-    memcpy (Cp, Ap, (n+1) * sizeof (int64_t)) ;
-    memcpy (Ci, Ai, anz   * sizeof (int64_t)) ;
+    if (A_is_sparse)
+    {
+        // A and C are sparse
+        pargout [0] = mxCreateSparse (m, n, anz+1, mxCOMPLEX) ;
+        int64_t *Cp = (int64_t *) mxGetJc (pargout [0]) ;
+        int64_t *Ci = (int64_t *) mxGetIr (pargout [0]) ;
+        // copy the pattern of A into C
+        memcpy (Cp, Ap, (n+1) * sizeof (int64_t)) ;
+        memcpy (Ci, Ai, anz   * sizeof (int64_t)) ;
+    }
+    else
+    {
+        // A and C are full
+        pargout [0] = mxCreateDoubleMatrix (m, n, mxCOMPLEX) ;
+    }
 
     // copy the values of A into C
+    double *Cx = (double *) mxGetComplexDoubles (pargout [0]) ;
     if (mxIsComplex (A))
     {
         memcpy (Cx, Ax, anz * 2 * sizeof (double)) ;

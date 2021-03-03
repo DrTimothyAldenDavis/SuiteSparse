@@ -2,8 +2,8 @@
 // GB_aliased: determine if two matrices are aliased
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -55,6 +55,12 @@ bool GB_aliased             // determine if A and B are aliased
     if (GB_POINTER_ALIASED (A->p, B->p))
     { 
         ASSERT (A->p_shallow || B->p_shallow) ;
+        aliased = true ;
+    }
+
+    if (GB_POINTER_ALIASED (A->b, B->b))
+    { 
+        ASSERT (A->b_shallow || B->b_shallow) ;
         aliased = true ;
     }
 

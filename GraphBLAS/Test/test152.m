@@ -1,8 +1,8 @@
 function test152
 %TEST152 test C = A+B for dense A, B, and C
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 fprintf ('\ntest152: test binops with C=A+B, all dense\n') ;
 

@@ -28,8 +28,8 @@ function [I, whole] = gb_index (I)
 % If I is a MATLAB matrix or vector (not a cell array), then it is
 % wrapped in a cell array, { I }, to denote A(I).
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 whole = false ;
 

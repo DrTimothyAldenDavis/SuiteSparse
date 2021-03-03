@@ -2,12 +2,14 @@
 // GB_dense_subassign_22: C += b where C is dense and b is a scalar
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
-// C += b where C is a dense matrix and b is a scalar
+// C += b where C is a dense or full matrix and b is a scalar
+// C can have any sparsity format, as long as all entries are present;
+// GB_is_dense (C)) must hold.
 
 #include "GB_dense.h"
 #include "GB_binop.h"
@@ -15,6 +17,8 @@
 #ifndef GBCOMPACT
 #include "GB_binop__include.h"
 #endif
+
+#define GB_FREE_ALL ;
 
 GrB_Info GB_dense_subassign_22      // C += b where C is dense and b is a scalar 
 (
@@ -32,11 +36,17 @@ GrB_Info GB_dense_subassign_22      // C += b where C is dense and b is a scalar
 
     GrB_Info info ;
     ASSERT_MATRIX_OK (C, "C for C+=b", GB0) ;
-    ASSERT (scalar != NULL) ;
-    ASSERT (!GB_PENDING (C)) ; ASSERT (!GB_ZOMBIES (C)) ;
     ASSERT (GB_is_dense (C)) ;
+    ASSERT (!GB_PENDING (C)) ;
+    ASSERT (!GB_JUMBLED (C)) ;
+    ASSERT (!GB_ZOMBIES (C)) ;
+
+    ASSERT (scalar != NULL) ;
     ASSERT_TYPE_OK (btype, "btype for C+=b", GB0) ;
     ASSERT_BINARYOP_OK (accum, "accum for C+=b", GB0) ;
+    ASSERT (!GB_OP_IS_POSITIONAL (accum)) ;
+
+    GB_ENSURE_FULL (C) ;        // convert C to full
 
     //--------------------------------------------------------------------------
     // get the operator
@@ -116,7 +126,7 @@ GrB_Info GB_dense_subassign_22      // C += b where C is dense and b is a scalar
 
     if (!done)
     { 
-        GB_BURBLE_MATRIX (C, "generic ") ;
+        GB_BURBLE_MATRIX (C, "(generic C(:,:)+=x assign) ") ;
 
         //----------------------------------------------------------------------
         // get operators, functions, workspace, contents of b and C
@@ -129,7 +139,7 @@ GrB_Info GB_dense_subassign_22      // C += b where C is dense and b is a scalar
         //----------------------------------------------------------------------
 
         // C(i,j) = C(i,j) + scalar
-        #define GB_BINOP(cout_ij, cin_aij, bwork) \
+        #define GB_BINOP(cout_ij, cin_aij, bwork, i, j) \
             fadd (cout_ij, cin_aij, bwork)
 
         // address of Cx [p]

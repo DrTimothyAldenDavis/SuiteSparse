@@ -2,8 +2,8 @@ function C = gb_max2 (op, A, B)
 %GB_MAX2 2-input max
 % Implements C = max (A,B)
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 [am, an, atype] = gbsize (A) ;
 [bm, bn, btype] = gbsize (B) ;
@@ -19,7 +19,7 @@ if (a_is_scalar)
         % A is a scalar, B is a matrix
         if (gb_scalar (A) > 0)
             % since A > 0, the result is full
-            A = gb_scalar_to_full (bm, bn, ctype, A) ;
+            A = gb_scalar_to_full (bm, bn, ctype, gb_fmt (B), A) ;
             C = gbeadd (A, op, B) ;
         else
             % since A <= 0, the result is sparse.
@@ -31,7 +31,7 @@ else
         % A is a matrix, B is a scalar
         if (gb_scalar (B) > 0)
             % since B > 0, the result is full
-            B = gb_scalar_to_full (am, an, ctype, B) ;
+            B = gb_scalar_to_full (am, an, ctype, gb_fmt (A), B) ;
             C = gbeadd (A, op, B) ;
         else
             % since B <= 0, the result is sparse.

@@ -4,10 +4,11 @@ function s = isdiag (G)
 %
 % See also GrB/isbanded.
 
-% FUTURE: this will faster when 'gb_bandwidth' is a mexFunction.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+% FUTURE: this will be faster when 'gb_bandwidth' is a mexFunction,
+% but this version is fairly fast anyway.
 
 G = G.opaque ;
 

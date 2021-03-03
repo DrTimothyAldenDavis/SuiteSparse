@@ -100,7 +100,6 @@
 %   test34   - test GrB_eWiseAdd
 %   test35   - test GrB_*_extractTuples
 %   test36   - performance test of matrix subref
-%   test37   - performance test of qsort
 %   test38   - test GrB_transpose
 %   test39   - performance test for GrB_transpose
 %   test40   - test GrB_Matrix_extractElement
@@ -154,7 +153,7 @@
 %   test85   - test GrB_transpose: 1-by-n with typecasting
 %   test86   - performance test of of GrB_Matrix_extract
 %   test87   - performance test of GrB_mxm
-%   test88   - test hypersparse matrices with heap-based method
+%   test88   - test hypersparse matrices with hash-based method
 %   test89   - performance test of complex A*B
 %   test90   - test AxB with user-defined semirings: plus_rdiv and plus_rdiv2
 %   test91   - test subref performance on dense vectors
@@ -169,7 +168,7 @@
 %   test99   - test GB_mex_transpose with explicit zeros in the Mask
 %   test100  - test GB_mex_isequal
 %   test101  - test import/export
-%   test102  - test GB_AxB_flopcount
+%   test102  - test GB_AxB_saxpy3_flopcount
 %   test103  - test aliases in GrB_transpose
 %   test104  - export/import
 %   test105  - eWiseAdd with hypersparse matrices
@@ -274,7 +273,7 @@
 %   stat             - report status of statement coverage and malloc debugging
 %   GB_define        - create C source code for GraphBLAS.h
 
-%   grbresults       - return time taken by last GraphBLAS function, and AxB method
+%   grbresults       - return time taken by last GraphBLAS function
 %   isequal_roundoff - compare two matrices, allowing for roundoff errors
 
 %   test_other       - installs all packages needed for extensive tests
@@ -306,5 +305,6 @@
 %   ../Demo/MATLAB/kron_demo      - test Program/kron_demo.c and compare with MATLAB kron
 %   ../Demo/MATLAB/kron_test      - test kron_demo.m
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
+

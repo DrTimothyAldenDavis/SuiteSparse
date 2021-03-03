@@ -2,8 +2,8 @@
 // GxB_Matrix_Option_set: set an option in a matrix
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -23,13 +23,11 @@ GrB_Info GxB_Matrix_Option_set      // set an option in a matrix
     // check inputs
     //--------------------------------------------------------------------------
 
-    GrB_Info info = GrB_SUCCESS ;
-    GB_WHERE ("GxB_Matrix_Option_set (A, field, value)") ;
+    GrB_Info info ;
+    GB_WHERE (A, "GxB_Matrix_Option_set (A, field, value)") ;
     GB_BURBLE_START ("GxB_set") ;
     GB_RETURN_IF_NULL_OR_FAULTY (A) ;
     ASSERT_MATRIX_OK (A, "A to set option", GB0) ;
-
-    GB_MATRIX_WAIT (A) ;
 
     //--------------------------------------------------------------------------
     // set the matrix option
@@ -40,15 +38,33 @@ GrB_Info GxB_Matrix_Option_set      // set an option in a matrix
     switch (field)
     {
 
-        case GxB_HYPER : 
+        case GxB_HYPER_SWITCH : 
 
             {
                 va_start (ap, field) ;
-                double hyper_ratio = va_arg (ap, double) ;
+                double hyper_switch = va_arg (ap, double) ;
                 va_end (ap) ;
-                A->hyper_ratio = hyper_ratio ;
-                // conform the matrix to its new desired hypersparsity
-                info = GB_to_hyper_conform (A, Context) ;
+                A->hyper_switch = (float) hyper_switch ;
+            }
+            break ;
+
+        case GxB_BITMAP_SWITCH : 
+
+            {
+                va_start (ap, field) ;
+                double bitmap_switch = va_arg (ap, double) ;
+                va_end (ap) ;
+                A->bitmap_switch = (float) bitmap_switch ;
+            }
+            break ;
+
+        case GxB_SPARSITY_CONTROL : 
+
+            {
+                va_start (ap, field) ;
+                int sparsity = va_arg (ap, int) ;
+                va_end (ap) ;
+                A->sparsity = GB_sparsity_control (sparsity, (int64_t) (-1)) ;
             }
             break ;
 
@@ -60,10 +76,7 @@ GrB_Info GxB_Matrix_Option_set      // set an option in a matrix
                 va_end (ap) ;
                 if (! (format == GxB_BY_ROW || format == GxB_BY_COL))
                 { 
-                    return (GB_ERROR (GrB_INVALID_VALUE, (GB_LOG,
-                            "unsupported format [%d], must be one of:\n"
-                            "GxB_BY_ROW [%d] or GxB_BY_COL [%d]", format,
-                            (int) GxB_BY_ROW, (int) GxB_BY_COL))) ;
+                    return (GrB_INVALID_VALUE) ;
                 }
                 // the value is normally GxB_BY_ROW (0) or GxB_BY_COL (1), but
                 // any nonzero value results in GxB_BY_COL.
@@ -71,27 +84,29 @@ GrB_Info GxB_Matrix_Option_set      // set an option in a matrix
                 // conform the matrix to the new CSR/CSC format
                 if (A->is_csc != new_csc)
                 { 
-                    // A = A', done in place, and change to the new format.
-                    // transpose: no typecast, no op, in place of A
-                    GBBURBLE ("(transpose) ") ;
-                    info = GB_transpose (NULL, NULL, new_csc, A,
-                        NULL, NULL, NULL, false, Context);
-                    ASSERT (GB_IMPLIES (info == GrB_SUCCESS,
-                        A->is_csc == new_csc)) ;
+                    // A = A', done in-place, and change to the new format.
+                    // transpose: no typecast, no op, in-place of A
+                    GB_BURBLE_N (GB_NNZ (A), "(transpose) ") ;
+                    GB_OK (GB_transpose (NULL, NULL, new_csc, A,
+                        NULL, NULL, NULL, false, Context)) ;
+                    ASSERT (A->is_csc == new_csc) ;
+                    ASSERT (GB_JUMBLED_OK (A)) ;
                 }
             }
             break ;
 
         default : 
 
-            return (GB_ERROR (GrB_INVALID_VALUE, (GB_LOG,
-                    "invalid option field [%d], must be one of:\n"
-                    "GxB_HYPER [%d], GxB_FORMAT [%d]",
-                    (int) field, (int) GxB_HYPER, (int) GxB_FORMAT))) ;
-
+            return (GrB_INVALID_VALUE) ;
     }
 
+    //--------------------------------------------------------------------------
+    // conform the matrix to its new desired sparsity structure
+    //--------------------------------------------------------------------------
+
+    GB_OK (GB_conform (A, Context)) ;
     GB_BURBLE_END ;
-    return (info) ;
+    ASSERT_MATRIX_OK (A, "A set", GB0) ;
+    return (GrB_SUCCESS) ;
 }
 

@@ -3,8 +3,12 @@ function mxm_demo
 % Requires the ssget interface to the SuiteSparse Matrix Collection.
 % See https://sparse.tamu.edu.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved.  http://suitesparse.com   See GraphBLAS/Doc/License.txt.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
+
+% reset to the default number of threads
+maxNumCompThreads ('automatic') ;
+GrB.clear ;
 
 ncores = feature ('numcores') ;
 rng ('default') ;
@@ -18,6 +22,8 @@ catch
 end
 v = ver ('matlab') ;
 fprintf ('MATLAB version: %s release: %s\n', v.Version, v.Release) ;
+v = GrB.ver ;
+fprintf ('GraphBLAS version: %s (%s)\n', v.Version, v.Date) ;
 
 % warmup
 G = GrB (1) ;
@@ -153,6 +159,6 @@ for nth = [1 ncores 2*ncores]
 end
 
 % restore # of threads to their defaults
-maxNumCompThreads (ncores) ;
+maxNumCompThreads ('automatic') ;
 GrB.clear ;
 

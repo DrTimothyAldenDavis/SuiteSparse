@@ -6,8 +6,8 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>graphblas_demo2</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-06-25"><meta name="DC.source" content="graphblas_demo2.m"><style type="text/css">
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      --><title>graphblas_demo2</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-01-03"><meta name="DC.source" content="graphblas_demo2.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -52,6 +52,7 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
@@ -68,8 +69,13 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
   </style></head><body><div class="content"><pre class="codeinput"><span class="comment">% Run the GraphBLAS demo2</span>
 
-<span class="comment">% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.</span>
-<span class="comment">% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.</span>
+<span class="comment">% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.</span>
+<span class="comment">% SPDX-License-Identifier: Apache-2.0</span>
+
+<span class="comment">% reset to the default number of threads</span>
+clear <span class="string">all</span>
+maxNumCompThreads (<span class="string">'automatic'</span>) ;
+GrB.clear ;
 
 gbdemo2
 </pre><pre class="codeoutput"> GBDEMO2 Extreme performance differences: GraphBLAS vs MATLAB.
@@ -79,8 +85,8 @@ gbdemo2
         gbdemo2             % uses a default bnz = 6000
         gbdemo2 (20000)     % uses bnz = 20000
  
-  The GraphBLAS operations used in gbdemo are perhaps 3x to 50x
-  faster than the corresponding MATLAB operations, depending on how
+  Many of the GraphBLAS operations used in gbdemo are perhaps 3x to
+  50x faster than the corresponding MATLAB operations, depending on how
   many cores your computer has.  Here's an example where GraphBLAS is
   asymptotically far faster than MATLAB R2019a: a simple assignment
   for a large matrix C:
@@ -116,79 +122,84 @@ C(I,J)=A where C is 1 million -by- 1 million
 with 35.7126 million entries:
 
     A is 5000-by-5000 with 49954 entries
-    setup time:     0.329855 sec
-    GraphBLAS time: 0.173019 sec
+    setup time:     0.400355 sec
+    GraphBLAS time: 0.258735 sec
     Starting MATLAB ... please wait ... 
-    MATLAB time:    0.474924 sec
-    Speedup of GraphBLAS over MATLAB: 2.74492
-    check time:     0.215864 sec
+    MATLAB time:    0.498557 sec
+    Speedup of GraphBLAS over MATLAB: 1.9269
+    check time:     0.344678 sec
     all tests passed
 
 C(I,J)=A where C is 4 million -by- 4 million
 with 35.8202 million entries:
 
     A is 5000-by-5000 with 49954 entries
-    setup time:     0.417582 sec
-    GraphBLAS time: 0.203017 sec
+    setup time:     0.435778 sec
+    GraphBLAS time: 0.221929 sec
     Starting MATLAB ... please wait ... 
-    MATLAB time:    0.453103 sec
-    Speedup of GraphBLAS over MATLAB: 2.23185
-    check time:     0.22641 sec
+    MATLAB time:    0.470126 sec
+    Speedup of GraphBLAS over MATLAB: 2.11836
+    check time:     0.232899 sec
     all tests passed
 
 C(I,J)=A where C is 9 million -by- 9 million
 with 35.928 million entries:
 
     A is 5000-by-5000 with 49954 entries
-    setup time:     0.485024 sec
-    GraphBLAS time: 0.249401 sec
+    setup time:     0.512156 sec
+    GraphBLAS time: 0.269746 sec
     Starting MATLAB ... please wait ... 
-    MATLAB time:    228.188 sec
-    Speedup of GraphBLAS over MATLAB: 914.945
-    check time:     0.249945 sec
+    MATLAB time:    231.803 sec
+    Speedup of GraphBLAS over MATLAB: 859.34
+    check time:     0.256974 sec
     all tests passed
 
 C(I,J)=A where C is 16 million -by- 16 million
 with 35.916 million entries:
 
     A is 5000-by-5000 with 49954 entries
-    setup time:     0.552762 sec
-    GraphBLAS time: 0.292017 sec
+    setup time:     0.583952 sec
+    GraphBLAS time: 0.316899 sec
     Starting MATLAB ... please wait ... 
-    MATLAB time:    246.474 sec
-    Speedup of GraphBLAS over MATLAB: 844.041
-    check time:     0.27686 sec
+    MATLAB time:    249.945 sec
+    Speedup of GraphBLAS over MATLAB: 788.722
+    check time:     0.286138 sec
     all tests passed
 
 C(I,J)=A where C is 25 million -by- 25 million
 with 35.964 million entries:
 
     A is 5000-by-5000 with 49954 entries
-    setup time:     0.630048 sec
-    GraphBLAS time: 0.25246 sec
+    setup time:     0.652218 sec
+    GraphBLAS time: 0.27157 sec
     Starting MATLAB ... please wait ... 
-    MATLAB time:    269.415 sec
-    Speedup of GraphBLAS over MATLAB: 1067.16
-    check time:     0.311659 sec
+    MATLAB time:    272.701 sec
+    Speedup of GraphBLAS over MATLAB: 1004.17
+    check time:     0.324539 sec
     all tests passed
 
 C(I,J)=A where C is 36 million -by- 36 million
 with 35.976 million entries:
 
     A is 5000-by-5000 with 49954 entries
-    setup time:     0.712427 sec
-    GraphBLAS time: 0.401151 sec
+    setup time:     0.731629 sec
+    GraphBLAS time: 0.426048 sec
     Starting MATLAB ... please wait ... 
-    MATLAB time:    296.906 sec
-    Speedup of GraphBLAS over MATLAB: 740.134
-    check time:     0.35269 sec
+    MATLAB time:    300.018 sec
+    Speedup of GraphBLAS over MATLAB: 704.187
+    check time:     0.365963 sec
     all tests passed
-</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018a</a><br></p></div><!--
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 % Run the GraphBLAS demo2
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
+
+% reset to the default number of threads
+clear all
+maxNumCompThreads ('automatic') ;
+GrB.clear ;
 
 gbdemo2
 

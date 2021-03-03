@@ -1,8 +1,8 @@
 function test62
 %TEST62 test GrB_apply
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 fprintf ('\n ------------ testing GrB_apply\n') ;
 
@@ -71,7 +71,7 @@ for k1 = 1:length (types)
                         end
 
                         try
-                            GB_spec_operate (unary_op) ;
+                            GB_spec_operator (unary_op) ;
                         catch
                             continue
                         end
@@ -97,8 +97,12 @@ for k1 = 1:length (types)
                                     accum_type = '' ;
                                 end
 
+                                if (GB_spec_is_positional (accum))
+                                    continue ;
+                                end
+
                                 try
-                                    GB_spec_operate (accum) ;
+                                    GB_spec_operator (accum) ;
                                 catch
                                     continue
                                 end

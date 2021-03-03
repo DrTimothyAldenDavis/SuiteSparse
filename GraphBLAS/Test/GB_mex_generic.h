@@ -2,13 +2,13 @@
 // GB_mex_generic.h: testing _Generic methods
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, _(c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
-#ifndef GB_GENERIC_H
-#define GB_GENERIC_H
+#ifndef GB_MEX_GENERIC_H
+#define GB_MEX_GENERIC_H
 
 #if GxB_STDC_VERSION >= 201112L
 
@@ -27,6 +27,18 @@
 #define GrB_Vector_free_(...)                       GrB_free (__VA_ARGS__)
 #define GrB_Matrix_free_(...)                       GrB_free (__VA_ARGS__)
 #define GrB_Descriptor_free_(...)                   GrB_free (__VA_ARGS__)
+
+// GrB_error:
+#define GrB_Type_error_(...)                        GrB_error (__VA_ARGS__)
+#define GrB_UnaryOp_error_(...)                     GrB_error (__VA_ARGS__)
+#define GrB_BinaryOp_error_(...)                    GrB_error (__VA_ARGS__)
+#define GxB_SelectOp_error_(...)                    GrB_error (__VA_ARGS__)
+#define GrB_Monoid_error_(...)                      GrB_error (__VA_ARGS__)
+#define GrB_Semiring_error_(...)                    GrB_error (__VA_ARGS__)
+#define GxB_Scalar_error_(...)                      GrB_error (__VA_ARGS__)
+#define GrB_Vector_error_(...)                      GrB_error (__VA_ARGS__)
+#define GrB_Matrix_error_(...)                      GrB_error (__VA_ARGS__)
+#define GrB_Descriptor_error_(...)                  GrB_error (__VA_ARGS__)
 
 // GrB_Monoid_new:
 #define GrB_Monoid_new_BOOL_(...)                   GrB_Monoid_new (__VA_ARGS__)
@@ -223,26 +235,28 @@
 // GxB_set:
 #define GxB_Global_Option_set_(...)                 GxB_set (__VA_ARGS__)
 #define GxB_Matrix_Option_set_(...)                 GxB_set (__VA_ARGS__)
+#define GxB_Vector_Option_set_(...)                 GxB_set (__VA_ARGS__)
 #define GrB_Descriptor_set_(...)                    GxB_set (__VA_ARGS__)
 #define GxB_Desc_set_(...)                          GxB_set (__VA_ARGS__)
 
 // GxB_get:
 #define GxB_Global_Option_get_(...)                 GxB_get (__VA_ARGS__)
 #define GxB_Matrix_Option_get_(...)                 GxB_get (__VA_ARGS__)
+#define GxB_Vector_Option_get_(...)                 GxB_get (__VA_ARGS__)
 #define GxB_Descriptor_get_(...)                    GxB_get (__VA_ARGS__)
 #define GxB_Desc_get_(...)                          GxB_get (__VA_ARGS__)
 
-// GrB_wait (not yet available as _Generic):
-#define GrB_Type_wait_(...)                         GrB_Type_wait (__VA_ARGS__)
-#define GrB_UnaryOp_wait_(...)                      GrB_UnaryOp_wait (__VA_ARGS__)
-#define GrB_BinaryOp_wait_(...)                     GrB_BinaryOp_wait (__VA_ARGS__)
-#define GxB_SelectOp_wait_(...)                     GxB_SelectOp_wait (__VA_ARGS__)
-#define GrB_Monoid_wait_(...)                       GrB_Monoid_wait (__VA_ARGS__)
-#define GrB_Semiring_wait_(...)                     GrB_Semiring_wait (__VA_ARGS__)
-#define GrB_Descriptor_wait_(...)                   GrB_Descriptor_wait (__VA_ARGS__)
-#define GxB_Scalar_wait_(...)                       GxB_Scalar_wait (__VA_ARGS__)
-#define GrB_Vector_wait_(...)                       GrB_Vector_wait (__VA_ARGS__)
-#define GrB_Matrix_wait_(...)                       GrB_Matrix_wait (__VA_ARGS__)
+// GrB_wait:
+#define GrB_Type_wait_(...)                         GrB_wait (__VA_ARGS__)
+#define GrB_UnaryOp_wait_(...)                      GrB_wait (__VA_ARGS__)
+#define GrB_BinaryOp_wait_(...)                     GrB_wait (__VA_ARGS__)
+#define GxB_SelectOp_wait_(...)                     GrB_wait (__VA_ARGS__)
+#define GrB_Monoid_wait_(...)                       GrB_wait (__VA_ARGS__)
+#define GrB_Semiring_wait_(...)                     GrB_wait (__VA_ARGS__)
+#define GrB_Descriptor_wait_(...)                   GrB_wait (__VA_ARGS__)
+#define GxB_Scalar_wait_(...)                       GrB_wait (__VA_ARGS__)
+#define GrB_Vector_wait_(...)                       GrB_wait (__VA_ARGS__)
+#define GrB_Matrix_wait_(...)                       GrB_wait (__VA_ARGS__)
 
 // GrB_eWiseMult:
 #define GrB_Vector_eWiseMult_Semiring_(...)         GrB_eWiseMult (__VA_ARGS__)
@@ -472,6 +486,18 @@
 #define GrB_Matrix_free_(...)                       GrB_Matrix_free (__VA_ARGS__)
 #define GrB_Descriptor_free_(...)                   GrB_Descriptor_free (__VA_ARGS__)
 
+// GrB_error:
+#define GrB_Type_error_(...)                        GrB_Type_error (__VA_ARGS__)
+#define GrB_UnaryOp_error_(...)                     GrB_UnaryOp_error (__VA_ARGS__)
+#define GrB_BinaryOp_error_(...)                    GrB_BinaryOp_error (__VA_ARGS__)
+#define GxB_SelectOp_error_(...)                    GxB_SelectOp_error (__VA_ARGS__)
+#define GrB_Monoid_error_(...)                      GrB_Monoid_error (__VA_ARGS__)
+#define GrB_Semiring_error_(...)                    GrB_Semiring_error (__VA_ARGS__)
+#define GxB_Scalar_error_(...)                      GxB_Scalar_error (__VA_ARGS__)
+#define GrB_Vector_error_(...)                      GrB_Vector_error (__VA_ARGS__)
+#define GrB_Matrix_error_(...)                      GrB_Matrix_error (__VA_ARGS__)
+#define GrB_Descriptor_error_(...)                  GrB_Descriptor_error (__VA_ARGS__)
+
 // GrB_Monoid_new:
 #define GrB_Monoid_new_BOOL_(...)                   GrB_Monoid_new_BOOL (__VA_ARGS__)
 #define GrB_Monoid_new_INT8_(...)                   GrB_Monoid_new_INT8 (__VA_ARGS__)
@@ -667,11 +693,13 @@
 // GxB_Desc_set:
 #define GxB_Global_Option_set_(...)                 GxB_Global_Option_set (__VA_ARGS__)
 #define GxB_Matrix_Option_set_(...)                 GxB_Matrix_Option_set (__VA_ARGS__)
+#define GxB_Vector_Option_set_(...)                 GxB_Vector_Option_set (__VA_ARGS__)
 #define GrB_Descriptor_set_(...)                    GrB_Descriptor_set (__VA_ARGS__)
 
 // GxB_Desc_get:
 #define GxB_Global_Option_get_(...)                 GxB_Global_Option_get (__VA_ARGS__)
 #define GxB_Matrix_Option_get_(...)                 GxB_Matrix_Option_get (__VA_ARGS__)
+#define GxB_Vector_Option_get_(...)                 GxB_Vector_Option_get (__VA_ARGS__)
 #define GxB_Descriptor_get_(...)                    GxB_Descriptor_get (__VA_ARGS__)
 
 // GrB_wait:

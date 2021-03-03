@@ -2,8 +2,8 @@
 %
 % Most of the overloaded operations on GrB matrices work just the same as
 % the MATLAB operations of the same name.  There are some important
-% differences.  In future versions, the GrB MATLAB interface to
-% GraphBLAS may be modified to reduce these differences.
+% differences.  In future versions, the GrB MATLAB interface to GraphBLAS
+% may be modified to minimize these differences.
 %
 % ------------------------------------------------
 %% Matrix classes and types:
@@ -11,7 +11,7 @@
 %
 %     MATLAB supports 3 kinds of sparse matrices: logical, double, and
 %     double complex.  For single precision floating-point (real or
-%     complex), and integer matrices, MATLAB only supports dense matrices,
+%     complex), and integer matrices, MATLAB only supports full matrices,
 %     not sparse.
 %
 %     GraphBLAS supports all types:  logical, int8, int16, int32, int64,
@@ -119,20 +119,13 @@
 %
 %     In MATLAB, the default is to round to the nearest integer.  If the
 %     fractional part is exactly 0.5: the integer with larger magnitude is
-%     selected.
-%
-%     In GraphBLAS v3.2.2 and earlier, the convention followed the one in
-%     the C API, which is to truncate (the same as what happens in C when
-%     typecasting from double to int, for example).
-%
-%     In GraphBLAS v3.3, the typecasting in the MATLAB interface has been
-%     changed to match the MATLAB behavior, when explicitly converting
-%     matrices:
+%     selected.  In GraphBLAS, typecasting matches the MATLAB behavior
+%     when explicitly converting matrices:
 %
 %       G = 100 * rand (4)
 %       G = GrB (G, 'int8')
 %
-%     If instead, a double matrix is used as-is directly in an integer
+%     However, if a double matrix is used as-is directly in an integer
 %     semiring, the C typecasting rules are used:
 %
 %       % suppose A and B are double:
@@ -224,9 +217,8 @@
 %         ./  ldivide
 %         .\  rdivide
 %         .^  power
-%
 %         sum, prod:  MATLAB converts to double; GraphBLAS keeps the type
-%         of the input
+%                     of the input
 %
 %     It does not affect the following:
 %
@@ -270,11 +262,10 @@
 %         GrB.semiringinfo ('bitor.bitand.uint8')
 %
 %% For more details, see the GraphBLAS user guide in GraphBLAS/Doc.
-%
 % See also GrB, sparse.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 help GrB.MATLAB_vs_GrB ;
 

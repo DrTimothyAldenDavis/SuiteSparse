@@ -2,8 +2,8 @@
 // GB_mex_nonzero: compute C=nonzero(A)
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -15,9 +15,9 @@
 
 #define FREE_ALL                        \
 {                                       \
-    GB_MATRIX_FREE (&A) ;               \
-    GB_MATRIX_FREE (&C) ;               \
-    GB_mx_put_global (true, 0) ;        \
+    GrB_Matrix_free_(&A) ;               \
+    GrB_Matrix_free_(&C) ;               \
+    GB_mx_put_global (true) ;           \
 }
 
 
@@ -34,7 +34,6 @@ void mexFunction
     GrB_Matrix A = NULL, C = NULL ;
 
     // check inputs
-    GB_WHERE (USAGE) ;
     if (nargout > 1 || nargin != 1)
     {
         mexErrMsgTxt ("Usage: " USAGE) ;

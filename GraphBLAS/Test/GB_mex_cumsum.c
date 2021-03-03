@@ -2,8 +2,8 @@
 // GB_mex_cumsum: cumulative using GB_cumsum
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -69,6 +69,6 @@ void mexFunction
     }
 
     // log the test coverage
-    GB_mx_put_global (true, 0) ;
+    GB_mx_put_global (true) ;   
 }
 

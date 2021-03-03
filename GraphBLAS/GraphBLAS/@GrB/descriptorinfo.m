@@ -28,33 +28,26 @@ function descriptorinfo (d)
 %            determine the method automatically, via a heuristic.
 %
 %   d.kind   For most GrB.methods, this is a string equal to 'default',
-%            'GrB', 'sparse', or 'full'.  The default is d.kind = 'GrB',
+%            'GrB', 'sparse', 'full', or 'matlab'.  The default is 'GrB',
 %            where the GraphBLAS operation returns an object, which is
 %            preferred since GraphBLAS sparse matrices are faster and can
 %            represent many more data types.  However, if you want a
 %            standard MATLAB sparse matrix on ouput, use d.kind='sparse'.
-%            Use d.kind='full' to return a MATLAB dense matrix.  For any
-%            GrB.method that takes a descriptor, the following uses are
-%            the same, but the first method is faster and takes less
-%            temporary workspace:
-%
-%               d.kind = 'sparse' ;
-%               S = GrB.method (..., d) ;
-%
-%               % with no d, or d.kind = 'default'
-%               S = double (GrB.method (...)) :
+%            Use d.kind='full' to return a MATLAB full matrix.  Use
+%            d.kind='matlab' for a MATLAB sparse or full matrix (full if
+%            all entries are present, sparse otherwise).
 %
 %   d.base   A string equal to 'default', 'zero-based', 'one-based', or
 %            'one-based int'.  The default is 'one-based'.  If d.base is
 %            'zero-based', then indices are zero-based, in the range 0 to
 %            n-1, for a matrix of dimension n.
 %
-%   d.format a string, either 'by row' or 'by col', which defines the
-%            format of the GraphBLAS output matrix C.  The following rules
-%            are used to determine the format of the result, in order:
+%   d.format a string that describes the sparsity format of the output
+%            matrix C.  The following rules are used to determine the
+%            format of the result, in order:
 %
-%            (1) If the format is determined by the descriptor to the
-%                method, then that determines the format of C.
+%            (1) If d.format appears in the descriptor for a method, then
+%               that determines the format of C.
 %            (2) If C is a column vector then C is stored by column.
 %            (3) If C is a row vector then C is stored by row.
 %            (4) If the method has a first matrix input (usually called A),
@@ -65,6 +58,13 @@ function descriptorinfo (d)
 %                is used for C.
 %            (6) Otherwise, the global default format is used for C.
 %                See GrB.format for details.
+%
+%           The d.format string optionally includes one or more strings
+%           'sparse', 'hypersparse' (or 'hyper' for short), 'bitmap', and
+%           'full', separated by '/', and then optionally followed by the
+%           string 'by row' or 'by col'.  For example, to allow C to be
+%           sparse or bitmap, use d.format = 'sparse/bitmap'.  To return
+%           C as hypersparse in row-oriented format, use 'hyper by row'.
 %
 % These descriptor values are scalars:
 %
@@ -78,8 +78,8 @@ function descriptorinfo (d)
 % See also GrB.binopinfo, GrB.monoidinfo, GrB.selectopinfo,
 % GrB.semiringinfo, GrB.unopinfo.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 % FUTURE: add desc.in* = 'conjugate transpose'
 

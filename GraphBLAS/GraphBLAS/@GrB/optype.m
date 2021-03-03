@@ -7,6 +7,8 @@ function type = optype (a, b)
 %
 % The rules are listed below; the first one that applies is used:
 %
+% (0) for positional operators, int64 is used by default.
+%
 % (1) same:
 %
 %   if A and B have the same type:  optype is the type of A and B.
@@ -44,8 +46,8 @@ function type = optype (a, b)
 %
 % See also GrB.binopinfo, GrB.semiringinfo, GrB.type.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 if (ischar (a))
     atype = a ;

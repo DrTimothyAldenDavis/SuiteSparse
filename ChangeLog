@@ -1,3 +1,7 @@
+Mar 3, 2021, SuiteSparse 5.9.0
+
+    * GraphBLAS v4.0.3: many new features, much faster performance
+
 July 14, 2020, SuiteSparse 5.8.1
 
     * SLIP_LU v1.0.2: resolved issue #51

@@ -2,8 +2,8 @@
 // GxB_Monoid_terminal_new:  create a new monoid with a terminal value
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ GrB_Info GxB_Monoid_terminal_new_ ## T   /* create a new monoid */          \
     type terminal                   /* terminal value of the monoid  */     \
 )                                                                           \
 {                                                                           \
-    GB_WHERE ("GxB_Monoid_terminal_new" GB_STR(T)                           \
+    GB_WHERE1 ("GxB_Monoid_terminal_new" GB_STR(T)                          \
         " (&monoid, op, identity, terminal)") ;                             \
     type id = identity ;                                                    \
     type tr = terminal ;                                                    \
@@ -51,8 +51,8 @@ GrB_Info GxB_Monoid_terminal_new_UDT        // create a monoid with a user type
     void *terminal                  // terminal value of the monoid
 )
 { 
-    GB_WHERE ("GxB_Monoid_terminal_new_UDT (&monoid, op, identity, terminal)") ;
-    GB_RETURN_IF_NULL (identity) ;
+    GB_WHERE1 ("GxB_Monoid_terminal_new_UDT "
+        "(&monoid, op, identity, terminal)") ;
     GB_RETURN_IF_NULL (terminal) ;
     return (GB_Monoid_new (monoid, op, identity, terminal, GB_UDT_code,
         Context)) ;

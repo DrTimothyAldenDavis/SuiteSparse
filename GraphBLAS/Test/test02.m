@@ -1,8 +1,8 @@
 function test02
 %TEST02 test GrB_*_dup
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 [~, ~, ~, types, ~, ~] = GB_spec_opsall ;
 GB_builtin_complex_set (1) ;
@@ -23,8 +23,8 @@ for k1 = 1:length (types)
             A.pattern (1,1) = true ;
             A_matrix = full (A.matrix) ;
             A_pattern = full (A.pattern) ;
-            assert (spok (1*A.matrix) == 1) ;
-            assert (spok (A.pattern) == 1) ;
+            assert (GB_spok (1*A.matrix) == 1) ;
+            assert (GB_spok (A.pattern) == 1) ;
 
             for k2 = 1:length (types)
                 ctype = types {k2} ;
@@ -33,7 +33,7 @@ for k1 = 1:length (types)
                 C = GB_mex_dup (A, ctype) ;
                 C_matrix = full (C.matrix) ;
                 C_pattern = full (GB_spones_mex (C.matrix)) ;
-                assert (spok (1*C.matrix) == 1) ;
+                assert (GB_spok (1*C.matrix) == 1) ;
 
                 if (k1 == k2)
                     % also try another method
@@ -44,7 +44,7 @@ for k1 = 1:length (types)
                     C2_matrix = full (C2.matrix) ;
                     C2_pattern = full (GB_spones_mex (C2.matrix)) ;
                     assert (isequal (C, C2))  ;
-                    assert (spok (1*C2.matrix) == 1) ;
+                    assert (GB_spok (1*C2.matrix) == 1) ;
                 end
 
             end
@@ -58,17 +58,17 @@ for k = [false true]
 
     % duplicate a complex matrix (user-defined can't be typecasted)
     A = GB_mex_random (4, 4, 10, 1) ;
-    assert (spok (1*A) == 1) ;
+    assert (GB_spok (1*A) == 1) ;
 
     C = GB_mex_dup (A) ;
     % C_matrix = full (C.matrix) ;
     assert (isequal (A, C.matrix))  ;
-    assert (spok (1*C.matrix) == 1) ;
+    assert (GB_spok (1*C.matrix) == 1) ;
 
     C = GB_mex_dup (A, 'double complex', 1) ;
     % C_matrix = full (C.matrix) ;
     assert (isequal (A, C.matrix))  ;
-    assert (spok (1*C.matrix) == 1) ;
+    assert (GB_spok (1*C.matrix) == 1) ;
 end
 
 format

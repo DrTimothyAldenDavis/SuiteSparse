@@ -2,8 +2,8 @@
 // GB_hyper_prune: remove empty vectors from a hypersparse Ap, Ah list
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -57,7 +57,7 @@ GrB_Info GB_hyper_prune
     if (W == NULL)
     { 
         // out of memory
-        return (GB_OUT_OF_MEMORY) ;
+        return (GrB_OUT_OF_MEMORY) ;
     }
 
     //--------------------------------------------------------------------------
@@ -87,7 +87,7 @@ GrB_Info GB_hyper_prune
         GB_FREE (W) ;
         GB_FREE (Ap) ;
         GB_FREE (Ah) ;
-        return (GB_OUT_OF_MEMORY) ;
+        return (GrB_OUT_OF_MEMORY) ;
     }
 
     //--------------------------------------------------------------------------

@@ -9,8 +9,8 @@ function builtin_complex = GB_builtin_complex_set (builtin_complex)
 %
 % See also GB_builtin_complex_get.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 global GraphBLAS_builtin_complex
 if (nargin > 0)

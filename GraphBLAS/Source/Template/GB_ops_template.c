@@ -2,8 +2,8 @@
 // GB_ops_template.c: built-in unary and binary functions and operators
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -33,10 +33,10 @@ GB_OP1 (GxB_, ONE, "one") ;
     GB_OP1 (GrB_, AINV     , "ainv"     ) ;
     GB_OP1 (GrB_, MINV     , "minv"     ) ;
 
-    // z=abs(x), z and x have the same type (now in v1.3 spec)
+    // z=abs(x), z and x have the same type
     GB_OP1 (GrB_, ABS      , "abs"      ) ;
 
-    // GxB_ABS_* is now GrB_ABS_* (but keep the old GxB_ABS_* name as well)
+    // GxB_ABS_* is now GrB_ABS_*, and GxB_ABS is deprecated
     GB_OP1_RENAME (GxB_, GrB_, ABS) ;
 
     // LNOT is only defined for real types, not complex
@@ -95,7 +95,7 @@ GB_OP1 (GxB_, ONE, "one") ;
 
 #if defined ( GB_SIGNED_INT ) || defined ( GB_UNSIGNED_INT )
 
-    // bitwise complement, added for v1.3 spec
+    // bitwise complement
     GB_OP1 (GrB_, BNOT     , "bnot"     ) ;
 
 #endif
@@ -204,8 +204,7 @@ GB_OP2 (GxB_, POW    , "pow"   )
 
 #if defined ( GB_SIGNED_INT ) || defined ( GB_UNSIGNED_INT )
 
-    // bitwise binary operators, added for v1.3 spec.  For integer only (int*,
-    // and uint*), not for logical or floating-point types.
+    // bitwise binary operators
     GB_OP2 (GrB_, BOR      , "bitor"   ) ;
     GB_OP2 (GrB_, BAND     , "bitand"  ) ;
     GB_OP2 (GrB_, BXOR     , "bitxor"  ) ;

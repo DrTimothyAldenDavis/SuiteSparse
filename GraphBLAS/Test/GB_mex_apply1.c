@@ -2,8 +2,8 @@
 // GB_mex_apply1: C<Mask> = accum(C,op(x,A)) or op(x,A')
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -18,12 +18,12 @@
 
 #define FREE_ALL                        \
 {                                       \
-    GB_MATRIX_FREE (&C) ;               \
-    GB_MATRIX_FREE (&Mask) ;            \
-    GB_MATRIX_FREE (&S) ;               \
-    GB_MATRIX_FREE (&A) ;               \
+    GrB_Matrix_free_(&C) ;               \
+    GrB_Matrix_free_(&Mask) ;            \
+    GrB_Matrix_free_(&S) ;               \
+    GrB_Matrix_free_(&A) ;               \
     GrB_Descriptor_free_(&desc) ;       \
-    GB_mx_put_global (true, 0) ;        \
+    GB_mx_put_global (true) ;           \
 }
 
 GrB_Matrix C = NULL, S = NULL ;
@@ -240,7 +240,6 @@ void mexFunction
     bool malloc_debug = GB_mx_get_global (true) ;
 
     // check inputs
-    GB_WHERE (USAGE) ;
     if (nargout > 1 || nargin < 7 || nargin > 8)
     {
         mexErrMsgTxt ("Usage: " USAGE) ;
@@ -249,7 +248,7 @@ void mexFunction
     // get C (make a deep copy)
     #define GET_DEEP_COPY \
     C = GB_mx_mxArray_to_Matrix (pargin [0], "C input", true, true) ;
-    #define FREE_DEEP_COPY GB_MATRIX_FREE (&C) ;
+    #define FREE_DEEP_COPY GrB_Matrix_free_(&C) ;
     GET_DEEP_COPY ;
     if (C == NULL)
     {
@@ -327,13 +326,6 @@ void mexFunction
         mexErrMsgTxt ("desc failed") ;
     }
 
-// printf ("\nin GB_mex_apply1 ---------------------------\n")  ;
-// printf ("input:\n") ; GxB_print (C, 3) ;
-// GxB_print (accum, 3) ;
-// GxB_print (op, 3) ;
-// GxB_print (scalar, 3) ;
-// GxB_print (A, 3) ;
-
     // C<Mask> = accum(C,op(x,A))
     if (GB_NCOLS (C) == 1 && (desc == NULL || desc->in0 == GxB_DEFAULT))
     {
@@ -344,8 +336,6 @@ void mexFunction
     {
         METHOD (apply1 (true)) ;
     }
-
-// printf ("result:\n") ; GxB_print (C, 3) ;
 
     // return C to MATLAB as a struct and free the GraphBLAS C
     pargout [0] = GB_mx_Matrix_to_mxArray (&C, "C output", true) ;

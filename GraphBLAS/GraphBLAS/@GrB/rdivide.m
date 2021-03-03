@@ -1,14 +1,14 @@
 function C = rdivide (A, B)
 %RDIVIDE C = A./B, sparse matrix element-wise division.
-% C = A./B when B is a matrix results in a dense matrix C, with all
+% C = A./B when B is a matrix results in a full matrix C, with all
 % entries present.  If A is a matrix and B is a scalar, then C has the
 % pattern of A, except if B is zero and A is double, single, or complex.
-% In that case, since 0/0 is NaN, C is a dense matrix.
+% In that case, since 0/0 is NaN, C is a full matrix.
 %
 % See also GrB/ldivide, GrB.emult, GrB.eadd.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 if (isobject (A))
     A = A.opaque ;
@@ -37,9 +37,9 @@ else
         % A is a matrix, B is a scalar
         if (gb_scalar (B) == 0 && gb_isfloat (atype))
             % 0/0 is Nan, and thus must be computed computed if A is
-            % floating-point.  The result is a dense matrix.
+            % floating-point.  The result is a full matrix.
             % expand B t a full matrix and cast to the type of A
-            B = gb_scalar_to_full (am, an, atype, B) ;
+            B = gb_scalar_to_full (am, an, atype, gb_fmt (A), B) ;
             C = GrB (gbemult (A, '/', B)) ;
         else
             % The scalar B is nonzero so just compute A/B in the pattern
@@ -47,7 +47,7 @@ else
             C = GrB (gbapply2 (A, '/', B)) ;
         end
     else
-        % both A and B are matrices.  The result is a dense matrix.
+        % both A and B are matrices.  The result is a full matrix.
         C = GrB (gbemult (gbfull (A, ctype), '/', gbfull (B, ctype))) ;
     end
 end

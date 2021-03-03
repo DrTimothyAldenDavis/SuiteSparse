@@ -2,8 +2,8 @@
 // GB_subref_slice: construct coarse/fine tasks for C = A(I,J)
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -154,7 +154,7 @@ GrB_Info GB_subref_slice
     { 
         // out of memory
         GB_FREE_ALL ;
-        return (GB_OUT_OF_MEMORY) ;
+        return (GrB_OUT_OF_MEMORY) ;
     }
 
     //--------------------------------------------------------------------------
@@ -169,7 +169,7 @@ GrB_Info GB_subref_slice
     for (kC = 0 ; kC < Cnvec ; kC++)
     { 
         // jC is the (kC)th vector of C = A(I,J)
-        // int64_t jC = (Ch == NULL) ? kC : Ch [kC] ;
+        // int64_t jC = GBH (Ch, kC) ;
         // C(:,kC) = A(I,kA) will be constructed
         int64_t pA      = Ap_start [kC] ;
         int64_t pA_end  = Ap_end   [kC] ;
@@ -248,11 +248,11 @@ GrB_Info GB_subref_slice
     // slice the work into coarse tasks
     //--------------------------------------------------------------------------
 
-    if (!GB_pslice (&Coarse, Cwork, Cnvec, ntasks1))
-    {
+    if (!GB_pslice (&Coarse, Cwork, Cnvec, ntasks1, false))
+    { 
         // out of memory
         GB_FREE_ALL ;
-        return (GB_OUT_OF_MEMORY) ;
+        return (GrB_OUT_OF_MEMORY) ;
     }
 
     //--------------------------------------------------------------------------

@@ -2,8 +2,8 @@ function C = gb_random (varargin)
 %GB_RANDOM uniformly distributed random GraphBLAS matrix.
 % Implements C = GrB.random (...), C = sprand (...), C = sprand (...),
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 %---------------------------------------------------------------------------
 % parse inputs
@@ -79,7 +79,7 @@ elseif (firstchar == (4 - (symmetric || hermitian)))
         d = gb_get_scalar (varargin {3}) ;
     end
     if (isinf (d))
-        % construct a dense random matrix
+        % construct a full random matrix
         e = m * n ;
         I = repmat ((int64 (0) : int64 (m-1)), 1, n) ;
         J = repmat ((int64 (0) : int64 (n-1)), m, 1) ;

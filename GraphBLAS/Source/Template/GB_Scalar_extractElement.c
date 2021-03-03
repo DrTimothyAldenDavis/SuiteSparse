@@ -2,8 +2,8 @@
 // GB_Scalar_extractElement_template: x = S
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -28,35 +28,33 @@ GrB_Info GB_EXTRACT_ELEMENT     // extract a single entry from S
     // check inputs
     //--------------------------------------------------------------------------
 
-    GB_CONTEXT_RETURN_IF_NULL (S) ;
-    GB_CONTEXT_RETURN_IF_FAULTY (S) ;
+    GB_RETURN_IF_NULL_OR_FAULTY (S) ;
+    GB_RETURN_IF_NULL (x) ;
 
-    // delete any lingering zombies and assemble any pending tuples
-    if (GB_PENDING_OR_ZOMBIES (S))
+    // delete any lingering zombies, assemble any pending tuples, and unjumble
+    if (GB_ANY_PENDING_WORK (S))
     { 
+        // extract scalar with pending tuples or zombies.  It cannot be
+        // actually jumbled, but S->jumbled might true anyway.
         GrB_Info info ;
-        GB_WHERE (GB_WHERE_STRING) ;
+        GB_WHERE1 (GB_WHERE_STRING) ;
         GB_BURBLE_START ("GxB_Scalar_extractElement") ;
         GB_OK (GB_Matrix_wait ((GrB_Matrix) S, Context)) ;
-        ASSERT (!GB_ZOMBIES (S)) ;
-        ASSERT (!GB_PENDING (S)) ;
         GB_BURBLE_END ;
     }
 
-    GB_CONTEXT_RETURN_IF_NULL (x) ;
+    ASSERT (!GB_ANY_PENDING_WORK (S)) ;
 
     // GB_XCODE and S must be compatible
     GB_Type_code scode = S->type->code ;
     if (!GB_code_compatible (GB_XCODE, scode))
     { 
-        GB_WHERE (GB_WHERE_STRING) ;
-        return (GB_ERROR (GrB_DOMAIN_MISMATCH, (GB_LOG,
-            "entry s of type [%s] cannot be typecast\n"
-            "to output scalar x of type [%s]",
-            S->type->name, GB_code_string (GB_XCODE)))) ;
+        return (GrB_DOMAIN_MISMATCH) ;
     }
 
-    if (S->nzmax == 0 || S->p [1] == 0)
+    if ((S->nzmax == 0)                         // empty
+        || (S->p != NULL && S->p [1] == 0)      // sparse/hyper with no entry
+        || (S->b != NULL && S->b [0] == 0))     // bitmap with no entry
     { 
         // quick return
         return (GrB_NO_VALUE) ;
@@ -79,7 +77,7 @@ GrB_Info GB_EXTRACT_ELEMENT     // extract a single entry from S
     { 
         // typecast the value from S into x
         GB_cast_array ((GB_void *) x, GB_XCODE,
-            ((GB_void *) S->x), scode, S->type->size, 1, 1) ;
+            ((GB_void *) S->x), scode, NULL, S->type->size, 1, 1) ;
     }
     return (GrB_SUCCESS) ;
 }

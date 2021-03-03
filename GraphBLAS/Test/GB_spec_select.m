@@ -4,8 +4,8 @@ function C = GB_spec_select (C, Mask, accum, opname, A, thunk, descriptor)
 % Usage:
 % C = GB_spec_select (C, Mask, accum, opname, A, thunk, descriptor)
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 %-------------------------------------------------------------------------------
 % get inputs
@@ -80,6 +80,8 @@ switch (opname)
         p = A.pattern & (A.matrix < xthunk) ;
     case 'le_thunk'
         p = A.pattern & (A.matrix <= xthunk) ;
+    case 'isnan'
+        p = A.pattern & isnan (A.matrix) ;
     otherwise
         error ('invalid op') ;
 end

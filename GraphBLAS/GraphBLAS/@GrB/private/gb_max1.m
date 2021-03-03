@@ -2,8 +2,8 @@ function C = gb_max1 (op, A)
 %GB_MAX1 single-input max
 % Implements C = max (A)
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 [m, n] = gbsize (A) ;
 if (m == 1 || n == 1)

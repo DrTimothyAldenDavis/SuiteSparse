@@ -39,6 +39,10 @@ static:
 cov:
 	( cd Tcov ; $(MAKE) )
 
+# user guide
+docs:
+	( cd Doc ; $(MAKE) )
+
 # remove files not in the distribution, but keep compiled libraries
 clean:
 	( cd Lib ; $(MAKE) clean )

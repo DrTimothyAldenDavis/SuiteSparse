@@ -2,8 +2,8 @@
 // GraphBLAS/Demo/Include/graphblas_demos.h: include file for all demo programs
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -18,22 +18,30 @@
 #pragma warning (disable: 58 167 144 177 181 186 188 589 593 869 981 1418 1419 1572 1599 2259 2282 2557 2547 3280 )
 #elif defined __GNUC__
 
+// disable warnings for gcc 5.x and higher:
+#if (__GNUC__ > 4)
+// disable warnings
+// #pragma GCC diagnostic ignored "-Wunknown-warning-option"
+#pragma GCC diagnostic ignored "-Wint-in-bool-context"
+#pragma GCC diagnostic ignored "-Wformat-truncation="
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+// enable these warnings as errors
+#pragma GCC diagnostic error "-Wmisleading-indentation"
+#endif
+
 #pragma GCC diagnostic ignored "-Wunknown-pragmas"
 #if !defined ( __cplusplus )
 #pragma GCC diagnostic ignored "-Wincompatible-pointer-types"
 #else
 #pragma GCC diagnostic ignored "-Wwrite-strings"
 #endif
-#pragma GCC diagnostic ignored "-Wformat-truncation="
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #pragma GCC diagnostic ignored "-Wunused-result"
-#pragma GCC diagnostic ignored "-Wint-in-bool-context"
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #pragma GCC diagnostic ignored "-Wsign-compare"
 #pragma GCC diagnostic ignored "-Wtype-limits"
 
 // enable these warnings as errors
-#pragma GCC diagnostic error "-Wmisleading-indentation"
 #pragma GCC diagnostic error "-Wswitch-default"
 #endif
 
@@ -293,7 +301,7 @@ GrB_Info import_test (GrB_Matrix *C_handle, int format, bool dump) ;
 }
 
 //------------------------------------------------------------------------------
-// OK: call a GraphBLAS method and check the result
+// OK  call a GraphBLAS method and check the result
 //------------------------------------------------------------------------------
 
 // OK(method) is a macro that calls a GraphBLAS method and checks the status;
@@ -305,7 +313,7 @@ GrB_Info import_test (GrB_Matrix *C_handle, int format, bool dump) ;
     info = method ;                                                     \
     if (!(info == GrB_SUCCESS || info == GrB_NO_VALUE))                 \
     {                                                                   \
-        printf ("GraphBLAS error:\n%s\n", GrB_error ( )) ;              \
+        printf ("GraphBLAS error: %d\n", info) ;                        \
         CHECK (false, info) ;                                           \
     }                                                                   \
 }

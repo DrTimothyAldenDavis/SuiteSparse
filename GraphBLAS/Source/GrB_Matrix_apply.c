@@ -2,8 +2,8 @@
 // GrB_Matrix_apply: apply a unary or binary operator to a matrix
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -31,7 +31,7 @@ GrB_Info GrB_Matrix_apply           // C<M> = accum (C, op(A)) or op(A')
     // check inputs
     //--------------------------------------------------------------------------
 
-    GB_WHERE ("GrB_Matrix_apply (C, M, accum, op, A, desc)") ;
+    GB_WHERE (C, "GrB_Matrix_apply (C, M, accum, op, A, desc)") ;
     GB_BURBLE_START ("GrB_apply") ;
     GB_RETURN_IF_NULL_OR_FAULTY (C) ;
     GB_RETURN_IF_FAULTY (M) ;
@@ -39,7 +39,7 @@ GrB_Info GrB_Matrix_apply           // C<M> = accum (C, op(A)) or op(A')
 
     // get the descriptor
     GB_GET_DESCRIPTOR (info, desc, C_replace, Mask_comp, Mask_struct,
-        A_transpose, xx1, xx2) ;
+        A_transpose, xx1, xx2, xx7) ;
 
     //--------------------------------------------------------------------------
     // apply the operator and optionally transpose
@@ -87,7 +87,7 @@ static inline GrB_Info GB_1st       // C<M>=accum(C,op(x,A))
 
     // get the descriptor
     GB_GET_DESCRIPTOR (info, desc, C_replace, Mask_comp, Mask_struct,
-        A_transpose, xx1, xx2) ;
+        A_transpose, xx1, xx2, xx7) ;
 
     //--------------------------------------------------------------------------
     // apply the operator and optionally transpose
@@ -137,7 +137,7 @@ static inline GrB_Info GB_2nd       // C<M>=accum(C,op(A,y))
 
     // get the descriptor
     GB_GET_DESCRIPTOR (info, desc, C_replace, Mask_comp, Mask_struct,
-        xx1, A_transpose, xx2) ;
+        xx1, A_transpose, xx2, xx7) ;
 
     //--------------------------------------------------------------------------
     // apply the operator and optionally transpose
@@ -173,7 +173,7 @@ GrB_Info GxB_Matrix_apply_BinaryOp1st           // C<M>=accum(C,op(x,A))
     const GrB_Descriptor desc       // descriptor for C, M, and A
 )
 { 
-    GB_WHERE ("GxB_Matrix_apply_BinaryOp1st (C, M, accum, op, x, A, desc)") ;
+    GB_WHERE (C, "GxB_Matrix_apply_BinaryOp1st (C, M, accum, op, x, A, desc)") ;
     return (GB_1st (C, M, accum, op, x, A, desc, Context)) ;
 }
 
@@ -194,7 +194,7 @@ GrB_Info GxB_Matrix_apply_BinaryOp2nd           // C<M>=accum(C,op(A,y))
     const GrB_Descriptor desc       // descriptor for C, M, and A
 )
 { 
-    GB_WHERE ("GxB_Matrix_apply_BinaryOp2nd (C, M, accum, op, A, y, desc)") ;
+    GB_WHERE (C, "GxB_Matrix_apply_BinaryOp2nd (C, M, accum, op, A, y, desc)") ;
     return (GB_2nd (C, M, accum, op, A, y, desc, Context)) ;
 }
 
@@ -214,7 +214,7 @@ GrB_Info prefix ## Matrix_apply_BinaryOp1st_ ## T                           \
     const GrB_Descriptor desc       /* descriptor for C, M, and A */        \
 )                                                                           \
 {                                                                           \
-    GB_WHERE (GB_STR(prefix) "Matrix_apply_BinaryOp1st_" GB_STR(T)          \
+    GB_WHERE (C, GB_STR(prefix) "Matrix_apply_BinaryOp1st_" GB_STR(T)       \
         "(C, M, accum, op, x, A, desc)") ;                                  \
     GB_SCALAR_WRAP (scalar, prefix, T, ampersand, x, stype) ;               \
     ASSERT_SCALAR_OK (scalar, "scalar for matrix_apply_bind1st", GB0) ;     \
@@ -252,7 +252,7 @@ GrB_Info prefix ## Matrix_apply_BinaryOp2nd_ ## T                           \
     const GrB_Descriptor desc       /* descriptor for C, M, and A */        \
 )                                                                           \
 {                                                                           \
-    GB_WHERE (GB_STR(prefix) "Matrix_apply_BinaryOp2nd_" GB_STR(T)          \
+    GB_WHERE (C, GB_STR(prefix) "Matrix_apply_BinaryOp2nd_" GB_STR(T)       \
         "(C, M, accum, op, A, y, desc)") ;                                  \
     GB_SCALAR_WRAP (scalar, prefix, T, ampersand, y, stype) ;               \
     ASSERT_SCALAR_OK (scalar, "scalar for matrix_apply_bind2nd", GB0) ;     \

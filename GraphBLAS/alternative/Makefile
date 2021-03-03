@@ -2,8 +2,8 @@
 # GraphBLAS/alternative/Makefile
 #-------------------------------------------------------------------------------
 
-#  SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-#  http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+# SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+# SPDX-License-Identifier: Apache-2.0
 
 #-------------------------------------------------------------------------------
 
@@ -19,9 +19,9 @@
 
 default: library
 
-VER1 = 3
-VER2 = 3
-VER3 = 0
+VER1 = 4
+VER2 = 0
+VER3 = 1
 
 # pick your compiler:
   CC = gcc
@@ -44,7 +44,7 @@ VER3 = 0
 # compiler (it complains), and thus this option is only available in this
 # alternative/Makefile.  The GCC C++ 5.4 compiler fails; version 7.5 is
 # sufficient.
-CC = c++
+# CC = c++
 
 # Using the Intel MKL (don't try this if CC=c++, it will likely break):
 # from https://software.intel.com/content/www/us/en/develop/articles/intel-mkl-link-line-advisor.html
@@ -60,7 +60,7 @@ INC = ../Include/*.h ../Source/*.h ../Source/Template/* ../Source/Generated/*.h 
 SRC2 = $(notdir $(wildcard $(SRC)))
 OBJ = $(SRC2:.c=.o)
 LDFLAGS = -fopenmp -lm $(MKL_LDFLAGS)
-CFLAGS = -fopenmp -fexceptions -fPIC -DUSER_OPENMP_THREADS $(MKL_CFLAGS)
+CFLAGS = -fopenmp -fexceptions -fPIC $(MKL_CFLAGS)
 # pick the roptimization level:
   CFLAGS += -O3
 # CFLAGS += -g

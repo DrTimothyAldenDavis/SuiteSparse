@@ -16,7 +16,7 @@
 %
 % The type can be 'double', 'single', 'logical', 'int8', 'int16', 'int32',
 % 'int64', 'uint8', 'uint16', 'uint32', 'uint64', 'double complex' or 'single
-% complex'.  The format is 'by row' or 'by col'.  
+% complex'.  Typical formats are 'by row' or 'by col'. 
 %
 % Essentially all operators and many built-in MATLAB functions are overloaded
 % by the @GrB class, so that they can be used for GraphBLAS matrices.

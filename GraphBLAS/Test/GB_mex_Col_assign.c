@@ -2,8 +2,8 @@
 // GB_mex_assign: C<Mask>(I,J) = accum (C (I,J), A)
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 // This function is a wrapper for GrB_Matrix_assign, GrB_Matrix_assign_T
 // GrB_Vector_assign, and GrB_Vector_assign_T.  For these uses, the Mask must
@@ -23,17 +23,17 @@
 
 #define FREE_ALL                        \
 {                                       \
-    GB_MATRIX_FREE (&A) ;               \
-    GB_MATRIX_FREE (&Mask) ;            \
-    GB_MATRIX_FREE (&C) ;               \
+    GrB_Matrix_free_(&A) ;               \
+    GrB_Matrix_free_(&Mask) ;            \
+    GrB_Matrix_free_(&C) ;               \
     GrB_Descriptor_free_(&desc) ;       \
-    GB_mx_put_global (true, 0) ;        \
+    GB_mx_put_global (true) ;           \
 }
 
 #define GET_DEEP_COPY \
     C = GB_mx_mxArray_to_Matrix (pargin [0], "C input", true, true) ;
 
-#define FREE_DEEP_COPY GB_MATRIX_FREE (&C) ;
+#define FREE_DEEP_COPY GrB_Matrix_free_(&C) ;
 
 GrB_Matrix C = NULL ;
 GrB_Matrix Mask = NULL ;
@@ -74,12 +74,9 @@ GrB_Info many_assign
 
 GrB_Info assign ( )
 {
-    GB_WHERE ("assign") ;
-
     bool at = (desc != NULL && desc->in0 == GrB_TRAN) ;
     GrB_Info info ;
 
-    // printf ("\n--- assign:\n") ;
     ASSERT_MATRIX_OK (C, "C", GB0) ;
     ASSERT_MATRIX_OK_OR_NULL (Mask, "Mask", GB0) ;
     ASSERT_MATRIX_OK (A, "A", GB0) ;
@@ -171,7 +168,6 @@ GrB_Info assign ( )
         {
 
             // test Matrix_assign_scalar functions
-            // printf ("scalar assign to matrix\n") ;
             #undef  ASSIGN
             #define ASSIGN(prefix,suffix,type)                          \
             {                                                           \
@@ -245,8 +241,6 @@ GrB_Info many_assign
     const mxArray *pargin [ ]
 )
 {
-    GB_WHERE ("many_assign") ;
-
     GrB_Info info = GrB_SUCCESS ;
 
     for (int64_t k = 0 ; k < nwork ; k++)
@@ -338,8 +332,8 @@ GrB_Info many_assign
 
         info = assign ( ) ;
 
-        GB_MATRIX_FREE (&A) ;
-        GB_MATRIX_FREE (&Mask) ;
+        GrB_Matrix_free_(&A) ;
+        GrB_Matrix_free_(&Mask) ;
         GrB_Descriptor_free_(&desc) ;
 
         if (info != GrB_SUCCESS)
@@ -375,10 +369,6 @@ void mexFunction
     C = NULL ;
     Mask = NULL ;
     desc = NULL ;
-
-    GB_WHERE (USAGE) ;
-
-    // printf ("\n========================= GB_mex_assign:\n") ;
 
     if (nargout > 1 || ! (nargin == 2 || nargin == 6 || nargin == 7))
     {

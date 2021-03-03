@@ -242,6 +242,7 @@ docs:
 	( cd UMFPACK && $(MAKE) docs )
 	( cd CHOLMOD && $(MAKE) docs )
 	( cd SPQR && $(MAKE) docs )
+	( cd SLIP_LU && $(MAKE) docs )
 #	( cd PIRO_BAND && $(MAKE) docs )
 #	( cd SKYLINE_SVD && $(MAKE) docs )
 

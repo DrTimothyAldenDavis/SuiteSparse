@@ -1,8 +1,8 @@
 function test111
 %TEST111 performance test for eWiseAdd
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 fprintf ('\ntest111 performance tests : eWiseAdd \n') ;
 rng ('default') ;
@@ -74,7 +74,7 @@ for d = [0.001 0.01 0.1 0.4 1 2 3]
             end
             fprintf ('nthreads %2d GraphBLAS time: %12.4f ', nthreads, tg) ;
             fprintf ('speedup %12.4f over MATLAB: %12.4f\n', t1/tg, tm/tg) ;
-            assert (spok (C4) == 1) ;
+            assert (GB_spok (C4) == 1) ;
             assert (isequal (C1, C4)) ;
         end
 
@@ -104,7 +104,7 @@ for d = [0.001 0.01 0.1 0.4 1 2 3]
             end
             fprintf ('nthreads %2d GraphBLAS time: %12.4f ', nthreads, tg) ;
             fprintf ('speedup %12.4f over MATLAB: %12.4f\n', t1/tg, tm/tg) ;
-            assert (spok (C4.matrix) == 1) ;
+            assert (GB_spok (C4.matrix) == 1) ;
             assert (isequal (C1, C4.matrix)) ;
         end
 
@@ -138,7 +138,7 @@ for d = [0.001 0.01 0.1 0.4 1 2 3]
             end
             fprintf ('nthreads %2d GraphBLAS time: %12.4f ', nthreads, tg) ;
             fprintf ('speedup %12.4f over MATLAB: %12.4f\n', t1/tg, tm/tg) ;
-            assert (spok (C4.matrix) == 1) ;
+            assert (GB_spok (C4.matrix) == 1) ;
             assert (isequal (C1, C4.matrix)) ;
         end
 
@@ -167,7 +167,7 @@ for d = [0.001 0.01 0.1 0.4 1 2 3]
             end
             fprintf ('nthreads %2d GraphBLAS time: %12.4f ', nthreads, tg) ;
             fprintf ('speedup %12.4f over MATLAB: %12.4f\n', t1/tg, tm/tg) ;
-            assert (spok (C4.matrix) == 1) ;
+            assert (GB_spok (C4.matrix) == 1) ;
             assert (isequal (C1, C4.matrix)) ;
         end
 
@@ -197,7 +197,7 @@ for d = [0.001 0.01 0.1 0.4 1 2 3]
             end
             fprintf ('nthreads %2d GraphBLAS time: %12.4f ', nthreads, tg) ;
             fprintf ('speedup %12.4f over MATLAB: %12.4f\n', t1/tg, tm/tg) ;
-            assert (spok (C4.matrix) == 1) ;
+            assert (GB_spok (C4.matrix) == 1) ;
             assert (isequal (C1, C4.matrix)) ;
         end
 

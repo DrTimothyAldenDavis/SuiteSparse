@@ -9,8 +9,8 @@ function [opname optype ztype xtype ytype] = GB_spec_operator (op,optype_default
 % ztype, xtype, and ytype are the types of z, x, and y for z = f(x,y), if
 % f is a binary operator, or z = f(x) if f is a unary operator.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 if (isempty (op))
     % No operator has been defined; return an empty operator.  GB_spec_accum
@@ -28,9 +28,14 @@ elseif (isstruct (op))
     opname = op.opname ;
     optype = op.optype ;
 else
-    % op is a string, use the default optype unless the op is just logical
+    % op is a string
     opname = op ;
-    optype = optype_default ;
+    if (nargin == 1 && GB_spec_is_positional (opname))
+        % optype_default is ignored
+        optype = 'int64' ;
+    else
+        optype = optype_default ;
+    end
 end
 
 % xtype is always the optype
@@ -290,6 +295,26 @@ switch opname
         ytype = 'none' ;
 
     %--------------------------------------------------------------------------
+    % binary positional ops
+    %--------------------------------------------------------------------------
+
+    case { 'firsti' , 'firsti1' , 'firstj' , 'firstj1', ...
+           'secondi', 'secondi1', 'secondj', 'secondj1' } ;
+        if (~(isequal (ztype, 'int64') || isequal (ztype, 'int32')))
+            error ('invalid op') ;
+        end
+        xtype = optype ;
+        ytype = optype ;
+
+    %--------------------------------------------------------------------------
+    % unary positional ops
+    %--------------------------------------------------------------------------
+
+    case { 'positioni', 'positioni1', 'positionj', 'positionj1' }
+        if (~(isequal (ztype, 'int64') || isequal (ztype, 'int32')))
+            error ('invalid op') ;
+        end
+        ytype = optype ;
 
     otherwise
         error ('unknown op') ;

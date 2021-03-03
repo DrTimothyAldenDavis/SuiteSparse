@@ -2,8 +2,8 @@
 // GB_unop_factory.c:  switch factory for unary operators and 2 types
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -31,14 +31,10 @@
         // z = (ztype) x, with arbitrary typecasting
         //----------------------------------------------------------------------
 
-        // With no typecasting, the identity operator and the switch factory
-        // are not used.  Instead, the work is done by GB_mempcy, as a shallow
-        // copy (see the call to GB_apply_op in GB_shallow_op.c and
-        // GB_transpose.c), or skipped (if the operator is applied in-place;
-        // see the call to GB_apply_op in GB_apply.c). 
+        // the identity operator is only used with typecasting via this switch
+        // factory, so code1 is never equal to code2.
 
         ASSERT (code1 != code2)
-
         #define GB_OPNAME _identity
         #define GB_EXCLUDE_SAME_TYPES
         #include "GB_2type_factory.c"

@@ -39,28 +39,48 @@ function binopinfo (op, optype)
 %
 %   operator name(s) f(x,y)         |   operator names(s) f(x,y)
 %   ---------------- ------         |   ----------------- ------
-%   1st first        x              |   iseq             x == y
-%   2nd second       y              |   isne             x ~= y
-%   min              min(x,y)       |   isgt             x > y
-%   max              max(x,y)       |   islt             x < y
-%   +   plus         x+y            |   isge             x >= y
-%   -   minus        x-y            |   isle             x <= y
-%   rminus           y-x            |   ==  eq           x == y
-%   *   times        x*y            |   ~=  ne           x ~= y
-%   /   div          x/y            |   >   gt           x > y
-%   \   rdiv         y/x            |   <   lt           x < y
-%   |   || or  lor   x | y          |   >=  ge           x >= y
-%   &   && and land  x & y          |   <=  le           x <= y
-%   xor lxor         xor(x,y)       |   .^  pow          x .^ y
-%   pair             1              |   any              pick x or y
-%
-% Comparators (*lt, *gt, *le, *ge) and min/max are not available for
-% complex types.
+%   1st first        x              |   iseq              x == y
+%   2nd second       y              |   isne              x ~= y
+%   min              min(x,y)       |   isgt              x > y
+%   max              max(x,y)       |   islt              x < y
+%   +   plus         x+y            |   isge              x >= y
+%   -   minus        x-y            |   isle              x <= y
+%   rminus           y-x            |   ==  eq            x == y
+%   *   times        x*y            |   ~=  ne            x ~= y
+%   /   div          x/y            |   >   gt            x > y
+%   \   rdiv         y/x            |   <   lt            x < y
+%   |   || or  lor   x | y          |   >=  ge            x >= y
+%   &   && and land  x & y          |   <=  le            x <= y
+%   xor lxor         xor(x,y)       |   .^  pow           x .^ y
+%   pair             1              |   any               pick x or y
 %
 % All of the above operators are defined for logical operands, but many
 % are redundant. 'min.logical' is the same as 'and.logical', for example.
 % Most of the logical operators have aliases: ('lor', 'or', '|') are the
 % same, as are ('lxnor', 'xnor', 'eq', '==') for logical types.
+%
+% Positional operators return int32 or int64, and depend only on the position
+% of the entry in the matrix.  They do not depend on the values of their
+% inputs, but on their position in the matrix instead:
+%
+%   1-based postional ops:          in a semiring:     in ewise operators:
+%   operator name(s)                f(A(i,k)*B(k,j))   f(A(i,j),B(i,j))
+%   ----------------                ----------------   ----------------
+%   firsti1  1sti1 firsti  1sti     i                  i
+%   firstj1  1stj1 firstj  1stj     k                  j
+%   secondi1 2ndi1 secondi 2ndi     k                  i
+%   secondj1 2ndj1 secondj 2ndj     j                  j
+%
+%   0-based postional ops:          in a semiring:     in ewise operators:
+%   operator name(s)                f(A(i,k)*B(k,j))   f(A(i,j),B(i,j))
+%   ----------------                ----------------   ----------------
+%   firsti0  1sti0                  i-1                i-1
+%   firstj0  1stj0                  k-1                j-1
+%   secondi0 2ndi0                  k-1                i-1
+%   secondj0 2ndj0                  j-1                j-1
+%
+% Comparators (*lt, *gt, *le, *ge) and min/max are not available for
+% complex types.
 %
 % The three logical operators, lor, land, and lxor, can be used with any
 % real types.  z = lor.double (x,y) tests the condition (x~=0) || (y~=0),
@@ -74,9 +94,8 @@ function binopinfo (op, optype)
 % z = cmplx(x,y) can be computed for x and y as single and double; z is
 % single complex or double complex, respectively.
 %
-% The following bitwise operators are available for any signed or
-% unsigned integer types:  bitor, bitand, bitxor, bitxnor, bitget, bitset,
-% bitclr, and bitshift.
+% The bitwise ops bitor, bitand, bitxor, bitxnor, bitget, bitset, bitclr,
+% and bitshift are available for any signed or unsigned integer type.
 %
 % Typecasting:  If the optype is omitted from the string (for example,
 % GrB.eadd (A, '+', B) or simply C = A+B), then the optype is inferred
@@ -97,8 +116,8 @@ function binopinfo (op, optype)
 % See also GrB.descriptorinfo, GrB.monoidinfo, GrB.selectopinfo,
 % GrB.semiringinfo, GrB.unopinfo, GrB.optype.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 if (nargin == 0)
     help GrB.binopinfo

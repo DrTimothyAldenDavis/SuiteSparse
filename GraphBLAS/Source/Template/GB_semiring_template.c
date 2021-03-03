@@ -2,8 +2,8 @@
 // GB_semiring_template.c: built-in unary and binary functions and operators
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -59,6 +59,14 @@
 //      4 bitwise monoids: BOR, BAND, BXOR, BXNOR
 //      4 bitwise multiply operators: BOR, BAND, BXOR, BXNOR
 //      4 unsigned integer types: UINT8, UINT16, UINT32, UINT64
+
+// 80 positional semirings:
+
+//      5 monoids: MIN, MAX, PLUS, TIMES, ANY
+//      8 multiply operators:
+//          FIRSTI, FIRSTI1, FIRSTJ, FIRSTJ1,
+//          SECONDI, SECONDI1, SECONDJ, SECONDJ1
+//      2 types: INT32, INT64
 
 #if defined ( GB_BOOLEAN )
 
@@ -292,7 +300,7 @@
     GB_SEMIRING_DEFINE ( ANY   , GxB_, LXOR   )
 
     //--------------------------------------------------------------------------
-    // 30 semirings of the form TxT->bool
+    // 30 semirings of the form TxT -> bool
     //--------------------------------------------------------------------------
 
     // The multiply operator has the form z=compare(x,y), where x and y are of

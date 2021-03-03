@@ -7,7 +7,7 @@ function C = subsref (A, S)
 % x = A (M) for a logical matrix M constructs an nnz(M)-by-1 vector x,
 % for MATLAB-style logical indexing.  A or M may be MATLAB sparse or full
 % matrices, or GraphBLAS matrices, in any combination.  M must be either
-% a MATLAB logical matrix (sparse or dense), or a GraphBLAS logical
+% a MATLAB logical matrix (sparse or full), or a GraphBLAS logical
 % matrix; that is, GrB.type (M) must be 'logical'.
 %
 % GraphBLAS can construct huge sparse matrices, but they cannot always be
@@ -31,10 +31,10 @@ function C = subsref (A, S)
 % See also GrB/subsasgn, GrB/subsindex, GrB.subassign, GrB.assign,
 % GrB.extract.
 
-% FUTURE: add linear indexing.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+% FUTURE: add linear indexing.
 
 if (isobject (A))
     A = A.opaque ;

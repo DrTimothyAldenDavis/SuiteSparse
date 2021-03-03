@@ -2,8 +2,8 @@
 // GB_Global: global values in GraphBLAS
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -22,8 +22,6 @@
 typedef struct
 {
 
-    void *queue_head ;          // TODO in 4.0: delete
-
     //--------------------------------------------------------------------------
     // blocking/non-blocking mode, set by GrB_init
     //--------------------------------------------------------------------------
@@ -32,10 +30,9 @@ typedef struct
     bool GrB_init_called ;      // true if GrB_init already called
 
     //--------------------------------------------------------------------------
-    // threading and MKL control
+    // threading control
     //--------------------------------------------------------------------------
 
-    bool use_mkl ;              // control usage of Intel MKL
     int nthreads_max ;          // max number of threads to use
     double chunk ;              // chunk size for determining # threads to use
 
@@ -43,7 +40,8 @@ typedef struct
     // hypersparsity and CSR/CSC format control
     //--------------------------------------------------------------------------
 
-    double hyper_ratio ;        // default hyper_ratio for new matrices
+    float bitmap_switch [GxB_NBITMAP_SWITCH] ; // default bitmap_switch
+    float hyper_switch ;        // default hyper_switch for new matrices
     bool is_csc ;               // default CSR/CSC format for new matrices
 
     //--------------------------------------------------------------------------
@@ -97,7 +95,12 @@ typedef struct
     //--------------------------------------------------------------------------
 
     int64_t hack ;                  // ad hoc setting (for draft versions only)
-    bool burble ;                   // controls GBBURBLE output
+
+    //--------------------------------------------------------------------------
+    // diagnostic output
+    //--------------------------------------------------------------------------
+
+    bool burble ;                   // controls GBURBLE output
 
     //--------------------------------------------------------------------------
     // for MATLAB interface only
@@ -115,6 +118,13 @@ typedef struct
     // properties of each GPU:
     GB_cuda_device gpu_properties [GB_CUDA_MAX_GPUS] ;
 
+    //--------------------------------------------------------------------------
+    // timing: for code development only
+    //--------------------------------------------------------------------------
+
+    double timing [20] ;
+
+    // #include "GB_Global_struct_mkl_template.c"
 }
 GB_Global_struct ;
 
@@ -123,23 +133,38 @@ GB_PUBLIC GB_Global_struct GB_Global ;
 GB_Global_struct GB_Global =
 {
 
-    .queue_head = NULL,         // TODO in 4.0: delete
-
     // GraphBLAS mode
     .mode = GrB_NONBLOCKING,    // default is nonblocking
 
     // initialization flag
     .GrB_init_called = false,   // GrB_init has not yet been called
 
-    // Intel MKL control (DRAFT: in progress)
-    .use_mkl = false,           // if true, exploit the Intel MKL
-
     // max number of threads and chunk size
     .nthreads_max = 1,
     .chunk = GB_CHUNK_DEFAULT,
 
+    // min dimension                density
+    #define GB_BITSWITCH_1          ((float) 0.04)
+    #define GB_BITSWITCH_2          ((float) 0.05)
+    #define GB_BITSWITCH_3_to_4     ((float) 0.06)
+    #define GB_BITSWITCH_5_to_8     ((float) 0.08)
+    #define GB_BITSWITCH_9_to_16    ((float) 0.10)
+    #define GB_BITSWITCH_17_to_32   ((float) 0.20)
+    #define GB_BITSWITCH_33_to_64   ((float) 0.30)
+    #define GB_BITSWITCH_gt_than_64 ((float) 0.40)
+
     // default format
-    .hyper_ratio = GB_HYPER_DEFAULT,
+    .hyper_switch = GB_HYPER_SWITCH_DEFAULT,
+    .bitmap_switch = {
+        GB_BITSWITCH_1,
+        GB_BITSWITCH_2,
+        GB_BITSWITCH_3_to_4,
+        GB_BITSWITCH_5_to_8,
+        GB_BITSWITCH_9_to_16,
+        GB_BITSWITCH_17_to_32,
+        GB_BITSWITCH_33_to_64,
+        GB_BITSWITCH_gt_than_64 },
+
     .is_csc = (GB_FORMAT_DEFAULT != GxB_BY_ROW),    // default is GxB_BY_ROW
 
     // abort function for debugging only
@@ -167,6 +192,8 @@ GB_Global_struct GB_Global =
     // for MATLAB interface only
     .print_one_based = false,   // if true, print 1-based indices
 
+    // #include "GB_Global_init_mkl_template.c'
+
     // CUDA environment (DRAFT: in progress)
     .gpu_count = 0,                     // # of GPUs in the system
     .gpu_control = GxB_DEFAULT,         // always, never, or default
@@ -177,12 +204,6 @@ GB_Global_struct GB_Global =
 //==============================================================================
 // GB_Global access functions
 //==============================================================================
-
-// TODO in 4.0: delete:
-GB_PUBLIC
-void GB_Global_queue_head_set (void *p) { GB_Global.queue_head = p ; }
-GB_PUBLIC
-void *GB_Global_queue_head_get (void) { return (GB_Global.queue_head) ; }
 
 //------------------------------------------------------------------------------
 // mode
@@ -202,13 +223,13 @@ GrB_Mode GB_Global_mode_get (void)
 // GrB_init_called
 //------------------------------------------------------------------------------
 
-GB_PUBLIC   // accessed by the MATLAB interface only
+GB_PUBLIC
 void GB_Global_GrB_init_called_set (bool GrB_init_called)
 { 
     GB_Global.GrB_init_called = GrB_init_called ;
 }
 
-GB_PUBLIC   // accessed by the MATLAB interface only
+GB_PUBLIC
 bool GB_Global_GrB_init_called_get (void)
 { 
     return (GB_Global.GrB_init_called) ;
@@ -218,13 +239,13 @@ bool GB_Global_GrB_init_called_get (void)
 // nthreads_max
 //------------------------------------------------------------------------------
 
-GB_PUBLIC   // accessed by the MATLAB interface only
+GB_PUBLIC
 void GB_Global_nthreads_max_set (int nthreads_max)
 { 
     GB_Global.nthreads_max = GB_IMAX (nthreads_max, 1) ;
 }
 
-GB_PUBLIC   // accessed by the MATLAB interface only
+GB_PUBLIC
 int GB_Global_nthreads_max_get (void)
 { 
     return (GB_Global.nthreads_max) ;
@@ -234,7 +255,7 @@ int GB_Global_nthreads_max_get (void)
 // OpenMP max_threads
 //------------------------------------------------------------------------------
 
-GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
+GB_PUBLIC
 int GB_Global_omp_get_max_threads (void)
 { 
     return (GB_OPENMP_MAX_THREADS) ;
@@ -244,47 +265,80 @@ int GB_Global_omp_get_max_threads (void)
 // chunk
 //------------------------------------------------------------------------------
 
-GB_PUBLIC   // accessed by the MATLAB interface only
+GB_PUBLIC
 void GB_Global_chunk_set (double chunk)
 { 
     if (chunk <= GxB_DEFAULT) chunk = GB_CHUNK_DEFAULT ;
     GB_Global.chunk = fmax (chunk, 1) ;
 }
 
-GB_PUBLIC   // accessed by the MATLAB interface only
+GB_PUBLIC
 double GB_Global_chunk_get (void)
 { 
     return (GB_Global.chunk) ;
 }
 
 //------------------------------------------------------------------------------
-// hyper_ratio
+// hyper_switch
 //------------------------------------------------------------------------------
 
-void GB_Global_hyper_ratio_set (double hyper_ratio)
+GB_PUBLIC
+void GB_Global_hyper_switch_set (float hyper_switch)
 { 
-    GB_Global.hyper_ratio = hyper_ratio ;
+    GB_Global.hyper_switch = hyper_switch ;
 }
 
-double GB_Global_hyper_ratio_get (void)
+GB_PUBLIC
+float GB_Global_hyper_switch_get (void)
 { 
-    return (GB_Global.hyper_ratio) ;
+    return (GB_Global.hyper_switch) ;
 }
 
 //------------------------------------------------------------------------------
-// use_mkl
+// bitmap_switch
 //------------------------------------------------------------------------------
 
-GB_PUBLIC   // accessed by the MATLAB interface only
-void GB_Global_use_mkl_set (bool use_mkl)
+GB_PUBLIC
+void GB_Global_bitmap_switch_set (int k, float b)
 { 
-    GB_Global.use_mkl = use_mkl ;
+    k = GB_IMAX (k, 0) ;
+    k = GB_IMIN (k, 7) ;
+    GB_Global.bitmap_switch [k] = b ;
 }
 
-GB_PUBLIC   // accessed by the MATLAB interface only
-bool GB_Global_use_mkl_get (void)
+GB_PUBLIC
+float GB_Global_bitmap_switch_get (int k)
 { 
-    return (GB_Global.use_mkl) ;
+    k = GB_IMAX (k, 0) ;
+    k = GB_IMIN (k, 7) ;
+    return (GB_Global.bitmap_switch [k]) ;
+}
+
+GB_PUBLIC
+float GB_Global_bitmap_switch_matrix_get (int64_t vlen, int64_t vdim)
+{ 
+    int64_t d = GB_IMIN (vlen, vdim) ;
+    if (d <=  1) return (GB_Global.bitmap_switch [0]) ;
+    if (d <=  2) return (GB_Global.bitmap_switch [1]) ;
+    if (d <=  4) return (GB_Global.bitmap_switch [2]) ;
+    if (d <=  8) return (GB_Global.bitmap_switch [3]) ;
+    if (d <= 16) return (GB_Global.bitmap_switch [4]) ;
+    if (d <= 32) return (GB_Global.bitmap_switch [5]) ;
+    if (d <= 64) return (GB_Global.bitmap_switch [6]) ;
+    return (GB_Global.bitmap_switch [7]) ;
+}
+
+GB_PUBLIC
+void GB_Global_bitmap_switch_default (void)
+{
+    GB_Global.bitmap_switch [0] = GB_BITSWITCH_1 ;
+    GB_Global.bitmap_switch [1] = GB_BITSWITCH_2 ;
+    GB_Global.bitmap_switch [2] = GB_BITSWITCH_3_to_4 ;
+    GB_Global.bitmap_switch [3] = GB_BITSWITCH_5_to_8 ;
+    GB_Global.bitmap_switch [4] = GB_BITSWITCH_9_to_16 ;
+    GB_Global.bitmap_switch [5] = GB_BITSWITCH_17_to_32 ;
+    GB_Global.bitmap_switch [6] = GB_BITSWITCH_33_to_64 ;
+    GB_Global.bitmap_switch [7] = GB_BITSWITCH_gt_than_64 ;
 }
 
 //------------------------------------------------------------------------------
@@ -305,13 +359,13 @@ bool GB_Global_is_csc_get (void)
 // abort_function
 //------------------------------------------------------------------------------
 
-GB_PUBLIC   // accessed by the MATLAB interface only
+GB_PUBLIC
 void GB_Global_abort_function_set (void (* abort_function) (void))
 { 
     GB_Global.abort_function = abort_function ;
 }
 
-GB_PUBLIC   // accessed by the MATLAB interface only
+GB_PUBLIC
 void GB_Global_abort_function (void)
 {
     GB_Global.abort_function ( ) ;
@@ -434,13 +488,13 @@ void GB_Global_free_function (void *p)
 // malloc_is_thread_safe
 //------------------------------------------------------------------------------
 
-GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
+GB_PUBLIC
 void GB_Global_malloc_is_thread_safe_set (bool malloc_is_thread_safe)
 { 
     GB_Global.malloc_is_thread_safe = malloc_is_thread_safe ;
 }
 
-GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
+GB_PUBLIC
 bool GB_Global_malloc_is_thread_safe_get (void)
 { 
     return (GB_Global.malloc_is_thread_safe) ;
@@ -450,7 +504,7 @@ bool GB_Global_malloc_is_thread_safe_get (void)
 // malloc_tracking
 //------------------------------------------------------------------------------
 
-GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
+GB_PUBLIC
 void GB_Global_malloc_tracking_set (bool malloc_tracking)
 { 
     GB_Global.malloc_tracking = malloc_tracking ;
@@ -471,7 +525,7 @@ void GB_Global_nmalloc_clear (void)
     GB_Global.nmalloc = 0 ;
 }
 
-GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
+GB_PUBLIC
 int64_t GB_Global_nmalloc_get (void)
 { 
     int64_t nmalloc ;
@@ -486,7 +540,7 @@ void GB_Global_nmalloc_increment (void)
     GB_Global.nmalloc++ ;
 }
 
-GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
+GB_PUBLIC
 void GB_Global_nmalloc_decrement (void)
 { 
     GB_ATOMIC_UPDATE
@@ -497,7 +551,7 @@ void GB_Global_nmalloc_decrement (void)
 // malloc_debug
 //------------------------------------------------------------------------------
 
-GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
+GB_PUBLIC
 void GB_Global_malloc_debug_set (bool malloc_debug)
 { 
     GB_ATOMIC_WRITE
@@ -516,7 +570,7 @@ bool GB_Global_malloc_debug_get (void)
 // malloc_debug_count
 //------------------------------------------------------------------------------
 
-GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
+GB_PUBLIC
 void GB_Global_malloc_debug_count_set (int64_t malloc_debug_count)
 { 
     GB_ATOMIC_WRITE
@@ -538,13 +592,13 @@ bool GB_Global_malloc_debug_count_decrement (void)
 // hack: for setting an internal value for development only
 //------------------------------------------------------------------------------
 
-GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
+GB_PUBLIC
 void GB_Global_hack_set (int64_t hack)
 { 
     GB_Global.hack = hack ;
 }
 
-GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
+GB_PUBLIC
 int64_t GB_Global_hack_get (void)
 { 
     return (GB_Global.hack) ;
@@ -559,7 +613,7 @@ void GB_Global_burble_set (bool burble)
     GB_Global.burble = burble ;
 }
 
-GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
+GB_PUBLIC
 bool GB_Global_burble_get (void)
 { 
     return (GB_Global.burble) ;
@@ -569,13 +623,13 @@ bool GB_Global_burble_get (void)
 // for MATLAB interface only
 //------------------------------------------------------------------------------
 
-GB_PUBLIC   // accessed by the MATLAB interface only
+GB_PUBLIC
 void GB_Global_print_one_based_set (bool onebased)
 { 
     GB_Global.print_one_based = onebased ;
 }
 
-GB_PUBLIC   // accessed by the MATLAB interface only
+GB_PUBLIC
 bool GB_Global_print_one_based_get (void)
 { 
     return (GB_Global.print_one_based) ;
@@ -668,6 +722,34 @@ int GB_Global_gpu_sm_get (int device)
     return (GB_Global.gpu_properties [device].number_of_sms)  ;
 }
 
+bool GB_Global_gpu_device_pool_size_set( int device, size_t size)
+{
+    GB_GPU_DEVICE_CHECK (0) ;       // zero if invalid GPU
+    GB_Global.gpu_properties [device].pool_size = (int) size ;
+    return( true); 
+}
+
+bool GB_Global_gpu_device_max_pool_size_set( int device, size_t size)
+{
+    GB_GPU_DEVICE_CHECK (0) ;       // zero if invalid GPU
+    GB_Global.gpu_properties[device].max_pool_size = (int) size ;
+    return( true); 
+}
+
+bool GB_Global_gpu_device_memory_resource_set( int device, void *resource)
+{
+    GB_GPU_DEVICE_CHECK (0) ;       // zero if invalid GPU
+    GB_Global.gpu_properties[device].memory_resource = resource;
+    return( true); 
+}
+
+void* GB_Global_gpu_device_memory_resource_get( int device )
+{
+    GB_GPU_DEVICE_CHECK (0) ;       // zero if invalid GPU
+    return ( GB_Global.gpu_properties [device].memory_resource ) ;
+    //NOTE: this returns a void*, needs to be cast to be used
+}
+
 bool GB_Global_gpu_device_properties_get (int device)
 {
     // get all properties of a specific GPU;
@@ -682,4 +764,42 @@ bool GB_Global_gpu_device_properties_get (int device)
     #endif
 }
 
+//------------------------------------------------------------------------------
+// timing: for code development only
+//------------------------------------------------------------------------------
+
+GB_PUBLIC
+void GB_Global_timing_clear_all (void)
+{
+    for (int k = 0 ; k < 20 ; k++)
+    {
+        GB_Global.timing [k] = 0 ;
+    }
+}
+
+GB_PUBLIC
+void GB_Global_timing_clear (int k)
+{
+    GB_Global.timing [k] = 0 ;
+}
+
+GB_PUBLIC
+void GB_Global_timing_set (int k, double t)
+{
+    GB_Global.timing [k] = t ;
+}
+
+GB_PUBLIC
+void GB_Global_timing_add (int k, double t)
+{
+    GB_Global.timing [k] += t ;
+}
+
+GB_PUBLIC
+double GB_Global_timing_get (int k)
+{
+    return (GB_Global.timing [k]) ;
+}
+
+// #include "GB_Global_mkl_template.c
 

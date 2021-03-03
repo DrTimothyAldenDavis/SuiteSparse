@@ -2,6 +2,11 @@
 // GraphBLAS/Demo/Program/reduce_demo: reduce a matrix to a scalar
 //------------------------------------------------------------------------------
 
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
+//------------------------------------------------------------------------------
+
 // TODO for GPU: add this to CMakelists.txt, or merge with reduce_demo.c
 
 #include "GraphBLAS.h"

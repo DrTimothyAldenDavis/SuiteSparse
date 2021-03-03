@@ -2,8 +2,8 @@
 // GB_mx_semiring: get a built-in semiring
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -83,9 +83,6 @@ GrB_Semiring GB_mx_semiring         // semiring, or NULL if error
         // Boolean.  MIN, MAX, PLUS, and TIMES are renamed.
         add_opcode = GB_boolean_rename (add_opcode) ;
     }
-
-//  printf ("zcode %d xcode %d ycode %d add_opcode %d mult_opcode %d\n",
-//      zcode, xcode, mult->ytype->code, add_opcode, mult_opcode) ;
 
     //--------------------------------------------------------------------------
     // launch the switch factory
@@ -2544,12 +2541,246 @@ GrB_Semiring GB_mx_semiring         // semiring, or NULL if error
             default : ;
         }
 
+        //----------------------------------------------------------------------
+        // 80 positional semirings
+        //----------------------------------------------------------------------
+
+        switch (mult_opcode)
+        {
+
+            case GB_FIRSTI_opcode   :   // z = first_i(A(i,k),y) == i
+
+                if (zcode == GB_INT64_code)
+                {
+                    switch (add_opcode)
+                    {
+                        case GB_MIN_opcode   : return (GxB_MIN_FIRSTI_INT64) ;
+                        case GB_MAX_opcode   : return (GxB_MAX_FIRSTI_INT64) ;
+                        case GB_TIMES_opcode : return (GxB_TIMES_FIRSTI_INT64) ;
+                        case GB_PLUS_opcode  : return (GxB_PLUS_FIRSTI_INT64) ;
+                        case GB_ANY_opcode   : return (GxB_ANY_FIRSTI_INT64) ;
+                        default: ;
+                    }
+                }
+                else
+                {
+                    switch (add_opcode)
+                    {
+                        case GB_MIN_opcode   : return (GxB_MIN_FIRSTI_INT32) ;
+                        case GB_MAX_opcode   : return (GxB_MAX_FIRSTI_INT32) ;
+                        case GB_TIMES_opcode : return (GxB_TIMES_FIRSTI_INT32) ;
+                        case GB_PLUS_opcode  : return (GxB_PLUS_FIRSTI_INT32) ;
+                        case GB_ANY_opcode   : return (GxB_ANY_FIRSTI_INT32) ;
+                        default: ;
+                    }
+                }
+                break ;
+
+            case GB_FIRSTI1_opcode  :   // z = first_i1(A(i,k),y) == i+1
+
+                if (zcode == GB_INT64_code)
+                {
+                    switch (add_opcode)
+                    {
+                        case GB_MIN_opcode   : return (GxB_MIN_FIRSTI1_INT64) ;
+                        case GB_MAX_opcode   : return (GxB_MAX_FIRSTI1_INT64) ;
+                        case GB_TIMES_opcode : return (GxB_TIMES_FIRSTI1_INT64) ;
+                        case GB_PLUS_opcode  : return (GxB_PLUS_FIRSTI1_INT64) ;
+                        case GB_ANY_opcode   : return (GxB_ANY_FIRSTI1_INT64) ;
+                        default: ;
+                    }
+                }
+                else
+                {
+                    switch (add_opcode)
+                    {
+                        case GB_MIN_opcode   : return (GxB_MIN_FIRSTI1_INT32) ;
+                        case GB_MAX_opcode   : return (GxB_MAX_FIRSTI1_INT32) ;
+                        case GB_TIMES_opcode : return (GxB_TIMES_FIRSTI1_INT32) ;
+                        case GB_PLUS_opcode  : return (GxB_PLUS_FIRSTI1_INT32) ;
+                        case GB_ANY_opcode   : return (GxB_ANY_FIRSTI1_INT32) ;
+                        default: ;
+                    }
+                }
+                break ;
+
+            case GB_FIRSTJ_opcode   :   // z = first_j(A(i,k),y) == k
+
+                if (zcode == GB_INT64_code)
+                {
+                    switch (add_opcode)
+                    {
+                        case GB_MIN_opcode   : return (GxB_MIN_FIRSTJ_INT64) ;
+                        case GB_MAX_opcode   : return (GxB_MAX_FIRSTJ_INT64) ;
+                        case GB_TIMES_opcode : return (GxB_TIMES_FIRSTJ_INT64) ;
+                        case GB_PLUS_opcode  : return (GxB_PLUS_FIRSTJ_INT64) ;
+                        case GB_ANY_opcode   : return (GxB_ANY_FIRSTJ_INT64) ;
+                        default: ;
+                    }
+                }
+                else
+                {
+                    switch (add_opcode)
+                    {
+                        case GB_MIN_opcode   : return (GxB_MIN_FIRSTJ_INT32) ;
+                        case GB_MAX_opcode   : return (GxB_MAX_FIRSTJ_INT32) ;
+                        case GB_TIMES_opcode : return (GxB_TIMES_FIRSTJ_INT32) ;
+                        case GB_PLUS_opcode  : return (GxB_PLUS_FIRSTJ_INT32) ;
+                        case GB_ANY_opcode   : return (GxB_ANY_FIRSTJ_INT32) ;
+                        default: ;
+                    }
+                }
+                break ;
+
+            case GB_FIRSTJ1_opcode  :   // z = first_j1(A(i,k),y) == k+1
+
+                if (zcode == GB_INT64_code)
+                {
+                    switch (add_opcode)
+                    {
+                        case GB_MIN_opcode   : return (GxB_MIN_FIRSTJ1_INT64) ;
+                        case GB_MAX_opcode   : return (GxB_MAX_FIRSTJ1_INT64) ;
+                        case GB_TIMES_opcode : return (GxB_TIMES_FIRSTJ1_INT64) ;
+                        case GB_PLUS_opcode  : return (GxB_PLUS_FIRSTJ1_INT64) ;
+                        case GB_ANY_opcode   : return (GxB_ANY_FIRSTJ1_INT64) ;
+                        default: ;
+                    }
+                }
+                else
+                {
+                    switch (add_opcode)
+                    {
+                        case GB_MIN_opcode   : return (GxB_MIN_FIRSTJ1_INT32) ;
+                        case GB_MAX_opcode   : return (GxB_MAX_FIRSTJ1_INT32) ;
+                        case GB_TIMES_opcode : return (GxB_TIMES_FIRSTJ1_INT32) ;
+                        case GB_PLUS_opcode  : return (GxB_PLUS_FIRSTJ1_INT32) ;
+                        case GB_ANY_opcode   : return (GxB_ANY_FIRSTJ1_INT32) ;
+                        default: ;
+                    }
+                }
+                break ;
+
+            case GB_SECONDI_opcode  :   // z = second_i(x,B(k,j)) == k
+
+                if (zcode == GB_INT64_code)
+                {
+                    switch (add_opcode)
+                    {
+                        case GB_MIN_opcode   : return (GxB_MIN_SECONDI_INT64) ;
+                        case GB_MAX_opcode   : return (GxB_MAX_SECONDI_INT64) ;
+                        case GB_TIMES_opcode : return (GxB_TIMES_SECONDI_INT64) ;
+                        case GB_PLUS_opcode  : return (GxB_PLUS_SECONDI_INT64) ;
+                        case GB_ANY_opcode   : return (GxB_ANY_SECONDI_INT64) ;
+                        default: ;
+                    }
+                }
+                else
+                {
+                    switch (add_opcode)
+                    {
+                        case GB_MIN_opcode   : return (GxB_MIN_SECONDI_INT32) ;
+                        case GB_MAX_opcode   : return (GxB_MAX_SECONDI_INT32) ;
+                        case GB_TIMES_opcode : return (GxB_TIMES_SECONDI_INT32) ;
+                        case GB_PLUS_opcode  : return (GxB_PLUS_SECONDI_INT32) ;
+                        case GB_ANY_opcode   : return (GxB_ANY_SECONDI_INT32) ;
+                        default: ;
+                    }
+                }
+                break ;
+
+            case GB_SECONDI1_opcode :   // z = second_i1(x,B(k,j)) == k+1
+
+                if (zcode == GB_INT64_code)
+                {
+                    switch (add_opcode)
+                    {
+                        case GB_MIN_opcode   : return (GxB_MIN_SECONDI1_INT64) ;
+                        case GB_MAX_opcode   : return (GxB_MAX_SECONDI1_INT64) ;
+                        case GB_TIMES_opcode : return (GxB_TIMES_SECONDI1_INT64) ;
+                        case GB_PLUS_opcode  : return (GxB_PLUS_SECONDI1_INT64) ;
+                        case GB_ANY_opcode   : return (GxB_ANY_SECONDI1_INT64) ;
+                        default: ;
+                    }
+                }
+                else
+                {
+                    switch (add_opcode)
+                    {
+                        case GB_MIN_opcode   : return (GxB_MIN_SECONDI1_INT32) ;
+                        case GB_MAX_opcode   : return (GxB_MAX_SECONDI1_INT32) ;
+                        case GB_TIMES_opcode : return (GxB_TIMES_SECONDI1_INT32) ;
+                        case GB_PLUS_opcode  : return (GxB_PLUS_SECONDI1_INT32) ;
+                        case GB_ANY_opcode   : return (GxB_ANY_SECONDI1_INT32) ;
+                        default: ;
+                    }
+                }
+                break ;
+
+            case GB_SECONDJ_opcode  :   // z = second_j(x,B(i,j)) == j
+
+                if (zcode == GB_INT64_code)
+                {
+                    switch (add_opcode)
+                    {
+                        case GB_MIN_opcode   : return (GxB_MIN_SECONDJ_INT64) ;
+                        case GB_MAX_opcode   : return (GxB_MAX_SECONDJ_INT64) ;
+                        case GB_TIMES_opcode : return (GxB_TIMES_SECONDJ_INT64) ;
+                        case GB_PLUS_opcode  : return (GxB_PLUS_SECONDJ_INT64) ;
+                        case GB_ANY_opcode   : return (GxB_ANY_SECONDJ_INT64) ;
+                        default: ;
+                    }
+                }
+                else
+                {
+                    switch (add_opcode)
+                    {
+                        case GB_MIN_opcode   : return (GxB_MIN_SECONDJ_INT32) ;
+                        case GB_MAX_opcode   : return (GxB_MAX_SECONDJ_INT32) ;
+                        case GB_TIMES_opcode : return (GxB_TIMES_SECONDJ_INT32) ;
+                        case GB_PLUS_opcode  : return (GxB_PLUS_SECONDJ_INT32) ;
+                        case GB_ANY_opcode   : return (GxB_ANY_SECONDJ_INT32) ;
+                        default: ;
+                    }
+                }
+                break ;
+
+            case GB_SECONDJ1_opcode :   // z = second_j1(x,B(i,j)) == j+1
+
+                if (zcode == GB_INT64_code)
+                {
+                    switch (add_opcode)
+                    {
+                        case GB_MIN_opcode   : return (GxB_MIN_SECONDJ1_INT64) ;
+                        case GB_MAX_opcode   : return (GxB_MAX_SECONDJ1_INT64) ;
+                        case GB_TIMES_opcode : return (GxB_TIMES_SECONDJ1_INT64) ;
+                        case GB_PLUS_opcode  : return (GxB_PLUS_SECONDJ1_INT64) ;
+                        case GB_ANY_opcode   : return (GxB_ANY_SECONDJ1_INT64) ;
+                        default: ;
+                    }
+                }
+                else
+                {
+                    switch (add_opcode)
+                    {
+                        case GB_MIN_opcode   : return (GxB_MIN_SECONDJ1_INT32) ;
+                        case GB_MAX_opcode   : return (GxB_MAX_SECONDJ1_INT32) ;
+                        case GB_TIMES_opcode : return (GxB_TIMES_SECONDJ1_INT32) ;
+                        case GB_PLUS_opcode  : return (GxB_PLUS_SECONDJ1_INT32) ;
+                        case GB_ANY_opcode   : return (GxB_ANY_SECONDJ1_INT32) ;
+                        default: ;
+                    }
+                }
+                break ;
+
+            default  : ;
+        }
+
     }
     else if (xcode != GB_BOOL_code)
     {
 
         //----------------------------------------------------------------------
-        // 300 semirings with TxT->bool multiply operators
+        // 300 semirings with TxT -> bool multiply operators
         //----------------------------------------------------------------------
 
         // x,y are one of the 10 non-Boolean types, z is Boolean

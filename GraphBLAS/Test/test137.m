@@ -1,8 +1,8 @@
 function test137
 %TEST137 GrB_eWiseMult with FIRST and SECOND operators
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 fprintf ('test137: GrB_eWiseMult with FIRST and SECOND operators\n') ;
 

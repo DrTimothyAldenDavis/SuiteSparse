@@ -14,8 +14,8 @@ function Y = dnn (W, bias, Y0)
 %   Y = GrB.dnn (W, bias, Y0) ;
 %
 % The matrices can be stored by row or by column, but GrB.format ('by row')
-% is significantly faster.  For the 2019 GraphChallenge, all matrices can
-% be 'single', and the same results are obtained.
+% is somewhat faster.  For the 2019 GraphChallenge, all matrices can be
+% 'single', and the same results are obtained.
 %
 % In the MATLAB reference implementation, the bias{k} is a row vector of
 % size 1-by-nneurons.  The MATLAB reference inputs can be converted to
@@ -34,21 +34,28 @@ function Y = dnn (W, bias, Y0)
 %
 % See also dnn_matlab, dnn_mat2gb.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 % NOTE: this is a high-level algorithm that uses GrB objects.
 
+[f,~] = GrB.format (Y0) ;
+desc.format = '' ;
+if (isequal (f, 'by row'))
+    % hypersparse-by-row is fastest, since entire rows drop out of Y
+    desc.format = 'hyper by row' ;
+end
+tol = single (32) ;
+
 Y = Y0 ;
 for k = 1:length(W)
-
     % Propagate through layer, apply bias, and threshold negative values.
-    Y = GrB.select (GrB.mxm (Y * W {k}, '+.+', bias {k}), '>0') ;
-
-    M = Y > 32 ;
+    Y = GrB.mxm (Y, '+.*', W {k}, desc) ;
+    Y = GrB.select (GrB.mxm (Y, '+.+', bias {k}, desc), '>0', desc) ;
+    M = Y > tol ;
     if (nnz (M) > 0)
-        % Y (M) = 32 ;
-        Y = GrB.subassign (Y, M, 32) ;
+        % Y (M) = tol ;
+        Y = GrB.subassign (Y, M, tol, desc) ;
     end
 end
 

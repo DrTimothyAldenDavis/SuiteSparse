@@ -2,15 +2,13 @@
 // GB_mx_get_global: get the GraphBLAS thread-local storage from MATLAB
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
 // Get the variable 'GraphBLAS_debug' from the MATLAB global workspace.
 // If it doesn't exist, create it and set it to false.
-
-// GxB_MKL is not controllable via MATLAB.
 
 #include "GB_mex.h"
 

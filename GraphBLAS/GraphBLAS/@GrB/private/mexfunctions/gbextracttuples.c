@@ -2,8 +2,8 @@
 // gbextracttuples: extract all entries from a GraphBLAS matrix
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -45,10 +45,12 @@ void mexFunction
     base_enum_t base = BASE_DEFAULT ;
     kind_enum_t kind = KIND_FULL ;              // ignored
     GxB_Format_Value fmt = GxB_NO_FORMAT ;      // ignored
+    int sparsity = 0 ;                          // ignored
     GrB_Descriptor desc = NULL ;
     if (nargin > 1)
     { 
-        desc = gb_mxarray_to_descriptor (pargin [nargin-1], &kind, &fmt, &base);
+        desc = gb_mxarray_to_descriptor (pargin [nargin-1], &kind, &fmt,
+            &sparsity, &base) ;
     }
     OK (GrB_Descriptor_free (&desc)) ;
 

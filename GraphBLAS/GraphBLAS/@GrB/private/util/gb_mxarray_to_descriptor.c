@@ -2,8 +2,8 @@
 // gb_mxarray_to_descriptor: get the contents of a GraphBLAS Descriptor
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -76,7 +76,7 @@ static void get_descriptor
             }
             else if (MATCH (s, "structural complement"))
             { 
-                OK (GxB_Desc_set (desc, field, GrB_COMP + GrB_STRUCTURE)) ;
+                OK (GxB_Desc_set (desc, field, GrB_COMP+GrB_STRUCTURE)) ;
             }
             else if (MATCH (s, "replace"))
             { 
@@ -93,10 +93,6 @@ static void get_descriptor
             else if (MATCH (s, "saxpy"))
             { 
                 OK (GxB_Desc_set (desc, field, GxB_AxB_SAXPY)) ;
-            }
-            else if (MATCH (s, "heap"))
-            { 
-                OK (GxB_Desc_set (desc, field, GxB_AxB_HEAP)) ;
             }
             else if (MATCH (s, "hash"))
             { 
@@ -120,6 +116,7 @@ GrB_Descriptor gb_mxarray_to_descriptor // new descriptor, or NULL if none
     const mxArray *desc_matlab, // MATLAB struct with possible descriptor
     kind_enum_t *kind,          // GrB, sparse, or full
     GxB_Format_Value *fmt,      // by row or by col
+    int *sparsity,              // hypersparse/sparse/bitmap/full
     base_enum_t *base           // 0-based int, 1-based int, or 1-based double
 )
 {
@@ -132,14 +129,16 @@ GrB_Descriptor gb_mxarray_to_descriptor // new descriptor, or NULL if none
     (*kind) = KIND_GRB ;
     (*fmt) = GxB_NO_FORMAT ;
     (*base) = BASE_DEFAULT ;
+    (*sparsity) = 0 ;
 
     if (desc_matlab == NULL || !mxIsStruct (desc_matlab)
-        || mxGetField (desc_matlab, 0, "GraphBLAS") != NULL)
+        || (mxGetField (desc_matlab, 0, "GraphBLASv4") != NULL)
+        || (mxGetField (desc_matlab, 0, "GraphBLAS") != NULL))
     {
         // If present, the descriptor is a struct whose first field is not
-        // "desc.GraphBLAS" (since that is a GrB matrix struct, not a
-        // descriptor).  If not present, the GraphBLAS descriptor is NULL.
-        // This is not an error.
+        // "desc.GraphBLASv4" (since that is a GrB matrix struct, not a
+        // descriptor), or "desc.GraphBLAS" (a v3 GraphBLAS struct).  If not
+        // present, the GraphBLAS descriptor is NULL.  This is not an error.
         return (NULL) ;
     }
 
@@ -171,15 +170,19 @@ GrB_Descriptor gb_mxarray_to_descriptor // new descriptor, or NULL if none
         gb_mxstring_to_string (s, LEN, mxkind, "kind") ;
         if (MATCH (s, "grb") || MATCH (s, "default"))
         { 
-            (*kind) = KIND_GRB ;
+            (*kind) = KIND_GRB ;        // @GrB matrix
         }
         else if (MATCH (s, "sparse"))
         { 
-            (*kind) = KIND_SPARSE ;
+            (*kind) = KIND_SPARSE ;     // MATLAB sparse matrix
         }
         else if (MATCH (s, "full"))
         { 
-            (*kind) = KIND_FULL ;
+            (*kind) = KIND_FULL ;       // MATLAB full matrix
+        }
+        else if (MATCH (s, "matlab"))
+        {
+            (*kind) = KIND_MATLAB ;     // MATLAB sparse or full matrix
         }
         else
         { 
@@ -194,8 +197,8 @@ GrB_Descriptor gb_mxarray_to_descriptor // new descriptor, or NULL if none
     mxArray *mxfmt = mxGetField (desc_matlab, 0, "format") ;
     if (mxfmt != NULL)
     {
-        (*fmt) = gb_mxstring_to_format (mxfmt) ;
-        if ((*fmt) == GxB_NO_FORMAT)
+        bool ok = gb_mxstring_to_format (mxfmt, fmt, sparsity) ;
+        if (!ok)
         { 
             ERROR ("unknown format") ;
         }

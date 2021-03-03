@@ -2,8 +2,8 @@
 // GrB_Vector_reduce: reduce a vector to a scalar
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -23,16 +23,17 @@ GrB_Info prefix ## Vector_reduce_ ## T  /* c = accum (c, reduce (u))*/         \
 (                                                                              \
     type *c,                        /* result scalar                        */ \
     const GrB_BinaryOp accum,       /* optional accum for c=accum(c,t)      */ \
-    const GrB_Monoid reduce,        /* monoid to do the reduction           */ \
+    const GrB_Monoid monoid,        /* monoid to do the reduction           */ \
     const GrB_Vector u,             /* vector to reduce                     */ \
     const GrB_Descriptor desc       /* descriptor (currently unused)        */ \
 )                                                                              \
 {                                                                              \
-    GB_WHERE ("GrB_Vector_reduce_" GB_STR(T) " (&c, accum, reduce, u, desc)") ;\
+    GB_WHERE1 ("GrB_Vector_reduce_" GB_STR(T)                             \
+        " (&c, accum, monoid, u, desc)") ;                                     \
     GB_BURBLE_START ("GrB_reduce") ;                                           \
     GB_RETURN_IF_NULL_OR_FAULTY (u) ;                                          \
     ASSERT (GB_VECTOR_OK (u)) ;                                                \
-    GrB_Info info = GB_reduce_to_scalar (c, prefix ## T, accum, reduce,        \
+    GrB_Info info = GB_reduce_to_scalar (c, prefix ## T, accum, monoid,        \
         (GrB_Matrix) u, Context) ;                                             \
     GB_BURBLE_END ;                                                            \
     return (info) ;                                                            \
@@ -56,19 +57,19 @@ GrB_Info GrB_Vector_reduce_UDT      // c = accum (c, reduce_to_scalar (u))
 (
     void *c,                        // result scalar
     const GrB_BinaryOp accum,       // optional accum for c=accum(c,t)
-    const GrB_Monoid reduce,        // monoid to do the reduction
+    const GrB_Monoid monoid,        // monoid to do the reduction
     const GrB_Vector u,             // vector to reduce
     const GrB_Descriptor desc       // descriptor (currently unused)
 )
 { 
     // See comments on GrB_Matrix_reduce_UDT
-    GB_WHERE ("GrB_Vector_reduce_UDT (&c, accum, reduce, u, desc)") ;
+    GB_WHERE1 ("GrB_Vector_reduce_UDT (&c, accum, monoid, u, desc)") ;
     GB_BURBLE_START ("GrB_reduce") ;
     GB_RETURN_IF_NULL_OR_FAULTY (u) ;
-    GB_RETURN_IF_NULL_OR_FAULTY (reduce) ;
+    GB_RETURN_IF_NULL_OR_FAULTY (monoid) ;
     ASSERT (GB_VECTOR_OK (u)) ;
-    GrB_Info info = GB_reduce_to_scalar (c, reduce->op->ztype,
-        accum, reduce, (GrB_Matrix) u, Context) ;
+    GrB_Info info = GB_reduce_to_scalar (c, monoid->op->ztype,
+        accum, monoid, (GrB_Matrix) u, Context) ;
     GB_BURBLE_END ;
     return (info) ;
 }

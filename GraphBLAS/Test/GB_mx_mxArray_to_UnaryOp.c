@@ -2,8 +2,8 @@
 // GB_mx_mxArray_to_UnaryOp
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -28,8 +28,6 @@ bool GB_mx_mxArray_to_UnaryOp           // true if successful
     const bool user_complex             // if true, use user-defined Complex
 )
 {
-    GB_WHERE ("GB_mx_mxArray_to_UnaryOp") ;
-
     (*op_handle) = NULL ;
     const mxArray *opname_mx = NULL, *optype_mx = NULL ;
 

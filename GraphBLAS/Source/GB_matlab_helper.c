@@ -2,8 +2,8 @@
 // GB_matlab_helper.c: helper functions for MATLAB interface
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -80,41 +80,6 @@ void GB_matlab_helper1i             // convert zero-based indices to one-based
 }
 
 //------------------------------------------------------------------------------
-// GB_matlab_helper2: create structure for dense matrix for gb_get_shallow
-//------------------------------------------------------------------------------
-
-void GB_matlab_helper2              // fill Xp and Xi for a dense matrix
-(
-    GrB_Index *GB_RESTRICT Xp,      // size ncols+1
-    GrB_Index *GB_RESTRICT Xi,      // size nrows*ncols
-    int64_t ncols,
-    int64_t nrows
-)
-{
-
-    GB_NTHREADS (ncols) ;
-
-    int64_t j ;
-    #pragma omp parallel for num_threads(nthreads) schedule(static)
-    for (j = 0 ; j <= ncols ; j++)
-    {
-        Xp [j] = j * nrows ;
-    }
-
-    double work = ((double) ncols) * ((double) nrows) ;
-    nthreads = GB_nthreads (work, chunk, nthreads_max) ;
-
-    int64_t nel = nrows * ncols ;
-    int64_t k ;
-    #pragma omp parallel for num_threads(nthreads) schedule(static)
-    for (k = 0 ; k < nel ; k++)
-    {
-        int64_t i = k % nrows ;
-        Xi [k] = i ;
-    }
-}
-
-//------------------------------------------------------------------------------
 // GB_matlab_helper3: convert 1-based indices to 0-based for gb_mxarray_to_list
 //------------------------------------------------------------------------------
 
@@ -128,6 +93,10 @@ bool GB_matlab_helper3              // return true if OK, false on error
 {
 
     GB_NTHREADS (len) ;
+
+    ASSERT (List != NULL) ;
+    ASSERT (List_double != NULL) ;
+    ASSERT (List_max != NULL) ;
 
     bool ok = true ;
     int64_t listmax = -1 ;
@@ -267,21 +236,27 @@ void GB_matlab_helper5              // construct pattern of S
 (
     GrB_Index *GB_RESTRICT Si,         // array of size anz
     GrB_Index *GB_RESTRICT Sj,         // array of size anz
-    const GrB_Index *GB_RESTRICT Mi,   // array of size mnz
-    const GrB_Index *GB_RESTRICT Mj,   // array of size mnz
-    GrB_Index *GB_RESTRICT Ai,         // array of size anz
+    const GrB_Index *GB_RESTRICT Mi,   // array of size mnz, M->i, may be NULL
+    const GrB_Index *GB_RESTRICT Mj,   // array of size mnz,
+    const int64_t mvlen,               // M->vlen
+    GrB_Index *GB_RESTRICT Ai,         // array of size anz, A->i, may be NULL
+    const int64_t avlen,               // M->vlen
     const GrB_Index anz
 )
 {
 
     GB_NTHREADS (anz) ;
+    ASSERT (Mj != NULL) ;
+    ASSERT (Si != NULL) ;
+    ASSERT (Sj != NULL) ;
 
     int64_t k ;
     #pragma omp parallel for num_threads(nthreads) schedule(static)
     for (k = 0 ; k < anz ; k++)
     {
-        Si [k] = Mi [Ai [k]] ;
-        Sj [k] = Mj [Ai [k]] ;
+        int64_t i = GBI (Ai, k, avlen) ;
+        Si [k] = GBI (Mi, i, mvlen) ;
+        Sj [k] = Mj [i] ;
     }
 }
 
@@ -363,6 +338,10 @@ bool GB_matlab_helper9  // true if successful, false if out of memory
     GrB_Index *nvec     // # of non-empty vectors
 )
 {
+    ASSERT_MATRIX_OK (A, "A for matlab helper9", GB0) ;
+    ASSERT (!GB_IS_BITMAP (A)) ;
+    ASSERT (GB_IS_SPARSE (A) || GB_IS_HYPERSPARSE (A) || GB_IS_FULL (A)) ;
+
     int64_t anvec = A->nvec ;
     GB_NTHREADS (anvec) ;
 
@@ -378,13 +357,14 @@ bool GB_matlab_helper9  // true if successful, false if out of memory
 
     int64_t *Ah = A->h ;
     int64_t *Ap = A->p ;
+    int64_t avlen = A->vlen ;
 
     int64_t k ;
     #pragma omp parallel for num_threads(nthreads) schedule(static)
     for (k = 0 ; k < anvec ; k++)
     {
-        List [k] = (Ah == NULL) ? k : Ah [k] ;
-        Degree [k] = Ap [k+1] - Ap [k] ;
+        List [k] = GBH (Ah, k) ;
+        Degree [k] = (Ap == NULL) ? avlen : (Ap [k+1] - Ap [k]) ;
     }
 
     // return result

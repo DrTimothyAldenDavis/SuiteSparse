@@ -2,8 +2,8 @@
 // GB_mex_AxB: compute C=A*B, A'*B, A*B', or A'*B'
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -16,15 +16,15 @@
 
 #define FREE_ALL                                \
 {                                               \
-    GB_MATRIX_FREE (&A) ;                       \
-    GB_MATRIX_FREE (&Aconj) ;                   \
-    GB_MATRIX_FREE (&B) ;                       \
-    GB_MATRIX_FREE (&Bconj) ;                   \
-    GB_MATRIX_FREE (&C) ;                       \
-    GB_MATRIX_FREE (&Mask) ;                    \
+    GrB_Matrix_free_(&A) ;                      \
+    GrB_Matrix_free_(&Aconj) ;                  \
+    GrB_Matrix_free_(&B) ;                      \
+    GrB_Matrix_free_(&Bconj) ;                  \
+    GrB_Matrix_free_(&C) ;                      \
+    GrB_Matrix_free_(&Mask) ;                   \
     GrB_Monoid_free_(&add) ;                    \
     GrB_Semiring_free_(&semiring) ;             \
-    GB_mx_put_global (true, AxB_method_used) ;  \
+    GB_mx_put_global (true) ;                   \
 }
 
 //------------------------------------------------------------------------------
@@ -44,7 +44,6 @@ int64_t bnrows = 0 ;
 int64_t bncols = 0 ;
 
 GrB_Desc_Value AxB_method = GxB_DEFAULT ;
-GrB_Desc_Value AxB_method_used = GxB_DEFAULT ;
 
 GrB_Info axb (GB_Context Context) ;
 GrB_Info axb_complex (GB_Context Context) ;
@@ -66,8 +65,7 @@ GrB_Info axb (GB_Context Context)
     }
 
     // C = A*B, A'*B, A*B', or A'*B'
-    info = GB_AxB_meta (&C,
-        NULL,       // not in place
+    info = GB_AxB_meta (&C, NULL,       // C cannot be computed in place
         false,      // C_replace
         true,       // CSC
         NULL,       // no MT returned
@@ -75,14 +73,17 @@ GrB_Info axb (GB_Context Context)
         false,      // mask not complemented
         false,      // mask not structural
         NULL,       // no accum
-        A, B,
+        A,
+        B,
         semiring,   // GrB_PLUS_TIMES_FP64
         atranspose,
         btranspose,
         false,      // flipxy
         &ignore,    // mask_applied
         &ignore2,   // done_in_place
-        AxB_method, &AxB_method_used, Context) ;
+        AxB_method,
+        true,       // do the sort
+        Context) ;
 
     GrB_Monoid_free_(&add) ;
     GrB_Semiring_free_(&semiring) ;
@@ -156,10 +157,9 @@ GrB_Info axb_complex (GB_Context Context)
         }
     }
 
-    info = GB_AxB_meta (&C,
-        NULL,       // not in place
+    info = GB_AxB_meta (&C, NULL,       // C cannot be computed in place
         false,      // C_replace
-        true,       //CSC
+        true,       // CSC
         NULL,       // no MT returned
         NULL,       // no Mask
         false,      // mask not complemented
@@ -173,7 +173,9 @@ GrB_Info axb_complex (GB_Context Context)
         false,      // flipxy
         &ignore,    // mask_applied
         &ignore2,   // done_in_place
-        AxB_method, &AxB_method_used, Context) ;
+        AxB_method,
+        true,       // do the sort
+        Context) ;
 
     GrB_Matrix_free_(&Bconj) ;
     GrB_Matrix_free_(&Aconj) ;
@@ -205,7 +207,7 @@ void mexFunction
     add = NULL ;
     semiring = NULL ;
 
-    GB_WHERE (USAGE) ;
+    GB_CONTEXT (USAGE) ;
 
     // check inputs
     if (nargout > 1 || nargin < 2 || nargin > 5)
@@ -239,7 +241,6 @@ void mexFunction
     // get the axb_method
     // 0 or not present: default
     // 1001: Gustavson
-    // 1002: heap
     // 1003: dot
     // 1004: hash
     // 1005: saxpy
@@ -247,7 +248,7 @@ void mexFunction
 
     if (! ((AxB_method == GxB_DEFAULT) ||
         (AxB_method == GxB_AxB_GUSTAVSON) ||
-        (AxB_method == GxB_AxB_HEAP) ||
+        (AxB_method == GxB_AxB_HASH) ||
         (AxB_method == GxB_AxB_DOT)))
     {
         mexErrMsgTxt ("unknown method") ;

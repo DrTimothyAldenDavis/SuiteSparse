@@ -1,20 +1,21 @@
 //------------------------------------------------------------------------------
-// gb_export_to_mxfull: export a dense array to a MATLAB dense matrix
+// gb_export_to_mxfull: export a full array to a MATLAB full matrix
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
-// The input (void *) X is exported to a MATLAB dense mxArray S.
+// The input (void *) X is exported to a MATLAB full mxArray S.
 
-// The input array must be deep.  The output is a standard
-// MATLAB dense matrix as an mxArray.  No typecasting is done.
+// The input array must be deep, but this cannot be checked here.  The caller
+// must ensure that the input X is deep.  The output is a standard MATLAB full
+// matrix as an mxArray.  No typecasting is done.
 
 #include "gb_matlab.h"
 
-mxArray *gb_export_to_mxfull    // return exported MATLAB dense matrix F
+mxArray *gb_export_to_mxfull    // return exported MATLAB full matrix F
 (
     void **X_handle,            // pointer to array to export
     const GrB_Index nrows,      // dimensions of F
@@ -31,7 +32,7 @@ mxArray *gb_export_to_mxfull    // return exported MATLAB dense matrix F
     CHECK_ERROR (type == NULL, "internal error 11") ;
 
     //--------------------------------------------------------------------------
-    // allocate an empty dense matrix of the right type, then set content
+    // allocate an empty full matrix of the right type, then set content
     //--------------------------------------------------------------------------
 
     mxArray *F ;
@@ -48,7 +49,7 @@ mxArray *gb_export_to_mxfull    // return exported MATLAB dense matrix F
     if (type == GrB_BOOL)
     { 
         F = mxCreateLogicalMatrix (0, 0) ;
-        mxSetData (F, X) ;      // OK:bool
+        mxSetData (F, X) ;
     }
     else if (type == GrB_FP32)
     { 
@@ -123,7 +124,7 @@ mxArray *gb_export_to_mxfull    // return exported MATLAB dense matrix F
     (*X_handle) = NULL ;
 
     //--------------------------------------------------------------------------
-    // return the new MATLAB dense matrix
+    // return the new MATLAB full matrix
     //--------------------------------------------------------------------------
 
     return (F) ;

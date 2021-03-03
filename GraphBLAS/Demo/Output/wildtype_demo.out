@@ -42,7 +42,7 @@ multiplication C=A*B InTheWild semiring:
 
 Printing the matrix with GxB_Matrix_fprint:
 
-  10x10 GraphBLAS wildtype matrix, sparse by row:
+  10x10 GraphBLAS wildtype matrix, sparse by row
   input A, 3 entries
 
     (2,4) [user-defined value]
@@ -80,7 +80,7 @@ a wildtype scalar:  [this is A(3,7)]
 
 Printing the matrix with GxB_Matrix_fprint:
 
-  10x10 GraphBLAS wildtype matrix, hypersparse by row:
+  10x10 GraphBLAS wildtype matrix, hypersparse by row
   input B, no entries
   pending tuples: 3 max pending: 256 zombies: 0
   pending tuples:
@@ -247,7 +247,7 @@ a wildtype scalar: z = x*y: [this was multiplied]
 
 Printing the matrix with GxB_Matrix_fprint:
 
-  10x10 GraphBLAS wildtype matrix, sparse by row:
+  10x10 GraphBLAS wildtype matrix, sparse by row
   output C, 4 entries
 
     (2,2) [user-defined value]
@@ -298,7 +298,7 @@ internal data structure.
 
 Printing the matrix with GxB_Matrix_fprint:
 
-  10x10 GraphBLAS wildtype matrix, sparse by col:
+  10x10 GraphBLAS wildtype matrix, sparse by col
   output C, 4 entries
 
     (2,2) [user-defined value]
@@ -345,11 +345,27 @@ a wildtype scalar:  [this was multiplied]
 
 Printing the matrix with GxB_Matrix_fprint:
 
-  10x10 GraphBLAS float matrix, hypersparse by row:
+  10x10 GraphBLAS float matrix, hypersparse by row
   D, no entries
 
 
 The matrix D is not wild enough to print.
+
+  10x10 GraphBLAS int64_t matrix, sparse by row
+  E (positional i), 3 entries
+
+    (2,4)   2
+    (2,7)   2
+    (3,7)   3
+
+
+  10x10 GraphBLAS int64_t matrix, sparse by row
+  E (positional j), 3 entries
+
+    (2,4)   4
+    (2,7)   7
+    (3,7)   7
+
 
 This is supposed to fail, as a demo of GrB_error:
 GraphBLAS error: GrB_DOMAIN_MISMATCH
@@ -357,4 +373,3 @@ function: GrB_Matrix_eWiseAdd_BinaryOp (C, M, accum, add, A, B, desc)
 Incompatible type for z=wildtype_add(x,y):
 second input of type [float]
 cannot be typecast to y input of type [wildtype]
-

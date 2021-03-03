@@ -2,8 +2,8 @@ function C = gb_minall (op, A)
 %GB_MINALL reduce a matrix to a scalar
 % Implements C = min (A, [ ], 'all') ;
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 C = gbreduce (op, A) ;
 [m, n] = gbsize (A) ;

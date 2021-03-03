@@ -2,8 +2,8 @@
 // GB_mex_triu: compute C=triu(A,1)
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -15,10 +15,10 @@
 
 #define FREE_ALL                        \
 {                                       \
-    GB_SCALAR_FREE (&Thunk) ;           \
-    GB_MATRIX_FREE (&A) ;               \
-    GB_MATRIX_FREE (&C) ;               \
-    GB_mx_put_global (true, 0) ;        \
+    GxB_Scalar_free_(&Thunk) ;          \
+    GrB_Matrix_free_(&A) ;              \
+    GrB_Matrix_free_(&C) ;              \
+    GB_mx_put_global (true) ;           \
 }
 
 void mexFunction
@@ -35,7 +35,6 @@ void mexFunction
     GxB_Scalar Thunk = NULL ;
 
     // check inputs
-    GB_WHERE (USAGE) ;
     if (nargout > 1 || nargin < 1 || nargin > 2)
     {
         mexErrMsgTxt ("Usage: " USAGE) ;
@@ -70,8 +69,7 @@ void mexFunction
 
     GxB_Scalar_new (&Thunk, GrB_INT64) ;
     GxB_Scalar_setElement_INT64_(Thunk, k) ;
-    GrB_Index ignore ;
-    GxB_Scalar_nvals (&ignore, Thunk) ;
+    GxB_Scalar_wait_(&Thunk) ;
 
     // C = triu (A,k)
     METHOD (GxB_Matrix_select_(C, NULL, NULL, GxB_TRIU, A, Thunk, NULL)) ;

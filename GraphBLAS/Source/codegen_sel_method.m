@@ -3,6 +3,9 @@ function codegen_sel_method (opname, func, atype, kind)
 %
 % codegen_sel_method (opname, func, atype, kind)
 
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
+
 f = fopen ('control.m4', 'w') ;
 
 [aname, unsigned, ~] = codegen_type (atype) ;
@@ -22,6 +25,16 @@ else
 end
 fprintf (f, 'define(`GB_sel_phase2'', `GB_sel_phase2__%s'')\n', name) ;
 
+if isequal (opname, 'nonzombie') || isequal (opname, 'resize') 
+    fprintf (f, 'define(`GB_sel_bitmap'', `GB_sel_bitmap__(none)'')\n') ;
+    fprintf (f, 'define(`if_bitmap'', `#if 0'')\n') ;
+    fprintf (f, 'define(`endif_bitmap'', `#endif'')\n') ;
+else
+    fprintf (f, 'define(`GB_sel_bitmap'', `GB_sel_bitmap__%s'')\n', name) ;
+    fprintf (f, 'define(`if_bitmap'', `'')\n') ;
+    fprintf (f, 'define(`endif_bitmap'', `'')\n') ;
+end
+
 % the type of A (no typecasting)
 fprintf (f, 'define(`GB_atype'', `%s'')\n', atype) ;
 
@@ -36,7 +49,7 @@ fprintf (f, 'define(`GB_kind'', `#define %s'')\n', kind) ;
 
 % get vector index for user-defined select operator
 if (isequal (opname, 'user'))
-    fprintf (f, 'define(`GB_get_j'', `int64_t j = (Ah == NULL) ? k : Ah [k]'')\n') ;
+    fprintf (f, 'define(`GB_get_j'', `int64_t j = GBH (Ah, k)'')\n') ;
 else
     fprintf (f, 'define(`GB_get_j'', `;'')\n') ;
 end
@@ -50,7 +63,7 @@ end
 
 % enable phase1
 if (is_nonzombie)
-    % nonzombie: phase1 uses a single worker
+    % nonzombie: phase1 uses a single worker: GB_sel_phase1__nonzombie_any
     fprintf (f, 'define(`if_phase1'', `#if 0'')\n') ;
     fprintf (f, 'define(`endif_phase1'', `#endif'')\n') ;
 else
@@ -81,14 +94,14 @@ fclose (f) ;
 
 % construct the *.c file
 cmd = sprintf (...
-'cat control.m4 Generator/GB_sel.c | m4 | tail -n +11 > Generated/GB_sel__%s.c', ...
+'cat control.m4 Generator/GB_sel.c | m4 | tail -n +14 > Generated/GB_sel__%s.c', ...
 name) ;
 fprintf ('.') ;
 system (cmd) ;
 
 % append to the *.h file
 cmd = sprintf (...
-'cat control.m4 Generator/GB_sel.h | m4 | tail -n +11 >> Generated/GB_sel__include.h') ;
+'cat control.m4 Generator/GB_sel.h | m4 | tail -n +14 >> Generated/GB_sel__include.h') ;
 system (cmd) ;
 
 delete ('control.m4') ;

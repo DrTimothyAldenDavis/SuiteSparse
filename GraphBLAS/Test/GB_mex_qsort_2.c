@@ -2,8 +2,8 @@
 // GB_mex_qsort_2: sort using GB_qsort_2
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -56,6 +56,6 @@ void mexFunction
     GB_qsort_2 (Iout, Jout, n) ;
 
     GB_MEX_TOC ;
-    GB_mx_put_time (0) ;
+    GB_mx_put_time ( ) ;
 }
 

@@ -7,11 +7,11 @@ function s = istriu (G)
 %
 % See also GrB/istriu, GrB/isbanded.
 
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
+
 % FUTURE: this will be much faster when written as a mexFunction
 % that doesn't rely on gbselect.  Use a gb_bandwith mexFunction.
-
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
 
 G = G.opaque ;
 s = (gbnvals (gbselect ('tril', G, -1)) == 0) ;

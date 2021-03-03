@@ -2,8 +2,8 @@
 // GB_dense_subassign_23: C += B where C is dense and B is sparse or dense
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -15,6 +15,10 @@
 // C(i,j) = accum (C(i,j), B(i,j)) is handled.  The generic case here can
 // typecast B(i,j) but not C(i,j).  The case for typecasting of C is handled by
 // Method 04.
+
+// The caller passes in the second matrix as A, but it is called B here to
+// match its use as the 2nd input to the binary accum operator.  C and B can
+// have any sparsity structure, but C must be dense.
 
 #include "GB_dense.h"
 #include "GB_binop.h"
@@ -41,14 +45,30 @@ GrB_Info GB_dense_subassign_23      // C += B; C is dense, B is sparse or dense
     // check inputs
     //--------------------------------------------------------------------------
 
+    ASSERT (!GB_aliased (C, B)) ;   // NO ALIAS of C==A (A is called B here)
+
+    //--------------------------------------------------------------------------
+    // check inputs
+    //--------------------------------------------------------------------------
+
     GrB_Info info ;
     ASSERT_MATRIX_OK (C, "C for C+=B", GB0) ;
+    ASSERT (!GB_PENDING (C)) ;
+    ASSERT (!GB_JUMBLED (C)) ;
+    ASSERT (!GB_ZOMBIES (C)) ;
+    ASSERT (GB_is_dense (C)) ;
+
     ASSERT_MATRIX_OK (B, "B for C+=B", GB0) ;
-    ASSERT (!GB_PENDING (B)) ; ASSERT (!GB_ZOMBIES (B)) ;
-    ASSERT (!GB_PENDING (C)) ; ASSERT (!GB_ZOMBIES (C)) ;
+    ASSERT (!GB_PENDING (B)) ;
+    ASSERT (GB_JUMBLED_OK (B)) ;
+    ASSERT (!GB_ZOMBIES (B)) ;
+
     ASSERT_BINARYOP_OK (accum, "accum for C+=B", GB0) ;
+    ASSERT (!GB_OP_IS_POSITIONAL (accum)) ;
     ASSERT (B->vlen == C->vlen) ;
     ASSERT (B->vdim == C->vdim) ;
+
+    GB_ENSURE_FULL (C) ;        // convert C to full
 
     //--------------------------------------------------------------------------
     // get the operator
@@ -69,13 +89,11 @@ GrB_Info GB_dense_subassign_23      // C += B; C is dense, B is sparse or dense
     // determine the number of threads to use
     //--------------------------------------------------------------------------
 
-    int64_t bnz   = GB_NNZ (B) ;
+    int64_t bnz = GB_NNZ_HELD (B) ;
     int64_t bnvec = B->nvec ;
     GB_GET_NTHREADS_MAX (nthreads_max, chunk, Context) ;
     int nthreads = GB_nthreads (bnz + bnvec, chunk, nthreads_max) ;
     int ntasks = (nthreads == 1) ? 1 : (32 * nthreads) ;
-    ntasks = GB_IMIN (ntasks, bnz) ;
-    ntasks = GB_IMAX (ntasks, 1) ;
 
     //--------------------------------------------------------------------------
     // slice the entries for each task
@@ -86,19 +104,20 @@ GrB_Info GB_dense_subassign_23      // C += B; C is dense, B is sparse or dense
     // vectors may be shared with prior slices and subsequent slices.
 
     int64_t *pstart_slice = NULL, *kfirst_slice = NULL, *klast_slice = NULL ;
-    if (GB_is_dense (B))
+    if (GB_is_packed (B))
     { 
-        // both C and B are dense; no need to construct tasks
-        GBBURBLE ("(Z dense) ") ;
+        // C is dense and B is either dense or bitmap
+        GBURBLE ("(Z packed) ") ;
+        ntasks = 0 ;   // unused
     }
     else
     {
         // create tasks to compute over the matrix B
         if (!GB_ek_slice (&pstart_slice, &kfirst_slice, &klast_slice, B,
-            ntasks))
+            &ntasks))
         { 
             // out of memory
-            return (GB_OUT_OF_MEMORY) ;
+            return (GrB_OUT_OF_MEMORY) ;
         }
     }
 
@@ -151,7 +170,7 @@ GrB_Info GB_dense_subassign_23      // C += B; C is dense, B is sparse or dense
         // get operators, functions, workspace, contents of B and C
         //----------------------------------------------------------------------
 
-        GB_BURBLE_MATRIX (B, "generic ") ;
+        GB_BURBLE_MATRIX (B, "(generic C+=B) ") ;
 
         GxB_binary_function fadd = accum->function ;
 
@@ -183,7 +202,7 @@ GrB_Info GB_dense_subassign_23      // C += B; C is dense, B is sparse or dense
         // no vectorization
         #define GB_PRAGMA_SIMD_VECTORIZE ;
 
-        #define GB_BINOP(z,x,y) fadd (z,x,y)
+        #define GB_BINOP(z,x,y,i,j) fadd (z,x,y)
         #include "GB_dense_subassign_23_template.c"
     }
 

@@ -2,18 +2,12 @@
 // GrB_Matrix_eWiseAdd: matrix element-wise operations, set union
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
 // C<M> = accum (C,A+B) and variations.
-
-// SuiteSparse:GraphBLAS v3.2 and earlier included these functions from the C
-// API with the wrong name.  It is corrected in this version.  The prior
-// misnamed functions are kept for backward compatibility, but they are
-// deprecated and their use is not recommend. The generic version,
-// GrB_eWiseAdd, is not affected.
 
 #include "GB_ewise.h"
 
@@ -25,7 +19,7 @@
     GB_RETURN_IF_FAULTY (M) ;                                               \
     /* get the descriptor */                                                \
     GB_GET_DESCRIPTOR (info, desc, C_replace, Mask_comp, Mask_struct,       \
-        A_tran, B_tran, xx) ;                                               \
+        A_tran, B_tran, xx, xx7) ;                                          \
     /* C<M> = accum (C,T) where T = A+B, A'+B, A+B', or A'+B' */            \
     info = GB_ewise (                                                       \
         C,              C_replace,  /* C and its descriptor        */       \
@@ -57,7 +51,7 @@ GrB_Info GrB_Matrix_eWiseAdd_BinaryOp       // C<M> = accum (C, A+B)
     // check inputs
     //--------------------------------------------------------------------------
 
-    GB_WHERE ("GrB_Matrix_eWiseAdd_BinaryOp (C, M, accum, add, A, B, desc)") ;
+    GB_WHERE (C, "GrB_Matrix_eWiseAdd_BinaryOp (C, M, accum, add, A, B, desc)");
     GB_BURBLE_START ("GrB_eWiseAdd") ;
     GB_RETURN_IF_NULL_OR_FAULTY (add) ;
 
@@ -68,17 +62,6 @@ GrB_Info GrB_Matrix_eWiseAdd_BinaryOp       // C<M> = accum (C, A+B)
     GB_EWISE (add) ;
     GB_BURBLE_END ;
     return (info) ;
-}
-
-GrB_Info GrB_eWiseAdd_Matrix_BinaryOp       // misnamed
-(
-    GrB_Matrix C, const GrB_Matrix M, const GrB_BinaryOp accum,
-    const GrB_BinaryOp add, const GrB_Matrix A, const GrB_Matrix B,
-    const GrB_Descriptor desc
-)
-{ 
-    // call the correctly-named function
-    return (GrB_Matrix_eWiseAdd_BinaryOp (C, M, accum, add, A, B, desc)) ;
 }
 
 //------------------------------------------------------------------------------
@@ -103,7 +86,8 @@ GrB_Info GrB_Matrix_eWiseAdd_Monoid         // C<M> = accum (C, A+B)
     // check inputs
     //--------------------------------------------------------------------------
 
-    GB_WHERE ("GrB_Matrix_eWiseAdd_Monoid (C, M, accum, monoid, A, B, desc)") ;
+    GB_WHERE (C, "GrB_Matrix_eWiseAdd_Monoid "
+        "(C, M, accum, monoid, A, B, desc)") ;
     GB_BURBLE_START ("GrB_eWiseAdd") ;
     GB_RETURN_IF_NULL_OR_FAULTY (monoid) ;
 
@@ -114,17 +98,6 @@ GrB_Info GrB_Matrix_eWiseAdd_Monoid         // C<M> = accum (C, A+B)
     GB_EWISE (monoid->op) ;
     GB_BURBLE_END ;
     return (info) ;
-}
-
-GrB_Info GrB_eWiseAdd_Matrix_Monoid         // misnamed
-(
-    GrB_Matrix C, const GrB_Matrix M, const GrB_BinaryOp accum,
-    const GrB_Monoid monoid, const GrB_Matrix A, const GrB_Matrix B,
-    const GrB_Descriptor desc
-)
-{ 
-    // call the correctly-named function
-    return (GrB_Matrix_eWiseAdd_Monoid (C, M, accum, monoid, A, B, desc)) ;
 }
 
 //------------------------------------------------------------------------------
@@ -149,7 +122,7 @@ GrB_Info GrB_Matrix_eWiseAdd_Semiring       // C<M> = accum (C, A+B)
     // check inputs
     //--------------------------------------------------------------------------
 
-    GB_WHERE ("GrB_Matrix_eWiseAdd_Semiring (C, M, accum, semiring, A, B,"
+    GB_WHERE (C, "GrB_Matrix_eWiseAdd_Semiring (C, M, accum, semiring, A, B,"
         " desc)") ;
     GB_BURBLE_START ("GrB_eWiseAdd") ;
     GB_RETURN_IF_NULL_OR_FAULTY (semiring) ;
@@ -161,16 +134,5 @@ GrB_Info GrB_Matrix_eWiseAdd_Semiring       // C<M> = accum (C, A+B)
     GB_EWISE (semiring->add->op) ;
     GB_BURBLE_END ;
     return (info) ;
-}
-
-GrB_Info GrB_eWiseAdd_Matrix_Semiring       // misnamed
-(
-    GrB_Matrix C, const GrB_Matrix M, const GrB_BinaryOp accum,
-    const GrB_Semiring semiring, const GrB_Matrix A, const GrB_Matrix B,
-    const GrB_Descriptor desc
-)
-{ 
-    // call the correctly-named function
-    return (GrB_Matrix_eWiseAdd_Semiring (C, M, accum, semiring, A, B, desc)) ;
 }
 

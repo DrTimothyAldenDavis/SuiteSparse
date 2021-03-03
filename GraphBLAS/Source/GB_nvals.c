@@ -1,9 +1,9 @@
 //------------------------------------------------------------------------------
-// GB_nvals: number of entries in a sparse matrix
+// GB_nvals: number of entries in a matrix
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -23,20 +23,10 @@ GrB_Info GB_nvals           // get the number of entries in a matrix
     // check inputs
     //--------------------------------------------------------------------------
 
-    GrB_Info info ;
-
-    // delete any lingering zombies and assemble any pending tuples
-    // TODO in 4.0: delete this line of code:
-    GB_MATRIX_WAIT (A) ; ASSERT (!GB_ZOMBIES (A)) ; ASSERT (!GB_PENDING (A)) ;
-
     GB_RETURN_IF_NULL (nvals) ;
 
-    // leave zombies alone, but assemble any pending tuples
-    if (GB_PENDING (A))
-    {
-        ASSERT (GB_DEAD_CODE) ; // TODO in 4.0: delete this line
-        GB_MATRIX_WAIT (A) ;
-    }
+    // leave zombies alone, and leave jumbled, but assemble any pending tuples
+    GB_MATRIX_WAIT_IF_PENDING (A) ;
 
     //--------------------------------------------------------------------------
     // return the number of entries in the matrix
@@ -48,6 +38,7 @@ GrB_Info GB_nvals           // get the number of entries in a matrix
     // tolerated but pending tuples cannot.
 
     ASSERT (GB_ZOMBIES_OK (A)) ;
+    ASSERT (GB_JUMBLED_OK (A)) ;
     ASSERT (!GB_PENDING (A)) ;
 
     (*nvals) = GB_NNZ (A) - (A->nzombies) ;

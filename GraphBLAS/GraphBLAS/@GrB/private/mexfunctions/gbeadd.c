@@ -2,8 +2,8 @@
 // gbeadd: sparse matrix addition
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -48,10 +48,10 @@ void mexFunction
     base_enum_t base ;
     kind_enum_t kind ;
     GxB_Format_Value fmt ;
-    int nmatrices, nstrings, ncells ;
+    int nmatrices, nstrings, ncells, sparsity ;
     GrB_Descriptor desc ;
     gb_get_mxargs (nargin, pargin, USAGE, Matrix, &nmatrices, String, &nstrings,
-        Cell, &ncells, &desc, &base, &kind, &fmt) ;
+        Cell, &ncells, &desc, &base, &kind, &fmt, &sparsity) ;
 
     CHECK_ERROR (nmatrices < 2 || nstrings < 1 || ncells > 0, USAGE) ;
 
@@ -132,16 +132,17 @@ void mexFunction
         // use the ztype of the op as the type of C
         OK (GxB_BinaryOp_ztype (&ctype, op)) ;
 
-        OK (GrB_Matrix_new (&C, ctype, cnrows, cncols)) ;
+        // create the matrix C and set its format and sparsity
         fmt = gb_get_format (cnrows, cncols, A, B, fmt) ;
-        OK (GxB_Matrix_Option_set (C, GxB_FORMAT, fmt)) ;
+        sparsity = gb_get_sparsity (A, B, sparsity) ;
+        C = gb_new (ctype, cnrows, cncols, fmt, sparsity) ;
     }
 
     //--------------------------------------------------------------------------
     // compute C<M> += A+B
     //--------------------------------------------------------------------------
 
-    OK (GrB_Matrix_eWiseAdd_BinaryOp (C, M, accum, op, A, B, desc)) ;
+    OK1 (C, GrB_Matrix_eWiseAdd_BinaryOp (C, M, accum, op, A, B, desc)) ;
 
     //--------------------------------------------------------------------------
     // free shallow copies

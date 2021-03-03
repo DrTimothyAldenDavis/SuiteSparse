@@ -2,8 +2,8 @@
 // GB_Type_check: print a built-in type
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -20,8 +20,7 @@ GrB_Info GB_Type_check      // check a GraphBLAS Type
     const GrB_Type type,    // GraphBLAS type to print and check
     const char *name,       // name of the type from the caller; optional
     int pr,                 // print level
-    FILE *f,                // file for output
-    GB_Context Context
+    FILE *f                 // file for output
 )
 {
 
@@ -34,7 +33,6 @@ GrB_Info GB_Type_check      // check a GraphBLAS Type
 
     if (type == NULL)
     { 
-        // GrB_error status not modified since this may be an optional argument
         GBPR0 ("NULL\n") ;
         return (GrB_NULL_POINTER) ;
     }
@@ -62,9 +60,7 @@ GrB_Info GB_Type_check      // check a GraphBLAS Type
         case GB_FC64_code   : GBPR0 ("double complex") ; break ;
         case GB_UDT_code    : GBPR0 ("user-defined: [%s]", type->name) ; break ;
         default             : GBPR0 ("unknown type\n") ;
-            return (GB_ERROR (GrB_INVALID_OBJECT, (GB_LOG,
-                "Type code %d is unknown: %s [%s]",
-                type->code, GB_NAME, type->name))) ;
+            return (GrB_INVALID_OBJECT) ;
     }
 
     GBPR0 (" size: %zu\n", type->size) ;
@@ -72,8 +68,7 @@ GrB_Info GB_Type_check      // check a GraphBLAS Type
     if (type->size == 0 || type->size != GB_code_size (type->code, type->size))
     { 
         GBPR0 ("    Type has an invalid size\n") ;
-        return (GB_ERROR (GrB_INVALID_OBJECT, (GB_LOG,
-            "Type has an invalid size: %s [%s]", GB_NAME, type->name))) ;
+        return (GrB_INVALID_OBJECT) ;
     }
 
     return (GrB_SUCCESS) ;

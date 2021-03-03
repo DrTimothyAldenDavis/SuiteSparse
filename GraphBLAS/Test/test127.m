@@ -1,8 +1,8 @@
 function test127
 %TEST127 test GrB_eWiseAdd and GrB_eWiseMult (all types and operators)
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 [binops, ~, ~, types, ~, ~] = GB_spec_opsall ;
 binops = binops.all ;
@@ -19,6 +19,7 @@ dnn = struct ;
 dtn = struct ( 'inp0', 'tran' ) ;
 dnt = struct ( 'inp1', 'tran' ) ;
 dtt = struct ( 'inp0', 'tran', 'inp1', 'tran' ) ;
+dnn_notM = struct ('mask', 'complement') ;
 
 Amat2 = sparse (2 * sprand (m,n, 0.8)) ;
 Bmat2 = sparse (2 * sprand (m,n, 0.8)) ;
@@ -107,12 +108,36 @@ for k1 = 1:length (types)
 
         fprintf (' %s', binop) ;
 
-        for A_is_hyper = 0 % 0:1
+        for A_sparsity_control = 0:1
         for A_is_csc   = 0 % 0:1
-        for B_is_hyper = 0 % 0:1
+        for B_sparsity_control = 0:1
         for B_is_csc   = 0 % 0:1
-        for C_is_hyper = 0 % 0:1
+        for C_sparsity_control = 0:1
         for C_is_csc   = 0 % 0:1
+
+        if (A_sparsity_control == 0)
+            A_is_hyper = 0 ; % not hyper
+            A_sparsity = 1 ; % sparse
+        else
+            A_is_hyper = 0 ; % not hyper
+            A_sparsity = 4 ; % bitmap
+        end
+
+        if (B_sparsity_control == 0)
+            B_is_hyper = 0 ; % not hyper
+            B_sparsity = 1 ; % sparse
+        else
+            B_is_hyper = 0 ; % not hyper
+            B_sparsity = 4 ; % bitmap
+        end
+
+        if (C_sparsity_control == 0)
+            C_is_hyper = 0 ; % not hyper
+            C_sparsity = 1 ; % sparse
+        else
+            C_is_hyper = 0 ; % not hyper
+            C_sparsity = 4 ; % bitmap
+        end
 
         for native = 1 % 0:1
 
@@ -138,23 +163,27 @@ for k1 = 1:length (types)
 
         A.is_hyper = A_is_hyper ;
         A.is_csc   = A_is_csc   ;
+        A.sparsity = A_sparsity ;
         if (native)
             A.class = op.optype ;
         end
 
         AT.is_hyper = A_is_hyper ;
+        AT.sparsity = A_sparsity ;
         AT.is_csc   = A_is_csc   ;
         if (native)
             AT.class = op.optype ;
         end
 
         B.is_hyper = B_is_hyper ;
+        B.sparsity = B_sparsity ;
         B.is_csc   = B_is_csc   ;
         if (native)
             B.class = op.optype ;
         end
 
         BT.is_hyper = B_is_hyper ;
+        BT.sparsity = B_sparsity ;
         BT.is_csc   = B_is_csc   ;
         if (native)
             BT.class = op.optype ;
@@ -162,6 +191,7 @@ for k1 = 1:length (types)
 
         C.is_hyper = C_is_hyper ;
         C.is_csc   = C_is_csc   ;
+        C.sparsity = C_sparsity ;
 
         u.is_csc = true ;
         if (native)
@@ -177,92 +207,80 @@ for k1 = 1:length (types)
         % A+B
         %---------------------------------------
 
-        C0 = GB_spec_Matrix_eWiseAdd ...
-            (C, [ ], [ ], op, A, B, dnn);
-        C1 = GB_mex_Matrix_eWiseAdd ...
-            (C, [ ], [ ], op, A, B, dnn);
+        C0 = GB_spec_Matrix_eWiseAdd (C, [ ], [ ], op, A, B, dnn) ;
+        C1 = GB_mex_Matrix_eWiseAdd  (C, [ ], [ ], op, A, B, dnn) ;
         GB_spec_compare (C0, C1, 0, tol) ;
 
-        w0 = GB_spec_Vector_eWiseAdd ...
-            (w, [ ], [ ], op, u, v, dnn);
-        w1 = GB_mex_Vector_eWiseAdd ...
-            (w, [ ], [ ], op, u, v, dnn);
+        w0 = GB_spec_Vector_eWiseAdd (w, [ ], [ ], op, u, v, dnn) ;
+        w1 = GB_mex_Vector_eWiseAdd  (w, [ ], [ ], op, u, v, dnn) ;
         GB_spec_compare (w0, w1, 0, tol) ;
 
         %---------------------------------------
         % A'+B
         %---------------------------------------
 
-        C0 = GB_spec_Matrix_eWiseAdd ...
-            (C, [ ], [ ], op, AT, B, dtn);
-        C1 = GB_mex_Matrix_eWiseAdd ...
-            (C, [ ], [ ], op, AT, B, dtn);
+        C0 = GB_spec_Matrix_eWiseAdd (C, [ ], [ ], op, AT, B, dtn) ;
+        C1 = GB_mex_Matrix_eWiseAdd  (C, [ ], [ ], op, AT, B, dtn) ;
         GB_spec_compare (C0, C1, 0, tol) ;
 
         %---------------------------------------
         % A+B'
         %---------------------------------------
 
-        C0 = GB_spec_Matrix_eWiseAdd ...
-            (C, [ ], [ ], op, A, BT, dnt);
-        C1 = GB_mex_Matrix_eWiseAdd ...
-            (C, [ ], [ ], op, A, BT, dnt);
+        C0 = GB_spec_Matrix_eWiseAdd (C, [ ], [ ], op, A, BT, dnt) ;
+        C1 = GB_mex_Matrix_eWiseAdd  (C, [ ], [ ], op, A, BT, dnt) ;
         GB_spec_compare (C0, C1, 0, tol) ;
 
         %---------------------------------------
         % A'+B'
         %---------------------------------------
 
-        C0 = GB_spec_Matrix_eWiseAdd ...
-            (C, [ ], [ ], op, AT, BT, dtt);
-        C1 = GB_mex_Matrix_eWiseAdd ...
-            (C, [ ], [ ], op, AT, BT, dtt);
+        C0 = GB_spec_Matrix_eWiseAdd (C, [ ], [ ], op, AT, BT, dtt) ;
+        C1 = GB_mex_Matrix_eWiseAdd  (C, [ ], [ ], op, AT, BT, dtt) ;
         GB_spec_compare (C0, C1, 0, tol) ;
 
         %---------------------------------------
         % A.*B
         %---------------------------------------
 
-        C0 = GB_spec_Matrix_eWiseMult ...
-            (C, [ ], [ ], op, A, B, dnn);
-        C1 = GB_mex_Matrix_eWiseMult ...
-            (C, [ ], [ ], op, A, B, dnn);
+        C0 = GB_spec_Matrix_eWiseMult (C, [ ], [ ], op, A, B, dnn) ;
+        C1 = GB_mex_Matrix_eWiseMult  (C, [ ], [ ], op, A, B, dnn) ;
         GB_spec_compare (C0, C1, 0, tol) ;
 
-        w0 = GB_spec_Vector_eWiseMult ...
-            (w, [ ], [ ], op, u, v, dnn);
-        w1 = GB_mex_Vector_eWiseMult ...
-            (w, [ ], [ ], op, u, v, dnn);
+        w0 = GB_spec_Vector_eWiseMult (w, [ ], [ ], op, u, v, dnn) ;
+        w1 = GB_mex_Vector_eWiseMult  (w, [ ], [ ], op, u, v, dnn) ;
         GB_spec_compare (w0, w1, 0, tol) ;
 
         %---------------------------------------
         % A'.*B
         %---------------------------------------
 
-        C0 = GB_spec_Matrix_eWiseMult ...
-            (C, [ ], [ ], op, AT, B, dtn);
-        C1 = GB_mex_Matrix_eWiseMult ...
-            (C, [ ], [ ], op, AT, B, dtn);
+        C0 = GB_spec_Matrix_eWiseMult (C, [ ], [ ], op, AT, B, dtn) ;
+        C1 = GB_mex_Matrix_eWiseMult  (C, [ ], [ ], op, AT, B, dtn) ;
+        GB_spec_compare (C0, C1, 0, tol) ;
+
+        %---------------------------------------
+        % B.*A'
+        %---------------------------------------
+
+        C0 = GB_spec_Matrix_eWiseMult (C, [ ], [ ], op, B, AT, dnt) ;
+        C1 = GB_mex_Matrix_eWiseMult  (C, [ ], [ ], op, B, AT, dnt) ;
         GB_spec_compare (C0, C1, 0, tol) ;
 
         %---------------------------------------
         % A.*B'
         %---------------------------------------
 
-        C0 = GB_spec_Matrix_eWiseMult ...
-            (C, [ ], [ ], op, A, BT, dnt);
-        C1 = GB_mex_Matrix_eWiseMult ...
-            (C, [ ], [ ], op, A, BT, dnt);
+        C0 = GB_spec_Matrix_eWiseMult (C, [ ], [ ], op, A, BT, dnt) ;
+        C1 = GB_mex_Matrix_eWiseMult  (C, [ ], [ ], op, A, BT, dnt) ;
         GB_spec_compare (C0, C1, 0, tol) ;
 
         %---------------------------------------
         % A'.*B'
         %---------------------------------------
 
-        C0 = GB_spec_Matrix_eWiseMult ...
-            (C, [ ], [ ], op, AT, BT, dtt);
-        C1 = GB_mex_Matrix_eWiseMult ...
-            (C, [ ], [ ], op, AT, BT, dtt);
+        C0 = GB_spec_Matrix_eWiseMult (C, [ ], [ ], op, AT, BT, dtt) ;
+        C1 = GB_mex_Matrix_eWiseMult  (C, [ ], [ ], op, AT, BT, dtt) ;
         GB_spec_compare (C0, C1, 0, tol) ;
 
         %-----------------------------------------------
@@ -270,7 +288,8 @@ for k1 = 1:length (types)
         %-----------------------------------------------
 
         for M_is_very_sparse = 0 % 0:1
-        for M_is_hyper = 0 % 0:1
+        % for M_is_hyper = 0 % 0:1
+        for M_sparsity_control = 0:1
         for M_is_csc   = 0 % 0:1
 
         clear Mask mask
@@ -281,7 +300,17 @@ for k1 = 1:length (types)
             Mask.matrix = Maskmat ;
             mask.matrix = maskvec ;
         end
+
+        if (M_sparsity_control == 0)
+            M_is_hyper = 0 ; % not hyper
+            M_sparsity = 1 ; % sparse
+        else
+            M_is_hyper = 0 ; % not hyper
+            M_sparsity = 4 ; % bitmap
+        end
+
         Mask.is_hyper = M_is_hyper ;
+        Mask.sparsity = M_sparsity ;
         Mask.is_csc   = M_is_csc   ;
         mask.is_csc = true ;
 
@@ -289,93 +318,97 @@ for k1 = 1:length (types)
         % A+B, with mask
         %---------------------------------------
 
-        C0 = GB_spec_Matrix_eWiseAdd ...
-            (C, Mask, [ ], op, A, B, dnn);
-        C1 = GB_mex_Matrix_eWiseAdd ...
-            (C, Mask, [ ], op, A, B, dnn);
+        C0 = GB_spec_Matrix_eWiseAdd (C, Mask, [ ], op, A, B, dnn) ;
+        C1 = GB_mex_Matrix_eWiseAdd  (C, Mask, [ ], op, A, B, dnn) ;
         GB_spec_compare (C0, C1, 0, tol) ;
 
-        w0 = GB_spec_Vector_eWiseAdd ...
-            (w, mask, [ ], op, u, v, dnn);
-        w1 = GB_mex_Vector_eWiseAdd ...
-            (w, mask, [ ], op, u, v, dnn);
+        w0 = GB_spec_Vector_eWiseAdd (w, mask, [ ], op, u, v, dnn) ;
+        w1 = GB_mex_Vector_eWiseAdd  (w, mask, [ ], op, u, v, dnn) ;
+        GB_spec_compare (w0, w1, 0, tol) ;
+
+        %---------------------------------------
+        % A+B, with mask complemented
+        %---------------------------------------
+
+        C0 = GB_spec_Matrix_eWiseAdd (C, Mask, [ ], op, A, B, dnn_notM) ;
+        C1 = GB_mex_Matrix_eWiseAdd  (C, Mask, [ ], op, A, B, dnn_notM) ;
+        GB_spec_compare (C0, C1, 0, tol) ;
+
+        w0 = GB_spec_Vector_eWiseAdd (w, mask, [ ], op, u, v, dnn_notM) ;
+        w1 = GB_mex_Vector_eWiseAdd  (w, mask, [ ], op, u, v, dnn_notM) ;
         GB_spec_compare (w0, w1, 0, tol) ;
 
         %---------------------------------------
         % A'+B, with mask
         %---------------------------------------
 
-        C0 = GB_spec_Matrix_eWiseAdd ...
-            (C, Mask, [ ], op, AT, B, dtn);
-        C1 = GB_mex_Matrix_eWiseAdd ...
-            (C, Mask, [ ], op, AT, B, dtn);
+        C0 = GB_spec_Matrix_eWiseAdd (C, Mask, [ ], op, AT, B, dtn) ;
+        C1 = GB_mex_Matrix_eWiseAdd  (C, Mask, [ ], op, AT, B, dtn) ;
         GB_spec_compare (C0, C1, 0, tol) ;
 
         %---------------------------------------
         % A+B', with mask
         %---------------------------------------
 
-        C0 = GB_spec_Matrix_eWiseAdd ...
-            (C, Mask, [ ], op, A, BT, dnt);
-        C1 = GB_mex_Matrix_eWiseAdd ...
-            (C, Mask, [ ], op, A, BT, dnt);
+        C0 = GB_spec_Matrix_eWiseAdd (C, Mask, [ ], op, A, BT, dnt) ;
+        C1 = GB_mex_Matrix_eWiseAdd  (C, Mask, [ ], op, A, BT, dnt) ;
         GB_spec_compare (C0, C1, 0, tol) ;
 
         %---------------------------------------
         % A'+B', with mask
         %---------------------------------------
 
-        C0 = GB_spec_Matrix_eWiseAdd ...
-            (C, Mask, [ ], op, AT, BT, dtt);
-        C1 = GB_mex_Matrix_eWiseAdd ...
-            (C, Mask, [ ], op, AT, BT, dtt);
+        C0 = GB_spec_Matrix_eWiseAdd (C, Mask, [ ], op, AT, BT, dtt) ;
+        C1 = GB_mex_Matrix_eWiseAdd  (C, Mask, [ ], op, AT, BT, dtt) ;
         GB_spec_compare (C0, C1, 0, tol) ;
 
         %---------------------------------------
         % A.*B, with mask
         %---------------------------------------
 
-        C0 = GB_spec_Matrix_eWiseMult ...
-            (C, Mask, [ ], op, A, B, dnn);
-        C1 = GB_mex_Matrix_eWiseMult ...
-            (C, Mask, [ ], op, A, B, dnn);
+        C0 = GB_spec_Matrix_eWiseMult (C, Mask, [ ], op, A, B, dnn) ;
+        C1 = GB_mex_Matrix_eWiseMult  (C, Mask, [ ], op, A, B, dnn) ;
         GB_spec_compare (C0, C1, 0, tol) ;
 
-        w0 = GB_spec_Vector_eWiseMult ...
-            (w, mask, [ ], op, u, v, dnn);
-        w1 = GB_mex_Vector_eWiseMult ...
-            (w, mask, [ ], op, u, v, dnn);
+        w0 = GB_spec_Vector_eWiseMult (w, mask, [ ], op, u, v, dnn) ;
+        w1 = GB_mex_Vector_eWiseMult  (w, mask, [ ], op, u, v, dnn) ;
         GB_spec_compare (w0, w1, 0, tol) ;
 
         %---------------------------------------
         % A'.*B, with mask
         %---------------------------------------
 
-        C0 = GB_spec_Matrix_eWiseMult ...
-            (C, Mask, [ ], op, AT, B, dtn);
-        C1 = GB_mex_Matrix_eWiseMult ...
-            (C, Mask, [ ], op, AT, B, dtn);
+        C0 = GB_spec_Matrix_eWiseMult (C, Mask, [ ], op, AT, B, dtn) ;
+        C1 = GB_mex_Matrix_eWiseMult  (C, Mask, [ ], op, AT, B, dtn) ;
         GB_spec_compare (C0, C1, 0, tol) ;
 
         %---------------------------------------
         % A.*B', with mask
         %---------------------------------------
 
-        C0 = GB_spec_Matrix_eWiseMult ...
-            (C, Mask, [ ], op, A, BT, dnt);
-        C1 = GB_mex_Matrix_eWiseMult ...
-            (C, Mask, [ ], op, A, BT, dnt);
+        C0 = GB_spec_Matrix_eWiseMult (C, Mask, [ ], op, A, BT, dnt) ;
+        C1 = GB_mex_Matrix_eWiseMult  (C, Mask, [ ], op, A, BT, dnt) ;
         GB_spec_compare (C0, C1, 0, tol) ;
 
         %---------------------------------------
         % A'.*B', with mask
         %---------------------------------------
 
-        C0 = GB_spec_Matrix_eWiseMult ...
-            (C, Mask, [ ], op, AT, BT, dtt);
-        C1 = GB_mex_Matrix_eWiseMult ...
-            (C, Mask, [ ], op, AT, BT, dtt);
+        C0 = GB_spec_Matrix_eWiseMult (C, Mask, [ ], op, AT, BT, dtt) ;
+        C1 = GB_mex_Matrix_eWiseMult  (C, Mask, [ ], op, AT, BT, dtt) ;
         GB_spec_compare (C0, C1, 0, tol) ;
+
+        %---------------------------------------
+        % A.*B, with mask complemented
+        %---------------------------------------
+
+        C0 = GB_spec_Matrix_eWiseMult (C, Mask, [ ], op, A, B, dnn_notM) ;
+        C1 = GB_mex_Matrix_eWiseMult  (C, Mask, [ ], op, A, B, dnn_notM) ;
+        GB_spec_compare (C0, C1, 0, tol) ;
+
+        w0 = GB_spec_Vector_eWiseMult (w, mask, [ ], op, u, v, dnn_notM) ;
+        w1 = GB_mex_Vector_eWiseMult  (w, mask, [ ], op, u, v, dnn_notM) ;
+        GB_spec_compare (w0, w1, 0, tol) ;
 
 
         end

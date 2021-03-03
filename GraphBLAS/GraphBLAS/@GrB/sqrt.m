@@ -4,8 +4,8 @@ function C = sqrt (G)
 %
 % See also GrB.apply, GrB/hypot.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights
-% Reserved. http://suitesparse.com.  See GraphBLAS/Doc/License.txt.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SPDX-License-Identifier: Apache-2.0
 
 G = G.opaque ;
 C = GrB (gb_to_real_if_imag_zero (gb_trig ('sqrt', G))) ;
