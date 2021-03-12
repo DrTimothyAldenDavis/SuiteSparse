@@ -133,7 +133,7 @@ ssget/files directory should not be a symbolic link.
     save (Problem.name, 'Problem', '-v7.3') ;
 
     Move the new *.mat files into
-    backslash:/archive/davis/SuiteSparseCollection/mat/Group.
+    backslash:/raid/SuiteSparseCollection/html//mat/Group.
 
 5) Compute matrix statistics and extend the ss_index. Do this in MATLAB:
 
