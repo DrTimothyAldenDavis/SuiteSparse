@@ -184,7 +184,9 @@ classdef GrB
 %   C = bitxor (A, B, ...)          bitwise xor
 %
 %   C = cast (G, ...)       cast GrB matrix to MATLAB matrix
+%   C = cat (dim, ...)      contatenate matrices
 %   C = ceil (G)            round towards infinity
+%   C = cell2mat (A)        concatenate a cell array of matrices
 %   p = colamd (G)          column approximate minimum degree ordering
 %   C = complex (G)         cast GrB matrix to MATLAB sparse complex
 %   C = conj (G)            complex conjugate
@@ -263,12 +265,14 @@ classdef GrB
 %   [F, E] = log2 (G)       base-2 logarithm
 %   C = logical (G)         cast GrB matrix to MATLAB sparse logical
 %
+%   C = mat2cell (A,m,n)    break a matrix into a cell array of matrices
 %   C = max (A,B,option)    reduce via max, to vector or scalar
 %   C = min (A,B,option)    reduce via min, to vector or scalar
 %
 %   e = nnz (G)             number of entries in a GrB matrix G
 %   X = nonzeros (G)        extract all entries from a GrB matrix
 %   s = norm (G, kind)      norm of a GrB matrix
+%   C = num2cell (A,dim)    convert a matrix into a cell array
 %   e = numel (G)           m*n for an m-by-n GrB matrix G
 %   e = nzmax (G)           number of entries in a GrB matrix G
 %
@@ -370,6 +374,10 @@ classdef GrB
 %   t = GrB.type (A)             get the type of a MATLAB or GrB matrix A
 %   v = GrB.version              string with SuiteSparse:GraphBLAS version
 %   v = GrB.ver                  struct with SuiteSparse:GraphBLAS version
+%
+%   load/save:
+%   C = GrB.load (filename)      load a single matrix from a file
+%   GrB.save (A, filename)       save a single matrix to a file
 %
 %-------------------------------------
 % Static Methods for graph algorithms:
@@ -556,7 +564,7 @@ classdef GrB
 % See also sparse.
 %
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
-% SPDX-License-Identifier: Apache-2.0
+% SPDX-License-Identifier: GPL-3.0-or-later
 
 properties (SetAccess = private, GetAccess = private)
     % The struct contains the entire opaque content of a GraphBLAS
@@ -706,7 +714,7 @@ methods
 
     % methods in MATLAB/elmat not implemented here:
     %
-    %       accumarray blkdiag bsxfun cat circshift compan gallery
+    %       accumarray blkdiag bsxfun circshift compan gallery
     %       hadamard hankel hilb inf invhilb ipermute isequaln nan ndgrid
     %       pascal permute repelem rot90 shiftdim toeplitz vander
     %       wilkinson
@@ -811,6 +819,7 @@ methods
     C = bitxor (A, B, assumedtype) ;
 
 %   C = cast (G, ...)       built-in works as-is
+    C = cat (dim, varargin) ;
     C = ceil (G) ;
     [p, varargout] = colamd (G, varargin) ;
     C = complex (A, B) ;
@@ -889,12 +898,14 @@ methods
     [F, E] = log2 (G) ;
     C = logical (G) ;
 
+    C = mat2cell (A, m, n) ;
     C = max (A, B, option) ;
     C = min (A, B, option) ;
 
     e = nnz (G) ;
     X = nonzeros (G) ;
     s = norm (G, kind) ;
+    C = num2cell (A, dim) ;
     s = numel (G) ;
     e = nzmax (G) ;
 
@@ -972,6 +983,7 @@ methods (Static)
     binopinfo (op, type) ;
     C = build (I, J, X, m, n, dup, type, desc) ;
     b = burble (b) ;
+    C = cell2mat (A) ;
     c = chunk (c) ;
     clear ;
     [C, I, J] = compact (A, id) ;
@@ -996,6 +1008,7 @@ methods (Static)
     C = kronecker (Cin, M, accum, op, A, B, desc) ;
     C = ktruss (A, k, check) ;                  % uses GrB matrices
     L = laplacian (A, type, check) ;
+    C = load (filename) ;
     iset = mis (A, check) ;                     % uses GrB matrices
     monoidinfo (monoid, type) ;
     C = mxm (Cin, M, accum, semiring, A, B, desc) ;
@@ -1007,6 +1020,7 @@ methods (Static)
     C = prune (A, identity) ;
     C = random (varargin) ;
     C = reduce (cin, accum, monoid, A, desc) ;
+    filename_used = save (C, filename) ;
     C = select (Cin, M, accum, selectop, A, b, desc) ;
     selectopinfo (op) ;
     semiringinfo (s, type) ;

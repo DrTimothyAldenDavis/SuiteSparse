@@ -1,7 +1,7 @@
 % Set locations of files.
 
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2020, All Rights Reserved.
-% SPDX-License-Identifier: Apache-2.0
+% SPDX-License-Identifier: GPL-3.0-or-later
 
 rootdir = '/raid/hyper/GraphChallenge/dnn_data/MATLAB' ;
 ncores = maxNumCompThreads ;

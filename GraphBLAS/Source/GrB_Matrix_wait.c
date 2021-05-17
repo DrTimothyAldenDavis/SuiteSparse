@@ -36,7 +36,7 @@ GrB_Info GrB_Matrix_wait    // finish all work on a matrix
     { 
         GrB_Info info ;
         GB_BURBLE_START ("GrB_Matrix_wait") ;
-        GB_OK (GB_Matrix_wait (*A, Context)) ;
+        GB_OK (GB_Matrix_wait (*A, "matrix", Context)) ;
         GB_BURBLE_END ;
     }
 

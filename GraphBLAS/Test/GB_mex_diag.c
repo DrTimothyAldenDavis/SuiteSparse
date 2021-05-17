@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// GB_mex_diag: compute C=diag(A,1)
+// GB_mex_diag: compute C=diag(A,k)
 //------------------------------------------------------------------------------
 
 // SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
@@ -8,6 +8,7 @@
 //------------------------------------------------------------------------------
 
 // C = diag (A,k), where A and C are double
+// C is a matrix the same size as A, not a vector.
 
 #include "GB_mex.h"
 
@@ -58,9 +59,6 @@ void mexFunction
     {
         k = (int64_t) mxGetScalar (pargin [1]) ;
     }
-
-    #define GET_DEEP_COPY ;
-    #define FREE_DEEP_COPY ;
 
     // construct C
     METHOD (GrB_Matrix_new (&C, GrB_FP64, A->vlen, A->vdim)) ;

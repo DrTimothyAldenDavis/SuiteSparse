@@ -29,14 +29,30 @@
     CHECK2 (info == expected, method) ;                                     \
 }
 
-// assert that a method should return a particular error code: with logger
+// assert that a method should return a particular error code: with logger,
+// for a GrB_Matrix, GrB_Vector, or GxB_Scalar
 #define ERR1(C,method)                                                      \
 {                                                                           \
     info = method ;                                                         \
     fprintf (f, "\nline %d: info %d, error logger:\n", __LINE__, info) ;    \
     char *error_logger ;                                                    \
     GrB_Matrix_error_(&error_logger, ((GrB_Matrix) C)) ;                    \
-    fprintf (f,"[%s]\n", error_logger) ;                                    \
+    fprintf (f, "logger is %p\n", error_logger) ;                           \
+    if (error_logger != NULL) fprintf (f,"[%s]\n", error_logger) ;          \
+    if (info != expected) fprintf (f, "got %d expected %d\n",               \
+        info, expected) ;                                                   \
+    CHECK2 (info == expected, method) ;                                     \
+}
+
+// assert that a method should return a particular error code: with logger,
+// for a GrB_Descriptor
+#define ERRD(descriptor,method)                                             \
+{                                                                           \
+    info = method ;                                                         \
+    fprintf (f, "\nline %d: info %d, error logger:\n", __LINE__, info) ;    \
+    char *error_logger ;                                                    \
+    GrB_Descriptor_error_(&error_logger, descriptor) ;                      \
+    if (error_logger != NULL) fprintf (f,"[%s]\n", error_logger) ;          \
     if (info != expected) fprintf (f, "got %d expected %d\n",               \
         info, expected) ;                                                   \
     CHECK2 (info == expected, method) ;                                     \

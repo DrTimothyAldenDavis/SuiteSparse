@@ -111,10 +111,16 @@ end
 name = sprintf ('%s_%s_%s', addop, multop, fname) ;
 
 % function names
-fprintf (f, 'define(`GB_Adot2B'', `GB_Adot2B__%s'')\n', name) ;
-fprintf (f, 'define(`GB_Adot3B'', `GB_Adot3B__%s'')\n', name) ;
-fprintf (f, 'define(`GB_Adot4B'', `GB_Adot4B__%s'')\n', name) ;
-fprintf (f, 'define(`GB_Asaxpy3B'', `GB_Asaxpy3B__%s'')\n', name) ;
+fprintf (f, 'define(`_Adot2B'', `_Adot2B__%s'')\n', name) ;
+fprintf (f, 'define(`_Adot3B'', `_Adot3B__%s'')\n', name) ;
+fprintf (f, 'define(`_Adot4B'', `_Adot4B__%s'')\n', name) ;
+fprintf (f, 'define(`_Asaxpy3B'', `_Asaxpy3B__%s'')\n', name) ;
+fprintf (f, 'define(`_Asaxpy3B_M'', `_Asaxpy3B_M__%s'')\n', name) ;
+fprintf (f, 'define(`_Asaxpy3B_noM'', `_Asaxpy3B_noM__%s'')\n', name) ;
+fprintf (f, 'define(`_Asaxpy3B_notM'', `_Asaxpy3B_notM__%s'')\n', name) ;
+fprintf (f, 'define(`_AsaxbitB'', `_AsaxbitB__%s'')\n', name) ;
+fprintf (f, 'define(`GB_AxB_defs'', `GB_AxB_defs__%s'')\n', name) ;
+fprintf (f, 'define(`GB_AxB_defs_include'', `#include "GB_AxB_defs__%s.h"'')\n', name) ;
 
 % type of C, A, and B
 fprintf (f, 'define(`GB_ctype'', `%s'')\n', ztype) ;
@@ -172,11 +178,11 @@ else
 end
 
 % for the conventional semirings in MATLAB, which get extra optimization
-if (isequal (addop, 'plus') && isequal (multop, 'times') && ztype_is_float)
-    fprintf (f, 'define(`GB_is_performance_critical_semiring'', `1'')\n') ;
-else
-    fprintf (f, 'define(`GB_is_performance_critical_semiring'', `0'')\n') ;
-end
+% if (isequal (addop, 'plus') && isequal (multop, 'times') && ztype_is_float)
+%     fprintf (f, 'define(`GB_is_performance_critical_semiring'', `1'')\n') ;
+% else
+%     fprintf (f, 'define(`GB_is_performance_critical_semiring'', `0'')\n') ;
+% end
 
 
 if (is_any)
@@ -187,7 +193,7 @@ if (is_any)
 elseif (~isempty (terminal))
     % terminal monoids terminate when cij equals the terminal value
     fprintf (f, 'define(`GB_is_any_monoid'', `0'')\n') ;
-    fprintf (f, 'define(`GB_terminal'', `if (cij == %s) break ;'')\n', ...
+    fprintf (f, 'define(`GB_terminal'', `if (cij == %s) { break ; }'')\n', ...
         terminal) ;
     fprintf (f, 'define(`GB_dot_simd_vectorize'', `;'')\n') ;
 else
@@ -376,25 +382,25 @@ fprintf (f, 'define(`GB_multiply'', `$1 = %s'')\n', mult2) ;
 if (is_min)
     if (contains (ztype, 'int'))
         % min monoid for signed or unsigned integers
-        add2 = 'if ($1 > $2) $1 = $2' ;
+        add2 = 'if ($1 > $2) { $1 = $2 ; }' ;
     else
         % min monoid for float or double, with omitnan property
         if (t_is_nonnan)
-            add2 = 'if (!islessequal ($1, $2)) $1 = $2' ;
+            add2 = 'if (!islessequal ($1, $2)) { $1 = $2 ; }' ;
         else
-            add2 = 'if (!isnan ($2) && !islessequal ($1, $2)) $1 = $2' ;
+            add2 = 'if (!isnan ($2) && !islessequal ($1, $2)) { $1 = $2 ; }' ;
         end
     end
 elseif (is_max)
     if (contains (ztype, 'int'))
         % max monoid for signed or unsigned integers
-        add2 = 'if ($1 < $2) $1 = $2' ;
+        add2 = 'if ($1 < $2) { $1 = $2 ; }' ;
     else
         % max monoid for float or double, with omitnan property
         if (t_is_nonnan)
-            add2 = 'if (!isgreaterequal ($1, $2)) $1 = $2' ;
+            add2 = 'if (!isgreaterequal ($1, $2)) { $1 = $2 ; }' ;
         else
-            add2 = 'if (!isnan ($2) && !isgreaterequal ($1, $2)) $1 = $2' ;
+            add2 = 'if (!isnan ($2) && !isgreaterequal ($1, $2)) { $1 = $2 ; }';
         end
     end
 else
@@ -464,7 +470,7 @@ switch (addop)
         if (isequal (multop, 'pair'))
             s = ' ' ;
         else
-            s = sprintf ('if (exists && !cb) cx = %s', mult2) ;
+            s = sprintf ('if (exists && !cb) { cx = %s ; }', mult2) ;
         end
 
     % boolean monoids (except eq / lxnor)
@@ -490,18 +496,25 @@ switch (addop)
         if (contains (ztype, 'int'))
             % min for signed or unsigned integers
             if (t_is_simple)
-                s = sprintf ('if (exists && cx > %s) cx = %s', mult2, mult2) ;
+                s = sprintf ('if (exists && cx > %s) { cx = %s ; }', ...
+                    mult2, mult2) ;
             else
-                s = sprintf ('%s t = %s ; if (exists && cx > t) cx = t', ztype, mult2) ;
+                s = sprintf (...
+                    '%s t = %s ; if (exists && cx > t) { cx = t ; }', ...
+                    ztype, mult2) ;
             end
         else
             % min for float or double, with omitnan property
             if (t_is_simple)
-                s = sprintf ('if (exists && !isnan (%s) && !islessequal (cx, %s)) cx = %s', mult2, mult2, mult2) ;
+                s = sprintf ( ...
+                'if (exists && !isnan (%s) && !islessequal (cx, %s)) { cx = %s ; }', ...
+                mult2, mult2, mult2) ;
             elseif (t_is_nonnan)
-                s = sprintf ('%s t = %s ; if (exists && !islessequal (cx, t)) cx = t', ztype, mult2) ;
+                s = sprintf ('%s t = %s ; if (exists && !islessequal (cx, t)) { cx = t ; } ', ...
+                ztype, mult2) ;
             else
-                s = sprintf ('%s t = %s ; if (exists && !isnan (t) && !islessequal (cx, t)) cx = t', ztype, mult2) ;
+                s = sprintf ('%s t = %s ; if (exists && !isnan (t) && !islessequal (cx, t)) { cx = t ; }', ...
+                ztype, mult2) ;
             end
         end
         if (contains (ztype, 'uint'))
@@ -511,18 +524,26 @@ switch (addop)
         if (contains (ztype, 'int'))
             % max for signed or unsigned integers
             if (t_is_simple)
-                s = sprintf ('if (exists && cx < %s) cx = %s', mult2, mult2) ;
+                s = sprintf ('if (exists && cx < %s) { cx = %s ; }', ...
+                mult2, mult2) ;
             else
-                s = sprintf ('%s t = %s ; if (exists && cx < t) cx = t', ztype, mult2) ;
+                s = sprintf ('%s t = %s ; if (exists && cx < t) { cx = t ; }', ...
+                ztype, mult2) ;
             end
         else
             % max for float or double, with omitnan property
             if (t_is_simple)
-                s = sprintf ('if (exists && !isnan (%s) && !isgreaterequal (cx, %s)) cx = %s', mult2, mult2, mult2) ;
+                s = sprintf (...
+                'if (exists && !isnan (%s) && !isgreaterequal (cx, %s)) { cx = %s ; }', ...
+                mult2, mult2, mult2) ;
             elseif (t_is_nonnan)
-                s = sprintf ('%s t = %s ; if (exists && !isgreaterequal (cx, t)) cx = t', ztype, mult2) ;
+                s = sprintf (...
+                '%s t = %s ; if (exists && !isgreaterequal (cx, t)) { cx = t ; }', ...
+                ztype, mult2) ;
             else
-                s = sprintf ('%s t = %s ; if (exists && !isnan (t) && !isgreaterequal (cx, t)) cx = t', ztype, mult2) ;
+                s = sprintf (...
+                '%s t = %s ; if (exists && !isnan (t) && !isgreaterequal (cx, t)) { cx = t ; }', ...
+                ztype, mult2) ;
             end
         end
         if (contains (ztype, 'uint'))
@@ -638,14 +659,21 @@ disable = [disable (sprintf (' || GxB_NO_%s_%s_%s', ...
 fprintf (f, 'define(`GB_disable'', `(%s)'')\n', disable) ;
 fclose (f) ;
 
-nprune = 52 ;
+nprune = 57 ;
 
-% construct the *.c file
-cmd = sprintf (...
-'cat control.m4 Generator/GB_AxB.c | m4 | tail -n +%d > Generated/GB_AxB__%s.c', ...
-nprune, name) ;
+% construct the *.c and *.h files for the semiring
+fmt = 'cat control.m4 Generator/%s.%s | m4 | tail -n +%d > Generated/%s__%s.%s' ;
+base = { 'GB_Adot2B', 'GB_Adot3B', 'GB_Adot4B', 'GB_AsaxbitB', ...
+    'GB_Asaxpy3B', 'GB_Asaxpy3B_noM', 'GB_Asaxpy3B_M', 'GB_Asaxpy3B_notM',  ...
+    'GB_AxB_defs' } ;
+suffix = { 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'h' } ;
+
+for k = 1:length (base)
+    cmd = sprintf (fmt, base {k}, suffix {k}, nprune, base {k}, name, suffix {k}) ;
+    system (cmd) ;
+end
+
 fprintf ('.') ;
-system (cmd) ;
 
 % append to the *.h file
 cmd = sprintf (...

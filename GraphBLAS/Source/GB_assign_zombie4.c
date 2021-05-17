@@ -52,10 +52,10 @@ void GB_assign_zombie4
     // get C
     //--------------------------------------------------------------------------
 
-    const int64_t *GB_RESTRICT Ch = C->h ;
-    const int64_t *GB_RESTRICT Cp = C->p ;
+    const int64_t *restrict Ch = C->h ;
+    const int64_t *restrict Cp = C->p ;
     const int64_t Cnvec = C->nvec ;
-    int64_t *GB_RESTRICT Ci = C->i ;
+    int64_t *restrict Ci = C->i ;
     int64_t nzombies = C->nzombies ;
     const int64_t zorig = nzombies ;
 
@@ -63,10 +63,10 @@ void GB_assign_zombie4
     // get M
     //--------------------------------------------------------------------------
 
-    const int64_t *GB_RESTRICT Mp = M->p ;
-    const int64_t *GB_RESTRICT Mh = M->h ;
-    const int8_t  *GB_RESTRICT Mb = M->b ;
-    const GB_void *GB_RESTRICT Mx = (GB_void *) (Mask_struct ? NULL : (M->x)) ;
+    const int64_t *restrict Mp = M->p ;
+    const int64_t *restrict Mh = M->h ;
+    const int8_t  *restrict Mb = M->b ;
+    const GB_void *restrict Mx = (GB_void *) (Mask_struct ? NULL : (M->x)) ;
     const size_t msize = M->type->size ;
     const int64_t Mnvec = M->nvec ;
     const int64_t Mvlen = M->vlen ;

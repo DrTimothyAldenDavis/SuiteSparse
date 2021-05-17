@@ -18,10 +18,10 @@
 
 #define FREE_ALL                        \
 {                                       \
-    GrB_Matrix_free_(&C) ;               \
-    GrB_Matrix_free_(&Mask) ;            \
-    GrB_Matrix_free_(&S) ;               \
-    GrB_Matrix_free_(&A) ;               \
+    GrB_Matrix_free_(&C) ;              \
+    GrB_Matrix_free_(&Mask) ;           \
+    GrB_Matrix_free_(&S) ;              \
+    GrB_Matrix_free_(&A) ;              \
     GrB_Descriptor_free_(&desc) ;       \
     GB_mx_put_global (true) ;           \
 }
@@ -327,7 +327,7 @@ void mexFunction
     }
 
     // C<Mask> = accum(C,op(x,A))
-    if (GB_NCOLS (C) == 1 && (desc == NULL || desc->in0 == GxB_DEFAULT))
+    if (GB_NCOLS (C) == 1 && (desc == NULL || desc->in1 == GxB_DEFAULT))
     {
         // this is just to test the Vector version
         METHOD (apply1 (false)) ;

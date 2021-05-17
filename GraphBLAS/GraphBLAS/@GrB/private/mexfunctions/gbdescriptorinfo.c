@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------------
 
 // SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 //------------------------------------------------------------------------------
 
@@ -13,6 +13,8 @@
 // gbdescriptorinfo (desc)
 
 #include "gb_matlab.h"
+
+#define USAGE "usage: GrB.descriptorinfo or GrB.descriptorinfo (desc)"
 
 void mexFunction
 (
@@ -27,8 +29,7 @@ void mexFunction
     // check inputs
     //--------------------------------------------------------------------------
 
-    gb_usage (nargin <= 1 && nargout == 0,
-        "usage: GrB.descriptorinfo or GrB.descriptorinfo (desc)") ;
+    gb_usage (nargin <= 1 && nargout == 0, USAGE) ;
 
     //--------------------------------------------------------------------------
     // construct the GraphBLAS descriptor

@@ -18,12 +18,13 @@ GrB_Info GxB_Matrix_export_CSR  // export and free a CSR matrix
     GrB_Index *nrows,   // number of rows of the matrix
     GrB_Index *ncols,   // number of columns of the matrix
 
-    GrB_Index **Ap,     // row "pointers", Ap_size >= nrows+1
-    GrB_Index **Aj,     // row indices, Aj_size >= nvals(A)
-    void **Ax,          // values, Ax_size 1, or >= nvals(A)
-    GrB_Index *Ap_size, // size of Ap
-    GrB_Index *Aj_size, // size of Aj
-    GrB_Index *Ax_size, // size of Ax
+    GrB_Index **Ap,     // row "pointers"
+    GrB_Index **Aj,     // column indices
+    void **Ax,          // values
+    GrB_Index *Ap_size, // size of Ap in bytes
+    GrB_Index *Aj_size, // size of Aj in bytes
+    GrB_Index *Ax_size, // size of Ax in bytes
+    bool *is_uniform,   // if true, A has uniform values (TODO:::unsupported)
 
     bool *jumbled,      // if true, indices in each row may be unsorted
     const GrB_Descriptor desc
@@ -35,7 +36,8 @@ GrB_Info GxB_Matrix_export_CSR  // export and free a CSR matrix
     //--------------------------------------------------------------------------
 
     GB_WHERE1 ("GxB_Matrix_export_CSR (&A, &type, &nrows, &ncols, "
-        "&Ap, &Aj, &Ax, &Ap_size, &Aj_size, &Ax_size, &jumbled, desc)") ;
+        "&Ap, &Aj, &Ax, &Ap_size, &Aj_size, &Ax_size, &is_uniform, "
+        "&jumbled, desc)") ;
     GB_BURBLE_START ("GxB_Matrix_export_CSR") ;
     GB_RETURN_IF_NULL (A) ;
     GB_RETURN_IF_NULL_OR_FAULTY (*A) ;
@@ -50,7 +52,7 @@ GrB_Info GxB_Matrix_export_CSR  // export and free a CSR matrix
     { 
         // A = A', done in-place, to put A in CSR format
         GBURBLE ("(transpose) ") ;
-        GB_OK (GB_transpose (NULL, NULL, false, *A,
+        GB_OK (GB_transpose (NULL, NULL, false, *A,     // in_place_A
             NULL, NULL, NULL, false, Context)) ;
     }
 
@@ -88,14 +90,15 @@ GrB_Info GxB_Matrix_export_CSR  // export and free a CSR matrix
     int sparsity ;
     bool is_csc ;
 
-    info = GB_export (A, type, ncols, nrows,
+    info = GB_export (A, type, ncols, nrows, false,
         Ap,   Ap_size,  // Ap
         NULL, NULL,     // Ah
         NULL, NULL,     // Ab
         Aj,   Aj_size,  // Ai
         Ax,   Ax_size,  // Ax
         NULL, jumbled, NULL,                // jumbled or not
-        &sparsity, &is_csc, Context) ;      // sparse by row
+        &sparsity, &is_csc,                 // sparse by row
+        is_uniform, Context) ;
 
     if (info == GrB_SUCCESS)
     {

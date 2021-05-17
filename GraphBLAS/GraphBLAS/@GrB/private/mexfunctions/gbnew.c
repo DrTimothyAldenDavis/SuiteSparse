@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------------
 
 // SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 //------------------------------------------------------------------------------
 
@@ -25,6 +25,8 @@
 
 #include "gb_matlab.h"
 
+#define USAGE "usage: C = GrB (m,n,type,format) or C = GrB (A,type,format)"
+
 void mexFunction
 (
     int nargout,
@@ -38,8 +40,7 @@ void mexFunction
     // check inputs
     //--------------------------------------------------------------------------
 
-    gb_usage (nargin >= 1 && nargin <= 4 && nargout <= 1,
-        "usage: C = GrB (m,n,type,format) or C = GrB (A,type,format)") ;
+    gb_usage (nargin >= 1 && nargin <= 4 && nargout <= 1, USAGE) ;
 
     //--------------------------------------------------------------------------
     // construct the GraphBLAS matrix
@@ -116,6 +117,7 @@ void mexFunction
                 GrB_Matrix A = gb_get_shallow (pargin [0]) ;
                 // C = A with the requested format and sparsity, no typecast
                 C = gb_typecast (A, NULL, fmt, sparsity) ;
+                OK (GrB_Matrix_free (&A)) ;
 
             }
             else

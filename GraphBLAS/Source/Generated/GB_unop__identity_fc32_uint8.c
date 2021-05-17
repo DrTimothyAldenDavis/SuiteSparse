@@ -17,8 +17,8 @@
 
 // C=unop(A) is defined by the following types and operators:
 
-// op(A)  function:  GB_unop_apply__identity_fc32_uint8
-// op(A') function:  GB_unop_tran__identity_fc32_uint8
+// op(A)  function:  GB (_unop_apply__identity_fc32_uint8)
+// op(A') function:  GB (_unop_tran__identity_fc32_uint8)
 
 // C type:   GxB_FC32_t
 // A type:   uint8_t
@@ -67,11 +67,11 @@
 // Cx = op (cast (Ax)): apply a unary operator
 //------------------------------------------------------------------------------
 
-GrB_Info GB_unop_apply__identity_fc32_uint8
+GrB_Info GB (_unop_apply__identity_fc32_uint8)
 (
     GxB_FC32_t *Cx,       // Cx and Ax may be aliased
     const uint8_t *Ax,
-    const int8_t *GB_RESTRICT Ab,   // A->b if A is bitmap
+    const int8_t *restrict Ab,   // A->b if A is bitmap
     int64_t anz,
     int nthreads
 )
@@ -80,6 +80,10 @@ GrB_Info GB_unop_apply__identity_fc32_uint8
     return (GrB_NO_VALUE) ;
     #else
     int64_t p ;
+
+    // TODO: if OP is ONE and uniform-valued matrices are exploited, then
+    // do this in O(1) time
+
     if (Ab == NULL)
     { 
         #if ( GB_OP_IS_IDENTITY_WITH_NO_TYPECAST )
@@ -114,12 +118,12 @@ GrB_Info GB_unop_apply__identity_fc32_uint8
 // C = op (cast (A')): transpose, typecast, and apply a unary operator
 //------------------------------------------------------------------------------
 
-GrB_Info GB_unop_tran__identity_fc32_uint8
+GrB_Info GB (_unop_tran__identity_fc32_uint8)
 (
     GrB_Matrix C,
     const GrB_Matrix A,
-    int64_t *GB_RESTRICT *Workspaces,
-    const int64_t *GB_RESTRICT A_slice,
+    int64_t *restrict *Workspaces,
+    const int64_t *restrict A_slice,
     int nworkspaces,
     int nthreads
 )

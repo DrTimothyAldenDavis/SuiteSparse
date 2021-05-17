@@ -1,8 +1,8 @@
 function gbtest51
-%GBTEST51 test GrB.tricount
+%GBTEST51 test GrB.tricount and concatenate
 
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
-% SPDX-License-Identifier: Apache-2.0
+% SPDX-License-Identifier: GPL-3.0-or-later
 
 files =  {
 '../../Demo/Matrix/2blocks'
@@ -54,7 +54,7 @@ for k = 1:nfiles
     % fprintf ('--------------------------construct G:\n') ;
     [m, n] = size (G) ;
     if (m ~= n)
-        G = [GrB(m,m) G ; G' GrB(n,n)] ; %#ok<*AGROW>
+        G = [GrB(m,m) G ; G' GrB(n,n)] ; %#ok<*AGROW>   (concatenate)
     elseif (~issymmetric (G))
         G = G + G' ;
     end

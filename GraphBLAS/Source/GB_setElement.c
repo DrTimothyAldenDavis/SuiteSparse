@@ -91,15 +91,7 @@ GrB_Info GB_setElement              // set a single entry, C(row,col) = scalar
     // sort C if needed; do not assemble pending tuples or kill zombies yet
     //--------------------------------------------------------------------------
 
-    if (C->jumbled)
-    { 
-        // C must not be jumbled; this also kills zombies and assembles
-        // pending tuples
-        GB_OK (GB_Matrix_wait (C, Context)) ;
-        ASSERT (!GB_JUMBLED (C)) ;
-        ASSERT (!GB_PENDING (C)) ;
-        ASSERT (!GB_ZOMBIES (C)) ;
-    }
+    GB_MATRIX_WAIT_IF_JUMBLED (C) ;
 
     // zombies and pending tuples are still OK, but C is no longer jumbled
     ASSERT (!GB_JUMBLED (C)) ;
@@ -163,7 +155,7 @@ GrB_Info GB_setElement              // set a single entry, C(row,col) = scalar
             pright = pC_end - 1 ;
 
             // Time taken for this step is at most O(log(nnz(C(:,j))).
-            const int64_t *GB_RESTRICT Ci = C->i ;
+            const int64_t *restrict Ci = C->i ;
             GB_BINARY_SEARCH_ZOMBIE (i, Ci, pleft, pright, found, C->nzombies,
                 is_zombie) ;
         }
@@ -269,7 +261,7 @@ GrB_Info GB_setElement              // set a single entry, C(row,col) = scalar
             #endif
 
             // delete any lingering zombies and assemble the pending tuples
-            GB_OK (GB_Matrix_wait (C, Context)) ;
+            GB_OK (GB_Matrix_wait (C, "C", Context)) ;
 
             #if GB_BURBLE
             if (burble)
@@ -298,7 +290,7 @@ GrB_Info GB_setElement              // set a single entry, C(row,col) = scalar
         // NULL, which is the implicit SECOND_ctype operator.
 
         if (!GB_Pending_add (&(C->Pending), (GB_void *)scalar,
-            stype, NULL, i, j, C->vdim > 1))
+            stype, NULL, i, j, C->vdim > 1, Context))
         { 
             // out of memory
             GB_phbix_free (C) ;

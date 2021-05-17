@@ -25,7 +25,8 @@ void mexFunction
 {
     mexPrintf ("usage:\n%s\n", USAGE) ;
 
-    GxB_init (GrB_NONBLOCKING, mxMalloc, mxCalloc, mxRealloc, mxFree, false) ;
+    GxB_init (GrB_NONBLOCKING, mxMalloc, NULL    , NULL     , mxFree, false) ;
+//  GxB_init (GrB_NONBLOCKING, mxMalloc, mxCalloc, mxRealloc, mxFree, false) ;
     GB_Global_abort_function_set (GB_mx_abort) ;
     GB_Global_malloc_tracking_set (true) ;
 

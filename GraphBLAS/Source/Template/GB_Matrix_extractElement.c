@@ -40,7 +40,7 @@ GrB_Info GB_EXTRACT_ELEMENT     // extract a single entry, x = A(row,col)
         GrB_Info info ;
         GB_WHERE1 (GB_WHERE_STRING) ;
         GB_BURBLE_START ("GrB_Matrix_extractElement") ;
-        GB_OK (GB_Matrix_wait (A, Context)) ;
+        GB_OK (GB_Matrix_wait (A, "A", Context)) ;
         GB_BURBLE_END ;
     }
 
@@ -88,19 +88,19 @@ GrB_Info GB_EXTRACT_ELEMENT     // extract a single entry, x = A(row,col)
 
     int64_t pleft ;
     bool found ;
-    const int64_t *GB_RESTRICT Ap = A->p ;
+    const int64_t *restrict Ap = A->p ;
 
     if (Ap != NULL)
     { 
         // A is sparse or hypersparse
-        const int64_t *GB_RESTRICT Ai = A->i ;
+        const int64_t *restrict Ai = A->i ;
 
         // extract from vector j of a GrB_Matrix
         int64_t k ;
         if (A->h != NULL)
         {
             // A is hypersparse: look for j in hyperlist A->h [0 ... A->nvec-1]
-            const int64_t *GB_RESTRICT Ah = A->h ;
+            const int64_t *restrict Ah = A->h ;
             int64_t pleft = 0 ;
             int64_t pright = A->nvec-1 ;
             GB_BINARY_SEARCH (j, Ah, pleft, pright, found) ;
@@ -129,7 +129,7 @@ GrB_Info GB_EXTRACT_ELEMENT     // extract a single entry, x = A(row,col)
     {
         // A is bitmap or full
         pleft = i + j * A->vlen ;
-        const int8_t *GB_RESTRICT Ab = A->b ;
+        const int8_t *restrict Ab = A->b ;
         if (Ab != NULL)
         { 
             // A is bitmap
@@ -153,7 +153,7 @@ GrB_Info GB_EXTRACT_ELEMENT     // extract a single entry, x = A(row,col)
         { 
             // copy the value from A into x, no typecasting, for built-in
             // types only.
-            GB_XTYPE *GB_RESTRICT Ax = ((GB_XTYPE *) (A->x)) ;
+            GB_XTYPE *restrict Ax = ((GB_XTYPE *) (A->x)) ;
             (*x) = Ax [pleft] ;
         }
         else

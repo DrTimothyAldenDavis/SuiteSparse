@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------------
 
 // SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 //------------------------------------------------------------------------------
 
@@ -15,6 +15,8 @@
 //                                  (either GraphBLAS or MATLAB)
 
 #include "gb_matlab.h"
+
+#define USAGE "usage: [f,s] = GrB.format, GrB.format (f), GrB.format (G)"
 
 void mexFunction
 (
@@ -29,8 +31,7 @@ void mexFunction
     // check inputs
     //--------------------------------------------------------------------------
 
-    gb_usage (nargin <= 1 && nargout <= 2,
-        "usage: [f,s] = GrB.format, GrB.format (f), GrB.format (G)") ;
+    gb_usage (nargin <= 1 && nargout <= 2, USAGE) ;
 
     //--------------------------------------------------------------------------
     // get/set the format
@@ -76,13 +77,18 @@ void mexFunction
             //------------------------------------------------------------------
 
             // get the type
-            mxArray *mx_type = mxGetField (pargin [0], 0, "GraphBLASv4") ;
+            mxArray *mx_type = mxGetField (pargin [0], 0, "GraphBLASv5") ;
+            if (mx_type == NULL)
+            {
+                // check if it is a GraphBLASv4 struct
+                mx_type = mxGetField (pargin [0], 0, "GraphBLASv4") ;
+            }
             if (mx_type == NULL)
             {
                 // check if it is a GraphBLASv3 struct
                 mx_type = mxGetField (pargin [0], 0, "GraphBLAS") ;
-                CHECK_ERROR (mx_type == NULL, "invalid GraphBLAS struct") ;
             }
+            CHECK_ERROR (mx_type == NULL, "invalid GraphBLAS struct") ;
 
             // get the row/column format of the input matrix G
             mxArray *opaque = mxGetField (pargin [0], 0, "s") ;

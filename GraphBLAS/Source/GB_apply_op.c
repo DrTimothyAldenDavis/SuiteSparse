@@ -27,6 +27,11 @@
 #include "GB_binop__include.h"
 #endif
 
+#define GB_FREE_ALL                         \
+{                                           \
+    GB_WERK_POP (A_ek_slicing, int64_t) ;   \
+}
+
 GrB_Info GB_apply_op                // apply a unary operator, Cx = op (A)
 (
     GB_void *Cx,                    // output array, of type op->ztype
@@ -47,6 +52,7 @@ GrB_Info GB_apply_op                // apply a unary operator, Cx = op (A)
     ASSERT (op1 != NULL || op2 != NULL) ;
     ASSERT_MATRIX_OK (A, "A input for GB_apply_op", GB0) ;
     ASSERT (GB_JUMBLED_OK (A)) ;        // A can be jumbled
+    GB_WERK_DECLARE (A_ek_slicing, int64_t) ;
 
     //--------------------------------------------------------------------------
     // get A
@@ -92,9 +98,9 @@ GrB_Info GB_apply_op                // apply a unary operator, Cx = op (A)
         }
 
         // get A and C
-        const int64_t *GB_RESTRICT Ah = A->h ;
-        const int64_t *GB_RESTRICT Ap = A->p ;
-        const int64_t *GB_RESTRICT Ai = A->i ;
+        const int64_t *restrict Ah = A->h ;
+        const int64_t *restrict Ap = A->p ;
+        const int64_t *restrict Ai = A->i ;
         int64_t anvec = A->nvec ;
         int64_t avlen = A->vlen ;
         int64_t avdim = A->vdim ;
@@ -117,7 +123,7 @@ GrB_Info GB_apply_op                // apply a unary operator, Cx = op (A)
 
         if (is64)
         {
-            int64_t *GB_RESTRICT Cx_int = (int64_t *) Cx ;
+            int64_t *restrict Cx_int = (int64_t *) Cx ;
             switch (opcode)
             {
                 case GB_POSITIONI_opcode  : // z = position_i(A(i,j)) == i
@@ -143,7 +149,7 @@ GrB_Info GB_apply_op                // apply a unary operator, Cx = op (A)
         }
         else
         {
-            int32_t *GB_RESTRICT Cx_int = (int32_t *) Cx ;
+            int32_t *restrict Cx_int = (int32_t *) Cx ;
             switch (opcode)
             {
                 case GB_POSITIONI_opcode  : // z = position_i(A(i,j)) == i
@@ -197,7 +203,7 @@ GrB_Info GB_apply_op                // apply a unary operator, Cx = op (A)
             //------------------------------------------------------------------
 
             #define GB_unop_apply(op,zname,aname) \
-                GB_unop_apply_ ## op ## zname ## aname
+                GB (_unop_apply_ ## op ## zname ## aname)
 
             #define GB_WORKER(op,zname,ztype,aname,atype)               \
             {                                                           \
@@ -314,7 +320,7 @@ GrB_Info GB_apply_op                // apply a unary operator, Cx = op (A)
                     // define the worker for the switch factory
                     //----------------------------------------------------------
 
-                    #define GB_bind1st(op,xname) GB_bind1st_ ## op ## xname
+                    #define GB_bind1st(op,xname) GB (_bind1st_ ## op ## xname)
 
                     #define GB_BINOP_WORKER(op,xname)                        \
                     {                                                        \
@@ -349,7 +355,7 @@ GrB_Info GB_apply_op                // apply a unary operator, Cx = op (A)
                     // define the worker for the switch factory
                     //----------------------------------------------------------
 
-                    #define GB_bind2nd(op,xname) GB_bind2nd_ ## op ## xname
+                    #define GB_bind2nd(op,xname) GB (_bind2nd_ ## op ## xname)
                     #undef  GB_BINOP_WORKER
                     #define GB_BINOP_WORKER(op,xname)                        \
                     {                                                        \
@@ -416,6 +422,7 @@ GrB_Info GB_apply_op                // apply a unary operator, Cx = op (A)
     // return result
     //--------------------------------------------------------------------------
 
+    GB_FREE_ALL ;
     return (GrB_SUCCESS) ;
 }
 

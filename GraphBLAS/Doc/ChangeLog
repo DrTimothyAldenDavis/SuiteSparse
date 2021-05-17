@@ -1,3 +1,41 @@
+Version 5.0.4, May 13, 2021
+
+    * @GrB MATLAB interface: changed license from Apache-2.0
+        to GNU GPLv3 or later.
+
+Version 5.0.3, May 12, 2021
+
+    * (25) bug fix: disabling ANY_PAIR semirings in Source/GB_control.h would
+        cause a segfault if those disabled semirings were used.
+    * demos: no longer built by default
+    * (24) bug fix: GB_PUBLIC added to the new functions in GraphBLAS.h
+    * GrB_Matrix_reduce_BinaryOp: reinstated from v4.0.3;
+        same limit on built-in ops that correspond to known monoids.
+    * Source/GB_control.h: more semirings disabled by default to reduce
+        compile time and binary library size.  The semirings still work, but
+        are not as fast since they now use the generic methods.
+
+Version 5.0.2, May 5, 2021
+
+    * GrB_Matrix_reduce_BinaryOp: removed.  Use a monoid instead, with
+        GrB_reduce or GrB_Matrix_reduce_Monoid.
+    * (23) bug fix: GrB_Matrix_apply_BinaryOp1st and 2nd were using the
+        wrong descriptors for GrB_INP0 and GrB_INP1. Caught by Erik Welch,
+        Anaconda.
+    * memory pool added for faster memory allocation
+    * calloc no longer used: using malloc+memset(0) instead
+    * realloc option: if not available, uses malloc+memcpy+free
+    * @GrB MATLAB interface ported to MATLAB R2021a.
+    * GxB_Matrix_diag: construct a diagonal matrix from a vector
+    * GxB_Vector_diag: extract a diagonal from a matrix
+    * concat/split: added methods to concatenate and split matrices
+    * import/export: size of arrays now in bytes, not entries.
+        A new parameter, is_uniform, has been added to all import/export
+        methods, which indicates that the matrix values are all the same.
+    * (22) bug fix: SIMD vectorization was missing reduction(+,task_cnvals)
+        in GB_dense_subassign_06d_template.c.  Caught by Jeff Huang, Texas A&M,
+        with his software package for race-condition detection.
+
 Version 4.0.3, Jan 19, 2021
 
     * faster min/max monoids
@@ -18,7 +56,10 @@ Version 4.0.1, Jan 4, 2021
     * GrB_wait(&object): polymorphic function added
     * GrB_*_nvals: no longer guarantees completion; use GrB_wait for that
     * GrB_error: now has two parameters: a string (char **) and an object
-    * GrB_Matrix_reduce_BinaryOp: limited to certain built-in ops
+        The no-input GrB_error(void) method has been deprecated and removed.
+    * GrB_Matrix_reduce_BinaryOp: limited to certain built-in ops.
+        Support for user-defined operators and binary ops that do not
+        correspond to built-in monoids has been deprecated and removed.
     * GrB_*_extractTuples: may return indices out of order
     * removed internal features: GBI iterator, slice and hyperslice matrices
     * bitmap/full matrices and vectors added: faster and lower memory usage

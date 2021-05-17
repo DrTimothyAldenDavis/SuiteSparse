@@ -44,7 +44,7 @@ GrB_Info GB_apply_op                // apply a unary operator, Cx = op (A)
 GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_shallow_op      // create shallow matrix and apply operator
 (
-    GrB_Matrix *Chandle,    // output matrix C, of type op*->ztype
+    GrB_Matrix C,           // output C, of type op*->ztype, static header
     const bool C_is_csc,    // desired CSR/CSC format of C
         const GrB_UnaryOp op1,          // unary operator to apply
         const GrB_BinaryOp op2,         // binary operator to apply

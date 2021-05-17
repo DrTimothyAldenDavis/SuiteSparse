@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------------
 
 // SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 //------------------------------------------------------------------------------
 
@@ -16,6 +16,8 @@
 // A = gbmatlab (X, type)
 
 #include "gb_matlab.h"
+
+#define USAGE "usage: A = gbmatlab (X, type)"
 
 void mexFunction
 (
@@ -30,7 +32,7 @@ void mexFunction
     // check inputs
     //--------------------------------------------------------------------------
 
-    gb_usage (nargin == 2 && nargout <= 1, "usage: A = gbmatlab (X, type)") ;
+    gb_usage (nargin == 2 && nargout <= 1, USAGE) ;
 
     //--------------------------------------------------------------------------
     // get the input matrix

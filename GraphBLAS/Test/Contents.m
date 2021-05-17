@@ -224,6 +224,8 @@
 %   test155  - test GrB_*_setElement and GrB_*_removeElement
 %   test156  - test assign C=A with typecasting
 
+% TODO:: add new tests here
+
 %   testc1   - test complex operators
 %   testc2   - test complex A*B, A'*B, A*B', A'*B', A+B
 %   testc3   - test complex GrB_extract

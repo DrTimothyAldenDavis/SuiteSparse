@@ -27,8 +27,10 @@
 #endif
 
 #undef  GB_FREE_WORK
-#define GB_FREE_WORK \
-    GB_ek_slice_free (&pstart_slice, &kfirst_slice, &klast_slice) ;
+#define GB_FREE_WORK                        \
+{                                           \
+    GB_WERK_POP (M_ek_slicing, int64_t) ;   \
+}
 
 #undef  GB_FREE_ALL
 #define GB_FREE_ALL GB_FREE_WORK
@@ -56,7 +58,7 @@ GrB_Info GB_dense_subassign_05d
     //--------------------------------------------------------------------------
 
     GrB_Info info ;
-    int64_t *pstart_slice = NULL, *kfirst_slice = NULL, *klast_slice = NULL ;
+    GB_WERK_DECLARE (M_ek_slicing, int64_t) ;
 
     ASSERT_MATRIX_OK (C, "C for subassign method_05d", GB0) ;
     ASSERT (!GB_ZOMBIES (C)) ;
@@ -86,25 +88,14 @@ GrB_Info GB_dense_subassign_05d
     // Parallel: slice M into equal-sized chunks
     //--------------------------------------------------------------------------
 
-    int64_t mnz = GB_NNZ_HELD (M) ;
-    int64_t mnvec = M->nvec ;
     GB_GET_NTHREADS_MAX (nthreads_max, chunk, Context) ;
-    int nthreads = GB_nthreads (mnz + mnvec, chunk, nthreads_max) ;
-    int ntasks = (nthreads == 1) ? 1 : (8 * nthreads) ;
 
     //--------------------------------------------------------------------------
     // slice the entries for each task
     //--------------------------------------------------------------------------
 
-    // Task tid does entries pstart_slice [tid] to pstart_slice [tid+1]-1 and
-    // vectors kfirst_slice [tid] to klast_slice [tid].  The first and last
-    // vectors may be shared with prior slices and subsequent slices.
-
-    if (!GB_ek_slice (&pstart_slice, &kfirst_slice, &klast_slice, M, &ntasks))
-    { 
-        // out of memory
-        return (GrB_OUT_OF_MEMORY) ;
-    }
+    int M_ntasks, M_nthreads ;
+    GB_SLICE_MATRIX (M, 8, chunk) ;
 
     //--------------------------------------------------------------------------
     // C<M> = x for built-in types
@@ -118,12 +109,12 @@ GrB_Info GB_dense_subassign_05d
         // define the worker for the switch factory
         //----------------------------------------------------------------------
 
-        #define GB_Cdense_05d(cname) GB_Cdense_05d_ ## cname
+        #define GB_Cdense_05d(cname) GB (_Cdense_05d_ ## cname)
 
         #define GB_WORKER(cname)                                              \
         {                                                                     \
             info = GB_Cdense_05d(cname) (C, M, Mask_struct, cwork,            \
-                kfirst_slice, klast_slice, pstart_slice, ntasks, nthreads) ;  \
+                M_ek_slicing, M_ntasks, M_nthreads) ;                         \
             done = (info != GrB_NO_VALUE) ;                                   \
         }                                                                     \
         break ;

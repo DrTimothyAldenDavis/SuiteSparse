@@ -232,6 +232,7 @@ int GB_subassigner_method           // return method to use in GB_subassigner
 
         //  M   -   -   -   -   -       05d: C<M> = x, no S, C dense
         //  M   -   -   -   -   -       05e: C<M,s> = x, no S, C empty
+        //  M   -   -   -   -   -       05f: C<C,s> = x, no S, C == M
         //  M   -   -   -   -   -       05:  C(I,J)<M> = x, no S
         //  A   -   -   -   A   -       06d: C<A> = A, no S, C dense
         //  M   -   -   -   A   -       25:  C<M,s> = A, A dense, C empty
@@ -268,7 +269,6 @@ int GB_subassigner_method           // return method to use in GB_subassigner
         //  M   c   r   +   A   -       20x: C(:,:)<!M,repl> += A
 
         //----------------------------------------------------------------------
-        // FUTURE::: C<C,s> = x    C == M, replace all values, C_replace ignored
         // FUTURE::: C<C,s> += x   C == M, update all values, C_replace ignored
         // FUTURE::: C<C,s> = A    C == M, A dense, C_replace ignored
         //----------------------------------------------------------------------
@@ -369,6 +369,7 @@ int GB_subassigner_method           // return method to use in GB_subassigner
         //  =====================       ==============
         //  M   -   -   -   -   -       05d: C(:,:)<M> = x, no S, C dense
         //  M   -   -   -   -   -       05e: C(:,:)<M,s> = x, no S, C empty
+        //  M   -   -   -   -   -       05f: C(:,:)<C,s> = x, no S, C == M
         //  M   -   -   -   -   -       05:  C(I,J)<M> = x, no S
         //  M   -   -   +   -   -       07:  C(I,J)<M> += x, no S
 
@@ -379,9 +380,14 @@ int GB_subassigner_method           // return method to use in GB_subassigner
 
         if (accum == NULL)
         {
-            if (C_is_empty && whole_C_matrix && Mask_struct)
+            if (C == M && whole_C_matrix && Mask_struct)
             { 
-                // Method 05e: C(:,:)<M> = scalar ; no S; C empty, M structural
+                // Method 05f: C(:,:)<C,s> = scalar ; no S ; C == M ; M struct
+                subassign_method = GB_SUBASSIGN_METHOD_05f ;
+            }
+            else if (C_is_empty && whole_C_matrix && Mask_struct)
+            { 
+                // Method 05e: C(:,:)<M,s> = scalar ; no S; C empty, M struct
                 subassign_method = GB_SUBASSIGN_METHOD_05e ;
             }
             else if (C_as_if_full && whole_C_matrix)
@@ -659,7 +665,8 @@ int GB_subassigner_method           // return method to use in GB_subassigner
             break ;
 
         case GB_SUBASSIGN_METHOD_05d :  // C(:,:)<M> = scalar ; C is dense
-        case GB_SUBASSIGN_METHOD_05e :  // C(:,:)<M,struct> = scalar
+        case GB_SUBASSIGN_METHOD_05e :  // C(:,:)<M,struct> = scalar ; C empty
+        case GB_SUBASSIGN_METHOD_05f :  // C(:,:)<C,struct> = scalar
         case GB_SUBASSIGN_METHOD_22 :   // C += scalar ; C is dense
             // C and M can have any sparsity pattern, including bitmap
             break ;

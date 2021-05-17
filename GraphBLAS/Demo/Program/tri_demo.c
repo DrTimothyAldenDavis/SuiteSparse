@@ -66,7 +66,7 @@ int main (int argc, char **argv)
     // demos.  So the time to typecast A = (int32) C is added to the read
     // time, not the prep time for triangle counting.
     simple_tic (tic) ;
-    OK (get_matrix (&C, argc, argv, true, true)) ;
+    OK (get_matrix (&C, argc, argv, true, true, true)) ;
     GrB_Index n, nedges ;
     OK (GrB_Matrix_nrows (&n, C)) ;
 

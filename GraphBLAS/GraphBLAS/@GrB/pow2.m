@@ -9,7 +9,7 @@ function C = pow2 (A, B)
 % See also GrB/log2, GrB/power, GrB/exp.
 
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
-% SPDX-License-Identifier: Apache-2.0
+% SPDX-License-Identifier: GPL-3.0-or-later
 
 % FUTURE: pow2(A,B) for two matrices A and B is slower than it could be.
 % See comments in gb_union_op.

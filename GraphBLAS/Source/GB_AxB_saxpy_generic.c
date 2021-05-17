@@ -9,33 +9,55 @@
 
 // GB_AxB_saxpy_generic computes C=A*B, C<M>=A*B, or C<!M>=A*B in parallel,
 // with arbitrary types and operators.  C can have any sparsity pattern:
-// hyper, sparse, bitmap, or full.
+// hyper, sparse, bitmap, or full.  For all cases, the four matrices C, M
+// (if present), A, and B have the same format (by-row or by-column), or they
+// represent implicitly transposed matrices with the same effect.  This method
+// does not handle the dot-product methods, which compute C=A'*B if A and B
+// are held by column, or equivalently A*B' if both are held by row.
+
+// This method uses GB_AxB_saxpy_template.c to implement two meta-methods,
+// each of which can contain further specialized methods (such as the fine/
+// coarse x Gustavson/Hash, mask/no-mask methods in saxpy3):
+
+// saxpy3: general purpose method, where C is sparse or hypersparse,
+//          via GB_AxB_saxpy3_template.c.  SaxpyTasks holds the (fine/coarse x
+//          Gustavson/Hash) tasks constructed by GB_AxB_saxpy3_slice*.
+
+// bitmap_saxpy: general purpose method, where C is bitmap or full, via
+//          GB_bitmap_AxB_saxpy_template.c.  The method constructs its own
+//          tasks in workspace defined and freed in that template.
 
 //------------------------------------------------------------------------------
 
 #include "GB_mxm.h"
+#include "GB_ek_slice.h"
 #include "GB_binop.h"
-#include "GB_AxB_saxpy3.h"
 #include "GB_bracket.h"
 #include "GB_sort.h"
 #include "GB_atomics.h"
-#include "GB_ek_slice.h"
+#include "GB_ek_slice_search.c"
 #include "GB_bitmap_assign_methods.h"
 
 GrB_Info GB_AxB_saxpy_generic
 (
-    GrB_Matrix C,
-    const GrB_Matrix M, bool Mask_comp, const bool Mask_struct,
-    const bool M_dense_in_place,    // ignored if C is bitmap
-    const GrB_Matrix A, bool A_is_pattern,
-    const GrB_Matrix B, bool B_is_pattern,
+    GrB_Matrix C,                   // any sparsity
+    const GrB_Matrix M,
+    bool Mask_comp,
+    const bool Mask_struct,
+    const bool M_packed_in_place,   // ignored if C is bitmap
+    const GrB_Matrix A,
+    bool A_is_pattern,
+    const GrB_Matrix B,
+    bool B_is_pattern,
     const GrB_Semiring semiring,    // semiring that defines C=A*B
     const bool flipxy,              // if true, do z=fmult(b,a) vs fmult(a,b)
-    GB_saxpy3task_struct *GB_RESTRICT TaskList, // NULL if C is bitmap
-    int ntasks,                     // 0 if C is bitmap (computed below)
-    int nfine,                      // 0 if C is bitmap (not used)
-    int nthreads,                   // 0 if C is bitmap (computed below)
-    const int do_sort,              // if nonzero, try to sort in saxpy3
+    const int saxpy_method,         // saxpy3 or bitmap method
+    // for saxpy3 only:
+    GB_saxpy3task_struct *restrict SaxpyTasks, // NULL if C is bitmap
+    int ntasks,
+    int nfine,
+    int nthreads,
+    const int do_sort,              // if true, sort in saxpy3
     GB_Context Context
 )
 {
@@ -46,6 +68,7 @@ GrB_Info GB_AxB_saxpy_generic
 
     GrB_BinaryOp mult = semiring->multiply ;
     GrB_Monoid add = semiring->add ;
+    GB_void *identity = (GB_void *) add->identity ;
     ASSERT (mult->ztype == add->op->ztype) ;
     ASSERT (mult->ztype == C->type) ;
 
@@ -91,8 +114,7 @@ GrB_Info GB_AxB_saxpy_generic
     //--------------------------------------------------------------------------
 
     // memcpy (&(Cx [pC]), &(Hx [i]), len*csize)
-    #define GB_CIJ_MEMCPY(pC,i,len) \
-        memcpy (GB_CX (pC), GB_HX (i), (len)*csize)
+    #define GB_CIJ_MEMCPY(pC,i,len) memcpy (GB_CX (pC), GB_HX (i), (len)*csize)
 
     // atomic update not available for function pointers
     #define GB_HAS_ATOMIC 0
@@ -122,8 +144,8 @@ GrB_Info GB_AxB_saxpy_generic
     // no vectorization
     #define GB_PRAGMA_SIMD_VECTORIZE ;
 
-    // The monoid identity value is not used.
-    #undef GB_IDENTITY
+    // The monoid identity byte value is not used in saxpy3
+    #define GB_GENERIC
     #define GB_HAS_IDENTITY_BYTE 0
     #define GB_IDENTITY_BYTE (none)
 
@@ -142,7 +164,9 @@ GrB_Info GB_AxB_saxpy_generic
         if (flipxy)
         { 
             // flip a positional multiplicative operator
-            opcode = GB_binop_flip (opcode) ;
+            bool handled ;
+            opcode = GB_binop_flip (opcode, &handled) ;  // for positional ops
+            ASSERT (handled) ;      // all positional ops can be flipped
         }
 
         // C always has type int64_t or int32_t.  The monoid must be used via
@@ -179,6 +203,9 @@ GrB_Info GB_AxB_saxpy_generic
 
         // Hx [i] = t
         #define GB_HX_WRITE(i,t) Hx [i] = t
+
+        // Hx [i] = identity
+        #define GB_HX_CLEAR(i) memcpy (GB_HX (i), identity, csize)
 
         // Cx [p] = Hx [i]
         #define GB_CIJ_GATHER(p,i) Cx [p] = Hx [i]
@@ -341,7 +368,9 @@ GrB_Info GB_AxB_saxpy_generic
             if (flipxy)
             { 
                 // flip first and second
-                opcode = GB_binop_flip (opcode) ;
+                bool handled ;
+                opcode = GB_binop_flip (opcode, &handled) ; // for 1st and 2nd
+                ASSERT (handled) ;      // FIRST and SECOND can be flipped
             }
             if (opcode == GB_FIRST_opcode)
             { 

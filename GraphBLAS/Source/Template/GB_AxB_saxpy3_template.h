@@ -41,7 +41,7 @@
 
 #define GB_SCATTER_M_j_TYPE(mask_t,pMstart,pMend,mark)                  \
 {                                                                       \
-    const mask_t *GB_RESTRICT Mxx = (mask_t *) Mx ;                     \
+    const mask_t *restrict Mxx = (mask_t *) Mx ;                     \
     if (M_is_bitmap)                                                    \
     {                                                                   \
         /* M is bitmap */                                               \
@@ -102,7 +102,7 @@ break ;
             case 8: GB_SCATTER_M_j_TYPE (uint64_t, pMstart, pMend, mark) ;  \
             case 16:                                                        \
             {                                                               \
-                const uint64_t *GB_RESTRICT Mxx = (uint64_t *) Mx ;         \
+                const uint64_t *restrict Mxx = (uint64_t *) Mx ;         \
                 for (int64_t pM = pMstart ; pM < pMend ; pM++)              \
                 {                                                           \
                     /* if (M (i,j) == 1) mark Hf [i] */                     \

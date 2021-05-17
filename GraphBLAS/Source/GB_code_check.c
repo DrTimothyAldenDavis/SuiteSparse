@@ -9,6 +9,9 @@
 
 // Only prints entries of built-in types; user-defined types can't be printed.
 
+// for code development only:
+// #define GB_DEVELOPER 1
+
 #include "GB.h"
 
 #define GB_PRINT_INF(x) GBPR ((x < 0) ? "-Inf" : "Inf")

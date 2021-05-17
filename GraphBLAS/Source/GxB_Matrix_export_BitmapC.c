@@ -18,10 +18,11 @@ GrB_Info GxB_Matrix_export_BitmapC  // export and free a bitmap matrix, by col
     GrB_Index *nrows,   // number of rows of the matrix
     GrB_Index *ncols,   // number of columns of the matrix
 
-    int8_t **Ab,        // bitmap, Ab_size >= nrows*ncols
-    void **Ax,          // values, Ax_size 1, or >= nrows*ncols
-    GrB_Index *Ab_size, // size of Ab
-    GrB_Index *Ax_size, // size of Ax
+    int8_t **Ab,        // bitmap
+    void **Ax,          // values
+    GrB_Index *Ab_size, // size of Ab in bytes
+    GrB_Index *Ax_size, // size of Ax in bytes
+    bool *is_uniform,   // if true, A has uniform values (TODO:::unsupported)
 
     GrB_Index *nvals,   // # of entries in bitmap
     const GrB_Descriptor desc
@@ -33,7 +34,7 @@ GrB_Info GxB_Matrix_export_BitmapC  // export and free a bitmap matrix, by col
     //--------------------------------------------------------------------------
 
     GB_WHERE1 ("GxB_Matrix_export_BitmapC (&A, &type, &nrows, &ncols, "
-        " &Ab, &Ax, &Ab_size, &Ax_size, &nvals, desc)") ;
+        "&Ab, &Ax, &Ab_size, &Ax_size, &is_uniform, &nvals, desc)") ;
     GB_BURBLE_START ("GxB_Matrix_export_BitmapC") ;
     GB_RETURN_IF_NULL (A) ;
     GB_RETURN_IF_NULL_OR_FAULTY (*A) ;
@@ -48,7 +49,7 @@ GrB_Info GxB_Matrix_export_BitmapC  // export and free a bitmap matrix, by col
     { 
         // A = A', done in-place, to put A in CSC format
         GBURBLE ("(transpose) ") ;
-        GB_OK (GB_transpose (NULL, NULL, true, *A,
+        GB_OK (GB_transpose (NULL, NULL, true, *A,      // in_place_A
             NULL, NULL, NULL, false, Context)) ;
     }
 
@@ -67,14 +68,15 @@ GrB_Info GxB_Matrix_export_BitmapC  // export and free a bitmap matrix, by col
     int sparsity ;
     bool is_csc ;
 
-    info = GB_export (A, type, nrows, ncols,
+    info = GB_export (A, type, nrows, ncols, false,
         NULL, NULL,     // Ap
         NULL, NULL,     // Ah
         Ab,   Ab_size,  // Ab
         NULL, NULL,     // Ai
         Ax,   Ax_size,  // Ax
         nvals, NULL, NULL,                  // nvals for bitmap
-        &sparsity, &is_csc, Context) ;      // bitmap by col
+        &sparsity, &is_csc,                 // bitmap by col
+        is_uniform, Context) ;
 
     if (info == GrB_SUCCESS)
     {

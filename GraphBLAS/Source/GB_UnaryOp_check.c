@@ -23,7 +23,7 @@ GrB_Info GB_UnaryOp_check   // check a GraphBLAS unary operator
     // check inputs
     //--------------------------------------------------------------------------
 
-    GBPR0 ("\n    GraphBLAS UnaryOp: %s ", GB_NAME) ;
+    GBPR0 ("\n    GraphBLAS UnaryOp: %s ", ((name != NULL) ? name : "")) ;
 
     if (op == NULL)
     { 

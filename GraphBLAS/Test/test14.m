@@ -43,8 +43,8 @@ for k1 = 1:length(types)
     for A_is_hyper = 0:1
     for A_is_csc   = 0:1
 
-    A.is_csc    = A_is_csc ; A.is_hyper    = A_is_hyper ;
-    B.is_csc    = A_is_csc ; B.is_hyper    = A_is_hyper ;
+    A.is_csc = A_is_csc ; A.is_hyper = A_is_hyper ;
+    B.is_csc = A_is_csc ; B.is_hyper = A_is_hyper ;
 
     for k2 = 1:length(add_ops)
         op = add_ops {k2} ;

@@ -18,8 +18,8 @@
     // get C and B
     //--------------------------------------------------------------------------
 
-    const GB_BTYPE *GB_RESTRICT Bx = (GB_BTYPE *) B->x ;
-    GB_CTYPE *GB_RESTRICT Cx = (GB_CTYPE *) C->x ;
+    const GB_BTYPE *restrict Bx = (GB_BTYPE *) B->x ;
+    GB_CTYPE *restrict Cx = (GB_CTYPE *) C->x ;
     ASSERT (GB_is_dense (C)) ;
     const int64_t cnz = GB_NNZ_HELD (C) ;
 
@@ -30,9 +30,9 @@
         // C += B when C is dense and B is bitmap
         //----------------------------------------------------------------------
 
-        const int8_t *GB_RESTRICT Bb = B->b ;
+        const int8_t *restrict Bb = B->b ;
         int64_t p ;
-        #pragma omp parallel for num_threads(nthreads) schedule(static)
+        #pragma omp parallel for num_threads(B_nthreads) schedule(static)
         for (p = 0 ; p < cnz ; p++)
         { 
             if (!Bb [p]) continue ;
@@ -41,7 +41,7 @@
         }
 
     }
-    else if (kfirst_slice == NULL)
+    else if (B_ek_slicing == NULL)
     {
 
         //----------------------------------------------------------------------
@@ -49,42 +49,14 @@
         //----------------------------------------------------------------------
 
         ASSERT (GB_is_dense (B)) ;
+        int64_t p ;
+        #pragma omp parallel for num_threads(B_nthreads) schedule(static)
+        for (p = 0 ; p < cnz ; p++)
+        { 
+            GB_GETB (bij, Bx, p) ;                  // bij = B(i,j)
+            GB_BINOP (GB_CX (p), GB_CX (p), bij, 0, 0) ;  // C(i,j) += bij
+        }
 
-        #if defined ( GB_HAS_CBLAS ) && GB_OP_IS_PLUS_REAL
-
-            // C += B via GB_cblas_daxpy or GB_cblas_saxpy
-            GB_CBLAS_AXPY           // Y += alpha*X
-            (
-                cnz,                // length of X and Y (note: int64_t)
-                (GB_CTYPE) 1,       // alpha is 1.0
-                Bx,                 // X, always stride 1
-                Cx,                 // Y, always stride 1
-                nthreads            // maximum # of threads to use
-            ) ;
-
-        #elif defined ( GB_HAS_CBLAS ) && GB_OP_IS_MINUS_REAL
-
-            // C -= B via GB_cblas_daxpy or GB_cblas_saxpy
-            GB_CBLAS_AXPY           // Y += alpha*X
-            (
-                cnz,                // length of X and Y (note: int64_t)
-                (GB_CTYPE) -1,      // alpha is -1.0
-                Bx,                 // X, always stride 1
-                Cx,                 // Y, always stride 1
-                nthreads            // maximum # of threads to use
-            ) ;
-
-        #else
-
-            int64_t p ;
-            #pragma omp parallel for num_threads(nthreads) schedule(static)
-            for (p = 0 ; p < cnz ; p++)
-            { 
-                GB_GETB (bij, Bx, p) ;                  // bij = B(i,j)
-                GB_BINOP (GB_CX (p), GB_CX (p), bij, 0, 0) ;  // C(i,j) += bij
-            }
-
-        #endif
     }
     else
     {
@@ -95,21 +67,25 @@
 
         ASSERT (GB_JUMBLED_OK (B)) ;
 
-        const int64_t *GB_RESTRICT Bp = B->p ;
-        const int64_t *GB_RESTRICT Bh = B->h ;
-        const int64_t *GB_RESTRICT Bi = B->i ;
+        const int64_t *restrict Bp = B->p ;
+        const int64_t *restrict Bh = B->h ;
+        const int64_t *restrict Bi = B->i ;
         const int64_t bvlen = B->vlen ;
         const int64_t cvlen = C->vlen ;
         bool B_jumbled = B->jumbled ;
 
+        const int64_t *restrict kfirst_Bslice = B_ek_slicing ;
+        const int64_t *restrict klast_Bslice  = kfirst_Bslice + B_ntasks ;
+        const int64_t *restrict pstart_Bslice = klast_Bslice + B_ntasks ;
+
         int taskid ;
-        #pragma omp parallel for num_threads(nthreads) schedule(dynamic,1)
-        for (taskid = 0 ; taskid < ntasks ; taskid++)
+        #pragma omp parallel for num_threads(B_nthreads) schedule(dynamic,1)
+        for (taskid = 0 ; taskid < B_ntasks ; taskid++)
         {
 
             // if kfirst > klast then taskid does no work at all
-            int64_t kfirst = kfirst_slice [taskid] ;
-            int64_t klast  = klast_slice  [taskid] ;
+            int64_t kfirst = kfirst_Bslice [taskid] ;
+            int64_t klast  = klast_Bslice  [taskid] ;
 
             //------------------------------------------------------------------
             // C(:,kfirst:klast) += B(:,kfirst:klast)
@@ -125,7 +101,7 @@
                 int64_t j = GBH (Bh, k) ;
                 int64_t my_pB_start, my_pB_end ;
                 GB_get_pA (&my_pB_start, &my_pB_end, taskid, k,
-                    kfirst, klast, pstart_slice, Bp, bvlen) ;
+                    kfirst, klast, pstart_Bslice, Bp, bvlen) ;
 
                 int64_t pB_start = GBP (Bp, k, bvlen) ;
                 int64_t pB_end   = GBP (Bp, k+1, bvlen) ;
@@ -145,58 +121,16 @@
                     // both C(:,j) and B(:,j) are dense
                     //----------------------------------------------------------
 
-                    #if defined ( GB_HAS_CBLAS ) && GB_OP_IS_PLUS_REAL
-
-                        // y += x via GB_cblas_daxpy or GB_cblas_saxpy.
-                        // use a single thread since this is already in a
-                        // parallel region.
-
-                        int64_t len = my_pB_end - my_pB_start ;
-                        int64_t i = my_pB_start - pB_start ;
+                    GB_PRAGMA_SIMD_VECTORIZE
+                    for (int64_t pB = my_pB_start ; pB < my_pB_end ; pB++)
+                    { 
+                        int64_t i = pB - pB_start ;
                         int64_t p = pC + i ;
-
-                        GB_CBLAS_AXPY           // Y += alpha*X
-                        (
-                            len,                // length of X and Y
-                            (GB_CTYPE) 1,       // alpha is 1.0
-                            Bx + my_pB_start,   // X, always stride 1
-                            Cx + p,             // Y, always stride 1
-                            1                   // use a single thread
-                        ) ;
-
-                    #elif defined ( GB_HAS_CBLAS ) && GB_OP_IS_MINUS_REAL
-
-                        // y -= x via GB_cblas_daxpy or GB_cblas_saxpy.
-                        // use a single thread since this is already in a
-                        // parallel region.
-
-                        int64_t len = my_pB_end - my_pB_start ;
-                        int64_t i = my_pB_start - pB_start ;
-                        int64_t p = pC + i ;
-
-                        GB_CBLAS_AXPY           // Y += alpha*X
-                        (
-                            len,                // length of X and Y
-                            (GB_CTYPE) -1,      // alpha is -1.0
-                            Bx + my_pB_start,   // X, always stride 1
-                            Cx + p,             // Y, always stride 1
-                            1                   // use a single thread
-                        ) ;
-
-                    #else
-
-                        GB_PRAGMA_SIMD_VECTORIZE
-                        for (int64_t pB = my_pB_start ; pB < my_pB_end ; pB++)
-                        { 
-                            int64_t i = pB - pB_start ;
-                            int64_t p = pC + i ;
-                            // bij = B(i,j)
-                            GB_GETB (bij, Bx, pB) ;
-                            // C(i,j) += bij
-                            GB_BINOP (GB_CX (p), GB_CX (p), bij, 0, 0) ;
-                        }
-
-                    #endif
+                        // bij = B(i,j)
+                        GB_GETB (bij, Bx, pB) ;
+                        // C(i,j) += bij
+                        GB_BINOP (GB_CX (p), GB_CX (p), bij, 0, 0) ;
+                    }
 
                 }
                 else

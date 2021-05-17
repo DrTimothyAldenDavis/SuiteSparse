@@ -93,7 +93,7 @@ GrB_Info GB_dense_ewise3_noaccum    // C = A+B
     //--------------------------------------------------------------------------
 
     #define GB_Cdense_ewise3_noaccum(op,xname) \
-        GB_Cdense_ewise3_noaccum_ ## op ## xname
+        GB (_Cdense_ewise3_noaccum_ ## op ## xname)
 
     #define GB_BINOP_WORKER(op,xname)                                       \
     {                                                                       \

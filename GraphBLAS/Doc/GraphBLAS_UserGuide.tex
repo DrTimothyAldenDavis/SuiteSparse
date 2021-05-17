@@ -67,6 +67,14 @@ applied to sparse adjacency matrices, these algebraic operations are equivalent
 to computations on graphs.  GraphBLAS provides a powerful and expressive
 framework for creating high-performance graph algorithms based on the elegant
 mathematics of sparse matrix operations on a semiring.
+
+\vspace{1in}
+SuiteSparse:GraphBLAS is under the Apache-2.0 license, except for
+the \verb'@GrB' MATLAB interface, which is licensed under the GNU GPLv3 (or
+later).  Refer to the SPDX license identifier in each file for details.  Note
+that all of the compiled \verb'libgraphblas.so' is under the Apache-2.0
+license.
+
 \end{abstract}
 
 \newpage
@@ -107,8 +115,7 @@ Scott McMillan, Jos\'e Moreira, Carl Yang, and Benjamin Brock}
 Mathematics} by Jeremy Kepner \cite{Kepner2017}.  The GraphBLAS C API
 Specification is available at \url{http://graphblas.org}.  This version of
 SuiteSparse:GraphBLAS conforms to Version \input{GraphBLAS_API_version.tex} of
-{\em The GraphBLAS C API specification}, with three exceptions
-(\verb'GrB_wait', \verb'GrB_error', and \verb'GrB_Matrix_reduce_BinaryOp').
+{\em The GraphBLAS C API specification}.
 
 In this User Guide, aspects of the GraphBLAS specification that would be true
 for any GraphBLAS implementation are simply called ``GraphBLAS.'' Details
@@ -131,6 +138,53 @@ are extensions to the v1.3 GraphBLAS C API.
 %-------------------------------------------------------------------------------
 
 \begin{itemize}
+
+\item Version 5.0.4 (May 13, 2021)
+
+    \begin{packed_itemize}
+    \item \verb'@GrB' MATLAB interface: changed license
+        to GNU General Public License v3.0 or later.
+    \end{packed_itemize}
+
+\item Version 5.0.3 (May 12, 2021)
+
+    \begin{packed_itemize}
+    \item (25) bug fix: disabling \verb'ANY_PAIR' semirings by editting
+        \verb'Source/GB_control.h' would cause a segfault if those disabled
+        semirings were used.
+    \item demos are no longer built by default
+    \item (24) bug fix: new functions in v5.0.2 not declared as \verb'extern'
+        in \verb'GraphBLAS.h'.
+    \item \verb'GrB_Matrix_reduce_BinaryOp' reinstated from v4.0.3;
+        same limit on built-in ops that correspond to known monoids.
+    \end{packed_itemize}
+
+\item Version 5.0.2 (May 5, 2021)
+
+    \begin{packed_itemize}
+    \item (23) bug fix: \verb'GrB_Matrix_apply_BinaryOp1st' and \verb'2nd'
+        were using the
+        wrong descriptors for \verb'GrB_INP0' and \verb'GrB_INP1'.
+        Caught by Erik Welch, Anaconda.
+    \item memory pool added for faster allocation/free of small blocks
+    \item \verb'@GrB' MATLAB interface ported to MATLAB R2021a.
+    \item \verb'GxB_PRINTF' and \verb'GxB_FLUSH' global options added.
+    \item \verb'GxB_Matrix_diag': construct a diagonal matrix from a vector
+    \item \verb'GxB_Vector_diag': extract a diagonal from a matrix
+    \item \verb'concat/split': methods to concatenate and split matrices.
+    \item \verb'import/export':
+        size of arrays now in bytes, not entries.  This change
+        is required for better internal memory management, and it is not
+        backward compatible with the \verb'GxB*import/export' functions in v4.0.
+        A new parameter, \verb'is_uniform', has been added to all import/export
+        methods, which indicates that the matrix values are all the same.
+    \item (22) bug fix: SIMD vectorization was missing
+        \verb'reduction(+,task_cnvals)' in
+        \verb'GB_dense_subassign_06d_template.c'.  Caught by Jeff Huang, Texas
+        A\&M, with his software package for race-condition detection.
+    \item \verb'GrB_Matrix_reduce_BinaryOp': removed.  Use a monoid instead,
+        with \verb'GrB_reduce' or \verb'GrB_Matrix_reduce_Monoid'.
+    \end{packed_itemize}
 
 \item Version 4.0.3 (Jan 19, 2021)
 
@@ -302,6 +356,25 @@ Version 1.1 (Dec 2017) primarily improved the performance.
 Version 1.0 was released on Nov 25, 2017.
 \end{itemize}
 
+%-------------------------------------------------------------------------------
+\subsubsection{Regarding historical and deprecated functions and symbols}
+%-------------------------------------------------------------------------------
+
+When a \verb'GxB*' function or symbol is added to the C API Specification with
+a \verb'GrB*' name, the new \verb'GrB*' name should be used instead, if
+possible.  However, the old \verb'GxB*' name will be kept as long as possible
+for historical reasons.  Historical functions and symbols will not always be
+documented here in the SuiteSparse:GraphBLAS User Guide, but they will be kept
+in \verb'GraphbBLAS.h' and kept in good working order in the library.
+Historical functions and symbols would only be removed in the very unlikely
+case that they cause a serious conflict with future methods.
+
+The only methods that have been fully deprecated and removed are the no-input
+\verb'GrB_wait' and \verb'GrB_error' methods, which are incompatible with the
+new 1-input \verb'GrB_wait' and 2-input \verb'GrB_error' methods defined in
+the latest version of the C API Specification, and the
+\verb'GrB_Matrix_reduce_BinaryOp' function, which is limited to binary
+operators that correspond to built-in monoids.
 
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -318,9 +391,8 @@ However, including them here is not essential and the additional information on
 the page might detract from a clearer view of the essential features of the
 GraphBLAS functions.
 
-This User Guide also assumes the reader is familiar with the MATLAB language,
-created by Cleve
-Moler.  MATLAB supports only the conventional plus-times semiring on sparse
+This User Guide also assumes the reader is familiar with MATLAB.
+MATLAB supports only the conventional plus-times semiring on sparse
 double and complex matrices, but a MATLAB-like notation easily extends to the
 arbitrary semirings used in GraphBLAS.  The matrix multiplication in the
 example in the Introduction can be written in MATLAB notation as \verb'C=A*B',
@@ -726,9 +798,7 @@ A set of MATLAB functions that precisely compute the ${\bf C \langle M \rangle
 provided in SuiteSparse:GraphBLAS as \verb'GB_spec_accum.m', which computes
 ${\bf Z=C\odot T}$, and \verb'GB_spec_mask.m', which computes ${\bf C \langle M
 \rangle = Z}$.  SuiteSparse:GraphBLAS includes a complete list of
-\verb'GB_spec_*' functions that illustrate every GraphBLAS operation;
-these are discussed in the \verb'GraphBLAS_Test.pdf' document in
-the \verb'GraphBLAS/Test' folder.
+\verb'GB_spec_*' functions that illustrate every GraphBLAS operation.
 
 The methods in Figure~\ref{fig_accummask} rely heavily on MATLAB's logical
 matrix indexing.  For those unfamiliar with logical indexing in MATLAB, here is
@@ -927,11 +997,10 @@ Some features for MATLAB sparse matrices are not yet available for
 GraphBLAS matrices.  Some of these may be added in future releases.
 
 \begin{packed_itemize}
-    \item Saving a GrB matrix object from MATLAB can be done, but the
-        resulting \verb'*.mat' file must be read in by the same version
-        of GraphBLAS.  To save an object in an upward compatible manner,
-        extract a struct as \verb'S=struct(G)', then save \verb'S'.
-        After loading \verb'S', do \verb'G=GrB(S)' to restore the object.
+    \item If you save a GrB matrix object from MATLAB using one version
+        of SuiteSparse:GraphBLAS, you can load it back in in that version or in
+        a later version.  You cannot go backwards, and save in v5.x and load in
+        v4.x, for example.
     \item \verb'GrB' matrices with dimension larger than \verb'2^53' do not
         display properly in the MATLAB \verb'whos' command.  MATLAB gets this
         information from \verb'size(A)', which returns a correct result, but
@@ -1261,7 +1330,7 @@ API Specification supported by the library.
 This version of SuiteSparse:GraphBLAS supports
 \input{GraphBLAS_API_version.tex}
 of the C API Specification, with the exception of changes to \verb'GrB_wait',
-\verb'GrB_error'. and \verb'GrB_Matrix_reduce_BinaryOp'.
+\verb'GrB_error', and \verb'GrB_Matrix_reduce_BinaryOp'.
 \end{alert}
 
 %===============================================================================
@@ -1291,6 +1360,10 @@ the user application control over this is particularly important when using the
 \verb'GxB_*import' and \verb'GxB_*export' functions described in
 Section~\ref{import_export}, since they require the user application and
 GraphBLAS to use the same memory manager.
+
+\verb'user_calloc_function' and \verb'user_realloc_function' are optional, and
+may be \verb'NULL'.  If \verb'NULL', then the \verb'user_malloc_function' is
+relied on instead, for all memory allocations.
 
 These
 functions can only be set once, when GraphBLAS starts.   Either \verb'GrB_init'
@@ -2685,7 +2758,7 @@ the non-deterministic nature of intra-thread synchronization.
 NOTE: the API for the select function has changed in v4.0.1 of
 SuiteSparse:GraphBLAS.  The former function signature (in v3.3.3 and earlier)
 included the dimensions of the matrix.  These are not needed since they can be
-passed in as part of the thunk, if needed.
+passed in as part of the \verb'thunk', if needed.
 \end{alert}
 
 A select operator is a scalar function of the form
@@ -2916,6 +2989,10 @@ table below.  Most of these are the binary operators of predefined monoids,
 except that the bitwise monoids are predefined only for the unsigned integer
 types, not the signed integers.
 
+Recall that $T$ denotes any built-in type (including boolean, integer,
+floating point real, and complex), $R$ denotes any non-complex type, and
+$I$ denotes any integer type.
+
 \vspace{0.2in}
 \noindent
 {\footnotesize
@@ -2926,7 +3003,7 @@ operator              &                            & $z=f(x,y)$      &          
 \hline
 % numeric TxT->T
 \verb'GrB_PLUS_'$T$   & $T \times T \rightarrow T$ & $z = x+y$       & 0         & none \\
-\verb'GrB_TIMES_'$T$  & $T \times T \rightarrow T$ & $z = xy$        & 1         & 0 (not $F$) \\
+\verb'GrB_TIMES_'$T$  & $T \times T \rightarrow T$ & $z = xy$        & 1         & 0 or none (see note) \\
 \verb'GxB_ANY_'$T$    & $T \times T \rightarrow T$ & $z = x$ or $y$  & any       & any        \\
 \hline
 \verb'GrB_MIN_'$R$    & $R \times R \rightarrow R$ & $z = \min(x,y)$ & $+\infty$ & $-\infty$ \\
@@ -2965,6 +3042,7 @@ an annihilator.  See Section~\ref{monoid_terminal_new} for an example.
 
 The \verb'GxB_ANY_*' monoid can terminate as soon as it finds any value at all.
 
+{\bf NOTE:}
 The \verb'GrB_TIMES_FP*' operators do not have a terminal value of zero, since
 they comply with the IEEE 754 standard, and \verb'0*NaN' is not zero, but
 \verb'NaN'.  Technically, their terminal value is \verb'NaN', but this value is
@@ -3732,6 +3810,9 @@ and destroy a GraphBLAS sparse vector, \verb'GrB_Vector':
 \verb'GrB_Vector_removeElement'  & remove an entry from a vector \\
 \verb'GrB_Vector_extractTuples'  & get all entries from a vector \\
 \verb'GrB_Vector_resize'         & resize a vector \\
+% new in v5:------------
+\verb'GxB_Vector_diag'           & extract a diagonal from a matrix \\
+%-----------------------
 \verb'GrB_Vector_free'           & free a vector \\
 \hline
 \hline
@@ -4066,6 +4147,46 @@ decreases, entries that fall outside the resized vector are deleted.
 
 \newpage
 %-------------------------------------------------------------------------------
+\subsubsection{{\sf GxB\_Vector\_diag:} extract a diagonal from a matrix}
+%-------------------------------------------------------------------------------
+\label{vector_diag}
+
+\begin{mdframed}[userdefinedwidth=6in]
+{\footnotesize
+\begin{verbatim}
+GrB_Info GxB_Vector_diag    // extract a diagonal from a matrix
+(
+    GrB_Vector v,                   // output vector
+    const GrB_Matrix A,             // input matrix
+    int64_t k,
+    const GrB_Descriptor desc       // unused, except threading control
+) ;
+\end{verbatim} } \end{mdframed}
+
+
+\verb'GxB_Vector_diag' extracts a vector \verb'v' from an input matrix
+\verb'A', which may be rectangular.  If \verb'k' = 0, the main diagonal of
+\verb'A' is extracted; \verb'k' $> 0$ denotes diagonals above the main diagonal
+of \verb'A', and \verb'k' $< 0$ denotes diagonals below the main diagonal of
+\verb'A'.  Let \verb'A' have dimension $m$-by-$n$.  If \verb'k' is in the range
+0 to $n-1$, then \verb'v' has length $\min(m,n-k)$.  If \verb'k' is negative
+and in the range -1 to $-m+1$, then \verb'v' has length $\min(m+k,n)$.  If
+\verb'k' is outside these ranges, \verb'v' has length 0 (this is not an error).
+This function computes the same thing as the MATLAB statement
+\verb'v=diag(A,k)' when \verb'A' is a matrix, except that
+\verb'GxB_Vector_diag' can also do typecasting.
+
+The vector \verb'v' must already exist on input, and
+\verb'GrB_Vector_size (&len,v)' must return \verb'len' = 0 if \verb'k' $\ge n$
+or \verb'k' $\le -m$, \verb'len' $=\min(m,n-k)$ if \verb'k' is in the range 0
+to $n-1$, and \verb'len' $=\min(m+k,n)$ if \verb'k' is in the range -1 to
+$-m+1$.  Any existing entries in \verb'v' are discarded.  The type of \verb'v'
+is preserved, so that if the type of \verb'A' and \verb'v' differ, the entries
+are typecasted into the type of \verb'v'.  Any settings made to \verb'v' by
+\verb'GxB_Vector_Option_set' (bitmap switch and sparsity control) are
+unchanged.
+
+%-------------------------------------------------------------------------------
 \subsubsection{{\sf GrB\_Vector\_free:}          free a vector}
 %-------------------------------------------------------------------------------
 \label{vector_free}
@@ -4119,6 +4240,11 @@ and destroy a GraphBLAS sparse matrix, \verb'GrB_Matrix':
 \verb'GrB_Matrix_removeElement' & remove an entry from a matrix \\
 \verb'GrB_Matrix_extractTuples' & get all entries from a matrix \\
 \verb'GrB_Matrix_resize'        & resize a matrix \\
+% new in v5:------------
+\verb'GxB_Matrix_concat'        & concatenate many matrices into one matrix \\
+\verb'GxB_Matrix_split'         & split one matrix into many matrices \\
+\verb'GxB_Matrix_diag'          & construct a diagonal matrix from a vector \\
+%-----------------------
 \verb'GrB_Matrix_free'          & free a matrix \\
 \hline
 \hline
@@ -4655,6 +4781,127 @@ If the dimensions decrease, entries that fall outside the resized
 matrix are deleted.
 
 %-------------------------------------------------------------------------------
+\subsubsection{{\sf GxB\_Matrix\_concat:} concatenate matrices   }
+%-------------------------------------------------------------------------------
+\label{matrix_concat}
+
+\begin{mdframed}[userdefinedwidth=6in]
+{\footnotesize
+\begin{verbatim}
+GrB_Info GxB_Matrix_concat          // concatenate a 2D array of matrices
+(
+    GrB_Matrix C,                   // input/output matrix for results
+    const GrB_Matrix *Tiles,        // 2D row-major array of size m-by-n
+    const GrB_Index m,
+    const GrB_Index n,
+    const GrB_Descriptor desc       // unused, except threading control
+) ;
+\end{verbatim} } \end{mdframed}
+
+\verb'GxB_Matrix_concat' concatenates an array of matrices (\verb'Tiles') into
+a single \verb'GrB_Matrix' \verb'C'.
+
+\verb'Tiles' is an \verb'm'-by-\verb'n' dense array of matrices held in
+row-major format, where \verb'Tiles [i*n+j]' is the $(i,j)$th tile, and where
+\verb'm' $> 0$ and \verb'n' $> 0$ must hold.  Let $A_{i,j}$ denote the
+$(i,j)$th tile.  The matrix \verb'C' is constructed by concatenating these
+tiles together, as:
+
+\[
+C = 
+\left[
+\begin{array}{ccccc}
+          A_{0,0}   & A_{0,1}   & A_{0,2}   & \cdots & A_{0,n-1}   \\
+          A_{1,0}   & A_{1,1}   & A_{1,2}   & \cdots & A_{1,n-1}   \\
+          \cdots    &                                              \\
+          A_{m-1,0} & A_{m-1,1} & A_{m-1,2} & \cdots & A_{m-1,n-1}
+\end{array}
+\right]
+\]
+
+On input, the matrix \verb'C' must already exist.  Any existing entries in
+\verb'C' are discarded.  \verb'C' must have dimensions \verb'nrows' by
+\verb'ncols' where \verb'nrows' is the sum of the number of rows in the
+matrices $A_{i,0}$ for all $i$, and \verb'ncols' is the sum of the number of
+columns in the matrices $A_{0,j}$ for all $j$.  All matrices in any given tile
+row $i$ must have the same number of rows (that is, and all matrices in any
+given tile column $j$ must have the same number of columns).
+
+The type of \verb'C' is unchanged, and all matrices $A_{i,j}$ are typecasted
+into the type of \verb'C'.  Any settings made to \verb'C' by
+\verb'GxB_Matrix_Option_set' (format by row or by column, bitmap switch, hyper
+switch, and sparsity control) are unchanged.
+
+%-------------------------------------------------------------------------------
+\subsubsection{{\sf GxB\_Matrix\_split:} split a matrix   }
+%-------------------------------------------------------------------------------
+\label{matrix_split}
+
+\begin{mdframed}[userdefinedwidth=6in]
+{\footnotesize
+\begin{verbatim}
+GrB_Info GxB_Matrix_split           // split a matrix into 2D array of matrices
+(
+    GrB_Matrix *Tiles,              // 2D row-major array of size m-by-n
+    const GrB_Index m,
+    const GrB_Index n,
+    const GrB_Index *Tile_nrows,    // array of size m
+    const GrB_Index *Tile_ncols,    // array of size n
+    const GrB_Matrix A,             // input matrix to split
+    const GrB_Descriptor desc       // unused, except threading control
+) ;
+\end{verbatim} } \end{mdframed}
+
+\verb'GxB_Matrix_split' does the opposite of \verb'GxB_Matrix_concat'.  It
+splits a single input matrix \verb'A' into a 2D array of tiles.  On input, the
+\verb'Tiles' array must be a non-\verb'NULL' pointer to a previously allocated
+array of size at least \verb'm*n' where both \verb'm' and \verb'n' must be
+greater than zero.  The \verb'Tiles_nrows' array has size \verb'm', and
+\verb'Tiles_ncols' has size \verb'n'.  The $(i,j)$th tile has dimension
+\verb'Tiles_nrows[i]'-by-\verb'Tiles_ncols[j]'.  The sum of
+\verb'Tiles_nrows [0:m-1]' must equal the number of rows of \verb'A', and the
+sum of \verb'Tiles_ncols [0:n-1]' must equal the number of columns of \verb'A'.
+The type of each tile is the same as the type of \verb'A'; no typecasting is
+done.
+
+\newpage
+%-------------------------------------------------------------------------------
+\subsubsection{{\sf GxB\_Matrix\_diag:} construct a diagonal matrix}
+%-------------------------------------------------------------------------------
+\label{matrix_diag}
+
+\begin{mdframed}[userdefinedwidth=6in]
+{\footnotesize
+\begin{verbatim}
+GrB_Info GxB_Matrix_diag    // construct a diagonal matrix from a vector
+(
+    GrB_Matrix C,                   // output matrix
+    const GrB_Vector v,             // input vector
+    int64_t k,
+    const GrB_Descriptor desc       // unused, except threading control
+) ;
+\end{verbatim} } \end{mdframed}
+
+\verb'GxB_Matrix_diag' constructs a matrix from a vector.  Let $n$ be the
+length of the \verb'v' vector, from \verb'GrB_Vector_size (&n, v)'.  If
+\verb'k' = 0, then \verb'C' is an $n$-by-$n$ diagonal matrix with the entries
+from \verb'v' along the main diagonal of \verb'C', with \verb'C(i,i)=v(i)'.  If
+\verb'k' is nonzero, \verb'C' is square with dimension $n+|k|$.  If \verb'k' is
+positive, it denotes diagonals above the main diagonal, with
+\verb'C(i,i+k)=v(i)'.
+If \verb'k' is negative, it denotes diagonals below the main diagonal of
+\verb'C', with \verb'C(i-k,i)=v(i)'.  This behavior is identical to the MATLAB
+statement \verb'C=diag(v,k)', where \verb'v' is a vector, except that
+\verb'GxB_Matrix_diag' can also do typecasting.
+
+\verb'C' must already exist on input, of the correct size.  Any existing
+entries in \verb'C' are discarded.  The type of \verb'C' is preserved, so that
+if the type of \verb'C' and \verb'v' differ, the entries are typecasted into
+the type of \verb'C'.  Any settings made to \verb'C' by
+\verb'GxB_Matrix_Option_set' (format by row or by column, bitmap switch, hyper
+switch, and sparsity control) are unchanged.
+
+%-------------------------------------------------------------------------------
 \subsubsection{{\sf GrB\_Matrix\_free:} free a matrix}
 %-------------------------------------------------------------------------------
 \label{matrix_free}
@@ -4755,16 +5002,27 @@ GraphBLAS (\verb'bool', \verb'int*_t', \verb'uint*_t', \verb'float',
 with the user-defined type.  No typecasting is done on import or export.
 
 \begin{alert}
-{\bf FUTURE:}
+% {\bf FUTURE:}
 For the import methods, the numerical array must be large enough to hold all
 the entries, but in a future release of SuiteSparse: GraphBLAS, it may be
 specified as an array of length one.  This will indicate that all entries in
-the matrix or vector being constructed have the same value, given by
+the matrix or vector being constructed have the same uniform value, given by
 \verb'Ax[0]' for matrices and \verb'vx[0]' for vectors.  Likewise, on export, a
-future release of SuiteSparse:GraphBLAS may return arrays of size 1, where
-\verb'Ax_size' or \verb'vx_size' is returned as 1, even though there may be
-many more entries than that in the matrix or vector.  This will indicate to the
-caller that all entries in the matrix or vector have the same value.
+future release of SuiteSparse:GraphBLAS may return arrays of size large
+enough only to hold a single entry.  Even though there may be many more entries
+than that in the matrix or vector.  This will be indicated, on both import
+and export, with the \verb'is_uniform' boolean flag.
+
+If \verb'is_uniform' is true, then all entries present in the matrix or vector
+have the same value, and the \verb'Ax' array (for matrices) or \verb'vx' array
+(for vectors) only need to be large enough to hold a single value.
+
+Currently, uniform-valued matrices are not yet supported in this release of
+SuiteSparse:GraphBLAS.  On export, \verb'is_uniform' will always be false.
+On import, an error is returned if \verb'is_uniform' is true on input.
+This feature will be added later, but the \verb'is_uniform' parameter is
+added now, so that the API does not need to change once this feature is
+implemented.
 \end{alert}
 
 The export of a \verb'GrB_Vector' in \verb'CSC' format may return the indices
@@ -4867,10 +5125,11 @@ GrB_Info GxB_Vector_import_CSC  // import a vector in CSC format
     GrB_Vector *v,      // handle of vector to create
     GrB_Type type,      // type of vector to create
     GrB_Index n,        // vector length
-    GrB_Index **vi,     // indices, vi_size >= nvals(v)
-    void **vx,          // values, vx_size >= nvals(v)
-    GrB_Index vi_size,  // size of vi
-    GrB_Index vx_size,  // size of vx
+    GrB_Index **vi,     // indices, vi_size >= nvals(v)*sizeof(int64_t)
+    void **vx,          // values, vx_size >= nvals(v)*(type size)
+    GrB_Index vi_size,  // size of vi in bytes
+    GrB_Index vx_size,  // size of vx in bytes
+    bool is_uniform,    // if true, v has uniform values (not yet supported)
     GrB_Index nvals,    // # of entries in vector
     bool jumbled,       // if true, indices may be unsorted
     const GrB_Descriptor desc
@@ -4911,10 +5170,11 @@ GrB_Info GxB_Vector_export_CSC  // export and free a CSC vector
     GrB_Vector *v,      // handle of vector to export and free
     GrB_Type *type,     // type of vector exported
     GrB_Index *n,       // length of the vector
-    GrB_Index **vi,     // indices, vi_size >= nvals(v)
-    void **vx,          // values, vx_size >= nvals(v)
-    GrB_Index *vi_size, // size of vi
-    GrB_Index *vx_size, // size of vx
+    GrB_Index **vi,     // indices, vi_size >= nvals(v)*sizeof(int64_t)
+    void **vx,          // values, vx_size >= nvals(v)*(type size)
+    GrB_Index *vi_size, // size of vi in bytes
+    GrB_Index *vx_size, // size of vx in bytes
+    bool *is_uniform,   // if true, v has uniform values (not yet supported)
     GrB_Index *nvals,   // # of entries in vector
     bool *jumbled,      // if true, indices may be unsorted
     const GrB_Descriptor desc
@@ -4957,9 +5217,10 @@ GrB_Info GxB_Vector_import_Bitmap // import a bitmap vector
     GrB_Type type,      // type of vector to create
     GrB_Index n,        // vector length
     int8_t **vb,        // bitmap, vb_size >= n
-    void **vx,          // values, vx_size >= n
-    GrB_Index vb_size,  // size of vb
-    GrB_Index vx_size,  // size of vx
+    void **vx,          // values, vx_size >= n * (type size)
+    GrB_Index vb_size,  // size of vb in bytes
+    GrB_Index vx_size,  // size of vx in bytes
+    bool is_uniform,    // if true, v has uniform values (not yet supported)
     GrB_Index nvals,    // # of entries in bitmap
     const GrB_Descriptor desc
 ) ;
@@ -5006,10 +5267,11 @@ GrB_Info GxB_Vector_export_Bitmap   // export and free a bitmap vector
     GrB_Type *type,     // type of vector exported
     GrB_Index *n,       // length of the vector
     int8_t **vb,        // bitmap, vb_size >= n
-    void **vx,          // values, vx_size >= n
-    GrB_Index *vb_size, // size of vb
-    GrB_Index *vx_size, // size of vx
-    GrB_Index *nvals,    // # of entries in bitmap
+    void **vx,          // values, vx_size >= n * (type size)
+    GrB_Index *vb_size, // size of vb in bytes
+    GrB_Index *vx_size, // size of vx in bytes
+    bool *is_uniform,   // if true, v has uniform values (not yet supported)
+    GrB_Index *nvals,   // # of entries in bitmap
     const GrB_Descriptor desc
 ) ;
 \end{verbatim}
@@ -5048,8 +5310,9 @@ GrB_Info GxB_Vector_import_Full // import a full vector
     GrB_Vector *v,      // handle of vector to create
     GrB_Type type,      // type of vector to create
     GrB_Index n,        // vector length
-    void **vx,          // values, vx_size >= nvals(v)
-    GrB_Index vx_size,  // size of vx
+    void **vx,          // values, vx_size >= nvals(v) * (type size)
+    GrB_Index vx_size,  // size of vx in bytes
+    bool is_uniform,    // if true, v has uniform values (not yet supported)
     const GrB_Descriptor desc
 ) ;
 \end{verbatim}
@@ -5084,8 +5347,9 @@ GrB_Info GxB_Vector_export_Full   // export and free a full vector
     GrB_Vector *v,      // handle of vector to export and free
     GrB_Type *type,     // type of vector exported
     GrB_Index *n,       // length of the vector
-    void **vx,          // values, vx_size >= nvals(v)
-    GrB_Index *vx_size, // size of vx
+    void **vx,          // values, vx_size >= nvals(v) * (type size)
+    GrB_Index *vx_size, // size of vx in bytes
+    bool *is_uniform,   // if true, v has uniform values (not yet supported)
     const GrB_Descriptor desc
 ) ;
 \end{verbatim}
@@ -5124,12 +5388,13 @@ GrB_Info GxB_Matrix_import_CSR      // import a CSR matrix
     GrB_Type type,      // type of matrix to create
     GrB_Index nrows,    // number of rows of the matrix
     GrB_Index ncols,    // number of columns of the matrix
-    GrB_Index **Ap,     // row "pointers", Ap_size >= nrows+1
-    GrB_Index **Aj,     // row indices, Aj_size >= nvals(A)
-    void **Ax,          // values, Ax_size >= nvals(A)
-    GrB_Index Ap_size,  // size of Ap
-    GrB_Index Aj_size,  // size of Aj
-    GrB_Index Ax_size,  // size of Ax
+    GrB_Index **Ap,     // row "pointers", Ap_size >= (nrows+1)*sizeof(int64_t)
+    GrB_Index **Aj,     // column indices, Aj_size >= nvals(A)*sizeof(int64_t)
+    void **Ax,          // values, Ax_size >= nvals(A) * (type size)
+    GrB_Index Ap_size,  // size of Ap in bytes
+    GrB_Index Aj_size,  // size of Aj in bytes
+    GrB_Index Ax_size,  // size of Ax in bytes
+    bool is_uniform,    // if true, A has uniform values (not yet supported)
     bool jumbled,       // if true, indices in each row may be unsorted
     const GrB_Descriptor desc
 ) ;
@@ -5239,7 +5504,7 @@ used
         {
             // get A(i,j)
             int64_t  j = Aj [p] ;           // column index
-            double aij = Ax [p] ;           // numerical value
+            double aij = Ax [is_uniform ? 0 : p] ;   // numerical value
         }
     } \end{verbatim}}
 
@@ -5273,12 +5538,13 @@ GrB_Info GxB_Matrix_export_CSR  // export and free a CSR matrix
     GrB_Type *type,     // type of matrix exported
     GrB_Index *nrows,   // number of rows of the matrix
     GrB_Index *ncols,   // number of columns of the matrix
-    GrB_Index **Ap,     // row "pointers", Ap_size >= nrows+1
-    GrB_Index **Aj,     // row indices, Aj_size >= nvals(A)
-    void **Ax,          // values, Ax_size >= nvals(A)
-    GrB_Index *Ap_size, // size of Ap
-    GrB_Index *Aj_size, // size of Aj
-    GrB_Index *Ax_size, // size of Ax
+    GrB_Index **Ap,     // row "pointers", Ap_size >= (nrows+1)*sizeof(int64_t)
+    GrB_Index **Aj,     // column indices, Aj_size >= nvals(A)*sizeof(int64_t)
+    void **Ax,          // values, Ax_size >= nvals(A)*(type size)
+    GrB_Index *Ap_size, // size of Ap in bytes
+    GrB_Index *Aj_size, // size of Aj in bytes
+    GrB_Index *Ax_size, // size of Ax in bytes
+    bool *is_uniform,   // if true, A has uniform values (not yet supported)
     bool *jumbled,      // if true, indices in each row may be unsorted
     const GrB_Descriptor desc
 ) ;
@@ -5328,12 +5594,13 @@ GrB_Info GxB_Matrix_import_CSC      // import a CSC matrix
     GrB_Type type,      // type of matrix to create
     GrB_Index nrows,    // number of rows of the matrix
     GrB_Index ncols,    // number of columns of the matrix
-    GrB_Index **Ap,     // column "pointers", Ap_size >= ncols+1
-    GrB_Index **Ai,     // row indices, Ai_size >= nvals(A)
-    void **Ax,          // values, Ax_size >= nvals(A)
-    GrB_Index Ap_size,  // size of Ap
-    GrB_Index Ai_size,  // size of Ai
-    GrB_Index Ax_size,  // size of Ax
+    GrB_Index **Ap,     // col "pointers", Ap_size >= (ncols+1)*sizeof(int64_t)
+    GrB_Index **Ai,     // row indices, Ai_size >= nvals(A)*sizeof(int64_t)
+    void **Ax,          // values, Ax_size >= nvals(A) * (type size)
+    GrB_Index Ap_size,  // size of Ap in bytes
+    GrB_Index Ai_size,  // size of Ai in bytes
+    GrB_Index Ax_size,  // size of Ax in bytes
+    bool is_uniform,    // if true, A has uniform values (not yet supported)
     bool jumbled,       // if true, indices in each column may be unsorted
     const GrB_Descriptor desc
 ) ;
@@ -5390,7 +5657,7 @@ be used
         {
             // get A(i,j)
             int64_t  i = Ai [p] ;           // row index
-            double aij = Ax [p] ;           // numerical value
+            double aij = Ax [is_uniform ? 0 : p] ;   // numerical value
         }
     } \end{verbatim}}
 
@@ -5417,11 +5684,12 @@ GrB_Info GxB_Matrix_export_CSC  // export and free a CSC matrix
     GrB_Index *nrows,   // number of rows of the matrix
     GrB_Index *ncols,   // number of columns of the matrix
     GrB_Index **Ap,     // column "pointers", Ap_size >= ncols+1
-    GrB_Index **Ai,     // row indices, Ai_size >= nvals(A)
-    void **Ax,          // values, Ax_size >= nvals(A)
-    GrB_Index *Ap_size, // size of Ap
-    GrB_Index *Ai_size, // size of Ai
-    GrB_Index *Ax_size, // size of Ax
+    GrB_Index **Ai,     // row indices, Ai_size >= nvals(A)*sizeof(int64_t)
+    void **Ax,          // values, Ax_size >= nvals(A)*(type size)
+    GrB_Index *Ap_size, // size of Ap in bytes
+    GrB_Index *Ai_size, // size of Ai in bytes
+    GrB_Index *Ax_size, // size of Ax in bytes
+    bool *is_uniform,   // if true, A has uniform values (not yet supported)
     bool *jumbled,      // if true, indices in each column may be unsorted
     const GrB_Descriptor desc
 ) ;
@@ -5460,14 +5728,15 @@ GrB_Info GxB_Matrix_import_HyperCSR      // import a hypersparse CSR matrix
     GrB_Type type,      // type of matrix to create
     GrB_Index nrows,    // number of rows of the matrix
     GrB_Index ncols,    // number of columns of the matrix
-    GrB_Index **Ap,     // row "pointers", Ap_size >= nvec+1
-    GrB_Index **Ah,     // row indices, Ah_size >= nvec
-    GrB_Index **Aj,     // column indices, Aj_size >= nvals(A)
-    void **Ax,          // values, Ax_size >= nvals(A)
-    GrB_Index Ap_size,  // size of Ap
-    GrB_Index Ah_size,  // size of Ah
-    GrB_Index Aj_size,  // size of Aj
-    GrB_Index Ax_size,  // size of Ax
+    GrB_Index **Ap,     // row "pointers", Ap_size >= (nvec+1)*sizeof(int64_t)
+    GrB_Index **Ah,     // row indices, Ah_size >= (nvec)*sizeof(int64_t)
+    GrB_Index **Aj,     // column indices, Aj_size >= nvals(A)*sizeof(int64_t)
+    void **Ax,          // values, Ax_size >= nvals(A) * (type size)
+    GrB_Index Ap_size,  // size of Ap in bytes
+    GrB_Index Ah_size,  // size of Ah in bytes
+    GrB_Index Aj_size,  // size of Aj in bytes
+    GrB_Index Ax_size,  // size of Ax in bytes
+    bool is_uniform,    // if true, A has uniform values (not yet supported)
     GrB_Index nvec,     // number of rows that appear in Ah
     bool jumbled,       // if true, indices in each row may be unsorted
     const GrB_Descriptor desc
@@ -5535,7 +5804,7 @@ order, and no duplicates can appear.  To iterate over this data structure
         {
             // get A(i,j)
             int64_t  j = Aj [p] ;           // column index
-            double aij = Ax [p] ;           // numerical value
+            double aij = Ax [is_uniform ? 0 : p] ;   // numerical value
         }
     } \end{verbatim}}
 
@@ -5573,14 +5842,15 @@ GrB_Info GxB_Matrix_export_HyperCSR  // export and free a hypersparse CSR matrix
     GrB_Type *type,     // type of matrix exported
     GrB_Index *nrows,   // number of rows of the matrix
     GrB_Index *ncols,   // number of columns of the matrix
-    GrB_Index **Ap,     // row "pointers", Ap_size >= nvec+1
-    GrB_Index **Ah,     // row indices, Ah_size >= nvec
-    GrB_Index **Aj,     // column indices, Aj_size >= nvals(A)
-    void **Ax,          // values, Ax_size >= nvals(A)
-    GrB_Index *Ap_size, // size of Ap
-    GrB_Index *Ah_size, // size of Ah
-    GrB_Index *Aj_size, // size of Aj
-    GrB_Index *Ax_size, // size of Ax
+    GrB_Index **Ap,     // row "pointers", Ap_size >= (nvec+1)*sizeof(int64_t)
+    GrB_Index **Ah,     // row indices, Ah_size >= nvec*sizeof(int64_t)
+    GrB_Index **Aj,     // column indices, Aj_size >= nvals(A)*sizeof(int64_t)
+    void **Ax,          // values, Ax_size >= nvals(A)*(type size)
+    GrB_Index *Ap_size, // size of Ap in bytes
+    GrB_Index *Ah_size, // size of Ah in bytes
+    GrB_Index *Aj_size, // size of Aj in bytes
+    GrB_Index *Ax_size, // size of Ax in bytes
+    bool *is_uniform,   // if true, A has uniform values (not yet supported)
     GrB_Index *nvec,    // number of rows that appear in Ah
     bool *jumbled,      // if true, indices in each row may be unsorted
     const GrB_Descriptor desc
@@ -5620,14 +5890,15 @@ GrB_Info GxB_Matrix_import_HyperCSC      // import a hypersparse CSC matrix
     GrB_Type type,      // type of matrix to create
     GrB_Index nrows,    // number of rows of the matrix
     GrB_Index ncols,    // number of columns of the matrix
-    GrB_Index **Ap,     // column "pointers", Ap_size >= nvec+1
-    GrB_Index **Ah,     // column indices, Ah_size >= nvec
-    GrB_Index **Ai,     // row indices, Ai_size >= nvals(A)
-    void **Ax,          // values, Ax_size >= nvals(A)
-    GrB_Index Ap_size,  // size of Ap
-    GrB_Index Ah_size,  // size of Ah
-    GrB_Index Ai_size,  // size of Ai
-    GrB_Index Ax_size,  // size of Ax
+    GrB_Index **Ap,     // col "pointers", Ap_size >= (nvec+1)*sizeof(int64_t)
+    GrB_Index **Ah,     // column indices, Ah_size >= nvec*sizeof(int64_t)
+    GrB_Index **Ai,     // row indices, Ai_size >= nvals(A)*sizeof(int64_t)
+    void **Ax,          // values, Ax_size >= nvals(A)*(type size)
+    GrB_Index Ap_size,  // size of Ap in bytes
+    GrB_Index Ah_size,  // size of Ah in bytes
+    GrB_Index Ai_size,  // size of Ai in bytes
+    GrB_Index Ax_size,  // size of Ax in bytes
+    bool is_uniform,    // if true, A has uniform values (not yet supported)
     GrB_Index nvec,     // number of columns that appear in Ah
     bool jumbled,       // if true, indices in each column may be unsorted
     const GrB_Descriptor desc
@@ -5654,7 +5925,7 @@ assuming it has type \verb'GrB_FP64':
         {
             // get A(i,j)
             int64_t  i = Ai [p] ;           // row index
-            double aij = Ax [p] ;           // numerical value
+            double aij = Ax [is_uniform ? 0 : p] ;   // numerical value
         }
     } \end{verbatim}}
 
@@ -5681,6 +5952,7 @@ GrB_Info GxB_Matrix_export_HyperCSC  // export and free a hypersparse CSC matrix
     GrB_Index *Ah_size, // size of Ah
     GrB_Index *Ai_size, // size of Ai
     GrB_Index *Ax_size, // size of Ax
+    bool *is_uniform,   // if true, A has uniform values (not yet supported)
     GrB_Index *nvec,    // number of columns that appear in Ah
     bool *jumbled,      // if true, indices in each column may be unsorted
     const GrB_Descriptor desc
@@ -5721,9 +5993,10 @@ GrB_Info GxB_Matrix_import_BitmapR  // import a bitmap matrix, held by row
     GrB_Index nrows,    // number of rows of the matrix
     GrB_Index ncols,    // number of columns of the matrix
     int8_t **Ab,        // bitmap, Ab_size >= nrows*ncols
-    void **Ax,          // values, Ax_size >= nrows*ncols
-    GrB_Index Ab_size,  // size of Ab
-    GrB_Index Ax_size,  // size of Ax
+    void **Ax,          // values, Ax_size >= nrows*ncols * (type size)
+    GrB_Index Ab_size,  // size of Ab in bytes
+    GrB_Index Ax_size,  // size of Ax in bytes
+    bool is_uniform,    // if true, A has uniform values (not yet supported)
     GrB_Index nvals,    // # of entries in bitmap
     const GrB_Descriptor desc
 ) ;
@@ -5778,7 +6051,7 @@ used (assuming it has type \verb'GrB_FP64'):
             int64_t p = i*ncols + j ;
             if (Ab [p])
             {
-                double aij = Ax [p] ;           // numerical value
+                double aij = Ax [is_uniform ? 0 : p] ;   // numerical value
             }
         }
     } \end{verbatim}}
@@ -5814,9 +6087,10 @@ GrB_Info GxB_Matrix_export_BitmapR  // export and free a bitmap matrix, by row
     GrB_Index *nrows,   // number of rows of the matrix
     GrB_Index *ncols,   // number of columns of the matrix
     int8_t **Ab,        // bitmap, Ab_size >= nrows*ncols
-    void **Ax,          // values, Ax_size >= nrows*ncols
-    GrB_Index *Ab_size, // size of Ab
-    GrB_Index *Ax_size, // size of Ax
+    void **Ax,          // values, Ax_size >= nrows*ncols * (type size)
+    GrB_Index *Ab_size, // size of Ab in bytes
+    GrB_Index *Ax_size, // size of Ax in bytes
+    bool *is_uniform,   // if true, A has uniform values (not yet supported)
     GrB_Index *nvals,   // # of entries in bitmap
     const GrB_Descriptor desc
 ) ;
@@ -5856,9 +6130,10 @@ GrB_Info GxB_Matrix_import_BitmapC  // import a bitmap matrix, held by column
     GrB_Index nrows,    // number of rows of the matrix
     GrB_Index ncols,    // number of columns of the matrix
     int8_t **Ab,        // bitmap, Ab_size >= nrows*ncols
-    void **Ax,          // values, Ax_size >= nrows*ncols
-    GrB_Index Ab_size,  // size of Ab
-    GrB_Index Ax_size,  // size of Ax
+    void **Ax,          // values, Ax_size >= nrows*ncols * (type size)
+    GrB_Index Ab_size,  // size of Ab in bytes
+    GrB_Index Ax_size,  // size of Ax in bytes
+    bool is_uniform,    // if true, A has uniform values (not yet supported)
     GrB_Index nvals,    // # of entries in bitmap
     const GrB_Descriptor desc
 ) ;
@@ -5885,9 +6160,10 @@ GrB_Info GxB_Matrix_export_BitmapC  // export and free a bitmap matrix, by col
     GrB_Index *nrows,   // number of rows of the matrix
     GrB_Index *ncols,   // number of columns of the matrix
     int8_t **Ab,        // bitmap, Ab_size >= nrows*ncols
-    void **Ax,          // values, Ax_size >= nrows*ncols
-    GrB_Index *Ab_size, // size of Ab
-    GrB_Index *Ax_size, // size of Ax
+    void **Ax,          // values, Ax_size >= nrows*ncols * (type size)
+    GrB_Index *Ab_size, // size of Ab in bytes
+    GrB_Index *Ax_size, // size of Ax in bytes
+    bool *is_uniform,   // if true, A has uniform values (not yet supported)
     GrB_Index *nvals,   // # of entries in bitmap
     const GrB_Descriptor desc
 ) ;
@@ -5914,8 +6190,9 @@ GrB_Info GxB_Matrix_import_FullR  // import a full matrix, held by row
     GrB_Type type,      // type of matrix to create
     GrB_Index nrows,    // number of rows of the matrix
     GrB_Index ncols,    // number of columns of the matrix
-    void **Ax,          // values, Ax_size >= nrows*ncols
-    GrB_Index Ax_size,  // size of Ax
+    void **Ax,          // values, Ax_size >= nrows*ncols * (type size)
+    GrB_Index Ax_size,  // size of Ax in bytes
+    bool is_uniform,    // if true, A has uniform values (not yet supported)
     const GrB_Descriptor desc
 ) ;
 \end{verbatim}
@@ -5937,7 +6214,7 @@ used (assuming it has type \verb'GrB_FP64'):
         {
             // get A(i,j)
             int64_t p = i*ncols + j ;
-            double aij = Ax [p] ;           // numerical value
+            double aij = Ax [is_uniform ? 0 : p] ;   // numerical value
         }
     } \end{verbatim}}
 
@@ -5956,8 +6233,9 @@ GrB_Info GxB_Matrix_export_FullR  // export and free a full matrix, by row
     GrB_Type *type,     // type of matrix exported
     GrB_Index *nrows,   // number of rows of the matrix
     GrB_Index *ncols,   // number of columns of the matrix
-    void **Ax,          // values, Ax_size >= nrows*ncols
-    GrB_Index *Ax_size, // size of Ax
+    void **Ax,          // values, Ax_size >= nrows*ncols * (type size)
+    GrB_Index *Ax_size, // size of Ax in bytes
+    bool *is_uniform,   // if true, A has uniform values (not yet supported)
     const GrB_Descriptor desc
 ) ;
 \end{verbatim}
@@ -5986,8 +6264,9 @@ GrB_Info GxB_Matrix_import_FullC  // import a full matrix, held by column
     GrB_Type type,      // type of matrix to create
     GrB_Index nrows,    // number of rows of the matrix
     GrB_Index ncols,    // number of columns of the matrix
-    void **Ax,          // values, Ax_size >= nrows*ncols
-    GrB_Index Ax_size,  // size of Ax
+    void **Ax,          // values, Ax_size >= nrows*ncols * (type size)
+    GrB_Index Ax_size,  // size of Ax in bytes
+    bool is_uniform,    // if true, A has uniform values (not yet supported)
     const GrB_Descriptor desc
 ) ;
 \end{verbatim}
@@ -6009,9 +6288,15 @@ used (assuming it has type \verb'GrB_FP64'):
         {
             // get A(i,j)
             int64_t p = i + j*nrows ;
-            double aij = Ax [p] ;           // numerical value
+            double aij = Ax [is_uniform ? 0 : p] ;   // numerical value
         }
     } \end{verbatim}}
+
+Note that the \verb'is_uniform' feature is not yet implemented.  Once it is
+added to SuiteSparse:GraphBLAS, a full matrix with uniform values will take
+only $O(1)$ time and memory to create and hold in memory.  Some operations
+need not traverse over all entries of the matrix, and these operations will
+be very fast with full matrices with uniform values.
 
 \newpage
 %-------------------------------------------------------------------------------
@@ -6028,8 +6313,9 @@ GrB_Info GxB_Matrix_export_FullC  // export and free a full matrix, by column
     GrB_Type *type,     // type of matrix exported
     GrB_Index *nrows,   // number of rows of the matrix
     GrB_Index *ncols,   // number of columns of the matrix
-    void **Ax,          // values, Ax_size >= nrows*ncols
-    GrB_Index *Ax_size, // size of Ax
+    void **Ax,          // values, Ax_size >= nrows*ncols * (type size)
+    GrB_Index *Ax_size, // size of Ax in bytes
+    bool *is_uniform,   // if true, A has uniform values (not yet supported)
     const GrB_Descriptor desc
 ) ;
 \end{verbatim}
@@ -6707,6 +6993,9 @@ field                       & value         & description \\
 \verb'GxB_GLOBAL_CHUNK'     & \verb'double' & chunk size \\
 \verb'GxB_CHUNK'            & \verb'double' & chunk size \\
 \verb'GxB_BURBLE'           & \verb'int'    & diagnostic output \\
+\verb'GxB_PRINTF'           & see below     & diagnostic output \\
+\verb'GxB_FLUSH'            & see below     & diagnostic output \\
+\verb'GxB_MEMORY_POOL'      & \verb'int64_t [64]' & memory pool control \\
 \end{tabular}
 }
 
@@ -6780,6 +7069,9 @@ field                       & value         & description \\
 \verb'GxB_GLOBAL_CHUNK'     & \verb'double' & chunk size \\
 \verb'GxB_CHUNK'            & \verb'double' & chunk size \\
 \verb'GxB_BURBLE'           & \verb'int'    & diagnostic output \\
+\verb'GxB_PRINTF'           & see below     & diagnostic output \\
+\verb'GxB_FLUSH'            & see below     & diagnostic output \\
+\verb'GxB_MEMORY_POOL'      & \verb'int64_t [64]' & memory pool control \\
 \hline
 \verb'GxB_MODE'                 & \verb'int'    & blocking/non-blocking \\
 \verb'GxB_LIBRARY_NAME'         & \verb'char *' & name of library \\
@@ -7077,13 +7369,13 @@ format, hypersparsity format, and \verb'hyper_switch' from \verb'A'.
 \label{bitmap_switch}
 %-------------------------------------------------------------------------------
 
-By default, SuiteSparse:GraphBLAS switches between bitmap and
-sparse/hypersparse formats automatically.  Let $d = |{\bf A}|/mn$ for an
-$m$-by-$n$ matrix $\bf A$ with $|{\bf A}|$ entries.  If the matrix is currently
-in sparse or hypersparse format, and is modified so that $d$ exceeds a given
-threshold, it is converted into bitmap format.  The default threshold is
-controlled by the \verb'GxB_BITMAP_SWITCH' setting, which can be set globally,
-or for a particular matrix or vector.
+By default, SuiteSparse:GraphBLAS switches between all four formats
+(hypersparse, sparse, bitmap, and full) automatically.  Let $d = |{\bf A}|/mn$
+for an $m$-by-$n$ matrix $\bf A$ with $|{\bf A}|$ entries.  If the matrix is
+currently in sparse or hypersparse format, and is modified so that $d$ exceeds
+a given threshold, it is converted into bitmap format.  The default threshold
+is controlled by the \verb'GxB_BITMAP_SWITCH' setting, which can be set
+globally, or for a particular matrix or vector.
 
 The default value of the switch to bitmap format depends on $\min(m,n)$, for a
 matrix of size $m$-by-$n$.  For the global setting, the bitmap switch is a
@@ -7143,6 +7435,8 @@ typedef enum
     GxB_GLOBAL_NTHREADS = GxB_NTHREADS, // max number of threads to use
     GxB_GLOBAL_CHUNK = GxB_CHUNK,       // chunk size for small problems
     GxB_BURBLE = 99,                    // diagnositic output
+    GxB_PRINTF = 101,               // printf function for diagnostic output
+    GxB_FLUSH = 102,                // flush function for diagnostic output
 
     // for matrix/vector get only:
     GxB_SPARSITY_STATUS = 33,   // query the sparsity of a matrix or vector
@@ -7282,7 +7576,7 @@ except full:
     GxB_set (A, GxB_SPARSITY_CONTROL, ~GxB_FULL) ; \end{verbatim}}
 
 %-------------------------------------------------------------------------------
-\subsection{{\sf GxB\_BURBLE}: diagnostic output}
+\subsection{{\sf GxB\_BURBLE}, {\sf GxB\_PRINTF}, {\sf GxB\_FLUSH}: diagnostics}
 %-------------------------------------------------------------------------------
 
 \verb'GxB_set (GxB_BURBLE, ...)' controls the burble setting.  It can also be
@@ -7306,6 +7600,26 @@ spent finishing a matrix or vector.  This may be the result of an inefficient
 use of the \verb'setElement' and \verb'assign' methods.  If this occurs you
 might try changing the sparsity format of a vector or matrix to
 \verb'GxB_BITMAP', assuming there's enough space for it.
+
+\verb'GxB_set (GxB_PRINTF, printf)' allows the user application to change the
+function used to print diagnostic output.  This also controls the output of the
+\verb'GxB_*print' functions.  By default this parameter is \verb'NULL', in
+which case the ANSI C11 \verb'printf' function is used.  The parameter is a
+function pointer with the same signature as the ANSI C11 \verb'printf'
+function.  The MATLAB interface to GraphBLAS uses the following so that
+GraphBLAS can print to the MATLAB Command Window:
+
+{\footnotesize
+\begin{verbatim}
+    GxB_set (GxB_PRINTF, mexPrintf) \end{verbatim}}
+
+After each call to the \verb'printf' function, an optional
+\verb'flush' function is called, which is \verb'NULL' by default.  If
+\verb'NULL', the function is not used.  This can be changed with
+\verb'GxB_set (GxB_FLUSH, flush)'.  The \verb'flush' function takes no
+arguments, and returns an \verb'int' which is 0 if successful, or any nonzero
+value on failure (the same output as the ANSI C11 \verb'fflush' function,
+except that \verb'flush' has no inputs).
 
 %-------------------------------------------------------------------------------
 \subsection{Other global options}
@@ -7350,8 +7664,12 @@ The \verb'field' parameter can be
 \verb'GxB_BITMAP_SWITCH',
 \verb'GxB_FORMAT',
 \verb'GxB_NTHREADS',
-\verb'GxB_CHUNK', or
-\verb'GxB_BURBLE'.
+\verb'GxB_CHUNK',
+\verb'GxB_BURBLE',
+\verb'GxB_PRINTF',
+\verb'GxB_FLUSH',
+or
+\verb'GxB_MEMORY_POOL'.
 
 For example, the following usage sets the global hypersparsity ratio to 0.2,
 the format of future matrices to \verb'GxB_BY_COL', the maximum number
@@ -7365,7 +7683,16 @@ No existing matrices are changed.
     GxB_set (GxB_NTHREADS, 4) ;
     GxB_set (GxB_CHUNK, (double) 10000) ;
     GxB_set (GxB_BURBLE, true) ;
+    GxB_set (GxB_PRINTF, mexPrintf) ;
 \end{verbatim} }
+
+The memory pool parameter sets an upper bound on the number of freed blocks of
+memory that SuiteSparse:GraphBLAS keeps in its internal memory pool for future
+allocations.   \verb'free_pool_limit'  is an \verb'int64_t' array of size 64,
+and \verb'free_pool_limit [k]' is the upper bound on the number of blocks
+of size $2^k$ that are kept in the pool.  Passing in a \verb'NULL' pointer
+sets the defaults.  Passing in an array of size 64 whose entries are all zero
+disables the memory pool entirely.
 
 %===============================================================================
 \subsection{{\sf GxB\_Matrix\_Option\_set:} set a matrix option}
@@ -7467,6 +7794,9 @@ This usage of \verb'GxB_get' retrieves the value of a global option.  The
         \verb'GxB_NTHREADS'             & default number of threads \\
         \verb'GxB_CHUNK'                & default chunk size \\
         \verb'GxB_BURBLE'       & burble setting \\
+        \verb'GxB_PRINTF'       & printf function \\
+        \verb'GxB_FLUSH'        & flush function \\
+        \verb'GxB_MEMORY_POOL'  & memory pool control \\
         \hline
         \verb'GxB_LIBRARY_NAME'         & the string
                                         \verb'"SuiteSparse:GraphBLAS"' \\
@@ -7532,6 +7862,11 @@ For example:
     double chunk ;
     GxB_get (GxB_CHUNK, &chunk) ;
     printf ("chunk size: %g\n", chunk) ;
+
+    int64_t free_pool_limit [64] ;
+    GxB_get (GxB_MEMORY_POOL, free_pool_limit) ;
+    for (int k = 0 ; k < 64 ; k++)
+        printf ("pool %d: limit %ld\n", free_pool_limit [k]) ;
 
     char *name ;
     int ver [3] ;
@@ -7630,24 +7965,27 @@ To set/get the global options:
     GxB_set (GxB_HYPER_SWITCH, GxB_ALWAYS_HYPER) ;
     GxB_set (GxB_HYPER_SWITCH, GxB_NEVER_HYPER) ;
     GxB_get (GxB_HYPER_SWITCH, double *h) ;
-
     double b [GxB_NBITMAP_SWITCH] ;
     GxB_set (GxB_BITMAP_SWITCH, b) ;
     GxB_set (GxB_BITMAP_SWITCH, NULL) ;     // set defaults
     GxB_get (GxB_BITMAP_SWITCH, b) ;
-
     GxB_set (GxB_FORMAT, GxB_BY_ROW) ;
     GxB_set (GxB_FORMAT, GxB_BY_COL) ;
     GxB_get (GxB_FORMAT, GxB_Format_Value *s) ;
-
     GxB_set (GxB_NTHREADS, int nthreads_max) ;
     GxB_get (GxB_NTHREADS, int *nthreads_max) ;
-
     GxB_set (GxB_CHUNK, double chunk) ;
     GxB_get (GxB_CHUNK, double *chunk) ;
-
     GxB_set (GxB_BURBLE, bool burble) ;
-    GxB_get (GxB_BURBLE, bool *burble) ; \end{verbatim} }
+    GxB_get (GxB_BURBLE, bool *burble) ;
+    GxB_set (GxB_PRINTF, void *printf_function) ;
+    GxB_get (GxB_PRINTF, void **printf_function) ;
+    GxB_set (GxB_FLUSH, void *flush_function) ;
+    GxB_get (GxB_FLUSH, void **flush_function) ;
+    int64_t free_pool_limit [64] ;
+    GxB_set (GxB_MEMORY_POOL, free_pool_limit) ;
+    GxB_set (GxB_MEMORY_POOL, NULL) ;     // set defaults
+    GxB_get (GxB_MEMORY_POOL, free_pool_limit) ; \end{verbatim} }
 
 \noindent
 To get global options that can be queried but not modified:
@@ -7666,8 +8004,7 @@ To get global options that can be queried but not modified:
     GxB_get (GxB_API_VERSION,          int *) ;
     GxB_get (GxB_API_DATE,             char **) ;
     GxB_get (GxB_API_ABOUT,            char **) ;
-    GxB_get (GxB_API_URL,              char **) ;
-    \end{verbatim} }
+    GxB_get (GxB_API_URL,              char **) ; \end{verbatim} }
 
 \noindent
 To set/get a matrix option or status
@@ -7678,20 +8015,15 @@ To set/get a matrix option or status
     GxB_set (GrB_Matrix A, GxB_HYPER_SWITCH, GxB_ALWAYS_HYPER) ;
     GxB_set (GrB_Matrix A, GxB_HYPER_SWITCH, GxB_NEVER_HYPER) ;
     GxB_get (GrB_Matrix A, GxB_HYPER_SWITCH, double *h) ;
-
     GxB_set (GrB_Matrix A, GxB_BITMAP_SWITCH, double b) ;
     GxB_get (GrB_Matrix A, GxB_BITMAP_SWITCH, double *b) ;
-
     GxB_set (GrB_Matrix A, GxB_FORMAT, GxB_BY_ROW) ;
     GxB_set (GrB_Matrix A, GxB_FORMAT, GxB_BY_COL) ;
     GxB_get (GrB_Matrix A, GxB_FORMAT, GxB_Format_Value *s) ;
-
     GxB_set (GrB_Matrix A, GxB_SPARSITY_CONTROL, GxB_AUTO_SPARSITY) ;
     GxB_set (GrB_Matrix A, GxB_SPARSITY_CONTROL, scontrol) ;
     GxB_get (GrB_Matrix A, GxB_SPARSITY_CONTROL, int *scontrol) ;
-
-    GxB_get (GrB_Matrix A, GxB_SPARSITY_STATUS, int *sparsity) ;
-    \end{verbatim} }
+    GxB_get (GrB_Matrix A, GxB_SPARSITY_STATUS, int *sparsity) ; \end{verbatim} }
 
 \noindent
 To set/get a vector option or status:
@@ -7700,17 +8032,13 @@ To set/get a vector option or status:
     \begin{verbatim}
     GxB_set (GrB_Vector v, GxB_BITMAP_SWITCH, double b) ;
     GxB_get (GrB_Vector v, GxB_BITMAP_SWITCH, double *b) ;
-
     GxB_set (GrB_Vector v, GxB_FORMAT, GxB_BY_ROW) ;
     GxB_set (GrB_Vector v, GxB_FORMAT, GxB_BY_COL) ;
     GxB_get (GrB_Vector v, GxB_FORMAT, GxB_Format_Value *s) ;
-
     GxB_set (GrB_Vector v, GxB_SPARSITY_CONTROL, GxB_AUTO_SPARSITY) ;
     GxB_set (GrB_Vector v, GxB_SPARSITY_CONTROL, scontrol) ;
     GxB_get (GrB_Vector v, GxB_SPARSITY_CONTROL, int *scontrol) ;
-
-    GxB_get (GrB_Vector v, GxB_SPARSITY_STATUS, int *sparsity) ;
-    \end{verbatim} }
+    GxB_get (GrB_Vector v, GxB_SPARSITY_STATUS, int *sparsity) ; \end{verbatim} }
 
 \noindent
 To set/get a descriptor field:
@@ -7720,34 +8048,27 @@ To set/get a descriptor field:
     GxB_set (GrB_Descriptor d, GrB_OUTP, GxB_DEFAULT) ;
     GxB_set (GrB_Descriptor d, GrB_OUTP, GrB_REPLACE) ;
     GxB_get (GrB_Descriptor d, GrB_OUTP, GrB_Desc_Value *v) ;
-
     GxB_set (GrB_Descriptor d, GrB_MASK, GxB_DEFAULT) ;
     GxB_set (GrB_Descriptor d, GrB_MASK, GrB_COMP) ;
     GxB_set (GrB_Descriptor d, GrB_MASK, GrB_STRUCTURE) ;
     GxB_set (GrB_Descriptor d, GrB_MASK, GrB_COMP+GrB_STRUCTURE) ;
     GxB_get (GrB_Descriptor d, GrB_MASK, GrB_Desc_Value *v) ;
-
     GxB_set (GrB_Descriptor d, GrB_INP0, GxB_DEFAULT) ;
     GxB_set (GrB_Descriptor d, GrB_INP0, GrB_TRAN) ;
     GxB_get (GrB_Descriptor d, GrB_INP0, GrB_Desc_Value *v) ;
-
     GxB_set (GrB_Descriptor d, GrB_INP1, GxB_DEFAULT) ;
     GxB_set (GrB_Descriptor d, GrB_INP1, GrB_TRAN) ;
     GxB_get (GrB_Descriptor d, GrB_INP1, GrB_Desc_Value *v) ;
-
     GxB_set (GrB_Descriptor d, GxB_AxB_METHOD, GxB_DEFAULT) ;
     GxB_set (GrB_Descriptor d, GxB_AxB_METHOD, GxB_AxB_GUSTAVSON) ;
     GxB_set (GrB_Descriptor d, GxB_AxB_METHOD, GxB_AxB_HASH) ;
     GxB_set (GrB_Descriptor d, GxB_AxB_METHOD, GxB_AxB_SAXPY) ;
     GxB_set (GrB_Descriptor d, GxB_AxB_METHOD, GxB_AxB_DOT) ;
     GxB_get (GrB_Descriptor d, GrB_AxB_METHOD, GrB_Desc_Value *v) ;
-
     GxB_set (GrB_Descriptor d, GxB_NTHREADS, int nthreads) ;
     GxB_get (GrB_Descriptor d, GxB_NTHREADS, int *nthreads) ;
-
     GxB_set (GrB_Descriptor d, GxB_CHUNK, double chunk) ;
     GxB_get (GrB_Descriptor d, GxB_CHUNK, double *chunk) ;
-    
     GxB_set (GrB_Descriptor d, GxB_SORT, sort) ;
     GxB_get (GrB_Descriptor d, GxB_SORT, int *sort) ; \end{verbatim} }
 
@@ -10032,7 +10353,7 @@ GrB_Info GrB_apply                  // C<M>=accum(C,op(x,A))
 $z=f(x,y)$ to a matrix, where a scalar $x$ is bound to the first input of the
 operator.  It is otherwise identical to \verb'GrB_Matrix_apply'.  With no
 suffix, \verb'GxB_Matrix_apply_BinaryOp1st' takes as input a \verb'GxB_Scalar'. 
-To transpose the input matrix, use the \verb'GrB_INP0' descriptor setting.
+To transpose the input matrix, use the \verb'GrB_INP1' descriptor setting.
 
 %===============================================================================
 \subsubsection{{\sf GrB\_Matrix\_apply\_BinaryOp2nd:} apply a binary operator to a matrix; 2nd scalar binding}
@@ -10058,7 +10379,7 @@ GrB_Info GrB_apply                  // C<M>=accum(C,op(A,y))
 $z=f(x,y)$ to a matrix, where a scalar $x$ is bound to the second input of the
 operator.  It is otherwise identical to \verb'GrB_Matrix_apply'.  With no
 suffix, \verb'GxB_Matrix_apply_BinaryOp2nd' takes as input a \verb'GxB_Scalar'. 
-To transpose the input matrix, use the \verb'GrB_INP1' descriptor setting.
+To transpose the input matrix, use the \verb'GrB_INP0' descriptor setting.
 
 \newpage
 %===============================================================================
@@ -10296,42 +10617,10 @@ The final step is ${\bf w \langle m \rangle  = w \odot t}$, as described
 in Section~\ref{accummask}, except that all the
 terms are column vectors instead of matrices.
 
-\newpage
-%-------------------------------------------------------------------------------
-\subsubsection{{\sf GrB\_Matrix\_reduce\_BinaryOp} reduce a matrix to a vector}
-%-------------------------------------------------------------------------------
-\label{reduce_to_vector_binop}
-
-\begin{mdframed}[userdefinedwidth=6in]
-{\footnotesize
-\begin{verbatim}
-GrB_Info GrB_reduce                 // w<mask> = accum (w,reduce(A))
-(
-    GrB_Vector w,                   // input/output vector for results
-    const GrB_Vector mask,          // optional mask for w, unused if NULL
-    const GrB_BinaryOp accum,       // optional accum for z=accum(w,t)
-    const GrB_BinaryOp op,          // reduce op for t=reduce(A)
-    const GrB_Matrix A,             // first input:  matrix A
-    const GrB_Descriptor desc       // descriptor for w, mask, and A
-) ;
-\end{verbatim} } \end{mdframed}
-
-\verb'GrB_Matrix_reduce_BinaryOp' is the same as
-\verb'GrB_Matrix_reduce_Monoid', except that a binary operator is specified
-instead.  In SuiteSparse:GraphBLAS v4, it can only be used with built-in binary
-operators that correspond to a known monoid.  Its use is discouraged in
-SuiteSparse:GraphBLAS.  Use \verb'GrB_Matrix_reduce_Monoid' instead, or
-equivalently, use \verb'GrB_reduce' with a \verb'GrB_Monoid' as the fourth
-input parameter.
-
-\begin{alert}
-{\bf SPEC:} 
-\verb'GrB_Matrix_reduce_BinaryOp' in the v1.3 GraphBLAS C API Specification can
-use any binary operator, including user-defined ones.  However, the efficient
-parallel implementation in SuiteSparse:GraphBLAS v4 requires the identity
-value, and so only binary operators that correspond to known monoids are
-supported.  Use \verb'GrB_Matrix_reduce_Monoid' instead.
-\end{alert}
+\verb'GrB_reduce' can also be passed a \verb'GrB_BinaryOp' in place of the
+monoid parameter, but the binary operator must correspond to a known
+built-in monoid.  This provides a limited implementation of
+\verb'GrB_Matrix_reduce_BinaryOp'.
 
 \newpage
 %-------------------------------------------------------------------------------
@@ -11923,7 +12212,7 @@ SuiteSparse:GraphBLAS v3.2.0 and later is recommended.  Atomics are slower in
 icc as compared to gcc.
 \end{alert}
 
-To compile SuiteSparse:GraphBLAS and the demo programs, simply type \verb'make'
+To compile SuiteSparse:GraphBLAS, simply type \verb'make'
 in the main GraphBLAS folder, which compiles the library.  This will be a
 single-threaded compilation, which will take a long time.  To compile in 
 parallel (40 threads for example), use:
@@ -11938,8 +12227,8 @@ To use a non-default compiler with 4 threads:
     \begin{verbatim}
     make CC=icc CXX=icc JOBS=4 \end{verbatim} }
 
-After compiling the library, you can run the demos by typing \verb'./demo'
-in the Demo folder.
+After compiling the library, you can compile the demos with
+\verb'make all' and then \verb'make run'.
 
 If \verb'cmake' or \verb'make' fail, it might be that your default compiler
 does not support ANSI C11.  Try another compiler.  For example, try one of
@@ -12068,8 +12357,9 @@ Visual Studio 2019, but may work for earlier versions.
 \end{enumerate}
 
 %----------------------------------------
-\subsection{Compiling the MATLAB interface}
+\subsection{Compiling the MATLAB interface (for MATLAB R2020a and earlier)}
 %----------------------------------------
+\label{gbmake}
 
 First, compile the SuiteSparse:GraphBLAS dynamic library
 (\verb'libgraphblas.so' for Linux, \verb'libgraphblas.dylib' for Mac,
@@ -12141,6 +12431,53 @@ subsections.  Next:
     %% FUTURE: fix asin and acsc on Windows for the complex case.
 
 \end{enumerate}
+
+%----------------------------------------
+\subsection{Compiling the MATLAB interface (for MATLAB R2021a and later)}
+%----------------------------------------
+
+MATLAB R2021a includes its own copy of SuiteSparse:GraphBLAS v3.3.3, as the
+file \verb'libmwgraphblas.so', which is used for the built-in \verb'C=A*B' when
+both \verb'A' and \verb'B' are sparse (see the Release Notes of MATLAB R2021a,
+which discusses the performance gained in MATLAB by using GraphBLAS).
+
+That's great news for the impact of GraphBLAS on MATLAB itself, and the domain
+of high performance computing in general, but it causes a linking problem when
+using this MATLAB interface for GraphBLAS.  The two use different versions of
+the same library, and a segfault arises if the MATLAB interface for v5.x tries
+to link with the older GraphBLAS v3.3.3 library.  Likewise, the built-in
+\verb'C=A*B' causes a segfault if it tries to use the newer GraphBLAS v4.x or
+v5.x libraries.
+
+To resolve this issue, a second GraphBLAS library must be compiled,
+\verb'libgraphblas_renamed', where the internal symbols are all renamed so they
+do not conflict with the \verb'libmwgraphblas' library.  Then both libraries
+can co-exist in the same instance of MATLAB.
+
+To do this, go to the \verb'GraphBLAS/GraphBLAS' folder, containing the
+MATLAB interface.  That folder contains a \verb'CMakeLists.txt' file to
+compile the \verb'libgraphblas_renamed' library.  See the instructions
+for how to compile the C library \verb'libgraphblas', and repeat them but
+using the folder \newline
+\verb'SuiteSparse/GraphBLAS/GraphBLAS/build' instead of \newline
+\verb'SuiteSparse/GraphBLAS/build'.
+
+This will compile the renamed SuiteSparse:GraphBLAS dynamic library
+(\verb'libgraphblas_renamed.so' for Linux, \verb'libgraphblas_renamed.dylib'
+for Mac, or \verb'graphblas_renamed.dll' for Windows).  These can be
+placed in the same system-wide location as the standard \verb'libgraphblas'
+libraries, such as \verb'/usr/local/lib' for Linux.  The two pairs of
+libraries share the identical \verb'GraphBLAS.h' include file.
+
+Next, compile the MATLAB interface as described in Section~\ref{gbmake}.  For
+any instructions in that Section that refer to the \verb'GraphBLAS/build'
+folder (Linux and Mac) or \verb'GraphBLAS/build/Release' (Windows), use \newline
+\verb'GraphBLAS/GraphBLAS/build' (Linux and Mac) or \newline
+\verb'GraphBLAS/GraphBLAS/build/Release' (Windows) instead.
+
+The resulting functions for your \verb'@GrB' object will now work just fine;
+no other changes are needed.  You can even use the GraphBLAS mexFunctions
+compiled in MATLAB R2021a in earlier versions of MATLAB (such as R2020a).
 
 %----------------------------------------
 \subsection{Default matrix format}
@@ -12220,6 +12557,12 @@ that can be used to compile SuiteSparse:GraphBLAS.  This is a useful option
 if you do not have the required version of \verb'cmake'.  This \verb'Makefile'
 can even compile the entire library with a C++ compiler, which cannot be
 done with \verb'CMake'.
+
+This alternative \verb'Makefile' does not build the
+\verb'libgraphblas_renamed.so' library required for MATLAB R2021a (see
+Section~\ref{R2021a}).  This can be done by revising the \verb'Makefile',
+however:  add the \verb'-DGBRENAME=1' flag, and change the library name
+from \verb'libgraphblas' to \verb'libgraphbas_renamed'.
 
 %----------------------------------------
 \subsection{Running the Demos}
@@ -12310,16 +12653,6 @@ Anaconda's python interface.
 I would like to thank John Gilbert (UC Santa Barbara) for our many discussions
 on GraphBLAS, and for our decades-long conversation and collaboration on sparse
 matrix computations, and sparse matrices in MATLAB in particular.
-
-I would like to thank Cleve Moler, Penny Anderson, Pat Quillen, and Bobby Cheng
-(MathWorks) for our many discussions on MATLAB, and for creating MATLAB in the
-first place.  I would like to thank Lucas Jarman, MathWorks, for his help in
-porting GraphBLAS to Microsoft Windows.  Without MATLAB, SuiteSparse:GraphBLAS
-would have been impossible to implement and test.  I've also appreciated the
-opportunity to contribute so much code to MATLAB over the years: AMD, COLAMD,
-UMFPACK, CHOLMOD, SuiteSparseQR, dmperm (in CSparse), etree,
-sparse-times-sparse matrix multiply, and probably more (I've lost count!).
-Most of these appear in \verb'x=A\b' when \verb'A' is sparse.
 
 I would like to thank S\'ebastien Villemot (Debian Developer,
 \url{http://sebastien.villemot.name}) for helping me with various build issues

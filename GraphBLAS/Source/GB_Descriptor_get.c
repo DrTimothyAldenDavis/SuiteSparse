@@ -181,8 +181,6 @@ GrB_Info GB_Descriptor_get      // get the contents of a descriptor
     Context->nthreads_max = nthreads_desc ;
     Context->chunk = chunk_desc ;
 
-    // #include "GB_Descriptor_get_mkl_template.c"
-
     return (GrB_SUCCESS) ;
 }
 

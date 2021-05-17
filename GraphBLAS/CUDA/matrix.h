@@ -3,7 +3,6 @@
 #define chunksize 128 
 
 #define ASSERT
-#define GB_RESTRICT __restrict__
 //#define GB_GETA( aval, ax, p) aval = (T_Z)ax[ ( p )]
 //#define GB_GETB( bval, bx, p) bval = (T_Z)bx[ ( p )]
 #define GB_ADD_F( f , s)  f = GB_ADD ( f, s ) 

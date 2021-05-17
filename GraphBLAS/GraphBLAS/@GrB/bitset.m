@@ -43,7 +43,7 @@ function C = bitset (A, B, arg3, arg4)
 % GrB/bitset, GrB/bitclr.
 
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
-% SPDX-License-Identifier: Apache-2.0
+% SPDX-License-Identifier: GPL-3.0-or-later
 
 % FUTURE: bitset(A,B,V) for two matrices A and B is slower than it could be.
 % See comments in gb_union_op.

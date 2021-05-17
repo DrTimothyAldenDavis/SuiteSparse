@@ -13,7 +13,7 @@
 
 #define FREE_ALL                                    \
 {                                                   \
-    GrB_Matrix_free_(&C) ;                           \
+    GrB_Matrix_free_(&C) ;                          \
     if (semiring != Complex_plus_times)             \
     {                                               \
         if (semiring != NULL)                       \

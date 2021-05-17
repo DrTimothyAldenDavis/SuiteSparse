@@ -106,7 +106,7 @@ GrB_Info GB_Descriptor_check    // check a GraphBLAS descriptor
     // check inputs
     //--------------------------------------------------------------------------
 
-    GBPR0 ("\n    GraphBLAS Descriptor: %s ", GB_NAME) ;
+    GBPR0 ("\n    GraphBLAS Descriptor: %s ", ((name != NULL) ? name : "")) ;
 
     if (D == NULL)
     { 
@@ -164,8 +164,6 @@ GrB_Info GB_Descriptor_check    // check a GraphBLAS descriptor
     {
         GBPR0 ("    d.sort     = true\n") ;
     }
-
-    // #include "GB_Descriptor_check_mkl_template.c"
 
     return (GrB_SUCCESS) ;
 }

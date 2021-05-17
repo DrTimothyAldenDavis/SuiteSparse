@@ -190,6 +190,9 @@ ASSERT (mult_opcode != GB_ANY_opcode) ;
             #include "GB_AxB_type_factory.c"
             break ;
 
+#if 0
+// in v5.0.1, the *_IS* semirings are completely disabled.
+
         //----------------------------------------------------------------------
         case GB_ISEQ_opcode    :    // z = (x == y)
         //----------------------------------------------------------------------
@@ -255,6 +258,7 @@ ASSERT (mult_opcode != GB_ANY_opcode) ;
             #define GB_MNAME _isle
             #include "GB_AxB_type_factory.c"
             break ;
+#endif
 
         //----------------------------------------------------------------------
         case GB_EQ_opcode      :    // z = (x == y)
@@ -316,7 +320,10 @@ ASSERT (mult_opcode != GB_ANY_opcode) ;
         case GB_LOR_opcode     :    // z = x || y
         //----------------------------------------------------------------------
 
-            // 55 semirings: (and,or,xor,eq,any) * 11 types (all but complex)
+            // 14 semirings:
+            // 10 semirings: plus_lor for 10 real non-boolean types
+            // 4 semirings: (lor,land,eq,lxor) for boolean
+            #define GB_NO_MIN_MAX_ANY_TIMES_MONOIDS
             #define GB_MNAME _lor
             #include "GB_AxB_type_factory.c"
             break ;
@@ -325,7 +332,7 @@ ASSERT (mult_opcode != GB_ANY_opcode) ;
         case GB_LAND_opcode    :    // z = x && y
         //----------------------------------------------------------------------
 
-            // 55 semirings: (and,or,xor,eq,any) * 11 types (all but complex)
+            // 14 semirings: same as LOR
             #define GB_MNAME _land
             #include "GB_AxB_type_factory.c"
             break ;
@@ -334,9 +341,10 @@ ASSERT (mult_opcode != GB_ANY_opcode) ;
         case GB_LXOR_opcode    :    // z = x != y
         //----------------------------------------------------------------------
 
-            // 55 semirings: (and,or,xor,eq,any) * 11 types (all but complex)
+            // 14 semirings: same as LOR
             #define GB_MNAME _lxor
             #include "GB_AxB_type_factory.c"
+            #define GB_NO_MIN_MAX_TIMES_MONOIDS
             break ;
 
         //----------------------------------------------------------------------

@@ -31,13 +31,13 @@
 
 static int64_t GB_msort_3b_binary_search    // return pleft
 (
-    const int64_t *GB_RESTRICT Y_0,         // Pivot is Y [pivot]
-    const int64_t *GB_RESTRICT Y_1,
-    const int64_t *GB_RESTRICT Y_2,
+    const int64_t *restrict Y_0,         // Pivot is Y [pivot]
+    const int64_t *restrict Y_1,
+    const int64_t *restrict Y_2,
     const int64_t pivot,
-    const int64_t *GB_RESTRICT X_0,         // search in X [p_start..p_end_-1]
-    const int64_t *GB_RESTRICT X_1,
-    const int64_t *GB_RESTRICT X_2,
+    const int64_t *restrict X_0,         // search in X [p_start..p_end_-1]
+    const int64_t *restrict X_1,
+    const int64_t *restrict X_2,
     const int64_t p_start,
     const int64_t p_end
 )
@@ -124,23 +124,23 @@ static int64_t GB_msort_3b_binary_search    // return pleft
 void GB_msort_3b_create_merge_tasks
 (
     // output:
-    int64_t *GB_RESTRICT L_task,        // L_task [t0...t0+ntasks-1] computed
-    int64_t *GB_RESTRICT L_len,         // L_len  [t0...t0+ntasks-1] computed
-    int64_t *GB_RESTRICT R_task,        // R_task [t0...t0+ntasks-1] computed
-    int64_t *GB_RESTRICT R_len,         // R_len  [t0...t0+ntasks-1] computed
-    int64_t *GB_RESTRICT S_task,        // S_task [t0...t0+ntasks-1] computed
+    int64_t *restrict L_task,        // L_task [t0...t0+ntasks-1] computed
+    int64_t *restrict L_len,         // L_len  [t0...t0+ntasks-1] computed
+    int64_t *restrict R_task,        // R_task [t0...t0+ntasks-1] computed
+    int64_t *restrict R_len,         // R_len  [t0...t0+ntasks-1] computed
+    int64_t *restrict S_task,        // S_task [t0...t0+ntasks-1] computed
     // input:
     const int t0,                       // first task tid to create
     const int ntasks,                   // # of tasks to create
     const int64_t pS_start,             // merge into S [pS_start...]
-    const int64_t *GB_RESTRICT L_0,     // Left = L [pL_start...pL_end-1]
-    const int64_t *GB_RESTRICT L_1,
-    const int64_t *GB_RESTRICT L_2,
+    const int64_t *restrict L_0,     // Left = L [pL_start...pL_end-1]
+    const int64_t *restrict L_1,
+    const int64_t *restrict L_2,
     const int64_t pL_start,
     const int64_t pL_end,
-    const int64_t *GB_RESTRICT R_0,     // Right = R [pR_start...pR_end-1]
-    const int64_t *GB_RESTRICT R_1,
-    const int64_t *GB_RESTRICT R_2,
+    const int64_t *restrict R_0,     // Right = R [pR_start...pR_end-1]
+    const int64_t *restrict R_1,
+    const int64_t *restrict R_2,
     const int64_t pR_start,
     const int64_t pR_end
 )
@@ -247,16 +247,16 @@ void GB_msort_3b_create_merge_tasks
 
 static void GB_msort_3b_merge
 (
-    int64_t *GB_RESTRICT S_0,              // output of length nleft + nright
-    int64_t *GB_RESTRICT S_1,
-    int64_t *GB_RESTRICT S_2,
-    const int64_t *GB_RESTRICT Left_0,     // left input of length nleft
-    const int64_t *GB_RESTRICT Left_1,
-    const int64_t *GB_RESTRICT Left_2,
+    int64_t *restrict S_0,              // output of length nleft + nright
+    int64_t *restrict S_1,
+    int64_t *restrict S_2,
+    const int64_t *restrict Left_0,     // left input of length nleft
+    const int64_t *restrict Left_1,
+    const int64_t *restrict Left_2,
     const int64_t nleft,
-    const int64_t *GB_RESTRICT Right_0,    // right input of length nright
-    const int64_t *GB_RESTRICT Right_1,
-    const int64_t *GB_RESTRICT Right_2,
+    const int64_t *restrict Right_0,    // right input of length nright
+    const int64_t *restrict Right_1,
+    const int64_t *restrict Right_2,
     const int64_t nright
 )
 {
@@ -308,9 +308,9 @@ static void GB_msort_3b_merge
 GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_msort_3b    // sort array A of size 3-by-n, using 3 keys (A [0:2][])
 (
-    int64_t *GB_RESTRICT A_0,   // size n array
-    int64_t *GB_RESTRICT A_1,   // size n array
-    int64_t *GB_RESTRICT A_2,   // size n array
+    int64_t *restrict A_0,   // size n array
+    int64_t *restrict A_1,   // size n array
+    int64_t *restrict A_2,   // size n array
     const int64_t n,
     int nthreads                // # of threads to use
 )
@@ -349,7 +349,8 @@ GrB_Info GB_msort_3b    // sort array A of size 3-by-n, using 3 keys (A [0:2][])
     // allocate workspace
     //--------------------------------------------------------------------------
 
-    int64_t *GB_RESTRICT W = GB_MALLOC (3*n + 6*ntasks + 1, int64_t) ;
+    int64_t *restrict W = NULL ; size_t W_size = 0 ;
+    W = GB_MALLOC_WERK (3*n + 6*ntasks + 1, int64_t, &W_size) ;
     if (W == NULL)
     { 
         // out of memory
@@ -357,15 +358,15 @@ GrB_Info GB_msort_3b    // sort array A of size 3-by-n, using 3 keys (A [0:2][])
     }
 
     int64_t *T = W ;
-    int64_t *GB_RESTRICT W_0    = T ; T += n ;
-    int64_t *GB_RESTRICT W_1    = T ; T += n ;
-    int64_t *GB_RESTRICT W_2    = T ; T += n ;
-    int64_t *GB_RESTRICT L_task = T ; T += ntasks ;
-    int64_t *GB_RESTRICT L_len  = T ; T += ntasks ;
-    int64_t *GB_RESTRICT R_task = T ; T += ntasks ;
-    int64_t *GB_RESTRICT R_len  = T ; T += ntasks ;
-    int64_t *GB_RESTRICT S_task = T ; T += ntasks ;
-    int64_t *GB_RESTRICT Slice  = T ; T += (ntasks+1) ;  
+    int64_t *restrict W_0    = T ; T += n ;
+    int64_t *restrict W_1    = T ; T += n ;
+    int64_t *restrict W_2    = T ; T += n ;
+    int64_t *restrict L_task = T ; T += ntasks ;
+    int64_t *restrict L_len  = T ; T += ntasks ;
+    int64_t *restrict R_task = T ; T += ntasks ;
+    int64_t *restrict R_len  = T ; T += ntasks ;
+    int64_t *restrict S_task = T ; T += ntasks ;
+    int64_t *restrict Slice  = T ; T += (ntasks+1) ;  
 
     //--------------------------------------------------------------------------
     // partition and sort the leaves
@@ -451,7 +452,7 @@ GrB_Info GB_msort_3b    // sort array A of size 3-by-n, using 3 keys (A [0:2][])
     // free workspace and return result
     //--------------------------------------------------------------------------
 
-    GB_FREE (W) ;
+    GB_FREE_WERK (&W, W_size) ;
     return (GrB_SUCCESS) ;
 }
 

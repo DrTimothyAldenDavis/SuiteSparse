@@ -19,7 +19,7 @@ GrB_Info GB_convert_to_full     // convert matrix to full; delete prior values
     // check inputs
     //--------------------------------------------------------------------------
 
-    GB_void *Ax_new = NULL ;
+    GB_void *Ax_new = NULL ; size_t Ax_new_size = 0 ;
     ASSERT_MATRIX_OK (A, "A converting to full", GB0) ;
     GBURBLE ("(to full) ") ;
     ASSERT (GB_ZOMBIES_OK (A)) ;
@@ -44,7 +44,7 @@ GrB_Info GB_convert_to_full     // convert matrix to full; delete prior values
 
     GB_phbix_free (A) ;
 
-    Ax_new = GB_MALLOC (anzmax * A->type->size, GB_void) ;
+    Ax_new = GB_MALLOC (anzmax * A->type->size, GB_void, &Ax_new_size) ;
     if (Ax_new == NULL)
     { 
         // out of memory
@@ -55,7 +55,7 @@ GrB_Info GB_convert_to_full     // convert matrix to full; delete prior values
     // transplant the new content into A
     //--------------------------------------------------------------------------
 
-    A->x = Ax_new ;
+    A->x = Ax_new ; A->x_size = Ax_new_size ;
     A->plen = -1 ;
     A->nvec = avdim ;
     A->nvec_nonempty = (avlen == 0) ? 0 : avdim ;

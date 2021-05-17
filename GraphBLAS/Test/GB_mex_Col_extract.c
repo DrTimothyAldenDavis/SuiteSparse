@@ -15,7 +15,7 @@
 {                                       \
     GrB_Vector_free_(&w) ;              \
     GrB_Vector_free_(&mask) ;           \
-    GrB_Matrix_free_(&A) ;               \
+    GrB_Matrix_free_(&A) ;              \
     GrB_Descriptor_free_(&desc) ;       \
     GB_mx_put_global (true) ;           \
 }

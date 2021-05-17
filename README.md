@@ -2,7 +2,7 @@
 SuiteSparse:  A Suite of Sparse matrix packages at http://suitesparse.com
 -----------------------------------------------------------------------------
 
-Mar 3, 2021.  SuiteSparse VERSION 5.9.0
+May 16, 2021.  SuiteSparse VERSION 5.10.0
 
     Now includes GraphBLAS, SLIP_LU, and a new interface to the SuiteSparse
     Matrix Collection (ssget), via MATLAB and a Java GUI, to

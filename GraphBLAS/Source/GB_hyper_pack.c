@@ -7,13 +7,18 @@
 
 //------------------------------------------------------------------------------
 
+// The header of C itself is assumed to be statically allocated.  On input C
+// must exist but the content of the C header is uninitialized.  No memory is
+// allocated to construct C as the hyperpacked version of A.  C is purely
+// shallow.
+
 #include "GB.h"
 #include "GB_convert.h"
 
 GrB_Matrix GB_hyper_pack            // return C
 (
     GrB_Matrix C,                   // output matrix
-    const GrB_Matrix A              // input matrix
+    const GrB_Matrix A              // input matrix, not modified.
 )
 {
 
@@ -31,6 +36,9 @@ GrB_Matrix GB_hyper_pack            // return C
 
     // copy the header
     memcpy (C, A, sizeof (struct GB_Matrix_opaque)) ;
+
+    // flag the header of C as static
+    C->static_header = true ;
 
     // remove the hyperlist
     C->h = NULL ;

@@ -16,7 +16,7 @@
 
 #define FREE_ALL                        \
 {                                       \
-    GrB_Matrix_free_(&A) ;               \
+    GrB_Matrix_free_(&A) ;              \
     GrB_BinaryOp_free_(&Max) ;          \
     GrB_Monoid_free_(&Max_Terminal) ;   \
     GB_mx_put_global (true) ;           \

@@ -40,6 +40,7 @@ GrB_Info GrB_Matrix_apply           // C<M> = accum (C, op(A)) or op(A')
     // get the descriptor
     GB_GET_DESCRIPTOR (info, desc, C_replace, Mask_comp, Mask_struct,
         A_transpose, xx1, xx2, xx7) ;
+//  printf ("unop  A_transpose (GrB_INP0): %d\n", A_transpose) ;
 
     //--------------------------------------------------------------------------
     // apply the operator and optionally transpose
@@ -85,9 +86,10 @@ static inline GrB_Info GB_1st       // C<M>=accum(C,op(x,A))
     GB_RETURN_IF_NULL_OR_FAULTY (x) ;
     GB_RETURN_IF_NULL_OR_FAULTY (A) ;
 
-    // get the descriptor
+    // get the descriptor, using GrB_INP1 to transpose the matrix
     GB_GET_DESCRIPTOR (info, desc, C_replace, Mask_comp, Mask_struct,
-        A_transpose, xx1, xx2, xx7) ;
+        xx1, A_transpose, xx2, xx7) ;
+//  printf ("bind1 A_transpose (GrB_INP1): %d\n", A_transpose) ;
 
     //--------------------------------------------------------------------------
     // apply the operator and optionally transpose
@@ -135,9 +137,10 @@ static inline GrB_Info GB_2nd       // C<M>=accum(C,op(A,y))
     GB_RETURN_IF_NULL_OR_FAULTY (A) ;
     GB_RETURN_IF_NULL_OR_FAULTY (y) ;
 
-    // get the descriptor
+    // get the descriptor, using GrB_INP0 to transpose the matrix
     GB_GET_DESCRIPTOR (info, desc, C_replace, Mask_comp, Mask_struct,
-        xx1, A_transpose, xx2, xx7) ;
+        A_transpose, xx1, xx2, xx7) ;
+//  printf ("bind2 A_transpose (GrB_INP0): %d\n", A_transpose) ;
 
     //--------------------------------------------------------------------------
     // apply the operator and optionally transpose
@@ -203,7 +206,7 @@ GrB_Info GxB_Matrix_apply_BinaryOp2nd           // C<M>=accum(C,op(A,y))
 //------------------------------------------------------------------------------
 
 #define GB_BIND1ST(prefix,type,T,ampersand,stype)                           \
-GrB_Info prefix ## Matrix_apply_BinaryOp1st_ ## T                           \
+GrB_Info GB_EVAL3 (prefix, _Matrix_apply_BinaryOp1st_, T)                   \
 (                                                                           \
     GrB_Matrix C,                   /* input/output matrix for results */   \
     const GrB_Matrix M,             /* optional mask for C*/                \
@@ -214,34 +217,34 @@ GrB_Info prefix ## Matrix_apply_BinaryOp1st_ ## T                           \
     const GrB_Descriptor desc       /* descriptor for C, M, and A */        \
 )                                                                           \
 {                                                                           \
-    GB_WHERE (C, GB_STR(prefix) "Matrix_apply_BinaryOp1st_" GB_STR(T)       \
+    GB_WHERE (C, "GrB_Matrix_apply_BinaryOp1st_" GB_STR(T)                  \
         "(C, M, accum, op, x, A, desc)") ;                                  \
-    GB_SCALAR_WRAP (scalar, prefix, T, ampersand, x, stype) ;               \
+    GB_SCALAR_WRAP (scalar, T, ampersand, x, stype) ;                       \
     ASSERT_SCALAR_OK (scalar, "scalar for matrix_apply_bind1st", GB0) ;     \
     return (GB_1st (C, M, accum, op, scalar, A, desc, Context)) ;           \
 }
 
-GB_BIND1ST (GrB_, bool      , BOOL   , &, GrB_BOOL  )
-GB_BIND1ST (GrB_, int8_t    , INT8   , &, GrB_INT8  )
-GB_BIND1ST (GrB_, int16_t   , INT16  , &, GrB_INT16 )
-GB_BIND1ST (GrB_, int32_t   , INT32  , &, GrB_INT32 )
-GB_BIND1ST (GrB_, int64_t   , INT64  , &, GrB_INT64 )
-GB_BIND1ST (GrB_, uint8_t   , UINT8  , &, GrB_UINT8 )
-GB_BIND1ST (GrB_, uint16_t  , UINT16 , &, GrB_UINT16)
-GB_BIND1ST (GrB_, uint32_t  , UINT32 , &, GrB_UINT32)
-GB_BIND1ST (GrB_, uint64_t  , UINT64 , &, GrB_UINT64)
-GB_BIND1ST (GrB_, float     , FP32   , &, GrB_FP32  )
-GB_BIND1ST (GrB_, double    , FP64   , &, GrB_FP64  )
-GB_BIND1ST (GxB_, GxB_FC32_t, FC32   , &, GxB_FC32  )
-GB_BIND1ST (GxB_, GxB_FC64_t, FC64   , &, GxB_FC64  )
-GB_BIND1ST (GrB_, void *    , UDT    ,  , op->xtype )
+GB_BIND1ST (GrB, bool      , BOOL   , &, GrB_BOOL  )
+GB_BIND1ST (GrB, int8_t    , INT8   , &, GrB_INT8  )
+GB_BIND1ST (GrB, int16_t   , INT16  , &, GrB_INT16 )
+GB_BIND1ST (GrB, int32_t   , INT32  , &, GrB_INT32 )
+GB_BIND1ST (GrB, int64_t   , INT64  , &, GrB_INT64 )
+GB_BIND1ST (GrB, uint8_t   , UINT8  , &, GrB_UINT8 )
+GB_BIND1ST (GrB, uint16_t  , UINT16 , &, GrB_UINT16)
+GB_BIND1ST (GrB, uint32_t  , UINT32 , &, GrB_UINT32)
+GB_BIND1ST (GrB, uint64_t  , UINT64 , &, GrB_UINT64)
+GB_BIND1ST (GrB, float     , FP32   , &, GrB_FP32  )
+GB_BIND1ST (GrB, double    , FP64   , &, GrB_FP64  )
+GB_BIND1ST (GxB, GxB_FC32_t, FC32   , &, GxB_FC32  )
+GB_BIND1ST (GxB, GxB_FC64_t, FC64   , &, GxB_FC64  )
+GB_BIND1ST (GrB, void *    , UDT    ,  , op->xtype )
 
 //------------------------------------------------------------------------------
 // GrB_Matrix_apply_BinaryOp2nd_TYPE: apply a binary operator: op(A,y)
 //------------------------------------------------------------------------------
 
 #define GB_BIND2ND(prefix,type,T,ampersand,stype)                           \
-GrB_Info prefix ## Matrix_apply_BinaryOp2nd_ ## T                           \
+GrB_Info GB_EVAL3 (prefix, _Matrix_apply_BinaryOp2nd_, T)                   \
 (                                                                           \
     GrB_Matrix C,                   /* input/output matrix for results */   \
     const GrB_Matrix M,             /* optional mask for C*/                \
@@ -252,25 +255,25 @@ GrB_Info prefix ## Matrix_apply_BinaryOp2nd_ ## T                           \
     const GrB_Descriptor desc       /* descriptor for C, M, and A */        \
 )                                                                           \
 {                                                                           \
-    GB_WHERE (C, GB_STR(prefix) "Matrix_apply_BinaryOp2nd_" GB_STR(T)       \
+    GB_WHERE (C, "GrB_Matrix_apply_BinaryOp2nd_" GB_STR(T)                  \
         "(C, M, accum, op, A, y, desc)") ;                                  \
-    GB_SCALAR_WRAP (scalar, prefix, T, ampersand, y, stype) ;               \
+    GB_SCALAR_WRAP (scalar, T, ampersand, y, stype) ;                       \
     ASSERT_SCALAR_OK (scalar, "scalar for matrix_apply_bind2nd", GB0) ;     \
     return (GB_2nd (C, M, accum, op, A, scalar, desc, Context)) ;           \
 }
 
-GB_BIND2ND (GrB_, bool      , BOOL   , &, GrB_BOOL  )
-GB_BIND2ND (GrB_, int8_t    , INT8   , &, GrB_INT8  )
-GB_BIND2ND (GrB_, int16_t   , INT16  , &, GrB_INT16 )
-GB_BIND2ND (GrB_, int32_t   , INT32  , &, GrB_INT32 )
-GB_BIND2ND (GrB_, int64_t   , INT64  , &, GrB_INT64 )
-GB_BIND2ND (GrB_, uint8_t   , UINT8  , &, GrB_UINT8 )
-GB_BIND2ND (GrB_, uint16_t  , UINT16 , &, GrB_UINT16)
-GB_BIND2ND (GrB_, uint32_t  , UINT32 , &, GrB_UINT32)
-GB_BIND2ND (GrB_, uint64_t  , UINT64 , &, GrB_UINT64)
-GB_BIND2ND (GrB_, float     , FP32   , &, GrB_FP32  )
-GB_BIND2ND (GrB_, double    , FP64   , &, GrB_FP64  )
-GB_BIND2ND (GxB_, GxB_FC32_t, FC32   , &, GxB_FC32  )
-GB_BIND2ND (GxB_, GxB_FC64_t, FC64   , &, GxB_FC64  )
-GB_BIND2ND (GrB_, void *    , UDT    ,  , op->ytype )
+GB_BIND2ND (GrB, bool      , BOOL   , &, GrB_BOOL  )
+GB_BIND2ND (GrB, int8_t    , INT8   , &, GrB_INT8  )
+GB_BIND2ND (GrB, int16_t   , INT16  , &, GrB_INT16 )
+GB_BIND2ND (GrB, int32_t   , INT32  , &, GrB_INT32 )
+GB_BIND2ND (GrB, int64_t   , INT64  , &, GrB_INT64 )
+GB_BIND2ND (GrB, uint8_t   , UINT8  , &, GrB_UINT8 )
+GB_BIND2ND (GrB, uint16_t  , UINT16 , &, GrB_UINT16)
+GB_BIND2ND (GrB, uint32_t  , UINT32 , &, GrB_UINT32)
+GB_BIND2ND (GrB, uint64_t  , UINT64 , &, GrB_UINT64)
+GB_BIND2ND (GrB, float     , FP32   , &, GrB_FP32  )
+GB_BIND2ND (GrB, double    , FP64   , &, GrB_FP64  )
+GB_BIND2ND (GxB, GxB_FC32_t, FC32   , &, GxB_FC32  )
+GB_BIND2ND (GxB, GxB_FC64_t, FC64   , &, GxB_FC64  )
+GB_BIND2ND (GrB, void *    , UDT    ,  , op->ytype )
 

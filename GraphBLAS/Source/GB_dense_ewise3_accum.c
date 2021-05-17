@@ -76,7 +76,7 @@ void GB_dense_ewise3_accum          // C += A+B, all matrices dense
     //--------------------------------------------------------------------------
 
     #define GB_Cdense_ewise3_accum(op,xname) \
-        GB_Cdense_ewise3_accum_ ## op ## xname
+        GB (_Cdense_ewise3_accum_ ## op ## xname)
 
     #define GB_BINOP_WORKER(op,xname)                                       \
     {                                                                       \

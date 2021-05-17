@@ -53,15 +53,15 @@ GrB_Info wathen             // construct a random Wathen matrix
     }
 
     // macro to free all workspace.  Not every method uses every object
-    #define FREE_ALL                    \
-        GrB_Matrix_free (&A) ;                 \
-        GrB_Matrix_free (&F) ;                 \
-        GrB_Matrix_free (&D) ;                 \
-        GrB_Matrix_free (&E) ;                 \
+    #define FREE_ALL                            \
+        GrB_Matrix_free (&A) ;                  \
+        GrB_Matrix_free (&F) ;                  \
+        GrB_Matrix_free (&D) ;                  \
+        GrB_Matrix_free (&E) ;                  \
         GrB_UnaryOp_free (&rho_op) ;            \
-        if (rho_rand != NULL) free (rho_rand) ;   \
-        if (I != NULL) free (I) ;       \
-        if (J != NULL) free (J) ;       \
+        if (rho_rand != NULL) free (rho_rand) ; \
+        if (I != NULL) free (I) ;               \
+        if (J != NULL) free (J) ;               \
         if (X != NULL) free (X) ;
 
     GrB_Info info ;
@@ -224,7 +224,7 @@ GrB_Info wathen             // construct a random Wathen matrix
             // difference increases greatly as the problem gets larger, as
             // well.  By contrast, this method is asympotically just as fast as
             // the other methods here, it's just a constant times slower (by a
-            // uniform factor of just under 2).
+            // typical factor of just under 2).
 
             for (int j = 1 ; j <= ny ; j++)
             {
@@ -264,7 +264,7 @@ GrB_Info wathen             // construct a random Wathen matrix
             // This method is about 20% slower than method 0, but it has
             // the advantage of not requiring the number of tuples to be
             // known in advance.  Method 3 is just as fast as this method.
-            // This method is uniformaly about 5% to 10% slower than the
+            // This method is typically about 5% to 10% slower than the
             // MATLAB wathen.m regardless of the problem size.
 
             // create a single 8-by-8 finite-element matrix F
@@ -311,7 +311,7 @@ GrB_Info wathen             // construct a random Wathen matrix
             // This method is as fast as method 2.  It is very flexible
             // since any method can be used to construct the finite-element
             // matrix.  Then A(nn,nn)+=F is very efficient when F is a matrix.
-            // This method is uniformaly about 5% to 10% slower than the
+            // This method is typically about 5% to 10% slower than the
             // MATLAB wathen.m regardless of the problem size.
 
             // create a single 8-by-8 finite-element matrix F

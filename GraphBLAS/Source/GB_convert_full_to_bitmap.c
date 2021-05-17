@@ -39,7 +39,7 @@ GrB_Info GB_convert_full_to_bitmap      // convert matrix from full to bitmap
     int64_t anz = avdim * avlen ;
     ASSERT (GB_Index_multiply (&anz, avdim, avlen) == true) ;
 
-    A->b = GB_MALLOC (anz, int8_t) ;
+    A->b = GB_MALLOC (anz, int8_t, &(A->b_size)) ;
     if (A->b == NULL)
     { 
         // out of memory

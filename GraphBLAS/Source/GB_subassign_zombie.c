@@ -21,7 +21,7 @@
 #include "GB_subassign_methods.h"
 
 #undef  GB_FREE_ALL
-#define GB_FREE_ALL GB_Matrix_free (&S) ;
+#define GB_FREE_ALL GB_phbix_free (S) ;
 
 GrB_Info GB_subassign_zombie
 (
@@ -52,16 +52,17 @@ GrB_Info GB_subassign_zombie
     //--------------------------------------------------------------------------
 
     GrB_Info info ;
-    GrB_Matrix S = NULL ;
-    GB_OK (GB_subassign_symbolic (&S, C, I, ni, J, nj, false, Context)) ;
+    struct GB_Matrix_opaque S_header ;
+    GrB_Matrix S = GB_clear_static_header (&S_header) ;
+    GB_OK (GB_subassign_symbolic (S, C, I, ni, J, nj, false, Context)) ;
     ASSERT (GB_JUMBLED_OK (S)) ;        // S can be returned as jumbled
 
     //--------------------------------------------------------------------------
     // get inputs
     //--------------------------------------------------------------------------
 
-    const int64_t *GB_RESTRICT Sx = (int64_t *) S->x ;
-    int64_t *GB_RESTRICT Ci = C->i ;
+    const int64_t *restrict Sx = (int64_t *) S->x ;
+    int64_t *restrict Ci = C->i ;
 
     //--------------------------------------------------------------------------
     // Method 00: C(I,J)<!,repl> = empty ; using S

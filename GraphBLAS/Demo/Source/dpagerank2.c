@@ -307,7 +307,8 @@ GrB_Info dpagerank2         // GrB_SUCCESS or error condition
 
     // dout = sum (A,2) ;       // dout(i) is the out-degree of node i
     OK (GrB_Vector_new (&dout, GrB_FP64, n)) ;
-    OK (GrB_Matrix_reduce_BinaryOp (dout, NULL, NULL, GrB_PLUS_FP64, A, NULL)) ;
+    OK (GrB_Matrix_reduce_Monoid (dout, NULL, NULL, GrB_PLUS_MONOID_FP64,
+        A, NULL)) ;
 
     // all nodes start with rank 1/n
     pagerank_init_rank = 1.0 / ((double) n) ;

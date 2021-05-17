@@ -23,7 +23,7 @@
 
 // argument list for defining a function
 #define GB_args(A)                      \
-    int64_t *GB_RESTRICT A ## _0
+    int64_t *restrict A ## _0
 
 // each entry has a single key
 #define GB_K 1
@@ -42,7 +42,7 @@
 GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 void GB_qsort_1a    // sort array A of size 1-by-n
 (
-    int64_t *GB_RESTRICT A_0,      // size n array
+    int64_t *restrict A_0,      // size n array
     const int64_t n
 )
 { 

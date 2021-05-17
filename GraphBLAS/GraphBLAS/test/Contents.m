@@ -104,6 +104,8 @@
 %  gbtest99  - test performance of C=A'*B and C=A'
 %  gbtest00  - test GrB.bfs and plot (graph (G))
 %  gbtest100 - test GrB.ver and GrB.version
+%  gbtest101 - test loading of v3 GraphBLAS objects
+%  gbtest102 - test horzcat, vertcat, cat, cell2mat, mat2cell, num2cell
 %
 % Utilities and other tests:
 %
@@ -117,5 +119,5 @@
 %  gbtest_err     - compare two matrices
 
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
-% SPDX-License-Identifier: Apache-2.0
+% SPDX-License-Identifier: GPL-3.0-or-later
 

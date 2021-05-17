@@ -3,13 +3,15 @@
 //------------------------------------------------------------------------------
 
 // SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 //------------------------------------------------------------------------------
 
 // v = gbversion
 
 #include "gb_matlab.h"
+
+#define USAGE "usage: v = gbversion"
 
 void mexFunction
 (
@@ -24,7 +26,7 @@ void mexFunction
     // check inputs
     //--------------------------------------------------------------------------
 
-    gb_usage (nargin == 0 && nargout <= 1, "usage: v = gbversion") ;
+    gb_usage (nargin == 0 && nargout <= 1, USAGE) ;
 
     //--------------------------------------------------------------------------
     // get the version and date information and return it as a MATLAB string

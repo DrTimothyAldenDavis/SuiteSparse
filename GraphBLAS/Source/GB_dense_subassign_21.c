@@ -17,6 +17,8 @@
 // Instead, it selects GB_bitmap_assign, which then just calls this method
 // via GB_bitmap_assign_noM_noaccum_whole.
 
+// TODO::: create a uniform-valued matrix C instead
+
 #include "GB_dense.h"
 #include "GB_select.h"
 #include "GB_Pending.h"
@@ -84,7 +86,8 @@ GrB_Info GB_dense_subassign_21      // C(:,:) = x, scalar to matrix assignment
         // clear prior content and recreate it; use exising header for C.
         GB_phbix_free (C) ;
         int C_sparsity = C->sparsity ;  // save the sparsity control of C
-        info = GB_new_bix (&C,  // full, old header
+        bool C_static_header = C->static_header ;
+        info = GB_new_bix (&C, C_static_header,    // full, old header
             C->type, cvlen, cvdim, GB_Ap_null, C->is_csc,
             GxB_FULL, true, C->hyper_switch, -1, cnzmax, true, Context) ;
         if (info != GrB_SUCCESS)
@@ -123,13 +126,15 @@ GrB_Info GB_dense_subassign_21      // C(:,:) = x, scalar to matrix assignment
         // define the worker for the switch factory
         //----------------------------------------------------------------------
 
+        // TODO use type-punning to reduce # of case to 1, 2, 4, 8, 16 bytes
+
         int64_t pC ;
         int nthreads = GB_nthreads (cnzmax, chunk, nthreads_max) ;
 
         // worker for built-in types
         #define GB_WORKER(ctype)                                               \
         {                                                                      \
-            ctype *GB_RESTRICT Cx = (ctype *) C->x ;                           \
+            ctype *restrict Cx = (ctype *) C->x ;                           \
             ctype x = (*(ctype *) cwork) ;                                     \
             GB_PRAGMA (omp parallel for num_threads(nthreads) schedule(static))\
             for (pC = 0 ; pC < cnzmax ; pC++)                                  \
@@ -162,7 +167,7 @@ GrB_Info GB_dense_subassign_21      // C(:,:) = x, scalar to matrix assignment
                 {
                     // worker for all user-defined types
                     GB_BURBLE_N (cnzmax, "(generic C(:,:)=x assign) ") ;
-                    GB_void *GB_RESTRICT Cx = (GB_void *) C->x ;
+                    GB_void *restrict Cx = (GB_void *) C->x ;
                     #pragma omp parallel for num_threads(nthreads) \
                         schedule(static)
                     for (pC = 0 ; pC < cnzmax ; pC++)

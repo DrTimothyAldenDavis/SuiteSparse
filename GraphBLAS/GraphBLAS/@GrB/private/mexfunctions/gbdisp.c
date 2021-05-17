@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------------
 
 // SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 //------------------------------------------------------------------------------
 
@@ -12,6 +12,8 @@
 // gbdisp (C, cnz, level)
 
 #include "gb_matlab.h"
+
+#define USAGE "usage: gbdisp (C, cnz, level)"
 
 void mexFunction
 (
@@ -26,7 +28,7 @@ void mexFunction
     // check inputs
     //--------------------------------------------------------------------------
 
-    gb_usage (nargin == 3 && nargout == 0, "usage: gbdisp (C, cnz, level)") ;
+    gb_usage (nargin == 3 && nargout == 0, USAGE) ;
 
     //--------------------------------------------------------------------------
     // get cnz and level

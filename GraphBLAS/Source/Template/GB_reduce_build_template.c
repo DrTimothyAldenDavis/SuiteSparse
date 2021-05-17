@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-// This template is used in GB_builder and the Generated/GB_red_build__*
+// This template is used in GB_builder and the Generated/GB__red_build__*
 // workers.  This is the same for both vectors and matrices, since this step is
 // agnostic about which vectors the entries appear.
 

@@ -17,7 +17,7 @@
 
 // to iterate across all entries in a bucket:
 #define GB_for_each_index_in_bucket(inew,i)     \
-    for (int64_t inew = Mark[i]-1 ; inew >= 0 ; inew = Inext [inew])
+    for (int64_t inew = Mark [i] - 1 ; inew >= 0 ; inew = Inext [inew])
 
 // copy values from A(:,kA) to C(:,kC): Cx [pC:pC+len-1] = ... (pA:pA+len-1).
 #if defined ( GB_SYMBOLIC )
@@ -64,7 +64,7 @@
     // get A
     //--------------------------------------------------------------------------
 
-    const int64_t *GB_RESTRICT Ai = A->i ;
+    const int64_t *restrict Ai = A->i ;
     const int64_t avlen = A->vlen ;
 
     #if defined ( GB_SYMBOLIC )
@@ -73,7 +73,7 @@
 
     #if defined ( GB_PHASE_2_OF_2 ) && defined ( GB_NUMERIC )
     ASSERT (C->type = A->type) ;
-    const GB_void *GB_RESTRICT Ax = (GB_void *) A->x ;
+    const GB_void *restrict Ax = (GB_void *) A->x ;
     const int64_t asize = A->type->size ;
     #endif
 
@@ -82,8 +82,8 @@
     //--------------------------------------------------------------------------
 
     #if defined ( GB_PHASE_2_OF_2 )
-    int64_t  *GB_RESTRICT Ci = C->i ;
-    GB_CTYPE *GB_RESTRICT Cx = (GB_CTYPE *) C->x ;
+    int64_t  *restrict Ci = C->i ;
+    GB_CTYPE *restrict Cx = (GB_CTYPE *) C->x ;
     #endif
 
     //--------------------------------------------------------------------------

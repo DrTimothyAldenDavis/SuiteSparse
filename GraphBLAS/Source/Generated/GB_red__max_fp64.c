@@ -12,21 +12,20 @@
 #include "GB.h"
 #ifndef GBCOMPACT
 #include "GB_atomics.h"
-#include "GB_ek_slice.h"
 #include "GB_control.h" 
 #include "GB_red__include.h"
 
 // The reduction is defined by the following types and operators:
 
-// Assemble tuples:    GB_red_build__max_fp64
-// Reduce to scalar:   GB_red_scalar__max_fp64
+// Assemble tuples:    GB (_red_build__max_fp64)
+// Reduce to scalar:   GB (_red_scalar__max_fp64)
 
 // A type:   double
 // C type:   double
 
-// Reduce:   if ((aij > s) || (s != s)) s = aij
+// Reduce:   if ((aij > s) || (s != s)) { s = aij ; }
 // Identity: ((double) -INFINITY)
-// Terminal: if (s == ((double) INFINITY)) break ;
+// Terminal: if (s == ((double) INFINITY)) { break ; }
 
 #define GB_ATYPE \
     double
@@ -52,7 +51,7 @@
 
     // W [k] += (ztype) S [i], with typecast
     #define GB_ADD_CAST_ARRAY_TO_ARRAY(W,k,S,i)     \
-        if ((S [i] > W [k]) || (W [k] != W [k])) W [k] = S [i]
+        if ((S [i] > W [k]) || (W [k] != W [k])) { W [k] = S [i] ; }
 
     // W [k] = S [i], no typecast
     #define GB_COPY_ARRAY_TO_ARRAY(W,k,S,i)         \
@@ -60,7 +59,7 @@
 
     // W [k] += S [i], no typecast
     #define GB_ADD_ARRAY_TO_ARRAY(W,k,S,i)          \
-        if ((S [i] > W [k]) || (W [k] != W [k])) W [k] = S [i]
+        if ((S [i] > W [k]) || (W [k] != W [k])) { W [k] = S [i] ; }
 
 // Array to scalar
 
@@ -74,11 +73,11 @@
 
     // s += (ztype) Ax [p], with typecast
     #define GB_ADD_CAST_ARRAY_TO_SCALAR(s,Ax,p)     \
-        if ((Ax [p] > s) || (s != s)) s = Ax [p]
+        if ((Ax [p] > s) || (s != s)) { s = Ax [p] ; }
 
     // s += S [i], no typecast
     #define GB_ADD_ARRAY_TO_SCALAR(s,S,i)           \
-        if ((S [i] > s) || (s != s)) s = S [i]
+        if ((S [i] > s) || (s != s)) { s = S [i] ; }
 
 // Scalar to array
 
@@ -88,7 +87,7 @@
 
     // W [k] += s, no typecast
     #define GB_ADD_SCALAR_TO_ARRAY(W,k,s)           \
-        if ((s > W [k]) || (W [k] != W [k])) W [k] = s
+        if ((s > W [k]) || (W [k] != W [k])) { W [k] = s ; }
 
 // break the loop if terminal condition reached
 
@@ -102,7 +101,7 @@
         ((double) INFINITY)
 
     #define GB_BREAK_IF_TERMINAL(s)                 \
-        if (s == ((double) INFINITY)) break ;
+        if (s == ((double) INFINITY)) { break ; }
 
 // panel size for built-in operators
 
@@ -124,12 +123,12 @@
 
 
 
-GrB_Info GB_red_scalar__max_fp64
+GrB_Info GB (_red_scalar__max_fp64)
 (
     double *result,
     const GrB_Matrix A,
-    GB_void *GB_RESTRICT W_space,
-    bool *GB_RESTRICT F,
+    GB_void *restrict W_space,
+    bool *restrict F,
     int ntasks,
     int nthreads
 )
@@ -138,7 +137,7 @@ GrB_Info GB_red_scalar__max_fp64
     return (GrB_NO_VALUE) ;
     #else
     double s = (*result) ;
-    double *GB_RESTRICT W = (double *) W_space ;
+    double *restrict W = (double *) W_space ;
     if (A->nzombies > 0 || GB_IS_BITMAP (A))
     {
         #include "GB_reduce_to_scalar_template.c"
@@ -158,17 +157,17 @@ GrB_Info GB_red_scalar__max_fp64
 // build matrix
 //------------------------------------------------------------------------------
 
-GrB_Info GB_red_build__max_fp64
+GrB_Info GB (_red_build__max_fp64)
 (
-    double *GB_RESTRICT Tx,
-    int64_t  *GB_RESTRICT Ti,
-    const double *GB_RESTRICT S,
+    double *restrict Tx,
+    int64_t  *restrict Ti,
+    const double *restrict S,
     int64_t nvals,
     int64_t ndupl,
-    const int64_t *GB_RESTRICT I_work,
-    const int64_t *GB_RESTRICT K_work,
-    const int64_t *GB_RESTRICT tstart_slice,
-    const int64_t *GB_RESTRICT tnz_slice,
+    const int64_t *restrict I_work,
+    const int64_t *restrict K_work,
+    const int64_t *restrict tstart_slice,
+    const int64_t *restrict tnz_slice,
     int nthreads
 )
 { 

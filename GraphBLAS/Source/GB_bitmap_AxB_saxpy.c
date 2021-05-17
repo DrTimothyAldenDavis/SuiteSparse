@@ -12,10 +12,7 @@
 #include "GB_AxB__include.h"
 #endif
 
-#define GB_FREE_ALL             \
-{                               \
-    GB_Matrix_free (Chandle) ;  \
-}
+#define GB_FREE_ALL GB_phbix_free (C) ;
 
 //------------------------------------------------------------------------------
 // GB_bitmap_AxB_saxpy: compute C=A*B, C<M>=A*B, or C<!M>=A*B
@@ -27,7 +24,7 @@
 GB_PUBLIC                           // for testing only
 GrB_Info GB_bitmap_AxB_saxpy        // C = A*B where C is bitmap or full
 (
-    GrB_Matrix *Chandle,            // output matrix (not computed in-place)
+    GrB_Matrix C,                   // output matrix, static header
     const int C_sparsity,
     const GrB_Matrix M,             // optional mask matrix
     const bool Mask_comp,           // if true, use !M
@@ -48,8 +45,7 @@ GrB_Info GB_bitmap_AxB_saxpy        // C = A*B where C is bitmap or full
     GrB_Info info ;
 
     (*mask_applied) = false ;
-    ASSERT (Chandle != NULL) ;
-    ASSERT (*Chandle == NULL) ;
+    ASSERT (C != NULL && C->static_header) ;
 
     ASSERT_MATRIX_OK_OR_NULL (M, "M for bitmap saxpy A*B", GB0) ;
     ASSERT (!GB_PENDING (M)) ;
@@ -86,9 +82,9 @@ GrB_Info GB_bitmap_AxB_saxpy        // C = A*B where C is bitmap or full
         // problem too large
         return (GrB_OUT_OF_MEMORY) ;
     }
-    GB_OK (GB_new_bix (Chandle, ctype, A->vlen, B->vdim, GB_Ap_null, true,
+    GB_OK (GB_new_bix (&C, true, // static header
+        ctype, A->vlen, B->vdim, GB_Ap_null, true,
         C_sparsity, true, GB_HYPER_SWITCH_DEFAULT, -1, cnzmax, true, Context)) ;
-    GrB_Matrix C = *Chandle ;
     C->magic = GB_MAGIC ;
 
     //--------------------------------------------------------------------------
@@ -113,16 +109,15 @@ GrB_Info GB_bitmap_AxB_saxpy        // C = A*B where C is bitmap or full
         // define the worker for the switch factory
         //----------------------------------------------------------------------
 
-        #define GB_Asaxpy3B(add,mult,xname) \
-            GB_Asaxpy3B_ ## add ## mult ## xname
+        #define GB_AsaxbitB(add,mult,xname)  \
+            GB (_AsaxbitB_ ## add ## mult ## xname)
 
-        #define GB_AxB_WORKER(add,mult,xname)                               \
-        {                                                                   \
-            info = GB_Asaxpy3B (add,mult,xname) (C, M, Mask_comp,           \
-                Mask_struct, true, A, A_is_pattern,  B,                     \
-                B_is_pattern, NULL, 0, 0, 0, 0, Context) ;                  \
-            done = (info != GrB_NO_VALUE) ;                                 \
-        }                                                                   \
+        #define GB_AxB_WORKER(add,mult,xname)                                  \
+        {                                                                      \
+            info = GB_AsaxbitB (add,mult,xname) (C, M, Mask_comp, Mask_struct, \
+                A, A_is_pattern, B, B_is_pattern, Context) ;                   \
+            done = (info != GrB_NO_VALUE) ;                                    \
+        }                                                                      \
         break ;
 
         //----------------------------------------------------------------------
@@ -148,7 +143,9 @@ GrB_Info GB_bitmap_AxB_saxpy        // C = A*B where C is bitmap or full
     { 
         info = GB_AxB_saxpy_generic (C, M, Mask_comp, Mask_struct,
             true, A, A_is_pattern, B, B_is_pattern, semiring,
-            flipxy, NULL, 0, 0, 0, 0, Context) ;
+            flipxy, GB_SAXPY_METHOD_BITMAP,
+            NULL, 0, 0, 0, 0,
+            Context) ;
     }
 
     if (info != GrB_SUCCESS)

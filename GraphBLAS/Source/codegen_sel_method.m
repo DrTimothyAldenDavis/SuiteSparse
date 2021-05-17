@@ -19,18 +19,18 @@ is_nonzombie = (isequal (opname, 'nonzombie') && ~isequal (atype, 'GB_void')) ;
 
 % function names
 if (is_nonzombie)
-    fprintf (f, 'define(`GB_sel_phase1'', `GB_sel_phase1__(none)'')\n') ;
+    fprintf (f, 'define(`_sel_phase1'', `_sel_phase1__(none)'')\n') ;
 else
-    fprintf (f, 'define(`GB_sel_phase1'', `GB_sel_phase1__%s'')\n', name) ;
+    fprintf (f, 'define(`_sel_phase1'', `_sel_phase1__%s'')\n', name) ;
 end
-fprintf (f, 'define(`GB_sel_phase2'', `GB_sel_phase2__%s'')\n', name) ;
+fprintf (f, 'define(`_sel_phase2'', `_sel_phase2__%s'')\n', name) ;
 
 if isequal (opname, 'nonzombie') || isequal (opname, 'resize') 
-    fprintf (f, 'define(`GB_sel_bitmap'', `GB_sel_bitmap__(none)'')\n') ;
+    fprintf (f, 'define(`_sel_bitmap'', `_sel_bitmap__(none)'')\n') ;
     fprintf (f, 'define(`if_bitmap'', `#if 0'')\n') ;
     fprintf (f, 'define(`endif_bitmap'', `#endif'')\n') ;
 else
-    fprintf (f, 'define(`GB_sel_bitmap'', `GB_sel_bitmap__%s'')\n', name) ;
+    fprintf (f, 'define(`_sel_bitmap'', `_sel_bitmap__%s'')\n', name) ;
     fprintf (f, 'define(`if_bitmap'', `'')\n') ;
     fprintf (f, 'define(`endif_bitmap'', `'')\n') ;
 end

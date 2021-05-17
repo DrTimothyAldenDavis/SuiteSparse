@@ -35,8 +35,8 @@ void GB_transpose_ix            // transpose the pattern and values of a matrix
     GrB_Matrix C,                       // output matrix
     const GrB_Matrix A,                 // input matrix
     // for sparse case:
-    int64_t *GB_RESTRICT *Workspaces,   // Workspaces, size nworkspaces
-    const int64_t *GB_RESTRICT A_slice, // how A is sliced, size nthreads+1
+    int64_t *restrict *Workspaces,   // Workspaces, size nworkspaces
+    const int64_t *restrict A_slice, // how A is sliced, size nthreads+1
     int nworkspaces,                    // # of workspaces to use
     // for all cases:
     int nthreads                        // # of threads to use
@@ -66,15 +66,15 @@ void GB_transpose_ix            // transpose the pattern and values of a matrix
         // define the worker for the switch factory
         //----------------------------------------------------------------------
 
-        #define GB_unop_tran(zname,aname)                           \
-            GB_unop_tran__identity ## zname ## aname
+        #define GB_unop_tran(zname,aname)                               \
+            GB (_unop_tran__identity ## zname ## aname)
 
-        #define GB_WORKER(ignore1,zname,ztype,aname,atype)          \
-        {                                                           \
-            info = GB_unop_tran (zname,aname)                       \
+        #define GB_WORKER(ignore1,zname,ztype,aname,atype)              \
+        {                                                               \
+            info = GB_unop_tran (zname,aname)                           \
                 (C, A, Workspaces, A_slice, nworkspaces, nthreads) ;    \
-            if (info == GrB_SUCCESS) return ;                       \
-        }                                                           \
+            if (info == GrB_SUCCESS) return ;                           \
+        }                                                               \
         break ;
 
         //----------------------------------------------------------------------

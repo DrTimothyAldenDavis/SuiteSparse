@@ -44,7 +44,7 @@ fclose (f) ;
 % MIN: 10 monoids:  name      op   type        identity      terminal   panel
 % (all but bool and complex)
 fprintf ('\nmin    ') ;
-op = 'if (yarg < zarg) zarg = yarg' ;
+op = 'if (yarg < zarg) { zarg = yarg ; }' ;
 codegen_red_method ('min',    op, 'int8_t'  , 'INT8_MAX'  , 'INT8_MIN'  , 16) ;
 codegen_red_method ('min',    op, 'int16_t' , 'INT16_MAX' , 'INT16_MIN' , 16) ;
 codegen_red_method ('min',    op, 'int32_t' , 'INT32_MAX' , 'INT32_MIN' , 16) ;
@@ -53,14 +53,14 @@ codegen_red_method ('min',    op, 'uint8_t' , 'UINT8_MAX' , '0'         , 16) ;
 codegen_red_method ('min',    op, 'uint16_t', 'UINT16_MAX', '0'         , 16) ;
 codegen_red_method ('min',    op, 'uint32_t', 'UINT32_MAX', '0'         , 16) ;
 codegen_red_method ('min',    op, 'uint64_t', 'UINT64_MAX', '0'         , 16) ;
-op = 'if ((yarg < zarg) || (zarg != zarg)) zarg = yarg' ;
+op = 'if ((yarg < zarg) || (zarg != zarg)) { zarg = yarg ; }' ;
 codegen_red_method ('min',    op, 'float'   , 'INFINITY' , '(-INFINITY)', 16) ;
 codegen_red_method ('min',    op, 'double'  , ...
     '((double) INFINITY)'  , '((double) -INFINITY)' , 16) ;
 
 % MAX: 10 monoids (all but bool and complex)
 fprintf ('\nmax    ') ;
-op = 'if (yarg > zarg) zarg = yarg' ;
+op = 'if (yarg > zarg) { zarg = yarg ; }' ;
 codegen_red_method ('max',    op, 'int8_t'  , 'INT8_MIN'  , 'INT8_MAX'  , 16) ;
 codegen_red_method ('max',    op, 'int16_t' , 'INT16_MIN' , 'INT16_MAX' , 16) ;
 codegen_red_method ('max',    op, 'int32_t' , 'INT32_MIN' , 'INT32_MAX' , 16) ;
@@ -69,7 +69,7 @@ codegen_red_method ('max',    op, 'uint8_t' , '0'         , 'UINT8_MAX' , 16) ;
 codegen_red_method ('max',    op, 'uint16_t', '0'         , 'UINT16_MAX', 16) ;
 codegen_red_method ('max',    op, 'uint32_t', '0'         , 'UINT32_MAX', 16) ;
 codegen_red_method ('max',    op, 'uint64_t', '0'         , 'UINT64_MAX', 16) ;
-op = 'if ((yarg > zarg) || (zarg != zarg)) zarg = yarg' ;
+op = 'if ((yarg > zarg) || (zarg != zarg)) { zarg = yarg ; }' ;
 codegen_red_method ('max',    op, 'float'   , '(-INFINITY)', 'INFINITY' , 16) ;
 codegen_red_method ('max',    op, 'double'  , ...
     '((double) -INFINITY)'  , '((double) INFINITY)' , 16) ;
@@ -140,7 +140,7 @@ fprintf ('\nany    ') ;
 codegen_red_method ('any' , 'zarg = (yarg)'        , 'bool','false') ;
 
 %-------------------------------------------------------------------------------
-% FIRST and SECOND (not monoids; used for GB_red_build__[first,second]_[type])
+% FIRST and SECOND (not monoids; used for GB_red_build__first,second_type)
 %-------------------------------------------------------------------------------
 
 % FIRST: 13 ops:    name      op           type        identity terminal panel

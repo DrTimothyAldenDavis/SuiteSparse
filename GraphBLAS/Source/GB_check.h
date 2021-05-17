@@ -18,9 +18,6 @@
 #define GB4 GxB_SHORT_VERBOSE
 #define GB5 GxB_COMPLETE_VERBOSE
 
-// a NULL name is treated as the empty string
-#define GB_NAME ((name != NULL) ? name : "")
-
 GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_entry_check     // print a single value
 (

@@ -23,6 +23,9 @@
 // bitmap, only assignments where (Mb [pC] == 1) are needed, but it's faster to
 // just assign all entries.
 
+// TODO::: when uniform-valued matrices are supported, this method will take
+// O(1) time.
+
 #include "GB_subassign_methods.h"
 
 #undef  GB_FREE_ALL
@@ -89,7 +92,7 @@ GrB_Info GB_subassign_05e
 
     bool C_is_csc = C->is_csc ;
     GB_phbix_free (C) ;
-    GB_OK (GB_dup2 (&C, M, false, C->type, Context)) ;
+    GB_OK (GB_dup2 (&C, M, false, C->type, Context)) ;  // reuse old header
     C->is_csc = C_is_csc ;
     int64_t pC ;
 
@@ -100,7 +103,7 @@ GrB_Info GB_subassign_05e
     // worker for built-in types
     #define GB_WORKER(ctype)                                                \
     {                                                                       \
-        ctype *GB_RESTRICT Cx = (ctype *) C->x ;                            \
+        ctype *restrict Cx = (ctype *) C->x ;                            \
         ctype x = (*(ctype *) cwork) ;                                      \
         GB_PRAGMA (omp parallel for num_threads(nthreads) schedule(static)) \
         for (pC = 0 ; pC < mnz ; pC++)                                      \
@@ -133,7 +136,7 @@ GrB_Info GB_subassign_05e
             {
                 // worker for all user-defined types
                 GB_BURBLE_N (mnz, "(generic C(:,:)<M,struct>=x assign) ") ;
-                GB_void *GB_RESTRICT Cx = (GB_void *) C->x ;
+                GB_void *restrict Cx = (GB_void *) C->x ;
                 #pragma omp parallel for num_threads(nthreads) schedule(static)
                 for (pC = 0 ; pC < mnz ; pC++)
                 { 
@@ -147,7 +150,7 @@ GrB_Info GB_subassign_05e
     // free workspace and return result
     //--------------------------------------------------------------------------
 
-    GB_FREE_WORK ;
+    GB_FREE_WORK ;                  // TODO:: delete this; no workspace
     C->jumbled = M->jumbled ;       // C is jumbled if M is jumbled
     ASSERT_MATRIX_OK (C, "C output for subassign method_05e", GB0) ;
     ASSERT (GB_JUMBLED_OK (C)) ;

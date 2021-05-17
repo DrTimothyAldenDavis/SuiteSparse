@@ -30,9 +30,6 @@
 // GraphBLAS will be slower.  Alternatively, use cmake with -DGBCOMPACT=1
 // #define GBCOMPACT 1
 
-// for code development only
-// #define GB_DEVELOPER 1
-
 //------------------------------------------------------------------------------
 // notes on future work
 //------------------------------------------------------------------------------
@@ -49,6 +46,10 @@
 //      full (non-constant) to constant-valued.
 //      need aggressive exploit of non-blocking mode, for x = sum (abs (t-r)),
 //      or GrB_vxv dot product, with PLUS_ABSDIFF semiring
+//
+// For BC:
+//  FUTURE: BC: constructing S will be faster with uniform-valued matrices,
+//  once they are added to SuiteSparse:GraphBLAS.
 
 #endif
 

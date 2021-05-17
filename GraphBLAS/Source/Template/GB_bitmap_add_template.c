@@ -96,7 +96,7 @@
             }
             cnvals = A->nvals ;
 
-            GB_SLICE_MATRIX (B, 8) ;
+            GB_SLICE_MATRIX (B, 8, chunk) ;
 
             #pragma omp parallel for num_threads(B_nthreads) \
                 schedule(dynamic,1) reduction(+:cnvals)
@@ -156,7 +156,7 @@
             }
             cnvals = B->nvals ;
 
-            GB_SLICE_MATRIX (A, 8) ;
+            GB_SLICE_MATRIX (A, 8, chunk) ;
 
             #pragma omp parallel for num_threads(A_nthreads) \
                 schedule(dynamic,1) reduction(+:cnvals)
@@ -230,7 +230,7 @@
         // scatter M into the C bitmap
         //----------------------------------------------------------------------
 
-        GB_SLICE_MATRIX (M, 8) ;
+        GB_SLICE_MATRIX (M, 8, chunk) ;
 
         #pragma omp parallel for num_threads(M_nthreads) schedule(dynamic,1)
         for (taskid = 0 ; taskid < M_ntasks ; taskid++)
@@ -354,7 +354,7 @@
                 cnvals += task_cnvals ;
             }
 
-            GB_SLICE_MATRIX (B, 8) ;
+            GB_SLICE_MATRIX (B, 8, chunk) ;
 
             #pragma omp parallel for num_threads(B_nthreads) \
                 schedule(dynamic,1) reduction(+:cnvals)
@@ -425,7 +425,7 @@
                 cnvals += task_cnvals ;
             }
 
-            GB_SLICE_MATRIX (A, 8) ;
+            GB_SLICE_MATRIX (A, 8, chunk) ;
 
             #pragma omp parallel for num_threads(A_nthreads) \
                 schedule(dynamic,1) reduction(+:cnvals)
@@ -664,7 +664,7 @@
                 cnvals += task_cnvals ;
             }
 
-            GB_SLICE_MATRIX (B, 8) ;
+            GB_SLICE_MATRIX (B, 8, chunk) ;
 
             #pragma omp parallel for num_threads(B_nthreads) \
                 schedule(dynamic,1) reduction(+:cnvals)
@@ -744,7 +744,7 @@
                 cnvals += task_cnvals ;
             }
 
-            GB_SLICE_MATRIX (A, 8) ;
+            GB_SLICE_MATRIX (A, 8, chunk) ;
 
             #pragma omp parallel for num_threads(A_nthreads) \
                 schedule(dynamic,1) reduction(+:cnvals)

@@ -54,7 +54,7 @@ GrB_Info GrB_mxm                    // C<M> = accum (C, A*B)
         semiring,                   // semiring that defines T=A*B
         A,          A_transpose,    // A matrix and its descriptor
         B,          B_transpose,    // B matrix and its descriptor
-        false,                      // use fmult(x,y), flipxy false
+        false,                      // use fmult(x,y), flipxy = false
         AxB_method, do_sort,        // algorithm selector
         Context) ;
 

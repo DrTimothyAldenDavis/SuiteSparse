@@ -199,14 +199,17 @@ GrB_Info GB_ijproperties        // check I and determine its properties
         imax = -1 ;
 
         // allocate workspace for imin and imax
-        int64_t *Work = GB_MALLOC (2*ntasks, int64_t) ;
-        if (Work == NULL)
+        GB_WERK_DECLARE (Work_imin, int64_t) ;
+        GB_WERK_DECLARE (Work_imax, int64_t) ;
+        GB_WERK_PUSH (Work_imin, ntasks, int64_t) ;
+        GB_WERK_PUSH (Work_imax, ntasks, int64_t) ;
+        if (Work_imin == NULL || Work_imax == NULL)
         { 
             // out of memory
+            GB_WERK_POP (Work_imax, int64_t) ;
+            GB_WERK_POP (Work_imin, int64_t) ;
             return (GrB_OUT_OF_MEMORY) ;
         }
-        int64_t *Work_imin = Work ;
-        int64_t *Work_imax = Work + ntasks ;
 
         int tid ;
         #pragma omp parallel for num_threads(nthreads) schedule(dynamic,1) \
@@ -262,7 +265,8 @@ GrB_Info GB_ijproperties        // check I and determine its properties
         }
 
         // free workspace
-        GB_FREE (Work) ;
+        GB_WERK_POP (Work_imax, int64_t) ;
+        GB_WERK_POP (Work_imin, int64_t) ;
 
         #ifdef GB_DEBUG
         {

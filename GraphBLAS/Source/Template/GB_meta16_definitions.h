@@ -217,6 +217,8 @@
 // GB_COMPUTE_DENSE_C_j: compute C(:,j)=A*B(:,j) when C(:,j) is completely dense
 //------------------------------------------------------------------------------
 
+// This method is not used for the saxpy3 generic method.
+
 #undef GB_COMPUTE_DENSE_C_j
 
 #if GB_IS_ANY_PAIR_SEMIRING

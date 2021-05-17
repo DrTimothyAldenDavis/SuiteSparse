@@ -12,10 +12,10 @@
     // get A
     //--------------------------------------------------------------------------
 
-    const int64_t  *GB_RESTRICT Ap = A->p ;
-    const int64_t  *GB_RESTRICT Ah = A->h ;
-    const int64_t  *GB_RESTRICT Ai = A->i ;
-    const GB_ATYPE *GB_RESTRICT Ax = (GB_ATYPE *) A->x ;
+    const int64_t  *restrict Ap = A->p ;
+    const int64_t  *restrict Ah = A->h ;
+    const int64_t  *restrict Ai = A->i ;
+    const GB_ATYPE *restrict Ax = (GB_ATYPE *) A->x ;
     size_t asize = A->type->size ;
     int64_t avlen = A->vlen ;
     int64_t avdim = A->vdim ;
@@ -26,18 +26,22 @@
     ASSERT (!GB_IS_FULL (A)) ;
     #endif
 
+    const int64_t *restrict kfirst_Aslice = A_ek_slicing ;
+    const int64_t *restrict klast_Aslice  = A_ek_slicing + A_ntasks ;
+    const int64_t *restrict pstart_Aslice = A_ek_slicing + A_ntasks * 2 ;
+
     //--------------------------------------------------------------------------
     // C = select (A)
     //--------------------------------------------------------------------------
 
     int tid ;
-    #pragma omp parallel for num_threads(nthreads) schedule(dynamic,1)
-    for (tid = 0 ; tid < ntasks ; tid++)
+    #pragma omp parallel for num_threads(A_nthreads) schedule(dynamic,1)
+    for (tid = 0 ; tid < A_ntasks ; tid++)
     {
 
         // if kfirst > klast then task tid does no work at all
-        int64_t kfirst = kfirst_slice [tid] ;
-        int64_t klast  = klast_slice  [tid] ;
+        int64_t kfirst = kfirst_Aslice [tid] ;
+        int64_t klast  = klast_Aslice  [tid] ;
 
         //----------------------------------------------------------------------
         // selection from vectors kfirst to klast
@@ -52,7 +56,7 @@
 
             int64_t pA_start, pA_end, pC ;
             GB_get_pA_and_pC (&pA_start, &pA_end, &pC, tid, k, kfirst, klast,
-                pstart_slice, C_pstart_slice, Cp, avlen, Ap, avlen) ;
+                pstart_Aslice, Cp_kfirst, Cp, avlen, Ap, avlen) ;
 
             //------------------------------------------------------------------
             // compact Ai and Ax [pA_start ... pA_end-1] into Ci and Cx

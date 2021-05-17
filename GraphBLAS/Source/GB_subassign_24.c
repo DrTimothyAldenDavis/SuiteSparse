@@ -116,7 +116,7 @@ GrB_Info GB_subassign_24    // C = A, copy A into an existing matrix C
         bool C_is_csc = C->is_csc ;
         GB_phbix_free (C) ;
         // copy the pattern, not the values
-        GB_OK (GB_dup2 (&C, A, false, C->type, Context)) ;
+        GB_OK (GB_dup2 (&C, A, false, C->type, Context)) ;  // reuse old header
         C->is_csc = C_is_csc ;      // do not change the CSR/CSC format of C
     }
 
@@ -131,8 +131,8 @@ GrB_Info GB_subassign_24    // C = A, copy A into an existing matrix C
 
     int64_t anz = GB_NNZ_HELD (A) ;
     int nthreads = GB_nthreads (anz, chunk, nthreads_max) ;
-    GB_cast_array (C->x, C->type->code, A->x, A->type->code,
-        A->b, A->type->size, anz, nthreads) ;
+    GB_cast_array ((GB_void *) (C->x), C->type->code, (GB_void *) (A->x),
+        A->type->code, A->b, A->type->size, anz, nthreads) ;
 
     //-------------------------------------------------------------------------
     // restore the sparsity control of C

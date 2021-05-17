@@ -17,8 +17,9 @@ GrB_Info GxB_Vector_export_Full   // export and free a full vector
     GrB_Type *type,     // type of vector exported
     GrB_Index *n,       // length of the vector
 
-    void **vx,          // values, vx_size 1, or >= nvals(v)
-    GrB_Index *vx_size, // size of vx
+    void **vx,          // values
+    GrB_Index *vx_size, // size of vx in bytes
+    bool *is_uniform,   // if true, v has uniform values (TODO:::unsupported)
 
     const GrB_Descriptor desc
 )
@@ -29,7 +30,7 @@ GrB_Info GxB_Vector_export_Full   // export and free a full vector
     //--------------------------------------------------------------------------
 
     GB_WHERE1 ("GxB_Vector_export_Full (&v, &type, &n, "
-        "&vx, &vx_size, desc)") ;
+        "&vx, &vx_size, &is_uniform, desc)") ;
     GB_BURBLE_START ("GxB_Vector_export_Full") ;
     GB_RETURN_IF_NULL (v) ;
     GB_RETURN_IF_NULL_OR_FAULTY (*v) ;
@@ -67,14 +68,15 @@ GrB_Info GxB_Vector_export_Full   // export and free a full vector
     bool is_csc ;
     GrB_Index vdim ;
 
-    info = GB_export ((GrB_Matrix *) v, type, n, &vdim,
+    info = GB_export ((GrB_Matrix *) v, type, n, &vdim, false,
         NULL, NULL,     // Ap
         NULL, NULL,     // Ah
         NULL, NULL,     // Ab
         NULL, NULL,     // Ai
         vx,   vx_size,  // Ax
         NULL, NULL, NULL,
-        &sparsity, &is_csc, Context) ;      // full by col
+        &sparsity, &is_csc,                 // full by col
+        is_uniform, Context) ;
 
     if (info == GrB_SUCCESS)
     {

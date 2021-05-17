@@ -114,7 +114,7 @@ inline uint64_t GB_cast_to_uint64_t (double x)
 void GB_copy_user_user (void *z, const void *x, size_t s) ;
 
 #define GB_CAST_FUNCTION(ztype,xtype)                                   \
-inline void GB_cast_ ## ztype ## _ ## xtype                             \
+inline void GB (_cast_ ## ztype ## _ ## xtype)                          \
 (                                                                       \
     void *z,            /* typecasted output, of type ztype */          \
     const void *x,      /* input value to typecast, of type xtype */    \
@@ -515,7 +515,7 @@ GB_CAST_FUNCTION (GxB_FC64_t, GxB_FC64_t)
 
 static inline bool GB_mcast         // return the value of M(i,j)
 (
-    const GB_void *GB_RESTRICT Mx,  // mask values
+    const GB_void *restrict Mx,  // mask values
     const int64_t pM,               // extract boolean value of Mx [pM]
     const size_t msize              // size of each data type
 )
@@ -540,7 +540,7 @@ static inline bool GB_mcast         // return the value of M(i,j)
             case 8: return ((*(uint64_t *) (Mx +((pM)*8))) != 0) ;
             case 16:
             {
-                const uint64_t *GB_RESTRICT Zx = (uint64_t *) Mx ;
+                const uint64_t *restrict Zx = (uint64_t *) Mx ;
                 return (Zx [2*pM] != 0 || Zx [2*pM+1] != 0) ;
             }
         }

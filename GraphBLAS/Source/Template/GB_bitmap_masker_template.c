@@ -55,7 +55,7 @@
     //--------------------------------------------------------------------------
 
     ASSERT_MATRIX_OK (C, "C input to R_bitmap_masker", GB0) ;
-    GB_SLICE_MATRIX (C, 8) ;
+    GB_SLICE_MATRIX (C, 8, chunk) ;
 
     #pragma omp parallel for num_threads(C_nthreads) schedule(dynamic,1) \
         reduction(+:rnvals)
@@ -111,7 +111,7 @@
         // scatter M into the R bitmap
         //----------------------------------------------------------------------
 
-        GB_SLICE_MATRIX (M, 8) ;
+        GB_SLICE_MATRIX (M, 8, chunk) ;
 
         #pragma omp parallel for num_threads(M_nthreads) schedule(dynamic,1)
         for (taskid = 0 ; taskid < M_ntasks ; taskid++)

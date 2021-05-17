@@ -20,10 +20,10 @@
 
 #define FREE_ALL                        \
 {                                       \
-    GrB_Matrix_free_(&A) ;               \
-    GrB_Matrix_free_(&E) ;               \
-    GrB_Matrix_free_(&L) ;               \
-    GrB_Matrix_free_(&U) ;               \
+    GrB_Matrix_free_(&A) ;              \
+    GrB_Matrix_free_(&E) ;              \
+    GrB_Matrix_free_(&L) ;              \
+    GrB_Matrix_free_(&U) ;              \
     GB_mx_put_global (true) ;           \
 }
 

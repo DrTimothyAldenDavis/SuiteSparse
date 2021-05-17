@@ -12,14 +12,13 @@
 #include "GB.h"
 #ifndef GBCOMPACT
 #include "GB_atomics.h"
-#include "GB_ek_slice.h"
 #include "GB_control.h" 
 #include "GB_red__include.h"
 
 // The reduction is defined by the following types and operators:
 
-// Assemble tuples:    GB_red_build__times_fc32
-// Reduce to scalar:   GB_red_scalar__times_fc32
+// Assemble tuples:    GB (_red_build__times_fc32)
+// Reduce to scalar:   GB (_red_scalar__times_fc32)
 
 // A type:   GxB_FC32_t
 // C type:   GxB_FC32_t
@@ -124,12 +123,12 @@
 
 
 
-GrB_Info GB_red_scalar__times_fc32
+GrB_Info GB (_red_scalar__times_fc32)
 (
     GxB_FC32_t *result,
     const GrB_Matrix A,
-    GB_void *GB_RESTRICT W_space,
-    bool *GB_RESTRICT F,
+    GB_void *restrict W_space,
+    bool *restrict F,
     int ntasks,
     int nthreads
 )
@@ -138,7 +137,7 @@ GrB_Info GB_red_scalar__times_fc32
     return (GrB_NO_VALUE) ;
     #else
     GxB_FC32_t s = (*result) ;
-    GxB_FC32_t *GB_RESTRICT W = (GxB_FC32_t *) W_space ;
+    GxB_FC32_t *restrict W = (GxB_FC32_t *) W_space ;
     if (A->nzombies > 0 || GB_IS_BITMAP (A))
     {
         #include "GB_reduce_to_scalar_template.c"
@@ -158,17 +157,17 @@ GrB_Info GB_red_scalar__times_fc32
 // build matrix
 //------------------------------------------------------------------------------
 
-GrB_Info GB_red_build__times_fc32
+GrB_Info GB (_red_build__times_fc32)
 (
-    GxB_FC32_t *GB_RESTRICT Tx,
-    int64_t  *GB_RESTRICT Ti,
-    const GxB_FC32_t *GB_RESTRICT S,
+    GxB_FC32_t *restrict Tx,
+    int64_t  *restrict Ti,
+    const GxB_FC32_t *restrict S,
     int64_t nvals,
     int64_t ndupl,
-    const int64_t *GB_RESTRICT I_work,
-    const int64_t *GB_RESTRICT K_work,
-    const int64_t *GB_RESTRICT tstart_slice,
-    const int64_t *GB_RESTRICT tnz_slice,
+    const int64_t *restrict I_work,
+    const int64_t *restrict K_work,
+    const int64_t *restrict tstart_slice,
+    const int64_t *restrict tnz_slice,
     int nthreads
 )
 { 

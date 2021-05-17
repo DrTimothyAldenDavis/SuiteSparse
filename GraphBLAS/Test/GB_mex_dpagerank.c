@@ -17,7 +17,7 @@
 #define FREE_ALL                        \
 {                                       \
     if (P != NULL) mxFree (P) ;         \
-    GrB_Matrix_free_(&A) ;               \
+    GrB_Matrix_free_(&A) ;              \
     GB_mx_put_global (true) ;           \
 }
 

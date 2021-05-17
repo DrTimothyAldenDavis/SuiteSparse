@@ -114,8 +114,8 @@
 #define GB_FREE_ALL                 \
 {                                   \
     GB_Matrix_free (Thandle) ;      \
-    GB_Matrix_free (&MT) ;          \
-    GB_Matrix_free (&Z) ;           \
+    GB_phbix_free (MT) ;          \
+    GB_phbix_free (Z) ;           \
 }
 
 //------------------------------------------------------------------------------
@@ -145,9 +145,11 @@ GrB_Info GB_accum_mask          // C<M> = accum (C,T)
     ASSERT (Thandle != NULL) ;
     GrB_Info info ;
     GrB_Matrix T = *Thandle ;
-    GrB_Matrix MT = NULL ;
+    struct GB_Matrix_opaque MT_header ;
+    GrB_Matrix MT = GB_clear_static_header (&MT_header) ;
     GrB_Matrix M = M_in ;
-    GrB_Matrix Z = NULL ;
+    struct GB_Matrix_opaque Z_header ;
+    GrB_Matrix Z = GB_clear_static_header (&Z_header) ;
 
     ASSERT_MATRIX_OK (C, "C input for C<M>=accum(C,T)", GB0) ;
     ASSERT_MATRIX_OK_OR_NULL (M, "M for GB_accum_mask", GB0) ;
@@ -195,7 +197,7 @@ GrB_Info GB_accum_mask          // C<M> = accum (C,T)
         // cannot have any zombies or pending tuples.
         // T can be jumbled.
         ASSERT (GB_JUMBLED_OK (T)) ;
-        GB_OK (GB_transpose (Thandle, NULL, C->is_csc, NULL,
+        GB_OK (GB_transpose (Thandle, NULL, C->is_csc, NULL,    // in_place_C
             NULL, NULL, NULL, false, Context)) ;
         #if GB_BURBLE
         T_transposed = true ;
@@ -217,8 +219,9 @@ GrB_Info GB_accum_mask          // C<M> = accum (C,T)
             // remove zombies and pending tuples from M.  M can be jumbled.
             GB_MATRIX_WAIT_IF_PENDING_OR_ZOMBIES (M) ;
             ASSERT (GB_JUMBLED_OK (M)) ;
-            GB_OK (GB_transpose (&MT, GrB_BOOL, C->is_csc, M,
+            GB_OK (GB_transpose (&MT, GrB_BOOL, C->is_csc, M, // MT static
                 NULL, NULL, NULL, false, Context)) ;
+            ASSERT (MT->static_header) ;
             // use the transpose mask
             M = MT ;
             ASSERT (GB_JUMBLED_OK (M)) ;
@@ -362,7 +365,7 @@ GrB_Info GB_accum_mask          // C<M> = accum (C,T)
 
         if (use_transplant)
         { 
- 
+
             //------------------------------------------------------------------
             // Z = (ctype) T
             //------------------------------------------------------------------
@@ -371,7 +374,7 @@ GrB_Info GB_accum_mask          // C<M> = accum (C,T)
             // allocated by the transplant if needed.  Z has the same
             // hypersparsity as T.
 
-            info = GB_new (&Z, // sparse or hyper, new header
+            info = GB_new (&Z, true, // sparse or hyper, static header
                 C->type, C->vlen, C->vdim, GB_Ap_null, C->is_csc,
                 GB_sparsity (T), T->hyper_switch, T->plen, Context) ;
             GB_OK (info) ;
@@ -391,7 +394,8 @@ GrB_Info GB_accum_mask          // C<M> = accum (C,T)
             // Z = (ctype) accum (C,T)
             //------------------------------------------------------------------
 
-            // GB_add_sparsity needs the final sparsity pattern of C and T.
+            // GB_add_sparsity needs the final sparsity pattern of C and T,
+            // so wait on C and T first.
             GB_MATRIX_WAIT (C) ;
             GB_MATRIX_WAIT (T) ;
 
@@ -402,13 +406,14 @@ GrB_Info GB_accum_mask          // C<M> = accum (C,T)
             // be used in GB_mask, below.  So ignore the mask_applied return
             // flag from GB_add.
             bool ignore ;
-            GB_OK (GB_add (&Z, C->type, C->is_csc, (apply_mask) ? M : NULL,
+            GB_OK (GB_add (Z, C->type, C->is_csc, (apply_mask) ? M : NULL,
                 Mask_struct, Mask_comp, &ignore, C, T, accum, Context)) ;
             GB_Matrix_free (Thandle) ;
         }
 
         // T has been transplanted into Z or freed after Z=C+T
-        ASSERT (*Thandle == NULL) ;
+        ASSERT (*Thandle == NULL ||
+               (*Thandle != NULL && (*Thandle)->static_header)) ;
 
         // C and Z have the same type
         ASSERT_MATRIX_OK (Z, "Z in accum_mask", GB0) ;
@@ -420,7 +425,6 @@ GrB_Info GB_accum_mask          // C<M> = accum (C,T)
 
         ASSERT_MATRIX_OK (C, "C<M>=Z input", GB0) ;
         GB_OK (GB_mask (C, M, &Z, C_replace, Mask_comp, Mask_struct, Context)) ;
-        ASSERT (Z == NULL) ;
     }
 
     //--------------------------------------------------------------------------

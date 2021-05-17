@@ -41,25 +41,28 @@ void GB_bix_free                // free A->b, A->i, and A->x of a matrix
     // free A->b unless it is shallow
     if (!A->b_shallow)
     { 
-        GB_FREE (A->b) ;
+        GB_FREE (&(A->b), A->b_size) ;
     }
     A->b = NULL ;
+    A->b_size = 0 ;
     A->b_shallow = false ;
 
     // free A->i unless it is shallow
     if (!A->i_shallow)
     { 
-        GB_FREE (A->i) ;
+        GB_FREE (&(A->i), A->i_size) ;
     }
     A->i = NULL ;
+    A->i_size = 0 ;
     A->i_shallow = false ;
 
     // free A->x unless it is shallow
     if (!A->x_shallow)
     { 
-        GB_FREE (A->x) ;
+        GB_FREE (&(A->x), A->x_size) ;
     }
     A->x = NULL ;
+    A->x_size = 0 ;
     A->x_shallow = false ;
 
     A->nzmax = 0 ;

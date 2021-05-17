@@ -15,11 +15,15 @@ function gbmake (what)
 % there.
 %
 % See also mex, version, GrB.clear.
-
+%
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
-% SPDX-License-Identifier: Apache-2.0
+% SPDX-License-Identifier: GPL-3.0-or-later
+
+fprintf ('Note that this @GrB interface is under the GNU GPLv3 (or later).\n') ;
+input ('Hit enter to confirm and agree; control-C to decline: ') ;
 
 have_octave = (exist ('OCTAVE_VERSION', 'builtin') == 5) ;
+need_rename = false ;
 
 if (have_octave)
     if verLessThan ('octave', '7')
@@ -29,6 +33,9 @@ else
     if verLessThan ('matlab', '9.4')
         error ('MATLAB 9.4 (R2018a) or later is required') ;
     end
+    % MATLAB 9.10 (R2021a) and following include a built-in GraphBLAS library
+    % that conflicts with this version, so rename this version.
+    need_rename = ~verLessThan ('matlab', '9.10') ;
 end
 
 % finish GraphBLAS
@@ -103,7 +110,11 @@ if ispc
     % folder, do:
     %
     %   gbmake
-    library = sprintf ('%s/../../../build/Release', pwd) ;
+    if (need_rename)
+        library = sprintf ('%s/../../build/Release', pwd) ;
+    else
+        library = sprintf ('%s/../../../build/Release', pwd) ;
+    end
 else
     % First do one the following in GraphBLAS (use JOBS=n for a parallel
     % build, which is faster):
@@ -116,7 +127,23 @@ else
     % folder to your LD_LIBRARY_PATH.  Then in this folder in MATLAB do:
     %
     %   gbmake
-    library = sprintf ('%s/../../../build', pwd) ;
+    if (need_rename)
+        library = sprintf ('%s/../../build', pwd) ;
+    else
+        library = sprintf ('%s/../../../build', pwd) ;
+    end
+end
+
+if (need_rename)
+    fprintf ('This version of MATLAB includes an earlier version of\n') ;
+    fprintf ('GraphBLAS, as a built-in library.  This interface to the\n') ;
+    fprintf ('latest version of GraphBLAS links against a library with\n') ;
+    fprintf ('with renamed symbols, to avoid a library conflict.\n') ;
+    flags = [flags ' -DGBRENAME=1 ' ] ;
+    inc = [inc ' -I../../rename ' ] ;
+    libgraphblas = '-lgraphblas_renamed' ;
+else
+    libgraphblas = '-lgraphblas' ;
 end
 
 ldflags = sprintf ('-L''%s''', library) ;
@@ -190,8 +217,8 @@ for k = 1:length (mexfunctions)
     % compile if it is newer than its object file, or if any cfile was compiled
     if (make_all || tc > tobj || any_c_compiled)
         % compile the mexFunction
-        mexcmd = sprintf ('mex %s -silent %s %s ''%s'' %s -lgraphblas', ...
-            ldflags, flags, inc, mexfunction, objlist) ;
+        mexcmd = sprintf ('mex %s -silent %s %s ''%s'' %s %s', ...
+            ldflags, flags, inc, mexfunction, objlist, libgraphblas) ;
         % fprintf ('%s\n', mexcmd) ;
         fprintf (':') ;
         eval (mexcmd) ;

@@ -57,7 +57,7 @@ GrB_Info GrB_mxv                    // w<M> = accum (w, A*u)
         semiring,                           // definition of matrix multiply
         A,                  A_transpose,    // allow A to be transposed
         (GrB_Matrix) u,     false,          // u is never transposed
-        false,                              // fmult(x,y), flipxy false
+        false,                              // fmult(x,y), flipxy = false
         AxB_method, do_sort,                // algorithm selector
         Context) ;
 

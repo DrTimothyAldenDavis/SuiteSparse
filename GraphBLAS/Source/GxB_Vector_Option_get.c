@@ -79,7 +79,7 @@ GrB_Info GxB_Vector_Option_get      // gets the current option of a vector
             }
             break ;
 
-        case GxB_IS_HYPER : // deprecated; use GxB_SPARSITY_STATUS instead
+        case GxB_IS_HYPER : // historical; use GxB_SPARSITY_STATUS instead
 
             {
                 // a GrB_Vector is never hypersparse

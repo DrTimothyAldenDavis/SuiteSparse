@@ -19,7 +19,7 @@ function C = min (A, B, option)
 % See also GrB/max.
 
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
-% SPDX-License-Identifier: Apache-2.0
+% SPDX-License-Identifier: GPL-3.0-or-later
 
 % FUTURE: min(A,B) for two matrices A and B is slower than it could be.
 % See comments in gb_union_op.

@@ -7,7 +7,7 @@
 % http://faculty.cse.tamu.edu/davis
 %
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
-% SPDX-License-Identifier: Apache-2.0
+% SPDX-License-Identifier: GPL-3.0-or-later
 
 %% GraphBLAS: faster and more general sparse matrices for MATLAB
 % GraphBLAS is not only useful for creating graph algorithms; it also
@@ -53,9 +53,13 @@ end
 
 %% Sparse single-precision matrices
 % Matrix operations in GraphBLAS are typically as fast, or faster than
-% MATLAB.  Here's an unfair comparison: computing X^2 with MATLAB in
+% MATLAB.  Here's an unfair comparison: computing X*X with MATLAB in
 % double precision and with GraphBLAS in single precision.  You would
 % naturally expect GraphBLAS to be faster. 
+%
+% CAVEAT:  MATLAB R2021a uses SuiteSparse:GraphBLAS v3.3.3 for C=A*B,
+% so on that version of MATLAB, we're comparing 2 versions of GraphBLAS
+% by the same author.
 %
 % Please wait ...
 
@@ -63,10 +67,10 @@ n = 1e5 ;
 X = spdiags (rand (n, 201), -100:100, n, n) ;
 G = GrB (X, 'single') ;
 tic
-G2 = G^2 ;
+G2 = G*G ;
 gb_time = toc ;
 tic
-X2 = X^2 ;
+X2 = X*X ;
 matlab_time = toc ;
 fprintf ('\nGraphBLAS time: %g sec (in single)\n', gb_time) ;
 fprintf ('MATLAB time:    %g sec (in double)\n', matlab_time) ;
@@ -88,11 +92,11 @@ whos G G2 X X2
 %% Faster matrix operations
 % But even with standard double precision sparse matrices, GraphBLAS is
 % typically faster than the built-in MATLAB methods.  Here's a fair
-% comparison:
+% comparison (caveat: these both use GraphBLAS in MATLAB R2021a):
 
 G = GrB (X) ;
 tic
-G2 = G^2 ;
+G2 = G*G ;
 gb_time = toc ;
 err = norm (X2 - G2, 1) / norm (X2,1)
 fprintf ('\nGraphBLAS time: %g sec (in double)\n', gb_time) ;
@@ -194,7 +198,7 @@ GrB.type (C2)
 % See 'help GrB.binopinfo' for a list of the binary operators, and
 % 'help GrB.monoidinfo' for the ones that can be used as the additive
 % monoid in a semiring.  'help GrB.unopinfo' lists the unary operators.
-% 'help GrB.semiringinfo' descripts the semirings.
+% 'help GrB.semiringinfo' describes the semirings.
 
 %% 
 help GrB.binopinfo
@@ -813,30 +817,19 @@ fprintf ('Results of GrB and MATLAB match perfectly.\n')
 % the equivalent built-in operators and functions in MATLAB.
 %
 % There are few notable exceptions; these will be addressed in the future.
-% Full matrices and vectors held as GraphBLAS objects can be slightly
-% slower than their MATLAB counterparts.  horzcat and vertcat, for [A B]
-% and [A;B] when either A or B are GraphBLAS matrices, are also slow, as
-% illustrated below in the next example.
-%
-% Other methods that will be faster in the future include bandwidth,
-% istriu, istril, isdiag, reshape, issymmetric, and ishermitian.
+% These include bandwidth, istriu, istril, isdiag, reshape, issymmetric,
+% and ishermitian, all of which should be faster in a future release.
 
 %%
-% Here is an example that illustrates the performance of C = [A B]
-clear
+% Here is an example that illustrates the performance of istril.
 A = sparse (rand (2000)) ;
-B = sparse (rand (2000)) ;
 tic
-C1 = [A B] ;
+c1 = istril (A) ;
 matlab_time = toc ;
-
 A = GrB (A) ;
-B = GrB (B) ;
 tic
-C2 = [A B] ;
+c2 = istril (A) ;
 gb_time = toc ;
-
-err = norm (C1-C2,1)
 fprintf ('\nMATLAB: %g sec, GraphBLAS: %g sec\n', ...
     matlab_time, gb_time) ;
 if (gb_time > matlab_time)

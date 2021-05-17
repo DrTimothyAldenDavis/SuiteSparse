@@ -35,7 +35,7 @@
     size_t aki_size = flipxy ? ysize : xsize ;
     size_t bkj_size = flipxy ? xsize : ysize ;
 
-    GB_void *GB_RESTRICT terminal = (GB_void *) add->terminal ;
+    GB_void *restrict terminal = (GB_void *) add->terminal ;
 
     GB_cast_function cast_A, cast_B ;
     if (flipxy)
@@ -77,7 +77,9 @@
         if (flipxy)
         { 
             // flip a positional multiplicative operator
-            opcode = GB_binop_flip (opcode) ;
+            bool handled ;
+            opcode = GB_binop_flip (opcode, &handled) ; // for positional ops
+            ASSERT (handled) ;      // all positional ops can be flipped
         }
 
         // aki = A(i,k), located in Ax [pA], value not used
@@ -279,7 +281,9 @@
             if (flipxy)
             { 
                 // flip first and second
-                opcode = GB_binop_flip (opcode) ;
+                bool handled ;
+                opcode = GB_binop_flip (opcode, &handled) ; // for 1st and 2nd
+                ASSERT (handled) ;      // FIRST and SECOND ops can be flipped
             }
             if (opcode == GB_FIRST_opcode)
             { 

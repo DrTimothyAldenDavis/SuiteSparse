@@ -53,10 +53,15 @@ hfiles = [ dir('../Test/*.h') ; ...
 % list of include directories
 inc = '-Itmp_include -I../Test -I../Test/Template' ;
 
+need_rename = ~verLessThan ('matlab', '9.10') ;
+
 addpath ../Test
 addpath ../Test/spok
 
 flags = '-g -DGBCOVER -R2018a' ;
+if (need_rename)
+    flags = [flags ' -DGBRENAME=1 '] ;
+end
 
 fprintf ('\nCompiling GraphBLAS tests\nplease wait [') ;
 
@@ -132,7 +137,7 @@ for k = 1:length (cfiles)
     % compile the cfile if it is newer than its object file, or any hfile
     if (make_all || tc > tobj || htime > tobj)
         % compile the cfile
-        fprintf ('.', cfile) ;
+        fprintf ('.') ;
         % fprintf ('%s\n', cfile) ;
         mexcmd = sprintf ('mex -c %s -silent %s %s', flags, inc, cfile) ;
         if (dryrun)
@@ -171,7 +176,7 @@ for k = 1:length (mexfunctions)
         % compile the mexFunction
         mexcmd = sprintf ('mex -silent %s %s %s %s %s', ...
             flags, inc, mexfunction, objlist, libraries) ;
-        fprintf (':') ;
+        fprintf ('.', mexfunction) ;
         % fprintf ('%s\n', mexfunction) ;
         if (dryrun)
             fprintf ('%s\n', mexcmd) ;

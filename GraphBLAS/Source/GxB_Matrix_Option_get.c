@@ -89,7 +89,7 @@ GrB_Info GxB_Matrix_Option_get      // gets the current option of a matrix
             }
             break ;
 
-        case GxB_IS_HYPER : // deprecated; use GxB_SPARSITY_STATUS instead
+        case GxB_IS_HYPER : // historical; use GxB_SPARSITY_STATUS instead
 
             {
                 va_start (ap, field) ;

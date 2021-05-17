@@ -58,8 +58,6 @@ GrB_Info mis                    // compute a maximal independent set
     GrB_Vector new_neighbors = NULL ;   // new neighbors to new iset members
     GrB_Vector candidates = NULL ;      // candidate members to iset
     GrB_Semiring maxSelect1st = NULL ;  // Max/Select1st "semiring"
-    GrB_Descriptor r_desc = NULL ;
-    GrB_Descriptor sr_desc = NULL ;
     GrB_BinaryOp set_random = NULL ;
     GrB_Vector degrees = NULL ;
 
@@ -79,27 +77,19 @@ GrB_Info mis                    // compute a maximal independent set
     // create the maxSelect1st semiring
     GrB_Semiring_new (&maxSelect1st, GrB_MAX_MONOID_FP64, GrB_FIRST_FP64) ;
 
-    // descriptor: C_replace
-    GrB_Descriptor_new (&r_desc) ;
-    GrB_Descriptor_set (r_desc, GrB_OUTP, GrB_REPLACE) ;
-
     // create the random number seeds
     GrB_Vector Seed, X ;
     prand_init ( ) ;
     prand_seed (&Seed, seed, n, 0) ;
     GrB_Vector_new (&X, GrB_FP64, n) ;
 
-    // descriptor: C_replace + structural complement of mask
-    GrB_Descriptor_new (&sr_desc) ;
-    GrB_Descriptor_set (sr_desc, GrB_MASK, GrB_COMP) ;
-    GrB_Descriptor_set (sr_desc, GrB_OUTP, GrB_REPLACE) ;
-
     // create the mis_score binary operator
     GrB_BinaryOp_new (&set_random, mis_score2, GrB_FP64, GrB_UINT32, GrB_FP64) ;
 
     // compute the degree of each nodes
     GrB_Vector_new (&degrees, GrB_FP64, n) ;
-    GrB_Matrix_reduce_BinaryOp (degrees, NULL, NULL, GrB_PLUS_FP64, A, NULL) ;
+    GrB_Matrix_reduce_Monoid (degrees, NULL, NULL, GrB_PLUS_MONOID_FP64,
+        A, NULL) ;
 
     // singletons are not candidates; they are added to iset first instead
     // candidates[degree != 0] = 1
@@ -107,7 +97,7 @@ GrB_Info mis                    // compute a maximal independent set
 
     // add all singletons to iset
     // iset[degree == 0] = 1
-    GrB_Vector_assign_BOOL (iset, degrees, NULL, true, GrB_ALL, n, sr_desc) ; 
+    GrB_Vector_assign_BOOL (iset, degrees, NULL, true, GrB_ALL, n, GrB_DESC_RC);
 
     // Iterate while there are candidates to check.
     GrB_Index nvals ;
@@ -118,18 +108,18 @@ GrB_Info mis                    // compute a maximal independent set
     while (nvals > 0)
     {
         // sparsify the random number seeds (just keep it for each candidate) 
-        GrB_Vector_assign (Seed, candidates, NULL, Seed, GrB_ALL, n, r_desc) ;
+        GrB_Vector_assign (Seed, candidates, NULL, Seed, GrB_ALL, n, GrB_DESC_R) ;
 
         // compute a random probability scaled by inverse of degree
         // GrB_Vector_apply (prob, candidates, NULL, set_random, degrees,
-        //      r_desc) ;
+        //      GrB_DESC_R) ;
         prand_xget (X, Seed) ;
         GrB_Vector_eWiseMult_BinaryOp (prob, candidates, NULL, set_random,
-            degrees, X, r_desc) ;
+            degrees, X, GrB_DESC_R) ;
 
         // compute the max probability of all neighbors
         GrB_vxm (neighbor_max, candidates, NULL, maxSelect1st,
-            prob, A, r_desc) ;
+            prob, A, GrB_DESC_R) ;
 
         // select node if its probability is > than all its active neighbors
         GrB_Vector_eWiseAdd_BinaryOp (new_members, NULL, NULL, GrB_GT_FP64,
@@ -139,9 +129,10 @@ GrB_Info mis                    // compute a maximal independent set
         GrB_Vector_eWiseAdd_BinaryOp (iset, NULL, NULL, GrB_LOR, iset,
             new_members, NULL) ;
 
-        // remove new members from set of candidates c = c & !new
+        // remove new members from set of candidates
+        // candidates<!new_members> = candidates
         GrB_Vector_apply (candidates, new_members, NULL, GrB_IDENTITY_BOOL,
-            candidates, sr_desc) ;
+            candidates, GrB_DESC_RC) ;
 
         GrB_Vector_nvals (&nvals, candidates) ;
         if (nvals == 0) { break ; }                  // early exit condition
@@ -149,8 +140,9 @@ GrB_Info mis                    // compute a maximal independent set
         // Neighbors of new members can also be removed from candidates
         GrB_vxm (new_neighbors, candidates, NULL, GrB_LOR_LAND_SEMIRING_BOOL,
             new_members, A, NULL) ;
+        // candidates<!new_neighbors> = candidates
         GrB_Vector_apply (candidates, new_neighbors, NULL, GrB_IDENTITY_BOOL,
-            candidates, sr_desc) ;
+            candidates, GrB_DESC_RC) ;
 
         GrB_Vector_nvals (&nvals, candidates) ;
 
@@ -160,7 +152,7 @@ GrB_Info mis                    // compute a maximal independent set
     }
 
     // drop explicit false values
-    GrB_Vector_apply (iset, iset, NULL, GrB_IDENTITY_BOOL, iset, r_desc) ;
+    GrB_Vector_apply (iset, iset, NULL, GrB_IDENTITY_BOOL, iset, GrB_DESC_R) ;
 
     // return result
     *iset_output = iset ;
@@ -172,8 +164,6 @@ GrB_Info mis                    // compute a maximal independent set
     GrB_Vector_free (&new_neighbors) ;
     GrB_Vector_free (&candidates) ;
     GrB_Semiring_free (&maxSelect1st) ;
-    GrB_Descriptor_free (&r_desc) ;
-    GrB_Descriptor_free (&sr_desc) ;
     GrB_BinaryOp_free (&set_random) ;
     GrB_Vector_free (&degrees) ;
     GrB_Vector_free (&Seed) ;

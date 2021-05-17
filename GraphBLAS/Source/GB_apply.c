@@ -40,6 +40,10 @@ GrB_Info GB_apply                   // C<M> = accum (C, op(A)) or op(A')
     //--------------------------------------------------------------------------
 
     // C may be aliased with M and/or A
+
+    struct GB_Matrix_opaque T_header ;
+    GrB_Matrix T = GB_clear_static_header (&T_header) ;
+
     GB_RETURN_IF_FAULTY_OR_POSITIONAL (accum) ;
     ASSERT_MATRIX_OK (C, "C input for GB_apply", GB0) ;
     ASSERT_MATRIX_OK_OR_NULL (M, "M for GB_apply", GB0) ;
@@ -140,11 +144,8 @@ GrB_Info GB_apply                   // C<M> = accum (C, op(A)) or op(A')
     }
 
     // check domains and dimensions for C<M> = accum (C,T)
-    GrB_Info info = GB_compatible (C->type, C, M, accum, T_type, Context) ;
-    if (info != GrB_SUCCESS)
-    { 
-        return (info) ;
-    }
+    GrB_Info info ;
+    GB_OK (GB_compatible (C->type, C, M, Mask_struct, accum, T_type, Context)) ;
 
     // check the dimensions
     int64_t tnrows = (A_transpose) ? GB_NCOLS (A) : GB_NROWS (A) ;
@@ -160,16 +161,11 @@ GrB_Info GB_apply                   // C<M> = accum (C, op(A)) or op(A')
     }
 
     // quick return if an empty mask is complemented
-    GB_RETURN_IF_QUICK_MASK (C, C_replace, M, Mask_comp) ;
+    GB_RETURN_IF_QUICK_MASK (C, C_replace, M, Mask_comp, Mask_struct) ;
 
     // delete any lingering zombies and assemble any pending tuples
-    GB_MATRIX_WAIT (M) ;        // TODO: postpone until accum/mask phase
-    GB_MATRIX_WAIT (A) ;        // TODO: allow A and C to be jumbled
+    GB_MATRIX_WAIT_IF_PENDING_OR_ZOMBIES (A) ;      // A can be jumbled
     GB_MATRIX_WAIT (scalar) ;
-
-    GB_BURBLE_DENSE (C, "(C %s) ") ;
-    GB_BURBLE_DENSE (M, "(M %s) ") ;
-    GB_BURBLE_DENSE (A, "(A %s) ") ;
 
     if (op2 != NULL && GB_NNZ (scalar) != 1)
     { 
@@ -257,14 +253,12 @@ GrB_Info GB_apply                   // C<M> = accum (C, op(A)) or op(A')
         }
     }
 
-    GrB_Matrix T = NULL ;
-
     if (A_transpose)
     { 
         // T = op (A'), typecasting to op*->ztype
         // transpose: typecast, apply an op, not in-place.
         GBURBLE ("(transpose-op) ") ;
-        info = GB_transpose (&T, T_type, T_is_csc, A,
+        info = GB_transpose (&T, T_type, T_is_csc, A,   // T static
             op1, op2, scalar, binop_bind1st, Context) ;
         ASSERT (GB_JUMBLED_OK (T)) ;
         // A positional op is applied to C after the transpose is computed,
@@ -291,13 +285,13 @@ GrB_Info GB_apply                   // C<M> = accum (C, op(A)) or op(A')
     { 
         // T = op (A), pattern is a shallow copy of A, type is op*->ztype.
         GBURBLE ("(shallow-op) ") ;
-        info = GB_shallow_op (&T, T_is_csc,
+        info = GB_shallow_op (T, T_is_csc,
             op1, op2, scalar, binop_bind1st, A, Context) ;
     }
 
     if (info != GrB_SUCCESS)
     { 
-        GB_Matrix_free (&T) ;
+        GB_phbix_free (T) ;
         return (info) ;
     }
 

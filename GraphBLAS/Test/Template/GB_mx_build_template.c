@@ -48,13 +48,7 @@
 #define DUP_ARG 5
 #define TYPE_ARG 6
 #define CSC_ARG 7
-
-#define FREE_ALL                \
-{                               \
-    GrB_Matrix_free_(&C) ;       \
-    GB_mx_put_global (true) ;           \
-}
-
+#define FREE_WORK GrB_Matrix_free_(&C) ;
 #else
 #define MAX_NARGIN 5
 #define MIN_NARGIN 2
@@ -64,14 +58,14 @@
 #define NROWS_ARG 2
 #define DUP_ARG 3
 #define TYPE_ARG 4
+#define FREE_WORK GrB_Vector_free_(&C) ;
+#endif
 
 #define FREE_ALL                    \
 {                                   \
-    GrB_Matrix_free_(&C) ;          \
+    FREE_WORK ;                     \
     GB_mx_put_global (true) ;       \
 }
-
-#endif
 
 #define GET_DEEP_COPY ;
 #define FREE_DEEP_COPY ;
@@ -130,15 +124,14 @@ GrB_Info builder
     if (C_is_csc)
     {
         // create a hypersparse CSC matrix
-        // was: info = GrB_Matrix_new (Chandle, ctype, nrows, ncols) ;
-        info = GB_new (Chandle, // auto (sparse or hyper), new header
+        info = GB_new (Chandle, false, // sparse/hyper, new mx header
             ctype, nrows, ncols, GB_Ap_calloc,
             true, sparsity, GxB_HYPER_DEFAULT, 1, Context) ;
     }
     else
     {
         // create a hypersparse CSR matrix
-        info = GB_new (Chandle, // auto (sparse or hyper), new header
+        info = GB_new (Chandle, false, // sparse/hyper, new mx header
             ctype, ncols, nrows, GB_Ap_calloc,
             false, sparsity, GxB_HYPER_DEFAULT, 1, Context) ;
     }
@@ -154,7 +147,7 @@ GrB_Info builder
 
     if (info != GrB_SUCCESS)
     {
-        FREE_ALL ;
+        FREE_WORK ;
         return (info) ;
     }
 
@@ -187,7 +180,7 @@ GrB_Info builder
         case GB_FC32_code    : BUILD (GxB_, _FC32,   GxB_FC32_t) ; break ;
         case GB_FC64_code    : BUILD (GxB_, _FC64,   GxB_FC64_t) ; break ;
         default              :
-            FREE_ALL ;
+            FREE_WORK ;
             mexErrMsgTxt ("xtype not supported")  ;
     }
 
@@ -197,7 +190,7 @@ GrB_Info builder
     }
     else
     {
-        FREE_ALL ;
+        FREE_WORK ;
     }
 
     return (info) ;

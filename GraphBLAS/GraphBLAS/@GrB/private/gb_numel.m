@@ -3,7 +3,7 @@ function s = gb_numel (G)
 % Implements s = numel (G)
 
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
-% SPDX-License-Identifier: Apache-2.0
+% SPDX-License-Identifier: GPL-3.0-or-later
 
 [m, n] = gbsize (G) ;
 s = m*n ;

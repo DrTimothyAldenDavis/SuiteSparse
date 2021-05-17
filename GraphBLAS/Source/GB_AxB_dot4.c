@@ -18,10 +18,10 @@
 #include "GB_AxB__include.h"
 #endif
 
-#define GB_FREE_WORK        \
-{                           \
-    GB_FREE (A_slice) ;     \
-    GB_FREE (B_slice) ;     \
+#define GB_FREE_WORK                    \
+{                                       \
+    GB_WERK_POP (B_slice, int64_t) ;    \
+    GB_WERK_POP (A_slice, int64_t) ;    \
 }
 
 GrB_Info GB_AxB_dot4                // C+=A'*B, dot product method
@@ -55,14 +55,12 @@ GrB_Info GB_AxB_dot4                // C+=A'*B, dot product method
     ASSERT (!GB_PENDING (B)) ;
 
     ASSERT (!GB_IS_BITMAP (C)) ;
-    ASSERT (!GB_IS_BITMAP (A)) ;
-    ASSERT (!GB_IS_BITMAP (B)) ;
 
     ASSERT_SEMIRING_OK (semiring, "semiring for in-place += A'*B", GB0) ;
     ASSERT (A->vlen == B->vlen) ;
 
-    int64_t *GB_RESTRICT A_slice = NULL ;
-    int64_t *GB_RESTRICT B_slice = NULL ;
+    GB_WERK_DECLARE (A_slice, int64_t) ;
+    GB_WERK_DECLARE (B_slice, int64_t) ;
 
     GBURBLE ("(%s+=%s'*%s) ",
         GB_sparsity_char_matrix (C),
@@ -77,8 +75,6 @@ GrB_Info GB_AxB_dot4                // C+=A'*B, dot product method
     int64_t bnz = GB_NNZ_HELD (B) ;
     GB_GET_NTHREADS_MAX (nthreads_max, chunk, Context) ;
     int nthreads = GB_nthreads (anz + bnz, chunk, nthreads_max) ;
-
-    // #include "GB_AxB_dot4_mkl_template.c
 
     //--------------------------------------------------------------------------
     // get the semiring operators
@@ -133,13 +129,16 @@ GrB_Info GB_AxB_dot4                // C+=A'*B, dot product method
     naslice = GB_IMIN (naslice, anvec) ;
     nbslice = GB_IMIN (nbslice, bnvec) ;
 
-    if (!GB_pslice (&A_slice, A->p, anvec, naslice, false)  ||
-        !GB_pslice (&B_slice, B->p, bnvec, nbslice, false))
+    GB_WERK_PUSH (A_slice, naslice + 1, int64_t) ;
+    GB_WERK_PUSH (B_slice, nbslice + 1, int64_t) ;
+    if (A_slice == NULL || B_slice == NULL)
     { 
         // out of memory
         GB_FREE_WORK ;
         return (GrB_OUT_OF_MEMORY) ;
     }
+    GB_pslice (A_slice, A->p, anvec, naslice, false) ;
+    GB_pslice (B_slice, B->p, bnvec, nbslice, false) ;
 
     //--------------------------------------------------------------------------
     // C += A'*B, computing each entry with a dot product, via builtin semiring
@@ -153,7 +152,7 @@ GrB_Info GB_AxB_dot4                // C+=A'*B, dot product method
         // define the worker for the switch factory
         //----------------------------------------------------------------------
 
-        #define GB_Adot4B(add,mult,xname) GB_Adot4B_ ## add ## mult ## xname
+        #define GB_Adot4B(add,mult,xname) GB (_Adot4B_ ## add ## mult ## xname)
 
         #define GB_AxB_WORKER(add,mult,xname)           \
         {                                               \

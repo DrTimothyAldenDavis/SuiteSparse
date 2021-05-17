@@ -8,8 +8,6 @@
 //------------------------------------------------------------------------------
 
 #include "GB_mxm.h"
-#include "GB_AxB_saxpy.h"
-#include "GB_AxB_saxpy3.h"
 #include "GB_bitmap_AxB_saxpy.h"
 
 //------------------------------------------------------------------------------
@@ -20,7 +18,7 @@
 
 GrB_Info GB_AxB_saxpy               // C = A*B using Gustavson/Hash/Bitmap
 (
-    GrB_Matrix *Chandle,            // output matrix (if not done in-place)
+    GrB_Matrix C,                   // output, static header
     const GrB_Matrix M,             // optional mask matrix
     const bool Mask_comp,           // if true, use !M
     const bool Mask_struct,         // if true, use the only structure of M
@@ -40,8 +38,7 @@ GrB_Info GB_AxB_saxpy               // C = A*B using Gustavson/Hash/Bitmap
     //--------------------------------------------------------------------------
 
     (*mask_applied) = false ;
-    ASSERT (Chandle != NULL) ;
-    ASSERT (*Chandle == NULL) ;
+    ASSERT (C != NULL && C->static_header) ;
 
     ASSERT_MATRIX_OK_OR_NULL (M, "M for saxpy A*B", GB0) ;
     ASSERT (!GB_PENDING (M)) ;
@@ -65,7 +62,10 @@ GrB_Info GB_AxB_saxpy               // C = A*B using Gustavson/Hash/Bitmap
     // determine the sparsity of C
     //--------------------------------------------------------------------------
 
-    int C_sparsity = GB_AxB_saxpy_sparsity (M, Mask_comp, A, B, Context) ;
+    GrB_Info info ;
+    int C_sparsity, saxpy_method ;
+    GB_AxB_saxpy_sparsity (&C_sparsity, &saxpy_method,
+        M, Mask_comp, A, B, Context) ;
 
     if (M == NULL)
     {
@@ -90,28 +90,50 @@ GrB_Info GB_AxB_saxpy               // C = A*B using Gustavson/Hash/Bitmap
     // select the method to use
     //--------------------------------------------------------------------------
 
-    if (C_sparsity == GxB_HYPERSPARSE || C_sparsity == GxB_SPARSE)
-    { 
+    if (saxpy_method == GB_SAXPY_METHOD_3)
+    {
 
         //----------------------------------------------------------------------
-        // C=A*B, C<M>=A*B or C<!M>=A*B: sparse Gustavson/Hash method
+        // saxpy3: general-purpose Gustavson/Hash method, C is sparse/hyper
         //----------------------------------------------------------------------
 
-        // GB_AxB_saxpy3 assumes C and B have the same sparsity structure
-        return (GB_AxB_saxpy3 (Chandle, C_sparsity, M, Mask_comp, Mask_struct,
-            A, B, semiring, flipxy, mask_applied, AxB_method, do_sort,
-            Context)) ;
+        // C is sparse or hypersparse
+
+        // This method allocates its own workspace, which is very small if the
+        // Hash method is used.  The workspace for Gustavson's method is
+        // larger, but saxpy3 selects that method only if the total work is
+        // high enough so that the time to initialize the space.  C is sparse
+        // or hypersparse.
+
+        info = GB_AxB_saxpy3 (C, C_sparsity, M, Mask_comp, Mask_struct, A, B,
+            semiring, flipxy, mask_applied, AxB_method, do_sort, Context) ;
+
+        if (info == GrB_NO_VALUE)
+        { 
+            // The mask is present but has been discarded since it results in
+            // too much work.  The analysis must be redone, which is done by
+            // calling this function once again, recursively, without the mask.
+            // GB_AxB_saxpy_sparsity will be called again, and it might choose
+            // the bitmap method instead.  If saxpy3 is still chosen, this
+            // results in a different analysis in GB_AxB_saxpy3, with no mask
+            // present.  Otherwise, GB_bitmap_AxB_saxpy, below, is called.
+            ASSERT (M != NULL) ;
+            info = GB_AxB_saxpy (C, NULL, false, false, A, B, semiring,
+                flipxy, mask_applied, AxB_method, do_sort, Context) ;
+        }
 
     }
     else
-    { 
+    {
 
         //----------------------------------------------------------------------
-        // C=A*B, C<M>=A*B or C<!M>=A*B: bitmap/full, possibly in-place 
+        // bitmap method: C is bitmap or full
         //----------------------------------------------------------------------
 
-        return (GB_bitmap_AxB_saxpy (Chandle, C_sparsity, M, Mask_comp,
-            Mask_struct, A, B, semiring, flipxy, mask_applied, Context)) ;
+        info = GB_bitmap_AxB_saxpy (C, C_sparsity, M, Mask_comp,
+            Mask_struct, A, B, semiring, flipxy, mask_applied, Context) ;
     }
+
+    return (info) ;
 }
 

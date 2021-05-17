@@ -32,7 +32,7 @@ function C = diag (A, k)
 % See also GrB/diag, spdiags, GrB/tril, GrB/triu, GrB.select.
 
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
-% SPDX-License-Identifier: Apache-2.0
+% SPDX-License-Identifier: GPL-3.0-or-later
 
 if (isobject (A))
     A = A.opaque ;
@@ -44,5 +44,30 @@ else
     k = gb_get_scalar (k) ;
 end
 
-C = GrB (gb_diag (A, k)) ;
+[am, an, atype] = gbsize (A) ;
+a_is_vector = (am == 1) || (an == 1) ;
+
+if (a_is_vector)
+
+    % ensure A is a column vector
+    if (am == 1)
+        A = gbtrans (A) ;
+    end
+
+    % ensure A is not hypersparse
+    [~, s] = gbformat (A) ;
+    if (isequal (s, 'hypersparse'))
+        A = gbnew (A, 'sparse') ;
+    end
+
+    % C = diag (v,k) where v is a column vector and C is a matrix
+    C = GrB (gbmdiag (A, k)) ;
+
+else
+
+    % v = diag (A,k) is a column vector formed from the elements of the kth
+    % diagonal of A
+    C = GrB (gbvdiag (A, k)) ;
+
+end
 

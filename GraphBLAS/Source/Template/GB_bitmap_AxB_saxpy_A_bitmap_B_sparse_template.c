@@ -50,13 +50,13 @@
     int64_t waxsize = naslice * axpanel_size ;
     int64_t wcsize  = naslice * hpanel_size ;
     int64_t wcxsize = GB_IS_ANY_PAIR_SEMIRING ? 0 : (wcsize * GB_CSIZE) ;
-    Wf = GB_MALLOC (wafsize + wcsize, int8_t) ;
-    Wax = GB_MALLOC (waxsize, GB_void) ;
-    Wcx = GB_MALLOC (wcxsize, GB_void) ;
+    Wf  = GB_MALLOC_WERK (wafsize + wcsize, int8_t, &Wf_size) ;
+    Wax = GB_MALLOC_WERK (waxsize, GB_void, &Wax_size) ;
+    Wcx = GB_MALLOC_WERK (wcxsize, GB_void, &Wcx_size) ;
     if (Wf == NULL || Wax == NULL || Wcx == NULL)
     { 
         // out of memory
-        GB_FREE_WORK ;
+        GB_FREE_ALL ;
         return (GrB_OUT_OF_MEMORY) ;
     }
 
@@ -79,7 +79,7 @@
             // an explicit loop is required to set Hx to identity
             // TODO: should each task initialize its own Hf and Hx,
             // and use a static schedule here and for H=G*B?
-            GB_CTYPE *GB_RESTRICT Hx = (GB_CTYPE *) Wcx ;
+            GB_CTYPE *restrict Hx = (GB_CTYPE *) Wcx ;
             int64_t pH ;
             #pragma omp parallel for num_threads(nthreads) schedule(static)
             for (pH = 0 ; pH < wcsize ; pH++)
@@ -136,8 +136,8 @@
                 if (np <= 0) continue ;
                 int64_t kstart, kend ; 
                 GB_PARTITION (kstart, kend, avdim, b_tid, nbslice) ;
-                int8_t   *GB_RESTRICT Gb = Wf  + (a_tid * afpanel_size) ;
-                GB_ATYPE *GB_RESTRICT Gx = (GB_ATYPE *)
+                int8_t   *restrict Gb = Wf  + (a_tid * afpanel_size) ;
+                GB_ATYPE *restrict Gx = (GB_ATYPE *)
                     (Wax + (a_tid * axpanel_size)) ;
 
                 //--------------------------------------------------------------
@@ -239,8 +239,8 @@
             int64_t np = iend - istart ;
             if (np <= 0) continue ;
 
-            const int8_t   *GB_RESTRICT Gb ;
-            const GB_ATYPE *GB_RESTRICT Gx ;
+            const int8_t   *restrict Gb ;
+            const GB_ATYPE *restrict Gx ;
 
             if (load_apanel)
             { 
@@ -255,8 +255,8 @@
                 Gx = (GB_ATYPE *) Ax ;
             }
 
-            int8_t   *GB_RESTRICT Hf = Wf  + (a_tid * hpanel_size) + wafsize ;
-            GB_CTYPE *GB_RESTRICT Hx = (GB_CTYPE *)
+            int8_t   *restrict Hf = Wf  + (a_tid * hpanel_size) + wafsize ;
+            GB_CTYPE *restrict Hx = (GB_CTYPE *)
                 (Wcx + (a_tid * hpanel_size) * GB_CSIZE) ;
             GB_XINIT ;  // for plus, bor, band, and bxor monoids only
 
@@ -386,8 +386,8 @@
             int64_t kstart, kend ; 
             GB_PARTITION (kstart, kend, bnvec, b_tid, nbslice) ;
 
-            int8_t   *GB_RESTRICT Hf = Wf  + (a_tid * hpanel_size) + wafsize ;
-            GB_CTYPE *GB_RESTRICT Hx = (GB_CTYPE *)
+            int8_t   *restrict Hf = Wf  + (a_tid * hpanel_size) + wafsize ;
+            GB_CTYPE *restrict Hx = (GB_CTYPE *)
                 (Wcx + (a_tid * hpanel_size) * GB_CSIZE) ;
 
             //------------------------------------------------------------------

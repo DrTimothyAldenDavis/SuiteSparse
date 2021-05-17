@@ -15,7 +15,7 @@
 
 #define FREE_ALL                        \
 {                                       \
-    GrB_Matrix_free_(&A) ;               \
+    GrB_Matrix_free_(&A) ;              \
     if (reduce_monoid_allocated)        \
     {                                   \
         GrB_Monoid_free_(&reduce) ;     \

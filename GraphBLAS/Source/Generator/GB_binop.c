@@ -11,6 +11,7 @@
 
 #include "GB.h"
 #ifndef GBCOMPACT
+#include "GB_emult.h"
 #include "GB_control.h"
 #include "GB_ek_slice.h"
 #include "GB_dense.h"
@@ -20,18 +21,21 @@
 
 // C=binop(A,B) is defined by the following types and operators:
 
-// A+B function (eWiseAdd):         GB_AaddB
-// A.*B function (eWiseMult):       GB_AemultB
-// A*D function (colscale):         GB_AxD
-// D*A function (rowscale):         GB_DxB
-// C+=B function (dense accum):     GB_Cdense_accumB
-// C+=b function (dense accum):     GB_Cdense_accumb
-// C+=A+B function (dense ewise3):  GB_Cdense_ewise3_accum
-// C=A+B function (dense ewise3):   GB_Cdense_ewise3_noaccum
-// C=scalar+B                       GB_bind1st
-// C=scalar+B'                      GB_bind1st_tran
-// C=A+scalar                       GB_bind2nd
-// C=A'+scalar                      GB_bind2nd_tran
+// A+B function (eWiseAdd):         GB (_AaddB)
+// A.*B function (eWiseMult):       GB (_AemultB)
+// A.*B function (eWiseMult):       GB (_AemultB_02)
+// A.*B function (eWiseMult):       GB (_AemultB_03)
+// A.*B function (eWiseMult):       GB (_AemultB_bitmap)
+// A*D function (colscale):         GB (_AxD)
+// D*A function (rowscale):         GB (_DxB)
+// C+=B function (dense accum):     GB (_Cdense_accumB)
+// C+=b function (dense accum):     GB (_Cdense_accumb)
+// C+=A+B function (dense ewise3):  GB (_Cdense_ewise3_accum)
+// C=A+B function (dense ewise3):   GB (_Cdense_ewise3_noaccum)
+// C=scalar+B                       GB (_bind1st)
+// C=scalar+B'                      GB (_bind1st_tran)
+// C=A+scalar                       GB (_bind2nd)
+// C=A'+scalar                      GB (_bind2nd_tran)
 
 // C type:   GB_ctype
 // A type:   GB_atype
@@ -85,21 +89,13 @@
 #define GB_BINOP(z, x, y, i, j) \
     GB_binaryop(z, x, y, i, j) ;
 
+// true if the binop must be flipped
+#define GB_BINOP_FLIP \
+    GB_binaryop_flip
+
 // op is second
 #define GB_OP_IS_SECOND \
     GB_op_is_second
-
-// op is plus_fp32 or plus_fp64
-#define GB_OP_IS_PLUS_REAL \
-    GB_op_is_plus_real
-
-// op is minus_fp32 or minus_fp64
-#define GB_OP_IS_MINUS_REAL \
-    GB_op_is_minus_real
-
-// GB_cblas_*axpy gateway routine, if it exists for this operator and type:
-#define GB_CBLAS_AXPY \
-    GB_cblas_axpy
 
 // do the numerical phases of GB_add and GB_emult
 #define GB_PHASE_2_OF_2
@@ -119,7 +115,7 @@ if_is_binop_subset
 
 // The op must be MIN, MAX, PLUS, MINUS, RMINUS, TIMES, DIV, or RDIV.
 
-void GB_Cdense_ewise3_accum
+void GB (_Cdense_ewise3_accum)
 (
     GrB_Matrix C,
     const GrB_Matrix A,
@@ -136,7 +132,7 @@ endif_is_binop_subset
 // C = A+B, all 3 matrices dense
 //------------------------------------------------------------------------------
 
-GrB_Info GB_Cdense_ewise3_noaccum
+GrB_Info GB (_Cdense_ewise3_noaccum)
 (
     GrB_Matrix C,
     const GrB_Matrix A,
@@ -156,15 +152,11 @@ GrB_Info GB_Cdense_ewise3_noaccum
 // C += B, accumulate a sparse matrix into a dense matrix
 //------------------------------------------------------------------------------
 
-GrB_Info GB_Cdense_accumB
+GrB_Info GB (_Cdense_accumB)
 (
     GrB_Matrix C,
     const GrB_Matrix B,
-    const int64_t *GB_RESTRICT kfirst_slice,
-    const int64_t *GB_RESTRICT klast_slice,
-    const int64_t *GB_RESTRICT pstart_slice,
-    const int ntasks,
-    const int nthreads
+    const int64_t *B_ek_slicing, const int B_ntasks, const int B_nthreads
 )
 {
     #if GB_DISABLE
@@ -183,7 +175,7 @@ GrB_Info GB_Cdense_accumB
 // C += b, accumulate a scalar into a dense matrix
 //------------------------------------------------------------------------------
 
-GrB_Info GB_Cdense_accumb
+GrB_Info GB (_Cdense_accumb)
 (
     GrB_Matrix C,
     const GB_void *p_bwork,
@@ -211,22 +203,18 @@ GrB_Info GB_Cdense_accumb
 
 if_binop_is_semiring_multiplier
 
-GrB_Info GB_AxD
+GrB_Info GB (_AxD)
 (
     GrB_Matrix C,
     const GrB_Matrix A, bool A_is_pattern,
     const GrB_Matrix D, bool D_is_pattern,
-    const int64_t *GB_RESTRICT kfirst_slice,
-    const int64_t *GB_RESTRICT klast_slice,
-    const int64_t *GB_RESTRICT pstart_slice,
-    const int ntasks,
-    const int nthreads
+    const int64_t *A_ek_slicing, const int A_ntasks, const int A_nthreads
 )
 { 
     #if GB_DISABLE
     return (GrB_NO_VALUE) ;
     #else
-    GB_ctype *GB_RESTRICT Cx = (GB_ctype *) C->x ;
+    GB_ctype *restrict Cx = (GB_ctype *) C->x ;
     #include "GB_AxB_colscale_meta.c"
     return (GrB_SUCCESS) ;
     #endif
@@ -240,7 +228,7 @@ endif_binop_is_semiring_multiplier
 
 if_binop_is_semiring_multiplier
 
-GrB_Info GB_DxB
+GrB_Info GB (_DxB)
 (
     GrB_Matrix C,
     const GrB_Matrix D, bool D_is_pattern,
@@ -251,7 +239,7 @@ GrB_Info GB_DxB
     #if GB_DISABLE
     return (GrB_NO_VALUE) ;
     #else
-    GB_ctype *GB_RESTRICT Cx = (GB_ctype *) C->x ;
+    GB_ctype *restrict Cx = (GB_ctype *) C->x ;
     #include "GB_AxB_rowscale_meta.c"
     return (GrB_SUCCESS) ;
     #endif
@@ -263,15 +251,7 @@ endif_binop_is_semiring_multiplier
 // eWiseAdd: C = A+B or C<M> = A+B
 //------------------------------------------------------------------------------
 
-#undef  GB_FREE_ALL
-#define GB_FREE_ALL                                                     \
-{                                                                       \
-    GB_ek_slice_free (&pstart_Mslice, &kfirst_Mslice, &klast_Mslice) ;  \
-    GB_ek_slice_free (&pstart_Aslice, &kfirst_Aslice, &klast_Aslice) ;  \
-    GB_ek_slice_free (&pstart_Bslice, &kfirst_Bslice, &klast_Bslice) ;  \
-}
-
-GrB_Info GB_AaddB
+GrB_Info GB (_AaddB)
 (
     GrB_Matrix C,
     const int C_sparsity,
@@ -281,10 +261,10 @@ GrB_Info GB_AaddB
     const GrB_Matrix A,
     const GrB_Matrix B,
     const bool Ch_is_Mh,
-    const int64_t *GB_RESTRICT C_to_M,
-    const int64_t *GB_RESTRICT C_to_A,
-    const int64_t *GB_RESTRICT C_to_B,
-    const GB_task_struct *GB_RESTRICT TaskList,
+    const int64_t *restrict C_to_M,
+    const int64_t *restrict C_to_A,
+    const int64_t *restrict C_to_B,
+    const GB_task_struct *restrict TaskList,
     const int C_ntasks,
     const int C_nthreads,
     GB_Context Context
@@ -293,11 +273,11 @@ GrB_Info GB_AaddB
     #if GB_DISABLE
     return (GrB_NO_VALUE) ;
     #else
-    int64_t *pstart_Mslice = NULL, *kfirst_Mslice = NULL, *klast_Mslice = NULL ;
-    int64_t *pstart_Aslice = NULL, *kfirst_Aslice = NULL, *klast_Aslice = NULL ;
-    int64_t *pstart_Bslice = NULL, *kfirst_Bslice = NULL, *klast_Bslice = NULL ;
+    GB_WERK_DECLARE (M_ek_slicing, int64_t) ;
+    GB_WERK_DECLARE (A_ek_slicing, int64_t) ;
+    GB_WERK_DECLARE (B_ek_slicing, int64_t) ;
     #include "GB_add_template.c"
-    GB_FREE_ALL ;
+    GB_FREE_WORK ;
     return (GrB_SUCCESS) ;
     #endif
 }
@@ -306,19 +286,20 @@ GrB_Info GB_AaddB
 // eWiseMult: C = A.*B or C<M> = A.*B
 //------------------------------------------------------------------------------
 
-GrB_Info GB_AemultB
+GrB_Info GB (_AemultB_01)
 (
     GrB_Matrix C,
     const int C_sparsity,
+    const int ewise_method,
     const GrB_Matrix M,
     const bool Mask_struct,
     const bool Mask_comp,
     const GrB_Matrix A,
     const GrB_Matrix B,
-    const int64_t *GB_RESTRICT C_to_M,
-    const int64_t *GB_RESTRICT C_to_A,
-    const int64_t *GB_RESTRICT C_to_B,
-    const GB_task_struct *GB_RESTRICT TaskList,
+    const int64_t *restrict C_to_M,
+    const int64_t *restrict C_to_A,
+    const int64_t *restrict C_to_B,
+    const GB_task_struct *restrict TaskList,
     const int C_ntasks,
     const int C_nthreads,
     GB_Context Context
@@ -327,11 +308,104 @@ GrB_Info GB_AemultB
     #if GB_DISABLE
     return (GrB_NO_VALUE) ;
     #else
-    int64_t *pstart_Mslice = NULL, *kfirst_Mslice = NULL, *klast_Mslice = NULL ;
-    int64_t *pstart_Aslice = NULL, *kfirst_Aslice = NULL, *klast_Aslice = NULL ;
-    int64_t *pstart_Bslice = NULL, *kfirst_Bslice = NULL, *klast_Bslice = NULL ;
-    #include "GB_emult_template.c"
-    GB_FREE_ALL ;
+    #include "GB_emult_01_meta.c"
+    return (GrB_SUCCESS) ;
+    #endif
+}
+
+//------------------------------------------------------------------------------
+// eWiseMult: C<#> = A.*B when A is sparse/hyper and B is bitmap/full
+//------------------------------------------------------------------------------
+
+GrB_Info GB (_AemultB_02)
+(
+    GrB_Matrix C,
+    const GrB_Matrix M,
+    const bool Mask_struct,
+    const bool Mask_comp,
+    const GrB_Matrix A,
+    const GrB_Matrix B,
+    const bool flipxy,
+    const int64_t *restrict Cp_kfirst,
+    const int64_t *A_ek_slicing, const int A_ntasks, const int A_nthreads
+)
+{ 
+    #if GB_DISABLE
+    return (GrB_NO_VALUE) ;
+    #else
+    #if GB_BINOP_FLIP
+        // The operator is not commutative, and does not have a flipped
+        // variant.  For example z=atan2(y,x).
+        if (flipxy)
+        {
+            // use fmult(y,x)
+            #undef  GB_FLIPPED
+            #define GB_FLIPPED 1
+            #include "GB_emult_02_template.c"
+        }
+        else
+        {
+            // use fmult(x,y)
+            #undef  GB_FLIPPED
+            #define GB_FLIPPED 0
+            #include "GB_emult_02_template.c"
+        }
+    #else
+        // No need to handle the flip: the operator is either commutative, or
+        // has been handled by changing z=div(y,x) to z=rdiv(x,y) for example.
+        #undef  GB_FLIPPED
+        #define GB_FLIPPED 0
+        #include "GB_emult_02_template.c"
+    #endif
+    return (GrB_SUCCESS) ;
+    #endif
+}
+
+//------------------------------------------------------------------------------
+// eWiseMult: C<M> = A.*B, M sparse/hyper, A and B bitmap/full
+//------------------------------------------------------------------------------
+
+GrB_Info GB (_AemultB_03)
+(
+    GrB_Matrix C,
+    const GrB_Matrix M,
+    const bool Mask_struct,
+    const GrB_Matrix A,
+    const GrB_Matrix B,
+    const int64_t *restrict Cp_kfirst,
+    const int64_t *M_ek_slicing, const int M_ntasks, const int M_nthreads
+)
+{ 
+    #if GB_DISABLE
+    return (GrB_NO_VALUE) ;
+    #else
+    #include "GB_emult_03_template.c"
+    return (GrB_SUCCESS) ;
+    #endif
+}
+
+//------------------------------------------------------------------------------
+// eWiseMult: C=A.*B, C<M>=A.*B, C<!M>=A.*B where C is bitmap
+//------------------------------------------------------------------------------
+
+GrB_Info GB (_AemultB_bitmap)
+(
+    GrB_Matrix C,
+    const int ewise_method,
+    const GrB_Matrix M,
+    const bool Mask_struct,
+    const bool Mask_comp,
+    const GrB_Matrix A,
+    const GrB_Matrix B,
+    const int64_t *M_ek_slicing, const int M_ntasks, const int M_nthreads,
+    const int C_nthreads,
+    GB_Context Context
+)
+{ 
+    #if GB_DISABLE
+    return (GrB_NO_VALUE) ;
+    #else
+    #include "GB_bitmap_emult_template.c"
     return (GrB_SUCCESS) ;
     #endif
 }
@@ -342,12 +416,12 @@ GrB_Info GB_AemultB
 
 if_binop_bind1st_is_enabled
 
-GrB_Info GB_bind1st
+GrB_Info GB (_bind1st)
 (
     GB_void *Cx_output,         // Cx and Bx may be aliased
     const GB_void *x_input,
     const GB_void *Bx_input,
-    const int8_t *GB_RESTRICT Bb,
+    const int8_t *restrict Bb,
     int64_t anz,
     int nthreads
 )
@@ -378,12 +452,12 @@ endif_binop_bind1st_is_enabled
 
 if_binop_bind2nd_is_enabled
 
-GrB_Info GB_bind2nd
+GrB_Info GB (_bind2nd)
 (
     GB_void *Cx_output,         // Cx and Ax may be aliased
     const GB_void *Ax_input,
     const GB_void *y_input,
-    const int8_t *GB_RESTRICT Ab,
+    const int8_t *restrict Ab,
     int64_t anz,
     int nthreads
 )
@@ -422,13 +496,13 @@ if_binop_bind1st_is_enabled
     GB_binaryop(Cx [pC], x, aij, 0, 0) ;        \
 }
 
-GrB_Info GB_bind1st_tran
+GrB_Info GB (_bind1st_tran)
 (
     GrB_Matrix C,
     const GB_void *x_input,
     const GrB_Matrix A,
-    int64_t *GB_RESTRICT *Workspaces,
-    const int64_t *GB_RESTRICT A_slice,
+    int64_t *restrict *Workspaces,
+    const int64_t *restrict A_slice,
     int nworkspaces,
     int nthreads
 )
@@ -466,13 +540,13 @@ if_binop_bind2nd_is_enabled
     GB_binaryop(Cx [pC], aij, y, 0, 0) ;        \
 }
 
-GrB_Info GB_bind2nd_tran
+GrB_Info GB (_bind2nd_tran)
 (
     GrB_Matrix C,
     const GrB_Matrix A,
     const GB_void *y_input,
-    int64_t *GB_RESTRICT *Workspaces,
-    const int64_t *GB_RESTRICT A_slice,
+    int64_t *restrict *Workspaces,
+    const int64_t *restrict A_slice,
     int nworkspaces,
     int nthreads
 )

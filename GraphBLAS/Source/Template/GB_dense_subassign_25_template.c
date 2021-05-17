@@ -18,20 +18,24 @@
     //--------------------------------------------------------------------------
 
     ASSERT (GB_sparsity (M) == GB_sparsity (C)) ;
-    GB_CTYPE *GB_RESTRICT Cx = (GB_CTYPE *) C->x ;
-    int64_t *GB_RESTRICT Ci = C->i ;
+    GB_CTYPE *restrict Cx = (GB_CTYPE *) C->x ;
+    int64_t *restrict Ci = C->i ;
 
     ASSERT (GB_IS_SPARSE (M) || GB_IS_HYPERSPARSE (M)) ;
     ASSERT (GB_JUMBLED_OK (M)) ;
-    const int64_t *GB_RESTRICT Mp = M->p ;
-    const int64_t *GB_RESTRICT Mh = M->h ;
-    const int64_t *GB_RESTRICT Mi = M->i ;
+    const int64_t *restrict Mp = M->p ;
+    const int64_t *restrict Mh = M->h ;
+    const int64_t *restrict Mi = M->i ;
     const int64_t mvlen = M->vlen ;
 
     const bool A_is_bitmap = GB_IS_BITMAP (A) ;
-    const GB_ATYPE *GB_RESTRICT Ax = (GB_ATYPE *) A->x ;
-    const int8_t   *GB_RESTRICT Ab = A->b ;
+    const GB_ATYPE *restrict Ax = (GB_ATYPE *) A->x ;
+    const int8_t   *restrict Ab = A->b ;
     const int64_t avlen = A->vlen ;
+
+    const int64_t *restrict kfirst_Mslice = M_ek_slicing ;
+    const int64_t *restrict klast_Mslice  = M_ek_slicing + M_ntasks ;
+    const int64_t *restrict pstart_Mslice = M_ek_slicing + M_ntasks * 2 ;
 
     //--------------------------------------------------------------------------
     // C<M> = A
@@ -47,14 +51,14 @@
         int64_t nzombies = 0 ;
 
         int tid ;
-        #pragma omp parallel for num_threads(nthreads) schedule(dynamic,1) \
+        #pragma omp parallel for num_threads(M_nthreads) schedule(dynamic,1) \
             reduction(+:nzombies)
-        for (tid = 0 ; tid < ntasks ; tid++)
+        for (tid = 0 ; tid < M_ntasks ; tid++)
         {
 
             // if kfirst > klast then task tid does no work at all
-            int64_t kfirst = kfirst_slice [tid] ;
-            int64_t klast  = klast_slice  [tid] ;
+            int64_t kfirst = kfirst_Mslice [tid] ;
+            int64_t klast  = klast_Mslice  [tid] ;
             int64_t task_nzombies = 0 ;
 
             //------------------------------------------------------------------
@@ -71,7 +75,7 @@
                 int64_t j = GBH (Mh, k) ;
                 int64_t pM_start, pM_end ;
                 GB_get_pA (&pM_start, &pM_end, tid, k,
-                    kfirst, klast, pstart_slice, Mp, mvlen) ;
+                    kfirst, klast, pstart_Mslice, Mp, mvlen) ;
 
                 //--------------------------------------------------------------
                 // C<M(:,j)> = A(:,j)
@@ -110,13 +114,13 @@
         //----------------------------------------------------------------------
 
         int tid ;
-        #pragma omp parallel for num_threads(nthreads) schedule(dynamic,1)
-        for (tid = 0 ; tid < ntasks ; tid++)
+        #pragma omp parallel for num_threads(M_nthreads) schedule(dynamic,1)
+        for (tid = 0 ; tid < M_ntasks ; tid++)
         {
 
             // if kfirst > klast then task tid does no work at all
-            int64_t kfirst = kfirst_slice [tid] ;
-            int64_t klast  = klast_slice  [tid] ;
+            int64_t kfirst = kfirst_Mslice [tid] ;
+            int64_t klast  = klast_Mslice  [tid] ;
 
             //------------------------------------------------------------------
             // C<M(:,kfirst:klast)> = A(:,kfirst:klast)
@@ -132,7 +136,7 @@
                 int64_t j = GBH (Mh, k) ;
                 int64_t pM_start, pM_end ;
                 GB_get_pA (&pM_start, &pM_end, tid, k,
-                    kfirst, klast, pstart_slice, Mp, mvlen) ;
+                    kfirst, klast, pstart_Mslice, Mp, mvlen) ;
 
                 //--------------------------------------------------------------
                 // C<M(:,j)> = A(:,j)

@@ -114,6 +114,8 @@ codegen_axb_template ('rdiv',         ...
     'GB_FC32_div (yarg, xarg)',         ... % GxB_FC32_t
     'GB_FC64_div (yarg, xarg)') ;       ... % GxB_FC64_t
 
+% in v5.0.1, the *is* semirings are deleted from Source/Generated/
+%{
 codegen_axb_template ('iseq',           ...
     [ ],                                ... % bool
     '(xarg == yarg)',                   ... % int, uint
@@ -161,6 +163,7 @@ codegen_axb_template ('isle',           ...
     '(xarg <= yarg)',                   ... % double
     [ ],                                ... % GxB_FC32_t
     [ ]) ;                              ... % GxB_FC64_t
+%}
 
 codegen_axb_compare_template ('eq',     ...
     '(xarg == yarg)',                   ... % bool
@@ -192,7 +195,8 @@ codegen_axb_template ('lor',          ...
     '((xarg != 0) || (yarg != 0))',     ... % float
     '((xarg != 0) || (yarg != 0))',     ... % double
     [ ],                                ... % GxB_FC32_t
-    [ ]) ;                              ... % GxB_FC64_t
+    [ ],                                ... % GxB_FC64_t
+    true) ;     % no min,max,times,any monoids for LOR multiplier op
 
 codegen_axb_template ('land',         ...
     '(xarg && yarg)',                   ... % bool
@@ -200,7 +204,8 @@ codegen_axb_template ('land',         ...
     '((xarg != 0) && (yarg != 0))',     ... % float
     '((xarg != 0) && (yarg != 0))',     ... % double
     [ ],                                ... % GxB_FC32_t
-    [ ]) ;                              ... % GxB_FC64_t
+    [ ],                                ... % GxB_FC64_t
+    true) ;     % no min,max,times,any monoids for LAND multiplier op
 
 codegen_axb_template ('lxor',         ...
     '(xarg != yarg)',                   ... % bool
@@ -208,7 +213,8 @@ codegen_axb_template ('lxor',         ...
     '((xarg != 0) != (yarg != 0))',     ... % float
     '((xarg != 0) != (yarg != 0))',     ... % double
     [ ],                                ... % GxB_FC32_t
-    [ ]) ;                              ... % GxB_FC64_t
+    [ ],                                ... % GxB_FC64_t
+    true) ;     % no min,max,times,any monoids for LXOR multipier op
 
 % bitwise semirings
 ops   = { 'bor', 'band', 'bxor', 'bxnor' } ;

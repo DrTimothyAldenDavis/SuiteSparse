@@ -9,11 +9,11 @@
 
 #include "GB_select.h"
 
-#define GB_FREE_ALL         \
-{                           \
-    GB_FREE (Ax_new) ;      \
-    GB_FREE (Ab_new) ;      \
-    GB_phbix_free (A) ;     \
+#define GB_FREE_ALL                     \
+{                                       \
+    GB_FREE (&Ax_new, Ax_new_size) ;    \
+    GB_FREE (&Ab_new, Ab_new_size) ;    \
+    GB_phbix_free (A) ;                 \
 }
 
 //------------------------------------------------------------------------------
@@ -34,8 +34,8 @@ GrB_Info GB_resize              // change the size of a matrix
     //--------------------------------------------------------------------------
 
     GrB_Info info ;
-    GB_void *GB_RESTRICT Ax_new = NULL ;
-    int8_t  *GB_RESTRICT Ab_new = NULL ;
+    GB_void *restrict Ax_new = NULL ; size_t Ax_new_size = 0 ;
+    int8_t  *restrict Ab_new = NULL ; size_t Ab_new_size = 0 ;
     ASSERT_MATRIX_OK (A, "A to resize", GB0) ;
 
     //--------------------------------------------------------------------------
@@ -111,17 +111,18 @@ GrB_Info GB_resize              // change the size of a matrix
         if (in_place)
         { 
             // reallocate A->x in-place; no data movement needed
-            GB_REALLOC (A->x, nzmax_new*asize, nzmax_old*asize, GB_void, &ok) ;
+            GB_REALLOC (A->x, nzmax_new*asize, nzmax_old*asize, GB_void, 
+                &(A->x_size), &ok, Context) ;
         }
         else
         { 
             // allocate new space for A->x
-            Ax_new = GB_MALLOC (nzmax_new*asize, GB_void) ;
+            Ax_new = GB_MALLOC (nzmax_new*asize, GB_void, &Ax_new_size) ;
             ok = (Ax_new != NULL) ;
             if (A_is_bitmap)
             {
                 // allocate new space for A->b
-                Ab_new = GB_MALLOC (nzmax_new*asize, int8_t) ;
+                Ab_new = GB_MALLOC (nzmax_new*asize, int8_t, &Ab_new_size) ;
                 ok = ok && (Ab_new != NULL) ;
             }
         }
@@ -150,7 +151,7 @@ GrB_Info GB_resize              // change the size of a matrix
             // resize Ax
             //------------------------------------------------------------------
         
-            GB_void *GB_RESTRICT Ax_old = A->x ;
+            GB_void *restrict Ax_old = (GB_void *) A->x ;
 
             int64_t j ;
             if (vdim_new <= 4*nthreads)
@@ -174,8 +175,8 @@ GrB_Info GB_resize              // change the size of a matrix
                     memcpy (pdest, psrc, vlen_new * asize) ;
                 }
             }
-            A->x = Ax_new ;
-            GB_FREE (Ax_old) ;
+            GB_FREE (&Ax_old, A->x_size) ;
+            A->x = Ax_new ; A->x_size = Ax_new_size ;
 
             //------------------------------------------------------------------
             // resize Ab if A is bitmap, and count the # of entries
@@ -183,7 +184,7 @@ GrB_Info GB_resize              // change the size of a matrix
 
             if (A_is_bitmap)
             { 
-                int8_t *GB_RESTRICT Ab_old = A->b ;
+                int8_t *restrict Ab_old = A->b ;
                 int64_t pnew ;
                 int64_t anvals = 0 ;
                 #pragma omp parallel for num_threads(nthreads) \
@@ -198,8 +199,8 @@ GrB_Info GB_resize              // change the size of a matrix
                     anvals += ab ;
                 }
                 A->nvals = anvals ;
-                A->b = Ab_new ;
-                GB_FREE (Ab_old) ;
+                GB_FREE (&Ab_old, A->b_size) ;
+                A->b = Ab_new ; A->b_size = Ab_new_size ;
             }
         }
 
@@ -228,8 +229,8 @@ GrB_Info GB_resize              // change the size of a matrix
         ASSERT (GB_IS_HYPERSPARSE (A)) ;
 
         // resize the number of sparse vectors
-        int64_t *GB_RESTRICT Ah = A->h ;
-        int64_t *GB_RESTRICT Ap = A->p ;
+        int64_t *restrict Ah = A->h ;
+        int64_t *restrict Ap = A->p ;
         A->vdim = vdim_new ;
 
         if (vdim_new < A->plen)

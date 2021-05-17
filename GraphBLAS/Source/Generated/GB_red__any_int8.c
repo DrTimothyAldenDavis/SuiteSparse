@@ -12,14 +12,13 @@
 #include "GB.h"
 #ifndef GBCOMPACT
 #include "GB_atomics.h"
-#include "GB_ek_slice.h"
 #include "GB_control.h" 
 #include "GB_red__include.h"
 
 // The reduction is defined by the following types and operators:
 
-// Assemble tuples:    GB_red_build__any_int8
-// Reduce to scalar:   GB_red_scalar__any_int8
+// Assemble tuples:    GB (_red_build__any_int8)
+// Reduce to scalar:   GB (_red_scalar__any_int8)
 
 // A type:   int8_t
 // C type:   int8_t
@@ -124,12 +123,12 @@
 
 
 
-GrB_Info GB_red_scalar__any_int8
+GrB_Info GB (_red_scalar__any_int8)
 (
     int8_t *result,
     const GrB_Matrix A,
-    GB_void *GB_RESTRICT W_space,
-    bool *GB_RESTRICT F,
+    GB_void *restrict W_space,
+    bool *restrict F,
     int ntasks,
     int nthreads
 )
@@ -138,7 +137,7 @@ GrB_Info GB_red_scalar__any_int8
     return (GrB_NO_VALUE) ;
     #else
     int8_t s = (*result) ;
-    int8_t *GB_RESTRICT W = (int8_t *) W_space ;
+    int8_t *restrict W = (int8_t *) W_space ;
     if (A->nzombies > 0 || GB_IS_BITMAP (A))
     {
         #include "GB_reduce_to_scalar_template.c"
@@ -158,17 +157,17 @@ GrB_Info GB_red_scalar__any_int8
 // build matrix
 //------------------------------------------------------------------------------
 
-GrB_Info GB_red_build__any_int8
+GrB_Info GB (_red_build__any_int8)
 (
-    int8_t *GB_RESTRICT Tx,
-    int64_t  *GB_RESTRICT Ti,
-    const int8_t *GB_RESTRICT S,
+    int8_t *restrict Tx,
+    int64_t  *restrict Ti,
+    const int8_t *restrict S,
     int64_t nvals,
     int64_t ndupl,
-    const int64_t *GB_RESTRICT I_work,
-    const int64_t *GB_RESTRICT K_work,
-    const int64_t *GB_RESTRICT tstart_slice,
-    const int64_t *GB_RESTRICT tnz_slice,
+    const int64_t *restrict I_work,
+    const int64_t *restrict K_work,
+    const int64_t *restrict tstart_slice,
+    const int64_t *restrict tnz_slice,
     int nthreads
 )
 { 

@@ -17,11 +17,11 @@
 
 #define FREE_ALL                            \
 {                                           \
-    GrB_Matrix_free_(&A) ;                   \
-    GrB_Matrix_free_(&Aconj) ;               \
-    GrB_Matrix_free_(&B) ;                   \
-    GrB_Matrix_free_(&C) ;                   \
-    GrB_Matrix_free_(&Mask) ;                \
+    GrB_Matrix_free_(&A) ;                  \
+    GrB_Matrix_free_(&Aconj) ;              \
+    GrB_Matrix_free_(&B) ;                  \
+    GrB_Matrix_free_(&C) ;                  \
+    GrB_Matrix_free_(&Mask) ;               \
     GrB_Monoid_free_(&add) ;                \
     GrB_Semiring_free_(&semiring) ;         \
     GB_mx_put_global (true) ;               \
@@ -34,6 +34,7 @@ GrB_Info adotb_complex (GB_Context Context) ;
 GrB_Info adotb (GB_Context Context) ;
 GrB_Index anrows, ancols, bnrows, bncols, mnrows, mncols ;
 bool flipxy = false ;
+struct GB_Matrix_opaque C_header ;
 
 //------------------------------------------------------------------------------
 
@@ -63,7 +64,7 @@ GrB_Info adotb_complex (GB_Context Context)
     if (Mask != NULL)
     {
         // C<M> = A'*B using dot product method
-        info = GB_AxB_dot3 (&C, Mask, false, Aconj, B, semiring, flipxy,
+        info = GB_AxB_dot3 (C, Mask, false, Aconj, B, semiring, flipxy,
             Context) ;
         mask_applied = true ;
     }
@@ -71,7 +72,7 @@ GrB_Info adotb_complex (GB_Context Context)
     {
         // C = A'*B using dot product method
         mask_applied = false ;  // no mask to apply
-        info = GB_AxB_dot2 (&C, NULL, false, false, Aconj, B, semiring, flipxy,
+        info = GB_AxB_dot2 (C, NULL, false, false, Aconj, B, semiring, flipxy,
             Context) ;
     }
 
@@ -98,7 +99,7 @@ GrB_Info adotb (GB_Context Context)
     if (Mask != NULL)
     {
         // C<M> = A'*B using dot product method
-        info = GB_AxB_dot3 (&C, Mask, false, A, B,
+        info = GB_AxB_dot3 (C, Mask, false, A, B,
             semiring /* GxB_PLUS_TIMES_FP64 */,
             flipxy, Context) ;
         mask_applied = true ;
@@ -106,7 +107,7 @@ GrB_Info adotb (GB_Context Context)
     else
     {
         mask_applied = false ;  // no mask to apply
-        info = GB_AxB_dot2 (&C, NULL, false, false, A, B,
+        info = GB_AxB_dot2 (C, NULL, false, false, A, B,
             semiring /* GxB_PLUS_TIMES_FP64 */, flipxy, Context) ;
     }
 
@@ -201,6 +202,9 @@ void mexFunction
 
     // get flipxy
     GET_SCALAR (3, bool, flipxy, false) ;
+
+    struct GB_Matrix_opaque C_header ;
+    C = GB_clear_static_header (&C_header) ;
 
     if (A->type == Complex)
     {

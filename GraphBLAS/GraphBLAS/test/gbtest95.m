@@ -2,7 +2,7 @@ function gbtest95
 %GBTEST95 test indexing
 
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
-% SPDX-License-Identifier: Apache-2.0
+% SPDX-License-Identifier: GPL-3.0-or-later
 
 G = GrB.empty (GrB ([0 2])) ;
 assert (isequal (size (G), [0 2])) ;

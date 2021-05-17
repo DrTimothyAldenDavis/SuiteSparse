@@ -107,7 +107,8 @@ mxArray *GB_mx_object_to_mxArray   // returns the MATLAB mxArray
     if (C->x == NULL)
     {
         ASSERT (C->nzmax == 0 && cnz == 0) ;
-        C->x = GB_MALLOC (2 * sizeof (double), GB_void) ;
+        C->x = (GB_void *) GB_malloc_memory (2 * sizeof (double),
+            sizeof (GB_void), &(C->x_size)) ;
         memset (C->x, 0, 2 * sizeof (double)) ;
         C->x_shallow = false ;
     }
@@ -119,14 +120,16 @@ mxArray *GB_mx_object_to_mxArray   // returns the MATLAB mxArray
         if (C->i == NULL)
         {
             ASSERT (C->nzmax == 0 && cnz == 0) ;
-            C->i = GB_MALLOC (1, int64_t) ;
+            C->i = (int64_t *) GB_malloc_memory (1, sizeof (int64_t),
+                &(C->i_size)) ;
             C->i [0] = 0 ;
             C->i_shallow = false ;
         }
         if (C->p == NULL)
         {
             ASSERT (C->nzmax == 0 && cnz == 0) ;
-            C->p = GB_MALLOC (C->vdim + 1, int64_t) ;
+            C->p = (int64_t *) GB_malloc_memory (C->vdim + 1, 
+                sizeof (int64_t), &(C->p_size)) ;
             memset (C->p, 0, (C->vdim + 1) * sizeof (int64_t)) ;
             C->p_shallow = false ;
         }
@@ -140,7 +143,7 @@ mxArray *GB_mx_object_to_mxArray   // returns the MATLAB mxArray
 
     if (C_is_full)
     {
-        // C is full.  See gb_export_to_mxfull
+        // C is full.
         // allocate an empty dense matrix of the right type, then set content
 
         void *Cx = (void *) C->x ;
@@ -217,7 +220,7 @@ mxArray *GB_mx_object_to_mxArray   // returns the MATLAB mxArray
 
         mexMakeMemoryPersistent (C->x) ;
         C->x_shallow = false ;
-        AS_IF_FREE (C->x) ;   // unlink C->x from C since it's now in MATLAB C
+        GB_AS_IF_FREE (C->x) ;   // unlink C->x from C; now in MATLAB C
 
     }
     else if (C->type == GrB_BOOL)
@@ -229,7 +232,7 @@ mxArray *GB_mx_object_to_mxArray   // returns the MATLAB mxArray
         C->x_shallow = false ;
 
         // C->x is treated as if it was freed
-        AS_IF_FREE (C->x) ;   // unlink C->x from C since it's now in MATLAB C
+        GB_AS_IF_FREE (C->x) ;   // unlink C->x from C; now in MATLAB C
 
     }
     else if (C->type == GrB_FP64)
@@ -241,7 +244,7 @@ mxArray *GB_mx_object_to_mxArray   // returns the MATLAB mxArray
         C->x_shallow = false ;
 
         // C->x is treated as if it was freed
-        AS_IF_FREE (C->x) ;   // unlink C->x from C since it's now in MATLAB C
+        GB_AS_IF_FREE (C->x) ;   // unlink C->x from C; in MATLAB C
 
     }
     else if (C->type == Complex || C->type == GxB_FC64)
@@ -266,7 +269,9 @@ mxArray *GB_mx_object_to_mxArray   // returns the MATLAB mxArray
 
         // otherwise C is cast into a MATLAB double sparse matrix
         A = mxCreateSparse (0, 0, 0, mxREAL) ;
-        double *Sx = GB_MALLOC (cnz+1, double) ;
+        size_t Sx_size ;
+        double *Sx = (double *) GB_malloc_memory (cnz+1, sizeof (double),
+            &Sx_size) ;
         GB_cast_array (Sx, GB_FP64_code,
             C->x, C->type->code, NULL, C->type->size, cnz, 1) ;
         mexMakeMemoryPersistent (Sx) ;
@@ -274,7 +279,7 @@ mxArray *GB_mx_object_to_mxArray   // returns the MATLAB mxArray
 
         // Sx was just malloc'd, and given to MATLAB.  Treat it as if
         // GraphBLAS has freed it
-        AS_IF_FREE (Sx) ;
+        GB_AS_IF_FREE (Sx) ;
 
         if (create_struct)
         {
@@ -287,7 +292,7 @@ mxArray *GB_mx_object_to_mxArray   // returns the MATLAB mxArray
             mexMakeMemoryPersistent (C->x) ;
             C->x_shallow = false ;
             // treat C->x as if it were freed
-            AS_IF_FREE (C->x) ;
+            GB_AS_IF_FREE (C->x) ;
         }
     }
 
@@ -306,11 +311,11 @@ mxArray *GB_mx_object_to_mxArray   // returns the MATLAB mxArray
         mxSetIr (A, (size_t *) C->i) ;
 
         // treat C->p as if freed
-        AS_IF_FREE (C->p) ;
+        GB_AS_IF_FREE (C->p) ;
 
         // treat C->i as if freed
         C->i_shallow = false ;
-        AS_IF_FREE (C->i) ;
+        GB_AS_IF_FREE (C->i) ;
     }
 
     // free C, but leave any shallow components untouched

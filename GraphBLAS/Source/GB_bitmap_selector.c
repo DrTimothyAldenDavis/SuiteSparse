@@ -14,13 +14,13 @@
 
 GrB_Info GB_bitmap_selector
 (
-    GrB_Matrix *Chandle,        // output matrix, never NULL
+    GrB_Matrix C,               // output matrix, static header
     GB_Select_Opcode opcode,    // selector opcode
     const GxB_select_function user_select,      // user select function
     const bool flipij,          // if true, flip i and j for user operator
     GrB_Matrix A,               // input matrix
     const int64_t ithunk,       // (int64_t) Thunk, if Thunk is NULL
-    const GB_void *GB_RESTRICT xthunk,
+    const GB_void *restrict xthunk,
     GB_Context Context
 )
 {
@@ -34,11 +34,7 @@ GrB_Info GB_bitmap_selector
     ASSERT (GB_is_packed (A)) ;
     ASSERT (opcode != GB_RESIZE_opcode) ;
     ASSERT (opcode != GB_NONZOMBIE_opcode) ;
-
-    // Only GB_Matrix_wait and GB_resize pass in Chandle as NULL, and they
-    // do not operate on bitmap matrices.  So for the bitmap case, Chandle
-    // is never NULL.
-    ASSERT (Chandle != NULL) ;
+    ASSERT (C != NULL && C->static_header) ;
 
     //--------------------------------------------------------------------------
     // get A
@@ -52,8 +48,7 @@ GrB_Info GB_bitmap_selector
     //--------------------------------------------------------------------------
 
     // C->b and C->x are malloc'd, not calloc'd
-    GrB_Matrix C = NULL ;
-    GB_OK (GB_new_bix (&C, // always bitmap, new header
+    GB_OK (GB_new_bix (&C, true, // always bitmap, static header
         A->type, A->vlen, A->vdim, GB_Ap_calloc, true,
         GxB_BITMAP, false, A->hyper_switch, -1, anz, true, Context)) ;
     int64_t cnvals ;
@@ -80,11 +75,11 @@ GrB_Info GB_bitmap_selector
     //--------------------------------------------------------------------------
 
     #define GB_BITMAP_SELECTOR
-    #define GB_selbit(opname,aname) GB_sel_bitmap_ ## opname ## aname
+    #define GB_selbit(opname,aname) GB (_sel_bitmap_ ## opname ## aname)
     #define GB_SEL_WORKER(opname,aname,atype)                           \
     {                                                                   \
-        GB_selbit (opname, aname) (C->b, C->x, &cnvals, A, flipij,      \
-            ithunk, (atype *) xthunk, user_select, nthreads) ;          \
+        GB_selbit (opname, aname) (C->b, (atype *) C->x, &cnvals, A,    \
+            flipij, ithunk, (atype *) xthunk, user_select, nthreads) ;  \
     }                                                                   \
     break ;
     #include "GB_select_factory.c"
@@ -93,7 +88,6 @@ GrB_Info GB_bitmap_selector
     // return result
     //--------------------------------------------------------------------------
 
-    (*Chandle) = C ;
     C->nvals = cnvals ;
     C->magic = GB_MAGIC ;
     ASSERT_MATRIX_OK (C, "C from bitmap selector", GB0) ;

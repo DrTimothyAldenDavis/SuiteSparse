@@ -23,16 +23,16 @@
         // allocate workspace for each task
         //----------------------------------------------------------------------
 
-        GH_slice = GB_MALLOC (2*ntasks, int64_t) ;
+        GB_WERK_PUSH (GH_slice, 2*ntasks, int64_t) ;
         if (GH_slice == NULL)
         {
             // out of memory
-            GB_FREE_WORK ;
+            GB_FREE_ALL ;
             return (GrB_OUT_OF_MEMORY) ;
         }
 
-        int64_t *GB_RESTRICT G_slice = GH_slice ;
-        int64_t *GB_RESTRICT H_slice = GH_slice + ntasks ;
+        int64_t *restrict G_slice = GH_slice ;
+        int64_t *restrict H_slice = GH_slice + ntasks ;
 
         int64_t gwork = 0 ;
         int64_t hwork = 0 ;
@@ -60,13 +60,13 @@
         size_t wfspace = gfspace + hwork * cvlen ;
         size_t wbxspace = gwork * bvlenx ;
         size_t wcxspace = hwork * cvlenx ;
-        Wf = GB_MALLOC (wfspace, int8_t) ;
-        Wbx = GB_MALLOC (wbxspace, GB_void) ;
-        Wcx = GB_MALLOC (wcxspace, GB_void) ;
+        Wf  = GB_MALLOC_WERK (wfspace, int8_t, &Wf_size) ;
+        Wbx = GB_MALLOC_WERK (wbxspace, GB_void, &Wbx_size) ;
+        Wcx = GB_MALLOC_WERK (wcxspace, GB_void, &Wcx_size) ;
         if (Wf == NULL || Wcx == NULL || Wbx == NULL)
         {
             // out of memory
-            GB_FREE_WORK ;
+            GB_FREE_ALL ;
             return (GrB_OUT_OF_MEMORY) ;
         }
 
@@ -94,20 +94,20 @@
             //------------------------------------------------------------------
 
             // Gb and Gx workspace to load the panel of B
-            int8_t   *GB_RESTRICT Gb = Wf  + G_slice [tid] * bvlenb ;
-            GB_BTYPE *GB_RESTRICT Gx = (GB_BTYPE *)
+            int8_t   *restrict Gb = Wf + G_slice [tid] * bvlenb ;
+            GB_BTYPE *restrict Gx = (GB_BTYPE *)
                 (Wbx + G_slice [tid] * bvlenx) ;
 
             // Hf and Hx workspace to compute the panel of C
-            int8_t   *GB_RESTRICT Hf = Wf  + (H_slice [tid] * cvlen) + gfspace ;
-            GB_CTYPE *GB_RESTRICT Hx = (GB_CTYPE *)
+            int8_t   *restrict Hf = Wf + (H_slice [tid] * cvlen) + gfspace ;
+            GB_CTYPE *restrict Hx = (GB_CTYPE *)
                 (Wcx +  H_slice [tid] * cvlenx) ;
             #if GB_IS_PLUS_FC32_MONOID
-            float  *GB_RESTRICT Hx_real = (float *) Hx ;
-            float  *GB_RESTRICT Hx_imag = Hx_real + 1 ;
+            float  *restrict Hx_real = (float *) Hx ;
+            float  *restrict Hx_imag = Hx_real + 1 ;
             #elif GB_IS_PLUS_FC64_MONOID
-            double *GB_RESTRICT Hx_real = (double *) Hx ;
-            double *GB_RESTRICT Hx_imag = Hx_real + 1 ;
+            double *restrict Hx_real = (double *) Hx ;
+            double *restrict Hx_imag = Hx_real + 1 ;
             #endif
 
             //------------------------------------------------------------------
@@ -161,7 +161,7 @@
                     if (np == 1)
                     {
                         // no need to load a single vector of B
-                        GB_void *GB_RESTRICT Bx = B->x ;
+                        GB_void *restrict Bx = (GB_void *) (B->x) ;
                         Gx = (GB_BTYPE *) (Bx + (j1 * bvlen) * GB_BSIZE) ;
                     }
                     else
@@ -314,7 +314,7 @@
                     //----------------------------------------------------------
 
                     int64_t j = j1 + jj ;
-                    int64_t pC_start = j * avlen ;  // get pointer to C(:,j)
+                    int64_t pC_start = j * cvlen ;  // get pointer to C(:,j)
 
                     for (int64_t i = 0 ; i < cvlen ; i++)
                     {
@@ -405,19 +405,19 @@
             int64_t kfirst = A_slice [fine_tid] ;
             int64_t klast = A_slice [fine_tid + 1] ;
             int64_t pB_start = j * bvlen ;      // pointer to B(:,j)
-            int64_t pC_start = j * avlen ;      // pointer to C(:,j)
+            int64_t pC_start = j * cvlen ;      // pointer to C(:,j)
             GB_GET_T_FOR_SECONDJ ;              // t = j or j+1 for SECONDJ*
             int64_t task_cnvals = 0 ;
 
             // for Hx Gustavason workspace: use C(:,j) in-place:
-            GB_CTYPE *GB_RESTRICT Hx = (GB_CTYPE *)
+            GB_CTYPE *restrict Hx = (GB_CTYPE *)
                 (((GB_void *) Cx) + (pC_start * GB_CSIZE)) ;
             #if GB_IS_PLUS_FC32_MONOID || GB_IS_ANY_FC32_MONOID
-            float  *GB_RESTRICT Hx_real = (float *) Hx ;
-            float  *GB_RESTRICT Hx_imag = Hx_real + 1 ;
+            float  *restrict Hx_real = (float *) Hx ;
+            float  *restrict Hx_imag = Hx_real + 1 ;
             #elif GB_IS_PLUS_FC64_MONOID || GB_IS_ANY_FC64_MONOID
-            double *GB_RESTRICT Hx_real = (double *) Hx ;
-            double *GB_RESTRICT Hx_imag = Hx_real + 1 ;
+            double *restrict Hx_real = (double *) Hx ;
+            double *restrict Hx_imag = Hx_real + 1 ;
             #endif
 
             //------------------------------------------------------------------
@@ -614,13 +614,13 @@
         //----------------------------------------------------------------------
 
         size_t workspace = cvlen * ntasks ;
-        Wf = GB_CALLOC (workspace, int8_t) ;
         size_t cxsize = (GB_IS_ANY_PAIR_SEMIRING) ? 0 : GB_CSIZE ;
-        Wcx = GB_MALLOC (workspace * cxsize, GB_void) ;
+        Wf  = GB_MALLOC_WERK (workspace, int8_t, &Wf_size) ;
+        Wcx = GB_MALLOC_WERK (workspace * cxsize, GB_void, &Wcx_size) ;
         if (Wf == NULL || Wcx == NULL)
         { 
             // out of memory
-            GB_FREE_WORK ;
+            GB_FREE_ALL ;
             return (GrB_OUT_OF_MEMORY) ;
         }
 
@@ -646,22 +646,28 @@
             int64_t kfirst = A_slice [fine_tid] ;
             int64_t klast = A_slice [fine_tid + 1] ;
             int64_t pB_start = j * bvlen ;      // pointer to B(:,j)
-            int64_t pC_start = j * avlen ;      // pointer to C(:,j), for bitmap
-            int64_t pW_start = tid * avlen ;    // pointer to W(:,tid)
+            int64_t pC_start = j * cvlen ;      // pointer to C(:,j), for bitmap
+            int64_t pW_start = tid * cvlen ;    // pointer to W(:,tid)
             GB_GET_T_FOR_SECONDJ ;              // t = j or j+1 for SECONDJ*
             int64_t task_cnvals = 0 ;
 
             // for Hf and Hx Gustavason workspace: use W(:,tid):
-            int8_t   *GB_RESTRICT Hf = Wf + pW_start ;
-            GB_CTYPE *GB_RESTRICT Hx = (GB_CTYPE *) 
+            int8_t   *restrict Hf = Wf + pW_start ;
+            GB_CTYPE *restrict Hx = (GB_CTYPE *) 
                 (Wcx + (pW_start * cxsize)) ;
             #if GB_IS_PLUS_FC32_MONOID
-            float  *GB_RESTRICT Hx_real = (float *) Hx ;
-            float  *GB_RESTRICT Hx_imag = Hx_real + 1 ;
+            float  *restrict Hx_real = (float *) Hx ;
+            float  *restrict Hx_imag = Hx_real + 1 ;
             #elif GB_IS_PLUS_FC64_MONOID
-            double *GB_RESTRICT Hx_real = (double *) Hx ;
-            double *GB_RESTRICT Hx_imag = Hx_real + 1 ;
+            double *restrict Hx_real = (double *) Hx ;
+            double *restrict Hx_imag = Hx_real + 1 ;
             #endif
+
+            //------------------------------------------------------------------
+            // clear Hf
+            //------------------------------------------------------------------
+
+            memset (Hf, 0, cvlen) ;
 
             //------------------------------------------------------------------
             // W<#M> = A(:,k1:k2) * B(k1:k2,j)
@@ -772,13 +778,13 @@
             int64_t task_cnvals = 0 ;
 
             // Hx = (typecasted) Wcx workspace, use Wf as-is
-            GB_CTYPE *GB_RESTRICT Hx = ((GB_CTYPE *) Wcx) ;
+            GB_CTYPE *restrict Hx = ((GB_CTYPE *) Wcx) ;
             #if GB_IS_PLUS_FC32_MONOID
-            float  *GB_RESTRICT Hx_real = (float *) Hx ;
-            float  *GB_RESTRICT Hx_imag = Hx_real + 1 ;
+            float  *restrict Hx_real = (float *) Hx ;
+            float  *restrict Hx_imag = Hx_real + 1 ;
             #elif GB_IS_PLUS_FC64_MONOID
-            double *GB_RESTRICT Hx_real = (double *) Hx ;
-            double *GB_RESTRICT Hx_imag = Hx_real + 1 ;
+            double *restrict Hx_real = (double *) Hx ;
+            double *restrict Hx_imag = Hx_real + 1 ;
             #endif
 
             //------------------------------------------------------------------

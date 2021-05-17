@@ -527,26 +527,31 @@ void mexFunction
     //--------------------------------------------------------------------------
 
     OK (GrB_Matrix_new (&A, GrB_BOOL, 10000, 10000)) ;
-    OK (GB_shallow_copy (&C, A->is_csc, A, NULL)) ;
-    OK (GxB_Matrix_fprint_(C, GxB_COMPLETE, NULL)) ;
+    struct GB_Matrix_opaque Q_header ;
+    GrB_Matrix Q = GB_clear_static_header (&Q_header) ;
+    OK (GB_shallow_copy (Q, A->is_csc, A, NULL)) ;
+    OK (GxB_Matrix_fprint_(Q, GxB_COMPLETE, NULL)) ;
     GrB_Matrix_free_(&A) ;
-    GrB_Matrix_free_(&C) ;
+    GrB_Matrix_free_(&Q) ;
 
     //--------------------------------------------------------------------------
     // tests with memory tracking off
     //--------------------------------------------------------------------------
 
+    size_t nbytes ;
     GB_Global_malloc_tracking_set (false) ;
-    GB_void *p = GB_malloc_memory (4, sizeof (int64_t)) ;
+    GB_void *p = GB_malloc_memory (4, sizeof (int64_t), &nbytes) ;
     CHECK (p != NULL) ;
-    GB_FREE (p) ;
-    p = GB_calloc_memory (4, sizeof (int64_t)) ;
+    GB_FREE (&p, nbytes) ;
+    CHECK (p == NULL) ;
+    p = GB_calloc_memory (4, sizeof (int64_t), &nbytes, NULL) ;
     CHECK (p != NULL) ;
     bool ok = true ;
-    p = GB_realloc_memory (6, 4, sizeof (int64_t), p, &ok) ;
+    p = GB_realloc_memory (6, 4, sizeof (int64_t), p, &nbytes, &ok, NULL) ;
     CHECK (p != NULL) ;
     CHECK (ok) ;
-    GB_FREE (p) ;
+    GB_FREE (&p, nbytes) ;
+    CHECK (p == NULL) ;
 
     CHECK (!GB_Global_malloc_is_thread_safe_get ( )) ;
     GB_Global_malloc_is_thread_safe_set (true) ;
@@ -560,8 +565,13 @@ void mexFunction
     // other global settings
     //--------------------------------------------------------------------------
 
-    GB_Global_hack_set (90123) ;
-    CHECK (GB_Global_hack_get ( ) == 90123) ;
+    int64_t hack0 = GB_Global_hack_get (0) ;
+    int64_t hack1 = GB_Global_hack_get (1) ;
+
+    GB_Global_hack_set (0, 90123) ; CHECK (GB_Global_hack_get (0) == 90123) ;
+    GB_Global_hack_set (0, hack0) ; CHECK (GB_Global_hack_get (0) == hack0) ;
+    GB_Global_hack_set (1, 99123) ; CHECK (GB_Global_hack_get (1) == 99123) ;
+    GB_Global_hack_set (1, hack1) ; CHECK (GB_Global_hack_get (1) == hack1) ;
 
     GrB_Info expected = GrB_INVALID_VALUE ;
 
@@ -569,10 +579,9 @@ void mexFunction
     // GB_pslice
     //--------------------------------------------------------------------------
 
-    int64_t *Slice = NULL ;
-    GB_pslice (&Slice, NULL, 0, 4, true) ;
+    int64_t Slice [30] ;
+    GB_pslice (Slice, NULL, 0, 4, true) ;
     for (int t = 0 ; t < 4 ; t++) CHECK (Slice [t] == 0) ;
-    GB_FREE (Slice) ;
 
     //--------------------------------------------------------------------------
     // renamed boolean monoids
@@ -1147,11 +1156,13 @@ void mexFunction
     OK (GrB_Matrix_new (&B, GrB_FP32, 0, n)) ;
     expected = GrB_OUT_OF_MEMORY ;
     bool ignore ;
-    ERR (GB_bitmap_AxB_saxpy (&C, GxB_BITMAP, NULL, false, false, A, B,
+    struct GB_Matrix_opaque G_header ;
+    GrB_Matrix G = GB_clear_static_header (&G_header) ;
+    ERR (GB_bitmap_AxB_saxpy (G, GxB_BITMAP, NULL, false, false, A, B,
         GrB_PLUS_TIMES_SEMIRING_FP32, false, &ignore, NULL)) ;
     GrB_Matrix_free_(&A) ;
     GrB_Matrix_free_(&B) ;
-    CHECK (C == NULL) ;
+    CHECK (G->x == NULL) ;
 
     //--------------------------------------------------------------------------
     // wrapup

@@ -51,24 +51,24 @@
     // get A, B, and C
     //--------------------------------------------------------------------------
 
-    GB_CTYPE *GB_RESTRICT Cx = (GB_CTYPE *) C->x ;
+    GB_CTYPE *restrict Cx = (GB_CTYPE *) C->x ;
     const int64_t cvlen = C->vlen ;
 
-    const int64_t  *GB_RESTRICT Bp = B->p ;
-    const int8_t   *GB_RESTRICT Bb = B->b ;
-    const int64_t  *GB_RESTRICT Bh = B->h ;
-    const int64_t  *GB_RESTRICT Bi = B->i ;
-    const GB_BTYPE *GB_RESTRICT Bx = (GB_BTYPE *) (B_is_pattern ? NULL : B->x) ;
+    const int64_t  *restrict Bp = B->p ;
+    const int8_t   *restrict Bb = B->b ;
+    const int64_t  *restrict Bh = B->h ;
+    const int64_t  *restrict Bi = B->i ;
+    const GB_BTYPE *restrict Bx = (GB_BTYPE *) (B_is_pattern ? NULL : B->x) ;
     const int64_t vlen = B->vlen ;
     const bool B_is_hyper = GB_IS_HYPERSPARSE (B) ;
     const bool B_is_bitmap = GB_IS_BITMAP (B) ;
     const bool B_is_sparse = GB_IS_SPARSE (B) ;
 
-    const int64_t  *GB_RESTRICT Ap = A->p ;
-    const int8_t   *GB_RESTRICT Ab = A->b ;
-    const int64_t  *GB_RESTRICT Ah = A->h ;
-    const int64_t  *GB_RESTRICT Ai = A->i ;
-    const GB_ATYPE *GB_RESTRICT Ax = (GB_ATYPE *) (A_is_pattern ? NULL : A->x) ;
+    const int64_t  *restrict Ap = A->p ;
+    const int8_t   *restrict Ab = A->b ;
+    const int64_t  *restrict Ah = A->h ;
+    const int64_t  *restrict Ai = A->i ;
+    const GB_ATYPE *restrict Ax = (GB_ATYPE *) (A_is_pattern ? NULL : A->x) ;
     ASSERT (A->vlen == B->vlen) ;
     const bool A_is_hyper = GB_IS_HYPERSPARSE (A) ;
     const bool A_is_bitmap = GB_IS_BITMAP (A) ;

@@ -13,32 +13,33 @@
 
 // TODO: GB_selector does not exploit the mask.
 
+// If C is NULL on input, A is modified in-place.
+// Otherwise, C is an uninitialized static header.
+
 #include "GB_select.h"
 #include "GB_ek_slice.h"
 #include "GB_sel__include.h"
 
-#define GB_FREE_ALL                 \
-{                                   \
-    GB_Matrix_free (&C) ;           \
-    GB_FREE_WORK ;                  \
+#define GB_FREE_WORK                        \
+{                                           \
+    GB_FREE_WERK (&Zp, Zp_size) ;           \
+    GB_WERK_POP (Work, int64_t) ;           \
+    GB_WERK_POP (A_ek_slicing, int64_t) ;   \
+    GB_FREE (&Cp, Cp_size) ;                \
+    GB_FREE (&Ch, Ch_size) ;                \
+    GB_FREE (&Ci, Ci_size) ;                \
+    GB_FREE (&Cx, Cx_size) ;                \
 }
 
-#define GB_FREE_WORK                \
-{                                   \
-    GB_ek_slice_free (&pstart_slice, &kfirst_slice, &klast_slice) ; \
-    GB_FREE (Wfirst) ;              \
-    GB_FREE (Wlast) ;               \
-    GB_FREE (C_pstart_slice) ;      \
-    GB_FREE (Zp) ;                  \
-    GB_FREE (Cp) ;                  \
-    GB_FREE (Ch) ;                  \
-    GB_FREE (Ci) ;                  \
-    GB_FREE (Cx) ;                  \
+#define GB_FREE_ALL                         \
+{                                           \
+    GB_phbix_free (C) ;                     \
+    GB_FREE_WORK ;                          \
 }
 
 GrB_Info GB_selector
 (
-    GrB_Matrix *Chandle,        // output matrix, NULL to modify A in-place
+    GrB_Matrix C,               // output matrix, NULL or static header
     GB_Select_Opcode opcode,    // selector opcode
     const GxB_SelectOp op,      // user operator
     const bool flipij,          // if true, flip i and j for user operator
@@ -64,10 +65,19 @@ GrB_Info GB_selector
     ASSERT (GB_IMPLIES (opcode >  GB_RESIZE_opcode, GB_JUMBLED_OK (A))) ;
 
     GrB_Info info ;
-    if (Chandle != NULL)
-    { 
-        (*Chandle) = NULL ;
-    }
+    bool in_place_A = (C == NULL) ; // GrB_Matrix_wait and GB_resize only
+    ASSERT (C == NULL || (C != NULL && C->static_header)) ;
+
+    //--------------------------------------------------------------------------
+    // declare workspace
+    //--------------------------------------------------------------------------
+
+    int64_t *restrict Zp = NULL ; size_t Zp_size = 0 ;
+    GB_WERK_DECLARE (Work, int64_t) ;
+    int64_t *restrict Wfirst = NULL ;
+    int64_t *restrict Wlast = NULL ;
+    int64_t *restrict Cp_kfirst = NULL ;
+    GB_WERK_DECLARE (A_ek_slicing, int64_t) ;
 
     //--------------------------------------------------------------------------
     // get Thunk
@@ -86,7 +96,7 @@ GrB_Info GB_selector
 
     GB_void athunk [GB_VLA(asize)] ;
     memset (athunk, 0, asize) ;
-    GB_void *GB_RESTRICT xthunk = athunk ;
+    GB_void *restrict xthunk = athunk ;
 
     if (Thunk != NULL && GB_NNZ (Thunk) > 0)
     {
@@ -98,7 +108,7 @@ GrB_Info GB_selector
         { 
             // ithunk = (int64_t) Thunk (0)
             size_t tsize = Thunk->type->size ;
-            GB_cast_array ((GB_void *GB_RESTRICT) &ithunk, GB_INT64_code,
+            GB_cast_array ((GB_void *restrict) &ithunk, GB_INT64_code,
                 xthunk, tcode, NULL, tsize, 1, 1) ;
             // athunk = (atype) Thunk (0)
             GB_cast_array (athunk, typecode, xthunk, tcode, NULL, tsize, 1, 1) ;
@@ -155,8 +165,10 @@ GrB_Info GB_selector
 
     if (use_bitmap_selector)
     { 
+        // this case is only used by GB_select
         GB_BURBLE_MATRIX (A, "(bitmap select: %s) ", op->name) ;
-        return (GB_bitmap_selector (Chandle, opcode, user_select, flipij, A,
+        ASSERT (C != NULL && C->static_header) ;
+        return (GB_bitmap_selector (C, opcode, user_select, flipij, A,
             ithunk, xthunk, Context)) ;
     }
 
@@ -167,84 +179,60 @@ GrB_Info GB_selector
     // the case when A is bitmap is always handled above by GB_bitmap_selector
     ASSERT (!GB_IS_BITMAP (A)) ;
 
-    int64_t *GB_RESTRICT Ap = A->p ;
-    int64_t *GB_RESTRICT Ah = A->h ;
-    int64_t *GB_RESTRICT Ai = A->i ;
-    GB_void *GB_RESTRICT Ax = (GB_void *) A->x ;
-    int64_t aplen = A->plen ;
+    int64_t *restrict Ap = A->p ; size_t Ap_size = A->p_size ;
+    int64_t *restrict Ah = A->h ;
+    int64_t *restrict Ai = A->i ; size_t Ai_size = A->i_size ;
+    GB_void *restrict Ax = (GB_void *) A->x ; size_t Ax_size = A->x_size ;
     int64_t avlen = A->vlen ;
     int64_t avdim = A->vdim ;
     int64_t anvec = A->nvec ;
     bool A_jumbled = A->jumbled ;
 
     //--------------------------------------------------------------------------
-    // declare workspace
-    //--------------------------------------------------------------------------
-
-    int64_t *GB_RESTRICT Zp = NULL ;
-    int64_t *GB_RESTRICT Wfirst = NULL ;
-    int64_t *GB_RESTRICT Wlast = NULL ;
-    int64_t *GB_RESTRICT C_pstart_slice = NULL ;
-
-    //--------------------------------------------------------------------------
     // allocate the new vector pointers of C
     //--------------------------------------------------------------------------
 
-    GrB_Matrix C = NULL ;
-    int64_t cplen = (GB_IS_FULL (A)) ? avdim : aplen ;
-    int64_t *GB_RESTRICT Cp = GB_CALLOC (cplen+1, int64_t) ;
-    int64_t *GB_RESTRICT Ch = NULL ;
-    int64_t *GB_RESTRICT Ci = NULL ;
-    GB_void *GB_RESTRICT Cx = NULL ;
+    int64_t *restrict Cp = NULL ; size_t Cp_size = 0 ;
+    int64_t *restrict Ch = NULL ; size_t Ch_size = 0 ;
+    int64_t *restrict Ci = NULL ; size_t Ci_size = 0 ;
+    GB_void *restrict Cx = NULL ; size_t Cx_size = 0 ;
     int64_t cnz = 0 ;
+
+    Cp = GB_CALLOC (anvec+1, int64_t, &Cp_size) ;
     if (Cp == NULL)
     { 
         // out of memory
         return (GrB_OUT_OF_MEMORY) ;
     }
-    ASSERT (anvec <= cplen) ;
-    Cp [anvec] = 0 ;
 
     //--------------------------------------------------------------------------
     // determine the number of threads and tasks to use
     //--------------------------------------------------------------------------
 
-    int64_t anz = GB_NNZ_HELD (A) ;
-    double work = 8*anvec + ((opcode == GB_DIAG_opcode) ? 0 : anz) ;
-
     GB_GET_NTHREADS_MAX (nthreads_max, chunk, Context) ;
-    int nthreads = GB_nthreads (work, chunk, nthreads_max) ;
-    int ntasks = (nthreads == 1) ? 1 : (8 * nthreads) ;
 
     //--------------------------------------------------------------------------
     // slice the entries for each task
     //--------------------------------------------------------------------------
 
-    // Task tid does entries pstart_slice [tid] to pstart_slice [tid+1]-1 and
-    // vectors kfirst_slice [tid] to klast_slice [tid].  The first and last
-    // vectors may be shared with prior slices and subsequent slices.
-
-    int64_t *pstart_slice = NULL, *kfirst_slice = NULL, *klast_slice = NULL ;
-    if (!GB_ek_slice (&pstart_slice, &kfirst_slice, &klast_slice, A, &ntasks))
-    { 
-        // out of memory
-        GB_FREE_ALL ;
-        return (GrB_OUT_OF_MEMORY) ;
-    }
+    int A_ntasks, A_nthreads ;
+    double work = 8*anvec + ((opcode == GB_DIAG_opcode) ? 0 : GB_NNZ_HELD (A)) ;
+    GB_SLICE_MATRIX_WORK (A, 8, chunk, work) ;
 
     //--------------------------------------------------------------------------
     // allocate workspace for each task
     //--------------------------------------------------------------------------
 
-    Wfirst = GB_CALLOC (ntasks, int64_t) ;
-    Wlast  = GB_CALLOC (ntasks, int64_t) ;
-    C_pstart_slice = GB_CALLOC (ntasks, int64_t) ;
-    if (Wfirst == NULL || Wlast  == NULL || C_pstart_slice == NULL)
+    GB_WERK_PUSH (Work, 3*A_ntasks, int64_t) ;
+    if (Work == NULL)
     { 
         // out of memory
         GB_FREE_ALL ;
         return (GrB_OUT_OF_MEMORY) ;
     }
+    Wfirst    = Work ;
+    Wlast     = Work + A_ntasks ;
+    Cp_kfirst = Work + A_ntasks * 2 ;
 
     //--------------------------------------------------------------------------
     // count the live entries in each vector
@@ -257,7 +245,7 @@ GrB_Info GB_selector
     if (opcode <= GB_RESIZE_opcode)
     {
         // allocate Zp
-        Zp = GB_MALLOC (cplen, int64_t) ;
+        Zp = GB_MALLOC_WERK (anvec, int64_t, &Zp_size) ;
         if (Zp == NULL)
         { 
             // out of memory
@@ -267,75 +255,43 @@ GrB_Info GB_selector
     }
 
     //--------------------------------------------------------------------------
-    // phase1: launch the switch factory to count the entries
+    // phase1: count the entries
     //--------------------------------------------------------------------------
 
+    // define the worker for the switch factory
     #define GB_SELECT_PHASE1
-    #define GB_sel1(opname,aname) GB_sel_phase1_ ## opname ## aname
-    #define GB_SEL_WORKER(opname,aname,atype)                           \
-    {                                                                   \
-        GB_sel1 (opname, aname) (Zp, Cp, Wfirst, Wlast,                 \
-            A, kfirst_slice, klast_slice, pstart_slice, flipij, ithunk, \
-            (atype *) xthunk, user_select, ntasks, nthreads) ;          \
-    }                                                                   \
+    #define GB_sel1(opname,aname) GB (_sel_phase1_ ## opname ## aname)
+    #define GB_SEL_WORKER(opname,aname,atype)               \
+    {                                                       \
+        GB_sel1 (opname, aname) (Zp, Cp, Wfirst, Wlast,     \
+            A, flipij, ithunk,                              \
+            (atype *) xthunk, user_select,                  \
+            A_ek_slicing, A_ntasks, A_nthreads) ;           \
+    }                                                       \
     break ;
 
+    // launch the switch factory
     #include "GB_select_factory.c"
 
     #undef  GB_SELECT_PHASE1
     #undef  GB_SEL_WORKER
 
     //--------------------------------------------------------------------------
-    // compute the new vector pointers
+    // cumulative sum of Cp and compute Cp_kfirst
     //--------------------------------------------------------------------------
 
-    // Cp = cumsum (Cp)
     int64_t C_nvec_nonempty ;
-    GB_cumsum (Cp, anvec, &C_nvec_nonempty, nthreads) ;
-    cnz = Cp [anvec] ;
-
-    //--------------------------------------------------------------------------
-    // determine the slice boundaries in the new C matrix
-    //--------------------------------------------------------------------------
-
-    int64_t kprior = -1 ;
-    int64_t pC = 0 ;
-
-    for (int taskid = 0 ; taskid < ntasks ; taskid++)
-    {
-        int64_t k = kfirst_slice [taskid] ;
-
-        if (kprior < k)
-        { 
-            // Task taskid is the first one to do work on C(:,k), so it starts
-            // at Cp [k], and it contributes Wfirst [taskid] entries to C(:,k)
-            pC = Cp [k] ;
-            kprior = k ;
-        }
-
-        // Task taskid contributes Wfirst [taskid] entries to C(:,k)
-        C_pstart_slice [taskid] = pC ;
-        pC += Wfirst [taskid] ;
-
-        int64_t klast = klast_slice [taskid] ;
-        if (k < klast)
-        { 
-            // Task taskid is the last to contribute to C(:,k).
-            ASSERT (pC == Cp [k+1]) ;
-            // Task taskid contributes the first Wlast [taskid] entries
-            // to C(:,klast), so the next task taskid+1 starts at this
-            // location, if its first vector is klast of this task.
-            pC = Cp [klast] + Wlast [taskid] ;
-            kprior = klast ;
-        }
-    }
+    GB_ek_slice_merge2 (&C_nvec_nonempty, Cp_kfirst, Cp, anvec,
+        Wfirst, Wlast, A_ek_slicing, A_ntasks, A_nthreads, Context) ;
 
     //--------------------------------------------------------------------------
     // allocate new space for the compacted Ci and Cx
     //--------------------------------------------------------------------------
 
-    Ci = GB_MALLOC (cnz, int64_t) ;
-    Cx = GB_MALLOC (cnz * asize, GB_void) ;
+    cnz = Cp [anvec] ;
+    cnz = GB_IMAX (cnz, 1) ;
+    Ci = GB_MALLOC (cnz, int64_t, &Ci_size) ;
+    Cx = GB_MALLOC (cnz * asize, GB_void, &Cx_size) ;
     if (Ci == NULL || Cx == NULL)
     { 
         // out of memory
@@ -351,31 +307,34 @@ GrB_Info GB_selector
     }
 
     //--------------------------------------------------------------------------
-    // phase2: launch the switch factory to select the entries
+    // phase2: select the entries
     //--------------------------------------------------------------------------
 
+    // define the worker for the switch factory
     #define GB_SELECT_PHASE2
-    #define GB_sel2(opname,aname) GB_sel_phase2_ ## opname ## aname
-    #define GB_SEL_WORKER(opname,aname,atype)                           \
-    {                                                                   \
-        GB_sel2 (opname, aname) (Ci, (atype *) Cx,                      \
-            Zp, Cp, C_pstart_slice,                                     \
-            A, kfirst_slice, klast_slice, pstart_slice, flipij, ithunk, \
-            (atype *) xthunk, user_select, ntasks, nthreads) ;          \
-    }                                                                   \
+    #define GB_sel2(opname,aname) GB (_sel_phase2_ ## opname ## aname)
+    #define GB_SEL_WORKER(opname,aname,atype)           \
+    {                                                   \
+        GB_sel2 (opname, aname) (Ci, (atype *) Cx,      \
+            Zp, Cp, Cp_kfirst,                          \
+            A, flipij, ithunk,                          \
+            (atype *) xthunk, user_select,              \
+            A_ek_slicing, A_ntasks, A_nthreads) ;       \
+    }                                                   \
     break ;
 
+    // launch the switch factory
     #include "GB_select_factory.c"
 
     //--------------------------------------------------------------------------
     // create the result
     //--------------------------------------------------------------------------
 
-    if (Chandle == NULL)
+    if (in_place_A)
     {
 
         //----------------------------------------------------------------------
-        // transplant C back into A
+        // transplant Cp, Ci, Cx back into A
         //----------------------------------------------------------------------
 
         // TODO: this is not parallel: use GB_hyper_prune
@@ -395,25 +354,26 @@ GrB_Info GB_selector
             Ap [cnvec] = Cp [anvec] ;
             A->nvec = cnvec ;
             ASSERT (A->nvec == C_nvec_nonempty) ;
-            GB_FREE (Cp) ;
+            GB_FREE (&Cp, Cp_size) ;
         }
         else
         { 
-            GB_FREE (Ap) ;
-            A->p = Cp ; Cp = NULL ;
+            // free the old A->p and transplant in Cp as the new A->p
+            GB_FREE (&Ap, Ap_size) ;
+            A->p = Cp ; Cp = NULL ; A->p_size = Cp_size ;
         }
 
         ASSERT (Cp == NULL) ;
 
-        GB_FREE (Ai) ;
-        GB_FREE (Ax) ;
-        A->i = Ci ; Ci = NULL ;
-        A->x = Cx ; Cx = NULL ;
+        GB_FREE (&Ai, Ai_size) ;
+        GB_FREE (&Ax, Ax_size) ;
+        A->i = Ci ; Ci = NULL ; A->i_size = Ci_size ;
+        A->x = Cx ; Cx = NULL ; A->x_size = Cx_size ;
         A->nzmax = cnz ;
         A->nvec_nonempty = C_nvec_nonempty ;
         A->jumbled = A_jumbled ;        // A remains jumbled (in-place select)
 
-        // the NONZOMBIES opcode may have removed all zombies, but A->nzombie
+        // the NONZOMBIE opcode may have removed all zombies, but A->nzombie
         // is still nonzero.  It set to zero in GB_Matrix_wait.
         ASSERT_MATRIX_OK (A, "A output for GB_selector", GB_FLIP (GB0)) ;
 
@@ -430,12 +390,12 @@ GrB_Info GB_selector
         // create C and transplant Cp, Ch, Ci, Cx into C
         //----------------------------------------------------------------------
 
-        ASSERT (C == NULL) ;
         int sparsity = (A->h != NULL) ? GxB_HYPERSPARSE : GxB_SPARSE ;
-        info = GB_new (&C, // sparse or hyper (from A), new header
+        ASSERT (C != NULL && C->static_header) ;
+        info = GB_new (&C, true, // sparse or hyper (from A), static header
             A->type, avlen, avdim, GB_Ap_null, true,
-            sparsity, A->hyper_switch, aplen, Context) ;
-        GB_OK (info) ;
+            sparsity, A->hyper_switch, anvec, Context) ;
+        ASSERT (info == GrB_SUCCESS) ;
 
         if (A->h != NULL)
         { 
@@ -444,7 +404,7 @@ GrB_Info GB_selector
             // A and C are hypersparse: copy non-empty vectors from Ah to Ch
             //------------------------------------------------------------------
 
-            Ch = GB_MALLOC (aplen, int64_t) ;
+            Ch = GB_MALLOC (anvec, int64_t, &Ch_size) ;
             if (Ch == NULL)
             { 
                 // out of memory
@@ -468,16 +428,15 @@ GrB_Info GB_selector
             ASSERT (C->nvec == C_nvec_nonempty) ;
         }
 
-        C->p = Cp ; Cp = NULL ;
-        C->h = Ch ; Ch = NULL ;
-        C->i = Ci ; Ci = NULL ;
-        C->x = Cx ; Cx = NULL ;
+        C->p = Cp ; Cp = NULL ; C->p_size = Cp_size ;
+        C->h = Ch ; Ch = NULL ; C->h_size = Ch_size ;
+        C->i = Ci ; Ci = NULL ; C->i_size = Ci_size ;
+        C->x = Cx ; Cx = NULL ; C->x_size = Cx_size ;
         C->nzmax = cnz ;
         C->magic = GB_MAGIC ;
         C->nvec_nonempty = C_nvec_nonempty ;
         C->jumbled = A_jumbled ;    // C is jumbled if A is jumbled
 
-        (*Chandle) = C ;
         ASSERT_MATRIX_OK (C, "C output for GB_selector", GB0) ;
 
         // positional selector (tril, triu, diag, offdiag, resize): not jumbled

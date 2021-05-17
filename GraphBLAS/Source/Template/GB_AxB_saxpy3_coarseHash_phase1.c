@@ -46,9 +46,9 @@
             // jumbled, with all entries present in the entire matrix).  Get
             // pointers Mjb and Mjx into the M(:,j) vector.
             GB_GET_M_j
-            const M_TYPE *GB_RESTRICT Mjx = Mask_struct ? NULL :
+            const M_TYPE *restrict Mjx = Mask_struct ? NULL :
                 ((M_TYPE *) Mx) + (M_SIZE * pM_start) ;
-            const int8_t *GB_RESTRICT Mjb = M_is_bitmap ? (Mb+pM_start) : NULL ;
+            const int8_t *restrict Mjb = M_is_bitmap ? (Mb+pM_start) : NULL ;
 
         #else
 

@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------------
 
 // SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 //------------------------------------------------------------------------------
 
@@ -28,20 +28,31 @@ extern int64_t gbcov [GBCOV_MAX] ;
 extern int gbcov_max ;
 void gbcov_get (void) ;
 void gbcov_put (void) ;
-#define GB_WRAPUP gbcov_put ( )
+#define GB_COV_PUT gbcov_put ( )
 #else
-#define GB_WRAPUP
+#define GB_COV_PUT
 #endif
+
+#define GB_WRAPUP                                           \
+{                                                           \
+    GB_COV_PUT ;                                            \
+    if (GB_Global_memtable_n ( ) != 0)                      \
+    {                                                       \
+        printf ("GrB memory leak!\n") ;                     \
+        GB_Global_memtable_dump ( ) ;                       \
+        mexErrMsgIdAndTxt ("GrB:error", "memory leak") ;    \
+    }                                                       \
+}
 
 #define ERROR2(message, arg)                                \
 {                                                           \
-    GB_WRAPUP ;                                             \
+    GB_COV_PUT ;                                            \
     mexErrMsgIdAndTxt ("GrB:error", message, arg) ;         \
 }
 
 #define ERROR(message)                                      \
 {                                                           \
-    GB_WRAPUP ;                                             \
+    GB_COV_PUT ;                                            \
     mexErrMsgIdAndTxt ("GrB:error", message) ;              \
 }
 

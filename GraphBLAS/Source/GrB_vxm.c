@@ -15,7 +15,7 @@
 
 #include "GB_mxm.h"
 
-GrB_Info GrB_vxm                    // w'<M> = accum (w, u'*A)
+GrB_Info GrB_vxm                    // w'<M> = accum (w', u'*A)
 (
     GrB_Vector w,                   // input/output vector for results
     const GrB_Vector M,             // optional mask for w, unused if NULL
@@ -49,12 +49,12 @@ GrB_Info GrB_vxm                    // w'<M> = accum (w, u'*A)
     // w'<M'> = accum (w',u'*A) and variations, using the mxm kernel
     //--------------------------------------------------------------------------
 
-    // w, M, and u are passed as matrices to GB_mxm
-    // A and u are swapped, and A_transpose is negated:
+    // w, M, and u are treated as column vectors and passed as n-by-1 matrices
+    // to GB_mxm A and u are swapped, and A_transpose is negated:
     //      u'*A  == A'*u
     //      u'*A' == A*u
-    // Since A and u are swapped, in all the matrix multiply kernels
-    // fmult(y,x) must be used instead of fmult(x,y).
+    // Since A and u are swapped, in all the matrix multiply kernels,
+    // the multiplier must be flipped, so flipxy is passed in as true.
 
     info = GB_mxm (
         (GrB_Matrix) w,     C_replace,      // w and its descriptor
@@ -63,7 +63,7 @@ GrB_Info GrB_vxm                    // w'<M> = accum (w, u'*A)
         semiring,                           // definition of matrix multiply
         A,                  !A_transpose,   // allow A to be transposed
         (GrB_Matrix) u,     false,          // u is never transposed
-        true,                               // flipxy: fmult(y,x)
+        true,                               // fmult(y,x), flipxy = true
         AxB_method, do_sort,                // algorithm selector
         Context) ;
 

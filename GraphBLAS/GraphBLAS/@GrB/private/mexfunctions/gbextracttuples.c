@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------------
 
 // SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 //------------------------------------------------------------------------------
 
@@ -22,6 +22,8 @@
 
 #include "gb_matlab.h"
 
+#define USAGE "usage: [I,J,X] = GrB.extracttuples (A, desc)"
+
 void mexFunction
 (
     int nargout,
@@ -35,8 +37,7 @@ void mexFunction
     // check inputs
     //--------------------------------------------------------------------------
 
-    gb_usage (nargin >= 1 && nargin <= 2 && nargout <= 3,
-        "usage: [I,J,X] = GrB.extracttuples (A, desc)") ;
+    gb_usage (nargin >= 1 && nargin <= 2 && nargout <= 3, USAGE) ;
 
     //--------------------------------------------------------------------------
     // get the optional descriptor

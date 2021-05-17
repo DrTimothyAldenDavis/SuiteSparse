@@ -15,7 +15,7 @@
 
 #define FREE_ALL                            \
 {                                           \
-    GrB_Matrix_free_(&A) ;                   \
+    GrB_Matrix_free_(&A) ;                  \
     GrB_Monoid_free_(&Times_terminal) ;     \
     GB_mx_put_global (true) ;               \
 }

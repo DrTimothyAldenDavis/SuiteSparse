@@ -25,12 +25,12 @@
 // examine entries in M, taking Omega(nnz(M)) time.  It can thus be used for
 // very large matrices C.  GB_AxB_dot4 computes C+=A'*B when C is dense.
 
-// The output matrix C = *Chandle has not been allocated, so C is NULL on
-// input.  The mask M is optional.
+// The output matrix C has not been allocated.  It is an uninitialzed static
+// header on input.  The mask M is optional.
 
-// If C is computed in-place, Chandle is ignored, and the result is computed in
-// C_in instead.  This case requires the accum operator to match the monoid of
-// the semiring.
+// If the result is computed in-place, then the C parameger is ignored, and the
+// result is computed in C_in instead.  This case requires the accum operator
+// to match the monoid of the semiring.
 
 // The semiring defines C=A*B.  flipxy modifies how the semiring multiply
 // operator is applied.  If false, then fmult(aik,bkj) is computed.  If true,
@@ -45,7 +45,7 @@
 
 GrB_Info GB_AxB_dot                 // dot product (multiple methods)
 (
-    GrB_Matrix *Chandle,            // output matrix, NULL on input
+    GrB_Matrix C,                   // output matrix, static header
     GrB_Matrix C_in,                // input/output matrix, if done in-place
     GrB_Matrix M,                   // optional mask matrix
     const bool Mask_comp,           // if true, use !M
@@ -64,8 +64,7 @@ GrB_Info GB_AxB_dot                 // dot product (multiple methods)
     // check inputs
     //--------------------------------------------------------------------------
 
-    ASSERT (Chandle != NULL) ;          // C = (*Chandle) is NULL
-    ASSERT (*Chandle == NULL) ;
+    ASSERT (C != NULL && C->static_header) ;
 
     ASSERT_MATRIX_OK_OR_NULL (M, "M for dot A'*B", GB0) ;
     ASSERT (!GB_PENDING (M)) ;
@@ -105,7 +104,7 @@ GrB_Info GB_AxB_dot                 // dot product (multiple methods)
     { 
         // no work to do; C is an empty matrix, normally hypersparse
         if (C_in != NULL) return (GrB_SUCCESS) ;
-        return (GB_new (Chandle, // auto sparsity, new header
+        return (GB_new (&C, true, // auto sparsity, static header
             semiring->add->op->ztype, A->vdim, B->vdim, GB_Ap_calloc, true,
             GxB_AUTO_SPARSITY, GB_Global_hyper_switch_get ( ), 1, Context)) ;
     }
@@ -142,21 +141,22 @@ GrB_Info GB_AxB_dot                 // dot product (multiple methods)
 
         int ngpus_to_use = GB_ngpus_to_use (work) ;
         GBURBLE (" work:%g gpus:%d ", work, ngpus_to_use) ;
-        if (ngpus_to_use > 0 && semiring->semiring_is_builtin
+        if (ngpus_to_use > 0
+            && (semiring->header_size == 0)     // semiring is built-in
             && (A->type->code != GB_UDT_code)
             && (B->type->code != GB_UDT_code)
             && !GB_IS_BITMAP (A) && !GB_IS_BITMAP (B))
 // to here ... ]
         {
             // use "the" GPU (TODO for GPU: could use multiple GPUs too)
-            return (GB_AxB_dot3_cuda (Chandle, M, Mask_struct, A, B, semiring,
+            return (GB_AxB_dot3_cuda (C, M, Mask_struct, A, B, semiring,
                 flipxy, Context)) ;
         }
         else
         #endif
         { 
             // use the CPU
-            return (GB_AxB_dot3 (Chandle, M, Mask_struct, A, B, semiring,
+            return (GB_AxB_dot3 (C, M, Mask_struct, A, B, semiring,
                 flipxy, Context)) ;
         }
     }
@@ -167,7 +167,7 @@ GrB_Info GB_AxB_dot                 // dot product (multiple methods)
 
     (*mask_applied) = (M != NULL) ; // mask applied if present
     (*done_in_place) = false ;      // TODO: allow dot2 to work in-place
-    return (GB_AxB_dot2 (Chandle, M, Mask_comp, Mask_struct, A, B, semiring,
+    return (GB_AxB_dot2 (C, M, Mask_comp, Mask_struct, A, B, semiring,
         flipxy, Context)) ;
 }
 

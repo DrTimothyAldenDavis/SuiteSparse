@@ -58,7 +58,7 @@ GrB_Info GB_subassign_12_and_20
     //--------------------------------------------------------------------------
 
     GB_EMPTY_TASKLIST ;
-    GB_OK (GB_subassign_symbolic (&S, C, I, ni, J, nj, true, Context)) ;
+    GB_OK (GB_subassign_symbolic (S, C, I, ni, J, nj, true, Context)) ;
 
     //--------------------------------------------------------------------------
     // get inputs

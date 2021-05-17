@@ -159,7 +159,8 @@ GrB_Info get_matrix         // get a matrix from stdin, or create random one
     int argc,               // command-line arguments
     char **argv,
     bool no_self_edges,     // if true, ensure the matrix has no self-edges
-    bool boolean            // if true, file is read as GrB_BOOL, else GrB_FP64
+    bool boolean,           // if true, file is read as GrB_BOOL, else GrB_FP64
+    bool spones             // if true, return all entries equal to 1
 ) ;
 
 GB_PUBLIC

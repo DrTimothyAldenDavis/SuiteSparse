@@ -2,7 +2,7 @@ function gbtest76
 %GBTEST76 test trig and other functions
 
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
-% SPDX-License-Identifier: Apache-2.0
+% SPDX-License-Identifier: GPL-3.0-or-later
 
 fprintf ('\ngbtest76: testing trig and special functions\n') ;
 

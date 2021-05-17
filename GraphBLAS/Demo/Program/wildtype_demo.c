@@ -354,7 +354,7 @@ int main (void)
     info = GrB_Matrix_eWiseAdd_BinaryOp (C, NULL, NULL, WildAdd, A, D, NULL) ;
     if (info != GrB_SUCCESS)
     {
-        char *s ;
+        const char *s ;
         GrB_Matrix_error (&s, C) ;
         printf ("\nThis is supposed to fail, as a demo of GrB_error:\n%s\n", s);
     }

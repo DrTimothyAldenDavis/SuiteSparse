@@ -64,7 +64,7 @@ int main (int argc, char **argv)
     //--------------------------------------------------------------------------
 
     // self edges are OK
-    OK (get_matrix (&A, argc, argv, false, true)) ;
+    OK (get_matrix (&A, argc, argv, false, true, true)) ;
     GrB_Index n ;
     OK (GrB_Matrix_nrows (&n, A)) ;
 

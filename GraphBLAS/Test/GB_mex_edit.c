@@ -13,17 +13,17 @@
 
 #define FREE_ALL                        \
 {                                       \
-    GrB_Matrix_free_(&C) ;               \
+    GrB_Matrix_free_(&C) ;              \
     GB_mx_put_global (true) ;           \
 }
 
-#define OK(method)                                          \
-{                                                           \
-    info = method ;                                         \
-    if (info != GrB_SUCCESS)                                \
-    {                                                       \
-        mexErrMsgTxt ("fail") ;                             \
-    }                                                       \
+#define OK(method)                      \
+{                                       \
+    info = method ;                     \
+    if (info != GrB_SUCCESS)            \
+    {                                   \
+        mexErrMsgTxt ("fail") ;         \
+    }                                   \
 }
 
 void mexFunction
@@ -72,7 +72,7 @@ void mexFunction
     bool is_hyper ;
     OK (GrB_Matrix_ncols (&ncols, C)) ;
     OK (GxB_Matrix_Option_get (C, GxB_FORMAT, &fmt)) ;
-    OK (GxB_Matrix_Option_get (C, GxB_IS_HYPER, &is_hyper)) ;   // deprecated
+    OK (GxB_Matrix_Option_get (C, GxB_IS_HYPER, &is_hyper)) ;   // historical
     bool is_vector = (fmt == GxB_BY_COL && !is_hyper && ncols == 1) ;
 
     // get I

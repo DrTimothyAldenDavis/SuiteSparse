@@ -13,11 +13,10 @@
 
 #define FREE_ALL                        \
 {                                       \
-    GrB_Matrix_free_(&A) ;               \
-    GrB_Matrix_free_(&B) ;               \
+    GrB_Matrix_free_(&A) ;              \
+    GrB_Matrix_free_(&B) ;              \
     GB_mx_put_global (true) ;           \
 }
-
 
 void mexFunction
 (

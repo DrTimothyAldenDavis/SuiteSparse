@@ -18,12 +18,12 @@
     bool A_is_M = (A == M) ;            \
     bool A_is_C = (A == C) ;            \
     bool C_is_M = (C == M) ;            \
-    GrB_Matrix_free_(&A) ;               \
+    GrB_Matrix_free_(&A) ;              \
     if (A_is_C) C = NULL ;              \
     if (A_is_M) M = NULL ;              \
-    GrB_Matrix_free_(&C) ;               \
+    GrB_Matrix_free_(&C) ;              \
     if (C_is_M) M = NULL ;              \
-    GrB_Matrix_free_(&M) ;               \
+    GrB_Matrix_free_(&M) ;              \
     GrB_Descriptor_free_(&desc) ;       \
     GB_mx_put_global (true) ;           \
 }
@@ -93,7 +93,7 @@ void mexFunction
     {                               \
         if (A == C) A = NULL ;      \
         if (M == C) M = NULL ;      \
-        GrB_Matrix_free_(&C) ;       \
+        GrB_Matrix_free_(&C) ;      \
     }
 
     GET_DEEP_COPY ;

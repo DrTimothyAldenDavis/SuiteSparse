@@ -11,13 +11,10 @@
 // output z, casting as needed.  That is, it computes z = (type of z) x.
 // s is the size for user-defined types, which can only be copied.
 
-// If the operator is FIRST, SECOND, or PAIR, this function is called for the
-// cast function on the unused argument, but the result is then unused. 
-
 // This function returns one of ((13*13) + 1) pointers to a typecasting/copy
-// function.  13*13 is the set of functions named GB_cast_ZTYPE_XTYPE, for each
-// pair of built-in types (ZTYPE, XTYPE).  The last pointer is the function
-// GB_copy_user_user.
+// function.  13*13 is the set of functions named GB__cast_ZTYPE_XTYPE, for
+// each pair of built-in types (ZTYPE, XTYPE).  The last pointer is the
+// function GB_copy_user_user.
 
 #include "GB.h"
 
@@ -35,7 +32,7 @@ GB_cast_function GB_cast_factory   // returns pointer to function to cast x to z
 
     // the worker selects a typecast function and returns it to the caller
     #define GB_WORKER(ignore1,ignore2,ztype,ignore3,xtype) \
-        return (&GB_cast_ ## ztype ## _ ## xtype) ;
+        return (&GB (_cast_ ## ztype ## _ ## xtype)) ;
 
     //--------------------------------------------------------------------------
     // launch the switch factory

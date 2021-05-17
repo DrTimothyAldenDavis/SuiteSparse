@@ -29,7 +29,7 @@ GrB_Info GB_select          // C<M> = accum (C, select(A,k)) or select(A',k)
 
 GrB_Info GB_selector
 (
-    GrB_Matrix *Chandle,        // output matrix, NULL to modify A in-place
+    GrB_Matrix C,               // output matrix, NULL or static header
     GB_Select_Opcode opcode,    // selector opcode
     const GxB_SelectOp op,      // user operator
     const bool flipij,          // if true, flip i and j for user operator
@@ -41,13 +41,13 @@ GrB_Info GB_selector
 
 GrB_Info GB_bitmap_selector
 (
-    GrB_Matrix *Chandle,        // output matrix, NULL to modify A in-place
+    GrB_Matrix C,               // output matrix, static header
     GB_Select_Opcode opcode,    // selector opcode
     const GxB_select_function user_select,      // user select function
     const bool flipij,          // if true, flip i and j for user operator
     GrB_Matrix A,               // input matrix
     const int64_t ithunk,       // (int64_t) Thunk, if Thunk is NULL
-    const GB_void *GB_RESTRICT xthunk,
+    const GB_void *restrict xthunk,
     GB_Context Context
 ) ;
 

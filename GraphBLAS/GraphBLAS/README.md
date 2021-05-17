@@ -1,18 +1,28 @@
 # GraphBLAS/GraphBLAS: MATLAB interface for SuiteSparse:GraphBLAS
 
 SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
-SPDX-License-Identifier: Apache-2.0
+The @GrB MATLAB interface (including its test suite and demos) is under the GNU
+GPLv3 (or later) license.
+SPDX-License-Identifier: GPL-3.0-or-later
+You may not use the @GrB MATLAB interface under the Apache-2.0 license.
 
 The GrB class provides an easy-to-use MATLAB interface to SuiteSparse:GraphBLAS.
 
 To install it for use in MATLAB, first compile the GraphBLAS library,
--lgraphblas.  See the instructions in the top-level GraphBLAS folder for
-details.  Be sure to use OpenMP for best performance.  The default installation
-process places the GraphBLAS library in /usr/local/lib.  If you do not have
-root access and cannot install GraphBLAS into /usr/local/lib, then follow the
-instructions below to modify your library path, but instead of /usr/local/lib,
-use /home/me/SuiteSparse/GraphBLAS/build, where
-"/home/me/SuiteSparse/GraphBLAS" is where you placed your copy of GraphBLAS.
+-lgraphblas (or -lgraphblas_rename for MATLAB R2021a and later).  See the
+instructions in the top-level GraphBLAS folder for details.  Be sure to use
+OpenMP for best performance.  The default installation process places the
+GraphBLAS library in /usr/local/lib.  If you do not have root access and cannot
+install GraphBLAS into /usr/local/lib, then follow the instructions below to
+modify your library path, but instead of /usr/local/lib, use
+/home/me/SuiteSparse/GraphBLAS/build, where "/home/me/SuiteSparse/GraphBLAS" is
+where you placed your copy of GraphBLAS.
+
+If you have MATLAB R2021a, the gbmake script will link against the library
+-lgraphblas_rename, not -lgraphblas, because that version of MATLAB includes
+its own version of SuiteSparse:GraphBLAS (v3.3.3, an earlier one).  To avoid
+a name conflict, you must compile the -lgraphblas_rename library in
+/home/me/SuiteSparse/GraphBLAS/GraphBLAS/build.
 
 MATLAB needs to know where to find the compiled GraphBLAS library.  On
 Linux/Unix, if you are using the bash or korn shells, make sure that add the
@@ -31,14 +41,21 @@ On the Mac, use the following:
     DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/usr/local/lib
     export DYLD_LIBRARY_PATH
 
+If you don't have system priveledges to change /usr/local/lib, then add the
+build folder to your LD_LIBRARY_PATH instead, either.  For MATLAB R2020b
+and earlier: /home/me/SuiteSparse/GraphBLAS/build for libgraphblas.so,
+For R2021a:  /home/me/SuiteSparse/GraphBLAS/GraphBLAS/build for for
+libgraphblas_rename.so.
+
 On Windows 10, on the Search bar type env and hit enter; (or you can
 right-click My Computer or This PC and select Properties, and then select
 Advanced System Settings).  Select "Edit the system environment variables",
 then "Environment Variables".  Under "System Variables" select "Path" and click
 "Edit".  These "New" to add a path and then "Browse".  Browse to the folder
 (for example: C:/Users/me/Documents/SuiteSparse/GraphBLAS/build/Release) and
-add it to your path.  Then close the editor, sign out of Windows and sign back
-in again.
+add it to your path.  For MATLAB R2021a and later, you must use the
+libgraphblas_rename.dll, in: /User/me/SuiteSparse/GraphBLAS/GraphBLAS/build/Release
+instead.  Then close the editor, sign out of Windows and sign back in again.
 
 For more details on setting your Linux/Unix/Mac library path for MATLAB see
 https://www.mathworks.com/help/matlab/matlab_external/building-on-unix-operating-systems.html
@@ -111,14 +128,7 @@ error messages during the test.  This is expected.
 
 The last two features don't exist for MATLAB sparse matrices.
 
-These features are supported, but are not as fast as they could be:
-
-    concatenation: [A B], [A;B], and the built-in functions: bandwidth, eps,
-    isbanded, isdiag, ishermitian, issymmetric, istril, istriu, spfun.
-
-A GrB matrix object can be saved to a mat-file and loaded back in, but
-must be loaded in with the same major version of SuiteSparse:GraphBLAS.
-v4.0.1. cannot load mat-files saved from v3.3.3 for example.  In the
-future, I will consider GrB.load and GrB.save methods that would work
-across different versions.
+These functions are supported, but are not yet as fast as they could be:
+bandwidth, eps, isbanded, isdiag, ishermitian, issymmetric, istril, istriu,
+spfun.
 

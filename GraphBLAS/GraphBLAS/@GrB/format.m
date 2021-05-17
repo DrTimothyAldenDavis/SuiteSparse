@@ -115,7 +115,7 @@ function [f,s] = format (arg)
 % See also GrB.
 
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
-% SPDX-License-Identifier: Apache-2.0
+% SPDX-License-Identifier: GPL-3.0-or-later
 
 if (nargin == 0)
     % f = GrB.format ; get the global format

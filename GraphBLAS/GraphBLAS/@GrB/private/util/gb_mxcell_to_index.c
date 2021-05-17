@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------------
 
 // SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 //------------------------------------------------------------------------------
 
@@ -98,11 +98,12 @@ GrB_Index *gb_mxcell_to_index   // return index list I
         CHECK_ERROR (Item_len [0] != 1 || Item_len [1] != 1,
             "start and fini must be scalars for start:fini") ;
 
-        I = mxCalloc (3, sizeof (GrB_Index)) ;
+        I = mxMalloc (3 * sizeof (GrB_Index)) ;
         (*I_allocated) = true ;
 
         I [GxB_BEGIN] = Item [0][0] ;
         I [GxB_END  ] = Item [1][0] ;
+        I [GxB_INC  ] = 0 ;             // unused
 
         if (Item_allocated [0]) gb_mxfree (& (Item [0])) ;
         if (Item_allocated [1]) gb_mxfree (& (Item [1])) ;
@@ -121,11 +122,12 @@ GrB_Index *gb_mxcell_to_index   // return index list I
             Item_len [2] != 1,
             "start, inc, and fini must be scalars for start:inc:fini") ;
 
-        I = mxCalloc (3, sizeof (GrB_Index)) ;
+        I = mxMalloc (3 * sizeof (GrB_Index)) ;
         (*I_allocated) = true ;
 
         I [GxB_BEGIN] = Item [0][0] ;
         I [GxB_END  ] = Item [2][0] ;
+        I [GxB_INC  ] = 0 ;
         int64_t inc = Item [1][0] ;
 
         if (Item_allocated [1])

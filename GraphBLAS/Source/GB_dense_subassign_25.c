@@ -30,12 +30,11 @@
 #include "GB_type__include.h"
 #endif
 
-#undef  GB_FREE_WORK
-#define GB_FREE_WORK \
-    GB_ek_slice_free (&pstart_slice, &kfirst_slice, &klast_slice) ;
-
 #undef  GB_FREE_ALL
-#define GB_FREE_ALL GB_FREE_WORK
+#define GB_FREE_ALL                         \
+{                                           \
+    GB_WERK_POP (M_ek_slicing, int64_t) ;   \
+}
 
 GrB_Info GB_dense_subassign_25
 (
@@ -88,24 +87,14 @@ GrB_Info GB_dense_subassign_25
     //--------------------------------------------------------------------------
 
     GB_GET_NTHREADS_MAX (nthreads_max, chunk, Context) ;
-    int64_t mnz = GB_NNZ_HELD (M) ;
-    int nthreads = GB_nthreads (mnz + M->nvec, chunk, nthreads_max) ;
-    int ntasks = (nthreads == 1) ? 1 : (8 * nthreads) ;
 
     //--------------------------------------------------------------------------
     // slice the entries for each task
     //--------------------------------------------------------------------------
 
-    // Task tid does entries pstart_slice [tid] to pstart_slice [tid+1]-1 and
-    // vectors kfirst_slice [tid] to klast_slice [tid].  The first and last
-    // vectors may be shared with prior slices and subsequent slices.
-
-    int64_t *pstart_slice = NULL, *kfirst_slice = NULL, *klast_slice = NULL ;
-    if (!GB_ek_slice (&pstart_slice, &kfirst_slice, &klast_slice, M, &ntasks))
-    { 
-        // out of memory
-        return (GrB_OUT_OF_MEMORY) ;
-    }
+    GB_WERK_DECLARE (M_ek_slicing, int64_t) ;
+    int M_nthreads, M_ntasks ;
+    GB_SLICE_MATRIX (M, 8, chunk) ;
 
     //--------------------------------------------------------------------------
     // allocate C and create its pattern
@@ -117,7 +106,7 @@ GrB_Info GB_dense_subassign_25
 
     bool C_is_csc = C->is_csc ;
     GB_phbix_free (C) ;
-    GB_OK (GB_dup2 (&C, M, false, C->type, Context)) ;
+    GB_OK (GB_dup2 (&C, M, false, C->type, Context)) ;  // reuse old header
     C->is_csc = C_is_csc ;
 
     //--------------------------------------------------------------------------
@@ -132,12 +121,12 @@ GrB_Info GB_dense_subassign_25
         // define the worker for the switch factory
         //----------------------------------------------------------------------
 
-        #define GB_Cdense_25(cname) GB_Cdense_25_ ## cname
+        #define GB_Cdense_25(cname) GB (_Cdense_25_ ## cname)
 
         #define GB_WORKER(cname)                                              \
         {                                                                     \
             info = GB_Cdense_25(cname) (C, M, A,                              \
-                kfirst_slice, klast_slice, pstart_slice, ntasks, nthreads) ;  \
+                M_ek_slicing, M_ntasks, M_nthreads) ;                         \
             done = (info != GrB_NO_VALUE) ;                                   \
         }                                                                     \
         break ;
@@ -205,7 +194,7 @@ GrB_Info GB_dense_subassign_25
     // free workspace and return result
     //--------------------------------------------------------------------------
 
-    GB_FREE_WORK ;
+    GB_FREE_ALL ;
     ASSERT_MATRIX_OK (C, "C output for subassign method_25", GB0) ;
     ASSERT (GB_ZOMBIES_OK (C)) ;
     ASSERT (GB_JUMBLED_OK (C)) ;

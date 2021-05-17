@@ -2,7 +2,7 @@ function gbtest101
 %GBTEST101 test loading of v3 GraphBLAS objects
 
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
-% SPDX-License-Identifier: Apache-2.0
+% SPDX-License-Identifier: GPL-3.0-or-later
 
 load gbtestv3
 whos
@@ -11,16 +11,16 @@ G
 fprintf ('================== v3 sparse struct:\n') ;
 G_struct = struct (G)
 G2 = GrB (G, 'sparse') ;
-fprintf ('================== v4 sparse struct:\n') ;
+fprintf ('================== v5 sparse struct:\n') ;
 G2_struct = struct (G2)
 assert (isequal (G, A)) ;
 assert (isequal (G2, A)) ;
 
 assert (isfield (G_struct, 'GraphBLAS')) ;
-assert (isfield (G2_struct, 'GraphBLASv4')) ;
+assert (isfield (G2_struct, 'GraphBLASv5')) ;
 G3 = GrB (G) ;
 G3_struct = struct (G3) ;
-assert (isfield (G3_struct, 'GraphBLASv4')) ;
+assert (isfield (G3_struct, 'GraphBLASv5')) ;
 assert (isequal (G3, A)) ;
 
 [m1, n1] = size (G) ;
@@ -40,14 +40,14 @@ assert (isequal (f1, f2)) ;
 H2 = GrB (H, 'hyper') ;
 fprintf ('================== v3 hypersparse struct:\n') ;
 H_struct = struct (H)
-fprintf ('================== v4 hypersparse struct:\n') ;
+fprintf ('================== v5 hypersparse struct:\n') ;
 H2_struct = struct (H2)
 
 assert (isfield (H_struct, 'GraphBLAS')) ;
-assert (isfield (H2_struct, 'GraphBLASv4')) ;
+assert (isfield (H2_struct, 'GraphBLASv5')) ;
 H3 = GrB (H) ;
 H3_struct = struct (H3) ;
-assert (isfield (H3_struct, 'GraphBLASv4')) ;
+assert (isfield (H3_struct, 'GraphBLASv5')) ;
 assert (isequal (H3, H)) ;
 
 H3 = GrB (n,n) ;
@@ -69,18 +69,18 @@ assert (isequal (R2, R)) ;
 assert (isequal (R2, A')) ;
 
 assert (isfield (struct (R), 'GraphBLAS')) ;
-assert (isfield (struct (R2), 'GraphBLASv4')) ;
+assert (isfield (struct (R2), 'GraphBLASv5')) ;
 
 X2 = GrB (X) ;
 assert (isequal (magic (4), X)) ;
 assert (isequal (magic (4), X2)) ;
 
 assert (isfield (struct (X), 'GraphBLAS')) ;
-assert (isfield (struct (X2), 'GraphBLASv4')) ;
+assert (isfield (struct (X2), 'GraphBLASv5')) ;
 
 fprintf ('================== v3 dense struct (held in sparse format):\n') ;
 X_struct = struct (X)
-fprintf ('================== v4 dense struct (no integers in struct):\n') ;
+fprintf ('================== v5 dense struct (no integers in struct):\n') ;
 X2_struct = struct (X2)
 
 fprintf ('gbtest101: all tests passed\n') ;

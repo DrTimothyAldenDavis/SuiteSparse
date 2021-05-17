@@ -58,7 +58,7 @@ int64_t GB_nvec_nonempty        // return # of non-empty vectors
     //--------------------------------------------------------------------------
 
     int64_t nvec_nonempty = 0 ;
-    const int64_t *GB_RESTRICT Ap = A->p ;
+    const int64_t *restrict Ap = A->p ;
 
     int64_t k ;
     #pragma omp parallel for num_threads(nthreads) schedule(static) \

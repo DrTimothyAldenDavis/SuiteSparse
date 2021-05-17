@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------------
 
 // SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 //------------------------------------------------------------------------------
 
@@ -44,6 +44,8 @@ void mexFunction
 
     int64_t *degree = NULL ;
     GrB_Index *list = NULL, nvec = 0 ;
+    size_t degree_size = 0 ;
+    size_t list_size = 0 ;
     GrB_Vector d = NULL ;
     GrB_Vector y = NULL ;
     GrB_Matrix T = NULL ;
@@ -107,12 +109,14 @@ void mexFunction
         // get the degree of each vector of X, where X is sparse or hypersparse
         //----------------------------------------------------------------------
 
-        if (!GB_matlab_helper9 (X, &degree, &list, &nvec))
+        if (!GB_matlab_helper9 (X, &degree, &degree_size,
+            &list, &list_size, &nvec))
         {
             ERROR ("out of memory") ;
         }
-        OK (GxB_Vector_import_CSC (&d, GrB_INT64, X->vdim,
-            &list, &degree, nvec, nvec, nvec, false, NULL)) ;
+        // TODO do not use X->vdim
+        OK (GxB_Vector_import_CSC (&d, GrB_INT64, X->vdim, &list, &degree,
+            list_size, degree_size, false, nvec, false, NULL)) ;
 
     }
     else
@@ -146,12 +150,13 @@ void mexFunction
                     NULL)) ;
 
                 // get the degree of nonempty rows of T
-                if (!GB_matlab_helper9 (T, &degree, &list, &nvec))
+                if (!GB_matlab_helper9 (T, &degree, &degree_size,
+                    &list, &list_size, &nvec))
                 {
                     ERROR ("out of memory") ;
                 }
-                OK (GxB_Vector_import_CSC (&d, GrB_INT64, nrows,
-                    &list, &degree, nvec, nvec, nvec, false, NULL)) ;
+                OK (GxB_Vector_import_CSC (&d, GrB_INT64, nrows, &list, &degree,
+                    list_size, degree_size, false, nvec, false, NULL)) ;
 
             }
             else
@@ -188,12 +193,13 @@ void mexFunction
                     NULL)) ;
 
                 // get the degree of nonempty columns of T
-                if (!GB_matlab_helper9 (T, &degree, &list, &nvec))
+                if (!GB_matlab_helper9 (T, &degree, &degree_size,
+                    &list, &list_size, &nvec))
                 {
                     ERROR ("out of memory") ;
                 }
-                OK (GxB_Vector_import_CSC (&d, GrB_INT64, ncols,
-                    &list, &degree, nvec, nvec, nvec, false, NULL)) ;
+                OK (GxB_Vector_import_CSC (&d, GrB_INT64, ncols, &list, &degree,
+                    list_size, degree_size, false, nvec, false, NULL)) ;
 
             }
             else
@@ -219,7 +225,7 @@ void mexFunction
     OK (GrB_Matrix_free (&T)) ;
     OK (GrB_Matrix_free (&X)) ;
     OK (GrB_Descriptor_free (&desc)) ;
-    pargout [0] = gb_export (&d, KIND_GRB) ;
+    pargout [0] = gb_export ((GrB_Matrix *) &d, KIND_GRB) ;
     GB_WRAPUP ;
 }
 

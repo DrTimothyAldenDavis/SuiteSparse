@@ -39,7 +39,7 @@ end
 cd (here) ;
 
 fprintf ('\n------------------installing CXSparse\n') ;
-cd ../../SuiteSparse/CXSparse/MATLAB/Csparse
+cd ../../SuiteSparse/CXSparse/MATLAB/CSparse
 addpath (pwd) ;
 try
     cs_sparse (1, 1, 1) ;

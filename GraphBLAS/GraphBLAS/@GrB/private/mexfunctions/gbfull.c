@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------------
 
 // SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 //------------------------------------------------------------------------------
 
@@ -25,6 +25,8 @@
 
 #include "gb_matlab.h"
 
+#define USAGE "usage: C = gbfull (A, type, id, desc)"
+
 void mexFunction
 (
     int nargout,
@@ -38,8 +40,7 @@ void mexFunction
     // check inputs
     //--------------------------------------------------------------------------
 
-    gb_usage (nargin >= 1 && nargin <= 4 && nargout <= 2,
-        "usage: C = gbfull (A, type, id, desc)") ;
+    gb_usage (nargin >= 1 && nargin <= 4 && nargout <= 2, USAGE) ;
 
     //--------------------------------------------------------------------------
     // get a shallow copy of the input matrix
@@ -114,7 +115,9 @@ void mexFunction
     //--------------------------------------------------------------------------
 
     GrB_Matrix C = gb_expand_to_full (A, type, fmt, id) ;
+
     OK (GrB_Matrix_free (&A)) ;
+    OK (GxB_Scalar_free (&id)) ;
 
     //--------------------------------------------------------------------------
     // export C

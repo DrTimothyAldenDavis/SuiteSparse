@@ -114,7 +114,7 @@ GrB_Info GB_subassigner             // C(I,J)<#M> = A or accum (C (I,J), A)
         GB_MATRIX_WAIT_IF_JUMBLED (C) ;
     }
 
-    GBURBLE ("(pending: "GBd") ", GB_Pending_n (C)) ;
+    GBURBLE ("(pending: " GBd ") ", GB_Pending_n (C)) ;
 
     //==========================================================================
     // submatrix assignment C(I,J)<M> = accum (C(I,J),A): meta-algorithm
@@ -165,6 +165,7 @@ GrB_Info GB_subassigner             // C(I,J)<#M> = A or accum (C (I,J), A)
 
         //  M   -   -   -   -   -       05d: C<M> = x, no S, C dense
         //  M   -   -   -   -   -       05e: C<M,s> = x, no S, C empty
+        //  M   -   -   -   -   -       05f: C<C,s> = x, no S, C == M
         //  M   -   -   -   -   -       05:  C(I,J)<M> = x, no S
         //  A   -   -   -   A   -       06d: C<A> = A, no S, C dense
         //  M   -   -   -   A   -       25:  C<M,s> = A, A dense, C empty
@@ -307,13 +308,22 @@ GrB_Info GB_subassigner             // C(I,J)<#M> = A or accum (C (I,J), A)
         //  =====================       ==============
         //  M   -   -   -   -   -       05d: C(:,:)<M> = x, no S, C dense
         //  M   -   -   -   -   -       05e: C(:,:)<M,s> = x, no S, C empty
+        //  M   -   -   -   -   -       05f: C(:,:)<C,s> = x, no S, C == M
         //  M   -   -   -   -   -       05:  C(I,J)<M> = x, no S
         //  M   -   -   +   -   -       07:  C(I,J)<M> += x, no S
+
+        case GB_SUBASSIGN_METHOD_05f : 
+        {
+            // Method 05f: C(:,:)<C,s> = scalar ; no S; C == M, M structural
+            GBURBLE ("Method 05f: C<C,struct> = scalar ") ;
+            GB_OK (GB_subassign_05f (C, scalar, atype, Context)) ;
+        }
+        break ;
 
         case GB_SUBASSIGN_METHOD_05e : 
         {
             // Method 05e: C(:,:)<M> = scalar ; no S; C empty, M structural
-            GBURBLE ("Method 05e: (C empty)<M> = scalar ") ;
+            GBURBLE ("Method 05e: (C empty)<M,struct> = scalar ") ;
             GB_OK (GB_subassign_05e (C, M, scalar, atype, Context)) ;
         }
         break ;

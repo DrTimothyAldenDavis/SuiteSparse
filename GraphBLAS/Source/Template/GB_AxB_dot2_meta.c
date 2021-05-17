@@ -53,23 +53,23 @@
     int64_t cnvals = 0 ;
 
     ASSERT (GB_IS_BITMAP (C)) ;
-    int8_t   *GB_RESTRICT Cb = C->b ;
-    GB_CTYPE *GB_RESTRICT Cx = (GB_CTYPE *) C->x ;
+    int8_t   *restrict Cb = C->b ;
+    GB_CTYPE *restrict Cx = (GB_CTYPE *) C->x ;
     const int64_t cvlen = C->vlen ;
 
-    const int64_t *GB_RESTRICT Bp = B->p ;
-    const int8_t  *GB_RESTRICT Bb = B->b ;
-    const int64_t *GB_RESTRICT Bi = B->i ;
-    const GB_BTYPE *GB_RESTRICT Bx = (GB_BTYPE *) (B_is_pattern ? NULL : B->x) ;
+    const int64_t *restrict Bp = B->p ;
+    const int8_t  *restrict Bb = B->b ;
+    const int64_t *restrict Bi = B->i ;
+    const GB_BTYPE *restrict Bx = (GB_BTYPE *) (B_is_pattern ? NULL : B->x) ;
     const bool B_is_bitmap = GB_IS_BITMAP (B) ;
     const bool B_is_sparse = GB_IS_SPARSE (B) ;
     ASSERT (!GB_IS_HYPERSPARSE (B)) ;
     #define B_is_hyper false
 
-    const int64_t *GB_RESTRICT Ap = A->p ;
-    const int8_t  *GB_RESTRICT Ab = A->b ;
-    const int64_t *GB_RESTRICT Ai = A->i ;
-    const GB_ATYPE *GB_RESTRICT Ax = (GB_ATYPE *) (A_is_pattern ? NULL : A->x) ;
+    const int64_t *restrict Ap = A->p ;
+    const int8_t  *restrict Ab = A->b ;
+    const int64_t *restrict Ai = A->i ;
+    const GB_ATYPE *restrict Ax = (GB_ATYPE *) (A_is_pattern ? NULL : A->x) ;
     const bool A_is_bitmap = GB_IS_BITMAP (A) ;
     const bool A_is_sparse = GB_IS_SPARSE (A) ;
     ASSERT (!GB_IS_HYPERSPARSE (A)) ;
@@ -112,7 +112,7 @@
         // M can be sparse, hyper, bitmap, or full
         // M can be structural or valued
 
-        const int8_t *GB_RESTRICT Mb = M->b ;
+        const int8_t *restrict Mb = M->b ;
         const bool M_is_bitmap = GB_IS_BITMAP (M) ;
         const bool M_is_full = GB_IS_FULL (M) ;
 
@@ -157,7 +157,7 @@
             // C<M>=A'*B or C<!M>=A'*B
             //------------------------------------------------------------------
 
-            const GB_void *GB_RESTRICT Mx = (GB_void *)
+            const GB_void *restrict Mx = (GB_void *)
                 (Mask_struct ? NULL : (M->x)) ;
             const size_t msize = M->type->size ;
 

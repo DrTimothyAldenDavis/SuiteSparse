@@ -38,7 +38,7 @@ GrB_Info GB_transpose           // C=A', C=(ctype)A or C=op(A')
 
 GrB_Info GB_transpose_bucket    // bucket transpose; typecast and apply op
 (
-    GrB_Matrix *Chandle,        // output matrix (unallocated on input)
+    GrB_Matrix C,               // output matrix (static header)
     const GrB_Type ctype,       // type of output matrix C
     const bool C_is_csc,        // format of output matrix C
     const GrB_Matrix A,         // input matrix
@@ -57,8 +57,8 @@ void GB_transpose_ix            // transpose the pattern and values of a matrix
     GrB_Matrix C,                       // output matrix
     const GrB_Matrix A,                 // input matrix
     // for sparse case:
-    int64_t *GB_RESTRICT *Workspaces,   // Workspaces, size nworkspaces
-    const int64_t *GB_RESTRICT A_slice, // how A is sliced, size nthreads+1
+    int64_t *restrict *Workspaces,   // Workspaces, size nworkspaces
+    const int64_t *restrict A_slice, // how A is sliced, size nthreads+1
     int nworkspaces,                    // # of workspaces to use
     // for all cases:
     int nthreads                        // # of threads to use
@@ -74,17 +74,17 @@ void GB_transpose_op    // transpose, typecast, and apply operator to a matrix
         bool binop_bind1st,             // if true, binop(x,A) else binop(A,y)
     const GrB_Matrix A,                 // input matrix
     // for sparse or hypersparse case:
-    int64_t *GB_RESTRICT *Workspaces,   // Workspaces, size nworkspaces
-    const int64_t *GB_RESTRICT A_slice, // how A is sliced, size nthreads+1
+    int64_t *restrict *Workspaces,   // Workspaces, size nworkspaces
+    const int64_t *restrict A_slice, // how A is sliced, size nthreads+1
     int nworkspaces,                    // # of workspaces to use
     // for all cases:
     int nthreads                        // # of threads to use
 ) ;
 
-GB_PUBLIC   // accessed by the MATLAB interface only
+GB_PUBLIC                   // used by GraphBLAS MATLAB interface
 GrB_Info GB_shallow_copy    // create a purely shallow matrix
 (
-    GrB_Matrix *Chandle,    // output matrix C
+    GrB_Matrix C,           // output matrix C, with a static header
     const bool C_is_csc,    // desired CSR/CSC format of C
     const GrB_Matrix A,     // input matrix
     GB_Context Context

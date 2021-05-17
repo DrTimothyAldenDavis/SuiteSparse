@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------------
 
 // SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 //------------------------------------------------------------------------------
 
@@ -130,6 +130,7 @@ mxArray *gb_export_to_mxsparse  // return exported MATLAB sparse matrix S
         { 
             S = mxCreateSparse (nrows, ncols, 1, mxREAL) ;
         }
+        OK (GrB_Matrix_free (&T)) ;
 
     }
     else
@@ -139,13 +140,14 @@ mxArray *gb_export_to_mxsparse  // return exported MATLAB sparse matrix S
         // export the content of T as a sparse CSC matrix
         //----------------------------------------------------------------------
 
-        GrB_Index Tp_size, Ti_size, Tx_size ;
+        GrB_Index Tp_size, Ti_size, Tx_size, type_size ;
         int64_t nonempty, *Tp, *Ti ;
         void *Tx ;
 
         // pass jumbled as NULL to indicate the matrix must be sorted
+        // pass is_uniform as NULL to indicate it cannot be uniform valued
         OK (GxB_Matrix_export_CSC (&T, &type, &nrows, &ncols,
-            &Tp, &Ti, &Tx, &Tp_size, &Ti_size, &Tx_size, NULL, NULL)) ;
+            &Tp, &Ti, &Tx, &Tp_size, &Ti_size, &Tx_size, NULL, NULL, NULL)) ;
 
         CHECK_ERROR (Ti_size == 0, "internal error 8") ;
         CHECK_ERROR (Tp == NULL || Ti == NULL || Tx == NULL,
@@ -158,48 +160,48 @@ mxArray *gb_export_to_mxsparse  // return exported MATLAB sparse matrix S
         if (type == GrB_BOOL)
         { 
             S = mxCreateSparseLogicalMatrix (0, 0, 1) ;
+            type_size = 1 ;
         }
         else if (type == GxB_FC64)
         { 
             S = mxCreateSparse (0, 0, 1, mxCOMPLEX) ;
+            type_size = 16 ;
         }
         else // type == GrB_FP64
         { 
             S = mxCreateSparse (0, 0, 1, mxREAL) ;
+            type_size = 8 ;
         }
 
         // set the size
         mxSetM (S, nrows) ;
         mxSetN (S, ncols) ;
-        mxSetNzmax (S, Ti_size) ;
+        int64_t nzmax = GB_IMIN (Ti_size / sizeof (int64_t),
+                                 Tx_size / type_size) ;
+        mxSetNzmax (S, nzmax) ;
 
         // set the column pointers
-        void *p = mxGetJc (S) ;
-        gb_mxfree (&p) ;
+        void *p = mxGetJc (S) ; gb_mxfree (&p) ;
         mxSetJc (S, Tp) ;
 
         // set the row indices
-        p = mxGetIr (S) ;
-        gb_mxfree (&p) ;
+        p = mxGetIr (S) ; gb_mxfree (&p) ;
         mxSetIr (S, Ti) ;
 
         // set the values
         if (type == GrB_BOOL)
         { 
-            p = mxGetData (S) ;
-            gb_mxfree (&p) ;
+            p = mxGetData (S) ; gb_mxfree (&p) ;
             mxSetData (S, Tx) ;
         }
         else if (type == GxB_FC64)
         { 
-            p = mxGetComplexDoubles (S) ;
-            gb_mxfree (&p) ;
+            p = mxGetComplexDoubles (S) ; gb_mxfree (&p) ;
             mxSetComplexDoubles (S, Tx) ;
         }
         else // type == GrB_FP64
         { 
-            p = mxGetDoubles (S) ;
-            gb_mxfree (&p) ;
+            p = mxGetDoubles (S) ; gb_mxfree (&p) ;
             mxSetDoubles (S, Tx) ;
         }
     }

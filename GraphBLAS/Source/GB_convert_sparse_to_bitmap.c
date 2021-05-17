@@ -12,14 +12,16 @@
 #include "GB_type__include.h"
 #endif
 
-#define GB_FREE_WORK                    \
-    GB_ek_slice_free (&pstart_slice, &kfirst_slice, &klast_slice) ;
+#define GB_FREE_WORK                                \
+{                                                   \
+    GB_WERK_POP (A_ek_slicing, int64_t) ;           \
+}
 
-#define GB_FREE_ALL                     \
-{                                       \
-    GB_FREE_WORK ;                      \
-    if (!in_place) GB_FREE (Ax_new) ;   \
-    GB_FREE (Ab) ;                      \
+#define GB_FREE_ALL                                 \
+{                                                   \
+    GB_FREE_WORK ;                                  \
+    if (!in_place) GB_FREE (&Ax_new, Ax_new_size) ; \
+    GB_FREE (&Ab, Ab_size) ;                        \
 }
 
 GrB_Info GB_convert_sparse_to_bitmap    // convert sparse/hypersparse to bitmap
@@ -34,9 +36,9 @@ GrB_Info GB_convert_sparse_to_bitmap    // convert sparse/hypersparse to bitmap
     //--------------------------------------------------------------------------
 
     GrB_Info info ;
-    int64_t *pstart_slice = NULL, *kfirst_slice = NULL, *klast_slice = NULL ;
-    int8_t *GB_RESTRICT Ab = NULL ;
-    GB_void *GB_RESTRICT Ax_new = NULL ;
+    GB_WERK_DECLARE (A_ek_slicing, int64_t) ;
+    int8_t  *restrict Ab     = NULL ; size_t Ab_size = 0 ;
+    GB_void *restrict Ax_new = NULL ; size_t Ax_new_size = 0 ;
 
     ASSERT_MATRIX_OK (A, "A converting sparse/hypersparse to bitmap", GB0) ;
     ASSERT (!GB_IS_FULL (A)) ;
@@ -69,30 +71,24 @@ GrB_Info GB_convert_sparse_to_bitmap    // convert sparse/hypersparse to bitmap
     const int64_t avlen = A->vlen ;
     const int64_t anvec = A->nvec ;
     int64_t anzmax ;
-    if (!GB_Index_multiply (&anzmax, avdim, avlen))
+    if (!GB_Index_multiply ((GrB_Index *) &anzmax, avdim, avlen))
     { 
         // problem too large
         return (GrB_OUT_OF_MEMORY) ;
     }
     anzmax = GB_IMAX (anzmax, 1) ;
 
-    if (in_place)
+    if (in_place || anz > 0)
     { 
-        // if done in-place, malloc is fine since all of Ab will be set below
-        Ab = GB_MALLOC (anzmax, int8_t) ;
-    }
-    else if (anz > 0)
-    { 
-        // malloc Ab and set it to 0, in parallel.  This is faster than
-        // calloc since most of Ab will be set below.
-        Ab = GB_MALLOC (anzmax, int8_t) ;
+        // if any entries exist, use malloc since all of Ab will be set below.
+        Ab = GB_MALLOC (anzmax, int8_t, &Ab_size) ;
     }
     else
     { 
         // calloc Ab so all bitmap entries are zero; no need to touch them.
         // This case occurs when setting the GxB_SPARSITY_CONTROL of a new
         // matrix to GxB_BITMAP, with no entries.
-        Ab = GB_CALLOC (anzmax, int8_t) ;       // anz is zero
+        Ab = GB_CALLOC (anzmax, int8_t, &Ab_size) ;
     }
 
     if (Ab == NULL)
@@ -111,13 +107,14 @@ GrB_Info GB_convert_sparse_to_bitmap    // convert sparse/hypersparse to bitmap
     if (in_place)
     { 
         // keep the existing A->x
-        Ax_new = A->x ;
+        Ax_new = (GB_void *) A->x ;
         Ax_shallow = A->x_shallow ;
+        Ax_new_size = A->x_size ;
     }
     else
     {
         // A->x must be modified to fit the bitmap structure
-        Ax_new = GB_MALLOC (anzmax * asize, GB_void) ;
+        Ax_new = GB_MALLOC (anzmax * asize, GB_void, &Ax_new_size) ;
         Ax_shallow = false ;
         if (Ax_new == NULL)
         { 
@@ -157,16 +154,8 @@ GrB_Info GB_convert_sparse_to_bitmap    // convert sparse/hypersparse to bitmap
         // scatter the values and pattern of A into the bitmap
         //----------------------------------------------------------------------
 
-        int nthreads = GB_nthreads (anz + anvec, chunk, nthreads_max) ;
-        int ntasks = (nthreads == 1) ? 1 : (8 * nthreads) ;
-        if (!GB_ek_slice (&pstart_slice, &kfirst_slice, &klast_slice, A,
-            &ntasks))
-        { 
-            // out of memory
-            GB_FREE_ALL ;
-            return (GrB_OUT_OF_MEMORY) ;
-        }
-
+        int A_nthreads, A_ntasks ;
+        GB_SLICE_MATRIX (A, 8, chunk) ;
         bool done = false ;
 
         #ifndef GBCOMPACT
@@ -175,11 +164,11 @@ GrB_Info GB_convert_sparse_to_bitmap    // convert sparse/hypersparse to bitmap
             // define the worker for the switch factory
             //------------------------------------------------------------------
 
-            #define GB_convert_s2b_(cname) GB_convert_s2b_ ## cname
+            #define GB_convert_s2b_(cname) GB (_convert_s2b_ ## cname)
             #define GB_WORKER(cname)                                        \
             {                                                               \
-                info = GB_convert_s2b_(cname) (A, Ax_new, Ab, kfirst_slice, \
-                    klast_slice, pstart_slice, ntasks, nthreads) ;          \
+                info = GB_convert_s2b_(cname) (A, Ax_new, Ab,               \
+                    A_ek_slicing, A_ntasks, A_nthreads) ;                   \
                 done = (info != GrB_NO_VALUE) ;                             \
             }                                                               \
             break ;
@@ -235,11 +224,11 @@ GrB_Info GB_convert_sparse_to_bitmap    // convert sparse/hypersparse to bitmap
 
     GB_phbix_free (A) ;
 
-    A->b = Ab ;
+    A->b = Ab ; A->b_size = Ab_size ;
     A->b_shallow = false ;
     Ab = NULL ;
 
-    A->x = Ax_new ;
+    A->x = Ax_new ; A->x_size = Ax_new_size ;
     A->x_shallow = Ax_shallow ;
     Ax_new = NULL ;
 

@@ -64,13 +64,14 @@ bool GB_mx_get_global       // true if doing malloc_debug
 
     bool burble = GB_Global_burble_get ( ) ;            // save current burble
     GB_Global_GrB_init_called_set (false) ;
+//  GxB_init (GrB_NONBLOCKING, mxMalloc, NULL, NULL, mxFree, false) ;
     GxB_init (GrB_NONBLOCKING, mxMalloc, mxCalloc, mxRealloc, mxFree, false) ;
     ASSERT (GB_Global_nmalloc_get ( ) == 0) ;
     GB_Global_abort_function_set (GB_mx_abort) ;
     GB_Global_malloc_tracking_set (true) ;
     GxB_Global_Option_set_(GxB_FORMAT, GxB_BY_COL) ;
     GxB_Global_Option_set_(GxB_BURBLE, burble) ;        // restore the burble
-    GB_printf_function = mexPrintf ;
+    GxB_Global_Option_set_(GxB_PRINTF, mexPrintf) ;
 
     //--------------------------------------------------------------------------
     // get nthreads
@@ -153,7 +154,6 @@ bool GB_mx_get_global       // true if doing malloc_debug
         }
     }
 
-    // printf ("complex init [%d]\n", builtin_complex [0]) ;
     Complex_init (builtin_complex [0]) ;
 
     //--------------------------------------------------------------------------

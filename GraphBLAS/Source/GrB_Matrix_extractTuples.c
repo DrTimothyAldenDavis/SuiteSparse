@@ -20,7 +20,7 @@
 #include "GB.h"
 
 #define GB_EXTRACT(prefix,type,T)                                             \
-GrB_Info prefix ## Matrix_extractTuples_ ## T     /* [I,J,X] = find (A) */    \
+GrB_Info GB_EVAL3 (prefix, _Matrix_extractTuples_, T) /* [I,J,X] = find (A) */\
 (                                                                             \
     GrB_Index *I,           /* array for returning row indices of tuples */   \
     GrB_Index *J,           /* array for returning col indices of tuples */   \
@@ -29,8 +29,7 @@ GrB_Info prefix ## Matrix_extractTuples_ ## T     /* [I,J,X] = find (A) */    \
     const GrB_Matrix A      /* matrix to extract tuples from             */   \
 )                                                                             \
 {                                                                             \
-    GB_WHERE1 (GB_STR(prefix) "Matrix_extractTuples_" GB_STR(T)          \
-        " (I, J, X, nvals, A)") ;                                             \
+    GB_WHERE1 ("GrB_Matrix_extractTuples_" GB_STR(T) " (I, J, X, nvals, A)") ;\
     GB_BURBLE_START ("GrB_Matrix_extractTuples") ;                            \
     GB_RETURN_IF_NULL_OR_FAULTY (A) ;                                         \
     GB_RETURN_IF_NULL (p_nvals) ;                                             \
@@ -40,18 +39,18 @@ GrB_Info prefix ## Matrix_extractTuples_ ## T     /* [I,J,X] = find (A) */    \
     return (info) ;                                                           \
 }
 
-GB_EXTRACT (GrB_, bool      , BOOL   )
-GB_EXTRACT (GrB_, int8_t    , INT8   )
-GB_EXTRACT (GrB_, uint8_t   , UINT8  )
-GB_EXTRACT (GrB_, int16_t   , INT16  )
-GB_EXTRACT (GrB_, uint16_t  , UINT16 )
-GB_EXTRACT (GrB_, int32_t   , INT32  )
-GB_EXTRACT (GrB_, uint32_t  , UINT32 )
-GB_EXTRACT (GrB_, int64_t   , INT64  )
-GB_EXTRACT (GrB_, uint64_t  , UINT64 )
-GB_EXTRACT (GrB_, float     , FP32   )
-GB_EXTRACT (GrB_, double    , FP64   )
-GB_EXTRACT (GxB_, GxB_FC32_t, FC32   )
-GB_EXTRACT (GxB_, GxB_FC64_t, FC64   )
-GB_EXTRACT (GrB_, void      , UDT    )
+GB_EXTRACT (GrB, bool      , BOOL   )
+GB_EXTRACT (GrB, int8_t    , INT8   )
+GB_EXTRACT (GrB, uint8_t   , UINT8  )
+GB_EXTRACT (GrB, int16_t   , INT16  )
+GB_EXTRACT (GrB, uint16_t  , UINT16 )
+GB_EXTRACT (GrB, int32_t   , INT32  )
+GB_EXTRACT (GrB, uint32_t  , UINT32 )
+GB_EXTRACT (GrB, int64_t   , INT64  )
+GB_EXTRACT (GrB, uint64_t  , UINT64 )
+GB_EXTRACT (GrB, float     , FP32   )
+GB_EXTRACT (GrB, double    , FP64   )
+GB_EXTRACT (GxB, GxB_FC32_t, FC32   )
+GB_EXTRACT (GxB, GxB_FC64_t, FC64   )
+GB_EXTRACT (GrB, void      , UDT    )
 

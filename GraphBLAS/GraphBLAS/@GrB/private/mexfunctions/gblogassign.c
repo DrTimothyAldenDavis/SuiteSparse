@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------------
 
 // SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 //------------------------------------------------------------------------------
 
@@ -66,9 +66,10 @@
 
 // C is always returned as a GrB matrix.
 
-#define ERR "A must be a vector of length nnz(M) for logical indexing, C(M)=A"
-
 #include "gb_matlab.h"
+
+#define USAGE "usage: C = gblogassign (C, M, A)"
+#define ERR "A must be a vector of length nnz(M) for logical indexing, C(M)=A"
 
 void mexFunction
 (
@@ -83,7 +84,7 @@ void mexFunction
     // check inputs
     //--------------------------------------------------------------------------
 
-    gb_usage (nargin == 3 && nargout <= 1, "usage: C = gblogassign (C, M, A)") ;
+    gb_usage (nargin == 3 && nargout <= 1, USAGE) ;
 
     //--------------------------------------------------------------------------
     // get a deep copy of C, of any sparsity structure
@@ -104,6 +105,7 @@ void mexFunction
         GxB_SPARSE + GxB_HYPERSPARSE) ;
     OK1 (M, GxB_Matrix_select (M, NULL, NULL, GxB_NONZERO, M_input,
         NULL, NULL)) ;
+
     OK (GrB_Matrix_free (&M_input)) ;
     GrB_Index mnz ;
     OK (GrB_Matrix_nvals (&mnz, M)) ;
@@ -123,7 +125,7 @@ void mexFunction
     OK (GxB_Matrix_type (&atype, A)) ;
     OK (GrB_Matrix_nvals (&anz, A)) ;
     OK (GxB_Matrix_Option_get (A, GxB_FORMAT, &fmt)) ;
-    OK (GxB_Matrix_Option_get (A, GxB_SPARSITY_CONTROL, &A_sparsity)) ;
+    OK (GxB_Matrix_Option_get (A, GxB_SPARSITY_STATUS, &A_sparsity)) ;
 
     GrB_Matrix A_copy = NULL ;
     GrB_Matrix A_copy2 = NULL ;
@@ -179,7 +181,12 @@ void mexFunction
         ERROR (ERR) ;
     }
 
-    GrB_Index *Ai = (GrB_Index *) A->i ;        // NULL if A is full
+    //--------------------------------------------------------------------------
+    // extract the values and pattern of A
+    //--------------------------------------------------------------------------
+
+    // TODO: use a shallow variant of GxB*export to access content of M and A
+    GrB_Index *Ai = (GrB_Index *) A->i ;
     void *Ax = A->x ;
     double empty ;
     if (Ax == NULL) Ax = &empty ;
@@ -274,11 +281,14 @@ void mexFunction
     // free shallow copies and temporary matrices
     //--------------------------------------------------------------------------
 
+    // OK: Si, Sj, and Mj were allocated above from mxMalloc, never in a
+    // GrB_Matrix
     gb_mxfree (&Si) ;
     gb_mxfree (&Sj) ;
     gb_mxfree (&Mj) ;
+    OK (GrB_Matrix_free (&S)) ;
     OK (GrB_Matrix_free (&M)) ;
-    OK (GrB_Matrix_free (&M_input)) ;
+    OK (GrB_Matrix_free (&A_input)) ;
 
     //--------------------------------------------------------------------------
     // export the output matrix C back to MATLAB as a GraphBLAS matrix

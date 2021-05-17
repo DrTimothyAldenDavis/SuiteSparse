@@ -28,7 +28,8 @@ GrB_Info get_matrix         // get a matrix from stdin, or create random one
     int argc,               // command-line arguments
     char **argv,
     bool no_self_edges,     // if true, ensure the matrix has no self-edges
-    bool boolean            // if true, file is read as GrB_BOOL, else GrB_FP64
+    bool boolean,           // if true, file is read as GrB_BOOL, else GrB_FP64
+    bool spones             // if true, return all entries equal to 1
 )
 {
 
@@ -175,6 +176,17 @@ GrB_Info get_matrix         // get a matrix from stdin, or create random one
         fprintf (stderr, "matrix %.16g by %.16g, %.16g entries, from stdin\n",
             (double) nrows, (double) ncols, (double) nvals) ;
 
+    }
+
+    //--------------------------------------------------------------------------
+    // replace all values with 1 if spones is true
+    //--------------------------------------------------------------------------
+
+    if (spones)
+    {
+        // A<A,struct> = 1
+        OK (GrB_Matrix_assign_BOOL (A, A, NULL, true,
+            GrB_ALL, nrows, GrB_ALL, ncols, GrB_DESC_S)) ;
     }
 
     //--------------------------------------------------------------------------

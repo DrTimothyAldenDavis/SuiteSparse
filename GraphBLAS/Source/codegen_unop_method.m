@@ -28,8 +28,8 @@ else
 end
 
 % function names
-fprintf (f, 'define(`GB_unop_apply'', `GB_unop_apply__%s'')\n', name) ;
-fprintf (f, 'define(`GB_unop_tran'', `GB_unop_tran__%s'')\n', name) ;
+fprintf (f, 'define(`_unop_apply'', `_unop_apply__%s'')\n', name) ;
+fprintf (f, 'define(`_unop_tran'', `_unop_tran__%s'')\n', name) ;
 
 % type of C and A
 fprintf (f, 'define(`GB_ctype'', `%s'')\n', ztype) ;

@@ -12,7 +12,7 @@
 
 // If the Ap_option is GB_Ap_calloc, the A->p and A->h are allocated and
 // initialized, and A->magic is set to GB_MAGIC to denote a valid matrix.
-// Otherwise, the matrix has not yet been completelyinitialized, and A->magic
+// Otherwise, the matrix has not yet been completely initialized, and A->magic
 // is set to GB_MAGIC2 to denote this.  This case only occurs internally in
 // GraphBLAS.  The internal function that calls GB_new must then allocate or
 // initialize A->p itself, and then set A->magic = GB_MAGIC when it does so.
@@ -20,8 +20,6 @@
 // To allocate a full or bitmap matrix, the sparsity parameter
 // is GxB_FULL or GxB_BITMAP.  The Ap_option is ignored.  For a full or
 // bitmap matrix, only the header is allocated, if NULL on input.
-
-// Only GrB_SUCCESS and GrB_OUT_OF_MEMORY can be returned by this function.
 
 // The GrB_Matrix object holds both a sparse vector and a sparse matrix.  A
 // vector is represented as an vlen-by-1 matrix, but it is sometimes treated
@@ -39,6 +37,7 @@ GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_new                 // create matrix, except for indices & values
 (
     GrB_Matrix *Ahandle,        // handle of matrix to create
+    const bool A_static_header, // true if Ahandle is statically allocated
     const GrB_Type type,        // matrix type
     const int64_t vlen,         // length of each vector
     const int64_t vdim,         // number of vectors
@@ -68,13 +67,22 @@ GrB_Info GB_new                 // create matrix, except for indices & values
     bool allocated_header = false ;
     if ((*Ahandle) == NULL)
     {
-        (*Ahandle) = GB_CALLOC (1, struct GB_Matrix_opaque) ;
+        size_t header_size ;
+        (*Ahandle) = GB_MALLOC (1, struct GB_Matrix_opaque, &header_size) ;
         if (*Ahandle == NULL)
         { 
             // out of memory
             return (GrB_OUT_OF_MEMORY) ;
         }
         allocated_header = true ;
+        (*Ahandle)->static_header = false ;  // header of A has been malloc'd
+        (*Ahandle)->header_size = header_size ;
+    }
+    else
+    {
+        // the header of A has been provided on input.  It may already be
+        // malloc'd, or it might be statically allocated in the caller. 
+        (*Ahandle)->static_header = A_static_header ;
     }
 
     GrB_Matrix A = *Ahandle ;
@@ -86,6 +94,8 @@ GrB_Info GB_new                 // create matrix, except for indices & values
     // basic information
     A->magic = GB_MAGIC2 ;                 // object is not yet valid
     A->type = type ;
+    A->logger = NULL ;          // no error logged yet
+    A->logger_size = 0 ;
 
     // CSR/CSC format
     A->is_csc = is_csc ;
@@ -146,23 +156,15 @@ GrB_Info GB_new                 // create matrix, except for indices & values
         A->nvec_nonempty = 0 ;
     }
 
-    A->p = NULL ;
-    A->h = NULL ;
-    A->p_shallow = false ;
-    A->h_shallow = false ;
-    // #include "GB_new_mkl_template.c"
+    // no content yet
+    A->p = NULL ; A->p_shallow = false ; A->p_size = 0 ;
+    A->h = NULL ; A->h_shallow = false ; A->h_size = 0 ;
+    A->b = NULL ; A->b_shallow = false ; A->b_size = 0 ;
+    A->i = NULL ; A->i_shallow = false ; A->i_size = 0 ;
+    A->x = NULL ; A->x_shallow = false ; A->x_size = 0 ;
 
-    A->logger = NULL ;          // no error logged yet
-
-    // content that is freed or reset in GB_bix_free
-    A->b = NULL ;
-    A->i = NULL ;
-    A->x = NULL ;
     A->nzmax = 0 ;              // GB_NNZ(A) checks nzmax==0 before Ap[nvec]
     A->nvals = 0 ;              // for bitmapped matrices only
-    A->b_shallow = false ;
-    A->i_shallow = false ;
-    A->x_shallow = false ;
     A->nzombies = 0 ;
     A->jumbled = false ;
     A->Pending = NULL ;
@@ -188,12 +190,13 @@ GrB_Info GB_new                 // create matrix, except for indices & values
     {
         // Sets the vector pointers to zero, which defines all vectors as empty
         A->magic = GB_MAGIC ;
-        A->p = GB_CALLOC (A->plen+1, int64_t) ;
+        A->p = GB_CALLOC (A->plen+1, int64_t, &(A->p_size)) ;
+        ASSERT (A->p_size == GB_Global_memtable_size (A->p)) ;
         ok = (A->p != NULL) ;
         if (A_is_hyper)
         { 
             // since nvec is zero, there is never any need to initialize A->h
-            A->h = GB_MALLOC (A->plen, int64_t) ;
+            A->h = GB_MALLOC (A->plen, int64_t, &(A->h_size)) ;
             ok = ok && (A->h != NULL) ;
         }
     }
@@ -205,11 +208,12 @@ GrB_Info GB_new                 // create matrix, except for indices & values
         // before returning the matrix to the user application.  GB_NNZ(A) must
         // check A->nzmax == 0 since A->p [A->nvec] might be undefined.
         A->magic = GB_MAGIC2 ;
-        A->p = GB_MALLOC (A->plen+1, int64_t) ;
+        A->p = GB_MALLOC (A->plen+1, int64_t, &(A->p_size)) ;
+        ASSERT (A->p_size == GB_Global_memtable_size (A->p)) ;
         ok = (A->p != NULL) ;
         if (A_is_hyper)
         { 
-            A->h = GB_MALLOC (A->plen, int64_t) ;
+            A->h = GB_MALLOC (A->plen, int64_t, &(A->h_size)) ;
             ok = ok && (A->h != NULL) ;
         }
     }
@@ -219,8 +223,13 @@ GrB_Info GB_new                 // create matrix, except for indices & values
         // out of memory
         if (allocated_header)
         { 
-            // only free the header if it was allocated here
+            // free all of A, including the header
             GB_Matrix_free (Ahandle) ;
+        }
+        else
+        {
+            // the header was not allocated here; only free the content of A
+            GB_phbix_free (A) ;
         }
         return (GrB_OUT_OF_MEMORY) ;
     }

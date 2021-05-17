@@ -14,9 +14,11 @@
 #include "GB_binop__include.h"
 #endif
 
+#define GB_FREE_ALL GB_phbix_free (C) ;
+
 GrB_Info GB_AxB_rowscale            // C = D*B, row scale with diagonal D
 (
-    GrB_Matrix *Chandle,            // output matrix
+    GrB_Matrix C,                   // output matrix, static header
     const GrB_Matrix D,             // diagonal input matrix
     const GrB_Matrix B,             // input matrix
     const GrB_Semiring semiring,    // semiring that defines C=D*A
@@ -30,7 +32,7 @@ GrB_Info GB_AxB_rowscale            // C = D*B, row scale with diagonal D
     //--------------------------------------------------------------------------
 
     GrB_Info info ;
-    ASSERT (Chandle != NULL) ;
+    ASSERT (C != NULL && C->static_header) ;
 
     ASSERT_MATRIX_OK (D, "D for rowscale A*D", GB0) ;
     ASSERT (!GB_ZOMBIES (D)) ;
@@ -71,14 +73,12 @@ GrB_Info GB_AxB_rowscale            // C = D*B, row scale with diagonal D
     //--------------------------------------------------------------------------
 
     // allocate C->x but do not initialize it
-    (*Chandle) = NULL ;
-    info = GB_dup (Chandle, B, false, mult->ztype, Context) ;
+    info = GB_dup2 (&C, B, false, mult->ztype, Context) ;   // static header
     if (info != GrB_SUCCESS)
     { 
         // out of memory
         return (info) ;
     }
-    GrB_Matrix C = (*Chandle) ;
 
     //--------------------------------------------------------------------------
     // apply a positional operator: convert C=D*B to C=op(B)
@@ -89,7 +89,9 @@ GrB_Info GB_AxB_rowscale            // C = D*B, row scale with diagonal D
         if (flipxy)
         { 
             // the multiplicatve operator is fmult(y,x), so flip the opcode
-            opcode = GB_binop_flip (opcode) ;
+            bool handled ;
+            opcode = GB_binop_flip (opcode, &handled) ; // for positional ops
+            ASSERT (handled) ;      // all positional ops can be flipped
         }
         // determine unary operator to compute C=D*B
         GrB_UnaryOp op1 = NULL ;
@@ -139,14 +141,8 @@ GrB_Info GB_AxB_rowscale            // C = D*B, row scale with diagonal D
                 default:  ;
             }
         }
-        info = GB_apply_op (C->x, op1,      // positional unary op only
-            NULL, NULL, false, B, Context) ;
-        if (info != GrB_SUCCESS)
-        { 
-            // out of memory
-            GB_Matrix_free (Chandle) ;
-            return (info) ;
-        }
+        GB_OK (GB_apply_op ((GB_void *) (C->x), op1,    // positional unary op
+            NULL, NULL, false, B, Context)) ;
         ASSERT_MATRIX_OK (C, "rowscale positional: C = D*B output", GB0) ;
         return (GrB_SUCCESS) ;
     }
@@ -201,7 +197,7 @@ GrB_Info GB_AxB_rowscale            // C = D*B, row scale with diagonal D
         // define the worker for the switch factory
         //----------------------------------------------------------------------
 
-        #define GB_DxB(mult,xname) GB_DxB_ ## mult ## xname
+        #define GB_DxB(mult,xname) GB (_DxB_ ## mult ## xname)
 
         #define GB_BINOP_WORKER(mult,xname)                                  \
         {                                                                    \
@@ -256,7 +252,7 @@ GrB_Info GB_AxB_rowscale            // C = D*B, row scale with diagonal D
         size_t dii_size = flipxy ? ysize : xsize ;
         size_t bij_size = flipxy ? xsize : ysize ;
 
-        GB_void *GB_RESTRICT Cx = (GB_void *) C->x ;
+        GB_void *restrict Cx = (GB_void *) C->x ;
 
         GB_cast_function cast_D, cast_B ;
         if (flipxy)
@@ -319,7 +315,6 @@ GrB_Info GB_AxB_rowscale            // C = D*B, row scale with diagonal D
     //--------------------------------------------------------------------------
 
     ASSERT_MATRIX_OK (C, "rowscale: C = D*B output", GB0) ;
-    ASSERT (*Chandle == C) ;
     return (GrB_SUCCESS) ;
 }
 

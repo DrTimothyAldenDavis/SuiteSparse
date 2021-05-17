@@ -96,7 +96,7 @@ GrB_Info GB_dense_subassign_22      // C += b where C is dense and b is a scalar
         //----------------------------------------------------------------------
 
         #define GB_Cdense_accumb(accum,xname) \
-            GB_Cdense_accumb_ ## accum ## xname
+            GB (_Cdense_accumb_ ## accum ## xname)
 
         #define GB_BINOP_WORKER(accum,xname)                                \
         {                                                                   \

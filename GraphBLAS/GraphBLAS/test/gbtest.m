@@ -23,7 +23,7 @@ function gbtest
 % See also GrB.
 
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
-% SPDX-License-Identifier: Apache-2.0
+% SPDX-License-Identifier: GPL-3.0-or-later
 
 % gbtest3 requires ../demo/dnn_matlab.m and ../demo/dnn_mat2gb.m.
 demo_folder = fullfile (fileparts (mfilename ('fullpath')), '../demo') ;
@@ -131,12 +131,13 @@ gbtest92  % test GrB.kronecker
 gbtest93  % test GrB.select
 gbtest94  % test GrB.vreduce
 gbtest95  % test indexing
-gbtest96  % test GrB.optype
 gbtest97  % test GrB.apply2
 gbtest98  % test row/col degree for hypersparse matrices
 gbtest99  % test performance of C=A'*B and C=A'
 gbtest100 % test GrB.ver and GrB.version
 gbtest101 % test loading of v3 GraphBLAS objects
+gbtest102 % test horzcat, vertcat, cat, cell2mat
+gbtest96  % test GrB.optype
 gbtest00  % test GrB.bfs and plot (graph (G))
 
 % restore default # of threads

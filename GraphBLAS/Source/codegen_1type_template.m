@@ -12,10 +12,10 @@ f = fopen ('control.m4', 'w') ;
 fprintf ('%-11s:  suffix: %-7s  unsigned: %d bits: %d\n', xtype, fname, unsigned, bits) ;
 
 % function names
-fprintf (f, 'define(`GB_Cdense_05d'', `GB_Cdense_05d__%s'')\n', fname) ;
-fprintf (f, 'define(`GB_Cdense_06d'', `GB_Cdense_06d__%s'')\n', fname) ;
-fprintf (f, 'define(`GB_Cdense_25'', `GB_Cdense_25__%s'')\n', fname) ;
-fprintf (f, 'define(`GB_convert_s2b'', `GB_convert_s2b__%s'')\n', fname) ;
+fprintf (f, 'define(`_Cdense_05d'', `_Cdense_05d__%s'')\n', fname) ;
+fprintf (f, 'define(`_Cdense_06d'', `_Cdense_06d__%s'')\n', fname) ;
+fprintf (f, 'define(`_Cdense_25'', `_Cdense_25__%s'')\n', fname) ;
+fprintf (f, 'define(`_convert_s2b'', `_convert_s2b__%s'')\n', fname) ;
 
 fprintf (f, 'define(`GB_ctype'', `%s'')\n', xtype) ;
 

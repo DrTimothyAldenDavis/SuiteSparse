@@ -16,9 +16,9 @@
     // get A
     //--------------------------------------------------------------------------
 
-    const int8_t   *GB_RESTRICT Ab = A->b ;
-    const int64_t  *GB_RESTRICT Ai = A->i ;
-    const GB_ATYPE *GB_RESTRICT Ax = (GB_ATYPE *) A->x ;
+    const int8_t   *restrict Ab = A->b ;
+    const int64_t  *restrict Ai = A->i ;
+    const GB_ATYPE *restrict Ax = (GB_ATYPE *) A->x ;
     int64_t anz = GB_NNZ_HELD (A) ;
     ASSERT (anz > 0) ;
     const bool A_has_zombies = (A->nzombies > 0) ;

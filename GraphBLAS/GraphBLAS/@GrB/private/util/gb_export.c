@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------------
 
 // SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 //------------------------------------------------------------------------------
 
@@ -52,7 +52,6 @@ mxArray *gb_export              // return the exported MATLAB matrix or struct
         //----------------------------------------------------------------------
 
         // Typecast to double, if C is integer (int8, ..., uint64)
-
         return (gb_export_to_mxsparse (C_handle)) ;
 
     }
@@ -85,12 +84,12 @@ mxArray *gb_export              // return the exported MATLAB matrix or struct
 
         CHECK_ERROR (GB_is_shallow (*C_handle), "internal error 717")
 
-        // export as a full matrix, held by column
+        // export as a full matrix, held by column, not uniform-valued
         void *Cx = NULL ;
         GrB_Type ctype = NULL ;
         GrB_Index Cx_size ;
         OK (GxB_Matrix_export_FullC (C_handle, &ctype, &nrows, &ncols,
-            &Cx, &Cx_size, NULL)) ;
+            &Cx, &Cx_size, NULL, NULL)) ;
 
         return (gb_export_to_mxfull (&Cx, nrows, ncols, ctype)) ;
 
@@ -104,7 +103,6 @@ mxArray *gb_export              // return the exported MATLAB matrix or struct
 
         // No typecasting is needed since the MATLAB struct can hold all of the
         // opaque content of the GrB_Matrix.
-
         return (gb_export_to_mxstruct (C_handle)) ;
     }
 }

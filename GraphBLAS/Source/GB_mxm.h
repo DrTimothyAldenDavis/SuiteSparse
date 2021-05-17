@@ -34,7 +34,7 @@ GrB_Info GB_mxm                     // C<M> = A*B
 
 GrB_Info GB_AxB_dot                 // dot product (multiple methods)
 (
-    GrB_Matrix *Chandle,            // output matrix, NULL on input
+    GrB_Matrix C,                   // output matrix, static header
     GrB_Matrix C_in_place,          // input/output matrix, if done in-place
     GrB_Matrix M,                   // optional mask matrix
     const bool Mask_comp,           // if true, use !M
@@ -51,15 +51,16 @@ GrB_Info GB_AxB_dot                 // dot product (multiple methods)
 GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_AxB_meta                // C<M>=A*B meta algorithm
 (
-    GrB_Matrix *Chandle,            // output matrix (if not done in-place)
-    GrB_Matrix C_in_place,          // input/output matrix, if done in-place
+    GrB_Matrix C,                   // output, static header (if not in-place)
+    GrB_Matrix C_in,                // input/output matrix, if done in-place
     bool C_replace,                 // C matrix descriptor
     const bool C_is_csc,            // desired CSR/CSC format of C
-    GrB_Matrix *MT_handle,          // return MT = M' to caller, if computed
+    GrB_Matrix MT,                  // return MT = M' (static header)
+    bool *M_transposed,             // true if MT = M' was computed
     const GrB_Matrix M_in,          // mask for C<M> (not complemented)
     const bool Mask_comp,           // if true, use !M
     const bool Mask_struct,         // if true, use the only structure of M
-    const GrB_BinaryOp accum,       // accum operator for C_input += A*B
+    const GrB_BinaryOp accum,       // accum operator for C_in += A*B
     const GrB_Matrix A_in,          // input matrix
     const GrB_Matrix B_in,          // input matrix
     const GrB_Semiring semiring,    // semiring that defines C=A*B
@@ -75,7 +76,7 @@ GrB_Info GB_AxB_meta                // C<M>=A*B meta algorithm
 
 GrB_Info GB_AxB_rowscale            // C = D*B, row scale with diagonal D
 (
-    GrB_Matrix *Chandle,            // output matrix
+    GrB_Matrix C,                   // output matrix, static header
     const GrB_Matrix D,             // diagonal input matrix
     const GrB_Matrix B,             // input matrix
     const GrB_Semiring semiring,    // semiring that defines C=D*A
@@ -85,7 +86,7 @@ GrB_Info GB_AxB_rowscale            // C = D*B, row scale with diagonal D
 
 GrB_Info GB_AxB_colscale            // C = A*D, column scale with diagonal D
 (
-    GrB_Matrix *Chandle,            // output matrix
+    GrB_Matrix C,                   // output matrix, static header
     const GrB_Matrix A,             // input matrix
     const GrB_Matrix D,             // diagonal input matrix
     const GrB_Semiring semiring,    // semiring that defines C=A*D
@@ -114,7 +115,7 @@ bool GB_AxB_semiring_builtin        // true if semiring is builtin
 GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_AxB_dot2                // C=A'*B or C<!M>=A'*B, dot product method
 (
-    GrB_Matrix *Chandle,            // output matrix
+    GrB_Matrix C,                   // output matrix, static header
     const GrB_Matrix M,             // mask matrix for C<!M>=A'*B
     const bool Mask_comp,           // if true, use !M
     const bool Mask_struct,         // if true, use the only structure of M
@@ -134,7 +135,7 @@ bool GB_is_diagonal             // true if A is diagonal
 GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_AxB_dot3                // C<M> = A'*B using dot product method
 (
-    GrB_Matrix *Chandle,            // output matrix
+    GrB_Matrix C,                   // output matrix, static header
     const GrB_Matrix M,             // mask matrix for C<M>=A'*B or C<!M>=A'*B
     const bool Mask_struct,         // if true, use the only structure of M
     const GrB_Matrix A,             // input matrix
@@ -148,7 +149,7 @@ GrB_Info GB_AxB_dot3_slice
 (
     // output:
     GB_task_struct **p_TaskList,    // array of structs, of size max_ntasks
-    int *p_max_ntasks,              // size of TaskList
+    size_t *p_TaskList_size,        // size of TaskList
     int *p_ntasks,                  // # of tasks constructed
     int *p_nthreads,                // # of threads to use
     // input:
@@ -160,7 +161,7 @@ GrB_Info GB_AxB_dot3_one_slice
 (
     // output:
     GB_task_struct **p_TaskList,    // array of structs, of size max_ntasks
-    int *p_max_ntasks,              // size of TaskList
+    size_t *p_TaskList_size,        // size of TaskList
     int *p_ntasks,                  // # of tasks constructed
     int *p_nthreads,                // # of threads to use
     // input:

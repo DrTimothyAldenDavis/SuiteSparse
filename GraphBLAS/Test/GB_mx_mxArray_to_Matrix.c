@@ -230,7 +230,7 @@ GrB_Matrix GB_mx_mxArray_to_Matrix     // returns GraphBLAS version of A
     {
 
         // create the GraphBLAS matrix
-        info = GB_new (&A, // sparse or full, new header
+        info = GB_new (&A, false, // sparse or full, new mx header
             atype_out, (GrB_Index) nrows, (GrB_Index) ncols,
             GB_Ap_calloc, is_csc, sparsity, GxB_HYPER_DEFAULT, 0, Context) ;
         if (info != GrB_SUCCESS)
@@ -265,7 +265,7 @@ GrB_Matrix GB_mx_mxArray_to_Matrix     // returns GraphBLAS version of A
         // MATLAB matrix and must not be modified.
 
         // [ create the GraphBLAS matrix, do not allocate A->p
-        info = GB_new (&A, // sparse or full, new header
+        info = GB_new (&A, false, // sparse or full, new mx header
             atype_out, (GrB_Index) nrows, (GrB_Index) ncols,
             GB_Ap_null, is_csc, sparsity, GxB_HYPER_DEFAULT, 0, Context) ;
         if (info != GrB_SUCCESS)
@@ -274,6 +274,9 @@ GrB_Matrix GB_mx_mxArray_to_Matrix     // returns GraphBLAS version of A
             mexWarnMsgIdAndTxt ("GB:warn", "new shallow matrix failed") ;
             return (NULL) ;
         }
+
+        A->p_size = 0 ;
+        A->i_size = 0 ;
 
         if (sparsity != GxB_FULL)
         {
@@ -318,6 +321,7 @@ GrB_Matrix GB_mx_mxArray_to_Matrix     // returns GraphBLAS version of A
         // make a shallow copy.
         A->nzmax = anzmax ;
         A->x = Mx ;
+        A->x_size = 0 ;     // A->x is shallow
     }
     else
     {
@@ -325,7 +329,8 @@ GrB_Matrix GB_mx_mxArray_to_Matrix     // returns GraphBLAS version of A
         {
             // allocate new space for the GraphBLAS values
             A->nzmax = GB_IMAX (anz, 1) ;
-            A->x = GB_MALLOC (A->nzmax * atype_out->size, GB_void) ;
+            A->x = (GB_void *) GB_malloc_memory (A->nzmax * atype_out->size,
+                sizeof (GB_void), &(A->x_size)) ;
             if (A->x == NULL)
             {
                 FREE_ALL ;

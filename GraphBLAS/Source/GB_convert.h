@@ -133,10 +133,10 @@ GrB_Info GB_convert_bitmap_to_sparse    // convert matrix from bitmap to sparse
 GrB_Info GB_convert_bitmap_worker   // extract CSC/CSR or triplets from bitmap
 (
     // outputs:
-    int64_t *GB_RESTRICT Ap,        // vector pointers for CSC/CSR form
-    int64_t *GB_RESTRICT Ai,        // indices for CSC/CSR or triplet form
-    int64_t *GB_RESTRICT Aj,        // vector indices for triplet form
-    GB_void *GB_RESTRICT Ax_new,    // values for CSC/CSR or triplet form
+    int64_t *restrict Ap,        // vector pointers for CSC/CSR form
+    int64_t *restrict Ai,        // indices for CSC/CSR or triplet form
+    int64_t *restrict Aj,        // vector indices for triplet form
+    GB_void *restrict Ax_new,    // values for CSC/CSR or triplet form
     int64_t *anvec_nonempty,        // # of non-empty vectors
     // inputs: not modified
     const GrB_Matrix A,             // matrix to extract; not modified
@@ -305,12 +305,13 @@ static inline char *GB_sparsity_char (int sparsity)
     }
 }
 
-static inline char *GB_sparsity_char_matrix (GrB_Matrix A)
+static inline const char *GB_sparsity_char_matrix (GrB_Matrix A)
 {
+    bool A_as_if_full = GB_as_if_full (A) ;
     if (A == NULL)             return (".") ;
-    if (GB_IS_HYPERSPARSE (A)) return ("H") ;
-    if (GB_IS_SPARSE (A))      return ("S") ;
-    if (GB_IS_BITMAP (A))      return ("B") ;
+    if (GB_IS_HYPERSPARSE (A)) return (A_as_if_full ? "Hf" : "H") ;
+    if (GB_IS_SPARSE (A))      return (A_as_if_full ? "Sf" : "S") ;
+    if (GB_IS_BITMAP (A))      return (A_as_if_full ? "Bf" : "B") ;
     if (GB_IS_FULL (A))        return ("F") ;
     ASSERT (0) ;               return ("?") ;
 }

@@ -21,10 +21,6 @@
     GrB_BinaryOp_free_(&myplus) ;                   \
     if (semiring != Complex_plus_times)             \
     {                                               \
-        if (semiring != NULL)                       \
-        {                                           \
-            GrB_Monoid_free_(&(semiring->add)) ;    \
-        }                                           \
         GrB_Semiring_free_(&semiring) ;             \
     }                                               \
     GrB_Descriptor_free_(&desc) ;                   \

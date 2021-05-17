@@ -89,7 +89,7 @@
                 GB_COPY_A_TO_C (GB_CX (p), Ax, p) ;
             }
 
-            GB_SLICE_MATRIX (B, 8) ;
+            GB_SLICE_MATRIX (B, 8, chunk) ;
 
             #pragma omp parallel for num_threads(B_nthreads) schedule(dynamic,1)
             for (taskid = 0 ; taskid < B_ntasks ; taskid++)
@@ -165,7 +165,7 @@
                 GB_COPY_B_TO_C (GB_CX (p), Bx, p) ;
             }
 
-            GB_SLICE_MATRIX (A, 8) ;
+            GB_SLICE_MATRIX (A, 8, chunk) ;
 
             #pragma omp parallel for num_threads(A_nthreads) schedule(dynamic,1)
             for (taskid = 0 ; taskid < A_ntasks ; taskid++)

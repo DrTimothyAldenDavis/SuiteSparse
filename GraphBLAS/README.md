@@ -1,11 +1,12 @@
 # SuiteSparse:GraphBLAS
 
 SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+
 SPDX-License-Identifier: Apache-2.0
 
-VERSION 4.0.3, Jan 19, 2021
+VERSION 5.0.4, May 13, 2021
 
-SuiteSparse:GraphBLAS is complete implementation of the GraphBLAS standard,
+SuiteSparse:GraphBLAS is a complete implementation of the GraphBLAS standard,
 which defines a set of sparse matrix operations on an extended algebra of
 semirings using an almost unlimited variety of operators and types.  When
 applied to sparse adjacency matrices, these algebraic operations are equivalent
@@ -23,8 +24,7 @@ https://github.com/GraphBLAS/GraphBLAS-Pointers
 for additional resources on GraphBLAS.
 
 
-QUICK START: To compile, run several demos, and install, do these commands in
-this directory:
+QUICK START: To compile and install, do these commands in this directory:
 
     make
     sudo make install
@@ -44,9 +44,9 @@ To remove all compiled files:
 
     make clean
 
-To compile the library without running the demos or installing it:
+To compile the demos:
 
-    make library
+    make all
 
 See the GraphBLAS/ subfolder for the MATLAB interface, which contains a
 README.md file with further details.
@@ -62,9 +62,11 @@ Demo:           a set of demos on how to use GraphBLAS
 
 Doc:            SuiteSparse:GraphBLAS User Guide and license
 
-GraphBLAS:      the MATLAB interface.  This folder is called 'GraphBLAS' so
-                that typing 'help graphblas' or 'doc graphblas' in the MATLAB
-                Command Window can locate the Contents.m file.
+GraphBLAS:      the @GrB MATLAB interface, including its test suite and demos.
+                This folder is called 'GraphBLAS' so that typing 'help
+                graphblas' or 'doc graphblas' in the MATLAB Command Window can
+                locate the Contents.m file.  Note that this folder and all its
+                contents are under the GNU GPLv3 (or later), not Apache-2.0.
 
 Include:        user-accessible include file, GraphBLAS.h
 

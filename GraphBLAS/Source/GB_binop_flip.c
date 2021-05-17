@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// GB_binop_flip:  flip a binary multipy operator in a semiring
+// GB_binop_flip:  flip a binary multiply operator in a semiring
 //------------------------------------------------------------------------------
 
 // SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2019, All Rights Reserved.
@@ -11,14 +11,19 @@
 // This function is only used for semirings, for matrix-matrix multiply.
 // It is not used for GrB_apply or GrB_eWise*.
 
+// TODO: rename this to GB_flip_opcode
+
 #include "GB.h"
 #include "GB_binop.h"
 
-GB_Opcode GB_binop_flip     // flipped opcode
+GB_Opcode GB_binop_flip     // flipped opcode, or -1 on error
 (
-    GB_Opcode opcode        // opcode to flip
+    GB_Opcode opcode,       // opcode to flip
+    bool *handled           // true if opcode is handled by flipping the opcode
 )
 {
+
+    (*handled) = true ;     // set below to false if the op is not handled
 
     switch (opcode)
     {
@@ -66,15 +71,47 @@ GB_Opcode GB_binop_flip     // flipped opcode
         case GB_FIRSTJ1_opcode  : return (GB_SECONDI1_opcode) ;
         case GB_SECONDI1_opcode : return (GB_FIRSTJ1_opcode) ;
 
-        // these operators do not have flipped versions:
-        // POW, BGET, BSET, BCLR, BSHIFT, ATAN2, FMOD, REMAINDER, COPYSIGN,
-        // LDEXP, CMPLX, and user-defined operators.
+        // these operators are not commutative and do not have flipped ops:
+        case GB_POW_opcode          :
+        case GB_BGET_opcode         :
+        case GB_BSET_opcode         :
+        case GB_BCLR_opcode         :
+        case GB_BSHIFT_opcode       :
+        case GB_ATAN2_opcode        :
+        case GB_FMOD_opcode         :
+        case GB_REMAINDER_opcode    :
+        case GB_COPYSIGN_opcode     :
+        case GB_LDEXP_opcode        :
+        case GB_CMPLX_opcode        :
+        case GB_USER_opcode         :
+            (*handled) = false ;
+            return (opcode) ;
 
         // these operators are commutative; they are their own flipped ops:
-        // PLUS, TIMES, PAIR, ANY, ISEQ, ISNE, EQ, NE, MIN, MAX, LOR, LAND,
-        // LXOR, LXNOR, HYPOT, BOR, BAND, BXOR, BXNOR.
-        default:
+        case GB_ANY_opcode          :
+        case GB_PAIR_opcode         :
+        case GB_MIN_opcode          :
+        case GB_MAX_opcode          :
+        case GB_PLUS_opcode         :
+        case GB_TIMES_opcode        :
+        case GB_ISEQ_opcode         :
+        case GB_ISNE_opcode         :
+        case GB_LOR_opcode          :
+        case GB_LAND_opcode         :
+        case GB_LXOR_opcode         :
+        case GB_BOR_opcode          :
+        case GB_BAND_opcode         :
+        case GB_BXOR_opcode         :
+        case GB_BXNOR_opcode        :
+        case GB_EQ_opcode           :
+        case GB_NE_opcode           :
+        case GB_HYPOT_opcode        :
             return (opcode) ;
+
+        default:
+            // not a valid binary opcode
+            (*handled) = false ;
+            return (GB_BAD_opcode) ;
     }
 }
 

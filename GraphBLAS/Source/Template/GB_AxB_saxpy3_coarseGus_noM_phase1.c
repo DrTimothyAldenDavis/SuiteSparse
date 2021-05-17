@@ -7,12 +7,6 @@
 
 //------------------------------------------------------------------------------
 
-// This method is #include'd in GB_meta16_methods.c, via GB_meta16_factory.c,
-// and used by GB_AxB_saxpy3_symbolic.  It is selected by the #define of
-// GB_SAXPY_COARSE_GUSTAVSON_NOMASK_PHASE1.
-
-//------------------------------------------------------------------------------
-
 // Initially, Hf [...] < mark for all Hf.
 // Hf [i] is set to mark when C(i,j) is found.
 

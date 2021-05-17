@@ -10,8 +10,10 @@ types = types.all ;
 
 fprintf ('\n--- testing apply with binaryop and scalar binding\n') ;
 rng ('default') ;
+% the right approach for apply_bind1st and apply_bind2nd
 desc0.inp0 = 'tran' ;
 desc1.inp1 = 'tran' ;
+% shotgun approach for eWiseMult
 desc.inp0 = 'tran' ;
 desc.inp1 = 'tran' ;
 
@@ -122,10 +124,10 @@ for k2 = 1:length(ops)
     C1 = GB_mex_apply1 (C, [ ], [ ], op, 1, x, B) ;
     GB_spec_compare (C1, C2, 0, tol) ;
 
-    C1 = GB_mex_apply1 (CT, [ ], [ ], op, 0, x, B, desc) ;
+    C1 = GB_mex_apply1 (CT, [ ], [ ], op, 0, x, B, desc1) ;
     C2 = GB_spec_Matrix_eWiseMult (CT, [ ], [ ], op_ewise, X, B, desc) ;
     GB_spec_compare (C1, C2, 0, tol) ;
-    C1 = GB_mex_apply1 (CT, [ ], [ ], op, 1, x, B, desc) ;
+    C1 = GB_mex_apply1 (CT, [ ], [ ], op, 1, x, B, desc1) ;
     GB_spec_compare (C1, C2, 0, tol) ;
 
     op_ewise = op ;
@@ -145,10 +147,10 @@ for k2 = 1:length(ops)
         C1 = GB_mex_apply2 (C, [ ], [ ], op, 1, A, y) ;
         GB_spec_compare (C1, C2, 0, tol) ;
 
-        C1 = GB_mex_apply2 (CT, [ ], [ ], op, 0, A, y, desc) ;
+        C1 = GB_mex_apply2 (CT, [ ], [ ], op, 0, A, y, desc0) ;
         C2 = GB_spec_Matrix_eWiseMult (CT, [ ], [ ], op_ewise, A, Y, desc) ;
         GB_spec_compare (C1, C2, 0, tol) ;
-        C1 = GB_mex_apply2 (CT, [ ], [ ], op, 1, A, y, desc) ;
+        C1 = GB_mex_apply2 (CT, [ ], [ ], op, 1, A, y, desc0) ;
         GB_spec_compare (C1, C2, 0, tol) ;
     end
 
@@ -162,10 +164,10 @@ for k2 = 1:length(ops)
     C1 = GB_mex_apply2 (C, [ ], [ ], op, 1, A, y) ;
     GB_spec_compare (C1, C2, 0, tol) ;
 
-    C1 = GB_mex_apply2 (CT, [ ], [ ], op, 0, A, y, desc) ;
+    C1 = GB_mex_apply2 (CT, [ ], [ ], op, 0, A, y, desc0) ;
     C2 = GB_spec_Matrix_eWiseMult (CT, [ ], [ ], op_ewise, A, Y, desc) ;
     GB_spec_compare (C1, C2, 0, tol) ;
-    C1 = GB_mex_apply2 (CT, [ ], [ ], op, 1, A, y, desc) ;
+    C1 = GB_mex_apply2 (CT, [ ], [ ], op, 1, A, y, desc0) ;
     GB_spec_compare (C1, C2, 0, tol) ;
 
 end

@@ -28,6 +28,8 @@ end
 
 fprintf ('\nCompiling GraphBLAS tests:\n') ;
 
+need_rename = ~verLessThan ('matlab', '9.10') ;
+
 try
     spok (sparse (1)) ;
 catch
@@ -91,20 +93,41 @@ inc = '-ITemplate -I../Include -I../Source -I../Source/Template -I../Demo/Includ
 
 if (ismac)
     % Mac (do 'make install' for GraphBLAS first)
-    libraries = '-L/usr/local/lib -lgraphblas' ; % -lomp' ;
+    if (need_rename)
+        libraries = '-L/usr/local/lib -lgraphblas_renamed' ; % -lomp' ;
+    else
+        libraries = '-L/usr/local/lib -lgraphblas' ; % -lomp' ;
+    end
 %   flags = [ flags   ' CFLAGS="$CXXFLAGS -Xpreprocessor -fopenmp" ' ] ;
 %   flags = [ flags ' CXXFLAGS="$CXXFLAGS -Xpreprocessor -fopenmp" ' ] ;
 %   flags = [ flags  ' LDFLAGS="$LDFLAGS  -fopenmp"' ] ;
 elseif (ispc)
     % Windows
-    libraries = '-L../build/Release -L. -lgraphblas' ;
+    if (need_rename)
+        libraries = '-L../GraphBLAS/build/Release -L. -lgraphblas_renamed' ;
+    else
+        libraries = '-L../build/Release -L. -lgraphblas' ;
+    end
     flags = [ flags ' CFLAGS="$CXXFLAGS -wd\"4244\" -wd\"4146\" -wd\"4217\" -wd\"4286\" -wd\"4018\" -wd\"4996\" -wd\"4047\" -wd\"4554\"" '] ;
 else
     % Linux
-    libraries = '-L../build -L. -lgraphblas' ;
+    if (need_rename)
+        libraries = '-L../GraphBLAS/build -L. -lgraphblas_renamed' ;
+    else
+        libraries = '-L../build -L. -lgraphblas' ;
+    end
     flags = [ flags   ' CFLAGS="$CXXFLAGS -fopenmp -fPIC -Wno-pragmas" '] ;
     flags = [ flags ' CXXFLAGS="$CXXFLAGS -fopenmp -fPIC -Wno-pragmas" '] ;
     flags = [ flags  ' LDFLAGS="$LDFLAGS  -fopenmp -fPIC" '] ;
+end
+
+if (need_rename)
+    fprintf ('Linking with -lgraphblas_renamed\n') ;
+    flags = [flags ' -DGBRENAME=1 ' ] ;
+    inc = [inc ' -I../GraphBLAS/rename ' ] ;
+    libgraphblas = '-lgraphblas_renamed' ;
+else
+    libgraphblas = '-lgraphblas' ;
 end
 
 %-------------------------------------------------------------------------------
@@ -152,7 +175,7 @@ for k = 1:length (cfiles)
     % compile the cfile if it is newer than its object file, or any hfile
     if (make_all || tc > tobj || htime > tobj)
         % compile the cfile
-        fprintf ('.', cfile) ;
+        fprintf ('.') ;
         % fprintf ('%s\n', cfile) ;
         mexcmd = sprintf ('mex -c %s -silent %s %s', flags, inc, cfile) ;
         if (dryrun)
@@ -200,7 +223,7 @@ for k = 1:length (mexfunctions)
 end
 
 % compile GB_spones_mex
-mex -O -R2018a GB_spones_mex.c
+mex -g -R2018a GB_spones_mex.c
 
 % load the library
 if (ispc)

@@ -42,11 +42,11 @@ void GB_convert_any_to_full     // convert any matrix to full
 
     GB_ph_free (A) ;
 
-    if (!A->i_shallow) GB_FREE (A->i) ;
+    if (!A->i_shallow) GB_FREE (&(A->i), A->i_size) ;
     A->i = NULL ;
     A->i_shallow = false ;
 
-    if (!A->b_shallow) GB_FREE (A->b) ;
+    if (!A->b_shallow) GB_FREE (&(A->b), A->b_size) ;
     A->b = NULL ;
     A->b_shallow = false ;
 

@@ -4,7 +4,7 @@ function gbcovmake
 % See also: gbcover, gbcov_edit
 
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
-% SPDX-License-Identifier: Apache-2.0
+% SPDX-License-Identifier: GPL-3.0-or-later
 
 if verLessThan ('matlab', '9.4')
     error ('MATLAB 9.4 (R2018a) or later is required') ;

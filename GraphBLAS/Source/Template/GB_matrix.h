@@ -24,12 +24,20 @@
 //      int64_t *h ;            // always NULL
 
 //------------------------------------------------------------------------------
-// basic information: magic and type
+// basic information: magic, error logger, and type
 //------------------------------------------------------------------------------
 
+// The first four items exactly match the first four items in the
+// GrB_Descriptor struct.
+
 int64_t magic ;         // for detecting uninitialized objects
+size_t header_size ;    // size of the malloc'd block for this struct, or 0
+char *logger ;          // error logger string
+size_t logger_size ;    // size of the malloc'd block for logger, or 0
+
+// The remaining items are specific the GrB_Matrix, GrB_Vector and GxB_Scalar
+// structs, and do not appear in the GrB_Descriptor struct:
 GrB_Type type ;         // the type of each numerical entry
-char *logger ;          // for error logging
 
 //------------------------------------------------------------------------------
 // compressed sparse vector data structure
@@ -229,7 +237,7 @@ char *logger ;          // for error logging
 // primary matrix content
 //------------------------------------------------------------------------------
 
-int64_t plen ;          // A->h has size plen, A->p has size plen+1
+int64_t plen ;          // size of A->p and A->h
 int64_t vlen ;          // length of each sparse vector
 int64_t vdim ;          // number of vectors in the matrix
 int64_t nvec ;          // number of non-empty vectors for hypersparse form,
@@ -238,13 +246,19 @@ int64_t nvec ;          // number of non-empty vectors for hypersparse form,
 int64_t nvec_nonempty ; // the actual number of non-empty vectors, or -1 if
                         // not known
 
-int64_t *h ;            // list of non-empty vectors of size plen
-int64_t *p ;            // array of size plen+1
-int64_t *i ;            // array of size nzmax
-void *x ;               // size nzmax; each entry of size A->type->size
-int8_t *b ;             // size nzmax; bitmap
-int64_t nzmax ;         // size of i and x arrays
+int64_t *h ;            // list of non-empty vectors: h_size >= 8*max(plen,1)
+int64_t *p ;            // pointers: p_size >= 8*(plen+1)
+int64_t *i ;            // indices:  i_size >= 8*max(nzmax,1)
+void *x ;               // values:   x_size >= max(nzmax*A->type->size,1)
+int8_t *b ;             // bitmap:   b_size >= max(nzmax,1)
+int64_t nzmax ;         // max possible # of entries
 int64_t nvals ;         // nvals(A) if A is bitmap
+
+size_t p_size ;         // exact size of A->p in bytes, zero if A->p is NULL
+size_t h_size ;         // exact size of A->h in bytes, zero if A->h is NULL
+size_t b_size ;         // exact size of A->b in bytes, zero if A->b is NULL
+size_t i_size ;         // exact size of A->i in bytes, zero if A->i is NULL
+size_t x_size ;         // exact size of A->x in bytes, zero if A->x is NULL
 
 //------------------------------------------------------------------------------
 // pending tuples
@@ -424,6 +438,7 @@ bool h_shallow ;        // true if h is a shallow copy
 bool b_shallow ;        // true if b is a shallow copy
 bool i_shallow ;        // true if i is a shallow copy
 bool x_shallow ;        // true if x is a shallow copy
+bool static_header ;    // true if this struct is statically allocated
 
 //------------------------------------------------------------------------------
 // other bool content
@@ -539,6 +554,4 @@ bool jumbled ;          // true if the matrix may be jumbled.  bitmap and full
         }
 
 #endif
-
-// #include "GB_matrix_mkl_template.h"
 

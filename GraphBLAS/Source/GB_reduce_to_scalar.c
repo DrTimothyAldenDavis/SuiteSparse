@@ -31,8 +31,8 @@
 
 #define GB_FREE_ALL                 \
 {                                   \
-    GB_FREE (W) ;                   \
-    GB_FREE (F) ;                   \
+    GB_WERK_POP (F, bool) ;         \
+    GB_WERK_POP (W, GB_void) ;      \
 }
 
 GrB_Info GB_reduce_to_scalar    // s = reduce_to_scalar (A)
@@ -54,8 +54,8 @@ GrB_Info GB_reduce_to_scalar    // s = reduce_to_scalar (A)
     GB_RETURN_IF_NULL_OR_FAULTY (reduce) ;
     GB_RETURN_IF_FAULTY_OR_POSITIONAL (accum) ;
     GB_RETURN_IF_NULL (c) ;
-    GB_void *GB_RESTRICT W = NULL ;
-    bool    *GB_RESTRICT F = NULL ;
+    GB_WERK_DECLARE (W, GB_void) ;
+    GB_WERK_DECLARE (F, bool) ;
 
     ASSERT_TYPE_OK (ctype, "type of scalar c", GB0) ;
     ASSERT_MONOID_OK (reduce, "reduce for reduce_to_scalar", GB0) ;
@@ -64,7 +64,7 @@ GrB_Info GB_reduce_to_scalar    // s = reduce_to_scalar (A)
 
     // check domains and dimensions for c = accum (c,s)
     GrB_Type ztype = reduce->op->ztype ;
-    GB_OK (GB_compatible (ctype, NULL, NULL, accum, ztype, Context)) ;
+    GB_OK (GB_compatible (ctype, NULL, NULL, false, accum, ztype, Context)) ;
 
     // s = reduce (s,A) must be compatible
     if (!GB_Type_compatible (A->type, ztype))
@@ -129,8 +129,8 @@ GrB_Info GB_reduce_to_scalar    // s = reduce_to_scalar (A)
         // allocate workspace
         //----------------------------------------------------------------------
 
-        W = GB_MALLOC (ntasks * zsize, GB_void) ;
-        F = GB_MALLOC (ntasks, bool) ;
+        GB_WERK_PUSH (W, ntasks * zsize, GB_void) ;
+        GB_WERK_PUSH (F, ntasks, bool) ;
         if (W == NULL || F == NULL)
         { 
             // out of memory
@@ -143,7 +143,7 @@ GrB_Info GB_reduce_to_scalar    // s = reduce_to_scalar (A)
         //----------------------------------------------------------------------
 
         // get terminal value, if any
-        GB_void *GB_RESTRICT terminal = (GB_void *) reduce->terminal ;
+        GB_void *restrict terminal = (GB_void *) reduce->terminal ;
 
         if (anz == 0)
         { 
@@ -170,7 +170,8 @@ GrB_Info GB_reduce_to_scalar    // s = reduce_to_scalar (A)
                 // define the worker for the switch factory
                 //--------------------------------------------------------------
 
-                #define GB_red(opname,aname) GB_red_scalar_ ## opname ## aname
+                #define GB_red(opname,aname) \
+                    GB (_red_scalar_ ## opname ## aname)
 
                 #define GB_RED_WORKER(opname,aname,atype)                   \
                 {                                                           \

@@ -14,6 +14,10 @@
 
 { 
 
+    const int64_t *restrict kfirst_Mslice = M_ek_slicing ;
+    const int64_t *restrict klast_Mslice  = M_ek_slicing + M_ntasks ;
+    const int64_t *restrict pstart_Mslice = M_ek_slicing + M_ntasks * 2 ;
+
     ASSERT (mvlen == 1) ;
     int64_t iC = I [0] ;
     int tid ;

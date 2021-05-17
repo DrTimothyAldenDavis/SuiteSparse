@@ -23,7 +23,7 @@ GrB_Info GB_SelectOp_check  // check a GraphBLAS select operator
     // check inputs
     //--------------------------------------------------------------------------
 
-    GBPR0 ("\n    GraphBLAS SelectOp: %s: ", GB_NAME) ;
+    GBPR0 ("\n    GraphBLAS SelectOp: %s: ", ((name != NULL) ? name : "")) ;
 
     if (op == NULL)
     { 

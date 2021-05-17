@@ -18,7 +18,7 @@
 
 #define FREE_ALL                        \
 {                                       \
-    GrB_Matrix_free_(&A) ;               \
+    GrB_Matrix_free_(&A) ;              \
     GrB_Vector_free_(&w) ;              \
     GrB_Vector_free_(&mask) ;           \
     GrB_Descriptor_free_(&desc) ;       \

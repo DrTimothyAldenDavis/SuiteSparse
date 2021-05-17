@@ -20,7 +20,7 @@ bool debug_wait = false ;
 
 #define FREE_ALL                        \
 {                                       \
-    GrB_Matrix_free_(&A) ;               \
+    GrB_Matrix_free_(&A) ;              \
     GB_mx_put_global (true) ;           \
 }
 
@@ -41,7 +41,7 @@ GrB_Info set_ ## name                                                       \
     }                                                                       \
     if (debug_wait)                                                         \
     {                                                                       \
-        return (GB_Matrix_wait (A, NULL)) ;                                 \
+        return (GB_Matrix_wait (A, "A", NULL)) ;                            \
     }                                                                       \
     return (GrB_SUCCESS) ;                                                  \
 }
@@ -81,7 +81,7 @@ GrB_Info vset_ ## name                                                      \
     }                                                                       \
     if (debug_wait)                                                         \
     {                                                                       \
-        return (GB_Matrix_wait (A, NULL)) ;                                 \
+        return (GB_Matrix_wait (A, "A", NULL)) ;                            \
     }                                                                       \
     return (GrB_SUCCESS) ;                                                  \
 }

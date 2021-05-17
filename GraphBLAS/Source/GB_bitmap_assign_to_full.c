@@ -32,7 +32,7 @@ void GB_bitmap_assign_to_full   // set all C->b to 1, or free it and make C full
     if (GB_sparsity_control (C->sparsity, C->vdim) & GxB_FULL)
     { 
         // C is bitmap but can become full; convert it to full
-        GB_FREE (C->b) ;
+        GB_FREE (&(C->b), C->b_size) ;
         C->nvals = -1 ;
     }
     else

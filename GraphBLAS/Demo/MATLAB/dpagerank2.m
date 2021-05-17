@@ -35,9 +35,9 @@ end
 % original problem in real arithmetic
 n = size (A,1) ;        % number of nodes
 c = 0.85 ;              % probability of walking to random neighbor
-r = ones (1,n) / n ;    % initial uniform probability
-% r = rand (1,n) ;        % random initial pageranks
-% r = r / sum (r) ;       % normalize so sum(r) == 1
+r = ones (1,n) / n ;    % initial probability
+% r = rand (1,n) ;      % random initial pageranks
+% r = r / sum (r) ;     % normalize so sum(r) == 1
 a = (1-c) / n ;         % to jump to any random node in entire graph
 C = c * rowscale (A) ;  % scale A by out-degree and damping factor
 

@@ -15,7 +15,10 @@
 // Result are undefined if multiple user threads simultaneously
 // call GrB_init, GxB_init, or GxB_cuda_init.
 
-// GrB_finalize must be called as the last GraphBLAS operation.
+// Per the spec, GrB_finalize must be called as the last GraphBLAS operation.
+// Not even GrB_Matrix_free can be safely called after GrB_finalize.  In the
+// current version of SuiteSparse:GraphBLAS, GrB_finalize does nothing, but in
+// future versions it may do critical work such as freeing a memory pool.
 
 // GrB_init, GxB_init, or GxB_cuda_init define the mode that GraphBLAS will
 // use:  blocking or non-blocking.  With blocking mode, all operations finish
@@ -29,6 +32,10 @@
 // caller_is_GxB_cuda_init as true to this function.  GxB_init and GrB_init
 // both pass this flag in as false.
 
+// The calloc and realloc function pointers are optional and can be NULL.  If
+// calloc is NULL, it is not used, and malloc/memset are used instead.  If
+// realloc is NULL, it is not used, and malloc/memcpy/free are used instead.
+
 #include "GB.h"
 
 //------------------------------------------------------------------------------
@@ -39,11 +46,11 @@ GrB_Info GB_init            // start up GraphBLAS
 (
     const GrB_Mode mode,    // blocking or non-blocking mode
 
-    // pointers to memory management functions.  Must be non-NULL.
-    void * (* malloc_function  ) (size_t),
-    void * (* calloc_function  ) (size_t, size_t),
-    void * (* realloc_function ) (void *, size_t),
-    void   (* free_function    ) (void *),
+    // pointers to memory management functions.
+    void * (* malloc_function  ) (size_t),          // required
+    void * (* calloc_function  ) (size_t, size_t),  // ignored, no longer used
+    void * (* realloc_function ) (void *, size_t),  // optional, can be NULL
+    void   (* free_function    ) (void *),          // required
     bool malloc_is_thread_safe,
 
     bool caller_is_GxB_cuda_init,       // true for GxB_cuda_init only
@@ -82,8 +89,9 @@ GrB_Info GB_init            // start up GraphBLAS
         #if defined ( GBCUDA )
         // CUDA is available at compile time, and requested at run time via
         // GxB_cuda_init.  Use CUDA unified memory management functions.
+        // No calloc or realloc functions are needed.
         malloc_function = GxB_cuda_malloc ;
-        calloc_function = GxB_cuda_calloc ;
+//      calloc_function = NULL ;
         realloc_function = NULL ;
         free_function = GxB_cuda_free ;
         #else
@@ -91,19 +99,19 @@ GrB_Info GB_init            // start up GraphBLAS
         // functions instead, even though the caller is GxB_cuda_init.
         // No GPUs will be used.
         malloc_function = malloc ;
-        calloc_function = calloc ;
+//      calloc_function = calloc ;
         realloc_function = realloc ;
         free_function = free ;
         #endif
     }
 
-    GB_Global_malloc_function_set  (malloc_function ) ;
-    GB_Global_calloc_function_set  (calloc_function ) ;
-    GB_Global_realloc_function_set (realloc_function) ;
-    GB_Global_free_function_set    (free_function   ) ;
+    GB_Global_malloc_function_set  (malloc_function ) ; // cannot be NULL
+//  GB_Global_calloc_function_set  (calloc_function ) ; // no longer used
+    GB_Global_realloc_function_set (realloc_function) ; // ok if NULL
+    GB_Global_free_function_set    (free_function   ) ; // cannot be NULL
     GB_Global_malloc_is_thread_safe_set (malloc_is_thread_safe) ;
-
-    // #include "GB_init_mkl_template.c"
+    GB_Global_memtable_clear ( ) ;
+    GB_Global_free_pool_init (true) ;
 
     //--------------------------------------------------------------------------
     // max number of threads
@@ -150,6 +158,8 @@ GrB_Info GB_init            // start up GraphBLAS
     //--------------------------------------------------------------------------
 
     GB_Global_burble_set (false) ;
+    GB_Global_printf_set (NULL) ;
+    GB_Global_flush_set (NULL) ;
 
     //--------------------------------------------------------------------------
     // development use only

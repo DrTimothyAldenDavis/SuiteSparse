@@ -10,19 +10,23 @@
 {
     ASSERT (GB_IS_SPARSE (A) || GB_IS_HYPERSPARSE (A)) ;
 
-    const int64_t  *GB_RESTRICT Ap = A->p ;
-    const int64_t  *GB_RESTRICT Ah = A->h ;
-    const int64_t  *GB_RESTRICT Ai = A->i ;
-    const GB_ATYPE *GB_RESTRICT Ax = (GB_ATYPE *) A->x ;
+    const int64_t  *restrict Ap = A->p ;
+    const int64_t  *restrict Ah = A->h ;
+    const int64_t  *restrict Ai = A->i ;
+    const GB_ATYPE *restrict Ax = (GB_ATYPE *) A->x ;
     const int64_t avlen = A->vlen ;
     const int64_t nzombies = A->nzombies ;
 
+    const int64_t *restrict kfirst_Aslice = A_ek_slicing ;
+    const int64_t *restrict klast_Aslice  = A_ek_slicing + A_ntasks ;
+    const int64_t *restrict pstart_Aslice = A_ek_slicing + A_ntasks * 2 ;
+
     int tid ;
-    #pragma omp parallel for num_threads(nthreads) schedule(dynamic,1)
-    for (tid = 0 ; tid < ntasks ; tid++)
+    #pragma omp parallel for num_threads(A_nthreads) schedule(dynamic,1)
+    for (tid = 0 ; tid < A_ntasks ; tid++)
     {
-        int64_t kfirst = kfirst_slice [tid] ;
-        int64_t klast  = klast_slice  [tid] ;
+        int64_t kfirst = kfirst_Aslice [tid] ;
+        int64_t klast  = klast_Aslice  [tid] ;
         for (int64_t k = kfirst ; k <= klast ; k++)
         {
 
@@ -33,7 +37,7 @@
             int64_t j = GBH (Ah, k) ;
             int64_t pA_start, pA_end ;
             GB_get_pA (&pA_start, &pA_end, tid, k,
-                kfirst, klast, pstart_slice, Ap, avlen) ;
+                kfirst, klast, pstart_Aslice, Ap, avlen) ;
 
             // the start of A(:,j) in the new bitmap
             int64_t pA_new = j * avlen ;
