@@ -139,6 +139,18 @@ are extensions to the v1.3 GraphBLAS C API.
 
 \begin{itemize}
 
+\item Version 5.0.5 (May 17, 2021)
+
+    \begin{packed_itemize}
+    \item (26) performance bug fix:  reduce-to-vector where \verb'A' is
+        hypersparse CSR with a transposed descriptor (or CSC with no
+        transpose), and some cases for \verb'GrB_mxm/mxv/vxm' when computing
+        \verb'C=A*B' with A hypersparse CSC and \verb'B' bitmap/full (or
+        \verb'A' bitmap/full and \verb'B' hypersparse CSR), the wrong internal
+        method was being selected via the auto-selection strategy, resulting in
+        a significant slowdown in some cases.
+    \end{packed_itemize}
+
 \item Version 5.0.4 (May 13, 2021)
 
     \begin{packed_itemize}

@@ -2,7 +2,7 @@
 SuiteSparse:  A Suite of Sparse matrix packages at http://suitesparse.com
 -----------------------------------------------------------------------------
 
-May 16, 2021.  SuiteSparse VERSION 5.10.0
+May 17, 2021.  SuiteSparse VERSION 5.10.1
 
     Now includes GraphBLAS, SLIP_LU, and a new interface to the SuiteSparse
     Matrix Collection (ssget), via MATLAB and a Java GUI, to
@@ -302,6 +302,10 @@ created and copied into SuiteSparse/lib.  All include files need by the
 applications that use SuiteSparse are copied into SuiteSparse/include.   All
 user documenation is copied into SuiteSparse/share/doc.
 
+Be sure to first install all required libraries:  BLAS and LAPACK for UMFPACK,
+CHOLMOD, and SPQR, and GMP and MPFR for SLIP_LU.  Be sure to use the latest
+libraries; SLIP_LU requires MPFR 4.0 for example.
+
 When compiling the libraries, do NOT use the INSTALL=... options for
 installing. Just do:
 
@@ -355,10 +359,26 @@ SuiteSparse/lib (libraries), SuiteSparse/include (include .h files), and
 SuiteSparse/doc/suitesparse-VERSION (documentation).  To install in
 /usr/local, the default location for Linux, do:
 
+    make library
     sudo make install INSTALL=/usr/local
 
-If you want to install elsewhere, do:
+If you want to install elsewhere, say in /my/path, first ensure that /my/path
+is in your LD_LIBRARY_PATH.  How to do that depends on your system, but in the
+bash shell, add this to your ~/.bashrc file:
 
+    LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/my/path
+    export LD_LIBRARY_PATH
+
+You may also need to add SuiteSparse/lib to your path.  If your copy of
+SuiteSparse is in /home/me/SuiteSparse, for example, then add this to your
+~/.bashrc file:
+
+    LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/me/SuiteSparse/lib:/my/path
+    export LD_LIBRARY_PATH
+
+Then do the following (use "sudo make ..." if needed):
+
+    make library
     make install INSTALL=/my/path
 
 which puts the files in /my/path/lib, /my/path/include, and /my/path/doc.

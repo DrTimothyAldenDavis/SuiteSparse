@@ -4,7 +4,9 @@ function test195
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
-n = 10 ;
+k = 3 ;
+n = 4 ;
+m = 200 ;
 desc.axb   = 'hash' ;
 desc_s.axb = 'hash' ; desc_s.mask = 'structural' ;
 dnot.axb   = 'hash' ; dnot.mask = 'complement' ;
@@ -13,7 +15,6 @@ dnot_s.axb = 'hash' ; dnot_s.mask = 'structural complement' ;
 semiring.multiply = 'times' ;
 semiring.add = 'plus' ;
 semiring.class = 'double' ;
-% GrB.burble (1) ;
 
 for asparsity = [1 2 4 8]
     fprintf ('\nA: %s ', GB_sparsity (asparsity)) ;
@@ -22,16 +23,14 @@ for asparsity = [1 2 4 8]
         for msparsity = [1 2 4 8]
             fprintf ('\n        M: %s ', GB_sparsity (msparsity)) ;
             for da = [0.01 .1 inf]
-                A = GB_spec_random (n, n, da) ; A.sparsity = asparsity ;
+                A = GB_spec_random (m, k, da) ; A.sparsity = asparsity ;
                 for db = [0.01 .1 inf]
-                    B = GB_spec_random (n, n, db) ; B.sparsity = bsparsity ;
+                    B = GB_spec_random (k, n, db) ; B.sparsity = bsparsity ;
                     for dm = [0.01 .1 inf]
                         fprintf ('.') ;
-                        M = GB_spec_random (n, n, dm) ; M.sparsity = msparsity ;
+                        M = GB_spec_random (m, n, dm) ; M.sparsity = msparsity ;
                         M.matrix = spones (M.matrix) ;
                         C0 = sparse (n, n) ;
-
-%       save gunk A B M C0 desc semiring desc_s dnot dnot_s n da db dm
 
                         % C = A*B
                         C0 = A.matrix * B.matrix ;
@@ -80,5 +79,4 @@ for asparsity = [1 2 4 8]
     end
 end
 
-GrB.burble (0) ;
 fprintf ('\ntest195: all tests passed\n') ;

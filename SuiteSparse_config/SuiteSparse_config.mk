@@ -7,7 +7,7 @@
 # and GraphBLAS.  The configuration settings for GraphBLAS are determined by
 # GraphBLAS/CMakeLists.txt
 
-SUITESPARSE_VERSION = 5.10.0
+SUITESPARSE_VERSION = 5.10.1
 
     #---------------------------------------------------------------------------
     # determine what system we are on
@@ -229,6 +229,8 @@ SUITESPARSE_VERSION = 5.10.0
 
     ifneq ($(CUDA),no)
         CUDA_PATH = $(shell which nvcc 2>/dev/null | sed "s/\/bin\/nvcc//")
+    else
+        CUDA_PATH =
     endif
 
     ifeq ($(wildcard $(CUDA_PATH)),)
@@ -259,8 +261,6 @@ SUITESPARSE_VERSION = 5.10.0
                 MAGMA_LIB     = -L/opt/magma-2.4.0/lib/ -lmagma
         NVCC          = $(CUDA_PATH)/bin/nvcc
         NVCCFLAGS     = -Xcompiler -fPIC -O3 \
-                            -gencode=arch=compute_30,code=sm_30 \
-                            -gencode=arch=compute_35,code=sm_35 \
                             -gencode=arch=compute_50,code=sm_50 \
                             -gencode=arch=compute_53,code=sm_53 \
                             -gencode=arch=compute_53,code=sm_53 \
@@ -595,6 +595,7 @@ config:
 	@echo 'pretty (for Tcov tests):  PRETTY=         ' '$(PRETTY)'
 	@echo 'C compiler:               CC=             ' '$(CC)'
 	@echo 'C++ compiler:             CXX=            ' '$(CXX)'
+	@echo 'CUDA enabled:             CUDA=           ' '$(CUDA)'
 	@echo 'CUDA compiler:            NVCC=           ' '$(NVCC)'
 	@echo 'CUDA root directory:      CUDA_PATH=      ' '$(CUDA_PATH)'
 	@echo 'OpenMP flags:             CFOPENMP=       ' '$(CFOPENMP)'

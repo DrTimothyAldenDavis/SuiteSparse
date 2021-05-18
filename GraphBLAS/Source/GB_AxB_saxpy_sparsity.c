@@ -208,7 +208,7 @@ void GB_AxB_saxpy_sparsity          // determine C_sparsity and method to use
                     case GxB_SPARSE : 
                         // S = {S,H} * {B,F} : if A is very sparse
                         // B = {S,H} * {B,F} : otherwise C is bitmap
-                        (*C_sparsity) = (anz < m) ? GxB_SPARSE : GxB_BITMAP ;
+                        (*C_sparsity) = (anz < m/20) ? GxB_SPARSE : GxB_BITMAP ;
                         break ;
                     case GxB_BITMAP : 
                     case GxB_FULL : 

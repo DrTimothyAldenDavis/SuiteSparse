@@ -1,3 +1,12 @@
+Version 5.0.5, May 17, 2021
+
+    * (26) performance bug fix:  reduce-to-vector where A is hypersparse CSR
+        with a transposed descriptor (or CSC with no transpose), and some cases
+        for GrB_mxm/mxv/vxm when computing C=A*B with A hypersparse CSC and B
+        bitmap/full (or A bitmap/full and B hypersparse CSR), the wrong
+        internal method was being selected via the auto-selection strategy,
+        resulting in a significant slowdown in some cases.
+
 Version 5.0.4, May 13, 2021
 
     * @GrB MATLAB interface: changed license from Apache-2.0

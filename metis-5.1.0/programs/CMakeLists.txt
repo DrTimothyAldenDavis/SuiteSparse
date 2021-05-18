@@ -1,6 +1,6 @@
 # These programs use internal metis data structures.
 include_directories(../libmetis)
-link_directories(/home/karypis/local/lib)
+# link_directories(/home/karypis/local/lib)
 # Build program.
 add_executable(gpmetis gpmetis.c cmdline_gpmetis.c io.c stat.c)
 add_executable(ndmetis ndmetis.c cmdline_ndmetis.c io.c smbfactor.c)

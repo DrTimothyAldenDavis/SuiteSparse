@@ -628,7 +628,7 @@ GrB_Info GB_AxB_meta                // C<M>=A*B meta algorithm
     {
 
         //----------------------------------------------------------------------
-        // C<M> = A*B
+        // select the method for C<M> = A*B
         //----------------------------------------------------------------------
 
         if (allow_scale && M == NULL
@@ -636,35 +636,94 @@ GrB_Info GB_AxB_meta                // C<M>=A*B meta algorithm
             && GB_is_diagonal (B, Context))
         { 
             // C = A*D, column scale
-            GBURBLE ("C%s=A*B, colscale ", M_str) ;
-            GB_OK (GB_AxB_colscale (C, A, B, semiring, flipxy, Context)) ;
+            axb_method = GB_USE_COLSCALE ;
         }
         else if (allow_scale && M == NULL
             && !GB_IS_BITMAP (B)     // TODO: D*B rowscale with B bitmap
             && GB_is_diagonal (A, Context))
         { 
             // C = D*B, row scale
-            GBURBLE ("C%s=A*B, rowscale ", M_str) ;
-            GB_OK (GB_AxB_rowscale (C, A, B, semiring, flipxy, Context)) ;
+            axb_method = GB_USE_ROWSCALE ;
         }
         else if (AxB_method == GxB_AxB_DOT)
         { 
             // C<M>=A*B via dot product, or C_in<M>+=A*B if in-place.
-            // only use the dot product method if explicitly requested
-            GBURBLE ("C%s=A*B', dot_product (transposed %s) ", M_str, A_str) ;
-            GB_OK (GB_transpose (&AT, atype_required, true, A,  // AT static
-                NULL, NULL, NULL, false, Context)) ;
-            GB_OK (GB_AxB_dot (C, (can_do_in_place) ? C_in : NULL,
-                M, Mask_comp, Mask_struct, AT, B, semiring, flipxy,
-                mask_applied, done_in_place, Context)) ;
+            axb_method = GB_USE_DOT ;
+        }
+        else if (AxB_method == GxB_AxB_SAXPY
+              || AxB_method == GxB_AxB_HASH
+              || AxB_method == GxB_AxB_GUSTAVSON)
+        { 
+            // C<M>=A*B via saxpy
+            axb_method = GB_USE_SAXPY ;
         }
         else
-        { 
-            // C = A*B via saxpy: Gustavson + Hash method
-            GBURBLE ("C%s=A*B, saxpy ", M_str) ;
-            GB_OK (GB_AxB_saxpy (C, M, Mask_comp, Mask_struct,
-                A, B, semiring, flipxy, mask_applied, AxB_method, do_sort,
-                Context)) ;
+        {
+            // C = A*B: auto selection: select saxpy or dot
+            if (GB_IS_HYPERSPARSE (A) && (GB_IS_BITMAP (B) || GB_IS_FULL (B)))
+            {
+                // If A is hyper and B is bitmap/full, then saxpy will compute
+                // C as sparse or bitmap.  If bitmap, use saxpy; if sparse, use
+                // dot product instead.
+                int ignore, saxpy_method ;
+                GB_AxB_saxpy_sparsity (&ignore, &saxpy_method, M, Mask_comp,
+                    A, B, Context) ;
+                if (saxpy_method == GB_SAXPY_METHOD_BITMAP)
+                { 
+                    // bitmap = hyper * (bitmap or full) is very efficient
+                    // to do via GB_bitmap_AxB_saxpy.
+                    axb_method = GB_USE_SAXPY ;
+                }
+                else
+                { 
+                    // sparse = hyper * (bitmap or full) would use
+                    // GB_AxB_saxpy3, which can be slow, so use dot instead.
+                    axb_method = GB_USE_DOT ;
+                }
+            }
+            else
+            { 
+                // otherwise, always use GB_AxB_saxpy
+                axb_method = GB_USE_SAXPY ;
+            }
+        }
+
+        //----------------------------------------------------------------------
+        // C<M> = A*B
+        //----------------------------------------------------------------------
+
+        switch (axb_method)
+        {
+            case GB_USE_COLSCALE : 
+                // C = A*D, column scale
+                GBURBLE ("C%s=A*B, colscale ", M_str) ;
+                GB_OK (GB_AxB_colscale (C, A, B, semiring, flipxy, Context)) ;
+                break ;
+
+            case GB_USE_ROWSCALE : 
+                // C = D*B, row scale
+                GBURBLE ("C%s=A*B, rowscale ", M_str) ;
+                GB_OK (GB_AxB_rowscale (C, A, B, semiring, flipxy, Context)) ;
+                break ;
+
+            case GB_USE_DOT : 
+                // C<M>=A*B via dot product, or C_in<M>+=A*B if in-place.
+                GBURBLE ("C%s=A*B', dot_product (transposed %s) ",
+                    M_str, A_str) ;
+                GB_OK (GB_transpose (&AT, atype_required, true, A,  // AT static
+                    NULL, NULL, NULL, false, Context)) ;
+                GB_OK (GB_AxB_dot (C, (can_do_in_place) ? C_in : NULL,
+                    M, Mask_comp, Mask_struct, AT, B, semiring, flipxy,
+                    mask_applied, done_in_place, Context)) ;
+                break ;
+
+            default : 
+                // C = A*B via saxpy: Gustavson + Hash method
+                GBURBLE ("C%s=A*B, saxpy ", M_str) ;
+                GB_OK (GB_AxB_saxpy (C, M, Mask_comp, Mask_struct,
+                    A, B, semiring, flipxy, mask_applied, AxB_method, do_sort,
+                    Context)) ;
+                break ;
         }
     }
 

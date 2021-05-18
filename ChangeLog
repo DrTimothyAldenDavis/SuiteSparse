@@ -1,3 +1,9 @@
+May 17, 2021, SuiteSparse 5.10.1
+
+    * CUDA: remove sm_30 from SuiteSparse_config.mk
+    * GraphBLAS v5.0.5: minor bug fix
+    * minor changes to Makefiles
+
 May 16, 2021, SuiteSparse 5.10.0
 
     * GraphBLAS v5.0.4: many new features, much faster performance
