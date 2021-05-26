@@ -79,6 +79,7 @@
     if (printf_result < 0)                                                  \
     {                                                                       \
         int err = errno ;                                                   \
+        (void)err ; /* to avoid unused variable warning */                  \
         return (GrB_INVALID_VALUE) ;                                        \
     }                                                                       \
 }

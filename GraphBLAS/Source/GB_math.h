@@ -564,6 +564,7 @@ inline float GB_frexpef (float x)
 {
     int exp ;
     float mantissa_ignored = frexpf (x, &exp) ;
+    (void) mantissa_ignored ; // to silence unused variable warnings
     return ((float) exp) ;
 }
 
@@ -577,6 +578,7 @@ inline double GB_frexpe (double x)
 {
     int exp ;
     double mantissa_ignored = frexp (x, &exp) ;
+    (void) mantissa_ignored ; // to silence unused variable warnings
     return ((double) exp) ;
 }
 
