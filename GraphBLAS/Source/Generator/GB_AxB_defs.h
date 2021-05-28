@@ -124,9 +124,10 @@
 #define GB_IS_PLUS_PAIR_REAL_SEMIRING \
     GB_is_plus_pair_real_semiring
 
-// // 1 for performance-critical semirings, which get extra optimization
-// #define GB_IS_PERFORMANCE_CRITICAL_SEMIRING \
-//     GB_is_performance_critical_semiring
+/* // 1 for performance-critical semirings, which get extra optimization
+ #define GB_IS_PERFORMANCE_CRITICAL_SEMIRING \
+    GB_is_performance_critical_semiring
+*/
 
 // declare the cij scalar
 #if GB_IS_PLUS_PAIR_REAL_SEMIRING
