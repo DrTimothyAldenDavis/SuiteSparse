@@ -1,0 +1,433 @@
+name: Run Sage CI for Linux/Cygwin/macOS
+
+## This GitHub Actions workflow provides:
+##
+##  - portability testing, by building and testing this project on many platforms
+##    (Linux variants and Cygwin), each with two configurations (installed packages),
+##
+##  - continuous integration, by building and testing other software
+##    that depends on this project.
+##
+## It runs on every pull request and push of a tag to the GitHub repository.
+##
+## The testing can be monitored in the "Actions" tab of the GitHub repository.
+##
+## After all jobs have finished (or are canceled) and a short delay,
+## tar files of all logs are made available as "build artifacts".
+##
+## This GitHub Actions workflow uses the portability testing framework
+## of SageMath (https://www.sagemath.org/).  For more information, see
+## https://doc.sagemath.org/html/en/developer/portability_testing.html
+
+## The workflow consists of two jobs:
+##
+##  - First, it builds a source distribution of the project
+##    and generates a script "update-pkgs.sh".  It uploads them
+##    as a build artifact named upstream.
+##
+##  - Second, it checks out a copy of the SageMath source tree.
+##    It downloads the upstream artifact and replaces the project's
+##    package in the SageMath distribution by the newly packaged one
+##    from the upstream artifact, by running the script "update-pkgs.sh".
+##    Then it builds a small portion of the Sage distribution.
+##
+## Many copies of the second step are run in parallel for each of the tested
+## systems/configurations.
+
+#on: [push, pull_request]
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+  push:
+    tags:
+      - '*'
+  workflow_dispatch:
+    # Allow to run manually
+
+env:
+  # Ubuntu packages to install so that the project's "make dist" can succeed
+  DIST_PREREQ: tar
+  # Name of this project in the Sage distribution
+  SPKG:        suitesparse
+  # Sage distribution packages to build
+  TARGETS_PRE: build/make/Makefile
+  TARGETS:     SAGE_CHECK=no SAGE_CHECK_PACKAGES=suitesparse suitesparse
+  TARGETS_OPTIONAL: build/make/Makefile
+  # Standard setting: Test the current beta release of Sage:
+  SAGE_REPO:   sagemath/sage
+  SAGE_REF:    develop
+  # Temporarily test with the branch from a sage ticket with build script fixes
+  # (this is a no-op after that ticket is merged)
+  SAGE_TRAC_GIT: https://github.com/sagemath/sagetrac-mirror.git
+  SAGE_TICKET: 30478
+  REMOVE_PATCHES:
+
+jobs:
+
+  dist:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out ${{ env.SPKG }}
+        uses: actions/checkout@v2
+        with:
+          path: build/pkgs/${{ env.SPKG }}/src
+      - name: Install prerequisites
+        run: |
+          sudo DEBIAN_FRONTEND=noninteractive apt-get update
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install $DIST_PREREQ
+      - name: Run make dist, prepare upstream artifact
+        run: |
+          ( cd build/pkgs/${{ env.SPKG }}/src && git archive --format=tar.gz --prefix=${{ env.SPKG }}-git/ HEAD > ${{ env.SPKG }}-git.tar.gz ) \
+          && mkdir -p upstream && cp build/pkgs/${{ env.SPKG }}/src/*.tar.gz upstream/${{ env.SPKG }}-git.tar.gz \
+          && echo "sage-package create ${{ env.SPKG }} --version git --tarball ${{ env.SPKG }}-git.tar.gz --type=standard" > upstream/update-pkgs.sh \
+          && if [ -n "${{ env.REMOVE_PATCHES }}" ]; then echo "(cd ../build/pkgs/${{ env.SPKG }}/patches && rm -f ${{ env.REMOVE_PATCHES }}; :)" >> upstream/update-pkgs.sh; fi \
+          && ls -l upstream/
+      - uses: actions/upload-artifact@v2
+        with:
+          path: upstream
+          name: upstream
+
+  canary:
+    # Quick run for 1 platform first; do not run the other platforms when this already fails
+    runs-on: ubuntu-latest
+    needs: [dist]
+    strategy:
+      fail-fast: true
+      max-parallel: 4
+      matrix:
+        tox_system_factor: [ubuntu-focal]
+        tox_packages_factor: [standard]
+    env:
+      # Override so that this runs faster
+      TARGETS: SAGE_CHECK=no suitesparse
+      TARGETS_OPTIONAL: build/make/Makefile
+    # The rest of this is identical to job "docker":
+      TOX_ENV: docker-${{ matrix.tox_system_factor }}-${{ matrix.tox_packages_factor }}
+      LOGS_ARTIFACT_NAME: logs-commit-${{ github.sha }}-tox-docker-${{ matrix.tox_system_factor }}-${{ matrix.tox_packages_factor }}
+      DOCKER_TARGETS: configured with-targets with-targets-optional
+    steps:
+      - name: Check out SageMath
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ env.SAGE_REPO }}
+          ref: ${{ env.SAGE_REF }}
+          fetch-depth: 2000
+        if: env.SAGE_REPO != ''
+      - name: Check out git-trac-command
+        uses: actions/checkout@v2
+        with:
+          repository: sagemath/git-trac-command
+          path: git-trac-command
+        if: env.SAGE_TRAC_GIT != ''
+      - name: Check out SageMath from trac.sagemath.org
+        shell: bash {0}
+        run: |
+          git config --global user.email "ci-sage@example.com"
+          git config --global user.name "ci-sage workflow"
+          if [ ! -d .git ]; then git init; fi; git remote add trac ${{ env.SAGE_TRAC_GIT }} && x=1 && while [ $x -le 5 ]; do x=$(( $x + 1 )); sleep $(( $RANDOM % 60 + 1 )); if git-trac-command/git-trac fetch $SAGE_TICKET; then git merge FETCH_HEAD || echo "(ignored)"; exit 0; fi; sleep 40; done; exit 1
+        if: env.SAGE_TRAC_GIT != ''
+      - uses: actions/download-artifact@v2
+        with:
+          path: upstream
+          name: upstream
+      - name: Install test prerequisites
+        run: |
+          sudo DEBIAN_FRONTEND=noninteractive apt-get update
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install tox python3-setuptools
+      - name: Update Sage packages from upstream artifact
+        run: |
+          (export PATH=$(pwd)/build/bin:$PATH; (cd upstream && bash -x update-pkgs.sh) && sed -i.bak '/upstream/d' .dockerignore && echo "/:toolchain:/i ADD upstream upstream" | sed -i.bak -f - build/bin/write-dockerfile.sh && git diff)
+      - name: Configure and build Sage distribution within a Docker container
+        run: |
+          set -o pipefail; EXTRA_DOCKER_BUILD_ARGS="--build-arg USE_MAKEFLAGS=\"-k V=0 SAGE_NUM_THREADS=3\"" tox -e $TOX_ENV -- $TARGETS 2>&1 | sed "/^configure: notice:/s|^|::warning file=artifacts/$LOGS_ARTIFACT_NAME/config.log::|;/^configure: warning:/s|^|::warning file=artifacts/$LOGS_ARTIFACT_NAME/config.log::|;/^configure: error:/s|^|::error file=artifacts/$LOGS_ARTIFACT_NAME/config.log::|;"
+      - name: Copy logs from the Docker image or build container
+        run: |
+          mkdir -p "artifacts/$LOGS_ARTIFACT_NAME"
+          cp -r .tox/$TOX_ENV/Dockerfile .tox/$TOX_ENV/log "artifacts/$LOGS_ARTIFACT_NAME"
+          if [ -f .tox/$TOX_ENV/Dockertags ]; then CONTAINERS=$(docker create $(tail -1 .tox/$TOX_ENV/Dockertags) /bin/bash || true); fi
+          if [ -n "$CONTAINERS" ]; then for CONTAINER in $CONTAINERS; do for ARTIFACT in /sage/logs; do docker cp $CONTAINER:$ARTIFACT artifacts/$LOGS_ARTIFACT_NAME && HAVE_LOG=1; done; if [ -n "$HAVE_LOG" ]; then break; fi; done; fi
+        if: always()
+      - uses: actions/upload-artifact@v2
+        with:
+          path: artifacts
+          name: ${{ env.LOGS_ARTIFACT_NAME }}
+        if: always()
+      - name: Print out logs for immediate inspection
+        # and markup the output with GitHub Actions logging commands
+        run: |
+          .github/workflows/scan-logs.sh "artifacts/$LOGS_ARTIFACT_NAME"
+        if: always()
+      - name: Push Docker images
+        run: |
+          if [ -f .tox/$TOX_ENV/Dockertags ]; then
+            TOKEN="${{ secrets.DOCKER_PKG_GITHUB_TOKEN }}"
+            if [ -z "$TOKEN" ]; then
+              TOKEN="${{ secrets.GITHUB_TOKEN }}"
+            fi
+            echo "$TOKEN" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+            for a in $(cat .tox/$TOX_ENV/Dockertags); do
+              FULL_TAG=docker.pkg.github.com/$(echo ${{ github.repository }}|tr 'A-Z' 'a-z')/$a
+              docker tag $a $FULL_TAG
+              echo Pushing $FULL_TAG
+              docker push $FULL_TAG
+            done || echo "(Ignoring errors)"
+          fi
+        if: always()
+
+  cygwin:
+    env:
+      STAGE: i-a
+      LOCAL_ARTIFACT_NAME: sage-local-commit-${{ github.sha }}-cygwin-${{ matrix.pkgs }}
+      LOGS_ARTIFACT_NAME: logs-commit-${{ github.sha }}-cygwin-${{ matrix.pkgs }}
+      MAKE: make -j8
+      SAGE_NUM_THREADS: 3
+      SAGE_CHECK: yes
+      SAGE_CHECK_PACKAGES: "!cython,!r,!python3,!python2,!nose,!pathpy,!gap,!cysignals,!linbox,!git,!ppl"
+      CYGWIN: winsymlinks:native
+      CONFIGURE_ARGS: --enable-experimental-packages --enable-download-from-upstream-url
+      SAGE_FAT_BINARY: yes
+      SAGE_LOCAL: /opt/sage-suitesparse-${{ github.sha }}
+
+    runs-on: windows-latest
+
+    needs: [dist]
+
+    strategy:
+      fail-fast: false
+      matrix:
+        pkgs: [minimal, standard]
+    steps:
+    - run: |
+        git config --global core.autocrlf false
+        git config --global core.symlinks true
+    - name: install cygwin with choco
+      shell: bash {0}
+      run: |
+        choco --version
+        choco install git python3 --source cygwin
+    - name: Check out SageMath
+      uses: actions/checkout@v2
+      with:
+        repository: ${{ env.SAGE_REPO }}
+        ref: ${{ env.SAGE_REF }}
+        fetch-depth: 2000
+      if: env.SAGE_REPO != ''
+    - name: Check out git-trac-command
+      uses: actions/checkout@v2
+      with:
+        repository: sagemath/git-trac-command
+        path: git-trac-command
+      if: env.SAGE_TRAC_GIT != ''
+    - name: Check out SageMath from trac.sagemath.org
+      shell: bash {0}
+      # Random sleep and retry to limit the load on trac.sagemath.org
+      run: |
+        git config --global user.email "ci-sage@example.com"
+        git config --global user.name "ci-sage workflow"
+        if [ ! -d .git ]; then git init; fi; git remote add trac ${{ env.SAGE_TRAC_GIT }} && x=1 && while [ $x -le 5 ]; do x=$(( $x + 1 )); sleep $(( $RANDOM % 60 + 1 )); if git-trac-command/git-trac fetch $SAGE_TICKET; then git merge FETCH_HEAD || echo "(ignored)"; exit 0; fi; sleep 40; done; exit 1
+      if: env.SAGE_TRAC_GIT != ''
+    - uses: actions/download-artifact@v2
+      with:
+        path: upstream
+        name: upstream
+    - name: install minimal prerequisites with choco
+      shell: bash {0}
+      run: |
+        choco --version
+        PACKAGES="python38 python38-pip"
+        choco install $PACKAGES --source cygwin
+    - name: Update Sage packages from upstream artifact
+      run: |
+        C:\\tools\\cygwin\\bin\\bash -l -c 'cd $(cygpath -u "$GITHUB_WORKSPACE") && ls -l upstream/ && export PATH="$(pwd)/build/bin:$PATH:/usr/local/bin:/usr/bin" && (cd upstream && bash -x update-pkgs.sh) && git diff'
+    - name: tox
+      run: |
+        C:\\tools\\cygwin\\bin\\bash -l -x -c 'python3.8 -m pip install tox'
+        C:\\tools\\cygwin\\bin\\bash -l -x -c 'cd $(cygpath -u "$GITHUB_WORKSPACE") && PREFIX="${{ env.SAGE_LOCAL }}" tox -e local-cygwin-choco-${{ matrix.pkgs }} -- $TARGETS'
+    - name: Prepare logs artifact
+      shell: bash
+      run: |
+        mkdir -p "artifacts/$LOGS_ARTIFACT_NAME"; for a in local/var/tmp/sage/build/*; do if [ -d $a ]; then tar -c --remove-files -f "artifacts/$LOGS_ARTIFACT_NAME/$(basename $a).tar" $a || tar -c --ignore-failed-read -f "artifacts/$LOGS_ARTIFACT_NAME/$(basename $a)-save.tar" $a ; fi; done; cp -r logs/*  "artifacts/$LOGS_ARTIFACT_NAME"
+      if: always()
+    - uses: actions/upload-artifact@v2
+      with:
+        path: artifacts
+        name: ${{ env.LOGS_ARTIFACT_NAME }}
+      if: always()
+    - name: Print out logs for immediate inspection
+      # The markup in the output is a GitHub Actions logging command
+      # https://help.github.com/en/actions/automating-your-workflow-with-github-actions/development-tools-for-github-actions
+      shell: bash
+      run: |
+        find "artifacts/$LOGS_ARTIFACT_NAME" -type f -name "*.log" -exec sh -c 'if tail -20 "{}" 2>/dev/null | grep "^Error" >/dev/null; then echo :":"error file={}:":" ==== LOG FILE {} CONTAINS AN ERROR ====; cat {} ; fi' \;
+      if: always()
+    - name: Prepare sage-local artifact
+      # We specifically use the cygwin tar so that symlinks are saved/restored correctly on Windows.
+      # We remove the $SAGE_LOCAL/lib64 link, which will be recreated by the next stage.
+      run: |
+        C:\\tools\\cygwin\\bin\\bash -l -c 'cd $(cygpath -u "$GITHUB_WORKSPACE") && rm -f "${{ env.SAGE_LOCAL }}"/lib64; tar -cf /tmp/sage-local-${{ env.STAGE }}.tar --remove-files "${{ env.SAGE_LOCAL }}"'
+      if: always()
+    - uses: actions/upload-artifact@v2
+      # upload-artifact@v2 does not support whitespace in file names.
+      # so we tar up the directory ourselves
+      with:
+        path: C:\\tools\\cygwin\\tmp\\sage-local-${{ env.STAGE }}.tar
+        name: ${{ env.LOCAL_ARTIFACT_NAME }}
+      if: always()
+
+  docker:
+    runs-on: ubuntu-latest
+    needs: [dist, canary]
+    strategy:
+      fail-fast: false
+      max-parallel: 32
+      matrix:
+        tox_system_factor: [ubuntu-trusty, ubuntu-xenial, ubuntu-bionic, ubuntu-focal, ubuntu-groovy, ubuntu-hirsute, debian-jessie, debian-stretch, debian-buster, debian-bullseye, debian-sid, linuxmint-17, linuxmint-18, linuxmint-19, linuxmint-19.3, linuxmint-20.1, fedora-26, fedora-27, fedora-28, fedora-29, fedora-30, fedora-31, fedora-32, fedora-33, fedora-34, centos-7, centos-8, gentoo, archlinux-latest, opensuse-15, opensuse-15.3, opensuse-tumbleweed, slackware-14.2, conda-forge, ubuntu-nvidia-cuda, centos-nvidia-cuda, ubuntu-focal-nvidia-cuda, ubuntu-bionic-nvidia-cuda, ubuntu-xenial-nvidia-cuda, ubuntu-bionic-i386, manylinux-2_24-i686, debian-buster-i386, centos-7-i386, raspbian-buster-armhf]
+        tox_packages_factor: [minimal, standard]
+    env:
+      TOX_ENV: docker-${{ matrix.tox_system_factor }}-${{ matrix.tox_packages_factor }}
+      LOGS_ARTIFACT_NAME: logs-commit-${{ github.sha }}-tox-docker-${{ matrix.tox_system_factor }}-${{ matrix.tox_packages_factor }}
+      DOCKER_TARGETS: configured with-targets with-targets-optional
+    steps:
+      - name: Check out SageMath
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ env.SAGE_REPO }}
+          ref: ${{ env.SAGE_REF }}
+          fetch-depth: 2000
+        if: env.SAGE_REPO != ''
+      - name: Check out git-trac-command
+        uses: actions/checkout@v2
+        with:
+          repository: sagemath/git-trac-command
+          path: git-trac-command
+        if: env.SAGE_TRAC_GIT != ''
+      - name: Check out SageMath from trac.sagemath.org
+        shell: bash {0}
+        run: |
+          git config --global user.email "ci-sage@example.com"
+          git config --global user.name "ci-sage workflow"
+          if [ ! -d .git ]; then git init; fi; git remote add trac ${{ env.SAGE_TRAC_GIT }} && x=1 && while [ $x -le 5 ]; do x=$(( $x + 1 )); sleep $(( $RANDOM % 60 + 1 )); if git-trac-command/git-trac fetch $SAGE_TICKET; then git merge FETCH_HEAD || echo "(ignored)"; exit 0; fi; sleep 40; done; exit 1
+        if: env.SAGE_TRAC_GIT != ''
+      - uses: actions/download-artifact@v2
+        with:
+          path: upstream
+          name: upstream
+      - name: Install test prerequisites
+        run: |
+          sudo DEBIAN_FRONTEND=noninteractive apt-get update
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install tox python3-setuptools
+      - name: Update Sage packages from upstream artifact
+        run: |
+          (export PATH=$(pwd)/build/bin:$PATH; (cd upstream && bash -x update-pkgs.sh) && sed -i.bak '/upstream/d' .dockerignore && echo "/:toolchain:/i ADD upstream upstream" | sed -i.bak -f - build/bin/write-dockerfile.sh && git diff)
+      - name: Configure and build Sage distribution within a Docker container
+        run: |
+          set -o pipefail; EXTRA_DOCKER_BUILD_ARGS="--build-arg USE_MAKEFLAGS=\"-k V=0 SAGE_NUM_THREADS=3\"" tox -e $TOX_ENV -- $TARGETS 2>&1 | sed "/^configure: notice:/s|^|::warning file=artifacts/$LOGS_ARTIFACT_NAME/config.log::|;/^configure: warning:/s|^|::warning file=artifacts/$LOGS_ARTIFACT_NAME/config.log::|;/^configure: error:/s|^|::error file=artifacts/$LOGS_ARTIFACT_NAME/config.log::|;"
+      - name: Copy logs from the Docker image or build container
+        run: |
+          mkdir -p "artifacts/$LOGS_ARTIFACT_NAME"
+          cp -r .tox/$TOX_ENV/Dockerfile .tox/$TOX_ENV/log "artifacts/$LOGS_ARTIFACT_NAME"
+          if [ -f .tox/$TOX_ENV/Dockertags ]; then CONTAINERS=$(docker create $(tail -1 .tox/$TOX_ENV/Dockertags) /bin/bash || true); fi
+          if [ -n "$CONTAINERS" ]; then for CONTAINER in $CONTAINERS; do for ARTIFACT in /sage/logs; do docker cp $CONTAINER:$ARTIFACT artifacts/$LOGS_ARTIFACT_NAME && HAVE_LOG=1; done; if [ -n "$HAVE_LOG" ]; then break; fi; done; fi
+        if: always()
+      - uses: actions/upload-artifact@v2
+        with:
+          path: artifacts
+          name: ${{ env.LOGS_ARTIFACT_NAME }}
+        if: always()
+      - name: Print out logs for immediate inspection
+        # and markup the output with GitHub Actions logging commands
+        run: |
+          .github/workflows/scan-logs.sh "artifacts/$LOGS_ARTIFACT_NAME"
+        if: always()
+      - name: Push Docker images
+        run: |
+          if [ -f .tox/$TOX_ENV/Dockertags ]; then
+            TOKEN="${{ secrets.DOCKER_PKG_GITHUB_TOKEN }}"
+            if [ -z "$TOKEN" ]; then
+              TOKEN="${{ secrets.GITHUB_TOKEN }}"
+            fi
+            echo "$TOKEN" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+            for a in $(cat .tox/$TOX_ENV/Dockertags); do
+              FULL_TAG=docker.pkg.github.com/$(echo ${{ github.repository }}|tr 'A-Z' 'a-z')/$a
+              docker tag $a $FULL_TAG
+              echo Pushing $FULL_TAG
+              docker push $FULL_TAG
+            done || echo "(Ignoring errors)"
+          fi
+        if: always()
+
+  macos:
+
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        os: [ macos-10.15, macos-11.0 ]
+        tox_system_factor: [homebrew-macos, conda-forge-macos]
+        tox_packages_factor: [minimal, standard]
+        xcode_version_factor: [11.7, default]
+
+    needs: [dist, canary]
+
+    env:
+      TOX_ENV: local-${{ matrix.tox_system_factor }}-${{ matrix.tox_packages_factor }}
+      LOGS_ARTIFACT_NAME: logs-commit-${{ github.sha }}-tox-local-${{ matrix.tox_system_factor }}-${{ matrix.tox_packages_factor }}-${{ matrix.os }}-xcode_${{ matrix.xcode_version_factor }}
+      DOCKER_TARGETS: configured with-targets with-targets-optional
+
+    steps:
+
+      - name: Select Xcode version
+        run: |
+          if [ ${{ matrix.xcode_version_factor }} != default ]; then sudo xcode-select -s /Applications/Xcode_${{ matrix.xcode_version_factor }}.app; fi
+      - name: Check out SageMath
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ env.SAGE_REPO }}
+          ref: ${{ env.SAGE_REF }}
+          fetch-depth: 2000
+        if: env.SAGE_REPO != ''
+      - name: Check out git-trac-command
+        uses: actions/checkout@v2
+        with:
+          repository: sagemath/git-trac-command
+          path: git-trac-command
+        if: env.SAGE_TRAC_GIT != ''
+      - name: Check out SageMath from trac.sagemath.org
+        shell: bash {0}
+        run: |
+          git config --global user.email "ci-sage@example.com"
+          git config --global user.name "ci-sage workflow"
+          if [ ! -d .git ]; then git init; fi; git remote add trac ${{ env.SAGE_TRAC_GIT }} && x=1 && while [ $x -le 5 ]; do x=$(( $x + 1 )); sleep $(( $RANDOM % 60 + 1 )); if git-trac-command/git-trac fetch $SAGE_TICKET; then git merge FETCH_HEAD || echo "(ignored)"; exit 0; fi; sleep 40; done; exit 1
+        if: env.SAGE_TRAC_GIT != ''
+      - uses: actions/download-artifact@v2
+        with:
+          path: upstream
+          name: upstream
+      - name: Update Sage packages from upstream artifact
+        run: |
+          (export PATH=$(pwd)/build/bin:$PATH; (cd upstream && bash -x update-pkgs.sh) && git diff)
+
+      - name: Install test prerequisites
+        run: |
+          brew install tox
+      - name: Build and test with tox
+        # We use a high parallelization on purpose in order to catch possible parallelization bugs in the build scripts.
+        # For doctesting, we use a lower parallelization to avoid timeouts.
+        run: |
+          MAKE="make -j12" tox -e $TOX_ENV -- SAGE_NUM_THREADS=4 $TARGETS
+      - name: Prepare logs artifact
+        run: |
+          mkdir -p "artifacts/$LOGS_ARTIFACT_NAME"; cp -r .tox/*/log "artifacts/$LOGS_ARTIFACT_NAME"
+        if: always()
+      - uses: actions/upload-artifact@v1
+        with:
+          path: artifacts
+          name: ${{ env.LOGS_ARTIFACT_NAME }}
+        if: always()
+      - name: Print out logs for immediate inspection
+        # and markup the output with GitHub Actions logging commands
+        run: |
+          .github/workflows/scan-logs.sh "artifacts/$LOGS_ARTIFACT_NAME"
+        if: always()
