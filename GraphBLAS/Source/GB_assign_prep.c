@@ -886,7 +886,7 @@ GrB_Info GB_assign_prep
 
     // C_replace_may_be_done_early is true if the C_replace action can take
     // place now.  If true, the final C does not depend on the contents of
-    // C on input.  If bitmap assigment might be done, delay the clearing of
+    // C on input.  If bitmap assignment might be done, delay the clearing of
     // C since it would be faster to set its bitmap to all zero later on,
     // instead of freeing it and reallocating it.
 
@@ -1035,7 +1035,7 @@ GrB_Info GB_assign_prep
     }
 
     //--------------------------------------------------------------------------
-    // check compatibilty of prior pending tuples
+    // check compatibility of prior pending tuples
     //--------------------------------------------------------------------------
 
     // The action: ( delete ) can only delete a live entry in the pattern.  It

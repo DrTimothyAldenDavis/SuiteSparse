@@ -311,7 +311,7 @@ GrB_Info GB_emult           // C=A.*B, C<M>=A.*B, or C<!M>=A.*B
             // TODO: this will use 04 (M,A,B, flipxy=false)
 
             // The method will compute the 2-way intersection of M and A,
-            // using the same parallization as C=A.*B when both A and B are
+            // using the same parallelization as C=A.*B when both A and B are
             // both sparse.  It will then lookup B in O(1) time.
             // M and A must not be jumbled.
 

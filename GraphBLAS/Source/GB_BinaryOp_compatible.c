@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-// check type compatibilty for C = op (A,B).  With typecasting: A is cast to
+// check type compatibility for C = op (A,B).  With typecasting: A is cast to
 // op->xtype, B is cast to op->ytype, the operator is computed, and then the
 // result of op->ztype is cast to C->type.
 

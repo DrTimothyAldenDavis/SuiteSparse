@@ -320,7 +320,7 @@ void *SuiteSparse_free      /* always returns NULL */
 /* Returns the number of seconds (tic [0]) and nanoseconds (tic [1]) since some
  * unspecified but fixed time in the past.  If no timer is installed, zero is
  * returned.  A scalar double precision value for 'tic' could be used, but this
- * might cause loss of precision because clock_getttime returns the time from
+ * might cause loss of precision because clock_gettime returns the time from
  * some distant time in the past.  Thus, an array of size 2 is used.
  *
  * The timer is enabled by default.  To disable the timer, compile with

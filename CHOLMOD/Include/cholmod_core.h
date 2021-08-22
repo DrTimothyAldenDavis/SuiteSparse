@@ -1641,7 +1641,7 @@ typedef struct cholmod_factor_struct
     void *z ;
     void *nz ;		/* nz [0..ncol-1], the # of nonzeros in each column.
 			 * i [p [j] ... p [j]+nz[j]-1] contains the row indices,
-			 * and the numerical values are in the same locatins
+			 * and the numerical values are in the same locations
 			 * in x. The value of i [p [k]] is always k. */
 
     void *next ;	/* size ncol+2. next [j] is the next column in i/x */

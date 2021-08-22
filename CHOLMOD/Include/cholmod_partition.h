@@ -130,7 +130,7 @@ SuiteSparse_long cholmod_metis_bisector	/* returns separator size */
     int *Aew,		/* size nz, edge weights (silently ignored). */
                         /* This option was available with METIS 4, but not */
                         /* in METIS 5.  This argument is now unused, but */
-                        /* it remains for backward compatibilty, so as not */
+                        /* it remains for backward compatibility, so as not */
                         /* to change the API for cholmod_metis_bisector. */
     /* ---- output --- */
     int *Partition,	/* size A->nrow */

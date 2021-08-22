@@ -9,7 +9,7 @@
 //------------------------------------------------------------------------------
 
 /* Purpose: This function solves the linear system LD^(-1)U x = b. It
- * essnetially serves as a wrapper for all forward and backward substitution
+ * essentially serves as a wrapper for all forward and backward substitution
  * routines. This function always returns the solution matrix x as a rational
  * matrix. If a user desires to have double or mpfr output, they must create
  * a matrix copy.
