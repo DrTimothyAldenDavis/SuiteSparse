@@ -93,12 +93,12 @@ void sfmult_AT_XT_YN_3	// y = A'*x'	x is 3-by-m, and y is n-by-3 (ldx = 4)
     double *Yz,		// n-by-3 if Y is complex (TO DO)
 
     // --- inputs, not modified
-    const int *Ap,	// size n+1 column pointers
-    const int *Ai,	// size nz = Ap[n] row indices
+    const Int *Ap,	// size n+1 column pointers
+    const Int *Ai,	// size nz = Ap[n] row indices
     const double *Ax,	// size nz values
     const double *Az,	// size nz imaginary values if A is complex (TO DO)
-    int m,		// A is m-by-n
-    int n,
+    Int m,		// A is m-by-n
+    Int n,
     const double *Xx,	// 3-by-m
     const double *Xz,	// 3-by-m if X complex (TO DO)
     int ac,		// true: use conj(A), otherwise use A (TO DO)
@@ -107,7 +107,7 @@ void sfmult_AT_XT_YN_3	// y = A'*x'	x is 3-by-m, and y is n-by-3 (ldx = 4)
 )
 {
     double y [4], a [2] ;
-    int p, pend, j, i0, i1 ;
+    Int p, pend, j, i0, i1 ;
 
     p = 0 ;
     for (j = 0 ; j < n ; j++)
@@ -156,12 +156,12 @@ void sfmult_AT_XT_YN_4	// y = A'*x'	x is 4-by-m, and y is n-by-4
     double *Yz,		// n-by-4 if Y is complex (TO DO)
 
     // --- inputs, not modified
-    const int *Ap,	// size n+1 column pointers
-    const int *Ai,	// size nz = Ap[n] row indices
+    const Int *Ap,	// size n+1 column pointers
+    const Int *Ai,	// size nz = Ap[n] row indices
     const double *Ax,	// size nz values
     const double *Az,	// size nz imaginary values if A is complex (TO DO)
-    int m,		// A is m-by-n
-    int n,
+    Int m,		// A is m-by-n
+    Int n,
     const double *Xx,	// 4-by-m
     const double *Xz,	// 4-by-m if X complex (TO DO)
     int ac,		// true: use conj(A), otherwise use A (TO DO)
@@ -170,7 +170,7 @@ void sfmult_AT_XT_YN_4	// y = A'*x'	x is 4-by-m, and y is n-by-4
 )
 {
     double y [4], a ;
-    int p, pend, j, i ;
+    Int p, pend, j, i ;
 
     p = 0 ;
     for (j = 0 ; j < n ; j++)

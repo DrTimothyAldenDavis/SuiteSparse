@@ -11,14 +11,15 @@
 // matrix functions used internally in MATLAB, these functions will NOT work
 // with mwIndex.
 
-#define Int mwSignedIndex
+#include <stdint.h>
+#define Int int64_t
 
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
 #define MIN(a,b) (((a) < (b)) ? (a) : (b))
 
 #define MXFREE(a) { \
-    double *ptr ; \
-    ptr = (a) ; \
+    void *ptr ; \
+    ptr = (void *) (a) ; \
     if (ptr != NULL) mxFree (ptr) ; \
 }
 
