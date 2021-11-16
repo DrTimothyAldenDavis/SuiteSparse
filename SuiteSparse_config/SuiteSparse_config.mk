@@ -357,8 +357,8 @@ SUITESPARSE_VERSION = 5.10.1
     #---------------------------------------------------------------------------
 
     ifeq ($(UNAME),Linux)
-        # add the realtime library, librt, and SuiteSparse/lib
-        LDLIBS += -lrt -Wl,-rpath=$(INSTALL_LIB)
+        # add the posix realtime extensions library: librt
+        LDLIBS += -lrt
     endif
 
     #---------------------------------------------------------------------------
@@ -448,11 +448,14 @@ SUITESPARSE_VERSION = 5.10.1
 SO_OPTS = $(LDFLAGS)
 
 ifeq ($(UNAME),Windows)
-    # Cygwin Make on Windows (untested)
+    # Cygwin Make on Windows
     AR_TARGET = $(LIBRARY).lib
-    SO_PLAIN  = $(LIBRARY).dll
+    SO_TARGET  = $(LIBRARY).dll
+    # The following two links are just garbage copies of the real target
+    # they aren't actually supported by this OS
     SO_MAIN   = $(LIBRARY).$(SO_VERSION).dll
-    SO_TARGET = $(LIBRARY).$(VERSION).dll
+    SO_PLAIN = $(LIBRARY).$(VERSION).dll
+    SO_OPTS  += -shared
     SO_INSTALL_NAME = echo
 else
     # Mac or Linux/Unix
@@ -474,8 +477,9 @@ else
         SO_PLAIN  = $(LIBRARY).so
         SO_MAIN   = $(LIBRARY).so.$(SO_VERSION)
         SO_TARGET = $(LIBRARY).so.$(VERSION)
-        SO_OPTS  += -shared -Wl,-soname -Wl,$(SO_MAIN) -Wl,--no-undefined
-        # Linux/Unix *.so files can be moved without modification:
+        SO_OPTS  += -shared -Wl,-soname -Wl,$(SO_MAIN) -Wl,--no-undefined \
+                     -Wl,-rpath,'$$ORIGIN' -Wl,-z,origin
+        # Use rpath ORIGIN so that Linux/Unix *.so files can be moved without modification:
         SO_INSTALL_NAME = echo
     endif
 endif
