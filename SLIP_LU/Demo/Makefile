@@ -18,28 +18,29 @@ include ../../SuiteSparse_config/SuiteSparse_config.mk
 # CF = $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -O
 I = -I../Include -I../Source -I../../SuiteSparse_config -I../../COLAMD/Include -I../../AMD/Include
 
-# LDFLAGS = -L../../lib
+LDFLAGS = -L../../lib
 
 LDLIBS += -lm -lgmp -lmpfr -lcolamd -lamd -lsliplu
 CS = $(LDLIBS)
 
+RPATH = -Wl,-rpath=../../lib
 
 all: lib example example2 SLIPLU
-	- ./example
-	- ./example2
-	- ./SLIPLU
+	-./example
+	-./example2
+	-./SLIPLU
 
 lib:
 	( cd ../Lib ; $(MAKE) )
 
 example: lib example.c Makefile
-	$(CC) $(LDFLAGS) $(CF) $(I) -o example example.c $(CS)
+	$(CC) $(LDFLAGS) $(CF) $(I) -o example example.c $(CS) $(RPATH)
 
 example2: lib example2.c Makefile
-	$(CC) $(LDFLAGS) $(CF) $(I) -o example2 example2.c demos.c $(CS)
+	$(CC) $(LDFLAGS) $(CF) $(I) -o example2 example2.c demos.c $(CS) $(RPATH)
 
 SLIPLU: lib SLIPLU.c demos.h demos.c Makefile
-	$(CC) $(LDFLAGS) $(CF) $(I) -o SLIPLU SLIPLU.c demos.c $(CS)
+	$(CC) $(LDFLAGS) $(CF) $(I) -o SLIPLU SLIPLU.c demos.c $(CS) $(RPATH)
 clean:
 	- $(RM) *.o
 
