@@ -170,7 +170,7 @@ SUITESPARSE_VERSION = 5.11.0
     # It places its shared *.so libraries in SuiteSparse/lib.
     # Linux also requires the -lrt library (see below)
     LDLIBS ?= -lm
-    LDFLAGS += -L$(INSTALL_LIB)
+    LDFLAGS += -L$(INSTALL_LIB) -Wl,-rpath=$(INSTALL_LIB)
 
     # NOTE: Use of the Intel MKL BLAS is strongly recommended.  The OpenBLAS can
     # result in severe performance degradation, in CHOLMOD in particular.
