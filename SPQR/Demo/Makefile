@@ -162,7 +162,7 @@ I = -I../../include $(I_WITH_SPQRGPU)
 C = $(CXX) $(CF) $(SPQR_CONFIG) $(CONFIG_PARTITION) $(CONFIG_GPU) $(I) \
 	$(CHOLMOD_CONFIG)
 
-LIBS = $(CLIB) $(FLIB) $(TBB) $(GPULIB)
+LIBS = $(CLIB) $(FLIB) $(GPULIB)
 
 # With the CUDA BLAS
 ifneq ($(GPU_CONFIG),)

@@ -518,11 +518,7 @@ template <typename Entry> Long spqr_front
             // that this single Householder vector is computed and then applied
             // just by itself to the rest of the frontal matrix (columns
             // k+1:n-1, or n-k-1 columns).  Applying the Householder reflection
-            // to just one column takes 4*(t-g) flops.  This computation only
-            // works if TBB is disabled, merely because it uses a global
-            // variable to keep track of the flop count.  If TBB is used, this
-            // computation may result in a race condition; it is disabled in
-            // that case.
+            // to just one column takes 4*(t-g) flops.
 
             FLOP_COUNT ((t-g) * (3 + 4 * (n-k-1))) ;
 

@@ -88,9 +88,6 @@ void spqr_mx_spumoni
             "    size of int:      %d bytes\n"
             "    size of BLAS int: %d bytes\n",
             sizeof (mwIndex), sizeof (int), sizeof (BLAS_INT)) ;
-#ifdef HAVE_TBB
-        mexPrintf ("    compiled with Intel Threading Building Blocks (TBB)\n");
-#endif
 #ifndef NEXPERT
         mexPrintf ("    compiled with opts.solution='min2norm' option\n") ;
 #endif
@@ -171,25 +168,6 @@ void spqr_mx_spumoni
         mexPrintf ("'basic'\n") ;
     }
 
-#ifdef HAVE_TBB
-    mexPrintf (
-    "    opts.grain = %g, opts.small = %g, opts.nthreads = %d\n"
-    "        The analysis for TBB parallelism constructs a task graph by\n"
-    "        merging nodes in the frontal elimination tree, which is itself\n"
-    "        a coalescing of the column elimination tree with one node per\n"
-    "        column in the matrix.  The goal of the merging heuristic is to\n"
-    "        create a task graph whose leaf nodes have flop counts >=\n"
-    "        max ((total flops)/opts.grain, opts.small).  If opts.grain <= 1,\n"
-    "        then no TBB parallelism is exploited.  The current default is\n"
-    "        opts.grain=1 because in the current version of TBB and OpenMP,\n"
-    "        TBB parallelism conflicts with BLAS OpenMP-based parallelism.\n"
-    "        This will be resolved in a future version.\n"
-    "        opts.nthreads is the number of threads that TBB should use.\n"
-    "        If zero, the TBB default is used, which is normally the total\n"
-    "        number of cores your computer has.\n",
-        cc->SPQR_grain, cc->SPQR_small, cc->SPQR_nthreads) ;
-#endif
-
     // -------------------------------------------------------------------------
     // output statistics
     // -------------------------------------------------------------------------
@@ -198,7 +176,7 @@ void spqr_mx_spumoni
     mexPrintf ("    upper bound on nnz(R): %ld\n",        cc->SPQR_istat [0]) ;
     mexPrintf ("    upper bound on nnz(H): %ld\n",        cc->SPQR_istat [1]) ;
     mexPrintf ("    number of frontal matrices: %ld\n",   cc->SPQR_istat [2]) ;
-    mexPrintf ("    # tasks in TBB task tree: %ld\n",     cc->SPQR_istat [3]) ;
+//  mexPrintf ("    # tasks in TBB task tree: %ld\n",     cc->SPQR_istat [3]) ;
     mexPrintf ("    rank(A) estimate: %ld\n",             cc->SPQR_istat [4]) ;
     mexPrintf ("    # of column singletons: %ld\n",       cc->SPQR_istat [5]) ;
     mexPrintf ("    # of singleton rows: %ld\n",          cc->SPQR_istat [6]) ;
@@ -1073,7 +1051,7 @@ mxArray *spqr_mx_info       // return a struct with info statistics
 
     mxSetFieldByNumber (s, 0, 12, mxCreateDoubleScalar (cc->SPQR_norm_E_fro)) ;
 
-#ifdef HAVE_TBB
+#if 0 /* ifdef HAVE_TBB (TBB removed) */
     mxSetFieldByNumber (s, 0, 13, mxCreateString ("yes")) ;
 #else
     mxSetFieldByNumber (s, 0, 13, mxCreateString ("no")) ;

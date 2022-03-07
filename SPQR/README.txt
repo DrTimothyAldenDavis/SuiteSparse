@@ -1,4 +1,4 @@
-SuiteSparseQR Copyright (c) 2008-2016, Timothy A. Davis,
+SuiteSparseQR Copyright (c) 2008-2020, Timothy A. Davis,
 GPU modules Copyright (c) 2015, Timothy A. Davis, Sencer Nuri Yeralan,
 and Sanjay Ranka.
 http://www.suitesparse.com
@@ -47,9 +47,6 @@ FOR LINUX/UNIX/Mac USERS who want to use the C++ callable library:
 
         -DNEXPERT       to compile without the min 2-norm solution option
                         (default is to include the Expert routines)
-
-        -DHAVE_TBB      to compile with Intel's Threading Building Blocks
-                        (default is to not use Intel TBB)
 
         -DTIMING        to compile with timing and exact flop counts enabled
                         (default is to not compile with timing and flop counts)

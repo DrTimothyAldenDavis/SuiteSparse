@@ -2644,7 +2644,7 @@ int do_matrix (int kind, FILE *file, cholmod_common *cc)
     fprintf (stderr, " CPU ") ;
     nfail0 = do_matrix2 (kind, A, cc) ;
 
-    // non-defaults to test TBB, if installed (will not use the GPU)
+    // non-defaults (will not use the GPU)
     cc->SPQR_grain = 4 ;         // grain size relative to total work
     nfail2 = do_matrix2 (kind, A, cc) ;
     cc->SPQR_grain = 1 ;         // no parallel analysis

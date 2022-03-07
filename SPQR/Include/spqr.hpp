@@ -199,7 +199,7 @@ typedef std::complex<double> Complex ;
 #endif
 
 // -----------------------------------------------------------------------------
-// For counting flops; disabled if TBB is used
+// For counting flops
 // -----------------------------------------------------------------------------
 
 #define FLOP_COUNT(f) { if (cc->SPQR_grain <= 1) cc->SPQR_flopcount += (f) ; }

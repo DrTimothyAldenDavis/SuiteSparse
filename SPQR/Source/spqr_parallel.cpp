@@ -5,7 +5,7 @@
 // Factorize all the tasks in parallel with TBB.
 // The GPU is not used.
 
-#ifdef HAVE_TBB
+#if 0 /* ifdef HAVE_TBB (TBB removed) */
 #include "spqr.hpp"
 #include <tbb/task_scheduler_init.h>
 #include <tbb/task.h>
