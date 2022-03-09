@@ -261,8 +261,6 @@ SUITESPARSE_VERSION = 5.11.0
                 MAGMA_LIB     = -L/opt/magma-2.4.0/lib/ -lmagma
         NVCC          = $(CUDA_PATH)/bin/nvcc
         NVCCFLAGS     = -Xcompiler -fPIC -O3 \
-                            -gencode=arch=compute_50,code=sm_50 \
-                            -gencode=arch=compute_53,code=sm_53 \
                             -gencode=arch=compute_53,code=sm_53 \
                             -gencode=arch=compute_60,code=compute_60
     endif
