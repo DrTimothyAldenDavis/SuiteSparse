@@ -20,7 +20,7 @@
 #
 #   make distclean
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.13)
 include(CMake/cmake_colors.cmake)
 
 if (POLICY CMP0048)
