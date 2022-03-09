@@ -1,3 +1,9 @@
+Version 6.2.4, Mar 8, 2022
+
+    * (42) bug fix: GrB_mxm with 0-by-0 iso full matrices: Caught by
+        @ParticularMiner in the Python grblas interface, then triaged and
+        isolated by Erik Welch.
+
 Version 6.2.3, Mar 5, 2022
 
     * minor update to documentation in GrB.build: no change to any code
