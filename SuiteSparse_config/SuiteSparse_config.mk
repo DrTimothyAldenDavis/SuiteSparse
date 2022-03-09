@@ -334,17 +334,9 @@ SUITESPARSE_VERSION = 5.11.0
     #
     # -DNPARTITION      do not include the CHOLMOD partition module
     # -DNEXPERT         do not include the functions in SuiteSparseQR_expert.cpp
-    # -DHAVE_TBB        enable the use of Intel's Threading Building Blocks
     # -DGPU_BLAS        enable the use of the CUDA BLAS
 
     SPQR_CONFIG ?= $(GPU_CONFIG)
-
-    # to compile with Intel's TBB, use TBB=-ltbb -DSPQR_CONFIG=-DHAVE_TBB
-    TBB ?=
-    # TBB = -ltbb -DSPQR_CONFIG=-DHAVE_TBB
-
-    # TODO: this *mk file should auto-detect the presence of Intel's TBB,
-    # and set the compiler flags accordingly.
 
 #===============================================================================
 # System-dependent configurations
@@ -581,7 +573,6 @@ config:
 	@echo 'parallel make jobs:       JOBS=           ' '$(JOBS)'
 	@echo 'BLAS library:             BLAS=           ' '$(BLAS)'
 	@echo 'LAPACK library:           LAPACK=         ' '$(LAPACK)'
-	@echo 'Intel TBB library:        TBB=            ' '$(TBB)'
 	@echo 'Other libraries:          LDLIBS=         ' '$(LDLIBS)'
 	@echo 'static library:           AR_TARGET=      ' '$(AR_TARGET)'
 	@echo 'shared library (full):    SO_TARGET=      ' '$(SO_TARGET)'

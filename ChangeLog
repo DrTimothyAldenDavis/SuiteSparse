@@ -1,6 +1,6 @@
-Mar 5, 2021, SuiteSparse 5.11.0
+Mar 9, 2021, SuiteSparse 5.11.0
 
-    * GraphBLAS v6.2.3:  see GraphBLAS/Doc/ChangeLog for changes.
+    * GraphBLAS v6.2.4:  see GraphBLAS/Doc/ChangeLog for changes.
         Primary ones highlighted here:
         * v2.0 API: v6.x complies with the v2.0 C API of the GraphBLAS Spec.
             Note that GrB_wait, GrB_Info are now different than in the v1.3
