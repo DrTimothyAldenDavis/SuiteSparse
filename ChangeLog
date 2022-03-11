@@ -1,3 +1,26 @@
+Mar 9, 2022, SuiteSparse 5.11.0
+
+    * GraphBLAS v6.2.4:  see GraphBLAS/Doc/ChangeLog for changes.
+        Primary ones highlighted here:
+        * v2.0 API: v6.x complies with the v2.0 C API of the GraphBLAS Spec.
+            Note that GrB_wait, GrB_Info are now different than in the v1.3
+            C API Specification (and in v5.x of SuiteSparse:GraphBLAS).
+        * GxB_Iterator: to iterate over rows/cols/entries of a matrix or vector
+        * GxB_eWiseUnion: like eWiseAdd but with the op always applied
+        * GxB_Matrix/Vector_sort: to sort the vectors of a matrix
+        * better performance: for sparse-times-dense and dense-times-sparse,
+            in particular; also other cases for GrB_mxm, up to 10x faster.
+        * Apple Silicon: port @GrB to Octave 7 (thanks to Gabor Szarnyas)
+        * added cpu_features: by Google
+        * added LZ4/LZ4HC: compression library, http://www.lz4.org (BSD 2),
+            v1.9.3, Copyright (c) 2011-2016, Yann Collet, All Rights Reserved.
+        * iso-valued matrices and vectors: to exploit the common case of
+            an unweighted graph
+        * bug fixes: 4 bugs fixed since SuiteSparse 5.10.1 with 
+            GraphBLAS v5.0.5.  12 other bugs appeared in the interim but
+            appeared in versions after v5.0.5 but fixed before ever
+            affecting SuiteSparse itself.
+
 May 17, 2021, SuiteSparse 5.10.1
 
     * CUDA: remove sm_30 from SuiteSparse_config.mk

@@ -2,7 +2,7 @@
 // GB_mex_assign: C<Mask>(I,J) = accum (C (I,J), A)
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 // This function is a wrapper for GrB_Matrix_assign, GrB_Matrix_assign_T
@@ -13,7 +13,7 @@
 // the Mask is a single row or column in these cases, and C is not modified
 // outside that single row (for GrB_Row_assign) or column (for GrB_Col_assign).
 
-// This function does the same thing as the MATLAB mimic GB_spec_assign.m.
+// This function does the same thing as the mimic GB_spec_assign.m.
 
 //------------------------------------------------------------------------------
 
@@ -83,10 +83,9 @@ GrB_Info assign ( )
     ASSERT_BINARYOP_OK_OR_NULL (accum, "accum", GB0) ;
     ASSERT_DESCRIPTOR_OK_OR_NULL (desc, "desc", GB0) ;
 
-    if (GB_NROWS (A) == 1 && GB_NCOLS (A) == 1 && GB_NNZ (A) == 1)
+    if (GB_NROWS (A) == 1 && GB_NCOLS (A) == 1 && GB_nnz (A) == 1)
     {
-        // scalar expansion to matrix or vector
-        GB_void *Ax = A->x ;
+        GB_void *Ax = A->x ; // OK: A is a scalar with exactly one entry
 
         if (ni == 1 && nj == 1 && Mask == NULL && I != GrB_ALL && J != GrB_ALL
             && GB_op_is_second (accum, C->type) && A->type->code < GB_FC64_code
@@ -124,8 +123,7 @@ GrB_Info assign ( )
             ASSERT_MATRIX_OK (C, "C after setElement", GB0) ;
 
         }
-
-        if (C->vdim == 1)
+        else if (C->vdim == 1)
         {
 
             // test GrB_Vector_assign_scalar functions
@@ -219,7 +217,7 @@ GrB_Info assign ( )
     }
 
     ASSERT_MATRIX_OK (C, "Final C before wait", GB0) ;
-    OK (GrB_Matrix_wait_(&C)) ;
+    OK (GrB_Matrix_wait (C, GrB_MATERIALIZE)) ;
     return (info) ;
 }
 
@@ -343,7 +341,7 @@ GrB_Info many_assign
     }
 
     ASSERT_MATRIX_OK (C, "Final C before wait", GB0) ;
-    OK (GrB_Matrix_wait_(&C)) ;
+    OK (GrB_Matrix_wait_(C, GrB_MATERIALIZE)) ;
     return (info) ;
 }
 
@@ -486,7 +484,7 @@ void mexFunction
     }
 
     //--------------------------------------------------------------------------
-    // return C to MATLAB as a struct
+    // return C as a struct
     //--------------------------------------------------------------------------
 
     pargout [0] = GB_mx_Matrix_to_mxArray (&C, "C assign result", true) ;

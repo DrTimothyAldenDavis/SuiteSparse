@@ -1,5 +1,5 @@
 function C = GB_spec_Col_assign (C, Mask, accum, A, I, j, descriptor)
-%GB_SPEC_COL_ASSIGN a MATLAB mimic of GrB_Col_assign
+%GB_SPEC_COL_ASSIGN a mimic of GrB_Col_assign
 %
 % Usage:
 % C = GB_spec_Col_assign (C, Mask, accum, A, I, j, descriptor)
@@ -8,7 +8,7 @@ function C = GB_spec_Col_assign (C, Mask, accum, A, I, j, descriptor)
 %
 % This function does the same thing as GrB_Col_assign
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 %-------------------------------------------------------------------------------

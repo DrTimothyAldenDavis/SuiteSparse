@@ -6,7 +6,7 @@ function grbcover (what)
 %
 % See also: grbcover_edit, grbmake
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 if (ispc)
@@ -34,31 +34,25 @@ for k = nmex:-1:1
 end
 
 % list of C files to compile
-cfiles = [ dir('../Test/GB_mx_*.c') ; ...
-           dir('../Demo/Source/usercomplex.c') ; ...
-           dir('../Demo/Source/simple_*.c') ; ...
-           dir('../Demo/Source/random_matrix.c') ; ...
-           dir('../Demo/Source/wathen.c') ; ...
-           dir('../Demo/Source/mis_*.c') ; ...
-           dir('../Demo/Source/prand.c') ; ...
-           dir('../Demo/Source/*pagerank*.c') ; ...
-           dir('../Demo/Source/*rowscale.c') ; ...
-           dir('../Demo/Source/isequal.c') ; ...
-           dir('GB_cover_util.c') ; ] ;
+cfiles = [ dir('../Test/GB_mx_*.c') ; dir('GB_cover_util.c') ; ] ;
 
 % list of *.h and template file dependencies
-hfiles = [ dir('../Test/*.h') ; ...
-           dir('../Test/Template/*.c') ] ;
+hfiles = [ dir('../Test/*.h') ; dir('../Test/Template/*.c') ] ;
 
 % list of include directories
-inc = '-Itmp_include -I../Test -I../Test/Template' ;
+inc = '-Itmp_include -I../Test -I../Test/Template -I../lz4 -I../rmm_wrap' ;
 
-need_rename = ~verLessThan ('matlab', '9.10') ;
+have_octave = (exist ('OCTAVE_VERSION', 'builtin') == 5) ;
+if (have_octave)
+    need_rename = false ;
+else
+    need_rename = ~verLessThan ('matlab', '9.10') ;
+end
 
 addpath ../Test
 addpath ../Test/spok
 
-flags = '-g -DGBCOVER -R2018a' ;
+flags = '-g -DGBCOVER -R2018a -DGBNCPUFEAT' ;
 if (need_rename)
     flags = [flags ' -DGBRENAME=1 '] ;
 end
@@ -150,8 +144,9 @@ for k = 1:length (cfiles)
 end
 
 if (ismac)
-    objlist = [objlist ' libgraphblas_tcov.dylib'] ;
+    objlist = [objlist ' libgraphblas_tcov.dylib '] ;
 end
+objlist = [objlist ' ../cpu_features/build/libcpu_features.a'] ;
 
 % compile the mexFunctions
 for k = 1:length (mexfunctions)

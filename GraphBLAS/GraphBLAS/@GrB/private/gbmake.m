@@ -1,12 +1,12 @@
 function gbmake (what)
-%GBMAKE compile MATLAB interface for SuiteSparse:GraphBLAS
+%GBMAKE compile @GrB interface for SuiteSparse:GraphBLAS
 %
 % Usage:
 %   gbmake
 %
-% gbmake compiles the MATLAB interface for SuiteSparse:GraphBLAS.  The
-% GraphBLAS library must already be compiled and installed.  MATLAB 9.4
-% (R2018a) or later is required.
+% gbmake compiles the @GrB interface for SuiteSparse:GraphBLAS.  The
+% GraphBLAS library must already be compiled and installed.
+% Octave 7 (recommended) or MATLAB 9.4 (R2018a) or later is required.
 %
 % For the Mac, the GraphBLAS library must be installed in /usr/local/lib/ as
 % libgraphblas.dylib.  It cannot be used where it is created in ../build,
@@ -16,7 +16,7 @@ function gbmake (what)
 %
 % See also mex, version, GrB.clear.
 %
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: GPL-3.0-or-later
 
 fprintf ('Note that this @GrB interface is under the GNU GPLv3 (or later).\n') ;
@@ -27,7 +27,7 @@ need_rename = false ;
 
 if (have_octave)
     if verLessThan ('octave', '7')
-        gb_error ('Octave 7 or later is required') ;
+        error ('Octave 7 or later is required') ;
     end
 else
     if verLessThan ('matlab', '9.4')
@@ -38,29 +38,20 @@ else
     need_rename = ~verLessThan ('matlab', '9.10') ;
 end
 
-% finish GraphBLAS
-try
-    GrB.finalize
-catch
-end
-
 if (nargin < 1)
     what = '' ;
 end
 
 make_all = (isequal (what, 'all')) ;
 
+flags = '-O -R2018a -DGBNCPUFEAT' ;
+
+% use -R2018a for the new interleaved complex API
 if (have_octave)
-    %% Octave does not have the new MEX classdef object and as of
-    %% version 7, the mex command doesn't handle compiler options
-    %% the same way as MATLAB's mex command.
-
-    % use -R2018a for the new interleaved complex API
-    flags = '-O -R2018a -std=c11 -fopenmp -fPIC -Wno-pragmas' ;
+    % Octave does not have the new MEX classdef object and as of version 7, the
+    % mex command doesn't handle compiler options the same way.
+    flags = [flags ' -std=c11 -fopenmp -fPIC -Wno-pragmas' ] ;
 else
-    % use -R2018a for the new interleaved complex API
-    flags = '-O -R2018a' ;
-
     try
         if (strncmp (computer, 'GLNX', 4))
             % remove -ansi from CFLAGS and replace it with -std=c11
@@ -97,7 +88,7 @@ else
     object_suffix = '.o' ;
 end
 
-inc = '-Iutil -I../../../Include -I../../../Source -I../../../Source/Template' ;
+inc = '-Iutil -I../../../Include -I../../../Source -I../../../Source/Template -I../../../rmm_wrap' ;
 
 if ispc
     % First do the following in GraphBLAS/build, in the Windows console:
@@ -106,8 +97,8 @@ if ispc
     %   devenv graphblas.sln /build "release|x64" /project graphblas
     %
     % The above commands require MS Visual Studio.  The graphblas.lib is
-    % compiled and placed in GraphBLAS/build/Release.  Then in MATLAB in this
-    % folder, do:
+    % compiled and placed in GraphBLAS/build/Release.  Then in the
+    % Command Window do:
     %
     %   gbmake
     if (need_rename)
@@ -124,7 +115,8 @@ else
     %   sudo make install
     %
     % If you can't do "sudo make install" then add the GraphBLAS/build
-    % folder to your LD_LIBRARY_PATH.  Then in this folder in MATLAB do:
+    % folder to your LD_LIBRARY_PATH.  Then in this folder in the
+    % Command Window do:
     %
     %   gbmake
     if (need_rename)
@@ -135,7 +127,7 @@ else
 end
 
 if (need_rename)
-    fprintf ('This version of MATLAB includes an earlier version of\n') ;
+    fprintf ('R2021a and later include an earlier version of\n') ;
     fprintf ('GraphBLAS, as a built-in library.  This interface to the\n') ;
     fprintf ('latest version of GraphBLAS links against a library with\n') ;
     fprintf ('with renamed symbols, to avoid a library conflict.\n') ;
@@ -227,18 +219,15 @@ end
 
 fprintf ('\n') ;
 
-% start GraphBLAS
-try
-    GrB.init
-catch
-end
-
-fprintf ('Compilation of the MATLAB interface to GraphBLAS is complete.\n') ;
+fprintf ('Compilation of the @GrB interface to GraphBLAS is complete.\n') ;
 fprintf ('Add the following commands to your startup.m file:\n\n') ;
 here1 = cd ('../..') ;
 addpath (pwd) ;
 fprintf ('  addpath (''%s'') ;\n', pwd) ;
 cd ('..') ;
+if (need_rename)
+    cd ('GraphBLAS') ;
+end
 if ispc
     lib_path = sprintf ('%s/build/Release', pwd) ;
 else

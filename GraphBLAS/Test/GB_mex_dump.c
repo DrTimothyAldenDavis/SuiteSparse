@@ -2,7 +2,7 @@
 // GB_mex_dump: copy and print a matrix
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -54,7 +54,7 @@ void mexFunction
         mexErrMsgTxt ("matrix fail") ;
     }
 
-    // return A to MATLAB as a struct and free the GraphBLAS A
+    // return A as a struct and free the GraphBLAS A
     pargout [0] = GB_mx_Matrix_to_mxArray (&A, "C output", true) ;
 
     FREE_ALL ;

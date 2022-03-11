@@ -2,7 +2,7 @@
 // GB_subassign_10_and_18: C(I,J)<M or !M,repl> = A ; using S
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -57,6 +57,7 @@ GrB_Info GB_subassign_10_and_18
     //--------------------------------------------------------------------------
 
     GB_EMPTY_TASKLIST ;
+    GB_CLEAR_STATIC_HEADER (S, &S_header) ;
     GB_OK (GB_subassign_symbolic (S, C, I, ni, J, nj, true, Context)) ;
 
     //--------------------------------------------------------------------------
@@ -86,12 +87,12 @@ GrB_Info GB_subassign_10_and_18
     //--------------------------------------------------------------------------
 
     if (A_is_bitmap)
-    {
+    { 
         // all of IxJ must be examined
         GB_SUBASSIGN_IXJ_SLICE ;
     }
     else
-    {
+    { 
         // traverse all A+S
         GB_SUBASSIGN_TWO_SLICE (A, S) ;
     }
@@ -409,7 +410,7 @@ GrB_Info GB_subassign_10_and_18
                             // ----[. A 1]--------------------------------------
                             // [. A 1]: action: ( insert )
                             int64_t iC = GB_ijlist (I, iA, Ikind, Icolon) ;
-                            GB_PENDING_INSERT (Ax +(pA*asize)) ;
+                            GB_PENDING_INSERT_aij ;
                         }
                     }
                     else if (Sfound)
@@ -492,7 +493,7 @@ GrB_Info GB_subassign_10_and_18
                             // ----[. A 1]--------------------------------------
                             // [. A 1]: action: ( insert )
                             int64_t iC = GB_ijlist (I, iA, Ikind, Icolon) ;
-                            GB_PENDING_INSERT (Ax +(pA*asize)) ;
+                            GB_PENDING_INSERT_aij ;
                         }
                         GB_NEXT (A) ;
                     }
@@ -516,7 +517,7 @@ GrB_Info GB_subassign_10_and_18
                         // ----[. A 1]------------------------------------------
                         // [. A 1]: action: ( insert )
                         int64_t iC = GB_ijlist (I, iA, Ikind, Icolon) ;
-                        GB_PENDING_INSERT (Ax +(pA*asize)) ;
+                        GB_PENDING_INSERT_aij ;
                     }
                     GB_NEXT (A) ;
                 }

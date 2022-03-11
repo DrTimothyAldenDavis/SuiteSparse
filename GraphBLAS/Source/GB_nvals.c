@@ -2,7 +2,7 @@
 // GB_nvals: number of entries in a matrix
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -41,7 +41,7 @@ GrB_Info GB_nvals           // get the number of entries in a matrix
     ASSERT (GB_JUMBLED_OK (A)) ;
     ASSERT (!GB_PENDING (A)) ;
 
-    (*nvals) = GB_NNZ (A) - (A->nzombies) ;
+    (*nvals) = GB_nnz (A) - (A->nzombies) ;
     return (GrB_SUCCESS) ;
 }
 

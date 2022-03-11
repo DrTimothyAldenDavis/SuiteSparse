@@ -2,7 +2,7 @@
 // GB_qsort_1b: sort a 2-by-n list, using A [0][ ] as the sort key
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -48,12 +48,12 @@
 
 #include "GB_qsort_template.c"
 
-GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
+GB_PUBLIC
 void GB_qsort_1b    // sort array A of size 2-by-n, using 1 key (A [0][])
 (
     int64_t *restrict A_0,       // size n array
     GB_void *restrict A_1,       // size n array
-    const size_t xsize,             // size of entries in A_1
+    const size_t xsize,          // size of entries in A_1
     const int64_t n
 )
 { 
@@ -82,8 +82,8 @@ void GB_qsort_1b    // sort array A of size 2-by-n, using 1 key (A [0][])
 // argument list for defining a function
 #undef  GB_args
 #define GB_args(A)                      \
-    int64_t *restrict A ## _0,       \
-    A1_type *restrict A ## _1        \
+    int64_t *restrict A ## _0,          \
+    A1_type *restrict A ## _1           \
 
 // swap A [a] and A [b]
 #undef  GB_swap
@@ -213,7 +213,6 @@ void GB_qsort_1b_size16 // GB_qsort_1b with A_1 with sizeof = 16
     const int64_t n
 )
 { 
-    ASSERT (sizeof (GB_blob16) == 16) ;
     uint64_t seed = n ;
     GB_quicksort (GB_arg (A), n, &seed) ;
 }

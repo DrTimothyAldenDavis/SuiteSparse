@@ -1,7 +1,7 @@
 function test186
 %TEST186 test saxpy for all sparsity formats
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 fprintf ('test186 --------------- C<!M>A*B for all sparsity formats\n') ;
@@ -19,7 +19,7 @@ semiring.multiply = 'times' ;
 semiring.class = 'double' ;
 
 any_pair.add = 'any' ;
-any_pair.multiply = 'pair' ;
+any_pair.multiply = 'pair' ;    % same as oneb
 any_pair.class = 'double' ;
 
 C0 = sparse (m, 1) ;

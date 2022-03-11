@@ -2,7 +2,7 @@
 // GB_mex_vxm: w'<mask> = accum(w',u'A)
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -116,7 +116,7 @@ void mexFunction
     // w'<mask> = accum(w',u'*A)
     METHOD (GrB_vxm (w, mask, accum, semiring, u, A, desc)) ;
 
-    // return w to MATLAB as a struct and free the GraphBLAS w
+    // return w as a struct and free the GraphBLAS w
     pargout [0] = GB_mx_Vector_to_mxArray (&w, "w output", true) ;
 
     FREE_ALL ;

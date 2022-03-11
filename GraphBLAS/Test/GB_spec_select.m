@@ -1,10 +1,10 @@
 function C = GB_spec_select (C, Mask, accum, opname, A, thunk, descriptor)
-%GB_SPEC_SELECT a MATLAB mimic of GxB_select
+%GB_SPEC_SELECT a mimic of GxB_select
 %
 % Usage:
 % C = GB_spec_select (C, Mask, accum, opname, A, thunk, descriptor)
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 %-------------------------------------------------------------------------------
@@ -22,7 +22,7 @@ A = GB_spec_matrix (A) ;
 Mask = GB_spec_getmask (Mask, Mask_struct) ;
 
 %-------------------------------------------------------------------------------
-% do the work via a clean MATLAB interpretation of the entire GraphBLAS spec
+% do the work via a clean *.m interpretation of the entire GraphBLAS spec
 %-------------------------------------------------------------------------------
 
 % select the descriptor to A
@@ -34,9 +34,9 @@ end
 atype = A.class ;
 T.matrix = GB_spec_zeros (size (A.matrix), atype) ;
 thunk = full (thunk) ;
-xthunk = GB_mex_cast (thunk, atype) ;
+athunk = GB_mex_cast (thunk, atype) ;
 
-is_complex = contains (atype, 'complex') ;
+is_complex = test_contains (atype, 'complex') ;
 if (is_complex)
     switch (opname)
         case { 'gt_zero', 'ge_zero', 'lt_zero', 'le_zero', ...
@@ -69,17 +69,17 @@ switch (opname)
     case 'le_zero'
         p = A.pattern & (A.matrix <= 0) ;
     case 'ne_thunk'
-        p = A.pattern & (A.matrix ~= xthunk) ;
+        p = A.pattern & (A.matrix ~= athunk) ;
     case 'eq_thunk'
-        p = A.pattern & (A.matrix == xthunk) ;
+        p = A.pattern & (A.matrix == athunk) ;
     case 'gt_thunk'
-        p = A.pattern & (A.matrix > xthunk) ;
+        p = A.pattern & (A.matrix > athunk) ;
     case 'ge_thunk'
-        p = A.pattern & (A.matrix >= xthunk) ;
+        p = A.pattern & (A.matrix >= athunk) ;
     case 'lt_thunk'
-        p = A.pattern & (A.matrix < xthunk) ;
+        p = A.pattern & (A.matrix < athunk) ;
     case 'le_thunk'
-        p = A.pattern & (A.matrix <= xthunk) ;
+        p = A.pattern & (A.matrix <= athunk) ;
     case 'isnan'
         p = A.pattern & isnan (A.matrix) ;
     otherwise

@@ -2,7 +2,7 @@
 // gbunopinfo : print a GraphBLAS unary op (for illustration only)
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 //------------------------------------------------------------------------------
@@ -12,7 +12,7 @@
 // gbunopinfo (unop)
 // gbunopinfo (unop, type)
 
-#include "gb_matlab.h"
+#include "gb_interface.h"
 
 #define USAGE "usage: GrB.unopinfo (unop) or GrB.unopinfo (unop,type)"
 

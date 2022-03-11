@@ -2,7 +2,7 @@
 // GB_semiring_template.c: built-in unary and binary functions and operators
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -27,7 +27,7 @@
 //      a single instance of this file creates 100 semirings of this
 //      form, of one type T, when T is not BOOL
 
-// 300 semirings with a comparison operator TxT -> bool, where T is
+// 300 semirings with a comparator TxT -> bool, where T is
 // non-Boolean, from the complete cross product of:
 
 //      5 Boolean monoids: LAND, LOR, LXOR, EQ, ANY
@@ -310,7 +310,7 @@
     // These are defined when T is one of the 10 non-Boolean types, not when T
     // is BOOL
 
-    // 6 semrings with LOR monoid; the 2nd argument is the comparison operator
+    // 6 semrings with LOR monoid; the 2nd argument is the comparator
     GXB_SEMIRING_COMPARE ( LOR  , EQ )
     GXB_SEMIRING_COMPARE ( LOR  , NE )
     GXB_SEMIRING_COMPARE ( LOR  , GT )
@@ -318,7 +318,7 @@
     GXB_SEMIRING_COMPARE ( LOR  , GE )
     GXB_SEMIRING_COMPARE ( LOR  , LE )
 
-    // 6 semrings with LAND monoid; the 2nd argument is the comparison operator
+    // 6 semrings with LAND monoid; the 2nd argument is the comparator
     GXB_SEMIRING_COMPARE ( LAND , EQ )
     GXB_SEMIRING_COMPARE ( LAND , NE )
     GXB_SEMIRING_COMPARE ( LAND , GT )
@@ -326,7 +326,7 @@
     GXB_SEMIRING_COMPARE ( LAND , GE )
     GXB_SEMIRING_COMPARE ( LAND , LE )
 
-    // 6 semrings with LXOR monoid; the 2nd argument is the comparison operator
+    // 6 semrings with LXOR monoid; the 2nd argument is the comparator
     GXB_SEMIRING_COMPARE ( LXOR , EQ )
     GXB_SEMIRING_COMPARE ( LXOR , NE )
     GXB_SEMIRING_COMPARE ( LXOR , GT )
@@ -334,7 +334,7 @@
     GXB_SEMIRING_COMPARE ( LXOR , GE )
     GXB_SEMIRING_COMPARE ( LXOR , LE )
 
-    // 6 semrings with EQ monoid; the 2nd argument is the comparison operator
+    // 6 semrings with EQ monoid; the 2nd argument is the comparator
     GXB_SEMIRING_COMPARE ( EQ   , EQ )
     GXB_SEMIRING_COMPARE ( EQ   , NE )
     GXB_SEMIRING_COMPARE ( EQ   , GT )
@@ -342,7 +342,7 @@
     GXB_SEMIRING_COMPARE ( EQ   , GE )
     GXB_SEMIRING_COMPARE ( EQ   , LE )
 
-    // 6 semrings with ANY monoid; the 2nd argument is the comparison operator
+    // 6 semrings with ANY monoid; the 2nd argument is the comparator
     GXB_SEMIRING_COMPARE ( ANY  , EQ )
     GXB_SEMIRING_COMPARE ( ANY  , NE )
     GXB_SEMIRING_COMPARE ( ANY  , GT )

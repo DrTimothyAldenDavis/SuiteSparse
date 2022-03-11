@@ -12,14 +12,6 @@ function spqr_make (opt1)
 % in the MATLAB command window.  If METIS is not present in ../../metis-5.1.0,
 % then it is not used.
 %
-% To compile using Intel's Threading Building Blocks (TBB) use:
-%
-%   spqr_make ('tbb')
-%
-% TBB parallelism is not the default, since it conflicts with the multithreaded
-% BLAS (the Intel MKL are OpenMP based, for example).  This may change in
-% future versions.
-%
 % You must type the spqr_make command while in the SuiteSparseQR/MATLAB
 % directory.
 %
@@ -57,13 +49,6 @@ include = '-DNMATRIXOPS -DNMODIFY -I. -I../../AMD/Include -I../../COLAMD/Include
 % Determine if METIS is available
 metis_path = '../../metis-5.1.0' ;
 have_metis = exist (metis_path, 'dir') ;
-
-% Determine if TBB is to be used
-if (nargin < 1)
-    tbb = 0 ;
-elseif (nargin < 2)
-    tbb = strcmp (opt1, 'tbb') ;
-end
 
 % fix the METIS 4.0.1 rename.h file
 if (have_metis)
@@ -119,58 +104,6 @@ end
 
 % GPU not yet supported for the spqr MATLAB mexFunction
 % flags = [flags ' -DGPU_BLAS'] ;
-
-%-------------------------------------------------------------------------------
-% TBB option
-%-------------------------------------------------------------------------------
-
-% You should install TBB properly so that mex can find the library files and
-% include files, but you can also modify the tbb_lib_path and tbb_include_path
-% strings below to if you need to specify the path to your own installation of
-% TBB.
-
-% vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-% >>>>>>>>>>>>>>>>>>>>> EDIT THE tbb_path BELOW AS NEEDED <<<<<<<<<<<<<<<<<<<<<<
-if (pc)
-    % For Windows, with TBB installed in C:\TBB.  Edit this line as needed:
-    tbb_path = 'C:\TBB\tbb21_009oss' ;
-else
-    % For Linux, edit this line as needed (not needed if already in /usr/lib):
-    tbb_path = '' ;
-end
-% ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-% You should not have to edit the lines below.
-if (pc)
-    if (is64)
-        tbb_lib_path = [tbb_path '\ia32\vc9\lib\'] ;
-    else
-        tbb_lib_path = [tbb_path '\em64t\vc9\lib\'] ;
-    end
-    tbb_include_path = [tbb_path '\include\'] ;
-else
-    % For Linux, with TBB might be already installed in /usr/lib
-    if (exist ('/usr/lib/libtbb.so', 'file'))
-        % do not edit these lines
-        tbb_path = '' ;
-        tbb_lib_path = '' ;
-        tbb_include_path = '' ;
-    else
-        if (is64)
-            tbb_lib_path = '/em64t/cc4.1.0_libc2.4_kernel2.6.16.21/lib' ;
-        else
-            tbb_lib_path = '/ia32/cc4.1.0_libc2.4_kernel2.6.16.21/lib' ;
-        end
-        tbb_lib_path = [tbb_path tbb_lib_path] ;
-        tbb_include_path = [tbb_path '/include/'] ;
-    end
-end
-
-if (tbb)
-    fprintf ('Compiling with Intel TBB parallelism\n') ;
-    lib = [lib ' -L' tbb_lib_path ' -ltbb'] ;
-    include = [include ' -I' tbb_include_path ' -DHAVE_TBB' ] ;
-end
 
 if (~(pc || mac))
     % for POSIX timing routine

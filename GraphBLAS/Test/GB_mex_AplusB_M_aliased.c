@@ -2,13 +2,13 @@
 // GB_mex_AplusB_M_aliased: compute C<B>=A+B
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
-// This is for testing only.  See GrB_eWiseAdd instead.  Returns a plain MATLAB
-// matrix, in double.
+// This is for testing only.  See GrB_eWiseAdd instead.  Returns a plain
+// built-in matrix, in double.
 
 #include "GB_mex.h"
 
@@ -70,10 +70,10 @@ void mexFunction
 
     // C<B> = A+B using the op.  M == B alias
     bool ignore ;
-    METHOD (GB_add (C, A->type, true, B, false, false, &ignore, A, B, op,
-        Context)) ;
+    METHOD (GB_add (C, A->type, true, B, false, false, &ignore, A, B,
+        false, NULL, NULL, op, Context)) ;
 
-    // return C to MATLAB as a plain sparse matrix
+    // return C as a plain sparse matrix
     pargout [0] = GB_mx_Matrix_to_mxArray (&C, "C<B>=A+B result", false) ;
 
     FREE_ALL ;

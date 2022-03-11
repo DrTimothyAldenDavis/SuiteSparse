@@ -4,12 +4,12 @@ function [V, varargout] = eig (G, varargin)
 %
 % See also eigs.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: GPL-3.0-or-later
 
 % NOTE: this is a high-level algorithm that uses GrB objects.
 
-% convert G to a MATLAB matrix
+% convert G to a built-in matrix
 if (isreal (G) && issymmetric (G))
     % G can be sparse if G is real and symmetric
     G = double (G) ;

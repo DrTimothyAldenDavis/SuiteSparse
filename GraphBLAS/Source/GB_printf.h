@@ -2,7 +2,7 @@
 // GB_printf.h: definitions for printing from GraphBLAS
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -20,9 +20,8 @@
 #define GBu "%" PRIu64
 #define GBd "%" PRId64
 
-// print to the standard output, and flush the result.  This function can
-// print to the MATLAB command window.  No error check is done.  This function
-// is used for the BURBLE, and for debugging output. 
+// print to the standard output, and flush the result.  No error check is done.
+// This function is used for the BURBLE, and for debugging output. 
 #define GBDUMP(...)                                                     \
 {                                                                       \
     GB_printf_function_t printf_func = GB_Global_printf_get ( ) ;       \
@@ -78,8 +77,6 @@
     }                                                                       \
     if (printf_result < 0)                                                  \
     {                                                                       \
-        int err = errno ;                                                   \
-        (void)err ; /* to avoid unused variable warning */                  \
         return (GrB_INVALID_VALUE) ;                                        \
     }                                                                       \
 }
@@ -94,7 +91,7 @@
 }
 
 // check object->magic and print an error if invalid
-#define GB_CHECK_MAGIC(object,kind)                                     \
+#define GB_CHECK_MAGIC(object)                                          \
 {                                                                       \
     switch (object->magic)                                              \
     {                                                                   \
@@ -123,11 +120,9 @@
 // burble
 //------------------------------------------------------------------------------
 
-// GB_BURBLE provides diagnostic output.
+// GBBURBLE and the GB_BURBLE_* methods provide diagnostic output.
 // Use GxB_set (GxB_BURBLE, true) to turn it on
 // and GxB_set (GxB_BURBLE, false) to turn it off.
-
-#if GB_BURBLE
 
 void GB_burble_assign
 (
@@ -212,16 +207,5 @@ void GB_burble_assign
     if (!(A->vlen <= 1 && A->vdim <= 1)) GBURBLE (__VA_ARGS__)      \
 }
 
-#else
-
-// no burble
-#define GBURBLE(...)
-#define GB_BURBLE_START(func)
-#define GB_BURBLE_END
-#define GB_BURBLE_N(n,...)
-#define GB_BURBLE_MATRIX(A,...)
-#define GB_BURBLE_DENSE(A,format)
-
-#endif
 #endif
 

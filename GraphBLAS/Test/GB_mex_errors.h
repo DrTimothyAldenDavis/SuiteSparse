@@ -2,20 +2,19 @@
 // GB_mex_errors.h: error handling macros
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
 #define FAIL(s)                                                             \
 {                                                                           \
-    fprintf (f,"\nTest failure: %s line %d\n", __FILE__, __LINE__) ;        \
-    fprintf (f, "%s\n", GB_STR(s)) ;                                        \
-    fclose (f) ;                                                            \
+    mexPrintf ("\nTest failure: %s line %d\n", __FILE__, __LINE__) ;        \
+    mexPrintf ( "%s\n", GB_STR(s)) ;                                        \
     mexErrMsgTxt (GB_STR(s) " line: " GB_XSTR(__LINE__)) ;                  \
 }
 
-#undef CHECK
+#undef  CHECK
 #define CHECK(x)    if (!(x)) FAIL(x) ;
 #define CHECK2(x,s) if (!(x)) FAIL(s) ;
 
@@ -23,24 +22,25 @@
 #define ERR(method)                                                         \
 {                                                                           \
     info = method ;                                                         \
-    fprintf (f, "line %d: info %d\n", __LINE__, info) ;                     \
-    if (info != expected) fprintf (f, "got %d expected %d\n",               \
-        info, expected) ;                                                   \
+    if (info != expected)                                                   \
+    {                                                                       \
+        mexPrintf ("got %d expected %d\n", info, expected) ;                \
+    }                                                                       \
     CHECK2 (info == expected, method) ;                                     \
 }
 
 // assert that a method should return a particular error code: with logger,
-// for a GrB_Matrix, GrB_Vector, or GxB_Scalar
+// for a GrB_Matrix, GrB_Vector, or GrB_Scalar
 #define ERR1(C,method)                                                      \
 {                                                                           \
     info = method ;                                                         \
-    fprintf (f, "\nline %d: info %d, error logger:\n", __LINE__, info) ;    \
-    char *error_logger ;                                                    \
-    GrB_Matrix_error_(&error_logger, ((GrB_Matrix) C)) ;                    \
-    fprintf (f, "logger is %p\n", error_logger) ;                           \
-    if (error_logger != NULL) fprintf (f,"[%s]\n", error_logger) ;          \
-    if (info != expected) fprintf (f, "got %d expected %d\n",               \
-        info, expected) ;                                                   \
+    if (info != expected)                                                   \
+    {                                                                       \
+        const char *error_logger = NULL ;                                   \
+        GrB_Matrix_error_(&error_logger, ((GrB_Matrix) C)) ;                \
+        if (error_logger != NULL) mexPrintf ("[%s]\n", error_logger) ;      \
+        mexPrintf ("got %d expected %d\n", info, expected) ;                \
+    }                                                                       \
     CHECK2 (info == expected, method) ;                                     \
 }
 
@@ -49,12 +49,13 @@
 #define ERRD(descriptor,method)                                             \
 {                                                                           \
     info = method ;                                                         \
-    fprintf (f, "\nline %d: info %d, error logger:\n", __LINE__, info) ;    \
-    char *error_logger ;                                                    \
-    GrB_Descriptor_error_(&error_logger, descriptor) ;                      \
-    if (error_logger != NULL) fprintf (f,"[%s]\n", error_logger) ;          \
-    if (info != expected) fprintf (f, "got %d expected %d\n",               \
-        info, expected) ;                                                   \
+    if (info != expected)                                                   \
+    {                                                                       \
+        const char *error_logger = NULL ;                                   \
+        GrB_Descriptor_error_(&error_logger, descriptor) ;                  \
+        if (error_logger != NULL) mexPrintf ("[%s]\n", error_logger) ;      \
+        mexPrintf ("got %d expected %d\n", info, expected) ;                \
+    }                                                                       \
     CHECK2 (info == expected, method) ;                                     \
 }
 
@@ -62,9 +63,8 @@
 #define OK(method)                                                          \
 {                                                                           \
     info = method ;                                                         \
-    if (! (info == GrB_SUCCESS || info == GrB_NO_VALUE))                    \
+    if (info < 0)                                                           \
     {                                                                       \
-        fprintf (f,"[%d] >>>>>>>>\n", info) ;                               \
         mexPrintf ("[%d] Test failed\n", info) ;                            \
         FAIL (method) ;                                                     \
     }                                                                       \

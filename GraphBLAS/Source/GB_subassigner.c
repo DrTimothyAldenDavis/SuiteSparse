@@ -2,7 +2,7 @@
 // GB_subassigner: C(I,J)<#M> = accum (C(I,J), A)
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -51,6 +51,9 @@
 // bringing a zombie back to life, but no entry in C->i moves in position, and
 // the underlying indices in C->i do not change otherwise.  C->b can be
 // modified for a C bitmap.
+
+// C->x and C->iso have already been computed if C is iso on output, by
+// GB_assign_prep, so if C->iso is true, there is no numeric work to do.
 
 #include "GB_subassign.h"
 #include "GB_subassign_methods.h"
@@ -206,7 +209,6 @@ GrB_Info GB_subassigner             // C(I,J)<#M> = A or accum (C (I,J), A)
         //  M   c   r   +   A   ?       20x: C(:,:)<!M,repl> += A
 
         //----------------------------------------------------------------------
-        // FUTURE::: C<C,s> = x    C == M, replace all values, C_replace ignored
         // FUTURE::: C<C,s> += x   C == M, update all values, C_replace ignored
         // FUTURE::: C<C,s> = A    C == M, A dense, C_replace ignored
         //----------------------------------------------------------------------
@@ -250,7 +252,8 @@ GrB_Info GB_subassigner             // C(I,J)<#M> = A or accum (C (I,J), A)
 
             // Method 21: C = x where x is a scalar; C becomes full
             GBURBLE ("Method 21: (C full) = scalar ") ;
-            GB_OK (GB_dense_subassign_21 (C, scalar, atype, Context)) ;
+            ASSERT (C->iso) ;
+            GB_convert_any_to_full (C) ;
         }
         break ;
 
@@ -316,7 +319,7 @@ GrB_Info GB_subassigner             // C(I,J)<#M> = A or accum (C (I,J), A)
         {
             // Method 05f: C(:,:)<C,s> = scalar ; no S; C == M, M structural
             GBURBLE ("Method 05f: C<C,struct> = scalar ") ;
-            GB_OK (GB_subassign_05f (C, scalar, atype, Context)) ;
+            // no more work to do; all work has been done by GB_assign_prep
         }
         break ;
 
@@ -407,6 +410,7 @@ GrB_Info GB_subassigner             // C(I,J)<#M> = A or accum (C (I,J), A)
         {
             // Method 25:  C<M,struct> = A, A dense, C empty
             // A is dense or full; remains unchanged
+            // C is iso if A is so
             GB_BURBLE_DENSE (A, "Method 25: (C empty)<M> = (Z %s) ") ;
             GB_OK (GB_dense_subassign_25 (C, M, A, Context)) ;
         }
@@ -656,7 +660,7 @@ GrB_Info GB_subassigner             // C(I,J)<#M> = A or accum (C (I,J), A)
     // finalize C and return result
     //--------------------------------------------------------------------------
 
-    ASSERT_MATRIX_OK (C, "C(I,J) result", GB0) ;
+    ASSERT_MATRIX_OK (C, "C subassigner result", GB0) ;
     return (GB_block (C, Context)) ;
 }
 

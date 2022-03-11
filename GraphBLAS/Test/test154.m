@@ -1,7 +1,7 @@
 function test154
 %TEST154 test GrB_apply with scalar binding
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 [binops, ~, ~, types, ~, ~] = GB_spec_opsall ;
@@ -49,9 +49,9 @@ for k2 = 1:length(ops)
             ylimits = [ ] ;
     end
 
-    if (contains (type, 'single'))
+    if (test_contains (type, 'single'))
         tol = 1e-5 ;
-    elseif (contains (type, 'double'))
+    elseif (test_contains (type, 'double'))
         tol = 1e-12 ;
     else
         tol = 0 ;
@@ -113,27 +113,24 @@ for k2 = 1:length(ops)
     Y.matrix = ymat .* spones (Amat) ; 
     Y.class = ytype ;
 
-    op_ewise = op ;
+    op_ewise_bind1st = op ;
+    op_ewise_bind2nd = op ;
     if (isequal (op.opname, 'any'))
-        op_ewise.opname = 'second' ;
+        op_ewise_bind1st.opname = 'first' ;
+        op_ewise_bind2nd.opname = 'second' ;
     end
 
     C1 = GB_mex_apply1 (C, [ ], [ ], op, 0, x, B) ;
-    C2 = GB_spec_Matrix_eWiseMult (C, [ ], [ ], op_ewise, X, B, [ ]) ;
+    C2 = GB_spec_Matrix_eWiseMult (C, [ ], [ ], op_ewise_bind1st, X, B, [ ]) ;
     GB_spec_compare (C1, C2, 0, tol) ;
     C1 = GB_mex_apply1 (C, [ ], [ ], op, 1, x, B) ;
     GB_spec_compare (C1, C2, 0, tol) ;
 
     C1 = GB_mex_apply1 (CT, [ ], [ ], op, 0, x, B, desc1) ;
-    C2 = GB_spec_Matrix_eWiseMult (CT, [ ], [ ], op_ewise, X, B, desc) ;
+    C2 = GB_spec_Matrix_eWiseMult (CT, [ ], [ ], op_ewise_bind1st, X, B, desc) ;
     GB_spec_compare (C1, C2, 0, tol) ;
     C1 = GB_mex_apply1 (CT, [ ], [ ], op, 1, x, B, desc1) ;
     GB_spec_compare (C1, C2, 0, tol) ;
-
-    op_ewise = op ;
-    if (isequal (op.opname, 'any'))
-        op_ewise.opname = 'first' ;
-    end
 
     for csc = 0:1
 
@@ -142,13 +139,13 @@ for k2 = 1:length(ops)
         CT.is_csc = csc ;
 
         C1 = GB_mex_apply2 (C, [ ], [ ], op, 0, A, y) ;
-        C2 = GB_spec_Matrix_eWiseMult (C, [ ], [ ], op_ewise, A, Y, [ ]) ;
+        C2 = GB_spec_Matrix_eWiseMult (C, [ ], [ ], op_ewise_bind2nd, A, Y, [ ]) ;
         GB_spec_compare (C1, C2, 0, tol) ;
         C1 = GB_mex_apply2 (C, [ ], [ ], op, 1, A, y) ;
         GB_spec_compare (C1, C2, 0, tol) ;
 
         C1 = GB_mex_apply2 (CT, [ ], [ ], op, 0, A, y, desc0) ;
-        C2 = GB_spec_Matrix_eWiseMult (CT, [ ], [ ], op_ewise, A, Y, desc) ;
+        C2 = GB_spec_Matrix_eWiseMult (CT, [ ], [ ], op_ewise_bind2nd, A, Y, desc) ;
         GB_spec_compare (C1, C2, 0, tol) ;
         C1 = GB_mex_apply2 (CT, [ ], [ ], op, 1, A, y, desc0) ;
         GB_spec_compare (C1, C2, 0, tol) ;
@@ -158,14 +155,14 @@ for k2 = 1:length(ops)
     Y.class = 'double' ;
 
     C1 = GB_mex_apply2 (C, [ ], [ ], op, 0, A, y) ;
-    C2 = GB_spec_Matrix_eWiseMult (C, [ ], [ ], op_ewise, A, Y, [ ]) ;
+    C2 = GB_spec_Matrix_eWiseMult (C, [ ], [ ], op_ewise_bind2nd, A, Y, [ ]) ;
     GB_spec_compare (C1, C2, 0, tol) ;
 
     C1 = GB_mex_apply2 (C, [ ], [ ], op, 1, A, y) ;
     GB_spec_compare (C1, C2, 0, tol) ;
 
     C1 = GB_mex_apply2 (CT, [ ], [ ], op, 0, A, y, desc0) ;
-    C2 = GB_spec_Matrix_eWiseMult (CT, [ ], [ ], op_ewise, A, Y, desc) ;
+    C2 = GB_spec_Matrix_eWiseMult (CT, [ ], [ ], op_ewise_bind2nd, A, Y, desc) ;
     GB_spec_compare (C1, C2, 0, tol) ;
     C1 = GB_mex_apply2 (CT, [ ], [ ], op, 1, A, y, desc0) ;
     GB_spec_compare (C1, C2, 0, tol) ;

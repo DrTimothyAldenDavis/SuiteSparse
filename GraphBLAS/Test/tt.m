@@ -1,12 +1,12 @@
 %TT test eWiseMult and A+B
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 tic ;
 C = A + B ;
 t = toc ;
-fprintf ('MATLAB C=A+B time: %g\n\n', t) ;
+fprintf ('built-in C=A+B time: %g\n\n', t) ;
 
 for k = 1:40
     nthreads_set (k) ;
@@ -19,7 +19,7 @@ end
 tic ;
 C = A .* B ;
 t = toc ;
-fprintf ('MATLAB C=A.*B time: %g\n\n', t) ;
+fprintf ('built-in C=A.*B time: %g\n\n', t) ;
 
 [m n] = size (A) ;
 Z = sparse (m,n) ;

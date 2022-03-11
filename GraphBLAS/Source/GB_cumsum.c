@@ -2,16 +2,14 @@
 // GB_cumsum: cumlative sum of an array
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
-// Compute the cumulative sum of an array count[0:n], of size n+1
-// in pseudo-MATLAB notation:
+// Compute the cumulative sum of an array count[0:n], of size n+1:
 
 //      k = sum (count [0:n-1] != 0) ;
-
 //      count = cumsum ([0 count[0:n-1]]) ;
 
 // That is, count [j] on input is overwritten with sum (count [0..j-1]).
@@ -20,7 +18,7 @@
 
 #include "GB.h"
 
-GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
+GB_PUBLIC
 void GB_cumsum                      // cumulative sum of an array
 (
     int64_t *restrict count,     // size n+1, input/output

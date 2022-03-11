@@ -10,7 +10,7 @@ function [xdomain, ydomain] = GB_spec_opdomain (op)
 %
 % See also GB_spec_op.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 % get the operator name and type
@@ -19,7 +19,7 @@ function [xdomain, ydomain] = GB_spec_opdomain (op)
 xdomain = [-inf, inf] ;
 ydomain = [-inf, inf] ;
 
-if (contains (optype, 'complex'))
+if (test_contains (optype, 'complex'))
     % complex operators z=f(x,y) are valid over all x and y
     return
 end

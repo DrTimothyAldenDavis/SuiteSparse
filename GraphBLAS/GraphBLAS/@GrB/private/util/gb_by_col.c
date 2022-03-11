@@ -2,7 +2,7 @@
 // gb_by_col: ensure a matrix is stored by column
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 //------------------------------------------------------------------------------
@@ -10,7 +10,7 @@
 // The return value A is set to either the input matrix A_input, or the A_copy
 // matrix.
 
-#include "gb_matlab.h"
+#include "gb_interface.h"
 
 GrB_Matrix gb_by_col            // return the matrix by column
 (
@@ -30,7 +30,7 @@ GrB_Matrix gb_by_col            // return the matrix by column
         // make a deep copy of A_input and change it to be stored by column
         OK (GrB_Matrix_dup (&A_copy, A_input)) ;
         OK1 (A_copy, GxB_Matrix_Option_set (A_copy, GxB_FORMAT, GxB_BY_COL)) ;
-        OK1 (A_copy, GrB_Matrix_wait (&A_copy)) ;
+        OK1 (A_copy, GrB_Matrix_wait (A_copy, GrB_MATERIALIZE)) ;
         A = A_copy ;
     }
     else

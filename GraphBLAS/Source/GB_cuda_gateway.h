@@ -29,27 +29,11 @@
 // The default value of this parameter is GB_GPU_CHUNK_DEFAULT:
 #define GB_GPU_CHUNK_DEFAULT (1024*1024)
 
-#if defined ( GB_NVCC )
-extern "C" {
-#endif
-
 //------------------------------------------------------------------------------
-// GB_cuda_device: properties of each GPU in the system
+// rmm_device: properties of each GPU in the system
 //------------------------------------------------------------------------------
 
-typedef struct
-{
-    char    name [256] ;
-    size_t  total_global_memory ;
-    int  number_of_sms ;
-    int  compute_capability_major;
-    int  compute_capability_minor;
-    bool use_memory_pool;
-    int  pool_size;             // TODO: should this be size_t?
-    int  max_pool_size;         // TODO: should this be size_t?
-    void *memory_resource;
-}
-GB_cuda_device ;
+#include "rmm_device.h"
 
 //------------------------------------------------------------------------------
 // GB_ngpus_to_use: determine # of GPUs to use for the next computation
@@ -60,8 +44,13 @@ static inline int GB_ngpus_to_use
     double work                 // total work to do
 )
 {
+
     // get the current GxB_GPU_CONTROL setting
     GrB_Desc_Value gpu_control = GB_Global_gpu_control_get ( ) ;
+
+    // HACK:
+    gpu_control = GxB_GPU_ALWAYS ;
+
     int gpu_count = GB_Global_gpu_count_get ( ) ;
     if (gpu_control == GxB_GPU_NEVER || gpu_count == 0)
     {
@@ -71,6 +60,7 @@ static inline int GB_ngpus_to_use
     else if (gpu_control == GxB_GPU_ALWAYS)
     {
         // always use all available GPU(s)
+        printf ("(using the GPU) ") ;
         return (gpu_count) ;
     }
     else
@@ -94,6 +84,7 @@ bool GB_cuda_get_device_count   // true if OK, false if failure
     int *gpu_count              // return # of GPUs in the system
 ) ;
 
+
 bool GB_cuda_warmup (int device) ;
 
 bool GB_cuda_get_device( int *device) ;
@@ -103,25 +94,22 @@ bool GB_cuda_set_device( int device) ;
 bool GB_cuda_get_device_properties
 (
     int device,
-    GB_cuda_device *prop
+    rmm_device *prop
 ) ;
 
-// There is no GB_cuda_realloc function, since CUDA does not have a
-// realloc function.
-void *GB_cuda_malloc (size_t size) ;           // standard malloc signature
-void  GB_cuda_free (void *p) ;                 // standard free signature
-void *GB_cuda_calloc (size_t n, size_t size) ; // standard calloc signature
-
-GrB_Info GB_cuda_red__plus_int64
+bool GB_reduce_to_scalar_cuda_branch 
 (
-    int64_t *result,
-    int64_t *Ax,
-    int64_t anz,
-    int64_t *restrict W,      // array of size ntasks
-    int64_t worksize,
-    int ntasks,
-    int nthreads,
-    int blocksize
+    const GrB_Monoid reduce,        // monoid to do the reduction
+    const GrB_Matrix A,             // input matrix
+    GB_Context Context
+) ;
+
+GrB_Info GB_reduce_to_scalar_cuda
+(
+    GB_void *s,
+    const GrB_Monoid reduce,
+    const GrB_Matrix A,
+    GB_Context Context
 ) ;
 
 GrB_Info GB_AxB_dot3_cuda           // C<M> = A'*B using dot product method
@@ -136,9 +124,17 @@ GrB_Info GB_AxB_dot3_cuda           // C<M> = A'*B using dot product method
     GB_Context Context
 ) ;
 
-#if defined ( GB_NVCC )
-}
-#endif
+
+bool GB_AxB_dot3_cuda_branch
+(
+    const GrB_Matrix M,             // mask matrix
+    const bool Mask_struct,         // if true, use the only structure of M
+    const GrB_Matrix A,             // input matrix
+    const GrB_Matrix B,             // input matrix
+    const GrB_Semiring semiring,    // semiring that defines C=A*B
+    const bool flipxy,              // if true, do z=fmult(b,a) vs fmult(a,b)
+    GB_Context Context
+);
 
 #endif
 

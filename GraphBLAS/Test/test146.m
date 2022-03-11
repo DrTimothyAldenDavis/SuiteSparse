@@ -1,7 +1,7 @@
 function test146
 %TEST146 test C<M,struct> = scalar
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 fprintf ('test146 --------------------- C<M,struct> = scalar\n') ;
@@ -30,5 +30,6 @@ C2 = logical (sparse (m, n)) ;
 C2 (M) = true ;
 assert (isequal (C2, logical (C1.matrix)))
 
+GB_builtin_complex_set (true) ;
 fprintf ('test146: all tests passed\n') ;
 

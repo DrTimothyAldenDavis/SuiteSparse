@@ -2,7 +2,7 @@
 // GB_subref: C = A(I,J)
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -12,7 +12,7 @@
 // means that the entry at position p in C is the same as the entry in A at
 // position pA.  In this case, Cx has a type of int64_t.
 
-// Numeric extraction:
+// Numeric extraction: C is iso if A is iso or C_iso is true on input
 
 //      Sparse submatrix reference, C = A(I,J), extracting the values.  This is
 //      an internal function called by GB_extract with symbolic==false, which
@@ -20,7 +20,7 @@
 //      called by GB_assign to extract the submask.  No pending tuples or
 //      zombies appear in A.
 
-// Symbolic extraction:
+// Symbolic extraction:  C is never iso
 
 //      Sparse submatrix reference, C = A(I,J), extracting the pattern, not the
 //      values.  For the symbolic case, this function is called only by
@@ -28,22 +28,19 @@
 //      same pattern (C->p and C->i) as numeric extraction, but with different
 //      values, C->x.  For numeric extracion if C(inew,jnew) = A(i,j), the
 //      value of A(i,j) is copied into C(i,j).  For symbolic extraction, its
-//      *pointer* is copied into C(i,j).  Suppose an entry A(i,j) is held in Ai
-//      [pa] and Ax [pa], and it appears in the output matrix C in Ci [pc] and
-//      Cx [pc].  Then the two methods differ as follows:
+//      *pointer* is copied into C(i,j).  Suppose an entry A(i,j) is held in
+//      Ai [pa] and Ax [pa], and it appears in the output matrix C in Ci [pc]
+//      and Cx [pc].  Then the two methods differ as follows:
 
 //          this is the same:
 
 //          i = Ai [pa] ;           // index i of entry A(i,j)
-
 //          aij = Ax [pa] ;         // value of the entry A(i,j)
-
 //          Ci [pc] = inew ;        // index inew of C(inew,jnew)
 
 //          this is different:
 
 //          Cx [pc] = aij ;         // for numeric extraction
-
 //          Cx [pc] = pa ;          // for symbolic extraction
 
 //      This function is called with symbolic==true by only by
@@ -70,30 +67,31 @@
 //      detected in A.  Since pa = Cx [pc] holds the position of the entry in
 //      A, the entry is a zombie if Ai [pa] has been flipped.
 
-#define GB_FREE_WORK                            \
+#define GB_FREE_WORKSPACE                       \
 {                                               \
-    GB_FREE_WERK (&TaskList, TaskList_size) ;   \
-    GB_FREE_WERK (&Ap_start, Ap_start_size) ;   \
-    GB_FREE_WERK (&Ap_end, Ap_end_size) ;       \
-    GB_FREE_WERK (&Mark, Mark_size) ;           \
-    GB_FREE_WERK (&Inext, Inext_size) ;         \
+    GB_FREE_WORK (&TaskList, TaskList_size) ;   \
+    GB_FREE_WORK (&Ap_start, Ap_start_size) ;   \
+    GB_FREE_WORK (&Ap_end, Ap_end_size) ;       \
+    GB_FREE_WORK (&Mark, Mark_size) ;           \
+    GB_FREE_WORK (&Inext, Inext_size) ;         \
 }
 
 #define GB_FREE_ALL             \
 {                               \
     GB_FREE (&Cp, Cp_size) ;    \
     GB_FREE (&Ch, Ch_size) ;    \
-    GB_FREE_WORK ;              \
+    GB_FREE_WORKSPACE ;         \
 }
 
 #include "GB_subref.h"
 
-GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
+GB_PUBLIC
 GrB_Info GB_subref              // C = A(I,J): either symbolic or numeric
 (
     // output
     GrB_Matrix C,               // output matrix, static header
     // input, not modified
+    bool C_iso,                 // if true, return C as iso, regardless of A 
     const bool C_is_csc,        // requested format of C
     const GrB_Matrix A,
     const GrB_Index *I,         // index list for C = A(I,J), or GrB_ALL, etc.
@@ -110,11 +108,39 @@ GrB_Info GB_subref              // C = A(I,J): either symbolic or numeric
     //--------------------------------------------------------------------------
 
     GrB_Info info ;
-    ASSERT (C != NULL && C->static_header) ;
+    ASSERT (C != NULL && (C->static_header || GBNSTATIC)) ;
     ASSERT_MATRIX_OK (A, "A for C=A(I,J) subref", GB0) ;
     ASSERT (GB_ZOMBIES_OK (A)) ;
     ASSERT (GB_JUMBLED_OK (A)) ;    // A is sorted, below, if jumbled on input
     ASSERT (GB_PENDING_OK (A)) ;
+
+    //--------------------------------------------------------------------------
+    // check if C is iso and get its iso value
+    //--------------------------------------------------------------------------
+
+    GrB_Type ctype = (symbolic) ? GrB_INT64 : A->type ;
+    size_t csize = ctype->size ;
+    GB_void cscalar [GB_VLA(csize)] ;
+    memset (cscalar, 0, csize) ;
+    if (symbolic)
+    { 
+        // symbolic extraction never results in an iso matrix
+        C_iso = false ;
+    }
+    else
+    {
+        // determine if C is iso and get the iso scalar
+        if (A->iso)
+        { 
+            memcpy (cscalar, A->x, csize) ;
+            C_iso = true ;
+        }
+    }
+
+    if (C_iso)
+    { 
+        GBURBLE ("(iso subref) ") ;
+    }
 
     //--------------------------------------------------------------------------
     // handle bitmap and full cases
@@ -123,8 +149,8 @@ GrB_Info GB_subref              // C = A(I,J): either symbolic or numeric
     if (GB_IS_BITMAP (A) || GB_IS_FULL (A))
     { 
         // C is constructed with same sparsity as A (bitmap or full)
-        return (GB_bitmap_subref (C, C_is_csc, A, I, ni, J, nj, symbolic,
-            Context)) ;
+        return (GB_bitmap_subref (C, C_iso, cscalar, C_is_csc, A, I, ni, J, nj,
+            symbolic, Context)) ;
     }
 
     //--------------------------------------------------------------------------
@@ -162,28 +188,28 @@ GrB_Info GB_subref              // C = A(I,J): either symbolic or numeric
         A, I, ni, J, nj, Context)) ;
 
     //--------------------------------------------------------------------------
-    // phase0b: split C=A(I,J) into tasks for phase1 and phase2
+    // phase1: split C=A(I,J) into tasks for phase2 and phase3
     //--------------------------------------------------------------------------
 
     // This phase also inverts I if needed.
 
     GB_OK (GB_subref_slice (
-        // computed by phase0b:
+        // computed by phase1:
         &TaskList, &TaskList_size, &ntasks, &nthreads, &post_sort,
         &Mark, &Mark_size, &Inext, &Inext_size, &ndupl,
         // computed by phase0:
         Ap_start, Ap_end, Cnvec, need_qsort, Ikind, nI, Icolon,
         // original input:
-        A->vlen, GB_NNZ (A), I, Context)) ;
+        A->vlen, GB_nnz (A), I, Context)) ;
 
     //--------------------------------------------------------------------------
-    // phase1: count the number of entries in each vector of C
+    // phase2: count the number of entries in each vector of C
     //--------------------------------------------------------------------------
 
-    GB_OK (GB_subref_phase1 (
-        // computed by phase1:
+    GB_OK (GB_subref_phase2 (
+        // computed by phase2:
         &Cp, &Cp_size, &Cnvec_nonempty,
-        // computed by phase0b:
+        // computed by phase1:
         TaskList, ntasks, nthreads, Mark, Inext, ndupl,
         // computed by phase0:
         Ap_start, Ap_end, Cnvec, need_qsort, Ikind, nI, Icolon,
@@ -191,28 +217,30 @@ GrB_Info GB_subref              // C = A(I,J): either symbolic or numeric
         A, I, symbolic, Context)) ;
 
     //--------------------------------------------------------------------------
-    // phase2: compute the entries (indices and values) in each vector of C
+    // phase3: compute the entries (indices and values) in each vector of C
     //--------------------------------------------------------------------------
 
-    GB_OK (GB_subref_phase2 (
-        // computed by phase2:
+    GB_OK (GB_subref_phase3 (
+        // computed by phase3:
         C,
-        // from phase1:
+        // from phase2:
         &Cp, Cp_size, Cnvec_nonempty,
-        // from phase0b:
+        // from phase1:
         TaskList, ntasks, nthreads, post_sort, Mark, Inext, ndupl,
         // from phase0:
         &Ch, Ch_size, Ap_start, Ap_end, Cnvec, need_qsort,
         Ikind, nI, Icolon, nJ,
+        // from the iso test above:
+        C_iso, cscalar,
         // original input:
         C_is_csc, A, I, symbolic, Context)) ;
 
-    // Cp and Ch have been imported into C->p and C->h, or freed if phase2
+    // Cp and Ch have been imported into C->p and C->h, or freed if phase3
     // fails.  Either way, Cp and Ch are set to NULL so that they cannot be
     // freed here (except by freeing C itself).
 
     // free workspace
-    GB_FREE_WORK ;
+    GB_FREE_WORKSPACE ;
 
     //--------------------------------------------------------------------------
     // return result

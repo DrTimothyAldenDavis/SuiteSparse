@@ -1,106 +1,75 @@
 //------------------------------------------------------------------------------
-// GB_transpose:  C=A' or C=op(A'), with typecasting
+// GB_transpose: C=A' or C=op(A'), with typecasting
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
 // CALLS:     GB_builder
 
-// TODO:: this is way too complicated.  Reduce it to two cases:
-//  C = A'      both C and A are passed in, not Chandle
-//  C = C'      C is transposed in-place, (C==A aliased)
-// In both cases, require the header for C and A to be allocated already
-// (either static or dynamic).   A is never modified, unless C==A.
-// C and A cannot be NULL on input.  If C==A then C contains a valid
-// matrix on input (the input matrix A), otherise GB_phbix_free(C) is 
-// immediately done.  Either header may be static or dynamic.
-
 // Transpose a matrix, C=A', and optionally apply a unary operator and/or
 // typecast the values.  The transpose may be done in-place, in which case C or
 // A are modified in-place.
 
-// The input matrix may have shallow components (even if in-place), and the
-// output may also have shallow components (even if the input matrix is not
+// There are two ways to use this method:
+//  C = A'      C and A are different
+//  C = C'      C is transposed in-place, (C==A aliased)
+
+// In both cases, the header for C and A must already be allocated (either
+// static or dynamic).   A is never modified, unless C==A.  C and A cannot be
+// NULL on input.  If in place (C == A) then C and A is a valid matrix on input
+// (the input matrix A).  If C != A, the contents of C are not defined on input,
+// and any prior content is freed.  Either header may be static or dynamic.
+
+// The input matrix A may have shallow components (even if in-place), and the
+// output C may also have shallow components (even if the input matrix is not
 // shallow).
 
 // This function is CSR/CSC agnostic; it sets the output matrix format from
 // C_is_csc but otherwise ignores the CSR/CSC type of A and C.
 
-// There are 3 ways to use this function:
-
-// Method1 (in_place_C): If A_in is not NULL and Chandle is NULL, then A is
-// modified in-place, and the A_in matrix is not freed when done.
-
-// Method2 (in_place_A): If A_in is NULL, then C = (*Chandle) is transposed
-// in-place.  If out of memory, (*Chandle) is always returned as NULL, which
-// frees the input matrix C if the transpose is done in-place.
-
-// Method3 (C=A'): Otherwise, A_in and Chandle are non-NULL, and C=A' is
-// computed.  If (*Chandle) is NULL on input, then a new header is allocated.
-// If (*Chandle) is non-NULL on input, it is assumed to be an uninitialized
-// static header, not obtained from malloc.  On output, C->static_header will
-// be true.
-
 // The bucket sort is parallel, but not highly scalable.  If e=nnz(A) and A is
 // m-by-n, then at most O(e/n) threads are used.  The GB_builder method is more
 // scalable, but not as fast with a modest number of threads.
+
+#define GB_FREE_WORKSPACE               \
+{                                       \
+    GB_FREE (&iwork, iwork_size) ;      \
+    GB_FREE (&jwork, jwork_size) ;      \
+    GB_FREE (&Swork, Swork_size) ;      \
+    GB_WERK_POP (Count, int64_t) ;      \
+}
+
+#define GB_FREE_ALL                     \
+{                                       \
+    GB_FREE_WORKSPACE ;                 \
+    GB_Matrix_free (&T) ;               \
+    /* freeing C also frees A if transpose is done in-place */ \
+    GB_phbix_free (C) ;                 \
+}
 
 #include "GB_transpose.h"
 #include "GB_build.h"
 #include "GB_apply.h"
 
-#define GB_FREE_ALL ;
-
-// free prior content of A, if transpose is done in-place
-#define GB_FREE_IN_PLACE_A                                                  \
-{                                                                           \
-    if (in_place)                                                           \
-    {                                                                       \
-        /* A is being transposed in-place */                                \
-        /* free prior content of A but not &A itself */                     \
-        if (!Ap_shallow) GB_FREE (&Ap, Ap_size) ;                           \
-        if (!Ah_shallow) GB_FREE (&Ah, Ah_size) ;                           \
-        if (!Ab_shallow) GB_FREE (&Ab, Ab_size) ;                           \
-        if (!Ai_shallow) GB_FREE (&Ai, Ai_size) ;                           \
-        if (!Ax_shallow) GB_FREE (&Ax, Ax_size) ;                           \
-    }                                                                       \
-    else                                                                    \
-    {                                                                       \
-        /* A is not modified; it is purely an input matrix */               \
-        ;                                                                   \
-    }                                                                       \
-}
-
-// free the new C matrix, unless C=A' is being done in-place of A
-#define GB_FREE_C                                                           \
-{                                                                           \
-    if (!in_place_A)                                                        \
-    {                                                                       \
-        /* free all of C and all its contents &C */                         \
-        GB_Matrix_free (Chandle) ;                                          \
-    }                                                                       \
-}
-
 //------------------------------------------------------------------------------
 // GB_transpose
 //------------------------------------------------------------------------------
 
-GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
-GrB_Info GB_transpose           // C=A', C=(ctype)A or C=op(A')
+GrB_Info GB_transpose           // C=A', C=(ctype)A' or C=op(A')
 (
-    GrB_Matrix *Chandle,        // output matrix C, possibly modified in-place
+    GrB_Matrix C,               // output matrix C, possibly modified in-place
     GrB_Type ctype,             // desired type of C; if NULL use A->type.
                                 // ignored if op is present (cast to op->ztype)
     const bool C_is_csc,        // desired CSR/CSC format of C
-    const GrB_Matrix A_in,      // input matrix
-        // no operator is applied if both op1 and op2 are NULL
-        const GrB_UnaryOp op1_in,       // unary operator to apply
-        const GrB_BinaryOp op2_in,      // binary operator to apply
-        const GxB_Scalar scalar,        // scalar to bind to binary operator
-        bool binop_bind1st,             // if true, binop(x,A) else binop(A,y)
+    const GrB_Matrix A,         // input matrix; C == A if done in place
+        // no operator is applied if op is NULL
+        const GB_Operator op_in,    // unary/idxunop/binop to apply
+        const GrB_Scalar scalar,    // scalar to bind to binary operator
+        bool binop_bind1st,         // if true, binop(x,A) else binop(A,y)
+        bool flipij,                // if true, flip i,j for user idxunop
     GB_Context Context
 )
 {
@@ -110,103 +79,43 @@ GrB_Info GB_transpose           // C=A', C=(ctype)A or C=op(A')
     //--------------------------------------------------------------------------
 
     GrB_Info info ;
-    GBURBLE ("(transpose) ") ;
-    GrB_Matrix A, C ;
-    bool in_place_C, in_place_A ;
-    bool C_static_header = false ;
+    ASSERT (C != NULL) ;
+    ASSERT (A != NULL) ;
+    bool in_place = (A == C) ;
+    GB_WERK_DECLARE (Count, int64_t) ;
+    int64_t *iwork = NULL ; size_t iwork_size = 0 ;
+    int64_t *jwork = NULL ; size_t jwork_size = 0 ;
+    GB_void *Swork = NULL ; size_t Swork_size = 0 ;
     struct GB_Matrix_opaque T_header ;
-    GrB_Matrix T = GB_clear_static_header (&T_header) ;
-
-    if (A_in == NULL)
-    { 
-
-        //----------------------------------------------------------------------
-        // Method1 (in_place_C): C = C' ; &C is transposed in-place
-        //----------------------------------------------------------------------
-
-        // GB_transpose (&C, ctype, csc, NULL, op) ;
-        // C=A' is transposed in-place, in the matrix C.
-        // The matrix C is freed if an error occurs and C is set to NULL.
-
-        ASSERT (Chandle != NULL) ;  // at least &C or A must be non-NULL
-        ASSERT (*Chandle != NULL) ;
-        A = (*Chandle) ;
-        C = A ;                     // C must be freed if an error occurs
-        in_place_C = true ;         // C is modified in-place
-        in_place_A = false ;
-        ASSERT (A == C && C == (*Chandle)) ;
-        C_static_header = C->static_header ;
-
-    }
-    else if (Chandle == NULL || (*Chandle) == A_in)
-    { 
-
-        //----------------------------------------------------------------------
-        // Method2 (in_place_A): A = A' ; A transposed in-place
-        //----------------------------------------------------------------------
-
-        // GB_transpose (NULL, ctype, csc, A, op) ;
-        // GB_transpose (&A, ctype, csc, A, op) ;
-        // C=A' is transposed in-place, in the matrix A.
-        // The matrix A_in is not freed if an error occurs.
-
-        A = A_in ;
-        Chandle = &A ;              // C must not be freed if an error occurs
-        C = A ;
-        in_place_C = false ;
-        in_place_A = true ;         // A is modified in-place
-        ASSERT (A == C && C == (*Chandle)) ;
-        C_static_header = A->static_header ;
-
-    }
-    else
-    { 
-
-        //----------------------------------------------------------------------
-        // Method3 (C=A'): C and A are different; C may be a static header
-        //----------------------------------------------------------------------
-
-        // GB_transpose (&C, ctype, csc, A, op) ;
-        // &C and A are both non-NULL, and not aliased.
-        // C=A' where C is a new matrix constructed here.
-        // The matrix C is freed if an error occurs, and C is set to NULL
-        // unless C has a static header.
-
-        // If C is NULL, a new header is allocated and returned as (*Chandle).
-        // Otherwise, C = (*Chandle) is assumed to be an uninitialized static
-        // header, and (*Chandle) is not modified.
-
-        A = A_in ;
-        C = (*Chandle) ;            // NULL, or pre-existing static header
-        in_place_C = false ;        // C and A are different matrices
-        in_place_A = false ;
-        ASSERT (A != C && C == (*Chandle)) ;
-        C_static_header = (C != NULL) ;
-        if (C_static_header)
-        { 
-            GB_clear_static_header (C) ;
-        }
-    }
-
-    bool in_place = (in_place_A || in_place_C) ;
+    GrB_Matrix T = NULL ;
+    GB_CLEAR_STATIC_HEADER (T, &T_header) ;
 
     ASSERT_MATRIX_OK (A, "A input for GB_transpose", GB0) ;
     ASSERT_TYPE_OK_OR_NULL (ctype, "ctype for GB_transpose", GB0) ;
-    ASSERT_UNARYOP_OK_OR_NULL (op1_in, "unop for GB_transpose", GB0) ;
-    ASSERT_BINARYOP_OK_OR_NULL (op2_in, "binop for GB_transpose", GB0) ;
+    ASSERT_OP_OK_OR_NULL (op_in, "unop/binop for GB_transpose", GB0) ;
     ASSERT_SCALAR_OK_OR_NULL (scalar, "scalar for GB_transpose", GB0) ;
-    ASSERT (C == (*Chandle)) ;      // both may be NULL
+
+    if (in_place)
+    { 
+        GBURBLE ("(in-place transpose) ") ;
+    }
 
     // get the current sparsity control of A
     float A_hyper_switch = A->hyper_switch ;
     float A_bitmap_switch = A->bitmap_switch ;
-    int A_sparsity = A->sparsity ;
+    int A_sparsity_control = A->sparsity_control ;
+    int64_t avlen = A->vlen ;
+    int64_t avdim = A->vdim ;
 
-    // wait if A has pending tuples or zombies, but leave it jumbled
-    GB_MATRIX_WAIT_IF_PENDING_OR_ZOMBIES (A) ;
+    // wait if A has pending tuples or zombies; leave jumbled unless avdim == 1
+    if (GB_PENDING (A) || GB_ZOMBIES (A) || (avdim == 1 && GB_JUMBLED (A)))
+    { 
+        GB_OK (GB_wait (A, "A", Context)) ;
+    }
     ASSERT (!GB_PENDING (A)) ;
     ASSERT (!GB_ZOMBIES (A)) ;
     ASSERT (GB_JUMBLED_OK (A)) ;
+    ASSERT (GB_IMPLIES (avdim == 1, !GB_JUMBLED (A))) ;
 
     //--------------------------------------------------------------------------
     // get A
@@ -216,28 +125,11 @@ GrB_Info GB_transpose           // C=A', C=(ctype)A or C=op(A')
     size_t asize = atype->size ;
     GB_Type_code acode = atype->code ;
 
-    int64_t avlen = A->vlen ;
-    int64_t avdim = A->vdim ;
-    int64_t anzmax = A->nzmax ;
-
-    // if in-place, these must be freed when done, whether successful or not
-    int64_t *restrict Ap = A->p ; size_t Ap_size = A->p_size ;
-    int64_t *restrict Ah = A->h ; size_t Ah_size = A->h_size ;
-    int64_t *restrict Ai = A->i ; size_t Ab_size = A->b_size ;
-    int8_t  *restrict Ab = A->b ; size_t Ai_size = A->i_size ;
-    GB_void *restrict Ax = (GB_void *) A->x ; size_t Ax_size = A->x_size ;
-
     bool A_is_bitmap = GB_IS_BITMAP (A) ;
-    bool A_is_packed = GB_is_packed (A) ;
     bool A_is_hyper  = GB_IS_HYPERSPARSE (A) ;
 
-    bool Ap_shallow = A->p_shallow ;
-    bool Ah_shallow = A->h_shallow ;
-    bool Ai_shallow = A->i_shallow ;
-    bool Ax_shallow = A->x_shallow ;
-    bool Ab_shallow = A->b_shallow ;
-
-    int64_t anz = GB_NNZ (A) ;
+    int64_t anz = GB_nnz (A) ;
+    int64_t anz_held = GB_nnz_held (A) ;
     int64_t anvec = A->nvec ;
     int64_t anvals = A->nvals ;
 
@@ -248,157 +140,160 @@ GrB_Info GB_transpose           // C=A', C=(ctype)A or C=op(A')
     GB_GET_NTHREADS_MAX (nthreads_max, chunk, Context) ;
 
     //--------------------------------------------------------------------------
-    // determine the type of C and get the unary or binary operator
+    // determine the type of C and get the unary, idxunop, binary operator
     //--------------------------------------------------------------------------
 
-    // If a unary or binary operator is present, C is always returned as
-    // the ztype of the operator.  The input ctype is ignored.
+    // If a unary, idxunop, or binary operator is present, C is always returned
+    // as the ztype of the operator.  The input ctype is ignored.
 
-    GrB_UnaryOp  op1 = NULL ;
-    GrB_BinaryOp op2 = NULL ;
-    GB_Opcode opcode = GB_NOP_opcode ;
+    GB_Operator op = NULL ;
+    GB_Opcode opcode = GB_NOP_code ;
 
-    if (op1_in != NULL)
+    if (op_in == NULL)
     {
-        // get the unary operator
-        opcode = op1_in->opcode ;
-        if (atype == op1_in->xtype && opcode == GB_IDENTITY_opcode)
-        { 
-            // op1 is a built-in identity operator, with the same type as A, so
-            // do not apply the operator and do not typecast.  op1 is NULL.
-            ctype = atype ;
-        }
-        else
-        { 
-            // apply the operator, z=op1(x)
-            op1 = op1_in ;
-            ctype = op1->ztype ;
-        }
-    }
-    else if (op2_in != NULL)
-    { 
-        // get the binary operator
-        GrB_Type op2_intype = binop_bind1st ? op2_in->xtype : op2_in->ytype ;
-        opcode = op2_in->opcode ;
-        // only GB_apply calls GB_transpose with op2_in, and it ensures this
-        // condition holds: the first(A,y), second(x,A), and any(...) have
-        // been renamed to identity(A), so these cases do not occur here.
-        ASSERT (!
-           ((opcode == GB_ANY_opcode) ||
-            (opcode == GB_FIRST_opcode  && !binop_bind1st) ||
-            (opcode == GB_SECOND_opcode &&  binop_bind1st))) ;
-        // apply the operator, z=op2(A,y) or op2(x,A)
-        op2 = op2_in ;
-        ctype = op2->ztype ;
-    }
-    else
-    {
-        // no operator.  both op1 and op2 are NULL
+        // no operator
         if (ctype == NULL)
         { 
             // no typecasting if ctype is NULL
             ctype = atype ;
         }
     }
+    else
+    {
+        opcode = op_in->opcode ;
+        if (GB_IS_UNARYOP_CODE (opcode))
+        {
+            // get the unary operator
+            if (atype == op_in->xtype && opcode == GB_IDENTITY_unop_code)
+            { 
+                // op is a built-in unary identity operator, with the same type
+                // as A, so do not apply the operator and do not typecast.  op
+                // is NULL.
+                ctype = atype ;
+            }
+            else
+            { 
+                // apply the operator, z=unop(x)
+                op = op_in ;
+                ctype = op->ztype ;
+            }
+        }
+        else // binary or idxunop
+        { 
+            // get the binary or idxunop operator: only GB_apply calls
+            // GB_transpose with op_in, and it ensures this condition holds:
+            // first(A,y), second(x,A) have been renamed to identity(A), and
+            // PAIR has been renamed one(A), so these cases do not occur here.
+            ASSERT (!((opcode == GB_PAIR_binop_code) ||
+                      (opcode == GB_FIRST_binop_code  && !binop_bind1st) ||
+                      (opcode == GB_SECOND_binop_code &&  binop_bind1st))) ;
+            // apply the operator, z=binop(A,y), binop(x,A), or idxunop(A,y)
+            op = op_in ;
+            ctype = op->ztype ;
+        }
+    }
 
-    GB_Type_code ccode = ctype->code ;
-    size_t csize = ctype->size ;
+    bool user_idxunop = (opcode == GB_USER_idxunop_code) ;
 
     //--------------------------------------------------------------------------
     // check for positional operators
     //--------------------------------------------------------------------------
 
     bool op_is_positional = GB_OPCODE_IS_POSITIONAL (opcode) ;
-    GrB_UnaryOp  save_op1 = op1 ;
-    GrB_BinaryOp save_op2 = op2 ;
+    GB_Operator save_op = op ;
     if (op_is_positional)
     { 
-        // do not apply the op until after the transpose
-        op1 = NULL ;
-        op2 = NULL ;
-        // replace op1 with the ONE operator, as a placeholder
-        ASSERT (ctype == GrB_INT64 || ctype == GrB_INT32) ;
-        op1 = (ctype == GrB_INT64) ? GxB_ONE_INT64 : GxB_ONE_INT32 ;
+        // do not apply the positional op until after the transpose;
+        // replace op with the ONE operator, as a placeholder.  C will be
+        // constructed as iso, and needs to be expanded to non-iso when done.
+        ASSERT (ctype == GrB_INT64 || ctype == GrB_INT32 || ctype == GrB_BOOL) ;
+        op = (GB_Operator) GB_unop_one (ctype->code) ;
+    }
+    else if (user_idxunop)
+    {
+        // do not apply the user op until after the transpose; replace with
+        // no operator at all, with no typecast
+        op = NULL ;
+        ctype = atype ;
     }
 
     //--------------------------------------------------------------------------
-    // C = A'
+    // determine the iso status of C
     //--------------------------------------------------------------------------
 
-    ASSERT (GB_IMPLIES (avlen == 0 || avdim == 0, anz == 0)) ;
+    size_t csize = ctype->size ;
 
-    bool allocate_new_Cx = (ctype != atype) || (op1 != NULL) || (op2 != NULL) ;
+    ASSERT (GB_IMPLIES (avlen == 0 || avdim == 0, anz == 0)) ;
+    GB_iso_code C_code_iso = GB_iso_unop_code (A, op, binop_bind1st) ;
+    bool C_iso = (C_code_iso != GB_NON_ISO) ;
+
+    ASSERT (GB_IMPLIES (A->iso, C_iso)) ;
+
+    if (C_iso && !op_is_positional)
+    { 
+        GBURBLE ("(iso transpose) ") ;
+    }
+    else
+    {
+        GBURBLE ("(transpose) ") ;
+    }
+
+    //==========================================================================
+    // T = A', T = (ctype) A', or T = op (A')
+    //==========================================================================
 
     if (anz == 0)
     { 
 
-        //======================================================================
-        // quick return if A is empty
-        //======================================================================
+        //----------------------------------------------------------------------
+        // A is empty
+        //----------------------------------------------------------------------
 
-        // free prior space of A, if transpose is done in-place
-        GB_FREE_IN_PLACE_A ;
-
-        // A is empty; create a new empty matrix C, with the new type and
-        // dimensions.  C is hypersparse for now but may convert when
-        // returned.
-        info = GB_new_bix (Chandle, C_static_header, // hyper, old or new header
-            ctype, avdim, avlen, GB_Ap_calloc, C_is_csc,
-            GxB_HYPERSPARSE, true, A_hyper_switch, 1, 1, true, Context) ;
-        if (info != GrB_SUCCESS)
-        { 
-            // out of memory
-            GB_FREE_C ;
-            return (info) ;
-        }
-        ASSERT_MATRIX_OK (*Chandle, "C transpose empty", GB0) ;
-        ASSERT (!GB_JUMBLED (*Chandle)) ;
+        // create a new empty matrix T, with the new type and dimensions.
+        // set T->iso = false   OK
+        GB_OK (GB_new_bix (&T, // hyper, existing header
+            ctype, avdim, avlen, GB_Ap_calloc, C_is_csc, GxB_HYPERSPARSE,
+            true, A_hyper_switch, 1, 1, true, false, Context)) ;
 
     }
-    else if (A_is_packed)
+    else if (A_is_bitmap || GB_as_if_full (A))
     {
 
-        //======================================================================
-        // transpose a packed or bitmap matrix or vector
-        //======================================================================
+        //----------------------------------------------------------------------
+        // transpose a bitmap/as-if-full matrix or vector
+        //----------------------------------------------------------------------
 
-        // A is packed if it is either: (a) bitmap, (b) full, or (c) sparse or
-        // hypersparse with all entries present, no zombies, no pending tuples,
-        // and not jumbled.  For (c), the matrix A can be treated as if it was
-        // full, and the pattern (A->p, A->h, and A->i) can be ignored.
+        // A is either bitmap or as-is-full (full, or sparse or hypersparse
+        // with all entries present, no zombies, no pending tuples, and not
+        // jumbled).  T = A' is either bitmap or full.
 
-        int sparsity = (A_is_bitmap) ? GxB_BITMAP : GxB_FULL ;
+        int T_sparsity = (A_is_bitmap) ? GxB_BITMAP : GxB_FULL ;
         bool T_cheap =                  // T can be done quickly if:
             (avlen == 1 || avdim == 1)      // A is a row or column vector,
-            && op1 == NULL && op2 == NULL   // no operator to apply, and
-            && atype == ctype ;             // no typecasting
+            && op == NULL                   // no operator to apply,
+            && atype == ctype ;             // and no typecasting
 
         // allocate T
         if (T_cheap)
         { 
             // just initialize the static header of T, not T->b or T->x
-            info = GB_new (&T, true,  // bitmap or full, static header
+            GBURBLE ("(cheap transpose) ") ;
+            info = GB_new (&T, // bitmap or full, existing header
                 ctype, avdim, avlen, GB_Ap_null, C_is_csc,
-                sparsity, A_hyper_switch, 1, Context) ;
+                T_sparsity, A_hyper_switch, 1, Context) ;
             ASSERT (info == GrB_SUCCESS) ;
         }
         else
         { 
             // allocate all of T, including T->b and T->x
-            info = GB_new_bix (&T, true,  // bitmap or full, static header
-                ctype, avdim, avlen, GB_Ap_null, C_is_csc,
-                sparsity, true, A_hyper_switch, 1, anzmax, true, Context) ;
-        }
-
-        if (info != GrB_SUCCESS)
-        { 
-            // out of memory
-            GB_FREE_C ;
-            return (info) ;
+            // set T->iso = C_iso   OK
+            GB_OK (GB_new_bix (&T, // bitmap or full, existing header
+                ctype, avdim, avlen, GB_Ap_null, C_is_csc, T_sparsity, true,
+                A_hyper_switch, 1, anz_held, true, C_iso, Context)) ;
         }
 
         T->magic = GB_MAGIC ;
-        if (sparsity == GxB_BITMAP)
+        if (T_sparsity == GxB_BITMAP)
         { 
             T->nvals = anvals ;     // for bitmap case only
         }
@@ -407,224 +302,165 @@ GrB_Info GB_transpose           // C=A', C=(ctype)A or C=op(A')
         // T = A'
         //----------------------------------------------------------------------
 
-        // Since A is full, # threads to use is nthreads, and the
-        // nworkspaces parameter is not used
-
-        int64_t anz_held = GB_NNZ_HELD (A) ;
-        ASSERT (anz > 0 && anz_held > 0) ;
         int nthreads = GB_nthreads (anz_held + anvec, chunk, nthreads_max) ;
 
         if (T_cheap)
         {
             // no work to do.  Transposing does not change A->b or A->x
-            T->b = Ab ; T->b_size = Ab_size ;
-            T->x = Ax ; T->x_size = Ax_size ;
-            T->nzmax = A->nzmax ;
+            T->b = A->b ; T->b_size = A->b_size ;
+            T->x = A->x ; T->x_size = A->x_size ;
             if (in_place)
             { 
                 // transplant A->b and A->x into T
-                T->b_shallow = Ab_shallow ;
-                T->x_shallow = Ax_shallow ;
-                Ab = NULL ;     // do not free prior Ab
-                Ax = NULL ;     // do not free prior Ax
+                T->b_shallow = A->b_shallow ;
+                T->x_shallow = A->x_shallow ;
                 A->b = NULL ;
                 A->x = NULL ;
             }
             else
             { 
                 // T is a purely shallow copy of A 
-                T->b_shallow = (Ab != NULL) ;
+                T->b_shallow = (A->b != NULL) ;
                 T->x_shallow = true ;
             }
+            T->iso = A->iso ;   // OK
         }
-        else if (op1 == NULL && op2 == NULL)
+        else if (op == NULL)
         { 
-            // do not apply an operator; optional typecast to C->type
+            // do not apply an operator; optional typecast to T->type
             GB_transpose_ix (T, A, NULL, NULL, 0, nthreads) ;
         }
         else
         { 
-            // apply an operator, C has type op->ztype
-            GB_transpose_op (T, op1, op2, scalar, binop_bind1st, A,
+            // apply an operator, T has type op->ztype
+            GB_transpose_op (T, C_code_iso, op, scalar, binop_bind1st, A,
                 NULL, NULL, 0, nthreads) ;
         }
 
         ASSERT_MATRIX_OK (T, "T dense/bitmap", GB0) ;
         ASSERT (!GB_JUMBLED (T)) ;
 
-        // free prior space of A, if transpose is done in-place
-        GB_FREE_IN_PLACE_A ;
-
-        //----------------------------------------------------------------------
-        // transplant T into C
-        //----------------------------------------------------------------------
-
-        // allocate the output matrix C as a full or bitmap matrix
-        // if *Chandle == NULL, allocate a new header; otherwise reuse existing
-        info = GB_new (Chandle, C_static_header, // bitmap/full, old/new header
-            ctype, avdim, avlen, GB_Ap_null, C_is_csc,
-            sparsity, A_hyper_switch, 0, Context) ;
-        if (info != GrB_SUCCESS)
-        { 
-            // out of memory
-            ASSERT (!in_place) ;            // cannot fail if in-place,
-            ASSERT (!C_static_header) ;     // or if C has a static header
-            GB_FREE_C ;
-            GB_phbix_free (T) ;
-            return (info) ;
-        }
-
-        // Transplant T into the result C, making a copy if T is shallow
-        info = GB_transplant (*Chandle, ctype, &T, Context) ;
-        if (info != GrB_SUCCESS)
-        { 
-            // out of memory
-            GB_FREE_C ;
-            return (info) ;
-        }
-        ASSERT_MATRIX_OK (*Chandle, "Chandle, GB_transpose, bitmap/full", GB0) ;
-
     }
     else if (avdim == 1)
     {
 
-        //======================================================================
+        //----------------------------------------------------------------------
         // transpose a "column" vector into a "row"
-        //======================================================================
+        //----------------------------------------------------------------------
 
         // transpose a vector (avlen-by-1) into a "row" matrix (1-by-avlen).
         // A must be sorted first.
+
         ASSERT_MATRIX_OK (A, "the vector A must already be sorted", GB0) ;
-        GB_MATRIX_WAIT (A) ;
         ASSERT (!GB_JUMBLED (A)) ;
 
         //----------------------------------------------------------------------
-        // allocate space
+        // allocate T
         //----------------------------------------------------------------------
 
-        // Allocate the header of C, with no C->p, C->h, C->i, C->b, or C->x
-        // content, and initialize the type and dimension of C.  The new matrix
-        // is hypersparse.  This step does not allocate anything if in-place.
+        // Initialized the header of T, with no content, and initialize the
+        // type and dimension of T.  T is hypersparse.
 
-        // if *Chandle == NULL, allocate a new header; otherwise reuse existing
-        info = GB_new (Chandle, C_static_header, // hyper; old or new header
+        info = GB_new (&T, // hyper; existing header
             ctype, 1, avlen, GB_Ap_null, C_is_csc,
             GxB_HYPERSPARSE, A_hyper_switch, 0, Context) ;
-        if (info != GrB_SUCCESS)
+        ASSERT (info == GrB_SUCCESS) ;
+
+        // allocate T->p, T->i, and optionally T->x, but not T->h
+        T->p = GB_MALLOC (anz+1, int64_t, &(T->p_size)) ;
+        T->i = GB_MALLOC (anz  , int64_t, &(T->i_size)) ;
+        bool allocate_Tx = (op != NULL || C_iso) || (ctype != atype) ;
+        if (allocate_Tx)
+        { 
+            // allocate new space for the new typecasted numerical values of T
+            T->x = GB_XALLOC (false, C_iso, anz, csize, &(T->x_size)) ; // x:OK
+        }
+        if (T->p == NULL || T->i == NULL || (allocate_Tx && T->x == NULL))
         { 
             // out of memory
-            ASSERT (!in_place) ;            // cannot fail if in-place,
-            ASSERT (!C_static_header) ;     // or if C has a static header
-            GB_FREE_C ;
-            return (info) ;
-        }
-
-        if (!in_place)
-        { 
-            C = (*Chandle) ;
-        }
-        else
-        {
-            ASSERT (A == C && A == (*Chandle)) ;
-        }
-
-        // allocate new space for the values and pattern
-        int64_t *restrict Cp = NULL ; size_t Cp_size = 0 ;
-        int64_t *restrict Ci = NULL ; size_t Ci_size = 0 ;
-        GB_void *restrict Cx = NULL ; size_t Cx_size = 0 ;
-        bool ok = true ;
-        Cp = GB_MALLOC (anz+1, int64_t, &Cp_size) ;
-        Ci = GB_MALLOC (anz  , int64_t, &Ci_size) ;
-        ok = (Cp != NULL && Ci != NULL) ;
-
-        if (allocate_new_Cx)
-        { 
-            // allocate new space for the new typecasted numerical values of C
-            ASSERT (anz > 0) ;
-            Cx = GB_MALLOC (anz * ctype->size, GB_void,  &Cx_size) ;
-            ok = ok && (Cx != NULL) ;
-        }
-
-        if (!ok)
-        { 
-            // out of memory
-            GB_FREE (&Cp, Cp_size) ;
-            GB_FREE (&Ci, Ci_size) ;
-            GB_FREE (&Cx, Cx_size) ;
-            GB_FREE_IN_PLACE_A ;
-            GB_FREE_C ;
+            GB_FREE_ALL ;
             return (GrB_OUT_OF_MEMORY) ;
         }
 
         //----------------------------------------------------------------------
-        // fill the content of C
+        // numerical values of T: apply the op, typecast, or make shallow copy
         //----------------------------------------------------------------------
 
         // numerical values: apply the operator, typecast, or make shallow copy
-        if (op1 != NULL || op2 != NULL)
+        if (op != NULL || C_iso)
         { 
-            // Cx = op (A)
-            info = GB_apply_op ( // op1 != identity of same types
-                (GB_void *) Cx, op1, op2, scalar, binop_bind1st, A, Context) ;
-            // GB_apply_op can only fail if op1/op2 are positional
-            ASSERT (!GB_OP_IS_POSITIONAL (op1)) ;
-            ASSERT (!GB_OP_IS_POSITIONAL (op2)) ;
+            // T->x = unop (A), binop (A,scalar), or binop (scalar,A), or
+            // compute the iso value of T = 1, A, or scalar, without any op
+            info = GB_apply_op ((GB_void *) T->x, ctype, C_code_iso, op,
+                scalar, binop_bind1st, flipij, A, Context) ;
             ASSERT (info == GrB_SUCCESS) ;
-            C->x = Cx ; C->x_size = Cx_size ;
-            C->x_shallow = false ;
-            // prior Ax will be freed
         }
         else if (ctype != atype)
         { 
-            // copy the values from A into C and cast from atype to ctype
-            C->x = Cx ; C->x_size = Cx_size ;
-            C->x_shallow = false ;
-            GB_cast_array (Cx, ccode, Ax, acode, Ab, asize, anz, 1) ;
-            // prior Ax will be freed
+            // copy the values from A into T and cast from atype to ctype
+            GB_cast_matrix (T, A, Context) ;
         }
-        else // ctype == atype
+        else
         { 
-            // no type change; numerical values of C are a shallow copy of A.
-            C->x = Ax ; C->x_size = Ax_size ;
-            C->x_shallow = (in_place) ? Ax_shallow : true ;
-            Ax = NULL ;  // do not free prior Ax
+            // no type change; numerical values of T are a shallow copy of A.
+            ASSERT (!allocate_Tx) ;
+            T->x = A->x ; T->x_size = A->x_size ;
+            if (in_place)
+            {
+                // transplant A->x as T->x
+                T->x_shallow = A->x_shallow ;
+                A->x = NULL ;
+            }
+            else
+            {
+                // T->x is a shallow copy of A->x
+                T->x_shallow = true ;
+            }
         }
 
-        // each entry in A becomes a non-empty vector in C
-        // C is a hypersparse 1-by-avlen matrix
-        C->h = Ai ; C->h_size = Ai_size ;
-        C->h_shallow = (in_place) ? Ai_shallow : true ;
-        Ai = NULL ;     // do not free prior Ai
-        // C->p = 0:anz and C->i = zeros (1,anz), newly allocated
-        C->plen = anz ;
-        C->nvec = anz ;
-        C->nvec_nonempty = anz ;
-        C->i = Ci ; C->i_size = Ci_size ;
-        C->p = Cp ; C->p_size = Cp_size ;
-        // fill the vector pointers C->p
+        // each entry in A becomes a non-empty vector in T;
+        // T is a hypersparse 1-by-avlen matrix
+
+        // transplant or shallow-copy A->i as the new T->h
+        T->h = A->i ; T->h_size = A->i_size ;
+        if (in_place)
+        { 
+            // transplant A->i as T->h
+            T->h_shallow = A->i_shallow ;
+            A->i = NULL ;
+        }
+        else
+        { 
+            // T->h is a shallow copy of A->i
+            T->h_shallow = true ;
+        }
+
+        // T->p = 0:anz and T->i = zeros (1,anz), newly allocated
+        T->plen = anz ;
+        T->nvec = anz ;
+        T->nvec_nonempty = anz ;
+
+        // fill the vector pointers T->p
         int nthreads = GB_nthreads (anz, chunk, nthreads_max) ;
         int64_t k ;
         #pragma omp parallel for num_threads(nthreads) schedule(static)
         for (k = 0 ; k < anz ; k++)
         { 
-            Ci [k] = 0 ;
-            Cp [k] = k ;
+            T->i [k] = 0 ;
+            T->p [k] = k ;
         }
-        Cp [anz] = anz ;
+        T->p [anz] = anz ;
 
-        C->nzmax = anz ;
-        C->magic = GB_MAGIC ;
-
-        // free prior space of A, if transpose is done in-place
-        GB_FREE_IN_PLACE_A ;
+        T->iso = C_iso ;
+        T->magic = GB_MAGIC ;
 
     }
     else if (avlen == 1)
     {
 
-        //======================================================================
+        //----------------------------------------------------------------------
         // transpose a "row" into a "column" vector
-        //======================================================================
+        //----------------------------------------------------------------------
 
         // transpose a "row" matrix (1-by-avdim) into a vector (avdim-by-1).
         // if A->vlen is 1, all vectors of A are implicitly sorted
@@ -636,7 +472,6 @@ GrB_Info GB_transpose           // C=A', C=(ctype)A or C=op(A')
 
         int ntasks = 0 ;
         int nth = GB_nthreads (avdim, chunk, nthreads_max) ;
-        GB_WERK_DECLARE (Count, int64_t) ;
         if (nth > 1 && !A_is_hyper)
         {
             // ntasks and Count are not needed if nth == 1
@@ -647,149 +482,123 @@ GrB_Info GB_transpose           // C=A', C=(ctype)A or C=op(A')
             if (Count == NULL)
             { 
                 // out of memory
-                GB_FREE_C ;
+                GB_FREE_ALL ;
                 return (GrB_OUT_OF_MEMORY) ;
             }
         }
 
-        // Allocate the header of C, with no C->p, C->h, C->i, or C->x content,
-        // and initialize the type and dimension of C.   If in-place, A->p,
-        // A->h, A->i, and A->x are all NULL.  The new matrix is sparse, but
-        // can be CSR or CSC.  This step does not allocate anything if in
-        // place.
-
-        // if *Chandle == NULL, allocate a new header; otherwise reuse existing
-        info = GB_new (Chandle, C_static_header, // sparse; old or new header
+        // Allocate the header of T, with no content
+        // and initialize the type and dimension of T.
+        info = GB_new (&T, // sparse; existing header
             ctype, avdim, 1, GB_Ap_null, C_is_csc,
             GxB_SPARSE, A_hyper_switch, 0, Context) ;
-        if (info != GrB_SUCCESS)
-        { 
-            // out of memory
-            ASSERT (!in_place) ;            // cannot fail if in-place,
-            ASSERT (!C_static_header) ;     // or if C has a static header
-            GB_FREE_C ;
-            GB_WERK_POP (Count, int64_t) ;
-            return (info) ;
-        }
+        ASSERT (info == GrB_SUCCESS) ;
 
-        if (!in_place)
-        { 
-            C = (*Chandle) ;
-        }
-        else
-        {
-            ASSERT (A == C && A == (*Chandle)) ;
-        }
+        T->iso = C_iso ;    // OK
 
         // allocate new space for the values and pattern
-        int64_t *restrict Cp = NULL ; size_t Cp_size = 0 ;
-        int64_t *restrict Ci = NULL ; size_t Ci_size = 0 ;
-        GB_void *restrict Cx = NULL ; size_t Cx_size = 0 ;
-        bool ok = true ;
-        Cp = GB_MALLOC (2, int64_t, &Cp_size) ;
-        ok = ok && (Cp != NULL) ;
+        T->p = GB_CALLOC (2, int64_t, &(T->p_size)) ;
         if (!A_is_hyper)
         { 
-            // A is sparse, so new space is needed for Ci
-            Ci = GB_MALLOC (anz, int64_t, &Ci_size) ;
-            ok = ok && (Ci != NULL) ;
+            // A is sparse, so new space is needed for T->i
+            T->i = GB_MALLOC (anz, int64_t, &(T->i_size)) ;
         }
-
-        if (allocate_new_Cx)
+        bool allocate_Tx = (op != NULL || C_iso) || (ctype != atype) ;
+        if (allocate_Tx)
         { 
-            // allocate new space for the new typecasted numerical values of C
-            Cx = GB_MALLOC (anz * ctype->size, GB_void, &Cx_size) ;
-            ok = ok && (Cx != NULL) ;
+            // allocate new space for the new typecasted numerical values of T
+            T->x = GB_XALLOC (false, C_iso, anz, csize, &(T->x_size)) ; // x:OK
         }
 
-        if (!ok)
+        if (T->p == NULL || (T->i == NULL && !A_is_hyper) ||
+            (T->x == NULL && allocate_Tx))
         { 
             // out of memory
-            GB_FREE (&Cp, Cp_size) ;
-            GB_FREE (&Ci, Ci_size) ;
-            GB_FREE (&Cx, Cx_size) ;
-            GB_WERK_POP (Count, int64_t) ;
-            GB_FREE_IN_PLACE_A ;
-            GB_FREE_C ;
+            GB_FREE_ALL ;
             return (GrB_OUT_OF_MEMORY) ;
         }
 
-        Cp [0] = 0 ;
-        Cp [1] = 0 ;
-
         //----------------------------------------------------------------------
-        // numerical values of C: apply the op, typecast, or make shallow copy
+        // numerical values of T: apply the op, typecast, or make shallow copy
         //----------------------------------------------------------------------
 
         // numerical values: apply the operator, typecast, or make shallow copy
-        if (op1 != NULL || op2 != NULL)
+        if (op != NULL || C_iso)
         { 
-            // Cx = op (A)
-            info = GB_apply_op ( // op1 != identity of same types
-                (GB_void *) Cx, op1, op2, scalar, binop_bind1st, A, Context) ;
-            // GB_apply_op can only fail if op1/op2 are positional
-            ASSERT (!GB_OP_IS_POSITIONAL (op1)) ;
-            ASSERT (!GB_OP_IS_POSITIONAL (op2)) ;
+            // T->x = unop (A), binop (A,scalar), or binop (scalar,A), or
+            // compute the iso value of T = 1, A, or scalar, without any op
+            info = GB_apply_op ((GB_void *) T->x, ctype, C_code_iso, op,
+                scalar, binop_bind1st, flipij, A, Context) ;
             ASSERT (info == GrB_SUCCESS) ;
-            C->x = Cx ; C->x_size = Cx_size ;
-            C->x_shallow = false ;
-            // prior Ax will be freed
         }
         else if (ctype != atype)
         { 
-            // copy the values from A into C and cast from atype to ctype
-            C->x = Cx ; C->x_size = Cx_size ;
-            C->x_shallow = false ;
-            GB_cast_array (Cx, ccode, Ax, acode, Ab, asize, anz, 1) ;
-            // prior Ax will be freed
+            // copy the values from A into T and cast from atype to ctype
+            GB_cast_matrix (T, A, Context) ;
         }
-        else // ctype == atype
+        else
         { 
-            // no type change; numerical values of C are a shallow copy of A
-            C->x = Ax ; C->x_size = Ax_size ;
-            C->x_shallow = (in_place) ? Ax_shallow : true ;
-            Ax = NULL ;  // do not free prior Ax
+            // no type change; numerical values of T are a shallow copy of A.
+            ASSERT (!allocate_Tx) ;
+            T->x = A->x ; T->x_size = A->x_size ;
+            if (in_place)
+            { 
+                // transplant A->x as T->x
+                T->x_shallow = A->x_shallow ;
+                A->x = NULL ;
+            }
+            else
+            { 
+                // T->x is a shallow copy of A->x
+                T->x_shallow = true ;
+            }
         }
 
         //----------------------------------------------------------------------
-        // pattern of C
+        // compute T->i
         //----------------------------------------------------------------------
 
         if (A_is_hyper)
         { 
 
             //------------------------------------------------------------------
-            // each non-empty vector in A becomes an entry in C
+            // each non-empty vector in A becomes an entry in T
             //------------------------------------------------------------------
 
-            C->i = Ah ; C->i_size = Ah_size ;
-            C->i_shallow = (in_place) ? Ah_shallow : true ;
-            ASSERT (anvec == anz) ;
-            Ah = NULL ;     // do not free prior Ah
+            T->i = A->h ; T->i_size = A->h_size ;
+            if (in_place)
+            { 
+                // transplant A->h as T->i
+                T->i_shallow = A->h_shallow ;
+                A->h = NULL ;
+            }
+            else
+            { 
+                // T->i is a shallow copy of A->h
+                T->i_shallow = true ;
+            }
 
         }
         else
         {
 
             //------------------------------------------------------------------
-            // find the non-empty vectors of A, which become entries in C
+            // find the non-empty vectors of A, which become entries in T
             //------------------------------------------------------------------
-
-            ASSERT (Ah == NULL) ;
 
             if (nth == 1)
             {
 
                 //--------------------------------------------------------------
-                // construct Ci with a single thread
+                // construct T->i with a single thread
                 //--------------------------------------------------------------
 
                 int64_t k = 0 ;
                 for (int64_t j = 0 ; j < avdim ; j++)
                 {
-                    if (Ap [j] < Ap [j+1])
+                    if (A->p [j] < A->p [j+1])
                     { 
-                        Ci [k++] = j ;
+                        T->i [k++] = j ;
                     }
                 }
                 ASSERT (k == anz) ;
@@ -799,7 +608,7 @@ GrB_Info GB_transpose           // C=A', C=(ctype)A or C=op(A')
             {
 
                 //--------------------------------------------------------------
-                // construct Ci in parallel
+                // construct T->i in parallel
                 //--------------------------------------------------------------
 
                 int tid ;
@@ -810,7 +619,7 @@ GrB_Info GB_transpose           // C=A', C=(ctype)A or C=op(A')
                     GB_PARTITION (jstart, jend, avdim, tid, ntasks) ;
                     for (int64_t j = jstart ; j < jend ; j++)
                     {
-                        if (Ap [j] < Ap [j+1])
+                        if (A->p [j] < A->p [j+1])
                         { 
                             k++ ;
                         }
@@ -828,9 +637,9 @@ GrB_Info GB_transpose           // C=A', C=(ctype)A or C=op(A')
                     GB_PARTITION (jstart, jend, avdim, tid, ntasks) ;
                     for (int64_t j = jstart ; j < jend ; j++)
                     {
-                        if (Ap [j] < Ap [j+1])
+                        if (A->p [j] < A->p [j+1])
                         { 
-                            Ci [k++] = j ;
+                            T->i [k++] = j ;
                         }
                     }
                 }
@@ -840,48 +649,35 @@ GrB_Info GB_transpose           // C=A', C=(ctype)A or C=op(A')
             int64_t k = 0 ;
             for (int64_t j = 0 ; j < avdim ; j++)
             {
-                if (Ap [j] < Ap [j+1])
+                if (A->p [j] < A->p [j+1])
                 {
-                    ASSERT (Ci [k] == j) ;
+                    ASSERT (T->i [k] == j) ;
                     k++ ;
                 }
             }
             ASSERT (k == anz) ;
             #endif
-
-            C->i = Ci ; C->i_size = Ci_size ;
-            C->i_shallow = false ;
         }
 
         //---------------------------------------------------------------------
-        // vector pointers of C
+        // vector pointers of T
         //---------------------------------------------------------------------
 
-        // C->p = [0 anz] and C->h = NULL
-        ASSERT (C->plen == 1) ;
-        ASSERT (C->nvec == 1) ;
-        ASSERT (C->h == NULL) ;
-        C->p = Cp ; C->p_size = Cp_size ;
-        C->p_shallow = false ;
-        C->nvec_nonempty = (anz == 0) ? 0 : 1 ;
-        // fill the vector pointers C->p
-        Cp [0] = 0 ;
-        Cp [1] = anz ;
-        C->nzmax = anz ;
-        C->magic = GB_MAGIC ;
-        ASSERT (!GB_JUMBLED (C)) ;
-
-        // free prior space of A, if transpose done in-place, and free workspace
-        GB_FREE_IN_PLACE_A ;
-        GB_WERK_POP (Count, int64_t) ;
+        // T->p = [0 anz]
+        ASSERT (T->plen == 1) ;
+        ASSERT (T->nvec == 1) ;
+        T->nvec_nonempty = (anz == 0) ? 0 : 1 ;
+        T->p [1] = anz ;
+        T->magic = GB_MAGIC ;
+        ASSERT (!GB_JUMBLED (T)) ;
 
     }
     else
     {
 
-        //======================================================================
+        //----------------------------------------------------------------------
         // transpose a general sparse or hypersparse matrix
-        //======================================================================
+        //----------------------------------------------------------------------
 
         ASSERT_MATRIX_OK (A, "A for GB_transpose", GB0) ;
 
@@ -902,88 +698,54 @@ GrB_Info GB_transpose           // C=A', C=(ctype)A or C=op(A')
         if (use_builder)
         {
 
-            //==================================================================
+            //------------------------------------------------------------------
             // transpose via GB_builder
-            //==================================================================
+            //------------------------------------------------------------------
 
             //------------------------------------------------------------------
             // allocate and create iwork
             //------------------------------------------------------------------
 
             // allocate iwork of size anz
-            int64_t *iwork = NULL ; size_t iwork_size = 0 ;
             iwork = GB_MALLOC (anz, int64_t, &iwork_size) ;
             if (iwork == NULL)
             { 
                 // out of memory
-                GB_FREE_C ;
+                GB_FREE_ALL ;
                 return (GrB_OUT_OF_MEMORY) ;
             }
 
             // Construct the "row" indices of C, which are "column" indices of
-            // A.  This array becomes the permanent T->i on output.  This phase
-            // must be done before Chandle is created below, since that step
-            // destroys A.
+            // A.  This array becomes the permanent T->i on output.
 
-            info = GB_extract_vector_list (iwork, A, Context) ;
-            if (info != GrB_SUCCESS)
-            { 
-                // out of memory
-                GB_FREE (&iwork, iwork_size) ;
-                GB_FREE_C ;
-                return (info) ;
-            }
+            GB_OK (GB_extract_vector_list (iwork, A, Context)) ;
 
             //------------------------------------------------------------------
-            // allocate the output matrix and additional space (jwork and S)
+            // allocate the output matrix and additional space (jwork and Swork)
             //------------------------------------------------------------------
 
-            // Allocate the header of C, with no C->p, C->h, C->i, or C->x
-            // content, and initialize the type and dimension of C.   If in
-            // place, A->p, A->h, A->i, and A->x are all NULL.  The new matrix
-            // is hypersparse, but can be CSR or CSC.  This step does not
-            // allocate anything if in-place.
+            // initialize the header of T, with no content
+            // content, and initialize the type and dimension of T.
 
-            // if *Chandle == NULL, allocate a new header; otherwise reuse
-            info = GB_new (Chandle, C_static_header, // hyper, old or new header
+            info = GB_new (&T, // hyper, existing header
                 ctype, avdim, avlen, GB_Ap_null, C_is_csc,
                 GxB_HYPERSPARSE, A_hyper_switch, 0, Context) ;
-            if (info != GrB_SUCCESS)
-            { 
-                // out of memory
-                ASSERT (!in_place) ;            // cannot fail if in-place,
-                ASSERT (!C_static_header) ;     // or if C has a static header
-                GB_FREE (&iwork, iwork_size) ;
-                GB_FREE_C ;
-                return (info) ;
-            }
+            ASSERT (info == GrB_SUCCESS) ;
 
-            if (!in_place)
-            { 
-                C = (*Chandle) ;
-            }
-            else
-            { 
-                ASSERT (A == C && A == (*Chandle)) ;
-            }
-
-            // if in_place, the prior Ap and Ah can now be freed
+            // if in_place, the prior A->p and A->h can now be freed
             if (in_place)
             { 
-                if (!Ap_shallow) GB_FREE (&Ap, Ap_size) ;
-                if (!Ah_shallow) GB_FREE (&Ah, Ah_size) ;
+                if (!A->p_shallow) GB_FREE (&A->p, A->p_size) ;
+                if (!A->h_shallow) GB_FREE (&A->h, A->h_size) ;
             }
 
-            int64_t *jwork = NULL ; size_t jwork_size = 0 ;
-            GB_Type_code scode ;
-            GB_void *S = NULL ;
-            GB_void *Swork = NULL ; size_t Swork_size = 0 ;
+            GB_void *S_input = NULL ;
 
             // for the GB_builder method, if the transpose is done in-place and
             // A->i is not shallow, A->i can be used and then freed.
             // Otherwise, A->i is not modified at all.
             bool ok = true ;
-            bool recycle_Ai = (in_place && !Ai_shallow) ;
+            bool recycle_Ai = (in_place && !A->i_shallow) ;
             if (!recycle_Ai)
             { 
                 // allocate jwork of size anz
@@ -991,21 +753,17 @@ GrB_Info GB_transpose           // C=A', C=(ctype)A or C=op(A')
                 ok = ok && (jwork != NULL) ;
             }
 
-            if (op1 != NULL || op2 != NULL)
+            if (op != NULL && !C_iso)
             { 
-                // allocate Swork of size anz * csize
-                Swork = GB_MALLOC (anz * csize, GB_void, &Swork_size) ;
+                Swork = (GB_void *) GB_XALLOC (false, C_iso, anz,   // x:OK
+                    csize, &Swork_size) ;
                 ok = ok && (Swork != NULL) ;
             }
 
             if (!ok)
             { 
                 // out of memory
-                GB_FREE (&iwork, iwork_size) ;
-                GB_FREE (&jwork, jwork_size) ;
-                GB_FREE (&Swork, Swork_size) ;
-                GB_FREE_IN_PLACE_A ;
-                GB_FREE_C ;
+                GB_FREE_ALL ;
                 return (GrB_OUT_OF_MEMORY) ;
             }
 
@@ -1016,55 +774,52 @@ GrB_Info GB_transpose           // C=A', C=(ctype)A or C=op(A')
             // "row" indices of A become "column" indices of C
             if (recycle_Ai)
             { 
-                // Ai is used as workspace for the "column" indices of C.
-                // jwork is a shallow copy of Ai, and is freed by GB_builder.
-                jwork = Ai ;
-                jwork_size = Ai_size ;
+                // A->i is used as workspace for the "column" indices of C.
+                // jwork is A->i, and is freed by GB_builder.
+                jwork = A->i ;
+                jwork_size = A->i_size ;
+                A->i = NULL ;
                 ASSERT (in_place) ;
-                // set Ai to NULL so it is not freed by GB_FREE_IN_PLACE_A
-                Ai = NULL ;
             }
             else
             { 
-                // jwork = Ai, making a deep copy.  jwork is freed by
+                // copy A->i into jwork, making a deep copy.  jwork is freed by
                 // GB_builder.  A->i is not modified, even if out of memory.
-                GB_memcpy (jwork, Ai, anz * sizeof (int64_t), nthreads_max) ;
+                GB_memcpy (jwork, A->i, anz * sizeof (int64_t), nthreads_max) ;
             }
 
             // numerical values: apply the op, typecast, or make shallow copy
-            if (op1 != NULL || op2 != NULL)
+            GrB_Type stype ;
+            GB_void sscalar [GB_VLA(csize)] ;
+            if (C_iso)
+            { 
+                // apply the op to the iso scalar
+                GB_iso_unop (sscalar, ctype, C_code_iso, op, A, scalar) ;
+                S_input = sscalar ;     // S_input is used instead of Swork
+                Swork = NULL ;
+                stype = ctype ;
+            }
+            else if (op != NULL)
             { 
                 // Swork = op (A)
-                info = GB_apply_op ( // op1 != identity of same types
-                    (GB_void *) Swork, op1, op2, scalar, binop_bind1st,
-                    A, Context) ;
-                // GB_apply_op can only fail if op1/op2 are positional
-                ASSERT (!GB_OP_IS_POSITIONAL (op1)) ;
-                ASSERT (!GB_OP_IS_POSITIONAL (op2)) ;
+                info = GB_apply_op (Swork, ctype, C_code_iso, op, scalar,
+                    binop_bind1st, flipij, A, Context) ;
                 ASSERT (info == GrB_SUCCESS) ;
                 // GB_builder will not need to typecast Swork to T->x, and it
                 // may choose to transplant it into T->x
-                scode = ccode ;
-                #if 0
-                if (in_place && !Ax_shallow)
-                {
-                    // A is being transposed in-place so A->x is no longer
-                    // needed.  If A->x is shallow this can be skipped.  T->x
-                    // will not be shallow if the op is present.  A->x should
-                    // be freed early to free up space for GB_builder.
-                    // However, in the current usage, when op is used, A is not
-                    // transposed in-place, so this step is not needed.
-                    ASSERT (GB_DEAD_CODE) ;
-                    GB_FREE (&Ax, A->x_size) ;
-                }
-                #endif
+                S_input = NULL ;        // Swork is used instead of S_input
+                stype = ctype ;
             }
             else
             { 
-                // GB_builder will typecast S from atype to ctype if needed.
-                // S is a shallow copy of Ax, and must not be modified.
-                S = Ax ;
-                scode = acode ;
+                // GB_builder will typecast S_input from atype to ctype if
+                // needed.  S_input is a shallow copy of Ax, and must not be
+                // modified.
+                ASSERT (!C_iso) ;
+                ASSERT (!A->iso) ;
+                S_input = (GB_void *) A->x ; // S_input is used instead of Swork
+                Swork = NULL ;
+                stype = atype ;
             }
 
             //------------------------------------------------------------------
@@ -1072,15 +827,11 @@ GrB_Info GB_transpose           // C=A', C=(ctype)A or C=op(A')
             //------------------------------------------------------------------
 
             // internally, jwork is freed and then T->x is allocated, so the
-            // total high-water memory usage is anz * max (csize,
-            // sizeof(int64_t)).  T is always hypersparse.
+            // total memory usage is anz * max (csize, sizeof(int64_t)).  T is
+            // always hypersparse.  Either T, Swork, and S_input are all iso,
+            // or all non-iso, depending on C_iso.
 
-            // If op is not NULL, then Swork can be transplanted into T in
-            // GB_builder, instead.  However, this requires the tuples to be
-            // sorted on input, which is possible but rare for GB_transpose.
-
-            info = GB_builder
-            (
+            GB_OK (GB_builder (
                 T,          // create T using a static header
                 ctype,      // T is of type ctype
                 avdim,      // T->vlen = A->vdim, always > 1
@@ -1097,146 +848,147 @@ GrB_Info GB_transpose           // C=A', C=(ctype)A or C=op(A')
                 anz,        // size of iwork, jwork, and Swork
                 true,       // is_matrix: unused
                 NULL, NULL, // original I,J indices: not used here
-                S,          // array of values of type scode, not modified
+                S_input,    // array of values of type stype, not modified
+                C_iso,      // iso property of T is the same as C->iso
                 anz,        // number of tuples
                 NULL,       // no dup operator needed (input has no duplicates)
-                scode,      // type of S or Swork
+                stype,      // type of S_input or Swork
                 Context
-            ) ;
+            )) ;
 
             // GB_builder always frees jwork, and either frees iwork or
             // transplants it in to T->i and sets iwork to NULL.  So iwork and
-            // jwork are always NULL on output.  GB_builder does not modify S.
+            // jwork are always NULL on output.  GB_builder does not modify
+            // S_input.
             ASSERT (iwork == NULL && jwork == NULL && Swork == NULL) ;
-
-            //------------------------------------------------------------------
-            // free prior space and transplant T into C
-            //------------------------------------------------------------------
-
-            // Free the prior content of the input matrix, if done in-place.
-            // Ap, Ah, and Ai have already been freed, but Ax has not.
-            GB_FREE_IN_PLACE_A ;
-
-            if (info != GrB_SUCCESS)
-            { 
-                // out of memory in GB_builder
-                GB_FREE_C ;
-                return (info) ;
-            }
-
-            // Transplant T in to the result C.  The matrix T is not shallow
-            // and no typecasting is done, so this will always succeed.
             ASSERT (!GB_JUMBLED (T)) ;
-            info = GB_transplant (*Chandle, ctype, &T, Context) ;
-            ASSERT (info == GrB_SUCCESS) ;
 
         }
         else
-        {
+        { 
 
-            //==================================================================
+            //------------------------------------------------------------------
             // transpose via bucket sort
-            //==================================================================
-
-            // This method does not operate on the matrix in-place, so it must
-            // create a temporary matrix T.  Then the input matrix is freed and
-            // replaced with the new matrix T.
+            //------------------------------------------------------------------
 
             // T = A' and typecast to ctype
-            info = GB_transpose_bucket (T, ctype, C_is_csc, A,
-                op1, op2, scalar, binop_bind1st,
-                nworkspaces_bucket, nthreads_bucket, Context) ;
-
-            // free prior content, if C=A' is being done in-place
-            if (in_place_A)
-            {
-                ASSERT (A == (*Chandle)) ; 
-                GB_phbix_free (A) ;
-            }
-            else if (in_place_C)
-            {
-                GB_phbix_free (C) ;
-            }
-
-            if (info != GrB_SUCCESS)
-            { 
-                // out of memory in GB_transpose_bucket
-                GB_FREE_C ;
-                return (info) ;
-            }
+            GB_OK (GB_transpose_bucket (T, C_code_iso, ctype, C_is_csc, A,
+                op, scalar, binop_bind1st,
+                nworkspaces_bucket, nthreads_bucket, Context)) ;
 
             ASSERT_MATRIX_OK (T, "T from bucket", GB0) ;
             ASSERT (GB_JUMBLED_OK (T)) ;
-
-            // allocate the output matrix C (just the header)
-            // if *Chandle == NULL, allocate a new header; otherwise reuse
-            info = GB_new (Chandle, C_static_header, // old/new header
-                ctype, avdim, avlen, GB_Ap_null, C_is_csc,
-                GxB_SPARSE, A_hyper_switch, 0, Context) ;
-            if (info != GrB_SUCCESS)
-            { 
-                // out of memory
-                ASSERT (!in_place) ;            // cannot fail if in-place,
-                ASSERT (!C_static_header) ;     // or if C has a static header
-                GB_FREE_C ;
-                GB_phbix_free (T) ;
-                return (info) ;
-            }
-
-            // Transplant T back into C and free T.  T is not shallow and
-            // no typecast is done so this will always succeed.
-            info = GB_transplant (*Chandle, ctype, &T, Context) ;
-            ASSERT (info == GrB_SUCCESS) ;
         }
     }
 
-    //--------------------------------------------------------------------------
-    // get the output matrix
-    //--------------------------------------------------------------------------
-
-    C = (*Chandle) ;
-    ASSERT (GB_JUMBLED_OK (C)) ;
+    //==========================================================================
+    // free workspace, apply positional op, and transplant/conform T into C
+    //==========================================================================
 
     //--------------------------------------------------------------------------
-    // apply a positional operator, after transposing the matrix
+    // free workspace
     //--------------------------------------------------------------------------
 
-    if (op_is_positional)
+    GB_FREE_WORKSPACE ;
+    if (in_place)
     { 
-        // the positional operator is applied in-place to the values of C
-        op1 = save_op1 ;
-        op2 = save_op2 ;
-        // Cx = op (C)
-        info = GB_apply_op ((GB_void *) C->x, op1,  // positional op only
-            op2, scalar, binop_bind1st, C, Context) ;
-        if (info != GrB_SUCCESS)
-        { 
-            // out of memory
-            GB_FREE_C ;
-            return (info) ;
-        }
+        // free prior space of A, if transpose is done in-place
+        GB_phbix_free (A) ;
     }
 
     //--------------------------------------------------------------------------
-    // conform the result to the desired sparisty structure of A
+    // transplant T into the result C
     //--------------------------------------------------------------------------
 
     // transplant the control settings from A to C
     C->hyper_switch = A_hyper_switch ;
     C->bitmap_switch = A_bitmap_switch ;
-    C->sparsity = A_sparsity ;
+    C->sparsity_control = A_sparsity_control ;
+    GB_OK (GB_transplant (C, ctype, &T, Context)) ;
+    ASSERT_MATRIX_OK (C, "C transplanted in GB_transpose", GB0) ;
+    ASSERT_TYPE_OK (ctype, "C type in GB_transpose", GB0) ;
 
-    ASSERT_MATRIX_OK (C, "C to conform in GB_transpose", GB0) ;
+    //--------------------------------------------------------------------------
+    // apply a positional operator or user idxunop after transposing the matrix
+    //--------------------------------------------------------------------------
 
-    info = GB_conform (C, Context) ;
-    if (info != GrB_SUCCESS)
+    op = save_op ;
+    if (op_is_positional)
+    {
+        if (C->iso)
+        { 
+            // If C was constructed as iso; it needs to be expanded first,
+            // but do not initialize the values.  These are computed by
+            // GB_apply_op below.
+            // set C->iso = false    OK: no need to burble
+            GB_OK (GB_convert_any_to_non_iso (C, false, Context)) ;
+        }
+
+        // the positional unary op is applied in-place: C->x = op (C)
+        GB_OK (GB_apply_op ((GB_void *) C->x, ctype, GB_NON_ISO, op,
+            scalar, binop_bind1st, flipij, C, Context)) ;
+
+    }
+    else if (user_idxunop)
     { 
-        // out of memory
-        GB_FREE_C ;
-        return (info) ;
+
+        if (C->iso)
+        { 
+            // If C was constructed as iso; it needs to be expanded and
+            // initialized first.
+            GB_OK (GB_convert_any_to_non_iso (C, true, Context)) ;
+        }
+
+        if (C->type == op->ztype)
+        { 
+            // the user-defined index unary op is applied in-place: C->x = op
+            // (C) where the type of C does not change
+            GB_OK (GB_apply_op ((GB_void *) C->x, ctype, GB_NON_ISO, op,
+                scalar, binop_bind1st, flipij, C, Context)) ;
+        }
+        else // op is a user-defined index unary operator
+        { 
+            // apply the operator to the transposed matrix:
+            // C = op (C), but not in-place since the type of C is changing
+            ctype = op->ztype ;
+            csize = ctype->size ;
+            size_t Cx_size = 0 ;
+            GB_void *Cx_new = NULL ;
+            if (GB_IS_BITMAP (C))
+            { 
+                // calloc the space so the new C->x has no uninitialized space
+                Cx_new = GB_CALLOC (anz_held*csize, GB_void, &Cx_size) ; // x:OK
+            }
+            else
+            { 
+                // malloc is fine; all C->x will be written
+                Cx_new = GB_MALLOC (anz_held*csize, GB_void, &Cx_size) ; // x:OK
+            }
+            if (Cx_new == NULL)
+            { 
+                // out of memory
+                GB_FREE_ALL ;
+                return (GrB_OUT_OF_MEMORY) ;
+            }
+            // Cx_new = op (C)
+            GB_OK (GB_apply_op (Cx_new, ctype, GB_NON_ISO, op,
+                scalar, false, flipij, C, Context)) ;
+            // transplant Cx_new as C->x and finalize the type of C
+            GB_FREE (&(C->x), C->x_size) ;
+            C->x = Cx_new ;
+            C->x_size = Cx_size ;
+            C->type = ctype ;
+            C->iso = false ;
+        }
     }
 
-    ASSERT_MATRIX_OK (*Chandle, "Chandle conformed in GB_transpose", GB0) ;
+    //--------------------------------------------------------------------------
+    // conform the result to the desired sparsity structure of A
+    //--------------------------------------------------------------------------
+
+    ASSERT_MATRIX_OK (C, "C to conform in GB_transpose", GB0) ;
+    GB_OK (GB_conform (C, Context)) ;
+    ASSERT_MATRIX_OK (C, "C output of GB_transpose", GB0) ;
     return (GrB_SUCCESS) ;
 }
 

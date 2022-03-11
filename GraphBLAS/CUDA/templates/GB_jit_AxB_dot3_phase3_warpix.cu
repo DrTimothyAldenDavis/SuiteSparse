@@ -30,12 +30,11 @@
 //  matrix<T_M> *M         <- mask matrix
 //  matrix<T_A> *A         <- input matrix A
 //  matrix<T_B> *B         <- input matrix B
-#define GB_KERNEL
+#define GB_CUDA_KERNEL
 #include <limits>
 #include <cstdint>
 #include "matrix.h"
 #include <cooperative_groups.h>
-#include "mySemiRing.h"
 
 // Using tile size fixed at compile time, we don't need shared memory
 #define tile_sz 32 

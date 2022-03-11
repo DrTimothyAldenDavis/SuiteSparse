@@ -7,7 +7,7 @@ function C = load (filename)
 % Examples:
 %
 %   A = GrB.random (4, 4, 0.5)
-%   GrB.save (A) ;              % A can be a @GrB or MATLAB matrix
+%   GrB.save (A) ;              % A can be a @GrB or built-in matrix
 %   clear all
 %   A = GrB.load ('A.mat') ;    % A is now a @GrB matrix
 %
@@ -15,13 +15,9 @@ function C = load (filename)
 %   GrB.save (2*A-1)            % save a matrix computation to GrB_Matrix.mat
 %   GrB.load                    % load it back in
 %
-% See also GrB.save, GrB/struct.
+% See also GrB.save, GrB/struct, GrB.serialize, GrB.deserialize.
 
-% A note to Octave users:  a file written out by GrB.save in MATLAB
-% should be readable by GrB.load in Octave, and visa versa, as long as
-% the same version of GraphBLAS is used.
-
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: GPL-3.0-or-later
 
 if (nargin < 1)

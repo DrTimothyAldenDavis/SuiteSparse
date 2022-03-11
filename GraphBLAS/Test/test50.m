@@ -1,7 +1,7 @@
 function test50
 %TEST50 test AxB numeric and symbolic
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 fprintf ('\n----------------------------- GB_mex_AxB\n') ;
@@ -25,7 +25,7 @@ for trial = 1:2
         B = sprand (k, n, nz / (k*n)) ;
     end
 
-    fprintf ('\n---------------matlab: C=A*B\n') ;
+    fprintf ('\n---------------builtin: C=A*B\n') ;
     tic ;
     C = (A*B) ;
     toc
@@ -49,7 +49,7 @@ for trial = 1:2
     fprintf ('err %g\n', err) ;
     assert (isequal (C, S)) ;
 
-    fprintf ('\n---------------matlab: C=(A*B)''\n') ;
+    fprintf ('\n---------------builtin: C=(A*B)''\n') ;
     tic ;
     C = (A*B)' ;
     toc

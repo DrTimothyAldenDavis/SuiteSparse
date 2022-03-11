@@ -2,7 +2,7 @@
 // GB_ij.h: definitions for I and J index lists
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -12,7 +12,7 @@
 
 #include "GB.h"
 
-GB_PUBLIC   // accessed by the MATLAB interface only
+GB_PUBLIC
 void GB_ijlength            // get the length and kind of an index list I
 (
     const GrB_Index *I,     // list of indices (actual or implicit)

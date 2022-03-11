@@ -1,7 +1,7 @@
 function test179
 %TEST179 bitmap select
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 fprintf ('test179: --------------------------------- bitmap select\n') ;
@@ -44,5 +44,6 @@ for sparsity_control = [1 2 4]
     GB_spec_compare (C1, C2) ;
 end
 
+GB_builtin_complex_set (true) ;
 fprintf ('\ntest179: all tests passed\n') ;
 

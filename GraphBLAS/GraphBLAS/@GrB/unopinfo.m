@@ -71,8 +71,8 @@ function unopinfo (op, type)
 %   erf         z = erf (x)     error function
 %   erfc        z = erfc (x)    complementary error function
 %   frexpx      z = frexpx (x)  mantissa from ANSI C11 frexp function
-%   frexpe      z = frexpe (x)  exponent from ANSI C11 frexp function
-%                               The MATLAB [f,e]=log2(x) returns
+%   frexpe      z = frexpe (x)  exponent from ANSI C11 frexp function;
+%                               the built-in [f,e]=log2(x) returns
 %                               f = frexpx (x) and e = frexpe (x).
 %
 % For integer types only (result is same type as input):
@@ -99,7 +99,7 @@ function unopinfo (op, type)
 % See also GrB.binopinfo, GrB.descriptorinfo, GrB.monoidinfo,
 % GrB.selectopinfo, GrB.semiringinfo.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: GPL-3.0-or-later
 
 if (nargin == 0)

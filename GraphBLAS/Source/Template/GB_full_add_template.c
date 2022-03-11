@@ -2,7 +2,7 @@
 // GB_full_add_template:  phase2 for C=A+B, C<M>=A+B, C<!M>=A+B, C is full
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -19,6 +19,9 @@
     //      full    .           full            bitmap
     //      full    .           full            full  
 
+// If C is iso and full, this phase has nothing to do.
+
+#ifndef GB_ISO_ADD
 {
 
     int64_t p ;
@@ -37,8 +40,8 @@
         for (p = 0 ; p < cnz ; p++)
         { 
             // C (i,j) = A (i,j) + B (i,j)
-            GB_GETA (aij, Ax, p) ;
-            GB_GETB (bij, Bx, p) ;
+            GB_LOAD_A (aij, Ax, p, A_iso) ;
+            GB_LOAD_B (bij, Bx, p, B_iso) ;
             GB_BINOP (GB_CX (p), aij, bij, p % vlen, p / vlen) ;
         }
 
@@ -63,14 +66,25 @@
                 if (Bb [p])
                 { 
                     // C (i,j) = A (i,j) + B (i,j)
-                    GB_GETA (aij, Ax, p) ;
-                    GB_GETB (bij, Bx, p) ;
+                    GB_LOAD_A (aij, Ax, p, A_iso) ;
+                    GB_LOAD_B (bij, Bx, p, B_iso) ;
                     GB_BINOP (GB_CX (p), aij, bij, p % vlen, p / vlen) ;
                 }
                 else
                 { 
-                    // C (i,j) = A (i,j)
-                    GB_COPY_A_TO_C (GB_CX (p), Ax, p) ;
+                    #ifdef GB_EWISEUNION
+                    { 
+                        // C (i,j) = A(i,j) + beta
+                        GB_LOAD_A (aij, Ax, p, A_iso) ;
+                        GB_BINOP (GB_CX (p), aij, beta_scalar,
+                            p % vlen, p / vlen);
+                    }
+                    #else
+                    { 
+                        // C (i,j) = A (i,j)
+                        GB_COPY_A_TO_C (GB_CX (p), Ax, p, A_iso) ;
+                    }
+                    #endif
                 }
             }
 
@@ -79,14 +93,25 @@
         {
 
             //------------------------------------------------------------------
-            // Method32: C and A full; B is sparse or hypersparse
+            // Method32: C and A are full; B is sparse or hypersparse
             //------------------------------------------------------------------
 
             #pragma omp parallel for num_threads(C_nthreads) schedule(static)
             for (p = 0 ; p < cnz ; p++)
             {
-                // C (i,j) = A (i,j)
-                GB_COPY_A_TO_C (GB_CX (p), Ax, p) ;
+                #ifdef GB_EWISEUNION
+                { 
+                    // C (i,j) = A(i,j) + beta
+                    GB_LOAD_A (aij, Ax, p, A_iso) ;
+                    GB_BINOP (GB_CX (p), aij, beta_scalar,
+                        p % vlen, p / vlen) ;
+                }
+                #else
+                { 
+                    // C (i,j) = A (i,j)
+                    GB_COPY_A_TO_C (GB_CX (p), Ax, p, A_iso) ;
+                }
+                #endif
             }
 
             GB_SLICE_MATRIX (B, 8, chunk) ;
@@ -110,8 +135,8 @@
                         // C (i,j) = A (i,j) + B (i,j)
                         int64_t i = Bi [pB] ;
                         int64_t p = pC_start + i ;
-                        GB_GETA (aij, Ax, p) ;
-                        GB_GETB (bij, Bx, pB) ;
+                        GB_LOAD_A (aij, Ax, p , A_iso) ;
+                        GB_LOAD_B (bij, Bx, pB, B_iso) ;
                         GB_BINOP (GB_CX (p), aij, bij, i, j) ;
                     }
                 }
@@ -139,14 +164,25 @@
                 if (Ab [p])
                 { 
                     // C (i,j) = A (i,j) + B (i,j)
-                    GB_GETA (aij, Ax, p) ;
-                    GB_GETB (bij, Bx, p) ;
+                    GB_LOAD_A (aij, Ax, p, A_iso) ;
+                    GB_LOAD_B (bij, Bx, p, B_iso) ;
                     GB_BINOP (GB_CX (p), aij, bij, p % vlen, p / vlen) ;
                 }
                 else
                 { 
-                    // C (i,j) = B (i,j)
-                    GB_COPY_B_TO_C (GB_CX (p), Bx, p) ;
+                    #ifdef GB_EWISEUNION
+                    { 
+                        // C (i,j) = alpha + B(i,j)
+                        GB_LOAD_B (bij, Bx, p, B_iso) ;
+                        GB_BINOP (GB_CX (p), alpha_scalar,
+                            bij, p % vlen, p / vlen);
+                    }
+                    #else
+                    { 
+                        // C (i,j) = B (i,j)
+                        GB_COPY_B_TO_C (GB_CX (p), Bx, p, B_iso) ;
+                    }
+                    #endif
                 }
             }
 
@@ -161,8 +197,19 @@
             #pragma omp parallel for num_threads(C_nthreads) schedule(static)
             for (p = 0 ; p < cnz ; p++)
             {
-                // C (i,j) = B (i,j)
-                GB_COPY_B_TO_C (GB_CX (p), Bx, p) ;
+                #ifdef GB_EWISEUNION
+                { 
+                    // C (i,j) = alpha + B(i,j)
+                    GB_LOAD_B (bij, Bx, p, B_iso) ;
+                    GB_BINOP (GB_CX (p), alpha_scalar, bij,
+                        p % vlen, p / vlen) ;
+                }
+                #else
+                { 
+                    // C (i,j) = B (i,j)
+                    GB_COPY_B_TO_C (GB_CX (p), Bx, p, B_iso) ;
+                }
+                #endif
             }
 
             GB_SLICE_MATRIX (A, 8, chunk) ;
@@ -186,8 +233,8 @@
                         // C (i,j) = A (i,j) + B (i,j)
                         int64_t i = Ai [pA] ;
                         int64_t p = pC_start + i ;
-                        GB_GETA (aij, Ax, pA) ;
-                        GB_GETB (bij, Bx, p) ;
+                        GB_LOAD_A (aij, Ax, pA, A_iso) ;
+                        GB_LOAD_B (bij, Bx, p , B_iso) ;
                         GB_BINOP (GB_CX (p), aij, bij, i, j) ;
                     }
                 }
@@ -195,4 +242,5 @@
         }
     }
 }
+#endif
 

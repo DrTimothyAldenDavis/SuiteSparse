@@ -2,19 +2,17 @@
 // GB_builder: build a matrix from tuples
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
-// CALLED BY: GB_build, GB_Matrix_wait, GB_transpose, GB_concat_hyper
-// CALLS:     Generated/GB__red_build__* workers
+// CALLED BY: GB_build, GB_wait, GB_transpose, GB_concat_hyper
 
 // This function is called by GB_build to build a matrix T for GrB_Matrix_build
-// or GrB_Vector_build, by GB_Matrix_wait to build a matrix T from the list of
-// pending tuples, and by GB_transpose to transpose a matrix or vector.
-// Duplicates can appear if called by GB_build or GB_Matrix_wait, but not
-// GB_transpose.
+// or GrB_Vector_build, by GB_wait to build a matrix T from the list of pending
+// tuples, and by GB_transpose to transpose a matrix or vector.  Duplicates can
+// appear if called by GB_build or GB_wait, but not GB_transpose.
 
 // The indices are provided either as (I_input,J_input) or (I_work,J_work), not
 // both.  The values are provided as S_input or S_work, not both.  On return,
@@ -48,7 +46,7 @@
 // writes to I_work), but Step 1 also does the work for Step 3.  Step 2 and 3
 // are skipped.  Step 4 does O(e/p) reads per thread (J_input only).  Then
 // I_work is transplanted into T->i.  Step 5 does O(e/p) read/writes per thread
-// to copy S into T->x.
+// to copy Sx into T->x.
 
 // For GrB_Vector_build: as GrB_Matrix_build, Step 1 does O(e/p) read/writes
 // per thread.  The input is always a vector, so vdim == 1 always holds.  Step
@@ -56,12 +54,12 @@
 // all unless duplicates appear.  Step 4 takes no time, for any vector. Step 5
 // does O(e/p) reads/writes per thread.
 
-// For GB_Matrix_wait:  the pending tuples are provided as I_work, J_work, and
-// S_work, so Step 1 is skipped (no need to check for invalid indices).  The
-// input J_work may be null (vdim can be anything, since GB_Matrix_wait is used
-// for both vectors and matrices).  The tuples might be in sorted order
-// already, which is known precisely known from A->Pending->sorted.  Step 2
-// does O((e log e)/p) work to sort the tuples.  Duplicates may appear, and
+// For GB_wait:  the pending tuples are provided as I_work, J_work, and S_work,
+// so Step 1 is skipped (no need to check for invalid indices).  The input
+// J_work may be null (vdim can be anything, since GB_wait is used for both
+// vectors and matrices).  The tuples might be in sorted order already, which
+// is known precisely known from A->Pending->sorted.  Step 2 does
+// O((e log e)/p) work to sort the tuples.  Duplicates may appear, and
 // out-of-order tuples are likely.  Step 3 does O(e/p) read/writes.  Step 4
 // does O(e/p) reads per thread of (I_work,J_work), or just I_work.  Step 5
 // does O(e/p) read/writes per thread, or O(1) time if S_work can be
@@ -84,9 +82,26 @@
 // J_work and S_work are freed on output.  S_work is not transplanted into
 // C->x.
 
-// This method always returns T as hypersparse, and has no matrix inputs.  If
-// the final C should become full or bitmap, that conversion is done by
-// GB_transplant_conform.
+// For iso inputs/outputs: T and Sx have the same iso property.  If
+// they are iso, then dup is always NULL.  Duplicates may or may not appear
+// if T and Sx are iso.
+
+//  (1) GrB_Matrix_build, GrB_Vector_build, and GB_wait do not pass in an iso
+//      Sx array, where Sx is S_input for GrB*build, and S_work for GB_wait.
+//      Sx and Tx are not iso.  Duplicates may appear.  dup is always present
+//      for GrB*build, but may be either NULL or non-NULL for GB_wait.
+
+//  (2) GxB_Matrix_build_Scalar and GxB_Vector_build_Scalar: always construct
+//      iso matrices.  For those methods Sx and Tx are always iso, and no dup
+//      operator is be passed in (dup is NULL here, which is the implied 2nd
+//      operator).  Duplicates may appear.
+
+//  (3) GB_transpose and GB_concat_hyper can pass in Sx as iso or
+//      non-iso, and always passes in dup as NULL since there are no
+//      duplicates.  Sx and Tx are either both iso, or both non-iso.
+
+// This method always returns T as hypersparse, and T is iso if and only
+// if Sx is iso.
 
 #include "GB_build.h"
 #include "GB_sort.h"
@@ -99,13 +114,13 @@
 #define GB_J_WORK(t) (((t) < 0) ? -1 : ((J_work == NULL) ? 0 : J_work [t]))
 #define GB_K_WORK(t) (((t) < 0) ? -1 : ((K_work == NULL) ? t : K_work [t]))
 
-#define GB_FREE_WORK                                \
+#define GB_FREE_WORKSPACE                           \
 {                                                   \
     GB_WERK_POP (Work, int64_t) ;                   \
     GB_FREE (I_work_handle, *I_work_size_handle) ;  \
     GB_FREE (J_work_handle, *J_work_size_handle) ;  \
     GB_FREE (S_work_handle, *S_work_size_handle) ;  \
-    GB_FREE_WERK (&K_work, K_work_size) ;           \
+    GB_FREE_WORK (&K_work, K_work_size) ;           \
 }
 
 //------------------------------------------------------------------------------
@@ -123,7 +138,8 @@ GrB_Info GB_builder                 // build a matrix from tuples
     size_t *I_work_size_handle,
     int64_t **J_work_handle,        // for (j,i,k) tuples
     size_t *J_work_size_handle,
-    GB_void **S_work_handle,        // array of values of tuples, size ijslen
+    GB_void **S_work_handle,        // array of values of tuples, size ijslen,
+                                    // or size 1 if S is iso
     size_t *S_work_size_handle,
     bool known_sorted,              // true if tuples known to be sorted
     bool known_no_duplicates,       // true if tuples known to not have dupl
@@ -131,12 +147,14 @@ GrB_Info GB_builder                 // build a matrix from tuples
     const bool is_matrix,           // true if T a GrB_Matrix, false if vector
     const int64_t *restrict I_input,// original indices, size nvals
     const int64_t *restrict J_input,// original indices, size nvals
-    const GB_void *restrict S_input,// array of values of tuples, size nvals
+    const GB_void *restrict S_input,// array of values of tuples, size nvals,
+                                    // or size 1 if S_input or S_work are iso
+    const bool S_iso,               // true if S_input or S_work are iso
     const int64_t nvals,            // number of tuples, and size of K_work
     const GrB_BinaryOp dup,         // binary function to assemble duplicates,
                                     // if NULL use the SECOND operator to
                                     // keep the most recent duplicate.
-    const GB_Type_code scode,       // GB_Type_code of S_work or S_input array
+    const GrB_Type stype,           // the type of S_work or S_input
     GB_Context Context
 )
 {
@@ -147,7 +165,6 @@ GrB_Info GB_builder                 // build a matrix from tuples
 
     ASSERT (T != NULL) ;            // T is a static or dynamic header on input 
     ASSERT (nvals >= 0) ;
-    ASSERT (scode <= GB_UDT_code) ;
     ASSERT_TYPE_OK (ttype, "ttype for builder", GB0) ;
     ASSERT_BINARYOP_OK_OR_NULL (dup, "dup for builder", GB0) ;
     ASSERT (I_work_handle != NULL) ;
@@ -159,15 +176,14 @@ GrB_Info GB_builder                 // build a matrix from tuples
     ASSERT (S_work_size_handle != NULL) ;
 
     //--------------------------------------------------------------------------
-    // get S
+    // get Sx
     //--------------------------------------------------------------------------
 
     GB_void *restrict S_work = (*S_work_handle) ;
-
-    const GB_void *restrict S = (S_work == NULL) ? S_input : S_work ;
-    size_t tsize = ttype->size ;
-    size_t ssize = GB_code_size (scode, tsize) ;
-    ASSERT (GB_IMPLIES (nvals > 0, S != NULL)) ;
+    const GB_void *restrict Sx = (S_work == NULL) ? S_input : S_work ;
+    ASSERT (GB_IMPLIES (nvals > 0, Sx != NULL)) ;
+    ASSERT (GB_IMPLIES (S_iso, ttype == stype)) ;
+    ASSERT (GB_IMPLIES (S_iso, dup == NULL)) ;
 
     //==========================================================================
     // symbolic phase of the build =============================================
@@ -207,7 +223,7 @@ GrB_Info GB_builder                 // build a matrix from tuples
     if (Work == NULL)
     { 
         // out of memory
-        GB_FREE_WORK ;
+        GB_FREE_WORKSPACE ;
         return (GrB_OUT_OF_MEMORY) ;
     }
 
@@ -268,7 +284,7 @@ GrB_Info GB_builder                 // build a matrix from tuples
         // input, then J_work is not allocated, and J_input is used instead.
 
         // The k value in the tuple gives the position in the original set of
-        // tuples: I_input [k] and S [k] when vdim <= 1, and also J_input [k]
+        // tuples: I_input [k] and Sx [k] when vdim <= 1, and also J_input [k]
         // for matrices with vdim > 1.
 
         // The workspace I_work and J_work are allocated here but freed (or
@@ -282,7 +298,7 @@ GrB_Info GB_builder                 // build a matrix from tuples
         if (I_work == NULL)
         { 
             // out of memory
-            GB_FREE_WORK ;
+            GB_FREE_WORKSPACE ;
             return (GrB_OUT_OF_MEMORY) ;
         }
 
@@ -378,7 +394,7 @@ GrB_Info GB_builder                 // build a matrix from tuples
                     int64_t col = is_csc ? j : i ;
                     int64_t nrows = is_csc ? vlen : vdim ;
                     int64_t ncols = is_csc ? vdim : vlen ;
-                    GB_FREE_WORK ;
+                    GB_FREE_WORKSPACE ;
                     GB_ERROR (GrB_INDEX_OUT_OF_BOUNDS,
                         "index (" GBd "," GBd ") out of bounds,"
                         " must be < (" GBd ", " GBd ")",
@@ -403,7 +419,7 @@ GrB_Info GB_builder                 // build a matrix from tuples
                 if (J_work == NULL)
                 { 
                     // out of memory
-                    GB_FREE_WORK ;
+                    GB_FREE_WORKSPACE ;
                     return (GrB_OUT_OF_MEMORY) ;
                 }
                 GB_memcpy (J_work, J_input, nvals * sizeof (int64_t), nthreads);
@@ -474,7 +490,7 @@ GrB_Info GB_builder                 // build a matrix from tuples
                 { 
                     // invalid index
                     int64_t i = I_input [kbad [tid]] ;
-                    GB_FREE_WORK ;
+                    GB_FREE_WORKSPACE ;
                     GB_ERROR (GrB_INDEX_OUT_OF_BOUNDS,
                         "index (" GBd ") out of bounds, must be < (" GBd ")",
                         i, vlen) ;
@@ -500,41 +516,63 @@ GrB_Info GB_builder                 // build a matrix from tuples
 
     // If the tuples are known to already be sorted, Step 2 is skipped.  In
     // that case, K_work is NULL (not allocated), which implicitly means that
-    // K_work [k] = k for all k = 0:nvals-1.
+    // K_work [k] = k for all k = 0:nvals-1.  K_work is always NULL if Sx and
+    // Tx are iso.
 
     if (!known_sorted)
     {
 
-        // create the k part of each tuple
-        K_work = GB_MALLOC_WERK (nvals, int64_t, &K_work_size) ;
-        if (K_work == NULL)
-        { 
-            // out of memory
-            GB_FREE_WORK ;
-            return (GrB_OUT_OF_MEMORY) ;
+        //----------------------------------------------------------------------
+        // allocate K_work workspace (not needed if T and Sx are iso)
+        //----------------------------------------------------------------------
+
+        if (!S_iso)
+        {
+            // create the k part of each tuple
+            K_work = GB_MALLOC_WORK (nvals, int64_t, &K_work_size) ;
+            if (K_work == NULL)
+            { 
+                // out of memory
+                GB_FREE_WORKSPACE ;
+                return (GrB_OUT_OF_MEMORY) ;
+            }
+
+            // The k part of each tuple (i,k) or (j,i,k) records the original
+            // position of the tuple in the input list.  This allows an
+            // unstable sorting algorithm to be used.  Since k is unique, it
+            // forces the result of the sort to be stable regardless of whether
+            // or not the sorting algorithm is stable.  It also keeps track of
+            // where the numerical value of the tuple can be found; it is in
+            // Sx[k] for the tuple (i,k) or (j,i,k), regardless of where the
+            // tuple appears in the list after it is sorted.
+            int64_t k ;
+            #pragma omp parallel for num_threads(nthreads) schedule(static)
+            for (k = 0 ; k < nvals ; k++)
+            { 
+                K_work [k] = k ;
+            }
         }
 
-        // The k part of each tuple (i,k) or (j,i,k) records the original
-        // position of the tuple in the input list.  This allows an unstable
-        // sorting algorith to be used.  Since k is unique, it forces the
-        // result of the sort to be stable regardless of whether or not the
-        // sorting algorithm is stable.  It also keeps track of where the
-        // numerical value of the tuple can be found; it is in S[k] for the
-        // tuple (i,k) or (j,i,k), regardless of where the tuple appears in the
-        // list after it is sorted.
-        int64_t k ;
-        #pragma omp parallel for num_threads(nthreads) schedule(static)
-        for (k = 0 ; k < nvals ; k++)
-        { 
-            K_work [k] = k ;
-        }
-
+        //----------------------------------------------------------------------
         // sort all the tuples
+        //----------------------------------------------------------------------
+
         if (vdim > 1)
         {
 
+            //------------------------------------------------------------------
             // sort a set of (j,i,k) tuples
-            info = GB_msort_3b (J_work, I_work, K_work, nvals, nthreads) ;
+            //------------------------------------------------------------------
+
+            if (S_iso)
+            { 
+                // K_work is NULL; only sort (j,i)
+                info = GB_msort_2 (J_work, I_work, nvals, nthreads) ;
+            }
+            else
+            { 
+                info = GB_msort_3 (J_work, I_work, K_work, nvals, nthreads) ;
+            }
 
             #ifdef GB_DEBUG
             if (info == GrB_SUCCESS)
@@ -555,8 +593,20 @@ GrB_Info GB_builder                 // build a matrix from tuples
         }
         else
         {
+
+            //------------------------------------------------------------------
             // sort a set of (i,k) tuples
-            info = GB_msort_2b (I_work, K_work, nvals, nthreads) ;
+            //------------------------------------------------------------------
+
+            if (S_iso)
+            { 
+                // K_work is NULL; only sort (i)
+                info = GB_msort_1 (I_work, nvals, nthreads) ;
+            }
+            else
+            { 
+                info = GB_msort_2 (I_work, K_work, nvals, nthreads) ;
+            }
 
             #ifdef GB_DEBUG
             if (info == GrB_SUCCESS)
@@ -570,13 +620,12 @@ GrB_Info GB_builder                 // build a matrix from tuples
                 }
             }
             #endif
-
         }
 
         if (info != GrB_SUCCESS)
         {
             // out of memory in GB_msort_*
-            GB_FREE_WORK ;
+            GB_FREE_WORKSPACE ;
             return (GrB_OUT_OF_MEMORY) ;
         }
     }
@@ -753,23 +802,35 @@ GrB_Info GB_builder                 // build a matrix from tuples
     // allocate T; allocate T->p and T->h but do not initialize them.
     // T is always hypersparse.  The header T always exists on input, as
     // either a static or dynamic header.
-    bool static_header = T->static_header ;
-    info = GB_new (&T, static_header, // always hyper, static or dynamic header
+    info = GB_new (&T, // always hyper, existing header
         ttype, vlen, vdim, GB_Ap_malloc, is_csc,
         GxB_HYPERSPARSE, GB_ALWAYS_HYPER, tnvec, Context) ;
     if (info != GrB_SUCCESS)
     { 
         // out of memory
-        GB_FREE_WORK ;
+        GB_FREE_WORKSPACE ;
         return (info) ;
     }
 
     ASSERT (T->p != NULL) ;
     ASSERT (T->h != NULL) ;
-    ASSERT (T->nzmax == 0) ;        // T->i and T->x not yet allocated
     ASSERT (T->b == NULL) ;
     ASSERT (T->i == NULL) ;
     ASSERT (T->x == NULL) ;
+
+    T->iso = S_iso ;                // OK: T is iso if and only if Sx is iso
+    bool do_burble = (vlen > 1 || vdim > 1) && (nvals > 1) ;
+    if (do_burble)
+    {
+        if (S_iso)
+        { 
+            GBURBLE ("(iso build) ") ;
+        }
+        else
+        { 
+            GBURBLE ("(build) ") ;
+        }
+    }
 
     //--------------------------------------------------------------------------
     // STEP 4: construct the vector pointers and hyperlist for T
@@ -887,17 +948,14 @@ GrB_Info GB_builder                 // build a matrix from tuples
     // allocate T->i
     //--------------------------------------------------------------------------
 
-    T->nzmax = GB_IMAX (tnz, 1) ;
-
     if (ndupl == 0)
     {
-        // shrink I_work from size ijslen to size T->nzmax
-        if (T->nzmax < ijslen)
+        // shrink I_work from size ijslen to size tnz
+        if (tnz < ijslen)
         { 
             // this cannot fail since the size is shrinking.
             bool ok ;
-            GB_REALLOC (I_work, T->nzmax, ijslen, int64_t, I_work_size_handle,
-                &ok, Context) ;
+            GB_REALLOC (I_work, tnz, int64_t, I_work_size_handle, &ok, Context);
             ASSERT (ok) ;
         }
         // transplant I_work into T->i
@@ -909,12 +967,12 @@ GrB_Info GB_builder                 // build a matrix from tuples
     else
     {
         // duplicates exist, so allocate a new T->i.  I_work must be freed later
-        T->i = GB_MALLOC (T->nzmax, int64_t, &(T->i_size)) ;
+        T->i = GB_MALLOC (tnz, int64_t, &(T->i_size)) ;
         if (T->i == NULL)
         { 
             // out of memory
             GB_phbix_free (T) ;
-            GB_FREE_WORK ;
+            GB_FREE_WORKSPACE ;
             return (GrB_OUT_OF_MEMORY) ;
         }
     }
@@ -932,19 +990,20 @@ GrB_Info GB_builder                 // build a matrix from tuples
 
     // If there are no duplicates, T->i holds the row indices of the tuple.
     // Otherwise, the row indices are still in I_work.  K_work holds the
-    // positions of each tuple in the array S.  The tuples are sorted so that
+    // positions of each tuple in the array Sx.  The tuples are sorted so that
     // duplicates are adjacent to each other and they appear in the order they
     // appeared in the original tuples.  This method assembles the duplicates
-    // and computes T->i and T->x from I_work, K_work, and S.  into T, becoming
-    // T->i.  If no duplicates appear, T->i is already computed, and S just
+    // and computes T->i and T->x from I_work, K_work, and Sx.  into T, becoming
+    // T->i.  If no duplicates appear, T->i is already computed, and Sx just
     // needs to be copied and permuted into T->x.
 
-    // The (i,k,S[k]) tuples are held in two integer arrays: (1) I_work or T->i,
-    // and (2) K_work, and an array S of numerical values.  S has not been
-    // sorted, nor even accessed yet.  It is identical to the original unsorted
-    // tuples.  The (i,k,S[k]) tuple holds the row index i, the position k, and
-    // the value S [k].  This entry becomes T(i,j) = S [k] in the matrix T, and
-    // duplicates (if any) are assembled via the dup operator.
+    // The (i,k,Sx[k]) tuples are held in two integer arrays: (1) I_work or
+    // T->i, and (2) K_work, and an array Sx of numerical values.  Sx has not
+    // been sorted, nor even accessed yet.  It is identical to the original
+    // unsorted tuples.  The (i,k,Sx[k]) tuple holds the row index i, the
+    // position k, and the value Sx [k].  This entry becomes T(i,j) = Sx [k] in
+    // the matrix T, and duplicates (if any) are assembled via the dup
+    // operator.
 
     //--------------------------------------------------------------------------
     // get opcodes and check types
@@ -953,11 +1012,11 @@ GrB_Info GB_builder                 // build a matrix from tuples
     // With GB_build, there can be 1 to 2 different types.
     //      T->type is identical to the types of x,y,z for z=dup(x,y).
     //      dup is never NULL and all its three types are the same
-    //      The type of S (scode) can different but must be compatible
+    //      The type of Sx (stype) can different but must be compatible
     //          with T->type
 
-    // With GB_Matrix_wait, there can be 1 to 5 different types:
-    //      The pending tuples are in S, of type scode which must be
+    // With GB_wait, there can be 1 to 5 different types:
+    //      The pending tuples are in Sx, of type stype which must be
     //          compatible with dup->ytype and T->type
     //      z = dup (x,y): can be NULL or have 1 to 3 different types
     //      T->type: must be compatible with all above types.
@@ -971,6 +1030,7 @@ GrB_Info GB_builder                 // build a matrix from tuples
     #endif
 
     GB_Type_code tcode = ttype->code ;
+    const size_t tsize = ttype->size ;
     bool op_2nd ;
 
     ASSERT_TYPE_OK (ttype, "ttype for build_factory", GB0) ;
@@ -983,17 +1043,17 @@ GrB_Info GB_builder                 // build a matrix from tuples
         //----------------------------------------------------------------------
 
         // z = SECOND (x,y) where all three types are the same as ttype
-        // T(i,j) = (ttype) S(k) will be done for all tuples.
+        // T(i,j) = (ttype) Sx(k) will be done for all tuples.
 
         #ifndef GBCOMPACT
-        opcode = GB_SECOND_opcode ;
+        opcode = GB_SECOND_binop_code ;
         #endif
-        ASSERT (GB_op_is_second (dup, ttype)) ;
         xtype = ttype ;
         ytype = ttype ;
         ztype = ttype ;
         fdup = NULL ;
         op_2nd = true ;
+        ASSERT (GB_op_is_second (dup, ttype)) ;
 
     }
     else
@@ -1003,23 +1063,24 @@ GrB_Info GB_builder                 // build a matrix from tuples
         // dup is an explicit operator
         //----------------------------------------------------------------------
 
-        // T(i,j) = (ttype) S[k] will be done for the first tuple.
-        // for subsequent tuples: T(i,j) += S[k], via the dup operator and
+        // T(i,j) = (ttype) Sx[k] will be done for the first tuple.
+        // for subsequent tuples: T(i,j) += Sx[k], via the dup operator and
         // typecasting:
         //
-        //      y = (dup->ytype) S[k]
+        //      y = (dup->ytype) Sx[k]
         //      x = (dup->xtype) T(i,j)
         //      z = (dup->ztype) dup (x,y)
         //      T(i,j) = (ttype) z
 
         ASSERT_BINARYOP_OK (dup, "dup for build_factory", GB0) ;
+        ASSERT (!S_iso) ;
         #ifndef GBCOMPACT
         opcode = dup->opcode ;
         #endif
         xtype = dup->xtype ;
         ytype = dup->ytype ;
         ztype = dup->ztype ;
-        fdup = dup->function ;
+        fdup = dup->binop_function ;
         op_2nd = GB_op_is_second (dup, ttype) ;
     }
 
@@ -1031,8 +1092,8 @@ GrB_Info GB_builder                 // build a matrix from tuples
     GB_Type_code xcode = xtype->code ;
     GB_Type_code ycode = ytype->code ;
 
-    ASSERT (GB_code_compatible (tcode, scode)) ;    // T(i,j) = (ttype) S
-    ASSERT (GB_code_compatible (ycode, scode)) ;    // y = (ytype) S
+    ASSERT (GB_Type_compatible (ttype, stype)) ;    // T(i,j) = (ttype) Sx
+    ASSERT (GB_Type_compatible (ytype, stype)) ;    // y = (ytype) Sx
     ASSERT (GB_Type_compatible (xtype, ttype)) ;    // x = (xtype) T(i,j)
     ASSERT (GB_Type_compatible (ttype, ztype)) ;    // T(i,j) = (ttype) z
 
@@ -1041,8 +1102,14 @@ GrB_Info GB_builder                 // build a matrix from tuples
     size_t ysize = ytype->size ;
 
     // no typecasting if all 5 types are the same
-    bool nocasting = (tcode == scode) &&
+    bool nocasting = (ttype == stype) &&
         (ttype == xtype) && (ttype == ytype) && (ttype == ztype) ;
+
+    ASSERT_TYPE_OK (ttype, "ttype for build_factory", GB0) ;
+    ASSERT_TYPE_OK (stype, "stype for build_factory", GB0) ;
+    ASSERT_TYPE_OK (xtype, "xtype for build_factory", GB0) ;
+    ASSERT_TYPE_OK (ytype, "ytype for build_factory", GB0) ;
+    ASSERT_TYPE_OK (ztype, "ztype for build_factory", GB0) ;
 
     //--------------------------------------------------------------------------
     // STEP 5: assemble the tuples
@@ -1058,19 +1125,27 @@ GrB_Info GB_builder                 // build a matrix from tuples
         //----------------------------------------------------------------------
 
         // No typecasting is needed, the tuples were originally in sorted
-        // order, and no duplicates appear.  All that is required is to copy S
-        // into Tx.  S can be directly transplanted into T->x since S is
+        // order, and no duplicates appear.  All that is required is to copy Sx
+        // into Tx.  Sx can be directly transplanted into T->x since Sx is
         // provided as S_work.  GB_builder must either transplant or free
-        // S_work.  The transplant can be used by GB_Matrix_wait, whenever the
-        // tuples are already sorted, with no duplicates, and no typecasting is
-        // needed, since S_work is always A->Pending->x.  This transplant can
-        // rarely be used for GB_transpose, in the case when op is NULL and the
-        // transposed tuples happen to be sorted (which is unlikely).
+        // S_work.  The transplant can be used by GB_wait, whenever the tuples
+        // are already sorted, with no duplicates, and no typecasting is
+        // needed, since S_work is always A->Pending->x.  T and Sx may be iso
+        // or non-iso.
 
         T->x = S_work ; T->x_size = (*S_work_size_handle) ;
         S_work = NULL ;
         (*S_work_handle) = NULL ;
         (*S_work_size_handle) = 0 ;
+
+        int64_t tx_size_required = tnz * tsize ;
+        if (2 * tx_size_required < T->x_size)
+        { 
+            // shrink the size of T->x
+            bool ok = true ;
+            GB_REALLOC (T->x, tx_size_required, GB_void, &(T->x_size), &ok,
+                Context) ;
+        }
 
     }
     else
@@ -1080,18 +1155,18 @@ GrB_Info GB_builder                 // build a matrix from tuples
         // allocate T->x
         //----------------------------------------------------------------------
 
-        T->x = GB_MALLOC (T->nzmax * ttype->size, GB_void, &(T->x_size)) ;
+        T->x = GB_XALLOC (false, S_iso, tnz, tsize, &(T->x_size)) ; // x:OK
         if (T->x == NULL)
         { 
             // out of memory
             GB_phbix_free (T) ;
-            GB_FREE_WORK ;
+            GB_FREE_WORKSPACE ;
             return (GrB_OUT_OF_MEMORY) ;
         }
 
         GB_void *restrict Tx = (GB_void *) T->x ;
 
-        ASSERT (GB_IMPLIES (nvals > 0, S != NULL)) ;
+        ASSERT (GB_IMPLIES (nvals > 0, Sx != NULL)) ;
 
         if (nvals == 0)
         { 
@@ -1103,28 +1178,27 @@ GrB_Info GB_builder                 // build a matrix from tuples
         { 
 
             //------------------------------------------------------------------
-            // copy S into T->x
+            // copy Sx into T->x
             //------------------------------------------------------------------
 
             // No typecasting is needed, the tuples were originally in sorted
             // order, and no duplicates appear.  All that is required is to
-            // copy S into Tx.  S cannot be transplanted into T->x since
+            // copy Sx into Tx.  Sx cannot be transplanted into T->x since
             // S_work is NULL and S_input cannot be modified by GB_builder.
 
-            GBURBLE ("(build:memcpy) ") ;
             ASSERT (S_work == NULL) ;
-            ASSERT (S == S_input) ;
-            GB_memcpy (Tx, S, nvals * tsize, nthreads) ;
+            ASSERT (Sx == S_input) ;
+            GB_memcpy (Tx, Sx, (S_iso ? 1 : nvals) * tsize, nthreads) ;
 
         }
         else if (nocasting)
         { 
 
             //------------------------------------------------------------------
-            // assemble the values, S, into T, no typecasting needed
+            // assemble the values, Sx, into T, no typecasting needed
             //------------------------------------------------------------------
 
-            // S (either S_work or S_input) must be permuted and copied into
+            // Sx (either S_work or S_input) must be permuted and copied into
             // T->x, since the tuples had to be sorted, or duplicates appear.
             // Any duplicates are now assembled.
 
@@ -1133,46 +1207,66 @@ GrB_Info GB_builder                 // build a matrix from tuples
             // (all but boolean; and OR, AND, XOR, and EQ for boolean.
 
             // In addition, the FIRST and SECOND operators are hard-coded, for
-            // another 22 workers, since SECOND is used by GB_Matrix_wait and
-            // since FIRST is useful for keeping the first tuple seen.  It is
+            // another 22 workers, since SECOND is used by GB_wait and since
+            // FIRST is useful for keeping the first tuple seen.  It is
             // controlled by the GB_INCLUDE_SECOND_OPERATOR definition, so they
             // do not appear in GB_reduce_to_* where the FIRST and SECOND
             // operators are not needed.
 
             // Early exit cannot be exploited, so the terminal is ignored.
 
-            GBURBLE ("(build:assemble) ") ;
             bool done = false ;
 
-            #ifndef GBCOMPACT
+            if (S_iso)
+            { 
 
                 //--------------------------------------------------------------
-                // define the worker for the switch factory
+                // T and Sx are iso; set iso value and delete duplicates
                 //--------------------------------------------------------------
 
-                #define GB_INCLUDE_SECOND_OPERATOR
+                memcpy (Tx, Sx, tsize) ;
+                #define GB_ISO_BUILD
+                #include "GB_reduce_build_template.c"
+                done = true ;
 
-                #define GB_red(opname,aname) \
-                    GB (_red_build_ ## opname ## aname)
-
-                #define GB_RED_WORKER(opname,aname,atype)                   \
-                {                                                           \
-                    info = GB_red (opname, aname) ((atype *) Tx, Ti,        \
-                        (atype *) S, nvals, ndupl, I_work, K_work,          \
-                        tstart_slice, tnz_slice, nthreads) ;                \
-                    done = (info != GrB_NO_VALUE) ;                         \
-                }                                                           \
-                break ;
+            }
+            else
+            { 
 
                 //--------------------------------------------------------------
-                // launch the switch factory
+                // T and Sx are not iso; call in the workers
                 //--------------------------------------------------------------
 
-                // controlled by opcode and typecode
-                GB_Type_code typecode = tcode ;
-                #include "GB_red_factory.c"
+                #ifndef GBCOMPACT
 
-            #endif
+                    //----------------------------------------------------------
+                    // define the worker for the switch factory
+                    //----------------------------------------------------------
+
+                    #define GB_INCLUDE_SECOND_OPERATOR
+
+                    #define GB_red(opname,aname) \
+                        GB (_red_build_ ## opname ## aname)
+
+                    #define GB_RED_WORKER(opname,aname,atype)               \
+                    {                                                       \
+                        info = GB_red (opname, aname) ((atype *) Tx, Ti,    \
+                            (atype *) Sx, nvals, ndupl, I_work, K_work,     \
+                            tstart_slice, tnz_slice, nthreads) ;            \
+                        done = (info != GrB_NO_VALUE) ;                     \
+                    }                                                       \
+                    break ;
+
+                    //----------------------------------------------------------
+                    // launch the switch factory
+                    //----------------------------------------------------------
+
+                    // controlled by opcode and typecode
+                    GB_Type_code typecode = tcode ;
+                    #include "GB_red_factory.c"
+
+                #endif
+            }
 
             //------------------------------------------------------------------
             // generic worker
@@ -1180,21 +1274,22 @@ GrB_Info GB_builder                 // build a matrix from tuples
 
             if (!done)
             {
-                GB_BURBLE_N (nvals, "(generic) ") ;
+                if (do_burble) GBURBLE ("(generic build) ") ;
 
                 //--------------------------------------------------------------
                 // no typecasting, but use the fdup function pointer and memcpy
                 //--------------------------------------------------------------
 
-                // Either the fdup operator or type of S and T are
+                // Either the fdup operator or type of Sx and T are
                 // user-defined, or fdup is not an associative operator handled
                 // by the GB_red_factory, or some combination of these
                 // conditions.  User-defined types cannot be typecasted, so
                 // this handles all user-defined types.
 
-                // Tx [p] = (ttype) S [k], but with no typecasting
-                #define GB_CAST_ARRAY_TO_ARRAY(Tx,p,S,k)                \
-                    memcpy (Tx +((p)*tsize), S +((k)*tsize), tsize) ;
+                // Tx [p] = (ttype) Sx [k], but with no typecasting
+                #undef  GB_CAST_ARRAY_TO_ARRAY
+                #define GB_CAST_ARRAY_TO_ARRAY(Tx,p,Sx,k)               \
+                    memcpy (Tx +((p)*tsize), Sx +((k)*tsize), tsize) ;
 
                 if (op_2nd)
                 { 
@@ -1203,9 +1298,10 @@ GrB_Info GB_builder                 // build a matrix from tuples
                     // dup is the SECOND operator, with no typecasting
                     //----------------------------------------------------------
 
-                    // Tx [p] += (ttype) S [k], but 2nd op and no typecasting
-                    #define GB_ADD_CAST_ARRAY_TO_ARRAY(Tx,p,S,k)        \
-                        GB_CAST_ARRAY_TO_ARRAY(Tx,p,S,k)
+                    // Tx [p] += (ttype) Sx [k], but 2nd op and no typecasting
+                    #undef  GB_ADD_CAST_ARRAY_TO_ARRAY
+                    #define GB_ADD_CAST_ARRAY_TO_ARRAY(Tx,p,Sx,k)       \
+                        GB_CAST_ARRAY_TO_ARRAY(Tx,p,Sx,k)
                     #include "GB_reduce_build_template.c"
 
                 }
@@ -1216,10 +1312,10 @@ GrB_Info GB_builder                 // build a matrix from tuples
                     // dup is another operator, with no typecasting needed
                     //----------------------------------------------------------
 
-                    // Tx [p] += (ttype) S [k], but with no typecasting
+                    // Tx [p] += (ttype) Sx [k], but with no typecasting
                     #undef  GB_ADD_CAST_ARRAY_TO_ARRAY
-                    #define GB_ADD_CAST_ARRAY_TO_ARRAY(Tx,p,S,k)        \
-                        fdup (Tx +((p)*tsize), Tx +((p)*tsize), S +((k)*tsize));
+                    #define GB_ADD_CAST_ARRAY_TO_ARRAY(Tx,p,Sx,k)       \
+                        fdup (Tx +((p)*tsize), Tx +((p)*tsize), Sx+((k)*tsize));
                     #include "GB_reduce_build_template.c"
                 }
             }
@@ -1229,17 +1325,26 @@ GrB_Info GB_builder                 // build a matrix from tuples
         {
 
             //------------------------------------------------------------------
-            // assemble the values S into T, typecasting as needed
+            // assemble the values Sx into T, typecasting as needed
             //------------------------------------------------------------------
 
-            GB_BURBLE_N (nvals, "(generic with typecast) ") ;
+            if (do_burble)
+            {
+                GBURBLE ("(generic build with typecast) ") ;
+            }
 
-            // S (either S_work or S_input) must be permuted and copied into
+            // If T and Sx are iso, no typecasting is ever done, so this method
+            // is not used in that case.
+            ASSERT (!S_iso) ;
+
+            // Sx (either S_work or S_input) must be permuted and copied into
             // T->x, since the tuples had to be sorted, or duplicates appear.
             // Any duplicates are now assembled.  Not all of the 5 types are
             // the same, but all of them are built-in since user-defined types
             // cannot be typecasted.
 
+            const GB_Type_code scode = stype->code ;
+            const size_t ssize = stype->size ;
             GB_cast_function cast_S_to_T = GB_cast_factory (tcode, scode) ;
             GB_cast_function cast_S_to_Y = GB_cast_factory (ycode, scode) ;
             GB_cast_function cast_T_to_X = GB_cast_factory (xcode, tcode) ;
@@ -1251,10 +1356,10 @@ GrB_Info GB_builder                 // build a matrix from tuples
             ASSERT (ycode <= GB_FC64_code) ;
             ASSERT (zcode <= GB_FC64_code) ;
 
-            // Tx [p] = (ttype) S [k], with typecasting
+            // Tx [p] = (ttype) Sx [k], with typecasting
             #undef  GB_CAST_ARRAY_TO_ARRAY
-            #define GB_CAST_ARRAY_TO_ARRAY(Tx,p,S,k)                        \
-                cast_S_to_T (Tx +((p)*tsize), S +((k)*ssize), ssize) ;
+            #define GB_CAST_ARRAY_TO_ARRAY(Tx,p,Sx,k)                   \
+                cast_S_to_T (Tx +((p)*tsize), Sx +((k)*ssize), ssize) ;
 
             if (op_2nd)
             { 
@@ -1263,10 +1368,10 @@ GrB_Info GB_builder                 // build a matrix from tuples
                 // dup operator is the SECOND operator, with typecasting
                 //--------------------------------------------------------------
 
-                // Tx [p] += (ttype) S [k], but 2nd op, with typecasting
+                // Tx [p] += (ttype) Sx [k], but 2nd op, with typecasting
                 #undef  GB_ADD_CAST_ARRAY_TO_ARRAY
-                #define GB_ADD_CAST_ARRAY_TO_ARRAY(Tx,p,S,k)        \
-                    GB_CAST_ARRAY_TO_ARRAY(Tx,p,S,k)
+                #define GB_ADD_CAST_ARRAY_TO_ARRAY(Tx,p,Sx,k)           \
+                    GB_CAST_ARRAY_TO_ARRAY(Tx,p,Sx,k)
                 #include "GB_reduce_build_template.c"
 
             }
@@ -1277,13 +1382,13 @@ GrB_Info GB_builder                 // build a matrix from tuples
                 // dup is another operator, with typecasting required
                 //--------------------------------------------------------------
 
-                // Tx [p] += S [k], with typecasting
+                // Tx [p] += Sx [k], with typecasting
                 #undef  GB_ADD_CAST_ARRAY_TO_ARRAY
-                #define GB_ADD_CAST_ARRAY_TO_ARRAY(Tx,p,S,k)                \
+                #define GB_ADD_CAST_ARRAY_TO_ARRAY(Tx,p,Sx,k)               \
                 {                                                           \
-                    /* ywork = (ytype) S [k] */                             \
+                    /* ywork = (ytype) Sx [k] */                            \
                     GB_void ywork [GB_VLA(ysize)] ;                         \
-                    cast_S_to_Y (ywork, S +((k)*ssize), ssize) ;            \
+                    cast_S_to_Y (ywork, Sx +((k)*ssize), ssize) ;           \
                     /* xwork = (xtype) Tx [p] */                            \
                     GB_void xwork [GB_VLA(xsize)] ;                         \
                     cast_T_to_X (xwork, Tx +((p)*tsize), tsize) ;           \
@@ -1303,7 +1408,7 @@ GrB_Info GB_builder                 // build a matrix from tuples
     // free workspace and return result
     //--------------------------------------------------------------------------
 
-    GB_FREE_WORK ;
+    GB_FREE_WORKSPACE ;
     T->jumbled = false ;
     ASSERT_MATRIX_OK (T, "T built", GB0) ;
     ASSERT (GB_IS_HYPERSPARSE (T)) ;

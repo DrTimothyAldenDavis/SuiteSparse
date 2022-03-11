@@ -2,7 +2,7 @@
 // GB_binop_builtin:  determine if a binary operator is built-in
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -15,7 +15,7 @@
 
 // If the op is NULL, then it is the implicit GrB_SECOND_[A_type] operator.
 // This is a built-in operator for built-in types.  This feature is only used
-// by GB_Matrix_wait.
+// by GB_wait.
 
 // This function is not used by the CUDA jitified kernels, since they can
 // typecast the entries in the matrices A and B to the types of x and y of the
@@ -51,7 +51,7 @@ bool GB_binop_builtin               // true if binary operator is builtin
     { 
         // implicit GB_SECOND_[TYPE] operator
         ASSERT (A_type == B_type) ;
-        (*opcode) = GB_SECOND_opcode ;
+        (*opcode) = GB_SECOND_binop_code ;
         op_xtype = A_type ;
         op_ytype = A_type ;
         op_ztype = A_type ;
@@ -64,7 +64,8 @@ bool GB_binop_builtin               // true if binary operator is builtin
         op_ztype = op->ztype ;
     }
 
-    if (*opcode >= GB_USER_opcode)
+    ASSERT (GB_IS_BINARYOP_CODE (*opcode)) ;
+    if (*opcode == GB_USER_binop_code)
     { 
         // the binary operator is user-defined
         return (false) ;
@@ -143,7 +144,7 @@ bool GB_binop_builtin               // true if binary operator is builtin
         // versions (DIV vs RDIV, ...).  Flipping the operator does not handle
         // ATAN2, BGET, and other built-in operators, but these do not
         // correspond to built-in semirings.
-        (*opcode) = GB_binop_flip (*opcode, &handled) ; // for any opcode
+        (*opcode) = GB_flip_binop_code (*opcode, &handled) ; // for any opcode
     }
 
     return (handled) ;

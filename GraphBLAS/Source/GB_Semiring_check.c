@@ -2,14 +2,14 @@
 // GB_Semiring_check: check and print a semiring
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
 #include "GB.h"
 
-GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
+GB_PUBLIC
 GrB_Info GB_Semiring_check          // check a GraphBLAS semiring
 (
     const GrB_Semiring semiring,    // GraphBLAS semiring to print and check
@@ -35,7 +35,7 @@ GrB_Info GB_Semiring_check          // check a GraphBLAS semiring
     // check object
     //--------------------------------------------------------------------------
 
-    GB_CHECK_MAGIC (semiring, "Semiring") ;
+    GB_CHECK_MAGIC (semiring) ;
     GBPR0 (semiring->header_size > 0 ? "(user-defined)" : "(built-in)") ;
 
     GrB_Info info ;

@@ -2,7 +2,7 @@
 // GB_assign_zombie4: delete entries in C(i,:) for C_replace_phase
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -15,6 +15,8 @@
 
 // C must be sparse or hypersparse.
 // M can have any sparsity structure: hypersparse, sparse, bitmap, or full
+
+// C->iso is not affected.
 
 #include "GB_assign.h"
 #include "GB_assign_zombie.h"
@@ -141,7 +143,7 @@ void GB_assign_zombie4
                         mij = GBB (Mb, pM) && GB_mcast (Mx, pM, msize) ;
                     }
                     else
-                    { 
+                    {
                         // M is sparse or hypersparse
                         int64_t pM, pM_end ;
                         int64_t pleft = 0 ;

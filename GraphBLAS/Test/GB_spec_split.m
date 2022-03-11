@@ -1,10 +1,10 @@
 function C = GB_spec_split (A, ms, ns)
-%GB_SPEC_SPLIT a MATLAB mimic of GxB_Matrix_split
+%GB_SPEC_SPLIT a mimic of GxB_Matrix_split
 %
 % Usage:
 % C = GB_spec_split (A, ms, ns)
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 %-------------------------------------------------------------------------------

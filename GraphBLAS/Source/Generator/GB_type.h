@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: Apache-2.0
-
 GrB_Info GB (_Cdense_05d)
 (
     GrB_Matrix C,
@@ -23,13 +22,5 @@ GrB_Info GB (_Cdense_25)
     const GrB_Matrix M,
     const GrB_Matrix A,
     const int64_t *M_ek_slicing, const int M_ntasks, const int M_nthreads
-) ;
-
-GrB_Info GB (_convert_s2b)
-(
-    GrB_Matrix A,
-    GB_void *restrict Ax_new_void,
-    int8_t  *restrict Ab,
-    const int64_t *A_ek_slicing, const int A_ntasks, const int A_nthreads
 ) ;
 

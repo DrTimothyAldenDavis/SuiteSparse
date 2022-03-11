@@ -1,7 +1,7 @@
 function test195
 %TEST195 test all variants of saxpy3
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 k = 3 ;
@@ -30,7 +30,6 @@ for asparsity = [1 2 4 8]
                         fprintf ('.') ;
                         M = GB_spec_random (m, n, dm) ; M.sparsity = msparsity ;
                         M.matrix = spones (M.matrix) ;
-                        C0 = sparse (n, n) ;
 
                         % C = A*B
                         C0 = A.matrix * B.matrix ;
@@ -80,3 +79,4 @@ for asparsity = [1 2 4 8]
 end
 
 fprintf ('\ntest195: all tests passed\n') ;
+

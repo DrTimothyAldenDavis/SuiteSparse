@@ -2,7 +2,7 @@
 // GB_AxB_saxpy_sparsity: determine the sparsity structure for C<M or !M>=A*B
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -36,13 +36,17 @@ void GB_AxB_saxpy_sparsity          // determine C_sparsity and method to use
     // determine the sparsity of C
     //--------------------------------------------------------------------------
 
-    if (B->nvec_nonempty < 0) B->nvec_nonempty = GB_nvec_nonempty (B, Context) ;
+    if (B->nvec_nonempty < 0)
+    { 
+        // B->nvec_nonempty is used to select the method
+        B->nvec_nonempty = GB_nvec_nonempty (B, Context) ;
+    }
     double bnvec = B->nvec_nonempty ;
 
     double m = (double) A->vlen ;
     double n = (double) B->vdim ;
-    double anz = (double) GB_NNZ_HELD (A) ;
-    double bnz = (double) GB_NNZ_HELD (B) ;
+    double anz = (double) GB_nnz_held (A) ;
+    double bnz = (double) GB_nnz_held (B) ;
 
     int M_sparsity = (M == NULL) ? 0 : GB_sparsity (M) ;
     int B_sparsity = GB_sparsity (B) ;
@@ -167,9 +171,9 @@ void GB_AxB_saxpy_sparsity          // determine C_sparsity and method to use
         // sparse/hyper, not bitmap.   TODO: give the user control over this
         // decision.
 
-        // TODO:  for bitmap*hyper and hyper*bitmap, create a packed version
-        // of the hyper matrix (like dot does), and construct C as bitmap.
-        // Then expand into C into hyper.
+        // TODO:  for bitmap*hyper and hyper*bitmap, create a hyper_shallow
+        // version of the hyper matrix (like dot does), and construct C as
+        // bitmap.  Then expand into C into hyper.
 
         switch (B_sparsity)
         {
@@ -192,14 +196,13 @@ void GB_AxB_saxpy_sparsity          // determine C_sparsity and method to use
                     case GxB_FULL : 
                         // S = {B,F} * S : if B has many empty columns
                         // B = {B,F} * S : otherwise C is bitmap
-                        (*C_sparsity) = (bnvec < n/2) ? GxB_SPARSE : GxB_BITMAP;
+                        (*C_sparsity) = (bnvec < n/4) ? GxB_SPARSE : GxB_BITMAP;
                         break ;
                     default: ;
                 }
                 break ;
 
             case GxB_BITMAP : 
-
             case GxB_FULL : 
 
                 switch (A_sparsity)
@@ -239,7 +242,7 @@ void GB_AxB_saxpy_sparsity          // determine C_sparsity and method to use
         // hypersparse.  Otherwise C must be sparse.  This is a requirement of
         // GB_AxB_saxpy3, and is also asserted there.
         ASSERT ((*C_sparsity) ==
-            (B_sparsity == GxB_HYPERSPARSE) ? GxB_HYPERSPARSE : GxB_SPARSE) ;
+            ((B_sparsity == GxB_HYPERSPARSE) ? GxB_HYPERSPARSE : GxB_SPARSE)) ;
     }
 }
 

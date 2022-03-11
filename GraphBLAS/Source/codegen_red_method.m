@@ -3,7 +3,7 @@ function codegen_red_method (opname, func, atype, identity, terminal, panel)
 %
 % codegen_red_method (opname, func, atype, identity, terminal)
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 f = fopen ('control.m4', 'w') ;
@@ -63,7 +63,7 @@ end
 % create the operator
 func = strrep (func, 'zarg', '`$1''') ;
 func = strrep (func, 'yarg', '`$2''') ;
-fprintf (f, 'define(`GB_REDUCE_OP'', `%s'')\n', func) ;
+fprintf (f, 'define(`GB_reduce_op'', `%s'')\n', func) ;
 
 % create the disable flag
 disable  = sprintf ('GxB_NO_%s', upper (opname)) ;
@@ -75,14 +75,14 @@ fclose (f) ;
 
 % construct the *.c file
 cmd = sprintf (...
-'cat control.m4 Generator/GB_red.c | m4 | tail -n +16 > Generated/GB_red__%s.c', ...
+'cat control.m4 Generator/GB_red.c | m4 | tail -n +16 > Generated2/GB_red__%s.c', ...
 name) ;
 fprintf ('.') ;
 system (cmd) ;
 
 % append to the *.h file
 cmd = sprintf (...
-'cat control.m4 Generator/GB_red.h | m4 | tail -n +16 >> Generated/GB_red__include.h') ;
+'cat control.m4 Generator/GB_red.h | m4 | tail -n +16 >> Generated2/GB_red__include.h') ;
 system (cmd) ;
 
 delete ('control.m4') ;

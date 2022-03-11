@@ -1,11 +1,11 @@
 function [Z simple] = GB_spec_accum (accum, C, T, identity)
-%GB_SPEC_ACCUM MATLAB mimic of the Z=accum(C,T) operation in GraphBLAS
+%GB_SPEC_ACCUM mimic of the Z=accum(C,T) operation in GraphBLAS
 %
 % Z = GB_spec_accum (accum, C, T, identity)
 %
 % Apply accum binary operator to the input C and the intermediate result T.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 % get the operator; of is type(C) if type is not present in the accum op

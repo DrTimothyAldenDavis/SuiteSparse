@@ -2,7 +2,7 @@
 // GB_bitmap_assign_methods.h: definitions for GB_bitmap_assign* methods
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -20,14 +20,10 @@
 // burble
 //------------------------------------------------------------------------------
 
-#if GB_BURBLE
     #define GBURBLE_BITMAP_ASSIGN(method,M,Mask_comp,accum,Ikind,Jkind,akind) \
         GBURBLE ("Method:" method " ") ;                                    \
         GB_burble_assign (C_replace, Ikind, Jkind, M, Mask_comp,            \
             Mask_struct, accum, A, akind) ;
-#else
-    #define GBURBLE_BITMAP_ASSIGN(method,M,Mask_comp,accum,Ikind,Jkind,akind) ;
-#endif
 
 //------------------------------------------------------------------------------
 // GB_GET_C_BITMAP: get the C matrix (must be bitmap)
@@ -42,7 +38,8 @@
     ASSERT_MATRIX_OK (C, "C for bitmap assign", GB0) ;                      \
     ASSERT (GB_IS_BITMAP (C)) ;                                             \
     int8_t  *Cb = C->b ;                                                    \
-    GB_void *Cx = (GB_void *) C->x ;                                        \
+    const bool C_iso = C->iso ;                                             \
+    GB_void *Cx = (C_iso) ? NULL : (GB_void *) C->x ;                       \
     const size_t csize = C->type->size ;                                    \
     const GB_Type_code ccode = C->type->code ;                              \
     const int64_t cvdim = C->vdim ;                                         \
@@ -94,27 +91,21 @@
     const int8_t  *Ab = NULL ;                                              \
     const int64_t *Ai = NULL ;                                              \
     const GB_void *Ax = NULL ;                                              \
-    size_t asize ;                                                          \
-    GB_Type_code acode ;                                                    \
-    if (A == NULL)                                                          \
-    {                                                                       \
-        asize = scalar_type->size ;                                         \
-        acode = scalar_type->code ;                                         \
-    }                                                                       \
-    else                                                                    \
+    const bool A_iso = (A == NULL) ? false : A->iso ;                       \
+    const size_t       asize = (A==NULL) ? scalar_type->size : A->type->size ; \
+    const GB_Type_code acode = (A==NULL) ? scalar_type->code : A->type->code ; \
+    if (A != NULL)                                                          \
     {                                                                       \
         ASSERT_MATRIX_OK (A, "A for bitmap assign/subassign", GB0) ;        \
-        asize = A->type->size ;                                             \
-        acode = A->type->code ;                                             \
         Ap = A->p ;                                                         \
         Ah = A->h ;                                                         \
         Ab = A->b ;                                                         \
         Ai = A->i ;                                                         \
-        Ax = (GB_void *) A->x ;                                             \
+        Ax = (C_iso) ? NULL : (GB_void *) A->x ;                            \
     }                                                                       \
     GB_cast_function cast_A_to_C = GB_cast_factory (ccode, acode) ;         \
     GB_void cwork [GB_VLA(csize)] ;                                         \
-    if (A == NULL)                                                          \
+    if (A == NULL && !C_iso)                                                \
     {                                                                       \
         cast_A_to_C (cwork, scalar, asize) ;                                \
     }                                                                       \
@@ -126,7 +117,7 @@
 #define GB_GET_ACCUM_FOR_BITMAP                                             \
     ASSERT_BINARYOP_OK (accum, "accum for bitmap assign", GB0) ;            \
     ASSERT (!GB_OP_IS_POSITIONAL (accum)) ;                                 \
-    GxB_binary_function faccum = accum->function ;                          \
+    GxB_binary_function faccum = accum->binop_function ;                    \
     GB_cast_function cast_A_to_Y = GB_cast_factory (accum->ytype->code, acode);\
     GB_cast_function cast_C_to_X = GB_cast_factory (accum->xtype->code, ccode);\
     GB_cast_function cast_Z_to_C = GB_cast_factory (ccode, accum->ztype->code);\
@@ -145,7 +136,10 @@
 
 #define GB_ASSIGN_SCALAR(pC)                                \
 {                                                           \
-    memcpy (Cx +(pC)*csize, cwork, csize) ;                 \
+    if (!C_iso)                                             \
+    {                                                       \
+        memcpy (Cx +(pC)*csize, cwork, csize) ;             \
+    }                                                       \
 }
 
 //------------------------------------------------------------------------------
@@ -154,33 +148,42 @@
 
 #define GB_ASSIGN_AIJ(pC,pA)                                \
 {                                                           \
-    cast_A_to_C (Cx +(pC)*csize, Ax +(pA)*asize, csize) ;   \
+    if (!C_iso)                                             \
+    {                                                       \
+        cast_A_to_C (Cx +(pC)*csize, Ax +(A_iso ? 0:(pA)*asize), csize) ;   \
+    }                                                       \
 }
 
 //------------------------------------------------------------------------------
 // GB_ACCUM_SCALAR:  Cx [pC] += ywork
 //------------------------------------------------------------------------------
 
-#define GB_ACCUM_SCALAR(pC)                                 \
-{                                                           \
-    GB_void xwork [GB_VLA(xsize)] ;                         \
-    cast_C_to_X (xwork, Cx +((pC)*csize), csize) ;          \
-    GB_void zwork [GB_VLA(zsize)] ;                         \
-    faccum (zwork, xwork, ywork) ;                          \
-    cast_Z_to_C (Cx +((pC)*csize), zwork, csize) ;          \
-}                                                           \
+#define GB_ACCUM_SCALAR(pC)                                     \
+{                                                               \
+    if (!C_iso)                                                 \
+    {                                                           \
+        GB_void xwork [GB_VLA(xsize)] ;                         \
+        cast_C_to_X (xwork, Cx +((pC)*csize), csize) ;          \
+        GB_void zwork [GB_VLA(zsize)] ;                         \
+        faccum (zwork, xwork, ywork) ;                          \
+        cast_Z_to_C (Cx +((pC)*csize), zwork, csize) ;          \
+    }                                                           \
+}
 
 //------------------------------------------------------------------------------
 // GB_ACCUM_AIJ:  Cx [pC] += Ax [pA]
 //------------------------------------------------------------------------------
 
-#define GB_ACCUM_AIJ(pC, pA)                                \
-{                                                           \
-    /* ywork = Ax [pA], with typecasting as needed */       \
-    GB_void ywork [GB_VLA(ysize)] ;                         \
-    cast_A_to_Y (ywork, Ax +((pA)*asize), asize) ;          \
-    /* Cx [pC] += ywork */                                  \
-    GB_ACCUM_SCALAR (pC) ;                                  \
+#define GB_ACCUM_AIJ(pC, pA)                                        \
+{                                                                   \
+    if (!C_iso)                                                     \
+    {                                                               \
+        /* ywork = Ax [pA], with typecasting as needed */           \
+        GB_void ywork [GB_VLA(ysize)] ;                             \
+        cast_A_to_Y (ywork, Ax +(A_iso ? 0:(pA)*asize), asize) ;    \
+        /* Cx [pC] += ywork */                                      \
+        GB_ACCUM_SCALAR (pC) ;                                      \
+    }                                                               \
 }
 
 //------------------------------------------------------------------------------
@@ -392,6 +395,7 @@ GrB_Info GB_bitmap_assign_noM_accum_whole
     GB_Context Context
 ) ;
 
+GB_PUBLIC
 GrB_Info GB_bitmap_assign_noM_noaccum
 (
     // input/output:

@@ -1,5 +1,5 @@
 function C = GB_spec_Row_assign (C, Mask, accum, A, i, J, descriptor)
-%GB_SPEC_ROW_ASSIGN a MATLAB mimic of GrB_Row_assign
+%GB_SPEC_ROW_ASSIGN a mimic of GrB_Row_assign
 %
 % Usage:
 % C = GB_spec_Row_assign (C, Mask, accum, A, i, J, descriptor)
@@ -9,7 +9,7 @@ function C = GB_spec_Row_assign (C, Mask, accum, A, i, J, descriptor)
 %
 % This function does the same thing as GrB_Row_assign
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 %-------------------------------------------------------------------------------

@@ -2,7 +2,7 @@
 // GxB_Matrix_import_FullC: import a matrix in full format, held by column
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -18,7 +18,7 @@ GrB_Info GxB_Matrix_import_FullC  // import a full matrix, held by column
 
     void **Ax,          // values
     GrB_Index Ax_size,  // size of Ax in bytes
-    bool is_uniform,    // if true, A has uniform values (TODO:::unsupported)
+    bool iso,           // if true, A is iso
 
     const GrB_Descriptor desc
 )
@@ -29,15 +29,16 @@ GrB_Info GxB_Matrix_import_FullC  // import a full matrix, held by column
     //--------------------------------------------------------------------------
 
     GB_WHERE1 ("GxB_Matrix_import_FullC (&A, type, nrows, ncols, "
-        "&Ax, Ax_size, is_uniform, desc)") ;
+        "&Ax, Ax_size, iso, desc)") ;
     GB_BURBLE_START ("GxB_Matrix_import_FullC") ;
     GB_GET_DESCRIPTOR (info, desc, xx1, xx2, xx3, xx4, xx5, xx6, xx7) ;
+    GB_GET_DESCRIPTOR_IMPORT (desc, fast_import) ;
 
     //--------------------------------------------------------------------------
     // import the matrix
     //--------------------------------------------------------------------------
 
-    info = GB_import (A, type, nrows, ncols, false,
+    info = GB_import (false, A, type, nrows, ncols, false,
         NULL, 0,        // Ap
         NULL, 0,        // Ah
         NULL, 0,        // Ab
@@ -45,7 +46,7 @@ GrB_Info GxB_Matrix_import_FullC  // import a full matrix, held by column
         Ax,   Ax_size,  // Ax
         0, false, 0,
         GxB_FULL, true,                     // full by col
-        is_uniform, Context) ;
+        iso, fast_import, true, Context) ;
 
     GB_BURBLE_END ;
     return (info) ;

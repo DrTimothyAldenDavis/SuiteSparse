@@ -1,5 +1,5 @@
 function w = GB_spec_Vector_eWiseMult (w, mask, accum, mult, u, v, descriptor)
-%GB_SPEC_VECTOR_EWISEMULT a MATLAB mimic of GrB_Vector_eWiseMult
+%GB_SPEC_VECTOR_EWISEMULT a mimic of GrB_Vector_eWiseMult
 %
 % Usage:
 % w = GB_spec_Vector_eWiseMult (w, mask, accum, mult, u, v, descriptor)
@@ -7,7 +7,7 @@ function w = GB_spec_Vector_eWiseMult (w, mask, accum, mult, u, v, descriptor)
 % Computes w<mask> = accum(w,t), in GraphBLAS notation, where t =u.*v,
 % The pattern of t is the union of u and v.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 %-------------------------------------------------------------------------------

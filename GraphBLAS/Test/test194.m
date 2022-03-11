@@ -1,7 +1,7 @@
 function test194
 %TEST194 test GxB_Vector_diag
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 fprintf ('test194 ----------- V = diag (A,k)\n') ;
@@ -10,6 +10,7 @@ fprintf ('test194 ----------- V = diag (A,k)\n') ;
 types = types.all ;
 
 rng ('default') ;
+GB_builtin_complex_set (true) ;
 
 ms = [10 20] ;
 ns = [4 10] ;

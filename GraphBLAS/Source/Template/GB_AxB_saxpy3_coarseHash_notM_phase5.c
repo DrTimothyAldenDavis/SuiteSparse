@@ -2,10 +2,11 @@
 // GB_AxB_saxpy3_coarseHash_notM_phase5: C<!M>=A*B, coarse Hash, phase 5
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
+
 {
 
     //--------------------------------------------------------------------------
@@ -47,10 +48,10 @@
                     if (f < mark)   // if true, i is new
                     { 
                         // C(i,j) is new
-                        Hf [hash] = mark1 ; // mark C(i,j) seen
+                        Hf [hash] = mark1 ;             // mark C(i,j) seen
                         Hi [hash] = i ;
-                        GB_MULT_A_ik_B_kj ; // t = A(i,k)*B(k,j)
-                        GB_HX_WRITE (hash, t) ; // Hx [hash] = t
+                        GB_MULT_A_ik_B_kj ;             // t = A(i,k)*B(k,j)
+                        GB_HX_WRITE (hash, t) ;         // Hx [hash] = t
                         Ci [pC++] = i ;
                         break ;
                     }
@@ -59,8 +60,8 @@
                         if (f == mark1)
                         { 
                             // C(i,j) has been seen; update it.
-                            GB_MULT_A_ik_B_kj ;//t=A(i,k)*B(k,j)
-                            GB_HX_UPDATE (hash, t) ;//Hx[ ] += t
+                            GB_MULT_A_ik_B_kj ;         //t = A(i,k)*B(k,j)
+                            GB_HX_UPDATE (hash, t) ;    // Hx [hash] += t
                         }
                         break ;
                     }

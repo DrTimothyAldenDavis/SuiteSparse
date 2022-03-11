@@ -95,6 +95,8 @@ SPQR/Demo/gpu_results.txt
 SPQR/Demo/qrdemo_gpu
 SPQR/Demo/qrdemo_gpu2
 SPQR/Demo/qrdemo_gpu3
+SPQR/Demo/pfile
+SPQR/Demo/tfile
 UMFPACK/Demo/numeric.umf
 UMFPACK/Demo/symbolic.umf
 UMFPACK/Demo/umfpack_di_demo

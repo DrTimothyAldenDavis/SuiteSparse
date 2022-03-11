@@ -14,17 +14,18 @@ function [multiply_op add_op identity ztype xtype ytype] = GB_spec_semiring (sem
 %               (default is 'times').
 %
 %   add         a string with the name of the 'add' operator (default is 'plus')
+%               or a monoid struct with add.opname and add.optype.
 %
-%   class       the MATLAB class of the operators (default is 'double', unless
-%               the multiply operator is 'or', 'and, or 'xor').  Any logical or
-%               numeric class is supported, which are the same as the 11
-%               built-in GraphBLAS types:
-%               'logical' (boolean in GraphBLAS), 'int8', 'uint8', 'int16',
-%               'uint16', 'int32', 'uint32', 'int64', 'uint64', 'single' (FP43
-%               in GraphBLAS), 'double' (FP64 in GraphBLAS),
-%               'single complex', and 'double complex'
+%   class       the built-in class of the operators (default is 'double',
+%               unless the multiply operator is 'or', 'and, or 'xor').  Any
+%               logical or numeric class is supported, which are the same as
+%               the 11 built-in GraphBLAS types: 'logical' (boolean in
+%               GraphBLAS), 'int8', 'uint8', 'int16', 'uint16', 'int32',
+%               'uint32', 'int64', 'uint64', 'single' (FP43 in GraphBLAS),
+%               'double' (FP64 in GraphBLAS), 'single complex', and 'double
+%               complex'
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 % set the default semiring

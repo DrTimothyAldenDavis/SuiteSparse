@@ -29,7 +29,7 @@ Portions of this work were supported by the National
 Science Foundation, under grants 0203270, 0620286, and 0619080.},
 Sencer Nuri Yeralan, Sanjay Ranka, Wissam Sid-Lakhdar}
 
-\date{VERSION 2.0.9, Dec 28, 2018}
+\date{VERSION 2.1.0, Mar 6, 2022}
 
 %-------------------------------------------------------------------------------
 \begin{document}
@@ -83,8 +83,7 @@ All packages in SuiteSparse, including SuiteSparseQR and the codes it relies on
 command typed into the MATLAB Command Window.  SuiteSparseQR uses the LAPACK
 and BLAS libraries provided with MATLAB; you do not need to do anything to use
 these.  Below are step-by-step instructions for compiling all of SuiteSparse
-(including SuiteSparseQR), and optional instructions on using METIS and/or
-Intel's Threading Building Blocks (TBB).
+(including SuiteSparseQR), and optional instructions on using METIS.
 
 %-------------------------------------------------------------------------------
 \subsubsection{Required instructions for Windows}
@@ -105,124 +104,6 @@ SuiteSparse now relies on METIS 5.1.0, which is distributed along with
 SuiteSparse itself.  Its use is optional, however.  If you compile with
 {\tt -DNPARTITION}, or if you delete or move the {\tt SuiteSparse/metis-5.1.0}
 folder, then SuiteSparse will be compiled without it.
-
-METIS tends to give orderings that are good for the parallelism exploited by
-TBB, so its use with TBB is recommended.  Note however that METIS is not
-bug-free; it can occasionally cause segmentation faults, particularly if used
-when finding basic solutions to underdetermined systems with many more columns
-than rows (SuiteSparseQR does not use METIS, by default, for those systems).
-This (rare) faulty behavior has been confirmed with valid inputs to the METIS
-test programs themselves; it is not a bug in the SuiteSparse interface to
-METIS.  Use METIS at your own risk.
-
-%-------------------------------------------------------------------------------
-\subsubsection{Optional instructions for using TBB on Linux/Unix/Mac}
-%-------------------------------------------------------------------------------
-
-If you are using a Debian-based Linux system (such as Ubuntu), you're in luck!
-You can install TBB via the Synaptic Package Manager.  Just search for TBB,
-select it, and click Apply.  This will place the right files in \verb'/usr/lib'
-and it will create the \verb'/usr/include/tbb' directory.  It's by far the
-simplest way to install TBB.  If you do this, skip the rest of this section.
-
-Alternatively, obtain a copy of TBB from
-\htmladdnormallink{http://www.threadingbuildingblocks.org}{http://www.threadingbuildingblocks.org}
-as a \verb'tbb*.tgz' file appropriate for your version of Linux/Unix.  If you
-install via the \verb'tbb_*.tgz' file, make sure the \verb'libtbb*.so*' and
-\verb'libtbbmalloc*.so*' files are placed in the \verb'/usr/lib' directory.
-Make sure the \verb'tbb' directory containing all of the include files is
-placed in \verb'/usr/include' (for example, the
-\verb'/usr/include/tbb/task_scheduler_init.h' file must exist).
-
-If you do not have permission to install TBB properly into the \verb'/usr/lib'
-and \verb'/usr/include' directories, you can place it in your own directory and
-modify the \verb'tbb_path' variable in \verb'spqr_make.m' to specify
-the location of your own copy of TBB (refer to that file for instructions).
-You must also set your \verb'LD_LIBRARY_PATH' environment variable to include
-the directory containing the \verb'libtbb*so' files.  You need to first
-determine which subdirectory of the TBB distribution contains the libraries
-appropriate for your system; in the examples below this is just called
-\verb'/path'.  It must be an absolute path, starting with the \verb'/'
-character.  There must be no spaces in the path name.
-
-For Linux use this command at the system command line before starting MATLAB,
-where \verb'/path' should be replaced with the actual full path of the TBB
-\verb'lib' directory:
-
-\begin{verbatim}
-    setenv LD_LIBRARY_PATH /path:$LD_LIBRARY_PATH
-\end{verbatim}
-
-If you use the \verb'csh' shell, place the command in your \verb'~/.cshrc'
-file so you don't have to type it each time you start MATLAB.
-
-For the Mac, edit the \verb'/etc/profile' file and add this line to the end of
-the file:
-
-\begin{verbatim}
-    export DYLD_LIBRARY_PATH=/path:$DYLD_LIBRARY_PATH
-\end{verbatim}
-
-For example, using the 64-bit Linux version placed in my home directory, this
-command would be placed in my \verb'~/.cshrc' file, prior to starting MATLAB.
-
-{\scriptsize
-\begin{verbatim}
-    setenv LD_LIBRARY_PATH /home/davis/tbb21_009oss/em64t/cc4.1.0_libc2.4_kernel2.6.16.21/lib:$LD_LIBRARY_PATH
-\end{verbatim}
-}
-
-Then, before starting MATLAB, make sure this variable is set by typing this
-command at the system command line (you only have to do this for this session;
-whenever you start a new command shell this will be done automatically): 
-
-\begin{verbatim}
-    source ~/.cshrc
-\end{verbatim}
-
-For this example, my \verb'spqr_make.m' file would contain this line:
-
-\begin{verbatim}
-    tbb_path = '/home/davis/tbb21_009oss' ;
-\end{verbatim}
-
-%-------------------------------------------------------------------------------
-\subsubsection{Optional instructions for using TBB on Windows}
-%-------------------------------------------------------------------------------
-
-Obtain a copy of TBB from
-\htmladdnormallink{http://www.threadingbuildingblocks.org}{http://www.threadingbuildingblocks.org}
-; for TBB Version 2.1 this file is \verb'tbb21_009oss_win.zip'.
-
-Create a folder and place the \verb'tbb21_009oss_win.zip' file there, and
-extract the file.  In the example below, I extracted to
-\verb'C:\TBB\tbb21_009oss' (if you do the same then you do not have to edit
-\verb'spqr_make.m').  There should be no spaces in the path (for example,
-placing TBB under the \verb'Program Files' directory will not work).
-
-In Windows XP, right-click \verb'My Computer' and select \verb'Properties'.
-Click the \verb'Advanced' tab.  Click \verb'Environment Variables'.  Under
-\verb'System' variables, edit the \verb'Path' to append the name of the folder
-containing the TBB \verb'bin' folder appropriate for your system, preceded by a
-semicolon.  For example, in a 32-bit Windows system if TBB is installed in
-\verb'C:\TBB' you would append the string
-\verb';C:\TBB\tbb21_009oss\ia32\vc9\bin\' to the end of your system \verb'Path'
-variable.
-
-For Vista, the instructions are the same, except that you choose
-\verb'Computer' instead of \verb'My Computer', and you click the
-\verb'Advanced System Settings' tab instead of the \verb'Advanced' tab.
-
-Next, edit the \verb'SPQR\MATLAB\spqr_make.m' file.  Change the \verb'tbb_path'
-variable to point to your copy of TBB.  For example, if you installed TBB into
-\verb'C:\TBB' your \verb'spqr_make.m' file would contain this line:
-
-\begin{verbatim}
-    tbb_path = 'C:\TBB\tbb21_009oss' ;
-\end{verbatim}
-
-That line is already in \verb'spqr_make.m', so if you choose to install TBB
-in that location, you do not have to edit the file.
 
 %-------------------------------------------------------------------------------
 \subsubsection{Now you're ready to compile (on any operating system)}
@@ -299,30 +180,6 @@ The \verb'SuiteSparse_install' script works on any version of MATLAB
 will detect if you have placed the METIS directory in the right place, and will
 compile it for use with SuiteSparseQR if it finds it there.  Otherwise METIS
 will be skipped (the install script will tell you if it finds METIS or not).
-
-%-------------------------------------------------------------------------------
-\subsubsection{Optional instructions for using TBB on any system}
-%-------------------------------------------------------------------------------
-
-If you have followed the steps above (as I recommend that you do), you have
-just compiled SuiteSparseQR, but it will not yet be using TBB.  To use TBB with
-SuiteSparseQR, first install TBB as described above.  Once TBB is installed,
-type the following commands in the MATLAB Command Window (assuming you have
-METIS):
-
-\begin{verbatim}
-    cd SuiteSparse/SPQR/MATLAB
-    spqr_make metis tbb
-\end{verbatim}
-
-Or if you do not have METIS, do this instead:
-
-\begin{verbatim}
-    cd SuiteSparse/SPQR/MATLAB
-    spqr_make nometis tbb
-\end{verbatim}
-
-For more options, type \verb'help spqr_make'.
 
 %-------------------------------------------------------------------------------
 \subsection{Functions provided to the MATLAB user}
@@ -462,27 +319,6 @@ SuiteSparseQR.  Entries not present in \verb'opts' are set to their defaults.
     \verb"'basic'" (the default), or \verb"'min2norm'".  Determines the kind of
     solution that \verb'spqr_solve' computes for underdetermined systems.  Has
     no effect for least-squares problems; ignored by \verb'spqr' itself.
-
-    \item \verb'opts.grain', \verb'opts.small', \verb'opts.nthreads':
-    multitasking control (if compiled with TBB).  Let \verb'f' be the total
-    flop count.  The analysis phase tries to ensure that all parallel tasks
-    have at least \verb'max(total_flops/opts.grain,opts.small)' flops.  No TBB
-    parallelism is exploited if \verb'opts.grain <= 1'.  The parameter
-    \verb'opts.nthreads' gives the number of threads to use for TBB (which is
-    different than the number of threads used by the BLAS).  Setting
-    \verb'opts.nthreads <= 0' means to let TBB determine the number of threads
-    (normally equal to the number of cores); otherwise, exactly
-    \verb'opts.nthreads' threads are used.  The defaults are
-    \verb'opts.grain=1', \verb'opts.small=1e6', and \verb'opts.nthreads=0',
-    respectively.  That is, TBB is disabled by default since it conflicts with
-    BLAS multithreading.  If you enable TBB, be sure to disable BLAS
-    multithreading with the MATLAB command \verb'maxNumCompThreads(1)', or
-    choose \newline \verb'opts.nthreads=k' and \verb'maxNumCompThreads(b)' so
-    that the product \verb'k*b' is equal to the number of cores.  Note that
-    these recommendations may change for future versions of TBB.  A good value
-    of \verb'opts.grain' is twice that of \verb'opts.nthreads'.  If TBB
-    parallelism is enabled, the METIS ordering normally gives the best speedup
-    for large problems.
 
 \end{itemize}
 
@@ -635,11 +471,6 @@ Select these via the \verb'SPQR_CONFIG=' line in the \verb'SuiteSparse_config.mk
     \item \verb'-DNEXPERT': do not compile with the ``expert'' routines in
     \verb'SuiteSparseQR_expert.cpp'.  The expert routines are included by
     default.
-
-    \item \verb'-DHAVE_TBB': enable the Intel Threading Building Blocks, TBB.
-    The use of TBB is disabled by default.  It is disabled because not all
-    installations have TBB available.  The use of TBB is recommended, however,
-    if you have a multicore computer.
 
 \end{itemize}
 
@@ -848,7 +679,7 @@ Output statistics include:
 \verb'cc->SPQR_istat [0]' & upper bound on \verb'nnz(R)' \\
 \verb'cc->SPQR_istat [1]' & upper bound on \verb'nnz(H)' \\
 \verb'cc->SPQR_istat [2]' & number of frontal matrices \\
-\verb'cc->SPQR_istat [3]' & number of TBB tasks \\
+\verb'cc->SPQR_istat [3]' & unused \\
 \verb'cc->SPQR_istat [4]' & estimate of the rank of \verb'A' \\
 \verb'cc->SPQR_istat [5]' & number of column singletons \\
 \verb'cc->SPQR_istat [6]' & number of row singletons \\
@@ -929,7 +760,7 @@ without it, only parallelism within the BLAS can be exploited (if available).
 Suite\-SparseQR can optionally use METIS 4.0.1 \cite{KarypisKumar98e} and two
 constrained minimum degree ordering algorithms, CCOLAMD and CAMD
 \cite{ChenDavisHagerRajamanickam09}, for its fill-reducing ordering options.
-SuiteSparseQR can be compiled without these ordering methods and without TBB.
+SuiteSparseQR can be compiled without these ordering methods.
 
 In addition to appearing as Collected Algorithm 8xx of the ACM, SuiteSparseQR
 is available at

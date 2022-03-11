@@ -2,7 +2,7 @@
 // GraphBLAS/Demo/Include/usercomplex.h:  complex numbers as a user-defined type
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -21,7 +21,7 @@ GrB_BinaryOp Complex_first , Complex_second , Complex_min ,
              Complex_rminus, Complex_pair ;
 
 //------------------------------------------------------------------------------
-// 6 binary comparison functions, z=f(x,y), where CxC -> C
+// 6 binary comparators, z=f(x,y), where CxC -> C
 //------------------------------------------------------------------------------
 
 GB_PUBLIC
@@ -37,7 +37,7 @@ GB_PUBLIC
 GrB_BinaryOp Complex_or , Complex_and , Complex_xor ;
 
 //------------------------------------------------------------------------------
-// 6 binary comparison functions, z=f(x,y), where CxC -> bool
+// 6 binary comparators, z=f(x,y), where CxC -> bool
 //------------------------------------------------------------------------------
 
 GB_PUBLIC

@@ -1,7 +1,7 @@
 function gbtest2
 %GBTEST2 list all binary operators
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: GPL-3.0-or-later
 
 optype = gbtest_types ;
@@ -37,7 +37,7 @@ fprintf ('\nhelp GrB.binopinfo:\n') ;
 GrB.binopinfo ;
 
 fprintf ('number of valid binary operators: %d\n', nbinop) ;
-assert (nbinop == 401) ;
+assert (nbinop == 414) ;
 
 fprintf ('gbtest2: all tests passed\n') ;
 

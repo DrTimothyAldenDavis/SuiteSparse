@@ -1,14 +1,14 @@
 function test51
 %TEST51 test GxB_subassign, multiply operations
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 fprintf ('\n-----------performance test GB_mex_subassign, multiple ops\n') ;
 
 [save save_chunk] = nthreads_get ;
 chunk = 4096 ;
-nthreads = feature ('numcores') ;
+nthreads = feature_numcores ;
 nthreads_set (nthreads, chunk) ;
 
 rng ('default')
@@ -124,12 +124,12 @@ for problem = 1:5
             Work2 (k).J = uint64 (Work2 (k).J - 1) ;
         end
         tic
-        C2 = GB_mex_subassign (Corig, Work2) ;
+        C2 = GB_mex_subassign (Corig, Work2) ;  % WORK_ASSIGN
         t1 = toc ;
         fprintf ('GraphBLAS time: %g\n', t1) ;
         fprintf ('final nnz: %d\n', nnz (C2.matrix)) ;
 
-        fprintf ('start MATLAB...\n') ;
+        fprintf ('start built-in methods...\n') ;
         tic
         C = Corig ;
         % full (C)
@@ -150,7 +150,7 @@ for problem = 1:5
             % full (C)
         end
         t2 = toc ;
-        fprintf ('MATLAB    time: %g\n', t2) ;
+        fprintf ('built-in methods time: %g\n', t2) ;
         fprintf ('GraphBLAS speedup: %g\n', t2/t1) ;
 
         % C2.matrix

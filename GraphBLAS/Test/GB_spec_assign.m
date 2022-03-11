@@ -1,5 +1,5 @@
 function C = GB_spec_assign (C, Mask, accum, A, I, J, descriptor, scalar)
-%GB_SPEC_ASSIGN a MATLAB mimic of GrB_assign (but not Row or Col variants)
+%GB_SPEC_ASSIGN a mimic of GrB_assign (but not Row or Col variants)
 %
 % Usage:
 % C = GB_spec_assign (C, Mask, accum, A, I, J, descriptor, scalar)
@@ -16,7 +16,7 @@ function C = GB_spec_assign (C, Mask, accum, A, I, J, descriptor, scalar)
 % not affect any part of C outside that row or column.  Those two functions
 % have their own GB_spec_Row_assign.m and GB_spec_Col_assign.m functions.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 %-------------------------------------------------------------------------------
@@ -36,7 +36,7 @@ A = GB_spec_matrix (A) ;
 Mask = GB_spec_getmask (Mask, Mask_struct) ;
 
 %-------------------------------------------------------------------------------
-% do the work via a clean MATLAB interpretation of the entire GraphBLAS spec
+% do the work via a clean *.m interpretation of the entire GraphBLAS spec
 %-------------------------------------------------------------------------------
 
 % apply the descriptor to A
@@ -70,7 +70,7 @@ if (scalar)
     ni = length (I) ;
     nj = length (J) ;
     A.matrix  (1:ni, 1:nj) = A.matrix (1,1) ;
-    A.pattern (1:ni, 1:nj) = true ;
+    A.pattern (1:ni, 1:nj) = A.pattern (1,1) ;
 end
 
 %-------------------------------------------------------------------------------

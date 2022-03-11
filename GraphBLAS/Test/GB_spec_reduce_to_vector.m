@@ -1,12 +1,12 @@
 function w = GB_spec_reduce_to_vector (w, mask, accum, reduce, A, descriptor)
-%GB_SPEC_REDUCE_TO_VECTOR a MATLAB mimic of GrB_reduce (to vector)
+%GB_SPEC_REDUCE_TO_VECTOR a mimic of GrB_reduce (to vector)
 %
 % Usage:
 % w = GB_spec_reduce_to_vector (w, mask, accum, reduce, A, desc)
 %
 % Reduces a matrix to a vector
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 %-------------------------------------------------------------------------------
@@ -53,7 +53,7 @@ w = GB_spec_matrix (w, identity) ;
 mask = GB_spec_getmask (mask, Mask_struct) ;
 
 %-------------------------------------------------------------------------------
-% do the work via a clean MATLAB interpretation of the entire GraphBLAS spec
+% do the work via a clean *.m interpretation of the entire GraphBLAS spec
 %-------------------------------------------------------------------------------
 
 % apply the descriptor to A

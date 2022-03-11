@@ -2,7 +2,7 @@
 # GraphBLAS/alternative/Makefile
 #-------------------------------------------------------------------------------
 
-# SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+# SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
 
 #-------------------------------------------------------------------------------
@@ -18,9 +18,10 @@
 
 default: library
 
-VER1 = 5
-VER2 = 0
-VER3 = 3
+# This version info must match ../CMakeLists.txt 
+VER1 = 6
+VER2 = 2
+VER3 = 4
 
 # pick your compiler:
   CC = gcc
@@ -32,8 +33,8 @@ VER3 = 3
 # CC = icc -mp1
 # CC = c++
 
-SRC = ../Source/*.c ../Source/Generated/*.c
-INC = ../Include/*.h ../Source/*.h ../Source/Template/* ../Source/Generated/*.h ../Source/Generator/*.h 
+SRC = ../Source/*.c ../Source/Generated1/*.c ../Source/Generated2/*.c
+INC = ../Include/*.h ../Source/*.h ../Source/Template/* ../Source/Generated1/*.h ../Source/Generated2/*.h
 SRC2 = $(notdir $(wildcard $(SRC)))
 OBJ = $(SRC2:.c=.o)
 LDFLAGS = -fopenmp -lm
@@ -41,11 +42,13 @@ CFLAGS = -fopenmp -fexceptions -fPIC
 # pick the optimization level:
   CFLAGS += -O3
 # CFLAGS += -g
+# to compile GraphBLAS as compact (fast to compile, small libgraphblas.so,
+# but slow at run time), uncomment this line:
+# CFLAGS += -DGBCOMPACT=1
 ifneq ($(CC),c++)
-    # comment this out if using c++:
-    CFLAGS += -std=c11 
+    CFLAGS += -std=c11
 endif
-CPPFLAGS = -I../Include -I../Source -I../Source/Template -I../Source/Generated -I../Source/Generator
+CPPFLAGS = -I../Include -I../Source -I../Source/Template -I../Source/Generated1 -I../Source/Generated2 -I../lz4 -I../cpu_features/include
 SO_OPTS = $(LDFLAGS)
 CFLAGS += -Wno-pragmas
 
@@ -73,7 +76,10 @@ endif
 %.o: ../Source/%.c $(INC)
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $(notdir $@)
 
-%.o: ../Source/Generated/%.c $(INC)
+%.o: ../Source/Generated1/%.c $(INC)
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $(notdir $@)
+
+%.o: ../Source/Generated2/%.c $(INC)
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $(notdir $@)
 
 library: $(SO_NAME)

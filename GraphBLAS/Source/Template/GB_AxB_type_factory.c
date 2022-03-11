@@ -2,7 +2,7 @@
 // GB_AxB_type_factory.c: switch factory for C=A*B
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -24,32 +24,27 @@
 // operators are redundant and have been renamed.  For these, the boolean
 // monoids are not needed.
 
-// GB_NO_MIN_MAX_ANY_TIMES_MONOIDS is defined for the LOR, LAND, and LXOR
+// GB_NO_MIN_MAX_ANY_TIMES_MONOIDS is defined for the PAIR, LOR, LAND, LXOR
 // multiply operators; these are valid semirings, but not useful.  The
 // corresponding semirings (such as GxB_TIMES_LOR_FP32) still exist, but are
 // done using the generic methods, not via fast methods controlled by this case
-// statement.
-
-// For the PAIR multiply operator, the monoids MIN, MAX, TIMES, EQ, LAND, 
-// and LOR have been renamed to ANY_PAIR.  See GB_AxB_semiring_builtin.c.
+// statement.  For the PAIR operator, these semirings are all done by the
+// single ANY_PAIR iso semiring, since C is always iso in that case.
 
 // the additive operator is a monoid, where all types of x,y,z are the same
 ASSERT (zcode == xcode) ;
 ASSERT (zcode == ycode) ;
-ASSERT (mult_opcode != GB_ANY_opcode) ;
+ASSERT (mult_binop_code != GB_ANY_binop_code) ;
 
 if (xcode != GB_BOOL_code)
 {
-    switch (add_opcode)
+    switch (add_binop_code)
     {
 
         // disable the MIN, MAX, ANY, and TIMES monoids for some multops
         #ifndef GB_NO_MIN_MAX_ANY_TIMES_MONOIDS
 
-        // MIN_PAIR, MAX_PAIR, and TIMES_PAIR have been renamed to ANY_PAIR
-        #ifndef GB_MULT_IS_PAIR_OPERATOR
-
-        case GB_MIN_opcode:
+        case GB_MIN_binop_code:
 
             switch (xcode)
             {
@@ -68,7 +63,7 @@ if (xcode != GB_BOOL_code)
             }
             break ;
 
-        case GB_MAX_opcode:
+        case GB_MAX_binop_code:
 
             switch (xcode)
             {
@@ -87,7 +82,7 @@ if (xcode != GB_BOOL_code)
             }
             break ;
 
-        case GB_TIMES_opcode:
+        case GB_TIMES_binop_code:
 
             switch (xcode)
             {
@@ -102,7 +97,8 @@ if (xcode != GB_BOOL_code)
                 case GB_UINT64_code : GB_AxB_WORKER (_times, GB_MNAME, _uint64)
                 case GB_FP32_code   : GB_AxB_WORKER (_times, GB_MNAME, _fp32  )
                 case GB_FP64_code   : GB_AxB_WORKER (_times, GB_MNAME, _fp64  )
-                #if defined ( GB_COMPLEX )
+                #if defined ( GB_COMPLEX ) && !defined (GB_NO_NONATOMIC_MONOID)
+                // the TIMES monoid is non-atomic for complex types
                 case GB_FC32_code   : GB_AxB_WORKER (_times, GB_MNAME, _fc32  )
                 case GB_FC64_code   : GB_AxB_WORKER (_times, GB_MNAME, _fc64  )
                 #endif
@@ -110,9 +106,8 @@ if (xcode != GB_BOOL_code)
             }
             break ;
 
-        #endif
-
-        case GB_ANY_opcode:
+        #ifndef GB_NO_ANY_MONOID
+        case GB_ANY_binop_code:
 
             switch (xcode)
             {
@@ -127,17 +122,18 @@ if (xcode != GB_BOOL_code)
                 case GB_UINT64_code : GB_AxB_WORKER (_any, GB_MNAME, _uint64)
                 case GB_FP32_code   : GB_AxB_WORKER (_any, GB_MNAME, _fp32  )
                 case GB_FP64_code   : GB_AxB_WORKER (_any, GB_MNAME, _fp64  )
-                #if defined ( GB_COMPLEX )
+                #if defined ( GB_COMPLEX ) && !defined (GB_NO_NONATOMIC_MONOID)
+                // the ANY monoid is non-atomic for complex types
                 case GB_FC32_code   : GB_AxB_WORKER (_any, GB_MNAME, _fc32  )
                 case GB_FC64_code   : GB_AxB_WORKER (_any, GB_MNAME, _fc64  )
                 #endif
                 default: ;
             }
             break ;
-
+        #endif
         #endif
 
-        case GB_PLUS_opcode:
+        case GB_PLUS_binop_code:
 
             switch (xcode)
             {
@@ -153,6 +149,7 @@ if (xcode != GB_BOOL_code)
                 case GB_FP32_code   : GB_AxB_WORKER (_plus, GB_MNAME, _fp32  )
                 case GB_FP64_code   : GB_AxB_WORKER (_plus, GB_MNAME, _fp64  )
                 #if defined ( GB_COMPLEX )
+                // only the PLUS monoid is atomic for complex types
                 case GB_FC32_code   : GB_AxB_WORKER (_plus, GB_MNAME, _fc32  )
                 case GB_FC64_code   : GB_AxB_WORKER (_plus, GB_MNAME, _fc64  )
                 #endif
@@ -167,17 +164,19 @@ if (xcode != GB_BOOL_code)
 #ifndef GB_NO_BOOLEAN
 else
 {
-        switch (add_opcode)
+        switch (add_binop_code)
         {
             // 5 boolean monoids
             #ifndef GB_MULT_IS_PAIR_OPERATOR
-            // EQ_PAIR, LOR_PAIR, LAND_PAIR, been renamed to ANY_PAIR
-            case GB_LOR_opcode  : GB_AxB_WORKER (_lor , GB_MNAME, _bool)
-            case GB_LAND_opcode : GB_AxB_WORKER (_land, GB_MNAME, _bool)
-            case GB_EQ_opcode   : GB_AxB_WORKER (_eq  , GB_MNAME, _bool)
+            // all these semirings are replaced with the ANY_PAIR iso semiring
+            case GB_LOR_binop_code  : GB_AxB_WORKER (_lor , GB_MNAME, _bool)
+            case GB_LAND_binop_code : GB_AxB_WORKER (_land, GB_MNAME, _bool)
+            case GB_EQ_binop_code   : GB_AxB_WORKER (_eq  , GB_MNAME, _bool)
+            #ifndef GB_NO_ANY_MONOID
+            case GB_ANY_binop_code  : GB_AxB_WORKER (_any , GB_MNAME, _bool)
             #endif
-            case GB_LXOR_opcode : GB_AxB_WORKER (_lxor, GB_MNAME, _bool)
-            case GB_ANY_opcode  : GB_AxB_WORKER (_any , GB_MNAME, _bool)
+            #endif
+            case GB_LXOR_binop_code : GB_AxB_WORKER (_lxor, GB_MNAME, _bool)
             default: ;
         }
 }
@@ -186,4 +185,6 @@ else
 #undef GB_NO_BOOLEAN
 #undef GB_MNAME
 #undef GB_COMPLEX
+#undef GB_NO_MIN_MAX_ANY_TIMES_MONOIDS
+#undef GB_MULT_IS_PAIR_OPERATOR
 

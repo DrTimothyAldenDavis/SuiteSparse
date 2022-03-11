@@ -2,7 +2,7 @@
 // GB_Descriptor_check: check and print a Descriptor
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -92,7 +92,7 @@ static GrB_Info GB_dc
 // GB_Descriptor_check
 //------------------------------------------------------------------------------
 
-GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
+GB_PUBLIC
 GrB_Info GB_Descriptor_check    // check a GraphBLAS descriptor
 (
     const GrB_Descriptor D,     // GraphBLAS descriptor to print and check
@@ -118,7 +118,7 @@ GrB_Info GB_Descriptor_check    // check a GraphBLAS descriptor
     // check object
     //--------------------------------------------------------------------------
 
-    GB_CHECK_MAGIC (D, "Descriptor") ;
+    GB_CHECK_MAGIC (D) ;
 
     GBPR0 ("\n") ;
 
@@ -150,6 +150,7 @@ GrB_Info GB_Descriptor_check    // check a GraphBLAS descriptor
     { 
         GBPR0 ("%d\n", nthreads_max) ;
     }
+
     GBPR0 ("    d.chunk    = ") ;
     if (chunk <= GxB_DEFAULT)
     { 
@@ -161,8 +162,18 @@ GrB_Info GB_Descriptor_check    // check a GraphBLAS descriptor
     }
 
     if (D->do_sort)
-    {
+    { 
         GBPR0 ("    d.sort     = true\n") ;
+    }
+
+    if (D->import != GxB_DEFAULT)
+    { 
+        GBPR0 ("    d.import   = secure\n") ;
+    }
+
+    if (D->compression != GxB_DEFAULT)
+    { 
+        GBPR0 ("    d.compression = %d\n", D->compression) ;
     }
 
     return (GrB_SUCCESS) ;

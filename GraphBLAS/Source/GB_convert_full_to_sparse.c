@@ -2,7 +2,7 @@
 // GB_convert_full_to_sparse: convert a matrix from full to sparse
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -21,7 +21,7 @@ GrB_Info GB_convert_full_to_sparse      // convert matrix from full to sparse
     //--------------------------------------------------------------------------
 
     ASSERT_MATRIX_OK (A, "A converting full to sparse", GB0) ;
-    ASSERT (GB_IS_FULL (A) || A->nzmax == 0) ;
+    ASSERT (GB_IS_FULL (A) || GB_nnz_max (A) == 0) ;
     ASSERT (!GB_IS_BITMAP (A)) ;
     ASSERT (!GB_IS_SPARSE (A)) ;
     ASSERT (!GB_IS_HYPERSPARSE (A)) ;
@@ -36,15 +36,11 @@ GrB_Info GB_convert_full_to_sparse      // convert matrix from full to sparse
 
     int64_t avdim = A->vdim ;
     int64_t avlen = A->vlen ;
-    int64_t anz = avdim * avlen ;
-    ASSERT (GB_Index_multiply (&anz, avdim, avlen) == true) ;
-
+    int64_t anz = GB_nnz_full (A) ;
     int64_t *restrict Ap = NULL ; size_t Ap_size = 0 ;
     int64_t *restrict Ai = NULL ; size_t Ai_size = 0 ;
-
     Ap = GB_MALLOC (avdim+1, int64_t, &Ap_size) ;
     Ai = GB_MALLOC (anz, int64_t, &Ai_size) ;
-
     if (Ap == NULL || Ai == NULL)
     { 
         // out of memory

@@ -2,7 +2,7 @@
 // GB_Mask_compatible: check input and operators for type compatibility
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -38,6 +38,9 @@ GrB_Info GB_Mask_compatible     // check type and dimensions of mask
                     "M of type [%s] cannot be typecast to boolean",
                     M->type->name) ;
             }
+            // if M is iso and can be typecasted to bool, Mask_struct has been
+            // set true by GB_get_mask
+            ASSERT (!M->iso) ;
         }
 
         // check the mask dimensions

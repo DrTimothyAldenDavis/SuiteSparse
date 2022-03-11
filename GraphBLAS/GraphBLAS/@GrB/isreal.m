@@ -6,9 +6,9 @@ function s = isreal (G)
 % See also GrB/isnumeric, GrB/isfloat, GrB/isinteger, GrB/islogical,
 % GrB.type, GrB/isa, GrB.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: GPL-3.0-or-later
 
 G = G.opaque ;
-s = ~contains (gbtype (G), 'complex') ;
+s = ~gb_contains (gbtype (G), 'complex') ;
 

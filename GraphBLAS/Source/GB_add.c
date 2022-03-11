@@ -2,7 +2,7 @@
 // GB_add: C = A+B, C<M>=A+B, and C<!M>=A+B
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -10,7 +10,8 @@
 // GB_add computes C=A+B, C<M>=A+B, or C<!M>=A+B using the given operator
 // element-wise on the matrices A and B.  The result is typecasted as needed.
 // The pattern of C is the union of the pattern of A and B, intersection with
-// the mask M, if present.
+// the mask M, if present.  On input, the contents of C are undefined; it is
+// an output-only matrix in a static header.
 
 // Let the op be z=f(x,y) where x, y, and z have type xtype, ytype, and ztype.
 // If both A(i,j) and B(i,j) are present, then:
@@ -28,10 +29,10 @@
 // ctype is the type of matrix C.  The pattern of C is the union of A and B.
 
 // op may be NULL.  In this case, the intersection of A and B must be empty.
-// This is used by GB_Matrix_wait only, for merging the pending tuple matrix T
-// into A.  In this case, the result C is always sparse or hypersparse, not
-// bitmap or full.  Any duplicate pending tuples have already been summed in T,
-// so the intersection of T and A is always empty.
+// This is used by GB_wait only, for merging the pending tuple matrix T into A.
+// In this case, the result C is always sparse or hypersparse, not bitmap or
+// full.  Any duplicate pending tuples have already been summed in T, so the
+// intersection of T and A is always empty.
 
 // Some methods should not exploit the mask, but leave it for later.
 // See GB_ewise and GB_accum_mask: the only places where this function is
@@ -39,11 +40,16 @@
 // mask being applied later.  GB_add_sparsity determines whether or not the
 // mask should be applied now, or later.
 
+// If A and B are iso, the op is not positional, and op(A,B) == A == B, then C
+// is iso.  If A and B are known to be disjoint, then op(A,B) is ignored when
+// determining if C is iso.
+
+// C on input is empty, see GB_add_phase2.c.
+
 #include "GB_add.h"
 
 #define GB_FREE_ALL ;
 
-GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
 GrB_Info GB_add             // C=A+B, C<M>=A+B, or C<!M>=A+B
 (
     GrB_Matrix C,           // output matrix, static header
@@ -55,6 +61,9 @@ GrB_Info GB_add             // C=A+B, C<M>=A+B, or C<!M>=A+B
     bool *mask_applied,     // if true, the mask was applied
     const GrB_Matrix A,     // input A matrix
     const GrB_Matrix B,     // input B matrix
+    const bool is_eWiseUnion,   // if true, eWiseUnion, else eWiseAdd
+    const GrB_Scalar alpha, // alpha and beta ignored for eWiseAdd,
+    const GrB_Scalar beta,  // nonempty scalars for GxB_eWiseUnion
     const GrB_BinaryOp op,  // op to perform C = op (A,B)
     GB_Context Context
 )
@@ -66,7 +75,7 @@ GrB_Info GB_add             // C=A+B, C<M>=A+B, or C<!M>=A+B
 
     GrB_Info info ;
 
-    ASSERT (C != NULL && C->static_header) ;
+    ASSERT (C != NULL && (C->static_header || GBNSTATIC)) ;
 
     ASSERT (mask_applied != NULL) ;
     (*mask_applied) = false ;
@@ -155,9 +164,9 @@ GrB_Info GB_add             // C=A+B, C<M>=A+B, or C<!M>=A+B
         { 
             // out of memory; free everything allocated by GB_add_phase0
             GB_FREE (&Ch, Ch_size) ;
-            GB_FREE_WERK (&C_to_M, C_to_M_size) ;
-            GB_FREE_WERK (&C_to_A, C_to_A_size) ;
-            GB_FREE_WERK (&C_to_B, C_to_B_size) ;
+            GB_FREE_WORK (&C_to_M, C_to_M_size) ;
+            GB_FREE_WORK (&C_to_A, C_to_A_size) ;
+            GB_FREE_WORK (&C_to_B, C_to_B_size) ;
             return (info) ;
         }
 
@@ -174,11 +183,11 @@ GrB_Info GB_add             // C=A+B, C<M>=A+B, or C<!M>=A+B
         if (info != GrB_SUCCESS)
         { 
             // out of memory; free everything allocated by GB_add_phase0
-            GB_FREE_WERK (&TaskList, TaskList_size) ;
+            GB_FREE_WORK (&TaskList, TaskList_size) ;
             GB_FREE (&Ch, Ch_size) ;
-            GB_FREE_WERK (&C_to_M, C_to_M_size) ;
-            GB_FREE_WERK (&C_to_A, C_to_A_size) ;
-            GB_FREE_WERK (&C_to_B, C_to_B_size) ;
+            GB_FREE_WORK (&C_to_M, C_to_M_size) ;
+            GB_FREE_WORK (&C_to_A, C_to_A_size) ;
+            GB_FREE_WORK (&C_to_B, C_to_B_size) ;
             return (info) ;
         }
 
@@ -211,16 +220,17 @@ GrB_Info GB_add             // C=A+B, C<M>=A+B, or C<!M>=A+B
         // from phase0:
         Cnvec, &Ch, Ch_size, C_to_M, C_to_A, C_to_B, Ch_is_Mh, C_sparsity,
         // original input:
-        (apply_mask) ? M : NULL, Mask_struct, Mask_comp, A, B, Context) ;
+        (apply_mask) ? M : NULL, Mask_struct, Mask_comp, A, B,
+        is_eWiseUnion, alpha, beta, Context) ;
 
     // Ch and Cp must not be freed; they are now C->h and C->p.
     // If the method failed, Cp and Ch have already been freed.
 
     // free workspace
-    GB_FREE_WERK (&TaskList, TaskList_size) ;
-    GB_FREE_WERK (&C_to_M, C_to_M_size) ;
-    GB_FREE_WERK (&C_to_A, C_to_A_size) ;
-    GB_FREE_WERK (&C_to_B, C_to_B_size) ;
+    GB_FREE_WORK (&TaskList, TaskList_size) ;
+    GB_FREE_WORK (&C_to_M, C_to_M_size) ;
+    GB_FREE_WORK (&C_to_A, C_to_A_size) ;
+    GB_FREE_WORK (&C_to_B, C_to_B_size) ;
 
     if (info != GrB_SUCCESS)
     { 

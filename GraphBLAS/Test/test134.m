@@ -1,7 +1,7 @@
 function test134(short)
 %TEST134 test GxB_select
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 % A shorter version of test25
@@ -82,7 +82,7 @@ for k1 = 1:length(types)
     for k2 = 1:length(select_ops)
         op = select_ops {k2} ;
 
-        if (contains (atype, 'complex'))
+        if (test_contains (atype, 'complex'))
             switch (op)
                 case { 'gt_zero', 'ge_zero', 'lt_zero', 'le_zero', ...
                        'gt_thunk', 'ge_thunk', 'lt_thunk', 'le_thunk' }

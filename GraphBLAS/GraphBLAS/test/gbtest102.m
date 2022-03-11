@@ -1,39 +1,44 @@
 function gbtest102
 %GBTEST102 test horzcat, vertcat, cat, cell2mat, mat2cell, num2cell
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: GPL-3.0-or-later
+
+have_octave = gb_octave ;
 
 rng ('default') ;
 A = GrB (rand (2)) ;
 B = GrB (speye (2)) ;
-C1 = [A B]
-C2 = [double(A) double(B)]
+C1 = [A B] ;
+C2 = [double(A) double(B)] ;
 assert (isequal (C1, C2)) ;
 
-C1 = [A ; B] 
-C2 = [double(A) ; double(B)]
+C1 = [A ; B]  ;
+C2 = [double(A) ; double(B)] ;
 assert (isequal (C1, C2)) ;
 
-S1 = num2cell (C1) ;
-S2 = num2cell (C2) ;
-assert (isequal (S1, S2)) ;
+if (~have_octave)
+    % num2cell works differently in octave
+    S1 = num2cell (C1) ;
+    S2 = num2cell (C2) ;
+    assert (isequal (S1, S2)) ;
 
-S1 = num2cell (C1, 1) ;
-S2 = num2cell (C2, 1) ;
-assert (isequal (S1, S2)) ;
+    S1 = num2cell (C1, 1) ;
+    S2 = num2cell (C2, 1) ;
+    assert (isequal (S1, S2)) ;
 
-S1 = num2cell (C1, 2) ;
-S2 = num2cell (C2, 2) ;
-assert (isequal (S1, S2)) ;
+    S1 = num2cell (C1, 2) ;
+    S2 = num2cell (C2, 2) ;
+    assert (isequal (S1, S2)) ;
 
-S1 = num2cell (C1, [1 2]) ;
-S2 = num2cell (C2, [1 2]) ;
-assert (isequal (S1, S2)) ;
+    S1 = num2cell (C1, [1 2]) ;
+    S2 = num2cell (C2, [1 2]) ;
+    assert (isequal (S1, S2)) ;
 
-S1 = num2cell (C1, [2 1]) ;
-S2 = num2cell (C2, [2 1]) ;
-assert (isequal (S1, S2)) ;
+    S1 = num2cell (C1, [2 1]) ;
+    S2 = num2cell (C2, [2 1]) ;
+    assert (isequal (S1, S2)) ;
+end
 
 for n = 100:100:1000
     fprintf ('.') ;
@@ -45,14 +50,14 @@ for n = 100:100:1000
         A3 = GrB.random (n, n, d) ;
         A4 = GrB.random (n, n, d) ;
 
-        % convert to MATLAB double sparse matrices
+        % convert to built-in double sparse matrices
         B1 = double (A1) ;
         B2 = double (A2) ;
         B3 = double (A3) ;
         B4 = double (A4) ;
 
         C1 = [A1 A2 ; A3 A4] ;  % using GrB horzcat and vertcat
-        C2 = [B1 B2 ; B3 B4] ;  % using MATLAB horzcat and vercat
+        C2 = [B1 B2 ; B3 B4] ;  % using built-in horzcat and vercat
         assert (isequal (C1, C2)) ;
 
         % test mat2cell
@@ -68,7 +73,7 @@ for n = 100:100:1000
         S1 {2,2} = A4 ;
         C3 = GrB.cell2mat (S1) ;
 
-        % and compare with the MATLAB cell2mat
+        % and compare with the built-in cell2mat
         S2 = cell (2,2) ;
         S2 {1,1} = B1 ;
         S2 {1,2} = B2 ;
@@ -81,16 +86,16 @@ for n = 100:100:1000
         % test cat
         C1 = [A1 A2 A3 A4] ;            % GrB/horzcat
         C2 = cat (2, A1, A2, A3, A4) ;  % GrB/cat
-        C3 = [B1 B2 B3 B4] ;            % MATLAB/horzcat
-        C4 = cat (2, B1, B2, B3, B4) ;  % MATLAB/cat
+        C3 = [B1 B2 B3 B4] ;            % built-in/horzcat
+        C4 = cat (2, B1, B2, B3, B4) ;  % built-in/cat
         assert (isequal (C1, C2)) ;
         assert (isequal (C1, C3)) ;
         assert (isequal (C1, C4)) ;
 
         C1 = [A1 ; A2 ; A3 ; A4] ;      % GrB/vertcat
         C2 = cat (1, A1, A2, A3, A4) ;  % GrB/cat
-        C3 = [B1 ; B2 ; B3 ; B4] ;      % MATLAB/vertcat
-        C4 = cat (1, B1, B2, B3, B4) ;  % MATLAB/cat
+        C3 = [B1 ; B2 ; B3 ; B4] ;      % built-in/vertcat
+        C4 = cat (1, B1, B2, B3, B4) ;  % built-in/cat
         assert (isequal (C1, C2)) ;
         assert (isequal (C1, C3)) ;
         assert (isequal (C1, C4)) ;

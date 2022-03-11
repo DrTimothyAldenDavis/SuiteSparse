@@ -2,15 +2,18 @@
 // GB_dense_ewise3_accum: C += A+B where all 3 matries are dense
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
+
+// C += A+B where no matrix is iso and all three matrices are as-if-full
 
 #include "GB_dense.h"
 #include "GB_binop.h"
 #ifndef GBCOMPACT
 #include "GB_binop__include.h"
+#endif
 
 void GB_dense_ewise3_accum          // C += A+B, all matrices dense
 (
@@ -21,6 +24,7 @@ void GB_dense_ewise3_accum          // C += A+B, all matrices dense
     GB_Context Context
 )
 {
+#ifndef GBCOMPACT
 
     //--------------------------------------------------------------------------
     // check inputs
@@ -30,23 +34,28 @@ void GB_dense_ewise3_accum          // C += A+B, all matrices dense
     ASSERT (!GB_ZOMBIES (C)) ;
     ASSERT (!GB_JUMBLED (C)) ;
     ASSERT (!GB_PENDING (C)) ;
-    ASSERT (GB_is_dense (C)) ;
 
     ASSERT_MATRIX_OK (A, "A for dense C+=A+B", GB0) ;
     ASSERT (!GB_ZOMBIES (A)) ;
     ASSERT (!GB_JUMBLED (A)) ;
     ASSERT (!GB_PENDING (A)) ;
-    ASSERT (GB_is_dense (A)) ;
 
     ASSERT_MATRIX_OK (B, "B for dense C+=A+B", GB0) ;
     ASSERT (!GB_ZOMBIES (B)) ;
     ASSERT (!GB_JUMBLED (B)) ;
     ASSERT (!GB_PENDING (B)) ;
-    ASSERT (GB_is_dense (B)) ;
+
+    ASSERT (GB_as_if_full (C)) ;
+    ASSERT (GB_as_if_full (A)) ;
+    ASSERT (GB_as_if_full (B)) ;
 
     ASSERT (!GB_IS_BITMAP (C)) ;
     ASSERT (!GB_IS_BITMAP (A)) ;
     ASSERT (!GB_IS_BITMAP (B)) ;
+
+    ASSERT (!C->iso) ;
+    ASSERT (!A->iso) ;
+    ASSERT (!B->iso) ;
 
     ASSERT_BINARYOP_OK (op, "op for dense C+=A+B", GB0) ;
     ASSERT (!GB_OP_IS_POSITIONAL (op)) ;
@@ -55,10 +64,10 @@ void GB_dense_ewise3_accum          // C += A+B, all matrices dense
     ASSERT (op->ztype == B->type) ;
     ASSERT (op->ztype == op->xtype) ;
     ASSERT (op->ztype == op->ytype) ;
-    ASSERT (op->opcode >= GB_MIN_opcode) ;
-    ASSERT (op->opcode <= GB_RDIV_opcode) ;
+    ASSERT (op->opcode >= GB_MIN_binop_code) ;
+    ASSERT (op->opcode <= GB_RDIV_binop_code) ;
 
-    GB_ENSURE_FULL (C) ;        // convert C to full
+    GB_ENSURE_FULL (C) ;    // convert C to full, if sparsity control allows it
 
     // FUTURE::: handle IS*, LOR, LAND, LXOR operators
 
@@ -66,8 +75,7 @@ void GB_dense_ewise3_accum          // C += A+B, all matrices dense
     // determine the number of threads to use
     //--------------------------------------------------------------------------
 
-    int64_t cnz = GB_NNZ (C) ;
-
+    int64_t cnz = GB_nnz (C) ;
     GB_GET_NTHREADS_MAX (nthreads_max, chunk, Context) ;
     int nthreads = GB_nthreads (3 * cnz, chunk, nthreads_max) ;
 
@@ -107,7 +115,6 @@ void GB_dense_ewise3_accum          // C += A+B, all matrices dense
     //--------------------------------------------------------------------------
 
     ASSERT_MATRIX_OK (C, "C+=A+B output", GB0) ;
-}
-
 #endif
+}
 

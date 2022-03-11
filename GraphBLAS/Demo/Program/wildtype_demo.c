@@ -2,7 +2,7 @@
 // GraphBLAS/Demo/Program/wildtype_demo: an arbitrary user-defined type
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -322,8 +322,7 @@ int main (void)
 
     // C = A*B
     // Since there is no accum operator, this overwrites C with A*B; the old
-    // content of C is gone, just like the statement "C=A*B" in MATLAB, for
-    // example (except MATLAB can't handle the WildType...).
+    // content of C is gone.
     GrB_mxm (C, NULL, NULL, InTheWild, A, B, NULL) ;
 
     wildtype_print_matrix (C, "output C") ;

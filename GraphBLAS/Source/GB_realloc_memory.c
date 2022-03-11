@@ -2,7 +2,7 @@
 // GB_realloc_memory: wrapper for realloc
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -22,7 +22,7 @@
 
 // Usage:
 
-//      p = GB_realloc_memory (nitems_new, nitems_old, size_of_item, p,
+//      p = GB_realloc_memory (nitems_new, size_of_item, p,
 //              &size_allocated, &ok, Context)
 //      if (ok)
 //      {
@@ -40,12 +40,11 @@
 
 #include "GB.h"
 
-GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
+GB_PUBLIC
 void *GB_realloc_memory     // pointer to reallocated block of memory, or
                             // to original block if the reallocation failed.
 (
     size_t nitems_new,      // new number of items in the object
-    size_t nitems_old,      // old number of items in the object
     size_t size_of_item,    // size of each item
     // input/output
     void *p,                // old object to reallocate
@@ -71,30 +70,26 @@ void *GB_realloc_memory     // pointer to reallocated block of memory, or
     // check inputs
     //--------------------------------------------------------------------------
 
-    // make sure at least one item is allocated
-    nitems_old = GB_IMAX (1, nitems_old) ;
-    nitems_new = GB_IMAX (1, nitems_new) ;
-
     // make sure at least one byte is allocated
     size_of_item = GB_IMAX (1, size_of_item) ;
+
+    size_t oldsize_allocated = (*size_allocated) ;
+    ASSERT (oldsize_allocated == GB_Global_memtable_size (p)) ;
+
+    // make sure at least one item is allocated
+    size_t nitems_old = oldsize_allocated / size_of_item ;
+    nitems_new = GB_IMAX (1, nitems_new) ;
 
     size_t newsize, oldsize ;
     (*ok) = GB_size_t_multiply (&newsize, nitems_new, size_of_item)
          && GB_size_t_multiply (&oldsize, nitems_old, size_of_item) ;
 
-    if (!(*ok) || nitems_new > GxB_INDEX_MAX || size_of_item > GxB_INDEX_MAX)
+    if (!(*ok) || nitems_new > GB_NMAX || size_of_item > GB_NMAX)
     { 
         // overflow
         (*ok) = false ;
         return (p) ;
     }
-
-    //--------------------------------------------------------------------------
-    // reallocate an existing block to accommodate the change in # of items
-    //--------------------------------------------------------------------------
-
-    int64_t oldsize_allocated = (*size_allocated) ;
-    ASSERT (oldsize_allocated == GB_Global_memtable_size (p)) ;
 
     //--------------------------------------------------------------------------
     // check for quick return
@@ -160,10 +155,14 @@ void *GB_realloc_memory     // pointer to reallocated block of memory, or
         }
         if (!pretend_to_fail)
         { 
-//          printf ("hard realloc %p oldsize %ld newsize %ld\n",
-//              p, oldsize_allocated, newsize_allocated) ;
+            #ifdef GB_MEMDUMP
+            printf ("hard realloc %p oldsize %ld newsize %ld\n",
+                p, oldsize_allocated, newsize_allocated) ;
+            #endif
             pnew = GB_Global_realloc_function (p, newsize_allocated) ;
-//          GB_Global_free_pool_dump (2) ; GB_Global_memtable_dump ( ) ;
+            #ifdef GB_MEMDUMP
+            GB_Global_free_pool_dump (2) ; GB_Global_memtable_dump ( ) ;
+            #endif
         }
     }
 

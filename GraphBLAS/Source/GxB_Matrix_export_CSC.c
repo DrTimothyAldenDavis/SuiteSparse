@@ -2,7 +2,7 @@
 // GxB_Matrix_export_CSC: export a matrix in CSC format
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -24,36 +24,35 @@ GrB_Info GxB_Matrix_export_CSC  // export and free a CSC matrix
     GrB_Index *Ap_size, // size of Ap in bytes
     GrB_Index *Ai_size, // size of Ai in bytes
     GrB_Index *Ax_size, // size of Ax in bytes
-    bool *is_uniform,   // if true, A has uniform values (TODO:::unsupported)
+    bool *iso,          // if true, A is iso
 
     bool *jumbled,      // if true, indices in each column may be unsorted
     const GrB_Descriptor desc
 )
-{ 
+{
 
     //--------------------------------------------------------------------------
     // check inputs and get the descriptor
     //--------------------------------------------------------------------------
 
     GB_WHERE1 ("GxB_Matrix_export_CSC (&A, &type, &nrows, &ncols, "
-        "&Ap, &Ai, &Ax, &Ap_size, &Ai_size, &Ax_size, &is_uniform, "
+        "&Ap, &Ai, &Ax, &Ap_size, &Ai_size, &Ax_size, &iso, "
         "&jumbled, desc)") ;
     GB_BURBLE_START ("GxB_Matrix_export_CSC") ;
     GB_RETURN_IF_NULL (A) ;
     GB_RETURN_IF_NULL_OR_FAULTY (*A) ;
     GB_GET_DESCRIPTOR (info, desc, xx1, xx2, xx3, xx4, xx5, xx6, xx7) ;
-    ASSERT_MATRIX_OK (*A, "A to export as CSC", GB0) ;
+    ASSERT_MATRIX_OK (*A, "A to export as by-col", GB0) ;
 
     //--------------------------------------------------------------------------
-    // ensure the matrix is in CSC format
+    // ensure the matrix is in by-col format
     //--------------------------------------------------------------------------
 
     if (!((*A)->is_csc))
     { 
-        // A = A', done in-place, to put A in CSC format
+        // A = A', done in-place, to put A in by-col format
         GBURBLE ("(transpose) ") ;
-        GB_OK (GB_transpose (NULL, NULL, true, *A,  // in_place_A
-            NULL, NULL, NULL, false, Context)) ;
+        GB_OK (GB_transpose_in_place (*A, true, Context)) ;
     }
 
     //--------------------------------------------------------------------------
@@ -90,7 +89,7 @@ GrB_Info GxB_Matrix_export_CSC  // export and free a CSC matrix
     int sparsity ;
     bool is_csc ;
 
-    info = GB_export (A, type, nrows, ncols, false,
+    info = GB_export (false, A, type, nrows, ncols, false,
         Ap,   Ap_size,  // Ap
         NULL, NULL,     // Ah
         NULL, NULL,     // Ab
@@ -98,7 +97,7 @@ GrB_Info GxB_Matrix_export_CSC  // export and free a CSC matrix
         Ax,   Ax_size,  // Ax
         NULL, jumbled, NULL,                // jumbled or not
         &sparsity, &is_csc,                 // sparse by col
-        is_uniform, Context) ;
+        iso, Context) ;
 
     if (info == GrB_SUCCESS)
     {

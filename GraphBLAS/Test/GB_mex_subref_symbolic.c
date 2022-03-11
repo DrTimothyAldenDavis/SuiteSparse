@@ -2,7 +2,7 @@
 // GB_mex_subref_symbolic: S=A(I,J)
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -76,9 +76,9 @@ void mexFunction
     }
 
     // C = A(I,J) or A(J,I)', no need to check dimensions of C; symbolic
-    METHOD (GB_subref (C, true , A, I, ni, J, nj, true, Context)) ;
+    METHOD (GB_subref (C, false, true, A, I, ni, J, nj, true, Context)) ;
 
-    // return C to MATLAB as a struct
+    // return C as a struct
     pargout [0] = GB_mx_Matrix_to_mxArray (&C, "C subref symbolic", true) ;
 
     FREE_ALL ;

@@ -2,7 +2,7 @@
 // gbsplit: matrix split
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 //------------------------------------------------------------------------------
@@ -15,7 +15,7 @@
 
 // where C is a 2D cell array of matrices.
 
-#include "gb_matlab.h"
+#include "gb_interface.h"
 
 #define USAGE "usage: C = GrB.split (A, m, n, desc)"
 
@@ -29,19 +29,20 @@ static inline GrB_Index *gb_get_tilesizes (mxArray *mxList, GrB_Index *len)
     (*len) = (GrB_Index) n ;
     mxClassID class = mxGetClassID (mxList) ;
     GrB_Index *List = mxMalloc (n * sizeof (GrB_Index)) ;
+    // use mxGetData (best for Octave, fine for MATLAB)
     if (class == mxINT64_CLASS)
     {
-        int64_t *p = mxGetInt64s (mxList) ;
+        int64_t *p = (int64_t *) mxGetData (mxList) ;
         memcpy (List, p, n * sizeof (int64_t)) ;
     }
     else if (class == mxUINT64_CLASS)
     {
-        int64_t *p = mxGetUint64s (mxList) ;
-        memcpy (List, p, n * sizeof (int64_t)) ;
+        uint64_t *p = (uint64_t *) mxGetData (mxList) ;
+        memcpy (List, p, n * sizeof (uint64_t)) ;
     }
     else if (class == mxDOUBLE_CLASS)
     {
-        double *p = mxGetDoubles (mxList) ;
+        double *p = (double *) mxGetData (mxList) ;
         for (int64_t k = 0 ; k < n ; k++)
         {
             List [k] = (GrB_Index) p [k] ;
@@ -79,7 +80,7 @@ void mexFunction
     // find the arguments
     //--------------------------------------------------------------------------
 
-    mxArray *Matrix [4], *String [2], *Cell [2] ;
+    mxArray *Matrix [6], *String [2], *Cell [2] ;
     base_enum_t base ;
     kind_enum_t kind ;
     GxB_Format_Value fmt ;
@@ -107,7 +108,7 @@ void mexFunction
     OK (GxB_Matrix_split (Tiles, m, n, Tile_nrows, Tile_ncols, A, desc)) ;
 
     //--------------------------------------------------------------------------
-    // convert the Tiles array to a MATLAB cell array
+    // convert the Tiles array to a built-in cell array
     //--------------------------------------------------------------------------
 
     mxArray *C = mxCreateCellMatrix (m, n) ;
@@ -131,7 +132,7 @@ void mexFunction
     mxFree (Tile_ncols) ;
 
     //--------------------------------------------------------------------------
-    // export the output cell array C back to MATLAB
+    // export the output cell array C
     //--------------------------------------------------------------------------
 
     pargout [0] = C ;

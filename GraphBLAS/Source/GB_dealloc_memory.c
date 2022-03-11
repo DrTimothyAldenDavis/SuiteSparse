@@ -2,7 +2,7 @@
 // GB_dealloc_memory: wrapper for free, using the free_pool
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -15,7 +15,7 @@
 
 #include "GB.h"
 
-GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
+GB_PUBLIC
 void GB_dealloc_memory      // free memory, return to free_pool or free it
 (
     // input/output
@@ -26,11 +26,11 @@ void GB_dealloc_memory      // free memory, return to free_pool or free it
 {
 
     if (p != NULL && (*p) != NULL)
-    { 
+    {
         bool returned_to_free_pool = false ;
 
         if (GB_IS_POWER_OF_TWO (size_allocated))
-        {
+        { 
 
             //------------------------------------------------------------------
             // return the memory to the free_pool, if possible
@@ -39,13 +39,15 @@ void GB_dealloc_memory      // free memory, return to free_pool or free it
             int k = GB_CEIL_LOG2 (size_allocated) ;
             if (GB_Global_free_pool_limit_get (k) > 0)
             {
-//              printf ("put to free pool %p %d\n", *p, k) ;
+                #ifdef GB_MEMDUMP
+                printf ("put to free pool %p %d\n", *p, k) ;
+                #endif
                 returned_to_free_pool = GB_Global_free_pool_put (*p, k) ;
             }
         }
 
         if (!returned_to_free_pool)
-        {
+        { 
 
             //------------------------------------------------------------------
             // otherwise free the memory back to the memory manager
@@ -54,7 +56,9 @@ void GB_dealloc_memory      // free memory, return to free_pool or free it
             GB_free_memory (p, size_allocated) ;
         }
 
-//      GB_Global_free_pool_dump (2) ; GB_Global_memtable_dump ( ) ;
+        #ifdef GB_MEMDUMP
+        GB_Global_free_pool_dump (2) ; GB_Global_memtable_dump ( ) ;
+        #endif
 
         (*p) = NULL ;
     }

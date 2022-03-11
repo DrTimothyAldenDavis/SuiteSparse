@@ -2,12 +2,12 @@
 // GB_jappend.h: definitions of GB_jappend, and GB_jwrapup
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
-// These methods are now only used by GB_Matrix_wait.
+// These methods are now only used by GB_wait.
 
 #ifndef GB_JAPPEND_H
 #define GB_JAPPEND_H

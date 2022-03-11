@@ -2,7 +2,7 @@
 // GB_AxB_dot3_meta: C<M>=A'*B via dot products, where C is sparse/hypersparse
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -58,28 +58,37 @@
     const int64_t *restrict Cp = C->p ;
     const int64_t *restrict Ch = C->h ;
     int64_t  *restrict Ci = C->i ;
-    GB_CTYPE *restrict Cx = (GB_CTYPE *) C->x ;
     const int64_t cvlen = C->vlen ;
 
     const int64_t *restrict Bp = B->p ;
     const int64_t *restrict Bh = B->h ;
     const int8_t  *restrict Bb = B->b ;
     const int64_t *restrict Bi = B->i ;
-    const GB_BTYPE *restrict Bx = (GB_BTYPE *) (B_is_pattern ? NULL : B->x) ;
     const int64_t bnvec = B->nvec ;
     const bool B_is_hyper = GB_IS_HYPERSPARSE (B) ;
     const bool B_is_bitmap = GB_IS_BITMAP (B) ;
     const bool B_is_sparse = GB_IS_SPARSE (B) ;
+    const bool B_iso = B->iso ;
 
     const int64_t *restrict Ap = A->p ;
     const int64_t *restrict Ah = A->h ;
     const int8_t  *restrict Ab = A->b ;
     const int64_t *restrict Ai = A->i ;
-    const GB_ATYPE *restrict Ax = (GB_ATYPE *) (A_is_pattern ? NULL : A->x) ;
     const int64_t anvec = A->nvec ;
     const bool A_is_hyper = GB_IS_HYPERSPARSE (A) ;
     const bool A_is_bitmap = GB_IS_BITMAP (A) ;
     const bool A_is_sparse = GB_IS_SPARSE (A) ;
+    const bool A_iso = A->iso ;
+
+    #if !GB_A_IS_PATTERN
+    const GB_ATYPE *restrict Ax = (GB_ATYPE *) A->x ;
+    #endif
+    #if !GB_B_IS_PATTERN
+    const GB_BTYPE *restrict Bx = (GB_BTYPE *) B->x ;
+    #endif
+    #if !GB_IS_ANY_PAIR_SEMIRING
+          GB_CTYPE *restrict Cx = (GB_CTYPE *) C->x ;
+    #endif
 
     const int64_t vlen = A->vlen ;
     ASSERT (A->vlen == B->vlen) ;
@@ -103,7 +112,7 @@
     // by dot2.
 
     if (M_is_sparse && Mask_struct && A_is_sparse && B_is_sparse)
-    {
+    { 
         // special case: M is sparse and structural, and A and B are sparse
         #define GB_MASK_SPARSE_AND_STRUCTURAL
         #define GB_A_IS_SPARSE 1
@@ -118,7 +127,7 @@
         #undef GB_MASK_SPARSE_AND_STRUCTURAL
     }
     else
-    {
+    { 
         // general case
         const GB_void *restrict Mx = (GB_void *) (Mask_struct ? NULL : (M->x)) ;
         const size_t msize = M->type->size ;

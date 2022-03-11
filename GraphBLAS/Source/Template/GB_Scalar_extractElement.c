@@ -2,7 +2,7 @@
 // GB_Scalar_extractElement_template: x = S
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -10,17 +10,17 @@
 // Extract the value of single scalar, x = S, typecasting from the
 // type of S to the type of x, as needed.
 
-// Returns GrB_SUCCESS if the GxB_Scalar entry is present, and sets x to its
-// value.  Returns GrB_NO_VALUE if the GxB_Scalar is not present, and x is
+// Returns GrB_SUCCESS if the GrB_Scalar entry is present, and sets x to its
+// value.  Returns GrB_NO_VALUE if the GrB_Scalar is not present, and x is
 // unmodified.
 
-// This template constructs GxB_Scalar_extractElement_[TYPE] for each of the
+// This template constructs GrB_Scalar_extractElement_[TYPE] for each of the
 // 13 built-in types, and the _UDT method for all user-defined types.
 
 GrB_Info GB_EXTRACT_ELEMENT     // extract a single entry from S
 (
     GB_XTYPE *x,                // scalar to extract, not modified if not found
-    const GxB_Scalar S          // GxB_Scalar to extract a scalar from
+    const GrB_Scalar S          // GrB_Scalar to extract a scalar from
 )
 {
 
@@ -38,8 +38,8 @@ GrB_Info GB_EXTRACT_ELEMENT     // extract a single entry from S
         // actually jumbled, but S->jumbled might true anyway.
         GrB_Info info ;
         GB_WHERE1 (GB_WHERE_STRING) ;
-        GB_BURBLE_START ("GxB_Scalar_extractElement") ;
-        GB_OK (GB_Matrix_wait ((GrB_Matrix) S, "s", Context)) ;
+        GB_BURBLE_START ("GrB_Scalar_extractElement") ;
+        GB_OK (GB_wait ((GrB_Matrix) S, "s", Context)) ;
         GB_BURBLE_END ;
     }
 
@@ -52,7 +52,7 @@ GrB_Info GB_EXTRACT_ELEMENT     // extract a single entry from S
         return (GrB_DOMAIN_MISMATCH) ;
     }
 
-    if ((S->nzmax == 0)                         // empty
+    if (GB_nnz ((GrB_Matrix) S) == 0            // empty
         || (S->p != NULL && S->p [1] == 0)      // sparse/hyper with no entry
         || (S->b != NULL && S->b [0] == 0))     // bitmap with no entry
     { 
@@ -67,18 +67,17 @@ GrB_Info GB_EXTRACT_ELEMENT     // extract a single entry from S
     #if !defined ( GB_UDT_EXTRACT )
     if (GB_XCODE == scode)
     { 
-        // copy the value from S into x, no typecasting, for built-in
-        // types only.
+        // copy S into x, no typecasting, for built-in types only.
         GB_XTYPE *restrict Sx = ((GB_XTYPE *) (S->x)) ;
         (*x) = Sx [0] ;
     }
     else
     #endif
     { 
-        // typecast the value from S into x
-        GB_cast_array ((GB_void *) x, GB_XCODE,
-            ((GB_void *) S->x), scode, NULL, S->type->size, 1, 1) ;
+        // typecast S into x
+        GB_cast_scalar (x, GB_XCODE, S->x, scode, S->type->size) ;
     }
+    #pragma omp flush
     return (GrB_SUCCESS) ;
 }
 

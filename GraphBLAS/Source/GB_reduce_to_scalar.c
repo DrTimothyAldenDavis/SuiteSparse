@@ -2,7 +2,7 @@
 // GB_reduce_to_scalar: reduce a matrix to a scalar
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -89,7 +89,8 @@ GrB_Info GB_reduce_to_scalar    // s = reduce_to_scalar (A)
 
     int64_t asize = A->type->size ;
     int64_t zsize = ztype->size ;
-    int64_t anz = GB_NNZ_HELD (A) ;
+    int64_t anz = GB_nnz_held (A) ;
+    ASSERT (anz >= A->nzombies) ;
 
     // s = identity
     GB_void s [GB_VLA(zsize)] ;
@@ -100,7 +101,7 @@ GrB_Info GB_reduce_to_scalar    // s = reduce_to_scalar (A)
     //--------------------------------------------------------------------------
 
     #if defined ( GBCUDA )
-    if (GB_reduce_to_scalar_cuda_branch (reduce, A, Context))
+    if (!A->iso && GB_reduce_to_scalar_cuda_branch (reduce, A, Context))
     {
 
         //----------------------------------------------------------------------
@@ -145,14 +146,25 @@ GrB_Info GB_reduce_to_scalar    // s = reduce_to_scalar (A)
         // get terminal value, if any
         GB_void *restrict terminal = (GB_void *) reduce->terminal ;
 
-        if (anz == 0)
+        if (anz == A->nzombies)
         { 
 
             //------------------------------------------------------------------
-            // nothing to do
+            // no live entries in A; nothing to do
             //------------------------------------------------------------------
 
             ;
+
+        }
+        else if (A->iso)
+        { 
+
+            //------------------------------------------------------------------
+            // reduce an iso matrix to scalar
+            //------------------------------------------------------------------
+
+            // this takes at most O(log(nvals(A))) time, for any monoid
+            GB_iso_reduce_to_scalar (s, reduce, A, Context) ;
 
         }
         else if (A->type == ztype)
@@ -204,7 +216,7 @@ GrB_Info GB_reduce_to_scalar    // s = reduce_to_scalar (A)
                     reduce->op->name) ;
 
                 // the switch factory didn't handle this case
-                GxB_binary_function freduce = reduce->op->function ;
+                GxB_binary_function freduce = reduce->op->binop_function ;
 
                 #define GB_ATYPE GB_void
 
@@ -216,10 +228,6 @@ GrB_Info GB_reduce_to_scalar    // s = reduce_to_scalar (A)
                 #define GB_SCALAR_IDENTITY(t)                           \
                     GB_void t [GB_VLA(zsize)] ;                         \
                     memcpy (t, reduce->identity, zsize) ;
-
-                // t = W [tid], no typecast
-                #define GB_COPY_ARRAY_TO_SCALAR(t, W, tid)              \
-                    memcpy (t, W +(tid*zsize), zsize)
 
                 // W [tid] = t, no typecast
                 #define GB_COPY_SCALAR_TO_ARRAY(W, tid, t)              \
@@ -233,10 +241,6 @@ GrB_Info GB_reduce_to_scalar    // s = reduce_to_scalar (A)
                 #define GB_HAS_TERMINAL 1
                 #define GB_IS_TERMINAL(s) \
                     (terminal != NULL && memcmp (s, terminal, zsize) == 0)
-
-                // t = (ztype) Ax [p], but no typecasting needed
-                #define GB_CAST_ARRAY_TO_SCALAR(t,Ax,p)                 \
-                    memcpy (t, Ax +((p)*zsize), zsize)
 
                 // t += (ztype) Ax [p], but no typecasting needed
                 #define GB_ADD_CAST_ARRAY_TO_SCALAR(t,Ax,p)             \
@@ -256,23 +260,18 @@ GrB_Info GB_reduce_to_scalar    // s = reduce_to_scalar (A)
             GB_BURBLE_MATRIX (A, "(generic reduce to scalar, with typecast:"
                 " %s) ", reduce->op->name) ;
 
-            GxB_binary_function freduce = reduce->op->function ;
+            GxB_binary_function freduce = reduce->op->binop_function ;
             GB_cast_function
                 cast_A_to_Z = GB_cast_factory (ztype->code, A->type->code) ;
 
-                // t = (ztype) Ax [p], with typecast
-                #undef  GB_CAST_ARRAY_TO_SCALAR
-                #define GB_CAST_ARRAY_TO_SCALAR(t,Ax,p)                 \
-                    cast_A_to_Z (t, Ax +((p)*asize), asize)
+            // t += (ztype) Ax [p], with typecast
+            #undef  GB_ADD_CAST_ARRAY_TO_SCALAR
+            #define GB_ADD_CAST_ARRAY_TO_SCALAR(t,Ax,p)             \
+                GB_void awork [GB_VLA(zsize)] ;                     \
+                cast_A_to_Z (awork, Ax +((p)*asize), asize) ;       \
+                freduce (t, t, awork)
 
-                // t += (ztype) Ax [p], with typecast
-                #undef  GB_ADD_CAST_ARRAY_TO_SCALAR
-                #define GB_ADD_CAST_ARRAY_TO_SCALAR(t,Ax,p)             \
-                    GB_void awork [GB_VLA(zsize)] ;                     \
-                    cast_A_to_Z (awork, Ax +((p)*asize), asize) ;       \
-                    freduce (t, t, awork)
-
-                #include "GB_reduce_to_scalar_template.c"
+            #include "GB_reduce_to_scalar_template.c"
         }
     }
 
@@ -292,7 +291,7 @@ GrB_Info GB_reduce_to_scalar    // s = reduce_to_scalar (A)
     }
     else
     { 
-        GxB_binary_function faccum = accum->function ;
+        GxB_binary_function faccum = accum->binop_function ;
 
         GB_cast_function cast_C_to_xaccum, cast_Z_to_yaccum, cast_zaccum_to_C ;
         cast_C_to_xaccum = GB_cast_factory (accum->xtype->code, ctype->code) ;
@@ -322,6 +321,7 @@ GrB_Info GB_reduce_to_scalar    // s = reduce_to_scalar (A)
     //--------------------------------------------------------------------------
 
     GB_FREE_ALL ;
+    #pragma omp flush
     return (GrB_SUCCESS) ;
 }
 

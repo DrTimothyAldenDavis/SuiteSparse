@@ -1,12 +1,9 @@
 function C = lt (A, B)
 %A < B less than.
-% C = (A < B) is an element-by-element comparison of A and B.  One or
+% C = (A < B) compares A and B element-by-element.  One or
 % both may be scalars.  Otherwise, A and B must have the same size.
 %
 % See also GrB/le, GrB/gt, GrB/ge, GrB/ne, GrB/eq.
-
-% FUTURE: lt(A,B) for two matrices A and B is slower than it could be.
-% See comments in gb_union_op.
 
 % The pattern of C depends on the type of inputs:
 % A scalar, B scalar:  C is scalar.
@@ -14,7 +11,7 @@ function C = lt (A, B)
 % B scalar, A matrix:  C is full if B>0, otherwise C is a subset of A.
 % A matrix, B matrix:  C has the pattern of the set union, A+B.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: GPL-3.0-or-later
 
 if (isobject (A))
@@ -34,7 +31,7 @@ ctype = gboptype (atype, btype) ;
 if (a_is_scalar)
     if (b_is_scalar)
         % both A and B are scalars
-        C = GrB (gb_union_op ('<', A, B)) ;
+        C = GrB (gbeunion (A, 0, '<', B, 0)) ;
     else
         % A is a scalar, B is a matrix
         if (gb_scalar (A) < 0)
@@ -75,7 +72,7 @@ else
         end
     else
         % both A and B are matrices.  C is the set union of A and B.
-        C = GrB (gb_union_op ('<', A, B)) ;
+        C = GrB (gbeunion (A, 0, '<', B, 0)) ;
     end
 end
 

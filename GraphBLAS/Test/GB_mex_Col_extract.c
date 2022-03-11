@@ -1,8 +1,8 @@
 //------------------------------------------------------------------------------
-// GB_mex_Col_extract: MATLAB interface for w<mask> = accum (w,A(I,j))
+// GB_mex_Col_extract: interface for w<mask> = accum (w,A(I,j))
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -114,7 +114,7 @@ void mexFunction
     // w<mask> = accum (w,A(I,j))
     METHOD (GrB_Col_extract_(w, mask, accum, A, I, ni, j, desc)) ;
 
-    // return w to MATLAB as a struct and free the GraphBLAS C
+    // return w as a struct and free the GraphBLAS C
     pargout [0] = GB_mx_Vector_to_mxArray (&w, "w output", true) ;
 
     FREE_ALL ;

@@ -3,7 +3,7 @@ function test129
 
 % This is a shorter version of test25
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 fprintf ('\ntest129: GxB_select tests (tril and nonzero)\n') ;
@@ -131,6 +131,6 @@ dt = struct ('inp0', 'tran') ;
     end
     end
 
+GB_builtin_complex_set (true) ;
 fprintf ('\ntest129: all tests passed\n') ;
-
 

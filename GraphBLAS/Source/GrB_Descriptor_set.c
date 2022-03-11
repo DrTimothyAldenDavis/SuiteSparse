@@ -2,7 +2,7 @@
 // GrB_Descriptor_set: set a field in a descriptor
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -116,6 +116,19 @@ GrB_Info GrB_Descriptor_set     // set a parameter in a descriptor
                     (int) GxB_AxB_HASH, (int) GxB_AxB_SAXPY) ;
             }
             desc->axb = value ;
+            break ;
+
+        case GxB_IMPORT : 
+
+            // The user application might not check the error return value of
+            // this method, so do not return an error if the value is something
+            // other that GxB_FAST_IMPORT (equal to GxB_DEFAULT) or
+            // GxB_SERCURE_IMPORT.  Instead, default to slower but secure
+            // import/deserialization, if the GxB_IMPORT setting is made.
+            // Only use the fast import/deserialize if the value is GxB_DEFAULT
+            // or GxB_FAST_IMPORT; otherwise use the slower secure method.
+            desc->import =
+                (value == GxB_DEFAULT) ? GxB_FAST_IMPORT : GxB_SECURE_IMPORT ;
             break ;
 
         default : 

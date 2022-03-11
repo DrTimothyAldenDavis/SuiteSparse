@@ -2,7 +2,7 @@
 // gbvreduce: reduce a matrix to a vector
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 //------------------------------------------------------------------------------
@@ -20,7 +20,7 @@
 // If Cin is not present then it is implicitly a matrix with no entries, of the
 // right size (which depends on A and the descriptor).
 
-#include "gb_matlab.h"
+#include "gb_interface.h"
 
 #define USAGE "usage: C = GrB.vreduce (Cin, M, accum, op, A, desc)"
 
@@ -43,7 +43,7 @@ void mexFunction
     // find the arguments
     //--------------------------------------------------------------------------
 
-    mxArray *Matrix [4], *String [2], *Cell [2] ;
+    mxArray *Matrix [6], *String [2], *Cell [2] ;
     base_enum_t base ;
     kind_enum_t kind ;
     GxB_Format_Value fmt ;
@@ -150,7 +150,8 @@ void mexFunction
     // compute C<M> += reduce(A)
     //--------------------------------------------------------------------------
 
-    OK1 (C, GrB_Matrix_reduce_Monoid (C, M, accum, monoid, A, desc)) ;
+    OK1 (C, GrB_Matrix_reduce_Monoid ((GrB_Vector) C, (GrB_Vector) M,
+        accum, monoid, A, desc)) ;
 
     //--------------------------------------------------------------------------
     // free shallow copies
@@ -161,7 +162,7 @@ void mexFunction
     OK (GrB_Descriptor_free (&desc)) ;
 
     //--------------------------------------------------------------------------
-    // export the output matrix C back to MATLAB
+    // export the output matrix C
     //--------------------------------------------------------------------------
 
     pargout [0] = gb_export (&C, kind) ;

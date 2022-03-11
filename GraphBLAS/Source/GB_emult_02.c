@@ -2,7 +2,7 @@
 // GB_emult_02: C = A.*B where A is sparse/hyper and B is bitmap/full
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -75,7 +75,7 @@
 #include "GB_binop__include.h"
 #endif
 
-#define GB_FREE_WORK                        \
+#define GB_FREE_WORKSPACE                   \
 {                                           \
     GB_WERK_POP (Work, int64_t) ;           \
     GB_WERK_POP (A_ek_slicing, int64_t) ;   \
@@ -83,7 +83,7 @@
 
 #define GB_FREE_ALL                         \
 {                                           \
-    GB_FREE_WORK ;                          \
+    GB_FREE_WORKSPACE ;                     \
     GB_phbix_free (C) ;                   \
 }
 
@@ -108,7 +108,7 @@ GrB_Info GB_emult_02        // C=A.*B when A is sparse/hyper, B bitmap/full
     //--------------------------------------------------------------------------
 
     GrB_Info info ;
-    ASSERT (C != NULL && C->static_header) ;
+    ASSERT (C != NULL && (C->static_header || GBNSTATIC)) ;
 
     ASSERT_MATRIX_OK_OR_NULL (M, "M for emult_02", GB0) ;
     ASSERT_MATRIX_OK (A, "A for emult_02", GB0) ;
@@ -126,14 +126,14 @@ GrB_Info GB_emult_02        // C=A.*B when A is sparse/hyper, B bitmap/full
     int C_sparsity = GB_sparsity (A) ;
 
     if (M == NULL)
-    {
+    { 
         GBURBLE ("emult_02:(%s=%s.*%s)",
             GB_sparsity_char (C_sparsity),
             GB_sparsity_char_matrix (A),
             GB_sparsity_char_matrix (B)) ;
     }
     else
-    {
+    { 
         GBURBLE ("emult_02:(%s<%s%s%s>=%s.*%s) ",
             GB_sparsity_char (C_sparsity),
             Mask_comp ? "!" : "",
@@ -142,6 +142,44 @@ GrB_Info GB_emult_02        // C=A.*B when A is sparse/hyper, B bitmap/full
             GB_sparsity_char_matrix (A),
             GB_sparsity_char_matrix (B)) ;
     }
+
+    //--------------------------------------------------------------------------
+    // revise the operator to handle flipxy
+    //--------------------------------------------------------------------------
+
+    // Replace the ANY operator with SECOND.  ANY and SECOND give the same
+    // result if flipxy is false.  However, SECOND is changed to FIRST if
+    // flipxy is true.  This ensures that the results do not depend on the
+    // sparsity structures of A and B.
+
+    if (op->opcode == GB_ANY_binop_code)
+    {
+        switch (op->xtype->code)
+        {
+            case GB_BOOL_code   : op = GrB_SECOND_BOOL   ; break ;
+            case GB_INT8_code   : op = GrB_SECOND_INT8   ; break ;
+            case GB_INT16_code  : op = GrB_SECOND_INT16  ; break ;
+            case GB_INT32_code  : op = GrB_SECOND_INT32  ; break ;
+            case GB_INT64_code  : op = GrB_SECOND_INT64  ; break ;
+            case GB_UINT8_code  : op = GrB_SECOND_UINT8  ; break ;
+            case GB_UINT16_code : op = GrB_SECOND_UINT16 ; break ;
+            case GB_UINT32_code : op = GrB_SECOND_UINT32 ; break ;
+            case GB_UINT64_code : op = GrB_SECOND_UINT64 ; break ;
+            case GB_FP32_code   : op = GrB_SECOND_FP32   ; break ;
+            case GB_FP64_code   : op = GrB_SECOND_FP64   ; break ;
+            case GB_FC32_code   : op = GxB_SECOND_FC32   ; break ;
+            case GB_FC64_code   : op = GxB_SECOND_FC64   ; break ;
+            default: ;
+        }
+    }
+
+    if (flipxy)
+    {
+        bool handled ;
+        op = GB_flip_op (op, &handled) ;
+        if (handled) flipxy = false ;
+    }
+    ASSERT_BINARYOP_OK (op, "final op for emult_02", GB0) ;
 
     //--------------------------------------------------------------------------
     // declare workspace
@@ -168,16 +206,24 @@ GrB_Info GB_emult_02        // C=A.*B when A is sparse/hyper, B bitmap/full
     const int64_t vlen = A->vlen ;
     const int64_t vdim = A->vdim ;
     const int64_t nvec = A->nvec ;
-    const int64_t anz = GB_NNZ (A) ;
+    const int64_t anz = GB_nnz (A) ;
 
     const int8_t *restrict Bb = B->b ;
     const bool B_is_bitmap = GB_IS_BITMAP (B) ;
 
     //--------------------------------------------------------------------------
+    // check if C is iso and compute its iso value if it is
+    //--------------------------------------------------------------------------
+
+    const size_t csize = ctype->size ;
+    GB_void cscalar [GB_VLA(csize)] ;
+    bool C_iso = GB_iso_emult (cscalar, ctype, A, B, op) ;
+
+    //--------------------------------------------------------------------------
     // allocate C->p and C->h
     //--------------------------------------------------------------------------
 
-    GB_OK (GB_new (&C, true, // sparse or hyper (same as A), static header
+    GB_OK (GB_new (&C, // sparse or hyper (same as A), existing header
         ctype, vlen, vdim, GB_Ap_calloc, C_is_csc,
         C_sparsity, A->hyper_switch, nvec, Context)) ;
     int64_t *restrict Cp = C->p ;
@@ -226,7 +272,7 @@ GrB_Info GB_emult_02        // C=A.*B when A is sparse/hyper, B bitmap/full
         {
 
             //------------------------------------------------------------------
-            // C = A.*B where A is sparse/hyper and B is bitmap
+            // Method2(a): C = A.*B where A is sparse/hyper and B is bitmap
             //------------------------------------------------------------------
 
             ASSERT (B_is_bitmap) ;
@@ -272,7 +318,7 @@ GrB_Info GB_emult_02        // C=A.*B when A is sparse/hyper, B bitmap/full
         {
 
             //------------------------------------------------------------------
-            // C<#M> = A.*B where M and B are bitmap/full, A is sparse/hyper
+            // Method2(c): C<#M> = A.*B; M, B bitmap/full, A is sparse/hyper
             //------------------------------------------------------------------
 
             ASSERT (M != NULL) ;
@@ -332,7 +378,8 @@ GrB_Info GB_emult_02        // C=A.*B when A is sparse/hyper, B bitmap/full
     //--------------------------------------------------------------------------
 
     int64_t cnz = (C_has_pattern_of_A) ? anz : Cp [nvec] ;
-    GB_OK (GB_bix_alloc (C, cnz, false, false, true, true, Context)) ;
+    // set C->iso = C_iso   OK
+    GB_OK (GB_bix_alloc (C, cnz, GxB_SPARSE, false, true, C_iso, Context)) ;
 
     //--------------------------------------------------------------------------
     // copy pattern into C
@@ -341,63 +388,21 @@ GrB_Info GB_emult_02        // C=A.*B when A is sparse/hyper, B bitmap/full
     // TODO: could make these components of C shallow instead of memcpy
 
     if (GB_IS_HYPERSPARSE (A))
-    {
+    { 
         // copy A->h into C->h
         GB_memcpy (C->h, Ah, nvec * sizeof (int64_t), A_nthreads) ;
     }
 
     if (C_has_pattern_of_A)
-    {
-        // B is full and no mask present, so the pattern of C is the same as
-        // the pattern of A
+    { 
+        // Method2(b): B is full and no mask present, so the pattern of C is
+        // the same as the pattern of A
         GB_memcpy (Cp, Ap, (nvec+1) * sizeof (int64_t), A_nthreads) ;
         GB_memcpy (C->i, Ai, cnz * sizeof (int64_t), A_nthreads) ;
     }
 
     C->jumbled = A->jumbled ;
     C->magic = GB_MAGIC ;
-
-    //--------------------------------------------------------------------------
-    // special case for the ANY operator 
-    //--------------------------------------------------------------------------
-
-    // Replace the ANY operator with SECOND.  ANY and SECOND give the same
-    // result if flipxy is false.  However, SECOND is changed to FIRST if
-    // flipxy is true.  This ensures that the results do not depend on the
-    // sparsity structures of A and B.
-
-    if (op->opcode == GB_ANY_opcode)
-    {
-        switch (op->xtype->code)
-        {
-            case GB_BOOL_code   : op = GrB_SECOND_BOOL   ; break ;
-            case GB_INT8_code   : op = GrB_SECOND_INT8   ; break ;
-            case GB_INT16_code  : op = GrB_SECOND_INT16  ; break ;
-            case GB_INT32_code  : op = GrB_SECOND_INT32  ; break ;
-            case GB_INT64_code  : op = GrB_SECOND_INT64  ; break ;
-            case GB_UINT8_code  : op = GrB_SECOND_UINT8  ; break ;
-            case GB_UINT16_code : op = GrB_SECOND_UINT16 ; break ;
-            case GB_UINT32_code : op = GrB_SECOND_UINT32 ; break ;
-            case GB_UINT64_code : op = GrB_SECOND_UINT64 ; break ;
-            case GB_FP32_code   : op = GrB_SECOND_FP32   ; break ;
-            case GB_FP64_code   : op = GrB_SECOND_FP64   ; break ;
-            case GB_FC32_code   : op = GxB_SECOND_FC32   ; break ;
-            case GB_FC64_code   : op = GxB_SECOND_FC64   ; break ;
-            default: ;
-        }
-    }
-
-    //--------------------------------------------------------------------------
-    // handle flipxy
-    //--------------------------------------------------------------------------
-
-    if (flipxy)
-    {
-        bool handled ;
-        op = GB_flip_op (op, &handled) ;
-        if (handled) flipxy = false ;
-    }
-    ASSERT_BINARYOP_OK (op, "final op for emult_02", GB0) ;
 
     //--------------------------------------------------------------------------
     // get the opcode
@@ -409,9 +414,9 @@ GrB_Info GB_emult_02        // C=A.*B when A is sparse/hyper, B bitmap/full
 
     GB_Opcode opcode = op->opcode ;
     bool op_is_positional = GB_OPCODE_IS_POSITIONAL (opcode) ;
-    bool op_is_first  = (opcode == GB_FIRST_opcode) ;
-    bool op_is_second = (opcode == GB_SECOND_opcode) ;
-    bool op_is_pair   = (opcode == GB_PAIR_opcode) ;
+    bool op_is_first  = (opcode == GB_FIRST_binop_code) ;
+    bool op_is_second = (opcode == GB_SECOND_binop_code) ;
+    bool op_is_pair   = (opcode == GB_PAIR_binop_code) ;
     GB_Type_code ccode = ctype->code ;
 
     //--------------------------------------------------------------------------
@@ -432,38 +437,63 @@ GrB_Info GB_emult_02        // C=A.*B when A is sparse/hyper, B bitmap/full
     // using a built-in binary operator (except for positional operators)
     //--------------------------------------------------------------------------
 
+    #define GB_PHASE_2_OF_2
+
     bool done = false ;
 
-    #ifndef GBCOMPACT
+    if (C_iso)
+    { 
 
         //----------------------------------------------------------------------
-        // define the worker for the switch factory
+        // C is iso
         //----------------------------------------------------------------------
 
-        #define GB_AemultB_02(mult,xname) GB (_AemultB_02_ ## mult ## xname)
+        // Cx [0] = cscalar = op (A,B)
+        GB_BURBLE_MATRIX (C, "(iso emult) ") ;
+        memcpy (C->x, cscalar, csize) ;
 
-        #define GB_BINOP_WORKER(mult,xname)                             \
-        {                                                               \
-            info = GB_AemultB_02(mult,xname) (C,                        \
-                M, Mask_struct, Mask_comp, A, B, flipxy,                \
-                Cp_kfirst, A_ek_slicing, A_ntasks, A_nthreads) ;        \
-            done = (info != GrB_NO_VALUE) ;                             \
-        }                                                               \
-        break ;
+        // pattern of C = set intersection of pattern of A and B
+        // flipxy is ignored since the operator is not applied
+        #define GB_ISO_EMULT
+        #include "GB_emult_02_template.c"
+        done = true ;
 
-        //----------------------------------------------------------------------
-        // launch the switch factory
-        //----------------------------------------------------------------------
+    }
+    else
+    {
 
-        GB_Type_code xcode, ycode, zcode ;
-        if (!op_is_positional &&
-            GB_binop_builtin (A->type, A_is_pattern, B->type, B_is_pattern,
-            op, false, &opcode, &xcode, &ycode, &zcode) && ccode == zcode)
-        { 
-            #include "GB_binop_factory.c"
-        }
+        #ifndef GBCOMPACT
 
-    #endif
+            //------------------------------------------------------------------
+            // define the worker for the switch factory
+            //------------------------------------------------------------------
+
+            #define GB_AemultB_02(mult,xname) GB (_AemultB_02_ ## mult ## xname)
+
+            #define GB_BINOP_WORKER(mult,xname)                         \
+            {                                                           \
+                info = GB_AemultB_02(mult,xname) (C,                    \
+                    M, Mask_struct, Mask_comp, A, B, flipxy,            \
+                    Cp_kfirst, A_ek_slicing, A_ntasks, A_nthreads) ;    \
+                done = (info != GrB_NO_VALUE) ;                         \
+            }                                                           \
+            break ;
+
+            //------------------------------------------------------------------
+            // launch the switch factory
+            //------------------------------------------------------------------
+
+            GB_Type_code xcode, ycode, zcode ;
+            if (!op_is_positional &&
+                GB_binop_builtin (A->type, A_is_pattern, B->type, B_is_pattern,
+                op, false, &opcode, &xcode, &ycode, &zcode) && ccode == zcode)
+            { 
+                #define GB_NO_PAIR
+                #include "GB_binop_factory.c"
+            }
+
+        #endif
+    }
 
     //--------------------------------------------------------------------------
     // generic worker
@@ -472,7 +502,7 @@ GrB_Info GB_emult_02        // C=A.*B when A is sparse/hyper, B bitmap/full
     if (!done)
     { 
         GB_BURBLE_MATRIX (C, "(generic emult_02: %s) ", op->name) ;
-        int ewise_method = flipxy ? GB_EMULT_METHOD_02B : GB_EMULT_METHOD_02A ;
+        int ewise_method = flipxy ? GB_EMULT_METHOD3 : GB_EMULT_METHOD2 ;
         GB_ewise_generic (C, op, NULL, 0, 0,
             NULL, NULL, NULL, C_sparsity, ewise_method, Cp_kfirst,
             NULL, 0, 0, A_ek_slicing, A_ntasks, A_nthreads, NULL, 0, 0,
@@ -489,7 +519,7 @@ GrB_Info GB_emult_02        // C=A.*B when A is sparse/hyper, B bitmap/full
     // free workspace and return result
     //--------------------------------------------------------------------------
 
-    GB_FREE_WORK ;
+    GB_FREE_WORKSPACE ;
     ASSERT_MATRIX_OK (C, "C output for emult_02", GB0) ;
     return (GrB_SUCCESS) ;
 }

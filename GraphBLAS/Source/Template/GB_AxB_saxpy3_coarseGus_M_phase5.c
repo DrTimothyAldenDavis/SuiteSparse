@@ -2,7 +2,7 @@
 // GB_AxB_saxpy3_coarseGus_M_phase5: C<M>=A*B, coarse Gustavson, phase5
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -56,22 +56,22 @@
                 GB_GET_A_k ;                // get A(:,k)
                 if (aknz == 0) continue ;
                 GB_GET_B_kj ;               // bkj = B(k,j)
-                #define GB_IKJ                                 \
-                {                                              \
-                    int64_t hf = Hf [i] ;                      \
-                    if (hf == mark)                            \
-                    {                                          \
-                        /* C(i,j) = A(i,k) * B(k,j) */         \
-                        Hf [i] = mark1 ;     /* mark as seen */\
-                        GB_MULT_A_ik_B_kj ;  /* t = aik*bkj */ \
-                        GB_HX_WRITE (i, t) ; /* Hx [i] = t */  \
-                    }                                          \
-                    else if (hf == mark1)                      \
-                    {                                          \
-                        /* C(i,j) += A(i,k) * B(k,j) */        \
-                        GB_MULT_A_ik_B_kj ;  /* t = aik*bkj */ \
-                        GB_HX_UPDATE (i, t) ;/* Hx [i] += t */ \
-                    }                                          \
+                #define GB_IKJ                                      \
+                {                                                   \
+                    int64_t hf = Hf [i] ;                           \
+                    if (hf == mark)                                 \
+                    {                                               \
+                        /* C(i,j) = A(i,k) * B(k,j) */              \
+                        Hf [i] = mark1 ;        /* mark as seen */  \
+                        GB_MULT_A_ik_B_kj ;     /* t = aik*bkj */   \
+                        GB_HX_WRITE (i, t) ;    /* Hx [i] = t */    \
+                    }                                               \
+                    else if (hf == mark1)                           \
+                    {                                               \
+                        /* C(i,j) += A(i,k) * B(k,j) */             \
+                        GB_MULT_A_ik_B_kj ;     /* t = aik*bkj */   \
+                        GB_HX_UPDATE (i, t) ;   /* Hx [i] += t */   \
+                    }                                               \
                 }
                 GB_SCAN_M_j_OR_A_k (A_ok_for_binary_search) ;
                 #undef GB_IKJ
@@ -92,23 +92,23 @@
                 GB_GET_A_k ;                // get A(:,k)
                 if (aknz == 0) continue ;
                 GB_GET_B_kj ;               // bkj = B(k,j)
-                #define GB_IKJ                                 \
-                {                                              \
-                    int64_t hf = Hf [i] ;                      \
-                    if (hf == mark)                            \
-                    {                                          \
-                        /* C(i,j) = A(i,k) * B(k,j) */         \
-                        Hf [i] = mark1 ;     /* mark as seen */\
-                        GB_MULT_A_ik_B_kj ;  /* t = aik*bkj */ \
-                        GB_HX_WRITE (i, t) ; /* Hx [i] = t */  \
-                        Ci [pC++] = i ; /* C(:,j) pattern */   \
-                    }                                          \
-                    else if (hf == mark1)                      \
-                    {                                          \
-                        /* C(i,j) += A(i,k) * B(k,j) */        \
-                        GB_MULT_A_ik_B_kj ;  /* t = aik*bkj */ \
-                        GB_HX_UPDATE (i, t) ;/* Hx [i] += t */ \
-                    }                                          \
+                #define GB_IKJ                                          \
+                {                                                       \
+                    int64_t hf = Hf [i] ;                               \
+                    if (hf == mark)                                     \
+                    {                                                   \
+                        /* C(i,j) = A(i,k) * B(k,j) */                  \
+                        Hf [i] = mark1 ;        /* mark as seen */      \
+                        GB_MULT_A_ik_B_kj ;     /* t = aik*bkj */       \
+                        GB_HX_WRITE (i, t) ;    /* Hx [i] = t */        \
+                        Ci [pC++] = i ;         /* C(:,j) pattern */    \
+                    }                                                   \
+                    else if (hf == mark1)                               \
+                    {                                                   \
+                        /* C(i,j) += A(i,k) * B(k,j) */                 \
+                        GB_MULT_A_ik_B_kj ;     /* t = aik*bkj */       \
+                        GB_HX_UPDATE (i, t) ;   /* Hx [i] += t */       \
+                    }                                                   \
                 }
                 GB_SCAN_M_j_OR_A_k (A_ok_for_binary_search) ;
                 #undef GB_IKJ

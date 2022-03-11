@@ -1,7 +1,7 @@
 function test23(fulltest)
 %TEST23 test GrB_*_build
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 [~, ~, ~, types, ~, ~] = GB_spec_opsall ;
@@ -16,6 +16,7 @@ ops = {
 'first',  0, % z = x
 'second', 0, % z = y
 'pair',   1, % z = 1
+'oneb',   1, % z = 1 (same as pair)
 'any',    1, % z = pick x or y
 'min',    1, % z = min(x,y)
 'max',    1, % z = max(x,y)
@@ -90,9 +91,9 @@ for k0 = 1:size (problems,1) ;
                 end
             end
 
-            if (contains (op.optype, 'single'))
+            if (test_contains (op.optype, 'single'))
                 epsilon = 1e-5 ;
-            elseif (contains (op.optype, 'double'))
+            elseif (test_contains (op.optype, 'double'))
                 epsilon = 1e-12 ;
             else
                 epsilon = 0 ;

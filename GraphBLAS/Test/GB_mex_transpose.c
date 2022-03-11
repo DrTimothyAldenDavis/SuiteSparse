@@ -1,8 +1,8 @@
 //------------------------------------------------------------------------------
-// GB_mex_transpose: transpose a sparse matrix and return it to MATLAB
+// GB_mex_transpose: transpose a sparse matrix
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -132,7 +132,7 @@ void mexFunction
     // C<M> = op(C,A') or op(C,A)
     METHOD (GrB_transpose (C, M, accum, A, desc)) ;
 
-    // return C to MATLAB as a struct and free the GraphBLAS C
+    // return C as a struct and free the GraphBLAS C
     if (C == A) A = NULL ;      // do not free A if it is aliased to C
     if (C == M) M = NULL ;      // do not free M if it is aliased to C
     pargout [0] = GB_mx_Matrix_to_mxArray (&C, "C output", true) ;

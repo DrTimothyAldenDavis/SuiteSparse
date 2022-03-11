@@ -2,7 +2,7 @@
 // GB_mex_kron: C<Mask> = accum(C,kron(A,B))
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -112,14 +112,14 @@ void mexFunction
     if (mult == GrB_PLUS_FP64)
     {
         // C<Mask> = accum(C,kron(A,B)), monoid variant
-        METHOD (GrB_Matrix_kronecker_Monoid_ (C, Mask, accum, GrB_PLUS_MONOID_FP64,
-            A, B, desc)) ;
+        METHOD (GrB_Matrix_kronecker_Monoid_ (C, Mask, accum,
+            GrB_PLUS_MONOID_FP64, A, B, desc)) ;
     }
     else if (mult == GrB_TIMES_FP64)
     {
         // C<Mask> = accum(C,kron(A,B)), semiring variant
-        METHOD (GrB_Matrix_kronecker_Semiring_ (C, Mask, accum, GrB_PLUS_TIMES_SEMIRING_FP64,
-            A, B, desc)) ;
+        METHOD (GrB_Matrix_kronecker_Semiring_ (C, Mask, accum,
+            GrB_PLUS_TIMES_SEMIRING_FP64, A, B, desc)) ;
     }
     else if (mult == GrB_TIMES_FP32)
     {
@@ -129,10 +129,11 @@ void mexFunction
     else
     {
         // C<Mask> = accum(C,kron(A,B)), binary op variant (new name)
-        METHOD (GrB_Matrix_kronecker_BinaryOp_ (C, Mask, accum, mult, A, B, desc)) ;
+        METHOD (GrB_Matrix_kronecker_BinaryOp_ (C, Mask, accum, mult,
+            A, B, desc)) ;
     }
 
-    // return C to MATLAB as a struct and free the GraphBLAS C
+    // return C as a struct and free the GraphBLAS C
     pargout [0] = GB_mx_Matrix_to_mxArray (&C, "C output", true) ;
 
     FREE_ALL ;

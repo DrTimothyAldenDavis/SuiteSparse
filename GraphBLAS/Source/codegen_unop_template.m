@@ -23,7 +23,7 @@ function codegen_unop_template (unop, bfunc, ifunc, ufunc, ffunc, dfunc, ...
 % pairs of functions are generated.  The other unary operators are defined only
 % for a single type (ctype == atype).
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 fprintf ('\n%-9s', unop) ;
@@ -111,7 +111,7 @@ for code1 = 1:ntypes
             if (isequal (ctype, 'bool')) 
                 % to bool from GxB_FC32_t 
                 fcast = 'GB_ctype zarg = (crealf (xarg) != 0) || (cimagf (xarg) != 0)' ;
-            elseif (contains (ctype, 'int'))
+            elseif (codegen_contains (ctype, 'int'))
                 % to integer from GxB_FC32_t 
                 fcast = sprintf ('GB_ctype zarg = GB_cast_to_%s ((double) crealf (xarg))', ctype) ;
             elseif (isequal (ctype, 'float') || isequal (ctype, 'double')) 
@@ -128,7 +128,7 @@ for code1 = 1:ntypes
             if (isequal (ctype, 'bool')) 
                 % to bool from GxB_FC64_t 
                 fcast = 'GB_ctype zarg = (creal (xarg) != 0) || (cimag (xarg) != 0)' ;
-            elseif (contains (ctype, 'int'))
+            elseif (codegen_contains (ctype, 'int'))
                 % to integer from GxB_FC64_t 
                 fcast = sprintf ('GB_ctype zarg = GB_cast_to_%s (creal (xarg))', ctype) ;
             elseif (isequal (ctype, 'float') || isequal (ctype, 'double')) 
@@ -145,7 +145,7 @@ for code1 = 1:ntypes
             if (isequal (ctype, 'bool')) 
                 % to bool from float or double 
                 fcast = 'GB_ctype zarg = (xarg != 0)' ;
-            elseif (contains (ctype, 'int'))
+            elseif (codegen_contains (ctype, 'int'))
                 % to integer from float or double 
                 fcast = sprintf ('GB_ctype zarg = GB_cast_to_%s ((double) (xarg))', ctype) ;
             elseif (isequal (ctype, 'GxB_FC32_t'))

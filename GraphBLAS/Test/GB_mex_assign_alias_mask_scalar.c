@@ -2,7 +2,7 @@
 // GB_mex_assign_alias_mask_scalar: C<C,struct> = scalar
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -20,7 +20,7 @@
 
 GrB_Matrix C = NULL ;
 GrB_Matrix S = NULL ;
-GxB_Scalar scalar = NULL ;
+GrB_Scalar scalar = NULL ;
 GrB_Info assign_mask_scalar (void) ;
 
 GrB_Info assign_mask_scalar (void)
@@ -37,79 +37,79 @@ GrB_Info assign_mask_scalar (void)
 
     if (stype == GrB_BOOL)
     {
-        bool y = *((bool *) (scalar->x)) ;
+        bool y = *((bool *) (scalar->x)) ;  // OK
         info = GrB_Matrix_assign_BOOL_
             (C, C, NULL, y, GrB_ALL, nrows, GrB_ALL, ncols, GrB_DESC_S) ;
     }
     else if (stype == GrB_INT8)
     {
-        int8_t y = *((int8_t *) (scalar->x)) ;
+        int8_t y = *((int8_t *) (scalar->x)) ;  // OK
         info = GrB_Matrix_assign_INT8_
             (C, C, NULL, y, GrB_ALL, nrows, GrB_ALL, ncols, GrB_DESC_S) ;
     }
     else if (stype == GrB_INT16)
     {
-        int16_t y = *((int16_t *) (scalar->x)) ;
+        int16_t y = *((int16_t *) (scalar->x)) ;    // OK
         info = GrB_Matrix_assign_INT16_
             (C, C, NULL, y, GrB_ALL, nrows, GrB_ALL, ncols, GrB_DESC_S) ;
     }
     else if (stype == GrB_INT32)
     {
-        int32_t y = *((int32_t *) (scalar->x)) ;
+        int32_t y = *((int32_t *) (scalar->x)) ;    // OK
         info = GrB_Matrix_assign_INT32_
             (C, C, NULL, y, GrB_ALL, nrows, GrB_ALL, ncols, GrB_DESC_S) ;
     }
     else if (stype == GrB_INT64)
     {
-        int64_t y = *((int64_t *) (scalar->x)) ;
+        int64_t y = *((int64_t *) (scalar->x)) ;    // OK
         info = GrB_Matrix_assign_INT64_
             (C, C, NULL, y, GrB_ALL, nrows, GrB_ALL, ncols, GrB_DESC_S) ;
     }
     else if (stype == GrB_UINT8)
     {
-        uint8_t y = *((uint8_t *) (scalar->x)) ;
+        uint8_t y = *((uint8_t *) (scalar->x)) ;    // OK
         info = GrB_Matrix_assign_UINT8_
             (C, C, NULL, y, GrB_ALL, nrows, GrB_ALL, ncols, GrB_DESC_S) ;
     }
     else if (stype == GrB_UINT16)
     {
-        uint16_t y = *((uint16_t *) (scalar->x)) ;
+        uint16_t y = *((uint16_t *) (scalar->x)) ;  // OK
         info = GrB_Matrix_assign_UINT16_
             (C, C, NULL, y, GrB_ALL, nrows, GrB_ALL, ncols, GrB_DESC_RS) ;
     }
     else if (stype == GrB_UINT32)
     {
-        uint32_t y = *((uint32_t *) (scalar->x)) ;
+        uint32_t y = *((uint32_t *) (scalar->x)) ;  // OK   // OK
         info = GrB_Matrix_assign_UINT32_
             (C, C, NULL, y, GrB_ALL, nrows, GrB_ALL, ncols, GrB_DESC_RS) ;
     }
     else if (stype == GrB_UINT64)
     {
-        uint64_t y = *((uint64_t *) (scalar->x)) ;
+        uint64_t y = *((uint64_t *) (scalar->x)) ;  // OK
         info = GrB_Matrix_assign_UINT64_
             (C, C, NULL, y, GrB_ALL, nrows, GrB_ALL, ncols, GrB_DESC_RS) ;
     }
     else if (stype == GrB_FP32)
     {
-        float y = *((float *) (scalar->x)) ;
+        float y = *((float *) (scalar->x)) ;    // OK
         info = GrB_Matrix_assign_FP32_
             (C, C, NULL, y, GrB_ALL, nrows, GrB_ALL, ncols, GrB_DESC_RS) ;
     }
     else if (stype == GrB_FP64)
     {
-        double y = *((double *) (scalar->x)) ;
+        double y = *((double *) (scalar->x)) ;  // OK
         info = GrB_Matrix_assign_FP64_
             (C, C, NULL, y, GrB_ALL, nrows, GrB_ALL, ncols, GrB_DESC_S) ;
     }
     else if (stype == GxB_FC32)
     {
-        GxB_FC32_t y = *((GxB_FC32_t *) (scalar->x)) ;
+        GxB_FC32_t y = *((GxB_FC32_t *) (scalar->x)) ;  // OK
         info = GxB_Matrix_assign_FC32_
             (C, C, NULL, y, GrB_ALL, nrows, GrB_ALL, ncols, GrB_DESC_S) ;
     }
     else if (stype == GxB_FC64)
     {
-        GxB_FC64_t y = *((GxB_FC64_t *) (scalar->x)) ;
+        GxB_FC64_t y = *((GxB_FC64_t *) (scalar->x)) ;  // OK
         info = GxB_Matrix_assign_FC64_
             (C, C, NULL, y, GrB_ALL, nrows, GrB_ALL, ncols, GrB_DESC_RS) ;
     }
@@ -141,7 +141,7 @@ void mexFunction
     // get C (make a deep copy)
     #define GET_DEEP_COPY       \
         C = GB_mx_mxArray_to_Matrix (pargin [0], "C input", true, true) ;   \
-        GxB_Matrix_Option_set (C, GxB_SPARSITY_CONTROL, C->sparsity) ;
+        GxB_Matrix_Option_set (C, GxB_SPARSITY_CONTROL, C->sparsity_control) ;
     #define FREE_DEEP_COPY      \
         GrB_Matrix_free_(&C) ;
     GET_DEEP_COPY ;
@@ -170,7 +170,7 @@ void mexFunction
         FREE_ALL ;
         mexErrMsgTxt ("scalar failed") ;
     }
-    scalar = (GxB_Scalar) S ;
+    scalar = (GrB_Scalar) S ;
 //  GrB_Info info = GxB_Scalar_fprint (scalar, "scalar", GxB_COMPLETE, NULL) ;
 //  if (info != GrB_SUCCESS)
 //  {
@@ -182,7 +182,7 @@ void mexFunction
     METHOD (assign_mask_scalar ( )) ;
 //  GxB_Matrix_fprint (C, "C output", GxB_COMPLETE, NULL) ;
 
-    // return C to MATLAB as a struct and free the GraphBLAS C
+    // return C as a struct and free the GraphBLAS C
     pargout [0] = GB_mx_Matrix_to_mxArray (&C, "C output", true) ;
 
     FREE_ALL ;

@@ -10,18 +10,7 @@ function S = struct (G)
 %
 % See also load, save, properties, GrB.version, GrB.ver, GrB.load, GrB.save.
 
-% Note for Octave users:  Octave cannot save or load a @GrB object G
-% to/from a file, but it should be able to save/load the struct S.  When S
-% is loaded back in from the file, it can be converted to a @GrB object
-% with G = GrB (S).  A struct S constructed from a @GrB object G via S =
-% struct (G) always has the fieldname 'GraphBLASv5' as its first field, in
-% SuiteSparse:GraphBLAS version v5.0.0 and later.  If the format of the
-% struct changes in the future, another field will be used, unique to that
-% version of SuiteSparse:GraphBLAS, and a backward-compatibility process
-% will be written so that G = GrB (S) converts S into a @GrB object for
-% the then-current version of SuiteSparse:GraphBLAS.
-
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: GPL-3.0-or-later
 
 S = G.opaque ;

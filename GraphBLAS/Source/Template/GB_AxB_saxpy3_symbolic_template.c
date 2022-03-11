@@ -2,7 +2,7 @@
 // GB_AxB_saxpy3_symbolic_template: symbolic analysis for GB_AxB_saxpy3
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -34,7 +34,7 @@ void GB_EVAL2 (GB (AxB_saxpy3_sym), GB_MASK_A_B_SUFFIX)
     #if ( !GB_NO_MASK )
     const GrB_Matrix M,         // mask matrix M
     const bool Mask_struct,     // M structural, or not
-    const bool M_packed_in_place,
+    const bool M_in_place,
     #endif
     const GrB_Matrix A,         // A matrix; only the pattern is accessed
     const GrB_Matrix B,         // B matrix; only the pattern is accessed
@@ -161,14 +161,14 @@ void GB_EVAL2 (GB (AxB_saxpy3_sym), GB_MASK_A_B_SUFFIX)
                     }
 
                 }
-                else if (!M_packed_in_place)
+                else if (!M_in_place)
                 {
 
                     //----------------------------------------------------------
                     // phase1: fine hash task, C<M>=A*B or C<!M>=A*B
                     //----------------------------------------------------------
 
-                    // If M_packed_in_place is true, this is skipped.  The mask
+                    // If M_in_place is true, this is skipped.  The mask
                     // M is dense, and is used in-place.
 
                     // The least significant 2 bits of Hf [hash] is the flag f,
@@ -278,7 +278,7 @@ void GB_EVAL2 (GB (AxB_saxpy3_sym), GB_MASK_A_B_SUFFIX)
                     // phase1: coarse hash task, C<M>=A*B
                     //----------------------------------------------------------
 
-                    if (M_packed_in_place)
+                    if (M_in_place)
                     { 
 
                         //------------------------------------------------------
@@ -295,29 +295,29 @@ void GB_EVAL2 (GB (AxB_saxpy3_sym), GB_MASK_A_B_SUFFIX)
                         switch (msize)
                         {
                             default:
-                            case 1 : 
+                            case GB_1BYTE : 
                                 #undef  M_TYPE
                                 #define M_TYPE uint8_t
                                 #undef  M_SIZE
                                 #define M_SIZE 1
                                 #include "GB_AxB_saxpy3_coarseHash_phase1.c"
                                 break ;
-                            case 2 : 
+                            case GB_2BYTE : 
                                 #undef  M_TYPE
                                 #define M_TYPE uint16_t
                                 #include "GB_AxB_saxpy3_coarseHash_phase1.c"
                                 break ;
-                            case 4 : 
+                            case GB_4BYTE : 
                                 #undef  M_TYPE
                                 #define M_TYPE uint32_t
                                 #include "GB_AxB_saxpy3_coarseHash_phase1.c"
                                 break ;
-                            case 8 : 
+                            case GB_8BYTE : 
                                 #undef  M_TYPE
                                 #define M_TYPE uint64_t
                                 #include "GB_AxB_saxpy3_coarseHash_phase1.c"
                                 break ;
-                            case 16 : 
+                            case GB_16BYTE : 
                                 #undef  M_TYPE
                                 #define M_TYPE uint64_t
                                 #undef  M_SIZE
@@ -353,7 +353,7 @@ void GB_EVAL2 (GB (AxB_saxpy3_sym), GB_MASK_A_B_SUFFIX)
                     // phase1: coarse hash task, C<!M>=A*B
                     //----------------------------------------------------------
 
-                    if (M_packed_in_place)
+                    if (M_in_place)
                     {
 
                         //------------------------------------------------------
@@ -370,29 +370,29 @@ void GB_EVAL2 (GB (AxB_saxpy3_sym), GB_MASK_A_B_SUFFIX)
                         switch (msize)
                         {
                             default:
-                            case 1 : 
+                            case GB_1BYTE : 
                                 #undef  M_TYPE
                                 #define M_TYPE uint8_t
                                 #undef  M_SIZE
                                 #define M_SIZE 1
                                 #include "GB_AxB_saxpy3_coarseHash_phase1.c"
                                 break ;
-                            case 2 : 
+                            case GB_2BYTE : 
                                 #undef  M_TYPE
                                 #define M_TYPE uint16_t
                                 #include "GB_AxB_saxpy3_coarseHash_phase1.c"
                                 break ;
-                            case 4 : 
+                            case GB_4BYTE : 
                                 #undef  M_TYPE
                                 #define M_TYPE uint32_t
                                 #include "GB_AxB_saxpy3_coarseHash_phase1.c"
                                 break ;
-                            case 8 : 
+                            case GB_8BYTE : 
                                 #undef  M_TYPE
                                 #define M_TYPE uint64_t
                                 #include "GB_AxB_saxpy3_coarseHash_phase1.c"
                                 break ;
-                            case 16 : 
+                            case GB_16BYTE : 
                                 #undef  M_TYPE
                                 #define M_TYPE uint64_t
                                 #undef  M_SIZE
@@ -470,7 +470,7 @@ void GB_EVAL2 (GB (AxB_saxpy3_sym), GB_MASK_A_B_SUFFIX)
                 }
                 ASSERT (mjcount == mjcount2) ;
             }
-            else if (!M_packed_in_place)
+            else if (!M_in_place)
             {
                 // phase1: fine hash task, C<M>=A*B or C<!M>=A*B
                 // h == 0,   f == 0: unoccupied and unlocked

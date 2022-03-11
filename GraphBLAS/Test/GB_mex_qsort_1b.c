@@ -2,7 +2,7 @@
 // GB_mex_qsort_1b: sort using GB_qsort_1b
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -51,11 +51,6 @@ void mexFunction
     int64_t *Jout = mxGetData (pargout [1]) ;
     memcpy (Jout, J, n * sizeof (int64_t)) ;
 
-    GB_MEX_TIC ;
-
-    GB_qsort_1b (Iout, Jout, sizeof (int64_t), n) ;
-
-    GB_MEX_TOC ;
-    GB_mx_put_time ( ) ;
+    GB_qsort_1b (Iout, (GB_void *) Jout, sizeof (int64_t), n) ;
 }
 

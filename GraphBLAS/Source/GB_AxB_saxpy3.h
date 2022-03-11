@@ -2,7 +2,7 @@
 // GB_AxB_saxpy3.h: definitions for C=A*B saxpy3 method
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -17,6 +17,8 @@
 GrB_Info GB_AxB_saxpy3              // C = A*B using Gustavson+Hash
 (
     GrB_Matrix C,                   // output matrix, static header
+    const bool C_iso,               // true if C is iso
+    const GB_void *cscalar,         // iso value of C
     int C_sparsity,                 // construct C as sparse or hypersparse
     const GrB_Matrix M_input,       // optional mask matrix
     const bool Mask_comp_input,     // if true, use !M
@@ -102,7 +104,7 @@ GB_saxpy3task_struct ;
 // GB_AxB_saxpy3_flopcount:  compute flops for GB_AxB_saxpy3
 //------------------------------------------------------------------------------
 
-GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
+GB_PUBLIC
 GrB_Info GB_AxB_saxpy3_flopcount
 (
     int64_t *Mwork,             // amount of work to handle the mask M
@@ -145,7 +147,7 @@ GrB_Info GB_AxB_saxpy3_slice_balanced
     GB_saxpy3task_struct **SaxpyTasks_handle,
     size_t *SaxpyTasks_size_handle,
     bool *apply_mask,               // if true, apply M during sapxy3
-    bool *M_packed_in_place,        // if true, use M in-place
+    bool *M_in_place,               // if true, use M in-place
     int *ntasks,                    // # of tasks created (coarse and fine)
     int *nfine,                     // # of fine tasks created
     int *nthreads,                  // # of threads to use
@@ -181,7 +183,7 @@ void GB_AxB_saxpy3_symbolic
     const GrB_Matrix M,         // mask matrix M
     const bool Mask_comp,       // M complemented, or not
     const bool Mask_struct,     // M structural, or not
-    const bool M_packed_in_place,
+    const bool M_in_place,
     const GrB_Matrix A,         // A matrix; only the pattern is accessed
     const GrB_Matrix B,         // B matrix; only the pattern is accessed
     GB_saxpy3task_struct *SaxpyTasks,     // list of tasks, and workspace
@@ -327,7 +329,7 @@ void GB_AxB_saxpy3_sym_mbb      // C<M> = A*B, A is bitmap, B is bitmap
     GrB_Matrix C,               // Cp is computed for coarse tasks
     const GrB_Matrix M,         // mask matrix M
     const bool Mask_struct,     // M structural, or not
-    const bool M_packed_in_place,
+    const bool M_in_place,
     const GrB_Matrix A,         // A matrix; only the pattern is accessed
     const GrB_Matrix B,         // B matrix; only the pattern is accessed
     GB_saxpy3task_struct *SaxpyTasks,     // list of tasks, and workspace
@@ -341,7 +343,7 @@ void GB_AxB_saxpy3_sym_mbf      // C<M> = A*B, A is bitmap, B is full
     GrB_Matrix C,               // Cp is computed for coarse tasks
     const GrB_Matrix M,         // mask matrix M
     const bool Mask_struct,     // M structural, or not
-    const bool M_packed_in_place,
+    const bool M_in_place,
     const GrB_Matrix A,         // A matrix; only the pattern is accessed
     const GrB_Matrix B,         // B matrix; only the pattern is accessed
     GB_saxpy3task_struct *SaxpyTasks,     // list of tasks, and workspace
@@ -355,7 +357,7 @@ void GB_AxB_saxpy3_sym_mbh      // C<M> = A*B, A is bitmap, B is hypersparse
     GrB_Matrix C,               // Cp is computed for coarse tasks
     const GrB_Matrix M,         // mask matrix M
     const bool Mask_struct,     // M structural, or not
-    const bool M_packed_in_place,
+    const bool M_in_place,
     const GrB_Matrix A,         // A matrix; only the pattern is accessed
     const GrB_Matrix B,         // B matrix; only the pattern is accessed
     GB_saxpy3task_struct *SaxpyTasks,     // list of tasks, and workspace
@@ -369,7 +371,7 @@ void GB_AxB_saxpy3_sym_mbs      // C<M> = A*B, A is bitmap, B is sparse
     GrB_Matrix C,               // Cp is computed for coarse tasks
     const GrB_Matrix M,         // mask matrix M
     const bool Mask_struct,     // M structural, or not
-    const bool M_packed_in_place,
+    const bool M_in_place,
     const GrB_Matrix A,         // A matrix; only the pattern is accessed
     const GrB_Matrix B,         // B matrix; only the pattern is accessed
     GB_saxpy3task_struct *SaxpyTasks,     // list of tasks, and workspace
@@ -383,7 +385,7 @@ void GB_AxB_saxpy3_sym_mfb      // C<M> = A*B, A is full, B is bitmap
     GrB_Matrix C,               // Cp is computed for coarse tasks
     const GrB_Matrix M,         // mask matrix M
     const bool Mask_struct,     // M structural, or not
-    const bool M_packed_in_place,
+    const bool M_in_place,
     const GrB_Matrix A,         // A matrix; only the pattern is accessed
     const GrB_Matrix B,         // B matrix; only the pattern is accessed
     GB_saxpy3task_struct *SaxpyTasks,     // list of tasks, and workspace
@@ -397,7 +399,7 @@ void GB_AxB_saxpy3_sym_mff      // C<M> = A*B, A is full, B is full
     GrB_Matrix C,               // Cp is computed for coarse tasks
     const GrB_Matrix M,         // mask matrix M
     const bool Mask_struct,     // M structural, or not
-    const bool M_packed_in_place,
+    const bool M_in_place,
     const GrB_Matrix A,         // A matrix; only the pattern is accessed
     const GrB_Matrix B,         // B matrix; only the pattern is accessed
     GB_saxpy3task_struct *SaxpyTasks,     // list of tasks, and workspace
@@ -411,7 +413,7 @@ void GB_AxB_saxpy3_sym_mfh      // C<M> = A*B, A is full, B is hypersparse
     GrB_Matrix C,               // Cp is computed for coarse tasks
     const GrB_Matrix M,         // mask matrix M
     const bool Mask_struct,     // M structural, or not
-    const bool M_packed_in_place,
+    const bool M_in_place,
     const GrB_Matrix A,         // A matrix; only the pattern is accessed
     const GrB_Matrix B,         // B matrix; only the pattern is accessed
     GB_saxpy3task_struct *SaxpyTasks,     // list of tasks, and workspace
@@ -425,7 +427,7 @@ void GB_AxB_saxpy3_sym_mfs      // C<M> = A*B, A is full, B is sparse
     GrB_Matrix C,               // Cp is computed for coarse tasks
     const GrB_Matrix M,         // mask matrix M
     const bool Mask_struct,     // M structural, or not
-    const bool M_packed_in_place,
+    const bool M_in_place,
     const GrB_Matrix A,         // A matrix; only the pattern is accessed
     const GrB_Matrix B,         // B matrix; only the pattern is accessed
     GB_saxpy3task_struct *SaxpyTasks,     // list of tasks, and workspace
@@ -439,7 +441,7 @@ void GB_AxB_saxpy3_sym_mhb      // C<M> = A*B, A is hypersparse, B is bitmap
     GrB_Matrix C,               // Cp is computed for coarse tasks
     const GrB_Matrix M,         // mask matrix M
     const bool Mask_struct,     // M structural, or not
-    const bool M_packed_in_place,
+    const bool M_in_place,
     const GrB_Matrix A,         // A matrix; only the pattern is accessed
     const GrB_Matrix B,         // B matrix; only the pattern is accessed
     GB_saxpy3task_struct *SaxpyTasks,     // list of tasks, and workspace
@@ -453,7 +455,7 @@ void GB_AxB_saxpy3_sym_mhf      // C<M> = A*B, A is hypersparse, B is full
     GrB_Matrix C,               // Cp is computed for coarse tasks
     const GrB_Matrix M,         // mask matrix M
     const bool Mask_struct,     // M structural, or not
-    const bool M_packed_in_place,
+    const bool M_in_place,
     const GrB_Matrix A,         // A matrix; only the pattern is accessed
     const GrB_Matrix B,         // B matrix; only the pattern is accessed
     GB_saxpy3task_struct *SaxpyTasks,     // list of tasks, and workspace
@@ -467,7 +469,7 @@ void GB_AxB_saxpy3_sym_mhh      // C<M> = A*B, A and B are hypersparse
     GrB_Matrix C,               // Cp is computed for coarse tasks
     const GrB_Matrix M,         // mask matrix M
     const bool Mask_struct,     // M structural, or not
-    const bool M_packed_in_place,
+    const bool M_in_place,
     const GrB_Matrix A,         // A matrix; only the pattern is accessed
     const GrB_Matrix B,         // B matrix; only the pattern is accessed
     GB_saxpy3task_struct *SaxpyTasks,     // list of tasks, and workspace
@@ -481,7 +483,7 @@ void GB_AxB_saxpy3_sym_mhs      // C<M> = A*B, A is hypersparse, B is sparse
     GrB_Matrix C,               // Cp is computed for coarse tasks
     const GrB_Matrix M,         // mask matrix M
     const bool Mask_struct,     // M structural, or not
-    const bool M_packed_in_place,
+    const bool M_in_place,
     const GrB_Matrix A,         // A matrix; only the pattern is accessed
     const GrB_Matrix B,         // B matrix; only the pattern is accessed
     GB_saxpy3task_struct *SaxpyTasks,     // list of tasks, and workspace
@@ -495,7 +497,7 @@ void GB_AxB_saxpy3_sym_msb      // C<M> = A*B, A is sparse, B is bitmap
     GrB_Matrix C,               // Cp is computed for coarse tasks
     const GrB_Matrix M,         // mask matrix M
     const bool Mask_struct,     // M structural, or not
-    const bool M_packed_in_place,
+    const bool M_in_place,
     const GrB_Matrix A,         // A matrix; only the pattern is accessed
     const GrB_Matrix B,         // B matrix; only the pattern is accessed
     GB_saxpy3task_struct *SaxpyTasks,     // list of tasks, and workspace
@@ -509,7 +511,7 @@ void GB_AxB_saxpy3_sym_msf      // C<M> = A*B, A is sparse, B is full
     GrB_Matrix C,               // Cp is computed for coarse tasks
     const GrB_Matrix M,         // mask matrix M
     const bool Mask_struct,     // M structural, or not
-    const bool M_packed_in_place,
+    const bool M_in_place,
     const GrB_Matrix A,         // A matrix; only the pattern is accessed
     const GrB_Matrix B,         // B matrix; only the pattern is accessed
     GB_saxpy3task_struct *SaxpyTasks,     // list of tasks, and workspace
@@ -523,7 +525,7 @@ void GB_AxB_saxpy3_sym_msh      // C<M> = A*B, A is sparse, B is hyperparse
     GrB_Matrix C,               // Cp is computed for coarse tasks
     const GrB_Matrix M,         // mask matrix M
     const bool Mask_struct,     // M structural, or not
-    const bool M_packed_in_place,
+    const bool M_in_place,
     const GrB_Matrix A,         // A matrix; only the pattern is accessed
     const GrB_Matrix B,         // B matrix; only the pattern is accessed
     GB_saxpy3task_struct *SaxpyTasks,     // list of tasks, and workspace
@@ -537,7 +539,7 @@ void GB_AxB_saxpy3_sym_mss      // C<M> = A*B, A is sparse, B is sparse
     GrB_Matrix C,               // Cp is computed for coarse tasks
     const GrB_Matrix M,         // mask matrix M
     const bool Mask_struct,     // M structural, or not
-    const bool M_packed_in_place,
+    const bool M_in_place,
     const GrB_Matrix A,         // A matrix; only the pattern is accessed
     const GrB_Matrix B,         // B matrix; only the pattern is accessed
     GB_saxpy3task_struct *SaxpyTasks,     // list of tasks, and workspace
@@ -551,7 +553,7 @@ void GB_AxB_saxpy3_sym_nbh      // C<!M> = A*B, A is bitmap, B is hypersparse
     GrB_Matrix C,               // Cp is computed for coarse tasks
     const GrB_Matrix M,         // mask matrix M
     const bool Mask_struct,     // M structural, or not
-    const bool M_packed_in_place,
+    const bool M_in_place,
     const GrB_Matrix A,         // A matrix; only the pattern is accessed
     const GrB_Matrix B,         // B matrix; only the pattern is accessed
     GB_saxpy3task_struct *SaxpyTasks,     // list of tasks, and workspace
@@ -565,7 +567,7 @@ void GB_AxB_saxpy3_sym_nbs      // C<!M> = A*B, A is bitmap, B is sparse
     GrB_Matrix C,               // Cp is computed for coarse tasks
     const GrB_Matrix M,         // mask matrix M
     const bool Mask_struct,     // M structural, or not
-    const bool M_packed_in_place,
+    const bool M_in_place,
     const GrB_Matrix A,         // A matrix; only the pattern is accessed
     const GrB_Matrix B,         // B matrix; only the pattern is accessed
     GB_saxpy3task_struct *SaxpyTasks,     // list of tasks, and workspace
@@ -579,7 +581,7 @@ void GB_AxB_saxpy3_sym_nfh      // C<!M> = A*B, A is full, B is hypersparse
     GrB_Matrix C,               // Cp is computed for coarse tasks
     const GrB_Matrix M,         // mask matrix M
     const bool Mask_struct,     // M structural, or not
-    const bool M_packed_in_place,
+    const bool M_in_place,
     const GrB_Matrix A,         // A matrix; only the pattern is accessed
     const GrB_Matrix B,         // B matrix; only the pattern is accessed
     GB_saxpy3task_struct *SaxpyTasks,     // list of tasks, and workspace
@@ -593,7 +595,7 @@ void GB_AxB_saxpy3_sym_nfs      // C<!M> = A*B, A is full, B is sparse
     GrB_Matrix C,               // Cp is computed for coarse tasks
     const GrB_Matrix M,         // mask matrix M
     const bool Mask_struct,     // M structural, or not
-    const bool M_packed_in_place,
+    const bool M_in_place,
     const GrB_Matrix A,         // A matrix; only the pattern is accessed
     const GrB_Matrix B,         // B matrix; only the pattern is accessed
     GB_saxpy3task_struct *SaxpyTasks,     // list of tasks, and workspace
@@ -607,7 +609,7 @@ void GB_AxB_saxpy3_sym_nhb      // C<!M> = A*B, A is hypersparse, B is bitmap
     GrB_Matrix C,               // Cp is computed for coarse tasks
     const GrB_Matrix M,         // mask matrix M
     const bool Mask_struct,     // M structural, or not
-    const bool M_packed_in_place,
+    const bool M_in_place,
     const GrB_Matrix A,         // A matrix; only the pattern is accessed
     const GrB_Matrix B,         // B matrix; only the pattern is accessed
     GB_saxpy3task_struct *SaxpyTasks,     // list of tasks, and workspace
@@ -621,7 +623,7 @@ void GB_AxB_saxpy3_sym_nhf      // C<!M> = A*B, A is hypersparse, B is full
     GrB_Matrix C,               // Cp is computed for coarse tasks
     const GrB_Matrix M,         // mask matrix M
     const bool Mask_struct,     // M structural, or not
-    const bool M_packed_in_place,
+    const bool M_in_place,
     const GrB_Matrix A,         // A matrix; only the pattern is accessed
     const GrB_Matrix B,         // B matrix; only the pattern is accessed
     GB_saxpy3task_struct *SaxpyTasks,     // list of tasks, and workspace
@@ -635,7 +637,7 @@ void GB_AxB_saxpy3_sym_nhh      // C<!M> = A*B, A and B  re hypersparse
     GrB_Matrix C,               // Cp is computed for coarse tasks
     const GrB_Matrix M,         // mask matrix M
     const bool Mask_struct,     // M structural, or not
-    const bool M_packed_in_place,
+    const bool M_in_place,
     const GrB_Matrix A,         // A matrix; only the pattern is accessed
     const GrB_Matrix B,         // B matrix; only the pattern is accessed
     GB_saxpy3task_struct *SaxpyTasks,     // list of tasks, and workspace
@@ -649,7 +651,7 @@ void GB_AxB_saxpy3_sym_nhs      // C<!M> = A*B, A is hypersparse, B is sparse
     GrB_Matrix C,               // Cp is computed for coarse tasks
     const GrB_Matrix M,         // mask matrix M
     const bool Mask_struct,     // M structural, or not
-    const bool M_packed_in_place,
+    const bool M_in_place,
     const GrB_Matrix A,         // A matrix; only the pattern is accessed
     const GrB_Matrix B,         // B matrix; only the pattern is accessed
     GB_saxpy3task_struct *SaxpyTasks,     // list of tasks, and workspace
@@ -663,7 +665,7 @@ void GB_AxB_saxpy3_sym_nsb      // C<!M> = A*B, A is sparse, B is bitmap
     GrB_Matrix C,               // Cp is computed for coarse tasks
     const GrB_Matrix M,         // mask matrix M
     const bool Mask_struct,     // M structural, or not
-    const bool M_packed_in_place,
+    const bool M_in_place,
     const GrB_Matrix A,         // A matrix; only the pattern is accessed
     const GrB_Matrix B,         // B matrix; only the pattern is accessed
     GB_saxpy3task_struct *SaxpyTasks,     // list of tasks, and workspace
@@ -677,7 +679,7 @@ void GB_AxB_saxpy3_sym_nsf      // C<!M> = A*B, A is sparse, B is full
     GrB_Matrix C,               // Cp is computed for coarse tasks
     const GrB_Matrix M,         // mask matrix M
     const bool Mask_struct,     // M structural, or not
-    const bool M_packed_in_place,
+    const bool M_in_place,
     const GrB_Matrix A,         // A matrix; only the pattern is accessed
     const GrB_Matrix B,         // B matrix; only the pattern is accessed
     GB_saxpy3task_struct *SaxpyTasks,     // list of tasks, and workspace
@@ -691,7 +693,7 @@ void GB_AxB_saxpy3_sym_nsh      // C<!M> = A*B, A is sparse, B is hypersparse
     GrB_Matrix C,               // Cp is computed for coarse tasks
     const GrB_Matrix M,         // mask matrix M
     const bool Mask_struct,     // M structural, or not
-    const bool M_packed_in_place,
+    const bool M_in_place,
     const GrB_Matrix A,         // A matrix; only the pattern is accessed
     const GrB_Matrix B,         // B matrix; only the pattern is accessed
     GB_saxpy3task_struct *SaxpyTasks,     // list of tasks, and workspace
@@ -705,7 +707,7 @@ void GB_AxB_saxpy3_sym_nss      // C<!M> = A*B, A is sparse, B is sparse
     GrB_Matrix C,               // Cp is computed for coarse tasks
     const GrB_Matrix M,         // mask matrix M
     const bool Mask_struct,     // M structural, or not
-    const bool M_packed_in_place,
+    const bool M_in_place,
     const GrB_Matrix A,         // A matrix; only the pattern is accessed
     const GrB_Matrix B,         // B matrix; only the pattern is accessed
     GB_saxpy3task_struct *SaxpyTasks,     // list of tasks, and workspace

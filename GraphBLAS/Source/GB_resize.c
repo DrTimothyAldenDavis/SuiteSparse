@@ -2,7 +2,7 @@
 // GB_resize: change the size of a matrix
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -84,9 +84,9 @@ GrB_Info GB_resize              // change the size of a matrix
     // resize the matrix
     //--------------------------------------------------------------------------
 
-    bool A_is_bitmap = GB_IS_BITMAP (A) ;
-    bool A_is_full = GB_IS_FULL (A) ;
-    bool A_is_shrinking = (vdim_new <= vdim_old && vlen_new <= vlen_old) ;
+    const bool A_is_bitmap = GB_IS_BITMAP (A) ;
+    const bool A_is_full = GB_IS_FULL (A) ;
+    const bool A_is_shrinking = (vdim_new <= vdim_old && vlen_new <= vlen_old) ;
 
     if ((A_is_full || A_is_bitmap) && A_is_shrinking)
     {
@@ -96,36 +96,49 @@ GrB_Info GB_resize              // change the size of a matrix
         //----------------------------------------------------------------------
 
         // get the old and new dimensions
-        int64_t anz_old = vlen_old * vdim_old ;
-        int64_t anz_new = vlen_new * vdim_new ;
+        int64_t anz_new = 1 ;
+        bool ok = GB_int64_multiply ((GrB_Index *) &anz_new,
+            vlen_new, vdim_new) ;
+        if (!ok) anz_new = 1 ;
         size_t nzmax_new = GB_IMAX (anz_new, 1) ;
-        size_t nzmax_old = A->nzmax ;
         bool in_place = A_is_full && (vlen_new == vlen_old || vdim_new <= 1) ;
         size_t asize = A->type->size ;
+        const bool A_iso = A->iso ;
 
         //----------------------------------------------------------------------
-        // allocate or reallocate A->x and A->b
+        // allocate or reallocate A->x, unless A is iso
         //----------------------------------------------------------------------
 
-        bool ok = true ;
-        if (in_place)
-        { 
-            // reallocate A->x in-place; no data movement needed
-            GB_REALLOC (A->x, nzmax_new*asize, nzmax_old*asize, GB_void, 
-                &(A->x_size), &ok, Context) ;
-        }
-        else
-        { 
-            // allocate new space for A->x
-            Ax_new = GB_MALLOC (nzmax_new*asize, GB_void, &Ax_new_size) ;
-            ok = (Ax_new != NULL) ;
-            if (A_is_bitmap)
-            {
-                // allocate new space for A->b
-                Ab_new = GB_MALLOC (nzmax_new*asize, int8_t, &Ab_new_size) ;
-                ok = ok && (Ab_new != NULL) ;
+        ok = true ;
+        if (!A_iso)
+        {
+            if (in_place)
+            { 
+                // reallocate A->x in-place; no data movement needed
+                GB_REALLOC (A->x, nzmax_new*asize, GB_void, &(A->x_size), &ok,
+                    Context) ;
+            }
+            else
+            { 
+                // allocate new space for A->x; use calloc to ensure all space
+                // is initialized.
+                Ax_new = GB_CALLOC (nzmax_new*asize, GB_void, // x:OK:calloc
+                    &Ax_new_size) ;
+                ok = (Ax_new != NULL) ;
             }
         }
+
+        //----------------------------------------------------------------------
+        // allocate or reallocate A->b
+        //----------------------------------------------------------------------
+
+        if (!in_place && A_is_bitmap)
+        { 
+            // allocate new space for A->b
+            Ab_new = GB_MALLOC (nzmax_new*asize, int8_t, &Ab_new_size) ;
+            ok = ok && (Ab_new != NULL) ;
+        }
+
         if (!ok)
         { 
             // out of memory
@@ -148,42 +161,46 @@ GrB_Info GB_resize              // change the size of a matrix
             int nthreads = GB_nthreads (anz_new, chunk, nthreads_max) ;
 
             //------------------------------------------------------------------
-            // resize Ax
+            // resize Ax, unless A is iso
             //------------------------------------------------------------------
         
-            GB_void *restrict Ax_old = (GB_void *) A->x ;
+            if (!A_iso)
+            {
+                GB_void *restrict Ax_old = (GB_void *) A->x ;
 
-            int64_t j ;
-            if (vdim_new <= 4*nthreads)
-            {
-                // use all threads for each vector
-                for (j = 0 ; j < vdim_new ; j++)
-                { 
-                    GB_void *pdest = Ax_new + j * vlen_new * asize ;
-                    GB_void *psrc  = Ax_old + j * vlen_old * asize ;
-                    GB_memcpy (pdest, psrc, vlen_new * asize, nthreads) ;
+                int64_t j ;
+                if (vdim_new <= 4*nthreads)
+                {
+                    // use all threads for each vector
+                    for (j = 0 ; j < vdim_new ; j++)
+                    { 
+                        GB_void *pdest = Ax_new + j * vlen_new * asize ;
+                        GB_void *psrc  = Ax_old + j * vlen_old * asize ;
+                        GB_memcpy (pdest, psrc, vlen_new * asize, nthreads) ;
+                    }
                 }
-            }
-            else
-            {
-                // use a single thread for each vector
-                #pragma omp parallel for num_threads(nthreads) schedule(static)
-                for (j = 0 ; j < vdim_new ; j++)
-                { 
-                    GB_void *pdest = Ax_new + j * vlen_new * asize ;
-                    GB_void *psrc  = Ax_old + j * vlen_old * asize ;
-                    memcpy (pdest, psrc, vlen_new * asize) ;
+                else
+                {
+                    // use a single thread for each vector
+                    #pragma omp parallel for num_threads(nthreads) \
+                        schedule(static)
+                    for (j = 0 ; j < vdim_new ; j++)
+                    { 
+                        GB_void *pdest = Ax_new + j * vlen_new * asize ;
+                        GB_void *psrc  = Ax_old + j * vlen_old * asize ;
+                        memcpy (pdest, psrc, vlen_new * asize) ;
+                    }
                 }
+                GB_FREE (&Ax_old, A->x_size) ;
+                A->x = Ax_new ; A->x_size = Ax_new_size ;
             }
-            GB_FREE (&Ax_old, A->x_size) ;
-            A->x = Ax_new ; A->x_size = Ax_new_size ;
 
             //------------------------------------------------------------------
             // resize Ab if A is bitmap, and count the # of entries
             //------------------------------------------------------------------
 
             if (A_is_bitmap)
-            { 
+            {
                 int8_t *restrict Ab_old = A->b ;
                 int64_t pnew ;
                 int64_t anvals = 0 ;
@@ -210,7 +227,6 @@ GrB_Info GB_resize              // change the size of a matrix
 
         A->vdim = vdim_new ;
         A->vlen = vlen_new ;
-        A->nzmax = nzmax_new ;
         A->nvec = vdim_new ;
         A->nvec_nonempty = (vlen_new == 0) ? 0 : vdim_new ;
         ASSERT_MATRIX_OK (A, "A bitmap/full shrunk", GB0) ;
@@ -267,8 +283,15 @@ GrB_Info GB_resize              // change the size of a matrix
         // if vlen is shrinking, delete entries outside the new matrix
         if (vlen_new < vlen_old)
         { 
-            GB_OK (GB_selector (NULL /* A in-place */, GB_RESIZE_opcode, NULL,
-                false, A, vlen_new-1, NULL, Context)) ;
+            GB_OK (GB_selector (
+                NULL,                   // A in-place
+                GB_ROWLE_idxunop_code,  // use the opcode only
+                NULL,                   // no operator, just opcode is needed
+                false,                  // flipij is false
+                A,                      // input/output matrix
+                vlen_new-1,             // ithunk
+                NULL,                   // no Thunk GrB_Scalar
+                Context)) ;
         }
 
         //----------------------------------------------------------------------
@@ -282,7 +305,9 @@ GrB_Info GB_resize              // change the size of a matrix
         // conform the matrix to its desired sparsity structure
         //----------------------------------------------------------------------
 
-        return (GB_conform (A, Context)) ;
+        info = GB_conform (A, Context) ;
+        ASSERT (GB_IMPLIES (info == GrB_SUCCESS, A->nvec_nonempty >= 0)) ;
+        return (info) ;
     }
 }
 

@@ -1,5 +1,3 @@
-time to call simple_tic 1 million times: 0.0455706
-time to generate 10 million random numbers: 0.182001
 first 10 random numbers:
     0.257524
     0.688456
@@ -11,4 +9,3 @@ first 10 random numbers:
     0.566362
     0.674999
     0.681490
-time to generate 10 million random uint64: 0.107747

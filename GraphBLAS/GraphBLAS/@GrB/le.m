@@ -1,6 +1,6 @@
 function C = le (A, B)
 %A <= B less than or equal to.
-% C = (A <= B) is an element-by-element comparison of A and B.  One or
+% C = (A <= B) compares A and B element-by-element.  One or
 % both may be scalars.  Otherwise, A and B must have the same size.
 %
 % See also GrB/lt, GrB/gt, GrB/ge, GrB/ne, GrB/eq.
@@ -11,7 +11,7 @@ function C = le (A, B)
 % B scalar, A matrix:  C is full if B>=0, otherwise C is a subset of A.
 % A matrix, B matrix:  C is full.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: GPL-3.0-or-later
 
 if (isobject (A))

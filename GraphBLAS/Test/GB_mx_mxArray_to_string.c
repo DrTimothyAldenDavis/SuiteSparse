@@ -1,8 +1,8 @@
 //------------------------------------------------------------------------------
-// GB_mx_mxArray_to_string.c: get a MATLAB string
+// GB_mx_mxArray_to_string.c: get a built-in string
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -13,7 +13,7 @@ int GB_mx_mxArray_to_string // returns length of string, or -1 if S not a string
 (
     char *string,           // size maxlen
     const size_t maxlen,    // length of string
-    const mxArray *S        // MATLAB mxArray containing a string
+    const mxArray *S        // built-in mxArray containing a string
 )
 {
 

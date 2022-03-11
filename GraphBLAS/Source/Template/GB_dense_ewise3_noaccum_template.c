@@ -2,7 +2,7 @@
 // GB_dense_ewise3_noaccum_template: C = A+B where all 3 matrices are dense
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -19,10 +19,13 @@
     GB_ATYPE *Ax = (GB_ATYPE *) A->x ;
     GB_BTYPE *Bx = (GB_BTYPE *) B->x ;
     GB_CTYPE *Cx = (GB_CTYPE *) C->x ;
-    const int64_t cnz = GB_NNZ (C) ;
-    ASSERT (GB_is_dense (A)) ;
-    ASSERT (GB_is_dense (B)) ;
-    ASSERT (GB_is_dense (C)) ;
+    const int64_t cnz = GB_nnz (C) ;
+    ASSERT (GB_as_if_full (A)) ;
+    ASSERT (GB_as_if_full (B)) ;
+    ASSERT (GB_IS_FULL (C)) ;
+    ASSERT (!C->iso) ;
+    ASSERT (!A->iso) ;
+    ASSERT (!B->iso) ;
     int64_t p ;
 
     //--------------------------------------------------------------------------
@@ -42,9 +45,8 @@
         #pragma omp parallel for num_threads(nthreads) schedule(static)
         for (p = 0 ; p < cnz ; p++)
         { 
-            GB_GETA (aij, Ax, p) ;                  // aij = Ax [p]
-            // Cx [p] = aij + Cx [p]
-            GB_BINOP (GB_CX (p), aij, GB_CX (p), 0, 0) ;
+            GB_GETA (aij, Ax, p, false) ;                // aij = Ax [p]
+            GB_BINOP (GB_CX (p), aij, GB_CX (p), 0, 0) ; // Cx [p] = aij+Cx [p]
         }
 
     }
@@ -63,8 +65,8 @@
         #pragma omp parallel for num_threads(nthreads) schedule(static)
         for (p = 0 ; p < cnz ; p++)
         { 
-            GB_GETB (bij, Bx, p) ;                  // bij = Bx [p]
-            GB_BINOP (GB_CX (p), GB_CX (p), bij, 0, 0) ; // Cx [p] += bij
+            GB_GETB (bij, Bx, p, false) ;                   // bij = Bx [p]
+            GB_BINOP (GB_CX (p), GB_CX (p), bij, 0, 0) ;    // Cx [p] += bij
         }
 
     }
@@ -81,9 +83,9 @@
         #pragma omp parallel for num_threads(nthreads) schedule(static)
         for (p = 0 ; p < cnz ; p++)
         { 
-            GB_GETA (aij, Ax, p) ;              // aij = Ax [p]
-            GB_GETB (bij, Bx, p) ;              // bij = Bx [p]
-            GB_BINOP (GB_CX (p), aij, bij, 0, 0) ;  // Cx [p] = aij + bij
+            GB_GETA (aij, Ax, p, false) ;               // aij = Ax [p]
+            GB_GETB (bij, Bx, p, false) ;               // bij = Bx [p]
+            GB_BINOP (GB_CX (p), aij, bij, 0, 0) ;      // Cx [p] = aij + bij
         }
     }
 }

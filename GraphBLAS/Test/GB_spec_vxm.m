@@ -1,12 +1,12 @@
 function w = GB_spec_vxm (w, mask, accum, semiring, u, A, descriptor)
-%GB_SPEC_VXM a MATLAB mimic of GrB_vxm
+%GB_SPEC_VXM a mimic of GrB_vxm
 %
 % Usage:
 % w = GB_spec_vxm (w, mask, accum, semiring, u, A, descriptor)
 %
 % w, mask, and u are column vectors.  Computes w'=u'*A or w'=u'*A'
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 if (nargout > 1 || nargin ~= 7)
@@ -21,7 +21,7 @@ end
 % The transformation of the problem in the C implementation is the same as
 % simply doing the transpose of u and w and leaving the descriptor unchanged.
 % Then the inputs to the multiply operator are used as-is and not flipped.
-% This simpler method is used in this MATLAB mimic.
+% This simpler method is used in this mimic.
 
 % make sure u is a column vector on input, then transpose it
 if (isstruct (u))

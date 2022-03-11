@@ -2,7 +2,7 @@
 // GB_subassign.h: definitions for GB_subassign
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -50,7 +50,10 @@ GrB_Info GB_subassign_scalar        // C(Rows,Cols)<M> += x
 
 int GB_subassigner_method           // return method to use in GB_subassigner
 (
-    // inputs: no matrix is modified
+    // outputs
+    bool *C_iso_out,                // true if C is iso on output
+    GB_void *cout,                  // iso value of C on output
+    // inputs
     const GrB_Matrix C,             // input/output matrix for results
     const bool C_replace,           // C matrix descriptor
     const GrB_Matrix M,             // optional mask for C(I,J), unused if NULL
@@ -60,7 +63,9 @@ int GB_subassigner_method           // return method to use in GB_subassigner
     const GrB_Matrix A,             // input matrix (NULL for scalar expansion)
     const int Ikind,
     const int Jkind,
-    const bool scalar_expansion     // if true, expand scalar to A
+    const bool scalar_expansion,    // if true, expand scalar to A
+    const void *scalar,
+    const GrB_Type atype            // type of A, or the type of the scalar
 ) ;
 
 GrB_Info GB_subassigner             // C(I,J)<#M> = A or accum (C (I,J), A)
@@ -97,6 +102,7 @@ GrB_Info GB_assign_prep
     GrB_Matrix *Chandle,            // C_in, or C2 if C is aliased to M or A
     GrB_Matrix *Mhandle,            // M_in, or a modified version M2
     GrB_Matrix *Ahandle,            // A_in, or a modified version A2
+    int *subassign_method,          // subassign method to use
 
     // modified versions of the matrices C, M, and A:
     GrB_Matrix *C2_handle,          // NULL, or a copy of C
@@ -127,7 +133,6 @@ GrB_Info GB_assign_prep
     int *Jkind_handle,
     int64_t Jcolon [3],
 
-    bool *done,                     // true if the prep has finished all work
     GrB_Type *atype_handle,         // type of A or the scalar
 
     // input/output
@@ -149,11 +154,13 @@ GrB_Info GB_assign_prep
     const GrB_Index nCols_in,       // number of column indices
     const bool scalar_expansion,    // if true, expand scalar to A
     const void *scalar,             // scalar to be expanded
-    const GB_Type_code scalar_code, // type code of scalar to expand
+    const GB_Type_code scode,       // type code of scalar to expand
     GB_Context Context
 ) ;
 
-    //--------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+// subassigner methods
+//------------------------------------------------------------------------------
 
 #define GB_SUBASSIGN_METHOD_01   1     // C(I,J) = scalar
 #define GB_SUBASSIGN_METHOD_02   2     // C(I,J) = A
@@ -179,7 +186,7 @@ GrB_Info GB_assign_prep
 #define GB_SUBASSIGN_METHOD_16  16     // C(I,J)<!M> += A
 #define GB_SUBASSIGN_METHOD_17  17     // C(I,J)<!M,replace> = scalar
 #define GB_SUBASSIGN_METHOD_18  18     // C(I,J)<!M,replace> = A
-#define GB_SUBASSIGN_METHOD_19  19     // C(I,J)<!M,replace> = scalar
+#define GB_SUBASSIGN_METHOD_19  19     // C(I,J)<!M,replace> += scalar
 #define GB_SUBASSIGN_METHOD_20  20     // C(I,J)<!M,replace> += A
 #define GB_SUBASSIGN_METHOD_21  21     // C(:,:) = scalar ; C becomes full
 #define GB_SUBASSIGN_METHOD_22  22     // C += scalar ; C is dense

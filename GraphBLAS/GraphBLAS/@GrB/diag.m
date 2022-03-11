@@ -9,10 +9,10 @@ function C = diag (A, k)
 % c = diag (A,k) when A is a matrix returns a column vector c formed the
 % entries on the kth diagonal of A.  The main diagonal is c = diag (A).
 %
-% The GraphBLAS diag function always constructs a GraphBLAS sparse matrix,
-% unlike the built-in MATLAB diag, which always constructs a MATLAB full
-% matrix.  To use this overloaded function for a MATLAB sparse matrix A,
-% use C = diag (A, GrB (k)) ;
+% The GraphBLAS diag function always constructs a GraphBLAS sparse
+% matrix, unlike the built-in diag, which always constructs a full
+% matrix.  To use this overloaded function for a non-@GrB sparse matrix
+% A, use C = diag (A, GrB (k)) ;
 %
 % Examples:
 %
@@ -31,7 +31,7 @@ function C = diag (A, k)
 %
 % See also GrB/diag, spdiags, GrB/tril, GrB/triu, GrB.select.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: GPL-3.0-or-later
 
 if (isobject (A))
@@ -44,7 +44,7 @@ else
     k = gb_get_scalar (k) ;
 end
 
-[am, an, atype] = gbsize (A) ;
+[am, an, ~] = gbsize (A) ;
 a_is_vector = (am == 1) || (an == 1) ;
 
 if (a_is_vector)
@@ -52,12 +52,6 @@ if (a_is_vector)
     % ensure A is a column vector
     if (am == 1)
         A = gbtrans (A) ;
-    end
-
-    % ensure A is not hypersparse
-    [~, s] = gbformat (A) ;
-    if (isequal (s, 'hypersparse'))
-        A = gbnew (A, 'sparse') ;
     end
 
     % C = diag (v,k) where v is a column vector and C is a matrix

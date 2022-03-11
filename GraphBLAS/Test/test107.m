@@ -1,7 +1,7 @@
 function test107
 %TEST107 user-defined terminal monoid
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 fprintf ('test107: reduce with built-in and  user-defined terminal monoids\n') ;
@@ -50,7 +50,7 @@ for trial = 1:ntrials
     s = full (max (max (A))) ;
 end
 tm = toc ;
-fprintf ('MATLAB max: %g\n', tm) ;
+fprintf ('builtin max: %g\n', tm) ;
 for nthreads = nthreads_list
     fprintf ('\n') ;
     if (nthreads > 2*nthreads_max)
@@ -97,7 +97,7 @@ for trial = 1:ntrials
     s = full (max (max (A))) ;
 end
 tm = toc ;
-fprintf ('MATLAB max: %g\n', tm) ;
+fprintf ('builtin max: %g\n', tm) ;
 for nthreads = nthreads_list
     fprintf ('\n') ;
     if (nthreads > nthreads_max)
@@ -130,7 +130,7 @@ for trial = 1:ntrials
     s = full (max (max (A))) ;
 end
 tm = toc ;
-fprintf ('MATLAB max: %g\n', tm) ;
+fprintf ('builtin max: %g\n', tm) ;
 for nthreads = nthreads_list
     fprintf ('\n') ;
     if (nthreads > nthreads_max)
@@ -163,7 +163,7 @@ for trial = 1:ntrials
     s = full (max (max (A))) ;
 end
 tm = toc ;
-fprintf ('MATLAB max: %g\n', tm) ;
+fprintf ('builtin max: %g\n', tm) ;
 for nthreads = nthreads_list
     fprintf ('\n') ;
     if (nthreads > nthreads_max)
@@ -196,7 +196,7 @@ for trial = 1:ntrials
     s = full (max (max (A))) ;
 end
 tm = toc ;
-fprintf ('MATLAB max: %g\n', tm) ;
+fprintf ('builtin max: %g\n', tm) ;
 for nthreads = nthreads_list
     fprintf ('\n') ;
     if (nthreads > nthreads_max)
@@ -224,7 +224,7 @@ for trial = 1:ntrials
     ss = full (sum (sum (A))) ;
 end
 tm = toc ;
-fprintf ('MATLAB sum: %g\n', tm) ;
+fprintf ('builtin sum: %g\n', tm) ;
 for nthreads = nthreads_list
     fprintf ('\n') ;
     if (nthreads > nthreads_max)

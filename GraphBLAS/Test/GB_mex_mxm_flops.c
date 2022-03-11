@@ -2,7 +2,7 @@
 // GB_mex_mxm_flops: compute flops to do C=A*B, C<M>=A*B or C<!M>=A*B
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -78,12 +78,12 @@ void mexFunction
 
     GB_AxB_saxpy3_flopcount (&Mwork, Bflops, M, Mask_comp, A, B, Context) ;
 
-    // return result to MATLAB
+    // return result
     pargout [0] = mxCreateDoubleMatrix (1, bnvec+1, mxREAL) ;
-    double *Bflops_matlab = mxGetPr (pargout [0]) ; 
+    double *Bflops_builtin = mxGetPr (pargout [0]) ; 
     for (int64_t kk = 0 ; kk <= bnvec ; kk++)
     {
-        Bflops_matlab [kk] = (double) Bflops [kk] ;
+        Bflops_builtin [kk] = (double) Bflops [kk] ;
     }
 
     pargout [1] = mxCreateDoubleScalar (Mwork) ;

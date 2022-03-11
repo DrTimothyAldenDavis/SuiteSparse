@@ -2,7 +2,7 @@
 // GB_subassign_methods.h: definitions for GB_subassign methods
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -21,23 +21,25 @@
 // free workspace
 //------------------------------------------------------------------------------
 
-#ifndef GB_FREE_WORK
-#define GB_FREE_WORK ;
+#ifndef GB_FREE_WORKSPACE
+#define GB_FREE_WORKSPACE ;
 #endif
 
 #undef  GB_FREE_ALL
 #define GB_FREE_ALL                             \
 {                                               \
-    GB_FREE_WORK ;                              \
+    GB_FREE_WORKSPACE ;                         \
     GB_WERK_POP (Npending, int64_t) ;           \
-    GB_FREE_WERK (&TaskList, TaskList_size) ;   \
+    GB_FREE_WORK (&TaskList, TaskList_size) ;   \
     GB_FREE (&Zh, Zh_size) ;                    \
-    GB_FREE_WERK (&Z_to_X, Z_to_X_size) ;       \
-    GB_FREE_WERK (&Z_to_S, Z_to_S_size) ;       \
-    GB_FREE_WERK (&Z_to_A, Z_to_A_size) ;       \
-    GB_FREE_WERK (&Z_to_M, Z_to_M_size) ;       \
-    GB_phbix_free (S);                        \
+    GB_FREE_WORK (&Z_to_X, Z_to_X_size) ;       \
+    GB_FREE_WORK (&Z_to_S, Z_to_S_size) ;       \
+    GB_FREE_WORK (&Z_to_A, Z_to_A_size) ;       \
+    GB_FREE_WORK (&Z_to_M, Z_to_M_size) ;       \
+    GB_Matrix_free (&S) ;                       \
 }
+
+#include "GB_static_header.h"
 
 //------------------------------------------------------------------------------
 // GB_EMPTY_TASKLIST: declare an empty TaskList
@@ -48,13 +50,13 @@
     int taskid, ntasks = 0, nthreads ;                                      \
     GB_task_struct *TaskList = NULL ; size_t TaskList_size = 0 ;            \
     GB_WERK_DECLARE (Npending, int64_t) ;                                   \
-    int64_t *restrict Zh     = NULL ; size_t Zh_size = 0 ;               \
-    int64_t *restrict Z_to_X = NULL ; size_t Z_to_X_size = 0 ;           \
-    int64_t *restrict Z_to_S = NULL ; size_t Z_to_S_size = 0 ;           \
-    int64_t *restrict Z_to_A = NULL ; size_t Z_to_A_size = 0 ;           \
-    int64_t *restrict Z_to_M = NULL ; size_t Z_to_M_size = 0 ;           \
+    int64_t *restrict Zh     = NULL ; size_t Zh_size = 0 ;                  \
+    int64_t *restrict Z_to_X = NULL ; size_t Z_to_X_size = 0 ;              \
+    int64_t *restrict Z_to_S = NULL ; size_t Z_to_S_size = 0 ;              \
+    int64_t *restrict Z_to_A = NULL ; size_t Z_to_A_size = 0 ;              \
+    int64_t *restrict Z_to_M = NULL ; size_t Z_to_M_size = 0 ;              \
     struct GB_Matrix_opaque S_header ;                                      \
-    GrB_Matrix S = GB_clear_static_header (&S_header) ;
+    GrB_Matrix S = NULL ;
 
 //------------------------------------------------------------------------------
 // GB_GET_C: get the C matrix (cannot be bitmap)
@@ -65,8 +67,9 @@
 #define GB_GET_C                                                            \
     ASSERT_MATRIX_OK (C, "C for subassign kernel", GB0) ;                   \
     ASSERT (!GB_IS_BITMAP (C)) ;                                            \
-    int64_t *restrict Ci = C->i ;                                        \
-    GB_void *restrict Cx = (GB_void *) C->x ;                            \
+    const bool C_iso = C->iso ;                                             \
+    int64_t *restrict Ci = C->i ;                                           \
+    GB_void *restrict Cx = (C_iso) ? NULL : (GB_void *) C->x ;              \
     const size_t csize = C->type->size ;                                    \
     const GB_Type_code ccode = C->type->code ;                              \
     const int64_t cvdim = C->vdim ;                                         \
@@ -100,7 +103,7 @@
 #define GB_GET_ACCUM                                                        \
     ASSERT_BINARYOP_OK (accum, "accum for assign", GB0) ;                   \
     ASSERT (!GB_OP_IS_POSITIONAL (accum)) ;                                 \
-    const GxB_binary_function faccum = accum->function ;                    \
+    const GxB_binary_function faccum = accum->binop_function ;              \
     const GB_cast_function                                                  \
         cast_A_to_Y = GB_cast_factory (accum->ytype->code, acode),          \
         cast_C_to_X = GB_cast_factory (accum->xtype->code, ccode),          \
@@ -124,7 +127,8 @@
     const GB_void *Ax = (GB_void *) A->x ;                                  \
     const GB_cast_function cast_A_to_C = GB_cast_factory (ccode, acode) ;   \
     const int64_t Avlen = A->vlen ;                                         \
-    const bool A_is_bitmap = GB_IS_BITMAP (A) ;
+    const bool A_is_bitmap = GB_IS_BITMAP (A) ;                             \
+    const bool A_iso = A->iso ;
 
 //------------------------------------------------------------------------------
 // GB_GET_SCALAR: get the scalar
@@ -157,10 +161,10 @@
 
 #define GB_GET_S                                                            \
     ASSERT_MATRIX_OK (S, "S extraction", GB0) ;                             \
-    const int64_t *restrict Sp = S->p ;                                  \
-    const int64_t *restrict Sh = S->h ;                                  \
-    const int64_t *restrict Si = S->i ;                                  \
-    const int64_t *restrict Sx = (int64_t *) S->x ;                      \
+    const int64_t *restrict Sp = S->p ;                                     \
+    const int64_t *restrict Sh = S->h ;                                     \
+    const int64_t *restrict Si = S->i ;                                     \
+    const int64_t *restrict Sx = (int64_t *) S->x ;                         \
     const int64_t Svlen = S->vlen ;                                         \
     const int64_t Snvec = S->nvec ;                                         \
     const bool S_is_hyper = GB_IS_HYPERSPARSE (S) ;
@@ -210,7 +214,7 @@
     // C may be standard sparse, or hypersparse
     // time: O(1) if standard, O(log(Cnvec)) if hyper
 
-    // This used for GB_subassign_one_slice and GB_subassign_emult_slice,
+    // This used for GB_subassign_one_slice and GB_subassign_08n_slice,
     // which compute the parallel schedule for Methods 05, 06n, 07, and 08n.
 
     #define GB_LOOKUP_jC                                                    \
@@ -271,30 +275,42 @@
     #define GB_COPY_scalar_to_C                                             \
     {                                                                       \
         /* C(iC,jC) = scalar, already typecasted into cwork      */         \
-        memcpy (Cx +(pC*csize), cwork, csize) ;                             \
+        if (!C_iso)                                                         \
+        {                                                                   \
+            memcpy (Cx +(pC*csize), cwork, csize) ;                         \
+        }                                                                   \
     }
 
     #define GB_COPY_aij_to_C                                                \
     {                                                                       \
         /* C(iC,jC) = A(i,j), with typecasting                   */         \
-        cast_A_to_C (Cx +(pC*csize), Ax +(pA*asize), csize) ;               \
+        if (!C_iso)                                                         \
+        {                                                                   \
+            cast_A_to_C (Cx +(pC*csize), Ax +(A_iso?0:(pA*asize)), csize) ; \
+        }                                                                   \
     }
 
     #define GB_COPY_aij_to_ywork                                            \
     {                                                                       \
         /* ywork = A(i,j), with typecasting                      */         \
-        cast_A_to_Y (ywork, Ax +(pA*asize), asize) ;                        \
+        if (!C_iso)                                                         \
+        {                                                                   \
+            cast_A_to_Y (ywork, Ax + (A_iso ? 0 : (pA*asize)), asize) ;     \
+        }                                                                   \
     }
 
     #define GB_ACCUMULATE                                                   \
     {                                                                       \
-        /* C(iC,jC) = accum (C(iC,jC), ywork)                    */         \
-        GB_void xwork [GB_VLA(xsize)] ;                                     \
-        cast_C_to_X (xwork, Cx +(pC*csize), csize) ;                        \
-        GB_void zwork [GB_VLA(zsize)] ;                                     \
-        faccum (zwork, xwork, ywork) ;                                      \
-        cast_Z_to_C (Cx +(pC*csize), zwork, csize) ;                        \
-    }                                                                       \
+        if (!C_iso)                                                         \
+        {                                                                   \
+            /* C(iC,jC) = accum (C(iC,jC), ywork)                    */     \
+            GB_void xwork [GB_VLA(xsize)] ;                                 \
+            cast_C_to_X (xwork, Cx +(pC*csize), csize) ;                    \
+            GB_void zwork [GB_VLA(zsize)] ;                                 \
+            faccum (zwork, xwork, ywork) ;                                  \
+            cast_Z_to_C (Cx +(pC*csize), zwork, csize) ;                    \
+        }                                                                   \
+    }
 
     #define GB_DELETE                                                       \
     {                                                                       \
@@ -812,7 +828,7 @@
             {                                                               \
                 /* ----[. A 1]                                           */ \
                 /* action: ( insert )                                    */ \
-                GB_PENDING_INSERT (Ax +(pA*asize)) ;                        \
+                GB_PENDING_INSERT_aij ;                                     \
             }
             #endif
 
@@ -1181,19 +1197,6 @@ GrB_Info GB_subassign_05e
 ) ;
 
 //------------------------------------------------------------------------------
-// GB_subassign_05f: C(:,:)<C,struct> = scalar ; no S, C anything
-//------------------------------------------------------------------------------
-
-GrB_Info GB_subassign_05f
-(
-    GrB_Matrix C,
-    // input:
-    const void *scalar,
-    const GrB_Type atype,
-    GB_Context Context
-) ;
-
-//------------------------------------------------------------------------------
 // GB_subassign_06n: C(I,J)<M> = A ; no S
 //------------------------------------------------------------------------------
 
@@ -1550,7 +1553,7 @@ GrB_Info GB_subassign_19
 // GB_SUBASSIGN_TWO_SLICE: slice two matrices
 //------------------------------------------------------------------------------
 
-// Methods: 02, 04, 06s, 09, 10, 11, 12, 14, 16, 18, 20.
+// Methods: 02, 04, 06s_and_14, 08s_and_16, 09, 10_and_18, 11, 12_and_20
 
 // Create tasks for Z = X+S, and the mapping of Z to X and S.  The matrix X is
 // either A or M.  No need to examine C, since it will be accessed via S, not
@@ -1614,10 +1617,10 @@ GrB_Info GB_subassign_one_slice
 ) ;
 
 //------------------------------------------------------------------------------
-// GB_subassign_emult_slice: slice the entries and vectors for GB_subassign_08n
+// GB_subassign_08n_slice: slice the entries and vectors for GB_subassign_08n
 //------------------------------------------------------------------------------
 
-GrB_Info GB_subassign_emult_slice
+GrB_Info GB_subassign_08n_slice
 (
     // output:
     GB_task_struct **p_TaskList,    // array of structs, of size max_ntasks
@@ -1837,21 +1840,20 @@ GrB_Info GB_subassign_emult_slice
     {                                                                       \
         /* no pending tuples, so skip phase 2 */                            \
         GB_FREE_ALL ;                                                       \
-        ASSERT_MATRIX_OK (C, "C, no pending tuples " __FILE__, \
-            GB_FLIP (GB0)) ;      \
+        ASSERT_MATRIX_OK (C, "C, no pending tuples ", GB_FLIP (GB0)) ;      \
         return (GrB_SUCCESS) ;                                              \
     }                                                                       \
     /* ensure that C->Pending is large enough to handle nnew more tuples */ \
-    if (!GB_Pending_ensure (&(C->Pending), atype, accum, is_matrix, nnew,   \
-        Context))                                                           \
+    if (!GB_Pending_ensure (&(C->Pending), C_iso, atype, accum, is_matrix,  \
+        nnew, Context))                                                     \
     {                                                                       \
         GB_FREE_ALL ;                                                       \
         return (GrB_OUT_OF_MEMORY) ;                                        \
     }                                                                       \
     GB_Pending Pending = C->Pending ;                                       \
-    int64_t *restrict Pending_i = Pending->i ;                           \
-    int64_t *restrict Pending_j = Pending->j ;                           \
-    GB_void *restrict Pending_x = Pending->x ;                           \
+    int64_t *restrict Pending_i = Pending->i ;                              \
+    int64_t *restrict Pending_j = Pending->j ;                              \
+    GB_void *restrict Pending_x = Pending->x ; /* NULL if C is iso */       \
     int64_t npending_orig = Pending->n ;                                    \
     bool pending_sorted = Pending->sorted ;
 
@@ -1913,7 +1915,7 @@ GrB_Info GB_subassign_emult_slice
     Pending->n += nnew ;                                                    \
     Pending->sorted = pending_sorted ;                                      \
     GB_FREE_ALL ;                                                           \
-    ASSERT_MATRIX_OK (C, "C with pending tuples :" __FILE__, GB_FLIP (GB0)) ;\
+    ASSERT_MATRIX_OK (C, "C with pending tuples", GB_FLIP (GB0)) ;          \
     return (GrB_SUCCESS) ;
 
 #endif

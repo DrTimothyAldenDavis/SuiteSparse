@@ -2,12 +2,12 @@
 // gblogassign: logical assignment: C(M) = A
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 //------------------------------------------------------------------------------
 
-// gblogassign computes the MATLAB logical indexing expression C(M) = A.  The
+// gblogassign computes the built-in logical indexing expression C(M) = A.  The
 // matrices C and M must be the same size.  M is normally logical but it can be
 // of any type in this mexFunction.  M should not have any explicit zeros.  A
 // is a sparse vector of size nnz(M)-by-1.  Scalar expansion is not handled.
@@ -22,10 +22,10 @@
 /*
 
     function C = gblogassign (C, M_input, A)
-    % Computing the MATLAB logical indexing expression C(M) = A in GraphBLAS.
+    % Computing the built-in logical indexing expression C(M) = A in GraphBLAS.
     % A is a sparse vector of size nnz(M)-by-1 (scalar expansion is not
     % handled). M is normally a sparse logical matrix, either GraphBLAS or
-    % MATLAB, but it can be of any type.  C and M have the same size.
+    % built-in, but it can be of any type.  C and M have the same size.
 
     % make sure all matrices are stored by column
     save = GrB.format ;
@@ -58,7 +58,6 @@
 
 */
 
-
 // This C mexFunction is faster than the above m-function, since it avoids the
 // use of GrB.extracttuples.  Instead, it accesses the internal structure of the
 // GrB_Matrix objects.  The m-file above is useful for understanding that this
@@ -66,7 +65,7 @@
 
 // C is always returned as a GrB matrix.
 
-#include "gb_matlab.h"
+#include "gb_interface.h"
 
 #define USAGE "usage: C = gblogassign (C, M, A)"
 #define ERR "A must be a vector of length nnz(M) for logical indexing, C(M)=A"
@@ -157,7 +156,7 @@ void mexFunction
             A_copy = gb_new (atype, mnz, 1, GxB_BY_COL, 
                 GxB_SPARSE + GxB_HYPERSPARSE + GxB_FULL) ;
             OK1 (A_copy, GrB_transpose (A_copy, NULL, NULL, A, NULL)) ;
-            OK1 (A_copy, GrB_Matrix_wait (&A_copy)) ;
+            OK1 (A_copy, GrB_Matrix_wait (A_copy, GrB_MATERIALIZE)) ;
             A = A_copy ;
         }
     }
@@ -172,7 +171,7 @@ void mexFunction
             A_copy = gb_new (atype, 1, mnz, GxB_BY_ROW,
                 GxB_SPARSE + GxB_HYPERSPARSE + GxB_FULL) ;
             OK1 (A_copy, GrB_transpose (A_copy, NULL, NULL, A, NULL)) ;
-            OK1 (A_copy, GrB_Matrix_wait (&A_copy)) ;
+            OK1 (A_copy, GrB_Matrix_wait (A_copy, GrB_MATERIALIZE)) ;
             A = A_copy ;
         }
     }
@@ -182,14 +181,16 @@ void mexFunction
     }
 
     //--------------------------------------------------------------------------
-    // extract the values and pattern of A
+    // extract the values and pattern of A; handle iso case
     //--------------------------------------------------------------------------
 
-    // TODO: use a shallow variant of GxB*export to access content of M and A
-    GrB_Index *Ai = (GrB_Index *) A->i ;
-    void *Ax = A->x ;
-    double empty ;
-    if (Ax == NULL) Ax = &empty ;
+    // Tim: use a shallow variant of GxB*export to access content of M and A
+    GrB_Index *Ai =            							
+        (GrB_Index *) A->i ;   	             	 	                 	
+    void *Ax = A->x ;          		 	 	 	 	 	
+    char nil [16] =            		 	 	 	 	 	
+     "iso logassign  " ;       		 	 	 	 	 	
+    if (Ax == NULL) Ax = &nil ;							
 
     //--------------------------------------------------------------------------
     // extract the pattern of M
@@ -205,12 +206,74 @@ void mexFunction
 
     GrB_Index *Si = mxMalloc (MAX (anz, 1) * sizeof (GrB_Index)) ;
     GrB_Index *Sj = mxMalloc (MAX (anz, 1) * sizeof (GrB_Index)) ;
-
-    GB_matlab_helper5 (Si, Sj, Mi, Mj, M->vlen, Ai, A->vlen, anz) ;
-
+    GB_helper5 (Si, Sj, Mi, Mj, M->vlen, Ai, A->vlen, anz) ;
     GrB_Matrix S = gb_new (atype, nrows, ncols, GxB_BY_COL, 0) ;
 
-    if (atype == GrB_BOOL)
+    if (A->iso)
+    {
+        // build S as an iso matrix
+        GrB_Scalar s = NULL ;
+        OK (GrB_Scalar_new (&s, atype)) ;
+        if (atype == GrB_BOOL)
+        { 
+            OK (GrB_Scalar_setElement_BOOL (s, (* ((bool *) Ax)))) ;
+        }
+        else if (atype == GrB_INT8)
+        { 
+            OK (GrB_Scalar_setElement_INT8 (s, (* ((int8_t *) Ax)))) ;
+        }
+        else if (atype == GrB_INT16)
+        { 
+            OK (GrB_Scalar_setElement_INT16 (s, (* ((int16_t *) Ax)))) ;
+        }
+        else if (atype == GrB_INT32)
+        { 
+            OK (GrB_Scalar_setElement_INT32 (s, (* ((int32_t *) Ax)))) ;
+        }
+        else if (atype == GrB_INT64)
+        { 
+            OK (GrB_Scalar_setElement_INT64 (s, (* ((int64_t *) Ax)))) ;
+        }
+        else if (atype == GrB_UINT8)
+        { 
+            OK (GrB_Scalar_setElement_UINT8 (s, (* ((uint8_t *) Ax)))) ;
+        }
+        else if (atype == GrB_UINT16)
+        { 
+            OK (GrB_Scalar_setElement_UINT16 (s, (* ((uint16_t *) Ax)))) ;
+        }
+        else if (atype == GrB_UINT32)
+        { 
+            OK (GrB_Scalar_setElement_UINT32 (s, (* ((uint32_t *) Ax)))) ;
+        }
+        else if (atype == GrB_UINT64)
+        { 
+            OK (GrB_Scalar_setElement_UINT64 (s, (* ((uint64_t *) Ax)))) ;
+        }
+        else if (atype == GrB_FP32)
+        { 
+            OK (GrB_Scalar_setElement_FP32 (s, (* ((float *) Ax)))) ;
+        }
+        else if (atype == GrB_FP64)
+        { 
+            OK (GrB_Scalar_setElement_FP64 (s, (* ((double *) Ax)))) ;
+        }
+        else if (atype == GxB_FC32)
+        { 
+            OK (GxB_Scalar_setElement_FC32 (s, (* ((GxB_FC32_t *) Ax)))) ;
+        }
+        else if (atype == GxB_FC64)
+        { 
+            OK (GxB_Scalar_setElement_FC64 (s, (* ((GxB_FC64_t *) Ax)))) ;
+        }
+        else
+        {
+            ERROR ("unsupported type") ;
+        }
+        OK1 (S, GxB_Matrix_build_Scalar (S, Si, Sj, s, anz)) ;
+        OK (GrB_Scalar_free (&s)) ;
+    }
+    else if (atype == GrB_BOOL)
     { 
         OK1 (S, GrB_Matrix_build_BOOL (S, Si, Sj, Ax, anz, GrB_LOR)) ;
     }
@@ -283,15 +346,15 @@ void mexFunction
 
     // OK: Si, Sj, and Mj were allocated above from mxMalloc, never in a
     // GrB_Matrix
-    gb_mxfree (&Si) ;
-    gb_mxfree (&Sj) ;
-    gb_mxfree (&Mj) ;
+    gb_mxfree ((void **) (&Si)) ;
+    gb_mxfree ((void **) (&Sj)) ;
+    gb_mxfree ((void **) (&Mj)) ;
     OK (GrB_Matrix_free (&S)) ;
     OK (GrB_Matrix_free (&M)) ;
     OK (GrB_Matrix_free (&A_input)) ;
 
     //--------------------------------------------------------------------------
-    // export the output matrix C back to MATLAB as a GraphBLAS matrix
+    // export the output matrix C as a GraphBLAS matrix
     //--------------------------------------------------------------------------
 
     pargout [0] = gb_export (&C, KIND_GRB) ;

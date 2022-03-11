@@ -2,14 +2,14 @@
 // GB_op_is_second: return true if op is the SECOND operator of the right type
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
 #include "GB.h"
 
-GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
+GB_PUBLIC
 bool GB_op_is_second    // return true if op is SECOND, of the right type
 (
     GrB_BinaryOp op,
@@ -24,7 +24,7 @@ bool GB_op_is_second    // return true if op is SECOND, of the right type
         return (true) ;
     }
 
-    if (op->opcode == GB_SECOND_opcode)
+    if (op->opcode == GB_SECOND_binop_code)
     {
         // op is the explict SECOND operator; check its type
         if (type == NULL)

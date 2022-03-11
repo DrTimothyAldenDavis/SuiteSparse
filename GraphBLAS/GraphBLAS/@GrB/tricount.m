@@ -13,7 +13,7 @@ function s = tricount (A, arg2, arg3)
 %
 % See also GrB.ktruss, GrB.entries.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: GPL-3.0-or-later
 
 % NOTE: this is a high-level algorithm that uses GrB objects.
@@ -92,11 +92,11 @@ desc.mask = 'structural' ;
 if (GrB.isbyrow (A))
     % C<U> = U*L': SandiaDot2 method
     desc.in1 = 'transpose' ;
-    C = GrB.mxm (C, U, '+.pair.int64', U, L, desc) ;
+    C = GrB.mxm (C, U, '+.oneb.int64', U, L, desc) ;
 else
     % C<U> = L'*U: SandiaDot2 method
     desc.in0 = 'transpose' ;
-    C = GrB.mxm (C, U, '+.pair.int64', L, U, desc) ;
+    C = GrB.mxm (C, U, '+.oneb.int64', L, U, desc) ;
 end
 
 s = full (double (GrB.reduce ('+.int64', C))) ;

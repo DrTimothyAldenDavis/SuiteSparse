@@ -2,7 +2,7 @@
 // GB_subassign_symbolic: S = C(I,J)
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -34,7 +34,7 @@ GrB_Info GB_subassign_symbolic
 
     GrB_Info info ;
     ASSERT (!GB_IS_BITMAP (C)) ;    // the caller cannot tolerate C bitmap
-    ASSERT (S != NULL && S->static_header) ;
+    ASSERT (S != NULL && (S->static_header || GBNSTATIC)) ;
 
     //--------------------------------------------------------------------------
     // extract the pattern: S = C(I,J) for S_Extraction method, and quick mask
@@ -63,7 +63,8 @@ GrB_Info GB_subassign_symbolic
     // S and C have the same CSR/CSC format.  S can be jumbled.  It is in
     // in the same hypersparse form as C (unless S is empty, in which case
     // it is always returned as hypersparse). This also checks I and J.
-    GB_OK (GB_subref (S, C->is_csc, C, I, ni, J, nj, true, Context)) ;
+    // S is not iso, even if C is iso.
+    GB_OK (GB_subref (S, false, C->is_csc, C, I, ni, J, nj, true, Context)) ;
     ASSERT (GB_JUMBLED_OK (S)) ;    // GB_subref can return S as unsorted
 
     //--------------------------------------------------------------------------
@@ -121,7 +122,7 @@ GrB_Info GB_subassign_symbolic
             // iC = I [iA] ; or I is a colon expression
             int64_t iC = GB_ijlist (I, inew, Ikind, Icolon) ;
             int64_t p = Sx [pS] ;
-            ASSERT (p >= 0 && p < GB_NNZ (C)) ;
+            ASSERT (p >= 0 && p < GB_nnz (C)) ;
             int64_t pC_start, pC_end, pleft = 0, pright = C->nvec-1 ;
             bool found = GB_lookup (C->h != NULL, C->h, C->p, C->vlen,
                 &pleft, pright, jC, &pC_start, &pC_end) ;

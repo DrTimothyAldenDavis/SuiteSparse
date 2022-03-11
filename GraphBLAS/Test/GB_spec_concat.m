@@ -1,10 +1,10 @@
 function C = GB_spec_concat (Tiles, ctype)
-%GB_SPEC_CONCAT a MATLAB mimic of GxB_Matrix_concat
+%GB_SPEC_CONCAT a mimic of GxB_Matrix_concat
 %
 % Usage:
 % C = GB_spec_concat (Types, ctype)
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 %-------------------------------------------------------------------------------

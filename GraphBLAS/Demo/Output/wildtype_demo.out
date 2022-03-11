@@ -43,7 +43,7 @@ multiplication C=A*B InTheWild semiring:
 Printing the matrix with GxB_Matrix_fprint:
 
   10x10 GraphBLAS wildtype matrix, sparse by row
-  input A, 3 entries
+  input A, 3 entries, memory: 928 bytes
 
     (2,4) [user-defined value]
     (2,7) [user-defined value]
@@ -81,11 +81,12 @@ a wildtype scalar:  [this is A(3,7)]
 Printing the matrix with GxB_Matrix_fprint:
 
   10x10 GraphBLAS wildtype matrix, hypersparse by row
-  input B, no entries
-  pending tuples: 3 max pending: 256 zombies: 0
+  input B, 1 entry, memory: 36.5 KB
+  pending tuples: 2 max pending: 256 zombies: 0
+
+    (7,2) [user-defined value]
   pending tuples:
     GraphBLAS type:  user-defined: [wildtype] size: 128
-    row: 7 col: 2 [user-defined value]
     row: 7 col: 5 [user-defined value]
     row: 4 col: 2 [user-defined value]
   pending operator: implicit 2nd
@@ -248,7 +249,7 @@ a wildtype scalar: z = x*y: [this was multiplied]
 Printing the matrix with GxB_Matrix_fprint:
 
   10x10 GraphBLAS wildtype matrix, sparse by row
-  output C, 4 entries
+  output C, 4 entries, memory: 928 bytes
 
     (2,2) [user-defined value]
     (2,5) [user-defined value]
@@ -299,7 +300,7 @@ internal data structure.
 Printing the matrix with GxB_Matrix_fprint:
 
   10x10 GraphBLAS wildtype matrix, sparse by col
-  output C, 4 entries
+  output C, 4 entries, memory: 928 bytes
 
     (2,2) [user-defined value]
     (3,2) [user-defined value]
@@ -346,13 +347,13 @@ a wildtype scalar:  [this was multiplied]
 Printing the matrix with GxB_Matrix_fprint:
 
   10x10 GraphBLAS float matrix, hypersparse by row
-  D, no entries
+  D, no entries, memory: 280 bytes
 
 
 The matrix D is not wild enough to print.
 
   10x10 GraphBLAS int64_t matrix, sparse by row
-  E (positional i), 3 entries
+  E (positional i), 3 entries, memory: 448 bytes
 
     (2,4)   2
     (2,7)   2
@@ -360,7 +361,7 @@ The matrix D is not wild enough to print.
 
 
   10x10 GraphBLAS int64_t matrix, sparse by row
-  E (positional j), 3 entries
+  E (positional j), 3 entries, memory: 448 bytes
 
     (2,4)   4
     (2,7)   7

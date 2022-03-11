@@ -2,7 +2,7 @@
 // GB_subref.h: definitions for GB_subref_* functions
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -11,20 +11,20 @@
 #define GB_SUBREF_H
 #include "GB_ij.h"
 
-GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
+GB_PUBLIC
 GrB_Info GB_subref              // C = A(I,J): either symbolic or numeric
 (
     // output
     GrB_Matrix C,               // output matrix, static header
     // input, not modified
+    bool C_iso,                 // if true, return C as iso, regardless of A 
     const bool C_is_csc,        // requested format of C
     const GrB_Matrix A,
     const GrB_Index *I,         // index list for C = A(I,J), or GrB_ALL, etc.
     const int64_t ni,           // length of I, or special
     const GrB_Index *J,         // index list for C = A(I,J), or GrB_ALL, etc.
     const int64_t nj,           // length of J, or special
-    const bool symbolic,        // if true, construct Cx as symbolic
-//  const bool must_sort,       // if true, must return C sorted
+    const bool symbolic,        // if true, construct C as symbolic
     GB_Context Context
 ) ;
 
@@ -53,7 +53,7 @@ GrB_Info GB_subref_phase0
     GB_Context Context
 ) ;
 
-GrB_Info GB_subref_slice
+GrB_Info GB_subref_slice    // phase 1 of GB_subref
 (
     // output:
     GB_task_struct **p_TaskList,    // array of structs
@@ -81,7 +81,7 @@ GrB_Info GB_subref_slice
     GB_Context Context
 ) ;
 
-GrB_Info GB_subref_phase1               // count nnz in each C(:,j)
+GrB_Info GB_subref_phase2               // count nnz in each C(:,j)
 (
     // computed by phase1:
     int64_t **Cp_handle,                // output of size Cnvec+1
@@ -109,7 +109,7 @@ GrB_Info GB_subref_phase1               // count nnz in each C(:,j)
     GB_Context Context
 ) ;
 
-GrB_Info GB_subref_phase2   // C=A(I,J)
+GrB_Info GB_subref_phase3   // C=A(I,J)
 (
     GrB_Matrix C,               // output matrix, static header
     // from phase1:
@@ -135,6 +135,9 @@ GrB_Info GB_subref_phase2   // C=A(I,J)
     const int64_t nI,
     const int64_t Icolon [3],
     const int64_t nJ,
+    // from GB_subref:
+    const bool C_iso,           // if true, C is iso
+    const GB_void *cscalar,     // iso value of C
     // original input:
     const bool C_is_csc,        // format of output matrix C
     const GrB_Matrix A,
@@ -154,6 +157,23 @@ GrB_Info GB_I_inverse           // invert the I list for C=A(I,:)
     int64_t *restrict *p_Inext, // next pointers for buckets, size nI
     size_t *p_Inext_size,
     int64_t *p_ndupl,           // number of duplicate entries in I
+    GB_Context Context
+) ;
+
+GrB_Info GB_bitmap_subref       // C = A(I,J): either symbolic or numeric
+(
+    // output
+    GrB_Matrix C,               // output matrix, static header
+    // input, not modified
+    const bool C_iso,           // if true, C is iso
+    const GB_void *cscalar,     // scalar value of C, if iso
+    const bool C_is_csc,        // requested format of C
+    const GrB_Matrix A,
+    const GrB_Index *I,         // index list for C = A(I,J), or GrB_ALL, etc.
+    const int64_t ni,           // length of I, or special
+    const GrB_Index *J,         // index list for C = A(I,J), or GrB_ALL, etc.
+    const int64_t nj,           // length of J, or special
+    const bool symbolic,        // if true, construct C as symbolic
     GB_Context Context
 ) ;
 
@@ -301,21 +321,6 @@ static inline int GB_subref_method  // return the method to use (1 to 12)
     }
     return (method) ;
 }
-
-GrB_Info GB_bitmap_subref       // C = A(I,J): either symbolic or numeric
-(
-    // output
-    GrB_Matrix C,               // output matrix, static header
-    // input, not modified
-    const bool C_is_csc,        // requested format of C
-    const GrB_Matrix A,
-    const GrB_Index *I,         // index list for C = A(I,J), or GrB_ALL, etc.
-    const int64_t ni,           // length of I, or special
-    const GrB_Index *J,         // index list for C = A(I,J), or GrB_ALL, etc.
-    const int64_t nj,           // length of J, or special
-    const bool symbolic,        // if true, construct C as symbolic
-    GB_Context Context
-) ;
 
 #endif
 

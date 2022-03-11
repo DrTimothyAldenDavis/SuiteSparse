@@ -2,7 +2,7 @@
 // GB_reduce_panel: s=reduce(A), reduce a matrix to a scalar
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -19,7 +19,8 @@
     //--------------------------------------------------------------------------
 
     const GB_ATYPE *restrict Ax = (GB_ATYPE *) A->x ;
-    int64_t anz = GB_NNZ (A) ;
+    ASSERT (!A->iso) ;
+    int64_t anz = GB_nnz (A) ;
     ASSERT (anz > 0) ;
     ASSERT (!GB_IS_BITMAP (A)) ;
     ASSERT (A->nzombies == 0) ;

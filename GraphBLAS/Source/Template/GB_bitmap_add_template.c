@@ -2,14 +2,15 @@
 // GB_bitmap_add_template: C = A+B, C<M>=A+B, and C<!M>=A+B, C bitmap
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
 // C is bitmap.  The mask M can have any sparsity structure, and is efficient
 // to apply (all methods are asymptotically optimal).  All cases (no M, M, !M)
-// are handled.
+// are handled.  The values of A, B, and C are not accessed if C is iso,
+// in which case GB_ISO_ADD is #defined' by the #including file.
 
 {
 
@@ -50,27 +51,53 @@
                 GB_PARTITION (pstart, pend, cnz, tid, C_nthreads) ;
                 for (int64_t p = pstart ; p < pend ; p++)
                 {
+                    #ifdef GB_ISO_ADD
+                    int8_t c = Ab [p] || Bb [p] ;
+                    #else
                     int8_t c = 0 ;
                     if (Ab [p] && Bb [p])
                     { 
                         // C (i,j) = A (i,j) + B (i,j)
-                        GB_GETA (aij, Ax, p) ;
-                        GB_GETB (bij, Bx, p) ;
+                        GB_LOAD_A (aij, Ax, p, A_iso) ;
+                        GB_LOAD_B (bij, Bx, p, B_iso) ;
                         GB_BINOP (GB_CX (p), aij, bij, p % vlen, p / vlen) ;
                         c = 1 ;
                     }
                     else if (Bb [p])
                     { 
-                        // C (i,j) = B (i,j)
-                        GB_COPY_B_TO_C (GB_CX (p), Bx, p) ;
+                        #ifdef GB_EWISEUNION
+                        { 
+                            // C (i,j) = alpha + B(i,j)
+                            GB_LOAD_B (bij, Bx, p, B_iso) ;
+                            GB_BINOP (GB_CX (p), alpha_scalar, bij,
+                                p % vlen, p / vlen) ;
+                        }
+                        #else
+                        { 
+                            // C (i,j) = B (i,j)
+                            GB_COPY_B_TO_C (GB_CX (p), Bx, p, B_iso) ;
+                        }
+                        #endif
                         c = 1 ;
                     }
                     else if (Ab [p])
                     { 
-                        // C (i,j) = A (i,j)
-                        GB_COPY_A_TO_C (GB_CX (p), Ax, p) ;
+                        #ifdef GB_EWISEUNION
+                        { 
+                            // C (i,j) = A(i,j) + beta
+                            GB_LOAD_A (aij, Ax, p, A_iso) ;
+                            GB_BINOP (GB_CX (p), aij, beta_scalar,
+                                p % vlen, p / vlen) ;
+                        }
+                        #else
+                        { 
+                            // C (i,j) = A (i,j)
+                            GB_COPY_A_TO_C (GB_CX (p), Ax, p, A_iso) ;
+                        }
+                        #endif
                         c = 1 ;
                     }
+                    #endif
                     Cb [p] = c ;
                     task_cnvals += c ;
                 }
@@ -85,15 +112,34 @@
             // Method22: C and A are bitmap; B is sparse or hypersparse
             //------------------------------------------------------------------
 
-            int64_t p ;
-            #pragma omp parallel for num_threads(C_nthreads) schedule(static)
-            for (p = 0 ; p < cnz ; p++)
-            { 
-                // C (i,j) = A (i,j)
-                int8_t a = Ab [p] ;
-                if (a) GB_COPY_A_TO_C (GB_CX (p), Ax, p) ;
-                Cb [p] = a ;
-            }
+            #ifdef GB_ISO_ADD
+                GB_memcpy (Cb, Ab, cnz, C_nthreads) ;
+            #else
+                int64_t p ;
+                #pragma omp parallel for num_threads(C_nthreads) \
+                    schedule(static)
+                for (p = 0 ; p < cnz ; p++)
+                { 
+                    int8_t a = Ab [p] ;
+                    if (a)
+                    { 
+                        #ifdef GB_EWISEUNION
+                        { 
+                            // C (i,j) = A(i,j) + beta
+                            GB_LOAD_A (aij, Ax, p, A_iso) ;
+                            GB_BINOP (GB_CX (p), aij, beta_scalar,
+                                p % vlen, p / vlen) ;
+                        }
+                        #else
+                        { 
+                            // C (i,j) = A (i,j)
+                            GB_COPY_A_TO_C (GB_CX (p), Ax, p, A_iso) ;
+                        }
+                        #endif
+                    }
+                    Cb [p] = a ;
+                }
+            #endif
             cnvals = A->nvals ;
 
             GB_SLICE_MATRIX (B, 8, chunk) ;
@@ -121,14 +167,28 @@
                         if (Cb [p])
                         { 
                             // C (i,j) = A (i,j) + B (i,j)
-                            GB_GETA (aij, Ax, p) ;
-                            GB_GETB (bij, Bx, pB) ;
+                            #ifndef GB_ISO_ADD
+                            GB_LOAD_A (aij, Ax, p , A_iso) ;
+                            GB_LOAD_B (bij, Bx, pB, B_iso) ;
                             GB_BINOP (GB_CX (p), aij, bij, i, j) ;
+                            #endif
                         }
                         else
                         { 
-                            // C (i,j) = B (i,j)
-                            GB_COPY_B_TO_C (GB_CX (p), Bx, pB) ;
+                            #ifndef GB_ISO_ADD
+                            #ifdef GB_EWISEUNION
+                            { 
+                                // C (i,j) = alpha + B(i,j)
+                                GB_LOAD_B (bij, Bx, pB, B_iso) ;
+                                GB_BINOP (GB_CX (p), alpha_scalar, bij, i, j) ;
+                            }
+                            #else
+                            { 
+                                // C (i,j) = B (i,j)
+                                GB_COPY_B_TO_C (GB_CX (p), Bx, pB, B_iso) ;
+                            }
+                            #endif
+                            #endif
                             Cb [p] = 1 ;
                             task_cnvals++ ;
                         }
@@ -145,15 +205,35 @@
             // Method23: C and B are bitmap; A is sparse or hypersparse
             //------------------------------------------------------------------
 
-            int64_t p ;
-            #pragma omp parallel for num_threads(C_nthreads) schedule(static)
-            for (p = 0 ; p < cnz ; p++)
-            { 
-                // C (i,j) = B (i,j)
-                int8_t b = Bb [p] ;
-                if (b) GB_COPY_B_TO_C (GB_CX (p), Bx, p) ;
-                Cb [p] = b ;
-            }
+            #ifdef GB_ISO_ADD
+                GB_memcpy (Cb, Bb, cnz, C_nthreads) ;
+            #else
+                int64_t p ;
+                #pragma omp parallel for num_threads(C_nthreads) \
+                    schedule(static)
+                for (p = 0 ; p < cnz ; p++)
+                { 
+                    int8_t b = Bb [p] ;
+                    if (b)
+                    {
+                        #ifdef GB_EWISEUNION
+                        { 
+                            // C (i,j) = alpha + B(i,j)
+                            GB_LOAD_B (bij, Bx, p, B_iso) ;
+                            GB_BINOP (GB_CX (p), alpha_scalar, bij,
+                                p % vlen, p / vlen) ;
+                        }
+                        #else
+                        { 
+                            // C (i,j) = B (i,j)
+                            GB_COPY_B_TO_C (GB_CX (p), Bx, p, B_iso) ;
+                        }
+                        #endif
+                    }
+                    Cb [p] = b ;
+                }
+            #endif
+
             cnvals = B->nvals ;
 
             GB_SLICE_MATRIX (A, 8, chunk) ;
@@ -181,14 +261,28 @@
                         if (Cb [p])
                         { 
                             // C (i,j) = A (i,j) + B (i,j)
-                            GB_GETA (aij, Ax, pA) ;
-                            GB_GETB (bij, Bx, p) ;
+                            #ifndef GB_ISO_ADD
+                            GB_LOAD_A (aij, Ax, pA, A_iso) ;
+                            GB_LOAD_B (bij, Bx, p , B_iso) ;
                             GB_BINOP (GB_CX (p), aij, bij, i, j) ;
+                            #endif
                         }
                         else
                         { 
-                            // C (i,j) = A (i,j)
-                            GB_COPY_A_TO_C (GB_CX (p), Ax, pA) ;
+                            #ifndef GB_ISO_ADD
+                            #ifdef GB_EWISEUNION
+                            { 
+                                // C (i,j) = A(i,j) + beta
+                                GB_LOAD_A (aij, Ax, pA, A_iso) ;
+                                GB_BINOP (GB_CX (p), aij, beta_scalar, i, j) ;
+                            }
+                            #else
+                            { 
+                                // C (i,j) = A (i,j)
+                                GB_COPY_A_TO_C (GB_CX (p), Ax, pA, A_iso) ;
+                            }
+                            #endif
+                            #endif
                             Cb [p] = 1 ;
                             task_cnvals++ ;
                         }
@@ -292,26 +386,52 @@
                         // M(i,j) is zero, so C(i,j) can be computed
                         int8_t a = GBB (Ab, p) ;
                         int8_t b = GBB (Bb, p) ;
+                        #ifdef GB_ISO_ADD
+                        c = a || b ;
+                        #else
                         if (a && b)
                         { 
                             // C (i,j) = A (i,j) + B (i,j)
-                            GB_GETA (aij, Ax, p) ;
-                            GB_GETB (bij, Bx, p) ;
+                            GB_LOAD_A (aij, Ax, p, A_iso) ;
+                            GB_LOAD_B (bij, Bx, p, B_iso) ;
                             GB_BINOP (GB_CX (p), aij, bij, p % vlen, p / vlen) ;
                             c = 1 ;
                         }
                         else if (b)
                         { 
-                            // C (i,j) = B (i,j)
-                            GB_COPY_B_TO_C (GB_CX (p), Bx, p) ;
+                            #ifdef GB_EWISEUNION
+                            { 
+                                // C (i,j) = alpha + B(i,j)
+                                GB_LOAD_B (bij, Bx, p, B_iso) ;
+                                GB_BINOP (GB_CX (p), alpha_scalar, bij,
+                                    p % vlen, p / vlen) ;
+                            }
+                            #else
+                            { 
+                                // C (i,j) = B (i,j)
+                                GB_COPY_B_TO_C (GB_CX (p), Bx, p, B_iso) ;
+                            }
+                            #endif
                             c = 1 ;
                         }
                         else if (a)
                         { 
-                            // C (i,j) = A (i,j)
-                            GB_COPY_A_TO_C (GB_CX (p), Ax, p) ;
+                            #ifdef GB_EWISEUNION
+                            { 
+                                // C (i,j) = A(i,j) + beta
+                                GB_LOAD_A (aij, Ax, p, A_iso) ;
+                                GB_BINOP (GB_CX (p), aij, beta_scalar,
+                                    p % vlen, p / vlen) ;
+                            }
+                            #else
+                            { 
+                                // C (i,j) = A (i,j)
+                                GB_COPY_A_TO_C (GB_CX (p), Ax, p, A_iso) ;
+                            }
+                            #endif
                             c = 1 ;
                         }
+                        #endif
                         Cb [p] = c ;
                         task_cnvals += c ;
                     }
@@ -344,9 +464,25 @@
                 {
                     if (Cb [p] == 0)
                     { 
-                        // C (i,j) = A (i,j)
                         int8_t a = GBB (Ab, p) ;
-                        if (a) GB_COPY_A_TO_C (GB_CX (p), Ax, p) ;
+                        #ifndef GB_ISO_ADD
+                        if (a)
+                        {
+                            #ifdef GB_EWISEUNION
+                            { 
+                                // C (i,j) = A(i,j) + beta
+                                GB_LOAD_A (aij, Ax, p, A_iso) ;
+                                GB_BINOP (GB_CX (p), aij, beta_scalar,
+                                    p % vlen, p / vlen) ;
+                            }
+                            #else
+                            { 
+                                // C (i,j) = A (i,j)
+                                GB_COPY_A_TO_C (GB_CX (p), Ax, p, A_iso) ;
+                            }
+                            #endif
+                        }
+                        #endif
                         Cb [p] = a ;
                         task_cnvals += a ;
                     }
@@ -380,14 +516,28 @@
                         if (c == 1)
                         { 
                             // C (i,j) = A (i,j) + B (i,j)
-                            GB_GETA (aij, Ax, p) ;
-                            GB_GETB (bij, Bx, pB) ;
+                            #ifndef GB_ISO_ADD
+                            GB_LOAD_A (aij, Ax, p , A_iso) ;
+                            GB_LOAD_B (bij, Bx, pB, B_iso) ;
                             GB_BINOP (GB_CX (p), aij, bij, i, j) ;
+                            #endif
                         }
                         else if (c == 0)
                         { 
-                            // C (i,j) = B (i,j)
-                            GB_COPY_B_TO_C (GB_CX (p), Bx, pB) ;
+                            #ifndef GB_ISO_ADD
+                            #ifdef GB_EWISEUNION
+                            {
+                                // C (i,j) = alpha + B(i,j)
+                                GB_LOAD_B (bij, Bx, pB, B_iso) ;
+                                GB_BINOP (GB_CX (p), alpha_scalar, bij, i, j) ;
+                            }
+                            #else
+                            { 
+                                // C (i,j) = B (i,j)
+                                GB_COPY_B_TO_C (GB_CX (p), Bx, pB, B_iso) ;
+                            }
+                            #endif
+                            #endif
                             Cb [p] = 1 ;
                             task_cnvals++ ;
                         }
@@ -415,9 +565,25 @@
                 {
                     if (Cb [p] == 0)
                     { 
-                        // C (i,j) = B (i,j)
                         int8_t b = GBB (Bb, p) ;
-                        if (b) GB_COPY_B_TO_C (GB_CX (p), Bx, p) ;
+                        #ifndef GB_ISO_ADD
+                        if (b)
+                        {
+                            #ifdef GB_EWISEUNION
+                            {
+                                // C (i,j) = alpha + B(i,j)
+                                GB_LOAD_B (bij, Bx, p, B_iso) ;
+                                GB_BINOP (GB_CX (p), alpha_scalar, bij,
+                                    p % vlen, p / vlen) ;
+                            }
+                            #else
+                            { 
+                                // C (i,j) = B (i,j)
+                                GB_COPY_B_TO_C (GB_CX (p), Bx, p, B_iso) ;
+                            }
+                            #endif
+                        }
+                        #endif
                         Cb [p] = b ;
                         task_cnvals += b ;
                     }
@@ -451,14 +617,28 @@
                         if (c == 1)
                         { 
                             // C (i,j) = A (i,j) + B (i,j)
-                            GB_GETA (aij, Ax, pA) ;
-                            GB_GETB (bij, Bx, p) ;
+                            #ifndef GB_ISO_ADD
+                            GB_LOAD_A (aij, Ax, pA, A_iso) ;
+                            GB_LOAD_B (bij, Bx, p , B_iso) ;
                             GB_BINOP (GB_CX (p), aij, bij, i, j) ;
+                            #endif
                         }
                         else if (c == 0)
                         { 
-                            // C (i,j) = A (i,j)
-                            GB_COPY_A_TO_C (GB_CX (p), Ax, pA) ;
+                            #ifndef GB_ISO_ADD
+                            #ifdef GB_EWISEUNION
+                            { 
+                                // C (i,j) = A(i,j) + beta
+                                GB_LOAD_A (aij, Ax, pA, A_iso) ;
+                                GB_BINOP (GB_CX (p), aij, beta_scalar, i, j) ;
+                            }
+                            #else
+                            { 
+                                // C (i,j) = A (i,j)
+                                GB_COPY_A_TO_C (GB_CX (p), Ax, pA, A_iso) ;
+                            }
+                            #endif
+                            #endif
                             Cb [p] = 1 ;
                             task_cnvals++ ;
                         }
@@ -597,27 +777,53 @@
                         // M(i,j) is true, so C(i,j) can be computed
                         int8_t a = GBB (Ab, p) ;
                         int8_t b = GBB (Bb, p) ;
+                        #ifdef GB_ISO_ADD
+                        int8_t c = a || b ;
+                        #else
                         int8_t c = 0 ;
                         if (a && b)
                         { 
                             // C (i,j) = A (i,j) + B (i,j)
-                            GB_GETA (aij, Ax, p) ;
-                            GB_GETB (bij, Bx, p) ;
+                            GB_LOAD_A (aij, Ax, p, A_iso) ;
+                            GB_LOAD_B (bij, Bx, p, B_iso) ;
                             GB_BINOP (GB_CX (p), aij, bij, p % vlen, p / vlen) ;
                             c = 1 ;
                         }
                         else if (b)
                         { 
-                            // C (i,j) = B (i,j)
-                            GB_COPY_B_TO_C (GB_CX (p), Bx, p) ;
+                            #ifdef GB_EWISEUNION
+                            {
+                                // C (i,j) = alpha + B(i,j)
+                                GB_LOAD_B (bij, Bx, p, B_iso) ;
+                                GB_BINOP (GB_CX (p), alpha_scalar, bij,
+                                    p % vlen, p / vlen) ;
+                            }
+                            #else
+                            { 
+                                // C (i,j) = B (i,j)
+                                GB_COPY_B_TO_C (GB_CX (p), Bx, p, B_iso) ;
+                            }
+                            #endif
                             c = 1 ;
                         }
                         else if (a)
                         { 
-                            // C (i,j) = A (i,j)
-                            GB_COPY_A_TO_C (GB_CX (p), Ax, p) ;
+                            #ifdef GB_EWISEUNION
+                            { 
+                                // C (i,j) = A(i,j) + beta
+                                GB_LOAD_A (aij, Ax, p, A_iso) ;
+                                GB_BINOP (GB_CX (p), aij, beta_scalar,
+                                    p % vlen, p / vlen) ;
+                            }
+                            #else
+                            { 
+                                // C (i,j) = A (i,j)
+                                GB_COPY_A_TO_C (GB_CX (p), Ax, p, A_iso) ;
+                            }
+                            #endif
                             c = 1 ;
                         }
+                        #endif
                         Cb [p] = c ;
                         task_cnvals += c ;
                     }
@@ -650,9 +856,25 @@
                     GB_GET_MIJ (p) ;
                     if (mij)
                     { 
-                        // C (i,j) = A (i,j)
                         int8_t a = GBB (Ab, p) ;
-                        if (a) GB_COPY_A_TO_C (GB_CX (p), Ax, p) ;
+                        #ifndef GB_ISO_ADD
+                        if (a)
+                        {
+                            #ifdef GB_EWISEUNION
+                            { 
+                                // C (i,j) = A(i,j) + beta
+                                GB_LOAD_A (aij, Ax, p, A_iso) ;
+                                GB_BINOP (GB_CX (p), aij, beta_scalar,
+                                    p % vlen, p / vlen) ;
+                            }
+                            #else
+                            { 
+                                // C (i,j) = A (i,j)
+                                GB_COPY_A_TO_C (GB_CX (p), Ax, p, A_iso) ;
+                            }
+                            #endif
+                        }
+                        #endif
                         Cb [p] = a ;
                         task_cnvals += a ;
                     }
@@ -693,14 +915,29 @@
                             if (c == 1)
                             { 
                                 // C (i,j) = A (i,j) + B (i,j)
-                                GB_GETA (aij, Ax, p) ;
-                                GB_GETB (bij, Bx, pB) ;
+                                #ifndef GB_ISO_ADD
+                                GB_LOAD_A (aij, Ax, p , A_iso) ;
+                                GB_LOAD_B (bij, Bx, pB, B_iso) ;
                                 GB_BINOP (GB_CX (p), aij, bij, i, j) ;
+                                #endif
                             }
                             else
                             { 
-                                // C (i,j) = B (i,j)
-                                GB_COPY_B_TO_C (GB_CX (p), Bx, pB) ;
+                                #ifndef GB_ISO_ADD
+                                #ifdef GB_EWISEUNION
+                                {
+                                    // C (i,j) = alpha + B(i,j)
+                                    GB_LOAD_B (bij, Bx, pB, B_iso) ;
+                                    GB_BINOP (GB_CX (p), alpha_scalar, bij,
+                                        i, j) ;
+                                }
+                                #else
+                                { 
+                                    // C (i,j) = B (i,j)
+                                    GB_COPY_B_TO_C (GB_CX (p), Bx, pB, B_iso) ;
+                                }
+                                #endif
+                                #endif
                                 Cb [p] = 1 ;
                                 task_cnvals++ ;
                             }
@@ -730,9 +967,25 @@
                     GB_GET_MIJ (p) ;
                     if (mij)
                     { 
-                        // C (i,j) = B (i,j)
                         int8_t b = GBB (Bb, p) ;
-                        if (b) GB_COPY_B_TO_C (GB_CX (p), Bx, p) ;
+                        #ifndef GB_ISO_ADD
+                        if (b)
+                        {
+                            #ifdef GB_EWISEUNION
+                            {
+                                // C (i,j) = alpha + B(i,j)
+                                GB_LOAD_B (bij, Bx, p, B_iso) ;
+                                GB_BINOP (GB_CX (p), alpha_scalar, bij,
+                                    p % vlen, p / vlen) ;
+                            }
+                            #else
+                            { 
+                                // C (i,j) = B (i,j)
+                                GB_COPY_B_TO_C (GB_CX (p), Bx, p, B_iso) ;
+                            }
+                            #endif
+                        }
+                        #endif
                         Cb [p] = b ;
                         task_cnvals += b ;
                     }
@@ -773,14 +1026,29 @@
                             if (c == 1)
                             { 
                                 // C (i,j) = A (i,j) + B (i,j)
-                                GB_GETA (aij, Ax, pA) ;
-                                GB_GETB (bij, Bx, p) ;
+                                #ifndef GB_ISO_ADD
+                                GB_LOAD_A (aij, Ax, pA, A_iso) ;
+                                GB_LOAD_B (bij, Bx, p , B_iso) ;
                                 GB_BINOP (GB_CX (p), aij, bij, i, j) ;
+                                #endif
                             }
                             else
                             { 
-                                // C (i,j) = A (i,j)
-                                GB_COPY_A_TO_C (GB_CX (p), Ax, pA) ;
+                                #ifndef GB_ISO_ADD
+                                #ifdef GB_EWISEUNION
+                                { 
+                                    // C (i,j) = A(i,j) + beta
+                                    GB_LOAD_A (aij, Ax, pA, A_iso) ;
+                                    GB_BINOP (GB_CX (p), aij, beta_scalar,
+                                        i, j) ;
+                                }
+                                #else
+                                { 
+                                    // C (i,j) = A (i,j)
+                                    GB_COPY_A_TO_C (GB_CX (p), Ax, pA, A_iso) ;
+                                }
+                                #endif
+                                #endif
                                 Cb [p] = 1 ;
                                 task_cnvals++ ;
                             }

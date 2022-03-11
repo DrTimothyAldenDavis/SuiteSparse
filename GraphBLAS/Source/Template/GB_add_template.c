@@ -2,7 +2,7 @@
 // GB_add_template:  phase1 and phase2 for C=A+B, C<M>=A+B, C<!M>=A+B
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -24,8 +24,8 @@
 
 // phase2: computes C, using the counts computed by phase1.
 
-#undef  GB_FREE_WORK
-#define GB_FREE_WORK                        \
+#undef  GB_FREE_WORKSPACE
+#define GB_FREE_WORKSPACE                   \
 {                                           \
     GB_WERK_POP (B_ek_slicing, int64_t) ;   \
     GB_WERK_POP (A_ek_slicing, int64_t) ;   \
@@ -35,7 +35,7 @@
 #undef  GB_FREE_ALL
 #define GB_FREE_ALL                 \
 {                                   \
-    GB_FREE_WORK ;                  \
+    GB_FREE_WORKSPACE ;             \
     GB_phbix_free (C) ;             \
 }
 
@@ -91,15 +91,25 @@
     }
 
     #if defined ( GB_PHASE_2_OF_2 )
+    #ifdef GB_ISO_ADD
+    ASSERT (C->iso) ;
+    #else
     const GB_ATYPE *restrict Ax = (GB_ATYPE *) A->x ;
     const GB_BTYPE *restrict Bx = (GB_BTYPE *) B->x ;
+          GB_CTYPE *restrict Cx = (GB_CTYPE *) C->x ;
+    ASSERT (!C->iso) ;
+    #endif
+
+    // unlike GB_emult, both A and B may be iso
+    const bool A_iso = A->iso ;
+    const bool B_iso = B->iso ;
     const int64_t  *restrict Cp = C->p ;
     const int64_t  *restrict Ch = C->h ;
           int8_t   *restrict Cb = C->b ;
           int64_t  *restrict Ci = C->i ;
-          GB_CTYPE *restrict Cx = (GB_CTYPE *) C->x ;
+
     // when C is bitmap or full:
-    const int64_t cnz = GB_NNZ_HELD (C) ;
+    const int64_t cnz = GB_nnz_held (C) ;
     GB_GET_NTHREADS_MAX (nthreads_max, chunk, Context) ;
     #endif
 
@@ -117,26 +127,86 @@
     #else
 
         // phase2: numerical phase
-        if (C_sparsity == GxB_SPARSE || C_sparsity == GxB_HYPERSPARSE)
-        { 
-            // C is sparse or hypersparse
-            // Werk allocated: none
-            #include "GB_sparse_add_template.c"
-        }
-        else if (C_sparsity == GxB_BITMAP)
-        { 
-            // C is bitmap (phase2 only)
-            // Werk: slice M and A, M and B, just A, or just B, or none
-            #include "GB_bitmap_add_template.c"
+
+        #ifdef GB_POSITIONAL_OP
+            // op doesn't depend aij, bij, alpha_scalar, or beta_scalar
+            #define GB_LOAD_A(aij, Ax,pA,A_iso)
+            #define GB_LOAD_B(bij, Bx,pB,B_iso)
+        #else
+            #define GB_LOAD_A(aij, Ax,pA,A_iso) GB_GETA(aij, Ax,pA,A_iso)
+            #define GB_LOAD_B(bij, Bx,pB,B_iso) GB_GETB(bij, Bx,pB,B_iso)
+        #endif
+
+        #ifndef GB_ISO_ADD
+        if (is_eWiseUnion)
+        {
+
+            //------------------------------------------------------------------
+            // eWiseUnion, using alpha and beta scalars
+            //------------------------------------------------------------------
+
+            #define GB_EWISEUNION
+            // if A(i,j) is not present: C(i,j) = alpha + B(i,j)
+            // if B(i,j) is not present: C(i,j) = A(i,j) + beta
+
+            if (C_sparsity == GxB_SPARSE || C_sparsity == GxB_HYPERSPARSE)
+            { 
+                // C is sparse or hypersparse
+                // Werk allocated: none
+                #include "GB_sparse_add_template.c"
+            }
+            else if (C_sparsity == GxB_BITMAP)
+            { 
+                // C is bitmap (phase2 only)
+                // Werk: slice M and A, M and B, just A, or just B, or none
+                #include "GB_bitmap_add_template.c"
+            }
+            else
+            { 
+                // C is full (phase2 only)
+                ASSERT (C_sparsity == GxB_FULL) ;
+                // Werk: slice just A, just B, or none
+                #include "GB_full_add_template.c"
+            }
+
         }
         else
-        { 
-            // C is full (phase2 only)
-            ASSERT (C_sparsity == GxB_FULL) ;
-            // Werk: slice just A, just B, or none
-            #include "GB_full_add_template.c"
+        #endif
+        {
+
+            //------------------------------------------------------------------
+            // eWiseAdd:
+            //------------------------------------------------------------------
+
+            #undef GB_EWISEUNION
+            // if A(i,j) is not present: C(i,j) = B(i,j)
+            // if B(i,j) is not present: C(i,j) = A(i,j)
+
+            if (C_sparsity == GxB_SPARSE || C_sparsity == GxB_HYPERSPARSE)
+            { 
+                // C is sparse or hypersparse
+                // Werk allocated: none
+                #include "GB_sparse_add_template.c"
+            }
+            else if (C_sparsity == GxB_BITMAP)
+            { 
+                // C is bitmap (phase2 only)
+                // Werk: slice M and A, M and B, just A, or just B, or none
+                #include "GB_bitmap_add_template.c"
+            }
+            else
+            { 
+                // C is full (phase2 only)
+                ASSERT (C_sparsity == GxB_FULL) ;
+                // Werk: slice just A, just B, or none
+                #include "GB_full_add_template.c"
+            }
         }
 
     #endif
 }
+
+#undef GB_ISO_ADD
+#undef GB_LOAD_A
+#undef GB_LOAD_B
 

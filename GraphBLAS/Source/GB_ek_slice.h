@@ -2,7 +2,7 @@
 // GB_ek_slice.h: slice the entries and vectors of a matrix
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -28,7 +28,7 @@ static inline void GB_ek_slice_ntasks
     int nthreads_max            // max # of threads to use
 )
 {
-    int64_t anz = GB_NNZ_HELD (A) ;
+    int64_t anz = GB_nnz_held (A) ;
     if (anz == 0)
     {
         (*nthreads) = 1 ;
@@ -64,7 +64,7 @@ static inline void GB_ek_slice_ntasks
 
 #define GB_SLICE_MATRIX(X,NTASKS_PER_THREAD,chunk)                            \
     GB_ek_slice_ntasks (&(X ## _nthreads), &(X ## _ntasks), X,                \
-        NTASKS_PER_THREAD, GB_NNZ_HELD (X) + X->nvec, chunk, nthreads_max) ;  \
+        NTASKS_PER_THREAD, GB_nnz_held (X) + X->nvec, chunk, nthreads_max) ;  \
     GB_WERK_PUSH (X ## _ek_slicing, 3*(X ## _ntasks)+1, int64_t) ;            \
     if (X ## _ek_slicing == NULL)                                             \
     {                                                                         \

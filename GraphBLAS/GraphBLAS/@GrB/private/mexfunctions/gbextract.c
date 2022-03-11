@@ -2,13 +2,13 @@
 // gbextract: extract entries into a GraphBLAS matrix
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 //------------------------------------------------------------------------------
 
-// gbextract is an interface to GrB_Matrix_extract and GrB_Matrix_extract_[TYPE],
-// computing the GraphBLAS expression:
+// gbextract is an interface to GrB_Matrix_extract and
+// GrB_Matrix_extract_[TYPE], computing the GraphBLAS expression:
 
 //      C<#M,replace> = accum (C, A (I,J)) or
 //      C<#M,replace> = accum (C, AT (I,J))
@@ -20,7 +20,7 @@
 // A is required.  See GrB.m for more details.
 // If accum or M is used, then Cin must appear.
 
-#include "gb_matlab.h"
+#include "gb_interface.h"
 #include "GB_ij.h"
 
 #define USAGE "usage: C = GrB.extract (Cin, M, accum, A, I, J, desc)"
@@ -44,7 +44,7 @@ void mexFunction
     // find the arguments
     //--------------------------------------------------------------------------
 
-    mxArray *Matrix [4], *String [2], *Cell [2] ;
+    mxArray *Matrix [6], *String [2], *Cell [2] ;
     base_enum_t base ;
     kind_enum_t kind ;
     GxB_Format_Value fmt ;
@@ -179,11 +179,11 @@ void mexFunction
     OK (GrB_Matrix_free (&M)) ;
     OK (GrB_Matrix_free (&A)) ;
     OK (GrB_Descriptor_free (&desc)) ;
-    if (I_allocated) gb_mxfree (&I) ;
-    if (J_allocated) gb_mxfree (&J) ;
+    if (I_allocated) gb_mxfree ((void **) (&I)) ;
+    if (J_allocated) gb_mxfree ((void **) (&J)) ;
 
     //--------------------------------------------------------------------------
-    // export the output matrix C back to MATLAB
+    // export the output matrix C
     //--------------------------------------------------------------------------
 
     pargout [0] = gb_export (&C, kind) ;

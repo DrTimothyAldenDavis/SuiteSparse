@@ -1,20 +1,20 @@
 //------------------------------------------------------------------------------
-// gb_export_to_mxsparse: export a GrB_Matrix to a MATLAB sparse matrix
+// gb_export_to_mxsparse: export a GrB_Matrix to a built-in sparse matrix
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 //------------------------------------------------------------------------------
 
-// The input GrB_Matrix A is exported to a MATLAB sparse mxArray S, and freed.
+// The input GrB_Matrix A is exported to a built-in sparse mxArray S, and freed.
 
 // The input GrB_Matrix A may be shallow or deep.  The output is a standard
-// MATLAB sparse matrix as an mxArray.
+// built-in sparse matrix as an mxArray.
 
-#include "gb_matlab.h"
+#include "gb_interface.h"
 
-mxArray *gb_export_to_mxsparse  // return exported MATLAB sparse matrix S
+mxArray *gb_export_to_mxsparse  // return exported built-in sparse matrix S
 (
     GrB_Matrix *A_handle        // matrix to export; freed on output
 )
@@ -27,7 +27,7 @@ mxArray *gb_export_to_mxsparse  // return exported MATLAB sparse matrix S
     CHECK_ERROR (A_handle == NULL || (*A_handle) == NULL, "internal error 2") ;
 
     //--------------------------------------------------------------------------
-    // typecast to a native MATLAB sparse type and free A
+    // typecast to a native built-in sparse type and free A
     //--------------------------------------------------------------------------
 
     GrB_Matrix T ;              // T will always be deep
@@ -41,7 +41,7 @@ mxArray *gb_export_to_mxsparse  // return exported MATLAB sparse matrix S
     {
 
         //----------------------------------------------------------------------
-        // A is already in a native MATLAB sparse matrix type, by column
+        // A is already in a native built-in sparse matrix type, by column
         //----------------------------------------------------------------------
 
         if (GB_is_shallow (*A_handle))
@@ -65,8 +65,8 @@ mxArray *gb_export_to_mxsparse  // return exported MATLAB sparse matrix S
         // typecast A to logical, double or double complex, and format by column
         //----------------------------------------------------------------------
 
-        // MATLAB supports only logical, double, and double complex sparse
-        // matrices.  These correspond to GrB_BOOL, GrB_FP64, and GxB_FC64,
+        // Built-in sparse matrices can only be logical, double, or double
+        // complex.  These correspond to GrB_BOOL, GrB_FP64, and GxB_FC64,
         // respectively.  A is typecasted to logical, double or double complex,
         // and converted to CSC format if not already in that format.
 
@@ -101,7 +101,7 @@ mxArray *gb_export_to_mxsparse  // return exported MATLAB sparse matrix S
     OK1 (T, GxB_Matrix_select (T, NULL, NULL, GxB_NONZERO, T, NULL, NULL)) ;
 
     //--------------------------------------------------------------------------
-    // create the new MATLAB sparse matrix
+    // create the new built-in sparse matrix
     //--------------------------------------------------------------------------
 
     GrB_Index nrows, ncols, nvals ;
@@ -141,11 +141,11 @@ mxArray *gb_export_to_mxsparse  // return exported MATLAB sparse matrix S
         //----------------------------------------------------------------------
 
         GrB_Index Tp_size, Ti_size, Tx_size, type_size ;
-        int64_t nonempty, *Tp, *Ti ;
+        uint64_t *Tp, *Ti ;
         void *Tx ;
 
         // pass jumbled as NULL to indicate the matrix must be sorted
-        // pass is_uniform as NULL to indicate it cannot be uniform valued
+        // pass iso as NULL to indicate it cannot be uniform valued
         OK (GxB_Matrix_export_CSC (&T, &type, &nrows, &ncols,
             &Tp, &Ti, &Tx, &Tp_size, &Ti_size, &Tx_size, NULL, NULL, NULL)) ;
 
@@ -182,32 +182,20 @@ mxArray *gb_export_to_mxsparse  // return exported MATLAB sparse matrix S
 
         // set the column pointers
         void *p = mxGetJc (S) ; gb_mxfree (&p) ;
-        mxSetJc (S, Tp) ;
+        mxSetJc (S, (mwIndex *) Tp) ;
 
         // set the row indices
         p = mxGetIr (S) ; gb_mxfree (&p) ;
-        mxSetIr (S, Ti) ;
+        mxSetIr (S, (mwIndex *) Ti) ;
 
         // set the values
-        if (type == GrB_BOOL)
-        { 
-            p = mxGetData (S) ; gb_mxfree (&p) ;
-            mxSetData (S, Tx) ;
-        }
-        else if (type == GxB_FC64)
-        { 
-            p = mxGetComplexDoubles (S) ; gb_mxfree (&p) ;
-            mxSetComplexDoubles (S, Tx) ;
-        }
-        else // type == GrB_FP64
-        { 
-            p = mxGetDoubles (S) ; gb_mxfree (&p) ;
-            mxSetDoubles (S, Tx) ;
-        }
+        // use mxGetData and mxSetData (best for Octave, fine for MATLAB)
+        p = mxGetData (S) ; gb_mxfree (&p) ;
+        mxSetData (S, Tx) ;
     }
 
     //--------------------------------------------------------------------------
-    // return the new MATLAB sparse matrix
+    // return the new built-in sparse matrix
     //--------------------------------------------------------------------------
 
     return (S) ;

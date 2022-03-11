@@ -2,12 +2,13 @@
 // GB_type:  hard-coded functions for each built-in type
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
-// If this file is in the Generated/ folder, do not edit it (auto-generated).
+// If this file is in the Generated2/ folder, do not edit it
+// (it is auto-generated from Generator/*).
 
 #include "GB.h"
 #ifndef GBCOMPACT
@@ -18,10 +19,9 @@
 // The operation is defined by the following types and operators:
 
 // functions:
-// C<M>=x (C is dense):          GB (_Cdense_05d)
+// C<M>=x (C is as-is-full):     GB (_Cdense_05d)
 // C<A>=A (C is dense):          GB (_Cdense_06d)
 // C<M>=A (C is empty, A dense): GB (_Cdense_25)
-// convert sparse to bitmap:     GB (_convert_s2b)
 
 // C type:   GB_ctype
 
@@ -37,7 +37,7 @@
 #define GB_COPY_SCALAR_TO_C(p,x) Cx [p] = x
 
 // Cx [p] = Ax [pA]
-#define GB_COPY_A_TO_C(Cx,p,Ax,pA) Cx [p] = Ax [pA]
+#define GB_COPY_A_TO_C(Cx,p,Ax,pA,A_iso) Cx [p] = GBX (Ax, pA, A_iso)
 
 // test the mask condition with Ax [pA]
 #define GB_AX_MASK(Ax,pA,asize) \
@@ -110,27 +110,6 @@ GrB_Info GB (_Cdense_25)
     #else
     ASSERT (C->type == A->type) ;
     #include "GB_dense_subassign_25_template.c"
-    return (GrB_SUCCESS) ;
-    #endif
-}
-
-//------------------------------------------------------------------------------
-// convert sparse to bitmap
-//------------------------------------------------------------------------------
-
-GrB_Info GB (_convert_s2b)
-(
-    GrB_Matrix A,
-    GB_void *restrict Ax_new_void,
-    int8_t  *restrict Ab,
-    const int64_t *A_ek_slicing, const int A_ntasks, const int A_nthreads
-)
-{ 
-    #if GB_DISABLE
-    return (GrB_NO_VALUE) ;
-    #else
-    GB_ctype *restrict Ax_new = (GB_ctype *) Ax_new_void ;
-    #include "GB_convert_sparse_to_bitmap_template.c"
     return (GrB_SUCCESS) ;
     #endif
 }

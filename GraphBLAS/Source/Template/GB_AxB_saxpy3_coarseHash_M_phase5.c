@@ -2,7 +2,7 @@
 // GB_AxB_saxpy3_coarseHash_M_phase5: C<M>=A*B, coarse Hash, phase 5
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -39,30 +39,30 @@
             GB_GET_A_k ;                // get A(:,k)
             if (aknz == 0) continue ;
             GB_GET_B_kj ;               // bkj = B(k,j)
-            #define GB_IKJ                                     \
-            {                                                  \
-                for (GB_HASH (i))       /* find i in hash */   \
-                {                                              \
-                    int64_t f = Hf [hash] ;                    \
-                    if (f < mark) break ; /* M(i,j)=0, ignore*/\
-                    if (Hi [hash] == i)                        \
-                    {                                          \
-                        GB_MULT_A_ik_B_kj ; /* t = aik*bkj */  \
-                        if (f == mark) /* if true, i is new */ \
-                        {                                      \
-                            /* C(i,j) is new */                \
-                            Hf [hash] = mark1 ; /* mark seen */\
-                            GB_HX_WRITE (hash, t) ;/*Hx[.]=t */\
-                            Ci [pC++] = i ;                    \
-                        }                                      \
-                        else                                   \
-                        {                                      \
-                            /* C(i,j) has been seen; update */ \
-                            GB_HX_UPDATE (hash, t) ;           \
-                        }                                      \
-                        break ;                                \
-                    }                                          \
-                }                                              \
+            #define GB_IKJ                                              \
+            {                                                           \
+                for (GB_HASH (i))       /* find i in hash */            \
+                {                                                       \
+                    int64_t f = Hf [hash] ;                             \
+                    if (f < mark) break ; /* M(i,j)=0, ignore*/         \
+                    if (Hi [hash] == i)                                 \
+                    {                                                   \
+                        GB_MULT_A_ik_B_kj ;     /* t = aik*bkj */       \
+                        if (f == mark)          /* if true, i is new */ \
+                        {                                               \
+                            /* C(i,j) is new */                         \
+                            Hf [hash] = mark1 ;     /* mark seen */     \
+                            GB_HX_WRITE (hash, t) ; /* Hx[hash] = t */  \
+                            Ci [pC++] = i ;                             \
+                        }                                               \
+                        else                                            \
+                        {                                               \
+                            /* C(i,j) has been seen; update */          \
+                            GB_HX_UPDATE (hash, t) ;                    \
+                        }                                               \
+                        break ;                                         \
+                    }                                                   \
+                }                                                       \
             }
             GB_SCAN_M_j_OR_A_k (A_ok_for_binary_search) ;
             #undef GB_IKJ

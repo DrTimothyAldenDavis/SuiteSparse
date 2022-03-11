@@ -21,14 +21,13 @@ function C = bitxor (A, B, assumedtype)
 %   fprintf ('\nA: ') ; fprintf ('%3x ', A) ; fprintf ('\n') ;
 %   fprintf ('\nB: ') ; fprintf ('%3x ', B) ; fprintf ('\n') ;
 %   fprintf ('\nC: ') ; fprintf ('%3x ', C) ; fprintf ('\n') ;
-%   % in MATLAB:
 %   C2 = bitxor (uint8 (A), uint8 (B))
 %   isequal (C2, C)
 %
 % See also GrB/bitor, GrB/bitand, GrB/bitcmp, GrB/bitshift, GrB/bitget,
 % GrB/bitset, GrB/bitclr.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: GPL-3.0-or-later
 
 if (nargin < 3)

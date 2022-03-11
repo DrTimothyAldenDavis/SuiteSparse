@@ -2,7 +2,7 @@
 // GB_mex_complex: convert a real matrix into a complex one
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -10,7 +10,7 @@
 // If A is real, C has an all-zero imaginary part.
 // If A is complex, then C = A.
 
-// This is a sparse version of the MATLAB 'complex' function, which does not
+// This is a sparse version of the built-in 'complex' function, which does not
 // work for sparse matrices.  This is self-contained and does not use GraphBLAS
 // at all.
 

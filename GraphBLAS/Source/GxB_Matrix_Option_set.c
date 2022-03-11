@@ -2,7 +2,7 @@
 // GxB_Matrix_Option_set: set an option in a matrix
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -62,9 +62,10 @@ GrB_Info GxB_Matrix_Option_set      // set an option in a matrix
 
             {
                 va_start (ap, field) ;
-                int sparsity = va_arg (ap, int) ;
+                int sparsity_control = va_arg (ap, int) ;
                 va_end (ap) ;
-                A->sparsity = GB_sparsity_control (sparsity, (int64_t) (-1)) ;
+                A->sparsity_control =
+                    GB_sparsity_control (sparsity_control, (int64_t) (-1)) ;
             }
             break ;
 
@@ -81,14 +82,12 @@ GrB_Info GxB_Matrix_Option_set      // set an option in a matrix
                 // the value is normally GxB_BY_ROW (0) or GxB_BY_COL (1), but
                 // any nonzero value results in GxB_BY_COL.
                 bool new_csc = (format != GxB_BY_ROW) ;
-                // conform the matrix to the new CSR/CSC format
+                // conform the matrix to the new by-row/by-col format
                 if (A->is_csc != new_csc)
                 { 
                     // A = A', done in-place, and change to the new format.
-                    // transpose: no typecast, no op, in-place of A
-                    GB_BURBLE_N (GB_NNZ (A), "(transpose) ") ;
-                    GB_OK (GB_transpose (NULL, NULL, new_csc, A, // in_place_A
-                        NULL, NULL, NULL, false, Context)) ;
+                    GB_BURBLE_N (GB_nnz (A), "(transpose) ") ;
+                    GB_OK (GB_transpose_in_place (A, new_csc, Context)) ;
                     ASSERT (A->is_csc == new_csc) ;
                     ASSERT (GB_JUMBLED_OK (A)) ;
                 }
@@ -104,9 +103,10 @@ GrB_Info GxB_Matrix_Option_set      // set an option in a matrix
     // conform the matrix to its new desired sparsity structure
     //--------------------------------------------------------------------------
 
+    ASSERT_MATRIX_OK (A, "A set before conform", GB0) ;
     GB_OK (GB_conform (A, Context)) ;
     GB_BURBLE_END ;
-    ASSERT_MATRIX_OK (A, "A set", GB0) ;
+    ASSERT_MATRIX_OK (A, "A set after conform", GB0) ;
     return (GrB_SUCCESS) ;
 }
 

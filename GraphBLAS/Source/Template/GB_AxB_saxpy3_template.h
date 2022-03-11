@@ -2,7 +2,7 @@
 // GB_AxB_saxpy3_template.h: C=A*B, C<M>=A*B, or C<!M>=A*B via saxpy3 method
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -26,22 +26,22 @@
     int64_t pM_start, pM_end ;                                  \
     GB_lookup (M_is_hyper, Mh, Mp, mvlen, &mpleft, mpright,     \
         GBH (Bh, kk), &pM_start, &pM_end) ;                     \
-    int64_t mjnz = pM_end - pM_start ;
+    const int64_t mjnz = pM_end - pM_start ;
 
 //------------------------------------------------------------------------------
 // GB_GET_M_j_RANGE
 //------------------------------------------------------------------------------
 
 #define GB_GET_M_j_RANGE(gamma)                                 \
-    int64_t mjnz_much = mjnz * gamma
+    const int64_t mjnz_much = mjnz * gamma
 
 //------------------------------------------------------------------------------
-// GB_SCATTER_M_j_TYPE: scatter M(:,j) of the given type into Gus. workspace
+// GB_SCATTER_Mj_t: scatter M(:,j) of the given type into Gus. workspace
 //------------------------------------------------------------------------------
 
-#define GB_SCATTER_M_j_TYPE(mask_t,pMstart,pMend,mark)                  \
+#define GB_SCATTER_Mj_t(mask_t,pMstart,pMend,mark)                      \
 {                                                                       \
-    const mask_t *restrict Mxx = (mask_t *) Mx ;                     \
+    const mask_t *restrict Mxx = (mask_t *) Mx ;                        \
     if (M_is_bitmap)                                                    \
     {                                                                   \
         /* M is bitmap */                                               \
@@ -96,13 +96,13 @@ break ;
         switch (msize)                                                      \
         {                                                                   \
             default:                                                        \
-            case 1: GB_SCATTER_M_j_TYPE (uint8_t , pMstart, pMend, mark) ;  \
-            case 2: GB_SCATTER_M_j_TYPE (uint16_t, pMstart, pMend, mark) ;  \
-            case 4: GB_SCATTER_M_j_TYPE (uint32_t, pMstart, pMend, mark) ;  \
-            case 8: GB_SCATTER_M_j_TYPE (uint64_t, pMstart, pMend, mark) ;  \
-            case 16:                                                        \
+            case GB_1BYTE: GB_SCATTER_Mj_t (uint8_t , pMstart, pMend, mark) ; \
+            case GB_2BYTE: GB_SCATTER_Mj_t (uint16_t, pMstart, pMend, mark) ; \
+            case GB_4BYTE: GB_SCATTER_Mj_t (uint32_t, pMstart, pMend, mark) ; \
+            case GB_8BYTE: GB_SCATTER_Mj_t (uint64_t, pMstart, pMend, mark) ; \
+            case GB_16BYTE:                                                 \
             {                                                               \
-                const uint64_t *restrict Mxx = (uint64_t *) Mx ;         \
+                const uint64_t *restrict Mxx = (uint64_t *) Mx ;            \
                 for (int64_t pM = pMstart ; pM < pMend ; pM++)              \
                 {                                                           \
                     /* if (M (i,j) == 1) mark Hf [i] */                     \
@@ -122,21 +122,21 @@ break ;
 //------------------------------------------------------------------------------
 
 // hash M(:,j) into Hf and Hi for coarse hash task, C<M>=A*B or C<!M>=A*B
-#define GB_HASH_M_j                                                     \
-    for (int64_t pM = pM_start ; pM < pM_end ; pM++)                    \
-    {                                                                   \
-        GB_GET_M_ij (pM) ;      /* get M(i,j) */                        \
-        if (!mij) continue ;    /* skip if M(i,j)=0 */                  \
-        int64_t i = GBI (Mi, pM, mvlen) ;                               \
-        for (GB_HASH (i))       /* find i in hash */                    \
-        {                                                               \
-            if (Hf [hash] < mark)                                       \
-            {                                                           \
-                Hf [hash] = mark ;  /* insert M(i,j)=1 */               \
-                Hi [hash] = i ;                                         \
-                break ;                                                 \
-            }                                                           \
-        }                                                               \
+#define GB_HASH_M_j                                         \
+    for (int64_t pM = pM_start ; pM < pM_end ; pM++)        \
+    {                                                       \
+        GB_GET_M_ij (pM) ;      /* get M(i,j) */            \
+        if (!mij) continue ;    /* skip if M(i,j)=0 */      \
+        const int64_t i = GBI (Mi, pM, mvlen) ;             \
+        for (GB_HASH (i))       /* find i in hash */        \
+        {                                                   \
+            if (Hf [hash] < mark)                           \
+            {                                               \
+                Hf [hash] = mark ;  /* insert M(i,j)=1 */   \
+                Hi [hash] = i ;                             \
+                break ;                                     \
+            }                                               \
+        }                                                   \
     }
 
 //------------------------------------------------------------------------------
@@ -160,11 +160,12 @@ break ;
 #define GB_GET_B_j_FOR_ALL_FORMATS(A_is_hyper,B_is_sparse,B_is_hyper)       \
     int64_t pleft = 0 ;                                                     \
     int64_t pright = anvec-1 ;                                              \
-    int64_t j = (B_is_hyper) ? Bh [kk] : kk ;                               \
+    const int64_t j = (B_is_hyper) ? Bh [kk] : kk ;                         \
     GB_GET_T_FOR_SECONDJ ;  /* t = j for SECONDJ, or j+1 for SECONDJ1 */    \
     int64_t pB = (B_is_sparse || B_is_hyper) ? Bp [kk] : (kk * bvlen) ;     \
-    int64_t pB_end = (B_is_sparse || B_is_hyper) ? Bp [kk+1] : (pB+bvlen) ; \
-    int64_t bjnz = pB_end - pB ;  /* nnz (B (:,j) */                        \
+    const int64_t pB_end =                                                  \
+        (B_is_sparse || B_is_hyper) ? Bp [kk+1] : (pB+bvlen) ;              \
+    const int64_t bjnz = pB_end - pB ;  /* nnz (B (:,j) */                  \
     /* FUTURE::: can skip if mjnz == 0 for C<M>=A*B tasks */                \
     if (A_is_hyper && (B_is_sparse || B_is_hyper) && bjnz > 2 && !B_jumbled)\
     {                                                                       \
@@ -189,7 +190,7 @@ break ;
 #else
 
     #define GB_GET_B_kj \
-        GB_GETB (bkj, Bx, pB)       /* bkj = Bx [pB] */
+        GB_GETB (bkj, Bx, pB, B_iso)       /* bkj = Bx [pB] */
 
 #endif
 
@@ -202,7 +203,7 @@ break ;
     int64_t pA_start, pA_end ;                                              \
     GB_lookup (A_is_hyper, Ah, Ap, avlen, &pleft, pright, k,                \
         &pA_start, &pA_end) ;                                               \
-    int64_t aknz = pA_end - pA_start
+    const int64_t aknz = pA_end - pA_start
 
 //------------------------------------------------------------------------------
 // GB_GET_M_ij: get the numeric value of M(i,j)
@@ -233,7 +234,7 @@ break ;
 
     // typical semiring
     #define GB_MULT_A_ik_B_kj                                       \
-        GB_GETA (aik, Ax, pA) ;         /* aik = Ax [pA] ;  */      \
+        GB_GETA (aik, Ax, pA, A_iso) ;  /* aik = Ax [pA] ;  */      \
         GB_CIJ_DECLARE (t) ;            /* ctype t ;        */      \
         GB_MULT (t, aik, bkj, i, k, j)  /* t = aik * bkj ;  */
 
@@ -284,7 +285,7 @@ break ;
     if (do_sort)                                                \
     {                                                           \
         /* sort the pattern of C(:,j) (non-default) */          \
-        GB_qsort_1a (Ci + Cp [kk], cjnz) ;                      \
+        GB_qsort_1 (Ci + Cp [kk], cjnz) ;                       \
     }                                                           \
     else                                                        \
     {                                                           \
@@ -311,7 +312,7 @@ break ;
         /* gather the values into C(:,j) */                     \
         for (int64_t pC = Cp [kk] ; pC < Cp [kk+1] ; pC++)      \
         {                                                       \
-            int64_t i = Ci [pC] ;                               \
+            const int64_t i = Ci [pC] ;                         \
             GB_CIJ_GATHER (pC, i) ;   /* Cx [pC] = Hx [i] */    \
         }
 
@@ -324,27 +325,27 @@ break ;
 #if GB_IS_ANY_PAIR_SEMIRING
 
     // ANY_PAIR: result is purely symbolic
-    #define GB_SORT_AND_GATHER_HASHED_C_j(hash_mark)            \
+    #define GB_SORT_AND_GATHER_HASHED_C_j(hash_mark)                    \
         GB_SORT_C_j_PATTERN ;
 
 #else
 
     // gather the values of C(:,j) for a coarse hash task
-    #define GB_SORT_AND_GATHER_HASHED_C_j(hash_mark)                        \
-        GB_SORT_C_j_PATTERN ;                                               \
-        for (int64_t pC = Cp [kk] ; pC < Cp [kk+1] ; pC++)                  \
-        {                                                                   \
-            int64_t i = Ci [pC] ;                                           \
-            for (GB_HASH (i))           /* find i in hash table */          \
-            {                                                               \
-                if (Hf [hash] == (hash_mark) && (Hi [hash] == i))           \
-                {                                                           \
-                    /* i found in the hash table */                         \
-                    /* Cx [pC] = Hx [hash] ; */                             \
-                    GB_CIJ_GATHER (pC, hash) ;                              \
-                    break ;                                                 \
-                }                                                           \
-            }                                                               \
+    #define GB_SORT_AND_GATHER_HASHED_C_j(hash_mark)                    \
+        GB_SORT_C_j_PATTERN ;                                           \
+        for (int64_t pC = Cp [kk] ; pC < Cp [kk+1] ; pC++)              \
+        {                                                               \
+            const int64_t i = Ci [pC] ;                                 \
+            for (GB_HASH (i))           /* find i in hash table */      \
+            {                                                           \
+                if (Hf [hash] == (hash_mark) && (Hi [hash] == i))       \
+                {                                                       \
+                    /* i found in the hash table */                     \
+                    /* Cx [pC] = Hx [hash] ; */                         \
+                    GB_CIJ_GATHER (pC, hash) ;                          \
+                    break ;                                             \
+                }                                                       \
+            }                                                           \
         }
 
 #endif
@@ -402,8 +403,8 @@ break ;
         // The update is skipped entirely if t is NaN.  Otherwise, if t is not
         // NaN, xold is checked.  If xold is NaN, islessequal (xold, t) is
         // always false, so the non-NaN t must be always be assigned to Hx [i].
-        // If both terms are not NaN, then islessequal (xold,t) is just the
-        // comparison xold <= t.  If that is true, there is no work to do and
+        // If both terms are not NaN, then islessequal (xold,t) is just
+        // xold <= t.  If that is true, there is no work to do and
         // the loop breaks.  Otherwise, t is smaller than xold and so it must
         // be assigned to Hx [i].
         #define GB_ATOMIC_UPDATE_HX(i,t)                            \
@@ -501,22 +502,6 @@ break ;
     //--------------------------------------------------------------------------
 
     #define GB_ATOMIC_WRITE_HX(i,t)
-
-    //--------------------------------------------------------------------------
-    // ANY_PAIR: for the bitmap case only: Hx [i] = 1
-    //--------------------------------------------------------------------------
-
-    #if GB_IS_ANY_FC32_MONOID || GB_IS_ANY_FC64_MONOID
-        #define GB_ATOMIC_SET_HX_ONE(i)             \
-            GB_ATOMIC_WRITE                         \
-            Hx_real [2*(i)] = 1 ;                   \
-            GB_ATOMIC_WRITE                         \
-            Hx_imag [2*(i)] = 0 ;
-    #else
-        #define GB_ATOMIC_SET_HX_ONE(i)             \
-            GB_ATOMIC_WRITE                         \
-            Hx [i] = 1 ;
-    #endif
 
 #elif GB_HAS_ATOMIC
 

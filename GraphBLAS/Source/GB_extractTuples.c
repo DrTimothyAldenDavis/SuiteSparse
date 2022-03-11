@@ -2,7 +2,7 @@
 // GB_extractTuples: extract all the tuples from a matrix
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -14,14 +14,16 @@
 // matrix are typecasted to the type of X, as needed.
 
 // This function does the work for the user-callable GrB_*_extractTuples
-// functions.
+// functions, and helps build the tuples for GB_concat_hyper.
+
+// Tf A is iso and X is not NULL, the iso scalar Ax [0] is expanded into X.
 
 #include "GB.h"
 
 #define GB_FREE_ALL                             \
 {                                               \
-    GB_FREE_WERK (&Ap, Ap_size) ;               \
-    GB_FREE_WERK (&X_bitmap, X_bitmap_size) ;   \
+    GB_FREE_WORK (&Ap, Ap_size) ;               \
+    GB_FREE_WORK (&X_bitmap, X_bitmap_size) ;   \
 }
 
 GrB_Info GB_extractTuples       // extract all tuples from a matrix
@@ -54,6 +56,7 @@ GrB_Info GB_extractTuples       // extract all tuples from a matrix
     GB_BURBLE_DENSE (A, "(A %s) ") ;
     ASSERT (xcode <= GB_UDT_code) ;
     const GB_Type_code acode = A->type->code ;
+    const size_t asize = A->type->size ;
 
     // xcode and A must be compatible
     if (!GB_code_compatible (xcode, acode))
@@ -61,7 +64,7 @@ GrB_Info GB_extractTuples       // extract all tuples from a matrix
         return (GrB_DOMAIN_MISMATCH) ;
     }
 
-    const int64_t anz = GB_NNZ (A) ;
+    const int64_t anz = GB_nnz (A) ;
     if (anz == 0)
     { 
         // no work to do
@@ -70,14 +73,11 @@ GrB_Info GB_extractTuples       // extract all tuples from a matrix
     }
 
     int64_t nvals = *p_nvals ;          // size of I,J,X on input
-
     if (nvals < anz && (I_out != NULL || J_out != NULL || X != NULL))
     { 
         // output arrays are not big enough
         return (GrB_INSUFFICIENT_SPACE) ;
     }
-
-    const size_t asize = A->type->size ;
 
     //-------------------------------------------------------------------------
     // determine the number of threads to use
@@ -118,9 +118,9 @@ GrB_Info GB_extractTuples       // extract all tuples from a matrix
         { 
             // X must be typecasted
             int64_t anzmax = GB_IMAX (anz, 1) ;
-            X_bitmap = GB_MALLOC_WERK (anzmax*asize, GB_void, &X_bitmap_size) ;
+            X_bitmap = GB_MALLOC_WORK (anzmax*asize, GB_void, &X_bitmap_size) ;
         }
-        Ap = GB_MALLOC_WERK (A->vdim+1, int64_t, &Ap_size) ;
+        Ap = GB_MALLOC_WORK (A->vdim+1, int64_t, &Ap_size) ;
         if (Ap == NULL || (need_typecast && X_bitmap == NULL))
         { 
             // out of memory
@@ -135,18 +135,23 @@ GrB_Info GB_extractTuples       // extract all tuples from a matrix
         // TODO: pass xcode to GB_convert_bitmap_worker and let it do the
         // typecasting.  This works for now, however.
 
+        // if A is iso, GB_convert_bitmap_worker expands the iso scalar
+        // into its result, X or X_bitmap
+
         GB_OK (GB_convert_bitmap_worker (Ap, (int64_t *) I, (int64_t *) J,
             (GB_void *) (need_typecast ? X_bitmap : X), NULL, A, Context)) ;
 
         //----------------------------------------------------------------------
-        // typecast the result if needed
+        // typecast X if needed
         //----------------------------------------------------------------------
 
         if (need_typecast)
         { 
             // typecast the values from X_bitmap into X
-            GB_cast_array ((GB_void *) X, xcode, X_bitmap,
-                acode, NULL, asize, anz, nthreads) ;
+            ASSERT (X != NULL) ;
+            ASSERT (xcode != acode) ;
+            GB_cast_array ((GB_void *) X, xcode, X_bitmap, acode, NULL, anz,
+                nthreads) ;
         }
 
     }
@@ -194,10 +199,27 @@ GrB_Info GB_extractTuples       // extract all tuples from a matrix
         //----------------------------------------------------------------------
 
         if (X != NULL)
-        { 
-            // typecast or copy the values from A into X
-            GB_cast_array ((GB_void *) X, xcode, (GB_void *) A->x,
-                acode, NULL, asize, anz, nthreads) ;
+        {
+            if (A->iso)
+            { 
+                // typecast the scalar and expand it into X
+                size_t xsize = GB_code_size (xcode, asize) ;
+                GB_void scalar [GB_VLA(xsize)] ;
+                GB_cast_scalar (scalar, xcode, A->x, acode, asize) ;
+                GB_iso_expand (X, anz, scalar, xsize, Context) ;
+            }
+            else if (xcode == acode)
+            { 
+                // copy the values from A into X, no typecast
+                GB_memcpy (X, A->x, anz * asize, nthreads) ;
+            }
+            else
+            { 
+                // typecast the values from A into X
+                ASSERT (X != NULL) ;
+                GB_cast_array ((GB_void *) X, xcode, (GB_void *) A->x, acode,
+                    NULL, anz, nthreads) ;
+            }
         }
     }
 

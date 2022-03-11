@@ -334,6 +334,7 @@ end
 
 % compile and install SLIP_LU
 try
+    fprintf ('try to install SLIP_LU (requires GMP and MPFR)') ;
     paths = add_to_path (paths, [SuiteSparse '/SLIP_LU/MATLAB']) ;
     SLIP_install (do_demo) ;
 catch me

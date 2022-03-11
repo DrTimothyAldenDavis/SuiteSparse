@@ -2,7 +2,7 @@
 // GB_Matrix_extractElement: x = A(row,col)
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -34,13 +34,17 @@ GrB_Info GB_EXTRACT_ELEMENT     // extract a single entry, x = A(row,col)
     GB_RETURN_IF_NULL_OR_FAULTY (A) ;
     GB_RETURN_IF_NULL (x) ;
 
+    // TODO: do not wait unless jumbled.  First try to find the element.
+    // If found (live or zombie), no need to wait.  If not found and pending
+    // tuples exist, wait and then extractElement again.
+
     // delete any lingering zombies, assemble any pending tuples, and unjumble
     if (GB_ANY_PENDING_WORK (A))
     { 
         GrB_Info info ;
         GB_WHERE1 (GB_WHERE_STRING) ;
         GB_BURBLE_START ("GrB_Matrix_extractElement") ;
-        GB_OK (GB_Matrix_wait (A, "A", Context)) ;
+        GB_OK (GB_wait (A, "A", Context)) ;
         GB_BURBLE_END ;
     }
 
@@ -76,7 +80,7 @@ GrB_Info GB_EXTRACT_ELEMENT     // extract a single entry, x = A(row,col)
         return (GrB_DOMAIN_MISMATCH) ;
     }
 
-    if (A->nzmax == 0)
+    if (GB_nnz (A) == 0)
     { 
         // quick return
         return (GrB_NO_VALUE) ;
@@ -91,7 +95,7 @@ GrB_Info GB_EXTRACT_ELEMENT     // extract a single entry, x = A(row,col)
     const int64_t *restrict Ap = A->p ;
 
     if (Ap != NULL)
-    { 
+    {
         // A is sparse or hypersparse
         const int64_t *restrict Ai = A->i ;
 
@@ -151,19 +155,20 @@ GrB_Info GB_EXTRACT_ELEMENT     // extract a single entry, x = A(row,col)
         #if !defined ( GB_UDT_EXTRACT )
         if (GB_XCODE == acode)
         { 
-            // copy the value from A into x, no typecasting, for built-in
-            // types only.
+            // copy A [pleft] into x, no typecasting, for built-in types only.
             GB_XTYPE *restrict Ax = ((GB_XTYPE *) (A->x)) ;
-            (*x) = Ax [pleft] ;
+            (*x) = Ax [A->iso ? 0:pleft] ;
         }
         else
         #endif
         { 
-            // typecast the value from A into x
+            // typecast the value from A [pleft] into x
             size_t asize = A->type->size ;
-            GB_cast_array ((GB_void *) x, GB_XCODE,
-                ((GB_void *) A->x) +(pleft*asize), acode, NULL, asize, 1, 1) ;
+            void *ax = ((GB_void *) A->x) + (A->iso ? 0 : (pleft*asize)) ;
+            GB_cast_scalar (x, GB_XCODE, ax, acode, asize) ;
         }
+        // TODO: do not flush if extracting to GrB_Scalar
+        #pragma omp flush
         return (GrB_SUCCESS) ;
     }
     else

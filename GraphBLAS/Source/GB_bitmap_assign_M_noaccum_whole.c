@@ -2,7 +2,7 @@
 // GB_bitmap_assign_M_noaccum_whole:  assign to C bitmap
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -319,8 +319,8 @@ GrB_Info GB_bitmap_assign_M_noaccum_whole
                 #include "GB_bitmap_assign_C_whole_template.c"
 
             }
-            else if (GB_NNZ (A) == 0)
-            {
+            else if (GB_nnz (A) == 0)
+            { 
 
                 //--------------------------------------------------------------
                 // C<M> = A where A is sparse or hyper, with no entries

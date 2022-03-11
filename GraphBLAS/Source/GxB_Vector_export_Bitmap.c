@@ -2,7 +2,7 @@
 // GxB_Vector_export_Bitmap: export a bitmap vector
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -21,7 +21,7 @@ GrB_Info GxB_Vector_export_Bitmap   // export and free a bitmap vector
     void **vx,          // values
     GrB_Index *vb_size, // size of vb in bytes
     GrB_Index *vx_size, // size of vx in bytes
-    bool *is_uniform,   // if true, v has uniform values (TODO:::unsupported)
+    bool *iso,          // if true, A is iso
 
     GrB_Index *nvals,    // # of entries in bitmap
     const GrB_Descriptor desc
@@ -33,7 +33,7 @@ GrB_Info GxB_Vector_export_Bitmap   // export and free a bitmap vector
     //--------------------------------------------------------------------------
 
     GB_WHERE1 ("GxB_Vector_export_Bitmap (&v, &type, &n, "
-        "&vb, &vx, &vb_size, &vx_size, &is_uniform, &nvals, desc)") ;
+        "&vb, &vx, &vb_size, &vx_size, &iso, &nvals, desc)") ;
     GB_BURBLE_START ("GxB_Vector_export_Bitmap") ;
     GB_RETURN_IF_NULL (v) ;
     GB_RETURN_IF_NULL_OR_FAULTY (*v) ;
@@ -66,7 +66,7 @@ GrB_Info GxB_Vector_export_Bitmap   // export and free a bitmap vector
     bool is_csc ;
     GrB_Index vdim ;
 
-    info = GB_export ((GrB_Matrix *) v, type, n, &vdim, false,
+    info = GB_export (false, (GrB_Matrix *) v, type, n, &vdim, false,
         NULL, NULL,     // Ap
         NULL, NULL,     // Ah
         vb,   vb_size,  // Ab
@@ -74,7 +74,7 @@ GrB_Info GxB_Vector_export_Bitmap   // export and free a bitmap vector
         vx,   vx_size,  // Ax
         nvals, NULL, NULL,                  // nvals for bitmap
         &sparsity, &is_csc,                 // bitmap by col
-        is_uniform, Context) ;
+        iso, Context) ;
 
     if (info == GrB_SUCCESS)
     {

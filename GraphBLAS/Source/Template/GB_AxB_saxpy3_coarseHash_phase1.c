@@ -2,7 +2,7 @@
 // GB_AxB_saxpy3_coarseHash_phase1: symbolic coarse Hash, optional dense mask
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -19,9 +19,8 @@
     // f < mark          : unoccupied.
     // h == i, f == mark : occupied with C(i,j)
 
-    // The mask M can be optionally checked, if it is packed (full, bitmap, or
-    // sparse/hyper with all entries present and not jumbled) and checked in
-    // place.  This method is not used if M is present and sparse.
+    // The mask M can be optionally checked, if it is bitmap, or as-if-full and
+    // checked in place.  This method is not used if M is present and sparse.
 
     for (int64_t kk = kfirst ; kk <= klast ; kk++)
     {
@@ -42,9 +41,8 @@
 
         #ifdef GB_CHECK_MASK_ij
 
-            // The mask M is packed (full, bitmap, or sparse/hyper and not
-            // jumbled, with all entries present in the entire matrix).  Get
-            // pointers Mjb and Mjx into the M(:,j) vector.
+            // The mask M is bitmap or as-if-full.  Get pointers Mjb and Mjx
+            // into the M(:,j) vector.
             GB_GET_M_j
             const M_TYPE *restrict Mjx = Mask_struct ? NULL :
                 ((M_TYPE *) Mx) + (M_SIZE * pM_start) ;

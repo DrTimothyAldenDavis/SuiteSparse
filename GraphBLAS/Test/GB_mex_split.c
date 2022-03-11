@@ -2,7 +2,7 @@
 // GB_mex_split: C = split (Tiles)
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -97,7 +97,7 @@ void mexFunction
     // Tiles = split (A, ms, ns)
     METHOD (GxB_Matrix_split (Tiles, m, n, Tile_nrows, Tile_ncols, A, NULL)) ;
 
-    // return C to MATLAB as a cell array and free the GraphBLAS tiles
+    // return C as a cell array and free the GraphBLAS tiles
     pargout [0] = mxCreateCellMatrix (m, n) ;
     for (int64_t j = 0 ; j < n ; j++)
     {

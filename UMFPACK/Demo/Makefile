@@ -27,7 +27,7 @@ endif
 C = $(CC) $(CF) $(UMFPACK_CONFIG) $(CONFIG_PARTITION) \
     -I../../include
 
-LIBS = $(LDLIBS) -L../../lib -lumfpack -lamd -lsuitesparseconfig \
+LIBS = $(LDLIBS) $(LDFLAGS) -lumfpack -lamd -lsuitesparseconfig \
 	$(LIB_WITH_CHOLMOD) $(LAPACK) $(BLAS)
 
 libs: metis

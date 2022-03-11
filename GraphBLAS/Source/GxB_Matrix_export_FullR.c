@@ -2,7 +2,7 @@
 // GxB_Matrix_export_FullR: export a full matrix, held by row
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -20,18 +20,18 @@ GrB_Info GxB_Matrix_export_FullR  // export and free a full matrix, by row
 
     void **Ax,          // values
     GrB_Index *Ax_size, // size of Ax in bytes
-    bool *is_uniform,   // if true, A has uniform values (TODO:::unsupported)
+    bool *iso,          // if true, A is iso
 
     const GrB_Descriptor desc
 )
-{ 
+{
 
     //--------------------------------------------------------------------------
     // check inputs and get the descriptor
     //--------------------------------------------------------------------------
 
     GB_WHERE1 ("GxB_Matrix_export_FullR (&A, &type, &nrows, &ncols, "
-        "&Ax, &Ax_size, &is_uniform, desc)") ;
+        "&Ax, &Ax_size, &iso, desc)") ;
     GB_BURBLE_START ("GxB_Matrix_export_FullR") ;
     GB_RETURN_IF_NULL (A) ;
     GB_RETURN_IF_NULL_OR_FAULTY (*A) ;
@@ -49,16 +49,15 @@ GrB_Info GxB_Matrix_export_FullR  // export and free a full matrix, by row
     }
 
     //--------------------------------------------------------------------------
-    // ensure the matrix is full CSR
+    // ensure the matrix is full by-row
     //--------------------------------------------------------------------------
 
-    // ensure the matrix is in CSR format
+    // ensure the matrix is in by-row format
     if ((*A)->is_csc)
     { 
-        // A = A', done in-place, to put A in CSR format
+        // A = A', done in-place, to put A in by-row format
         GBURBLE ("(transpose) ") ;
-        GB_OK (GB_transpose (NULL, NULL, false, *A, // in_place_A
-            NULL, NULL, NULL, false, Context)) ;
+        GB_OK (GB_transpose_in_place (*A, false, Context)) ;
         GB_MATRIX_WAIT (*A) ;
     }
 
@@ -77,7 +76,7 @@ GrB_Info GxB_Matrix_export_FullR  // export and free a full matrix, by row
     int sparsity ;
     bool is_csc ;
 
-    info = GB_export (A, type, ncols, nrows, false,
+    info = GB_export (false, A, type, ncols, nrows, false,
         NULL, NULL,     // Ap
         NULL, NULL,     // Ah
         NULL, NULL,     // Ab
@@ -85,7 +84,7 @@ GrB_Info GxB_Matrix_export_FullR  // export and free a full matrix, by row
         Ax,   Ax_size,  // Ax
         NULL, NULL, NULL,
         &sparsity, &is_csc,                 // full by row
-        is_uniform, Context) ;
+        iso, Context) ;
 
     if (info == GrB_SUCCESS)
     {

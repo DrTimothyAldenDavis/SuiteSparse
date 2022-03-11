@@ -2,7 +2,7 @@
 // GxB_Vector_Option_set: set an option in a vector
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -52,9 +52,10 @@ GrB_Info GxB_Vector_Option_set      // set an option in a vector
 
             {
                 va_start (ap, field) ;
-                int sparsity = va_arg (ap, int) ;
+                int sparsity_control = va_arg (ap, int) ;
                 va_end (ap) ;
-                v->sparsity = GB_sparsity_control (sparsity, (int64_t) (-1)) ;
+                v->sparsity_control =
+                    GB_sparsity_control (sparsity_control, (int64_t) (-1)) ;
             }
             break ;
 

@@ -2,7 +2,7 @@
 // gb_mxfree: mxFree wrapper
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 //------------------------------------------------------------------------------
@@ -12,7 +12,7 @@
 //  void *p = mxMalloc ( ... ) ;
 //  gb_mxfree (&p) ;                // frees p and sets p to NULL
 
-#include "gb_matlab.h"
+#include "gb_interface.h"
 
 void gb_mxfree              // mxFree wrapper
 (

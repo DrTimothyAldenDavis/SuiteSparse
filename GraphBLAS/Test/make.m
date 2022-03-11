@@ -1,8 +1,8 @@
 function make (what)
-%MAKE compiles the MATLAB interface to GraphBLAS (for testing only)
+%MAKE compiles the @GrB interface to GraphBLAS (for testing only)
 % and dynamically links it with the libraries in ../build/libgraphblas.
 %
-% This MATLAB interface to GraphBLAS is meant for testing and development,
+% This @GrB interface to GraphBLAS is meant for testing and development,
 % not for general use.
 %
 % Usage:
@@ -14,7 +14,7 @@ function make (what)
 % GraphBLAS requires an ANSI C11 compliant compiler.  On the Mac, clang 8.0
 % suffices.  gcc should be version 4.9.3 or later
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 here = pwd ;
@@ -28,7 +28,12 @@ end
 
 fprintf ('\nCompiling GraphBLAS tests:\n') ;
 
-need_rename = ~verLessThan ('matlab', '9.10') ;
+have_octave = (exist ('OCTAVE_VERSION', 'builtin') == 5) ;
+if (have_octave)
+    need_rename = false ;
+else
+    need_rename = ~verLessThan ('matlab', '9.10') ;
+end
 
 try
     spok (sparse (1)) ;
@@ -45,51 +50,37 @@ end
 
 make_all = (isequal (what, 'all')) ;
 
-flags = '-g -R2018a' ;
+flags = '-g -R2018a -DGBNCPUFEAT' ;
 
-try
-    if (strncmp (computer, 'GLNX', 4))
-        % remove -ansi from CFLAGS and replace it with -std=c11
-        cc = mex.getCompilerConfigurations ('C', 'Selected') ;
-        env = cc.Details.SetEnv ;
-        c1 = strfind (env, 'CFLAGS=') ;
-        q = strfind (env, '"') ;
-        q = q (q > c1) ;
-        if (~isempty (c1) && length (q) > 1)
-            c2 = q (2) ;
-            cflags = env (c1:c2) ;  % the CFLAGS="..." string
-            ansi = strfind (cflags, '-ansi') ;
-            if (~isempty (ansi))
-                cflags = [cflags(1:ansi-1) '-std=c11' cflags(ansi+5:end)] ;
-                flags = [flags ' ' cflags] ;
-                fprintf ('compiling with -std=c11 instead of default -ansi\n') ;
+if (~have_octave)
+    try
+        if (strncmp (computer, 'GLNX', 4))
+            % remove -ansi from CFLAGS and replace it with -std=c11
+            cc = mex.getCompilerConfigurations ('C', 'Selected') ;
+            env = cc.Details.SetEnv ;
+            c1 = strfind (env, 'CFLAGS=') ;
+            q = strfind (env, '"') ;
+            q = q (q > c1) ;
+            if (~isempty (c1) && length (q) > 1)
+                c2 = q (2) ;
+                cflags = env (c1:c2) ;  % the CFLAGS="..." string
+                ansi = strfind (cflags, '-ansi') ;
+                if (~isempty (ansi))
+                    cflags = [cflags(1:ansi-1) '-std=c11' cflags(ansi+5:end)] ;
+                    flags = [flags ' ' cflags] ;
+                    fprintf ('compiling with -std=c11 instead of default -ansi\n') ;
+                end
             end
         end
+    catch
     end
-catch
 end
 
 mexfunctions = dir ('GB_mex_*.c') ;
-cfiles = [ dir('GB_mx_*.c') ; ...
-           dir('../Demo/Source/bfs5m.c') ; ...
-           dir('../Demo/Source/drowscale.c') ; ...
-           dir('../Demo/Source/dpagerank.c') ; ...
-           dir('../Demo/Source/dpagerank2.c') ; ...
-           dir('../Demo/Source/ipagerank.c') ; ...
-           dir('../Demo/Source/irowscale.c') ; ...
-           dir('../Demo/Source/isequal.c') ; ...
-           dir('../Demo/Source/mis_check.c') ; ...
-           dir('../Demo/Source/mis_score.c') ; ...
-           dir('../Demo/Source/wathen.c') ; ...
-           dir('../Demo/Source/random_matrix.c') ; ...
-           dir('../Demo/Source/simple_rand.c') ; ...
-           dir('../Demo/Source/prand.c') ; ...
-           dir('../Demo/Source/simple_timer.c') ; ...
-           dir('../Demo/Source/tricount.c') ; ...
-           dir('../Demo/Source/usercomplex.c') ] ;
+cfiles = [ dir('GB_mx_*.c') ] ;
 
-hfiles = [ dir('*.h') ; dir('Template/*.c') ; dir('../Demo/Include/*.h') ] ;
-inc = '-ITemplate -I../Include -I../Source -I../Source/Template -I../Demo/Include' ;
+hfiles = [ dir('*.h') ; dir('Template/*.c') ] ;
+inc = '-ITemplate -I../Include -I../Source -I../Source/Template -I../lz4 -I../rmm_wrap' ;
 
 if (ismac)
     % Mac (do 'make install' for GraphBLAS first)

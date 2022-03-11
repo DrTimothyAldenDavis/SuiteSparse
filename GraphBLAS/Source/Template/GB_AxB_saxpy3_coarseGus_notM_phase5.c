@@ -2,7 +2,7 @@
 // GB_AxB_saxpy3_coarseGus_notM_phase5: C<!M>=A*B, coarse Gustavson, phase5
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -46,29 +46,29 @@
             // C(:,j) is not very sparse
             //------------------------------------------------------------------
 
-            for ( ; pB < pB_end ; pB++)     // scan B(:,j)
+            for ( ; pB < pB_end ; pB++)         // scan B(:,j)
             {
-                GB_GET_B_kj_INDEX ;         // get k of B(k,j)
-                GB_GET_A_k ;                // get A(:,k)
+                GB_GET_B_kj_INDEX ;             // get k of B(k,j)
+                GB_GET_A_k ;                    // get A(:,k)
                 if (aknz == 0) continue ;
-                GB_GET_B_kj ;               // bkj = B(k,j)
+                GB_GET_B_kj ;                   // bkj = B(k,j)
                 // scan A(:,k)
                 for (int64_t pA = pA_start ; pA < pA_end ; pA++)
                 {
-                    GB_GET_A_ik_INDEX ;     // get i of A(i,k)
+                    GB_GET_A_ik_INDEX ;         // get i of A(i,k)
                     int64_t hf = Hf [i] ;
                     if (hf < mark)
                     { 
                         // C(i,j) = A(i,k) * B(k,j)
-                        Hf [i] = mark1 ;     // mark as seen
-                        GB_MULT_A_ik_B_kj ;  // t =A(i,k)*B(k,j)
-                        GB_HX_WRITE (i, t) ; // Hx [i] = t
+                        Hf [i] = mark1 ;        // mark as seen
+                        GB_MULT_A_ik_B_kj ;     // t = A(i,k)*B(k,j)
+                        GB_HX_WRITE (i, t) ;    // Hx [i] = t
                     }
                     else if (hf == mark1)
                     { 
                         // C(i,j) += A(i,k) * B(k,j)
-                        GB_MULT_A_ik_B_kj ;  // t =A(i,k)*B(k,j)
-                        GB_HX_UPDATE (i, t) ;// Hx [i] += t
+                        GB_MULT_A_ik_B_kj ;     // t =A(i,k)*B(k,j)
+                        GB_HX_UPDATE (i, t) ;   // Hx [i] += t
                     }
                 }
             }
@@ -82,29 +82,29 @@
             // C(:,j) is very sparse
             //------------------------------------------------------------------
 
-            for ( ; pB < pB_end ; pB++)     // scan B(:,j)
+            for ( ; pB < pB_end ; pB++)         // scan B(:,j)
             {
-                GB_GET_B_kj_INDEX ;         // get k of B(k,j)
-                GB_GET_A_k ;                // get A(:,k)
+                GB_GET_B_kj_INDEX ;             // get k of B(k,j)
+                GB_GET_A_k ;                    // get A(:,k)
                 if (aknz == 0) continue ;
-                GB_GET_B_kj ;               // bkj = B(k,j)
+                GB_GET_B_kj ;                   // bkj = B(k,j)
                 // scan A(:,k)
                 for (int64_t pA = pA_start ; pA < pA_end ; pA++)
                 {
-                    GB_GET_A_ik_INDEX ;     // get i of A(i,k)
+                    GB_GET_A_ik_INDEX ;         // get i of A(i,k)
                     int64_t hf = Hf [i] ;
                     if (hf < mark)
                     { 
                         // C(i,j) = A(i,k) * B(k,j)
                         Hf [i] = mark1 ;        // mark as seen
-                        GB_MULT_A_ik_B_kj ;  // t =A(i,k)*B(k,j)
+                        GB_MULT_A_ik_B_kj ;     // t = A(i,k)*B(k,j)
                         GB_HX_WRITE (i, t) ;    // Hx [i] = t
-                        Ci [pC++] = i ; // create C(:,j) pattern
+                        Ci [pC++] = i ;         // create C(:,j) pattern
                     }
                     else if (hf == mark1)
                     { 
                         // C(i,j) += A(i,k) * B(k,j)
-                        GB_MULT_A_ik_B_kj ;  // t =A(i,k)*B(k,j)
+                        GB_MULT_A_ik_B_kj ;     // t =A(i,k)*B(k,j)
                         GB_HX_UPDATE (i, t) ;   // Hx [i] += t
                     }
                 }

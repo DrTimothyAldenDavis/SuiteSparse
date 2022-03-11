@@ -2,7 +2,7 @@
 // GB_mex_vdiag: compute v=diag(A,k)
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -94,7 +94,7 @@ void mexFunction
     // V = diag (A,k)
     METHOD (GxB_Vector_diag (V, A, k, NULL)) ;
 
-    // return V to MATLAB as a struct
+    // return V as a struct
     pargout [0] = GB_mx_Matrix_to_mxArray ((GrB_Matrix *) &V, "V=diag(A,k)",
         true) ;
     FREE_ALL ;

@@ -2,7 +2,7 @@
 // GB_dense_subassign_23: C += B where C is dense and B is sparse or dense
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -67,13 +67,13 @@ GrB_Info GB_dense_subassign_23      // C += B; C is dense, B is sparse or dense
     ASSERT (B->vlen == C->vlen) ;
     ASSERT (B->vdim == C->vdim) ;
 
-    GB_ENSURE_FULL (C) ;        // convert C to full
+    GB_ENSURE_FULL (C) ;    // convert C to full, if sparsity control allows it
 
     //--------------------------------------------------------------------------
     // get the operator
     //--------------------------------------------------------------------------
 
-    if (accum->opcode == GB_FIRST_opcode)
+    if (accum->opcode == GB_FIRST_binop_code || C->iso)
     { 
         // nothing to do
         return (GrB_SUCCESS) ;
@@ -97,18 +97,18 @@ GrB_Info GB_dense_subassign_23      // C += B; C is dense, B is sparse or dense
     GB_WERK_DECLARE (B_ek_slicing, int64_t) ;
     int B_ntasks, B_nthreads ;
 
-    if (GB_is_packed (B))
+    if (GB_IS_BITMAP (B) || GB_as_if_full (B))
     { 
-        // C is dense and B is either dense or bitmap
-        GBURBLE ("(Z packed) ") ;
+        // C is dense and B is bitmap or as-if-full
+        GBURBLE ("(Z bitmap/as-if-full) ") ;
         int64_t bnvec = B->nvec ;
-        int64_t bnz = GB_NNZ_HELD (B) ;
+        int64_t bnz = GB_nnz_held (B) ;
         B_nthreads = GB_nthreads (bnz + bnvec, chunk, nthreads_max) ;
         B_ntasks = 0 ;   // unused
         ASSERT (B_ek_slicing == NULL) ;
     }
     else
-    {
+    { 
         // create tasks to compute over the matrix B
         GB_SLICE_MATRIX (B, 32, chunk) ;
         ASSERT (B_ek_slicing != NULL) ;
@@ -165,7 +165,7 @@ GrB_Info GB_dense_subassign_23      // C += B; C is dense, B is sparse or dense
 
         GB_BURBLE_MATRIX (B, "(generic C+=B) ") ;
 
-        GxB_binary_function fadd = accum->function ;
+        GxB_binary_function fadd = accum->binop_function ;
 
         size_t csize = C->type->size ;
         size_t bsize = B->type->size ;
@@ -182,9 +182,9 @@ GrB_Info GB_dense_subassign_23      // C += B; C is dense, B is sparse or dense
 
         // bij = B(i,j), located in Bx [pB].  Note that GB_GETB is used,
         // since B appears as the 2nd input to z = fadd (x,y)
-        #define GB_GETB(bij,Bx,pB)                                          \
+        #define GB_GETB(bij,Bx,pB,B_iso)                                    \
             GB_void bij [GB_VLA(ysize)] ;                                   \
-            cast_B_to_Y (bij, Bx +((pB)*bsize), bsize)
+            cast_B_to_Y (bij, Bx +(B_iso ? 0:(pB)*bsize), bsize)
 
         // address of Cx [p]
         #define GB_CX(p) Cx +((p)*csize)

@@ -2,7 +2,7 @@
 // GB_AxB_saxpy3_symbolic: symbolic analysis for GB_AxB_saxpy3
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -27,7 +27,7 @@ void GB_AxB_saxpy3_symbolic
     const GrB_Matrix M,         // mask matrix M
     const bool Mask_comp,       // M complemented, or not
     const bool Mask_struct,     // M structural, or not
-    const bool M_packed_in_place,
+    const bool M_in_place,
     const GrB_Matrix A,         // A matrix; only the pattern is accessed
     const GrB_Matrix B,         // B matrix; only the pattern is accessed
     GB_saxpy3task_struct *SaxpyTasks,     // list of tasks, and workspace
@@ -174,25 +174,25 @@ void GB_AxB_saxpy3_symbolic
             if (B_is_sparse)
             { 
                 // both A and B are sparse
-                GB_AxB_saxpy3_sym_mss (C, M, Mask_struct, M_packed_in_place,
+                GB_AxB_saxpy3_sym_mss (C, M, Mask_struct, M_in_place,
                     A, B, SaxpyTasks, ntasks, nfine, nthreads) ;
             }
             else if (B_is_hyper)
             { 
                 // A is sparse and B is hyper
-                GB_AxB_saxpy3_sym_msh (C, M, Mask_struct, M_packed_in_place,
+                GB_AxB_saxpy3_sym_msh (C, M, Mask_struct, M_in_place,
                     A, B, SaxpyTasks, ntasks, nfine, nthreads) ;
             }
             else if (B_is_bitmap)
             { 
                 // A is sparse and B is bitmap
-                GB_AxB_saxpy3_sym_msb (C, M, Mask_struct, M_packed_in_place,
+                GB_AxB_saxpy3_sym_msb (C, M, Mask_struct, M_in_place,
                     A, B, SaxpyTasks, ntasks, nfine, nthreads) ;
             }
             else
             { 
                 // A is sparse and B is full
-                GB_AxB_saxpy3_sym_msf (C, M, Mask_struct, M_packed_in_place,
+                GB_AxB_saxpy3_sym_msf (C, M, Mask_struct, M_in_place,
                     A, B, SaxpyTasks, ntasks, nfine, nthreads) ;
             }
         }
@@ -201,25 +201,25 @@ void GB_AxB_saxpy3_symbolic
             if (B_is_sparse)
             { 
                 // A is hyper and B is sparse
-                GB_AxB_saxpy3_sym_mhs (C, M, Mask_struct, M_packed_in_place,
+                GB_AxB_saxpy3_sym_mhs (C, M, Mask_struct, M_in_place,
                     A, B, SaxpyTasks, ntasks, nfine, nthreads) ;
             }
             else if (B_is_hyper)
             { 
                 // both A and B are hyper
-                GB_AxB_saxpy3_sym_mhh (C, M, Mask_struct, M_packed_in_place,
+                GB_AxB_saxpy3_sym_mhh (C, M, Mask_struct, M_in_place,
                     A, B, SaxpyTasks, ntasks, nfine, nthreads) ;
             }
             else if (B_is_bitmap)
             { 
                 // A is hyper and B is bitmap
-                GB_AxB_saxpy3_sym_mhb (C, M, Mask_struct, M_packed_in_place,
+                GB_AxB_saxpy3_sym_mhb (C, M, Mask_struct, M_in_place,
                     A, B, SaxpyTasks, ntasks, nfine, nthreads) ;
             }
             else
             { 
                 // A is hyper and B is full
-                GB_AxB_saxpy3_sym_mhf (C, M, Mask_struct, M_packed_in_place,
+                GB_AxB_saxpy3_sym_mhf (C, M, Mask_struct, M_in_place,
                     A, B, SaxpyTasks, ntasks, nfine, nthreads) ;
             }
         }
@@ -228,25 +228,25 @@ void GB_AxB_saxpy3_symbolic
             if (B_is_sparse)
             { 
                 // A is bitmap and B is sparse
-                GB_AxB_saxpy3_sym_mbs (C, M, Mask_struct, M_packed_in_place,
+                GB_AxB_saxpy3_sym_mbs (C, M, Mask_struct, M_in_place,
                     A, B, SaxpyTasks, ntasks, nfine, nthreads) ;
             }
             else if (B_is_hyper)
             { 
                 // A is bitmap and B is hyper
-                GB_AxB_saxpy3_sym_mbh (C, M, Mask_struct, M_packed_in_place,
+                GB_AxB_saxpy3_sym_mbh (C, M, Mask_struct, M_in_place,
                     A, B, SaxpyTasks, ntasks, nfine, nthreads) ;
             }
             else if (B_is_bitmap)
             { 
                 // both A and B are bitmap
-                GB_AxB_saxpy3_sym_mbb (C, M, Mask_struct, M_packed_in_place,
+                GB_AxB_saxpy3_sym_mbb (C, M, Mask_struct, M_in_place,
                     A, B, SaxpyTasks, ntasks, nfine, nthreads) ;
             }
             else
             { 
                 // A is bitmap and B is full
-                GB_AxB_saxpy3_sym_mbf (C, M, Mask_struct, M_packed_in_place,
+                GB_AxB_saxpy3_sym_mbf (C, M, Mask_struct, M_in_place,
                     A, B, SaxpyTasks, ntasks, nfine, nthreads) ;
             }
         }
@@ -255,25 +255,25 @@ void GB_AxB_saxpy3_symbolic
             if (B_is_sparse)
             { 
                 // A is full and B is sparse
-                GB_AxB_saxpy3_sym_mfs (C, M, Mask_struct, M_packed_in_place,
+                GB_AxB_saxpy3_sym_mfs (C, M, Mask_struct, M_in_place,
                     A, B, SaxpyTasks, ntasks, nfine, nthreads) ;
             }
             else if (B_is_hyper)
             { 
                 // A is full and B is hyper
-                GB_AxB_saxpy3_sym_mfh (C, M, Mask_struct, M_packed_in_place,
+                GB_AxB_saxpy3_sym_mfh (C, M, Mask_struct, M_in_place,
                     A, B, SaxpyTasks, ntasks, nfine, nthreads) ;
             }
             else if (B_is_bitmap)
             { 
                 // A is full and B is bitmap
-                GB_AxB_saxpy3_sym_mfb (C, M, Mask_struct, M_packed_in_place,
+                GB_AxB_saxpy3_sym_mfb (C, M, Mask_struct, M_in_place,
                     A, B, SaxpyTasks, ntasks, nfine, nthreads) ;
             }
             else
             { 
                 // both A and B are full
-                GB_AxB_saxpy3_sym_mff (C, M, Mask_struct, M_packed_in_place,
+                GB_AxB_saxpy3_sym_mff (C, M, Mask_struct, M_in_place,
                     A, B, SaxpyTasks, ntasks, nfine, nthreads) ;
             }
         }
@@ -291,25 +291,25 @@ void GB_AxB_saxpy3_symbolic
             if (B_is_sparse)
             { 
                 // both A and B are sparse
-                GB_AxB_saxpy3_sym_nss (C, M, Mask_struct, M_packed_in_place,
+                GB_AxB_saxpy3_sym_nss (C, M, Mask_struct, M_in_place,
                     A, B, SaxpyTasks, ntasks, nfine, nthreads) ;
             }
             else if (B_is_hyper)
             { 
                 // A is sparse and B is hyper
-                GB_AxB_saxpy3_sym_nsh (C, M, Mask_struct, M_packed_in_place,
+                GB_AxB_saxpy3_sym_nsh (C, M, Mask_struct, M_in_place,
                     A, B, SaxpyTasks, ntasks, nfine, nthreads) ;
             }
             else if (B_is_bitmap)
             { 
                 // A is sparse and B is bitmap
-                GB_AxB_saxpy3_sym_nsb (C, M, Mask_struct, M_packed_in_place,
+                GB_AxB_saxpy3_sym_nsb (C, M, Mask_struct, M_in_place,
                     A, B, SaxpyTasks, ntasks, nfine, nthreads) ;
             }
             else
             { 
                 // A is sparse and B is full
-                GB_AxB_saxpy3_sym_nsf (C, M, Mask_struct, M_packed_in_place,
+                GB_AxB_saxpy3_sym_nsf (C, M, Mask_struct, M_in_place,
                     A, B, SaxpyTasks, ntasks, nfine, nthreads) ;
             }
         }
@@ -318,25 +318,25 @@ void GB_AxB_saxpy3_symbolic
             if (B_is_sparse)
             { 
                 // A is hyper and B is sparse
-                GB_AxB_saxpy3_sym_nhs (C, M, Mask_struct, M_packed_in_place,
+                GB_AxB_saxpy3_sym_nhs (C, M, Mask_struct, M_in_place,
                     A, B, SaxpyTasks, ntasks, nfine, nthreads) ;
             }
             else if (B_is_hyper)
             { 
                 // both A and B are hyper
-                GB_AxB_saxpy3_sym_nhh (C, M, Mask_struct, M_packed_in_place,
+                GB_AxB_saxpy3_sym_nhh (C, M, Mask_struct, M_in_place,
                     A, B, SaxpyTasks, ntasks, nfine, nthreads) ;
             }
             else if (B_is_bitmap)
             { 
                 // A is hyper and B is bitmap
-                GB_AxB_saxpy3_sym_nhb (C, M, Mask_struct, M_packed_in_place,
+                GB_AxB_saxpy3_sym_nhb (C, M, Mask_struct, M_in_place,
                     A, B, SaxpyTasks, ntasks, nfine, nthreads) ;
             }
             else
             { 
                 // A is hyper and B is full
-                GB_AxB_saxpy3_sym_nhf (C, M, Mask_struct, M_packed_in_place,
+                GB_AxB_saxpy3_sym_nhf (C, M, Mask_struct, M_in_place,
                     A, B, SaxpyTasks, ntasks, nfine, nthreads) ;
             }
         }
@@ -346,14 +346,14 @@ void GB_AxB_saxpy3_symbolic
             if (B_is_sparse)
             { 
                 // A is bitmap and B is sparse
-                GB_AxB_saxpy3_sym_nbs (C, M, Mask_struct, M_packed_in_place,
+                GB_AxB_saxpy3_sym_nbs (C, M, Mask_struct, M_in_place,
                     A, B, SaxpyTasks, ntasks, nfine, nthreads) ;
             }
             else
             { 
                 // A is bitmap and B is hyper
                 ASSERT (B_is_hyper) ;
-                GB_AxB_saxpy3_sym_nbh (C, M, Mask_struct, M_packed_in_place,
+                GB_AxB_saxpy3_sym_nbh (C, M, Mask_struct, M_in_place,
                     A, B, SaxpyTasks, ntasks, nfine, nthreads) ;
             }
         }
@@ -363,14 +363,14 @@ void GB_AxB_saxpy3_symbolic
             if (B_is_sparse)
             { 
                 // A is full and B is sparse
-                GB_AxB_saxpy3_sym_nfs (C, M, Mask_struct, M_packed_in_place,
+                GB_AxB_saxpy3_sym_nfs (C, M, Mask_struct, M_in_place,
                     A, B, SaxpyTasks, ntasks, nfine, nthreads) ;
             }
             else
             { 
                 // A is full and B is hyper
                 ASSERT (B_is_hyper) ;
-                GB_AxB_saxpy3_sym_nfh (C, M, Mask_struct, M_packed_in_place,
+                GB_AxB_saxpy3_sym_nfh (C, M, Mask_struct, M_in_place,
                     A, B, SaxpyTasks, ntasks, nfine, nthreads) ;
             }
         }

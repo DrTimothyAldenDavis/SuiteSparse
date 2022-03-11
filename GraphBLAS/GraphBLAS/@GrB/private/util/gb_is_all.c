@@ -2,7 +2,7 @@
 // gb_is_all: check two matrices
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 //------------------------------------------------------------------------------
@@ -11,7 +11,7 @@
 // if the pattern of A and B are identical, and if the result of C = op(A,B) is
 // true for all entries in C.
 
-#include "gb_matlab.h"
+#include "gb_interface.h"
 
 bool gb_is_all              // true if op (A,B) is all true, false otherwise
 (

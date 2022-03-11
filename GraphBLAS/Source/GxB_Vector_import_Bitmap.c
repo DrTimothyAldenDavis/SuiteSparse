@@ -2,7 +2,7 @@
 // GxB_Vector_import_Bitmap: import a vector in bitmap format
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -19,7 +19,7 @@ GrB_Info GxB_Vector_import_Bitmap // import a bitmap vector
     void **vx,          // values
     GrB_Index vb_size,  // size of vb in bytes
     GrB_Index vx_size,  // size of vx in bytes
-    bool is_uniform,    // if true, v has uniform values (TODO:::unsupported)
+    bool iso,           // if true, A is iso
 
     GrB_Index nvals,    // # of entries in bitmap
     const GrB_Descriptor desc
@@ -31,15 +31,16 @@ GrB_Info GxB_Vector_import_Bitmap // import a bitmap vector
     //--------------------------------------------------------------------------
 
     GB_WHERE1 ("GxB_Vector_import_Bitmap (&v, type, n, "
-        "&vb, &vx, vb_size, vx_size, is_uniform, nvals, desc)") ;
+        "&vb, &vx, vb_size, vx_size, iso, nvals, desc)") ;
     GB_BURBLE_START ("GxB_Vector_import_Bitmap") ;
     GB_GET_DESCRIPTOR (info, desc, xx1, xx2, xx3, xx4, xx5, xx6, xx7) ;
+    GB_GET_DESCRIPTOR_IMPORT (desc, fast_import) ;
 
     //--------------------------------------------------------------------------
     // import the vector
     //--------------------------------------------------------------------------
 
-    info = GB_import ((GrB_Matrix *) v, type, n, 1, false,
+    info = GB_import (false, (GrB_Matrix *) v, type, n, 1, false,
         NULL, 0,        // Ap
         NULL, 0,        // Ah
         vb,   vb_size,  // Ab
@@ -47,7 +48,7 @@ GrB_Info GxB_Vector_import_Bitmap // import a bitmap vector
         vx,   vx_size,  // Ax
         nvals, false, 0,                    // nvals for bitmap
         GxB_BITMAP, true,                   // bitmap by col
-        is_uniform, Context) ;
+        iso, fast_import, true, Context) ;
 
     GB_BURBLE_END ;
     return (info) ;

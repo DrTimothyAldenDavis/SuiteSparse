@@ -2,7 +2,7 @@
 // GB_binop.h: definitions for binary operators
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -26,9 +26,9 @@ bool GB_binop_builtin               // true if binary operator is builtin
     GB_Type_code *zcode             // type code for z output
 ) ;
 
-GB_Opcode GB_binop_flip     // flipped opcode, or -1 on error
+GB_Opcode GB_flip_binop_code    // flipped binary opcode, or -1 on error
 (
-    GB_Opcode opcode,       // opcode to flip
+    GB_Opcode opcode,       // binary opcode to flip
     bool *handled           // true if opcode is handled by flipping the opcode
 ) ;
 
@@ -38,7 +38,7 @@ GrB_BinaryOp GB_flip_op     // flip a binary operator, or NULL on error
     bool *handled           // true if operator is handled
 ) ;
 
-GB_PUBLIC   // accessed by the MATLAB interface only
+GB_PUBLIC
 GB_Opcode GB_boolean_rename     // renamed opcode
 (
     const GB_Opcode opcode      // opcode to rename
@@ -56,13 +56,31 @@ void GB_binop_new
     GrB_Type ztype,                 // type of output z
     GrB_Type xtype,                 // type of input x
     GrB_Type ytype,                 // type of input y
-    const char *name,               // name of the function (may be NULL)
+    const char *binop_name,         // name of the user function
+    const char *binop_defn,         // definition of the user function
     const GB_Opcode opcode          // opcode for the function
 ) ;
 
-GrB_Monoid *GB_binop_to_monoid      // return the corresponding monoid, or NULL
+GrB_Monoid GB_binop_to_monoid       // return the corresponding monoid, or NULL
 (
     const GrB_BinaryOp op_in        // binary op to convert
+) ;
+
+void GB_binop_rename            // rename a bound binary op
+(
+    GB_Operator *op,            // operator to rename
+    bool binop_bind1st
+) ;
+
+void GB_binop_pattern
+(
+    // outputs:
+    bool *A_is_pattern,     // true if A is pattern-only, because of the op
+    bool *B_is_pattern,     // true if B is pattern-only, because of the op
+    // inputs:
+    const bool flipxy,      // if true,  z = op (b,a) will be computed
+                            // if false, z = op (a,b) will be computed
+    const GB_Opcode opcode  // opcode of binary op
 ) ;
 
 #endif

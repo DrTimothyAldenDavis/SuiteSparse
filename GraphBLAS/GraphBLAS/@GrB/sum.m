@@ -13,14 +13,14 @@ function C = sum (G, option)
 % C = sum (G,2) sums each row to a scalar, resulting in an m-by-1 column
 % vector C where C(i) is the sum of all entries in G(i,:).
 %
-% The MATLAB sum (A, ... type, nanflag) allows for different types of
+% The built-in sum (A, ... type, nanflag) allows for different types of
 % sums to be computed, and the NaN behavior can be specified.  The
 % GraphBLAS sum (G,...) uses only a type of 'native', and a nanflag of
 % 'includenan'.  See 'help sum' for more details.
 %
 % See also GrB/any, GrB/prod, GrB/max, GrB/min.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: GPL-3.0-or-later
 
 G = G.opaque ;

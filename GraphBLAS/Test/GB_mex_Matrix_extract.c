@@ -1,8 +1,8 @@
 //------------------------------------------------------------------------------
-// GB_mex_Matrix_extract: MATLAB interface for C<Mask> = accum (C,A(I,J))
+// GB_mex_Matrix_extract: interface for C<Mask> = accum (C,A(I,J))
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -106,7 +106,7 @@ void mexFunction
     // C<Mask> = accum (C,A(I,J))
     METHOD (GrB_Matrix_extract_(C, Mask, accum, A, I, ni, J, nj, desc)) ;
 
-    // return C to MATLAB as a struct and free the GraphBLAS C
+    // return C as a struct and free the GraphBLAS C
     pargout [0] = GB_mx_Matrix_to_mxArray (&C, "C output", true) ;
 
     FREE_ALL ;

@@ -2,10 +2,12 @@
 // GB_bitmap_AxB_saxpy_A_bitmap_B_bitmap: C<#M>+=A*B, C bitmap, M any format
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
+
+// C is bitmap, A and B are bitmap/full.  M has any format.
 
 {
 

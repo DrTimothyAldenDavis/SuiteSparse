@@ -2,7 +2,7 @@
 // GB_hypermatrix_prune: prune empty vectors from a hypersparse matrix
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -40,6 +40,7 @@ GrB_Info GB_hypermatrix_prune
 
     if (A->nvec_nonempty < 0)
     { 
+        // A->nvec_nonempty is needed to prune the hyperlist
         A->nvec_nonempty = GB_nvec_nonempty (A, Context) ;
     }
 

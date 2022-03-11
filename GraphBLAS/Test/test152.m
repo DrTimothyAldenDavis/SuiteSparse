@@ -1,7 +1,7 @@
 function test152
 %TEST152 test C = A+B for dense A, B, and C
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 fprintf ('\ntest152: test binops with C=A+B, all dense\n') ;
@@ -58,9 +58,9 @@ for k1 = 1:length (binops)
             B.class = 'int8' ;
         end
 
-        if (contains (type, 'single'))
+        if (test_contains (type, 'single'))
             tol = 1e-5 ;
-        elseif (contains (type, 'double'))
+        elseif (test_contains (type, 'double'))
             tol = 1e-12 ;
         else
             tol = 0 ;

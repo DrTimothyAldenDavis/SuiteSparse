@@ -1,10 +1,10 @@
 function V = GB_spec_vdiag (A, k, vtype)
-%GB_SPEC_VDIAG a MATLAB mimic of GxB_Vector_diag
+%GB_SPEC_VDIAG a mimic of GxB_Vector_diag
 %
 % Usage:
 % V = GB_spec_vdiag (A, k, vtype)
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 %-------------------------------------------------------------------------------

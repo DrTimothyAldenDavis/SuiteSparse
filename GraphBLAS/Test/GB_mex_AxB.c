@@ -2,12 +2,12 @@
 // GB_mex_AxB: compute C=A*B, A'*B, A*B', or A'*B'
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
-// This is for testing only.  See GrB_mxm instead.  Returns a plain MATLAB
+// This is for testing only.  See GrB_mxm instead.  Returns a plain built-in
 // matrix, in double.
 
 #include "GB_mex.h"
@@ -142,7 +142,7 @@ GrB_Info axb_complex (GB_Context Context)
     // force completion
     if (Aconj != NULL)
     {
-        info = GrB_Matrix_wait_(&Aconj) ;
+        info = GrB_Matrix_wait_(Aconj, GrB_MATERIALIZE) ;
         if (info != GrB_SUCCESS)
         {
             GrB_Matrix_free_(&Aconj) ;
@@ -153,7 +153,7 @@ GrB_Info axb_complex (GB_Context Context)
 
     if (Bconj != NULL)
     {
-        info = GrB_Matrix_wait_(&Bconj) ;
+        info = GrB_Matrix_wait_(Bconj, GrB_MATERIALIZE) ;
         if (info != GrB_SUCCESS)
         {
             GrB_Matrix_free_(&Aconj) ;
@@ -286,7 +286,7 @@ void mexFunction
         METHOD (axb (Context)) ;
     }
 
-    // return C to MATLAB
+    // return C
     pargout [0] = GB_mx_Matrix_to_mxArray (&C, "C AxB result", false) ;
 
     FREE_ALL ;

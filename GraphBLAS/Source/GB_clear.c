@@ -2,7 +2,7 @@
 // GB_clear: clears the content of a matrix
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -21,8 +21,8 @@
 // header is left.
 
 // A is first converted to sparse or hypersparse, and then conformed via
-// GB_conform.  If A->sparsity disables the sparse and hypersparse structures,
-// A is converted bitmap instead.
+// GB_conform.  If A->sparsity_control disables the sparse and hypersparse
+// structures, A is converted bitmap instead.
 
 #include "GB.h"
 
@@ -50,11 +50,12 @@ GrB_Info GB_clear           // clear a matrix, type and dimensions unchanged
     //--------------------------------------------------------------------------
 
     GB_GET_NTHREADS_MAX (nthreads_max, chunk, Context) ;
-    int sparsity = GB_sparsity_control (A->sparsity, A->vdim) ;
-    if (((sparsity & (GxB_SPARSE + GxB_HYPERSPARSE)) == 0) && GB_IS_BITMAP (A))
+    int sparsity_control = GB_sparsity_control (A->sparsity_control, A->vdim) ;
+    if (((sparsity_control & (GxB_SPARSE + GxB_HYPERSPARSE)) == 0)
+        && GB_IS_BITMAP (A))
     { 
         // A should remain bitmap
-        GB_memset (A->b, 0, GB_NNZ_HELD (A), nthreads_max) ;
+        GB_memset (A->b, 0, GB_nnz_held (A), nthreads_max) ;
         A->nvals = 0 ;
         A->magic = GB_MAGIC ;
         return (GrB_SUCCESS) ;
@@ -122,7 +123,7 @@ GrB_Info GB_clear           // clear a matrix, type and dimensions unchanged
         }
         A->p [0] = 0 ;
         if (plen > 0)
-        {
+        { 
             A->p [1] = 0 ;
             A->h [0] = 0 ;
         }

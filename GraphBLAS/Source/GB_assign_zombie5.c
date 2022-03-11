@@ -2,7 +2,7 @@
 // GB_assign_zombie5: delete entries in C for C_replace_phase
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -14,6 +14,8 @@
 // See also GB_assign_zombie3 and GB_assign_zombie4.
 
 // C must be sparse or hypersparse.
+
+// C->iso is not affected.
 
 #include "GB_assign.h"
 #include "GB_assign_zombie.h"

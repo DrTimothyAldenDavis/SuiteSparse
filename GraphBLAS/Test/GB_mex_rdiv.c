@@ -2,12 +2,12 @@
 // GB_mex_rdiv: compute C=A*B with the rdiv operator
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
-// This is for testing only.  See GrB_mxm instead.  Returns a plain MATLAB
+// This is for testing only.  See GrB_mxm instead.  Returns a plain built-in
 // matrix, in double.  The semiring is plus-rdiv-fp64 where plus is the 
 // built-in GrB_PLUS_FP64 operator, and rdiv is z=y/x in double.
 
@@ -56,9 +56,10 @@ void my_rdiv (double *z, const double *x, const double *y)
 GrB_Info axb (GB_Context Context, bool cprint)
 {
     // create the rdiv operator
-    info = GrB_BinaryOp_new (&My_rdiv, my_rdiv, GrB_FP64, GrB_FP64, GrB_FP64) ;
+    info = GrB_BinaryOp_new (&My_rdiv,
+        (GxB_binary_function) my_rdiv, GrB_FP64, GrB_FP64, GrB_FP64) ;
     if (info != GrB_SUCCESS) return (info) ;
-    GrB_BinaryOp_wait_(&My_rdiv) ;
+    GrB_BinaryOp_wait_(My_rdiv, GrB_MATERIALIZE) ;
     if (info != GrB_SUCCESS) return (info) ;
     info = GrB_Semiring_new (&My_plus_rdiv, GxB_PLUS_FP64_MONOID, My_rdiv) ;
     if (info != GrB_SUCCESS)
@@ -183,7 +184,7 @@ void mexFunction
 
     METHOD (axb (Context, cprint)) ;
 
-    // return C to MATLAB
+    // return C
     pargout [0] = GB_mx_Matrix_to_mxArray (&C, "C AxB result", false) ;
 
     FREE_ALL ;

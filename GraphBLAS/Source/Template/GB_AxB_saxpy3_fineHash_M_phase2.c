@@ -2,7 +2,7 @@
 // GB_AxB_saxpy3_fineHash_M_phase2: C<M>=A*B, fine Hash, phase2
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -36,48 +36,46 @@
         GB_GET_A_k ;                // get A(:,k)
         if (aknz == 0) continue ;
         GB_GET_B_kj ;               // bkj = B(k,j)
-        #define GB_IKJ                                             \
-        {                                                          \
-            GB_MULT_A_ik_B_kj ;      /* t = A(i,k) * B(k,j) */     \
-            int64_t i1 = i + 1 ;     /* i1 = one-based index */    \
-            int64_t i_unlocked = (i1 << 2) + 2 ;  /* (i+1,2) */    \
-            for (GB_HASH (i))        /* find i in hash table */    \
-            {                                                      \
-                int64_t hf ;                                       \
-                GB_ATOMIC_READ                                     \
-                hf = Hf [hash] ;        /* grab the entry */       \
-                if (GB_HAS_ATOMIC && (hf == i_unlocked))           \
-                {                                                  \
-                    /* Hx [hash] += t */                           \
-                    GB_ATOMIC_UPDATE_HX (hash, t) ;                \
-                    break ;     /* C(i,j) has been updated */      \
-                }                                                  \
-                if (hf == 0) break ; /* M(i,j)=0; ignore Cij */    \
-                if ((hf >> 2) == i1) /* if true, i found */        \
-                {                                                  \
-                    do /* lock the entry */                        \
-                    {                                              \
-                        /* do this atomically: */                  \
-                        /* { hf = Hf [hash] ; Hf [hash] |= 3 ; }*/ \
-                        GB_ATOMIC_CAPTURE_INT64_OR (hf,Hf[hash],3);\
-                    } while ((hf & 3) == 3) ; /* own: f=1,2 */     \
-                    if ((hf & 3) == 1) /* f == 1 */                \
-                    {                                              \
-                        /* C(i,j) is a new entry in C(:,j) */      \
-                        /* Hx [hash] = t */                        \
-                        GB_ATOMIC_WRITE_HX (hash, t) ;             \
-                    }                                              \
-                    else /* f == 2 */                              \
-                    {                                              \
-                        /* C(i,j) already appears in C(:,j) */     \
-                        /* Hx [hash] += t */                       \
-                        GB_ATOMIC_UPDATE_HX (hash, t) ;            \
-                    }                                              \
-                    GB_ATOMIC_WRITE                                \
-                    Hf [hash] = i_unlocked ; /* unlock entry */    \
-                    break ;                                        \
-                }                                                  \
-            }                                                      \
+        #define GB_IKJ                                                        \
+        {                                                                     \
+            GB_MULT_A_ik_B_kj ;      /* t = A(i,k) * B(k,j) */                \
+            int64_t i1 = i + 1 ;     /* i1 = one-based index */               \
+            int64_t i_unlocked = (i1 << 2) + 2 ;  /* (i+1,2) */               \
+            for (GB_HASH (i))        /* find i in hash table */               \
+            {                                                                 \
+                int64_t hf ;                                                  \
+                GB_ATOMIC_READ                                                \
+                hf = Hf [hash] ;        /* grab the entry */                  \
+                if (GB_HAS_ATOMIC && (hf == i_unlocked))                      \
+                {                                                             \
+                    /* Hx [hash] += t */                                      \
+                    GB_ATOMIC_UPDATE_HX (hash, t) ;                           \
+                    break ;     /* C(i,j) has been updated */                 \
+                }                                                             \
+                if (hf == 0) break ; /* M(i,j)=0; ignore Cij */               \
+                if ((hf >> 2) == i1) /* if true, i found */                   \
+                {                                                             \
+                    do /* lock the entry */                                   \
+                    {                                                         \
+                        /* do this atomically: */                             \
+                        /* { hf = Hf [hash] ; Hf [hash] |= 3 ; }*/            \
+                        GB_ATOMIC_CAPTURE_INT64_OR (hf, Hf [hash], 3) ;       \
+                    } while ((hf & 3) == 3) ; /* own: f=1,2 */                \
+                    if ((hf & 3) == 1) /* f == 1 */                           \
+                    {                                                         \
+                        /* C(i,j) is a new entry in C(:,j) */                 \
+                        GB_ATOMIC_WRITE_HX (hash, t) ; /* Hx [hash] = t */    \
+                    }                                                         \
+                    else /* f == 2 */                                         \
+                    {                                                         \
+                        /* C(i,j) already appears in C(:,j) */                \
+                        GB_ATOMIC_UPDATE_HX (hash, t) ; /* Hx [hash] += t */  \
+                    }                                                         \
+                    GB_ATOMIC_WRITE                                           \
+                    Hf [hash] = i_unlocked ; /* unlock entry */               \
+                    break ;                                                   \
+                }                                                             \
+            }                                                                 \
         }
         GB_SCAN_M_j_OR_A_k (A_ok_for_binary_search) ;
         #undef GB_IKJ

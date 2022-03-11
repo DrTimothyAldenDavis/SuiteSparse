@@ -1,7 +1,7 @@
 function test155
 %TEST155 test GrB_*_setElement and GrB_*_removeElement
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 rng ('default') ;
@@ -18,16 +18,16 @@ for trial = 1:4
     I = irand (1, m, nz, 1) ;
     J = irand (1, n, nz, 1) ;
     X = rand (nz, 1) ;
-    Action = double (rand (nz, 1) > 0.4) ;
+    Action = rand (nz, 1) ; % > 0.4) ;
 
     %---------------------------------------------------------------------------
     % starting with an empty matrix:
     %---------------------------------------------------------------------------
 
-    % do the work in MATLAB
+    % do the work with built-in methods
     C1 = sparse (m, n) ;
     for k = 1:nz
-        if (Action (k) == 0)
+        if (Action (k) <= 0.4)
             C1 (I (k), J (k)) = sparse (0) ;
         else
             C1 (I (k), J (k)) = sparse (X (k)) ;
@@ -54,11 +54,11 @@ for trial = 1:4
     % starting with a full matrix:
     %---------------------------------------------------------------------------
 
-    % do the work in MATLAB
+    % do the work with built-in methods
     C1 = rand (m, n) ;
     C1_start = C1 ;
     for k = 1:nz
-        if (Action (k) == 0)
+        if (Action (k) <= 0.4)
             C1 (I (k), J (k)) = sparse (0) ;
         else
             C1 (I (k), J (k)) = sparse (X (k)) ;

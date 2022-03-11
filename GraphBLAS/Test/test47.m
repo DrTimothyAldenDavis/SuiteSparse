@@ -1,7 +1,7 @@
 function test47
 %TEST47 prformance test of GrB_vxm
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 rng ('default') ;
@@ -18,12 +18,6 @@ semiring.multiply = 'times' ;
 semiring.add = 'plus' ;
 semiring.class = 'double' ;
 
-%{
-fprintf ('\nMATLAB C=A'' time:\n') ;
-tic
-C=A' ;
-toc
-%}
 t3 = 0 ;
 
 Xnz = [ ]  ;
@@ -42,7 +36,6 @@ for xnz = [100:100:1000 2000:1000:72000]
     tic
     c2 = GB_mex_vxm (w, [],[], semiring, x, A, d2) ;
     t2 = toc ;
-    t2 = grbresults ;
 
     tic
     c0 = x'*A ;
@@ -53,7 +46,7 @@ for xnz = [100:100:1000 2000:1000:72000]
     Xnz = [Xnz nnz(x)] ;
     T = [T t] ;
 
-    fprintf ('%5d : %10g(%s) %10g MATLAB %10g speedup %10g %10g\n', ...
+    fprintf ('%5d : %10g(%s) %10g built-in %10g speedup %10g %10g\n', ...
         nnz(x), t, method (1), t2, tm, tm/t, tm/t2) ;
 
 end

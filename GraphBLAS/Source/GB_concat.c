@@ -2,17 +2,17 @@
 // GB_concat: concatenate an array of matrices into a single matrix
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
-#define GB_FREE_WORK                    \
+#define GB_FREE_WORKSPACE               \
     GB_WERK_POP (Tile_cols, int64_t) ;  \
     GB_WERK_POP (Tile_rows, int64_t) ;
 
 #define GB_FREE_ALL                     \
-    GB_FREE_WORK ;                      \
+    GB_FREE_WORKSPACE ;                 \
     GB_phbix_free (C) ;
 
 #include "GB_concat.h"
@@ -25,7 +25,7 @@ GrB_Info GB_concat                  // concatenate a 2D array of matrices
     const GrB_Index n,
     GB_Context Context
 )
-{ 
+{
 
     //--------------------------------------------------------------------------
     // allocate workspace
@@ -60,7 +60,6 @@ GrB_Info GB_concat                  // concatenate a 2D array of matrices
     // check the sizes and types of each tile
     //--------------------------------------------------------------------------
 
-    bool C_is_full = true ;
     bool csc = C->is_csc ;
     GrB_Type ctype = C->type ;
 
@@ -76,31 +75,50 @@ GrB_Info GB_concat                  // concatenate a 2D array of matrices
         Tile_cols [j] = GB_NCOLS (A) ;
     }
 
+    bool C_is_full = true ;
+    bool C_iso = false ;
+    const size_t csize = ctype->size ;
+    const GB_Type_code ccode = ctype->code ;
+    GB_void cscalar [GB_VLA(csize)] ;
+    GB_void ascalar [GB_VLA(csize)] ;
+    memset (cscalar, 0, csize) ;
+    memset (ascalar, 0, csize) ;
     int64_t cnz = 0 ;
-    int64_t k = 0 ;
+    int64_t cnvec_estimate = 0 ;    // upper bound on C->nvec if hypersparse
+
     for (int64_t i = 0 ; i < m ; i++)
     {
         for (int64_t j = 0 ; j < n ; j++)
         {
+
+            //------------------------------------------------------------------
+            // get the (i,j) tile
+            //------------------------------------------------------------------
+
             GrB_Matrix A = GB_TILE (Tiles, i, j) ;
-            // C is full only if all A(i,j) are entirely dense 
-            C_is_full = C_is_full && GB_is_dense (A) ;
+
+            //------------------------------------------------------------------
+            // check the types and dimensions
+            //------------------------------------------------------------------
+
             int64_t nrows = GB_NROWS (A) ;
             int64_t ncols = GB_NCOLS (A) ;
-            cnz += GB_NNZ (A) ;
-            if (GB_IS_HYPERSPARSE (A))
+            int64_t anz = GB_nnz (A) ;
+            int A_sparsity = GB_sparsity (A) ;
+            if (A_sparsity == GxB_HYPERSPARSE)
             { 
-                k += A->nvec ;
+                cnvec_estimate += A->nvec ;
             }
             else
             { 
-                k += csc ? ncols : nrows ;
+                int64_t n = csc ? ncols : nrows ;
+                cnvec_estimate += GB_IMIN (n, anz) ;
             }
             GrB_Type atype = A->type ;
             #define offset (GB_Global_print_one_based_get ( ) ? 1 : 0)
             if (!GB_Type_compatible (ctype, atype))
             { 
-                GB_FREE_WORK ;
+                GB_FREE_WORKSPACE ;
                 GB_ERROR (GrB_DOMAIN_MISMATCH,
                     "Input matrix Tiles{" GBd "," GBd "} of type [%s]\n"
                     "cannot be typecast to output of type [%s]\n",
@@ -109,34 +127,85 @@ GrB_Info GB_concat                  // concatenate a 2D array of matrices
             int64_t tile_rows = Tile_rows [i] ;
             if (tile_rows != nrows)
             { 
-                GB_FREE_WORK ;
+                GB_FREE_WORKSPACE ;
                 GB_ERROR (GrB_DIMENSION_MISMATCH,
-                    "Input matrix Tiles{" GBd "," GBd "} is " GBd "-by-" GBd "; "
-                    "its row\ndimension must match all other matrices Tiles{" GBd
-                    ",:}, which is " GBd "\n", i+offset, j+offset, nrows, ncols,
-                    i+offset, tile_rows) ;
+                    "Input matrix Tiles{" GBd "," GBd "} is " GBd "-by-" GBd
+                    "; its row\ndimension must match all other matrices Tiles{"
+                    GBd ",:}, which is " GBd "\n", i+offset, j+offset,
+                    nrows, ncols, i+offset, tile_rows) ;
             }
             int64_t tile_cols = Tile_cols [j] ;
             if (tile_cols != ncols)
             { 
-                GB_FREE_WORK ;
+                GB_FREE_WORKSPACE ;
                 GB_ERROR (GrB_DIMENSION_MISMATCH,
-                    "Input matrix Tiles{" GBd "," GBd "} is " GBd "-by-" GBd "; "
-                    "its column dimension must match all other matrices Tiles{:,"
-                    GBd "}, which is " GBd "\n", i+offset, j+offset, nrows, ncols,
-                    j+offset, tile_cols) ;
+                    "Input matrix Tiles{" GBd "," GBd "} is " GBd "-by-" GBd
+                    "; its column\ndimension must match all other matrices "
+                    "Tiles{:," GBd "}, which is " GBd "\n", i+offset, j+offset,
+                    nrows, ncols, j+offset, tile_cols) ;
             }
+
+            //------------------------------------------------------------------
+            // check if C is iso, full, and/or empty
+            //------------------------------------------------------------------
+
+            bool A_full = (A_sparsity == GxB_FULL) || (anz == GB_nnz_full (A)) ;
+            bool A_empty = (anz == 0) ;
+            bool A_iso = A->iso || (anz == 1 && A_sparsity != GxB_BITMAP) ;
+
+            // C is full only if all tiles are full or as-if-full.  A tile with
+            // a zero dimension has no entries and is both as-if-full and
+            // empty, but not iso.
+            C_is_full = C_is_full && A_full ;
+
+            // get the iso value of an iso tile, typecasted to C->type
+            if (A_iso)
+            {
+                GB_cast_scalar (ascalar, ccode, A->x, A->type->code, csize) ;
+                if (cnz == 0)
+                { 
+                    // A is the first non-empty iso tile seen while C is empty;
+                    // C becomes non-empty and iso, with the iso value from A.
+                    C_iso = true ;
+                    memcpy (cscalar, ascalar, csize) ;
+                }
+            }
+
+            // C is iso only if at least one tile is iso, and all others empty
+            // or iso with the same value as the first non-empty iso tile
+            if (C_iso)
+            {
+                if (A_empty)
+                { 
+                    // C remains iso
+                }
+                else if (A_iso)
+                { 
+                    // C and A are both iso; check if iso values are the same
+                    C_iso = C_iso && (memcmp (cscalar, ascalar, csize) == 0) ;
+                }
+                else
+                { 
+                    // otherwise, C is non-iso
+                    C_iso = false ;
+                }
+            }
+
+            cnz += anz ;
         }
     }
 
+    //--------------------------------------------------------------------------
     // replace Tile_rows and Tile_cols with their cumulative sum
+    //--------------------------------------------------------------------------
+
     GB_cumsum (Tile_rows, m, NULL, 1, Context) ;
     GB_cumsum (Tile_cols, n, NULL, 1, Context) ;
     int64_t cnrows = Tile_rows [m] ;
     int64_t cncols = Tile_cols [n] ;
     if (cnrows != GB_NROWS (C) || cncols != GB_NCOLS (C))
     { 
-        GB_FREE_WORK ;
+        GB_FREE_WORKSPACE ;
         GB_ERROR (GrB_DIMENSION_MISMATCH,
             "C is " GBd "-by-" GBd " but Tiles{:,:} is " GBd "-by-" GBd "\n",
             GB_NROWS (C), GB_NCOLS (C), cnrows, cncols) ;
@@ -146,36 +215,48 @@ GrB_Info GB_concat                  // concatenate a 2D array of matrices
     // C = concatenate (Tiles)
     //--------------------------------------------------------------------------
 
-    if (C_is_full)
+    if (cnz == 0)
+    { 
+        // construct C as an empty matrix
+        GBURBLE ("(empty concat) ") ;
+        GB_OK (GB_clear (C, Context)) ;
+    }
+    else if (C_is_full)
     { 
         // construct C as full
-        GB_OK (GB_concat_full (C, Tiles, m, n, Tile_rows, Tile_cols, Context)) ;
+        GBURBLE ("(%sfull concat) ", C_iso ? "iso " : "") ;
+        GB_OK (GB_concat_full (C, C_iso, cscalar,
+            Tiles, m, n, Tile_rows, Tile_cols, Context)) ;
     }
     else if (GB_convert_sparse_to_bitmap_test (C->bitmap_switch, cnz, cnrows,
         cncols))
     { 
         // construct C as bitmap
-        GB_OK (GB_concat_bitmap (C, cnz, Tiles, m, n, Tile_rows, Tile_cols,
-            Context)) ;
+        GBURBLE ("(%sbitmap concat) ", C_iso ? "iso " : "") ;
+        GB_OK (GB_concat_bitmap (C, C_iso, cscalar,
+            cnz, Tiles, m, n, Tile_rows, Tile_cols, Context)) ;
     }
-    else if (GB_convert_sparse_to_hyper_test (C->hyper_switch, k, C->vdim))
+    else if (GB_convert_sparse_to_hyper_test (C->hyper_switch, cnvec_estimate,
+        C->vdim))
     { 
         // construct C as hypersparse
-        GB_OK (GB_concat_hyper (C, cnz, Tiles, m, n, Tile_rows, Tile_cols,
-            Context)) ;
+        GBURBLE ("(%shyper concat) ", C_iso ? "iso " : "") ;
+        GB_OK (GB_concat_hyper (C, C_iso, cscalar,
+            cnz, Tiles, m, n, Tile_rows, Tile_cols, Context)) ;
     }
     else
     { 
         // construct C as sparse
-        GB_OK (GB_concat_sparse (C, cnz, Tiles, m, n, Tile_rows, Tile_cols,
-            Context)) ;
+        GBURBLE ("(%ssparse concat) ", C_iso ? "iso " : "") ;
+        GB_OK (GB_concat_sparse (C, C_iso, cscalar,
+            cnz, Tiles, m, n, Tile_rows, Tile_cols, Context)) ;
     }
 
     //--------------------------------------------------------------------------
     // conform C to its desired format and return result
     //--------------------------------------------------------------------------
 
-    GB_FREE_WORK ;
+    GB_FREE_WORKSPACE ;
     ASSERT_MATRIX_OK (C, "C before conform for GB_concat", GB0) ;
     GB_OK (GB_conform (C, Context)) ;
     ASSERT_MATRIX_OK (C, "C output for GB_concat", GB0) ;

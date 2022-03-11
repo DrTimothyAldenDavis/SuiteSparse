@@ -2,7 +2,7 @@
 // gbmdiag: construct a diaogonal matrix from a vector
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 //------------------------------------------------------------------------------
@@ -11,7 +11,7 @@
 
 // C = gbmdiag (v, k, desc)
 
-#include "gb_matlab.h"
+#include "gb_interface.h"
 
 #define USAGE "usage: C = gbmdiag (v, k, desc)"
 
@@ -61,7 +61,7 @@ void mexFunction
     CHECK_ERROR (s == GxB_HYPERSPARSE, "v cannot be hypersparse") ;
 
     if (nargin > 1)
-    {
+    { 
         CHECK_ERROR (!gb_mxarray_is_scalar (pargin [1]), "k must be a scalar") ;
         double x = mxGetScalar (pargin [1]) ;
         k = (int64_t) x ;
@@ -84,7 +84,14 @@ void mexFunction
     // compute C = diag (v, k)
     //--------------------------------------------------------------------------
 
-    OK1 (C, GxB_Matrix_diag (C, (GrB_Vector) V, k, desc)) ;
+    if (desc == NULL)
+    { 
+        OK1 (C, GrB_Matrix_diag (C, (GrB_Vector) V, k)) ;
+    }
+    else
+    {
+        OK1 (C, GxB_Matrix_diag (C, (GrB_Vector) V, k, desc)) ;
+    }
 
     //--------------------------------------------------------------------------
     // free shallow copies
@@ -94,7 +101,7 @@ void mexFunction
     OK (GrB_Descriptor_free (&desc)) ;
 
     //--------------------------------------------------------------------------
-    // export the output matrix C back to MATLAB
+    // export the output matrix C
     //--------------------------------------------------------------------------
 
     pargout [0] = gb_export (&C, kind) ;

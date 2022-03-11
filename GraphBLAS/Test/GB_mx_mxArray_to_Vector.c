@@ -2,7 +2,7 @@
 // GB_mx_mxArray_to_Vector
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -11,7 +11,7 @@
 
 GrB_Vector GB_mx_mxArray_to_Vector     // returns GraphBLAS version of V
 (
-    const mxArray *V_matlab,            // MATLAB version of V
+    const mxArray *V_builtin,           // built-in version of V
     const char *name,                   // name of the argument
     const bool deep_copy,               // if true, return a deep copy
     const bool empty    // if false, 0-by-0 matrices are returned as NULL.
@@ -19,7 +19,7 @@ GrB_Vector GB_mx_mxArray_to_Vector     // returns GraphBLAS version of V
 )
 {
 
-    GrB_Matrix V = GB_mx_mxArray_to_Matrix (V_matlab, name, deep_copy, empty) ;
+    GrB_Matrix V = GB_mx_mxArray_to_Matrix (V_builtin, name, deep_copy, empty) ;
     if (V != NULL && !GB_VECTOR_OK (V))
     {
         mexWarnMsgIdAndTxt ("GB:warn", "must be a column vector") ;

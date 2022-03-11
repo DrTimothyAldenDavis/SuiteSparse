@@ -2,7 +2,7 @@
 // GB_convert_sparse_to_hyper: convert a matrix from sparse to hyperspasre
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -13,7 +13,7 @@
 // shallow.  If the input matrix is already hypersparse, nothing is changed
 // (and in that case A->p and A->h remain shallow on output if shallow on
 // input). The A->x and A->i content is not changed; it remains in whatever
-// shallow/non-shallow state that it had on input).
+// shallow/non-shallow/iso property that it had on input).
 
 // If an out-of-memory condition occurs, all content of the matrix is cleared.
 
@@ -33,7 +33,7 @@ GrB_Info GB_convert_sparse_to_hyper // convert from sparse to hypersparse
     //--------------------------------------------------------------------------
 
     ASSERT_MATRIX_OK (A, "A converting to hypersparse", GB0) ;
-    int64_t anz = GB_NNZ (A) ;
+    int64_t anz = GB_nnz (A) ;
     ASSERT (GB_ZOMBIES_OK (A)) ;
     ASSERT (GB_JUMBLED_OK (A)) ;
     ASSERT (GB_PENDING_OK (A)) ;
@@ -43,7 +43,7 @@ GrB_Info GB_convert_sparse_to_hyper // convert from sparse to hypersparse
     //--------------------------------------------------------------------------
 
     if (GB_IS_SPARSE (A))
-    { 
+    {
 
         //----------------------------------------------------------------------
         // determine the number of threads to use
@@ -170,7 +170,7 @@ GrB_Info GB_convert_sparse_to_hyper // convert from sparse to hypersparse
     // A is now in hypersparse form (or left as full or bitmap)
     //--------------------------------------------------------------------------
 
-    ASSERT (anz == GB_NNZ (A)) ;
+    ASSERT (anz == GB_nnz (A)) ;
     ASSERT_MATRIX_OK (A, "A conv to hypersparse (or left full/bitmap)", GB0) ;
     ASSERT (!GB_IS_SPARSE (A)) ;
     ASSERT (GB_ZOMBIES_OK (A)) ;

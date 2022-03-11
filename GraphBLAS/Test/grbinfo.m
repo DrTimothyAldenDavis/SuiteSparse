@@ -3,7 +3,7 @@ function [nth chnk] = grbinfo
 %
 % nthreads = grbinfo
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 [nthreads, format, hyper_switch, ...
@@ -20,14 +20,14 @@ else
     fprintf ('    malloc debug: off\n') ;
 end
 
-ncores = feature ('numcores') ;
+ncores = feature_numcores ;
 [nthreads2 chunk2] = nthreads_get ;
 
 fprintf ('    # of threads to use:   %d (%d)\n', nthreads, nthreads2) ;
 fprintf ('    chunk:                 %g (%g)\n', chunk, chunk2) ;
 
 fprintf ('    OpenMP max threads:    %d\n', GB_mex_omp_max_threads) ;
-fprintf ('    # of cores for MATLAB: %d\n', ncores) ;
+fprintf ('    # of cores for builtin %d\n', ncores) ;
 
 switch (format)
     case {0}

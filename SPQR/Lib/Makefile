@@ -3,7 +3,7 @@
 #===============================================================================
 
 LIBRARY = libspqr
-VERSION = 2.0.9
+VERSION = 2.1.0
 SO_VERSION = 2
 
 default: library
@@ -13,7 +13,7 @@ ccode: all
 include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 # SPQR depends on CHOLMOD, AMD, COLAMD, LAPACK, the BLAS and SuiteSparse_config
-LDLIBS += -lamd -lcolamd -lcholmod -lsuitesparseconfig $(LAPACK) $(BLAS) $(TBB)
+LDLIBS += -lamd -lcolamd -lcholmod -lsuitesparseconfig $(LAPACK) $(BLAS)
 
 # compile and install in SuiteSparse/lib
 library:

@@ -2,12 +2,12 @@ function C = gb_trig (op, G)
 %GB_TRIG inverse sine, cosine, log, sqrt, ... etc
 % Implements C = asin (G), C = acos (G), C = atanh (G), ... etc
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: GPL-3.0-or-later
 
 type = gbtype (G) ;
 
-if (~contains (type, 'complex'))
+if (~gb_contains (type, 'complex'))
 
     % determine if any entries are outside the domain for the real case
     noutside = 0 ;  % default if no switch cases apply

@@ -2,12 +2,13 @@
 // GB_concat_sparse_template: concatenate a tile into a sparse matrix
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
-// The tile A is hypersparse, sparse, or full, not bitmap.
+// The tile A is hypersparse, sparse, or full, not bitmap.  If C is iso, then
+// so is A, and the values are not copied here.
 
 {
 
@@ -15,8 +16,10 @@
     // get C and the tile A
     //--------------------------------------------------------------------------
 
+    #ifndef GB_ISO_CONCAT
     const GB_CTYPE *restrict Ax = (GB_CTYPE *) A->x ;
-    GB_CTYPE *restrict Cx = (GB_CTYPE *) C->x ;
+          GB_CTYPE *restrict Cx = (GB_CTYPE *) C->x ;
+    #endif
 
     //--------------------------------------------------------------------------
     // copy the tile A into C
@@ -66,12 +69,12 @@
 
             GB_PRAGMA_SIMD
             for (int64_t pA = pA_start ; pA < pA_end ; pA++)
-            {
+            { 
                 int64_t i = GBI (Ai, pA, avlen) ;       // i = Ai [pA]
                 int64_t pC = pC_start + pA - p0 ;
                 Ci [pC] = cistart + i ;
                 // Cx [pC] = Ax [pA] ;
-                GB_COPY (pC, pA) ;
+                GB_COPY (pC, pA, A_iso) ;
             }
         }
     }
@@ -80,4 +83,5 @@
 }
 
 #undef GB_CTYPE
+#undef GB_ISO_CONCAT
 

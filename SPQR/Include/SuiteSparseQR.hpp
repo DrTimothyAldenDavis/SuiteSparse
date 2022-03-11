@@ -202,8 +202,8 @@ struct spqr_symbolic
 
     // This is NULL if the GPU is not in use.  The GPU must be enabled at
     // compile time (-DGPU_BLAS enables the GPU).  If the Householder vectors
-    // are requested, if TBB is used (Common->SPQR_grain > 1), or if rank
-    // detection is requested, then the GPU is disabled.
+    // are requested or if rank detection is requested, then the GPU is
+    // disabled.
 
     spqr_gpu *QRgpu ;
 

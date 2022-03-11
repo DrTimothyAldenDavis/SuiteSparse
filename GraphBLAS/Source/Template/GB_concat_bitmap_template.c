@@ -2,7 +2,7 @@
 // GB_concat_bitmap_template: concatenate a tile into a bitmap matrix
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -13,8 +13,11 @@
     // get C and the tile A
     //--------------------------------------------------------------------------
 
+    #ifndef GB_ISO_CONCAT
+    const bool A_iso = A->iso ;
     const GB_CTYPE *restrict Ax = (GB_CTYPE *) A->x ;
-    GB_CTYPE *restrict Cx = (GB_CTYPE *) C->x ;
+          GB_CTYPE *restrict Cx = (GB_CTYPE *) C->x ;
+    #endif
     int8_t *restrict Cb = C->b ;
 
     //--------------------------------------------------------------------------
@@ -30,14 +33,14 @@
             int64_t pA ;
             #pragma omp parallel for num_threads(A_nthreads) schedule(static)
             for (pA = 0 ; pA < anz ; pA++)
-            {
+            { 
                 int64_t i = pA % avlen ;
                 int64_t j = pA / avlen ;
                 int64_t iC = cistart + i ;
                 int64_t jC = cvstart + j ;
                 int64_t pC = iC + jC * cvlen ;
                 // Cx [pC] = Ax [pA] ;
-                GB_COPY (pC, pA) ;
+                GB_COPY (pC, pA, A_iso) ;
                 Cb [pC] = 1 ;
             }
         }
@@ -52,14 +55,14 @@
             for (pA = 0 ; pA < anz ; pA++)
             {
                 if (Ab [pA])
-                {
+                { 
                     int64_t i = pA % avlen ;
                     int64_t j = pA / avlen ;
                     int64_t iC = cistart + i ;
                     int64_t jC = cvstart + j ;
                     int64_t pC = iC + jC * cvlen ;
                     // Cx [pC] = Ax [pA] ;
-                    GB_COPY (pC, pA) ;
+                    GB_COPY (pC, pA, A_iso) ;
                     Cb [pC] = 1 ;
                 }
             }
@@ -89,11 +92,11 @@
                         kfirst, klast, pstart_Aslice, Ap, avlen) ;
                     GB_PRAGMA_SIMD
                     for (int64_t pA = pA_start ; pA < pA_end ; pA++)
-                    {
+                    { 
                         int64_t i = Ai [pA] ;
                         int64_t pC = pC_start + i ;
                         // Cx [pC] = Ax [pA] ;
-                        GB_COPY (pC, pA) ;
+                        GB_COPY (pC, pA, A_iso) ;
                         Cb [pC] = 1 ;
                     }
                 }
@@ -106,4 +109,4 @@
 }
 
 #undef GB_CTYPE
-
+#undef GB_ISO_CONCAT

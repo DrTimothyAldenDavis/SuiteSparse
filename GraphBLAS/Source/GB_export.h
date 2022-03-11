@@ -2,7 +2,7 @@
 // GB_export.h: definitions for import/export
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -11,9 +11,12 @@
 #define GB_EXPORT_H
 #include "GB_transpose.h"
 
-GrB_Info GB_import      // import a matrix in any format
+
+GrB_Info GB_import      // import/pack a matrix in any format
 (
-    GrB_Matrix *A,      // handle of matrix to create
+    bool packing,       // pack if true, create and import false
+
+    GrB_Matrix *A,      // handle of matrix to create, or pack
     GrB_Type type,      // type of matrix to create
     GrB_Index vlen,     // vector length
     GrB_Index vdim,     // vector dimension
@@ -44,15 +47,20 @@ GrB_Info GB_import      // import a matrix in any format
     // information for all formats:
     int sparsity,       // hypersparse, sparse, bitmap, or full
     bool is_csc,        // if true then matrix is by-column, else by-row
-    bool is_uniform,    // if true then A has uniform values and only one
-                        // entry is provided in Ax, regardless of nvals(A).
-                        // TODO::: uniform valued matrices not yet supported
+    bool iso,           // if true then A is iso and only one entry is provided
+                        // in Ax, regardless of nvals(A).
+    // fast vs secure import:
+    bool fast_import,   // if true: trust the data, if false: check it
+
+    bool add_to_memtable,   // if true: add to debug memtable
     GB_Context Context
 ) ;
 
-GrB_Info GB_export      // export a matrix in any format
+GrB_Info GB_export      // export/unpack a matrix in any format
 (
-    GrB_Matrix *A,      // handle of matrix to export and free
+    bool unpacking,     // unpack if true, export and free if false
+
+    GrB_Matrix *A,      // handle of matrix to export and free, or unpack
     GrB_Type *type,     // type of matrix to export
     GrB_Index *vlen,    // vector length
     GrB_Index *vdim,    // vector dimension
@@ -82,9 +90,8 @@ GrB_Info GB_export      // export a matrix in any format
     // information for all formats:
     int *sparsity,      // hypersparse, sparse, bitmap, or full
     bool *is_csc,       // if true then matrix is by-column, else by-row
-    bool *is_uniform,   // if true then A has uniform values and only one
-                        // entry is returned in Ax, regardless of nvals(A).
-                        // TODO::: uniform valued matrices not yet supported
+    bool *iso,          // if true then A is iso and only one entry is returned
+                        // in Ax, regardless of nvals(A).
     GB_Context Context
 ) ;
 

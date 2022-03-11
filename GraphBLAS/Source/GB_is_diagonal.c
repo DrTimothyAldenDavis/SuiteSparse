@@ -2,7 +2,7 @@
 // GB_is_diagonal: check if A is a diagonal matrix
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -57,7 +57,7 @@ bool GB_is_diagonal             // true if A is diagonal
         return (false) ;
     }
 
-    int64_t anz  = GB_NNZ (A) ;
+    int64_t anz  = GB_nnz (A) ;
     int64_t nvec = A->nvec ;
 
     if (n != anz || n != nvec)

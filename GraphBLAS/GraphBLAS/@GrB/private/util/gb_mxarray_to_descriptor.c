@@ -2,33 +2,33 @@
 // gb_mxarray_to_descriptor: get the contents of a GraphBLAS Descriptor
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 //------------------------------------------------------------------------------
 
-// get a GraphBLAS descriptor from a MATLAB struct.
+// get a GraphBLAS descriptor from a built-in struct.
 
-#include "gb_matlab.h"
+#include "gb_interface.h"
 
 #define LEN 100
 
 static void get_descriptor
 (
     GrB_Descriptor desc,            // GraphBLAS descriptor to modify
-    const mxArray *desc_matlab,     // MATLAB struct with d.out, etc
-    const char *fieldname,          // fieldname to extract from desc_matlab
+    const mxArray *desc_builtin,    // built-in struct with d.out, etc
+    const char *fieldname,          // fieldname to extract from desc_builtin
     const GrB_Desc_Field field      // field to set in desc
 )
 {
 
-    // find the field in the MATLAB struct
-    int fieldnumber = mxGetFieldNumber (desc_matlab, fieldname) ;
+    // find the field in the built-in struct
+    int fieldnumber = mxGetFieldNumber (desc_builtin, fieldname) ;
     if (fieldnumber >= 0)
     {
 
         // the field is present
-        mxArray *value = mxGetFieldByNumber (desc_matlab, 0, fieldnumber) ;
+        mxArray *value = mxGetFieldByNumber (desc_builtin, 0, fieldnumber) ;
 
         if (MATCH (fieldname, "nthreads"))
         { 
@@ -53,7 +53,7 @@ static void get_descriptor
         else
         {
 
-            // get the string from the MATLAB field
+            // get the string from the built-in field
             char s [LEN+2] ;
             gb_mxstring_to_string (s, LEN, value, "field") ;
 
@@ -113,7 +113,7 @@ static void get_descriptor
 
 GrB_Descriptor gb_mxarray_to_descriptor // new descriptor, or NULL if none
 (
-    const mxArray *desc_matlab, // MATLAB struct with possible descriptor
+    const mxArray *desc_builtin, // built-in struct with possible descriptor
     kind_enum_t *kind,          // GrB, sparse, or full
     GxB_Format_Value *fmt,      // by row or by col
     int *sparsity,              // hypersparse/sparse/bitmap/full
@@ -131,14 +131,15 @@ GrB_Descriptor gb_mxarray_to_descriptor // new descriptor, or NULL if none
     (*base) = BASE_DEFAULT ;
     (*sparsity) = 0 ;
 
-    if (desc_matlab == NULL || !mxIsStruct (desc_matlab)
-        || (mxGetField (desc_matlab, 0, "GraphBLASv5") != NULL)
-        || (mxGetField (desc_matlab, 0, "GraphBLASv4") != NULL)
-        || (mxGetField (desc_matlab, 0, "GraphBLAS") != NULL))
+    if (desc_builtin == NULL || !mxIsStruct (desc_builtin)
+        || (mxGetField (desc_builtin, 0, "GraphBLASv5_1") != NULL)
+        || (mxGetField (desc_builtin, 0, "GraphBLASv5") != NULL)
+        || (mxGetField (desc_builtin, 0, "GraphBLASv4") != NULL)
+        || (mxGetField (desc_builtin, 0, "GraphBLAS") != NULL))
     {
         // If present, the descriptor is a struct whose first field is not
-        // "desc.GraphBLASv5", "desc.GraphBLASv4", or "desc.GraphBLAS".  If not
-        // present, the GraphBLAS descriptor is NULL.  This is not an error.
+        // "desc.GraphBLAS*". If not present, the GraphBLAS descriptor is NULL.
+        // This is not an error.
         return (NULL) ;
     }
 
@@ -150,22 +151,22 @@ GrB_Descriptor gb_mxarray_to_descriptor // new descriptor, or NULL if none
     OK (GrB_Descriptor_new (&desc)) ;
 
     // get each component of the descriptor struct
-    get_descriptor (desc, desc_matlab, "out"     , GrB_OUTP) ;
-    get_descriptor (desc, desc_matlab, "in0"     , GrB_INP0) ;
-    get_descriptor (desc, desc_matlab, "in1"     , GrB_INP1) ;
-    get_descriptor (desc, desc_matlab, "mask"    , GrB_MASK) ;
-    get_descriptor (desc, desc_matlab, "axb"     , GxB_AxB_METHOD) ;
-    get_descriptor (desc, desc_matlab, "nthreads", GxB_NTHREADS) ;
-    get_descriptor (desc, desc_matlab, "chunk"   , GxB_CHUNK) ;
+    get_descriptor (desc, desc_builtin, "out"     , GrB_OUTP) ;
+    get_descriptor (desc, desc_builtin, "in0"     , GrB_INP0) ;
+    get_descriptor (desc, desc_builtin, "in1"     , GrB_INP1) ;
+    get_descriptor (desc, desc_builtin, "mask"    , GrB_MASK) ;
+    get_descriptor (desc, desc_builtin, "axb"     , GxB_AxB_METHOD) ;
+    get_descriptor (desc, desc_builtin, "nthreads", GxB_NTHREADS) ;
+    get_descriptor (desc, desc_builtin, "chunk"   , GxB_CHUNK) ;
 
     //--------------------------------------------------------------------------
     // get the desired kind of output
     //--------------------------------------------------------------------------
 
-    mxArray *mxkind = mxGetField (desc_matlab, 0, "kind") ;
+    mxArray *mxkind = mxGetField (desc_builtin, 0, "kind") ;
     if (mxkind != NULL)
     {
-        // get the string from the MATLAB field
+        // get the string from the built-in field
         char s [LEN+2] ;
         gb_mxstring_to_string (s, LEN, mxkind, "kind") ;
         if (MATCH (s, "grb") || MATCH (s, "default"))
@@ -174,15 +175,17 @@ GrB_Descriptor gb_mxarray_to_descriptor // new descriptor, or NULL if none
         }
         else if (MATCH (s, "sparse"))
         { 
-            (*kind) = KIND_SPARSE ;     // MATLAB sparse matrix
+            (*kind) = KIND_SPARSE ;     // built-in sparse matrix
         }
         else if (MATCH (s, "full"))
         { 
-            (*kind) = KIND_FULL ;       // MATLAB full matrix
+            (*kind) = KIND_FULL ;       // built-in full matrix
         }
-        else if (MATCH (s, "matlab"))
+        else if (MATCH (s, "builtin")   // preferred
+            || MATCH (s, "matlab")      // deprecated (use 'builtin')
+            || MATCH (s, "octave"))     // 'builtin' is preferred
         {
-            (*kind) = KIND_MATLAB ;     // MATLAB sparse or full matrix
+            (*kind) = KIND_BUILTIN ;    // built-in sparse or full matrix
         }
         else
         { 
@@ -194,7 +197,7 @@ GrB_Descriptor gb_mxarray_to_descriptor // new descriptor, or NULL if none
     // get the desired format of output, if any
     //--------------------------------------------------------------------------
 
-    mxArray *mxfmt = mxGetField (desc_matlab, 0, "format") ;
+    mxArray *mxfmt = mxGetField (desc_builtin, 0, "format") ;
     if (mxfmt != NULL)
     {
         bool ok = gb_mxstring_to_format (mxfmt, fmt, sparsity) ;
@@ -208,10 +211,10 @@ GrB_Descriptor gb_mxarray_to_descriptor // new descriptor, or NULL if none
     // get the desired base
     //--------------------------------------------------------------------------
 
-    mxArray *mxbase = mxGetField (desc_matlab, 0, "base") ;
+    mxArray *mxbase = mxGetField (desc_builtin, 0, "base") ;
     if (mxbase != NULL)
     {
-        // get the string from the MATLAB field
+        // get the string from the struct field
         char s [LEN+2] ;
         gb_mxstring_to_string (s, LEN, mxbase, "base") ;
         if (MATCH (s, "default"))

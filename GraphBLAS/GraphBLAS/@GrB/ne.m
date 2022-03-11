@@ -1,12 +1,9 @@
 function C = ne (A, B)
 %A ~= B not equal.
-% C = (A ~= B) is an element-by-element comparison of A and B.  One or
+% C = (A ~= B) compares A and B element-by-element.  One or
 % both may be scalars.  Otherwise, A and B must have the same size.
 %
 % See also GrB/lt, GrB/le, GrB/gt, GrB/ge, GrB/eq.
-
-% FUTURE: ne(A,B) for two matrices A and B is slower than it could be.
-% See comments in gb_union_op.
 
 % The pattern of C depends on the type of inputs:
 % A scalar, B scalar:  C is scalar.
@@ -15,7 +12,7 @@ function C = ne (A, B)
 % A matrix, B matrix:  C is sparse, with the pattern of A+B.
 % Zeroes are then dropped from C after it is computed.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: GPL-3.0-or-later
 
 if (isobject (A))
@@ -35,7 +32,7 @@ ctype = gboptype (atype, btype) ;
 if (a_is_scalar)
     if (b_is_scalar)
         % both A and B are scalars.  C is sparse.
-        C = GrB (gb_union_op ('~=', A, B)) ;
+        C = GrB (gbeunion (A, 0, '~=', B, 0)) ;
     else
         % A is a scalar, B is a matrix
         if (gb_scalar (A) ~= 0)
@@ -68,7 +65,7 @@ else
         end
     else
         % both A and B are matrices.  C is sparse.
-        C = GrB (gb_union_op ('~=', A, B)) ;
+        C = GrB (gbeunion (A, 0, '~=', B, 0)) ;
     end
 end
 

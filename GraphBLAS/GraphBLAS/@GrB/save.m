@@ -1,6 +1,6 @@
 function filename_used = save (C, filename)
 %GRB.SAVE Save a single GraphBLAS matrix to a file.
-% GrB.save (C) saves a single @GrB or MATLAB matrix C to a file, with a
+% GrB.save (C) saves a single @GrB or built-in matrix C to a file, with a
 % filename of 'C.mat' that matches the matrix name.  If C is an
 % expression, the filename 'GrB_Matrix.mat' is used.  A second parameter
 % allows for the selection of a different filename, as GrB.save (C,
@@ -15,17 +15,13 @@ function filename_used = save (C, filename)
 % Example:
 %
 %   A = magic (4) ;
-%   GrB.save (A) ;              % A can be a @GrB or MATLAB matrix
+%   GrB.save (A) ;              % A can be a @GrB or built-in matrix
 %   clear all
 %   A = GrB.load ('A.mat') ;    % A is now a @GrB matrix
 %
-% See also GrB.load, GrB/struct.
+% See also GrB.load, GrB/struct, GrB.serialize, GrB.deserialize.
 
-% A note to Octave users:  a file written out by GrB.save in MATLAB
-% should be readable by GrB.load in Octave, and visa versa, as long as
-% the same version of GraphBLAS is used.
-
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: GPL-3.0-or-later
 
 % make sure C is a @GrB object

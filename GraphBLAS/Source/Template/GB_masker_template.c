@@ -2,7 +2,7 @@
 // GB_masker_template:  R = masker (C, M, Z)
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -72,16 +72,20 @@
     }
 
     #if defined ( GB_PHASE_2_OF_2 )
+    const bool Z_iso = Z->iso ;
+    const bool C_iso = C->iso ;
+    #ifndef GB_ISO_MASKER
     const GB_void *restrict Cx = (GB_void *) C->x ;
     const GB_void *restrict Zx = (GB_void *) Z->x ;
+          GB_void *restrict Rx = (GB_void *) R->x ;
+    #endif
     const int64_t *restrict Rp = R->p ;
     const int64_t *restrict Rh = R->h ;
           int8_t  *restrict Rb = R->b ;
           int64_t *restrict Ri = R->i ;
-          GB_void *restrict Rx = (GB_void *) R->x ;
     size_t rsize = R->type->size ;
     // when R is bitmap or full:
-    const int64_t rnz = GB_NNZ_HELD (R) ;
+    const int64_t rnz = GB_nnz_held (R) ;
     GB_GET_NTHREADS_MAX (nthreads_max, chunk, Context) ;
     #endif
 
@@ -111,4 +115,6 @@
 
     #endif
 }
+
+#undef GB_ISO_MASKER
 

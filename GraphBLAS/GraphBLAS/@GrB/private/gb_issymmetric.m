@@ -2,10 +2,10 @@ function s = gb_issymmetric (G, option, herm)
 %GB_ISSYMMETRIC check if symmetric or Hermitian
 % Implements issymmetric (G,option) and ishermitian (G,option).
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: GPL-3.0-or-later
 
-% FUTURE: this can be much faster; see CHOLMOD/MATLAB/spsym.
+% FUTURE: this can be much faster; see spsym in CHOLMOD.
 
 [m, n, type] = gbsize (G) ;
 
@@ -19,7 +19,7 @@ else
         G = gbnew (G, 'double') ;
     end
 
-    if (herm && contains (type, 'complex'))
+    if (herm && gb_contains (type, 'complex'))
         % T = G', complex conjugate transpose
         desc.in0 = 'transpose' ;
         T = gbapply ('conj', G, desc) ;

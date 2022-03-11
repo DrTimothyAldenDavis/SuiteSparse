@@ -2,7 +2,7 @@
 // GB_compatible: check input and operators for type compatibility
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -38,7 +38,7 @@ GrB_Info GB_compatible          // SUCCESS if all is OK, *_MISMATCH otherwise
     //--------------------------------------------------------------------------
 
     if (accum != NULL)
-    {
+    { 
         // Results T are accumlated via C<M>=accum(C,T)
 
         // For entries in C and T, c=z=accum(c,t) is computed, so C must

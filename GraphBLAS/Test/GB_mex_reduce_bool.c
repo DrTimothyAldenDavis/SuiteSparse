@@ -2,7 +2,7 @@
 // GB_mex_reduce_bool: c = accum(c,reduce_to_scalar(A)) for boolean
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -103,7 +103,7 @@ void mexFunction
         mexErrMsgTxt ("GrB_reduce failed") ;
     }
 
-    // return result to MATLAB as a boolean scalar
+    // return result as a boolean scalar
     pargout [0] = GB_mx_create_full (1, 1, GrB_BOOL) ;
     GB_void *p = mxGetData (pargout [0]) ;
     memcpy (p, &result, sizeof (bool)) ;

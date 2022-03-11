@@ -2,52 +2,51 @@
 // GB_bitmap_emult: C = A.*B, C<M>=A.*B, or C<!M>=A.*B when C is bitmap
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
-
-// GB_EMULT_METHOD_05 : 
+// GB_EMULT_METHOD5 : 
 
             //      ------------------------------------------
             //      C       =           A       .*      B
             //      ------------------------------------------
-            //      bitmap  .           bitmap          bitmap  (method: 05)
-            //      bitmap  .           bitmap          full    (method: 05)
-            //      bitmap  .           full            bitmap  (method: 05)
+            //      bitmap  .           bitmap          bitmap  (method: 5)
+            //      bitmap  .           bitmap          full    (method: 5)
+            //      bitmap  .           full            bitmap  (method: 5)
 
-// GB_EMULT_METHOD_06 : 
+// GB_EMULT_METHOD6 : 
 
             //      ------------------------------------------
             //      C       <!M>=       A       .*      B
             //      ------------------------------------------
-            //      bitmap  sparse      bitmap          bitmap  (method: 06)
-            //      bitmap  sparse      bitmap          full    (method: 06)
-            //      bitmap  sparse      full            bitmap  (method: 06)
+            //      bitmap  sparse      bitmap          bitmap  (method: 6)
+            //      bitmap  sparse      bitmap          full    (method: 6)
+            //      bitmap  sparse      full            bitmap  (method: 6)
 
-// GB_EMULT_METHOD_07 : 
+// GB_EMULT_METHOD7 : 
 
             //      ------------------------------------------
             //      C      <M> =        A       .*      B
             //      ------------------------------------------
-            //      bitmap  bitmap      bitmap          bitmap  (method: 07)
-            //      bitmap  bitmap      bitmap          full    (method: 07)
-            //      bitmap  bitmap      full            bitmap  (method: 07)
-            //      bitmap  full        bitmap          bitmap  (method: 07)
-            //      bitmap  full        bitmap          full    (method: 07)
-            //      bitmap  full        full            bitmap  (method: 07)
+            //      bitmap  bitmap      bitmap          bitmap  (method: 7)
+            //      bitmap  bitmap      bitmap          full    (method: 7)
+            //      bitmap  bitmap      full            bitmap  (method: 7)
+            //      bitmap  full        bitmap          bitmap  (method: 7)
+            //      bitmap  full        bitmap          full    (method: 7)
+            //      bitmap  full        full            bitmap  (method: 7)
             //      ------------------------------------------
             //      C      <!M> =       A       .*      B
             //      ------------------------------------------
-            //      bitmap  bitmap      bitmap          bitmap  (method: 07)
-            //      bitmap  bitmap      bitmap          full    (method: 07)
-            //      bitmap  bitmap      full            bitmap  (method: 07)
-            //      bitmap  full        bitmap          bitmap  (method: 07)
-            //      bitmap  full        bitmap          full    (method: 07)
-            //      bitmap  full        full            bitmap  (method: 07)
+            //      bitmap  bitmap      bitmap          bitmap  (method: 7)
+            //      bitmap  bitmap      bitmap          full    (method: 7)
+            //      bitmap  bitmap      full            bitmap  (method: 7)
+            //      bitmap  full        bitmap          bitmap  (method: 7)
+            //      bitmap  full        bitmap          full    (method: 7)
+            //      bitmap  full        full            bitmap  (method: 7)
 
-            // For methods 05, 06, and 07, C is constructed as bitmap.
+            // For methods 5, 6, and 7, C is constructed as bitmap.
             // Both A and B are bitmap/full.  M is either not present,
             // complemented, or not complemented and bitmap/full.  The
             // case when M is not complemented and sparse/hyper is handled
@@ -66,15 +65,15 @@
 #include "GB_binop__include.h"
 #endif
 
-#define GB_FREE_WORK                        \
+#define GB_FREE_WORKSPACE                   \
 {                                           \
     GB_WERK_POP (M_ek_slicing, int64_t) ;   \
 }
 
 #define GB_FREE_ALL                         \
 {                                           \
-    GB_FREE_WORK ;                          \
-    GB_phbix_free (C) ;                   \
+    GB_FREE_WORKSPACE ;                     \
+    GB_phbix_free (C) ;                     \
 }
 
 GrB_Info GB_bitmap_emult    // C=A.*B, C<M>=A.*B, or C<!M>=A.*B
@@ -99,7 +98,7 @@ GrB_Info GB_bitmap_emult    // C=A.*B, C<M>=A.*B, or C<!M>=A.*B
     //--------------------------------------------------------------------------
 
     GrB_Info info ;
-    ASSERT (C != NULL && C->static_header) ;
+    ASSERT (C != NULL && (C->static_header || GBNSTATIC)) ;
 
     ASSERT_MATRIX_OK (A, "A for bitmap emult ", GB0) ;
     ASSERT_MATRIX_OK (B, "B for bitmap emult ", GB0) ;
@@ -134,13 +133,13 @@ GrB_Info GB_bitmap_emult    // C=A.*B, C<M>=A.*B, or C<!M>=A.*B
     // determine how many threads to use
     //--------------------------------------------------------------------------
 
+    int64_t cnz = GB_nnz_full (A) ;
     GB_GET_NTHREADS_MAX (nthreads_max, chunk, Context) ;
-    int64_t cnz = (A->vlen*A->vdim) ;
     int C_nthreads = GB_nthreads (cnz, chunk, nthreads_max) ;
 
-    // slice the M matrix for method 06
-    if (ewise_method == GB_EMULT_METHOD_06)
-    {
+    // slice the M matrix for Method6
+    if (ewise_method == GB_EMULT_METHOD6)
+    { 
         GB_SLICE_MATRIX (M, 8, chunk) ;
     }
 
@@ -150,18 +149,27 @@ GrB_Info GB_bitmap_emult    // C=A.*B, C<M>=A.*B, or C<!M>=A.*B
 
     GB_Opcode opcode = op->opcode ;
     bool op_is_positional = GB_OPCODE_IS_POSITIONAL (opcode) ;
-    bool op_is_first  = (opcode == GB_FIRST_opcode) ;
-    bool op_is_second = (opcode == GB_SECOND_opcode) ;
-    bool op_is_pair   = (opcode == GB_PAIR_opcode) ;
+    bool op_is_first  = (opcode == GB_FIRST_binop_code) ;
+    bool op_is_second = (opcode == GB_SECOND_binop_code) ;
+    bool op_is_pair   = (opcode == GB_PAIR_binop_code) ;
+
+    //--------------------------------------------------------------------------
+    // check if C is iso and compute its iso value if it is
+    //--------------------------------------------------------------------------
+
+    const size_t csize = ctype->size ;
+    GB_void cscalar [GB_VLA(csize)] ;
+    bool C_iso = GB_iso_emult (cscalar, ctype, A, B, op) ;
 
     //--------------------------------------------------------------------------
     // allocate the output matrix C
     //--------------------------------------------------------------------------
 
     // allocate the result C (but do not allocate C->p or C->h)
-    GB_OK (GB_new_bix (&C, true,  // any sparsity, static header
+    // set C->iso = C_iso   OK
+    GB_OK (GB_new_bix (&C, // bitmap, existing header
         ctype, A->vlen, A->vdim, GB_Ap_null, C_is_csc,
-        GxB_BITMAP, true, A->hyper_switch, -1, cnz, true, Context)) ;
+        GxB_BITMAP, true, A->hyper_switch, -1, cnz, true, C_iso, Context)) ;
 
     C->magic = GB_MAGIC ;
     GB_Type_code ccode = ctype->code ;
@@ -184,39 +192,63 @@ GrB_Info GB_bitmap_emult    // C=A.*B, C<M>=A.*B, or C<!M>=A.*B
     // using a built-in binary operator (except for positional operators)
     //--------------------------------------------------------------------------
 
+    #define GB_PHASE_2_OF_2
+
     bool done = false ;
 
-    #ifndef GBCOMPACT
+    if (C_iso)
+    { 
 
         //----------------------------------------------------------------------
-        // define the worker for the switch factory
+        // C is iso
         //----------------------------------------------------------------------
 
-        #define GB_AemultB_bitmap(mult,xname) \
-            GB (_AemultB_bitmap_ ## mult ## xname)
+        // Cx [0] = cscalar = op (A,B)
+        GB_BURBLE_MATRIX (C, "(iso bitmap emult) ") ;
+        memcpy (C->x, cscalar, csize) ;
 
-        #define GB_BINOP_WORKER(mult,xname)                                 \
-        {                                                                   \
-            info = GB_AemultB_bitmap(mult,xname) (C, ewise_method,          \
-                M, Mask_struct, Mask_comp, A, B,                            \
-                M_ek_slicing, M_ntasks, M_nthreads, C_nthreads, Context) ;  \
-            done = (info != GrB_NO_VALUE) ;                                 \
-        }                                                                   \
-        break ;
+        // pattern of C = set intersection of pattern of A and B
+        #define GB_ISO_EMULT
+        #include "GB_bitmap_emult_template.c"
+        done = true ;
 
-        //----------------------------------------------------------------------
-        // launch the switch factory
-        //----------------------------------------------------------------------
+    }
+    else
+    {
 
-        GB_Type_code xcode, ycode, zcode ;
-        if (!op_is_positional &&
-            GB_binop_builtin (A->type, A_is_pattern, B->type, B_is_pattern,
-            op, false, &opcode, &xcode, &ycode, &zcode) && ccode == zcode)
-        { 
-            #include "GB_binop_factory.c"
-        }
+        #ifndef GBCOMPACT
 
-    #endif
+            //------------------------------------------------------------------
+            // define the worker for the switch factory
+            //------------------------------------------------------------------
+
+            #define GB_AemultB_bitmap(mult,xname) \
+                GB (_AemultB_bitmap_ ## mult ## xname)
+
+            #define GB_BINOP_WORKER(mult,xname)                             \
+            {                                                               \
+                info = GB_AemultB_bitmap(mult,xname) (C, ewise_method,      \
+                    M, Mask_struct, Mask_comp, A, B, M_ek_slicing,          \
+                    M_ntasks, M_nthreads, C_nthreads, Context) ;            \
+                done = (info != GrB_NO_VALUE) ;                             \
+            }                                                               \
+            break ;
+
+            //------------------------------------------------------------------
+            // launch the switch factory
+            //------------------------------------------------------------------
+
+            GB_Type_code xcode, ycode, zcode ;
+            if (!op_is_positional &&
+                GB_binop_builtin (A->type, A_is_pattern, B->type, B_is_pattern,
+                op, false, &opcode, &xcode, &ycode, &zcode) && ccode == zcode)
+            { 
+                #define GB_NO_PAIR
+                #include "GB_binop_factory.c"
+            }
+
+        #endif
+    }
 
     //--------------------------------------------------------------------------
     // generic worker
@@ -235,7 +267,7 @@ GrB_Info GB_bitmap_emult    // C=A.*B, C<M>=A.*B, or C<!M>=A.*B
     // return result
     //--------------------------------------------------------------------------
 
-    GB_FREE_WORK ;
+    GB_FREE_WORKSPACE ;
     ASSERT_MATRIX_OK (C, "C output for emult_bitmap", GB0) ;
     (*mask_applied) = (M != NULL) ;
     return (GrB_SUCCESS) ;

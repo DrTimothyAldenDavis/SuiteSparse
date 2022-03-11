@@ -2,7 +2,7 @@
 // GxB_Global_Option_set: set a global default option for all future matrices
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -52,14 +52,14 @@ GrB_Info GxB_Global_Option_set      // set a global default option
                 double *bitmap_switch = va_arg (ap, double *) ;
                 va_end (ap) ;
                 if (bitmap_switch == NULL)
-                {
+                { 
                     // set all switches to their default
                     GB_Global_bitmap_switch_default ( ) ;
                 }
                 else
                 {
                     for (int k = 0 ; k < GxB_NBITMAP_SWITCH ; k++)
-                    {
+                    { 
                         float b = (float) (bitmap_switch [k]) ;
                         GB_Global_bitmap_switch_set (k, b) ;
                     }
@@ -123,9 +123,9 @@ GrB_Info GxB_Global_Option_set      // set a global default option
                     GB_Global_free_pool_init (false) ;
                 }
                 else
-                { 
+                {
                     for (int k = 3 ; k < 64 ; k++)
-                    {
+                    { 
                         GB_Global_free_pool_limit_set (k, free_pool_limit [k]) ;
                     }
                 }
@@ -163,6 +163,16 @@ GrB_Info GxB_Global_Option_set      // set a global default option
                 void *flush_func = va_arg (ap, void *) ;
                 va_end (ap) ;
                 GB_Global_flush_set ((GB_flush_function_t) flush_func) ;
+            }
+            break ;
+
+        case GxB_PRINT_1BASED : 
+
+            {
+                va_start (ap, field) ;
+                int onebased = va_arg (ap, int) ;
+                va_end (ap) ;
+                GB_Global_print_one_based_set ((bool) onebased) ;
             }
             break ;
 

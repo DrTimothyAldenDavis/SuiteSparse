@@ -1,7 +1,7 @@
 function test_other
 %TEST_OTHER installs all packages needed for extensive tests
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 here = pwd ;
@@ -13,9 +13,6 @@ catch
     addpath (pwd) ;
 end
 cd (here) ;
-
-fprintf ('\n------------------installing GraphBLAS/Demo/MATLAB\n') ;
-addpath ../Demo/MATLAB
 
 fprintf ('\n------------------installing spok\n') ;
 cd spok

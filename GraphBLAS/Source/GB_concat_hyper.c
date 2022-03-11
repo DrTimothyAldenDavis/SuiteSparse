@@ -2,22 +2,26 @@
 // GB_concat_hyper: concatenate an array of matrices into a hypersparse matrix
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
 #define GB_FREE_ALL                 \
+{                                   \
     GB_FREE (&Wi, Wi_size) ;        \
-    GB_FREE_WERK (&Wj, Wj_size) ;   \
-    GB_FREE_WERK (&Wx, Wx_size) ;   \
-    GB_phbix_free (C) ;
+    GB_FREE_WORK (&Wj, Wj_size) ;   \
+    GB_FREE_WORK (&Wx, Wx_size) ;   \
+    GB_phbix_free (C) ;             \
+}
 
 #include "GB_concat.h"
 
 GrB_Info GB_concat_hyper            // concatenate into a hypersparse matrix
 (
     GrB_Matrix C,                   // input/output matrix for results
+    const bool C_iso,               // if true, construct C as iso
+    const GB_void *cscalar,         // iso value of C, if C is iso 
     const int64_t cnz,              // # of entries in C
     const GrB_Matrix *Tiles,        // 2D row-major array of size m-by-n,
     const GrB_Index m,
@@ -26,7 +30,7 @@ GrB_Info GB_concat_hyper            // concatenate into a hypersparse matrix
     const int64_t *restrict Tile_cols,  // size n+1
     GB_Context Context
 )
-{ 
+{
 
     //--------------------------------------------------------------------------
     // allocate triplet workspace to construct C as hypersparse
@@ -34,6 +38,7 @@ GrB_Info GB_concat_hyper            // concatenate into a hypersparse matrix
 
     GrB_Info info ;
     GrB_Matrix A = NULL ;
+    ASSERT_MATRIX_OK (C, "C input to concat hyper", GB0) ;
 
     int64_t *restrict Wi = NULL ; size_t Wi_size = 0 ;
     int64_t *restrict Wj = NULL ; size_t Wj_size = 0 ;
@@ -48,15 +53,17 @@ GrB_Info GB_concat_hyper            // concatenate into a hypersparse matrix
 
     float hyper_switch = C->hyper_switch ;
     float bitmap_switch = C->bitmap_switch ;
-    int sparsity_control = C->sparsity ;
+    int sparsity_control = C->sparsity_control ;
 
-    bool static_header = C->static_header ;
     GB_phbix_free (C) ;
 
     Wi = GB_MALLOC (cnz, int64_t, &Wi_size) ;               // becomes C->i
-    Wj = GB_MALLOC_WERK (cnz, int64_t, &Wj_size) ;          // freed below
-    Wx = GB_MALLOC_WERK (cnz * csize, GB_void, &Wx_size) ;  // freed below
-    if (Wi == NULL || Wj == NULL || Wx == NULL)
+    Wj = GB_MALLOC_WORK (cnz, int64_t, &Wj_size) ;          // freed below
+    if (!C_iso)
+    { 
+        Wx = GB_MALLOC_WORK (cnz * csize, GB_void, &Wx_size) ;  // freed below
+    }
+    if (Wi == NULL || Wj == NULL || (!C_iso && Wx == NULL))
     { 
         // out of memory
         GB_FREE_ALL ;
@@ -113,11 +120,16 @@ GrB_Info GB_concat_hyper            // concatenate into a hypersparse matrix
             // extract the tuples from tile A
             //------------------------------------------------------------------
 
-            int64_t anz = GB_NNZ (A) ;
+            // if A is iso but C is not, extractTuples expands A->x [0] into
+            // all Wx [...].   If both A and C are iso, then all tiles are iso,
+            // and Wx is not extracted.
+
+            int64_t anz = GB_nnz (A) ;
             GB_OK (GB_extractTuples (
                 (GrB_Index *) ((csc ? Wi : Wj) + pC),
                 (GrB_Index *) ((csc ? Wj : Wi) + pC),
-                Wx + pC * csize, (GrB_Index *) (&anz), ccode, A, Context)) ;
+                (C_iso) ? NULL : (Wx + pC * csize),
+                (GrB_Index *) (&anz), ccode, A, Context)) ;
 
             //------------------------------------------------------------------
             // adjust the indices to reflect their new place in C
@@ -165,35 +177,42 @@ GrB_Info GB_concat_hyper            // concatenate into a hypersparse matrix
     // build C from the triplets
     //--------------------------------------------------------------------------
 
-    GB_OK (GB_builder
-    (
+    const GB_void *S_input = NULL ;
+    if (C_iso)
+    { 
+        S_input = cscalar ;
+    }
+
+    GB_OK (GB_builder (
         C,                      // create C using a static or dynamic header
         ctype,                  // C->type
         cvlen,                  // C->vlen
         cvdim,                  // C->vdim
         csc,                    // C->is_csc
-        (int64_t **) &Wi,       // Wi becomes C->i on output, or freed on error
+        (int64_t **) &Wi,       // Wi is C->i on output, or freed on error
         &Wi_size,
         (int64_t **) &Wj,       // Wj, free on output
         &Wj_size,
-        (GB_void **) &Wx,       // Wx, free on output
+        (GB_void **) &Wx,       // Wx, free on output; or NULL if C is iso
         &Wx_size,
         false,                  // tuples need to be sorted
         true,                   // no duplicates
         cnz,                    // size of Wi and Wj in # of tuples
         true,                   // is_matrix: unused
-        NULL, NULL, NULL,       // original I,J,S tuples, not used here
+        NULL, NULL,             // original I,J tuples
+        S_input,                // cscalar if C is iso, or NULL
+        C_iso,                  // true if C is iso
         cnz,                    // # of tuples
-        NULL,                   // op for assembling duplicates (there are none)
-        ccode,                  // type of Wx
+        NULL,                   // no duplicates, so dup is NUL
+        ctype,                  // the type of Wx (no typecasting)
         Context
     )) ;
 
     C->hyper_switch = hyper_switch ;
     C->bitmap_switch = bitmap_switch ;
-    C->sparsity = sparsity_control ;
-    ASSERT (C->static_header == static_header) ;
+    C->sparsity_control = sparsity_control ;
     ASSERT (GB_IS_HYPERSPARSE (C)) ;
+    ASSERT_MATRIX_OK (C, "C from concat hyper", GB0) ;
 
     // workspace has been freed by GB_builder, or transplanted into C
     ASSERT (Wi == NULL) ;

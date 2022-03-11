@@ -2,7 +2,7 @@
 // GB_reduce_to_vector: reduce a matrix to a vector using a monoid
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -10,16 +10,18 @@
 // C<M> = accum (C,reduce(A)) where C is n-by-1.  Reduces a matrix A or A'
 // to a vector.
 
+#define GB_FREE_ALL GB_Matrix_free (&B) ;
+
 #include "GB_reduce.h"
 #include "GB_binop.h"
 #include "GB_mxm.h"
-
-#define GB_FREE_ALL ;
+#include "GB_get_mask.h"
+#include "GB_Semiring_new.h"
 
 GrB_Info GB_reduce_to_vector        // C<M> = accum (C,reduce(A))
 (
     GrB_Matrix C,                   // input/output for results, size n-by-1
-    const GrB_Matrix M,             // optional M for C, unused if NULL
+    const GrB_Matrix M_in,          // optional M for C, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for z=accum(C,T)
     const GrB_Monoid monoid,        // reduce monoid for T=reduce(A)
     const GrB_Matrix A,             // first input:  matrix A
@@ -33,30 +35,31 @@ GrB_Info GB_reduce_to_vector        // C<M> = accum (C,reduce(A))
     //--------------------------------------------------------------------------
 
     struct GB_Matrix_opaque B_header ;
-    GrB_Matrix B = GB_clear_static_header (&B_header) ;
+    GrB_Matrix B = NULL ;
 
     // C may be aliased with M and/or A
     GB_RETURN_IF_NULL_OR_FAULTY (C) ;
-    GB_RETURN_IF_FAULTY (M) ;
+    GB_RETURN_IF_FAULTY (M_in) ;
     GB_RETURN_IF_FAULTY_OR_POSITIONAL (accum) ;
     GB_RETURN_IF_NULL_OR_FAULTY (monoid) ;
     GB_RETURN_IF_NULL_OR_FAULTY (A) ;
     GB_RETURN_IF_FAULTY (desc) ;
 
     ASSERT_MATRIX_OK (C, "C input for reduce-to-vector", GB0) ;
-    ASSERT_MATRIX_OK_OR_NULL (M, "M for reduce-to-vector", GB0) ;
+    ASSERT_MATRIX_OK_OR_NULL (M_in, "M_in for reduce-to-vector", GB0) ;
     ASSERT_BINARYOP_OK_OR_NULL (accum, "accum for reduce-to-vector", GB0) ;
     ASSERT_MONOID_OK (monoid, "monoid for reduce-to-vector", GB0) ;
     ASSERT_MATRIX_OK (A, "A input for reduce-to-vector", GB0) ;
     ASSERT_DESCRIPTOR_OK_OR_NULL (desc, "desc for reduce-to-vector", GB0) ;
+    ASSERT (GB_VECTOR_OK (C)) ;
+    ASSERT (GB_IMPLIES (M_in != NULL, GB_VECTOR_OK (M_in))) ;
 
     // get the descriptor
     GB_GET_DESCRIPTOR (info, desc, C_replace, Mask_comp, Mask_struct,
         A_transpose, xx1, xx2, do_sort) ;
 
-    // C and M are n-by-1 GrB_Vector objects, typecasted to GrB_Matrix
-    ASSERT (GB_VECTOR_OK (C)) ;
-    ASSERT (GB_IMPLIES (M != NULL, GB_VECTOR_OK (M))) ;
+    // get the mask
+    GrB_Matrix M = GB_get_mask (M_in, &Mask_comp, &Mask_struct) ;
 
     // check domains and dimensions for C<M> = accum (C,T)
     GrB_Type ztype = monoid->op->ztype ;
@@ -99,18 +102,25 @@ GrB_Info GB_reduce_to_vector        // C<M> = accum (C,reduce(A))
     GB_RETURN_IF_QUICK_MASK (C, C_replace, M, Mask_comp, Mask_struct) ;
 
     //--------------------------------------------------------------------------
-    // create B as full vector but with B->x of NULL
+    // create B as full iso vector
     //--------------------------------------------------------------------------
 
     // B is constructed with a static header in O(1) time and space, even
     // though it is m-by-1.  It contains no dynamically-allocated content and
     // does not need to be freed.
     int64_t m = A_transpose ? GB_NROWS (A) : GB_NCOLS (A) ;
-    info = GB_new (&B, true,  // full, static header
+    GB_CLEAR_STATIC_HEADER (B, &B_header) ;
+    info = GB_new (&B, // full, existing header
         ztype, m, 1, GB_Ap_null, true, GxB_FULL, GB_NEVER_HYPER, 1, Context) ;
     ASSERT (info == GrB_SUCCESS) ;
-    B->nzmax = m ;
     B->magic = GB_MAGIC ;
+    B->iso = true ;             // OK: B is a temporary matrix; no burble
+    size_t zsize = ztype->size ;
+    GB_void bscalar [GB_VLA(zsize)] ;
+    memset (bscalar, 0, zsize) ;
+    B->x = bscalar ;
+    B->x_shallow = true ;
+    B->x_size = zsize ;
     ASSERT_MATRIX_OK (B, "B for reduce-to-vector", GB0) ;
 
     //--------------------------------------------------------------------------
@@ -120,7 +130,8 @@ GrB_Info GB_reduce_to_vector        // C<M> = accum (C,reduce(A))
     // note the function pointer is NULL; it is not needed by FIRST
     struct GB_BinaryOp_opaque op_header ;
     GrB_BinaryOp op = &op_header ;
-    GB_binop_new (op, NULL, ztype, ztype, ztype, NULL, GB_FIRST_opcode) ;
+    GB_binop_new (op, NULL, ztype, ztype, ztype, "1st_ztype", NULL,
+        GB_FIRST_binop_code) ;
     ASSERT_BINARYOP_OK (op, "op for reduce-to-vector", GB0) ;
 
     //--------------------------------------------------------------------------
@@ -138,8 +149,10 @@ GrB_Info GB_reduce_to_vector        // C<M> = accum (C,reduce(A))
     // reduce the matrix to a vector via C<M> = accum (C, A*B)
     //--------------------------------------------------------------------------
 
-    return (GB_mxm (C, C_replace, M, Mask_comp, Mask_struct, accum,
+    info = GB_mxm (C, C_replace, M, Mask_comp, Mask_struct, accum,
         semiring, A, A_transpose, B, false, false, GxB_DEFAULT, do_sort,
-        Context)) ;
+        Context) ;
+    GB_FREE_ALL ;
+    return (info) ;
 }
 

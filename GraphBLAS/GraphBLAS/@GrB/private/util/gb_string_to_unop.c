@@ -2,12 +2,12 @@
 // gb_string_to_unop: get a GraphBLAS unary operator from a string
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 //------------------------------------------------------------------------------
 
-#include "gb_matlab.h"
+#include "gb_interface.h"
 
 // The string has the form op_name.op_type.  For example 'abs.double' is the
 // GrB_ABS_FP64 operator.  The type is optional.  If not present, it defaults

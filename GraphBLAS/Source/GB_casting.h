@@ -2,7 +2,7 @@
 // GB_casting.h: define the unary typecasting functions
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -18,7 +18,7 @@
 
 typedef void (*GB_cast_function) (void *, const void *, size_t) ;
 
-GB_PUBLIC   // accessed by the MATLAB tests in GraphBLAS/Test only
+GB_PUBLIC
 GB_cast_function GB_cast_factory   // returns pointer to function to cast x to z
 (
     const GB_Type_code code1,      // the type of z, the output value
@@ -32,11 +32,10 @@ GB_cast_function GB_cast_factory   // returns pointer to function to cast x to z
 // The GraphBLAS C API states that typecasting follows the rules of the C
 // language.  However, the ANSI C11 language specification states that results
 // are undefined when typecasting a float or double to an integer value that is
-// outside the range of the integer type.  MATLAB handles this case by
+// outside the range of the integer type.  GraphBLAS handles this case by
 // typecasting a float or double that is larger than the maximum integer to the
 // max integer, and a value less than the minimum integer to the min integer.
-// NaN's are typecasted to the integer value zero.  GraphBLAS follows the same
-// rules as MATLAB.
+// NaN's are typecasted to the integer value zero.
 
 inline int8_t GB_cast_to_int8_t (double x)
 { 
@@ -131,9 +130,8 @@ inline void GB (_cast_ ## ztype ## _ ## xtype)                          \
 //------------------------------------------------------------------------------
 
 // Typecasting a NaN to a bool results in 'true', as defined by the ANSI C11
-// standard (NaN converts to true, since Nan != 0 is true).  MATLAB throws an
-// error when trying to convert NaN's to logical.  GraphBLAS follows the ANSI
-// C11 standard in this case.
+// standard (NaN converts to true, since Nan != 0 is true).  GraphBLAS follows
+// the ANSI C11 standard in this case.
 
 #undef  GB_CAST
 #define GB_CAST(ztype,x) (ztype) x
@@ -490,6 +488,7 @@ GB_CAST_FUNCTION (GxB_FC64_t, uint32_t  )
 GB_CAST_FUNCTION (GxB_FC64_t, uint64_t  )
 GB_CAST_FUNCTION (GxB_FC64_t, float     )
 GB_CAST_FUNCTION (GxB_FC64_t, double    )
+
 #ifndef GBCUDA
 // TODO: this does not work on CUDA yet
 #undef  GB_CAST
@@ -498,10 +497,10 @@ GB_CAST_FUNCTION (GxB_FC64_t, GxB_FC32_t)
 #undef  GB_CAST
 #define GB_CAST(ztype,x) x
 GB_CAST_FUNCTION (GxB_FC64_t, GxB_FC64_t)
+#endif
 
 #undef  GB_CAST
 #undef  GB_CAST_FUNCTION
-#endif
 
 //------------------------------------------------------------------------------
 // GB_mcast: cast a mask entry from any native type to boolean
@@ -534,11 +533,11 @@ static inline bool GB_mcast         // return the value of M(i,j)
         switch (msize)
         {
             default:
-            case 1: return ((*(uint8_t  *) (Mx +((pM)*1))) != 0) ;
-            case 2: return ((*(uint16_t *) (Mx +((pM)*2))) != 0) ;
-            case 4: return ((*(uint32_t *) (Mx +((pM)*4))) != 0) ;
-            case 8: return ((*(uint64_t *) (Mx +((pM)*8))) != 0) ;
-            case 16:
+            case GB_1BYTE: return ((*(uint8_t  *) (Mx +((pM)*1))) != 0) ;
+            case GB_2BYTE: return ((*(uint16_t *) (Mx +((pM)*2))) != 0) ;
+            case GB_4BYTE: return ((*(uint32_t *) (Mx +((pM)*4))) != 0) ;
+            case GB_8BYTE: return ((*(uint64_t *) (Mx +((pM)*8))) != 0) ;
+            case GB_16BYTE:
             {
                 const uint64_t *restrict Zx = (uint64_t *) Mx ;
                 return (Zx [2*pM] != 0 || Zx [2*pM+1] != 0) ;

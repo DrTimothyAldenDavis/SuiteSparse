@@ -3,7 +3,7 @@ function codegen_binop_method (binop, op, xtype)
 %
 % codegen_binop_method (binop, op, xtype)
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 f = fopen ('control.m4', 'w') ;
@@ -17,10 +17,7 @@ name = sprintf ('%s_%s', binop, fname) ;
 
 % function names
 fprintf (f, 'define(`_AaddB'', `_AaddB__%s'')\n', name) ;
-fprintf (f, 'define(`_AemultB_01'', `_AemultB_01__%s'')\n', name) ;
-fprintf (f, 'define(`_AemultB_02'', `_AemultB_02__%s'')\n', name) ;
-fprintf (f, 'define(`_AemultB_03'', `_AemultB_03__%s'')\n', name) ;
-fprintf (f, 'define(`_AemultB_bitmap'', `_AemultB_bitmap__%s'')\n', name) ;
+
 fprintf (f, 'define(`_Cdense_accumB'', `_Cdense_accumB__%s'')\n', name) ;
 fprintf (f, 'define(`_Cdense_accumb'', `_Cdense_accumb__%s'')\n', name) ;
 fprintf (f, 'define(`_Cdense_ewise3_noaccum'', `_Cdense_ewise3_noaccum__%s'')\n', name) ;
@@ -41,16 +38,16 @@ end
 % subset of operators for GB_AxB_rowscale and GB_AxB_colscale
 switch (binop)
     case { 'min', 'max', 'plus', 'minus', 'rminus', 'times', 'div', 'rdiv', ...
-        'first', 'second', 'pair', 'isgt', 'islt', 'isge', 'isle', ...
+        'first', 'second', 'isgt', 'islt', 'isge', 'isle', ...
         'gt', 'lt', 'ge', 'le', 'lor', 'land', 'lxor' }
         % these operators are used in GB_AxB_*scale
         binop_is_semiring_multiplier = true ;
     case { 'eq', 'iseq', 'ne', 'isne' }
         % these do not appear in complex semirings
-        binop_is_semiring_multiplier = (~contains (xtype, 'FC')) ;
+        binop_is_semiring_multiplier = (~codegen_contains (xtype, 'FC')) ;
     case { 'bor', 'band', 'bxor', 'bxnor' }
         % these operators are used in GB_AxB_*scale for uint* only
-        binop_is_semiring_multiplier = contains (xtype, 'uint') ;
+        binop_is_semiring_multiplier = codegen_contains (xtype, 'uint') ;
     otherwise
         % these operators are not used in GB_AxB_*scale by any builtin semiring
         binop_is_semiring_multiplier = false ;
@@ -62,37 +59,47 @@ if (binop_is_semiring_multiplier)
     fprintf (f, 'define(`endif_binop_is_semiring_multiplier'', `'')\n') ;
 else
     fprintf (f, 'define(`_AxD'', `(none)'')\n') ;
-    fprintf (f, 'define(`_DxB'', `(node)'')\n') ;
+    fprintf (f, 'define(`_DxB'', `(none)'')\n') ;
     fprintf (f, 'define(`if_binop_is_semiring_multiplier'', `#if 0'')\n') ;
     fprintf (f, 'define(`endif_binop_is_semiring_multiplier'', `#endif'')\n') ;
 end
 
 % subset of operators for GB_apply
 switch (binop)
-    case { 'first', 'any', 'pair' }
-        % no bind2nd for these operators
-        fprintf (f, 'define(`_bind2nd'', `(none)'')\n', name) ;
-        fprintf (f, 'define(`_bind2nd_tran'', `(none)'')\n', name) ;
-        fprintf (f, 'define(`if_binop_bind2nd_is_enabled'', `#if 0'')\n') ;
-        fprintf (f, 'define(`endif_binop_bind2nd_is_enabled'', `#endif'')\n') ;
-    otherwise
-        fprintf (f, 'define(`_bind2nd'', `_bind2nd__%s'')\n', name) ;
-        fprintf (f, 'define(`_bind2nd_tran'', `_bind2nd_tran__%s'')\n', name) ;
-        fprintf (f, 'define(`if_binop_bind2nd_is_enabled'', `'')\n') ;
-        fprintf (f, 'define(`endif_binop_bind2nd_is_enabled'', `'')\n') ;
-end
-switch (binop)
-    case { 'second', 'any', 'pair' }
-        % no bind1st for these operators
+    case { 'first', 'second', 'any', 'pair' }
+        % no bind1st or bind2nd for these operators
         fprintf (f, 'define(`_bind1st'', `(none)'')\n', name) ;
         fprintf (f, 'define(`_bind1st_tran'', `(none)'')\n', name) ;
-        fprintf (f, 'define(`if_binop_bind1st_is_enabled'', `#if 0'')\n') ;
-        fprintf (f, 'define(`endif_binop_bind1st_is_enabled'', `#endif'')\n') ;
+        fprintf (f, 'define(`_bind2nd'', `(none)'')\n', name) ;
+        fprintf (f, 'define(`_bind2nd_tran'', `(none)'')\n', name) ;
+        fprintf (f, 'define(`if_binop_bind_is_enabled'', `#if 0'')\n') ;
+        fprintf (f, 'define(`endif_binop_bind_is_enabled'', `#endif'')\n') ;
     otherwise
         fprintf (f, 'define(`_bind1st'', `_bind1st__%s'')\n', name) ;
         fprintf (f, 'define(`_bind1st_tran'', `_bind1st_tran__%s'')\n', name) ;
-        fprintf (f, 'define(`if_binop_bind1st_is_enabled'', `'')\n') ;
-        fprintf (f, 'define(`endif_binop_bind1st_is_enabled'', `'')\n') ;
+        fprintf (f, 'define(`_bind2nd'', `_bind2nd__%s'')\n', name) ;
+        fprintf (f, 'define(`_bind2nd_tran'', `_bind2nd_tran__%s'')\n', name) ;
+        fprintf (f, 'define(`if_binop_bind_is_enabled'', `'')\n') ;
+        fprintf (f, 'define(`endif_binop_bind_is_enabled'', `'')\n') ;
+end
+
+% subset of operators for GB_emult
+switch (binop)
+    case { 'pair' }
+        % no emult for these operators
+        fprintf (f, 'define(`_AemultB_08'', `(none)'')\n') ;
+        fprintf (f, 'define(`_AemultB_02'', `(none)'')\n') ;
+        fprintf (f, 'define(`_AemultB_04'', `(none)'')\n') ;
+        fprintf (f, 'define(`_AemultB_bitmap'', `(none)'')\n') ;
+        fprintf (f, 'define(`if_binop_emult_is_enabled'', `#if 0'')\n') ;
+        fprintf (f, 'define(`endif_binop_emult_is_enabled'', `#endif'')\n') ;
+    otherwise
+        fprintf (f, 'define(`_AemultB_08'', `_AemultB_08__%s'')\n', name) ;
+        fprintf (f, 'define(`_AemultB_02'', `_AemultB_02__%s'')\n', name) ;
+        fprintf (f, 'define(`_AemultB_04'', `_AemultB_04__%s'')\n', name) ;
+        fprintf (f, 'define(`_AemultB_bitmap'', `_AemultB_bitmap__%s'')\n', name) ;
+        fprintf (f, 'define(`if_binop_emult_is_enabled'', `'')\n') ;
+        fprintf (f, 'define(`endif_binop_emult_is_enabled'', `'')\n') ;
 end
 
 if (isequal (binop, 'second'))
@@ -148,51 +155,60 @@ end
 if (isequal (binop, 'second') || isequal (binop, 'pair'))
     % the value of A is ignored
     fprintf (f, 'define(`GB_geta'', `;'')\n') ;
+    fprintf (f, 'define(`GB_a_is_pattern'', `1'')\n') ;
 else
-    fprintf (f, 'define(`GB_geta'', `%s $1 = $2 [$3]'')\n', xtype) ;
+    fprintf (f, 'define(`GB_geta'', `%s $1 = GBX ($2, $3, $4)'')\n', xtype) ;
+    fprintf (f, 'define(`GB_a_is_pattern'', `0'')\n') ;
 end
 
 % to get an entry from B
 if (isequal (binop, 'first') || isequal (binop, 'pair'))
     % the value of B is ignored
     fprintf (f, 'define(`GB_getb'', `;'')\n') ;
+    fprintf (f, 'define(`GB_b_is_pattern'', `1'')\n') ;
 else
-    fprintf (f, 'define(`GB_getb'', `%s $1 = $2 [$3]'')\n', ytype) ;
+    fprintf (f, 'define(`GB_getb'', `%s $1 = GBX ($2, $3, $4)'')\n', ytype) ;
+    fprintf (f, 'define(`GB_b_is_pattern'', `0'')\n') ;
 end
 
 % to copy an entry from A to C
 if (isequal (xtype, 'GxB_FC32_t') && isequal (ztype, 'bool'))
-    fprintf (f, 'define(`GB_copy_a_to_c'', `$1 = (crealf ($2 [$3]) != 0) || (cimagf ($2 [$3]) != 0)'')\n') ;
+    fprintf (f, 'define(`GB_copy_a_to_c'', `$1 = (crealf (GBX ($2, $3, $4)) != 0) || (cimagf (GBX ($2, $3, $4)) != 0)'')\n') ;
 elseif (isequal (xtype, 'GxB_FC64_t') && isequal (ztype, 'bool'))
-    fprintf (f, 'define(`GB_copy_a_to_c'', `$1 = (creal ($2 [$3]) != 0) || (cimag ($2 [$3]) != 0)'')\n') ;
+    fprintf (f, 'define(`GB_copy_a_to_c'', `$1 = (creal (GBX ($2, $3, $4)) != 0) || (cimag (GBX ($2, $3, $4)) != 0)'')\n') ;
 elseif (isequal (xtype, 'float') && isequal (ztype, 'GxB_FC32_t'))
-    fprintf (f, 'define(`GB_copy_a_to_c'', `$1 = GxB_CMPLXF ($2 [$3], 0)'')\n') ;
+    fprintf (f, 'define(`GB_copy_a_to_c'', `$1 = GxB_CMPLXF (GBX ($2, $3, $4), 0)'')\n') ;
 elseif (isequal (xtype, 'double') && isequal (ztype, 'GxB_FC64_t'))
-    fprintf (f, 'define(`GB_copy_a_to_c'', `$1 = GxB_CMPLX ($2 [$3], 0)'')\n') ;
+    fprintf (f, 'define(`GB_copy_a_to_c'', `$1 = GxB_CMPLX (GBX ($2, $3, $4), 0)'')\n') ;
 else
-    fprintf (f, 'define(`GB_copy_a_to_c'', `$1 = $2 [$3]'')\n') ;
+    fprintf (f, 'define(`GB_copy_a_to_c'', `$1 = GBX ($2, $3, $4)'')\n') ;
 end
 
 % to copy an entry from B to C
 if (isequal (ytype, 'GxB_FC32_t') && isequal (ztype, 'bool'))
-    fprintf (f, 'define(`GB_copy_b_to_c'', `$1 = (crealf ($2 [$3]) != 0) || (cimagf ($2 [$3]) != 0)'')\n') ;
+    fprintf (f, 'define(`GB_copy_b_to_c'', `$1 = (crealf (GBX ($2, $3, $4)) != 0) || (cimagf (GBX ($2, $3, $4)) != 0)'')\n') ;
 elseif (isequal (ytype, 'GxB_FC64_t') && isequal (ztype, 'bool'))
-    fprintf (f, 'define(`GB_copy_b_to_c'', `$1 = (creal ($2 [$3]) != 0) || (cimag ($2 [$3]) != 0)'')\n') ;
+    fprintf (f, 'define(`GB_copy_b_to_c'', `$1 = (creal (GBX ($2, $3, $4)) != 0) || (cimag (GBX ($2, $3, $4)) != 0)'')\n') ;
 elseif (isequal (ytype, 'float') && isequal (ztype, 'GxB_FC32_t'))
-    fprintf (f, 'define(`GB_copy_b_to_c'', `$1 = GxB_CMPLXF ($2 [$3], 0)'')\n') ;
+    fprintf (f, 'define(`GB_copy_b_to_c'', `$1 = GxB_CMPLXF (GBX ($2, $3, $4), 0)'')\n') ;
 elseif (isequal (ytype, 'double') && isequal (ztype, 'GxB_FC64_t'))
-    fprintf (f, 'define(`GB_copy_b_to_c'', `$1 = GxB_CMPLX ($2 [$3], 0)'')\n') ;
+    fprintf (f, 'define(`GB_copy_b_to_c'', `$1 = GxB_CMPLX (GBX ($2, $3, $4), 0)'')\n') ;
 else
-    fprintf (f, 'define(`GB_copy_b_to_c'', `$1 = $2 [$3]'')\n') ;
+    fprintf (f, 'define(`GB_copy_b_to_c'', `$1 = GBX ($2, $3, $4)'')\n') ;
 end
 
 % type-specific IDIV
 if (~isempty (strfind (op, 'IDIV')))
     if (unsigned)
         op = strrep (op, 'IDIV', 'IDIV_UNSIGNED') ;
+        % TODO: use this instead
+        % mult = strrep (op, 'IDIV', 'idiv_uint%d', bits) ;
     else
         op = strrep (op, 'IDIV', 'IDIV_SIGNED') ;
+        % TODO: use this instead
+        % mult = strrep (op, 'IDIV', 'idiv_int%d', bits) ;
     end
+    % TODO: remove this
     op = strrep (op, ')', sprintf (', %d)', bits)) ;
 end
 
@@ -222,18 +238,18 @@ fprintf (f, 'define(`GB_disable'', `(%s)'')\n', disable) ;
 
 fclose (f) ;
 
-trim = 41 ;
+trim = 42 ;
 
 % construct the *.c file
 cmd = sprintf (...
-'cat control.m4 Generator/GB_binop.c | m4 | tail -n +%d > Generated/GB_binop__%s.c', ...
+'cat control.m4 Generator/GB_binop.c | m4 | tail -n +%d > Generated2/GB_binop__%s.c', ...
 trim, name) ;
 fprintf ('.') ;
 system (cmd) ;
 
 % append to the *.h file
 cmd = sprintf (...
-'cat control.m4 Generator/GB_binop.h | m4 | tail -n +%d >> Generated/GB_binop__include.h', trim) ;
+'cat control.m4 Generator/GB_binop.h | m4 | tail -n +%d >> Generated2/GB_binop__include.h', trim) ;
 system (cmd) ;
 
 delete ('control.m4') ;

@@ -16,25 +16,23 @@
 
 void GB_stringify_identity     // return string for identity value
 (
-    // output:
-    char *identity_macro,   // string with the #define macro
     // input:
+    FILE *fp,               // File to write macros, assumed open already
     GB_Opcode opcode,       // must be a built-in binary operator from a monoid
     GB_Type_code zcode      // type code of the binary operator
 )
 {
 
-    char *identity_value ;
     int ecode ;
 
     // get ecode from the opcode and zcode
     GB_enumify_identity (&ecode, opcode, zcode) ;
 
     // convert ecode to string
-    GB_charify_identity_or_terminal (&identity_value, ecode) ;
+    const char *identity_value = GB_charify_identity_or_terminal (ecode) ;
 
     // convert string to macro
-    GB_macrofy_identity (identity_macro, identity_value) ;
+    GB_macrofy_identity ( fp, identity_value) ;
 }
 
 //------------------------------------------------------------------------------
@@ -56,20 +54,20 @@ void GB_enumify_identity       // return enum of identity value
     switch (opcode)
     {
 
-        case GB_PLUS_opcode     : e = 0 ; break ; // 0
+        case GB_PLUS_binop_code     : e = 0 ; break ; // 0
 
-        case GB_TIMES_opcode    : e = 1 ; break ; // 1
+        case GB_TIMES_binop_code    : e = 1 ; break ; // 1
 
-        case GB_LAND_opcode     : 
-        // case GB_LXNOR_opcode : 
-        case GB_EQ_opcode       : 
+        case GB_LAND_binop_code     : 
+        // case GB_LXNOR_binop_code : 
+        case GB_EQ_binop_code       : 
             e = (zcode == GB_BOOL_code) ? 2 : (-1) ; break ; // true
 
-        case GB_LOR_opcode      : 
-        case GB_LXOR_opcode     : 
+        case GB_LOR_binop_code      : 
+        case GB_LXOR_binop_code     : 
             e = (zcode == GB_BOOL_code) ? 3 : (-1) ; break ; // false
 
-        case GB_MIN_opcode :
+        case GB_MIN_binop_code :
 
             switch (zcode)
             {
@@ -88,7 +86,7 @@ void GB_enumify_identity       // return enum of identity value
             }
             break ;
 
-        case GB_MAX_opcode :
+        case GB_MAX_binop_code :
 
             switch (zcode)
             {
@@ -107,14 +105,14 @@ void GB_enumify_identity       // return enum of identity value
             }
             break ;
 
-        case GB_ANY_opcode   : e = 0 ; break ; // 0
+        case GB_ANY_binop_code      : e = 0 ; break ; // 0
 
         // identity/terminal values for user-defined monoids must be provided
         // by an additional string.  This value is a place-holder to indicate
         // that the additional user-provided string must be used.
-        case GB_USER_opcode  : e = 31 ; break ;
+        case GB_USER_binop_code     : e = 31 ; break ;
 
-        default              : e = -1 ; break ; // invalid operator or type
+        default                     : e = -1 ; break ; // invalid op or type
     }
 
     (*ecode) = e ;
@@ -124,10 +122,8 @@ void GB_enumify_identity       // return enum of identity value
 // GB_charify_identity_or_terminal: string for identity/terminal value
 //------------------------------------------------------------------------------
 
-void GB_charify_identity_or_terminal
+const char *GB_charify_identity_or_terminal // return string encoding the value
 (
-    // output:
-    char **value_string,        // string encoding the value
     // input:
     int ecode                   // enumerated identity/terminal value
 )
@@ -155,10 +151,10 @@ void GB_charify_identity_or_terminal
         case 10 : f = "UINT32_MAX"  ; break ;
         case 11 : f = "UINT64_MAX"  ; break ;
         case 12 : f = "INFINITY"    ; break ;
-        case 13 ; f = "INT8_MIN"    ; break ;
-        case 14 ; f = "INT16_MIN"   ; break ;
-        case 15 ; f = "INT32_MIN"   ; break ;
-        case 16 ; f = "INT64_MIN"   ; break ;
+        case 13 : f = "INT8_MIN"    ; break ;
+        case 14 : f = "INT16_MIN"   ; break ;
+        case 15 : f = "INT32_MIN"   ; break ;
+        case 16 : f = "INT64_MIN"   ; break ;
         case 17 : f = "-INFINITY"   ; break ;
         case 18 : f = "0"           ; break ;       // for the ANY monoid only
 
@@ -180,7 +176,7 @@ void GB_charify_identity_or_terminal
         default : f = NULL ;        ; break ;
     }
 
-    (*value_string) = f ;
+    return (f) ;
 }
 
 //------------------------------------------------------------------------------
@@ -189,13 +185,11 @@ void GB_charify_identity_or_terminal
 
 void GB_macrofy_identity
 (
-    // output:
-    char *identity_macro,        // string with #define macro
     // input:
+    FILE *fp,                   // File to write macros, assumed open already
     const char *value_string    // string defining the identity value
 )
 {
-    snprintf (identity_macro, GB_CUDA_STRLEN, "#define GB_IDENTITY (%s)",
-        value_string) ;
+    fprintf ( fp, "#define GB_IDENTITY (%s)\n", value_string) ;
 }
 

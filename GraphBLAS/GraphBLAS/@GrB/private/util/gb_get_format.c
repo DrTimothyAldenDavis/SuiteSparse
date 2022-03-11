@@ -2,7 +2,7 @@
 // gb_get_format: determine the format of a matrix result 
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 //------------------------------------------------------------------------------
@@ -29,7 +29,7 @@
 
 // (6) Otherwise, the global default format is used for C.
 
-#include "gb_matlab.h"
+#include "gb_interface.h"
 
 GxB_Format_Value gb_get_format          // GxB_BY_ROW or GxB_BY_COL
 (

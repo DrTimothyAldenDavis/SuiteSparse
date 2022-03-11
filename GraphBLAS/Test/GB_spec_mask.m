@@ -1,5 +1,5 @@
 function R = GB_spec_mask (C, Mask, Z, C_replace, Mask_complement, identity)
-%GB_SPEC_MASK a pure MATLAB implementation of GrB_mask
+%GB_SPEC_MASK mimic of GrB_mask
 %
 % Computes C<Mask> = Z, in GraphBLAS notation.
 %
@@ -20,7 +20,7 @@ function R = GB_spec_mask (C, Mask, Z, C_replace, Mask_complement, identity)
 % This method operates on both plain matrices and on structs with
 % matrix, pattern, and class components.
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 if (nargin < 6)

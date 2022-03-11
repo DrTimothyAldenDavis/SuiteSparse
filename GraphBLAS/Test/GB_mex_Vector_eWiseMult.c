@@ -2,7 +2,7 @@
 // GB_mex_Vector_eWiseMult: w<mask> = accum(w,u.*v)
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -109,7 +109,7 @@ void mexFunction
     // w<mask> = accum(w,u.*v)
     METHOD (GrB_Vector_eWiseMult_BinaryOp_(w, mask, accum, mult, u, v, desc)) ;
 
-    // return w to MATLAB as a struct and free the GraphBLAS w
+    // return w as a struct and free the GraphBLAS w
     pargout [0] = GB_mx_Vector_to_mxArray (&w, "w output", true) ;
 
     FREE_ALL ;

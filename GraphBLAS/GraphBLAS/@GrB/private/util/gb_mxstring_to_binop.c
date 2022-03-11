@@ -1,17 +1,17 @@
 //------------------------------------------------------------------------------
-// gb_mxstring_to_binop: get a GraphBLAS operator from a MATLAB string
+// gb_mxstring_to_binop: get a GraphBLAS operator from a built-in string
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2021, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 //------------------------------------------------------------------------------
 
-#include "gb_matlab.h"
+#include "gb_interface.h"
 
 GrB_BinaryOp gb_mxstring_to_binop       // return binary operator from a string
 (
-    const mxArray *mxstring,            // MATLAB string
+    const mxArray *mxstring,            // built-in string
     const GrB_Type atype,               // type of A
     const GrB_Type btype                // type of B
 )
@@ -41,6 +41,6 @@ GrB_BinaryOp gb_mxstring_to_binop       // return binary operator from a string
     // convert the string to a binary operator
     //--------------------------------------------------------------------------
 
-    return (gb_string_to_binop (opstring, atype, btype)) ;
+    return (gb_string_to_binop_or_idxunop (opstring, atype, btype, NULL, NULL));
 }
 

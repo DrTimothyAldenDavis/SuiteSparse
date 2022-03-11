@@ -7,7 +7,7 @@
 # and GraphBLAS.  The configuration settings for GraphBLAS are determined by
 # GraphBLAS/CMakeLists.txt
 
-SUITESPARSE_VERSION = 5.10.1
+SUITESPARSE_VERSION = 5.11.0
 
     #---------------------------------------------------------------------------
     # determine what system we are on
@@ -261,8 +261,6 @@ SUITESPARSE_VERSION = 5.10.1
                 MAGMA_LIB     = -L/opt/magma-2.4.0/lib/ -lmagma
         NVCC          = $(CUDA_PATH)/bin/nvcc
         NVCCFLAGS     = -Xcompiler -fPIC -O3 \
-                            -gencode=arch=compute_50,code=sm_50 \
-                            -gencode=arch=compute_53,code=sm_53 \
                             -gencode=arch=compute_53,code=sm_53 \
                             -gencode=arch=compute_60,code=compute_60
     endif
@@ -336,17 +334,9 @@ SUITESPARSE_VERSION = 5.10.1
     #
     # -DNPARTITION      do not include the CHOLMOD partition module
     # -DNEXPERT         do not include the functions in SuiteSparseQR_expert.cpp
-    # -DHAVE_TBB        enable the use of Intel's Threading Building Blocks
     # -DGPU_BLAS        enable the use of the CUDA BLAS
 
     SPQR_CONFIG ?= $(GPU_CONFIG)
-
-    # to compile with Intel's TBB, use TBB=-ltbb -DSPQR_CONFIG=-DHAVE_TBB
-    TBB ?=
-    # TBB = -ltbb -DSPQR_CONFIG=-DHAVE_TBB
-
-    # TODO: this *mk file should auto-detect the presence of Intel's TBB,
-    # and set the compiler flags accordingly.
 
 #===============================================================================
 # System-dependent configurations
@@ -359,6 +349,7 @@ SUITESPARSE_VERSION = 5.10.1
     ifeq ($(UNAME),Linux)
         # add the posix realtime extensions library: librt
         LDLIBS += -lrt
+        LDFLAGS += -Wl,-rpath=$(INSTALL_LIB)
     endif
 
     #---------------------------------------------------------------------------
@@ -583,7 +574,6 @@ config:
 	@echo 'parallel make jobs:       JOBS=           ' '$(JOBS)'
 	@echo 'BLAS library:             BLAS=           ' '$(BLAS)'
 	@echo 'LAPACK library:           LAPACK=         ' '$(LAPACK)'
-	@echo 'Intel TBB library:        TBB=            ' '$(TBB)'
 	@echo 'Other libraries:          LDLIBS=         ' '$(LDLIBS)'
 	@echo 'static library:           AR_TARGET=      ' '$(AR_TARGET)'
 	@echo 'shared library (full):    SO_TARGET=      ' '$(SO_TARGET)'
