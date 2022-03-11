@@ -44,7 +44,7 @@ endif
 #       sudo make install INSTALL=/usr/local
 # See SuiteSparse/README.md for more details.
 # (note that CSparse is not installed; CXSparse is installed instead)
-install: metisinstall
+install: metisinstall gbinstall moninstall
 	( cd SuiteSparse_config && $(MAKE) install )
 	( cd Mongoose  && $(MAKE) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' install )
 	( cd AMD && $(MAKE) install )
