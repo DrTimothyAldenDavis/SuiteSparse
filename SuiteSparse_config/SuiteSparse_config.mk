@@ -187,7 +187,7 @@ SUITESPARSE_VERSION = 5.11.0
             #   -Wl,--end-group -lpthread -lm
             # using dynamic linking:
             ifeq ($(UNAME),Linux)
-                BLAS ?= -lmkl_intel_lp64 -lmkl_core -lmkl_intel_thread -liomp5 -lpthread -lm
+                BLAS ?= -lmkl_intel_lp64 -lmkl_gnu_thread -lmkl_core -lgomp -lpthread -lm -ldl
                 LAPACK ?=
             endif
         else
