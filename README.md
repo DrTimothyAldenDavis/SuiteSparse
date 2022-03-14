@@ -213,6 +213,7 @@ Packages in SuiteSparse, and files in this directory:
                 (not builtin to MATLAB, however).
 
     SuiteSparse_install.m       install SuiteSparse for MATLAB
+    SuiteSparse_paths.m         set paths for SuiteSparse MATLAB mexFunctions
 
     SuiteSparse_test.m          exhaustive test for SuiteSparse in MATLAB
 
@@ -278,29 +279,59 @@ METIS 5.0.1 is distributed with SuiteSparse, and is Copyright (c)
 by George Karypis.  Please refer to that package for its License.
 
 -----------------------------------------------------------------------------
-QUICK START FOR MATLAB USERS (Linux, Mac, or Windows):
+QUICK START FOR MATLAB USERS (Linux or Mac):
 -----------------------------------------------------------------------------
 
 Uncompress the SuiteSparse.zip or SuiteSparse.tar.gz archive file (they contain
-the same thing).  Next, compile the GraphBLAS library (see instructions in
-GraphBLAS/Doc).  Then in the MATLAB Command Window, cd to the SuiteSparse
-directory and type SuiteSparse_install.  All packages will be compiled, and
-several demos will be run.  To run a (long!) exhaustive test, do
-SuiteSparse_test.
+the same thing).  Suppose you place SuiteSparse in the /home/me/SuiteSparse
+folder.
+
+Add the SuiteSparse/lib folder to your run-time library path.  On Linux, add
+this to your ~/.bashrc script, assuming /home/me/SuiteSparse is the location of
+your copy of SuiteSparse:
+
+    LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/me/SuiteSparse/lib
+    export LD_LIBRARY_PATH
+
+For the Mac, use this instead, in your ~/.zshrc script, assuming you place
+SuiteSparse in /Users/me/SuiteSparse:
+
+    DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/Users/me/SuiteSparse/lib
+    export DYLD_LIBRARY_PATH
+
+Next, compile the GraphBLAS library.  In the system shell while in the
+SuiteSparse folder, type "make gbinstall" if you have MATLAB R2020b or earlier,
+or type "make gbrenamed" if you have MATLAB 9.10 (R2021a) or later.
+
+Then in the MATLAB Command Window, cd to the SuiteSparse directory and type
+SuiteSparse_install.  All packages will be compiled, and several demos will be
+run.  To run a (long!) exhaustive test, do SuiteSparse_test.
+
+Save your MATLAB path for future sessions with the MATLAB pathtool or savepath
+commands.  If those methods fail because you don't have system-wide permission,
+add the new paths to your startup.m file, normally in
+Documents/MATLAB/startup.m.  You can also use the SuiteSparse_paths method to
+set all your paths at the start of each MATLAB session.
+
+For Windows:  My apologies, but I don't support Windows so you will need to
+revise the above instructions for Windows yourself.
 
 -----------------------------------------------------------------------------
 QUICK START FOR THE C/C++ LIBRARIES:
 -----------------------------------------------------------------------------
 
-For just GraphBLAS, do this:
+Type the following in this directory:
 
-    cd GraphBLAS/build ; cmake .. ; make ; cd ../Demo ; ./demo 
-    cd ../build ; sudo make install
+    make ; make install
 
-For all other packages, type 'make' in this directory.  All libraries will be
-created and copied into SuiteSparse/lib.  All include files need by the
-applications that use SuiteSparse are copied into SuiteSparse/include.   All
-user documenation is copied into SuiteSparse/share/doc.
+or, if want to use GraphBLAS in recent versions of MATLAB, do:
+
+    make ; make gbrenamed ; make install
+
+All libraries will be created and copied into SuiteSparse/lib.  All include
+files need by the applications that use SuiteSparse are copied into
+SuiteSparse/include.   All user documenation is copied into
+SuiteSparse/share/doc.
 
 Be sure to first install all required libraries:  BLAS and LAPACK for UMFPACK,
 CHOLMOD, and SPQR, and GMP and MPFR for SLIP_LU.  Be sure to use the latest
@@ -316,10 +347,10 @@ or to compile just the libraries without running the demos, do:
     make library
 
 Any program that uses SuiteSparse can thus use a simpler rule as compared to
-earlier versions of SuiteSparse.  If you add /home/myself/SuiteSparse/lib to
+earlier versions of SuiteSparse.  If you add /home/me/SuiteSparse/lib to
 your library search patch, you can do the following (for example):
 
-    S = /home/myself/SuiteSparse
+    S = /home/me/SuiteSparse
     cc myprogram.c -I$(S)/include -lumfpack -lamd -lcholmod -lsuitesparseconfig -lm
 
 To change the C and C++ compilers, and to compile in parallel use:
@@ -375,6 +406,11 @@ SuiteSparse is in /home/me/SuiteSparse, for example, then add this to your
 
     LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/me/SuiteSparse/lib:/my/path
     export LD_LIBRARY_PATH
+
+For the Mac, use this instead:
+
+    DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/home/me/SuiteSparse/lib:/my/path
+    export DYLD_LIBRARY_PATH
 
 Then do the following (use "sudo make ..." if needed):
 

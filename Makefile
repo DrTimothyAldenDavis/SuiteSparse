@@ -301,6 +301,12 @@ gbinstall: gb
 	echo $(CMAKE_OPTIONS)
 	( cd GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' install )
 
+# compile and install GraphBLAS libgraphblas_renamed, for MATLAB
+gbrenamed:
+	echo $(CMAKE_OPTIONS)
+	( cd GraphBLAS/GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' )
+	( cd GraphBLAS/GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' install )
+
 # just compile Mongoose
 mon:
 	( cd Mongoose && $(MAKE) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' )
