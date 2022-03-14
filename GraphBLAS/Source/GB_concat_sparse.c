@@ -331,7 +331,7 @@ GrB_Info GB_concat_sparse           // concatenate into a sparse matrix
             else
             {
 
-                #ifndef GBCOMPACT
+                #ifndef GBCUDA_DEV
                 if (ccode == acode)
                 {
                     // no typecasting needed

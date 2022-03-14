@@ -48,9 +48,6 @@ static inline int GB_ngpus_to_use
     // get the current GxB_GPU_CONTROL setting
     GrB_Desc_Value gpu_control = GB_Global_gpu_control_get ( ) ;
 
-    // HACK:
-    gpu_control = GxB_GPU_ALWAYS ;
-
     int gpu_count = GB_Global_gpu_count_get ( ) ;
     if (gpu_control == GxB_GPU_NEVER || gpu_count == 0)
     {
@@ -60,7 +57,8 @@ static inline int GB_ngpus_to_use
     else if (gpu_control == GxB_GPU_ALWAYS)
     {
         // always use all available GPU(s)
-        printf ("(using the GPU) ") ;
+        // FIXME: allow 1 to gpu_count to be requested
+        printf ("(using the GPU: %d) ", gpu_count) ;
         return (gpu_count) ;
     }
     else

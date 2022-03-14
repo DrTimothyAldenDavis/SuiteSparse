@@ -78,7 +78,8 @@ void GB_enumify_semiring   // enumerate a semiring
     //--------------------------------------------------------------------------
     // get the semiring
     //--------------------------------------------------------------------------
-    printf("inside enumify: %lu\n", semiring);
+    printf("inside enumify: %p\n", semiring);
+    GxB_print (semiring, 3) ;
 
     printf("Getting semiring add\n");
     GrB_Monoid add = semiring->add ;
@@ -232,11 +233,15 @@ void GB_enumify_semiring   // enumerate a semiring
 
     // total scode bits: 60
 
-    printf("coinstructing semiring scode\n");
+    printf("constructing semiring scode\n");
 
 #define LSHIFT(x,k) (((uint64_t) x) << k)
-    // TODO: We need to
-    printf("add_ecode: %d, mult_ecode: %d\n", add_ecode, mult_ecode);
+    printf("before: add_ecode: %d, id_ecode: %d, term_ecode: %d, mult_ecode: %d, flipxy: %d, zcode: %d, "
+           "xcode: %d, ycode: %d, mask_ecode: %d, ccode: %d, acode: %d, bcode: %d, csparsity: %d, msparsity: %d, "
+           "asparsity: %d, bsparsity: %d\n", add_ecode, id_ecode, term_ecode, mult_ecode, flipxy, zcode, xcode, ycode, mask_ecode,
+           ccode, acode, bcode, csparsity, msparsity, asparsity, bsparsity);
+
+
 
     (*scode) =
                                             // range        bits
@@ -255,8 +260,6 @@ void GB_enumify_semiring   // enumerate a semiring
                 // mask
                 LSHIFT (mask_ecode , 20) |  // 0 to 13      4
 
-                printf("serialized mask ecode: %d\n", mask_ecode);
-
                 // types of C, A, and B (bool, int*, uint*, etc)
                 LSHIFT (ccode      , 16) |  // 1 to 14      4
                 LSHIFT (acode      , 12) |  // 0 to 14      4
@@ -267,6 +270,8 @@ void GB_enumify_semiring   // enumerate a semiring
                 LSHIFT (msparsity  ,  4) |  // 0 to 3       2
                 LSHIFT (asparsity  ,  2) |  // 0 to 3       2
                 LSHIFT (bsparsity  ,  0) ;  // 0 to 3       2
+
+                printf("serialized_scode: %lu\n", *scode);
 
 
     printf("done enumify semiring\n");
@@ -291,8 +296,8 @@ void GB_macrofy_semiring   // construct all macros for a semiring
     // extract the semiring scode
     //--------------------------------------------------------------------------
 
-#define RSHIFT(x,k,b) (x >> k) & ((0x00000001 << b) -1)
-//#define RSHIFT(x,k,b) (x >> k) & ((((uint64_t) 1) << b) - 1)
+#define RSHIFT(x,k,b) (x >> k) & ((((uint64_t)0x00000001) << b) -1)
+//#define RSHIFT(x,k,b) (x >> k) & ((((uint64_t) 1) << (64-k) + b) - 1)
 
     // monoid
     int add_ecode   = RSHIFT (scode, 55, 5) ;
@@ -313,15 +318,28 @@ void GB_macrofy_semiring   // construct all macros for a semiring
     printf("deserialized mask ecode: %d\n", mask_ecode);
 
     // types of C, A, and B
-    int acode       = RSHIFT (scode, 16, 4) ;
-    int bcode       = RSHIFT (scode, 12, 4) ;
-    int ccode       = RSHIFT (scode,  8, 4) ;
+    int ccode       = RSHIFT (scode, 16, 4) ;
+    int acode       = RSHIFT (scode, 12, 4) ;
+    int bcode       = RSHIFT (scode,  8, 4) ;
 
+    printf("deserialized acode: %d\n", acode);
+
+    // TODO: I have a suspicion here that these might not
+    // be getting serialized properly because they are the
+    // only elements which require only 2 bits.
     // formats of C, A, and B
     int csparsity   = RSHIFT (scode,  6, 2) ;
     int msparsity   = RSHIFT (scode,  4, 2) ;
     int asparsity   = RSHIFT (scode,  2, 2) ;
     int bsparsity   = RSHIFT (scode,  0, 2) ;
+
+    printf("after: add_ecode: %d, id_ecode: %d, term_ecode: %d, mult_ecode: %d, flipxy: %d, zcode: %d, "
+           "xcode: %d, ycode: %d, mask_ecode: %d, ccode: %d, acode: %d, bcode: %d, csparsity: %d, msparsity: %d, "
+           "asparsity: %d, bsparsity: %d\n", add_ecode, id_ecode, term_ecode, mult_ecode, flipxy, zcode, xcode, ycode, mask_ecode,
+           ccode, acode, bcode, csparsity, msparsity, asparsity, bsparsity);
+
+    printf("a sparsity ecode after rshift: %d\n", asparsity);
+
 
     //--------------------------------------------------------------------------
     // construct macros to load scalars from A and B (and typecast) them

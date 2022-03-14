@@ -44,6 +44,7 @@
 #include "GrB_Semiring_new.c"
 #include "GB_Monoid_new.c"
 #include "GrB_Monoid_new.c"
+#include "GB_cuda_buckets.h"
 
 #include "type_name.hpp"
 
@@ -84,7 +85,7 @@ template<typename T1, typename T2, typename T3> class spdotFactory ;
 
 
 //AxB_dot3_phase1 kernel launchers
-template<  typename T_C, typename T_M, typename T_A, typename T_B> class phase1launchFactory ;
+template<  typename T_C, typename T_M, typename T_A, typename T_B, int threads_per_block, int chunk_size> class phase1launchFactory ;
 
 //AxB_dot3_phase3 kernel launchers
 
@@ -110,81 +111,65 @@ const std::vector<std::string> compiler_flags{
 
 const std::vector<std::string> header_names ={};
 
-
 // FIXME: Need to be able to convert from GrB_Type->std::type to populate these templates
 // this isn't going to be known at compile time.
-template<  typename T_C, typename T_M, typename T_A, typename T_B> 
+template<  typename T_C, typename T_M, typename T_A, typename T_B, int threads_per_block=32, int chunk_size = 128>
 class phase1launchFactory 
 {
   std::string base_name = "GB_jit";
   std::string kernel_name = "AxB_phase1";
-//  TODO REMOVE: std::string template_name = "GB_jit_AxB_phase1.cu";
-  GrB_Monoid monoid_;
-  GrB_BinaryOp binop_;
+
+  GB_cuda_semiring_factory &semiring_factory_;
 
 public:
 
+  int get_number_of_blocks(GrB_Matrix M) {
+      int number_of_sms = GB_Global_gpu_sm_get (0);
+      int nblks = ( GB_nnz (M) + chunk_size - 1)/chunk_size;
+      return GB_IMIN( nblks,  128 * number_of_sms);
+  }
+
+  int get_threads_per_block() {
+      return threads_per_block;
+  }
+
   // This assumes the needed state on the GB_cuda_semiring_factory
   // has already been populated
-  phase1launchFactory(GrB_Monoid monoid, GrB_BinaryOp binop): monoid_(monoid), binop_(binop){}
+  phase1launchFactory(GB_cuda_semiring_factory &semiring_factory): semiring_factory_(semiring_factory){}
 
-  bool jitGridBlockLaunch(int gridsz, int blocksz, 
-                          int64_t *nanobuckets, int64_t *blockBucket,
-                          // FIXME: This should be GrB_Matrix directly (matrix is just a builder for testing)
-                          GrB_Matrix C, GrB_Matrix M, GrB_Matrix A, GrB_Matrix B)
-     {
-      
-      bool result = false; 
+  bool jitGridBlockLaunch(int64_t *nanobuckets, int64_t *blockBucket,
+                          GrB_Matrix C, GrB_Matrix M, GrB_Matrix A, GrB_Matrix B) {
 
-      // Defining dummy instance only so we can introspect type
-      T_M dumM;
+    // Idea is to have each task work on a continguous block of columns of C
+    // Note: for small tests, mnz is small so ntasks is be governed by
+    // chunksize, not 128*number_of_sms.  For large problems in production,
+    // chunksize is less important since ntasks will likely be bounded by
+    // 128*number_of_sms (say 128*80 = 10,240 on a V100).
 
-      dim3 grid(gridsz);
-      dim3 block(blocksz);
-
-//    std::cout << "Semiring: " << semiring << std::endl;
-
-    GB_cuda_semiring_factory mysemiringfactory = GB_cuda_semiring_factory ( ) ;
-
-    /**
-     * Build semiring
-     */
-    GrB_Semiring mysemiring;
-//
-//    // FIXME: These should be created from the given template types
-    auto grb_info = GrB_Semiring_new(&mysemiring, monoid_, binop_);
-
-    std::cout << "semiring pointer: " << mysemiring << std::endl;
-    bool flipxy = false;
-    bool mask_struct = false;
-    bool mask_comp = false;
+    // Defining dummy instance only so we can introspect type
+    T_M dumM;
 
     std::cout << "A TYpe: " << A->type << std::endl;
     std::cout << "B TYpe: " << B->type << std::endl;
 //    // (1) create the semiring code and name
-    mysemiringfactory.semiring_factory ( mysemiring, flipxy,
-        C->type, M->type,
-        A->type, B->type,
-        mask_struct,  // matrix types
-        mask_comp, GB_sparsity(C),
-        GB_sparsity(M),
-        GB_sparsity(A),
-        GB_sparsity(B) ) ;
 
     //    // (2) ensure the jitifier has "GB_semiring_[mysemiring.sr_code].h"
     jit::GBJitCache filecache = jit::GBJitCache::Instance() ;
-    filecache.getFile (mysemiringfactory) ;
+    filecache.getFile (semiring_factory_) ;
 
     std::stringstream string_to_be_jitted ;
     std::vector<std::string> template_types = {GET_TYPE_NAME(dumM)};
 
-      std::string hashable_name = base_name + "_" + kernel_name;
-      string_to_be_jitted << hashable_name << std::endl <<
-      R"(#include ")" << jit::get_user_home_cache_dir() << "/" << mysemiringfactory.filename << R"(")" << std::endl <<
-      R"(#include ")" << hashable_name << R"(.cu")" << std::endl;
+    std::string hashable_name = base_name + "_" + kernel_name;
+    string_to_be_jitted << hashable_name << std::endl <<
+    R"(#include ")" << jit::get_user_home_cache_dir() << "/" << semiring_factory_.filename << R"(")" << std::endl <<
+    R"(#include ")" << hashable_name << R"(.cu")" << std::endl;
     std::cout << string_to_be_jitted.str();
 
+    bool result = false;
 
+    dim3 grid(get_number_of_blocks(M));
+    dim3 block(get_threads_per_block());
 
     jit::launcher( hashable_name,
                    string_to_be_jitted.str(),
@@ -202,7 +187,7 @@ public:
      }
 };
 
-template<  typename T_C>
+template<  typename T_C, int threads_per_block = 32, int chunk_size = 128>
 class phase2launchFactory
 {
 
@@ -211,35 +196,27 @@ class phase2launchFactory
 
 public:
 
-    #if 0
-    void AxB_phase2
-    (
-        // input, not modified:
-        int64_t *__restrict__ nanobuckets,    // array of size 12-blockDim.x-by-nblocks
-        int64_t *__restrict__ blockbucket,    // global bucket count, of size 12*nblocks
-        // output:
-        int64_t *__restrict__ bucketp,        // global bucket cumsum, of size 13
-        int64_t *__restrict__ bucket,         // global buckets, of size cnz (== mnz)
-        int64_t *__restrict__ offset,         // global offsets, for each bucket
-        // inputs, not modified:
-        const int nblocks         // input number of blocks to reduce
-    )
-    #endif
+  int get_threads_per_block() {
+        return threads_per_block;
+  }
 
-  bool jitGridBlockLaunch(// launcher input:
-                          int gridsz, int blocksz, 
-                          // parameters to AxB_phase2:
+  int get_number_of_blocks(GrB_Matrix M) {
+    const int64_t mnz = GB_nnz (M) ;
+    int ntasks = ( mnz +chunk_size -1)/chunk_size;
+    // Idea is to have each task work on a continguous block of columns of C
+    ntasks = GB_IMIN( ntasks,  128*GB_Global_gpu_sm_get (0)) ;    // ntasks will be grid.x
+    return (ntasks + threads_per_block - 1) / threads_per_block ;
+  }
+
+  bool jitGridBlockLaunch(// parameters to AxB_phase2:
                           int64_t *nanobuckets, int64_t *blockBucket, 
                           int64_t *bucketp, int64_t *bucket, int64_t *offset,
-                          const int64_t nblocks )
-     {
-      
-      bool result = false; 
+                          GrB_Matrix M) {
 
-      dim3 grid(gridsz);
-      dim3 block(blocksz);
+    bool result = false;
 
-//      std::cout<< kernel_name<<" with types " <<GET_TYPE_NAME(dumC)<<std::endl;
+      dim3 grid(get_number_of_blocks(M));
+      dim3 block(get_threads_per_block());
 
       std::string hashable_name = base_name + "_" + kernel_name;
       std::stringstream string_to_be_jitted ;
@@ -249,6 +226,7 @@ public:
       // dump it:
       std::cout << string_to_be_jitted.str();
 
+      const int64_t mnz = GB_nnz (M) ;
       jit::launcher( hashable_name,
                      string_to_be_jitted.str(),
                      header_names, 
@@ -257,7 +235,7 @@ public:
                    .set_kernel_inst( kernel_name, {})
                    .configure(grid, block)
                    // parameters to AxB_phase2:
-                   .launch( nanobuckets, blockBucket, bucketp, bucket, offset, nblocks);
+                   .launch( nanobuckets, blockBucket, bucketp, bucket, offset, mnz);
 
       checkCudaErrors( cudaDeviceSynchronize() );
       result= true;
@@ -267,7 +245,7 @@ public:
 
 };
 
-template<  typename T_C> 
+template<  typename T_C, int threads_per_block = 32, int chunk_size = 128>
 class phase2endlaunchFactory 
 {
 
@@ -276,35 +254,30 @@ class phase2endlaunchFactory
 
 public: 
 
-    #if 0
-    // The jitified kernel itself:
-    void GB_AxB_dot3_phase2end
-    (
-        // input, not modified:
-              int64_t *__restrict__ nanobuckets,    // array of size 12-blockDim.x-by-nblocks
-        const int64_t *__restrict__ blockbucket,    // global bucket count, of size 12*nblocks
-        // output:
-        const int64_t *__restrict__ bucketp,        // global bucket cumsum, of size 13 
-              int64_t *__restrict__ bucket,         // global buckets, of size cnz (== mnz)
-        const int64_t *__restrict__ offset,         // global offsets, for each bucket
-        // inputs, not modified:
-        const GrB_Matrix C,            // output matrix
-        const int64_t cnz        // number of entries in C and M 
-    )
-    #endif
+  int get_threads_per_block() {
+        return threads_per_block;
+  }
 
-  bool jitGridBlockLaunch(int gridsz, int blocksz, 
-                          int64_t *nanobuckets, int64_t *blockBucket, 
+  int get_number_of_blocks(GrB_Matrix M) {
+    const int64_t mnz = GB_nnz (M) ;
+    int ntasks = ( mnz +chunk_size -1)/chunk_size;
+    int number_of_sms = GB_Global_gpu_sm_get (0);
+
+    // Idea is to have each task work on a continguous block of columns of C
+    return GB_IMIN( ntasks,  128*number_of_sms) ;    // ntasks will be grid.x
+  }
+
+  bool jitGridBlockLaunch(int64_t *nanobuckets, int64_t *blockBucket,
                           int64_t *bucketp, int64_t *bucket, int64_t *offset,
-                          GrB_Matrix C, const int64_t cnz)
+                          GrB_Matrix C, GrB_Matrix M)
      {
       
       bool result = false; 
 
       T_C dumC;
 
-      dim3 grid(gridsz);
-      dim3 block(blocksz);
+      dim3 grid(get_number_of_blocks(M));
+      dim3 block(get_threads_per_block());
 
       std::string hashable_name = base_name + "_" + kernel_name;
       std::stringstream string_to_be_jitted ;
@@ -321,7 +294,7 @@ public:
                      file_callback)
                    .set_kernel_inst(  kernel_name , {})
                    .configure(grid, block)
-                   .launch( nanobuckets, blockBucket, bucketp, bucket, offset, C, cnz);
+                   .launch( nanobuckets, blockBucket, bucketp, bucket, offset, C, GB_nnz (M));
 
       checkCudaErrors( cudaDeviceSynchronize() );
       result= true;
@@ -331,31 +304,30 @@ public:
 
 };
 
-template<  typename T_C, typename T_M, typename T_A, typename T_B, typename T_XY, typename T_Z> 
+template<  typename T_C, typename T_M, typename T_A, typename T_B, typename T_XY, typename T_Z>
 class phase3launchFactory
 {
   std::string base_name = "GB_jit";
   std::string kernel_name = "AxB_dot3";
-  std::string op_name = "phase3";
 
-  GB_cuda_semiring_factory &semiring_factory;
+  GB_cuda_semiring_factory &semiring_factory_;
 
+  GB_bucket_code bucket_code_;
   GB_callback callback_generator;
 
 public:
-  // This assumes the needed state on the GB_cuda_semiring_factory
-  // has already been populated
-  phase3launchFactory(GB_cuda_semiring_factory &mysemiring) {
-      semiring_factory = mysemiring;
-  }
 
-  bool jitGridBlockLaunch(int gridsz, int blocksz,
-                          int64_t *nanobuckets, int64_t *blockBucket,
-                          int64_t *bucketp,
-                          int64_t start, int64_t end, int64_t *bucket,
-                          matrix<T_C> *C, matrix<T_M> *M, matrix<T_A> *A, matrix<T_B> *B,
-                          int sz) 
-     {
+
+
+  /**
+   * This assumes the needed state on the GB_cuda_semiring_factory has already been populated.
+   * The `bucket_code` determines which kernel is launched
+   */
+  phase3launchFactory(GB_cuda_semiring_factory &mysemiringfactory, GB_bucket_code bucket_code):
+      semiring_factory_(mysemiringfactory), bucket_code_(bucket_code) {}
+
+  bool jitGridBlockLaunch(int64_t start, int64_t end, int64_t *bucketp, int64_t *bucket,
+                          GrB_Matrix C,  GrB_Matrix M, GrB_Matrix A, GrB_Matrix B) {
       
       bool result = false; 
 
@@ -367,59 +339,179 @@ public:
       T_Z dumZ;
 
 
-      dim3 grid(gridsz);
-      dim3 block(blocksz);
+    //----------------------------------------------------------------------
+    // phase3: do the numerical work
+    //----------------------------------------------------------------------
 
-      std::string hashable_name = base_name + "_" + kernel_name + "_" + op_name;
+    C->nzombies = bucketp[1];  //set pre-zombie counts
+    const int64_t Cnz = GB_nnz (C) ;
+    const int64_t mnvec = M->nvec ;
 
-      std::stringstream string_to_be_jitted ;
-      string_to_be_jitted <<
-      kernel_name << R"("
-      #include )" << hashable_name << R"(".cuh")";
+    int gridsz, blocksz, sz = 4;
 
-      // dump it:
-      std::cout << string_to_be_jitted.str();
+    std::stringstream final_kernel_name_ss;
+    final_kernel_name_ss << kernel_name << "_";
 
-      jit::launcher( base_name + kernel_name,
-                     string_to_be_jitted.str(),
-                     header_names,
-                     compiler_flags,
-                     file_callback)
-                   .set_kernel_inst(  base_name + kernel_name,
-                                    { GET_TYPE_NAME(dumC),
-                                      GET_TYPE_NAME(dumA),
-                                      GET_TYPE_NAME(dumB),
-                                      GET_TYPE_NAME(dumXY),
-                                      GET_TYPE_NAME(dumXY),
-                                      GET_TYPE_NAME(dumZ)})
-                   .configure(grid, block)
-                   .launch( nanobuckets, blockBucket, bucketp, start, end, bucket, C,  M, A, B, sz);
+    /**
+     * Configure geometry and kernel function name based on sparsity of C and number of vectors in M
+     */
+    configure(Cnz, mnvec, final_kernel_name_ss, blocksz, gridsz, sz);
 
+    std::string hashable_name = base_name + "_" + final_kernel_name_ss.str();
+    std::stringstream string_to_be_jitted ;
 
-//      jit::launcher( base_name + SR + OpName+ GET_TYPE_NAME(dumZ),
-//                     jit_template,
-//                     header_names,
-//                     compiler_flags,
-//                     file_callback)
-//
-//                   .set_kernel_inst(  kernel_name+OpName,
-//                                    { GET_TYPE_NAME(dumC),
-//                                      GET_TYPE_NAME(dumA),
-//                                      GET_TYPE_NAME(dumB),
-//                                      GET_TYPE_NAME(dumXY),
-//                                      GET_TYPE_NAME(dumXY),
-//                                      GET_TYPE_NAME(dumZ)
-//                                      })
-//                   .configure(grid, block)
-//                   .launch( start, end, Bucket,
-//                            C, M, A, B, sz);
+    jit::GBJitCache filecache = jit::GBJitCache::Instance() ;
+    filecache.getFile (semiring_factory_) ;
 
-      checkCudaErrors( cudaDeviceSynchronize() );
-      result= true;
+    string_to_be_jitted << hashable_name << std::endl <<
+    R"(#include ")" << jit::get_user_home_cache_dir() << "/" << semiring_factory_.filename << R"(")" << std::endl <<
+    R"(#include ")" << hashable_name << R"(.cu")" << std::endl;
 
-      return result;
-     }
+    std::cout << "String to be jitted: " << string_to_be_jitted.str() << std::endl;
 
+    dim3 grid(gridsz);
+    dim3 block(blocksz);
+
+    std::cout<< "program name =" <<hashable_name<<std::endl;
+    std::cout << "Final kernel name =" << final_kernel_name_ss.str() << std::endl;
+    GBURBLE ("(GPU phase3 launch st,end=%ld,%ld nblocks,blocksize= %d,%d )\n",start,end,gridsz,blocksz) ;
+    printf("(GPU phase3 launch st,end=%ld,%ld nblocks,blocksize= %d,%d )\n",start,end,gridsz,blocksz) ;
+    jit::launcher( hashable_name,
+                   string_to_be_jitted.str(),
+                   header_names,
+                   compiler_flags,
+                   file_callback)
+               .set_kernel_inst(final_kernel_name_ss.str(),
+                                { GET_TYPE_NAME(dumC),
+                                  GET_TYPE_NAME(dumA),
+                                  GET_TYPE_NAME(dumB),
+                                  GET_TYPE_NAME(dumXY),
+                                  GET_TYPE_NAME(dumXY),
+                                  GET_TYPE_NAME(dumZ) })
+               .configure(grid, block) //if commented, use implicit 1D configure in launch
+               .launch(
+                        start,             // input/output:
+                        end,               // global bucket cumsum, of size NBUCKETS+1
+                        bucket,            // global buckets, of size cnz (== mnz)
+                        C,                 // final output matrix
+                                           // inputs, not modified:
+                        M,                 // Mi used for column index
+                        A,                 // A matrix
+                        B,                 // B matrix
+                        sz                 // only used for sparse-sparse cases
+                    );
+
+    GBURBLE ("(GPU phase3 done) ") ;
+
+    // do we really want to sync after each kernel launch in production?
+    checkCudaErrors( cudaDeviceSynchronize() );
+    result= true;
+
+    return result;
+  }
+
+private:
+    void configure(std::int64_t Cnz, std::int64_t mnvec, std::stringstream &opname,
+                   int &blocksz, int &gridsz, int &sz) {
+    int number_of_sms = GB_Global_gpu_sm_get (0) ;
+
+    std::string Opname;
+    switch (bucket_code_)
+    {
+
+        //--------------------------------------------------------------
+        // not a bucket ... bring out your dead:
+        //--------------------------------------------------------------
+
+        case GB_BUCKET_ZOMBIE : // C(i,j) is a zombie (not a bucket)
+            break ;
+
+        //--------------------------------------------------------------
+        // CUDA kernel: dndn, handles a single bucket:
+        //--------------------------------------------------------------
+
+        // both A(:,i) and B(:,j) are dense
+        case GB_BUCKET_DNDN :
+            Opname = "phase3_dndn" ;
+
+            blocksz = 32;
+            gridsz = ( Cnz -1 + blocksz)/blocksz;
+            break ;
+
+        //--------------------------------------------------------------
+        // CUDA kernel: spdn, handles 4 buckets:
+        //--------------------------------------------------------------
+
+        // A(:,i) is dense and B(:,j) is very sparse (< 256 entries)
+        case GB_BUCKET_DNVS :
+        // A(:,i) is very sparse (< 256 entries) and B(:,j) is dense
+        case GB_BUCKET_VSDN :
+            sz = 64 ;
+            Opname = "phase3_spdn" ;
+            blocksz = 32;
+            gridsz = ( Cnz -1 + blocksz)/blocksz;
+            break ;
+
+        // A(:,i) is dense and B(:,j) is sparse (>= 256 entries)
+        case GB_BUCKET_DNSP :
+        // A(:,i) is sparse (>= 256 entries) and B(:,j) is dense
+        case GB_BUCKET_SPDN :
+            printf("Confiring spdn");
+            sz = 256 ;
+            Opname = "phase3_spdn" ;
+            blocksz = 32;
+            gridsz = ( Cnz -1 + blocksz)/blocksz;
+            break ;
+
+        //--------------------------------------------------------------
+        // CUDA kernel: vssp, handles 1 bucket, uses binary search:
+        //--------------------------------------------------------------
+
+        // A(:,i) is very sparse compared to B(:,j), or visa versa
+        case GB_BUCKET_VSSP :
+            Opname = "phase3_vssp" ;
+            blocksz = 32;
+            gridsz = ( Cnz -1 + blocksz)/blocksz;
+            break ;
+
+        //--------------------------------------------------------------
+        // CUDA kernel: vsvs, handles 4 buckets:
+        //--------------------------------------------------------------
+
+        // let len = nnz (A (:,i) + nnz (B (:,j)), then:
+
+        case GB_BUCKET_VSVS_256 : sz += 256-64 ;
+        case GB_BUCKET_VSVS_64 :  sz += 64-16  ;
+        case GB_BUCKET_VSVS_16 :  sz += 16-4   ;
+        case GB_BUCKET_VSVS_4 :   sz += 4      ;
+            Opname = "phase3_vsvs" ;
+            blocksz = 1024;
+            gridsz = GB_IMIN( 1024*number_of_sms, ( Cnz  + blocksz -1 )/blocksz);
+            gridsz =  ( Cnz  + blocksz -1 )/blocksz;
+            break ;
+
+        //--------------------------------------------------------------
+        // CUDA kernel: mp, use the merge-path method:
+        //--------------------------------------------------------------
+
+        case GB_BUCKET_MERGEPATH :
+            Opname = "phase3_mp" ;
+            blocksz = 32;
+            gridsz = ( Cnz -1 + blocksz)/blocksz;
+            break ;
+
+        case GB_BUCKET_WARP_IX :   sz = 32      ;
+            Opname = "phase3_warpix" ;
+            blocksz = 32;
+            gridsz =  GB_IMIN( (mnvec+15)/16, 256*number_of_sms);
+            break ;
+
+        default:
+            break ;
+    }
+
+    opname << Opname;
+  }
 };
 
 //template<typename T1, typename T2, typename T3>

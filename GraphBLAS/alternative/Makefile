@@ -21,7 +21,7 @@ default: library
 # This version info must match ../CMakeLists.txt 
 VER1 = 6
 VER2 = 2
-VER3 = 4
+VER3 = 5
 
 # pick your compiler:
   CC = gcc
@@ -42,9 +42,6 @@ CFLAGS = -fopenmp -fexceptions -fPIC
 # pick the optimization level:
   CFLAGS += -O3
 # CFLAGS += -g
-# to compile GraphBLAS as compact (fast to compile, small libgraphblas.so,
-# but slow at run time), uncomment this line:
-# CFLAGS += -DGBCOMPACT=1
 ifneq ($(CC),c++)
     CFLAGS += -std=c11
 endif

@@ -57,6 +57,21 @@ template<> void set_element<float>(GrB_Matrix A, float x, int64_t i, int64_t j) 
 template<> void set_element<double>(GrB_Matrix A, double x, int64_t i, int64_t j) { GrB_Matrix_setElement_FP64(A, x, i, j); }
 template<> void set_element<bool>(GrB_Matrix A, bool x, int64_t i, int64_t j) { GrB_Matrix_setElement_BOOL(A, x, i, j); }
 
+template <typename T>
+GrB_Info get_element(GrB_Matrix A, T* x, int64_t i, int64_t j);
+
+template<> GrB_Info get_element<int8_t>(GrB_Matrix A, int8_t *x, int64_t i, int64_t j) { return GrB_Matrix_extractElement_INT8(x, A, i, j); }
+template<> GrB_Info get_element<int16_t>(GrB_Matrix A, int16_t *x, int64_t i, int64_t j) { return GrB_Matrix_extractElement_INT16(x, A, i, j); }
+template<> GrB_Info get_element<int32_t>(GrB_Matrix A, int32_t *x, int64_t i, int64_t j) { return GrB_Matrix_extractElement_INT32(x, A, i, j); }
+template<> GrB_Info get_element<int64_t>(GrB_Matrix A, int64_t *x, int64_t i, int64_t j) { return GrB_Matrix_extractElement_INT64(x, A, i, j); }
+template<> GrB_Info get_element<uint8_t>(GrB_Matrix A, uint8_t *x, int64_t i, int64_t j) { return GrB_Matrix_extractElement_UINT8(x, A, i, j); }
+template<> GrB_Info get_element<uint16_t>(GrB_Matrix A, uint16_t *x, int64_t i, int64_t j) { return GrB_Matrix_extractElement_UINT16(x, A, i, j); }
+template<> GrB_Info get_element<uint32_t>(GrB_Matrix A, uint32_t *x, int64_t i, int64_t j) { return GrB_Matrix_extractElement_UINT32(x, A, i, j); }
+template<> GrB_Info get_element<uint64_t>(GrB_Matrix A, uint64_t *x, int64_t i, int64_t j) { return GrB_Matrix_extractElement_UINT64(x, A, i, j); }
+template<> GrB_Info get_element<float>(GrB_Matrix A, float *x, int64_t i, int64_t j) { return GrB_Matrix_extractElement_FP32(x, A, i, j); }
+template<> GrB_Info get_element<double>(GrB_Matrix A, double *x, int64_t i, int64_t j) { return GrB_Matrix_extractElement_FP64(x, A, i, j); }
+template<> GrB_Info get_element<bool>(GrB_Matrix A, bool *x, int64_t i, int64_t j) { return GrB_Matrix_extractElement_BOOL(x, A, i, j); }
+
 
 }  // namespace cuda
 #endif

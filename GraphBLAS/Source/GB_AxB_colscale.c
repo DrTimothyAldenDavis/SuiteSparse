@@ -11,7 +11,7 @@
 #include "GB_binop.h"
 #include "GB_apply.h"
 #include "GB_ek_slice.h"
-#ifndef GBCOMPACT
+#ifndef GBCUDA_DEV
 #include "GB_binop__include.h"
 #endif
 
@@ -219,7 +219,7 @@ GrB_Info GB_AxB_colscale            // C = A*D, column scale with diagonal D
 
         bool done = false ;
 
-        #ifndef GBCOMPACT
+        #ifndef GBCUDA_DEV
 
             //------------------------------------------------------------------
             // define the worker for the switch factory

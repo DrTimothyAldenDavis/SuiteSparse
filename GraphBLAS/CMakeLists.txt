@@ -26,10 +26,10 @@ endif ( )
 set ( CMAKE_MACOSX_RPATH TRUE )
 
 # version of SuiteSparse:GraphBLAS
-set ( GraphBLAS_DATE "Mar 8, 2022" )
+set ( GraphBLAS_DATE "Mar 14, 2022" )
 set ( GraphBLAS_VERSION_MAJOR 6 )
 set ( GraphBLAS_VERSION_MINOR 2 )
-set ( GraphBLAS_VERSION_SUB   4 )
+set ( GraphBLAS_VERSION_SUB   5 )
 
 message ( STATUS "Building SuiteSparse:GraphBLAS version: v" ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}  " date: " ${GraphBLAS_DATE} )
 
@@ -103,17 +103,19 @@ else ( )
 endif ( )
 
 # CUDA is under development for now, and not deployed in production:
-set ( CMAKE_CUDA off)
+  set ( CMAKE_CUDA off)
 
 # Edit these lines for code development only, not for end-users:
-# set ( GBCOMPACT true )
 # set ( CMAKE_BUILD_TYPE Debug )
 
 if ( CMAKE_CUDA )
+    # for CUDA development only; not for production use
+    set ( CMAKE_CUDA_DEV on )
     project ( graphblas
             VERSION "${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}"
             LANGUAGES CUDA C )
 else ( )
+    set ( CMAKE_CUDA_DEV off )
     project ( graphblas
             VERSION "${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}"
             LANGUAGES C )
@@ -206,8 +208,9 @@ else ( )
     message ( STATUS "Building dynamic GraphBLAS library" )
 endif ( )
 
-if ( GBCOMPACT )
-    set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -DGBCOMPACT=1 " )
+if ( CMAKE_CUDA_DEV )
+    # for CUDA development only; not for production use
+    set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -DGBCUDA_DEV=1 " )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -252,7 +255,8 @@ message ( STATUS "CMAKE have OpenMP:         " ${OPENMP_FOUND} )
 
 set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 
-if ( GBCOMPACT )
+if ( CMAKE_CUDA_DEV )
+    # for CUDA development only; not for production use
     include_directories ( Source/Template Source Include Source/Generated1 lz4 Demo/Include rmm_wrap )
 else ( )
     include_directories ( Source/Template Source Include Source/Generated1 lz4 Source/Generated2 Demo/Include rmm_wrap )
@@ -352,7 +356,8 @@ set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${CMAKE_CUDA_FLAG}" )
 #   - a public enum is extended (by adding a new item at the end, but without
 #       changing the already existing items)
 
-if ( GBCOMPACT )
+if ( CMAKE_CUDA_DEV )
+    # for CUDA development only; not for production use
     file ( GLOB GRAPHBLAS_SOURCES "Source/*.c" "Source/Generated1/*.c" )
 else ( )
     file ( GLOB GRAPHBLAS_SOURCES "Source/*.c" "Source/Generated1/*.c" "Source/Generated2/*.c" )

@@ -86,7 +86,7 @@ class GB_cuda_semiring_factory: public jit::File_Desc {
 	    B_sparsity     // sparsity structure of B
        ) ;
 
-       printf("scode=%uld\n", scode);
+       printf("scode=%lu\n", scode);
        std::cout << "done stringify semiring" << std::endl;
        this->sr_code = scode;
 

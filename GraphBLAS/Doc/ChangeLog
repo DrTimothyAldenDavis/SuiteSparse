@@ -1,3 +1,7 @@
+Version 6.2.5, Mar 14, 2022
+
+    * For SuiteSparse v5.11.0
+
 Version 6.2.4, Mar 8, 2022
 
     * (42) bug fix: GrB_mxm with 0-by-0 iso full matrices: Caught by

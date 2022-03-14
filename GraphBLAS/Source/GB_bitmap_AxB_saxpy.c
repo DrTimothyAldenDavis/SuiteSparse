@@ -10,7 +10,7 @@
 #include "GB_bitmap_AxB_saxpy.h"
 #include "GB_AxB_saxpy_generic.h"
 #include "GB_AxB__include1.h"
-#ifndef GBCOMPACT
+#ifndef GBCUDA_DEV
 #include "GB_AxB__include2.h"
 #endif
 
@@ -122,7 +122,7 @@ GrB_Info GB_bitmap_AxB_saxpy        // C = A*B where C is bitmap
         GBURBLE ("(bitmap saxpy) ") ;
         bool done = false ;
 
-        #ifndef GBCOMPACT
+        #ifndef GBCUDA_DEV
 
             //------------------------------------------------------------------
             // define the worker for the switch factory

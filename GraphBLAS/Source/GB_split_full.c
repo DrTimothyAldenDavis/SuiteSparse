@@ -107,7 +107,7 @@ GrB_Info GB_split_full              // split a full matrix
                 //--------------------------------------------------------------
 
                 bool done = false ;
-                #ifndef GBCOMPACT
+                #ifndef GBCUDA_DEV
                 {
                     // no typecasting needed
                     switch (asize)

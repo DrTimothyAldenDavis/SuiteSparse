@@ -5,9 +5,12 @@
 #include <cmath>
 #include <cstdint>
 #include <random>
+#include <unordered_set>
 
+#include "GB.h"
 #include "../type_convert.hpp"
 #include "../GB_Matrix_allocate.h"
+#include "test_utility.hpp"
 
 static const char *_cudaGetErrorEnum(cudaError_t error) {
   return cudaGetErrorName(error);
@@ -60,6 +63,11 @@ inline void __printLastCudaError(const char *errorMessage, const char *file,
 }
 #define CHECK_CUDA(call) checkCudaErrors( call )
 
+// CAUTION: This assumes our indices are small enough to fit into a 32-bit int.
+inline std::int64_t gen_key(std::int64_t i, std::int64_t j) {
+    return (std::int64_t) i << 32 | (std::int64_t) j;
+}
+
 //Vector generators
 template<typename T>
 void fillvector_linear( int N, T *vec) {
@@ -108,13 +116,13 @@ class matrix : public Managed {
      uint64_t get_zombie_count() { return mat->nzombies;}
 
      void clear() {
-        GrB_Matrix_clear (mat) ;
+        GRB_TRY (GrB_Matrix_clear (mat)) ;
      }
 
      void alloc() {
          GrB_Type type = cuda::to_grb_type<T>();
 
-         GrB_Matrix_new (&mat, type, nrows_, ncols_) ;
+         GRB_TRY (GrB_Matrix_new (&mat, type, nrows_, ncols_)) ;
          // GxB_Matrix_Option_set (mat, GxB_SPARSITY_CONTROL,
             // GxB_SPARSE) ;
             // or:
@@ -125,14 +133,22 @@ class matrix : public Managed {
 //            sizeof(T), nrows, ncols, 2, false, false, Nz, -1);
      }
 
-     // FIXME: We probably want this to go away
-     void fill_random( int64_t nnz, bool debug_print = false) {
 
+    void fill_random( int64_t nnz, int gxb_sparsity_control, int gxb_format, std::int64_t seed = 12345ULL, T val_min = 0.0, T val_max = 2.0 , bool debug_print = false) {
 
-         std::cout << "inside fill" << std::endl;
-         alloc();
+        std::cout << "inside fill, using seed "<< seed << std::endl;
+        alloc();
 
-        int64_t inv_sparsity = (nrows_*ncols_)/nnz;   //= values not taken per value occupied in index space
+        double inv_sparsity ;
+        if (nnz < 0)
+        {
+            // build a matrix with all entries present
+            inv_sparsity = 1 ;
+        }
+        else
+        {
+            inv_sparsity = ceil(((double)nrows_*ncols_)/nnz);   //= values not taken per value occupied in index space
+        }
 
         std::cout<< "fill_random nrows="<< nrows_<<"ncols=" << ncols_ <<" need "<< nnz<<" values, invsparse = "<<inv_sparsity<<std::endl;
         std::cout<< "fill_random"<<" after alloc values"<<std::endl;
@@ -143,43 +159,77 @@ class matrix : public Managed {
         bool make_symmetric = false;
         bool no_self_edges = false;
 
-        std::random_device rd;
-        std::mt19937 r(rd());
+        std::mt19937 r(seed);
         std::uniform_real_distribution<double> dis(0.0, 1.0);
-         for (int64_t k = 0 ; k < nnz ; k++)
-         {
-             GrB_Index i = ((GrB_Index) (dis(r) * nrows_)) % ((GrB_Index) nrows_) ;
-             GrB_Index j = ((GrB_Index) (dis(r) * ncols_)) % ((GrB_Index) ncols_) ;
-             if (no_self_edges && (i == j)) continue ;
-             double x = dis(r) ;
-             // A (i,j) = x
-             cuda::set_element<T> (mat, x, i, j) ;
-             if (make_symmetric)
-             {
-                 // A (j,i) = x
-                 cuda::set_element<T>(mat, x, j, i) ;
-             }
-         }
 
-        GrB_Matrix_wait (mat, GrB_MATERIALIZE) ;
-        // TODO: Need to specify these
-        GxB_Matrix_Option_set (mat, GxB_FORMAT, GxB_BY_ROW) ;
-        GxB_Matrix_Option_set (mat, GxB_SPARSITY_CONTROL, GxB_SPARSE) ;
-        GrB_Matrix_nvals ((GrB_Index *) &nnz, mat) ;
-        GxB_Matrix_fprint (mat, "my mat", GxB_SHORT_VERBOSE, stdout) ;
-    
-        printf("a_vector = [");
-        for (int p = 0;  p < nnz; p++) {
-            printf("%ld, ", mat->i [p]);
-            if (p > 100) { printf ("...\n") ; break ; }
+        if (nnz < 0)
+        {
+            for (int64_t i = 0 ; i < nrows_ ; i++)
+            {
+                for (int64_t j = 0 ; j < ncols_ ; j++)
+                {
+                    T x = (T)(dis(r) * (val_max - val_min)) + (T)val_min ;
+                    if (make_symmetric)
+                    {
+                        // A (i,j) = x
+                        cuda::set_element<T> (mat, x, i, j) ;
+                        // A (j,i) = x
+                        cuda::set_element<T> (mat, x, j, i) ;
+                    }
+                    else
+                    {
+                        // A (i,j) = x
+                        cuda::set_element<T> (mat, x, i, j) ;
+                    }
+                }
+            }
         }
-        printf("]\n");
+        else
+        {
+            unordered_set<std::int64_t> key_lookup;
 
+            while(key_lookup.size() < nnz) {
+                GrB_Index i = ((GrB_Index) (dis(r) * nrows_)) % ((GrB_Index) nrows_) ;
+                GrB_Index j = ((GrB_Index) (dis(r) * ncols_)) % ((GrB_Index) ncols_) ;
 
-     }
+                key_lookup.insert(gen_key(i, j));
+            }
+
+            for (int64_t k : key_lookup)
+            {
+                GrB_Index i = k >> 32;
+                GrB_Index j = k & 0x0000ffff;
+
+                if (no_self_edges && (i == j)) continue ;
+                T x = (T)(dis(r) * (val_max - val_min)) + (T)val_min ;
+                // A (i,j) = x
+                cuda::set_element<T> (mat, x, i, j) ;
+                if (make_symmetric) {
+                    // A (j,i) = x
+                    cuda::set_element<T>(mat, x, j, i) ;
+                }
+            }
+        }
+
+        GRB_TRY (GrB_Matrix_wait (mat, GrB_MATERIALIZE)) ;
+        GB_convert_any_to_non_iso (mat, true, NULL) ;
+        // TODO: Need to specify these
+        GRB_TRY (GxB_Matrix_Option_set (mat, GxB_SPARSITY_CONTROL, gxb_sparsity_control)) ;
+        GRB_TRY (GxB_Matrix_Option_set(mat, GxB_FORMAT, gxb_format));
+        GRB_TRY (GrB_Matrix_nvals ((GrB_Index *) &nnz, mat)) ;
+        GRB_TRY (GxB_Matrix_fprint (mat, "my mat", GxB_SHORT_VERBOSE, stdout)) ;
+
+        bool iso ;
+        GRB_TRY (GxB_Matrix_iso (&iso, mat)) ;
+        if (iso)
+        {
+            printf ("Die! (cannot do iso)\n") ;
+            GRB_TRY (GrB_Matrix_free (&mat)) ;
+        }
+
+    }
+
 };
-
-
 
 template< typename T_C, typename T_M, typename T_A, typename T_B>
 class SpGEMM_problem_generator {
@@ -216,6 +266,21 @@ class SpGEMM_problem_generator {
     matrix<T_A>* getAptr(){ return A;}
     matrix<T_B>* getBptr(){ return B;}
 
+    void init_A(std::int64_t Anz, int gxb_sparsity_control, int gxb_format, std::int64_t seed = 12345ULL, T_A min_val = 0.0, T_A max_val = 2.0) {
+        Anzpercent = float(Anz)/float(nrows_*ncols_);
+        A->fill_random(Anz, gxb_sparsity_control, gxb_format, seed, min_val, max_val);
+    }
+
+    void init_B(std::int64_t Bnz, int gxb_sparsity_control, int gxb_format, std::int64_t seed = 54321ULL, T_B min_val = 0.0, T_B max_val = 2.0) {
+        Bnzpercent = float(Bnz)/float(nrows_*ncols_);
+        B->fill_random(Bnz, gxb_sparsity_control, gxb_format, seed, min_val, max_val);
+    }
+
+    GrB_Matrix getC(){ return C->get_grb_matrix();}
+    GrB_Matrix getM(){ return M->get_grb_matrix();}
+    GrB_Matrix getA(){ return A->get_grb_matrix();}
+    GrB_Matrix getB(){ return B->get_grb_matrix();}
+
     int64_t* getBucket() { return Bucket;}
     int64_t* getBucketStart(){ return BucketStart;}
 
@@ -227,33 +292,23 @@ class SpGEMM_problem_generator {
                C->mat->i[r] = c << 4 ; //shift to store bucket info
            }
        }
-
     }
 
-    void init(int64_t Anz, int64_t Bnz, float Cnzpercent){
+    void init_C(float Cnzp, std::int64_t seed_c = 23456ULL, std::int64_t seed_m = 4567ULL){
 
        // Get sizes relative to fully dense matrices
-       Anzpercent = float(Anz)/float(nrows_*ncols_);
-       Bnzpercent = float(Bnz)/float(nrows_*ncols_);
-       Cnzpercent = Cnzpercent;
-       Cnz = (int64_t)(Cnzpercent * nrows_ * ncols_);
-       std::cout<<"Anz% ="<<Anzpercent<<" Bnz% ="<<Bnzpercent<<" Cnz% ="<<Cnzpercent<<std::endl;
+       Cnzpercent = Cnzp;
+       Cnz = (int64_t)(Cnzp * nrows_ * ncols_);
 
        //Seed the generator
        std::cout<<"filling matrices"<<std::endl;
 
-       C->fill_random(Cnz);
-       M->fill_random(Cnz);
-       A->fill_random(Anz);
-       B->fill_random(Bnz);
+       C->fill_random(Cnz, GxB_SPARSE, GxB_BY_ROW, seed_m);
+       M->fill_random(Cnz, GxB_SPARSE, GxB_BY_ROW, seed_m);
 
-
-       std::cout<<"fill complete"<<std::endl;
-       C->mat->p = M->mat->p; //same column pointers (assuming CSC here)
-       C->mat->p_shallow = true ; // C->mat does not own M->mat->p
-
-       loadCj();
-
+//       std::cout<<"fill complete"<<std::endl;
+//       C->mat->p = M->mat->p; //same column pointers (assuming CSC here)
+//       C->mat->p_shallow = true ; // C->mat does not own M->mat->p
     }
 
     void del(){
@@ -282,7 +337,7 @@ class SpGEMM_problem_generator {
            BucketStart[0] = 0; 
            BucketStart[12] = Cnz;
            for (int b = 1; b < 12; ++b){
-              BucketStart[b] = BucketStart[b-1] + (Cnz / 12);  
+              BucketStart[b] = BucketStart[b-1] + (Cnz / 12);
               //std::cout<< "bucket "<< b<<" starts at "<<BucketStart[b]<<std::endl;
               for (int j = BucketStart[b-1]; j < BucketStart[b]; ++j) { 
                 Bucket[j] = b ; 

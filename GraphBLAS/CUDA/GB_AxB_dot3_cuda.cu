@@ -166,6 +166,9 @@ GrB_Info GB_AxB_dot3_cuda           // C<M> = A'*B using dot product method
     C->nvec_nonempty = M->nvec_nonempty ;
     C->nvec = M->nvec ;
 
+    // the dot3 CUDA kernel will produce C->i with jumbled indices
+    C->jumbled = true ;
+
     GBURBLE ("(GPU C created and copied from M) ") ;
     //--------------------------------------------------------------------------
     // stringify the semiring and the mask

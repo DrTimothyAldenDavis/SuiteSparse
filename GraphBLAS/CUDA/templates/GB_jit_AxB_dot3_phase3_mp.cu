@@ -125,12 +125,12 @@ __global__ void AxB_dot3_phase3_mp
          int64_t i = Mi[pair_id];
          int64_t j = Ci[pair_id] >> 4;
 
-         int64_t xstart = Ap[i];
-         int64_t xend   = Ap[i+1];
+         int64_t xstart = Ap[j];
+         int64_t xend   = Ap[j+1];
          nnzA = xend - xstart;
 
-         int64_t ystart = Bp[j]; 
-         int64_t yend   = Bp[j+1]; 
+         int64_t ystart = Bp[i];
+         int64_t yend   = Bp[i+1];
          nnzB = yend - ystart;
 
          n_intersect = GB_IMIN( xend -xstart, yend -ystart); 

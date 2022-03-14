@@ -29,10 +29,10 @@ endif ( )
 set ( CMAKE_MACOSX_RPATH TRUE )
 
 # version of SuiteSparse:GraphBLAS (must match ../CMakeLists.txt)
-set ( GraphBLAS_DATE "Mar 8, 2022" )
+set ( GraphBLAS_DATE "Mar 14, 2022" )
 set ( GraphBLAS_VERSION_MAJOR 6 )
 set ( GraphBLAS_VERSION_MINOR 2 )
-set ( GraphBLAS_VERSION_SUB   4 )
+set ( GraphBLAS_VERSION_SUB   5 )
 
 message ( STATUS "Building SuiteSparse:GraphBLAS version: v" ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}  " date: " ${GraphBLAS_DATE} )
 
@@ -108,7 +108,6 @@ endif ( )
 include ( GNUInstallDirs )
 
 # Edit these lines for code development only, not for end-users:
-# set ( GBCOMPACT true )
 # set ( CMAKE_BUILD_TYPE Debug )
 
 if ( NOT CMAKE_BUILD_TYPE )
@@ -128,21 +127,13 @@ endif ( )
 message ( STATUS "CMAKE compiler ID:         " ${CMAKE_C_COMPILER_ID} )
 message ( STATUS "CMAKE have OpenMP:         " ${OPENMP_FOUND} )
 
-if ( GBCOMPACT )
-    set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -DGBCOMPACT=1 " )
-endif ( )
-
 #-------------------------------------------------------------------------------
 # include directories
 #-------------------------------------------------------------------------------
 
 set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 
-if ( GBCOMPACT )
-    include_directories ( ../Source/Template ../Source ../Include rename ../Source/Generated1 ../lz4 ../rmm_wrap )
-else ( )
-    include_directories ( ../Source/Template ../Source ../Include rename ../Source/Generated1 ../lz4 ../rmm_wrap ../Source/Generated2 )
-endif ( )
+include_directories ( ../Source/Template ../Source ../Include rename ../Source/Generated1 ../lz4 ../rmm_wrap ../Source/Generated2 )
 
 #-------------------------------------------------------------------------------
 # compiler options:
@@ -206,11 +197,7 @@ endif ( )
 # dynamic graphblas_renamed library properties
 #-------------------------------------------------------------------------------
 
-if ( GBCOMPACT )
-    file ( GLOB GRAPHBLAS_SOURCES "../Source/*.c" "../Source/Generated1/*.c" )
-else ( )
-    file ( GLOB GRAPHBLAS_SOURCES "../Source/*.c" "../Source/Generated1/*.c" "../Source/Generated2/*.c" )
-endif ( )
+file ( GLOB GRAPHBLAS_SOURCES "../Source/*.c" "../Source/Generated1/*.c" "../Source/Generated2/*.c" )
 
 add_library ( graphblas_renamed SHARED ${GRAPHBLAS_SOURCES} )
 SET_TARGET_PROPERTIES ( graphblas_renamed PROPERTIES

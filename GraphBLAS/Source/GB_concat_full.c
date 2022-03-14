@@ -138,7 +138,7 @@ GrB_Info GB_concat_full             // concatenate into a full matrix
 
             bool done = false ;
 
-            #ifndef GBCOMPACT
+            #ifndef GBCUDA_DEV
                 if (ccode == acode)
                 {
                     // no typecasting needed

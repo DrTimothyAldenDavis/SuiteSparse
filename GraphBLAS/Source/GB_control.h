@@ -22,11 +22,6 @@
 // few operations will be 10x slower, such as GrB_reduce to scalar using the
 // GrB_MAX_FP64 operator.
 
-// Enabling the "#define GBCOMPACT" option is the same as uncommenting this
-// entire file.  This file provides a more concise control over which
-// types, operators, and semirings are given fast hard-coded versions in
-// Source/Generated2, and which use the slower generic methods.
-
 // However, the code size can be reduced significantly.  Uncommenting all of
 // the options below cuts the code from 55MB to under 2.7MB, on a MacBook Pro
 // using gcc 8.2.0 (as of the draft V3.0.0 version, June 18, 2019).  Disabling

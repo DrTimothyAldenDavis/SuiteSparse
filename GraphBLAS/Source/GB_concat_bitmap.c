@@ -154,7 +154,7 @@ GrB_Info GB_concat_bitmap           // concatenate into a bitmap matrix
                 // C is not iso, but A might be
                 //--------------------------------------------------------------
 
-                #ifndef GBCOMPACT
+                #ifndef GBCUDA_DEV
                 if (ccode == acode)
                 {
                     // no typecasting needed

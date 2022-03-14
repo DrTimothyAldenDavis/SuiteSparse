@@ -10,7 +10,7 @@
 #include "GB_mxm.h"
 #include "GB_binop.h"
 #include "GB_apply.h"
-#ifndef GBCOMPACT
+#ifndef GBCUDA_DEV
 #include "GB_binop__include.h"
 #endif
 
@@ -203,7 +203,7 @@ GrB_Info GB_AxB_rowscale            // C = D*B, row scale with diagonal D
 
         bool done = false ;
 
-        #ifndef GBCOMPACT
+        #ifndef GBCUDA_DEV
 
             //------------------------------------------------------------------
             // define the worker for the switch factory

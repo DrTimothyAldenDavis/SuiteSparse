@@ -67,7 +67,7 @@ void AxB_phase2end
         int64_t my_bucket_ ## bucket =                  \
             nanobucket [bucket * blockDim.x]        \
          + blockbucket [bucket * gridDim.x + blockIdx.x]\
-         + bucketp [bucket] ; 
+         + bucketp [bucket] ;
 
     LOAD_NANOBUCKET (0) ;
     LOAD_NANOBUCKET (1) ;

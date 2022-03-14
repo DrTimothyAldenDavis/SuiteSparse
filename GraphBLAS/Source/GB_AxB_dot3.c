@@ -15,7 +15,7 @@
 #include "GB_mxm.h"
 #include "GB_binop.h"
 #include "GB_AxB__include1.h"
-#ifndef GBCOMPACT
+#ifndef GBCUDA_DEV
 #include "GB_AxB__include2.h"
 #endif
 
@@ -264,7 +264,7 @@ GrB_Info GB_AxB_dot3                // C<M> = A'*B using dot product method
 
         bool done = false ;
 
-        #ifndef GBCOMPACT
+        #ifndef GBCUDA_DEV
 
             //------------------------------------------------------------------
             // define the worker for the switch factory

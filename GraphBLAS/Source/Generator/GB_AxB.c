@@ -12,7 +12,7 @@
 
 #include "GB_dev.h"
 
-ifndef_compact
+ifndef_GBCUDA_DEV
 
 #include "GB.h"
 #include "GB_control.h"

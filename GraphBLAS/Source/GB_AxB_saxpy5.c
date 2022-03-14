@@ -28,7 +28,7 @@
 
 #include "GB_mxm.h"
 #include "GB_control.h"
-#ifndef GBCOMPACT
+#ifndef GBCUDA_DEV
 #include "GB_AxB__include2.h"
 #endif
 
@@ -63,7 +63,7 @@ GrB_Info GB_AxB_saxpy5              // C += A*B
     // saxpy5 is disabled if GraphBLAS is compiled as compact
     //--------------------------------------------------------------------------
 
-    #ifdef GBCOMPACT
+    #ifdef GBCUDA_DEV
     return (GrB_NO_VALUE) ;
     #else
 

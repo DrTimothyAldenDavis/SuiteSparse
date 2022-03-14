@@ -12,7 +12,7 @@
 
 #include "GB_dense.h"
 #include "GB_binop.h"
-#ifndef GBCOMPACT
+#ifndef GBCUDA_DEV
 #include "GB_binop__include.h"
 #endif
 
@@ -28,7 +28,7 @@ GrB_Info GB_dense_ewise3_noaccum    // C = A+B
     GB_Context Context
 )
 {
-#ifndef GBCOMPACT
+#ifndef GBCUDA_DEV
 
     //--------------------------------------------------------------------------
     // check inputs

@@ -106,7 +106,7 @@
 #include "GB_build.h"
 #include "GB_sort.h"
 #include "GB_binop.h"
-#ifndef GBCOMPACT
+#ifndef GBCUDA_DEV
 #include "GB_red__include.h"
 #endif
 
@@ -1025,7 +1025,7 @@ GrB_Info GB_builder                 // build a matrix from tuples
 
     GrB_Type xtype, ytype, ztype ;
     GxB_binary_function fdup ;
-    #ifndef GBCOMPACT
+    #ifndef GBCUDA_DEV
     GB_Opcode opcode ;
     #endif
 
@@ -1045,7 +1045,7 @@ GrB_Info GB_builder                 // build a matrix from tuples
         // z = SECOND (x,y) where all three types are the same as ttype
         // T(i,j) = (ttype) Sx(k) will be done for all tuples.
 
-        #ifndef GBCOMPACT
+        #ifndef GBCUDA_DEV
         opcode = GB_SECOND_binop_code ;
         #endif
         xtype = ttype ;
@@ -1074,7 +1074,7 @@ GrB_Info GB_builder                 // build a matrix from tuples
 
         ASSERT_BINARYOP_OK (dup, "dup for build_factory", GB0) ;
         ASSERT (!S_iso) ;
-        #ifndef GBCOMPACT
+        #ifndef GBCUDA_DEV
         opcode = dup->opcode ;
         #endif
         xtype = dup->xtype ;
@@ -1237,7 +1237,7 @@ GrB_Info GB_builder                 // build a matrix from tuples
                 // T and Sx are not iso; call in the workers
                 //--------------------------------------------------------------
 
-                #ifndef GBCOMPACT
+                #ifndef GBCUDA_DEV
 
                     //----------------------------------------------------------
                     // define the worker for the switch factory

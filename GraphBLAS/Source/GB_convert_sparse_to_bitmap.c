@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------
 
 #include "GB_ek_slice.h"
-#ifndef GBCOMPACT
+#ifndef GBCUDA_DEV
 #include "GB_type__include.h"
 #endif
 
@@ -162,7 +162,7 @@ GrB_Info GB_convert_sparse_to_bitmap    // convert sparse/hypersparse to bitmap
         else
         {
 
-            #ifndef GBCOMPACT
+            #ifndef GBCUDA_DEV
             {
                 switch (asize)
                 {
