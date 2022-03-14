@@ -20,6 +20,8 @@
 #include <stdio.h>
 #include "matrix.h"
 
+#include "local_cub/block/block_reduce.cuh"
+
 template< typename T_C, typename T_A, typename T_B, typename T_X, typename T_Y, typename T_Z>
 __global__ void AxB_dot3_phase3_spdn
 ( 
@@ -44,6 +46,9 @@ __global__ void AxB_dot3_phase3_spdn
    int64_t *Bp = B->p;
 
    C->jumbled = true;
+
+   typedef cub::BlockReduce<int, 32> BlockReduce;
+   __shared__ typename BlockReduce::TempStorage temp_storage;
 
    // sz = expected non-zeros per dot 
    int m = 256/sz;
@@ -92,9 +97,12 @@ __global__ void AxB_dot3_phase3_spdn
           T_B bkj;
           T_Z cij;
 
+          int zombie_count = 0;
+
           if (nnzA == 0 || nnzB == 0)
           {
-              j = GB_FLIP (j) ;
+              i = GB_FLIP (i) ;
+              zombie_count +=1;
           }
           else if( nnzA == A->vlen) // A is dense
           {
@@ -255,10 +263,12 @@ __global__ void AxB_dot3_phase3_spdn
 //             }
 //         }
 
-        // TODO: Should the row/column here be
          GB_PUTC( Ci[pair_id]=i ) ;
          GB_PUTC( Cx[pair_id]=cij ) ;
-        
+
+         int zc = BlockReduce(temp_storage).Sum(zombie_count);
+         if(threadIdx.x == 0 && zc > 0)
+            atomicAdd(&(C->nzombies), zc);
       }
   
    }

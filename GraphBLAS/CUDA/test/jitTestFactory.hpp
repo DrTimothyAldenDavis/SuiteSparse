@@ -411,11 +411,6 @@ bool test_AxB_dot3_full_factory( int TB, int64_t N, int64_t Anz, int64_t Bnz,
     int64_t *offset = (int64_t*)rmm_wrap_malloc(NBUCKETS * sizeof (int64_t));
 
     /**
-     * TODO: Need to run phase1 and verify the i,j pair out of Phase1 for C is updated
-     * w/ the proper encoding. (i << 4) + bucket. Phase2 (or somewhere else) strips off the bucket
-     */
-
-    /**
      * Run Phase 3: Execute dot3 on all buckets
      */
     for (int b =0; b < 12; ++b) {// loop on buckets
