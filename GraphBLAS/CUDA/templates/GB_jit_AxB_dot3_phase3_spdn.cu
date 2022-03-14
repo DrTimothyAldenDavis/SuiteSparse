@@ -20,7 +20,28 @@
 #include <stdio.h>
 #include "matrix.h"
 
-#include "local_cub/block/block_reduce.cuh"
+#include <cooperative_groups.h>
+
+#define tile_sz 32
+
+//#include "local_cub/block/block_reduce.cuh"
+
+
+using namespace cooperative_groups;
+
+// TODO: Put this in a shared location
+template< typename T, int warpSize >
+__device__ T reduce_sum(thread_block_tile<warpSize> g, T val)
+{
+    // Each iteration halves the number of active threads
+    // Each thread adds its partial sum[i] to sum[lane+i]
+    for (int i = g.size() / 2; i > 0; i /= 2)
+    {
+        val += g.shfl_down(val,i) ;
+    }
+    return val; // note: only thread 0 will return full sum
+}
+
 
 template< typename T_C, typename T_A, typename T_B, typename T_X, typename T_Y, typename T_Z>
 __global__ void AxB_dot3_phase3_spdn
@@ -47,8 +68,8 @@ __global__ void AxB_dot3_phase3_spdn
 
    C->jumbled = true;
 
-   typedef cub::BlockReduce<int, 32> BlockReduce;
-   __shared__ typename BlockReduce::TempStorage temp_storage;
+//   typedef cub::BlockReduce<int, 32> BlockReduce;
+//   __shared__ typename BlockReduce::TempStorage temp_storage;
 
    // sz = expected non-zeros per dot 
    int m = 256/sz;
@@ -266,7 +287,10 @@ __global__ void AxB_dot3_phase3_spdn
          GB_PUTC( Ci[pair_id]=i ) ;
          GB_PUTC( Cx[pair_id]=cij ) ;
 
-         int zc = BlockReduce(temp_storage).Sum(zombie_count);
+//         int zc = BlockReduce(temp_storage).Sum(zombie_count);
+          thread_block_tile<tile_sz> tile = tiled_partition<tile_sz>( this_thread_block());
+          int zc = reduce_sum<int,tile_sz>(tile, zombie_count);
+
          if(threadIdx.x == 0 && zc > 0)
             atomicAdd(&(C->nzombies), zc);
       }
