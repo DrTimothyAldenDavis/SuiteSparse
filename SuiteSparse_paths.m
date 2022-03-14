@@ -36,6 +36,9 @@ function SuiteSparse_paths
 % can be used at the start of a MATLAB session.  The mexFunctions must also be
 % installed via SuiteSparse_install.
 %
+% You must run this m-file while in the SuiteSparse folder containing this
+% m-file.
+%
 % Copyright 1990-2022, Timothy A. Davis, http://suitesparse.com.
 
 paths = { } ;
