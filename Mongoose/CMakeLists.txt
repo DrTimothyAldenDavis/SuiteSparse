@@ -220,7 +220,8 @@ include ( GNUInstallDirs )
 install ( TARGETS mongoose_dylib mongoose_lib 
     LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-    ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+    ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME       DESTINATION ${CMAKE_INSTALL_BINDIR} )
 
 # Build the Mongoose library and all tests with coverage flags
 add_library(mongoose_lib_dbg ${MONGOOSE_LIB_FILES})
