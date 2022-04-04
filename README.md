@@ -23,6 +23,190 @@ Refer to each package for license, copyright, and author information.  All
 codes are authored or co-authored by Timothy A. Davis.
 
 -----------------------------------------------------------------------------
+How to cite the SuiteSparse meta-package and its component packages:
+-----------------------------------------------------------------------------
+
+SuiteSparse is a meta-package of many packages, each with their own published
+papers.  To cite the whole collection, use the URLs:
+
+    * https://github.com/DrTimothyAldenDavis/SuiteSparse
+    * http://suitesparse.com (which is a forwarding URL
+        to https://people.engr.tamu.edu/davis/suitesparse.html)
+
+Please also cite the specific papers for the packages you use:
+
+    * For the MATLAB x=A\b, see below for AMD, COLAMD, CHOLMOD, UMFPACK,
+        and SuiteSparseQR.
+
+    * for GraphBLAS, and `C=A*B` in MATLAB (sparse-times-sparse):
+
+        T. Davis, Algorithm 10xx: SuiteSparse:GraphBLAS: parallel graph
+        algorithms in the language of sparse linear algebra, ACM Trans on
+        Mathematical Software, submitted, under revision, 2022.
+
+        T. Davis, Algorithm 1000: SuiteSparse:GraphBLAS: graph algorithms in
+        the language of sparse linear algebra, ACM Trans on Mathematical
+        Software, vol 45, no 4, Dec. 2019, Article No 44.
+        https://doi.org/10.1145/3322125.
+
+    * for CSparse/CXSParse:
+
+        T. A. Davis, Direct Methods for Sparse Linear Systems, SIAM Series on
+        the Fundamentals of Algorithms, SIAM, Philadelphia, PA, 2006.
+        https://doi.org/10.1137/1.9780898718881
+
+    * for SuiteSparseQR: (also cite AMD, COLAMD):
+
+        T. A. Davis, Algorithm 915: SuiteSparseQR: Multifrontal multithreaded
+        rank-revealing sparse QR factorization, ACM Trans. on Mathematical
+        Software, 38(1), 2011, pp. 8:1--8:22.
+        https://doi.org/10.1145/2049662.2049670
+
+    * for SuiteSparseQR/GPU:
+
+        Sencer Nuri Yeralan, T. A. Davis, Wissam M. Sid-Lakhdar, and Sanjay
+        Ranka. 2017. Algorithm 980: Sparse QR Factorization on the GPU.  ACM
+        Trans. Math. Softw. 44, 2, Article 17 (June 2018), 29 pages.
+        https://doi.org/10.1145/3065870
+
+    * for CHOLMOD: (also cite AMD, COLAMD):
+
+        T. A. Davis and W. W. Hager, Dynamic supernodes in sparse Cholesky
+        update/downdate and triangular solves, ACM Trans. on Mathematical Software,
+        35(4), 2009, pp. 27:1--27:23.
+        https://doi.org/10.1145/1462173.1462176
+
+        Y. Chen, T. A. Davis, W. W. Hager, and S. Rajamanickam, Algorithm 887:
+        CHOLMOD, supernodal sparse Cholesky factorization and update/downdate, ACM
+        Trans. on Mathematical Software, 35(3), 2008, pp. 22:1--22:14.
+        https://dl.acm.org/doi/abs/10.1145/1391989.1391995
+
+    * for CHOLMOD/Modify Module: (also cite AMD, COLAMD):
+
+        T. A. Davis and William W. Hager, Row Modifications of a Sparse
+        Cholesky Factorization SIAM Journal on Matrix Analysis and Applications
+        2005 26:3, 621-639 
+        https://doi.org/10.1137/S089547980343641X
+
+        T. A. Davis and William W. Hager, Multiple-Rank Modifications of a
+        Sparse Cholesky Factorization SIAM Journal on Matrix Analysis and
+        Applications 2001 22:4, 997-1013
+        https://doi.org/10.1137/S0895479899357346
+
+        T. A. Davis and William W. Hager, Modifying a Sparse Cholesky
+        Factorization, SIAM Journal on Matrix Analysis and Applications 1999
+        20:3, 606-627
+        https://doi.org/10.1137/S0895479897321076
+
+    * for CHOLMOD/GPU Modules:
+
+        Steven C. Rennich, Darko Stosic, Timothy A. Davis, Accelerating sparse
+        Cholesky factorization on GPUs, Parallel Computing, Vol 59, 2016, pp
+        140-150.
+        https://doi.org/10.1016/j.parco.2016.06.004
+
+    * for AMD and CAMD:
+
+        P. Amestoy, T. A. Davis, and I. S. Duff, Algorithm 837: An approximate
+        minimum degree ordering algorithm, ACM Trans. on Mathematical Software,
+        30(3), 2004, pp. 381--388.
+        https://dl.acm.org/doi/abs/10.1145/1024074.1024081
+
+        P. Amestoy, T. A. Davis, and I. S. Duff, An approximate minimum degree
+        ordering algorithm, SIAM J. Matrix Analysis and Applications, 17(4),
+        1996, pp. 886--905.
+        https://doi.org/10.1137/S0895479894278952
+
+    * for COLAMD, SYMAMD, CCOLAMD, and CSYMAMD:
+
+        T. A. Davis, J. R. Gilbert, S. Larimore, E. Ng, Algorithm 836:  COLAMD,
+        an approximate column minimum degree ordering algorithm, ACM Trans. on
+        Mathematical Software, 30(3), 2004, pp. 377--380.
+        https://doi.org/10.1145/1024074.1024080
+
+        T. A. Davis, J. R. Gilbert, S. Larimore, E. Ng, A column approximate
+        minimum degree ordering algorithm, ACM Trans. on Mathematical Software,
+        30(3), 2004, pp. 353--376.
+        https://doi.org/10.1145/1024074.1024079
+
+    * for UMFPACK: (also cite AMD and COLAMD):
+
+        T. A. Davis, Algorithm 832:  UMFPACK - an unsymmetric-pattern
+        multifrontal method with a column pre-ordering strategy, ACM Trans. on
+        Mathematical Software, 30(2), 2004, pp. 196--199.
+        https://dl.acm.org/doi/abs/10.1145/992200.992206
+
+        T. A. Davis, A column pre-ordering strategy for the unsymmetric-pattern
+        multifrontal method, ACM Trans. on Mathematical Software, 30(2), 2004,
+        pp. 165--195.
+        https://dl.acm.org/doi/abs/10.1145/992200.992205
+
+        T. A. Davis and I. S. Duff, A combined unifrontal/multifrontal method
+        for unsymmetric sparse matrices, ACM Trans. on Mathematical Software,
+        25(1), 1999, pp. 1--19.
+        https://doi.org/10.1145/305658.287640
+
+        T. A. Davis and I. S. Duff, An unsymmetric-pattern multifrontal method
+        for sparse LU factorization, SIAM J. Matrix Analysis and Computations,
+        18(1), 1997, pp. 140--158.
+        https://doi.org/10.1137/S0895479894246905
+
+    * for the FACTORIZE m-file:
+
+        T. A. Davis, Algorithm 930: FACTORIZE, an object-oriented linear system
+        solver for MATLAB, ACM Trans. on Mathematical Software, 39(4), 2013,
+        pp. 28:1-28:18.
+        https://doi.org/10.1145/2491491.2491498
+
+    * for KLU and BTF (also cite AMD and COLAMD):
+
+        T. A. Davis and Ekanathan Palamadai Natarajan. 2010. Algorithm 907:
+        KLU, A Direct Sparse Solver for Circuit Simulation Problems. ACM Trans.
+        Math. Softw. 37, 3, Article 36 (September 2010), 17 pages.
+        https://dl.acm.org/doi/abs/10.1145/1824801.1824814
+
+    * for LDL:
+
+        T. A. Davis. Algorithm 849: A concise sparse Cholesky factorization
+        package. ACM Trans. Math. Softw. 31, 4 (December 2005), 587–591.
+        https://doi.org/10.1145/1114268.1114277
+
+    * for ssget and the SuiteSparse Matrix Collection:
+
+        T. A. Davis and Yifan Hu. 2011. The University of Florida sparse
+        matrix collection. ACM Trans. Math. Softw. 38, 1, Article 1 (November
+        2011), 25 pages.
+        https://doi.org/10.1145/2049662.2049663
+
+        Kolodziej et al., (2019). The SuiteSparse Matrix Collection Website
+        Interface. Journal of Open Source Software, 4(35), 1244,
+        https://doi.org/10.21105/joss.01244        
+
+    * for `spqr_rank`:
+
+        Leslie V. Foster and T. A. Davis. 2013. Algorithm 933: Reliable
+        calculation of numerical rank, null space bases, pseudoinverse
+        solutions, and basic solutions using suitesparseQR. ACM Trans. Math.
+        Softw. 40, 1, Article 7 (September 2013), 23 pages.
+        https://doi.org/10.1145/2513109.2513116
+
+    * for Mongoose:
+
+        T. A. Davis, William W. Hager, Scott P. Kolodziej, and S. Nuri Yeralan.
+        2020. Algorithm 1003: Mongoose, a Graph Coarsening and Partitioning
+        Library. ACM Trans. Math. Softw. 46, 1, Article 7 (March 2020), 18
+        pages. 
+        https://doi.org/10.1145/3337792
+
+    * for `SLIP_LU` and SPEX:
+
+        Christopher Lourenco, Jinhao Chen, Erick Moreno-Centeno, and T. A.
+        Davis. 2022. Algorithm 1XXX: SPEX Left LU, Exactly Solving Sparse
+        Linear Systems via a Sparse Left-Looking Integer-Preserving LU
+        Factorization. ACM Trans. Math. Softw. Just Accepted (February 2022).
+        https://doi.org/10.1145/3519024
+
+-----------------------------------------------------------------------------
 About the BLAS and LAPACK libraries
 -----------------------------------------------------------------------------
 
