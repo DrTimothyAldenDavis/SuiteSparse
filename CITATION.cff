@@ -1,0 +1,490 @@
+
+@article{10.1145/3322125,
+author = {Davis, Timothy A.},
+title = {Algorithm 1000: SuiteSparse:GraphBLAS: Graph Algorithms in the Language of Sparse Linear Algebra},
+year = {2019},
+issue_date = {December 2019},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {45},
+number = {4},
+issn = {0098-3500},
+url = {https://doi.org/10.1145/3322125},
+doi = {10.1145/3322125},
+abstract = {SuiteSparse:GraphBLAS is a full implementation of the GraphBLAS standard, which defines a set of sparse matrix operations on an extended algebra of semirings using an almost unlimited variety of operators and types. When applied to sparse adjacency matrices, these algebraic operations are equivalent to computations on graphs. GraphBLAS provides a powerful and expressive framework for creating graph algorithms based on the elegant mathematics of sparse matrix operations on a semiring. An overview of the GraphBLAS specification is given, followed by a description of the key features and performance of its implementation in the SuiteSparse:GraphBLAS package.},
+journal = {ACM Trans. Math. Softw.},
+month = {dec},
+articleno = {44},
+numpages = {25},
+keywords = {GraphBLAS, Graph algorithms, sparse matrices}
+}
+
+@book{FA02,
+    author={T. A. Davis},
+    title={Direct Methods for Sparse Linear Systems},
+    publisher={SIAM},
+    address={Philadelphia, PA},
+    year={2006},
+    url={https://doi.org/10.1137/1.9780898718881},
+    doi={10.1137/1.9780898718881}}
+
+
+@article{10.1145/2049662.2049670,
+author = {Davis, Timothy A.},
+title = {Algorithm 915, SuiteSparseQR: Multifrontal Multithreaded Rank-Revealing Sparse QR Factorization},
+year = {2011},
+issue_date = {November 2011},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {38},
+number = {1},
+issn = {0098-3500},
+url = {https://doi.org/10.1145/2049662.2049670},
+doi = {10.1145/2049662.2049670},
+abstract = {SuiteSparseQR is a sparse QR factorization package based on the multifrontal method. Within each frontal matrix, LAPACK and the multithreaded BLAS enable the method to obtain high performance on multicore architectures. Parallelism across different frontal matrices is handled with Intel's Threading Building Blocks library. The symbolic analysis and ordering phase pre-eliminates singletons by permuting the input matrix A into the form [R11 R12; 0 A22] where R11 is upper triangular with diagonal entries above a given tolerance. Next, the fill-reducing ordering, column elimination tree, and frontal matrix structures are found without requiring the formation of the pattern of ATA. Approximate rank-detection is performed within each frontal matrix using Heath's method. While Heath's method is not always exact, it has the advantage of not requiring column pivoting and thus does not interfere with the fill-reducing ordering. For sufficiently large problems, the resulting sparse QR factorization obtains a substantial fraction of the theoretical peak performance of a multicore computer.},
+journal = {ACM Trans. Math. Softw.},
+month = {dec},
+articleno = {8},
+numpages = {22},
+keywords = {least-square problems, sparse matrices, QR factorization}
+}
+
+@article{10.1145/3065870,
+author = {Yeralan, Sencer Nuri and Davis, Timothy A. and Sid-Lakhdar, Wissam M. and Ranka, Sanjay},
+title = {Algorithm 980: Sparse QR Factorization on the GPU},
+year = {2017},
+issue_date = {June 2018},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {44},
+number = {2},
+issn = {0098-3500},
+url = {https://doi.org/10.1145/3065870},
+doi = {10.1145/3065870},
+abstract = {Sparse matrix factorization involves a mix of regular and irregular computation, which is a particular challenge when trying to obtain high-performance on the highly parallel general-purpose computing cores available on graphics processing units (GPUs). We present a sparse multifrontal QR factorization method that meets this challenge and is significantly faster than a highly optimized method on a multicore CPU. Our method factorizes many frontal matrices in parallel and keeps all the data transmitted between frontal matrices on the GPU. A novel bucket scheduler algorithm extends the communication-avoiding QR factorization for dense matrices by exploiting more parallelism and by exploiting the staircase form present in the frontal matrices of a sparse multifrontal method.},
+journal = {ACM Trans. Math. Softw.},
+month = {aug},
+articleno = {17},
+numpages = {29},
+keywords = {GPU, QR factorization, least-square problems, sparse matrices}
+}
+
+@article{10.1145/1391989.1391995,
+author = {Chen, Yanqing and Davis, Timothy A. and Hager, William W. and Rajamanickam, Sivasankaran},
+title = {Algorithm 887: CHOLMOD, Supernodal Sparse Cholesky Factorization and Update/Downdate},
+year = {2008},
+issue_date = {October 2008},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {35},
+number = {3},
+issn = {0098-3500},
+url = {https://doi.org/10.1145/1391989.1391995},
+doi = {10.1145/1391989.1391995},
+abstract = {CHOLMOD is a set of routines for factorizing sparse symmetric positive definite matrices of the form A or AAT, updating/downdating a sparse Cholesky factorization, solving linear systems, updating/downdating the solution to the triangular system Lx = b, and many other sparse matrix functions for both symmetric and unsymmetric matrices. Its supernodal Cholesky factorization relies on LAPACK and the Level-3 BLAS, and obtains a substantial fraction of the peak performance of the BLAS. Both real and complex matrices are supported. CHOLMOD is written in ANSI/ISO C, with both C and MATLABTM interfaces. It appears in MATLAB 7.2 as x = Ab when A is sparse symmetric positive definite, as well as in several other sparse matrix functions.},
+journal = {ACM Trans. Math. Softw.},
+month = {oct},
+articleno = {22},
+numpages = {14},
+keywords = {sparse matrices, linear equations, Cholesky factorization}
+}
+
+@article{10.1145/1462173.1462176,
+author = {Davis, Timothy A. and Hager, William W.},
+title = {Dynamic Supernodes in Sparse Cholesky Update/Downdate and Triangular Solves},
+year = {2009},
+issue_date = {February 2009},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {35},
+number = {4},
+issn = {0098-3500},
+url = {https://doi.org/10.1145/1462173.1462176},
+doi = {10.1145/1462173.1462176},
+abstract = {The supernodal method for sparse Cholesky factorization represents the factor L as a set of supernodes, each consisting of a contiguous set of columns of L with identical nonzero pattern. A conventional supernode is stored as a dense submatrix. While this is suitable for sparse Cholesky factorization where the nonzero pattern of L does not change, it is not suitable for methods that modify a sparse Cholesky factorization after a low-rank change to A (an update/downdate, undefined = A ± WWT). Supernodes merge and split apart during an update/downdate. Dynamic supernodes are introduced which allow a sparse Cholesky update/downdate to obtain performance competitive with conventional supernodal methods. A dynamic supernodal solver is shown to exceed the performance of the conventional (BLAS-based) supernodal method for solving triangular systems. These methods are incorporated into CHOLMOD, a sparse Cholesky factorization and update/downdate package which forms the basis of x = Ab MATLAB when A is sparse and symmetric positive definite.},
+journal = {ACM Trans. Math. Softw.},
+month = {feb},
+articleno = {27},
+numpages = {23},
+keywords = {sparse matrices, linear equations, Cholesky factorization}
+}
+
+
+@article{doi:10.1137/S089547980343641X,
+author = {Davis, Timothy A. and Hager, William W.},
+title = {Row Modifications of a Sparse Cholesky Factorization},
+journal = {SIAM Journal on Matrix Analysis and Applications},
+volume = {26},
+number = {3},
+pages = {621-639},
+year = {2005},
+doi = {10.1137/S089547980343641X},
+URL = {https://doi.org/10.1137/S089547980343641X },
+eprint = { https://doi.org/10.1137/S089547980343641X } ,
+    abstract = { Given a sparse, symmetric positive definite matrix C and an associated sparse Cholesky factorization LDL\$\tr\$, we develop sparse techniques for updating the factorization after a symmetric modification of a row and column of C. We show how the modification in the Cholesky factorization associated with this rank-2 modification of C can be computed efficiently using a sparse rank-1 technique developed in [T. A. Davis and W. W. Hager, SIAM J. Matrix Anal. Appl., 20 (1999), pp. 606--627]. We also determine how the solution of a linear system Lx = b changes after changing a row and column of C or after a rank-r change in C. }
+}
+
+
+@article{doi:10.1137/S0895479899357346,
+author = {Davis, Timothy A. and Hager, William W.},
+title = {Multiple-Rank Modifications of a Sparse Cholesky Factorization},
+journal = {SIAM Journal on Matrix Analysis and Applications},
+volume = {22},
+number = {4},
+pages = {997-1013},
+year = {2001},
+doi = {10.1137/S0895479899357346},
+URL = { https://doi.org/10.1137/S0895479899357346 },
+eprint = { https://doi.org/10.1137/S0895479899357346 } ,
+    abstract = { Given a sparse symmetric positive definite matrix \$\mathbf{AA}\tr\$ and an associated sparse Cholesky factorization \$\mathbf{LDL}\tr\$ or \$\mathbf{LL}\tr\$, we develop sparse techniques for updating the factorization after either adding a collection of columns to A or deleting a collection of columns from A. Our techniques are based on an analysis and manipulation of the underlying graph structure, using the framework developed in an earlier paper on rank-1 modifications [T. A. Davis and W. W. Hager, SIAM J. Matrix Anal. Appl., 20 (1999), pp. 606--627]. Computationally, the multiple-rank update has better memory traffic and executes much faster than an equivalent series of rank-1 updates since the multiple-rank update makes one pass through L computing the new entries, while a series of rank-1 updates requires multiple passes through L. }
+}
+
+
+
+@article{doi:10.1137/S0895479897321076,
+author = {Davis, Timothy A. and Hager, William W.},
+title = {Modifying a Sparse Cholesky Factorization},
+journal = {SIAM Journal on Matrix Analysis and Applications},
+volume = {20},
+number = {3},
+pages = {606-627},
+year = {1999},
+doi = {10.1137/S0895479897321076},
+URL = { https://doi.org/10.1137/S0895479897321076 },
+eprint = { https://doi.org/10.1137/S0895479897321076 } ,
+    abstract = { Given a sparse symmetric positive definite matrix \${\bf AA}^{\sf T}\$ and an associated sparse Cholesky factorization \${\bf LDL}^{\sf T}\$ or \${\bf LL}^{\sf T}\$, we develop sparse techniques for obtaining the new factorization associated with either adding a column to \${\bf A}\$ or deleting a column from \${\bf A}\$. Our techniques are based on an analysis and manipulation of the underlying graph structure and on ideas of Gill et al.\ [ Math. Comp., 28 (1974), pp. 505--535] for modifying a dense Cholesky factorization. We show that our methods extend to the general case where an arbitrary sparse symmetric positive definite matrix is modified. Our methods are optimal in the sense that they take time proportional to the number of nonzero entries in \${\bf L}\$ and \${\bf D}\$ that change. }
+}
+
+
+@article{RENNICH2016140,
+title = {Accelerating sparse Cholesky factorization on GPUs},
+journal = {Parallel Computing},
+volume = {59},
+pages = {140-150},
+year = {2016},
+note = {Theory and Practice of Irregular Applications},
+issn = {0167-8191},
+doi = {https://doi.org/10.1016/j.parco.2016.06.004},
+url = {https://www.sciencedirect.com/science/article/pii/S016781911630059X},
+author = {Steven C. Rennich and Darko Stosic and Timothy A. Davis},
+keywords = {Sparse, Cholesky, Factorization, GPU, Parallel},
+abstract = {Sparse factorization is a fundamental tool in scientific computing. As the major component of a sparse direct solver, it represents the dominant computational cost for many analyses. For factorizations which involve sufficient dense math, the substantial computational capability provided by GPUs (Graphics Processing Units) can help alleviate this cost. However, for many other cases, the prevalence of small/irregular dense math and the relatively slow communication between the host and device over the PCIe bus, make it challenging to significantly accelerate sparse factorization using the GPU. In this paper we describe a left-looking supernodal Cholesky factorization algorithm which permits improved utilization of the GPU when factoring sparse matrices. The central idea is to stream subtrees of the elimination tree through the GPU and perform the factorization of each subtree entirely on the GPU. This avoids the majority of the PCIe communication without the need for a complex task scheduler. Importantly, within these subtrees, many independent, small, dense operations are batched to minimize kernel launch overhead and many of these batched kernels are executed concurrently to maximize device utilization. Performance results for commonly studied matrices are presented along with suggested actions for further optimization.}
+}
+
+@article{10.1145/1024074.1024081,
+author = {Amestoy, Patrick R. and Davis, Timothy A. and Duff, Iain S.},
+title = {Algorithm 837: AMD, an Approximate Minimum Degree Ordering Algorithm},
+year = {2004},
+issue_date = {September 2004},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {30},
+number = {3},
+issn = {0098-3500},
+url = {https://doi.org/10.1145/1024074.1024081},
+doi = {10.1145/1024074.1024081},
+abstract = {AMD is a set of routines that implements the approximate minimum degree ordering algorithm to permute sparse matrices prior to numerical factorization. There are versions written in both C and Fortran 77. A MATLAB interface is included.},
+journal = {ACM Trans. Math. Softw.},
+month = {sep},
+pages = {381–388},
+numpages = {8},
+keywords = {sparse matrices, Linear equations, ordering methods, minimum degree}
+}
+
+
+
+
+
+
+
+@article{doi:10.1137/S0895479894278952,
+author = {Amestoy, Patrick R. and Davis, Timothy A. and Duff, Iain S.},
+title = {An Approximate Minimum Degree Ordering Algorithm},
+journal = {SIAM Journal on Matrix Analysis and Applications},
+volume = {17},
+number = {4},
+pages = {886-905},
+year = {1996},
+doi = {10.1137/S0895479894278952},
+URL = { https://doi.org/10.1137/S0895479894278952 },
+eprint = { https://doi.org/10.1137/S0895479894278952 } ,
+    abstract = { Abstract. An approximate minimum degree (AMD), ordering algorithm for preordering a symmetric sparse matrix prior to numerical factorization is presented. We use techniques based on the quotient graph for matrix factorization that allow us to obtain computationally cheap bounds for the minimum degree. We show that these bounds are often equal to the actual degree. The resulting algorithm is typically much faster than previous minimum degree ordering algorithms and produces results that are comparable in quality with the best orderings from other minimum degree algorithms. }
+}
+
+
+@article{10.1145/1024074.1024080,
+author = {Davis, Timothy A. and Gilbert, John R. and Larimore, Stefan I. and Ng, Esmond G.},
+title = {Algorithm 836: COLAMD, a Column Approximate Minimum Degree Ordering Algorithm},
+year = {2004},
+issue_date = {September 2004},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {30},
+number = {3},
+issn = {0098-3500},
+url = {https://doi.org/10.1145/1024074.1024080},
+doi = {10.1145/1024074.1024080},
+abstract = {Two codes are discussed, COLAMD and SYMAMD, that compute approximate minimum degree orderings for sparse matrices in two contexts: (1) sparse partial pivoting, which requires a sparsity preserving column pre-ordering prior to numerical factorization, and (2) sparse Cholesky factorization, which requires a symmetric permutation of both the rows and columns of the matrix being factorized. These orderings are computed by COLAMD and SYMAMD, respectively. The ordering from COLAMD is also suitable for sparse QR factorization, and the factorization of matrices of the form ATA and AAT, such as those that arise in least-squares problems and interior point methods for linear programming problems. The two routines are available both in MATLAB and C-callable forms. They appear as built-in routines in MATLAB Version 6.0.},
+journal = {ACM Trans. Math. Softw.},
+month = {sep},
+pages = {377–380},
+numpages = {4},
+keywords = {sparse nonsymmetric matrices, ordering methods, Linear equations}
+}
+
+@article{10.1145/1024074.1024079,
+author = {Davis, Timothy A. and Gilbert, John R. and Larimore, Stefan I. and Ng, Esmond G.},
+title = {A Column Approximate Minimum Degree Ordering Algorithm},
+year = {2004},
+issue_date = {September 2004},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {30},
+number = {3},
+issn = {0098-3500},
+url = {https://doi.org/10.1145/1024074.1024079},
+doi = {10.1145/1024074.1024079},
+abstract = {Sparse Gaussian elimination with partial pivoting computes the factorization PAQ = LU of a sparse matrix A, where the row ordering P is selected during factorization using standard partial pivoting with row interchanges. The goal is to select a column preordering, Q, based solely on the nonzero pattern of A, that limits the worst-case number of nonzeros in the factorization. The fill-in also depends on P, but Q is selected to reduce an upper bound on the fill-in for any subsequent choice of P. The choice of Q can have a dramatic impact on the number of nonzeros in L and U. One scheme for determining a good column ordering for A is to compute a symmetric ordering that reduces fill-in in the Cholesky factorization of ATA. A conventional minimum degree ordering algorithm would require the sparsity structure of ATA to be computed, which can be expensive both in terms of space and time since ATA may be much denser than A. An alternative is to compute Q directly from the sparsity structure of A; this strategy is used by MATLAB's COLMMD preordering algorithm. A new ordering algorithm, COLAMD, is presented. It is based on the same strategy but uses a better ordering heuristic. COLAMD is faster and computes better orderings, with fewer nonzeros in the factors of the matrix.},
+journal = {ACM Trans. Math. Softw.},
+month = {sep},
+pages = {353–376},
+numpages = {24},
+keywords = {linear equations, Sparse nonsymmetric matrices, ordering methods}
+}
+
+@article{10.1145/992200.992206,
+author = {Davis, Timothy A.},
+title = {Algorithm 832: UMFPACK V4.3---an Unsymmetric-Pattern Multifrontal Method},
+year = {2004},
+issue_date = {June 2004},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {30},
+number = {2},
+issn = {0098-3500},
+url = {https://doi.org/10.1145/992200.992206},
+doi = {10.1145/992200.992206},
+abstract = {An ANSI C code for sparse LU factorization is presented that combines a column pre-ordering strategy with a right-looking unsymmetric-pattern multifrontal numerical factorization. The pre-ordering and symbolic analysis phase computes an upper bound on fill-in, work, and memory usage during the subsequent numerical factorization. User-callable routines are provided for ordering and analyzing a sparse matrix, computing the numerical factorization, solving a system with the LU factors, transposing and permuting a sparse matrix, and converting between sparse matrix representations. The simple user interface shields the user from the details of the complex sparse factorization data structures by returning simple handles to opaque objects. Additional user-callable routines are provided for printing and extracting the contents of these opaque objects. An even simpler way to use the package is through its MATLAB interface. UMFPACK is incorporated as a built-in operator in MATLAB 6.5 as x = Ab when A is sparse and unsymmetric.},
+journal = {ACM Trans. Math. Softw.},
+month = {jun},
+pages = {196–199},
+numpages = {4},
+keywords = {ordering methods, multifrontal method, sparse nonsymmetric matrices, linear equations}
+}
+
+
+@article{10.1145/992200.992205,
+author = {Davis, Timothy A.},
+title = {A Column Pre-Ordering Strategy for the Unsymmetric-Pattern Multifrontal Method},
+year = {2004},
+issue_date = {June 2004},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {30},
+number = {2},
+issn = {0098-3500},
+url = {https://doi.org/10.1145/992200.992205},
+doi = {10.1145/992200.992205},
+abstract = {A new method for sparse LU factorization is presented that combines a column pre-ordering strategy with a right-looking unsymmetric-pattern multifrontal numerical factorization. The column ordering is selected to give a good a priori upper bound on fill-in and then refined during numerical factorization (while preserving the bound). Pivot rows are selected to maintain numerical stability and to preserve sparsity. The method analyzes the matrix and automatically selects one of three pre-ordering and pivoting strategies. The number of nonzeros in the LU factors computed by the method is typically less than or equal to those found by a wide range of unsymmetric sparse LU factorization methods, including left-looking methods and prior multifrontal methods.},
+journal = {ACM Trans. Math. Softw.},
+month = {jun},
+pages = {165–195},
+numpages = {31},
+keywords = {linear equations, multifrontal method, sparse nonsymmetric matrices, ordering methods}
+}
+
+@article{10.1145/305658.287640,
+author = {Davis, Timothy A. and Duff, Iain S.},
+title = {A Combined Unifrontal/Multifrontal Method for Unsymmetric Sparse Matrices},
+year = {1999},
+issue_date = {March 1999},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {25},
+number = {1},
+issn = {0098-3500},
+url = {https://doi.org/10.1145/305658.287640},
+doi = {10.1145/305658.287640},
+abstract = {We discuss the organization of frontal matrices in multifrontal methods for the solution of large sparse sets of unsymmetric linear equations. In the multifrontal method, work on a frontal matrix can be suspended, the frontal matrix can be stored for later reuse, and a new frontal matrix can be generated. There are thus several frontal matrices stored during the factorization, and one or more of these are assembled (summed) when creating a new frontal matrix. Although this means that arbitrary sparsity patterns can be handled efficiently, extra work is required to sum the frontal matrices together and can be costly because indirect addressing is requred. The (uni)frontal method avoids this extra work by factorizing the matrix with a single frontal matrix. Rows and columns are added  to the frontal matrix, and pivot rows and columns are removed. Data movement is simpler, but higher fill-in can result if the matrix cannot be permuted into a variable-band form with small profile. We consider a combined unifrontal/multifrontal algorithm to enable general fill-in reduction orderings to be applied without the data movement of previous multifrontal approaches.  We discuss this technique in the context of a code designed for the solution of sparse systems with unsymmetric pattern.},
+journal = {ACM Trans. Math. Softw.},
+month = {mar},
+pages = {1–20},
+numpages = {20},
+keywords = {linear equations, frontal methods, sparse unsymmetric matrices, multifrontal methods}
+}
+
+
+
+
+
+
+
+
+@article{doi:10.1137/S0895479894246905,
+author = {Davis, Timothy A. and Duff, Iain S.},
+title = {An Unsymmetric-Pattern Multifrontal Method for Sparse LU Factorization},
+journal = {SIAM Journal on Matrix Analysis and Applications},
+volume = {18},
+number = {1},
+pages = {140-158},
+year = {1997},
+doi = {10.1137/S0895479894246905},
+URL = { https://doi.org/10.1137/S0895479894246905 },
+eprint = { https://doi.org/10.1137/S0895479894246905 } ,
+    abstract = { Sparse matrix factorization algorithms for general problems are typically characterized by irregular memory access patterns that limit their performance on parallel-vector supercomputers. For symmetric problems, methods such as the multifrontal method avoid indirect addressing in the innermost loops by using dense matrix kernels. However, no efficient LU factorization algorithm based primarily on dense matrix kernels exists for matrices whose pattern is very unsymmetric. We address this deficiency and present a new unsymmetric-pattern multifrontal method based on dense matrix kernels. As in the classical multifrontal method, advantage is taken of repetitive structure in the matrix by factorizing more than one pivot in each frontal matrix, thus enabling the use of Level 2 and Level 3 BLAS. The performance is compared with the classical multifrontal method and other unsymmetric solvers on a CRAY C-98. }
+}
+
+
+@article{10.1145/2491491.2491498,
+author = {Davis, Timothy A.},
+title = {Algorithm 930: FACTORIZE: An Object-Oriented Linear System Solver for MATLAB},
+year = {2013},
+issue_date = {July 2013},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {39},
+number = {4},
+issn = {0098-3500},
+url = {https://doi.org/10.1145/2491491.2491498},
+doi = {10.1145/2491491.2491498},
+abstract = {The MATLAB™ backslash (x=Ab) is an elegant and powerful interface to a suite of high-performance factorization methods for the direct solution of the linear system Ax = b and the least-squares problem minx ‖b - Ax‖. It is a meta-algorithm that selects the best factorization method for a particular matrix, whether sparse or dense. However, the simplicity and elegance of its single-character interface prohibits the reuse of its factorization for subsequent systems. Requiring MATLAB users to find the best factorization method on their own can lead to suboptimal choices; even MATLAB experts can make the wrong choice. Furthermore, naive MATLAB users have a tendency to translate mathematical expressions from linear algebra directly into MATLAB, so that x = A-1b becomes the inferior yet all-to-prevalent x=inv(A)*b. To address these issues, an object-oriented FACTORIZE method is presented. Via simple-to-use operator overloading, solving two linear systems can be written as F=factorize(A); x=Fb; y=Fc, where A is factorized only once. The selection of the best factorization method (LU, Cholesky, LDLT, QR, or a complete orthogonal decomposition for rank-deficient matrices) is hidden from the user. The mathematical expression x = A-1b directly translates into the MATLAB expression x=inverse(A)*b, which does not compute the inverse at all, but does the right thing by factorizing A and solving the corresponding triangular systems.},
+journal = {ACM Trans. Math. Softw.},
+month = {jul},
+articleno = {28},
+numpages = {18},
+keywords = {object-oriented methods, least-square problems, matrix factorization, Linear systems}
+}
+
+
+@article{10.1145/1824801.1824814,
+author = {Davis, Timothy A. and Palamadai Natarajan, Ekanathan},
+title = {Algorithm 907: KLU, A Direct Sparse Solver for Circuit Simulation Problems},
+year = {2010},
+issue_date = {September 2010},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {37},
+number = {3},
+issn = {0098-3500},
+url = {https://doi.org/10.1145/1824801.1824814},
+doi = {10.1145/1824801.1824814},
+abstract = {KLU is a software package for solving sparse unsymmetric linear systems of equations that arise in circuit simulation applications. It relies on a permutation to Block Triangular Form (BTF), several methods for finding a fill-reducing ordering (variants of approximate minimum degree and nested dissection), and Gilbert/Peierls’ sparse left-looking LU factorization algorithm to factorize each block. The package is written in C and includes a MATLAB interface. Performance results comparing KLU with SuperLU, Sparse 1.3, and UMFPACK on circuit simulation matrices are presented. KLU is the default sparse direct solver in the XyceTMcircuit simulation package developed by Sandia National Laboratories.},
+journal = {ACM Trans. Math. Softw.},
+month = {sep},
+articleno = {36},
+numpages = {17},
+keywords = {LU factorization, circuit simulation, sparse matrices}
+}
+
+@article{10.1145/1114268.1114277,
+author = {Davis, Timothy A.},
+title = {Algorithm 849: A Concise Sparse Cholesky Factorization Package},
+year = {2005},
+issue_date = {December 2005},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {31},
+number = {4},
+issn = {0098-3500},
+url = {https://doi.org/10.1145/1114268.1114277},
+doi = {10.1145/1114268.1114277},
+abstract = {The LDL software package is a set of short, concise routines for factorizing symmetric positive-definite sparse matrices, with some applicability to symmetric indefinite matrices. Its primary purpose is to illustrate much of the basic theory of sparse matrix algorithms in as concise a code as possible, including an elegant method of sparse symmetric factorization that computes the factorization row-by-row but stores it column-by-column. The entire symbolic and numeric factorization consists of less than 50 executable lines of code. The package is written in C, and includes a MATLAB interface.},
+journal = {ACM Trans. Math. Softw.},
+month = {dec},
+pages = {587–591},
+numpages = {5},
+keywords = {Cholesky factorization, linear equations, sparse matrices}
+}
+
+@article{10.1145/2049662.2049663,
+author = {Davis, Timothy A. and Hu, Yifan},
+title = {The University of Florida Sparse Matrix Collection},
+year = {2011},
+issue_date = {November 2011},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {38},
+number = {1},
+issn = {0098-3500},
+url = {https://doi.org/10.1145/2049662.2049663},
+doi = {10.1145/2049662.2049663},
+abstract = {We describe the University of Florida Sparse Matrix Collection, a large and actively growing set of sparse matrices that arise in real applications. The Collection is widely used by the numerical linear algebra community for the development and performance evaluation of sparse matrix algorithms. It allows for robust and repeatable experiments: robust because performance results with artificially generated matrices can be misleading, and repeatable because matrices are curated and made publicly available in many formats. Its matrices cover a wide spectrum of domains, include those arising from problems with underlying 2D or 3D geometry (as structural engineering, computational fluid dynamics, model reduction, electromagnetics, semiconductor devices, thermodynamics, materials, acoustics, computer graphics/vision, robotics/kinematics, and other discretizations) and those that typically do not have such geometry (optimization, circuit simulation, economic and financial modeling, theoretical and quantum chemistry, chemical process simulation, mathematics and statistics, power networks, and other networks and graphs). We provide software for accessing and managing the Collection, from MATLAB™, Mathematica™, Fortran, and C, as well as an online search capability. Graph visualization of the matrices is provided, and a new multilevel coarsening scheme is proposed to facilitate this task.},
+journal = {ACM Trans. Math. Softw.},
+month = {dec},
+articleno = {1},
+numpages = {25},
+keywords = {sparse matrices, Graph drawing, performance evaluation, multilevel algorithms}
+}
+
+
+@article{Kolodziej2019,
+  doi = {10.21105/joss.01244},
+  url = {https://doi.org/10.21105/joss.01244},
+  year = {2019},
+  publisher = {The Open Journal},
+  volume = {4},
+  number = {35},
+  pages = {1244},
+  author = {Scott P. Kolodziej and Mohsen Aznaveh and Matthew Bullock and Jarrett David and Timothy A. Davis and Matthew Henderson and Yifan Hu and Read Sandstrom},
+  title = {The SuiteSparse Matrix Collection Website Interface},
+  journal = {Journal of Open Source Software}
+}
+
+
+@article{10.1145/2513109.2513116,
+author = {Foster, Leslie V. and Davis, Timothy A.},
+title = {Algorithm 933: Reliable Calculation of Numerical Rank, Null Space Bases, Pseudoinverse Solutions, and Basic Solutions Using SuitesparseQR},
+year = {2013},
+issue_date = {September 2013},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {40},
+number = {1},
+issn = {0098-3500},
+url = {https://doi.org/10.1145/2513109.2513116},
+doi = {10.1145/2513109.2513116},
+abstract = {The SPQR_RANK package contains routines that calculate the numerical rank of large, sparse, numerically rank-deficient matrices. The routines can also calculate orthonormal bases for numerical null spaces, approximate pseudoinverse solutions to least squares problems involving rank-deficient matrices, and basic solutions to these problems. The algorithms are based on SPQR from SuiteSparseQR (ACM Transactions on Mathematical Software 38, Article 8, 2011). SPQR is a high-performance routine for forming QR factorizations of large, sparse matrices. It returns an estimate for the numerical rank that is usually, but not always, correct. The new routines improve the accuracy of the numerical rank calculated by SPQR and reliably determine the numerical rank in the sense that, based on extensive testing with matrices from applications, the numerical rank is almost always accurately determined when our methods report that the numerical rank should be correct. Reliable determination of numerical rank is critical to the other calculations in the package. The routines work well for matrices with either small or large null space dimensions.},
+journal = {ACM Trans. Math. Softw.},
+month = {oct},
+articleno = {7},
+numpages = {23},
+keywords = {QR factorization, pseudoinverse, Numerical rank, null space, rank revealing, sparse matrices}
+}
+
+@article{10.1145/3337792,
+author = {Davis, Timothy A. and Hager, William W. and Kolodziej, Scott P. and Yeralan, S. Nuri},
+title = {Algorithm 1003: Mongoose, a Graph Coarsening and Partitioning Library},
+year = {2020},
+issue_date = {March 2020},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {46},
+number = {1},
+issn = {0098-3500},
+url = {https://doi.org/10.1145/3337792},
+doi = {10.1145/3337792},
+abstract = {Partitioning graphs is a common and useful operation in many areas, from parallel computing to VLSI design to sparse matrix algorithms. In this article, we introduce Mongoose, a multilevel hybrid graph partitioning algorithm and library. Building on previous work in multilevel partitioning frameworks and combinatoric approaches, we introduce novel stall-reducing and stall-free coarsening strategies, as well as an efficient hybrid algorithm leveraging (1) traditional combinatoric methods and (2) continuous quadratic programming formulations. We demonstrate how this new hybrid algorithm outperforms either strategy in isolation, and we also compare Mongoose to METIS and demonstrate its effectiveness on large and social networking (power law) graphs.},
+journal = {ACM Trans. Math. Softw.},
+month = {mar},
+articleno = {7},
+numpages = {18},
+keywords = {vertex matching, Graph partitioning, graph coarsening}
+}
+
+
+@article{10.1145/3519024,
+author = {Lourenco, Christopher and Chen, Jinhao and Moreno-Centeno, Erick and Davis, Timothy A.},
+title = {Algorithm&nbsp;1XXX: SPEX Left LU, Exactly Solving Sparse Linear Systems via a Sparse Left-Looking Integer-Preserving LU Factorization},
+year = {2022},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+issn = {0098-3500},
+url = {https://doi.org/10.1145/3519024},
+doi = {10.1145/3519024},
+abstract = {SPEX Left LU is a software package for exactly solving unsymmetric sparse linear systems. As a component of the sparse exact (SPEX) software package, SPEX Left LU can be applied to any input matrix, A, whose entries are integral, rational, or decimal, and provides a solution to the system Ax = b which is either exact or accurate to user-specified precision. SPEX Left LU preorders the matrix A with a user-specified fill-reducing ordering and computes a left-looking LU factorization with the special property that each operation used to compute the L and U matrices is integral. Notable additional applications of this package include benchmarking the stability and accuracy of state-of-the-art linear solvers, and determining whether singular-to-double-precision matrices are indeed singular. Computationally, this paper evaluates the impact of several novel pivoting schemes in exact arithmetic, benchmarks the exact iterative solvers within Linbox, and benchmarks the accuracy of MATLAB sparse backslash. Most importantly, it is shown that SPEX Left LU outperforms the exact iterative solvers in run time on easy instances and in stability as the iterative solver fails on a sizeable subset of the tested (both easy and hard) instances. The SPEX Left LU package is written in ANSI C, comes with a MATLAB interface, and is distributed via GitHub, as a component of the SPEX software package, and as a component of SuiteSparse.},
+note = {Just Accepted},
+journal = {ACM Trans. Math. Softw.},
+month = {feb},
+keywords = {exact matrix factorization, sparse linear systems, sparse matrix algorithms, exactly solving linear systems, roundoff errors}
+}
+
