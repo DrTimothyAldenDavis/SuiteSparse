@@ -33,7 +33,9 @@ papers.  To cite the whole collection, use the URLs:
     * http://suitesparse.com (which is a forwarding URL
         to https://people.engr.tamu.edu/davis/suitesparse.html)
 
-Please also cite the specific papers for the packages you use:
+Please also cite the specific papers for the packages you use.  This is a long
+list; if you want a shorter list, just cite the most recent "Algorithm XXX:"
+papers in ACM TOMS, for each package.
 
     * For the MATLAB x=A\b, see below for AMD, COLAMD, CHOLMOD, UMFPACK,
         and SuiteSparseQR.
@@ -43,6 +45,8 @@ Please also cite the specific papers for the packages you use:
         T. Davis, Algorithm 10xx: SuiteSparse:GraphBLAS: parallel graph
         algorithms in the language of sparse linear algebra, ACM Trans on
         Mathematical Software, submitted, under revision, 2022.
+        In GraphBLAS/Doc v7.0.1, to appear here shortly.  See:
+        https://github.com/DrTimothyAldenDavis/GraphBLAS/tree/stable/Doc
 
         T. Davis, Algorithm 1000: SuiteSparse:GraphBLAS: graph algorithms in
         the language of sparse linear algebra, ACM Trans on Mathematical
@@ -71,15 +75,15 @@ Please also cite the specific papers for the packages you use:
 
     * for CHOLMOD: (also cite AMD, COLAMD):
 
-        T. A. Davis and W. W. Hager, Dynamic supernodes in sparse Cholesky
-        update/downdate and triangular solves, ACM Trans. on Mathematical Software,
-        35(4), 2009, pp. 27:1--27:23.
-        https://doi.org/10.1145/1462173.1462176
-
         Y. Chen, T. A. Davis, W. W. Hager, and S. Rajamanickam, Algorithm 887:
         CHOLMOD, supernodal sparse Cholesky factorization and update/downdate, ACM
         Trans. on Mathematical Software, 35(3), 2008, pp. 22:1--22:14.
         https://dl.acm.org/doi/abs/10.1145/1391989.1391995
+
+        T. A. Davis and W. W. Hager, Dynamic supernodes in sparse Cholesky
+        update/downdate and triangular solves, ACM Trans. on Mathematical Software,
+        35(4), 2009, pp. 27:1--27:23.
+        https://doi.org/10.1145/1462173.1462176
 
     * for CHOLMOD/Modify Module: (also cite AMD, COLAMD):
 
