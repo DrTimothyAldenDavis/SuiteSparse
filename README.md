@@ -680,9 +680,6 @@ Python interface
 
 See scikit-sparse and scikit-umfpack for the Python interface via SciPy:
 
-[`https://github.com/scikit-sparse/scikit-sparse`]
-(https://github.com/scikit-sparse/scikit-sparse)
-
-[`https://github.com/scikit-umfpack/scikit-umfpack`]
-(https://github.com/scikit-umfpack/scikit-umfpack)
+https://github.com/scikit-sparse/scikit-sparse
+https://github.com/scikit-umfpack/scikit-umfpack
 
