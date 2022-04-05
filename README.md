@@ -674,3 +674,15 @@ Step-by-step details:
     from the place they were installed.  If you pass INSTALL_***= options
     to 'make install', you must pass the same to 'make uninstall'.
 
+-----------------------------------------------------------------------------
+Python interface
+-----------------------------------------------------------------------------
+
+See scikit-sparse and scikit-umfpack for the Python interface via SciPy:
+
+[`https://github.com/scikit-sparse/scikit-sparse`]
+(https://github.com/scikit-sparse/scikit-sparse)
+
+[`https://github.com/scikit-umfpack/scikit-umfpack`]
+(https://github.com/scikit-umfpack/scikit-umfpack)
+
