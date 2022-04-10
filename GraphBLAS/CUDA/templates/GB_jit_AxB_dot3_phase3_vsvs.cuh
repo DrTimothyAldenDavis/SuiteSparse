@@ -19,13 +19,14 @@
 
 //  Blocksize is 1024, uses warp and block reductions to count zombies produced.
 //******************************************************************************
+
+#pragma once
 #define GB_CUDA_KERNEL
 #include <limits>
 #include <cstdint>
 #include <stdio.h>
 #include <cooperative_groups.h>
 #include "matrix.h"
-//#include "GB_binary_search.h"
 
 using namespace cooperative_groups;
 
@@ -60,6 +61,8 @@ __inline__ __device__
 T block_ReduceSum(thread_block g, T val)
 {
   static __shared__ T shared[warpSize]; // Shared mem for 32 partial sums
+  
+
   int lane = threadIdx.x & 31 ; // % warpSize;
   int wid  = threadIdx.x >> 5 ; // / warpSize;
   thread_block_tile<warpSize> tile = tiled_partition<warpSize>( g );
@@ -70,40 +73,44 @@ T block_ReduceSum(thread_block g, T val)
   // Wait for all partial reductions
   if (lane==0) shared[wid]=val; // Write reduced value to shared memory
   __syncthreads();              // Wait for all partial reductions
+    for(int i = threadIdx.x; i < warpSize; i+= blockDim.x) {
+            printf("blockIdx.x=%d, wid=%d, val=%lld\n", blockIdx.x, i, shared[i]);
+    }
 
-  if (wid > 0 || gridDim.x == 1 ) return val;
+//  if (wid > 0 || gridDim.x == 1 ) return val;
 
   //read from shared memory only if that warp existed
   val = (threadIdx.x <  (blockDim.x / warpSize ) ) ? shared[lane] : 0;
-  //printf("thd%d warp loaded val = %d\n", threadIdx.x, lane, val);
+  printf("thd%d warp loaded val = %d\n", threadIdx.x, lane, val);
 
   if (wid==0) val = warp_ReduceSumPlus<T, warpSize>( tile, val); //Final reduce within first warp
 
   return val;
 }
 
-template< typename T_C, typename T_A, typename T_B, typename T_X, typename T_Y, typename T_Z>
+template< typename T_C, typename T_A, typename T_B>
 __global__ void AxB_dot3_phase3_vsvs
 ( 
-  const int64_t start, 
-  const int64_t end,
-  const int64_t *__restrict__ Bucket, 
-  const GrB_Matrix C, 
-  const GrB_Matrix M, 
-  const GrB_Matrix A, 
-  const GrB_Matrix B,
-  const int sz 
+  int64_t start,
+  int64_t end,
+  int64_t *Bucket,
+  GrB_Matrix C,
+  GrB_Matrix M,
+  GrB_Matrix A,
+  GrB_Matrix B,
+  int sz
 )
 {
+//    printf("start=%lu, end=%lu\n", start, end);
    int dots = end - start;
-   // sz = expected non-zeros per dot 
-   /*
-   int m = (gridDim.x*blockDim.x)*256/sz;
-   int dpt = (nvecs+ gridDim.x*blockDim.x -1)/(gridDim.x*blockDim.x);
-   m = dpt < m ? dpt : m;
-   
-   int dots = (nvecs +m -1)/m; 
-   */
+   // sz = expected non-zeros per dot
+//   /*
+//   int m = (gridDim.x*blockDim.x)*256/sz;
+//   int dpt = (nvecs+ gridDim.x*blockDim.x -1)/(gridDim.x*blockDim.x);
+//   m = dpt < m ? dpt : m;
+//
+//   int dots = (nvecs +m -1)/m;
+//   */
    const T_A *__restrict__ Ax = (T_A *)A->x  ;
    const T_B *__restrict__ Bx = (T_B *)B->x  ;
    T_C *__restrict__ Cx = (T_C *)C->x  ;
@@ -116,14 +123,18 @@ __global__ void AxB_dot3_phase3_vsvs
 
    int pfirst, plast;
 
-   GB_PARTITION (pfirst, plast, dots, blockIdx.x, gridDim.x ) ;
-   if( threadIdx.x ==0 )
-   {
-      printf("block%d %d dots/thrd, start,end = %ld,%ld pf,pl=%d,%d blockDim=%d\n",
-               blockIdx.x, (dots + blockDim.x*gridDim.x -1)/(blockDim.x*gridDim.x),
-               start, end, pfirst, plast, blockDim.x);
-   }
-   __syncthreads();
+    //#define GB_PARTITION(k1,k2,n,tid,nthreads)                                  \
+
+    GB_PARTITION (pfirst, plast, dots, blockIdx.x, gridDim.x ) ;
+//   if( threadIdx.x ==0 )
+//   {
+//   if( threadIdx.x ==0 )
+//   {
+//      printf("block%d %d dots/thrd, start,end = %ld,%ld pf,pl=%d,%d blockDim=%d\n",
+//               blockIdx.x, (dots + blockDim.x*gridDim.x -1)/(blockDim.x*gridDim.x),
+//               start, end, pfirst, plast, blockDim.x);
+//   }
+//   __syncthreads();
 
 
    int zc = 0 ;
@@ -137,24 +148,24 @@ __global__ void AxB_dot3_phase3_vsvs
              tid < plast;
              tid += blockDim.x )
    {
-
-         pair_id = Bucket[ start + tid ]; 
+         pair_id = Bucket[ start + tid ];
 
          int64_t i = Mi [pair_id] ;
          int64_t j = Ci [pair_id]>>4 ; 
-
+         if (j < 0) continue; //don't operate on zombies
+       printf("start=%d, tid=%d, pair_id=%lu, (i,j)=%lu,%lu\n", pfirst, tid, pair_id,i,j);
          int64_t pA       = Ap[i] ;
          int64_t pA_end   = Ap[i+1] ;
-         int64_t pB       = Bp[j] ; 
-         int64_t pB_end   = Bp[j+1] ; 
+         int64_t pB       = Bp[j] ;
+         int64_t pB_end   = Bp[j+1] ;
 
          T_A aki;
          T_B bkj;
-         T_Z cij ;
+         T_C cij ;
 
          bool cij_exists = false;
 
-         while (pA < pA_end && pB < pB_end)
+         while (pA < pA_end && pB < pB_end )
          {
             int64_t ia = Ai [pA] ;
             int64_t ib = Bi [pB] ;
@@ -184,7 +195,7 @@ __global__ void AxB_dot3_phase3_vsvs
             GB_PUTC ( Cx[pair_id] = (T_C)cij ) ;
          }
          else{
-            //printf(" %lld, %lld is zombie %d!\n",i,j,zc);
+            printf(" %lld, %lld is zombie %d!\n",i,j,zc);
             zc++; 
             GB_PUTC( Ci[pair_id] = GB_FLIP( i ) ) ;
          }
@@ -192,15 +203,14 @@ __global__ void AxB_dot3_phase3_vsvs
   
    __syncthreads();
 
-   //printf("thd%d zombie count = %d\n",threadIdx.x,zc);
-   zc = block_ReduceSum<int , 32>( this_thread_block(), zc); 
+   printf("thd%d zombie count = %d\n",threadIdx.x,zc);
+   zc = block_ReduceSum<int , 32>( this_thread_block(), zc);
    __syncthreads();
-
    if( threadIdx.x == 0 && zc > 0) {
-      //printf("block%d zombie count = %d\n", blockIdx.x, zc);
+      printf("block%d zombie count = %d\n", blockIdx.x, zc);
       atomicAdd( (unsigned long long int*)&(C->nzombies), (unsigned long long int)zc);
-      //C->nzombies += (unsigned long long int)zc;
-      //printf("blk:%d Czombie = %lld\n", blockIdx.x,C->nzombies);
+//      C->nzombies += (unsigned long long int)zc;
+      printf("blk:%d Czombie = %lld\n", blockIdx.x,C->nzombies);
    }
-   
+
 }

@@ -31,10 +31,12 @@
 //  GrB_Matrix B           <- input matrix B
 //  int sz                 <- size parameter (not used) 
 
+#pragma once
 #include <limits>
 #include <cstdint>
-#include <cooperative_groups.h>
 #include "matrix.h"
+
+#include <cooperative_groups.h>
 
 // Using tile size fixed at compile time, we don't need shared memory
 #define tile_sz 32 
@@ -81,7 +83,7 @@ T block_ReduceSum(thread_block g, T val, T Ident)
 }
 
 
-template< typename T_C, typename T_A, typename T_B, typename T_X, typename T_Y, typename T_Z>
+template< typename T_C, typename T_A, typename T_B>
 __global__ void AxB_dot3_phase3_dndn 
 (
     int64_t start,
@@ -94,14 +96,15 @@ __global__ void AxB_dot3_phase3_dndn
     int sz
 )
 {
-
-    T_A *Ax = (T_A*)A->x;
-    T_B *Bx = (T_B*)B->x;
-    T_C *Cx = (T_C*)C->x;
-    int64_t *Mi = M->i;
-    int64_t *Ci = C->i;
-    int64_t *Ap = A->p;
-    int64_t *Bp = B->p;
+   const T_A *__restrict__ Ax = (T_A *)A->x  ;
+   const T_B *__restrict__ Bx = (T_B *)B->x  ;
+         T_C *__restrict__ Cx = (T_C *)C->x  ;
+         int64_t *__restrict__ Ci = C->i ;
+   const int64_t *__restrict__ Mi = M->i ;
+   const int64_t *__restrict__ Ai = A->i ;
+   const int64_t *__restrict__ Bi = B->i ;
+   const int64_t *__restrict__ Ap = A->p ;
+   const int64_t *__restrict__ Bp = B->p ;
 
     // zombie count
     int zc = 0;
@@ -124,33 +127,31 @@ __global__ void AxB_dot3_phase3_dndn
          int64_t xend   = Ap[i+1];
          nnzA = xend - pA;
 
-         int64_t pB = Bp[j]; 
-         int64_t yend   = Bp[j+1]; 
+         int64_t pB = Bp[j];
+         int64_t yend   = Bp[j+1];
          nnzB = yend - pB;
 
-    /*
     if (threadIdx.x == 0 ){
-        printf(" i,j = %d,%d  nnz= %d xstart,end = %d,%d  ystart,end = %d,%d\n",
-            (int)i,(int)j,  (int)nnzA, (int)xstart,(int)xend, (int)ystart, (int)yend);
+        printf("tid=%d, i,j = %d,%d  nnzA= %d, nnzB=%d\n",
+               threadIdx.x, (int)i,(int)j,  (int)nnzA, (int)nnzB);
     }
-    __syncthreads();                                          
-    */
+    __syncthreads();
 
     
     // convert global data pointer to the local pointer of this block
     T_A  aki; // *xdata = &Ax[xstart]; 
     T_B  bkj; // *ydata = &Bx[ystart];
-    T_Z  cij;
+    T_C  cij;
 
-    GB_GETA ( aki=(T_Z)Ax[pA+threadIdx.x] ) ;             // aki = A(0,i)
-    GB_GETB ( bkj=(T_Z)Bx[pB+threadIdx.x] ) ;             // bkj = B(0,j)
+    GB_GETA ( aki=(T_C)Ax[pA+threadIdx.x] ) ;             // aki = A(0,i)
+    GB_GETB ( bkj=(T_C)Bx[pB+threadIdx.x] ) ;             // bkj = B(0,j)
     GB_C_MULT ( cij, aki, bkj ) ;                        // cij = aki * bkj
 
     for ( int tid = threadIdx.x + s; tid < nnzA; tid+= s) { 
           // cij += A(k,i) * B(k,j)
           // GB_DOT_TERMINAL ( cij ) ;             // break if cij == terminal
-          GB_GETA ( aki=(T_Z)Ax[pA+tid] ) ;         // aki = A(k,i)
-          GB_GETB ( bkj=(T_Z)Bx[pB+tid] ) ;        // bkj = B(k,j)
+          GB_GETA ( aki=(T_C)Ax[pA+tid] ) ;         // aki = A(k,i)
+          GB_GETB ( bkj=(T_C)Bx[pB+tid] ) ;        // bkj = B(k,j)
           GB_MULTADD ( cij, aki, bkj ) ;        // cij += aki * bkj
     }
 
@@ -159,7 +160,7 @@ __global__ void AxB_dot3_phase3_dndn
     // reduce per-thread sums to a single scalar
     //--------------------------------------------------------------------------
     thread_block_tile<32> tile = tiled_partition<32>( this_thread_block() );
-    cij = warp_ReduceSum<T_Z, 32> ( tile, cij);
+    cij = warp_ReduceSum<T_C, 32> ( tile, cij);
 
     // write result for this block to global mem
     if (threadIdx.x == 0)

@@ -19,6 +19,16 @@ typedef enum                    // input parameter to GB_new and GB_new_bix
 GB_Ap_code ;
 
 GB_PUBLIC
+GrB_Info GB_Matrix_new          // create a new matrix with no entries
+(
+    GrB_Matrix *A,              // handle of matrix to create
+    GrB_Type type,              // type of matrix to create
+    GrB_Index nrows,            // matrix dimension is nrows-by-ncols
+    GrB_Index ncols,
+    GB_Context Context
+) ;
+
+GB_PUBLIC
 GrB_Info GB_new                 // create matrix, except for indices & values
 (
     GrB_Matrix *Ahandle,        // handle of matrix to create

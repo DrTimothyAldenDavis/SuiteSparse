@@ -55,9 +55,9 @@ To remove all compiled files:
 
     make clean
 
-To compile the demos:
+To compile and run the demos:
 
-    make all
+    make run
 
 See the GraphBLAS/ subfolder for the Octave/MATLAB interface, which contains a
 README.md file with further details.

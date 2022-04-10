@@ -163,7 +163,6 @@ logstat ('test179',t) ; % test bitmap select
 logstat ('test165',t) ; % test C=A*B' where A is diagonal and B becomes bitmap
 
 logstat ('test01' ,t) ; % error handling
-logstat ('test07b',t) ; % quick test GB_mex_assign
 logstat ('test83' ,t) ; % GrB_assign with C_replace and empty J
 
 logstat ('test176',t) ; % test GrB_assign, method 09, 11
@@ -227,6 +226,7 @@ logstat ('test82' ,t) ; % GrB_extract with index range (hypersparse)
 logstat ('test158',t) ; % test colscale and rowscale
 logstat ('test84' ,t) ; % GrB_assign (row and column with C in CSR/CSC format)
 logstat ('test130',t) ; % GrB_apply, hypersparse cases
+
 logstat ('test19b',t) ; % GrB_assign, many pending operators
 logstat ('test19b',s) ; % GrB_assign, many pending operators
 logstat ('test133',t) ; % test mask operations (GB_masker)
@@ -297,6 +297,7 @@ logstat ('test05',t) ;     %      % quick setElement test, with typecasting
 logstat ('test06(936)',t); %      % performance test GrB_mxm on all semirings
 logstat ('test07',t) ;     %    0 % quick test GB_mex_subassign
 logstat ('test07',s) ;     %    0 % quick test GB_mex_subassign
+logstat ('test07b',t) ;    %      % quick test GB_mex_assign
 logstat ('test09b',t) ;    %      % duplicate I,J test of GB_mex_assign
 
 logstat ('test13',t) ;     %      % simple tests of GB_mex_transpose

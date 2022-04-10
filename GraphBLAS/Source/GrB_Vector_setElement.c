@@ -23,7 +23,7 @@ GrB_Info GB_EVAL3 (prefix, _Vector_setElement_, T)    /* w(row) = x */      \
     GB_WHERE (w, "GrB_Vector_setElement_" GB_STR(T) " (w, x, row)") ;       \
     GB_RETURN_IF_NULL_OR_FAULTY (w) ;                                       \
     ASSERT (GB_VECTOR_OK (w)) ;                                             \
-    return (GB_setElement ((GrB_Matrix) w, ampersand x, row, 0,             \
+    return (GB_setElement ((GrB_Matrix) w, NULL, ampersand x, row, 0,       \
         GB_ ## T ## _code, Context)) ;                                      \
 }
 
@@ -74,7 +74,7 @@ GrB_Info GrB_Vector_setElement_Scalar
     if (GB_nnz ((GrB_Matrix) scalar) > 0)
     { 
         // set the element: w(row) = scalar
-        return (GB_setElement ((GrB_Matrix) w, scalar->x, row, 0,
+        return (GB_setElement ((GrB_Matrix) w, NULL, scalar->x, row, 0,
             scalar->type->code, Context)) ;
     }
     else

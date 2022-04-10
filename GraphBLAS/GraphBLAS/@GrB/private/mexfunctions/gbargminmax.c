@@ -81,13 +81,12 @@ static void gb_argminmax
     // D = diag (x)
     //--------------------------------------------------------------------------
 
-    // note: typecasting from an m-by-1  GrB_Matrix to a GrB_Vector is
+    // note: typecasting from an m-by-1 GrB_Matrix to a GrB_Vector is
     // not allowed by the GraphBLAS C API, but it can be done in SuiteSparse.
     // A more portable method would construct x as a GrB_Vector,
     // but using x as a GrB_Matrix simplifies the gb_export.
 
-    OK (GrB_Matrix_new (&D, type, m, m)) ;
-    OK (GrB_Matrix_diag (D, (GrB_Vector) *x, 0)) ;
+    OK (GrB_Matrix_diag (&D, (GrB_Vector) *x, 0)) ;
 
     //--------------------------------------------------------------------------
     // compute G, where G(i,j)=1 if A(i,j) is the min/max in its row/col

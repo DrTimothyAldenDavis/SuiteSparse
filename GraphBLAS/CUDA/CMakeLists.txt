@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.20.1)
 
 project(GRAPHBLAS_CUDA VERSION 0.1 LANGUAGES CXX CUDA)
 
-set(CMAKE_CUDA_FLAGS "-cudart static -lineinfo -G")
+set(CMAKE_CUDA_FLAGS "-cudart=static -lineinfo -G")
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++17 -fPIC ")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DGBNCPUFEAT")
@@ -16,7 +16,7 @@ set(CMAKE_C_STANDARD 11)
 
 message(STATUS "${CMAKE_CXX_FLAGS}")
 
-file(GLOB GRAPHBLAS_CUDA_SOURCES "*.cu" "*.c")
+file(GLOB GRAPHBLAS_CUDA_SOURCES "*.cu" "*.c" "*.cpp")
 
 add_library(graphblascuda SHARED
             ${GRAPHBLAS_CUDA_SOURCES}
@@ -34,12 +34,18 @@ set(GRAPHBLAS_CUDA_INCLUDES
 
 message(STATUS "${GRAPHBLAS_CUDA_INCLUDES}")
 
-target_include_directories(graphblascuda PUBLIC  ${CUDA_INCLUDE_DIRECTORIES} ${GRAPHBLAS_CUDA_INCLUDES})
+target_include_directories(graphblascuda PUBLIC  ${CUDAToolkit_INCLUDE_DIRS} ${GRAPHBLAS_CUDA_INCLUDES})
 set_target_properties(graphblascuda PROPERTIES POSITION_INDEPENDENT_CODE ON)
 set_target_properties(graphblascuda PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 set_target_properties(graphblascuda PROPERTIES CUDA_ARCHITECTURES "75")
 
-target_link_libraries(graphblascuda nvrtc cuda)
+target_link_libraries(graphblascuda CUDA::nvrtc CUDA::cudart_static)
+
+install ( TARGETS graphblascuda
+        LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+
 
 # 1. Execute enumify/stringify/jitify logic to compile ptx kernels and compile/link w/ relevant *.cu files.
 
@@ -77,8 +83,8 @@ foreach(var ${CUDA_TEST_SUITES})
             # easily ignore them from the build
             add_custom_command(
                     OUTPUT
-                    ${CMAKE_CURRENT_BINARY_DIR}/${var}_${semiring}_${kernel}_test_instances.hpp
-                    ${CMAKE_CURRENT_BINARY_DIR}/${var}_${semiring}_${kernel}_cuda_tests.cu
+                    ${CMAKE_CURRENT_BINARY_DIR}/${var}_${semiring}_test_instances.hpp
+                    ${CMAKE_CURRENT_BINARY_DIR}/${var}_${semiring}_cuda_tests.cpp
                     DEPENDS
                     jitFactory.hpp
                     COMMAND python3 ${CMAKE_CURRENT_SOURCE_DIR}/test/testGen_cmake.py "\"${CMAKE_CURRENT_SOURCE_DIR}\"" "\"${var}\"" "\"${CUDA_TEST_MONOIDS}\""
@@ -87,7 +93,7 @@ foreach(var ${CUDA_TEST_SUITES})
             )
 
             # Construct final list of files to compile (in parallel)
-            list(APPEND CUDA_TEST_CPP_FILES ${CMAKE_CURRENT_BINARY_DIR}/${var}_${semiring}_${kernel}_cuda_tests.cu)
+            list(APPEND CUDA_TEST_CPP_FILES ${CMAKE_CURRENT_BINARY_DIR}/${var}_${semiring}_cuda_tests.cpp)
         endforeach()
     endforeach()
 endforeach()
@@ -100,7 +106,13 @@ FetchContent_Declare(
 )
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
+FetchContent_GetProperties(googletest)
+if(NOT googletest_POPULATED)
+    FetchContent_Populate(googletest)
+    add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif()
+
+#FetchContent_MakeAvailable(googletest EC)
 
 
 #file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/external_includes)
@@ -131,14 +143,18 @@ add_dependencies(graphblascuda_test gtest_main)
 add_dependencies(graphblascuda_test rmm_wrap)
 
 target_link_libraries(graphblascuda_test
+        PUBLIC
         graphblas
         graphblascuda
-        gtest_main
-        nvrtc
-        cuda
-        ${ADDITIONAL_DEPS})
+        CUDA::cudart_static
+        CUDA::nvrtc
+        ${ADDITIONAL_DEPS}
+        PRIVATE
+        gtest_main)
 
-target_include_directories(graphblascuda_test PUBLIC
+target_include_directories(graphblascuda_test
+        PUBLIC
         ${ADDITIONAL_INCLUDES}
-        ${CUDA_INCLUDE_DIRECTORIES}
+        ${CUDAToolkit_INCLUDE_DIRS}
         ${GRAPHBLAS_CUDA_INCLUDES})
+

@@ -20,7 +20,7 @@
 
 #include "GB_diag.h"
 
-GrB_Info GB_Matrix_diag     // construct a diagonal matrix from a vector
+GrB_Info GB_Matrix_diag     // build a diagonal matrix from a vector
 (
     GrB_Matrix C,           // output matrix
     const GrB_Matrix V_in,  // input vector (as an n-by-1 matrix)
@@ -45,23 +45,11 @@ GrB_Info GB_Matrix_diag     // construct a diagonal matrix from a vector
 
     GrB_Type ctype = C->type ;
     GrB_Type vtype = V_in->type ;
-    int64_t nrows = GB_NROWS (C) ;
-    int64_t ncols = GB_NCOLS (C) ;
     int64_t n = V_in->vlen + GB_IABS (k) ;     // C must be n-by-n
 
-    if (nrows != ncols || nrows != n)
-    { 
-        GB_ERROR (GrB_DIMENSION_MISMATCH,
-            "Input matrix is " GBd "-by-" GBd " but must be "
-            GBd "-by-" GBd "\n", nrows, ncols, n, n) ;
-    }
-
-    if (!GB_Type_compatible (ctype, vtype))
-    { 
-        GB_ERROR (GrB_DOMAIN_MISMATCH, "Input vector of type [%s] "
-            "cannot be typecast to output of type [%s]\n",
-            vtype->name, ctype->name) ;
-    }
+    ASSERT (GB_NROWS (C) == GB_NCOLS (C))
+    ASSERT (GB_NROWS (C) == n)
+    ASSERT (GB_Type_compatible (ctype, vtype)) ;
 
     //--------------------------------------------------------------------------
     // finish any pending work in V_in and clear the output matrix C

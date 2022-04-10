@@ -267,6 +267,7 @@ GrB_Info GB_transpose           // C=A', C=(ctype)A' or C=op(A')
         // with all entries present, no zombies, no pending tuples, and not
         // jumbled).  T = A' is either bitmap or full.
 
+        GBURBLE ("(bitmap/full transpose) ") ;
         int T_sparsity = (A_is_bitmap) ? GxB_BITMAP : GxB_FULL ;
         bool T_cheap =                  // T can be done quickly if:
             (avlen == 1 || avdim == 1)      // A is a row or column vector,
@@ -351,6 +352,7 @@ GrB_Info GB_transpose           // C=A', C=(ctype)A' or C=op(A')
         // transpose a vector (avlen-by-1) into a "row" matrix (1-by-avlen).
         // A must be sorted first.
 
+        GBURBLE ("(sparse vector transpose (a)) ") ;
         ASSERT_MATRIX_OK (A, "the vector A must already be sorted", GB0) ;
         ASSERT (!GB_JUMBLED (A)) ;
 
@@ -464,6 +466,7 @@ GrB_Info GB_transpose           // C=A', C=(ctype)A' or C=op(A')
 
         // transpose a "row" matrix (1-by-avdim) into a vector (avdim-by-1).
         // if A->vlen is 1, all vectors of A are implicitly sorted
+        GBURBLE ("(sparse vector transpose (b)) ") ;
         ASSERT_MATRIX_OK (A, "1-by-n input A already sorted", GB0) ;
 
         //----------------------------------------------------------------------
@@ -701,6 +704,8 @@ GrB_Info GB_transpose           // C=A', C=(ctype)A' or C=op(A')
             //------------------------------------------------------------------
             // transpose via GB_builder
             //------------------------------------------------------------------
+
+            GBURBLE ("(builder transpose) ") ;
 
             //------------------------------------------------------------------
             // allocate and create iwork

@@ -17,8 +17,15 @@
 
 #define GB_CUDA_KERNEL
 #include <limits>
+#include <type_traits>
+#include "matrix.h"
+#include "GB_cuda_atomics.cuh"
 #include <cstdint>
 #include <cooperative_groups.h>
+
+// TODO: Temporary
+#define GB_IDENTITY 0
+#define GB_ADD(a, b) a + b
 
 using namespace cooperative_groups;
 
@@ -36,6 +43,7 @@ T warp_ReduceSum( thread_block_tile<tile_sz> g, T val)
     //if (threadIdx.x ==0) printf("thd%d single warp sum is %d\n", threadIdx.x,  val);
     return val; // note: only thread 0 will return full sum
 }
+
 
 template<typename T, int warpSize>
 __inline__ __device__
@@ -68,29 +76,33 @@ T block_ReduceSum(thread_block g, T val)
   return val;
 }
 
-template< typename T>
+
+template< typename T, typename Accum, bool atomic_reduce = true>
 __global__ void reduceNonZombiesWarp
 (
-    int64_t *index,  // array of size n
-    T *g_idata,      // array of size n
-    T *g_odata,      // array of size grid.x
-    unsigned int N
+    GrB_Matrix A,
+    GrB_Scalar O,      // array of size grid.x if atomic_reduce==false and size 1 if atomic_reduce==true
+    int64_t N,  // number of edges for sparse, size of x array for full/bitmap
+    bool is_sparse
 )
 {
     // set thread ID
     int tid = threadIdx.x ;
 
+    int64_t *index = A->i;
+    T *g_idata = (T*) A->x;
+    Accum *g_odata = (Accum*) O->x;
+
     // each thread tid reduces its result into sum
-    T sum = (T) GB_IDENTITY;
+    Accum sum = (Accum) GB_IDENTITY;
 
     for(int i = blockIdx.x * blockDim.x + threadIdx.x; 
-        i < N; 
+        i < N;
         i += blockDim.x * gridDim.x) {
-        if ( index[i] < 0) continue;
+        if (is_sparse && index[i] < 0) continue; // skip zombies
         T fold = g_idata[i];
         sum = GB_ADD( sum, fold );
     }
-    //printf("thd%d  sum is %d\n", threadIdx.x + blockDim.x*blockIdx.x, sum);
     __syncthreads();
     //--------------------------------------------------------------------------
     // reduce work [0..s-1] to a single scalar
@@ -101,7 +113,12 @@ __global__ void reduceNonZombiesWarp
     // write result for this block to global mem
     if (tid == 0)
     {
-        g_odata [blockIdx.x] = sum ;
+        // TODO: Assuming sum for now (liek the rest of the kernel)
+        if(atomic_reduce) {
+            atomic_add<Accum>(g_odata, sum);
+        } else {
+            g_odata [blockIdx.x] = sum ;
+        }
     }
 }
 

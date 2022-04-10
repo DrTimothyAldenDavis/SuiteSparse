@@ -115,7 +115,7 @@ application to create new types and operators without needing to recompile the
 GraphBLAS library.
 
 For more details on SuiteSparse:GraphBLAS, and its use in LAGraph, see
-\cite{Davis19,Davis21,Davis18b,DavisAznavehKolodziej19,Davis20,Mattson19}.
+\cite{Davis19,Davis22,Davis18b,DavisAznavehKolodziej19,Davis20,Mattson19}.
 
 A full and precise definition of the GraphBLAS specification is provided in
 {\em The GraphBLAS C API Specification} by {Ayd\i n Bulu\c{c}, Timothy Mattson,
@@ -148,6 +148,38 @@ are extensions to the GraphBLAS C API.
 
 \begin{itemize}
 
+\item Version 7.0.3 (Apr 8, 2022)
+
+    \begin{packed_itemize}
+    \item faster transpose when using 2 threads
+    \end{packed_itemize}
+
+\item Version 7.0.2 (Apr 5, 2022)
+
+    \begin{packed_itemize}
+    \item (45) bug fix: vector iterator was broken for iterating across a
+        vector in bitmap format.  Caught by Erik Welch.
+    \end{packed_itemize}
+
+\item Version 7.0.1 (Apr 3, 2022)
+
+    \begin{packed_itemize}
+    \item added revised ACM TOMS submission to the Doc folder
+    \end{packed_itemize}
+
+\item Version 7.0.0 (Apr 2, 2022)
+
+    \begin{packed_itemize}
+    \item (44) spec bug: \verb'GrB_Matrix_diag'
+        was implemented in v5.2.x and v6.x with the wrong signature.
+        This fix requires the major release to change, from v6.x to v7.x.
+    \item (43) performance bug fix for \verb'GrB_mxm':
+        auto selection for saxpy method (Hash vs Gustavson) revised.
+    \item \verb'GrB_assign': better performance for \verb'C(i,j)=scalar' and
+        \verb'C(i,j)+=scalar' when \verb'i' and \verb'j' have length 1 (scalar
+        assigment with no scalar expansion).
+    \end{packed_itemize}
+
 \item Version 6.2.5 (Mar 14, 2022)
 
     \begin{packed_itemize}
@@ -158,7 +190,7 @@ are extensions to the GraphBLAS C API.
 
     \begin{packed_itemize}
     \item (42) bug fix: \verb'GrB_mxm' with 0-by-0 iso full matrices.
-        Caught by \verb'@ParticularMiner' in the Python
+        Caught by Henry Amuasi in the Python
         grblas interface, then triaged and isolated by Erik Welch.
     \end{packed_itemize}
 
@@ -5745,7 +5777,7 @@ done.
 \begin{verbatim}
 GrB_Info GrB_Matrix_diag    // construct a diagonal matrix from a vector
 (
-    GrB_Matrix C,                   // output matrix
+    GrB_Matrix *C,                  // output matrix
     const GrB_Vector v,             // input vector
     int64_t k
 ) ;
@@ -5760,26 +5792,21 @@ positive, it denotes diagonals above the main diagonal, with
 \verb'C(i,i+k)=v(i)'.
 If \verb'k' is negative, it denotes diagonals below the main diagonal of
 \verb'C', with \verb'C(i-k,i)=v(i)'.  This behavior is identical to the MATLAB
-statement \verb'C=diag(v,k)', where \verb'v' is a vector, except that
-\verb'GrB_Matrix_diag' can also do typecasting.
+statement \verb'C=diag(v,k)', where \verb'v' is a vector.
 
-\verb'C' must already exist on input, of the correct size.  Any existing
-entries in \verb'C' are discarded.  The type of \verb'C' is preserved, so that
-if the type of \verb'C' and \verb'v' differ, the entries are typecasted into
-the type of \verb'C'.  Any settings made to \verb'C' by
-\verb'GxB_Matrix_Option_set' (format by row or by column, bitmap switch, hyper
-switch, and sparsity control) are unchanged.
+The output matrix \verb'C' is a newly-constructed square matrix with the
+same type as the input vector \verb'v'.  No typecasting is performed.
 
 \newpage
 %-------------------------------------------------------------------------------
-\subsubsection{{\sf GxB\_Matrix\_diag:} construct a diagonal matrix}
+\subsubsection{{\sf GxB\_Matrix\_diag:} build a diagonal matrix}
 %-------------------------------------------------------------------------------
 \label{matrix_diag_GxB}
 
 \begin{mdframed}[userdefinedwidth=6in]
 {\footnotesize
 \begin{verbatim}
-GrB_Info GxB_Matrix_diag    // construct a diagonal matrix from a vector
+GrB_Info GxB_Matrix_diag    // build a diagonal matrix from a vector
 (
     GrB_Matrix C,                   // output matrix
     const GrB_Vector v,             // input vector
@@ -5788,8 +5815,17 @@ GrB_Info GxB_Matrix_diag    // construct a diagonal matrix from a vector
 ) ;
 \end{verbatim} } \end{mdframed}
 
-Identical to \verb'GrB_Matrix_diag', except for the extra parameter:
-a \verb'descriptor' to provide control over the number of threads used.
+Identical to \verb'GrB_Matrix_diag', except for the extra parameter
+(a \verb'descriptor' to provide control over the number of threads used),
+and this method is not a constructor.
+
+The matrix \verb'C' must already exist on input, of the correct size.  It must
+be square of dimension $n+|k|$ where the vector \verb'v' has length $n$.  Any
+existing entries in \verb'C' are discarded.  The type of \verb'C' is preserved,
+so that if the type of \verb'C' and \verb'v' differ, the entries are typecasted
+into the type of \verb'C'.  Any settings made to \verb'C' by
+\verb'GxB_Matrix_Option_set' (format by row or by column, bitmap switch, hyper
+switch, and sparsity control) are unchanged.
 
 %-------------------------------------------------------------------------------
 \subsubsection{{\sf GxB\_Matrix\_iso:} query iso status of a matrix}
@@ -5904,8 +5940,8 @@ Deserialization of untrusted data is a common security problem; see
 \url{https://cwe.mitre.org/data/definitions/502.html}. The deserialization
 methods do a few basic checks so that no out-of-bounds access occurs during
 deserialization, but the output matrix or vector itself may still be corrupted.
-If the data is untrusted, use check the matrix or vector after
-deserializing it:
+If the data is untrusted, use \verb'GxB_*_fprint' to
+check the matrix or vector after deserializing it:
 
 {\footnotesize
 \begin{verbatim}
@@ -12315,7 +12351,7 @@ GrB_Info GrB_select                 // C<M>=accum(C,op(A))
 \end{verbatim} } \end{mdframed}
 
 \verb'GrB_Matrix_select_*' applies a \verb'GrB_IndexUnaryOp' operator to the
-entries of a vector.  If the operator evaluates as \verb'true' for the entry
+entries of a matrix.  If the operator evaluates as \verb'true' for the entry
 \verb'A(i,j)', it is copied to the matrix \verb'T', or not copied if the
 operator evaluates to \verb'false'.  The input matrix \verb'A' may be
 transposed first.  The entries in \verb'A' are typecasted into the \verb'xtype'
@@ -13873,8 +13909,7 @@ in the Octave/MATLAB interface for details.
     // x = max (A) where x(i) = max (A (i,:))
     GrB_mxv (x, NULL, NULL, GrB_MAX_FIRST_SEMIRING_FP64, A, y, NULL) ;
     // D = diag (x)
-    GrB_Matrix_new (&D, GrB_FP64, n, n) ;
-    GrB_Matrix_diag (D, x, 0) ;
+    GrB_Matrix_diag (&D, x, 0) ;
     // G = D*A using the ANY_EQ semiring
     GrB_Matrix_new (&G, GrB_BOOL, n, n) ;
     GrB_mxm (G, NULL, NULL, GxB_ANY_EQ_FP64, D, A, NULL) ;
@@ -15142,7 +15177,8 @@ AVX2 but not AVX512F, and use 40 threads to compile:
     make CMAKE_OPTIONS='-DGBNCPUFEAT=1 -DGBAVX2=1' JOBS=40 \end{verbatim} }
 
 After compiling the library, you can compile the demos with
-\verb'make all' and then \verb'make run'.
+\verb'make all' and then \verb'make run' while in the top-level
+GraphBLAS folder.
 
 If \verb'cmake' or \verb'make' fail, it might be that your default compiler
 does not support ANSI C11.  Try another compiler.  For example, try one of
@@ -15613,10 +15649,12 @@ from \verb'libgraphblas' to \verb'libgraphbas_renamed'.
 %----------------------------------------
 
 After \verb'make' in the top-level directory to compile the library, type
-\verb'make run' to run the demos.  You can also run the demos after compiling:
+\verb'make run' to run the demos (also in the top-level directory).
+You can also run the demos after compiling with \verb'make all':
 
     {\small
     \begin{verbatim}
+    make all
     cd Demo
     ./demo \end{verbatim} }
 

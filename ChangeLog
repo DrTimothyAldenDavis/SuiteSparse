@@ -1,3 +1,12 @@
+Apr 10, 2022, SuiteSparse 5.12.0
+
+    * GraphBLAS v7.0.3:  see GraphBLAS/Doc/ChangeLog for details.
+        * performance: GrB_mxm, GrB_assign, and transpose
+        * bug fix: vector iterator for bitmap
+        * revised ACM TOMS submission: Doc/toms_parallel_grb2.pdf
+        * spec bug: GrB_Matrix_diag was implemented incorrectly,
+            thus requiring a version v7.x
+
 Mar 14, 2022, SuiteSparse 5.11.0
 
     * GraphBLAS v6.2.5:  see GraphBLAS/Doc/ChangeLog for changes.

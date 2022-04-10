@@ -1,3 +1,32 @@
+Version 7.0.3, Apr 8, 2022
+
+    * faster transpose when using 2 threads
+
+Version 7.0.2, Apr 6, 2022
+
+    * (45) bug fix: vector iterator was broken for iterating across a
+        vector in bitmap format.  Caught by Erik Welch.
+
+Version 7.0.1, Apr 3, 2022
+
+    * revised ACM TOMS submission: Doc/toms_parallel_grb2.pdf
+
+Version 7.0.0, Apr 2, 2022
+
+    * (44) spec bug: GrB_Matrix_diag was implemented in v5.2.x and v6.x with
+        the wrong signature.  This fix requires the major release to change,
+        from v6.x to v7.x, since the change means that the revised v7 is not
+        backward compatible with v6.
+    * performance for GrB_mxm: auto selection for saxpy method (Hash vs
+        Gustavson) revised.
+    * (43) performance bug fix for GrB_assign: better performance for
+        C(i,j)=scalar and C(i,j)+=scalar when i and j have length 1 (scalar
+        assigment with no scalar expansion).  The prior code worked but this is
+        a performance bug introduced in the parallel GraphBLAS.  The bug likely
+        doesn't appear in v2.x (the sequential version of SS:GrB).  This
+        affects method 1 of Demo/Source/wathen.c.  Caught by a reviewer of the
+        ACM TOMS paper on the parallel GraphBLAS.
+
 Version 6.2.5, Mar 14, 2022
 
     * For SuiteSparse v5.11.0
@@ -5,7 +34,7 @@ Version 6.2.5, Mar 14, 2022
 Version 6.2.4, Mar 8, 2022
 
     * (42) bug fix: GrB_mxm with 0-by-0 iso full matrices: Caught by
-        @ParticularMiner in the Python grblas interface, then triaged and
+        Henry Amuasi in the Python grblas interface, then triaged and
         isolated by Erik Welch.
 
 Version 6.2.3, Mar 5, 2022

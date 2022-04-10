@@ -25,9 +25,11 @@ int main(int argc, char **argv) {
     auto r = RUN_ALL_TESTS();
 
     rmm_wrap_deallocate( p, buff_size);
-    rmm_wrap_finalize();
-
     GRB_TRY (GrB_finalize());
+    rmm_wrap_finalize();
+    std::cout << "Tests complete" << std::endl;
+
+
 
     return r;
 }

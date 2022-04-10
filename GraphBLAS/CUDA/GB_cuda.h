@@ -18,8 +18,8 @@ extern "C"
 }
 
 // Finally, include the CUDA definitions
-#include "cuda.h"
 #include "cuda_runtime.h"
+#include "cuda.h"
 #include "jitify.hpp"
 #include "GB_cuda_semiring_factory.hpp"
 

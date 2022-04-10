@@ -24,8 +24,8 @@ GrB_Info GB_EVAL3 (prefix, _Matrix_setElement_, T) /* C (row,col) = x */    \
     GB_WHERE (C, GB_STR(prefix) "_Matrix_setElement_" GB_STR(T)             \
         " (C, row, col, x)") ;                                              \
     GB_RETURN_IF_NULL_OR_FAULTY (C) ;                                       \
-    return (GB_setElement (C, ampersand x, row, col, GB_ ## T ## _code,     \
-        Context)) ;                                                         \
+    return (GB_setElement (C, NULL, ampersand x, row, col,                  \
+        GB_ ## T ## _code, Context)) ;                                      \
 }
 
 GB_SET (GrB, bool      , BOOL   , &)
@@ -75,8 +75,8 @@ GrB_Info GrB_Matrix_setElement_Scalar
     if (GB_nnz ((GrB_Matrix) scalar) > 0)
     { 
         // set the element: C(row,col) = scalar
-        return (GB_setElement (C, scalar->x, row, col, scalar->type->code,
-            Context)) ;
+        return (GB_setElement (C, NULL, scalar->x, row, col,
+            scalar->type->code, Context)) ;
     }
     else
     { 

@@ -8,60 +8,11 @@
 #include <unordered_set>
 
 #include "GB.h"
-#include "../type_convert.hpp"
+#include "../GB_cuda_type_wrap.hpp"
 #include "../GB_Matrix_allocate.h"
 #include "test_utility.hpp"
+#include "../GB_cuda_error.h"
 
-static const char *_cudaGetErrorEnum(cudaError_t error) {
-  return cudaGetErrorName(error);
-}
-
-template <typename T>
-void check(T result, char const *const func, const char *const file,
-           int const line) {
-  if (result) {
-    fprintf(stderr, "CUDA error at %s:%d code=%d(%s) \"%s\" \n", file, line,
-            static_cast<unsigned int>(result), _cudaGetErrorEnum(result), func);
-    exit(EXIT_FAILURE);
-  }
-}
-
-#define checkCudaErrors(val) check((val), #val, __FILE__, __LINE__)
-
-// This will output the proper error string when calling cudaGetLastError
-#define getLastCudaError(msg) __getLastCudaError(msg, __FILE__, __LINE__)
-
-inline void __getLastCudaError(const char *errorMessage, const char *file,
-                               const int line) {
-  cudaError_t err = cudaGetLastError();
-
-  if (cudaSuccess != err) {
-    fprintf(stderr,
-            "%s(%i) : getLastCudaError() CUDA error :"
-            " %s : (%d) %s.\n",
-            file, line, errorMessage, static_cast<int>(err),
-            cudaGetErrorString(err));
-    exit(EXIT_FAILURE);
-  }
-}
-
-// This will only print the proper error string when calling cudaGetLastError
-// but not exit program incase error detected.
-#define printLastCudaError(msg) __printLastCudaError(msg, __FILE__, __LINE__)
-
-inline void __printLastCudaError(const char *errorMessage, const char *file,
-                                 const int line) {
-  cudaError_t err = cudaGetLastError();
-
-  if (cudaSuccess != err) {
-    fprintf(stderr,
-            "%s(%i) : getLastCudaError() CUDA error :"
-            " %s : (%d) %s.\n",
-            file, line, errorMessage, static_cast<int>(err),
-            cudaGetErrorString(err));
-  }
-}
-#define CHECK_CUDA(call) checkCudaErrors( call )
 
 // CAUTION: This assumes our indices are small enough to fit into a 32-bit int.
 inline std::int64_t gen_key(std::int64_t i, std::int64_t j) {
@@ -70,8 +21,8 @@ inline std::int64_t gen_key(std::int64_t i, std::int64_t j) {
 
 //Vector generators
 template<typename T>
-void fillvector_linear( int N, T *vec) {
-   for (int i = 0; i< N; ++i) vec[i] = T(i);
+void fillvector_linear( int N, T *vec, int start=0) {
+   for (int i = start; i< N+start; ++i) vec[i] = T(i);
 }
 template<typename T>
 void fillvector_constant( int N, T *vec, T val) {
@@ -120,7 +71,7 @@ class matrix : public Managed {
      }
 
      void alloc() {
-         GrB_Type type = cuda::to_grb_type<T>();
+         GrB_Type type = cuda::jit::to_grb_type<T>();
 
          GRB_TRY (GrB_Matrix_new (&mat, type, nrows_, ncols_)) ;
          // GxB_Matrix_Option_set (mat, GxB_SPARSITY_CONTROL,
@@ -162,8 +113,9 @@ class matrix : public Managed {
         std::mt19937 r(seed);
         std::uniform_real_distribution<double> dis(0.0, 1.0);
 
-        if (nnz < 0)
+        if (nnz < 0 || inv_sparsity == 1.)
         {
+            std::cout<<"filling dense"<<std::endl;
             for (int64_t i = 0 ; i < nrows_ ; i++)
             {
                 for (int64_t j = 0 ; j < ncols_ ; j++)
@@ -172,41 +124,88 @@ class matrix : public Managed {
                     if (make_symmetric)
                     {
                         // A (i,j) = x
-                        cuda::set_element<T> (mat, x, i, j) ;
+                        cuda::jit::set_element<T> (mat, x, i, j) ;
                         // A (j,i) = x
-                        cuda::set_element<T> (mat, x, j, i) ;
+                        cuda::jit::set_element<T> (mat, x, j, i) ;
                     }
                     else
                     {
                         // A (i,j) = x
-                        cuda::set_element<T> (mat, x, i, j) ;
+                        cuda::jit::set_element<T> (mat, x, i, j) ;
                     }
                 }
             }
         }
         else
         {
+            std::cout<<"filling sparse"<<std::endl;
+            unordered_set<std::int64_t> row_lookup;
             unordered_set<std::int64_t> key_lookup;
+            for ( int co = 0; co < 2*nrows_; co++ )
+            {
+                GrB_Index i = ((GrB_Index) (dis(r) * nrows_)) % ((GrB_Index) nrows_) ;
 
+                row_lookup.insert( i );
+            }
+            int remain= nnz; //countdown to done
+
+            while ( remain > 0) 
+            { 
+            std::cout<< remain<<" nonzeroes left to fill.."<<std::endl;
+            for ( GrB_Index i : row_lookup)
+            {
+                GrB_Index col_guess = ((GrB_Index) (dis(r) * nnz/row_lookup.size() )) % ((GrB_Index) ncols_) ;
+                col_guess++;  // make it at least 1
+
+                //std::cout<<"putting "<< col_guess<<" values in row "<<i<<std::endl;
+                while (col_guess > 0 )
+                {
+                    GrB_Index j = ((GrB_Index) (dis(r) * ncols_)) % ((GrB_Index) ncols_) ;
+                    if (key_lookup.count( gen_key(i,j) ) == 1) continue;
+                    if (no_self_edges && (i == j)) continue ;
+
+                    key_lookup.insert( gen_key(i, j) );
+                    col_guess--;
+                    remain= (nnz- key_lookup.size() );
+                    if (remain <= 0) break;
+                    if (make_symmetric) {
+                      // A (j,i) = x
+                      if (key_lookup.count( gen_key( j, i) ) == 0)
+                      {
+                         key_lookup.insert( gen_key( j, i) ) ;
+                         col_guess--;
+                         remain= (nnz- key_lookup.size() );
+                      }
+                    }
+                    if (remain <= 0) break;
+                }
+                if (remain <= 0) break;
+                //std::cout<< remain<<" nonzeroes left..."<<std::endl;
+            }
+            } //remain > 0
+            /*
             while(key_lookup.size() < nnz) {
                 GrB_Index i = ((GrB_Index) (dis(r) * nrows_)) % ((GrB_Index) nrows_) ;
                 GrB_Index j = ((GrB_Index) (dis(r) * ncols_)) % ((GrB_Index) ncols_) ;
 
-                key_lookup.insert(gen_key(i, j));
-            }
+                key_lookup.insert( gen_key(i, j) );
+                if (make_symmetric) {
+                    // A (j,i) = x
+                    key_lookup.insert( gen_key( j, i) ) ;
+                }
+            } */
 
             for (int64_t k : key_lookup)
             {
                 GrB_Index i = k >> 32;
                 GrB_Index j = k & 0x0000ffff;
 
-                if (no_self_edges && (i == j)) continue ;
-                T x = (T)(dis(r) * (val_max - val_min)) + (T)val_min ;
+                T x = (T)val_min + (T)(dis(r) * (val_max - val_min)) ;
                 // A (i,j) = x
-                cuda::set_element<T> (mat, x, i, j) ;
+                cuda::jit::set_element<T> (mat, x, i, j) ;
                 if (make_symmetric) {
                     // A (j,i) = x
-                    cuda::set_element<T>(mat, x, j, i) ;
+                    cuda::jit::set_element<T>(mat, x, j, i) ;
                 }
             }
         }
@@ -217,7 +216,7 @@ class matrix : public Managed {
         GRB_TRY (GxB_Matrix_Option_set (mat, GxB_SPARSITY_CONTROL, gxb_sparsity_control)) ;
         GRB_TRY (GxB_Matrix_Option_set(mat, GxB_FORMAT, gxb_format));
         GRB_TRY (GrB_Matrix_nvals ((GrB_Index *) &nnz, mat)) ;
-        GRB_TRY (GxB_Matrix_fprint (mat, "my mat", GxB_SHORT_VERBOSE, stdout)) ;
+        //GRB_TRY (GxB_Matrix_fprint (mat, "my random mat", GxB_SHORT_VERBOSE, stdout)) ;
 
         bool iso ;
         GRB_TRY (GxB_Matrix_iso (&iso, mat)) ;
@@ -340,7 +339,7 @@ class SpGEMM_problem_generator {
               BucketStart[b] = BucketStart[b-1] + (Cnz / 12);
               //std::cout<< "bucket "<< b<<" starts at "<<BucketStart[b]<<std::endl;
               for (int j = BucketStart[b-1]; j < BucketStart[b]; ++j) { 
-                Bucket[j] = b ; 
+                Bucket[j] = b ;
               }
            }
            int b = 11;
@@ -349,8 +348,13 @@ class SpGEMM_problem_generator {
            }
        }
        else {// all in one test bucket
-           Bucket = nullptr;
-           BucketStart[0] = 0; 
+
+           CHECK_CUDA( cudaMallocManaged((void**)&Bucket, Cnz*sizeof(int64_t)) );
+           for (int j = 0; j < Cnz; ++j) {
+               Bucket[j] = j ;
+           }
+
+           BucketStart[0] = 0;
            BucketStart[12] = Cnz;
            for (int b= 0; b<12; ++b){
               if (b <= fill_bucket) BucketStart[b] = 0;

@@ -31,6 +31,7 @@
 namespace jit {
 
 std::string get_user_home_cache_dir();
+std::string get_user_graphblas_source_path();
 std::string getCacheDir(void);
 
 template <typename Tv>
