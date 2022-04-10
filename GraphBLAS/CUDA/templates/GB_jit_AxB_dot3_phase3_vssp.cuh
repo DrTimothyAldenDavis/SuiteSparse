@@ -30,11 +30,11 @@
 //  GrB_Matrix M         <- mask matrix
 //  GrB_Matrix A         <- input matrix A
 //  GrB_Matrix B         <- input matrix B
+#pragma once
 
 #include <limits>
 #include <cstdint>
 #include <cooperative_groups.h>
-//#include "GB_binary_search.h"
 #include "matrix.h"
 
 // Using tile size fixed at compile time, we don't need shared memory
@@ -56,7 +56,7 @@ __device__ T reduce_sum(thread_block_tile<warpSize> g, T val)
 
 #define intersects_per_thread 8
 
-template< typename T_C, typename T_A, typename T_B, typename T_X, typename T_Y, typename T_Z>
+template< typename T_C, typename T_A, typename T_B>
 __global__ void AxB_dot3_phase3_vssp
 (
     int64_t start,
@@ -111,12 +111,12 @@ __global__ void AxB_dot3_phase3_vssp
             continue;
         }
 
-        int64_t pA      = Ap[j];
-        int64_t pA_end  = Ap[j+1];
+        int64_t pA      = Ap[i];
+        int64_t pA_end  = Ap[i+1];
         int64_t nnzA = pA_end - pA;
 
-        int64_t pB      = B->p[i];
-        int64_t pB_end  = B->p[i+1];
+        int64_t pB      = B->p[j];
+        int64_t pB_end  = B->p[j+1];
         int64_t nnzB = pB_end - pB;
 
         //Search for each nonzero in the smaller vector to find intersection 
@@ -124,7 +124,7 @@ __global__ void AxB_dot3_phase3_vssp
 
         T_A aki;
         T_B bkj;
-        T_Z cij;
+        T_C cij;
 
         if (nnzA <= nnzB) {
             //----------------------------------------------------------------------

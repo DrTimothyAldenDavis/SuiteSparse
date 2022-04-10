@@ -9,7 +9,7 @@
 // ie. we want to produce C = A'*B in the sense of the given semi-ring.
 
 // This version uses a merge-path algorithm, when the sizes nnzA and nnzB are 
-// relatively close in size, neither is very spare nor dense, for any size of N.
+// relatively close in size, neither is very sparse nor dense, for any size of N.
 // Handles arbitrary sparsity patterns with guaranteed load balance.
 
 // Both the grid and block are 1D, so blockDim.x is the # threads in a
@@ -30,6 +30,9 @@
 //  matrix<T_M> *M         <- mask matrix
 //  matrix<T_A> *A         <- input matrix A
 //  matrix<T_B> *B         <- input matrix B
+
+#pragma once
+
 #include <limits>
 #include <cstdint>
 #include <cooperative_groups.h>
@@ -69,7 +72,7 @@ T reduce_plus(thread_block_tile<warp_sz> g, T val)
 
 #define intersects_per_thread 8
 
-template< typename T_C, typename T_A, typename T_B, typename T_X, typename T_Y, typename T_Z>  
+template< typename T_C, typename T_A, typename T_B>
 __global__ void AxB_dot3_phase3_mp
 (
     int64_t start,
@@ -83,6 +86,7 @@ __global__ void AxB_dot3_phase3_mp
 )
 {
 
+    C->jumbled = true;
     T_A *Ax = (T_A*)A->x;
     T_B *Bx = (T_B*)B->x;
     T_C *Cx = (T_C*)C->x;
@@ -92,7 +96,6 @@ __global__ void AxB_dot3_phase3_mp
     int64_t *Bi = B->i;
     int64_t *Ap = A->p;
     int64_t *Bp = B->p;
-
 
     // zombie count
     int zc = 0;
@@ -125,14 +128,17 @@ __global__ void AxB_dot3_phase3_mp
          int64_t i = Mi[pair_id];
          int64_t j = Ci[pair_id] >> 4;
 
-         int64_t xstart = Ap[j];
-         int64_t xend   = Ap[j+1];
+         int64_t xstart = Ap[i];
+         int64_t xend   = Ap[i+1];
          nnzA = xend - xstart;
 
-         int64_t ystart = Bp[i];
-         int64_t yend   = Bp[i+1];
+         int64_t ystart = Bp[j];
+         int64_t yend   = Bp[j+1];
          nnzB = yend - ystart;
 
+//         if(threadIdx.x == 0 && j == 139 && i == 945)
+//             printf("blk%d tid=%d, nnzA=%d, nnzB=%d\n", blockIdx.x, tid_global, nnzA, nnzB);
+//
          n_intersect = GB_IMIN( xend -xstart, yend -ystart); 
     /* 
     if (threadIdx.x ==0 ) {
@@ -197,7 +203,7 @@ __global__ void AxB_dot3_phase3_mp
 
     T_A aki;
     T_B bkj;
-    T_Z cij = GB_IDENTITY ;
+    T_C cij = GB_IDENTITY ;
 
     // TODO PLUS_PAIR_INT64, FP32, FP64: no need for cij_exists.
     // just check if cij > 0
@@ -208,34 +214,42 @@ __global__ void AxB_dot3_phase3_mp
     //merge-path dot product
     int k = tx_start;
     int l = ty_start;
-    while ( k < tx_end && l < ty_end )
+
+//    if(threadIdx.x == 0 && j == 139) {
+//        printf("blk%d, thd%d k=%d, l=%d, tx_start=%d, ty_start=%d, tx_end=%d, ty_end=%d\n", blockIdx.x, tid_global, k, l, tx_start, ty_start, tx_end, ty_end);
+//    }
+
+    while ( k < tx_end && l < ty_end && nnzA != 0 && nnzB != 0)
     {
-       if (Ai [k] == Bi [l])
-       {
-          GB_GETA ( aki=(T_Z)Ax[k] ) ;
-          GB_GETB ( bkj=(T_Z)Bx[l] ) ;
-          if (cij_exists)
-          {
-            T_Z t = GB_MULT( (T_Z)aki, (T_Z)bkj );
-            GB_ADD_F (cij, t ) ;
-          //printf("  thd%d ix at %lld   cij += %d * %d \n", tid_global, Ai[k], aki, bkj);
-          }
-          else
-          {
-            cij_exists = 1 ;
-            cij = GB_MULT ( (T_Z)aki, (T_Z)bkj ) ;
-          //printf("  thd%d ix at %lld   cij = %d * %d \n", tid_global, Ai[k], Ax[k], Bx[l]);
-          }
-          // TODO check terminal condition
-          k+= 1;
-          l+= 1;
-          //printf(" block%u work value = %d, exists = %d\n", b, cij, cij_exists);
-       }
-       else
-       {
+        if (Ai [k] == Bi [l])
+        {
+            GB_GETA ( aki=(T_C)Ax[k] ) ;
+            GB_GETB ( bkj=(T_C)Bx[l] ) ;
+            if (cij_exists)
+            {
+                T_C t = GB_MULT( (T_C)aki, (T_C)bkj );
+                GB_ADD_F (cij, t ) ;
+//                    if(j == 139 && i == 945)
+//                        printf("blk%d thd%d ix at %lld  %lld cij += %d * %d \n", blockIdx.x, tid_global, Ai[k], Bi[l], aki, bkj);
+            }
+            else
+            {
+                cij_exists = 1 ;
+                cij = GB_MULT ( (T_C)aki, (T_C)bkj ) ;
+//                    if(j == 139 && i == 945)
+//                        printf("blk%d thd%d ix at %lld %lld  cij = %d * %d, k=%d, l=%d i=%lld j=%lld \n", blockIdx.x, tid_global, Ai[k], Bi[l], Ax[k], Bx[l], k, l, i, j);
+            }
+            // TODO check terminal condition
+            k+= 1;
+            l+= 1;
+//                if(j == 139 && i == 945)
+//                    printf(" block%u work value = %d, exists = %d\n", b, cij, cij_exists);
+        }
+        else
+        {
             k += ( Ai[k] < Bi[l] ) ;
             l += ( Ai[k] > Bi[l] ) ;
-       }
+        }
     }
 
     //tile.sync( ) ;
@@ -256,13 +270,13 @@ __global__ void AxB_dot3_phase3_mp
 
     if (cij_exists)
     {
-       cij = GB_reduce_sum<T_Z, tile_sz>( tile, cij );
+       cij = GB_reduce_sum<T_C, tile_sz>( tile, cij );
        
     }
     // else has_zombies = 1;
 
 
-    //__syncthreads();
+        //__syncthreads();
     //tile.sync( );
     // write result for this block to global mem
     if (tid == 0)
@@ -270,13 +284,18 @@ __global__ void AxB_dot3_phase3_mp
         //printf ("final %d : %d exists = %d\n", b,  cij, cij_exists) ;
         if (cij_exists)
         {
-           //printf(" cij = %d\n", cij);
+//
+//            if(j == 139) {
+//                printf("what's the deal here? %d, %ld\n", cij, i);
+//            }
+
+            //printf(" cij = %d\n", cij);
            GB_PUTC ( Cx[pair_id]=(T_C)cij ) ;
            GB_PUTC ( Ci[pair_id]=i ) ;
         }
         else
         {
-           //printf(" dot %d is a zombie\n", pair_id);
+           printf(" dot %d is a zombie\n", pair_id);
            zc++;
            GB_PUTC ( Ci[pair_id]=GB_FLIP (i) ) ;
         }
@@ -288,9 +307,9 @@ __global__ void AxB_dot3_phase3_mp
 
   if( tid ==0 && zc > 0)
   {
-      //printf("warp %d zombie count = %d\n", blockIdx.x, zc);
+//      printf("warp %d zombie count = %d, nzombies = %d\n", blockIdx.x, zc, C->nzombies);
       atomicAdd( (unsigned long long int*)&(C->nzombies), (unsigned long long int)zc);
-      //printf(" Czombie = %lld\n",C->nzombies);
+//      printf(" Czombie = %lld\n",C->nzombies);
   }
 
   //__syncthreads();

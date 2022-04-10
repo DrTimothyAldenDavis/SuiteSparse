@@ -3,15 +3,14 @@
 //------------------------------------------------------------------------------
 
 // TODO describe me
+#pragma once
 
 #define GB_CUDA_KERNEL
 
-
-//#include <cstdint>
 #include "GB_cuda_buckets.h"
 #include "matrix.h"
 #include <cooperative_groups.h>
-#include "local_cub/block/block_scan.cuh"
+#include <cub/block/block_scan.cuh>
 
 using namespace cooperative_groups;
 

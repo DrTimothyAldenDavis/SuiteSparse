@@ -7,8 +7,8 @@
 //------------------------------------------------------------------------------
 // TODO: this will be in the jit code:
 #define chunksize 128 
-//#define GB_GETA( aval, ax, p) aval = (T_Z)ax[ ( p )]
-//#define GB_GETB( bval, bx, p) bval = (T_Z)bx[ ( p )]
+//#define GB_GETA( aval, ax, p) aval = (T_C)ax[ ( p )]
+//#define GB_GETB( bval, bx, p) bval = (T_C)bx[ ( p )]
 #define GB_ADD_F( f , s)  f = GB_ADD ( f, s ) 
 #define GB_C_MULT( c, a, b)  c = GB_MULT( (a), (b) )
 #define GB_MULTADD( c, a ,b ) GB_ADD_F( (c), GB_MULT( (a),(b) ) )
@@ -18,8 +18,8 @@
 // cij += A(k,i) * B(k,j), for merge operation
 #define GB_DOT_MERGE                                                \
 {                                                                   \
-    GB_GETA ( aki= (T_Z)Ax[pA]) ;       /* aki = A(k,i) */          \
-    GB_GETB ( bkj= (T_Z)Bx[pB]) ;       /* bkj = B(k,j) */          \
+    GB_GETA ( aki= (T_C)Ax[pA]) ;       /* aki = A(k,i) */          \
+    GB_GETB ( bkj= (T_C)Bx[pB]) ;       /* bkj = B(k,j) */          \
     if (cij_exists)                                                 \
     {                                                               \
         GB_MULTADD (cij, aki, bkj) ;    /* cij += aki * bkj */      \
@@ -56,6 +56,10 @@
 //------------------------------------------------------------------------------
 // remainder of this file is extracted from GraphBLAS.h:
 //------------------------------------------------------------------------------
+
+// GB_STR: convert the content of x into a string "x"
+#define GB_XSTR(x) GB_STR(x)
+#define GB_STR(x) #x
 
 #undef  GB_PUBLIC
 #define GB_PUBLIC extern

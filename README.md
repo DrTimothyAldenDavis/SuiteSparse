@@ -2,7 +2,7 @@
 SuiteSparse:  A Suite of Sparse matrix packages at http://suitesparse.com
 -----------------------------------------------------------------------------
 
-Mar 14, 2022.  SuiteSparse VERSION 5.11.0
+Apr 10, 2022.  SuiteSparse VERSION 5.12.0
 
     Now includes GraphBLAS, SLIP_LU, and a new interface to the SuiteSparse
     Matrix Collection (ssget), via MATLAB and a Java GUI, to
@@ -673,4 +673,14 @@ Step-by-step details:
     by removing the SuiteSparse libraries, include files, and documentation
     from the place they were installed.  If you pass INSTALL_***= options
     to 'make install', you must pass the same to 'make uninstall'.
+
+-----------------------------------------------------------------------------
+Python interface
+-----------------------------------------------------------------------------
+
+See scikit-sparse and scikit-umfpack for the Python interface via SciPy:
+
+https://github.com/scikit-sparse/scikit-sparse
+
+https://github.com/scikit-umfpack/scikit-umfpack
 

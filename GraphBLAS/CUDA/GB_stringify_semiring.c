@@ -44,7 +44,7 @@ void GB_stringify_semiring     // build a semiring (name and code)
         semiring, flipxy,
         ctype, mtype, atype, btype, Mask_struct, Mask_comp,
         C_sparsity, M_sparsity, A_sparsity, B_sparsity) ;
-    printf("done enumify semiring\n");
+    printf("done enumify semiring: scode is %lu\n", scode);
 
     GB_macrofy_semiring ( fp, scode) ;
 
@@ -78,7 +78,7 @@ void GB_enumify_semiring   // enumerate a semiring
     //--------------------------------------------------------------------------
     // get the semiring
     //--------------------------------------------------------------------------
-    printf("inside enumify: %p\n", semiring);
+    printf("inside enumify: \n") ;
     GxB_print (semiring, 3) ;
 
     printf("Getting semiring add\n");
@@ -211,9 +211,11 @@ void GB_enumify_semiring   // enumerate a semiring
     // enumify the mask
     //--------------------------------------------------------------------------
 
-    printf("Invoking enumify_mask, mtype %p\n", mtype);
+    printf("Invoking enumify_mask, mtype: \n");
+    GxB_print (mtype, 3) ;
     int mtype_code = (mtype == NULL) ? 0 : mtype->code ; // 0 to 14
     int mask_ecode ;
+    printf("Mask_struct: %d, Mask_comp: %d\n", Mask_struct, Mask_comp);
     GB_enumify_mask (&mask_ecode, mtype_code, Mask_struct, Mask_comp) ;
     printf ("got mask_ecode: %d\n", mask_ecode) ;
 

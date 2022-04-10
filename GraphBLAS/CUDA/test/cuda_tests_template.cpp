@@ -12,6 +12,7 @@
 #include <algorithm>
 #include <cstdint>
 #include "jitTestFactory.hpp"
+#include "../GB_cuda_buckets.h"
 
 //Test instances and groupings
 

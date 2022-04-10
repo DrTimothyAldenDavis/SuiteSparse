@@ -179,6 +179,7 @@ GrB_Info GB_transpose_bucket    // bucket transpose; typecast and apply op
 
         // Only requires a single int64 workspace of size vlen for a single
         // thread.  The resulting C matrix is not jumbled.
+        GBURBLE ("(1-thread bucket transpose) ") ;
 
         // compute the row counts of A.  No need to scan the A->p pointers
         ASSERT (nworkspaces == 1) ;
@@ -209,6 +210,8 @@ GrB_Info GB_transpose_bucket    // bucket transpose; typecast and apply op
         // because of contention on the atomic workspace.  Otherwise, it is
         // typically faster than the non-atomic method.  The resulting C matrix
         // is jumbled.
+
+        GBURBLE ("(%d-thread atomic bucket transpose) ", nthreads) ;
 
         // compute the row counts of A.  No need to scan the A->p pointers
         int64_t *restrict workspace = Workspaces [0] ;
@@ -243,6 +246,8 @@ GrB_Info GB_transpose_bucket    // bucket transpose; typecast and apply op
         // int64 workspace of size vlen, but no atomics are required.  The
         // resulting C matrix is not jumbled, so this can save work if C needs
         // to be unjumbled later.
+
+        GBURBLE ("(%d-thread non-atomic bucket transpose) ", nthreads) ;
 
         ASSERT (nworkspaces == nthreads) ;
         const int64_t *restrict Ap = A->p ;

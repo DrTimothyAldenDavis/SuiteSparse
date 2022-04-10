@@ -309,6 +309,8 @@ void GB_macrofy_mask       // return enum to define mask macros
             break ;
     }
 
+    printf ("HERE is the Mask stuff:\n%s\n", f) ;
+
     fprintf( fp, "%s\n", f ) ;
 }
 

@@ -41,7 +41,7 @@ void mexFunction
     //--------------------------------------------------------------------------
 
     // Test for bug fix in GB_iso_reduce_worker (the correct test is "n <= 0").
-    // Bug caught by @ParticularMiner in the python grblas interface, on Mar 8,
+    // Bug caught by Henry Amuasi in the python grblas interface, on Mar 8,
     // 2022, which causes a stack overflow because of an infinite recursion,
     // and segfaults in v6.2.3 and earlier.  The bug first occurs in v5.1.1,
     // released on June 29, 2021.

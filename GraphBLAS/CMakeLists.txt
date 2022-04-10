@@ -26,10 +26,10 @@ endif ( )
 set ( CMAKE_MACOSX_RPATH TRUE )
 
 # version of SuiteSparse:GraphBLAS
-set ( GraphBLAS_DATE "Mar 14, 2022" )
-set ( GraphBLAS_VERSION_MAJOR 6 )
-set ( GraphBLAS_VERSION_MINOR 2 )
-set ( GraphBLAS_VERSION_SUB   5 )
+set ( GraphBLAS_DATE "Apr 8, 2022" )
+set ( GraphBLAS_VERSION_MAJOR 7 )
+set ( GraphBLAS_VERSION_MINOR 0 )
+set ( GraphBLAS_VERSION_SUB   3 )
 
 message ( STATUS "Building SuiteSparse:GraphBLAS version: v" ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}  " date: " ${GraphBLAS_DATE} )
 
@@ -511,6 +511,7 @@ if ( DEMO )
     add_executable ( wildtype_demo "Demo/Program/wildtype_demo.c" )
     add_executable ( reduce_demo   "Demo/Program/reduce_demo.c" )
     add_executable ( import_demo   "Demo/Program/import_demo.c" )
+    add_executable ( wathen_demo   "Demo/Program/wathen_demo.c" )
 
     # Libraries required for Demo programs
     target_link_libraries ( openmp_demo   PUBLIC graphblas graphblasdemo ${GB_CUDA} ${GB_RMM} )
@@ -520,6 +521,7 @@ if ( DEMO )
     target_link_libraries ( wildtype_demo PUBLIC graphblas ${GB_CUDA} ${GB_RMM} )
     target_link_libraries ( reduce_demo   PUBLIC graphblas ${GB_CUDA} ${GB_RMM} )
     target_link_libraries ( import_demo   PUBLIC graphblas graphblasdemo ${GB_CUDA} ${GB_RMM} )
+    target_link_libraries ( wathen_demo   PUBLIC graphblas graphblasdemo ${GB_CUDA} ${GB_RMM} )
 
 else ( )
 

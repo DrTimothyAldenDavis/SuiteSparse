@@ -400,11 +400,11 @@ GrB_Info GB_AxB_saxpy3_slice_balanced
     // give preference to Gustavson when using few threads
     //--------------------------------------------------------------------------
 
-    if ((*nthreads) <= 8 &&
+    if (/* (*nthreads) <= 8 && */
         (!(AxB_method == GxB_AxB_HASH || AxB_method == GxB_AxB_GUSTAVSON)))
     {
         // Unless a specific method has been explicitly requested, see if
-        // Gustavson should be used with a small number of threads.
+        // Gustavson should be used.
         // Matrix-vector has a maximum intensity of 1, so this heuristic only
         // applies to GrB_mxm.
         double abnz = GB_nnz (A) + GB_nnz (B) + 1 ;
@@ -412,12 +412,13 @@ GrB_Info GB_AxB_saxpy3_slice_balanced
         double intensity = total_flops / abnz ;
         GBURBLE ("(intensity: %0.3g workspace/(nnz(A)+nnz(B)): %0.3g",
             intensity, workspace / abnz) ;
-        if (intensity >= 8 && workspace < abnz)
+        if (((*nthreads) <= 8 && intensity >= 8  && workspace < abnz)
+        ||  (                    intensity >= 16 && workspace < abnz))
         { 
             // work intensity is large, and Gustvason workspace is modest;
             // use Gustavson for all tasks
             AxB_method = GxB_AxB_GUSTAVSON ;
-            GBURBLE (": select Gustvason) ") ;
+            GBURBLE (": all Gustvason) ") ;
         }
         else
         { 

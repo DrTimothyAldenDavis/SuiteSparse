@@ -2828,6 +2828,7 @@ void mexFunction
     ERR1 (C4, GxB_Matrix_subassign (C4, C4, GrB_PLUS_FP64, C4, I3, 3, J3, 2, NULL)) ;
     OK (GrB_Matrix_free_(&C4)) ;
 
+    expected = GrB_INVALID_INDEX ;
     OK (GrB_Matrix_dup (&A4, A)) ;
     ERR1 (A4, GxB_Matrix_subassign_FP64_(A4, NULL, GrB_PLUS_FP64, x_double, I3, 1, J3, 1, NULL));
     OK (GrB_Matrix_free_(&A4)) ;
