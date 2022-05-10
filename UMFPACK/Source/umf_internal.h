@@ -672,6 +672,8 @@ typedef struct	/* SymbolicType */
 	*Esize,
 	dense_row_threshold,
 	n1,			/* number of singletons */
+    n1r,                    /* number of row singletons */
+    n1c,                    /* number of column singletons */
 	nempty,			/* MIN (nempty_row, nempty_col) */
 	*Diagonal_map,		/* initial "diagonal" */
 	esize,			/* size of Esize array */
@@ -692,6 +694,27 @@ typedef struct	/* SymbolicType */
 
 } SymbolicType ;
 
+/* -------------------------------------------------------------------------- */
+/* SW Type: used internally in umfpack_qsymbolic */
+/* -------------------------------------------------------------------------- */
+
+typedef struct	/* SWType */
+{
+    Int *Front_npivcol ;    /* size n_col + 1 */
+    Int *Front_nrows ;	    /* size n_col */
+    Int *Front_ncols ;	    /* size n_col */
+    Int *Front_parent ;	    /* size n_col */
+    Int *Front_cols ;	    /* size n_col */
+    Int *InFront ;	    /* size n_row */
+    Int *Ci ;		    /* size Clen */
+    Int *Cperm1 ;	    /* size n_col */
+    Int *Rperm1 ;	    /* size n_row */
+    Int *InvRperm1 ;	    /* size n_row */
+    Int *Si ;		    /* size nz */
+    Int *Sp ;		    /* size n_col + 1 */
+    double *Rs ;	    /* size n_row */
+
+} SWType ;
 
 /* -------------------------------------------------------------------------- */
 /* for debugging only: */
