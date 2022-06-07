@@ -52,6 +52,7 @@ extern "C" {
 /* Alternative routines: */
 #include "umfpack_defaults.h"
 #include "umfpack_qsymbolic.h"
+#include "umfpack_paru.h"
 #include "umfpack_wsolve.h"
 
 /* Matrix manipulation routines: */

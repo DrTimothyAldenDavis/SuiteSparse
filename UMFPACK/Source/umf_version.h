@@ -489,6 +489,8 @@ typedef struct
 #define UMFPACK_numeric		 umfpack_di_numeric
 #define UMFPACK_qsymbolic	 umfpack_di_qsymbolic
 #define UMFPACK_fsymbolic	 umfpack_di_fsymbolic
+#define UMFPACK_paru_symbolic	 umfpack_di_paru_symbolic
+#define UMFPACK_paru_free_sw      umfpack_di_paru_free_sw
 #define UMFPACK_report_control	 umfpack_di_report_control
 #define UMFPACK_report_info	 umfpack_di_report_info
 #define UMFPACK_report_matrix	 umfpack_di_report_matrix
@@ -605,6 +607,8 @@ typedef struct
 #define UMFPACK_numeric		 umfpack_dl_numeric
 #define UMFPACK_qsymbolic	 umfpack_dl_qsymbolic
 #define UMFPACK_fsymbolic	 umfpack_dl_fsymbolic
+#define UMFPACK_paru_symbolic	 umfpack_dl_paru_symbolic
+#define UMFPACK_paru_free_sw      umfpack_dl_paru_free_sw
 #define UMFPACK_report_control	 umfpack_dl_report_control
 #define UMFPACK_report_info	 umfpack_dl_report_info
 #define UMFPACK_report_matrix	 umfpack_dl_report_matrix
@@ -721,6 +725,8 @@ typedef struct
 #define UMFPACK_numeric		 umfpack_zi_numeric
 #define UMFPACK_qsymbolic	 umfpack_zi_qsymbolic
 #define UMFPACK_fsymbolic	 umfpack_zi_fsymbolic
+#define UMFPACK_paru_symbolic	 umfpack_zi_paru_symbolic
+#define UMFPACK_paru_free_sw      umfpack_zi_paru_free_sw
 #define UMFPACK_report_control	 umfpack_zi_report_control
 #define UMFPACK_report_info	 umfpack_zi_report_info
 #define UMFPACK_report_matrix	 umfpack_zi_report_matrix
@@ -837,6 +843,8 @@ typedef struct
 #define UMFPACK_numeric		 umfpack_zl_numeric
 #define UMFPACK_qsymbolic	 umfpack_zl_qsymbolic
 #define UMFPACK_fsymbolic	 umfpack_zl_fsymbolic
+#define UMFPACK_paru_symbolic	 umfpack_zl_paru_symbolic
+#define UMFPACK_paru_free_sw      umfpack_zl_paru_free_sw
 #define UMFPACK_report_control	 umfpack_zl_report_control
 #define UMFPACK_report_info	 umfpack_zl_report_info
 #define UMFPACK_report_matrix	 umfpack_zl_report_matrix
