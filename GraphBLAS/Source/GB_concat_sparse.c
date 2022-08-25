@@ -26,6 +26,7 @@
 }
 
 #include "GB_concat.h"
+#include "GB_unused.h"
 
 GrB_Info GB_concat_sparse           // concatenate into a sparse matrix
 (

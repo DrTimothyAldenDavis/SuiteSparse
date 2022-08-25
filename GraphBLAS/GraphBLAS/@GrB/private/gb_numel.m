@@ -8,11 +8,9 @@ function s = gb_numel (G)
 [m, n] = gbsize (G) ;
 s = m*n ;
 
-try
-    if (m > flintmax || n > flintmax || s > flintmax)
-        % use the VPA if available, for really huge matrices
+if (m > flintmax || n > flintmax || s > flintmax)
+    % use the VPA if available, for really huge matrices
+    if (exist ('vpa'))
         s = vpa (vpa (m, 64) * vpa (n, 64), 128) ;
     end
-catch
 end
-

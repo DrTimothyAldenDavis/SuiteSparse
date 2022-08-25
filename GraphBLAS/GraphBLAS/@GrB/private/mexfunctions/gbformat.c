@@ -50,7 +50,6 @@ void mexFunction
         //----------------------------------------------------------------------
 
         // get the global format
-        gb_usage (nargout <= 1, USAGE) ;
         OK (GxB_Global_Option_get (GxB_FORMAT, &fmt)) ;
 
     }
@@ -60,11 +59,11 @@ void mexFunction
         if (mxIsChar (pargin [0]))
         { 
 
+
             //------------------------------------------------------------------
             // GrB.format (format)
             //------------------------------------------------------------------
 
-            gb_usage (nargout <= 1, USAGE) ;
             // parse the format string
             int ignore ;
             bool ok = gb_mxstring_to_format (pargin [0], &fmt, &ignore) ;
@@ -157,7 +156,7 @@ void mexFunction
         pargout [1] = mxCreateString (s) ;
     }
     if (nargout > 2)
-    {
+    { 
         pargout [2] = mxCreateString (iso ? "iso-valued" : "non-iso-valued") ;
     }
 

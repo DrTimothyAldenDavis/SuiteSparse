@@ -1,5 +1,5 @@
 function [W, bias, Y0] = dnn_builtin2gb (W, bias, Y0)
-%DNN_MAT2GB convert sparse deep neural network from built-in to GraphBLAS
+%DNN_BUILTIN2GB convert sparse deep neural network from built-in to GraphBLAS
 %
 % Usage:
 %
@@ -36,4 +36,5 @@ for k=1:length(W)
     W {k} = GrB (W {k}, prec, fmt) ;
     bias {k} = GrB.build (1:n, 1:n, bias {k}, n, n, '+', prec, d) ;
 end
+
 

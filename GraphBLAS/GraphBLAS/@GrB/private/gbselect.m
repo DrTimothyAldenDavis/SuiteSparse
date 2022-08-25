@@ -1,4 +1,4 @@
-function C = gbselect (Cin, M, accum, op, A, b, desc)        %#ok
+function [C,k] = gbselect (Cin, M, accum, op, A, b, desc)        %#ok
 
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: GPL-3.0-or-later

@@ -133,6 +133,10 @@ for k = 1:8
         C2 = bitshift (A2, B2, type) ;
         assert (isequal (C1, C2)) ;
 
+        C1 = bitshift (A, 2, type) ;
+        C2 = bitshift (A2, 2, type) ;
+        assert (isequal (C1, C2)) ;
+
         % sparse case
 
         A = sprand (10, 10, 0.5) * imax ;

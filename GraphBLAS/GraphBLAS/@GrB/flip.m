@@ -33,7 +33,7 @@ end
 
 dim = floor (double (dim)) ;
 if (dim <= 0)
-    error ('dim must be positive') ;
+    error ('GrB:error', 'dim must be positive') ;
 end
 
 if (dim == 1 && m ~= 1)

@@ -105,5 +105,17 @@ G = GrB.emult (G, M, '*', A, B) ;
 err = norm (C-G, 1) ;
 assert (err < 1e-12)
 
+C1 = 2 - C ;
+C2 = 2 - G ;
+assert (isequal (C1, C2)) ;
+
+C1 = 0 - C ;
+C2 = 0 - G ;
+assert (isequal (C1, C2)) ;
+
+C1 = C - 2 ;
+C2 = C - 2 ;
+assert (isequal (C1, C2)) ;
+
 fprintf ('gbtest12: all tests passed\n') ;
 

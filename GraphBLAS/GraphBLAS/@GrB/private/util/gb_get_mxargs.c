@@ -92,7 +92,7 @@ void gb_get_mxargs
             // a matrix argument is C, M, A, or B
             if ((*nmatrices) >= 6)
             { 
-                // at most 4 matrix inputs are allowed
+                // at most 6 matrix inputs are allowed
                 ERROR (usage) ;
             }
             Matrix [(*nmatrices)++] = (mxArray *) pargin [k] ;

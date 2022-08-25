@@ -12,6 +12,7 @@
 
 #include "GB_subref.h"
 #include "GB_sort.h"
+#include "GB_unused.h"
 
 GrB_Info GB_subref_phase3   // C=A(I,J)
 (

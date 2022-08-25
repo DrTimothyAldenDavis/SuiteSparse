@@ -46,7 +46,7 @@ else
         % split A into rows
         C = gbsplit (A, ones (m, 1), n) ;
     else
-        error ('unknown option') ;
+        error ('GrB:error', 'unknown option') ;
     end
 
     % convert each cell back into GrB matrices

@@ -8,7 +8,7 @@ For the GraphBLAS/GraphBLAS Octave/MATLAB interface *only*:
 SPDX-License-Identifier: GPL-3.0-or-later
 (see below for a discussion of the licensing of this package).
 
-VERSION 7.0.3, Apr 8, 2022
+VERSION 7.2.0, Aug 8, 2022
 
 SuiteSparse:GraphBLAS is a complete implementation of the GraphBLAS standard,
 which defines a set of sparse matrix operations on an extended algebra of
@@ -24,8 +24,8 @@ built-in sparse matrix multiply in MATLAB R2021a, where `C=A*B` is now up to
 30x faster than in prior versions of MATLAB (on my 20-core NVIDIA DGX Station).
 
 The development of this package is supported by Intel, NVIDIA (including the
-donation of the 20-core DGX Station), Redis, MIT Lincoln Lab, IBM, and Julia
-Computing.
+donation of the 20-core DGX Station), Redis, MIT Lincoln Lab, MathWorks,
+IBM, and Julia Computing.
 
 See the user guide in `Doc/GraphBLAS_UserGuide.pdf` for documentation on the
 SuiteSparse implementation of GraphBLAS, and how to use it in your

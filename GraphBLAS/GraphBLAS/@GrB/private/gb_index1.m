@@ -21,7 +21,7 @@ switch (type)
         I = double (I) ;
 
     case { 'single complex', 'double complex' }
-        error ('array indices must be integers') ;
+        error ('GrB:error', 'array indices must be integers') ;
 
     otherwise
         % any other integer must be typecast to double, int64, or uint64.

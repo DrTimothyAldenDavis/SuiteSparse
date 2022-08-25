@@ -22,10 +22,10 @@ switch (nargin)
             % C = ones ([m n])
             [m, n] = gb_get_2scalars (arg1) ;
         else
-            error ('invalid dimensions') ;
+            error ('GrB:error', 'invalid dimensions') ;
         end
 
-    case { 2 }
+    otherwise
 
         % C = ones (m, n)
         m = gb_get_scalar (arg1) ;

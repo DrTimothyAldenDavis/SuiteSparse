@@ -27,7 +27,7 @@ end
 
 type = gbtype (A) ;
 if (gb_contains (type, 'complex'))
-    error ('complex matrices not yet supported') ;
+    error ('GrB:error', 'complex matrices not yet supported') ;
 elseif (isequal (type, 'logical'))
     op = '&.logical' ;
 else
@@ -46,7 +46,8 @@ elseif (nargin == 2)
 else
     % C = min (A, [ ], option)
     if (~isempty (B))
-        error ('dimension argument not allowed with 2 input matrices') ;
+        error ('GrB:error', ...
+            'dimension argument not allowed with 2 input matrices') ;
     end
     C = GrB (gb_min3 (op, A, option)) ;
 end

@@ -239,6 +239,7 @@
 // #define GxB_NO_TGAMMA    1
 // #define GxB_NO_ERF       1
 // #define GxB_NO_ERFC      1
+// #define GxB_NO_CBRT      1
 
 // #define GxB_NO_FREXPX    1
 // #define GxB_NO_FREXPE    1

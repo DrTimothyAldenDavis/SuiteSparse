@@ -28,5 +28,11 @@ for trial = 1:10
     end
 end
 
+n = 2^60 ;
+G = GrB (n, n) ;
+G (n,1) = 1
+[lo, hi] = bandwidth (G)
+assert (lo == int64 (2^60) - 1)
+
 fprintf ('\ngbtest20: all tests passed\n') ;
 

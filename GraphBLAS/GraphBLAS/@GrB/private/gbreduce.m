@@ -1,4 +1,4 @@
-function c = gbreduce (cin, accum, op, A, desc)      %#ok
+function [c,k] = gbreduce (cin, accum, op, A, desc)      %#ok
 
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: GPL-3.0-or-later

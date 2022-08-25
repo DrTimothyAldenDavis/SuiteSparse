@@ -20,7 +20,7 @@ for k = 1:nargs
     if (ischar (arg))
         if (isequal (arg, 'like'))
             if (nargs ~= k+1)
-                error ('usage: GrB.%s (m, n, ''like'', G)', func) ;
+                error ('GrB:error', 'usage: GrB.%s (m, n, ''like'', G)', func) ;
             end
             arg = varargin {k+1} ;
             if (isobject (arg))
@@ -29,7 +29,7 @@ for k = 1:nargs
             type = gbtype (arg) ;
         else
             if (nargs ~= k)
-                error ('usage: GrB.%s (m, n, type)', func) ;
+                error ('GrB:error', 'usage: GrB.%s (m, n, type)', func) ;
             end
             type = arg ;
         end

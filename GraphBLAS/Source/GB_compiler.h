@@ -213,7 +213,7 @@
 
     #define GB_HAS_VLA  1
 
-#elif GxB_STDC_VERSION >= 199901L
+#elif (defined (__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L))
 
     // ANSI C99 and later
     #define GB_HAS_VLA  1

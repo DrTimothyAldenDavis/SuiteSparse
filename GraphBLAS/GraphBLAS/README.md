@@ -111,19 +111,16 @@ messages during the test.  This is expected.
 
 # FUTURE: Not yet supported for GrB matrices in Octave/MATLAB:
 
-    linear indexing
-    2nd output for [x,i] = max (...) and [x,i] = min (...); needs
-        modified reduction methods inside GraphBLAS
+    linear indexing, except for C=A(:) to index the whole matrix A
+        or C(:)=A to index the whole matrix C.
+    2nd output for [x,i] = max (...) and [x,i] = min (...):
+        use GrB.argmin and GrB.argmax instead.
     'includenan' for min and max
     min and max for complex matrices
     singleton expansion
-    3D and higher dimensional matrices:
-        this might be done by converting the higher dimensioal
-        indices down to a large 2D space, and relying on hypersparsity.
     saturating element-wise binary and unary operators for integers.
         See also the discussion in the User Guide.
 
 These functions are supported, but are not yet as fast as they could be:
-bandwidth, eps, isbanded, isdiag, ishermitian, issymmetric, istril, istriu,
-spfun.
+eps, ishermitian, issymmetric, spfun.
 

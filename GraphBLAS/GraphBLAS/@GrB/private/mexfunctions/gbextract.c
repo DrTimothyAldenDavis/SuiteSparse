@@ -130,18 +130,22 @@ void mexFunction
     if (anrows == 1 && ncells == 1)
     { 
         // only J is present
-        J = gb_mxcell_to_index (Cell [0], base, ancols, &J_allocated, &nj) ;
+        J = gb_mxcell_to_index (Cell [0], base, ancols, &J_allocated, &nj,
+            NULL) ;
     }
     else if (ncells == 1)
     { 
         // only I is present
-        I = gb_mxcell_to_index (Cell [0], base, anrows, &I_allocated, &ni) ;
+        I = gb_mxcell_to_index (Cell [0], base, anrows, &I_allocated, &ni,
+            NULL) ;
     }
     else if (ncells == 2)
     { 
         // both I and J are present
-        I = gb_mxcell_to_index (Cell [0], base, anrows, &I_allocated, &ni) ;
-        J = gb_mxcell_to_index (Cell [1], base, ancols, &J_allocated, &nj) ;
+        I = gb_mxcell_to_index (Cell [0], base, anrows, &I_allocated, &ni,
+            NULL) ;
+        J = gb_mxcell_to_index (Cell [1], base, ancols, &J_allocated, &nj,
+            NULL) ;
     }
 
     //--------------------------------------------------------------------------

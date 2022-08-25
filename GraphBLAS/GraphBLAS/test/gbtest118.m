@@ -65,6 +65,9 @@ for d = [0.2 inf]
         assert (isequal (Pk, a)) ;
     end
 
+    C2 = GrB.argsort (A) ;
+    assert (isequal (C, C2)) ;
+
     [C, P] = GrB.argsort (A, 'descend') ;
     for k = 1:n
         Ak = A (:,k) ;

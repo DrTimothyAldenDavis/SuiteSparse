@@ -25,6 +25,7 @@
 #ifndef GBCUDA_DEV
 #include "GB_binop__include.h"
 #endif
+#include "GB_unused.h"
 
 #define GB_FREE_ALL                         \
 {                                           \

@@ -14,6 +14,8 @@
 
 extern "C"
 {
+#include <cassert>
+#include <cmath>
     #include "GB.h"
 }
 
@@ -21,16 +23,14 @@ extern "C"
 #include "cuda_runtime.h"
 #include "cuda.h"
 #include "jitify.hpp"
-#include "GB_cuda_semiring_factory.hpp"
+#include "GB_cuda_mxm_factory.hpp"
 
-#include <cassert>
-#include <cmath>
 #include <iostream>
 
 #define CHECK_CUDA_SIMPLE(call)                                           \
   do {                                                                    \
     cudaError_t err = call;                                               \
-    if (err != cudaSuccess) {                                            \
+    if (err != cudaSuccess) {                                             \
       const char* str = cudaGetErrorName( err);                           \
       std::cout << "(CUDA runtime) returned " << str;                     \
       std::cout << " (" << __FILE__ << ":" << __LINE__ << ":" << __func__ \
@@ -38,7 +38,6 @@ extern "C"
       return (GrB_PANIC) ;                                                \
     }                                                                     \
   } while (0)
-
 
 //------------------------------------------------------------------------------
 // GB_CUDA_CATCH: catch error from a try { ... } region
@@ -68,14 +67,15 @@ extern "C"
         return (GB_ERROR (info, (GB_LOG, "CUDA died\n"))) ;                    \
     }
 
-// 12 buckets: computed by up to 11 kernel launches (zombies need no work...),
-// using 5 different kernels (with different configurations depending on the
-// bucket).
-    #include "GB_cuda_buckets.h"
+// NBUCKETS buckets: computed by up to NBUCKETS-1 kernel launches (zombies need
+// no work...), using different kernels (with different configurations
+// depending on the bucket).
+
+#include "GB_cuda_buckets.h"
+
 extern "C"
 {
     #include "GB_stringify.h"
-    
 }
 #endif
 

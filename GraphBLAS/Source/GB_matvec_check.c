@@ -510,7 +510,7 @@ GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
         }
     }
 
-    if (!ignore_zombies && (A->nzombies < 0 || A->nzombies > anz))
+    if (!ignore_zombies && (A->nzombies > anz))
     { 
         GBPR0 ("  invalid number of zombies: " GBd " "
             "must be >= 0 and <= # entries (" GBd ")\n", A->nzombies, anz) ;
@@ -721,7 +721,7 @@ GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
         // matrix has tuples, arrays and type must not be NULL
         // Pending->x must be NULL if and only if A is iso
         // Pending->x must be non-NULL if and only if A is non-iso
-        if (Pending->i == NULL || (Pending->x == NULL != (A->iso)) ||
+        if (Pending->i == NULL || ((Pending->x == NULL) != (A->iso)) ||
             (A->vdim > 1 && Pending->j == NULL))
         { 
             GBPR0 ("  invalid pending tuples\n") ;

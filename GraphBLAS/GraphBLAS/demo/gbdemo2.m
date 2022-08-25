@@ -1,5 +1,5 @@
 function gbdemo2 (bnz)
-%GBDEMO2 Extreme performance differences: GraphBLAS vs built-in methods.
+%GBDEMO2 Extreme performance differences: GraphBLAS vs built-in methods
 %
 % Usage:
 %
@@ -98,4 +98,5 @@ for n = 1000:1000:6000
     fprintf ('    all tests passed\n') ;
 
 end
+
 

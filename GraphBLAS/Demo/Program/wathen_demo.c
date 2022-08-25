@@ -43,8 +43,8 @@ int main (int argc, char **argv)
     }
     OK (GxB_Global_Option_get (GxB_GLOBAL_NTHREADS, &nthreads)) ;
 
-    fprintf (stderr, "Wathen: nx %ld ny %ld method: %d nthreads: %d ",
-        nx, ny, method, nthreads) ;
+    fprintf (stderr, "Wathen: nx %d ny %d method: %d nthreads: %d ",
+        (int) nx, (int) ny, method, nthreads) ;
 
     //--------------------------------------------------------------------------
     // create a Wathen matrix

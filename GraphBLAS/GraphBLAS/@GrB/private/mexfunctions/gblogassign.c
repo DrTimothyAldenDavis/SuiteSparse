@@ -39,7 +39,7 @@
     [m n] = size (C) ;
     mnz = nnz (M) ;         % A must be mnz-by-1
     if (~isequal (size (A), [mnz 1]))
-        error ('A must be nnz(M)-by-1')
+        error ('GrB:error', 'A must be nnz(M)-by-1')
     end
 
     [ai,  ~, ax] = GrB.extracttuples (A) ;

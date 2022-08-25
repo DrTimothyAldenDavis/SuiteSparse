@@ -33,9 +33,10 @@ t2 = GrB.type (A) ;
 assert (isequal (t1, t2)) ;
 
 [s1, f1] = GrB.format (G) ;
-[s2, f2] = GrB.format (G2) ;
+[s2, f2, iso] = GrB.format (G2) ;
 assert (isequal (s1, s2)) ;
 assert (isequal (f1, f2)) ;
+iso
 
 H2 = GrB (H, 'hyper') ;
 fprintf ('================== v3 hypersparse struct:\n') ;

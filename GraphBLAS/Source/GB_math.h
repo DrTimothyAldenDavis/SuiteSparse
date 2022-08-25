@@ -133,7 +133,7 @@
 #include "GB_imin.h"
 
 // ceiling of a/b for two integers a and b
-#define GB_ICEIL(a,b) (((a) + (b) - 1) / (b))
+#include "GB_iceil.h"
 
 //------------------------------------------------------------------------------
 // division by zero

@@ -29,6 +29,6 @@ elseif (nargin == 3)
     C = GrB (gb_random (m, n, d, 'normal')) ;
 else
     % the 'rc' input option is not supported
-    error ('usage: sprandn(A) or sprandn(m,n,d)') ;
+    error ('GrB:error', 'usage: sprandn(A) or sprandn(m,n,d)') ;
 end
 

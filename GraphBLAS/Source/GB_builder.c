@@ -205,7 +205,7 @@ GrB_Info GB_builder                 // build a matrix from tuples
     int64_t *restrict I_work = (*I_work_handle) ;
     int64_t *restrict J_work = (*J_work_handle) ;
     int64_t *restrict K_work = NULL ; size_t K_work_size = 0 ;
-    ASSERT (*J_work_size_handle == GB_Global_memtable_size (J_work)) ;
+//  ASSERT (*J_work_size_handle == GB_Global_memtable_size (J_work)) ;
 
     //--------------------------------------------------------------------------
     // determine the number of threads to use

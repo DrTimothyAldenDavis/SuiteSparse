@@ -2,6 +2,8 @@
 #include <vector>
 #include <cstdint>
 
+#pragma once
+
 template<typename T_A, typename T_B, typename T_C, typename T_M>
 class TestData {
 

@@ -17,6 +17,7 @@
 
 #include "GB.h"
 #include "GB_partition.h"
+#include "GB_unused.h"
 
 GrB_Info GB_convert_bitmap_worker   // extract CSC/CSR or triplets from bitmap
 (

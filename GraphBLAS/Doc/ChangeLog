@@ -1,3 +1,35 @@
+Version 7.2.0, Aug 8, 2022
+
+    * added ZSTD as a compression option for serialize/deserialize:
+        Version 1.5.3 by Yann Collet, https://github.com/facebook/zstd.git
+        Copyright (c) 2016-present, Facebook, Inc. All rights reserved.
+        Included in SuiteSparse:GraphBLAS via its BSD-3-clause license.
+        The default method is now ZSTD, level 1.
+    * added GxB_Matrix_reshape and GxB_Matrix_reshapeDup
+    * MATLAB interface: faster C(:)=A, C=A(:), and reshape.
+        Better error messages.
+
+Version 7.1.2, July 8, 2022
+
+    * MATLAB interface: linear indexing added for C(:)=A, C=A(:), and
+        single-output I=find(C).  Faster bandwidth, istriu, istril,
+        isbanded, isdiag.  C(I,J)=A can now grow the size of A.
+
+Version 7.1.1, June 17, 2022
+
+    * minor updates to documentation and error messages
+    * MATLAB interface: minor revision of GrB.deserialize
+
+Version 7.1.0, May 20, 2022
+
+    * added cube root: GxB_CBRT_FP* unary operators
+    * added GxB_Matrix_isStoredElement and GxB_Vector_isStoredElement
+
+Version 7.0.4, Apr 25, 2022
+
+    * (46) bug fix: user-defined type size was incorrectly limited
+        to 128 bytes.  Caught by Erik Welch.
+
 Version 7.0.3, Apr 8, 2022
 
     * faster transpose when using 2 threads

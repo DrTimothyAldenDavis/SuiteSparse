@@ -22,7 +22,7 @@ ctype = gbtype (C) ;
         % all columns A(:,j) have between 1 and m-1 entries
         C = gbapply2 (op, C, zero) ;
     else
-        d = gbapply2 (['1st.' ctype], zero, d) ;
+        d = gbapply2 (['2nd.' ctype], d, zero) ;
         % if d (j) is between 1 and m-1 and C (j) > 0 then C (j) = 0
         C = gbeadd (op, C, d) ;
     end

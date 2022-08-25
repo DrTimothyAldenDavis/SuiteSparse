@@ -122,7 +122,7 @@ function [f,s,iso] = format (arg)
 if (nargin == 0)
     % f = GrB.format ; get the global format
     if (nargout > 1)
-        error ('usage: f = GrB.format') ;
+        error ('GrB:error', 'usage: f = GrB.format') ;
     end
     f = gbformat ;
 else
