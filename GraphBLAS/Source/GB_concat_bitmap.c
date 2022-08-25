@@ -16,6 +16,7 @@
     GB_phbix_free (C) ;
 
 #include "GB_concat.h"
+#include "GB_unused.h"
 
 GrB_Info GB_concat_bitmap           // concatenate into a bitmap matrix
 (

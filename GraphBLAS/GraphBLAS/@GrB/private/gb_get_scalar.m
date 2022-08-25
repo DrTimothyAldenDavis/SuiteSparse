@@ -10,7 +10,7 @@ end
 
 [m, n] = gbsize (A) ;
 if (m ~= 1 || n ~= 1)
-    error ('input parameter %s must be a scalar', inputname (1)) ;
+    error ('GrB:error', 'input parameter %s must be a scalar', inputname (1)) ;
 end
 
 x = gb_scalar (A) ;

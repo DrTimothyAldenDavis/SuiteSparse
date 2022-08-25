@@ -51,7 +51,7 @@ switch (option)
 
     otherwise
 
-        error ('unknown option') ;
+        error ('GrB:error', 'unknown option') ;
 end
 
 

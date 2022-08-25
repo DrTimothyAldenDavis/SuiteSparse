@@ -113,6 +113,38 @@ template<> inline GrB_Info vector_reduce<float>(float *scalar, GrB_Vector A, GrB
 template<> inline GrB_Info vector_reduce<double>(double *scalar, GrB_Vector A, GrB_Monoid op) { return GrB_Vector_reduce_FP64(scalar, NULL, op, A, NULL); }
 template<> inline GrB_Info vector_reduce<bool>(bool *scalar, GrB_Vector A, GrB_Monoid op) { return GrB_Vector_reduce_BOOL(scalar, NULL, op, A, NULL); }
 
+/**
+ *     GxB_Matrix_reduce_FC32     // c = accum (c, reduce_to_scalar (A))
+            (
+                    GxB_FC32_t *c,                  // result scalar
+    const GrB_BinaryOp accum,       // optional accum for c=accum(c,t)
+    const GrB_Monoid monoid,        // monoid to do the reduction
+    const GrB_Matrix A,             // matrix to reduce
+    const GrB_Descriptor desc
+
+ * @tparam T 
+ * @param scalar 
+ * @param A 
+ * @param op 
+ * @return 
+ */
+
+template<typename T>
+GrB_Info matrix_reduce(T *scalar, GrB_Matrix A, GrB_Monoid op);
+
+template<> inline GrB_Info matrix_reduce<int8_t>(int8_t *scalar, GrB_Matrix A, GrB_Monoid op) { return GrB_Matrix_reduce_INT8(scalar, NULL, op, A, NULL); }
+template<> inline GrB_Info matrix_reduce<int16_t>(int16_t *scalar, GrB_Matrix A, GrB_Monoid op) { return GrB_Matrix_reduce_INT16(scalar, NULL, op, A, NULL); }
+template<> inline GrB_Info matrix_reduce<int32_t>(int32_t *scalar, GrB_Matrix A, GrB_Monoid op) { return GrB_Matrix_reduce_INT32(scalar, NULL, op, A, NULL); }
+template<> inline GrB_Info matrix_reduce<int64_t>(int64_t *scalar, GrB_Matrix A, GrB_Monoid op) { return GrB_Matrix_reduce_INT64(scalar, NULL, op, A, NULL); }
+template<> inline GrB_Info matrix_reduce<uint8_t>(uint8_t *scalar, GrB_Matrix A, GrB_Monoid op) { return GrB_Matrix_reduce_UINT8(scalar, NULL, op, A, NULL); }
+template<> inline GrB_Info matrix_reduce<uint16_t>(uint16_t *scalar, GrB_Matrix A, GrB_Monoid op) { return GrB_Matrix_reduce_UINT16(scalar, NULL, op, A, NULL); }
+template<> inline GrB_Info matrix_reduce<uint32_t>(uint32_t *scalar, GrB_Matrix A, GrB_Monoid op) { return GrB_Matrix_reduce_UINT32(scalar, NULL, op, A, NULL); }
+template<> inline GrB_Info matrix_reduce<uint64_t>(uint64_t *scalar, GrB_Matrix A, GrB_Monoid op) { return GrB_Matrix_reduce_UINT64(scalar, NULL, op, A, NULL); }
+template<> inline GrB_Info matrix_reduce<float>(float *scalar, GrB_Matrix A, GrB_Monoid op) { return GrB_Matrix_reduce_FP32(scalar, NULL, op, A, NULL); }
+template<> inline GrB_Info matrix_reduce<double>(double *scalar, GrB_Matrix A, GrB_Monoid op) { return GrB_Matrix_reduce_FP64(scalar, NULL, op, A, NULL); }
+template<> inline GrB_Info matrix_reduce<bool>(bool *scalar, GrB_Matrix A, GrB_Monoid op) { return GrB_Matrix_reduce_BOOL(scalar, NULL, op, A, NULL); }
+
+
 template <typename T>
 GrB_Info get_element(GrB_Matrix A, T* x, int64_t i, int64_t j);
 template<> inline GrB_Info get_element<int8_t>(GrB_Matrix A, int8_t *x, int64_t i, int64_t j) { return GrB_Matrix_extractElement_INT8(x, A, i, j); }

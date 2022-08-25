@@ -93,12 +93,12 @@ void GB_helper1i             // convert zero-based indices to one-based
 // GB_helper3: convert 1-based indices to 0-based for gb_mxarray_to_list
 //------------------------------------------------------------------------------
 
-bool GB_helper3              // return true if OK, false on error
+bool GB_helper3             // return true if OK, false on error
 (
     int64_t *restrict List,             // size len, output array
     const double *restrict List_double, // size len, input array
     int64_t len,
-    int64_t *List_max               // also compute the max entry in the list
+    int64_t *List_max       // also compute the max entry in the list (1-based)
 )
 {
 
@@ -151,12 +151,12 @@ bool GB_helper3              // return true if OK, false on error
 // GB_helper3i: convert 1-based indices to 0-based for gb_mxarray_to_list
 //------------------------------------------------------------------------------
 
-bool GB_helper3i             // return true if OK, false on error
+bool GB_helper3i        // return true if OK, false on error
 (
     int64_t *restrict List,             // size len, output array
     const int64_t *restrict List_int64, // size len, input array
     int64_t len,
-    int64_t *List_max               // also compute the max entry in the list
+    int64_t *List_max   // also compute the max entry in the list (1-based)
 )
 {
 
@@ -194,14 +194,15 @@ bool GB_helper3i             // return true if OK, false on error
 }
 
 //------------------------------------------------------------------------------
-// GB_helper4: find the max entry in an index list for gbbuild
+// GB_helper4: find the max entry in a list of type GrB_Index
 //------------------------------------------------------------------------------
 
-bool GB_helper4              // return true if OK, false on error
+bool GB_helper4             // return true if OK, false on error
 (
     const GrB_Index *restrict I,    // array of size len
     const int64_t len,
-    GrB_Index *List_max             // find max (I) + 1
+    GrB_Index *List_max     // also compute the max entry in the list (1-based,
+                            // which is max(I)+1)
 )
 {
 

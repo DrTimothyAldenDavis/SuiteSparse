@@ -58,6 +58,10 @@ Cout = GrB.extract (A, {I}, {J}) ;
 C2 = A (I,J)  ;
 assert (gbtest_eq (C2, Cout)) ;
 
+desc.base = 'zero-based' ;
+Cout = GrB.extract (A, { int64(I) - 1 }, { int64(J) - 1 }, desc) ;
+assert (gbtest_eq (C2, Cout)) ;
+
 G = GrB.random (1, 10, inf) ;
 A = double (G) ;
 C0 = A (1:3) ;

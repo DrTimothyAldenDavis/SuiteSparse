@@ -20,7 +20,7 @@ function s = tricount (A, arg2, arg3)
 
 [m, n] = size (A) ;
 if (m ~= n)
-    error ('A must be square') ;
+    error ('GrB:error', 'A must be square') ;
 end
 
 d = [ ] ;
@@ -47,7 +47,7 @@ elseif (nargin == 3)
 end
 
 if (check && ~issymmetric (spones (A)))
-    error ('pattern of A must be symmetric') ;
+    error ('GrB:error', 'pattern of A must be symmetric') ;
 end
 
 if (isequal (class (d), 'GrB'))

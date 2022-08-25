@@ -100,8 +100,8 @@ GrB_Info GB_AxB_saxpy5              // C += A*B
     //--------------------------------------------------------------------------
 
     GrB_BinaryOp mult = semiring->multiply ;
-    GrB_Monoid add = semiring->add ;
-    ASSERT (mult->ztype == add->op->ztype) ;
+//  GrB_Monoid add = semiring->add ;
+    ASSERT (mult->ztype == semiring->add->op->ztype) ;
     bool A_is_pattern, B_is_pattern ;
     GB_binop_pattern (&A_is_pattern, &B_is_pattern, flipxy, mult->opcode) ;
 

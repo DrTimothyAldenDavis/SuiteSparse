@@ -1,12 +1,11 @@
-
 //------------------------------------------------------------------------------
 // AxB_dot3_phase3_dndn.cu 
 //------------------------------------------------------------------------------
 
 // This CUDA kernel produces the semi-ring product of two
-// sparse matrices of types T_A and T_B and common index space size n, to a  
-// output matrix of type T_C. The matrices are sparse, with different numbers
-// of non-zeros and different sparsity patterns. 
+// dense matrices of types T_A and T_B and common index space size n, to a  
+// output matrix of type T_C. The matrices are dense, with uniform
+// non-zeros and sparsity patterns. 
 // ie. we want to produce C = A'*B in the sense of the given semi-ring.
 
 // This version uses a simple warp-based dense dot product algorithm, when the
@@ -31,10 +30,23 @@
 //  GrB_Matrix B           <- input matrix B
 //  int sz                 <- size parameter (not used) 
 
+/* fixme: This kernel needs to be split into 4 methods:
+
+        (A bitmap) * (B bitmap)
+        (A full ) * (B bitmap)
+        (A bitmap) * (B full)
+        (A full) * (B full)
+
+    The buckets are not needed at all.  A single pass can be done.
+    C and M would still be sparse or hypersparse.
+
+    See also denseDotProduct.cu.
+*/
+
 #pragma once
 #include <limits>
 #include <cstdint>
-#include "matrix.h"
+#include "GB_cuda_kernel.h"
 
 #include <cooperative_groups.h>
 
@@ -72,7 +84,7 @@ T block_ReduceSum(thread_block g, T val, T Ident)
 
   //tile.sync();                    // Wait for all partial reductions
 
-  if (wid > 0 || gridDim.x == 1 ) return val;
+  if (wid > 0 ) return val;
 
   //read from shared memory only if that warp existed
   val = (threadIdx.x < blockDim.x / warpSize) ? shared[lane] :  Ident  ;
@@ -83,19 +95,23 @@ T block_ReduceSum(thread_block g, T val, T Ident)
 }
 
 
-template< typename T_C, typename T_A, typename T_B>
-__global__ void AxB_dot3_phase3_dndn 
+template<
+    typename T_C, typename T_A, typename T_B,
+    typename T_Z, typename T_X, typename T_Y,
+    uint64_t srcode>
+__global__ void AxB_dot3_phase3_dndn
 (
-    int64_t start,
-    int64_t end,
-    int64_t *Bucket,
     GrB_Matrix C,
     GrB_Matrix M,
     GrB_Matrix A,
-    GrB_Matrix B,
-    int sz
+    GrB_Matrix B
 )
 {
+    // TODO: Figure out how to use graphblas-specific INFINITY macro
+    #ifndef INFINITY
+    #define INFINITY std::numeric_limits<T_C>::max()
+    #endif
+
    const T_A *__restrict__ Ax = (T_A *)A->x  ;
    const T_B *__restrict__ Bx = (T_B *)B->x  ;
          T_C *__restrict__ Cx = (T_C *)C->x  ;
@@ -105,10 +121,20 @@ __global__ void AxB_dot3_phase3_dndn
    const int64_t *__restrict__ Bi = B->i ;
    const int64_t *__restrict__ Ap = A->p ;
    const int64_t *__restrict__ Bp = B->p ;
+   #if GB_A_IS_BITMAP
+   const int8_t  *__restrict__ Ab = A->b ;
+   #endif
+   #if GB_B_IS_BITMAP
+   const int8_t  *__restrict__ Bb = B->b ;
+   #endif
 
     // zombie count
     int zc = 0;
+    // dot pair and index in bucket
     int64_t pair_id;
+
+    int64_t start = 0;
+    int64_t end   = M->p[M->nvec];
 
     // total items to be inspected
     int64_t nnzA = 0;
@@ -116,60 +142,113 @@ __global__ void AxB_dot3_phase3_dndn
     int s = blockDim.x;
 
     // Main loop over pairs 
-    for (pair_id = start + blockIdx.x; //warp per pair 
-         pair_id < end;  
-         pair_id += gridDim.x ){
+    for ( int64_t kk  = start + blockIdx.x; //warp per pair 
+                  kk  < end;  
+                  kk += gridDim.x ){
 
+         pair_id = kk ;
          int64_t i = Mi[pair_id];
          int64_t j = Ci[pair_id] >> 4;
 
-         int64_t pA = Ap[i];
-         int64_t xend   = Ap[i+1];
+         int64_t pA   = (A->vlen)*i;
+         int64_t xend = pA +(A->vlen);
          nnzA = xend - pA;
 
-         int64_t pB = Bp[j];
-         int64_t yend   = Bp[j+1];
+         int64_t pB   = (B->vlen)*j;
+         int64_t yend = pB +(B->vlen);
          nnzB = yend - pB;
 
-    if (threadIdx.x == 0 ){
-        printf("tid=%d, i,j = %d,%d  nnzA= %d, nnzB=%d\n",
-               threadIdx.x, (int)i,(int)j,  (int)nnzA, (int)nnzB);
-    }
-    __syncthreads();
+//      if (threadIdx.x == 0 ){
+//          printf("tid=%d, i,j = %d,%d  nnzA= %d, nnzB=%d\n",
+//                 threadIdx.x, (int)i,(int)j,  (int)nnzA, (int)nnzB);
+//      }
+//      __syncthreads();
 
     
     // convert global data pointer to the local pointer of this block
-    T_A  aki; // *xdata = &Ax[xstart]; 
-    T_B  bkj; // *ydata = &Bx[ystart];
-    T_C  cij;
+    GB_DECLAREA (aki) ;
+    GB_DECLAREB (bkj) ;
 
-    GB_GETA ( aki=(T_C)Ax[pA+threadIdx.x] ) ;             // aki = A(0,i)
-    GB_GETB ( bkj=(T_C)Bx[pB+threadIdx.x] ) ;             // bkj = B(0,j)
-    GB_C_MULT ( cij, aki, bkj ) ;                        // cij = aki * bkj
+    #if GB_A_IS_FULL && GB_B_IS_FULL
 
-    for ( int tid = threadIdx.x + s; tid < nnzA; tid+= s) { 
-          // cij += A(k,i) * B(k,j)
-          // GB_DOT_TERMINAL ( cij ) ;             // break if cij == terminal
-          GB_GETA ( aki=(T_C)Ax[pA+tid] ) ;         // aki = A(k,i)
-          GB_GETB ( bkj=(T_C)Bx[pB+tid] ) ;        // bkj = B(k,j)
-          GB_MULTADD ( cij, aki, bkj ) ;        // cij += aki * bkj
-    }
+        T_Z cij ; // = GB_IDENTITY ; not needed
+        GB_GETA ( aki, Ax, pA+threadIdx.x) ;        // aki = A(0,i)
+        GB_GETB ( bkj, Bx, pB+threadIdx.x) ;        // bkj = B(0,j)
+        GB_C_MULT ( cij, aki, bkj ) ;               // cij = aki * bkj
+        for ( int64_t k = threadIdx.x + s; k < nnzA; k+= s) { 
+              // cij += A(k,i) * B(k,j)
+              GB_GETA (aki, Ax, pA+k) ;           // aki = A(k,i)
+              GB_GETB (bkj, Bx, pB+k) ;           // bkj = B(k,j)
+              GB_MULTADD ( cij, aki, bkj ) ;        // cij += aki * bkj
+        }
 
+    #elif GB_A_IS_BITMAP && GB_B_IS_BITMAP
+
+        T_Z cij = GB_IDENTITY ;
+        bool cij_exists = false ;
+        for ( int64_t k = threadIdx.x ; k < nnzA; k+= s) { 
+              GB_GETA (aki, Ax, pA+k) ;           // aki = A(k,i)
+              GB_GETB (bkj, Bx, pB+k) ;           // bkj = B(k,j)
+              int8_t b = (Ab [pA+k] && Bb [pB+k]) ;
+              cij_exists |= b ;
+              if (b)
+              {
+                  GB_MULTADD ( cij, aki, bkj ) ;        // cij += aki * bkj
+              }
+        }
+
+    #elif GB_A_IS_FULL && GB_B_IS_BITMAP
+
+        T_Z cij = GB_IDENTITY ;
+        bool cij_exists = false ;
+        for ( int tid = threadIdx.x ; tid < nnzA; tid+= s) { 
+            if (Bb [pB+tid])
+            {
+              GB_GETA (aki, Ax, pA+tid) ;           // aki = A(k,i)
+              GB_GETB (bkj, Bx, pB+tid) ;           // bkj = B(k,j)
+              GB_MULTADD ( cij, aki, bkj ) ;        // cij += aki * bkj
+              cij_exists = true ;
+            }
+        }
+
+    #elif GB_A_IS_BITMAP && GB_B_IS_FULL
+
+        T_Z cij = GB_IDENTITY ;
+        bool cij_exists = false ;
+        for ( int tid = threadIdx.x ; tid < nnzA; tid+= s) { 
+            if (Ab [pB+tid])
+            {
+              GB_GETA (aki, Ax, pA+tid) ;           // aki = A(k,i)
+              GB_GETB (bkj, Bx, pB+tid) ;           // bkj = B(k,j)
+              GB_MULTADD ( cij, aki, bkj ) ;        // cij += aki * bkj
+              cij_exists = true ;
+            }
+        }
+
+    #endif
 
     //--------------------------------------------------------------------------
     // reduce per-thread sums to a single scalar
     //--------------------------------------------------------------------------
+
+    // FIXME: need to check if cij_exists for any thread, for the 3
+    // cases of bitmap*bitmap, full*bitmap, and bitmap*full, and if not,
+    // C(i,j) is a zombie.
+
+    #if !GB_C_ISO
     thread_block_tile<32> tile = tiled_partition<32>( this_thread_block() );
-    cij = warp_ReduceSum<T_C, 32> ( tile, cij);
+    cij = warp_ReduceSum<T_Z, 32> ( tile, cij);
+    #endif
 
     // write result for this block to global mem
     if (threadIdx.x == 0)
     {
        //printf("tid: %d final sum after reduce = %d\n", threadIdx.x, sum);
        GB_PUTC( Cx[pair_id]=(T_C)cij ) ;
-       GB_PUTC( Ci[pair_id]=i ) ;
+       Ci[pair_id]=i ;
     }
     //__syncthreads ( ) ;
+    // never have block zombies to add to C->nzombies
   }
 
 }

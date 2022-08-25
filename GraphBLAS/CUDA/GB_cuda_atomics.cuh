@@ -45,7 +45,9 @@ template <typename T>
 __device__ void atomic_sub(T* ptr, T val);
 
 template<> __device__ __inline__ void atomic_add<int>(int* ptr, int val) { atomicAdd(ptr, val); }
+template<> __device__ __inline__ void atomic_add<uint32_t>(uint32_t* ptr, uint32_t val) { atomicAdd((unsigned int*)ptr, (unsigned int)val); }
 template<> __device__ __inline__ void atomic_add<int64_t>(int64_t* ptr, int64_t val) { atomicAdd((unsigned long long*)ptr, (unsigned long long)val); }
+template<> __device__ __inline__ void atomic_add<uint64_t>(uint64_t* ptr, uint64_t val) { atomicAdd((unsigned long long*)ptr, (unsigned long long)val); }
 template<> __device__ __inline__ void atomic_add<float>(float* ptr, float val) { atomicAdd(ptr, val); }
 template<> __device__ __inline__ void atomic_add<double>(double* ptr, double val) { atomicAdd(ptr, val); }
 

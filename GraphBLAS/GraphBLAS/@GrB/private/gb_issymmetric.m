@@ -42,7 +42,7 @@ else
 
         otherwise
 
-            error ('invalid option') ;
+            error ('GrB:error', 'invalid option') ;
 
     end
 

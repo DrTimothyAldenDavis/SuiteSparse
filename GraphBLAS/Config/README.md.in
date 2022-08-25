@@ -24,8 +24,8 @@ built-in sparse matrix multiply in MATLAB R2021a, where `C=A*B` is now up to
 30x faster than in prior versions of MATLAB (on my 20-core NVIDIA DGX Station).
 
 The development of this package is supported by Intel, NVIDIA (including the
-donation of the 20-core DGX Station), Redis, MIT Lincoln Lab, IBM, and Julia
-Computing.
+donation of the 20-core DGX Station), Redis, MIT Lincoln Lab, MathWorks,
+IBM, and Julia Computing.
 
 See the user guide in `Doc/GraphBLAS_UserGuide.pdf` for documentation on the
 SuiteSparse implementation of GraphBLAS, and how to use it in your

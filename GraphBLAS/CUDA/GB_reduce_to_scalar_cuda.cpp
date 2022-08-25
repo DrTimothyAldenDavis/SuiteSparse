@@ -29,16 +29,25 @@ GrB_Info GB_reduce_to_scalar_cuda
 )
 {
 
+    cudaStream_t stream;
+    CHECK_CUDA(cudaStreamCreate(&stream));
+
     //----------------------------------------------------------------------
     // reduce C to a scalar, just for testing:
     //----------------------------------------------------------------------
 
+    GBURBLE ("(get nnz) ") ;
     int64_t nz = GB_nnz(A);
+    GBURBLE ("(got nnz) ") ;
 
-    GB_cuda_reduce( A, s, reduce);
+    GB_cuda_reduce_factory myreducefactory;
+    myreducefactory.reduce_factory(reduce, A);
 
-    printf("num_triangles = %d\n",  s[0] );
+    GB_cuda_reduce( myreducefactory, A, s, reduce, stream);
+    GBURBLE ("(did reduce) ") ;
 
+    CHECK_CUDA(cudaStreamSynchronize(stream));
+    CHECK_CUDA(cudaStreamDestroy(stream));
     return GrB_SUCCESS ;
 }
 

@@ -54,7 +54,7 @@ else
     b_is_scalar = (bm == 1) && (bn == 1) ;
 
     if (gb_contains (atype, 'complex') || gb_contains (btype, 'complex'))
-        error ('inputs must be real') ;
+        error ('GrB:error', 'inputs must be real') ;
     end
 
     if (a_is_scalar)
@@ -94,7 +94,7 @@ else
         else
             % both A and B are matrices.  C is sparse or full.
             desc.kind = 'builtin' ;
-            C = gbeadd (A, '+', gbapply2 (1i, '*', B), desc) ;
+            C = gbeadd (A, '+', gbapply2 (B, '*', 1i), desc) ;
         end
     end
 

@@ -86,6 +86,7 @@ GrB_Info GB_export      // export/unpack a matrix in any format
         case GxB_HYPERSPARSE : 
             GB_RETURN_IF_NULL (nvec) ;
             GB_RETURN_IF_NULL (Ah) ; GB_RETURN_IF_NULL (Ah_size) ;
+            // fall through to the sparse case
 
         case GxB_SPARSE : 
             if (is_sparse_vector)
@@ -102,6 +103,7 @@ GrB_Info GB_export      // export/unpack a matrix in any format
         case GxB_BITMAP : 
             GB_RETURN_IF_NULL (nvals) ;
             GB_RETURN_IF_NULL (Ab) ; GB_RETURN_IF_NULL (Ab_size) ;
+            // fall through to the full case
 
         case GxB_FULL : 
             break ;

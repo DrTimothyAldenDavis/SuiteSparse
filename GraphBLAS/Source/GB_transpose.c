@@ -122,8 +122,8 @@ GrB_Info GB_transpose           // C=A', C=(ctype)A' or C=op(A')
     //--------------------------------------------------------------------------
 
     GrB_Type atype = A->type ;
-    size_t asize = atype->size ;
-    GB_Type_code acode = atype->code ;
+//  size_t asize = atype->size ;
+//  GB_Type_code acode = atype->code ;
 
     bool A_is_bitmap = GB_IS_BITMAP (A) ;
     bool A_is_hyper  = GB_IS_HYPERSPARSE (A) ;
@@ -729,8 +729,8 @@ GrB_Info GB_transpose           // C=A', C=(ctype)A' or C=op(A')
             // allocate the output matrix and additional space (jwork and Swork)
             //------------------------------------------------------------------
 
-            // initialize the header of T, with no content
-            // content, and initialize the type and dimension of T.
+            // initialize the header of T, with no content,
+            // and initialize the type and dimension of T.
 
             info = GB_new (&T, // hyper, existing header
                 ctype, avdim, avlen, GB_Ap_null, C_is_csc,

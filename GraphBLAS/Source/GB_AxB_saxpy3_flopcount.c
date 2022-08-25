@@ -69,6 +69,7 @@
 #include "GB_ek_slice.h"
 #include "GB_bracket.h"
 #include "GB_AxB_saxpy3.h"
+#include "GB_unused.h"
 
 #define GB_FREE_ALL                         \
 {                                           \

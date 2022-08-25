@@ -242,6 +242,7 @@ GrB_Info GB_import      // import/pack a matrix in any format
                 #endif
                 GB_Global_memtable_add ((*A)->h, (*A)->h_size) ;
             }
+            // fall through to the sparse case
 
         case GxB_SPARSE : 
             (*A)->jumbled = jumbled ;   // import jumbled status

@@ -81,4 +81,10 @@ for k = -6:6
 
 end
 
+%   diagindex       j - (i + thunk)
+C1 = GrB.apply2 ('diagindex', 0, 3) ;
+assert (C1 == -3) ;
+C1 = GrB.apply2 ('diagindex', 1, 0) ;
+assert (C1 == 0) ;
+
 fprintf ('gbtest117: all tests passed\n') ;

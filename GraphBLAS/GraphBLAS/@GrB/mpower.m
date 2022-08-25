@@ -25,14 +25,16 @@ if (a_is_scalar && b_is_scalar)
     C = GrB (gb_power (A, B)) ;
 else
     if (am ~= an)
-        error ('For C=A^B, A must be square') ;
+        error ('GrB:error', 'For C=A^B, A must be square') ;
     end
     if (~b_is_scalar)
-        error ('For C=A^B, B must be a non-negative integer scalar') ;
+        error ('GrB:error', ...
+            'For C=A^B, B must be a non-negative integer scalar') ;
     end
     b = gb_scalar (B) ;
     if (~(isreal (b) && isfinite (b) && round (b) == b && b >= 0))
-        error ('For C=A^B, B must be a non-negative integer scalar') ;
+        error ('GrB:error', ...
+            'For C=A^B, B must be a non-negative integer scalar') ;
     end
     if (b == 0)
         % C = A^0 = I

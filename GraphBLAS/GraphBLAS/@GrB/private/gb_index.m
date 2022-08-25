@@ -50,7 +50,7 @@ elseif (iscell (I))
     % C ({ }), C ({ I }), C ({start,fini}), or C ({start,inc,fini}).
     len = length (I) ;
     if (len > 3)
-        error ('invalid indexing: usage is A ({start,inc,fini})') ;
+        error ('GrB:error', 'invalid indexing: usage is A ({start,inc,fini})') ;
     elseif (len == 0)
         % C ({ })
         whole = true ;

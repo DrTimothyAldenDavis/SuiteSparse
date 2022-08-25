@@ -19,7 +19,7 @@ else
         % giving an m-by-1 column vector.
         C = gb_maxbyrow (op, A) ;
     else
-        error ('invalid option') ;
+        error ('GrB:error', 'invalid option') ;
     end
 end
 

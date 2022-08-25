@@ -141,596 +141,6 @@ methods.  They are not highlighted since their name makes it clear that they
 are extensions to the GraphBLAS C API.
 \end{alert}
 
-\newpage
-%-------------------------------------------------------------------------------
-\subsection{Release Notes}
-%-------------------------------------------------------------------------------
-
-\begin{itemize}
-
-\item Version 7.0.3 (Apr 8, 2022)
-
-    \begin{packed_itemize}
-    \item faster transpose when using 2 threads
-    \end{packed_itemize}
-
-\item Version 7.0.2 (Apr 5, 2022)
-
-    \begin{packed_itemize}
-    \item (45) bug fix: vector iterator was broken for iterating across a
-        vector in bitmap format.  Caught by Erik Welch.
-    \end{packed_itemize}
-
-\item Version 7.0.1 (Apr 3, 2022)
-
-    \begin{packed_itemize}
-    \item added revised ACM TOMS submission to the Doc folder
-    \end{packed_itemize}
-
-\item Version 7.0.0 (Apr 2, 2022)
-
-    \begin{packed_itemize}
-    \item (44) spec bug: \verb'GrB_Matrix_diag'
-        was implemented in v5.2.x and v6.x with the wrong signature.
-        This fix requires the major release to change, from v6.x to v7.x.
-    \item (43) performance bug fix for \verb'GrB_mxm':
-        auto selection for saxpy method (Hash vs Gustavson) revised.
-    \item \verb'GrB_assign': better performance for \verb'C(i,j)=scalar' and
-        \verb'C(i,j)+=scalar' when \verb'i' and \verb'j' have length 1 (scalar
-        assigment with no scalar expansion).
-    \end{packed_itemize}
-
-\item Version 6.2.5 (Mar 14, 2022)
-
-    \begin{packed_itemize}
-    \item For SuiteSparse v5.11.0.
-    \end{packed_itemize}
-
-\item Version 6.2.4 (Mar 8, 2022)
-
-    \begin{packed_itemize}
-    \item (42) bug fix: \verb'GrB_mxm' with 0-by-0 iso full matrices.
-        Caught by Henry Amuasi in the Python
-        grblas interface, then triaged and isolated by Erik Welch.
-    \end{packed_itemize}
-
-\item Version 6.2.3 (Mar 5, 2022)
-
-    \begin{packed_itemize}
-    \item minor update to documentation in \verb'GrB.build':
-        no change to any code
-    \end{packed_itemize}
-
-\item Version 6.2.2 (Feb 28, 2022)
-
-    \begin{packed_itemize}
-    \item revised output of \verb'GxB_*_sort' to return newly created matrices
-        C and P as full or bitmap matrices, as appropriate, instead of
-        sparse/hypersparse, following their sparsity control settings.
-    \end{packed_itemize}
-
-\item Version 6.2.1 (Feb 14, 2022)
-
-    \begin{packed_itemize}
-    \item  (41) bug fix: \verb'GxB_Iterator_get' used \verb'(void *) + size'
-        arithmetic
-    \end{packed_itemize}
-
-\item Version 6.2.0 (Feb 14, 2022)
-
-    \begin{packed_itemize}
-    \item added the \verb'GxB_Iterator' object and its methods.  See
-        Section~\ref{iter}.
-    \item \verb'@GrB' interface: revised sparse-times-full rule for the
-        conventional semiring (the syntax \verb'C=A*B'), so that
-        sparse-times-full results in \verb'C' as full,
-        but hypersparse-times-sparse is not full
-        (typically sparse or hypersparse).
-    \end{packed_itemize}
-
-\item Version 6.1.4 (Jan 12, 2022)
-
-    \begin{packed_itemize}
-    \item added Section~\ref{perf} to User Guide: how to get the best
-        performance out of algorithms based on GraphBLAS.
-    \item \verb'cpu_features':  no longer built as a separate library,
-        but built directly into \verb'libgraphblas.so' and
-        \verb'libgraphblas.a'.  Added compile-time flags to
-        optionally disable the use of \verb'cpu_features' completely.
-    \item Octave 7: port to Apple Silicon (thanks to 
-            G{\'{a}}bor Sz{\'{a}}rnyas).
-    \item min/max monoids:  real case (FP32 and FP64) no longer terminal
-    \item \verb'@GrB' interface: overloaded \verb'C=A*B' syntax where one
-        matrix is full always results in a full matrix \verb'C'.
-    \item Faster \verb'C=A*B' for sparse-times-full and full-times-sparse
-        for \verb'@GrB' interface.
-    \end{packed_itemize}
-
-\item Version 6.1.3 (Jan 1, 2022)
-
-    \begin{packed_itemize}
-    \item performance: task creation for \verb'GrB_mxm'
-        had a minor flaw (results were correct but parallelism suffered).
-        Performance improvement of up to 10x when nnz(A)<<nnz(B).
-    \end{packed_itemize}
-
-\item Version 6.1.2 (Dec 31, 2021)
-
-    \begin{packed_itemize}
-    \item performance: revised \verb'swap_rule' in \verb'GrB_mxm', which decides whether
-        to compute \verb"C=A*B" or \verb"C=(B'*A')'", and variants, resulting in up
-        to 3x performance gain over v6.1.1 for \verb'GrB_mxm' (observed;
-        could be higher in other cases).
-    \end{packed_itemize}
-
-\item Version 6.1.1 (Dec 28, 2021) 
-
-    \begin{packed_itemize}
-    \item minor revision to AVX2 and AVX512f selection
-    \item \verb'cpu_features/Makefile': remove test of \verb'list_cpu_features'
-        so that the package can be built when cross-compiling
-    \end{packed_itemize}
-
-\item Versions 6.1.0 (Dec 26, 2021)
-
-    \begin{packed_itemize}
-    \item added \verb'GxB_get' options: compiler name and version.
-    \item added package: \url{https://github.com/google/cpu_features},
-        Nov 30, 2021 version.
-    \item performance: faster \verb'C+=A*B' when \verb'C' is full,
-        \verb'A' is bitmap/full, and \verb'B' is sparse/hyper.  % saxpy5
-        Faster \verb"C+=A'*B" when
-        \verb'A' is sparse/hyper, and \verb'B' is bitmap/full.  % dot4
-    \item (40) bug fix: deserialization of iso and empty matrices/vectors was
-        incorrect
-    \end{packed_itemize}
-
-\item Versions 6.0.2 and 5.2.2 (Nov 30, 2021)
-
-    \begin{packed_itemize}
-    \item (39) bug fix: \verb'GrB_Matrix_export':
-        numerical values not properly exported
-    \end{packed_itemize}
-
-\item Versions 6.0.1 and 5.2.1 (Nov 27, 2021)
-
-    \begin{packed_itemize}
-    \item v6.0.x and v5.2.x (for the same x):
-        differ only in \verb'GrB_wait', \verb'GrB_Info',
-        \verb'GrB_SCMP', and \verb'GxB_init'.
-    \item (38) bug fix:  \verb"C+=A'*B" when the accum operator is the same as
-        the monoid and C is iso-full, and \verb'A' or \verb'B' are hypersparse.
-        (dot4 method).
-    \item performance: \verb'GrB_select' with user-defined
-        \verb'GrB_IndexUnaryOp' about 2x faster.
-    \item performance: faster \verb'(MIN,MAX)_(FIRSTJ,SECONDI)' semirings
-    \end{packed_itemize}
-
-\item Version 6.0.0 (Nov 15, 2021)
-
-    \begin{packed_itemize}
-    \item this release contains only a few changes that cause a
-        break with backward compatibility.  It is otherwise identical to v5.2.0.
-    \item v6.0.0 is fully compliant with the v2.0 C API Specification.
-        Three changes from the v2.0 C API Spec are not backward compatible
-        (\verb'GrB_*wait', \verb'GrB_Info', \verb'GrB_SCMP').
-        \verb'GxB_init' has also changed.
-        \begin{packed_itemize}
-        \item \verb'GrB_wait (object, mode)': was \verb'GrB_wait (&object)'.
-        \item \verb'GrB_Info': changed enum values
-        \item \verb'GrB_SCMP': removed
-        \item \verb'GxB_init (mode, malloc, calloc, realloc, free, is_thread_safe)':
-            the last parameter, \verb'is_thread_safe', is deleted.
-            The malloc, calloc, realloc, and free functions must be thread-safe.
-        \end{packed_itemize}
-    \end{packed_itemize}
-
-\item Version 5.2.0 (Nov 15, 2021)
-
-    \begin{packed_itemize}
-    \item Added for the v2.0 C API Specification: only features that are
-        backward compatible with SuiteSparse:GraphBLAS v5.x have been
-        added to v5.2.0:
-        \begin{packed_itemize}
-        \item \verb'GrB_Scalar': replaces \verb'GxB_Scalar', \verb'GxB_Scalar_*'
-            functions renamed GrB
-        \item \verb'GrB_IndexUnaryOp': new, free, fprint, wait
-        \item \verb'GrB_select': selection via \verb'GrB_IndexUnaryOp'
-        \item \verb'GrB_apply': with \verb'GrB_IndexUnaryOp'
-        \item \verb'GrB_reduce': reduce matrix or vector to \verb'GrB_Scalar'
-        \item \verb'GrB_assign', \verb'GrB_subassion': with \verb'GrB_Scalar'
-            input
-        \item \verb'GrB_*_extractElement_Scalar': get \verb'GrB_Scalar'
-            from a matrix or vector
-        \item \verb'GrB*build': when \verb'dup' is \verb'NULL',
-            duplicates result in an error.
-        \item \verb'GrB import/export': import/export from/to user-provided
-            arrays
-        \item \verb'GrB_EMPTY_OBJECT', \verb'GrB_NOT_IMPLEMENTED': error codes
-            added
-        \item \verb'GrB_*_setElement_Scalar': set an entry in a matrix or
-            vector, from a \verb'GrB_Scalar'
-        \item \verb'GrB_Matrix_diag': same as
-            \verb'GxB_Matrix_diag (C,v,k,NULL)'
-        \item \verb'GrB_*_serialize/deserialize': with compression
-        \item \verb'GrB_ONEB_T': binary operator, $f(x,y)=1$, the same as
-            \verb'GxB_PAIR_T'.
-        \end{packed_itemize}
-    \item \verb'GxB*import*' and \verb'GxB*export*': now historical; use
-        \verb'GxB*pack/unpack*'
-    \item \verb'GxB_select': is now historical; use \verb'GrB_select' instead.
-    \item \verb'GxB_IGNORE_DUP': special operator for build methods only; if dup
-        is this operator, then duplicates are ignored (not an error)
-    \item \verb'GxB_IndexUnaryOp_new': create a named index-unary operator
-    \item \verb'GxB_BinaryOp_new': create a named binary operator
-    \item \verb'GxB_UnaryOp_new': create a named unary operator
-    \item \verb'GxB_Type_new': to create a named type
-    \item \verb'GxB_Type_name': to query the name of a type
-    \item added \verb'GxB_*type_name' methods
-        to query the name of a type as a string.
-    \item \verb'GxB' methods that query an object return a \verb'GrB_type' such
-        as \verb'GxB_Matrix_type' are declared historical; will be kept but not
-        recommended (use \verb'GxB_*type_name' methods).
-    \item \verb'GxB_Matrix_serialize/deserialize': with compression;
-        optional descriptor.
-    \item \verb'GxB_Matrix_sort', \verb'GxB_Vector_sort':
-        sort a matrix or vector
-    \item \verb'GxB_eWiseUnion': like \verb'GrB_eWiseAdd' except for how
-        entries in $\bf A\setminus B$ and $\bf B \setminus A$ are computed.
-    \item added LZ4/LZ4HC: compression library, \url{http://www.lz4.org} (BSD
-        2), v1.9.3, Copyright (c) 2011-2016, Yann Collet.
-    \item MIS and pagerank demos: removed; MIS added to LAGraph/experimental
-    \item disabled free memory pool if OpenMP not available
-    \item (37) bug fix: ewise \verb'C=A+B' when all matrices are full,
-        \verb'GBCOMPACT' not used, but \verb'GB_control.h' disabled the
-        operator or type.  Caught by Roi Lipman, Redis.
-    \item (36) bug fix: \verb'C<M>=Z' not returning \verb'C'
-        as iso if \verb'Z 'iso and \verb'C' initially
-        empty.  Caught by Erik Welch, Anaconda.
-    \item performance improvements: \verb'C=A*B': sparse/hyper times
-        bitmap/full, and visa versa, including \verb'C += A*B' when \verb'C' is
-        full.
-    \end{packed_itemize}
-
-\item Version 5.1.10 (Oct 27, 2021)
-
-    \begin{packed_itemize}
-    \item  (35) bug fix: \verb'GB_selector'; \verb'A->plen' and \verb'C->plen'
-        not updated correctly.  Caught by Jeffry Lovitz, Redis.
-    \end{packed_itemize}
-
-\item Version 5.1.9 (Oct 26, 2021)
-
-    \begin{packed_itemize}
-    \item (34) bug fix: in-place test incorrect for \verb"C+=A'*B" using dot4
-    \item (33) bug fix: disable free pool if OpenMP not available
-    \end{packed_itemize}
-
-\item Version 5.1.8 (Oct 5, 2021)
-
-    \begin{packed_itemize}
-    \item (32) bug fix: C=A*B when A is sparse and B is iso and bitmap.
-        Caught by Mark Blanco, CMU.
-    \end{packed_itemize}
-
-\item Version 5.1.7 (Aug 23, 2021)
-
-    \begin{packed_itemize}
-    \item (31) bug fix:  \verb'GrB_apply', when done in-place and matrix starts
-        non-iso and becomes iso, gave the wrong iso result.
-        Caught by Fabian Murariu.
-    \end{packed_itemize}
-
-\item Version 5.1.6 (Aug 16, 2021)
-
-    \begin{packed_itemize}
-    \item one-line change to \verb'C=A*B': faster symbolic analysis when a
-        vector \verb'C(:,j)' is dense (for CSC) or \verb'C(i,:)' for CSR.
-    \end{packed_itemize}
-
-\item Version 5.1.5 (July 15, 2021)
-
-    \begin{packed_itemize}
-    \item submission to ACM Transactions on Mathematical Software as
-        a Collected Algorithm of the ACM.
-    \end{packed_itemize}
-
-\item Version 5.1.4 (July 6, 2021)
-
-    \begin{packed_itemize}
-    \item faster Octave interface.  Octave v7 or later is required.
-    \item (30) bug fix: 1-based printing not enabled for pending tuples.
-        Caught by Will Kimmerer, while working on the Julia interface.
-    \end{packed_itemize}
-
-\item Version 5.1.3 (July 3, 2021)
-
-    \begin{packed_itemize}
-    \item added \verb'GxB_Matrix_iso' and \verb'GxB_Vector_iso':
-        to query if a matrix or vector is held as iso-valued
-    \item (29) bug fix: \verb'Matrix_pack_*R' into a matrix previously held by
-        column, or \verb'Matrix_pack*C' into a matrix by row, would flip the
-        dimensions.
-        Caught by Erik Welch, Anaconda.
-    \item (28) bug fix: \verb'kron(A,B)' with iso input matrices
-        \verb'A' and \verb'B' fixed.
-        Caught by Michel Pelletier, Graphegon.
-    \item (27) bug fix: v5.1.0 had a wrong version of a file; posted by mistake.
-        Caught by Michel Pelletier, Graphegon.
-    \end{packed_itemize}
-
-\item Version 5.1.2 (June 30, 2021)
-
-    \begin{packed_itemize}
-    \item iso matrices added:  these are matrices and vectors whose
-        values in the sparsity pattern are all the same.  This is an internal
-        change to the opaque data structures of the \verb'GrB_Matrix' and
-        \verb'GrB_Vector' with very little change to the API.
-    \item added \verb'GxB_Matrix_build_Scalar'
-            and \verb'GxB_Vector_build_Scalar',
-            which always build iso matrices and vectors.
-    \item import/export methods can now import/export iso matrices and vectors.
-    \item added \verb'GrB.argmin/argmax' to Octave/MATLAB interface
-    \item added \verb'GxB_*_pack/unpack' methods as alternatives to
-        import/export.
-    \item added \verb'GxB_PRINT_1BASED' to the global settings.
-    \item added \verb'GxB_*_memoryUsage'
-    \item port to Octave:  \verb'gbmake' and \verb'gbtest'
-        work in Octave7 to build and test
-        the \verb'@GrB' interface to GraphBLAS.  Octave 7.0.0 is required.
-    \end{packed_itemize}
-
-\item Version 5.0.6 (May 24, 2021)
-
-    \begin{packed_itemize}
-    \item BFS and triangle counting demos removed from GraphBLAS/Demo:
-        see LAGraph for these algorithms.  Eventually, all of GraphBLAS/Demo
-        will be deleted, once LAGraph includes all the methods included there.
-    \end{packed_itemize}
-
-\item Version 5.0.5 (May 17, 2021)
-
-    \begin{packed_itemize}
-    \item (26) performance bug fix:  reduce-to-vector where \verb'A' is
-        hypersparse CSR with a transposed descriptor (or CSC with no
-        transpose), and some cases for \verb'GrB_mxm/mxv/vxm' when computing
-        \verb'C=A*B' with A hypersparse CSC and \verb'B' bitmap/full (or
-        \verb'A' bitmap/full and \verb'B' hypersparse CSR), the wrong internal
-        method was being selected via the auto-selection strategy, resulting in
-        a significant slowdown in some cases.
-    \end{packed_itemize}
-
-\item Version 5.0.4 (May 13, 2021)
-
-    \begin{packed_itemize}
-    \item \verb'@GrB' Octave/MATLAB interface: changed license
-        to GNU General Public License v3.0 or later.
-    \end{packed_itemize}
-
-\item Version 5.0.3 (May 12, 2021)
-
-    \begin{packed_itemize}
-    \item (25) bug fix: disabling \verb'ANY_PAIR' semirings by editing
-        \verb'Source/GB_control.h' would cause a segfault if those disabled
-        semirings were used.
-    \item demos are no longer built by default
-    \item (24) bug fix: new functions in v5.0.2 not declared as \verb'extern'
-        in \verb'GraphBLAS.h'.
-    \item \verb'GrB_Matrix_reduce_BinaryOp' reinstated from v4.0.3;
-        same limit on built-in ops that correspond to known monoids.
-    \end{packed_itemize}
-
-\item Version 5.0.2 (May 5, 2021)
-
-    \begin{packed_itemize}
-    \item (23) bug fix: \verb'GrB_Matrix_apply_BinaryOp1st' and \verb'2nd'
-        were using the
-        wrong descriptors for \verb'GrB_INP0' and \verb'GrB_INP1'.
-        Caught by Erik Welch, Anaconda.
-    \item memory pool added for faster allocation/free of small blocks
-    \item \verb'@GrB' interface ported to MATLAB R2021a.
-    \item \verb'GxB_PRINTF' and \verb'GxB_FLUSH' global options added.
-    \item \verb'GxB_Matrix_diag': construct a diagonal matrix from a vector
-    \item \verb'GxB_Vector_diag': extract a diagonal from a matrix
-    \item \verb'concat/split': methods to concatenate and split matrices.
-    \item \verb'import/export':
-        size of arrays now in bytes, not entries.  This change
-        is required for better internal memory management, and it is not
-        backward compatible with the \verb'GxB*import/export' functions in v4.0.
-        A new parameter, \verb'is_uniform', has been added to all import/export
-        methods, which indicates that the matrix values are all the same.
-    \item (22) bug fix: SIMD vectorization was missing
-        \verb'reduction(+,task_cnvals)' in
-        \verb'GB_dense_subassign_06d_template.c'.  Caught by Jeff Huang, Texas
-        A\&M, with his software package for race-condition detection.
-    \item \verb'GrB_Matrix_reduce_BinaryOp': removed.  Use a monoid instead,
-        with \verb'GrB_reduce' or \verb'GrB_Matrix_reduce_Monoid'.
-    \end{packed_itemize}
-
-\item Version 4.0.3 (Jan 19, 2021)
-
-    \begin{packed_itemize}
-    \item faster min/max monoids
-    \item \verb'G=GrB(G)' converts \verb'G' from v3 object to v4
-    \end{packed_itemize}
-
-\item Version 4.0.2 (Jan 13, 2021)
-
-    \begin{packed_itemize}
-    \item ability to load \verb'*.mat' files saved with the v3 \verb'GrB'
-    \end{packed_itemize}
-
-\item Version 4.0.1 (Jan 4, 2021)
-
-    \begin{packed_itemize}
-    \item significant performance improvements: compared with v3.3.3,
-        up to 5x faster in breadth-first-search (using 
-        \verb'LAGraph_bfs_parent2'), and 2x faster in
-        Betweenness-Centrality (using \verb'LAGraph_bc_batch5').
-    \item \verb'GrB_wait(void)', with no inputs: removed
-    \item \verb'GrB_wait(&object)': polymorphic function added
-    \item \verb'GrB_*_nvals': no longer guarantees completion;
-        use \verb'GrB_wait(&object)'
-        or non-polymorphic \verb'GrB_*_wait (&object)' instead
-    \item \verb'GrB_error': now has two parameters: a string
-        (\verb'char **') and an object.
-    \item \verb'GrB_Matrix_reduce_BinaryOp' limited to built-in operators that
-        correspond to known monoids.
-    \item \verb'GrB_*_extractTuples': may return indices out of order
-    \item removed internal features: GBI iterator, slice and hyperslice matrices
-    \item bitmap/full matrices and vectors added
-    \item positional operators and semirings:
-        \verb'GxB_FIRSTI_INT32' and related ops
-    \item jumbled matrices: sort left pending, like zombies and pending tuples
-    \item \verb'GxB_get/set': added \verb'GxB_SPARSITY_*'
-        (hyper, sparse, bitmap, or full) and \verb'GxB_BITMAP_SWITCH'.
-    \item \verb'GxB_HYPER': enum renamed to \verb'GxB_HYPER_SWITCH'
-    \item \verb'GxB*import/export': API modified
-    \item \verb'GxB_SelectOp': \verb'nrows' and \verb'ncols' removed
-        from function signature.
-    \item OpenMP tasking removed from mergesort and replaced with parallel
-        for loops.  Just as fast on Linux/Mac; now the performance ports to
-        Windows.
-    \item \verb'GxB_BURBLE' added as a supported feature.  This was an
-        undocumented feature of prior versions.
-    \item bug fix: \verb'A({lo,hi})=scalar'
-        \verb'A(lo:hi)=scalar' was OK
-    \end{packed_itemize}
-
-\item Version 3.3.3 (July 14, 2020).
-    Bug fix: \verb'w<m>=A*u' with mask non-empty and u empty.
-
-\item Version 3.3.2 (July 3, 2020).  Minor changes to build system.
-
-\item Version 3.3.1 (June 30, 2020).  Bug fix to \verb'GrB_assign' and
-    \verb'GxB_subassign' when the assignment is simple (\verb'C=A') but
-    with typecasting.
-
-\item Version 3.3.0 (June 26, 2020).  Compliant with V1.3 of the C API
-    (except that the polymorphic \verb'GrB_wait(&object)' doesn't appear yet;
-    it will appear in V4.0).
-
-    Added complex types (\verb'GxB_FC32' and \verb'GxB_FC64'), many unary
-    operators, binary operators, monoids, and semirings.  Added bitwise
-    operators, and their monoids and semirings.  Added the predefined monoids
-    and semirings from the v1.3 specification.  \verb'@GrB' interface: added complex
-    matrices and operators, and changed behavior of integer operations to more
-    closely match the behavior on built-in integer matrices.  The rules for
-    typecasting large floating point values to integers has changed.  The
-    specific object-based \verb'GrB_Matrix_wait', \verb'GrB_Vector_wait', etc,
-    functions have been added.  The no-argument \verb'GrB_wait()' is
-    deprecated.  Added \verb'GrB_getVersion', \verb'GrB_Matrix_resize',
-    \verb'GrB_Vector_resize', \verb'GrB_kronecker', \verb'GrB_*_wait', scalar
-    binding with binary operators for \verb'GrB_apply', \newline
-    \verb'GrB_Matrix_removeElement', and \verb'GrB_Vector_removeElement'.
-
-\item Version 3.2.0 (Feb 20, 2020).  Faster \verb'GrB_mxm', \verb'GrB_mxv', and
-    \verb'GrB_vxm', and faster operations on dense matrices/vectors.  Removed
-    compile-time user objects (\verb'GxB_*_define'), since these were not
-    compatible with the faster matrix operations.  Added the \verb'ANY' and
-    \verb'PAIR' operators.  Added the predefined descriptors,
-    \verb'GrB_DESC_*'.  Added the structural mask option.  Changed default
-    chunk size to 65,536.  \verb'@GrB' interface modified:  \verb'GrB.init' is
-    now optional.
-
-\item Version 3.1.2 (Dec, 2019).  Changes to allow SuiteSparse:GraphBLAS
-    to be compiled with the Microsoft Visual Studio compiler.  This compiler
-    does not support the \verb'_Generic' keyword, so the polymorphic functions
-    are not available.  Use the equivalent non-polymorphic functions instead,
-    when compiling GraphBLAS with MS Visual Studio.  In addition,
-    variable-length arrays are not supported, so user-defined types are limited
-    to 128 bytes in size.  These changes have no effect if you have an ANSI C11
-    compliant compiler.
-
-    \verb'@GrB' interface modified:  \verb'GrB.init' is now required.
-
-\item Version 3.1.0 (Oct 1, 2019).  \verb'@GrB' interface added.  See the
-    \newline \verb'GraphBLAS/GraphBLAS' folder for details and documentation,
-    and Section~\ref{octave}.
-
-\item Version 3.0 (July 26, 2019), with OpenMP parallelism.
-
-The version number is increased to 3.0, since
-this version is not backward compatible with V2.x.  The \verb'GxB_select'
-operation changes; the \verb'Thunk' parameter was formerly a
-\verb'const void *' pointer, and is now a \verb'GxB_Scalar'.  A new parameter
-is added to \verb'GxB_SelectOp_new', to define the expected type of
-\verb'Thunk'.  A new parameter is added to \verb'GxB_init', to specify whether
-or not the user-provided memory management functions are thread safe.
-
-The remaining changes add new features, and are upward compatible with V2.x.
-The major change is the addition of OpenMP parallelism.  This addition has no
-effect on the API, except that round-off errors can differ with the number of
-threads used, for floating-point types.  \verb'GxB_set' can optionally define
-the number of threads to use (the default is \verb'omp_get_max_threads').  The
-number of threads can also defined globally, and/or in the
-\verb'GrB_Descriptor'.  The \verb'RDIV' and \verb'RMINUS' operators are added,
-which are defined as $f(x,y)=y/x$ and $f(x,y)=y-x$, respectively.  Additional
-options are added to \verb'GxB_get'.
-
-\item Version 2.3.3 (May 2019): Collected Algorithm of the ACM.
-No changes from V2.3.2 other than the documentation.
-
-\item Version 2.3 (Feb 2019) improves the performance of many GraphBLAS
-operations, including an early-exit for monoids.  These changes have a
-significant impact on breadth-first-search (a performance bug was also fixed in
-the two BFS \verb'Demo' codes).  The matrix and vector import/export functions
-were added (Section~\ref{pack_unpack}), in support of the new LAGraph project
-(\url{https://github.com/GraphBLAS/LAGraph}, see also Section~\ref{lagraph}).
-LAGraph includes a push-pull BFS in GraphBLAS that is faster than two versions
-in the \verb'Demo' folder.  \verb'GxB_init' was added to allow the memory
-manager functions (\verb'malloc', etc) to be specified.
-
-\item
-Version 2.2 (Nov 2018)
-adds user-defined objects at compile-time, via user \verb'*.m4' files placed in
-\verb'GraphBLAS/User', which use the \verb'GxB_*_define' macros 
-(NOTE: feature removed in v3.2).
-The default matrix format is now \verb'GxB_BY_ROW'.
-Also added are the \verb'GxB_*print' methods for printing the contents of each
-GraphBLAS object (Section~\ref{fprint}).   PageRank demos have been added to
-the \verb'Demos' folder.
-
-\item
-Version 2.1 (Oct 2018) was
-a major update with support for new matrix formats
-(by row or column, and hypersparse matrices), and colon notation
-(\verb'I=begin:end' or \verb'I=begin:inc:end').  Some graph algorithms are more
-naturally expressed with matrices stored by row, and this version includes the
-new \verb'GxB_BY_ROW' format.  The default format in Version 2.1 and
-prior versions is by column.
-New extensions to GraphBLAS in this version include \verb'GxB_get',
-\verb'GxB_set', and \verb'GxB_AxB_METHOD', \verb'GxB_RANGE', \verb'GxB_STRIDE',
-and \verb'GxB_BACKWARDS', and their related definitions, described in
-Sections~\ref{descriptor},~\ref{options},~and~\ref{colon}.
-
-\item
-Version 2.0 (March 2018) addressed changes in the GraphBLAS C API
-Specification and added \verb'GxB_kron' and \verb'GxB_resize'.
-
-\item
-Version 1.1 (Dec 2017) primarily improved the performance.
-
-\item
-Version 1.0 was released on Nov 25, 2017.
-\end{itemize}
-
-%-------------------------------------------------------------------------------
-\subsubsection{Regarding historical and deprecated functions and symbols}
-%-------------------------------------------------------------------------------
-
-When a \verb'GxB*' function or symbol is added to the C API Specification with
-a \verb'GrB*' name, the new \verb'GrB*' name should be used instead, if
-possible.  However, the old \verb'GxB*' name will be kept as long as possible
-for historical reasons.  Historical functions and symbols will not always be
-documented here in the SuiteSparse:GraphBLAS User Guide, but they will be kept
-in \verb'GraphbBLAS.h' and kept in good working order in the library.
-Historical functions and symbols would only be removed in the very unlikely
-case that they cause a serious conflict with future methods.
-
-The only methods that have been fully deprecated and removed are the older
-versions of \verb'GrB_wait' and \verb'GrB_error' methods, which are
-incompatible with the latest versions.
 
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1415,7 +825,7 @@ it also appears at
 \url{https://anaconda.org/conda-forge/pygraphblas}.
 
 See Jim Kitchen and Erik Welch's (both from Anaconda, Inc.) Python interface at
-\url{https://github.com/metagraph-dev/grblas}.
+\url{https://github.com/python-graphblas/python-graphblas} (formerly known as grblas).
 See also \\
 \url{https://anaconda.org/conda-forge/graphblas}.
 
@@ -1534,6 +944,7 @@ into MATLAB R2021a.
     C=S+S:   MATLAB:  14.3368 GrB:   1.5539 speedup:     9.23
     C=S+B:   MATLAB:  15.5600 GrB:   1.5098 speedup:    10.31
     C=S(p,q) MATLAB:  95.6219 GrB:  15.9468 speedup:     6.00    \end{verbatim}
+}
 
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2547,17 +1958,27 @@ GraphBLAS name          & types (domains)   & $z=f(x)$      & description \\
 \verb'GxB_ROUND_'$F$    & $F \rightarrow F$ & $z = \mbox{round}(x)$        & round to nearest \\
 \verb'GxB_TRUNC_'$F$    & $F \rightarrow F$ & $z = \mbox{trunc}(x)$        & round towards zero \\
 \hline
-\verb'GxB_LGAMMA_'$F$   & $F \rightarrow F$ & $z = \log(|\Gamma (x)|)$  & log of gamma function \\
-\verb'GxB_TGAMMA_'$F$   & $F \rightarrow F$ & $z = \Gamma(x)$        & gamma function \\
-\verb'GxB_ERF_'$F$      & $F \rightarrow F$ & $z = \erf(x)$          & error function \\
-\verb'GxB_ERFC_'$F$     & $F \rightarrow F$ & $z = \erfc(x)$         & complimentary error function \\
-\hline
-\verb'GxB_FREXPX_'$F$   & $F \rightarrow F$ & $z = \mbox{frexpx}(x)$  & normalized fraction \\
-\verb'GxB_FREXPE_'$F$   & $F \rightarrow F$ & $z = \mbox{frexpe}(x)$  & normalized exponent \\
-\hline
 \verb'GxB_ISINF_'$F$    & $F \rightarrow $ \verb'bool' & $z = \mbox{isinf}(x)$ & true if $\pm \infty$ \\
 \verb'GxB_ISNAN_'$F$    & $F \rightarrow $ \verb'bool' & $z = \mbox{isnan}(x)$ & true if \verb'NaN' \\
 \verb'GxB_ISFINITE_'$F$ & $F \rightarrow $ \verb'bool' & $z = \mbox{isfinite}(x)$ & true if finite \\
+\hline
+\end{tabular}
+\vspace{0.2in}
+
+\begin{tabular}{|llll|}
+\hline
+\multicolumn{4}{|c|}{Unary operators for floating-point types (real only)} \\
+\hline
+GraphBLAS name          & types (domains)   & $z=f(x)$      & description \\
+\hline
+\verb'GxB_LGAMMA_'$R$   & $R \rightarrow R$ & $z = \log(|\Gamma (x)|)$  & log of gamma function \\
+\verb'GxB_TGAMMA_'$R$   & $R \rightarrow R$ & $z = \Gamma(x)$        & gamma function \\
+\verb'GxB_ERF_'$R$      & $R \rightarrow R$ & $z = \erf(x)$          & error function \\
+\verb'GxB_ERFC_'$R$     & $R \rightarrow R$ & $z = \erfc(x)$         & complimentary error function \\
+\verb'GxB_CBRT_'$R$     & $R \rightarrow R$ & $z = x^{1/3}$          & cube root \\
+\hline
+\verb'GxB_FREXPX_'$R$   & $R \rightarrow R$ & $z = \mbox{frexpx}(x)$  & normalized fraction \\
+\verb'GxB_FREXPE_'$R$   & $R \rightarrow R$ & $z = \mbox{frexpe}(x)$  & normalized exponent \\
 \hline
 \end{tabular}
 \vspace{0.2in}
@@ -4522,6 +3943,7 @@ GraphBLAS function   & purpose                                      & Section \\
 \verb'GxB_Vector_build_Scalar'   & build a vector from tuples       & \ref{vector_build_Scalar} \\
 \verb'GrB_Vector_setElement'     & add an entry to a vector         & \ref{vector_setElement} \\
 \verb'GrB_Vector_extractElement' & get an entry from a vector       & \ref{vector_extractElement} \\
+\verb'GxB_Vector_isStoredElement'& check if entry present in vector & \ref{vector_isStoredElement} \\
 \verb'GrB_Vector_removeElement'  & remove an entry from a vector    & \ref{vector_removeElement} \\
 \verb'GrB_Vector_extractTuples'  & get all entries from a vector    & \ref{vector_extractTuples} \\
 \verb'GrB_Vector_resize'         & resize a vector                  & \ref{vector_resize} \\
@@ -4858,6 +4280,26 @@ GrB_Info GrB_Vector_extractElement  // x = v(i)
 Section~\ref{matrix_extractElement}.
 
 %-------------------------------------------------------------------------------
+\subsubsection{{\sf GxB\_Vector\_isStoredElement:} check if entry present in vector}
+%-------------------------------------------------------------------------------
+\label{vector_isStoredElement}
+
+\begin{mdframed}[userdefinedwidth=6in]
+{\footnotesize
+\begin{verbatim}
+GrB_Info GxB_Vector_isStoredElement
+(
+    const GrB_Vector v,         // check presence of entry v(i)
+    GrB_Index i                 // index
+) ;
+\end{verbatim} } \end{mdframed}
+
+\verb'GxB_Vector_isStoredElement' checks if a single entry \verb'v(i)'
+is present, returning \verb'GrB_SUCCESS' if the entry is present or
+\verb'GrB_NO_VALUE' otherwise.  The value of \verb'v(i)' is not returned.
+See also Section~\ref{matrix_isStoredElement}.
+
+%-------------------------------------------------------------------------------
 \subsubsection{{\sf GrB\_Vector\_removeElement:} remove an entry from a vector}
 %-------------------------------------------------------------------------------
 \label{vector_removeElement}
@@ -5049,6 +4491,7 @@ GraphBLAS function   & purpose                                      & Section \\
 \verb'GxB_Matrix_build_Scalar'  & build a matrix from tuples            & \ref{matrix_build_Scalar} \\
 \verb'GrB_Matrix_setElement'    & add an entry to a matrix              & \ref{matrix_setElement} \\
 \verb'GrB_Matrix_extractElement'& get an entry from a matrix            & \ref{matrix_extractElement} \\
+\verb'GxB_Matrix_isStoredElement'& check if entry present in matrix     & \ref{matrix_isStoredElement} \\
 \verb'GrB_Matrix_removeElement' & remove an entry from a matrix         & \ref{matrix_removeElement} \\
 \verb'GrB_Matrix_extractTuples' & get all entries from a matrix         & \ref{matrix_extractTuples} \\
 \verb'GrB_Matrix_resize'        & resize a matrix                       & \ref{matrix_resize} \\
@@ -5556,7 +4999,6 @@ GrB_Info GrB_Matrix_extractElement      // x = A(i,j)
     GrB_Index i,                // row index
     GrB_Index j                 // column index
 ) ;
-
 GrB_Info GrB_Matrix_extractElement      // x = A(i,j)
 (
     GrB_Scalar x,               // extracted GrB_Scalar
@@ -5568,14 +5010,11 @@ GrB_Info GrB_Matrix_extractElement      // x = A(i,j)
 
 \verb'GrB_Matrix_extractElement' extracts a single entry from a matrix
 \verb'x=A(i,j)'.
-
 An error is returned (\verb'GrB_INVALID_INDEX') if the row index \verb'i' is
 greater than or equal to the number of rows of \verb'C', or if column index
 \verb'j' is greater than or equal to the number of columns of \verb'C'.
-
 If the entry is present, \verb'x=A(i,j)' is performed and the scalar \verb'x'
 is returned with this value.  The method returns \verb'GrB_SUCCESS'.
-
 If no entry is present at \verb'A(i,j)', and \verb'x' is a non-opaque C scalar,
 then \verb'x' is not modified, and the return value of
 \verb'GrB_Matrix_extractElement' is \verb'GrB_NO_VALUE'.  If \verb'x' is a
@@ -5595,7 +5034,28 @@ function should not be arbitrarily intermixed with calls to these other two
 functions.  Everything will work correctly and results will be predictable, it
 will just be slow.
 
+%-------------------------------------------------------------------------------
 \newpage
+\subsubsection{{\sf GxB\_Matrix\_isStoredElement:} check if entry present in matrix}
+%-------------------------------------------------------------------------------
+\label{matrix_isStoredElement}
+
+\begin{mdframed}[userdefinedwidth=6in]
+{\footnotesize
+\begin{verbatim}
+GrB_Info GxB_Matrix_isStoredElement
+(
+    const GrB_Matrix A,         // check for A(i,j)
+    GrB_Index i,                // row index
+    GrB_Index j                 // column index
+) ;
+\end{verbatim} } \end{mdframed}
+
+\verb'GxB_Matrix_isStoredElement' check if the single entry \verb'A(i,j)' is
+present in the matrix \verb'A'.  It returns \verb'GrB_SUCCESS' if the entry is
+present, or \verb'GrB_NO_VALUE' otherwise.  The value of \verb'A(i,j)' is not
+returned. It is otherwise identical to \verb'GrB_Matrix_extractElement'.
+
 %-------------------------------------------------------------------------------
 \subsubsection{{\sf GrB\_Matrix\_removeElement:} remove an entry from a matrix}
 %-------------------------------------------------------------------------------
@@ -5612,9 +5072,10 @@ GrB_Info GrB_Matrix_removeElement
 ) ;
 \end{verbatim} } \end{mdframed}
 
-\verb'GrB_Matrix_removeElement' removes a single entry \verb'A(i,j)' from a matrix.
-If no entry is present at \verb'A(i,j)', then the matrix is not modified.
-If an error occurs, \verb'GrB_error(&err,A)' returns details about the error.
+\verb'GrB_Matrix_removeElement' removes a single entry \verb'A(i,j)' from a
+matrix.  If no entry is present at \verb'A(i,j)', then the matrix is not
+modified.  If an error occurs, \verb'GrB_error(&err,A)' returns details about
+the error.
 
 %-------------------------------------------------------------------------------
 \subsubsection{{\sf GrB\_Matrix\_extractTuples:} get all entries from a matrix}
@@ -5661,7 +5122,6 @@ extracted.
 \verb'NULL'.  This is not an error condition.
 \end{alert}
 
-\newpage
 %-------------------------------------------------------------------------------
 \subsubsection{{\sf GrB\_Matrix\_resize:}          resize a matrix}
 %-------------------------------------------------------------------------------
@@ -5678,11 +5138,93 @@ GrB_Info GrB_Matrix_resize      // change the size of a matrix
 ) ;
 \end{verbatim} } \end{mdframed}
 
-\verb'GrB_Matrix_resize' changes the size of a matrix.
-If the dimensions decrease, entries that fall outside the resized
-matrix are deleted.
+\verb'GrB_Matrix_resize' changes the size of a matrix.  If the dimensions
+decrease, entries that fall outside the resized matrix are deleted.  Unlike
+\verb'GxB_Matrix_reshape*' (see Sections \ref{matrix_reshape} and
+\ref{matrix_reshapedup}), entries remain in their same position after resizing
+the matrix.
 
 %-------------------------------------------------------------------------------
+\newpage
+\subsubsection{{\sf GxB\_Matrix\_reshape:} reshape a matrix}
+%-------------------------------------------------------------------------------
+\label{matrix_reshape}
+
+\begin{mdframed}[userdefinedwidth=6in]
+{\footnotesize
+\begin{verbatim}
+GrB_Info GxB_Matrix_reshape     // reshape a GrB_Matrix in place
+(
+    // input/output:
+    GrB_Matrix C,               // input/output matrix, reshaped in place
+    // input:
+    bool by_col,                // true if reshape by column, false if by row
+    GrB_Index nrows_new,        // new number of rows of C
+    GrB_Index ncols_new,        // new number of columns of C
+    const GrB_Descriptor desc   // to control # of threads used
+) ;
+\end{verbatim} } \end{mdframed}
+
+\verb'GxB_Matrix_reshape' changes the size of a matrix \verb'C', taking entries
+from the input matrix either column-wise or row-wise.  If matrix \verb'C' on
+input is \verb'nrows'-by-\verb'ncols', and the requested dimensions of
+\verb'C' on output are \verb'nrows_new'-by-\verb'nrows_cols', then
+the condition \verb'nrows*ncols == nrows_new*nrows_cols' must hold.
+The matrix \verb'C' is modified in-place, as both an input and output for
+this method.  To create a new matrix, use \verb'GxB_Matrix_reshapeDup'
+instead (Section \ref{matrix_reshapedup}).
+
+For example, if \verb'C' is 3-by-4 on input, and is reshaped column-wise to
+have dimensions 2-by-6:
+
+\begin{verbatim}
+        C on input      C on output (by_col true)
+        00 01 02 03     00 20 11 02 22 13
+        10 11 12 13     10 01 21 12 03 23
+        20 21 22 23
+\end{verbatim}
+
+If the same \verb'C' on input is reshaped row-wise to dimensions 2-by-6:
+
+\begin{verbatim}
+        C on input      C on output (by_col false)
+        00 01 02 03     00 01 02 03 10 11
+        10 11 12 13     12 13 20 21 22 23
+        20 21 22 23
+\end{verbatim}
+
+NOTE: because an intermediate linear index must be computed for each entry,
+\verb'GxB_Matrix_reshape' cannot be used on matrices for which
+\verb'nrows*ncols' exceeds $2^{60}$.
+
+%-------------------------------------------------------------------------------
+\newpage
+\subsubsection{{\sf GxB\_Matrix\_reshapeDup:} reshape a matrix}
+%-------------------------------------------------------------------------------
+\label{matrix_reshapedup}
+
+\begin{mdframed}[userdefinedwidth=6in]
+{\footnotesize
+\begin{verbatim}
+GrB_Info GxB_Matrix_reshapeDup // reshape a GrB_Matrix into another GrB_Matrix
+(
+    // output:
+    GrB_Matrix *C,              // newly created output matrix, not in place
+    // input:
+    GrB_Matrix A,               // input matrix, not modified
+    bool by_col,                // true if reshape by column, false if by row
+    GrB_Index nrows_new,        // number of rows of C
+    GrB_Index ncols_new,        // number of columns of C
+    const GrB_Descriptor desc   // to control # of threads used
+) ;
+\end{verbatim} } \end{mdframed}
+
+\verb'GxB_Matrix_reshapeDup' is identical to \verb'GxB_Matrix_reshape' (see
+Section \ref{matrix_reshape}), except that creates a new output matrix
+\verb'C' that is reshaped from the input matrix \verb'A'.
+
+%-------------------------------------------------------------------------------
+% \newpage
 \subsubsection{{\sf GxB\_Matrix\_concat:} concatenate matrices   }
 %-------------------------------------------------------------------------------
 \label{matrix_concat}
@@ -5734,8 +5276,8 @@ into the type of \verb'C'.  Any settings made to \verb'C' by
 \verb'GxB_Matrix_Option_set' (format by row or by column, bitmap switch, hyper
 switch, and sparsity control) are unchanged.
 
-\newpage
 %-------------------------------------------------------------------------------
+% \newpage
 \subsubsection{{\sf GxB\_Matrix\_split:} split a matrix   }
 %-------------------------------------------------------------------------------
 \label{matrix_split}
@@ -5797,7 +5339,7 @@ statement \verb'C=diag(v,k)', where \verb'v' is a vector.
 The output matrix \verb'C' is a newly-constructed square matrix with the
 same type as the input vector \verb'v'.  No typecasting is performed.
 
-\newpage
+% \newpage
 %-------------------------------------------------------------------------------
 \subsubsection{{\sf GxB\_Matrix\_diag:} build a diagonal matrix}
 %-------------------------------------------------------------------------------
@@ -5862,6 +5404,7 @@ GrB_Info GxB_Matrix_memoryUsage  // return # of bytes used for a matrix
 Returns the memory space required for a matrix, in bytes.
 
 %-------------------------------------------------------------------------------
+% \newpage
 \subsubsection{{\sf GrB\_Matrix\_free:} free a matrix}
 %-------------------------------------------------------------------------------
 \label{matrix_free}
@@ -5909,9 +5452,10 @@ There are two forms of serialization: \verb'GrB*serialize' and
 allocated by the user application, and it must be large enough to hold the
 matrix or vector.
 
-By default, LZ4 compression is used for serialization, but other options can be
-selected via the descriptor: \verb'GxB_set (desc, GxB_COMPRESSION, method)',
-where \verb'method' is an integer selected from the following options:
+By default, ZSTD (level 1) compression is used for serialization, but other
+options can be selected via the descriptor:
+\verb'GxB_set (desc, GxB_COMPRESSION, method)', where \verb'method' is an
+integer selected from the following options:
 
 \vspace{0.2in}
 {\footnotesize
@@ -5920,9 +5464,10 @@ where \verb'method' is an integer selected from the following options:
 method                           &  description \\
 \hline
 \verb'GxB_COMPRESSION_NONE'      &  no compression \\
-\verb'GxB_COMPRESSION_DEFAULT'   &  LZ4 \\
+\verb'GxB_COMPRESSION_DEFAULT'   &  ZSTD, with default level 1 \\
 \verb'GxB_COMPRESSION_LZ4'       &  LZ4 \\
 \verb'GxB_COMPRESSION_LZ4HC'     &  LZ4HC, with default level 9 \\
+\verb'GxB_COMPRESSION_ZSTD'      &  ZSTD, with default level 1 \\
 \hline
 \end{tabular} }
 \vspace{0.2in}
@@ -5935,6 +5480,13 @@ vector with LZ4HC with level 6, use:
     {\footnotesize
     \begin{verbatim}
     GxB_set (desc, GxB_COMPRESSION, GxB_COMPRESSION_LZ4HC + 6) ; \end{verbatim}}
+
+The ZSTD method can be specified as level 1 to 19, with 1 being the default.
+To compress with ZSTD at level 6, use:
+
+    {\footnotesize
+    \begin{verbatim}
+    GxB_set (desc, GxB_COMPRESSION, GxB_COMPRESSION_ZSTD + 6) ; \end{verbatim}}
 
 Deserialization of untrusted data is a common security problem; see
 \url{https://cwe.mitre.org/data/definitions/502.html}. The deserialization
@@ -6029,7 +5581,7 @@ GraphBLAS function   & purpose                                      & Section \\
 % On output, it is reduced to the numbed of bytes actually used to serialize
 % the vector.  After calling \verb'GrB_Vector_serialize', the blob may be
 % \verb'realloc''d to this revised size if desired (this is optional).
-% LZ4 compression is used to construct a compact blob.
+% ZSTD (level 1) compression is used to construct a compact blob.
 
 %-------------------------------------------------------------------------------
 \subsubsection{{\sf GxB\_Vector\_serialize:}      serialize a vector}
@@ -6054,10 +5606,9 @@ GrB_Info GxB_Vector_serialize       // serialize a GrB_Vector to a blob
 
 \verb'GxB_Vector_serialize' serializes a vector into a single array of bytes
 (the blob), which is \verb'malloc''ed and filled with the serialized vector.
-By default, LZ4 compression is used, but other options can be selected
-via the descriptor.
-Serializing a vector is identical to serializing a matrix;
-see Section \ref{matrix_serialize_GxB} for more information.
+By default, ZSTD (level 1) compression is used, but other options can be
+selected via the descriptor.  Serializing a vector is identical to serializing
+a matrix; see Section \ref{matrix_serialize_GxB} for more information.
 
 \newpage
 %-------------------------------------------------------------------------------
@@ -6115,6 +5666,12 @@ blob, constructed by
 Deserializing a vector is identical to deserializing a matrix;
 see Section \ref{matrix_deserialize_GxB} for more information.
 
+The blob is allocated with the \verb'malloc' function passed to
+\verb'GxB_init', or the ANSI C11 \verb'malloc' if \verb'GrB_init' was used
+to initialize GraphBLAS.  The blob must be freed by the matching \verb'free'
+method, either the \verb'free' function passed to \verb'GxB_init' or
+the ANSI C11 \verb'free' if \verb'GrB_init' was used.
+
 % Identical to \verb'GrB_Vector_deserialize', except that the descriptor
 % appears as the last parameter to control the number of threads used.
 
@@ -6171,7 +5728,7 @@ On input, \verb'&blob_size' is the size of the allocated blob in bytes.
 On output, it is reduced to the numbed of bytes actually used to serialize
 the matrix.  After calling \verb'GrB_Matrix_serialize', the blob may be
 \verb'realloc''d to this revised size if desired (this is optional).
-LZ4 compression is used to construct a compact blob.
+ZSTD (level 1) compression is used to construct a compact blob.
 
 %-------------------------------------------------------------------------------
 \subsubsection{{\sf GxB\_Matrix\_serialize:}      serialize a matrix}
@@ -6195,10 +5752,15 @@ GrB_Info GxB_Matrix_serialize       // serialize a GrB_Matrix to a blob
 } \end{mdframed}
 
 \verb'GxB_Matrix_serialize' is identical to \verb'GrB_Matrix_serialize', except
-that it does not require a pre-allocated blob.  Instead, it \verb'malloc''s the
-blob internally, and fills it with the serialized matrix.
-By default, LZ4 compression is used, but other options can be selected
-via the descriptor.
+that it does not require a pre-allocated blob.  Instead, it allocates the blob
+internally, and fills it with the serialized matrix.  By default, ZSTD (level 1)
+compression is used, but other options can be selected via the descriptor.
+
+The blob is allocated with the \verb'malloc' function passed to
+\verb'GxB_init', or the ANSI C11 \verb'malloc' if \verb'GrB_init' was used
+to initialize GraphBLAS.  The blob must be freed by the matching \verb'free'
+method, either the \verb'free' function passed to \verb'GxB_init' or
+the ANSI C11 \verb'free' if \verb'GrB_init' was used.
 
 \newpage
 %-------------------------------------------------------------------------------
@@ -8114,8 +7676,8 @@ GrB_Desc_Value ;
     value will inform the matrix multiplication to sort its result, instead.
 
 \item \verb'GxB_COMPRESSION' selects the compression method for serialization.
-    The default is LZ4.  See Section~\ref{serialize_deserialize} for other
-    options.
+    The default is ZSTD (level 1).  See Section~\ref{serialize_deserialize} for
+    other options.
 
 \item \verb'GxB_IMPORT' informs the \verb'GxB' pack methods
     that they can trust their input data, or not.  The default is to trust
@@ -13850,7 +13412,7 @@ The Octave/MATLAB analog of the code above is \verb'C=spones(C)'.
 The second case for where iso matrices and vectors are useful is to use them
 with operations that do not necessarily access all of their content.
 Suppose you have a matrix \verb'A' of arbitrarily large dimension (say
-\verb'n'-by-\verb'n' where \verb'n=2^60', of type \verb'GrB_FP64'.  A matrix
+\verb'n'-by-\verb'n' where \verb'n=2^60', of type \verb'GrB_FP64').  A matrix
 this large can be represented by SuiteSparse:GraphBLAS, but only in a
 hypersparse form.
 
@@ -14611,6 +14173,18 @@ accelerator, these data types and operators will be just as fast as built-in
 types and operators.  This work is in progress for the GPU, in CUDA, in
 collaboration with Joe Eaton and Corey Nolet.
 
+%-------------------------------------------------------------------------------
+\subsection{About NUMA systems}
+%-------------------------------------------------------------------------------
+
+I have tested this package extensively on multicore single-socket systems, but
+have not yet optimized it for multi-socket systems with a NUMA architecture.
+That will be done in a future release.  If you publish benchmarks
+with this package, please state the SuiteSparse:GraphBLAS version, and a caveat
+if appropriate.  If you see significant performance issues when going from a
+single-socket to multi-socket system, I would like to hear from you so I can
+look into it.
+
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Examples} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -15227,7 +14801,7 @@ The following instructions work on MacOS Big Sur (v11.3)
 and MacOS Monterey (12.1), using
 cmake 3.13 or later:
 
-First install Xcode (see \url{https://developer.apple.com/xcode},
+First install Xcode (see \url{https://developer.apple.com/xcode}),
 and then install the command line tools for Xcode:
 
     {\small
@@ -15700,7 +15274,7 @@ include file as \verb'/usr/local/include/GraphBLAS.h'.  This command fails:
 Revising my \verb'LD_LIBRARY_PATH' to put \verb'/usr/local/lib' first in the
 library directory order didn't help.  If you encounter this problem, try one of
 the following options (all four work for me, and link against the proper
-version (\verb'/usr/local/lib/libgraphblas.so.6.1.4' for example):
+version, \verb'/usr/local/lib/libgraphblas.so.6.1.4' for example):
 
     {\small
     \begin{verbatim}
@@ -15752,16 +15326,639 @@ To remove all compiled files, type \verb'make' \verb'distclean' in the top-level
 GraphBLAS folder.
 
 %-------------------------------------------------------------------------------
-\section{About NUMA systems}
+\section{Release Notes}
 %-------------------------------------------------------------------------------
 
-I have tested this package extensively on multicore single-socket systems, but
-have not yet optimized it for multi-socket systems with a NUMA architecture.
-That will be done in a future release.  If you publish benchmarks
-with this package, please state the SuiteSparse:GraphBLAS version, and a caveat
-if appropriate.  If you see significant performance issues when going from a
-single-socket to multi-socket system, I would like to hear from you so I can
-look into it.
+\begin{itemize}
+
+\item Version 7.2.0 (Aug 8, 2022)
+
+    \begin{packed_itemize}
+    \item added ZSTD as a compression option for serialize/deserialize:
+        Version 1.5.3 by Yann Collet,
+        \url{https://github.com/facebook/zstd.git}.
+        Copyright (c) 2016-present, Facebook, Inc. All rights reserved.
+        Included in SuiteSparse:GraphBLAS via its BSD-3-clause license.
+        The default method is now ZSTD, level 1.
+    \item \verb'GxB_Matrix_reshape*' added.
+    \item MATLAB interface: \verb'reshape', \verb'C(:)=A', \verb'C=A(:)' are
+        faster.  Better error messages.
+    \end{packed_itemize}
+
+\item Version 7.1.2 (July 8, 2022)
+
+    \begin{packed_itemize}
+    \item MATLAB interface: linear indexing added for C(:)=A, C=A(:), and
+        single-output I=find(C).  Faster bandwidth, istriu, istril,
+        isbanded, isdiag.  C(I,J)=A can now grow the size of A.
+    \end{packed_itemize}
+
+\item Version 7.1.1 (June 3, 2022)
+
+    \begin{packed_itemize}
+    \item minor updates to documentation and error messages
+    \item MATLAB interface: minor revision of GrB.deserialize
+    \end{packed_itemize}
+
+\item Version 7.1.0 (May 20, 2022)
+
+    \begin{packed_itemize}
+    \item  added cube root: \verb'GxB_CBRT_FP32' and \verb'GxB_CBRT_FP64'
+        unary operators
+    \item added \verb'GxB_Matrix_isStoredElement'
+        and \verb'GxB_Vector_isStoredElement'
+    \end{packed_itemize}
+
+\item Version 7.0.4 (Apr 25, 2022)
+
+    \begin{packed_itemize}
+    \item (46) bug fix: user-defined type size was incorrectly limited
+        to 128 bytes.  Caught by Erik Welch.
+    \end{packed_itemize}
+
+\item Version 7.0.3 (Apr 8, 2022)
+
+    \begin{packed_itemize}
+    \item faster transpose when using 2 threads
+    \end{packed_itemize}
+
+\item Version 7.0.2 (Apr 5, 2022)
+
+    \begin{packed_itemize}
+    \item (45) bug fix: vector iterator was broken for iterating across a
+        vector in bitmap format.  Caught by Erik Welch.
+    \end{packed_itemize}
+
+\item Version 7.0.1 (Apr 3, 2022)
+
+    \begin{packed_itemize}
+    \item added revised ACM TOMS submission to the Doc folder
+    \end{packed_itemize}
+
+\item Version 7.0.0 (Apr 2, 2022)
+
+    \begin{packed_itemize}
+    \item (44) spec bug: \verb'GrB_Matrix_diag'
+        was implemented in v5.2.x and v6.x with the wrong signature.
+        This fix requires the major release to change, from v6.x to v7.x.
+    \item (43) performance bug fix for \verb'GrB_mxm':
+        auto selection for saxpy method (Hash vs Gustavson) revised.
+    \item \verb'GrB_assign': better performance for \verb'C(i,j)=scalar' and
+        \verb'C(i,j)+=scalar' when \verb'i' and \verb'j' have length 1 (scalar
+        assigment with no scalar expansion).
+    \end{packed_itemize}
+
+\item Version 6.2.5 (Mar 14, 2022)
+
+    \begin{packed_itemize}
+    \item For SuiteSparse v5.11.0.
+    \end{packed_itemize}
+
+\item Version 6.2.4 (Mar 8, 2022)
+
+    \begin{packed_itemize}
+    \item (42) bug fix: \verb'GrB_mxm' with 0-by-0 iso full matrices.
+        Caught by Henry Amuasi in the Python
+        grblas interface, then triaged and isolated by Erik Welch.
+    \end{packed_itemize}
+
+\item Version 6.2.3 (Mar 5, 2022)
+
+    \begin{packed_itemize}
+    \item minor update to documentation in \verb'GrB.build':
+        no change to any code
+    \end{packed_itemize}
+
+\item Version 6.2.2 (Feb 28, 2022)
+
+    \begin{packed_itemize}
+    \item revised output of \verb'GxB_*_sort' to return newly created matrices
+        C and P as full or bitmap matrices, as appropriate, instead of
+        sparse/hypersparse, following their sparsity control settings.
+    \end{packed_itemize}
+
+\item Version 6.2.1 (Feb 14, 2022)
+
+    \begin{packed_itemize}
+    \item  (41) bug fix: \verb'GxB_Iterator_get' used \verb'(void *) + size'
+        arithmetic
+    \end{packed_itemize}
+
+\item Version 6.2.0 (Feb 14, 2022)
+
+    \begin{packed_itemize}
+    \item added the \verb'GxB_Iterator' object and its methods.  See
+        Section~\ref{iter}.
+    \item \verb'@GrB' interface: revised sparse-times-full rule for the
+        conventional semiring (the syntax \verb'C=A*B'), so that
+        sparse-times-full results in \verb'C' as full,
+        but hypersparse-times-sparse is not full
+        (typically sparse or hypersparse).
+    \end{packed_itemize}
+
+\item Version 6.1.4 (Jan 12, 2022)
+
+    \begin{packed_itemize}
+    \item added Section~\ref{perf} to User Guide: how to get the best
+        performance out of algorithms based on GraphBLAS.
+    \item \verb'cpu_features':  no longer built as a separate library,
+        but built directly into \verb'libgraphblas.so' and
+        \verb'libgraphblas.a'.  Added compile-time flags to
+        optionally disable the use of \verb'cpu_features' completely.
+    \item Octave 7: port to Apple Silicon (thanks to 
+            G{\'{a}}bor Sz{\'{a}}rnyas).
+    \item min/max monoids:  real case (FP32 and FP64) no longer terminal
+    \item \verb'@GrB' interface: overloaded \verb'C=A*B' syntax where one
+        matrix is full always results in a full matrix \verb'C'.
+    \item Faster \verb'C=A*B' for sparse-times-full and full-times-sparse
+        for \verb'@GrB' interface.
+    \end{packed_itemize}
+
+\item Version 6.1.3 (Jan 1, 2022)
+
+    \begin{packed_itemize}
+    \item performance: task creation for \verb'GrB_mxm'
+        had a minor flaw (results were correct but parallelism suffered).
+        Performance improvement of up to 10x when nnz(A)<<nnz(B).
+    \end{packed_itemize}
+
+\item Version 6.1.2 (Dec 31, 2021)
+
+    \begin{packed_itemize}
+    \item performance: revised \verb'swap_rule' in \verb'GrB_mxm', which decides whether
+        to compute \verb"C=A*B" or \verb"C=(B'*A')'", and variants, resulting in up
+        to 3x performance gain over v6.1.1 for \verb'GrB_mxm' (observed;
+        could be higher in other cases).
+    \end{packed_itemize}
+
+\item Version 6.1.1 (Dec 28, 2021) 
+
+    \begin{packed_itemize}
+    \item minor revision to AVX2 and AVX512f selection
+    \item \verb'cpu_features/Makefile': remove test of \verb'list_cpu_features'
+        so that the package can be built when cross-compiling
+    \end{packed_itemize}
+
+\item Versions 6.1.0 (Dec 26, 2021)
+
+    \begin{packed_itemize}
+    \item added \verb'GxB_get' options: compiler name and version.
+    \item added package: \url{https://github.com/google/cpu_features},
+        Nov 30, 2021 version.
+    \item performance: faster \verb'C+=A*B' when \verb'C' is full,
+        \verb'A' is bitmap/full, and \verb'B' is sparse/hyper.  % saxpy5
+        Faster \verb"C+=A'*B" when
+        \verb'A' is sparse/hyper, and \verb'B' is bitmap/full.  % dot4
+    \item (40) bug fix: deserialization of iso and empty matrices/vectors was
+        incorrect
+    \end{packed_itemize}
+
+\item Versions 6.0.2 and 5.2.2 (Nov 30, 2021)
+
+    \begin{packed_itemize}
+    \item (39) bug fix: \verb'GrB_Matrix_export':
+        numerical values not properly exported
+    \end{packed_itemize}
+
+\item Versions 6.0.1 and 5.2.1 (Nov 27, 2021)
+
+    \begin{packed_itemize}
+    \item v6.0.x and v5.2.x (for the same x):
+        differ only in \verb'GrB_wait', \verb'GrB_Info',
+        \verb'GrB_SCMP', and \verb'GxB_init'.
+    \item (38) bug fix:  \verb"C+=A'*B" when the accum operator is the same as
+        the monoid and C is iso-full, and \verb'A' or \verb'B' are hypersparse.
+        (dot4 method).
+    \item performance: \verb'GrB_select' with user-defined
+        \verb'GrB_IndexUnaryOp' about 2x faster.
+    \item performance: faster \verb'(MIN,MAX)_(FIRSTJ,SECONDI)' semirings
+    \end{packed_itemize}
+
+\item Version 6.0.0 (Nov 15, 2021)
+
+    \begin{packed_itemize}
+    \item this release contains only a few changes that cause a
+        break with backward compatibility.  It is otherwise identical to v5.2.0.
+    \item v6.0.0 is fully compliant with the v2.0 C API Specification.
+        Three changes from the v2.0 C API Spec are not backward compatible
+        (\verb'GrB_*wait', \verb'GrB_Info', \verb'GrB_SCMP').
+        \verb'GxB_init' has also changed.
+        \begin{packed_itemize}
+        \item \verb'GrB_wait (object, mode)': was \verb'GrB_wait (&object)'.
+        \item \verb'GrB_Info': changed enum values
+        \item \verb'GrB_SCMP': removed
+        \item \verb'GxB_init (mode, malloc, calloc, realloc, free, is_thread_safe)':
+            the last parameter, \verb'is_thread_safe', is deleted.
+            The malloc, calloc, realloc, and free functions must be thread-safe.
+        \end{packed_itemize}
+    \end{packed_itemize}
+
+\item Version 5.2.0 (Nov 15, 2021)
+
+    \begin{packed_itemize}
+    \item Added for the v2.0 C API Specification: only features that are
+        backward compatible with SuiteSparse:GraphBLAS v5.x have been
+        added to v5.2.0:
+        \begin{packed_itemize}
+        \item \verb'GrB_Scalar': replaces \verb'GxB_Scalar', \verb'GxB_Scalar_*'
+            functions renamed GrB
+        \item \verb'GrB_IndexUnaryOp': new, free, fprint, wait
+        \item \verb'GrB_select': selection via \verb'GrB_IndexUnaryOp'
+        \item \verb'GrB_apply': with \verb'GrB_IndexUnaryOp'
+        \item \verb'GrB_reduce': reduce matrix or vector to \verb'GrB_Scalar'
+        \item \verb'GrB_assign', \verb'GrB_subassion': with \verb'GrB_Scalar'
+            input
+        \item \verb'GrB_*_extractElement_Scalar': get \verb'GrB_Scalar'
+            from a matrix or vector
+        \item \verb'GrB*build': when \verb'dup' is \verb'NULL',
+            duplicates result in an error.
+        \item \verb'GrB import/export': import/export from/to user-provided
+            arrays
+        \item \verb'GrB_EMPTY_OBJECT', \verb'GrB_NOT_IMPLEMENTED': error codes
+            added
+        \item \verb'GrB_*_setElement_Scalar': set an entry in a matrix or
+            vector, from a \verb'GrB_Scalar'
+        \item \verb'GrB_Matrix_diag': same as
+            \verb'GxB_Matrix_diag (C,v,k,NULL)'
+        \item \verb'GrB_*_serialize/deserialize': with compression
+        \item \verb'GrB_ONEB_T': binary operator, $f(x,y)=1$, the same as
+            \verb'GxB_PAIR_T'.
+        \end{packed_itemize}
+    \item \verb'GxB*import*' and \verb'GxB*export*': now historical; use
+        \verb'GxB*pack/unpack*'
+    \item \verb'GxB_select': is now historical; use \verb'GrB_select' instead.
+    \item \verb'GxB_IGNORE_DUP': special operator for build methods only; if dup
+        is this operator, then duplicates are ignored (not an error)
+    \item \verb'GxB_IndexUnaryOp_new': create a named index-unary operator
+    \item \verb'GxB_BinaryOp_new': create a named binary operator
+    \item \verb'GxB_UnaryOp_new': create a named unary operator
+    \item \verb'GxB_Type_new': to create a named type
+    \item \verb'GxB_Type_name': to query the name of a type
+    \item added \verb'GxB_*type_name' methods
+        to query the name of a type as a string.
+    \item \verb'GxB' methods that query an object return a \verb'GrB_type' such
+        as \verb'GxB_Matrix_type' are declared historical; will be kept but not
+        recommended (use \verb'GxB_*type_name' methods).
+    \item \verb'GxB_Matrix_serialize/deserialize': with compression;
+        optional descriptor.
+    \item \verb'GxB_Matrix_sort', \verb'GxB_Vector_sort':
+        sort a matrix or vector
+    \item \verb'GxB_eWiseUnion': like \verb'GrB_eWiseAdd' except for how
+        entries in $\bf A\setminus B$ and $\bf B \setminus A$ are computed.
+    \item added LZ4/LZ4HC: compression library, \url{http://www.lz4.org} (BSD
+        2), v1.9.3, Copyright (c) 2011-2016, Yann Collet.
+    \item MIS and pagerank demos: removed; MIS added to LAGraph/experimental
+    \item disabled free memory pool if OpenMP not available
+    \item (37) bug fix: ewise \verb'C=A+B' when all matrices are full,
+        \verb'GBCOMPACT' not used, but \verb'GB_control.h' disabled the
+        operator or type.  Caught by Roi Lipman, Redis.
+    \item (36) bug fix: \verb'C<M>=Z' not returning \verb'C'
+        as iso if \verb'Z 'iso and \verb'C' initially
+        empty.  Caught by Erik Welch, Anaconda.
+    \item performance improvements: \verb'C=A*B': sparse/hyper times
+        bitmap/full, and visa versa, including \verb'C += A*B' when \verb'C' is
+        full.
+    \end{packed_itemize}
+
+\item Version 5.1.10 (Oct 27, 2021)
+
+    \begin{packed_itemize}
+    \item  (35) bug fix: \verb'GB_selector'; \verb'A->plen' and \verb'C->plen'
+        not updated correctly.  Caught by Jeffry Lovitz, Redis.
+    \end{packed_itemize}
+
+\item Version 5.1.9 (Oct 26, 2021)
+
+    \begin{packed_itemize}
+    \item (34) bug fix: in-place test incorrect for \verb"C+=A'*B" using dot4
+    \item (33) bug fix: disable free pool if OpenMP not available
+    \end{packed_itemize}
+
+\item Version 5.1.8 (Oct 5, 2021)
+
+    \begin{packed_itemize}
+    \item (32) bug fix: C=A*B when A is sparse and B is iso and bitmap.
+        Caught by Mark Blanco, CMU.
+    \end{packed_itemize}
+
+\item Version 5.1.7 (Aug 23, 2021)
+
+    \begin{packed_itemize}
+    \item (31) bug fix:  \verb'GrB_apply', when done in-place and matrix starts
+        non-iso and becomes iso, gave the wrong iso result.
+        Caught by Fabian Murariu.
+    \end{packed_itemize}
+
+\item Version 5.1.6 (Aug 16, 2021)
+
+    \begin{packed_itemize}
+    \item one-line change to \verb'C=A*B': faster symbolic analysis when a
+        vector \verb'C(:,j)' is dense (for CSC) or \verb'C(i,:)' for CSR.
+    \end{packed_itemize}
+
+\item Version 5.1.5 (July 15, 2021)
+
+    \begin{packed_itemize}
+    \item submission to ACM Transactions on Mathematical Software as
+        a Collected Algorithm of the ACM.
+    \end{packed_itemize}
+
+\item Version 5.1.4 (July 6, 2021)
+
+    \begin{packed_itemize}
+    \item faster Octave interface.  Octave v7 or later is required.
+    \item (30) bug fix: 1-based printing not enabled for pending tuples.
+        Caught by Will Kimmerer, while working on the Julia interface.
+    \end{packed_itemize}
+
+\item Version 5.1.3 (July 3, 2021)
+
+    \begin{packed_itemize}
+    \item added \verb'GxB_Matrix_iso' and \verb'GxB_Vector_iso':
+        to query if a matrix or vector is held as iso-valued
+    \item (29) bug fix: \verb'Matrix_pack_*R' into a matrix previously held by
+        column, or \verb'Matrix_pack*C' into a matrix by row, would flip the
+        dimensions.
+        Caught by Erik Welch, Anaconda.
+    \item (28) bug fix: \verb'kron(A,B)' with iso input matrices
+        \verb'A' and \verb'B' fixed.
+        Caught by Michel Pelletier, Graphegon.
+    \item (27) bug fix: v5.1.0 had a wrong version of a file; posted by mistake.
+        Caught by Michel Pelletier, Graphegon.
+    \end{packed_itemize}
+
+\item Version 5.1.2 (June 30, 2021)
+
+    \begin{packed_itemize}
+    \item iso matrices added:  these are matrices and vectors whose
+        values in the sparsity pattern are all the same.  This is an internal
+        change to the opaque data structures of the \verb'GrB_Matrix' and
+        \verb'GrB_Vector' with very little change to the API.
+    \item added \verb'GxB_Matrix_build_Scalar'
+            and \verb'GxB_Vector_build_Scalar',
+            which always build iso matrices and vectors.
+    \item import/export methods can now import/export iso matrices and vectors.
+    \item added \verb'GrB.argmin/argmax' to Octave/MATLAB interface
+    \item added \verb'GxB_*_pack/unpack' methods as alternatives to
+        import/export.
+    \item added \verb'GxB_PRINT_1BASED' to the global settings.
+    \item added \verb'GxB_*_memoryUsage'
+    \item port to Octave:  \verb'gbmake' and \verb'gbtest'
+        work in Octave7 to build and test
+        the \verb'@GrB' interface to GraphBLAS.  Octave 7.0.0 is required.
+    \end{packed_itemize}
+
+\item Version 5.0.6 (May 24, 2021)
+
+    \begin{packed_itemize}
+    \item BFS and triangle counting demos removed from GraphBLAS/Demo:
+        see LAGraph for these algorithms.  Eventually, all of GraphBLAS/Demo
+        will be deleted, once LAGraph includes all the methods included there.
+    \end{packed_itemize}
+
+\item Version 5.0.5 (May 17, 2021)
+
+    \begin{packed_itemize}
+    \item (26) performance bug fix:  reduce-to-vector where \verb'A' is
+        hypersparse CSR with a transposed descriptor (or CSC with no
+        transpose), and some cases for \verb'GrB_mxm/mxv/vxm' when computing
+        \verb'C=A*B' with A hypersparse CSC and \verb'B' bitmap/full (or
+        \verb'A' bitmap/full and \verb'B' hypersparse CSR), the wrong internal
+        method was being selected via the auto-selection strategy, resulting in
+        a significant slowdown in some cases.
+    \end{packed_itemize}
+
+\item Version 5.0.4 (May 13, 2021)
+
+    \begin{packed_itemize}
+    \item \verb'@GrB' Octave/MATLAB interface: changed license
+        to GNU General Public License v3.0 or later.
+    \end{packed_itemize}
+
+\item Version 5.0.3 (May 12, 2021)
+
+    \begin{packed_itemize}
+    \item (25) bug fix: disabling \verb'ANY_PAIR' semirings by editing
+        \verb'Source/GB_control.h' would cause a segfault if those disabled
+        semirings were used.
+    \item demos are no longer built by default
+    \item (24) bug fix: new functions in v5.0.2 not declared as \verb'extern'
+        in \verb'GraphBLAS.h'.
+    \item \verb'GrB_Matrix_reduce_BinaryOp' reinstated from v4.0.3;
+        same limit on built-in ops that correspond to known monoids.
+    \end{packed_itemize}
+
+\item Version 5.0.2 (May 5, 2021)
+
+    \begin{packed_itemize}
+    \item (23) bug fix: \verb'GrB_Matrix_apply_BinaryOp1st' and \verb'2nd'
+        were using the
+        wrong descriptors for \verb'GrB_INP0' and \verb'GrB_INP1'.
+        Caught by Erik Welch, Anaconda.
+    \item memory pool added for faster allocation/free of small blocks
+    \item \verb'@GrB' interface ported to MATLAB R2021a.
+    \item \verb'GxB_PRINTF' and \verb'GxB_FLUSH' global options added.
+    \item \verb'GxB_Matrix_diag': construct a diagonal matrix from a vector
+    \item \verb'GxB_Vector_diag': extract a diagonal from a matrix
+    \item \verb'concat/split': methods to concatenate and split matrices.
+    \item \verb'import/export':
+        size of arrays now in bytes, not entries.  This change
+        is required for better internal memory management, and it is not
+        backward compatible with the \verb'GxB*import/export' functions in v4.0.
+        A new parameter, \verb'is_uniform', has been added to all import/export
+        methods, which indicates that the matrix values are all the same.
+    \item (22) bug fix: SIMD vectorization was missing
+        \verb'reduction(+,task_cnvals)' in
+        \verb'GB_dense_subassign_06d_template.c'.  Caught by Jeff Huang, Texas
+        A\&M, with his software package for race-condition detection.
+    \item \verb'GrB_Matrix_reduce_BinaryOp': removed.  Use a monoid instead,
+        with \verb'GrB_reduce' or \verb'GrB_Matrix_reduce_Monoid'.
+    \end{packed_itemize}
+
+\item Version 4.0.3 (Jan 19, 2021)
+
+    \begin{packed_itemize}
+    \item faster min/max monoids
+    \item \verb'G=GrB(G)' converts \verb'G' from v3 object to v4
+    \end{packed_itemize}
+
+\item Version 4.0.2 (Jan 13, 2021)
+
+    \begin{packed_itemize}
+    \item ability to load \verb'*.mat' files saved with the v3 \verb'GrB'
+    \end{packed_itemize}
+
+\item Version 4.0.1 (Jan 4, 2021)
+
+    \begin{packed_itemize}
+    \item significant performance improvements: compared with v3.3.3,
+        up to 5x faster in breadth-first-search (using 
+        \verb'LAGraph_bfs_parent2'), and 2x faster in
+        Betweenness-Centrality (using \verb'LAGraph_bc_batch5').
+    \item \verb'GrB_wait(void)', with no inputs: removed
+    \item \verb'GrB_wait(&object)': polymorphic function added
+    \item \verb'GrB_*_nvals': no longer guarantees completion;
+        use \verb'GrB_wait(&object)'
+        or non-polymorphic \verb'GrB_*_wait (&object)' instead
+    \item \verb'GrB_error': now has two parameters: a string
+        (\verb'char **') and an object.
+    \item \verb'GrB_Matrix_reduce_BinaryOp' limited to built-in operators that
+        correspond to known monoids.
+    \item \verb'GrB_*_extractTuples': may return indices out of order
+    \item removed internal features: GBI iterator, slice and hyperslice matrices
+    \item bitmap/full matrices and vectors added
+    \item positional operators and semirings:
+        \verb'GxB_FIRSTI_INT32' and related ops
+    \item jumbled matrices: sort left pending, like zombies and pending tuples
+    \item \verb'GxB_get/set': added \verb'GxB_SPARSITY_*'
+        (hyper, sparse, bitmap, or full) and \verb'GxB_BITMAP_SWITCH'.
+    \item \verb'GxB_HYPER': enum renamed to \verb'GxB_HYPER_SWITCH'
+    \item \verb'GxB*import/export': API modified
+    \item \verb'GxB_SelectOp': \verb'nrows' and \verb'ncols' removed
+        from function signature.
+    \item OpenMP tasking removed from mergesort and replaced with parallel
+        for loops.  Just as fast on Linux/Mac; now the performance ports to
+        Windows.
+    \item \verb'GxB_BURBLE' added as a supported feature.  This was an
+        undocumented feature of prior versions.
+    \item bug fix: \verb'A({lo,hi})=scalar'
+        \verb'A(lo:hi)=scalar' was OK
+    \end{packed_itemize}
+
+\item Version 3.3.3 (July 14, 2020).
+    Bug fix: \verb'w<m>=A*u' with mask non-empty and u empty.
+
+\item Version 3.3.2 (July 3, 2020).  Minor changes to build system.
+
+\item Version 3.3.1 (June 30, 2020).  Bug fix to \verb'GrB_assign' and
+    \verb'GxB_subassign' when the assignment is simple (\verb'C=A') but
+    with typecasting.
+
+\item Version 3.3.0 (June 26, 2020).  Compliant with V1.3 of the C API
+    (except that the polymorphic \verb'GrB_wait(&object)' doesn't appear yet;
+    it will appear in V4.0).
+
+    Added complex types (\verb'GxB_FC32' and \verb'GxB_FC64'), many unary
+    operators, binary operators, monoids, and semirings.  Added bitwise
+    operators, and their monoids and semirings.  Added the predefined monoids
+    and semirings from the v1.3 specification.  \verb'@GrB' interface: added complex
+    matrices and operators, and changed behavior of integer operations to more
+    closely match the behavior on built-in integer matrices.  The rules for
+    typecasting large floating point values to integers has changed.  The
+    specific object-based \verb'GrB_Matrix_wait', \verb'GrB_Vector_wait', etc,
+    functions have been added.  The no-argument \verb'GrB_wait()' is
+    deprecated.  Added \verb'GrB_getVersion', \verb'GrB_Matrix_resize',
+    \verb'GrB_Vector_resize', \verb'GrB_kronecker', \verb'GrB_*_wait', scalar
+    binding with binary operators for \verb'GrB_apply', \newline
+    \verb'GrB_Matrix_removeElement', and \verb'GrB_Vector_removeElement'.
+
+\item Version 3.2.0 (Feb 20, 2020).  Faster \verb'GrB_mxm', \verb'GrB_mxv', and
+    \verb'GrB_vxm', and faster operations on dense matrices/vectors.  Removed
+    compile-time user objects (\verb'GxB_*_define'), since these were not
+    compatible with the faster matrix operations.  Added the \verb'ANY' and
+    \verb'PAIR' operators.  Added the predefined descriptors,
+    \verb'GrB_DESC_*'.  Added the structural mask option.  Changed default
+    chunk size to 65,536.  \verb'@GrB' interface modified:  \verb'GrB.init' is
+    now optional.
+
+\item Version 3.1.2 (Dec, 2019).  Changes to allow SuiteSparse:GraphBLAS
+    to be compiled with the Microsoft Visual Studio compiler.  This compiler
+    does not support the \verb'_Generic' keyword, so the polymorphic functions
+    are not available.  Use the equivalent non-polymorphic functions instead,
+    when compiling GraphBLAS with MS Visual Studio.  In addition,
+    variable-length arrays are not supported, so user-defined types are limited
+    to 128 bytes in size.  These changes have no effect if you have an ANSI C11
+    compliant compiler.
+
+    \verb'@GrB' interface modified:  \verb'GrB.init' is now required.
+
+\item Version 3.1.0 (Oct 1, 2019).  \verb'@GrB' interface added.  See the
+    \newline \verb'GraphBLAS/GraphBLAS' folder for details and documentation,
+    and Section~\ref{octave}.
+
+\item Version 3.0 (July 26, 2019), with OpenMP parallelism.
+
+The version number is increased to 3.0, since
+this version is not backward compatible with V2.x.  The \verb'GxB_select'
+operation changes; the \verb'Thunk' parameter was formerly a
+\verb'const void *' pointer, and is now a \verb'GxB_Scalar'.  A new parameter
+is added to \verb'GxB_SelectOp_new', to define the expected type of
+\verb'Thunk'.  A new parameter is added to \verb'GxB_init', to specify whether
+or not the user-provided memory management functions are thread safe.
+
+The remaining changes add new features, and are upward compatible with V2.x.
+The major change is the addition of OpenMP parallelism.  This addition has no
+effect on the API, except that round-off errors can differ with the number of
+threads used, for floating-point types.  \verb'GxB_set' can optionally define
+the number of threads to use (the default is \verb'omp_get_max_threads').  The
+number of threads can also defined globally, and/or in the
+\verb'GrB_Descriptor'.  The \verb'RDIV' and \verb'RMINUS' operators are added,
+which are defined as $f(x,y)=y/x$ and $f(x,y)=y-x$, respectively.  Additional
+options are added to \verb'GxB_get'.
+
+\item Version 2.3.3 (May 2019): Collected Algorithm of the ACM.
+No changes from V2.3.2 other than the documentation.
+
+\item Version 2.3 (Feb 2019) improves the performance of many GraphBLAS
+operations, including an early-exit for monoids.  These changes have a
+significant impact on breadth-first-search (a performance bug was also fixed in
+the two BFS \verb'Demo' codes).  The matrix and vector import/export functions
+were added (Section~\ref{pack_unpack}), in support of the new LAGraph project
+(\url{https://github.com/GraphBLAS/LAGraph}, see also Section~\ref{lagraph}).
+LAGraph includes a push-pull BFS in GraphBLAS that is faster than two versions
+in the \verb'Demo' folder.  \verb'GxB_init' was added to allow the memory
+manager functions (\verb'malloc', etc) to be specified.
+
+\item
+Version 2.2 (Nov 2018)
+adds user-defined objects at compile-time, via user \verb'*.m4' files placed in
+\verb'GraphBLAS/User', which use the \verb'GxB_*_define' macros 
+(NOTE: feature removed in v3.2).
+The default matrix format is now \verb'GxB_BY_ROW'.
+Also added are the \verb'GxB_*print' methods for printing the contents of each
+GraphBLAS object (Section~\ref{fprint}).   PageRank demos have been added to
+the \verb'Demos' folder.
+
+\item
+Version 2.1 (Oct 2018) was
+a major update with support for new matrix formats
+(by row or column, and hypersparse matrices), and colon notation
+(\verb'I=begin:end' or \verb'I=begin:inc:end').  Some graph algorithms are more
+naturally expressed with matrices stored by row, and this version includes the
+new \verb'GxB_BY_ROW' format.  The default format in Version 2.1 and
+prior versions is by column.
+New extensions to GraphBLAS in this version include \verb'GxB_get',
+\verb'GxB_set', and \verb'GxB_AxB_METHOD', \verb'GxB_RANGE', \verb'GxB_STRIDE',
+and \verb'GxB_BACKWARDS', and their related definitions, described in
+Sections~\ref{descriptor},~\ref{options},~and~\ref{colon}.
+
+\item
+Version 2.0 (March 2018) addressed changes in the GraphBLAS C API
+Specification and added \verb'GxB_kron' and \verb'GxB_resize'.
+
+\item
+Version 1.1 (Dec 2017) primarily improved the performance.
+
+\item
+Version 1.0 was released on Nov 25, 2017.
+\end{itemize}
+
+%-------------------------------------------------------------------------------
+\subsection{Regarding historical and deprecated functions and symbols}
+%-------------------------------------------------------------------------------
+
+When a \verb'GxB*' function or symbol is added to the C API Specification with
+a \verb'GrB*' name, the new \verb'GrB*' name should be used instead, if
+possible.  However, the old \verb'GxB*' name will be kept as long as possible
+for historical reasons.  Historical functions and symbols will not always be
+documented here in the SuiteSparse:GraphBLAS User Guide, but they will be kept
+in \verb'GraphbBLAS.h' and kept in good working order in the library.
+Historical functions and symbols would only be removed in the very unlikely
+case that they cause a serious conflict with future methods.
+
+The only methods that have been fully deprecated and removed are the older
+versions of \verb'GrB_wait' and \verb'GrB_error' methods, which are
+incompatible with the latest versions.
 
 % \newpage
 %-------------------------------------------------------------------------------

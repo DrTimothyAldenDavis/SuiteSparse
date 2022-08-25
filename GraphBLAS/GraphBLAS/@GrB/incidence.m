@@ -45,7 +45,7 @@ end
 
 [m, n] = gbsize (A) ;
 if (m ~= n)
-    error ('A must be square') ;
+    error ('GrB:error', 'A must be square') ;
 end
 
 % get the string options
@@ -60,9 +60,9 @@ for k = 1:nargin-1
         case { 'double', 'single', 'int8', 'int16', 'int32', 'int64' }
             type = arg ;
         case { 'uint8', 'uint16', 'uint32', 'uint64', 'logical' }
-            error ('type must be signed') ;
+            error ('GrB:error', 'type must be signed') ;
         otherwise
-            error ('unknown option') ;
+            error ('GrB:error', 'unknown option') ;
     end
 end
 

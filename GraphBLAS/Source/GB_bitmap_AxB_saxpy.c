@@ -90,8 +90,8 @@ GrB_Info GB_bitmap_AxB_saxpy        // C = A*B where C is bitmap
     //--------------------------------------------------------------------------
 
     GrB_BinaryOp mult = semiring->multiply ;
-    GrB_Monoid add = semiring->add ;
-    ASSERT (mult->ztype == add->op->ztype) ;
+//  GrB_Monoid add = semiring->add ;
+    ASSERT (mult->ztype == semiring->add->op->ztype) ;
     bool A_is_pattern, B_is_pattern ;
     GB_binop_pattern (&A_is_pattern, &B_is_pattern, flipxy, mult->opcode) ;
 

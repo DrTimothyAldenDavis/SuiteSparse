@@ -1227,12 +1227,11 @@ void mexFunction
     ERR (GrB_Vector_extractElement_FP64_(&x_double, v, -1)) ;
     ERR (GrB_Vector_extractElement_FP64_(&x_double, v, 10)) ;
 
-    expected = GrB_DOMAIN_MISMATCH ;
-
-    ERR (GrB_Vector_extractElement_UDT ((void *) X, v, 0)) ;
-
     OK (GrB_Vector_setElement_FP64 (v, 22.8, 2)) ;
     OK (GrB_Vector_setElement_FP64 (v, 44.9, 4)) ;
+
+    expected = GrB_DOMAIN_MISMATCH ;
+    ERR (GrB_Vector_extractElement_UDT ((void *) X, v, 2)) ;
 
     x_double = 404 ;
     OK (GrB_Vector_extractElement_FP64_(&x_double, v, 3)) ;
@@ -1666,18 +1665,24 @@ void mexFunction
     ERR (GrB_Matrix_extractElement_FP64   (NULL, Acrud, 0, 0)) ;
     ERR (GrB_Matrix_extractElement_UDT    (NULL, Acrud, 0, 0)) ;
 
-    expected = GrB_INVALID_INDEX ;
+    OK (GrB_Matrix_setElement_FP64 (A, 22.8, 2, 0)) ;
+    OK (GrB_Matrix_setElement_FP64 (A, 44.9, 4, 0)) ;
 
+    expected = GrB_INVALID_INDEX ;
+    OK (GxB_Matrix_Option_set (A, GxB_FORMAT, GxB_BY_ROW)) ;
+    GxB_print (A, 3) ;
     ERR (GrB_Matrix_extractElement_FP64_(&x_double, A, -1, 0)) ;
     ERR (GrB_Matrix_extractElement_FP64_(&x_double, A, 10, 0)) ;
     ERR (GrB_Matrix_extractElement_FP64_(&x_double, A, 0, 911)) ;
+    OK (GxB_Matrix_Option_set (A, GxB_FORMAT, GxB_BY_COL)) ;
+    GxB_print (A, 3) ;
+    ERR (GrB_Matrix_extractElement_FP64_(&x_double, A, -1, 0)) ;
+    ERR (GrB_Matrix_extractElement_FP64_(&x_double, A, 10, 0)) ;
+    ERR (GrB_Matrix_extractElement_FP64_(&x_double, A, 0, 911)) ;
+    OK (GxB_Matrix_Option_set (A, GxB_FORMAT, GxB_BY_ROW)) ;
 
     expected = GrB_DOMAIN_MISMATCH ;
-
-    ERR (GrB_Matrix_extractElement_UDT ((void *) X, A, 0, 0)) ;
-
-    OK (GrB_Matrix_setElement_FP64 (A, 22.8, 2, 0)) ;
-    OK (GrB_Matrix_setElement_FP64 (A, 44.9, 4, 0)) ;
+    ERR (GrB_Matrix_extractElement_UDT ((void *) X, A, 2, 0)) ;
 
     x_double = 404 ;
     OK (GrB_Matrix_extractElement_FP64_(&x_double, A, 3, 0)) ;

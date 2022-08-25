@@ -221,10 +221,10 @@
 
 // The version of this implementation, and the GraphBLAS API version:
 #define GxB_IMPLEMENTATION_NAME "SuiteSparse:GraphBLAS"
-#define GxB_IMPLEMENTATION_DATE "Apr 8, 2022"
+#define GxB_IMPLEMENTATION_DATE "Aug 8, 2022"
 #define GxB_IMPLEMENTATION_MAJOR 7
-#define GxB_IMPLEMENTATION_MINOR 0
-#define GxB_IMPLEMENTATION_SUB   3
+#define GxB_IMPLEMENTATION_MINOR 2
+#define GxB_IMPLEMENTATION_SUB   0
 #define GxB_SPEC_DATE "Nov 15, 2021"
 #define GxB_SPEC_MAJOR 2
 #define GxB_SPEC_MINOR 0
@@ -352,21 +352,25 @@ GrB_Info ;
 
 typedef enum
 {
-    GrB_NONBLOCKING = 0,    // methods may return with pending computations
-    GrB_BLOCKING = 1        // no computations are ever left pending
+    GrB_NONBLOCKING = 0,        // methods may return with pending computations
+    GrB_BLOCKING = 1,           // no computations are ever left pending
+//  DRAFT: in progress, do not use:
+    GxB_NONBLOCKING_GPU = 2,    // non-blocking mode, allow use of GPU(s)
+    GxB_BLOCKING_GPU = 3,       // blocking mode, allow use of GPU(s)
 }
 GrB_Mode ;
 
 GB_PUBLIC
 GrB_Info GrB_init           // start up GraphBLAS
 (
-    GrB_Mode mode           // blocking or non-blocking mode
+    GrB_Mode mode           // blocking or non-blocking mode, no GPU
 ) ;
 
 GB_PUBLIC
 GrB_Info GxB_init           // start up GraphBLAS and also define malloc, etc
 (
-    GrB_Mode mode,          // blocking or non-blocking mode
+    GrB_Mode mode,          // blocking or non-blocking mode,
+                            // with or without GPU
     // pointers to memory management functions
     void * (* user_malloc_function  ) (size_t),
     void * (* user_calloc_function  ) (size_t, size_t),
@@ -467,7 +471,7 @@ GrB_Info GrB_getVersion         // runtime access to C API version number
 //      done, and this setting has no effect.
 //
 // GxB_COMPRESSION: compression method for GxB_Matrix_serialize and
-//      GxB_Vector_serialize.  The default is LZ4.
+//      GxB_Vector_serialize.  The default is ZSTD (level 1).
 //
 // GxB_IMPORT:  GxB_FAST_IMPORT (faster, for trusted input data) or
 //      GxB_SECURE_IMPORT (slower, for untrusted input data), for the
@@ -944,6 +948,10 @@ GB_PUBLIC GrB_UnaryOp
     // z = lgamma (x)   z = tgamma (x)      z = erf (x)         z = erfc (x)
     GxB_LGAMMA_FP32,    GxB_TGAMMA_FP32,    GxB_ERF_FP32,       GxB_ERFC_FP32,
     GxB_LGAMMA_FP64,    GxB_TGAMMA_FP64,    GxB_ERF_FP64,       GxB_ERFC_FP64,
+
+    // z = cbrt (x)
+    GxB_CBRT_FP32,
+    GxB_CBRT_FP64,
 
     // frexpx and frexpe return the mantissa and exponent, respectively,
     // from the ANSI C11 frexp function.  The exponent is returned as a
@@ -3196,6 +3204,17 @@ GrB_Info GrB_Vector_extractElement  // x = v(i)
     (x, v, i)
 #endif
 
+// GxB_Vector_isStoredElement determines if v(i) is present in the structure
+// of the vector v, as a stored element.  It does not return the value.  It
+// returns GrB_SUCCESS if the element is present, or GrB_NO_VALUE otherwise.
+
+GB_PUBLIC
+GrB_Info GxB_Vector_isStoredElement // determine if v(i) is a stored element
+(
+    const GrB_Vector v,             // vector to check
+    GrB_Index i                     // row index
+) ;
+
 //------------------------------------------------------------------------------
 // GrB_Vector_removeElement
 //------------------------------------------------------------------------------
@@ -3993,6 +4012,18 @@ GrB_Info GrB_Matrix_extractElement      // x = A(i,j)
     )                                                           \
     (x, A, i, j)
 #endif
+
+// GxB_Matrix_isStoredElement determines if A(i,j) is present in the structure
+// of the matrix A, as a stored element.  It does not return the value.  It
+// returns GrB_SUCCESS if the element is present, or GrB_NO_VALUE otherwise.
+
+GB_PUBLIC
+GrB_Info GxB_Matrix_isStoredElement // determine if A(i,j) is a stored element
+(
+    const GrB_Matrix A,                 // matrix to check
+    GrB_Index i,                        // row index
+    GrB_Index j                         // column index
+) ;
 
 //------------------------------------------------------------------------------
 // GrB_Matrix_removeElement
@@ -11247,10 +11278,10 @@ GrB_Info GrB_Matrix_exportHint  // suggest the best export format
 
 // GrB_Matrix_serialize/deserialize are slightly different from their GxB*
 // counterparts.  The blob is allocated by GxB_Matrix_serialize, and must be
-// freed by GxB_serialize_free (which calls the ANSI C11 free if GrB_init was
-// used).  By contrast, the GrB* methods require the user application to pass
-// in a preallocated blob to GrB_Matrix_serialize, whose size can be given by
-// GrB_Matrix_serializeSize (as a loose upper bound).
+// freed by the same free() method passed to GxB_init (or the ANSI C11 free()
+// if GrB_init was used).  By contrast, the GrB* methods require the user
+// application to pass in a preallocated blob to GrB_Matrix_serialize, whose
+// size can be given by GrB_Matrix_serializeSize (as a loose upper bound).
 
 // The GrB* and GxB* methods can be mixed.  GrB_Matrix_serialize and
 // GxB_Matrix_serialize construct the same blob (assuming they are given the
@@ -11339,20 +11370,14 @@ GrB_Info GrB_Matrix_exportHint  // suggest the best export format
     free (blob) ;
 */
 
-// Three methods are currently implemented: no compression, LZ4, and LZ4HC
+// Currently implemented: no compression, LZ4, LZ4HC, and ZSTD
 #define GxB_COMPRESSION_NONE -1     // no compression
-#define GxB_COMPRESSION_DEFAULT 0   // LZ4
+#define GxB_COMPRESSION_DEFAULT 0   // ZSTD (level 1)
 #define GxB_COMPRESSION_LZ4   1000  // LZ4
 #define GxB_COMPRESSION_LZ4HC 2000  // LZ4HC, with default level 9
+#define GxB_COMPRESSION_ZSTD  3000  // ZSTD, with default level 1
 
-// possible future methods that could be added:
-// #define GxB_COMPRESSION_ZLIB  3000  // ZLIB, with default level 6
-// #define GxB_COMPRESSION_LZO   4000  // LZO, with default level 2
-// #define GxB_COMPRESSION_BZIP2 5000  // BZIP2, with default level 9
-// #define GxB_COMPRESSION_LZSS  6000  // LZSS
-
-// using the Intel IPP versions, if available (not yet supported);
-#define GxB_COMPRESSION_INTEL   1000000
+#define GxB_COMPRESSION_INTEL   1000000 // not yet supported
 
 // Most of the above methods have a level parameter that controls the tradeoff
 // between run time and the amount of compression obtained.  Higher levels
@@ -11360,31 +11385,16 @@ GrB_Info GrB_Matrix_exportHint  // suggest the best export format
 
 //  LZ4     no level setting
 //  LZ4HC   1: fast, 9: default, 9: max
-
-//  these methos are not yet supported but may be added in the future:
-//  ZLIB    1: fast, 6: default, 9: max
-//  LZO     1: fast (X1ST), 2: default (XST)
-//  BZIP2   1: fast, 9: default, 9: max
-//  LZSS    no level setting
+//  ZSTD:   1: fast, 1: default, 19: max
 
 // For all methods, a level of zero results in the default level setting.
 // These settings can be added, so to use LZ4HC at level 5, use method =
 // GxB_COMPRESSION_LZ4HC + 5.
 
-// If the Intel IPPS compression methods are available, they can be selected
-// by adding GxB_COMPRESSION_INTEL.  For example, to use the Intel IPPS
-// implementation of LZ4HC at level 9, use method = GxB_COMPRESSION_INTEL +
-// GxB_COMPRESSION_LZ4HC + 9 = 1,002,009.  If the Intel methods are requested
-// but not available, this setting is ignored and the non-Intel methods are
-// used instead.
-
 // If the level setting is out of range, the default is used for that method.
 // If the method is negative, no compression is performed.  If the method is
-// positive but unrecognized, the default is used (GxB_COMPRESSION_LZ4, with no
-// level setting, and the non-Intel version).
-
-// If a method is not implemented, LZ4 is used instead, and the level setting
-// is ignored.
+// positive but unrecognized, the default is used (GxB_COMPRESSION_ZSTD,
+// level 1).
 
 GB_PUBLIC
 GrB_Info GxB_Matrix_serialize       // serialize a GrB_Matrix to a blob
@@ -11536,6 +11546,65 @@ GrB_Info GxB_Matrix_sort
     )                                                       \
     (arg1, __VA_ARGS__)
 
+//==============================================================================
+// GxB_Matrix_reshape and GxB_Matrix_reshapeDup:  reshape a matrix
+//==============================================================================
+
+// GxB_Matrix_reshape changes the dimensions of a matrix, reshaping the entries
+// by row or by column.
+
+// For example, if C is 3-by-4 on input, and is reshaped by column to have
+// dimensions 2-by-6:
+
+//      C on input      C on output (by_col true)
+//      00 01 02 03     00 20 11 02 22 13
+//      10 11 12 13     10 01 21 12 03 23
+//      20 21 22 23
+
+// If the same C on input is reshaped by row to dimensions 2-by-6:
+
+//      C on input      C on output (by_col false)
+//      00 01 02 03     00 01 02 03 10 11
+//      10 11 12 13     12 13 20 21 22 23
+//      20 21 22 23
+
+// If the input matrix is nrows-by-ncols, and the size of the reshaped matrix
+// is nrows_new-by-ncols_new, then nrows*ncols must equal nrows_new*ncols_new.
+// The format of the input matrix (by row or by column) is unchanged; this
+// format need not match the by_col input parameter.
+
+GB_PUBLIC
+GrB_Info GxB_Matrix_reshape     // reshape a GrB_Matrix in place
+(
+    // input/output:
+    GrB_Matrix C,               // input/output matrix, reshaped in place
+    // input:
+    bool by_col,                // true if reshape by column, false if by row
+    GrB_Index nrows_new,        // new number of rows of C
+    GrB_Index ncols_new,        // new number of columns of C
+    const GrB_Descriptor desc   // to control # of threads used
+) ;
+
+// GxB_Matrix_reshapeDup reshapes a matrix into another matrix.
+
+// If the input matrix A is nrows-by-ncols, and the size of the newly-created
+// matrix C is nrows_new-by-ncols_new, then nrows*ncols must equal
+// nrows_new*ncols_new.  The format of the input matrix A (by row or by column)
+// determines the format of the output matrix C, which need not match the
+// by_col input parameter.
+
+GB_PUBLIC
+GrB_Info GxB_Matrix_reshapeDup // reshape a GrB_Matrix into another GrB_Matrix
+(
+    // output:
+    GrB_Matrix *C,              // newly created output matrix, not in place
+    // input:
+    GrB_Matrix A,               // input matrix, not modified
+    bool by_col,                // true if reshape by column, false if by row
+    GrB_Index nrows_new,        // number of rows of C
+    GrB_Index ncols_new,        // number of columns of C
+    const GrB_Descriptor desc   // to control # of threads used
+) ;
 
 //==============================================================================
 // GxB_Iterator: an object that iterates over the entries of a matrix or vector
@@ -12542,15 +12611,28 @@ extern "C" {
 #endif
 
 // TODO describe the modes
-typedef enum { rmm_wrap_host=0, rmm_wrap_host_pinned=1, rmm_wrap_device=2, rmm_wrap_managed=3 } RMM_MODE ;
+typedef enum
+{
+    rmm_wrap_host = 0,
+    rmm_wrap_host_pinned = 1,
+    rmm_wrap_device = 2,
+    rmm_wrap_managed = 3
+} RMM_MODE ;
 
 void rmm_wrap_finalize (void) ;
-int rmm_wrap_initialize (RMM_MODE mode, size_t init_pool_size, size_t max_pool_size) ;
+
+int rmm_wrap_initialize
+(
+    RMM_MODE mode,
+    size_t init_pool_size,
+    size_t max_pool_size
+) ;
 
 // example usage:
     //  rmm_wrap_initialize (rmm_wrap_managed, INT32_MAX, INT64_MAX) ;
-    //  GxB_init (GrB_NONBLOCKING, rmm_wrap_malloc, rmm_wrap_calloc, rmm_wrap_realloc, rmm_wrap_free) ;
-    //  use GraphBLAS ...
+    //  GxB_init (GxB_NONBLOCKING_GPU, rmm_wrap_malloc, rmm_wrap_calloc,
+    //      rmm_wrap_realloc, rmm_wrap_free) ;
+    //  use GraphBLAS ... with the GPU
     //  GrB_finalize ( ) ;
     //  rmm_wrap_finalize ( ) ;
 

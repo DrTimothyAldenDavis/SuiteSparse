@@ -27,7 +27,7 @@ void mexFunction
 {
 
     GrB_Info info ;
-    GrB_Matrix A = NULL ;
+    GrB_Matrix A = NULL, C = NULL ;
 
     //--------------------------------------------------------------------------
     // startup GraphBLAS
@@ -62,6 +62,22 @@ void mexFunction
     GrB_free (&M_0) ;
     GrB_free (&v_0) ;
     GrB_free (&v_1) ;
+
+    //--------------------------------------------------------------------------
+    // reshape error handling
+    //--------------------------------------------------------------------------
+
+    GrB_Index n =  (1L << 40) ;
+    OK (GrB_Matrix_new (&C, GrB_BOOL, n, n)) ;
+    expected = GrB_OUT_OF_MEMORY ;
+    ERR (GxB_Matrix_reshape (C, true, n/2, 2*n, NULL)) ;
+    OK (GrB_Matrix_free (&C)) ;
+
+    n = 12 ;
+    OK (GrB_Matrix_new (&C, GrB_BOOL, n, n)) ;
+    expected = GrB_DIMENSION_MISMATCH ;
+    ERR (GxB_Matrix_reshape (C, true, n, 2*n, NULL)) ;
+    OK (GrB_Matrix_free (&C)) ;
 
     //--------------------------------------------------------------------------
     // wrapup

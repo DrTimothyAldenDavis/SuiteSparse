@@ -11,6 +11,7 @@
 // No change is made if A is not hypersparse.
 
 #include "GB.h"
+#include "GB_unused.h"
 
 GrB_Info GB_hyper_realloc
 (

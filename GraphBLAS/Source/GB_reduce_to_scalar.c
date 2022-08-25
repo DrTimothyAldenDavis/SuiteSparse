@@ -101,7 +101,7 @@ GrB_Info GB_reduce_to_scalar    // s = reduce_to_scalar (A)
     //--------------------------------------------------------------------------
 
     #if defined ( GBCUDA )
-    if (!A->iso && GB_reduce_to_scalar_cuda_branch (reduce, A, Context))
+    if (GB_reduce_to_scalar_cuda_branch (reduce, A, Context))
     {
 
         //----------------------------------------------------------------------

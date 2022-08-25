@@ -21,7 +21,7 @@ ctype = gbtype (C) ;
         % all rows A(i,:) have between 1 and n-1 entries
         C = gbapply2 (op, C, zero) ;
     else
-        d = gbapply2 (['1st.' ctype], zero, d) ;
+        d = gbapply2 (['2nd.' ctype], d, zero) ;
         % if d(i) is between 1 and n-1 and C(i) > 0 then C (i) = 0
         C = gbeadd (op, C, d) ;
     end

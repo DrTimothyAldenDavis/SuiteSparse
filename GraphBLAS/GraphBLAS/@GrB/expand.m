@@ -23,7 +23,7 @@ if (isobject (scalar))
 end
 
 if (~gb_isscalar (scalar))
-    error ('first input must be a scalar') ;
+    error ('GrB:error', 'first input must be a scalar') ;
 end
 
 if (isobject (S))

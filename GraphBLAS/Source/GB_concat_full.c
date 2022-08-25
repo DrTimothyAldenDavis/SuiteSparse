@@ -170,11 +170,13 @@ GrB_Info GB_concat_full             // concatenate into a full matrix
 
                         case GB_16BYTE : // double complex or 16-byte user
                             #define GB_CTYPE GB_blob16
-//                          #define GB_CTYPE uint64_t
-//                          #undef  GB_COPY
-//                          #define GB_COPY(pC,pA,A_iso)                    \
-//                              Cx [2*pC  ] = Ax [A_iso ? 0 : (2*pA)] ;     \
-//                              Cx [2*pC+1] = Ax [A_iso ? 1 : (2*pA+1)] ;
+                            /*
+                            #define GB_CTYPE uint64_t
+                            #undef  GB_COPY
+                            #define GB_COPY(pC,pA,A_iso)                    \
+                                Cx [2*pC  ] = Ax [A_iso ? 0 : (2*pA)] ;     \
+                                Cx [2*pC+1] = Ax [A_iso ? 1 : (2*pA+1)] ;
+                            */
                             #include "GB_concat_full_template.c"
                             break ;
 

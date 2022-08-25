@@ -16,7 +16,7 @@ for trial = 1:40
     t = GrB.vreduce ('+', G, d) ;
     z = sum (G, 2) ;
     w = sum (A, 2) ;
-    
+
     assert (isequal (w, x)) ;
     assert (isequal (w, y)) ;
     assert (isequal (w, z)) ;

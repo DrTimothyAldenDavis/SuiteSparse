@@ -2,7 +2,7 @@ function [err, errnan] = gbtest_err (A, B)
 %GBTEST_ERR compare two matrices
 %
 % err = gbtest_err (A, B)
-%  
+%
 % Returns the norm (A-B,1), ignoring inf's and nan's.
 % Also tests the result of isinf and isnan for A and B.
 

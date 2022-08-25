@@ -31,7 +31,7 @@ G = G.opaque ;
 
 [m, n, type] = gbsize (G) ;
 if (m ~= n)
-    error ('G must be square') ;
+    error ('GrB:error', 'G must be square') ;
 end
 
 % get the string options
@@ -40,7 +40,7 @@ if (nargin > 1)
     if (isequal (lower (option), 'omitselfloops'))
         omitself = true ;
     else
-        error ('unknown option') ;
+        error ('GrB:error', 'unknown option') ;
     end
 end
 

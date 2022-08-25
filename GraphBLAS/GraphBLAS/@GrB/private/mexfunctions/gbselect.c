@@ -124,7 +124,7 @@ void mexFunction
     gb_get_mxargs (nargin, pargin, USAGE, Matrix, &nmatrices, String, &nstrings,
         Cell, &ncells, &desc, &base, &kind, &fmt, &sparsity) ;
 
-    CHECK_ERROR (nmatrices < 1 || nmatrices > 4 || nstrings < 1 || ncells > 0,  
+    CHECK_ERROR (nmatrices < 1 || nmatrices > 4 || nstrings < 1 || ncells > 0,
         USAGE) ;
 
     //--------------------------------------------------------------------------

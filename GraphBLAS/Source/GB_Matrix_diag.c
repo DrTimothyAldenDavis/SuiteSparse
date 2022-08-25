@@ -19,6 +19,7 @@
 }
 
 #include "GB_diag.h"
+#include "GB_unused.h"
 
 GrB_Info GB_Matrix_diag     // build a diagonal matrix from a vector
 (
@@ -135,9 +136,6 @@ GrB_Info GB_Matrix_diag     // build a diagonal matrix from a vector
     int64_t *restrict Cp = C->p ;
     int64_t *restrict Ch = C->h ;
     int64_t *restrict Ci = C->i ;
-    GB_Type_code vcode = vtype->code ;
-    GB_Type_code ccode = ctype->code ;
-    size_t vsize = vtype->size ;
 
     //--------------------------------------------------------------------------
     // copy the contents of V into the kth diagonal of C

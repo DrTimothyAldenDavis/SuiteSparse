@@ -10,9 +10,6 @@ function s = istril (G)
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: GPL-3.0-or-later
 
-% FUTURE: this will be much faster when written as a mexFunction
-% that doesn't rely on gbselect.  Use a gb_bandwith mexFunction.
-
-G = G.opaque ;
-s = (gbnvals (gbselect ('triu', G, 1)) == 0) ;
+[~,hi] = gbbandwidth (G.opaque, 0, 1) ;
+s = (hi == 0) ;
 

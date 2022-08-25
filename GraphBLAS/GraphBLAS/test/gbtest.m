@@ -171,6 +171,8 @@ gbtest116 % test GrB.binopinfo for index_unary operators
 gbtest117 % test idxunop in GrB.apply2
 gbtest118 % test GrB.argsort
 gbtest119 % test GrB.eunion
+gbtest120 % test subsref
+gbtest121 % test times with scalars
 gbtest96  % test GrB.optype
 
 if (~have_octave)

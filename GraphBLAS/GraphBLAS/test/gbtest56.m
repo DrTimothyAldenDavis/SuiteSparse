@@ -6,7 +6,7 @@ function gbtest56
 
 for m1 = -1:5
     for n1 = -1:5
-        
+
         m = max (m1, 0) ;
         n = max (n1, 0) ;
 

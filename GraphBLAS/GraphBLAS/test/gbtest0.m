@@ -5,6 +5,7 @@ function gbtest0
 % SPDX-License-Identifier: GPL-3.0-or-later
 
 GrB.clear
+GrB.init
 
 assert (isequal (GrB.format, 'by col')) ;
 assert (isequal (GrB.chunk, 64*1024)) ;

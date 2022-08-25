@@ -1,4 +1,4 @@
-function C = gbsubassign (Cin, M, accum, A, I, j, desc)      %#ok
+function [C,k] = gbsubassign (Cin, M, accum, A, I, j, desc)      %#ok
 
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: GPL-3.0-or-later

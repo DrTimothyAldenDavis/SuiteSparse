@@ -18,6 +18,7 @@
 #ifndef GBCUDA_DEV
 #include "GB_AxB__include2.h"
 #endif
+#include "GB_unused.h"
 
 #define GB_FREE_WORKSPACE                       \
 {                                               \
@@ -219,6 +220,7 @@ GrB_Info GB_AxB_dot3                // C<M> = A'*B using dot product method
         #define GB_MASK_SPARSE_AND_STRUCTURAL
         #include "GB_meta16_factory.c"
         #undef GB_MASK_SPARSE_AND_STRUCTURAL
+        // TODO: skip phase1 if A and B are both bitmap/full.
     }
     else
     {

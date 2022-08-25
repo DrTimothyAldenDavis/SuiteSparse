@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// GB_setElement: C(row,col) = scalar
+// GB_setElement: C(row,col) = scalar or += scalar
 //------------------------------------------------------------------------------
 
 // SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
@@ -17,14 +17,15 @@
 // non-blocking, the tuple (i,j,scalar) is appended to a list of pending tuples
 // to C.  GB_wait assembles these pending tuples.
 
-// GrB_setElement when accum is NULL is the same as GrB_*assign with an implied
-// SECOND accum operator whose ztype, xtype, and ytype are the same as C, with
-// I=i, J=j, a 1-by-1 dense matrix A (where nnz (A) == 1), no mask, mask not
-// complemented, C_replace effectively false (its value is ignored), and A
-// transpose effectively false (since transposing a scalar has no effect).
+// GB_setElement when accum is NULL is used by GrB_*_setElement.  It is the
+// same as GrB_*assign with an implied SECOND accum operator whose ztype,
+// xtype, and ytype are the same as C, with I=i, J=j, a 1-by-1 dense matrix A
+// (where nnz (A) == 1), no mask, mask not complemented, C_replace effectively
+// false (its value is ignored), and A transpose effectively false (since
+// transposing a scalar has no effect).
 
-// GrB_setElement when accum is not NULL uses the accum operator instead of
-// the implied SECOND operator.
+// GB_setElement when accum is not NULL uses the accum operator instead of the
+// implied SECOND operator.  It is used by GrB_*_assign, as a special case.
 
 // Compare this function with GrB_*_extractElement_*
 
