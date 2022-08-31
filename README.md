@@ -4,14 +4,12 @@ SuiteSparse:  A Suite of Sparse matrix packages at http://suitesparse.com
 
 Aug 25, 2022.  SuiteSparse VERSION 5.13.0
 
-    SuiteSparse is a set of sparse-matrix-related packages written or
-    co-authored by Tim Davis, available at 
-    https://github.com/DrTimothyAldenDavis/SuiteSparse .
+SuiteSparse is a set of sparse-matrix-related packages written or co-authored
+by Tim Davis, available at https://github.com/DrTimothyAldenDavis/SuiteSparse .
 
 Primary author of SuiteSparse (codes and algorithms, excl. METIS): Tim Davis
 
 Code co-authors, in alphabetical order (not including METIS):
-
     Patrick Amestoy, David Bateman, Jinhao Chen, Yanqing Chen, Iain Duff,
     Les Foster, William Hager, Scott Kolodziej, Chris Lourenco, Stefan
     Larimore, Erick Moreno-Centeno, Ekanathan Palamadai, Sivasankaran
