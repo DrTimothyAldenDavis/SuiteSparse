@@ -4,23 +4,20 @@ SuiteSparse:  A Suite of Sparse matrix packages at http://suitesparse.com
 
 Aug 25, 2022.  SuiteSparse VERSION 5.13.0
 
-    Now includes GraphBLAS, SLIP_LU, and a new interface to the SuiteSparse
-    Matrix Collection (ssget), via MATLAB and a Java GUI, to
-    http://sparse.tamu.edu.
+SuiteSparse is a set of sparse-matrix-related packages written or co-authored
+by Tim Davis, available at https://github.com/DrTimothyAldenDavis/SuiteSparse .
 
 Primary author of SuiteSparse (codes and algorithms, excl. METIS): Tim Davis
 
 Code co-authors, in alphabetical order (not including METIS):
-
-    Patrick Amestoy, David Bateman, Jinhao Chen.  Yanqing Chen, Iain Duff,
+    Patrick Amestoy, David Bateman, Jinhao Chen, Yanqing Chen, Iain Duff,
     Les Foster, William Hager, Scott Kolodziej, Chris Lourenco, Stefan
     Larimore, Erick Moreno-Centeno, Ekanathan Palamadai, Sivasankaran
     Rajamanickam, Sanjay Ranka, Wissam Sid-Lakhdar, Nuri Yeralan.
 
 Additional algorithm designers: Esmond Ng and John Gilbert.
 
-Refer to each package for license, copyright, and author information.  All
-codes are authored or co-authored by Timothy A. Davis.
+Refer to each package for license, copyright, and author information.
 
 -----------------------------------------------------------------------------
 How to cite the SuiteSparse meta-package and its component packages:
