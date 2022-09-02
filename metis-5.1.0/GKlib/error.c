@@ -180,6 +180,10 @@ char *gk_strerror(int errnum)
 #ifndef SUNOS
   static __thread char buf[1024];
 
+  #if defined ( __GNUC__ )
+  #pragma GCC diagnostic ignored "-Wunused-result"
+  #endif
+
   strerror_r(errnum, buf, 1024);
 
   buf[1023] = '\0';
