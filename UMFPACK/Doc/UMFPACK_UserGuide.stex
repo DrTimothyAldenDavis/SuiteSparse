@@ -20,7 +20,7 @@
 \author{Timothy A. Davis \\
 DrTimothyAldenDavis@gmail.com, http://www.suitesparse.com}
 \title{UMFPACK User Guide}
-\date{VERSION 5.7.9, Oct 20, 2019}
+\date{VERSION 6.0.0, Sept FIXME, 2022}
 \maketitle
 
 %-------------------------------------------------------------------------------
@@ -996,7 +996,7 @@ behavior.  They are fully described in Section~\ref{Alternative}:
         and the ordering (AMD/COLAMD or METIS) giving the lowest fill-in is
         used.
 
-    \item \verb'UMFPACK_ORDERING_DEFAULT'.  This is the same as
+    \item \verb'UMFPACK_DEFAULT_ORDERING'.  This is the same as
     \verb'UMFPACK_ORDERING_AMD'.
 
     \item \verb'UMFPACK_ORDERING_AMD' (1).  This is the default.
@@ -1025,6 +1025,21 @@ behavior.  They are fully described in Section~\ref{Alternative}:
     \item \verb'UMFPACK_ORDERING_USER' (6).  Use the user-ordering function
         passed to \newline {\tt umfpack\_*\_fsymbolic}.    Refer to 
         \verb'UMFPACK/Source/umf_cholmod.c' for an example.
+
+    \item \verb'UMFPACK_ORDERING_METIS_GUARD' (7).
+        This is an ordering option added for UMFPACK v6.0.0.  For the symmetric
+        strategy, METIS on $\m{A}+\m{A}' is always used.  For the unsymmetric
+        strategy: METIS is used on $\m{A}'\m{A}$, unless $\m{A}$ has one or
+        more very dense rows.  In that case, $\m{A}'\m{A}$ is very costly to
+        form.  In this case, COLAMD is used instead of METIS.  A dense row is
+        defined by the control parameter,
+        $\alpha = ${\tt Control [UMFPACK\_METIS\_GUARD]}.  Suppose the
+        submatrix $\m{S}$, obtained after eliminating pivots with zero
+        Markowitz cost, is $m$-by-$n$.  Then a row is considered ``dense'' if
+        it has more than $\max (16, 16 \alpha \sqrt{n})$ entries.  METIS
+        requires the explicit formation of $\m{S}\m{S}'$, and this is very
+        costly if $\m{S}$ has one or dense rows.  In that case, COLAMD is used
+        on $\m{S}$ instead of METIS.  The default value of $\alpha$ is 0.2.
 
     \end{itemize}
 

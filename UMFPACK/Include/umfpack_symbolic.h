@@ -232,6 +232,11 @@ Arguments:
             UMFPACK_ORDERING_METIS      just METIS(A+A') or METIS(A'A)
             UMFPACK_ORDERING_BEST       try AMD/COLAMD, METIS, and NESDIS
             UMFPACK_ORDERING_USER       just user function (*_fsymbolic only)
+            UMFPACK_ORDERING_METIS_GUARD use METIS, AMD, or COLAMD.
+                Symmetric strategy: always use METIS on A+A'.  Unsymmetric
+                strategy: use METIS on A'A, unless A has one or more very dense
+                rows.  In that case, A'A is very costly to form.  In this case,
+                COLAMD is used instead of METIS.
 
         Control [UMFPACK_SINGLETONS]: If false (0), then singletons are
             not removed prior to factorization.  Default: true (1).
@@ -447,7 +452,7 @@ Arguments:
 	    UMFPACK_STRATEGY_SYMMETRIC or UMFPACK_STRATEGY_UNSYMMETRIC
 
 	Info [UMFPACK_ORDERING_USED]:  The ordering method used:
-            UMFPACK_ORDERING_AMD
+            UMFPACK_ORDERING_AMD    (AMD for sym. strategy, COLAMD for unsym.)
             UMFPACK_ORDERING_GIVEN
             UMFPACK_ORDERING_NONE
             UMFPACK_ORDERING_METIS

@@ -138,7 +138,7 @@ GLOBAL void UMFPACK_report_control
     /* ---------------------------------------------------------------------- */
 
     ordering_option = GET_CONTROL (UMFPACK_ORDERING, UMFPACK_DEFAULT_ORDERING) ;
-    if (ordering_option < 0 || ordering_option > UMFPACK_ORDERING_USER)
+    if (ordering_option < 0 || ordering_option > UMFPACK_ORDERING_METIS_GUARD)
     {
         ordering_option = UMFPACK_DEFAULT_ORDERING ;
     }
@@ -163,6 +163,10 @@ GLOBAL void UMFPACK_report_control
     else if (ordering_option == UMFPACK_ORDERING_METIS)
     {
         PRINTF ((" METIS\n")) ;
+    }
+    else if (ordering_option == UMFPACK_ORDERING_METIS_GUARD)
+    {
+        PRINTF ((" METIS_GUARD: METIS, or COLAMD if A'A is costly to form\n")) ;
     }
     else if (ordering_option == UMFPACK_ORDERING_BEST)
     {

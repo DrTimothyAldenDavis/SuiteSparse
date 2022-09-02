@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
+/* Copyright (c) 2005-2022 by Timothy A. Davis, http://www.suitesparse.com.   */
 /* All Rights Reserved.  See ../Doc/License.txt for License.                  */
 /* -------------------------------------------------------------------------- */
 
@@ -41,6 +41,8 @@ extern "C" {
 /* -------------------------------------------------------------------------- */
 /* User-callable routines */
 /* -------------------------------------------------------------------------- */
+
+// FIXME: copy the *.h files here, and into the user guide, and delete them.
 
 /* Primary routines: */
 #include "umfpack_symbolic.h"
@@ -96,10 +98,10 @@ extern "C" {
 /* Version, copyright, and license */
 /* -------------------------------------------------------------------------- */
 
-#define UMFPACK_VERSION "UMFPACK V5.7.9 (Oct 20, 2019)"
+#define UMFPACK_VERSION "UMFPACK V6.0.0 (Sept FIXME, 2022)"
 
 #define UMFPACK_COPYRIGHT \
-"UMFPACK:  Copyright (c) 2005-2013 by Timothy A. Davis.  All Rights Reserved.\n"
+"UMFPACK:  Copyright (c) 2005-2022 by Timothy A. Davis.  All Rights Reserved.\n"
 
 #define UMFPACK_LICENSE_PART1 \
 "\nUMFPACK License:  refer to UMFPACK/Doc/License.txt for the license.\n" \
@@ -133,11 +135,11 @@ extern "C" {
  * above.
  */
 
-#define UMFPACK_DATE "Oct 20, 2019"
+#define UMFPACK_DATE "Sept FIXME, 2022"
 #define UMFPACK_VER_CODE(main,sub) ((main) * 1000 + (sub))
-#define UMFPACK_MAIN_VERSION 5
-#define UMFPACK_SUB_VERSION 7
-#define UMFPACK_SUBSUB_VERSION 9
+#define UMFPACK_MAIN_VERSION 6
+#define UMFPACK_SUB_VERSION 0
+#define UMFPACK_SUBSUB_VERSION 0
 #define UMFPACK_VER UMFPACK_VER_CODE(UMFPACK_MAIN_VERSION,UMFPACK_SUB_VERSION)
 
 /* -------------------------------------------------------------------------- */
@@ -286,6 +288,9 @@ extern "C" {
 /* compile-time settings - Control [8..11] cannot be changed at run time: */
 #define UMFPACK_COMPILED_WITH_BLAS 8	    /* uses the BLAS */
 
+// added for controlling UMFPACK_ORDERING_METIS_GUARD:
+#define UMFPACK_METIS_GUARD 9		// dense row param. for METIS vs COLAMD
+
 /* 9,12: unused */
 
 /* -------------------------------------------------------------------------- */
@@ -311,6 +316,14 @@ extern "C" {
 #define UMFPACK_ORDERING_BEST 4         /* try many orderings, pick best */
 #define UMFPACK_ORDERING_NONE 5         /* natural ordering */
 #define UMFPACK_ORDERING_USER 6         /* user-provided function */
+
+// ordering option added for v6.0.0:
+#define UMFPACK_ORDERING_METIS_GUARD 7  // Use METIS, AMD, or COLAMD.
+    // Symmetric strategy: always use METIS on A+A'.  Unsymmetric strategy: use
+    // METIS on A'A, unless A has one or more very dense rows.  In that case,
+    // A'A is very costly to form.  In this case, COLAMD is used instead of
+    // METIS.
+
 /* AMD/COLAMD means: use AMD for symmetric strategy, COLAMD for unsymmetric */
 
 /* -------------------------------------------------------------------------- */

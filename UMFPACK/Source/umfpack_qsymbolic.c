@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
+/* Copyright (c) 2005-2022 by Timothy A. Davis, http://www.suitesparse.com.   */
 /* All Rights Reserved.  See ../Doc/License.txt for License.                  */
 /* -------------------------------------------------------------------------- */
 
@@ -743,8 +743,9 @@ PRIVATE Int symbolic_analysis
 
     /* get the ordering_option */
     ordering_option = GET_CONTROL (UMFPACK_ORDERING, UMFPACK_DEFAULT_ORDERING) ;
-    if (ordering_option < 0 || ordering_option > UMFPACK_ORDERING_USER)
+    if (ordering_option < 0 || ordering_option > UMFPACK_ORDERING_METIS_GUARD)
     {
+        // ordering unrecognized: punt to default ordering
         ordering_option = UMFPACK_DEFAULT_ORDERING ;
     }
     if (Quser == (Int *) NULL)
@@ -1111,8 +1112,6 @@ PRIVATE Int symbolic_analysis
 	UMFPACK_DENSE_DEGREE_THRESHOLD (drow, n_col - n1 - nempty_col) ;
     Symbolic->dense_row_threshold = dense_row_threshold ;
 
-    //printf ("Is submatrix symmetric after removing singletons: %d\n", is_sym) ;
-
     if (!is_sym)
     {
 	/* either the pruned submatrix rectangular, or it is square and
@@ -1121,7 +1120,6 @@ PRIVATE Int symbolic_analysis
 	 * strategy. */
 	strategy = UMFPACK_STRATEGY_UNSYMMETRIC ;
 	DEBUGm4 (("Strategy: Unsymmetric singletons\n")) ;
-     //   printf ("is_sym is false: punt to unsymmetric strategy\n") ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -1219,6 +1217,7 @@ PRIVATE Int symbolic_analysis
 
     if (strategy == UMFPACK_STRATEGY_AUTO)
     {
+        // FIXME: use Control for 0.5 and 0.9 below:
         if (sym >= 0.5 && nzdiag >= 0.9 * n2)
         {
             /* pattern is mostly symmetric (50% or more) and the diagonal is
@@ -1290,6 +1289,11 @@ PRIVATE Int symbolic_analysis
     if (strategy == UMFPACK_STRATEGY_SYMMETRIC && Quser == (Int *) NULL)
     {
 	/* symmetric strategy for a matrix with mostly symmetric pattern */
+        if (ordering_option == UMFPACK_ORDERING_METIS_GUARD)
+        {
+            // METIS_GUARD with the symmetric strategy always uses METIS 
+            ordering_option = UMFPACK_ORDERING_METIS ;
+        }
         Int ordering_used ;
 	Int *Qinv = Fr_npivcol ;
 	ASSERT (n_row == n_col && nn == n_row) ;
@@ -1359,6 +1363,54 @@ PRIVATE Int symbolic_analysis
         nrow2 = n_row - n1 - nempty_row ;
         ncol2 = n_col - n1 - nempty_col ;
 
+        //----------------------------------------------------------------------
+        // METIS_GUARD ordering: select between METIS and COLAMD
+        //----------------------------------------------------------------------
+
+        if (ordering_option == UMFPACK_ORDERING_METIS_GUARD)
+        {
+            if (nrow2 == 0 || ncol2 == 0)
+            {
+                // pruned matrix is empty: use COLAMD instead of METIS
+                ordering_option = UMFPACK_ORDERING_AMD ;
+                // FIXME: remove this printf
+                printf ("METIS_GUARD: pruned matrix is empty, using colamd\n") ;
+            }
+            else
+            {
+                // limit on row degree of the pruned matrix C for METIS_GUARD
+                // ordering:
+                double dmetis_guard = GET_CONTROL (UMFPACK_METIS_GUARD,
+                    UMFPACK_DEFAULT_DENSE_ROW);
+                Int metis_guard_degree =
+                    UMFPACK_DENSE_DEGREE_THRESHOLD (dmetis_guard, nrow2) ;
+                if (max_rdeg > metis_guard_degree)
+                {
+                    // A has at least one very dense row, so A'A is costly to
+                    // explicitly create.  Use COLAMD on A instead.  Assuming
+                    // that the Control parameters for UMFPACK_DENSE_ROW and
+                    // UMFPACK_METIS_GUARD are set to their default values
+                    // (both default to 0.2), COLAMD will find one or more
+                    // dense rows during its ordering, and it will ignore them.
+                    ordering_option = UMFPACK_ORDERING_AMD ;
+                }
+                else
+                {
+                    // OK to use METIS
+                    ordering_option = UMFPACK_ORDERING_METIS ;
+                }
+                // FIXME: remove this printf
+                printf ("METIS_GUARD: max_rdeg %ld, metis_guard_degree %ld, "
+                    "ordering : %s\n", max_rdeg, metis_guard_degree,
+                    (ordering_option == UMFPACK_ORDERING_METIS)
+                    ? "metis" : "colamd") ;
+            }
+        }
+
+        //----------------------------------------------------------------------
+        // find the unsymmetric ordering
+        //----------------------------------------------------------------------
+
         if ((ordering_option == UMFPACK_ORDERING_USER
             || ordering_option == UMFPACK_ORDERING_NONE
             || ordering_option == UMFPACK_ORDERING_METIS
@@ -1368,7 +1420,7 @@ PRIVATE Int symbolic_analysis
         {
 
             /* -------------------------------------------------------------- */
-            /* use the user-provided column ordering */
+            /* use the user-provided column ordering, or umf_cholmod */
             /* -------------------------------------------------------------- */
 
             double user_info [3] ;    /* not needed */

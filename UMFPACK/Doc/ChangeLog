@@ -1,3 +1,17 @@
+Sept FIXME, 2022: version 6.0.0
+
+    * added new ordering option: UMFPACK_ORDERING_METIS_GUARD.  For the
+        symmetric strategy, this is the same as METIS on A+A'.  For the
+        unsymmetric strategy, if A has one or more fairly dense rows,
+        COLAMD is used.  Otherwise, METIS is used on A'A.
+    * added support methods for ParU: umfpack_paru_symbolic and
+        umfpack_paru_free_sw.
+    * added control parameters: TODO
+    * umfpack_get_symbolic: revised output row permutation to exclude
+        the Diagonal Map.  This wasn't useful for the end user, so the initial
+        row permutation is returned as-is.  This modifies user-visible
+        behavior of an existing method, so this version is v6.0.0.
+
 Oct 20, 2019: version 5.7.9
 
     * update to Makefile, Tcov, and MATLAB: BLAS and LAPACK libraries

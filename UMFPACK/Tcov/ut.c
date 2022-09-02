@@ -2646,7 +2646,7 @@ static double do_matrix
     if (n < 15) Control [UMFPACK_PRL] = 4 ;
     for (singletons = 0 ; singletons <= 1 ; singletons++)
     {
-        for (ordering = EMPTY ; ordering <= UMFPACK_ORDERING_USER ; ordering++)
+        for (ordering = EMPTY ; ordering <= UMFPACK_ORDERING_METIS_GUARD ; ordering++)
         {
             Control [UMFPACK_ORDERING] = ordering ;
             Control [UMFPACK_SINGLETONS] = singletons ;

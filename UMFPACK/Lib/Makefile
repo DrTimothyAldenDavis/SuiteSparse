@@ -3,8 +3,8 @@
 #-------------------------------------------------------------------------------
 
 LIBRARY = libumfpack
-VERSION = 5.7.9
-SO_VERSION = 5
+VERSION = 6.0.0
+SO_VERSION = 6
 
 default: library
 
