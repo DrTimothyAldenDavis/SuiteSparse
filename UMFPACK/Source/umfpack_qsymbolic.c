@@ -1380,18 +1380,13 @@ PRIVATE Int symbolic_analysis
             {
                 // limit on row degree of the pruned matrix C for METIS_GUARD
                 // ordering:
-                double dmetis_guard = GET_CONTROL (UMFPACK_METIS_GUARD,
-                    UMFPACK_DEFAULT_DENSE_ROW);
-                Int metis_guard_degree =
-                    UMFPACK_DENSE_DEGREE_THRESHOLD (dmetis_guard, nrow2) ;
-                if (max_rdeg > metis_guard_degree)
+                Int metis_guard = UMFPACK_DENSE_DEGREE_THRESHOLD (drow, ncol2) ;
+                if (max_rdeg > metis_guard)
                 {
                     // A has at least one very dense row, so A'A is costly to
-                    // explicitly create.  Use COLAMD on A instead.  Assuming
-                    // that the Control parameters for UMFPACK_DENSE_ROW and
-                    // UMFPACK_METIS_GUARD are set to their default values
-                    // (both default to 0.2), COLAMD will find one or more
-                    // dense rows during its ordering, and it will ignore them.
+                    // explicitly create.  Use COLAMD on A instead.  COLAMD
+                    // will find one or more dense rows during its ordering,
+                    // and it will ignore them.
                     ordering_option = UMFPACK_ORDERING_AMD ;
                 }
                 else
@@ -1400,10 +1395,9 @@ PRIVATE Int symbolic_analysis
                     ordering_option = UMFPACK_ORDERING_METIS ;
                 }
                 // FIXME: remove this printf
-                printf ("METIS_GUARD: max_rdeg %ld, metis_guard_degree %ld, "
-                    "ordering : %s\n", max_rdeg, metis_guard_degree,
-                    (ordering_option == UMFPACK_ORDERING_METIS)
-                    ? "metis" : "colamd") ;
+                printf ("METIS_GUARD: max_rdeg "ID", metis_guard "ID", ordering : %s\n",
+                    max_rdeg, metis_guard,
+                    (ordering_option == UMFPACK_ORDERING_METIS) ? "metis" : "colamd") ;
             }
         }
 

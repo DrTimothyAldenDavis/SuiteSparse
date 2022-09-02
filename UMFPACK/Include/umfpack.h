@@ -288,9 +288,6 @@ extern "C" {
 /* compile-time settings - Control [8..11] cannot be changed at run time: */
 #define UMFPACK_COMPILED_WITH_BLAS 8	    /* uses the BLAS */
 
-// added for controlling UMFPACK_ORDERING_METIS_GUARD:
-#define UMFPACK_METIS_GUARD 9		// dense row param. for METIS vs COLAMD
-
 /* 9,12: unused */
 
 /* -------------------------------------------------------------------------- */

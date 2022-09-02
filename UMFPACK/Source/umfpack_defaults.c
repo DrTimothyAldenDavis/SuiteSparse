@@ -56,9 +56,6 @@ GLOBAL void UMFPACK_defaults
     /* used in UMFPACK_*solve: */
     Control [UMFPACK_IRSTEP] = UMFPACK_DEFAULT_IRSTEP ;
 
-    // for controlling UMFPACK_ORDERING_METIS_GUARD:
-    Control [UMFPACK_METIS_GUARD] = UMFPACK_DEFAULT_DENSE_ROW ;
-
     /* ---------------------------------------------------------------------- */
     /* compile-time settings: cannot be modified at run-time */
     /* ---------------------------------------------------------------------- */
