@@ -66,10 +66,6 @@ int UMF_cholmod
     print_level = params [1] - 1 ;
     params [2] = -1 ;
 
-    // METIS_GUARD: if the max row degree of A exceeds this limit, COLAMD is
-    // used instead of METIS on A'A:
-    Int metis_guard_degree = params [3] ;
-
     if (Ap == NULL || Ai == NULL || Perm == NULL || nrow < 0 || ncol < 0)
     {
         /* invalid inputs */
