@@ -1,4 +1,4 @@
-UMFPACK, Copyright (c) 1995-2018 by Timothy A. Davis,
+UMFPACK, Copyright (c) 1995-2022 by Timothy A. Davis,
 http://www.suitesparse.com
 
 UMFPACK :  a set of routines solving sparse linear systems via LU
@@ -157,15 +157,14 @@ Files and directories in the UMFPACK distribution:
     ----------------------------------------------------------------------------
 
     ChangeLog			change log
-    License			the UMFPACK License
+    License.txt			the UMFPACK License (GPL)
+    gpl.txt			the GNU GPL
     Makefile			for creating the documentation
-    QuickStart.tex		Quick Start guide (source)
-    QuickStart.pdf		Quick Start guide (PDF)
+    UMFPACK_QuickStart.tex	Quick Start guide (source)
+    UMFPACK_QuickStart.pdf	Quick Start guide (PDF)
     UserGuide.bib		User Guide (references)
-    UserGuide.sed1		sed script for processing UserGuide.stex
-    UserGuide.sed2		sed script for processing UserGuide.stex
-    UserGuide.stex		User Guide (LaTeX)
-    UserGuide.pdf		User Guide (PDF)
+    UMFPACK_UserGuide.tex	User Guide (LaTeX)
+    UMFPACK_UserGuide.pdf	User Guide (PDF)
 
     ----------------------------------------------------------------------------
     Source directory:
@@ -261,45 +260,8 @@ Files and directories in the UMFPACK distribution:
     Include directory:
     ----------------------------------------------------------------------------
 
-    umfpack.h			include file for user programs.  Includes all of
-				the following files.  This serves are source-
-				code level documenation.  These files are also
-				used to construct the User Guide.
-
-    umfpack_col_to_triplet.h
-    umfpack_defaults.h
-    umfpack_free_numeric.h
-    umfpack_free_symbolic.h
-    umfpack_get_determinant.h
-    umfpack_get_lunz.h
-    umfpack_get_numeric.h
-    umfpack_get_symbolic.h
-    umfpack_load_numeric.h
-    umfpack_load_symbolic.h
-    umfpack_numeric.h
-    umfpack_qsymbolic.h
-    umfpack_report_control.h
-    umfpack_report_info.h
-    umfpack_report_matrix.h
-    umfpack_report_numeric.h
-    umfpack_report_perm.h
-    umfpack_report_status.h
-    umfpack_report_symbolic.h
-    umfpack_report_triplet.h
-    umfpack_report_vector.h
-    umfpack_save_numeric.h
-    umfpack_save_symbolic.h
-    umfpack_scale.h
-    umfpack_solve.h
-    umfpack_symbolic.h
-    umfpack_tictoc.h
-    umfpack_timer.h
-    umfpack_transpose.h
-    umfpack_triplet_to_col.h
-
-    umfpack_wsolve.h		note that there is no umfpack_wsolve.c.  The
-				umfpack_*_wsolve routines are created from the
-				umfpack_solve.c file.
+    umfpack.h			include file for user programs.  Also serves as
+                                source-code level documentation.
 
     ----------------------------------------------------------------------------
     Demo directory:

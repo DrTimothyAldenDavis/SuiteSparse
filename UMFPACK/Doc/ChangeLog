@@ -8,9 +8,10 @@ Sept FIXME, 2022: version 6.0.0
         umfpack_paru_free_sw.
     * added control parameters: TODO
     * umfpack_get_symbolic: revised output row permutation to exclude
-        the Diagonal Map.  This wasn't useful for the end user, so the initial
-        row permutation is returned as-is.  This modifies user-visible
+        the Diagonal Map, and now it is returned as its own array (if present).
+        The initial row permutation is returned as-is.  This modifies the C API
         behavior of an existing method, so this version is v6.0.0.
+    * umfpack.h: a single include file, no longer #include's umfpack_*.h files.
 
 Oct 20, 2019: version 5.7.9
 

@@ -8,7 +8,7 @@
 /* -------------------------------------------------------------------------- */
 
 /*
-    User-callable.  Prints the Info array.  See umfpack_report_info.h for
+    User-callable.  Prints the Info array.  See umfpack.h for
     details.
 */
 

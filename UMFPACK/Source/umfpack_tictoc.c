@@ -10,7 +10,7 @@
 /*
     User-callable.  Returns the current wall clock time.  BE CAREFUL:  if you
     compare the run time of UMFPACK with other sparse matrix packages, be sure
-    to use the same timer.  See umfpack_tictoc.h for details.
+    to use the same timer.  See umfpack.h for details.
 
     These routines conform to the POSIX standard.  See umf_config.h for
     more details.

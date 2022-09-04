@@ -8,7 +8,7 @@
 /* -------------------------------------------------------------------------- */
 
 /*
-    User-callable.  Sets default control parameters.  See umfpack_defaults.h
+    User-callable.  Sets default control parameters.  See umfpack.h
     for details.
 */
 

@@ -140,7 +140,7 @@ int main (int argc, char **argv)
 	*P, *Q, *Lj, i, j, k, anz, nfr, nchains, *Qinit, fnpiv, lnz1, unz1, nz1,
 	status, *Front_npivcol, *Front_parent, *Chain_start, *Wi, *Pinit, n1,
 	*Chain_maxrows, *Chain_maxcols, *Front_1strow, *Front_leftmostdesc,
-	nzud, do_recip ;
+	nzud, do_recip, *Dmap ;
     void *Symbolic, *Numeric ;
 
     /* ---------------------------------------------------------------------- */
@@ -501,8 +501,9 @@ int main (int argc, char **argv)
     Chain_start = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
     Chain_maxrows = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
     Chain_maxcols = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
+    Dmap = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
     if (!Pinit || !Qinit || !Front_npivcol || !Front_parent || !Chain_start ||
-	!Chain_maxrows || !Chain_maxcols || !Front_1strow ||
+	!Chain_maxrows || !Chain_maxcols || !Front_1strow || !Dmap ||
 	!Front_leftmostdesc)
     {
 	error ("out of memory") ;
@@ -511,7 +512,7 @@ int main (int argc, char **argv)
     status = umfpack_dl_get_symbolic (&nr, &nc, &n1, &anz, &nfr, &nchains,
 	Pinit, Qinit, Front_npivcol, Front_parent, Front_1strow,
 	Front_leftmostdesc, Chain_start, Chain_maxrows, Chain_maxcols,
-	Symbolic) ;
+	Dmap, Symbolic) ;
 
     if (status < 0)
     {
@@ -729,6 +730,7 @@ int main (int argc, char **argv)
     free (Chain_start) ;
     free (Chain_maxrows) ;
     free (Chain_maxcols) ;
+    free (Dmap) ;
 
     free (Lp) ;
     free (Lj) ;

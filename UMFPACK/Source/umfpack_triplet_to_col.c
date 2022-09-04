@@ -11,7 +11,7 @@
     User callable.  Converts triplet input to column-oriented form.  Duplicate
     entries may exist (they are summed in the output).  The columns of the
     column-oriented form are in sorted order.  The input is not modified.
-    Returns 1 if OK, 0 if an error occurred.  See umfpack_triplet_to_col.h for
+    Returns 1 if OK, 0 if an error occurred.  See umfpack.h for
     details.
 
     If Map is present (a non-NULL pointer to an Int array of size nz), then on

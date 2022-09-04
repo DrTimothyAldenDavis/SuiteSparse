@@ -9,7 +9,7 @@
 
 /*
     User-callable.  Performs a symbolic factorization.
-    See umfpack_qsymbolic.h and umfpack_symbolic.h for details.
+    See umfpack.h for details.
 
     Dynamic memory usage:  about (3.4nz + 8n + n) integers and n double's as
     workspace (via UMF_malloc, for a square matrix).  All of it is free'd via

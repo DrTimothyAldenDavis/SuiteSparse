@@ -9,7 +9,7 @@
 
 /*
     User-callable.  Prints a matrix in triplet form.  See
-    umfpack_report_triplet.h for details.
+    umfpack.h for details.
 */
 
 #include "umf_internal.h"

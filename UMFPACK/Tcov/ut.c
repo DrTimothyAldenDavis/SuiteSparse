@@ -1642,7 +1642,7 @@ static double do_symnum
     Int *noP = INULL, *noQ = INULL, *Li, *Ui, n, n_inner, n1, do_recip ;
     Int lnz, unz, nz, nn, nfr, nchains, nsparse_col, status ;
     Int *Front_npivots, *Front_parent, *Chain_start, *Chain_maxrows ;
-    Int *Chain_maxcols, *Lrowi, *Lrowp, is_singular ;
+    Int *Chain_maxcols, *Lrowi, *Lrowp, is_singular, *Dmap ;
     double Info [UMFPACK_INFO], *Lrowx, *Lrowz, *Dx, *Dz ;
     Int nnrow, nncol, nzud, *Front_1strow, *Front_leftmostdesc, prl, i ;
     double mind, maxd, rcond ;
@@ -1826,14 +1826,15 @@ static double do_symnum
     Chain_start = (Int *) malloc ((n+1) * sizeof (Int)) ;		/* [ */
     Chain_maxrows = (Int *) malloc ((n+1) * sizeof (Int)) ;		/* [ */
     Chain_maxcols = (Int *) malloc ((n+1) * sizeof (Int)) ;		/* [ */
+    Dmap = (Int *) malloc ((n+1) * sizeof (Int)) ;		        /* [ */
 
     if (!Front_npivots || !Front_parent || !Chain_start || !Chain_maxrows
-	|| !Front_leftmostdesc || !Front_1strow
+	|| !Front_leftmostdesc || !Front_1strow || !Dmap
 	|| !Chain_maxcols || !Qtree || !Ptree) error ("out of memory (1)",0.) ;
 
     status = UMFPACK_get_symbolic (&nnrow, &nncol, &n1, &nz, &nfr, &nchains,
 	Ptree, Qtree, Front_npivots, Front_parent, Front_1strow, Front_leftmostdesc,
-	Chain_start, Chain_maxrows, Chain_maxcols, Symbolic) ;
+	Chain_start, Chain_maxrows, Chain_maxcols, Dmap, Symbolic) ;
 
     if (status != UMFPACK_OK)
     {
@@ -1841,6 +1842,7 @@ static double do_symnum
 	error ("get symbolic failed\n", 0.) ;
     }
 
+    free (Dmap) ;               /* ] */
     free (Chain_maxcols) ;	/* ] */
     free (Chain_maxrows) ;	/* ] */
     free (Chain_start) ;	/* ] */
@@ -6619,14 +6621,16 @@ int main (int argc, char **argv)
 	Chain_maxcols = (Int *) malloc (n * sizeof (Int)) ;		/* [ */
 	Qtree = (Int *) malloc (n * sizeof (Int)) ;			/* [ */
 	Ptree = (Int *) malloc (n * sizeof (Int)) ;			/* [ */
+	Dmap = (Int *) malloc (n * sizeof (Int)) ;			/* [ */
 	if (!Front_npivots || !Front_parent || !Chain_start || !Chain_maxrows
 	    || !Chain_maxcols || !Qtree) error ("out of memory (22)",0.) ;
 
 	s = UMFPACK_get_symbolic (&nnrow, &nncol, &n1, &nnz, &nfr, &nchains,
 	    Ptree, Qtree, Front_npivots, Front_parent, Front_1strow, Front_leftmostdesc,
-	    Chain_start, Chain_maxrows, Chain_maxcols, Symbolic) ;
+	    Chain_start, Chain_maxrows, Chain_maxcols, Dmap, Symbolic) ;
 	if (s != UMFPACK_ERROR_invalid_Symbolic_object) error ("93", 0.) ;
 
+	free (Dmap) ;           /* ] */
 	free (Ptree) ;		/* ] */
 	free (Qtree) ;		/* ] */
 	free (Chain_maxcols) ;	/* ] */

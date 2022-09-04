@@ -1861,7 +1861,7 @@ void mexFunction
 	    status = umfpack_zl_get_symbolic (&ignore1, &ignore2, &ignore3,
 	        &nz, &nfronts, &nchains, P, Q, Front_npivcol,
 	        Front_parent, Front_1strow, Front_leftmostdesc,
-	        Chain_start, Chain_maxrows, Chain_maxcols, Symbolic) ;
+	        Chain_start, Chain_maxrows, Chain_maxcols, NULL, Symbolic) ;
 	    umfpack_zl_free_symbolic (&Symbolic) ;
 	}
 	else
@@ -1869,7 +1869,7 @@ void mexFunction
 	    status = umfpack_dl_get_symbolic (&ignore1, &ignore2, &ignore3,
 	        &nz, &nfronts, &nchains, P, Q, Front_npivcol,
 	        Front_parent, Front_1strow, Front_leftmostdesc,
-	        Chain_start, Chain_maxrows, Chain_maxcols, Symbolic) ;
+	        Chain_start, Chain_maxrows, Chain_maxcols, NULL, Symbolic) ;
 	    umfpack_dl_free_symbolic (&Symbolic) ;
 	}
 

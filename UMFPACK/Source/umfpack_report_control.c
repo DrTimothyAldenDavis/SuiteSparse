@@ -8,7 +8,7 @@
 /* -------------------------------------------------------------------------- */
 
 /*
-    User-callable.  Prints the control settings.  See umfpack_report_control.h
+    User-callable.  Prints the control settings.  See umfpack.h
     for details.
 */
 

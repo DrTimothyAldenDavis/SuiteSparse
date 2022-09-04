@@ -12,7 +12,7 @@
 /*
     User-callable.  From the LU factors, scale factor, and permutation vectors
     held in the Numeric object, calculates the determinant of the matrix A.
-    See umfpack_get_determinant.h for a more detailed description.
+    See umfpack.h for a more detailed description.
 
     Dynamic memory usage:  calls UMF_malloc once, for a total space of
     n integers, and then frees all of it via UMF_free when done.

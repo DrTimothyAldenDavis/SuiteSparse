@@ -9,7 +9,7 @@
 
 /*
     User-callable.  Prints the Numeric object.
-    See umfpack_report_numeric.h for details.
+    See umfpack.h for details.
 
     Dynamic memory usage:  Allocates a size n*sizeof(Int) workspace via a single
     call to UMF_malloc and then frees all of it via UMF_free on return.  The

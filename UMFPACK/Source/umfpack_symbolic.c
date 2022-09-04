@@ -9,7 +9,7 @@
 
 /*
     User-callable.  Performs a symbolic factorization.
-    See umfpack_symbolic.h for details.
+    See umfpack.h for details.
 */
 
 #include "umf_internal.h"

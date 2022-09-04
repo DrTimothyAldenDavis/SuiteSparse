@@ -9,7 +9,7 @@
 
 /*
     User callable.  Computes a permuted transpose, R = (A (P,Q))' in MATLAB
-    notation.  See umfpack_transpose.h for details.  A and R can be rectangular.
+    notation.  See umfpack.h for details.  A and R can be rectangular.
     The matrix A may be singular.
     The complex version can do transpose (') or array transpose (.').
 

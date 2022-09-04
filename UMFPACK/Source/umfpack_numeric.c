@@ -9,7 +9,7 @@
 
 /*
     User-callable.  Factorizes A into its LU factors, given a symbolic
-    pre-analysis computed by UMFPACK_symbolic.  See umfpack_numeric.h for a
+    pre-analysis computed by UMFPACK_symbolic.  See umfpack.h for a
     description.
 
     Dynamic memory allocation:  substantial.  See comments (1) through (7),

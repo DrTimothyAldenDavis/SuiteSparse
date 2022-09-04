@@ -10,7 +10,7 @@
 /*
     User callable.  Converts a column-oriented input matrix to triplet form by
     constructing the column indices Tj from the column pointers Ap.  The matrix
-    may be singular.  See umfpack_col_to_triplet.h for details.
+    may be singular.  See umfpack.h for details.
 
 */
 

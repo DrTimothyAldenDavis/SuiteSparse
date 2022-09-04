@@ -8,7 +8,7 @@
 /* -------------------------------------------------------------------------- */
 
 /*
-    User-callable.  Prints the Symbolic object. See umfpack_report_symbolic.h
+    User-callable.  Prints the Symbolic object. See umfpack.h
     for details.  Not all of the object is printed.
 
     Dynamic memory usage:  Allocates a size MAX (n_row,n_col)*sizeof(Int)

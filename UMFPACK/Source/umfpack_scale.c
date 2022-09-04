@@ -9,7 +9,7 @@
 
 /*
     User-callable.  Applies the scale factors computed during numerical
-    factorization to a vector. See umfpack_scale.h for more details.
+    factorization to a vector. See umfpack.h for more details.
 
     The LU factorization is L*U = P*R*A*Q, where P and Q are permutation
     matrices, and R is diagonal.  This routine computes X = R * B using the

@@ -9,7 +9,7 @@
 
 /*
     User-callable.  Prints a real or complex vector.
-    See umfpack_report_vector.h for details.
+    See umfpack.h for details.
 */
 
 #include "umf_internal.h"

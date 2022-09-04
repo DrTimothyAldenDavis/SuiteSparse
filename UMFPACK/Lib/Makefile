@@ -62,7 +62,7 @@ UMF_CREATED = umf_lhsolve umf_uhsolve umf_triplet_map_nox \
 # non-user-callable, int/SuiteSparse_long and real/complex versions:
 UMF = $(UMF_CREATED) $(UMFCH)
 
-# user-callable umfpack_*.[ch] files (int/SuiteSparse_long and real/complex):
+# user-callable umfpack_*.c files (int/SuiteSparse_long and real/complex):
 UMFPACK = umfpack_col_to_triplet umfpack_defaults umfpack_free_numeric \
 	umfpack_free_symbolic umfpack_get_numeric umfpack_get_lunz \
 	umfpack_get_symbolic umfpack_get_determinant umfpack_numeric \
@@ -93,8 +93,6 @@ INC = ../Include/umfpack.h ../../SuiteSparse_config/SuiteSparse_config.h \
 	../Source/umf_internal.h ../Source/umf_triplet.h \
 	$(addprefix ../Source/,  $(addsuffix .h,$(UMFCH))) \
 	$(addprefix ../Source/,  $(addsuffix .h,$(UMFINT))) \
-	$(addprefix ../Include/, $(addsuffix .h,$(UMFUSER))) \
-	$(addprefix ../Include/, $(addsuffix .h,$(GENERIC))) \
 	../../AMD/Include/amd_internal.h ../../AMD/Include/amd.h
 
 #-------------------------------------------------------------------------------

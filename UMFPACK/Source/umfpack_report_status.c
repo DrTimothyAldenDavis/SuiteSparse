@@ -9,7 +9,7 @@
 
 /*
     User-callable.  Prints the return value from other UMFPACK_* routines.
-    See umfpack_report_status.h for details.
+    See umfpack.h for details.
 */
 
 #include "umf_internal.h"

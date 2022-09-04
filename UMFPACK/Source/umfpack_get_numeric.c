@@ -11,7 +11,7 @@
     User-callable.  Gets the LU factors and the permutation vectors held in the
     Numeric object.  L is returned in sparse row form with sorted rows, U is
     returned in sparse column form with sorted columns, and P and Q are
-    returned as permutation vectors.  See umfpack_get_numeric.h for a more
+    returned as permutation vectors.  See umfpack.h for a more
     detailed description.
 
     Returns TRUE if successful, FALSE if the Numeric object is invalid or

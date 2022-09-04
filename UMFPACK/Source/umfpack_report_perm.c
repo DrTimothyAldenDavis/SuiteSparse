@@ -8,7 +8,7 @@
 /* -------------------------------------------------------------------------- */
 
 /*
-    User-callable.  Prints a permutation vector.  See umfpack_report_perm.h
+    User-callable.  Prints a permutation vector.  See umfpack.h
     for details.
 
     Dynamic memory usage:  Allocates a size max(np,1)*sizeof(Int) workspace via

@@ -9,7 +9,7 @@
 
 /*
     User-callable.  Prints a column or row-oriented matrix.  See
-    umfpack_report_matrix.h for details.
+    umfpack.h for details.
 */
 
 #include "umf_internal.h"

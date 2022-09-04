@@ -9,7 +9,7 @@
 
 /*
     User-callable.  Gets the symbolic information held in the Symbolic object.
-    See umfpack_get_symbolic.h for a more detailed description.
+    See umfpack.h for a more detailed description.
 */
 
 #include "umf_internal.h"
@@ -32,6 +32,7 @@ GLOBAL Int UMFPACK_get_symbolic
     Int Chain_start [ ],
     Int Chain_maxrows [ ],
     Int Chain_maxcols [ ],
+    Int Dmap [ ],               // added for v6.0.0
     void *SymbolicHandle
 )
 {
@@ -99,6 +100,22 @@ GLOBAL Int UMFPACK_get_symbolic
         for (k = 0 ; k < n_row ; k++)
         {
             P [k] = Rperm_init [k] ;
+        }
+    }
+
+    if (Dmap != NULL)
+    {
+        if (Symbolic->Diagonal_map == NULL)
+        {
+            // Diagonal_Map wasn't constructed (implicit identity)
+            for (k = 0 ; k < n_col ; k++)
+            {
+                Dmap [k] = k ;
+            }
+        }
+        else
+        {
+            memcpy (Dmap, Symbolic->Diagonal_map, n_col * sizeof (Int)) ;
         }
     }
 

@@ -8,7 +8,7 @@
 /* -------------------------------------------------------------------------- */
 
 /*
-    User-callable.  See umfpack_free_symbolic.h for details.
+    User-callable.  See umfpack.h for details.
     All 10 objects comprising the Symbolic object are free'd via UMF_free.
 */
 

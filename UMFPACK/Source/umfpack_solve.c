@@ -9,7 +9,7 @@
 
 /*
     User-callable.  Solves a linear system using the numerical factorization
-    computed by UMFPACK_numeric.  See umfpack_solve.h for more details.
+    computed by UMFPACK_numeric.  See umfpack.h for more details.
 
     For umfpack_*_solve:
 	Dynamic memory usage:  UMFPACK_solve calls UMF_malloc twice, for
