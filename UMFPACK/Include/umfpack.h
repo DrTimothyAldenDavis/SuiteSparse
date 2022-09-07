@@ -68,6 +68,10 @@ extern "C" {
 #include "umfpack_load_numeric.h"
 #include "umfpack_save_symbolic.h"
 #include "umfpack_load_symbolic.h"
+#include "umfpack_serialize_symbolic.h"
+#include "umfpack_deserialize_symbolic.h"
+#include "umfpack_serialize_numeric.h"
+#include "umfpack_deserialize_numeric.h"
 #include "umfpack_get_determinant.h"
 
 /* Reporting routines (the above 14 routines print nothing): */
