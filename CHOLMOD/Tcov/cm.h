@@ -14,6 +14,7 @@
 #ifdef DLONG
 #define Real double
 #define Int SuiteSparse_long
+#define UInt uint64_t
 #define Int_max SuiteSparse_long_max
 #define CHOLMOD(name) cholmod_l_ ## name
 #define LONG
@@ -35,6 +36,7 @@
 
 #define Real double
 #define Int int
+#define UInt unsigned int
 #define Int_max INT_MAX
 #define CHOLMOD(name) cholmod_ ## name
 #define ITYPE CHOLMOD_INT

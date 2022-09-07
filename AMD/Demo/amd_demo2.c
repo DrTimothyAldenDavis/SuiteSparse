@@ -25,7 +25,7 @@ int main (void)
      * Since AMD operates on A+A', only A(i,j) or A(j,i) need to be specified,
      * or both.  The diagonal entries are optional (some are missing).
      * There are many duplicate entries, which must be removed. */
-    int n = 24, nz,
+    int32_t n = 24, nz,
     Ap [ ] = { 0, 9, 14, 20, 28, 33, 37, 44, 53, 58, 63, 63, 66, 69, 72, 75,
 	      78, 82, 86, 91, 97, 101, 112, 112, 116 },
     Ai [ ] = {
@@ -54,7 +54,7 @@ int main (void)
 	/* column 22: */
 	/* column 23: */    12, 11, 12, 23 } ;
 
-    int P [24], Pinv [24], i, j, k, jnew, p, inew, result ;
+    int32_t P [24], Pinv [24], i, j, k, jnew, p, inew, result ;
     double Control [AMD_CONTROL], Info [AMD_INFO] ;
     char A [24][24] ;
 

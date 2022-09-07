@@ -1,30 +1,14 @@
 /* ========================================================================== */
-/* === SuiteSparse_config =================================================== */
+/* === SuiteSparse/SuiteSparse_config/SuiteSparse_config.c ================== */
 /* ========================================================================== */
 
-/* SuiteSparse configuration : memory manager and printf functions. */
-
-/* Copyright (c) 2013-2018, Timothy A. Davis.  No licensing restrictions
- * apply to this file or to the SuiteSparse_config directory.
- * Author: Timothy A. Davis.
+/* SuiteSparse configuration : memory manager and printf functions.
+ *
+ * Copyright (c) 2012-2022, Timothy A. Davis.  All Rights Reserved.
+ * SPEX-License-Identifier: BSD-3-clause
  */
 
-#include <math.h>
-#include <stdlib.h>
-
-#ifndef NPRINT
-#include <stdio.h>
-#endif
-
-#ifdef MATLAB_MEX_FILE
-#include "mex.h"
-#include "matrix.h"
-#endif
-
-#ifndef NULL
-#define NULL ((void *) 0)
-#endif
-
+#define SUITESPARSE_LIBRARY
 #include "SuiteSparse_config.h"
 
 /* -------------------------------------------------------------------------- */
@@ -101,6 +85,7 @@ struct SuiteSparse_config_struct SuiteSparse_config =
    SuiteSparse_start be called prior to calling any SuiteSparse function.
  */
 
+SUITESPARSE_PUBLIC
 void SuiteSparse_start ( void )
 {
 
@@ -161,6 +146,7 @@ void SuiteSparse_start ( void )
    SuiteSparse-wide cleanup operations or finalization of statistics.
  */
 
+SUITESPARSE_PUBLIC
 void SuiteSparse_finish ( void )
 {
     /* do nothing */ ;
@@ -170,6 +156,7 @@ void SuiteSparse_finish ( void )
 /* SuiteSparse_malloc: malloc wrapper */
 /* -------------------------------------------------------------------------- */
 
+SUITESPARSE_PUBLIC
 void *SuiteSparse_malloc    /* pointer to allocated block of memory */
 (
     size_t nitems,          /* number of items to malloc */
@@ -194,11 +181,11 @@ void *SuiteSparse_malloc    /* pointer to allocated block of memory */
     return (p) ;
 }
 
-
 /* -------------------------------------------------------------------------- */
 /* SuiteSparse_calloc: calloc wrapper */
 /* -------------------------------------------------------------------------- */
 
+SUITESPARSE_PUBLIC
 void *SuiteSparse_calloc    /* pointer to allocated block of memory */
 (
     size_t nitems,          /* number of items to calloc */
@@ -235,6 +222,7 @@ void *SuiteSparse_calloc    /* pointer to allocated block of memory */
    pointer to the old (unmodified) object is returned.
  */
 
+SUITESPARSE_PUBLIC
 void *SuiteSparse_realloc   /* pointer to reallocated block of memory, or
                                to original block if the realloc failed. */
 (
@@ -300,6 +288,7 @@ void *SuiteSparse_realloc   /* pointer to reallocated block of memory, or
 /* SuiteSparse_free: free wrapper */
 /* -------------------------------------------------------------------------- */
 
+SUITESPARSE_PUBLIC
 void *SuiteSparse_free      /* always returns NULL */
 (
     void *p                 /* block to free */
@@ -311,7 +300,6 @@ void *SuiteSparse_free      /* always returns NULL */
     }
     return (NULL) ;
 }
-
 
 /* -------------------------------------------------------------------------- */
 /* SuiteSparse_tic: return current wall clock time */
@@ -344,36 +332,60 @@ void *SuiteSparse_free      /* always returns NULL */
  * <time.h> include file.
  */
 
-#ifdef SUITESPARSE_TIMER_ENABLED
+#if !defined ( SUITESPARSE_TIMER_ENABLED )
 
-#include <time.h>
+    /* ---------------------------------------------------------------------- */
+    /* no timer */
+    /* ---------------------------------------------------------------------- */
 
-void SuiteSparse_tic
-(
-    double tic [2]      /* output, contents undefined on input */
-)
-{
-    /* POSIX C 1993 timer, requires -librt */
-    struct timespec t ;
-    clock_gettime (CLOCK_MONOTONIC, &t) ;
-    tic [0] = (double) (t.tv_sec) ;
-    tic [1] = (double) (t.tv_nsec) ;
-}
+    SUITESPARSE_PUBLIC
+    void SuiteSparse_tic
+    (
+        double tic [2]      /* output, contents undefined on input */
+    )
+    {
+        /* no timer installed */
+        tic [0] = 0 ;
+        tic [1] = 0 ;
+    }
 
-#else
+#elif defined ( _OPENMP )
 
-void SuiteSparse_tic
-(
-    double tic [2]      /* output, contents undefined on input */
-)
-{
-    /* no timer installed */
-    tic [0] = 0 ;
-    tic [1] = 0 ;
-}
+    /* ---------------------------------------------------------------------- */
+    /* OpenMP timer */
+    /* ---------------------------------------------------------------------- */
+
+    SUITESPARSE_PUBLIC
+    void SuiteSparse_tic
+    (
+        double tic [2]      /* output, contents undefined on input */
+    )
+    {
+        tic [0] = omp_get_wtime ( ) ;
+        tic [1] = 0 ;
+    }
+
+#else 
+
+    /* ---------------------------------------------------------------------- */
+    /* POSIX timer */
+    /* ---------------------------------------------------------------------- */
+
+    #include <time.h>
+    SUITESPARSE_PUBLIC
+    void SuiteSparse_tic
+    (
+        double tic [2]      /* output, contents undefined on input */
+    )
+    {
+        /* POSIX C 1993 timer, requires -lrt */
+        struct timespec t ;
+        clock_gettime (CLOCK_MONOTONIC, &t) ;
+        tic [0] = (double) (t.tv_sec) ;
+        tic [1] = (double) (t.tv_nsec) ;
+    }
 
 #endif
-
 
 /* -------------------------------------------------------------------------- */
 /* SuiteSparse_toc: return time since last tic */
@@ -386,6 +398,7 @@ void SuiteSparse_tic
  * SuiteSparse_tic and do the calculations differently.
  */
 
+SUITESPARSE_PUBLIC
 double SuiteSparse_toc  /* returns time in seconds since last tic */
 (
     double tic [2]  /* input, not modified from last call to SuiteSparse_tic */
@@ -396,13 +409,13 @@ double SuiteSparse_toc  /* returns time in seconds since last tic */
     return ((toc [0] - tic [0]) + 1e-9 * (toc [1] - tic [1])) ;
 }
 
-
 /* -------------------------------------------------------------------------- */
 /* SuiteSparse_time: return current wallclock time in seconds */
 /* -------------------------------------------------------------------------- */
 
 /* This function might not be accurate down to the nanosecond. */
 
+SUITESPARSE_PUBLIC
 double SuiteSparse_time  /* returns current wall clock time in seconds */
 (
     void
@@ -413,11 +426,11 @@ double SuiteSparse_time  /* returns current wall clock time in seconds */
     return (toc [0] + 1e-9 * toc [1]) ;
 }
 
-
 /* -------------------------------------------------------------------------- */
 /* SuiteSparse_version: return the current version of SuiteSparse */
 /* -------------------------------------------------------------------------- */
 
+SUITESPARSE_PUBLIC
 int SuiteSparse_version
 (
     int version [3]
@@ -453,6 +466,7 @@ int SuiteSparse_version
  * P. Friedland, Comm. ACM, vol 10, no 10, October 1967, page 665.
  */
 
+SUITESPARSE_PUBLIC
 double SuiteSparse_hypot (double x, double y)
 {
     double s, r ;
@@ -503,6 +517,7 @@ double SuiteSparse_hypot (double x, double y)
  * SuiteSparse_divcomplex.
  */
 
+SUITESPARSE_PUBLIC
 int SuiteSparse_divcomplex
 (
     double ar, double ai,       /* real and imaginary parts of a */
@@ -529,3 +544,4 @@ int SuiteSparse_divcomplex
     *ci = ti ;
     return (den == 0.) ;
 }
+

@@ -219,6 +219,7 @@ size_t cholmod_l_mult_size_t (size_t a, size_t k, int *ok) ;
 #ifdef DLONG
 #define Real double
 #define Int SuiteSparse_long
+#define UInt uint64_t
 #define Int_max SuiteSparse_long_max
 #define CHOLMOD(name) cholmod_l_ ## name
 #define LONG
@@ -241,6 +242,7 @@ size_t cholmod_l_mult_size_t (size_t a, size_t k, int *ok) ;
 
 #define Real double
 #define Int int
+#define UInt unsigned int
 #define Int_max INT_MAX
 #define CHOLMOD(name) cholmod_ ## name
 #define ITYPE CHOLMOD_INT

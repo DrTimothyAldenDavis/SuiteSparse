@@ -1,0 +1,2 @@
+% version of SuiteSparse/AMD
+\date{VERSION @AMD_VERSION_MAJOR@.@AMD_VERSION_MINOR@.@AMD_VERSION_SUB@, @AMD_DATE@}

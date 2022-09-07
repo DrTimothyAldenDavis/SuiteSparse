@@ -35,8 +35,9 @@
 #define MIN(a,b) (((a) < (b)) ? (a) : (b))
 #define ABS(a)   (((a) > 0) ? (a) : -(a))
 #define ISNAN(a) ((a) != (a))
+
 #define PRIVATE static
-#define PUBLIC
+#define PUBLIC SUITESPARSE_PUBLIC
 
 #define SLEN 4096
 #define FREE_WORK   { SuiteSparse_free (w) ; \

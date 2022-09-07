@@ -20,26 +20,33 @@
 #
 #   make distclean
 
-cmake_minimum_required(VERSION 3.13)
+# cmake 3.17 is required
+cmake_minimum_required ( VERSION 3.17 )
+
 include(CMake/cmake_colors.cmake)
 
-if (POLICY CMP0048)
-    cmake_policy(SET CMP0048 NEW)
-endif (POLICY CMP0048)
+set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+    ${CMAKE_SOURCE_DIR}/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../cmake_modules
+    ${CMAKE_SOURCE_DIR}/../SuiteSparse/cmake_modules
+    )
 
-set(Mongoose_DATE "May 25, 2019")
-set(Mongoose_NUMERIC_DATE "2019-05-25")
-set(Mongoose_VERSION_MAJOR 2)
+# if (POLICY CMP0048)
+#    cmake_policy(SET CMP0048 NEW)
+# endif (POLICY CMP0048)
+
+set(Mongoose_DATE "Sept FIXME, 2022")
+set(Mongoose_NUMERIC_DATE "2022-09-06") # FIXME
+set(Mongoose_VERSION_MAJOR 3)
 set(Mongoose_VERSION_MINOR 0)
-set(Mongoose_VERSION_PATCH 4)
+set(Mongoose_VERSION_PATCH 0)
 
-if(CMAKE_MAJOR_VERSION GREATER 2)
 project(Mongoose
         VERSION "${Mongoose_VERSION_MAJOR}.${Mongoose_VERSION_MINOR}.${Mongoose_VERSION_PATCH}"
         LANGUAGES CXX C)
-else()
-project(Mongoose CXX C)
-endif()
+
+# Mongoose installation location
+include ( GNUInstallDirs )
 
 # Configure files to pass CMake information
 configure_file (
@@ -54,6 +61,8 @@ configure_file (
         "Version/codemeta.json.in"
         "${PROJECT_SOURCE_DIR}/codemeta.json"
 )
+
+find_package ( SuiteSparse_config REQUIRED )
 
 include_directories("${PROJECT_BINARY_DIR}")
 
@@ -147,27 +156,7 @@ include_directories(Include
 set(CMAKE_CXX_STANDARD 11)
 #set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# determine which SuiteSparse_config to use
-if (EXISTS ${PROJECT_SOURCE_DIR}/../SuiteSparse_config)
-    message(STATUS "External ../SuiteSparse_config" ${BoldBlue} " found" ${ColourReset} ".")
-    set ( SUITESPARSE_CONFIG_DIR ${PROJECT_SOURCE_DIR}/../SuiteSparse_config )
-    link_directories ( ${PROJECT_SOURCE_DIR}/../lib )
-    message ( STATUS "Note: ../SuiteSparse_config must be compiled before compiling Mongoose" )
-    set ( SUITESPARSE_CONFIG_LIBRARY suitesparseconfig )
-else ()
-    message(STATUS "External ../SuiteSparse_config" ${BoldRed} " not found" ${ColourReset} ", compiling stand-alone Mongoose.")
-    set(SUITESPARSE_CONFIG_DIR ${PROJECT_SOURCE_DIR}/SuiteSparse_config)
-    set(SUITESPARSE_CONFIG_FILES
-            ${SUITESPARSE_CONFIG_DIR}/SuiteSparse_config.c
-            ${SUITESPARSE_CONFIG_DIR}/SuiteSparse_config.h
-            )
-    set(MONGOOSE_LIB_FILES
-            ${MONGOOSE_LIB_FILES}
-            ${SUITESPARSE_CONFIG_FILES}
-            )
-endif ()
-
-include_directories(${SUITESPARSE_CONFIG_DIR})
+include_directories ( ${SUITESPARSE_CONFIG_INCLUDE_DIR} )
 
 # set the output directories
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -179,9 +168,8 @@ add_library(mongoose_lib ${MONGOOSE_LIB_FILES})
 set_property(TARGET mongoose_lib PROPERTY POSITION_INDEPENDENT_CODE ON)
 set_target_properties(mongoose_lib
         PROPERTIES OUTPUT_NAME mongoose)
-if ( SUITESPARSE_CONFIG_LIBRARY )
-    target_link_libraries(mongoose_lib ${SUITESPARSE_CONFIG_LIBRARY})
-endif ()
+
+target_link_libraries(mongoose_lib ${SUITESPARSE_CONFIG_LIBRARY})
 
 if (UNIX AND NOT APPLE)
     target_link_libraries(mongoose_lib rt)
@@ -193,9 +181,8 @@ add_library(mongoose_dylib SHARED ${MONGOOSE_LIB_FILES})
 set_property(TARGET mongoose_dylib PROPERTY POSITION_INDEPENDENT_CODE ON)
 set_target_properties(mongoose_dylib
         PROPERTIES OUTPUT_NAME mongoose)
-if ( SUITESPARSE_CONFIG_LIBRARY )
-    target_link_libraries(mongoose_dylib ${SUITESPARSE_CONFIG_LIBRARY})
-endif ()
+
+target_link_libraries(mongoose_dylib ${SUITESPARSE_CONFIG_LIBRARY})
 
 # if(CMAKE_MAJOR_VERSION GREATER 2)
 #     set_target_properties(mongoose_dylib PROPERTIES VERSION ${PROJECT_VERSION})
@@ -207,7 +194,6 @@ endif ()
         ${Mongoose_VERSION_MAJOR})
 # endif()
 
-
 set_target_properties(mongoose_dylib PROPERTIES PUBLIC_HEADER Include/Mongoose.hpp)
 target_include_directories(mongoose_dylib PRIVATE .)
 
@@ -215,20 +201,27 @@ if (UNIX AND NOT APPLE)
     target_link_libraries(mongoose_dylib rt)
 endif ()
 
-# Mongoose installation location
-include ( GNUInstallDirs )
-install ( TARGETS mongoose_dylib mongoose_lib 
+install ( TARGETS mongoose_dylib
     LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+
+install ( TARGETS mongoose_lib
     ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+
+# also install in ../lib and ../include
+install ( TARGETS mongoose_dylib
+    LIBRARY       DESTINATION ${CMAKE_SOURCE_DIR}/../lib
+    PUBLIC_HEADER DESTINATION ${CMAKE_SOURCE_DIR}/../include )
+
+install ( TARGETS mongoose_lib
+    ARCHIVE       DESTINATION ${CMAKE_SOURCE_DIR}/../lib)
 
 # Build the Mongoose library and all tests with coverage flags
 add_library(mongoose_lib_dbg ${MONGOOSE_LIB_FILES})
 set_target_properties(mongoose_lib_dbg
         PROPERTIES OUTPUT_NAME mongoose_dbg)
-if ( SUITESPARSE_CONFIG_LIBRARY )
-    target_link_libraries(mongoose_lib_dbg ${SUITESPARSE_CONFIG_LIBRARY})
-endif ()
+
+target_link_libraries(mongoose_lib_dbg ${SUITESPARSE_CONFIG_LIBRARY})
 
 if (UNIX AND NOT APPLE)
     target_link_libraries(mongoose_lib_dbg rt)

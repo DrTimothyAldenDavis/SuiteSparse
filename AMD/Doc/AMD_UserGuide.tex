@@ -1,4 +1,5 @@
 \documentclass[11pt]{article}
+\batchmode
 
 \newcommand{\m}[1]{{\bf{#1}}}       % for matrices and vectors
 \newcommand{\tr}{^{\sf T}}          % transpose
@@ -32,7 +33,7 @@ http://www.numerical.rl.ac.uk/people/isd/isd.html.
 This work was supported by the EPSRC under grant GR/R46441.
 }}
 
-\date{VERSION 2.4.6, May 4, 2016}
+\input{amd_version.tex}
 \maketitle
 
 %------------------------------------------------------------------------------
@@ -45,7 +46,7 @@ A MATLAB interface is included.
 \end{abstract}
 %------------------------------------------------------------------------------
 
-AMD Copyright\copyright 2013 by Timothy A.
+AMD Copyright\copyright 1996-2022 by Timothy A.
 Davis, Patrick R. Amestoy, and Iain S. Duff.  All Rights Reserved.
 AMD is available under alternate licences; contact T. Davis for details.
 
@@ -203,27 +204,27 @@ type {\tt help amd} in the MATLAB command window.
 
 The C-callable AMD library consists of seven user-callable routines and one
 include file.  There are two versions of each of the routines, with
-{\tt int} and {\tt long} integers.
+\verb'int32_t' and \verb'int64_t' integers.
 The routines with prefix
-{\tt amd\_l\_} use {\tt long} integer arguments; the others use
-{\tt int} integer arguments.  If you compile AMD in the standard
-ILP32 mode (32-bit {\tt int}'s, {\tt long}'s, and pointers) then the versions
+{\tt amd\_l\_} use \verb'int64_t' integer arguments; the others use
+\verb'int32_t' integer arguments.  If you compile AMD in the standard
+ILP32 mode (32-bit \verb'int32_t''s, \verb'int64_t''s, and pointers) then the versions
 are essentially identical.  You will be able to solve problems using up to 2GB
 of memory.  If you compile AMD in the standard LP64 mode, the size of an
-{\tt int} remains 32-bits, but the size of a {\tt long} and a pointer both get
+\verb'int32_t' remains 32-bits, but the size of a \verb'int64_t' and a pointer both get
 promoted to 64-bits.
 
 The following routines are fully described in Section~\ref{Primary}:
 
 \begin{itemize}
 \item {\tt amd\_order}
-({\tt long} version: {\tt amd\_l\_order})
+(\verb'int64_t' version: {\tt amd\_l\_order})
     {\footnotesize
     \begin{verbatim}
     #include "amd.h"
-    int n, Ap [n+1], Ai [nz], P [n] ;
+    int32_t n, Ap [n+1], Ai [nz], P [n] ;
     double Control [AMD_CONTROL], Info [AMD_INFO] ;
-    int result = amd_order (n, Ap, Ai, P, Control, Info) ;
+    int32_t result = amd_order (n, Ap, Ai, P, Control, Info) ;
     \end{verbatim}
     }
     Computes the approximate minimum degree ordering of an $n$-by-$n$ matrix
@@ -244,7 +245,7 @@ The following routines are fully described in Section~\ref{Primary}:
     {\tt AMD\_OUT\_OF\_MEMORY} if out of memory.
 
 \item {\tt amd\_defaults}
-({\tt long} version: {\tt amd\_l\_defaults})
+(\verb'int64_t' version: {\tt amd\_l\_defaults})
     {\footnotesize
     \begin{verbatim}
     #include "amd.h"
@@ -257,7 +258,7 @@ The following routines are fully described in Section~\ref{Primary}:
     routines.
 
 \item {\tt amd\_control}
-({\tt long} version: {\tt amd\_l\_control})
+(\verb'int64_t' version: {\tt amd\_l\_control})
     {\footnotesize
     \begin{verbatim}
     #include "amd.h"
@@ -268,7 +269,7 @@ The following routines are fully described in Section~\ref{Primary}:
     Prints a description of the control parameters, and their values.
 
 \item {\tt amd\_info}
-({\tt long} version: {\tt amd\_l\_info})
+(\verb'int64_t' version: {\tt amd\_l\_info})
     {\footnotesize
     \begin{verbatim}
     #include "amd.h"
@@ -279,12 +280,12 @@ The following routines are fully described in Section~\ref{Primary}:
     Prints a description of the statistics computed by AMD, and their values.
 
 \item {\tt amd\_valid}
-({\tt long} version: {\tt amd\_valid})
+(\verb'int64_t' version: {\tt amd\_l\_valid})
     {\footnotesize
     \begin{verbatim}
     #include "amd.h"
-    int n, Ap [n+1], Ai [nz] ;
-    int result = amd_valid (n, n, Ap, Ai) ;
+    int32_t n, Ap [n+1], Ai [nz] ;
+    int32_t result = amd_valid (n, n, Ap, Ai) ;
     \end{verbatim}
     }
     Returns {\tt AMD\_OK} or {\tt AMD\_OK\_BUT\_JUMBLED}
@@ -299,7 +300,7 @@ The following routines are fully described in Section~\ref{Primary}:
     equal {\tt n}.
 
 \item {\tt amd\_2}
-({\tt long} version: {\tt amd\_l2})
+(\verb'int64_t' version: {\tt amd\_l2})
     AMD ordering kernel.  It is faster than {\tt amd\_order}, and
     can be called by the user, but it is difficult to use.
     It does not check its inputs for errors.
@@ -393,14 +394,14 @@ of each calling sequence.
 #include <stdio.h>
 #include "amd.h"
 
-int n = 5 ;
-int Ap [ ] = { 0,   2,       6,       10,  12, 14} ;
-int Ai [ ] = { 0,1, 0,1,2,4, 1,2,3,4, 2,3, 1,4   } ;
-int P [5] ;
+int32_t n = 5 ;
+int32_t Ap [ ] = { 0,   2,       6,       10,  12, 14} ;
+int32_t Ai [ ] = { 0,1, 0,1,2,4, 1,2,3,4, 2,3, 1,4   } ;
+int32_t P [5] ;
 
 int main (void)
 {
-    int k ;
+    int32_t k ;
     (void) amd_order (n, Ap, Ai, P, (double *) NULL, (double *) NULL) ;
     for (k = 0 ; k < n ; k++) printf ("P [%d] = %d\n", k, P [k]) ;
     return (0) ;
@@ -459,7 +460,7 @@ The matrix $\m{A}$ is {\tt n}-by-{\tt n} with {\tt nz} entries.
 {\footnotesize
 \begin{verbatim}
 #include "amd.h"
-int n, status, Ap [n+1], Ai [nz], P [n] ;
+int32_t n, status, Ap [n+1], Ai [nz], P [n] ;
 double Control [AMD_CONTROL], Info [AMD_INFO] ;
 amd_defaults (Control) ;
 status = amd_order (n, Ap, Ai, P, Control, Info) ;
@@ -469,13 +470,13 @@ status = amd_valid (n, n, Ap, Ai) ;
 \end{verbatim}
 }
 
-The {\tt amd\_l\_*} routines are identical, except that all {\tt int}
-arguments become {\tt long}:
+The {\tt amd\_l\_*} routines are identical, except that all \verb'int32_t'
+arguments become \verb'int64_t':
 
 {\footnotesize
 \begin{verbatim}
 #include "amd.h"
-long n, status, Ap [n+1], Ai [nz], P [n] ;
+int64_t n, status, Ap [n+1], Ai [nz], P [n] ;
 double Control [AMD_CONTROL], Info [AMD_INFO] ;
 amd_l_defaults (Control) ;
 status = amd_l_order (n, Ap, Ai, P, Control, Info) ;

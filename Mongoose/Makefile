@@ -11,15 +11,21 @@
 # simple Makefile for Mongoose, relies on cmake to do the actual build.  Use
 # the CMAKE_OPTIONS argument to this Makefile to pass options to cmake.
 
-JOBS ?= 1
+JOBS ?= 8
+
+default: library
 
 # build the Mongoose library (static and dynamic) and run a quick test
-default:
-	( cd build ; cmake $(CMAKE_OPTIONS) .. ; $(MAKE) --jobs=$(JOBS) ; ./bin/demo )
+demo: library
+	( cd build ; ./bin/demo )
 
 # just build the static and dynamic libraries; do not run the demo
 library:
 	( cd build ; cmake $(CMAKE_OPTIONS) .. ; $(MAKE) --jobs=$(JOBS) )
+
+# install only in SuiteSparse/lib and SuiteSparse/include
+local:
+	( cd build ; cmake $(CMAKE_OPTIONS) -DCMAKE_INSTALL_PREFIX=../.. .. ; $(MAKE) --jobs=${JOBS} )
 
 # the same as "make library"
 static: library

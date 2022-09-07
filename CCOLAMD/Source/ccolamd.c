@@ -616,6 +616,7 @@
 #ifdef DLONG
 
 #define Int SuiteSparse_long
+#define UInt uint64_t
 #define ID  SuiteSparse_long_id
 #define Int_MAX SuiteSparse_long_max
 
@@ -634,6 +635,7 @@
 #else
 
 #define Int int
+#define UInt unsigned int
 #define ID "%d"
 #define Int_MAX INT_MAX
 
@@ -728,8 +730,8 @@ typedef struct CColamd_Row_struct
 #define MIN(a,b) (((a) < (b)) ? (a) : (b))
 
 /* Routines are either PUBLIC (user-callable) or PRIVATE (not user-callable) */
-#define GLOBAL 
-#define PUBLIC
+#define GLOBAL SUITESPARSE_PUBLIC
+#define PUBLIC SUITESPARSE_PUBLIC
 #define PRIVATE static 
 
 #define DENSE_DEGREE(alpha,n) \
@@ -2595,7 +2597,7 @@ PRIVATE Int find_ordering	/* return the number of garbage collections */
     Int col ;			/* a column index */
     Int max_score ;		/* maximum possible score */
     Int cur_score ;		/* score of current column */
-    unsigned Int hash ;		/* hash value for supernode detection */
+    UInt hash ;		/* hash value for supernode detection */
     Int head_column ;		/* head of hash bucket */
     Int first_col ;		/* first column in hash bucket */
     Int tag_mark ;		/* marker value for mark array */

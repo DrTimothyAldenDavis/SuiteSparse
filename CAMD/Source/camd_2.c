@@ -504,7 +504,7 @@ GLOBAL void CAMD_2
 	nvi, nvj, nvpiv, slenme, wbig, we, wflg, wnvi, ok, ndense, ncmpa, nnull,
 	dense, aggressive ;
 
-    unsigned Int hash ;	    /* unsigned, so that hash % n is well defined.*/
+    UInt hash ;	    /* unsigned, so that hash % n is well defined.*/
 
 /*
  * deg:		the degree of a variable or element

@@ -14,10 +14,10 @@
 #include <string>
 
 // Configuration information from CMake
-#define Mongoose_VERSION_MAJOR 2
+#define Mongoose_VERSION_MAJOR 3
 #define Mongoose_VERSION_MINOR 0
-#define Mongoose_VERSION_PATCH 4
-#define Mongoose_DATE "May 25, 2019"
+#define Mongoose_VERSION_PATCH 0
+#define Mongoose_DATE "Sept FIXME, 2022"
 
 namespace Mongoose
 {

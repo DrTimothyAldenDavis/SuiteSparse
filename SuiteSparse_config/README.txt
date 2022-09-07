@@ -1,21 +1,52 @@
-SuiteSparse_config, 2021, Timothy A. Davis, http://www.suitesparse.com
-(formerly the UFconfig package)
+SuiteSparse_config, Timothy A. Davis, http://www.suitesparse.com
 
-This directory contains a default SuiteSparse_config.mk file.  It tries to
-detect your system (Linux, SunOS, or Mac), which compiler to use (icc or cc),
-which BLAS and LAPACK library to use (Intel MKL is strongly preferred), and
-whether or not to compile with CUDA.
-
-For alternatives, see the comments in the SuiteSparse_config.mk file.
-
-License: No licensing restrictions apply to this file or to the
-SuiteSparse_config directory.
+Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
+SPEX-License-Identifier: BSD-3-clause
 
 --------------------------------------------------------------------------------
 
 SuiteSparse_config contains configuration settings for all many of the software
 packages that I develop or co-author.  Note that older versions of some of
 these packages do not require SuiteSparse_config.
+
+Files in SuiteSparse_config:
+
+    CMakeLists.txt              for compiling SuiteSparse_config
+    Makefile                    simple Makefile to control cmake (optional)
+    README.txt                  this file
+    SuiteSparse_config.c        SuiteSparse-wide utilities
+    SuiteSparse_config.h        SuiteSparse-wide include file
+                                (created from Config/SuiteSparse_config.h)
+
+    SuiteSparse_config.mk       for old-style Makefiles in SuiteSparse
+                                (see comments below)
+    build/      where SuiteSparse_config is compiled
+    xerbla/     alternative version of BLAS/LAPACK xerbla routine (see below)
+    Config/SuiteSparse_config.h.in      source for SuiteSparse_config.h
+
+For packages that use cmake and require SuiteSparse_config, see:
+
+    ../cmake_modules/FindSuiteSparse_config.cmake
+
+To compile/install SuiteSparse_config on Linux/MacOS, in this directory do:
+
+    make
+    sudo make install
+
+To compile for installation in ../lib and ../include instead:
+
+    make local
+    make install
+
+To clean up:
+
+    make clean
+
+See the SuiteSparse/SuiteSparse_config/Makefile for more options.
+
+--------------------------------------------------------------------------------
+SuiteSparse packages:
+--------------------------------------------------------------------------------
 
   Package  Description
   -------  -----------
@@ -46,6 +77,14 @@ the BLAS or LAPACK.  The xerbla provided here does not print any message, so
 the entire Fortran I/O library does not need to be linked into a C application.
 Most versions of the BLAS contain xerbla, but those from K. Goto do not.  Use
 this if you need too.
+
+This directory contains a default SuiteSparse_config.mk file for SuiteSparse
+packages that still use an old-style Makefile instead of CMakeLists.txt.  It
+tries to detect your system (Linux, SunOS, or Mac), which compiler to use (icc
+or cc), which BLAS and LAPACK library to use (Intel MKL is strongly preferred),
+and whether or not to compile with CUDA.  For alternatives, see the comments in
+the SuiteSparse_config.mk file.  The SuiteSparse build system is transitioning
+to cmake so SuiteSparse_config.mk file will eventually be deprecated.
 
 If you edit this directory (SuiteSparse_config.mk in particular) then you
 must do "make purge ; make" in the parent directory to recompile all of

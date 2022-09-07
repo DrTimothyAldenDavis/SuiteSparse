@@ -11,6 +11,7 @@
 #include "SuiteSparse_config.h"
 /* 64-bit version only */
 #define Int SuiteSparse_long
+#define UInt uint64_t
 
 extern "C" {
 

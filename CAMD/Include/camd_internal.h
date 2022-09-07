@@ -91,13 +91,8 @@
 #undef EMPTY
 #endif
 
-#ifdef GLOBAL
-#undef GLOBAL
-#endif
-
-#ifdef PRIVATE
-#undef PRIVATE
-#endif
+#define GLOBAL SUITESPARSE_PUBLIC
+#define PRIVATE static
 
 /* FLIP is a "negation about -1", and is used to mark an integer i that is
  * normally non-negative.  FLIP (EMPTY) is EMPTY.  FLIP of a number > EMPTY
@@ -125,8 +120,6 @@
 
 #define TRUE (1)
 #define FALSE (0)
-#define PRIVATE static
-#define GLOBAL
 #define EMPTY (-1)
 
 /* Note that Linux's gcc 2.96 defines NULL as ((void *) 0), but other */
@@ -157,6 +150,7 @@
 #if defined (DLONG) || defined (ZLONG)
 
 #define Int SuiteSparse_long
+#define UInt uint64_t
 #define ID  SuiteSparse_long_id
 #define Int_MAX SuiteSparse_long_max
 
@@ -179,6 +173,7 @@
 #else
 
 #define Int int
+#define UInt unsigned int
 #define ID "%d"
 #define Int_MAX INT_MAX
 

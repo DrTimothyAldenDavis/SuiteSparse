@@ -16,7 +16,7 @@
 typedef char MM_typecode[4];
 
 int mm_read_banner(FILE *f, MM_typecode *matcode);
-int mm_read_mtx_crd_size(FILE *f, long *M, long *N, long *nz);
+int mm_read_mtx_crd_size(FILE *f, int64_t *M, int64_t *N, int64_t *nz);
 
 /********************* MM_typecode query fucntions ***************************/
 
@@ -107,7 +107,7 @@ int mm_read_mtx_crd_size(FILE *f, long *M, long *N, long *nz);
 
 /*  high level routines */
 
-int mm_read_mtx_crd_data(FILE *f, long M, long N, long nz, long I[], long J[],
+int mm_read_mtx_crd_data(FILE *f, int64_t M, int64_t N, int64_t nz, int64_t I[], int64_t J[],
 		double val[], MM_typecode matcode);
 
 

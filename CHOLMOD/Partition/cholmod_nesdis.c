@@ -853,7 +853,7 @@ SuiteSparse_long CHOLMOD(bisect)	/* returns # of nodes in separator */
 {
     Int *Bp, *Bi, *Hash, *Cmap, *Bnw, *Bew, *Iwork ;
     cholmod_sparse *B ;
-    unsigned Int hash ;
+    UInt hash ;
     Int j, n, bnz, sepsize, p, pend ;
     size_t csize, s ;
     int ok = TRUE ;
@@ -1055,7 +1055,7 @@ SuiteSparse_long CHOLMOD(nested_dissection)
     Int *Bp, *Bi, *Bnz, *Cstack, *Imap, *Map, *Flag, *Head, *Next, *Bnw, *Iwork,
 	*Ipost, *NewParent, *Hash, *Cmap, *Cp, *Ci, *Cew, *Cnw, *Part, *Post,
 	*Work3n ;
-    unsigned Int hash ;
+    UInt hash ;
     Int n, bnz, top, i, j, k, cnode, cdense, p, cj, cn, ci, cnz, mark, c, uncol,
 	sepsize, parent, ncomponents, threshold, ndense, pstart, pdest, pend,
 	nd_compress, nd_camd, csize, jnext, nd_small, total_weight,

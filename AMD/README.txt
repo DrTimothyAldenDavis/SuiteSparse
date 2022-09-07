@@ -1,4 +1,4 @@
-AMD, Copyright (c) 2009-2013 by Timothy A. Davis (http://www.suitesparse.com),
+AMD, Copyright (c) 1996-2022 by Timothy A. Davis (http://www.suitesparse.com),
 Patrick R. Amestoy, and Iain S. Duff.  All Rights Reserved.  AMD is available
 under alternate licences; contact T. Davis for details.
 
@@ -9,17 +9,21 @@ AMD:  a set of routines for permuting sparse matrices prior to
 Requires SuiteSparse_config, in the ../SuiteSparse_config directory relative to
 this directory.
 
-Quick start (Unix, or Windows with Cygwin):
+Quick start (Linux or MacOSX):
 
-    To compile, test, and install AMD, you may wish to first configure the
-    installation by editting the ../SuiteSparse_config/SuiteSparse_config.mk
-    file.  Next, cd to this directory (AMD) and type "make" (or "make lib" if
-    you do not have MATLAB).  To compile and run a demo program for the Fortran
-    version, type "make fortran".  When done, type "make clean" to remove
-    unused *.o files (keeps the compiled libraries and demo programs).  See the
-    User Guide (Doc/AMD_UserGuide.pdf), or
-    ../SuiteSparse_config/SuiteSparse_config.mk for more details.
-    To install do "make install"
+    To compile and install the library for system-wide usage:
+
+        make
+        sudo make install
+
+    To compile/install for local usage (SuiteSparse/lib and SuiteSparse/include)
+
+        make local
+        make install
+
+    To run the demos
+
+        make demo
 
 Quick start (for MATLAB users);
 
@@ -76,15 +80,15 @@ Files and directories in the AMD distribution:
     Include	include file for use in your code that calls AMD
     Demo	demo programs.  also serves as test of the AMD installation.
     MATLAB	AMD mexFunction for MATLAB, and supporting m-files
-    Lib		where the compiled C-callable and Fortran-callable
-		AMD libraries placed.
+    build       where the compiled libraries and demos are placed.
+    Config      source file to construct amd.h
 
     ---------------------------------------------------------------------------
     Files in the AMD directory:
     ---------------------------------------------------------------------------
 
-    Makefile	top-level Makefile
-		Windows users would require Cygwin to use "make"
+    Makefile	a very simple Makefile (optional); just for simplifying cmake
+    CMakeLists.txt  cmake script for building AMD
 
     README.txt	this file
 
@@ -119,6 +123,8 @@ Files and directories in the AMD distribution:
     amd_valid.c			non-user-callable, verifies a matrix
     amd_preprocess.c		non-user-callable, computes A', removes duplic
 
+    amd_l*                      same as above, but with int64_t integers
+
     amd.f			user-callable Fortran 77 version
     amdbar.f			user-callable Fortran 77 version
 
@@ -127,13 +133,13 @@ Files and directories in the AMD distribution:
     ---------------------------------------------------------------------------
 
     amd.h			include file for C programs that use AMD
+                                constructed by cmake from Config/amd.h.in
     amd_internal.h		non-user-callable, include file for AMD
 
     ---------------------------------------------------------------------------
     Demo directory:
     ---------------------------------------------------------------------------
 
-    Makefile                    to compile the demos
     amd_demo.c			C demo program for AMD
     amd_demo.out		output of amd_demo.c
 
@@ -173,8 +179,8 @@ Files and directories in the AMD distribution:
     can_24.mat			input file for AMD demo
 
     ---------------------------------------------------------------------------
-    Lib directory:  libamd.a and libamd.so library placed here
+    build directory:  libamd.a and libamd.so library placed here
     ---------------------------------------------------------------------------
 
-    Makefile			Makefile for both shared and static libraries
+    .gitignore                  only file in the original distribution
 
