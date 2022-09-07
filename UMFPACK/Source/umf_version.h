@@ -508,6 +508,8 @@ typedef struct
 #define UMFPACK_serialize_numeric  umfpack_di_serialize_numeric
 #define UMFPACK_deserialize_numeric    umfpack_di_deserialize_numeric
 #define UMFPACK_serialize_numeric_size umfpack_di_serialize_numeric_size
+#define UMFPACK_copy_symbolic	 umfpack_di_copy_symbolic
+#define UMFPACK_copy_numeric	 umfpack_di_copy_numeric
 #define UMFPACK_scale		 umfpack_di_scale
 #define UMFPACK_solve		 umfpack_di_solve
 #define UMFPACK_symbolic	 umfpack_di_symbolic
@@ -630,6 +632,8 @@ typedef struct
 #define UMFPACK_serialize_numeric  umfpack_dl_serialize_numeric
 #define UMFPACK_deserialize_numeric    umfpack_dl_deserialize_numeric
 #define UMFPACK_serialize_numeric_size umfpack_dl_serialize_numeric_size
+#define UMFPACK_copy_symbolic	 umfpack_dl_copy_symbolic
+#define UMFPACK_copy_numeric	 umfpack_dl_copy_numeric
 #define UMFPACK_scale		 umfpack_dl_scale
 #define UMFPACK_solve		 umfpack_dl_solve
 #define UMFPACK_symbolic	 umfpack_dl_symbolic
@@ -752,6 +756,8 @@ typedef struct
 #define UMFPACK_serialize_numeric  umfpack_zi_serialize_numeric
 #define UMFPACK_deserialize_numeric    umfpack_zi_deserialize_numeric
 #define UMFPACK_deserialize_numeric_size    umfpack_zi_deserialize_numeric_size
+#define UMFPACK_copy_symbolic	 umfpack_zi_copy_symbolic
+#define UMFPACK_copy_numeric	 umfpack_zi_copy_numeric
 #define UMFPACK_scale		 umfpack_zi_scale
 #define UMFPACK_solve		 umfpack_zi_solve
 #define UMFPACK_symbolic	 umfpack_zi_symbolic
@@ -874,6 +880,8 @@ typedef struct
 #define UMFPACK_serialize_numeric  umfpack_zl_serialize_numeric
 #define UMFPACK_deserialize_numeric    umfpack_zl_deserialize_numeric
 #define UMFPACK_serialize_numeric_size umfpack_zl_serialize_numeric_size
+#define UMFPACK_copy_symbolic	 umfpack_zl_copy_symbolic
+#define UMFPACK_copy_numeric	 umfpack_zl_copy_numeric
 #define UMFPACK_scale		 umfpack_zl_scale
 #define UMFPACK_solve		 umfpack_zl_solve
 #define UMFPACK_symbolic	 umfpack_zl_symbolic

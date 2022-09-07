@@ -72,6 +72,8 @@ extern "C" {
 #include "umfpack_deserialize_symbolic.h"
 #include "umfpack_serialize_numeric.h"
 #include "umfpack_deserialize_numeric.h"
+#include "umfpack_copy_numeric.h"
+#include "umfpack_copy_symbolic.h"
 #include "umfpack_get_determinant.h"
 
 /* Reporting routines (the above 14 routines print nothing): */

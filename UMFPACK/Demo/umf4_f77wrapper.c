@@ -87,12 +87,6 @@
 #define UMFPACK_save_symbolic	 umfpack_dl_save_symbolic
 #define UMFPACK_load_numeric	 umfpack_dl_load_numeric
 #define UMFPACK_load_symbolic	 umfpack_dl_load_symbolic
-#define UMFPACK_serialize_symbolic	 umfpack_dl_serialize_symbolic
-#define UMFPACK_deserialize_symbolic    umfpack_dl_deserialize_symbolic
-#define UMFPACK_serialize_symbolic_size umfpack_dl_serialize_symbolic_size
-#define UMFPACK_serialize_numeric	 umfpack_dl_serialize_numeric
-#define UMFPACK_deserialize_numeric    umfpack_dl_deserialize_numeric
-#define UMFPACK_serialize_numeric_size umfpack_dl_serialize_numeric_size
 #define UMFPACK_scale		 umfpack_dl_scale
 #define UMFPACK_solve		 umfpack_dl_solve
 #define UMFPACK_symbolic	 umfpack_dl_symbolic
@@ -110,12 +104,6 @@
 #define UMFPACK_save_symbolic	 umfpack_di_save_symbolic
 #define UMFPACK_load_numeric	 umfpack_di_load_numeric
 #define UMFPACK_load_symbolic	 umfpack_di_load_symbolic
-#define UMFPACK_serialize_symbolic	 umfpack_di_serialize_symbolic
-#define UMFPACK_deserialize_symbolic    umfpack_di_deserialize_symbolic
-#define UMFPACK_serialize_symbolic_size umfpack_di_serialize_symbolic_size
-#define UMFPACK_serialize_numeric	 umfpack_di_serialize_numeric
-#define UMFPACK_deserialize_numeric    umfpack_di_deserialize_numeric
-#define UMFPACK_serialize_numeric_size umfpack_di_serialize_numeric_size
 #define UMFPACK_scale		 umfpack_di_scale
 #define UMFPACK_solve		 umfpack_di_solve
 #define UMFPACK_symbolic	 umfpack_di_symbolic

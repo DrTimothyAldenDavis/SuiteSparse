@@ -74,7 +74,8 @@ UMFPACK = umfpack_col_to_triplet umfpack_defaults umfpack_free_numeric \
 	umfpack_load_numeric umfpack_save_numeric \
 	umfpack_load_symbolic umfpack_save_symbolic \
 	umfpack_serialize_symbolic umfpack_deserialize_symbolic \
-	umfpack_serialize_numeric umfpack_deserialize_numeric
+	umfpack_serialize_numeric umfpack_deserialize_numeric \
+	umfpack_copy_numeric umfpack_copy_symbolic
 
 # user-callable, created from umfpack_solve.c (umfpack_wsolve.h exists, though):
 # with int/SuiteSparse_long and real/complex versions:

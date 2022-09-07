@@ -1,5 +1,5 @@
 /* ========================================================================== */
-/* === umfpack_deserialize_symbolic ========================================= */
+/* === umfpack_copy_symbolic ========================================= */
 /* ========================================================================== */
 
 /* -------------------------------------------------------------------------- */
@@ -7,28 +7,28 @@
 /* All Rights Reserved.  See ../Doc/License.txt for License.                  */
 /* -------------------------------------------------------------------------- */
 
-int umfpack_di_deserialize_symbolic
+int umfpack_di_copy_symbolic
 (
     void **Symbolic,
-    char *buffer
+    void *Original
 ) ;
 
-SuiteSparse_long umfpack_dl_deserialize_symbolic
+SuiteSparse_long umfpack_dl_copy_symbolic
 (
     void **Symbolic,
-    char *buffer
+    void *Original
 ) ;
 
-int umfpack_zi_deserialize_symbolic
+int umfpack_zi_copy_symbolic
 (
     void **Symbolic,
-    char *buffer
+    void *Original
 ) ;
 
-SuiteSparse_long umfpack_zl_deserialize_symbolic
+SuiteSparse_long umfpack_zl_copy_symbolic
 (
     void **Symbolic,
-    char *buffer
+    void *Original
 ) ;
 
 /*
@@ -36,37 +36,37 @@ double int Syntax:
 
     #include "umfpack.h"
     int status ;
-    char *buffer ;
+    void *Original ;
     void *Symbolic ;
-    status = umfpack_di_deserialize_symbolic (&Symbolic, buffer) ;
+    status = umfpack_di_copy_symbolic (&Symbolic, Original) ;
 
 double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     SuiteSparse_long status ;
-    char *buffer ;
+    void *Original ;
     void *Symbolic ;
-    status = umfpack_dl_deserialize_symbolic (&Symbolic, buffer) ;
+    status = umfpack_dl_copy_symbolic (&Symbolic, Original) ;
 
 complex int Syntax:
 
     #include "umfpack.h"
     int status ;
-    char *buffer ;
+    void *Original ;
     void *Symbolic ;
-    status = umfpack_zi_deserialize_symbolic (&Symbolic, buffer) ;
+    status = umfpack_zi_copy_symbolic (&Symbolic, Original) ;
 
 complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     SuiteSparse_long status ;
-    char *buffer ;
+    void *Original ;
     void *Symbolic ;
-    status = umfpack_zl_deserialize_symbolic (&Symbolic, buffer) ;
+    status = umfpack_zl_copy_symbolic (&Symbolic, Original) ;
 
 Purpose:
 
-    Loads a Symbolic object from a buffer created by umfpack_*_serialize_symbolic. 
+    Copies a Symbolic object. 
     The Symbolic handle passed to this routine is overwritten with the new object.
     If that object exists prior to calling this routine, a memory leak will
     occur.  The contents of Symbolic are ignored on input.
@@ -87,7 +87,7 @@ Arguments:
 	pointer to the Symbolic object (if successful), or (void *) NULL if
 	a failure occurred.
 
-    char *buffer ;	    Input argument, not modified.
+    void *Original ;	    Input argument, not modified.
 
-	The buffer from which to read the Symbolic object.
+	The original Symbolic object to be copied.
 */
