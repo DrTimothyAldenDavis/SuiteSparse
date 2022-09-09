@@ -130,7 +130,23 @@ GLOBAL void UMFPACK_report_control
     else /* auto strategy */
     {
 	strategy = UMFPACK_STRATEGY_AUTO ;
-	PRINTF ((" (auto)\n")) ;
+	PRINTF ((" (auto)\n"
+	"        Use symmetric strategy if symmetry > tsym and fraction of\n"
+	"        entries on diagonal >= tnnzdiag. Otherwise use unsymmetric\n"
+        "        strategy.\n")) ;
+        // auto strategy control for v6.0.0
+        double strategy_thresh_sym =
+            GET_CONTROL (UMFPACK_STRATEGY_THRESH_SYM,
+                 UMFPACK_DEFAULT_STRATEGY_THRESH_SYM) ;
+        double strategy_thresh_nnzdiag = 
+            GET_CONTROL (UMFPACK_STRATEGY_THRESH_NNZDIAG,
+                 UMFPACK_DEFAULT_STRATEGY_THRESH_NNZDIAG) ;
+        PRINTF (("    "ID": tsym: %g\n", 
+            (Int) INDEX (UMFPACK_STRATEGY_THRESH_SYM),
+            strategy_thresh_sym)) ;
+        PRINTF (("    "ID": tnnzdiag: %g\n", 
+            (Int) INDEX (UMFPACK_STRATEGY_THRESH_NNZDIAG),
+            strategy_thresh_nnzdiag)) ;
     }
 
     /* ---------------------------------------------------------------------- */

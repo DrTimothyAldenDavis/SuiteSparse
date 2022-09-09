@@ -12,6 +12,10 @@
 # cmake 3.17 is required
 cmake_minimum_required ( VERSION 3.17 )
 
+cmake_policy ( SET CMP0042 NEW )
+cmake_policy ( SET CMP0048 NEW )
+set ( CMAKE_MACOSX_RPATH TRUE )
+
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
     ${CMAKE_SOURCE_DIR}/../cmake_modules
@@ -139,26 +143,41 @@ if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
 endif ( )
 
 #-------------------------------------------------------------------------------
-# amd installation location
+# AMD installation location
 #-------------------------------------------------------------------------------
 
-# install in /usr/local/lib and /usr/local/include
-include ( GNUInstallDirs )
+# use "cmake -DLOCAL=1" to install only in SuiteSparse/lib and
+# SuiteSparse/include.  
 
-install ( TARGETS amd
-    LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+if ( NOT LOCAL )
 
-install ( TARGETS amd_static
-    ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+    # install in /usr/local/lib and /usr/local/include.
+    # requires "sudo make install"
+    message ( STATUS "Installation will be system-wide (requires 'sudo make install')" )
+    include ( GNUInstallDirs )
 
-# also install in ../lib and ../include
+    install ( TARGETS amd
+        LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+
+    install ( TARGETS amd_static
+        ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+
+else ( )
+
+    message ( STATUS "Installation in ../lib and ../include only," )
+    message ( STATUS "  with 'make install'. No 'sudo' required." )
+
+endif ( )
+
+# also install in SuiteSparse/lib and SuiteSparse/include;
+# does not require "sudo make install", just "make install"
 install ( TARGETS amd
     LIBRARY       DESTINATION ${CMAKE_SOURCE_DIR}/../lib
     PUBLIC_HEADER DESTINATION ${CMAKE_SOURCE_DIR}/../include )
 
 install ( TARGETS amd_static
-    ARCHIVE       DESTINATION ${CMAKE_SOURCE_DIR}/../lib)
+    ARCHIVE       DESTINATION ${CMAKE_SOURCE_DIR}/../lib )
 
 #-------------------------------------------------------------------------------
 # Demo library and programs

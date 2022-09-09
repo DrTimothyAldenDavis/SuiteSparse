@@ -15,7 +15,8 @@
 #
 #       make CC=gcc CXX=g++
 #
-# To compile/install for system-wide usage:
+# To compile/install for system-wide usage and for local usage in
+# SuiteSparse/lib and SuiteSparse/include:
 #
 #       make
 #       sudo make install
@@ -34,9 +35,9 @@ default: library
 library:
 	( cd build ; cmake $(CMAKE_OPTIONS) .. ; $(MAKE) )
 
-# install in SuiteSparse/lib and SuiteSparse/include
+# install in SuiteSparse/lib and SuiteSparse/include only
 local:
-	( cd build ; cmake $(CMAKE_OPTIONS) -DCMAKE_INSTALL_PREFIX=../.. .. ; $(MAKE) )
+	( cd build ; cmake $(CMAKE_OPTIONS) -DLOCAL=1 .. ; $(MAKE) )
 
 debug:
 	( cd build ; cmake $(CMAKE_OPTIONS) -DCMAKE_BUILD_TYPE=Debug .. ; $(MAKE) )

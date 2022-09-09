@@ -2187,7 +2187,7 @@ PRIVATE Int find_ordering	/* return the number of garbage collections */
 		Col [col].shared2.score = cur_score ;
 
 		/* add column to hash table, for supercolumn detection */
-		/* NOTE: hash is an unsigned Int to avoid a problem in ANSI C.
+		/* NOTE: hash is an UInt to avoid a problem in ANSI C.
 		 * The sign of the expression a % b is not defined when a and/or
 		 * b are negative.  Since hash is unsigned and n_col >= 0,
 		 * this problem is avoided. */

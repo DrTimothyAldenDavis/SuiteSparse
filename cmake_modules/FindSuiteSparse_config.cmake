@@ -31,6 +31,7 @@
 # include files for SuiteSparse_config
 find_path ( SUITESPARSE_CONFIG_INCLUDE_DIR
     NAMES SuiteSparse_config.h
+    HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_config
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config
     PATHS SUITESPARSE_CONFIG_ROOT ENV SUITESPARSE_CONFIG_ROOT
@@ -40,6 +41,7 @@ find_path ( SUITESPARSE_CONFIG_INCLUDE_DIR
 # compiled libraries SuiteSparse_config
 find_library ( SUITESPARSE_CONFIG_LIBRARY
     NAMES suitesparseconfig
+    HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_config
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config
     PATHS SUITESPARSE_CONFIG_ROOT ENV SUITESPARSE_CONFIG_ROOT

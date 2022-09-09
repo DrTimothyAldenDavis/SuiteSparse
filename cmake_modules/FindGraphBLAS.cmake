@@ -53,6 +53,7 @@ LAGraph with their own copy of GraphBLAS, ignoring the system-wide version.
 find_path(
   GRAPHBLAS_INCLUDE_DIR
   NAMES GraphBLAS.h
+  HINTS ${CMAKE_SOURCE_DIR}/..
   HINTS ${CMAKE_SOURCE_DIR}/../GraphBLAS
   HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/GraphBLAS
   PATHS GRAPHBLAS_ROOT ENV GRAPHBLAS_ROOT
@@ -63,6 +64,7 @@ find_path(
 find_library(
   GRAPHBLAS_LIBRARY
   NAMES graphblas
+  HINTS ${CMAKE_SOURCE_DIR}/..
   HINTS ${CMAKE_SOURCE_DIR}/../GraphBLAS
   HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/GraphBLAS
   PATHS GRAPHBLAS_ROOT ENV GRAPHBLAS_ROOT

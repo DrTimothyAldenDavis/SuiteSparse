@@ -1217,11 +1217,20 @@ PRIVATE Int symbolic_analysis
 
     if (strategy == UMFPACK_STRATEGY_AUTO)
     {
-        // FIXME: use Control for 0.5 and 0.9 below:
-        if (sym >= 0.5 && nzdiag >= 0.9 * n2)
+        // in v5.7.9, these two values (tsym and tnzd), were hard-coded
+        // constants, equal to 0.5 and 0.9 respectively.  They are now Control
+        // parameters in v6.0.0.
+        double tsym = GET_CONTROL (UMFPACK_STRATEGY_THRESH_SYM,
+                           UMFPACK_DEFAULT_STRATEGY_THRESH_SYM) ;
+        double tnzd = GET_CONTROL (UMFPACK_STRATEGY_THRESH_NNZDIAG,
+                           UMFPACK_DEFAULT_STRATEGY_THRESH_NNZDIAG) ;
+//      printf ("tsym %g tnzd %g\n",
+//          tsym, tnzd) ;
+        if ((sym >= tsym) && ((double) nzdiag >= (tnzd * ((double) n2))))
         {
-            /* pattern is mostly symmetric (50% or more) and the diagonal is
-             * mostly zero-free (90% or more).  Use symmetric strategy. */
+            /* pattern is mostly symmetric (default 50% or more) and the
+             * diagonal is mostly zero-free (default 90% or more).  Use
+             * symmetric strategy. */
 	    strategy = UMFPACK_STRATEGY_SYMMETRIC ;
 	    DEBUG0 (("Strategy: select symmetric\n")) ;
         }

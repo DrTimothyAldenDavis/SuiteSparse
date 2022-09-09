@@ -521,10 +521,13 @@ mxArray *umfpack_mx_info_details    /* return a struct with info statistics */
         "omega2",
         "solve_flops",
         "solve_time",
-        "solve_walltime"
+        "solve_walltime",
+
+        "control_tsym",
+        "control_tdiag",
     } ;
 
-    info = mxCreateStructMatrix (1, 1, 100, info_struct) ;
+    info = mxCreateStructMatrix (1, 1, 102, info_struct) ;
 
     XFIELD (Control [UMFPACK_PRL]) ;
     XFIELD (Control [UMFPACK_DENSE_ROW]) ;
@@ -757,6 +760,8 @@ mxArray *umfpack_mx_info_details    /* return a struct with info statistics */
     XFIELD (Info [UMFPACK_SOLVE_TIME]) ;
     XFIELD (Info [UMFPACK_SOLVE_WALLTIME]) ;
 
+    XFIELD (Control [UMFPACK_STRATEGY_THRESH_SYM]) ;
+    XFIELD (Control [UMFPACK_STRATEGY_THRESH_NNZDIAG]) ;
     return (info) ;
 }
 

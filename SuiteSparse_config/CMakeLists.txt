@@ -141,21 +141,37 @@ endif ( )
 # suitesparseconfig installation location
 #-------------------------------------------------------------------------------
 
-# install in /usr/local/lib and /usr/local/include
-include ( GNUInstallDirs )
+# use "cmake -DLOCAL=1" to install only in SuiteSparse/lib and
+# SuiteSparse/include.  
 
-install ( TARGETS suitesparseconfig
-    LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+if ( NOT LOCAL )
 
-install ( TARGETS suitesparseconfig_static
-    ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+    # install in /usr/local/lib and /usr/local/include.
+    # requires "sudo make install"
+    message ( STATUS "Installation will be system-wide (requires 'sudo make install')." )
+    message ( STATUS "    If you do not have 'sudo' privilege, do 'make local' instead." )
+    include ( GNUInstallDirs )
 
-# also install in ../lib and ../include
+    install ( TARGETS suitesparseconfig
+        LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+
+    install ( TARGETS suitesparseconfig_static
+        ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+
+else ( )
+
+    message ( STATUS "Installation in ../lib and ../include only," )
+    message ( STATUS "    with 'make install'. No 'sudo' required." )
+
+endif ( )
+
+# also install in SuiteSparse/lib and SuiteSparse/include;
+# does not require "sudo make install", just "make install"
 install ( TARGETS suitesparseconfig
     LIBRARY       DESTINATION ${CMAKE_SOURCE_DIR}/../lib
     PUBLIC_HEADER DESTINATION ${CMAKE_SOURCE_DIR}/../include )
 
 install ( TARGETS suitesparseconfig_static
-    ARCHIVE       DESTINATION ${CMAKE_SOURCE_DIR}/../lib)
+    ARCHIVE       DESTINATION ${CMAKE_SOURCE_DIR}/../lib )
 

@@ -12,9 +12,14 @@
 # in this directory.  The Mongoose/Makefile will then run cmake
 # in the build directory.
 #
-# To install Mongoose in /usr/local/lib and /usr/local/include:
+# To install Mongoose in /usr/local/lib and /usr/local/include,
+# and also in ../lib, ../include, and ../bin:
 #
 #   sudo make install
+#
+# To install only in ../lib and ../include (no sudo required):
+#
+#   make local ; make install
 #
 # To remove all compiled files and libraries (except installed ones):
 #
@@ -23,7 +28,9 @@
 # cmake 3.17 is required
 cmake_minimum_required ( VERSION 3.17 )
 
-include(CMake/cmake_colors.cmake)
+cmake_policy ( SET CMP0042 NEW )
+cmake_policy ( SET CMP0048 NEW )
+set ( CMAKE_MACOSX_RPATH TRUE )
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
@@ -31,9 +38,7 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/../SuiteSparse/cmake_modules
     )
 
-# if (POLICY CMP0048)
-#    cmake_policy(SET CMP0048 NEW)
-# endif (POLICY CMP0048)
+# include ( cmake_modules/cmake_colors.cmake )
 
 set(Mongoose_DATE "Sept FIXME, 2022")
 set(Mongoose_NUMERIC_DATE "2022-09-06") # FIXME
@@ -201,20 +206,7 @@ if (UNIX AND NOT APPLE)
     target_link_libraries(mongoose_dylib rt)
 endif ()
 
-install ( TARGETS mongoose_dylib
-    LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
-
-install ( TARGETS mongoose_lib
-    ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
-
-# also install in ../lib and ../include
-install ( TARGETS mongoose_dylib
-    LIBRARY       DESTINATION ${CMAKE_SOURCE_DIR}/../lib
-    PUBLIC_HEADER DESTINATION ${CMAKE_SOURCE_DIR}/../include )
-
-install ( TARGETS mongoose_lib
-    ARCHIVE       DESTINATION ${CMAKE_SOURCE_DIR}/../lib)
+#-------------------------------------------------------------------------------
 
 # Build the Mongoose library and all tests with coverage flags
 add_library(mongoose_lib_dbg ${MONGOOSE_LIB_FILES})
@@ -232,9 +224,6 @@ add_executable(mongoose_exe ${EXE_FILES})
 set_target_properties(mongoose_exe
         PROPERTIES OUTPUT_NAME mongoose)
 target_link_libraries(mongoose_exe mongoose_lib)
-
-install(TARGETS mongoose_exe
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Build the Demo executable
 add_executable(demo_exe ${DEMO_FILES})
@@ -395,4 +384,48 @@ add_custom_target(userguide
         COMMAND make
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/Doc
         )
+
+#-------------------------------------------------------------------------------
+# Mongoose installation location
+#-------------------------------------------------------------------------------
+
+# use "cmake -DLOCAL=1" to install only in SuiteSparse/lib and
+# SuiteSparse/include.  
+
+if ( NOT LOCAL )
+
+    # install in /usr/local/lib, /usr/local/include, and /usr/local/bin.
+    # requires "sudo make install"
+    message ( STATUS "Installation will be system-wide (requires 'sudo make install')." )
+    message ( STATUS "If you do not have 'sudo' privilege, do 'make local' instead." )
+    include ( GNUInstallDirs )
+
+    install ( TARGETS mongoose_dylib
+        LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+
+    install ( TARGETS mongoose_lib
+        ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+
+    install ( TARGETS mongoose_exe
+        RUNTIME       DESTINATION ${CMAKE_INSTALL_BINDIR} )
+
+else ( )
+
+    message ( STATUS "Installation in ../lib, ../include, ../bin only," )
+    message ( STATUS "  with 'make install'. No 'sudo' required." )
+
+endif ( )
+
+# also install in SuiteSparse/lib and SuiteSparse/include;
+# does not require "sudo make install", just "make install"
+install ( TARGETS mongoose_dylib
+    LIBRARY       DESTINATION ${CMAKE_SOURCE_DIR}/../lib
+    PUBLIC_HEADER DESTINATION ${CMAKE_SOURCE_DIR}/../include )
+
+install ( TARGETS mongoose_lib
+    ARCHIVE       DESTINATION ${CMAKE_SOURCE_DIR}/../lib )
+
+install ( TARGETS mongoose_exe
+    RUNTIME       DESTINATION ${CMAKE_SOURCE_DIR}/../bin )
 
