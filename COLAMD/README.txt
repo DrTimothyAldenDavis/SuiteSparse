@@ -1,5 +1,7 @@
-COLAMD, Copyright 1998-2016, Timothy A. Davis.  http://www.suitesparse.com
+COLAMD, Copyright 1998-2022, Timothy A. Davis.  http://www.suitesparse.com
 -------------------------------------------------------------------------------
+
+SPDX-License-Identifier: BSD-3-clause
 
 The COLAMD column approximate minimum degree ordering algorithm computes
 a permutation vector P such that the LU factorization of A (:,P)
@@ -11,18 +13,9 @@ that M'*M has the same pattern as A, and then uses COLAMD to compute a column
 ordering of M.  Colamd and symamd tend to be faster and generate better
 orderings than their MATLAB counterparts, colmmd and symmmd.
 
-To compile and test the colamd m-files and mexFunctions, just unpack the
-COLAMD/ directory from the COLAMD.tar.gz file, and run MATLAB from
-within that directory.  Next, type colamd_test to compile and test colamd
-and symamd.  This will work on any computer with MATLAB (Unix, PC, or Mac).
-Alternatively, type "make" (in Unix) to compile and run a simple example C
-code, without using MATLAB.
-
 To compile and install the colamd m-files and mexFunctions, just cd to
 COLAMD/MATLAB and type colamd_install in the MATLAB command window.
 A short demo will run.  Optionally, type colamd_test to run an extensive tests.
-Type "make" in Unix in the COLAMD directory to compile the C-callable
-library and to run a short demo.
 
 Colamd is a built-in routine in MATLAB, available from The 
 Mathworks, Inc.  Under most cases, the compiled COLAMD from Versions 2.0 to the
@@ -33,16 +26,26 @@ mexFunction.  v2.5 adds additional checks for integer overflow, so that
 the "int" version can be safely used with 64-bit pointers.  Refer to the
 ChangeLog for more details.
 
-Other "make" targets:
+COLAMD includes a simple top-level Makefile, which is optional.  All the work
+is done via cmake.  Windows users can simply import the CMakeLists.txt into MS
+Visual Studio.
 
+"make" targets:
+
+    make                compiles the COLAMD library;
+                            "make install" will install in /usr/local/lib,
+                            /usr/local/include, SuiteSparse/lib, and
+                            SuiteSparse/include
+    make demo           compiles and runs a few demos
     make library	compiles a C-callable library containing colamd
     make clean		removes all files not in the distribution,
                             but keeps the compiled libraries.
     make distclean	removes all files not in the distribution
-    make install        installs the library in /usr/local/lib and
-                            /usr/local/include
-    make uninstall      uninstalls the library from /usr/local/lib and
-                            /usr/local/include
+    make local          compiles the COLAMD library;
+                            "make install" will install only in
+                            SuiteSparse/lib and SuiteSparse/include
+    make install        installs the library
+    make uninstall      uninstalls the library
 
 To use colamd and symamd within an application written in C, all you need are
 colamd.c, and colamd.h, which are the C-callable
@@ -86,8 +89,9 @@ COLAMD files:
     Demo	    simple demo
     Doc		    additional documentation (see colamd.c for more)
     Include	    include file
-    Lib		    compiled C-callable library
-    Makefile	    primary Unix Makefile
+    Config          source for colamd.h
+    Makefile	    optional Makefile
+    CMakeLists.txt  for using cmake to build COLAMD
     MATLAB	    MATLAB functions
     README.txt	    this file
     Source	    C source code
@@ -97,7 +101,6 @@ COLAMD files:
     colamd_example.out	    output of colamd_example.c
     colamd_l_example.c	    simple example, long integers
     colamd_l_example.out    output of colamd_l_example.c
-    Makefile		    Makefile for C demos
 
     ./Doc:
     ChangeLog	    change log
@@ -105,9 +108,6 @@ COLAMD files:
 
     ./Include:
     colamd.h	    include file
-
-    ./Lib:
-    Makefile	    Makefile for C-callable library
 
     ./MATLAB:
     colamd2.m		MATLAB interface for colamd2
@@ -126,3 +126,8 @@ COLAMD files:
 
     ./Source:
     colamd.c		primary source code
+    colamd_l.c		primary source code for int64_t version
+
+    ./build:            where COLAMD is built
+    .gitignore
+

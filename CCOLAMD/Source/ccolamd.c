@@ -3,8 +3,9 @@
 /* ========================================================================== */
 
 /* ----------------------------------------------------------------------------
- * CCOLAMD, Copyright (C) Univ. of Florida.  Authors: Timothy A. Davis,
+ * CCOLAMD, Copyright (C).  Authors: Timothy A. Davis,
  * Sivasankaran Rajamanickam, and Stefan Larimore
+// SPDX-License-Identifier: BSD-3-clause
  * -------------------------------------------------------------------------- */
 
 /*
@@ -592,19 +593,6 @@
 
 #include "ccolamd.h"
 
-#include <stdlib.h>
-#include <math.h>
-#include <limits.h>
-
-#ifdef MATLAB_MEX_FILE
-#include "mex.h"
-#include "matrix.h"
-#endif
-
-#if !defined (NPRINT) || !defined (NDEBUG)
-#include <stdio.h>
-#endif
-
 #ifndef NULL
 #define NULL ((void *) 0)
 #endif
@@ -615,10 +603,10 @@
 
 #ifdef DLONG
 
-#define Int SuiteSparse_long
+#define Int int64_t
 #define UInt uint64_t
-#define ID  SuiteSparse_long_id
-#define Int_MAX SuiteSparse_long_max
+#define ID  "%" PRId64
+#define Int_MAX INT64_MAX
 
 #define CCOLAMD_recommended ccolamd_l_recommended
 #define CCOLAMD_set_defaults ccolamd_l_set_defaults
@@ -634,10 +622,10 @@
 
 #else
 
-#define Int int
-#define UInt unsigned int
+#define Int int32_t
+#define UInt uint32_t
 #define ID "%d"
-#define Int_MAX INT_MAX
+#define Int_MAX INT32_MAX
 
 #define CCOLAMD_recommended ccolamd_recommended
 #define CCOLAMD_set_defaults ccolamd_set_defaults
@@ -1143,7 +1131,7 @@ PUBLIC void CCOLAMD_set_defaults
 /* === symamd =============================================================== */
 /* ========================================================================== */
 
-PUBLIC Int CSYMAMD_MAIN		/* return TRUE if OK, FALSE otherwise */
+PUBLIC int CSYMAMD_MAIN		/* return TRUE if OK, FALSE otherwise */
 (
     /* === Parameters ======================================================= */
 
@@ -1475,7 +1463,7 @@ PUBLIC Int CSYMAMD_MAIN		/* return TRUE if OK, FALSE otherwise */
  *  (AQ)'(AQ) = LL' remains sparse.
  */
 
-PUBLIC Int CCOLAMD_MAIN
+PUBLIC int CCOLAMD_MAIN
 (
     /* === Parameters ======================================================= */
 
@@ -1504,7 +1492,7 @@ PUBLIC Int CCOLAMD_MAIN
  * the user.
  */
 
-PUBLIC Int CCOLAMD_2	    /* returns TRUE if successful, FALSE otherwise */
+PUBLIC int CCOLAMD_2	    /* returns TRUE if successful, FALSE otherwise */
 (
     /* === Parameters ======================================================= */
 
@@ -3722,8 +3710,9 @@ PRIVATE void print_report
 
     Int i1, i2, i3 ;
 
-    SUITESPARSE_PRINTF (("\n%s version %d.%d, %s: ", method,
-	    CCOLAMD_MAIN_VERSION, CCOLAMD_SUB_VERSION, CCOLAMD_DATE)) ;
+    SUITESPARSE_PRINTF (("\n%s version %d.%d.%d, %s: ", method,
+	    CCOLAMD_MAIN_VERSION, CCOLAMD_SUB_VERSION,
+            CCOLAMD_SUBSUB_VERSION, CCOLAMD_DATE)) ;
 
     if (!stats)
     {

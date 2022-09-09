@@ -35,38 +35,38 @@ JOBS ?= 8
 default: library
 
 library:
-	( cd build ; cmake $(CMAKE_OPTIONS) .. ; $(MAKE) --jobs=${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) .. && $(MAKE) --jobs=${JOBS} )
 
 # install only in SuiteSparse/lib and SuiteSparse/include
 local:
-	( cd build ; cmake $(CMAKE_OPTIONS) -DCMAKE_INSTALL_PREFIX=../.. .. ; $(MAKE) --jobs=${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DCMAKE_INSTALL_PREFIX=../.. .. && $(MAKE) --jobs=${JOBS} )
 
 debug:
-	( cd build ; cmake $(CMAKE_OPTIONS) -DCMAKE_BUILD_TYPE=Debug .. ; $(MAKE) --jobs=${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DCMAKE_BUILD_TYPE=Debug .. && $(MAKE) --jobs=${JOBS} )
 
 all: library
 
 demo: library
-	( cd build ; cmake $(CMAKE_OPTIONS) -DDEMO=1 .. ; $(MAKE) --jobs=${JOBS} )
-	./build/amd_demo > Demo/my_amd_demo.out
-	- diff Demo/amd_demo.out Demo/my_amd_demo.out
-	./build/amd_l_demo > Demo/my_amd_l_demo.out
-	- diff Demo/amd_l_demo.out Demo/my_amd_l_demo.out
-	./build/amd_demo2 > Demo/my_amd_demo2.out
-	- diff Demo/amd_demo2.out Demo/my_amd_demo2.out
-	./build/amd_simple > Demo/my_amd_simple.out
-	- diff Demo/amd_simple.out Demo/my_amd_simple.out
+	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && $(MAKE) --jobs=${JOBS} )
+	./build/amd_demo > build/my_amd_demo.out
+	- diff Demo/amd_demo.out build/my_amd_demo.out
+	./build/amd_l_demo > build/my_amd_l_demo.out
+	- diff Demo/amd_l_demo.out build/my_amd_l_demo.out
+	./build/amd_demo2 > build/my_amd_demo2.out
+	- diff Demo/amd_demo2.out build/my_amd_demo2.out
+	./build/amd_simple > build/my_amd_simple.out
+	- diff Demo/amd_simple.out build/my_amd_simple.out
 
 # just compile after running cmake; do not run cmake again
 remake:
-	( cd build ; $(MAKE) --jobs=${JOBS} )
+	( cd build && $(MAKE) --jobs=${JOBS} )
 
 # just run cmake to set things up
 setup:
-	( cd build ; cmake $(CMAKE_OPTIONS) .. )
+	( cd build && cmake $(CMAKE_OPTIONS) .. )
 
 install:
-	( cd build ; $(MAKE) install )
+	( cd build && $(MAKE) install )
 
 # remove any installed libraries and #include files
 uninstall:

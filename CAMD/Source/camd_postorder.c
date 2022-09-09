@@ -6,6 +6,7 @@
 /* CAMD, Copyright (c) Timothy A. Davis, Yanqing Chen,			     */
 /* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
 /* email: DrTimothyAldenDavis@gmail.com                                      */
+// SPDX-License-Identifier: BSD-3-clause
 /* ------------------------------------------------------------------------- */
 
 /* Perform a postordering (via depth-first search) of an assembly tree. */

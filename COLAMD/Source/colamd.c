@@ -2,6 +2,9 @@
 /* === colamd/symamd - a sparse matrix column ordering algorithm ============ */
 /* ========================================================================== */
 
+// COLAMD, Copyright (c) Timothy A. Davis.
+// SPDX-License-Identifier: BSD-3-clause
+
 /* COLAMD / SYMAMD
 
     colamd:  an approximate minimum degree column ordering algorithm,
@@ -46,7 +49,7 @@
 
     Copyright and License:
 
-	Copyright (c) 1998-2007, Timothy A. Davis, All Rights Reserved.
+	Copyright (c) 1998-2022, Timothy A. Davis, All Rights Reserved.
 	COLAMD is also available under alternate licenses, contact T. Davis
 	for details.
 
@@ -637,17 +640,6 @@
 /* ========================================================================== */
 
 #include "colamd.h"
-#include <limits.h>
-#include <math.h>
-
-#ifdef MATLAB_MEX_FILE
-#include "mex.h"
-#include "matrix.h"
-#endif /* MATLAB_MEX_FILE */
-
-#if !defined (NPRINT) || !defined (NDEBUG)
-#include <stdio.h>
-#endif
 
 #ifndef NULL
 #define NULL ((void *) 0)
@@ -659,10 +651,10 @@
 
 #ifdef DLONG
 
-#define Int SuiteSparse_long
+#define Int int64_t
 #define UInt uint64_t
-#define ID  SuiteSparse_long_id
-#define Int_MAX SuiteSparse_long_max
+#define ID  "%" PRId64
+#define Int_MAX INT64_MAX
 
 #define COLAMD_recommended colamd_l_recommended
 #define COLAMD_set_defaults colamd_l_set_defaults
@@ -673,10 +665,10 @@
 
 #else
 
-#define Int int
-#define UInt unsigned int
+#define Int int32_t
+#define UInt uint32_t
 #define ID "%d"
-#define Int_MAX INT_MAX
+#define Int_MAX INT32_MAX
 
 #define COLAMD_recommended colamd_recommended
 #define COLAMD_set_defaults colamd_set_defaults
@@ -1115,7 +1107,7 @@ PUBLIC void COLAMD_set_defaults
 /* === symamd =============================================================== */
 /* ========================================================================== */
 
-PUBLIC Int SYMAMD_MAIN			/* return TRUE if OK, FALSE otherwise */
+PUBLIC int SYMAMD_MAIN			/* return TRUE if OK, FALSE otherwise */
 (
     /* === Parameters ======================================================= */
 
@@ -1435,7 +1427,7 @@ PUBLIC Int SYMAMD_MAIN			/* return TRUE if OK, FALSE otherwise */
     (AQ)'(AQ) = LL' remains sparse.
 */
 
-PUBLIC Int COLAMD_MAIN		/* returns TRUE if successful, FALSE otherwise*/
+PUBLIC int COLAMD_MAIN		/* returns TRUE if successful, FALSE otherwise*/
 (
     /* === Parameters ======================================================= */
 
@@ -3158,8 +3150,9 @@ PRIVATE void print_report
 
     Int i1, i2, i3 ;
 
-    SUITESPARSE_PRINTF (("\n%s version %d.%d, %s: ", method,
-            COLAMD_MAIN_VERSION, COLAMD_SUB_VERSION, COLAMD_DATE)) ;
+    SUITESPARSE_PRINTF (("\n%s version %d.%d.%d, %s: ", method,
+            COLAMD_MAIN_VERSION, COLAMD_SUB_VERSION, COLAMD_SUBSUB_VERSION, 
+            COLAMD_DATE)) ;
 
     if (!stats)
     {

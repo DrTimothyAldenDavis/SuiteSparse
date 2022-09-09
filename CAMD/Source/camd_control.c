@@ -6,6 +6,7 @@
 /* CAMD, Copyright (c) Timothy A. Davis, Yanqing Chen,			     */
 /* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
 /* email: DrTimothyAldenDavis@gmail.com                                      */
+// SPDX-License-Identifier: BSD-3-clause
 /* ------------------------------------------------------------------------- */
 
 /* User-callable.  Prints the control parameters for CAMD.  See camd.h
@@ -35,9 +36,9 @@ GLOBAL void CAMD_control
     }
 
     SUITESPARSE_PRINTF ((
-        "\ncamd version %d.%d, %s:  approximate minimum degree ordering:\n"
+        "\ncamd version %d.%d.%d, %s:  approximate minimum degree ordering:\n"
 	"    dense row parameter: %g\n", CAMD_MAIN_VERSION, CAMD_SUB_VERSION,
-	CAMD_DATE, alpha)) ;
+        CAMD_SUBSUB_VERSION, CAMD_DATE, alpha)) ;
 
     if (alpha < 0)
     {

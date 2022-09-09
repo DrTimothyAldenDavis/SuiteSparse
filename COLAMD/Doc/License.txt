@@ -1,4 +1,4 @@
-COLAMD, Copyright 1998-2016, Timothy A. Davis.  http://www.suitesparse.com
+COLAMD, Copyright 1998-2022, Timothy A. Davis.  http://www.suitesparse.com
 http://www.suitesparse.com
 
 --------------------------------------------------------------------------------

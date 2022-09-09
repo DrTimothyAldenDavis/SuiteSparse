@@ -35,19 +35,19 @@ JOBS ?= 8
 default: library
 
 library:
-	( cd build ; cmake $(CMAKE_OPTIONS) .. ; $(MAKE) --jobs=${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) .. && $(MAKE) --jobs=${JOBS} )
 
 # install only in SuiteSparse/lib and SuiteSparse/include
 local:
-	( cd build ; cmake $(CMAKE_OPTIONS) -DCMAKE_INSTALL_PREFIX=../.. .. ; $(MAKE) --jobs=${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DCMAKE_INSTALL_PREFIX=../.. .. && $(MAKE) --jobs=${JOBS} )
 
 debug:
-	( cd build ; cmake $(CMAKE_OPTIONS) -DCMAKE_BUILD_TYPE=Debug .. ; $(MAKE) --jobs=${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DCMAKE_BUILD_TYPE=Debug .. && $(MAKE) --jobs=${JOBS} )
 
 all: library
 
 demo: library
-	( cd build ; cmake $(CMAKE_OPTIONS) -DDEMO=1 .. ; $(MAKE) --jobs=${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && $(MAKE) --jobs=${JOBS} )
 	./build/camd_demo > Demo/my_camd_demo.out
 	- diff Demo/camd_demo.out Demo/my_camd_demo.out
 	./build/camd_l_demo > Demo/my_camd_l_demo.out
@@ -57,16 +57,16 @@ demo: library
 	./build/camd_simple > Demo/my_camd_simple.out
 	- diff Demo/camd_simple.out Demo/my_camd_simple.out
 
-# just compile after running cmake; do not run cmake again
+# just compile after running cmake&& do not run cmake again
 remake:
-	( cd build ; $(MAKE) --jobs=${JOBS} )
+	( cd build && $(MAKE) --jobs=${JOBS} )
 
 # just run cmake to set things up
 setup:
-	( cd build ; cmake $(CMAKE_OPTIONS) .. )
+	( cd build && cmake $(CMAKE_OPTIONS) .. )
 
 install:
-	( cd build ; $(MAKE) install )
+	( cd build && $(MAKE) install )
 
 # remove any installed libraries and #include files
 uninstall:

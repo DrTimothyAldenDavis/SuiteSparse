@@ -6,6 +6,7 @@
 /* AMD, Copyright (c) Timothy A. Davis,					     */
 /* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
 /* email: DrTimothyAldenDavis@gmail.com                                      */
+// SPDX-License-Identifier: BSD-3-clause
 /* ------------------------------------------------------------------------- */
 
 /* User-callable AMD minimum degree ordering routine.  See amd.h for

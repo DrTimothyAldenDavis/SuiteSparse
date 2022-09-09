@@ -1,9 +1,11 @@
 CCOLAMD: constrained column approximate minimum degree ordering
-Copyright (C) 2005-2016, Univ. of Florida.  Authors: Timothy A. Davis,
+Copyright (C) 2005-2016.  Authors: Timothy A. Davis,
 Sivasankaran Rajamanickam, and Stefan Larimore.  Closely based on COLAMD by
 Davis, Stefan Larimore, in collaboration with Esmond Ng, and John Gilbert.
 http://www.suitesparse.com
 -------------------------------------------------------------------------------
+
+SPDX-License-Identifier: BSD-3-clause
 
 The CCOLAMD column approximate minimum degree ordering algorithm computes
 a permutation vector P such that the LU factorization of A (:,P)
@@ -23,22 +25,26 @@ A short demo will run.  Optionally, type ccolamd_test to run an extensive tests.
 Type "make" in Unix in the CCOLAMD directory to compile the C-callable
 library and to run a short demo.
 
-Other "make" targets:
+CCOLAMD includes a simple top-level Makefile, which is optional.  All the work
+is done via cmake.  Windows users can simply import the CMakeLists.txt into MS
+Visual Studio.
 
-    make library	compiles a C-callable library containing ccolamd
-    make clean		removes all files not in the distribution
+"make" targets:
+
+    make                compiles the CCOLAMD library;
+                            "make install" will install in /usr/local/lib,
+                            /usr/local/include, SuiteSparse/lib, and
+                            SuiteSparse/include
+    make demo           compiles and runs a few demos
+    make library	compiles a C-callable library containing colamd
+    make clean		removes all files not in the distribution,
                             but keeps the compiled libraries.
     make distclean	removes all files not in the distribution
-    make install        installs the library in /usr/local/lib and
-                            /usr/local/include
-    make uninstall      uninstalls the library from /usr/local/lib and
-                            /usr/local/include
-
-To use ccolamd and csymamd within an application written in C, all you need are
-ccolamd.c and ccolamd.h, which are the C-callable ccolamd/csymamd codes.
-See ccolamd.c for more information on how to call ccolamd from a C program.
-It contains a complete description of the C-interface to CCOLAMD and CSYMAMD.
-
+    make local          compiles the CCOLAMD library;
+                            "make install" will install only in
+                            SuiteSparse/lib and SuiteSparse/include
+    make install        installs the library
+    make uninstall      uninstalls the library
 
 See CCOLAMD/Doc/License.txt for the license.
 
@@ -85,8 +91,9 @@ CCOLAMD files:
     Demo	    simple demo
     Doc		    additional documentation (see ccolamd.c for more)
     Include	    include file
-    Lib		    compiled C-callable library
-    Makefile	    primary Unix Makefile
+    Config          source for ccolamd.h
+    Makefile	    optional Makefile
+    CMakeLists.txt  for using cmake to build CCOLAMD
     MATLAB	    MATLAB functions
     README.txt	    this file
     Source	    C source code
@@ -96,16 +103,13 @@ CCOLAMD files:
     ccolamd_example.out	    output of colamd_example.c
     ccolamd_l_example.c	    simple example, long integers
     ccolamd_l_example.out   output of colamd_l_example.c
-    Makefile		    Makefile for C demos
 
     ./Doc:
     ChangeLog	    change log
+    License.txt     license
 
     ./Include:
     ccolamd.h	    include file
-
-    ./Lib:
-    Makefile	    Makefile for C-callable library
 
     ./MATLAB:
     ccolamd.m		MATLAB interface for ccolamd
@@ -124,3 +128,9 @@ CCOLAMD files:
 
     ./Source:
     ccolamd.c		primary source code
+    ccolamd_l.c		primary source code for int64_t version
+
+    ./build:            where CCOLAMD is built
+    .gitignore
+
+
