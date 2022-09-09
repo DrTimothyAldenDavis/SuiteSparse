@@ -1,3 +1,10 @@
+Sept FIXME, 2022: version 4.0.0
+
+    * using CMake to build CSparse instead of a Makefile
+    * integer "csi": changed to int64_t.  This can be overridded with
+        -Dcsi=int (for example).  This is a modest change to the API, so the
+        major version number must increase from 3.x to 4.x.
+
 Sept 12, 2017: version 3.2.0
 
     * replaced UFget with ssget

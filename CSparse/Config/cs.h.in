@@ -9,10 +9,10 @@
 #ifdef MATLAB_MEX_FILE
 #include "mex.h"
 #endif
-#define CS_VER 4  /* CSparse Version */
-#define CS_SUBVER 0
-#define CS_SUBSUB 0
-#define CS_DATE "Sept FIXME, 2022"        /* CSparse release date */
+#define CS_VER @CSPARSE_VERSION_MAJOR@  /* CSparse Version */
+#define CS_SUBVER @CSPARSE_VERSION_MINOR@
+#define CS_SUBSUB @CSPARSE_VERSION_SUB@
+#define CS_DATE "@CSPARSE_DATE@"        /* CSparse release date */
 #define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006-2022"
 
 #ifndef csi

@@ -4,9 +4,9 @@ V =
 
 # Linux test coverage
 CC = gcc
-CFLAGS = -O -g -fprofile-arcs -ftest-coverage \
+CFLAGS = -O -g --coverage -fprofile-abs-path \
     	-Wall -W -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
-    	-Wredundant-decls -Wnested-externs -Wdisabled-optimization -ansi \
+    	-Wredundant-decls -Wnested-externs -Wdisabled-optimization -std=c11 \
 	-Wno-unused-parameter -I../Include -I../Demo
 
 run: all run1 runbook run3 runtest
