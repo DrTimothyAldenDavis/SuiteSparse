@@ -3,7 +3,13 @@ Yanqing Chen,
 Patrick R. Amestoy, and Iain S. Duff.  All Rights Reserved.
 CAMD is available under alternate licenses, contact T. Davis for details.
 
-CAMD License: BSD 3-clause
+Availability:
+
+    http://www.suitesparse.com
+
+-------------------------------------------------------------------------------
+CAMD License: BSD 3-clause:
+-------------------------------------------------------------------------------
 
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
@@ -28,8 +34,3 @@ CAMD License: BSD 3-clause
     LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
     OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
     DAMAGE.
-
-Availability:
-
-    http://www.suitesparse.com
-

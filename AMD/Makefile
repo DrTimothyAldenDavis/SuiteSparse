@@ -73,10 +73,10 @@ uninstall:
 	- xargs rm < build/install_manifest.txt
 
 # remove all files not in the distribution
-clean: distclean
-
-purge: distclean
-
-distclean:
+clean:
 	- $(RM) -rf build/* Config/*.tmp
+
+purge: clean
+
+distclean: clean
 

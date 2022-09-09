@@ -13,15 +13,13 @@
  */
 
 #include "camd.h"
-#include <stdio.h>
-#include <stdlib.h>
 
 int main (void)
 {
     /* The symmetric can_24 Harwell/Boeing matrix, including upper and lower
      * triangular parts, and the diagonal entries.  Note that this matrix is
      * 0-based, with row and column indices in the range 0 to n-1. */
-    int n = 24, nz,
+    int32_t n = 24, nz,
     Ap [ ] = { 0, 9, 15, 21, 27, 33, 39, 48, 57, 61, 70, 76, 82, 88, 94, 100,
 	106, 110, 119, 128, 137, 143, 152, 156, 160 },
     Ai [ ] = {
@@ -50,10 +48,10 @@ int main (void)
 	/* column 22: */    2, 20, 21, 22,
 	/* column 23: */    6, 11, 12, 23 } ;
 
-    int P [24], Pinv [24], i, j, k, jnew, p, inew, result ;
+    int32_t P [24], Pinv [24], i, j, k, jnew, p, inew, result ;
     double Control [CAMD_CONTROL], Info [CAMD_INFO] ;
     char A [24][24] ;
-    int C [ ] = { 0, 0, 4, 0, 1, 0, 2, 2, 1, 1, 3, 4, 5, 5, 3, 4,
+    int32_t C [ ] = { 0, 0, 4, 0, 1, 0, 2, 2, 1, 1, 3, 4, 5, 5, 3, 4,
 		    5, 2, 5, 3, 4, 2, 1, 0 } ;
 
     printf ("CAMD version %d.%d, date: %s\n", CAMD_MAIN_VERSION,

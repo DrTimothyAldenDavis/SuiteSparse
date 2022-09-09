@@ -42,35 +42,6 @@
 #undef NDEBUG
 */
 
-
-/* ------------------------------------------------------------------------- */
-/* ANSI include files */
-/* ------------------------------------------------------------------------- */
-
-/* from stdlib.h:  size_t, malloc, free, realloc, and calloc */
-#include <stdlib.h>
-
-#if !defined(NPRINT) || !defined(NDEBUG)
-/* from stdio.h:  printf.  Not included if NPRINT is defined at compile time.
- * fopen and fscanf are used when debugging. */
-#include <stdio.h>
-#endif
-
-/* from limits.h:  INT_MAX and LONG_MAX */
-#include <limits.h>
-
-/* from math.h: sqrt */
-#include <math.h>
-
-/* ------------------------------------------------------------------------- */
-/* MATLAB include files (only if being used in or via MATLAB) */
-/* ------------------------------------------------------------------------- */
-
-#ifdef MATLAB_MEX_FILE
-#include "matrix.h"
-#include "mex.h"
-#endif
-
 /* ------------------------------------------------------------------------- */
 /* basic definitions */
 /* ------------------------------------------------------------------------- */
@@ -142,17 +113,18 @@
 #endif
 
 /* ------------------------------------------------------------------------- */
-/* integer type for CAMD: int or SuiteSparse_long */
+/* integer type for CAMD: int32_t or int64_t */
 /* ------------------------------------------------------------------------- */
 
+#define SUITESPARSE_LIBRARY
 #include "camd.h"
 
 #if defined (DLONG) || defined (ZLONG)
 
-#define Int SuiteSparse_long
+#define Int int64_t
 #define UInt uint64_t
-#define ID  SuiteSparse_long_id
-#define Int_MAX SuiteSparse_long_max
+#define ID  "%" PRId64
+#define Int_MAX INT64_MAX
 
 #define CAMD_order camd_l_order
 #define CAMD_defaults camd_l_defaults
@@ -164,7 +136,6 @@
 #define CAMD_cvalid camd_l_cvalid
 #define CAMD_aat camd_l_aat
 #define CAMD_postorder camd_l_postorder
-#define CAMD_post_tree camd_l_post_tree
 #define CAMD_dump camd_l_dump
 #define CAMD_debug camd_l_debug
 #define CAMD_debug_init camd_l_debug_init
@@ -172,8 +143,8 @@
 
 #else
 
-#define Int int
-#define UInt unsigned int
+#define Int int32_t
+#define UInt uint32_t
 #define ID "%d"
 #define Int_MAX INT_MAX
 
@@ -187,7 +158,6 @@
 #define CAMD_cvalid camd_cvalid
 #define CAMD_aat camd_aat
 #define CAMD_postorder camd_postorder
-#define CAMD_post_tree camd_post_tree
 #define CAMD_dump camd_dump
 #define CAMD_debug camd_debug
 #define CAMD_debug_init camd_debug_init
@@ -249,11 +219,7 @@ GLOBAL void CAMD_preprocess
 /* from assert.h:  assert macro */
 #include <assert.h>
 
-#ifndef EXTERN
-#define EXTERN extern
-#endif
-
-EXTERN Int CAMD_debug ;
+GLOBAL Int CAMD_debug ;
 
 GLOBAL void CAMD_debug_init ( char *s ) ;
 

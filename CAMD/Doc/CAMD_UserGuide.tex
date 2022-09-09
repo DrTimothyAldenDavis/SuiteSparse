@@ -1,4 +1,5 @@
 \documentclass[11pt]{article}
+\batchmode
 
 \newcommand{\m}[1]{{\bf{#1}}}       % for matrices and vectors
 \newcommand{\tr}{^{\sf T}}          % transpose
@@ -34,7 +35,7 @@ http://www.numerical.rl.ac.uk/people/isd/isd.html.
 This work was supported by the EPSRC under grant GR/R46441.
 }}
 
-\date{VERSION 2.4.6, May 4, 2016}
+\input{camd_version.tex}
 \maketitle
 
 %------------------------------------------------------------------------------
@@ -46,7 +47,7 @@ A MATLAB interface is included.
 \end{abstract}
 %------------------------------------------------------------------------------
 
-CAMD Copyright\copyright 2013 by Timothy A.  Davis,
+CAMD Copyright\copyright 2013-2022 by Timothy A.  Davis,
 Yanqing (Morris) Chen,
 Patrick R. Amestoy, and Iain S. Duff.  All Rights Reserved.
 CAMD is available under alternate licences; contact T. Davis for details.
@@ -210,25 +211,20 @@ type {\tt help camd} in the MATLAB command window.
 
 The C-callable CAMD library consists of seven user-callable routines and one
 include file.  There are two versions of each of the routines, with
-{\tt int} and {\tt long} integers.
+\verb'int32_t' and \verb'int64_t' integers.
 The routines with prefix
-{\tt camd\_l\_} use {\tt long} integer arguments; the others use
-{\tt int} integer arguments.  If you compile CAMD in the standard
-ILP32 mode (32-bit {\tt int}'s, {\tt long}'s, and pointers) then the versions
-are essentially identical.  You will be able to solve problems using up to 2GB
-of memory.  If you compile CAMD in the standard LP64 mode, the size of an
-{\tt int} remains 32-bits, but the size of a {\tt long} and a pointer both get
-promoted to 64-bits.
+{\tt camd\_l\_} use \verb'int64_t' integer arguments; the others use
+\verb'int32_t' integer arguments.
 
 The following routines are fully described in Section~\ref{Primary}:
 
 \begin{itemize}
 \item {\tt camd\_order}
-({\tt long} version: {\tt camd\_l\_order})
+(\verb'int64_t' version: {\tt camd\_l\_order})
     {\footnotesize
     \begin{verbatim}
     #include "camd.h"
-    int n, Ap [n+1], Ai [nz], P [n], C [n] ;
+    int32_t n, Ap [n+1], Ai [nz], P [n], C [n] ;
     double Control [CAMD_CONTROL], Info [CAMD_INFO] ;
     int result = camd_order (n, Ap, Ai, P, Control, Info, C) ;
     \end{verbatim}
@@ -257,7 +253,7 @@ The following routines are fully described in Section~\ref{Primary}:
     On output, {\tt C[P[0..n-1]]} is monotonically non-descreasing.  
 
 \item {\tt camd\_defaults}
-({\tt long} version: {\tt camd\_l\_defaults})
+(\verb'int64_t' version: {\tt camd\_l\_defaults})
     {\footnotesize
     \begin{verbatim}
     #include "camd.h"
@@ -270,7 +266,7 @@ The following routines are fully described in Section~\ref{Primary}:
     routines.
 
 \item {\tt camd\_control}
-({\tt long} version: {\tt camd\_l\_control})
+(\verb'int64_t' version: {\tt camd\_l\_control})
     {\footnotesize
     \begin{verbatim}
     #include "camd.h"
@@ -281,7 +277,7 @@ The following routines are fully described in Section~\ref{Primary}:
     Prints a description of the control parameters, and their values.
 
 \item {\tt camd\_info}
-({\tt long} version: {\tt camd\_l\_info})
+(\verb'int64_t' version: {\tt camd\_l\_info})
     {\footnotesize
     \begin{verbatim}
     #include "camd.h"
@@ -292,11 +288,11 @@ The following routines are fully described in Section~\ref{Primary}:
     Prints a description of the statistics computed by CAMD, and their values.
 
 \item {\tt camd\_valid}
-({\tt long} version: {\tt camd\_valid})
+(\verb'int64_t' version: {\tt camd\_valid})
     {\footnotesize
     \begin{verbatim}
     #include "camd.h"
-    int n, Ap [n+1], Ai [nz] ;
+    int32_t n, Ap [n+1], Ai [nz] ;
     int result = camd_valid (n, n, Ap, Ai) ;
     \end{verbatim}
     }
@@ -312,7 +308,7 @@ The following routines are fully described in Section~\ref{Primary}:
     equal {\tt n}.
 
 \item {\tt camd\_2}
-({\tt long} version: {\tt camd\_l2})
+(\verb'int64_t' version: {\tt camd\_l2})
     CAMD ordering kernel.  It is faster than {\tt camd\_order}, and
     can be called by the user, but it is difficult to use.
     It does not check its inputs for errors.
@@ -403,18 +399,17 @@ of each calling sequence.
 
 {\footnotesize
 \begin{verbatim}
-#include <stdio.h>
 #include "camd.h"
 
-int n = 5 ;
-int Ap [ ] = { 0,   2,       6,       10,  12, 14} ;
-int Ai [ ] = { 0,1, 0,1,2,4, 1,2,3,4, 2,3, 1,4   } ;
-int C [ ] = { 2, 0, 0, 0, 1 } ;
-int P [5] ;
+int32_t n = 5 ;
+int32_t Ap [ ] = { 0,   2,       6,       10,  12, 14} ;
+int32_t Ai [ ] = { 0,1, 0,1,2,4, 1,2,3,4, 2,3, 1,4   } ;
+int32_t C [ ] = { 2, 0, 0, 0, 1 } ;
+int32_t P [5] ;
 
 int main (void)
 {
-    int k ;
+    int32_t k ;
     (void) camd_order (n, Ap, Ai, P, (double *) NULL, (double *) NULL, C) ;
     for (k = 0 ; k < n ; k++) printf ("P [%d] = %d\n", k, P [k]) ;
     return (0) ;
@@ -476,7 +471,7 @@ The matrix $\m{A}$ is {\tt n}-by-{\tt n} with {\tt nz} entries.
 {\footnotesize
 \begin{verbatim}
 #include "camd.h"
-int n, status, Ap [n+1], Ai [nz], P [n], C [n] ;
+int32_t n, status, Ap [n+1], Ai [nz], P [n], C [n] ;
 double Control [CAMD_CONTROL], Info [CAMD_INFO] ;
 camd_defaults (Control) ;
 status = camd_order (n, Ap, Ai, P, Control, Info, C) ;
@@ -486,13 +481,13 @@ status = camd_valid (n, n, Ap, Ai) ;
 \end{verbatim}
 }
 
-The {\tt camd\_l\_*} routines are identical, except that all {\tt int}
-arguments become {\tt long}:
+The {\tt camd\_l\_*} routines are identical, except that all \verb'int32_t'
+arguments become \verb'int64_t':
 
 {\footnotesize
 \begin{verbatim}
 #include "camd.h"
-long n, status, Ap [n+1], Ai [nz], P [n], C [n] ;
+int64_t n, status, Ap [n+1], Ai [nz], P [n], C [n] ;
 double Control [CAMD_CONTROL], Info [CAMD_INFO] ;
 camd_l_defaults (Control) ;
 status = camd_l_order (n, Ap, Ai, P, Control, Info, C) ;
@@ -507,83 +502,43 @@ status = camd_l_valid (n, n, Ap, Ai) ;
 \label{Install}
 %------------------------------------------------------------------------------
 
-The following discussion assumes you have the {\tt make} program, either in
-Unix, or in Windows with Cygwin.
+CAMD now relies primarily on CMake to build the library.  It also includes
+a simple \verb'CAMD/Makefile' which uses cmake to do the actual build.
+The use of this \verb'CAMD/Makefile' is optional; for Windows, just import
+the CMakeLists.txt into MS Visual Studio.
 
-System-dependent configurations are in the
-{\tt ../SuiteSparse\_config/SuiteSparse\_config.mk}
-file.  You can edit that file to customize the compilation.  The default
-settings will work on most systems.
-Sample configuration files are provided
-for Mac, Linux, Sun Solaris, and IBM AIX.
-The system you are on is detected automatically.
+To compile and install the library for both system-wide usage and local
+usage:
 
-To compile and install the C-callable CAMD library,
-go to the {\tt CAMD} directory and type {\tt make}.
-A dynamic library is placed in
-in {\tt AMD/Lib/libcamd.so.*}, ({\tt *.dylib} for the Mac).
-Three demo programs of the AMD ordering routine will be compiled and tested in
-the {\tt CAMD/Demo} directory.
-The outputs of these demo programs will then be compared with output
-files in the distribution.
+    \begin{verbatim}
+        make
+        sudo make install
+    \end{verbatim}
 
-Typing {\tt make clean} will remove all but the final compiled libraries
-and demo programs.  Typing {\tt make purge} or {\tt make distclean}
-removes all files not in the original distribution.
-If you compile CAMD and then later change the
-{\tt ../SuiteSparse\_config/SuiteSparse\_config.mk} file
-then you should type {\tt make purge} and then {\tt make} to recompile.
+To compile/install for just local usage (SuiteSparse/lib and
+SuiteSparse/include):
 
-When you compile your program that uses the C-callable CAMD library,
-you need to add the {\tt CAMD/Lib/libcamd.*} library
-and you need to tell your compiler to look in the
-{\tt CAMD/Include} directory for include
-files.
-See {\tt CAMD/Demo/Makefile} for an example.
+    \begin{verbatim}
+        make local
+        make install
+    \end{verbatim}
 
-By doing {\tt make}, all compiled dynamic libraries are also copied into {\tt
-SuiteSparse/lib} the include files are coped into {\tt SuiteSparse/include},
-and documentation is copied into {\tt SuiteSparse/doc}.
+To run the demos
 
-Alternatively, you can install the shared library
-and include files in /usr/local/lib and /usr/local/include, and
-the documenation in /usr/local/doc.
-Just do {\tt make} then {\tt make install}.
-Now you can simply use {\tt -lcamd} when you compile your own program.
+    \begin{verbatim}
+        make demo
+    \end{verbatim}
 
-If all you want to use is the CAMD mexFunction in MATLAB, you can skip
-the use of the {\tt make} command entirely.  Simply type
-{\tt camd\_make} in MATLAB while in the {\tt CAMD/MATLAB} directory.
-This works on any system with MATLAB, including Windows.
-Alternately, type {\tt make} in the {\tt CAMD/MATLAB} directory.
+To remove all files in \verb'CAMD/' not in the original distribution (leaves
+SuiteSparse/lib and SuiteSparse/include unchanged):
 
-If you are including CAMD as a subset of a larger library and do not want
-to link the C standard I/O library, or if you simply do not need to use
-them, you can safely remove the {\tt camd\_control.c} and {\tt camd\_info.c}
-files.  Similarly, if you use default parameters (or define your
-own {\tt Control} array), then you can exclude the {\tt camd\_defaults.c}
-file.
-Each of these files contains the user-callable routines of the same
-name.  None of these auxiliary routines are directly called by
-{\tt camd\_order}.
-The {\tt camd\_dump.c} file contains debugging routines
-that are neither used nor compiled unless debugging is enabled.
-The {\tt camd\_internal.h} file must be edited to enable debugging;
-refer to the instructions in that file.
-The bare minimum files required to use just {\tt camd\_order} are
-{\tt camd.h} and {\tt camd\_internal.h}
-in the {\tt Include} directory,
-and
-{\tt camd\_1.c},
-{\tt camd\_2.c},
-{\tt camd\_aat.c},
-{\tt camd\_global.c},
-{\tt and\_order.c},
-{\tt camd\_postorder.c},
-{\tt camd\_preprocess.c},
-and
-{\tt camd\_valid.c}
-in the {\tt Source} directory.
+    \begin{verbatim}
+        make clean
+    \end{verbatim}
+
+To use the CAMD mexFunction in MATLAB, simply type {\tt camd\_make} in MATLAB
+while in the {\tt CAMD/MATLAB} directory.  This works on any system with MATLAB,
+including Windows.
 
 %------------------------------------------------------------------------------
 \newpage
@@ -592,12 +547,13 @@ in the {\tt Source} directory.
 %------------------------------------------------------------------------------
 
 The file {\tt CAMD/Include/camd.h} listed below
-describes each user-callable routine in CAMD,
+describes each user-callable routine in the C version of CAMD,
 and gives details on their use.
 
 {\footnotesize
 \input{camd_h.tex}
 }
+
 
 %------------------------------------------------------------------------------
 \newpage

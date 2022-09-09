@@ -35,7 +35,7 @@
 
 #include "amd_internal.h"
 
-GLOBAL Int AMD_valid
+GLOBAL int AMD_valid
 (
     /* inputs, not modified on output: */
     Int n_row,		/* A is n_row-by-n_col */
@@ -44,7 +44,8 @@ GLOBAL Int AMD_valid
     const Int Ai [ ]	/* row indices of A, of size nz = Ap [n_col] */
 )
 {
-    Int nz, j, p1, p2, ilast, i, p, result = AMD_OK ;
+    Int nz, j, p1, p2, ilast, i, p ;
+    int result = AMD_OK ;
 
     if (n_row < 0 || n_col < 0 || Ap == NULL || Ai == NULL)
     {

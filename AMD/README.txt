@@ -80,7 +80,7 @@ Files and directories in the AMD distribution:
     Include	include file for use in your code that calls AMD
     Demo	demo programs.  also serves as test of the AMD installation.
     MATLAB	AMD mexFunction for MATLAB, and supporting m-files
-    build       where the compiled libraries and demos are placed.
+    build       where the compiled libraries and demos are placed
     Config      source file to construct amd.h
 
     ---------------------------------------------------------------------------
@@ -146,7 +146,7 @@ Files and directories in the AMD distribution:
     amd_demo2.c			C demo program for AMD, jumbled matrix
     amd_demo2.out		output of amd_demo2.c
 
-    amd_l_demo.c		C demo program for AMD (long integer version)
+    amd_l_demo.c		C demo program for AMD (int64_t version)
     amd_l_demo.out		output of amd_l_demo.c
 
     amd_simple.c		simple C demo program for AMD

@@ -5,6 +5,7 @@ Version 3.0.0, Sept FIXME, 2022
         with v2.0.4, since the integer sizes (sizeof(...)) should remain the
         same.  However, since this is a possible change to the binary API,
         the version number becomes v3.0.0.
+    * minor change to the build system
 
 Version 2.0.4, May 25, 2019
 

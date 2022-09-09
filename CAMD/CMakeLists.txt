@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# SuiteSparse/AMD/CMakeLists.txt:  cmake for AMD
+# SuiteSparse/CAMD/CMakeLists.txt:  cmake for CAMD
 #-------------------------------------------------------------------------------
 
 # Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
@@ -22,22 +22,22 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/../SuiteSparse/cmake_modules
     )
 
-set ( AMD_DATE "Sept FIXME, 2022" )
-set ( AMD_VERSION_MAJOR 3 )
-set ( AMD_VERSION_MINOR 0 )
-set ( AMD_VERSION_SUB   0 )
+set ( CAMD_DATE "Sept FIXME, 2022" )
+set ( CAMD_VERSION_MAJOR 3 )
+set ( CAMD_VERSION_MINOR 0 )
+set ( CAMD_VERSION_SUB   0 )
 
-message ( STATUS "Building AMD version: v"
-    ${AMD_VERSION_MAJOR}.
-    ${AMD_VERSION_MINOR}.
-    ${AMD_VERSION_SUB} " (" ${AMD_DATE} ")" )
+message ( STATUS "Building CAMD version: v"
+    ${CAMD_VERSION_MAJOR}.
+    ${CAMD_VERSION_MINOR}.
+    ${CAMD_VERSION_SUB} " (" ${CAMD_DATE} ")" )
 
-project ( amd
-    VERSION "${AMD_VERSION_MAJOR}.${AMD_VERSION_MINOR}.${AMD_VERSION_SUB}"
+project ( camd
+    VERSION "${CAMD_VERSION_MAJOR}.${CAMD_VERSION_MINOR}.${CAMD_VERSION_SUB}"
     LANGUAGES C ) # <-- add CXX here for packages that use C++
 
-message ( STATUS "AMD project: " ${PROJECT_SOURCE_DIR} )
-message ( STATUS "AMD build:   " ${CMAKE_BINARY_DIR} )
+message ( STATUS "CAMD project: " ${PROJECT_SOURCE_DIR} )
+message ( STATUS "CAMD build:   " ${CMAKE_BINARY_DIR} )
 
 #-------------------------------------------------------------------------------
 # find library dependencies
@@ -55,17 +55,17 @@ if ( NOT CMAKE_BUILD_TYPE )
 endif ( )
 
 #-------------------------------------------------------------------------------
-# Configure amd.h with version number
+# Configure camd.h with version number
 #-------------------------------------------------------------------------------
 
 configure_file (
-    "Config/amd.h.in"
-    "${PROJECT_SOURCE_DIR}/Include/amd.h"
+    "Config/camd.h.in"
+    "${PROJECT_SOURCE_DIR}/Include/camd.h"
 )
 
 configure_file (
-    "Config/amd_version.tex.in"
-    "${PROJECT_SOURCE_DIR}/Doc/amd_version.tex"
+    "Config/camd_version.tex.in"
+    "${PROJECT_SOURCE_DIR}/Doc/camd_version.tex"
 )
 
 #-------------------------------------------------------------------------------
@@ -95,55 +95,55 @@ set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 include_directories ( Source Include ${SUITESPARSE_CONFIG_INCLUDE_DIR} )
 
 #-------------------------------------------------------------------------------
-# dynamic amd library properties
+# dynamic camd library properties
 #-------------------------------------------------------------------------------
 
-file ( GLOB AMD_SOURCES "Source/*.c" )
+file ( GLOB CAMD_SOURCES "Source/*.c" )
 
-add_library ( amd SHARED ${AMD_SOURCES} )
+add_library ( camd SHARED ${CAMD_SOURCES} )
 
-SET_TARGET_PROPERTIES ( amd PROPERTIES
-    VERSION ${AMD_VERSION_MAJOR}.${AMD_VERSION_MINOR}.${AMD_VERSION_SUB}
-    SOVERSION ${AMD_VERSION_MAJOR}
-    PUBLIC_HEADER "Include/amd.h" )
+SET_TARGET_PROPERTIES ( camd PROPERTIES
+    VERSION ${CAMD_VERSION_MAJOR}.${CAMD_VERSION_MINOR}.${CAMD_VERSION_SUB}
+    SOVERSION ${CAMD_VERSION_MAJOR}
+    PUBLIC_HEADER "Include/camd.h" )
 
 #-------------------------------------------------------------------------------
-# static amd library properties
+# static camd library properties
 #-------------------------------------------------------------------------------
 
-add_library ( amd_static STATIC ${AMD_SOURCES} )
+add_library ( camd_static STATIC ${CAMD_SOURCES} )
 
-SET_TARGET_PROPERTIES ( amd_static PROPERTIES
-    VERSION ${AMD_VERSION_MAJOR}.${AMD_VERSION_MINOR}.${AMD_VERSION_SUB}
-    OUTPUT_NAME amd
-    SOVERSION ${AMD_VERSION_MAJOR} )
+SET_TARGET_PROPERTIES ( camd_static PROPERTIES
+    VERSION ${CAMD_VERSION_MAJOR}.${CAMD_VERSION_MINOR}.${CAMD_VERSION_SUB}
+    OUTPUT_NAME camd
+    SOVERSION ${CAMD_VERSION_MAJOR} )
 
 #-------------------------------------------------------------------------------
 # add the library dependencies
 #-------------------------------------------------------------------------------
 
-target_link_libraries ( amd PUBLIC ${SUITESPARSE_CONFIG_LIBRARY} )
-target_link_libraries ( amd_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARY} )
+target_link_libraries ( camd PUBLIC ${SUITESPARSE_CONFIG_LIBRARY} )
+target_link_libraries ( camd_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARY} )
 
 # OpenMP:
 if ( OPENMP_FOUND )
     message ( STATUS "OpenMP C libraries:      " ${OpenMP_C_LIBRARIES} )
     message ( STATUS "OpenMP C include:        " ${OpenMP_C_INCLUDE_DIRS} )
     message ( STATUS "OpenMP C flags:          " ${OpenMP_C_FLAGS} )
-    target_link_libraries ( amd PUBLIC ${OpenMP_C_LIBRARIES} )
-    target_link_libraries ( amd_static PUBLIC ${OpenMP_C_LIBRARIES} )
+    target_link_libraries ( camd PUBLIC ${OpenMP_C_LIBRARIES} )
+    target_link_libraries ( camd_static PUBLIC ${OpenMP_C_LIBRARIES} )
     set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} " )
     include_directories ( ${OpenMP_C_INCLUDE_DIRS} )
 endif ( )
 
 # libm:
 if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
-    target_link_libraries ( amd PUBLIC m )
-    target_link_libraries ( amd_static PUBLIC m )
+    target_link_libraries ( camd PUBLIC m )
+    target_link_libraries ( camd_static PUBLIC m )
 endif ( )
 
 #-------------------------------------------------------------------------------
-# AMD installation location
+# CAMD installation location
 #-------------------------------------------------------------------------------
 
 # use "cmake -DLOCAL=1" to install only in SuiteSparse/lib and
@@ -156,11 +156,11 @@ if ( NOT LOCAL )
     message ( STATUS "Installation will be system-wide (requires 'sudo make install')" )
     include ( GNUInstallDirs )
 
-    install ( TARGETS amd
+    install ( TARGETS camd
         LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
 
-    install ( TARGETS amd_static
+    install ( TARGETS camd_static
         ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
 
 else ( )
@@ -172,11 +172,11 @@ endif ( )
 
 # also install in SuiteSparse/lib and SuiteSparse/include;
 # does not require "sudo make install", just "make install"
-install ( TARGETS amd
+install ( TARGETS camd
     LIBRARY       DESTINATION ${CMAKE_SOURCE_DIR}/../lib
     PUBLIC_HEADER DESTINATION ${CMAKE_SOURCE_DIR}/../include )
 
-install ( TARGETS amd_static
+install ( TARGETS camd_static
     ARCHIVE       DESTINATION ${CMAKE_SOURCE_DIR}/../lib )
 
 #-------------------------------------------------------------------------------
@@ -189,25 +189,25 @@ if ( DEMO )
     # demo library
     #---------------------------------------------------------------------------
 
-    message ( STATUS "Also compiling the demos in AMD/Demo" )
+    message ( STATUS "Also compiling the demos in CAMD/Demo" )
 
     #---------------------------------------------------------------------------
     # Demo programs
     #---------------------------------------------------------------------------
 
-    add_executable ( amd_demo   "Demo/amd_demo.c" )
-    add_executable ( amd_l_demo "Demo/amd_l_demo.c" )
-    add_executable ( amd_demo2  "Demo/amd_demo2.c" )
-    add_executable ( amd_simple "Demo/amd_simple.c" )
+    add_executable ( camd_demo   "Demo/camd_demo.c" )
+    add_executable ( camd_l_demo "Demo/camd_l_demo.c" )
+    add_executable ( camd_demo2  "Demo/camd_demo2.c" )
+    add_executable ( camd_simple "Demo/camd_simple.c" )
 
     # Libraries required for Demo programs
-    target_link_libraries ( amd_demo   PUBLIC amd )
-    target_link_libraries ( amd_l_demo PUBLIC amd )
-    target_link_libraries ( amd_demo2  PUBLIC amd )
-    target_link_libraries ( amd_simple PUBLIC amd )
+    target_link_libraries ( camd_demo   PUBLIC camd )
+    target_link_libraries ( camd_l_demo PUBLIC camd )
+    target_link_libraries ( camd_demo2  PUBLIC camd )
+    target_link_libraries ( camd_simple PUBLIC camd )
 
 else ( )
 
-    message ( STATUS "Skipping the demos in AMD/Demo" )
+    message ( STATUS "Skipping the demos in CAMD/Demo" )
 
 endif ( )

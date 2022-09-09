@@ -11,6 +11,24 @@
 # simple Makefile for Mongoose, relies on cmake to do the actual build.  Use
 # the CMAKE_OPTIONS argument to this Makefile to pass options to cmake.
 
+# To compile with an alternate compiler:
+#
+#       make CC=gcc CXX=g++
+#
+# To compile/install for system-wide usage:
+#
+#       make
+#       sudo make install
+#
+# To compile/install for local usage (SuiteSparse/lib and SuiteSparse/include):
+#
+#       make local
+#       make install
+#
+# To clean up the files:
+#
+#       make clean
+
 JOBS ?= 8
 
 default: library
@@ -54,5 +72,4 @@ purge: distclean
 # remove all files not in the distribution
 distclean:
 	rm -rf build/* Lib/* MATLAB/*.mex*
-	rm -rf SuiteSparse_config/*.o SuiteSparse_config/*.a
 

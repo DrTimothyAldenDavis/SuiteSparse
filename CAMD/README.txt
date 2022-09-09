@@ -1,7 +1,6 @@
-CAMD, Copyright (c) 2007-2013, University of Florida.
-Written by Timothy A. Davis (http://www.suitesparse.com), Yanqing Chen, Patrick
-R. Amestoy, and Iain S. Duff.  All Rights Reserved.  CAMD is available under
-alternate licences; contact T. Davis for details.
+CAMD, Copyright (c) 2007-2022, Timothy A. Davis (http://www.suitesparse.com),
+Yanqing Chen, Patrick R. Amestoy, and Iain S. Duff.  All Rights Reserved.  CAMD
+is available under alternate licences; contact T. Davis for details.
 
 CAMD:  a set of routines for permuting sparse matrices prior to
     factorization.  Includes a version in C, a version in Fortran, and a MATLAB
@@ -10,15 +9,21 @@ CAMD:  a set of routines for permuting sparse matrices prior to
 Requires SuiteSparse_config, in the ../SuiteSparse_config directory relative to
 this directory.
 
-Quick start (Unix, or Windows with Cygwin):
+Quick start (Linux or MacOSX):
 
-    To compile, test, and install CAMD, you may wish to first configure the
-    installation by editting the ../SuiteSparse_config/SuiteSparse_config.mk
-    file.  Next, cd to this directory (CAMD) and type "make" (or "make lib" if
-    you do not have MATLAB).  When done, type "make clean" to remove unused *.o
-    files (keeps the compiled libraries and demo programs).  See the User Guide
-    (Doc/CAMD_UserGuide.pdf), or ../SuiteSparse_config/SuiteSparse_config.mk
-    for more details.  To install do "make install".
+    To compile and install the library for system-wide usage:
+
+        make
+        sudo make install
+
+    To compile/install for local usage (SuiteSparse/lib and SuiteSparse/include)
+
+        make local
+        make install
+
+    To run the demos
+
+        make demo
 
 Quick start (for MATLAB users);
 
@@ -75,15 +80,15 @@ Files and directories in the CAMD distribution:
     Include	include file for use in your code that calls CAMD
     Demo	demo programs.  also serves as test of the CAMD installation.
     MATLAB	CAMD mexFunction for MATLAB, and supporting m-files
-    Lib		where the compiled C-callable and Fortran-callable
-		CAMD libraries placed.
+    build       where the compiled libraries and demos are placed
+    Config      source file to construct camd.h
 
     ---------------------------------------------------------------------------
     Files in the CAMD directory:
     ---------------------------------------------------------------------------
 
-    Makefile	top-level Makefile.
-		Windows users would require Cygwin to use "make"
+    Makefile	a very simple Makefile (optional); just for simplifying cmake
+    CMakeLists.txt  cmake script for building CAMD
 
     README.txt	this file
 
@@ -121,6 +126,8 @@ Files and directories in the CAMD distribution:
     camd_valid.c		non-user-callable, verifies a matrix
     camd_preprocess.c		non-user-callable, computes A', removes duplic
 
+    camd_l*                     same as above, but with int64_t integers
+
     ---------------------------------------------------------------------------
     Include directory:
     ---------------------------------------------------------------------------
@@ -140,7 +147,7 @@ Files and directories in the CAMD distribution:
     camd_demo2.c		C demo program for CAMD, jumbled matrix
     camd_demo2.out		output of camd_demo2.c
 
-    camd_l_demo.c		C demo program for CAMD ("long" version)
+    camd_l_demo.c		C demo program for CAMD (int64_t version)
     camd_l_demo.out		output of camd_l_demo.c
 
     camd_simple.c		simple C demo program for CAMD
@@ -163,9 +170,8 @@ Files and directories in the CAMD distribution:
     can_24.mat			input file for CAMD demo
 
     ---------------------------------------------------------------------------
-    Lib directory:  libcamd.a and libcamd.so library placed here
+    build directory:  libcamd.a and libcamd.so library placed here
     ---------------------------------------------------------------------------
 
-    Makefile			Makefile for both shared and static libraries
-    old/                        old version of Makefiles
+    .gitignore                  only file in the original distribution
 
