@@ -1,16 +1,13 @@
-CXSparse: Copyright (c) 2006-2012, Timothy A. Davis.
+CXSparse: Copyright (c) 2006-2022, Timothy A. Davis.
 http://www.suitesparse.com
 
 Derived from CSparse.  Conversion originally by David Bateman, Motorola,
-and then modified by Tim Davis.  ANSI C99 is required, with support for
-the _Complex data type.
+and then modified by Tim Davis.  ANSI C11 is required, with support for
+the double complex data type.
 (if you use a C++ compiler, the C++ complex type is used instead).
 
 CXSparse is a version of CSparse that operates on both real and complex
-matrices, using either int or SuiteSparse_long integers.  A SuiteSparse_long is
-normally just a long on most platforms, but becomes __int64 on WIN64.  It now
-includes a MATLAB interface, enabling the use of CXSparse functions on both
-32-bit and 64-bit platforms.
+matrices, using either int32_t or int64_t integers.
 
 To install for use in MATLAB, simply type "cs_install" in the MATLAB Command
 Window, while in the CXSparse/MATLAB directory.  (NOTE:  you may need to
@@ -20,20 +17,18 @@ Refer to "Direct Methods for Sparse Linear Systems," Timothy A. Davis,
 SIAM, Philadelphia, 2006.  No detailed user guide is included in this
 package; the user guide is the book itself.
 
-To compile the C-library (./Source), C demo programs (./Demo) just type "make"
-in this directory.  To run the exhaustive statement coverage tests, type
-"make" in the Tcov directory; the Tcov tests assume you are using Linux.  To
-remove all files not in the original distribution, type "make distclean".
-I recommend that you use a different level of
-optimization than "cc -O", which was chosen so that the Makefile is portable.
-See Source/Makefile.
+To compile the C-library (./Source) and C demo programs (./Demo) just type
+"make" in this directory, or import the CMakeLists.txt into your build system
+(such as Microsoft Visual Studio).  To install, use "sudo make install".
+Run the demos with "make demo".  To clean up, do "make clean".
 
-To install into /usr/local/lib and /usr/local/include, do "make install"
-and "make uninstall" to uninstall CXSparse.
+To run the exhaustive tests, type "make" in the Tcov directory (Linux is
+assumed).  To remove all files not in the original distribution, type "make
+distclean".
 
-If your C compiler does not support the ANSI C99 complex type, the
-#include <complex.h> statement will fail.  If this happens, compile the
-code with the -DNCOMPLEX flag (the MATLAB cs_install will do this for you).
+While in MATLAB, type "cs_install" while in the CSparse/MATLAB directory to
+compile and install CSparse for use in MATLAB.  For more details, see
+CXSparse/MATLAB/README.txt.
 
 This package is backward compatible with CSparse.  That is, user code that
 uses CSparse may switch to using CXSparse without any changes to the user code.
@@ -41,7 +36,7 @@ Each CXSparse function has a generic version with the same name as the CSparse
 function, and four type-specific versions.  For example:
 
     cs_add      same as cs_add_di by default, but can be changed to use
-                SuiteSparse_long
+                int64_t
                 integers if user code is compiled with -DCS_LONG, and/or can
                 be changed to operate on complex matrices with -DCS_COMPLEX.
 
@@ -64,8 +59,8 @@ code to be written in a type-generic manner:
     CS_INT      int by default, SuiteSparse_long if -DCS_LONG compiler flag
                 is used
     CS_ENTRY    double by default, double complex if -DCS_COMPLEX flag is used.
-    CS_ID       "%d" or "%ld", for printf and scanf of the CS_INT type.
-    CS_INT_MAX  INT_MAX or LONG_MAX, the largest possible value of CS_INT.
+    CS_ID       "%d" or "%"PRId64, for printf and scanf of the CS_INT type.
+    CS_INT_MAX  INT32_MAX or INT64_MAX, the largest possible value of CS_INT.
     CS_REAL(x)  x or creal(x)
     CS_IMAG(x)  0 or cimag(x)
     CS_CONJ(x)  x or conj(x)
@@ -92,12 +87,12 @@ See cs.h for the prototypes of each function, and the book "Direct Methods
 for Sparse Linear Systems" for full documentation of CSparse and CXSparse.
 
 Other changes from CSparse:  cs_transpose performs the complex conjugate
-transpose if values>0 (C=A'), the pattern-only transpose if values=0
-(C=spones(A') in MATLAB), and the array transpose if values<0 (C=A.' in
-MATLAB notation).  A set of four conversion routines are included in CXSparse,
-to convert real matrices to/from complex matrices.
-The Householder reflection constructed by cs_house.c also differs slightly, to
-accomodate both the real and complex cases properly.
+transpose if 'values' input parameter is >0 (C=A'), the pattern-only transpose
+if values=0 (C=spones(A') in MATLAB), and the array transpose if values<0
+(C=A.' in MATLAB notation).  A set of four conversion routines are included in
+CXSparse, to convert real matrices to/from complex matrices.  The Householder
+reflection constructed by cs_house.c also differs slightly, to accomodate both
+the real and complex cases properly.
 
 CXSparse is generated automatically from CSparse.  Refer to
 http://www.suitesparse.com for details.
@@ -109,11 +104,13 @@ Contents:
 Demo/           demo C programs that use CXSparse
 Doc/            license and change log
 Makefile        Makefile for the whole package
-MATLAB/         MATLAB interface, demos, and tests for CXSparse
+Makefile        Makefile for the whole package (optional)
 Matrix/         sample matrices (with extra complex matrices for CXSparse)
 README.txt      this file
 Source/         primary CXSparse source files
 Tcov/           CXSparse tests
+Config/         source for Include/cs.h
+build/          compiled files
 
 --------------------------------------------------------------------------------
 ./Doc:          license and change log
@@ -130,7 +127,7 @@ cs_add.c        add sparse matrices
 cs_amd.c        approximate minimum degree
 cs_chol.c       sparse Cholesky
 cs_cholsol.c    x=A\b using sparse Cholesky
-cs_compress.c   convert a compress form to compressed-column form
+cs_compress.c   convert a triplet form to compressed-column form
 cs_counts.c     column counts for Cholesky and QR
 cs_convert.c    convert real to complex and complex to real (not in CSparse)
 cs_cumsum.c     cumulative sum
@@ -179,8 +176,17 @@ cs_updown.c     sparse rank-1 Cholesky update/downate
 cs_usolve.c     x=U\b
 cs_util.c       various utilities (allocate/free matrices, workspace, etc)
 cs_utsolve.c    x=U'\b
-Makefile        Makefile for CXSparse
-README.txt      README file for CXSparse
+README.txt      README file for CXSparse/Source
+
+cs_*_ci.c       complex int32_t versions
+cs_*_cl.c       complex int64_t versions
+cs_*_dl.c       double int64_t versions
+
+--------------------------------------------------------------------------------
+./Config:
+--------------------------------------------------------------------------------
+
+cs.h.in         source for cs.h
 
 --------------------------------------------------------------------------------
 ./Demo:         C program demos
@@ -221,8 +227,6 @@ cs_dl_demo.h    double/SuiteSparse_long version of cs_demo.h
 cs_idemo.c      convert real matrices to/from complex (int version)
 cs_ldemo.c      convert real matrices to/from complex (SuiteSparse_long version)
 
-Makefile        Makefile for Demo programs
-readhb.f        read a Rutherford-Boeing matrix (real matrices only)
 README.txt      Demo README file
 
 --------------------------------------------------------------------------------
@@ -235,8 +239,7 @@ Demo/           MATLAB demos for CSparse
 Makefile        MATLAB interface Makefile
 README.txt      MATLAB README file
 Test/           MATLAB test for CSparse, and "textbook" routines
-ssget/          MATLAB interface to UF Sparse Matrix Collection
-
+ssget/          MATLAB interface to SuiteSparse Sparse Matrix Collection
 
 --------------------------------------------------------------------------------
 ./MATLAB/CSparse:   MATLAB interface for CSparse
@@ -493,14 +496,12 @@ young1c             aeronautical problem (complex matrix)
 --------------------------------------------------------------------------------
 
 covall              same as covall.linux
-covall.linux        find coverage (Linux)
-covall.sol          find coverage (Solaris)
 cov.awk             coverage summary
 cover               print uncovered lines
 covs                print uncovered lines
-cstcov_malloc_test.c    malloc test
+cstcov_malloc_test*.c    malloc test
 cstcov_malloc_test.h
-cstcov_test.c       main program for Tcov tests
+cstcov_test*.c      main programs for Tcov tests
 gcovs               run gcov (Linux)
 Makefile            Makefile for Tcov tests
 nil                 an empty matrix
@@ -508,66 +509,3 @@ zero                a 1-by-1 zero matrix
 czero               a 1-by-1 complex zero matrix
 README.txt          README file for Tcov directory
 
-
---------------------------------------------------------------------------------
-Change Log:
---------------------------------------------------------------------------------
-
-Refer to CSparse for changes in CSparse, which are immediately propagated
-into CXSparse (those Change Log entries are not repeated here).
-
-Jun 1, 2012.  version 3.1.0
-
-    * now based on CSparse v3.1.0
-    * This version of CXSparse changes the 'long' integer from UF_long to
-        cs_long_t.  UF_long is still available to user codes, however, so this
-        change is backward compatible with user codes.  Future user codes
-        should use cs_long_t instead of UF_long.
-    * changed unsigned integer in cs_amd.c to signed, for hash code.
-    * in Source, only changes are to cs_demo*.c, cs_print.c
-
-Nov 1, 2007.  version 2.2.1
-
-    CXSparse/MATLAB/Test ported to Windows
-
-
-May 31, 2007.  version 2.2.0
-
-    * back-port to MATLAB 7.2 and earlier (which does not have mwIndex).
-
-    * more graceful failure in cs_make when attempting complex matrix support
-        (Windows, in particular)
-
-    * correction to CXSparse/Demo/Makefile
-
-    * added sizeof(CS_INT) printout to cs_idemo.c, cs_ldemo.c
-
-Mar 14, 2007.  Version 2.1.0.
-
-    * MATLAB interface added for CXSparse.
-
-    * cs_complex_t type added (a #define for "double _Complex", which is the
-        complex type used in CXSparse 2.0.x).  When compiling with a C++ 
-        compiler, the std::compex<double> type is used for the complex case.
-
-    * bug fix in complex sparse Cholesky (cs_chol.c).
-
-    * bug fix in complex sparse Cholesky update/downdate (cs_updown.c).
-
-    * bug fix in cs_symperm for the complex case.
-
-    * "beta" changed from complex to real, in sparse QR (cs_house.c,
-        cs_happly.c, cs_qr.c), (a performance/memory improvement, not a
-        bug fix).  Similar change to "nz2" in cs_cumsum.c.
-
-May 5, 2006.  Version 2.0.1 released.
-
-    * long changed to UF_long, dependency in ../UFconfig/UFconfig.h added.
-        "UF_long" is a #define'd term in UFconfig.h.  It is normally defined
-        as "long", but can be redefined as something else if desired.
-        On Windows-64, it becomes __int64.
-
-Mar 6, 2006
-
-    "double complex" changed to "double _Complex", to avoid conflicts when
-    CXSparse is compiled with a C++ compiler.  Other minor changes to cs.h.

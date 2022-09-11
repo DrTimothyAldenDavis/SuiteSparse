@@ -65,15 +65,12 @@ install: $(AR_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
 $(INSTALL_LIB)/$(SO_TARGET): $(OBJ)
 	@mkdir -p $(INSTALL_LIB)
 	@mkdir -p $(INSTALL_INCLUDE)
-	@mkdir -p $(INSTALL_DOC)
 	$(CC) $(SO_OPTS) $^ -o $@ $(LDLIBS)
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_MAIN) )
 	$(CP) ../Include/RBio.h $(INSTALL_INCLUDE)
-	$(CP) ../README.txt $(INSTALL_DOC)/RBIO_README.txt
 	chmod 755 $(INSTALL_LIB)/$(SO_TARGET)
 	chmod 644 $(INSTALL_INCLUDE)/RBio.h
-	chmod 644 $(INSTALL_DOC)/RBIO_README.txt
 
 # uninstall RBio
 uninstall:
@@ -81,4 +78,3 @@ uninstall:
 	$(RM) $(INSTALL_LIB)/$(SO_PLAIN)
 	$(RM) $(INSTALL_LIB)/$(SO_MAIN)
 	$(RM) $(INSTALL_INCLUDE)/RBio.h
-	$(RM) $(INSTALL_DOC)/RBIO_README.txt

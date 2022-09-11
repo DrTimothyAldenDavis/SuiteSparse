@@ -75,18 +75,14 @@ install: $(AR_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
 $(INSTALL_LIB)/$(SO_TARGET): $(OBJS)
 	@mkdir -p $(INSTALL_LIB)
 	@mkdir -p $(INSTALL_INCLUDE)
-	@mkdir -p $(INSTALL_DOC)
 	$(CXX) $(SO_OPTS) $^ -o $@ $(LDLIBS)
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_MAIN) )
-	$(CP) ../README.txt $(INSTALL_DOC)/GPURUNTIME_README.txt
 	chmod 755 $(INSTALL_LIB)/$(SO_TARGET)
-	chmod 644 $(INSTALL_DOC)/GPURUNTIME_README.txt
 
 # uninstall SuiteSparse_GPURuntime
 uninstall:
 	$(RM) $(INSTALL_LIB)/$(SO_TARGET)
 	$(RM) $(INSTALL_LIB)/$(SO_PLAIN)
 	$(RM) $(INSTALL_LIB)/$(SO_MAIN)
-	$(RM) $(INSTALL_DOC)/GPURUNTIME_README.txt
 

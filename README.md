@@ -275,11 +275,6 @@ Packages in SuiteSparse, and files in this directory:
                 This package is used for the built-in DMPERM in MATLAB.
                 author: Tim Davis
 
-    CSparse_to_CXSparse
-                a Perl script to create CXSparse from CSparse and
-                CXSparse_newfiles
-                author: David Bateman, Motorola
-
     CXSparse    CSparse Extended.  Includes support for complex matrices
                 and both int or long integers.  Use this instead of CSparse
                 for production use; it creates a libcsparse.so (or *dylib on
@@ -606,15 +601,9 @@ which puts the files in /my/path/lib, /my/path/include, and /my/path/doc.
 If you want to selectively put the libraries, include files, and doc files
 in different locations, do:
 
-    make install INSTALL_LIB=/my/libs INSTALL_INCLUDE=/myotherstuff/include INSTALL_DOC=/mydocs
+    make install INSTALL_LIB=/my/libs INSTALL_INCLUDE=/myotherstuff/include
 
-for example.  Any term not defined will be set to its default, so if you don't
-want to install the documentation, but wish to install the libraries and
-includes in /usr/local/lib and /usr/local/include, do:
-
-    make install INSTALL_DOC=/tmp/doc
-
-which copies the documentation to /tmp/doc where you can then remove it later.
+for example.  Any term not defined will be set to its default.
 
 Both the static (.a) and shared (.so) libraries are compiled.  The lib.a
 libraries are left in the package Lib folder (AMD/Lib/libamd.a for example).

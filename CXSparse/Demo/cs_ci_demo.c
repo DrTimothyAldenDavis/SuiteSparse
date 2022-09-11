@@ -202,7 +202,8 @@ int demo3 (problem *Prob)
     double t, t1 ;
     cs_cis *S = NULL ;
     cs_cin *N = NULL ;
-    if (!Prob || !Prob->sym || Prob->A->n == 0) return (0) ;
+    if (!Prob) return (0) ;
+    if (!Prob->sym || Prob->A->n == 0) return (1) ;
     A = Prob->A ; C = Prob->C ; b = Prob->b ; x = Prob->x ; resid = Prob->resid;
     n = A->n ;
     if (!Prob->sym || n == 0) return (1) ;

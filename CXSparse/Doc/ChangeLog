@@ -1,3 +1,10 @@
+Sept FIXME, 2022: version 4.0.0
+
+    * using CMake to build CXSparse instead of a Makefile
+    * integers: int and SuiteSparse_long changed to int32_t and int64_t.
+        This is a modest change to the API, so the
+        major version number must increase from 3.x to 4.x.
+
 Sept 12, 2017: version 3.2.0
 
     * replaced UFget with ssget
@@ -49,7 +56,13 @@ Jun 20, 2012: verison 3.1.1
 
 Jun 1, 2012: version 3.1.0
 
-    * minor changes to enable the creation of CXSparse 3.1.0
+    * now based on CSparse v3.1.0
+    * This version of CXSparse changes the 'long' integer from UF_long to
+        cs_long_t.  UF_long is still available to user codes, however, so this
+        change is backward compatible with user codes.  Future user codes
+        should use cs_long_t instead of UF_long.
+    * changed unsigned integer in cs_amd.c to signed, for hash code.
+    * in Source, only changes are to cs_demo*.c, cs_print.c
 
 Dec 7, 2011: version 3.0.2
 
@@ -92,6 +105,7 @@ Nov 1, 2007, v2.2.1
     * very minor change to Include/cs.h:  Changed name of 2nd argument of
         cs_permute, to match the code.  This has no affect on the code itself,
         since the type ("int *") is unchanged.  It's just a documentation issue.
+    * CXSparse/MATLAB/Test ported to Windows
 
     * minor lint cleanup in mexFunctions
 
@@ -122,6 +136,12 @@ Mar 31, 2007, v2.2.0
 
     * minor improvements to MATLAB/ demos.
 
+    * back-port to MATLAB 7.2 and earlier (which does not have mwIndex).
+    * more graceful failure in cs_make when attempting complex matrix support
+        (Windows, in particular)
+    * correction to CXSparse/Demo/Makefile
+    * added sizeof(CS_INT) printout to cs_idemo.c, cs_ldemo.c
+
 Mar 1, 2007, v2.1.0
 
     * Source/cs_add.c:  added test for matrix dimensions
@@ -131,6 +151,17 @@ Mar 1, 2007, v2.1.0
     * correction to MATLAB demo3 (no error in C code version of the demo)
 
     * minor corrections to MATLAB m-file help comments.
+
+    * MATLAB interface added for CXSparse.
+    * cs_complex_t type added (a #define for "double _Complex", which is the
+        complex type used in CXSparse 2.0.x).  When compiling with a C++ 
+        compiler, the std::complex<double> type is used for the complex case.
+    * bug fix in complex sparse Cholesky (cs_chol.c).
+    * bug fix in complex sparse Cholesky update/downdate (cs_updown.c).
+    * bug fix in cs_symperm for the complex case.
+    * "beta" changed from complex to real, in sparse QR (cs_house.c,
+        cs_happly.c, cs_qr.c), (a performance/memory improvement, not a
+        bug fix).  Similar change to "nz2" in cs_cumsum.c.
 
 Dec 12, 2006, v2.0.7
 

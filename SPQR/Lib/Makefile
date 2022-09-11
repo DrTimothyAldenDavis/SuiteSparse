@@ -247,7 +247,6 @@ install: $(AR_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
 $(INSTALL_LIB)/$(SO_TARGET): $(OBJ)
 	@mkdir -p $(INSTALL_LIB)
 	@mkdir -p $(INSTALL_INCLUDE)
-	@mkdir -p $(INSTALL_DOC)
 	$(CXX) $(SO_OPTS) $^ -o $@ $(LDLIBS)
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_MAIN) )
@@ -255,15 +254,11 @@ $(INSTALL_LIB)/$(SO_TARGET): $(OBJ)
 	$(CP) ../Include/SuiteSparseQR_C.h $(INSTALL_INCLUDE)
 	$(CP) ../Include/SuiteSparseQR_definitions.h $(INSTALL_INCLUDE)
 	$(CP) ../Include/spqr.hpp $(INSTALL_INCLUDE)
-	$(CP) ../Doc/spqr_user_guide.pdf $(INSTALL_DOC)
-	$(CP) ../README.txt $(INSTALL_DOC)/SPQR_README.txt
 	chmod 755 $(INSTALL_LIB)/$(SO_TARGET)
 	chmod 644 $(INSTALL_INCLUDE)/SuiteSparseQR.hpp
 	chmod 644 $(INSTALL_INCLUDE)/SuiteSparseQR_C.h
 	chmod 644 $(INSTALL_INCLUDE)/SuiteSparseQR_definitions.h
 	chmod 644 $(INSTALL_INCLUDE)/spqr.hpp
-	chmod 644 $(INSTALL_DOC)/spqr_user_guide.pdf
-	chmod 644 $(INSTALL_DOC)/SPQR_README.txt
 
 # uninstall SPQR
 uninstall:
@@ -274,6 +269,4 @@ uninstall:
 	$(RM) $(INSTALL_INCLUDE)/SuiteSparseQR_C.h
 	$(RM) $(INSTALL_INCLUDE)/SuiteSparseQR_definitions.h
 	$(RM) $(INSTALL_INCLUDE)/spqr.hpp
-	$(RM) $(INSTALL_DOC)/spqr_user_guide.pdf
-	$(RM) $(INSTALL_DOC)/SPQR_README.txt
 

@@ -1,50 +1,143 @@
-#------------------------------------------------------------------------------
-# CXSparse Makefile
-#------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+# CXSparse/Makefile
+#-------------------------------------------------------------------------------
 
-SUITESPARSE ?= $(realpath $(CURDIR)/..)
-export SUITESPARSE
+# Copyright (c) 2009-2022, Timothy A. Davis, All Rights Reserved.
+# SPDX-License-Identifier: LGPL-2.1+
 
-default: C
+#-------------------------------------------------------------------------------
 
-include ../SuiteSparse_config/SuiteSparse_config.mk
+# A simple Makefile for CXSparse, which relies on cmake to do the
+# actual build.  All the work is done in cmake so this Makefile is just for
+# convenience.
 
-C:
-	( cd Lib ; $(MAKE) )
-	( cd Demo ; $(MAKE) )
+# To compile with an alternate compiler:
+#
+#       make CC=gcc CXX=g++
+#
+# To compile/install for system-wide usage:
+#
+#       make
+#       sudo make install
+#
+# To compile/install for local usage (SuiteSparse/lib and SuiteSparse/include):
+#
+#       make local
+#       make install
+#
+# To clean up the files:
+#
+#       make clean
+#
+# To run test coverage:
+#
+#       make cov
 
-all: C cov
+JOBS ?= 8
+
+default: library
 
 library:
-	( cd Lib ; $(MAKE) )
+	( cd build && cmake $(CMAKE_OPTIONS) .. && $(MAKE) --jobs=${JOBS} )
 
-# compile the static libraries only
-static:
-	( cd Lib    ; $(MAKE) static )
+# install only in SuiteSparse/lib and SuiteSparse/include
+local:
+	( cd build && cmake $(CMAKE_OPTIONS) -DCMAKE_INSTALL_PREFIX=../.. .. && $(MAKE) --jobs=${JOBS} )
 
-cov:
-	( cd Tcov ; $(MAKE) )
+debug:
+	( cd build && cmake $(CMAKE_OPTIONS) -DCMAKE_BUILD_TYPE=Debug .. && $(MAKE) --jobs=${JOBS} )
 
-clean:
-	( cd Lib ; $(MAKE) clean )
-	( cd Demo ; $(MAKE) clean )
-	( cd Tcov ; $(MAKE) clean )
-	( cd MATLAB/CSparse ; $(RM) *.o cs_cl_*.c )
-	( cd MATLAB/Test    ; $(RM) *.o cs_cl_*.c )
+all: library
 
-purge:
-	( cd Lib ; $(MAKE) purge )
-	( cd Demo ; $(MAKE) purge )
-	( cd Tcov ; $(MAKE) purge )
-	( cd MATLAB/CSparse ; $(RM) *.o cs_cl_*.c *.mex* )
-	( cd MATLAB/Test    ; $(RM) *.o cs_cl_*.c *.mex* )
+demo: library
+	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && $(MAKE) --jobs=${JOBS} )
+	- ./build/cs_idemo < Matrix/t2
+	- ./build/cs_ldemo < Matrix/t2
+	- ./build/cs_demo1 < Matrix/t1
+	- ./build/cs_demo2 < Matrix/t1
+	- ./build/cs_demo2 < Matrix/fs_183_1
+	- ./build/cs_demo2 < Matrix/west0067
+	- ./build/cs_demo2 < Matrix/lp_afiro
+	- ./build/cs_demo2 < Matrix/ash219
+	- ./build/cs_demo2 < Matrix/mbeacxc
+	- ./build/cs_demo2 < Matrix/bcsstk01
+	- ./build/cs_demo3 < Matrix/bcsstk01
+	- ./build/cs_demo2 < Matrix/bcsstk16
+	- ./build/cs_demo3 < Matrix/bcsstk16
+	- ./build/cs_di_demo1 < Matrix/t1
+	- ./build/cs_di_demo2 < Matrix/t1
+	- ./build/cs_di_demo2 < Matrix/fs_183_1
+	- ./build/cs_di_demo2 < Matrix/west0067
+	- ./build/cs_di_demo2 < Matrix/lp_afiro
+	- ./build/cs_di_demo2 < Matrix/ash219
+	- ./build/cs_di_demo2 < Matrix/mbeacxc
+	- ./build/cs_di_demo2 < Matrix/bcsstk01
+	- ./build/cs_di_demo3 < Matrix/bcsstk01
+	- ./build/cs_di_demo2 < Matrix/bcsstk16
+	- ./build/cs_di_demo3 < Matrix/bcsstk16
+	- ./build/cs_dl_demo1 < Matrix/t1
+	- ./build/cs_dl_demo2 < Matrix/t1
+	- ./build/cs_dl_demo2 < Matrix/fs_183_1
+	- ./build/cs_dl_demo2 < Matrix/west0067
+	- ./build/cs_dl_demo2 < Matrix/lp_afiro
+	- ./build/cs_dl_demo2 < Matrix/ash219
+	- ./build/cs_dl_demo2 < Matrix/mbeacxc
+	- ./build/cs_dl_demo2 < Matrix/bcsstk01
+	- ./build/cs_dl_demo3 < Matrix/bcsstk01
+	- ./build/cs_dl_demo2 < Matrix/bcsstk16
+	- ./build/cs_dl_demo3 < Matrix/bcsstk16
+	- ./build/cs_ci_demo1 < Matrix/t2
+	- ./build/cs_ci_demo2 < Matrix/t2
+	- ./build/cs_ci_demo2 < Matrix/t3
+	- ./build/cs_ci_demo2 < Matrix/t4
+	- ./build/cs_ci_demo2 < Matrix/c_west0067
+	- ./build/cs_ci_demo2 < Matrix/c_mbeacxc
+	- ./build/cs_ci_demo2 < Matrix/young1c
+	- ./build/cs_ci_demo2 < Matrix/qc324
+	- ./build/cs_ci_demo2 < Matrix/neumann
+	- ./build/cs_ci_demo2 < Matrix/c4
+	- ./build/cs_ci_demo3 < Matrix/c4
+	- ./build/cs_ci_demo2 < Matrix/mhd1280b
+	- ./build/cs_ci_demo3 < Matrix/mhd1280b
+	- ./build/cs_cl_demo1 < Matrix/t2
+	- ./build/cs_cl_demo2 < Matrix/t2
+	- ./build/cs_cl_demo2 < Matrix/t3
+	- ./build/cs_cl_demo2 < Matrix/t4
+	- ./build/cs_cl_demo2 < Matrix/c_west0067
+	- ./build/cs_cl_demo2 < Matrix/c_mbeacxc
+	- ./build/cs_cl_demo2 < Matrix/young1c
+	- ./build/cs_cl_demo2 < Matrix/qc324
+	- ./build/cs_cl_demo2 < Matrix/neumann
+	- ./build/cs_cl_demo2 < Matrix/c4
+	- ./build/cs_cl_demo3 < Matrix/c4
+	- ./build/cs_cl_demo2 < Matrix/mhd1280b
+	- ./build/cs_cl_demo3 < Matrix/mhd1280b
 
-distclean: purge
+# just compile after running cmake; do not run cmake again
+remake:
+	( cd build && $(MAKE) --jobs=${JOBS} )
 
-# install CXSparse
+# just run cmake to set things up
+setup:
+	( cd build && cmake $(CMAKE_OPTIONS) .. )
+
 install:
-	( cd Lib ; $(MAKE) install )
+	( cd build && $(MAKE) install )
 
-# uninstall CXSparse
+# remove any installed libraries and #include files
 uninstall:
-	( cd Lib ; $(MAKE) uninstall )
+	- xargs rm < build/install_manifest.txt
+
+# remove all files not in the distribution
+clean:
+	- $(RM) -rf build/* Config/*.tmp
+	( cd Tcov && $(MAKE) purge )
+
+purge: clean
+
+distclean: clean
+
+# test coverage
+cov:
+	( cd Tcov && $(MAKE) )
+

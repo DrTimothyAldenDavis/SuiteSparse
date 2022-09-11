@@ -49,7 +49,6 @@ install: $(AR_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
 $(INSTALL_LIB)/$(SO_TARGET): $(DEPENDS)
 	@mkdir -p $(INSTALL_LIB)
 	@mkdir -p $(INSTALL_INCLUDE)
-	@mkdir -p $(INSTALL_DOC)
 	$(COMPILE)
 	$(CC) $(SO_OPTS) xerbla.o -o $@
 	- $(RM) xerbla.o

@@ -1,15 +1,14 @@
-
 # To run with valgrind:
 V =
 # V = valgrind -q
 
 # Linux test coverage
 CC = gcc
-CFLAGS = -O -g -fprofile-arcs -ftest-coverage \
+CFLAGS = -O -g --coverage -fprofile-abs-path \
     	-Wall -W -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
-    	-Wredundant-decls -Wnested-externs -Wdisabled-optimization -ansi \
-	-Wno-unused-parameter -I../Include \
-        -I../Demo -I../../SuiteSparse_config
+    	-Wredundant-decls -Wnested-externs -Wdisabled-optimization -std=c11 \
+        -Wno-unused-but-set-variable \
+	-Wno-unused-parameter -I../Include -I../Demo -I../../SuiteSparse_config
 
 C = $(CC) $(CFLAGS)
 
@@ -22,18 +21,18 @@ all:	cs_demo1_di cs_demo2_di cs_demo3_di cstcov_test_di \
 	cs_demo1_cl cs_demo2_cl cs_demo3_cl cstcov_test_cl \
 	cs_idemo cs_ldemo
 
-CS_DI = cs_add_di.o cs_amd_di.o cs_chol_di.o cs_cholsol_di.o cs_counts_di.o \
-	cs_cumsum_di.o cs_droptol_di.o cs_dropzeros_di.o cs_dupl_di.o \
-	cs_entry_di.o cs_etree_di.o cs_fkeep_di.o cs_gaxpy_di.o cs_happly_di.o \
-	cs_house_di.o cs_ipvec_di.o cs_lsolve_di.o cs_ltsolve_di.o cs_lu_di.o \
-	cs_lusol_di.o cs_util_di.o cs_multiply_di.o cs_permute_di.o \
-	cs_pinv_di.o cs_post_di.o cs_pvec_di.o cs_qr_di.o cs_qrsol_di.o \
-	cs_scatter_di.o cs_schol_di.o cs_sqr_di.o cs_symperm_di.o cs_tdfs_di.o \
-	cs_transpose_di.o cs_compress_di.o cs_usolve_di.o cs_scc_di.o \
-	cs_maxtrans_di.o cs_dmperm_di.o cs_updown_di.o cs_print_di.o \
-	cs_norm_di.o cs_load_di.o cs_dfs_di.o cstcov_malloc_test_di.o \
-	cs_utsolve_di.o cs_reach_di.o cs_spsolve_di.o \
-	cs_leaf_di.o cs_ereach_di.o cs_randperm_di.o
+CS_DI = cs_add.o cs_amd.o cs_chol.o cs_cholsol.o cs_counts.o \
+	cs_cumsum.o cs_droptol.o cs_dropzeros.o cs_dupl.o \
+	cs_entry.o cs_etree.o cs_fkeep.o cs_gaxpy.o cs_happly.o \
+	cs_house.o cs_ipvec.o cs_lsolve.o cs_ltsolve.o cs_lu.o \
+	cs_lusol.o cs_util.o cs_multiply.o cs_permute.o \
+	cs_pinv.o cs_post.o cs_pvec.o cs_qr.o cs_qrsol.o \
+	cs_scatter.o cs_schol.o cs_sqr.o cs_symperm.o cs_tdfs.o \
+	cs_transpose.o cs_compress.o cs_usolve.o cs_scc.o \
+	cs_maxtrans.o cs_dmperm.o cs_updown.o cs_print.o \
+	cs_norm.o cs_load.o cs_dfs.o cstcov_malloc_test.o \
+	cs_utsolve.o cs_reach.o cs_spsolve.o \
+	cs_leaf.o cs_ereach.o cs_randperm.o
 
 CS_DL = cs_add_dl.o cs_amd_dl.o cs_chol_dl.o cs_cholsol_dl.o cs_counts_dl.o \
 	cs_cumsum_dl.o cs_droptol_dl.o cs_dropzeros_dl.o cs_dupl_dl.o \
@@ -78,7 +77,6 @@ OBJ = $(CS_DI) $(CS_DL) $(CS_CI) $(CS_CL) cs_convert.o
 
 $(OBJ): ../Include/cs.h cstcov_malloc_test.h Makefile
 
-
 .PRECIOUS: %demo.c %demo1.c %demo2.c %demo3.c cs_%.c cs_%_ci.c cs_%_cl.c cs_%_di.c cs_%_dl.c cstcov_%.c
 
 
@@ -94,38 +92,14 @@ $(OBJ): ../Include/cs.h cstcov_malloc_test.h Makefile
 %demo3.c:
 	- ln -s ../Demo/$*demo3.c
 
+cs_%.c:
+	- ln -s ../Source/cs_$*.c
 
-cstcov_%.c:
-	- ln -s cstcov_malloc_test.c cstcov_$*.c
-
-cs_convert.c:
-	- ln -s ../Source/cs_convert.c
-
-cs_%_ci.c:
-	- ln -s ../Source/cs_$*.c cs_$*_ci.c
-
-cs_%_di.c:
-	- ln -s ../Source/cs_$*.c cs_$*_di.c
-
-cs_%_dl.c:
-	- ln -s ../Source/cs_$*.c cs_$*_dl.c
-
-cs_%_cl.c:
-	- ln -s ../Source/cs_$*.c cs_$*_cl.c
-
-
-%_di.o: %_di.c
+cs_%.o: cs_%.c
 	$(C) -c $<
 
-%_dl.o: %_dl.c
-	$(C) -DCS_LONG -c $<
-
-%_ci.o: %_ci.c
-	$(C) -DCS_COMPLEX -c $<
-
-%_cl.o: %_cl.c
-	$(C) -DCS_LONG -DCS_COMPLEX -c $<
-
+cstcov_%.o: cstcov_%.c
+	$(C) -c $<
 
 cs_idemo: $(OBJ) cs_idemo.c
 	$(C) -o cs_idemo cs_idemo.c $(OBJ) -lm
@@ -148,42 +122,42 @@ cstcov_test_di: $(CS_DI) cstcov_test.c cs_di_demo.c
 
 
 cs_demo1_dl: $(CS_DL) cs_dl_demo1.c
-	$(C) -DCS_LONG -o cs_demo1_dl cs_dl_demo1.c $(CS_DL) -lm
+	$(C) -o cs_demo1_dl cs_dl_demo1.c $(CS_DL) -lm
 
 cs_demo2_dl: $(CS_DL) cs_dl_demo2.c cs_dl_demo.c
-	$(C) -DCS_LONG -o cs_demo2_dl cs_dl_demo2.c cs_dl_demo.c $(CS_DL) -lm
+	$(C) -o cs_demo2_dl cs_dl_demo2.c cs_dl_demo.c $(CS_DL) -lm
 
 cs_demo3_dl: $(CS_DL) cs_dl_demo3.c cs_dl_demo.c
-	$(C) -DCS_LONG -o cs_demo3_dl cs_dl_demo3.c cs_dl_demo.c $(CS_DL) -lm
+	$(C) -o cs_demo3_dl cs_dl_demo3.c cs_dl_demo.c $(CS_DL) -lm
 
-cstcov_test_dl: $(CS_DL) cstcov_test.c cs_dl_demo.c
-	$(C) -DCS_LONG -o cstcov_test_dl cstcov_test.c cs_dl_demo.c $(CS_DL) -lm
+cstcov_test_dl: $(CS_DL) cstcov_test_dl.c cs_dl_demo.c
+	$(C) -o cstcov_test_dl cstcov_test_dl.c cs_dl_demo.c $(CS_DL) -lm
 
 
 cs_demo1_ci: $(CS_CI) cs_ci_demo1.c
-	$(C) -DCS_COMPLEX -o cs_demo1_ci cs_ci_demo1.c $(CS_CI) -lm
+	$(C) -o cs_demo1_ci cs_ci_demo1.c $(CS_CI) -lm
 
 cs_demo2_ci: $(CS_CI) cs_ci_demo2.c cs_ci_demo.c
-	$(C) -DCS_COMPLEX -o cs_demo2_ci cs_ci_demo2.c cs_ci_demo.c $(CS_CI) -lm
+	$(C) -o cs_demo2_ci cs_ci_demo2.c cs_ci_demo.c $(CS_CI) -lm
 
 cs_demo3_ci: $(CS_CI) cs_ci_demo3.c cs_ci_demo.c
-	$(C) -DCS_COMPLEX -o cs_demo3_ci cs_ci_demo3.c cs_ci_demo.c $(CS_CI) -lm
+	$(C) -o cs_demo3_ci cs_ci_demo3.c cs_ci_demo.c $(CS_CI) -lm
 
-cstcov_test_ci: $(CS_CI) cstcov_test.c cs_ci_demo.c
-	$(C) -DCS_COMPLEX -o cstcov_test_ci cstcov_test.c cs_ci_demo.c $(CS_CI) -lm
+cstcov_test_ci: $(CS_CI) cstcov_test_ci.c cs_ci_demo.c
+	$(C) -o cstcov_test_ci cstcov_test_ci.c cs_ci_demo.c $(CS_CI) -lm
 
 
 cs_demo1_cl: $(CS_CL) cs_cl_demo1.c
-	$(C) -DCS_LONG -DCS_COMPLEX -o cs_demo1_cl cs_cl_demo1.c $(CS_CL) -lm
+	$(C) -o cs_demo1_cl cs_cl_demo1.c $(CS_CL) -lm
 
 cs_demo2_cl: $(CS_CL) cs_cl_demo2.c cs_cl_demo.c
-	$(C) -DCS_LONG -DCS_COMPLEX -o cs_demo2_cl cs_cl_demo2.c cs_cl_demo.c $(CS_CL) -lm
+	$(C) -o cs_demo2_cl cs_cl_demo2.c cs_cl_demo.c $(CS_CL) -lm
 
 cs_demo3_cl: $(CS_CL) cs_cl_demo3.c cs_cl_demo.c
-	$(C) -DCS_LONG -DCS_COMPLEX -o cs_demo3_cl cs_cl_demo3.c cs_cl_demo.c $(CS_CL) -lm
+	$(C) -o cs_demo3_cl cs_cl_demo3.c cs_cl_demo.c $(CS_CL) -lm
 
-cstcov_test_cl: $(CS_CL) cstcov_test.c cs_cl_demo.c
-	$(C) -DCS_LONG -DCS_COMPLEX -o cstcov_test_cl cstcov_test.c cs_cl_demo.c $(CS_CL) -lm
+cstcov_test_cl: $(CS_CL) cstcov_test_cl.c cs_cl_demo.c
+	$(C) -o cstcov_test_cl cstcov_test_cl.c cs_cl_demo.c $(CS_CL) -lm
 
 
 run_convert: cs_idemo cs_ldemo
@@ -298,25 +272,16 @@ run_cl: cs_demo1_cl cs_demo2_cl cs_demo3_cl cstcov_test_cl
 	- $(V) ./cstcov_test_cl ../Matrix/neumann > test_cl_neumann.out
 	- $(V) ./cstcov_test_cl ../Matrix/mhd1280b > test_cl_mhd1280b.out
 
-
-readhb: readhb.f
-	f77 -o readhb readhb.f
-
-readhb.f:
-	- ln -s ../Demo/readhb.f
-
 clean:
 	- $(RM) *.o *.bbg *.da *.gcov *.gcda *.gcno
 
 purge: distclean
 
 distclean: clean
-	- $(RM) readhb *.out *.a cov.sort
+	- $(RM) *.out *.a cov.sort
 	- $(RM) cs_demo1_di cs_demo2_di cs_demo3_di cstcov_test_di
 	- $(RM) cs_demo1_dl cs_demo2_dl cs_demo3_dl cstcov_test_dl
 	- $(RM) cs_demo1_ci cs_demo2_ci cs_demo3_ci cstcov_test_ci
 	- $(RM) cs_demo1_cl cs_demo2_cl cs_demo3_cl cstcov_test_cl
 	- $(RM) cs_idemo cs_ldemo
-	- $(RM) cs_*.c
-	- $(RM) cs*_di.c cs*_dl.c cs*_ci.c cs*_cl.c
-	- $(RM) -r *.dSYM
+	- $(RM) -r cs_*.c *.dSYM

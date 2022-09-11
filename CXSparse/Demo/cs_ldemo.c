@@ -1,3 +1,4 @@
+#define CS_LONG
 #include "cs.h"
 /* test real/complex conversion routines (cs_long_t version) */
 int main (void)

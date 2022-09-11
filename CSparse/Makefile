@@ -28,6 +28,10 @@
 # To clean up the files:
 #
 #       make clean
+#
+# To run test coverage:
+#
+#       make cov
 
 JOBS ?= 8
 
@@ -77,8 +81,13 @@ uninstall:
 # remove all files not in the distribution
 clean:
 	- $(RM) -rf build/* Config/*.tmp
+	( cd Tcov && $(MAKE) purge )
 
 purge: clean
 
 distclean: clean
+
+# test coverage
+cov:
+	( cd Tcov && $(MAKE) )
 

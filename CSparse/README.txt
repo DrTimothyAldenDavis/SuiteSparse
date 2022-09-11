@@ -124,7 +124,6 @@ cs_updown.c     sparse rank-1 Cholesky update/downate
 cs_usolve.c     x=U\b
 cs_util.c       various utilities (allocate/free matrices, workspace, etc)
 cs_utsolve.c    x=U'\b
-Makefile        Makefile for CSparse
 README.txt      README file for CSparse
 
 --------------------------------------------------------------------------------
@@ -395,7 +394,6 @@ lp_afiro            NETLIB afiro linear programming problem
 mbeacxc             US economy, 1972.  Dan Szyld, while at NYU
 t1                  small example used in Chapter 2
 west0067            Cavett problem with 5 components (chemical eng., Westerberg)
-
 
 --------------------------------------------------------------------------------
 ./Tcov:             Exhaustive test coverage of CSparse

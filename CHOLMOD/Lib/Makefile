@@ -540,18 +540,13 @@ install: $(AR_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
 $(INSTALL_LIB)/$(SO_TARGET): $(OBJ)
 	@mkdir -p $(INSTALL_LIB)
 	@mkdir -p $(INSTALL_INCLUDE)
-	@mkdir -p $(INSTALL_DOC)
 	$(CXX) $(SO_OPTS) $^ -o $@ $(LDLIBS)
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_MAIN) )
 	$(CP) ../Include/cholmod*.h $(INSTALL_INCLUDE)
 	$(RM) $(INSTALL_INCLUDE)/cholmod_internal.h
-	$(CP) ../Doc/CHOLMOD_UserGuide.pdf $(INSTALL_DOC)
-	$(CP) ../README.txt $(INSTALL_DOC)/CHOLMOD_README.txt
 	chmod 755 $(INSTALL_LIB)/$(SO_TARGET)
 	chmod 644 $(INSTALL_INCLUDE)/cholmod*.h
-	chmod 644 $(INSTALL_DOC)/CHOLMOD_UserGuide.pdf
-	chmod 644 $(INSTALL_DOC)/CHOLMOD_README.txt
 
 # uninstall CHOLMOD
 uninstall:
@@ -559,6 +554,4 @@ uninstall:
 	$(RM) $(INSTALL_LIB)/$(SO_PLAIN)
 	$(RM) $(INSTALL_LIB)/$(SO_MAIN)
 	$(RM) $(INSTALL_INCLUDE)/cholmod*.h
-	$(RM) $(INSTALL_DOC)/CHOLMOD_UserGuide.pdf
-	$(RM) $(INSTALL_DOC)/CHOLMOD_README.txt
 

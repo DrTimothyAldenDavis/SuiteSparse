@@ -58,30 +58,24 @@ SUITESPARSE_VERSION = 6.0.0
     #---------------------------------------------------------------------------
 
     # For "make install" and "make uninstall", the default location is
-    # SuiteSparse/lib, SuiteSparse/include, and
-    # SuiteSparse/share/doc/suitesparse-x.y.z
+    # SuiteSparse/lib and SuiteSparse/include.
     # If you do this:
     #    make install INSTALL=/usr/local
-    # then the libraries are installed in /usr/local/lib, include files in
-    # /usr/local/include, and documentation in
-    # /usr/local/share/doc/suitesparse-x.y.z.
-    # You can instead specify the install location of each of these 3 components
-    # separately, via (for example):
-    #    make install INSTALL_LIB=/yada/mylibs INSTALL_INCLUDE=/yoda/myinc  \
-    #                 INSTALL_DOC=/solo/mydox
-    # which puts the libraries in /yada/mylibs, include files in /yoda/myinc,
-    # and documentation in /solo/mydox.
+    # then the libraries are installed in /usr/local/lib, and include files in
+    # /usr/local/include
+    # You can instead specify the install location for each component:
+    #    make install INSTALL_LIB=/yada/mylibs INSTALL_INCLUDE=/yoda/myinc
+    # which puts the libraries in /yada/mylibs and include files in /yoda/myinc
     INSTALL ?= $(SUITESPARSE)
     INSTALL_LIB ?= $(INSTALL)/lib
     INSTALL_INCLUDE ?= $(INSTALL)/include
-    INSTALL_DOC ?= $(INSTALL)/share/doc/suitesparse-$(SUITESPARSE_VERSION)
 
     #---------------------------------------------------------------------------
     # parallel make
     #---------------------------------------------------------------------------
 
-    # use 8 jobs by default
-    JOBS ?= 8
+    # use 8 jobs by default FIXME
+    JOBS ?= 40
 
     CMAKE_OPTIONS ?= -DCMAKE_INSTALL_PREFIX=$(INSTALL)
 
@@ -569,7 +563,6 @@ config:
 	@echo 'Install directory:        INSTALL=        ' '$(INSTALL)'
 	@echo 'Install libraries in:     INSTALL_LIB=    ' '$(INSTALL_LIB)'
 	@echo 'Install include files in: INSTALL_INCLUDE=' '$(INSTALL_INCLUDE)'
-	@echo 'Install documentation in: INSTALL_DOC=    ' '$(INSTALL_DOC)'
 	@echo 'Optimization level:       OPTIMIZATION=   ' '$(OPTIMIZATION)'
 	@echo 'parallel make jobs:       JOBS=           ' '$(JOBS)'
 	@echo 'BLAS library:             BLAS=           ' '$(BLAS)'

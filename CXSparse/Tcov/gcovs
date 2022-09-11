@@ -1,6 +1,9 @@
+#!/bin/bash
 # usage: gcovs files
 echo '================================================================='
-foreach file ($argv[1-])
-        gcov -f $file
+for file in $@
+do
+        gcov -fl $file
         echo '================================================================='
         end
+done

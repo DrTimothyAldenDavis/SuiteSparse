@@ -200,7 +200,8 @@ cs_long_t demo3 (problem *Prob)
     double *b, *x, *resid, *y = NULL, *Lx, *Wx, s,  t, t1 ;
     cs_dls *S = NULL ;
     cs_dln *N = NULL ;
-    if (!Prob || !Prob->sym || Prob->A->n == 0) return (0) ;
+    if (!Prob) return (0) ;
+    if (!Prob->sym || Prob->A->n == 0) return (1) ;
     A = Prob->A ; C = Prob->C ; b = Prob->b ; x = Prob->x ; resid = Prob->resid;
     n = A->n ;
     if (!Prob->sym || n == 0) return (1) ;

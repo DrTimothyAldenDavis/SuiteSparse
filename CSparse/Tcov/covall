@@ -2,6 +2,6 @@
         ./gcovs cs*.c |& awk -f cov.awk | sort -n > cov.out
         sort -n cov.out > cov.sort
         ./covs *.gcov > covs.out
-        echo -n "statments not yet tested: "
+        echo -n "statements not yet tested: "
         grep "#####" *gcov | wc -l
         ./cover *v > cover.out

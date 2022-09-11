@@ -67,30 +67,22 @@ endif
 #	( cd PIRO_BAND && $(MAKE) install )
 #	( cd SKYLINE_SVD && $(MAKE) install )
 	( cd SLIP_LU && $(MAKE) install )
-	$(CP) README.md $(INSTALL_DOC)/SuiteSparse_README.md
-	chmod 644 $(INSTALL_DOC)/SuiteSparse_README.md
 
 metisinstall: metis
 ifeq (,$(MY_METIS_LIB))
         # install METIS from SuiteSparse/metis-5.1.0
 	@mkdir -p $(INSTALL_LIB)
 	@mkdir -p $(INSTALL_INCLUDE)
-	@mkdir -p $(INSTALL_DOC)
 	- $(CP) lib/libmetis.* $(INSTALL_LIB)
-	- $(CP) metis-5.1.0/manual/manual.pdf $(INSTALL_DOC)/METIS_manual.pdf
-	- $(CP) metis-5.1.0/README.txt $(INSTALL_DOC)/METIS_README.txt
         # the following is needed only on the Mac, so *.dylib is hardcoded:
 	$(SO_INSTALL_NAME) $(INSTALL_LIB)/libmetis.dylib $(INSTALL_LIB)/libmetis.dylib
 	- $(CP) include/metis.h $(INSTALL_INCLUDE)
 	chmod 755 $(INSTALL_LIB)/libmetis.*
 	chmod 644 $(INSTALL_INCLUDE)/metis.h
-	chmod 644 $(INSTALL_DOC)/METIS_manual.pdf
-	chmod 644 $(INSTALL_DOC)/METIS_README.txt
 endif
 
 # uninstall all packages
 uninstall:
-	$(RM) $(INSTALL_DOC)/SuiteSparse_README.md
 	( cd SuiteSparse_config && $(MAKE) uninstall )
 	- ( cd metis-5.1.0 && $(MAKE) uninstall )
 	- ( cd GraphBLAS && $(MAKE) uninstall )
@@ -117,10 +109,7 @@ ifeq (,$(MY_METIS_LIB))
         # uninstall METIS, which came from SuiteSparse/metis-5.1.0
 	$(RM) $(INSTALL_LIB)/libmetis.*
 	$(RM) $(INSTALL_INCLUDE)/metis.h
-	$(RM) $(INSTALL_DOC)/METIS_manual.pdf
-	$(RM) $(INSTALL_DOC)/METIS_README.txt
 endif
-	$(RM) -r $(INSTALL_DOC)
 
 # compile the dynamic libraries.  For GraphBLAS and Mongoose, this also builds
 # the static library
@@ -247,18 +236,6 @@ docs:
 #	( cd SKYLINE_SVD && $(MAKE) docs )
 
 distclean: purge
-
-# Create CXSparse from CSparse
-# Note that the CXSparse directory should initially not exist.
-cx:
-	( cd CSparse ; $(MAKE) purge )
-	( cd SuiteSparse_config && $(MAKE) )
-	( cd CXSparse_newfiles ; tar cfv - * | gzip -9 > ../CXSparse_newfiles.tar.gz )
-	./CSparse_to_CXSparse CSparse CXSparse CXSparse_newfiles.tar.gz
-	( cd CXSparse/Demo ; $(MAKE) )
-	( cd CXSparse/Demo ; $(MAKE) > cs_demo.out )
-	( cd CXSparse ; $(MAKE) purge )
-	$(RM) -f CXSparse_newfiles.tar.gz
 
 # statement coverage (Linux only); this requires a lot of time.
 # The umfpack tcov requires a lot of disk space in /tmp

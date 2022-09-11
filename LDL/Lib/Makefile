@@ -51,17 +51,12 @@ install: $(AR_TARGET) $(INSTALL_LIB)/$(SO_TARGET)
 $(INSTALL_LIB)/$(SO_TARGET): $(OBJ)
 	@mkdir -p $(INSTALL_LIB)
 	@mkdir -p $(INSTALL_INCLUDE)
-	@mkdir -p $(INSTALL_DOC)
 	$(CC) $(SO_OPTS) $^ -o $@ $(LDLIBS)
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_PLAIN) )
 	( cd $(INSTALL_LIB) ; ln -sf $(SO_TARGET) $(SO_MAIN) )
 	$(CP) ../Include/ldl.h $(INSTALL_INCLUDE)
-	$(CP) ../Doc/ldl_userguide.pdf $(INSTALL_DOC)
-	$(CP) ../README.txt $(INSTALL_DOC)/LDL_README.txt
 	chmod 755 $(INSTALL_LIB)/$(SO_TARGET)
 	chmod 644 $(INSTALL_INCLUDE)/ldl.h
-	chmod 644 $(INSTALL_DOC)/ldl_userguide.pdf
-	chmod 644 $(INSTALL_DOC)/LDL_README.txt
 
 # uninstall LDL
 uninstall:
@@ -69,6 +64,4 @@ uninstall:
 	$(RM) $(INSTALL_LIB)/$(SO_PLAIN)
 	$(RM) $(INSTALL_LIB)/$(SO_MAIN)
 	$(RM) $(INSTALL_INCLUDE)/ldl.h
-	$(RM) $(INSTALL_DOC)/ldl_userguide.pdf
-	$(RM) $(INSTALL_DOC)/LDL_README.txt
 
