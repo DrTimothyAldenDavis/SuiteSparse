@@ -146,7 +146,7 @@ int main (void)
 	/* read in the matrix and the permutation */
 	/* ------------------------------------------------------------------ */
 
-	sprintf (filename, "../Matrix/A%02d", (int) matrix) ;
+	sprintf (filename, "Matrix/A%02d", (int) matrix) ;
 	if ((f = fopen (filename, "r")) == (FILE *) NULL)
 	{
 	    printf (PROGRAM ": could not open file: %s\n", filename) ;

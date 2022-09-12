@@ -1,0 +1,2 @@
+% version of SuiteSparse/LDL
+\date{VERSION @LDL_VERSION_MAJOR@.@LDL_VERSION_MINOR@.@LDL_VERSION_SUB@, @LDL_DATE@}

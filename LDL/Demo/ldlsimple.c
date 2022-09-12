@@ -47,6 +47,12 @@ int main (void)
     double Lx [LNZ], D [N], Y [N] ;
     int Li [LNZ], Lp [N+1], Parent [N], Lnz [N], Flag [N], Pattern [N], d, i ;
 
+    int version [3] ;
+    SuiteSparse_version (version) ;
+    printf ("LDL %d.%d.%d in SuiteSparse %d.%d.%d\n",
+        LDL_MAIN_VERSION, LDL_SUB_VERSION, LDL_SUBSUB_VERSION,
+        version [0], version [1], version [2]) ;
+
     /* factorize A into LDL' (P and Pinv not used) */
     ldl_symbolic (N, Ap, Ai, Lp, Parent, Lnz, Flag, NULL, NULL) ;
     printf ("Nonzeros in L, excluding diagonal: %d\n", Lp [N]) ;

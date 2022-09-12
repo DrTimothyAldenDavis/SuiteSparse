@@ -11,23 +11,24 @@
 # actual build.  All the work is done in cmake so this Makefile is just for
 # convenience.
 
+# Note that there is no "make install" target.  For production use, CXSparse
+# should be installed instead.
+
 # To compile with an alternate compiler:
 #
 #       make CC=gcc CXX=g++
 #
-# To compile/install for system-wide usage:
+# To compile:
 #
 #       make
-#       sudo make install
-#
-# To compile/install for local usage (SuiteSparse/lib and SuiteSparse/include):
-#
-#       make local
-#       make install
 #
 # To clean up the files:
 #
 #       make clean
+#
+# To run the demos
+#
+#       make demo
 #
 # To run test coverage:
 #
@@ -39,10 +40,6 @@ default: library
 
 library:
 	( cd build && cmake $(CMAKE_OPTIONS) .. && $(MAKE) --jobs=${JOBS} )
-
-# install only in SuiteSparse/lib and SuiteSparse/include
-local:
-	( cd build && cmake $(CMAKE_OPTIONS) -DCMAKE_INSTALL_PREFIX=../.. .. && $(MAKE) --jobs=${JOBS} )
 
 debug:
 	( cd build && cmake $(CMAKE_OPTIONS) -DCMAKE_BUILD_TYPE=Debug .. && $(MAKE) --jobs=${JOBS} )
@@ -70,13 +67,6 @@ remake:
 # just run cmake to set things up
 setup:
 	( cd build && cmake $(CMAKE_OPTIONS) .. )
-
-install:
-	( cd build && $(MAKE) install )
-
-# remove any installed libraries and #include files
-uninstall:
-	- xargs rm < build/install_manifest.txt
 
 # remove all files not in the distribution
 clean:

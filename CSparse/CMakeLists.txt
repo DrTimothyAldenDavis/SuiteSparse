@@ -5,16 +5,17 @@
 # Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: LGPL-2.1+
 
+# CSparse/CMakeLists.txt is a standalone script, which can be used outside of
+# SuiteSparse.  The library (libcsparse.so) and include file (cs.h) are NOT
+# installed in ../lib and ../include.  CSparse is meant for classwork and
+# stand-alone development, while SuiteSpare/CXSparse should be used in
+# production.
+
 #-------------------------------------------------------------------------------
 # get the version
 #-------------------------------------------------------------------------------
 
-# cmake 3.17 is required
-cmake_minimum_required ( VERSION 3.17 )
-
-cmake_policy ( SET CMP0042 NEW )
-cmake_policy ( SET CMP0048 NEW )
-set ( CMAKE_MACOSX_RPATH TRUE )
+cmake_minimum_required ( VERSION 3.13 )
 
 set ( CSPARSE_DATE "Sept FIXME, 2022" )
 set ( CSPARSE_VERSION_MAJOR 4 )
@@ -26,29 +27,40 @@ message ( STATUS "Building CSparse version: v"
     ${CSPARSE_VERSION_MINOR}.
     ${CSPARSE_VERSION_SUB} " (" ${CSPARSE_DATE} ")" )
 
-project ( csparse
-    VERSION "${CSPARSE_VERSION_MAJOR}.${CSPARSE_VERSION_MINOR}.${CSPARSE_VERSION_SUB}"
-    LANGUAGES C ) # <-- add CXX here for packages that use C++
-
-message ( STATUS "CSparse project: " ${PROJECT_SOURCE_DIR} )
-message ( STATUS "CSparse build:   " ${CMAKE_BINARY_DIR} )
-
 #-------------------------------------------------------------------------------
-# determine build type
+# SuiteSparse policies (a subset)
 #-------------------------------------------------------------------------------
+
+message ( STATUS "Source:        " ${CMAKE_SOURCE_DIR} )
+message ( STATUS "Build:         " ${CMAKE_BINARY_DIR} )
+
+cmake_policy ( SET CMP0042 NEW )    # enable MACOSX_RPATH by default
+cmake_policy ( SET CMP0048 NEW )    # VERSION variable policy
+cmake_policy ( SET CMP0054 NEW )    # if ( expression ) handling policy
+
+set ( CMAKE_MACOSX_RPATH TRUE )
+enable_language ( C )
+include ( GNUInstallDirs )
 
 if ( NOT CMAKE_BUILD_TYPE )
     set ( CMAKE_BUILD_TYPE Release )
 endif ( )
 
+message ( STATUS "Build type:    " ${CMAKE_BUILD_TYPE} )
+
+#-------------------------------------------------------------------------------
+# define the project
+#-------------------------------------------------------------------------------
+
+project ( csparse
+    VERSION "${CSPARSE_VERSION_MAJOR}.${CSPARSE_VERSION_MINOR}.${CSPARSE_VERSION_SUB}"
+    LANGUAGES C ) # <-- add CXX here for packages that use C++
+
 #-------------------------------------------------------------------------------
 # Configure cs.h with version number
 #-------------------------------------------------------------------------------
 
-configure_file (
-    "Config/cs.h.in"
-    "${PROJECT_SOURCE_DIR}/Include/cs.h"
-)
+configure_file ( "Config/cs.h.in" "${PROJECT_SOURCE_DIR}/Include/cs.h" )
 
 #-------------------------------------------------------------------------------
 # report status and set compile flags
@@ -73,7 +85,7 @@ message ( STATUS "CMAKE C compiler:        " ${CMAKE_C_COMPILER_ID} )
 #-------------------------------------------------------------------------------
 
 set ( CMAKE_INCLUDE_CURRENT_DIR ON )
-include_directories ( Source Include ${SUITESPARSE_CONFIG_INCLUDE_DIR} )
+include_directories ( Source Include )
 
 #-------------------------------------------------------------------------------
 # dynamic csparse library properties
@@ -103,55 +115,10 @@ SET_TARGET_PROPERTIES ( csparse_static PROPERTIES
 # add the library dependencies
 #-------------------------------------------------------------------------------
 
-target_link_libraries ( csparse PUBLIC ${SUITESPARSE_CONFIG_LIBRARY} )
-target_link_libraries ( csparse_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARY} )
-
 # libm:
 if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
     target_link_libraries ( csparse PUBLIC m )
     target_link_libraries ( csparse_static PUBLIC m )
-endif ( )
-
-#-------------------------------------------------------------------------------
-# CSparse installation location
-#-------------------------------------------------------------------------------
-
-# use "cmake -DLOCAL=1" to install only in SuiteSparse/lib and
-# SuiteSparse/include.  
-
-if ( NOT LOCAL )
-
-    # install in /usr/local/lib and /usr/local/include.
-    # requires "sudo make install"
-    message ( STATUS "Installation will be system-wide (requires 'sudo make install')" )
-    include ( GNUInstallDirs )
-
-    install ( TARGETS csparse
-        LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
-
-    install ( TARGETS csparse_static
-        ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
-
-else ( )
-
-    message ( STATUS "Installation in ../lib and ../include only," )
-    message ( STATUS "  with 'make install'. No 'sudo' required." )
-
-endif ( )
-
-if ( ( EXISTS ${CMAKE_SOURCE_DIR}/../lib ) AND
-     ( EXISTS ${CMAKE_SOURCE_DIR}/../include ))
-
-    # also install in SuiteSparse/lib and SuiteSparse/include;
-    # does not require "sudo make install", just "make install"
-    install ( TARGETS csparse
-        LIBRARY       DESTINATION ${CMAKE_SOURCE_DIR}/../lib
-        PUBLIC_HEADER DESTINATION ${CMAKE_SOURCE_DIR}/../include )
-
-    install ( TARGETS csparse_static
-        ARCHIVE       DESTINATION ${CMAKE_SOURCE_DIR}/../lib )
-
 endif ( )
 
 #-------------------------------------------------------------------------------

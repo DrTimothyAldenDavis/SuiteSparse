@@ -9,14 +9,7 @@
 # get the version
 #-------------------------------------------------------------------------------
 
-# cmake 3.17 is required
-cmake_minimum_required ( VERSION 3.17 )
-
-set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse/cmake_modules
-    )
+cmake_minimum_required ( VERSION 3.19 )
 
 # version of both SuiteSparse and SuiteSparse_config
 set ( SUITESPARSE_DATE "Sept FIXME, 2022" )
@@ -29,12 +22,25 @@ message ( STATUS "Building SuiteSparse_config version: v"
     ${SUITESPARSE_VERSION_MINOR}.
     ${SUITESPARSE_VERSION_SUB} " (" ${SUITESPARSE_DATE} ")" )
 
+#-------------------------------------------------------------------------------
+# SuiteSparse policies
+#-------------------------------------------------------------------------------
+
+set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+    ${CMAKE_SOURCE_DIR}/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../cmake_modules
+    ${CMAKE_SOURCE_DIR}/../SuiteSparse/cmake_modules
+    )
+
+include ( SuiteSparsePolicy )
+
+#-------------------------------------------------------------------------------
+# define the project
+#-------------------------------------------------------------------------------
+
 project ( suitesparseconfig
     VERSION "${SUITESPARSE_VERSION_MAJOR}.${SUITESPARSE_VERSION_MINOR}.${SUITESPARSE_VERSION_SUB}"
     LANGUAGES C ) # <-- add CXX here for packages that use C++
-
-message ( STATUS "SuiteSparse_config project: " ${PROJECT_SOURCE_DIR} )
-message ( STATUS "SuiteSparse_config build:   " ${CMAKE_BINARY_DIR} )
 
 #-------------------------------------------------------------------------------
 # find library dependencies
@@ -43,28 +49,10 @@ message ( STATUS "SuiteSparse_config build:   " ${CMAKE_BINARY_DIR} )
 find_package ( OpenMP )
 
 #-------------------------------------------------------------------------------
-# determine build type
-#-------------------------------------------------------------------------------
-
-if ( NOT CMAKE_BUILD_TYPE )
-    set ( CMAKE_BUILD_TYPE Release )
-endif ( )
-
-#-------------------------------------------------------------------------------
-# Configure SuiteSparse_config.h with version number
-#-------------------------------------------------------------------------------
-
-configure_file (
-    "Config/SuiteSparse_config.h.in"
-    "${PROJECT_SOURCE_DIR}/SuiteSparse_config.h"
-)
-
-#-------------------------------------------------------------------------------
 # report status and set compile flags
 #-------------------------------------------------------------------------------
 
-message ( STATUS "CMAKE build type:        " ${CMAKE_BUILD_TYPE} )
-
+# FIXME: move this to cmake_modules/SuiteSparseReport.cmake
 if ( ${CMAKE_BUILD_TYPE} STREQUAL "Debug" )
     message ( STATUS "CMAKE C Flags debug:     " ${CMAKE_C_FLAGS_DEBUG} )
 #   message ( STATUS "CMAKE C++ Flags debug:   " ${CMAKE_CXX_FLAGS_DEBUG} )
@@ -77,12 +65,6 @@ message ( STATUS "CMAKE C compiler:        " ${CMAKE_C_COMPILER_ID} )
 message ( STATUS "CMAKE have OpenMP:       " ${OPENMP_FOUND} )
 
 # message ( STATUS "CMAKE C++ compiler:      " ${CMAKE_CXX_COMPILER_ID} )
-
-#-------------------------------------------------------------------------------
-# include directories
-#-------------------------------------------------------------------------------
-
-set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 
 #-------------------------------------------------------------------------------
 # dynamic suitesparseconfig library properties
@@ -107,6 +89,12 @@ SET_TARGET_PROPERTIES ( suitesparseconfig_static PROPERTIES
     VERSION ${SUITESPARSE_VERSION_MAJOR}.${SUITESPARSE_VERSION_MINOR}.${SUITESPARSE_VERSION_SUB}
     OUTPUT_NAME suitesparseconfig
     SOVERSION ${SUITESPARSE_VERSION_MAJOR} )
+
+#-------------------------------------------------------------------------------
+# configure files
+#-------------------------------------------------------------------------------
+
+configure_file ( "Config/SuiteSparse_config.h.in" "${PROJECT_SOURCE_DIR}/SuiteSparse_config.h" )
 
 #-------------------------------------------------------------------------------
 # add the library dependencies
@@ -145,33 +133,25 @@ endif ( )
 # SuiteSparse/include.  
 
 if ( NOT LOCAL )
-
     # install in /usr/local/lib and /usr/local/include.
     # requires "sudo make install"
-    message ( STATUS "Installation will be system-wide (requires 'sudo make install')." )
-    message ( STATUS "    If you do not have 'sudo' privilege, do 'make local' instead." )
-    include ( GNUInstallDirs )
-
+    message ( STATUS "Installation will be system-wide (requires 'sudo make install')" )
     install ( TARGETS suitesparseconfig
         LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
-
     install ( TARGETS suitesparseconfig_static
         ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
-
-else ( )
-
-    message ( STATUS "Installation in ../lib and ../include only," )
-    message ( STATUS "    with 'make install'. No 'sudo' required." )
-
 endif ( )
 
-# also install in SuiteSparse/lib and SuiteSparse/include;
-# does not require "sudo make install", just "make install"
-install ( TARGETS suitesparseconfig
-    LIBRARY       DESTINATION ${CMAKE_SOURCE_DIR}/../lib
-    PUBLIC_HEADER DESTINATION ${CMAKE_SOURCE_DIR}/../include )
-
-install ( TARGETS suitesparseconfig_static
-    ARCHIVE       DESTINATION ${CMAKE_SOURCE_DIR}/../lib )
+if ( INSIDE_SUITESPARSE )
+    # also install in SuiteSparse/lib and SuiteSparse/include;
+    # does not require "sudo make install", just "make install"
+    message ( STATUS "Installation in ../lib and ../include only," )
+    message ( STATUS "  with 'make install'. No 'sudo' required." )
+    install ( TARGETS suitesparseconfig
+        LIBRARY       DESTINATION ${LOCAL_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${LOCAL_INCLUDEDIR} )
+    install ( TARGETS suitesparseconfig_static
+        ARCHIVE       DESTINATION ${LOCAL_LIBDIR} )
+endif ( )
 

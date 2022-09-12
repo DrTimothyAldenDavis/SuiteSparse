@@ -31,6 +31,9 @@ cmake_minimum_required ( VERSION 3.17 )
 cmake_policy ( SET CMP0042 NEW )
 cmake_policy ( SET CMP0048 NEW )
 set ( CMAKE_MACOSX_RPATH TRUE )
+set ( CMAKE_INSTALL_RPATH ${CMAKE_SOURCE_DIR}/../lib )
+set ( CMAKE_BUILD_RPATH ${CMAKE_SOURCE_DIR}/../lib )
+set ( CMAKE_BUILD_WITH_INSTALL_RPATH TRUE )
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
@@ -181,7 +184,6 @@ if (UNIX AND NOT APPLE)
 endif ()
 
 # Build the Mongoose library for dynamic linking
-set(CMAKE_MACOSX_RPATH 1)
 add_library(mongoose_dylib SHARED ${MONGOOSE_LIB_FILES})
 set_property(TARGET mongoose_dylib PROPERTY POSITION_INDEPENDENT_CODE ON)
 set_target_properties(mongoose_dylib

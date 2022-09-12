@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# SuiteSparse_config/cmake/FindSuiteSparse_config.cmake
+# SuiteSparse/cmake_modules/FindSuiteSparse_config.cmake
 #-------------------------------------------------------------------------------
 
 # Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
@@ -55,6 +55,8 @@ string (
     SUITESPARSE_CONFIG_VERSION
     ${SUITESPARSE_CONFIG_LIBRARY}
 )
+
+# libaries when using SuiteSparse_config
 set (SUITESPARSE_CONFIG_LIBRARIES ${SUITESPARSE_CONFIG_LIBRARY})
 
 include (FindPackageHandleStandardArgs)
@@ -71,10 +73,9 @@ mark_as_advanced (
 )
 
 if ( SUITESPARSE_CONFIG_FOUND )
-    message ( STATUS "SuiteSparse_config include dir: " ${SUITESPARSE_CONFIG_INCLUDE_DIR} )
-    message ( STATUS "SuiteSparse_config library:     " ${SUITESPARSE_CONFIG_LIBRARY} )
-    message ( STATUS "SuiteSparse_config version:     " ${SUITESPARSE_CONFIG_VERSION} )
-    message ( STATUS "SuiteSparse_config libraries:   " ${SUITESPARSE_CONFIG_LIBRARIES} )
+    message ( STATUS "SuiteSparse_config include dir: ${SUITESPARSE_CONFIG_INCLUDE_DIR} ")
+    message ( STATUS "SuiteSparse_config version:     ${SUITESPARSE_CONFIG_VERSION} ")
+    message ( STATUS "SuiteSparse_config libraries:   ${SUITESPARSE_CONFIG_LIBRARIES} ")
 else ( )
     message ( STATUS "SuiteSparse_config not found" )
 endif ( )

@@ -11,19 +11,7 @@
 # get the version
 #-------------------------------------------------------------------------------
 
-# cmake 3.13 is required; cmake 3.17 or later required for CUDA
-cmake_minimum_required ( VERSION 3.13 )
-
-message ( STATUS "GrapphBLAS source: " ${CMAKE_SOURCE_DIR} )
-message ( STATUS "GrapphBLAS build:  " ${CMAKE_BINARY_DIR} )
-message ( STATUS "CMake version: " ${CMAKE_VERSION} )
-
-if ( CMAKE_VERSION VERSION_GREATER "3.0" )
-    cmake_policy ( SET CMP0042 NEW )
-    cmake_policy ( SET CMP0048 NEW )
-    cmake_policy ( SET CMP0054 NEW )
-endif ( )
-set ( CMAKE_MACOSX_RPATH TRUE )
+cmake_minimum_required ( VERSION 3.19 )
 
 # version of SuiteSparse:GraphBLAS
 set ( GraphBLAS_DATE "Aug 8, 2022" )
@@ -31,26 +19,31 @@ set ( GraphBLAS_VERSION_MAJOR 7 )
 set ( GraphBLAS_VERSION_MINOR 2 )
 set ( GraphBLAS_VERSION_SUB   0 )
 
-message ( STATUS "Building SuiteSparse:GraphBLAS version: v" ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}  " date: " ${GraphBLAS_DATE} )
-
 # GraphBLAS C API Specification version, at graphblas.org
-if ( GraphBLAS_VERSION_MAJOR GREATER_EQUAL 6 )
-    # SuiteSparse:GraphBLAS v6.0.0 and later fully implement the v2 spec
-    set ( GraphBLAS_API_DATE "Nov 15, 2021" )
-    set ( GraphBLAS_API_VERSION_MAJOR 2 )
-    set ( GraphBLAS_API_VERSION_MINOR 0 )
-    set ( GraphBLAS_API_VERSION_SUB   0 )
-else ( )
-    # SuiteSparse:GraphBLAS v5.2.0 has much of the v2 spec but not all.
-    # It is backward compatible with all v5.x which have little of the new
-    # features of the v2 C API Specification.
-    set ( GraphBLAS_API_DATE "Sept 25, 2019" )
-    set ( GraphBLAS_API_VERSION_MAJOR 1 )
-    set ( GraphBLAS_API_VERSION_MINOR 3 )
-    set ( GraphBLAS_API_VERSION_SUB   0 )
-endif ( )
+set ( GraphBLAS_API_DATE "Nov 15, 2021" )
+set ( GraphBLAS_API_VERSION_MAJOR 2 )
+set ( GraphBLAS_API_VERSION_MINOR 0 )
+set ( GraphBLAS_API_VERSION_SUB   0 )
 
-message ( STATUS "GraphBLAS C API: v" "${GraphBLAS_API_VERSION_MAJOR}.${GraphBLAS_API_VERSION_MINOR}, date: ${GraphBLAS_API_DATE}" )
+message ( STATUS "Building SuiteSparse:GraphBLAS version: v"
+    ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
+    ", date: " ${GraphBLAS_DATE} )
+
+message ( STATUS "GraphBLAS C API: v"
+    ${GraphBLAS_API_VERSION_MAJOR}.${GraphBLAS_API_VERSION_MINOR}
+    ", date: ${GraphBLAS_API_DATE}" )
+
+#-------------------------------------------------------------------------------
+# SuiteSparse policies
+#-------------------------------------------------------------------------------
+
+set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+    ${CMAKE_SOURCE_DIR}/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../cmake_modules
+    ${CMAKE_SOURCE_DIR}/../SuiteSparse/cmake_modules
+    )
+
+include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
 # find CUDA
@@ -60,16 +53,7 @@ message ( STATUS "GraphBLAS C API: v" "${GraphBLAS_API_VERSION_MAJOR}.${GraphBLA
 # if ( set some flag to ignore cuda )
 #   ... disable CUDA
 #   message ( STATUS "CUDA: disabled" )
-# elseif ( ${CMAKE_VERSION} VERSION_LESS "3.17.0" )
-#   ...
-
-if ( ${CMAKE_VERSION} VERSION_LESS "3.17.0" )
-
-    # CUDA requires cmake 3.17 or later
-    set ( CMAKE_CUDA off )
-    message ( STATUS "CUDA: not enabled (cmake 3.17.0 or later required)" )
-
-else ( )
+# else ( ) ...
 
     # try finding CUDA
     project ( graphblas LANGUAGES C )
@@ -99,13 +83,15 @@ else ( )
         set ( CMAKE_CUDA off )
     endif ( )
 
-endif ( )
-
 # CUDA is under development for now, and not deployed in production:
   set ( CMAKE_CUDA off )
 
 # Edit these lines for code development only, not for end-users:
 # set ( CMAKE_BUILD_TYPE Debug )
+
+#-------------------------------------------------------------------------------
+# define the project
+#-------------------------------------------------------------------------------
 
 if ( CMAKE_CUDA )
     # for CUDA development only; not for production use
@@ -186,12 +172,6 @@ endif ( )
 # determine build type
 #-------------------------------------------------------------------------------
 
-include ( GNUInstallDirs )
-
-if ( NOT CMAKE_BUILD_TYPE )
-    set ( CMAKE_BUILD_TYPE Release )
-endif ( )
-
 # select "true" to build both dynamic and static libraries:
 # set ( BUILD_GRB_STATIC_LIBRARY true )
 # set ( BUILD_GRB_STATIC_LIBRARY false )
@@ -212,28 +192,15 @@ endif ( )
 # Configure Include/GraphBLAS.h and documentation with version number
 #-------------------------------------------------------------------------------
 
-configure_file (
-    "Config/GraphBLAS.h.in"
-    "${PROJECT_SOURCE_DIR}/Include/GraphBLAS.h"
-)
-configure_file (
-    "Config/GraphBLAS_version.tex.in"
-    "${PROJECT_SOURCE_DIR}/Doc/GraphBLAS_version.tex"
-)
-configure_file (
-    "Config/GraphBLAS_API_version.tex.in"
-    "${PROJECT_SOURCE_DIR}/Doc/GraphBLAS_API_version.tex"
-)
-configure_file (
-    "Config/README.md.in"
-    "${PROJECT_SOURCE_DIR}/README.md"
-)
+configure_file ( "Config/GraphBLAS.h.in" "${PROJECT_SOURCE_DIR}/Include/GraphBLAS.h" )
+configure_file ( "Config/GraphBLAS_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/GraphBLAS_version.tex" )
+configure_file ( "Config/GraphBLAS_API_version.tex.in"
+    "${PROJECT_SOURCE_DIR}/Doc/GraphBLAS_API_version.tex" )
+configure_file ( "Config/README.md.in" "${PROJECT_SOURCE_DIR}/README.md" )
 
 #-------------------------------------------------------------------------------
 # report status
 #-------------------------------------------------------------------------------
-
-message ( STATUS "CMAKE build type:          " ${CMAKE_BUILD_TYPE} )
 
 if ( ${CMAKE_BUILD_TYPE} STREQUAL "Debug" )
     message ( STATUS "CMAKE C Flags debug:       " ${CMAKE_C_FLAGS_DEBUG} )
@@ -247,8 +214,6 @@ message ( STATUS "CMAKE have OpenMP:         " ${OPENMP_FOUND} )
 #-------------------------------------------------------------------------------
 # include directories for both graphblas and graphblasdemo libraries
 #-------------------------------------------------------------------------------
-
-set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 
 if ( CMAKE_CUDA_DEV )
     # for CUDA development only; not for production use
@@ -531,39 +496,57 @@ else ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
-# graphblas installation location
+# installation location
 #-------------------------------------------------------------------------------
 
-if ( BUILD_GRB_STATIC_LIBRARY )
+# use "cmake -DLOCAL=1" to install only in ../lib and
+# ../include.  
 
-    # install both the dynamic and static libraries
-    install ( TARGETS graphblas  graphblas_static
-        LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-        ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
-
-else ( )
-
-    # only install the dynamic graphblas library
+if ( NOT LOCAL )
+    # install in /usr/local/lib and /usr/local/include.
+    # requires "sudo make install"
+    message ( STATUS "Installation will be system-wide (requires 'sudo make install')" )
     install ( TARGETS graphblas
-         LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
-         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-         ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+        LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+    if ( BUILD_GRB_STATIC_LIBRARY )
+        install ( TARGETS graphblas_static
+            ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+    endif ( )
+endif ( )
 
+if ( INSIDE_SUITESPARSE )
+    # also install in SuiteSparse/lib and SuiteSparse/include;
+    # does not require "sudo make install", just "make install"
+    message ( STATUS "Installation in ../lib and ../include only," )
+    message ( STATUS "  with 'make install'. No 'sudo' required." )
+    install ( TARGETS graphblas
+        LIBRARY       DESTINATION ${LOCAL_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${LOCAL_INCLUDEDIR} )
+    if ( BUILD_GRB_STATIC_LIBRARY )
+        install ( TARGETS graphblas_static
+            ARCHIVE       DESTINATION ${LOCAL_LIBDIR} )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
 # dump all variables, for debugging only
 #-------------------------------------------------------------------------------
 
-# uncomment this line to dump all cmake variables:
+# uncomment this line or add -DDUMP=true to your cmake call to dump all cmake variables:
 # set ( DUMP true )
 
 if ( DUMP )
+    message("====")
+    message("Begin dumping all CMake variables in alphabetic order")
+    message("====")
     get_cmake_property ( _variableNames VARIABLES )
     list ( SORT _variableNames )
     foreach ( _variableName ${_variableNames} )
         message ( STATUS "${_variableName}=${${_variableName}}" )
     endforeach ( )
+    message("====")
+    message("End dumping all CMake variables in alphabetic order")
+    message("====")
 endif ( )
 

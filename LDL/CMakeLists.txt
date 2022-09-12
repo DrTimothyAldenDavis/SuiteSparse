@@ -1,9 +1,9 @@
 #-------------------------------------------------------------------------------
-# CXSparse/CMakeLists.txt:  cmake for CXSparse
+# SuiteSparse/LDL/CMakeLists.txt:  cmake for LDL
 #-------------------------------------------------------------------------------
 
 # Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
-# SPDX-License-Identifier: LGPL-2.1+
+# SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------
 # get the version
@@ -11,15 +11,15 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( CXSPARSE_DATE "Sept FIXME, 2022" )
-set ( CXSPARSE_VERSION_MAJOR 4 )
-set ( CXSPARSE_VERSION_MINOR 0 )
-set ( CXSPARSE_VERSION_SUB   0 )
+set ( LDL_DATE "Sept FIXME, 2022" )
+set ( LDL_VERSION_MAJOR 3 )
+set ( LDL_VERSION_MINOR 0 )
+set ( LDL_VERSION_SUB   0 )
 
-message ( STATUS "Building CXSparse version: v"
-    ${CXSPARSE_VERSION_MAJOR}.
-    ${CXSPARSE_VERSION_MINOR}.
-    ${CXSPARSE_VERSION_SUB} " (" ${CXSPARSE_DATE} ")" )
+message ( STATUS "Building LDL version: v"
+    ${LDL_VERSION_MAJOR}.
+    ${LDL_VERSION_MINOR}.
+    ${LDL_VERSION_SUB} " (" ${LDL_DATE} ")" )
 
 #-------------------------------------------------------------------------------
 # SuiteSparse policies
@@ -37,8 +37,8 @@ include ( SuiteSparsePolicy )
 # define the project
 #-------------------------------------------------------------------------------
 
-project ( cxsparse
-    VERSION "${CXSPARSE_VERSION_MAJOR}.${CXSPARSE_VERSION_MINOR}.${CXSPARSE_VERSION_SUB}"
+project ( ldl
+    VERSION "${LDL_VERSION_MAJOR}.${LDL_VERSION_MINOR}.${LDL_VERSION_SUB}"
     LANGUAGES C ) # <-- add CXX here for packages that use C++
 
 #-------------------------------------------------------------------------------
@@ -47,12 +47,14 @@ project ( cxsparse
 
 find_package ( OpenMP )
 find_package ( SuiteSparse_config REQUIRED )
+find_package ( AMD REQUIRED )
 
 #-------------------------------------------------------------------------------
-# Configure cs.h with version number
+# Configure ldl.h with version number
 #-------------------------------------------------------------------------------
 
-configure_file ( "Config/cs.h.in" "${PROJECT_SOURCE_DIR}/Include/cs.h" )
+configure_file ( "Config/ldl.h.in" "${PROJECT_SOURCE_DIR}/Include/ldl.h" )
+configure_file ( "Config/ldl_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/ldl_version.tex" )
 
 #-------------------------------------------------------------------------------
 # report status and set compile flags
@@ -67,6 +69,7 @@ else ( )
 endif ( )
 
 message ( STATUS "CMAKE C compiler:        " ${CMAKE_C_COMPILER_ID} )
+message ( STATUS "CMAKE have OpenMP:       " ${OPENMP_FOUND} )
 
 # message ( STATUS "CMAKE C++ compiler:      " ${CMAKE_CXX_COMPILER_ID} )
 
@@ -77,44 +80,59 @@ message ( STATUS "CMAKE C compiler:        " ${CMAKE_C_COMPILER_ID} )
 include_directories ( Source Include ${SUITESPARSE_CONFIG_INCLUDE_DIR} )
 
 #-------------------------------------------------------------------------------
-# dynamic cxsparse library properties
+# dynamic ldl library properties
 #-------------------------------------------------------------------------------
 
-file ( GLOB CXSPARSE_SOURCES "Source/*.c" )
+file ( GLOB LDL_SOURCES "Source/*.c" )
 
-add_library ( cxsparse SHARED ${CXSPARSE_SOURCES} )
+add_library ( ldl SHARED ${LDL_SOURCES} )
 
-SET_TARGET_PROPERTIES ( cxsparse PROPERTIES
-    VERSION ${CXSPARSE_VERSION_MAJOR}.${CXSPARSE_VERSION_MINOR}.${CXSPARSE_VERSION_SUB}
-    SOVERSION ${CXSPARSE_VERSION_MAJOR}
-    PUBLIC_HEADER "Include/cs.h" )
+SET_TARGET_PROPERTIES ( ldl PROPERTIES
+    VERSION ${LDL_VERSION_MAJOR}.${LDL_VERSION_MINOR}.${LDL_VERSION_SUB}
+    SOVERSION ${LDL_VERSION_MAJOR}
+    PUBLIC_HEADER "Include/ldl.h" )
 
 #-------------------------------------------------------------------------------
-# static cxsparse library properties
+# static ldl library properties
 #-------------------------------------------------------------------------------
 
-add_library ( cxsparse_static STATIC ${CXSPARSE_SOURCES} )
+add_library ( ldl_static STATIC ${LDL_SOURCES} )
 
-SET_TARGET_PROPERTIES ( cxsparse_static PROPERTIES
-    VERSION ${CXSPARSE_VERSION_MAJOR}.${CXSPARSE_VERSION_MINOR}.${CXSPARSE_VERSION_SUB}
-    OUTPUT_NAME cxsparse
-    SOVERSION ${CXSPARSE_VERSION_MAJOR} )
+SET_TARGET_PROPERTIES ( ldl_static PROPERTIES
+    VERSION ${LDL_VERSION_MAJOR}.${LDL_VERSION_MINOR}.${LDL_VERSION_SUB}
+    OUTPUT_NAME ldl
+    SOVERSION ${LDL_VERSION_MAJOR} )
 
 #-------------------------------------------------------------------------------
 # add the library dependencies
 #-------------------------------------------------------------------------------
 
-target_link_libraries ( cxsparse PUBLIC ${SUITESPARSE_CONFIG_LIBRARY} )
-target_link_libraries ( cxsparse_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARY} )
-
-# libm:
-if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
-    target_link_libraries ( cxsparse PUBLIC m )
-    target_link_libraries ( cxsparse_static PUBLIC m )
+# OpenMP:
+if ( OPENMP_FOUND )
+    message ( STATUS "OpenMP C libraries:      " ${OpenMP_C_LIBRARIES} )
+    message ( STATUS "OpenMP C include:        " ${OpenMP_C_INCLUDE_DIRS} )
+    message ( STATUS "OpenMP C flags:          " ${OpenMP_C_FLAGS} )
+    set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} " )
+    include_directories ( ${OpenMP_C_INCLUDE_DIRS} )
 endif ( )
 
+# libm:
+if ( "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
+    set ( M_LIB "" )
+else ( )
+    set ( M_LIB "m" )
+endif ( )
+
+target_link_libraries ( ldl PUBLIC ${M_LIB}
+    ${SUITESPARSE_CONFIG_LIBRARIES} ${OpenMP_C_LIBRARIES} ${AMD_LIBRARIES} )
+
+target_link_libraries ( ldl_static PUBLIC ${M_LIB}
+    ${SUITESPARSE_CONFIG_LIBRARIES} ${OpenMP_C_LIBRARIES} ${AMD_LIBRARIES} )
+
+include_directories ( ${AMD_INCLUDE_DIR} )
+
 #-------------------------------------------------------------------------------
-# installation location
+# LDL installation location
 #-------------------------------------------------------------------------------
 
 # use "cmake -DLOCAL=1" to install only in SuiteSparse/lib and
@@ -124,10 +142,10 @@ if ( NOT LOCAL )
     # install in /usr/local/lib and /usr/local/include.
     # requires "sudo make install"
     message ( STATUS "Installation will be system-wide (requires 'sudo make install')" )
-    install ( TARGETS cxsparse
+    install ( TARGETS ldl
         LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
-    install ( TARGETS cxsparse_static
+    install ( TARGETS ldl_static
         ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
 endif ( )
 
@@ -136,10 +154,10 @@ if ( INSIDE_SUITESPARSE )
     # does not require "sudo make install", just "make install"
     message ( STATUS "Installation in ../lib and ../include only," )
     message ( STATUS "  with 'make install'. No 'sudo' required." )
-    install ( TARGETS cxsparse
+    install ( TARGETS ldl
         LIBRARY       DESTINATION ${LOCAL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${LOCAL_INCLUDEDIR} )
-    install ( TARGETS cxsparse_static
+    install ( TARGETS ldl_static
         ARCHIVE       DESTINATION ${LOCAL_LIBDIR} )
 endif ( )
 
@@ -153,61 +171,33 @@ if ( DEMO )
     # demo library
     #---------------------------------------------------------------------------
 
-    message ( STATUS "Also compiling the demos in CXSparse/Demo" )
+    message ( STATUS "Also compiling the demos in LDL/Demo" )
 
     #---------------------------------------------------------------------------
     # Demo programs
     #---------------------------------------------------------------------------
 
-    add_executable ( cs_demo1 "Demo/cs_demo1.c" "Demo/cs_demo.c" )
-    add_executable ( cs_demo2 "Demo/cs_demo2.c" "Demo/cs_demo.c" )
-    add_executable ( cs_demo3 "Demo/cs_demo3.c" "Demo/cs_demo.c" )
-
-    add_executable ( cs_di_demo1 "Demo/cs_di_demo1.c" "Demo/cs_di_demo.c" )
-    add_executable ( cs_di_demo2 "Demo/cs_di_demo2.c" "Demo/cs_di_demo.c" )
-    add_executable ( cs_di_demo3 "Demo/cs_di_demo3.c" "Demo/cs_di_demo.c" )
-
-    add_executable ( cs_dl_demo1 "Demo/cs_dl_demo1.c" "Demo/cs_dl_demo.c" )
-    add_executable ( cs_dl_demo2 "Demo/cs_dl_demo2.c" "Demo/cs_dl_demo.c" )
-    add_executable ( cs_dl_demo3 "Demo/cs_dl_demo3.c" "Demo/cs_dl_demo.c" )
-
-    add_executable ( cs_ci_demo1 "Demo/cs_ci_demo1.c" "Demo/cs_ci_demo.c" )
-    add_executable ( cs_ci_demo2 "Demo/cs_ci_demo2.c" "Demo/cs_ci_demo.c" )
-    add_executable ( cs_ci_demo3 "Demo/cs_ci_demo3.c" "Demo/cs_ci_demo.c" )
-
-    add_executable ( cs_cl_demo1 "Demo/cs_cl_demo1.c" "Demo/cs_cl_demo.c" )
-    add_executable ( cs_cl_demo2 "Demo/cs_cl_demo2.c" "Demo/cs_cl_demo.c" )
-    add_executable ( cs_cl_demo3 "Demo/cs_cl_demo3.c" "Demo/cs_cl_demo.c" )
-
-    add_executable ( cs_idemo "Demo/cs_idemo.c" )
-    add_executable ( cs_ldemo "Demo/cs_ldemo.c" )
+    add_executable ( ldlsimple      "Demo/ldlsimple.c" )
+    add_executable ( ldllsimple     "Demo/ldllsimple.c" )
+    add_executable ( ldlmain        "Demo/ldlmain.c" )
+    add_executable ( ldllmain       "Demo/ldllmain.c" )
 
     # Libraries required for Demo programs
-    target_link_libraries ( cs_demo1 PUBLIC cxsparse )
-    target_link_libraries ( cs_demo2 PUBLIC cxsparse )
-    target_link_libraries ( cs_demo3 PUBLIC cxsparse )
+    target_link_libraries ( ldlsimple   PUBLIC ldl )
+    target_link_libraries ( ldllsimple  PUBLIC ldl )
+    target_link_libraries ( ldlmain     PUBLIC ldl )
+    target_link_libraries ( ldllmain    PUBLIC ldl )
 
-    target_link_libraries ( cs_di_demo1 PUBLIC cxsparse )
-    target_link_libraries ( cs_di_demo2 PUBLIC cxsparse )
-    target_link_libraries ( cs_di_demo3 PUBLIC cxsparse )
-
-    target_link_libraries ( cs_dl_demo1 PUBLIC cxsparse )
-    target_link_libraries ( cs_dl_demo2 PUBLIC cxsparse )
-    target_link_libraries ( cs_dl_demo3 PUBLIC cxsparse )
-
-    target_link_libraries ( cs_ci_demo1 PUBLIC cxsparse )
-    target_link_libraries ( cs_ci_demo2 PUBLIC cxsparse )
-    target_link_libraries ( cs_ci_demo3 PUBLIC cxsparse )
-
-    target_link_libraries ( cs_cl_demo1 PUBLIC cxsparse )
-    target_link_libraries ( cs_cl_demo2 PUBLIC cxsparse )
-    target_link_libraries ( cs_cl_demo3 PUBLIC cxsparse )
-
-    target_link_libraries ( cs_idemo PUBLIC cxsparse )
-    target_link_libraries ( cs_ldemo PUBLIC cxsparse )
+    if ( AMD_FOUND )
+        message ( STATUS "AMD found for ldlamd and ldllamd" )
+        add_executable ( ldlamd     "Demo/ldlamd.c" )
+        add_executable ( ldllamd    "Demo/ldllamd.c" )
+        target_link_libraries ( ldlamd  PUBLIC ldl )
+        target_link_libraries ( ldllamd PUBLIC ldl )
+    endif ( )
 
 else ( )
 
-    message ( STATUS "Skipping the demos in CXSparse/Demo" )
+    message ( STATUS "Skipping the demos in LDL/Demo" )
 
 endif ( )

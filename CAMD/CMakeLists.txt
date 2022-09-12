@@ -9,18 +9,7 @@
 # get the version
 #-------------------------------------------------------------------------------
 
-# cmake 3.17 is required
-cmake_minimum_required ( VERSION 3.17 )
-
-cmake_policy ( SET CMP0042 NEW )
-cmake_policy ( SET CMP0048 NEW )
-set ( CMAKE_MACOSX_RPATH TRUE )
-
-set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse/cmake_modules
-    )
+cmake_minimum_required ( VERSION 3.19 )
 
 set ( CAMD_DATE "Sept FIXME, 2022" )
 set ( CAMD_VERSION_MAJOR 3 )
@@ -32,12 +21,25 @@ message ( STATUS "Building CAMD version: v"
     ${CAMD_VERSION_MINOR}.
     ${CAMD_VERSION_SUB} " (" ${CAMD_DATE} ")" )
 
+#-------------------------------------------------------------------------------
+# SuiteSparse policies
+#-------------------------------------------------------------------------------
+
+set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+    ${CMAKE_SOURCE_DIR}/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../cmake_modules
+    ${CMAKE_SOURCE_DIR}/../SuiteSparse/cmake_modules
+    )
+
+include ( SuiteSparsePolicy )
+
+#-------------------------------------------------------------------------------
+# define the project
+#-------------------------------------------------------------------------------
+
 project ( camd
     VERSION "${CAMD_VERSION_MAJOR}.${CAMD_VERSION_MINOR}.${CAMD_VERSION_SUB}"
     LANGUAGES C ) # <-- add CXX here for packages that use C++
-
-message ( STATUS "CAMD project: " ${PROJECT_SOURCE_DIR} )
-message ( STATUS "CAMD build:   " ${CMAKE_BINARY_DIR} )
 
 #-------------------------------------------------------------------------------
 # find library dependencies
@@ -47,26 +49,11 @@ find_package ( OpenMP )
 find_package ( SuiteSparse_config REQUIRED )
 
 #-------------------------------------------------------------------------------
-# determine build type
+# configure files
 #-------------------------------------------------------------------------------
 
-if ( NOT CMAKE_BUILD_TYPE )
-    set ( CMAKE_BUILD_TYPE Release )
-endif ( )
-
-#-------------------------------------------------------------------------------
-# Configure camd.h with version number
-#-------------------------------------------------------------------------------
-
-configure_file (
-    "Config/camd.h.in"
-    "${PROJECT_SOURCE_DIR}/Include/camd.h"
-)
-
-configure_file (
-    "Config/camd_version.tex.in"
-    "${PROJECT_SOURCE_DIR}/Doc/camd_version.tex"
-)
+configure_file ( "Config/camd.h.in" "${PROJECT_SOURCE_DIR}/Include/camd.h" )
+configure_file ( "Config/camd_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/camd_version.tex" )
 
 #-------------------------------------------------------------------------------
 # report status and set compile flags
@@ -91,7 +78,6 @@ message ( STATUS "CMAKE have OpenMP:       " ${OPENMP_FOUND} )
 # include directories
 #-------------------------------------------------------------------------------
 
-set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 include_directories ( Source Include ${SUITESPARSE_CONFIG_INCLUDE_DIR} )
 
 #-------------------------------------------------------------------------------
@@ -150,34 +136,27 @@ endif ( )
 # SuiteSparse/include.  
 
 if ( NOT LOCAL )
-
     # install in /usr/local/lib and /usr/local/include.
     # requires "sudo make install"
     message ( STATUS "Installation will be system-wide (requires 'sudo make install')" )
-    include ( GNUInstallDirs )
-
     install ( TARGETS camd
         LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
-
     install ( TARGETS camd_static
         ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
-
-else ( )
-
-    message ( STATUS "Installation in ../lib and ../include only," )
-    message ( STATUS "  with 'make install'. No 'sudo' required." )
-
 endif ( )
 
-# also install in SuiteSparse/lib and SuiteSparse/include;
-# does not require "sudo make install", just "make install"
-install ( TARGETS camd
-    LIBRARY       DESTINATION ${CMAKE_SOURCE_DIR}/../lib
-    PUBLIC_HEADER DESTINATION ${CMAKE_SOURCE_DIR}/../include )
-
-install ( TARGETS camd_static
-    ARCHIVE       DESTINATION ${CMAKE_SOURCE_DIR}/../lib )
+if ( INSIDE_SUITESPARSE )
+    # also install in SuiteSparse/lib and SuiteSparse/include;
+    # does not require "sudo make install", just "make install"
+    message ( STATUS "Installation in ../lib and ../include only," )
+    message ( STATUS "  with 'make install'. No 'sudo' required." )
+    install ( TARGETS camd
+        LIBRARY       DESTINATION ${LOCAL_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${LOCAL_INCLUDEDIR} )
+    install ( TARGETS camd_static
+        ARCHIVE       DESTINATION ${LOCAL_LIBDIR} )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # Demo library and programs
