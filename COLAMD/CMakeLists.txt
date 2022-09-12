@@ -87,6 +87,7 @@ add_library ( colamd SHARED ${COLAMD_SOURCES} )
 
 SET_TARGET_PROPERTIES ( colamd PROPERTIES
     VERSION ${COLAMD_VERSION_MAJOR}.${COLAMD_VERSION_MINOR}.${COLAMD_VERSION_SUB}
+    C_STANDARD_REQUIRED 11
     SOVERSION ${COLAMD_VERSION_MAJOR}
     PUBLIC_HEADER "Include/colamd.h" )
 
@@ -99,6 +100,7 @@ add_library ( colamd_static STATIC ${COLAMD_SOURCES} )
 SET_TARGET_PROPERTIES ( colamd_static PROPERTIES
     VERSION ${COLAMD_VERSION_MAJOR}.${COLAMD_VERSION_MINOR}.${COLAMD_VERSION_SUB}
     OUTPUT_NAME colamd
+    C_STANDARD_REQUIRED 11
     SOVERSION ${COLAMD_VERSION_MAJOR} )
 
 #-------------------------------------------------------------------------------

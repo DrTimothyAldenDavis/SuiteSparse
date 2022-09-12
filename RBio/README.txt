@@ -14,7 +14,7 @@ MATLAB help for RBio:
 --------------------------------------------------------------------------------
 
   RBio - MATLAB toolbox for reading/writing sparse matrices in the Rutherford/
-    Boeing format, and for reading/writing problems in the UF Sparse Matrix
+    Boeing format, and for reading/writing problems in the SuiteSparse Matrix
     Collection from/to a set of files in a directory.
 
     RBread    - read a sparse matrix from a Rutherford/Boeing file
@@ -33,7 +33,7 @@ MATLAB help for RBio:
     A = RBread ('mywest') ;
     norm (A-C,1)
 
-  See also UFget, mread, mwrite.
+  See also ssget, mread, mwrite.
 
 
 --------------------------------------------------------------------------------
@@ -65,14 +65,14 @@ Files and directories:
 ./RBio/private:  test directory for MATLAB
 
     testRB1.m	    simple test for RBio
-    testRB2.m	    simple test for RBio (requires UFget)
-    testRB3.m       extensive test for RBio (requires UFget)
+    testRB2.m	    simple test for RBio (requires ssget)
+    testRB3.m       extensive test for RBio (requires ssget)
 
-    bcsstk01.rb	    HB/bcsstk01 Problem.A from UF Sparse Matrix Collection
-    farm.rb	    Meszaros/farm Problem.A from UF Sparse Matrix Collection
+    bcsstk01.rb	    HB/bcsstk01 Problem.A from SuiteSparse Matrix Collection
+    farm.rb	    Meszaros/farm Problem.A from SuiteSparse Matrix Collection
     lap_25.pse	    original Harwell/Boeing version of lap_25 (finite-element)
-    lap_25.rb	    HB/lap_25 Problem.A from UF Sparse Matrix Collection
-    west0479.rb	    sparse matrix west0479 from UF Sparse Matrix Collection
+    lap_25.rb	    HB/lap_25 Problem.A from SuiteSparse Matrix Collection
+    west0479.rb	    sparse matrix west0479 from SuiteSparse Matrix Collection
     west0479.rua    original Harwell/Boeing version of west0479
 
     Note that the west0479 matrix provided in the Test directory is the correct

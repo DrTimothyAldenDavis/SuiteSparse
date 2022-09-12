@@ -4,7 +4,7 @@ function testRB1
 % Example:
 %   testRB1
 %
-% See also UFget, RBread, RBreade, testRB2.
+% See also ssget, RBread, RBreade, testRB2.
 
 % Copyright 2006, Timothy A. Davis
 

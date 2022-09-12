@@ -2,15 +2,14 @@
 /* === RBio/Demo/RBdemo.c: C demo =========================================== */
 /* ========================================================================== */
 
-/* Copyright 2009, Timothy A. Davis, All Rights Reserved.
-   Refer to RBio/Doc/license.txt for the RBio license. */
+// Copyright (c) 2009-2022, Timothy A. Davis.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
 
 /* This program reads a Rutherford/Boeing file from stdin and uses it
    to test the RBio C-callable functions. */
 
 #include "RBio.h"
-#define Long SuiteSparse_long
-#define ID "%ld"
+#define ID "%" PRId64
 
 #define SLEN 4096
 
@@ -18,9 +17,9 @@ int main (int argc, char **argv)
 {
     double xr, xz, xmin, xmax ;
     double *Ax, *Az ;
-    Long nrow, ncol, mkind, skind, *Ap, *Ai, i, *Zp, *Zi, asize, mkind2, skind2,
-        znz, j, p, status, njumbled, nzeros, build_upper, zero_handling, fem,
-        xsize, nelnz, nnz ;
+    int64_t nrow, ncol, mkind, skind, *Ap, *Ai, i, *Zp, *Zi, asize, mkind2,
+        skind2, znz, j, p, status, njumbled, nzeros, build_upper, zero_handling,
+        fem, xsize, nelnz, nnz ;
     char title [73], key [9], mtype [4], mtype2 [4], *filename ;
 
     /* initialize the memory allocation functions */
