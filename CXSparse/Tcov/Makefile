@@ -34,44 +34,47 @@ CS_DI = cs_add.o cs_amd.o cs_chol.o cs_cholsol.o cs_counts.o \
 	cs_utsolve.o cs_reach.o cs_spsolve.o \
 	cs_leaf.o cs_ereach.o cs_randperm.o
 
-CS_DL = cs_add_dl.o cs_amd_dl.o cs_chol_dl.o cs_cholsol_dl.o cs_counts_dl.o \
-	cs_cumsum_dl.o cs_droptol_dl.o cs_dropzeros_dl.o cs_dupl_dl.o \
-	cs_entry_dl.o cs_etree_dl.o cs_fkeep_dl.o cs_gaxpy_dl.o cs_happly_dl.o \
-	cs_house_dl.o cs_ipvec_dl.o cs_lsolve_dl.o cs_ltsolve_dl.o cs_lu_dl.o \
-	cs_lusol_dl.o cs_util_dl.o cs_multiply_dl.o cs_permute_dl.o \
-	cs_pinv_dl.o cs_post_dl.o cs_pvec_dl.o cs_qr_dl.o cs_qrsol_dl.o \
-	cs_scatter_dl.o cs_schol_dl.o cs_sqr_dl.o cs_symperm_dl.o cs_tdfs_dl.o \
-	cs_transpose_dl.o cs_compress_dl.o cs_usolve_dl.o cs_scc_dl.o \
-	cs_maxtrans_dl.o cs_dmperm_dl.o cs_updown_dl.o cs_print_dl.o \
-	cs_norm_dl.o cs_load_dl.o cs_dfs_dl.o cstcov_malloc_test_dl.o \
-	cs_utsolve_dl.o cs_reach_dl.o cs_spsolve_dl.o \
-	cs_leaf_dl.o cs_ereach_dl.o cs_randperm_dl.o
+CS_DL = cs_dl_add.o cs_dl_amd.o cs_dl_chol.o cs_dl_cholsol.o cs_dl_compress.o \
+        cs_dl_counts.o cs_dl_cumsum.o cs_dl_dfs.o cs_dl_dmperm.o \
+        cs_dl_droptol.o cs_dl_dropzeros.o cs_dl_dupl.o cs_dl_entry.o \
+        cs_dl_ereach.o cs_dl_etree.o cs_dl_fkeep.o cs_dl_gaxpy.o \
+        cs_dl_happly.o cs_dl_house.o cs_dl_ipvec.o cs_dl_leaf.o cs_dl_load.o \
+        cs_dl_lsolve.o cs_dl_ltsolve.o cs_dl_lu.o cs_dl_lusol.o \
+        cs_dl_maxtrans.o cs_dl_multiply.o cs_dl_norm.o \
+        cs_dl_permute.o cs_dl_pinv.o cs_dl_post.o cs_dl_print.o cs_dl_pvec.o \
+        cs_dl_qr.o cs_dl_qrsol.o cs_dl_randperm.o cs_dl_reach.o \
+        cs_dl_scatter.o cs_dl_scc.o cs_dl_schol.o cs_dl_spsolve.o cs_dl_sqr.o \
+        cs_dl_symperm.o cs_dl_tdfs.o cs_dl_transpose.o cs_dl_updown.o \
+        cs_dl_usolve.o cs_dl_util.o cs_dl_utsolve.o \
+        cstcov_malloc_test_dl.o
 
-CS_CI = cs_add_ci.o cs_amd_ci.o cs_chol_ci.o cs_cholsol_ci.o cs_counts_ci.o \
-	cs_cumsum_ci.o cs_droptol_ci.o cs_dropzeros_ci.o cs_dupl_ci.o \
-	cs_entry_ci.o cs_etree_ci.o cs_fkeep_ci.o cs_gaxpy_ci.o cs_happly_ci.o \
-	cs_house_ci.o cs_ipvec_ci.o cs_lsolve_ci.o cs_ltsolve_ci.o cs_lu_ci.o \
-	cs_lusol_ci.o cs_util_ci.o cs_multiply_ci.o cs_permute_ci.o \
-	cs_pinv_ci.o cs_post_ci.o cs_pvec_ci.o cs_qr_ci.o cs_qrsol_ci.o \
-	cs_scatter_ci.o cs_schol_ci.o cs_sqr_ci.o cs_symperm_ci.o cs_tdfs_ci.o \
-	cs_transpose_ci.o cs_compress_ci.o cs_usolve_ci.o cs_scc_ci.o \
-	cs_maxtrans_ci.o cs_dmperm_ci.o cs_updown_ci.o cs_print_ci.o \
-	cs_norm_ci.o cs_load_ci.o cs_dfs_ci.o cstcov_malloc_test_ci.o \
-	cs_utsolve_ci.o cs_reach_ci.o cs_spsolve_ci.o \
-	cs_leaf_ci.o cs_ereach_ci.o cs_randperm_ci.o
+CS_CI = cs_ci_add.o cs_ci_amd.o cs_ci_chol.o cs_ci_cholsol.o cs_ci_compress.o \
+        cs_ci_counts.o cs_ci_cumsum.o cs_ci_dfs.o cs_ci_dmperm.o \
+        cs_ci_droptol.o cs_ci_dropzeros.o cs_ci_dupl.o cs_ci_entry.o \
+        cs_ci_ereach.o cs_ci_etree.o cs_ci_fkeep.o cs_ci_gaxpy.o \
+        cs_ci_happly.o cs_ci_house.o cs_ci_ipvec.o cs_ci_leaf.o cs_ci_load.o \
+        cs_ci_lsolve.o cs_ci_ltsolve.o cs_ci_lu.o cs_ci_lusol.o \
+        cs_ci_maxtrans.o cs_ci_multiply.o cs_ci_norm.o \
+        cs_ci_permute.o cs_ci_pinv.o cs_ci_post.o cs_ci_print.o cs_ci_pvec.o \
+        cs_ci_qr.o cs_ci_qrsol.o cs_ci_randperm.o cs_ci_reach.o \
+        cs_ci_scatter.o cs_ci_scc.o cs_ci_schol.o cs_ci_spsolve.o cs_ci_sqr.o \
+        cs_ci_symperm.o cs_ci_tdfs.o cs_ci_transpose.o cs_ci_updown.o \
+        cs_ci_usolve.o cs_ci_util.o cs_ci_utsolve.o \
+        cstcov_malloc_test_ci.o
 
-CS_CL = cs_add_cl.o cs_amd_cl.o cs_chol_cl.o cs_cholsol_cl.o cs_counts_cl.o \
-	cs_cumsum_cl.o cs_droptol_cl.o cs_dropzeros_cl.o cs_dupl_cl.o \
-	cs_entry_cl.o cs_etree_cl.o cs_fkeep_cl.o cs_gaxpy_cl.o cs_happly_cl.o \
-	cs_house_cl.o cs_ipvec_cl.o cs_lsolve_cl.o cs_ltsolve_cl.o cs_lu_cl.o \
-	cs_lusol_cl.o cs_util_cl.o cs_multiply_cl.o cs_permute_cl.o \
-	cs_pinv_cl.o cs_post_cl.o cs_pvec_cl.o cs_qr_cl.o cs_qrsol_cl.o \
-	cs_scatter_cl.o cs_schol_cl.o cs_sqr_cl.o cs_symperm_cl.o cs_tdfs_cl.o \
-	cs_transpose_cl.o cs_compress_cl.o cs_usolve_cl.o cs_scc_cl.o \
-	cs_maxtrans_cl.o cs_dmperm_cl.o cs_updown_cl.o cs_print_cl.o \
-	cs_norm_cl.o cs_load_cl.o cs_dfs_cl.o cstcov_malloc_test_cl.o \
-	cs_utsolve_cl.o cs_reach_cl.o cs_spsolve_cl.o \
-	cs_leaf_cl.o cs_ereach_cl.o cs_randperm_cl.o
+CS_CL = cs_cl_add.o cs_cl_amd.o cs_cl_chol.o cs_cl_cholsol.o cs_cl_compress.o \
+        cs_cl_counts.o cs_cl_cumsum.o cs_cl_dfs.o cs_cl_dmperm.o \
+        cs_cl_droptol.o cs_cl_dropzeros.o cs_cl_dupl.o cs_cl_entry.o \
+        cs_cl_ereach.o cs_cl_etree.o cs_cl_fkeep.o cs_cl_gaxpy.o \
+        cs_cl_happly.o cs_cl_house.o cs_cl_ipvec.o cs_cl_leaf.o cs_cl_load.o \
+        cs_cl_lsolve.o cs_cl_ltsolve.o cs_cl_lu.o cs_cl_lusol.o \
+        cs_cl_maxtrans.o cs_cl_multiply.o cs_cl_norm.o \
+        cs_cl_permute.o cs_cl_pinv.o cs_cl_post.o cs_cl_print.o cs_cl_pvec.o \
+        cs_cl_qr.o cs_cl_qrsol.o cs_cl_randperm.o cs_cl_reach.o \
+        cs_cl_scatter.o cs_cl_scc.o cs_cl_schol.o cs_cl_spsolve.o cs_cl_sqr.o \
+        cs_cl_symperm.o cs_cl_tdfs.o cs_cl_transpose.o cs_cl_updown.o \
+        cs_cl_usolve.o cs_cl_util.o cs_cl_utsolve.o \
+        cstcov_malloc_test_cl.o
 
 OBJ = $(CS_DI) $(CS_DL) $(CS_CI) $(CS_CL) cs_convert.o
 
