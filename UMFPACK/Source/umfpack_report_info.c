@@ -321,7 +321,7 @@ GLOBAL void UMFPACK_report_info
         Info [UMFPACK_ORDERING_USED] != UMFPACK_ORDERING_GIVEN)
     {
 	double dmax = Info [UMFPACK_SYMMETRIC_DMAX] ;
-	PRINTF (("    AMD statistics, for strict diagonal pivoting:\n")) ;
+	PRINTF (("    ordering statistics, for strict diagonal pivoting:\n")) ;
 	PRINT_INFO ("        est. flops for LU factorization:           %.5e\n",
 	    Info [UMFPACK_SYMMETRIC_FLOPS]) ;
 	PRINT_INFO ("        est. nz in L+U (incl. diagonal):           %.0f\n",

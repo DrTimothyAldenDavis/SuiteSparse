@@ -11,6 +11,7 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
+set ( UMFPACK_DATE "Sept FIXME, 2022" )
 set ( UMFPACK_VERSION_MAJOR 6 )
 set ( UMFPACK_VERSION_MINOR 0 )
 set ( UMFPACK_VERSION_SUB   0 )
@@ -47,12 +48,16 @@ project ( umfpack
 enable_language ( C Fortran )
 message ( STATUS "Fortran: ${CMAKE_Fortran_COMPILER_ID} ") 
 find_package ( OpenMP )
-find_package ( SuiteSparse_config REQUIRED )
-find_package ( AMD REQUIRED )
+find_package ( SuiteSparse_config 6.0.0 REQUIRED )
+find_package ( AMD 3.0.0 REQUIRED )
 find_package ( BLAS REQUIRED )
 
-# FIXME: no cholmod yet (add this)
-add_compile_definitions ( NCHOLMOD )
+find_package ( CHOLMOD 4.0.0 )
+if ( CHOLMOD_FOUND )
+    message ( STATUS "Using CHOLMOD for additional ordering options.")
+else ( )
+    add_compile_definitions ( NCHOLMOD )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # configure files
@@ -145,6 +150,12 @@ message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES} ")
 message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
 target_link_libraries ( umfpack PUBLIC ${BLAS_LIBRARIES} )
 target_link_libraries ( umfpack_static PUBLIC ${BLAS_LIBRARIES} )
+
+# cholmod:
+if ( CHOLMOD_FOUND )
+    target_link_libraries ( umfpack PUBLIC ${CHOLMOD_LIBRARIES} )
+    target_link_libraries ( umfpack_static PUBLIC ${CHOLMOD_LIBRARIES} )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # UMFPACK installation location

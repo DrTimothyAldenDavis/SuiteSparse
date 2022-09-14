@@ -45,8 +45,8 @@ project ( ldl
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config REQUIRED )
-find_package ( AMD REQUIRED )
+find_package ( SuiteSparse_config 6.0.0 REQUIRED )
+find_package ( AMD 3.0.0 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # Configure ldl.h with version number

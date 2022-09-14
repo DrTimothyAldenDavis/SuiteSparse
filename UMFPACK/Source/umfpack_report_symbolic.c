@@ -100,6 +100,10 @@ GLOBAL int UMFPACK_report_symbolic
             {
                 PRINTF (("metis on A")) ;
             }
+            else if (Symbolic->ordering == UMFPACK_ORDERING_NONE)
+            {
+                PRINTF (("none")) ;
+            }
 	}
 	else /* if (Symbolic->strategy == UMFPACK_STRATEGY_UNSYMMETRIC) */
 	{
@@ -120,6 +124,10 @@ GLOBAL int UMFPACK_report_symbolic
             else if (Symbolic->ordering == UMFPACK_ORDERING_METIS)
             {
                 PRINTF (("metis on A'A")) ;
+            }
+            else if (Symbolic->ordering == UMFPACK_ORDERING_NONE)
+            {
+                PRINTF (("none")) ;
             }
 	}
 	PRINTF (("\n")) ;

@@ -46,7 +46,7 @@ project ( btf
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config REQUIRED )
+find_package ( SuiteSparse_config 6.0.0 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # configure files

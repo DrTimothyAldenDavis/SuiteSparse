@@ -381,6 +381,12 @@ GLOBAL void UMFPACK_report_control
     PRINTF (("    no timer used.\n")) ;
 #endif
 
+#ifdef NCHOLMOD
+    PRINTF (("    compiled without CHOLMOD's ordering options\n")) ;
+#else
+    PRINTF (("    compiled with CHOLMOD ordering options\n")) ;
+#endif
+
     PRINTF (("    computer/operating system: %s\n", UMFPACK_ARCHITECTURE)) ;
     PRINTF (("    size of int32_t: %g int64_t: %g Int: %g pointer: %g"
 	" double: %g Entry: %g (in bytes)\n\n", (double) sizeof (int32_t),

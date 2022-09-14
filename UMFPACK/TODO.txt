@@ -1,1 +1,0 @@
-FIXME: use cholmod ordering, remove NCHOLMOD in CMakeLists.txt

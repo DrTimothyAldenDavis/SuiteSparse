@@ -285,8 +285,10 @@ you need to link your program with all libraries:
 If you don't compile UMFPACK to use METIS, then you can  just use
 -lumfpack -lamd -lsuitesparseconfig.
 
-All libraries are placed in {\tt SuiteSparse/lib} and all include
-files are placed in {\tt SuiteSparse/include}.
+All libraries are placed in {\tt SuiteSparse/lib} and all include files are
+placed in {\tt SuiteSparse/include}, and \verb'make install' will also place
+them where they are available system-wide.  To install for just yourself, use
+\verb'make local' and then \verb'make install'.
 
 You do not need to directly include any AMD include files in your
 program, unless you directly call AMD routines.  You only need the

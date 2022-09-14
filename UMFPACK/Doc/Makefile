@@ -8,13 +8,13 @@
 dist:  UMFPACK_QuickStart.pdf UMFPACK_UserGuide.pdf
 	- $(RM) *.aux *.bbl *.blg *.log *.toc
 
-UMFPACK_UserGuide.pdf:  UMFPACK_UserGuide.tex UserGuide.bib
+UMFPACK_UserGuide.pdf:  UMFPACK_UserGuide.tex UserGuide.bib umfpack_version.tex
 	pdflatex UMFPACK_UserGuide
 	bibtex UMFPACK_UserGuide
 	pdflatex UMFPACK_UserGuide
 	pdflatex UMFPACK_UserGuide
 
-UMFPACK_QuickStart.pdf: UMFPACK_QuickStart.tex
+UMFPACK_QuickStart.pdf: UMFPACK_QuickStart.tex umfpack_version.tex
 	pdflatex UMFPACK_QuickStart
 	pdflatex UMFPACK_QuickStart
 

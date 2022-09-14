@@ -50,7 +50,7 @@ local: metis
 	( cd CSparse && $(MAKE) )
 	( cd CXSparse && $(MAKE) local && $(MAKE) install )
 	( cd LDL && $(MAKE) local && $(MAKE) install )
-	( cd KLU && $(MAKE) library && $(MAKE) install )
+	( cd KLU && $(MAKE) local && $(MAKE) install )
 	( cd UMFPACK && $(MAKE) local && $(MAKE) install )
 	( cd RBio && $(MAKE) local && $(MAKE) install )
 ifneq ($(GPU_CONFIG),)

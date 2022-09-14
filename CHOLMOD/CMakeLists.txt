@@ -47,16 +47,16 @@ project ( cholmod
 
 enable_language ( C Fortran )
 find_package ( OpenMP )
-find_package ( SuiteSparse_config REQUIRED )
-find_package ( COLAMD REQUIRED )
-find_package ( AMD REQUIRED )
+find_package ( SuiteSparse_config 6.0.0 REQUIRED )
+find_package ( COLAMD 3.0.0 REQUIRED )
+find_package ( AMD 3.0.0 REQUIRED )
 find_package ( BLAS REQUIRED )
 find_package ( LAPACK REQUIRED )
-find_package ( CAMD )
-find_package ( CCOLAMD )
+find_package ( CAMD 3.0.0 )
+find_package ( CCOLAMD 3.0.0 )
 find_package ( METIS )
 
-# no gpu yet
+# FIXME: no gpu yet
 # add_compile_definitions ( NGPU )
 
 #-------------------------------------------------------------------------------

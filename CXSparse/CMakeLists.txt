@@ -45,7 +45,7 @@ project ( cxsparse
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config REQUIRED )
+find_package ( SuiteSparse_config 6.0.0 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # Configure cs.h with version number

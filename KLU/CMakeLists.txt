@@ -46,10 +46,10 @@ project ( klu
 #-------------------------------------------------------------------------------
 
 enable_language ( C Fortran )
-find_package ( SuiteSparse_config REQUIRED )
-find_package ( BTF REQUIRED )
-find_package ( AMD REQUIRED )
-find_package ( COLAMD REQUIRED )
+find_package ( SuiteSparse_config 6.0.0 REQUIRED )
+find_package ( BTF 2.0.0 REQUIRED )
+find_package ( AMD 3.0.0 REQUIRED )
+find_package ( COLAMD 3.0.0 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # configure files
