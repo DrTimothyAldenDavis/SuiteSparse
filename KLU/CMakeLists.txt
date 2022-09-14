@@ -50,6 +50,7 @@ find_package ( SuiteSparse_config 6.0.0 REQUIRED )
 find_package ( BTF 2.0.0 REQUIRED )
 find_package ( AMD 3.0.0 REQUIRED )
 find_package ( COLAMD 3.0.0 REQUIRED )
+find_package ( CHOLMOD 4.0.0 )
 
 #-------------------------------------------------------------------------------
 # configure files
@@ -78,7 +79,7 @@ message ( STATUS "CMAKE C compiler:        ${CMAKE_C_COMPILER_ID} ")
 # include directories
 #-------------------------------------------------------------------------------
 
-include_directories ( Source Include ${SUITESPARSE_CONFIG_INCLUDE_DIR}
+include_directories ( Source Include User ${SUITESPARSE_CONFIG_INCLUDE_DIR}
     ${AMD_INCLUDE_DIR} ${COLAMD_INCLUDE_DIR} ${BTF_INCLUDE_DIR} )
 
 #-------------------------------------------------------------------------------
@@ -108,6 +109,32 @@ SET_TARGET_PROPERTIES ( klu_static PROPERTIES
     SOVERSION ${KLU_VERSION_MAJOR} )
 
 #-------------------------------------------------------------------------------
+# klu_cholmod library properties
+#-------------------------------------------------------------------------------
+
+if ( CHOLMOD_FOUND )
+
+    file ( GLOB KLU_CHOLMOD_SOURCES "User/*.c" )
+
+    add_library ( klu_cholmod SHARED ${KLU_CHOLMOD_SOURCES} )
+
+    SET_TARGET_PROPERTIES ( klu_cholmod PROPERTIES
+        VERSION ${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}
+        C_STANDARD_REQUIRED 11
+        SOVERSION ${KLU_VERSION_MAJOR}
+        PUBLIC_HEADER "User/klu_cholmod.h" )
+
+    add_library ( klu_cholmod_static STATIC ${KLU_CHOLMOD_SOURCES} )
+
+    SET_TARGET_PROPERTIES ( klu_cholmod_static PROPERTIES
+        VERSION ${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}
+        C_STANDARD_REQUIRED 11
+        OUTPUT_NAME klu_cholmod
+        SOVERSION ${KLU_VERSION_MAJOR} )
+
+endif ( )
+
+#-------------------------------------------------------------------------------
 # add the library dependencies
 #-------------------------------------------------------------------------------
 
@@ -133,6 +160,18 @@ target_link_libraries ( klu_static PUBLIC ${COLAMD_LIBRARIES} )
 target_link_libraries ( klu PUBLIC ${BTF_LIBRARIES} )
 target_link_libraries ( klu_static PUBLIC ${BTF_LIBRARIES} )
 
+if ( CHOLMOD_FOUND )
+
+    # klu:
+    target_link_libraries ( klu_cholmod PUBLIC klu )
+    target_link_libraries ( klu_cholmod_static PUBLIC klu )
+
+    # cholmod:
+    target_link_libraries ( klu_cholmod PUBLIC ${CHOLMOD_LIBRARIES} )
+    target_link_libraries ( klu_cholmod_static PUBLIC ${CHOLMOD_LIBRARIES} )
+
+endif ( )
+
 #-------------------------------------------------------------------------------
 # KLU installation location
 #---------------------------------------------------------------Z--------------
@@ -149,6 +188,14 @@ if ( NOT LOCAL )
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
     install ( TARGETS klu_static
         ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+
+    if ( CHOLMOD_FOUND )
+        install ( TARGETS klu_cholmod
+            LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+        install ( TARGETS klu_cholmod_static
+            ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+    endif ( )
 endif ( )
 
 if ( INSIDE_SUITESPARSE )
@@ -161,6 +208,14 @@ if ( INSIDE_SUITESPARSE )
         PUBLIC_HEADER DESTINATION ${LOCAL_INCLUDEDIR} )
     install ( TARGETS klu_static
         ARCHIVE       DESTINATION ${LOCAL_LIBDIR} )
+
+    if ( CHOLMOD_FOUND )
+        install ( TARGETS klu_cholmod
+            LIBRARY       DESTINATION ${LOCAL_LIBDIR}
+            PUBLIC_HEADER DESTINATION ${LOCAL_INCLUDEDIR} )
+        install ( TARGETS klu_cholmod_static
+            ARCHIVE       DESTINATION ${LOCAL_LIBDIR} )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -180,14 +235,17 @@ if ( DEMO )
     #---------------------------------------------------------------------------
 
     add_executable ( klu_simple  "Demo/klu_simple.c" )
-#   FIXME requires CHOLMOD:
-#   add_executable ( kludemo     "Demo/kludemo.c" )
-#   add_executable ( kluldemo    "Demo/kluldemo.c" )
+    if ( CHOLMOD_FOUND )
+        add_executable ( kludemo     "Demo/kludemo.c" )
+        add_executable ( kluldemo    "Demo/kluldemo.c" )
+    endif ( )
 
     # Libraries required for Demo programs
     target_link_libraries ( klu_simple  PUBLIC klu )
-#   target_link_libraries ( kludemo     PUBLIC klu )
-#   target_link_libraries ( kluldemo    PUBLIC klu )
+    if ( CHOLMOD_FOUND )
+        target_link_libraries ( kludemo  PUBLIC klu_cholmod )
+        target_link_libraries ( kluldemo PUBLIC klu_cholmod )
+    endif ( )
 
 else ( )
 

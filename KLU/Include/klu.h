@@ -43,7 +43,7 @@ typedef struct
         nzoff,          /* nz in off-diagonal blocks */
         nblocks,        /* number of blocks */
         maxblock,       /* size of largest block */
-        ordering,       /* ordering used (AMD, COLAMD, or GIVEN) */
+        ordering,       /* ordering used (0:AMD, 1:COLAMD, 2:given, ... */
         do_btf ;        /* whether or not BTF preordering was requested */
 
     /* only computed if BTF preordering requested */

@@ -49,19 +49,18 @@ all: library
 demo: library
 	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && $(MAKE) --jobs=${JOBS} )
 	- ./build/klu_simple
-# FIXME: requires CHOLMOD
-#	- ./build/kludemo  < ./Matrix/1c.mtx
-#	- ./build/kludemo  < ./Matrix/arrowc.mtx
-#	- ./build/kludemo  < ./Matrix/arrow.mtx
-#	- ./build/kludemo  < ./Matrix/impcol_a.mtx
-#	- ./build/kludemo  < ./Matrix/w156.mtx
-#	- ./build/kludemo  < ./Matrix/ctina.mtx
-#	- ./build/kluldemo < ./Matrix/1c.mtx
-#	- ./build/kluldemo < ./Matrix/arrowc.mtx
-#	- ./build/kluldemo < ./Matrix/arrow.mtx
-#	- ./build/kluldemo < ./Matrix/impcol_a.mtx
-#	- ./build/kluldemo < ./Matrix/w156.mtx
-#	- ./build/kluldemo < ./Matrix/ctina.mtx
+	- ./build/kludemo  < ./Matrix/1c.mtx
+	- ./build/kludemo  < ./Matrix/arrowc.mtx
+	- ./build/kludemo  < ./Matrix/arrow.mtx
+	- ./build/kludemo  < ./Matrix/impcol_a.mtx
+	- ./build/kludemo  < ./Matrix/w156.mtx
+	- ./build/kludemo  < ./Matrix/ctina.mtx
+	- ./build/kluldemo < ./Matrix/1c.mtx
+	- ./build/kluldemo < ./Matrix/arrowc.mtx
+	- ./build/kluldemo < ./Matrix/arrow.mtx
+	- ./build/kluldemo < ./Matrix/impcol_a.mtx
+	- ./build/kluldemo < ./Matrix/w156.mtx
+	- ./build/kluldemo < ./Matrix/ctina.mtx
 
 # just compile after running cmake; do not run cmake again
 remake:

@@ -5,6 +5,7 @@
 /* Read in a Matrix Market matrix (using CHOLMOD) and solve a linear system. */
 
 #include "klu.h"
+#include "klu_cholmod.h"
 
 /* for handling complex matrices */
 #define REAL(X,i) (X [2*(i)])
@@ -206,7 +207,7 @@ static int klu_l_backslash    /* return 1 if successful, 0 otherwise */
 /* Given a sparse matrix A, set up a right-hand-side and solve X = A\b */
 
 static void klu_l_demo (int64_t n, int64_t *Ap, int64_t *Ai, double *Ax,
-    int64_t isreal)
+    int64_t isreal, int cholmod_ordering)
 {
     double rnorm ;
     klu_l_common Common ;
@@ -221,6 +222,15 @@ static void klu_l_demo (int64_t n, int64_t *Ap, int64_t *Ai, double *Ax,
     /* ---------------------------------------------------------------------- */
 
     klu_l_defaults (&Common) ;
+    int64_t user_data [2] ;
+    if (cholmod_ordering >= 0)
+    {
+        Common.ordering = 3 ;
+        Common.user_order = klu_l_cholmod ;
+        user_data [0] = 1 ; // symmetric
+        user_data [1] = cholmod_ordering ;
+        Common.user_data = user_data ;
+    }
 
     /* ---------------------------------------------------------------------- */
     /* create a right-hand-side */
@@ -289,7 +299,7 @@ static void klu_l_demo (int64_t n, int64_t *Ap, int64_t *Ai, double *Ax,
         klu_l_free (X, 2*n, sizeof (double), &Common) ;
         klu_l_free (R, 2*n, sizeof (double), &Common) ;
     }
-    printf ("peak memory usage: %g bytes\n\n", (double) (Common.mempeak)) ;
+    printf ("peak memory usage: %g bytes\n", (double) (Common.mempeak)) ;
 }
 
 
@@ -317,7 +327,12 @@ int main (void)
         }
         else
         {
-            klu_l_demo (A->nrow, A->p, A->i, A->x, A->xtype == CHOLMOD_REAL) ;
+            printf ("\ndefault ordering:\n") ;
+            klu_l_demo (A->nrow, A->p, A->i, A->x, A->xtype == CHOLMOD_REAL, -1) ;
+            printf ("\nCHOLMOD AMD ordering:\n") ;
+            klu_l_demo (A->nrow, A->p, A->i, A->x, A->xtype == CHOLMOD_REAL, CHOLMOD_AMD) ;
+            printf ("\nCHOLMOD METIS ordering:\n") ;
+            klu_l_demo (A->nrow, A->p, A->i, A->x, A->xtype == CHOLMOD_REAL, CHOLMOD_METIS) ;
         }
         cholmod_l_free_sparse (&A, &ch) ;
     }

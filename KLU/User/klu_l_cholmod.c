@@ -1,6 +1,12 @@
-/* ========================================================================== */
-/* === klu_cholmod ========================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// SuiteSparse/KLU/User/klu_l_cholmod.c: KLU int64_t interface to CHOLMOD
+//------------------------------------------------------------------------------
+
+// Copyright (c) 2013-2022, University of Florida.  All Rights Reserved.
+// Authors: Timothy A. Davis and Ekanathan Palamadai.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* klu_l_cholmod: user-defined ordering function to interface KLU to CHOLMOD.
  *
@@ -35,7 +41,10 @@ int64_t klu_l_cholmod
     cholmod_factor *L ;
     cholmod_common cm ;
     int64_t *P ;
-    int64_t k, symmetric ;
+    int64_t k ;
+    int symmetric ;
+    klu_common km ;
+    klu_defaults (&km) ;
 
     if (Ap == NULL || Ai == NULL || Perm == NULL || n < 0)
     {
@@ -66,8 +75,15 @@ int64_t klu_l_cholmod
     A->sorted = FALSE ;             /* columns of A are not sorted */
 
     /* get the user_data; default is symmetric if user_data is NULL */
-    symmetric = (Common->user_data == NULL) ? TRUE :
-        (((int64_t *) (Common->user_data)) [0] != 0) ;
+    symmetric = true ;
+    cm.nmethods = 1 ;
+    cm.method [0].ordering = CHOLMOD_AMD ;
+    int64_t *user_data = Common->user_data ;
+    if (user_data != NULL)
+    {
+        symmetric = (user_data [0] != 0) ;
+        cm.method [0].ordering = user_data [1] ;
+    }
 
     /* AT = pattern of A' */
     AT = cholmod_l_transpose (A, 0, &cm) ;

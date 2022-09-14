@@ -56,8 +56,6 @@ else ( )
 endif ( )
 
 message ( STATUS "CMAKE C compiler:        " ${CMAKE_C_COMPILER_ID} )
-# message ( STATUS "CMAKE have OpenMP:       " ${OPENMP_FOUND} )
-
 # message ( STATUS "CMAKE C++ compiler:      " ${CMAKE_CXX_COMPILER_ID} )
 
 #-------------------------------------------------------------------------------
@@ -95,25 +93,6 @@ configure_file ( "Config/SuiteSparse_config.h.in" "${PROJECT_SOURCE_DIR}/SuiteSp
 #-------------------------------------------------------------------------------
 # add the library dependencies
 #-------------------------------------------------------------------------------
-
-# OpenMP:
-if ( OPENMP_FOUND )
-    message ( STATUS "OpenMP C libraries:      " ${OpenMP_C_LIBRARIES} )
-    message ( STATUS "OpenMP C include:        " ${OpenMP_C_INCLUDE_DIRS} )
-    message ( STATUS "OpenMP C flags:          " ${OpenMP_C_FLAGS} )
-    target_link_libraries ( suitesparseconfig PUBLIC ${OpenMP_C_LIBRARIES} )
-    target_link_libraries ( suitesparseconfig_static PUBLIC ${OpenMP_C_LIBRARIES} )
-    set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} " )
-    include_directories ( ${OpenMP_C_INCLUDE_DIRS} )
-#   for packages that use OpenMP in C++:
-#   message ( STATUS "OpenMP C++ libraries:    " ${OpenMP_CXX_LIBRARIES} )
-#   message ( STATUS "OpenMP C++ include:      " ${OpenMP_CXX_INCLUDE_DIRS} )
-#   message ( STATUS "OpenMP C++ flags:        " ${OpenMP_CXX_FLAGS} )
-#   target_link_libraries ( suitesparseconfig PUBLIC ${OpenMP_CXX_LIBRARIES} )
-#   target_link_libraries ( suitesparseconfig_static PUBLIC ${OpenMP_CXX_LIBRARIES} )
-#   set ( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS} " )
-#   include_directories ( ${OpenMP_CXX_INCLUDE_DIRS} )
-endif ( )
 
 # libm:
 if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
