@@ -9,11 +9,9 @@ default: go
 
 include SuiteSparse_config/SuiteSparse_config.mk
 
-# Compile the default rules for each package.  Compiled libraries for all
-# packages are placed in SuiteSparse/lib, except for Mongoose and GraphBLAS.
-# Those two packages use CMake, and their compiled libraries are placed in
-# Mongoose/build and GraphBLAS/build, respectively.  Then "make install"
-# installs all libraries SuiteSparse/lib.
+# Compile the default rules for each package.
+# "make install" will install all libraries in /usr/local/lib
+# and include files in /usr/local/include.
 go: metis
 	( cd SuiteSparse_config && $(MAKE) )
 	( cd Mongoose && $(MAKE) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' )
@@ -34,6 +32,32 @@ ifneq ($(GPU_CONFIG),)
 	( cd GPUQREngine && $(MAKE) )
 endif
 	( cd SPQR && $(MAKE) )
+	( cd GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' )
+	( cd SLIP_LU && $(MAKE) )
+#	( cd PIRO_BAND && $(MAKE) )
+#	( cd SKYLINE_SVD && $(MAKE) )
+
+# compile and install in SuiteSparse/lib and SuiteSparse/include
+local: metis
+	( cd SuiteSparse_config && $(MAKE) local && $(MAKE) install )
+	( cd Mongoose && $(MAKE) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' local && $(MAKE) install )
+	( cd AMD && $(MAKE) local && $(MAKE) install )
+	( cd BTF && $(MAKE) local && $(MAKE) install )
+	( cd CAMD && $(MAKE) local && $(MAKE) install )
+	( cd CCOLAMD && $(MAKE) local && $(MAKE) install )
+	( cd COLAMD && $(MAKE) local && $(MAKE) install )
+	( cd CHOLMOD && $(MAKE) local && $(MAKE) install )
+	( cd CSparse && $(MAKE) )
+	( cd CXSparse && $(MAKE) local && $(MAKE) install )
+	( cd LDL && $(MAKE) local && $(MAKE) install )
+	( cd KLU && $(MAKE) library && $(MAKE) install )
+	( cd UMFPACK && $(MAKE) local && $(MAKE) install )
+	( cd RBio && $(MAKE) local && $(MAKE) install )
+ifneq ($(GPU_CONFIG),)
+	( cd SuiteSparse_GPURuntime && $(MAKE) )
+	( cd GPUQREngine && $(MAKE) )
+endif
+	( cd SPQR && $(MAKE) library && $(MAKE) install )
 	( cd GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' )
 	( cd SLIP_LU && $(MAKE) )
 #	( cd PIRO_BAND && $(MAKE) )

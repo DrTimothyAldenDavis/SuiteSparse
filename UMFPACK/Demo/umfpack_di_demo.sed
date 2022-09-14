@@ -1,6 +1,6 @@
 /::/d
 1,$s/_xx_/_di_/g
-1,$s/Int/int/g
+1,$s/Int/int32_t/g
 1,$s/WSIZE/5/
 1,$s/%ld/%d/g
 /define ABS/ {

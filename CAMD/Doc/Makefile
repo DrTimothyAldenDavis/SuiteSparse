@@ -1,26 +1,13 @@
 #------------------------------------------------------------------------------
-# CAMD Makefile for compiling on Unix systems
+# CAMD/Doc/Makefile: Create the User Guide and Quick Start Guide
 #------------------------------------------------------------------------------
 
-default: dist
+# Copyright (c) 2007-2022, Timothy A. Davis, Yanqing Chen, Patrick Amestoy,
+# Iain Duff.  All Rights Reserved.
+# SPDX-License-Identifier: BSD-3-clause
 
-include ../../SuiteSparse_config/SuiteSparse_config.mk
-
-#------------------------------------------------------------------------------
-# Remove all but the files in the original distribution
-#------------------------------------------------------------------------------
-
-clean:
-	- $(RM) -r camd_temp $(CLEAN)
-
-purge: distclean
-
-distclean: clean
-	- $(RM) -r $(PURGE)
-
-#------------------------------------------------------------------------------
-# Create the User Guide and Quick Start Guide
-#------------------------------------------------------------------------------
+default:  CAMD_UserGuide.pdf
+	- $(RM) *.aux *.bbl *.blg *.log *.toc camp_temp camd_h.tex
 
 CAMD_UserGuide.pdf: CAMD_UserGuide.tex CAMD_UserGuide.bib ../Include/camd.h
 	echo '\\begin{verbatim}' > camd_h.tex
@@ -31,7 +18,11 @@ CAMD_UserGuide.pdf: CAMD_UserGuide.tex CAMD_UserGuide.bib ../Include/camd.h
 	pdflatex CAMD_UserGuide
 	pdflatex CAMD_UserGuide
 
-dist:  CAMD_UserGuide.pdf
-	- $(RM) *.aux *.bbl *.blg *.log *.toc camd_h.tex
-	- $(RM) camd_temp
+# Remove all but the files in the original distribution
+clean:
+	- $(RM) -r *.out *.aux *.log *.bbl *.blg *.toc camd_temp camd_h.tex
+
+purge: distclean
+
+distclean: clean
 

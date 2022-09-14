@@ -17,26 +17,23 @@ The AMD, SuiteSparse_config, and UMFPACK directories must all reside in the
 same parent directory.  If the -DNCHOLMOD is not used, the CHOLMOD, CAMD,
 CCOLAMD, COLAMD, and metis-5.1.0 also also exist in the same parent.
 
-Quick start (Unix, or Windows with Cygwin):
+Quick start:
 
-    To compile, test, and install both UMFPACK and AMD, the UMFPACK and AMD
-    directories must be in the same parent directory.  To configure, you may
-    need to edit the SuiteSparse_config/SuiteSparse_config.mk file, but the
-    defaults should work on most systems.   Next, type 'make' in this
-    directory.
+    To compile and install the library for system-wide usage:
 
-    To compile and run a FORTRAN demo program for Harwell/Boeing matrices, type
-    "make hb".  To compile a FORTRAN main program that calls the 32-bit
-    C-callable UMFPACK library, type "make fortran".  When done, type "make
-    clean" to remove unused *.o files (keeps the compiled libraries and demo
-    programs).  See the User Guide (Doc/UserGuide.pdf), or
-    ../SuiteSparse_config/SuiteSparse_config.mk for more details.
+        make
+        sudo make install
 
-    To install into /usr/local/lib and /usr/local/include, use
-    "make install".  To remove, do "make uninstall"
-    For installing in other locations, see SuiteSparse/README.txt.
+    To compile/install for local usage (SuiteSparse/lib and SuiteSparse/include)
 
-Quick start (for MATLAB users):
+        make local
+        make install
+
+    To run the demos
+
+        make demo
+
+Quick start (for MATLAB users);
 
     To compile, test, and install the UMFPACK mexFunction, cd to the
     UMFPACK/MATLAB directory and type umfpack_install at the MATLAB prompt.
@@ -141,15 +138,15 @@ Files and directories in the UMFPACK distribution:
     Include	include files for use in your code that calls UMFPACK
     Demo	demo programs.  also serves as test of the UMFPACK installation.
     MATLAB	UMFPACK mexFunction for MATLAB, and supporting m-files
-    Lib		where the compiled C-callable UMFPACK library is placed.
+    build       where the compiled libraries and demos are placed
+    Config      source file to construct umfpack.h
 
     ----------------------------------------------------------------------------
     Files in the UMFPACK directory:
     ----------------------------------------------------------------------------
 
-    Makefile	top-level Makefile
-		Windows users would require Cygwin to use "make"
-
+    Makefile	a very simple Makefile (optional); just for simplifying cmake
+    CMakeLists.txt  cmake script for building UMFPACK
     README.txt	this file
 
     ----------------------------------------------------------------------------
@@ -165,6 +162,14 @@ Files and directories in the UMFPACK distribution:
     UserGuide.bib		User Guide (references)
     UMFPACK_UserGuide.tex	User Guide (LaTeX)
     UMFPACK_UserGuide.pdf	User Guide (PDF)
+
+    ----------------------------------------------------------------------------
+    Source2 directory:
+    ----------------------------------------------------------------------------
+
+    This directory contains all source files used directly in CMakeLists.txt.
+    Each of them sets various #define's, and then #include's files in the
+    Source/ directory.
 
     ----------------------------------------------------------------------------
     Source directory:
@@ -205,7 +210,7 @@ Files and directories in the UMFPACK distribution:
 
     umf_config.h		configuration file (BLAS, memory, timer)
     umf_internal.h		definitions internal to UMFPACK
-    umf_version.h		version definitions (int/long, real/complex)
+    umf_version.h		version definitions (int/int64_t, real/complex)
 
     umf_analyze.[ch]		symbolic factorization of A'*A
     umf_apply_order.[ch]	apply column etree postorder
@@ -278,9 +283,9 @@ Files and directories in the UMFPACK distribution:
     umfpack_zl_demo.sed		for creating umfpack_zl_demo.c
 
     umfpack_di_demo.c		a full demo (real/int version)
-    umfpack_dl_demo.c		a full demo (real/long version)
+    umfpack_dl_demo.c		a full demo (real/int64_t version)
     umfpack_zi_demo.c		a full demo (complex/int version)
-    umfpack_zl_demo.c		a full demo (complex/long version)
+    umfpack_zl_demo.c		a full demo (complex/int64_t version)
 
     umfpack_di_demo.out		umfpack_di_demo output
     umfpack_dl_demo.out		umfpack_dl_demo output
@@ -289,11 +294,10 @@ Files and directories in the UMFPACK distribution:
 
     umf4.c			a demo (real/int) for Harwell/Boeing matrices
     umf4.out			output of "make hb"
-    HB				directory of sample Harwell/Boeing matrices
+    HB/			        directory of sample Harwell/Boeing matrices
     readhb.f			reads HB matrices, keeps zero entries
     readhb_nozeros.f		reads HB matrices, removes zero entries
     readhb_size.f		reads HB matrix dimension, nnz
-    tmp				empty directory for umf4.c demo
 
     umf4_f77wrapper.c		a simple FORTRAN interface for UMFPACK.
 				compile with "make fortran"
@@ -306,10 +310,6 @@ Files and directories in the UMFPACK distribution:
     umf4zhb.out			output of umf4zhb with HB/qc324.cua
 
     umf4hb64.f			64-bit version of umf4hb.f
-
-    simple_compile		a single command that compiles the double/int
-				version of UMFPACK (useful prototype for
-				Microsoft Visual Studio project)
 
     ----------------------------------------------------------------------------
     MATLAB directory:
@@ -335,8 +335,3 @@ Files and directories in the UMFPACK distribution:
     umfpack_demo.m.out		output of umfpack_demo.m
     umfpack_simple.m.out	output of umfpack_simple
 
-    ----------------------------------------------------------------------------
-    Lib directory:
-    ----------------------------------------------------------------------------
-
-    Makefile			to compile the library

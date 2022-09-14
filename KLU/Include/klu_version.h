@@ -2,13 +2,13 @@
 #define _KLU_VERSION_H
 
 #ifdef DLONG
-#define Int SuiteSparse_long
-#define Int_id SuiteSparse_long_id
-#define Int_MAX SuiteSparse_long_max
+#define Int int64_t
+#define Int_id "%" PRId64
+#define Int_MAX INT64_MAX
 #else
-#define Int int
+#define Int int32_t
 #define Int_id "%d"
-#define Int_MAX INT_MAX
+#define Int_MAX INT32_MAX
 #endif
 
 #define NPRINT  
@@ -41,6 +41,7 @@
 
 #ifdef DLONG
 
+// zl: complex int64_t
 #define KLU_scale klu_zl_scale
 #define KLU_solve klu_zl_solve
 #define KLU_tsolve klu_zl_tsolve
@@ -64,6 +65,7 @@
 
 #else
 
+// z: complex int32_t
 #define KLU_scale klu_z_scale
 #define KLU_solve klu_z_solve
 #define KLU_tsolve klu_z_tsolve
@@ -91,6 +93,7 @@
 
 #ifdef DLONG
 
+// l: int64_t
 #define KLU_scale klu_l_scale
 #define KLU_solve klu_l_solve
 #define KLU_tsolve klu_l_tsolve
@@ -114,6 +117,7 @@
 
 #else
 
+// no prefix: int32_t
 #define KLU_scale klu_scale
 #define KLU_solve klu_solve
 #define KLU_tsolve klu_tsolve
@@ -142,6 +146,7 @@
 
 #ifdef DLONG
 
+// l: int64_t
 #define KLU_analyze klu_l_analyze
 #define KLU_analyze_given klu_l_analyze_given
 #define KLU_alloc_symbolic klu_l_alloc_symbolic
@@ -166,6 +171,7 @@
 
 #else
 
+// no prefiex: int64_t
 #define KLU_analyze klu_analyze
 #define KLU_analyze_given klu_analyze_given
 #define KLU_alloc_symbolic klu_alloc_symbolic

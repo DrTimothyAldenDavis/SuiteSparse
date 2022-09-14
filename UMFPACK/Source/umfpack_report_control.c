@@ -44,19 +44,19 @@ GLOBAL void UMFPACK_report_control
 
 #ifdef DINT
     PRINTF (("    Matrix entry defined as: double\n")) ;
-    PRINTF (("    Int (generic integer) defined as: int\n")) ;
+    PRINTF (("    Int (generic integer) defined as: int32_t\n")) ;
 #endif
 #ifdef DLONG
     PRINTF (("    Matrix entry defined as: double\n")) ;
-    PRINTF (("    Int (generic integer) defined as: SuiteSparse_long\n")) ;
+    PRINTF (("    Int (generic integer) defined as: int64_t\n")) ;
 #endif
 #ifdef ZINT
     PRINTF (("    Matrix entry defined as: double complex\n")) ;
-    PRINTF (("    Int (generic integer) defined as: int\n")) ;
+    PRINTF (("    Int (generic integer) defined as: int32_t\n")) ;
 #endif
 #ifdef ZLONG
     PRINTF (("    Matrix entry defined as: double complex\n")) ;
-    PRINTF (("    Int (generic integer) defined as: SuiteSparse_long\n")) ;
+    PRINTF (("    Int (generic integer) defined as: int64_t\n")) ;
 #endif
 
     /* ---------------------------------------------------------------------- */
@@ -382,9 +382,9 @@ GLOBAL void UMFPACK_report_control
 #endif
 
     PRINTF (("    computer/operating system: %s\n", UMFPACK_ARCHITECTURE)) ;
-    PRINTF (("    size of int: %g SuiteSparse_long: %g Int: %g pointer: %g"
-	" double: %g Entry: %g (in bytes)\n\n", (double) sizeof (int),
-	(double) sizeof (SuiteSparse_long), (double) sizeof (Int),
+    PRINTF (("    size of int32_t: %g int64_t: %g Int: %g pointer: %g"
+	" double: %g Entry: %g (in bytes)\n\n", (double) sizeof (int32_t),
+	(double) sizeof (int64_t), (double) sizeof (Int),
 	(double) sizeof (void *), (double) sizeof (double),
 	(double) sizeof (Entry))) ;
 }

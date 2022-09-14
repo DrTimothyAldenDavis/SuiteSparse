@@ -22,7 +22,7 @@
  *   rgrowth = min (max (abs ((R \ A (p,q)) - F))) ./ max (abs (U)))
  */
 
-Int KLU_rgrowth         /* return TRUE if successful, FALSE otherwise */
+int KLU_rgrowth         /* return TRUE if successful, FALSE otherwise */
 (
     Int *Ap,
     Int *Ai,
@@ -169,7 +169,7 @@ Int KLU_rgrowth         /* return TRUE if successful, FALSE otherwise */
  * 1-norm pseudospectra, SIAM J. Matrix Anal. Appl., 21(4):1185-1201, 2000.
  */
 
-Int KLU_condest         /* return TRUE if successful, FALSE otherwise */
+int KLU_condest         /* return TRUE if successful, FALSE otherwise */
 (
     Int Ap [ ],
     double Ax [ ],
@@ -410,7 +410,7 @@ Int KLU_condest         /* return TRUE if successful, FALSE otherwise */
 
 /* Compute the flop count for the LU factorization (in Common->flops) */
 
-Int KLU_flops           /* return TRUE if successful, FALSE otherwise */
+int KLU_flops           /* return TRUE if successful, FALSE otherwise */
 (
     KLU_symbolic *Symbolic,
     KLU_numeric *Numeric,
@@ -494,7 +494,7 @@ Int KLU_flops           /* return TRUE if successful, FALSE otherwise */
  * pivot, or a NaN pivot, rcond will be zero.  Takes O(n) time.
  */   
 
-Int KLU_rcond           /* return TRUE if successful, FALSE otherwise */
+int KLU_rcond           /* return TRUE if successful, FALSE otherwise */
 (
     KLU_symbolic *Symbolic,     /* input, not modified */
     KLU_numeric *Numeric,       /* input, not modified */

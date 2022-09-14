@@ -11,7 +11,7 @@
 
 #include "klu_internal.h"
 
-Int KLU_tsolve
+int KLU_tsolve
 (
     /* inputs, not modified */
     KLU_symbolic *Symbolic,
@@ -23,7 +23,7 @@ Int KLU_tsolve
     double B [ ],           /* size n*nrhs, in column-oriented form, with
                              * leading dimension d. */
 #ifdef COMPLEX
-    Int conj_solve,         /* TRUE for conjugate transpose solve, FALSE for
+    int conj_solve,         /* TRUE for conjugate transpose solve, FALSE for
                              * array transpose solve.  Used for the complex
                              * case only. */
 #endif

@@ -31,11 +31,6 @@
  */
 
 #include "cholmod_internal.h"
-#include "cholmod_core.h"
-
-#ifdef GPU_BLAS
-#include "cholmod_gpu.h"
-#endif
 
 /* ========================================================================== */
 /* === cholmod_start ======================================================== */
@@ -604,7 +599,7 @@ int CHOLMOD(free_work)
  * workspace: Flag (nrow).  Does not modify Flag if nrow is zero.
  */
 
-SuiteSparse_long CHOLMOD(clear_flag)
+int64_t CHOLMOD(clear_flag)
 (
     cholmod_common *Common
 )

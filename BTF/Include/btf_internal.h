@@ -13,11 +13,11 @@
 /* Not to be included in any user program. */
 
 #ifdef DLONG
-#define Int SuiteSparse_long
-#define Int_id SuiteSparse_long_id
+#define Int int64_t
+#define Int_id "%" PRId64
 #define BTF(name) btf_l_ ## name
 #else
-#define Int int
+#define Int int32_t
 #define Int_id "%d"
 #define BTF(name) btf_ ## name
 #endif

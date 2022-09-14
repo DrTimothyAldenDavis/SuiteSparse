@@ -145,9 +145,6 @@
 #ifndef NCHECK
 
 #include "cholmod_internal.h"
-#include "cholmod_check.h"
-#include <string.h>
-#include <ctype.h>
 
 /* The MatrixMarket format specificies a maximum line length of 1024 */
 #define MAXLINE 1030

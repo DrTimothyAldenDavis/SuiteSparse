@@ -10,7 +10,6 @@
 /* CHOLMOD error-handling routine.  */
 
 #include "cholmod_internal.h"
-#include "cholmod_core.h"
 
 /* ========================================================================== */
 /* ==== cholmod_error ======================================================= */

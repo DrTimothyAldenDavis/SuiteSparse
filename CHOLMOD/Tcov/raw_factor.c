@@ -127,9 +127,9 @@ double raw_factor (cholmod_sparse *A, Int check_errors)
 	prefer_zomplex, Bxtype ;
     Int *Parent, *Post, *First, *Level, *Ri, *Rp, *LTp = NULL, *LTi = NULL, *P,
 	*mask, *RLinkUp ;
-    SuiteSparse_long lr ;
+    int64_t lr ;
     double beta [2] ;
-    unsigned SuiteSparse_long save ;
+    uint64_t save ;
 
     /* ---------------------------------------------------------------------- */
     /* create the problem */

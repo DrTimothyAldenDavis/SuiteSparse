@@ -58,12 +58,10 @@
  * numeric identity matrix.
  */
 
+#include "cholmod_internal.h"
+
 #ifndef NGPL
 #ifndef NMODIFY
-
-#include "cholmod_internal.h"
-#include "cholmod_modify.h"
-
 
 /* ========================================================================== */
 /* === cholmod_updown ======================================================= */

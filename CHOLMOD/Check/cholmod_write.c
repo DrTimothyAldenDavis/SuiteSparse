@@ -22,12 +22,7 @@
 
 #ifndef NCHECK
 
-#include "cholmod_config.h"
 #include "cholmod_internal.h"
-#include "cholmod_check.h"
-#include "cholmod_matrixops.h"
-#include <string.h>
-#include <ctype.h>
 
 #define MMLEN 1024
 #define MAXLINE MMLEN+6

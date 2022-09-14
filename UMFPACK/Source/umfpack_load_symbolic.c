@@ -44,7 +44,7 @@
 /* === UMFPACK_load_symbolic ================================================ */
 /* ========================================================================== */
 
-GLOBAL Int UMFPACK_load_symbolic
+GLOBAL int UMFPACK_load_symbolic
 (
     void **SymbolicHandle,
     char *user_filename

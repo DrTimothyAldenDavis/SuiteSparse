@@ -18,12 +18,12 @@
 
 #ifdef DLONG
 #define CHOLMOD(routine) cholmod_l_ ## routine
-#define Int SuiteSparse_long
+#define Int int64_t
 #define UInt uint64_t
 #else
 #define CHOLMOD(routine) cholmod_ ## routine
-#define Int int
-#define UInt unsigned int
+#define Int int32_t
+#define UInt uint32_t
 #endif
 
 int main (int argc, char **argv)

@@ -37,8 +37,10 @@ if ( INSIDE_SUITESPARSE )
     # find ( REAL_PATH ...) requires cmake 3.19.
     file ( REAL_PATH  ${CMAKE_SOURCE_DIR}/../lib     LOCAL_LIBDIR )
     file ( REAL_PATH  ${CMAKE_SOURCE_DIR}/../include LOCAL_INCLUDEDIR )
+    file ( REAL_PATH  ${CMAKE_SOURCE_DIR}/../bin     LOCAL_BINDIR )
     message ( STATUS "Local install: ${LOCAL_LIBDIR} ")
     message ( STATUS "Local include: ${LOCAL_INCLUDEDIR} ")
+    message ( STATUS "Local bin:     ${LOCAL_BINDIR} ")
     # append ../lib to the install and build runpaths 
     set ( CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_RPATH} ${LOCAL_LIBDIR} )
     set ( CMAKE_BUILD_RPATH   ${CMAKE_BUILD_RPATH}   ${LOCAL_LIBDIR} )
@@ -54,3 +56,20 @@ endif ( )
 message ( STATUS "Build type:    ${CMAKE_BUILD_TYPE} ")
 
 set ( CMAKE_INCLUDE_CURRENT_DIR ON )
+
+#-------------------------------------------------------------------------------
+# BLAS library
+#-------------------------------------------------------------------------------
+
+# Uncomment one of the lines below to select OpenBLAS or the Intel MKL.
+# Be sure to use a parallel BLAS library for best results in UMFPACK,
+# CHOLMOD, SPQR, and ParU.  All SuiteSparse packages should use the same
+# BLAS and the same OpenMP library.
+
+# set ( BLA_VENDOR OpenBLAS )
+# set ( BLA_VENDOR Intel10_64ilp )
+
+# The Intel MKL BLAS is recommended.  It is free to download (but be sure to
+# check their license to make sure you accept it).   See:
+# https://www.intel.com/content/www/us/en/developer/tools/oneapi/onemkl.htm
+

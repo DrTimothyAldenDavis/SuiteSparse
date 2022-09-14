@@ -17,7 +17,7 @@
 GLOBAL void UMFPACK_report_status
 (
     const double Control [UMFPACK_CONTROL],
-    Int status
+    int status
 )
 {
     Int prl ;
@@ -116,7 +116,7 @@ GLOBAL void UMFPACK_report_status
 	    break ;
 
 	default:
-	    PRINTF (("ERROR: Unrecognized error code: "ID"\n", status)) ;
+	    PRINTF (("ERROR: Unrecognized error code: %d\n", status)) ;
 
     }
     PRINTF  (("\n")) ;

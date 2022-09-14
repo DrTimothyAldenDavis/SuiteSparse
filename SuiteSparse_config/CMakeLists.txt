@@ -46,7 +46,7 @@ project ( suitesparseconfig
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( OpenMP )
+# find_package ( OpenMP )
 
 #-------------------------------------------------------------------------------
 # report status and set compile flags
@@ -62,7 +62,7 @@ else ( )
 endif ( )
 
 message ( STATUS "CMAKE C compiler:        " ${CMAKE_C_COMPILER_ID} )
-message ( STATUS "CMAKE have OpenMP:       " ${OPENMP_FOUND} )
+# message ( STATUS "CMAKE have OpenMP:       " ${OPENMP_FOUND} )
 
 # message ( STATUS "CMAKE C++ compiler:      " ${CMAKE_CXX_COMPILER_ID} )
 
@@ -148,8 +148,8 @@ endif ( )
 if ( INSIDE_SUITESPARSE )
     # also install in SuiteSparse/lib and SuiteSparse/include;
     # does not require "sudo make install", just "make install"
-    message ( STATUS "Installation in ../lib and ../include only," )
-    message ( STATUS "  with 'make install'. No 'sudo' required." )
+    message ( STATUS "Installation in ../lib and ../include," )
+    message ( STATUS "  with 'make local ; make install'. No 'sudo' required." )
     install ( TARGETS suitesparseconfig
         LIBRARY       DESTINATION ${LOCAL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${LOCAL_INCLUDEDIR} )

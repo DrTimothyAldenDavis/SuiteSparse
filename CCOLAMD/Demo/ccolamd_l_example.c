@@ -51,14 +51,14 @@ int main (void)
     /* input matrix A definition */
     /* ====================================================================== */
 
-    SuiteSparse_long A [ALEN] = {
+    int64_t A [ALEN] = {
 
     	0, 1, 4,		/* row indices of nonzeros in column 0 */
 	2, 4,			/* row indices of nonzeros in column 1 */
 	0, 1, 2, 3,		/* row indices of nonzeros in column 2 */
 	1, 3} ;			/* row indices of nonzeros in column 3 */
 
-    SuiteSparse_long p [ ] = {
+    int64_t p [ ] = {
 
     	0,			/* column 0 is in A [0..2] */
 	3,			/* column 1 is in A [3..4] */ 
@@ -70,7 +70,7 @@ int main (void)
     /* input matrix B definition */
     /* ====================================================================== */
 
-    SuiteSparse_long B [ ] = {  /* Note: only strictly lower triangular part */
+    int64_t B [ ] = {  /* Note: only strictly lower triangular part */
     				/* is included, since symamd ignores the */
 				/* diagonal and upper triangular part of B. */
 
@@ -80,7 +80,7 @@ int main (void)
     	4			/* row indices of nonzeros in column 3 */
     	} ;			/* row indices of nonzeros in column 4 (none) */
 
-    SuiteSparse_long q [ ] = {
+    int64_t q [ ] = {
 
     	0,			/* column 0 is in B [0] */
 	1,			/* column 1 is in B [1..2] */ 
@@ -93,9 +93,10 @@ int main (void)
     /* other variable definitions */
     /* ====================================================================== */
 
-    SuiteSparse_long perm [B_N+1] ;	    /* note the size is N+1 */
-    SuiteSparse_long stats [CCOLAMD_STATS] ;  /* ccolamd/csymamd output stats */
-    SuiteSparse_long row, col, pp, length, ok ;
+    int64_t perm [B_N+1] ;	    /* note the size is N+1 */
+    int64_t stats [CCOLAMD_STATS] ;  /* ccolamd/csymamd output stats */
+    int64_t row, col, pp, length ;
+    int ok ;
 
     /* ====================================================================== */
     /* dump the input matrix A */

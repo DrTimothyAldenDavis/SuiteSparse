@@ -28,12 +28,9 @@
 # cmake 3.17 is required
 cmake_minimum_required ( VERSION 3.17 )
 
-cmake_policy ( SET CMP0042 NEW )
-cmake_policy ( SET CMP0048 NEW )
-set ( CMAKE_MACOSX_RPATH TRUE )
-set ( CMAKE_INSTALL_RPATH ${CMAKE_SOURCE_DIR}/../lib )
-set ( CMAKE_BUILD_RPATH ${CMAKE_SOURCE_DIR}/../lib )
-set ( CMAKE_BUILD_WITH_INSTALL_RPATH TRUE )
+#-------------------------------------------------------------------------------
+# SuiteSparse policies
+#-------------------------------------------------------------------------------
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
@@ -41,7 +38,9 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/../SuiteSparse/cmake_modules
     )
 
-# include ( cmake_modules/cmake_colors.cmake )
+include ( SuiteSparsePolicy )
+
+#-------------------------------------------------------------------------------
 
 set(Mongoose_DATE "Sept FIXME, 2022")
 set(Mongoose_NUMERIC_DATE "2022-09-06") # FIXME
@@ -313,12 +312,13 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" ST
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     # using GCC
     SET(CMAKE_CXX_FLAGS "-O3 -fwrapv")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-but-set-variable -Wno-unused-variable" )
     # Debug flags for GCC
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.6")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
         message(WARNING "${BoldRed} WARNING:${ColourReset} Your compiler does not support the C++11 ISO standard. Future versions of Mongoose will require a compiler with C++11 support. We recommend you upgrade to at least GCC 4.6.")
     endif ()
-    SET(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -fwrapv -W -Wshadow -Wunused-variable -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -fprofile-arcs -ftest-coverage")
+    SET(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -fwrapv -W -Wshadow -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -fprofile-arcs -ftest-coverage")
     SET(CMAKE_C_FLAGS_DEBUG "-g -O0 -Wall -fwrapv -W -fprofile-arcs -ftest-coverage")
     SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "-fprofile-arcs -ftest-coverage")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
@@ -395,39 +395,30 @@ add_custom_target(userguide
 # SuiteSparse/include.  
 
 if ( NOT LOCAL )
-
     # install in /usr/local/lib, /usr/local/include, and /usr/local/bin.
     # requires "sudo make install"
     message ( STATUS "Installation will be system-wide (requires 'sudo make install')." )
     message ( STATUS "If you do not have 'sudo' privilege, do 'make local' instead." )
-    include ( GNUInstallDirs )
-
     install ( TARGETS mongoose_dylib
         LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
-
     install ( TARGETS mongoose_lib
         ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
-
     install ( TARGETS mongoose_exe
         RUNTIME       DESTINATION ${CMAKE_INSTALL_BINDIR} )
-
-else ( )
-
-    message ( STATUS "Installation in ../lib, ../include, ../bin only," )
-    message ( STATUS "  with 'make install'. No 'sudo' required." )
-
 endif ( )
 
-# also install in SuiteSparse/lib and SuiteSparse/include;
-# does not require "sudo make install", just "make install"
-install ( TARGETS mongoose_dylib
-    LIBRARY       DESTINATION ${CMAKE_SOURCE_DIR}/../lib
-    PUBLIC_HEADER DESTINATION ${CMAKE_SOURCE_DIR}/../include )
-
-install ( TARGETS mongoose_lib
-    ARCHIVE       DESTINATION ${CMAKE_SOURCE_DIR}/../lib )
-
-install ( TARGETS mongoose_exe
-    RUNTIME       DESTINATION ${CMAKE_SOURCE_DIR}/../bin )
+if ( INSIDE_SUITESPARSE )
+    # also install in SuiteSparse/lib and SuiteSparse/include;
+    # does not require "sudo make install", just "make install"
+    message ( STATUS "Installation in ../lib and ../include," )
+    message ( STATUS "  with 'make local ; make install'. No 'sudo' required." )
+    install ( TARGETS mongoose_dylib
+        LIBRARY       DESTINATION ${LOCAL_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${LOCAL_INCLUDEDIR} )
+    install ( TARGETS mongoose_lib
+        ARCHIVE       DESTINATION ${LOCAL_LIBDIR} )
+    install ( TARGETS mongoose_exe
+        RUNTIME       DESTINATION ${LOCAL_BINDIR} )
+endif ( )
 

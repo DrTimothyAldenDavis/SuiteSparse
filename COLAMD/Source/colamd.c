@@ -79,10 +79,9 @@
 /* === Description of user-callable routines ================================ */
 /* ========================================================================== */
 
-/* COLAMD includes both int and SuiteSparse_long versions of all its routines.
-    The description below is for the int version.  For SuiteSparse_long, all
-    int arguments become SuiteSparse_long.  SuiteSparse_long is normally
-    defined as long, except for WIN64.
+/* COLAMD includes both int32_t and int64_t versions of all its routines.
+    The description below is for the int32_t version.  For int64_t, all
+    int32_t arguments become int64_t.
 
     ----------------------------------------------------------------------------
     colamd_recommended:
@@ -91,9 +90,9 @@
 	C syntax:
 
 	    #include "colamd.h"
-	    size_t colamd_recommended (int nnz, int n_row, int n_col) ;
-	    size_t colamd_l_recommended (SuiteSparse_long nnz,
-                SuiteSparse_long n_row, SuiteSparse_long n_col) ;
+	    size_t colamd_recommended (int32_t nnz, int32_t n_row, int32_t n_col) ;
+	    size_t colamd_l_recommended (int64_t nnz,
+                int64_t n_row, int64_t n_col) ;
 
 	Purpose:
 
@@ -102,19 +101,16 @@
 	    is optional.  Not needed for symamd, which dynamically allocates
 	    its own memory.
 
-	    Note that in v2.4 and earlier, these routines returned int or long.
-	    They now return a value of type size_t.
-
 	Arguments (all input arguments):
 
-	    int nnz ;		Number of nonzeros in the matrix A.  This must
+	    int32_t nnz ;	Number of nonzeros in the matrix A.  This must
 				be the same value as p [n_col] in the call to
 				colamd - otherwise you will get a wrong value
 				of the recommended memory to use.
 
-	    int n_row ;		Number of rows in the matrix A.
+	    int32_t n_row ;	Number of rows in the matrix A.
 
-	    int n_col ;		Number of columns in the matrix A.
+	    int32_t n_col ;	Number of columns in the matrix A.
 
     ----------------------------------------------------------------------------
     colamd_set_defaults:
@@ -174,12 +170,12 @@
 	C syntax:
 
 	    #include "colamd.h"
-	    int colamd (int n_row, int n_col, int Alen, int *A, int *p,
-	    	double knobs [COLAMD_KNOBS], int stats [COLAMD_STATS]) ;
-	    SuiteSparse_long colamd_l (SuiteSparse_long n_row,
-                SuiteSparse_long n_col, SuiteSparse_long Alen,
-                SuiteSparse_long *A, SuiteSparse_long *p, double knobs
-                [COLAMD_KNOBS], SuiteSparse_long stats [COLAMD_STATS]) ;
+	    int colamd (int32_t n_row, int32_t n_col, int32_t Alen, int32_t *A, int32_t *p,
+	    	double knobs [COLAMD_KNOBS], int32_t stats [COLAMD_STATS]) ;
+	    int colamd_l (int64_t n_row,
+                int64_t n_col, int64_t Alen,
+                int64_t *A, int64_t *p, double knobs
+                [COLAMD_KNOBS], int64_t stats [COLAMD_STATS]) ;
 
 	Purpose:
 
@@ -194,19 +190,19 @@
 
 	Arguments:
 
-	    int n_row ;		Input argument.
+	    int32_t n_row ;		Input argument.
 
 		Number of rows in the matrix A.
 		Restriction:  n_row >= 0.
 		Colamd returns FALSE if n_row is negative.
 
-	    int n_col ;		Input argument.
+	    int32_t n_col ;		Input argument.
 
 		Number of columns in the matrix A.
 		Restriction:  n_col >= 0.
 		Colamd returns FALSE if n_col is negative.
 
-	    int Alen ;		Input argument.
+	    int32_t Alen ;		Input argument.
 
 		Restriction (see note):
 		Alen >= 2*nnz + 6*(n_col+1) + 4*(n_row+1) + n_col
@@ -222,7 +218,7 @@
 		for integer overflow, and thus is not recommended.  Use
 		the colamd_recommended routine instead.
 
-	    int A [Alen] ;	Input argument, undefined on output.
+	    int32_t A [Alen] ;	Input argument, undefined on output.
 
 		A is an integer array of size Alen.  Alen must be at least as
 		large as the bare minimum value given above, but this is very
@@ -246,7 +242,7 @@
 		The contents of A are modified during ordering, and are
 		undefined on output.
 
-	    int p [n_col+1] ;	Both input and output argument.
+	    int32_t p [n_col+1] ;	Both input and output argument.
 
 		p is an integer array of size n_col+1.  On input, it holds the
 		"pointers" for the column form of the matrix A.  Column c of
@@ -270,7 +266,7 @@
 
 		See colamd_set_defaults for a description.
 
-	    int stats [COLAMD_STATS] ;		Output argument.
+	    int32_t stats [COLAMD_STATS] ;		Output argument.
 
 		Statistics on the ordering, and error status.
 		See colamd.h for related definitions.
@@ -370,9 +366,9 @@
 
 		#include "colamd.h"
 		#define ALEN 100
-		int A [ALEN] = {0, 1, 4, 2, 4, 0, 1, 2, 3, 1, 3} ;
-		int p [ ] = {0, 3, 5, 9, 11} ;
-		int stats [COLAMD_STATS] ;
+		int32_t A [ALEN] = {0, 1, 4, 2, 4, 0, 1, 2, 3, 1, 3} ;
+		int32_t p [ ] = {0, 3, 5, 9, 11} ;
+		int32_t stats [COLAMD_STATS] ;
 		colamd (5, 4, ALEN, A, p, (double *) NULL, stats) ;
 
 	    The permutation is returned in the array p, and A is destroyed.
@@ -384,12 +380,12 @@
 	C syntax:
 
 	    #include "colamd.h"
-	    int symamd (int n, int *A, int *p, int *perm,
-	    	double knobs [COLAMD_KNOBS], int stats [COLAMD_STATS],
+	    int symamd (int32_t n, int32_t *A, int32_t *p, int32_t *perm,
+	    	double knobs [COLAMD_KNOBS], int32_t stats [COLAMD_STATS],
 		void (*allocate) (size_t, size_t), void (*release) (void *)) ;
-	    SuiteSparse_long symamd_l (SuiteSparse_long n, SuiteSparse_long *A,
-                SuiteSparse_long *p, SuiteSparse_long *perm, double knobs
-                [COLAMD_KNOBS], SuiteSparse_long stats [COLAMD_STATS], void
+	    int symamd_l (int64_t n, int64_t *A,
+                int64_t *p, int64_t *perm, double knobs
+                [COLAMD_KNOBS], int64_t stats [COLAMD_STATS], void
                 (*allocate) (size_t, size_t), void (*release) (void *)) ;
 
 	Purpose:
@@ -409,13 +405,13 @@
 
 	Arguments:
 
-	    int n ;		Input argument.
+	    int32_t n ;		Input argument.
 
 	    	Number of rows and columns in the symmetrix matrix A.
 		Restriction:  n >= 0.
 		Symamd returns FALSE if n is negative.
 
-	    int A [nnz] ;	Input argument.
+	    int32_t A [nnz] ;	Input argument.
 
 	    	A is an integer array of size nnz, where nnz = p [n].
 		
@@ -431,7 +427,7 @@
 
 		The contents of A are not modified.
 
-	    int p [n+1] ;   	Input argument.
+	    int32_t p [n+1] ;   	Input argument.
 
 		p is an integer array of size n+1.  On input, it holds the
 		"pointers" for the column form of the matrix A.  Column c of
@@ -443,7 +439,7 @@
 
 		The contents of p are not modified.
 
-	    int perm [n+1] ;   	Output argument.
+	    int32_t perm [n+1] ;   	Output argument.
 
 		On output, if symamd returns TRUE, the array perm holds the
 		permutation P, where perm [0] is the first index in the new
@@ -458,7 +454,7 @@
 
 		See colamd_set_defaults for a description.
 
-	    int stats [COLAMD_STATS] ;		Output argument.
+	    int32_t stats [COLAMD_STATS] ;		Output argument.
 
 		Statistics on the ordering, and error status.
 		See colamd.h for related definitions.
@@ -556,8 +552,8 @@
 	C syntax:
 
 	    #include "colamd.h"
-	    colamd_report (int stats [COLAMD_STATS]) ;
-	    colamd_l_report (SuiteSparse_long stats [COLAMD_STATS]) ;
+	    colamd_report (int32_t stats [COLAMD_STATS]) ;
+	    colamd_l_report (int64_t stats [COLAMD_STATS]) ;
 
 	Purpose:
 
@@ -567,7 +563,7 @@
 
 	Arguments:
 
-	    int stats [COLAMD_STATS] ;	Input only.  Statistics from colamd.
+	    int32_t stats [COLAMD_STATS] ;	Input only.  Statistics from colamd.
 
 
     ----------------------------------------------------------------------------
@@ -577,8 +573,8 @@
 	C syntax:
 
 	    #include "colamd.h"
-	    symamd_report (int stats [COLAMD_STATS]) ;
-	    symamd_l_report (SuiteSparse_long stats [COLAMD_STATS]) ;
+	    symamd_report (int32_t stats [COLAMD_STATS]) ;
+	    symamd_l_report (int64_t stats [COLAMD_STATS]) ;
 
 	Purpose:
 
@@ -588,7 +584,7 @@
 
 	Arguments:
 
-	    int stats [COLAMD_STATS] ;	Input only.  Statistics from symamd.
+	    int32_t stats [COLAMD_STATS] ;	Input only.  Statistics from symamd.
 
 
 */
@@ -646,7 +642,7 @@
 #endif
 
 /* ========================================================================== */
-/* === int or SuiteSparse_long ============================================== */
+/* === int32_t or int64_t ============================================== */
 /* ========================================================================== */
 
 #ifdef DLONG

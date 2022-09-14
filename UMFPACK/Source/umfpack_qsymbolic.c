@@ -634,7 +634,7 @@ PRIVATE void combine_ordering
 /* === symbolic_analysis ==================================================== */
 /* ========================================================================== */
 
-PRIVATE Int symbolic_analysis
+PRIVATE int symbolic_analysis
 (
     Int n_row,
     Int n_col,
@@ -794,8 +794,8 @@ PRIVATE Int symbolic_analysis
     Info [UMFPACK_NROW] = n_row ;
     Info [UMFPACK_NCOL] = n_col ;
     Info [UMFPACK_SIZE_OF_UNIT] = (double) (sizeof (Unit)) ;
-    Info [UMFPACK_SIZE_OF_INT] = (double) (sizeof (int)) ;
-    Info [UMFPACK_SIZE_OF_LONG] = (double) (sizeof (SuiteSparse_long)) ;
+    Info [UMFPACK_SIZE_OF_INT] = (double) (sizeof (int32_t)) ;
+    Info [UMFPACK_SIZE_OF_LONG] = (double) (sizeof (int64_t)) ;
     Info [UMFPACK_SIZE_OF_POINTER] = (double) (sizeof (void *)) ;
     Info [UMFPACK_SIZE_OF_ENTRY] = (double) (sizeof (Entry)) ;
     Info [UMFPACK_SYMBOLIC_DEFRAG] = 0 ;
@@ -895,7 +895,7 @@ PRIVATE Int symbolic_analysis
 	/* :: int overflow, Clen too large :: */
 	/* Problem is too large for array indexing (Ci [i]) with an Int i. */
 	/* Cannot even analyze the problem to determine upper bounds on */
-	/* memory usage. Need to use the SuiteSparse_long version, */
+	/* memory usage. Need to use the int64_t version, */
         /* umfpack_*l_*. */
 	DEBUGm4 (("out of memory: symbolic int overflow\n")) ;
 	Info [UMFPACK_STATUS] = UMFPACK_ERROR_out_of_memory ;
@@ -1224,8 +1224,6 @@ PRIVATE Int symbolic_analysis
                            UMFPACK_DEFAULT_STRATEGY_THRESH_SYM) ;
         double tnzd = GET_CONTROL (UMFPACK_STRATEGY_THRESH_NNZDIAG,
                            UMFPACK_DEFAULT_STRATEGY_THRESH_NNZDIAG) ;
-//      printf ("tsym %g tnzd %g\n",
-//          tsym, tnzd) ;
         if ((sym >= tsym) && ((double) nzdiag >= (tnzd * ((double) n2))))
         {
             /* pattern is mostly symmetric (default 50% or more) and the
@@ -1382,8 +1380,7 @@ PRIVATE Int symbolic_analysis
             {
                 // pruned matrix is empty: use COLAMD instead of METIS
                 ordering_option = UMFPACK_ORDERING_AMD ;
-                // FIXME: remove this printf
-                printf ("METIS_GUARD: pruned matrix is empty, using colamd\n") ;
+                DEBUG0 (("METIS_GUARD: pruned matrix is empty, using colamd\n")) ;
             }
             else
             {
@@ -1403,10 +1400,10 @@ PRIVATE Int symbolic_analysis
                     // OK to use METIS
                     ordering_option = UMFPACK_ORDERING_METIS ;
                 }
-                // FIXME: remove this printf
-                printf ("METIS_GUARD: max_rdeg "ID", metis_guard "ID", ordering : %s\n",
-                    max_rdeg, metis_guard,
-                    (ordering_option == UMFPACK_ORDERING_METIS) ? "metis" : "colamd") ;
+                DEBUG0 (("METIS_GUARD: max_rdeg "ID", metis_guard "ID
+                    ", ordering : %s\n", max_rdeg, metis_guard,
+                    (ordering_option == UMFPACK_ORDERING_METIS) ?
+                    "metis" : "colamd")) ;
             }
         }
 
@@ -2729,7 +2726,7 @@ PRIVATE void error
 /* === UMFPACK_qsymbolic ==================================================== */
 /* ========================================================================== */
 
-GLOBAL Int UMFPACK_qsymbolic
+GLOBAL int UMFPACK_qsymbolic
 (
     Int n_row,
     Int n_col,
@@ -2770,7 +2767,7 @@ GLOBAL Int UMFPACK_qsymbolic
 /* === UMFPACK_fsymbolic ==================================================== */
 /* ========================================================================== */
 
-GLOBAL Int UMFPACK_fsymbolic
+GLOBAL int UMFPACK_fsymbolic
 (
     Int n_row,
     Int n_col,
@@ -2831,7 +2828,7 @@ GLOBAL Int UMFPACK_fsymbolic
 /* === UMFPACK_paru_symbolic ================================================ */
 /* ========================================================================== */
 
-GLOBAL Int UMFPACK_paru_symbolic
+GLOBAL int UMFPACK_paru_symbolic
 (
     Int n_row,
     Int n_col,

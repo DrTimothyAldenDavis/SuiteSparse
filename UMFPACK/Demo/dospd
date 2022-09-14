@@ -28,8 +28,8 @@ echo '0.5'	>> tmp/control.umf4 ; # 18: frontal matrix alloc.
 echo '0'	>> tmp/control.umf4 ; # 19: drop tolerance
 echo '1'	>> tmp/control.umf4 ; # 20: AMD/COLAMD aggressive absorption
 
-zcat $1 | readhb_nozeros > tmp/A
-zcat $1 | readhb_size    > tmp/Asize
+zcat $1 | ./readhb_nozeros > tmp_A
+zcat $1 | ./readhb_size    > tmp_Asize
 umf4 s
 
 echo '================================================================='

@@ -11,7 +11,7 @@
 
 #include "klu_internal.h"
 
-Int KLU_extract     /* returns TRUE if successful, FALSE otherwise */
+int KLU_extract     /* returns TRUE if successful, FALSE otherwise */
 (
     /* inputs: */
     KLU_numeric *Numeric,

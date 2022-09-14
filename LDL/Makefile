@@ -48,16 +48,18 @@ all: library
 
 demo: library
 	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && $(MAKE) --jobs=${JOBS} )
-	- ./build/ldlsimple > ./build/my_ldlsimple.out
+	./build/ldlsimple > ./build/my_ldlsimple.out
 	- diff ./Demo/ldlsimple.out ./build/my_ldlsimple.out
-	- ./build/ldllsimple > ./build/my_ldllsimple.out
+	./build/ldllsimple > ./build/my_ldllsimple.out
 	- diff ./Demo/ldlsimple.out ./build/my_ldllsimple.out
-	- ./build/ldlmain > ./build/my_ldlmain.out
+	./build/ldlmain > ./build/my_ldlmain.out
 	- diff ./Demo/ldlmain.out ./build/my_ldlmain.out
-	- ./build/ldllmain > ./build/my_ldllmain.out
+	./build/ldllmain > ./build/my_ldllmain.out
 	- diff ./Demo/ldlmain.out ./build/my_ldllmain.out
-	- ( ./build/ldlamd  > ./build/my_ldlamd.out  && diff ./Demo/ldlamd.out  ./build/my_ldlamd.out  )
-	- ( ./build/ldllamd > ./build/my_ldllamd.out && diff ./Demo/ldllamd.out ./build/my_ldllamd.out )
+	./build/ldlamd  > ./build/my_ldlamd.out
+	- diff ./Demo/ldlamd.out  ./build/my_ldlamd.out
+	./build/ldllamd  > ./build/my_ldllamd.out
+	- diff ./Demo/ldllamd.out  ./build/my_ldllamd.out
 
 # just compile after running cmake; do not run cmake again
 remake:

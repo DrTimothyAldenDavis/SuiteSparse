@@ -109,6 +109,7 @@ extern "C" {
     integers have the _i suffix appended to their names.
 */
 
+SUITESPARSE_PUBLIC 
 int RBkind_i        /* 0: OK, < 0: error, > 0: warning */
 (
     /* input */
@@ -132,12 +133,13 @@ int RBkind_i        /* 0: OK, < 0: error, > 0: warning */
     int32_t *cp     /* workspace of size ncol+1, undefined on input and output*/
 ) ;
 
+SUITESPARSE_PUBLIC 
 int RBkind (int64_t nrow, int64_t ncol,
     int64_t *Ap, int64_t *Ai, double *Ax, double *Az,
     int64_t mkind_in, int64_t *mkind, int64_t *skind,
     char mtype [4], double *xmin, double *xmax, int64_t *cp) ;
 
-
+SUITESPARSE_PUBLIC 
 int RBread_i            /* 0: OK, < 0: error, > 0: warning */
 (
     /* input */
@@ -165,6 +167,7 @@ int RBread_i            /* 0: OK, < 0: error, > 0: warning */
     int32_t **Zi        /* row indices of Z */
 ) ;
 
+SUITESPARSE_PUBLIC 
 int RBread (char *filename, int64_t build_upper,
     int64_t zero_handling, char title [73], char key [9],
     char mtype [4], int64_t *nrow, int64_t *ncol,
@@ -173,6 +176,7 @@ int RBread (char *filename, int64_t build_upper,
     double **Ax, double **Az, int64_t **Zp, int64_t **Zi) ;
 
 
+SUITESPARSE_PUBLIC 
 int RBreadraw_i         /* 0: OK, < 0: error, > 0: warning */
 (
     /* input */
@@ -198,6 +202,7 @@ int RBreadraw_i         /* 0: OK, < 0: error, > 0: warning */
 ) ;
 
 
+SUITESPARSE_PUBLIC 
 int RBreadraw (char *filename, char title [73], char key [9],
     char mtype[4], int64_t *nrow, int64_t *ncol,
     int64_t *nnz, int64_t *nelnz, int64_t *mkind,
@@ -205,6 +210,7 @@ int RBreadraw (char *filename, char title [73], char key [9],
     int64_t **p_Ap, int64_t **p_Ai, double **p_Ax) ;
 
 
+SUITESPARSE_PUBLIC 
 int RBwrite_i       /* 0:OK, < 0: error, > 0: warning */
 (
     /* input */
@@ -225,12 +231,14 @@ int RBwrite_i       /* 0:OK, < 0: error, > 0: warning */
     char mtype [4]  /* matrix type (RUA, RSA, etc), may be NULL */
 ) ;
 
+SUITESPARSE_PUBLIC 
 int RBwrite (char *filename, char *title, char *key,
     int64_t nrow, int64_t ncol, int64_t *Ap,
     int64_t *Ai, double *Ax, double *Az, int64_t *Zp,
     int64_t *Zi, int64_t mkind_in, char mtype [4]) ;
 
 
+SUITESPARSE_PUBLIC 
 void RBget_entry_i
 (
     int32_t mkind,      /* R: 0, P: 1, C: 2, I: 3 */
@@ -241,10 +249,12 @@ void RBget_entry_i
     double *xz          /* imaginary part */
 ) ;
 
+SUITESPARSE_PUBLIC 
 void RBget_entry (int64_t mkind, double *Ax, double *Az,
     int64_t p, double *xr, double *xz) ;
 
 
+SUITESPARSE_PUBLIC 
 void RBput_entry_i
 (
     int32_t mkind,      /* R: 0, P: 1, C: 2, I: 3 */
@@ -255,10 +265,12 @@ void RBput_entry_i
     double xz           /* imaginary part */
 ) ;
 
+SUITESPARSE_PUBLIC 
 void RBput_entry (int64_t mkind, double *Ax, double *Az,
     int64_t p, double xr, double xz) ;
 
 
+SUITESPARSE_PUBLIC 
 int RBok_i          /* 0:OK, < 0: error, > 0: warning */
 (
     /* inputs, not modified */
@@ -278,12 +290,14 @@ int RBok_i          /* 0:OK, < 0: error, > 0: warning */
     int32_t *p_nzeros      /* number of explicit zeros (-1 if not computed) */
 ) ;
 
+SUITESPARSE_PUBLIC 
 int RBok (int64_t nrow, int64_t ncol,
     int64_t nzmax, int64_t *Ap, int64_t *Ai,
     double *Ax, double *Az, char *As, int64_t mkind,
     int64_t *p_njumbled, int64_t *p_nzeros) ;
 
 #ifdef MATLAB_MEX_FILE
+SUITESPARSE_PUBLIC 
 void RBerror (int status) ;     /* only for MATLAB mexFunctions */
 #endif
 

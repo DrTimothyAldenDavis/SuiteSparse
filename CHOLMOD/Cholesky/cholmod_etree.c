@@ -30,10 +30,9 @@
  * Supports any xtype (pattern, real, complex, or zomplex)
  */
 
-#ifndef NCHOLESKY
-
 #include "cholmod_internal.h"
-#include "cholmod_cholesky.h"
+
+#ifndef NCHOLESKY
 
 /* ========================================================================== */
 /* === update_etree ========================================================= */

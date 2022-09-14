@@ -8,13 +8,7 @@
 /* -------------------------------------------------------------------------- */
 
 /*
-    This file controls the compile-time configuration of UMFPACK.  Modify the
-    SuiteSparse_config/SuiteSparse_config.mk file and this file if necessary,
-    to control these options.  The following flags may be given as options to
-    your C compiler (as in "cc -DNSUNPERF", for example).  These flags are
-    normally placed in your UMFPACK_CONFIG string, defined in the
-    SuiteSparse_config/SuiteSparse_config.mk file.
-
+    This file controls the compile-time configuration of UMFPACK.
     All of these options, except for the timer, are for accessing the BLAS.
 
 	-DNSUNPERF

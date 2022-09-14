@@ -42,7 +42,7 @@ PRIVATE void print_value
 /* === UMF_report_vector ==================================================== */
 /* ========================================================================== */
 
-GLOBAL Int UMF_report_vector
+GLOBAL int UMF_report_vector
 (
     Int n,
     const double Xx [ ],

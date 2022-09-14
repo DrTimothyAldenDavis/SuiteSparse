@@ -9,12 +9,12 @@
 /* -------------------------------------------------------------------------- */
 
 /* FORTRAN interface for the C-callable UMFPACK library (double / int version
- * only and double / SuiteSparse_long versions only).  This is HIGHLY
+ * only and double / int64_t versions only).  This is HIGHLY
  * non-portable.  You will need to modify this depending on how your FORTRAN
  * and C compilers behave.  This has been tested in Linux, Sun Solaris, SGI
  * IRIX, and IBM AIX, with various compilers.  It has not been exhaustively
  * tested on all possible combinations of C and FORTRAN compilers.  The
- * SuiteSparse_long version works on Solaris, SGI IRIX, and IBM AIX when the
+ * int64_t version works on Solaris, SGI IRIX, and IBM AIX when the
  * UMFPACK library is compiled in 64-bit mode.
  *
  * Only a subset of UMFPACK's capabilities are provided.  Refer to the UMFPACK
@@ -53,12 +53,6 @@
  * integer*8, in the FORTRAN routine that calls these wrapper routines.
  * The latter is required on Solaris, SGI IRIX, and IBM AIX when UMFPACK is
  * compiled in 64-bit mode.
- *
- * If you want to use 64-bit integers, try compiling this file with the -DDLONG
- * compiler option (via "make fortran64").  First modify your
- * SuiteSparse_config.mk
- * file to compile UMFPACK in LP64 mode (see the User Guide for details).
- * Your FORTRAN code should use integer*8.  See umf4hb64.f for an example.
  */
 
 #include "umfpack.h"
@@ -71,12 +65,12 @@
 #define LEN 200
 
 /* -------------------------------------------------------------------------- */
-/* integer type: int or SuiteSparse_long */
+/* integer type: int32_t or int64_t */
 /* -------------------------------------------------------------------------- */
 
 #if defined (DLONG)
 
-#define Int SuiteSparse_long
+#define Int int64_t
 #define UMFPACK_defaults	 umfpack_dl_defaults
 #define UMFPACK_free_numeric	 umfpack_dl_free_numeric
 #define UMFPACK_free_symbolic	 umfpack_dl_free_symbolic

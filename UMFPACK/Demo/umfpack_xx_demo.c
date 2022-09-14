@@ -6,14 +6,14 @@
 :: Do not attempt to compile this file!  It is processed via sed scripts into
 :: four different C demo programs:
 ::
-:: umfpack_di_demo.c:  double precision, int integers
-:: umfpack_dl_demo.c:  double precision, SuiteSparse_long integers
-:: umfpack_zi_demo.c:  complex double precision, int integers
-:: umfpack_zl_demo.c:  complex double precision, SuiteSparse_long integers
+:: umfpack_di_demo.c:  double precision, int32_t integers
+:: umfpack_dl_demo.c:  double precision, int64_t integers
+:: umfpack_zi_demo.c:  complex double precision, int32_t integers
+:: umfpack_zl_demo.c:  complex double precision, int64_t integers
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) 2005-2012 by Timothy A. Davis,                       */
+/* UMFPACK Copyright (c) 2005-2022 by Timothy A. Davis,                       */
 /* http://www.suitesparse.com. All Rights Reserved.                           */
 /* See ../Doc/License.txt for License.                                        */
 /* -------------------------------------------------------------------------- */
@@ -71,7 +71,7 @@
 /* -------------------------------------------------------------------------- */
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:: Int is either int or SuiteSparse_long:
+:: Int is either int32_t or int64_t:
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 static Int n = 5, nz = 12 ;
 static Int Arow [ ] = { 0,  4,  1,  1,   2,   2,  0,  1,  2,  3,  4,  4} ;
@@ -104,7 +104,7 @@ static void error
 
 static double resid
 (
-    Int transpose,
+    int transpose,
     Int Ap [ ],
     Int Ai [ ],
     double Ax [ ]

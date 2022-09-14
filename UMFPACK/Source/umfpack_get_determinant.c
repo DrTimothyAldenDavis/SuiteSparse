@@ -32,7 +32,7 @@
 
 /* If the mantissa is too big or too small, rescale it and change exponent */
 
-PRIVATE Int rescale_determinant
+PRIVATE int rescale_determinant
 (
     Entry *d_mantissa,
     double *d_exponent
@@ -76,7 +76,7 @@ PRIVATE Int rescale_determinant
 /* === UMFPACK_get_determinant ============================================== */
 /* ========================================================================== */
 
-GLOBAL Int UMFPACK_get_determinant
+GLOBAL int UMFPACK_get_determinant
 (
     double *Mx,
 #ifdef COMPLEX

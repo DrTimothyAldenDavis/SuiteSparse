@@ -59,7 +59,7 @@ void mexFunction
     cholmod_dense Bmatrix, *X, *B ;
     cholmod_factor *L ;
     cholmod_common Common, *cm ;
-    Long n, B_is_sparse, ordering, k, *Perm ;
+    int64_t n, B_is_sparse, ordering, k, *Perm ;
 
     /* ---------------------------------------------------------------------- */
     /* start CHOLMOD and set parameters */ 
@@ -190,7 +190,7 @@ void mexFunction
 	}
 	/* copy from double to integer, and convert to 0-based */
 	p = mxGetPr (pargin [2]) ;
-	Perm = cholmod_l_malloc (n, sizeof (Long), cm) ;
+	Perm = cholmod_l_malloc (n, sizeof (int64_t), cm) ;
 	for (k = 0 ; k < n ; k++)
 	{
 	    Perm [k] = p [k] - 1 ;
@@ -215,7 +215,7 @@ void mexFunction
     /* ---------------------------------------------------------------------- */
 
     L = cholmod_l_analyze_p (A, Perm, NULL, 0, cm) ;
-    cholmod_l_free (n, sizeof (Long), Perm, cm) ;
+    cholmod_l_free (n, sizeof (int64_t), Perm, cm) ;
     cholmod_l_factorize (A, L, cm) ;
 
     rcond = cholmod_l_rcond (L, cm) ;

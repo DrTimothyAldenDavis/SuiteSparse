@@ -41,22 +41,22 @@ function, and four type-specific versions.  For example:
                 be changed to operate on complex matrices with -DCS_COMPLEX.
 
     cs_di_add   double/int version of cs_add
-    cs_dl_add   double/SuiteSparse_long version of cs_add
+    cs_dl_add   double/int64_t version of cs_add
     cs_ci_add   complex/int version of cs_add
-    cs_cl_add   complex/SuiteSparse_long version of cs_add
+    cs_cl_add   complex/int64_t version of cs_add
 
 The sparse matrix data structures are treated in the same way:  cs, css,
 csn, and csd become cs_di, cs_dis, cs_din, and cs_did for the double/int case,
-cs_cl, cs_cls, cs_cln, and cs_cld for the complex/SuiteSparse_long case, and so
+cs_cl, cs_cls, cs_cln, and cs_cld for the complex/int64_t case, and so
 on.
 
 See cs_demo.c for a type-generic user program, and cs_cl_demo.c for a
-type-specific version of the same program (complex/SuiteSparse_long).
+type-specific version of the same program (complex/int64_t).
 
 Several macros are available in CXSparse (but not in CSparse) to allow user
 code to be written in a type-generic manner:
 
-    CS_INT      int by default, SuiteSparse_long if -DCS_LONG compiler flag
+    CS_INT      int by default, int64_t if -DCS_LONG compiler flag
                 is used
     CS_ENTRY    double by default, double complex if -DCS_COMPLEX flag is used.
     CS_ID       "%d" or "%"PRId64, for printf and scanf of the CS_INT type.
@@ -198,11 +198,11 @@ cs_ci_demo3.c   complex/int version of cs_demo3.c
 cs_ci_demo.c    complex/int version of cs_demo.c
 cs_ci_demo.h    complex/int version of cs_demo.h
 
-cs_cl_demo1.c   complex/SuiteSparse_long version of cs_demo1.c
-cs_cl_demo2.c   complex/SuiteSparse_long version of cs_demo2.c
-cs_cl_demo3.c   complex/SuiteSparse_long version of cs_demo3.c
-cs_cl_demo.c    complex/SuiteSparse_long version of cs_demo.c
-cs_cl_demo.h    complex/SuiteSparse_long version of cs_demo.h
+cs_cl_demo1.c   complex/int64_t version of cs_demo1.c
+cs_cl_demo2.c   complex/int64_t version of cs_demo2.c
+cs_cl_demo3.c   complex/int64_t version of cs_demo3.c
+cs_cl_demo.c    complex/int64_t version of cs_demo.c
+cs_cl_demo.h    complex/int64_t version of cs_demo.h
 
 cs_demo1.c      read a matrix from a file and perform basic matrix operations
 cs_demo2.c      read a matrix from a file and solve a linear system
@@ -218,14 +218,14 @@ cs_di_demo3.c   double/int version of cs_demo3.c
 cs_di_demo.c    double/int version of cs_demo.c
 cs_di_demo.h    double/int version of cs_demo.h
 
-cs_dl_demo1.c   double/SuiteSparse_long version of cs_demo1.c
-cs_dl_demo2.c   double/SuiteSparse_long version of cs_demo2.c
-cs_dl_demo3.c   double/SuiteSparse_long version of cs_demo3.c
-cs_dl_demo.c    double/SuiteSparse_long version of cs_demo.c
-cs_dl_demo.h    double/SuiteSparse_long version of cs_demo.h
+cs_dl_demo1.c   double/int64_t version of cs_demo1.c
+cs_dl_demo2.c   double/int64_t version of cs_demo2.c
+cs_dl_demo3.c   double/int64_t version of cs_demo3.c
+cs_dl_demo.c    double/int64_t version of cs_demo.c
+cs_dl_demo.h    double/int64_t version of cs_demo.h
 
 cs_idemo.c      convert real matrices to/from complex (int version)
-cs_ldemo.c      convert real matrices to/from complex (SuiteSparse_long version)
+cs_ldemo.c      convert real matrices to/from complex (int64_t version)
 
 README.txt      Demo README file
 

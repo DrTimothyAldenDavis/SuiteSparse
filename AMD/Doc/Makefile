@@ -1,26 +1,13 @@
 #------------------------------------------------------------------------------
-# AMD Makefile for compiling on Unix systems
+# AMD/Doc/Makefile: Create the User Guide and Quick Start Guide
 #------------------------------------------------------------------------------
 
-default: dist
+# Copyright (c) 1996-2022, Timothy A. Davis, Patrick Amestoy, Iain Duff.
+# All Rights Reserved.
+# SPDX-License-Identifier: BSD-3-clause
 
-include ../../SuiteSparse_config/SuiteSparse_config.mk
-
-#------------------------------------------------------------------------------
-# Remove all but the files in the original distribution
-#------------------------------------------------------------------------------
-
-clean:
-	- $(RM) -r $(CLEAN)
-
-purge: distclean
-
-distclean: clean
-	- $(RM) -r $(PURGE)
-
-#------------------------------------------------------------------------------
-# Create the User Guide and Quick Start Guide
-#------------------------------------------------------------------------------
+default:  AMD_UserGuide.pdf
+	- $(RM) *.aux *.bbl *.blg *.log *.toc amd_h.tex
 
 AMD_UserGuide.pdf: AMD_UserGuide.tex AMD_UserGuide.bib ../Include/amd.h
 	echo '\\begin{verbatim}' > amd_h.tex
@@ -31,6 +18,11 @@ AMD_UserGuide.pdf: AMD_UserGuide.tex AMD_UserGuide.bib ../Include/amd.h
 	pdflatex AMD_UserGuide
 	pdflatex AMD_UserGuide
 
-dist:  AMD_UserGuide.pdf
-	- $(RM) *.aux *.bbl *.blg *.log *.toc amd_h.tex
+# Remove all but the files in the original distribution
+clean:
+	- $(RM) -r *.out *.aux *.log *.bbl *.blg *.toc amd_h.tex
+
+purge: distclean
+
+distclean: clean
 

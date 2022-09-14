@@ -33,8 +33,6 @@
  */
 
 #include "cholmod_internal.h"
-#include "cholmod_core.h"
-
 
 /* ========================================================================== */
 /* === cholmod_allocate_sparse ============================================== */
@@ -410,7 +408,7 @@ cholmod_sparse *CHOLMOD(spzeros)
  * integer overflow cannot occur, since the matrix is already allocated.
  */
 
-SuiteSparse_long CHOLMOD(nnz)
+int64_t CHOLMOD(nnz)
 (
     /* ---- input ---- */
     cholmod_sparse *A,

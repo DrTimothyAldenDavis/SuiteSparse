@@ -15,7 +15,7 @@
 #include "umf_internal.h"
 #include "umf_report_vector.h"
 
-GLOBAL Int UMFPACK_report_vector
+GLOBAL int UMFPACK_report_vector
 (
     Int n,
     const double Xx [ ],

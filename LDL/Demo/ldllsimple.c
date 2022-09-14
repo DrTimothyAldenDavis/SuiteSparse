@@ -39,22 +39,21 @@
 #define N 10	/* A is 10-by-10 */
 #define ANZ 19	/* # of nonzeros on diagonal and upper triangular part of A */
 #define LNZ 13	/* # of nonzeros below the diagonal of L */
-#define Long SuiteSparse_long
 
 int main (void)
 {
     /* only the upper triangular part of A is required */
-    Long Ap[N+1] = {0, 1, 2, 3, 4,   6, 7,   9,   11,      15,     ANZ},
+    int64_t Ap[N+1] = {0, 1, 2, 3, 4,   6, 7,   9,   11,      15,     ANZ},
            Ai [ANZ] = {0, 1, 2, 3, 1,4, 5, 4,6, 4,7, 0,4,7,8, 1,4,6,9 } ;
     double Ax [ANZ] = {1.7, 1., 1.5, 1.1, .02,2.6, 1.2, .16,1.3, .09,1.6,
 		     .13,.52,.11,1.4, .01,.53,.56,3.1},
            b [N] = {.287, .22, .45, .44, 2.486, .72, 1.55, 1.424, 1.621, 3.759};
     double Lx [LNZ], D [N], Y [N] ;
-    Long Li [LNZ], Lp [N+1], Parent [N], Lnz [N], Flag [N], Pattern [N], d, i ;
+    int64_t Li [LNZ], Lp [N+1], Parent [N], Lnz [N], Flag [N], Pattern [N], d, i ;
 
     /* factorize A into LDL' (P and Pinv not used) */
     ldl_l_symbolic (N, Ap, Ai, Lp, Parent, Lnz, Flag, NULL, NULL) ;
-    printf ("Nonzeros in L, excluding diagonal: %d\n", Lp [N]) ;
+    printf ("Nonzeros in L, excluding diagonal: "LDL_ID"\n", Lp [N]) ;
     d = ldl_l_numeric (N, Ap, Ai, Ax, Lp, Parent, Lnz, Li, Lx, D, Y, Pattern,
 	Flag, NULL, NULL) ;
 
@@ -64,11 +63,11 @@ int main (void)
 	ldl_l_lsolve (N, b, Lp, Li, Lx) ;
 	ldl_l_dsolve (N, b, D) ;
 	ldl_l_ltsolve (N, b, Lp, Li, Lx) ;
-	for (i = 0 ; i < N ; i++) printf ("x [%d] = %g\n", i, b [i]) ;
+	for (i = 0 ; i < N ; i++) printf ("x ["LDL_ID"] = %g\n", i, b [i]) ;
     }
     else
     {
-	printf ("ldl_l_numeric failed, D (%d,%d) is zero\n", d, d) ;
+	printf ("ldl_l_numeric failed, D ("LDL_ID","LDL_ID") is zero\n", d, d) ;
     }
     return (0) ;
 }

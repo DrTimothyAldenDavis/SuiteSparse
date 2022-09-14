@@ -1,0 +1,234 @@
+#-------------------------------------------------------------------------------
+# SuiteSparse/UMFPACK/CMakeLists.txt:  cmake for UMFPACK
+#-------------------------------------------------------------------------------
+
+# Copyright (c) 1995-2022, Timothy A. Davis.  All Rights Reserved.
+# SPDX-License-Identifier: GPL-2.0+
+
+#-------------------------------------------------------------------------------
+# get the version
+#-------------------------------------------------------------------------------
+
+cmake_minimum_required ( VERSION 3.19 )
+
+set ( UMFPACK_VERSION_MAJOR 6 )
+set ( UMFPACK_VERSION_MINOR 0 )
+set ( UMFPACK_VERSION_SUB   0 )
+
+message ( STATUS "Building UMFPACK version: v"
+    ${UMFPACK_VERSION_MAJOR}.
+    ${UMFPACK_VERSION_MINOR}.
+    ${UMFPACK_VERSION_SUB} " (" ${UMFPACK_DATE} ")" )
+
+#-------------------------------------------------------------------------------
+# SuiteSparse policies
+#-------------------------------------------------------------------------------
+
+set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+    ${CMAKE_SOURCE_DIR}/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../cmake_modules
+    ${CMAKE_SOURCE_DIR}/../SuiteSparse/cmake_modules
+    )
+
+include ( SuiteSparsePolicy )
+
+#-------------------------------------------------------------------------------
+# define the project
+#-------------------------------------------------------------------------------
+
+project ( umfpack
+    VERSION "${UMFPACK_VERSION_MAJOR}.${UMFPACK_VERSION_MINOR}.${UMFPACK_VERSION_SUB}"
+    LANGUAGES C ) # <-- add CXX here for packages that use C++
+
+#-------------------------------------------------------------------------------
+# find library dependencies
+#-------------------------------------------------------------------------------
+
+enable_language ( C Fortran )
+message ( STATUS "Fortran: ${CMAKE_Fortran_COMPILER_ID} ") 
+find_package ( OpenMP )
+find_package ( SuiteSparse_config REQUIRED )
+find_package ( AMD REQUIRED )
+find_package ( BLAS REQUIRED )
+
+# FIXME: no cholmod yet (add this)
+add_compile_definitions ( NCHOLMOD )
+
+#-------------------------------------------------------------------------------
+# configure files
+#-------------------------------------------------------------------------------
+
+configure_file ( "Config/umfpack.h.in" "${PROJECT_SOURCE_DIR}/Include/umfpack.h")
+configure_file ( "Config/umfpack_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/umfpack_version.tex")
+
+#-------------------------------------------------------------------------------
+# report status and set compile flags
+#-------------------------------------------------------------------------------
+
+if ( ${CMAKE_BUILD_TYPE} STREQUAL "Debug" )
+    message ( STATUS "CMAKE C Flags debug:     ${CMAKE_C_FLAGS_DEBUG} ")
+#   message ( STATUS "CMAKE C++ Flags debug:   ${CMAKE_CXX_FLAGS_DEBUG} ")
+else ( )
+    message ( STATUS "CMAKE C Flags release:   ${CMAKE_C_FLAGS_RELEASE} ")
+#   message ( STATUS "CMAKE C++ Flags release: ${CMAKE_CXX_FLAGS_RELEASE} ")
+endif ( )
+
+message ( STATUS "CMAKE C compiler:        ${CMAKE_C_COMPILER_ID} ")
+message ( STATUS "CMAKE have OpenMP:       ${OPENMP_FOUND} ")
+
+# message ( STATUS "CMAKE C++ compiler:      " ${CMAKE_CXX_COMPILER_ID} )
+
+#-------------------------------------------------------------------------------
+# include directories
+#-------------------------------------------------------------------------------
+
+include_directories ( Source Include ${SUITESPARSE_CONFIG_INCLUDE_DIR}
+    ${AMD_INCLUDE_DIR} ${CMAKE_SOURCE_DIR}/../AMD/Include )
+
+#-------------------------------------------------------------------------------
+# dynamic umfpack library properties
+#-------------------------------------------------------------------------------
+
+file ( GLOB UMFPACK_SOURCES "Source2/*.c" )
+
+add_library ( umfpack SHARED ${UMFPACK_SOURCES} )
+
+SET_TARGET_PROPERTIES ( umfpack PROPERTIES
+    VERSION ${UMFPACK_VERSION_MAJOR}.${UMFPACK_VERSION_MINOR}.${UMFPACK_VERSION_SUB}
+    C_STANDARD_REQUIRED 11
+    SOVERSION ${UMFPACK_VERSION_MAJOR}
+    PUBLIC_HEADER "Include/umfpack.h" )
+
+#-------------------------------------------------------------------------------
+# static umfpack library properties
+#-------------------------------------------------------------------------------
+
+add_library ( umfpack_static STATIC ${UMFPACK_SOURCES} )
+
+SET_TARGET_PROPERTIES ( umfpack_static PROPERTIES
+    VERSION ${UMFPACK_VERSION_MAJOR}.${UMFPACK_VERSION_MINOR}.${UMFPACK_VERSION_SUB}
+    C_STANDARD_REQUIRED 11
+    OUTPUT_NAME umfpack
+    SOVERSION ${UMFPACK_VERSION_MAJOR} )
+
+#-------------------------------------------------------------------------------
+# add the library dependencies
+#-------------------------------------------------------------------------------
+
+# suitesparseconfig:
+target_link_libraries ( umfpack PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
+target_link_libraries ( umfpack_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
+
+# OpenMP:
+if ( OPENMP_FOUND )
+    message ( STATUS "OpenMP C libraries:      ${OpenMP_C_LIBRARIES} ")
+    message ( STATUS "OpenMP C include:        ${OpenMP_C_INCLUDE_DIRS} ")
+    message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS} ")
+    target_link_libraries ( umfpack PUBLIC ${OpenMP_C_LIBRARIES} )
+    target_link_libraries ( umfpack_static PUBLIC ${OpenMP_C_LIBRARIES} )
+    set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} " )
+    include_directories ( ${OpenMP_C_INCLUDE_DIRS} )
+endif ( )
+
+# libm:
+if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
+    target_link_libraries ( umfpack PUBLIC m )
+    target_link_libraries ( umfpack_static PUBLIC m )
+endif ( )
+
+# amd:
+target_link_libraries ( umfpack PUBLIC ${AMD_LIBRARIES} )
+target_link_libraries ( umfpack_static PUBLIC ${AMD_LIBRARIES} )
+
+# BLAS:
+message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES} ")
+message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
+target_link_libraries ( umfpack PUBLIC ${BLAS_LIBRARIES} )
+target_link_libraries ( umfpack_static PUBLIC ${BLAS_LIBRARIES} )
+
+#-------------------------------------------------------------------------------
+# UMFPACK installation location
+#---------------------------------------------------------------Z--------------
+
+# use "cmake -DLOCAL=1" to install only in SuiteSparse/lib and
+# SuiteSparse/include.  
+
+if ( NOT LOCAL )
+    # install in /usr/local/lib and /usr/local/include.
+    # requires "sudo make install"
+    message ( STATUS "Installation will be system-wide (requires 'sudo make install')" )
+    install ( TARGETS umfpack
+        LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+    install ( TARGETS umfpack_static
+        ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+endif ( )
+
+if ( INSIDE_SUITESPARSE )
+    # also install in SuiteSparse/lib and SuiteSparse/include;
+    # does not require "sudo make install", just "make install"
+    message ( STATUS "Installation in ../lib and ../include only," )
+    message ( STATUS "  with 'make install'. No 'sudo' required." )
+    install ( TARGETS umfpack
+        LIBRARY       DESTINATION ${LOCAL_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${LOCAL_INCLUDEDIR} )
+    install ( TARGETS umfpack_static
+        ARCHIVE       DESTINATION ${LOCAL_LIBDIR} )
+endif ( )
+
+#-------------------------------------------------------------------------------
+# Demo library and programs
+#-------------------------------------------------------------------------------
+
+if ( DEMO )
+
+    #---------------------------------------------------------------------------
+    # demo library
+    #---------------------------------------------------------------------------
+
+    message ( STATUS "Also compiling the demos in UMFPACK/Demo" )
+
+    #---------------------------------------------------------------------------
+    # Demo programs
+    #---------------------------------------------------------------------------
+
+    add_executable ( umfpack_simple  "Demo/umfpack_simple.c" )
+    add_executable ( umfpack_di_demo "Demo/umfpack_di_demo.c" )
+    add_executable ( umfpack_dl_demo "Demo/umfpack_dl_demo.c" )
+    add_executable ( umfpack_zi_demo "Demo/umfpack_zi_demo.c" )
+    add_executable ( umfpack_zl_demo "Demo/umfpack_zl_demo.c" )
+
+    if ( FDEMO )
+        # Fortran demos
+        add_executable ( umf4            "Demo/umf4.c" )
+        add_executable ( readhb          "Demo/readhb.f" )
+        add_executable ( readhb_nozeros  "Demo/readhb_nozeros.f" )
+        add_executable ( readhb_size     "Demo/readhb_size.f" )
+        add_executable ( umf4hb          "Demo/umf4hb.f"
+                                         "Demo/umf4_f77wrapper.c" )
+        add_executable ( umf4zhb         "Demo/umf4zhb.f"
+                                         "Demo/umf4_f77zwrapper.c" )
+        add_executable ( umf4hb64        "Demo/umf4hb64.f"
+                                         "Demo/umf4_f77wrapper64.c" )
+    endif ( )
+
+    # Libraries required for Demo programs
+    target_link_libraries ( umfpack_simple  PUBLIC umfpack )
+    target_link_libraries ( umfpack_di_demo PUBLIC umfpack )
+    target_link_libraries ( umfpack_dl_demo PUBLIC umfpack )
+    target_link_libraries ( umfpack_zi_demo PUBLIC umfpack )
+    target_link_libraries ( umfpack_zl_demo PUBLIC umfpack )
+    if ( FDEMO )
+        # Fortran demos
+        target_link_libraries ( umf4            PUBLIC umfpack )
+        target_link_libraries ( umf4hb          PUBLIC umfpack )
+        target_link_libraries ( umf4zhb         PUBLIC umfpack )
+        target_link_libraries ( umf4hb64        PUBLIC umfpack )
+    endif ( )
+
+else ( )
+
+    message ( STATUS "Skipping the demos in UMFPACK/Demo" )
+
+endif ( )
+

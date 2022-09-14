@@ -6,7 +6,7 @@
 
 #include "klu_internal.h"
 
-Int KLU_free_numeric
+int KLU_free_numeric
 (
     KLU_numeric **NumericHandle,
     KLU_common  *Common

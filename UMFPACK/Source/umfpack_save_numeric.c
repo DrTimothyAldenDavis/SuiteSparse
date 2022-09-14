@@ -30,7 +30,7 @@
 /* === UMFPACK_save_numeric ================================================= */
 /* ========================================================================== */
 
-GLOBAL Int UMFPACK_save_numeric
+GLOBAL int UMFPACK_save_numeric
 (
     void *NumericHandle,
     char *user_filename

@@ -88,7 +88,7 @@ static void sort (Int n, Int *Xip, Int *Xlen, Unit *LU, Int *Tp, Int *Tj,
 /* === KLU_sort ============================================================= */
 /* ========================================================================== */
 
-Int KLU_sort
+int KLU_sort
 (
     KLU_symbolic *Symbolic,
     KLU_numeric *Numeric,

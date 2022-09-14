@@ -106,19 +106,9 @@
  * Supports any xtype (pattern, real, complex, or zomplex)
  */
 
-#ifndef NCHOLESKY
-
 #include "cholmod_internal.h"
-#include "cholmod_cholesky.h"
 
-#ifndef NSUPERNODAL
-#include "cholmod_supernodal.h"
-#endif
-
-#ifndef NPARTITION
-#include "cholmod_partition.h"
-#endif
-
+#ifndef NCHOLESKY
 
 /* ========================================================================== */
 /* === cholmod_analyze ====================================================== */

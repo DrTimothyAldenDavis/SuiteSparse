@@ -1,3 +1,12 @@
+Sept FIXME: version 2.0.0
+
+    * using CMake build system
+    * integers: int (32-bit) and SuiteSparse_long (nominally 64-bit) replaced
+        with int32_t and int64_t.  This change should be backward compatible
+        with v1.2.6, since the integer sizes (sizeof(...)) should remain the
+        same.  However, since this is a possible change to the binary API,
+        the version number becomes v2.0.0.
+
 May 4, 2016: version 1.2.6
 
     * minor changes to Makefile

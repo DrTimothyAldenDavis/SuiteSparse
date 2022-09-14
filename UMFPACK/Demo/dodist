@@ -1,0 +1,6 @@
+#!/bin/bash
+# create the umfpack_*_demo.c files from umfpack_xx_demo.c
+sed -f umfpack_di_demo.sed < umfpack_xx_demo.c > umfpack_di_demo.c
+sed -f umfpack_dl_demo.sed < umfpack_xx_demo.c > umfpack_dl_demo.c
+sed -f umfpack_zi_demo.sed < umfpack_xx_demo.c > umfpack_zi_demo.c
+sed -f umfpack_zl_demo.sed < umfpack_xx_demo.c > umfpack_zl_demo.c

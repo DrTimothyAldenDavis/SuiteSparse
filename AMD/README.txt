@@ -89,7 +89,6 @@ Files and directories in the AMD distribution:
 
     Makefile	a very simple Makefile (optional); just for simplifying cmake
     CMakeLists.txt  cmake script for building AMD
-
     README.txt	this file
 
     ---------------------------------------------------------------------------

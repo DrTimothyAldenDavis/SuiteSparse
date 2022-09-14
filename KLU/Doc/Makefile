@@ -2,25 +2,9 @@
 # KLU Makefile for creating the user guide
 #------------------------------------------------------------------------------
 
-default: dist
-
-include ../../SuiteSparse_config/SuiteSparse_config.mk
-
-#------------------------------------------------------------------------------
-# Remove all but the files in the original distribution
-#------------------------------------------------------------------------------
-
-clean:
-	- $(RM) -r $(CLEAN)
-
-purge: distclean
-
-distclean: clean
-	- $(RM) -r $(PURGE)
-
-#------------------------------------------------------------------------------
-# Create the User Guide and Quick Start Guide
-#------------------------------------------------------------------------------
+dist:  KLU_UserGuide.pdf
+	- $(RM) *.aux *.bbl *.blg *.log *.toc
+	- $(RM) klu_simple_c.tex klu_h.tex btf_h.tex
 
 KLU_UserGuide.pdf: KLU_UserGuide.tex KLU_UserGuide.bib \
     ../Include/klu.h ../../BTF/Include/btf.h Makefile
@@ -38,7 +22,12 @@ KLU_UserGuide.pdf: KLU_UserGuide.tex KLU_UserGuide.bib \
 	pdflatex KLU_UserGuide
 	pdflatex KLU_UserGuide
 
-dist:  KLU_UserGuide.pdf
+# Remove all but the files in the original distribution
+clean: 
 	- $(RM) *.aux *.bbl *.blg *.log *.toc
 	- $(RM) klu_simple_c.tex klu_h.tex btf_h.tex
+
+purge: clean
+
+distclean: clean
 

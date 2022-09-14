@@ -8,11 +8,9 @@
 
 /* Compute the postorder of a tree. */
 
-#ifndef NCHOLESKY
-
 #include "cholmod_internal.h"
-#include "cholmod_cholesky.h"
 
+#ifndef NCHOLESKY
 
 /* ========================================================================== */
 /* === dfs ================================================================== */
@@ -135,7 +133,7 @@ static Int dfs		/* return the new value of k */
  * workspace: Head (n), Iwork (2*n)
  */
 
-SuiteSparse_long CHOLMOD(postorder)	/* return # of nodes postordered */
+Int CHOLMOD(postorder)	/* return # of nodes postordered */
 (
     /* ---- input ---- */
     Int *Parent,	/* size n. Parent [j] = p if p is the parent of j */

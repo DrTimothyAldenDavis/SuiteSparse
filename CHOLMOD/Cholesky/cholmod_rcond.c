@@ -18,10 +18,9 @@
  * For an LDL' factorization, (min(diag(D))/max(diag(D))) is returned.
  */
 
-#ifndef NCHOLESKY
-
 #include "cholmod_internal.h"
-#include "cholmod_cholesky.h"
+
+#ifndef NCHOLESKY
 
 /* ========================================================================== */
 /* === LMINMAX ============================================================== */

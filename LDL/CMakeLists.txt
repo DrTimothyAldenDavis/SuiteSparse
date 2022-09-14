@@ -45,7 +45,6 @@ project ( ldl
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( OpenMP )
 find_package ( SuiteSparse_config REQUIRED )
 find_package ( AMD REQUIRED )
 
@@ -69,7 +68,6 @@ else ( )
 endif ( )
 
 message ( STATUS "CMAKE C compiler:        " ${CMAKE_C_COMPILER_ID} )
-message ( STATUS "CMAKE have OpenMP:       " ${OPENMP_FOUND} )
 
 # message ( STATUS "CMAKE C++ compiler:      " ${CMAKE_CXX_COMPILER_ID} )
 
@@ -109,15 +107,6 @@ SET_TARGET_PROPERTIES ( ldl_static PROPERTIES
 # add the library dependencies
 #-------------------------------------------------------------------------------
 
-# OpenMP:
-if ( OPENMP_FOUND )
-    message ( STATUS "OpenMP C libraries:      " ${OpenMP_C_LIBRARIES} )
-    message ( STATUS "OpenMP C include:        " ${OpenMP_C_INCLUDE_DIRS} )
-    message ( STATUS "OpenMP C flags:          " ${OpenMP_C_FLAGS} )
-    set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} " )
-    include_directories ( ${OpenMP_C_INCLUDE_DIRS} )
-endif ( )
-
 # libm:
 if ( "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
     set ( M_LIB "" )
@@ -126,10 +115,10 @@ else ( )
 endif ( )
 
 target_link_libraries ( ldl PUBLIC ${M_LIB}
-    ${SUITESPARSE_CONFIG_LIBRARIES} ${OpenMP_C_LIBRARIES} ${AMD_LIBRARIES} )
+    ${SUITESPARSE_CONFIG_LIBRARIES} ${AMD_LIBRARIES} )
 
 target_link_libraries ( ldl_static PUBLIC ${M_LIB}
-    ${SUITESPARSE_CONFIG_LIBRARIES} ${OpenMP_C_LIBRARIES} ${AMD_LIBRARIES} )
+    ${SUITESPARSE_CONFIG_LIBRARIES} ${AMD_LIBRARIES} )
 
 include_directories ( ${AMD_INCLUDE_DIR} )
 
@@ -154,8 +143,8 @@ endif ( )
 if ( INSIDE_SUITESPARSE )
     # also install in SuiteSparse/lib and SuiteSparse/include;
     # does not require "sudo make install", just "make install"
-    message ( STATUS "Installation in ../lib and ../include only," )
-    message ( STATUS "  with 'make install'. No 'sudo' required." )
+    message ( STATUS "Installation in ../lib and ../include," )
+    message ( STATUS "  with 'make local ; make install'. No 'sudo' required." )
     install ( TARGETS ldl
         LIBRARY       DESTINATION ${LOCAL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${LOCAL_INCLUDEDIR} )

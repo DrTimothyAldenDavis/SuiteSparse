@@ -67,7 +67,6 @@
 #ifndef FALSE
 #define FALSE (0)
 #endif
-#define Long SuiteSparse_long
 
 /* ========================================================================== */
 /* === error ================================================================ */
@@ -78,15 +77,14 @@
 static void error
 (
     char *s,
-    Long A_is_complex,
+    int A_is_complex,
     int nargout,
     mxArray *pargout [ ],
     double Control [UMFPACK_CONTROL],
     double Info [UMFPACK_INFO],
-    Long status
+    int status
 )
 {
-    Long i ;
     double *Out_Info ;
     if (A_is_complex)
     {
@@ -117,12 +115,12 @@ static int get_option
 
     /* outputs: */
     double *x,                  /* double value of the field, if present */
-    Long *x_present,            /* true if double x is present */
+    int *x_present,             /* true if double x is present */
     char **s                    /* char value of the field, if present; */
                                 /* must be mxFree'd by caller when done */
 )
 {
-    Long f ;
+    int64_t f ;
     mxArray *p ;
 
     /* find the field number */
@@ -212,7 +210,7 @@ int get_all_options
 {
     double x ;
     char *s ;
-    Long x_present, i, info_details ;
+    int x_present, info_details ;
 
     /* ---------------------------------------------------------------------- */
     /* prl: an integer, default 1 */
@@ -436,8 +434,8 @@ mxArray *umfpack_mx_info_details    /* return a struct with info statistics */
         "anz",
 
         "sizeof_unit",
-        "sizeof_int",
-        "sizeof_long",
+        "sizeof_int32_t",
+        "sizeof_int64_t",
         "sizeof_pointer",
         "sizeof_entry",
         "number_of_dense_rows",
@@ -903,13 +901,14 @@ void mexFunction
     double *Lx, *Lz, *Ux, *Uz, *Ax, *Az, *Bx, *Bz, *Xx, *Xz, *User_Control,
 	*p, *q, *Out_Info, *p1, *p2, *p3, *p4, *Ltx, *Ltz, *Rs, *Px, *Qx ;
     void *Symbolic, *Numeric ;
-    Long *Lp, *Li, *Up, *Ui, *Ap, *Ai, *P, *Q, do_solve, lnz, unz, nn, i,
+    int64_t *Lp, *Li, *Up, *Ui, *Ap, *Ai, *P, *Q, do_solve, lnz, unz, nn, i,
 	transpose, size, do_info, do_numeric, *Front_npivcol, op, k, *Rp, *Ri,
 	*Front_parent, *Chain_start, *Chain_maxrows, *Chain_maxcols, nz, status,
 	nfronts, nchains, *Ltp, *Ltj, *Qinit, print_level, status2, no_scale,
 	*Front_1strow, *Front_leftmostdesc, n_row, n_col, n_inner, sys,
-	ignore1, ignore2, ignore3, A_is_complex, B_is_complex, X_is_complex,
+	ignore1, ignore2, ignore3,
 	*Pp, *Pi, *Qp, *Qi, do_recip, do_det ;
+    int A_is_complex, B_is_complex, X_is_complex ;
     mxArray *Amatrix, *Bmatrix, *User_Control_struct, *User_Qinit ;
     char *operator, *operation ;
     mxComplexity Atype, Xtype ;

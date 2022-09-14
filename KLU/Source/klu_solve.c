@@ -11,7 +11,7 @@
 
 #include "klu_internal.h"
 
-Int KLU_solve
+int KLU_solve
 (
     /* inputs, not modified */
     KLU_symbolic *Symbolic,

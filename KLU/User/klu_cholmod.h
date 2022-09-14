@@ -1,7 +1,8 @@
 #include "klu.h"
 
-int klu_cholmod (int n, int Ap [ ], int Ai [ ], int Perm [ ], klu_common *) ;
+int32_t klu_cholmod (int32_t n, int32_t Ap [ ],
+    int32_t Ai [ ], int32_t Perm [ ], klu_common *) ;
 
-SuiteSparse_long klu_l_cholmod (SuiteSparse_long n, SuiteSparse_long Ap [ ],
-    SuiteSparse_long Ai [ ], SuiteSparse_long Perm [ ], klu_l_common *) ;
+int64_t klu_l_cholmod (int64_t n, int64_t Ap [ ],
+    int64_t Ai [ ], int64_t Perm [ ], klu_l_common *) ;
 

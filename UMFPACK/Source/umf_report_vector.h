@@ -3,7 +3,7 @@
 /* All Rights Reserved.  See ../Doc/License.txt for License.                  */
 /* -------------------------------------------------------------------------- */
 
-GLOBAL Int UMF_report_vector
+GLOBAL int UMF_report_vector
 (
     Int n,
     const double Xx [ ],

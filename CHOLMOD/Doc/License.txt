@@ -112,35 +112,6 @@
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301, USA.
 
 --------------------------------------------------------------------------------
-==> Include/License.txt <==
---------------------------------------------------------------------------------
-
-    CHOLMOD/Include/* files.  Copyright (C) 2005-2006, either Univ. of Florida
-    or T. Davis, depending on the file.
-
-    Each file is licensed separately, according to the Module for which it
-    contains definitions and prototypes:
-
-    Include/cholmod.h               LGPL
-    Include/cholmod_blas.h          LGPL
-    Include/cholmod_camd.h          part of Partition module
-    Include/cholmod_check.h         part of Check module
-    Include/cholmod_cholesky.h      part of Cholesky module
-    Include/cholmod_complexity.h    LGPL
-    Include/cholmod_config.h        LGPL
-    Include/cholmod_core.h          part of Core module
-    Include/cholmod_function.h      no license; freely usable, no restrictions
-    Include/cholmod_gpu.h           part of GPU module
-    Include/cholmod_gpu_kernels.h   part of GPU module
-    Include/cholmod_internal.h      LGPL
-    Include/cholmod_io64.h          LGPL
-    Include/cholmod_matrixops.h     part of MatrixOps module
-    Include/cholmod_modify.h        part of Modify module
-    Include/cholmod_partition.h     part of Partition module
-    Include/cholmod_supernodal.h    part of Supernodal module
-    Include/cholmod_template.h      LGPL
-
---------------------------------------------------------------------------------
 ==> MATLAB/License.txt <==
 --------------------------------------------------------------------------------
 

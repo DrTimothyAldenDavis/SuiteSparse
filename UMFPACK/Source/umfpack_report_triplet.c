@@ -14,7 +14,7 @@
 
 #include "umf_internal.h"
 
-GLOBAL Int UMFPACK_report_triplet
+GLOBAL int UMFPACK_report_triplet
 (
     Int n_row,
     Int n_col,

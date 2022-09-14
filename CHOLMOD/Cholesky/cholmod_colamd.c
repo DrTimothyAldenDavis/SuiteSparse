@@ -22,12 +22,11 @@
  * Supports any xtype (pattern, real, complex, or zomplex)
  */
 
+#include "cholmod_internal.h"
+
 #ifndef NCHOLESKY
 
-#include "cholmod_internal.h"
 #include "colamd.h"
-#include "cholmod_cholesky.h"
-
 #if (!defined (COLAMD_VERSION) || (COLAMD_VERSION < COLAMD_VERSION_CODE (2,5)))
 #error "COLAMD v2.5 or later is required"
 #endif

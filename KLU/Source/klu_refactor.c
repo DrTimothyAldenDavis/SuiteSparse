@@ -15,7 +15,7 @@
 /* === KLU_refactor ========================================================= */
 /* ========================================================================== */
 
-Int KLU_refactor        /* returns TRUE if successful, FALSE otherwise */
+int KLU_refactor        /* returns TRUE if successful, FALSE otherwise */
 (
     /* inputs, not modified */
     Int Ap [ ],         /* size n+1, column pointers */

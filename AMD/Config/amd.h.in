@@ -42,18 +42,18 @@ extern "C" {
 
 #include "SuiteSparse_config.h"
 
-int amd_order                  /* returns AMD_OK, AMD_OK_BUT_JUMBLED,
-                                * AMD_INVALID, or AMD_OUT_OF_MEMORY */
+SUITESPARSE_PUBLIC int amd_order  /* returns AMD_OK, AMD_OK_BUT_JUMBLED,
+                                    * AMD_INVALID, or AMD_OUT_OF_MEMORY */
 (
     int32_t n,                     /* A is n-by-n.  n must be >= 0. */
     const int32_t Ap [ ],          /* column pointers for A, of size n+1 */
     const int32_t Ai [ ],          /* row indices of A, of size nz = Ap [n] */
     int32_t P [ ],                 /* output permutation, of size n */
-    double Control [ ],        /* input Control settings, of size AMD_CONTROL */
-    double Info [ ]            /* output Info statistics, of size AMD_INFO */
+    double Control [ ],     /* input Control settings, of size AMD_CONTROL */
+    double Info [ ]         /* output Info statistics, of size AMD_INFO */
 ) ;
 
-int amd_l_order    /* see above for description of arguments */
+SUITESPARSE_PUBLIC int amd_l_order  /* see above for description */
 (
     int64_t n,
     const int64_t Ap [ ],
@@ -231,7 +231,7 @@ int amd_l_order    /* see above for description of arguments */
  * of the matrix for AMD to destroy).  Refer to AMD/Source/amd_2.c for a
  * description of each parameter. */
 
-void amd_2
+SUITESPARSE_PUBLIC void amd_2
 (
     int32_t n,
     int32_t Pe [ ],
@@ -250,7 +250,7 @@ void amd_2
     double Info [ ]
 ) ;
 
-void amd_l2
+SUITESPARSE_PUBLIC void amd_l2
 (
     int64_t n,
     int64_t Pe [ ],
@@ -281,7 +281,7 @@ void amd_l2
  * of columns of the matrix.  For its use in AMD, these must both equal n.
  */
 
-int amd_valid
+SUITESPARSE_PUBLIC int amd_valid
 (
     int32_t n_row,                 /* # of rows */
     int32_t n_col,                 /* # of columns */
@@ -289,7 +289,7 @@ int amd_valid
     const int32_t Ai [ ]           /* row indices, of size Ap [n_col] */
 ) ;
 
-int amd_l_valid
+SUITESPARSE_PUBLIC int amd_l_valid
 (
     int64_t n_row,
     int64_t n_col,
@@ -302,16 +302,16 @@ int amd_l_valid
 /* ------------------------------------------------------------------------- */
 
 /* amd_defaults:  sets the default control settings */
-void amd_defaults   (double Control [ ]) ;
-void amd_l_defaults (double Control [ ]) ;
+SUITESPARSE_PUBLIC void amd_defaults   (double Control [ ]) ;
+SUITESPARSE_PUBLIC void amd_l_defaults (double Control [ ]) ;
 
 /* amd_control: prints the control settings */
-void amd_control    (double Control [ ]) ;
-void amd_l_control  (double Control [ ]) ;
+SUITESPARSE_PUBLIC void amd_control    (double Control [ ]) ;
+SUITESPARSE_PUBLIC void amd_l_control  (double Control [ ]) ;
 
 /* amd_info: prints the statistics */
-void amd_info       (double Info [ ]) ;
-void amd_l_info     (double Info [ ]) ;
+SUITESPARSE_PUBLIC void amd_info       (double Info [ ]) ;
+SUITESPARSE_PUBLIC void amd_l_info     (double Info [ ]) ;
 
 #define AMD_CONTROL 5          /* size of Control array */
 #define AMD_INFO 20            /* size of Info array */

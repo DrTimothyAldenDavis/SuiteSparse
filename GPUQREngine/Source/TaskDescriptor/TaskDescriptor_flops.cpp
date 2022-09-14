@@ -101,6 +101,7 @@ Int getFlops(TaskDescriptor *task)
         case TASKTYPE_SAssembly:         return 0;
         case TASKTYPE_PackAssembly:      return 0;
     }
+    return (0) ;
 }
 
 // -----------------------------------------------------------------------------

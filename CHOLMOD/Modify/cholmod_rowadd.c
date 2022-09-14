@@ -17,12 +17,10 @@
  * numeric identity matrix before the row is added.
  */
 
+#include "cholmod_internal.h"
+
 #ifndef NGPL
 #ifndef NMODIFY
-
-#include "cholmod_internal.h"
-#include "cholmod_modify.h"
-
 
 /* ========================================================================== */
 /* === cholmod_rowadd ======================================================= */

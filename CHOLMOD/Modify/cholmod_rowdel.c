@@ -18,12 +18,10 @@
  * is used, it can have any valid xtype).
  */
 
+#include "cholmod_internal.h"
+
 #ifndef NGPL
 #ifndef NMODIFY
-
-#include "cholmod_internal.h"
-#include "cholmod_modify.h"
-
 
 /* ========================================================================== */
 /* === cholmod_rowdel ======================================================= */

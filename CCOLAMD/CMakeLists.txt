@@ -45,7 +45,6 @@ project ( ccolamd
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( OpenMP )
 find_package ( SuiteSparse_config REQUIRED )
 
 #-------------------------------------------------------------------------------
@@ -69,7 +68,6 @@ else ( )
 endif ( )
 
 message ( STATUS "CMAKE C compiler:        " ${CMAKE_C_COMPILER_ID} )
-message ( STATUS "CMAKE have OpenMP:       " ${OPENMP_FOUND} )
 
 # message ( STATUS "CMAKE C++ compiler:      " ${CMAKE_CXX_COMPILER_ID} )
 
@@ -112,17 +110,6 @@ SET_TARGET_PROPERTIES ( ccolamd_static PROPERTIES
 target_link_libraries ( ccolamd PUBLIC ${SUITESPARSE_CONFIG_LIBRARY} )
 target_link_libraries ( ccolamd_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARY} )
 
-# OpenMP:
-if ( OPENMP_FOUND )
-    message ( STATUS "OpenMP C libraries:      " ${OpenMP_C_LIBRARIES} )
-    message ( STATUS "OpenMP C include:        " ${OpenMP_C_INCLUDE_DIRS} )
-    message ( STATUS "OpenMP C flags:          " ${OpenMP_C_FLAGS} )
-    target_link_libraries ( ccolamd PUBLIC ${OpenMP_C_LIBRARIES} )
-    target_link_libraries ( ccolamd_static PUBLIC ${OpenMP_C_LIBRARIES} )
-    set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} " )
-    include_directories ( ${OpenMP_C_INCLUDE_DIRS} )
-endif ( )
-
 # libm:
 if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
     target_link_libraries ( ccolamd PUBLIC m )
@@ -150,8 +137,8 @@ endif ( )
 if ( INSIDE_SUITESPARSE )
     # also install in SuiteSparse/lib and SuiteSparse/include;
     # does not require "sudo make install", just "make install"
-    message ( STATUS "Installation in ../lib and ../include only," )
-    message ( STATUS "  with 'make install'. No 'sudo' required." )
+    message ( STATUS "Installation in ../lib and ../include," )
+    message ( STATUS "  with 'make local ; make install'. No 'sudo' required." )
     install ( TARGETS ccolamd
         LIBRARY       DESTINATION ${LOCAL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${LOCAL_INCLUDEDIR} )

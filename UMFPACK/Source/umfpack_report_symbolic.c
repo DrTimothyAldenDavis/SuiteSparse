@@ -23,7 +23,7 @@
 #include "umf_malloc.h"
 #include "umf_free.h"
 
-GLOBAL Int UMFPACK_report_symbolic
+GLOBAL int UMFPACK_report_symbolic
 (
     void *SymbolicHandle,
     const double Control [UMFPACK_CONTROL]

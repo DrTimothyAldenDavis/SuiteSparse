@@ -22,10 +22,9 @@
  *	Allocates up to 2 copies of its input matrix A (pattern only).
  */
 
-#ifndef NCHOLESKY
-
 #include "cholmod_internal.h"
-#include "cholmod_cholesky.h"
+
+#ifndef NCHOLESKY
 
 /* ========================================================================== */
 /* === cholmod_resymbol ===================================================== */

@@ -6,7 +6,7 @@
 
 #include "klu_internal.h"
 
-Int KLU_free_symbolic
+int KLU_free_symbolic
 (
     KLU_symbolic **SymbolicHandle,
     KLU_common   *Common

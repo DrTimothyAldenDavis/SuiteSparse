@@ -23,10 +23,9 @@
  * All xtypes of x and b are supported (real, complex, and zomplex).
  */
 
-#ifndef NCHOLESKY
-
 #include "cholmod_internal.h"
-#include "cholmod_cholesky.h"
+
+#ifndef NCHOLESKY
 
 /* ========================================================================== */
 /* === EXPAND_AS_NEEDED ===================================================== */

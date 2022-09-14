@@ -14,12 +14,10 @@
  * Pattern, real, complex, and zomplex sparse matrices are supported.
  */
 
+#include "cholmod_internal.h"
+
 #ifndef NGPL
 #ifndef NMATRIXOPS
-
-#include "cholmod_internal.h"
-#include "cholmod_matrixops.h"
-
 
 /* ========================================================================== */
 /* === abs_value ============================================================ */

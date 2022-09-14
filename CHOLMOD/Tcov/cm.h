@@ -8,14 +8,14 @@
 #define Size_max ((size_t) (-1))
 
 /* -------------------------------------------------------------------------- */
-/* double, SuiteSparse_long */
+/* double, int64_t */
 /* -------------------------------------------------------------------------- */
 
 #ifdef DLONG
 #define Real double
-#define Int SuiteSparse_long
+#define Int int64_t
 #define UInt uint64_t
-#define Int_max SuiteSparse_long_max
+#define Int_max INT64_MAX
 #define CHOLMOD(name) cholmod_l_ ## name
 #define LONG
 #define DOUBLE
@@ -35,9 +35,9 @@
 #define DOUBLE
 
 #define Real double
-#define Int int
-#define UInt unsigned int
-#define Int_max INT_MAX
+#define Int int32_t
+#define UInt uint32_t
+#define Int_max INT32_MAX
 #define CHOLMOD(name) cholmod_ ## name
 #define ITYPE CHOLMOD_INT
 #define DTYPE CHOLMOD_DOUBLE

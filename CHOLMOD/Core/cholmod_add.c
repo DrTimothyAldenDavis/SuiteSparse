@@ -24,7 +24,6 @@
  */
 
 #include "cholmod_internal.h"
-#include "cholmod_core.h"
 
 cholmod_sparse *CHOLMOD(add)
 (

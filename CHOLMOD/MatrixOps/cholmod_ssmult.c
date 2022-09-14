@@ -31,12 +31,10 @@
  * is FALSE).
  */
 
+#include "cholmod_internal.h"
+
 #ifndef NGPL
 #ifndef NMATRIXOPS
-
-#include "cholmod_internal.h"
-#include "cholmod_matrixops.h"
-
 
 /* ========================================================================== */
 /* === cholmod_ssmult ======================================================= */

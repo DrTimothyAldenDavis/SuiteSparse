@@ -9,11 +9,11 @@
 /* -------------------------------------------------------------------------- */
 
 /* FORTRAN interface for the C-callable UMFPACK library (complex / int version
- * only and complex / SuiteSparse_long versions only).  This is HIGHLY
+ * only and complex / int64_t versions only).  This is HIGHLY
  * non-portable.  You will need to modify this depending on how your FORTRAN
  * and C compilers behave.
  *
- * See umf4z_f77wrapper.c for more information.
+ * See umf4_f77wrapper.c for more information.
  *
  * The complex values are provided in two separate arrays.  Ax contains the
  * real part and Az contains the imaginary part.  The solution vector is in
@@ -32,12 +32,12 @@
 #define LEN 200
 
 /* -------------------------------------------------------------------------- */
-/* integer type: int or SuiteSparse_long */
+/* integer type: int32_t or int64_t */
 /* -------------------------------------------------------------------------- */
 
 #if defined (ZLONG)
 
-#define Int SuiteSparse_long
+#define Int int64_t
 #define UMFPACK_defaults	 umfpack_zl_defaults
 #define UMFPACK_free_numeric	 umfpack_zl_free_numeric
 #define UMFPACK_free_symbolic	 umfpack_zl_free_symbolic

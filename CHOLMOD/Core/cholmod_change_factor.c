@@ -101,7 +101,6 @@
  */
 
 #include "cholmod_internal.h"
-#include "cholmod_core.h"
 
 static void natural_list (cholmod_factor *L) ;
 

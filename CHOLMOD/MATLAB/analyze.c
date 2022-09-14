@@ -44,7 +44,7 @@ void mexFunction
     cholmod_factor *L ;
     cholmod_sparse *A, Amatrix, *C, *S ;
     cholmod_common Common, *cm ;
-    Long n, transpose, c ;
+    int64_t n, transpose, c ;
     char buf [LEN] ;
 
     /* ---------------------------------------------------------------------- */

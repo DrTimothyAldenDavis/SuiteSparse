@@ -44,7 +44,7 @@ PRIVATE Int init_count ;
 
 /* ========================================================================== */
 
-GLOBAL Int UMFPACK_triplet_to_col
+GLOBAL int UMFPACK_triplet_to_col
 (
     Int n_row,
     Int n_col,
@@ -69,7 +69,8 @@ GLOBAL Int UMFPACK_triplet_to_col
     /* local variables */
     /* ---------------------------------------------------------------------- */
 
-    Int *RowCount, *Rp, *Rj, *W, nn, do_values, do_map, *Map2, status ;
+    Int *RowCount, *Rp, *Rj, *W, nn, do_values, do_map, *Map2 ;
+    int status ;
     double *Rx ;
 #ifdef COMPLEX
     double *Rz ;

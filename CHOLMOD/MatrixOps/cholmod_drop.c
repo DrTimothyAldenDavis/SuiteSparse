@@ -16,12 +16,10 @@
  * Supports pattern and real matrices, complex and zomplex not supported.
  */
 
+#include "cholmod_internal.h"
+
 #ifndef NGPL
 #ifndef NMATRIXOPS
-
-#include "cholmod_internal.h"
-#include "cholmod_matrixops.h"
-
 
 /* ========================================================================== */
 /* === cholmod_drop ========================================================= */

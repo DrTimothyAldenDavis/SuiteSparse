@@ -24,7 +24,7 @@
 #include "umf_internal.h"
 #include "umf_valid_numeric.h"
 
-GLOBAL Int UMFPACK_scale
+GLOBAL int UMFPACK_scale
 (
     double Xx [ ],
 #ifdef COMPLEX

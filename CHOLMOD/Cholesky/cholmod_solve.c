@@ -45,15 +45,9 @@
  * exist on output.
  */
 
-#ifndef NCHOLESKY
-
 #include "cholmod_internal.h"
-#include "cholmod_cholesky.h"
 
-#ifndef NSUPERNODAL
-#include "cholmod_supernodal.h"
-#endif
-
+#ifndef NCHOLESKY
 
 /* ========================================================================== */
 /* === TEMPLATE ============================================================= */

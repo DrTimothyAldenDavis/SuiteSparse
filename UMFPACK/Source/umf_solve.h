@@ -5,7 +5,7 @@
 
 GLOBAL Int UMF_solve
 (
-    Int sys,
+    int sys,
     const Int Ap [ ],
     const Int Ai [ ],
     const double Ax [ ],

@@ -43,7 +43,6 @@
 
 #include "ldl.h"
 #include "mex.h"
-#define Long SuiteSparse_long
 
 /* ========================================================================== */
 /* === LDLSYMBOL mexFunction ================================================ */
@@ -57,8 +56,9 @@ void mexFunction
     const mxArray *pargin[ ]
 )
 {
-    Long i, n, *Pattern, *Flag, *Lp, *Ap, *Ai, *Lnz, *Parent,
-	*P, *Pinv, nn, k, j, permute ;
+    int64_t i, n, *Pattern, *Flag, *Lp, *Ap, *Ai, *Lnz, *Parent,
+	*P, *Pinv, nn, k, j ;
+    int permute ;
     double flops, *p ;
 
     /* ---------------------------------------------------------------------- */
@@ -81,8 +81,8 @@ void mexFunction
     nn = (n == 0) ? 1 : n ;
 
     /* get sparse matrix A */
-    Ap = (Long *) mxGetJc (pargin [0]) ;
-    Ai = (Long *) mxGetIr (pargin [0]) ;
+    Ap = (int64_t *) mxGetJc (pargin [0]) ;
+    Ai = (int64_t *) mxGetIr (pargin [0]) ;
 
     /* get fill-reducing ordering, if present */
     permute = ((nargin > 1) && !mxIsEmpty (pargin [1])) ;
@@ -93,8 +93,8 @@ void mexFunction
 	{
 	    mexErrMsgTxt ("ldlsymbol: invalid input permutation\n") ;
 	}
-	P    = (Long *) mxMalloc (nn * sizeof (Long)) ;
-	Pinv = (Long *) mxMalloc (nn * sizeof (Long)) ;
+	P    = (int64_t *) mxMalloc (nn * sizeof (int64_t)) ;
+	Pinv = (int64_t *) mxMalloc (nn * sizeof (int64_t)) ;
 	p = mxGetPr (pargin [1]) ;
 	for (k = 0 ; k < n ; k++)
 	{
@@ -103,18 +103,18 @@ void mexFunction
     }
     else
     {
-	P    = (Long *) NULL ;
-	Pinv = (Long *) NULL ;
+	P    = (int64_t *) NULL ;
+	Pinv = (int64_t *) NULL ;
     }
 
     /* allocate first part of L */
-    Lp      = (Long *) mxMalloc ((n+1) * sizeof (Long)) ;
-    Parent  = (Long *) mxMalloc (nn * sizeof (Long)) ;
+    Lp      = (int64_t *) mxMalloc ((n+1) * sizeof (int64_t)) ;
+    Parent  = (int64_t *) mxMalloc (nn * sizeof (int64_t)) ;
 
     /* get workspace */
-    Flag    = (Long *) mxMalloc (nn * sizeof (Long)) ;
-    Pattern = (Long *) mxMalloc (nn * sizeof (Long)) ;
-    Lnz     = (Long *) mxMalloc (nn * sizeof (Long)) ;
+    Flag    = (int64_t *) mxMalloc (nn * sizeof (int64_t)) ;
+    Pattern = (int64_t *) mxMalloc (nn * sizeof (int64_t)) ;
+    Lnz     = (int64_t *) mxMalloc (nn * sizeof (int64_t)) ;
 
     /* make sure the input P is valid */
     if (permute && !ldl_l_valid_perm (n, P, Flag))

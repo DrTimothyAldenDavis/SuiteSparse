@@ -14,7 +14,7 @@
 
 #include "umf_internal.h"
 
-GLOBAL Int UMFPACK_report_matrix
+GLOBAL int UMFPACK_report_matrix
 (
     Int n_row,
     Int n_col,
@@ -24,7 +24,7 @@ GLOBAL Int UMFPACK_report_matrix
 #ifdef COMPLEX
     const double Az [ ],
 #endif
-    Int col_form,		/* 1: column form, 0: row form */
+    int col_form,		/* 1: column form, 0: row form */
     const double Control [UMFPACK_CONTROL]
 )
 {

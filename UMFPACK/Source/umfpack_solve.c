@@ -39,14 +39,14 @@ PRIVATE Int init_count ;
 #endif
 #endif
 
-GLOBAL Int
+GLOBAL int
 #ifdef WSOLVE
 UMFPACK_wsolve
 #else
 UMFPACK_solve
 #endif
 (
-    Int sys,
+    int sys,
     const Int Ap [ ],
     const Int Ai [ ],
     const double Ax [ ],

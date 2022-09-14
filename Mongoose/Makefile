@@ -51,7 +51,7 @@ static: library
 # installs Mongoose to the install location defined by cmake, usually
 # /usr/local/lib and /usr/local/include
 install:
-	( cd build ; cmake $(CMAKE_OPTIONS) .. ; $(MAKE) --jobs=$(JOBS) ; $(MAKE) install )
+	( cd build && $(MAKE) install )
 
 # create the Doc/Mongoose_UserGuide.pdf
 docs:

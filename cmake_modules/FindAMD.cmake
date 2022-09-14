@@ -7,7 +7,7 @@
 
 # Finds the AMD include file and compiled library and sets:
 
-# AMD_INCLUDE_DIR - where to find AMD.h
+# AMD_INCLUDE_DIR - where to find amd.h
 # AMD_LIBRARY     - compiled AMD library
 # AMD_LIBRARIES   - libraries when using AMD
 # AMD_FOUND       - true if AMD found

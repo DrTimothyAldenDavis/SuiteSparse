@@ -6,10 +6,10 @@
 # SPDX-License-Identifier: LGPL-2.1+
 
 # CSparse/CMakeLists.txt is a standalone script, which can be used outside of
-# SuiteSparse.  The library (libcsparse.so) and include file (cs.h) are NOT
-# installed in ../lib and ../include.  CSparse is meant for classwork and
-# stand-alone development, while SuiteSpare/CXSparse should be used in
-# production.
+# SuiteSparse.  There is no "make install" target for CSparse.  The library
+# (libcsparse.so) and include file (cs.h) are NOT installed in ../lib and
+# ../include.  CSparse is meant for classwork and stand-alone development,
+# while SuiteSpare/CXSparse should be used in production.
 
 #-------------------------------------------------------------------------------
 # get the version
@@ -153,3 +153,4 @@ else ( )
     message ( STATUS "Skipping the demos in CSparse/Demo" )
 
 endif ( )
+

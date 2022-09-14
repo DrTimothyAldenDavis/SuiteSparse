@@ -12,11 +12,10 @@
  * interface that performs that operation.
  */
 
+#include "cholmod_internal.h"
+
 #ifndef NGPL
 #ifndef NSUPERNODAL
-
-#include "cholmod_internal.h"
-#include "cholmod_supernodal.h"
 
 /* ========================================================================== */
 /* === TEMPLATE ============================================================= */

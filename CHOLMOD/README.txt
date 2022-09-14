@@ -43,21 +43,9 @@ to
 
     CHOLMOD_CONFIG = -DNPARTITION
 
-The CHOLMOD, AMD, COLAMD, CCOLAMD, and SuiteSparse)config directories must all
-reside in a common parent directory.  To compile all these libraries, edit
-SuiteSparse)config/SuiteSparse)config.mk to reflect your environment (C
-compiler, location of the BLAS, and so on) and then type "make" in either the
-CHOLMOD directory or in the parent directory of CHOLMOD.  See each package for
-more details on how to compile them.
-
 For use in MATLAB (on any system, including Windows):  start MATLAB,
 cd to the CHOLMOD/MATLAB directory, and type cholmod_make in the MATLAB
-Command Window.  This is the best way to compile CHOLMOD for MATLAB; it
-provides a workaround for a METIS design feature, in which METIS terminates
-your program (and thus MATLAB) if it runs out of memory.  Using cholmod_make
-also ensures your mexFunctions are compiled with -fexceptions, so that
-exceptions are handled properly (when hitting control-C in the MATLAB command
-window, for example).
+Command Window.
 
 Acknowledgements:  this work was supported in part by the National Science
 Foundation (NFS CCR-0203270 and DMS-9803599), and a grant from Sandia National

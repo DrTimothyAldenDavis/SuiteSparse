@@ -25,7 +25,7 @@
 #include "umf_free.h"
 
 
-PRIVATE Int report_L
+PRIVATE int report_L
 (
     NumericType *Numeric,
     Int Pattern [ ],
@@ -33,7 +33,7 @@ PRIVATE Int report_L
 ) ;
 
 
-PRIVATE Int report_U
+PRIVATE int report_U
 (
     NumericType *Numeric,
     Int Pattern [ ],
@@ -44,7 +44,7 @@ PRIVATE Int report_U
 /* === UMFPACK_report_numeric =============================================== */
 /* ========================================================================== */
 
-GLOBAL Int UMFPACK_report_numeric
+GLOBAL int UMFPACK_report_numeric
 (
     void *NumericHandle,
     const double Control [UMFPACK_CONTROL]
@@ -248,7 +248,7 @@ GLOBAL Int UMFPACK_report_numeric
 /* === report_L ============================================================= */
 /* ========================================================================== */
 
-PRIVATE Int report_L
+PRIVATE int report_L
 (
     NumericType *Numeric,
     Int Pattern [ ],
@@ -443,7 +443,7 @@ PRIVATE Int report_L
 /* === report_U ============================================================= */
 /* ========================================================================== */
 
-PRIVATE Int report_U
+PRIVATE int report_U
 (
     NumericType *Numeric,
     Int Pattern [ ],

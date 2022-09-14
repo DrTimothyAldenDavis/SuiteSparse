@@ -241,6 +241,25 @@ an old version of AMD with a newer version of UMFPACK can fail.}
 A detailed list of changes is in the {\tt ChangeLog} file.
 
 %-------------------------------------------------------------------------------
+\subsection{Version 6.0.0}
+%-------------------------------------------------------------------------------
+
+\begin{itemize}
+    \item added new ordering option: \verb'UMFPACK_ORDERING_METIS_GUARD'.  For the
+        symmetric strategy, this is the same as METIS on A+A'.  For the
+        unsymmetric strategy, if A has one or more fairly dense rows,
+        COLAMD is used.  Otherwise, METIS is used on A'A.
+    \item added two control parameters: to control auto selection strategy
+    \item added support methods for ParU: \verb'umfpack_paru_symbolic' and
+        \verb'umfpack_paru_free_sw'.
+    \item \verb'umfpack_get_symbolic': revised output row permutation to exclude
+        the Diagonal Map, and now it is returned as its own array (if present).
+        The initial row permutation is returned as-is.
+    \item \verb'umfpack.h': a single include file, no longer \verb'#include's \verb'umfpack_*.h' files.
+    \item \verb'SuiteSparse_long' replaced with \verb'int64_t'
+\end{itemize}
+
+%-------------------------------------------------------------------------------
 \subsection{Version 5.7.3}
 %-------------------------------------------------------------------------------
 
@@ -260,12 +279,12 @@ in {\tt SuiteSparse\_config}.
 %-------------------------------------------------------------------------------
 
 Replaced {\tt UFconfig} with {\tt SuiteSparse\_config}, for {\tt
-SuiteSparse\_timer}.  The {\tt UF\_long} type is replaced with {\tt
-SuiteSparse\_long} to avoid potential name conflicts with the {\tt UF\_}
-prefix, but the former is still available for user programs.
-User programs may safely {\tt \#undef} the {\tt UF\_long} macro and
-use {\tt SuiteSparse\_long} instead.  In future versions, {\tt UF\_long} will
-be removed completely from {\tt SuiteSparse\_config.h}.
+SuiteSparse\_timer}.  The \verb'UF_long' type is replaced with
+\verb'SuiteSparse_long' to avoid potential name conflicts with the {\tt UF\_}
+prefix, but the former is still available for user programs.  User programs may
+safely {\tt \#undef} the \verb'UF_long' macro and use \verb'SuiteSparse_long'
+instead.  In future versions, \verb'UF_long' will be removed completely from
+{\tt SuiteSparse\_config.h}.
 
 %-------------------------------------------------------------------------------
 \subsection{Version 5.5.0}
@@ -315,8 +334,8 @@ itself (the MATLAB built-in version of UMFPACK).
 \subsection{Version 5.0}
 %-------------------------------------------------------------------------------
 
-Changed {\tt long} to {\tt UF\_long}, controlled by the {\tt UFconfig.h}
-file.  A {\tt UF\_long} is normally just {\tt long}, except on the Windows 64
+Changed {\tt long} to \verb'UF_long', controlled by the {\tt UFconfig.h}
+file.  A \verb'UF_long' is normally just {\tt long}, except on the Windows 64
 (WIN64) platform.  In that case, it becomes {\tt \_\_int64}.
 
 %-------------------------------------------------------------------------------
@@ -693,9 +712,9 @@ include file.  All but three of the routines come in four versions, with
 different sizes of integers and for real or complex floating-point numbers:
 \begin{enumerate}
 \item {\tt umfpack\_di\_*}: real double precision, {\tt int} integers.
-\item {\tt umfpack\_dl\_*}: real double precision, {\tt SuiteSparse\_long} integers.
+\item {\tt umfpack\_dl\_*}: real double precision, \verb'int64_t' integers.
 \item {\tt umfpack\_zi\_*}: complex double precision, {\tt int} integers.
-\item {\tt umfpack\_zl\_*}: complex double precision, {\tt SuiteSparse\_long} integers.
+\item {\tt umfpack\_zl\_*}: complex double precision, \verb'int64_t' integers.
 \end{enumerate}
 where {\tt *} denotes the specific name of one of the routines.
 Routine names beginning with {\tt umf\_} are internal to the package,
@@ -705,7 +724,7 @@ The other three routines are the same for all four versions.
 
 In addition, the C-callable AMD library distributed with UMFPACK
 includes 4 user-callable routines (in two versions with {\tt int} and
-{\tt SuiteSparse\_long} integers) and one include file.  Refer to the AMD documentation
+\verb'int64_t' integers) and one include file.  Refer to the AMD documentation
 for more details.
 
 Use only one version for any one problem; do not attempt to use one version
@@ -714,7 +733,7 @@ to analyze the matrix and another version to factorize the matrix, for example.
 The notation {\tt umfpack\_di\_*} refers to all user-callable routines
 for the real double precision and {\tt int} integer case.  The notation
 {\tt umfpack\_*\_numeric}, for example, refers all four versions
-(real/complex, int/SuiteSparse\_long) of a single operation
+(real/complex, int/\verb'int64_t') of a single operation
 (in this case numeric factorization).
 
 %-------------------------------------------------------------------------------
@@ -723,7 +742,7 @@ for the real double precision and {\tt int} integer case.  The notation
 
 The {\tt umfpack\_di\_*} and {\tt umfpack\_zi\_*} routines use {\tt int} integer
 arguments; those starting with {\tt umfpack\_dl\_} or {\tt umfpack\_zl\_}
-use {\tt SuiteSparse\_long} integer arguments.  If you compile UMFPACK in the standard
+use \verb'int64_t' integer arguments.  If you compile UMFPACK in the standard
 ILP32 mode (32-bit {\tt int}'s, {\tt long}'s, and pointers) then the versions
 are essentially identical.  You will be able to solve problems using up to 2GB
 of memory.  If you compile UMFPACK in the standard LP64 mode, the size of an
@@ -836,12 +855,12 @@ with {\tt nz} entries.  For the {\tt int} version of UMFPACK:
 \end{verbatim}
 }
 
-For the {\tt SuiteSparse\_long} version of UMFPACK:
+For the \verb'int64_t' version of UMFPACK:
 
 {\footnotesize
 \begin{verbatim}
-     SuiteSparse_long Ap [n+1] ;
-     SuiteSparse_long Ai [nz] ;
+     int64_t Ap [n+1] ;
+     int64_t Ai [nz] ;
      double Ax [nz] ;
 \end{verbatim}
 }
@@ -1119,12 +1138,12 @@ four arrays.  For the {\tt int} version of UMFPACK:
 \end{verbatim}
 }
 
-For the {\tt SuiteSparse\_long} version:
+For the \verb'int64_t' version:
 
 {\footnotesize
 \begin{verbatim}
-     SuiteSparse_long Ti [nz] ;
-     SuiteSparse_long Tj [nz] ;
+     int64_t Ti [nz] ;
+     int64_t Tj [nz] ;
      double Tx [nz] ;
 \end{verbatim}
 }
@@ -1393,7 +1412,7 @@ printed (similar to the MATLAB commands
 Three timing routines are provided in UMFPACK Version 4.1 and following,
 {\tt umfpack\_tic}, {\tt umfpack\_toc}, and {\tt umfpack\_timer}.
 These three routines are the only user-callable
-routine that is identical in all four {\tt int}/{\tt SuiteSparse\_long}, real/complex
+routine that is identical in all four {\tt int}/\verb'int64_t', real/complex
 versions (there is no {\tt umfpack\_di\_timer} routine, for example).
 
 %-------------------------------------------------------------------------------
@@ -1656,15 +1675,15 @@ values, and calling sequences of the routines in one category.  Variables with
 the same name as those already listed in a prior category have the same size
 and type.
 
-The real, {\tt SuiteSparse\_long} integer {\tt umfpack\_dl\_*} routines are
+The real, \verb'int64_t' integer {\tt umfpack\_dl\_*} routines are
 identical to the real, {\tt int} routines, except that {\tt \_di\_} is replaced
 with {\tt \_dl\_} in the name, and all {\tt int} arguments become
-{\tt SuiteSparse\_long}.
-Similarly, the complex, {\tt SuiteSparse\_long} integer {\tt umfpack\_zl\_*} routines are
+\verb'int64_t'.
+Similarly, the complex, \verb'int64_t' integer {\tt umfpack\_zl\_*} routines are
 identical to the complex, {\tt int} routines, except that {\tt \_zi\_} is
 replaced
 with {\tt \_zl\_} in the name, and all {\tt int} arguments become
-{\tt SuiteSparse\_long}.
+\verb'int64_t'.
 Only the real and complex {\tt int} versions are listed in the synopsis below.
 
 The matrix $\m{A}$ is {\tt m}-by-{\tt n} with {\tt nz} entries.
@@ -1953,7 +1972,7 @@ UMFPACK makes use of the AMD ordering package for its symmetric ordering
 strategy.  You may also use these four user-callable routines in your own C
 programs.  You need to include the {\tt amd.h} file only if you make direct
 calls to the AMD routines themselves.  The {\tt int} versions are summarized
-below; {\tt SuiteSparse\_long} versions are also available.  Refer to the AMD User Guide
+below; \verb'int64_t' versions are also available.  Refer to the AMD User Guide
 for more information, or to the file {\tt amd.h} which documents these routines.
 
 {\footnotesize
@@ -2462,11 +2481,12 @@ let me know and I could consider including them:
 %-------------------------------------------------------------------------------
 
 The include files are the same for all four versions of
-UMFPACK.  The generic integer type is {\tt Int}, which is an {\tt int} or
-{\tt SuiteSparse\_long}, depending on which version of UMFPACK you are using.
+UMFPACK.  The generic integer type is {\tt Int}, which is an \verb'int32_t' or
+\verb'int64_t', depending on which version of UMFPACK you are using.
 
 \subsection{umfpack\_*\_symbolic}
 
+% FIXME: re-import the *.h contents here:
 {\footnotesize
 % INCLUDE umfpack_symbolic
 \begin{verbatim}

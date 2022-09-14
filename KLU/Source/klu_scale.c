@@ -16,10 +16,10 @@
 
 #include "klu_internal.h"
 
-Int KLU_scale           /* return TRUE if successful, FALSE otherwise */
+int KLU_scale           /* return TRUE if successful, FALSE otherwise */
 (
     /* inputs, not modified */
-    Int scale,          /* 0: none, 1: sum, 2: max */
+    int scale,          /* 0: none, 1: sum, 2: max */
     Int n,
     Int Ap [ ],         /* size n+1, column pointers */
     Int Ai [ ],         /* size nz, row indices */

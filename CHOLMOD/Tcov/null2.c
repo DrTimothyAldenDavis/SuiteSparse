@@ -40,7 +40,7 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
 	*R2p, *R2i ;
     double *Xwork, *Cx, *x, *Lx, *Tx, *Az, *R2x ;
     size_t size, nznew, gsave2 ;
-    SuiteSparse_long lr ;
+    int64_t lr ;
     void *pp, *ii, *jj, *xx ;
     Int p, i, j, d, nrhs, nrow, ncol, stype, fsizeok, nz, ok, n2, trial, anz,
 	nzmax, cset [CSETSIZE], Axbad_type, isreal, xtype, enz, Lxtype, Cxtype,

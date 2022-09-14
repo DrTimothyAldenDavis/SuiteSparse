@@ -433,7 +433,8 @@ is represented by the following components:
         If \texttt{w} is \texttt{NULL}, then the vertices all have weight 1.
     \end{itemize}
     
-Note that the \texttt{Int} type is generally a 64-bit (long) integer type. It is defined as \texttt{typedef SuiteSparse\_long Int;} which is further defined as \texttt{\#define SuiteSparse\_long long} in SuiteSparse\_config.
+Note that the \texttt{Int} type is generally a 64-bit (long) integer type. It
+is defined as \verb'typedef int64_t Int;'.
 
 \subsubsection{Creating a Graph Manually}
 

@@ -1,0 +1,12 @@
+FIXME check MATLAB interfaces for all packages
+FIXME: copyright (c) and SPDX for all files
+
+FIXME: test coverage for all packages
+
+FIXME: cmake CUDA for CHOLMOD
+FIXME: CHOLMOD: detect which packages are present
+FIXME: cmake for SPQR, SuiteSparse_GPURuntime, GPUQREngine, KLU/User
+FIXME: Find*.cmake for all packages
+
+FIXME: remove SuiteSparse_config.mk
+

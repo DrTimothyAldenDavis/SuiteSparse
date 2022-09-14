@@ -17,9 +17,10 @@ this directory.  KLU relies on the BTF package to permute the matrix prior to
 factorization.
 
 To compile the libbtf.a and libbtf.so library (*.dylib on the Mac), type
-"make".  The compiled library is located in BTF/Lib.  Compile code that uses
-BTF with -IBTF/Include.  Type "make install" to install the library in
-/usr/local/lib and /usr/local/include, and "make uninstall" to remove it.
+"make".  Type "make install" to install the library in /usr/local/lib and
+/usr/local/include, and "make uninstall" to remove it.
+"make local ; make install" will install only in SuiteSparse/lib and
+SuiteSparse/include.
 
 Type "make clean" to remove all but the compiled library, and "make distclean"
 to remove all files not in the original distribution.
@@ -41,11 +42,12 @@ Files and directories in the BTF package:
 
     Doc             documentation and license
     Include         include files
-    Lib             compiled BTF library
     Makefile        Makefile for C and MATLAB versions
     MATLAB          MATLAB interface
     README.txt      this file
     Source          BTF source code
+    CMakeLists.txt  cmake script for compiling BTF
+    Config          source for bft.h
 
 ./Doc:
 

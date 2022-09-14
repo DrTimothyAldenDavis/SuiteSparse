@@ -130,7 +130,7 @@
  * for (p = head ; ...)         DO 90 K=1,JORD
  */
 
-static Int augment
+static int augment
 (
     Int k,              /* which stage of the main loop we're in */
     Int Ap [ ],         /* column pointers, size n+1 */
@@ -314,7 +314,8 @@ Int BTF(maxtrans)   /* returns # of columns in the matching */
 )
 {
     Int *Cheap, *Flag, *Istack, *Jstack, *Pstack ;
-    Int i, j, k, nmatch, work_limit_reached, result ;
+    Int i, j, k, nmatch, work_limit_reached ;
+    int result ;
 
     /* ---------------------------------------------------------------------- */
     /* get workspace and initialize */

@@ -29,12 +29,11 @@
  * Supports any xtype (pattern, real, complex, or zomplex)
  */
 
+#include "cholmod_internal.h"
+
 #ifndef NCAMD
 
-#include "cholmod_internal.h"
 #include "camd.h"
-#include "cholmod_camd.h"
-
 #if (CAMD_VERSION < CAMD_VERSION_CODE (2,0))
 #error "CAMD v2.0 or later is required"
 #endif

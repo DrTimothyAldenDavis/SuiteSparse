@@ -44,7 +44,7 @@
 /* === UMFPACK_load_numeric ================================================= */
 /* ========================================================================== */
 
-GLOBAL Int UMFPACK_load_numeric
+GLOBAL int UMFPACK_load_numeric
 (
     void **NumericHandle,
     char *user_filename

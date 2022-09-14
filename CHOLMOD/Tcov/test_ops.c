@@ -839,7 +839,7 @@ double test_ops (cholmod_sparse *A)
 #ifndef NPARTITION
     if (A != NULL && A->nrow == A->ncol)
     {
-	SuiteSparse_long nc, nc_new ;
+	int64_t nc, nc_new ;
 	Int cnz, csep, save2 ;
 	Int *Cnw, *Cew, *Cmember, *CParent, *Perm ;
 	double save1 ;

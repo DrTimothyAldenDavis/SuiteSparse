@@ -5,17 +5,11 @@
 default:
 	- echo "Use umfpack_make.m in MATLAB to compile the UMFPACK mexFunction"
 
-include ../../SuiteSparse_config/SuiteSparse_config.mk
-
-#-------------------------------------------------------------------------------
 # Remove all but the files in the original distribution
-#-------------------------------------------------------------------------------
+distclean:
+	- $(RM) -r rename.h GKlib_util.c GKlib_graph.c *.o *.mex*
 
-distclean: purge
+purge: distclean
 
-purge: clean
-	- $(RM) luflop.mex* umfpack.mex* rename.h GKlib_util.c GKlib_graph.c
-	- $(RM) -r $(PURGE)
+clean: distclean
 
-clean:
-	- $(RM) -r $(CLEAN)

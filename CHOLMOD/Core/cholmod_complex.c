@@ -15,7 +15,6 @@
  * than is used.  You can safely ignore any of these complaints by valgrind. */
 
 #include "cholmod_internal.h"
-#include "cholmod_core.h"
 
 /* ========================================================================== */
 /* === cholmod_hypot ======================================================== */

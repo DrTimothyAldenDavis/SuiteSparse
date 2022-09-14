@@ -37,15 +37,10 @@
  * Supports any xtype (pattern, real, complex, or zomplex).
  */
 
+#include "cholmod_internal.h"
+
 #ifndef NGPL
 #ifndef NSUPERNODAL
-
-#include "cholmod_internal.h"
-#include "cholmod_supernodal.h"
-
-#ifdef GPU_BLAS
-#include "cholmod_gpu.h"
-#endif
 
 /* ========================================================================== */
 /* === subtree ============================================================== */

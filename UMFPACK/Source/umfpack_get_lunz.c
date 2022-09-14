@@ -15,7 +15,7 @@
 #include "umf_internal.h"
 #include "umf_valid_numeric.h"
 
-GLOBAL Int UMFPACK_get_lunz
+GLOBAL int UMFPACK_get_lunz
 (
     Int *lnz,
     Int *unz,

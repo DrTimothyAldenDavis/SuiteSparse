@@ -115,19 +115,19 @@ GLOBAL void UMFPACK_report_info
 
 #ifdef DINT
     PRINTF (("    matrix entry defined as:          double\n")) ;
-    PRINTF (("    Int (generic integer) defined as: int\n")) ;
+    PRINTF (("    Int (generic integer) defined as: int32_t\n")) ;
 #endif
 #ifdef DLONG
     PRINTF (("    matrix entry defined as:          double\n")) ;
-    PRINTF (("    Int (generic integer) defined as: SuiteSparse_long\n")) ;
+    PRINTF (("    Int (generic integer) defined as: int64_t\n")) ;
 #endif
 #ifdef ZINT
     PRINTF (("    matrix entry defined as:          double complex\n")) ;
-    PRINTF (("    Int (generic integer) defined as: int\n")) ;
+    PRINTF (("    Int (generic integer) defined as: int32_t\n")) ;
 #endif
 #ifdef ZLONG
     PRINTF (("    matrix entry defined as:          double complex\n")) ;
-    PRINTF (("    Int (generic integer) defined as: SuiteSparse_long\n")) ;
+    PRINTF (("    Int (generic integer) defined as: int64_t\n")) ;
 #endif
 
     /* ---------------------------------------------------------------------- */
@@ -176,9 +176,9 @@ GLOBAL void UMFPACK_report_info
     PRINT_INFO ("    memory usage reported in:         "ID"-byte Units\n",
 	(Int) Info [UMFPACK_SIZE_OF_UNIT]) ;
 
-    PRINT_INFO ("    size of int:                      "ID" bytes\n",
+    PRINT_INFO ("    size of int32_t:                  "ID" bytes\n",
 	(Int) Info [UMFPACK_SIZE_OF_INT]) ;
-    PRINT_INFO ("    size of SuiteSparse_long:         "ID" bytes\n",
+    PRINT_INFO ("    size of int64_t:                  "ID" bytes\n",
 	(Int) Info [UMFPACK_SIZE_OF_LONG]) ;
     PRINT_INFO ("    size of pointer:                  "ID" bytes\n",
 	(Int) Info [UMFPACK_SIZE_OF_POINTER]) ;

@@ -106,7 +106,7 @@
 #endif
 
 /* -------------------------------------------------------------------------- */
-/* Real/complex and int/SuiteSparse_long definitions, double relops */
+/* Real/complex and int32_t/int64_t definitions, double relops */
 /* -------------------------------------------------------------------------- */
 
 #include "umf_version.h"

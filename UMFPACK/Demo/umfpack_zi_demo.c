@@ -4,7 +4,7 @@
 
 
 /* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) 2005-2012 by Timothy A. Davis,                       */
+/* UMFPACK Copyright (c) 2005-2022 by Timothy A. Davis,                       */
 /* http://www.suitesparse.com. All Rights Reserved.                           */
 /* See ../Doc/License.txt for License.                                        */
 /* -------------------------------------------------------------------------- */
@@ -58,9 +58,9 @@
 /* triplet form of the matrix.  The triplets can be in any order. */
 /* -------------------------------------------------------------------------- */
 
-static int n = 5, nz = 12 ;
-static int Arow [ ] = { 0,  4,  1,  1,   2,   2,  0,  1,  2,  3,  4,  4} ;
-static int Acol [ ] = { 0,  4,  0,  2,   1,   2,  1,  4,  3,  2,  1,  2} ;
+static int32_t n = 5, nz = 12 ;
+static int32_t Arow [ ] = { 0,  4,  1,  1,   2,   2,  0,  1,  2,  3,  4,  4} ;
+static int32_t Acol [ ] = { 0,  4,  0,  2,   1,   2,  1,  4,  3,  2,  1,  2} ;
 static double Aval [ ] = {2., 1., 3., 4., -1., -3., 3., 6., 2., 1., 4., 2.} ;
 static double Avalz[ ] = {1., .4, .1, .2, -1., -.2, 0., 6., 3., 0., .3, .3} ;
 static double b [ ] = {8., 45., -3., 3., 19.}, x [5], r [5] ;
@@ -90,13 +90,13 @@ static void error
 static double resid
 (
     int transpose,
-    int Ap [ ],
-    int Ai [ ],
+    int32_t Ap [ ],
+    int32_t Ai [ ],
     double Ax [ ]
     , double Az [ ]
 )
 {
-    int i, j, p ;
+    int32_t i, j, p ;
     double norm ;
 
     for (i = 0 ; i < n ; i++)
@@ -151,7 +151,7 @@ int main (int argc, char **argv)
     double Info [UMFPACK_INFO], Control [UMFPACK_CONTROL], *Ax, *Cx, *Lx, *Ux,
 	*W, t [2], *Dx, rnorm, *Rb, *y, *Rs ;
     double *Az, *Lz, *Uz, *Dz, *Cz, *Rbz, *yz ;
-    int *Ap, *Ai, *Cp, *Ci, row, col, p, lnz, unz, nr, nc, *Lp, *Li, *Ui, *Up,
+    int32_t *Ap, *Ai, *Cp, *Ci, row, col, p, lnz, unz, nr, nc, *Lp, *Li, *Ui, *Up,
 	*P, *Q, *Lj, i, j, k, anz, nfr, nchains, *Qinit, fnpiv, lnz1, unz1, nz1,
 	status, *Front_npivcol, *Front_parent, *Chain_start, *Wi, *Pinit, n1,
 	*Chain_maxrows, *Chain_maxcols, *Front_1strow, *Front_leftmostdesc,
@@ -196,8 +196,8 @@ int main (int argc, char **argv)
 
     /* convert to column form */
     nz1 = MAX (nz,1) ;	/* ensure arrays are not of size zero. */
-    Ap = (int *) malloc ((n+1) * sizeof (int)) ;
-    Ai = (int *) malloc (nz1 * sizeof (int)) ;
+    Ap = (int32_t *) malloc ((n+1) * sizeof (int32_t)) ;
+    Ai = (int32_t *) malloc (nz1 * sizeof (int32_t)) ;
     Ax = (double *) malloc (nz1 * sizeof (double)) ;
     Az = (double *) malloc (nz1 * sizeof (double)) ;
     if (!Ap || !Ai || !Ax || !Az)
@@ -206,7 +206,7 @@ int main (int argc, char **argv)
     }
 
     status = umfpack_zi_triplet_to_col (n, n, nz, Arow, Acol, Aval, Avalz,
-	Ap, Ai, Ax, Az, (int *) NULL) ;
+	Ap, Ai, Ax, Az, (int32_t *) NULL) ;
 
     if (status < 0)
     {
@@ -479,8 +479,8 @@ int main (int argc, char **argv)
     /* C = transpose of A */
     /* ---------------------------------------------------------------------- */
 
-    Cp = (int *) malloc ((n+1) * sizeof (int)) ;
-    Ci = (int *) malloc (nz1 * sizeof (int)) ;
+    Cp = (int32_t *) malloc ((n+1) * sizeof (int32_t)) ;
+    Ci = (int32_t *) malloc (nz1 * sizeof (int32_t)) ;
     Cx = (double *) malloc (nz1 * sizeof (double)) ;
     Cz = (double *) malloc (nz1 * sizeof (double)) ;
     if (!Cp || !Ci || !Cx || !Cz)
@@ -488,7 +488,7 @@ int main (int argc, char **argv)
 	error ("out of memory") ;
     }
     status = umfpack_zi_transpose (n, n, Ap, Ai, Ax, Az,
-	(int *) NULL, (int *) NULL, Cp, Ci, Cx, Cz, TRUE) ;
+	(int32_t *) NULL, (int32_t *) NULL, Cp, Ci, Cx, Cz, TRUE) ;
     if (status < 0)
     {
 	umfpack_zi_report_status (Control, status) ;
@@ -518,16 +518,16 @@ int main (int argc, char **argv)
 
     printf ("\nGet the contents of the Symbolic object for C:\n") ;
     printf ("(compare with umfpack_zi_report_symbolic output, above)\n") ;
-    Pinit = (int *) malloc ((n+1) * sizeof (int)) ;
-    Qinit = (int *) malloc ((n+1) * sizeof (int)) ;
-    Front_npivcol = (int *) malloc ((n+1) * sizeof (int)) ;
-    Front_1strow = (int *) malloc ((n+1) * sizeof (int)) ;
-    Front_leftmostdesc = (int *) malloc ((n+1) * sizeof (int)) ;
-    Front_parent = (int *) malloc ((n+1) * sizeof (int)) ;
-    Chain_start = (int *) malloc ((n+1) * sizeof (int)) ;
-    Chain_maxrows = (int *) malloc ((n+1) * sizeof (int)) ;
-    Chain_maxcols = (int *) malloc ((n+1) * sizeof (int)) ;
-    Dmap = (int *) malloc ((n+1) * sizeof (int)) ;
+    Pinit = (int32_t *) malloc ((n+1) * sizeof (int32_t)) ;
+    Qinit = (int32_t *) malloc ((n+1) * sizeof (int32_t)) ;
+    Front_npivcol = (int32_t *) malloc ((n+1) * sizeof (int32_t)) ;
+    Front_1strow = (int32_t *) malloc ((n+1) * sizeof (int32_t)) ;
+    Front_leftmostdesc = (int32_t *) malloc ((n+1) * sizeof (int32_t)) ;
+    Front_parent = (int32_t *) malloc ((n+1) * sizeof (int32_t)) ;
+    Chain_start = (int32_t *) malloc ((n+1) * sizeof (int32_t)) ;
+    Chain_maxrows = (int32_t *) malloc ((n+1) * sizeof (int32_t)) ;
+    Chain_maxcols = (int32_t *) malloc ((n+1) * sizeof (int32_t)) ;
+    Dmap = (int32_t *) malloc ((n+1) * sizeof (int32_t)) ;
     if (!Pinit || !Qinit || !Front_npivcol || !Front_parent || !Chain_start ||
 	!Chain_maxrows || !Chain_maxcols || !Front_1strow || !Dmap ||
 	!Front_leftmostdesc)
@@ -605,16 +605,16 @@ int main (int argc, char **argv)
     /* ensure arrays are not of zero size */
     lnz1 = MAX (lnz,1) ;
     unz1 = MAX (unz,1) ;
-    Lp = (int *) malloc ((n+1) * sizeof (int)) ;
-    Lj = (int *) malloc (lnz1 * sizeof (int)) ;
+    Lp = (int32_t *) malloc ((n+1) * sizeof (int32_t)) ;
+    Lj = (int32_t *) malloc (lnz1 * sizeof (int32_t)) ;
     Lx = (double *) malloc (lnz1 * sizeof (double)) ;
     Lz = (double *) malloc (lnz1 * sizeof (double)) ;
-    Up = (int *) malloc ((n+1) * sizeof (int)) ;
-    Ui = (int *) malloc (unz1 * sizeof (int)) ;
+    Up = (int32_t *) malloc ((n+1) * sizeof (int32_t)) ;
+    Ui = (int32_t *) malloc (unz1 * sizeof (int32_t)) ;
     Ux = (double *) malloc (unz1 * sizeof (double)) ;
     Uz = (double *) malloc (unz1 * sizeof (double)) ;
-    P = (int *) malloc (n * sizeof (int)) ;
-    Q = (int *) malloc (n * sizeof (int)) ;
+    P = (int32_t *) malloc (n * sizeof (int32_t)) ;
+    Q = (int32_t *) malloc (n * sizeof (int32_t)) ;
     Dx = (double *) NULL ;	/* D vector not requested */
     Dz = (double *) NULL ;
     Rs  = (double *) malloc (n * sizeof (double)) ;
@@ -656,7 +656,7 @@ int main (int argc, char **argv)
     /* by umfpack_zi_col_to_triplet. */
 
     printf ("\nConverting L to triplet form, and printing it:\n") ;
-    Li = (int *) malloc (lnz1 * sizeof (int)) ;
+    Li = (int32_t *) malloc (lnz1 * sizeof (int32_t)) ;
     if (!Li)
     {
 	error ("out of memory") ;
@@ -713,7 +713,7 @@ int main (int argc, char **argv)
     /* ---------------------------------------------------------------------- */
 
     printf ("\nSolving C'x=b again, using umfpack_zi_wsolve instead:\n") ;
-    Wi = (int *) malloc (n * sizeof (int)) ;
+    Wi = (int32_t *) malloc (n * sizeof (int32_t)) ;
     W = (double *) malloc (10*n * sizeof (double)) ;
     if (!Wi || !W)
     {

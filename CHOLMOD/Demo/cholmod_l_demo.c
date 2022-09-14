@@ -26,8 +26,6 @@
  * Does not use the Modify Module.
  *
  * See cholmod_simple.c for a simpler demo program.
- *
- * SuiteSparse_long is normally defined as long, except for WIN64.
  */
 
 #include "cholmod_demo.h"
@@ -60,7 +58,7 @@ int main (int argc, char **argv)
     cholmod_common Common, *cm ;
     cholmod_factor *L ;
     double *Bx, *Rx, *Xx, *Bz, *Xz, *Rz ;
-    SuiteSparse_long i, n, isize, xsize, ordering, xtype, s, ss, lnz ;
+    int64_t i, n, isize, xsize, ordering, xtype, s, ss, lnz ;
     int trial, method, L_is_super ;
     int ver [3] ;
     int prefer_zomplex, nmethods ;
@@ -152,7 +150,7 @@ int main (int argc, char **argv)
            the real and imaginary parts are in separate arrays.  MATLAB
            uses zomplex matrix exclusively. */
         double *Ax = A->x ;
-        SuiteSparse_long nz = cholmod_l_nnz (A, cm) ;
+        int64_t nz = cholmod_l_nnz (A, cm) ;
         printf ("nz: %ld\n", nz) ;
         double *Ax2 = cholmod_l_malloc (nz, sizeof (double), cm) ;
         double *Az2 = cholmod_l_malloc (nz, sizeof (double), cm) ;
@@ -400,7 +398,7 @@ int main (int argc, char **argv)
             cholmod_dense *Ywork = NULL, *Ework = NULL ;
             cholmod_dense *X2 = NULL, *B2 = NULL ;
             cholmod_sparse *Bset, *Xset = NULL ;
-            SuiteSparse_long *Bsetp, *Bseti, *Xsetp, *Xseti, xlen, j, k, *Lnz ;
+            int64_t *Bsetp, *Bseti, *Xsetp, *Xseti, xlen, j, k, *Lnz ;
             double *X1x, *X2x, *B2x, err ;
             FILE *timelog = fopen ("timelog.m", "w") ;
             if (timelog) fprintf (timelog, "results = [\n") ;

@@ -18,12 +18,11 @@
  * Supports any xtype (pattern, real, complex, or zomplex).
  */
 
+#include "cholmod_internal.h"
+
 #ifndef NCAMD
 
-#include "cholmod_internal.h"
 #include "ccolamd.h"
-#include "cholmod_camd.h"
-
 #if (CCOLAMD_VERSION < CCOLAMD_VERSION_CODE (2,5))
 #error "CCOLAMD v2.0 or later is required"
 #endif

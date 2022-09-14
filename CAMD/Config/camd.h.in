@@ -30,7 +30,7 @@ extern "C" {
 
 #include "SuiteSparse_config.h"
 
-int camd_order          /* returns CAMD_OK, CAMD_OK_BUT_JUMBLED,
+SUITESPARSE_PUBLIC int camd_order /* returns CAMD_OK, CAMD_OK_BUT_JUMBLED,
                              * CAMD_INVALID, or CAMD_OUT_OF_MEMORY */
 (
     int32_t n,                  /* A is n-by-n.  n must be >= 0. */
@@ -42,7 +42,7 @@ int camd_order          /* returns CAMD_OK, CAMD_OK_BUT_JUMBLED,
     const int32_t C [ ]         /* Constraint set of A, of size n; can be NULL */
 ) ;
 
-int camd_l_order   /* see above for description of arguments */
+SUITESPARSE_PUBLIC int camd_l_order   /* see above for description */
 (
     int64_t n,
     const int64_t Ap [ ],
@@ -221,7 +221,7 @@ int camd_l_order   /* see above for description of arguments */
  * of the matrix for CAMD to destroy).  Refer to CAMD/Source/camd_2.c for a
  * description of each parameter. */
 
-void camd_2
+SUITESPARSE_PUBLIC void camd_2
 (
     int32_t n,
     int32_t Pe [ ],
@@ -242,7 +242,7 @@ void camd_2
     int32_t BucketSet [ ] 
 ) ;
 
-void camd_l2
+SUITESPARSE_PUBLIC void camd_l2
 (
     int64_t n,
     int64_t Pe [ ],
@@ -276,7 +276,7 @@ void camd_l2
  * of columns of the matrix.  For its use in CAMD, these must both equal n.
  */
 
-int camd_valid
+SUITESPARSE_PUBLIC int camd_valid
 (
     int32_t n_row,              /* # of rows */
     int32_t n_col,              /* # of columns */
@@ -284,7 +284,7 @@ int camd_valid
     const int32_t Ai [ ]        /* row indices, of size Ap [n_col] */
 ) ;
 
-int camd_l_valid
+SUITESPARSE_PUBLIC int camd_l_valid
 (
     int64_t n_row,
     int64_t n_col,
@@ -299,13 +299,13 @@ int camd_l_valid
 /* Returns TRUE if the constraint set is valid as input to camd_order,
  * FALSE otherwise. */
 
-int camd_cvalid
+SUITESPARSE_PUBLIC int camd_cvalid
 (
    int32_t n,
    const int32_t C [ ]
 ) ;
 
-int camd_l_cvalid
+SUITESPARSE_PUBLIC int camd_l_cvalid
 (
    int64_t n,
    const int64_t C [ ]
@@ -316,16 +316,16 @@ int camd_l_cvalid
 /* ------------------------------------------------------------------------- */
 
 /* camd_defaults:  sets the default control settings */
-void camd_defaults   (double Control [ ]) ;
-void camd_l_defaults (double Control [ ]) ;
+SUITESPARSE_PUBLIC void camd_defaults   (double Control [ ]) ;
+SUITESPARSE_PUBLIC void camd_l_defaults (double Control [ ]) ;
 
 /* camd_control: prints the control settings */
-void camd_control    (double Control [ ]) ;
-void camd_l_control  (double Control [ ]) ;
+SUITESPARSE_PUBLIC void camd_control    (double Control [ ]) ;
+SUITESPARSE_PUBLIC void camd_l_control  (double Control [ ]) ;
 
 /* camd_info: prints the statistics */
-void camd_info       (double Info [ ]) ;
-void camd_l_info     (double Info [ ]) ;
+SUITESPARSE_PUBLIC void camd_info       (double Info [ ]) ;
+SUITESPARSE_PUBLIC void camd_l_info     (double Info [ ]) ;
 
 #define CAMD_CONTROL 5      /* size of Control array */
 #define CAMD_INFO 20        /* size of Info array */

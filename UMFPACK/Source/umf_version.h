@@ -10,10 +10,10 @@
 /*
    Define routine names, depending on version being compiled.
 
-   DINT:	double precision, int's as integers
-   DLONG:	double precision, SuiteSparse_long's as integers
-   ZLONG:	complex double precision, SuiteSparse_long's as integers
-   ZINT:	complex double precision, int's as integers
+   DINT:	double precision, int32_t integers
+   DLONG:	double precision, int64_t integers
+   ZLONG:	complex double precision, int64_t integers
+   ZINT:	complex double precision, int32_t integers
 */
 
 /* Set DINT as the default, if nothing is defined */
@@ -27,7 +27,7 @@
 #endif
 
 /* -------------------------------------------------------------------------- */
-/* integer type (Int is int or SuiteSparse_long) defined in amd_internal.h */
+/* integer type (Int is int32_t or int64_t) defined in amd_internal.h */
 /* -------------------------------------------------------------------------- */
 
 #if defined (DLONG) || defined (ZLONG)
@@ -415,7 +415,7 @@ typedef struct
 #endif	/* #ifndef COMPLEX */
 
 /* -------------------------------------------------------------------------- */
-/* Double precision, with int's as integers */
+/* Double precision, with int32_t integers */
 /* -------------------------------------------------------------------------- */
 
 #ifdef DINT
@@ -533,7 +533,7 @@ typedef struct
 #endif
 
 /* -------------------------------------------------------------------------- */
-/* Double precision, with SuiteSparse_long's as integers */
+/* Double precision, with int64_t integers */
 /* -------------------------------------------------------------------------- */
 
 #ifdef DLONG
@@ -651,7 +651,7 @@ typedef struct
 #endif
 
 /* -------------------------------------------------------------------------- */
-/* Complex double precision, with int's as integers */
+/* Complex double precision, with int32_t integers */
 /* -------------------------------------------------------------------------- */
 
 #ifdef ZINT
@@ -769,7 +769,7 @@ typedef struct
 #endif
 
 /* -------------------------------------------------------------------------- */
-/* Complex double precision, with SuiteSparse_long's as integers */
+/* Complex double precision, with int64_t integers */
 /* -------------------------------------------------------------------------- */
 
 #ifdef ZLONG

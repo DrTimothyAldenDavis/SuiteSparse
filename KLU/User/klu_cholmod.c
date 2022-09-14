@@ -18,14 +18,14 @@
 #define TRUE 1
 #define FALSE 0
 
-int klu_cholmod
+int32_t klu_cholmod
 (
     /* inputs */
-    int n,                  /* A is n-by-n */
-    int Ap [ ],             /* column pointers */
-    int Ai [ ],             /* row indices */
+    int32_t n,                  /* A is n-by-n */
+    int32_t Ap [ ],             /* column pointers */
+    int32_t Ai [ ],             /* row indices */
     /* outputs */
-    int Perm [ ],           /* fill-reducing permutation */
+    int32_t Perm [ ],           /* fill-reducing permutation */
     /* user-defined */
     klu_common *Common      /* user-defined data is in Common->user_data */
 )
@@ -34,8 +34,9 @@ int klu_cholmod
     cholmod_sparse Amatrix, *A, *AT, *S ;
     cholmod_factor *L ;
     cholmod_common cm ;
-    int *P ;
-    int k, symmetric ;
+    int32_t *P ;
+    int32_t k ;
+    int symmetric ;
 
     if (Ap == NULL || Ai == NULL || Perm == NULL || n < 0)
     {

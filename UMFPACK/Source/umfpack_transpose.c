@@ -29,7 +29,7 @@ PRIVATE Int init_count ;
 
 /* ========================================================================== */
 
-GLOBAL Int UMFPACK_transpose
+GLOBAL int UMFPACK_transpose
 (
     Int n_row,
     Int n_col,
@@ -53,7 +53,7 @@ GLOBAL Int UMFPACK_transpose
     double Rx [ ]	/* size nz, if present */
 #ifdef COMPLEX
     , double Rz [ ]	/* size nz, if present */
-    , Int do_conjugate	/* if true, then to conjugate transpose */
+    , int do_conjugate	/* if true, then to conjugate transpose */
 			/* otherwise, do array transpose */
 #endif
 )
@@ -63,7 +63,8 @@ GLOBAL Int UMFPACK_transpose
     /* local variables */
     /* ---------------------------------------------------------------------- */
 
-    Int status, *W, nn ;
+    Int *W, nn ;
+    int status ;
 
 #ifndef NDEBUG
     init_count = UMF_malloc_count ;

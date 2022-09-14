@@ -2,11 +2,6 @@
 /* === Include/cholmod_blas.h =============================================== */
 /* ========================================================================== */
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Include/cholmod_blas.h.
- * Copyright (C) 2005-2006, Univ. of Florida.  Author: Timothy A. Davis
- * -------------------------------------------------------------------------- */
-
 /* This does not need to be included in the user's program. */
 
 #ifndef CHOLMOD_BLAS_H
@@ -150,9 +145,9 @@
  * uses 64-bit integers */
 
 #if defined (LONGBLAS) || defined (BLAS64)
-#define BLAS_INT SuiteSparse_long
+#define BLAS_INT int64_t
 #else
-#define BLAS_INT int
+#define BLAS_INT int32_t
 #endif
 
 /* If the BLAS integer is smaller than the basic CHOLMOD integer, then we need

@@ -9,8 +9,8 @@
 #include "SuiteSparse_config.h"
 
 #ifdef LDL_LONG
-#define LDL_int SuiteSparse_long
-#define LDL_ID SuiteSparse_long_id
+#define LDL_int int64_t
+#define LDL_ID  "%" PRId64
 
 #define LDL_symbolic ldl_l_symbolic
 #define LDL_numeric ldl_l_numeric
@@ -23,7 +23,7 @@
 #define LDL_valid_matrix ldl_l_valid_matrix
 
 #else
-#define LDL_int int
+#define LDL_int int32_t
 #define LDL_ID "%d"
 
 #define LDL_symbolic ldl_symbolic
@@ -42,62 +42,80 @@
 /* === int version ========================================================== */
 /* ========================================================================== */
 
+SUITESPARSE_PUBLIC 
 void ldl_symbolic (int n, int Ap [ ], int Ai [ ], int Lp [ ],
     int Parent [ ], int Lnz [ ], int Flag [ ], int P [ ], int Pinv [ ]) ;
 
+SUITESPARSE_PUBLIC 
 int ldl_numeric (int n, int Ap [ ], int Ai [ ], double Ax [ ],
     int Lp [ ], int Parent [ ], int Lnz [ ], int Li [ ], double Lx [ ],
     double D [ ], double Y [ ], int Pattern [ ], int Flag [ ],
     int P [ ], int Pinv [ ]) ;
 
+SUITESPARSE_PUBLIC 
 void ldl_lsolve (int n, double X [ ], int Lp [ ], int Li [ ],
     double Lx [ ]) ;
 
+SUITESPARSE_PUBLIC 
 void ldl_dsolve (int n, double X [ ], double D [ ]) ;
 
+SUITESPARSE_PUBLIC 
 void ldl_ltsolve (int n, double X [ ], int Lp [ ], int Li [ ],
     double Lx [ ]) ;
 
+SUITESPARSE_PUBLIC 
 void ldl_perm  (int n, double X [ ], double B [ ], int P [ ]) ;
+SUITESPARSE_PUBLIC 
 void ldl_permt (int n, double X [ ], double B [ ], int P [ ]) ;
 
+SUITESPARSE_PUBLIC 
 int ldl_valid_perm (int n, int P [ ], int Flag [ ]) ;
+SUITESPARSE_PUBLIC 
 int ldl_valid_matrix ( int n, int Ap [ ], int Ai [ ]) ;
 
 /* ========================================================================== */
 /* === long version ========================================================= */
 /* ========================================================================== */
 
-void ldl_l_symbolic (SuiteSparse_long n, SuiteSparse_long Ap [ ],
-    SuiteSparse_long Ai [ ], SuiteSparse_long Lp [ ],
-    SuiteSparse_long Parent [ ], SuiteSparse_long Lnz [ ],
-    SuiteSparse_long Flag [ ], SuiteSparse_long P [ ],
-    SuiteSparse_long Pinv [ ]) ;
+SUITESPARSE_PUBLIC 
+void ldl_l_symbolic (int64_t n, int64_t Ap [ ],
+    int64_t Ai [ ], int64_t Lp [ ],
+    int64_t Parent [ ], int64_t Lnz [ ],
+    int64_t Flag [ ], int64_t P [ ],
+    int64_t Pinv [ ]) ;
 
-SuiteSparse_long ldl_l_numeric (SuiteSparse_long n, SuiteSparse_long Ap [ ],
-    SuiteSparse_long Ai [ ], double Ax [ ], SuiteSparse_long Lp [ ],
-    SuiteSparse_long Parent [ ], SuiteSparse_long Lnz [ ],
-    SuiteSparse_long Li [ ], double Lx [ ], double D [ ], double Y [ ],
-    SuiteSparse_long Pattern [ ], SuiteSparse_long Flag [ ],
-    SuiteSparse_long P [ ], SuiteSparse_long Pinv [ ]) ;
+SUITESPARSE_PUBLIC 
+int64_t ldl_l_numeric (int64_t n, int64_t Ap [ ],
+    int64_t Ai [ ], double Ax [ ], int64_t Lp [ ],
+    int64_t Parent [ ], int64_t Lnz [ ],
+    int64_t Li [ ], double Lx [ ], double D [ ], double Y [ ],
+    int64_t Pattern [ ], int64_t Flag [ ],
+    int64_t P [ ], int64_t Pinv [ ]) ;
 
-void ldl_l_lsolve (SuiteSparse_long n, double X [ ], SuiteSparse_long Lp [ ],
-    SuiteSparse_long Li [ ], double Lx [ ]) ;
+SUITESPARSE_PUBLIC 
+void ldl_l_lsolve (int64_t n, double X [ ], int64_t Lp [ ],
+    int64_t Li [ ], double Lx [ ]) ;
 
-void ldl_l_dsolve (SuiteSparse_long n, double X [ ], double D [ ]) ;
+SUITESPARSE_PUBLIC 
+void ldl_l_dsolve (int64_t n, double X [ ], double D [ ]) ;
 
-void ldl_l_ltsolve (SuiteSparse_long n, double X [ ], SuiteSparse_long Lp [ ],
-    SuiteSparse_long Li [ ], double Lx [ ]) ;
+SUITESPARSE_PUBLIC 
+void ldl_l_ltsolve (int64_t n, double X [ ], int64_t Lp [ ],
+    int64_t Li [ ], double Lx [ ]) ;
 
-void ldl_l_perm  (SuiteSparse_long n, double X [ ], double B [ ],
-    SuiteSparse_long P [ ]) ;
-void ldl_l_permt (SuiteSparse_long n, double X [ ], double B [ ],
-    SuiteSparse_long P [ ]) ;
+SUITESPARSE_PUBLIC 
+void ldl_l_perm  (int64_t n, double X [ ], double B [ ],
+    int64_t P [ ]) ;
+void ldl_l_permt (int64_t n, double X [ ], double B [ ],
+    int64_t P [ ]) ;
 
-SuiteSparse_long ldl_l_valid_perm (SuiteSparse_long n, SuiteSparse_long P [ ],
-    SuiteSparse_long Flag [ ]) ;
-SuiteSparse_long ldl_l_valid_matrix ( SuiteSparse_long n,
-    SuiteSparse_long Ap [ ], SuiteSparse_long Ai [ ]) ;
+SUITESPARSE_PUBLIC 
+int64_t ldl_l_valid_perm (int64_t n, int64_t P [ ],
+    int64_t Flag [ ]) ;
+
+SUITESPARSE_PUBLIC 
+int64_t ldl_l_valid_matrix ( int64_t n,
+    int64_t Ap [ ], int64_t Ai [ ]) ;
 
 /* ========================================================================== */
 /* === LDL version ========================================================== */

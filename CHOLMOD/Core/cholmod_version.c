@@ -11,7 +11,6 @@
    CHOLMOD, this function does not require the CHOLMOD Common. */
 
 #include "cholmod_internal.h"
-#include "cholmod_core.h"
 
 int CHOLMOD(version)        /* returns CHOLMOD_VERSION */
 (

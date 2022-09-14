@@ -61,7 +61,7 @@ PRIVATE void get_U
 /* === UMFPACK_get_numeric ================================================== */
 /* ========================================================================== */
 
-GLOBAL Int UMFPACK_get_numeric
+GLOBAL int UMFPACK_get_numeric
 (
     Int Lp [ ],
     Int Lj [ ],

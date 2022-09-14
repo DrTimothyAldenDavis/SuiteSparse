@@ -16,7 +16,7 @@ cc         = not-set
 cputype = $(shell uname -m | sed "s/\\ /_/g")
 systype = $(shell uname -s)
 
-BUILDDIR = build/$(systype)-$(cputype)
+BUILDDIR = build
 
 # Process configuration options.
 CONFIG_FLAGS = 
@@ -55,7 +55,7 @@ endif
 VERNUM=5.1.0
 PKGNAME=metis-$(VERNUM)
 
-JOBS ?= 1
+JOBS ?= 8
 
 define run-config
 mkdir -p $(BUILDDIR)

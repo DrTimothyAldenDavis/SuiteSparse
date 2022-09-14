@@ -16,7 +16,7 @@
 
 #include "umf_internal.h"
 
-GLOBAL Int UMFPACK_col_to_triplet
+GLOBAL int UMFPACK_col_to_triplet
 (
     Int n_col,
     const Int Ap [ ],

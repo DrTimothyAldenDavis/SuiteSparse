@@ -6,7 +6,7 @@
 
 #include "klu_internal.h"
 
-Int KLU_defaults
+int KLU_defaults
 (
     KLU_common *Common
 )
