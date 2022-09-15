@@ -63,8 +63,10 @@ endif ( )
 # configure files
 #-------------------------------------------------------------------------------
 
-configure_file ( "Config/umfpack.h.in" "${PROJECT_SOURCE_DIR}/Include/umfpack.h")
-configure_file ( "Config/umfpack_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/umfpack_version.tex")
+configure_file ( "Config/umfpack.h.in"
+    "${PROJECT_SOURCE_DIR}/Include/umfpack.h" )
+configure_file ( "Config/umfpack_version.tex.in"
+    "${PROJECT_SOURCE_DIR}/Doc/umfpack_version.tex" )
 
 #-------------------------------------------------------------------------------
 # report status and set compile flags
