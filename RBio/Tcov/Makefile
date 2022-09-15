@@ -4,13 +4,11 @@
 
 default: all
 
-include ../../SuiteSparse_config/SuiteSparse_config.mk
-
 # valgrind is not used
 V =
 
 # with test coverage
-CF = -O0 -g --coverage
+CF = -O0 -g --coverage -fprofile-abs-path
 
 # Tcov requires gcc
 CC = gcc
@@ -74,10 +72,10 @@ SuiteSparse_config.h:
 	ln -s ../../SuiteSparse_config/SuiteSparse_config.h
 
 RBdemo: RBdemo.c $(OBJ) $(INC) Makefile
-	$(C) -o RBdemo RBdemo.c $(OBJ) $(LDLIBS)
+	$(C) -o RBdemo RBdemo.c $(OBJ) -lm -lrt
 
 RBtest: RBtest.c $(OBJ) $(INC) Makefile
-	$(C) -o RBtest RBtest.c $(OBJ) $(LDLIBS)
+	$(C) -o RBtest RBtest.c $(OBJ) -lm -lrt
 
 RBio.o: RBio.c $(INC)
 	$(C) -c RBio.c
