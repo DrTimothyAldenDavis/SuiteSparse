@@ -584,7 +584,7 @@ clean:
 	- $(RM) leak zz_*.c z_*.c *.a l_*.c zl_*.c cov.sort ldemo.c zdemo.c
 	- $(RM) -r cm.profile cmread.profile zdemo.profile $(T)
 	- $(RM) -r cl.profile clread.profile ldemo.profile
-	- $(RM) temp*.mtx timelog.m
+	- $(RM) temp*.mtx timelog.m l_*.cu
 	- $(RM) -r $(PURGE)
 	- $(RM) -r $(CLEAN)
 
