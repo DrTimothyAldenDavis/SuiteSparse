@@ -199,23 +199,8 @@ static void print_sparse (Int n, Int isreal, Int *Ap, Int *Ai, double *Ax,
         for (p = Ap [j] ; p < Ap [j+1] ; p++)
         {
             i = Ai [p] ;
-            if (isreal)
-            {
-                ax = Ax [p] ;
-                az = 0 ;
-            }
-            else if (Az)
-            {
-                /* split complex */
-                ax = Ax [p] ;
-                az = Az [p] ;
-            }
-            else
-            {
-                /* merged complex */
-                ax = Ax [2*p  ] ;
-                az = Ax [2*p+1] ;
-            }
+            ax = (isreal || !Az) ? Ax [p] : Ax [2*p] ;
+            az = (isreal) ? 0 : (Az ? Az [p] : Ax [2*p+1]) ;
             printf ("  row "ID" : %g", i, ax) ;
             if (!isreal)
             {
@@ -323,7 +308,7 @@ static void ludump (KLU_symbolic *Symbolic, KLU_numeric *Numeric, Int isreal,
 
     if (my_tries != 0) OK (result) ;
 
-    if (ch->print >= 5)
+    if (ch->print >= 5 || n < 5)
     {
         printf ("------ L:\n") ; print_sparse (n, isreal, Lp, Li, Lx, Lz) ;
         printf ("------ U:\n") ; print_sparse (n, isreal, Up, Ui, Ux, Uz) ;
@@ -400,8 +385,8 @@ static double do_1_solve (cholmod_sparse *A, cholmod_dense *B,
         rnorm, anorm, xnorm, relresid, relerr, err = 0. ;
     Int i, j, nrhs2, isreal, n, nrhs, transpose, step, k, save, tries ;
 
-    printf ("\ndo_1_solve: btf "ID" maxwork %g scale "ID" ordering "ID" user: "
-        ID" P,Q: %d halt: "ID"\n",
+    printf ("\ndo_1_solve: btf %d maxwork %g scale %d ordering %d user: "
+        ID" P,Q: %d halt: %d\n",
         Common->btf, Common->maxwork, Common->scale, Common->ordering,
         Common->user_data ?  (*((Int *) Common->user_data)) : -1,
         (Puser != NULL || Quser != NULL), Common->halt_if_singular) ;
@@ -437,20 +422,18 @@ static double do_1_solve (cholmod_sparse *A, cholmod_dense *B,
         my_tries = tries ;
         if (Puser != NULL || Quser != NULL)
         {
+            printf ("klu analyze given, try %g\n", (double) tries) ;
             Symbolic = klu_analyze_given (n, Ap, Ai, Puser, Quser, Common) ;
         }
         else
         {
+            printf ("klu analyze try %g\n", (double) tries) ;
             Symbolic = klu_analyze (n, Ap, Ai, Common) ;
         }
     }
-    printf ("sym try "ID" btf "ID" ordering "ID"\n",
+    printf ("sym try "ID" btf %d ordering %d\n",
         tries, Common->btf, Common->ordering) ;
-    if (Symbolic == NULL)
-    {
-        printf ("Symbolic is null\n") ;
-        return (998) ;
-    }
+    if (Symbolic == NULL) return (998) ;
     my_tries = -1 ;
 
     /* create a modified version of A */
@@ -504,7 +487,7 @@ static double do_1_solve (cholmod_sparse *A, cholmod_dense *B,
                     Numeric = klu_z_factor (Ap, Ai, Ax, Symbolic, Common) ;
                 }
             }
-            printf ("num try "ID" btf "ID"\n", tries, Common->btf) ;
+            printf ("num try "ID" btf %d\n", tries, Common->btf) ;
             my_tries = -1 ;
 
             if (Common->status == KLU_OK ||
@@ -515,11 +498,6 @@ static double do_1_solve (cholmod_sparse *A, cholmod_dense *B,
             else
             {
                 FAIL (Numeric) ;
-            }
-
-            if (Common->status < KLU_OK)
-            {
-                printf ("factor failed: "ID"\n", Common->status) ;
             }
 
         }
@@ -774,7 +752,7 @@ static double do_solves (cholmod_sparse *A, cholmod_dense *B, cholmod_dense *X,
     Int *Puser, Int *Quser, KLU_common *Common, cholmod_common *ch, Int *isnan)
 {
     double err, maxerr = 0 ;
-    Int n = A->nrow, sflag ;
+    Int n = A->nrow ;
     *isnan = FALSE ;
 
     /* ---------------------------------------------------------------------- */
@@ -782,12 +760,16 @@ static double do_solves (cholmod_sparse *A, cholmod_dense *B, cholmod_dense *X,
     /* ---------------------------------------------------------------------- */
 
     maxerr = do_1_solve (A, B, X, NULL, NULL, Common, ch, isnan) ;
+    printf ("\nfirst err %g\n", maxerr) ;
 
     /* ---------------------------------------------------------------------- */
     /* test with non-default options */
     /* ---------------------------------------------------------------------- */
 
+    int64_t user_data [3] ;
     Common->user_order = klu_cholmod ;
+    user_data [0] = 0 ;
+    user_data [1] = CHOLMOD_AMD ;
     for (Common->btf = 0 ; Common->btf <= 2 ; Common->btf++)
     {
         Common->maxwork = (Common->btf == 2) ? 0.001 : 0 ;
@@ -806,14 +788,15 @@ static double do_solves (cholmod_sparse *A, cholmod_dense *B, cholmod_dense *X,
                      Common->ordering++)
                 {
                     err = do_1_solve (A, B, X, NULL, NULL, Common, ch, isnan) ;
+                    printf ("ordering %d err %g\n", Common->ordering, err) ;
                     maxerr = MAX (maxerr, err) ;
                 }
 
                 /* user-ordering, unsymmetric case */
                 Common->ordering = 3 ;
-                Common->user_data = &sflag ;
-                sflag = 0 ;
+                Common->user_data = user_data ;
                 err = do_1_solve (A, B, X, NULL, NULL, Common, ch, isnan) ;
+                printf ("user ordering %d err %g\n", Common->ordering, err) ;
                 maxerr = MAX (maxerr, err) ;
                 Common->user_data = NULL ;
 
@@ -822,6 +805,7 @@ static double do_solves (cholmod_sparse *A, cholmod_dense *B, cholmod_dense *X,
                 if (n < 200)
                 {
                     err = do_1_solve (A, B, X, Puser, Quser, Common, ch, isnan);
+                    printf ("pq err %g\n", err) ;
                     maxerr = MAX (maxerr, err) ;
                 }
             }
@@ -837,6 +821,7 @@ static double do_solves (cholmod_sparse *A, cholmod_dense *B, cholmod_dense *X,
     Common->user_order = NULL ; 
 
     my_tries = -1 ;
+    printf ("final err %g\n\n", err) ;
     return (maxerr) ;
 }
 
@@ -875,18 +860,10 @@ int main (void)
 
     A = CHOLMOD_read_sparse (stdin, &ch) ;
 
-    if (A->nrow != A->ncol || A->stype != 0)
-    {
-        fprintf (stderr, "error: only square unsymmetric matrices handled\n") ;
-        CHOLMOD_free_sparse (&A, &ch) ;
-        return (0) ;
-    }
-    if (!(A->xtype == CHOLMOD_REAL || A->xtype == CHOLMOD_COMPLEX))
-    {
-        fprintf (stderr, "error: only real or complex matrices hanlded\n") ;
-        CHOLMOD_free_sparse (&A, &ch) ;
-        return (0) ;
-    }
+    // error: only square unsymmetric matrices handled
+    FAIL (A->nrow != A->ncol || A->stype != 0) ;
+    // error: only real or complex matrices handled
+    FAIL (!(A->xtype == CHOLMOD_REAL || A->xtype == CHOLMOD_COMPLEX)) ;
 
     n = A->nrow ;
     Ap = A->p ;
@@ -944,6 +921,11 @@ int main (void)
 
     test_memory_handler ( ) ;
     maxerr = do_solves (A, B, X, Puser, Quser, &Common, &ch, &isnan) ;
+    printf ("dosolves err %g\n\n", maxerr) ;
+    int64_t *pp = my_calloc (2, 4) ;
+    pp [0] = 1 ;
+    OK (pp) ;
+    my_free (pp) ;
 
     /* ---------------------------------------------------------------------- */
     /* basic error checking */
@@ -1363,16 +1345,9 @@ int main (void)
     CHOLMOD_finish (&ch) ;
     fprintf (stderr, " maxerr %10.3e", maxerr) ;
     printf (" maxerr %10.3e", maxerr) ;
-    if (maxerr < 1e-8)
-    {
-        fprintf (stderr, "  test passed") ;
-        printf ("  test passed") ;
-    }
-    else
-    {
-        fprintf (stderr, "  test FAILED") ;
-        printf ("  test FAILED") ;
-    }
+    FAIL (maxerr > 1e-8) ;
+    fprintf (stderr, "  test passed") ;
+    printf ("  test passed") ;
     if (isnan)
     {
         fprintf (stderr, " *") ;
