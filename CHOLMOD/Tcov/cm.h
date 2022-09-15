@@ -177,6 +177,8 @@ void ctest (cholmod_sparse *A) ;
 void amdtest (cholmod_sparse *A) ;
 double resid_sparse (cholmod_sparse *A, cholmod_sparse *X, cholmod_sparse *B) ;
 cholmod_dense *zeros (Int nrow, Int ncol, Int d, Int xtype) ;
+void huge (void) ;
+void camdtest (cholmod_sparse *A) ;
 
 /* -------------------------------------------------------------------------- */
 /* AMD, COLAMD, and CCOLAMD */
@@ -184,7 +186,7 @@ cholmod_dense *zeros (Int nrow, Int ncol, Int d, Int xtype) ;
 
 #ifdef LONG
 
-#define ID "%ld"
+#define ID "%" PRId64
 
 #define AMD_order amd_l_order
 #define AMD_defaults amd_l_defaults

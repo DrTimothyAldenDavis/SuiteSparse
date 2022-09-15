@@ -18,7 +18,19 @@
 default: go
 
 include ../../SuiteSparse_config/SuiteSparse_config.mk
-include Make.inc
+
+# uncomment this to disable the GPU
+# GPU_CONFIG =
+# CHOLMOD_CONFIG =
+
+# valgrind is not used
+V =
+
+# covall is used
+COVER = ./covall
+
+# with test coverage
+CF = -O0 -g --coverage -fprofile-abs-path
 
 # Temp directory
 T = $(TCOV_TMP)/CHOLMOD_TCOV_TMP
@@ -60,7 +72,11 @@ endif
 I = -I../../AMD/Include -I../../COLAMD/Include \
 	-I../../metis-5.1.0/include -I../../CCOLAMD/Include \
 	-I../../CAMD/Include \
-	-I../Include -I../../SuiteSparse_config $(CUDA_INC)
+	-I../Include -I../../SuiteSparse_config $(CUDA_INC) \
+        -I../Core -I../Check -I../Cholesky -I../Demo -I../Supernodal \
+        -I../Partition -I../Modify -I../MatrixOps -I../GPU \
+        -I../../AMD/Source -I../../CAMD/Source \
+        -I../../COLAMD/Source -I../../CCOLAMD/Source
 
 I += $(GPU_CONFIG)
 
@@ -69,18 +85,11 @@ ccode: cm cl zdemo ldemo cmread clread
 TEST = cm.c test_ops.c null.c null2.c lpdemo.c memory.c solve.c aug.c unpack.c \
 	raw_factor.c cctest.c ctest.c amdtest.c camdtest.c huge.c
 
+LTEST = cl.c amdtest_l.c camdtest_l.c huge_l.c
+
 INC =   ../Include/cholmod.h \
 	../Include/cholmod_blas.h \
-	../Include/cholmod_check.h \
-	../Include/cholmod_cholesky.h \
-	../Include/cholmod_complexity.h \
-	../Include/cholmod_config.h \
-	../Include/cholmod_core.h \
 	../Include/cholmod_internal.h \
-	../Include/cholmod_matrixops.h \
-	../Include/cholmod_modify.h \
-	../Include/cholmod_partition.h \
-	../Include/cholmod_supernodal.h \
 	../Include/cholmod_template.h
 
 AMDSRC = ../../AMD/Source/amd_1.c \
@@ -267,8 +276,6 @@ IOBJ = \
 	z_super_numeric.o \
 	z_super_solve.o \
 	z_super_symbolic.o \
-	z_gpu.o \
-	cholmod_gpu_kernels.o \
 	$(IPARTITION_OBJ)
 
 LOBJ = \
@@ -317,38 +324,46 @@ LOBJ = \
 	l_super_numeric.o \
 	l_super_solve.o \
 	l_super_symbolic.o \
-	l_gpu.o \
-	cholmod_gpu_kernels.o \
 	$(LPARTITION_OBJ)
+
+ifneq ($(GPU_CONFIG),)
+    IGPU = l_gpu_kernels.o z_gpu.o
+    LGPU = l_gpu_kernels.o l_gpu.o
+else
+    IGPU = 
+    LGPU = 
+endif
 
 CONFIG = zz_SuiteSparse_config.o
 
-IALL = $(IOBJ) $(AMDOBJ)  $(COLAMDOBJ)  $(CCOLAMDOBJ)  $(CAMDOBJ)   $(CONFIG)
+IALL = $(IOBJ) $(AMDOBJ)  $(COLAMDOBJ)  $(CCOLAMDOBJ)  $(CAMDOBJ)   $(CONFIG) $(IGPU)
 
-LALL = $(LOBJ) $(LAMDOBJ) $(LCOLAMDOBJ) $(LCCOLAMDOBJ) $(LCAMDOBJ)  $(CONFIG)
+LALL = $(LOBJ) $(LAMDOBJ) $(LCOLAMDOBJ) $(LCCOLAMDOBJ) $(LCAMDOBJ)  $(CONFIG) $(LGPU)
 
 
 cm: metis $(IALL) $(TEST) cm.h Makefile
 	$(C) $(I) $(TEST) -o cm $(IALL) $(LDLIBS)
 
-cl: metis $(LALL) $(TEST) cm.h Makefile
-	$(C) -DDLONG $(I) $(TEST) -o cl $(LALL) $(LDLIBS)
+cl: metis $(LALL) $(LTEST) cm.h Makefile
+	$(C) $(I) $(LTEST) -o cl $(LALL) $(LDLIBS)
 
 cmread: metis $(IALL) cmread.c Makefile
 	$(C) $(I) cmread.c -o cmread $(IALL) $(LDLIBS)
 
-clread: metis $(LALL) cmread.c Makefile
-	$(C) -DDLONG $(I) cmread.c -o clread $(LALL) $(LDLIBS)
+clread: metis $(LALL) clread.c Makefile
+	$(C) $(I) clread.c -o clread $(LALL) $(LDLIBS)
 
 zdemo: metis $(IALL) ../Demo/cholmod_demo.c cm.h Makefile \
 	../Demo/cholmod_demo.h
-	cat ../Demo/cholmod_demo.c > zdemo.c
+	- ln -s ../Demo/cholmod_demo.c zdemo.c
 	$(C) $(I) -I../Demo zdemo.c -o zdemo $(IALL) $(LDLIBS)
 
 ldemo: metis $(LALL) ../Demo/cholmod_l_demo.c cm.h Makefile \
 	../Demo/cholmod_demo.h
-	cat ../Demo/cholmod_l_demo.c > ldemo.c
-	$(C) -DDLONG $(I) -I../Demo ldemo.c -o ldemo $(LALL) $(LDLIBS)
+	- ln -s ../Demo/cholmod_l_demo.c ldemo.c
+	$(C) $(I) -I../Demo ldemo.c -o ldemo $(LALL) $(LDLIBS)
+
+compile: zdemo ldemo cmread clread cm cl
 
 go: zdemo ldemo cmread clread cm cl
 	mkdir -p $(T)
@@ -560,19 +575,18 @@ gpu: ldemo
 	./ldemo ../../../Matrix/nd6k_complex.mtx 1
 	- $(COVER)
 
-purge: distclean
+purge: clean
 
 distclean: clean
-	- $(RM) cm cl cmread clread *.c.gcov *.out $(T) zdemo ldemo
+
+clean:
+	- $(RM) cm cl cmread clread *.c.gcov *.out zdemo ldemo
 	- $(RM) leak zz_*.c z_*.c *.a l_*.c zl_*.c cov.sort ldemo.c zdemo.c
 	- $(RM) -r cm.profile cmread.profile zdemo.profile $(T)
 	- $(RM) -r cl.profile clread.profile ldemo.profile
 	- $(RM) temp*.mtx timelog.m
 	- $(RM) -r $(PURGE)
-
-clean:
 	- $(RM) -r $(CLEAN)
-
 
 $(AMDOBJ): $(AMDSRC)
 
@@ -591,7 +605,7 @@ $(LOBJ): $(INC)
 
 zz_SuiteSparse_config.o: ../../SuiteSparse_config/SuiteSparse_config.c \
     ../../SuiteSparse_config/SuiteSparse_config.h
-	$(C) -E $(I) $< | $(PRETTY) > zz_SuiteSparse_config.c
+	- ln -s $< zz_SuiteSparse_config.c
 	$(C) -c $(I) zz_SuiteSparse_config.c
 
 #-------------------------------------------------------------------------------
@@ -599,101 +613,101 @@ zz_SuiteSparse_config.o: ../../SuiteSparse_config/SuiteSparse_config.c \
 #-------------------------------------------------------------------------------
 
 zz_amd_1.o: ../../AMD/Source/amd_1.c
-	$(C) -E $(I) $< | $(PRETTY) > zz_amd_1.c
+	- ln -s $< zz_amd_1.c
 	$(C) -c $(I) zz_amd_1.c
 
 zz_amd_2.o: ../../AMD/Source/amd_2.c
-	$(C) -E $(I) $< | $(PRETTY) > zz_amd_2.c
+	- ln -s $< zz_amd_2.c
 	$(C) -c $(I) zz_amd_2.c
 
 zz_amd_aat.o: ../../AMD/Source/amd_aat.c
-	$(C) -E $(I) $< | $(PRETTY) > zz_amd_aat.c
+	- ln -s $< zz_amd_aat.c
 	$(C) -c $(I) zz_amd_aat.c
 
 zz_amd_control.o: ../../AMD/Source/amd_control.c
-	$(C) -E $(I) $< | $(PRETTY) > zz_amd_control.c
+	- ln -s $< zz_amd_control.c
 	$(C) -c $(I) zz_amd_control.c
 
 zz_amd_defaults.o: ../../AMD/Source/amd_defaults.c
-	$(C) -E $(I) $< | $(PRETTY) > zz_amd_defaults.c
+	- ln -s $< zz_amd_defaults.c
 	$(C) -c $(I) zz_amd_defaults.c
 
-zz_amd_dump.o: ../../AMD/Source/amd_dump.c
-	$(C) -E $(I) $< | $(PRETTY) > zz_amd_dump.c
-	$(C) -c $(I) zz_amd_dump.c
+# zz_amd_dump.o: ../../AMD/Source/amd_dump.c
+# 	- ln -s $< zz_amd_dump.c
+# 	$(C) -c $(I) zz_amd_dump.c
 
 zz_amd_info.o: ../../AMD/Source/amd_info.c
-	$(C) -E $(I) $< | $(PRETTY) > zz_amd_info.c
+	- ln -s $< zz_amd_info.c
 	$(C) -c $(I) zz_amd_info.c
 
 zz_amd_order.o: ../../AMD/Source/amd_order.c
-	$(C) -E $(I) $< | $(PRETTY) > zz_amd_order.c
+	- ln -s $< zz_amd_order.c
 	$(C) -c $(I) zz_amd_order.c
 
 zz_amd_postorder.o: ../../AMD/Source/amd_postorder.c
-	$(C) -E $(I) $< | $(PRETTY) > zz_amd_postorder.c
+	- ln -s $< zz_amd_postorder.c
 	$(C) -c $(I) zz_amd_postorder.c
 
 zz_amd_post_tree.o: ../../AMD/Source/amd_post_tree.c
-	$(C) -E $(I) $< | $(PRETTY) > zz_amd_post_tree.c
+	- ln -s $< zz_amd_post_tree.c
 	$(C) -c $(I) zz_amd_post_tree.c
 
 zz_amd_preprocess.o: ../../AMD/Source/amd_preprocess.c
-	$(C) -E $(I) $< | $(PRETTY) > zz_amd_preprocess.c
+	- ln -s $< zz_amd_preprocess.c
 	$(C) -c $(I) zz_amd_preprocess.c
 
 zz_amd_valid.o: ../../AMD/Source/amd_valid.c
-	$(C) -E $(I) $< | $(PRETTY) > zz_amd_valid.c
+	- ln -s $< zz_amd_valid.c
 	$(C) -c $(I) zz_amd_valid.c
 
 #-------------------------------------------------------------------------------
 
-zl_amd_1.o: ../../AMD/Source/amd_1.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > zl_amd_1.c
+zl_amd_1.o: ../../AMD/Source/amd_l1.c
+	- ln -s $< zl_amd_1.c
 	$(C) -c $(I) zl_amd_1.c
 
-zl_amd_2.o: ../../AMD/Source/amd_2.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > zl_amd_2.c
+zl_amd_2.o: ../../AMD/Source/amd_l2.c
+	- ln -s $< zl_amd_2.c
 	$(C) -c $(I) zl_amd_2.c
 
-zl_amd_aat.o: ../../AMD/Source/amd_aat.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > zl_amd_aat.c
+zl_amd_aat.o: ../../AMD/Source/amd_l_aat.c
+	- ln -s $< zl_amd_aat.c
 	$(C) -c $(I) zl_amd_aat.c
 
-zl_amd_control.o: ../../AMD/Source/amd_control.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > zl_amd_control.c
+zl_amd_control.o: ../../AMD/Source/amd_l_control.c
+	- ln -s $< zl_amd_control.c
 	$(C) -c $(I) zl_amd_control.c
 
-zl_amd_defaults.o: ../../AMD/Source/amd_defaults.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > zl_amd_defaults.c
+zl_amd_defaults.o: ../../AMD/Source/amd_l_defaults.c
+	- ln -s $< zl_amd_defaults.c
 	$(C) -c $(I) zl_amd_defaults.c
 
-zl_amd_dump.o: ../../AMD/Source/amd_dump.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > zl_amd_dump.c
-	$(C) -c $(I) zl_amd_dump.c
+# zl_amd_dump.o: ../../AMD/Source/amd_l_dump.c
+# 	- ln -s $< zl_amd_dump.c
+# 	$(C) -c $(I) zl_amd_dump.c
 
-zl_amd_info.o: ../../AMD/Source/amd_info.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > zl_amd_info.c
+zl_amd_info.o: ../../AMD/Source/amd_l_info.c
+	- ln -s $< zl_amd_info.c
 	$(C) -c $(I) zl_amd_info.c
 
-zl_amd_order.o: ../../AMD/Source/amd_order.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > zl_amd_order.c
+zl_amd_order.o: ../../AMD/Source/amd_l_order.c
+	- ln -s $< zl_amd_order.c
 	$(C) -c $(I) zl_amd_order.c
 
-zl_amd_postorder.o: ../../AMD/Source/amd_postorder.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > zl_amd_postorder.c
+zl_amd_postorder.o: ../../AMD/Source/amd_l_postorder.c
+	- ln -s $< zl_amd_postorder.c
 	$(C) -c $(I) zl_amd_postorder.c
 
-zl_amd_post_tree.o: ../../AMD/Source/amd_post_tree.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > zl_amd_post_tree.c
+zl_amd_post_tree.o: ../../AMD/Source/amd_l_post_tree.c
+	- ln -s $< zl_amd_post_tree.c
 	$(C) -c $(I) zl_amd_post_tree.c
 
-zl_amd_preprocess.o: ../../AMD/Source/amd_preprocess.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > zl_amd_preprocess.c
+zl_amd_preprocess.o: ../../AMD/Source/amd_l_preprocess.c
+	- ln -s $< zl_amd_preprocess.c
 	$(C) -c $(I) zl_amd_preprocess.c
 
-zl_amd_valid.o: ../../AMD/Source/amd_valid.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > zl_amd_valid.c
+zl_amd_valid.o: ../../AMD/Source/amd_l_valid.c
+	- ln -s $< zl_amd_valid.c
 	$(C) -c $(I) zl_amd_valid.c
 
 #-------------------------------------------------------------------------------
@@ -701,564 +715,554 @@ zl_amd_valid.o: ../../AMD/Source/amd_valid.c
 #-------------------------------------------------------------------------------
 
 zz_camd_1.o: ../../CAMD/Source/camd_1.c
-	$(C) -E $(I) $< | $(PRETTY) > zz_camd_1.c
+	- ln -s $< zz_camd_1.c
 	$(C) -c $(I) zz_camd_1.c
 
 zz_camd_2.o: ../../CAMD/Source/camd_2.c
-	$(C) -E $(I) $< | $(PRETTY) > zz_camd_2.c
+	- ln -s $< zz_camd_2.c
 	$(C) -c $(I) zz_camd_2.c
 
 zz_camd_aat.o: ../../CAMD/Source/camd_aat.c
-	$(C) -E $(I) $< | $(PRETTY) > zz_camd_aat.c
+	- ln -s $< zz_camd_aat.c
 	$(C) -c $(I) zz_camd_aat.c
 
 zz_camd_control.o: ../../CAMD/Source/camd_control.c
-	$(C) -E $(I) $< | $(PRETTY) > zz_camd_control.c
+	- ln -s $< zz_camd_control.c
 	$(C) -c $(I) zz_camd_control.c
 
 zz_camd_defaults.o: ../../CAMD/Source/camd_defaults.c
-	$(C) -E $(I) $< | $(PRETTY) > zz_camd_defaults.c
+	- ln -s $< zz_camd_defaults.c
 	$(C) -c $(I) zz_camd_defaults.c
 
-zz_camd_dump.o: ../../CAMD/Source/camd_dump.c
-	$(C) -E $(I) $< | $(PRETTY) > zz_camd_dump.c
-	$(C) -c $(I) zz_camd_dump.c
+# zz_camd_dump.o: ../../CAMD/Source/camd_dump.c
+# 	- ln -s $< zz_camd_dump.c
+# 	$(C) -c $(I) zz_camd_dump.c
 
 zz_camd_info.o: ../../CAMD/Source/camd_info.c
-	$(C) -E $(I) $< | $(PRETTY) > zz_camd_info.c
+	- ln -s $< zz_camd_info.c
 	$(C) -c $(I) zz_camd_info.c
 
 zz_camd_order.o: ../../CAMD/Source/camd_order.c
-	$(C) -E $(I) $< | $(PRETTY) > zz_camd_order.c
+	- ln -s $< zz_camd_order.c
 	$(C) -c $(I) zz_camd_order.c
 
 zz_camd_postorder.o: ../../CAMD/Source/camd_postorder.c
-	$(C) -E $(I) $< | $(PRETTY) > zz_camd_postorder.c
+	- ln -s $< zz_camd_postorder.c
 	$(C) -c $(I) zz_camd_postorder.c
 
 zz_camd_preprocess.o: ../../CAMD/Source/camd_preprocess.c
-	$(C) -E $(I) $< | $(PRETTY) > zz_camd_preprocess.c
+	- ln -s $< zz_camd_preprocess.c
 	$(C) -c $(I) zz_camd_preprocess.c
 
 zz_camd_valid.o: ../../CAMD/Source/camd_valid.c
-	$(C) -E $(I) $< | $(PRETTY) > zz_camd_valid.c
+	- ln -s $< zz_camd_valid.c
 	$(C) -c $(I) zz_camd_valid.c
 
 #-------------------------------------------------------------------------------
 
-zl_camd_1.o: ../../CAMD/Source/camd_1.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > zl_camd_1.c
+zl_camd_1.o: ../../CAMD/Source/camd_l1.c
+	- ln -s $< zl_camd_1.c
 	$(C) -c $(I) zl_camd_1.c
 
-zl_camd_2.o: ../../CAMD/Source/camd_2.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > zl_camd_2.c
+zl_camd_2.o: ../../CAMD/Source/camd_l2.c
+	- ln -s $< zl_camd_2.c
 	$(C) -c $(I) zl_camd_2.c
 
-zl_camd_aat.o: ../../CAMD/Source/camd_aat.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > zl_camd_aat.c
+zl_camd_aat.o: ../../CAMD/Source/camd_l_aat.c
+	- ln -s $< zl_camd_aat.c
 	$(C) -c $(I) zl_camd_aat.c
 
-zl_camd_control.o: ../../CAMD/Source/camd_control.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > zl_camd_control.c
+zl_camd_control.o: ../../CAMD/Source/camd_l_control.c
+	- ln -s $< zl_camd_control.c
 	$(C) -c $(I) zl_camd_control.c
 
-zl_camd_defaults.o: ../../CAMD/Source/camd_defaults.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > zl_camd_defaults.c
+zl_camd_defaults.o: ../../CAMD/Source/camd_l_defaults.c
+	- ln -s $< zl_camd_defaults.c
 	$(C) -c $(I) zl_camd_defaults.c
 
-zl_camd_dump.o: ../../CAMD/Source/camd_dump.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > zl_camd_dump.c
-	$(C) -c $(I) zl_camd_dump.c
+# zl_camd_dump.o: ../../CAMD/Source/camd_l_dump.c
+# 	- ln -s $< zl_camd_dump.c
+# 	$(C) -c $(I) zl_camd_dump.c
 
-zl_camd_info.o: ../../CAMD/Source/camd_info.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > zl_camd_info.c
+zl_camd_info.o: ../../CAMD/Source/camd_l_info.c
+	- ln -s $< zl_camd_info.c
 	$(C) -c $(I) zl_camd_info.c
 
-zl_camd_order.o: ../../CAMD/Source/camd_order.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > zl_camd_order.c
+zl_camd_order.o: ../../CAMD/Source/camd_l_order.c
+	- ln -s $< zl_camd_order.c
 	$(C) -c $(I) zl_camd_order.c
 
-zl_camd_postorder.o: ../../CAMD/Source/camd_postorder.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > zl_camd_postorder.c
+zl_camd_postorder.o: ../../CAMD/Source/camd_l_postorder.c
+	- ln -s $< zl_camd_postorder.c
 	$(C) -c $(I) zl_camd_postorder.c
 
-zl_camd_preprocess.o: ../../CAMD/Source/camd_preprocess.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > zl_camd_preprocess.c
+zl_camd_preprocess.o: ../../CAMD/Source/camd_l_preprocess.c
+	- ln -s $< zl_camd_preprocess.c
 	$(C) -c $(I) zl_camd_preprocess.c
 
-zl_camd_valid.o: ../../CAMD/Source/camd_valid.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > zl_camd_valid.c
+zl_camd_valid.o: ../../CAMD/Source/camd_l_valid.c
+	- ln -s $< zl_camd_valid.c
 	$(C) -c $(I) zl_camd_valid.c
 
 #-------------------------------------------------------------------------------
 
 zz_colamd.o: ../../COLAMD/Source/colamd.c
-	$(C) -E $(I) $< | $(PRETTY) > zz_colamd.c
+	- ln -s $< zz_colamd.c
 	$(C) -c $(I) zz_colamd.c
 
-zl_colamd.o: ../../COLAMD/Source/colamd.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > zl_colamd.c
+zl_colamd.o: ../../COLAMD/Source/colamd_l.c
+	- ln -s $< zl_colamd.c
 	$(C) -c $(I) zl_colamd.c
 
 #-------------------------------------------------------------------------------
 
 zz_ccolamd.o: ../../CCOLAMD/Source/ccolamd.c
-	$(C) -E $(I) $< | $(PRETTY) > zz_ccolamd.c
+	- ln -s $< zz_ccolamd.c
 	$(C) -c $(I) zz_ccolamd.c
 
-zl_ccolamd.o: ../../CCOLAMD/Source/ccolamd.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > zl_ccolamd.c
+zl_ccolamd.o: ../../CCOLAMD/Source/ccolamd_l.c
+	- ln -s $< zl_ccolamd.c
 	$(C) -c $(I) zl_ccolamd.c
 
 #-------------------------------------------------------------------------------
 
 z_check.o: ../Check/cholmod_check.c
-	$(C) -E $(I) $< | $(PRETTY) > z_check.c
+	- ln -s $< z_check.c
 	$(C) -c $(I) z_check.c
 
 z_read.o: ../Check/cholmod_read.c
-	$(C) -E $(I) $< | $(PRETTY) > z_read.c
+	- ln -s $< z_read.c
 	$(C) -c $(I) z_read.c
 
 z_write.o: ../Check/cholmod_write.c
-	$(C) -E $(I) $< | $(PRETTY) > z_write.c
+	- ln -s $< z_write.c
 	$(C) -c $(I) z_write.c
 
 #-------------------------------------------------------------------------------
 
 z_common.o: ../Core/cholmod_common.c
-	$(C) -E $(I) $< | $(PRETTY) > z_common.c
+	- ln -s $< z_common.c
 	$(C) -c $(I) z_common.c
 
 z_version.o: ../Core/cholmod_version.c
-	$(C) -E $(I) $< | $(PRETTY) > z_version.c
+	- ln -s $< z_version.c
 	$(C) -c $(I) z_version.c
 
-z_dense.o: ../Core/cholmod_dense.c ../Core/t_cholmod_dense.c
-	$(C) -E $(I) $< | $(PRETTY) > z_dense.c
+z_dense.o: ../Core/cholmod_dense.c
+	- ln -s $< z_dense.c
 	$(C) -c $(I) z_dense.c
 
 z_factor.o: ../Core/cholmod_factor.c
-	$(C) -E $(I) $< | $(PRETTY) > z_factor.c
+	- ln -s $< z_factor.c
 	$(C) -c $(I) z_factor.c
 
-z_change_factor.o: ../Core/cholmod_change_factor.c \
-	../Core/t_cholmod_change_factor.c
-	$(C) -E $(I) $< | $(PRETTY) > z_change_factor.c
+z_change_factor.o: ../Core/cholmod_change_factor.c
+	- ln -s $< z_change_factor.c
 	$(C) -c $(I) z_change_factor.c
 
 z_memory.o: ../Core/cholmod_memory.c
-	$(C) -E $(I) $< | $(PRETTY) > z_memory.c
+	- ln -s $< z_memory.c
 	$(C) -c $(I) z_memory.c
 
 z_sparse.o: ../Core/cholmod_sparse.c
-	$(C) -E $(I) $< | $(PRETTY) > z_sparse.c
+	- ln -s $< z_sparse.c
 	$(C) -c $(I) z_sparse.c
 
 z_complex.o: ../Core/cholmod_complex.c
-	$(C) -E $(I) $< | $(PRETTY) > z_complex.c
+	- ln -s $< z_complex.c
 	$(C) -c $(I) z_complex.c
 
-z_transpose.o: ../Core/cholmod_transpose.c ../Core/t_cholmod_transpose.c
-	$(C) -E $(I) $< | $(PRETTY) > z_transpose.c
+z_transpose.o: ../Core/cholmod_transpose.c
+	- ln -s $< z_transpose.c
 	$(C) -c $(I) z_transpose.c
 
 z_band.o: ../Core/cholmod_band.c
-	$(C) -E $(I) $< | $(PRETTY) > z_band.c
+	- ln -s $< z_band.c
 	$(C) -c $(I) z_band.c
 
 z_copy.o: ../Core/cholmod_copy.c
-	$(C) -E $(I) $< | $(PRETTY) > z_copy.c
+	- ln -s $< z_copy.c
 	$(C) -c $(I) z_copy.c
 
-z_triplet.o: ../Core/cholmod_triplet.c ../Core/t_cholmod_triplet.c
-	$(C) -E $(I) $< | $(PRETTY) > z_triplet.c
+z_triplet.o: ../Core/cholmod_triplet.c
+	- ln -s $< z_triplet.c
 	$(C) -c $(I) z_triplet.c
 
 z_error.o: ../Core/cholmod_error.c
-	$(C) -E $(I) $< | $(PRETTY) > z_error.c
+	- ln -s $< z_error.c
 	$(C) -c $(I) z_error.c
 
 z_aat.o: ../Core/cholmod_aat.c
-	$(C) -E $(I) $< | $(PRETTY) > z_aat.c
+	- ln -s $< z_aat.c
 	$(C) -c $(I) z_aat.c
 
 z_add.o: ../Core/cholmod_add.c
-	$(C) -E $(I) $< | $(PRETTY) > z_add.c
+	- ln -s $< z_add.c
 	$(C) -c $(I) z_add.c
 
 #-------------------------------------------------------------------------------
 
 z_amd.o: ../Cholesky/cholmod_amd.c
-	$(C) -E $(I) $< | $(PRETTY) > z_amd.c
+	- ln -s $< z_amd.c
 	$(C) -c $(I) z_amd.c
 
 z_analyze.o: ../Cholesky/cholmod_analyze.c
-	$(C) -E $(I) $< | $(PRETTY) > z_analyze.c
+	- ln -s $< z_analyze.c
 	$(C) -c $(I) z_analyze.c
 
 z_colamd.o: ../Cholesky/cholmod_colamd.c
-	$(C) -E $(I) $< | $(PRETTY) > z_colamd.c
+	- ln -s $< z_colamd.c
 	$(C) -c $(I) z_colamd.c
 
 z_etree.o: ../Cholesky/cholmod_etree.c
-	$(C) -E $(I) $< | $(PRETTY) > z_etree.c
+	- ln -s $< z_etree.c
 	$(C) -c $(I) z_etree.c
 
 z_factorize.o: ../Cholesky/cholmod_factorize.c
-	$(C) -E $(I) $< | $(PRETTY) > z_factorize.c
+	- ln -s $< z_factorize.c
 	$(C) -c $(I) z_factorize.c
 
 z_postorder.o: ../Cholesky/cholmod_postorder.c
-	$(C) -E $(I) $< | $(PRETTY) > z_postorder.c
+	- ln -s $< z_postorder.c
 	$(C) -c $(I) z_postorder.c
 
-z_rcond.o: ../Cholesky/cholmod_rcond.c 
-	$(C) -E $(I) $< | $(PRETTY) > z_rcond.c
+z_rcond.o: ../Cholesky/cholmod_rcond.c
+	- ln -s $< z_rcond.c
 	$(C) -c $(I) z_rcond.c
 
 z_resymbol.o: ../Cholesky/cholmod_resymbol.c
-	$(C) -E $(I) $< | $(PRETTY) > z_resymbol.c
+	- ln -s $< z_resymbol.c
 	$(C) -c $(I) z_resymbol.c
 
 z_rowcolcounts.o: ../Cholesky/cholmod_rowcolcounts.c
-	$(C) -E $(I) $< | $(PRETTY) > z_rowcolcounts.c
+	- ln -s $< z_rowcolcounts.c
 	$(C) -c $(I) z_rowcolcounts.c
 
-z_solve.o: ../Cholesky/cholmod_solve.c ../Cholesky/t_cholmod_lsolve.c \
-	../Cholesky/t_cholmod_ltsolve.c ../Cholesky/t_cholmod_solve.c
-	$(C) -E $(I) $< | $(PRETTY) > z_solve.c
+z_solve.o: ../Cholesky/cholmod_solve.c
+	- ln -s $< z_solve.c
 	$(C) -c $(I) z_solve.c
 
 z_spsolve.o: ../Cholesky/cholmod_spsolve.c
-	$(C) -E $(I) $< | $(PRETTY) > z_spsolve.c
+	- ln -s $< z_spsolve.c
 	$(C) -c $(I) z_spsolve.c
 
-z_rowfac.o: ../Cholesky/cholmod_rowfac.c ../Cholesky/t_cholmod_rowfac.c
-	$(C) -E $(I) $< | $(PRETTY) > z_rowfac.c
+z_rowfac.o: ../Cholesky/cholmod_rowfac.c
+	- ln -s $< z_rowfac.c
 	$(C) -c $(I) z_rowfac.c
 
 #------------------------------------------------------------------------------- 
 z_ccolamd.o: ../Partition/cholmod_ccolamd.c
-	$(C) -E $(I) $< | $(PRETTY) > z_ccolamd.c
+	- ln -s $< z_ccolamd.c
 	$(C) -c $(I) z_ccolamd.c
 
 z_csymamd.o: ../Partition/cholmod_csymamd.c
-	$(C) -E $(I) $< | $(PRETTY) > z_csymamd.c
+	- ln -s $< z_csymamd.c
 	$(C) -c $(I) z_csymamd.c
 
 z_camd.o: ../Partition/cholmod_camd.c
-	$(C) -E $(I) $< | $(PRETTY) > z_camd.c
+	- ln -s $< z_camd.c
 	$(C) -c $(I) z_camd.c
 
 z_metis.o: ../Partition/cholmod_metis.c
-	$(C) -E $(I) $< | $(PRETTY) > z_metis.c
+	- ln -s $< z_metis.c
 	$(C) -c $(I) z_metis.c
 
 z_nesdis.o: ../Partition/cholmod_nesdis.c
-	$(C) -E $(I) $< | $(PRETTY) > z_nesdis.c
+	- ln -s $< z_nesdis.c
 	$(C) -c $(I) z_nesdis.c
 
 #-------------------------------------------------------------------------------
 
 z_horzcat.o: ../MatrixOps/cholmod_horzcat.c
-	$(C) -E $(I) $< | $(PRETTY) > z_horzcat.c
+	- ln -s $< z_horzcat.c
 	$(C) -c $(I) z_horzcat.c
 
 z_norm.o: ../MatrixOps/cholmod_norm.c
-	$(C) -E $(I) $< | $(PRETTY) > z_norm.c
+	$- ln -s $< z_norm.c
 	$(C) -c $(I) z_norm.c
 
 z_scale.o: ../MatrixOps/cholmod_scale.c
-	$(C) -E $(I) $< | $(PRETTY) > z_scale.c
+	- ln -s $< z_scale.c
 	$(C) -c $(I) z_scale.c
 
 z_drop.o: ../MatrixOps/cholmod_drop.c
-	$(C) -E $(I) $< | $(PRETTY) > z_drop.c
+	- ln -s $< z_drop.c
 	$(C) -c $(I) z_drop.c
 
-z_sdmult.o: ../MatrixOps/cholmod_sdmult.c ../MatrixOps/t_cholmod_sdmult.c
-	$(C) -E $(I) $< | $(PRETTY) > z_sdmult.c
+z_sdmult.o: ../MatrixOps/cholmod_sdmult.c
+	- ln -s $< z_sdmult.c
 	$(C) -c $(I) z_sdmult.c
 
 z_ssmult.o: ../MatrixOps/cholmod_ssmult.c
-	$(C) -E $(I) $< | $(PRETTY) > z_ssmult.c
+	- ln -s $< z_ssmult.c
 	$(C) -c $(I) z_ssmult.c
 
 z_submatrix.o: ../MatrixOps/cholmod_submatrix.c
-	$(C) -E $(I) $< | $(PRETTY) > z_submatrix.c
+	- ln -s $< z_submatrix.c
 	$(C) -c $(I) z_submatrix.c
 
 z_vertcat.o: ../MatrixOps/cholmod_vertcat.c
-	$(C) -E $(I) $< | $(PRETTY) > z_vertcat.c
+	- ln -s $< z_vertcat.c
 	$(C) -c $(I) z_vertcat.c
 
 z_symmetry.o: ../MatrixOps/cholmod_symmetry.c
-	$(C) -E $(I) $< | $(PRETTY) > z_symmetry.c
+	- ln -s $< z_symmetry.c
 	$(C) -c $(I) z_symmetry.c
 
 #-------------------------------------------------------------------------------
 
 z_rowadd.o: ../Modify/cholmod_rowadd.c
-	$(C) -E $(I) $< | $(PRETTY) > z_rowadd.c
+	- ln -s $< z_rowadd.c
 	$(C) -c $(I) z_rowadd.c
 
 z_rowdel.o: ../Modify/cholmod_rowdel.c
-	$(C) -E $(I) $< | $(PRETTY) > z_rowdel.c
+	- ln -s $< z_rowdel.c
 	$(C) -c $(I) z_rowdel.c
 
-z_updown.o: ../Modify/cholmod_updown.c \
-	../Modify/t_cholmod_updown.c ../Modify/t_cholmod_updown_numkr.c
-	$(C) -E $(I) $< | $(PRETTY) > z_updown.c
+z_updown.o: ../Modify/cholmod_updown.c
+	- ln -s $< z_updown.c
 	$(C) -c $(I) z_updown.c
 
 #-------------------------------------------------------------------------------
 
-z_super_numeric.o: ../Supernodal/cholmod_super_numeric.c \
-		../Supernodal/t_cholmod_super_numeric.c \
-		../GPU/t_cholmod_gpu.c
-	$(C) -E $(I) $< | $(PRETTY) > z_super_numeric.c
+z_super_numeric.o: ../Supernodal/cholmod_super_numeric.c
+	- ln -s $< z_super_numeric.c
 	$(C) -c $(I) z_super_numeric.c
 
 z_super_symbolic.o: ../Supernodal/cholmod_super_symbolic.c
-	$(C) -E $(I) $< | $(PRETTY) > z_super_symbolic.c
+	- ln -s $< z_super_symbolic.c
 	$(C) -c $(I) z_super_symbolic.c
 
 z_gpu.o: ../GPU/cholmod_gpu.c
-	$(C) -E $(I) $< | $(PRETTY) > z_gpu.c
+	- ln -s $< z_gpu.c
 	$(C) -c $(I) z_gpu.c
 
 z_super_solve.o: ../Supernodal/cholmod_super_solve.c
-	$(C) -E $(I) $< | $(PRETTY) > z_super_solve.c
+	- ln -s $< z_super_solve.c
 	$(C) -c $(I) z_super_solve.c
 
 #-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
 
-l_check.o: ../Check/cholmod_check.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_check.c
+l_check.o: ../Check/cholmod_l_check.c
+	- ln -s $< l_check.c
 	$(C) -c $(I) l_check.c
 
-l_read.o: ../Check/cholmod_read.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_read.c
+l_read.o: ../Check/cholmod_l_read.c
+	- ln -s $< l_read.c
 	$(C) -c $(I) l_read.c
 
-l_write.o: ../Check/cholmod_write.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_write.c
+l_write.o: ../Check/cholmod_l_write.c
+	- ln -s $< l_write.c
 	$(C) -c $(I) l_write.c
 
 #-------------------------------------------------------------------------------
 
-l_common.o: ../Core/cholmod_common.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_common.c
+l_common.o: ../Core/cholmod_l_common.c
+	- ln -s $< l_common.c
 	$(C) -c $(I) l_common.c
 
-l_version.o: ../Core/cholmod_version.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_version.c
+l_version.o: ../Core/cholmod_l_version.c
+	- ln -s $< l_version.c
 	$(C) -c $(I) l_version.c
 
-l_dense.o: ../Core/cholmod_dense.c ../Core/t_cholmod_dense.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_dense.c
+l_dense.o: ../Core/cholmod_l_dense.c
+	- ln -s $< l_dense.c
 	$(C) -c $(I) l_dense.c
 
-l_factor.o: ../Core/cholmod_factor.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_factor.c
+l_factor.o: ../Core/cholmod_l_factor.c
+	- ln -s $< l_factor.c
 	$(C) -c $(I) l_factor.c
 
-l_change_factor.o: ../Core/cholmod_change_factor.c \
-	../Core/t_cholmod_change_factor.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_change_factor.c
+l_change_factor.o: ../Core/cholmod_l_change_factor.c
+	- ln -s $< l_change_factor.c
 	$(C) -c $(I) l_change_factor.c
 
-l_memory.o: ../Core/cholmod_memory.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_memory.c
+l_memory.o: ../Core/cholmod_l_memory.c
+	- ln -s $< l_memory.c
 	$(C) -c $(I) l_memory.c
 
-l_sparse.o: ../Core/cholmod_sparse.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_sparse.c
+l_sparse.o: ../Core/cholmod_l_sparse.c
+	- ln -s $< l_sparse.c
 	$(C) -c $(I) l_sparse.c
 
-l_complex.o: ../Core/cholmod_complex.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_complex.c
+l_complex.o: ../Core/cholmod_l_complex.c
+	- ln -s $< l_complex.c
 	$(C) -c $(I) l_complex.c
 
-l_transpose.o: ../Core/cholmod_transpose.c ../Core/t_cholmod_transpose.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_transpose.c
+l_transpose.o: ../Core/cholmod_l_transpose.c
+	- ln -s $< l_transpose.c
 	$(C) -c $(I) l_transpose.c
 
-l_band.o: ../Core/cholmod_band.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_band.c
+l_band.o: ../Core/cholmod_l_band.c
+	- ln -s $< l_band.c
 	$(C) -c $(I) l_band.c
 
-l_copy.o: ../Core/cholmod_copy.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_copy.c
+l_copy.o: ../Core/cholmod_l_copy.c
+	- ln -s $< l_copy.c
 	$(C) -c $(I) l_copy.c
 
-l_triplet.o: ../Core/cholmod_triplet.c ../Core/t_cholmod_triplet.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_triplet.c
+l_triplet.o: ../Core/cholmod_l_triplet.c
+	- ln -s $< l_triplet.c
 	$(C) -c $(I) l_triplet.c
 
-l_error.o: ../Core/cholmod_error.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_error.c
+l_error.o: ../Core/cholmod_l_error.c
+	- ln -s $< l_error.c
 	$(C) -c $(I) l_error.c
 
-l_aat.o: ../Core/cholmod_aat.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_aat.c
+l_aat.o: ../Core/cholmod_l_aat.c
+	- ln -s $< l_aat.c
 	$(C) -c $(I) l_aat.c
 
-l_add.o: ../Core/cholmod_add.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_add.c
+l_add.o: ../Core/cholmod_l_add.c
+	- ln -s $< l_add.c
 	$(C) -c $(I) l_add.c
 
 #-------------------------------------------------------------------------------
 
-l_amd.o: ../Cholesky/cholmod_amd.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_amd.c
+l_amd.o: ../Cholesky/cholmod_l_amd.c
+	- ln -s $< l_amd.c
 	$(C) -c $(I) l_amd.c
 
-l_analyze.o: ../Cholesky/cholmod_analyze.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_analyze.c
+l_analyze.o: ../Cholesky/cholmod_l_analyze.c
+	- ln -s $< l_analyze.c
 	$(C) -c $(I) l_analyze.c
 
-l_colamd.o: ../Cholesky/cholmod_colamd.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_colamd.c
+l_colamd.o: ../Cholesky/cholmod_l_colamd.c
+	- ln -s $< l_colamd.c
 	$(C) -c $(I) l_colamd.c
 
-l_etree.o: ../Cholesky/cholmod_etree.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_etree.c
+l_etree.o: ../Cholesky/cholmod_l_etree.c
+	- ln -s $< l_etree.c
 	$(C) -c $(I) l_etree.c
 
-l_factorize.o: ../Cholesky/cholmod_factorize.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_factorize.c
+l_factorize.o: ../Cholesky/cholmod_l_factorize.c
+	- ln -s $< l_factorize.c
 	$(C) -c $(I) l_factorize.c
 
-l_postorder.o: ../Cholesky/cholmod_postorder.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_postorder.c
+l_postorder.o: ../Cholesky/cholmod_l_postorder.c
+	- ln -s $< l_postorder.c
 	$(C) -c $(I) l_postorder.c
 
-l_rcond.o: ../Cholesky/cholmod_rcond.c 
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_rcond.c
+l_rcond.o: ../Cholesky/cholmod_l_rcond.c
+	- ln -s $< l_rcond.c
 	$(C) -c $(I) l_rcond.c
 
-l_resymbol.o: ../Cholesky/cholmod_resymbol.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_resymbol.c
+l_resymbol.o: ../Cholesky/cholmod_l_resymbol.c
+	- ln -s $< l_resymbol.c
 	$(C) -c $(I) l_resymbol.c
 
-l_rowcolcounts.o: ../Cholesky/cholmod_rowcolcounts.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_rowcolcounts.c
+l_rowcolcounts.o: ../Cholesky/cholmod_l_rowcolcounts.c
+	- ln -s $< l_rowcolcounts.c
 	$(C) -c $(I) l_rowcolcounts.c
 
-l_solve.o: ../Cholesky/cholmod_solve.c ../Cholesky/t_cholmod_lsolve.c \
-	../Cholesky/t_cholmod_ltsolve.c ../Cholesky/t_cholmod_solve.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_solve.c
+l_solve.o: ../Cholesky/cholmod_l_solve.c
+	- ln -s $< l_solve.c
 	$(C) -c $(I) l_solve.c
 
-l_spsolve.o: ../Cholesky/cholmod_spsolve.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_spsolve.c
+l_spsolve.o: ../Cholesky/cholmod_l_spsolve.c
+	- ln -s $< l_spsolve.c
 	$(C) -c $(I) l_spsolve.c
 
-l_rowfac.o: ../Cholesky/cholmod_rowfac.c ../Cholesky/t_cholmod_rowfac.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_rowfac.c
+l_rowfac.o: ../Cholesky/cholmod_l_rowfac.c
+	- ln -s $< l_rowfac.c
 	$(C) -c $(I) l_rowfac.c
 
 #------------------------------------------------------------------------------- 
-l_ccolamd.o: ../Partition/cholmod_ccolamd.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_ccolamd.c
+l_ccolamd.o: ../Partition/cholmod_l_ccolamd.c
+	- ln -s $< l_ccolamd.c
 	$(C) -c $(I) l_ccolamd.c
 
-l_csymamd.o: ../Partition/cholmod_csymamd.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_csymamd.c
+l_csymamd.o: ../Partition/cholmod_l_csymamd.c
+	- ln -s $< l_csymamd.c
 	$(C) -c $(I) l_csymamd.c
 
-l_camd.o: ../Partition/cholmod_camd.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_camd.c
+l_camd.o: ../Partition/cholmod_l_camd.c
+	- ln -s $< l_camd.c
 	$(C) -c $(I) l_camd.c
 
-l_metis.o: ../Partition/cholmod_metis.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_metis.c
+l_metis.o: ../Partition/cholmod_l_metis.c
+	- ln -s $< l_metis.c
 	$(C) -c $(I) l_metis.c
 
-l_nesdis.o: ../Partition/cholmod_nesdis.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_nesdis.c
+l_nesdis.o: ../Partition/cholmod_l_nesdis.c
+	- ln -s $< l_nesdis.c
 	$(C) -c $(I) l_nesdis.c
 
 #-------------------------------------------------------------------------------
 
-l_horzcat.o: ../MatrixOps/cholmod_horzcat.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_horzcat.c
+l_horzcat.o: ../MatrixOps/cholmod_l_horzcat.c
+	- ln -s $< l_horzcat.c
 	$(C) -c $(I) l_horzcat.c
 
-l_norm.o: ../MatrixOps/cholmod_norm.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_norm.c
+l_norm.o: ../MatrixOps/cholmod_l_norm.c
+	- ln -s $< l_norm.c
 	$(C) -c $(I) l_norm.c
 
-l_scale.o: ../MatrixOps/cholmod_scale.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_scale.c
+l_scale.o: ../MatrixOps/cholmod_l_scale.c
+	- ln -s $< l_scale.c
 	$(C) -c $(I) l_scale.c
 
-l_drop.o: ../MatrixOps/cholmod_drop.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_drop.c
+l_drop.o: ../MatrixOps/cholmod_l_drop.c
+	- ln -s $< l_drop.c
 	$(C) -c $(I) l_drop.c
 
-l_sdmult.o: ../MatrixOps/cholmod_sdmult.c ../MatrixOps/t_cholmod_sdmult.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_sdmult.c
+l_sdmult.o: ../MatrixOps/cholmod_l_sdmult.c
+	- ln -s $< l_sdmult.c
 	$(C) -c $(I) l_sdmult.c
 
-l_ssmult.o: ../MatrixOps/cholmod_ssmult.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_ssmult.c
+l_ssmult.o: ../MatrixOps/cholmod_l_ssmult.c
+	- ln -s $< l_ssmult.c
 	$(C) -c $(I) l_ssmult.c
 
-l_submatrix.o: ../MatrixOps/cholmod_submatrix.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_submatrix.c
+l_submatrix.o: ../MatrixOps/cholmod_l_submatrix.c
+	- ln -s $< l_submatrix.c
 	$(C) -c $(I) l_submatrix.c
 
-l_vertcat.o: ../MatrixOps/cholmod_vertcat.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_vertcat.c
+l_vertcat.o: ../MatrixOps/cholmod_l_vertcat.c
+	- ln -s $< l_vertcat.c
 	$(C) -c $(I) l_vertcat.c
 
-l_symmetry.o: ../MatrixOps/cholmod_symmetry.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_symmetry.c
+l_symmetry.o: ../MatrixOps/cholmod_l_symmetry.c
+	- ln -s $< l_symmetry.c
 	$(C) -c $(I) l_symmetry.c
 
 #-------------------------------------------------------------------------------
 
-l_rowadd.o: ../Modify/cholmod_rowadd.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_rowadd.c
+l_rowadd.o: ../Modify/cholmod_l_rowadd.c
+	- ln -s $< l_rowadd.c
 	$(C) -c $(I) l_rowadd.c
 
-l_rowdel.o: ../Modify/cholmod_rowdel.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_rowdel.c
+l_rowdel.o: ../Modify/cholmod_l_rowdel.c
+	- ln -s $< l_rowdel.c
 	$(C) -c $(I) l_rowdel.c
 
-l_updown.o: ../Modify/cholmod_updown.c \
-	../Modify/t_cholmod_updown.c ../Modify/t_cholmod_updown_numkr.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_updown.c
+l_updown.o: ../Modify/cholmod_l_updown.c
+	- ln -s $< l_updown.c
 	$(C) -c $(I) l_updown.c
 
 #-------------------------------------------------------------------------------
 
-l_super_numeric.o: ../Supernodal/cholmod_super_numeric.c \
-		../Supernodal/t_cholmod_super_numeric.c \
-                ../GPU/t_cholmod_gpu.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_super_numeric.c
+l_super_numeric.o: ../Supernodal/cholmod_l_super_numeric.c
+	- ln -s $< l_super_numeric.c
 	$(C) -c $(I) l_super_numeric.c
 
-l_super_symbolic.o: ../Supernodal/cholmod_super_symbolic.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_super_symbolic.c
+l_super_symbolic.o: ../Supernodal/cholmod_l_super_symbolic.c
+	- ln -s $< l_super_symbolic.c
 	$(C) -c $(I) l_super_symbolic.c
 
-l_gpu.o: ../GPU/cholmod_gpu.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_gpu.c
+l_gpu.o: ../GPU/cholmod_l_gpu.c
+	- ln -s $< l_gpu.c
 	$(C) -c $(I) l_gpu.c
 
-l_super_solve.o: ../Supernodal/cholmod_super_solve.c
-	$(C) -DDLONG -E $(I) $< | $(PRETTY) > l_super_solve.c
+l_super_solve.o: ../Supernodal/cholmod_l_super_solve.c
+	- ln -s $< l_super_solve.c
 	$(C) -c $(I) l_super_solve.c
 
-cholmod_gpu_kernels.o: ../GPU/cholmod_gpu_kernels.c \
-        ../GPU/cholmod_gpu_kernels.cu
-	$(C) -DDLONG -c $(I) $<
-	$(NVCC) -I../../SuiteSparse_config -Xcompiler -fPIC -O3 -c ../GPU/cholmod_gpu_kernels.cu
+# GPU kernels only use int64_t:
+l_gpu_kernels.o: ../GPU/cholmod_gpu_kernels.cu
+	- ln -s $< l_gpu_kernels.cu
+	$(NVCC) $(CHOLMOD_CONFIG) -I../../SuiteSparse_config -Xcompiler -fPIC -O3 -c l_gpu_kernels.cu
 
 #-------------------------------------------------------------------------------
 

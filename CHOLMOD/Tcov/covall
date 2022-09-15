@@ -1,4 +1,4 @@
-#!/bin/csh
+#!/bin/bash
 
 # ------------------------------------------------------------------------------
 # CHOLMOD/Tcov Module.  Copyright (C) 2005-2022, Timothy A. Davis.
@@ -7,6 +7,6 @@
 # ------------------------------------------------------------------------------
 
 ./gcovs z*.c l_*c
-./covs > covs.out
+./covs *.gcov > covs.out
 echo -n "statments not yet tested: "
 grep -c "#####" covs.out
