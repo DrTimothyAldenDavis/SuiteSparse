@@ -14,6 +14,7 @@ function L = resymbol (L, A)						    %#ok
 %
 % See also LCHOL, LDLUPDATE, LDLROWMOD
 
-%   Copyright 2006-2015, Timothy A. Davis, http://www.suitesparse.com
+% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 error ('resymbol not found') ;

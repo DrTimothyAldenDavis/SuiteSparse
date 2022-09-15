@@ -11,7 +11,8 @@ function cholmod_make (metis_path)
 %   ldlupdate, metis, spsym, nesdis, septree, resymbol, sdmult, sparse2,
 %   symbfact2, mread, mwrite, ldlrowmod
 
-%   Copyright 2006-2015, Timothy A. Davis, http://www.suitesparse.com
+% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 details = 0 ;	    % 1 if details of each command are to be printed
 

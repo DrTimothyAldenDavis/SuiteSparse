@@ -2,9 +2,11 @@
 /* === Check/cholmod_read =================================================== */
 /* ========================================================================== */
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Check Module.  Copyright (C) 2005-2006, Timothy A. Davis.
- * -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// CHOLMOD/Check Module.  Copyright (C) 2005-2022, Timothy A. Davis
+// All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
+//------------------------------------------------------------------------------
 
 /* Read a sparse matrix in triplet or dense form.  A triplet matrix can be
  * returned as compressed-column sparse matrix.  The file format is compatible

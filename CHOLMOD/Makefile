@@ -15,6 +15,10 @@
 #
 #       make CC=gcc CXX=g++
 #
+# To compile with any GPL modules (MatrixOps, Modify, and Supernodal):
+#
+#       make CMAKE_OPTIONS='-DNGPL=1'
+#
 # To compile/install for system-wide usage:
 #
 #       make
@@ -34,6 +38,7 @@ JOBS ?= 8
 default: library
 
 library:
+	echo "CMake options: " $(CMAKE_OPTIONS)
 	( cd build && cmake $(CMAKE_OPTIONS) .. && $(MAKE) --jobs=${JOBS} )
 
 # install only in SuiteSparse/lib and SuiteSparse/include

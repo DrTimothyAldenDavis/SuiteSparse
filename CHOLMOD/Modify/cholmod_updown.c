@@ -2,11 +2,11 @@
 /* === Modify/cholmod_updown ================================================ */
 /* ========================================================================== */
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Modify Module.
- * Copyright (C) 2005-2006, Timothy A. Davis and William W. Hager.
- * http://www.suitesparse.com
- * -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// CHOLMOD/Modify Module.  Copyright (C) 2005-2022, Timothy A. Davis,
+// and William W. Hager. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+//------------------------------------------------------------------------------
 
 /* Updates/downdates the LDL' factorization (symbolic, then numeric), by
  * computing a new factorization of

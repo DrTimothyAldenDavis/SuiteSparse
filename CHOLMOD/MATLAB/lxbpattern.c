@@ -2,11 +2,11 @@
 /* === CHOLMOD/MATLAB/Test/lxbpattern mexFunction =========================== */
 /* ========================================================================== */
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/MATLAB Module.  Copyright (C) 2005-2013, Timothy A. Davis
- * http://www.suitesparse.com
- * MATLAB(tm) is a Trademark of The MathWorks, Inc.
- * -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// CHOLMOD/MATLAB Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+//------------------------------------------------------------------------------
 
 /* Find the nonzero pattern of x=L\b for a sparse vector b.  If numerical
  * cancellation has caused entries to drop in L, then this function may

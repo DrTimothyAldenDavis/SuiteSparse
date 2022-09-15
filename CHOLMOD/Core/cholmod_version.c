@@ -2,10 +2,11 @@
 /* === Core/cholmod_version ================================================= */
 /* ========================================================================== */
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Core Module.  Copyright (C) 2005-2013,
- * Univ. of Florida.  Author: Timothy A. Davis
- * -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// CHOLMOD/Core Module.  Copyright (C) 2005-2022, University of Florida.
+// All Rights Reserved. Author:  Timothy A. Davis
+// SPDX-License-Identifier: LGPL-2.1+
+//------------------------------------------------------------------------------
 
 /* Return the current version of CHOLMOD.  Unlike all other functions in
    CHOLMOD, this function does not require the CHOLMOD Common. */

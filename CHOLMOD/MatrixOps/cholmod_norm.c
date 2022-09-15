@@ -2,10 +2,11 @@
 /* === MatrixOps/cholmod_norm =============================================== */
 /* ========================================================================== */
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/MatrixOps Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * http://www.suitesparse.com
- * -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// CHOLMOD/MatrixOps Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+//------------------------------------------------------------------------------
 
 /* r = norm (A), compute the infinity-norm, 1-norm, or 2-norm of a sparse or
  * dense matrix.  Can compute the 2-norm only for a dense column vector.

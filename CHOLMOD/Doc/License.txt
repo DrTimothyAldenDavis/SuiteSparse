@@ -2,7 +2,7 @@
 ==> Check/License.txt <==
 --------------------------------------------------------------------------------
 
-    CHOLMOD/Check Module.  Copyright (C) 2005-2006, Timothy A. Davis CHOLMOD is
+    CHOLMOD/Check Module.  Copyright (C) 2005-2022, Timothy A. Davis CHOLMOD is
     also available under other licenses; contact authors for details.
     http://www.suitesparse.com
 
@@ -29,7 +29,7 @@
 ==> Cholesky/License.txt <==
 --------------------------------------------------------------------------------
 
-    CHOLMOD/Cholesky module, Copyright (C) 2005-2006, Timothy A. Davis.
+    CHOLMOD/Cholesky module, Copyright (C) 2005-2022, Timothy A. Davis.
     CHOLMOD is also available under other licenses; contact authors for
     details.  http://www.suitesparse.com
 
@@ -57,7 +57,7 @@
 ==> Core/License.txt <==
 --------------------------------------------------------------------------------
 
-    CHOLMOD/Core Module.  Copyright (C) 2005-2006, Univ. of Florida.  Author:
+    CHOLMOD/Core Module.  Copyright (C) 2005-2022, Univ. of Florida.  Author:
     Timothy A. Davis.  CHOLMOD is also available under other licenses; contact
     authors for details.  http://www.suitesparse.com
 
@@ -86,7 +86,7 @@
 ==> Demo/License.txt <==
 --------------------------------------------------------------------------------
 
-    CHOLMOD/Demo Module.  Copyright (C) 2005-2006, Timothy A. Davis.  CHOLMOD
+    CHOLMOD/Demo Module.  Copyright (C) 2005-2022, Timothy A. Davis.  CHOLMOD
     is also available under other licenses; contact authors for details.
     http://www.suitesparse.com
 
@@ -115,7 +115,7 @@
 ==> MATLAB/License.txt <==
 --------------------------------------------------------------------------------
 
-    CHOLMOD/MATLAB Module.  Copyright (C) 2005-2006, Timothy A. Davis.  CHOLMOD
+    CHOLMOD/MATLAB Module.  Copyright (C) 2005-2022, Timothy A. Davis.  CHOLMOD
     is also available under other licenses; contact authors for details.
     MATLAB(tm) is a Registered Trademark of The MathWorks, Inc.
     http://www.suitesparse.com
@@ -144,7 +144,7 @@
 ==> MatrixOps/License.txt <==
 --------------------------------------------------------------------------------
 
-    CHOLMOD/MatrixOps Module.  Copyright (C) 2005-2006, Timothy A. Davis.
+    CHOLMOD/MatrixOps Module.  Copyright (C) 2005-2022, Timothy A. Davis.
     CHOLMOD is also available under other licenses; contact authors for
     details.  http://www.suitesparse.com
 
@@ -173,7 +173,7 @@
 ==> Modify/License.txt <==
 --------------------------------------------------------------------------------
 
-    CHOLMOD/Modify Module.  Copyright (C) 2005-2006, Timothy A. Davis and
+    CHOLMOD/Modify Module.  Copyright (C) 2005-2022, Timothy A. Davis and
     William W. Hager.  CHOLMOD is also available under other licenses; contact
     authors for details.  http://www.suitesparse.com
 
@@ -203,7 +203,7 @@
 --------------------------------------------------------------------------------
 
     CHOLMOD/Partition Module.
-    Copyright (C) 2005-2006, Univ. of Florida.  Author: Timothy A. Davis
+    Copyright (C) 2005-2022, Univ. of Florida.  Author: Timothy A. Davis
     CHOLMOD is also available under other licenses; contact authors for details.
     http://www.suitesparse.com
 
@@ -233,7 +233,7 @@
 --------------------------------------------------------------------------------
 
     CHOLMOD/Supernodal Module.
-    Copyright (C) 2005-2006, Timothy A. Davis
+    Copyright (C) 2005-2022, Timothy A. Davis
     CHOLMOD is also available under other licenses; contact authors for details.
     http://www.suitesparse.com
 
@@ -262,7 +262,7 @@
 ==> Tcov/License.txt <==
 --------------------------------------------------------------------------------
 
-    CHOLMOD/Tcov Module.  Copyright (C) 2005-2006, Timothy A. Davis
+    CHOLMOD/Tcov Module.  Copyright (C) 2005-2022, Timothy A. Davis
     CHOLMOD is also available under other licenses; contact authors for details.
     http://www.suitesparse.com
 
@@ -291,7 +291,7 @@
 ==> Valgrind/License.txt <==
 --------------------------------------------------------------------------------
 
-    CHOLMOD/Valgrind Module.  Copyright (C) 2005-2006, Timothy A. Davis.
+    CHOLMOD/Valgrind Module.  Copyright (C) 2005-2022, Timothy A. Davis.
     CHOLMOD is also available under other licenses; contact authors for details.
     http://www.suitesparse.com
 

@@ -32,6 +32,7 @@ function [LD,p,q] = ldlchol (A,beta)					    %#ok
 %
 %   See also LDLUPDATE, LDLSOLVE, LDLSPLIT, CHOL2, LCHOL, CHOL, SPARSE2
 
-%   Copyright 2006-2007, Timothy A. Davis, http://www.suitesparse.com
+% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 error ('ldlchol mexFunction not found') ;

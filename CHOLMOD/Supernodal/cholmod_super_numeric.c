@@ -2,10 +2,11 @@
 /* === Supernodal/cholmod_super_numeric ===================================== */
 /* ========================================================================== */
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Supernodal Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * http://www.suitesparse.com
- * -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// CHOLMOD/Supernodal Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+//------------------------------------------------------------------------------
 
 /* Computes the Cholesky factorization of A+beta*I or A*F+beta*I.  Only the
  * the lower triangular part of A+beta*I or A*F+beta*I is accessed.  The

@@ -18,7 +18,8 @@ function cholmod_install (metis_path)
 %   ldlupdate, metis, spsym, nesdis, septree, resymbol, sdmult, sparse2,
 %   symbfact2, mread, mwrite, amd2, colamd2, camd, ccolamd, ldlrowmod
 
-%   Copyright 2006-2015, Timothy A. Davis
+% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 if (nargin < 1)
     metis_path = '../../metis-5.1.0' ;

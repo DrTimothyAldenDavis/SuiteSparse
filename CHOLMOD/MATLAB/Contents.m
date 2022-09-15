@@ -35,4 +35,5 @@
 % Note: cholmod has been renamed cholmod2, so as not to conflict with itself
 % (the MATLAB built-in cholmod function).
 
-%   Copyright 2006-2015, Timothy A. Davis, http://www.suitesparse.com
+% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+

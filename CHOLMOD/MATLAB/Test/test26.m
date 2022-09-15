@@ -4,7 +4,8 @@ function test26 (do_metis)
 %   test26
 % See also cholmod_test
 
-% Copyright 2007, Timothy A. Davis, http://www.suitesparse.com
+% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 fprintf ('=================================================================\n');
 fprintf ('test26: test logical full and sparse matrices\n') ;

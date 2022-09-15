@@ -2,9 +2,11 @@
 /* === Cholesky/cholmod_resymbol ============================================ */
 /* ========================================================================== */
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Cholesky Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// CHOLMOD/Cholesky Module.  Copyright (C) 2005-2022, Timothy A. Davis
+// All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
+//------------------------------------------------------------------------------
 
 /* Recompute the symbolic pattern of L.  Entries not in the symbolic pattern
  * are dropped.  L->Perm can be used (or not) to permute the input matrix A.

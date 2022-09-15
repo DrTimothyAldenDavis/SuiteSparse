@@ -1,10 +1,9 @@
 /* ========================================================================== */
-/* === CHOLMOD/Include/cholmod_function.h ================================ */
+/* === Demo/cholmod_function.h ============================================== */
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * CHOLMOD/Include/cholmod_function.h
- * Copyright (C) 2014, Timothy A. Davis
+ * CHOLMOD/Demo/cholmod_function.h: Copyright (C) 2014, Timothy A. Davis.
  * This specific file (CHOLMOD/Include/cholmod_function.h) has no license
  * restrictions at all.  You may freely include this in your applications, and
  * modify it at will.

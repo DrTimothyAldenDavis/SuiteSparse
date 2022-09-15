@@ -2,10 +2,11 @@
 /* === Supernodal/cholmod_super_solve ======================================= */
 /* ========================================================================== */
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Supernodal Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * http://www.suitesparse.com
- * -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// CHOLMOD/Supernodal Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+//------------------------------------------------------------------------------
 
 /* Solve Lx=b or L'x=b for a supernodal factorization.  These routines do not
  * apply the permutation L->Perm.  See cholmod_solve for a more general

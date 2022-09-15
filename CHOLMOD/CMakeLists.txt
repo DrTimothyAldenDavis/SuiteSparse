@@ -56,12 +56,18 @@ find_package ( CAMD 3.0.0 )
 find_package ( CCOLAMD 3.0.0 )
 find_package ( METIS )
 
-# FIXME: no gpu yet
+# FIXME: enable the GPU in cmake
 # add_compile_definitions ( NGPU )
 
 #-------------------------------------------------------------------------------
 # configure files
 #-------------------------------------------------------------------------------
+
+# determine which modules of CHOLMOD to include in the library
+if ( NGPL )
+    add_compile_definitions ( NGPL )
+    message ( STATUS "compile defn: ${COMPILE_DEFINITIONS} ")
+endif ( )
 
 configure_file ( "Config/cholmod.h.in" "${PROJECT_SOURCE_DIR}/Include/cholmod.h")
 configure_file ( "Config/cholmod_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/cholmod_version.tex")
@@ -247,3 +253,5 @@ else ( )
 
 endif ( )
 
+message ( STATUS "Final CMAKE C flags :     ${CMAKE_C_FLAGS} ")
+message ( STATUS "Final CMAKE C++ flags :   ${CMAKE_CXX_FLAGS} ")

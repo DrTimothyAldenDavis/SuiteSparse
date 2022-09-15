@@ -2,10 +2,11 @@
 /* === MatrixOps/cholmod_symmetry =========================================== */
 /* ========================================================================== */
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/MatrixOps Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * http://www.suitesparse.com
- * -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// CHOLMOD/MatrixOps Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+//------------------------------------------------------------------------------
 
 /* Determines if a sparse matrix is rectangular, unsymmetric, symmetric,
  * skew-symmetric, or Hermitian.  It does so by looking at its numerical values

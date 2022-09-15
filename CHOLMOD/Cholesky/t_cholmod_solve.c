@@ -2,9 +2,11 @@
 /* === Cholesky/t_cholmod_solve ============================================= */
 /* ========================================================================== */
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Cholesky Module.  Copyright (C) 2005-2013, Timothy A. Davis
- * -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// CHOLMOD/Cholesky Module.  Copyright (C) 2005-2022, Timothy A. Davis
+// All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
+//------------------------------------------------------------------------------
 
 /* Template routine for cholmod_solve.  Supports any numeric xtype (real,
  * complex, or zomplex).  The xtypes of all matrices (L and Y) must match.

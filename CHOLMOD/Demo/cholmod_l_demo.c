@@ -2,9 +2,11 @@
 /* === Demo/cholmod_l_demo ================================================== */
 /* ========================================================================== */
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Demo Module.  Copyright (C) 2005-2013, Timothy A. Davis
- * -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// CHOLMOD/Demo Module.  Copyright (C) 2005-2022, Timothy A. Davis,
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+//------------------------------------------------------------------------------
 
 /* Read in a matrix from a file, and use CHOLMOD to solve Ax=b if A is
  * symmetric, or (AA'+beta*I)x=b otherwise.  The file format is a simple

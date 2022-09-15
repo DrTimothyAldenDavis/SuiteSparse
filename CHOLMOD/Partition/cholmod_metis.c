@@ -2,10 +2,11 @@
 /* === Partition/cholmod_metis ============================================== */
 /* ========================================================================== */
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Partition Module.
- * Copyright (C) 2005-2006, Univ. of Florida.  Author: Timothy A. Davis
- * -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// CHOLMOD/Partition Module.  Copyright (C) 2005-2022, University of Florida.
+// All Rights Reserved.  Author: Timothy A. Davis.
+// SPDX-License-Identifier: LGPL-2.1+
+//------------------------------------------------------------------------------
 
 /* CHOLMOD interface to the METIS package (Version 5.1.0):
  *

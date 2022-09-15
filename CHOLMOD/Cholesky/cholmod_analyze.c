@@ -2,9 +2,11 @@
 /* === Cholesky/cholmod_analyze ============================================= */
 /* ========================================================================== */
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Cholesky Module.  Copyright (C) 2005-2013, Timothy A. Davis
- * -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// CHOLMOD/Cholesky Module.  Copyright (C) 2005-2022, Timothy A. Davis
+// All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
+//------------------------------------------------------------------------------
 
 /* Order and analyze a matrix (either simplicial or supernodal), in prepartion
  * for numerical factorization via cholmod_factorize or via the "expert"

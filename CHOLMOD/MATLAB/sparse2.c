@@ -2,6 +2,12 @@
 /* === MATLAB/sparse2 mexFunction =========================================== */
 /* ========================================================================== */
 
+//------------------------------------------------------------------------------
+// CHOLMOD/MATLAB Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+//------------------------------------------------------------------------------
+
 /* Identical to the "sparse" function in MATLAB, just faster.  */
 
 #include "cholmod_matlab.h"

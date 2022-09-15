@@ -2,11 +2,11 @@
 /* === CHOLMOD/MATLAB/cholmod mexFunction =================================== */
 /* ========================================================================== */
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/MATLAB Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * http://www.suitesparse.com
- * MATLAB(tm) is a Trademark of The MathWorks, Inc.
- * -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// CHOLMOD/MATLAB Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+//------------------------------------------------------------------------------
 
 /* Supernodal sparse Cholesky backslash, x = A\b.  Factorizes PAP' in LL' then
  * solves a sparse linear system.  Uses the diagonal and upper triangular part

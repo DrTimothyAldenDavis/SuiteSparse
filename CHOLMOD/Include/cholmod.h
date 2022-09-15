@@ -4,8 +4,18 @@
 
 /* -----------------------------------------------------------------------------
  * CHOLMOD/Include/cholmod.h.
- * Copyright (C) 2005-2013, Univ. of Florida.  Author: Timothy A. Davis
+ * Copyright (C) 2005-2022, Timothy A. Davis.
  * http://www.suitesparse.com
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * CHOLMOD consists of a set of Modules, each with their own license: either
+ * LGPL-2.1+ or GPL-2.0+.  This cholmod.h file includes defintions of the
+ * CHOLMOD API for all Modules, and this cholmod.h file itself is provided to
+ * you with a permissive license (Apache-2.0).  You are permitted to provide
+ * the hooks for an optional interface to CHOLMOD in a non-GPL/non-LGPL code,
+ * without requiring you to agree to the GPL/LGPL license of the Modules.  The
+ * Modules themselves can only be functional if their GPL or LGPL licenses are
+ * used.
  *
  * Portions of CHOLMOD (the Core and Partition Modules) are copyrighted by the
  * University of Florida.  The Modify Module is co-authored by William W.
@@ -150,9 +160,6 @@ extern "C" {
 
 /* Use the compiler flag, or uncomment the definition(s), if you want to use
  * one or more non-default installation options: */
-
-// FIXME: use config_file in cmake to build these options (check if
-// the folders exist)
 
 /*
 #define NCHECK
@@ -1441,7 +1448,7 @@ typedef struct cholmod_descendant_score_t
     double score ;
     int64_t d ;
 }
-descendantScore ;       // FIXME: name is broken
+descendantScore ;
 
 /* For sorting descendant supernodes with qsort */
 SUITESPARSE_PUBLIC

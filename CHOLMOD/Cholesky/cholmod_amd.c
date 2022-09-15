@@ -2,9 +2,11 @@
 /* === Cholesky/cholmod_amd ================================================= */
 /* ========================================================================== */
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Cholesky Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// CHOLMOD/Cholesky Module.  Copyright (C) 2005-2022, Timothy A. Davis
+// All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
+//------------------------------------------------------------------------------
 
 /* CHOLMOD interface to the AMD ordering routine.  Orders A if the matrix is
  * symmetric.  On output, Perm [k] = i if row/column i of A is the kth

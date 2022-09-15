@@ -2,6 +2,12 @@
 /* === CHOLMOD/MATLAB/mwrite mexFunction ==================================== */
 /* ========================================================================== */
 
+//------------------------------------------------------------------------------
+// CHOLMOD/MATLAB Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+//------------------------------------------------------------------------------
+
 /* Write a matrix to a file in Matrix Market form.
  *
  *	symmetry = mwrite (filename, A, Z, comments_filename)

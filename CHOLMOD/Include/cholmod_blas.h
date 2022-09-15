@@ -2,6 +2,12 @@
 /* === Include/cholmod_blas.h =============================================== */
 /* ========================================================================== */
 
+//------------------------------------------------------------------------------
+// CHOLMOD/Include/cholmod_blas.h.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
+//------------------------------------------------------------------------------
+
 /* This does not need to be included in the user's program. */
 
 #ifndef CHOLMOD_BLAS_H

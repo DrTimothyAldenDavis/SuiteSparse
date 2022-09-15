@@ -2,12 +2,14 @@
 /* === CHOLMOD/MATLAB/metis mexFunction ===================================== */
 /* ========================================================================== */
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/MATLAB Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * http://www.suitesparse.com
- * MATLAB(tm) is a Trademark of The MathWorks, Inc.
- * METIS is Copyrighted by G. Karypis
- * -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// CHOLMOD/MATLAB Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+//------------------------------------------------------------------------------
+ 
+// MATLAB(tm) is a Trademark of The MathWorks, Inc.
+// METIS is Copyrighted by G. Karypis
 
 /* Nested dissection using METIS_NodeND
  *

@@ -2,6 +2,10 @@ function result = get_symmetry (A,quick)
 %GET_SYMMETRY: does the same thing as the spsym mexFunction.
 % It's just a lot slower and uses much more memory.  This function
 % is meant for testing and documentation only.
+
+% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
+
 [m n] = size (A) ;
 if (m ~= n)
     result = 1 ;            % rectangular

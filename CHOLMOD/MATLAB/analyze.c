@@ -2,11 +2,13 @@
 /* === CHOLMOD/MATLAB/analyze mexFunction =================================== */
 /* ========================================================================== */
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/MATLAB Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * http://www.suitesparse.com
- * MATLAB(tm) is a Trademark of The MathWorks, Inc.
- * -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// CHOLMOD/MATLAB Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+//------------------------------------------------------------------------------
+
+// MATLAB(tm) is a Trademark of The MathWorks, Inc.
 
 /* Order a matrix and then analyze it, using CHOLMOD's best-effort ordering.
  * Returns the count of the number of nonzeros in each column of L for the

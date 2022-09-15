@@ -4,7 +4,8 @@ function lxtest
 %   lxtest
 % See also cholmod_test, ltest, ltest2
 
-% Copyright 2013, Timothy A. Davis, http://www.suitesparse.com
+% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 rng ('default')
 index = ssget ;

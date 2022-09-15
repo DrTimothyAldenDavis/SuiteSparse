@@ -2,12 +2,14 @@
 /* === CHOLMOD/MATLAB/bisect mexFunction ==================================== */
 /* ========================================================================== */
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/MATLAB Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * http://www.suitesparse.com
- * MATLAB(tm) is a Trademark of The MathWorks, Inc.
- * METIS is Copyrighted by G. Karypis
- * -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// CHOLMOD/MATLAB Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+//------------------------------------------------------------------------------
+
+// MATLAB(tm) is a Trademark of The MathWorks, Inc.
+// METIS is Copyrighted by G. Karypis
 
 /* Find an node separator of an undirected graph, using
  * METIS_ComputeVertexSeparator.

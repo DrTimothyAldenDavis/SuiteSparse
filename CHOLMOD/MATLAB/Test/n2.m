@@ -3,7 +3,8 @@
 %   n2
 % See also cholmod_test
 
-% Copyright 2007, Timothy A. Davis, http://www.suitesparse.com
+% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 index = ssget ;
 f = find ((index.amd_lnz > 0) & (index.nrows > 200)) ;

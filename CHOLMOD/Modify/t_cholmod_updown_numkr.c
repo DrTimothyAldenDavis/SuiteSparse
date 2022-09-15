@@ -2,11 +2,11 @@
 /* === Modify/t_cholmod_updown_numkr ======================================== */
 /* ========================================================================== */
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Modify Module.  Copyright (C) 2005-2006,
- * Timothy A. Davis and William W. Hager.
- * http://www.suitesparse.com
- * -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// CHOLMOD/Modify Module.  Copyright (C) 2005-2022, Timothy A. Davis,
+// and William W. Hager. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+//------------------------------------------------------------------------------
 
 /* Supernodal numerical update/downdate of rank K = RANK, along a single path.
  * This routine operates on a simplicial factor, but operates on adjacent
