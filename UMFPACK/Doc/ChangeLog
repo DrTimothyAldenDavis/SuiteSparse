@@ -1,5 +1,8 @@
-Sept FIXME, 2022: version 6.0.0
+Oct FIXME, 2022: version 6.0.0
 
+    * using CMake build system
+    * integers: int (32-bit) and SuiteSparse_long (nominally 64-bit) replaced
+        with int32_t and int64_t.
     * added new ordering option: UMFPACK_ORDERING_METIS_GUARD.  For the
         symmetric strategy, this is the same as METIS on A+A'.  For the
         unsymmetric strategy, if A has one or more fairly dense rows,
@@ -11,7 +14,6 @@ Sept FIXME, 2022: version 6.0.0
         the Diagonal Map, and now it is returned as its own array (if present).
         The initial row permutation is returned as-is.
     * umfpack.h: a single include file, no longer #include's umfpack_*.h files.
-    * SuiteSparse_long: replaced with int64_t
 
 Oct 20, 2019: version 5.7.9
 

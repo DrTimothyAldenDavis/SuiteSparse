@@ -1,12 +1,11 @@
-//------------------------------------------------------------------------------
-// CCOLAMD/Include/ccolamd.h: include file for CCOLAMD
-//------------------------------------------------------------------------------
+/* ========================================================================== */
+/* === CCOLAMD/ccolamd.h ==================================================== */
+/* ========================================================================== */
 
-// CCOLAMD, Copyright (c) 2005-2022, Univ. of Florida, All Rights Reserved.
-// Authors: Timothy A. Davis, Sivasankaran Rajamanickam, and Stefan Larimore.
-// SPDX-License-Identifier: BSD-3-clause
-
-//------------------------------------------------------------------------------
+/* ----------------------------------------------------------------------------
+ * CCOLAMD Copyright (C), Univ. of Florida.  Authors: Timothy A. Davis,
+ * Sivasankaran Rajamanickam, and Stefan Larimore
+ * -------------------------------------------------------------------------- */
 
 /*
  *  You must include this file (ccolamd.h) in any routine that uses ccolamd,
@@ -41,7 +40,7 @@ extern "C" {
  *	#endif
  */
 
-#define CCOLAMD_DATE "Sept FIXME, 2022"
+#define CCOLAMD_DATE "Oct 1, 2022"
 #define CCOLAMD_MAIN_VERSION   3
 #define CCOLAMD_SUB_VERSION    0
 #define CCOLAMD_SUBSUB_VERSION 0

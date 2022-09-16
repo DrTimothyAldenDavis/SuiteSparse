@@ -11,7 +11,7 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( UMFPACK_DATE "Sept FIXME, 2022" )
+set ( UMFPACK_DATE "Oct 1, 2022" )  # FIXME
 set ( UMFPACK_VERSION_MAJOR 6 )
 set ( UMFPACK_VERSION_MINOR 0 )
 set ( UMFPACK_VERSION_SUB   0 )

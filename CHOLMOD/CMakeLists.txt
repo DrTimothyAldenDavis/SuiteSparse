@@ -11,7 +11,7 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( CHOLMOD_DATE "Sept FIXME, 2022" )
+set ( CHOLMOD_DATE "Oct 1, 2022" )  # FIXME
 set ( CHOLMOD_VERSION_MAJOR 4 )
 set ( CHOLMOD_VERSION_MINOR 0 )
 set ( CHOLMOD_VERSION_SUB   0 )
@@ -55,9 +55,6 @@ find_package ( LAPACK REQUIRED )
 find_package ( CAMD 3.0.0 )
 find_package ( CCOLAMD 3.0.0 )
 find_package ( METIS )
-
-# FIXME: enable the GPU in cmake
-# add_compile_definitions ( NGPU )
 
 #-------------------------------------------------------------------------------
 # configure files

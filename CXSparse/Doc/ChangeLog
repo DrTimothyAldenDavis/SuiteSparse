@@ -1,9 +1,8 @@
-Sept FIXME, 2022: version 4.0.0
+Oct FIXME, 2022: version 4.0.0
 
-    * using CMake to build CXSparse instead of a Makefile
-    * integers: int and SuiteSparse_long changed to int32_t and int64_t.
-        This is a modest change to the API, so the
-        major version number must increase from 3.x to 4.x.
+    * using CMake build system
+    * integers: int (32-bit) and SuiteSparse_long (nominally 64-bit) replaced
+        with int32_t and int64_t.
 
 Sept 12, 2017: version 3.2.0
 

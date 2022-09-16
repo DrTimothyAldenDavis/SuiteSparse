@@ -12,7 +12,7 @@
 cmake_minimum_required ( VERSION 3.19 )
 
 # version of both SuiteSparse and SuiteSparse_config
-set ( SUITESPARSE_DATE "Sept FIXME, 2022" )
+set ( SUITESPARSE_DATE "Oct 1, 2022" )  # FIXME
 set ( SUITESPARSE_VERSION_MAJOR 6 )
 set ( SUITESPARSE_VERSION_MINOR 0 )
 set ( SUITESPARSE_VERSION_SUB   0 )

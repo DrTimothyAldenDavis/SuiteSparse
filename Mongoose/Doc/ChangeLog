@@ -1,11 +1,8 @@
-Version 3.0.0, Sept FIXME, 2022
+Oct FIXME, 2022: version 3.0.0
 
-    * integers: SuiteSparse_long (nominally 64-bit) replaced
-        with int64_t.  This change should be backward compatible
-        with v2.0.4, since the integer sizes (sizeof(...)) should remain the
-        same.  However, since this is a possible change to the binary API,
-        the version number becomes v3.0.0.
     * minor change to the build system
+    * integers: int (32-bit) and SuiteSparse_long (nominally 64-bit) replaced
+        with int32_t and int64_t.
 
 Version 2.0.4, May 25, 2019
 

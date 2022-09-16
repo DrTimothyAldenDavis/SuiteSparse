@@ -872,7 +872,7 @@ void *klu_l_realloc (size_t, size_t, size_t, void *, klu_l_common *) ;
  *      #endif
  */
 
-#define KLU_DATE "Sept FIXME, 2022"
+#define KLU_DATE "Oct 1, 2022"
 #define KLU_MAIN_VERSION   2
 #define KLU_SUB_VERSION    0
 #define KLU_SUBSUB_VERSION 0

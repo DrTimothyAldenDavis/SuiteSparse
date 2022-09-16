@@ -13,6 +13,8 @@ FIXME: test coverage for all packages.
 
 FIXME: cmake CUDA for CHOLMOD and SPQR
 
+FIXME: update metis cmake to use SuiteSparsePolicy
+
 FIXME: cmake and Find*.cmake for:
     SPQR, SuiteSparse_GPURuntime, GPUQREngine
 

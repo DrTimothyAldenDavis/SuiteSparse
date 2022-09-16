@@ -11,7 +11,7 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( CXSPARSE_DATE "Sept FIXME, 2022" )
+set ( CXSPARSE_DATE "Oct 1, 2022" ) # FIXME
 set ( CXSPARSE_VERSION_MAJOR 4 )
 set ( CXSPARSE_VERSION_MINOR 0 )
 set ( CXSPARSE_VERSION_SUB   0 )
