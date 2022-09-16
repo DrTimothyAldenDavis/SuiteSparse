@@ -1,3 +1,6 @@
+// CSparse/MATLAB/CSparse/cs_multiply_mex: sparse-times-sparse matrix multiply
+// CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_mex.h"
 /* cs_multiply: sparse matrix multiply */
 void mexFunction

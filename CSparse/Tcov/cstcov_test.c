@@ -1,3 +1,6 @@
+// CSparse/Tcov/cstcov_test: test program
+// CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_demo.h"
 /* cs_test: read a matrix and run cs_demo2 and cs_demo3, using malloc tests. */
 

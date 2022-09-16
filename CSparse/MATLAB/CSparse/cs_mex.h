@@ -1,3 +1,6 @@
+// CSparse/MATLAB/CSparse/cs_mex.h: include file for MATLAB interface
+// CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 #include "mex.h"
 cs *cs_mex_get_sparse (cs *A, csi square, csi values, const mxArray *Amatlab) ;

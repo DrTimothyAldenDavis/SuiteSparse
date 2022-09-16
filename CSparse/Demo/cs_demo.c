@@ -1,3 +1,6 @@
+// CSparse/Demo/cs_demo: demo utilities for CSparse
+// CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_demo.h"
 #include <time.h>
 /* 1 if A is square & upper tri., -1 if square & lower tri., 0 otherwise */

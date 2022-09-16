@@ -1,4 +1,7 @@
 #!/bin/bash
+# CSparse/Tcov/covs
+# Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+# SPDX-License-Identifier: LGPL-2.1+
 echo '================================================================='
 for file in $@
 do

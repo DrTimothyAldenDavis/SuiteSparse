@@ -1,3 +1,7 @@
+# CSparse/Tcov/Makefile
+# Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+# SPDX-License-Identifier: LGPL-2.1+
+
 # To run with valgrind:
 V =
 # V = valgrind -q

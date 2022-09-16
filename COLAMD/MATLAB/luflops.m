@@ -25,8 +25,11 @@ function fl = luflops (L, U)
 %
 % See also symbfact
 
-%    Copyright 1998-2007, Timothy A. Davis
-
+% Copyright (c) 1998-2022, Timothy A. Davis, and Stefan Larimore.
+% Developed in collaboration with J. Gilbert and E. Ng.
+%
+% Acknowledgements: This work was supported by the National Science Foundation,
+% under grants DMS-9504974 and DMS-9803599.
 
 Lnz = full (sum (spones (L))) - 1 ;	% off diagonal nz in cols of L
 Unz = full (sum (spones (U')))' - 1 ;	% off diagonal nz in rows of U

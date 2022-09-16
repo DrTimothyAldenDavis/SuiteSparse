@@ -6,8 +6,11 @@ function colamd_make
 %
 % See also colamd, symamd
 
-%    Copyright 1998-2007, Timothy A. Davis, and Stefan Larimore
-%    Developed in collaboration with J. Gilbert and E. Ng.
+% Copyright (c) 1998-2022, Timothy A. Davis, and Stefan Larimore.
+% Developed in collaboration with J. Gilbert and E. Ng.
+%
+% Acknowledgements: This work was supported by the National Science Foundation,
+% under grants DMS-9504974 and DMS-9803599.
 
 details = 0 ;	    % 1 if details of each command are to be printed
 d = '' ;

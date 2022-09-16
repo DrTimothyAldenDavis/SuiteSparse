@@ -1,9 +1,12 @@
-/* ========================================================================== */
-/* === colamd/symamd - a sparse matrix column ordering algorithm ============ */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// COLAMD/Source/colamd.c: column approximate minimum degree ordering
+//------------------------------------------------------------------------------
 
-// COLAMD, Copyright (c) Timothy A. Davis.
+// COLAMD, Copyright (c) 1998-2022, Timothy A. Davis and Stefan Larimore,
+// All Rights Reserved.
 // SPDX-License-Identifier: BSD-3-clause
+
+//------------------------------------------------------------------------------
 
 /* COLAMD / SYMAMD
 

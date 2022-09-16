@@ -1,3 +1,6 @@
+// CSparse/MATLAB/CSparse/cs_cholsol_mex: x=A\b via sparse Cholesky
+// CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_mex.h"
 /* cs_cholsol: solve A*x=b using a sparse Cholesky factorization */
 void mexFunction

@@ -1,3 +1,6 @@
+// CSparse/Source/cs_randperm: generate a random permutation
+// CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 /* return a random permutation vector, the identity perm, or p = n-1:-1:0.
  * seed = -1 means p = n-1:-1:0.  seed = 0 means p = identity.  otherwise

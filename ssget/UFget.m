@@ -2,7 +2,8 @@ function Problem = UFget (matrix, index)
 %UFGET former interface to the UF (now SuiteSparse) Matrix Collection
 % This function works but is deprecated.  Use ssget instead.
 
-% Copyright 2017-2019, Timothy A. Davis, http://www.suitesparse.com
+% Copyright (c) 2009-2019, Timothy A. Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 warning ('UFget:deprecated', 'UFget is deprecated; use ssget instead') ;
 if (nargin == 0)

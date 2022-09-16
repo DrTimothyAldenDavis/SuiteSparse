@@ -1,8 +1,9 @@
 FIXME update MATLAB interfaces for all packages
 
 FIXME: copyright (c) and SPDX for all files
-    done: AMD, BTF, CAMD, CCOLAMD
-    to do: CHOLMOD, COLAMD, CSparse, CXSparse, GPUQREngine,
+    done: AMD, BTF, CAMD, CCOLAMD, CHOLMOD, COLAMD
+
+    to do: CSparse, CXSparse, GPUQREngine,
         KLU, LDL, MATLAB_Tools, Mongoose, RBio, SPQR, ssget,
         SuiteSparse_config, SuiteSparse_GPURuntime, UMFPACK
 

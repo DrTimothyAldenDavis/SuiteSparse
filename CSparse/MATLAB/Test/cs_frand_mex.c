@@ -1,3 +1,6 @@
+// CSparse/MATLAB/Test/cs_frand_mex: random sparse finite-element matrix
+// CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_mex.h"
 /* A = cs_frand (n,nel,s) creates an n-by-n sparse matrix consisting of nel
  * finite elements, each of which are of size s-by-s with random symmetric

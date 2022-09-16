@@ -23,8 +23,11 @@
 % Minor changes:  in MATLAB 7, symmmd and colmmd are flagged as "obsolete".
 % This demo checks if they exist, so it should still work when they are removed.
 
-%    Copyright 1998-2007, Timothy A. Davis, and Stefan Larimore
-%    Developed in collaboration with J. Gilbert and E. Ng.
+% Copyright (c) 1998-2022, Timothy A. Davis, and Stefan Larimore.
+% Developed in collaboration with J. Gilbert and E. Ng.
+%
+% Acknowledgements: This work was supported by the National Science Foundation,
+% under grants DMS-9504974 and DMS-9803599.
 
 %-------------------------------------------------------------------------------
 % Print the introduction, the help info, and compile the mexFunctions

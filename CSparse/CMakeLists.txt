@@ -2,7 +2,7 @@
 # CSparse/CMakeLists.txt:  cmake for CSparse
 #-------------------------------------------------------------------------------
 
-# Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
+# Copyright (c) 2006-2022, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: LGPL-2.1+
 
 # CSparse/CMakeLists.txt is a standalone script, which can be used outside of

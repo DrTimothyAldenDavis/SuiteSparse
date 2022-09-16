@@ -1,3 +1,6 @@
+// CSparse/MATLAB/CSparse/cs_thumb_mex: 2D dense thumbnail of a sparse matrix
+// CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_mex.h"
 /* cs_thumb: convert a sparse matrix to a dense 2D thumbnail matrix of size
  * at most k-by-k.  k defaults to 256.  A helper mexFunction for cspy. */

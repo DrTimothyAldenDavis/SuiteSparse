@@ -1,6 +1,12 @@
-/* ========================================================================== */
-/* === symamd mexFunction =================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// COLAMD/MATLAB/symamdmex.c: MATLAB interface for SYMAMD
+//------------------------------------------------------------------------------
+
+// COLAMD, Copyright (c) 1998-2022, Timothy A. Davis and Stefan Larimore,
+// All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
+//------------------------------------------------------------------------------
 
 /* SYMAMD mexFunction
 
@@ -22,11 +28,6 @@
 
 	This work was supported by the National Science Foundation, under
 	grants DMS-9504974 and DMS-9803599.
-
-    Notice:
-
-	Copyright (c) 1998-2007, Timothy A. Davis.  All Rights Reserved.
-	See COLAMD/Doc/License.txt for the License.
 
     Availability:
 

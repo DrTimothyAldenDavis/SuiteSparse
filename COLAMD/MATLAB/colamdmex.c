@@ -1,6 +1,12 @@
-/* ========================================================================== */
-/* === colamd mexFunction =================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// COLAMD/MATLAB/colamdmex: MATLAB interface for COLAMD
+//------------------------------------------------------------------------------
+
+// COLAMD, Copyright (c) 1998-2022, Timothy A. Davis and Stefan Larimore,
+// All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
+//------------------------------------------------------------------------------
 
 /* Usage:
 
@@ -20,10 +26,6 @@
 
 	This work was supported by the National Science Foundation, under
 	grants DMS-9504974 and DMS-9803599.
-
-    Notice:
-
-	Copyright (c) 1998-2007, Timothy A. Davis, All Rights Reserved.
 
     Availability:
 
