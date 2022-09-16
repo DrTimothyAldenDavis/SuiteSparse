@@ -4,7 +4,8 @@ function [P, stats] = csymamdtestmex (A, knobs)				    %#ok
 %   [ P, stats ] = csymamdtest (A, knobs) ;
 % See also csymamd
 
-% Copyright 1998-2007, Timothy A. Davis, Stefan Larimore, and Siva Rajamanickam
-% Developed in collaboration with J. Gilbert and E. Ng.
+% CCOLAMD, Copyright (c) 2005-2022, Univ. of Florida, All Rights Reserved.
+% Authors: Timothy A. Davis, Sivasankaran Rajamanickam, and Stefan Larimore.
+% SPDX-License-Identifier: BSD-3-clause
 
 error ('csymamdtestmex mexFunction not found') ;

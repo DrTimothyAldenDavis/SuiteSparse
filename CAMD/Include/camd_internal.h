@@ -1,12 +1,12 @@
-/* ========================================================================= */
-/* === camd_internal.h ===================================================== */
-/* ========================================================================= */
+//------------------------------------------------------------------------------
+// CAMD/Source/camd_internal.h: internal definitions for CAMD
+//------------------------------------------------------------------------------
 
-/* ------------------------------------------------------------------------- */
-/* CAMD, Copyright (c) Timothy A. Davis, Yanqing Chen,                       */
-/* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
-/* email: DrTimothyAldenDavis@gmail.com                                      */
-/* ------------------------------------------------------------------------- */
+// CAMD, Copyright (c) 2007-2022, Timothy A. Davis, Yanqing Chen, Patrick R.
+// Amestoy, and Iain S. Duff.  All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
+//------------------------------------------------------------------------------
 
 /* This file is for internal use in CAMD itself, and does not normally need to
  * be included in user code (it is included in UMFPACK, however).   All others

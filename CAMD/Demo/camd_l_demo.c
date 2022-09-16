@@ -1,12 +1,12 @@
-/* ========================================================================= */
-/* === CAMD demo main program (int64_t version) ============================ */
-/* ========================================================================= */
+//------------------------------------------------------------------------------
+// CAMD/Demo/camd_l_demo.c: int64_t demo program for CAMD
+//------------------------------------------------------------------------------
 
-/* ------------------------------------------------------------------------- */
-/* CAMD, Copyright (c) Timothy A. Davis, Yanqing Chen,			     */
-/* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
-/* email: DrTimothyAldenDavis@gmail.com                                      */
-/* ------------------------------------------------------------------------- */
+// CAMD, Copyright (c) 2007-2022, Timothy A. Davis, Yanqing Chen, Patrick R.
+// Amestoy, and Iain S. Duff.  All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
+//------------------------------------------------------------------------------
 
 /* A simple C main program that illustrates the use of the ANSI C interface
  * to CAMD.

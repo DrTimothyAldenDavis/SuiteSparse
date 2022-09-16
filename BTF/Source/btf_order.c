@@ -1,6 +1,12 @@
-/* ========================================================================== */
-/* === BTF_ORDER ============================================================ */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// BTF/Source/btf_order: permute a matrix to block triangular form
+//------------------------------------------------------------------------------
+
+// BTF, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+// Author: Timothy A. Davis.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* Find a permutation P and Q to permute a square sparse matrix into upper block
  * triangular form.  A(P,Q) will contain a zero-free diagonal if A has
@@ -21,9 +27,6 @@
  * might not be equal to the structural rank.
  *
  * See btf.h for more details.
- *
- * By Tim Davis.  Copyright (c) 2004-2007, University of Florida.
- * with support from Sandia National Laboratories.  All Rights Reserved.
  */
 
 #include "btf.h"

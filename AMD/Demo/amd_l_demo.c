@@ -1,12 +1,12 @@
-/* ========================================================================= */
-/* === AMD demo main program (int64_t version) ============================= */
-/* ========================================================================= */
+//------------------------------------------------------------------------------
+// AMD/Demo/amd_l_demo: demo program for AMD, int64_t version
+//------------------------------------------------------------------------------
 
-/* ------------------------------------------------------------------------- */
-/* AMD Copyright (c) by Timothy A. Davis,				     */
-/* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
-/* email: DrTimothyAldenDavis@gmail.com                                      */
-/* ------------------------------------------------------------------------- */
+// AMD, Copyright (c) 1996-2022, Timothy A. Davis, Patrick R. Amestoy, and
+// Iain S. Duff.  All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
+//------------------------------------------------------------------------------
 
 /* A simple C main program that illustrates the use of the ANSI C interface
  * to AMD.

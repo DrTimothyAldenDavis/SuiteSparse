@@ -1,11 +1,12 @@
-/* ========================================================================== */
-/* === ccolamd and csymamd example (long integer version) =================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CCOLAMD/Demo/ccolamd_l_example: simple example for CCOLAMD (int64_t)
+//------------------------------------------------------------------------------
 
-/* ----------------------------------------------------------------------------
- * CCOLAMD Copyright (C), Univ. of Florida.  Authors: Timothy A. Davis,
- * Sivasankaran Rajamanickam, and Stefan Larimore
- * -------------------------------------------------------------------------- */
+// CCOLAMD, Copyright (c) 2005-2022, Univ. of Florida, All Rights Reserved.
+// Authors: Timothy A. Davis, Sivasankaran Rajamanickam, and Stefan Larimore.
+// SPDX-License-Identifier: BSD-3-clause
+
+//------------------------------------------------------------------------------
 
 /*
  *  ccolamd example of use, to order the columns of a 5-by-4 matrix with

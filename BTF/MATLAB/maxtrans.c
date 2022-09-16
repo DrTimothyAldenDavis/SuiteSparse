@@ -1,6 +1,12 @@
-/* ========================================================================== */
-/* === maxtrans mexFunction ================================================= */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// BTF/Include/maxtrans.c: MATLAB interface for btf_maxtrans
+//------------------------------------------------------------------------------
+
+// BTF, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+// Author: Timothy A. Davis.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 #define MIN(a,b) (((a) < (b)) ?  (a) : (b))
 
@@ -18,9 +24,6 @@
  * An optional second output [q,work] = maxtrans (...) returns the amount of
  * work performed, or -1 if the maximum work limit is reached (in which case
  * the maximum matching might not have been found).
- *
- * By Tim Davis.  Copyright (c) 2004-2022, University of Florida.
- * with support from Sandia National Laboratories.  All Rights Reserved.
  */
 
 /* ========================================================================== */

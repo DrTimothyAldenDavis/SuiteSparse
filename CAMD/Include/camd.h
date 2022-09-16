@@ -1,12 +1,14 @@
-/* ========================================================================= */
-/* === CAMD:  approximate minimum degree ordering ========================== */
-/* ========================================================================= */
+//------------------------------------------------------------------------------
+// CAMD/Include/camd.h: include file for CAMD
+//------------------------------------------------------------------------------
 
-/* ------------------------------------------------------------------------- */
-/* CAMD Version 3.0, Copyright (c) 2022 by Timothy A. Davis, Yanqing Chen,   */
-/* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
-/* email: DrTimothyAldenDavis@gmail.com                                      */
-/* ------------------------------------------------------------------------- */
+// CAMD, Copyright (c) 2007-2022, Timothy A. Davis, Yanqing Chen, Patrick R.
+// Amestoy, and Iain S. Duff.  All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
+//------------------------------------------------------------------------------
+
+// CAMD: Constrained approximate minimum degree ordering.
 
 /* CAMD finds a symmetric ordering P of a matrix A so that the Cholesky
  * factorization of P*A*P' has fewer nonzeros and takes less work than the

@@ -1,6 +1,12 @@
-/* ========================================================================== */
-/* === stongcomp mexFunction ================================================ */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// BTF/Include/strongcomp.c: MATLAB interface for btf_strongcomp
+//------------------------------------------------------------------------------
+
+// BTF, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+// Author: Timothy A. Davis.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* STRONGCOMP: Find a symmetric permutation to upper block triangular form of
  * a sparse square matrix.
@@ -46,9 +52,6 @@
  * deficient matrices, dmpmerm returns the maximum matching as a zero-free 
  * diagonal that is above the main diagonal; btf always returns the matching as
  * the main diagonal (which will thus contain zeros).
- *
- * By Tim Davis.  Copyright (c) 2004-2022, University of Florida.
- * with support from Sandia National Laboratories.  All Rights Reserved.
  *
  * See also maxtrans, btf, dmperm
  */

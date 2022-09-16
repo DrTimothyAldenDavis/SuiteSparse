@@ -1,13 +1,12 @@
-/* ========================================================================= */
-/* === AMD_preprocess ====================================================== */
-/* ========================================================================= */
+//------------------------------------------------------------------------------
+// AMD/Source/amd_preprocess: sort, remove duplicates, transpose a matrix
+//------------------------------------------------------------------------------
 
-/* ------------------------------------------------------------------------- */
-/* AMD, Copyright (c) Timothy A. Davis,					     */
-/* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
-/* email: DrTimothyAldenDavis@gmail.com                                      */
+// AMD, Copyright (c) 1996-2022, Timothy A. Davis, Patrick R. Amestoy, and
+// Iain S. Duff.  All Rights Reserved.
 // SPDX-License-Identifier: BSD-3-clause
-/* ------------------------------------------------------------------------- */
+
+//------------------------------------------------------------------------------
 
 /* Sorts, removes duplicate entries, and transposes from the nonzero pattern of
  * a column-form matrix A, to obtain the matrix R.  The input matrix can have
@@ -18,10 +17,6 @@
  */
 
 #include "amd_internal.h"
-
-/* ========================================================================= */
-/* === AMD_preprocess ====================================================== */
-/* ========================================================================= */
 
 /* AMD_preprocess does not check its input for errors or allocate workspace.
  * On input, the condition (AMD_valid (n,n,Ap,Ai) != AMD_INVALID) must hold.

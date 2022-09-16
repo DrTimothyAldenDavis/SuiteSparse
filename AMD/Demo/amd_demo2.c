@@ -1,12 +1,12 @@
-/* ========================================================================= */
-/* === AMD demo main program (jumbled matrix version) ====================== */
-/* ========================================================================= */
+//------------------------------------------------------------------------------
+// AMD/Demo/amd_demo2: demo program for AMD
+//------------------------------------------------------------------------------
 
-/* ------------------------------------------------------------------------- */
-/* AMD Copyright (c) by Timothy A. Davis,				     */
-/* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
-/* DrTimothyAldenDavis@gmail.com, http://www.suitesparse.com                 */
-/* ------------------------------------------------------------------------- */
+// AMD, Copyright (c) 1996-2022, Timothy A. Davis, Patrick R. Amestoy, and
+// Iain S. Duff.  All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
+//------------------------------------------------------------------------------
 
 /* A simple C main program that illustrates the use of the ANSI C interface
  * to AMD.

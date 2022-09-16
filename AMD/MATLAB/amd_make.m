@@ -6,7 +6,9 @@ function amd_make
 %
 % See also amd, amd2.
 
-% Copyright 1994-2007, Tim Davis, Patrick R. Amestoy, and Iain S. Duff. 
+% AMD, Copyright (c) 1996-2022, Timothy A. Davis, Patrick R. Amestoy, and
+% Iain S. Duff.  All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 details = 0 ;	    % 1 if details of each command are to be printed
 

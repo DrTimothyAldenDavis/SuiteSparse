@@ -1,16 +1,18 @@
-/* ========================================================================== */
-/* === BTF package ========================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// BTF/Include/btf.h: include file for BTF
+//------------------------------------------------------------------------------
+
+// BTF, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+// Author: Timothy A. Davis.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* BTF_MAXTRANS:  find a column permutation Q to give A*Q a zero-free diagonal
  * BTF_STRONGCOMP:  find a symmetric permutation P to put P*A*P' into block
  *      upper triangular form.
  * BTF_ORDER: do both of the above (btf_maxtrans then btf_strongcomp).
- *
- * By Tim Davis.  Copyright (c) 2004-2007, University of Florida.
- * with support from Sandia National Laboratories.  All Rights Reserved.
  */
-
 
 /* ========================================================================== */
 /* === BTF_MAXTRANS ========================================================= */
@@ -261,7 +263,7 @@ int64_t btf_l_order (int64_t, int64_t *, int64_t *, double , double *,
 #define BTF_DATE "@BTF_DATE@"
 #define BTF_MAIN_VERSION   @BTF_VERSION_MAJOR@
 #define BTF_SUB_VERSION    @BTF_VERSION_MINOR@
-#define BTBTFUBSUB_VERSION @AMD_VERSION_SUB@
+#define BTF_SUBSUB_VERSION @BTF_VERSION_SUB@
 
 #define BTF_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
 #define BTF_VERSION BTF_VERSION_CODE(BTF_MAIN_VERSION,BTF_SUB_VERSION)

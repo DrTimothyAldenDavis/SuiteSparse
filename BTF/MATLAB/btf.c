@@ -1,6 +1,12 @@
-/* ========================================================================== */
-/* === btf mexFunction ====================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// BTF/MATLAB/btf.c: MATLAB interface for BTF
+//------------------------------------------------------------------------------
+
+// BTF, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+// Author: Timothy A. Davis.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* BTF: Permute a square matrix to upper block triangular form with a zero-free
  * diagonal, or with a maximum number of nonzeros along the diagonal if a
@@ -32,9 +38,6 @@
  * An optional fourth output [p,q,r,work] = btf (...) returns the amount of
  * work performed, or -1 if the maximum work limit is reached (in which case
  * the maximum matching might not have been found).
- *
- * By Tim Davis.  Copyright (c) 2004-2022, University of Florida.
- * with support from Sandia National Laboratories.  All Rights Reserved.
  *
  * See also maxtrans, strongcomp, dmperm
  */

@@ -1,13 +1,12 @@
-/* ========================================================================= */
-/* === CAMD_order ========================================================== */
-/* ========================================================================= */
+//------------------------------------------------------------------------------
+// CAMD/Source/camd_order: user-callable CAMD ordering method
+//------------------------------------------------------------------------------
 
-/* ------------------------------------------------------------------------- */
-/* CAMD, Copyright (c) Timothy A. Davis, Yanqing Chen,			     */
-/* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
-/* email: DrTimothyAldenDavis@gmail.com                                      */
+// CAMD, Copyright (c) 2007-2022, Timothy A. Davis, Yanqing Chen, Patrick R.
+// Amestoy, and Iain S. Duff.  All Rights Reserved.
 // SPDX-License-Identifier: BSD-3-clause
-/* ------------------------------------------------------------------------- */
+
+//------------------------------------------------------------------------------
 
 /* User-callable CAMD minimum degree ordering routine.  See camd.h for
  * documentation.

@@ -67,13 +67,13 @@ function [p, Info] = camd (A, Control, C)				    %#ok
 %
 %    See also AMD, COLMMD, COLAMD, COLPERM, SYMAMD, SYMMMD, SYMRCM.
 
+% CAMD, Copyright (c) 2007-2022, Timothy A. Davis, Yanqing Chen, Patrick R.
+% Amestoy, and Iain S. Duff.  All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
-% Copyright 1994-2007, Tim Davis, Patrick R. Amestoy, Iain S. Duff, and Y. Chen.
-%
 %    Acknowledgements: This work was supported by the National Science
 %       Foundation, under grants ASC-9111263, DMS-9223088, and CCR-0203270,
 %       and by Sandia National Laboratories.
-%
 
 help camd
 error ('camd mexFunction not found!  Type "camd_make" in MATLAB to compile camd');

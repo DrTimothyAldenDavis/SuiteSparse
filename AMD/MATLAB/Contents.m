@@ -13,6 +13,8 @@
 % Example:
 %   p = amd2 (A) ;
 
-% Copyright 1994-2007, Tim Davis, Patrick R. Amestoy, and Iain S. Duff. 
+% AMD, Copyright (c) 1996-2022, Timothy A. Davis, Patrick R. Amestoy, and
+% Iain S. Duff.  All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 help Contents

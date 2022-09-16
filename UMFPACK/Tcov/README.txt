@@ -1,8 +1,6 @@
 This is the UMFPACK Tcov directory.  It runs a large number of tests on
 UMFPACK and checks the statement coverage (using gcc and gcov on Linux).
 
-FIXME: get this to work
-
 Timothy A. Davis, http://www.suitesparse.com
 
 To run the tests, type "make" in this directory.  The METIS, CAMD, CCOLAMD,

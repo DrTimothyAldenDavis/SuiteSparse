@@ -1,14 +1,15 @@
-/* ========================================================================== */
-/* === btf_internal include file ============================================ */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// BTF/Include/btf_internsl.h: internal include file for BTF
+//------------------------------------------------------------------------------
+
+// BTF, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+// Author: Timothy A. Davis.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 #ifndef _BTF_INTERNAL_H
 #define _BTF_INTERNAL_H
-
-/*
- * By Tim Davis.  Copyright (c) 2004-2007, University of Florida.
- * with support from Sandia National Laboratories.  All Rights Reserved.
- */
 
 /* Not to be included in any user program. */
 

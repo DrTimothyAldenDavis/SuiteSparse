@@ -1,13 +1,12 @@
-/* ========================================================================= */
-/* === AMD_dump ============================================================ */
-/* ========================================================================= */
+//------------------------------------------------------------------------------
+// AMD/Source/amd_dump: debug routines for AMD
+//------------------------------------------------------------------------------
 
-/* ------------------------------------------------------------------------- */
-/* AMD, Copyright (c) Timothy A. Davis,					     */
-/* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
-/* email: DrTimothyAldenDavis@gmail.com                                      */
+// AMD, Copyright (c) 1996-2022, Timothy A. Davis, Patrick R. Amestoy, and
+// Iain S. Duff.  All Rights Reserved.
 // SPDX-License-Identifier: BSD-3-clause
-/* ------------------------------------------------------------------------- */
+
+//------------------------------------------------------------------------------
 
 /* Debugging routines for AMD.  Not used if NDEBUG is not defined at compile-
  * time (the default).  See comments in amd_internal.h on how to enable

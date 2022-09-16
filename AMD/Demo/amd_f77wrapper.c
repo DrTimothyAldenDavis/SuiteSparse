@@ -1,12 +1,12 @@
-/* ========================================================================= */
-/* === amd_f77wrapper ====================================================== */
-/* ========================================================================= */
+//------------------------------------------------------------------------------
+// AMD/Demo/amd_f77wrapper: Fortran interface for AMD
+//------------------------------------------------------------------------------
 
-/* ------------------------------------------------------------------------- */
-/* AMD Copyright (c) by Timothy A. Davis,				     */
-/* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
-/* email: DrTimothyAldenDavis@gmail.com                                      */
-/* ------------------------------------------------------------------------- */
+// AMD, Copyright (c) 1996-2022, Timothy A. Davis, Patrick R. Amestoy, and
+// Iain S. Duff.  All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
+//------------------------------------------------------------------------------
 
 /* Fortran interface for the C-callable AMD library (int32_t only).  This
  * is HIGHLY non-portable.  You will need to modify this depending on how your

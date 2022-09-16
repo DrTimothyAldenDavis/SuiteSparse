@@ -1,12 +1,21 @@
-FIXME check MATLAB interfaces for all packages
+FIXME update MATLAB interfaces for all packages
+
 FIXME: copyright (c) and SPDX for all files
+    done: AMD, BTF, CAMD, CCOLAMD
+    to do: CHOLMOD, COLAMD, CSparse, CXSparse, GPUQREngine,
+        KLU, LDL, MATLAB_Tools, Mongoose, RBio, SPQR, ssget,
+        SuiteSparse_config, SuiteSparse_GPURuntime, UMFPACK
 
-FIXME: test coverage for all packages
+FIXME: test coverage for all packages.
+    done: CSparse, CXSparse, RBio, CHOLMOD, GraphBLAS, KLU
+    todo: UMFPACK, SPQR
+    do not change: SLIP_LU
 
-FIXME: cmake CUDA for CHOLMOD
-FIXME: CHOLMOD: detect which packages are present
+FIXME: cmake CUDA for CHOLMOD and SPQR
+
 FIXME: cmake and Find*.cmake for:
-    SPQR, SuiteSparse_GPURuntime, GPUQREngine, KLU/User
+    SPQR, SuiteSparse_GPURuntime, GPUQREngine
 
-FIXME: remove SuiteSparse_config.mk
+FIXME: remove SuiteSparse_config.mk?
+    currently needed for CHOLMOD/Tcov, however
 

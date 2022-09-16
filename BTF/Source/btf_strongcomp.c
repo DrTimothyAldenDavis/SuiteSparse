@@ -1,13 +1,16 @@
-/* ========================================================================== */
-/* === BTF_STRONGCOMP ======================================================= */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// BTF/Source/btf_strongcomp: strongly connected components
+//------------------------------------------------------------------------------
+
+// BTF, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+// Author: Timothy A. Davis.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* Finds the strongly connected components of a graph, or equivalently, permutes
  * the matrix into upper block triangular form.  See btf.h for more details.
  * Input matrix and Q are not checked on input.
- *
- * By Tim Davis.  Copyright (c) 2004-2007, University of Florida.
- * with support from Sandia National Laboratories.  All Rights Reserved.
  */
 
 #include "btf.h"

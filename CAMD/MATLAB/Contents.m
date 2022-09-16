@@ -9,6 +9,8 @@
 %
 % See also:  camd, amd, colamd, symamd, colmmd, symmmd, umfpack
 
-% Copyright 1994-2007, Tim Davis, Patrick R. Amestoy, Iain S. Duff, and Y. Chen.
+% CAMD, Copyright (c) 2007-2022, Timothy A. Davis, Yanqing Chen, Patrick R.
+% Amestoy, and Iain S. Duff.  All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 help Contents

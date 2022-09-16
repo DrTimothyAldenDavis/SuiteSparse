@@ -1,13 +1,12 @@
-/* ========================================================================= */
-/* === CAMD_valid ========================================================== */
-/* ========================================================================= */
+//------------------------------------------------------------------------------
+// CAMD/Source/camd_valid: check if a matrix is valid for CAMD
+//------------------------------------------------------------------------------
 
-/* ------------------------------------------------------------------------- */
-/* CAMD, Copyright (c) Timothy A. Davis, Yanqing Chen,			     */
-/* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
-/* email: DrTimothyAldenDavis@gmail.com                                      */
+// CAMD, Copyright (c) 2007-2022, Timothy A. Davis, Yanqing Chen, Patrick R.
+// Amestoy, and Iain S. Duff.  All Rights Reserved.
 // SPDX-License-Identifier: BSD-3-clause
-/* ------------------------------------------------------------------------- */
+
+//------------------------------------------------------------------------------
 
 /* Check if a column-form matrix is valid or not.  The matrix A is
  * n_row-by-n_col.  The row indices of entries in column j are in

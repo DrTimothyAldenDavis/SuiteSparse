@@ -1,13 +1,12 @@
-/* ========================================================================= */
-/* === AMD_2 =============================================================== */
-/* ========================================================================= */
+//------------------------------------------------------------------------------
+// AMD/Source/amd_2: AMD ordering
+//------------------------------------------------------------------------------
 
-/* ------------------------------------------------------------------------- */
-/* AMD, Copyright (c) Timothy A. Davis,					     */
-/* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
-/* email: DrTimothyAldenDavis@gmail.com                                      */
+// AMD, Copyright (c) 1996-2022, Timothy A. Davis, Patrick R. Amestoy, and
+// Iain S. Duff.  All Rights Reserved.
 // SPDX-License-Identifier: BSD-3-clause
-/* ------------------------------------------------------------------------- */
+
+//------------------------------------------------------------------------------
 
 /* AMD_2:  performs the AMD ordering on a symmetric sparse matrix A, followed
  * by a postordering (via depth-first search) of the assembly tree using the

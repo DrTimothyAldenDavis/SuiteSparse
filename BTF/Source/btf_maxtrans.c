@@ -1,6 +1,12 @@
-/* ========================================================================== */
-/* === BTF_MAXTRANS ========================================================= */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// BTF/Source/btf_maxtrans: maximum transversal
+//------------------------------------------------------------------------------
+
+// BTF, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+// Author: Timothy A. Davis.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* Finds a column permutation that maximizes the number of entries on the
  * diagonal of a sparse matrix.  See btf.h for more information.
@@ -40,9 +46,6 @@
  * Thus, for general usage, cs_maxtrans is preferred.  For square matrices that
  * are typically structurally non-singular, maxtrans is preferred.  A partial
  * maxtrans can still be very useful when solving a sparse linear system.
- *
- * By Tim Davis.  Copyright (c) 2004-2007, University of Florida.
- * with support from Sandia National Laboratories.  All Rights Reserved.
  */ 
 
 #include "btf.h"
