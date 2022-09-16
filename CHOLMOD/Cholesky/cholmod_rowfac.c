@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === Cholesky/cholmod_rowfac ============================================== */
-/* ========================================================================== */
-
 //------------------------------------------------------------------------------
+// CHOLMOD/Cholesky/cholmod_rowfac: row-wise numerical LDL' or LL' factorization
+//------------------------------------------------------------------------------
+
 // CHOLMOD/Cholesky Module.  Copyright (C) 2005-2022, Timothy A. Davis
 // All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
+
 //------------------------------------------------------------------------------
 
 /* Full or incremental numerical LDL' or LL' factorization (simplicial, not

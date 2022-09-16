@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === Partition/cholmod_ccolamd ============================================ */
-/* ========================================================================== */
-
 //------------------------------------------------------------------------------
+// CHOLMOD/Partition/cholmod_ccolamd: CHOLMOD interface to CCOLAMD
+//------------------------------------------------------------------------------
+
 // CHOLMOD/Partition Module.  Copyright (C) 2005-2022, University of Florida.
 // All Rights Reserved.  Author: Timothy A. Davis.
 // SPDX-License-Identifier: LGPL-2.1+
+
 //------------------------------------------------------------------------------
 
 /* CHOLMOD interface to the CCOLAMD ordering routine.  Finds a permutation

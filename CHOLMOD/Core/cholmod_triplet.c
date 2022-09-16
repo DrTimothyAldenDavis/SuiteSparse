@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === Core/cholmod_triplet ================================================= */
-/* ========================================================================== */
-
 //------------------------------------------------------------------------------
+// CHOLMOD/Core/cholmod_triplet: core methods for the cholmod_triplet object
+//------------------------------------------------------------------------------
+
 // CHOLMOD/Core Module.  Copyright (C) 2005-2022, University of Florida.
 // All Rights Reserved. Author:  Timothy A. Davis
 // SPDX-License-Identifier: LGPL-2.1+
+
 //------------------------------------------------------------------------------
 
 /* Core utility routines for the cholmod_triplet object:

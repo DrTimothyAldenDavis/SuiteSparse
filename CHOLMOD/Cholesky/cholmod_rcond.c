@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === Cholesky/cholmod_rcond =============================================== */
-/* ========================================================================== */
-
 //------------------------------------------------------------------------------
+// CHOLMOD/Cholesky/cholmod_rcond: estimate the reciprocal of condition number
+//------------------------------------------------------------------------------
+
 // CHOLMOD/Cholesky Module.  Copyright (C) 2005-2022, Timothy A. Davis
 // All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
+
 //------------------------------------------------------------------------------
 
 /* Return a rough estimate of the reciprocal of the condition number:

@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === Core/t_cholmod_triplet =============================================== */
-/* ========================================================================== */
-
 //------------------------------------------------------------------------------
+// CHOLMOD/Core/t_cholmod_triplet: template for cholmod_triplet
+//------------------------------------------------------------------------------
+
 // CHOLMOD/Core Module.  Copyright (C) 2005-2022, University of Florida.
 // All Rights Reserved. Author:  Timothy A. Davis
 // SPDX-License-Identifier: LGPL-2.1+
+
 //------------------------------------------------------------------------------
 
 /* Template routine for cholmod_triplet.  All xtypes supported */

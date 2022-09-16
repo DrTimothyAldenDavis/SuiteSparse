@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === Modify/cholmod_rowadd ================================================ */
-/* ========================================================================== */
-
 //------------------------------------------------------------------------------
+// CHOLMOD/Modify/cholmod_rowadd: add row/column to an LDL' factorization
+//------------------------------------------------------------------------------
+
 // CHOLMOD/Modify Module.  Copyright (C) 2005-2022, Timothy A. Davis,
 // and William W. Hager. All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
+
 //------------------------------------------------------------------------------
 
 /* Adds a row and column to an LDL' factorization, and optionally updates the

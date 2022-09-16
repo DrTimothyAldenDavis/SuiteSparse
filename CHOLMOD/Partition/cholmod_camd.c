@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === Partition/cholmod_camd =============================================== */
-/* ========================================================================== */
-
 //------------------------------------------------------------------------------
+// CHOLMOD/Partition/cholmod_camd: CHOLMOD interface to CAMD
+//------------------------------------------------------------------------------
+
 // CHOLMOD/Partition Module.  Copyright (C) 2005-2022, University of Florida.
 // All Rights Reserved.  Author: Timothy A. Davis.
 // SPDX-License-Identifier: LGPL-2.1+
+
 //------------------------------------------------------------------------------
 
 /* CHOLMOD interface to the CAMD ordering routine.  Orders A if the matrix is

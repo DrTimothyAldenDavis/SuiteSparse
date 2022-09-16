@@ -11,7 +11,8 @@ FIXME: test coverage for all packages.
     todo: UMFPACK, SPQR
     do not change: SLIP_LU
 
-FIXME: cmake CUDA for CHOLMOD and SPQR
+FIXME: cmake CUDA for: CHOLMOD,
+    SPQR, SuiteSparse_GPURuntime, GPUQREngine
 
 FIXME: update metis cmake to use SuiteSparsePolicy
 

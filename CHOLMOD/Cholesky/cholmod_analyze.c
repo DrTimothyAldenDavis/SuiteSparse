@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === Cholesky/cholmod_analyze ============================================= */
-/* ========================================================================== */
-
 //------------------------------------------------------------------------------
+// CHOLMOD/Cholesky/cholmod_analyze: order and analyze a matrix
+//------------------------------------------------------------------------------
+
 // CHOLMOD/Cholesky Module.  Copyright (C) 2005-2022, Timothy A. Davis
 // All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
+
 //------------------------------------------------------------------------------
 
 /* Order and analyze a matrix (either simplicial or supernodal), in prepartion

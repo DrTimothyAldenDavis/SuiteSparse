@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === Cholesky/cholmod_rowcolcounts ======================================== */
-/* ========================================================================== */
-
 //------------------------------------------------------------------------------
+// CHOLMOD/Cholesky/cholmod_rowcolcounts: compute row/col counts of L
+//------------------------------------------------------------------------------
+
 // CHOLMOD/Cholesky Module.  Copyright (C) 2005-2022, Timothy A. Davis
 // All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
+
 //------------------------------------------------------------------------------
 
 /* Compute the row and column counts of the Cholesky factor L of the matrix

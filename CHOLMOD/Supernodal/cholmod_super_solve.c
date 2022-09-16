@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === Supernodal/cholmod_super_solve ======================================= */
-/* ========================================================================== */
-
 //------------------------------------------------------------------------------
+// CHOLMOD/Supernodal/cholmod_super_solve: solve using supernodal factorization
+//------------------------------------------------------------------------------
+
 // CHOLMOD/Supernodal Module.  Copyright (C) 2005-2022, Timothy A. Davis.
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
+
 //------------------------------------------------------------------------------
 
 /* Solve Lx=b or L'x=b for a supernodal factorization.  These routines do not

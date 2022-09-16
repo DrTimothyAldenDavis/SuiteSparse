@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === CHOLMOD/MATLAB/ldlsolve mexFunction ================================== */
-/* ========================================================================== */
-
 //------------------------------------------------------------------------------
+// CHOLMOD/MATLAB/ldlsolve: MATLAB interface to CHOLMOD LDL' solve
+//------------------------------------------------------------------------------
+
 // CHOLMOD/MATLAB Module.  Copyright (C) 2005-2022, Timothy A. Davis.
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
+
 //------------------------------------------------------------------------------
 
 /* Solve LDL'x=b given an LDL' factorization computed by ldlchol.

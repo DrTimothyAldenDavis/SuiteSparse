@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === Demo/cholmod_l_demo ================================================== */
-/* ========================================================================== */
-
 //------------------------------------------------------------------------------
+// CHOLMOD/Demo/cholmod_l_demo: demo program for CHOLMOD
+//------------------------------------------------------------------------------
+
 // CHOLMOD/Demo Module.  Copyright (C) 2005-2022, Timothy A. Davis,
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
+
 //------------------------------------------------------------------------------
 
 /* Read in a matrix from a file, and use CHOLMOD to solve Ax=b if A is
@@ -96,7 +96,6 @@ int main (int argc, char **argv)
 
     cm = &Common ;
     cholmod_l_start (cm) ;
-    CHOLMOD_FUNCTION_DEFAULTS ;     /* just for testing (not required) */
 
     /* cm->useGPU = 1; */
     cm->prefer_zomplex = prefer_zomplex ;

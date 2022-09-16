@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === CHOLMOD/MATLAB/Test/lxbpattern mexFunction =========================== */
-/* ========================================================================== */
-
 //------------------------------------------------------------------------------
+// CHOLMOD/MATLAB/lxbpattern: MATLAB interface for CHOLMOD symbolic x=L\b solve
+//------------------------------------------------------------------------------
+
 // CHOLMOD/MATLAB Module.  Copyright (C) 2005-2022, Timothy A. Davis.
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
+
 //------------------------------------------------------------------------------
 
 /* Find the nonzero pattern of x=L\b for a sparse vector b.  If numerical

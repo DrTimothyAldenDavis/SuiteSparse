@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === Supernodal/t_cholmod_super_numeric =================================== */
-/* ========================================================================== */
-
 //------------------------------------------------------------------------------
+// CHOLMOD/Supernodal/t_cholmod_super_numeric: cholmod_super_numeric template
+//------------------------------------------------------------------------------
+
 // CHOLMOD/Supernodal Module.  Copyright (C) 2005-2022, Timothy A. Davis.
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
+
 //------------------------------------------------------------------------------
 
 /* Template routine for cholmod_super_numeric.  All xtypes supported, except

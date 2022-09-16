@@ -2,7 +2,7 @@
 SuiteSparse:  A Suite of Sparse matrix packages at http://suitesparse.com
 -----------------------------------------------------------------------------
 
-Aug 25, 2022.  SuiteSparse VERSION 5.13.0
+Oct 1, 2022.  SuiteSparse VERSION 6.0.0
 
 SuiteSparse is a set of sparse-matrix-related packages written or co-authored
 by Tim Davis, available at https://github.com/DrTimothyAldenDavis/SuiteSparse .
@@ -315,11 +315,9 @@ Packages in SuiteSparse, and files in this directory:
                 make clean      removes all files not in distribution, but
                                 keeps compiled libraries and demoes, ./lib,
                                 ./share, and ./include.
-                make config     displays parameter settings; does not compile
 
                 Each individual package also has each of the above 'make'
-                targets.  Doing 'make config' in each package */Lib directory
-                displays the exact shared and static library names.
+                targets.
 
                 Things you don't need to do:
                 make cx         creates CXSparse from CSparse
@@ -383,10 +381,8 @@ Packages in SuiteSparse, and files in this directory:
                 authors: Tim Davis, Nuri Yeralan, Sanjay Ranka,
                     Wissam Sid-Lakhdar
 
-    SuiteSparse_config    configuration file for all the above packages.  The
-                SuiteSparse_config/SuiteSparse_config.mk is included in the
-                Makefile's of all packages.  CSparse and MATLAB_Tools do not
-                use SuiteSparse_config.
+    SuiteSparse_config    configuration file for all the above packages.
+                CSparse and MATLAB_Tools do not use SuiteSparse_config.
                 author: Tim Davis
 
     SuiteSparse_GPURuntime      GPU support package for SPQR and CHOLMOD
@@ -451,7 +447,6 @@ PACKAGENAME/Doc/License.txt:
 These files are also present, but they are simply copies of the above license
 files for CXSparse and ssget:
 
-    CXSparse_newfiles/Doc/License.txt
     CSparse/MATLAB/ssget/Doc/License.txt
     CXSparse/MATLAB/ssget/Doc/License.txt
 
@@ -500,18 +495,15 @@ revise the above instructions for Windows yourself.
 QUICK START FOR THE C/C++ LIBRARIES:
 -----------------------------------------------------------------------------
 
+FIXME: revise the installation instructions
+
 Type the following in this directory:
 
     make ; make install
 
-or, if want to use GraphBLAS in recent versions of MATLAB, do:
-
-    make ; make gbrenamed ; make install
-
 All libraries will be created and copied into SuiteSparse/lib.  All include
 files need by the applications that use SuiteSparse are copied into
-SuiteSparse/include.   All user documenation is copied into
-SuiteSparse/share/doc.
+SuiteSparse/include.
 
 Be sure to first install all required libraries:  BLAS and LAPACK for UMFPACK,
 CHOLMOD, and SPQR, and GMP and MPFR for SLIP_LU.  Be sure to use the latest
@@ -541,34 +533,23 @@ for example, which changes the compiler to gcc and g++, and runs make with
 'make -j32', in parallel with 32 jobs.
 
 Now you can install the libraries, if you wish, in a location other than
-SuiteSparse/lib, SuiteSparse/include, and SuiteSparse/share/doc, using
-'make install INSTALL=...'
+SuiteSparse/lib, SuiteSparse/include, using:
+
+    make install INSTALL=(some other path here)
 
 Do 'make install' if you want to install the libraries and include files in
-SuiteSparse/lib and SuiteSparse/include, and the documentation in
-SuiteSparse/doc/suitesparse-VERSION.
-This will work on Linux/Unix and the Mac.  It should automatically detect if
-you have the Intel compilers or not, and whether or not you have CUDA.  If this
-fails, see the SuiteSparse_config/SuiteSparse_config.mk file.  There are many
-options that you can either list on the 'make' command line, or you can just
-edit that file.  For example, to compile with your own BLAS:
+SuiteSparse/lib and SuiteSparse/include.
 
-    make BLAS=-lmyblaslibraryhere
+This will work on Linux/Unix and the Mac.  It should automatically detect if
+you have the Intel compilers or not, and whether or not you have CUDA.
 
 NOTE: Use of the Intel MKL BLAS is strongly recommended.  The OpenBLAS can
 result in severe performance degradation, in CHOLMOD in particular.
-
-To list all configuration options (but not compile anything), do:
-
-    make config
-
-Any parameter you see in the output of 'make config' with an equal sign
-can be modified at the 'make' command line.
+See cmake_modules/SuiteSparsePolicy.cmake to select your BLAS.
 
 If you do "make install" by itself, then the packages are all installed in
-SuiteSparse/lib (libraries), SuiteSparse/include (include .h files), and
-SuiteSparse/doc/suitesparse-VERSION (documentation).  To install in
-/usr/local, the default location for Linux, do:
+SuiteSparse/lib (libraries), SuiteSparse/include (include .h files).
+To install in /usr/local, the default location for Linux, do:
 
     make library
     sudo make install INSTALL=/usr/local
@@ -604,13 +585,6 @@ in different locations, do:
     make install INSTALL_LIB=/my/libs INSTALL_INCLUDE=/myotherstuff/include
 
 for example.  Any term not defined will be set to its default.
-
-Both the static (.a) and shared (.so) libraries are compiled.  The lib.a
-libraries are left in the package Lib folder (AMD/Lib/libamd.a for example).
-The main exception to this rule is the SuiteSparse_config library, which is in
-SuiteSparse/libsuiteSparseconfig.a.  SuiteSparse_config is required by all
-packages.  The (extremely) optional xerbla library is also an exception, but it
-is highly unlikely that you need that library.
 
 The 'make uninstall' takes the same command-line arguments.
 
@@ -648,12 +622,11 @@ Step-by-step details:
     ignore those errors.
 
 (6) To install, type "make install".  This will place copies of all
-    libraries in SuiteSparse/lib, and all include files in SuiteSparse/include,
-    and all documentation in SuiteSparse/doc/suitesparse-VERSION.  You can
-    change the install location by "make install INSTALL=/my/path" which puts
-    the libraries in /my/path/lib, the include files in /my/path/include, and
-    documentation in /my/path/doc.  These directories are created if they do
-    not already exist.
+    libraries in SuiteSparse/lib, and all include files in SuiteSparse/include.
+    You can change the install location by "make install INSTALL=/my/path"
+    which puts the libraries in /my/path/lib, the include files in
+    /my/path/include, and documentation in /my/path/doc.  These directories are
+    created if they do not already exist.
 
 (7) To uninstall, type "make uninstall", which reverses "make install"
     by removing the SuiteSparse libraries, include files, and documentation

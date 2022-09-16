@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === Demo/cholmod_demo ==================================================== */
-/* ========================================================================== */
-
 //------------------------------------------------------------------------------
+// CHOLMOD/Demo/cholmod_demo:  demo program for CHOLMOD
+//------------------------------------------------------------------------------
+
 // CHOLMOD/Demo Module.  Copyright (C) 2005-2022, Timothy A. Davis,
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
+
 //------------------------------------------------------------------------------
 
 /* Read in a matrix from a file, and use CHOLMOD to solve Ax=b if A is
@@ -96,7 +96,6 @@ int main (int argc, char **argv)
 
     cm = &Common ;
     cholmod_start (cm) ;
-    CHOLMOD_FUNCTION_DEFAULTS ;     /* just for testing (not required) */
 
     /* use default parameter settings, except for the error handler.  This
      * demo program terminates if an error occurs (out of memory, not positive

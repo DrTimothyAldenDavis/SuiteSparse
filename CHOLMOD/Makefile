@@ -81,6 +81,7 @@ uninstall:
 
 # remove all files not in the distribution
 clean:
+	( cd Tcov && $(MAKE) purge )
 	- $(RM) -rf build/* Config/*.tmp timelog.m
 
 purge: clean

@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === Partition/cholmod_nesdis ============================================= */
-/* ========================================================================== */
-
 //------------------------------------------------------------------------------
+// CHOLMOD/Partition/cholmod_nesdis: CHOLMOD nested dissection, using METIS
+//------------------------------------------------------------------------------
+
 // CHOLMOD/Partition Module.  Copyright (C) 2005-2022, University of Florida.
 // All Rights Reserved.  Author: Timothy A. Davis.
 // SPDX-License-Identifier: LGPL-2.1+
+
 //------------------------------------------------------------------------------
 
 /* CHOLMOD nested dissection and graph partitioning.

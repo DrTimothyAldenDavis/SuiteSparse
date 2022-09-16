@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === Partition/cholmod_csymamd ============================================ */
-/* ========================================================================== */
-
 //------------------------------------------------------------------------------
+// CHOLMOD/Partition/cholmod_csymamd: CHOLMOD interface to CSYMAMD
+//------------------------------------------------------------------------------
+
 // CHOLMOD/Partition Module.  Copyright (C) 2005-2022, University of Florida.
 // All Rights Reserved.  Author: Timothy A. Davis.
 // SPDX-License-Identifier: LGPL-2.1+
+
 //------------------------------------------------------------------------------
 
 /* CHOLMOD interface to the CSYMAMD ordering routine.  Finds a permutation

@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === Supernodal/cholmod_super_numeric ===================================== */
-/* ========================================================================== */
-
 //------------------------------------------------------------------------------
+// CHOLMOD/Supernodal/cholmod_super_numeric: supernodal Cholesky factorization
+//------------------------------------------------------------------------------
+
 // CHOLMOD/Supernodal Module.  Copyright (C) 2005-2022, Timothy A. Davis.
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
+
 //------------------------------------------------------------------------------
 
 /* Computes the Cholesky factorization of A+beta*I or A*F+beta*I.  Only the

@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === Cholesky/cholmod_spsolve ============================================= */
-/* ========================================================================== */
-
 //------------------------------------------------------------------------------
+// CHOLMOD/Cholesky/cholmod_spsolve: solve a linear system with sparse x and b
+//------------------------------------------------------------------------------
+
 // CHOLMOD/Cholesky Module.  Copyright (C) 2005-2022, Timothy A. Davis
 // All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
+
 //------------------------------------------------------------------------------
 
 /* Given an LL' or LDL' factorization of A, solve one of the following systems:

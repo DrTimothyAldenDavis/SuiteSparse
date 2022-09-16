@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === MatrixOps/cholmod_symmetry =========================================== */
-/* ========================================================================== */
-
 //------------------------------------------------------------------------------
+// CHOLMOD/MatrixOps/cholmod_symmetry: determine symmetry status of a matrix
+//------------------------------------------------------------------------------
+
 // CHOLMOD/MatrixOps Module.  Copyright (C) 2005-2022, Timothy A. Davis.
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
+
 //------------------------------------------------------------------------------
 
 /* Determines if a sparse matrix is rectangular, unsymmetric, symmetric,

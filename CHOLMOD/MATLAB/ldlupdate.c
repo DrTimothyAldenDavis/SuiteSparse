@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === CHOLMOD/MATLAB/ldlupdate mexFunction ================================= */
-/* ========================================================================== */
-
 //------------------------------------------------------------------------------
+// CHOLMOD/MATLAB/ldlupdate: MATLAB interface to CHOLMOD update/downdate
+//------------------------------------------------------------------------------
+
 // CHOLMOD/MATLAB Module.  Copyright (C) 2005-2022, Timothy A. Davis.
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
+
 //------------------------------------------------------------------------------
 
 /* Multiple-rank update or downdate of a sparse LDL' factorization.

@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === Core/cholmod_change_factor =========================================== */
-/* ========================================================================== */
-
 //------------------------------------------------------------------------------
+// CHOLMOD/Core/cholmod_change_factor: change format of a Cholesky factorization
+//------------------------------------------------------------------------------
+
 // CHOLMOD/Core Module.  Copyright (C) 2005-2022, University of Florida.
 // All Rights Reserved. Author:  Timothy A. Davis
 // SPDX-License-Identifier: LGPL-2.1+
+
 //------------------------------------------------------------------------------
 
 /* Change the numeric/symbolic, LL/LDL, simplicial/super, packed/unpacked,

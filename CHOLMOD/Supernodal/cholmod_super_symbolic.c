@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === Supernodal/cholmod_super_symbolic ==================================== */
-/* ========================================================================== */
-
 //------------------------------------------------------------------------------
+// CHOLMOD/Supernodal/cholmod_super_symbolic: symbolic supernodal analysis
+//------------------------------------------------------------------------------
+
 // CHOLMOD/Supernodal Module.  Copyright (C) 2005-2022, Timothy A. Davis.
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
+
 //------------------------------------------------------------------------------
 
 /* Supernodal symbolic analysis of the LL' factorization of A, A*A',

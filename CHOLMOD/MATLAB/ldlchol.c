@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === CHOLMOD/MATLAB/ldlchol mexFunction =================================== */
-/* ========================================================================== */
-
 //------------------------------------------------------------------------------
+// CHOLMOD/MATLAB/ldlchol: MATLAB interface to CHOLMOD LDL' factorization
+//------------------------------------------------------------------------------
+
 // CHOLMOD/MATLAB Module.  Copyright (C) 2005-2022, Timothy A. Davis.
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
+
 //------------------------------------------------------------------------------
 
 /* Numeric LDL' factorization.  Note that LL' and LDL' are faster than R'R

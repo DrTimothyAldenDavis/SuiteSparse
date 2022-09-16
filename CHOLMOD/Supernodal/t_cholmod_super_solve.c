@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === Supernodal/t_cholmod_super_solve ===================================== */
-/* ========================================================================== */
-
 //------------------------------------------------------------------------------
+// CHOLMOD/Supernodal/t_cholmod_super_solve: template for cholmod_super_solve
+//------------------------------------------------------------------------------
+
 // CHOLMOD/Supernodal Module.  Copyright (C) 2005-2022, Timothy A. Davis.
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
+
 //------------------------------------------------------------------------------
 
 /* Template routine for cholmod_super_solve.  Supports real or complex L. */

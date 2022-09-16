@@ -1,21 +1,21 @@
-/* ========================================================================== */
-/* === Include/cholmod.h ==================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Include/cholmod.h: include file for CHOLMOD
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Include/cholmod.h.
- * Copyright (C) 2005-2022, Timothy A. Davis.
- * http://www.suitesparse.com
- * SPDX-License-Identifier: Apache-2.0
- *
- * CHOLMOD consists of a set of Modules, each with their own license: either
+// CHOLMOD/Include/cholmod.h.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+
+//------------------------------------------------------------------------------
+
+/* CHOLMOD consists of a set of Modules, each with their own license: either
  * LGPL-2.1+ or GPL-2.0+.  This cholmod.h file includes defintions of the
  * CHOLMOD API for all Modules, and this cholmod.h file itself is provided to
  * you with a permissive license (Apache-2.0).  You are permitted to provide
  * the hooks for an optional interface to CHOLMOD in a non-GPL/non-LGPL code,
- * without requiring you to agree to the GPL/LGPL license of the Modules.  The
- * Modules themselves can only be functional if their GPL or LGPL licenses are
- * used.
+ * without requiring you to agree to the GPL/LGPL license of the Modules, as
+ * long as you don't use the *.c files in the relevant Modules.  The Modules
+ * themselves can only be functional if their GPL or LGPL licenses are used.
  *
  * Portions of CHOLMOD (the Core and Partition Modules) are copyrighted by the
  * University of Florida.  The Modify Module is co-authored by William W.

@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === Modify/t_cholmod_updown_numkr ======================================== */
-/* ========================================================================== */
-
 //------------------------------------------------------------------------------
+// CHOLMOD/Modify/t_cholmod_updown_numkr: template for update/downdate
+//------------------------------------------------------------------------------
+
 // CHOLMOD/Modify Module.  Copyright (C) 2005-2022, Timothy A. Davis,
 // and William W. Hager. All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
+
 //------------------------------------------------------------------------------
 
 /* Supernodal numerical update/downdate of rank K = RANK, along a single path.

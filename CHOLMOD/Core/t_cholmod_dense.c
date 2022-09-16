@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === Core/t_cholmod_dense ================================================= */
-/* ========================================================================== */
-
 //------------------------------------------------------------------------------
+// CHOLMOD/Core/t_cholmod_dense: template for cholmod_dense
+//------------------------------------------------------------------------------
+
 // CHOLMOD/Core Module.  Copyright (C) 2005-2022, University of Florida.
 // All Rights Reserved. Author:  Timothy A. Davis
 // SPDX-License-Identifier: LGPL-2.1+
+
 //------------------------------------------------------------------------------
 
 /* Template routine for cholmod_dense.  All xtypes supported, except that there

@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === Modify/cholmod_updown ================================================ */
-/* ========================================================================== */
-
 //------------------------------------------------------------------------------
+// CHOLMOD/Modify/cholmod_updown: sparse Cholesky update/downdate
+//------------------------------------------------------------------------------
+
 // CHOLMOD/Modify Module.  Copyright (C) 2005-2022, Timothy A. Davis,
 // and William W. Hager. All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
+
 //------------------------------------------------------------------------------
 
 /* Updates/downdates the LDL' factorization (symbolic, then numeric), by

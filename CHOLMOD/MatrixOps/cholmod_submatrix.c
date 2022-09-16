@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === MatrixOps/cholmod_submatrix ========================================== */
-/* ========================================================================== */
-
 //------------------------------------------------------------------------------
+// CHOLMOD/MatrixOps/cholmod_submatrix: extract submatrix from a sparse matrix
+//------------------------------------------------------------------------------
+
 // CHOLMOD/MatrixOps Module.  Copyright (C) 2005-2022, Timothy A. Davis.
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
+
 //------------------------------------------------------------------------------
 
 /* C = A (rset,cset), where C becomes length(rset)-by-length(cset) in dimension.
