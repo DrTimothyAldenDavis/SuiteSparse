@@ -15,7 +15,7 @@ function X = cs_qleft (V, Beta, p, Y)
 %      
 %   See also CS_QR, CS_QRIGHT.
 
-% Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+% CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
 % SPDX-License-Identifier: LGPL-2.1+
 
 [m2 n] = size (V) ;

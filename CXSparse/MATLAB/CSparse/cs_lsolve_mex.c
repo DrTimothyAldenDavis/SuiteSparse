@@ -1,3 +1,6 @@
+// CXSparse/MATLAB/CSparse/cs_lsolve_mex: x=L\b where x,b are sparse or dense
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_mex.h"
 /* cs_lsolve: x=L\b.  L must be sparse and lower triangular.  b must be a
  * full or sparse vector.  x is full or sparse, depending on b.

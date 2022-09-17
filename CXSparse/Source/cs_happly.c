@@ -1,3 +1,6 @@
+// CXSparse/Source/cs_happly: apply a Householder transformation to a vector
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 /* apply the ith Householder vector to x */
 CS_INT cs_happly (const cs *V, CS_INT i, double beta, CS_ENTRY *x)

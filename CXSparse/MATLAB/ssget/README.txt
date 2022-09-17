@@ -3,6 +3,8 @@ ssget:  MATLAB and Java interfaces to the SuiteSparse Matrix Collection
 Copyright 2005-2019, Timothy A. Davis, http://www.suitesparse.com,
 Texas A&M University.
 
+SPDX-License-Identifier: BSD-3-clause
+
 REQUIREMENTS:
 
     Java JRE 1.8.0 or later is required for the ssgui Java program.

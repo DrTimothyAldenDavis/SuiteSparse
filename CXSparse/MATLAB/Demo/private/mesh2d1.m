@@ -4,7 +4,8 @@ function A = mesh2d1 (n)
 %   A = mesh2d1 (30) ;  % a 30-by-30 mesh
 % See also: cs_demo
 
-% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
+% CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+% SPDX-License-Identifier: LGPL-2.1+
 
 ii = zeros (5*n^2, 1) ;     % preallocate ii, jj, and xx
 jj = zeros (5*n^2, 1) ;

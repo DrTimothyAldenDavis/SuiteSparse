@@ -1,3 +1,6 @@
+// CXSparse/MATLAB/CSparse/cs_etree_mex: elimination tree
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_mex.h"
 /* cs_etree: elimination tree of A or A'*A */
 void mexFunction

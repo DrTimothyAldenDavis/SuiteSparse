@@ -4,7 +4,7 @@ function [v,beta,xnorm] = hmake1 (x)
 %   [v,beta,xnorm] = hmake1 (x)
 % See also: testall
 
-% Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+% CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
 % SPDX-License-Identifier: LGPL-2.1+
 
 n = length (x) ;

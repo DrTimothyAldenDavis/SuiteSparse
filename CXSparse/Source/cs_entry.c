@@ -1,3 +1,6 @@
+// CXSparse/Source/cs_entry: add an entry to a sparse matrix in triplet-form
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 /* add an entry to a triplet matrix; return 1 if ok, 0 otherwise */
 CS_INT cs_entry (cs *T, CS_INT i, CS_INT j, CS_ENTRY x)

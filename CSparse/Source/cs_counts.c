@@ -1,4 +1,4 @@
-// CSparse/Source/Source/cs_counts: column counts for sparse Cholesky
+// CSparse/Source/cs_counts: column counts for sparse Cholesky
 // CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"

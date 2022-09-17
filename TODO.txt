@@ -1,16 +1,16 @@
 FIXME update MATLAB interfaces for all packages
 
 FIXME: copyright (c) and SPDX for all files
-    done: AMD, BTF, CAMD, CCOLAMD, CHOLMOD, COLAMD
+    done: AMD, BTF, CAMD, CCOLAMD, CHOLMOD, COLAMD, CSparse, 
+        CXSparse, 
 
-    to do: CSparse, CXSparse, GPUQREngine,
+    to do: GPUQREngine,
         KLU, LDL, MATLAB_Tools, Mongoose, RBio, SPQR, ssget,
         SuiteSparse_config, SuiteSparse_GPURuntime, UMFPACK
 
 FIXME: test coverage for all packages.
     done: CSparse, CXSparse, RBio, CHOLMOD, GraphBLAS, KLU
     todo: UMFPACK, SPQR
-    do not change: SLIP_LU
 
 FIXME: cmake CUDA for: CHOLMOD,
     SPQR, SuiteSparse_GPURuntime, GPUQREngine

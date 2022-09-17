@@ -1,3 +1,6 @@
+// CSparse/Demo/cs_di_demo: demo utilities for CXSparse (double int32_t)
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_di_demo.h"
 #include <time.h>
 /* 1 if A is square & upper tri., -1 if square & lower tri., 0 otherwise */

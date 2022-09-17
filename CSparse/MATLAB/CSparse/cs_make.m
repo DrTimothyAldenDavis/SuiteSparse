@@ -39,7 +39,7 @@ function [objfiles, timestamp_out] = cs_make (f)
 %
 %   See also MEX.
 
-% Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+% CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
 % SPDX-License-Identifier: LGPL-2.1+
 
 try

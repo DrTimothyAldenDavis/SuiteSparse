@@ -1,3 +1,6 @@
+// CXSparse/Source/cs_convert: convert between real and complex 
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 
 /* convert from complex to real (int version) */

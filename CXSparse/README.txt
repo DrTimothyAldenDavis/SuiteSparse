@@ -1,5 +1,6 @@
-CXSparse: Copyright (c) 2006-2022, Timothy A. Davis.
-http://www.suitesparse.com
+CXSparse: a Concise eXtended Sparse Matrix Package
+CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+SPDX-License-Identifier: LGPL-2.1+
 
 Derived from CSparse.  Conversion originally by David Bateman, Motorola,
 and then modified by Tim Davis.  ANSI C11 is required, with support for

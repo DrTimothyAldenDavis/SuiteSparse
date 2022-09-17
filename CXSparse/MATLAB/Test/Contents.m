@@ -100,4 +100,5 @@
 % Example:
 %   help chol_update
 
-%   Copyright 2006-2007, Timothy A. Davis
+% CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+% SPDX-License-Identifier: LGPL-2.1+

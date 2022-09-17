@@ -5,7 +5,7 @@ function R = gqr3 (A)
 %   R = gqr3 (A)
 % See also: testall
 
-% Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+% CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
 % SPDX-License-Identifier: LGPL-2.1+
 
 [m n] = size (A) ;

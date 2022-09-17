@@ -7,7 +7,7 @@ function [C, sym] = get_problem (prefix, name, tol)
 %    [C, sym] = get_problem ('', 'west0067') ;
 % See also: cs_demo
 
-% Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+% CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
 % SPDX-License-Identifier: LGPL-2.1+
 
 fprintf ('\n------------------- Matrix: %s\n', name) ;

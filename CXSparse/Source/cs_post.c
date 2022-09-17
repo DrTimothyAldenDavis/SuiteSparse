@@ -1,3 +1,6 @@
+// CXSparse/Source/cs_post: postorder a forest
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 /* post order a forest */
 CS_INT *cs_post (const CS_INT *parent, CS_INT n)

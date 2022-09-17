@@ -5,7 +5,8 @@ function est = norm1est (L,U,P,Q)
 %   est = norm1est (L,U,P,Q)
 % See also: cs_demo
 
-% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
+% CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+% SPDX-License-Identifier: LGPL-2.1+
 
 n = size (L,1) ;
 for k = 1:5

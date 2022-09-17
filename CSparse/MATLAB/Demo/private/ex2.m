@@ -5,7 +5,7 @@ function ex2 (n)
 %   ex2
 % See also: cs_demo
 
-% Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+% CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
 % SPDX-License-Identifier: LGPL-2.1+
 
 if (nargin < 1)

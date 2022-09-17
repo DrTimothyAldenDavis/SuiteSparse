@@ -4,7 +4,8 @@ function A = mesh3d2 (n)
 %   A = mesh3d2 (10) ;  % a 10-by-10-by-10 mesh
 % See also: cs_demo
 
-% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
+% CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+% SPDX-License-Identifier: LGPL-2.1+
 
 nn = 1:n^3 ;
 ii = [nn-n^2 ; nn-n ; nn-1 ; nn ; nn+1 ; nn+n ; nn+n^2] ;

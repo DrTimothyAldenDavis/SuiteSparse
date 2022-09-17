@@ -1,3 +1,6 @@
+// CXSparse/Source/cs_add: sparse matrix addition
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 /* C = alpha*A + beta*B */
 cs *cs_add (const cs *A, const cs *B, CS_ENTRY alpha, CS_ENTRY beta)

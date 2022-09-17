@@ -1,3 +1,6 @@
+// CXSparse/Source/cs_fkeep: keep or drop entries from a sparse matrix
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 /* drop entries for which fkeep(A(i,j)) is false; return nz if OK, else -1 */
 CS_INT cs_fkeep (cs *A, CS_INT (*fkeep) (CS_INT, CS_INT, CS_ENTRY, void *), void *other)

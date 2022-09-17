@@ -5,7 +5,8 @@ function x = cs_pvec (b,p)                                                  %#ok
 %   x = cs_pvec (b,p)
 % See also: cs_demo
 
-% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
+% CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+% SPDX-License-Identifier: LGPL-2.1+
 
 error ('cs_pvec mexFunction not found') ;
 

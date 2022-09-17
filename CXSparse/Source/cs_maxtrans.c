@@ -1,3 +1,6 @@
+// CXSparse/Source/cs_maxtrans: maximum transversal of a graph
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 /* find an augmenting path starting at column k and extend the match if found */
 static void cs_augment (CS_INT k, const cs *A, CS_INT *jmatch, CS_INT *cheap, CS_INT *w,

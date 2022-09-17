@@ -1,3 +1,6 @@
+// CXSparse/Source/cs_malloc: wrappers for malloc/calloc/realloc/free
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 #ifdef MATLAB_MEX_FILE
 #define malloc mxMalloc

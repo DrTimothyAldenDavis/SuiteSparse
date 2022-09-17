@@ -20,7 +20,7 @@ function L = cs_updown (L, c, parent, sigma)                                %#ok
 %
 %   See also CS_ETREE, CS_CHOL, ETREE, CHOLUPDATE, CHOL.
 
-% Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+% CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
 % SPDX-License-Identifier: LGPL-2.1+
 
 error ('cs_updown mexFunction not found') ;

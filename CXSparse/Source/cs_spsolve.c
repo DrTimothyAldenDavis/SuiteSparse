@@ -1,3 +1,6 @@
+// CXSparse/Source/cs_spsolve: solve x=L\b or U\b where x and b are both sparse
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 /* solve Gx=b(:,k), where G is either upper (lo=0) or lower (lo=1) triangular */
 CS_INT cs_spsolve (cs *G, const cs *B, CS_INT k, CS_INT *xi, CS_ENTRY *x, const CS_INT *pinv,

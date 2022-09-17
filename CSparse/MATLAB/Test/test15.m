@@ -5,7 +5,7 @@ function test15
 %   test15
 % See also: testall
 
-% Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+% CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
 % SPDX-License-Identifier: LGPL-2.1+
 
 rand ('state', 0) ;

@@ -5,7 +5,7 @@ function [L,U,P] = lu_rightpr (A)
 %   [L,U,P] = lu_rightpr (A)
 % See also: cs_demo
 
-% Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+% CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
 % SPDX-License-Identifier: LGPL-2.1+
 
 n = size (A,1) ;

@@ -10,7 +10,7 @@ function [p,v,d] = cs_fiedler (A)
 %
 %   See also CS_SCC, EIGS, SYMRCM, UNMESH.
 
-% Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+% CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
 % SPDX-License-Identifier: LGPL-2.1+
 
 n = size (A,1) ;

@@ -1,6 +1,6 @@
 CSparse: a Concise Sparse Matrix package.
-Copyright (c) 2006-2022, Timothy A. Davis.
-http://www.suitesparse.com
+CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+SPDX-License-Identifier: LGPL-2.1+
 
 Refer to "Direct Methods for Sparse Linear Systems," Timothy A. Davis,
 SIAM, Philadelphia, 2006.  No detailed user guide is included in this

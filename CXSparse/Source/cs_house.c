@@ -1,3 +1,6 @@
+// CXSparse/Source/cs_house: create a Householder transformation
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 /* create a Householder reflection [v,beta,s]=house(x), overwrite x with v,
  * where (I-beta*v*v')*x = s*e1 and e1 = [1 0 ... 0]'.

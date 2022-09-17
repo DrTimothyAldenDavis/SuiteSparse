@@ -1,3 +1,6 @@
+// CXSparse/MATLAB/CSparse/cs_mex.h: include file for MATLAB interface
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 #include "mex.h"
 

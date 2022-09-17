@@ -4,7 +4,7 @@ function print_order (order)
 %   print_order (0)
 % See also: cs_demo
 
-% Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+% CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
 % SPDX-License-Identifier: LGPL-2.1+
 
 switch (fix (order))

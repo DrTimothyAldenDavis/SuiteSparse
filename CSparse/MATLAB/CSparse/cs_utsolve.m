@@ -13,7 +13,7 @@ function x = cs_utsolve (U,b)                                               %#ok
 %
 %   See also CS_LSOLVE, CS_LTSOLVE, CS_USOLVE, MLDIVIDE.
 
-% Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+% CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
 % SPDX-License-Identifier: LGPL-2.1+
 
 error ('cs_utsolve mexFunction not found') ;

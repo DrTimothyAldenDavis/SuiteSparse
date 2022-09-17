@@ -1,3 +1,6 @@
+// CXSparse/Source/cs_permute: permute a sparse matrix
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 /* C = A(p,q) where p and q are permutations of 0..m-1 and 0..n-1. */
 cs *cs_permute (const cs *A, const CS_INT *pinv, const CS_INT *q, CS_INT values)

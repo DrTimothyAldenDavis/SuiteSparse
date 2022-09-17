@@ -6,7 +6,7 @@ function [s, t, tobj] = cs_must_compile (srcdir, f, suffix, obj, hfile, force)
 %        none, not meant for end users.
 %   See also: CS_MAKE.
 
-% Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+% CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
 % SPDX-License-Identifier: LGPL-2.1+
 
 dobj = dir ([f obj]) ;

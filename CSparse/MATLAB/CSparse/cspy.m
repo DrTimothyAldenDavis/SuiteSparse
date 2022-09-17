@@ -17,7 +17,7 @@ function [s,M,H] = cspy (A,res)
 %
 %   See also CS_DMSPY, SPY.
 
-% Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+% CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
 % SPDX-License-Identifier: LGPL-2.1+
 
 if nargin < 2

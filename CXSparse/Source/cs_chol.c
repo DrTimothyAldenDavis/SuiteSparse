@@ -1,3 +1,6 @@
+// CXSparse/Source/cs_chol: sparse Cholesky factorization
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 /* L = chol (A, [pinv parent cp]), pinv is optional */
 csn *cs_chol (const cs *A, const css *S)

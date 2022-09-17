@@ -1,3 +1,6 @@
+// CXSparse/Source/cs_scc: strongly connected components
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 /* find the strongly connected components of a square matrix */
 csd *cs_scc (cs *A)     /* matrix A temporarily modified, then restored */

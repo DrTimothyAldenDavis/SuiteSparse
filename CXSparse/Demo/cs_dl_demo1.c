@@ -1,3 +1,6 @@
+// CSparse/Demo/cs_dl_demo1: demo program for CXSparse (double int64_t)
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 int main (void)
 {

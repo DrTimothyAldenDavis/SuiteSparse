@@ -5,7 +5,8 @@ function another_colormap
 %   another_colormap
 % See also: testall
 
-% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
+% CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+% SPDX-License-Identifier: LGPL-2.1+
 
 j = jet (128) ;
 j = j (48:112, :) ;

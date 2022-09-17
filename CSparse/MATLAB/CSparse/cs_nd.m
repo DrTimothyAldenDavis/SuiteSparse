@@ -11,7 +11,7 @@ function p = cs_nd (A)
 %
 %   See also CS_AMD, CS_SEP, CS_ESEP, CS_NSEP, AMD.
 
-% Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+% CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
 % SPDX-License-Identifier: LGPL-2.1+
 
 n = size (A,1) ;

@@ -1,3 +1,6 @@
+// CXSparse/MATLAB/CSparse/cs_qrsol_mex: x=A\b via sparse QR factorization
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_mex.h"
 /* cs_qrsol: solve least squares or underdetermined problem */
 void mexFunction

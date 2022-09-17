@@ -1,9 +1,3 @@
-( cd ../Lib ; /Applications/Xcode.app/Contents/Developer/usr/bin/make )
-/Applications/Xcode.app/Contents/Developer/usr/bin/make install INSTALL=/Users/davis/sparse/SuiteSparse
-make[3]: Nothing to be done for `install'.
-( cd ../../SuiteSparse_config ; /Applications/Xcode.app/Contents/Developer/usr/bin/make )
-/Applications/Xcode.app/Contents/Developer/usr/bin/make install INSTALL=/Users/davis/sparse/SuiteSparse
-make[3]: Nothing to be done for `install'.
 ./cs_idemo < ../Matrix/t2
 
 --- cs_idemo, size of CS_INT: 4

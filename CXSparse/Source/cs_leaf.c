@@ -1,3 +1,6 @@
+// CXSparse/Source/cs_leaf: find least common ancestor of a row subtree
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 /* consider A(i,j), node j in ith row subtree and return lca(jprev,j) */
 CS_INT cs_leaf (CS_INT i, CS_INT j, const CS_INT *first, CS_INT *maxfirst, CS_INT *prevleaf,

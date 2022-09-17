@@ -6,7 +6,7 @@ function cs_demo (do_pause, matrixpath)
 %   cs_demo
 % See also: cs_demo1, cs_demo2, cs_demo3
 
-% Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+% CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
 % SPDX-License-Identifier: LGPL-2.1+
 
 help cs_demo

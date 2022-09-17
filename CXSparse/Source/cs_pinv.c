@@ -1,3 +1,6 @@
+// CXSparse/Source/cs_pinv: construct an inverse permutation
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 /* pinv = p', or p = pinv' */
 CS_INT *cs_pinv (CS_INT const *p, CS_INT n)

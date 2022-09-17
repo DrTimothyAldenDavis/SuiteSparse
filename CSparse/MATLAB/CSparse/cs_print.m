@@ -8,7 +8,7 @@ function cs_print (A,brief)                                                 %#ok
 %
 %   See also: DISPLAY.
 
-% Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+% CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
 % SPDX-License-Identifier: LGPL-2.1+
 
 error ('cs_print mexFunction not found') ;
