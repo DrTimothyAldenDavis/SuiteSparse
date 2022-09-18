@@ -50,12 +50,13 @@ function SuiteSparse_install (do_demo)
 % you have MATLAB R2020b or earlier, or type "make gbrenamed" if you have
 % MATLAB 9.10 (R2021a) or later.
 %
-% Copyright 1990-2022, Timothy A. Davis, http://suitesparse.com.
+% Copyright (c) 1990-2022, Timothy A. Davis, http://suitesparse.com.
 % In collaboration with (in alphabetical order): Patrick Amestoy, David
 % Bateman, Jinhao Chen.  Yanqing Chen, Iain Duff, Les Foster, William Hager,
 % Scott Kolodziej, Chris Lourenco, Stefan Larimore, Erick Moreno-Centeno,
 % Ekanathan Palamadai, Sivasankaran Rajamanickam, Sanjay Ranka, Wissam
 % Sid-Lakhdar, Nuri Yeralan.
+% See each package for its license.
 
 %-------------------------------------------------------------------------------
 % initializations

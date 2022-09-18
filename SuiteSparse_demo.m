@@ -7,7 +7,8 @@ function SuiteSparse_demo (matrixpath, dopause)
 % See also umfpack, cholmod, amd, camd, colamd, ccolamd, btf, klu, spqr,
 %   CSparse, CXSparse, ldlsparse, mongoose, GraphBLAS.
 
-% Copyright 2020, Timothy A. Davis, http://suitesparse.com.
+% Copyright (c) 2020, Timothy A. Davis, http://suitesparse.com.
+% See each package for its license.
 
 if (nargin < 1 || isempty (matrixpath) || ~ischar (matrixpath))
     try
