@@ -1,5 +1,8 @@
 WAITMEX provides a simple way of using a waitbar from within a C mexFunction.
 
+waitmex, Copyright (c) 2007, Timothy A Davis. All Rights Reserved.
+SPDX-License-Identifier: BSD-3-clause
+
 Files:
 
     README.txt	    this file
@@ -21,4 +24,3 @@ These functions should be easily adaptable to any of the many replacements for
 waitbar posted on the MATLAB Central File Exchange, particularly if they use
 the same input and output arguments as the MATLAB waitbar.
 
-Copyright 2007, Timothy A. Davis, http://www.suitesparse.com

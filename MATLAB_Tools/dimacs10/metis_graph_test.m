@@ -8,7 +8,8 @@ function metis_graph_test
 %
 % See also metis_graph_read, metis_graph_install
 
-% Copyright 2011, Tim Davis
+% DIMACS10, Copyright (c) 2011, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 %-------------------------------------------------------------------------------
 % tests with valid graphs

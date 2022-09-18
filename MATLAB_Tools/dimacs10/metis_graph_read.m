@@ -29,7 +29,8 @@ function [A w fmt] = metis_graph_read (file)
 %
 % See also sprand, gallery
 
-% Copyright 2011, Tim Davis
+% DIMACS10, Copyright (c) 2011, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 if (nargin ~= 1 || nargout > 3)
     error ('metis_graph:usage', ...

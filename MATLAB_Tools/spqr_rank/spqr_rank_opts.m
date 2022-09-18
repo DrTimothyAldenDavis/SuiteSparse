@@ -132,7 +132,9 @@ function [opts] = spqr_rank_opts (opts, opts_for_ssp)
 %
 % See also spqr_basic, spqr_null, spqr_cod, spqr_pinv, spqr_ssp, spqr_ssi.
 
-% Copyright 2012, Leslie Foster and Timothy A. Davis
+% spqr_rank, Copyright (c) 2012, Leslie Foster and Timothy A Davis.
+% All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 % The second input parameter to spqr_rank_opts is no longer necessary
 % but maintained for compatibility reasons.

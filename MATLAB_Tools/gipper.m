@@ -59,7 +59,9 @@ function files_out = gipper (directory, include, exclude, exclude_hidden)
 % while the gipper is running, your current directory will now be the parent.
 % You must install the gipper first, by placing it in your MATLAB path.
 
-% Copyright 2007, Timothy A. Davis, Win one for the gipper.
+% gipper, Copyright (c) 2007, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
+
 % Created May 2007, using MATLAB 7.4 (R2007a).  Requires MATLAB 6.5 or later.
 
 % exclude hidden files and directories by default

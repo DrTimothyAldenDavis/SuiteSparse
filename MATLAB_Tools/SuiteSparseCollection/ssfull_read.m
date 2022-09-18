@@ -12,7 +12,9 @@ function A = ssfull_read (file)
 %
 % See also mread, mwrite, RBwrite, RBread.
 
-% Copyright 2006-2019, Timothy A. Davis
+% SuiteSparseCollection, Copyright (c) 2006-2019, Timothy A Davis.
+% All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 % open the file
 f = fopen (file, 'r') ;

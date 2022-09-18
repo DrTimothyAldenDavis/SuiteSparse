@@ -3,7 +3,8 @@ classdef factorization_cod_sparse < factorization
 % A fairly accurate estimate of rank is found.  double(inverse(F)) is a fairly
 % accurate estimate of pinv(A).
 
-% Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
+% Factorize, Copyright (c) 2011-2012, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
     methods
 

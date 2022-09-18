@@ -31,6 +31,9 @@ function SJplot(matrix,tol,option)
 
 % Written by Nikolay Botev and Leslie Foster, 9/5/2008, Version 1.0
 % Copyright 2008, Leslie Foster
+% All Rights Reserved.
+
+% SPDX-License-Identifier: BSD-3-clause
 
 
    % check that the input is ok

@@ -30,7 +30,9 @@ function test_spqr_coverage
 %
 % See also demo_spqr_rank, test_spqr_rank
 
-% Copyright 2012, Leslie Foster and Timothy A Davis.
+% spqr_rank, Copyright (c) 2012, Leslie Foster and Timothy A Davis.
+% All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 profile clear
 profile on

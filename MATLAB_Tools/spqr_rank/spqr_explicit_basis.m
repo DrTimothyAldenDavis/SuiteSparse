@@ -17,7 +17,9 @@ function Nexp = spqr_explicit_basis (N, type)
 %
 % See also spqr_basic, spqr_null, spqr_cod, spqr_pinv, spqr_null_mult.
 
-% Copyright 2012, Leslie Foster and Timothy A. Davis
+% spqr_rank, Copyright (c) 2012, Leslie Foster and Timothy A Davis.
+% All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 is_implicit_basis = ...
     isstruct(N) && isfield(N,'Q') && isfield(N,'X') ;

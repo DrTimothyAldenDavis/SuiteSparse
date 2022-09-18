@@ -6,7 +6,8 @@ function meshnd_example
 %
 % See also meshnd.
 
-% Copyright 2009, Timothy A. Davis, http://www.suitesparse.com
+% MESHND, Copyright (c) 2009, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 help meshnd
 

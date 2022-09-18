@@ -24,5 +24,6 @@
 %   waitmex             % example mexFunction that creates a waitbar
 %   find_commponents_example
 %
-% Copyright 2008-2012, Tim Davis, exceot for spqr_rank which is
+% Copyright 2008-2012, Tim Davis, except for spqr_rank which is
 % Copyright by Les Foster (San Jose State Univ) and Tim Davis.
+% See the SPDX license identifier in each package.

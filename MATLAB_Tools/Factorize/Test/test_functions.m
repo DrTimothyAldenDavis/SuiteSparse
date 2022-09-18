@@ -7,7 +7,8 @@ function err = test_functions
 %
 % See also test_all, factorize, inverse, mldivide
 
-% Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
+% Factorize, Copyright (c) 2011-2012, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 fprintf ('\n----- Test functions:\n') ;
 reset_rand ;

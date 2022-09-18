@@ -1,3 +1,7 @@
+// SuiteSparse/MATLAB_TOOLS/sparsinv/sparseinv.c
+// SPARSEINV, Copyright (c) 2011, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
 #include "sparseinv.h"
 
 /* sparsinv: computes the sparse inverse subset, using Takahashi's equations.
@@ -19,8 +23,6 @@
    an Int.  This will not overflow on a 64 bit system but might on a 32 bit.
    The total work is flops + O(n + nnz(Z)).  Since flops > n and flops > nnz(Z),
    this is O(flops).
-
-   Copyright 2011, Timothy A. Davis, http://www.suitesparse.com
 */
 
 Int sparseinv       /* returns -1 on error, or flop count if OK */

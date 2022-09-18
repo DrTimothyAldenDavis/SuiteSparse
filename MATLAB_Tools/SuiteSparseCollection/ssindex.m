@@ -69,7 +69,9 @@ function ss_index = ssindex (matrixlist)
 %
 % See also ssstats.
 
-% Copyright 2006-2019, Timothy A. Davis
+% SuiteSparseCollection, Copyright (c) 2006-2019, Timothy A Davis.
+% All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 % Requires the SuiteSparse set of packages: CHOLMOD, RBio, CSparse
 

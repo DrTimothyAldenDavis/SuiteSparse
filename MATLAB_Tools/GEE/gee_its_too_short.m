@@ -4,7 +4,8 @@ function b = gee_its_too_short (A, b)
 %   x = gee_its_too_short (A,b) ;       % x=A\b, with no pivoting (!)
 % See also: mldivide, gee_its_simple, gee_its_short
 
-% Copyright 2007, Timothy A. Davis, http://www.suitesparse.com
+% GEE, Copyright (c) 2006-2007, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 n = size (A,1) ;
 for k = 1:n

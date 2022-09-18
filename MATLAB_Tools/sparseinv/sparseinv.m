@@ -29,7 +29,8 @@ function [Z, Zpattern, L, D, U, P, Q, stats] = sparseinv (A)
 %
 % See also inv, lu, chol.
 
-% Copyright 2011, Timothy A. Davis, http://www.suitesparse.com
+% SPARSEINV, Copyright (c) 2011, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 get_stats = (nargout > 7) ;
 if (get_stats)

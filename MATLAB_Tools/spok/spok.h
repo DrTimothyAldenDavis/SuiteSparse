@@ -1,3 +1,7 @@
+// SuiteSparse/MATLAB_Tools/spok/spok.h
+// SPOK, Copyright (c) 2008-2011, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
 #ifdef MATLAB_MEX_FILE
 #include "mex.h"
 #define SPOK_INT mwSignedIndex

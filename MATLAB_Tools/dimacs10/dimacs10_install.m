@@ -9,7 +9,8 @@ function dimacs10_install (demo)
 %
 % See also dimacs10, metis_graph_read, ssget.
 
-% Copyright 2011, Timothy A. Davis, http://www.suitesparse.com
+% DIMACS10, Copyright (c) 2011, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 if (nargin < 1)
     demo = 1 ;

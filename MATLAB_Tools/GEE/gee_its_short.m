@@ -4,7 +4,8 @@ function b = gee_its_short (A, b)
 %   x = gee_its_short (A,b) ;       % same as x=A\b for square A
 % See also: mldivide, gee_its_simple
 
-% Copyright 2006-2007, Timothy A. Davis, http://www.suitesparse.com
+% GEE, Copyright (c) 2006-2007, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 n = size (A,1) ;
 for k = 1:n

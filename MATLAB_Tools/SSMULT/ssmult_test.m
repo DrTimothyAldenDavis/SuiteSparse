@@ -6,7 +6,8 @@ function ssmult_test
 %
 % See also ssmult, ssmultsym
 
-% Copyright 2007-2011, Timothy A. Davis, http://www.suitesparse.com
+% SSMULT, Copyright (c) 2007-2011, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 fprintf ('\nTesting large sparse column vectors (1e7-by-1)\n') ;
 x = sprandn (1e7,1,1e-4) ;

@@ -1,5 +1,6 @@
-SuiteSparseCollection, Copyright 2007-2019, Timothy A. Davis,
-http://www.suitesparse.com
+SuiteSparseCollection, Copyright (c) 2006-2019, Timothy A Davis.
+All Rights Reserved.
+SPDX-License-Identifier: GPL-2.0+
 
 SuiteSparseCollection is a MATLAB toolbox for managing the SuiteSparse Matrix
 Collection.  If you are a MATLAB user of the collection, you would not normally

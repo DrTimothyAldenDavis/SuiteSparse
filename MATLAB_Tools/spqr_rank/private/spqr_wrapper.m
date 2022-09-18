@@ -4,7 +4,9 @@ function [Q,R,C,p,info] = spqr_wrapper (A, B, tol, Q_option, get_details)
 %
 %   [Q,R,C,p,info] = spqr_wrapper (A, B, tol, Q_option, get_details) ;
 
-% Copyright 2012, Leslie Foster and Timothy A Davis.
+% spqr_rank, Copyright (c) 2012, Leslie Foster and Timothy A Davis.
+% All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 if (get_details)
     % get detailed statistics for time and memory usage

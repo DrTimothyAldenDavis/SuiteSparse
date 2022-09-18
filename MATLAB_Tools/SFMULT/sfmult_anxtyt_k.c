@@ -2,6 +2,9 @@
 //=== sfmult_anxtyt_k ==========================================================
 //==============================================================================
 
+// SFMULT, Copyright (c) 2009, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
 // y = (A*x')'	    where x has 2, 3, or 4 rows
 
 // compare with sfmult_anxnyt_k

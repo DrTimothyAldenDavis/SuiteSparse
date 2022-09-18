@@ -60,7 +60,9 @@ function stats = ssstats (A, kind, skip_chol, skip_dmperm, Z)
 % See also ssget, ssindex, RBtype, amd, colamd, cs_scc, cs_sqr, dmperm,
 % cholmod2, symrcm
 
-% Copyright 2006-2014, Timothy A. Davis
+% SuiteSparseCollection, Copyright (c) 2006-2019, Timothy A Davis.
+% All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 % Requires the SuiteSparse set of packages: CHOLMOD, RBio, CSparse
 

@@ -1,6 +1,10 @@
 function sscsv_write (ss_index, kinds)
 %SSCSV_WRITE: create the ssstats.csv file
 
+% SuiteSparseCollection, Copyright (c) 2006-2019, Timothy A Davis.
+% All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
+
 if (nargin < 2)
     kinds = sskinds ;
 end

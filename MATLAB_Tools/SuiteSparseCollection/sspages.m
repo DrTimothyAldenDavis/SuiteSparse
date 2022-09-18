@@ -12,7 +12,9 @@ function sspages (list)
 %
 % See also sspage, ssget.
 
-% Copyright 2006-2019, Timothy A. Davis
+% SuiteSparseCollection, Copyright (c) 2006-2019, Timothy A Davis.
+% All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 index = ssget ;
 if (nargin < 1)

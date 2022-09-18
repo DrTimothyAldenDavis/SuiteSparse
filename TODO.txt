@@ -3,9 +3,9 @@ FIXME update MATLAB interfaces for all packages
 FIXME: copyright (c) and SPDX for all files
     done: AMD, BTF, CAMD, CCOLAMD, CHOLMOD, COLAMD, CSparse, 
         SuiteSparse_config, CXSparse, LDL, KLU, RBio, ssget,
-        UMFPACK
+        UMFPACK, MATLAB_Tools, 
 
-    to do: GPUQREngine, MATLAB_Tools, SPQR,
+    to do: GPUQREngine, SPQR,
         SuiteSparse_GPURuntime,
         Mongoose is GPL-3.0 only
 

@@ -48,4 +48,5 @@
 %
 % See also: lu, mldivide, rcond
 
-% Copyright 2006-2007, Timothy A. Davis, http://www.suitesparse.com
+% GEE, Copyright (c) 2006-2007, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause

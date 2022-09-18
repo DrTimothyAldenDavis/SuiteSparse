@@ -35,7 +35,9 @@ function B = spqr_null_mult (N,A,method)
 %
 % See also spqr, spqr_basic, spqr_cod, spqr_null, spqr_pinv, spqr_ssi, spqr_ssp.
 
-% Copyright 2012, Leslie Foster and Timothy A Davis.
+% spqr_rank, Copyright (c) 2012, Leslie Foster and Timothy A Davis.
+% All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 % If N is stored implicitly, to potentially improve efficiency, code is
 % selected based on the number of rows and columns in A and N.

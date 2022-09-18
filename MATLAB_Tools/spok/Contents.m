@@ -22,4 +22,5 @@
 %   spok (A + 1i*A)         % complex sparse
 %   spok (A > .5)           % logical sparse
 
-% Copyright 2008-2011, Timothy A. Davis, http://www.suitesparse.com
+% SPOK, Copyright (c) 2008-2011, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause

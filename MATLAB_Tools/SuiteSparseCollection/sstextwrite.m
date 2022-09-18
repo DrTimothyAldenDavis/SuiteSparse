@@ -6,6 +6,10 @@ function sstextwrite (filename, X)
 % X must either be a char array of size m-by-n, or a cell array of size m-by-1
 % where each component X{i} has size 1-by-*.
 
+% SuiteSparseCollection, Copyright (c) 2006-2019, Timothy A Davis.
+% All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
+
 ff = fopen (filename, 'w') ;
 if (ff < 0)
     error ('cannot open file') ;

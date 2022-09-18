@@ -14,7 +14,9 @@ function sspage (matrix, index)
 %
 % See also ssget, cspy, ssgplot.
 
-% Copyright 2006-2019, Timothy A. Davis
+% SuiteSparseCollection, Copyright (c) 2006-2019, Timothy A Davis.
+% All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 %-------------------------------------------------------------------------------
 % get inputs

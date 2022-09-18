@@ -1,3 +1,7 @@
+// SuiteSparse/MATLAB_Tools/waitmex/waitmex.c
+// waitmex, Copyright (c) 2007, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
 /* -------------------------------------------------------------------------- */
 /* waitmex functions */
 /* -------------------------------------------------------------------------- */

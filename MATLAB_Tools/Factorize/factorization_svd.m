@@ -14,7 +14,8 @@ classdef factorization_svd < factorization
 %   C = pinv (F)        the pseudo-inverse, V'*(S\V).
 %   [U,S,V] = svd (F)   SVD of A or pinv(A), regular, economy, or rank-sized
 
-% Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
+% Factorize, Copyright (c) 2011-2012, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
     methods
 
