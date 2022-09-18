@@ -1,6 +1,11 @@
-/* ========================================================================== */
-/* === ldlmain.c: LDL main program, for demo and testing ==================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// LDL/Demo/ldlmain.c: demo program for LDL
+//------------------------------------------------------------------------------
+
+// LDL, Copyright (c) 2005-2022 by Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* LDLMAIN:  this main program has two purposes.  It provides an example of how
  * to use the LDL routines, and it tests the package.  The output of this
@@ -32,9 +37,6 @@
  * This program can also be compiled as a MATLAB mexFunction, with the command
  * "mex ldlmain.c ldl.c".  You can then run the program in MATLAB, with the
  * command "ldlmain".
- *
- * Copyright (c) 2006 by Timothy A Davis, http://www.suitesparse.com.
- * All Rights Reserved.  See LDL/Doc/License.txt for the License.
  */
 
 #ifdef MATLAB_MEX_FILE

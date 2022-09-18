@@ -31,7 +31,7 @@ M = \
 	../MATLAB/mwrite.m \
 	../MATLAB/symbfact2.m
 
-CHOLMOD_UserGuide.pdf: CHOLMOD_UserGuide.tex UserGuide.bib $(I) $(C) $(M) Makefile getproto rule.awk header.tex footer.tex getmproto mfooter.tex mheader.tex mfile.awk
+CHOLMOD_UserGuide.pdf: CHOLMOD_UserGuide.tex UserGuide.bib $(I) $(C) $(M) Makefile getproto rule.awk header.tex footer.tex getmproto mfooter.tex mheader.tex mfile.awk cholmod_version.tex
 	./getmproto ../MATLAB/analyze.m > _analyze_m.tex
 	./getmproto ../MATLAB/bisect.m > _bisect_m.tex
 	./getmproto ../MATLAB/chol2.m > _chol2_m.tex

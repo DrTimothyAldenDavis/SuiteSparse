@@ -2,13 +2,13 @@
 # LDL/Doc/Makefile: Create the User Guide
 #------------------------------------------------------------------------------
 
-# Copyright (c) 2005-2022, Timothy A. Davis.  All Rights Reserved.
-# SPDX-License-Identifier: BSD-3-clause
+# LDL, Copyright (c) 2005-2022 by Timothy A. Davis. All Rights Reserved.
+# SPDX-License-Identifier: LGPL-2.1+
 
 default: ldl_userguide.pdf
 	- $(RM) -r *.dvi *.aux *.log *.bak *.bbl *.blg *.out
 
-ldl_userguide.pdf: ldl_userguide.tex ldl.bib
+ldl_userguide.pdf: ldl_userguide.tex ldl.bib ldl_version.tex
 	latex ldl_userguide
 	- bibtex ldl_userguide
 	latex ldl_userguide

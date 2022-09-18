@@ -7,7 +7,7 @@ dist:  KLU_UserGuide.pdf
 	- $(RM) klu_simple_c.tex klu_h.tex btf_h.tex
 
 KLU_UserGuide.pdf: KLU_UserGuide.tex KLU_UserGuide.bib \
-    ../Include/klu.h ../../BTF/Include/btf.h Makefile
+    ../Include/klu.h ../../BTF/Include/btf.h Makefile klu_version.tex
 	echo '\\begin{verbatim}' > klu_h.tex
 	expand -8 ../Include/klu.h >> klu_h.tex
 	echo '\\end{verbatim}' >> klu_h.tex

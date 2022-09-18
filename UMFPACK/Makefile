@@ -105,3 +105,6 @@ purge: clean
 
 distclean: clean
 
+docs:
+	( cd Doc && $(MAKE) )
+

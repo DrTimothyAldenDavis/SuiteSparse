@@ -2,8 +2,8 @@
 # SuiteSparse/LDL/CMakeLists.txt:  cmake for LDL
 #-------------------------------------------------------------------------------
 
-# Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
-# SPDX-License-Identifier: BSD-3-clause
+# LDL, Copyright (c) 2005-2022 by Timothy A. Davis. All Rights Reserved.
+# SPDX-License-Identifier: LGPL-2.1+
 
 #-------------------------------------------------------------------------------
 # get the version
@@ -52,8 +52,10 @@ find_package ( AMD 3.0.0 REQUIRED )
 # Configure ldl.h with version number
 #-------------------------------------------------------------------------------
 
-configure_file ( "Config/ldl.h.in" "${PROJECT_SOURCE_DIR}/Include/ldl.h" )
-configure_file ( "Config/ldl_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/ldl_version.tex" )
+configure_file ( "Config/ldl.h.in"
+                 "${PROJECT_SOURCE_DIR}/Include/ldl.h" )
+configure_file ( "Config/ldl_version.tex.in"
+                 "${PROJECT_SOURCE_DIR}/Doc/ldl_version.tex" )
 
 #-------------------------------------------------------------------------------
 # report status and set compile flags

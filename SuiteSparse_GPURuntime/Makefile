@@ -39,3 +39,5 @@ install:
 uninstall:
 	( cd Lib ; $(MAKE) uninstall )
 
+docs:
+

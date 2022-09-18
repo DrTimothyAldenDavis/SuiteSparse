@@ -69,3 +69,5 @@ purge: distclean
 distclean:
 	- $(RM) -rf build/* Config/*.tmp
 
+docs:
+

@@ -7,7 +7,8 @@ function ldl_install
 %
 % See also ldlsparse, ldlsymbol
 
-% Copyright 2006-2007 by Timothy A. Davis, http://www.suitesparse.com
+% LDL, Copyright (c) 2005-2022 by Timothy A. Davis. All Rights Reserved.
+% SPDX-License-Identifier: LGPL-2.1+
 
 ldl_make
 addpath (pwd) ;

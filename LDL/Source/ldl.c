@@ -1,6 +1,11 @@
-/* ========================================================================== */
-/* === ldl.c: sparse LDL' factorization and solve package =================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// LDL/Source/ldl.c: sparse LDL' factorization
+//------------------------------------------------------------------------------
+
+// LDL, Copyright (c) 2005-2022 by Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* LDL:  a simple set of routines for sparse LDL' factorization.  These routines
  * are not terrifically fast (they do not use dense matrix kernels), but the
@@ -148,10 +153,8 @@
  * Compare ldl_symbolic with the first part of ldl_numeric, and note that the
  * while (len > 0) loop is not present in ldl_symbolic.
  *
- * Copyright (c) 2006 by Timothy A Davis, http://www.suitesparse.com.
- * All Rights Reserved.  Developed while on sabbatical
- * at Stanford University and Lawrence Berkeley National Laboratory.  Refer to
- * the README file for the License.
+ * Developed while on sabbatical at Stanford University and Lawrence Berkeley
+ * National Laboratory.  Refer to the README file for the License.
  */
 
 #include "ldl.h"

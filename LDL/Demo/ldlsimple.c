@@ -1,6 +1,11 @@
-/* ========================================================================== */
-/* === ldlsimple.c:  a simple LDL main program ============================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// LDL/Demo/ldlsimple.c: a simple LDL main program (int32_t version)
+//------------------------------------------------------------------------------
+
+// LDL, Copyright (c) 2005-2022 by Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* LDLSIMPLE:  this is a very simple main program that illustrates the basic
  * usage of the LDL routines.  The output of this program is in ldlsimple.out.
@@ -25,9 +30,6 @@
  * enough to hold the factor L, but normally this size is not known until after
  * ldl_symbolic has analyzed the matrix.  The size of Li and Lx must be greater
  * than or equal to lnz = Lp [N], which is 13 for this matrix L.
- *
- * Copyright (c) 2006 by Timothy A Davis, http://www.suitesparse.com.
- * All Rights Reserved.  See LDL/Doc/License.txt for the License.
  */
 
 #include <stdio.h>
@@ -39,7 +41,7 @@
 int main (void)
 {
     /* only the upper triangular part of A is required */
-    int    Ap [N+1] = {0, 1, 2, 3, 4,   6, 7,   9,   11,      15,     ANZ},
+    int32_t Ap [N+1] = {0, 1, 2, 3, 4,   6, 7,   9,   11,      15,     ANZ},
            Ai [ANZ] = {0, 1, 2, 3, 1,4, 5, 4,6, 4,7, 0,4,7,8, 1,4,6,9 } ;
     double Ax [ANZ] = {1.7, 1., 1.5, 1.1, .02,2.6, 1.2, .16,1.3, .09,1.6,
 		     .13,.52,.11,1.4, .01,.53,.56,3.1},

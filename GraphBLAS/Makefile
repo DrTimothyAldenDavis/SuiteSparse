@@ -65,7 +65,7 @@ install:
 
 # create the Doc/GraphBLAS_UserGuide.pdf
 docs:
-	( cd Doc ; $(MAKE) )
+	( cd Doc && $(MAKE) )
 
 # compile the CUDA kernels
 gpu:

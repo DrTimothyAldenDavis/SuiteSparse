@@ -9,7 +9,8 @@
 default:  CAMD_UserGuide.pdf
 	- $(RM) *.aux *.bbl *.blg *.log *.toc camp_temp camd_h.tex
 
-CAMD_UserGuide.pdf: CAMD_UserGuide.tex CAMD_UserGuide.bib ../Include/camd.h
+CAMD_UserGuide.pdf: CAMD_UserGuide.tex CAMD_UserGuide.bib ../Include/camd.h \
+    camd_version.tex
 	echo '\\begin{verbatim}' > camd_h.tex
 	expand -8 ../Include/camd.h >> camd_h.tex
 	echo '\\end{verbatim}' >> camd_h.tex

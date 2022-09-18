@@ -1,6 +1,11 @@
-/* ========================================================================== */
-/* === ldlsymbolmex.c:  LDLSYMBOL mexFunction =============================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// LDL/MATLAB/ldlsymbolmex.c: MATLAB interface for LDL symbolic analysis
+//------------------------------------------------------------------------------
+
+// LDL, Copyright (c) 2005-2022 by Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* MATLAB interface for symbolic LDL' factorization using the LDL sparse matrix
  * package.  This mexFunction is not required by the LDL mexFunction.
@@ -32,9 +37,6 @@
  * This code is faster than the above MATLAB statements, typically by a factor
  * of 4 to 40 (median speedup of 9) in MATLAB 6.5 on a Pentium 4 Linux laptop
  * (excluding the B=A(P,P) time), on a wide range of symmetric sparse matrices.
- *
- * Copyright (c) 2006 by Timothy A Davis, http://www.suitesparse.com.
- * All Rights Reserved.  See LDL/Doc/License.txt for the License.
  */
 
 #ifndef LDL_LONG

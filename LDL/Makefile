@@ -2,9 +2,8 @@
 # SuiteSparse/LDL/Makefile
 #-------------------------------------------------------------------------------
 
-# Copyright (c) 2005-2022, Timothy A. Davis, Patrick Amestoy, Iain Duff.
-# All Rights Reserved.
-# SPDX-License-Identifier: LDL-2.1+
+# LDL, Copyright (c) 2005-2022 by Timothy A. Davis. All Rights Reserved.
+# SPDX-License-Identifier: LGPL-2.1+
 
 #-------------------------------------------------------------------------------
 
@@ -83,4 +82,7 @@ clean:
 purge: clean
 
 distclean: clean
+
+docs:
+	( cd Doc && $(MAKE) )
 

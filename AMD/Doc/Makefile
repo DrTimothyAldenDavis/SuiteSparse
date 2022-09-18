@@ -9,7 +9,8 @@
 default:  AMD_UserGuide.pdf
 	- $(RM) *.aux *.bbl *.blg *.log *.toc amd_h.tex
 
-AMD_UserGuide.pdf: AMD_UserGuide.tex AMD_UserGuide.bib ../Include/amd.h
+AMD_UserGuide.pdf: AMD_UserGuide.tex AMD_UserGuide.bib ../Include/amd.h \
+    amd_version.tex
 	echo '\\begin{verbatim}' > amd_h.tex
 	expand -8 ../Include/amd.h >> amd_h.tex
 	echo '\\end{verbatim}' >> amd_h.tex

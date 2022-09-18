@@ -1,6 +1,11 @@
-/* ========================================================================== */
-/* === ldlmex.c:  LDL mexFunction =========================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// LDL/MATLAB/ldlmex.c: MATLAB interface for LDL
+//------------------------------------------------------------------------------
+
+// LDL, Copyright (c) 2005-2022 by Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* MATLAB interface for numerical LDL' factorization using the LDL sparse matrix
  * package.
@@ -50,9 +55,6 @@
  *
  * That is, the LDL' factorization of B (1:d,1:d) is in the first d rows and
  * columns of L and D.  The rest of L and D are zero.
- *
- * Copyright (c) by Timothy A Davis, http://www.suitesparse.com.
- * All Rights Reserved.  See LDL/Doc/License.txt for the License.
  */
 
 #ifndef LDL_LONG
