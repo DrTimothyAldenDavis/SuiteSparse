@@ -1,5 +1,6 @@
 # ssget/Makefile
-# Copyright (c) 2009-2019, Timothy A. Davis. All Rights Reserved.
+
+# ssget, Copyright (c) 2009-2022, Timothy A. Davis. All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 ssgui.jar:  ssgui.java sshelp.html
