@@ -2,8 +2,9 @@
 # SuiteSparse/SuiteSparse_config/Makefile
 #-------------------------------------------------------------------------------
 
-# Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
-# SPEX-License-Identifier: BSD-3-clause
+# SuiteSparse_config, Copyright (c) 2012-2022, Timothy A. Davis.
+# All Rights Reserved.
+# SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------
 

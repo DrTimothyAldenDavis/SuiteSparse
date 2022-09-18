@@ -1,6 +1,12 @@
-/* ========================================================================== */
-/* === klu ================================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// KLU/Source/klu: primary factorization and forward/backsolve kernels for KLU
+//------------------------------------------------------------------------------
+
+// KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+// Authors: Timothy A. Davis and Ekanathan Palamadai.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* KLU: factorizes P*A into L*U, using the Gilbert-Peierls algorithm [1], with
  * optional symmetric pruning by Eisenstat and Liu [2].  The code is by Tim
@@ -32,12 +38,6 @@
  * or unsorted row indices.  Row indices for column j of A is in
  * Ai [Ap [j] ... Ap [j+1]-1] and the same range of indices in Ax holds the
  * numerical values.  No duplicate entries are allowed.
- *
- * Copyright 2004-2009, Tim Davis.  All rights reserved.  See the README
- * file for details on permitted use.  Note that no code from The MathWorks,
- * Inc, or from SuperLU, or from any other source appears here.  The code is
- * written from scratch, from the algorithmic description in Gilbert & Peierls'
- * and Eisenstat & Liu's journal papers [1,2].
  *
  * If an input permutation Q is provided, the factorization L*U = A (P,Q)
  * is computed, where P is determined by partial pivoting, and Q is the input

@@ -66,7 +66,8 @@ function [LU_or_x,info,c] = klu (A,operation,b,opts)                        %#ok
 %
 %   See also BTF, LU, DMPERM, CONDEST, CHOLMOD, AMD, COLAMD, CAMD, CCOLAMD.
 
-% Copyright 2004-2009, Univ. of Florida
-% http://www.suitesparse.com
+% KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+% Authors: Timothy A. Davis and Ekanathan Palamadai.
+% SPDX-License-Identifier: LGPL-2.1+
 
 error ('klu mexFunction not found') ;

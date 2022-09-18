@@ -2,8 +2,9 @@
 # SuiteSparse/KLU/CMakeLists.txt:  cmake for KLU
 #-------------------------------------------------------------------------------
 
-# Copyright (c) 1995-2022, Timothy A. Davis.  All Rights Reserved.
-# SPDX-License-Identifier: GPL-2.0+
+# KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+# Authors: Timothy A. Davis and Ekanathan Palamadai.
+# SPDX-License-Identifier: LGPL-2.1+
 
 #-------------------------------------------------------------------------------
 # get the version
@@ -117,6 +118,7 @@ if ( CHOLMOD_FOUND )
     file ( GLOB KLU_CHOLMOD_SOURCES "User/*.c" )
 
     add_library ( klu_cholmod SHARED ${KLU_CHOLMOD_SOURCES} )
+    include_directories ( ${CHOLMOD_INCLUDE_DIR} )
 
     SET_TARGET_PROPERTIES ( klu_cholmod PROPERTIES
         VERSION ${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}

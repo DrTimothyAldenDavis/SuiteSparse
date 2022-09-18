@@ -1,6 +1,12 @@
-#===============================================================================
-# SuiteSparse_config.mk:  common configuration file for the SuiteSparse
-#===============================================================================
+#-------------------------------------------------------------------------------
+# SuiteSparse_config/SuiteSparse_config.mk: Makefile config  for SuiteSparse
+#-------------------------------------------------------------------------------
+
+# SuiteSparse_config, Copyright (c) 2012-2022, Timothy A. Davis.
+# All Rights Reserved.
+# SPDX-License-Identifier: BSD-3-clause
+
+#-------------------------------------------------------------------------------
 
 # This file contains all configuration settings for all packages in SuiteSparse,
 # except for CSparse (which is stand-alone), the packages in MATLAB_Tools,

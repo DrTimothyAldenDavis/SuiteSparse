@@ -2,7 +2,7 @@
 // SuiteSparse/KLU/User/klu_cholmod.c: KLU int32_t interface to CHOLMOD
 //------------------------------------------------------------------------------
 
-// Copyright (c) 2013-2022, University of Florida.  All Rights Reserved.
+// KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
 // Authors: Timothy A. Davis and Ekanathan Palamadai.
 // SPDX-License-Identifier: LGPL-2.1+
 

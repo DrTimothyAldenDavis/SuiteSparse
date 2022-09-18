@@ -1,6 +1,12 @@
-/* ========================================================================== */
-/* === SuiteSparse/SuiteSparse_config/SuiteSparse_config.h ================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// SuiteSparse_config/SuiteSparse_config.h: common utilites for SuiteSparse
+//------------------------------------------------------------------------------
+
+// SuiteSparse_config, Copyright (c) 2012-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
+//------------------------------------------------------------------------------
 
 /* Configuration file for SuiteSparse: a Suite of Sparse matrix packages (AMD,
  * COLAMD, CCOLAMD, CAMD, CHOLMOD, UMFPACK, CXSparse, and others).
@@ -12,9 +18,6 @@
  * signed integer.
  *
  * This file also defines the SUITESPARSE_VERSION and related definitions.
- *
- * Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
- * SPEX-License-Identifier: BSD-3-clause
  */
 
 #ifndef SUITESPARSE_CONFIG_H

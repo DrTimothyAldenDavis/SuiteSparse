@@ -1,6 +1,12 @@
-/* ========================================================================== */
-/* === KLU_refactor ========================================================= */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// KLU/Source/klu_refactor: factor another matrix (no pivoting)
+//------------------------------------------------------------------------------
+
+// KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+// Authors: Timothy A. Davis and Ekanathan Palamadai.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* Factor the matrix, after ordering and analyzing it with KLU_analyze, and
  * factoring it once with KLU_factor.  This routine cannot do any numerical

@@ -1,6 +1,12 @@
-/* ========================================================================== */
-/* === klu_analyze ========================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// KLU/Source/klu_analyze: symbolic analysis
+//------------------------------------------------------------------------------
+
+// KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+// Authors: Timothy A. Davis and Ekanathan Palamadai.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* Order the matrix using BTF (or not), and then AMD, COLAMD, the natural
  * ordering, or the user-provided-function on the blocks.  Does not support

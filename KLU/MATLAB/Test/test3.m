@@ -4,7 +4,9 @@ function test3
 %   test3
 % See also klu
 
-% Copyright 2004-2012, University of Florida
+% KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+% Authors: Timothy A. Davis and Ekanathan Palamadai.
+% SPDX-License-Identifier: LGPL-2.1+
 
 h = waitbar (1/12, 'KLU test 3 of 5') ;
 

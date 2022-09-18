@@ -1,6 +1,12 @@
-/* ========================================================================== */
-/* === KLU_diagnostics ====================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// KLU/Source/klu_diagnostics: linear algebraic diagnostics
+//------------------------------------------------------------------------------
+
+// KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+// Authors: Timothy A. Davis and Ekanathan Palamadai.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* Linear algebraic diagnostics:
  * KLU_rgrowth: reciprocal pivot growth, takes O(|A|+|U|) time

@@ -1,6 +1,12 @@
-/* ========================================================================== */
-/* === KLU_kernel =========================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// KLU/Source/klu_kernel: primary sparse LU factorization kernel
+//------------------------------------------------------------------------------
+
+// KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+// Authors: Timothy A. Davis and Ekanathan Palamadai.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* Sparse left-looking LU factorization, with partial pivoting.  Based on
  * Gilbert & Peierl's method, with a non-recursive DFS and with Eisenstat &

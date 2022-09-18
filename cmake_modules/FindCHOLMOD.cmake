@@ -3,7 +3,7 @@
 #-------------------------------------------------------------------------------
 
 # Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
-# SPEX-License-Identifier: BSD-3-clause
+# SPDX-License-Identifier: BSD-3-clause
 
 # Finds the CHOLMOD include file and compiled library and sets:
 

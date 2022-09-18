@@ -1,6 +1,12 @@
-/* ========================================================================== */
-/* === klu_analyze_given ==================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// KLU/Source/klu_analyze_given: symbolic analysis with given permutation
+//------------------------------------------------------------------------------
+
+// KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+// Authors: Timothy A. Davis and Ekanathan Palamadai.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* Given an input permutation P and Q, create the Symbolic object.  BTF can
  * be done to modify the user's P and Q (does not perform the max transversal;

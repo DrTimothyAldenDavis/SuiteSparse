@@ -7,7 +7,9 @@ function test5
 %
 % See also klu
 
-% Copyright 2004-2012, University of Florida
+% KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+% Authors: Timothy A. Davis and Ekanathan Palamadai.
+% SPDX-License-Identifier: LGPL-2.1+
 
 do_diary = 0 ;
 

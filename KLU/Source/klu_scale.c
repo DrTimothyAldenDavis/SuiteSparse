@@ -1,6 +1,12 @@
-/* ========================================================================== */
-/* === KLU_scale ============================================================ */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// KLU/Source/klu_scale: scale a sparse matrix
+//------------------------------------------------------------------------------
+
+// KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+// Authors: Timothy A. Davis and Ekanathan Palamadai.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* Scale a matrix and check to see if it is valid.  Can be called by the user.
  * This is called by KLU_factor and KLU_refactor.  Returns TRUE if the input

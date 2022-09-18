@@ -6,7 +6,9 @@ function klu_demo
 %
 % See also klu, btf
 
-% Copyright 2004-2009, Univ. of Florida
+% KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+% Authors: Timothy A. Davis and Ekanathan Palamadai.
+% SPDX-License-Identifier: LGPL-2.1+
 
 load west0479
 A = west0479 ;

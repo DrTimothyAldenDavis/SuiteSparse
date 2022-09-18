@@ -1,6 +1,12 @@
-/* ========================================================================== */
-/* === KLU_sort ============================================================= */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// KLU/Source/klu_sort: sorts the L and U factors of KLU
+//------------------------------------------------------------------------------
+
+// KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+// Authors: Timothy A. Davis and Ekanathan Palamadai.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* sorts the columns of L and U so that the row indices appear in strictly
  * increasing order.

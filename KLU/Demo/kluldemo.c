@@ -1,6 +1,12 @@
-/* ========================================================================== */
-/* === KLU DEMO (long integer version) ====================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// KLU/Demo/kluldemo.c:  demo for KLU (int64_t version)
+//------------------------------------------------------------------------------
+
+// KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+// Authors: Timothy A. Davis and Ekanathan Palamadai.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* Read in a Matrix Market matrix (using CHOLMOD) and solve a linear system. */
 

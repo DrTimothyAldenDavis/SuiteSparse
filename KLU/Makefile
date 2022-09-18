@@ -2,7 +2,7 @@
 # SuiteSparse/KLU/Makefile
 #-------------------------------------------------------------------------------
 
-# Copyright (c) 2013-2022, University of Florida.  All Rights Reserved.
+# KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
 # Authors: Timothy A. Davis and Ekanathan Palamadai.
 # SPDX-License-Identifier: LGPL-2.1+
 
@@ -46,7 +46,7 @@ debug:
 
 all: library
 
-demo: library
+demo:
 	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && $(MAKE) --jobs=${JOBS} )
 	- ./build/klu_simple
 	- ./build/kludemo  < ./Matrix/1c.mtx
@@ -80,6 +80,7 @@ uninstall:
 # remove all files not in the distribution
 clean:
 	- $(RM) -rf build/* Config/*.tmp
+	( cd Tcov && $(MAKE) purge )
 
 purge: clean
 

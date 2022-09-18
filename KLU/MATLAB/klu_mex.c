@@ -1,6 +1,12 @@
-/* ========================================================================== */
-/* === klu mexFunction ====================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// KLU/MATLAB/klumex.c: MATLAB interface for KLU
+//------------------------------------------------------------------------------
+
+// KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+// Authors: Timothy A. Davis and Ekanathan Palamadai.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* KLU: a MATLAB interface to a "Clark Kent" sparse LU factorization algorithm.
 

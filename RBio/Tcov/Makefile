@@ -86,12 +86,10 @@ SuiteSparse_config.o: SuiteSparse_config.c $(INC)
 code: RBdemo RBtest
 
 clean:
-	- $(RM) temp*.rb
-	- $(RM) -r $(CLEAN)
+	- $(RM) temp*.rb *.gcov *.o *.gcda *.gcno
 
 distclean: purge
 
 purge: clean
 	- $(RM) $(SRC) $(INC) RBdemo gcov.out RBtest RBdemo.c
-	- $(RM) -r $(PURGE)
 
