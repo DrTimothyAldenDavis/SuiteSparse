@@ -1,9 +1,11 @@
-/* ========================================================================== */
-/* === RBio/RBio/RBerror.c: mexFunction error-handling ====================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// RBio/RBio/RBerror.c: error handling for MATLAB interface to RBio
+//------------------------------------------------------------------------------
 
-/* Copyright 2009, Timothy A. Davis, All Rights Reserved.
-   Refer to RBio/Doc/license.txt for the RBio license. */
+// RBio, Copyright (c) 2009-2022, Timothy A. Davis.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 #include "RBio.h"
 

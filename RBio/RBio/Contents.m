@@ -21,4 +21,5 @@
 %
 % See also ssget, mread, mwrite.
 
-% Copyright 2009, Timothy A. Davis
+% RBio, Copyright (c) 2009-2022, Timothy A. Davis.  All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+

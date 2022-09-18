@@ -6,7 +6,8 @@ function testRB1
 %
 % See also ssget, RBread, RBreade, testRB2.
 
-% Copyright 2006, Timothy A. Davis
+% RBio, Copyright (c) 2009-2022, Timothy A. Davis.  All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 files = {
 'bcsstk01.rb'

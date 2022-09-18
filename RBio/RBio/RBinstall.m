@@ -9,7 +9,8 @@ function RBinstall (quiet)
 %
 % See also RBread, RBwrite, RBtype, RBraw.
 %
-% Copyright 2009, Timothy A. Davis
+% RBio, Copyright (c) 2009-2022, Timothy A. Davis.  All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 if (nargin < 1)
     quiet = 0 ;

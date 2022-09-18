@@ -2,7 +2,7 @@
 # SuiteSparse/RBio/Makefile
 #-------------------------------------------------------------------------------
 
-# Copyright (c) 2016-2022, Timothy A. Davis.  All Rights Reserved.
+# RBio, Copyright (c) 2009-2022, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: GPL-2.0+
 
 #-------------------------------------------------------------------------------

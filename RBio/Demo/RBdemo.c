@@ -1,9 +1,11 @@
-/* ========================================================================== */
-/* === RBio/Demo/RBdemo.c: C demo =========================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// RBio/Demo/RBdemo.c: demo for RBio
+//------------------------------------------------------------------------------
 
-// Copyright (c) 2009-2022, Timothy A. Davis.  All Rights Reserved.
+// RBio, Copyright (c) 2009-2022, Timothy A. Davis.  All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* This program reads a Rutherford/Boeing file from stdin and uses it
    to test the RBio C-callable functions. */

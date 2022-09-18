@@ -1,5 +1,7 @@
-RBio: Copyright 2016, Timothy A. Davis, http://www.suitesparse.com
-A MATLAB Toolbox for reading/writing sparse matrices in Rutherford/Boeing
+RBio, Copyright (c) 2009-2022, Timothy A. Davis.  All Rights Reserved.
+SPDX-License-Identifier: GPL-2.0+
+
+RBio: a MATLAB Toolbox for reading/writing sparse matrices in Rutherford/Boeing
 format.
 
 To install the MATLAB functions, cd to the RBio directory (the one containing
@@ -92,10 +94,6 @@ Files and directories:
 ./Include: include files for user programs
 
     RBio.h
-
-./Lib:
-
-    Makefile        for compiling the RBio library
 
 ./Source: C source codes
 

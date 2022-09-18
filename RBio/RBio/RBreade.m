@@ -16,7 +16,8 @@ function [A, Z, title, key, mtype] = RBreade (filename)
 
 % Optionally uses the CHOLMOD sparse2 mexFunction.
 
-% Copyright 2009, Timothy A. Davis
+% RBio, Copyright (c) 2009-2022, Timothy A. Davis.  All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 %-------------------------------------------------------------------------------
 % read in the raw contents of the Rutherford/Boeing file

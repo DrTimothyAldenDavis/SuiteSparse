@@ -1,9 +1,11 @@
-/* ========================================================================== */
-/* === RBio/RBio/RBread.c: MATLAB mexFunction for reading R/B file ========== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// RBio/RBio/RBread.c: MATLAB mexFunction for reading R/B file
+//------------------------------------------------------------------------------
 
-// Copyright (c) 2009-2022, Timothy A. Davis.  All Rights Reserved.
+// RBio, Copyright (c) 2009-2022, Timothy A. Davis.  All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /*
    [A Z title key mtype] = RBread (filename)

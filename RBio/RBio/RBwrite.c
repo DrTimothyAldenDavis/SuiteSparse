@@ -1,9 +1,11 @@
-/* ========================================================================== */
-/* === RBio/RBio/RBwrite.c: MATLAB mexFunction to write R/B file ============ */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// RBio/RBio/RBwrite.c: MATLAB mexFunction to write R/B file
+//------------------------------------------------------------------------------
 
-/* Copyright 2009, Timothy A. Davis, All Rights Reserved.
-   Refer to RBio/Doc/license.txt for the RBio license. */
+// RBio, Copyright (c) 2009-2022, Timothy A. Davis.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /*
 function mtype = RBwrite (filename, A, Z, title, key)                       %#ok

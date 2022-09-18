@@ -6,7 +6,8 @@ function testRB2
 %
 % See also ssget, RBread, RBreade, testRB1.
 
-% Copyright 2006, Timothy A. Davis
+% RBio, Copyright (c) 2009-2022, Timothy A. Davis.  All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 Problem = ssget ('Meszaros/farm') ;
 % disp (Problem) ;

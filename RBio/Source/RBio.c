@@ -1,9 +1,11 @@
-/* ========================================================================== */
-/* === RBio/Source/RBio.c: C-callable RBio functions ======================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// RBio/Source/RBio.c: C-callable RBio functions
+//------------------------------------------------------------------------------
 
-// Copyright (c) 2009-2022, Timothy A. Davis.  All Rights Reserved.
+// RBio, Copyright (c) 2009-2022, Timothy A. Davis.  All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* This file contains functions for writing/reading a sparse matrix to/from a
    file in Rutherford-Boeing format.  User-callable functions are declared
