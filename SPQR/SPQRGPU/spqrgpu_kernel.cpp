@@ -2,6 +2,12 @@
 // === spqrgpu_kernel ==========================================================
 // =============================================================================
 
+// SPQRGPU, Copyright (c) 2008-2022, Timothy A Davis, Sanjay Ranka,
+// Sencer Nuri Yeralan, and Wissam Sid-Lakhdar, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 // Compute the QR factorization on the GPU.  Does not handle rank-deficient
 // matrices (R is OK, but will not be 'squeezed').  Does not handle complex
 // matrices.  Does not return the Householder vectors.

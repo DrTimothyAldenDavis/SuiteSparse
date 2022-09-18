@@ -17,7 +17,8 @@ function spqr_make (opt1)
 %
 % See also spqr, spqr_solve, spqr_qmult, qr, mldivide
 
-% Copyright 2008, Timothy A. Davis, http://www.suitesparse.com
+% SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 details = 0 ;       % 1 if details of each command are to be printed, 0 if not
 

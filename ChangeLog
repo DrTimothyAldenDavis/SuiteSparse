@@ -1,3 +1,17 @@
+Oct FIXME, 2022: SuiteSparse 6.0.0
+
+    * using CMake build system for (nearly) all packages:
+        SLIP_LU has not been modified.  It will be updated with a
+        new package, SPEX, in a future release of SuiteSparse.
+    * integers: int (32-bit) and SuiteSparse_long (nominally 64-bit) replaced
+        with int32_t and int64_t.  This is likely compatible with all prior
+        usage of SuiteSparse, but it requires the major version numbers of all
+        packages to be bumped up by one, since it's a change to the C API that
+        potentially affects the binary interface, for systems where
+        SuiteSparse_long was actually just 32 bits.
+    * UMFPACK: new options to support ParU.  Single umfpack.h include file.
+    * CHOLMOD: Single cholmod.h include file.
+
 Aug 25, 2022, SuiteSparse 5.13.0
 
     * GraphBLAS v7.2.0:  see GraphBLAS/Doc/ChangeLog for details.

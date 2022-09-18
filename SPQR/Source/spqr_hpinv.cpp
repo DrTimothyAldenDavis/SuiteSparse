@@ -2,6 +2,11 @@
 // === spqr_hpinv ==============================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 // Finalizes the row permutation that is implicit in the pattern of H.  This
 // must be done sequentially, after all threads have finished factorizing the
 // matrix and finding all the dead columns.  Also determines QRnum->maxfm.

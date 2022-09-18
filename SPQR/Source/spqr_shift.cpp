@@ -2,6 +2,11 @@
 // === spqr_shift ==============================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 // Insert a zero as the first entry in a vector, shifting all the other entries
 // down by one position.  Does nothing if X is NULL.
 

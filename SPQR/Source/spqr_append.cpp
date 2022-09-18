@@ -2,6 +2,11 @@
 // === spqr_append =============================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 // Appends a dense column X onto a sparse matrix A, increasing nnzmax(A) as
 // needed.  The column pointer array is not modified; it must be large enough
 // to accomodate the new column.

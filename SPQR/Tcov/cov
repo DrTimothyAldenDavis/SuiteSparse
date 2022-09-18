@@ -1,5 +1,8 @@
 #!/bin/csh
 
+# SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+# SPDX-License-Identifier: GPL-2.0+
+
 echo "Test coverage summary" > cov.out
 echo '=================================================================' >> cov.out
 

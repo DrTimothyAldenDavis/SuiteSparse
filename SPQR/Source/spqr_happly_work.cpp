@@ -2,6 +2,11 @@
 // === spqr_happly_work ========================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 // Determines the workspace workspace needed by spqr-happly
 
 #include "spqr.hpp"

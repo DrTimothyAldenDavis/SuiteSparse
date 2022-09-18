@@ -2,6 +2,11 @@
 // === spqr_happly =============================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 // Applies a set n of sparse Householder vectors to a dense m-by-n matrix X.
 //
 //  Let H(k) = I - Tau(k) * V(k) * V(k)', then either of the following is done:

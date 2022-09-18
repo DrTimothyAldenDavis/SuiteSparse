@@ -1,5 +1,8 @@
 % compares SPQR with SPQR+GPU on lots of sparse matrices
 
+% SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
+
 clear
 index = UFget ;
 f = find ((index.isReal == 1) & (index.isBinary == 0) & (index.isGraph == 0)) ;

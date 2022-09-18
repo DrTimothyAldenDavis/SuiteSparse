@@ -2,6 +2,13 @@
 // === spqrgpu_buildAssemblyMaps ===============================================
 // =============================================================================
 
+// SPQRGPU, Copyright (c) 2008-2022, Timothy A Davis, Sanjay Ranka,
+// Sencer Nuri Yeralan, and Wissam Sid-Lakhdar, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
+
 #ifdef GPU_BLAS
 #include "spqr.hpp"
 

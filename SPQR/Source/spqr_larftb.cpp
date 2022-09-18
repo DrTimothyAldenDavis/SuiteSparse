@@ -2,6 +2,11 @@
 // === spqr_larftb =============================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 // Apply a set of Householder reflections to a matrix.  Given the vectors
 // V and coefficients Tau, construct the matrix T and then apply the updates.
 // In MATLAB (1-based indexing), this function computes the following:

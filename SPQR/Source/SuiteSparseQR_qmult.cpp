@@ -2,6 +2,11 @@
 // === SuiteSparseQR_qmult =====================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 // Applies Q in Householder form to a sparse or dense matrix X.  These functions
 // use the Householder form in plain sparse column form, as returned by
 // the SuiteSparseQR function.

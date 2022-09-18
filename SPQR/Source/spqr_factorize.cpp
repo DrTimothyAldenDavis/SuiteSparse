@@ -2,6 +2,11 @@
 // === spqr_factorize ==========================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 // Given an m-by-n sparse matrix A and its symbolic analsys, compute its
 // numeric QR factorization.
 //

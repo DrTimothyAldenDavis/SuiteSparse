@@ -2,6 +2,11 @@
 // === spqr_freefac ============================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 // Frees the contents of the QR factor object.
 
 #include "spqr.hpp"

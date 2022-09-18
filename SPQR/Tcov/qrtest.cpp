@@ -2,6 +2,11 @@
 // === qrtest ==================================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 // This is an exhaustive test for SuiteSparseQR.  With the right input matrices,
 // it tests each and every line of code in the package.  A malloc wrapper is
 // used that can pretend to run out of memory, to test the out-of-memory

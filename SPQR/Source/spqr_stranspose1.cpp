@@ -2,6 +2,11 @@
 // === spqr_stranspose =========================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 // Given a fill-reducing ordering, Qfill, and the user's input matrix A in 
 // standard compressed-column form, construct S=A(P,Qfill)' if S is considered
 // to be in compressed-column form (S is A(P,Qfill) in compressed-row form).

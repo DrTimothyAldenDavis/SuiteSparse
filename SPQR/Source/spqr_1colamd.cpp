@@ -2,6 +2,11 @@
 // === spqr_1colamd ============================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 //  Find column singletons, with column permutations allowed.  After column
 //  singletons are found (and ordered first in Q1fill), the remaining columns
 //  are optionally permuted via COLAMD or CHOLMOD's internal ordering method(s).

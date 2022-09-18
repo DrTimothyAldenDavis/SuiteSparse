@@ -3,6 +3,7 @@ Oct FIXME, 2022: version 4.0.0
     * using CMake build system
     * integers: int (32-bit) and SuiteSparse_long (nominally 64-bit) replaced
         with int32_t and int64_t.
+    * cholmod.h: single include file for all Modules
 
 June 30, 2020: no change to version number
 

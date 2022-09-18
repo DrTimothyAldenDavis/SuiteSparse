@@ -2,6 +2,9 @@
 // === spqr_singletons mexFunction =============================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
 #include "spqr_mx.hpp"
 #include "spqr.hpp"
 

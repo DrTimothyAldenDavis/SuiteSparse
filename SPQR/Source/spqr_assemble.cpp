@@ -2,6 +2,11 @@
 // === spqr_assemble ===========================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 /* Assemble the children into the current front.
 
     Example:  Suppose there are 3 pivot columns in F (5, 6, 7), and 4

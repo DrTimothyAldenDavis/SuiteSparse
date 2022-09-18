@@ -2,6 +2,11 @@
 // === spqr_fcsize =============================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 #include "spqr.hpp"
 
 Long spqr_fcsize    // returns # of entries in C of current front F

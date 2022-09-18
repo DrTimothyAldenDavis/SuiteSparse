@@ -2,6 +2,11 @@
 // === SuiteSparseQR ===========================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 //  QR factorization of a sparse matrix, and optionally solve a least squares
 //  problem, Q*R = A*E where A is m-by-n, E is a permutation matrix, R is
 //  upper triangular if A is full rank, and Q is an orthogonal matrix.

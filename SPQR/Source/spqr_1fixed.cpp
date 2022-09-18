@@ -2,6 +2,11 @@
 // === spqr_1fixed =============================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 //  Find column singletons, but do not permute the columns of A.  If there are
 //  no column singletons, and no right-hand side B, then this takes only
 //  O(m+n) time and memory.

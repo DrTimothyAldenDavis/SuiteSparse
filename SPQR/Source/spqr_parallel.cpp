@@ -2,6 +2,11 @@
 // === spqr_parallel ===========================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 // Factorize all the tasks in parallel with TBB.
 // The GPU is not used.
 

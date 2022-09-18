@@ -2,6 +2,11 @@
 // === spqr_cpack ==============================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 //  spqr_cpack copies the C matrix from the frontal matrix F and
 //  stores it in packed form.  F can be overwritten with C (the pack can occur
 //  in-place), but in that case, the R and H matrices are destroyed.

@@ -2,6 +2,11 @@
 // === SuiteSparseQR_C =========================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 // This C++ file provides a set of C-callable wrappers so that a C program can
 // call SuiteSparseQR.
 

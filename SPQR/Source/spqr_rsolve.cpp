@@ -2,6 +2,11 @@
 // === spqr_rsolve =============================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 // Solve X = E*(R\B) or X=R\B using the QR factorization from spqr_1factor
 // (including the singleton-row R and the multifrontal R).
 

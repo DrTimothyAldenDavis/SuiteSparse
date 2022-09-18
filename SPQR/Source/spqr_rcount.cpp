@@ -2,6 +2,11 @@
 // === spqr_rcount =============================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 // Count the number of explicit nonzeros in each column of R.  Exact zero
 // entries are excluded.
 

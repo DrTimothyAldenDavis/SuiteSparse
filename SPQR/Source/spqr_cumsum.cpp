@@ -2,6 +2,11 @@
 // === spqr_cumsum =============================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 #include "spqr.hpp"
 
 //  Overwrite a vector of length n with its cumulative sum of length n+1.

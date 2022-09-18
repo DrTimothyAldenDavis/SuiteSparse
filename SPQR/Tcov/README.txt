@@ -1,5 +1,8 @@
 SuiteSparseQR exhaustive statement coverage tests.
 
+SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+SPDX-License-Identifier: GPL-2.0+
+
 This test exercises all of SuiteSparseQR and checks its results.  On a 32-bit
 platform, all lines are tested.  Some lines of code that handle integer
 overflow are not tested (nor are they likely to be testable) on 64-bit

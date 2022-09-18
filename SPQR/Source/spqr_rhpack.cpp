@@ -2,6 +2,11 @@
 // === spqr_rhpack =============================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 /*  Copy the R matrix and optionally the H matrix in the frontal matrix F and
     store them in packed form.  The columns of R and H are interleaved.  F can
     be overwritten with R+H (the pack can occur in-place), but in that case,

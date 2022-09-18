@@ -2,6 +2,11 @@
 // === spqr_trapezoidal ========================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 // Permute the columns of a "squeezed" R, possibly rank-deficient, into
 // upper trapezoidal form.  On input, Qfill gives the column permutation of
 // A that gave the factor R (Q*R = A(:,Qfill).  On output, T is upper

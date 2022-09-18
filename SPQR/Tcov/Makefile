@@ -2,6 +2,9 @@
 # SuiteSparseQR/Tcov/Makefile
 #===============================================================================
 
+# SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+# SPDX-License-Identifier: GPL-2.0+
+
 # This test requires METIS, and it only works on Linux.
 
 # run statement-coverage test without Valgrind

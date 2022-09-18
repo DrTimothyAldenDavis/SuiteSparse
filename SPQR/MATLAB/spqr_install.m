@@ -13,7 +13,8 @@ function spqr_install (tbb)
 %
 % See also spqr, spqr_solve, spqr_qmult.
 
-% Copyright 2008, Timothy A. Davis, http://www.suitesparse.com
+% SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 if (nargin < 1)
     tbb = 0 ;

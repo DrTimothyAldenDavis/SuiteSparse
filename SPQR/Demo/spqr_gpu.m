@@ -3,6 +3,9 @@ function info = spqr_gpu (ordering, A)
 %   ordering: 1 colamd
 %   ordering: 2 metis
 
+% SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
+
 if (nargin > 1)
     % write the matrix to a file
     mwrite ('A.mtx', A) ;

@@ -2,6 +2,12 @@
 // === spqrgpu_computeFrontStaging =============================================
 // =============================================================================
 
+// SPQRGPU, Copyright (c) 2008-2022, Timothy A Davis, Sanjay Ranka,
+// Sencer Nuri Yeralan, and Wissam Sid-Lakhdar, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 // Returns a front staging and whether the staging is feasible.
 // A front staging is infeasible if a front and its children do not fit on
 // the GPU at the same time.

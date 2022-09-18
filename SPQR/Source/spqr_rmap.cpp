@@ -2,6 +2,11 @@
 // === spqr_rmap ===============================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 // R is squeezed, find the mapping that permutes it to trapezoidal form
 
 // Rmap is a permutation that converts R from squeezed to upper trapezoidal.

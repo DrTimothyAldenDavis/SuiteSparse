@@ -2,6 +2,11 @@
 // === spqr_front ==============================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 /* Given an m-by-n frontal matrix, use Householder reflections to reduce it
    to upper trapezoidal form.  Columns 0:npiv-1 are checked against tol.
 

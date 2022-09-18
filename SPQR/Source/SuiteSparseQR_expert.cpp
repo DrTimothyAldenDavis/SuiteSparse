@@ -2,6 +2,11 @@
 // === SuiteSparseQR_expert ====================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 // This file includes a suite of "expert" user-callable routines that allow the
 // reuse of a QR factorization, including the ability to find the min 2-norm
 // solution of an under-determined system of equations:

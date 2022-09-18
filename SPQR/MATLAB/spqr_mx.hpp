@@ -2,6 +2,9 @@
 // === spqr_mx_matlab.hpp ======================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
 // utility functions and definitions solely for use in a MATLAB mexFunction
 
 #ifndef SPQR_MX_MATLAB_H

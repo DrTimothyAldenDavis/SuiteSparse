@@ -1,7 +1,11 @@
-SuiteSparseQR Copyright (c) 2008-2020, Timothy A. Davis,
-GPU modules Copyright (c) 2015, Timothy A. Davis, Sencer Nuri Yeralan,
-and Sanjay Ranka.
-http://www.suitesparse.com
+SPQR (SuiteSparseQR), Copyright (c) 2008-2022, Timothy A Davis.
+All Rights Reserved.
+SPDX-License-Identifier: GPL-2.0+
+
+The GPU modules in SPQRGPU are under a different copyright:
+
+    SPQRGPU, Copyright (c) 2008-2022, Timothy A Davis, Sanjay Ranka,
+    Sencer Nuri Yeralan, and Wissam Sid-Lakhdar, All Rights Reserved.
 
 SuiteSparseQR is a multithreaded, multifrontal, rank-revealing sparse QR
 factorization method, with optional GPU acceleration using NVIDIA GPUs.

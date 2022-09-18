@@ -2,6 +2,11 @@
 // === spqr_analyze ============================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 // Given the nonzero pattern of a sparse m-by-n matrix A, analyze it for
 // subsequent numerical factorization.  This function operates on the pattern
 // of A only; it does not need to be templatized.

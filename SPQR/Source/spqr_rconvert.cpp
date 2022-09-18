@@ -2,6 +2,11 @@
 // === spqr_rconvert ===========================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 // Converts the packed supernodal form of R into two MATLAB-style
 // compressed-column form matrices, Ra and Rb.  Ra is the first n2 columns
 // of R, and Rb is the last n-n2 columns of R.  The matrix Ra is not created
