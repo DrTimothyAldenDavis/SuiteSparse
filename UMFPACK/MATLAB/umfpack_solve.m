@@ -11,7 +11,8 @@ function [x, info] = umfpack_solve (arg1, op, arg2, Control)
 % See also umfpack, umfpack_make, umfpack_details, umfpack_report,
 % and umfpack_simple.
 
-% Copyright 1995-2007 by Timothy A. Davis.
+% UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 %-------------------------------------------------------------------------------
 % check inputs and get default control parameters

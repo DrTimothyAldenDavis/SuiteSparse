@@ -130,13 +130,9 @@ function umfpack_details
 % Control and Info are optional; if Control is not present, defaults
 % are used.  If a Control entry is NaN, then the default is used for that entry.
 %
-%
-% Copyright 1995-2012 by Timothy A. Davis, http://www.suitesparse.com
-% All Rights Reserved.
+% UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 % UMFPACK is available under alternate licenses, contact T. Davis for details.
-%
-% UMFPACK License: see UMFPACK/Doc/License.txt for the license.
-%
 % Availability: http://www.suitesparse.com
 %
 % See also umfpack, umfpack_make, umfpack_report,

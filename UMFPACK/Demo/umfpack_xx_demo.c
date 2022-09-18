@@ -1,6 +1,11 @@
-/* ========================================================================== */
-/* === umfpack_xx_demo ====================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/Demo/umfpack_xx_demo: C demo for UMFPACK
+//------------------------------------------------------------------------------
+
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Do not attempt to compile this file!  It is processed via sed scripts into
@@ -11,12 +16,6 @@
 :: umfpack_zi_demo.c:  complex double precision, int32_t integers
 :: umfpack_zl_demo.c:  complex double precision, int64_t integers
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-/* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) 2005-2022 by Timothy A. Davis,                       */
-/* http://www.suitesparse.com. All Rights Reserved.                           */
-/* See ../Doc/License.txt for License.                                        */
-/* -------------------------------------------------------------------------- */
 
 /*
   A demo of UMFPACK:   umfpack_xx_* version.

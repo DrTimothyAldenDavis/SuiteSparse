@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === UMFPACK_free_numeric ================================================= */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/Source/umfpack_free_numeric: free Numeric object
+//------------------------------------------------------------------------------
 
-/* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
-/* -------------------------------------------------------------------------- */
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /*  User-callable.  Free the entire Numeric object (consists of 11 to 13
  *  malloc'd objects.  See UMFPACK_free_numeric.h for details.

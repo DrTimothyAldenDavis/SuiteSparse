@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === UMF_dump ============================================================= */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/Source/umf_dump.c: debug routines for UMFPACK
+//------------------------------------------------------------------------------
 
-/* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
-/* -------------------------------------------------------------------------- */
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* These routines, and external variables, are used only when debugging. */
 /* If debugging is disabled (for normal operation) then this entire file */

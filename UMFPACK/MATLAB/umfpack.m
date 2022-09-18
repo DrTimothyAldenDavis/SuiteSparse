@@ -60,7 +60,8 @@ function [out1, out2, out3, out4, out5] = umfpack (in1, in2, in3, in4, in5) %#ok
 % See also: lu_normest, colamd, amd, umfpack.
 % To use UMFPACK for an arbitrary b, see umfpack_solve.
 
-% Copyright 1995-2009 by Timothy A. Davis.
+% UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 help umfpack 
 error ('umfpack mexFunction not found') ;

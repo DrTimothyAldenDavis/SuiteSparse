@@ -1,12 +1,11 @@
-/* ========================================================================== */
-/* === umf4_f77zwrapper ===================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/Demo/umf4_f77zwrapper: Fortran interface for UMFPACK
+//------------------------------------------------------------------------------
 
-/* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) 2005-2012 by Timothy A. Davis,                       */
-/* http://www.suitesparse.com. All Rights Reserved.                           */
-/* See ../Doc/License.txt for License.                                        */
-/* -------------------------------------------------------------------------- */
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* FORTRAN interface for the C-callable UMFPACK library (complex / int version
  * only and complex / int64_t versions only).  This is HIGHLY

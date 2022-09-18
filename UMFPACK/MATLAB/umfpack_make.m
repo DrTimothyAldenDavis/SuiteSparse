@@ -15,7 +15,8 @@ function umfpack_make
 % See also: umfpack, umfpack_details, umfpack_report, umfpack_demo,
 % and umfpack_simple.
 
-% Copyright 1995-2016 by Timothy A. Davis.
+% UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 metis_path = '../../metis-5.1.0' ;
 with_cholmod = exist (metis_path, 'dir') ;

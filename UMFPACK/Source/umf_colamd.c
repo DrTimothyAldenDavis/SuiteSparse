@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === UMF_colamd =========================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/Source/umf_colamd: UMFPACK version of COLAMD
+//------------------------------------------------------------------------------
 
-/* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
-/* -------------------------------------------------------------------------- */
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /*
 UMF_colamd:  an approximate minimum degree column ordering algorithm,
@@ -51,8 +51,6 @@ Acknowledgements:
 
     This work was supported by the National Science Foundation, under
     grants DMS-9504974, DMS-9803599, and CCR-0203270.
-
-UMFPACK:  Copyright (c) 2003 by Timothy A. Davis.  All Rights Reserved.
 
 See the UMFPACK README file for the License for your use of this code.
 

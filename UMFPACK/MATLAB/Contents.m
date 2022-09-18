@@ -22,7 +22,10 @@
 % colamd            unsymmetric column approx minimum degree ordering
 % symamd            symmetric approx minimum degree ordering, based on colamd
 %
-% Copyright 1995-2009 by Timothy A. Davis.
-% All Rights Reserved.  See UMFPACK/Doc/License.txt for License.
+% UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 
 help Contents

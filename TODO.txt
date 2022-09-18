@@ -2,10 +2,11 @@ FIXME update MATLAB interfaces for all packages
 
 FIXME: copyright (c) and SPDX for all files
     done: AMD, BTF, CAMD, CCOLAMD, CHOLMOD, COLAMD, CSparse, 
-        SuiteSparse_config, CXSparse, LDL, KLU, RBio
+        SuiteSparse_config, CXSparse, LDL, KLU, RBio, ssget,
+        UMFPACK
 
-    to do: GPUQREngine, MATLAB_Tools, SPQR, ssget,
-        SuiteSparse_GPURuntime, UMFPACK
+    to do: GPUQREngine, MATLAB_Tools, SPQR,
+        SuiteSparse_GPURuntime,
         Mongoose is GPL-3.0 only
 
 FIXME: test coverage for all packages.
@@ -22,4 +23,7 @@ FIXME: cmake and Find*.cmake for:
 
 FIXME: remove SuiteSparse_config.mk?
     currently needed for CHOLMOD/Tcov, however
+
+FIXME: determine how my metis-5.1.0 differs from the original.
+    Rename mine as suitesparse_metis-5.1.0
 

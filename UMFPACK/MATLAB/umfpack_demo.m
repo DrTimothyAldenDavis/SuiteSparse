@@ -9,7 +9,8 @@ function umfpack_demo (c)
 % See also umfpack, umfpack_make, umfpack_details, umfpack_report,
 % and umfpack_simple.
 
-% Copyright 1995-2009 by Timothy A. Davis.
+% UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 %-------------------------------------------------------------------------------
 % get default control parameters
