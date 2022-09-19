@@ -4,7 +4,6 @@
 
 // CHOLMOD/Include/cholmod.h.  Copyright (C) 2005-2022, Timothy A. Davis.
 // All Rights Reserved.
-// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 

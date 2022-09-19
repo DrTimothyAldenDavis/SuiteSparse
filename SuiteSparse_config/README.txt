@@ -20,7 +20,6 @@ Files in SuiteSparse_config:
     SuiteSparse_config.mk       for old-style Makefiles in SuiteSparse
                                 (see comments below)
     build/      where SuiteSparse_config is compiled
-    xerbla/     alternative version of BLAS/LAPACK xerbla routine (see below)
     Config/SuiteSparse_config.h.in      source for SuiteSparse_config.h
 
 For packages that use cmake and require SuiteSparse_config, see:
@@ -69,13 +68,6 @@ SuiteSparse_config is not required by these packages:
   CSparse       a Concise Sparse matrix package
   MATLAB_Tools  toolboxes for use in MATLAB
   GraphBLAS     graph algorithms in the language of linear algebra
-
-In addition, the xerbla/ directory contains Fortan and C versions of the
-BLAS/LAPACK xerbla routine, which is called when an invalid input is passed to
-the BLAS or LAPACK.  The xerbla provided here does not print any message, so
-the entire Fortran I/O library does not need to be linked into a C application.
-Most versions of the BLAS contain xerbla, but those from K. Goto do not.  Use
-this if you need too.
 
 This directory contains a default SuiteSparse_config.mk file for SuiteSparse
 packages that still use an old-style Makefile instead of CMakeLists.txt.  It

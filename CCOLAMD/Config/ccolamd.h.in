@@ -1,11 +1,12 @@
-/* ========================================================================== */
-/* === CCOLAMD/ccolamd.h ==================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CCOLAMD/Include/ccolamd.h:  constrained column approx. min. degree ordering
+//------------------------------------------------------------------------------
 
-/* ----------------------------------------------------------------------------
- * CCOLAMD Copyright (C), Univ. of Florida.  Authors: Timothy A. Davis,
- * Sivasankaran Rajamanickam, and Stefan Larimore
- * -------------------------------------------------------------------------- */
+// CCOLAMD, Copyright (c) 1996-2022, Timothy A. Davis, Sivasankaran
+// Rajamanickam, and Stefan Larimore.  All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
+//------------------------------------------------------------------------------
 
 /*
  *  You must include this file (ccolamd.h) in any routine that uses ccolamd,

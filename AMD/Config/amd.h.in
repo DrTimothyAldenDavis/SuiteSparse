@@ -1,12 +1,12 @@
-/* ========================================================================= */
-/* === AMD:  approximate minimum degree ordering =========================== */
-/* ========================================================================= */
+//------------------------------------------------------------------------------
+// AMD/Include/amd.h:  approximate minimum degree ordering
+//------------------------------------------------------------------------------
 
-/* ------------------------------------------------------------------------- */
-/* AMD, Copyright (c) 1996-2022 by Timothy A. Davis,                         */
-/* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
-/* email: DrTimothyAldenDavis@gmail.com                                      */
-/* ------------------------------------------------------------------------- */
+// AMD, Copyright (c) 1996-2022, Timothy A. Davis, Patrick R. Amestoy, and
+// Iain S. Duff.  All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
+//------------------------------------------------------------------------------
 
 /* AMD finds a symmetric ordering P of a matrix A so that the Cholesky
  * factorization of P*A*P' has fewer nonzeros and takes less work than the
