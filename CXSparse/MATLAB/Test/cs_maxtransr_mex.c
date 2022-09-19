@@ -86,6 +86,6 @@ void mexFunction
     x = mxGetPr (pargout [0]) ;
     for (i = 0 ; i < n ; i++) x [i] = imatch [i] + 1 ;
 
-    cs_free (jmatch) ;
-    cs_free (imatch) ;
+    cs_dl_free (jmatch) ;
+    cs_dl_free (imatch) ;
 }

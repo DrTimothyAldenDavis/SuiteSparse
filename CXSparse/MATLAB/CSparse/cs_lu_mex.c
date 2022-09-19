@@ -11,7 +11,7 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    CS_INT n, order, *p ;
+    int64_t n, order, *p ;
     double tol ;
     if (nargout > 4 || nargin > 3 || nargin < 1)
     {

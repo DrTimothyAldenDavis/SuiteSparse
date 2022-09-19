@@ -23,7 +23,7 @@ void mexFunction
         L = cs_cl_mex_get_sparse (&Lmatrix, 1, pargin [0]) ;    /* get L */
         x = cs_cl_mex_get_double (L->n, pargin [1]) ;           /* x = b */
         cs_cl_ltsolve (L, x) ;                                  /* x = L'\x */
-        cs_free (L->x) ;
+        cs_cl_free (L->x) ;
         pargout [0] = cs_cl_mex_put_double (L->n, x) ;          /* return x */
 #else
         mexErrMsgTxt ("complex matrices not supported") ;

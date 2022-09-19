@@ -25,8 +25,8 @@ void mexFunction
         x = cs_cl_mex_get_double (A->n, pargin [1]) ;       /* get x */
         z = cs_cl_mex_get_double (A->m, pargin [2]) ;       /* z = y */
         cs_cl_gaxpy (A, x, z) ;                             /* z = z + A*x */
-        cs_free (x) ;
-        cs_free (A->x) ;
+        cs_cl_free (x) ;
+        cs_cl_free (A->x) ;
         pargout [0] = cs_cl_mex_put_double (A->m, z) ;      /* return z */
 #else
         mexErrMsgTxt ("complex matrices not supported") ;

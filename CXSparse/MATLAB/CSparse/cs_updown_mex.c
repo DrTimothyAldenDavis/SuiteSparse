@@ -11,7 +11,7 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    CS_INT ignore, j, k, n, lnz, *parent, sigma = 1, cp [2], ok ;
+    int64_t ignore, j, k, n, lnz, *parent, sigma = 1, cp [2], ok ;
     char sigma_string [20] ;
     if (nargout > 1 || nargin < 3 || nargin > 4)
     {
@@ -66,7 +66,7 @@ void mexFunction
         /* return new L */ 
         pargout [0] = cs_cl_mex_put_sparse (&L) ;
 
-        cs_free (C->x) ;        /* free complex copy of C */
+        cs_cl_free (C->x) ;        /* free complex copy of C */
 #else
         mexErrMsgTxt ("complex matrices not supported") ;
 #endif

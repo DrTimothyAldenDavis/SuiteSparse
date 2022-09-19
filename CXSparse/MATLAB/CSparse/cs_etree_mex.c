@@ -12,7 +12,7 @@ void mexFunction
 )
 {
     cs_dl Amatrix, *A ;
-    CS_INT n, *parent, *post ;
+    int64_t n, *parent, *post ;
     int ata ;
     char mode [20] ;
     if (nargout > 2 || nargin < 1 || nargin > 2)

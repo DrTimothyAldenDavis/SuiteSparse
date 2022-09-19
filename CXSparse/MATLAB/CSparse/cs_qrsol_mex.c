@@ -11,7 +11,7 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    CS_INT k, order ;
+    int64_t k, order ;
     if (nargout > 1 || nargin < 2 || nargin > 3)
     {
         mexErrMsgTxt ("Usage: x = cs_qrsol(A,b,order)") ;
@@ -29,7 +29,7 @@ void mexFunction
         b = cs_cl_mex_get_double (A->m, pargin [1]) ;           /* get b */
         x = cs_dl_calloc (CS_MAX (A->m, A->n), sizeof (cs_complex_t)) ;
         for (k = 0 ; k < A->m ; k++) x [k] = b [k] ;            /* x = b */
-        cs_free (b) ;
+        cs_cl_free (b) ;
         if (!cs_cl_qrsol (order, A, x))                         /* x = A\x */
         {
             mexErrMsgTxt ("QR solve failed") ;
@@ -52,6 +52,6 @@ void mexFunction
             mexErrMsgTxt ("QR solve failed") ;
         }
         cs_dl_mex_put_double (A->n, x, &(pargout [0])) ;        /* return x */
-        cs_free (x) ;
+        cs_dl_free (x) ;
     }
 }

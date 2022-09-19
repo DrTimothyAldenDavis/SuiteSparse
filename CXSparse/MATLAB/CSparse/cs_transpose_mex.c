@@ -12,7 +12,7 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    CS_INT values ;
+    int64_t values ;
     if (nargout > 1 || nargin < 1 || nargin > 2)
     {
         mexErrMsgTxt ("Usage: C = cs_transpose(A,kind)") ;

@@ -11,7 +11,7 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    CS_INT order ;
+    int64_t order ;
     if (nargout > 1 || nargin < 2 || nargin > 3)
     {
         mexErrMsgTxt ("Usage: x = cs_cholsol(A,b,order)") ;
@@ -30,7 +30,7 @@ void mexFunction
         {
             mexErrMsgTxt ("A not positive definite") ;
         }
-        cs_free (A->x) ;
+        cs_cl_free (A->x) ;
         pargout [0] = cs_cl_mex_put_double (A->n, x) ;      /* return x */
 #else
         mexErrMsgTxt ("complex matrices not supported") ;

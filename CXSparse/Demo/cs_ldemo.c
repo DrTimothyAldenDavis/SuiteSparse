@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: LGPL-2.1+
 #define CS_LONG
 #include "cs.h"
-/* test real/complex conversion routines (cs_long_t version) */
+/* test real/complex conversion routines (int64_t version) */
 int main (void)
 {
     cs_cl *T, *A, *A1, *A2, *B ;

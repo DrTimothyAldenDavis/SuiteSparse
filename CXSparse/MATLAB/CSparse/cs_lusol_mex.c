@@ -12,7 +12,7 @@ void mexFunction
 )
 {
     double tol ;
-    CS_INT order ;
+    int64_t order ;
     if (nargout > 1 || nargin < 2 || nargin > 4)
     {
         mexErrMsgTxt ("Usage: x = cs_lusol(A,b,order,tol)") ;

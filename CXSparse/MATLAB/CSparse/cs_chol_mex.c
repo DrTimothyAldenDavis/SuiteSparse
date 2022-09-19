@@ -6,7 +6,7 @@
 void mexFunction (int nargout, mxArray *pargout [ ], int nargin,
     const mxArray *pargin [ ])
 {
-    CS_INT order, n, drop, *p ;
+    int64_t order, n, drop, *p ;
     if (nargout > 2 || nargin < 1 || nargin > 2)
     {
         mexErrMsgTxt ("Usage: [L,p] = cs_chol(A,drop)") ;
@@ -24,7 +24,7 @@ void mexFunction (int nargout, mxArray *pargout [ ], int nargin,
         S = cs_cl_schol (order, A) ;                /* symbolic Cholesky */
         N = cs_cl_chol (A, S) ;                     /* numeric Cholesky */
         if (!N) mexErrMsgTxt ("cs_chol failed: not positive definite\n") ;
-        cs_free (A->x) ;
+        cs_cl_free (A->x) ;
         if (drop) cs_cl_dropzeros (N->L) ;          /* drop zeros if requested*/
         pargout [0] = cs_cl_mex_put_sparse (&(N->L)) ;      /* return L */
         if (nargout > 1)

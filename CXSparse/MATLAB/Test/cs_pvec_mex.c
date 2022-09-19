@@ -37,7 +37,7 @@ void mexFunction
         x = cs_dl_malloc (n, sizeof (cs_complex_t)) ;
         cs_cl_pvec (p, b, x, n) ;
         pargout [0] = cs_cl_mex_put_double (n, x) ;
-        cs_free (b) ;       /* free copy of complex values */
+        cs_cl_free (b) ;       /* free copy of complex values */
 #endif
     }
     else
@@ -48,5 +48,5 @@ void mexFunction
         x = mxGetPr (pargout [0]) ;
         cs_dl_pvec (p, b, x, n) ;
     }
-    cs_free (p) ;
+    cs_dl_free (p) ;
 }

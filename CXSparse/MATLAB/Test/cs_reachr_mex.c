@@ -66,5 +66,5 @@ void mexFunction
     x = mxGetPr (pargout [0]) ;
     for (j = 0, i = top ; i < L->n ; i++, j++) x [j] = xi [i] ;
 
-    cs_free (xi) ;
+    cs_dl_free (xi) ;
 }

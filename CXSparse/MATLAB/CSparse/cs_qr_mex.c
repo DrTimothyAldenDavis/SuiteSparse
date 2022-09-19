@@ -11,7 +11,7 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    CS_INT m, n, order, *p ;
+    int64_t m, n, order, *p ;
     if (nargout > 5 || nargin != 1)
     {
         mexErrMsgTxt ("Usage: [V,beta,p,R,q] = cs_qr(A)") ;
@@ -29,7 +29,7 @@ void mexFunction
         A = cs_cl_mex_get_sparse (&Amatrix, 0, pargin [0]) ;    /* get A */
         S = cs_cl_sqr (order, A, 1) ;       /* symbolic QR ordering & analysis*/
         N = cs_cl_qr (A, S) ;               /* numeric QR factorization */
-        cs_free (A->x) ;
+        cs_cl_free (A->x) ;
         if (!N) mexErrMsgTxt ("qr failed") ;
         cs_cl_dropzeros (N->L) ;            /* drop zeros from V and sort */
         D = cs_cl_transpose (N->L, 1) ;
