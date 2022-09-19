@@ -2,6 +2,12 @@
 // === SuiteSparse_GPURuntime/Source/SuiteSparseGPU_Workspace.cpp ==============
 // =============================================================================
 
+// SuiteSparse_GPURuntime, Copyright (c) 2013-2016, Timothy A Davis,
+// Sencer Nuri Yeralan, and Sanjay Ranka.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 // The SuiteSparse_GPURuntime Workspace provides a convenient way to allocate
 // and free memory on the CPU and/or GPU, and to transfer data between the
 // CPU and GPU.

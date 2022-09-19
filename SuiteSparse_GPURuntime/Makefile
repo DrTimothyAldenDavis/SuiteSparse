@@ -2,6 +2,12 @@
 # SuiteSparse_GPURuntime Makefile
 #-------------------------------------------------------------------------------
 
+# SuiteSparse_GPURuntime, Copyright (c) 2013-2016, Timothy A Davis,
+# Sencer Nuri Yeralan, and Sanjay Ranka.  All Rights Reserved.
+# SPDX-License-Identifier: GPL-2.0+
+
+#-------------------------------------------------------------------------------
+
 SUITESPARSE ?= $(realpath $(CURDIR)/..)
 export SUITESPARSE
 
