@@ -4,6 +4,14 @@
  * the results. Does not take any input. This application can be used to
  * test that compilation was successful and that everything is working
  * properly.
+ *
+ * Mongoose, Copyright (c) 2018, All Rights Reserved.
+ *   Nuri Yeralan, Microsoft Research
+ *   Scott Kolodziej, Texas A&M University
+ *   Tim Davis, Texas A&M University
+ *   William Hager, University of Florida.
+ * 
+ * SPDX-License-Identifier: GPL-3.0-only
  */
 
 #include "Mongoose.hpp"

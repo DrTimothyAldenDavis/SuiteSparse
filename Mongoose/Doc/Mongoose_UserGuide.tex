@@ -106,6 +106,14 @@ Mongoose is a graph partitioning library that can quickly compute edge cuts in a
 
 Finding high quality edge cuts quickly is an important part of circuit simulation, parallel and distributed computing, and sparse matrix algorithms.
 
+
+ Mongoose Graph Partitioning Library, Copyright (C) 2017-2018,
+ Scott P. Kolodziej, Nuri S. Yeralan, Timothy A. Davis, William W. Hager
+ Mongoose is licensed under Version 3 of the GNU General Public License.
+ Mongoose is also available under other licenses; contact authors for details.
+
+SPDX-License-Identifier: GPL-3.0-only
+
 \subsection{Coarsening and Refinement Framework}
 
 Mongoose uses a coarsening and refinement framework (sometimes referred to as a multilevel framework \cite{HendricksonLeland1995, KarypisKumar1995}). Rather than attempt to compute an edge cut on the input graph directly, Mongoose first coarsens the graph by computing a vertex matching and contracting the graph to form a smaller, but structurally similar, graph.

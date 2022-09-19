@@ -25,6 +25,7 @@ function partition = safe_edgecut(G,O,A)
 %   See also EDGECUT, EDGECUT_OPTIONS.
 
 %   Copyright (c) 2018, N. Yeralan, S. Kolodziej, T. Davis, W. Hager
+%   SPDX-License-Identifier: GPL-3.0-only
 
 G_safe = sanitize(G);
 

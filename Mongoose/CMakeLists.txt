@@ -6,6 +6,8 @@
 #   Tim Davis, Texas A&M University
 #   William Hager, University of Florida.
 #
+# SPDX-License-Identifier: GPL-3.0-only
+#
 # http://suitesparse.com   See Mongoose/Doc/License.txt for license.
 #
 # To compile the Mongoose library and demo programs just do "make"

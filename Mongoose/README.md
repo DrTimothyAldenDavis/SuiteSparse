@@ -51,3 +51,9 @@ The following people have made significant contributions to Mongoose:
 ## License
 
 Mongoose is licensed under the GNU Public License, version 3. For commercial license inquiries, please contact Dr. Tim Davis at davis@tamu.edu. The specific text of the license can be found in [`Doc/License.txt`](Doc/License.txt).
+
+Mongoose Graph Partitioning Library, Copyright (C) 2017-2018,
+Scott P. Kolodziej, Nuri S. Yeralan, Timothy A. Davis, William W. Hager.
+
+SPDX-License-Identifier: GPL-3.0-only
+

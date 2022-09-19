@@ -8,6 +8,7 @@ function mongoose_make (run_test)
 % See also mongoose_test, mongoose_make
 
 %   Copyright (c) 2018, N. Yeralan, S. Kolodziej, T. Davis, W. Hager
+%   SPDX-License-Identifier: GPL-3.0-only
 
 if (nargin < 1)
     run_test = 1;

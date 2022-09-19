@@ -7,6 +7,7 @@ function mongoose_test
 % See also mongoose_demo.
 
 %   Copyright (c) 2018, N. Yeralan, S. Kolodziej, T. Davis, W. Hager
+%   SPDX-License-Identifier: GPL-3.0-only
 
 % A simple demo to demonstrate and test Mongoose. Reads in a matrix, 
 % sanitizes it, partitions it, and displays the results.

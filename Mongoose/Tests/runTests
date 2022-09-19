@@ -1,4 +1,17 @@
 #!/usr/bin/env python
+
+#-------------------------------------------------------------------------------
+# Mongoose/Tests/runTests
+#-------------------------------------------------------------------------------
+
+# Mongoose Graph Partitioning Library, Copyright (C) 2017-2018,
+# Scott P. Kolodziej, Nuri S. Yeralan, Timothy A. Davis, William W. Hager
+# Mongoose is licensed under Version 3 of the GNU General Public License.
+# Mongoose is also available under other licenses; contact authors for details.
+# SPDX-License-Identifier: GPL-3.0-only
+
+#-------------------------------------------------------------------------------
+
 from __future__ import absolute_import, print_function, unicode_literals
 from subprocess import call, check_output
 import os       # For filesystem access

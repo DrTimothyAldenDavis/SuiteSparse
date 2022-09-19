@@ -31,5 +31,6 @@ function [G_coarse, A_coarse, map] = coarsen (G, O, A)      %#ok
 %   See also SAFE_COARSEN, EDGECUT_OPTIONS.
 
 %   Copyright (c) 2018, N. Yeralan, S. Kolodziej, T. Davis, W. Hager
+%   SPDX-License-Identifier: GPL-3.0-only
 
 error ('coarsen mexFunction not found') ;

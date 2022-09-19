@@ -26,5 +26,6 @@ function partition = edgecut(G, O, A)   %#ok
 %   See also EDGECUT_OPTIONS, SAFE_EDGECUT.
 
 %   Copyright (c) 2018, N. Yeralan, S. Kolodziej, T. Davis, W. Hager
+%   SPDX-License-Identifier: GPL-3.0-only
 
 error ('edgecut mexFunction not found') ;
