@@ -9,7 +9,9 @@ function checkbtf (A, p, q, r)
 %
 % See also drawbtf, maxtrans, strongcomp.
 
-% Copyright 2007, Timothy A. Davis, http://www.suitesparse.com
+% BTF, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+% Author: Timothy A. Davis.
+% SPDX-License-Identifier: LGPL-2.1+
 
 [m n] = size (A) ;
 if (m ~= n)

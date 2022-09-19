@@ -1,18 +1,20 @@
 function test3 (nmat)
 %TEST3 test for BTF
-% Requires UFget
+% Requires ssget
 % Example:
 %   test3
-% See also btf, maxtrans, strongcomp, dmperm, UFget,
+% See also btf, maxtrans, strongcomp, dmperm, ssget,
 %   test1, test2, test3, test4, test5.
 
-% Copyright 2007, Timothy A. Davis, http://www.suitesparse.com
+% BTF, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+% Author: Timothy A. Davis.
+% SPDX-License-Identifier: LGPL-2.1+
 
 doplot = 1 ;
 dopause = 0 ;
 dostrong = 1 ;
 
-index = UFget ;
+index = ssget ;
 f = find (index.nrows == index.ncols) ;
 [ignore i] = sort (index.nnz (f)) ;
 f = f (i) ;
@@ -207,7 +209,7 @@ try
         % pause
 
         if (j > 0)
-            Problem = UFget (j, index) ;
+            Problem = ssget (j, index) ;
             name = Problem.name ;
             A = Problem.A ;
             clear Problem
@@ -215,7 +217,7 @@ try
             % construct the jth test matrix
             j = -j ;
             if (j == 1 | j == 2)                                            %#ok
-                B11 = UFget ('Grund/b1_ss') ;       % 7-by-7 diagonal block
+                B11 = ssget ('Grund/b1_ss') ;       % 7-by-7 diagonal block
                 B11 = B11.A ;
                 B12 = sparse (zeros (7,2)) ;
                 B12 (3,2) = 1 ;
@@ -225,7 +227,7 @@ try
                 B23 = sparse (ones  (2,5)) ;
                 B31 = sparse (zeros (5,7)) ;
                 B32 = sparse (zeros (5,2)) ;
-                B33 = UFget ('vanHeukelum/cage3') ;    % 5-by-5 diagonal block
+                B33 = ssget ('vanHeukelum/cage3') ;    % 5-by-5 diagonal block
                 B33 = B33.A ;
                 A = [ B11 B12 B13 ; B21 B22 B23 ; B31 B32 B33 ] ;
                 name = '(j=1 test matrix)' ;

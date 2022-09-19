@@ -394,8 +394,6 @@ Packages in SuiteSparse, and files in this directory:
     SuiteSparse_test.m          exhaustive test for SuiteSparse in MATLAB
 
     ssget       MATLAB interface to the SuiteSparse Matrix Collection
-                (formerly called the UF Sparse Matrix Collection).
-                Includes a UFget function for backward compatibility.
                 author: Tim Davis
 
     UMFPACK     sparse LU factorization.  Requires AMD and the BLAS.

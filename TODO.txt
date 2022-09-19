@@ -1,4 +1,13 @@
+FIXME: date for all packages
+
+FIXME: make sure SuiteSparse_long is gone
+
 FIXME update MATLAB interfaces for all packages
+    done: AMD,
+
+FIXME: new output files
+    AMD/MATLAB/amd_demo.m.out (diary)
+    AMD/Demo/*.out
 
 FIXME: test coverage for all packages.
     done: CSparse, CXSparse, RBio, CHOLMOD, GraphBLAS, KLU
@@ -17,4 +26,6 @@ FIXME: remove SuiteSparse_config.mk?
 
 FIXME: determine how my metis-5.1.0 differs from the original.
     Rename mine as suitesparse_metis-5.1.0
+
+FIXME: Mongoose 'make test' fails: unable to download test files
 

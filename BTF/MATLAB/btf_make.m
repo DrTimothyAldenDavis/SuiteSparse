@@ -13,7 +13,7 @@ function btf_make
 
 details = 0 ;       % if 1, print details of each command
 
-mexcmd = 'mex -O -DDLONG -I../Include -I../../SuiteSparse_config ' ;
+mexcmd = 'mex -O -I../Include -I../../SuiteSparse_config ' ;
 if (~isempty (strfind (computer, '64')))
     mexcmd = [mexcmd '-largeArrayDims '] ;
 end
@@ -23,19 +23,19 @@ if (~verLessThan ('matlab', '8.3.0'))
     mexcmd = [mexcmd ' -silent '] ;
 end
 
-s = [mexcmd 'maxtrans.c ../Source/btf_maxtrans.c'] ;
+s = [mexcmd 'maxtrans.c ../Source/btf_l_maxtrans.c'] ;
 if (details)
     fprintf ('%s\n', s) ;
 end
 eval (s) ;
 
-s = [mexcmd 'strongcomp.c ../Source/btf_strongcomp.c'] ;
+s = [mexcmd 'strongcomp.c ../Source/btf_l_strongcomp.c'] ;
 if (details)
     fprintf ('%s\n', s) ;
 end
 eval (s) ;
 
-s = [mexcmd 'btf.c ../Source/btf_maxtrans.c ../Source/btf_strongcomp.c ../Source/btf_order.c'] ;
+s = [mexcmd 'btf.c ../Source/btf_l_maxtrans.c ../Source/btf_l_strongcomp.c ../Source/btf_l_order.c'] ;
 if (details)
     fprintf ('%s\n', s) ;
 end

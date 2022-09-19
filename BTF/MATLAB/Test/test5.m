@@ -1,14 +1,16 @@
 function test5 (nmat)
 %TEST5 test for BTF
-% Requires UFget
+% Requires ssget
 % Example:
 %   test5
-% See also btf, maxtrans, strongcomp, dmperm, UFget,
+% See also btf, maxtrans, strongcomp, dmperm, ssget,
 %   test1, test2, test3, test4, test5.
 
-% Copyright 2007, Timothy A. Davis, http://www.suitesparse.com
+% BTF, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+% Author: Timothy A. Davis.
+% SPDX-License-Identifier: LGPL-2.1+
 
-index = UFget ;
+index = ssget ;
 
 [ignore f] = sort (index.nnz) ;
 
@@ -28,7 +30,7 @@ try
     for k = 1:nmat
 
         i = f(k) ;
-        Prob = UFget (i, index) ;
+        Prob = ssget (i, index) ;
         A = Prob.A ;
 
         waitbar (k/nmat, h) ;
