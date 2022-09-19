@@ -1,6 +1,12 @@
 // =============================================================================
 // === GPUQREngine/Source/LLBundle_AddTiles.cpp ================================
 // =============================================================================
+
+// GPUQREngine, Copyright (c) 2013, Timothy A Davis, Sencer Nuri Yeralan,
+// and Sanjay Ranka.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 //
 // This file contains two codes that add a rowtile to either the main bundle
 // or to the bundle's delta (if pipelined factorization is enabled).

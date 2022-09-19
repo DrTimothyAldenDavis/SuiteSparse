@@ -2,6 +2,12 @@
 // === GPUQREngine/Include/Kernel/Assemble/packAssemble.cu =====================
 // =============================================================================
 
+// GPUQREngine, Copyright (c) 2013, Timothy A Davis, Sencer Nuri Yeralan,
+// and Sanjay Ranka.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 __device__ void packassemble ( )
 {
     // Use shared memory for Rjmap and Rimap.

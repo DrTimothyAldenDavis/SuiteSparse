@@ -1,6 +1,12 @@
 // =============================================================================
 // === GPUQREngine/Source/BucketList_PostProcessing.cpp ========================
 // =============================================================================
+
+// GPUQREngine, Copyright (c) 2013, Timothy A Davis, Sencer Nuri Yeralan,
+// and Sanjay Ranka.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 //
 // PostProcess handles any cleanup operations following a kernel invocation
 // including merging delta tiles with the main bundle and other fixups.

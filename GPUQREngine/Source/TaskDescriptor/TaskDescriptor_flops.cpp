@@ -1,6 +1,12 @@
 // =============================================================================
 // === GPUQREngine/Source/TaskDescriptor_flops.cpp =============================
 // =============================================================================
+
+// GPUQREngine, Copyright (c) 2013, Timothy A Davis, Sencer Nuri Yeralan,
+// and Sanjay Ranka.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 //
 // This file contains functions that are responsible for computing the actual
 // flops performed by various GPU tasks in the GPUQREngine.

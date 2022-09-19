@@ -2,6 +2,12 @@
 // === GPUQREngine/Demo/dense_demo.cpp =========================================
 // =============================================================================
 
+// GPUQREngine, Copyright (c) 2013, Timothy A Davis, Sencer Nuri Yeralan,
+// and Sanjay Ranka.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 // GPUQREngine can be used to factorize a set of dense matrices of
 // various sizes.  This is the demo for this 'dense' usage case.
 // The 'sparse' case is exercised by SuiteSparseQR.

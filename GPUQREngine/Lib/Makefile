@@ -2,6 +2,12 @@
 # GPUQREngine/Lib/Makefile: for compiling the GPUQREngine library
 #-------------------------------------------------------------------------------
 
+# GPUQREngine, Copyright (c) 2013, Timothy A Davis, Sencer Nuri Yeralan,
+# and Sanjay Ranka.  All Rights Reserved.
+# SPDX-License-Identifier: GPL-2.0+
+
+#-------------------------------------------------------------------------------
+
 LIBRARY = libGPUQREngine
 VERSION = 1.0.5
 SO_VERSION = 1

@@ -1,6 +1,12 @@
 // =============================================================================
 // === GPUQREngine/Source/GPUQREngine_UberKernel.cu ============================
 // =============================================================================
+
+// GPUQREngine, Copyright (c) 2013, Timothy A Davis, Sencer Nuri Yeralan,
+// and Sanjay Ranka.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 // 
 // This is the actual concrete kernel invocation, transfering control flow to
 // the GPU accelerator briefly. We actually launch kernels using alternating

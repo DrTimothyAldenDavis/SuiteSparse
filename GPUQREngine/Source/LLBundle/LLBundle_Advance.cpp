@@ -1,6 +1,12 @@
 // =============================================================================
 // === GPUQREngine/Source/LLBundle_Advance.cpp =================================
 // =============================================================================
+
+// GPUQREngine, Copyright (c) 2013, Timothy A Davis, Sencer Nuri Yeralan,
+// and Sanjay Ranka.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 //
 // The LLBundle Advance member function advances the bundle, leaving behind the
 // min tile (which becomes the bundle's Shadow). On advance, the bundle is

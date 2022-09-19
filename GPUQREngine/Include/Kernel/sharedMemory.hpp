@@ -2,6 +2,12 @@
 // === GPUQREngine/Include/Kernel/sharedMemory.cu ==============================
 // =============================================================================
 
+// GPUQREngine, Copyright (c) 2013, Timothy A Davis, Sencer Nuri Yeralan,
+// and Sanjay Ranka.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 #ifndef GPUQRENGINE_SHAREDMEMORY_HPP
 #define GPUQRENGINE_SHAREDMEMORY_HPP
 

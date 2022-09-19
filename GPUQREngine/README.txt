@@ -1,5 +1,7 @@
-GPUQREngine Copyright (c) 2013, Timothy A. Davis, Sencer Nuri Yeralan,
-and Sanjay Ranka.
+GPUQREngine, Copyright (c) 2013, Timothy A Davis, Sencer Nuri Yeralan,
+and Sanjay Ranka.  All Rights Reserved.
+SPDX-License-Identifier: GPL-2.0+
+
 http://www.suitesparse.com
 
 GPUQREngine is a gpu-accelerated QR factorization engine supporting
@@ -19,3 +21,4 @@ FOR LINUX/UNIX/Mac USERS who want to use the C++ callable library:
 
 
 See GPUQREngine/Doc/License.txt for the license
+
