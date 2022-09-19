@@ -1,6 +1,6 @@
-CAMD, Copyright (c) 2007-2022, Timothy A. Davis (http://www.suitesparse.com),
-Yanqing Chen, Patrick R. Amestoy, and Iain S. Duff.  All Rights Reserved.  CAMD
-is available under alternate licences; contact T. Davis for details.
+CAMD, Copyright (c) 2007-2022, Timothy A. Davis, Yanqing Chen, Patrick R.
+Amestoy, and Iain S. Duff.  All Rights Reserved.
+SPDX-License-Identifier: BSD-3-clause
 
 CAMD:  a set of routines for permuting sparse matrices prior to
     factorization.  Includes a version in C, a version in Fortran, and a MATLAB

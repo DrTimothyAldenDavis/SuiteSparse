@@ -21,9 +21,9 @@ if (~verLessThan ('matlab', '8.3.0'))
     d = ['-silent ' d] ;
 end
 
-src = '../Source/ccolamd.c ../../SuiteSparse_config/SuiteSparse_config.c' ;
+src = '../Source/ccolamd_l.c ../../SuiteSparse_config/SuiteSparse_config.c' ;
 cmd = sprintf ( ...
-    'mex -DDLONG -O %s -I../../SuiteSparse_config -I../Include -output ', d) ;
+    'mex -O %s -I../../SuiteSparse_config -I../Include -output ', d) ;
 s = [cmd 'ccolamd ccolamdmex.c ' src] ;
 
 if (~(ispc || ismac))

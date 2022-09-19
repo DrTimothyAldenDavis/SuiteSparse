@@ -113,7 +113,7 @@ void mexFunction
     int spumoni ;           /* verbosity variable */
     int64_t stats2 [CCOLAMD_STATS] ;    /* stats for csymamd */
 
-    int64_t *cp, *cp_end, , nnz, col, length ;
+    int64_t *cp, *cp_end, nnz, col, length ;
     int64_t *stats ;
     int result, ok ;
     stats = stats2 ;

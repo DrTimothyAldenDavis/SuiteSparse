@@ -1,3 +1,7 @@
+#
+# CAMD, Copyright (c) 2007-2022, Timothy A. Davis, Yanqing Chen, Patrick R.
+# Amestoy, and Iain S. Duff.  All Rights Reserved.
+# SPDX-License-Identifier: BSD-3-clause
 ./cdiff  ../Demo/camd_demo2.c ../../AMD/Demo/amd_demo2.c
 ./cdiff  ../Demo/camd_demo.c ../../AMD/Demo/amd_demo.c
 ./cdiff  ../Demo/camd_l_demo.c ../../AMD/Demo/amd_l_demo.c
