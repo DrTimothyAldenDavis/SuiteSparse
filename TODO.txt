@@ -2,10 +2,10 @@ FIXME: date for all packages
 
 FIXME: make sure SuiteSparse_long is gone
 
-FIXME tes/update MATLAB interfaces for all packages
-    done: AMD, BTF, CAMD,
-    todo: CCOLAMD, CHOLMOD, COLAMD
-        CSparse, CXSparse, KLU, LDL, Mongoose,
+FIXME test/update MATLAB interfaces for all packages
+    done: AMD, BTF, CAMD, CCOLAMD, COLAMD, CHOLMOD,
+
+    todo: CSparse, CXSparse, KLU, LDL, Mongoose,
         SPQR, UMFPACK
 
 FIXME: new output files
@@ -13,6 +13,8 @@ FIXME: new output files
     AMD/Demo/*.out
     CAMD/MATLAB/camd_demo.m.out (diary)
     CAMD/Demo/*.out
+    CCOLAMD/Demo/*out
+    COLAMD/Demo/*out
 
 FIXME: test coverage for all packages.
     done: CSparse, CXSparse, RBio, CHOLMOD, GraphBLAS, KLU

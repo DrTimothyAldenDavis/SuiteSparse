@@ -5,6 +5,22 @@
 // CHOLMOD/Include/cholmod.h.  Copyright (C) 2005-2022, Timothy A. Davis.
 // All Rights Reserved.
 
+// Each Module of CHOLMOD has its own license, and a shared cholmod.h file.
+
+// CHOLMOD/Check:      SPDX-License-Identifier: LGPL-2.1+
+// CHOLMOD/Cholesky:   SPDX-License-Identifier: LGPL-2.1+
+// CHOLMOD/Core:       SPDX-License-Identifier: LGPL-2.1+
+// CHOLMOD/Partition:  SPDX-License-Identifier: LGPL-2.1+
+
+// CHOLMOD/Demo:       SPDX-License-Identifier: GPL-2.0+
+// CHOLMOD/GPU:        SPDX-License-Identifier: GPL-2.0+
+// CHOLMOD/MATLAB:     SPDX-License-Identifier: GPL-2.0+
+// CHOLMOD/MatrixOps:  SPDX-License-Identifier: GPL-2.0+
+// CHOLMOD/Modify:     SPDX-License-Identifier: GPL-2.0+
+// CHOLMOD/Supernodal: SPDX-License-Identifier: GPL-2.0+
+// CHOLMOD/Tcov:       SPDX-License-Identifier: GPL-2.0+
+// CHOLMOD/Valgrind:   SPDX-License-Identifier: GPL-2.0+
+
 //------------------------------------------------------------------------------
 
 /* CHOLMOD consists of a set of Modules, each with their own license: either
