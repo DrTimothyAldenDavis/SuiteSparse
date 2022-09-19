@@ -25,9 +25,11 @@ function [p,stats] = colamd2 (S, knobs)
 %    printed.  The default is knobs = [10 10 0].  Note that knobs differs from
 %    earlier versions of colamd.
 
-% Copyright (c) 1998-2022, Timothy A. Davis, and Stefan Larimore.
+
+% COLAMD, Copyright (c) 1998-2022, Timothy A. Davis, and Stefan Larimore.
+% SPDX-License-Identifier: BSD-3-clause
+
 % Developed in collaboration with J. Gilbert and E. Ng.
-%
 % Acknowledgements: This work was supported by the National Science Foundation,
 % under grants DMS-9504974 and DMS-9803599.
 
