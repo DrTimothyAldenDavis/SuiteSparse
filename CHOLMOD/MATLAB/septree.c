@@ -45,10 +45,10 @@ void mexFunction
 {
 #ifndef NPARTITION
     double *p ;
-    Long *Cmember, *CParent ;
+    int64_t *Cmember, *CParent ;
     cholmod_common Common, *cm ;
     double nd_oksep ;
-    Long nd_small, nc, n, c, j, nc_new ;
+    int64_t nd_small, nc, n, c, j, nc_new ;
 
     /* ---------------------------------------------------------------------- */
     /* start CHOLMOD and set defaults */
@@ -78,8 +78,8 @@ void mexFunction
 	mexErrMsgTxt ("invalid inputs") ;
     }
 
-    CParent = cholmod_l_malloc (nc, sizeof (Long), cm) ;
-    Cmember = cholmod_l_malloc (n, sizeof (Long), cm) ;
+    CParent = cholmod_l_malloc (nc, sizeof (int64_t), cm) ;
+    Cmember = cholmod_l_malloc (n, sizeof (int64_t), cm) ;
 
     p = mxGetPr (pargin [0]) ;
     for (c = 0 ; c < nc ; c++)
@@ -127,8 +127,8 @@ void mexFunction
     /* free workspace */
     /* ---------------------------------------------------------------------- */
 
-    cholmod_l_free (nc, sizeof (Long), CParent, cm) ;
-    cholmod_l_free (n, sizeof (Long), Cmember, cm) ;
+    cholmod_l_free (nc, sizeof (int64_t), CParent, cm) ;
+    cholmod_l_free (n, sizeof (int64_t), Cmember, cm) ;
     cholmod_l_finish (cm) ;
     cholmod_l_print_common (" ", cm) ;
     /*

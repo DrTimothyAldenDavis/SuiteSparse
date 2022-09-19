@@ -11,14 +11,6 @@
 /* Shared prototypes and definitions for CHOLMOD mexFunctions */
 
 #include "SuiteSparse_config.h"
-#ifndef DLONG
-#define DLONG
-#endif
-
-/* Ensure cholmod_read_* and cholmod_write_* work for large files.  This
- * requires MATLAB 7.0 or later.  If you are using MATLAB 6.5 or earlier,
- * you must delete the following line, or compile CHOLMOD with -DNLARGEFILE */
-#include "cholmod_io64.h"
 
 #ifndef NPARTITION
 #include "metis.h"
@@ -26,9 +18,6 @@
 #undef ASSERT
 
 #include "cholmod.h"
-#include <limits.h>
-#include <string.h>
-#include <ctype.h>
 #include <float.h>
 #include "mex.h"
 #define EMPTY (-1)

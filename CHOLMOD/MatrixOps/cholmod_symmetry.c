@@ -44,7 +44,7 @@
  * If option is 2, this function can be used to compute the numerical and
  * pattern symmetry, where 0 is a completely unsymmetric matrix, and 1 is a
  * perfectly symmetric matrix.  This option is used when computing the following
- * statistics for the matrices in the UF Sparse Matrix Collection.
+ * statistics for the matrices in the SuiteSparse Matrix Collection.
  *
  *	numerical symmetry: number of matched offdiagonal nonzeros over
  *	the total number of offdiagonal entries.  A real entry A(i,j), i ~= j,

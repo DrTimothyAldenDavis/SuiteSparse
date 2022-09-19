@@ -40,10 +40,10 @@ void mexFunction
     cholmod_dense *X = NULL ;
     cholmod_sparse *A = NULL, *Z = NULL ;
     cholmod_common Common, *cm ;
-    Long *Ap = NULL, *Ai ;
+    int64_t *Ap = NULL, *Ai ;
     double *Ax, *Az = NULL ;
     char filename [MAXLEN] ;
-    Long nz, k, is_complex = FALSE, nrow = 0, ncol = 0, allzero ;
+    int64_t nz, k, is_complex = FALSE, nrow = 0, ncol = 0, allzero ;
     int mtype ;
 
     /* ---------------------------------------------------------------------- */

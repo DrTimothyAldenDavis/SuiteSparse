@@ -33,11 +33,11 @@ void mexFunction
 )
 {
     double dummy = 0 ;
-    Long *Lp, *Lnz, *Xp, *Xi, xnz ;
+    int64_t *Lp, *Lnz, *Xp, *Xi, xnz ;
     cholmod_sparse *B, Bmatrix, *X ;
     cholmod_factor *L ;
     cholmod_common Common, *cm ;
-    Long j, n ;
+    int64_t j, n ;
 
     /* ---------------------------------------------------------------------- */
     /* start CHOLMOD and set parameters */ 
@@ -95,7 +95,7 @@ void mexFunction
     L->z = mxGetPi (pargin [0]) ;
 
     /* allocate and initialize the rest of L */
-    L->nz = cholmod_l_malloc (n, sizeof (Long), cm) ;
+    L->nz = cholmod_l_malloc (n, sizeof (int64_t), cm) ;
     Lp = L->p ;
     Lnz = L->nz ;
     for (j = 0 ; j < n ; j++)
@@ -127,8 +127,8 @@ void mexFunction
     /* return result, converting to 1-based */ 
     /* ---------------------------------------------------------------------- */
 
-    Xp = (Long *) X->p ;
-    Xi = (Long *) X->i ;
+    Xp = (int64_t *) X->p ;
+    Xi = (int64_t *) X->i ;
     xnz = Xp [1] ;
     pargout [0] = sputil_put_int (Xi, xnz, 1) ;
 

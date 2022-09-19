@@ -787,8 +787,8 @@ cholmod_factor *CHOLMOD(analyze_p2)
 		 * L, or one with a fill-in ratio (nnz(L)/nnz(A)) of less than
 		 * 5.  This is pretty good, and it's unlikely that METIS will do
 		 * better (this heuristic is based on tests on all symmetric
-		 * positive definite matrices in the UF sparse matrix
-		 * collection, and it works well across a wide range of
+		 * positive definite matrices in the SuiteSparse Matrix
+		 * Collection, and it works well across a wide range of
 		 * problems).  METIS can take much more time than AMD. */
 		break ;
 	    }

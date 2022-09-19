@@ -32,7 +32,7 @@ void mexFunction
     cholmod_sparse *S, Smatrix ;
     cholmod_dense *F, Fmatrix, *C ;
     cholmod_common Common, *cm ;
-    Long srow, scol, frow, fcol, crow, transpose ; 
+    int64_t srow, scol, frow, fcol, crow, transpose ; 
 
     /* ---------------------------------------------------------------------- */
     /* start CHOLMOD and set parameters */ 

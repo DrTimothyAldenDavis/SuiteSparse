@@ -25,7 +25,7 @@ void mexFunction
     double dummy = 0 ;
     cholmod_sparse Amatrix, *A ;
     cholmod_common Common, *cm ;
-    Long result, quick, option, xmatched, pmatched, nzoffdiag, nzdiag ;
+    int64_t result, quick, option, xmatched, pmatched, nzoffdiag, nzdiag ;
 
     /* ---------------------------------------------------------------------- */
     /* start CHOLMOD and set parameters */ 

@@ -89,8 +89,8 @@ July 18, 2014: version 3.0.1
         CHOLMOD is compiled on the GPU
     * added cholmod_rowfac_mask2 function for LPDASA
     * to test the GPU, use 'make big' in CHOLMOD/Demo.  You will need to first
-        download the GHS_psdef/audikw_1.mtx from the UF collection:
-        http://www.cise.ufl.edu/research/sparse/matrices/GHS_psdef/audikw_1.html
+        download the GHS_psdef/audikw_1.mtx:
+        http://sparse.tamu.edu/GHS_psdef/audikw_1
 
 March 26, 2014: version 3.0.0 (beta)
 

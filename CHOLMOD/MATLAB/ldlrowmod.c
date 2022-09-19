@@ -48,11 +48,12 @@ void mexFunction
 {
     double dummy = 0 ;
     double *Lx, *Lx2 ;
-    Long *Li, *Lp, *Li2, *Lp2, *Lnz2, *ColCount ;
+    int64_t *Li, *Lp, *Li2, *Lp2, *Lnz2, *ColCount ;
     cholmod_sparse Cmatrix, *C, *Lsparse ;
     cholmod_factor *L ;
     cholmod_common Common, *cm ;
-    Long j, k, s, rowadd, n, lnz, ok ;
+    int64_t j, k, s, rowadd, n, lnz ;
+    int ok ;
 
     /* ---------------------------------------------------------------------- */
     /* start CHOLMOD and set parameters */ 
@@ -72,7 +73,7 @@ void mexFunction
     }
 
     n = mxGetN (pargin [0]) ;
-    k = (Long) mxGetScalar (pargin [1]) ;
+    k = (int64_t) mxGetScalar (pargin [1]) ;
     k = k - 1 ;         /* change from 1-based to 0-based */
 
     if (!mxIsSparse (pargin [0])
@@ -111,8 +112,8 @@ void mexFunction
     /* ---------------------------------------------------------------------- */
 
     /* get the MATLAB L */
-    Lp = (Long *) mxGetJc (pargin [0]) ;
-    Li = (Long *) mxGetIr (pargin [0]) ;
+    Lp = (int64_t *) mxGetJc (pargin [0]) ;
+    Li = (int64_t *) mxGetIr (pargin [0]) ;
     Lx = mxGetPr (pargin [0]) ;
 
     /* allocate the CHOLMOD symbolic L */

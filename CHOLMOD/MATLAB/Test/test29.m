@@ -74,14 +74,14 @@ if (~isequal (r, rtrue))
     error ('failed.  Incomplete test cases') ;
 end
 
-% test with the UF sparse matrix collection
+% test with the SuiteSparse Matrix Collection
 r = zeros (0,2) ;
 index = ssget ;
 for i = [168 27 2137 56 231 1621 -1621] ;
     Prob = ssget (abs (i),index)
     A = Prob.A ;
     if (i < 0)
-        % UF collection does not contain any matrices for which spsym(A) = 4.
+        % SSMC does not contain any matrices for which spsym(A) = 4.
         % (complex Hermitian with zero nonpos. diagonal).  So make one.
         fprintf ('setting A (5,5) = 0\n') ;
         A (5,5) = 0 ;

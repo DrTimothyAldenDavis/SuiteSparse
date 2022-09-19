@@ -45,7 +45,7 @@ void mexFunction
     cholmod_sparse Amatrix, Zmatrix, *A, *Z ;
     cholmod_dense Xmatrix, *X ;
     cholmod_common Common, *cm ;
-    Long arg_z, arg_comments, sym ;
+    int64_t arg_z, arg_comments, sym ;
     char filename [MAXLEN], comments [MAXLEN] ;
 
     /* ---------------------------------------------------------------------- */

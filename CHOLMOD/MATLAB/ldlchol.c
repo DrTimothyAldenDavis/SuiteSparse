@@ -69,7 +69,7 @@ void mexFunction
     cholmod_sparse Amatrix, *A, *Lsparse ;
     cholmod_factor *L ;
     cholmod_common Common, *cm ;
-    Long n, minor ;
+    int64_t n, minor ;
 
     /* ---------------------------------------------------------------------- */
     /* start CHOLMOD and set parameters */ 

@@ -36,10 +36,10 @@ void mexFunction
 {
 #ifndef NPARTITION
     double dummy = 0 ;
-    Long *Perm ;
+    int64_t *Perm ;
     cholmod_sparse *A, Amatrix, *C, *S ;
     cholmod_common Common, *cm ;
-    Long n, transpose, c, postorder ;
+    int64_t n, transpose, c, postorder ;
     char buf [LEN] ;
 
     /* ---------------------------------------------------------------------- */
@@ -128,7 +128,7 @@ void mexFunction
     /* get workspace */
     /* ---------------------------------------------------------------------- */
 
-    Perm = cholmod_l_malloc (n, sizeof (Long), cm) ;
+    Perm = cholmod_l_malloc (n, sizeof (int64_t), cm) ;
 
     /* ---------------------------------------------------------------------- */
     /* order the matrix with CHOLMOD's interface to METIS_NodeND */ 
@@ -151,7 +151,7 @@ void mexFunction
     /* free workspace */
     /* ---------------------------------------------------------------------- */
 
-    cholmod_l_free (n, sizeof (Long), Perm, cm) ;
+    cholmod_l_free (n, sizeof (int64_t), Perm, cm) ;
     cholmod_l_free_sparse (&C, cm) ;
     cholmod_l_free_sparse (&S, cm) ;
     cholmod_l_finish (cm) ;
