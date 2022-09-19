@@ -1,5 +1,5 @@
-2856
-09-Oct-2019 16:31:17
+2893
+08-Oct-2020 17:09:58
 HB,1138_bus,1138,1138,4054,1,0,0,1,1,1,power network problem,4054
 HB,494_bus,494,494,1666,1,0,0,1,1,1,power network problem,1666
 HB,662_bus,662,662,2474,1,0,0,1,1,1,power network problem,2474
@@ -2856,3 +2856,40 @@ GAP,GAP-web,50636151,50636151,1930292948,1,0,0,0,0.1245713694644861,0.0004892386
 GAP,GAP-road,23947347,23947347,57708624,1,0,0,0,1,1,directed weighted graph,57708624
 GAP,GAP-kron,134217726,134217726,4223264644,1,0,0,0,1,1,random undirected weighted graph,4223264644
 GAP,GAP-urand,134217728,134217728,4294966740,1,0,0,0,1,1,random undirected weighted graph,4294966740
+ML_Graph,Binaryalphadigs_10NN,1404,1404,19392,1,0,0,0,1,1,undirected weighted graph,19392
+ML_Graph,breasttissue_10NN,106,106,1412,1,0,0,0,1,1,undirected weighted graph,1412
+ML_Graph,cnae9_10NN,1080,1080,18278,1,0,0,0,1,1,undirected weighted graph,18278
+ML_Graph,collins_15NN,1000,1000,16492,1,0,0,0,1,1,undirected weighted graph,16492
+ML_Graph,dataset12mfeatfactors_10NN,2000,2000,27442,1,0,0,0,1,1,undirected weighted graph,27442
+ML_Graph,dataset16mfeatkarhunen_10NN,2000,2000,27668,1,0,0,0,1,1,undirected weighted graph,27668
+ML_Graph,dataset18mfeatmorphological_10NN,2000,2000,22832,1,0,0,0,1,1,undirected weighted graph,22832
+ML_Graph,dataset20mfeatpixel_10NN,2000,2000,27932,1,0,0,0,1,1,undirected weighted graph,27932
+ML_Graph,dataset22mfeatzernike_10NN,2000,2000,27414,1,0,0,0,1,1,undirected weighted graph,27414
+ML_Graph,dermatology_5NN,366,366,2440,1,0,0,0,1,1,undirected weighted graph,2440
+ML_Graph,Ecoli_10NN,336,336,4560,1,0,0,0,1,1,undirected weighted graph,4560
+ML_Graph,Fashion_MNIST_norm_10NN,10000,10000,158304,1,0,0,0,1,1,undirected weighted graph,158304
+ML_Graph,Glass_10NN,214,214,2986,1,0,0,0,1,1,undirected weighted graph,2986
+ML_Graph,har_10NN,10299,10299,151736,1,0,0,0,1,1,undirected weighted graph,151736
+ML_Graph,indianpines_10NN,9144,9144,124656,1,0,0,0,1,1,undirected weighted graph,124656
+ML_Graph,iris_dataset_30NN,150,150,5518,1,0,0,0,1,1,undirected weighted graph,5518
+ML_Graph,JapaneseVowelsSmall_10NN,9961,9961,131144,1,0,0,0,1,1,undirected weighted graph,131144
+ML_Graph,k49_norm_10NN,38547,38547,618158,1,0,0,0,1,1,undirected weighted graph,618158
+ML_Graph,kmnist_norm_10NN,10000,10000,156932,1,0,0,0,1,1,undirected weighted graph,156932
+ML_Graph,mice_10NN,1077,1077,13484,1,0,0,0,1,1,undirected weighted graph,13484
+ML_Graph,micromass_10NN,571,571,9668,1,0,0,0,1,1,undirected weighted graph,9668
+ML_Graph,mnist_test_norm_10NN,10000,10000,145600,1,0,0,0,1,1,undirected weighted graph,145600
+ML_Graph,Olivetti_norm_10NN,400,400,5656,1,0,0,0,1,1,undirected weighted graph,5656
+ML_Graph,optdigits_10NN,5620,5620,79650,1,0,0,0,1,1,undirected weighted graph,79650
+ML_Graph,Plants_10NN,1600,1600,21930,1,0,0,0,1,1,undirected weighted graph,21930
+ML_Graph,plantsmargin_12NN,1600,1600,25482,1,0,0,0,1,1,undirected weighted graph,25482
+ML_Graph,plantstexture_10NN,1599,1599,21204,1,0,0,0,1,1,undirected weighted graph,21204
+ML_Graph,semeion_10NN,1593,1593,22226,1,0,0,0,1,1,undirected weighted graph,22226
+ML_Graph,Spectro_10NN,531,531,7422,1,0,0,0,1,1,undirected weighted graph,7422
+ML_Graph,umistfacesnorm_10NN,575,575,6990,1,0,0,0,1,1,undirected weighted graph,6990
+ML_Graph,usps_norm_5NN,11000,11000,81112,1,0,0,0,1,1,undirected weighted graph,81112
+ML_Graph,Vehicle_10NN,846,846,10894,1,0,0,0,1,1,undirected weighted graph,10894
+ML_Graph,worms20_10NN,20055,20055,240826,1,0,0,0,1,1,undirected weighted graph,240826
+ML_Graph,YaleA_10NN,165,165,2268,1,0,0,0,1,1,undirected weighted graph,2268
+ML_Graph,YaleB_10NN,2414,2414,34808,1,0,0,0,1,1,undirected weighted graph,34808
+ML_Graph,yeast_30NN,1484,1484,62350,1,0,0,0,1,1,undirected weighted graph,62350
+Sybrandt,AGATHA_2015,183964077,183964077,11588725964,1,1,0,0,1,1,undirected graph,11588725964
