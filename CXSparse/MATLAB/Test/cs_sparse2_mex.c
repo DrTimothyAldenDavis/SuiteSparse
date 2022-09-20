@@ -12,7 +12,7 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    CS_INT k, m, n, nz, *Ti, *Tj ;
+    int64_t k, m, n, nz, *Ti, *Tj ;
     if (nargout > 1 || nargin != 3)
     {
         mexErrMsgTxt ("Usage: A = cs_sparse2(i,j,x)") ;

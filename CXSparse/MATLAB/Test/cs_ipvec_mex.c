@@ -11,7 +11,7 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    CS_INT n, k, *p ;
+    int64_t n, k, *p ;
     double *xx ;
     if (nargout > 1 || nargin != 2)
     {
@@ -24,7 +24,7 @@ void mexFunction
     }
 
     xx = mxGetPr (pargin [1]) ;
-    p = cs_dl_malloc (n, sizeof (CS_INT)) ;
+    p = cs_dl_malloc (n, sizeof (int64_t)) ;
     for (k = 0 ; k < n ; k++) p [k] = xx [k] - 1 ;
 
     if (mxIsComplex (pargin [0]))

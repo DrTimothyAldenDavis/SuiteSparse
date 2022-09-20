@@ -32,6 +32,8 @@ void mexFunction
         A = cs_cl_transpose (C, -1) ;           /* A=C.' */
         cs_cl_spfree (C) ;
         pargout [0] = cs_cl_mex_put_sparse (&A) ;       /* return A */
+        cs_dl_free (T->p) ;
+        cs_dl_free (T->i) ;
         cs_cl_free (T->x) ;                     /* free copy of complex values*/
 #else
         mexErrMsgTxt ("complex matrices not supported") ;
@@ -53,7 +55,7 @@ void mexFunction
         A = cs_dl_transpose (C, 1) ;            /* A=C' */
         cs_dl_spfree (C) ;
         pargout [0] = cs_dl_mex_put_sparse (&A) ;       /* return A */
+        cs_dl_free (T->p) ;
+        cs_dl_free (T->i) ;
     }
-    cs_dl_free (T->p) ;
-    cs_dl_free (T->i) ;
 }

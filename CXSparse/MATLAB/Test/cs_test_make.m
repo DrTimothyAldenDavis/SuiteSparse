@@ -9,7 +9,7 @@ function cs_test_make (force)
 % CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
 % SPDX-License-Identifier: LGPL-2.1+
 
-mexcmd = 'mex -DCS_LONG -I../../../SuiteSparse_config' ;
+mexcmd = 'mex -I../../../SuiteSparse_config' ;
 if (~isempty (strfind (computer, '64')))
     mexcmd = [mexcmd ' -largeArrayDims'] ;
 end
