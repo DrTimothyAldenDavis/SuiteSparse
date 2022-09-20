@@ -24,16 +24,16 @@ FIXME: new output files
     UMFPACK/MATLAB/*out
 
 FIXME: test coverage for all packages.
-    done: CSparse, CXSparse, RBio, CHOLMOD, GraphBLAS, KLU
-    todo: UMFPACK, SPQR
+    done: CSparse, CXSparse, RBio, CHOLMOD, GraphBLAS, KLU, UMFPACK
+    todo: SPQR
 
-FIXME: cmake CUDA for: CHOLMOD,
-    SPQR, SuiteSparse_GPURuntime, GPUQREngine
+FIXME: cmake CUDA for:
+    todo: CHOLMOD, SPQR, SuiteSparse_GPURuntime, GPUQREngine
 
 FIXME: update metis cmake to use SuiteSparsePolicy
 
 FIXME: cmake and Find*.cmake for:
-    SPQR, SuiteSparse_GPURuntime, GPUQREngine
+    todo: SPQR, SuiteSparse_GPURuntime, GPUQREngine
 
 FIXME: remove SuiteSparse_config.mk?
     currently needed for CHOLMOD/Tcov, however

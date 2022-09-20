@@ -33,7 +33,7 @@
 
 #define GB_FREE_ALL             \
 {                               \
-    GB_phbix_free (C) ;         \
+    GB_phybix_free (C) ;        \
 }
 
 GrB_Info GB_emult_08_phase2             // C=A.*B or C<M>=A.*B
@@ -150,6 +150,7 @@ GrB_Info GB_emult_08_phase2             // C=A.*B or C<M>=A.*B
     { 
         C->nvec_nonempty = Cnvec_nonempty ;
         C->p = (int64_t *) Cp ; C->p_size = Cp_size ;
+        C->nvals = cnz ;
         (*Cp_handle) = NULL ;
     }
 

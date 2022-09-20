@@ -312,7 +312,6 @@ logstat ('test81' ,t) ; % GrB_Matrix_extract with stride, range, backwards
 logstat ('test21b',t) ; % quick test of GB_mex_assign
 logstat ('test18' ,t) ; % quick tests of GrB_eWiseAdd and eWiseMult
 
-
 %===============================================================================
 % The following tests are not required for statement coverage.  Some need
 % other packages in SuiteSparse (CSparse, SSMULT, ssget).  By default, these

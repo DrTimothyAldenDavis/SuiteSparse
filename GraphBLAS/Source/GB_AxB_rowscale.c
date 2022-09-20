@@ -14,7 +14,7 @@
 #include "GB_binop__include.h"
 #endif
 
-#define GB_FREE_ALL GB_phbix_free (C) ;
+#define GB_FREE_ALL GB_phybix_free (C) ;
 
 GrB_Info GB_AxB_rowscale            // C = D*B, row scale with diagonal D
 (

@@ -366,8 +366,8 @@ double GB_helper10       // norm (x-y,p), or -1 on error
     GB_NTHREADS (n) ;
     GB_ALLOCATE_WORK (double) ;
 
-    #define X(k) x [x_iso ? 0 : k]
-    #define Y(k) y [y_iso ? 0 : k]
+    #define xx(k) x [x_iso ? 0 : k]
+    #define yy(k) y [y_iso ? 0 : k]
 
     //--------------------------------------------------------------------------
     // each thread computes its partial norm
@@ -399,7 +399,7 @@ double GB_helper10       // norm (x-y,p), or -1 on error
                     {
                         for (int64_t k = k1 ; k < k2 ; k++)
                         {
-                            float t = X (k) ;
+                            float t = xx (k) ;
                             my_s += (t*t) ;
                         }
                     }
@@ -407,7 +407,7 @@ double GB_helper10       // norm (x-y,p), or -1 on error
                     {
                         for (int64_t k = k1 ; k < k2 ; k++)
                         {
-                            float t = (X (k) - Y (k)) ;
+                            float t = (xx (k) - yy (k)) ;
                             my_s += (t*t) ;
                         }
                     }
@@ -420,14 +420,14 @@ double GB_helper10       // norm (x-y,p), or -1 on error
                     {
                         for (int64_t k = k1 ; k < k2 ; k++)
                         {
-                            my_s += fabsf (X (k)) ;
+                            my_s += fabsf (xx (k)) ;
                         }
                     }
                     else
                     {
                         for (int64_t k = k1 ; k < k2 ; k++)
                         {
-                            my_s += fabsf (X (k) - Y (k)) ;
+                            my_s += fabsf (xx (k) - yy (k)) ;
                         }
                     }
                 }
@@ -439,14 +439,14 @@ double GB_helper10       // norm (x-y,p), or -1 on error
                     {
                         for (int64_t k = k1 ; k < k2 ; k++)
                         {
-                            my_s = fmaxf (my_s, fabsf (X (k))) ;
+                            my_s = fmaxf (my_s, fabsf (xx (k))) ;
                         }
                     }
                     else
                     {
                         for (int64_t k = k1 ; k < k2 ; k++)
                         {
-                            my_s = fmaxf (my_s, fabsf (X (k) - Y (k))) ;
+                            my_s = fmaxf (my_s, fabsf (xx (k) - yy (k))) ;
                         }
                     }
                 }
@@ -459,14 +459,14 @@ double GB_helper10       // norm (x-y,p), or -1 on error
                     {
                         for (int64_t k = k1 ; k < k2 ; k++)
                         {
-                            my_s = fminf (my_s, fabsf (X (k))) ;
+                            my_s = fminf (my_s, fabsf (xx (k))) ;
                         }
                     }
                     else
                     {
                         for (int64_t k = k1 ; k < k2 ; k++)
                         {
-                            my_s = fminf (my_s, fabsf (X (k) - Y (k))) ;
+                            my_s = fminf (my_s, fabsf (xx (k) - yy (k))) ;
                         }
                     }
                 }
@@ -496,7 +496,7 @@ double GB_helper10       // norm (x-y,p), or -1 on error
                     {
                         for (int64_t k = k1 ; k < k2 ; k++)
                         {
-                            double t = X (k) ;
+                            double t = xx (k) ;
                             my_s += (t*t) ;
                         }
                     }
@@ -504,7 +504,7 @@ double GB_helper10       // norm (x-y,p), or -1 on error
                     {
                         for (int64_t k = k1 ; k < k2 ; k++)
                         {
-                            double t = (X (k) - Y (k)) ;
+                            double t = (xx (k) - yy (k)) ;
                             my_s += (t*t) ;
                         }
                     }
@@ -517,14 +517,14 @@ double GB_helper10       // norm (x-y,p), or -1 on error
                     {
                         for (int64_t k = k1 ; k < k2 ; k++)
                         {
-                            my_s += fabs (X (k)) ;
+                            my_s += fabs (xx (k)) ;
                         }
                     }
                     else
                     {
                         for (int64_t k = k1 ; k < k2 ; k++)
                         {
-                            my_s += fabs (X (k) - Y (k)) ;
+                            my_s += fabs (xx (k) - yy (k)) ;
                         }
                     }
                 }
@@ -536,14 +536,14 @@ double GB_helper10       // norm (x-y,p), or -1 on error
                     {
                         for (int64_t k = k1 ; k < k2 ; k++)
                         {
-                            my_s = fmax (my_s, fabs (X (k))) ;
+                            my_s = fmax (my_s, fabs (xx (k))) ;
                         }
                     }
                     else
                     {
                         for (int64_t k = k1 ; k < k2 ; k++)
                         {
-                            my_s = fmax (my_s, fabs (X (k) - Y (k))) ;
+                            my_s = fmax (my_s, fabs (xx (k) - yy (k))) ;
                         }
                     }
                 }
@@ -556,14 +556,14 @@ double GB_helper10       // norm (x-y,p), or -1 on error
                     {
                         for (int64_t k = k1 ; k < k2 ; k++)
                         {
-                            my_s = fmin (my_s, fabs (X (k))) ;
+                            my_s = fmin (my_s, fabs (xx (k))) ;
                         }
                     }
                     else
                     {
                         for (int64_t k = k1 ; k < k2 ; k++)
                         {
-                            my_s = fmin (my_s, fabs (X (k) - Y (k))) ;
+                            my_s = fmin (my_s, fabs (xx (k) - yy (k))) ;
                         }
                     }
                 }

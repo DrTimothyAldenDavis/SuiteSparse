@@ -24,16 +24,12 @@ using namespace cooperative_groups;
 // GB_AxB_dense_phase1 is a CUDA kernel that scans all entries in M and
 // assigns i,j coordinates for each entries and stores in Mi and Ci. 
 
-
 template<typename T_M, uint64_t srcode, int chunk_size = 128>
 __global__ void AxB_dense_phase1
 (
     // input/output:
     GrB_Matrix C,           // final output matrix
-    // inputs, not modified:
-    const GrB_Matrix M,     // mask matrix
-    const GrB_Matrix A,     // input matrix
-    const GrB_Matrix B      // input matrix
+    const GrB_Matrix M      // mask matrix
 )
 {
 
@@ -41,7 +37,6 @@ __global__ void AxB_dense_phase1
     // get C, M, A, and B
     //--------------------------------------------------------------------------
 
-    const int64_t *__restrict__ Mh = M->h ;
     const int64_t *__restrict__ Mp = M->p ;
     const int64_t *__restrict__ Mi = M->i ;
     const T_M *__restrict__ Mx = (T_M*) M->x ; // not accessed if M structural
@@ -50,22 +45,6 @@ __global__ void AxB_dense_phase1
     const int64_t mnz =  GB_nnz(M) ;
     const bool M_is_hyper = M->h != NULL ;
 
-    const int64_t *__restrict__ Ah = A->h ;
-    const int64_t *__restrict__ Ap = A->p ;
-    const int64_t *__restrict__ Ai = A->i ;
-    const int64_t avlen = A->vlen ;
-    const int64_t anz = GB_nnz(A) ;
-    const bool A_is_hyper = A->h != NULL ;
-
-    const int64_t *__restrict__ Bh = B->h ;
-    const int64_t *__restrict__ Bp = B->p ;
-    const int64_t *__restrict__ Bi = B->i ;
-    const int64_t bvlen = B->vlen ;
-    const int64_t bnz = GB_nnz(B);
-    const bool B_is_hyper = B->h != NULL ;
-
-    // int64_t *restrict Cp = C->p ;    // copy of Mp
-    // int64_t *restrict Ch = C->h ;    // copy of Mh
     int64_t *__restrict__ Ci = C->i ;   // for zombies, or bucket assignment
 
     // Ci [p] for an entry C(i,j) contains either GB_FLIP(i) if C(i,j) is a
@@ -79,7 +58,6 @@ __global__ void AxB_dense_phase1
 
     // shared cache used for coordinate search
     __shared__ int64_t ks [chunk_size] ;
-
 
     //--------------------------------------------------------------------------
     // assign all entries of C to the buckets
@@ -150,20 +128,29 @@ __global__ void AxB_dense_phase1
         // assign entries in C(i,j) to the buckets
         //----------------------------------------------------------------------
 
-        // if B is hypersparse, bpleft ... TODO describe
-        // int64_t bpleft = 0 ;
-
         for ( int64_t pM = pfirst + threadIdx.x;
                       pM < pfirst + my_chunk_size;
                       pM += blockDim.x )
         {
             int64_t k = ks [pM - pfirst] ;  // get the k value of Mi,Mx [pM].
-            int64_t i = Mi [ pM ] ;
-            int64_t j = k ; // HACK, does not need to be initialized here
+            // j = k or j = Mh [k] if C and M are hypersparse, but j is not
+            // needed here.
 
-            Ci[pM] = (k<<4) ;
+            #if GB_MASK_STRUCT
+            {
+                // no need to check the value of M(i,j); no prezombies
+                Ci[pM] = (k << 4) ;
+            }
+            #else
+            {
+                bool mij = (bool) MX (pM) ;
+                int64_t i = Mi [ pM ] ;
+                // FIXME: no need for k<<4, just place k or GB_FLIP(i) in Ci
+                Ci[pM] = (!mij) * ( GB_FLIP(i) << 4)
+                       +   mij  * ((k<<4) ) ;
+            }
+            #endif
         }
     }
-
 }
 

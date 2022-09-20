@@ -81,7 +81,7 @@ a wildtype scalar:  [this is A(3,7)]
 Printing the matrix with GxB_Matrix_fprint:
 
   10x10 GraphBLAS wildtype matrix, hypersparse by row
-  input B, 1 entry, memory: 36.5 KB
+  input B, 1 entry, memory: 36.9 KB
   pending tuples: 2 max pending: 256 zombies: 0
 
     (7,2) [user-defined value]

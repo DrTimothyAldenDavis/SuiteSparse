@@ -185,7 +185,7 @@ public:
                    file_callback)
                  .set_kernel_inst(  kernel_name, template_types)
                  .configure(grid, block, SMEM, stream)
-                 .launch( C, M, A, B);
+                 .launch( C, M);
 
       result = true;
 
@@ -511,7 +511,7 @@ private:
 class mxm_sparse_dense_launchFactory
 {
   std::string base_name = "GB_jit";
-  std::string kernel_name = "AxB_dot3_phase3_spdn";
+  std::string kernel_name = "AxB_dot3";
 
   GB_cuda_mxm_factory &mxm_factory_;
 
@@ -659,9 +659,10 @@ public:
     /**
      * Configure geometry and kernel function name based on sparsity of C and number of vectors in M
      */
-    configure( nz, mnvec, final_kernel_name_ss, blocksz, gridsz, sz);
-
     auto sr_code = std::to_string(mxm_factory_.sr_code);
+
+    configure2( nz, mnvec, final_kernel_name_ss, blocksz, gridsz, sz, mxm_factory_.sr_code);
+
 
     GrB_BinaryOp mult = mxm_factory_.semiring->multiply ;
 
@@ -714,63 +715,133 @@ public:
   }
 
 private:
-    void configure(std::int64_t Cnz, std::int64_t mnvec, std::stringstream &opname,
-                   int &blocksz, int &gridsz, int &sz) {
+    void configure2(std::int64_t Cnz, std::int64_t mnvec, std::stringstream &opname,
+                   int &blocksz, int &gridsz, int &sz, uint64_t sr_code) {
     int number_of_sms = GB_Global_gpu_sm_get (0) ;
 
     int work_per_thread;
 
-    switch (bucket_code_)
+    // 0:hyper, 1:sparse, 2:bitmap, 3:full
+    int asparsity   = RSHIFT (sr_code,  2, 2) ;
+    int bsparsity   = RSHIFT (sr_code,  0, 2) ;
+
+    if (asparsity <= 1 && bsparsity <= 1)
     {
+        // both A and B are sparse/hyper
+        switch (bucket_code_)
+        {
 
-        //--------------------------------------------------------------
-        // not a bucket ... bring out your dead:
-        //--------------------------------------------------------------
+            //--------------------------------------------------------------
+            // not a bucket ... bring out your dead:
+            //--------------------------------------------------------------
 
-        case GB_BUCKET_ZOMBIE : // C(i,j) is a zombie (not a bucket)
-            break ;
+            case GB_BUCKET_ZOMBIE : // C(i,j) is a zombie (not a bucket)
+                break ;
 
-        //--------------------------------------------------------------
-        // CUDA kernel: vsvs bucket:
-        //--------------------------------------------------------------
+            //--------------------------------------------------------------
+            // CUDA kernel: vsvs bucket:
+            //--------------------------------------------------------------
 
-        case GB_BUCKET_VSVS :
-            Opname = "phase3_vsvs" ;
-            blocksz = 256;
-            work_per_thread = 4;
-            
-            if( Cnz > (2<<12)){
-              blocksz = 512;
-              work_per_thread = 4;
-            }
+            case GB_BUCKET_VSVS :
+                Opname = "phase3_vsvs" ;
+                blocksz = 256;
+                work_per_thread = 4;
+                
+                if( Cnz > (2<<12)){
+                  blocksz = 512;
+                  work_per_thread = 4;
+                }
 
-            // gridsz = ceiling (Cnz / work_per_thread*blocksz)
-            gridsz = GB_ICEIL (Cnz, work_per_thread*blocksz) ;
-            if (gridsz > 256*number_of_sms)  gridsz = 256*number_of_sms;
-            break ;
+                // gridsz = ceiling (Cnz / work_per_thread*blocksz)
+                gridsz = GB_ICEIL (Cnz, work_per_thread*blocksz) ;
+                if (gridsz > 256*number_of_sms)  gridsz = 256*number_of_sms;
+                break ;
 
-        //--------------------------------------------------------------
-        // CUDA kernel: mp, use the merge-path method:
-        //--------------------------------------------------------------
+            //--------------------------------------------------------------
+            // CUDA kernel: mp, use the merge-path method:
+            //--------------------------------------------------------------
 
-        case GB_BUCKET_MERGEPATH :
-            Opname = "phase3_mp" ;
-            blocksz = 32;
-            work_per_thread = 256 ;
+            case GB_BUCKET_MERGEPATH :
+                Opname = "phase3_mp" ;
+                blocksz = 32;
+                work_per_thread = 256 ;
 
-            if( Cnz > (2<<20)){
-              work_per_thread = 1024;
-            }
-            gridsz = GB_ICEIL (Cnz, work_per_thread) ;
-            if ((gridsz < number_of_sms) && (Cnz > (2<<20)))
-            {
-               gridsz = number_of_sms; 
-            }
-            if (gridsz > 256*number_of_sms)  gridsz = 256*number_of_sms;
-            break ;
+                if( Cnz > (2<<20)){
+                  work_per_thread = 1024;
+                }
+                gridsz = GB_ICEIL (Cnz, work_per_thread) ;
+                if ((gridsz < number_of_sms) && (Cnz > (2<<20)))
+                {
+                   gridsz = number_of_sms; 
+                }
+                if (gridsz > 256*number_of_sms)  gridsz = 256*number_of_sms;
+                break ;
 
-        default:
-            break ;
+            default:
+                break ;
+        }
+
+    }
+    else
+    {
+        // either A or B are bitmap/full
+        switch (bucket_code_)
+        {
+
+            //--------------------------------------------------------------
+            // not a bucket ... bring out your dead:
+            //--------------------------------------------------------------
+
+            case GB_BUCKET_ZOMBIE : // C(i,j) is a zombie (not a bucket)
+                break ;
+
+            //--------------------------------------------------------------
+            // CUDA kernel: vsdn bucket:  one thread per C(i,j) dot product
+            //--------------------------------------------------------------
+
+            case GB_BUCKET_VSDN :
+                Opname = "phase3_vsdn" ;
+
+                // FIXME:
+                blocksz = 256;
+                work_per_thread = 4;
+                
+                if( Cnz > (2<<12)){
+                  blocksz = 512;
+                  work_per_thread = 4;
+                }
+
+                // gridsz = ceiling (Cnz / work_per_thread*blocksz)
+                gridsz = GB_ICEIL (Cnz, work_per_thread*blocksz) ;
+                if (gridsz > 256*number_of_sms)  gridsz = 256*number_of_sms;
+                break ;
+
+            //--------------------------------------------------------------
+            // CUDA kernel: spdn bucket: one warp per C(i,j) dot product
+            //--------------------------------------------------------------
+
+            case GB_BUCKET_SPDN :
+                Opname = "phase3_spdn" ;
+
+                // FIXME:
+                blocksz = 32;
+                work_per_thread = 256 ;
+
+                if( Cnz > (2<<20)){
+                  work_per_thread = 1024;
+                }
+                gridsz = GB_ICEIL (Cnz, work_per_thread) ;
+                if ((gridsz < number_of_sms) && (Cnz > (2<<20)))
+                {
+                   gridsz = number_of_sms; 
+                }
+                if (gridsz > 256*number_of_sms)  gridsz = 256*number_of_sms;
+                break ;
+
+            default:
+                break ;
+        }
+
     }
 
     opname << Opname;

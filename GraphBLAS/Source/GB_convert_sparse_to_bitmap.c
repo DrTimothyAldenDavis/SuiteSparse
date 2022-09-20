@@ -224,7 +224,7 @@ GrB_Info GB_convert_sparse_to_bitmap    // convert sparse/hypersparse to bitmap
         A->x_shallow = false ;
     }
 
-    GB_phbix_free (A) ;
+    GB_phybix_free (A) ;
     A->iso = A_iso ;        // OK: convert_sparse_to_bitmap, keep iso
 
     A->b = Ab ; A->b_size = Ab_size ; A->b_shallow = false ;

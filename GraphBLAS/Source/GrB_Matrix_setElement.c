@@ -10,6 +10,7 @@
 // Set a single entry in a matrix, C(row,col) = x,
 // typecasting from the type of x to the type of C, as needed.
 
+#define GB_FREE_ALL ;
 #include "GB.h"
 
 #define GB_SET(prefix,type,T,ampersand)                                     \
@@ -72,6 +73,8 @@ GrB_Info GrB_Matrix_setElement_Scalar
     // set or remove the element
     //--------------------------------------------------------------------------
 
+    GrB_Info info ;
+    GB_MATRIX_WAIT (scalar) ;
     if (GB_nnz ((GrB_Matrix) scalar) > 0)
     { 
         // set the element: C(row,col) = scalar

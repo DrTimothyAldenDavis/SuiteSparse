@@ -15,7 +15,7 @@ function Y = dnn_builtin (W, bias, Y0)
 % expansion.
 
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
-% SPDX-License-Identifier: GPL-3.0-or-later
+% SPDX-License-Identifier: Apache-2.0
 
 Y = Y0 ;
 n = size (Y, 2) ;

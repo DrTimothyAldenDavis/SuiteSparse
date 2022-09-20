@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// GB_phbix_free: free all content of a matrix
+// GB_phybix_free: free all content of a matrix
 //------------------------------------------------------------------------------
 
 // SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
@@ -13,7 +13,7 @@
 
 #include "GB.h"
 
-void GB_phbix_free              // free all content of a matrix
+void GB_phybix_free             // free all content of a matrix
 (
     GrB_Matrix A                // handle of matrix with content to free
 )
@@ -21,7 +21,7 @@ void GB_phbix_free              // free all content of a matrix
 
     if (A != NULL)
     { 
-        GB_ph_free (A) ;            // free A->p and A->h
+        GB_phy_free (A) ;           // free A->p, A->h, and A->Y
         GB_bix_free (A) ;           // free A->b, A->i, and A->x
         GB_FREE (&(A->logger), A->logger_size) ;        // free the error logger
     }

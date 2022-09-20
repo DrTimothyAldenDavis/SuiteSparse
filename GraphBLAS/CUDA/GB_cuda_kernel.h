@@ -92,7 +92,7 @@
     #define GB_ADD_F( f , s)
     #define GB_C_MULT( c, a, b)
     #define GB_MULTADD( c, a ,b )
-    #define GB_DOT_TERMINAL ( c )   
+    #define GB_DOT_TERMINAL( c ) break
     #define GB_DOT_MERGE(pA,pB)                                         \
     {                                                                   \
         cij_exists = true ;                                             \
@@ -104,8 +104,7 @@
     #define GB_ADD_F( f , s)  f = GB_ADD ( f, s ) 
     #define GB_C_MULT( c, a, b)  c = GB_MULT( (a), (b) )
     #define GB_MULTADD( c, a ,b ) GB_ADD_F( (c), GB_MULT( (a),(b) ) )
-    #define GB_DOT_TERMINAL ( c )
-    //# if ( c == TERMINAL_VALUE) break;
+    #define GB_DOT_TERMINAL( c ) GB_IF_TERMINAL_BREAK (c)
 
     #if GB_IS_PLUS_PAIR_REAL_SEMIRING
 
@@ -242,6 +241,7 @@ GrB_Desc_Value ;
 //------------------------------------------------------------------------------
 // subset of GB.h
 //------------------------------------------------------------------------------
+
 //#include GB_iceil.h
 #define GB_ICEIL(a,b) (((a) + (b) - 1) / (b))
 //#include GB_imin.h
@@ -258,7 +258,7 @@ GrB_Desc_Value ;
 
 #include "GB_nnz.h"
 #include "GB_partition.h"
-//#include "GB_binary_search.h"
+
 // version for the GPU, with fewer branches
 #define GB_TRIM_BINARY_SEARCH(i,X,pleft,pright)                             \
 {                                                                           \
@@ -274,11 +274,13 @@ GrB_Desc_Value ;
     /* or it has found the list is empty */                                 \
     ASSERT (pleft == pright || pleft == pright + 1) ;                       \
 }
+
 #define GB_BINARY_SEARCH(i,X,pleft,pright,found)                            \
 {                                                                           \
     GB_TRIM_BINARY_SEARCH (i, X, pleft, pright) ;                           \
     found = (pleft == pright && X [pleft] == i) ;                           \
 }
+
 #define GB_SPLIT_BINARY_SEARCH(i,X,pleft,pright,found)                      \
 {                                                                           \
     GB_BINARY_SEARCH (i, X, pleft, pright, found)                           \
@@ -295,7 +297,6 @@ GrB_Desc_Value ;
     }                                                                       \
 }
 
-//#include "GB_search_for_vector_template.c"
 __device__
 static inline int64_t GB_search_for_vector_device
 (
@@ -359,3 +360,4 @@ static inline int64_t GB_search_for_vector_device
 
     return (k) ;
 }
+

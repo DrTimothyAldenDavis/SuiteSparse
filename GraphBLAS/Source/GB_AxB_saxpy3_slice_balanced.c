@@ -260,8 +260,20 @@ GrB_Info GB_AxB_saxpy3_slice_balanced
     const int64_t *restrict Ap = A->p ;
     const int64_t *restrict Ah = A->h ;
     const int64_t avlen = A->vlen ;
-    const int64_t anvec = A->nvec ;
     const bool A_is_hyper = GB_IS_HYPERSPARSE (A) ;
+
+    const int64_t *restrict A_Yp = NULL ;
+    const int64_t *restrict A_Yi = NULL ;
+    const int64_t *restrict A_Yx = NULL ;
+    int64_t A_hash_bits = 0 ;
+    if (A_is_hyper)
+    {
+        ASSERT_MATRIX_OK (A->Y, "A->Y hyper_hash", GB0) ;
+        A_Yp = A->Y->p ;
+        A_Yi = A->Y->i ;
+        A_Yx = A->Y->x ;
+        A_hash_bits = A->Y->vdim - 1 ;
+    }
 
     const int64_t *restrict Bp = B->p ;
     const int64_t *restrict Bh = B->h ;
@@ -657,10 +669,22 @@ GrB_Info GB_AxB_saxpy3_slice_balanced
                             if (!GBB (Bb, pB)) continue ;
                             int64_t k = GBI (Bi, pB, bvlen) ;
                             // fl = flop count for just A(:,k)*B(k,j)
+
+                            // find A(:,k)
                             int64_t pA, pA_end ;
-                            int64_t pleft = 0 ;
-                            GB_lookup (A_is_hyper, Ah, Ap, avlen, &pleft,
-                                anvec-1, k, &pA, &pA_end) ;
+                            if (A_is_hyper)
+                            {
+                                // A is hypersparse: find A(:,k) in the A->Y hyper_hash
+                                GB_hyper_hash_lookup (Ap, A_Yp, A_Yi, A_Yx, A_hash_bits,
+                                    k, &pA, &pA_end) ;
+                            }
+                            else
+                            {
+                                // A is sparse, bitmap, or full
+                                pA     = GBP (Ap, k  , avlen) ;
+                                pA_end = GBP (Ap, k+1, avlen) ;
+                            }
+
                             int64_t fl = pA_end - pA ;
                             Fine_fl [s] = fl ;
                             ASSERT (fl >= 0) ;

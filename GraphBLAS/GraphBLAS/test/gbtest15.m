@@ -2,7 +2,7 @@ function gbtest15
 %GBTEST15 list all unary operators
 
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
-% SPDX-License-Identifier: GPL-3.0-or-later
+% SPDX-License-Identifier: Apache-2.0
 
 types = gbtest_types ;
 ops = { 'identity', '~', '-', '1', 'minv', 'abs',  'sqrt', 'log', ...

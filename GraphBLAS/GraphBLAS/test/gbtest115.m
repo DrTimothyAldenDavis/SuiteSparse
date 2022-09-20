@@ -2,7 +2,7 @@ function gbtest115
 %GBTEST115 test serialize/deserialize
 
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
-% SPDX-License-Identifier: GPL-3.0-or-later
+% SPDX-License-Identifier: Apache-2.0
 
 rng ('default') ;
 
@@ -18,7 +18,7 @@ for k = 1:length(types)
     B = GrB.deserialize (blob) ;
     assert (isequal (A, B)) ;
 
-    for k2 = 1:4
+    for k2 = 1:5
         method = compression_methods {k2} ;
 
         % default level

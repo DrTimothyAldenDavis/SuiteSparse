@@ -73,7 +73,7 @@ GrB_Info GB_dense_subassign_22      // C += b where C is dense and b is a scalar
     int nthreads = GB_nthreads (cnz, chunk, nthreads_max) ;
 
     //--------------------------------------------------------------------------
-    // typecast the scalar into the same type as Y
+    // typecast the scalar into the same type as the y input of the binary op
     //--------------------------------------------------------------------------
 
     int64_t csize = C->type->size ;

@@ -2,11 +2,12 @@ function gbtest122
 %GBTEST122 test reshape (extended methods in GrB)
 
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
-% SPDX-License-Identifier: GPL-3.0-or-later
+% SPDX-License-Identifier: Apache-2.0
 
 rng ('default')
 
 for m = 1:12
+    fprintf ('.') ;
     for n = 1:12
         for kind = [0 1]
             if (kind == 0)
@@ -61,4 +62,4 @@ for m = 1:12
     end
 end
 
-fprintf ('gbtest122: all tests passed\n') ;
+fprintf ('\ngbtest122: all tests passed\n') ;

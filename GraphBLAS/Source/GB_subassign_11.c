@@ -133,7 +133,7 @@ GrB_Info GB_subassign_11
                 // get S(iM_start:iM_end,j)
                 //--------------------------------------------------------------
 
-                GB_GET_VECTOR_FOR_IXJ (S, iM_start) ;
+                GB_LOOKUP_VECTOR_FOR_IXJ (S, iM_start) ;
                 int64_t pM_start = j * Mvlen ;
 
                 //--------------------------------------------------------------
@@ -335,7 +335,7 @@ GrB_Info GB_subassign_11
                 // get S(iM_start:iM_end,j)
                 //--------------------------------------------------------------
 
-                GB_GET_VECTOR_FOR_IXJ (S, iM_start) ;
+                GB_LOOKUP_VECTOR_FOR_IXJ (S, iM_start) ;
                 int64_t pM_start = j * Mvlen ;
 
                 //--------------------------------------------------------------

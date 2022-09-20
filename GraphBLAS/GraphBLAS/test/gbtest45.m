@@ -2,7 +2,7 @@ function gbtest45
 %GBTEST45 test GrB.vreduce
 
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
-% SPDX-License-Identifier: GPL-3.0-or-later
+% SPDX-License-Identifier: Apache-2.0
 
 rng ('default') ;
 d.kind = 'sparse' ;

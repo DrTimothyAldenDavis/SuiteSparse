@@ -14,8 +14,8 @@
 
 extern "C"
 {
-#include <cassert>
-#include <cmath>
+    #include <cassert>
+    #include <cmath>
     #include "GB.h"
 }
 
@@ -38,6 +38,8 @@ extern "C"
       return (GrB_PANIC) ;                                                \
     }                                                                     \
   } while (0)
+
+#define CU_OK(call) CHECK_CUDA_SIMPLE(call)
 
 //------------------------------------------------------------------------------
 // GB_CUDA_CATCH: catch error from a try { ... } region
@@ -77,5 +79,49 @@ extern "C"
 {
     #include "GB_stringify.h"
 }
+
+//------------------------------------------------------------------------------
+// prefetch and memadvise
+//------------------------------------------------------------------------------
+
+// for the "which" parameter of GB_cuda_matrix_prefetch:
+// FIXME: rename this to GB_WHATEVER_P for GB_cuda_matrix_advise
+#define GB_PREFETCH_P   1
+#define GB_PREFETCH_H   2
+#define GB_PREFETCH_Y   4
+#define GB_PREFETCH_B   8
+#define GB_PREFETCH_I  16
+#define GB_PREFETCH_X  32
+#define GB_PREFETCH_PIX   (GB_PREFETCH_P + GB_PREFETCH_I + GB_PREFETCH_X)
+#define GB_PREFETCH_PYI   (GB_PREFETCH_P + GB_PREFETCH_Y + GB_PREFETCH_I)
+#define GB_PREFETCH_PYBI  (GB_PREFETCH_PYI + GB_PREFETCH_B)
+#define GB_PREFETCH_PYBIX (GB_PREFETCH_PYBI + GB_PREFETCH_X)
+#define GB_PREFETCH_PHI   (GB_PREFETCH_P + GB_PREFETCH_H + GB_PREFETCH_I)
+#define GB_PREFETCH_PHBI  (GB_PREFETCH_PHI + GB_PREFETCH_B)
+#define GB_PREFETCH_PHBIX (GB_PREFETCH_PHBI + GB_PREFETCH_X)
+
+GrB_Info GB_cuda_matrix_prefetch
+(
+    GrB_Matrix A,
+    int which,              // which components to prefetch (phybix control)
+    int device,             // GPU device or cudaCpuDeviceId
+    cudaStream_t stream
+) ;
+
+#if 0
+// do we need this function too?
+GrB_Info GB_cuda_matrix_advise
+(
+    GrB_Matrix A,
+
+    p, h, y, b, i, x?   6 bools
+
+    what to do:  advise (prefer location? access by)?  prefetch? nothing?
+        avdice: enum (1 to 6)
+
+    int device,             // GPU device or cudaCpuDeviceId
+) ;
+#endif
+
 #endif
 

@@ -96,9 +96,7 @@ void AxB_phase2end
         pfirst = chunksize * chunk ;
         plast  = GB_IMIN( chunksize * (chunk+1), cnz ) ;
 
-        for ( int64_t p = pfirst + threadIdx.x;
-              p < plast ;
-              p += blockDim.x )
+        for ( int64_t p = pfirst + threadIdx.x; p < plast ; p += blockDim.x )
         {
             // get the entry C(i,j), and extract its bucket.  Then
             // place the entry C(i,j) in the global bucket it belongs to.
@@ -111,29 +109,29 @@ void AxB_phase2end
             //printf(" thd: %d p,Ci[p] = %ld,%ld,%d\n", threadIdx.x, p, Ci[p], irow );
 
             //bucket[my_bucket[ibucket]++] = p;
-          //int idx = (my_bucket[ibucket]  - pfirst); 
-          //my_bucket[ibucket] +=  1; //blockDim.x;
-          //int idx = (my_bucket[ibucket]++ - pfirst) & 0x7F;
-          //bucket_s[ibucket][ idx ] = p;
+            //int idx = (my_bucket[ibucket]  - pfirst); 
+            //my_bucket[ibucket] +=  1; //blockDim.x;
+            //int idx = (my_bucket[ibucket]++ - pfirst) & 0x7F;
+            //bucket_s[ibucket][ idx ] = p;
             bucket_idx[tid] = my_bucket[ibucket]++;
             Ci[p] = (ibucket==0) * (Ci[p] >> 4) + (ibucket > 0)* Ci[p];
-          //if(ibucket == 0) {
-          ////    bucket[my_bucket[0]++] = p;
-          //    Ci[p] = Ci[p] >> 4;
-          //} else {
-          //  bucket[my_bucket[ibucket]++] = p;
-          //}
+            //if(ibucket == 0) {
+            ////    bucket[my_bucket[0]++] = p;
+            //    Ci[p] = Ci[p] >> 4;
+            //} else {
+            //  bucket[my_bucket[ibucket]++] = p;
+            //}
         }
-        for ( int64_t p = pfirst + threadIdx.x; p < plast ; p+= blockDim.x ){
+
+        for ( int64_t p = pfirst + threadIdx.x; p < plast ; p+= blockDim.x )
+        {
             int tid = p - pfirst;
-          //int ibucket = Ci[p] & 0xF;
-          //bucket[ p ] = bucket_s[ibucket][tid];
+            //int ibucket = Ci[p] & 0xF;
+            //bucket[ p ] = bucket_s[ibucket][tid];
             bucket [ bucket_idx[tid]  ]  = p;
-          //printf("ibucket = %d tid=%d p=%lu idx = %lu  val = %lu \n",ibucket, threadIdx.x,p, tid, bucket_s[ibucket][tid]);
-          //printf("ibucket = %d tid=%d p=%lu idx = %lu  \n",ibucket, threadIdx.x, p, bucket_idx[tid]);
-
+            //printf("ibucket = %d tid=%d p=%lu idx = %lu  val = %lu \n",ibucket, threadIdx.x,p, tid, bucket_s[ibucket][tid]);
+            //printf("ibucket = %d tid=%d p=%lu idx = %lu  \n",ibucket, threadIdx.x, p, bucket_idx[tid]);
         }
-
     }
 }
 

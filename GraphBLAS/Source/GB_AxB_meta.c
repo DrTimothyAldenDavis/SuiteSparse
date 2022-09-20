@@ -31,8 +31,8 @@
 #define GB_FREE_ALL             \
 {                               \
     GB_FREE_WORKSPACE ;         \
-    GB_phbix_free (C) ;         \
-    GB_phbix_free (MT) ;        \
+    GB_phybix_free (C) ;        \
+    GB_phybix_free (MT) ;       \
 }
 
 #include "GB_mxm.h"

@@ -78,11 +78,7 @@ in $O(e \log e)$ time (or $O(e)$ in some cases), and in practice that
 means GraphBLAS can compute \verb'C(M)=A' for a large problem in under
 a second, while MATLAB takes about 4 to 5 days.
 
-SuiteSparse:GraphBLAS is under the Apache-2.0 license, except for the
-\verb'@GrB' Octave/MATLAB interface, which is licensed under the GNU GPLv3 (or
-later).  Refer to the SPDX license identifier in each file for details.  Note
-that all of the compiled \verb'libgraphblas.so' is under the Apache-2.0
-license.
+SuiteSparse:GraphBLAS is under the Apache-2.0 license.
 
 \end{abstract}
 
@@ -157,7 +153,7 @@ However, including them here is not essential and the additional information on
 the page might detract from a clearer view of the essential features of the
 GraphBLAS functions.
 
-This User Guide also assumes the reader is familiar with Octave/MATLAB.
+This User Guide also assumes the reader is familiar with MATLAB/Octave.
 MATLAB supports only the conventional plus-times semiring on sparse
 double and complex matrices, but a MATLAB-like notation easily extends to the
 arbitrary semirings used in GraphBLAS.  The matrix multiplication in the
@@ -242,11 +238,11 @@ monoids, semirings, and a descriptor object used for parameter settings.
 Details are given in Section~\ref{objects}.  Once these objects are created
 they can be used in mathematical {\em operations} (not to be confused with the
 how the term {\em operator} is used in GraphBLAS).  A short summary of these
-operations and their nearest Octave/MATLAB analog is given in the table below.
+operations and their nearest MATLAB/Octave analog is given in the table below.
 
 % \vspace{0.1in}
 \begin{tabular}{ll}
-operation                           & approximate Octave/MATLAB analog \\
+operation                           & approximate MATLAB/Octave analog \\
 \hline
 matrix multiplication               & \verb'C=A*B' \\
 element-wise operations             & \verb'C=A+B' and \verb'C=A.*B' \\
@@ -260,7 +256,7 @@ select                              & \verb'C=tril(A)' \\
 \end{tabular}
 \vspace{0.1in}
 
-GraphBLAS can do far more than what Octave/MATLAB can do in these rough
+GraphBLAS can do far more than what MATLAB/Octave can do in these rough
 analogs, but the list provides a first step in describing what GraphBLAS can
 do.  Details of each GraphBLAS operation are given in Section~\ref{operations}.
 With this brief overview, the full scope of GraphBLAS extensions of these
@@ -746,10 +742,10 @@ reduces down the columns, not across the rows.
 
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Interfaces to Octave, MATLAB, Python, Julia, Java} %%%%%%%%%%%%%%%%%%%%
+\section{Interfaces to MATLAB, Octave, Python, Julia, Java} %%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-The Octave/MATLAB interface to SuiteSparse:GraphBLAS is included with this
+The MATLAB/Octave interface to SuiteSparse:GraphBLAS is included with this
 distribution, described in Section~\ref{octave}.
 It is fully polished, and fully tested, but does have
 some limitations that will be addressed in future releases.
@@ -758,19 +754,19 @@ Julia interface.  These are not part of the SuiteSparse:GraphBLAS distribution.
 See the links below (see Sections \ref{python} and \ref{julia}).
 
 %===============================================================================
-\subsection{Octave/MATLAB Interface}
+\subsection{MATLAB/Octave Interface}
 %===============================================================================
 \label{octave}
 
-An easy-to-use Octave/MATLAB interface for SuiteSparse:GraphBLAS is available;
+An easy-to-use MATLAB/Octave interface for SuiteSparse:GraphBLAS is available;
 see the documentation in the \verb'GraphBLAS/GraphBLAS' folder for details.
 Start with the \verb'README.md' file in that directory.  An easy-to-read output
 of the MATLAB demos can be found in \verb'GraphBLAS/GraphBLAS/demo/html'.
 
-The Octave/MATLAB interface adds the \verb'@GrB' class, which is an opaque
-Octave/MATLAB object that contains a GraphBLAS matrix, either double or single
+The MATLAB/Octave interface adds the \verb'@GrB' class, which is an opaque
+MATLAB/Octave object that contains a GraphBLAS matrix, either double or single
 precision (real or complex), boolean, or any of the built-in integer types.
-Octave/MATLAB sparse and full matrices can be arbitrarily mixed with GraphBLAS
+MATLAB/Octave sparse and full matrices can be arbitrarily mixed with GraphBLAS
 matrices.  The following overloaded operators and methods all work as you would
 expect for any matrix.  The matrix multiplication \verb'A*B' uses the
 conventional \verb'PLUS_TIMES' semiring.
@@ -782,10 +778,10 @@ conventional \verb'PLUS_TIMES' semiring.
     A~=B   A>B   A==B   A<=B   A>=B   A<B    [A,B]   [A;B]  A(1:end,1:end) \end{verbatim}}
 
 For a list of overloaded operations and static methods, type
-\verb'methods GrB' in Octave/MATLAB, or \verb'help GrB' for more details.
+\verb'methods GrB' in MATLAB/Octave, or \verb'help GrB' for more details.
 
 {\bf Limitations:}
-Some features for Octave/MATLAB sparse matrices are not yet available for
+Some features for MATLAB/Octave sparse matrices are not yet available for
 GraphBLAS matrices.  Some of these may be added in future releases.
 
 \begin{packed_itemize}
@@ -794,11 +790,11 @@ GraphBLAS matrices.  Some of these may be added in future releases.
         correctly with \verb'disp' or \verb'display'.
     \item Non-blocking mode is not exploited.
         % ; this would require
-        % a Octave/MATLAB mexFunction to modify its inputs, which is
-        % technically possible but not permitted by the Octave/MATLAB API.
+        % a MATLAB/Octave mexFunction to modify its inputs, which is
+        % technically possible but not permitted by the MATLAB/Octave API.
         % This can have significant impact on performance, if an
         % m-file makes many repeated tiny changes to a matrix.  This 
-        % can be done in the C API but not Octave/MATLAB.
+        % can be done in the C API but not MATLAB/Octave.
     \item Linear indexing: \verb'A(:)' for a 2D matrix, and \verb'I=find(A)'.
     \item Singleton expansion.
     \item Dynamically growing arrays, where \verb'C(i)=x' can increase
@@ -839,7 +835,7 @@ Both of them allow for pending work to be left pending in a \verb'GrB_Matrix'.
 The Julia interface is at
 \url{https://github.com/JuliaSparse/SuiteSparseGraphBLAS.jl}, developed by Will
 Kimmerer, Abhinav Mehndiratta, Miha Zgubic, and Viral Shah.  
-Unlike the Octave/MATLAB interface (and like the Python interfaces) the Julia 
+Unlike the MATLAB/Octave interface (and like the Python interfaces) the Julia 
 interface can keep pending work (zombies, pending tuples, jumbled state) in
 a \verb'GrB_Matrix'. This makes Python and Julia the best high-level interfaces
 for SuiteSparse:GraphBLAS.  MATLAB is not as well suited, since it does not
@@ -1083,7 +1079,7 @@ Matrix and vector dimensions and indexing rely on a specific integer,
 Row and column indices of an \verb'nrows'-by-\verb'ncols' matrix range from
 zero to the \verb'nrows-1' for the rows, and zero to \verb'ncols-1' for the
 columns.  Indices are zero-based, like C, and not one-based, like
-Octave/MATLAB.  In SuiteSparse:GraphBLAS, the largest permitted index value
+MATLAB/Octave.  In SuiteSparse:GraphBLAS, the largest permitted index value
 is \verb'GrB_INDEX_MAX', defined as $2^{60}-1$.  The largest permitted
 matrix or vector dimension is $2^{60}$ (that is, \verb'GrB_INDEX_MAX+1').
 The largest \verb'GrB_Matrix' that
@@ -2001,7 +1997,7 @@ GraphBLAS name          & types (domains)   & $z=f(x)$      & description \\
 
 A positional unary operator return the row or column index of an entry.  For a
 matrix $z=f(a_{ij})$ returns $z = i$ or $z = j$, or +1 for 1-based indices.
-The latter is useful in the Octave/MATLAB interface, where row and column indices are
+The latter is useful in the MATLAB/Octave interface, where row and column indices are
 1-based.  When applied to a vector, $j$ is always zero, and $i$ is the index in
 the vector.  Positional unary operators come in two types: \verb'INT32' and
 \verb'INT64', which is the type of the output, $z$.  The functions are agnostic
@@ -2764,7 +2760,7 @@ with other GraphBLAS libraries.
 The \verb'ANY' operator is very unusual, but very powerful.  It is the function
 $f_{\mbox{any}}(x,y)=x$, or $y$, where GraphBLAS has to freedom to select
 either $x$, or $y$, at its own discretion.  Do not confuse the \verb'ANY'
-operator with the \verb'any' function in Octave/MATLAB, which computes a reduction
+operator with the \verb'any' function in MATLAB/Octave, which computes a reduction
 using the logical OR operator.
 
 The \verb'ANY' function is associative and commutative, and can thus serve as
@@ -2830,7 +2826,7 @@ typecasted to \verb'int32_t' for the \verb'*INDEX_INT32' operators.
 {\footnotesize
 \begin{tabular}{lll}
 \hline
-GraphBLAS name          & Octave/MATLAB     & description \\
+GraphBLAS name          & MATLAB/Octave     & description \\
                         & analog            & \\
 \hline
 \verb'GrB_ROWINDEX_INT32'  & \verb'z=i+y'       & row index of \verb'A(i,j)', as int32 \\
@@ -3692,7 +3688,7 @@ GrB_Info GrB_Scalar_new     // create a new GrB_Scalar with no entry
 } \end{mdframed}
 
 \verb'GrB_Scalar_new' creates a new scalar with no
-entry in it, of the given type.  This is analogous to Octave/MATLAB statement
+entry in it, of the given type.  This is analogous to MATLAB/Octave statement
 \verb's = sparse(0)', except that GraphBLAS can create scalars any
 type.  The pattern of the new scalar is empty.
 
@@ -3780,7 +3776,7 @@ GrB_Info GrB_Scalar_clear   // clear a GrB_Scalar of its entry
 
 \verb'GrB_Scalar_clear' clears the entry from a scalar.  The pattern of
 \verb's' is empty, just as if it were created fresh with \verb'GrB_Scalar_new'.
-Analogous with \verb's = sparse (0)' in Octave/MATLAB.  The type of \verb's' does not
+Analogous with \verb's = sparse (0)' in MATLAB/Octave.  The type of \verb's' does not
 change.  Any pending updates to the scalar are discarded.
 
 \newpage
@@ -3801,7 +3797,7 @@ GrB_Info GrB_Scalar_nvals   // get the number of entries in a GrB_Scalar
 } \end{mdframed}
 
 \verb'GrB_Scalar_nvals' returns the number of entries in a scalar, which
-is either 0 or 1.  Roughly analogous to \verb'nvals = nnz(s)' in Octave/MATLAB,
+is either 0 or 1.  Roughly analogous to \verb'nvals = nnz(s)' in MATLAB/Octave,
 except that the implicit value in GraphBLAS need not be zero and \verb'nnz'
 (short for ``number of nonzeros'') in MATLAB is better described as ``number of
 entries'' in GraphBLAS.
@@ -4001,7 +3997,7 @@ GrB_Info GrB_Vector_new     // create a new vector with no entries
 } \end{mdframed}
 
 \verb'GrB_Vector_new' creates a new \verb'n'-by-\verb'1' sparse vector with no
-entries in it, of the given type.  This is analogous to Octave/MATLAB statement
+entries in it, of the given type.  This is analogous to MATLAB/Octave statement
 \verb'v = sparse (n,1)', except that GraphBLAS can create sparse vectors any
 type.  The pattern of the new vector is empty.
 
@@ -4336,7 +4332,7 @@ GrB_Info GrB_Vector_extractTuples           // [I,~,X] = find (v)
 \end{verbatim} } \end{mdframed}
 
 \verb'GrB_Vector_extractTuples' extracts all tuples from a sparse vector,
-analogous to \verb'[I,~,X] = find(v)' in Octave/MATLAB.  This function is
+analogous to \verb'[I,~,X] = find(v)' in MATLAB/Octave.  This function is
 identical to its \verb'GrB_Matrix_extractTuples' counterpart, except that the
 array of column indices \verb'J' does not appear in this function.  Refer to
 Section~\ref{matrix_extractTuples} where further details of this function are
@@ -4387,7 +4383,7 @@ of \verb'A', and \verb'k' $< 0$ denotes diagonals below the main diagonal of
 0 to $n-1$, then \verb'v' has length $\min(m,n-k)$.  If \verb'k' is negative
 and in the range -1 to $-m+1$, then \verb'v' has length $\min(m+k,n)$.  If
 \verb'k' is outside these ranges, \verb'v' has length 0 (this is not an error).
-This function computes the same thing as the Octave/MATLAB statement
+This function computes the same thing as the MATLAB/Octave statement
 \verb'v=diag(A,k)' when \verb'A' is a matrix, except that
 \verb'GxB_Vector_diag' can also do typecasting.
 
@@ -5997,6 +5993,9 @@ method & purpose & Section \\
 \verb'GxB_Matrix_pack_HyperCSC'   & pack a matrix in HyperCSC form & \ref{matrix_pack_hypercsc} \\
 \verb'GxB_Matrix_unpack_HyperCSC' & unpack a matrix in HyperCSC form & \ref{matrix_unpack_hypercsc} \\
 \hline
+\verb'GxB_unpack_HyperHash' & unpack a hyper-hash & \ref{unpack_hyperhash} \\
+\verb'GxB_pack_HyperHash'   & pack a hyper-hash & \ref{pack_hyperhash} \\
+\hline
 \verb'GxB_Matrix_pack_BitmapR'    & pack a matrix in BitmapR form & \ref{matrix_pack_bitmapr} \\
 \verb'GxB_Matrix_unpack_BitmapR'  & unpack a matrix in BitmapR form & \ref{matrix_unpack_bitmapr} \\
 \hline
@@ -6599,8 +6598,9 @@ unpacked.
 GrB_Info GxB_Matrix_pack_HyperCSR      // pack a hypersparse CSR matrix
 (
     GrB_Matrix A,       // matrix to create (type, nrows, ncols unchanged)
-    GrB_Index **Ap,     // row "pointers", Ap_size >= (nvec+1)*sizeof(int64_t)
-    GrB_Index **Ah,     // row indices, Ah_size >= nvec*sizeof(int64_t)
+    GrB_Index **Ap,     // row "pointers", Ap_size >= (plen+1)*sizeof(int64_t)
+    GrB_Index **Ah,     // row indices, Ah_size >= plen*sizeof(int64_t)
+                        // where plen = 1 if nrows = 1, or nvec otherwise.
     GrB_Index **Aj,     // column indices, Aj_size >= nvals(A)*sizeof(int64_t)
     void **Ax,          // values, Ax_size >= nvals(A) * (type size)
                         // or Ax_size >= (type size), if iso is true
@@ -6615,7 +6615,6 @@ GrB_Info GxB_Matrix_pack_HyperCSR      // pack a hypersparse CSR matrix
 ) ;
 \end{verbatim}
 } \end{mdframed}
-
 
 \verb'GxB_Matrix_pack_HyperCSR' packs a matrix in hypersparse CSR format.
 The hypersparse HyperCSR format is identical to the CSR format, except that the
@@ -6745,6 +6744,14 @@ This method takes $O(1)$ time if the matrix is already in HyperCSR format
 internally.  Otherwise, the matrix is converted to HyperCSR format and then
 unpacked.
 
+In v7.3.0 and later, a hypersparse matrix \verb'A' also may include a hash
+table for \verb'Ah', called the {\em hyper-hash}, based on \cite{Green19}.  It
+allows for fast lookups of entries in \verb'Ah'.  The hyper-hash is not
+exported by this method.  Instead, it is discarded.  Use
+\verb'GxB_unpack_HyperHash' (Section~\ref{unpack_hyperhash}) to preserve it,
+prior to calling this method.  If the matrix is re-imported, and the hyper-hash
+is not preserved, it is recomputed from \verb'Ah' when needed.
+
 \newpage
 %-------------------------------------------------------------------------------
 \subsubsection{{\sf GxB\_Matrix\_pack\_HyperCSC:} pack a HyperCSC matrix}
@@ -6754,21 +6761,22 @@ unpacked.
 \begin{mdframed}[userdefinedwidth=6in]
 {\footnotesize
 \begin{verbatim}
-GrB_Info GxB_Matrix_pack_HyperCSR      // pack a hypersparse CSR matrix
+GrB_Info GxB_Matrix_pack_HyperCSC      // pack a hypersparse CSC matrix
 (
     GrB_Matrix A,       // matrix to create (type, nrows, ncols unchanged)
-    GrB_Index **Ap,     // row "pointers", Ap_size >= (nvec+1)*sizeof(int64_t)
-    GrB_Index **Ah,     // row indices, Ah_size >= nvec*sizeof(int64_t)
-    GrB_Index **Aj,     // column indices, Aj_size >= nvals(A)*sizeof(int64_t)
-    void **Ax,          // values, Ax_size >= nvals(A) * (type size)
+    GrB_Index **Ap,     // col "pointers", Ap_size >= (plen+1)*sizeof(int64_t)
+    GrB_Index **Ah,     // column indices, Ah_size >= plen*sizeof(int64_t)
+                        // where plen = 1 if ncols = 1, or nvec otherwise.
+    GrB_Index **Ai,     // row indices, Ai_size >= nvals(A)*sizeof(int64_t)
+    void **Ax,          // values, Ax_size >= nvals(A)*(type size)
                         // or Ax_size >= (type size), if iso is true
     GrB_Index Ap_size,  // size of Ap in bytes
     GrB_Index Ah_size,  // size of Ah in bytes
-    GrB_Index Aj_size,  // size of Aj in bytes
+    GrB_Index Ai_size,  // size of Ai in bytes
     GrB_Index Ax_size,  // size of Ax in bytes
     bool iso,           // if true, A is iso
-    GrB_Index nvec,     // number of rows that appear in Ah
-    bool jumbled,       // if true, indices in each row may be unsorted
+    GrB_Index nvec,     // number of columns that appear in Ah
+    bool jumbled,       // if true, indices in each column may be unsorted
     const GrB_Descriptor desc
 ) ;
 \end{verbatim}
@@ -6806,20 +6814,20 @@ assuming it has type \verb'GrB_FP64':
 \begin{mdframed}[userdefinedwidth=6in]
 {\footnotesize
 \begin{verbatim}
-GrB_Info GxB_Matrix_unpack_HyperCSR  // unpack a hypersparse CSR matrix
+GrB_Info GxB_Matrix_unpack_HyperCSC  // unpack a hypersparse CSC matrix
 (
     GrB_Matrix A,       // matrix to unpack (type, nrows, ncols unchanged)
-    GrB_Index **Ap,     // row "pointers"
-    GrB_Index **Ah,     // row indices
-    GrB_Index **Aj,     // column indices
+    GrB_Index **Ap,     // column "pointers"
+    GrB_Index **Ah,     // column indices
+    GrB_Index **Ai,     // row indices
     void **Ax,          // values
     GrB_Index *Ap_size, // size of Ap in bytes
     GrB_Index *Ah_size, // size of Ah in bytes
-    GrB_Index *Aj_size, // size of Aj in bytes
+    GrB_Index *Ai_size, // size of Ai in bytes
     GrB_Index *Ax_size, // size of Ax in bytes
     bool *iso,          // if true, A is iso
-    GrB_Index *nvec,    // number of rows that appear in Ah
-    bool *jumbled,      // if true, indices in each row may be unsorted
+    GrB_Index *nvec,    // number of columns that appear in Ah
+    bool *jumbled,      // if true, indices in each column may be unsorted
     const GrB_Descriptor desc
 ) ;
 \end{verbatim}
@@ -6842,6 +6850,116 @@ This method takes $O(1)$ time if the matrix is already in HyperCSC format
 internally.  Otherwise, the matrix is converted to HyperCSC format and then
 unpacked.
 
+In v7.3.0 and later, a hypersparse matrix \verb'A' also may include a hash
+table for \verb'Ah', called the {\em hyper-hash}, based on \cite{Green19}.  It
+allows for fast lookups of entries in \verb'Ah'.  The hyper-hash is not
+exported by this method.  Instead, it is discarded.  Use
+\verb'GxB_unpack_HyperHash' (Section~\ref{unpack_hyperhash}) to preserve it,
+prior to calling this method.  If the matrix is re-imported, and the hyper-hash
+is not preserved, it is recomputed from \verb'Ah' when needed.
+
+\newpage
+%-------------------------------------------------------------------------------
+\subsubsection{{\sf GxB\_unpack\_HyperHash:} unpack the hypersparse hash}
+%-------------------------------------------------------------------------------
+\label{unpack_hyperhash}
+
+\begin{mdframed}[userdefinedwidth=6in]
+{\footnotesize
+\begin{verbatim}
+GrB_Info GxB_unpack_HyperHash       // move A->Y into Y
+(
+    GrB_Matrix A,                   // matrix to modify
+    GrB_Matrix *Y,                  // hyper_hash matrix to move from A
+    const GrB_Descriptor desc       // unused
+) ;
+\end{verbatim}
+} \end{mdframed}
+
+
+SuiteSparse:GraphBLAS v7.3.0 adds a new internal component to the
+hypersparse matrix format: the {\em hyper-hash} \verb'GrB_Matrix' \verb'A->Y'.
+The matrix provides a fast lookup into the hyperlist \verb'Ah'.
+
+\verb'GxB_unpack_HyperHash' unpacks the hyper-hash from the hypersparse matrix
+\verb'A'.  Normally, this method is called immediately before calling one of
+the two methods \verb'GxB_Matrix_unpack_Hyper(CSR/CSC)'.  For example, to
+unpack then pack a hypersparse CSC matrix:
+
+    {\footnotesize
+    \begin{verbatim}
+    GrB_Matrix Y = NULL ;
+    // to unpack all of A:
+    GxB_unpack_HyperHash (A, &Y, desc) ;    // first unpack A->Y into Y
+    GxB_Matrix_unpack_HyperCSC (A,          // then unpack the rest of A
+        &Ap, &Ah, &Ai, &Ax, &Ap_size, &Ah_size, &Ai_size, &Ax_size,
+        &iso, &nvec, &jumbled, descriptor) ;
+    // use the unpacked contents of A here, but do not change Ah or nvec.
+    ...
+    // to pack the data back into A:
+    GxB_Matrix_pack_HyperCSC (A, ...) ;     // pack most of A, except A->Y 
+    GxB_pack_HyperHash (A, &Y, desc) ;      // then pack A->Y \end{verbatim}}
+
+The same process is used with \verb'GxB_Matrix_unpack_HyperCSR'.
+
+If \verb'A' is not hypersparse on input to \verb'GxB_unpack_HyperHash', or if
+\verb'A' is hypersparse but does yet not have a hyper-hash, then \verb'Y' is
+returned as \verb'NULL'.  This is not an error condition, and
+\verb'GrB_SUCCESS' is returned.  The hyper-hash of a hypersparse matrix
+\verb'A' is a matrix that provides quick access to the inverse of \verb'Ah'.
+It is not always needed and may not be present.  It is left as pending work to
+be computed when needed.  To ensure that the hyper-hash is constructed for a
+hypersparse matrix \verb'A', use \verb'GrB_Matrix_wait (A, GrB_MATERIALIZE)' 
+
+If \verb'Y' is moved from \verb'A' and returned as non-\verb'NULL' to the
+caller, then it is the responsibility of the user application to free it, or to
+re-pack it back into \verb'A' via \verb'GxB_pack_HyperHash', as shown in the
+example above.
+
+If this method is called to remove the hyper-hash \verb'Y' from the hypersparse
+matrix \verb'A', and then \verb'GrB_Matrix_wait (A, GrB_MATERIALZE)' is called,
+a new hyper-hash matrix is constructed for \verb'A'.
+
+\newpage
+%-------------------------------------------------------------------------------
+\subsubsection{{\sf GxB\_pack\_HyperHash:} pack the hypersparse hash}
+%-------------------------------------------------------------------------------
+\label{pack_hyperhash}
+
+\begin{mdframed}[userdefinedwidth=6in]
+{\footnotesize
+\begin{verbatim}
+GrB_Info GxB_pack_HyperHash         // move Y into A->Y
+(
+    GrB_Matrix A,                   // matrix to modify
+    GrB_Matrix *Y,                  // hyper_hash matrix to pack into A
+    const GrB_Descriptor desc       // unused
+) ;
+\end{verbatim}
+} \end{mdframed}
+
+\verb'GxB_pack_HyperHash' assigns the input \verb'Y' matrix as the \verb'A->Y'
+hyper-hash of the hypersparse matrix \verb'A'.  Normally, this method is called
+immediately after calling one of the two methods
+\verb'GxB_Matrix_pack_Hyper(CSR/CSC)'.
+
+If \verb'A' is not hypersparse on input to \verb'GxB_pack_HyperHash', or if
+\verb'A' already has a hyper-hash matrix, or if \verb'Y' is \verb'NULL' on
+input, then nothing happens and \verb'Y' is unchanged.  This is not an error
+condition and this method returns \verb'GrB_SUCCESS'.  In this case, if
+\verb'Y' is non-\verb'NULL' after calling this method, it owned by the user
+application and freeing it is the responsibility of the user application.
+
+If \verb'Y' is moved into \verb'A' as its hyper-hash, then the caller's
+\verb'Y' is set to \verb'NULL' to indicate that it has been moved into
+\verb'A'.  It is no longer owned by the caller, but is instead becomes an
+opaque component of the \verb'A' matrix.  It will be freed by
+SuiteSparse:GraphBLAS if \verb'A' is modified or freed.
+
+Results are undefined if the input \verb'Y' was not created by
+\verb'GxB_unpack_HyperHash' (see the example in Section \ref{unpack_hyperhash})
+or if the \verb'Ah' contents or \verb'nvec' of the matrix \verb'A' are modified
+after they were unpacked by \verb'GxB_Matrix_unpack_Hyper(CSR/CSC)'.
 
 \newpage
 %-------------------------------------------------------------------------------
@@ -8821,7 +8939,7 @@ except full:
 %-------------------------------------------------------------------------------
 
 \verb'GxB_set (GxB_BURBLE, ...)' controls the burble setting.  It can also be
-controlled via \verb'GrB.burble(b)' in the Octave/MATLAB interface.
+controlled via \verb'GrB.burble(b)' in the MATLAB/Octave interface.
 
 {\footnotesize
 \begin{verbatim}
@@ -8847,8 +8965,8 @@ function used to print diagnostic output.  This also controls the output of the
 \verb'GxB_*print' functions.  By default this parameter is \verb'NULL', in
 which case the ANSI C11 \verb'printf' function is used.  The parameter is a
 function pointer with the same signature as the ANSI C11 \verb'printf'
-function.  The Octave/MATLAB interface to GraphBLAS uses the following so that
-GraphBLAS can print to the Octave/MATLAB Command Window:
+function.  The MATLAB/Octave interface to GraphBLAS uses the following so that
+GraphBLAS can print to the MATLAB/Octave Command Window:
 
 {\footnotesize
 \begin{verbatim}
@@ -9328,13 +9446,13 @@ To set/get a descriptor field:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \label{colon}
 
-Octave/MATLAB uses a colon notation to index into matrices, such as
+MATLAB/Octave uses a colon notation to index into matrices, such as
 \verb'C=A(2:4,3:8)', which extracts \verb'C' as 3-by-6 submatrix from \verb'A',
 from rows 2 through 4 and columns 3 to 8 of the matrix \verb'A'.  A single
 colon is used to denote all rows, \verb'C=A(:,9)', or all columns,
 \verb'C=A(12,:)', which refers to the 9th column and 12th row of \verb'A',
 respectively.  An arbitrary integer list can be given as well, such as the
-Octave/MATLAB statements:
+MATLAB/Octave statements:
 
     {\footnotesize
     \begin{verbatim}
@@ -10143,7 +10261,7 @@ assigment \verb'C(i,j) = (bool) A(i,j)' would be performed.  This is not
 possible because user-defined types cannot be typecasted to any other type.
 
 Another advantage of \verb'GxB_eWiseUnion' is its performance.  For example,
-the Octave/MATLAB expression \verb'C=A-B' computes \verb'C(i,j)=-B(i,j)' when
+the MATLAB/Octave expression \verb'C=A-B' computes \verb'C(i,j)=-B(i,j)' when
 \verb'A(i,j)' is not present.  This cannot be done with a single call
 \verb'GrB_eWiseAdd', but it can be done with a single call to
 \verb'GxB_eWiseUnion', with the \verb'GrB_MINUS_FP64' operator, and with both
@@ -11033,9 +11151,9 @@ are removed, as (for example):
     C (I2,J2) = C (I2,J2) + A (I2k,J2k) ;
 \end{verbatim}}
 
-These definitions allow the Octave/MATLAB interface to GraphBLAS to return the same
+These definitions allow the MATLAB/Octave interface to GraphBLAS to return the same
 results for \verb'C(I,J)=A' for a \verb'GrB' object as they do for built-in
-Octave/MATLAB matrices.  They also allow the assignment to be done in parallel.
+MATLAB/Octave matrices.  They also allow the assignment to be done in parallel.
 
 Results are always well-defined in SuiteSparse:GraphBLAS, but they might not be
 what you expect.  For example, suppose the \verb'MIN' operator is being used
@@ -11962,7 +12080,7 @@ performs the test with the ANSI C \verb'isnan' function instead.
 {\footnotesize
 \begin{tabular}{lll}
 \hline
-GraphBLAS name          & Octave/MATLAB     & description \\
+GraphBLAS name          & MATLAB/Octave     & description \\
                         & analog            & \\
 \hline
 \verb'GrB_ROWINDEX_*'    & \verb'z=i+y'         & select \verb'A(i,j)' if \verb'i != -y' \\
@@ -12337,7 +12455,7 @@ the user application needs to extract content from a GraphBLAS matrix or
 vector, use \verb'GrB_*_extractTuples' or the import/export methods instead.
 
 GraphBLAS matrices and vectors are zero-based, where indices of an $n$-by-$n$
-matrix are in the range 0 to $n-1$.  However, Octave, MATLAB, and Julia prefer
+matrix are in the range 0 to $n-1$.  However, MATLAB, Octave, and Julia prefer
 to print their matrices and vectors as one-based.  To enable 1-based printing,
 use \verb'GxB_set (GxB_PRINT_1BASED, true)'.  Printing is done as zero-based by
 default.
@@ -13407,7 +13525,7 @@ code takes $O(1)$ time, and it resets the size of the numerical part of the
     GrB_Matrix_assign (C, C, NULL, scalar, GrB_ALL, nrows, GrB_ALL, ncols,
         GrB_DESC_S) ; \end{verbatim}}
 
-The Octave/MATLAB analog of the code above is \verb'C=spones(C)'.
+The MATLAB/Octave analog of the code above is \verb'C=spones(C)'.
 
 The second case for where iso matrices and vectors are useful is to use them
 with operations that do not necessarily access all of their content.
@@ -13457,7 +13575,7 @@ duplicates).
 To compute the argmax of each column, use the \verb'GrB_DESC_T0' descriptor
 in \verb'GrB_mxv', and compute \verb'G=A*D' instead of \verb'G=D*A' with
 \verb'GrB_mxm'.  See the \verb'GrB.argmin' and \verb'GrB.argmax' functions
-in the Octave/MATLAB interface for details.
+in the MATLAB/Octave interface for details.
 
 % corresponds to GrB.argmax with dim = 2
 
@@ -14619,7 +14737,7 @@ creates the operators listed in the following table, where $D$ is
 {\footnotesize
 \begin{tabular}{llll}
 \hline
-name                    & types             & Octave/MATLAB & description \\
+name                    & types             & MATLAB/Octave & description \\
                         &                   & equivalent    & \\
 \hline
 \verb'Complex_complex'  & $D \times D \rightarrow C$ & \verb'z=complex(x,y)' & complex from real and imag. \\
@@ -14751,7 +14869,7 @@ AVX2 but not AVX512F, and use 40 threads to compile:
     make CMAKE_OPTIONS='-DGBNCPUFEAT=1 -DGBAVX2=1' JOBS=40 \end{verbatim} }
 
 After compiling the library, you can compile the demos with
-\verb'make all' and then \verb'make run' while in the top-level
+\verb'make all' and then \verb'make demo' while in the top-level
 GraphBLAS folder.
 
 If \verb'cmake' or \verb'make' fail, it might be that your default compiler
@@ -14982,12 +15100,12 @@ Visual Studio 2019, but may work for earlier versions.
 
 \item The \verb'GraphBLAS/Include/GraphBLAS.h' file must be included in user
     applications via \verb'#include "GraphBLAS.h"'.  This is already done for
-    you in the Octave/MATLAB interface discussed in the next section.
+    you in the MATLAB/Octave interface discussed in the next section.
 
 \end{enumerate}
 
 %----------------------------------------
-\subsection{Compiling the Octave/MATLAB interface (for Octave, and for MATLAB R2020a and earlier)}
+\subsection{Compiling the MATLAB/Octave interface (for Octave, and for MATLAB R2020a and earlier)}
 %----------------------------------------
 \label{gbmake}
 
@@ -15052,7 +15170,7 @@ and \verb'gbmake.m' is modified if needed for Octave 7 on the Mac,
 (or if using MATLAB) continue with the following instructions:
 
 \begin{enumerate}
-\item In the Octave/MATLAB command window:
+\item In the MATLAB/Octave command window:
 
     {\small
     \begin{verbatim}
@@ -15061,7 +15179,7 @@ and \verb'gbmake.m' is modified if needed for Octave 7 on the Mac,
 
 \item Follow the remaining instructions in the
     \verb'GraphBLAS/GraphBLAS/README.md' file, to revise your
-    Octave/MATLAB path and \verb'startup.m' file.
+    MATLAB/Octave path and \verb'startup.m' file.
 
 \item As a quick test, try the command \verb'GrB(1)', which
     creates and displays a 1-by-1 GraphBLAS matrix.  For a longer test, do the
@@ -15118,7 +15236,7 @@ and \verb'gbmake.m' is modified if needed for Octave 7 on the Mac,
 \end{enumerate}
 
 %----------------------------------------
-\subsection{Compiling the Octave/MATLAB interface (for MATLAB R2021a and later)}
+\subsection{Compiling the MATLAB/Octave interface (for MATLAB R2021a and later)}
 \label{R2021a}
 %----------------------------------------
 
@@ -15154,6 +15272,13 @@ for Mac, or \verb'graphblas_renamed.dll' for Windows).  These can be
 placed in the same system-wide location as the standard \verb'libgraphblas'
 libraries, such as \verb'/usr/local/lib' for Linux.  The two pairs of
 libraries share the identical \verb'GraphBLAS.h' include file.
+
+If you do not have system privileges to install the GraphBLAS compiled
+libraries via \verb'sudo make install', then augment your
+\verb'LD_LIBRARY_PATH' (Linux) or \verb'DYLD_LIBRARY_PATH' (MacOS) to point to
+your personal copy \verb'SuiteSparse/GraphBLAS/GraphBLAS/build' folder.  See
+\url{https://www.mathworks.com/help/matlab/matlab_external/building-on-unix-operating-systems.html}
+for details. 
 
 Next, compile the MATLAB interface as described in Section~\ref{gbmake}.  For
 any instructions in that Section that refer to the \verb'GraphBLAS/build'
@@ -15223,7 +15348,7 @@ from \verb'libgraphblas' to \verb'libgraphbas_renamed'.
 %----------------------------------------
 
 After \verb'make' in the top-level directory to compile the library, type
-\verb'make run' to run the demos (also in the top-level directory).
+\verb'make demo' to run the demos (also in the top-level directory).
 You can also run the demos after compiling with \verb'make all':
 
     {\small
@@ -15306,12 +15431,12 @@ Compile the program above, then use this command to ensure
 \subsection{Running the tests}
 %----------------------------------------
 
-To run a short test, type \verb'make run' at the top-level \verb'GraphBLAS'
+To run a short test, type \verb'make demo' at the top-level \verb'GraphBLAS'
 folder.  This will run all the demos in \verb'GraphBLAS/Demos'.  MATLAB is not
 required.
 
 To perform the extensive tests in the \verb'Test' folder, and the statement
-coverage tests in \verb'Tcov', MATLAB R2017A is required.  See the
+coverage tests in \verb'Tcov', MATLAB R2018a or later is required.  See the
 \verb'README.txt' files in those two folders for instructions on how to run the
 tests.  The tests in the \verb'Test' folder have been ported to MATLAB on
 Linux, MacOS, and Windows.  The \verb'Tcov' tests do not work on Windows.  The
@@ -15330,6 +15455,19 @@ GraphBLAS folder.
 %-------------------------------------------------------------------------------
 
 \begin{itemize}
+
+\item Version 7.3.0 (Sept 5, 2022)
+
+    \begin{packed_itemize}
+    \item \verb'GrB_Matrix': changes to the internal data structure
+        \item minor internal changes: \verb'A->nvals' for sparse/hypersparse
+        \item more significant changes: added hyper-hash for
+        hypersparse case, speeds up many operations on hypersparse matrices.
+        Based on \cite{Green19}.
+        \item \verb'GxB_unpack_HyperHash' and \verb'GxB_pack_HyperHash':
+            to pack/unpack the hyper-hash
+    \item \verb'@GrB' MATLAB/Octave interface: changed license to Apache-2.0.
+    \end{packed_itemize}
 
 \item Version 7.2.0 (Aug 8, 2022)
 
@@ -15698,7 +15836,7 @@ GraphBLAS folder.
             and \verb'GxB_Vector_build_Scalar',
             which always build iso matrices and vectors.
     \item import/export methods can now import/export iso matrices and vectors.
-    \item added \verb'GrB.argmin/argmax' to Octave/MATLAB interface
+    \item added \verb'GrB.argmin/argmax' to MATLAB/Octave interface
     \item added \verb'GxB_*_pack/unpack' methods as alternatives to
         import/export.
     \item added \verb'GxB_PRINT_1BASED' to the global settings.
@@ -15731,8 +15869,10 @@ GraphBLAS folder.
 \item Version 5.0.4 (May 13, 2021)
 
     \begin{packed_itemize}
-    \item \verb'@GrB' Octave/MATLAB interface: changed license
+    \item \verb'@GrB' MATLAB/Octave interface: changed license
         to GNU General Public License v3.0 or later.
+        It was licensed under Apache-2.0 in Version 5.0.3 and earlier.
+        Changed back to Apache-2.0 for Version 7.3.0; see above.
     \end{packed_itemize}
 
 \item Version 5.0.3 (May 12, 2021)

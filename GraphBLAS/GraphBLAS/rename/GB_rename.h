@@ -2574,6 +2574,7 @@
 #define GxB_ONE_UINT32 GxM_ONE_UINT32
 #define GxB_ONE_UINT64 GxM_ONE_UINT64
 #define GxB_ONE_UINT8 GxM_ONE_UINT8
+#define GxB_pack_HyperHash GxM_pack_HyperHash
 #define GxB_PAIR_BOOL GxM_PAIR_BOOL
 #define GxB_PAIR_FC32 GxM_PAIR_FC32
 #define GxB_PAIR_FC64 GxM_PAIR_FC64
@@ -3238,6 +3239,7 @@
 #define GxB_UnaryOp_xtype_name GxM_UnaryOp_xtype_name
 #define GxB_UnaryOp_ztype GxM_UnaryOp_ztype
 #define GxB_UnaryOp_ztype_name GxM_UnaryOp_ztype_name
+#define GxB_unpack_HyperHash GxM_unpack_HyperHash
 #define GxB_VALUEEQ_FC32 GxM_VALUEEQ_FC32
 #define GxB_VALUEEQ_FC64 GxM_VALUEEQ_FC64
 #define GxB_VALUENE_FC32 GxM_VALUENE_FC32
@@ -3765,6 +3767,8 @@
 #define GB_HUF_validateCTable GM_HUF_validateCTable
 #define GB_HUF_writeCTable GM_HUF_writeCTable
 #define GB_HUF_writeCTable_wksp GM_HUF_writeCTable_wksp
+#define GB_hyper_hash_build GM_hyper_hash_build
+#define GB_hyper_hash_free GM_hyper_hash_free
 #define GB_hypermatrix_prune GM_hypermatrix_prune
 #define GB_hyper_prune GM_hyper_prune
 #define GB_hyper_realloc GM_hyper_realloc
@@ -3925,8 +3929,8 @@
 #define GB_Pending_free GM_Pending_free
 #define GB_Pending_n GM_Pending_n
 #define GB_Pending_realloc GM_Pending_realloc
-#define GB_phbix_free GM_phbix_free
-#define GB_ph_free GM_ph_free
+#define GB_phybix_free GM_phybix_free
+#define GB_phy_free GM_phy_free
 #define GB_POOL_add GM_POOL_add
 #define GB_POOL_create GM_POOL_create
 #define GB_POOL_create_advanced GM_POOL_create_advanced

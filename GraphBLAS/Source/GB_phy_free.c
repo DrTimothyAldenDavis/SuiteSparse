@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// GB_ph_free: free the A->p and A->h content of a matrix
+// GB_phy_free: free the A->p, A->h, and A->Y content of a matrix
 //------------------------------------------------------------------------------
 
 // SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
@@ -7,14 +7,14 @@
 
 //------------------------------------------------------------------------------
 
-// Free the A->p and A->h content of a matrix.  The matrix becomes invalid, and
-// would generate a GrB_INVALID_OBJECT error if passed to a user-callable
-// GraphBLAS function.
+// Free the A->p, A->h, and A->Y content of a matrix.  The matrix becomes
+// invalid, and would generate a GrB_INVALID_OBJECT error if passed to a
+// user-callable GraphBLAS function.
 
 #include "GB.h"
 
 GB_PUBLIC
-void GB_ph_free                 // free A->p and A->h of a matrix
+void GB_phy_free                // free A->p, A->h, and A->Y of a matrix
 (
     GrB_Matrix A                // matrix with content to free
 )
@@ -30,7 +30,7 @@ void GB_ph_free                 // free A->p and A->h of a matrix
     }
 
     //--------------------------------------------------------------------------
-    // free A->p and A->h
+    // free A->p, A->h, and A->Y
     //--------------------------------------------------------------------------
 
     // free A->p unless it is shallow
@@ -53,7 +53,10 @@ void GB_ph_free                 // free A->p and A->h of a matrix
 
     A->plen = 0 ;
     A->nvec = 0 ;
+    A->nvals = 0 ;
     A->nvec_nonempty = 0 ;
+
+    GB_hyper_hash_free (A) ;
 
     //--------------------------------------------------------------------------
     // set the status to invalid

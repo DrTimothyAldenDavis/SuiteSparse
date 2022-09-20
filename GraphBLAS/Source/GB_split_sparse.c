@@ -210,6 +210,7 @@ GrB_Info GB_split_sparse            // split a sparse matrix
             GB_OK (GB_bix_alloc (C, cnz, GxB_SPARSE, false, true, A_iso,
                 Context)) ;
             int64_t *restrict Ci = C->i ;
+            C->nvals = cnz ;
             C->magic = GB_MAGIC ;       // for GB_nnz_held(C), to slice C
 
             //------------------------------------------------------------------

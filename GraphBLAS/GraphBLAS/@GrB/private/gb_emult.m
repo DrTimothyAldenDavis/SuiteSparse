@@ -10,7 +10,7 @@ function C = gb_emult (A, op, B)
 % matrices, in any combination.  C is returned as a GraphBLAS struct.
 
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
-% SPDX-License-Identifier: GPL-3.0-or-later
+% SPDX-License-Identifier: Apache-2.0
 
 if (gb_isscalar (A))
     if (gb_isscalar (B))

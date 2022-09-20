@@ -8,22 +8,23 @@
 
 //------------------------------------------------------------------------------
 
-// This function only computes C<M>=A'*B on the GPUs.  The mask must be
-// present, and not complemented.  The mask is always applied.
+// This function computes C<M>=A'*B on the GPUs.  The mask must be present,
+// sparse or hypersparse, and not complemented.  The mask is always applied.  A
+// and B can have any sparsity format.  C is computed as sparse or hypersparse,
+// with the same format as M.
 
 extern "C"
 {
-  #include "GB_mxm.h"
+    #include "GB_mxm.h"
 }
 
 #include "GB_cuda.h"
-
 #include "GB_jit_cache.h"
-
 #include "jitFactory.hpp"
 #include "GB_cuda_type_wrap.hpp"
 #include "test/GpuTimer.h"
 
+/*
 template<typename T, typename I>
 void print_array(void *arr, I size, const char *name) {
     std::cout << "Printing " << name << std::endl;
@@ -32,24 +33,26 @@ void print_array(void *arr, I size, const char *name) {
     }
     std::cout << std::endl << "Done." << std::endl;
 }
-
+*/
 
 #undef  GB_FREE_WORKSPACE
 #define GB_FREE_WORKSPACE                                               \
 {                                                                       \
-    /* FIXME: use GB_FREE_WORK */                                       \
-    if (Nanobuckets != NULL) rmm_wrap_free (Nanobuckets) ; Nanobuckets = NULL ;\
-    if (Blockbucket != NULL) rmm_wrap_free (Blockbucket) ; Blockbucket = NULL ;\
-    if (Bucket      != NULL) rmm_wrap_free (Bucket);       Bucket      = NULL ;\
-    if (Bucketp     != NULL) rmm_wrap_free (Bucketp);      Bucketp     = NULL ;\
-    if (offset      != NULL) rmm_wrap_free (offset);       offset      = NULL ;\
+    /* FIXME: use a stream pool instead */                              \
+    CU_OK (cudaStreamSynchronize(stream));                              \
+    CU_OK (cudaStreamDestroy(stream));                                  \
+    GB_FREE_WORK (&Nanobuckets, Nb_size) ;                              \
+    GB_FREE_WORK (&Blockbucket, Bb_size) ;                              \
+    GB_FREE_WORK (&Bucketp, Bup_size) ;                                 \
+    GB_FREE_WORK (&offset, O_size) ;                                    \
+    GB_FREE_WORK (&Bucket, Bu_size) ;                                   \
 }
 
 #undef  GB_FREE_ALL
 #define GB_FREE_ALL                                                     \
 {                                                                       \
     GB_FREE_WORKSPACE ;                                                 \
-    GB_Matrix_free (&C) ;                                               \
+    GB_phybix_free (C) ;                                                \
 }
 
 
@@ -66,8 +69,9 @@ GrB_Info GB_AxB_dot3_cuda           // C<M> = A'*B using dot product method
 )
 {
 
-    cudaStream_t stream;
-    CHECK_CUDA_SIMPLE(cudaStreamCreate(&stream));
+    // FIXME: pass in a stream instead, or checkout a stream
+    cudaStream_t stream = NULL ;
+    CU_OK (cudaStreamCreate(&stream));
 
     GpuTimer kernel_timer; 
 
@@ -102,20 +106,25 @@ GrB_Info GB_AxB_dot3_cuda           // C<M> = A'*B using dot product method
 
     ASSERT (A->vlen == B->vlen) ;
     GBURBLE ("(GPU dot3) ") ;
+    //printf ("\nM -------------\n") ; GxB_Matrix_fprint (M, "M", GxB_SHORT, stdout) ;
+    //printf ("\nA -------------\n") ; GxB_Matrix_fprint (A, "A", GxB_SHORT, stdout) ;
+    //printf ("\nB -------------\n") ; GxB_Matrix_fprint (B, "B", GxB_SHORT, stdout) ;
 
     //--------------------------------------------------------------------------
     // initializations
     //--------------------------------------------------------------------------
 
-    int64_t *Nanobuckets = NULL, *Blockbucket = NULL ;
-    int64_t *Bucket = NULL;
-    int64_t *Bucketp = NULL;
-    int64_t *offset = NULL;
+    int64_t *Nanobuckets = NULL ; size_t Nb_size  = 0 ;
+    int64_t *Blockbucket = NULL ; size_t Bb_size  = 0 ;
+    int64_t *Bucket = NULL      ; size_t Bu_size  = 0 ;
+    int64_t *Bucketp = NULL     ; size_t Bup_size = 0 ;
+    int64_t *offset = NULL      ; size_t O_size   = 0 ;
 
     int device = -1;
 
-    CHECK_CUDA_SIMPLE(cudaSetDevice( 0 ));
-    CHECK_CUDA_SIMPLE(cudaGetDevice(&device));
+    // FIXME: control the GPU to use via the descriptor
+    CU_OK (cudaSetDevice( 0 ));
+    CU_OK (cudaGetDevice(&device));
 
     //--------------------------------------------------------------------------
     // get M
@@ -160,55 +169,46 @@ GrB_Info GB_AxB_dot3_cuda           // C<M> = A'*B using dot product method
         return (info) ;
     }
 
-
-    CHECK_CUDA_SIMPLE(cudaMemAdvise( C->i, (cnz+1) * sizeof ( int64_t),
-        cudaMemAdviseSetPreferredLocation, device));
-    if (!C_iso)
-    {
-        CHECK_CUDA_SIMPLE(cudaMemAdvise( C->x, (cnz+1) * C->type->size ,
-            cudaMemAdviseSetPreferredLocation, device));
-    }
+//  try this with GB_Ap_null, above in GB_new_bix
+//  C->p = M->p ; C->p_shallow = true ;
+//  C->h = M->h ; C->h_shallow = true ;
 
     //--------------------------------------------------------------------------
     // Pre-fetch arrays that will be used on the device
     //--------------------------------------------------------------------------
 
-    // prefetch M
-    CHECK_CUDA_SIMPLE(cudaMemPrefetchAsync( M->p, (mnvec+1) * sizeof (int64_t),
-        device, stream)) ; //stream_data) ;
-    CHECK_CUDA_SIMPLE(cudaMemPrefetchAsync( M->i, mnz * sizeof (int64_t),
-        device, stream )) ; //stream_data) ;
-    if (!(Mask_struct || M->iso))
-    {
-        // prefetch M->x only if the mask is valued and M is non-iso
-        CHECK_CUDA_SIMPLE(cudaMemPrefetchAsync( M->x, mnz * M->type->size,
-            device, stream )) ; //stream_data) ;
+    // GB_cuda_matrix_advise (C, cnvec, cnz, which, what, device)
+    // advise C
+    CU_OK (cudaMemAdvise (C->p, (cnvec+1) * sizeof ( int64_t),
+        cudaMemAdviseSetPreferredLocation, device)) ;
+    if (M_is_hyper)
+    { 
+        CU_OK (cudaMemAdvise (C->h, cnvec * sizeof ( int64_t),
+            cudaMemAdviseSetPreferredLocation, device)) ;
     }
+    CU_OK (cudaMemAdvise (C->i, (cnz+1) * sizeof ( int64_t),
+        cudaMemAdviseSetPreferredLocation, device)) ;
+    CU_OK (cudaMemAdvise (C->x, (C_iso ? 1: (cnz+1)) * C->type->size ,
+        cudaMemAdviseSetPreferredLocation, device)) ;
 
-    // prefetch C
-    CHECK_CUDA_SIMPLE(cudaMemPrefetchAsync( C->i, (cnz+1) * sizeof (int64_t),
-        device, stream )); //stream_data) ;
-    if (!C_iso)
-    {
-        // FIXME: why prefect C->x?
-        CHECK_CUDA_SIMPLE(cudaMemPrefetchAsync( C->x, (cnz+1) * C->type->size,
-            device, stream )); //stream_data) ;
-    }
+    // prefetch M (if M hypersparse: using M->h not M->Y)
+    GB_OK (GB_cuda_matrix_prefetch (M,
+        Mask_struct ? GB_PREFETCH_PHBI : GB_PREFETCH_PHBIX, device, stream)) ;
 
     //--------------------------------------------------------------------------
     // copy Mp and Mh into C
     //--------------------------------------------------------------------------
 
-    CHECK_CUDA_SIMPLE( cudaMemcpyAsync (C->p, M->p, (cnvec+1) * sizeof (int64_t),
+    // FIXME: use shallow?
+    CU_OK (cudaMemcpyAsync (C->p, M->p, (cnvec+1) * sizeof (int64_t),
         cudaMemcpyDefault, stream)) ;
-    //memcpy( C->p, M->p, (cnvec+1)* sizeof( int64_t) );
     if (M_is_hyper)
     { 
-        // FIXME: this method does not yet handle the hypersparse case
-        CHECK_CUDA_SIMPLE(cudaMemcpyAsync (C->h, M->h, cnvec * sizeof (int64_t),
+        CU_OK (cudaMemcpyAsync (C->h, M->h, cnvec * sizeof (int64_t),
             cudaMemcpyDefault, stream)) ;
     }
 
+    C->nvals = cnz ;
     C->magic = GB_MAGIC ;
     C->nvec_nonempty = M->nvec_nonempty ;
     C->jumbled = GB_JUMBLED (M) ;   // C is jumbled if M is jumbled
@@ -231,24 +231,63 @@ GrB_Info GB_AxB_dot3_cuda           // C<M> = A'*B using dot product method
 
     GBURBLE ("(GPU stringified srcode = %lu)\n", my_mxm_spec.sr_code) ;
 
-//  cases:
+    //--------------------------------------------------------------------------
+    // get A and B
+    //--------------------------------------------------------------------------
 
-// (1)
-//      A full          B full
-//      A bit           B full
-//      A full          B bit
-//      A bit           B bit
+    // FIXME: add acode, bcode to the GB_cuda_mxm_factory object
+    int acode = RSHIFT (my_mxm_spec.sr_code, 12, 4) ;   // if 0: A is pattern
+    int bcode = RSHIFT (my_mxm_spec.sr_code,  8, 4) ;   // if 0: B is pattern
 
-    if ( GB_IS_FULL(A) && GB_IS_FULL(B) )
+    bool A_is_sparse = GB_IS_SPARSE (A) ;
+    bool A_is_hyper  = GB_IS_HYPERSPARSE (A) ;
+    bool A_is_bitmap = GB_IS_BITMAP (A) ;
+    bool A_is_full   = GB_IS_FULL (A) ;
+    bool A_is_sparse_or_hyper = A_is_sparse || A_is_hyper ;
+    bool A_is_bitmap_or_full  = A_is_bitmap || A_is_full  ;
+    bool A_is_pattern = (acode == 0) ;
+
+    bool B_is_sparse = GB_IS_SPARSE (B) ;
+    bool B_is_hyper  = GB_IS_HYPERSPARSE (B) ;
+    bool B_is_bitmap = GB_IS_BITMAP (B) ;
+    bool B_is_full   = GB_IS_FULL (B) ;
+    bool B_is_sparse_or_hyper = B_is_sparse || B_is_hyper ;
+    bool B_is_bitmap_or_full  = B_is_bitmap || B_is_full  ;
+    bool B_is_pattern = (bcode == 0) ;
+
+    // M might be very very sparse.  A(:,i) is not needed if M(:,i) is empty.
+    // Likewise, B(:,j) is not needed if M(:,j) is empty.  For now, try this
+    // heuristic:  if M is hypersparse, then do not prefetch A->b or A->x.  
+
+    int prefetch_b = (M_is_hyper) ? 0 : GB_PREFETCH_B ;
+    int prefetch_x = (M_is_hyper) ? 0 : GB_PREFETCH_X ;
+    int prefetch_pybi = GB_PREFETCH_PYI + prefetch_b ;
+
+    // prefetch A (if A hypersparse: using A->Y)
+    GB_OK (GB_cuda_matrix_prefetch (A, prefetch_pybi +
+        (A_is_pattern ? 0 : prefetch_x), device, stream)) ;
+
+    // prefetch B (if B hypersparse: using B->Y)
+    GB_OK (GB_cuda_matrix_prefetch (B, prefetch_pybi +
+        (B_is_pattern ? 0 : prefetch_x), device, stream)) ;
+
+    //--------------------------------------------------------------------------
+    // C<M>=A'*B via jitified kernels
+    //--------------------------------------------------------------------------
+
+    if (A_is_bitmap_or_full && B_is_bitmap_or_full)
     {
 
-        // Full x Full
+        //----------------------------------------------------------------------
+        // (full or bitmap) times (full or bitmap)
+        //----------------------------------------------------------------------
+
         dense_phase1launchFactory dp1lf(my_mxm_spec);
 
         GBURBLE ("(GPU phase1 start nblk = %d) ", dp1lf.get_number_of_blocks(M)) ;
         kernel_timer.Start();
             dp1lf.jitGridBlockLaunch(C, M, A, B, stream);
-            CHECK_CUDA_SIMPLE(cudaStreamSynchronize(stream));
+            CU_OK (cudaStreamSynchronize(stream));
         kernel_timer.Stop();
         GBURBLE ("(GPU phase1 done %12.6g ms )\n", kernel_timer.Elapsed()) ;
 
@@ -256,280 +295,157 @@ GrB_Info GB_AxB_dot3_cuda           // C<M> = A'*B using dot product method
         GBURBLE ("(GPU Dense full x full launch ) ") ;
         kernel_timer.Start();
             mdlf.jitGridBlockLaunch( C, M, A, B, stream);
-            CHECK_CUDA_SIMPLE(cudaStreamSynchronize(stream));  // only for timing
+            CU_OK (cudaStreamSynchronize(stream));  // only for timing
         kernel_timer.Stop();
         GBURBLE ("(GPU Dense full x full done %12.6g ms, rate=%12.6g)\n", 
                    kernel_timer.Elapsed(), (mnvec)/(1000*kernel_timer.Elapsed())) ;  
 
     }
-    else if ( GB_IS_FULL(A) && GB_IS_BITMAP(B) )
-    {
-        //  FIXME: Full x Bitmap
-    }
-    else if ( GB_IS_BITMAP(A) && GB_IS_FULL(B) )
-    {
-        //  FIXME: Bitmap x Full
-    }
-    else if ( GB_IS_BITMAP(A) && GB_IS_BITMAP(B) )
-    {
-        //  FIXME Bitmap x Bitmap
-    }
-    else if ( GB_IS_SPARSE(A) && GB_IS_FULL(B) )
+    else
     {
 
-        // (2) Sparse x Full
-        //      A sparse        B full
-        //      A hyper         B full      GB_IS_HYPERSPARSE(A) && GB_IS_FULL (B))
-        //      A sparse        B bit
-        //      A hyper         B bit
+        //----------------------------------------------------------------------
+        // (sparse or hyper) times (sparse or hyper)
+        // (sparse or hyper) times (bitmap or full)
+        // (bitmap or full) times (sparse or hyper)
+        //----------------------------------------------------------------------
 
-        dense_phase1launchFactory dp1lf(my_mxm_spec);
+        //----------------------------------------------------------------------
+        // construct the tasks for phase1 and phase2
+        //----------------------------------------------------------------------
 
-        GBURBLE ("(GPU phase1 start nblk = %d) ", dp1lf.get_number_of_blocks(M)) ;
+        // on the CPU: nthreads = GB_nthreads (cnz, chunk, nthreads_max) ;
+        // on the GPU:
+        phase1launchFactory p1lf(my_mxm_spec);
+        phase2launchFactory p2lf;
+        phase2endlaunchFactory p2elf;
+
+        // # of threads in phase1 and phase2 kernel launches are related
+        // # by the size of the warp.  ph2_task = ph1_task/32 for example
+        int nthrd = p2lf.get_threads_per_block();
+        int ntasks = p2elf.get_number_of_blocks(M);
+
+        int64_t nanobuckets_size = NBUCKETS * nthrd * ntasks;
+        int64_t blockbuckets_size = NBUCKETS * ntasks;
+
+        Nanobuckets = GB_MALLOC_WORK (nanobuckets_size, int64_t, &Nb_size) ;
+        Blockbucket = GB_MALLOC_WORK (blockbuckets_size, int64_t, &Bb_size) ;
+        Bucketp = GB_MALLOC_WORK (NBUCKETS+1, int64_t, &Bup_size) ;
+        offset = GB_MALLOC_WORK (NBUCKETS, int64_t, &O_size) ;
+        Bucket = GB_MALLOC_WORK (mnz, int64_t, &Bu_size) ;
+
+        if (Nanobuckets == NULL || Blockbucket == NULL || Bucketp == NULL
+            || Bucket == NULL || offset == NULL)
+        {
+            // out of memory
+            GB_FREE_ALL ;
+            return (GrB_OUT_OF_MEMORY) ;
+        }
+
+        // fixme: do async with streams
+        // FIXME: do we need any of these?
+        //CU_OK (cudaMemsetAsync(Nanobuckets, 0,
+        //    nanobuckets_size * sizeof(int64_t), stream));
+        //CU_OK (cudaMemsetAsync(Blockbucket, 0,
+        //    blockbuckets_size * sizeof(int64_t), stream));
+        CU_OK (cudaMemsetAsync(Bucketp, 0,
+            (NBUCKETS+1) * sizeof(int64_t), stream));
+        CU_OK (cudaMemsetAsync(offset, 0,
+            NBUCKETS * sizeof(int64_t), stream));
+        //CU_OK (cudaMemsetAsync(Bucket, 0,
+        //    mnz * sizeof(int64_t), stream));
+
+        //----------------------------------------------------------------------
+        // phase1 and phase2: place each C(i,j) in a bucket
+        //----------------------------------------------------------------------
+
+        CU_OK (cudaMemAdvise( Bucketp, (NBUCKETS+1) * sizeof ( int64_t),
+            cudaMemAdviseSetPreferredLocation, cudaCpuDeviceId));
+        CU_OK (cudaMemAdvise( Bucketp, (NBUCKETS+1) * sizeof ( int64_t),
+            cudaMemAdviseSetAccessedBy, device));
+
+        CU_OK (cudaMemAdvise( offset, NBUCKETS * sizeof ( int64_t),
+            cudaMemAdviseSetPreferredLocation, cudaCpuDeviceId));
+        CU_OK (cudaMemAdvise( offset, NBUCKETS * sizeof ( int64_t),
+            cudaMemAdviseSetAccessedBy, device));
+
+        //----------------------------------------------------------------------
+        // phase1: assign each C(i,j) to a bucket, and count them
+        //----------------------------------------------------------------------
+
+        GBURBLE ("(GPU phase1 start nblk = %d) ", p1lf.get_number_of_blocks(M)) ;
         kernel_timer.Start();
-            dp1lf.jitGridBlockLaunch(C, M, A, B, stream);
-            CHECK_CUDA_SIMPLE(cudaStreamSynchronize(stream));
+        p1lf.jitGridBlockLaunch(Nanobuckets, Blockbucket, C, M, A, B, stream);
+        CU_OK (cudaStreamSynchronize(stream));
         kernel_timer.Stop();
+
         GBURBLE ("(GPU phase1 done %12.6g ms )\n", kernel_timer.Elapsed()) ;
 
-        mxm_sparse_dense_launchFactory spdnlf(my_mxm_spec);
-        GBURBLE ("(GPU Dense sparse x full launch ) ") ;
-        kernel_timer.Start();
-            spdnlf.jitGridBlockLaunch( C, M, A, B, stream);
-            CHECK_CUDA_SIMPLE(cudaStreamSynchronize(stream));  // only for timing
-        kernel_timer.Stop();
-        GBURBLE ("(GPU Dense sparse x full done %12.6g ms, rate=%12.6g)\n", 
-                   kernel_timer.Elapsed(), (mnvec)/(1000*kernel_timer.Elapsed())) ;  
+        //--------------------------------------------------------------------------
+        // phase2: cumsum across the blockbuckets, propagate to thread level
+        //--------------------------------------------------------------------------
 
-    }
-    else if ( GB_IS_HYPERSPARSE(A) && GB_IS_FULL(B) )
-    {
-        //  FIXME: Hyper x Full 
-    }
-    else if ( GB_IS_HYPERSPARSE(A) && GB_IS_BITMAP(B) )
-    {
-        //  FIXME: Sparse x Bitmap 
-    }
-    else if ( GB_IS_BITMAP(A) && GB_IS_BITMAP(B) )
-    {
-        //  FIXME: Hyper x Bitmap
-    }
-
-// (3)
-//      A full          B sparse
-//      A bit           B sparse
-//      A full          B hyper
-//      A bit           B hyper
-
-// (4) phase1, phase2, phase2end, phase3:
-//      A sparse        B sparse    <<<
-//      A hyper         B sparse
-//      A sparse        B hyper
-//      A hyper         B hyper
-
-
-//          && !GB_IS_BITMAP (A) && !GB_IS_BITMAP (B)
-//          && !GB_IS_FULL (A) && !GB_IS_FULL (B))
-
-    else if ( GB_IS_SPARSE(A) && GB_IS_SPARSE(B) )
-    {
-
-    // Sparse x Sparse
-
-    //--------------------------------------------------------------------------
-    // construct the tasks for phase1 and phase2
-    //--------------------------------------------------------------------------
-
-    // on the CPU: nthreads = GB_nthreads (cnz, chunk, nthreads_max) ;
-    // on the GPU:
-    phase1launchFactory p1lf(my_mxm_spec);
-    phase2launchFactory p2lf;
-    phase2endlaunchFactory p2elf;
-
-
-    // # of threads in phase1 and phase2 kernel launches are related
-    // # by the size of the warp.  ph2_task = ph1_task/32 for example
-    int nthrd = p2lf.get_threads_per_block();
-    int ntasks = p2elf.get_number_of_blocks(M);
-
-    int64_t nanobuckets_size = NBUCKETS * nthrd * ntasks;
-    int64_t blockbuckets_size = NBUCKETS * ntasks;
-
-    // FIXME: use GB_MALLOC_WORK which calls rmm_wrap_malloc anyway
-    Nanobuckets = (int64_t*)
-        rmm_wrap_malloc(nanobuckets_size * sizeof (int64_t));
-    Blockbucket = (int64_t*)
-        rmm_wrap_malloc(blockbuckets_size * sizeof (int64_t));
-    Bucketp = (int64_t*)rmm_wrap_malloc((NBUCKETS+1) * sizeof (int64_t));
-    offset = (int64_t*)rmm_wrap_malloc(NBUCKETS * sizeof (int64_t));
-    Bucket = (int64_t*)rmm_wrap_malloc(mnz * sizeof (int64_t));
-    if (Nanobuckets == NULL || Blockbucket == NULL || Bucketp == NULL
-        || Bucket == NULL || offset == NULL)
-    {
-        // out of memory
-        GB_FREE_WORKSPACE ;
-        return (GrB_OUT_OF_MEMORY) ;
-    }
-
-    // fixme: do async with streams
-    // FIXME: do we need any of these?
-  //CHECK_CUDA_SIMPLE(cudaMemsetAsync(Nanobuckets, 0,
-  //    nanobuckets_size * sizeof(int64_t), stream));
-  //CHECK_CUDA_SIMPLE(cudaMemsetAsync(Blockbucket, 0,
-  //    blockbuckets_size * sizeof(int64_t), stream));
-    CHECK_CUDA_SIMPLE(cudaMemsetAsync(Bucketp, 0,
-        (NBUCKETS+1) * sizeof(int64_t), stream));
-    CHECK_CUDA_SIMPLE(cudaMemsetAsync(offset, 0,
-        NBUCKETS * sizeof(int64_t), stream));
-  //CHECK_CUDA_SIMPLE(cudaMemsetAsync(Bucket, 0,
-  //    mnz * sizeof(int64_t), stream));
-
-    //--------------------------------------------------------------------------
-    // phase1 and phase2: place each C(i,j) in a bucket
-    //--------------------------------------------------------------------------
-
-    CHECK_CUDA_SIMPLE(cudaMemAdvise( Bucketp, (NBUCKETS+1) * sizeof ( int64_t),
-        cudaMemAdviseSetPreferredLocation, cudaCpuDeviceId));
-    CHECK_CUDA_SIMPLE(cudaMemAdvise( Bucketp, (NBUCKETS+1) * sizeof ( int64_t),
-        cudaMemAdviseSetAccessedBy, device));
-
-    CHECK_CUDA_SIMPLE(cudaMemAdvise( offset, NBUCKETS * sizeof ( int64_t),
-        cudaMemAdviseSetPreferredLocation, cudaCpuDeviceId));
-    CHECK_CUDA_SIMPLE(cudaMemAdvise( offset, NBUCKETS * sizeof ( int64_t),
-        cudaMemAdviseSetAccessedBy, device));
-
-    //--------------------------------------------------------------------------
-    // Pre-fetch arrays that will be used on the device
-    //--------------------------------------------------------------------------
-
-    // prefetch M
-    CHECK_CUDA_SIMPLE(cudaMemPrefetchAsync( M->p, (mnvec+1) * sizeof (int64_t),
-        device, stream)) ; //stream_data) ;
-    CHECK_CUDA_SIMPLE(cudaMemPrefetchAsync( M->i, mnz * sizeof (int64_t),
-        device, stream )) ; //stream_data) ;
-    if (!(Mask_struct || M->iso))
-    {
-        // prefetch M->x only if the mask is valued and M is non-iso
-        CHECK_CUDA_SIMPLE(cudaMemPrefetchAsync( M->x, mnz * M->type->size,
-            device, stream )) ; //stream_data) ;
-    }
-
-//  // prefetch C
-//  CHECK_CUDA_SIMPLE(cudaMemPrefetchAsync( C->i, (cnz+1) * sizeof (int64_t),
-//      device, stream )); //stream_data) ;
-//  if (!C_iso)
-//  {
-//      // FIXME: why prefect C->x?
-//      CHECK_CUDA_SIMPLE(cudaMemPrefetchAsync( C->x, (cnz+1) * C->type->size,
-//          device, stream )); //stream_data) ;
-//  }
-
-    //--------------------------------------------------------------------------
-    // Pre-fetch arrays that will be used on the device
-    //--------------------------------------------------------------------------
-
-    // prefetch A
-    CHECK_CUDA_SIMPLE(cudaMemPrefetchAsync( A->p, (anvec+1) * sizeof (int64_t),
-        device, stream)); // stream_data) ;
-    CHECK_CUDA_SIMPLE(cudaMemPrefetchAsync( A->i, anz * sizeof (int64_t),
-        device, stream )) ; //stream_data) ;
-    if (!A->iso)
-    {
-        CHECK_CUDA_SIMPLE(cudaMemPrefetchAsync( A->x, anz * A->type->size,
-            device, stream )) ; //stream_data) ;
-    }
-
-    // prefetch B
-    CHECK_CUDA_SIMPLE(cudaMemPrefetchAsync( B->p, (bnvec+1) * sizeof (int64_t),
-        device, stream)); //stream_data) ;
-    CHECK_CUDA_SIMPLE(cudaMemPrefetchAsync( B->i, bnz * sizeof (int64_t),
-        device, stream )); //stream_data) ;
-    if (!B->iso)
-    {
-        CHECK_CUDA_SIMPLE(cudaMemPrefetchAsync( B->x, bnz * B->type->size,
-            device, stream )); //stream_data) ;
-    }
-
-    // The work to compute C(i,j) is held in Ci [p], if C(i,j) appears in
-    // as the pth entry in C.
-    
-    //--------------------------------------------------------------------------
-    // phase1: assign each C(i,j) to a bucket, and count them
-    //--------------------------------------------------------------------------
-
-    GBURBLE ("(GPU phase1 start nblk = %d) ", p1lf.get_number_of_blocks(M)) ;
-    kernel_timer.Start();
-    p1lf.jitGridBlockLaunch(Nanobuckets, Blockbucket, C, M, A, B, stream);
-    CHECK_CUDA_SIMPLE(cudaStreamSynchronize(stream));
-    kernel_timer.Stop();
-
-    GBURBLE ("(GPU phase1 done %12.6g ms )\n", kernel_timer.Elapsed()) ;
-
-    //--------------------------------------------------------------------------
-    // phase2: cumsum across the blockbuckets, propagate to thread level
-    //--------------------------------------------------------------------------
-
-    GBURBLE ("(GPU phase2 start nblk=%d ) ", ntasks) ;
-
-    kernel_timer.Start();
-    p2lf.jitGridBlockLaunch(Blockbucket, offset, M, stream);
-    kernel_timer.Stop();
-
-    CHECK_CUDA_SIMPLE(cudaStreamSynchronize(stream));
-
-    int64_t s= offset[0];
-    C->nzombies = s;
-    bool all_in_one = false;
-    for ( int bucket = 1 ; bucket < NBUCKETS+1; ++bucket)
-    {
-        Bucketp[bucket] = s; 
-        s+= offset[bucket];
-        if ( (Bucketp[bucket] - Bucketp[bucket-1] ) == mnz ) all_in_one = true;
-    }
-
-    GBURBLE ("(GPU phase2 done %12.6g ms )\n", kernel_timer.Elapsed()) ;
-
-    if( !all_in_one) 
-    {
-        GBURBLE ("(GPU phase2end start nblk=%d) ",  ntasks) ;
+        GBURBLE ("(GPU phase2 start nblk=%d ) ", ntasks) ;
 
         kernel_timer.Start();
-        p2elf.jitGridBlockLaunch(Nanobuckets, Blockbucket,
-                                 Bucketp, Bucket, offset, C, M, stream);
-
-        CHECK_CUDA_SIMPLE(cudaStreamSynchronize(stream));
+        p2lf.jitGridBlockLaunch(Blockbucket, offset, M, stream);
         kernel_timer.Stop();
-        GBURBLE ("(GPU phase2end done %12.6g ms)\n",kernel_timer.Elapsed()) ;
-    }
 
-    //--------------------------------------------------------------------------
-    // phase3: do the numerical work
-    //--------------------------------------------------------------------------
+        CU_OK (cudaStreamSynchronize(stream));
 
+        int64_t s= offset[0];
+        C->nzombies = s;
+        bool all_in_one = false;
+        for ( int bucket = 1 ; bucket < NBUCKETS+1; ++bucket)
+        {
+            Bucketp[bucket] = s; 
+            s += offset[bucket];
+            if ( (Bucketp[bucket] - Bucketp[bucket-1] ) == mnz ) all_in_one = true;
+        }
 
-    for ( int bucket = 1 ; bucket < NBUCKETS; ++bucket)
-    {
-        int64_t start = Bucketp[bucket];
-        int64_t end   = Bucketp[bucket + 1 ];
-      //int64_t start = 0;
-      //int64_t end   = cnz;
+        GBURBLE ("(GPU phase2 done %12.6g ms )\n", kernel_timer.Elapsed()) ;
 
-        if(end - start > 0) {
-            // TODO: Use stream pool
-            phase3launchFactory p3lf(my_mxm_spec, (GB_bucket_code)bucket);
-            GBURBLE ("(GPU phase3 bucket %d launch ) ", bucket) ;
+        if (!all_in_one) 
+        {
+            GBURBLE ("(GPU phase2end start nblk=%d) ",  ntasks) ;
+
             kernel_timer.Start();
-            p3lf.jitGridBlockLaunch(start, end, Bucketp, Bucket, C, M, A, B, stream);
-            CHECK_CUDA_SIMPLE(cudaStreamSynchronize(stream));  // only for timing
+            p2elf.jitGridBlockLaunch(Nanobuckets, Blockbucket,
+                             Bucketp, Bucket, offset, C, M, stream);
+
+            CU_OK (cudaStreamSynchronize(stream));
             kernel_timer.Stop();
-            GBURBLE ("(GPU phase3 bucket %d done %12.6g ms, rate=%12.6g)\n", bucket, kernel_timer.Elapsed(), (end-start)/(1000*kernel_timer.Elapsed())) ; }
+            GBURBLE ("(GPU phase2end done %12.6g ms)\n",kernel_timer.Elapsed()) ;
+        }
+
+        //--------------------------------------------------------------------------
+        // phase3: do the numerical work
+        //--------------------------------------------------------------------------
+
+
+        for ( int bucket = 1 ; bucket < NBUCKETS; ++bucket)
+        {
+            int64_t start = Bucketp[bucket];
+            int64_t end   = Bucketp[bucket + 1 ];
+            if (end - start > 0)
+            {
+                // TODO: Use stream pool
+                phase3launchFactory p3lf(my_mxm_spec, (GB_bucket_code)bucket);
+                GBURBLE ("(GPU phase3 bucket %d launch ) ", bucket) ;
+                kernel_timer.Start();
+                p3lf.jitGridBlockLaunch(start, end, Bucketp, Bucket, C, M, A, B, stream);
+                CU_OK (cudaStreamSynchronize(stream));  // only for timing
+                kernel_timer.Stop();
+                GBURBLE ("(GPU phase3 bucket %d done %12.6g ms, rate=%12.6g)\n", bucket, kernel_timer.Elapsed(), (end-start)/(1000*kernel_timer.Elapsed())) ; 
+            }
+        }
     }
+
+    //--------------------------------------------------------------------------
+    // free workspace and return result
+    //--------------------------------------------------------------------------
 
     GB_FREE_WORKSPACE ;
-    }
-
-    CHECK_CUDA_SIMPLE(cudaStreamSynchronize(stream));
-    CHECK_CUDA_SIMPLE(cudaStreamDestroy(stream));
     return GrB_SUCCESS; 
 }
 

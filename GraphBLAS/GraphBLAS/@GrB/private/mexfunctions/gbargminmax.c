@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------------
 
 // SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -370,6 +370,7 @@ void mexFunction
     // return result
     //--------------------------------------------------------------------------
 
+    OK (GrB_Matrix_free (&A)) ;
     pargout [0] = gb_export (&x, KIND_GRB) ;
     pargout [1] = gb_export (&p, KIND_GRB) ;
     GB_WRAPUP ;

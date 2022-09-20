@@ -92,12 +92,18 @@ void GB_bix_free                // free A->b, A->i, and A->x of a matrix
 ) ;
 
 GB_PUBLIC
-void GB_ph_free                 // free A->p and A->h of a matrix
+void GB_phy_free                // free A->p, A->h, and A->Y of a matrix
 (
     GrB_Matrix A                // matrix with content to free
 ) ;
 
-void GB_phbix_free              // free all content of a matrix
+GB_PUBLIC
+void GB_hyper_hash_free         // free the A->Y hyper_hash of a matrix
+(
+    GrB_Matrix A                // matrix with content to free
+) ;
+
+void GB_phybix_free             // free all content of a matrix
 (
     GrB_Matrix A                // matrix with content to free
 ) ;

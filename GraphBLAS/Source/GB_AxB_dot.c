@@ -172,6 +172,18 @@ GrB_Info GB_AxB_dot                 // dot product (multiple methods)
         (*done_in_place) = false ;
         GrB_Info info ;
 
+        // construct the hyper hashes for A and B
+        GB_OK (GB_hyper_hash_build (A, Context)) ;
+        GB_OK (GB_hyper_hash_build (B, Context)) ;
+
+        GBURBLE ("(%s%s%s%s = %s'*%s) ",
+            GB_sparsity_char_matrix (M),    // C has the same sparsity as M
+            Mask_struct ? "{" : "<",
+            GB_sparsity_char_matrix (M),
+            Mask_struct ? "}" : ">",
+            GB_sparsity_char_matrix (A),
+            GB_sparsity_char_matrix (B)) ;
+
         #if defined ( GBCUDA )
         if (!C_iso &&   // FIXME for CUDA, remove and create C iso on output
             GB_AxB_dot3_cuda_branch (M, Mask_struct, A, B, semiring,
@@ -187,7 +199,6 @@ GrB_Info GB_AxB_dot                 // dot product (multiple methods)
             info = (GB_AxB_dot3 (C, C_iso, cscalar, M, Mask_struct, A, B,
                 semiring, flipxy, Context)) ;
         }
-        // GxB_print (C,3) ;
         return (info) ;
     }
 

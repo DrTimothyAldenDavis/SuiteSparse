@@ -5,7 +5,6 @@
 #include <random>
 #include <algorithm>
 #include <iostream>
-//#include "GB_binary_search.h"
 #include "GpuTimer.h"
 #include "GB_cuda_buckets.h"
 #include "../../rmm_wrap/rmm_wrap.h"

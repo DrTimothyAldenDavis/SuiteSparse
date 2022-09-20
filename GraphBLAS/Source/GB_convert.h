@@ -42,7 +42,7 @@ static inline int GB_sparsity (GrB_Matrix A)
     if (A == NULL)
     {
         // if A is NULL, pretend it is sparse
-        return (GxB_SPARSE) ;
+        return (GxB_SPARSE) ;       // FIXME: try GxB_HYPERSPARSE
     }
     else if (GB_IS_HYPERSPARSE (A))
     { 
@@ -66,6 +66,7 @@ GB_PUBLIC
 GrB_Info GB_convert_hyper_to_sparse // convert hypersparse to sparse
 (
     GrB_Matrix A,           // matrix to convert from hypersparse to sparse
+    bool do_burble,         // if true, then burble is allowed
     GB_Context Context
 ) ;
 

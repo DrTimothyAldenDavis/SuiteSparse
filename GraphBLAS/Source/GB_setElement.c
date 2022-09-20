@@ -53,6 +53,7 @@ GrB_Info GB_setElement              // set a single entry, C(row,col) = scalar
     GrB_Info info ;
     ASSERT (C != NULL) ;
     GB_RETURN_IF_NULL (scalar) ;
+//  ASSERT_MATRIX_OK (C, "C input for setElement", GB0) ;
 
     if (row >= GB_NROWS (C))
     { 
@@ -197,9 +198,12 @@ GrB_Info GB_setElement              // set a single entry, C(row,col) = scalar
     }
 
     int64_t pleft ;
-    bool found ;
+    bool found = false ;
     bool is_zombie ;
     bool C_is_bitmap = GB_IS_BITMAP (C) ;
+    C_is_full = GB_IS_FULL (C) ;
+
+//  ASSERT_MATRIX_OK (C, "C start the search for setElement", GB0) ;
 
     if (C_is_full || C_is_bitmap)
     { 
@@ -217,13 +221,26 @@ GrB_Info GB_setElement              // set a single entry, C(row,col) = scalar
     {
 
         //----------------------------------------------------------------------
-        // binary search in C->h for vector j, or O(1)-time lookup if sparse
+        // hyper_hash search in C->Y for vector j, or O(1)-time lookup if sparse
         //----------------------------------------------------------------------
 
-        int64_t pC_start, pC_end, pright = C->nvec - 1 ;
-        pleft = 0 ;
-        found = GB_lookup (C->h != NULL, C->h, C->p, C->vlen, &pleft,
-            pright, j, &pC_start, &pC_end) ;
+        int64_t pC_start, pC_end ;
+        if (C->h != NULL)
+        { 
+            // C is hypersparse
+            GB_OK (GB_hyper_hash_build (C, Context)) ;
+            int64_t k = GB_hyper_hash_lookup (C->p, C->Y->p, C->Y->i, C->Y->x,
+                C->Y->vdim-1, j, &pC_start, &pC_end) ;
+            found = (k >= 0) ;
+            ASSERT (GB_IMPLIES (found, j == C->h [k])) ;
+        }
+        else
+        { 
+            // C is sparse
+            pC_start = C->p [j] ;
+            pC_end   = C->p [j+1] ;
+            found = true ;
+        }
 
         //----------------------------------------------------------------------
         // binary search in kth vector for index i
@@ -233,7 +250,7 @@ GrB_Info GB_setElement              // set a single entry, C(row,col) = scalar
         { 
             // vector j has been found; now look for index i
             pleft = pC_start ;
-            pright = pC_end - 1 ;
+            int64_t pright = pC_end - 1 ;
 
             // Time taken for this step is at most O(log(nnz(C(:,j))).
             const int64_t *restrict Ci = C->i ;
@@ -407,7 +424,7 @@ GrB_Info GB_setElement              // set a single entry, C(row,col) = scalar
                 stype, accum, i, j, C->vdim > 1, Context))
             { 
                 // out of memory
-                GB_phbix_free (C) ;
+                GB_phybix_free (C) ;
                 return (GrB_OUT_OF_MEMORY) ;
             }
 
