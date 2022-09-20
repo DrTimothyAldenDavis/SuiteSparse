@@ -29,8 +29,8 @@ function [LU_or_x,info,c] = klu (A,operation,b,opts)                        %#ok
 %       opts.btf        1       use block triangular form (BTF) if nonzero
 %       opts.ordering   0       how each block is ordered:
 %                               0: AMD, 1: COLAMD, 2: natural,
-%                               3: CHOLMOD's ordering of (A'*A),
-%                               4: CHOLMOD's ordering of (A+A')
+%                               3: METIS ordering of (A'*A), via CHOLMOD
+%                               4: METIS ordering of (A+A'), via CHOLMOD
 %       opts.scale      2       1: R = diag(sum(abs(A)')), row-sum
 %                               2: R = diag(max(abs(A)')), max in each row
 %                               otherwise: none (R=I)

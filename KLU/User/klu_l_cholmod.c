@@ -43,8 +43,9 @@ int64_t klu_l_cholmod
     int64_t *P ;
     int64_t k ;
     int symmetric ;
-    klu_common km ;
-    klu_defaults (&km) ;
+    printf ("------------------- KLU User\n") ;
+    klu_l_common km ;
+    klu_l_defaults (&km) ;
 
     if (Ap == NULL || Ai == NULL || Perm == NULL || n < 0)
     {

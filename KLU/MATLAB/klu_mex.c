@@ -56,6 +56,7 @@
 
 #ifndef NCHOLMOD
 #include "klu_cholmod.h"
+#include "cholmod.h"
 #endif
 
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
@@ -297,8 +298,11 @@ void mexFunction
     /* ordering option 3,4 becomes KLU option 3, with symmetric 0 or 1 */
     symmetric = (Common.ordering == 4) ;
     if (symmetric) Common.ordering = 3 ;
+    int64_t user_data [3] ;
     Common.user_order = klu_l_cholmod ;
-    Common.user_data = &symmetric ;
+    user_data [0] = symmetric ;
+    user_data [1] = CHOLMOD_METIS ;
+    Common.user_data = user_data ;
 #else
     /* CHOLMOD, METIS, CAMD, CCOLAMD, not available */
     if (Common.ordering > 2)
