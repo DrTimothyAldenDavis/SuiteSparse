@@ -31,15 +31,26 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/../SuiteSparse/cmake_modules
     )
 
+# FIXME: CUDA doesn't work yet
+set ( ENABLE_CUDA false )
+
 include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
 # define the project
 #-------------------------------------------------------------------------------
 
-project ( cholmod
-    VERSION "${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}"
-    LANGUAGES C ) # <-- add CXX here for packages that use C++
+if ( SUITESPARSE_CUDA )
+    # CHOLMOD with CUDA
+    project ( cholmod
+            VERSION "${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}"
+            LANGUAGES CUDA C CXX )
+else ( )
+    # CHOLMOD without CUDA
+    project ( cholmod
+            VERSION "${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}"
+            LANGUAGES C )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # find library dependencies
@@ -63,7 +74,6 @@ find_package ( METIS )
 # determine which modules of CHOLMOD to include in the library
 if ( NGPL )
     add_compile_definitions ( NGPL )
-    message ( STATUS "compile defn: ${COMPILE_DEFINITIONS} ")
 endif ( )
 
 configure_file ( "Config/cholmod.h.in" "${PROJECT_SOURCE_DIR}/Include/cholmod.h")
@@ -95,13 +105,24 @@ include_directories ( Check Cholesky Core MatrixOps Modify Partition
     ${COLAMD_INCLUDE_DIR} ${CAMD_INCLUDE_DIR} ${CCOLAMD_INCLUDE_DIR}
     ${METIS_INCLUDE_DIR} )
 
+if ( SUITESPARSE_CUDA )
+    include_directories ( GPU ${CUDAToolkit_INCLUDE_DIRS} )
+endif ( )
+
 #-------------------------------------------------------------------------------
 # dynamic cholmod library properties
 #-------------------------------------------------------------------------------
 
-file ( GLOB CHOLMOD_SOURCES "Check/cholmod_*.c" "Cholesky/cholmod_*.c"
-    "Core/cholmod_*.c" "MatrixOps/cholmod_*.c" "Modify/cholmod_*.c"
-    "Partition/cholmod_*.c" "Supernodal/cholmod_*.c")
+if ( SUITESPARSE_CUDA )
+    file ( GLOB CHOLMOD_SOURCES "Check/cholmod_*.c" "Cholesky/cholmod_*.c"
+        "Core/cholmod_*.c" "MatrixOps/cholmod_*.c" "Modify/cholmod_*.c"
+        "Partition/cholmod_*.c" "Supernodal/cholmod_*.c" "GPU/cholmod_*.c"
+        "GPU/cholmod_*.cu" )
+else ( )
+    file ( GLOB CHOLMOD_SOURCES "Check/cholmod_*.c" "Cholesky/cholmod_*.c"
+        "Core/cholmod_*.c" "MatrixOps/cholmod_*.c" "Modify/cholmod_*.c"
+        "Partition/cholmod_*.c" "Supernodal/cholmod_*.c" )
+endif ( )
 
 add_library ( cholmod SHARED ${CHOLMOD_SOURCES} )
 
@@ -110,6 +131,12 @@ SET_TARGET_PROPERTIES ( cholmod PROPERTIES
     C_STANDARD_REQUIRED 11
     SOVERSION ${CHOLMOD_VERSION_MAJOR}
     PUBLIC_HEADER "Include/cholmod.h" )
+
+if ( SUITESPARSE_CUDA )
+    set_target_properties ( cholmod PROPERTIES CUDA_SEPARABLE_COMPILATION on )
+    set_target_properties ( cholmod PROPERTIES POSITION_INDEPENDENT_CODE on )
+    set_target_properties ( cholmod PROPERTIES CUDA_ARCHITECTURES "75" )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # static cholmod library properties
@@ -122,6 +149,12 @@ SET_TARGET_PROPERTIES ( cholmod_static PROPERTIES
     C_STANDARD_REQUIRED 11
     OUTPUT_NAME cholmod
     SOVERSION ${CHOLMOD_VERSION_MAJOR} )
+
+if ( SUITESPARSE_CUDA )
+    set_target_properties ( cholmod_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
+    set_target_properties ( cholmod_static PROPERTIES POSITION_INDEPENDENT_CODE on )
+    set_target_properties ( cholmod_static PROPERTIES CUDA_ARCHITECTURES "75" )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # add the library dependencies
@@ -138,7 +171,8 @@ if ( OPENMP_FOUND )
     message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS} ")
     target_link_libraries ( cholmod PUBLIC ${OpenMP_C_LIBRARIES} )
     target_link_libraries ( cholmod_static PUBLIC ${OpenMP_C_LIBRARIES} )
-    set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} " )
+    set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   ${OpenMP_C_FLAGS} " )
+    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_C_FLAGS} " )
     include_directories ( ${OpenMP_C_INCLUDE_DIRS} )
 endif ( )
 
@@ -186,14 +220,25 @@ if ( METIS_FOUND )
     target_link_libraries ( cholmod_static PUBLIC ${METIS_LIBRARIES} )
 endif ( )
 
+# CUDA: cudart and cublas libraries
+if ( SUITESPARSE_CUDA )
+    link_directories ( ${CUDA_LIBRARIES} ${CUDAToolkit_LIBRARY_DIR} )
+    target_link_libraries ( cholmod PUBLIC ${CUDA_LIBRARIES}
+        CUDA::cudart CUDA::cublas CUDA::nvrtc CUDA::nvToolsExt )
+    target_link_libraries ( cholmod_static PUBLIC ${CUDA_LIBRARIES}
+        CUDA::cudart_static CUDA::cublas CUDA::nvrtc CUDA::nvToolsExt )
+    set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -DGPU_BLAS " )
+    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DGPU_BLAS --std=c++17 -fPIC" )
+endif ( )
+
 #-------------------------------------------------------------------------------
 # CHOLMOD installation location
 #---------------------------------------------------------------Z--------------
 
-# use "cmake -DLOCAL=1" to install only in SuiteSparse/lib and
+# use "cmake -DSUITESPARSE_LOCAL=1" to install only in SuiteSparse/lib and
 # SuiteSparse/include.  
 
-if ( NOT LOCAL )
+if ( NOT SUITESPARSE_LOCAL )
     # install in /usr/local/lib and /usr/local/include.
     # requires "sudo make install"
     message ( STATUS "Installation will be system-wide (requires 'sudo make install')" )
@@ -210,10 +255,10 @@ if ( INSIDE_SUITESPARSE )
     message ( STATUS "Installation in ../lib and ../include only," )
     message ( STATUS "  with 'make install'. No 'sudo' required." )
     install ( TARGETS cholmod
-        LIBRARY       DESTINATION ${LOCAL_LIBDIR}
-        PUBLIC_HEADER DESTINATION ${LOCAL_INCLUDEDIR} )
+        LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
     install ( TARGETS cholmod_static
-        ARCHIVE       DESTINATION ${LOCAL_LIBDIR} )
+        ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )
 endif ( )
 
 #-------------------------------------------------------------------------------

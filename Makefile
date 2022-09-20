@@ -27,15 +27,13 @@ go: metis
 	( cd KLU && $(MAKE) )
 	( cd UMFPACK && $(MAKE) )
 	( cd RBio && $(MAKE) )
+	( cd GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' )
 ifneq ($(GPU_CONFIG),)
 	( cd SuiteSparse_GPURuntime && $(MAKE) )
 	( cd GPUQREngine && $(MAKE) )
 endif
 	( cd SPQR && $(MAKE) )
-	( cd GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' )
 	( cd SLIP_LU && $(MAKE) )
-#	( cd PIRO_BAND && $(MAKE) )
-#	( cd SKYLINE_SVD && $(MAKE) )
 
 # compile and install in SuiteSparse/lib and SuiteSparse/include
 local: metis
@@ -53,15 +51,13 @@ local: metis
 	( cd KLU && $(MAKE) local && $(MAKE) install )
 	( cd UMFPACK && $(MAKE) local && $(MAKE) install )
 	( cd RBio && $(MAKE) local && $(MAKE) install )
+	( cd GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' local && $(MAKE) install )
 ifneq ($(GPU_CONFIG),)
 	( cd SuiteSparse_GPURuntime && $(MAKE) )
 	( cd GPUQREngine && $(MAKE) )
 endif
 	( cd SPQR && $(MAKE) library && $(MAKE) install )
-	( cd GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' )
 	( cd SLIP_LU && $(MAKE) )
-#	( cd PIRO_BAND && $(MAKE) )
-#	( cd SKYLINE_SVD && $(MAKE) )
 
 # install all packages in SuiteSparse/lib and SuiteSparse/include.  Use the
 # following command to install in /usr/local/lib and /usr/local/include:
@@ -82,14 +78,12 @@ install: metisinstall gbinstall moninstall
 	( cd KLU && $(MAKE) install )
 	( cd UMFPACK && $(MAKE) install )
 	( cd RBio && $(MAKE) install )
+	( cd GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' install )
 ifneq (,$(GPU_CONFIG))
 	( cd SuiteSparse_GPURuntime && $(MAKE) install )
 	( cd GPUQREngine && $(MAKE) install )
 endif
 	( cd SPQR && $(MAKE) install )
-	# ( cd GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' install )
-#	( cd PIRO_BAND && $(MAKE) install )
-#	( cd SKYLINE_SVD && $(MAKE) install )
 	( cd SLIP_LU && $(MAKE) install )
 
 metisinstall: metis
@@ -127,8 +121,6 @@ uninstall:
 	( cd GPUQREngine && $(MAKE) uninstall )
 	( cd SPQR && $(MAKE) uninstall )
 	( cd SLIP_LU && $(MAKE) uninstall )
-#	( cd PIRO_BAND && $(MAKE) uninstall )
-#	( cd SKYLINE_SVD && $(MAKE) uninstall )
 ifeq (,$(MY_METIS_LIB))
         # uninstall METIS, which came from SuiteSparse/metis-5.1.0
 	$(RM) $(INSTALL_LIB)/libmetis.*
@@ -152,43 +144,13 @@ library: metis
 	( cd CSparse && $(MAKE) library )
 	( cd CXSparse && $(MAKE) library )
 	( cd RBio && $(MAKE) library )
+	( cd GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' library )
 ifneq (,$(GPU_CONFIG))
 	( cd SuiteSparse_GPURuntime && $(MAKE) library )
 	( cd GPUQREngine && $(MAKE) library )
 endif
 	( cd SPQR && $(MAKE) library )
-	( cd GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' library )
 	( cd SLIP_LU && $(MAKE) library )
-#	( cd PIRO_BAND && $(MAKE) library )
-#	( cd SKYLINE_SVD && $(MAKE) library )
-
-# compile the static libraries (except for metis, GraphBLAS, and Mongoose).
-# metis is only dynamic, and the 'make static' for GraphBLAS and Mongoose makes
-# both the dynamic and static libraries.
-static: metis
-	( cd SuiteSparse_config && $(MAKE) static )
-	( cd Mongoose  && $(MAKE) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' static )
-	( cd AMD && $(MAKE) static )
-	( cd BTF && $(MAKE) static )
-	( cd CAMD && $(MAKE) static )
-	( cd CCOLAMD && $(MAKE) static )
-	( cd COLAMD && $(MAKE) static )
-	( cd CHOLMOD && $(MAKE) static )
-	( cd KLU && $(MAKE) static )
-	( cd LDL && $(MAKE) static )
-	( cd UMFPACK && $(MAKE) static )
-	( cd CSparse && $(MAKE) static )
-	( cd CXSparse && $(MAKE) static )
-	( cd RBio && $(MAKE) static )
-ifneq (,$(GPU_CONFIG))
-	( cd SuiteSparse_GPURuntime && $(MAKE) static )
-	( cd GPUQREngine && $(MAKE) static )
-endif
-	( cd SPQR && $(MAKE) static )
-	( cd GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' static )
-	( cd SLIP_LU && $(MAKE) static )
-#	( cd PIRO_BAND && $(MAKE) static )
-#	( cd SKYLINE_SVD && $(MAKE) static )
 
 # Remove all files not in the original distribution
 purge:
@@ -214,8 +176,6 @@ purge:
 	- ( cd GPUQREngine && $(MAKE) purge )
 	- ( cd SPQR && $(MAKE) purge )
 	- ( cd SLIP_LU && $(MAKE) purge )
-#	- ( cd PIRO_BAND && $(MAKE) purge )
-#	- ( cd SKYLINE_SVD && $(MAKE) purge )
 	- $(RM) MATLAB_Tools/*/*.mex* MATLAB_Tools/spok/private/*.mex*
 	- $(RM) -r include/* bin/* lib/* share/*
 
@@ -241,8 +201,6 @@ clean:
 	- ( cd GPUQREngine && $(MAKE) clean )
 	- ( cd SPQR && $(MAKE) clean )
 	- ( cd SLIP_LU && $(MAKE) clean )
-#	- ( cd PIRO_BAND && $(MAKE) clean )
-#	- ( cd SKYLINE_SVD && $(MAKE) clean )
 
 # Create the PDF documentation
 docs:
@@ -256,13 +214,10 @@ docs:
 	( cd CHOLMOD && $(MAKE) docs )
 	( cd SPQR && $(MAKE) docs )
 	( cd SLIP_LU && $(MAKE) docs )
-#	( cd PIRO_BAND && $(MAKE) docs )
-#	( cd SKYLINE_SVD && $(MAKE) docs )
 
 distclean: purge
 
 # statement coverage (Linux only); this requires a lot of time.
-# The umfpack tcov requires a lot of disk space in /tmp
 cov: purge
 	( cd CXSparse && $(MAKE) cov )
 	( cd CSparse && $(MAKE) cov )
@@ -271,8 +226,6 @@ cov: purge
 	( cd SPQR && $(MAKE) cov )
 	( cd UMFPACK && $(MAKE) cov )
 	( cd SLIP_LU && $(MAKE) cov )
-#	( cd PIRO_BAND && $(MAKE) cov )
-#	( cd SKYLINE_SVD && $(MAKE) cov )
 
 # configure and compile METIS, placing the libmetis.* library in
 # SuiteSparse/lib and the metis.h include file in SuiteSparse/include.

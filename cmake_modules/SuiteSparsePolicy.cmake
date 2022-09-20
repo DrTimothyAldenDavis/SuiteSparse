@@ -7,12 +7,22 @@
 
 #-------------------------------------------------------------------------------
 
-# cmake policies for all of SuiteSparse
+# SuiteSparse CMake policies.  The following parameters can be defined prior
+# to including this file:
+#
+#   CMAKE_BUILD_TYPE:   if not set, it is set below to "Release".
+#                       To use the "Debug" policy, precede this with
+#                       set ( CMAKE_BUILD_TYPE Debug )
+#
+#   ENABLE_CUDA:        if set to true, CUDA is enabled for the project.
+#
+# To select a specific BLAS library, edit this file and uncomment one of:
+# set ( BLA_VENDOR ... )
+
 cmake_minimum_required ( VERSION 3.19 )
 
 message ( STATUS "Source:        ${CMAKE_SOURCE_DIR} ")
 message ( STATUS "Build:         ${CMAKE_BINARY_DIR} ")
-# message ( STATUS "Modules:       ${CMAKE_MODULE_PATH}")
 
 cmake_policy ( SET CMP0042 NEW )    # enable MACOSX_RPATH by default
 cmake_policy ( SET CMP0048 NEW )    # VERSION variable policy
@@ -22,8 +32,8 @@ set ( CMAKE_MACOSX_RPATH TRUE )
 enable_language ( C )
 include ( GNUInstallDirs )
 
-# and the ./build folder to the runpath so other SuiteSparse packages can
-# find this one with out "make install"
+# add the ./build folder to the runpath so other SuiteSparse packages can
+# find this one without "make install"
 set ( CMAKE_BUILD_RPATH ${CMAKE_BUILD_RPATH} ${CMAKE_BINARY_DIR} )
 
 # determine if this package is inside the top-level SuiteSparse folder
@@ -35,15 +45,15 @@ set ( INSIDE_SUITESPARSE
 if ( INSIDE_SUITESPARSE )
     # ../lib and ../include exist: the package is inside SuiteSparse.
     # find ( REAL_PATH ...) requires cmake 3.19.
-    file ( REAL_PATH  ${CMAKE_SOURCE_DIR}/../lib     LOCAL_LIBDIR )
-    file ( REAL_PATH  ${CMAKE_SOURCE_DIR}/../include LOCAL_INCLUDEDIR )
-    file ( REAL_PATH  ${CMAKE_SOURCE_DIR}/../bin     LOCAL_BINDIR )
-    message ( STATUS "Local install: ${LOCAL_LIBDIR} ")
-    message ( STATUS "Local include: ${LOCAL_INCLUDEDIR} ")
-    message ( STATUS "Local bin:     ${LOCAL_BINDIR} ")
+    file ( REAL_PATH  ${CMAKE_SOURCE_DIR}/../lib     SUITESPARSE_LIBDIR )
+    file ( REAL_PATH  ${CMAKE_SOURCE_DIR}/../include SUITESPARSE_INCLUDEDIR )
+    file ( REAL_PATH  ${CMAKE_SOURCE_DIR}/../bin     SUITESPARSE_BINDIR )
+    message ( STATUS "Local install: ${SUITESPARSE_LIBDIR} ")
+    message ( STATUS "Local include: ${SUITESPARSE_INCLUDEDIR} ")
+    message ( STATUS "Local bin:     ${SUITESPARSE_BINDIR} ")
     # append ../lib to the install and build runpaths 
-    set ( CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_RPATH} ${LOCAL_LIBDIR} )
-    set ( CMAKE_BUILD_RPATH   ${CMAKE_BUILD_RPATH}   ${LOCAL_LIBDIR} )
+    set ( CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_RPATH} ${SUITESPARSE_LIBDIR} )
+    set ( CMAKE_BUILD_RPATH   ${CMAKE_BUILD_RPATH}   ${SUITESPARSE_LIBDIR} )
 endif ( )
 
 message ( STATUS "Install rpath: ${CMAKE_INSTALL_RPATH} ")
@@ -72,4 +82,51 @@ set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 # The Intel MKL BLAS is recommended.  It is free to download (but be sure to
 # check their license to make sure you accept it).   See:
 # https://www.intel.com/content/www/us/en/developer/tools/oneapi/onemkl.htm
+
+#-------------------------------------------------------------------------------
+# find CUDA
+#-------------------------------------------------------------------------------
+
+if ( ENABLE_CUDA )
+
+    # try finding CUDA
+    include ( CheckLanguage )
+    check_language ( CUDA )
+    message ( STATUS "Looking for CUDA" )
+    if ( CMAKE_CUDA_COMPILER )
+        # with CUDA:
+        message ( STATUS "Find CUDA tool kit:" )
+        # FindCUDAToolKit needs to have C or CXX enabled first (see above)
+        include ( FindCUDAToolkit )
+        message ( STATUS "CUDA toolkit found:   " ${CUDAToolkit_FOUND} )
+        message ( STATUS "CUDA toolkit version: " ${CUDAToolkit_VERSION} )
+        message ( STATUS "CUDA toolkit include: " ${CUDAToolkit_INCLUDE_DIRS} )
+        message ( STATUS "CUDA toolkit lib dir: " ${CUDAToolkit_LIBRARY_DIR} )
+        if ( CUDAToolkit_VERSION VERSION_LESS "11.2" )
+            # CUDA is present but too old
+            message ( STATUS "CUDA: not enabled (CUDA 11.2 or later required)" )
+            set ( SUITESPARSE_CUDA off )
+        else ( )
+            # CUDA 11.2 or later present
+            enable_language ( CUDA )
+            set ( SUITESPARSE_CUDA on )
+        endif ( )
+    else ( )
+        # without CUDA:
+        message ( STATUS "CUDA: not found" )
+        set ( SUITESPARSE_CUDA off )
+    endif ( )
+
+else ( )
+
+    # CUDA is disabled
+    set ( SUITESPARSE_CUDA off )
+
+endif ( )
+
+if ( SUITESPARSE_CUDA )
+    message ( STATUS "CUDA: enabled" )
+else ( )
+    message ( STATUS "CUDA: not enabled" )
+endif ( )
 

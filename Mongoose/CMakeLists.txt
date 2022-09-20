@@ -393,10 +393,10 @@ add_custom_target(userguide
 # Mongoose installation location
 #-------------------------------------------------------------------------------
 
-# use "cmake -DLOCAL=1" to install only in SuiteSparse/lib and
+# use "cmake -DSUITESPARSE_LOCAL=1" to install only in SuiteSparse/lib and
 # SuiteSparse/include.  
 
-if ( NOT LOCAL )
+if ( NOT SUITESPARSE_LOCAL )
     # install in /usr/local/lib, /usr/local/include, and /usr/local/bin.
     # requires "sudo make install"
     message ( STATUS "Installation will be system-wide (requires 'sudo make install')." )
@@ -416,11 +416,11 @@ if ( INSIDE_SUITESPARSE )
     message ( STATUS "Installation in ../lib and ../include," )
     message ( STATUS "  with 'make local ; make install'. No 'sudo' required." )
     install ( TARGETS mongoose_dylib
-        LIBRARY       DESTINATION ${LOCAL_LIBDIR}
-        PUBLIC_HEADER DESTINATION ${LOCAL_INCLUDEDIR} )
+        LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
     install ( TARGETS mongoose_lib
-        ARCHIVE       DESTINATION ${LOCAL_LIBDIR} )
+        ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )
     install ( TARGETS mongoose_exe
-        RUNTIME       DESTINATION ${LOCAL_BINDIR} )
+        RUNTIME       DESTINATION ${SUITESPARSE_BINDIR} )
 endif ( )
 

@@ -38,7 +38,7 @@ library:
 
 # install only in SuiteSparse/lib and SuiteSparse/include
 local:
-	( cd build ; cmake $(CMAKE_OPTIONS) -DLOCAL=1 .. ; $(MAKE) --jobs=${JOBS} )
+	( cd build ; cmake $(CMAKE_OPTIONS) -DSUITESPARSE_LOCAL=1 .. ; $(MAKE) --jobs=${JOBS} )
 
 debug:
 	( cd build ; cmake $(CMAKE_OPTIONS) -DCMAKE_BUILD_TYPE=Debug .. ; $(MAKE) --jobs=${JOBS} )

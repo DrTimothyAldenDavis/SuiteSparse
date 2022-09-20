@@ -65,6 +65,7 @@
 
 #ifdef DLONG
 #ifdef GPU_BLAS
+#include "cholmod_gpu_kernels.h"
 #define REAL
 #include "../GPU/t_cholmod_gpu.c"
 #define COMPLEX

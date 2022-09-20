@@ -163,10 +163,10 @@ endif ( )
 # UMFPACK installation location
 #---------------------------------------------------------------Z--------------
 
-# use "cmake -DLOCAL=1" to install only in SuiteSparse/lib and
+# use "cmake -DSUITESPARSE_LOCAL=1" to install only in SuiteSparse/lib and
 # SuiteSparse/include.  
 
-if ( NOT LOCAL )
+if ( NOT SUITESPARSE_LOCAL )
     # install in /usr/local/lib and /usr/local/include.
     # requires "sudo make install"
     message ( STATUS "Installation will be system-wide (requires 'sudo make install')" )
@@ -183,10 +183,10 @@ if ( INSIDE_SUITESPARSE )
     message ( STATUS "Installation in ../lib and ../include only," )
     message ( STATUS "  with 'make install'. No 'sudo' required." )
     install ( TARGETS umfpack
-        LIBRARY       DESTINATION ${LOCAL_LIBDIR}
-        PUBLIC_HEADER DESTINATION ${LOCAL_INCLUDEDIR} )
+        LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
     install ( TARGETS umfpack_static
-        ARCHIVE       DESTINATION ${LOCAL_LIBDIR} )
+        ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )
 endif ( )
 
 #-------------------------------------------------------------------------------

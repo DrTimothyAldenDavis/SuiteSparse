@@ -45,55 +45,15 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
 
 include ( SuiteSparsePolicy )
 
-#-------------------------------------------------------------------------------
-# find CUDA
-#-------------------------------------------------------------------------------
-
-# TODO: use something like this:
-# if ( set some flag to ignore cuda )
-#   ... disable CUDA
-#   message ( STATUS "CUDA: disabled" )
-# else ( ) ...
-
-    # try finding CUDA
-    project ( graphblas LANGUAGES C )
-    include ( CheckLanguage )
-    check_language ( CUDA )
-    message ( STATUS "Looking for CUDA" )
-    if ( CMAKE_CUDA_COMPILER )
-        # with CUDA:
-        message ( STATUS "Find CUDA tool kit:" )
-        # FindCUDAToolKit needs to have C or CXX enabled first
-        # now C is enabled so FindCudaToolKit will work
-        include ( FindCUDAToolkit )
-        message ( STATUS "CUDA toolkit found:   " ${CUDAToolkit_FOUND} )
-        message ( STATUS "CUDA toolkit version: " ${CUDAToolkit_VERSION} )
-        if ( CUDAToolkit_VERSION VERSION_LESS "11.2" )
-            # CUDA is present but too old
-            message ( STATUS "CUDA: not enabled (CUDA 11.2 or later required)" )
-            set ( CMAKE_CUDA off )
-        else ( )
-            # CUDA 11.2 or later present
-            enable_language ( CUDA )
-            set ( CMAKE_CUDA on )
-        endif ( )
-    else ( )
-        # without CUDA:
-        message ( STATUS "CUDA: not found" )
-        set ( CMAKE_CUDA off )
-    endif ( )
-
 # CUDA is under development for now, and not deployed in production:
-  set ( CMAKE_CUDA off )
-
-# Edit these lines for code development only, not for end-users:
-# set ( CMAKE_BUILD_TYPE Debug )
+# FIXME:
+# set ( SUITESPARSE_CUDA off )
 
 #-------------------------------------------------------------------------------
 # define the project
 #-------------------------------------------------------------------------------
 
-if ( CMAKE_CUDA )
+if ( SUITESPARSE_CUDA )
     # for CUDA development only; not for production use
     set ( CMAKE_CUDA_DEV off )
     project ( graphblas
@@ -112,10 +72,10 @@ endif ( )
 
 find_package ( OpenMP )
 
-if ( CMAKE_CUDA )
+if ( SUITESPARSE_CUDA )
     # with CUDA and RMM
     message ( STATUS "CUDA: enabled" )
-    set ( CMAKE_CUDA_FLAG " -DGBCUDA" )
+    set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -DGBCUDA" )
     add_subdirectory ( CUDA )
     set ( GB_CUDA graphblascuda  ${CUDA_LIBRARIES} )
     set ( GB_RMM rmm_wrap ${CUDA_LIBRARIES} )
@@ -125,7 +85,6 @@ if ( CMAKE_CUDA )
 else ( )
     # without CUDA and RMM
     message ( STATUS "CUDA: not enabled" )
-    set ( CMAKE_CUDA_FLAG " " )
     set ( CMAKE_RMM_FLAG " " )
     set ( GB_CUDA )
     set ( GB_RMM )
@@ -289,8 +248,6 @@ else ( )
     set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${CMAKE_C_FLAGS_RELEASE}" )
 endif ( )
 
-set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${CMAKE_CUDA_FLAG}" )
-
 #-------------------------------------------------------------------------------
 # dynamic graphblas library properties
 #-------------------------------------------------------------------------------
@@ -332,7 +289,7 @@ SET_TARGET_PROPERTIES ( graphblas PROPERTIES
     PUBLIC_HEADER "Include/GraphBLAS.h" )
 set_property ( TARGET graphblas PROPERTY C_STANDARD 11 )
 
-if ( CMAKE_CUDA )
+if ( SUITESPARSE_CUDA )
     add_dependencies ( graphblas graphblascuda )
     add_dependencies ( graphblas rmm_wrap )
 endif ( )
@@ -353,7 +310,7 @@ if ( BUILD_GRB_STATIC_LIBRARY )
        PUBLIC_HEADER "Include/GraphBLAS.h" )
     set_property ( TARGET graphblas_static PROPERTY C_STANDARD 11 )
 
-    if ( CMAKE_CUDA )
+    if ( SUITESPARSE_CUDA )
         add_dependencies ( graphblas_static graphblascuda )
         add_dependencies ( graphblas_static rmm_wrap )
     endif ( )
@@ -422,7 +379,7 @@ if ( OPENMP_FOUND )
     include_directories ( ${OpenMP_C_INCLUDE_DIRS} )
 endif ( )
 
-if ( CMAKE_CUDA )
+if ( SUITESPARSE_CUDA )
     target_link_libraries ( graphblas PUBLIC ${GB_CUDA} ${GB_RMM} )
     if ( BUILD_GRB_STATIC_LIBRARY )
         target_link_libraries ( graphblas_static PUBLIC ${GB_CUDA} ${GB_RMM} )
@@ -499,10 +456,10 @@ endif ( )
 # installation location
 #-------------------------------------------------------------------------------
 
-# use "cmake -DLOCAL=1" to install only in ../lib and
+# use "cmake -DSUITESPARSE_LOCAL=1" to install only in ../lib and
 # ../include.  
 
-if ( NOT LOCAL )
+if ( NOT SUITESPARSE_LOCAL )
     # install in /usr/local/lib and /usr/local/include.
     # requires "sudo make install"
     message ( STATUS "Installation will be system-wide (requires 'sudo make install')" )
@@ -521,11 +478,11 @@ if ( INSIDE_SUITESPARSE )
     message ( STATUS "Installation in ../lib and ../include," )
     message ( STATUS "  with 'make local ; make install'. No 'sudo' required." )
     install ( TARGETS graphblas
-        LIBRARY       DESTINATION ${LOCAL_LIBDIR}
-        PUBLIC_HEADER DESTINATION ${LOCAL_INCLUDEDIR} )
+        LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
     if ( BUILD_GRB_STATIC_LIBRARY )
         install ( TARGETS graphblas_static
-            ARCHIVE       DESTINATION ${LOCAL_LIBDIR} )
+            ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )
     endif ( )
 endif ( )
 

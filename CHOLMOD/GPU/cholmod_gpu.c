@@ -22,7 +22,7 @@
 #include <cuda.h>
 #include <cuda_runtime.h>
 #endif
-
+ 
 // #define HACK
 
 #define MINSIZE (64 * 1024 * 1024)
