@@ -1013,6 +1013,14 @@ PRIVATE int symbolic_analysis
 
     SW = (SWType *) UMF_malloc (1, sizeof (SWType)) ;
 
+    if (!SW)
+    {
+	DEBUGm4 (("out of memory: SW\n")) ;
+	Info [UMFPACK_STATUS] = UMFPACK_ERROR_out_of_memory ;
+	error (&Symbolic, &SW) ;
+	return (UMFPACK_ERROR_out_of_memory) ;
+    }
+
     /* Note that SW->Front_* does not include the dummy placeholder front. */
     /* This space is accounted for by the SYM_WORK_USAGE macro. */
 

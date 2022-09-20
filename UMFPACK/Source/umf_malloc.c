@@ -27,14 +27,14 @@
     defined, and thus UMFPACK has no global variables.
 */
 
-GLOBAL Int UMF_malloc_count = 0 ;
+Int UMF_malloc_count = 0 ;
 
 #endif
 
 #ifdef UMF_TCOV_TEST
 /* For exhaustive statement coverage testing only! */
-GLOBAL int umf_fail, umf_fail_lo, umf_fail_hi ;
-GLOBAL int umf_realloc_fail, umf_realloc_lo, umf_realloc_hi ;
+int umf_fail, umf_fail_lo, umf_fail_hi ;
+int umf_realloc_fail, umf_realloc_lo, umf_realloc_hi ;
 #endif
 
 GLOBAL void *UMF_malloc

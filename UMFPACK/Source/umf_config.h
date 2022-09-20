@@ -11,14 +11,6 @@
     This file controls the compile-time configuration of UMFPACK.
     All of these options, except for the timer, are for accessing the BLAS.
 
-	-DNSUNPERF
-
-	    Applies only to Sun Solaris.  If -DNSUNPERF is set, then the Sun
-	    Performance Library BLAS will not be used.
-
-	    The Sun Performance Library BLAS is used by default when compiling
-	    the C-callable libumfpack.a library on Sun Solaris.
-
 	-DLONGBLAS
 
 	-DNRECIPROCAL
