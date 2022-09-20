@@ -39,10 +39,6 @@
  * (excluding the B=A(P,P) time), on a wide range of symmetric sparse matrices.
  */
 
-#ifndef LDL_LONG
-#define LDL_LONG
-#endif
-
 #include "ldl.h"
 #include "mex.h"
 

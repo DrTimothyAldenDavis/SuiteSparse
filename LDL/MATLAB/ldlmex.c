@@ -57,10 +57,6 @@
  * columns of L and D.  The rest of L and D are zero.
  */
 
-#ifndef LDL_LONG
-#define LDL_LONG
-#endif
-
 #include "ldl.h"
 #include "mex.h"
 

@@ -33,17 +33,7 @@
  * valid, the matrix factorized twice (A and P*A*P').  A linear
  * system Ax=b is set up and solved, and the residual computed.
  * If any system is not solved accurately, this test will fail.
- *
- * This program can also be compiled as a MATLAB mexFunction, with the command
- * "mex ldlmain.c ldl.c".  You can then run the program in MATLAB, with the
- * command "ldlmain".
  */
-
-#ifdef MATLAB_MEX_FILE
-#ifndef LDL_LONG
-#define LDL_LONG
-#endif
-#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -59,14 +49,8 @@
 #define PROGRAM "ldlmain"
 #endif
 
-#ifdef MATLAB_MEX_FILE
-#include "mex.h"
-#define EXIT_ERROR mexErrMsgTxt ("failure") ;
-#define EXIT_OK
-#else
 #define EXIT_ERROR exit (EXIT_FAILURE) ;
 #define EXIT_OK exit (EXIT_SUCCESS) ;
-#endif
 
 /* -------------------------------------------------------------------------- */
 /* ALLOC_MEMORY: allocate a block of memory */
@@ -92,20 +76,10 @@ if (p != (type *) NULL) \
 }
 
 /* -------------------------------------------------------------------------- */
-/* stand-alone main program, or MATLAB mexFunction */
+/* stand-alone main program */
 /* -------------------------------------------------------------------------- */
 
-#ifdef MATLAB_MEX_FILE
-void mexFunction
-(
-    int	nargout,
-    mxArray *pargout[ ],
-    int	nargin,
-    const mxArray *pargin[ ]
-)
-#else
 int main (void)
-#endif
 {
 
     /* ---------------------------------------------------------------------- */

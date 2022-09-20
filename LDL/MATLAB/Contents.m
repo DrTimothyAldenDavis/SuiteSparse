@@ -10,7 +10,6 @@
 %   ldldemo     - demo program for LDL
 %   ldlrow      - an m-file description of the algorithm used by LDL
 %   ldltest     - test program for LDL
-%   ldlmain2    - compiles and runs a longer test program for LDL
 %   ldl_install - compile and install the LDL package for use in MATLAB.
 %   ldl_make    - compile LDL
 %

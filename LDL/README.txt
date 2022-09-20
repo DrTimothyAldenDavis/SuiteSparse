@@ -95,8 +95,6 @@ Files and directories in this distribution:
 	ldltest.out	diary output of ldltest
 	ldlmex.c	the LDL mexFunction for MATLAB
 	ldlrow.m	the numerical algorithm that LDL is based on
-	ldlmain2.m	compiles and runs ldlmain.c as a MATLAB mexFunction
-	ldlmain2.out	output of ldlmain2.m
 	ldlsymbolmex.c	symbolic factorization using LDL (see SYMBFACT, ETREE)
 	ldlsymbol.m	help file for the LDLSYMBOL mexFunction
 
