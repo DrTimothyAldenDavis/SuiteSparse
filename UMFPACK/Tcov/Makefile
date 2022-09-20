@@ -1,4 +1,15 @@
-# choose the test:  also see ../Source/umf_config.h
+#-------------------------------------------------------------------------------
+# SuiteSparse/UMFPACK/Tcov/Makefile
+#-------------------------------------------------------------------------------
+
+# Copyright (c) 1995-2022, Timothy A. Davis.  All Rights Reserved.
+# SPDX-License-Identifier: GPL-2.0+
+
+#-------------------------------------------------------------------------------
+
+# statement coverage test
+
+# choose the test options:  also see ../Source/umf_config.h
 #
 # NBLAS: do not use the BLAS; use plain C code instead
 # NRECIPROCAL: do not multiply by the reciprocal when scaling
