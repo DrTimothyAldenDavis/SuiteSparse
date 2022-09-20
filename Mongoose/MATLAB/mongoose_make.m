@@ -23,6 +23,8 @@ is64 = (~isempty (strfind (computer, '64'))) ;  %#ok
 if (is64)
     % 64-bit MATLAB
     flags = ' -largeArrayDims' ;
+else
+    error ('32-bit MATLAB not supported') ;
 end
 
 include = '-I. -I../Include -I../External/Include -I../../SuiteSparse_config' ;
@@ -33,8 +35,8 @@ flags = [flags ' -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE'] ;
 % We're compiling this from within a mex function.
 flags = [flags ' -DGP_MEX_FUNCTION'] ;
 
-% Append optimization and 64-bit flags
-flags = [flags ' -DDLONG -O -silent COPTIMFLAGS="-O3 -fwrapv"'];
+% Append optimization
+flags = [flags ' -O -silent COPTIMFLAGS="-O3 -fwrapv"'];
 
 cpp_flags = '' ;
 lib = '';
