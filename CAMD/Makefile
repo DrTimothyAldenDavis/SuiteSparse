@@ -48,14 +48,14 @@ all: library
 
 demo: library
 	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && $(MAKE) --jobs=${JOBS} )
-	./build/camd_demo > Demo/my_camd_demo.out
-	- diff Demo/camd_demo.out Demo/my_camd_demo.out
-	./build/camd_l_demo > Demo/my_camd_l_demo.out
-	- diff Demo/camd_l_demo.out Demo/my_camd_l_demo.out
-	./build/camd_demo2 > Demo/my_camd_demo2.out
-	- diff Demo/camd_demo2.out Demo/my_camd_demo2.out
-	./build/camd_simple > Demo/my_camd_simple.out
-	- diff Demo/camd_simple.out Demo/my_camd_simple.out
+	./build/camd_demo > build/my_camd_demo.out
+	- diff Demo/camd_demo.out build/my_camd_demo.out
+	./build/camd_l_demo > build/my_camd_l_demo.out
+	- diff Demo/camd_l_demo.out build/my_camd_l_demo.out
+	./build/camd_demo2 > build/my_camd_demo2.out
+	- diff Demo/camd_demo2.out build/my_camd_demo2.out
+	./build/camd_simple > build/my_camd_simple.out
+	- diff Demo/camd_simple.out build/my_camd_simple.out
 
 # just compile after running cmake&& do not run cmake again
 remake:
@@ -74,7 +74,7 @@ uninstall:
 
 # remove all files not in the distribution
 clean:
-	- $(RM) -rf build/* Config/*.tmp
+	- $(RM) -rf build/* Config/*.tmp MATLAB/*.o MATLAB/*.mex*
 
 purge: clean
 

@@ -15,13 +15,15 @@ valgrind: vgo
 
 ccode: all
 
+CUDA = no
 include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 # this test requires gcc
 CC = gcc
 CXX= g++
-# BLAS = -lrefblas
-# LAPACK = -llapack
+# BLAS = 
+# LAPACK =
+GPU_CONFIG = 
 
 # for statement coverage (with gcov; see go) and picky compiler warnings
 CF = -pg \
@@ -157,7 +159,8 @@ endif
 
 C = $(CXX) $(CF) $(I) $(SPQR_CONFIG)
 
-LIBS = $(CLIB) $(FLIB) $(LDLIBS) $(CUDA_LIB)
+LIBS = $(CLIB) $(FLIB) $(LDLIBS) $(CUDA_LIB) \
+    -Wl,--rpath=$(SUITESPARSE)/lib
 
 qrtestc.o: qrtestc.c $(INC)
 	$(CC) $(CF) $(I) -c $<

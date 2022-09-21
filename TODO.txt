@@ -1,11 +1,10 @@
 FIXME: date for all packages
 
-FIXME: make sure SuiteSparse_long is gone
-
 FIXME test/update MATLAB interfaces for all packages
     done: AMD, BTF, CAMD, CCOLAMD, COLAMD, CHOLMOD, CSparse,
-        CXSparse, KLU, LDL, Mongoose, UMFPACK
-    todo:SPQR
+        CXSparse, KLU, LDL, Mongoose, UMFPACK, SPQR
+
+    todo: SuiteSparse_install.m, SuiteSparse_demo.m
 
 FIXME: new output files
     AMD/MATLAB/amd_demo.m.out (diary)
@@ -24,23 +23,17 @@ FIXME: new output files
     UMFPACK/MATLAB/*out
     SPQR/Demo/*out*
 
-FIXME: test coverage for all packages.
-    done: CSparse, CXSparse, RBio, CHOLMOD, GraphBLAS, KLU, UMFPACK
-    todo: SPQR
-
-FIXME: cmake CUDA for:
-    todo: CHOLMOD, SPQR, SuiteSparse_GPURuntime, GPUQREngine
-
 FIXME: update metis cmake to use SuiteSparsePolicy
-
-FIXME: cmake and Find*.cmake for:
-    todo: SuiteSparse_GPURuntime, GPUQREngine
-
-FIXME: remove SuiteSparse_config.mk?
-    currently needed for CHOLMOD/Tcov, however
 
 FIXME: determine how my metis-5.1.0 differs from the original.
     Rename mine as suitesparse_metis-5.1.0
 
 FIXME: Mongoose 'make test' fails: unable to download test files
+
+FIXME: cmake CUDA for:
+    todo: CHOLMOD, SPQR, SuiteSparse_GPURuntime, GPUQREngine
+
+FIXME: cmake and Find*.cmake for
+    SuiteSparse_GPURuntime, GPUQREngine
+    (but needs CUDA to work first)
 

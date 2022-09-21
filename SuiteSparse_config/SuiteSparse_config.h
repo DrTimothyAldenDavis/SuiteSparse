@@ -9,13 +9,7 @@
 //------------------------------------------------------------------------------
 
 /* Configuration file for SuiteSparse: a Suite of Sparse matrix packages (AMD,
- * COLAMD, CCOLAMD, CAMD, CHOLMOD, UMFPACK, CXSparse, and others).
- *
- * SuiteSparse_config.h provides the definition of the long integer:
- * SuiteSparse_long.  For SuiteSparse v6.0.0 and later, this is now int64_t for
- * all compilers, and ANSI C11 is assumed.  In prior versions, its definition
- * depended on the C compiler, with the intent of ensuring it was a 64-bit
- * signed integer.
+ * COLAMD, CCOLAMD, CAMD, CHOLMOD, UMFPACK, CXSparse, SuiteSparseQR, ...).
  *
  * This file also defines the SUITESPARSE_VERSION and related definitions.
  */
@@ -323,16 +317,6 @@ extern "C" {
     #define SUITESPARSE_RESTRICT
 
 #endif
-
-/* ========================================================================== */
-/* SuiteSparse_long */
-/* ========================================================================== */
-
-#undef  SuiteSparse_long
-#define SuiteSparse_long int64_t
-#define SuiteSparse_long_max INT64_MAX
-#define SuiteSparse_long_idd PRId64
-#define SuiteSparse_long_id "%" SuiteSparse_long_idd
 
 /* ========================================================================== */
 /* SuiteSparse_config parameters and functions */

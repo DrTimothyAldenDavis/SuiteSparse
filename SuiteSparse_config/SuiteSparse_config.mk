@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# SuiteSparse_config/SuiteSparse_config.mk: Makefile config  for SuiteSparse
+# SuiteSparse_config/SuiteSparse_config.mk: Makefile config for SuiteSparse
 #-------------------------------------------------------------------------------
 
 # SuiteSparse_config, Copyright (c) 2012-2022, Timothy A. Davis.
@@ -8,10 +8,13 @@
 
 #-------------------------------------------------------------------------------
 
-# This file contains all configuration settings for all packages in SuiteSparse,
-# except for CSparse (which is stand-alone), the packages in MATLAB_Tools,
-# and GraphBLAS.  The configuration settings for GraphBLAS are determined by
-# GraphBLAS/CMakeLists.txt
+# This file contains all configuration settings for all testing all packages in
+# SuiteSparse, except for CSparse (which is stand-alone), the packages in
+# MATLAB_Tools, and GraphBLAS.
+
+# The configuration settings for GraphBLAS, and for the production libraries
+# of SuiteSparse packages are determined by their respective CMakeLists.txt
+# file, and by SuiteSparse/cmake_modules/SuiteSparsePolicy.cmake.
 
 SUITESPARSE_VERSION = 6.0.0
 
@@ -187,7 +190,8 @@ SUITESPARSE_VERSION = 6.0.0
             #   -Wl,--end-group -lpthread -lm
             # using dynamic linking:
             ifeq ($(UNAME),Linux)
-                BLAS ?= -lmkl_intel_lp64 -lmkl_gnu_thread -lmkl_core -lgomp -lpthread -lm -ldl
+#               BLAS ?= -lmkl_intel_lp64 -lmkl_gnu_thread -lmkl_core -lgomp -lpthread -lm -ldl
+                BLAS ?= -lmkl_gf_lp64 -lmkl_gnu_thread -lmkl_core -lgomp -lpthread -lm -ldl
                 LAPACK ?=
             endif
         else
@@ -225,7 +229,7 @@ SUITESPARSE_VERSION = 6.0.0
 
     # CUDA is detected automatically, and used if found.  To disable CUDA,
     # use CUDA=no
-    CUDA = auto
+    CUDA ?= auto
 
     ifneq ($(CUDA),no)
         CUDA_PATH = $(shell which nvcc 2>/dev/null | sed "s/\/bin\/nvcc//")

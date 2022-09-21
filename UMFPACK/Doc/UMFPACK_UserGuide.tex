@@ -256,7 +256,7 @@ A detailed list of changes is in the {\tt ChangeLog} file.
         the Diagonal Map, and now it is returned as its own array (if present).
         The initial row permutation is returned as-is.
     \item \verb'umfpack.h': a single include file, no longer \verb'#include's \verb'umfpack_*.h' files.
-    \item \verb'SuiteSparse_long' replaced with \verb'int64_t'
+    \item 64-bit integers now use \verb'int64_t'
 \end{itemize}
 
 %-------------------------------------------------------------------------------
@@ -278,13 +278,7 @@ in {\tt SuiteSparse\_config}.
 \subsection{Version 5.6.0}
 %-------------------------------------------------------------------------------
 
-Replaced {\tt UFconfig} with {\tt SuiteSparse\_config}, for {\tt
-SuiteSparse\_timer}.  The \verb'UF_long' type is replaced with
-\verb'SuiteSparse_long' to avoid potential name conflicts with the {\tt UF\_}
-prefix, but the former is still available for user programs.  User programs may
-safely {\tt \#undef} the \verb'UF_long' macro and use \verb'SuiteSparse_long'
-instead.  In future versions, \verb'UF_long' will be removed completely from
-{\tt SuiteSparse\_config.h}.
+Replaced {\tt UFconfig} with {\tt SuiteSparse\_config}.
 
 %-------------------------------------------------------------------------------
 \subsection{Version 5.5.0}

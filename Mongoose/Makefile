@@ -71,5 +71,5 @@ purge: distclean
 
 # remove all files not in the distribution
 distclean:
-	rm -rf build/* Lib/* MATLAB/*.mex*
+	- $(RM) -rf build/* Version/*.tmp MATLAB/*.o MATLAB/*.mex*
 

@@ -213,8 +213,7 @@ About the BLAS and LAPACK libraries
 
 *NOTE: Use of the Intel MKL BLAS is strongly recommended.  A recent OpenBLAS
 can result in severe performance degradation.  The reason for this is being
-investigated, and this may be resolved in the near future.  Ignore the comments
-about OpenBLAS in the various user guides; those are out of date.*
+investigated, and this may be resolved in the near future.
 
 ------------------
 SuiteSparse/README

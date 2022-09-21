@@ -90,7 +90,8 @@ message ( STATUS "CMAKE have OpenMP:       ${OPENMP_FOUND} ")
 #-------------------------------------------------------------------------------
 
 include_directories ( Source Include ${SUITESPARSE_CONFIG_INCLUDE_DIR}
-    ${AMD_INCLUDE_DIR} ${CMAKE_SOURCE_DIR}/../AMD/Include )
+    ${AMD_INCLUDE_DIR} ${CHOLMOD_INCLUDE_DIR}
+    ${CMAKE_SOURCE_DIR}/../AMD/Include )
 
 #-------------------------------------------------------------------------------
 # dynamic umfpack library properties

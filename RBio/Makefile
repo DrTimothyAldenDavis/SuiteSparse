@@ -66,7 +66,7 @@ uninstall:
 
 # remove all files not in the distribution
 clean:
-	- $(RM) -rf build/* Config/*.tmp temp.rb
+	- $(RM) -rf build/* Config/*.tmp RBio/*.o RBio/*.mex* timelog.m
 	( cd Tcov ; $(MAKE) clean )
 
 purge: clean

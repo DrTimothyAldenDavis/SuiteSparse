@@ -99,7 +99,8 @@ uninstall:
 
 # remove all files not in the distribution
 clean:
-	- $(RM) -rf build/* Config/*.tmp
+	- $(RM) -rf build/* Config/*.tmp MATLAB/*.o MATLAB/*.mex* timelog.m
+	- $(RM) -rf MATLAB/*/*.o MATLAB/*/*.mex*
 	( cd Tcov && $(MAKE) purge )
 
 purge: clean

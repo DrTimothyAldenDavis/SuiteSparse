@@ -4,11 +4,9 @@ Oct FIXME, 2022: SuiteSparse 6.0.0
         SLIP_LU has not been modified.  It will be updated with a
         new package, SPEX, in a future release of SuiteSparse.
     * integers: int (32-bit) and SuiteSparse_long (nominally 64-bit) replaced
-        with int32_t and int64_t.  This is likely compatible with all prior
-        usage of SuiteSparse, but it requires the major version numbers of all
-        packages to be bumped up by one, since it's a change to the C API that
-        potentially affects the binary interface, for systems where
-        SuiteSparse_long was actually just 32 bits.
+        with int32_t and int64_t.  The SuiteSparse_long #define has been
+        deprecated and removed.  Replace its use with int64_t in any code that
+        uses SuiteSparse v6.0.0 or later.
     * UMFPACK: new options to support ParU.  Single umfpack.h include file.
     * CHOLMOD: Single cholmod.h include file.
 
