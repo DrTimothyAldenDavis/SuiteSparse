@@ -16,12 +16,9 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-message ( STATUS "CMake version: " ${CMAKE_VERSION} )
-
-# version must match ../CMakeLists.txt:
-
+# date version must match ../CMakeLists.txt:
 # version of SuiteSparse:GraphBLAS
-set ( GraphBLAS_DATE "Sept 5, 2022 (beta4)" )   # FIXME
+set ( GraphBLAS_DATE "Oct 31, 2022 (beta5)" )   # FIXME
 set ( GraphBLAS_VERSION_MAJOR 7 )
 set ( GraphBLAS_VERSION_MINOR 3 )
 set ( GraphBLAS_VERSION_SUB   0 )
@@ -283,15 +280,6 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 message ( STATUS "CMAKE C flags: " ${CMAKE_C_FLAGS} )
-
-#-------------------------------------------------------------------------------
-# graphblas_matlab installation
-#-------------------------------------------------------------------------------
-
-install ( TARGETS graphblas_matlab
-     LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
-     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-     ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
 
 #-------------------------------------------------------------------------------
 # installation location
