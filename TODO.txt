@@ -1,10 +1,6 @@
 FIXME: date for all packages
 
-FIXME test/update MATLAB interfaces for all packages
-    done: AMD, BTF, CAMD, CCOLAMD, COLAMD, CHOLMOD, CSparse,
-        CXSparse, KLU, LDL, Mongoose, UMFPACK, SPQR
-
-    todo: SuiteSparse_install.m, SuiteSparse_demo.m
+FIXME test/update SuiteSparse_install.m, SuiteSparse_demo.m
 
 FIXME: new output files
     AMD/MATLAB/amd_demo.m.out (diary)
@@ -22,6 +18,7 @@ FIXME: new output files
     UMFPACK/Demo/*out
     UMFPACK/MATLAB/*out
     SPQR/Demo/*out*
+    (look for more)
 
 FIXME: update metis cmake to use SuiteSparsePolicy
 
