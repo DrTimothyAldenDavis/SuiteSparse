@@ -14,10 +14,10 @@ c
 c usage (for example):
 c
 c       in a Unix shell:
-c       readhb < HB/arc130.rua > tmp/A
+c       readhb < HB/arc130.rua > tmp_A
 c
 c       Then, in MATLAB, you can do the following:
-c       >> load tmp/A
+c       >> load tmp_A
 c       >> A = spconvert (A) ;
 c       >> spy (A)
 

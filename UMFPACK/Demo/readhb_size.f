@@ -13,7 +13,7 @@ c       size of the matrix (# rows, # columns, and # of entries)
 c
 c usage (for example):
 c
-c       readhb_size < HB/arc130.rua > tmp/Asize
+c       readhb_size < HB/arc130.rua > tmp_Asize
 
         integer nz, totcrd, ptrcrd,
      $          indcrd, valcrd, rhscrd, ncol, nrow, nrhs

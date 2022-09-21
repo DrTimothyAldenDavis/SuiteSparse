@@ -170,13 +170,12 @@ purge:
 	- ( cd CSparse && $(MAKE) purge )
 	- ( cd CXSparse && $(MAKE) purge )
 	- ( cd RBio && $(MAKE) purge )
-	- ( cd MATLAB_Tools/SuiteSparseCollection && $(RM) *.mex* )
-	- ( cd MATLAB_Tools/SSMULT && $(RM) *.mex* )
 	- ( cd SuiteSparse_GPURuntime && $(MAKE) purge )
 	- ( cd GPUQREngine && $(MAKE) purge )
 	- ( cd SPQR && $(MAKE) purge )
 	- ( cd SLIP_LU && $(MAKE) purge )
-	- $(RM) MATLAB_Tools/*/*.mex* MATLAB_Tools/spok/private/*.mex*
+	- $(RM) MATLAB_Tools/*/*.mex* MATLAB_Tools/*/*/*.mex*
+	- $(RM) MATLAB_Tools/*/*.o    MATLAB_Tools/*/*/*.o
 	- $(RM) -r include/* bin/* lib/* share/*
 
 # Remove all files not in the original distribution, but keep the libraries
