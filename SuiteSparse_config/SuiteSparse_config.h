@@ -38,6 +38,23 @@ extern "C" {
 #include <stdarg.h>
 #include <ctype.h>
 
+//------------------------------------------------------------------------------
+// SuiteSparse_long is now int64_t in SuiteSparse v6.0.0 and later
+//------------------------------------------------------------------------------
+
+// The use of SuiteSparse_long is deprecated.  User applications should use
+// int64_t instead.
+
+#undef  SuiteSparse_long
+#undef  SuiteSparse_long_max
+#undef  SuiteSparse_long_idd
+#undef  SuiteSparse_long_id
+
+#define SuiteSparse_long int64_t
+#define SuiteSparse_long_max INT64_MAX
+#define SuiteSparse_long_idd PRId64
+#define SuiteSparse_long_id "%" SuiteSparse_long_idd
+
 /* -------------------------------------------------------------------------- */
 /* OpenMP */
 /* -------------------------------------------------------------------------- */
