@@ -20,23 +20,23 @@ template <typename Entry> void spqr_rconvert
     spqr_symbolic *QRsym,
     spqr_numeric <Entry> *QRnum,
 
-    Long n1rows,        // added to each row index of Ra, Rb, and H
-    Long econ,          // only get entries in rows n1rows to econ-1
-    Long n2,            // Ra = R (:,0:n2-1), Rb = R (:,n2:n-1)
+    int64_t n1rows,        // added to each row index of Ra, Rb, and H
+    int64_t econ,          // only get entries in rows n1rows to econ-1
+    int64_t n2,            // Ra = R (:,0:n2-1), Rb = R (:,n2:n-1)
     int getT,           // if true, get Rb' instead of Rb
 
     // input/output
     // FUTURE : make Ra, Rb, H2 cholmod_sparse:
-    Long *Rap,          // size n2+1; on input, Rap [j] is the column pointer
+    int64_t *Rap,          // size n2+1; on input, Rap [j] is the column pointer
                         // for Ra.  Incremented on output by the number of
                         // entries added to column j of Ra.
 
     // output, not defined on input
-    Long *Rai,          // size rnz1 = nnz(Ra); row indices of Ra
+    int64_t *Rai,          // size rnz1 = nnz(Ra); row indices of Ra
     Entry *Rax,         // size rnz; numerical values of Ra
 
     // input/output
-    Long *Rbp,          // if getT is false:
+    int64_t *Rbp,          // if getT is false:
                         // size (n-n2)+1; on input, Rbp [j] is the column
                         // pointer for Rb.  Incremented on output by the number
                         // of entries added to column j of Rb.
@@ -46,16 +46,16 @@ template <typename Entry> void spqr_rconvert
                         // of entries added to row i of Rb.
 
     // output, not defined on input
-    Long *Rbi,          // size rnz2 = nnz(Rb); indices of Rb
+    int64_t *Rbi,          // size rnz2 = nnz(Rb); indices of Rb
     Entry *Rbx,         // size rnz2; numerical values of Rb
 
     // input
-    Long *H2p,          // size nh+1; H2p [j] is the column pointer for H.
+    int64_t *H2p,          // size nh+1; H2p [j] is the column pointer for H.
                         // H2p, H2i, and H2x are ignored if H was not kept
                         // during factorization.  nh computed by rcount
 
     // output, not defined on input
-    Long *H2i,          // size hnz = nnz(H); indices of H
+    int64_t *H2i,          // size hnz = nnz(H); indices of H
     Entry *H2x,         // size hnz; numerical values of H
 
     Entry *H2Tau        // size nh; Householder coefficients
@@ -63,9 +63,9 @@ template <typename Entry> void spqr_rconvert
 {
     Entry rij, hij ;
     Entry **Rblock, *R, *Tau, *HTau ;
-    Long *Rp, *Rj, *Super, *HStair, *Hii, *Stair, *Hip, *Hm, *Hi ;
+    int64_t *Rp, *Rj, *Super, *HStair, *Hii, *Stair, *Hip, *Hm, *Hi ;
     char *Rdead ;
-    Long nf, j, f, col1, fp, pr, fn, rm, k, i, p, getRa, getRb, row1, fm,
+    int64_t nf, j, f, col1, fp, pr, fn, rm, k, i, p, getRa, getRb, row1, fm,
         // n, rjsize,
         h, getH, keepH, ph, t, nh ;
 
@@ -94,8 +94,8 @@ template <typename Entry> void spqr_rconvert
     }
     if (getRb)
     {
-        Long n = QRsym->n ;
-        Long zn = getT ? econ : n-n2 ;
+        int64_t n = QRsym->n ;
+        int64_t zn = getT ? econ : n-n2 ;
         for (k = 0 ; k <= zn ; k++)
         {
             PR (("Rbp [%ld] = %ld on input\n", k, Rbp [k])) ;
@@ -314,22 +314,22 @@ template void spqr_rconvert <double>
     spqr_symbolic *QRsym,
     spqr_numeric <double> *QRnum,
 
-    Long n1rows,        // added to each row index of Ra, Rb, and H
-    Long econ,          // only get entries in rows n1rows to econ-1
-    Long n2,            // Ra = R (:,0:n2-1), Rb = R (:,n2:n-1)
+    int64_t n1rows,        // added to each row index of Ra, Rb, and H
+    int64_t econ,          // only get entries in rows n1rows to econ-1
+    int64_t n2,            // Ra = R (:,0:n2-1), Rb = R (:,n2:n-1)
     int getT,           // if true, get Rb' instead of Rb
 
     // input/output
-    Long *Rap,          // size n2+1; on input, Rap [j] is the column pointer
+    int64_t *Rap,          // size n2+1; on input, Rap [j] is the column pointer
                         // for Ra.  Incremented on output by the number of
                         // entries added to column j of Ra.
 
     // output, not defined on input
-    Long *Rai,          // size rnz1 = nnz(Ra); row indices of Ra
+    int64_t *Rai,          // size rnz1 = nnz(Ra); row indices of Ra
     double *Rax,        // size rnz; numerical values of Ra
 
     // input/output
-    Long *Rbp,          // if getT is false:
+    int64_t *Rbp,          // if getT is false:
                         // size (n-n2)+1; on input, Rbp [j] is the column
                         // pointer for Rb.  Incremented on output by the number
                         // of entries added to column j of Rb.
@@ -340,16 +340,16 @@ template void spqr_rconvert <double>
                         // of entries added to row i of Rb.
 
     // output, not defined on input
-    Long *Rbi,          // size rnz2 = nnz(Rb); indices of Rb
+    int64_t *Rbi,          // size rnz2 = nnz(Rb); indices of Rb
     double *Rbx,        // size rnz2; numerical values of Rb
 
     // input
-    Long *H2p,          // size nh+1; H2p [j] is the column pointer for H.
+    int64_t *H2p,          // size nh+1; H2p [j] is the column pointer for H.
                         // H2p, H2i, and H2x are ignored if H was not kept
                         // during factorization.  nh computed by rcount
 
     // output, not defined on input
-    Long *H2i,          // size hnz = nnz(H); indices of H
+    int64_t *H2i,          // size hnz = nnz(H); indices of H
     double *H2x,        // size hnz; numerical values of H
     double *H2Tau       // size nh; Householder coefficients
 ) ;
@@ -362,22 +362,22 @@ template void spqr_rconvert <Complex>
     spqr_symbolic *QRsym,
     spqr_numeric<Complex> *QRnum,
 
-    Long n1rows,        // added to each row index of Ra, Rb, and H
-    Long econ,          // only get entries in rows n1rows to econ-1
-    Long n2,            // Ra = R (:,0:n2-1), Rb = R (:,n2:n-1)
+    int64_t n1rows,        // added to each row index of Ra, Rb, and H
+    int64_t econ,          // only get entries in rows n1rows to econ-1
+    int64_t n2,            // Ra = R (:,0:n2-1), Rb = R (:,n2:n-1)
     int getT,           // if true, get Rb' instead of Rb
 
     // input/output
-    Long *Rap,          // size n2+1; on input, Rap [j] is the column pointer
+    int64_t *Rap,          // size n2+1; on input, Rap [j] is the column pointer
                         // for Ra.  Incremented on output by the number of
                         // entries added to column j of Ra.
 
     // output, not defined on input
-    Long *Rai,          // size rnz1 = nnz(Ra); row indices of Ra
+    int64_t *Rai,          // size rnz1 = nnz(Ra); row indices of Ra
     Complex *Rax,       // size rnz; numerical values of Ra
 
     // input/output
-    Long *Rbp,          // if getT is false:
+    int64_t *Rbp,          // if getT is false:
                         // size (n-n2)+1; on input, Rbp [j] is the column
                         // pointer for Rb.  Incremented on output by the number
                         // of entries added to column j of Rb.
@@ -388,16 +388,16 @@ template void spqr_rconvert <Complex>
                         // of entries added to row i of Rb.
 
     // output, not defined on input
-    Long *Rbi,          // size rnz2 = nnz(Rb); indices of Rb
+    int64_t *Rbi,          // size rnz2 = nnz(Rb); indices of Rb
     Complex *Rbx,       // size rnz2; numerical values of Rb
 
     // input
-    Long *H2p,          // size nh+1; H2p [j] is the column pointer for H.
+    int64_t *H2p,          // size nh+1; H2p [j] is the column pointer for H.
                         // H2p, H2i, and H2x are ignored if H was not kept
                         // during factorization.  nh computed by rcount
 
     // output, not defined on input
-    Long *H2i,          // size hnz = nnz(H); indices of H
+    int64_t *H2i,          // size hnz = nnz(H); indices of H
     Complex *H2x,       // size hnz; numerical values of H
     Complex *H2Tau      // size nh; Householder coefficients
 ) ;

@@ -21,14 +21,14 @@ template <typename Entry> int spqr_1fixed
 (
     // inputs, not modified
     double tol,             // only accept singletons above tol
-    Long bncols,            // number of columns of B
+    int64_t bncols,            // number of columns of B
     cholmod_sparse *A,      // m-by-n sparse matrix
 
     // output arrays, neither allocated nor defined on input.
 
-    Long **p_R1p,           // size n1rows+1, R1p [k] = # of nonzeros in kth
+    int64_t **p_R1p,           // size n1rows+1, R1p [k] = # of nonzeros in kth
                             // row of R1.  NULL if n1cols == 0.
-    Long **p_P1inv,         // size m, singleton row inverse permutation.
+    int64_t **p_P1inv,         // size m, singleton row inverse permutation.
                             // If row i of A is the kth singleton row, then
                             // P1inv [i] = k.  NULL if n1cols is zero.
 
@@ -37,18 +37,18 @@ template <typename Entry> int spqr_1fixed
                             // Y = [A B] or Y = [A2 B2].  If B is empty and
                             // there are no column singletons, Y is NULL
 
-    Long *p_n1cols,         // number of column singletons found
-    Long *p_n1rows,         // number of corresponding rows found
+    int64_t *p_n1cols,         // number of column singletons found
+    int64_t *p_n1rows,         // number of corresponding rows found
 
     // workspace and parameters
     cholmod_common *cc
 )
 {
     cholmod_sparse *Y ;
-    Long *P1inv, *R1p, *Yp, *Qrows, *Ap, *Ai ;
+    int64_t *P1inv, *R1p, *Yp, *Qrows, *Ap, *Ai ;
     char *Mark ;
     Entry *Ax ;
-    Long i, j, k, p, d, row, n1rows, n1cols, ynz, iold, inew, kk, m, n, xtype ;
+    int64_t i, j, k, p, d, row, n1rows, n1cols, ynz, iold, inew, kk, m, n, xtype ;
 
     // -------------------------------------------------------------------------
     // get inputs
@@ -58,8 +58,8 @@ template <typename Entry> int spqr_1fixed
 
     m = A->nrow ;
     n = A->ncol ;
-    Ap = (Long *) A->p ;
-    Ai = (Long *) A->i ;
+    Ap = (int64_t *) A->p ;
+    Ai = (int64_t *) A->i ;
     Ax = (Entry *) A->x ;
 
     // set outputs to NULL in case of early return
@@ -74,13 +74,13 @@ template <typename Entry> int spqr_1fixed
     // -------------------------------------------------------------------------
 
     Mark = (char *) cholmod_l_calloc (m, sizeof (char), cc) ;
-    Qrows = (Long *) cholmod_l_malloc (n, sizeof (Long), cc) ;
+    Qrows = (int64_t *) cholmod_l_malloc (n, sizeof (int64_t), cc) ;
 
     if (cc->status < CHOLMOD_OK)
     {
         // out of memory
         cholmod_l_free (m, sizeof (char), Mark, cc) ;
-        cholmod_l_free (n, sizeof (Long), Qrows, cc) ;
+        cholmod_l_free (n, sizeof (int64_t), Qrows, cc) ;
         return (FALSE) ;
     }
 
@@ -162,11 +162,11 @@ template <typename Entry> int spqr_1fixed
         {
             // out of memory
             cholmod_l_free (m, sizeof (char), Mark, cc) ;
-            cholmod_l_free (n, sizeof (Long), Qrows, cc) ;
+            cholmod_l_free (n, sizeof (int64_t), Qrows, cc) ;
             return (FALSE) ;
         }
 
-        Yp = (Long *) Y->p ;
+        Yp = (int64_t *) Y->p ;
 
         ASSERT (n1rows == 0) ;
         P1inv = NULL ;
@@ -193,21 +193,21 @@ template <typename Entry> int spqr_1fixed
         // Y has no entries yet; nnz(Y) will be determined later
         Y = cholmod_l_allocate_sparse (m-n1rows, n-n1cols+bncols, 0,
             TRUE, TRUE, 0, xtype, cc) ;
-        P1inv = (Long *) cholmod_l_malloc (m, sizeof (Long), cc) ;
-        R1p   = (Long *) cholmod_l_calloc (n1rows+1, sizeof (Long), cc) ;
+        P1inv = (int64_t *) cholmod_l_malloc (m, sizeof (int64_t), cc) ;
+        R1p   = (int64_t *) cholmod_l_calloc (n1rows+1, sizeof (int64_t), cc) ;
 
         if (cc->status < CHOLMOD_OK)
         {
             // out of memory
             cholmod_l_free_sparse (&Y, cc) ;
-            cholmod_l_free (m, sizeof (Long), P1inv, cc) ;
-            cholmod_l_free (n1rows+1, sizeof (Long), R1p, cc) ;
+            cholmod_l_free (m, sizeof (int64_t), P1inv, cc) ;
+            cholmod_l_free (n1rows+1, sizeof (int64_t), R1p, cc) ;
             cholmod_l_free (m, sizeof (char), Mark, cc) ;
-            cholmod_l_free (n, sizeof (Long), Qrows, cc) ;
+            cholmod_l_free (n, sizeof (int64_t), Qrows, cc) ;
             return (FALSE) ;
         }
 
-        Yp = (Long *) Y->p ;
+        Yp = (int64_t *) Y->p ;
 
 #ifndef NDEBUG
         for (i = 0 ; i < m ; i++) P1inv [i] = EMPTY ;
@@ -291,7 +291,7 @@ template <typename Entry> int spqr_1fixed
     // free workspace and return results
     // -------------------------------------------------------------------------
 
-    cholmod_l_free (n, sizeof (Long), Qrows, cc) ;
+    cholmod_l_free (n, sizeof (int64_t), Qrows, cc) ;
     cholmod_l_free (m, sizeof (char), Mark, cc) ;
 
     *p_R1p    = R1p ;
@@ -310,14 +310,14 @@ template int spqr_1fixed <double>
 (
     // inputs, not modified
     double tol,             // only accept singletons above tol
-    Long bncols,            // number of columns of B
+    int64_t bncols,            // number of columns of B
     cholmod_sparse *A,      // m-by-n sparse matrix
 
     // output arrays, neither allocated nor defined on input.
 
-    Long **p_R1p,           // size n1rows+1, R1p [k] = # of nonzeros in kth
+    int64_t **p_R1p,           // size n1rows+1, R1p [k] = # of nonzeros in kth
                             // row of R1.  NULL if n1cols == 0.
-    Long **p_P1inv,         // size m, singleton row inverse permutation.
+    int64_t **p_P1inv,         // size m, singleton row inverse permutation.
                             // If row i of A is the kth singleton row, then
                             // P1inv [i] = k.  NULL if n1cols is zero.
 
@@ -326,8 +326,8 @@ template int spqr_1fixed <double>
                             // Y = [A B] or Y = [A2 B2].  If B is empty and
                             // there are no column singletons, Y is NULL
 
-    Long *p_n1cols,         // number of column singletons found
-    Long *p_n1rows,         // number of corresponding rows found
+    int64_t *p_n1cols,         // number of column singletons found
+    int64_t *p_n1rows,         // number of corresponding rows found
 
     // workspace and parameters
     cholmod_common *cc
@@ -339,14 +339,14 @@ template int spqr_1fixed <Complex>
 (
     // inputs, not modified
     double tol,             // only accept singletons above tol
-    Long bncols,            // number of columns of B
+    int64_t bncols,            // number of columns of B
     cholmod_sparse *A,      // m-by-n sparse matrix
 
     // output arrays, neither allocated nor defined on input.
 
-    Long **p_R1p,           // size n1rows+1, R1p [k] = # of nonzeros in kth
+    int64_t **p_R1p,           // size n1rows+1, R1p [k] = # of nonzeros in kth
                             // row of R1.  NULL if n1cols == 0.
-    Long **p_P1inv,         // size m, singleton row inverse permutation.
+    int64_t **p_P1inv,         // size m, singleton row inverse permutation.
                             // If row i of A is the kth singleton row, then
                             // P1inv [i] = k.  NULL if n1cols is zero.
 
@@ -355,8 +355,8 @@ template int spqr_1fixed <Complex>
                             // Y = [A B] or Y = [A2 B2].  If B is empty and
                             // there are no column singletons, Y is NULL
 
-    Long *p_n1cols,         // number of column singletons found
-    Long *p_n1rows,         // number of corresponding rows found
+    int64_t *p_n1cols,         // number of column singletons found
+    int64_t *p_n1rows,         // number of corresponding rows found
 
     // workspace and parameters
     cholmod_common *cc

@@ -15,13 +15,13 @@
 void spqr_shift
 (
     // input, not modified
-    Long n,
+    int64_t n,
 
     // input/output
-    Long *X                     // size n+1
+    int64_t *X                     // size n+1
 )
 {
-    Long k ;
+    int64_t k ;
     if (X != NULL)
     {
         for (k = n ; k >= 1 ; k--)

@@ -45,13 +45,13 @@ void spqrDebug_print
 template <typename Entry> void spqrDebug_dumpdense
 (
     Entry *A,
-    Long m,
-    Long n,
-    Long lda,
+    int64_t m,
+    int64_t n,
+    int64_t lda,
     cholmod_common *cc
 )
 {
-    Long i, j ;
+    int64_t i, j ;
     if (cc == NULL) return ;
     PR (("Dense: m %ld n %ld lda %ld p %p\n", m, n, lda, A)) ;
     if (m < 0 || n < 0 || lda < m || A == NULL)
@@ -99,18 +99,18 @@ template <typename Entry> void spqrDebug_dumpdense
 template void spqrDebug_dumpdense <double>
 (
     double *A,
-    Long m,
-    Long n,
-    Long lda,
+    int64_t m,
+    int64_t n,
+    int64_t lda,
     cholmod_common *cc
 ) ;
 
 template void spqrDebug_dumpdense <Complex>
 (
     Complex *A,
-    Long m,
-    Long n,
-    Long lda,
+    int64_t m,
+    int64_t n,
+    int64_t lda,
     cholmod_common *cc
 ) ;
 
@@ -120,15 +120,15 @@ template void spqrDebug_dumpdense <Complex>
 
 template <typename Entry> void spqrDebug_dumpsparse
 (
-    Long *Ap,
-    Long *Ai,
+    int64_t *Ap,
+    int64_t *Ai,
     Entry *Ax,
-    Long m,
-    Long n,
+    int64_t m,
+    int64_t n,
     cholmod_common *cc
 )
 {
-    Long p, i, j ;
+    int64_t p, i, j ;
     if (cc == NULL) return ;
     PR (("\nSparse: m %ld n %ld nz %ld Ap %p Ai %p Ax %p\n",
         m, n, Ap [n], Ap, Ai,Ax)) ;
@@ -149,21 +149,21 @@ template <typename Entry> void spqrDebug_dumpsparse
 
 template void spqrDebug_dumpsparse <double>
 (
-    Long *Ap,
-    Long *Ai,
+    int64_t *Ap,
+    int64_t *Ai,
     double *Ax,
-    Long m,
-    Long n,
+    int64_t m,
+    int64_t n,
     cholmod_common *cc
 ) ;
 
 template void spqrDebug_dumpsparse <Complex>
 (
-    Long *Ap,
-    Long *Ai,
+    int64_t *Ap,
+    int64_t *Ai,
     Complex *Ax,
-    Long m,
-    Long n,
+    int64_t m,
+    int64_t n,
     cholmod_common *cc
 ) ;
 
@@ -176,13 +176,13 @@ template void spqrDebug_dumpsparse <Complex>
 #ifdef DEBUG_EXPENSIVE
 
 // returns # of times x is in the List [0..len-1]
-Long spqrDebug_listcount
+int64_t spqrDebug_listcount
 (
-    Long x, Long *List, Long len, Long what,
+    int64_t x, int64_t *List, int64_t len, int64_t what,
     cholmod_common *cc
 )
 {
-    Long k, nfound = 0 ;
+    int64_t k, nfound = 0 ;
     if (cc == NULL) return (EMPTY) ;
     if (what == 0)
     {
@@ -210,18 +210,18 @@ Long spqrDebug_listcount
 
 // Count the number of entries in the R+H block for a single front.
 
-Long spqrDebug_rhsize       // returns # of entries in R+H
+int64_t spqrDebug_rhsize       // returns # of entries in R+H
 (
     // input, not modified
-    Long m,                 // # of rows in F
-    Long n,                 // # of columns in F
-    Long npiv,              // number of pivotal columns in F
-    Long *Stair,            // size n; column j is dead if Stair [j] == 0.
+    int64_t m,                 // # of rows in F
+    int64_t n,                 // # of columns in F
+    int64_t npiv,              // number of pivotal columns in F
+    int64_t *Stair,            // size n; column j is dead if Stair [j] == 0.
                             // Only the first npiv columns can be dead.
     cholmod_common *cc
 )
 {
-    Long k, h, t, rm, rhsize = 0 ;
+    int64_t k, h, t, rm, rhsize = 0 ;
 
     ASSERT (m >= 0 && n >= 0 && npiv <= n && npiv >= 0) ;
 
@@ -278,7 +278,7 @@ Long spqrDebug_rhsize       // returns # of entries in R+H
 // === spqrDebug_dump_Parent ===================================================
 // =============================================================================
 
-void spqrDebug_dump_Parent (Long n, Long *Parent, const char *filename)
+void spqrDebug_dump_Parent (int64_t n, int64_t *Parent, const char *filename)
 {
     FILE *pfile = fopen (filename, "w") ;
     if (Parent == NULL)
@@ -287,7 +287,7 @@ void spqrDebug_dump_Parent (Long n, Long *Parent, const char *filename)
     }
     else
     {
-        for (Long f = 0 ; f < n ; f++)
+        for (int64_t f = 0 ; f < n ; f++)
         {
             fprintf (pfile, "%ld\n", 1+Parent [f]) ;
         }

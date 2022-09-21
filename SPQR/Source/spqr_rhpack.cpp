@@ -37,14 +37,14 @@
 
 #include "spqr.hpp"
 
-template <typename Entry> Long spqr_rhpack   // returns # of entries in R+H
+template <typename Entry> int64_t spqr_rhpack   // returns # of entries in R+H
 (
     // input, not modified
     int keepH,              // if true, then H is packed
-    Long m,                 // # of rows in F
-    Long n,                 // # of columns in F
-    Long npiv,              // number of pivotal columns in F
-    Long *Stair,            // size npiv; column j is dead if Stair [j] == 0.
+    int64_t m,                 // # of rows in F
+    int64_t n,                 // # of columns in F
+    int64_t npiv,              // number of pivotal columns in F
+    int64_t *Stair,            // size npiv; column j is dead if Stair [j] == 0.
                             // Only the first npiv columns can be dead.
 
     // input, not modified (unless the pack occurs in-place)
@@ -52,11 +52,11 @@ template <typename Entry> Long spqr_rhpack   // returns # of entries in R+H
 
     // output, contents not defined on input
     Entry *R,               // packed columns of R+H
-    Long *p_rm              // number of rows in R block
+    int64_t *p_rm              // number of rows in R block
 )
 {
     Entry *R0 = R ;
-    Long i, k, h, t, rm ;
+    int64_t i, k, h, t, rm ;
 
     // -------------------------------------------------------------------------
     // get inputs
@@ -147,14 +147,14 @@ template <typename Entry> Long spqr_rhpack   // returns # of entries in R+H
 
 // =============================================================================
 
-template Long spqr_rhpack <double>   // returns # of entries in R+H
+template int64_t spqr_rhpack <double>   // returns # of entries in R+H
 (
     // input, not modified
     int keepH,              // if true, then H is packed
-    Long m,                 // # of rows in F
-    Long n,                 // # of columns in F
-    Long npiv,              // number of pivotal columns in F
-    Long *Stair,            // size npiv; column j is dead if Stair [j] == 0.
+    int64_t m,                 // # of rows in F
+    int64_t n,                 // # of columns in F
+    int64_t npiv,              // number of pivotal columns in F
+    int64_t *Stair,            // size npiv; column j is dead if Stair [j] == 0.
                             // Only the first npiv columns can be dead.
 
     // input, not modified (unless the pack occurs in-place)
@@ -162,19 +162,19 @@ template Long spqr_rhpack <double>   // returns # of entries in R+H
 
     // output, contents not defined on input
     double *R,              // packed columns of R+H
-    Long *p_rm              // number of rows in R block
+    int64_t *p_rm              // number of rows in R block
 ) ;
 
 // =============================================================================
 
-template Long spqr_rhpack <Complex>   // returns # of entries in R+H
+template int64_t spqr_rhpack <Complex>   // returns # of entries in R+H
 (
     // input, not modified
     int keepH,              // if true, then H is packed
-    Long m,                 // # of rows in F
-    Long n,                 // # of columns in F
-    Long npiv,              // number of pivotal columns in F
-    Long *Stair,            // size npiv; column j is dead if Stair [j] == 0.
+    int64_t m,                 // # of rows in F
+    int64_t n,                 // # of columns in F
+    int64_t npiv,              // number of pivotal columns in F
+    int64_t *Stair,            // size npiv; column j is dead if Stair [j] == 0.
                             // Only the first npiv columns can be dead.
 
     // input, not modified (unless the pack occurs in-place)
@@ -182,5 +182,5 @@ template Long spqr_rhpack <Complex>   // returns # of entries in R+H
 
     // output, contents not defined on input
     Complex *R,             // packed columns of R+H
-    Long *p_rm              // number of rows in R block
+    int64_t *p_rm              // number of rows in R block
 ) ;

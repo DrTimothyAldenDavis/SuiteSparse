@@ -20,7 +20,7 @@ template <typename Entry> void spqr_freenum
 )
 {
     spqr_numeric <Entry> *QRnum ;
-    Long nf, n, m, rjsize, hisize, ns, stack, maxstack ;
+    int64_t nf, n, m, rjsize, hisize, ns, stack, maxstack ;
 
     if (QRnum_handle == NULL || *QRnum_handle == NULL)
     {
@@ -43,18 +43,18 @@ template <typename Entry> void spqr_freenum
     if (QRnum->keepH)
     {
         // QRnum->H* items are present only if H is kept
-        cholmod_l_free (rjsize, sizeof (Long),  QRnum->HStair,  cc) ;
+        cholmod_l_free (rjsize, sizeof (int64_t),  QRnum->HStair,  cc) ;
         cholmod_l_free (rjsize, sizeof (Entry), QRnum->HTau,    cc) ;
-        cholmod_l_free (nf,     sizeof (Long),  QRnum->Hm,      cc) ;
-        cholmod_l_free (nf,     sizeof (Long),  QRnum->Hr,      cc) ;
-        cholmod_l_free (hisize, sizeof (Long),  QRnum->Hii,     cc) ;
-        cholmod_l_free (m,      sizeof (Long),  QRnum->HPinv,   cc) ;
+        cholmod_l_free (nf,     sizeof (int64_t),  QRnum->Hm,      cc) ;
+        cholmod_l_free (nf,     sizeof (int64_t),  QRnum->Hr,      cc) ;
+        cholmod_l_free (hisize, sizeof (int64_t),  QRnum->Hii,     cc) ;
+        cholmod_l_free (m,      sizeof (int64_t),  QRnum->HPinv,   cc) ;
     }
 
     // free each stack
     if (QRnum->Stacks != NULL)
     {
-        Long *Stack_size = QRnum->Stack_size ;
+        int64_t *Stack_size = QRnum->Stack_size ;
         for (stack = 0 ; stack < ns ; stack++)
         {
             size_t s = Stack_size ? (Stack_size [stack]) : maxstack ;
@@ -62,7 +62,7 @@ template <typename Entry> void spqr_freenum
         }
     }
     cholmod_l_free (ns, sizeof (Entry *), QRnum->Stacks, cc) ;
-    cholmod_l_free (ns, sizeof (Long), QRnum->Stack_size, cc) ;
+    cholmod_l_free (ns, sizeof (int64_t), QRnum->Stack_size, cc) ;
 
     cholmod_l_free (1, sizeof (spqr_numeric<Entry>), QRnum, cc) ;
     *QRnum_handle = NULL ;

@@ -12,24 +12,24 @@
 
 #include "spqr.hpp"
 
-Long spqr_fsize     // returns # of rows of F
+int64_t spqr_fsize     // returns # of rows of F
 (
     // inputs, not modified
-    Long f,
-    Long *Super,            // size nf, from QRsym
-    Long *Rp,               // size nf, from QRsym
-    Long *Rj,               // size rjsize, from QRsym
-    Long *Sleft,            // size n+2, from QRsym
-    Long *Child,            // size nf, from QRsym
-    Long *Childp,           // size nf+1, from QRsym
-    Long *Cm,               // size nf
+    int64_t f,
+    int64_t *Super,            // size nf, from QRsym
+    int64_t *Rp,               // size nf, from QRsym
+    int64_t *Rj,               // size rjsize, from QRsym
+    int64_t *Sleft,            // size n+2, from QRsym
+    int64_t *Child,            // size nf, from QRsym
+    int64_t *Childp,           // size nf+1, from QRsym
+    int64_t *Cm,               // size nf
 
     // outputs, not defined on input
-    Long *Fmap,             // size n
-    Long *Stair             // size fn
+    int64_t *Fmap,             // size n
+    int64_t *Stair             // size fn
 )
 {
-    Long col1, col2, p1, p2, fp, fn, fm, col, p, j, c, pc, cm, ci, t, fpc ;
+    int64_t col1, col2, p1, p2, fp, fn, fm, col, p, j, c, pc, cm, ci, t, fpc ;
 
     // -------------------------------------------------------------------------
     // get the front F

@@ -10,7 +10,7 @@
 /* Test the C wrapper functions. */
 
 #include "SuiteSparseQR_C.h"
-#define Long SuiteSparse_long
+#define int64_t int64_t
 
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
 
@@ -27,7 +27,7 @@ void qrtest_C
     cholmod_sparse *Bsparse, *Xsparse ;
     SuiteSparseQR_C_factorization *QR ;
     double resid, one [2] = {1,0}, minusone [2] = {-1,0} ;
-    Long m, n ;
+    int64_t m, n ;
 #ifndef NEXPERT
     cholmod_dense *Y ;
     int split ;

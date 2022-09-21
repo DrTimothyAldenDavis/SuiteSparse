@@ -22,6 +22,7 @@ FIXME: new output files
     KLU/Demo/*out
     UMFPACK/Demo/*out
     UMFPACK/MATLAB/*out
+    SPQR/Demo/*out*
 
 FIXME: test coverage for all packages.
     done: CSparse, CXSparse, RBio, CHOLMOD, GraphBLAS, KLU, UMFPACK

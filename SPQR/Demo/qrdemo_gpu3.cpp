@@ -19,7 +19,7 @@ int main (int argc, char **argv)
 {
     cholmod_sparse *A, *R ;
     cholmod_dense *B, *C ;
-    SuiteSparse_long *E ;
+    int64_t *E ;
     int mtype ;
     long m, n, rnk ;
     size_t total_mem, available_mem ;

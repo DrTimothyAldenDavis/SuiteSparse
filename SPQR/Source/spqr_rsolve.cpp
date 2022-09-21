@@ -67,8 +67,8 @@ template <typename Entry> void spqr_rsolve
     SuiteSparseQR_factorization <Entry> *QR,
     int use_Q1fill,         // if TRUE, do X=E*(R\B), otherwise do X=R\B
 
-    Long nrhs,              // number of columns of B
-    Long ldb,               // leading dimension of B
+    int64_t nrhs,              // number of columns of B
+    int64_t ldb,               // leading dimension of B
     Entry *B,               // size m-by-nrhs with leading dimesion ldb
 
     // output
@@ -76,7 +76,7 @@ template <typename Entry> void spqr_rsolve
 
     // workspace
     Entry **Rcolp,          // size QRnum->maxfrank
-    Long *Rlive,            // size QRnum->maxfrank
+    int64_t *Rlive,            // size QRnum->maxfrank
     Entry *W,               // size QRnum->maxfrank * nrhs
 
     cholmod_common *cc
@@ -84,15 +84,15 @@ template <typename Entry> void spqr_rsolve
 {
     spqr_symbolic *QRsym ;
     spqr_numeric <Entry> *QRnum ;
-    Long n1rows, n1cols, n ;
-    Long *Q1fill, *R1p, *R1j ;
+    int64_t n1rows, n1cols, n ;
+    int64_t *Q1fill, *R1p, *R1j ;
     Entry *R1x ;
 
     Entry xi ;
     Entry **Rblock, *R, *W1, *B1, *X1 ;
-    Long *Rp, *Rj, *Super, *HStair, *Hm, *Stair ;
+    int64_t *Rp, *Rj, *Super, *HStair, *Hm, *Stair ;
     char *Rdead ;
-    Long nf, // m,
+    int64_t nf, // m,
         rank, j, f, col1, col2, fp, pr, fn, rm, k, i, row1, row2, ii,
         keepH, fm, h, t, live, kk ;
 
@@ -357,18 +357,18 @@ template <typename Entry> void spqr_rsolve
             // get the right-hand side for this ith singleton row
             Entry x = B [i] ;
             // solve with the "off-diagonal" entries, x = x-R(i,:)*x2
-            for (Long p = R1p [i] + 1 ; p < R1p [i+1] ; p++)
+            for (int64_t p = R1p [i] + 1 ; p < R1p [i+1] ; p++)
             {
-                Long jnew = R1j [p] ;
+                int64_t jnew = R1j [p] ;
                 ASSERT (jnew >= i && jnew < n) ;
-                Long jold = Q1fill ? Q1fill [jnew] : jnew ;
+                int64_t jold = Q1fill ? Q1fill [jnew] : jnew ;
                 ASSERT (jold >= 0 && jold < n) ;
                 x -= R1x [p] * X [jold] ;
             }
             // divide by the "diagonal" (the singleton entry itself)
-            Long p = R1p [i] ;
-            Long jnew = R1j [p] ;
-            Long jold = Q1fill ? Q1fill [jnew] : jnew ;
+            int64_t p = R1p [i] ;
+            int64_t jnew = R1j [p] ;
+            int64_t jold = Q1fill ? Q1fill [jnew] : jnew ;
             ASSERT (jold >= 0 && jold < n) ;
             // X [jold] = x / R1x [p] ; using cc->complex_divide
             X [jold] = spqr_divide (x, R1x [p], cc) ;
@@ -386,8 +386,8 @@ template void spqr_rsolve <double>
     SuiteSparseQR_factorization <double> *QR,
     int use_Q1fill,
 
-    Long nrhs,              // number of columns of B
-    Long ldb,               // leading dimension of B
+    int64_t nrhs,              // number of columns of B
+    int64_t ldb,               // leading dimension of B
     double *B,              // size m-by-nrhs with leading dimesion ldb
 
     // output
@@ -395,7 +395,7 @@ template void spqr_rsolve <double>
 
     // workspace
     double **Rcolp,
-    Long *Rlive,
+    int64_t *Rlive,
     double *W,
 
     cholmod_common *cc
@@ -408,8 +408,8 @@ template void spqr_rsolve <Complex>
     SuiteSparseQR_factorization <Complex> *QR,
     int use_Q1fill,
 
-    Long nrhs,              // number of columns of B
-    Long ldb,               // leading dimension of B
+    int64_t nrhs,              // number of columns of B
+    int64_t ldb,               // leading dimension of B
     Complex *B,             // size m-by-nrhs with leading dimesion ldb
 
     // output
@@ -417,7 +417,7 @@ template void spqr_rsolve <Complex>
 
     // workspace
     Complex **Rcolp,
-    Long *Rlive,
+    int64_t *Rlive,
     Complex *W,
 
     cholmod_common *cc

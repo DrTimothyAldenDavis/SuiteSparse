@@ -31,7 +31,7 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/../SuiteSparse/cmake_modules
     )
 
-# FIXME: CUDA doesn't work yet
+# FIXME: CUDA doesn't work yet with this cmake script
 set ( ENABLE_CUDA false )
 
 include ( SuiteSparsePolicy )

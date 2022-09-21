@@ -39,14 +39,14 @@ template <typename Entry> void spqr_panel
 (
     // input
     int method,         // 0,1,2,3
-    Long m,
-    Long n,
-    Long v,             // length of the first vector in V
-    Long h,             // number of Householder vectors in the panel
-    Long *Vi,           // Vi [0:v-1] defines the pattern of the panel
+    int64_t m,
+    int64_t n,
+    int64_t v,             // length of the first vector in V
+    int64_t h,             // number of Householder vectors in the panel
+    int64_t *Vi,           // Vi [0:v-1] defines the pattern of the panel
     Entry *V,           // v-by-h, panel of Householder vectors
     Entry *Tau,         // size h, Householder coefficients for the panel
-    Long ldx,
+    int64_t ldx,
 
     // input/output
     Entry *X,           // m-by-n with leading dimension ldx
@@ -59,7 +59,7 @@ template <typename Entry> void spqr_panel
 )
 {
     Entry *C1, *X1 ;
-    Long k, p, i ;
+    int64_t k, p, i ;
 
     // -------------------------------------------------------------------------
     // gather X into workspace C
@@ -154,14 +154,14 @@ template void spqr_panel <double>
 (
     // input
     int method,
-    Long m,
-    Long n,
-    Long v,
-    Long h,             // number of Householder vectors in the panel
-    Long *Vi,           // Vi [0:v-1] defines the pattern of the panel
+    int64_t m,
+    int64_t n,
+    int64_t v,
+    int64_t h,             // number of Householder vectors in the panel
+    int64_t *Vi,           // Vi [0:v-1] defines the pattern of the panel
     double *V,          // v-by-h, panel of Householder vectors
     double *Tau,        // size h, Householder coefficients for the panel
-    Long ldx,
+    int64_t ldx,
 
     // input/output
     double *X,          // m-by-n with leading dimension m 
@@ -177,14 +177,14 @@ template void spqr_panel <Complex>
 (
     // input
     int method,
-    Long m,
-    Long n,
-    Long v,
-    Long h,             // number of Householder vectors in the panel
-    Long *Vi,           // Vi [0:v-1] defines the pattern of the panel
+    int64_t m,
+    int64_t n,
+    int64_t v,
+    int64_t h,             // number of Householder vectors in the panel
+    int64_t *Vi,           // Vi [0:v-1] defines the pattern of the panel
     Complex *V,         // v-by-h, panel of Householder vectors
     Complex *Tau,       // size h, Householder coefficients for the panel
-    Long ldx,
+    int64_t ldx,
 
     // input/output
     Complex *X,         // m-by-n with leading dimension m

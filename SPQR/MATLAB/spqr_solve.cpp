@@ -60,9 +60,9 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    Long *Bp, *Bi ;
+    int64_t *Bp, *Bi ;
     double *Ax, *Bx, dummy ;
-    Long m, n, k, bncols, p, i, rank, A_complex, B_complex, is_complex,
+    int64_t m, n, k, bncols, p, i, rank, A_complex, B_complex, is_complex,
         anz, bnz ;
     spqr_mx_options opts ;
     cholmod_sparse *A, Amatrix, *Xsparse ; 

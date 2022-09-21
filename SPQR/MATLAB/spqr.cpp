@@ -40,9 +40,9 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    Long *Ap, *Ai, *E, *Bp, *Bi, *HPinv ;
+    int64_t *Ap, *Ai, *E, *Bp, *Bi, *HPinv ;
     double *Ax, *Bx, dummy, tol ;
-    Long m, n, anz, bnz, is_complex, econ, A_complex, B_complex ;
+    int64_t m, n, anz, bnz, is_complex, econ, A_complex, B_complex ;
     spqr_mx_options opts ;
     cholmod_sparse *A, Amatrix, *R, *Q, *Csparse, Bsmatrix, *Bsparse, *H ;
     cholmod_dense *Cdense, Bdmatrix, *Bdense, *HTau ;
@@ -88,8 +88,8 @@ void mexFunction
     }
 
     A = spqr_mx_get_sparse (pargin [0], &Amatrix, &dummy) ;
-    Ap = (Long *) A->p ;
-    Ai = (Long *) A->i ;
+    Ap = (int64_t *) A->p ;
+    Ai = (int64_t *) A->i ;
     m = A->nrow ;
     n = A->ncol ;
     A_complex = mxIsComplex (pargin [0]) ;
@@ -436,7 +436,7 @@ void mexFunction
             // Q.P contains the inverse row permutation
             P = mxCreateDoubleMatrix (1, m, mxREAL) ;
             double *Tx = mxGetPr (P) ;
-            for (Long i = 0 ; i < m ; i++)
+            for (int64_t i = 0 ; i < m ; i++)
             {
                 Tx [i] = HPinv [i] + 1 ;
             }

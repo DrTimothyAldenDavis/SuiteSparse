@@ -9,16 +9,16 @@
 
 #include "spqr.hpp"
 
-Long spqr_csize     // returns # of entries in C of a child
+int64_t spqr_csize     // returns # of entries in C of a child
 (
     // input, not modified
-    Long c,                 // child c
-    Long *Rp,               // size nf+1, pointers for pattern of R
-    Long *Cm,               // size nf, Cm [c] = # of rows in child C
-    Long *Super             // size nf, pivotal columns in each front
+    int64_t c,                 // child c
+    int64_t *Rp,               // size nf+1, pointers for pattern of R
+    int64_t *Cm,               // size nf, Cm [c] = # of rows in child C
+    int64_t *Super             // size nf, pivotal columns in each front
 )
 {
-    Long pc, cm, fnc, fpc, cn, csize ;
+    int64_t pc, cm, fnc, fpc, cn, csize ;
 
     pc = Rp [c] ;                   // get the pattern of child R
     cm = Cm [c] ;                   // # of rows in child C
@@ -27,7 +27,7 @@ Long spqr_csize     // returns # of entries in C of a child
     cn = fnc - fpc ;                // # of cols in child C
     ASSERT (cm >= 0 && cm <= cn) ;
     ASSERT (pc + cm <= Rp [c+1]) ;
-    // Note that this is safe from Long overflow
+    // Note that this is safe from int64_t overflow
     csize = (cm * (cm+1)) / 2 + cm * (cn - cm) ;
     return (csize) ;
 }

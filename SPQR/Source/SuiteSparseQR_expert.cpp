@@ -64,7 +64,7 @@ SuiteSparseQR_factorization <Entry> *SuiteSparseQR_symbolic
 
     RETURN_IF_NULL_COMMON (NULL) ;
     RETURN_IF_NULL (A, NULL) ;
-    Long xtype = spqr_type <Entry> ( ) ;
+    int64_t xtype = spqr_type <Entry> ( ) ;
     RETURN_IF_XTYPE_INVALID (A, NULL) ;
     cc->status = CHOLMOD_OK ;
 
@@ -132,10 +132,10 @@ SuiteSparseQR_factorization <Entry> *SuiteSparseQR_symbolic
 
     if (QRsym->Qfill != NULL)
     {
-        Long n, k, *Qfill, *Q1fill ;
+        int64_t n, k, *Qfill, *Q1fill ;
         Qfill = QRsym->Qfill ;
         n = A->ncol ;
-        Q1fill = (Long *) cholmod_l_malloc (n, sizeof (Long), cc) ;
+        Q1fill = (int64_t *) cholmod_l_malloc (n, sizeof (int64_t), cc) ;
         QR->Q1fill = Q1fill ;
         if (cc->status < CHOLMOD_OK)
         {
@@ -206,7 +206,7 @@ template <typename Entry> int SuiteSparseQR_numeric
     RETURN_IF_NULL_COMMON (FALSE) ;
     RETURN_IF_NULL (A, FALSE) ;
     RETURN_IF_NULL (QR, FALSE) ;
-    Long xtype = spqr_type <Entry> ( ) ;
+    int64_t xtype = spqr_type <Entry> ( ) ;
     RETURN_IF_XTYPE_INVALID (A, FALSE) ;
     cc->status = CHOLMOD_OK ;
 
@@ -218,7 +218,7 @@ template <typename Entry> int SuiteSparseQR_numeric
         return (FALSE) ;
     }
 
-    Long n = A->ncol ;
+    int64_t n = A->ncol ;
 
     // -------------------------------------------------------------------------
     // get the column 2-norm tolerance
@@ -338,7 +338,7 @@ SuiteSparseQR_factorization <Entry> *SuiteSparseQR_factorize
 {
     RETURN_IF_NULL_COMMON (NULL) ;
     RETURN_IF_NULL (A, NULL) ;
-    Long xtype = spqr_type <Entry> ( ) ;
+    int64_t xtype = spqr_type <Entry> ( ) ;
     RETURN_IF_XTYPE_INVALID (A, NULL) ;
     cc->status = CHOLMOD_OK ;
     // B is not present, and always keep H:
@@ -382,8 +382,8 @@ template <typename Entry> void spqr_private_rtsolve
     SuiteSparseQR_factorization <Entry> *QR,
     int use_Q1fill,
 
-    Long nrhs,              // number of columns of B
-    Long ldb,               // leading dimension of B
+    int64_t nrhs,              // number of columns of B
+    int64_t ldb,               // leading dimension of B
     Entry *B,               // size n-by-nrhs with leading dimension ldb
 
     // output, contents undefined on input
@@ -395,11 +395,11 @@ template <typename Entry> void spqr_private_rtsolve
     Entry xi ;
     spqr_symbolic *QRsym ;
     spqr_numeric <Entry> *QRnum ;
-    Long *R1p, *R1j, *Rmap, *Rp, *Rj, *Super, *HStair, *Hm, *Stair, *Q1fill,
+    int64_t *R1p, *R1j, *Rmap, *Rp, *Rj, *Super, *HStair, *Hm, *Stair, *Q1fill,
         *RmapInv ;
     Entry *R1x, **Rblock, *R, *X1, *X2 ;
     char *Rdead ;
-    Long i, j, k, m, n, p, kk, n1rows, n1cols, rank, nf, f, col1, col2, fp, pr,
+    int64_t i, j, k, m, n, p, kk, n1rows, n1cols, rank, nf, f, col1, col2, fp, pr,
         fn, rm, row1, keepH, fm, h, t, live, jj ;
 
     // -------------------------------------------------------------------------
@@ -475,7 +475,7 @@ template <typename Entry> void spqr_private_rtsolve
             {
                 k = RmapInv [i] ;
                 ASSERT (k >= 0 && k < n) ;
-                Long knew = Q1fill ? Q1fill [k] : k ;
+                int64_t knew = Q1fill ? Q1fill [k] : k ;
                 ASSERT (knew >= 0 && knew < n) ;
                 X1 [i] = B [knew] ;
             }
@@ -630,7 +630,7 @@ template <typename Entry> void spqr_private_rtsolve
             jj = j + n1cols ;
             if (jj >= n) break ;            // in case [A Binput] was factorized
 
-            Long ii = Rmap ? Rmap [jj] : jj ;
+            int64_t ii = Rmap ? Rmap [jj] : jj ;
             ASSERT (ii >= n1rows && ii < n) ;
             if (ii < rank)
             {
@@ -699,7 +699,7 @@ template <typename Entry> cholmod_dense *SuiteSparseQR_solve    // returns X
 {
     Entry *Bx ;
     cholmod_dense *W, *X ;
-    Long m, n, nrhs, ldb, ok ;
+    int64_t m, n, nrhs, ldb, ok ;
 
     // -------------------------------------------------------------------------
     // get inputs
@@ -707,7 +707,7 @@ template <typename Entry> cholmod_dense *SuiteSparseQR_solve    // returns X
 
     RETURN_IF_NULL_COMMON (NULL) ;
     RETURN_IF_NULL (B, NULL) ;
-    Long xtype = spqr_type <Entry> ( ) ;
+    int64_t xtype = spqr_type <Entry> ( ) ;
     RETURN_IF_XTYPE_INVALID (B, NULL) ;
     RETURN_IF_NULL (QR, NULL) ;
     RETURN_IF_NULL (QR->QRnum, NULL) ;
@@ -718,7 +718,7 @@ template <typename Entry> cholmod_dense *SuiteSparseQR_solve    // returns X
     }
     m = QR->narows ;
     n = QR->nacols ;
-    if ((Long) B->nrow != ((system <= SPQR_RETX_EQUALS_B) ? m : n))
+    if ((int64_t) B->nrow != ((system <= SPQR_RETX_EQUALS_B) ? m : n))
     {
         ERROR (CHOLMOD_INVALID, "invalid dimensions") ;
         return (NULL) ;
@@ -739,12 +739,12 @@ template <typename Entry> cholmod_dense *SuiteSparseQR_solve    // returns X
         // X = E*(R\B) or X=R\B
         // ---------------------------------------------------------------------
 
-        Long *Rlive ;
+        int64_t *Rlive ;
         Entry **Rcolp ;
         X = cholmod_l_allocate_dense (n, nrhs, n, xtype, cc) ;
-        Long maxfrank = QR->QRnum->maxfrank  ;
+        int64_t maxfrank = QR->QRnum->maxfrank  ;
         W = cholmod_l_allocate_dense (maxfrank, nrhs, maxfrank, xtype, cc) ;
-        Rlive = (Long *)   cholmod_l_malloc (maxfrank, sizeof (Long),    cc) ;
+        Rlive = (int64_t *)   cholmod_l_malloc (maxfrank, sizeof (int64_t),    cc) ;
         Rcolp = (Entry **) cholmod_l_malloc (maxfrank, sizeof (Entry *), cc) ;
         ok = (X != NULL) && (W != NULL) && (cc->status == CHOLMOD_OK) ;
         if (ok)
@@ -752,7 +752,7 @@ template <typename Entry> cholmod_dense *SuiteSparseQR_solve    // returns X
             spqr_rsolve (QR, system == SPQR_RETX_EQUALS_B, nrhs, ldb, Bx,
                 (Entry *) X->x, Rcolp, Rlive, (Entry *) W->x, cc) ;
         }
-        cholmod_l_free (maxfrank, sizeof (Long),    Rlive, cc) ;
+        cholmod_l_free (maxfrank, sizeof (int64_t),    Rlive, cc) ;
         cholmod_l_free (maxfrank, sizeof (Entry *), Rcolp, cc) ;
         cholmod_l_free_dense (&W, cc) ;
 
@@ -825,7 +825,7 @@ template <typename Entry> cholmod_sparse *SuiteSparseQR_solve    // returns X
     RETURN_IF_NULL_COMMON (NULL) ;
     RETURN_IF_NULL (QR, NULL) ;
     RETURN_IF_NULL (Bsparse, NULL) ;
-    Long xtype = spqr_type <Entry> ( ) ;
+    int64_t xtype = spqr_type <Entry> ( ) ;
     RETURN_IF_XTYPE_INVALID (Bsparse, NULL) ;
     cc->status = CHOLMOD_OK ;
 
@@ -870,24 +870,24 @@ template cholmod_sparse *SuiteSparseQR_solve <Complex>
 // Get pointers to the Householder vectors in a single front.
 // Returns # Householder vectors in F.
 
-template <typename Entry> Long spqr_private_get_H_vectors
+template <typename Entry> int64_t spqr_private_get_H_vectors
 (
     // inputs
-    Long f,                 // front to operate on
+    int64_t f,                 // front to operate on
     SuiteSparseQR_factorization <Entry> *QR,
 
     // outputs
     Entry *H_Tau,           // size QRsym->maxfn
-    Long *H_start,          // size QRsym->maxfn
-    Long *H_end,            // size QRsym->maxfn
+    int64_t *H_start,          // size QRsym->maxfn
+    int64_t *H_end,            // size QRsym->maxfn
     cholmod_common *cc
 )
 {
     spqr_symbolic *QRsym ;
     spqr_numeric <Entry> *QRnum ;
     Entry *Tau ;
-    Long *Rj, *Stair ;
-    Long col1, col2, fp, pr, fn, fm, h, nh, p, rm, k, j, t, n1cols, n ;
+    int64_t *Rj, *Stair ;
+    int64_t col1, col2, fp, pr, fn, fm, h, nh, p, rm, k, j, t, n1cols, n ;
 
     // -------------------------------------------------------------------------
     // get the R block for front F
@@ -969,13 +969,13 @@ template <typename Entry> Long spqr_private_get_H_vectors
 
 // Load Householder vectors h1:h2-1 into the panel V.  Return # of rows in V.
 
-template <typename Entry> Long spqr_private_load_H_vectors
+template <typename Entry> int64_t spqr_private_load_H_vectors
 (
     // input
-    Long h1,            // load vectors h1 to h2-1
-    Long h2,
-    Long *H_start,      // vector h starts at R [H_start [h]]
-    Long *H_end,        // vector h ends at R [H_end [h]-1]
+    int64_t h1,            // load vectors h1 to h2-1
+    int64_t h2,
+    int64_t *H_start,      // vector h starts at R [H_start [h]]
+    int64_t *H_end,        // vector h ends at R [H_end [h]-1]
     Entry *R,           // Rblock [f]
     // output
     Entry *V,           // V is v-by-(h2-h1) and lower triangular
@@ -983,16 +983,16 @@ template <typename Entry> Long spqr_private_load_H_vectors
 )
 {
     // v = length of last H vector
-    Long v = H_end [h2-1] - H_start [h2-1] + (h2-h1) ;
+    int64_t v = H_end [h2-1] - H_start [h2-1] + (h2-h1) ;
     Entry *V1 = V ;
-    for (Long h = h1 ; h < h2 ; h++)
+    for (int64_t h = h1 ; h < h2 ; h++)
     {
-        Long i ;
+        int64_t i ;
         // This part of V is not accessed, for testing only:
         // for (i = 0 ; i < h-h1 ; i++) V1 [i] = 0 ;
         i = h-h1 ;
         V1 [i++] = 1 ;
-        for (Long p = H_start [h] ; p < H_end [h] ; p++)
+        for (int64_t p = H_start [h] ; p < H_end [h] ; p++)
         {
             V1 [i++] = R [p] ;
         }
@@ -1018,18 +1018,18 @@ template <typename Entry> void spqr_private_Happly
     // inputs
     int method,             // 0,1,2,3
     SuiteSparseQR_factorization <Entry> *QR,
-    Long hchunk,            // apply hchunk Householder vectors at a time
+    int64_t hchunk,            // apply hchunk Householder vectors at a time
 
     // input/output
-    Long m,
-    Long n,
+    int64_t m,
+    int64_t n,
     Entry *X,               // size m-by-n with leading dimension m; only
                             // X (n1rows:m-1,:) or X (:,n1rows:n-1) is modified
 
     // workspace, not defined on input or output
     Entry *H_Tau,           // size QRsym->maxfn
-    Long *H_start,          // size QRsym->maxfn
-    Long *H_end,            // size QRsym->maxfn
+    int64_t *H_start,          // size QRsym->maxfn
+    int64_t *H_end,            // size QRsym->maxfn
     Entry *V,               // size v-by-hchunk, where v = QRnum->maxfm
     Entry *C,               // size: method 0,1: v*n,     method 2,3: m*v
     Entry *W,               // size: method 0,1: h*h+n*h, method 2,3: h*h+m*h
@@ -1041,8 +1041,8 @@ template <typename Entry> void spqr_private_Happly
     spqr_symbolic *QRsym ;
     spqr_numeric <Entry> *QRnum ;
     Entry **Rblock, *R, *X2 ;
-    Long *Hii, *Hip, *Hi ;
-    Long nf, f, nh, h1, h2, v, n1rows, m2, n2 ;
+    int64_t *Hii, *Hip, *Hi ;
+    int64_t nf, f, nh, h1, h2, v, n1rows, m2, n2 ;
 
     // -------------------------------------------------------------------------
     // get the contents of the QR factorization
@@ -1163,8 +1163,8 @@ template <typename Entry> void spqr_private_Happly
     cholmod_l_free_dense (&Wdense, cc) ; \
     cholmod_l_free_dense (&Cdense, cc) ; \
     cholmod_l_free (maxfn, sizeof (Entry), H_Tau,   cc) ; \
-    cholmod_l_free (maxfn, sizeof (Long),  H_start, cc) ; \
-    cholmod_l_free (maxfn, sizeof (Long),  H_end,   cc) ; \
+    cholmod_l_free (maxfn, sizeof (int64_t),  H_start, cc) ; \
+    cholmod_l_free (maxfn, sizeof (int64_t),  H_end,   cc) ; \
 }
 
 // returns Y of size m-by-n, or NULL on failure
@@ -1181,8 +1181,8 @@ template <typename Entry> cholmod_dense *SuiteSparseQR_qmult
 {
     cholmod_dense *Ydense, *Cdense, *Vdense, *Wdense, *Zdense ;
     Entry *X, *Y, *X1, *Y1, *Z1, *C, *V, *Z, *W, *H_Tau ;
-    Long *HPinv, *H_start, *H_end ;
-    Long i, k, mh, v, hchunk, ldx, m, n, maxfn, ok ;
+    int64_t *HPinv, *H_start, *H_end ;
+    int64_t i, k, mh, v, hchunk, ldx, m, n, maxfn, ok ;
 
     // -------------------------------------------------------------------------
     // get inputs
@@ -1193,7 +1193,7 @@ template <typename Entry> cholmod_dense *SuiteSparseQR_qmult
     RETURN_IF_NULL (QR->QRnum, NULL) ;
     RETURN_IF_NULL (QR->QRnum->Hm, NULL) ;
     RETURN_IF_NULL (Xdense, NULL) ;
-    Long xtype = spqr_type <Entry> ( ) ;
+    int64_t xtype = spqr_type <Entry> ( ) ;
     RETURN_IF_XTYPE_INVALID (Xdense, NULL) ;
     cc->status = CHOLMOD_OK ;
 
@@ -1276,8 +1276,8 @@ template <typename Entry> cholmod_dense *SuiteSparseQR_qmult
     Wdense = NULL ;
 
     H_Tau   = (Entry *) cholmod_l_malloc (maxfn, sizeof (Entry), cc) ;
-    H_start = (Long *)  cholmod_l_malloc (maxfn, sizeof (Long),  cc) ;
-    H_end   = (Long *)  cholmod_l_malloc (maxfn, sizeof (Long),  cc) ;
+    H_start = (int64_t *)  cholmod_l_malloc (maxfn, sizeof (int64_t),  cc) ;
+    H_end   = (int64_t *)  cholmod_l_malloc (maxfn, sizeof (int64_t),  cc) ;
 
     if (!ok || Cdense == NULL || cc->status < CHOLMOD_OK)
     {
@@ -1519,7 +1519,7 @@ template <typename Entry> cholmod_sparse *SuiteSparseQR_qmult
     RETURN_IF_NULL_COMMON (NULL) ;
     RETURN_IF_NULL (QR, NULL) ;
     RETURN_IF_NULL (Xsparse, NULL) ;
-    Long xtype = spqr_type <Entry> ( ) ;
+    int64_t xtype = spqr_type <Entry> ( ) ;
     RETURN_IF_XTYPE_INVALID (Xsparse, NULL) ;
     cc->status = CHOLMOD_OK ;
 
@@ -1607,7 +1607,7 @@ template <typename Entry> cholmod_dense *SuiteSparseQR_min2norm
     RETURN_IF_NULL_COMMON (NULL) ;
     RETURN_IF_NULL (A, NULL) ;
     RETURN_IF_NULL (B, NULL) ;
-    Long xtype = spqr_type <Entry> ( ) ;
+    int64_t xtype = spqr_type <Entry> ( ) ;
     RETURN_IF_XTYPE_INVALID (A, NULL) ;
     RETURN_IF_XTYPE_INVALID (B, NULL) ;
     cc->status = CHOLMOD_OK ;
@@ -1697,7 +1697,7 @@ template <typename Entry> cholmod_sparse *SuiteSparseQR_min2norm    // returns X
     RETURN_IF_NULL_COMMON (NULL) ;
     RETURN_IF_NULL (A, NULL) ;
     RETURN_IF_NULL (Bsparse, NULL) ;
-    Long xtype = spqr_type <Entry> ( ) ;
+    int64_t xtype = spqr_type <Entry> ( ) ;
     RETURN_IF_XTYPE_INVALID (A, NULL) ;
     RETURN_IF_XTYPE_INVALID (Bsparse, NULL) ;
     cc->status = CHOLMOD_OK ;
