@@ -28,11 +28,11 @@ go: metis
 	( cd UMFPACK && $(MAKE) )
 	( cd RBio && $(MAKE) )
 	( cd GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' )
+	( cd SPQR && $(MAKE) )
 ifneq ($(GPU_CONFIG),)
 	( cd SuiteSparse_GPURuntime && $(MAKE) )
 	( cd GPUQREngine && $(MAKE) )
 endif
-	( cd SPQR && $(MAKE) )
 	( cd SLIP_LU && $(MAKE) )
 
 # compile and install in SuiteSparse/lib and SuiteSparse/include
@@ -52,11 +52,11 @@ local: metis
 	( cd UMFPACK && $(MAKE) local && $(MAKE) install )
 	( cd RBio && $(MAKE) local && $(MAKE) install )
 	( cd GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' local && $(MAKE) install )
+	( cd SPQR && $(MAKE) local && $(MAKE) install )
 ifneq ($(GPU_CONFIG),)
 	( cd SuiteSparse_GPURuntime && $(MAKE) )
 	( cd GPUQREngine && $(MAKE) )
 endif
-	( cd SPQR && $(MAKE) library && $(MAKE) install )
 	( cd SLIP_LU && $(MAKE) )
 
 # install all packages in SuiteSparse/lib and SuiteSparse/include.  Use the
@@ -79,11 +79,11 @@ install: metisinstall gbinstall moninstall
 	( cd UMFPACK && $(MAKE) install )
 	( cd RBio && $(MAKE) install )
 	( cd GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' install )
+	( cd SPQR && $(MAKE) install )
 ifneq (,$(GPU_CONFIG))
 	( cd SuiteSparse_GPURuntime && $(MAKE) install )
 	( cd GPUQREngine && $(MAKE) install )
 endif
-	( cd SPQR && $(MAKE) install )
 	( cd SLIP_LU && $(MAKE) install )
 
 metisinstall: metis
@@ -145,11 +145,11 @@ library: metis
 	( cd CXSparse && $(MAKE) library )
 	( cd RBio && $(MAKE) library )
 	( cd GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' library )
+	( cd SPQR && $(MAKE) library )
 ifneq (,$(GPU_CONFIG))
 	( cd SuiteSparse_GPURuntime && $(MAKE) library )
 	( cd GPUQREngine && $(MAKE) library )
 endif
-	( cd SPQR && $(MAKE) library )
 	( cd SLIP_LU && $(MAKE) library )
 
 # Remove all files not in the original distribution

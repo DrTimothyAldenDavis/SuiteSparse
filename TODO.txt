@@ -34,7 +34,7 @@ FIXME: cmake CUDA for:
 FIXME: update metis cmake to use SuiteSparsePolicy
 
 FIXME: cmake and Find*.cmake for:
-    todo: SPQR, SuiteSparse_GPURuntime, GPUQREngine
+    todo: SuiteSparse_GPURuntime, GPUQREngine
 
 FIXME: remove SuiteSparse_config.mk?
     currently needed for CHOLMOD/Tcov, however

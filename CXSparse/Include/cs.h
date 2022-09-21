@@ -1,15 +1,11 @@
 //------------------------------------------------------------------------------
-// CXSparse/Source/cs_ci_add.c: complex, int32_t version of cs_add
+// CXSparse/Include/cs.h: include file for CXSparse
 //------------------------------------------------------------------------------
 
 // CXSparse, Copyright (c) 2006-2022, Timothy A. Davis, All Rights Reserved
 // SPDX-License-Identifier: LGPL-2.1+
 
 //------------------------------------------------------------------------------
-
-/* ========================================================================== */
-/* CXSparse/Include/cs.h file */
-/* ========================================================================== */
 
 /* This is the CXSparse/Include/cs.h file.  It has the same name (cs.h) as
    the CSparse/Include/cs.h file.  The 'make install' for SuiteSparse installs

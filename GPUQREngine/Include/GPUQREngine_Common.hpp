@@ -66,7 +66,7 @@
 #endif
 
 #define EMPTY       (-1)
-#define Int         SuiteSparse_long
+#define Int         int64_t
 
 // To render the buckets for visualization in graphvis, uncomment this next
 // line, or compile the code with -DGPUQRENGINE_RENDER
